@@ -5,7 +5,7 @@
   "description": "研修が終わって、開発チームに配属されます。初日に使うことばを覚えましょう。",
   "password": "stage11",
   "fieldSequence": ["forest", "sky", "space"],
-  "questionCount": 16,
+  "questionCount": 8,
   "passRate": 80,
   "furigana": [
     ["挨拶回り", "あいさつまわり"],

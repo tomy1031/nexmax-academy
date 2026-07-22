@@ -92,6 +92,9 @@ function main() {
     return;
   }
 
+  // kind別のID重複をファイル横断で検出する（同じステージ/シナリオIDが2ファイルにあると進捗保存が壊れる）
+  const seenIds = new Map<string, string>();
+
   for (const file of files) {
     const rel = relative(ROOT, file);
     let data: unknown;
@@ -112,6 +115,18 @@ function main() {
         });
       }
       continue;
+    }
+
+    const idKey = `${parsed.data.kind}:${parsed.data.id}`;
+    const dup = seenIds.get(idKey);
+    if (dup) {
+      findings.push({
+        file: rel,
+        level: "error",
+        message: `ID「${parsed.data.id}」（${parsed.data.kind}）が ${dup} と重複している`,
+      });
+    } else {
+      seenIds.set(idKey, rel);
     }
 
     checkForbiddenWords(rel, data);
