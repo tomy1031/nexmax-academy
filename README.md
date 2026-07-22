@@ -12,10 +12,14 @@
 
 ## 開発
 
+Node は `.nvmrc` に合わせる（Node 22）。
+
 ```bash
 npm install
+cp .env.example .env.local   # 環境変数を用意（実値は各自）
 npm run dev                  # 開発サーバ http://localhost:3000
-npm run lint                 # ESLint
+npm run lint                 # ESLint（品質）
+npm run format               # Prettier で整形
 npm run typecheck            # tsc --noEmit
 npm run lint:content         # コンテンツ検収（スキーマ＋禁止語＋秘匿漏れ）
 npm run measure:readability  # 文長・漢字密度レポート
@@ -23,10 +27,10 @@ npm run measure:readability  # 文長・漢字密度レポート
 
 ## ドキュメント
 
-| ファイル | 内容 |
-|---|---|
-| `docs/design/01_理解設計ガイド.md` | 教材設計の13原則・アンチパターン・制作レシピ（教材を書く前に必読） |
-| `docs/design/02_拡張カリキュラム設計書.md` | 「ネクストメイク1年目」12モジュールのカリキュラム計画 |
-| `docs/design/03_リニューアル設計方針.md` | アーキテクチャ・DB要件・検収パイプライン・移行手順 |
-| `docs/design/review_rubric.md` | 検収ルーブリック（証拠必須） |
-| `AGENTS.md` | AIエージェント向けの規律（CLAUDE.md / .gemini からも参照される単一ソース） |
+| ファイル                                   | 内容                                                                       |
+| ------------------------------------------ | -------------------------------------------------------------------------- |
+| `docs/design/01_理解設計ガイド.md`         | 教材設計の13原則・アンチパターン・制作レシピ（教材を書く前に必読）         |
+| `docs/design/02_拡張カリキュラム設計書.md` | 「ネクストメイク1年目」12モジュールのカリキュラム計画                      |
+| `docs/design/03_リニューアル設計方針.md`   | アーキテクチャ・DB要件・検収パイプライン・移行手順                         |
+| `docs/design/review_rubric.md`             | 検収ルーブリック（証拠必須）                                               |
+| `AGENTS.md`                                | AIエージェント向けの規律（CLAUDE.md / .gemini からも参照される単一ソース） |

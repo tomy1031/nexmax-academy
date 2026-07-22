@@ -1,4 +1,5 @@
 <!-- BEGIN:nextjs-agent-rules -->
+
 # This is NOT the Next.js you know
 
 This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
@@ -11,12 +12,12 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 ## 必読ドキュメント（該当する作業の前に必ず読む）
 
-| ファイル | 読むべきとき |
-|---|---|
-| `docs/design/01_理解設計ガイド.md` | 教材・UI文言・シナリオ・フィードバックを書く前（13原則＋アンチパターン集） |
-| `docs/design/02_拡張カリキュラム設計書.md` | 新モジュール（M1〜M12）を実装する前 |
-| `docs/design/03_リニューアル設計方針.md` | アーキテクチャ・DB・検収・移行に関わる作業の前 |
-| `docs/design/review_rubric.md` | 検収・レビューを行うとき（証拠必須ルーブリック） |
+| ファイル                                   | 読むべきとき                                                               |
+| ------------------------------------------ | -------------------------------------------------------------------------- |
+| `docs/design/01_理解設計ガイド.md`         | 教材・UI文言・シナリオ・フィードバックを書く前（13原則＋アンチパターン集） |
+| `docs/design/02_拡張カリキュラム設計書.md` | 新モジュール（M1〜M12）を実装する前                                        |
+| `docs/design/03_リニューアル設計方針.md`   | アーキテクチャ・DB・検収・移行に関わる作業の前                             |
+| `docs/design/review_rubric.md`             | 検収・レビューを行うとき（証拠必須ルーブリック）                           |
 
 ## 絶対規律（機械検査の対象。違反はCIで落ちる）
 
@@ -33,12 +34,29 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - クライアントコンポーネント中心（学習エンジンはインタラクティブなため）。サーバ側はAPI Route（Geminiプロキシ・DB操作）に限定。RSCの高度な機能は使わない。
 - 表記ゆれ正規化・ルビ合成・フィードバック表示は共有ユーティリティ/コンポーネントを使う。再実装しない。
 
+## ディレクトリ規約
+
+```
+src/app/          # ルーティング・ページ（App Router）。サーバ処理は API Route に限定
+src/components/   # 学習エンジンの再利用UI部品（クライアントコンポーネント中心）
+src/lib/          # 横断ユーティリティ（env アクセサ・正規化・ルビ合成など）。再実装しない
+src/content/      # コンテンツのzodスキーマ（schema.ts）
+content/          # スキーマ準拠のコンテンツデータ（*.json）
+scripts/          # 検収スクリプト（lint_content / measure_readability）
+docs/design/      # 設計ドキュメント（唯一の知識ソース）
+```
+
+- 環境変数は `process.env` を直接読まず `src/lib/env.ts` を通す。
+- 秘密鍵（`getServerEnv()`）はクライアントコンポーネントから import しない。
+
 ## コマンド
 
 ```
 npm run dev                  # 開発サーバ
 npm run build                # ビルド
-npm run lint                 # ESLint
+npm run lint                 # ESLint（品質）
+npm run format               # Prettier で整形（整形はESLintでなくPrettierが担当）
+npm run format:check         # 整形崩れの検査（CIで実行）
 npm run typecheck            # tsc --noEmit
 npm run lint:content         # コンテンツ検収（スキーマ＋禁止語＋秘匿漏れ）
 npm run measure:readability  # 文長・漢字密度の計測レポート

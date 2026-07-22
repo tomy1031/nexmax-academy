@@ -32,12 +32,7 @@ function walk(dir: string): string[] {
   return files;
 }
 
-function collectStrings(
-  value: unknown,
-  path: string,
-  key: string,
-  out: [string, string][],
-) {
+function collectStrings(value: unknown, path: string, key: string, out: [string, string][]) {
   if (typeof value === "string") {
     if (!EXCLUDED_KEYS.has(key)) out.push([path, value]);
   } else if (Array.isArray(value)) {

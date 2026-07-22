@@ -1,0 +1,12 @@
+# 生成物・依存
+.next/
+out/
+build/
+node_modules/
+package-lock.json
+
+# ドキュメント（手組みの表・整形を保持したいため Prettier 対象外）
+docs/
+
+# コンテンツJSON（lint:content が別途スキーマ検証する）
+content/

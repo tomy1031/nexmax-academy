@@ -14,11 +14,7 @@
  */
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
-import {
-  contentSchema,
-  FORBIDDEN_LEARNER_WORDS,
-  type Scenario,
-} from "../src/content/schema";
+import { contentSchema, FORBIDDEN_LEARNER_WORDS, type Scenario } from "../src/content/schema";
 
 const ROOT = join(import.meta.dirname, "..");
 const CONTENT_DIR = join(ROOT, "content");
@@ -72,9 +68,7 @@ function checkForbiddenWords(file: string, data: unknown) {
 function checkSecretLeaks(file: string, scenario: Scenario) {
   const pagesHtml = scenario.research.pages.map((p) => p.html).join("\n");
   for (const req of scenario.interview.reqs) {
-    const leaked = req.keywords.filter(
-      (kw) => kw.length >= 2 && pagesHtml.includes(kw),
-    );
+    const leaked = req.keywords.filter((kw) => kw.length >= 2 && pagesHtml.includes(kw));
     if (leaked.length > 0) {
       findings.push({
         file,
@@ -131,9 +125,7 @@ function main() {
   for (const f of findings) {
     console.log(`${f.level === "error" ? "✖" : "⚠"} [${f.file}] ${f.message}`);
   }
-  console.log(
-    `\n${files.length} ファイル検査: エラー ${errors.length} / 警告 ${warns.length}`,
-  );
+  console.log(`\n${files.length} ファイル検査: エラー ${errors.length} / 警告 ${warns.length}`);
   if (errors.length > 0) process.exit(1);
 }
 
