@@ -292,7 +292,7 @@ function StepDepart() {
       <p className="text-ink mt-4 text-lg leading-relaxed font-bold">
         じゅんびは OK！
         <br />
-        マップの さいしょの ばしょから、ぼうけんを はじめよう。
+        マップの さいしょの ばしょから、まなびを はじめよう。
       </p>
       <div className="mt-6 flex justify-center">
         <Link href="/" className="btn-game px-10 py-4 text-lg">

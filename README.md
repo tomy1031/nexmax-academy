@@ -39,6 +39,12 @@ npm run measure:readability  # 文長・漢字密度レポート
 
 環境変数が未設定の間は「たいけんモード」で全ページを閲覧できます。
 
+## デプロイ（検証環境）
+
+常時の動作確認用に **Vercel Hobby（無料）** を検証環境として使う。`git push` で本番URL、PRごとにプレビューURLが自動発行される。DB・認証は本番と同じ Supabase を共有する。
+
+セットアップと運用注意（OAuthリダイレクトURL登録・同一DB共有の線引き）は `docs/deploy.md` を参照。本番環境は `docs/design/03` の正式運用に従う。
+
 ## キャラクター画像（ネクマックス）
 
 ナビゲーターのネクマックスは Codex の image-gen-2 で生成します（手描きSVG禁止）。
@@ -53,4 +59,6 @@ npm run measure:readability  # 文長・漢字密度レポート
 | `docs/design/02_拡張カリキュラム設計書.md` | 「ネクストメイク1年目」12モジュールのカリキュラム計画                      |
 | `docs/design/03_リニューアル設計方針.md`   | アーキテクチャ・DB要件・検収パイプライン・移行手順                         |
 | `docs/design/review_rubric.md`             | 検収ルーブリック（証拠必須）                                               |
+| `docs/design/04_ビジュアルテーマ.md`       | ビジュアル・文言トーン・ネクマックスの規律（UIに触る前に必読）             |
+| `docs/deploy.md`                           | 検証環境（Vercel）と Supabase 共有の運用                                   |
 | `AGENTS.md`                                | AIエージェント向けの規律（CLAUDE.md / .gemini からも参照される単一ソース） |

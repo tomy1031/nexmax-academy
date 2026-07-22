@@ -6,7 +6,7 @@ import { signOut } from "@/app/auth/actions";
 import { NekuMax, NEKUMAX_FAMILY } from "@/components/nekumax";
 import { DriftingClouds, PaperPlane, Sun } from "@/components/scenery";
 
-/* ---- パスウェイ（ぼうけんマップ）の停留所 ---- */
+/* ---- パスウェイ（まなびマップ）の停留所 ---- */
 
 interface Stop {
   emoji: string;
@@ -208,7 +208,7 @@ export function HomeShell({
             の IT の しごとへ、
             <br className="sm:hidden" />
             <span className="text-navy whitespace-nowrap underline decoration-[#ffc93c] decoration-8 underline-offset-4">
-              ぼうけんの みち
+              まなびの みち
             </span>
             を すすもう
           </motion.h1>
@@ -249,10 +249,10 @@ export function HomeShell({
           </motion.div>
         </section>
 
-        {/* ぼうけんマップ */}
+        {/* まなびマップ */}
         <section id="map" className="mb-16 scroll-mt-24">
           <h2 className="text-ink mb-2 text-2xl font-extrabold">
-            🗺️ ぼうけんマップ
+            🗺️ まなびマップ
             <span className="bg-sky ml-3 inline-block h-2 w-16 rounded-full align-middle" />
           </h2>
           <p className="text-ink-soft mb-6 font-bold">

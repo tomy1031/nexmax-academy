@@ -20,9 +20,9 @@ const notoJp = Noto_Sans_JP({
 });
 
 export const metadata: Metadata = {
-  title: "にほんご しごとの島 | NEXT MAKE",
+  title: "Japanese IT Pathway | NEXT MAKE",
   description:
-    "カンボジアのITの学生が、日本の会社で はたらくための ことばと しごとを、島を たんけんしながら たのしく まなぶ アプリ。",
+    "カンボジアのITの学生が、日本の会社で はたらくための ことばと しごとを、みちを 一歩ずつ すすみながら たのしく まなぶ アプリ。",
 };
 
 export default function RootLayout({
