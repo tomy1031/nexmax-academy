@@ -58,9 +58,14 @@ npm run lint                 # ESLint（品質）
 npm run format               # Prettier で整形（整形はESLintでなくPrettierが担当）
 npm run format:check         # 整形崩れの検査（CIで実行）
 npm run typecheck            # tsc --noEmit
-npm run lint:content         # コンテンツ検収（スキーマ＋禁止語＋秘匿漏れ）
+npm run lint:content         # コンテンツ検収（スキーマ＋禁止語＋秘匿漏れ＋ID重複）
+npm run lint:secrets         # 秘密情報（キー・トークン）混入検査
+npm test                     # 単体テスト（Vitest）
 npm run measure:readability  # 文長・漢字密度の計測レポート
 ```
+
+コミット時は husky + lint-staged が整形・eslint --fix・secretlint・lint:content を自動実行する。
+フックを回避するコミット（--no-verify）はしない。
 
 ## レビュー時の役割分担（複数エージェント検収）
 

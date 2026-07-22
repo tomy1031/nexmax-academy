@@ -21,9 +21,13 @@ npm run dev                  # 開発サーバ http://localhost:3000
 npm run lint                 # ESLint（品質）
 npm run format               # Prettier で整形
 npm run typecheck            # tsc --noEmit
-npm run lint:content         # コンテンツ検収（スキーマ＋禁止語＋秘匿漏れ）
+npm run lint:content         # コンテンツ検収（スキーマ＋禁止語＋秘匿漏れ＋ID重複）
+npm run lint:secrets         # 秘密情報混入検査（secretlint）
+npm test                     # 単体テスト（Vitest）
 npm run measure:readability  # 文長・漢字密度レポート
 ```
+
+コミット時に pre-commit フック（husky + lint-staged）が整形と検収を自動実行します。
 
 ## ドキュメント
 
