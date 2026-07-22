@@ -1,26 +1,196 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/*
+ * あおぞらパスウェイ — デザイントークン層
+ * 仕様: docs/design/04_ビジュアルテーマ.md（DESIGN.md の学習アプリ向け翻案）
+ *
+ * 原則: 値をコンポーネントに直書きせず、役割名トークンだけを参照する。
+ * 紺(navy)=構造・CTA / 空(sky)=進捗・リンク・世界。この二色規律を崩さない。
+ */
+
+@theme {
+  /* 背景世界 — 空からクリームの地平線へ */
+  --color-bg-sky: #d8f0fc;
+  --color-bg-mid: #f4fbff;
+  --color-bg-warm: #fff7e8;
+  --color-panel: #ffffff;
+  --color-panel-tint: #eef8fe;
+  --color-cream: #fff4dd;
+
+  /* インク — 濃紺スレート（純黒は使わない） */
+  --color-ink: #1f3a56;
+  --color-ink-soft: #5a7089;
+  --color-ink-faint: #9db0c2;
+
+  /* ブランド（NEXT MAKE 二色のブルー） */
+  --color-navy: #004f8d;
+  --color-navy-deep: #003c6b;
+  --color-sky: #0288d1;
+  --color-sky-deep: #0272ae;
+  --color-sky-soft: #e1f2fb;
+
+  /* アクセント（モジュール/キャラ識別色） */
+  --color-leaf: #58c273;
+  --color-leaf-deep: #3aa458;
+  --color-sun: #ffc93c;
+  --color-sun-deep: #f0a819;
+  --color-coral: #ff8a70;
+  --color-coral-deep: #f2654a;
+  --color-grape: #a78bfa;
+  --color-grape-deep: #8d6ae8;
+  --color-blossom: #ffd7e4;
+
+  /* 意味色（島トーン。色相はDESIGN.mdの4色に対応） */
+  --color-success: #58c273;
+  --color-warning: #ffc93c;
+  --color-danger: #ff8a70;
+  --color-on-accent: #ffffff;
+
+  /* 罫線 */
+  --color-hairline: #dcebf5;
+
+  /* 角丸 — なにもかも丸く */
+  --radius-chip: 9999px;
+  --radius-button: 16px;
+  --radius-card: 24px;
+  --radius-blob: 36px;
+
+  /* フォント */
+  --font-sans:
+    var(--font-rounded), "Hiragino Maru Gothic ProN", var(--font-jp), "Noto Sans JP", system-ui,
+    sans-serif;
+
+  /* 弾むイージング */
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* アニメーション */
+  --animate-bob: bob 3s ease-in-out infinite;
+  --animate-bob-slow: bob 4.2s ease-in-out infinite;
+  --animate-drift: drift 26s linear infinite;
+  --animate-drift-slow: drift 40s linear infinite;
+  --animate-spin-slow: spin 40s linear infinite;
+  --animate-wiggle: wiggle 2.6s ease-in-out infinite;
+  --animate-pop-in: pop-in 0.5s var(--ease-bounce) both;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+@keyframes bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
 }
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@keyframes drift {
+  0% {
+    transform: translateX(-15%);
+  }
+  100% {
+    transform: translateX(115%);
+  }
+}
+@keyframes wiggle {
+  0%,
+  100% {
+    transform: rotate(-2.5deg);
+  }
+  50% {
+    transform: rotate(2.5deg);
+  }
+}
+@keyframes pop-in {
+  0% {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
   }
 }
 
+/* ---- ベース ---- */
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: linear-gradient(
+    180deg,
+    var(--color-bg-sky) 0%,
+    var(--color-bg-mid) 46%,
+    var(--color-bg-warm) 100%
+  );
+  background-attachment: fixed;
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  line-height: 1.8;
+  letter-spacing: 0.01em;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100dvh;
+}
+
+/* フォーカスは全フォーカス可能要素にくっきりリング（sky） */
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 3px solid var(--color-sky);
+  outline-offset: 3px;
+  border-radius: 8px;
+}
+
+/* ルビは小さく控えめに */
+rt {
+  font-size: 0.55em;
+  font-weight: 500;
+  color: var(--color-ink-soft);
+  letter-spacing: 0;
+}
+
+/* 動きを減らす設定を尊重 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* ---- ユーティリティ ---- */
+
+/* ふわっと浮くカード */
+@utility card-pop {
+  background: var(--color-panel);
+  border: 2px solid var(--color-hairline);
+  border-radius: var(--radius-card);
+  box-shadow:
+    0 8px 0 -3px rgba(2, 136, 209, 0.08),
+    0 20px 44px -24px rgba(31, 58, 86, 0.35);
+}
+
+/* ゲームボタン: 下にハードシャドウ、押すと沈む。--btn-face / --btn-shadow を指定して使う */
+@utility btn-game {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: var(--radius-button);
+  background: var(--btn-face, var(--color-navy));
+  color: var(--color-on-accent);
+  font-weight: 700;
+  box-shadow: 0 5px 0 var(--btn-shadow, var(--color-navy-deep));
+  transition:
+    transform 0.12s var(--ease-bounce),
+    box-shadow 0.12s var(--ease-bounce),
+    filter 0.12s ease;
+}
+.btn-game:hover {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 0 var(--btn-shadow, var(--color-navy-deep));
+}
+.btn-game:active {
+  transform: translateY(4px);
+  box-shadow: 0 1px 0 var(--btn-shadow, var(--color-navy-deep));
+}
+
+@utility text-balance {
+  text-wrap: balance;
 }

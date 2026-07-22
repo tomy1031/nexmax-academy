@@ -18,6 +18,8 @@ This version has breaking changes — APIs, conventions, and file structure may 
 | `docs/design/02_拡張カリキュラム設計書.md` | 新モジュール（M1〜M12）を実装する前                                        |
 | `docs/design/03_リニューアル設計方針.md`   | アーキテクチャ・DB・検収・移行に関わる作業の前                             |
 | `docs/design/review_rubric.md`             | 検収・レビューを行うとき（証拠必須ルーブリック）                           |
+| `docs/design/04_ビジュアルテーマ.md`       | UI・画面・キャラクターに触る前（あおぞらパスウェイ／ネクマックス）         |
+| `docs/skills/codex_image_generation.md`    | 画像アセットを作るとき（image-gen-2・一貫性ルール）                        |
 
 ## 絶対規律（機械検査の対象。違反はCIで落ちる）
 
@@ -27,6 +29,8 @@ This version has breaking changes — APIs, conventions, and file structure may 
 4. APIキー・シークレットをクライアントコードに置かない。Gemini呼び出しはサーバプロキシ経由。
 5. コンテンツデータは `src/content/schema.ts` のzodスキーマに準拠（`npm run lint:content` で検証）。
 6. シナリオの秘匿情報（予算等、質問で引き出すべき事実）を調査用模擬ページに書かない。
+7. キャラクター画像を手描きSVGで自作しない。ネクマックスは Codex image-gen-2 で生成する
+   （正典 reference.png を参照入力・マスター記述を逐語使用。docs/skills/codex_image_generation.md）。
 
 ## アーキテクチャ原則
 

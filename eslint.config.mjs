@@ -21,7 +21,12 @@ const eslintConfig = defineConfig([
     },
     rules: {
       "@typescript-eslint/no-floating-promises": "error",
-      "@typescript-eslint/no-misused-promises": "error",
+      // React 19 の <form action={serverAction}> は Promise を返すのが正規の書き方のため、
+      // JSX属性への Promise 関数だけ許可する。
+      "@typescript-eslint/no-misused-promises": [
+        "error",
+        { checksVoidReturn: { attributes: false } },
+      ],
       "@typescript-eslint/await-thenable": "error",
       "@typescript-eslint/consistent-type-imports": ["warn", { fixStyle: "inline-type-imports" }],
     },

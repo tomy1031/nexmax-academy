@@ -43,3 +43,22 @@ export const publicEnv = publicEnvSchema.parse({
   NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
   NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
 });
+
+/**
+ * Supabase の公開設定がそろっているか。
+ * 未設定でもアプリは起動し、ログインは「準備中（デモモード）」として振る舞う。
+ */
+export const isSupabaseConfigured = Boolean(
+  publicEnv.NEXT_PUBLIC_SUPABASE_URL && publicEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+);
+
+/** Supabase クライアント生成に使う公開設定（未設定なら null）。 */
+export function getSupabasePublicConfig(): { url: string; anonKey: string } | null {
+  if (!publicEnv.NEXT_PUBLIC_SUPABASE_URL || !publicEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+    return null;
+  }
+  return {
+    url: publicEnv.NEXT_PUBLIC_SUPABASE_URL,
+    anonKey: publicEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+  };
+}

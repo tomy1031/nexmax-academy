@@ -29,6 +29,22 @@ npm run measure:readability  # 文長・漢字密度レポート
 
 コミット時に pre-commit フック（husky + lint-staged）が整形と検収を自動実行します。
 
+## Google ログインの設定（Supabase）
+
+1. Supabase プロジェクトを作成し、`.env.local` に `NEXT_PUBLIC_SUPABASE_URL` と `NEXT_PUBLIC_SUPABASE_ANON_KEY` を設定
+2. Google Cloud Console で OAuth クライアントを作成し、リダイレクトURIに
+   `https://<プロジェクトID>.supabase.co/auth/v1/callback` を登録
+3. Supabase ダッシュボード → Authentication → Providers → Google を有効化し、クライアントID/シークレットを入力
+4. アプリ側のコールバックは `/auth/callback`（実装済み）
+
+環境変数が未設定の間は「たいけんモード」で全ページを閲覧できます。
+
+## キャラクター画像（ネクマックス）
+
+ナビゲーターのネクマックスは Codex の image-gen-2 で生成します（手描きSVG禁止）。
+正典 `public/img/characters/nekumax/reference.png` を置いたうえで、
+`docs/skills/codex_image_generation.md` の手順でバリアントを生成してください。
+
 ## ドキュメント
 
 | ファイル                                   | 内容                                                                       |
