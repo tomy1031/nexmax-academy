@@ -2,7 +2,14 @@
 
 **目的**: このアプリのキャラクター・イラスト画像を、Codex の **image-gen-2** で生成する。
 **最重要ルール**: キャラクターを手描きSVGで自作しない。キャラ画像はすべて本スキルの手順で生成する。
-**正典（スタイルアンカー）**: `public/img/characters/nekumax/reference.png`（ユーザー提供のネクマックス原画）
+**正典（スタイルアンカー）**: `public/img/characters/nekumax/reference.png`（ネクマックス原画）
+**原画の入手元**: <https://nextmake.site/wp-content/uploads/2025/08/N.D%E5%B7%A6.png>
+（NEXT MAKE 公式サイトの画像。まだリポジトリに未配置なら、下記コマンドで取得して上記パスに保存する）
+
+```bash
+curl -L -o public/img/characters/nekumax/reference.png \
+  "https://nextmake.site/wp-content/uploads/2025/08/N.D%E5%B7%A6.png"
+```
 
 ---
 
