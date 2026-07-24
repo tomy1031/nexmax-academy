@@ -31,7 +31,8 @@ DB・認証は3環境とも**同じ Supabase プロジェクト**を使う（ユ
    | `NEXT_PUBLIC_SUPABASE_URL` | Supabase の Project URL | 公開（クライアントに出る） |
    | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase の anon key | 公開（RLSで保護） |
    | `SUPABASE_SERVICE_ROLE_KEY` | Supabase の service_role key | **秘密**（サーバのみ） |
-   | `GEMINI_API_KEY` | Gemini APIキー | **秘密**（サーバのみ） |
+
+   > `GEMINI_API_KEY` はここには登録しない。Geminiは単一の共有サーバーキーを持たず、生徒・教師が各自で発行した自分のAPIキーを設定画面から登録するBYOK方式（`docs/design/03_リニューアル設計方針.md` §2）。登録キーはDBに保存し、サーバプロキシが本人のキーとしてのみ使用する。
 
 5. Deploy。以後は `git push` で本番URL、PR作成でプレビューURLが自動生成される
 
