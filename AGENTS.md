@@ -5,7 +5,7 @@
 This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
 <!-- END:nextjs-agent-rules -->
 
-# nextmake_kenshu — Japanese IT Pathway 新アプリ
+# NexmaxAcademy — Japanese IT Pathway 新アプリ
 
 カンボジアのIT専攻学生（日本語学習歴1年・N5〜N3挑戦）向けeラーニング。
 旧アプリ（tomy1031/nextmake_onbording）のリニューアル。Next.js + TypeScript + Tailwind。

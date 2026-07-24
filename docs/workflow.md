@@ -27,8 +27,8 @@
 ## ローカル初回セットアップ
 
 ```bash
-git clone https://github.com/tomy1031/nextmake_kenshu.git
-cd nextmake_kenshu
+git clone https://github.com/tomy1031/nexmax-academy.git
+cd nexmax-academy
 npm install          # husky pre-commit も自動セットアップされる
 cp .env.example .env.local   # 実値を投入（docs/deploy.md 参照）
 npm run dev

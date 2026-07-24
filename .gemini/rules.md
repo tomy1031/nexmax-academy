@@ -1,4 +1,4 @@
-# Gemini Agent Rules — nextmake_kenshu
+# Gemini Agent Rules — NexmaxAcademy
 
 まず `AGENTS.md` を読むこと。プロジェクト共通の規律・必読ドキュメント・コマンドはすべてそこにある（このファイルには重複させない）。
 

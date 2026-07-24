@@ -22,7 +22,7 @@ DB・認証は3環境とも**同じ Supabase プロジェクト**を使う（ユ
 ## 3. セットアップ手順（検証環境・一度きり）
 
 1. [vercel.com](https://vercel.com) に GitHub アカウントでログイン
-2. **Add New → Project** → `tomy1031/nextmake_kenshu` を Import
+2. **Add New → Project** → `tomy1031/nexmax-academy` を Import
 3. Framework は Next.js が自動検出される（Build/Output はデフォルトのまま）
 4. **Environment Variables** に以下を登録（Production / Preview 両方に付与）:
 

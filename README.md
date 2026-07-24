@@ -1,4 +1,4 @@
-# nextmake_kenshu — Japanese IT Pathway 新アプリ
+# NexmaxAcademy — Japanese IT Pathway 新アプリ
 
 カンボジアのIT専攻学生（日本語学習歴1年・N5〜N3挑戦）が、日本のIT企業で働くための知識と日本語を、リアルな現場の追体験で学ぶeラーニングアプリ。
 
