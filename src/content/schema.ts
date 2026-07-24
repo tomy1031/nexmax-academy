@@ -59,20 +59,44 @@ export const wordSchema = z.object({
 });
 
 /** 単語ステージ（課ごとに1ステージ追加するだけでゲーム化される）。 */
-export const wordStageSchema = z.object({
-  kind: z.literal("wordstage"),
-  id: z.string().regex(/^[a-z0-9_-]+$/),
-  title: plainText,
-  description: plainText,
-  /** 教師が授業で伝える開放パスワード。省略時は最初から開放。 */
-  password: z.string().optional(),
-  fieldSequence: z.array(z.string()).min(1),
-  questionCount: z.number().int().positive(),
-  passRate: z.number().int().min(1).max(100),
-  /** 複合語優先の読み辞書（表示ルビ用）。 */
-  furigana: z.array(furiganaEntrySchema).optional(),
-  words: z.array(wordSchema).min(6),
-});
+export const wordStageSchema = z
+  .object({
+    kind: z.literal("wordstage"),
+    id: z.string().regex(/^[a-z0-9_-]+$/),
+    title: plainText,
+    description: plainText,
+    /** 教師が授業で伝える開放パスワード。省略時は最初から開放。 */
+    password: z.string().optional(),
+    fieldSequence: z.array(z.string()).min(1),
+    questionCount: z.number().int().positive(),
+    passRate: z.number().int().min(1).max(100),
+    /** 複合語優先の読み辞書（表示ルビ用）。 */
+    furigana: z.array(furiganaEntrySchema).optional(),
+    words: z.array(wordSchema).min(6),
+  })
+  .superRefine((stage, ctx) => {
+    if (stage.questionCount > stage.words.length) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["questionCount"],
+        message: `questionCount(${stage.questionCount}) が語数(${stage.words.length})を超えている — 出題は語彙の部分集合`,
+      });
+    }
+    const ids = stage.words.map((w) => w.id);
+    if (new Set(ids).size !== ids.length) {
+      ctx.addIssue({ code: "custom", path: ["words"], message: "words の id が重複している" });
+    }
+    stage.words.forEach((w, i) => {
+      const meanings = [w.meaningEn, ...w.wrongMeanings].map((m) => m.trim().toLowerCase());
+      if (new Set(meanings).size !== meanings.length) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["words", i, "wrongMeanings"],
+          message: `「${w.term}」の選択肢に重複がある（誤答同士、または誤答＝正解）`,
+        });
+      }
+    });
+  });
 
 /** ヒアリング型シナリオ（お客さまインタビュー系）。 */
 const reqCatSchema = z.enum([
