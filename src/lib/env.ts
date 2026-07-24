@@ -11,8 +11,9 @@ import { z } from "zod";
  */
 
 const serverEnvSchema = z.object({
-  // Gemini はサーバ側プロキシ（API Route）からのみ使用する。
-  GEMINI_API_KEY: z.string().min(1, "GEMINI_API_KEY が未設定です"),
+  // Gemini は単一の共有サーバーキーを持たない（BYOK方式）。
+  // 生徒・教師が各自登録したAPIキーをDBから読み、サーバプロキシが本人のキーとしてのみ使用する
+  // （docs/design/03_リニューアル設計方針.md §2）。ここには環境変数として置かない。
   // フェーズ1で使用。導入までは optional にしておく。
   SUPABASE_SERVICE_ROLE_KEY: z.string().min(1).optional(),
 });
