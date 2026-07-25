@@ -4,6 +4,8 @@ out/
 build/
 node_modules/
 package-lock.json
+.claude/
+.tmp*
 
 # ドキュメント（手組みの表・整形を保持したいため Prettier 対象外）
 docs/
