@@ -1,5 +1,7 @@
 export type PersonalityTypeId = "leader" | "idea" | "heart" | "challenge";
 export type PersonalityLanguage = "easy" | "japanese" | "english";
+export type PersonalityAnswer = "yes" | "neutral" | "no";
+export type PersonalityScores = Record<PersonalityTypeId, number>;
 
 export interface Reading {
   text: string;
@@ -24,6 +26,7 @@ export interface PersonalityQuestion {
   japanese: string;
   english: string;
   readings: readonly Reading[];
+  image: string;
 }
 
 export const PERSONALITY_TYPES: readonly PersonalityType[] = [
@@ -102,6 +105,7 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
       { text: "計画", reading: "けいかく" },
       { text: "立てます", reading: "たてます" },
     ],
+    image: "/img/quiz/q01.png",
   },
   {
     id: 2,
@@ -114,6 +118,7 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
       { text: "考える", reading: "かんがえる" },
       { text: "好き", reading: "すき" },
     ],
+    image: "/img/quiz/q02.png",
   },
   {
     id: 3,
@@ -122,11 +127,12 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
     japanese: "困っている人を見ると、声をかけますか。",
     english: "Do you talk to people who look troubled?",
     readings: [
-      { text: "困っている", reading: "こまっている" },
+      { text: "困って", reading: "こまって" },
       { text: "人", reading: "ひと" },
       { text: "見る", reading: "みる" },
       { text: "声", reading: "こえ" },
     ],
+    image: "/img/quiz/q03.png",
   },
   {
     id: 4,
@@ -138,6 +144,7 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
       { text: "新しい", reading: "あたらしい" },
       { text: "挑戦", reading: "ちょうせん" },
     ],
+    image: "/img/quiz/q04.png",
   },
   {
     id: 5,
@@ -146,6 +153,7 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
     japanese: "チームをまとめるのが好きですか。",
     english: "Do you like organizing your team?",
     readings: [{ text: "好き", reading: "すき" }],
+    image: "/img/quiz/q05.png",
   },
   {
     id: 6,
@@ -154,6 +162,7 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
     japanese: "「なぜ？」「どうして？」とよく考えますか。",
     english: 'Do you often ask "why?" and "how?"',
     readings: [{ text: "考えます", reading: "かんがえます" }],
+    image: "/img/quiz/q06.png",
   },
   {
     id: 7,
@@ -167,6 +176,7 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
       { text: "聞く", reading: "きく" },
       { text: "好き", reading: "すき" },
     ],
+    image: "/img/quiz/q07.png",
   },
   {
     id: 8,
@@ -175,6 +185,7 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
     japanese: "うまくいかなくても、もう一度やりますか。",
     english: "When something does not work, do you try again?",
     readings: [{ text: "一度", reading: "いちど" }],
+    image: "/img/quiz/q08.png",
   },
   {
     id: 9,
@@ -187,6 +198,7 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
       { text: "時間", reading: "じかん" },
       { text: "守ります", reading: "まもります" },
     ],
+    image: "/img/quiz/q09.png",
   },
   {
     id: 10,
@@ -200,6 +212,7 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
       { text: "作る", reading: "つくる" },
       { text: "好き", reading: "すき" },
     ],
+    image: "/img/quiz/q10.png",
   },
   {
     id: 11,
@@ -212,6 +225,7 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
       { text: "気持ち", reading: "きもち" },
       { text: "気づく", reading: "きづく" },
     ],
+    image: "/img/quiz/q11.png",
   },
   {
     id: 12,
@@ -220,6 +234,105 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
     japanese: "まずやってみてから考えますか。",
     english: "Do you try first and think later?",
     readings: [{ text: "考えます", reading: "かんがえます" }],
+    image: "/img/quiz/q12.png",
+  },
+  {
+    id: 13,
+    axis: "leader",
+    easy: "みんなの いけんを まとめて、ひとつに きめられますか。",
+    japanese: "みんなの意見をまとめて、一つに決められますか。",
+    english: "Can you bring everyone's ideas together and decide?",
+    readings: [
+      { text: "意見", reading: "いけん" },
+      { text: "一つ", reading: "ひとつ" },
+      { text: "決められます", reading: "きめられます" },
+    ],
+    image: "/img/quiz/q13.png",
+  },
+  {
+    id: 14,
+    axis: "idea",
+    easy: "ふつうと ちがう やりかたを ためすのが すきですか。",
+    japanese: "ふつうと違うやり方を試すのが好きですか。",
+    english: "Do you like trying a different way from others?",
+    readings: [
+      { text: "違う", reading: "ちがう" },
+      { text: "方", reading: "かた" },
+      { text: "試す", reading: "ためす" },
+      { text: "好き", reading: "すき" },
+    ],
+    image: "/img/quiz/q14.png",
+  },
+  {
+    id: 15,
+    axis: "heart",
+    easy: "チームの ふんいきを よくするのが とくいですか。",
+    japanese: "チームのふんいきをよくするのが得意ですか。",
+    english: "Are you good at making your team's mood better?",
+    readings: [{ text: "得意", reading: "とくい" }],
+    image: "/img/quiz/q15.png",
+  },
+  {
+    id: 16,
+    axis: "challenge",
+    easy: "むずかしい もんだいが 出ると、わくわくしますか。",
+    japanese: "難しい問題が出ると、わくわくしますか。",
+    english: "Do hard problems make you excited?",
+    readings: [
+      { text: "難しい", reading: "むずかしい" },
+      { text: "問題", reading: "もんだい" },
+      { text: "出る", reading: "でる" },
+    ],
+    image: "/img/quiz/q16.png",
+  },
+  {
+    id: 17,
+    axis: "leader",
+    easy: "さいごまで せきにんを もって やりますか。",
+    japanese: "最後まで責任を持ってやりますか。",
+    english: "Do you finish what you are responsible for?",
+    readings: [
+      { text: "最後", reading: "さいご" },
+      { text: "責任", reading: "せきにん" },
+      { text: "持って", reading: "もって" },
+    ],
+    image: "/img/quiz/q17.png",
+  },
+  {
+    id: 18,
+    axis: "idea",
+    easy: "え や 図で せつめいするのが すきですか。",
+    japanese: "絵や図で説明するのが好きですか。",
+    english: "Do you like explaining with pictures and charts?",
+    readings: [
+      { text: "絵", reading: "え" },
+      { text: "図", reading: "ず" },
+      { text: "説明", reading: "せつめい" },
+      { text: "好き", reading: "すき" },
+    ],
+    image: "/img/quiz/q18.png",
+  },
+  {
+    id: 19,
+    axis: "heart",
+    easy: "なかまの いい ところを 見つけて、ほめますか。",
+    japanese: "なかまのいいところを見つけて、ほめますか。",
+    english: "Do you notice and praise your friends' good points?",
+    readings: [{ text: "見つけて", reading: "みつけて" }],
+    image: "/img/quiz/q19.png",
+  },
+  {
+    id: 20,
+    axis: "challenge",
+    easy: "あたらしい 人と はなすのは へいきですか。",
+    japanese: "新しい人と話すのはへいきですか。",
+    english: "Are you comfortable talking with new people?",
+    readings: [
+      { text: "新しい", reading: "あたらしい" },
+      { text: "人", reading: "ひと" },
+      { text: "話す", reading: "はなす" },
+    ],
+    image: "/img/quiz/q20.png",
   },
 ] as const;
 
@@ -237,6 +350,12 @@ export const PERSONALITY_RESULT_READINGS: readonly Reading[] = [
   { text: "人", reading: "ひと" },
 ] as const;
 
+const ANSWER_POINTS: Record<PersonalityAnswer, number> = {
+  yes: 2,
+  neutral: 1,
+  no: 0,
+};
+
 const TIE_BREAK_ORDER: readonly PersonalityTypeId[] = [
   "heart",
   "challenge",
@@ -244,12 +363,20 @@ const TIE_BREAK_ORDER: readonly PersonalityTypeId[] = [
   "leader",
 ];
 
-export function scorePersonality(answers: readonly boolean[]): PersonalityTypeId {
-  if (answers.length !== PERSONALITY_QUESTIONS.length) {
-    throw new Error("12もん すべてに こたえてください。");
+function validateAnswers(answers: readonly PersonalityAnswer[]): void {
+  if (
+    answers.length !== PERSONALITY_QUESTIONS.length ||
+    answers.some((answer) => !(answer in ANSWER_POINTS))
+  ) {
+    throw new Error("20もん すべてに こたえてください。");
   }
+}
 
-  const scores: Record<PersonalityTypeId, number> = {
+export function calculatePersonalityScores(
+  answers: readonly PersonalityAnswer[],
+): PersonalityScores {
+  validateAnswers(answers);
+  const scores: PersonalityScores = {
     leader: 0,
     idea: 0,
     heart: 0,
@@ -257,12 +384,19 @@ export function scorePersonality(answers: readonly boolean[]): PersonalityTypeId
   };
 
   PERSONALITY_QUESTIONS.forEach((question, index) => {
-    if (answers[index]) scores[question.axis] += 1;
+    scores[question.axis] += ANSWER_POINTS[answers[index]!];
   });
+  return scores;
+}
 
+export function pickPersonalityType(scores: PersonalityScores): PersonalityTypeId {
   return TIE_BREAK_ORDER.reduce((best, candidate) =>
     scores[candidate] > scores[best] ? candidate : best,
   );
+}
+
+export function scorePersonality(answers: readonly PersonalityAnswer[]): PersonalityTypeId {
+  return pickPersonalityType(calculatePersonalityScores(answers));
 }
 
 export function getPersonalityType(id: PersonalityTypeId): PersonalityType {

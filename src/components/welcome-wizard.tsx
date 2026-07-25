@@ -2,27 +2,27 @@
 
 import { Fragment, useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
+import { AnimatePresence, motion } from "motion/react";
 import {
   PERSONALITY_QUESTIONS,
   PERSONALITY_RESULT_READINGS,
   PERSONALITY_TYPES,
+  calculatePersonalityScores,
   getPersonalityType,
   scorePersonality,
+  type PersonalityAnswer,
   type PersonalityLanguage,
   type PersonalityQuestion,
   type Reading,
 } from "@/content/personality";
 import { NekuMaxType } from "@/components/nekumax-types";
+import { upsertOwnProfile } from "@/lib/profile-db";
 import { createClient } from "@/lib/supabase/client";
-import { getGeminiKey, getProfile, saveGeminiKey, saveProfile, type Gender } from "@/lib/profile";
+import { getGeminiKey, saveGeminiKey, saveProfile, type Gender } from "@/lib/profile";
 
 function subscribeToStorage(onStoreChange: () => void) {
   window.addEventListener("storage", onStoreChange);
   return () => window.removeEventListener("storage", onStoreChange);
-}
-
-function savedGenderSnapshot(): Gender | "" {
-  return getProfile()?.gender ?? "";
 }
 
 function savedGeminiKeySnapshot(): string {
@@ -82,6 +82,21 @@ function FallbackImage({
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img src={src} alt={alt} onError={() => setFailed(true)} className={className} />
+  );
+}
+
+function QuizIllustration({ src }: { src: string }) {
+  const [failed, setFailed] = useState(false);
+  if (failed) return null;
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={src}
+      alt=""
+      aria-hidden
+      onError={() => setFailed(true)}
+      className="mx-auto h-56 w-full rounded-3xl object-cover sm:h-72"
+    />
   );
 }
 
@@ -181,39 +196,42 @@ function QuestionText({
   return <>{question.english}</>;
 }
 
-export function WelcomeWizard({ authReady, loggedIn }: { authReady: boolean; loggedIn: boolean }) {
+export function WelcomeWizard({
+  authReady,
+  loggedIn,
+  email,
+}: {
+  authReady: boolean;
+  loggedIn: boolean;
+  email: string | null;
+}) {
   const router = useRouter();
-  const savedGender = useSyncExternalStore<Gender | "">(
-    subscribeToStorage,
-    savedGenderSnapshot,
-    () => "",
-  );
   const savedGeminiKey = useSyncExternalStore(subscribeToStorage, savedGeminiKeySnapshot, () => "");
   const [step, setStep] = useState<1 | 2 | 3>(1);
+  const [displayName, setDisplayName] = useState("");
   const [genderChoice, setGenderChoice] = useState<Gender | null>(null);
-  const storedGender: Gender | null =
-    savedGender === "male" || savedGender === "female" || savedGender === "other"
-      ? savedGender
-      : null;
-  const gender: Gender | null = genderChoice ?? storedGender;
+  const gender = genderChoice;
   const [geminiValue, setGeminiValue] = useState<string | null>(null);
   const geminiKey = geminiValue ?? savedGeminiKey;
   const [showKey, setShowKey] = useState(false);
   const [busy, setBusy] = useState(false);
   const [language, setLanguage] = useState<PersonalityLanguage>("easy");
-  const [answers, setAnswers] = useState<(boolean | null)[]>(() =>
+  const [answers, setAnswers] = useState<(PersonalityAnswer | null)[]>(() =>
     Array.from({ length: PERSONALITY_QUESTIONS.length }, () => null),
   );
+  const [questionIndex, setQuestionIndex] = useState(0);
+  const [questionDirection, setQuestionDirection] = useState(1);
+  const [saveError, setSaveError] = useState(false);
   const [showWelcomeBg, setShowWelcomeBg] = useState(true);
   const geminiInput = useRef<HTMLInputElement>(null);
 
-  const answeredCount = answers.filter((answer) => answer !== null).length;
   const completedAnswers = useMemo(
-    () => (answers.every((answer) => answer !== null) ? (answers as boolean[]) : null),
+    () => (answers.every((answer) => answer !== null) ? (answers as PersonalityAnswer[]) : null),
     [answers],
   );
   const resultId = completedAnswers ? scorePersonality(completedAnswers) : "heart";
   const result = getPersonalityType(resultId);
+  const currentQuestion = PERSONALITY_QUESTIONS[questionIndex]!;
 
   async function signInWithGoogle() {
     const supabase = createClient();
@@ -228,16 +246,26 @@ export function WelcomeWizard({ authReady, loggedIn }: { authReady: boolean; log
   }
 
   function goToQuestions() {
-    if (!gender) return;
+    if (!loggedIn || !displayName.trim() || !gender) return;
     saveGeminiKey(geminiInput.current?.value ?? geminiKey);
     setStep(2);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
-  function setAnswer(index: number, value: boolean) {
+  function setAnswer(index: number, value: PersonalityAnswer) {
     setAnswers((current) =>
       current.map((answer, answerIndex) => (answerIndex === index ? value : answer)),
     );
+    if (index < PERSONALITY_QUESTIONS.length - 1) {
+      setQuestionDirection(1);
+      setQuestionIndex(index + 1);
+    }
+  }
+
+  function previousQuestion() {
+    if (questionIndex === 0) return;
+    setQuestionDirection(-1);
+    setQuestionIndex((current) => current - 1);
   }
 
   function showResult() {
@@ -246,15 +274,31 @@ export function WelcomeWizard({ authReady, loggedIn }: { authReady: boolean; log
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
-  function finish() {
+  async function finish() {
     if (!gender || !completedAnswers) return;
-    saveProfile({
-      gender,
-      type: resultId,
-      answers: completedAnswers,
-      createdAt: new Date().toISOString(),
-    });
-    router.push("/map");
+    setBusy(true);
+    setSaveError(false);
+    const scores = calculatePersonalityScores(completedAnswers);
+    try {
+      const stored = await upsertOwnProfile({
+        displayName: displayName.trim(),
+        gender,
+        personalityType: resultId,
+        answers: completedAnswers,
+        scores,
+      });
+      saveProfile({
+        displayName: stored.display_name,
+        gender: stored.gender,
+        type: stored.personality_type,
+        scores: stored.scores,
+        createdAt: stored.created_at,
+      });
+      router.push("/map");
+    } catch {
+      setSaveError(true);
+      setBusy(false);
+    }
   }
 
   return (
@@ -401,14 +445,14 @@ export function WelcomeWizard({ authReady, loggedIn }: { authReady: boolean; log
               </div>
             </div>
 
-            <div className="mt-5 grid gap-4 lg:grid-cols-3">
+            <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
               <article className="card-pop border-white p-5 shadow-[0_6px_0_#d7eaf5]">
                 <h2 className="text-navy font-extrabold">
                   ⭐ Googleでログイン{" "}
-                  <span className="text-ink-soft text-xs">
+                  <span className="text-coral-deep text-xs">
                     （
                     <ruby>
-                      任意<rt>にんい</rt>
+                      必須<rt>ひっす</rt>
                     </ruby>
                     ）
                   </span>
@@ -417,9 +461,10 @@ export function WelcomeWizard({ authReady, loggedIn }: { authReady: boolean; log
                   アカウントで ログインして、データを あんぜんに のこそう！
                 </p>
                 {loggedIn ? (
-                  <p className="bg-leaf/15 text-leaf-deep mt-4 rounded-2xl px-4 py-3 text-center font-extrabold">
-                    ✅ ログインずみ
-                  </p>
+                  <div className="bg-leaf/15 text-leaf-deep mt-4 rounded-2xl px-4 py-3 text-center font-extrabold">
+                    <p>✅ ログインできました！</p>
+                    {email && <p className="text-ink-soft mt-1 text-xs break-all">{email}</p>}
+                  </div>
                 ) : authReady ? (
                   <button
                     type="button"
@@ -441,6 +486,30 @@ export function WelcomeWizard({ authReady, loggedIn }: { authReady: boolean; log
                     じゅんびちゅう
                   </p>
                 )}
+              </article>
+
+              <article className="card-pop border-white p-5 shadow-[0_6px_0_#d7eaf5]">
+                <h2 className="text-navy font-extrabold">
+                  ⭐ なまえ{" "}
+                  <span className="text-coral-deep text-xs">
+                    （
+                    <ruby>
+                      必須<rt>ひっす</rt>
+                    </ruby>
+                    ）
+                  </span>
+                </h2>
+                <p className="text-ink-soft mt-2 text-sm font-bold">
+                  マップで つかう なまえだよ。ニックネームでも OK！
+                </p>
+                <input
+                  type="text"
+                  value={displayName}
+                  onChange={(event) => setDisplayName(event.target.value)}
+                  placeholder="れい：ソピア"
+                  maxLength={20}
+                  className="border-hairline mt-4 w-full rounded-2xl border-2 bg-white px-4 py-2 font-bold"
+                />
               </article>
 
               <article className="card-pop border-white p-5 shadow-[0_6px_0_#d7eaf5]">
@@ -505,7 +574,7 @@ export function WelcomeWizard({ authReady, loggedIn }: { authReady: boolean; log
                 <p className="text-ink-soft mt-2 text-sm font-bold">
                   あなたの せいべつを えらんでね。
                 </p>
-                <div className="mt-4 grid grid-cols-3 gap-2">
+                <div className="mt-4 grid grid-cols-2 gap-2">
                   {[
                     {
                       id: "male" as const,
@@ -520,13 +589,6 @@ export function WelcomeWizard({ authReady, loggedIn }: { authReady: boolean; log
                       image: "/img/ui/gender_female.png",
                       label: "女性",
                       color: "#f26fa7",
-                    },
-                    {
-                      id: "other" as const,
-                      icon: "🙂",
-                      image: "/img/ui/gender_other.png",
-                      label: "その他",
-                      color: "#8d6ae8",
                     },
                   ].map((choice) => (
                     <button
@@ -550,13 +612,7 @@ export function WelcomeWizard({ authReady, loggedIn }: { authReady: boolean; log
                       </span>
                       <ruby>
                         {choice.label}
-                        <rt>
-                          {choice.id === "male"
-                            ? "だんせい"
-                            : choice.id === "female"
-                              ? "じょせい"
-                              : "そのた"}
-                        </rt>
+                        <rt>{choice.id === "male" ? "だんせい" : "じょせい"}</rt>
                       </ruby>
                     </button>
                   ))}
@@ -570,7 +626,7 @@ export function WelcomeWizard({ authReady, loggedIn }: { authReady: boolean; log
             <div className="mt-4 text-center">
               <button
                 type="button"
-                disabled={!gender}
+                disabled={!loggedIn || !displayName.trim() || !gender}
                 onClick={goToQuestions}
                 className="btn-game text-ink min-w-64 px-10 py-4 text-xl disabled:cursor-not-allowed disabled:opacity-45"
                 style={
@@ -631,60 +687,78 @@ export function WelcomeWizard({ authReady, loggedIn }: { authReady: boolean; log
               </div>
             </div>
 
-            <div className="mt-6 space-y-3">
-              {PERSONALITY_QUESTIONS.map((question, index) => (
-                <fieldset
-                  key={question.id}
-                  className="card-pop border-white p-4 shadow-[0_4px_0_#d8edf8]"
+            <div className="mx-auto mt-6 max-w-3xl overflow-hidden">
+              <AnimatePresence mode="wait" custom={questionDirection}>
+                <motion.fieldset
+                  key={currentQuestion.id}
+                  custom={questionDirection}
+                  initial={{ opacity: 0, x: 90 * questionDirection }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -90 * questionDirection }}
+                  transition={{ duration: 0.24, ease: "easeOut" }}
+                  className="card-pop border-4 border-white p-4 shadow-[0_8px_0_#c7e6f5,0_20px_36px_rgba(0,79,141,.16)] sm:p-6"
                 >
-                  <legend className="sr-only">{question.id}</legend>
-                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-                    <span className="bg-sky grid h-9 w-9 shrink-0 place-items-center rounded-full font-black text-white">
-                      {question.id}
+                  <legend className="sr-only">{currentQuestion.id}</legend>
+                  <QuizIllustration src={currentQuestion.image} />
+                  <div className="mt-5 flex items-start gap-3">
+                    <span className="bg-sky grid h-10 w-10 shrink-0 place-items-center rounded-full font-black text-white shadow-[0_4px_0_#0272ae]">
+                      {currentQuestion.id}
                     </span>
-                    <p className="text-ink flex-1 font-extrabold">
-                      <QuestionText question={question} language={language} />
+                    <p className="text-ink flex-1 text-lg font-extrabold sm:text-xl">
+                      <QuestionText question={currentQuestion} language={language} />
                     </p>
-                    <div className="grid grid-cols-2 gap-2 sm:w-48">
-                      {[
-                        { value: true, label: "はい" },
-                        { value: false, label: "いいえ" },
-                      ].map((option) => (
-                        <button
-                          key={String(option.value)}
-                          type="button"
-                          onClick={() => setAnswer(index, option.value)}
-                          className={`flex items-center justify-center gap-2 rounded-2xl border-2 px-3 py-2 text-sm font-extrabold whitespace-nowrap ${
-                            answers[index] === option.value
-                              ? "border-sky bg-sky-soft text-navy"
-                              : "border-hairline text-ink-soft bg-white"
-                          }`}
-                        >
-                          <span
-                            aria-hidden
-                            className={`grid h-4 w-4 place-items-center rounded-full border-2 ${
-                              answers[index] === option.value
-                                ? "border-sky bg-sky"
-                                : "border-ink-faint bg-white"
-                            }`}
-                          >
-                            {answers[index] === option.value && (
-                              <span className="h-1.5 w-1.5 rounded-full bg-white" />
-                            )}
-                          </span>
-                          {option.label}
-                        </button>
-                      ))}
-                    </div>
                   </div>
-                </fieldset>
-              ))}
+                  <div className="mt-6 grid gap-3 sm:grid-cols-3">
+                    {[
+                      {
+                        value: "yes" as const,
+                        label: "はい",
+                        image: "/img/ui/ans_yes.png",
+                        fallback: "⭕",
+                      },
+                      {
+                        value: "neutral" as const,
+                        label: "どちらでもない",
+                        image: "/img/ui/ans_neutral.png",
+                        fallback: "🔺",
+                      },
+                      {
+                        value: "no" as const,
+                        label: "いいえ",
+                        image: "/img/ui/ans_no.png",
+                        fallback: "❌",
+                      },
+                    ].map((option) => (
+                      <button
+                        key={option.value}
+                        type="button"
+                        onClick={() => setAnswer(questionIndex, option.value)}
+                        className={`flex min-h-24 items-center justify-center gap-3 rounded-3xl border-3 px-4 py-3 text-base font-extrabold ${
+                          answers[questionIndex] === option.value
+                            ? "border-sky bg-sky-soft text-navy shadow-[0_5px_0_#9dd8f2]"
+                            : "border-hairline text-ink-soft bg-white shadow-[0_4px_0_#dcebf5]"
+                        }`}
+                      >
+                        <span className="flex h-14 w-14 shrink-0 items-center justify-center">
+                          <FallbackImage
+                            src={option.image}
+                            alt=""
+                            fallback={<span className="text-3xl">{option.fallback}</span>}
+                            className="h-14 w-14 object-contain"
+                          />
+                        </span>
+                        <span>{option.label}</span>
+                      </button>
+                    ))}
+                  </div>
+                </motion.fieldset>
+              </AnimatePresence>
             </div>
 
-            <div className="mt-6 flex flex-col items-center gap-3">
+            <div className="mt-6 flex flex-col items-center gap-4">
               <div className="flex flex-wrap items-center justify-center gap-3 rounded-full border-2 border-white bg-white/95 px-5 py-2 shadow-[0_4px_0_#c7e6f5]">
-                <p className="text-navy font-extrabold">{answeredCount} / 12 もんちゅう</p>
-                <div className="flex gap-1.5" aria-hidden>
+                <p className="text-navy font-extrabold">{questionIndex + 1} / 20 もんちゅう</p>
+                <div className="flex flex-wrap justify-center gap-1.5" aria-hidden>
                   {answers.map((answer, index) => (
                     <span
                       key={index}
@@ -695,20 +769,30 @@ export function WelcomeWizard({ authReady, loggedIn }: { authReady: boolean; log
                   ))}
                 </div>
               </div>
-              <button
-                type="button"
-                disabled={!completedAnswers}
-                onClick={showResult}
-                className="btn-game text-ink mt-2 min-w-64 px-10 py-4 text-xl disabled:cursor-not-allowed disabled:opacity-45"
-                style={
-                  {
-                    "--btn-face": "#ffc93c",
-                    "--btn-shadow": "#f0a819",
-                  } as React.CSSProperties
-                }
-              >
-                ⭐ つぎへ ⭐
-              </button>
+              <div className="flex w-full max-w-3xl items-center justify-between gap-4">
+                <button
+                  type="button"
+                  disabled={questionIndex === 0}
+                  onClick={previousQuestion}
+                  className="text-navy rounded-full bg-white px-5 py-2 font-extrabold shadow-md disabled:opacity-0"
+                >
+                  ← もどる
+                </button>
+                {questionIndex === PERSONALITY_QUESTIONS.length - 1 &&
+                  answers[questionIndex] !== null && (
+                    <button
+                      type="button"
+                      disabled={!completedAnswers}
+                      onClick={showResult}
+                      className="btn-game px-8 py-3 text-lg [--btn-face:#ffc93c] [--btn-shadow:#f0a819] disabled:cursor-not-allowed disabled:opacity-45"
+                    >
+                      けっかを{" "}
+                      <ruby>
+                        見る<rt>みる</rt>
+                      </ruby>
+                    </button>
+                  )}
+              </div>
             </div>
           </div>
         )}
@@ -724,7 +808,7 @@ export function WelcomeWizard({ authReady, loggedIn }: { authReady: boolean; log
                   おすすめタイプ
                 </p>
                 <div className="relative z-10 mt-8">
-                  <NekuMaxType id={result.id} gender={gender ?? "other"} size={285} bob />
+                  <NekuMaxType id={result.id} gender={gender ?? "male"} size={285} bob />
                 </div>
                 <div
                   aria-hidden
@@ -781,7 +865,7 @@ export function WelcomeWizard({ authReady, loggedIn }: { authReady: boolean; log
                     >
                       <NekuMaxType
                         id={type.id}
-                        gender={gender ?? "other"}
+                        gender={gender ?? "male"}
                         size={78}
                         className="mx-auto"
                       />
@@ -804,8 +888,9 @@ export function WelcomeWizard({ authReady, loggedIn }: { authReady: boolean; log
               </p>
               <button
                 type="button"
-                onClick={finish}
-                className="btn-game text-ink min-w-64 px-10 py-4 text-xl"
+                onClick={() => void finish()}
+                disabled={busy}
+                className="btn-game text-ink min-w-64 px-10 py-4 text-xl disabled:opacity-55"
                 style={
                   {
                     "--btn-face": "#ffc93c",
@@ -815,6 +900,11 @@ export function WelcomeWizard({ authReady, loggedIn }: { authReady: boolean; log
               >
                 ⭐ はじめる ⭐
               </button>
+              {saveError && (
+                <p className="text-coral-deep mt-4 font-extrabold">
+                  ほぞんに しっぱいしました。でんぱを かくにんして、もういちど おしてね。
+                </p>
+              )}
             </div>
           </div>
         )}
@@ -831,7 +921,7 @@ export function WelcomeWizard({ authReady, loggedIn }: { authReady: boolean; log
           >
             <NekuMaxType
               id={step === 2 ? "idea" : step === 3 ? result.id : "leader"}
-              gender={step === 3 ? (gender ?? "other") : "other"}
+              gender={step === 3 ? (gender ?? "male") : "male"}
               size={step === 1 ? 170 : step === 2 ? 142 : 108}
               className="shrink-0 drop-shadow-[0_10px_8px_rgba(0,79,141,.2)]"
             />

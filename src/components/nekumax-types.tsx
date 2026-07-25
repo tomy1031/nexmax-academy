@@ -10,7 +10,7 @@ const REFERENCE_SRC = "/img/characters/nekumax/reference.png";
 
 export function NekuMaxType({
   id,
-  gender = "other",
+  gender = "male",
   size = 160,
   bob = false,
   className = "",

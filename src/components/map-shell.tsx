@@ -1,10 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
-  type CSSProperties,
   type ReactNode,
   useCallback,
   useEffect,
@@ -16,13 +14,16 @@ import {
 import { NekuMaxType } from "@/components/nekumax-types";
 import { getPersonalityType, type PersonalityTypeId } from "@/content/personality";
 import { STAGES, type StageDefinition } from "@/content/stages";
+import { fetchOwnProfile, type ProfileRow } from "@/lib/profile-db";
 import {
   getMapView,
   getProfile,
   saveMapView,
+  saveProfile,
   type MapView,
   type NexmaxProfile,
 } from "@/lib/profile";
+import { createClient } from "@/lib/supabase/client";
 
 const PROFILE_SERVER_SNAPSHOT = "__server__";
 const LONG_WAIT_TOAST = "じゅんびちゅう です。もうすこし まってね！";
@@ -62,6 +63,16 @@ function subscribeToStorage(onStoreChange: () => void) {
 
 function profileSnapshot() {
   return JSON.stringify(getProfile());
+}
+
+function profileFromRow(profile: ProfileRow): NexmaxProfile {
+  return {
+    displayName: profile.display_name,
+    gender: profile.gender,
+    type: profile.personality_type,
+    scores: profile.scores,
+    createdAt: profile.created_at,
+  };
 }
 
 function Logo() {
@@ -163,39 +174,71 @@ function KindLabel({ stage }: { stage: StageDefinition }) {
   );
 }
 
-function ScenicBackground() {
-  const upperMask: CSSProperties = {
-    maskImage: "linear-gradient(to bottom, black 0%, black 82%, transparent 100%)",
-    WebkitMaskImage: "linear-gradient(to bottom, black 0%, black 82%, transparent 100%)",
-  };
-  const lowerMask: CSSProperties = {
-    maskImage: "linear-gradient(to bottom, transparent 0%, black 18%, black 100%)",
-    WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 18%, black 100%)",
-  };
-
+function MapSegment({ src }: { src: string }) {
+  const [failed, setFailed] = useState(false);
+  if (failed) {
+    return <div className="h-full w-full bg-linear-to-b from-[#45b7df] to-[#2e9fd6]" />;
+  }
   return (
-    <div className="pointer-events-none absolute inset-0 overflow-hidden bg-linear-to-b from-[#84d9f5] via-[#48bde3] to-[#c8ecff]">
-      <div className="absolute inset-x-0 top-0 h-[56%]" style={upperMask}>
-        <Image
-          src="/img/scenes/map_cambodia.png"
-          alt=""
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover"
-        />
-      </div>
-      <div className="absolute inset-x-0 bottom-0 h-[56%]" style={lowerMask}>
-        <Image
-          src="/img/scenes/map_japan.png"
-          alt=""
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover"
-        />
-      </div>
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={src}
+      alt=""
+      aria-hidden
+      onError={() => setFailed(true)}
+      className="h-full w-full object-cover"
+    />
+  );
+}
+
+function ScenicBackground() {
+  const segments = [
+    "/img/scenes/map_seg1_cambodia.png",
+    "/img/scenes/map_seg2_ocean.png",
+    "/img/scenes/map_seg3_coast.png",
+  ];
+  return (
+    <div className="pointer-events-none absolute inset-0 overflow-hidden bg-[#2e9fd6]">
+      {segments.map((src, index) => (
+        <div
+          key={src}
+          className="absolute inset-x-0 h-[calc(33.3334%+1px)]"
+          style={{ top: `calc(${index * 33.3333}% - ${index}px)` }}
+        >
+          <MapSegment src={src} />
+        </div>
+      ))}
       <div className="absolute inset-0 bg-[#003c6b]/5" />
+    </div>
+  );
+}
+
+function GoalBand() {
+  const [showImage, setShowImage] = useState(true);
+  return (
+    <div className="fixed inset-x-0 bottom-0 z-25 h-[clamp(130px,21vh,230px)] overflow-hidden bg-linear-to-b from-[#d8f0fc] via-[#ffd8d0] to-[#f5b56c] shadow-[0_-8px_30px_rgba(0,79,141,.2)]">
+      {showImage && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src="/img/scenes/japan_goal.png"
+          alt=""
+          aria-hidden
+          onError={() => setShowImage(false)}
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+      )}
+      <div className="absolute inset-x-0 top-0 h-12 bg-linear-to-b from-[#8fdcf5] to-transparent" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center">
+        <div className="mx-auto h-6 w-4 bg-linear-to-r from-[#6f3518] via-[#a7622e] to-[#5a2b15]" />
+        <div className="min-w-44 rounded-lg border-4 border-[#fff3cf] bg-linear-to-b from-[#b96a32] to-[#713516] px-6 py-2 text-white shadow-[0_6px_0_#4e250f,0_10px_20px_rgba(0,0,0,.25)]">
+          <p className="text-xl font-black">GOAL!</p>
+          <p className="text-sm font-extrabold">
+            <ruby>
+              日本<rt className="text-white">にほん</rt>
+            </ruby>
+          </p>
+        </div>
+      </div>
     </div>
   );
 }
@@ -265,7 +308,10 @@ function Hud({ profile }: { profile: NexmaxProfile }) {
       </div>
       <div className="flex items-center gap-2 rounded-2xl border-2 border-[#e9bd55] bg-[#fffaf0]/95 p-1.5 pr-3 shadow-[0_4px_0_#d9a839,0_8px_18px_rgba(0,79,141,.16)]">
         <NekuMaxType id={profile.type} gender={profile.gender} size={42} />
-        <span className="text-ink hidden text-xs font-extrabold sm:block">{personality.name}</span>
+        <span className="hidden leading-tight sm:block">
+          <span className="text-ink block text-sm font-black">{profile.displayName}</span>
+          <span className="text-ink-soft block text-[10px] font-extrabold">{personality.name}</span>
+        </span>
         <span aria-label="オンライン" className="bg-leaf h-2.5 w-2.5 rounded-full" />
       </div>
     </div>
@@ -320,12 +366,14 @@ function NavigationLabel({ item }: { item: (typeof NAV_ITEMS)[number] }) {
 function Navigation({
   collapsed,
   drawerOpen,
+  isAdmin,
   onCollapsedChange,
   onDrawerClose,
   onUnavailable,
 }: {
   collapsed: boolean;
   drawerOpen: boolean;
+  isAdmin: boolean;
   onCollapsedChange: (value: boolean) => void;
   onDrawerClose: () => void;
   onUnavailable: () => void;
@@ -346,6 +394,18 @@ function Navigation({
       {!collapsed && <span className="whitespace-nowrap">{<NavigationLabel item={item} />}</span>}
     </button>
   ));
+  const adminLink = isAdmin ? (
+    <Link
+      href="/admin"
+      onClick={onDrawerClose}
+      className="text-ink hover:bg-sky-soft flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl px-3 text-sm font-extrabold transition"
+    >
+      <span aria-hidden className="text-xl">
+        🛡️
+      </span>
+      {!collapsed && <span className="whitespace-nowrap">かんり</span>}
+    </Link>
+  ) : null;
 
   return (
     <>
@@ -374,6 +434,7 @@ function Navigation({
           ☰
         </button>
         {navButtons}
+        {adminLink}
         <button
           type="button"
           onClick={() => onCollapsedChange(!collapsed)}
@@ -394,7 +455,10 @@ function Navigation({
           />
           <aside className="absolute inset-y-0 left-0 w-72 bg-white p-5 pt-20 shadow-2xl">
             <p className="text-navy mb-4 text-lg font-black">Nexmax Academy</p>
-            <div className="space-y-2">{navButtons}</div>
+            <div className="space-y-2">
+              {navButtons}
+              {adminLink}
+            </div>
           </aside>
         </div>
       )}
@@ -534,18 +598,12 @@ function MapView({
   onUnavailable: () => void;
 }) {
   return (
-    <main className="relative min-h-[270vh] overflow-hidden">
+    <main className="relative min-h-[260vh] overflow-hidden pb-[clamp(130px,21vh,230px)]">
       <ScenicBackground />
 
       <WoodenBanner label="START!" className="top-[2.5%] left-1/2">
         アンコールワット／カンボジア
       </WoodenBanner>
-      <WoodenBanner label="GOAL!" className="top-[94%] left-1/2">
-        <ruby>
-          日本<rt className="text-white">にほん</rt>
-        </ruby>
-      </WoodenBanner>
-
       <svg
         aria-hidden
         viewBox="0 0 100 100"
@@ -623,7 +681,7 @@ function MapView({
 
 function CardsView({ onUnavailable }: { onUnavailable: () => void }) {
   return (
-    <main className="relative min-h-dvh overflow-hidden px-4 pt-36 pb-16 sm:px-8 md:pl-48">
+    <main className="relative min-h-dvh overflow-hidden px-4 pt-36 pb-[clamp(150px,23vh,250px)] sm:px-8 md:pl-48">
       <ScenicBackground />
       <section className="relative z-10 mx-auto max-w-6xl">
         <div className="rounded-[2rem] border-2 border-white bg-white/80 p-5 shadow-2xl backdrop-blur-md sm:p-8">
@@ -682,10 +740,12 @@ export function MapShell() {
     () => PROFILE_SERVER_SNAPSHOT,
   );
   const storedView = useSyncExternalStore<MapView>(subscribeToStorage, getMapView, () => "map");
-  const profile = useMemo(
+  const cachedProfile = useMemo(
     () => (rawProfile === PROFILE_SERVER_SNAPSHOT ? null : getProfile()),
     [rawProfile],
   );
+  const [databaseProfile, setDatabaseProfile] = useState<ProfileRow | null>(null);
+  const profile = databaseProfile ? profileFromRow(databaseProfile) : cachedProfile;
   const [viewOverride, setViewOverride] = useState<MapView | null>(null);
   const [expandedStage, setExpandedStage] = useState<string | null>("it-words");
   const [collapsed, setCollapsed] = useState(false);
@@ -695,10 +755,36 @@ export function MapShell() {
   const view = viewOverride ?? storedView;
 
   useEffect(() => {
-    if (rawProfile !== PROFILE_SERVER_SNAPSHOT && !profile) {
-      router.replace("/welcome");
-    }
-  }, [profile, rawProfile, router]);
+    let active = true;
+    void (async () => {
+      const supabase = createClient();
+      if (!supabase) {
+        router.replace("/welcome");
+        return;
+      }
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) {
+        router.replace("/welcome");
+        return;
+      }
+      try {
+        const stored = await fetchOwnProfile();
+        if (!stored) {
+          router.replace("/welcome");
+          return;
+        }
+        saveProfile(profileFromRow(stored));
+        if (active) setDatabaseProfile(stored);
+      } catch {
+        router.replace("/welcome");
+      }
+    })();
+    return () => {
+      active = false;
+    };
+  }, [router]);
 
   useEffect(
     () => () => {
@@ -736,9 +822,10 @@ export function MapShell() {
       <Navigation
         collapsed={collapsed}
         drawerOpen={drawerOpen}
+        isAdmin={databaseProfile?.is_admin ?? false}
         onCollapsedChange={(value) => {
           setCollapsed(value);
-          if (!value && window.innerWidth < 1024) setDrawerOpen(true);
+          if (!value && window.innerWidth < 768) setDrawerOpen(true);
         }}
         onDrawerClose={() => setDrawerOpen(false)}
         onUnavailable={() => showToast(SHORT_WAIT_TOAST)}
@@ -762,6 +849,7 @@ export function MapShell() {
         <CardsView onUnavailable={() => showToast(LONG_WAIT_TOAST)} />
       )}
 
+      <GoalBand />
       <Toast message={toast} />
     </div>
   );
