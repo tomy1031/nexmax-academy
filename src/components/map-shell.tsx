@@ -239,16 +239,31 @@ function Hud({ profile }: { profile: NexmaxProfile }) {
   return (
     <div className="fixed top-3 right-3 z-50 flex max-w-[calc(100vw-6rem)] flex-wrap justify-end gap-2">
       <div className="flex gap-1.5">
-        {["⭐ Lv.1", "🪙 0", "💎 0"].map((item) => (
+        {[
+          { key: "level", node: <>⭐ Lv.1</> },
+          {
+            key: "coin",
+            node: (
+              <>
+                <span
+                  aria-hidden
+                  className="inline-block h-3.5 w-3.5 rounded-full border-2 border-[#d9a839] bg-[linear-gradient(180deg,#ffe37a,#f5b70f)] align-[-2px]"
+                />{" "}
+                0
+              </>
+            ),
+          },
+          { key: "gem", node: <>💎 0</> },
+        ].map((item) => (
           <span
-            key={item}
-            className="bg-navy/90 rounded-full border-2 border-white px-2.5 py-1 text-xs font-black text-white shadow-md backdrop-blur-sm sm:text-sm"
+            key={item.key}
+            className="text-navy rounded-full border-2 border-[#e9bd55] bg-[#fffaf0]/95 px-3 py-1 text-xs font-black shadow-[0_3px_0_#d9a839,0_7px_15px_rgba(0,79,141,.14)] backdrop-blur-sm sm:text-sm"
           >
-            {item}
+            {item.node}
           </span>
         ))}
       </div>
-      <div className="flex items-center gap-2 rounded-2xl border-2 border-white bg-white/95 p-1.5 pr-3 shadow-lg">
+      <div className="flex items-center gap-2 rounded-2xl border-2 border-[#e9bd55] bg-[#fffaf0]/95 p-1.5 pr-3 shadow-[0_4px_0_#d9a839,0_8px_18px_rgba(0,79,141,.16)]">
         <NekuMaxType id={profile.type} gender={profile.gender} size={42} />
         <span className="text-ink hidden text-xs font-extrabold sm:block">{personality.name}</span>
         <span aria-label="オンライン" className="bg-leaf h-2.5 w-2.5 rounded-full" />
@@ -259,7 +274,7 @@ function Hud({ profile }: { profile: NexmaxProfile }) {
 
 function ViewToggle({ view, onChange }: { view: MapView; onChange: (view: MapView) => void }) {
   return (
-    <div className="fixed top-[4.75rem] right-3 z-50 flex rounded-full border-2 border-white bg-white/95 p-1 text-xs font-black shadow-lg sm:top-[4.25rem] sm:text-sm">
+    <div className="fixed top-[4.75rem] right-3 z-50 flex rounded-full border-2 border-[#e9bd55] bg-[#fffaf0]/95 p-1 text-xs font-black shadow-[0_3px_0_#d9a839] sm:top-[4.25rem] sm:text-sm">
       <button
         type="button"
         aria-pressed={view === "map"}
@@ -339,14 +354,14 @@ function Navigation({
         aria-label="メニューを ひらく"
         aria-expanded={drawerOpen}
         onClick={() => (drawerOpen ? onDrawerClose() : onCollapsedChange(false))}
-        className="bg-navy fixed top-4 left-3 z-[61] grid h-12 w-12 place-items-center rounded-full border-2 border-white text-xl text-white shadow-lg lg:hidden"
+        className="bg-navy fixed top-4 left-3 z-[61] grid h-12 w-12 place-items-center rounded-full border-2 border-white text-xl text-white shadow-lg md:hidden"
       >
         ☰
       </button>
 
       <aside
         aria-label="サイドメニュー"
-        className={`fixed top-1/2 left-3 z-50 hidden -translate-y-1/2 flex-col items-center gap-1 rounded-[2rem] border-2 border-white bg-white/95 p-2 shadow-2xl backdrop-blur-sm lg:flex ${
+        className={`fixed top-1/2 left-3 z-50 hidden -translate-y-1/2 flex-col items-center gap-1 rounded-[2rem] border-4 border-white bg-[#fffaf0]/95 p-2 shadow-[0_6px_0_#b9ddec,0_18px_30px_rgba(0,79,141,.22)] backdrop-blur-sm md:flex ${
           collapsed ? "w-16" : "w-40"
         }`}
       >
@@ -370,7 +385,7 @@ function Navigation({
       </aside>
 
       {drawerOpen && (
-        <div className="fixed inset-0 z-[60] lg:hidden">
+        <div className="fixed inset-0 z-[60] md:hidden">
           <button
             type="button"
             aria-label="メニューを とじる"
@@ -391,8 +406,8 @@ function LessonCard({ onUnavailable }: { onUnavailable: () => void }) {
   const stage = STAGES[0]!;
 
   return (
-    <section className="card-pop w-full max-w-sm p-4 shadow-2xl">
-      <p className="inline-flex rounded-full bg-[#e64a5f] px-4 py-1 text-sm font-black text-white">
+    <section className="w-full max-w-sm rounded-[28px] border-4 border-white bg-[#fffaf0]/97 p-4 shadow-[0_7px_0_#b8deed,0_18px_32px_rgba(0,79,141,.25)] backdrop-blur-sm">
+      <p className="inline-flex rounded-full border-2 border-white bg-[#e64a5f] px-4 py-1 text-sm font-black text-white shadow-[0_3px_0_#bd3148]">
         ✦{" "}
         <ruby>
           現在<rt>げんざい</rt>
@@ -411,7 +426,7 @@ function LessonCard({ onUnavailable }: { onUnavailable: () => void }) {
         <span>0 / 5 ステージ</span>
         <span>0%</span>
       </div>
-      <div className="bg-hairline mt-1 h-3 overflow-hidden rounded-full">
+      <div className="mt-1 h-3 overflow-hidden rounded-full border border-white bg-[#e4eef3] shadow-inner">
         <div className="bg-leaf h-full w-0 rounded-full" />
       </div>
       <div className="mt-4 grid gap-3">
@@ -547,10 +562,6 @@ function MapView({
         />
       </svg>
 
-      <div className="absolute top-[7%] right-3 left-3 z-30 mx-auto max-w-sm lg:hidden">
-        <LessonCard onUnavailable={onUnavailable} />
-      </div>
-
       {CHARACTER_POSITIONS.map((character) => (
         <div
           key={character.id}
@@ -612,7 +623,7 @@ function MapView({
 
 function CardsView({ onUnavailable }: { onUnavailable: () => void }) {
   return (
-    <main className="relative min-h-dvh overflow-hidden px-4 pt-36 pb-16 sm:px-8 lg:pl-48">
+    <main className="relative min-h-dvh overflow-hidden px-4 pt-36 pb-16 sm:px-8 md:pl-48">
       <ScenicBackground />
       <section className="relative z-10 mx-auto max-w-6xl">
         <div className="rounded-[2rem] border-2 border-white bg-white/80 p-5 shadow-2xl backdrop-blur-md sm:p-8">
@@ -733,7 +744,11 @@ export function MapShell() {
         onUnavailable={() => showToast(SHORT_WAIT_TOAST)}
       />
 
-      <div className="fixed top-28 left-44 z-40 hidden w-sm lg:block">
+      <div className="fixed top-28 left-44 z-40 hidden w-sm md:block">
+        <LessonCard onUnavailable={() => showToast(LONG_WAIT_TOAST)} />
+      </div>
+
+      <div className="relative z-30 px-3 pt-36 pb-2 md:hidden">
         <LessonCard onUnavailable={() => showToast(LONG_WAIT_TOAST)} />
       </div>
 

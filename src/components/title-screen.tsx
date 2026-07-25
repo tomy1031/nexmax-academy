@@ -35,17 +35,33 @@ export function TitleScreen() {
 
       <section className="flex w-full max-w-5xl flex-1 flex-col items-center justify-between">
         <div className="animate-pop-in">
-          <div
+          <svg
             aria-hidden
-            className="text-navy mx-auto -mb-2 text-4xl leading-none font-black tracking-[-.4em] [text-shadow:0_3px_0_white,0_6px_0_#003c6b]"
+            viewBox="0 0 120 58"
+            className="mx-auto -mb-3 h-12 w-28 drop-shadow-[0_5px_0_white] sm:h-16 sm:w-36"
           >
-            〽〽
-          </div>
+            <path
+              d="M10 48V18L37 42L60 8L83 42L110 18V48L83 54L60 25L37 54Z"
+              fill="#004f8d"
+              stroke="#ffffff"
+              strokeWidth="8"
+              strokeLinejoin="round"
+              paintOrder="stroke"
+            />
+            <path
+              d="M14 45V24L38 47L60 14L82 47L106 24V45"
+              fill="none"
+              stroke="#29b6f6"
+              strokeWidth="7"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
           <h1 className="leading-[0.86]">
-            <span className="block bg-gradient-to-b from-[#55c9ff] via-[#0288d1] to-[#004f8d] bg-clip-text text-5xl font-black tracking-tight text-transparent [-webkit-text-stroke:5px_white] [paint-order:stroke_fill] [text-shadow:0_7px_0_#003c6b,0_12px_24px_rgba(31,58,86,.28)] sm:text-7xl">
+            <span className="block bg-gradient-to-b from-[#71ddff] via-[#078ed6] to-[#003c79] bg-clip-text text-5xl font-black tracking-tight text-transparent [filter:drop-shadow(0_8px_0_#003c6b)_drop-shadow(0_10px_18px_rgba(31,58,86,.3))] [-webkit-text-stroke:5px_white] [paint-order:stroke_fill] sm:text-7xl">
               Nexmax
             </span>
-            <span className="mt-3 block bg-gradient-to-b from-[#fff4a8] via-[#ffc93c] to-[#f0a819] bg-clip-text text-4xl font-black tracking-wide text-transparent [-webkit-text-stroke:5px_white] [paint-order:stroke_fill] [text-shadow:0_6px_0_#b96b16,0_10px_20px_rgba(31,58,86,.24)] sm:text-6xl">
+            <span className="mt-3 block bg-gradient-to-b from-[#fffbd0] via-[#ffdb35] to-[#f3980b] bg-clip-text text-4xl font-black tracking-wide text-transparent [filter:drop-shadow(0_7px_0_#b9680d)_drop-shadow(0_9px_16px_rgba(31,58,86,.28))] [-webkit-text-stroke:5px_white] [paint-order:stroke_fill] sm:text-6xl">
               Academy
             </span>
           </h1>
@@ -86,15 +102,15 @@ export function TitleScreen() {
               }
             >
               {hasProfile ? (
-                "⭐ つづきから ⭐"
+                <span className="whitespace-nowrap">⭐ つづきから ⭐</span>
               ) : (
-                <>
+                <span className="whitespace-nowrap">
                   ⭐ ゲームを
                   <ruby>
                     始<rt>はじ</rt>
                   </ruby>
                   める ⭐
-                </>
+                </span>
               )}
             </Link>
             {hasProfile && (
