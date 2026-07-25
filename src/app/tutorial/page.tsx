@@ -295,7 +295,7 @@ function StepDepart() {
         マップの さいしょの ばしょから、まなびを はじめよう。
       </p>
       <div className="mt-6 flex justify-center">
-        <Link href="/" className="btn-game px-10 py-4 text-lg">
+        <Link href="/map" className="btn-game px-10 py-4 text-lg">
           🗺️ マップへ しゅっぱつ！
         </Link>
       </div>

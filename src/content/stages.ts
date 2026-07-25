@@ -6,6 +6,7 @@ export interface StageDefinition {
   step: number;
   title: string;
   reading: string;
+  description: string;
   kind: StageKind;
   kindLabel: string;
   color: StageColor;
@@ -17,6 +18,7 @@ export const STAGES: readonly StageDefinition[] = [
     step: 1,
     title: "IT単語帳",
     reading: "たんごちょう",
+    description: "IT の たんごを まなびます。",
     kind: "word",
     kindLabel: "単語",
     color: "leaf",
@@ -26,6 +28,7 @@ export const STAGES: readonly StageDefinition[] = [
     step: 2,
     title: "企業の仕組み",
     reading: "きぎょうの しくみ",
+    description: "きぎょうの しくみを まなびます。",
     kind: "video-reading",
     kindLabel: "動画/読解",
     color: "sky",
@@ -35,6 +38,7 @@ export const STAGES: readonly StageDefinition[] = [
     step: 3,
     title: "報告",
     reading: "ほうこく",
+    description: "ほうこくを ペアで れんしゅうします。",
     kind: "pair",
     kindLabel: "ペアワーク",
     color: "coral",
@@ -44,6 +48,7 @@ export const STAGES: readonly StageDefinition[] = [
     step: 4,
     title: "連絡",
     reading: "れんらく",
+    description: "れんらくを まなびます。",
     kind: "video",
     kindLabel: "動画",
     color: "sky-soft",
@@ -53,6 +58,7 @@ export const STAGES: readonly StageDefinition[] = [
     step: 5,
     title: "相談",
     reading: "そうだん",
+    description: "そうだんを ペアで れんしゅうします。",
     kind: "pair",
     kindLabel: "ペアワーク",
     color: "leaf",
