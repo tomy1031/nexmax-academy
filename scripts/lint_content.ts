@@ -2,7 +2,7 @@
  * コンテンツ検収（検収パイプライン第1段・機械検査）
  *
  * 実行: npm run lint:content
- * 検査対象: content ディレクトリ配下の *.json
+ * 検査対象: content ディレクトリ配下の *.json と src 配下の *.ts / *.tsx
  *
  * 検査項目:
  *  1. zodスキーマ検証（src/content/schema.ts が唯一の契約）
@@ -14,10 +14,12 @@
  */
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
+import ts from "typescript";
 import { contentSchema, FORBIDDEN_LEARNER_WORDS, type Scenario } from "../src/content/schema";
 
 const ROOT = join(import.meta.dirname, "..");
 const CONTENT_DIR = join(ROOT, "content");
+const SRC_DIR = join(ROOT, "src");
 
 interface Finding {
   file: string;
@@ -33,6 +35,16 @@ function walk(dir: string): string[] {
     const full = join(dir, entry);
     if (statSync(full).isDirectory()) files = files.concat(walk(full));
     else if (entry.endsWith(".json")) files.push(full);
+  }
+  return files;
+}
+
+function walkSource(dir: string): string[] {
+  let files: string[] = [];
+  for (const entry of readdirSync(dir)) {
+    const full = join(dir, entry);
+    if (statSync(full).isDirectory()) files = files.concat(walkSource(full));
+    else if (entry.endsWith(".ts") || entry.endsWith(".tsx")) files.push(full);
   }
   return files;
 }
@@ -79,17 +91,72 @@ function checkSecretLeaks(file: string, scenario: Scenario) {
   }
 }
 
+function isForbiddenListDefinition(node: ts.Node): boolean {
+  for (let parent = node.parent; parent; parent = parent.parent) {
+    if (
+      ts.isVariableDeclaration(parent) &&
+      ts.isIdentifier(parent.name) &&
+      parent.name.text === "FORBIDDEN_LEARNER_WORDS"
+    ) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function sourceLiteralText(node: ts.Node): string | null {
+  if (ts.isStringLiteralLike(node) || ts.isJsxText(node)) return node.text;
+  if (
+    node.kind === ts.SyntaxKind.TemplateHead ||
+    node.kind === ts.SyntaxKind.TemplateMiddle ||
+    node.kind === ts.SyntaxKind.TemplateTail
+  ) {
+    return (node as ts.LiteralLikeNode).text;
+  }
+  return null;
+}
+
+function checkSourceForbiddenWords(file: string) {
+  const rel = relative(ROOT, file);
+  const sourceText = readFileSync(file, "utf8");
+  const sourceFile = ts.createSourceFile(
+    file,
+    sourceText,
+    ts.ScriptTarget.Latest,
+    true,
+    file.endsWith(".tsx") ? ts.ScriptKind.TSX : ts.ScriptKind.TS,
+  );
+
+  function visit(node: ts.Node) {
+    const text = sourceLiteralText(node);
+    if (text !== null && !isForbiddenListDefinition(node)) {
+      for (const word of FORBIDDEN_LEARNER_WORDS) {
+        if (!text.includes(word)) continue;
+        const { line, character } = sourceFile.getLineAndCharacterOfPosition(node.getStart());
+        findings.push({
+          file: rel,
+          level: "error",
+          message: `禁止語「${word}」が文字列リテラル ${line + 1}:${character + 1} にある — フィードバックは励まし＋次の行動に（P8）`,
+        });
+      }
+    }
+    ts.forEachChild(node, visit);
+  }
+
+  visit(sourceFile);
+}
+
 function main() {
   let files: string[] = [];
+  let contentDirAvailable = true;
   try {
     files = walk(CONTENT_DIR);
   } catch {
+    contentDirAvailable = false;
     console.log("content/ ディレクトリがありません。検査対象なし。");
-    return;
   }
-  if (files.length === 0) {
+  if (contentDirAvailable && files.length === 0) {
     console.log("コンテンツファイルがありません。検査対象なし。");
-    return;
   }
 
   // kind別のID重複をファイル横断で検出する（同じステージ/シナリオIDが2ファイルにあると進捗保存が壊れる）
@@ -135,12 +202,17 @@ function main() {
     }
   }
 
+  const sourceFiles = walkSource(SRC_DIR);
+  for (const file of sourceFiles) checkSourceForbiddenWords(file);
+
   const errors = findings.filter((f) => f.level === "error");
   const warns = findings.filter((f) => f.level === "warn");
   for (const f of findings) {
     console.log(`${f.level === "error" ? "✖" : "⚠"} [${f.file}] ${f.message}`);
   }
-  console.log(`\n${files.length} ファイル検査: エラー ${errors.length} / 警告 ${warns.length}`);
+  console.log(
+    `\nコンテンツ ${files.length} ファイル / ソース ${sourceFiles.length} ファイル検査: エラー ${errors.length} / 警告 ${warns.length}`,
+  );
   if (errors.length > 0) process.exit(1);
 }
 

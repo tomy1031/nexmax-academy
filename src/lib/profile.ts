@@ -96,3 +96,13 @@ export function getMapView(): MapView {
 export function saveMapView(view: MapView): void {
   storage()?.setItem(MAP_VIEW_KEY, view);
 }
+
+export function clearNexmaxCache(): void {
+  const target = storage();
+  if (!target) return;
+
+  for (let index = target.length - 1; index >= 0; index -= 1) {
+    const key = target.key(index);
+    if (key?.startsWith("nexmax.")) target.removeItem(key);
+  }
+}

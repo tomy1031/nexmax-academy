@@ -86,7 +86,7 @@ export function LoginCard({ authReady }: { authReady: boolean }) {
               <path d="M2 12 L22 4 L14 21 L11 14 Z" fill="#fff" />
             </svg>
           </span>
-          <h1 className="text-navy text-2xl font-extrabold">Japanese IT Pathway</h1>
+          <h1 className="text-navy text-2xl font-extrabold">Nexmax Academy</h1>
           <p className="text-ink-soft mt-1 text-sm font-bold">
             <ruby>
               日本<rt>にほん</rt>

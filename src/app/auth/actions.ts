@@ -1,11 +1,15 @@
-"use server";
+"use client";
 
-import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { clearNexmaxCache } from "@/lib/profile";
+import { createClient } from "@/lib/supabase/client";
 
 /** ログアウトしてログインページへ戻す。 */
 export async function signOut() {
-  const supabase = await createClient();
-  if (supabase) await supabase.auth.signOut();
-  redirect("/login");
+  const supabase = createClient();
+  try {
+    if (supabase) await supabase.auth.signOut();
+  } finally {
+    clearNexmaxCache();
+    window.location.replace("/login?next=/welcome");
+  }
 }

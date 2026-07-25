@@ -43,7 +43,7 @@ begin
   if u_email is not null then
     new.email := u_email;
   end if;
-  new.is_admin := new.email in ('tomy1031@gmail.com', 's.tominaga@nextmake.co.jp');
+  new.is_admin := coalesce(u_email, new.email) in ('tomy1031@gmail.com', 's.tominaga@nextmake.co.jp');
   new.updated_at := now();
   return new;
 end;

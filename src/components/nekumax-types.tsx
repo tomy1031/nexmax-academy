@@ -23,7 +23,7 @@ export function NekuMaxType({
 }) {
   const meta = getPersonalityType(id);
   const variant = gender === "female" ? `${id}_f` : id;
-  const primarySrc = `${TYPE_DIR}/${variant}.png`;
+  const primarySrc = `${TYPE_DIR}/${variant}.webp`;
   const [failedSources, setFailedSources] = useState<string[]>([]);
 
   const wrapperClass = `${bob ? "animate-bob" : ""} ${className}`.trim();

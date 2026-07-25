@@ -232,6 +232,11 @@ export function WelcomeWizard({
   const resultId = completedAnswers ? scorePersonality(completedAnswers) : "heart";
   const result = getPersonalityType(resultId);
   const currentQuestion = PERSONALITY_QUESTIONS[questionIndex]!;
+  const missingSetupItems = [
+    !loggedIn ? "ログイン" : null,
+    !displayName.trim() ? "なまえ" : null,
+    !gender ? "せいべつ" : null,
+  ].filter((item): item is string => item !== null);
 
   async function signInWithGoogle() {
     const supabase = createClient();
@@ -266,6 +271,20 @@ export function WelcomeWizard({
     if (questionIndex === 0) return;
     setQuestionDirection(-1);
     setQuestionIndex((current) => current - 1);
+  }
+
+  function nextQuestion() {
+    if (answers[questionIndex] === null || questionIndex >= PERSONALITY_QUESTIONS.length - 1) {
+      return;
+    }
+    setQuestionDirection(1);
+    setQuestionIndex((current) => current + 1);
+  }
+
+  function jumpToAnsweredQuestion(index: number) {
+    if (answers[index] === null || index === questionIndex) return;
+    setQuestionDirection(index > questionIndex ? 1 : -1);
+    setQuestionIndex(index);
   }
 
   function showResult() {
@@ -307,7 +326,7 @@ export function WelcomeWizard({
         {showWelcomeBg && (
           // eslint-disable-next-line @next/next/no-img-element
           <img
-            src="/img/scenes/welcome_bg.png"
+            src="/img/scenes/welcome_bg.webp"
             alt=""
             aria-hidden
             onError={() => setShowWelcomeBg(false)}
@@ -398,7 +417,7 @@ export function WelcomeWizard({
                     <div className="mx-auto flex h-28 items-center justify-center">
                       {index === 0 && (
                         <FallbackImage
-                          src="/img/ui/feature_learn.png"
+                          src="/img/ui/feature_learn.webp"
                           alt=""
                           fallback={
                             <span className="text-6xl" aria-hidden>
@@ -427,7 +446,7 @@ export function WelcomeWizard({
                       )}
                       {index === 2 && (
                         <FallbackImage
-                          src="/img/ui/feature_pathway.png"
+                          src="/img/ui/feature_pathway.webp"
                           alt=""
                           fallback={
                             <span className="text-6xl" aria-hidden>
@@ -579,14 +598,14 @@ export function WelcomeWizard({
                     {
                       id: "male" as const,
                       icon: "👨",
-                      image: "/img/ui/gender_male.png",
+                      image: "/img/ui/gender_male.webp",
                       label: "男性",
                       color: "#0288d1",
                     },
                     {
                       id: "female" as const,
                       icon: "👩",
-                      image: "/img/ui/gender_female.png",
+                      image: "/img/ui/gender_female.webp",
                       label: "女性",
                       color: "#f26fa7",
                     },
@@ -638,8 +657,10 @@ export function WelcomeWizard({
               >
                 ⭐ つぎへ ⭐
               </button>
-              {!gender && (
-                <p className="text-coral-deep mt-3 text-sm font-extrabold">せいべつを えらんでね</p>
+              {missingSetupItems.length > 0 && (
+                <p className="text-coral-deep mt-3 text-sm font-extrabold">
+                  {missingSetupItems.join("と ")}を おねがいね
+                </p>
               )}
             </div>
           </div>
@@ -713,19 +734,19 @@ export function WelcomeWizard({
                       {
                         value: "yes" as const,
                         label: "はい",
-                        image: "/img/ui/ans_yes.png",
+                        image: "/img/ui/ans_yes.webp",
                         fallback: "⭕",
                       },
                       {
                         value: "neutral" as const,
                         label: "どちらでもない",
-                        image: "/img/ui/ans_neutral.png",
+                        image: "/img/ui/ans_neutral.webp",
                         fallback: "🔺",
                       },
                       {
                         value: "no" as const,
                         label: "いいえ",
-                        image: "/img/ui/ans_no.png",
+                        image: "/img/ui/ans_no.webp",
                         fallback: "❌",
                       },
                     ].map((option) => (
@@ -758,12 +779,21 @@ export function WelcomeWizard({
             <div className="mt-6 flex flex-col items-center gap-4">
               <div className="flex flex-wrap items-center justify-center gap-3 rounded-full border-2 border-white bg-white/95 px-5 py-2 shadow-[0_4px_0_#c7e6f5]">
                 <p className="text-navy font-extrabold">{questionIndex + 1} / 20 もんちゅう</p>
-                <div className="flex flex-wrap justify-center gap-1.5" aria-hidden>
+                <div className="flex flex-wrap justify-center gap-1.5">
                   {answers.map((answer, index) => (
-                    <span
+                    <button
+                      type="button"
                       key={index}
+                      disabled={answer === null}
+                      aria-label={`${index + 1}もんめへ`}
+                      aria-current={index === questionIndex ? "step" : undefined}
+                      onClick={() => jumpToAnsweredQuestion(index)}
                       className={`h-3 w-3 rounded-full border border-white shadow-sm ${
-                        answer === null ? "bg-hairline" : "bg-sky"
+                        answer === null
+                          ? "bg-hairline"
+                          : index === questionIndex
+                            ? "bg-navy ring-2 ring-white"
+                            : "bg-sky cursor-pointer hover:scale-125"
                       }`}
                     />
                   ))}
@@ -778,7 +808,16 @@ export function WelcomeWizard({
                 >
                   ← もどる
                 </button>
-                {questionIndex === PERSONALITY_QUESTIONS.length - 1 &&
+                {questionIndex < PERSONALITY_QUESTIONS.length - 1 ? (
+                  <button
+                    type="button"
+                    disabled={answers[questionIndex] === null}
+                    onClick={nextQuestion}
+                    className="btn-game px-8 py-3 text-lg [--btn-face:#ffc93c] [--btn-shadow:#f0a819] disabled:cursor-not-allowed disabled:opacity-45"
+                  >
+                    つぎへ →
+                  </button>
+                ) : (
                   answers[questionIndex] !== null && (
                     <button
                       type="button"
@@ -791,7 +830,8 @@ export function WelcomeWizard({
                         見る<rt>みる</rt>
                       </ruby>
                     </button>
-                  )}
+                  )
+                )}
               </div>
             </div>
           </div>

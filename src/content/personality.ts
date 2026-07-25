@@ -105,7 +105,7 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
       { text: "計画", reading: "けいかく" },
       { text: "立てます", reading: "たてます" },
     ],
-    image: "/img/quiz/q01.png",
+    image: "/img/quiz/q01.webp",
   },
   {
     id: 2,
@@ -118,7 +118,7 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
       { text: "考える", reading: "かんがえる" },
       { text: "好き", reading: "すき" },
     ],
-    image: "/img/quiz/q02.png",
+    image: "/img/quiz/q02.webp",
   },
   {
     id: 3,
@@ -132,7 +132,7 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
       { text: "見る", reading: "みる" },
       { text: "声", reading: "こえ" },
     ],
-    image: "/img/quiz/q03.png",
+    image: "/img/quiz/q03.webp",
   },
   {
     id: 4,
@@ -144,7 +144,7 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
       { text: "新しい", reading: "あたらしい" },
       { text: "挑戦", reading: "ちょうせん" },
     ],
-    image: "/img/quiz/q04.png",
+    image: "/img/quiz/q04.webp",
   },
   {
     id: 5,
@@ -153,7 +153,7 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
     japanese: "チームをまとめるのが好きですか。",
     english: "Do you like organizing your team?",
     readings: [{ text: "好き", reading: "すき" }],
-    image: "/img/quiz/q05.png",
+    image: "/img/quiz/q05.webp",
   },
   {
     id: 6,
@@ -162,7 +162,7 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
     japanese: "「なぜ？」「どうして？」とよく考えますか。",
     english: 'Do you often ask "why?" and "how?"',
     readings: [{ text: "考えます", reading: "かんがえます" }],
-    image: "/img/quiz/q06.png",
+    image: "/img/quiz/q06.webp",
   },
   {
     id: 7,
@@ -176,7 +176,7 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
       { text: "聞く", reading: "きく" },
       { text: "好き", reading: "すき" },
     ],
-    image: "/img/quiz/q07.png",
+    image: "/img/quiz/q07.webp",
   },
   {
     id: 8,
@@ -185,7 +185,7 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
     japanese: "うまくいかなくても、もう一度やりますか。",
     english: "When something does not work, do you try again?",
     readings: [{ text: "一度", reading: "いちど" }],
-    image: "/img/quiz/q08.png",
+    image: "/img/quiz/q08.webp",
   },
   {
     id: 9,
@@ -198,7 +198,7 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
       { text: "時間", reading: "じかん" },
       { text: "守ります", reading: "まもります" },
     ],
-    image: "/img/quiz/q09.png",
+    image: "/img/quiz/q09.webp",
   },
   {
     id: 10,
@@ -212,7 +212,7 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
       { text: "作る", reading: "つくる" },
       { text: "好き", reading: "すき" },
     ],
-    image: "/img/quiz/q10.png",
+    image: "/img/quiz/q10.webp",
   },
   {
     id: 11,
@@ -225,7 +225,7 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
       { text: "気持ち", reading: "きもち" },
       { text: "気づく", reading: "きづく" },
     ],
-    image: "/img/quiz/q11.png",
+    image: "/img/quiz/q11.webp",
   },
   {
     id: 12,
@@ -234,7 +234,7 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
     japanese: "まずやってみてから考えますか。",
     english: "Do you try first and think later?",
     readings: [{ text: "考えます", reading: "かんがえます" }],
-    image: "/img/quiz/q12.png",
+    image: "/img/quiz/q12.webp",
   },
   {
     id: 13,
@@ -247,7 +247,7 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
       { text: "一つ", reading: "ひとつ" },
       { text: "決められます", reading: "きめられます" },
     ],
-    image: "/img/quiz/q13.png",
+    image: "/img/quiz/q13.webp",
   },
   {
     id: 14,
@@ -261,7 +261,7 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
       { text: "試す", reading: "ためす" },
       { text: "好き", reading: "すき" },
     ],
-    image: "/img/quiz/q14.png",
+    image: "/img/quiz/q14.webp",
   },
   {
     id: 15,
@@ -270,7 +270,7 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
     japanese: "チームのふんいきをよくするのが得意ですか。",
     english: "Are you good at making your team's mood better?",
     readings: [{ text: "得意", reading: "とくい" }],
-    image: "/img/quiz/q15.png",
+    image: "/img/quiz/q15.webp",
   },
   {
     id: 16,
@@ -283,7 +283,7 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
       { text: "問題", reading: "もんだい" },
       { text: "出る", reading: "でる" },
     ],
-    image: "/img/quiz/q16.png",
+    image: "/img/quiz/q16.webp",
   },
   {
     id: 17,
@@ -296,7 +296,7 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
       { text: "責任", reading: "せきにん" },
       { text: "持って", reading: "もって" },
     ],
-    image: "/img/quiz/q17.png",
+    image: "/img/quiz/q17.webp",
   },
   {
     id: 18,
@@ -310,7 +310,7 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
       { text: "説明", reading: "せつめい" },
       { text: "好き", reading: "すき" },
     ],
-    image: "/img/quiz/q18.png",
+    image: "/img/quiz/q18.webp",
   },
   {
     id: 19,
@@ -319,7 +319,7 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
     japanese: "なかまのいいところを見つけて、ほめますか。",
     english: "Do you notice and praise your friends' good points?",
     readings: [{ text: "見つけて", reading: "みつけて" }],
-    image: "/img/quiz/q19.png",
+    image: "/img/quiz/q19.webp",
   },
   {
     id: 20,
@@ -332,7 +332,7 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
       { text: "人", reading: "ひと" },
       { text: "話す", reading: "はなす" },
     ],
-    image: "/img/quiz/q20.png",
+    image: "/img/quiz/q20.webp",
   },
 ] as const;
 
@@ -344,6 +344,7 @@ export const PERSONALITY_RESULT_READINGS: readonly Reading[] = [
   { text: "信頼", reading: "しんらい" },
   { text: "気もち", reading: "きもち" },
   { text: "気づく", reading: "きづく" },
+  { text: "出て", reading: "でて" },
   { text: "力", reading: "ちから" },
   { text: "大すき", reading: "だいすき" },
   { text: "お客さま", reading: "おきゃくさま" },

@@ -20,9 +20,9 @@ const notoJp = Noto_Sans_JP({
 });
 
 export const metadata: Metadata = {
-  title: "Japanese IT Pathway | NEXT MAKE",
+  title: "Nexmax Academy | NEXT MAKE",
   description:
-    "カンボジアのITの学生が、日本の会社で はたらくための ことばと しごとを、みちを 一歩ずつ すすみながら たのしく まなぶ アプリ。",
+    "ネクマックスアカデミーは、カンボジアのITの学生が、日本の会社で はたらくための ことばと しごとを、みちを 一歩ずつ すすみながら たのしく まなぶ アプリです。",
 };
 
 export default function RootLayout({

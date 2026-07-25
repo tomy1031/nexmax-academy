@@ -11,6 +11,7 @@ import {
   useState,
   useSyncExternalStore,
 } from "react";
+import { signOut } from "@/app/auth/actions";
 import { NekuMaxType } from "@/components/nekumax-types";
 import { getPersonalityType, type PersonalityTypeId } from "@/content/personality";
 import { STAGES, type StageDefinition } from "@/content/stages";
@@ -193,9 +194,9 @@ function MapSegment({ src }: { src: string }) {
 
 function ScenicBackground() {
   const segments = [
-    "/img/scenes/map_seg1_cambodia.png",
-    "/img/scenes/map_seg2_ocean.png",
-    "/img/scenes/map_seg3_coast.png",
+    "/img/scenes/map_seg1_cambodia.webp",
+    "/img/scenes/map_seg2_ocean.webp",
+    "/img/scenes/map_seg3_coast.webp",
   ];
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden bg-[#2e9fd6]">
@@ -220,7 +221,7 @@ function GoalBand() {
       {showImage && (
         // eslint-disable-next-line @next/next/no-img-element
         <img
-          src="/img/scenes/japan_goal.png"
+          src="/img/scenes/japan_goal.webp"
           alt=""
           aria-hidden
           onError={() => setShowImage(false)}
@@ -276,9 +277,7 @@ function Toast({ message }: { message: string | null }) {
   );
 }
 
-function Hud({ profile }: { profile: NexmaxProfile }) {
-  const personality = getPersonalityType(profile.type);
-
+function Hud({ profile }: { profile: ProfileRow | null }) {
   return (
     <div className="fixed top-3 right-3 z-50 flex max-w-[calc(100vw-6rem)] flex-wrap justify-end gap-2">
       <div className="flex gap-1.5">
@@ -307,12 +306,26 @@ function Hud({ profile }: { profile: NexmaxProfile }) {
         ))}
       </div>
       <div className="flex items-center gap-2 rounded-2xl border-2 border-[#e9bd55] bg-[#fffaf0]/95 p-1.5 pr-3 shadow-[0_4px_0_#d9a839,0_8px_18px_rgba(0,79,141,.16)]">
-        <NekuMaxType id={profile.type} gender={profile.gender} size={42} />
-        <span className="hidden leading-tight sm:block">
-          <span className="text-ink block text-sm font-black">{profile.displayName}</span>
-          <span className="text-ink-soft block text-[10px] font-extrabold">{personality.name}</span>
-        </span>
-        <span aria-label="オンライン" className="bg-leaf h-2.5 w-2.5 rounded-full" />
+        {profile ? (
+          <>
+            <NekuMaxType id={profile.personality_type} gender={profile.gender} size={42} />
+            <span className="hidden leading-tight sm:block">
+              <span className="text-ink block text-sm font-black">{profile.display_name}</span>
+              <span className="text-ink-soft block text-[10px] font-extrabold">
+                {getPersonalityType(profile.personality_type).name}
+              </span>
+            </span>
+            <span aria-label="オンライン" className="bg-leaf h-2.5 w-2.5 rounded-full" />
+          </>
+        ) : (
+          <>
+            <span aria-hidden className="bg-hairline block h-10 w-10 animate-pulse rounded-full" />
+            <span className="hidden min-w-20 leading-tight sm:block">
+              <span className="text-ink block text-sm font-black">…</span>
+              <span className="text-ink-soft block text-[10px] font-extrabold">…</span>
+            </span>
+          </>
+        )}
       </div>
     </div>
   );
@@ -370,6 +383,7 @@ function Navigation({
   onCollapsedChange,
   onDrawerClose,
   onUnavailable,
+  onLogout,
 }: {
   collapsed: boolean;
   drawerOpen: boolean;
@@ -377,6 +391,7 @@ function Navigation({
   onCollapsedChange: (value: boolean) => void;
   onDrawerClose: () => void;
   onUnavailable: () => void;
+  onLogout: () => void;
 }) {
   const navButtons = NAV_ITEMS.map((item) => (
     <button
@@ -406,6 +421,21 @@ function Navigation({
       {!collapsed && <span className="whitespace-nowrap">かんり</span>}
     </Link>
   ) : null;
+  const logoutButton = (
+    <button
+      type="button"
+      onClick={() => {
+        onDrawerClose();
+        onLogout();
+      }}
+      className="text-ink hover:bg-sky-soft flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl px-3 text-sm font-extrabold transition"
+    >
+      <span aria-hidden className="text-xl">
+        ↪
+      </span>
+      {!collapsed && <span className="whitespace-nowrap">ログアウト</span>}
+    </button>
+  );
 
   return (
     <>
@@ -435,6 +465,7 @@ function Navigation({
         </button>
         {navButtons}
         {adminLink}
+        {logoutButton}
         <button
           type="button"
           onClick={() => onCollapsedChange(!collapsed)}
@@ -458,6 +489,7 @@ function Navigation({
             <div className="space-y-2">
               {navButtons}
               {adminLink}
+              {logoutButton}
             </div>
           </aside>
         </div>
@@ -817,7 +849,7 @@ export function MapShell() {
   return (
     <div className="bg-bg-sky relative min-h-dvh">
       <Logo />
-      <Hud profile={profile} />
+      <Hud profile={databaseProfile} />
       <ViewToggle view={view} onChange={changeView} />
       <Navigation
         collapsed={collapsed}
@@ -829,6 +861,7 @@ export function MapShell() {
         }}
         onDrawerClose={() => setDrawerOpen(false)}
         onUnavailable={() => showToast(SHORT_WAIT_TOAST)}
+        onLogout={() => void signOut()}
       />
 
       <div className="fixed top-28 left-44 z-40 hidden w-sm md:block">
