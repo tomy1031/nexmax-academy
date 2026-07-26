@@ -43,7 +43,7 @@ export function LoginCard({ authReady }: { authReady: boolean }) {
     await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${window.location.origin}/auth/callback?next=/welcome`,
+        redirectTo: `${window.location.origin}/auth/callback`,
       },
     });
   }

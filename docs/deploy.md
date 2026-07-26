@@ -43,12 +43,19 @@ DB・認証は3環境とも**同じ Supabase プロジェクト**を使う（ユ
 DBを本番と共有するため、検証操作が本番データ・本番ユーザーに影響する。以下を守る。
 
 1. **Google OAuth のリダイレクトURL登録**（Supabase → Authentication → URL Configuration）
-   - Site URL: 本番URL
+   - Site URL: 本番URL（`https://nexmax-academy.vercel.app`）
    - Additional Redirect URLs に検証・プレビューを追加:
-     - `https://<vercel-project>.vercel.app/auth/callback`
-     - `https://*.vercel.app/auth/callback`（プレビューは毎回サブドメインが変わるため）
+     - `https://nexmax-academy.vercel.app/auth/callback`（本番・明示）
+     - `https://*.vercel.app/auth/callback`（ブランチプレビュー。サブドメインが毎回変わるため）
      - `http://localhost:3000/auth/callback`（ローカル）
-   - 未登録のURLからのログインは Supabase が拒否する
+   - **未登録のURLに戻そうとすると、Supabase は拒否ではなく Site URL（＝本番）へ
+     `?code=` 付きでフォールバックする**。「検証環境でログインしたのに本番に飛ぶ」は
+     この症状。ドメインをまたぐためアプリ側では救えず、登録するしかない。
+   - アプリが渡す `redirectTo` は**クエリなしの `<origin>/auth/callback`** に固定している
+     （クエリ付きだと許可リストのパターンに一致しないことがあるため）。遷移先は
+     コールバック側の既定値 `/welcome` で決める。
+   - 保険として、`?code=` がどのページに落ちても `src/middleware.ts` が
+     `/auth/callback` へ回送する（同一オリジン内のみ有効）。
 2. **破壊的な検証は本番データに直撃する**。テーブル追加・RLS変更・大量データ投入は、まず Supabase の別プロジェクト（無料でもう1つ作れる）か、本番に影響しない専用テーブル/スキーマで行うことを推奨。「同一で大丈夫」の範囲は日常の閲覧・ログイン確認・少量の学習データまで、と運用で線引きする
 3. **service_role key は検証環境にも置く**が、クライアントには決して出さない（`getServerEnv()` 経由・サーバ専用）。露出したら Supabase ダッシュボードで即ローテーション
 4. RLS を有効化し、学生ロールは自分の行のみ・教師は自クラスのみ（03 §3.3）。検証と本番でユーザーが混ざっても、権限は RLS が守る
