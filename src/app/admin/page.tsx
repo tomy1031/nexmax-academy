@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
+  AdminError,
   AdminHeader,
   AdminLoading,
   AdminPageFrame,
@@ -42,6 +43,7 @@ export default function AdminDashboardPage() {
   const [results, setResults] = useState<PersonalityResultRow[]>([]);
   const [teamSize, setTeamSize] = useState(4);
   const [loading, setLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -60,7 +62,13 @@ export default function AdminDashboardPage() {
       }
       try {
         const ownProfile = await fetchOwnProfile();
-        if (!ownProfile?.is_admin) {
+        if (!active) return;
+        // プロフィール未作成＝オンボーディング未完了。権限以前の問題なので /welcome へ。
+        if (!ownProfile) {
+          router.replace("/welcome");
+          return;
+        }
+        if (!ownProfile.is_admin) {
           router.replace("/map");
           return;
         }
@@ -72,8 +80,11 @@ export default function AdminDashboardPage() {
         setProfiles(allProfiles);
         setResults(allResults);
         setLoading(false);
-      } catch {
-        router.replace("/map");
+      } catch (error) {
+        // 取得エラーは権限の問題ではない。理由を画面に出す（黙って戻さない）。
+        if (!active) return;
+        setErrorMessage(error instanceof Error ? error.message : String(error));
+        setLoading(false);
       }
     })();
     return () => {
@@ -106,6 +117,7 @@ export default function AdminDashboardPage() {
     URL.revokeObjectURL(url);
   }, [profiles, results]);
 
+  if (errorMessage) return <AdminError message={errorMessage} />;
   if (loading) return <AdminLoading />;
 
   return (

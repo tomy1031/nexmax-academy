@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { AdminHeader, AdminLoading, AdminPageFrame } from "@/components/admin/admin-ui";
+import { AdminError, AdminHeader, AdminLoading, AdminPageFrame } from "@/components/admin/admin-ui";
 import type { PersonalityTypeId } from "@/content/personality";
 import {
   deleteProfileAsAdmin,
@@ -41,6 +41,7 @@ export default function AdminUsersPage() {
   const [profiles, setProfiles] = useState<ProfileRow[]>([]);
   const [drafts, setDrafts] = useState<Record<string, ProfileDraft>>({});
   const [loading, setLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [savingId, setSavingId] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -68,7 +69,13 @@ export default function AdminUsersPage() {
       }
       try {
         const ownProfile = await fetchOwnProfile();
-        if (!ownProfile?.is_admin) {
+        if (!active) return;
+        // プロフィール未作成＝オンボーディング未完了。権限以前の問題なので /welcome へ。
+        if (!ownProfile) {
+          router.replace("/welcome");
+          return;
+        }
+        if (!ownProfile.is_admin) {
           router.replace("/map");
           return;
         }
@@ -79,8 +86,11 @@ export default function AdminUsersPage() {
           Object.fromEntries(allProfiles.map((profile) => [profile.id, draftFromProfile(profile)])),
         );
         setLoading(false);
-      } catch {
-        router.replace("/map");
+      } catch (error) {
+        // 取得エラーは権限の問題ではない。理由を画面に出す（黙って戻さない）。
+        if (!active) return;
+        setErrorMessage(error instanceof Error ? error.message : String(error));
+        setLoading(false);
       }
     })();
     return () => {
@@ -145,7 +155,7 @@ export default function AdminUsersPage() {
   }
 
   if (loading) {
-    return <AdminLoading />;
+    return errorMessage ? <AdminError message={errorMessage} /> : <AdminLoading />;
   }
 
   return (

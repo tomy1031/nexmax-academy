@@ -125,6 +125,14 @@ export async function insertPersonalityResult(
   return result as PersonalityResultRow;
 }
 
+/**
+ * 記録台帳テーブルが未作成（マイグレーション未適用）か。
+ * 履歴は補助データなので、無いときは「空」として扱い画面を止めない。
+ */
+function isMissingResultsTable(error: { code?: string } | null): boolean {
+  return error?.code === "42P01";
+}
+
 export async function fetchResultsForProfile(profileId: string): Promise<PersonalityResultRow[]> {
   const supabase = requireClient();
   const { data, error } = await supabase
@@ -132,7 +140,10 @@ export async function fetchResultsForProfile(profileId: string): Promise<Persona
     .select("*")
     .eq("profile_id", profileId)
     .order("created_at", { ascending: false });
-  if (error) throw error;
+  if (error) {
+    if (isMissingResultsTable(error)) return [];
+    throw error;
+  }
   return (data ?? []) as PersonalityResultRow[];
 }
 
@@ -142,7 +153,10 @@ export async function fetchAllResults(): Promise<PersonalityResultRow[]> {
     .from("personality_results")
     .select("*")
     .order("created_at", { ascending: false });
-  if (error) throw error;
+  if (error) {
+    if (isMissingResultsTable(error)) return [];
+    throw error;
+  }
   return (data ?? []) as PersonalityResultRow[];
 }
 

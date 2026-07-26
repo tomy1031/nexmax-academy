@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
   AdminHeader,
+  AdminError,
   AdminLoading,
   AdminPageFrame,
   ANSWER_COLORS,
@@ -48,6 +49,7 @@ export default function StudentPersonalityReportPage() {
   const [profile, setProfile] = useState<ProfileRow | null>(null);
   const [results, setResults] = useState<PersonalityResultRow[]>([]);
   const [loading, setLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
@@ -67,7 +69,13 @@ export default function StudentPersonalityReportPage() {
       }
       try {
         const ownProfile = await fetchOwnProfile();
-        if (!ownProfile?.is_admin) {
+        if (!active) return;
+        // プロフィール未作成＝オンボーディング未完了。権限以前の問題なので /welcome へ。
+        if (!ownProfile) {
+          router.replace("/welcome");
+          return;
+        }
+        if (!ownProfile.is_admin) {
           router.replace("/map");
           return;
         }
@@ -85,8 +93,11 @@ export default function StudentPersonalityReportPage() {
         setProfile(target);
         setResults(profileResults);
         setLoading(false);
-      } catch {
-        router.replace("/map");
+      } catch (error) {
+        // 取得エラーは権限の問題ではない。理由を画面に出す（黙って戻さない）。
+        if (!active) return;
+        setErrorMessage(error instanceof Error ? error.message : String(error));
+        setLoading(false);
       }
     })();
     return () => {
@@ -94,6 +105,7 @@ export default function StudentPersonalityReportPage() {
     };
   }, [id, router]);
 
+  if (errorMessage) return <AdminError message={errorMessage} />;
   if (loading) return <AdminLoading />;
 
   if (notFound || !profile) {

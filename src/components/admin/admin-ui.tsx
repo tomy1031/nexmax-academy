@@ -93,6 +93,44 @@ export function AdminPageFrame({ children }: { children: ReactNode }) {
   );
 }
 
+/**
+ * データ取得の失敗を画面に出す。権限の問題ではないので、黙ってリダイレクトしない
+ * （原因が分からないまま戻される事故を防ぐ）。
+ */
+export function AdminError({ message }: { message: string }) {
+  return (
+    <AdminPageFrame>
+      <div className="grid min-h-[70dvh] place-items-center">
+        <div className="card-pop max-w-lg px-6 py-6">
+          <h1 className="text-navy text-lg font-black">データを読み込めませんでした</h1>
+          <p className="text-ink-soft mt-3 text-sm font-bold">
+            テーブルが未作成の可能性があります。supabase/migrations/ の SQL
+            がすべて適用済みか確認してください。
+          </p>
+          <pre className="bg-panel-tint text-ink mt-3 overflow-x-auto rounded-xl px-3 py-2 text-xs">
+            {message}
+          </pre>
+          <div className="mt-5 flex gap-3">
+            <button
+              type="button"
+              onClick={() => window.location.reload()}
+              className="btn-game px-5 py-2.5 text-sm"
+            >
+              もう一度ためす
+            </button>
+            <Link
+              href="/map"
+              className="border-hairline text-navy rounded-2xl border-2 bg-white px-5 py-2.5 text-sm font-bold"
+            >
+              マップへ戻る
+            </Link>
+          </div>
+        </div>
+      </div>
+    </AdminPageFrame>
+  );
+}
+
 export function AdminLoading() {
   return (
     <AdminPageFrame>
