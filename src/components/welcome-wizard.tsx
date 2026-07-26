@@ -16,7 +16,7 @@ import {
   type Reading,
 } from "@/content/personality";
 import { NekuMaxType } from "@/components/nekumax-types";
-import { upsertOwnProfile } from "@/lib/profile-db";
+import { insertPersonalityResult, upsertOwnProfile } from "@/lib/profile-db";
 import { createClient } from "@/lib/supabase/client";
 import { getGeminiKey, saveGeminiKey, saveProfile, type Gender } from "@/lib/profile";
 
@@ -306,6 +306,15 @@ export function WelcomeWizard({
         answers: completedAnswers,
         scores,
       });
+      try {
+        await insertPersonalityResult({
+          personalityType: resultId,
+          answers: completedAnswers,
+          scores,
+        });
+      } catch {
+        // 最新プロフィールが保存できていれば学習を止めず、記録台帳の失敗だけを許容する。
+      }
       saveProfile({
         displayName: stored.display_name,
         gender: stored.gender,

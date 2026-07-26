@@ -27,6 +27,21 @@ export interface OwnProfileInput {
   scores: PersonalityScores;
 }
 
+export interface PersonalityResultRow {
+  id: string;
+  profile_id: string;
+  personality_type: PersonalityTypeId;
+  answers: PersonalityAnswer[];
+  scores: PersonalityScores;
+  created_at: string;
+}
+
+export interface PersonalityResultInput {
+  personalityType: PersonalityTypeId;
+  answers: PersonalityAnswer[];
+  scores: PersonalityScores;
+}
+
 export interface AdminProfilePatch {
   displayName?: string;
   gender?: Gender;
@@ -83,6 +98,52 @@ export async function upsertOwnProfile(data: OwnProfileInput): Promise<ProfileRo
     .single();
   if (error) throw error;
   return profile as ProfileRow;
+}
+
+export async function insertPersonalityResult(
+  data: PersonalityResultInput,
+): Promise<PersonalityResultRow> {
+  const supabase = requireClient();
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+  if (userError) throw userError;
+  if (!user) throw new Error("Authentication is required.");
+
+  const { data: result, error } = await supabase
+    .from("personality_results")
+    .insert({
+      profile_id: user.id,
+      personality_type: data.personalityType,
+      answers: data.answers,
+      scores: data.scores,
+    })
+    .select("*")
+    .single();
+  if (error) throw error;
+  return result as PersonalityResultRow;
+}
+
+export async function fetchResultsForProfile(profileId: string): Promise<PersonalityResultRow[]> {
+  const supabase = requireClient();
+  const { data, error } = await supabase
+    .from("personality_results")
+    .select("*")
+    .eq("profile_id", profileId)
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  return (data ?? []) as PersonalityResultRow[];
+}
+
+export async function fetchAllResults(): Promise<PersonalityResultRow[]> {
+  const supabase = requireClient();
+  const { data, error } = await supabase
+    .from("personality_results")
+    .select("*")
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  return (data ?? []) as PersonalityResultRow[];
 }
 
 export async function fetchAllProfiles(): Promise<ProfileRow[]> {
