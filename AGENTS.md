@@ -31,6 +31,10 @@ This version has breaking changes — APIs, conventions, and file structure may 
 6. シナリオの秘匿情報（予算等、質問で引き出すべき事実）を調査用模擬ページに書かない。
 7. キャラクター画像を手描きSVGで自作しない。ネクマックスは Codex image-gen-2 で生成する
    （正典 reference.png を参照入力・マスター記述を逐語使用。docs/skills/codex_image_generation.md）。
+8. **「タイ」という国名を使わない**（文言・画像・画像生成プロンプトのいずれでも）。
+   国際情勢を踏まえた運用判断。まなびマップのエリアは**画面に国名を出さず景色の名前で呼ぶ**
+   （`src/content/areas.ts`。ゴールの日本だけは学習の目的地なので例外）。
+   新しい国名を画面や画像に出すときは、事前にユーザーへ確認する。
 
 ## アーキテクチャ原則
 

@@ -1,83 +1,98 @@
 /**
- * まなびマップの「エリア」— カンボジアから日本までの道のりを地域ごとに区切ったもの。
+ * まなびマップの「エリア」— 出発地から日本までの空路を、土地ごとに区切ったもの。
  *
- * 背景画像1枚＝1エリア。エリアは上から順に縦に積まれ、各画像の上下10%は同じ海色
- * （#2E9FD6）なので継ぎ目が見えない（画像生成の契約: docs/skills/codex_image_generation.md）。
+ * 背景画像1枚＝1エリア。エリアは上から順に縦に積まれ、あいだは雲海の帯（`CloudBand`）で
+ * 仕切る。学習者は空路で雲を越えて次の土地へ進む。
+ *
+ * ## 表示名に国名を出さない（重要）
+ * `name` は必ず「景色の名前」にする。国名・国旗・実在の地名を画面に出さない。
+ * 国は今後の情勢で柔軟に差し替える前提なので、表示文言が国に依存していると差し替えのたびに
+ * UI を直すことになる。国は画像の主題（`imageSubject`）と `id` にだけ残す。
+ * ※ ゴールの日本だけは学習の目的地そのものなので例外的に国名を出す。
+ *
+ * ## ルート方針
+ * 出発地から北上して日本へ向かう「北回り」。南国 → 霧の山 → 温帯の都市 と気候が段階的に
+ * 変わるので、絵が単調にならず「日本に近づいている」ことが絵だけで伝わる。
+ * エリアを増やすときは、この並びの途中に中継点を挿し込む（末尾に足さない）。
  *
  * ステージ（STAGES）はエリアの上に置く。`stageId` を持つエリアにだけステージが立ち、
- * `stageId: null` のエリアは「渡るだけ」の道中（外洋など）になる。
+ * `stageId: null` のエリアは通過するだけの土地になる（コンテンツが増えるまでの受け皿）。
  */
 export interface MapArea {
   id: string;
-  /** 画面に出す地域名 */
+  /** 画面に出す景色の名前。**国名を入れない** */
   name: string;
-  /** 地域名のよみ（ルビに使う） */
+  /** 表示名のよみ（ルビに使う） */
   reading: string;
   /** 背景画像。`public/` からのパス */
   image: string;
-  /** このエリアに立つステージ。道中のみのエリアは null */
+  /** 画像が何をモチーフにしているか。開発者向けの覚書で、画面には出さない */
+  imageSubject: string;
+  /** このエリアに立つステージ。通過するだけのエリアは null */
   stageId: string | null;
-  /** 地図の傍らに小さく添える一言。ステージのないエリアの間つなぎにもなる */
+  /** 地図に小さく添える一言 */
   note: string;
 }
 
-/** 継ぎ目の海色。背景画像の上下10%と、画像が読めなかったときの下地に使う */
-export const SEAM_OCEAN = "#2e9fd6";
+/** 雲海の色。エリア画像の端をここへ溶かして継ぎ目を隠す */
+export const CLOUD_WHITE = "#f4fbff";
+
+/** 雲のすきまから見える空・海の色。画像が読めなかったときの下地にもなる */
+export const SKY_BLUE = "#2e9fd6";
 
 export const MAP_AREAS: readonly MapArea[] = [
   {
     id: "cambodia",
-    name: "カンボジア",
-    reading: "かんぼじあ",
+    name: "いしの みやこ",
+    reading: "いしの みやこ",
     image: "/img/scenes/area1_cambodia.webp",
+    imageSubject: "アンコールワット風の石造寺院と熱帯雨林",
     stageId: "it-words",
     note: "ここから はじまります。",
   },
   {
-    id: "thailand",
-    name: "タイ",
-    reading: "たい",
-    image: "/img/scenes/area2_thailand.webp",
-    stageId: "company-structure",
-    note: "きんいろの おてらの くに。",
-  },
-  {
     id: "vietnam",
-    name: "ベトナム",
-    reading: "べとなむ",
+    name: "うみの いわやま",
+    reading: "うみの いわやま",
     image: "/img/scenes/area3_vietnam.webp",
-    stageId: "report",
-    note: "うみに ならぶ みどりの いわやま。",
-  },
-  {
-    id: "south-china-sea",
-    name: "南シナ海",
-    reading: "みなみしなかい",
-    image: "/img/scenes/area4_sea.webp",
-    stageId: null,
-    note: "ふねで わたります。",
+    imageSubject: "ハロン湾風の石灰岩の岩山と棚田、提灯の村",
+    stageId: "company-structure",
+    note: "いわやまの あいだを とびます。",
   },
   {
     id: "taiwan",
-    name: "台湾",
-    reading: "たいわん",
+    name: "かいだんの まち",
+    reading: "かいだんの まち",
     image: "/img/scenes/area5_taiwan.webp",
-    stageId: "contact",
-    note: "やまの うえの かいだんの まち。",
+    imageSubject: "九份風の階段街と赤提灯、茶畑",
+    stageId: "report",
+    note: "やまの しゃめんに ならぶ まち。",
   },
   {
-    id: "okinawa",
-    name: "沖縄",
-    reading: "おきなわ",
-    image: "/img/scenes/area6_okinawa.webp",
+    id: "misty-peaks",
+    name: "きりの やまなみ",
+    reading: "きりの やまなみ",
+    image: "/img/scenes/area_misty_peaks.webp",
+    imageSubject: "水墨画風の霧の岩峰と古い城下町、茶畑",
+    stageId: "contact",
+    note: "きりの なかを ぬけて いきます。",
+  },
+  {
+    id: "palace-town",
+    name: "みやこの まち",
+    reading: "みやこの まち",
+    image: "/img/scenes/area_palace_town.webp",
+    imageSubject: "宮殿と瓦屋根の旧市街、奥に現代のビル群",
     stageId: "consult",
-    note: "にほんの みなみの しま。",
+    note: "ふるい まちと あたらしい まち。",
   },
   {
     id: "japan",
+    // ゴールだけは学習の目的地そのものなので国名を出す
     name: "日本",
     reading: "にほん",
     image: "/img/scenes/japan_goal.webp",
+    imageSubject: "富士山・桜・東京のスカイライン・鳥居",
     stageId: null,
     note: "ゴール。ここで はたらきます。",
   },

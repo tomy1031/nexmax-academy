@@ -15,7 +15,8 @@ import {
 import { signOut } from "@/app/auth/actions";
 import { AreaTrail } from "@/components/map-trail";
 import { NekuMaxType } from "@/components/nekumax-types";
-import { GOAL_AREA, ROUTE_AREAS, SEAM_OCEAN, type MapArea } from "@/content/areas";
+import { CloudBand } from "@/components/cloud-band";
+import { GOAL_AREA, ROUTE_AREAS, SKY_BLUE, type MapArea } from "@/content/areas";
 import { getPersonalityType, type PersonalityTypeId } from "@/content/personality";
 import { STAGES, type StageDefinition } from "@/content/stages";
 import { fetchOwnProfile, type ProfileRow } from "@/lib/profile-db";
@@ -42,7 +43,7 @@ const LONG_WAIT_TOAST = "じゅんびちゅう です。もうすこし まっ�
 const SHORT_WAIT_TOAST = "じゅんびちゅう です。";
 
 /** 各エリアの中央に立つステージの x 位置（%）。左右に振って道をうねらせる */
-const AREA_NODE_X = [58, 38, 62, 46, 36, 60] as const;
+const AREA_NODE_X = [58, 38, 62, 40, 60] as const;
 
 /**
  * エリア内でステージを置く高さ（%）。上寄りに置いて、下に「現在のレッスン」パネルを
@@ -67,7 +68,6 @@ const AREA_CHARACTERS: readonly PersonalityTypeId[] = [
   "idea",
   "heart",
   "challenge",
-  "idea",
   "leader",
 ];
 
@@ -107,11 +107,11 @@ function profileFromRow(profile: ProfileRow): NexmaxProfile {
 }
 
 /**
- * 学習者の現在地を「エリア番号＋エリア内の位置」で表す。足跡の塗り分けの境目になる。
- * 例: 2.4 = 3番目のエリアのステージのところ。すべてクリアなら日本（＝道のりの終端）。
+ * 学習者の現在地を「エリア番号＋エリア内の位置」で表す。空路の塗り分けの境目になり、
+ * ここに飛行機が立つ。例: 2.3 = 3番目のエリアのステージのところ。
  */
-function walkedUntil(progress: StageProgress): number {
-  // すべてクリアなら日本まで歩き切っている（ゴールのエリアの足跡も塗る）
+function flownUntil(progress: StageProgress): number {
+  // すべてクリアなら日本まで飛び切っている（ゴールのエリアの航路も塗る）
   if (!progress.currentStageId) return ROUTE_AREAS.length + 1;
   const index = ROUTE_AREAS.findIndex((area) => area.stageId === progress.currentStageId);
   if (index < 0) return ROUTE_AREAS.length;
@@ -221,9 +221,10 @@ function KindLabel({ stage }: { stage: StageDefinition }) {
  * エリア背景。
  *
  * 画像は `object-cover` なので、画面が横に広いほど上下が切り落とされる。切り口がそのまま
- * 継ぎ目になると島が途中で切れて見えるため、上下の端を透明にぼかして下地の海色
- * （`SEAM_OCEAN`）に溶かす。こうすると「島 → 海 → 島」に見え、どの画面幅でも継ぎ目が出ない。
- * 読み込めなかったときも同じ海色が残るので、地図が破れない。
+ * 継ぎ目になると土地が途中で切れて見えるため、上下の端を透明にぼかして下地の空色
+ * （`SKY_BLUE`）に溶かし、その上を `CloudBand` の雲海が覆う。こうすると
+ * 「土地 → 雲 → 土地」に見え、どの画面幅でも継ぎ目が出ない。
+ * 読み込めなかったときも同じ空色が残るので、地図が破れない。
  */
 function AreaImage({ src, fade }: { src: string; fade: "both" | "top" }) {
   const [failed, setFailed] = useState(false);
@@ -257,7 +258,10 @@ function MapLayer({ children }: { children: ReactNode }) {
   return <div className="absolute inset-0 md:left-44">{children}</div>;
 }
 
-/** エリア名の札。ステージと反対側の肩に置く */
+/**
+ * エリア名の札。ステージと反対側の肩に置く。
+ * 出すのは景色の名前だけで、国名は出さない（`MAP_AREAS` の方針。areas.ts を参照）。
+ */
 function AreaLabel({
   area,
   onRight,
@@ -269,7 +273,7 @@ function AreaLabel({
 }) {
   return (
     <div
-      className={`absolute top-4 z-20 flex items-center gap-1.5 rounded-full border-2 px-3 py-1 text-xs font-black shadow-[0_3px_0_rgba(0,79,141,.25)] backdrop-blur-sm sm:text-sm ${
+      className={`absolute top-6 z-30 flex items-center gap-1.5 rounded-full border-2 px-3 py-1 text-xs font-black shadow-[0_3px_0_rgba(0,79,141,.25)] backdrop-blur-sm sm:text-sm ${
         onRight ? "right-3 sm:right-6" : "left-3 sm:left-6"
       } ${
         cleared
@@ -278,10 +282,7 @@ function AreaLabel({
       }`}
     >
       <span aria-hidden>{cleared ? "✓" : "📍"}</span>
-      <ruby>
-        {area.name}
-        <rt>{area.reading}</rt>
-      </ruby>
+      {area.name}
     </div>
   );
 }
@@ -771,13 +772,13 @@ function RouteArea({
   const nodeTop = NODE_TOP;
   const chipOnRight = nodeX <= 50;
   const open = stage ? expandedStage === stage.id : false;
-  const areaCleared = status === "cleared" || (!stage && index < walkedUntil(progress));
+  const areaCleared = status === "cleared" || (!stage && index < flownUntil(progress));
 
   return (
     <section
       aria-label={area.name}
       className="relative h-[clamp(600px,58vh,660px)] w-full"
-      style={{ backgroundColor: SEAM_OCEAN }}
+      style={{ backgroundColor: SKY_BLUE }}
     >
       <AreaImage src={area.image} fade="both" />
 
@@ -790,13 +791,13 @@ function RouteArea({
           xOut={AREA_BOUNDARY_X[index + 1]!}
           nodeT={NODE_TOP / 100}
           areaIndex={index}
-          walkedUntil={walkedUntil(progress)}
+          flownUntil={flownUntil(progress)}
         />
 
         {/* 道中だけのエリアには、一言だけ添えて「なにも無い」感じにしない */}
         {!stage && (
           <p className="text-navy absolute bottom-10 left-1/2 z-20 -translate-x-1/2 rounded-full border-2 border-white bg-white/85 px-4 py-1.5 text-xs font-black shadow-md backdrop-blur-sm">
-            🚢 {area.note}
+            ☁ {area.note}
           </p>
         )}
 
@@ -850,6 +851,9 @@ function RouteArea({
           </>
         )}
       </MapLayer>
+
+      {/* 土地の境目の雲海。エリアの下端にまたがるので、背景画像の切り口が雲に隠れる */}
+      <CloudBand className="bottom-0 translate-y-1/2" />
     </section>
   );
 }
@@ -861,7 +865,7 @@ function GoalArea({ progress }: { progress: StageProgress }) {
     <section
       aria-label={GOAL_AREA.name}
       className="relative h-[clamp(320px,40vh,460px)] w-full overflow-hidden"
-      style={{ backgroundColor: SEAM_OCEAN }}
+      style={{ backgroundColor: SKY_BLUE }}
     >
       <AreaImage src={GOAL_AREA.image} fade="top" />
 
@@ -872,7 +876,7 @@ function GoalArea({ progress }: { progress: StageProgress }) {
           xOut={50}
           nodeT={0.5}
           areaIndex={ROUTE_AREAS.length}
-          walkedUntil={walkedUntil(progress)}
+          flownUntil={flownUntil(progress)}
         />
 
         <div className="absolute top-1/2 left-1/2 z-20 -translate-x-1/2 -translate-y-1/2 text-center">
@@ -917,14 +921,11 @@ function MapViewPane({
   const firstArea = ROUTE_AREAS[0]!;
   return (
     <main className="relative w-full overflow-x-hidden">
-      {/* 出発の帯。1枚目のエリア画像の上端は平らな海色なので、同じ色で continuous に見える */}
-      <div className="relative h-44 w-full" style={{ backgroundColor: SEAM_OCEAN }}>
+      {/* 出発の帯。1枚目のエリア画像の上端は平らな空色なので、同じ色で continuous に見える */}
+      <div className="relative h-44 w-full" style={{ backgroundColor: SKY_BLUE }}>
         <MapLayer>
           <WoodenBanner label="START!" className="top-20 left-1/2">
-            <ruby>
-              {firstArea.name}
-              <rt>{firstArea.reading}</rt>
-            </ruby>
+            {firstArea.name}
           </WoodenBanner>
           <AreaTrail
             xIn={50}
@@ -932,7 +933,7 @@ function MapViewPane({
             xOut={AREA_BOUNDARY_X[0]!}
             nodeT={0.5}
             areaIndex={-1}
-            walkedUntil={walkedUntil(progress)}
+            flownUntil={flownUntil(progress)}
           />
         </MapLayer>
       </div>
