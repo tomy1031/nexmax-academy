@@ -5,10 +5,12 @@
  * 仕切る。学習者は空路で雲を越えて次の土地へ進む。
  *
  * ## 表示名に国名を出さない（重要）
- * `name` は必ず「景色の名前」にする。国名・国旗・実在の地名を画面に出さない。
- * 国は今後の情勢で柔軟に差し替える前提なので、表示文言が国に依存していると差し替えのたびに
- * UI を直すことになる。国は画像の主題（`imageSubject`）と `id` にだけ残す。
- * ※ ゴールの日本だけは学習の目的地そのものなので例外的に国名を出す。
+ * `name` に**国名を入れない**。国は今後の情勢で柔軟に差し替える前提なので、表示文言が国に
+ * 依存していると差し替えのたびに UI を直すことになる。国は画像の主題（`imageSubject`）と
+ * `id` にだけ残す。※ ゴールの日本だけは学習の目的地そのものなので例外的に国名を出す。
+ *
+ * 都市名・遺跡名（アンコールワット、プノンペンなど）は国名ではないので出してよい。
+ * 学習者の出発地であるこの2つは、親しみのために実名で呼ぶ。それ以外の土地は景色の名前にする。
  *
  * ## ルート方針
  * 出発地から北上して日本へ向かう「北回り」。南国 → 霧の山 → 温帯の都市 と気候が段階的に
@@ -42,13 +44,22 @@ export const SKY_BLUE = "#2e9fd6";
 
 export const MAP_AREAS: readonly MapArea[] = [
   {
-    id: "cambodia",
-    name: "いしの みやこ",
-    reading: "いしの みやこ",
+    id: "angkor",
+    name: "アンコールワット",
+    reading: "あんこーるわっと",
     image: "/img/scenes/area1_cambodia.webp",
     imageSubject: "アンコールワット風の石造寺院と熱帯雨林",
     stageId: "it-words",
     note: "ここから はじまります。",
+  },
+  {
+    id: "phnom-penh",
+    name: "プノンペン",
+    reading: "ぷのんぺん",
+    image: "/img/scenes/area_riverside_capital.webp",
+    imageSubject: "王宮・高層ビル・リバーサイドの首都",
+    stageId: "company-structure",
+    note: "かわぞいの おおきな まち。",
   },
   {
     id: "vietnam",
@@ -56,7 +67,7 @@ export const MAP_AREAS: readonly MapArea[] = [
     reading: "うみの いわやま",
     image: "/img/scenes/area3_vietnam.webp",
     imageSubject: "ハロン湾風の石灰岩の岩山と棚田、提灯の村",
-    stageId: "company-structure",
+    stageId: "report",
     note: "いわやまの あいだを とびます。",
   },
   {
@@ -65,7 +76,7 @@ export const MAP_AREAS: readonly MapArea[] = [
     reading: "かいだんの まち",
     image: "/img/scenes/area5_taiwan.webp",
     imageSubject: "九份風の階段街と赤提灯、茶畑",
-    stageId: "report",
+    stageId: null,
     note: "やまの しゃめんに ならぶ まち。",
   },
   {

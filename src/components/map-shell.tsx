@@ -15,7 +15,7 @@ import {
 import { signOut } from "@/app/auth/actions";
 import { AreaTrail } from "@/components/map-trail";
 import { NekuMaxType } from "@/components/nekumax-types";
-import { CloudBand } from "@/components/cloud-band";
+import { CloudBand, CloudCorners } from "@/components/cloud-band";
 import { GOAL_AREA, ROUTE_AREAS, SKY_BLUE, type MapArea } from "@/content/areas";
 import { getPersonalityType, type PersonalityTypeId } from "@/content/personality";
 import { STAGES, type StageDefinition } from "@/content/stages";
@@ -43,7 +43,7 @@ const LONG_WAIT_TOAST = "じゅんびちゅう です。もうすこし まっ�
 const SHORT_WAIT_TOAST = "じゅんびちゅう です。";
 
 /** 各エリアの中央に立つステージの x 位置（%）。左右に振って道をうねらせる */
-const AREA_NODE_X = [58, 38, 62, 40, 60] as const;
+const AREA_NODE_X = [58, 38, 62, 42, 36, 60] as const;
 
 /**
  * エリア内でステージを置く高さ（%）。上寄りに置いて、下に「現在のレッスン」パネルを
@@ -68,6 +68,7 @@ const AREA_CHARACTERS: readonly PersonalityTypeId[] = [
   "idea",
   "heart",
   "challenge",
+  "idea",
   "leader",
 ];
 
@@ -781,6 +782,8 @@ function RouteArea({
       style={{ backgroundColor: SKY_BLUE }}
     >
       <AreaImage src={area.image} fade="both" />
+      {/* 四隅を雲でぼかして、画像の角が四角く出ないようにする */}
+      <CloudCorners />
 
       <MapLayer>
         <AreaLabel area={area} onRight={!chipOnRight} cleared={areaCleared} />
@@ -923,6 +926,8 @@ function MapViewPane({
     <main className="relative w-full overflow-x-hidden">
       {/* 出発の帯。1枚目のエリア画像の上端は平らな空色なので、同じ色で continuous に見える */}
       <div className="relative h-44 w-full" style={{ backgroundColor: SKY_BLUE }}>
+        {/* 1枚目のエリアの上端にも雲をかける。看板より先に置いて、看板を隠さないようにする */}
+        <CloudBand className="bottom-0 translate-y-1/2" />
         <MapLayer>
           <WoodenBanner label="START!" className="top-20 left-1/2">
             {firstArea.name}
