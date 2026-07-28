@@ -52,6 +52,7 @@ const STOPS: Stop[] = [
     x: 72,
     y: 14,
     color: "#f2654a",
+    href: "/quiz",
   },
   {
     emoji: "❓",

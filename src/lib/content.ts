@@ -10,7 +10,7 @@
 
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
-import { contentSchema, type Scenario, type WordStage } from "@/content/schema";
+import { contentSchema, type QuizSet, type Scenario, type WordStage } from "@/content/schema";
 
 const CONTENT_DIR = join(process.cwd(), "content");
 
@@ -47,6 +47,16 @@ export function listWordStages(): WordStage[] {
 
 export function getWordStage(id: string): WordStage | null {
   return listWordStages().find((stage) => stage.id === id) ?? null;
+}
+
+export function listQuizSets(): QuizSet[] {
+  return parseAll()
+    .filter((c): c is QuizSet => c.kind === "quizset")
+    .sort((a, b) => a.id.localeCompare(b.id));
+}
+
+export function getQuizSet(id: string): QuizSet | null {
+  return listQuizSets().find((set) => set.id === id) ?? null;
 }
 
 export function listScenarios(): Scenario[] {

@@ -98,6 +98,188 @@ export const wordStageSchema = z
     });
   });
 
+/* ------------------------------------------------------------------ *
+ * 問題セット（まなびの島の問題の種類を引き継いだ5型）
+ * ------------------------------------------------------------------ */
+
+/** 空欄のしるし。wordbank の文中でこの並びが1つの空欄になる。 */
+export const BLANK_MARK = "___";
+
+const quizCommon = {
+  id: z.string().min(1),
+  /** 設問文。 */
+  q: plainText,
+  /** 正誤に関わらず読ませる解説。実務に接続する（P8）。 */
+  explain: plainText,
+  points: z.number().int().positive().default(1),
+};
+
+/** 4択（読解確認）。 */
+const chooseSchema = z.object({
+  ...quizCommon,
+  type: z.literal("choose"),
+  options: z.array(plainText).min(2).max(6),
+  /** options のインデックス。 */
+  answer: z.number().int().min(0),
+});
+
+/** 複数選択。「ぜんぶ えらぶ」。 */
+const multiSchema = z.object({
+  ...quizCommon,
+  type: z.literal("multi"),
+  options: z.array(plainText).min(3).max(8),
+  answers: z.array(z.number().int().min(0)).min(2),
+});
+
+/** 自由入力。表記ゆれは normalize.ts が吸収するので accept は別解だけを書く。 */
+const keywordSchema = z.object({
+  ...quizCommon,
+  type: z.literal("keyword"),
+  answer: plainText,
+  /** 意味として同じ別解（表記ゆれは列挙しない）。 */
+  accept: z.array(plainText).default([]),
+});
+
+/** 語群からの穴埋め。文中の ___ が空欄になる。 */
+const wordbankSchema = z.object({
+  ...quizCommon,
+  type: z.literal("wordbank"),
+  /** 1行ずつの文。空欄は ___ で表す。 */
+  lines: z.array(plainText).min(1),
+  /** 空欄の正解（出現順）。 */
+  blanks: z.array(plainText).min(1),
+  /** 画面に並べる語群（blanks＋まぎらわしい語）。 */
+  bank: z.array(plainText).min(2),
+});
+
+/**
+ * 気持ち→対応の2段階。
+ * 「相手がどう感じているか」を先に選び、そのうえで「その場での言い方」を選ぶ。
+ * 場面から答えが導ける設計にする（感情語の対応表で引ける — 理解設計ガイド）。
+ */
+const emotionSchema = z.object({
+  ...quizCommon,
+  type: z.literal("emotion"),
+  /** 相手の気持ちの選択肢。 */
+  feelings: z.array(plainText).min(3).max(5),
+  answerFeeling: z.number().int().min(0),
+  /** 2段階目の問い。 */
+  replyQ: plainText,
+  replies: z.array(plainText).min(3).max(5),
+  answerReply: z.number().int().min(0),
+});
+
+export const quizQuestionSchema = z.discriminatedUnion("type", [
+  chooseSchema,
+  multiSchema,
+  keywordSchema,
+  wordbankSchema,
+  emotionSchema,
+]);
+
+/** 選択で答える型（読解確認でだけ使ってよい）。 */
+const SELECTION_TYPES = ["choose", "multi", "emotion"] as const;
+
+export const quizSetSchema = z
+  .object({
+    kind: z.literal("quizset"),
+    id: z.string().regex(/^[a-z0-9_-]+$/),
+    title: plainText,
+    description: plainText,
+    /** 担当するネクマックス（04 §6.2）。 */
+    nekumax: z.enum(["guide", "hello", "build", "listen", "cheer", "book"]).default("book"),
+    /**
+     * research = 読んだ・聞いた内容の確認 / production = 自分で日本語を出す。
+     * 選択式は research でだけ使える（AGENTS.md 規律3）。
+     */
+    phase: z.enum(["research", "production"]).default("research"),
+    passRate: z.number().int().min(1).max(100).default(70),
+    furigana: z.array(furiganaEntrySchema).optional(),
+    questions: z.array(quizQuestionSchema).min(1),
+  })
+  .superRefine((set, ctx) => {
+    const ids = set.questions.map((q) => q.id);
+    if (new Set(ids).size !== ids.length) {
+      ctx.addIssue({ code: "custom", path: ["questions"], message: "questions の id が重複している" });
+    }
+
+    set.questions.forEach((q, i) => {
+      const at = (field: string) => ["questions", i, field];
+
+      if (set.phase === "production" && SELECTION_TYPES.includes(q.type as never)) {
+        ctx.addIssue({
+          code: "custom",
+          path: at("type"),
+          message: `産出フェーズに選択式（${q.type}）は置けない。自由入力型を使う（規律3）`,
+        });
+      }
+
+      if (q.type === "choose" && q.answer >= q.options.length) {
+        ctx.addIssue({ code: "custom", path: at("answer"), message: "answer が options の範囲外" });
+      }
+      if (q.type === "multi") {
+        if (q.answers.some((a) => a >= q.options.length)) {
+          ctx.addIssue({
+            code: "custom",
+            path: at("answers"),
+            message: "answers に options の範囲外がある",
+          });
+        }
+        if (new Set(q.answers).size !== q.answers.length) {
+          ctx.addIssue({ code: "custom", path: at("answers"), message: "answers が重複している" });
+        }
+        if (q.answers.length >= q.options.length) {
+          ctx.addIssue({
+            code: "custom",
+            path: at("answers"),
+            message: "すべてが正解の複数選択は問題にならない",
+          });
+        }
+      }
+      if (q.type === "emotion") {
+        if (q.answerFeeling >= q.feelings.length) {
+          ctx.addIssue({
+            code: "custom",
+            path: at("answerFeeling"),
+            message: "answerFeeling が feelings の範囲外",
+          });
+        }
+        if (q.answerReply >= q.replies.length) {
+          ctx.addIssue({
+            code: "custom",
+            path: at("answerReply"),
+            message: "answerReply が replies の範囲外",
+          });
+        }
+      }
+      if (q.type === "wordbank") {
+        const marks = q.lines.join("").split(BLANK_MARK).length - 1;
+        if (marks !== q.blanks.length) {
+          ctx.addIssue({
+            code: "custom",
+            path: at("blanks"),
+            message: `文中の空欄（${BLANK_MARK}）が${marks}個、blanks が${q.blanks.length}個で合わない`,
+          });
+        }
+        const missing = q.blanks.filter((b) => !q.bank.includes(b));
+        if (missing.length > 0) {
+          ctx.addIssue({
+            code: "custom",
+            path: at("bank"),
+            message: `正解「${missing.join("、")}」が語群にない`,
+          });
+        }
+        if (q.bank.length <= q.blanks.length) {
+          ctx.addIssue({
+            code: "custom",
+            path: at("bank"),
+            message: "語群に まぎらわしい語がない（正解だけの語群は問題にならない）",
+          });
+        }
+      }
+    });
+  });
+
 /** ヒアリング型シナリオ（お客さまインタビュー系）。 */
 const reqCatSchema = z.enum([
   "why",
@@ -244,10 +426,13 @@ export const scenarioSchema = z
 
 export const contentSchema = z.discriminatedUnion("kind", [
   wordStageSchema,
+  quizSetSchema,
   scenarioSchema,
 ]);
 
 export type Word = z.infer<typeof wordSchema>;
 export type WordStage = z.infer<typeof wordStageSchema>;
+export type QuizQuestion = z.infer<typeof quizQuestionSchema>;
+export type QuizSet = z.infer<typeof quizSetSchema>;
 export type Scenario = z.infer<typeof scenarioSchema>;
 export type Content = z.infer<typeof contentSchema>;
