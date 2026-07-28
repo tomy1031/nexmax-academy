@@ -17,6 +17,7 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@google/genai": "^2.13.0",
     "@supabase/ssr": "^0.12.3",
     "@supabase/supabase-js": "^2.110.8",
     "motion": "^12.42.2",

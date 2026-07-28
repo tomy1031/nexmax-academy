@@ -24,7 +24,11 @@
     ],
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+    // 型定義はこのリポジトリの node_modules だけを見る。
+    // 既定では上位ディレクトリの node_modules/@types も読むため、
+    // 開発機のホームに古い @types があるとビルドが壊れる。
+    "typeRoots": ["./node_modules/@types"]
   },
   "include": [
     "next-env.d.ts",
