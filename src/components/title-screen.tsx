@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState, useSyncExternalStore } from "react";
-import { NekuMaxType } from "@/components/nekumax-types";
+import { NekuMaxFamily } from "@/components/nekumax-types";
 import { getProfile } from "@/lib/profile";
 
 export function TitleScreen() {
@@ -82,8 +82,8 @@ export function TitleScreen() {
         </div>
 
         <div className="relative mt-6 flex w-full flex-1 items-end justify-between sm:mt-3">
-          <NekuMaxType
-            id="leader"
+          <NekuMaxFamily
+            family="leader"
             size={180}
             bob
             className="-ml-14 max-w-[36vw] drop-shadow-[0_12px_8px_rgba(31,58,86,.25)] sm:ml-0"
@@ -123,8 +123,8 @@ export function TitleScreen() {
             )}
           </div>
 
-          <NekuMaxType
-            id="heart"
+          <NekuMaxFamily
+            family="heart"
             gender="female"
             size={180}
             bob

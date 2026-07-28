@@ -1,19 +1,28 @@
 import type {
   PersonalityAnswer,
   PersonalityScores,
-  PersonalityTypeId,
+  PersonalityTypeCode,
 } from "@/content/personality";
 import type { Gender } from "@/lib/profile";
 import { createClient } from "@/lib/supabase/client";
+
+/**
+ * 診断方式の版。MBTI 4軸 / 16タイプ が v3（07 §8.1）。
+ * DBの default に頼らず、insert / upsert が毎回この値を明示的に書く。
+ * default 任せにすると、移行中に旧クライアントが送った v2 データまで v3 として記録されてしまう。
+ * 履歴の差分比較は、同じ版どうしだけで行う。
+ */
+export const PERSONALITY_VERSION = 3;
 
 export interface ProfileRow {
   id: string;
   email: string;
   display_name: string;
   gender: Gender;
-  personality_type: PersonalityTypeId;
+  personality_type: PersonalityTypeCode;
   answers: PersonalityAnswer[];
   scores: PersonalityScores;
+  personality_version: number;
   is_admin: boolean;
   created_at: string;
   updated_at: string;
@@ -22,7 +31,7 @@ export interface ProfileRow {
 export interface OwnProfileInput {
   displayName: string;
   gender: Gender;
-  personalityType: PersonalityTypeId;
+  personalityType: PersonalityTypeCode;
   answers: PersonalityAnswer[];
   scores: PersonalityScores;
 }
@@ -30,14 +39,15 @@ export interface OwnProfileInput {
 export interface PersonalityResultRow {
   id: string;
   profile_id: string;
-  personality_type: PersonalityTypeId;
+  personality_type: PersonalityTypeCode;
   answers: PersonalityAnswer[];
   scores: PersonalityScores;
+  personality_version: number;
   created_at: string;
 }
 
 export interface PersonalityResultInput {
-  personalityType: PersonalityTypeId;
+  personalityType: PersonalityTypeCode;
   answers: PersonalityAnswer[];
   scores: PersonalityScores;
 }
@@ -45,7 +55,7 @@ export interface PersonalityResultInput {
 export interface AdminProfilePatch {
   displayName?: string;
   gender?: Gender;
-  personalityType?: PersonalityTypeId;
+  personalityType?: PersonalityTypeCode;
 }
 
 function requireClient() {
@@ -91,6 +101,7 @@ export async function upsertOwnProfile(data: OwnProfileInput): Promise<ProfileRo
         personality_type: data.personalityType,
         answers: data.answers,
         scores: data.scores,
+        personality_version: PERSONALITY_VERSION,
       },
       { onConflict: "id" },
     )
@@ -118,6 +129,7 @@ export async function insertPersonalityResult(
       personality_type: data.personalityType,
       answers: data.answers,
       scores: data.scores,
+      personality_version: PERSONALITY_VERSION,
     })
     .select("*")
     .single();

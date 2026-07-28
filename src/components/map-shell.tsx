@@ -12,8 +12,12 @@ import {
   useSyncExternalStore,
 } from "react";
 import { signOut } from "@/app/auth/actions";
-import { NekuMaxType } from "@/components/nekumax-types";
-import { getPersonalityType, type PersonalityTypeId } from "@/content/personality";
+import { NekuMaxFamily } from "@/components/nekumax-types";
+import {
+  getFamilyForCode,
+  getPersonalityType,
+  type PersonalityFamilyId,
+} from "@/content/personality";
 import { STAGES, type StageDefinition } from "@/content/stages";
 import { fetchOwnProfile, type ProfileRow } from "@/lib/profile-db";
 import {
@@ -39,7 +43,7 @@ const STAGE_POSITIONS = [
 ] as const;
 
 const CHARACTER_POSITIONS: readonly {
-  id: PersonalityTypeId;
+  id: PersonalityFamilyId;
   x: number;
   y: number;
   size: number;
@@ -308,7 +312,11 @@ function Hud({ profile }: { profile: ProfileRow | null }) {
       <div className="flex items-center gap-2 rounded-2xl border-2 border-[#e9bd55] bg-[#fffaf0]/95 p-1.5 pr-3 shadow-[0_4px_0_#d9a839,0_8px_18px_rgba(0,79,141,.16)]">
         {profile ? (
           <>
-            <NekuMaxType id={profile.personality_type} gender={profile.gender} size={42} />
+            <NekuMaxFamily
+              family={getFamilyForCode(profile.personality_type).id}
+              gender={profile.gender}
+              size={42}
+            />
             <span className="hidden leading-tight sm:block">
               <span className="text-ink block text-sm font-black">{profile.display_name}</span>
               <span className="text-ink-soft block text-[10px] font-extrabold">
@@ -658,7 +666,7 @@ function MapView({
           className="pointer-events-none absolute z-20 hidden -translate-x-1/2 -translate-y-1/2 sm:block"
           style={{ left: `${character.x}%`, top: `${character.y}%` }}
         >
-          <NekuMaxType id={character.id} size={character.size} bob />
+          <NekuMaxFamily family={character.id} size={character.size} bob />
         </div>
       ))}
 

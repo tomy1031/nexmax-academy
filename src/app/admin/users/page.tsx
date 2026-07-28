@@ -4,7 +4,15 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AdminError, AdminHeader, AdminLoading, AdminPageFrame } from "@/components/admin/admin-ui";
-import type { PersonalityTypeId } from "@/content/personality";
+import {
+  PERSONALITY_AXES,
+  PERSONALITY_AXIS_META,
+  PERSONALITY_TYPES,
+  getPersonalityFamily,
+  pickPersonalityCode,
+  type PersonalityTypeCode,
+} from "@/content/personality";
+import { hasCompletedPersonality } from "@/lib/personality-stats";
 import {
   deleteProfileAsAdmin,
   fetchAllProfiles,
@@ -18,15 +26,16 @@ import { createClient } from "@/lib/supabase/client";
 interface ProfileDraft {
   displayName: string;
   gender: Gender;
-  personalityType: PersonalityTypeId;
+  personalityType: PersonalityTypeCode;
 }
 
-const TYPE_OPTIONS: readonly { id: PersonalityTypeId; label: string }[] = [
-  { id: "leader", label: "リーダー" },
-  { id: "idea", label: "ひらめき" },
-  { id: "heart", label: "きづかい" },
-  { id: "challenge", label: "チャレンジ" },
-];
+/** 16タイプ。組でまとめて選びやすくする。 */
+const TYPE_OPTIONS: readonly { id: PersonalityTypeCode; label: string }[] = PERSONALITY_TYPES.map(
+  (type) => ({
+    id: type.code,
+    label: `${type.code}  ${getPersonalityFamily(type.familyId).name}・${type.name}`,
+  }),
+);
 
 function draftFromProfile(profile: ProfileRow): ProfileDraft {
   return {
@@ -154,9 +163,10 @@ export default function AdminUsersPage() {
     }
   }
 
-  if (loading) {
-    return errorMessage ? <AdminError message={errorMessage} /> : <AdminLoading />;
-  }
+  // エラーは loading の内外を問わず最優先で出す。ここを loading の内側に入れると、
+  // 取得失敗時に「空の一覧」が正常画面として表示されてしまう。
+  if (errorMessage) return <AdminError message={errorMessage} />;
+  if (loading) return <AdminLoading />;
 
   return (
     <AdminPageFrame>
@@ -181,6 +191,11 @@ export default function AdminUsersPage() {
             <tbody>
               {profiles.map((profile) => {
                 const draft = drafts[profile.id] ?? draftFromProfile(profile);
+                const diagnosed = hasCompletedPersonality(profile);
+                // 管理者はタイプだけを手で変えられる。スコアは診断の記録なので書き換えない
+                // 代わりに、コードとスコアが食い違っている行をここで可視化する。
+                const mismatched =
+                  diagnosed && pickPersonalityCode(profile.scores) !== profile.personality_type;
                 return (
                   <tr key={profile.id} className="bg-white shadow-sm">
                     <td className="rounded-l-2xl px-3 py-3 font-medium">{profile.email}</td>
@@ -220,7 +235,7 @@ export default function AdminUsersPage() {
                         value={draft.personalityType}
                         onChange={(event) =>
                           updateDraft(profile.id, {
-                            personalityType: event.target.value as PersonalityTypeId,
+                            personalityType: event.target.value as PersonalityTypeCode,
                           })
                         }
                         className="border-hairline rounded-xl border-2 px-3 py-2"
@@ -233,8 +248,30 @@ export default function AdminUsersPage() {
                       </select>
                     </td>
                     <td className="px-3 py-3 font-mono text-xs">
-                      L:{profile.scores.leader} / I:{profile.scores.idea} / H:
-                      {profile.scores.heart} / C:{profile.scores.challenge}
+                      {diagnosed ? (
+                        <>
+                          {PERSONALITY_AXES.map((axis) => {
+                            const [first, second] = PERSONALITY_AXIS_META[axis].poles;
+                            return (
+                              <span key={axis} className="mr-2 inline-block">
+                                {first}
+                                {profile.scores[axis]}/{second}
+                                {5 - profile.scores[axis]}
+                              </span>
+                            );
+                          })}
+                          {mismatched && (
+                            <span
+                              className="ml-1 rounded bg-[#fdf0e4] px-1.5 py-0.5 font-sans text-[10px] font-bold text-[#a5541c]"
+                              title={`回答から求まるタイプは ${pickPersonalityCode(profile.scores)} です`}
+                            >
+                              手動変更あり
+                            </span>
+                          )}
+                        </>
+                      ) : (
+                        <span className="text-ink-soft font-sans">未診断</span>
+                      )}
                     </td>
                     <td className="px-3 py-3">{profile.is_admin ? "はい" : "いいえ"}</td>
                     <td className="px-3 py-3">
