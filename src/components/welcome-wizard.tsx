@@ -194,11 +194,17 @@ function QuestionText({
   question: PersonalityQuestion;
   language: PersonalityLanguage;
 }) {
+  // 柱書きは <p> の中なので語彙メモ（ボタン）を入れられる。
+  // 選択肢は <button> の中なのでボタンを入れ子にできず、OptionText はルビだけ（§2.5）。
   if (language === "japanese") {
-    return <RubyText text={question.japanese} readings={question.readings} />;
+    return (
+      <GlossaryText text={question.japanese} readings={question.readings} renderText={renderRuby} />
+    );
   }
   if (language === "easy") {
-    return <RubyText text={question.easy} readings={question.readings} />;
+    return (
+      <GlossaryText text={question.easy} readings={question.readings} renderText={renderRuby} />
+    );
   }
   return <>{question.english}</>;
 }
@@ -1014,7 +1020,9 @@ export function WelcomeWizard({
                 </p>
 
                 {/* 相性。「合わない相手」という枠組みはUIに一切登場させない（07 §5.1）。 */}
-                <h3 className="text-navy mt-6 font-black">すぐに 話が できる なかま</h3>
+                <h3 className="text-navy mt-6 font-black">
+                  すぐに <ResultText text="話が できる 仲間" />
+                </h3>
                 <p className="text-ink-soft mt-1 text-xs font-bold">
                   すこしの ことばでも、わかって もらえます。
                 </p>
@@ -1025,7 +1033,7 @@ export function WelcomeWizard({
                 </div>
 
                 <h3 className="text-navy mt-5 font-black">
-                  じぶんに ない ものを もって いる なかま
+                  じぶんに ない ものを もって いる <ResultText text="仲間" />
                 </h3>
                 <p className="text-ink-soft mt-1 text-xs font-bold">
                   見て いる ところが ちがうので、二人が いると チームが もっと よく なります。

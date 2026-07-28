@@ -3,6 +3,7 @@ import { GLOSSARY, findGlossaryTerm, getGlossaryEntry } from "../src/content/glo
 import {
   PERSONALITY_FAMILIES,
   PERSONALITY_QUESTIONS,
+  PERSONALITY_RESULT_READINGS,
   PERSONALITY_TYPES,
 } from "../src/content/personality";
 
@@ -12,11 +13,40 @@ describe("語彙メモ台帳（07 §2.5）", () => {
     expect(new Set(GLOSSARY.map((entry) => entry.term)).size).toBe(GLOSSARY.length);
   });
 
-  it("すべての語に読みと意味がある", () => {
+  it("すべての語に読みと意味と英語がある", () => {
     for (const entry of GLOSSARY) {
       expect(entry.term.length).toBeGreaterThan(0);
       expect(entry.reading.length).toBeGreaterThan(0);
       expect(entry.meaning.length).toBeGreaterThan(0);
+      expect(entry.english.length).toBeGreaterThan(0);
+    }
+  });
+
+  it("英語は日本語を含まない（受け皿が日本語で書かれていたら意味が無い）", () => {
+    const japanese = /[ぁ-んァ-ヶ一-鿿]/;
+    for (const entry of GLOSSARY) {
+      // 「「こう しませんか」と 言う こと」のような引用は例外にせず、
+      // 英語欄そのものが日本語で書かれていないかを見る。
+      const withoutQuotes = entry.english.replace(/「[^」]*」/g, "");
+      expect(withoutQuotes).not.toMatch(japanese);
+    }
+  });
+
+  it("英語は本文には出ない（本文に出す語は term だけ）", () => {
+    // english は説明であって表記ではない。term に英字が混ざっていないことで担保する。
+    for (const entry of GLOSSARY) {
+      expect(entry.term).not.toMatch(/[A-Za-z]/);
+    }
+  });
+
+  it("漢字のある語は term を漢字で持つ（ひらがなに開かない）", () => {
+    // ひらがなに開いても意味は出ない、というのがこの機構の前提（§2.5）。
+    // kanji を持つ語は本文でも漢字で書き、ふりがなは reading から合成する。
+    const kanaOnlyByDesign = new Set(["おもいやり", "おせわ", "おうえん", "よそう"]);
+    for (const entry of GLOSSARY) {
+      if (entry.kanji === null) continue;
+      if (kanaOnlyByDesign.has(entry.term)) continue; // タイプ名なので かな のまま
+      expect(entry.term).toBe(entry.kanji);
     }
   });
 
@@ -44,8 +74,8 @@ describe("語彙メモ台帳（07 §2.5）", () => {
 
 describe("findGlossaryTerm", () => {
   it("文中で最初に出た語を1件だけ返す", () => {
-    expect(findGlossaryTerm("トラブルが 出た とき、たいおう します。")?.term).toBe("トラブル");
-    expect(findGlossaryTerm("さいごの しあげを します。")?.term).toBe("しあげ");
+    expect(findGlossaryTerm("トラブルが 出た とき、対応 します。")?.term).toBe("トラブル");
+    expect(findGlossaryTerm("さいごの 仕上げを します。")?.term).toBe("仕上げ");
   });
 
   it("対象語が無ければ null", () => {
@@ -53,10 +83,14 @@ describe("findGlossaryTerm", () => {
   });
 
   it("1文につき1語しか返さない（下線を2本引かせない）", () => {
-    const sentence = "うんようと たいおうの しごと。";
+    const sentence = "運用と 対応の しごと。";
     const found = findGlossaryTerm(sentence);
-    expect(found?.term).toBe("うんよう");
+    expect(found?.term).toBe("運用");
     expect([found].filter(Boolean)).toHaveLength(1);
+  });
+
+  it("「仕組み」が「組」に取られない（同位置なら長い語が勝つ）", () => {
+    expect(findGlossaryTerm("仕組みを しらべます")?.term).toBe("仕組み");
   });
 });
 
@@ -83,5 +117,31 @@ describe("学習者向け文言との対応", () => {
       (entry) => entry.term,
     );
     expect(unused).toEqual([]);
+  });
+
+  it("漢字を含む語は読み辞書にあり、読みが台帳と一致する", () => {
+    // teamRole（「段取り役」など）は GlossaryText を通らず RubyText 直なので、
+    // 読み辞書に無いと漢字が裸で出る。台帳とのズレもここで止める。
+    const dictionary = new Map(PERSONALITY_RESULT_READINGS.map((r) => [r.text, r.reading]));
+    for (const entry of GLOSSARY) {
+      if (!/[一-鿿]/.test(entry.term)) continue;
+      if (entry.term === "組") continue; // 「まもり組」など家族名の一部。家族名側でルビを振る
+      expect(dictionary.get(entry.term)).toBe(entry.reading);
+    }
+  });
+});
+
+describe("読み辞書の並び（RubyText は同位置なら先勝ち）", () => {
+  it("短い語が長い語を食べる並びになっていない", () => {
+    // RubyText は同じ位置で一致した語のうち配列で先に出たほうを採る。
+    // 「手」が「手順」より前にあると、「手順」は永久に一致せず「順」が裸で残る。
+    const offenders: string[] = [];
+    PERSONALITY_RESULT_READINGS.forEach((entry, index) => {
+      const shadowedBy = PERSONALITY_RESULT_READINGS.slice(0, index).find(
+        (earlier) => earlier.text !== entry.text && entry.text.startsWith(earlier.text),
+      );
+      if (shadowedBy) offenders.push(`${entry.text} は ${shadowedBy.text} に食われる`);
+    });
+    expect(offenders).toEqual([]);
   });
 });

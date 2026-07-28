@@ -154,7 +154,7 @@ export const PERSONALITY_FAMILIES: readonly PersonalityFamily[] = [
     reading: "かんがえぐみ",
     keirsey: "NT",
     color: "#58c273",
-    strengths: ["なぜ?", "しくみ", "つくる"],
+    strengths: ["なぜ?", "仕組み", "つくる"],
     codes: ["INTJ", "INTP", "ENTJ", "ENTP"],
   },
   {
@@ -190,7 +190,7 @@ export const PERSONALITY_TYPES: readonly PersonalityType[] = [
       "一度 やると 言った ことは、かならず おわらせます。",
       "小さな ちがいにも 気が つきます。",
       "ルールや じゅんばんを たいせつに します。",
-      "日本の IT の しごとでは、テストや てじゅんづくりを まかせて もらえます。",
+      "日本の IT の しごとでは、テストや 手順づくりを まかせて もらえます。",
     ],
   },
   {
@@ -202,10 +202,10 @@ export const PERSONALITY_TYPES: readonly PersonalityType[] = [
     teamRole: "ささえ役",
     teamRoleDetail: "こまって いる 人に 気が ついて、手を かす。",
     analysis: [
-      "なかまが 元気か どうかを よく 見て います。",
+      "仲間が 元気か どうかを よく 見て います。",
       "たのまれた ことを さいごまで やります。",
       "だれも 見て いない ときも、ていねいに やります。",
-      "日本の IT の しごとでは、まいにちの うんようや サポートで チームを ささえます。",
+      "日本の IT の しごとでは、まいにちの 運用や サポートで チームを ささえます。",
     ],
   },
   {
@@ -214,7 +214,7 @@ export const PERSONALITY_TYPES: readonly PersonalityType[] = [
     name: "まとめの ネクマックス",
     emblem: "📣",
     tagline: "じゅんばんを きめて、すすめます",
-    teamRole: "だんどり役",
+    teamRole: "段取り役",
     teamRoleDetail: "はじめに「だれが いつ やるか」を きめる。",
     analysis: [
       "やる ことを 一つずつ 書いて、じゅんばんを きめます。",
@@ -235,7 +235,7 @@ export const PERSONALITY_TYPES: readonly PersonalityType[] = [
       "こまって いる 人に、すぐ 気が つきます。",
       "あいさつや、じぶんから 話しかける ことを たいせつに します。",
       "チームを 楽しく します。",
-      "日本の IT の しごとでは、お客さまや なかまと 話す しごとが よく できます。",
+      "日本の IT の しごとでは、お客さまや 仲間と 話す しごとが よく できます。",
     ],
   },
   {
@@ -244,13 +244,13 @@ export const PERSONALITY_TYPES: readonly PersonalityType[] = [
     name: "よそうの ネクマックス",
     emblem: "♟️",
     tagline: "さきを 見て、みちを つくります",
-    teamRole: "せっけい役",
+    teamRole: "設計役",
     teamRoleDetail: "むずかしく なりそうな ところを、先に 見つける。",
     analysis: [
       "さきの ことを かんがえて、じゅんび します。",
       "いちばん 早い やりかたを さがします。",
       "ひとりで 時間を かけて かんがえるのが すきです。",
-      "日本の IT の しごとでは、つくる 前に せっけいを かんがえる しごとが よく できます。",
+      "日本の IT の しごとでは、つくる 前に 設計を かんがえる しごとが よく できます。",
     ],
   },
   {
@@ -258,13 +258,13 @@ export const PERSONALITY_TYPES: readonly PersonalityType[] = [
     familyId: "idea",
     name: "なぜなぜの ネクマックス",
     emblem: "🔍",
-    tagline: "しくみを しらべます",
+    tagline: "仕組みを しらべます",
     teamRole: "しらべ役",
     teamRoleDetail: "わからない ことの りゆうを しらべる。",
     analysis: [
       "「なぜ そう なるのか」が 気に なります。",
       "わかるまで しらべます。",
-      "あたらしい ぎじゅつを おぼえるのが すきです。",
+      "あたらしい 技術を おぼえるのが すきです。",
       "日本の IT の しごとでは、なぜ うごかないのかを 見つける 人に なれます。",
     ],
   },
@@ -277,7 +277,7 @@ export const PERSONALITY_TYPES: readonly PersonalityType[] = [
     teamRole: "リーダー役",
     teamRoleDetail: "ゴールを きめて、みんなを あんない する。",
     analysis: [
-      "もくひょうを きめて、まよわないで すすみます。",
+      "目標を きめて、まよわないで すすみます。",
       "むずかしい ことでも、きめるのが 早いです。",
       "みんなで いっしょに がんばれます。",
       "日本の IT の しごとでは、チームの リーダーに なれます。",
@@ -289,11 +289,11 @@ export const PERSONALITY_TYPES: readonly PersonalityType[] = [
     name: "アイデアの ネクマックス",
     emblem: "💡",
     tagline: "もっと いい やりかたを 見つけます",
-    teamRole: "ていあん役",
+    teamRole: "提案役",
     teamRoleDetail: "「こう しませんか」と あたらしい やりかたを 出す。",
     analysis: [
       "アイデアが たくさん 出て きます。",
-      "「こう しませんか」と ていあん します。",
+      "「こう しませんか」と 提案 します。",
       "話しながら かんがえるのが すきです。",
       "日本の IT の しごとでは、あたらしい ことを かんがえる しごとが よく できます。",
     ],
@@ -335,9 +335,9 @@ export const PERSONALITY_TYPES: readonly PersonalityType[] = [
     emblem: "☀️",
     tagline: "みんなを 元気に します",
     teamRole: "おうえん役",
-    teamRoleDetail: "あたらしく 入った なかまに、さいしょに 話しかける。",
+    teamRoleDetail: "あたらしく 入った 仲間に、さいしょに 話しかける。",
     analysis: [
-      "なかまを ほめて、元気に します。",
+      "仲間を ほめて、元気に します。",
       "人に 教えるのが とくいです。",
       "チームの みんなを つなぎます。",
       "日本の IT の しごとでは、あとから 入る 人に しごとを 教える 人に なれます。",
@@ -369,7 +369,7 @@ export const PERSONALITY_TYPES: readonly PersonalityType[] = [
     analysis: [
       "こわれた ものを 見ると、なおしたく なります。",
       "じぶんで やって みて、おぼえます。",
-      "いそがないで、おちついて たいおう します。",
+      "いそがないで、おちついて 対応 します。",
       "日本の IT の しごとでは、トラブルで とまった システムを もとに もどせます。",
     ],
   },
@@ -379,13 +379,13 @@ export const PERSONALITY_TYPES: readonly PersonalityType[] = [
     name: "デザインの ネクマックス",
     emblem: "🎨",
     tagline: "きれいに つくります",
-    teamRole: "しあげ役",
+    teamRole: "仕上げ役",
     teamRoleDetail: "さいごに きれいに して、おわらせる。",
     analysis: [
       "かたちや 色に、じぶんの すきが あります。",
       "自分の ペースで ていねいに すすめます。",
       "みんなが なかよく すすめる やりかたを えらびます。",
-      "日本の IT の しごとでは、がめんの デザインや しあげが よく できます。",
+      "日本の IT の しごとでは、がめんの デザインや 仕上げが よく できます。",
     ],
   },
   {
@@ -592,11 +592,12 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
     },
     b: {
       pole: "T",
-      easy: "どちらが いい けっかに なるか",
+      easy: "どちらが いい 結果に なるか",
       japanese: "どちらがいい結果になるか",
       english: "Which one gives a better result",
     },
     readings: [
+      { text: "結果", reading: "けっか" },
       { text: "二つ", reading: "ふたつ" },
       { text: "気", reading: "き" },
     ],
@@ -605,8 +606,8 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
   {
     id: 8,
     axis: "jp",
-    easy: "しめきりの ある しごとです。「この 日までに おわらせて ください」と 言われました。",
-    japanese: "しめきりのある仕事です。「この日までに終わらせてください」と言われました。",
+    easy: "締め切りの ある しごとです。「この 日までに おわらせて ください」と 言われました。",
+    japanese: "締め切りのある仕事です。「この日までに終わらせてください」と言われました。",
     english: "This job has a deadline. You are told to finish it by a certain day.",
     a: {
       pole: "J",
@@ -622,6 +623,7 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
       english: "You give it everything on the last day",
     },
     readings: [
+      { text: "締め切り", reading: "しめきり" },
       { text: "日", reading: "ひ" },
       { text: "早め", reading: "はやめ" },
     ],
@@ -931,6 +933,22 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
 
 /** 結果画面（tagline / analysis / teamRoleDetail）の読み辞書。 */
 export const PERSONALITY_RESULT_READINGS: readonly Reading[] = [
+  // 語彙メモ（glossary.ts）の見出し語は必ずここに置く。本文は漢字で書き、読みはここから合成する。
+  // **配列の先頭に置くこと。** RubyText は同じ位置で一致した語のうち配列で先に出たほうを採るので、
+  // 「手順」を「手」より後ろに置くと「手」だけにルビが付いて「順」が裸で残る。
+  { text: "仕組み", reading: "しくみ" },
+  { text: "手順", reading: "てじゅん" },
+  { text: "仲間", reading: "なかま" },
+  { text: "運用", reading: "うんよう" },
+  { text: "対応", reading: "たいおう" },
+  { text: "設計", reading: "せっけい" },
+  { text: "技術", reading: "ぎじゅつ" },
+  { text: "提案", reading: "ていあん" },
+  { text: "目標", reading: "もくひょう" },
+  { text: "締め切り", reading: "しめきり" },
+  { text: "段取り", reading: "だんどり" },
+  { text: "仕上げ", reading: "しあげ" },
+  { text: "結果", reading: "けっか" },
   { text: "日本", reading: "にほん" },
   { text: "役", reading: "やく" },
   { text: "会議", reading: "かいぎ" },
