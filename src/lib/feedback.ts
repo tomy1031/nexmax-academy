@@ -26,13 +26,13 @@ export const FEEDBACK = {
   "reading.correct": { tone: "praise", title: "よみ、あってる！", next: "つぎは 意味を えらぼう" },
   "reading.retry": {
     tone: "encourage",
-    title: "おしい！ もう一度 よんでみよう",
-    next: "ふりがなを ONにすると よみが 見えるよ",
+    title: "おしい！",
+    next: "正しい よみを 見てから、意味を えらぼう",
   },
   "reading.timeup": {
     tone: "encourage",
     title: "つぎに いこう",
-    next: "この ことばは あとで「まちがえた ことばだけ」で もう一度 出てくるよ",
+    next: "この ことばは「まちがえた ことばだけ」で もう一度 出てくるよ",
   },
   "reading.needHiragana": {
     tone: "hint",

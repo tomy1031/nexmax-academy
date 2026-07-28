@@ -101,6 +101,21 @@ export type MasteryMap = Record<string, WordMastery>;
  * ストア
  * ------------------------------------------------------------------ */
 
+/**
+ * 変更の通知。React 側は useSyncExternalStore で購読できる
+ *（effect の中で setState して同期する形を避けるため）。
+ */
+const listeners = new Set<() => void>();
+
+export function subscribeProgress(listener: () => void): () => void {
+  listeners.add(listener);
+  return () => void listeners.delete(listener);
+}
+
+function notifyProgressChanged(): void {
+  for (const listener of listeners) listener();
+}
+
 function readJson<T>(backend: ProgressBackend, key: string, fallback: T): T {
   const raw = backend.get(`${NAMESPACE}:${key}`);
   if (!raw) return fallback;
@@ -113,6 +128,7 @@ function readJson<T>(backend: ProgressBackend, key: string, fallback: T): T {
 
 function writeJson(backend: ProgressBackend, key: string, value: unknown): void {
   backend.set(`${NAMESPACE}:${key}`, JSON.stringify(value));
+  notifyProgressChanged();
 }
 
 export interface ProgressStore {

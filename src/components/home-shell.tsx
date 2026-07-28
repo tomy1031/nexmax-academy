@@ -91,6 +91,7 @@ const STOPS: Stop[] = [
     x: 18,
     y: 74,
     color: "#f2654a",
+    href: "/arcade",
   },
   {
     emoji: "🗼",
