@@ -76,6 +76,7 @@ const STOPS: Stop[] = [
     x: 60,
     y: 46,
     color: "#3aa458",
+    href: "/meeting",
   },
   {
     emoji: "🛠️",

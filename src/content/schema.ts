@@ -280,6 +280,71 @@ export const quizSetSchema = z
     });
   });
 
+/* ------------------------------------------------------------------ *
+ * ミーティング（Zoom風の画面で「聞く」教材）
+ * ------------------------------------------------------------------ */
+
+/** 会議の参加者。自分は "me" 固定なのでここには入れない。 */
+const participantSchema = z.object({
+  id: z.string().regex(/^[a-z0-9_-]+$/),
+  name: plainText,
+  role: plainText,
+  /** タイルの縁とイニシャルの色（テーマのアクセント名）。 */
+  accent: z.enum(["sky", "leaf", "sun", "coral", "grape"]).default("sky"),
+});
+
+const scriptLineSchema = z.object({
+  /** participants の id、または "me"・"narration"。 */
+  speaker: z.string().min(1),
+  text: plainText,
+  /** 音声内の開始秒（あれば字幕を音に追従させる）。 */
+  at: z.number().nonnegative().optional(),
+});
+
+export const meetingSchema = z
+  .object({
+    kind: z.literal("meeting"),
+    id: z.string().regex(/^[a-z0-9_-]+$/),
+    title: plainText,
+    description: plainText,
+    /** 聞く前に配る視点。「どこに注目して聞くか」を先に渡す（P6）。 */
+    focus: plainText,
+    participants: z.array(participantSchema).min(1),
+    script: z.array(scriptLineSchema).min(2),
+    /**
+     * 音声ファイル。今は任意で、未設定なら台本を読む画面として成立させる。
+     * 本番は R2 等の配信先URLを入れる。
+     */
+    audioUrl: z.string().optional(),
+    /** 聞き取りチェック: 聞こえた言葉を入れて見つける。 */
+    keywords: z.array(plainText).default([]),
+    /** 隠し原稿リベールのクリア条件（原稿の表示率%）。 */
+    revealGoal: z.number().int().min(1).max(100).default(30),
+    furigana: z.array(furiganaEntrySchema).optional(),
+  })
+  .superRefine((meeting, ctx) => {
+    const known = new Set([...meeting.participants.map((p) => p.id), "me", "narration"]);
+    meeting.script.forEach((line, i) => {
+      if (!known.has(line.speaker)) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["script", i, "speaker"],
+          message: `話者「${line.speaker}」が participants にない（me / narration は使える）`,
+        });
+      }
+    });
+
+    const transcript = meeting.script.map((l) => l.text).join("");
+    const missing = meeting.keywords.filter((kw) => !transcript.includes(kw));
+    if (missing.length > 0) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["keywords"],
+        message: `台本に出てこない言葉が キーワードに入っている: ${missing.join("、")}`,
+      });
+    }
+  });
+
 /** ヒアリング型シナリオ（お客さまインタビュー系）。 */
 const reqCatSchema = z.enum([
   "why",
@@ -427,6 +492,7 @@ export const scenarioSchema = z
 export const contentSchema = z.discriminatedUnion("kind", [
   wordStageSchema,
   quizSetSchema,
+  meetingSchema,
   scenarioSchema,
 ]);
 
@@ -434,5 +500,8 @@ export type Word = z.infer<typeof wordSchema>;
 export type WordStage = z.infer<typeof wordStageSchema>;
 export type QuizQuestion = z.infer<typeof quizQuestionSchema>;
 export type QuizSet = z.infer<typeof quizSetSchema>;
+export type Meeting = z.infer<typeof meetingSchema>;
+export type MeetingParticipant = z.infer<typeof participantSchema>;
+export type MeetingScriptLine = z.infer<typeof scriptLineSchema>;
 export type Scenario = z.infer<typeof scenarioSchema>;
 export type Content = z.infer<typeof contentSchema>;

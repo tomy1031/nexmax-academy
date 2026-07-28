@@ -10,7 +10,13 @@
 
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
-import { contentSchema, type QuizSet, type Scenario, type WordStage } from "@/content/schema";
+import {
+  contentSchema,
+  type Meeting,
+  type QuizSet,
+  type Scenario,
+  type WordStage,
+} from "@/content/schema";
 
 const CONTENT_DIR = join(process.cwd(), "content");
 
@@ -57,6 +63,16 @@ export function listQuizSets(): QuizSet[] {
 
 export function getQuizSet(id: string): QuizSet | null {
   return listQuizSets().find((set) => set.id === id) ?? null;
+}
+
+export function listMeetings(): Meeting[] {
+  return parseAll()
+    .filter((c): c is Meeting => c.kind === "meeting")
+    .sort((a, b) => a.id.localeCompare(b.id));
+}
+
+export function getMeeting(id: string): Meeting | null {
+  return listMeetings().find((meeting) => meeting.id === id) ?? null;
 }
 
 export function listScenarios(): Scenario[] {
