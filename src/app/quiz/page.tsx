@@ -18,7 +18,7 @@ export default function QuizIndexPage() {
         </Link>
       </header>
 
-      <div className="card-pop flex items-center gap-4 p-5 sm:p-6">
+      <div className="card-island flex items-center gap-4 p-5 sm:p-6">
         <NekuMax variant="hello" size={92} bob />
         <div>
           <h1 className="text-ink text-2xl font-extrabold sm:text-3xl">✏️ もんだい</h1>
@@ -34,7 +34,7 @@ export default function QuizIndexPage() {
             <li key={set.id}>
               <Link
                 href={`/quiz/${set.id}`}
-                className="card-pop block p-5 transition hover:scale-[1.01]"
+                className="card-island block p-5 transition hover:scale-[1.01]"
               >
                 <p className="text-sky text-xs font-extrabold">
                   もんだい {set.questions.length}こ ／ 合格 {set.passRate}%

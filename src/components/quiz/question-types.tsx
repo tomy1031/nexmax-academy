@@ -117,7 +117,7 @@ function OptionList({
             type="button"
             disabled={disabled}
             onClick={() => onPick(index)}
-            className="btn-game w-full justify-start px-4 py-3.5 text-left"
+            className="btn-island btn-game w-full justify-start px-4 py-3.5 text-left"
             style={{ "--btn-face": "#ffffff", "--btn-shadow": "#cfe6f3" } as React.CSSProperties}
           >
             <span className="bg-sky-soft text-navy grid h-7 w-7 shrink-0 place-items-center rounded-full text-sm font-extrabold">
@@ -165,7 +165,7 @@ function MultiPicker({
                 disabled={disabled}
                 aria-pressed={on}
                 onClick={() => toggle(index)}
-                className="btn-game w-full justify-start px-4 py-3.5 text-left"
+                className="btn-island btn-game w-full justify-start px-4 py-3.5 text-left"
                 style={
                   {
                     "--btn-face": on ? "#e1f2fb" : "#ffffff",
@@ -194,7 +194,7 @@ function MultiPicker({
         type="button"
         disabled={disabled || picked.length === 0}
         onClick={() => onSubmit(picked)}
-        className="btn-game mt-4 w-full px-6 py-3 text-base disabled:opacity-50"
+        className="btn-island btn-game mt-4 w-full px-6 py-3 text-base disabled:opacity-50"
       >
         こたえる
       </button>
@@ -233,7 +233,7 @@ function KeywordInput({
         aria-label="こたえを 入力する"
         className="border-hairline bg-panel text-ink w-full rounded-[var(--radius-button)] border-2 px-4 py-3 text-center text-xl font-extrabold"
       />
-      <button type="submit" disabled={disabled} className="btn-game shrink-0 px-8 py-3">
+      <button type="submit" disabled={disabled} className="btn-island btn-game shrink-0 px-8 py-3">
         こたえる
       </button>
     </form>
@@ -330,7 +330,7 @@ function WordBank({
             type="button"
             disabled={disabled}
             onClick={() => place(word)}
-            className="btn-game px-4 py-2 text-sm"
+            className="btn-island btn-game px-4 py-2 text-sm"
             style={
               {
                 "--btn-face": filled.includes(word) ? "#e1f2fb" : "#ffffff",
@@ -349,7 +349,7 @@ function WordBank({
         type="button"
         disabled={disabled || filled.some((f) => f === null)}
         onClick={() => onSubmit(filled)}
-        className="btn-game mt-4 w-full px-6 py-3 disabled:opacity-50"
+        className="btn-island btn-game mt-4 w-full px-6 py-3 disabled:opacity-50"
       >
         こたえる
       </button>

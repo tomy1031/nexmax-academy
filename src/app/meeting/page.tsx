@@ -23,7 +23,7 @@ export default function MeetingIndexPage() {
         </Link>
       </header>
 
-      <div className="card-pop flex items-center gap-4 p-5 sm:p-6">
+      <div className="card-island flex items-center gap-4 p-5 sm:p-6">
         <NekuMax variant="listen" size={92} bob />
         <div>
           <h1 className="text-ink text-2xl font-extrabold sm:text-3xl">🎧 ミーティング</h1>
@@ -43,7 +43,7 @@ export default function MeetingIndexPage() {
               <li key={meeting.id}>
                 <Link
                   href={`/meeting/${meeting.id}`}
-                  className="card-pop block p-5 transition hover:scale-[1.01]"
+                  className="card-island block p-5 transition hover:scale-[1.01]"
                 >
                   <p className="text-sky text-xs font-extrabold">
                     {meeting.participants.length + 1}人 ／ {meeting.script.length}行
@@ -68,7 +68,7 @@ export default function MeetingIndexPage() {
               <li key={scenario.id}>
                 <Link
                   href={`/meeting/live/${scenario.id}`}
-                  className="card-pop block p-5 transition hover:scale-[1.01]"
+                  className="card-island block p-5 transition hover:scale-[1.01]"
                 >
                   <p className="text-sky text-xs font-extrabold">{scenario.subtitle}</p>
                   <p className="text-ink mt-1 text-lg font-extrabold">

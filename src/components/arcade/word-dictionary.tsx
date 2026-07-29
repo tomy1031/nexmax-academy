@@ -32,7 +32,7 @@ export function WordDictionary({
   }, [query, words]);
 
   return (
-    <div className="card-pop mx-auto w-full max-w-2xl p-5 sm:p-6">
+    <div className="card-island mx-auto w-full max-w-2xl p-5 sm:p-6">
       <h2 className="text-ink text-2xl font-extrabold">辞書</h2>
       <p className="text-ink-soft mt-1 text-sm font-bold">
         ことばを 入れると さがせるよ（かんじ・ひらがな・えいご どれでも いいよ）
@@ -72,8 +72,8 @@ export function WordDictionary({
       <button
         type="button"
         onClick={onBack}
-        className="btn-game mt-4 w-full px-6 py-3 text-base"
-        style={{ "--btn-face": "#0288d1", "--btn-shadow": "#0272ae" } as React.CSSProperties}
+        className="btn-island btn-game mt-4 w-full px-6 py-3 text-base"
+        style={{ "--btn-face": "#4fa8e8", "--btn-shadow": "#0272ae" } as React.CSSProperties}
       >
         もどる
       </button>

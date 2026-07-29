@@ -75,12 +75,12 @@ export function LiveMeeting({ scenario }: { scenario: Scenario }) {
         activeSpeaker={live.status === "live" ? "client" : null}
         onLeft={live.disconnect}
         controls={
-          <div className="card-pop flex flex-wrap items-center gap-2 p-3">
+          <div className="card-island flex flex-wrap items-center gap-2 p-3">
             {live.status === "idle" && (
               <button
                 type="button"
                 onClick={() => void live.connect(scenario.interview.persona)}
-                className="btn-game px-6 py-2.5 text-sm"
+                className="btn-island btn-game px-6 py-2.5 text-sm"
               >
                 🎙️ 話しはじめる
               </button>
@@ -96,7 +96,7 @@ export function LiveMeeting({ scenario }: { scenario: Scenario }) {
                 <button
                   type="button"
                   onClick={live.disconnect}
-                  className="btn-game px-4 py-2 text-xs"
+                  className="btn-island btn-game px-4 py-2 text-xs"
                   style={
                     { "--btn-face": "#ffffff", "--btn-shadow": "#cfe6f3" } as React.CSSProperties
                   }
@@ -147,7 +147,7 @@ export function LiveMeeting({ scenario }: { scenario: Scenario }) {
                 aria-label="しつもんを 入力する"
                 className="border-hairline bg-panel text-ink w-full rounded-[var(--radius-button)] border-2 px-4 py-2.5 font-bold"
               />
-              <button type="submit" className="btn-game shrink-0 px-6 py-2.5 text-sm">
+              <button type="submit" className="btn-island btn-game shrink-0 px-6 py-2.5 text-sm">
                 きく
               </button>
             </form>
@@ -157,7 +157,7 @@ export function LiveMeeting({ scenario }: { scenario: Scenario }) {
         )}
 
         {/* 要件ボード（？？？フリップ） */}
-        <section className="card-pop p-5">
+        <section className="card-island p-5">
           <h3 className="text-ink font-extrabold">
             📋 聞き出すこと（{open.size} / {scenario.interview.reqs.length}）
           </h3>

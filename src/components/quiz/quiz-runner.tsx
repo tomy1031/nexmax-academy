@@ -76,7 +76,7 @@ export function QuizRunner({ set }: { set: QuizSet }) {
               key={`${question.id}:${state.phase.kind}`}
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
-              className="card-pop mt-4 p-5 sm:p-6"
+              className="card-island mt-4 p-5 sm:p-6"
             >
               <p className="text-ink text-lg leading-relaxed font-extrabold">
                 <RubyText text={question.q} index={furigana} />
@@ -164,7 +164,7 @@ function ExplainCard({
         </p>
       </div>
 
-      <button type="button" onClick={onNext} className="btn-game mt-4 w-full px-6 py-3">
+      <button type="button" onClick={onNext} className="btn-island btn-game mt-4 w-full px-6 py-3">
         つぎへ
       </button>
     </div>
@@ -208,7 +208,7 @@ function QuizResultCard({
     <motion.div
       initial={{ opacity: 0, y: 18 }}
       animate={{ opacity: 1, y: 0 }}
-      className="card-pop p-6 sm:p-8"
+      className="card-island p-6 sm:p-8"
     >
       {summary.passed && <CelebrationBurst />}
       <div className="flex items-center gap-4">
@@ -255,8 +255,8 @@ function QuizResultCard({
           <button
             type="button"
             onClick={onRetryWrong}
-            className="btn-game px-6 py-3.5"
-            style={{ "--btn-face": "#f2654a", "--btn-shadow": "#c94d36" } as React.CSSProperties}
+            className="btn-island btn-game px-6 py-3.5"
+            style={{ "--btn-face": "#f26fa7", "--btn-shadow": "#d94d84" } as React.CSSProperties}
           >
             まちがえた もんだいだけ
           </button>
@@ -264,15 +264,15 @@ function QuizResultCard({
         <button
           type="button"
           onClick={onRetryAll}
-          className="btn-game px-6 py-3.5"
-          style={{ "--btn-face": "#3aa458", "--btn-shadow": "#2c7f44" } as React.CSSProperties}
+          className="btn-island btn-game px-6 py-3.5"
+          style={{ "--btn-face": "#58c273", "--btn-shadow": "#3aa458" } as React.CSSProperties}
         >
           もう一度
         </button>
         <Link
           href="/quiz"
-          className="btn-game px-6 py-3"
-          style={{ "--btn-face": "#0288d1", "--btn-shadow": "#0272ae" } as React.CSSProperties}
+          className="btn-island btn-game px-6 py-3"
+          style={{ "--btn-face": "#4fa8e8", "--btn-shadow": "#0272ae" } as React.CSSProperties}
         >
           もんだいを えらぶ
         </Link>

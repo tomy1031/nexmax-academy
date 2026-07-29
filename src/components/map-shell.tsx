@@ -24,6 +24,7 @@ import {
   type MapView,
   type NexmaxProfile,
 } from "@/lib/profile";
+import { createProgressStore, subscribeProgress } from "@/lib/progress/store";
 import { createClient } from "@/lib/supabase/client";
 
 const PROFILE_SERVER_SNAPSHOT = "__server__";
@@ -359,7 +360,8 @@ function ViewToggle({ view, onChange }: { view: MapView; onChange: (view: MapVie
 
 const NAV_ITEMS = [
   { icon: "👤", label: "マイページ" },
-  { icon: "📖", label: "単語", reading: "たんご" },
+  // 単語は単体で開ける。その場合はステージ選択から始まる。
+  { icon: "📖", label: "単語", reading: "たんご", href: "/arcade" },
   { icon: "👥", label: "チーム・ペア" },
   { icon: "🛍️", label: "ショップ" },
 ] as const;
@@ -393,22 +395,37 @@ function Navigation({
   onUnavailable: () => void;
   onLogout: () => void;
 }) {
-  const navButtons = NAV_ITEMS.map((item) => (
-    <button
-      key={item.label}
-      type="button"
-      onClick={() => {
-        onUnavailable();
-        onDrawerClose();
-      }}
-      className="text-ink hover:bg-sky-soft flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl px-3 text-sm font-extrabold transition"
-    >
-      <span aria-hidden className="text-xl">
-        {item.icon}
-      </span>
-      {!collapsed && <span className="whitespace-nowrap">{<NavigationLabel item={item} />}</span>}
-    </button>
-  ));
+  const navClass =
+    "text-ink hover:bg-sky-soft flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl px-3 text-sm font-extrabold transition";
+
+  const navButtons = NAV_ITEMS.map((item) => {
+    const body = (
+      <>
+        <span aria-hidden className="text-xl">
+          {item.icon}
+        </span>
+        {!collapsed && <span className="whitespace-nowrap">{<NavigationLabel item={item} />}</span>}
+      </>
+    );
+
+    return "href" in item ? (
+      <Link key={item.label} href={item.href} onClick={onDrawerClose} className={navClass}>
+        {body}
+      </Link>
+    ) : (
+      <button
+        key={item.label}
+        type="button"
+        onClick={() => {
+          onUnavailable();
+          onDrawerClose();
+        }}
+        className={navClass}
+      >
+        {body}
+      </button>
+    );
+  });
   const adminLink = isAdmin ? (
     <Link
       href="/admin"
@@ -498,8 +515,35 @@ function Navigation({
   );
 }
 
-function LessonCard({ onUnavailable }: { onUnavailable: () => void }) {
+/** マップから渡される単語ステージ（進捗と行き先に使う最小限の情報）。 */
+export interface WordStageRef {
+  id: string;
+  title: string;
+}
+
+function LessonCard({
+  onUnavailable,
+  wordStages,
+}: {
+  onUnavailable: () => void;
+  wordStages: readonly WordStageRef[];
+}) {
   const stage = STAGES[0]!;
+
+  // 合格したステージ数を進捗に出す。localStorage は外部の状態として購読する。
+  const store = useMemo(() => createProgressStore(), []);
+  const clearedKey = useSyncExternalStore(
+    subscribeProgress,
+    () => wordStages.map((w) => (store.readTestResult(w.id)?.passed ? "1" : "0")).join(""),
+    () => wordStages.map(() => "0").join(""),
+  );
+
+  const total = wordStages.length;
+  const cleared = clearedKey.split("").filter((c) => c === "1").length;
+  const percent = total === 0 ? 0 : Math.round((cleared / total) * 100);
+  // 「続きから」は、まだ合格していない最初のステージへ直行する
+  const nextIndex = clearedKey.indexOf("0");
+  const next = wordStages[nextIndex === -1 ? 0 : nextIndex];
 
   return (
     <section className="w-full max-w-sm rounded-[28px] border-4 border-white bg-[#fffaf0]/97 p-4 shadow-[0_7px_0_#b8deed,0_18px_32px_rgba(0,79,141,.25)] backdrop-blur-sm">
@@ -519,30 +563,50 @@ function LessonCard({ onUnavailable }: { onUnavailable: () => void }) {
       </p>
       <p className="text-ink mt-2 text-sm font-bold">{stage.description}</p>
       <div className="text-ink-soft mt-3 flex items-center justify-between text-xs font-extrabold">
-        <span>0 / 5 ステージ</span>
-        <span>0%</span>
+        <span>
+          {cleared} / {total} ステージ
+        </span>
+        <span>{percent}%</span>
       </div>
       <div className="mt-1 h-3 overflow-hidden rounded-full border border-white bg-[#e4eef3] shadow-inner">
-        <div className="bg-leaf h-full w-0 rounded-full" />
+        <div
+          className="bg-leaf h-full rounded-full transition-[width] duration-500"
+          style={{ width: `${percent}%` }}
+        />
       </div>
       <div className="mt-4 grid gap-3">
-        <button
-          type="button"
-          onClick={onUnavailable}
-          className="btn-game flex-col px-4 py-2 leading-tight [--btn-face:#f26fa7] [--btn-shadow:#d94d84]"
-        >
-          <span>
-            ▶{" "}
-            <ruby>
-              続き<rt>つづき</rt>
-            </ruby>
-            から
-          </span>
-          <span className="text-xs">ステージを つづける</span>
-        </button>
-        <button
-          type="button"
-          onClick={onUnavailable}
+        {next ? (
+          <Link
+            href={`/arcade/${next.id}`}
+            className="btn-game flex-col px-4 py-2 leading-tight [--btn-face:#f26fa7] [--btn-shadow:#d94d84]"
+          >
+            <span>
+              ▶{" "}
+              <ruby>
+                続き<rt>つづき</rt>
+              </ruby>
+              から
+            </span>
+            <span className="text-xs">ステージを つづける</span>
+          </Link>
+        ) : (
+          <button
+            type="button"
+            onClick={onUnavailable}
+            className="btn-game flex-col px-4 py-2 leading-tight [--btn-face:#f26fa7] [--btn-shadow:#d94d84]"
+          >
+            <span>
+              ▶{" "}
+              <ruby>
+                続き<rt>つづき</rt>
+              </ruby>
+              から
+            </span>
+            <span className="text-xs">ステージを つづける</span>
+          </button>
+        )}
+        <Link
+          href="/arcade"
           className="btn-game flex-col px-4 py-2 leading-tight [--btn-face:#ffc93c] [--btn-shadow:#f0a819]"
         >
           <span>
@@ -555,8 +619,8 @@ function LessonCard({ onUnavailable }: { onUnavailable: () => void }) {
               勉強<rt>べんきょう</rt>
             </ruby>
           </span>
-          <span className="text-xs">たんごを ふやして レベルアップ！</span>
-        </button>
+          <span className="text-xs">ステージを えらんで れんしゅう</span>
+        </Link>
       </div>
     </section>
   );
@@ -764,7 +828,7 @@ function CardsView({ onUnavailable }: { onUnavailable: () => void }) {
   );
 }
 
-export function MapShell() {
+export function MapShell({ wordStages }: { wordStages: readonly WordStageRef[] }) {
   const router = useRouter();
   const rawProfile = useSyncExternalStore(
     subscribeToStorage,
@@ -865,11 +929,11 @@ export function MapShell() {
       />
 
       <div className="fixed top-28 left-44 z-40 hidden w-sm md:block">
-        <LessonCard onUnavailable={() => showToast(LONG_WAIT_TOAST)} />
+        <LessonCard onUnavailable={() => showToast(LONG_WAIT_TOAST)} wordStages={wordStages} />
       </div>
 
       <div className="relative z-30 px-3 pt-36 pb-2 md:hidden">
-        <LessonCard onUnavailable={() => showToast(LONG_WAIT_TOAST)} />
+        <LessonCard onUnavailable={() => showToast(LONG_WAIT_TOAST)} wordStages={wordStages} />
       </div>
 
       {view === "map" ? (

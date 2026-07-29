@@ -19,11 +19,11 @@ import { NekuMax } from "@/components/nekumax";
 export type MeetingStage = "lobby" | "inRoom" | "leaving" | "left";
 
 const ACCENT: Record<MeetingParticipant["accent"], string> = {
-  sky: "#0288d1",
-  leaf: "#3aa458",
-  sun: "#f0a819",
-  coral: "#f2654a",
-  grape: "#8d6ae8",
+  sky: "#4fa8e8",
+  leaf: "#58c273",
+  sun: "#ffc93c",
+  coral: "#f26fa7",
+  grape: "#a78bfa",
 };
 
 export function MeetingShell({
@@ -56,7 +56,7 @@ export function MeetingShell({
 
   if (stage === "leaving") {
     return (
-      <div className="card-pop mx-auto max-w-md p-6 text-center sm:p-8">
+      <div className="card-island mx-auto max-w-md p-6 text-center sm:p-8">
         <NekuMax variant="listen" size={92} className="mx-auto" bob />
         <h2 className="text-ink mt-4 text-2xl font-extrabold">お礼を 言いましたか？</h2>
         <p className="text-ink-soft mt-2 font-bold">
@@ -69,14 +69,14 @@ export function MeetingShell({
               setStage("left");
               onLeft?.();
             }}
-            className="btn-game px-6 py-3"
+            className="btn-island btn-game px-6 py-3"
           >
             言いました。おわる
           </button>
           <button
             type="button"
             onClick={() => setStage("inRoom")}
-            className="btn-game px-6 py-3"
+            className="btn-island btn-game px-6 py-3"
             style={{ "--btn-face": "#ffffff", "--btn-shadow": "#cfe6f3" } as React.CSSProperties}
           >
             <span className="text-ink">もどる</span>
@@ -88,7 +88,7 @@ export function MeetingShell({
 
   if (stage === "left") {
     return (
-      <div className="card-pop mx-auto max-w-md p-8 text-center">
+      <div className="card-island mx-auto max-w-md p-8 text-center">
         <NekuMax variant="cheer" size={92} className="mx-auto" bob />
         <h2 className="text-ink mt-4 text-2xl font-extrabold">おつかれさま！</h2>
         <p className="text-ink-soft mt-2 font-bold">ミーティングが おわりました。</p>
@@ -130,7 +130,7 @@ export function MeetingShell({
           <button
             type="button"
             onClick={() => setStage("leaving")}
-            className="rounded-full bg-[#f2654a] px-4 py-1.5 text-xs font-extrabold text-white"
+            className="rounded-full bg-[#e64a5f] px-4 py-1.5 text-xs font-extrabold text-white"
           >
             たいしつ
           </button>
@@ -148,7 +148,7 @@ function Lobby({ title, focus, onEnter }: { title: string; focus: string; onEnte
     <motion.div
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
-      className="card-pop mx-auto max-w-xl p-6 text-center sm:p-8"
+      className="card-island mx-auto max-w-xl p-6 text-center sm:p-8"
     >
       <NekuMax variant="listen" size={100} className="mx-auto" bob />
       <h1 className="text-ink mt-4 text-2xl font-extrabold">{title}</h1>
@@ -158,7 +158,11 @@ function Lobby({ title, focus, onEnter }: { title: string; focus: string; onEnte
         <p className="text-ink mt-1 leading-relaxed font-bold">{focus}</p>
       </div>
 
-      <button type="button" onClick={onEnter} className="btn-game mt-6 w-full px-6 py-4 text-lg">
+      <button
+        type="button"
+        onClick={onEnter}
+        className="btn-island btn-game mt-6 w-full px-6 py-4 text-lg"
+      >
         🔔 ドアを ノックする
       </button>
       <p className="text-ink-faint mt-2 text-xs font-bold">
@@ -303,7 +307,7 @@ export function CaptionBar({
     <motion.div
       initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
-      className="card-pop px-4 py-3"
+      className="card-island px-4 py-3"
     >
       <p className="text-sky text-xs font-extrabold">{speaker}</p>
       <p className="text-ink mt-0.5 leading-relaxed font-bold">{text}</p>

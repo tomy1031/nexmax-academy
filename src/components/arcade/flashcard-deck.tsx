@@ -41,7 +41,7 @@ export function FlashcardDeck({
   };
 
   return (
-    <div className="card-pop mx-auto w-full max-w-xl p-6 text-center sm:p-8">
+    <div className="card-island mx-auto w-full max-w-xl p-6 text-center sm:p-8">
       <p className="text-ink-soft text-sm font-extrabold">
         フラッシュカード　{index + 1} / {order.length}
       </p>
@@ -120,7 +120,7 @@ function DeckButton({
     <button
       type="button"
       onClick={onClick}
-      className="btn-game px-5 py-2.5 text-sm"
+      className="btn-island btn-game px-5 py-2.5 text-sm"
       style={
         {
           "--btn-face": face,

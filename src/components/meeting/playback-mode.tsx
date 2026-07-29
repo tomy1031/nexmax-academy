@@ -58,7 +58,7 @@ export function PlaybackMeeting({ meeting }: { meeting: Meeting }) {
         participants={meeting.participants}
         activeSpeaker={current?.speaker ?? null}
         controls={
-          <div className="card-pop flex flex-wrap items-center gap-2 p-3">
+          <div className="card-island flex flex-wrap items-center gap-2 p-3">
             {meeting.audioUrl && (
               <audio ref={audioRef} src={meeting.audioUrl} controls className="w-full sm:w-auto" />
             )}
@@ -105,7 +105,7 @@ export function PlaybackMeeting({ meeting }: { meeting: Meeting }) {
             type="button"
             disabled={line === 0}
             onClick={() => setLine((i) => Math.max(0, i - 1))}
-            className="btn-game px-5 py-2.5 text-sm disabled:opacity-40"
+            className="btn-island btn-game px-5 py-2.5 text-sm disabled:opacity-40"
             style={{ "--btn-face": "#ffffff", "--btn-shadow": "#cfe6f3" } as React.CSSProperties}
           >
             <span className="text-ink">← まえ</span>
@@ -117,7 +117,7 @@ export function PlaybackMeeting({ meeting }: { meeting: Meeting }) {
             type="button"
             disabled={line >= meeting.script.length - 1}
             onClick={() => setLine((i) => Math.min(meeting.script.length - 1, i + 1))}
-            className="btn-game px-5 py-2.5 text-sm disabled:opacity-40"
+            className="btn-island btn-game px-5 py-2.5 text-sm disabled:opacity-40"
           >
             つぎ →
           </button>

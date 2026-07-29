@@ -54,7 +54,7 @@ export function ListeningPanel({
   };
 
   return (
-    <section className="card-pop p-5">
+    <section className="card-island p-5">
       <h3 className="text-ink font-extrabold">🔍 聞こえた ことばを 入れてみよう</h3>
 
       {/* 旧アプリの score-bar 相当 */}
@@ -112,7 +112,7 @@ export function ListeningPanel({
           }`}
           style={{ borderColor: "var(--color-hairline)" }}
         />
-        <button type="submit" className="btn-game shrink-0 px-6 py-2.5 text-sm">
+        <button type="submit" className="btn-island btn-game shrink-0 px-6 py-2.5 text-sm">
           はんてい
         </button>
       </form>

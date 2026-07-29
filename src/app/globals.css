@@ -203,6 +203,23 @@ rt {
     0 20px 44px -24px rgba(31, 58, 86, 0.35);
 }
 
+/* 島のボタン: 既定のCTA色。インラインの --btn-face を書けばそちらが勝つ。 */
+@utility btn-island {
+  --btn-face: #f26fa7;
+  --btn-shadow: #d94d84;
+}
+
+/* 島のカード: /map のレッスンカードと同じ質感（クリーム地・白の太枠・下向きの硬い影）。
+   学習エンジンの画面はこれを使って、マップと地続きに見せる。 */
+@utility card-island {
+  background: color-mix(in srgb, #fffaf0 97%, transparent);
+  border: 4px solid #ffffff;
+  border-radius: 28px;
+  box-shadow:
+    0 7px 0 #b8deed,
+    0 18px 32px rgba(0, 79, 141, 0.25);
+}
+
 /* ゲームボタン: 下にハードシャドウ、押すと沈む。--btn-face / --btn-shadow を指定して使う */
 @utility btn-game {
   display: inline-flex;

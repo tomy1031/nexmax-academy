@@ -39,7 +39,7 @@ export function ArcadeResult({
     <motion.div
       initial={{ opacity: 0, y: 18 }}
       animate={{ opacity: 1, y: 0 }}
-      className="card-pop mx-auto w-full max-w-2xl p-6 sm:p-8"
+      className="card-island mx-auto w-full max-w-2xl p-6 sm:p-8"
     >
       <div className="flex items-center gap-4">
         <NekuMax variant={summary.passed ? "cheer" : "guide"} size={84} bob />
@@ -107,8 +107,8 @@ export function ArcadeResult({
           <button
             type="button"
             onClick={onRetryWrong}
-            className="btn-game px-6 py-3.5 text-lg"
-            style={{ "--btn-face": "#f2654a", "--btn-shadow": "#c94d36" } as React.CSSProperties}
+            className="btn-island btn-game px-6 py-3.5 text-lg"
+            style={{ "--btn-face": "#f26fa7", "--btn-shadow": "#d94d84" } as React.CSSProperties}
           >
             まちがえた ことばだけ
           </button>
@@ -116,16 +116,16 @@ export function ArcadeResult({
         <button
           type="button"
           onClick={onRetryAll}
-          className="btn-game px-6 py-3.5 text-lg"
-          style={{ "--btn-face": "#3aa458", "--btn-shadow": "#2c7f44" } as React.CSSProperties}
+          className="btn-island btn-game px-6 py-3.5 text-lg"
+          style={{ "--btn-face": "#58c273", "--btn-shadow": "#3aa458" } as React.CSSProperties}
         >
           もう一度
         </button>
         <button
           type="button"
           onClick={onBack}
-          className="btn-game px-6 py-3 text-base"
-          style={{ "--btn-face": "#0288d1", "--btn-shadow": "#0272ae" } as React.CSSProperties}
+          className="btn-island btn-game px-6 py-3 text-base"
+          style={{ "--btn-face": "#4fa8e8", "--btn-shadow": "#0272ae" } as React.CSSProperties}
         >
           ステージを えらぶ
         </button>

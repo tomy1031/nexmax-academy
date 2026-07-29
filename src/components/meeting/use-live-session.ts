@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useRef, useState } from "react";
+import { getGeminiKey } from "@/lib/profile";
 
 /**
  * Gemini Live との対話セッション。
@@ -10,7 +11,7 @@ import { useCallback, useRef, useState } from "react";
  *   2. ブラウザが そのトークンだけで Live に直接つなぐ
  * APIキーはクライアントに渡らない。サーバは音声を中継しない。
  *
- * トークンが用意できない環境（キー未登録・未ログイン・DB未整備）では
+ * キーが未登録のときは
  * status="notReady" になり、画面は「じゅんびちゅう」に落ちる。
  */
 
@@ -54,7 +55,13 @@ export function useLiveSession(): LiveSession {
   const connect = useCallback(async (systemInstruction: string) => {
     setStatus("connecting");
 
-    const response = await fetch("/api/live/token", { method: "POST" });
+    // 本人のキーはこの端末に保存されている（はじめの設定ウィザードで登録）。
+    // サーバへ渡すのは交換のためだけで、Live には短命トークンしか出さない。
+    const response = await fetch("/api/live/token", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ apiKey: getGeminiKey() }),
+    });
     const payload = (await response.json()) as TokenResponse;
     if (!payload.ready || !payload.token || !payload.model) {
       setStatus("notReady");
