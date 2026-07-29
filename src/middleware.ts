@@ -5,10 +5,25 @@ import { getSupabasePublicConfig } from "@/lib/env";
 /**
  * リクエストごとに Supabase セッションを更新する。
  * 未設定なら何もしない（デモモードでもアプリは動く）。
+ *
+ * あわせて OAuth の `?code=` を取りこぼさない。Supabase の Redirect URLs に
+ * 未登録の宛先を渡すと Site URL（＝ルート）へ `?code=` 付きで戻されるため、
+ * どのページに落ちてもコールバックへ回送する。
  */
 export async function middleware(request: NextRequest) {
   const cfg = getSupabasePublicConfig();
   if (!cfg) return NextResponse.next({ request });
+
+  const { pathname, searchParams } = request.nextUrl;
+  const code = searchParams.get("code");
+  if (code && pathname !== "/auth/callback") {
+    const callback = request.nextUrl.clone();
+    callback.pathname = "/auth/callback";
+    callback.search = "";
+    callback.searchParams.set("code", code);
+    callback.searchParams.set("next", searchParams.get("next") ?? "/welcome");
+    return NextResponse.redirect(callback);
+  }
 
   let response = NextResponse.next({ request });
 

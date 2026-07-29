@@ -30,7 +30,7 @@ function StepWelcome() {
       </motion.div>
       <h1 className="text-navy text-3xl font-extrabold sm:text-4xl">ようこそ！</h1>
       <p className="text-ink mt-4 text-lg leading-relaxed font-bold">
-        ここは <span className="text-sky">Japanese IT Pathway</span>。
+        ここは <span className="text-sky">ネクマックスアカデミー</span>。
         <br />
         <ruby>
           日本<rt>にほん</rt>
@@ -295,7 +295,7 @@ function StepDepart() {
         マップの さいしょの ばしょから、まなびを はじめよう。
       </p>
       <div className="mt-6 flex justify-center">
-        <Link href="/" className="btn-game px-10 py-4 text-lg">
+        <Link href="/map" className="btn-game px-10 py-4 text-lg">
           🗺️ マップへ しゅっぱつ！
         </Link>
       </div>

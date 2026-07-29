@@ -106,7 +106,7 @@ export function NekuMax({
 }) {
   const meta = getNekuMax(variant);
   // フォールバック連鎖: バリアント画像 → 正典reference → プレースホルダー
-  const sources = [`${DIR}/${variant}.png`, NEKUMAX_REFERENCE_SRC];
+  const sources = [`${DIR}/${variant}.webp`, NEKUMAX_REFERENCE_SRC];
   const [srcIndex, setSrcIndex] = useState(0);
   const src = sources[srcIndex];
 

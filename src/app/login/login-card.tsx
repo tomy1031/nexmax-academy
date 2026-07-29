@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { motion } from "motion/react";
@@ -44,7 +43,7 @@ export function LoginCard({ authReady }: { authReady: boolean }) {
     await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${window.location.origin}/auth/callback?next=/tutorial`,
+        redirectTo: `${window.location.origin}/auth/callback`,
       },
     });
   }
@@ -87,7 +86,7 @@ export function LoginCard({ authReady }: { authReady: boolean }) {
               <path d="M2 12 L22 4 L14 21 L11 14 Z" fill="#fff" />
             </svg>
           </span>
-          <h1 className="text-navy text-2xl font-extrabold">Japanese IT Pathway</h1>
+          <h1 className="text-navy text-2xl font-extrabold">Nexmax Academy</h1>
           <p className="text-ink-soft mt-1 text-sm font-bold">
             <ruby>
               日本<rt>にほん</rt>
@@ -125,24 +124,10 @@ export function LoginCard({ authReady }: { authReady: boolean }) {
             <p className="text-ink text-sm font-bold">
               🔧 ログインは いま じゅんびちゅう です。
               <br />
-              下の「たいけんモード」で あそんで みてね！
+              もうすこし まってね！
             </p>
           </div>
         )}
-
-        <div className="my-5 flex items-center gap-3" aria-hidden>
-          <span className="bg-hairline h-0.5 flex-1 rounded-full" />
-          <span className="text-ink-faint text-xs font-bold">または</span>
-          <span className="bg-hairline h-0.5 flex-1 rounded-full" />
-        </div>
-
-        <Link
-          href="/"
-          className="btn-game w-full px-6 py-3.5 text-base"
-          style={{ "--btn-face": "#58c273", "--btn-shadow": "#3aa458" } as React.CSSProperties}
-        >
-          🎈 たいけんモードで はじめる
-        </Link>
 
         <p className="text-ink-soft mt-5 text-center text-xs leading-relaxed font-bold">
           ログインすると、がんばった きろく（
@@ -150,8 +135,6 @@ export function LoginCard({ authReady }: { authReady: boolean }) {
             進<rt>しん</rt>
           </ruby>
           ちょくや ⭐）が のこるよ。
-          <br />
-          先生から あんないが あるまで、たいけんモードでも OK！
         </p>
       </motion.div>
     </div>

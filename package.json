@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
-    "lint:content": "tsx scripts/lint_content.ts",
+    "lint:content": "node --import tsx scripts/lint_content.ts",
     "measure:readability": "tsx scripts/measure_readability.ts",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
