@@ -1,12 +1,23 @@
 # labs/vrm — 検証用アセット
 
-## Seed-san.vrm（仮モデル）
+## hendy.vrm（ヘンディ先輩・ユーザー制作）
 
-- 出典: [vrm-c/vrm-specification samples](https://github.com/vrm-c/vrm-specification/tree/master/samples/Seed-san)
-- モデル制作: VirtualCast, Inc.
-- ライセンス: [VRM Public License 1.0](https://vrm.dev/licenses/1.0/)
-- 用途: シーンプレイヤー（/labs/vrm-pilot）の技術検証のみ。
-  **ヘンディ先輩のVRoidモデル完成後に差し替えること。**
+- 出典: ユーザー（tomy1031）が VRoid Studio で制作した `~/Documents/Teacher1.vrm`。
+- VRM 1.0 / メタデータ: name `Teacher1` / author `Tommy` / 10.3MB
+- 口パクに必要な表情プリセット（`aa` `ih` `ou` `ee` `oh`）と `blink` を保持。
+
+### ⚠ ライセンスメタデータの確認事項
+
+エクスポート時の設定が以下になっている。教材アプリで配信するなら見直しが必要:
+
+| 項目                  | 現在値              | 懸念                                      |
+| --------------------- | ------------------- | ----------------------------------------- |
+| `commercialUsage`     | `personalNonProfit` | 商用・法人研修で使うなら不整合            |
+| `allowRedistribution` | `false`             | Webアプリでの配信は実質的に再配布にあたる |
+| `modification`        | `prohibited`        | 表情・衣装の派生を作れない                |
+| `avatarPermission`    | `onlyAuthor`        | 作者のみ利用可                            |
+
+自作モデルなので、作者（ユーザー）が VRoid Studio で再エクスポートすれば変更できる。
 
 ## m1_asakai/line01〜05.wav（仮音声）
 

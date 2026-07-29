@@ -30,18 +30,9 @@ export default function VrmPilotPage() {
       <ScenePlayer scene={scene} />
 
       <footer className="text-xs leading-5 text-[#9db0c2]">
-        仮モデル: Seed-san（VirtualCast, Inc. /{" "}
-        <a
-          className="underline"
-          href="https://vrm.dev/licenses/1.0/"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          VRM Public License 1.0
-        </a>
-        、vrm-c/vrm-specification サンプルより検証目的で使用）。
-        ヘンディ先輩のVRoidモデル完成後に差し替える。 音声は Gemini Live（
-        {Object.values(scene.characters)[0]?.voice}）で生成する。
+        モデル: ヘンディ先輩（VRoid Studio 制作 / VRM 1.0）。 音声は Gemini Live（
+        {Object.values(scene.characters)[0]?.voice}）で差し替え予定（現在は仮音声）。
+        ライセンスメタデータの確認事項は <code>public/labs/vrm/README.md</code> を参照。
       </footer>
     </main>
   );

@@ -105,13 +105,14 @@ export function ScenePlayer({ scene, showRuby = true }: ScenePlayerProps) {
         if (leftArm) leftArm.rotation.z = -1.15;
         if (rightArm) rightArm.rotation.z = 1.15;
 
-        // バストアップの構図
+        // バストアップの構図。頭頂が切れないよう、頭のてっぺんを基準に引きを決める
         const head = vrm.humanoid.getNormalizedBoneNode("head");
         const headPos = new THREE.Vector3();
         if (head) head.getWorldPosition(headPos);
         const headY = headPos.y || 1.3;
-        camera.position.set(0, headY, 1.25);
-        camera.lookAt(0, headY - 0.1, 0);
+        const eyeY = headY + 0.1; // 頭ボーンは頭の付け根なので少し上を見る
+        camera.position.set(0, eyeY, 1.6);
+        camera.lookAt(0, eyeY - 0.15, 0);
 
         setReady(true);
         setStatus("じゅんび できました");
