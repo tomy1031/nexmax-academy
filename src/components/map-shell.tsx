@@ -1059,6 +1059,7 @@ export function MapShell() {
   const [collapsed, setCollapsed] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
+  const [loadingIsSlow, setLoadingIsSlow] = useState(false);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   // undefined = 学習者がまだ触っていない。そのあいだは「いま取り組むステージ」を開いておく
   const [expandedOverride, setExpandedOverride] = useState<string | null | undefined>(undefined);
@@ -1069,19 +1070,22 @@ export function MapShell() {
   useEffect(() => {
     let active = true;
     void (async () => {
-      const supabase = createClient();
-      if (!supabase) {
-        router.replace("/welcome");
-        return;
-      }
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (!user) {
-        router.replace("/welcome");
-        return;
-      }
+      // 例外は必ずここで拾う。取りこぼすと `void` に握りつぶされ、リダイレクトも
+      // setState も走らないまま「マップを じゅんびしています」から抜けられなくなる。
+      // getUser() は通信断・セッション切れ・トークン不正のいずれでも throw しうる。
       try {
+        const supabase = createClient();
+        if (!supabase) {
+          router.replace("/welcome");
+          return;
+        }
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+        if (!user) {
+          router.replace("/welcome");
+          return;
+        }
         const stored = await fetchOwnProfile();
         if (!stored) {
           router.replace("/welcome");
@@ -1105,6 +1109,14 @@ export function MapShell() {
     [],
   );
 
+  // 通信が返ってこないときは例外も起きないので、待ち続けるしかなくなる。
+  // 一定時間で「やりなおす道」を出して、黙って固まったままにしない。
+  useEffect(() => {
+    if (profile) return;
+    const timer = setTimeout(() => setLoadingIsSlow(true), 8000);
+    return () => clearTimeout(timer);
+  }, [profile]);
+
   const showToast = useCallback((message: string) => {
     if (toastTimer.current) clearTimeout(toastTimer.current);
     setToast(message);
@@ -1118,10 +1130,34 @@ export function MapShell() {
 
   if (!profile) {
     return (
-      <main className="from-bg-sky to-bg-warm grid min-h-dvh place-items-center bg-linear-to-b">
-        <p className="text-navy rounded-full bg-white px-6 py-3 font-extrabold shadow-lg">
-          マップを じゅんびしています。
-        </p>
+      <main className="from-bg-sky to-bg-warm grid min-h-dvh place-items-center bg-linear-to-b p-6">
+        <div className="text-center">
+          <p className="text-navy inline-block rounded-full bg-white px-6 py-3 font-extrabold shadow-lg">
+            マップを じゅんびしています。
+          </p>
+          {loadingIsSlow && (
+            <div className="mx-auto mt-5 max-w-sm rounded-2xl border-2 border-white bg-white/90 p-5 shadow-lg">
+              <p className="text-ink text-sm font-bold">
+                じかんが かかっています。つうしんの ちょうしを みて、もういちど ためしてください。
+              </p>
+              <div className="mt-4 grid gap-2">
+                <button
+                  type="button"
+                  onClick={() => window.location.reload()}
+                  className="btn-game w-full px-4 py-2 [--btn-face:#ffc93c] [--btn-shadow:#f0a819]"
+                >
+                  もういちど よみこむ
+                </button>
+                <Link
+                  href="/welcome"
+                  className="text-sky text-sm font-extrabold underline underline-offset-4"
+                >
+                  ログインを やりなおす
+                </Link>
+              </div>
+            </div>
+          )}
+        </div>
       </main>
     );
   }
