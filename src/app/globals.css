@@ -70,6 +70,8 @@
   --animate-drift-slow: drift 40s linear infinite;
   --animate-spin-slow: spin 40s linear infinite;
   --animate-wiggle: wiggle 2.6s ease-in-out infinite;
+  /* ことばアーケード: 用語が目の前に届く直前のふるえ */
+  --animate-term-jitter: term-jitter 0.16s linear infinite;
   --animate-pop-in: pop-in 0.5s var(--ease-bounce) both;
 }
 
@@ -97,6 +99,42 @@
   }
   50% {
     transform: rotate(2.5deg);
+  }
+}
+/* ことばアーケード: 読みを外したときの入力欄（旧 shake-input / 0.3s を移植。色だけ島に合わせた） */
+@keyframes shake-input {
+  0%,
+  100% {
+    translate: 0;
+    border-color: var(--color-sun);
+  }
+  25% {
+    translate: -10px;
+    border-color: var(--color-coral);
+  }
+  50% {
+    translate: 10px;
+    border-color: var(--color-coral);
+  }
+  75% {
+    translate: -10px;
+    border-color: var(--color-coral);
+  }
+}
+.shake-input {
+  animation: shake-input 0.3s;
+}
+
+@keyframes term-jitter {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  25% {
+    translate: -3px 1px;
+  }
+  75% {
+    translate: 3px -1px;
   }
 }
 @keyframes pop-in {

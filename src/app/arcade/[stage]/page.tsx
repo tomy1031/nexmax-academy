@@ -20,8 +20,7 @@ export async function generateMetadata({
 
 export default async function ArcadeStagePage({ params }: { params: Promise<{ stage: string }> }) {
   const { stage: id } = await params;
-  const stage = getWordStage(id);
-  if (!stage) notFound();
+  if (!getWordStage(id)) notFound();
 
-  return <ArcadeGame stage={stage} />;
+  return <ArcadeGame stages={listWordStages()} initialStageId={id} />;
 }

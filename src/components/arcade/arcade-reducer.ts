@@ -73,6 +73,8 @@ export interface ArcadeState {
   readonly outcomes: readonly WordOutcome[];
   readonly life: number;
   readonly score: number;
+  /** 直前に入った点。「+150」のポップを出すために持つ（0なら出さない）。 */
+  readonly lastGain: number;
   readonly combo: number;
   readonly bestCombo: number;
   readonly furiganaOn: boolean;
@@ -130,6 +132,7 @@ export function createSession({
     outcomes: [],
     life: START_LIFE,
     score: 0,
+    lastGain: 0,
     combo: 0,
     bestCombo: 0,
     furiganaOn: mode !== "test",
@@ -145,12 +148,17 @@ function startPhase(mode: ArcadeMode): ArcadePhase {
  * 遷移
  * ------------------------------------------------------------------ */
 
-/** コンボが乗るほど点が伸びる（れんしゅうモードのみ意味を持つ）。 */
-function comboMultiplier(combo: number): number {
-  return 1 + Math.min(4, Math.floor(combo / 3));
+/**
+ * 得点は旧アプリの式をそのまま使う（読み 100+（コンボ-1）×50 ／ 意味 200+コンボ×100）。
+ * 数字の伸び方が手ごたえそのものなので、勝手に変えない。
+ */
+export function readingGain(comboAfterHit: number): number {
+  return 100 + (comboAfterHit - 1) * 50;
 }
 
-const HIT_POINTS = 10;
+export function meaningGain(comboAfterHit: number): number {
+  return 200 + comboAfterHit * 100;
+}
 
 export function arcadeReducer(state: ArcadeState, action: ArcadeAction): ArcadeState {
   if (state.phase.kind === "finished" && action.type !== "toggleFurigana") return state;
@@ -214,12 +222,15 @@ export function arcadeReducer(state: ArcadeState, action: ArcadeAction): ArcadeS
 
 function onReadingCorrect(state: ArcadeState): ArcadeState {
   const combo = state.combo + 1;
+  // 点が入るのは れんしゅう のときだけ（テストは成績で見る）
+  const gain = state.mode === "practice" ? readingGain(combo) : 0;
   return {
     ...state,
     hint: null,
     combo,
     bestCombo: Math.max(state.bestCombo, combo),
-    score: state.score + HIT_POINTS * comboMultiplier(state.combo),
+    score: state.score + gain,
+    lastGain: gain,
     phase: { kind: "meaning", readingOk: true },
   };
 }
@@ -230,6 +241,7 @@ function onReadingMissed(state: ArcadeState, feedback: FeedbackKey): ArcadeState
     // 意味フェーズの間、正しい読みと一緒に励ましを出しておく。
     hint: feedback,
     combo: 0,
+    lastGain: 0,
     life: state.mode === "practice" ? state.life - 1 : state.life,
     // 読みを外しても意味は必ず学ぶ。ここで打ち切らない。
     phase: { kind: "meaning", readingOk: false },
@@ -245,12 +257,14 @@ function closeQuestion(
   if (!word) return state;
 
   const combo = meaningOk ? state.combo + 1 : 0;
+  const gain = meaningOk && state.mode === "practice" ? meaningGain(combo) : 0;
   return {
     ...state,
     hint: null,
     combo,
     bestCombo: Math.max(state.bestCombo, combo),
-    score: meaningOk ? state.score + HIT_POINTS * comboMultiplier(state.combo) : state.score,
+    score: state.score + gain,
+    lastGain: gain,
     life: !meaningOk && state.mode === "practice" ? state.life - 1 : state.life,
     outcomes: [...state.outcomes, { wordId: word.id, readingOk, meaningOk }],
     phase: { kind: "explain", feedback: meaningOk ? "meaning.correct" : "meaning.retry" },

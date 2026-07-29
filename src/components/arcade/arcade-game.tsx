@@ -1,11 +1,9 @@
 "use client";
 
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
-import { motion } from "motion/react";
 import type { Word, WordStage } from "@/content/schema";
 import { FeedbackMessage } from "@/components/feedback-message";
-import { NekuMax } from "@/components/nekumax";
 import { RubyText } from "@/components/ruby-text";
 import { buildFuriganaIndex } from "@/lib/text/furigana";
 import { isHiraganaInputReady } from "@/lib/text/normalize";
@@ -25,7 +23,9 @@ import {
   type ArcadeState,
   type Difficulty,
 } from "./arcade-reducer";
-import { ApproachField } from "./approach-field";
+import { ApproachingTerm, ArcadeScene, HudChip } from "./arcade-scene";
+import { ArcadeButton, ArcadePanel } from "./arcade-panel";
+import { DamageFlash, HitRing, ScorePop } from "./arcade-fx";
 import { ArcadeResult } from "./arcade-result";
 import { FlashcardDeck } from "./flashcard-deck";
 import { MeaningChoice } from "./meaning-choice";
@@ -35,304 +35,587 @@ import { fieldForIndex } from "./scheduler";
 import { useCountdown } from "./use-countdown";
 
 /**
- * ことばアーケード（旧 wordtest / DATA DIVE）の画面シェル。
+ * ことばアーケード（旧 wordtest / DATA DIVE）。
  *
- * 中心体験は変えない: 用語が迫ってくる → 読みをひらがなで入力して止める →
- * 英語の意味を選ぶ → 結果で弱点が分かる → まちがえた ことばだけ もう一度。
+ * 旧アプリの画面構成をそのまま持ってくる:
+ *   全画面の舞台の上に、四隅のHUD・中央の用語・下端の入力。
+ *   画面の中の小さな枠に収めない。「迫ってくる」は画面を占有してこそ成立する。
+ *
+ * 変えたのは配色（暗いサイバー調 → 島の明るいトロピカル）と、
+ * 実装（グローバル変数 → 純関数reducer・WebGL → CSS遠近法）だけ。
+ * 遊び方・得点式・5モード・難易度の効き方は原典どおり。
  */
 
 type Screen =
-  | { kind: "menu" }
-  | { kind: "hiraCheck"; mode: ArcadeMode }
-  | { kind: "play" }
-  | { kind: "result" }
-  | { kind: "flashcard" }
-  | { kind: "dictionary" };
+  | { kind: "stageSelect" }
+  | { kind: "password"; stageId: string }
+  | { kind: "mode"; stageId: string }
+  | { kind: "hiraCheck"; stageId: string; mode: ArcadeMode }
+  | { kind: "play"; stageId: string }
+  | { kind: "result"; stageId: string }
+  | { kind: "flashcard"; stageId: string }
+  | { kind: "dictionary"; stageId: string };
 
-/** 解説の自動送り（クリック・Enterで早送りできる）。 */
+/** 解説の自動送り（旧アプリと同じく、押すと早送りできる）。 */
 const EXPLAIN_MS = 2800;
 
-export function ArcadeGame({ stage }: { stage: WordStage }) {
+export function ArcadeGame({
+  stages,
+  /** レッスンから直接呼ばれたときの入り口。単語だけで開いたときは未指定。 */
+  initialStageId,
+}: {
+  stages: readonly WordStage[];
+  initialStageId?: string;
+}) {
+  const router = useRouter();
   const store = useMemo(() => createProgressStore(), []);
-  const furigana = useMemo(() => buildFuriganaIndex(stage.furigana ?? []), [stage.furigana]);
-
-  const needsPassword = Boolean(stage.password);
-  const [screen, setScreen] = useState<Screen>({ kind: "menu" });
+  const [screen, setScreen] = useState<Screen>(() =>
+    initialStageId ? { kind: "mode", stageId: initialStageId } : { kind: "stageSelect" },
+  );
   const [difficulty, setDifficulty] = useState<Difficulty>(DEFAULT_DIFFICULTY);
   const [session, setSession] = useState<ArcadeState | null>(null);
   const savedRef = useRef<string | null>(null);
 
-  // 解錠状態は外部ストア（localStorage）として購読する。
-  // サーバ描画では未解錠として返し、マウント後に本当の値へ切り替わる。
-  const unlocked = useSyncExternalStore(
-    subscribeProgress,
-    () => !needsPassword || store.isUnlocked(stage.id),
-    () => !needsPassword,
-  );
+  const stageId = "stageId" in screen ? screen.stageId : (initialStageId ?? stages[0]?.id);
+  const stage = stages.find((s) => s.id === stageId) ?? null;
+  const furigana = useMemo(() => buildFuriganaIndex(stage?.furigana ?? []), [stage?.furigana]);
 
-  // 遷移は純関数の reducer に任せ、ここは保持だけを受け持つ。
   const dispatch = useCallback((action: ArcadeAction) => {
     setSession((prev) => (prev ? arcadeReducer(prev, action) : prev));
   }, []);
 
   const start = useCallback(
-    (mode: ArcadeMode, onlyWordIds?: readonly string[]) => {
-      // 苦手な語を先に出すため、開始のたびに最新の学習履歴を読む。
-      const mastery = store.readMastery(stage.id);
-      setSession(createSession({ stage, mode, difficulty, mastery, onlyWordIds }));
+    (target: WordStage, mode: ArcadeMode, onlyWordIds?: readonly string[]) => {
+      const mastery = store.readMastery(target.id);
+      setSession(createSession({ stage: target, mode, difficulty, mastery, onlyWordIds }));
       savedRef.current = null;
-      setScreen({ kind: "play" });
+      setScreen({ kind: "play", stageId: target.id });
     },
-    [stage, difficulty, store],
+    [difficulty, store],
   );
 
+  const openStage = useCallback(
+    (target: WordStage) => {
+      const locked = Boolean(target.password) && !store.isUnlocked(target.id);
+      setScreen(
+        locked ? { kind: "password", stageId: target.id } : { kind: "mode", stageId: target.id },
+      );
+    },
+    [store],
+  );
+
+  const leave = useCallback(() => router.push("/map"), [router]);
+
+  // 舞台の景色。遊んでいる間は問題の進みに合わせて変わる。
+  const field =
+    session && screen.kind === "play"
+      ? fieldForIndex(session.fieldSequence, session.index, session.questions.length)
+      : (stage?.fieldSequence[0] ?? "sea");
+
   return (
-    <ArcadeShell stage={stage}>
-      {screen.kind === "menu" && (
-        <ArcadeMenu
-          stage={stage}
-          furigana={furigana}
-          unlocked={unlocked}
-          difficulty={difficulty}
-          onDifficulty={setDifficulty}
-          onUnlock={() => store.unlock(stage.id)}
-          onPlay={(mode) =>
-            mode === "test" ? setScreen({ kind: "hiraCheck", mode }) : start(mode)
-          }
-          onFlashcard={() => setScreen({ kind: "flashcard" })}
-          onDictionary={() => setScreen({ kind: "dictionary" })}
-        />
-      )}
-
-      {screen.kind === "hiraCheck" && (
-        <HiraganaCheck
-          onReady={() => start(screen.mode)}
-          onCancel={() => setScreen({ kind: "menu" })}
-        />
-      )}
-
-      {screen.kind === "play" && session && (
-        <PlayScreen
+    <ArcadeScene field={field}>
+      {screen.kind === "play" && session && stage ? (
+        <PlayLayer
           state={session}
           furigana={furigana}
+          field={field}
           dispatch={dispatch}
-          onFinished={() => setScreen({ kind: "result" })}
+          onFinished={() => setScreen({ kind: "result", stageId: stage.id })}
         />
-      )}
+      ) : (
+        <div className="pointer-events-none absolute inset-0 grid place-items-center overflow-y-auto p-4">
+          <div className="pointer-events-none w-full max-w-2xl">
+            {screen.kind === "stageSelect" && (
+              <StageSelect stages={stages} store={store} onPick={openStage} onLeave={leave} />
+            )}
 
-      {screen.kind === "result" && session && (
-        <ResultScreen
-          stage={stage}
-          state={session}
-          furigana={furigana}
-          store={store}
-          savedRef={savedRef}
-          onRetryWrong={(ids) => start(session.mode, ids)}
-          onRetryAll={() => start(session.mode)}
-          onBack={() => setScreen({ kind: "menu" })}
-        />
-      )}
+            {screen.kind === "password" && stage && (
+              <PasswordGate
+                stage={stage}
+                onUnlock={() => {
+                  store.unlock(stage.id);
+                  setScreen({ kind: "mode", stageId: stage.id });
+                }}
+                onBack={() => setScreen({ kind: "stageSelect" })}
+              />
+            )}
 
-      {screen.kind === "flashcard" && (
-        <FlashcardDeck
-          words={stage.words}
-          furigana={furigana}
-          onBack={() => setScreen({ kind: "menu" })}
-        />
-      )}
+            {screen.kind === "mode" && stage && (
+              <ModeSelect
+                stage={stage}
+                furigana={furigana}
+                difficulty={difficulty}
+                canGoBack={stages.length > 1}
+                onDifficulty={setDifficulty}
+                onPick={(mode) => {
+                  if (mode === "test") setScreen({ kind: "hiraCheck", stageId: stage.id, mode });
+                  else start(stage, mode);
+                }}
+                onFlashcard={() => setScreen({ kind: "flashcard", stageId: stage.id })}
+                onDictionary={() => setScreen({ kind: "dictionary", stageId: stage.id })}
+                onBack={() => (stages.length > 1 ? setScreen({ kind: "stageSelect" }) : leave())}
+              />
+            )}
 
-      {screen.kind === "dictionary" && (
-        <WordDictionary
-          words={stage.words}
-          furigana={furigana}
-          onBack={() => setScreen({ kind: "menu" })}
-        />
+            {screen.kind === "hiraCheck" && stage && (
+              <HiraganaCheck
+                onReady={() => start(stage, screen.mode)}
+                onCancel={() => setScreen({ kind: "mode", stageId: stage.id })}
+              />
+            )}
+
+            {screen.kind === "result" && session && stage && (
+              <ResultLayer
+                stage={stage}
+                state={session}
+                furigana={furigana}
+                store={store}
+                savedRef={savedRef}
+                onRetryWrong={(ids) => start(stage, session.mode, ids)}
+                onRetryAll={() => start(stage, session.mode)}
+                onBack={() => setScreen({ kind: "mode", stageId: stage.id })}
+              />
+            )}
+
+            {screen.kind === "flashcard" && stage && (
+              <div className="pointer-events-auto">
+                <FlashcardDeck
+                  words={stage.words}
+                  furigana={furigana}
+                  onBack={() => setScreen({ kind: "mode", stageId: stage.id })}
+                />
+              </div>
+            )}
+
+            {screen.kind === "dictionary" && stage && (
+              <div className="pointer-events-auto">
+                <WordDictionary
+                  words={stage.words}
+                  furigana={furigana}
+                  onBack={() => setScreen({ kind: "mode", stageId: stage.id })}
+                />
+              </div>
+            )}
+          </div>
+        </div>
       )}
-    </ArcadeShell>
+    </ArcadeScene>
   );
 }
 
 /* ------------------------------------------------------------------ *
- * 外枠
+ * プレイ中 — 四隅HUD・中央の用語・下端の入力
  * ------------------------------------------------------------------ */
 
-function ArcadeShell({ stage, children }: { stage: WordStage; children: React.ReactNode }) {
-  return (
-    <div className="mx-auto w-full max-w-4xl px-4 py-6">
-      <header className="mb-5 flex items-center justify-between gap-3">
-        <Link href="/" className="text-ink-soft hover:text-navy text-sm font-extrabold">
-          ← まなびマップ
-        </Link>
-        <span className="bg-sky-soft text-navy rounded-full px-3 py-1 text-xs font-extrabold">
-          🕹️ ことばアーケード ／ {stage.title}
-        </span>
-      </header>
-      {children}
-    </div>
-  );
-}
-
-/* ------------------------------------------------------------------ *
- * メニュー（モード・難しさ・パスワード）
- * ------------------------------------------------------------------ */
-
-const MODE_CARDS: {
-  mode: ArcadeMode;
-  title: string;
-  sub: string;
-  face: string;
-  shadow: string;
-}[] = [
-  {
-    mode: "practice",
-    title: "れんしゅう",
-    sub: "たのしく おぼえる",
-    face: "#3aa458",
-    shadow: "#2c7f44",
-  },
-  { mode: "test", title: "テスト", sub: "点数を 見る", face: "#f2654a", shadow: "#c94d36" },
-  {
-    mode: "quiz",
-    title: "もんだいだけ",
-    sub: "入力なしで 意味クイズ",
-    face: "#8d6ae8",
-    shadow: "#7452cc",
-  },
-];
-
-function ArcadeMenu({
-  stage,
+function PlayLayer({
+  state,
   furigana,
-  unlocked,
-  difficulty,
-  onDifficulty,
+  field,
+  dispatch,
+  onFinished,
+}: {
+  state: ArcadeState;
+  furigana: ReturnType<typeof buildFuriganaIndex>;
+  field: string;
+  dispatch: (action: ArcadeAction) => void;
+  onFinished: () => void;
+}) {
+  const question = currentQuestion(state);
+  const phase = state.phase;
+  const resetKey = `${state.index}:${phase.kind}`;
+
+  const onReadingExpire = useCallback(() => dispatch({ type: "readingTimeout" }), [dispatch]);
+  const onMeaningExpire = useCallback(() => dispatch({ type: "meaningTimeout" }), [dispatch]);
+
+  const readingLeft = useCountdown({
+    seconds: approachSeconds(state.difficulty),
+    active: phase.kind === "reading",
+    onExpire: onReadingExpire,
+    resetKey,
+  });
+  const meaningLeft = useCountdown({
+    seconds: choiceSeconds(state.difficulty),
+    active: phase.kind === "meaning",
+    onExpire: onMeaningExpire,
+    resetKey,
+  });
+
+  useEffect(() => {
+    if (phase.kind !== "explain") return;
+    const advance = () => dispatch({ type: "advance" });
+    const timer = setTimeout(advance, EXPLAIN_MS);
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Enter" || e.key === " ") advance();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [phase.kind, state.index, dispatch]);
+
+  useEffect(() => {
+    if (phase.kind === "finished") onFinished();
+  }, [phase.kind, onFinished]);
+
+  if (!question) return null;
+  const { word, choices } = question;
+  const isPractice = state.mode === "practice";
+  const readingMissed = phase.kind === "meaning" && phase.readingOk === false;
+
+  return (
+    <>
+      <ApproachingTerm
+        term={word.term}
+        reading={word.reading}
+        showFurigana={state.furiganaOn}
+        remaining={readingLeft}
+        field={field}
+        frozen={phase.kind !== "reading"}
+        missed={readingMissed}
+      />
+
+      {/* 正解・加点の演出（旧アプリの scorePop / リング を移植） */}
+      {state.lastGain > 0 && (
+        <>
+          <HitRing id={`${resetKey}-ring`} combo={state.combo} />
+          <ScorePop id={resetKey} label={`+${state.lastGain}`} />
+        </>
+      )}
+      {isPractice && readingMissed && <DamageFlash id={resetKey} />}
+
+      {/* 四隅のHUD（旧アプリと同じ配置。中央は用語のために空ける） */}
+      <div className="pointer-events-none absolute inset-x-0 top-12 flex items-start justify-between px-4 sm:px-8">
+        <div className="flex flex-col items-start gap-2">
+          {isPractice && <HudChip label="SCORE" value={state.score} accent="#f0a819" />}
+          <HudChip
+            label="もんだい"
+            value={`${Math.min(state.index + 1, state.questions.length)} / ${state.questions.length}`}
+          />
+          {isPractice && state.combo >= 2 && (
+            <span className="animate-pulse rounded-full bg-[#f26fa7] px-3 py-1 text-sm font-black text-white">
+              {state.combo} COMBO!! 🔥
+            </span>
+          )}
+        </div>
+        <div className="flex flex-col items-end gap-2">
+          <HudChip label="MODE" value={MODE_LABEL[state.mode]} accent="#0272ae" />
+          {isPractice && (
+            <HudChip
+              label="LIFE"
+              value={
+                <span aria-label={`のこり ライフ ${state.life}`}>
+                  {"❤️".repeat(Math.max(0, state.life))}
+                  {"🤍".repeat(Math.max(0, START_LIFE - Math.max(0, state.life)))}
+                </span>
+              }
+            />
+          )}
+        </div>
+      </div>
+
+      {/* 下端 — 入力／4択／解説 */}
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 flex flex-col items-center gap-3 px-4 pb-5 sm:pb-8">
+        {phase.kind === "reading" && (
+          <>
+            {state.hint && (
+              <div className="pointer-events-auto w-full max-w-2xl">
+                <FeedbackMessage messageKey={state.hint} />
+              </div>
+            )}
+            <p
+              className="text-lg font-black sm:text-xl"
+              style={{ color: "#1f3a56", WebkitTextStroke: "3px #fff", paintOrder: "stroke fill" }}
+            >
+              よみを ひらがなで 入力して、Enter！
+            </p>
+            <div className="pointer-events-auto w-full max-w-2xl">
+              <ReadingInput
+                key={resetKey}
+                shake={Boolean(state.hint)}
+                onSubmit={(input) => dispatch({ type: "submitReading", input })}
+              />
+            </div>
+          </>
+        )}
+
+        {phase.kind === "meaning" && (
+          <>
+            {readingMissed && (
+              <p
+                className="text-lg font-black"
+                style={{
+                  color: "#1f3a56",
+                  WebkitTextStroke: "3px #fff",
+                  paintOrder: "stroke fill",
+                }}
+              >
+                よみ: {word.reading}
+              </p>
+            )}
+            <p
+              className="text-xl font-black sm:text-2xl"
+              style={{ color: "#1f3a56", WebkitTextStroke: "3px #fff", paintOrder: "stroke fill" }}
+            >
+              英語の 意味を えらぼう！
+            </p>
+            <div className="pointer-events-auto w-full max-w-3xl">
+              <MeaningChoice
+                choices={choices}
+                remaining={meaningLeft}
+                onChoose={(choice) => dispatch({ type: "chooseMeaning", choice })}
+              />
+            </div>
+          </>
+        )}
+
+        {phase.kind === "explain" && (
+          <button
+            type="button"
+            onClick={() => dispatch({ type: "advance" })}
+            className="pointer-events-auto w-full max-w-2xl rounded-[24px] border-4 border-white bg-[#fffaf0]/97 p-4 text-left shadow-[0_7px_0_#b8deed,0_18px_32px_rgba(0,79,141,.25)]"
+          >
+            <FeedbackMessage messageKey={phase.feedback} />
+            <p className="text-ink mt-3 text-lg font-black">
+              <ruby>
+                {word.term}
+                <rt>{word.reading}</rt>
+              </ruby>
+              <span className="text-sky ml-3 text-base">{word.meaningEn}</span>
+            </p>
+            <p className="text-ink-soft mt-1 font-bold">
+              <RubyText text={word.explanationJa} index={furigana} />
+            </p>
+            <p className="text-ink-faint mt-2 text-sm">
+              <RubyText text={word.example} index={furigana} />
+            </p>
+            <p className="text-ink-faint mt-2 text-xs font-bold">（おす／Enter で つぎへ）</p>
+          </button>
+        )}
+
+        <div className="pointer-events-auto flex gap-2">
+          {state.mode !== "test" && (
+            <ArcadeButton
+              tone={state.furiganaOn ? "info" : "quiet"}
+              className="px-4 py-2 text-sm"
+              onClick={() => dispatch({ type: "toggleFurigana" })}
+            >
+              ふりがな {state.furiganaOn ? "ON" : "OFF"}
+            </ArcadeButton>
+          )}
+          <ArcadeButton
+            tone="quiet"
+            className="px-4 py-2 text-sm"
+            onClick={() => dispatch({ type: "quit" })}
+          >
+            やめる
+          </ArcadeButton>
+        </div>
+      </div>
+    </>
+  );
+}
+
+const MODE_LABEL: Record<ArcadeMode, string> = {
+  practice: "れんしゅう",
+  test: "テスト",
+  quiz: "もんだい",
+};
+
+/* ------------------------------------------------------------------ *
+ * ステージ選択（単語だけで開いたときの入り口）
+ * ------------------------------------------------------------------ */
+
+function StageSelect({
+  stages,
+  store,
+  onPick,
+  onLeave,
+}: {
+  stages: readonly WordStage[];
+  store: ReturnType<typeof createProgressStore>;
+  onPick: (stage: WordStage) => void;
+  onLeave: () => void;
+}) {
+  // 解錠状態は外部ストア（localStorage）を購読する
+  const unlockedKey = useSyncExternalStore(
+    subscribeProgress,
+    () => stages.map((s) => (store.isUnlocked(s.id) ? "1" : "0")).join(""),
+    () => stages.map(() => "0").join(""),
+  );
+
+  return (
+    <ArcadePanel kicker="Select Stage" title="グループを えらぶ">
+      <p className="text-ink-soft mt-1 text-sm font-bold">
+        まなびたい ことばの グループを えらんでね。
+      </p>
+      <ul className="mt-4 grid gap-3 sm:grid-cols-2">
+        {stages.map((stage, i) => {
+          const locked = Boolean(stage.password) && unlockedKey[i] === "0";
+          return (
+            <li key={stage.id}>
+              <button
+                type="button"
+                onClick={() => onPick(stage)}
+                className="border-hairline hover:border-sky w-full rounded-[20px] border-2 bg-white p-4 text-left transition hover:scale-[1.02]"
+              >
+                <p className="text-sky text-xs font-black">
+                  ことば {stage.words.length}こ ／ 合格 {stage.passRate}%
+                </p>
+                <p className="text-ink mt-1 text-lg font-black">
+                  {stage.title}
+                  {locked && <span className="ml-2 text-sm">🔒</span>}
+                </p>
+                <p className="text-ink-soft mt-1 text-sm font-bold">{stage.description}</p>
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+      <ArcadeButton tone="quiet" className="mt-4 w-full" onClick={onLeave}>
+        マップに もどる
+      </ArcadeButton>
+    </ArcadePanel>
+  );
+}
+
+function PasswordGate({
+  stage,
   onUnlock,
-  onPlay,
-  onFlashcard,
-  onDictionary,
+  onBack,
 }: {
   stage: WordStage;
-  furigana: ReturnType<typeof buildFuriganaIndex>;
-  unlocked: boolean;
-  difficulty: Difficulty;
-  onDifficulty: (d: Difficulty) => void;
   onUnlock: () => void;
-  onPlay: (mode: ArcadeMode) => void;
-  onFlashcard: () => void;
-  onDictionary: () => void;
+  onBack: () => void;
 }) {
   const [password, setPassword] = useState("");
   const [wrong, setWrong] = useState(false);
 
-  if (!unlocked) {
-    return (
-      <div className="card-pop mx-auto max-w-md p-6 text-center sm:p-8">
-        <NekuMax variant="guide" size={92} className="mx-auto" bob />
-        <div className="mt-4">
-          <FeedbackMessage messageKey="stage.locked" />
-        </div>
-        <input
-          type="text"
-          value={password}
-          onChange={(e) => {
-            setPassword(e.target.value);
-            setWrong(false);
-          }}
-          autoComplete="off"
-          spellCheck={false}
-          placeholder="パスワード"
-          aria-label="パスワード"
-          className="border-hairline bg-panel text-ink mt-4 w-full rounded-[var(--radius-button)] border-2 px-4 py-3 text-center text-xl font-extrabold"
-        />
-        {wrong && (
-          <div className="mt-3">
-            <FeedbackMessage messageKey="stage.passwordRetry" />
-          </div>
-        )}
-        <button
-          type="button"
-          onClick={() => (password === stage.password ? onUnlock() : setWrong(true))}
-          className="btn-game mt-4 w-full px-6 py-3 text-lg"
-        >
-          ひらく
-        </button>
-      </div>
-    );
-  }
-
   return (
-    <div className="card-pop p-6 sm:p-8">
-      <div className="flex items-start gap-4">
-        <NekuMax variant="book" size={88} bob />
-        <div className="flex-1">
-          <h1 className="text-ink text-2xl font-extrabold sm:text-3xl">{stage.title}</h1>
-          <p className="text-ink-soft mt-1 font-bold">
-            <RubyText text={stage.description} index={furigana} />
-          </p>
-          <p className="text-ink-faint mt-1 text-sm font-bold">
-            ことば {stage.words.length}こ ／ 1回の もんだい {stage.questionCount}こ ／ 合格{" "}
-            {stage.passRate}%
-          </p>
-        </div>
+    <ArcadePanel
+      kicker="Locked"
+      title="この グループは まだ ひらいていません"
+      className="text-center"
+    >
+      <div className="mt-3">
+        <FeedbackMessage messageKey="stage.locked" />
       </div>
-
-      <section className="mt-6">
-        <h2 className="text-ink-soft mb-2 text-sm font-extrabold">
-          むずかしさ（スピードと 時間だけが かわるよ）
-        </h2>
-        <div className="flex gap-2">
-          {(Object.keys(DIFFICULTY) as Difficulty[]).map((key) => (
-            <button
-              key={key}
-              type="button"
-              onClick={() => onDifficulty(key)}
-              aria-pressed={difficulty === key}
-              className={`rounded-full border-2 px-4 py-2 text-sm font-extrabold transition ${
-                difficulty === key
-                  ? "bg-sky border-sky text-white"
-                  : "border-hairline bg-panel text-ink-soft"
-              }`}
-            >
-              {DIFFICULTY[key].label}
-            </button>
-          ))}
+      <input
+        type="text"
+        value={password}
+        onChange={(e) => {
+          setPassword(e.target.value);
+          setWrong(false);
+        }}
+        autoComplete="off"
+        spellCheck={false}
+        placeholder="パスワード"
+        aria-label="パスワード"
+        className="border-hairline bg-panel text-ink mt-4 w-full rounded-[var(--radius-button)] border-2 px-4 py-3 text-center text-xl font-black"
+      />
+      {wrong && (
+        <div className="mt-3">
+          <FeedbackMessage messageKey="stage.passwordRetry" />
         </div>
-      </section>
+      )}
+      <div className="mt-4 flex justify-center gap-2">
+        <ArcadeButton onClick={() => (password === stage.password ? onUnlock() : setWrong(true))}>
+          ひらく
+        </ArcadeButton>
+        <ArcadeButton tone="quiet" onClick={onBack}>
+          もどる
+        </ArcadeButton>
+      </div>
+    </ArcadePanel>
+  );
+}
 
-      <section className="mt-6 grid gap-3 sm:grid-cols-3">
-        {MODE_CARDS.map((card) => (
+/* ------------------------------------------------------------------ *
+ * モード選択（旧アプリの5モード＋難易度をそのまま）
+ * ------------------------------------------------------------------ */
+
+function ModeSelect({
+  stage,
+  furigana,
+  difficulty,
+  canGoBack,
+  onDifficulty,
+  onPick,
+  onFlashcard,
+  onDictionary,
+  onBack,
+}: {
+  stage: WordStage;
+  furigana: ReturnType<typeof buildFuriganaIndex>;
+  difficulty: Difficulty;
+  canGoBack: boolean;
+  onDifficulty: (d: Difficulty) => void;
+  onPick: (mode: ArcadeMode) => void;
+  onFlashcard: () => void;
+  onDictionary: () => void;
+  onBack: () => void;
+}) {
+  return (
+    <ArcadePanel kicker="Mission Select" title={stage.title} className="text-center">
+      <p className="text-ink-soft mt-1 text-sm font-bold">
+        <RubyText text={stage.description} index={furigana} />
+      </p>
+      <p className="text-ink-faint mt-1 text-xs font-bold">
+        ことば {stage.words.length}こ ／ 1回の もんだい {stage.questionCount}こ ／ 合格{" "}
+        {stage.passRate}%
+      </p>
+
+      <p className="text-ink-soft mt-5 text-sm font-black">
+        むずかしさ（スピードと 時間だけが かわるよ）
+      </p>
+      <div className="mt-2 flex justify-center gap-2">
+        {(Object.keys(DIFFICULTY) as Difficulty[]).map((key) => (
           <button
-            key={card.mode}
+            key={key}
             type="button"
-            onClick={() => onPlay(card.mode)}
-            className="btn-game flex-col px-4 py-5 text-lg"
-            style={{ "--btn-face": card.face, "--btn-shadow": card.shadow } as React.CSSProperties}
+            onClick={() => onDifficulty(key)}
+            aria-pressed={difficulty === key}
+            className={`rounded-full border-2 px-4 py-2 text-sm font-black transition ${
+              difficulty === key
+                ? "border-[#f26fa7] bg-[#f26fa7] text-white"
+                : "border-hairline text-ink-soft bg-white"
+            }`}
           >
-            <span>{card.title}</span>
-            <span className="text-xs font-bold opacity-90">{card.sub}</span>
+            {DIFFICULTY[key].label}
           </button>
         ))}
-      </section>
+      </div>
 
-      <section className="mt-3 grid gap-3 sm:grid-cols-2">
-        <button
-          type="button"
-          onClick={onFlashcard}
-          className="btn-game px-4 py-4"
-          style={{ "--btn-face": "#0288d1", "--btn-shadow": "#0272ae" } as React.CSSProperties}
-        >
-          フラッシュカード
-        </button>
-        <button
-          type="button"
-          onClick={onDictionary}
-          className="btn-game px-4 py-4"
-          style={{ "--btn-face": "#f0a819", "--btn-shadow": "#c8890f" } as React.CSSProperties}
-        >
-          辞書
-        </button>
-      </section>
-    </div>
+      <div className="mt-5 grid gap-3 sm:grid-cols-3">
+        <ArcadeButton tone="go" className="flex-col py-4" onClick={() => onPick("practice")}>
+          <span className="text-lg">れんしゅう</span>
+          <span className="text-xs opacity-90">たのしく おぼえる</span>
+        </ArcadeButton>
+        <ArcadeButton tone="primary" className="flex-col py-4" onClick={() => onPick("test")}>
+          <span className="text-lg">テスト</span>
+          <span className="text-xs opacity-90">点数を 見る</span>
+        </ArcadeButton>
+        <ArcadeButton tone="sub" className="flex-col py-4" onClick={() => onPick("quiz")}>
+          <span className="text-lg">もんだいだけ</span>
+          <span className="text-xs opacity-90">入力なしで 意味クイズ</span>
+        </ArcadeButton>
+      </div>
+
+      <div className="mt-3 grid gap-3 sm:grid-cols-2">
+        <ArcadeButton tone="info" className="flex-col py-4" onClick={onFlashcard}>
+          <span className="text-lg">フラッシュカード</span>
+          <span className="text-xs opacity-90">カードを めくって おぼえる</span>
+        </ArcadeButton>
+        <ArcadeButton tone="quiet" className="flex-col py-4" onClick={onDictionary}>
+          <span className="text-lg">辞書</span>
+          <span className="text-xs opacity-80">ことばを しらべる</span>
+        </ArcadeButton>
+      </div>
+
+      <ArcadeButton tone="quiet" className="mt-4 px-6 py-2 text-sm" onClick={onBack}>
+        {canGoBack ? "グループを えらびなおす" : "マップに もどる"}
+      </ArcadeButton>
+    </ArcadePanel>
   );
 }
 
@@ -360,10 +643,9 @@ function HiraganaCheck({ onReady, onCancel }: { onReady: () => void; onCancel: (
   };
 
   return (
-    <div className="card-pop mx-auto max-w-lg p-6 text-center sm:p-8">
-      <h2 className="text-ink text-2xl font-extrabold">ひらがな入力チェック</h2>
-      <p className="text-ink-soft mt-1 font-bold">つぎの ことばを 入力してください。</p>
-      <p className="text-navy mt-4 text-4xl font-extrabold">{target}</p>
+    <ArcadePanel kicker="Input Check" title="ひらがな入力チェック" className="text-center">
+      <p className="text-ink-soft mt-2 font-bold">つぎの ことばを 入力してください。</p>
+      <p className="text-navy mt-4 text-4xl font-black">{target}</p>
       <input
         type="text"
         value={value}
@@ -379,7 +661,7 @@ function HiraganaCheck({ onReady, onCancel }: { onReady: () => void; onCancel: (
         autoCapitalize="off"
         spellCheck={false}
         aria-label="ひらがなで 入力する"
-        className="border-hairline bg-panel text-ink mt-4 w-full rounded-[var(--radius-button)] border-2 px-4 py-3 text-center text-2xl font-extrabold"
+        className="border-hairline bg-panel text-ink mt-4 w-full rounded-[var(--radius-button)] border-2 px-4 py-3 text-center text-2xl font-black"
       />
       {miss && (
         <div className="mt-3 text-left">
@@ -387,210 +669,12 @@ function HiraganaCheck({ onReady, onCancel }: { onReady: () => void; onCancel: (
         </div>
       )}
       <div className="mt-5 flex justify-center gap-2">
-        <button type="button" onClick={submit} className="btn-game px-8 py-3 text-lg">
-          けってい
-        </button>
-        <button
-          type="button"
-          onClick={onCancel}
-          className="btn-game px-6 py-3"
-          style={{ "--btn-face": "#ffffff", "--btn-shadow": "#cfe6f3" } as React.CSSProperties}
-        >
-          <span className="text-ink">やめる</span>
-        </button>
+        <ArcadeButton onClick={submit}>けってい</ArcadeButton>
+        <ArcadeButton tone="quiet" onClick={onCancel}>
+          やめる
+        </ArcadeButton>
       </div>
-    </div>
-  );
-}
-
-/* ------------------------------------------------------------------ *
- * プレイ
- * ------------------------------------------------------------------ */
-
-function PlayScreen({
-  state,
-  furigana,
-  dispatch,
-  onFinished,
-}: {
-  state: ArcadeState;
-  furigana: ReturnType<typeof buildFuriganaIndex>;
-  dispatch: (action: ArcadeAction) => void;
-  onFinished: () => void;
-}) {
-  const question = currentQuestion(state);
-  const phase = state.phase;
-  const resetKey = `${state.index}:${phase.kind}`;
-
-  const onReadingExpire = useCallback(() => dispatch({ type: "readingTimeout" }), [dispatch]);
-  const onMeaningExpire = useCallback(() => dispatch({ type: "meaningTimeout" }), [dispatch]);
-
-  const readingLeft = useCountdown({
-    seconds: approachSeconds(state.difficulty),
-    active: phase.kind === "reading",
-    onExpire: onReadingExpire,
-    resetKey,
-  });
-  const meaningLeft = useCountdown({
-    seconds: choiceSeconds(state.difficulty),
-    active: phase.kind === "meaning",
-    onExpire: onMeaningExpire,
-    resetKey,
-  });
-
-  // 解説は自動で消える。クリック／Enterで早送りできる。
-  useEffect(() => {
-    if (phase.kind !== "explain") return;
-    const advance = () => dispatch({ type: "advance" });
-    const timer = setTimeout(advance, EXPLAIN_MS);
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Enter" || e.key === " ") advance();
-    };
-    window.addEventListener("keydown", onKey);
-    return () => {
-      clearTimeout(timer);
-      window.removeEventListener("keydown", onKey);
-    };
-  }, [phase.kind, state.index, dispatch]);
-
-  useEffect(() => {
-    if (phase.kind === "finished") onFinished();
-  }, [phase.kind, onFinished]);
-
-  if (!question) return null;
-  const { word, choices } = question;
-  const field = fieldForIndex(state.fieldSequence, state.index, state.questions.length);
-
-  return (
-    <div className="flex flex-col gap-4">
-      <Hud state={state} />
-
-      <ApproachField
-        term={word.term}
-        reading={word.reading}
-        showFurigana={state.furiganaOn}
-        remaining={readingLeft}
-        field={field}
-        frozen={phase.kind !== "reading"}
-      />
-
-      {phase.kind === "reading" && (
-        <div className="flex flex-col items-center gap-2">
-          <p className="text-ink font-extrabold">
-            よみを ひらがなで 入力して、<span className="text-sky">Enter</span>！
-          </p>
-          {state.hint && <FeedbackMessage messageKey={state.hint} className="w-full max-w-2xl" />}
-          <ReadingInput
-            key={resetKey}
-            onSubmit={(input) => dispatch({ type: "submitReading", input })}
-          />
-        </div>
-      )}
-
-      {phase.kind === "meaning" && (
-        <div className="flex flex-col items-center gap-3">
-          {phase.readingOk === false && (
-            <div className="w-full max-w-3xl">
-              <p className="text-ink mb-2 text-center font-extrabold">
-                よみ: <span className="text-sky">{word.reading}</span>
-              </p>
-              {state.hint && <FeedbackMessage messageKey={state.hint} />}
-            </div>
-          )}
-          <p className="text-ink font-extrabold">英語の 意味を えらぼう！</p>
-          <MeaningChoice
-            choices={choices}
-            remaining={meaningLeft}
-            onChoose={(choice) => dispatch({ type: "chooseMeaning", choice })}
-          />
-        </div>
-      )}
-
-      {phase.kind === "explain" && (
-        <motion.button
-          type="button"
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          onClick={() => dispatch({ type: "advance" })}
-          className="card-pop w-full p-5 text-left"
-        >
-          <FeedbackMessage messageKey={phase.feedback} />
-          <p className="text-ink mt-3 text-lg font-extrabold">
-            <ruby>
-              {word.term}
-              <rt>{word.reading}</rt>
-            </ruby>
-            <span className="text-sky ml-3 text-base">{word.meaningEn}</span>
-          </p>
-          <p className="text-ink-soft mt-1 font-bold">
-            <RubyText text={word.explanationJa} index={furigana} />
-          </p>
-          <p className="text-ink-faint mt-2 text-sm">
-            <RubyText text={word.example} index={furigana} />
-          </p>
-          <p className="text-ink-faint mt-3 text-xs font-bold">（おす／Enter で つぎへ）</p>
-        </motion.button>
-      )}
-
-      <div className="flex justify-center gap-2">
-        {state.mode !== "test" && (
-          <button
-            type="button"
-            onClick={() => dispatch({ type: "toggleFurigana" })}
-            className="btn-game px-4 py-2 text-sm"
-            style={
-              {
-                "--btn-face": state.furiganaOn ? "#0288d1" : "#ffffff",
-                "--btn-shadow": state.furiganaOn ? "#0272ae" : "#cfe6f3",
-                color: state.furiganaOn ? undefined : "var(--color-ink)",
-              } as React.CSSProperties
-            }
-          >
-            ふりがな {state.furiganaOn ? "ON" : "OFF"}
-          </button>
-        )}
-        <button
-          type="button"
-          onClick={() => dispatch({ type: "quit" })}
-          className="btn-game px-4 py-2 text-sm"
-          style={{ "--btn-face": "#ffffff", "--btn-shadow": "#cfe6f3" } as React.CSSProperties}
-        >
-          <span className="text-ink">やめる</span>
-        </button>
-      </div>
-    </div>
-  );
-}
-
-function Hud({ state }: { state: ArcadeState }) {
-  return (
-    <div className="flex flex-wrap items-center justify-between gap-2">
-      <span className="border-hairline bg-panel text-ink rounded-full border-2 px-3 py-1 text-sm font-extrabold">
-        もんだい {Math.min(state.index + 1, state.questions.length)} / {state.questions.length}
-      </span>
-      <div className="flex items-center gap-2">
-        {state.mode === "practice" && (
-          <>
-            <span className="border-hairline bg-panel rounded-full border-2 px-3 py-1 text-sm font-extrabold">
-              <span className="text-ink-soft">Score </span>
-              <span className="text-navy">{state.score}</span>
-            </span>
-            <span
-              className="border-hairline bg-panel rounded-full border-2 px-3 py-1 text-sm"
-              aria-label={`のこり ライフ ${state.life}`}
-            >
-              {"❤️".repeat(Math.max(0, state.life))}
-              {"🤍".repeat(Math.max(0, START_LIFE - Math.max(0, state.life)))}
-            </span>
-            {state.combo >= 2 && (
-              <span className="bg-sun text-ink rounded-full px-3 py-1 text-sm font-extrabold">
-                {state.combo} れんぞく！
-              </span>
-            )}
-          </>
-        )}
-      </div>
-    </div>
+    </ArcadePanel>
   );
 }
 
@@ -598,7 +682,7 @@ function Hud({ state }: { state: ArcadeState }) {
  * けっか
  * ------------------------------------------------------------------ */
 
-function ResultScreen({
+function ResultLayer({
   stage,
   state,
   furigana,
@@ -623,7 +707,6 @@ function ResultScreen({
     .map((id) => byId.get(id))
     .filter((w): w is Word => Boolean(w));
 
-  // 結果は1回だけ保存する（再描画で二重計上しない）
   useEffect(() => {
     const token = `${stage.id}:${state.mode}:${state.outcomes.length}:${summary.score}`;
     if (savedRef.current === token) return;
@@ -652,16 +735,18 @@ function ResultScreen({
   }, [stage.id, state, summary, store, savedRef]);
 
   return (
-    <ArcadeResult
-      summary={summary}
-      gameScore={state.score}
-      bestCombo={state.bestCombo}
-      isTest={state.mode === "test"}
-      missedWords={missedWords}
-      furigana={furigana}
-      onRetryWrong={() => onRetryWrong(summary.missedWordIds)}
-      onRetryAll={onRetryAll}
-      onBack={onBack}
-    />
+    <div className="pointer-events-auto">
+      <ArcadeResult
+        summary={summary}
+        gameScore={state.score}
+        bestCombo={state.bestCombo}
+        isTest={state.mode === "test"}
+        missedWords={missedWords}
+        furigana={furigana}
+        onRetryWrong={() => onRetryWrong(summary.missedWordIds)}
+        onRetryAll={onRetryAll}
+        onBack={onBack}
+      />
+    </div>
   );
 }

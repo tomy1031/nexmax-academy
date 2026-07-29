@@ -172,6 +172,42 @@ describe("ことばアーケードの状態機械", () => {
     expect(arcadeReducer(quit, { type: "submitReading", input: "あ" })).toBe(quit);
   });
 
+  it("得点は旧アプリの式のまま（読み 100+（コンボ-1）×50 ／ 意味 200+コンボ×100）", () => {
+    let s = createSession({ stage, mode: "practice", rng: seededRng(21) });
+    const first = currentWord(s)!;
+
+    s = arcadeReducer(s, { type: "submitReading", input: first.reading });
+    expect(s.score).toBe(100); // コンボ1本目
+    expect(s.lastGain).toBe(100);
+
+    s = arcadeReducer(s, { type: "chooseMeaning", choice: first.meaningEn });
+    expect(s.score).toBe(100 + 400); // コンボ2で 200+2×100
+    s = arcadeReducer(s, { type: "advance" });
+
+    const second = currentWord(s)!;
+    s = arcadeReducer(s, { type: "submitReading", input: second.reading });
+    expect(s.lastGain).toBe(100 + (3 - 1) * 50); // コンボ3本目の読み
+  });
+
+  it("テストでは点が入らない（成績とゲームスコアは別物）", () => {
+    let s = createSession({ stage, mode: "test", rng: seededRng(22) });
+    const word = currentWord(s)!;
+    s = arcadeReducer(s, { type: "submitReading", input: word.reading });
+    s = arcadeReducer(s, { type: "chooseMeaning", choice: word.meaningEn });
+    expect(s.score).toBe(0);
+    expect(summarize(s).score).toBe(2); // 成績のほうには 読み1点＋意味1点
+  });
+
+  it("外すとコンボと加点表示がリセットされる", () => {
+    let s = createSession({ stage, mode: "practice", rng: seededRng(23) });
+    const word = currentWord(s)!;
+    s = arcadeReducer(s, { type: "submitReading", input: word.reading });
+    expect(s.combo).toBe(1);
+    s = arcadeReducer(s, { type: "chooseMeaning", choice: "___ありえない選択肢___" });
+    expect(s.combo).toBe(0);
+    expect(s.lastGain).toBe(0);
+  });
+
   it("ふりがなの表示はテストでは既定OFF、れんしゅうでは既定ON", () => {
     expect(createSession({ stage, mode: "test", rng: seededRng(1) }).furiganaOn).toBe(false);
     expect(createSession({ stage, mode: "practice", rng: seededRng(1) }).furiganaOn).toBe(true);
