@@ -37,6 +37,10 @@ yarn-error.log*
 # vercel
 .vercel
 
+# claude code (ローカル設定・ワークツリーは共有しない)
+.claude/settings.local.json
+.claude/worktrees/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

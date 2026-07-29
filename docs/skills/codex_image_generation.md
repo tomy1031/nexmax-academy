@@ -102,6 +102,19 @@ codex -i public/img/characters/nekumax/reference.png \
 
 シーン生成時もマスター記述の Style 節（線・色・禁止事項）を流用して統一する。
 
+## 7.5 人間キャスト（教材シナリオ内の登場人物）
+
+ネクマックスとは別レイヤーの人間キャラ（04テーマ §6.2）。VRoidモデリングの参照用設定画をここに台帳化する。
+
+| 保存先 | キャラ | 生成日 | プロンプト要点 |
+| --- | --- | --- | --- |
+| `public/img/characters/hendy/sheet_v1.png` | ヘンディ先輩（直属PM・朝会司会） | 2026-07-27 | Southeast Asian young man, early 20s, slim; short black tousled hair with side-swept fringe; dark brown eyes; light tan skin; calm gentle smile; plain black hoodie over dark t-shirt; full-body front + bust-up, clean anime cel, white bg, no text |
+| `public/img/characters/hendy/suit_ref.png` | ヘンディ先輩（スーツ姿・入力素材） | 2026-07-27 | ユーザー提供画像。生成物ではなく、下記 `suit_v2` の構図・人物アンカー |
+| `public/img/characters/hendy/suit_v2.png` | ヘンディ先輩（スーツ姿） | 2026-07-27 | `suit_ref.png` の顔・髪・表情・紺スーツ・正面構図・画風を維持し、肌色だけを暖かいタン（base `#EBAC71` 前後、shadow `#CD9566` 前後）へ変更。実測: 顔領域の肌色中央値 `#E6B484` → `#E9AB74`（目標 `#E8AA70` との色距離 22→4） |
+
+- 用途: VRoid Studio でヘンディ先輩VRMを作る際の似姿アンカー（本人写真の直接使用を避ける）。
+- 本人の実写真は生成入力に使わない（リポジトリにも置かない）。似姿の最終判断はユーザーが行う。
+
 ## 8. 権利と運用
 
 - reference.png はユーザー提供の原画。アプリ・教材以外への流用はしない。
