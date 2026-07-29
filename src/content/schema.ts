@@ -242,12 +242,69 @@ export const scenarioSchema = z
     }
   });
 
+/** 発話の読み（口パク生成用）。ひらがな＋間（ま）を表す約物のみ。 */
+const spokenKana = z
+  .string()
+  .min(1)
+  .regex(
+    /^[ぁ-ゖーゔ・、。！？\s]+$/u,
+    "発話の読みはひらがなで書く（カタカナ語もひらがなに開く。句読点は間として使う）",
+  );
+
+/** シーンの登場人物。model を持たない人物は字幕のみで登場する。 */
+export const sceneCharacterSchema = z.object({
+  name: plainText,
+  /** VRMモデルのパス（public 配下）。省略時は字幕のみ。 */
+  model: z.string().min(1).optional(),
+  /** Live音声プリセット名（scenarioSchema.client.voice と同じ語彙）。 */
+  voice: z.string().min(1).optional(),
+});
+
+/** シーンの1行。text は表示用、kana は口パク用の読み。 */
+export const sceneLineSchema = z.object({
+  /** characters のキー。 */
+  speaker: z.string().min(1),
+  text: plainText,
+  kana: spokenKana,
+  /** 音声ファイル（public 配下）。未生成でも字幕と口パクは動く。 */
+  audio: z.string().min(1).optional(),
+});
+
+/** シーン（動画のかわりに再生する会話劇）。教材追加＝データ追加。 */
+export const sceneSchema = z
+  .object({
+    kind: z.literal("scene"),
+    id: z.string().regex(/^[a-z0-9_-]+$/),
+    title: plainText,
+    description: plainText,
+    /** 背景の識別子（プレイヤー側のCSS背景に対応）。 */
+    background: z.string().min(1).optional(),
+    characters: z.record(z.string().min(1), sceneCharacterSchema),
+    lines: z.array(sceneLineSchema).min(1),
+    /** 複合語優先の読み辞書（字幕ルビ用）。 */
+    furigana: z.array(furiganaEntrySchema).optional(),
+  })
+  .superRefine((scene, ctx) => {
+    scene.lines.forEach((line, i) => {
+      if (!scene.characters[line.speaker]) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["lines", i, "speaker"],
+          message: `speaker "${line.speaker}" が characters に定義されていない`,
+        });
+      }
+    });
+  });
+
 export const contentSchema = z.discriminatedUnion("kind", [
   wordStageSchema,
   scenarioSchema,
+  sceneSchema,
 ]);
 
 export type Word = z.infer<typeof wordSchema>;
 export type WordStage = z.infer<typeof wordStageSchema>;
 export type Scenario = z.infer<typeof scenarioSchema>;
+export type Scene = z.infer<typeof sceneSchema>;
+export type SceneLine = z.infer<typeof sceneLineSchema>;
 export type Content = z.infer<typeof contentSchema>;

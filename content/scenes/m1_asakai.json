@@ -1,0 +1,57 @@
+{
+  "kind": "scene",
+  "id": "m1_asakai",
+  "title": "あさのミーティング（報告・連絡・相談）",
+  "description": "配属されたチームの朝のミーティングで、ヘンディ先輩が報告・連絡・相談のお手本を見せます。",
+  "background": "office_morning",
+  "characters": {
+    "hendy": {
+      "name": "ヘンディ先輩",
+      "model": "/labs/vrm/Seed-san.vrm",
+      "voice": "Puck"
+    }
+  },
+  "furigana": [
+    ["朝", "あさ"],
+    ["作業", "さぎょう"],
+    ["報告", "ほうこく"],
+    ["連絡", "れんらく"],
+    ["画面", "がめん"],
+    ["午後", "ごご"],
+    ["3時", "さんじ"],
+    ["設定", "せってい"],
+    ["相談", "そうだん"]
+  ],
+  "lines": [
+    {
+      "speaker": "hendy",
+      "text": "おはようございます。朝の ミーティングを はじめます。",
+      "kana": "おはよーございます。あさの みーてぃんぐを はじめます。",
+      "audio": "/labs/vrm/m1_asakai/line01.wav"
+    },
+    {
+      "speaker": "hendy",
+      "text": "きのうの 作業を 報告します。ログイン画面が できました。",
+      "kana": "きのーの さぎょーを ほーこくします。ろぐいんがめんが できました。",
+      "audio": "/labs/vrm/m1_asakai/line02.wav"
+    },
+    {
+      "speaker": "hendy",
+      "text": "きょうの よていを 連絡します。午後 3時まで テストを します。",
+      "kana": "きょーの よていを れんらくします。ごご さんじまで てすとを します。",
+      "audio": "/labs/vrm/m1_asakai/line03.wav"
+    },
+    {
+      "speaker": "hendy",
+      "text": "こまって いることが あります。データベースの 設定が わかりません。",
+      "kana": "こまって いることが あります。でーたべーすの せっていが わかりません。",
+      "audio": "/labs/vrm/m1_asakai/line04.wav"
+    },
+    {
+      "speaker": "hendy",
+      "text": "あとで 相談させて ください。では、はじめましょう。",
+      "kana": "あとで そーだんさせて ください。では、はじめましょー。",
+      "audio": "/labs/vrm/m1_asakai/line05.wav"
+    }
+  ]
+}

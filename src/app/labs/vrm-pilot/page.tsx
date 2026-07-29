@@ -1,11 +1,15 @@
 import type { Metadata } from "next";
-import VrmPilot from "./VrmPilot";
+import sceneJson from "@/../content/scenes/m1_asakai.json";
+import { sceneSchema } from "@/content/schema";
+import { ScenePlayer } from "@/components/scene-player";
 
 export const metadata: Metadata = {
-  title: "VRM口パクパイロット | NexmaxAcademy labs",
-  description:
-    "three-vrmによるブラウザ内キャラクター描画と、かなタイムライン駆動の口パク検証（ヘンディ先輩の朝会）",
+  title: "シーンプレイヤー検証 | NexmaxAcademy labs",
+  description: "VRMキャラクターの口パクとルビ字幕でシーンデータを再生する検証ページ",
 };
+
+// スキーマが検収の契約。壊れたデータならビルド時に落とす。
+const scene = sceneSchema.parse(sceneJson);
 
 export default function VrmPilotPage() {
   return (
@@ -14,17 +18,17 @@ export default function VrmPilotPage() {
         <p className="text-xs font-semibold tracking-wide text-[#0288d1] uppercase">
           labs / 検証用（学習者には公開しない）
         </p>
-        <h1 className="text-2xl font-bold text-[#1f3a56]">
-          VRM口パクパイロット — ヘンディ先輩の朝会
-        </h1>
+        <h1 className="text-2xl font-bold text-[#1f3a56]">シーンプレイヤー検証</h1>
         <p className="text-sm leading-6 text-[#5a7089]">
-          VRoid製VRMモデルをthree-vrm（WebGL2）でブラウザ描画し、かな文字列から
-          生成した口パクタイムラインで「あ・い・う・え・お」表情を駆動する検証ページです。
-          キャラクターはHTML背景の上に直接合成されるため、背景透過処理は不要です。
-          現在は仮モデル（Seed-san）で、ヘンディ先輩のVRoidモデル完成後に差し替えます。
+          コンテンツデータ（<code>content/scenes/{scene.id}.json</code>
+          ）だけを入力に、VRMキャラクターの口パク・ルビ字幕・音声を同期再生します。
+          セリフはコードに書かれていません。キャラクターはHTML背景の上に直接描画されるため、
+          背景透過処理は不要です。
         </p>
       </header>
-      <VrmPilot />
+
+      <ScenePlayer scene={scene} />
+
       <footer className="text-xs leading-5 text-[#9db0c2]">
         仮モデル: Seed-san（VirtualCast, Inc. /{" "}
         <a
@@ -36,7 +40,8 @@ export default function VrmPilotPage() {
           VRM Public License 1.0
         </a>
         、vrm-c/vrm-specification サンプルより検証目的で使用）。
-        音声はmacOS内蔵TTSの仮置き。本番はGemini Live / VOICEVOXに差し替える。
+        ヘンディ先輩のVRoidモデル完成後に差し替える。 音声は Gemini Live（
+        {Object.values(scene.characters)[0]?.voice}）で生成する。
       </footer>
     </main>
   );
