@@ -14,6 +14,7 @@ import {
   StudentScoreChart,
   axisLabel,
 } from "@/components/admin/admin-ui";
+import { TeachingHintsCard } from "@/components/admin/hints-card";
 import { NekuMaxFamily, TypeEmblem } from "@/components/nekumax-types";
 import {
   PERSONALITY_AXES,
@@ -54,6 +55,8 @@ export default function StudentPersonalityReportPage() {
   const router = useRouter();
   const { id } = useParams<{ id: string }>();
   const [profile, setProfile] = useState<ProfileRow | null>(null);
+  // 授業サポートの偏り判定（08 §3.3）はクラス全体を数えないと決まらないため、コホートも持つ。
+  const [cohort, setCohort] = useState<ProfileRow[]>([]);
   const [results, setResults] = useState<PersonalityResultRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -98,6 +101,7 @@ export default function StudentPersonalityReportPage() {
           return;
         }
         setProfile(target);
+        setCohort(allProfiles);
         setResults(profileResults);
         setLoading(false);
       } catch (error) {
@@ -263,6 +267,8 @@ export default function StudentPersonalityReportPage() {
             })}
           </div>
         </section>
+
+        <TeachingHintsCard student={profile} cohort={cohort} examDate={examDate} />
 
         <section className="card-pop p-5 sm:p-7">
           <h2 className="text-navy text-xl font-black sm:text-2xl">受験履歴</h2>

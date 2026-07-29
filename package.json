@@ -14,7 +14,8 @@
     "format:check": "prettier --check .",
     "test": "vitest run",
     "lint:secrets": "secretlint --secretlintignore .secretlintignore '**/*'",
-    "prepare": "husky"
+    "prepare": "husky",
+    "codex:bridge": "node scripts/codex_bridge.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.3",

@@ -942,8 +942,7 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
     readings: [
       { text: "変えよう", reading: "かえよう" },
       { text: "言われました", reading: "いわれました" },
-      { text: "一回", reading: "いっかい" },
-      { text: "作って", reading: "つくって" },
+      { text: "作りなおしたい", reading: "つくりなおしたい" },
     ],
     image: "/img/quiz/q20.webp",
   },
@@ -1133,12 +1132,27 @@ export function getPoleFromCode(
 }
 
 /**
+ * その軸が 3-2 の僅差か。「僅差」の定義はここ1か所に持つ（08 §3.1）。
+ * 定義が2か所に散ると片方だけ直されて壊れるため、getCloseAxis / getCloseAxes も
+ * この述語の上に載せる。
+ */
+export function isCloseAxis(scores: PersonalityScores, axis: PersonalityAxis): boolean {
+  assertScores(scores);
+  return scores[axis] === 3 || scores[axis] === 2;
+}
+
+/** 僅差の軸すべて（EI→SN→TF→JP の順）。教師向けの授業サポート表示が使う（08 §3.2）。 */
+export function getCloseAxes(scores: PersonalityScores): readonly PersonalityAxis[] {
+  assertScores(scores);
+  return PERSONALITY_AXES.filter((axis) => isCloseAxis(scores, axis));
+}
+
+/**
  * 3-2 の僅差になっている軸。EI→SN→TF→JP の順で最初の1つだけ返す（07 §4.3）。
  * 「どちらも あなたの いい ところ」の表示に使う。
  */
 export function getCloseAxis(scores: PersonalityScores): PersonalityAxis | null {
-  assertScores(scores);
-  return PERSONALITY_AXES.find((axis) => scores[axis] === 3 || scores[axis] === 2) ?? null;
+  return getCloseAxes(scores)[0] ?? null;
 }
 
 /** 指定した軸だけ極を反転したコードを返す。 */

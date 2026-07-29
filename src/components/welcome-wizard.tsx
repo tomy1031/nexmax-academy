@@ -240,6 +240,8 @@ export function WelcomeWizard({
   const [showKey, setShowKey] = useState(false);
   const [busy, setBusy] = useState(false);
   const [language, setLanguage] = useState<PersonalityLanguage>("easy");
+  // 診断の途中で言語を切り替えたか（08 §5.2）。回答言語と一緒に保存する。
+  const languageSwitchedRef = useRef(false);
   const [answers, setAnswers] = useState<(PersonalityAnswer | null)[]>(() =>
     Array.from({ length: PERSONALITY_QUESTIONS.length }, () => null),
   );
@@ -339,12 +341,16 @@ export function WelcomeWizard({
         personalityType: resultCode,
         answers: completedAnswers,
         scores,
+        answerLanguage: language,
+        languageSwitched: languageSwitchedRef.current,
       });
       try {
         await insertPersonalityResult({
           personalityType: resultCode,
           answers: completedAnswers,
           scores,
+          answerLanguage: language,
+          languageSwitched: languageSwitchedRef.current,
         });
       } catch {
         // 最新プロフィールが保存できていれば学習を止めず、記録台帳の失敗だけを許容する。
@@ -737,7 +743,10 @@ export function WelcomeWizard({
                   <button
                     key={option.id}
                     type="button"
-                    onClick={() => setLanguage(option.id)}
+                    onClick={() => {
+                      if (option.id !== language) languageSwitchedRef.current = true;
+                      setLanguage(option.id);
+                    }}
                     className={`rounded-full px-3 py-2 text-xs font-extrabold sm:px-4 ${
                       language === option.id ? "bg-navy text-white" : "text-ink-soft"
                     }`}

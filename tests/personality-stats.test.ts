@@ -784,6 +784,8 @@ describe("latestResultsByProfile", () => {
     answers: answersForCode("ISTJ"),
     scores: scoresForCode("ISTJ"),
     personality_version: 3,
+    answer_language: null,
+    language_switched: false,
     created_at: createdAt,
   });
 

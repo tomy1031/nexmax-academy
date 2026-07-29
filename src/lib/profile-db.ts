@@ -1,5 +1,6 @@
 import type {
   PersonalityAnswer,
+  PersonalityLanguage,
   PersonalityScores,
   PersonalityTypeCode,
 } from "@/content/personality";
@@ -23,6 +24,10 @@ export interface ProfileRow {
   answers: PersonalityAnswer[];
   scores: PersonalityScores;
   personality_version: number;
+  /** 診断に答えた言語。null は記録前のデータ（08 §8）。 */
+  answer_language: PersonalityLanguage | null;
+  /** 診断の途中で言語を切り替えたか。 */
+  language_switched: boolean;
   is_admin: boolean;
   created_at: string;
   updated_at: string;
@@ -34,6 +39,8 @@ export interface OwnProfileInput {
   personalityType: PersonalityTypeCode;
   answers: PersonalityAnswer[];
   scores: PersonalityScores;
+  answerLanguage: PersonalityLanguage;
+  languageSwitched: boolean;
 }
 
 export interface PersonalityResultRow {
@@ -43,6 +50,8 @@ export interface PersonalityResultRow {
   answers: PersonalityAnswer[];
   scores: PersonalityScores;
   personality_version: number;
+  answer_language: PersonalityLanguage | null;
+  language_switched: boolean;
   created_at: string;
 }
 
@@ -50,6 +59,8 @@ export interface PersonalityResultInput {
   personalityType: PersonalityTypeCode;
   answers: PersonalityAnswer[];
   scores: PersonalityScores;
+  answerLanguage: PersonalityLanguage;
+  languageSwitched: boolean;
 }
 
 export interface AdminProfilePatch {
@@ -102,6 +113,8 @@ export async function upsertOwnProfile(data: OwnProfileInput): Promise<ProfileRo
         answers: data.answers,
         scores: data.scores,
         personality_version: PERSONALITY_VERSION,
+        answer_language: data.answerLanguage,
+        language_switched: data.languageSwitched,
       },
       { onConflict: "id" },
     )
@@ -130,6 +143,8 @@ export async function insertPersonalityResult(
       answers: data.answers,
       scores: data.scores,
       personality_version: PERSONALITY_VERSION,
+      answer_language: data.answerLanguage,
+      language_switched: data.languageSwitched,
     })
     .select("*")
     .single();

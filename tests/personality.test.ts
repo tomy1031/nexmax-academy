@@ -6,8 +6,10 @@ import {
   PERSONALITY_QUESTIONS,
   PERSONALITY_TYPES,
   calculatePersonalityScores,
+  getCloseAxes,
   getCloseAxis,
   getCompatibility,
+  isCloseAxis,
   getFamilyForCode,
   getPersonalityType,
   isPersonalityScores,
@@ -303,6 +305,36 @@ describe("僅差の軸（07 §4.3）", () => {
   it("壊れたスコアには僅差表示を返さず弾く", () => {
     const broken = { ei: 2, sn: 99, tf: Number.NaN, jp: -1 } as PersonalityScores;
     expect(() => getCloseAxis(broken)).toThrow();
+    expect(() => getCloseAxes(broken)).toThrow();
+    expect(() => isCloseAxis(broken, "ei")).toThrow();
+  });
+
+  it("isCloseAxis は 2・3 だけを僅差とする（0〜5 の全値）", () => {
+    for (const value of [0, 1, 2, 3, 4, 5]) {
+      const scores: PersonalityScores = { ei: value, sn: 0, tf: 5, jp: 1 };
+      expect(isCloseAxis(scores, "ei")).toBe(value === 2 || value === 3);
+    }
+  });
+
+  it("getCloseAxes は僅差の軸すべてを軸順で返す（全16パターン網羅）", () => {
+    // 各軸を「僅差（3）」か「決定的（5）」のどちらかにした 2^4 = 16 通りを尽くす。
+    // getCloseAxis（1件版）が getCloseAxes の先頭と常に一致することも同時に固定する。
+    for (let mask = 0; mask < 16; mask += 1) {
+      const closeSet = PERSONALITY_AXES.filter((_, index) => (mask & (1 << index)) !== 0);
+      const scores = { ei: 0, sn: 0, tf: 0, jp: 0 } as PersonalityScores;
+      PERSONALITY_AXES.forEach((axis, index) => {
+        scores[axis] = (mask & (1 << index)) !== 0 ? 3 : 5;
+      });
+      expect(getCloseAxes(scores)).toEqual(closeSet);
+      expect(getCloseAxis(scores)).toBe(closeSet[0] ?? null);
+    }
+  });
+
+  it("複数の僅差軸が漏れない（08 §3.1 の例）", () => {
+    // 1件版では tf が漏れる例。全件版はすべて返す。
+    expect(getCloseAxes({ ei: 3, sn: 4, tf: 2, jp: 5 })).toEqual(["ei", "tf"]);
+    expect(getCloseAxes({ ei: 5, sn: 4, tf: 3, jp: 2 })).toEqual(["tf", "jp"]);
+    expect(getCloseAxes({ ei: 5, sn: 0, tf: 4, jp: 1 })).toEqual([]);
   });
 });
 
