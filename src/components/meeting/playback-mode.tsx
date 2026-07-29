@@ -1,23 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useMemo, useRef, useState } from "react";
-import { motion } from "motion/react";
+import { useMemo, useRef, useState } from "react";
 import type { Meeting } from "@/content/schema";
-import { FeedbackMessage } from "@/components/feedback-message";
 import { RubyText } from "@/components/ruby-text";
 import { buildFuriganaIndex } from "@/lib/text/furigana";
-import type { FeedbackKey } from "@/lib/feedback";
 import { CaptionBar, MeetingShell } from "./meeting-shell";
-import {
-  createKeywordHunt,
-  createReveal,
-  revealRate,
-  revealWith,
-  submitKeyword,
-  type KeywordHuntState,
-  type RevealState,
-} from "./listening-checks";
+import { ListeningPanel } from "./listening-panel";
 
 /**
  * 再生モード — Zoom風の画面で「聞く」教材。
@@ -25,8 +14,7 @@ import {
  * 音声（audioUrl）があれば速度を落として聞ける。無いときは台本を1行ずつ
  * 進める読み物として成立させる（音声はあとから差し込める）。
  *
- * 聞き取りチェックは旧アプリの2つを移植した:
- *   キーワード発見 / 隠し原稿リベール
+ * 聞き取りチェックは旧アプリと同じく、入力欄ひとつ（ListeningPanel）。
  */
 export function PlaybackMeeting({ meeting }: { meeting: Meeting }) {
   const furigana = useMemo(() => buildFuriganaIndex(meeting.furigana ?? []), [meeting.furigana]);
@@ -135,174 +123,13 @@ export function PlaybackMeeting({ meeting }: { meeting: Meeting }) {
           </button>
         </div>
 
-        {meeting.keywords.length > 0 && (
-          <KeywordHunt keywords={meeting.keywords} furigana={furigana} />
-        )}
-
-        <TranscriptReveal meeting={meeting} goal={meeting.revealGoal} />
+        <ListeningPanel
+          transcript={meeting.script.map((l) => l.text).join("\n")}
+          keywords={meeting.keywords}
+          goal={meeting.revealGoal}
+          furigana={furigana}
+        />
       </MeetingShell>
     </div>
-  );
-}
-
-/* ------------------------------------------------------------------ *
- * キーワード発見
- * ------------------------------------------------------------------ */
-
-function KeywordHunt({
-  keywords,
-  furigana,
-}: {
-  keywords: readonly string[];
-  furigana: ReturnType<typeof buildFuriganaIndex>;
-}) {
-  const [state, setState] = useState<KeywordHuntState>(() => createKeywordHunt(keywords));
-  const [feedback, setFeedback] = useState<FeedbackKey | null>(null);
-  const [value, setValue] = useState("");
-
-  const submit = useCallback(
-    (input: string) => {
-      const result = submitKeyword(state, input);
-      setState(result.state);
-      setFeedback(result.hit ? "listening.keywordFound" : "listening.keywordUnknown");
-      if (result.hit) setValue("");
-    },
-    [state],
-  );
-
-  return (
-    <section className="card-pop p-5">
-      <h3 className="text-ink font-extrabold">🔍 聞こえた ことばを 入れてみよう</h3>
-      <p className="text-ink-soft mt-1 text-sm font-bold">
-        {state.found.length} / {keywords.length} こ　スコア {state.score}
-      </p>
-
-      <form
-        className="mt-3 flex gap-2"
-        onSubmit={(e) => {
-          e.preventDefault();
-          submit(value);
-        }}
-      >
-        <input
-          type="text"
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          autoComplete="off"
-          spellCheck={false}
-          placeholder="きこえた ことば"
-          aria-label="聞こえた ことばを 入力する"
-          className="border-hairline bg-panel text-ink w-full rounded-[var(--radius-button)] border-2 px-4 py-2.5 font-bold"
-        />
-        <button type="submit" className="btn-game shrink-0 px-6 py-2.5 text-sm">
-          さがす
-        </button>
-      </form>
-
-      {feedback && <FeedbackMessage messageKey={feedback} className="mt-3" />}
-
-      {state.found.length > 0 && (
-        <ul className="mt-3 flex flex-wrap gap-2">
-          {state.found.map((word) => (
-            <motion.li
-              key={word}
-              initial={{ scale: 0.6, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              className="bg-leaf/15 text-leaf-deep rounded-full px-3 py-1 text-sm font-extrabold"
-            >
-              ✓ <RubyText text={word} index={furigana} />
-            </motion.li>
-          ))}
-        </ul>
-      )}
-    </section>
-  );
-}
-
-/* ------------------------------------------------------------------ *
- * 隠し原稿リベール
- * ------------------------------------------------------------------ */
-
-function TranscriptReveal({ meeting, goal }: { meeting: Meeting; goal: number }) {
-  const transcript = useMemo(() => meeting.script.map((l) => l.text).join("\n"), [meeting.script]);
-  const [state, setState] = useState<RevealState>(() => createReveal(transcript));
-  const [value, setValue] = useState("");
-  const rate = revealRate(state);
-  const cleared = rate >= goal;
-
-  const submit = (input: string) => {
-    setState((prev) => revealWith(prev, input).state);
-    setValue("");
-  };
-
-  return (
-    <section className="card-pop p-5">
-      <h3 className="text-ink font-extrabold">📜 かくれた 原稿を 出そう</h3>
-      <p className="text-ink-soft mt-1 text-sm font-bold">
-        聞こえた ことばを 入れると、その ところが 見えてくるよ（いま {rate}% ／ めやす {goal}%）
-      </p>
-
-      <div
-        className="mt-3 h-2.5 w-full overflow-hidden rounded-full"
-        style={{ background: "var(--color-sky-soft)" }}
-      >
-        <motion.div
-          className="h-full rounded-full"
-          initial={{ width: 0 }}
-          animate={{ width: `${Math.min(100, rate)}%` }}
-          style={{ background: cleared ? "var(--color-leaf)" : "var(--color-sky)" }}
-        />
-      </div>
-
-      <form
-        className="mt-3 flex gap-2"
-        onSubmit={(e) => {
-          e.preventDefault();
-          submit(value);
-        }}
-      >
-        <input
-          type="text"
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          autoComplete="off"
-          spellCheck={false}
-          placeholder="きこえた ことば"
-          aria-label="原稿を 出す ことばを 入力する"
-          className="border-hairline bg-panel text-ink w-full rounded-[var(--radius-button)] border-2 px-4 py-2.5 font-bold"
-        />
-        <button
-          type="submit"
-          className="btn-game shrink-0 px-6 py-2.5 text-sm"
-          style={{ "--btn-face": "#8d6ae8", "--btn-shadow": "#7452cc" } as React.CSSProperties}
-        >
-          出す
-        </button>
-      </form>
-
-      {cleared && <FeedbackMessage messageKey="listening.revealProgress" className="mt-3" />}
-
-      <p
-        className="border-hairline bg-panel-tint mt-3 rounded-[var(--radius-card)] border-2 p-4 leading-loose font-bold break-words whitespace-pre-wrap"
-        aria-label="原稿"
-      >
-        {[...transcript].map((char, i) =>
-          state.revealed.has(i) ? (
-            <span key={i} className="text-ink">
-              {char}
-            </span>
-          ) : (
-            <span
-              key={i}
-              className="text-ink-faint/40 rounded-[3px]"
-              style={{ background: "var(--color-hairline)" }}
-              aria-hidden
-            >
-              {char === "\n" ? "\n" : "　"}
-            </span>
-          ),
-        )}
-      </p>
-    </section>
   );
 }
