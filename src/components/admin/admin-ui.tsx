@@ -69,6 +69,9 @@ export function AdminHeader({ onCsv }: { onCsv?: () => void }) {
         >
           ユーザー
         </Link>
+        <Link href="/nekumax" className={itemClass(pathname === "/nekumax")}>
+          ネクマックス16人
+        </Link>
         {onCsv ? (
           <button type="button" onClick={onCsv} className={itemClass(false)}>
             CSV
@@ -299,7 +302,7 @@ export function TypeDistributionChart({ data }: { data: TypeDistribution }) {
                 ...family.codes.map((code) => (
                   <tr key={code.code} className="border-hairline border-b">
                     <td className="text-ink-soft px-3 py-1.5 pl-8">
-                      {code.code} {getPersonalityType(code.code).name}
+                      {getPersonalityType(code.code).name}
                     </td>
                     <td className="px-3 py-1.5 text-right tabular-nums">{code.count}人</td>
                     {data.sampleMode === "full" && (
@@ -335,7 +338,7 @@ export function TypeDistributionChart({ data }: { data: TypeDistribution }) {
                 {family.codes.map((code) => (
                   <li key={code.code} className="flex justify-between gap-2">
                     <span className={code.count === 0 ? "opacity-45" : "font-bold"}>
-                      {code.code}
+                      {getPersonalityType(code.code).shortName}
                     </span>
                     <span className={`tabular-nums ${code.count === 0 ? "opacity-45" : ""}`}>
                       {code.count}人

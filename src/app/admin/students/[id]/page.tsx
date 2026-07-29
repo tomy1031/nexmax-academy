@@ -192,7 +192,7 @@ export default function StudentPersonalityReportPage() {
                 }}
               >
                 {FAMILY_LABELS[getFamilyForCode(profile.personality_type).id]}・
-                {profile.personality_type}
+                {getPersonalityType(profile.personality_type).shortName}
               </span>
             </div>
             <dl className="text-ink mt-4 grid gap-x-8 gap-y-2 text-sm sm:grid-cols-2">
@@ -304,7 +304,7 @@ export default function StudentPersonalityReportPage() {
                             FAMILY_COLORS[getFamilyForCode(result.personality_type).id],
                         }}
                       >
-                        {result.personality_type}
+                        {getPersonalityType(result.personality_type).shortName}
                       </span>
                     </div>
                     <div className="mt-3 grid grid-cols-2 gap-2 text-sm sm:grid-cols-4">

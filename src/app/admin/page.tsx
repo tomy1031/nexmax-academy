@@ -342,7 +342,7 @@ export default function AdminDashboardPage() {
                           }}
                           title={getPersonalityType(member.personality_type).name}
                         >
-                          {member.personality_type}
+                          {getPersonalityType(member.personality_type).shortName}
                         </span>
                       </li>
                     ))}

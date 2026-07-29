@@ -4,11 +4,14 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AdminError, AdminHeader, AdminLoading, AdminPageFrame } from "@/components/admin/admin-ui";
+import { TypeEmblem } from "@/components/nekumax-types";
 import {
   PERSONALITY_AXES,
   PERSONALITY_AXIS_META,
   PERSONALITY_TYPES,
+  getFamilyForCode,
   getPersonalityFamily,
+  getPersonalityType,
   pickPersonalityCode,
   type PersonalityTypeCode,
 } from "@/content/personality";
@@ -33,7 +36,7 @@ interface ProfileDraft {
 const TYPE_OPTIONS: readonly { id: PersonalityTypeCode; label: string }[] = PERSONALITY_TYPES.map(
   (type) => ({
     id: type.code,
-    label: `${type.code}  ${getPersonalityFamily(type.familyId).name}・${type.name}`,
+    label: `${getPersonalityFamily(type.familyId).name}・${type.shortName}`,
   }),
 );
 
@@ -181,7 +184,8 @@ export default function AdminUsersPage() {
                 <th className="px-3">メール</th>
                 <th className="px-3">なまえ</th>
                 <th className="px-3">性別</th>
-                <th className="px-3">タイプ</th>
+                <th className="px-3">ネクマックス</th>
+                <th className="px-3">タイプを 変える</th>
                 <th className="px-3">スコア</th>
                 <th className="px-3">管理者</th>
                 <th className="px-3">作成日</th>
@@ -230,6 +234,31 @@ export default function AdminUsersPage() {
                         <option value="female">女性</option>
                       </select>
                     </td>
+                    {/* いま何の人か。診断ずみの行だけ出す。未診断を診断ずみに見せない。 */}
+                    <td className="px-3 py-3">
+                      {diagnosed ? (
+                        <span className="flex items-center gap-2">
+                          <TypeEmblem
+                            code={profile.personality_type}
+                            size={34}
+                            className="shrink-0"
+                          />
+                          <span className="min-w-0">
+                            <span className="text-ink block font-extrabold whitespace-nowrap">
+                              {getPersonalityType(profile.personality_type).shortName}
+                            </span>
+                            <span
+                              className="block text-[10px] font-bold whitespace-nowrap"
+                              style={{ color: getFamilyForCode(profile.personality_type).color }}
+                            >
+                              {getFamilyForCode(profile.personality_type).name}
+                            </span>
+                          </span>
+                        </span>
+                      ) : (
+                        <span className="text-ink-soft font-bold">未診断</span>
+                      )}
+                    </td>
                     <td className="px-3 py-3">
                       <select
                         value={draft.personalityType}
@@ -263,7 +292,7 @@ export default function AdminUsersPage() {
                           {mismatched && (
                             <span
                               className="ml-1 rounded bg-[#fdf0e4] px-1.5 py-0.5 font-sans text-[10px] font-bold text-[#a5541c]"
-                              title={`回答から求まるタイプは ${pickPersonalityCode(profile.scores)} です`}
+                              title={`回答から求まるのは ${getPersonalityType(pickPersonalityCode(profile.scores)).name} です`}
                             >
                               手動変更あり
                             </span>

@@ -19,10 +19,10 @@ import {
   type PersonalityQuestion,
   type PersonalityQuestionOption,
   type PersonalityTypeCode,
-  type Reading,
 } from "@/content/personality";
 import { NekuMaxFamily, TypeEmblem } from "@/components/nekumax-types";
 import { GlossaryText } from "@/components/glossary-text";
+import { LearnerText, RubyText, renderRuby } from "@/components/ruby-text";
 import { insertPersonalityResult, upsertOwnProfile } from "@/lib/profile-db";
 import { createClient } from "@/lib/supabase/client";
 import { getGeminiKey, saveGeminiKey, saveProfile, type Gender } from "@/lib/profile";
@@ -105,39 +105,6 @@ function QuizIllustration({ src }: { src: string }) {
       className="mx-auto h-56 w-full rounded-3xl object-cover sm:h-72"
     />
   );
-}
-
-function RubyText({ text, readings }: { text: string; readings: readonly Reading[] }) {
-  const parts: ReactNode[] = [];
-  let cursor = 0;
-
-  while (cursor < text.length) {
-    let nextReading: Reading | undefined;
-    let nextIndex = text.length;
-
-    for (const reading of readings) {
-      const index = text.indexOf(reading.text, cursor);
-      if (index >= 0 && index < nextIndex) {
-        nextIndex = index;
-        nextReading = reading;
-      }
-    }
-
-    if (!nextReading) {
-      parts.push(text.slice(cursor));
-      break;
-    }
-    if (nextIndex > cursor) parts.push(text.slice(cursor, nextIndex));
-    parts.push(
-      <ruby key={`${nextReading.text}-${cursor}`}>
-        {nextReading.text}
-        <rt>{nextReading.reading}</rt>
-      </ruby>,
-    );
-    cursor = nextIndex + nextReading.text.length;
-  }
-
-  return <>{parts}</>;
 }
 
 function Stepper({ step }: { step: 1 | 2 | 3 }) {
@@ -233,17 +200,6 @@ const ASK_LABEL: Readonly<Record<PersonalityLanguage, string>> = {
   japanese: "あなたに近いのは、どっちですか?",
   english: "Which one is closer to you?",
 };
-
-function renderRuby(text: string, readings: readonly Reading[]) {
-  return <RubyText text={text} readings={readings} />;
-}
-
-/** ふりがな＋語彙メモを両方通す本文。結果画面の学習者向け文はすべてこれを使う。 */
-function ResultText({ text }: { text: string }) {
-  return (
-    <GlossaryText text={text} readings={PERSONALITY_RESULT_READINGS} renderText={renderRuby} />
-  );
-}
 
 function CompatibilityCard({ code, reason }: { code: PersonalityTypeCode; reason: string }) {
   const type = getPersonalityType(code);
@@ -980,24 +936,22 @@ export function WelcomeWizard({
                     readings={[{ text: resultFamily.name, reading: resultFamily.reading }]}
                   />
                 </p>
+                {/* 4文字コードは出さない。ネクマックス診断として完結させる（07 §1.3）。 */}
                 <h2 className="bg-navy mt-2 flex items-center gap-3 rounded-2xl px-5 py-3 text-xl font-black text-white shadow-[0_5px_0_#003c6b] sm:text-2xl">
                   <span aria-hidden className="shrink-0 text-2xl">
                     {result.emblem}
                   </span>
                   <span className="flex-1 text-center">{result.name}</span>
-                  <span className="text-navy shrink-0 rounded-lg bg-white px-2 py-1 text-xs tracking-widest">
-                    {result.code}
-                  </span>
                 </h2>
                 <p className="text-ink-soft mt-2 text-sm font-extrabold">
-                  <ResultText text={result.tagline} />
+                  <LearnerText text={result.tagline} />
                 </p>
                 <h3 className="text-navy mt-5 text-lg font-black">あなたは こんな 人</h3>
                 <ul className="mt-3 space-y-2">
                   {result.analysis.map((line) => (
                     <li key={line} className="text-ink flex gap-2 font-bold">
                       <span className="text-leaf-deep">✓</span>
-                      <ResultText text={line} />
+                      <LearnerText text={line} />
                     </li>
                   ))}
                 </ul>
@@ -1016,12 +970,12 @@ export function WelcomeWizard({
                   <span className="bg-navy mr-2 rounded-lg px-2 py-1 text-sm text-white">
                     <RubyText text={result.teamRole} readings={PERSONALITY_RESULT_READINGS} />
                   </span>
-                  <ResultText text={result.teamRoleDetail} />
+                  <LearnerText text={result.teamRoleDetail} />
                 </p>
 
                 {/* 相性。「合わない相手」という枠組みはUIに一切登場させない（07 §5.1）。 */}
                 <h3 className="text-navy mt-6 font-black">
-                  すぐに <ResultText text="話が できる 仲間" />
+                  すぐに <LearnerText text="話が できる 仲間" />
                 </h3>
                 <p className="text-ink-soft mt-1 text-xs font-bold">
                   すこしの ことばでも、わかって もらえます。
@@ -1033,7 +987,7 @@ export function WelcomeWizard({
                 </div>
 
                 <h3 className="text-navy mt-5 font-black">
-                  じぶんに ない ものを もって いる <ResultText text="仲間" />
+                  じぶんに ない ものを もって いる <LearnerText text="仲間" />
                 </h3>
                 <p className="text-ink-soft mt-1 text-xs font-bold">
                   見て いる ところが ちがうので、二人が いると チームが もっと よく なります。

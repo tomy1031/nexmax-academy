@@ -90,6 +90,31 @@ describe("タイプ台帳", () => {
     expect(new Set(PERSONALITY_TYPES.map((type) => type.code)).size).toBe(16);
   });
 
+  it("shortName は name から「の ネクマックス」を外したもので、重複しない", () => {
+    // 狭いところ（表・チップ）で使う呼び名。name と食い違うと同じ人が別名で並ぶ。
+    for (const type of PERSONALITY_TYPES) {
+      expect(type.name).toBe(`${type.shortName}の ネクマックス`);
+      expect(type.shortName.length).toBeGreaterThan(0);
+    }
+    expect(new Set(PERSONALITY_TYPES.map((type) => type.shortName)).size).toBe(16);
+  });
+
+  it("学習者に見せる文に4文字コードが混ざっていない", () => {
+    // 診断はネクマックスの世界で完結させる（07 §1.3）。台帳の文言側にコードが漏れていないか。
+    const codes = PERSONALITY_TYPES.map((type) => type.code);
+    const learnerText = PERSONALITY_TYPES.flatMap((type) => [
+      type.name,
+      type.shortName,
+      type.tagline,
+      type.teamRole,
+      type.teamRoleDetail,
+      ...type.analysis,
+    ]).join("\n");
+    for (const code of codes) {
+      expect(learnerText).not.toContain(code);
+    }
+  });
+
   it("4家族に4タイプずつ所属し、家族のcodesと一致する", () => {
     expect(PERSONALITY_FAMILIES).toHaveLength(4);
     for (const family of PERSONALITY_FAMILIES) {

@@ -3,6 +3,7 @@ import {
   PERSONALITY_QUESTIONS,
   getFamilyForCode,
   getPersonalityFamily,
+  getPersonalityType,
   isPersonalityTypeCode,
 } from "@/content/personality";
 import { hasCompletedPersonality, latestResultsByProfile } from "@/lib/personality-stats";
@@ -47,7 +48,9 @@ export function buildPersonalityCsv(
       profile.email,
       profile.display_name,
       profile.gender === "male" ? "男性" : "女性",
-      complete ? profile.personality_type : "",
+      complete && isPersonalityTypeCode(profile.personality_type)
+        ? getPersonalityType(profile.personality_type).name
+        : "",
       family,
       complete ? profile.personality_version : "",
       ...PERSONALITY_AXES.map((axis) => (complete ? profile.scores[axis] : "")),

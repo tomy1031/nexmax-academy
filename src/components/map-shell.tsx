@@ -417,6 +417,19 @@ function Navigation({
       {!collapsed && <span className="whitespace-nowrap">{<NavigationLabel item={item} />}</span>}
     </button>
   ));
+  // ネクマックス図鑑への回遊先。診断のあとに16人を見に行けるようにする（07 §7）。
+  const catalogLink = (
+    <Link
+      href="/nekumax"
+      onClick={onDrawerClose}
+      className="text-ink hover:bg-sky-soft flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl px-3 text-sm font-extrabold transition"
+    >
+      <span aria-hidden className="text-xl">
+        📖
+      </span>
+      {!collapsed && <span className="whitespace-nowrap">ネクマックス</span>}
+    </Link>
+  );
   const adminLink = isAdmin ? (
     <Link
       href="/admin"
@@ -472,6 +485,7 @@ function Navigation({
           ☰
         </button>
         {navButtons}
+        {catalogLink}
         {adminLink}
         {logoutButton}
         <button
@@ -496,6 +510,7 @@ function Navigation({
             <p className="text-navy mb-4 text-lg font-black">Nexmax Academy</p>
             <div className="space-y-2">
               {navButtons}
+              {catalogLink}
               {adminLink}
               {logoutButton}
             </div>
