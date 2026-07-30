@@ -30,17 +30,41 @@
 
 ## 3. 次セッションの作業（順番どおり）
 
-### Phase A — Next.js 更新と OpenNext 導入（ローカルで完結）
+### Phase A — Next.js 更新と OpenNext 導入（ローカルで完結）→ **完了（2026-07-30）**
 
-1. `next`・`eslint-config-next` を 16.2.12+ へ更新 → `npm test / lint / typecheck / build` 全通し
-2. `@opennextjs/cloudflare` と `wrangler` を導入、`wrangler.jsonc` 作成（`nodejs_compat`・`compatibility_date >= 2025-05-05`・assets）
-3. `opennextjs-cloudflare build && opennextjs-cloudflare preview` でローカル検証（ログイン以外の全ページ）
-4. AGENTS.md に「`middleware.ts` を `proxy.ts` に移行しない」を追記
+1. ✅ `next`・`eslint-config-next` を 16.2.12 へ更新 → `npm test / lint / typecheck / build` 全通し
+2. ✅ `@opennextjs/cloudflare` 1.20.2 と `wrangler` 4.115.0 を導入、`wrangler.jsonc` 作成
+3. ✅ `opennextjs-cloudflare build && preview` でローカル検証（全11ルート 200・404・middleware の `?code=` 転送・ブラウザ描画・console エラー0）
+4. ✅ AGENTS.md 絶対規律 8 に「`middleware.ts` を `proxy.ts` に改名しない」を追記
 
-### Phase B — デプロイと認証（ユーザーの Cloudflare アカウントが必要）
+Phase A で判明した追加事項（計画時点では未把握）:
 
-5. `wrangler login` → デプロイ。`NEXT_PUBLIC_*` は**ビルド変数**（`wrangler secret` では手遅れ。バンドルに埋まるため）
+- **ESLint が `.open-next/` を走査してヒープを食い潰し `npm run lint` が OOM で落ちる。**
+  `eslint.config.mjs` の `globalIgnores` と `.prettierignore` に `.open-next/` を追加した。
+- **`turbopack.root` の明示が必要。** ホーム側に `~/package-lock.json` があると
+  Turbopack がそこをワークスペース root と誤認し、standalone 出力の依存トレースがずれる。
+- **秘密鍵がバンドルに同梱される経路がある（重要）。** OpenNext の `compileEnvFiles` は
+  `.env*` の中身を丸ごと `.open-next/cloudflare/next-env.mjs` に書き出し、それが Worker の
+  バンドルに入る。`.env.local` に `SUPABASE_SERVICE_ROLE_KEY` を置いたままビルドすると
+  service_role key がデプロイ成果物に入る（実測で確認）。
+  `scripts/check_build_env.mjs` を作ってビルド前に止めるようにし、`cf:deploy` / `cf:upload`
+  に接続した。詳細は `docs/deploy.md` §0.2。
+- **§2.6 の懸念は解消。** `auth/callback` の `x-forwarded-host` 分岐は workerd では効かず、
+  フォールバック（`request.url` の origin）が走る。Workers では `request.url` が公開URLなので
+  正しく動く。ただし独自ドメインでの実機確認は Phase B-7 で行う。
+
+### Phase B — デプロイと認証（ユーザーの Cloudflare アカウントが必要）→ **未完了**
+
+5. デプロイ。`NEXT_PUBLIC_*` は**ビルド変数**（`wrangler secret` では手遅れ。バンドルに埋まるため）
+   - `wrangler` の認証は**済み**（`tomy1031@gmail.com` / account `<CLOUDFLARE_ACCOUNT_ID>`）。
+     `wrangler login` は不要
+   - workers.dev subdomain = **`mokumoku-db`** → 本番URLは
+     `https://nexmax-academy.mokumoku-db.workers.dev`
+   - 秘密を除いたビルドは検証済み（`next-env.mjs` が空・バンドルに service_role key なし・
+     `NEXT_PUBLIC_*` はクライアント/middleware/server に inline 済み）。**deploy 実行のみ残り**
 6. プレビューエイリアスを作成し、Supabase の Redirect URLs に登録
+   - **ワイルドカードは効かない**（§2.7）。登録する2本は `docs/deploy.md` §0.3 に逐語で記載
+   - タスクボードに登録済み
 7. Google ログイン → 20問 → 保存 → `/admin` の実機確認（deploy.md §4 の再現）
 
 ### Phase C — Tunnel + Access（AI指示出しを本番から使う）

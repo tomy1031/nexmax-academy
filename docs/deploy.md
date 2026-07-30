@@ -1,5 +1,84 @@
 # デプロイ / 環境構成
 
+> **移行中（2026-07-30）**: ホスティングを Vercel から **Cloudflare Workers** へ移している。
+> 手順は §0 を見る。§1〜§4 の Vercel 前提の記述は**移行完了までの併存**であり、
+> 完了時に「旧」として畳む（計画: `docs/design/09_Cloudflare移行実行計画.md` §3 Phase C-11）。
+> Supabase（DB・認証）は移さない。移すのはホスティングだけ。
+
+## 0. Cloudflare Workers（新・移行先）
+
+OpenNext（`@opennextjs/cloudflare`）で Workers 上に載せる。旧 `@cloudflare/next-on-pages` は使わない。
+
+### 0.1 コマンド
+
+```bash
+npm run cf:preview   # ローカルの workerd で確認（ビルド＋プレビュー）
+npm run cf:deploy    # 本番へデプロイ（秘密ガード＋ビルド＋deploy）
+npm run cf:upload    # バージョンだけ上げる（本番トラフィックは切り替えない）
+```
+
+### 0.2 環境変数の渡し方 — ここが最大の罠
+
+**`NEXT_PUBLIC_*` はビルド時に必要**。バンドルへ literal として埋め込まれるので、
+`wrangler secret` で後から入れても手遅れ（クライアントチャンクに焼き込まれた値は変わらない）。
+
+**逆に、秘密鍵はビルド環境に置いてはいけない。**
+OpenNext の `compileEnvFiles` は `.env` / `.env.<mode>` / `.env.local` /
+`.env.<mode>.local` の**中身を丸ごと** `.open-next/cloudflare/next-env.mjs` に書き出し、
+それが Worker のバンドルに入る。`.env.local` に `SUPABASE_SERVICE_ROLE_KEY` を
+置いたままビルドすると、**service_role key がデプロイ成果物へ同梱される**
+（ブラウザには出ないが、ダッシュボードでコードを読める相手には見え、
+再ビルドなしに失効させられない）。
+
+`npm run cf:build` は `scripts/check_build_env.mjs` でこれを検査して止める。
+`cf:deploy` / `cf:upload` はこのガードを必ず通る。
+
+| 変数 | 渡し方 |
+|---|---|
+| `NEXT_PUBLIC_SUPABASE_URL` | **ビルド時**（シェル環境変数 or 公開値だけの `.env.production`） |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | **ビルド時**（同上） |
+| `SUPABASE_SERVICE_ROLE_KEY` | ビルド時に渡さない。実行時に必要になったら `wrangler secret put` |
+| `GEMINI_API_KEY` | 置かない（BYOK方式。§3 の注記と同じ） |
+
+ローカルの `.env.local` に秘密が入っている場合は、ビルド中だけ退避する:
+
+```bash
+mv .env.local .env.local.holdaside
+NEXT_PUBLIC_SUPABASE_URL=... NEXT_PUBLIC_SUPABASE_ANON_KEY=... npm run cf:deploy
+mv .env.local.holdaside .env.local
+```
+
+> なお `SUPABASE_SERVICE_ROLE_KEY` は現在**コードから参照されていない**
+> （`src/lib/env.ts` に optional で宣言があるだけ）。実際に使い始めるまでは
+> ビルド環境にもランタイムにも不要。
+
+### 0.3 Redirect URLs（workers.dev はワイルドカードが効かない）
+
+workers.dev のホストは `nexmax-academy.mokumoku-db.workers.dev` のように
+**ラベルが2つ**入る。Supabase の `*` は1ラベルしか食わないため
+`https://*.workers.dev/auth/callback` では一致しない。逐語で登録する。
+
+```
+https://nexmax-academy.mokumoku-db.workers.dev/auth/callback
+https://staging-nexmax-academy.mokumoku-db.workers.dev/auth/callback
+```
+
+2行目は `wrangler versions upload --preview-alias staging` で作る固定エイリアス。
+プレビューURLは既定では `<version>-<worker>.<subdomain>.workers.dev` とバージョンごとに
+変わるので、**エイリアスを固定してから登録する**。
+未登録URLの挙動（Site URL へ `?code=` 付きフォールバック）は §4-1 と同じ。
+
+### 0.4 恒久の制約
+
+- **`src/middleware.ts` を `proxy.ts` に改名しない。** `next build` の
+  "middleware is deprecated" 警告は意図して無視する。Next.js 16 の proxy は
+  Node ランタイム固定で、OpenNext は Node middleware を検出してビルドを止める
+  （AGENTS.md 絶対規律 8・計画書 §2.3）
+- `compatibility_date` は `2025-05-05` 以降が必須（`FinalizationRegistry` 対策）
+- `incrementalCache`（R2）は入れていない。ISR / on-demand revalidate を使っておらず、
+  SSR は設定なしで動くため。**R2 を足さない = 無料枠に収まる**。ISR を使い始めたら
+  ここを見直す
+
 ## 1. 環境の位置づけ
 
 | 環境 | ホスト | 目的 | Supabase |
