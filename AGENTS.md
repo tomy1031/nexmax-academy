@@ -31,6 +31,13 @@ This version has breaking changes — APIs, conventions, and file structure may 
 6. シナリオの秘匿情報（予算等、質問で引き出すべき事実）を調査用模擬ページに書かない。
 7. キャラクター画像を手描きSVGで自作しない。ネクマックスは Codex image-gen-2 で生成する
    （正典 reference.png を参照入力・マスター記述を逐語使用。docs/skills/codex_image_generation.md）。
+8. **`src/middleware.ts` を `proxy.ts` に改名しない**（`npx @next/codemod middleware-to-proxy`
+   を実行しない）。`next build` が出す "middleware is deprecated" 警告は**意図して無視する**。
+   Next.js 16 の proxy は Node ランタイム固定で、OpenNext は Node middleware を拒否して
+   ビルドを止める（`@opennextjs/cloudflare` の `dist/cli/build/build.js`:
+   `logger.error("Node.js middleware is not currently supported...")` → `process.exit(1)`。
+   opennextjs-cloudflare#1277 が未解決）。Cloudflare Workers で動かす限り恒久の制約。
+   詳細は docs/design/09_Cloudflare移行実行計画.md §2.3。
 
 ## アーキテクチャ原則
 

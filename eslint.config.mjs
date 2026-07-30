@@ -58,6 +58,11 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // OpenNext / wrangler の生成物。除外しないと ESLint がバンドルを走査して
+    // ヒープを食い潰す（`npm run lint` が OOM で落ちる）。
+    ".open-next/**",
+    ".wrangler/**",
+    "cloudflare-env.d.ts",
   ]),
 ]);
 
