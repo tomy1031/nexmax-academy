@@ -53,19 +53,38 @@ Phase A で判明した追加事項（計画時点では未把握）:
   フォールバック（`request.url` の origin）が走る。Workers では `request.url` が公開URLなので
   正しく動く。ただし独自ドメインでの実機確認は Phase B-7 で行う。
 
-### Phase B — デプロイと認証（ユーザーの Cloudflare アカウントが必要）→ **未完了**
+### Phase B — デプロイと認証 → **5・6 完了（2026-07-31）／7 のみ残り**
 
-5. デプロイ。`NEXT_PUBLIC_*` は**ビルド変数**（`wrangler secret` では手遅れ。バンドルに埋まるため）
-   - `wrangler` の認証は**済み**（`tomy1031@gmail.com` / account `<CLOUDFLARE_ACCOUNT_ID>`）。
-     `wrangler login` は不要
-   - workers.dev subdomain = **`nextmake`** → 本番URLは
-     `https://nexmax-academy.nextmake.workers.dev`
-   - 秘密を除いたビルドは検証済み（`next-env.mjs` が空・バンドルに service_role key なし・
-     `NEXT_PUBLIC_*` はクライアント/middleware/server に inline 済み）。**deploy 実行のみ残り**
-6. プレビューエイリアスを作成し、Supabase の Redirect URLs に登録
-   - **ワイルドカードは効かない**（§2.7）。登録する2本は `docs/deploy.md` §0.3 に逐語で記載
-   - タスクボードに登録済み
-7. Google ログイン → 20問 → 保存 → `/admin` の実機確認（deploy.md §4 の再現）
+5. ✅ デプロイ済み。`NEXT_PUBLIC_*` は**ビルド変数**（`wrangler secret` では手遅れ。バンドルに埋まるため）
+   - `wrangler` 認証済み（`tomy1031@gmail.com` / account `<CLOUDFLARE_ACCOUNT_ID>`）
+   - **workers.dev subdomain を `mokumoku-db` → `nextmake` に変更した。**
+     subdomain はアカウント全体で1つしかなく、既定は別アプリ由来の名前だった。
+     変更は**ダッシュボード操作のみ**（API は `code 10036: Account already has an associated
+     subdomain` で既存サブドメインの変更を拒否する）
+   - 本番URL: **`https://nexmax-academy.nextmake.workers.dev`**（Version `ae783bed`）
+   - 秘密を除いたビルドで投入（`next-env.mjs` が空・バンドルに service_role key なし・
+     `NEXT_PUBLIC_*` はクライアント/middleware/server に inline 済み）
+6. ✅ プレビューエイリアス作成済み: **`https://staging-nexmax-academy.nextmake.workers.dev`**
+   （`wrangler versions upload --preview-alias staging`）
+   - Supabase の Redirect URLs 登録は**ユーザー作業として残**（タスクボード登録済み）。
+     **ワイルドカードは効かない**（§2.7）。登録する2本は `docs/deploy.md` §0.3 に逐語で記載
+7. ⬜ Google ログイン → 20問 → 保存 → `/admin` の実機確認（deploy.md §4 の再現）
+   - 6 の登録が済むまでログインは動かない
+
+Phase B の実機検証結果（本番URLに対して実施）:
+
+- 全10ルート 200・未存在 404。`/admin/users` の初回のみ 404 だったが、これは**デプロイ直後の
+  伝播中**によるもので、2回目以降は 200（ビルド出力にも存在）。回帰ではない
+- Edge middleware の `?code=` → `/auth/callback` 転送、`next` パラメータ保持、静的アセット素通し
+  をすべて確認
+- **§2.6 の懸念は本番で解消。** `/auth/callback` が
+  `https://nexmax-academy.nextmake.workers.dev/login?...` と**公開ホスト＋https**で解決した。
+  `x-forwarded-host` 分岐は使われず、`request.url` 由来のフォールバックが正しく動いている
+- ブラウザ実機で `/`・`/nekumax` の描画・画像・ルビ合成を確認。console エラー 0
+  - 注意: 画像は `loading="lazy"` なので、読み込み途中に `naturalWidth` を測ると
+    「壊れている」ように見える。判定は curl か十分待ってから行うこと
+- mokumoku（同一アカウントの別 Worker）は subdomain 変更後も
+  `https://mokumoku.nextmake.workers.dev` で 200。再デプロイ不要だった
 
 ### Phase C — Tunnel + Access（AI指示出しを本番から使う）
 
