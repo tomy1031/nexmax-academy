@@ -19,14 +19,18 @@
 
 自作モデルなので、作者（ユーザー）が VRoid Studio で再エクスポートすれば変更できる。
 
-## m1_asakai/line01〜05.wav（仮音声）
+## 音声（Gemini Live / 声は Puck）
 
-- macOS 内蔵TTS（`say -v Eddy`）で生成した**仮置き**。
-- 本番は Gemini Live の **Puck**（ユーザー選定済み）で差し替える。
-  `.env.local` の `GEMINI_API_KEY` に値が入り次第、下記で置き換わる:
+| ディレクトリ                        | 台本                                     | 用途                              |
+| ----------------------------------- | ---------------------------------------- | --------------------------------- |
+| `m1_asakai/line01〜05.wav`          | `content/scenes/m1_asakai.json`          | 朝会の報連相シーン                |
+| `onboarding_welcome/line01〜08.wav` | `content/scenes/onboarding_welcome.json` | リスニング題材（/labs/listening） |
+
+いずれも `gemini-3.1-flash-live-preview` / 声 **Puck**（ユーザー選定）で生成済み。
+台本を直したら該当行だけ作り直す:
 
 ```bash
-GEMINI_API_KEY=... node ~/.claude/skills/generating-gemini-live-audio/scripts/gen_audio.mjs --manifest ./manifest.json --out public/labs/vrm/m1_asakai --force
+# manifest は台本から生成する（key=line01…, text=セリフから分かち書きの空白を除いたもの, voice=characters.hendy.voice）
+GEMINI_API_KEY=... node ~/.claude/skills/generating-gemini-live-audio/scripts/gen_audio.mjs \
+  --manifest ./manifest.json --out public/labs/vrm/<dir> --only line03 --force
 ```
-
-manifest は `content/scenes/m1_asakai.json` から生成する（key=line01…, text=セリフから分かち書きの空白を除いたもの, voice=characters.hendy.voice）。

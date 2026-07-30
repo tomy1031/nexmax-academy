@@ -34,9 +34,14 @@ interface ScenePlayerProps {
   scene: SceneContent;
   /** ルビ表示（学習レベルで切り替える）。 */
   showRuby?: boolean;
+  /**
+   * リスニング題材モード。字幕を最初は出さず、聞きとってから自分で開く。
+   * 「もじを みる」で表示し、いつでも隠せる（何度でも聞ける — 01ガイド）。
+   */
+  listening?: boolean;
 }
 
-export function ScenePlayer({ scene, showRuby = true }: ScenePlayerProps) {
+export function ScenePlayer({ scene, showRuby = true, listening = false }: ScenePlayerProps) {
   const mountRef = useRef<HTMLDivElement>(null);
   const playbackRef = useRef<PlaybackState | null>(null);
   const clockRef = useRef<THREE.Clock | null>(null);
@@ -47,6 +52,8 @@ export function ScenePlayer({ scene, showRuby = true }: ScenePlayerProps) {
   const [lineIndex, setLineIndex] = useState(-1);
   const [playing, setPlaying] = useState(false);
   const [missingAudio, setMissingAudio] = useState(false);
+  /** リスニングモードで字幕を開いているか。 */
+  const [subtitleOpen, setSubtitleOpen] = useState(!listening);
 
   // シーン内で最初にモデルを持つ人物を主役として描画する（現状は1体構成）
   const modelUrl = Object.values(scene.characters).find((c) => c.model)?.model;
@@ -291,12 +298,18 @@ export function ScenePlayer({ scene, showRuby = true }: ScenePlayerProps) {
         {currentLine && (
           <div className="absolute bottom-4 left-1/2 w-[85%] -translate-x-1/2 rounded-2xl bg-white/90 px-5 py-3 text-[#1f3a56] shadow-lg">
             <span className="mr-3 text-xs font-bold text-[#0288d1]">{speaker?.name}</span>
-            <RubyText
-              text={currentLine.text}
-              furigana={scene.furigana}
-              showRuby={showRuby}
-              className="leading-loose"
-            />
+            {subtitleOpen ? (
+              <RubyText
+                text={currentLine.text}
+                furigana={scene.furigana}
+                showRuby={showRuby}
+                className="leading-loose"
+              />
+            ) : (
+              <span className="leading-loose text-[#9db0c2]">
+                ●●● きいて みよう（{lineIndex + 1} / {scene.lines.length}）
+              </span>
+            )}
           </div>
         )}
       </div>
@@ -309,6 +322,16 @@ export function ScenePlayer({ scene, showRuby = true }: ScenePlayerProps) {
         >
           {playing ? "さいせい中…" : "▶ さいせい"}
         </button>
+
+        {listening && (
+          <button
+            onClick={() => setSubtitleOpen((open) => !open)}
+            className="rounded-full border-2 border-[#0288d1] px-5 py-2 text-sm font-bold text-[#0288d1] transition-transform hover:scale-[1.02]"
+          >
+            {subtitleOpen ? "もじを かくす" : "もじを みる"}
+          </button>
+        )}
+
         <span className="text-sm text-[#5a7089]">
           {playing ? `${lineIndex + 1} / ${scene.lines.length}` : status}
           {missingAudio && "（音声ファイルなし: 字幕と口パクのみ）"}

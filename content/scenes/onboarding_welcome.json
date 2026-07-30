@@ -1,0 +1,73 @@
+{
+  "kind": "scene",
+  "id": "onboarding_welcome",
+  "title": "ようこそ！（オンボーディング）",
+  "description": "チュートリアル（/tutorial）で実際に使っているナレーションを、ヘンディ先輩が読み上げるシーン。手書きルビは読み辞書に置き換えている。",
+  "background": "office_morning",
+  "characters": {
+    "hendy": {
+      "name": "ヘンディ先輩",
+      "model": "/labs/vrm/hendy.vrm",
+      "voice": "Puck"
+    }
+  },
+  "furigana": [
+    ["日本語", "にほんご"],
+    ["日本", "にほん"],
+    ["会社", "がいしゃ"],
+    ["出会", "であ"],
+    ["本物", "ほんもの"],
+    ["面接", "めんせつ"],
+    ["話", "はな"]
+  ],
+  "lines": [
+    {
+      "speaker": "hendy",
+      "text": "ようこそ！ ここは ネクマックスアカデミー。",
+      "kana": "ようこそ！ ここは ねくまっくすあかでみー。",
+      "audio": "/labs/vrm/onboarding_welcome/line01.wav"
+    },
+    {
+      "speaker": "hendy",
+      "text": "日本の IT の しごとを たいけんしながら、日本語も いっしょに まなべる ばしょだよ。",
+      "kana": "にほんの あいてぃー の しごとを たいけんしながら、にほんごも いっしょに まなべる ばしょだよ。",
+      "audio": "/labs/vrm/onboarding_welcome/line02.wav"
+    },
+    {
+      "speaker": "hendy",
+      "text": "あなたは きょうから、IT 会社「ネクストメイク」の あたらしい なかま。",
+      "kana": "あなたは きょうから、あいてぃーがいしゃ ねくすとめいくの あたらしい なかま。",
+      "audio": "/labs/vrm/onboarding_welcome/line03.wav"
+    },
+    {
+      "speaker": "hendy",
+      "text": "しごとの ことば、チームの きもち、つくる たのしさ。みちの とちゅうで、ぜんぶ 出会えるよ。",
+      "kana": "しごとの ことば、ちーむの きもち、つくる たのしさ。みちの とちゅうで、ぜんぶ であえるよ。",
+      "audio": "/labs/vrm/onboarding_welcome/line04.wav"
+    },
+    {
+      "speaker": "hendy",
+      "text": "よんで おわり、じゃない。本物の しごとみたいに、しらべる、きく、はなす、つくる。",
+      "kana": "よんで おわり、じゃない。ほんものの しごとみたいに、しらべる、きく、はなす、つくる。",
+      "audio": "/labs/vrm/onboarding_welcome/line05.wav"
+    },
+    {
+      "speaker": "hendy",
+      "text": "まちがえても だいじょうぶ。しっぱいも たいせつな べんきょう。なんども ちょうせん できるよ。",
+      "kana": "まちがえても だいじょうぶ。しっぱいも たいせつな べんきょう。なんども ちょうせん できるよ。",
+      "audio": "/labs/vrm/onboarding_welcome/line06.wav"
+    },
+    {
+      "speaker": "hendy",
+      "text": "あつめた きろくは、いつか 面接で「わたしの がんばり」として 話せる たからものに なるよ。",
+      "kana": "あつめた きろくは、いつか めんせつで わたしの がんばり として はなせる たからものに なるよ。",
+      "audio": "/labs/vrm/onboarding_welcome/line07.wav"
+    },
+    {
+      "speaker": "hendy",
+      "text": "じゅんびは OK！ マップの さいしょの ばしょから、まなびを はじめよう。",
+      "kana": "じゅんびは おーけー！ まっぷの さいしょの ばしょから、まなびを はじめよう。",
+      "audio": "/labs/vrm/onboarding_welcome/line08.wav"
+    }
+  ]
+}

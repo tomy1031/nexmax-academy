@@ -30,9 +30,10 @@ export default function VrmPilotPage() {
       <ScenePlayer scene={scene} />
 
       <footer className="text-xs leading-5 text-[#9db0c2]">
-        モデル: ヘンディ先輩（VRoid Studio 制作 / VRM 1.0）。 音声は Gemini Live（
-        {Object.values(scene.characters)[0]?.voice}）で差し替え予定（現在は仮音声）。
-        ライセンスメタデータの確認事項は <code>public/labs/vrm/README.md</code> を参照。
+        モデル: ヘンディ先輩（VRoid Studio 制作 / VRM 1.0）。 音声: Gemini Live（
+        {Object.values(scene.characters)[0]?.voice}）。 ライセンスメタデータの確認事項は{" "}
+        <code>public/labs/vrm/README.md</code> を参照。 リスニング題材版は{" "}
+        <code>/labs/listening</code>。
       </footer>
     </main>
   );
