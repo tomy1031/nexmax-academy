@@ -54,13 +54,13 @@ mv .env.local.holdaside .env.local
 
 ### 0.3 Redirect URLs（workers.dev はワイルドカードが効かない）
 
-workers.dev のホストは `nexmax-academy.mokumoku-db.workers.dev` のように
+workers.dev のホストは `nexmax-academy.nextmake.workers.dev` のように
 **ラベルが2つ**入る。Supabase の `*` は1ラベルしか食わないため
 `https://*.workers.dev/auth/callback` では一致しない。逐語で登録する。
 
 ```
-https://nexmax-academy.mokumoku-db.workers.dev/auth/callback
-https://staging-nexmax-academy.mokumoku-db.workers.dev/auth/callback
+https://nexmax-academy.nextmake.workers.dev/auth/callback
+https://staging-nexmax-academy.nextmake.workers.dev/auth/callback
 ```
 
 2行目は `wrangler versions upload --preview-alias staging` で作る固定エイリアス。

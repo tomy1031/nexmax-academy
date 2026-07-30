@@ -58,8 +58,8 @@ Phase A で判明した追加事項（計画時点では未把握）:
 5. デプロイ。`NEXT_PUBLIC_*` は**ビルド変数**（`wrangler secret` では手遅れ。バンドルに埋まるため）
    - `wrangler` の認証は**済み**（`tomy1031@gmail.com` / account `<CLOUDFLARE_ACCOUNT_ID>`）。
      `wrangler login` は不要
-   - workers.dev subdomain = **`mokumoku-db`** → 本番URLは
-     `https://nexmax-academy.mokumoku-db.workers.dev`
+   - workers.dev subdomain = **`nextmake`** → 本番URLは
+     `https://nexmax-academy.nextmake.workers.dev`
    - 秘密を除いたビルドは検証済み（`next-env.mjs` が空・バンドルに service_role key なし・
      `NEXT_PUBLIC_*` はクライアント/middleware/server に inline 済み）。**deploy 実行のみ残り**
 6. プレビューエイリアスを作成し、Supabase の Redirect URLs に登録
