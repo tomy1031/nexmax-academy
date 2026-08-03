@@ -101,6 +101,7 @@
     <li><a href="#s9">9. 単語抽出とステージ紐づけ</a></li>
     <li><a href="#s10">10. 人間側の制作プロセス</a></li>
     <li><a href="#s11">11. 保存とインフラ</a></li>
+    <li style="margin-left:14px"><a href="#s11-2">11.2 学習データの保存形式</a></li>
     <li><a href="#s12">12. 段階計画</a></li>
     <li><a href="#s13">13. リスクと未決事項</a></li>
     <li><a href="#changelog">変更履歴 / Changelog</a></li>
@@ -113,7 +114,7 @@
     <h1>コンテンツスタジオ設計書</h1>
     <p class="en">Content Studio — dual-path authoring with Codex App Server</p>
     <p class="meta">
-      <span>版: v1.1</span>
+      <span>版: v1.2</span>
       <span>作成日: 2026-07-31</span>
       <span>対象: ステージ／漫画／記事／会議／単語の制作パイプライン</span>
     </p>
@@ -122,12 +123,17 @@
   <details class="changelog" id="changelog">
     <summary>
       <span class="chev">▶</span>変更履歴 / Changelog
-      <span class="latest">最新: v1.1 (2026-07-31)</span>
+      <span class="latest">最新: v1.2 (2026-07-31)</span>
     </summary>
     <div class="cl-body">
       <p>本書への変更を記録する。各エントリの「修正箇所」リンクから該当章へ移動できる。</p>
       <table>
         <tr><th>版</th><th>日付</th><th>変更内容</th><th>修正箇所</th></tr>
+        <tr>
+          <td>v1.2</td><td>2026-07-31</td>
+          <td>学習データ（学習者の記録）の保存形式を追加。教材=jsonb／学習記録=実カラムの使い分け、7テーブル定義、進捗保存層の接続方針、RLSと集計ビュー。</td>
+          <td><a href="#s11-2">11.2</a></td>
+        </tr>
         <tr>
           <td>v1.1</td><td>2026-07-31</td>
           <td>漫画をストーリー漫画対応に拡張（<code>format</code> 2形式・場面カード・コマsizeヒント・しおり・2段生成・場面連続性の参照ルール）。</td>
@@ -568,6 +574,78 @@ flowchart LR
     <div class="callout warn"><strong>注意</strong>：スキーマ変更は従来どおり
       「zod変更＋マイグレーションスクリプト」をセットで行う（設計方針03）。DB側 <code>data</code> は jsonb なので、
       マイグレーションは git と DB の両方に同じ変換を適用する。</div>
+
+    <h3 id="s11-2">11.2 学習データ（学習者の記録）の保存形式</h3>
+    <p>教材とは逆の方針を採る。<strong>教材＝jsonb 1枚</strong>（規格の進化が速く、正しさは zod が守る）に対し、
+      <strong>学習記録＝実カラムのテーブル</strong>にする。先生が集計する（クラスの弱点・進み具合・成績一覧）対象は
+      SQL で直接 GROUP BY できる形でないと、ダッシュボードのたびに jsonb を掘ることになるからである。
+      kind 固有の細部（しおりの位置など）だけを小さな jsonb 列に逃がす。</p>
+
+    <table>
+      <tr><th>テーブル</th><th>主な列</th><th>型</th><th>対応する教材</th></tr>
+      <tr><td><code>content_progress</code></td>
+        <td><code>user_id, content_id, kind, status(started|completed), position(jsonb), completed_at</code><br/>PK=(user_id, content_id)</td>
+        <td>上書き型</td>
+        <td>全種共通。<code>position</code> の中身は kind 別：manga=<code>{page,panel}</code>（しおり §4.1）／meeting=<code>{line}</code>／article=<code>{block}</code>。ステージ進捗（n/m）はこれを数えるだけ</td></tr>
+      <tr><td><code>test_results</code></td>
+        <td><code>user_id, stage_id, attempt, score, max_score, reading_correct, meaning_correct, total, passed, taken_at</code><br/>UNIQUE=(user_id, stage_id, attempt)</td>
+        <td>追記型</td>
+        <td>ことばアーケード「テスト」。<strong>attempt=1 が正式成績</strong>（P11「初回のみ正式」をDB制約で守る）。再挑戦も残るが上書きできない</td></tr>
+      <tr><td><code>game_scores</code></td>
+        <td><code>user_id, stage_id, best_score, best_combo, plays</code><br/>PK=(user_id, stage_id)</td>
+        <td>上書き型</td>
+        <td>れんしゅうの最高記録。励まし専用で合否に使わない（成績と別テーブルである理由）</td></tr>
+      <tr><td><code>word_mastery</code></td>
+        <td><code>user_id, stage_id, word_id, seen, missed, last_missed_at</code><br/>PK=(user_id, stage_id, word_id)</td>
+        <td>上書き型</td>
+        <td>語ごとの苦手。出題スケジューラの材料（端末をまたいで苦手が引き継がれる）。先生画面の「クラスの弱点語ランキング」もここから集計</td></tr>
+      <tr><td><code>quiz_results</code></td>
+        <td><code>user_id, quizset_id, correct, total, earned, max_points, passed, missed_question_ids(jsonb), taken_at</code></td>
+        <td>追記型</td>
+        <td>問題エンジン。どの問題を落としたかは jsonb（設問IDの配列）で十分</td></tr>
+      <tr><td><code>listening_results</code></td>
+        <td><code>user_id, meeting_id, score, reveal_rate, keyword_hits, misses, cleared, taken_at</code></td>
+        <td>追記型</td>
+        <td>リスニング（スコア・ワード表示率・ミス数 §D）</td></tr>
+      <tr><td><code>live_sessions</code></td>
+        <td><code>user_id, scenario_id, opened_req_ids(jsonb), duration_sec, completed, taken_at</code></td>
+        <td>追記型</td>
+        <td>Live対話。<strong>音声・逐語の文字起こしは保存しない</strong>（プライバシー。開けた項目数と時間だけで指導には足りる）</td></tr>
+    </table>
+
+    <pre class="mermaid">
+erDiagram
+  PROFILES ||--o{ CONTENT_PROGRESS : "user_id"
+  PROFILES ||--o{ TEST_RESULTS : "user_id"
+  PROFILES ||--o{ GAME_SCORES : "user_id"
+  PROFILES ||--o{ WORD_MASTERY : "user_id"
+  PROFILES ||--o{ QUIZ_RESULTS : "user_id"
+  PROFILES ||--o{ LISTENING_RESULTS : "user_id"
+  PROFILES ||--o{ LIVE_SESSIONS : "user_id"
+  CONTENTS ||--o{ CONTENT_PROGRESS : "content_id"
+  CONTENTS ||--o{ QUIZ_RESULTS : "quizset_id"
+  CONTENTS ||--o{ LISTENING_RESULTS : "meeting_id"
+  WORDSTAGE ||--o{ TEST_RESULTS : "stage_id"
+  WORDSTAGE ||--o{ WORD_MASTERY : "stage_id"
+    </pre>
+
+    <h4>接続方針 — 既存の進捗保存層をそのまま生かす</h4>
+    <ul>
+      <li>アプリは既に <code>src/lib/progress/store.ts</code>（差し替え可能な抽象）越しに読み書きしている。
+        ここに <strong>Supabase バックエンド</strong>を足すだけで、画面側のコードは変えない。
+        保存する形も TypeScript 型（<code>TestResult / GameScore / WordMastery</code>）と上表の列を1対1にする。</li>
+      <li><strong>ログイン中＝DB直書き</strong>（楽観的更新）。<strong>未ログイン＝localStorage のみ</strong>（ゲスト練習）。
+        初回ログイン時に端末の記録を一括アップロードして取り込む（bests は max、回数は加算、attempt は再採番せず端末分を後ろに積む）。</li>
+      <li>RLS：学習者は自分の行のみ読み書き。追記型テーブルは <strong>UPDATE/DELETE を許可しない</strong>
+        （「初回のみ正式」をアプリ規約でなくDB権限で守る）。<code>profiles.is_admin</code> は全行 SELECT 可。</li>
+      <li>先生ダッシュボードは集計ビューで提供：<code>v_stage_completion</code>（ステージ別進捗）・
+        <code>v_weak_words</code>（word_mastery のクラス集計）・<code>v_official_scores</code>（attempt=1 の成績一覧）。
+        §9 の単語抽出が作った新ステージの効果測定（導入前後の missed 率）もこのビューで見る。</li>
+    </ul>
+
+    <div class="callout good"><strong>使い分けの一行まとめ</strong>：
+      進化が速く検査で守るもの（教材）は jsonb、集計して意思決定に使うもの（学習記録）は実カラム。
+      同じDBでも役割で形式を変える。</div>
   </section>
 
   <!-- ============================================================ -->
@@ -631,7 +709,7 @@ gantt
 
   </div>
 
-  <footer>コンテンツスタジオ設計書 v1.1 ・ 出典: docs/design/01〜04・08（授業サポート表示 §0.1.1 拡張経路）・AGENTS.md・docs/skills/codex_image_generation.md・generating-gemini-live-audio スキル・Codex CLI 0.145.0 (app-server)・scripts/codex_bridge.mjs（character-personality-design ブランチ）</footer>
+  <footer>コンテンツスタジオ設計書 v1.2 ・ 出典: docs/design/01〜04・08（授業サポート表示 §0.1.1 拡張経路）・AGENTS.md・docs/skills/codex_image_generation.md・generating-gemini-live-audio スキル・Codex CLI 0.145.0 (app-server)・scripts/codex_bridge.mjs（character-personality-design ブランチ）</footer>
 </main>
 
 </div>
