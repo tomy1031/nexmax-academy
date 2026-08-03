@@ -57,14 +57,44 @@ Phase A で判明した追加事項（計画時点では未把握）:
 
 5. ✅ デプロイ済み。`NEXT_PUBLIC_*` は**ビルド変数**（`wrangler secret` では手遅れ。バンドルに埋まるため）
    - `wrangler` 認証済み（`tomy1031@gmail.com` / account `<CLOUDFLARE_ACCOUNT_ID>`）
-   - **workers.dev subdomain を `mokumoku-db` → `nextmake` に変更した。**
-     subdomain はアカウント全体で1つしかなく、既定は別アプリ由来の名前だった。
-     変更は**ダッシュボード操作のみ**（API は `code 10036: Account already has an associated
-     subdomain` で既存サブドメインの変更を拒否する）
-   - 本番URL: **`https://nexmax-academy.nextmake.workers.dev`**（Version `ae783bed`）
+   - 本番URL: **`https://academy.nexmax.workers.dev`**
+     （Worker名 `academy` ＋ アカウントsubdomain `nexmax`）
    - 秘密を除いたビルドで投入（`next-env.mjs` が空・バンドルに service_role key なし・
      `NEXT_PUBLIC_*` はクライアント/middleware/server に inline 済み）
-6. ✅ プレビューエイリアス作成済み: **`https://staging-nexmax-academy.nextmake.workers.dev`**
+
+**URL短縮の経緯（2026-07-31 〜 08-03）**
+
+公開URLは `<Worker名>.<アカウントsubdomain>.workers.dev` で、**`workers.dev` も
+subdomain の階層も外せない**。短くする手段は独自ドメインだけだが、ドメインは買わない方針
+（§Phase C の決定）。そこで**2つのラベルを選び直して**短縮した。
+
+| | URL | 文字数 |
+|---|---|---|
+| 初回デプロイ時 | `nexmax-academy.mokumoku-db.workers.dev` | 38 |
+| subdomain 変更後 | `nexmax-academy.nextmake.workers.dev` | 35 |
+| **最終** | **`academy.nexmax.workers.dev`** | **26** |
+
+- アカウントsubdomain は**アカウント全体で1つ**。既定 `mokumoku-db` は別アプリ由来の名前
+  だったため変更した。**変更はダッシュボード操作のみ**（API は
+  `code 10036: Account already has an associated subdomain` で既存subdomainの変更を拒否）
+- 希望だった `nexmax.academy.workers.dev` は **`academy` が他者に取得済み**で不可。
+  `nexmax` は空いていたので `academy.nexmax.workers.dev` にした
+- **subdomain の空き判定**: 登録済みなら任意の3階層目が DNS 解決し、未登録なら解決しない。
+  `dig +short A zz1test.<候補>.workers.dev` で判定できる（自分の subdomain が
+  「取得済み」と出ることで裏を取る）
+- Worker 名は `nexmax-academy` → `academy` に改名した。**改名は別 Worker になる**ので
+  旧 Worker は `wrangler delete` で消す（デプロイ履歴は引き継がれない）
+- subdomain 変更は**アカウント内の全 Worker のURLを変える**。mokumoku も
+  `mokumoku.nexmax.workers.dev` に移ったが、URLをコードに持っていなかったため
+  再デプロイ不要だった
+
+**踏んだ罠: URL変更と Redirect URLs 登録の順序（2026-08-03）**
+
+subdomain を変更する**前**に、変更**後**のURL（`academy.nexmax.workers.dev/**`）を
+Supabase に登録してしまい、その間ログインが Vercel へ落ち続けた。
+実際に生きているURLと許可リストが食い違うと `/authorize` の時点で拒否される。
+**URLを変えてから登録する**か、移行期間中は両方登録しておくこと。
+6. ✅ プレビューエイリアス作成済み: **`https://staging-academy.nexmax.workers.dev`**
    （`wrangler versions upload --preview-alias staging`）
    - Supabase の Redirect URLs は **`/**` 付きで登録する**。
      `.../auth/callback` の完全一致では動かない（下記）
@@ -75,7 +105,7 @@ Phase A で判明した追加事項（計画時点では未把握）:
 
 **踏んだ罠: 完全一致で登録すると `?code=` 付きで外れる（2026-08-03）**
 
-最初 `https://nexmax-academy.nextmake.workers.dev/auth/callback` を完全一致で登録し、
+最初 `https://academy.nexmax.workers.dev/auth/callback` を完全一致で登録し、
 クエリなしの `/authorize` テストが通ったので「登録できた」と判断した。**これは誤判定。**
 実際のログインでは `/authorize` は通るが `/callback` で Site URL（Vercel）へ落ちた。
 
@@ -104,18 +134,18 @@ Phase B の実機検証結果（本番URLに対して実施）:
 - Edge middleware の `?code=` → `/auth/callback` 転送、`next` パラメータ保持、静的アセット素通し
   をすべて確認
 - **§2.6 の懸念は本番で解消。** `/auth/callback` が
-  `https://nexmax-academy.nextmake.workers.dev/login?...` と**公開ホスト＋https**で解決した。
+  `https://academy.nexmax.workers.dev/login?...` と**公開ホスト＋https**で解決した。
   `x-forwarded-host` 分岐は使われず、`request.url` 由来のフォールバックが正しく動いている
 - ブラウザ実機で `/`・`/nekumax` の描画・画像・ルビ合成を確認。console エラー 0
   - 注意: 画像は `loading="lazy"` なので、読み込み途中に `naturalWidth` を測ると
     「壊れている」ように見える。判定は curl か十分待ってから行うこと
 - mokumoku（同一アカウントの別 Worker）は subdomain 変更後も
-  `https://mokumoku.nextmake.workers.dev` で 200。再デプロイ不要だった
+  `https://mokumoku.nexmax.workers.dev` で 200。再デプロイ不要だった
 
 ### Phase C — Tunnel + Access（AI指示出しを本番から使う）→ **保留（ドメインなしでは成立しない）**
 
 **決定（2026-08-03）: ドメインは購入しない。`nextmake.co.jp` も使わない。無料運用が必須。**
-本番URLは `https://nexmax-academy.nextmake.workers.dev` のまま確定。
+本番URLは `https://academy.nexmax.workers.dev` のまま確定。
 
 この決定により Phase C は現状の設計では実施できない。理由:
 
@@ -147,7 +177,7 @@ Phase B の実機検証結果（本番URLに対して実施）:
 
 - Cloudflare アカウント: `tomy1031@gmail.com` / `<CLOUDFLARE_ACCOUNT_ID>`
 - **ドメインは購入しない。`nextmake.co.jp` も使わない。無料運用が必須。**
-- 本番URLは **`https://nexmax-academy.nextmake.workers.dev`** で確定
+- 本番URLは **`https://academy.nexmax.workers.dev`** で確定
   - workers.dev のURLは `<Worker名>.<アカウントsubdomain>.workers.dev` という構造で、
     `workers.dev` もアカウント subdomain の階層も**外せない**。短縮には独自ドメインが要る
   - アカウント subdomain は既定の `mokumoku-db`（別アプリ由来）から `nextmake` に変更済み

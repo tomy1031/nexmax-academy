@@ -54,13 +54,13 @@ mv .env.local.holdaside .env.local
 
 ### 0.3 Redirect URLs（workers.dev はワイルドカードが効かない）
 
-workers.dev のホストは `nexmax-academy.nextmake.workers.dev` のように
+workers.dev のホストは `academy.nexmax.workers.dev` のように
 **ラベルが2つ**入る。Supabase の `*` は1ラベルしか食わないため
 `https://*.workers.dev/auth/callback` では一致しない。逐語で登録する。
 
 ```
-https://nexmax-academy.nextmake.workers.dev/**
-https://staging-nexmax-academy.nextmake.workers.dev/**
+https://academy.nexmax.workers.dev/**
+https://staging-academy.nexmax.workers.dev/**
 ```
 
 2行目は `wrangler versions upload --preview-alias staging` で作る固定エイリアス。
@@ -70,7 +70,7 @@ https://staging-nexmax-academy.nextmake.workers.dev/**
 #### 末尾の `/**` が必須。`/auth/callback` の完全一致では動かない（実測）
 
 **戻り先は `?code=...` が付いた状態で照合される。** そのため
-`https://nexmax-academy.nextmake.workers.dev/auth/callback` を完全一致で登録しても、
+`https://academy.nexmax.workers.dev/auth/callback` を完全一致で登録しても、
 実際のログインでは一致せず Site URL へフォールバックする。
 
 実測した対照結果:
@@ -100,7 +100,7 @@ Supabase の auth ログは**実際に採用した戻り先**を `referer` と�
 
 ```bash
 SB=https://ytlmwhovgvpdmmxyfmuz.supabase.co
-R="https://nexmax-academy.nextmake.workers.dev/auth/callback?code=testvalue"
+R="https://academy.nexmax.workers.dev/auth/callback?code=testvalue"
 enc=$(python3 -c "import urllib.parse,sys;print(urllib.parse.quote(sys.argv[1],safe=''))" "$R")
 curl -s -o /dev/null "$SB/auth/v1/authorize?provider=google&redirect_to=$enc"
 ```
@@ -118,8 +118,8 @@ curl -s -o /dev/null "$SB/auth/v1/authorize?provider=google&redirect_to=$enc"
 #### Redirect URLs の全量（2026-08-03 時点）
 
 ```
-https://nexmax-academy.nextmake.workers.dev/**
-https://staging-nexmax-academy.nextmake.workers.dev/**
+https://academy.nexmax.workers.dev/**
+https://staging-academy.nexmax.workers.dev/**
 http://localhost:3000/**
 https://nexmax-academy.vercel.app/**
 https://*.vercel.app/**
