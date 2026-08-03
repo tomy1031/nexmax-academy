@@ -547,6 +547,13 @@ export const imageSlotSchema = z.object({
   status: z.enum(["empty", "generating", "done"]).default("empty"),
 });
 
+/** ことばチップ（語・読み・意味）。タップで辞書ポップアップ。 */
+const vocabItemSchema = z.object({
+  term: plainText,
+  reading: hiragana,
+  meaning: plainText,
+});
+
 /** 漫画の登場人物（画像の一貫性にも使う）。 */
 const mangaCharacterSchema = z.object({
   id: z.string().regex(/^[a-z0-9_-]+$/),
@@ -584,6 +591,12 @@ export const mangaSchema = z
     title: plainText,
     description: plainText,
     furigana: z.array(furiganaEntrySchema).optional(),
+    /**
+     * 復習に出す語彙。furigana（ルビ合成のための最長一致辞書）とは役割が違う。
+     * 辞書には「分」「終」のような送りがな幹も入るので、そのまま語彙として見せない
+     *（意味を1行で書ける語だけをここに載せる — 設計07 §4）。
+     */
+    vocab: z.array(vocabItemSchema).optional(),
     characters: z.array(mangaCharacterSchema).optional(),
     pages: z.array(mangaPageSchema).min(1),
   })
@@ -608,13 +621,6 @@ export const mangaSchema = z
       });
     });
   });
-
-/** ことばチップ（語・読み・意味）。タップで辞書ポップアップ。 */
-const vocabItemSchema = z.object({
-  term: plainText,
-  reading: hiragana,
-  meaning: plainText,
-});
 
 /**
  * 説明ページのブロック（設計07 §5）。生HTMLは持たない — 禁止語・ルビ・秘匿漏れの

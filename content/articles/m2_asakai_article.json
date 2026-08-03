@@ -16,7 +16,8 @@
     ["言", "い"],
     ["終", "お"],
     ["形", "かたち"],
-    ["日", "ひ"]
+    ["日", "ひ"],
+    ["聞", "き"]
   ],
   "blocks": [
     {
@@ -63,14 +64,15 @@
       "items": [
         { "term": "報告", "reading": "ほうこく", "meaning": "したことを つたえること" },
         { "term": "結論", "reading": "けつろん", "meaning": "いちばん 言いたい こと" },
-        { "term": "予定", "reading": "よてい", "meaning": "これから する ことです" }
+        { "term": "予定", "reading": "よてい", "meaning": "これから する ことです" },
+        { "term": "順調", "reading": "じゅんちょう", "meaning": "よてい どおりに すすんで いること" }
       ]
     },
     {
       "kind": "link",
-      "ref": "sample_horenso",
-      "type": "quizset",
-      "label": "もんだいで たしかめる"
+      "ref": "sample_asakai",
+      "type": "meeting",
+      "label": "朝会を 聞いてみる"
     }
   ]
 }

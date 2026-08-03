@@ -7,6 +7,7 @@ import {
   type StageWordItem,
 } from "@/components/stage/stage-detail";
 import { contentHref } from "@/components/stage/stage-progress";
+import type { FuriganaEntry } from "@/lib/text/furigana";
 import {
   getArticle,
   getManga,
@@ -14,13 +15,23 @@ import {
   getQuizSet,
   getScenario,
   getStage,
-  getWordStage,
   listStages,
+  getWordStage,
 } from "@/lib/content";
 
-/** 実行時にファイルを読まないよう、全ステージを静的に切り出す。 */
+/**
+ * 公開分のDBコンテンツを合流させるため ISR にする（設計07 §11.1
+ * 「gitコンテンツは静的生成のまま。DBコンテンツはリクエスト時取得（ISR/短いキャッシュ）」）。
+ * スタジオで「こうかい」した教材は、再デプロイを待たずこの間隔で届く。
+ */
+export const revalidate = 60;
+/**
+ * git 由来の教材はビルド時に切り出す（実行時のファイル読みを起こさない）。
+ * DB由来（スタジオで公開したもの）はここに現れないが、dynamicParams の既定により
+ * 初回アクセスで生成され、以後は revalidate の間隔でキャッシュされる。
+ */
 export async function generateStaticParams() {
-  return (await listStages()).map((stage) => ({ id: stage.id }));
+  return (await listStages()).map((item) => ({ id: item.id }));
 }
 
 export async function generateMetadata({
@@ -36,34 +47,71 @@ export async function generateMetadata({
 /**
  * 参照先の見出しを引く。参照切れ（null）はここでは落とさず一覧から外す
  * — 参照整合は lint:content が先に落とす契約なので、画面は壊さないほうを選ぶ。
+ *
+ * 読み辞書も一緒に持ち帰る。ステージ詳細の一覧は学習者が最初に見る画面なので、
+ * ここで裸の漢字を出さない（AGENTS.md 規律2 — 表示時にエンジンがルビを合成する）。
  */
-async function loadRef(
-  ref: StageContentRef,
-): Promise<{ title: string; description: string } | null> {
+interface LoadedRef {
+  title: string;
+  description: string;
+  furigana?: readonly FuriganaEntry[];
+}
+
+async function loadRef(ref: StageContentRef): Promise<LoadedRef | null> {
   switch (ref.type) {
     case "manga": {
       const manga = await getManga(ref.ref);
-      return manga && { title: manga.title, description: manga.description };
+      return (
+        manga && {
+          title: manga.title,
+          description: manga.description,
+          furigana: manga.furigana,
+        }
+      );
     }
     case "article": {
       const article = await getArticle(ref.ref);
-      return article && { title: article.title, description: article.description };
+      return (
+        article && {
+          title: article.title,
+          description: article.description,
+          furigana: article.furigana,
+        }
+      );
     }
     case "meeting": {
       const meeting = getMeeting(ref.ref);
-      return meeting && { title: meeting.title, description: meeting.description };
+      return (
+        meeting && {
+          title: meeting.title,
+          description: meeting.description,
+          furigana: meeting.furigana,
+        }
+      );
     }
     case "quizset": {
       const set = getQuizSet(ref.ref);
-      return set && { title: set.title, description: set.description };
+      return set && { title: set.title, description: set.description, furigana: set.furigana };
     }
     case "scenario": {
       const scenario = getScenario(ref.ref);
-      return scenario && { title: scenario.title, description: scenario.subtitle };
+      return (
+        scenario && {
+          title: scenario.title,
+          description: scenario.subtitle,
+          furigana: scenario.furigana,
+        }
+      );
     }
     case "wordstage": {
       const stage = getWordStage(ref.ref);
-      return stage && { title: stage.title, description: stage.description };
+      return (
+        stage && {
+          title: stage.title,
+          description: stage.description,
+          furigana: stage.furigana,
+        }
+      );
     }
   }
 }
@@ -76,6 +124,7 @@ async function resolveContent(ref: StageContentRef): Promise<StageContentItem | 
     type: ref.type,
     title: found.title,
     description: found.description,
+    furigana: found.furigana,
     href: contentHref(ref.type, ref.ref),
   };
 }

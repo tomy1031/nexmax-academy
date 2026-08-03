@@ -6,7 +6,7 @@ import {
   stageSchema,
   type Content,
 } from "../src/content/schema";
-import { checkReferenceIntegrity } from "../src/lib/content-checks";
+import { checkLinkOrder, checkReferenceIntegrity } from "../src/lib/content-checks";
 
 /** 最小の正常フィクスチャ（テストごとに structuredClone して壊す）。 */
 const stageFixture = {
@@ -95,6 +95,25 @@ describe("スタジオ系スキーマ（stage / manga / article）", () => {
       expect(panel.image.status).toBe("empty");
       expect(panel.image.refs).toEqual([]);
     }
+  });
+
+  it("manga の vocab は任意で、語・読み・意味がそろっていれば通る", () => {
+    const manga = clone(mangaFixture);
+    manga.vocab = [{ term: "朝会", reading: "あさかい", meaning: "あさに する みじかい かいぎ" }];
+    const result = mangaSchema.safeParse(manga);
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data.vocab?.[0]?.meaning).toBe("あさに する みじかい かいぎ");
+    // 省略しても通る（復習セクションを出さないだけ）
+    const bare = clone(mangaFixture);
+    const bareResult = mangaSchema.safeParse(bare);
+    expect(bareResult.success).toBe(true);
+    if (bareResult.success) expect(bareResult.data.vocab).toBeUndefined();
+  });
+
+  it("manga の vocab は意味なしを弾く（読みだけの語彙リストにしない）", () => {
+    const manga = clone(mangaFixture);
+    manga.vocab = [{ term: "朝会", reading: "あさかい" }];
+    expect(mangaSchema.safeParse(manga).success).toBe(false);
   });
 
   it("最小の article フィクスチャが通る", () => {
@@ -208,5 +227,67 @@ describe("参照整合検査（checkReferenceIntegrity）", () => {
     const findings = checkReferenceIntegrity(entries);
     expect(findings).toHaveLength(1);
     expect(findings[0]!.message).toContain("stage12_asakai");
+  });
+});
+
+describe("導線の一致検査（checkLinkOrder）", () => {
+  function entriesOf(...raws: unknown[]) {
+    return raws.map((raw, i) => ({
+      file: `content/fixture-${i}.json`,
+      content: contentSchema.parse(raw) as Content,
+    }));
+  }
+
+  /** article → manga の順のステージ（article の直後は manga）。 */
+  function articleFirstStage() {
+    const stage = clone(stageFixture);
+    stage.contents = [
+      { ref: "m2-asakai-article", type: "article" },
+      { ref: "m2-asakai-manga", type: "manga" },
+    ];
+    return stage;
+  }
+
+  it("link がステージの直後の教材と一致すれば指摘なし", () => {
+    // articleFixture の link は m2-asakai-manga（＝直後）を指している
+    const entries = entriesOf(articleFirstStage(), clone(mangaFixture), clone(articleFixture));
+    expect(checkLinkOrder(entries)).toEqual([]);
+  });
+
+  it("直後の教材を飛ばす link を error で検出する", () => {
+    const article = clone(articleFixture);
+    (article.blocks as { kind: string; ref?: string; type?: string; label?: string }[])[5] = {
+      kind: "link",
+      ref: "sample_horenso",
+      type: "quizset",
+      label: "もんだいで たしかめる",
+    };
+    const findings = checkLinkOrder(entriesOf(articleFirstStage(), clone(mangaFixture), article));
+    expect(findings).toHaveLength(1);
+    expect(findings[0]!.level).toBe("error");
+    expect(findings[0]!.message).toContain("sample_horenso");
+  });
+
+  it("使い回しに厳しくしない — いずれかのステージの直後と一致すれば通る", () => {
+    const otherStage = clone(stageFixture);
+    otherStage.id = "m9-another";
+    otherStage.step = 9;
+    // こちらのステージでは article の直後が別の教材
+    otherStage.contents = [
+      { ref: "m2-asakai-article", type: "article" },
+      { ref: "sample_horenso", type: "quizset" },
+    ];
+    const entries = entriesOf(
+      articleFirstStage(),
+      otherStage,
+      clone(mangaFixture),
+      clone(articleFixture),
+    );
+    expect(checkLinkOrder(entries)).toEqual([]);
+  });
+
+  it("どのステージからも参照されていない article は検査しない", () => {
+    const entries = entriesOf(clone(mangaFixture), clone(articleFixture));
+    expect(checkLinkOrder(entries)).toEqual([]);
   });
 });

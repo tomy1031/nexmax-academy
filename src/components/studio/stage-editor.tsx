@@ -95,21 +95,17 @@ export function StageEditor({
           onChange={(description) => patch({ description })}
           placeholder="こまったことが 起きたとき、先輩に つたえる ことばを ならいます。"
         />
+        {/*
+          公開かどうかは上の「こうかい」ボタン（editor-frame）だけで決める。
+          ここにも状態セレクトを置くと、DBの status 列と中身の status が食い違い
+          「こうかいしたのに 地図に出ない」が起きるため、入口を1つにする。
+        */}
         <div className="grid gap-4 sm:grid-cols-2">
           <SelectField
             label="ピンの色"
             value={value.color}
             options={STAGE_COLOR_OPTIONS}
             onChange={(color) => patch({ color })}
-          />
-          <SelectField
-            label="状態"
-            value={value.status}
-            options={[
-              { value: "draft", label: "したがき（マップに出さない）" },
-              { value: "published", label: "こうかい" },
-            ]}
-            onChange={(status) => patch({ status })}
           />
         </div>
       </StudioSection>

@@ -41,6 +41,13 @@ const NARRATION_ACCENT = "var(--color-ink-soft)";
 const STAGE_ID = /^[a-z0-9_-]+$/;
 const STAGE_PATH = /^\/stage\/[a-z0-9_-]+$/;
 
+/** 話者チップに出す情報。role は narration には無い。 */
+interface Speaker {
+  readonly name: string;
+  readonly role?: string;
+  readonly accent: string;
+}
+
 /** 1コマの居場所。しおり（position）は 0 はじまりで持つ。 */
 interface PanelSpot {
   readonly pageIndex: number;
@@ -119,10 +126,18 @@ export function MangaReader({ manga }: { manga: Manga }) {
   const isStory = manga.format === "story";
 
   const characters = useMemo(() => manga.characters ?? [], [manga.characters]);
+  /**
+   * 話者チップの中身。role（先輩・同期）も載せる — 上下関係が分からないと
+   * ていねいな指示口調が「誰から誰へ」なのか読み取れないため。
+   */
   const speakerOf = useMemo(() => {
-    const map = new Map<string, { name: string; accent: string }>();
+    const map = new Map<string, Speaker>();
     characters.forEach((c, i) => {
-      map.set(c.id, { name: c.name, accent: SPEAKER_ACCENTS[i % SPEAKER_ACCENTS.length]! });
+      map.set(c.id, {
+        name: c.name,
+        role: c.role,
+        accent: SPEAKER_ACCENTS[i % SPEAKER_ACCENTS.length]!,
+      });
     });
     map.set("narration", { name: "せつめい", accent: NARRATION_ACCENT });
     return map;
@@ -320,19 +335,27 @@ export function MangaReader({ manga }: { manga: Manga }) {
             : "つづきは いつでも ここから よめるよ。"}
         </p>
 
-        {manga.furigana && manga.furigana.length > 0 && (
+        {/*
+          復習は vocab（作者が選んだ語＋意味）だけで作る。furigana はルビ合成のための
+          最長一致辞書で、「分」「終」のような送りがな幹や本文に出ない語も入るため、
+          そのまま語彙リストにすると誤った語を覚えさせてしまう。
+        */}
+        {manga.vocab && manga.vocab.length > 0 && (
           <div className="mt-5 text-left">
             <p className="text-ink-soft text-xs font-extrabold">この まんがに 出てきた ことば</p>
-            <ul className="mt-2 flex flex-wrap gap-2">
-              {manga.furigana.map(([surface, reading]) => (
+            <ul className="mt-2 space-y-2">
+              {manga.vocab.map((item) => (
                 <li
-                  key={surface}
-                  className="border-hairline bg-panel text-ink rounded-full border-2 px-3 py-1 text-sm font-extrabold"
+                  key={item.term}
+                  className="border-hairline bg-panel rounded-2xl border-2 px-3 py-2"
                 >
-                  <ruby>
-                    {surface}
-                    <rt>{reading}</rt>
-                  </ruby>
+                  <span className="text-ink text-sm font-extrabold">
+                    <ruby>
+                      {item.term}
+                      <rt>{item.reading}</rt>
+                    </ruby>
+                  </span>
+                  <span className="text-ink-soft ml-2 text-sm font-bold">{item.meaning}</span>
                 </li>
               ))}
             </ul>
@@ -396,7 +419,7 @@ function PanelBlock({
   panel: MangaPanel;
   index: number;
   story: boolean;
-  speakerOf: Map<string, { name: string; accent: string }>;
+  speakerOf: Map<string, Speaker>;
   furigana: FuriganaIndex;
   furiganaOn: boolean;
 }) {
@@ -469,11 +492,12 @@ function SpeechLine({
   furiganaOn,
 }: {
   line: MangaLine;
-  speaker?: { name: string; accent: string };
+  speaker?: Speaker;
   furigana: FuriganaIndex;
   furiganaOn: boolean;
 }) {
   const name = speaker?.name ?? line.speaker;
+  const role = speaker?.role;
   const accent = speaker?.accent ?? NARRATION_ACCENT;
   const narration = line.speaker === "narration";
 
@@ -491,10 +515,16 @@ function SpeechLine({
   return (
     <div>
       <span
-        className="ml-3 inline-block rounded-full px-3 py-0.5 text-xs font-extrabold text-white"
+        className="ml-3 inline-flex items-baseline gap-1 rounded-full px-3 py-0.5 text-xs font-extrabold text-white"
         style={{ background: accent }}
       >
         {name}
+        {role && (
+          <span className="text-[10px] font-bold opacity-90">
+            （
+            <RubyText text={role} index={furigana} show={furiganaOn} />）
+          </span>
+        )}
       </span>
       <div
         className="relative mt-1 rounded-[20px] border-2 bg-white px-4 py-3"

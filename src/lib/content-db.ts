@@ -11,7 +11,9 @@
  * クライアントコンポーネントから import しないこと。
  */
 
+import { createClient as createPlainClient } from "@supabase/supabase-js";
 import { contentSchema, type Content } from "@/content/schema";
+import { getSupabasePublicConfig } from "@/lib/env";
 import { createClient } from "@/lib/supabase/server";
 
 export type ContentStatus = "draft" | "published";
@@ -37,20 +39,57 @@ interface ContentRow {
 const SELECT_COLUMNS = "id, kind, data, status, stage_id, updated_at";
 
 /**
+ * Next の制御用エラー（動的レンダリングへの切り替え・redirect・notFound）かどうか。
+ *
+ * これらは「失敗」ではなくフレームワークの合図なので、握りつぶすとページが
+ * 静的なまま固まる。digest / code の値で見分ける（内部モジュールを import しない）。
+ */
+function isNextControlFlowError(e: unknown): boolean {
+  if (typeof e !== "object" || e === null) return false;
+  const digest = (e as { digest?: unknown }).digest;
+  if (
+    typeof digest === "string" &&
+    (digest === "DYNAMIC_SERVER_USAGE" || digest.startsWith("NEXT_"))
+  )
+    return true;
+  const code = (e as { code?: unknown }).code;
+  return code === "NEXT_STATIC_GEN_BAILOUT";
+}
+
+/**
+ * 公開分だけを読むための、Cookie を使わないクライアント。
+ *
+ * 公開済みの教材は誰でも読めるデータで（RLS: status='published' or is_admin）、
+ * セッションを必要としない。ここで Cookie を読むと、それだけでページが
+ * 動的レンダリングに落ちてしまい、学習者ページを静的化・ISR できなくなる
+ *（設計07 §11.1「gitコンテンツは静的生成のまま。DBコンテンツはISR」）。
+ */
+function createPublicClient() {
+  const cfg = getSupabasePublicConfig();
+  if (!cfg) return null;
+  return createPlainClient(cfg.url, cfg.anonKey, {
+    auth: { persistSession: false, autoRefreshToken: false },
+  });
+}
+
+/**
  * `contents` 表を読む。
  *
- * - 既定は公開分のみ。`includeDrafts` は管理画面用（下書きは RLS でも管理者に限られる）。
+ * - 既定は公開分のみ。Cookie を使わないので、静的生成・ISR の途中からでも読める。
+ * - `includeDrafts` は管理画面用。下書きは本人のセッションが要る（RLSで管理者に限られる）。
  * - 行の `data` を contentSchema で検証し、通ったものだけ返す。
  *   規格が進化して古い行が残っていても、学習者の画面は壊れない。
  */
 export async function fetchDbContents(opts?: {
   includeDrafts?: boolean;
 }): Promise<DbContentEntry[]> {
-  let supabase: Awaited<ReturnType<typeof createClient>>;
+  let supabase: NonNullable<Awaited<ReturnType<typeof createClient>>> | null;
   try {
-    supabase = await createClient();
-  } catch {
-    // ビルド時の静的生成などリクエスト外では Cookie が読めない。git 側だけで組み立てる
+    supabase = opts?.includeDrafts ? await createClient() : createPublicClient();
+  } catch (e) {
+    // Next の制御用エラー（動的レンダリングへの切り替え等）は握りつぶさない
+    if (isNextControlFlowError(e)) throw e;
+    // Supabase 未設定など想定内の失敗だけ、git 側だけで組み立てる
     return [];
   }
   if (!supabase) return [];

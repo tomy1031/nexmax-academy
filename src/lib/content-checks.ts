@@ -10,6 +10,7 @@
  *  - 秘匿情報の漏れ（シナリオ: 質問で引き出すべき事実を調査用模擬ページに書かない）
  *  - kind別ID重複（ファイル横断。重複すると進捗保存が壊れる）
  *  - 参照整合（stage.contents / wordStageIds の参照先が存在するか — 設計07 §3）
+ *  - 導線の一致（article の「つぎは これ」がステージの学習順の直後を指しているか）
  */
 
 import { FORBIDDEN_LEARNER_WORDS, type Content, type Scenario } from "../content/schema";
@@ -128,6 +129,53 @@ export function checkReferenceIntegrity(entries: readonly ContentEntry[]): Findi
         });
       }
     });
+  }
+  return findings;
+}
+
+/**
+ * 導線の一致検査（設計07 §3・§5）。
+ *
+ * article 末尾の link ブロックは「つぎは これ」と断定して見せるので、ステージの
+ * contents[] で自分の直後にある教材と食い違うと、学習者が教材を飛ばしてしまう。
+ *
+ * 1つの教材は複数ステージから使い回せる（コンテンツ側はステージを知らない）ため、
+ * 「いずれかのステージで直後と一致すれば OK」で判定する。どのステージからも
+ * 参照されていない教材は判断材料がないので検査しない。
+ */
+export function checkLinkOrder(entries: readonly ContentEntry[]): Finding[] {
+  const findings: Finding[] = [];
+  const stages = entries.flatMap(({ content }) => (content.kind === "stage" ? [content] : []));
+
+  for (const { file, content } of entries) {
+    if (content.kind !== "article") continue;
+    const links = content.blocks.flatMap((block) => (block.kind === "link" ? [block] : []));
+    if (links.length === 0) continue;
+
+    // このarticleを含むステージそれぞれで「自分の直後」に来る教材
+    const successors = stages.flatMap((stage) => {
+      const at = stage.contents.findIndex(
+        (item) => item.type === "article" && item.ref === content.id,
+      );
+      const next = at >= 0 ? stage.contents[at + 1] : undefined;
+      return next ? [{ stageId: stage.id, next }] : [];
+    });
+    if (successors.length === 0) continue;
+
+    for (const link of links) {
+      const matched = successors.some(
+        ({ next }) => next.type === link.type && next.ref === link.ref,
+      );
+      if (matched) continue;
+      const expected = successors
+        .map(({ stageId, next }) => `${stageId}→${next.ref}(${next.type})`)
+        .join(" / ");
+      findings.push({
+        file,
+        level: "error",
+        message: `link ブロックの「${link.ref}」（${link.type}）が、ステージの学習順で直後に来る教材と違う（直後は ${expected}）— 学習者が教材を飛ばす（設計07 §3）`,
+      });
+    }
   }
   return findings;
 }

@@ -99,6 +99,13 @@ export async function POST(request: Request): Promise<NextResponse> {
   }
 
   const status = body.publish === true ? "published" : "draft";
+  /**
+   * 公開スイッチの正はDBの status 列（＝スタジオの「こうかい」ボタン）。
+   * stage は本体にも status を持ち、マップの絞り込みがそちらを見るため、
+   * 保存時に列へ合わせる（二重管理で「公開したのに地図に出ない」を起こさない）。
+   * status を持つのは stage だけなので、他の kind には足さない。
+   */
+  const data = content.kind === "stage" ? { ...content, status } : content;
   const stageId =
     typeof body.stageId === "string" && body.stageId.length > 0
       ? body.stageId
@@ -110,7 +117,7 @@ export async function POST(request: Request): Promise<NextResponse> {
     {
       id: content.id,
       kind: content.kind,
-      data: content,
+      data,
       status,
       stage_id: stageId,
       updated_by: gate.userId,

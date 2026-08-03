@@ -9,8 +9,16 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
  *  - 同一IDは DB が勝つ（管理画面での修正が常に最新）
  */
 
-const { createClientMock } = vi.hoisted(() => ({ createClientMock: vi.fn() }));
+const { createClientMock, plainClientMock, configMock } = vi.hoisted(() => ({
+  /** Cookie 版（管理画面の下書き読み取り用）。 */
+  createClientMock: vi.fn(),
+  /** Cookie を使わない版（公開分の読み取り用。静的生成・ISRから呼べる）。 */
+  plainClientMock: vi.fn(),
+  configMock: vi.fn(),
+}));
 vi.mock("@/lib/supabase/server", () => ({ createClient: createClientMock }));
+vi.mock("@supabase/supabase-js", () => ({ createClient: plainClientMock }));
+vi.mock("@/lib/env", () => ({ getSupabasePublicConfig: configMock }));
 
 const { fetchDbContents } = await import("@/lib/content-db");
 const { listStages, listMangas, mergeContentsById } = await import("@/lib/content");
@@ -85,22 +93,54 @@ function row(over: Partial<Row> = {}): Row {
 function useRows(rows: Row[], error: { code?: string } | null = null) {
   const fake = fakeClient(rows, error);
   createClientMock.mockResolvedValue(fake.client);
+  plainClientMock.mockReturnValue(fake.client);
   return fake;
 }
 
 beforeEach(() => {
   createClientMock.mockReset();
+  plainClientMock.mockReset();
+  configMock.mockReset();
+  // 既定は「Supabase 設定あり」。未設定の場合は各テストで null を返す
+  configMock.mockReturnValue({ url: "https://example.supabase.co", anonKey: "anon" });
 });
 
 describe("fetchDbContents", () => {
   it("Supabase 未設定なら空を返す（git だけで動く）", async () => {
+    configMock.mockReturnValue(null);
     createClientMock.mockResolvedValue(null);
     await expect(fetchDbContents()).resolves.toEqual([]);
+    await expect(fetchDbContents({ includeDrafts: true })).resolves.toEqual([]);
   });
 
-  it("リクエスト外で Cookie が読めなくても落ちない", async () => {
+  it("公開分の読み取りは Cookie を使わない（静的生成・ISRから呼べる）", async () => {
+    useRows([row()]);
+    await fetchDbContents();
+    // Cookie 版に触れていないこと。触れるとページが動的レンダリングに落ちる
+    expect(createClientMock).not.toHaveBeenCalled();
+    expect(plainClientMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("リクエスト外で Cookie が読めなくても落ちない（管理画面経路）", async () => {
     createClientMock.mockRejectedValue(new Error("cookies() outside request"));
-    await expect(fetchDbContents()).resolves.toEqual([]);
+    await expect(fetchDbContents({ includeDrafts: true })).resolves.toEqual([]);
+  });
+
+  it("Next の動的レンダリング要求は握りつぶさず投げ直す", async () => {
+    // 握りつぶすと静的HTMLにDB由来の教材が焼き付いたまま配られる
+    const dynamicError = Object.assign(new Error("Dynamic server usage: cookies"), {
+      digest: "DYNAMIC_SERVER_USAGE",
+    });
+    createClientMock.mockRejectedValue(dynamicError);
+    await expect(fetchDbContents({ includeDrafts: true })).rejects.toBe(dynamicError);
+  });
+
+  it("redirect / notFound の合図も投げ直す", async () => {
+    const notFound = Object.assign(new Error("NEXT_HTTP_ERROR_FALLBACK;404"), {
+      digest: "NEXT_HTTP_ERROR_FALLBACK;404",
+    });
+    createClientMock.mockRejectedValue(notFound);
+    await expect(fetchDbContents({ includeDrafts: true })).rejects.toBe(notFound);
   });
 
   it("テーブル未作成なら空を返す", async () => {

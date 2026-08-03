@@ -10,6 +10,7 @@
  *  3. 秘匿情報の漏れ（シナリオ: reqs のキーワードが調査用模擬ページに
  *     書かれていたら警告 — 質問で引き出すべき情報は調査素材に書かない）
  *  4. kind別ID重複＋参照整合（stage.contents / wordStageIds の参照切れ — 設計07 §3）
+ *  5. 導線の一致（article の link ブロックがステージの学習順の直後を指しているか）
  *
  * 検査ロジックの実体は src/lib/content-checks.ts（スタジオ側と共用）。
  * このスクリプトはファイル走査とレポートだけを受け持つ。
@@ -23,6 +24,7 @@ import { contentSchema, FORBIDDEN_LEARNER_WORDS } from "../src/content/schema";
 import {
   checkDuplicateIds,
   checkForbiddenWords,
+  checkLinkOrder,
   checkReferenceIntegrity,
   checkSecretLeaks,
   type ContentEntry,
@@ -157,6 +159,7 @@ function main() {
 
   findings.push(...checkDuplicateIds(entries));
   findings.push(...checkReferenceIntegrity(entries));
+  findings.push(...checkLinkOrder(entries));
 
   const sourceFiles = walkSource(SRC_DIR);
   for (const file of sourceFiles) checkSourceForbiddenWords(file);

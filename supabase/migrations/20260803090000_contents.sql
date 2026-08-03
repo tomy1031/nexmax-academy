@@ -43,11 +43,17 @@ create trigger contents_touch_updated_at
 
 alter table public.contents enable row level security;
 
--- 読み: 公開分は認証済みの学習者全員 / 下書きは管理者だけ
+-- 読み: 公開分は誰でも / 下書きは管理者だけ
+--
+-- 学習者の画面（/map・/stage・/manga・/article）はログインを求めていない
+-- （ミドルウェアはセッションを更新するだけで、リダイレクトしない）。
+-- ここを認証必須にすると、git 由来の教材は見えるのに DB 由来の教材だけ
+-- ログアウト時に消える、という壊れ方をする。公開＝公開で揃える
+-- （下の assets バケットも同じ方針で読み取りは公開）。
 drop policy if exists contents_select_published_or_admin on public.contents;
 create policy contents_select_published_or_admin on public.contents
   for select using (
-    (auth.uid() is not null and status = 'published') or public.is_admin()
+    status = 'published' or public.is_admin()
   );
 
 -- 書き: 管理者だけ（公開可否は「検査を通ったか」でアプリ側が決め、DBは主体を絞る）
