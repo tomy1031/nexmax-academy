@@ -489,11 +489,177 @@ export const scenarioSchema = z
     }
   });
 
+/* ------------------------------------------------------------------ *
+ * ステージ・漫画・説明ページ（コンテンツスタジオ — 設計07 §3〜§5）
+ * ------------------------------------------------------------------ */
+
+/** ステージから参照できるコンテンツ種別（設計07 §3）。 */
+export const CONTENT_REF_TYPES = [
+  "manga",
+  "article",
+  "meeting",
+  "quizset",
+  "scenario",
+  "wordstage",
+] as const;
+
+const contentRefTypeSchema = z.enum(CONTENT_REF_TYPES);
+
+/** ステージ内の1コンテンツ参照。contents[] の並びが学習順（順序の正はステージ側）。 */
+export const stageContentRefSchema = z.object({
+  ref: z.string().min(1),
+  type: contentRefTypeSchema,
+});
+
+/**
+ * ステージ＝コンテンツの入れ物と順序（設計07 §3）。マップはこのデータから描画する。
+ * コンテンツ側はステージを知らない（付け替え・使い回しが自由）。
+ * 参照切れは lint:content の参照整合検査（content-checks.ts）が落とす。
+ */
+export const stageSchema = z.object({
+  kind: z.literal("stage"),
+  id: z.string().regex(/^[a-z0-9_-]+$/),
+  /** マップ上の順序（M1〜M12）。 */
+  step: z.number().int().min(1).max(12),
+  title: plainText,
+  reading: hiragana,
+  description: plainText,
+  /** マップのピン色。 */
+  color: z.enum(["leaf", "sky", "coral", "sky-soft"]),
+  status: z.enum(["draft", "published"]).default("published"),
+  /** 学習順そのもの（並びが正）。 */
+  contents: z.array(stageContentRefSchema).min(1),
+  /** 紐づく単語ステージ（別管理・複数可）。 */
+  wordStageIds: z.array(z.string().min(1)).default([]),
+});
+
+/**
+ * 画像スロット（設計07 §4・§5 共通）。
+ * 「生成する／アップロードする／あとで」を status で表し、prompt / refs は再生成用に保存する。
+ */
+export const imageSlotSchema = z.object({
+  /** 表示する画像。未生成なら省略。 */
+  src: z.string().min(1).optional(),
+  /** 生成に渡したプロンプト全文（再現・「少し直して再生成」用）。 */
+  prompt: z.string().min(1).optional(),
+  /** 参照画像（キャラ正典・同一場面の直前パネルなど）。 */
+  refs: z.array(z.string().min(1)).default([]),
+  status: z.enum(["empty", "generating", "done"]).default("empty"),
+});
+
+/** 漫画の登場人物（画像の一貫性にも使う）。 */
+const mangaCharacterSchema = z.object({
+  id: z.string().regex(/^[a-z0-9_-]+$/),
+  name: plainText,
+  role: plainText,
+});
+
+/** セリフ1行。speaker は characters の id、または "narration"。 */
+const mangaLineSchema = z.object({
+  speaker: z.string().min(1),
+  text: plainText,
+});
+
+const mangaPanelSchema = z.object({
+  /** レイアウトヒント（story 形式でのみ意味を持つ。wide＝決めゴマ）。 */
+  size: z.enum(["normal", "wide", "tall"]).default("normal"),
+  image: imageSlotSchema.default({ refs: [], status: "empty" }),
+  /** セリフは画像に焼き込まずデータで持つ（設計07 §4 最重要判断）。 */
+  lines: z.array(mangaLineSchema).default([]),
+  caption: plainText.optional(),
+});
+
+const mangaPageSchema = z.object({
+  /** 場面カード（story のみ・省略可）。例:「その日の午後 — 会議室」。 */
+  title: plainText.optional(),
+  panels: z.array(mangaPanelSchema).min(1),
+});
+
+/** 漫画ページ（設計07 §4）。4コマもストーリーも同じ構造で、違いは量とレイアウトヒントだけ。 */
+export const mangaSchema = z
+  .object({
+    kind: z.literal("manga"),
+    id: z.string().regex(/^[a-z0-9_-]+$/),
+    format: z.enum(["yonkoma", "story"]),
+    title: plainText,
+    description: plainText,
+    furigana: z.array(furiganaEntrySchema).optional(),
+    characters: z.array(mangaCharacterSchema).optional(),
+    pages: z.array(mangaPageSchema).min(1),
+  })
+  .superRefine((manga, ctx) => {
+    const characters = manga.characters ?? [];
+    const ids = characters.map((c) => c.id);
+    if (new Set(ids).size !== ids.length) {
+      ctx.addIssue({ code: "custom", path: ["characters"], message: "characters の id が重複している" });
+    }
+    const known = new Set([...ids, "narration"]);
+    manga.pages.forEach((page, pageIndex) => {
+      page.panels.forEach((panel, panelIndex) => {
+        panel.lines.forEach((line, lineIndex) => {
+          if (!known.has(line.speaker)) {
+            ctx.addIssue({
+              code: "custom",
+              path: ["pages", pageIndex, "panels", panelIndex, "lines", lineIndex, "speaker"],
+              message: `話者「${line.speaker}」が characters にない（narration は使える）`,
+            });
+          }
+        });
+      });
+    });
+  });
+
+/** ことばチップ（語・読み・意味）。タップで辞書ポップアップ。 */
+const vocabItemSchema = z.object({
+  term: plainText,
+  reading: hiragana,
+  meaning: plainText,
+});
+
+/**
+ * 説明ページのブロック（設計07 §5）。生HTMLは持たない — 禁止語・ルビ・秘匿漏れの
+ * 機械検査を確実に効かせ、XSSなくDB由来コンテンツを描画するため。
+ * 判別キーは kind（link ブロックが参照先種別に type を使うため）。
+ */
+export const articleBlockSchema = z.discriminatedUnion("kind", [
+  z.object({
+    kind: z.literal("heading"),
+    level: z.union([z.literal(2), z.literal(3)]),
+    text: plainText,
+  }),
+  z.object({ kind: z.literal("paragraph"), text: plainText }),
+  imageSlotSchema.extend({ kind: z.literal("image"), caption: plainText.optional() }),
+  z.object({ kind: z.literal("callout"), tone: z.enum(["point", "care"]), text: plainText }),
+  z.object({ kind: z.literal("list"), items: z.array(plainText).min(1) }),
+  z.object({ kind: z.literal("steps"), items: z.array(plainText).min(1) }),
+  z.object({ kind: z.literal("vocab"), items: z.array(vocabItemSchema).min(1) }),
+  /** 次の教材への誘導カード（ステージ内コンテンツ限定）。 */
+  z.object({
+    kind: z.literal("link"),
+    ref: z.string().min(1),
+    type: contentRefTypeSchema,
+    label: plainText,
+  }),
+]);
+
+/** 説明ページ（article / WYSIWYG — 設計07 §5）。保存形式はブロックJSON。 */
+export const articleSchema = z.object({
+  kind: z.literal("article"),
+  id: z.string().regex(/^[a-z0-9_-]+$/),
+  title: plainText,
+  description: plainText,
+  furigana: z.array(furiganaEntrySchema).optional(),
+  blocks: z.array(articleBlockSchema).min(1),
+});
+
 export const contentSchema = z.discriminatedUnion("kind", [
   wordStageSchema,
   quizSetSchema,
   meetingSchema,
   scenarioSchema,
+  stageSchema,
+  mangaSchema,
+  articleSchema,
 ]);
 
 export type Word = z.infer<typeof wordSchema>;
@@ -504,4 +670,15 @@ export type Meeting = z.infer<typeof meetingSchema>;
 export type MeetingParticipant = z.infer<typeof participantSchema>;
 export type MeetingScriptLine = z.infer<typeof scriptLineSchema>;
 export type Scenario = z.infer<typeof scenarioSchema>;
+export type Stage = z.infer<typeof stageSchema>;
+export type StageContentRef = z.infer<typeof stageContentRefSchema>;
+export type ContentRefType = StageContentRef["type"];
+export type ImageSlot = z.infer<typeof imageSlotSchema>;
+export type Manga = z.infer<typeof mangaSchema>;
+export type MangaCharacter = z.infer<typeof mangaCharacterSchema>;
+export type MangaPage = Manga["pages"][number];
+export type MangaPanel = MangaPage["panels"][number];
+export type MangaLine = z.infer<typeof mangaLineSchema>;
+export type Article = z.infer<typeof articleSchema>;
+export type ArticleBlock = z.infer<typeof articleBlockSchema>;
 export type Content = z.infer<typeof contentSchema>;

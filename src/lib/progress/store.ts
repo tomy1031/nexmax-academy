@@ -87,6 +87,16 @@ export interface GameScore {
   readonly plays: number;
 }
 
+/**
+ * ステージ内コンテンツ（manga / article / meeting / quizset / scenario など）の進捗。
+ * ステージ詳細の「4つ中2つ おわった」やレッスンカードの n/m がこれを数える（設計07 §3）。
+ */
+export interface ContentProgress {
+  readonly status: "started" | "completed";
+  /** 途中位置（しおり）。例: 漫画なら { page: 3, panel: 2 }。 */
+  readonly position?: Record<string, number>;
+}
+
 /** 語ごとの学習履歴。スケジューラが「苦手」を判断する材料。 */
 export interface WordMastery {
   readonly seen: number;
@@ -213,4 +223,33 @@ export function createProgressStore(backend: ProgressBackend = defaultBackend())
       backend.remove(`${NAMESPACE}:mastery:${stageId}`);
     },
   };
+}
+
+/* ------------------------------------------------------------------ *
+ * コンテンツ進捗（stage 内の manga / article / meeting / quizset / scenario）
+ * ------------------------------------------------------------------ */
+
+export function readContentProgress(
+  contentId: string,
+  backend: ProgressBackend = defaultBackend(),
+): ContentProgress | null {
+  return readJson<ContentProgress | null>(backend, `content:${contentId}`, null);
+}
+
+/**
+ * コンテンツ進捗を記録する。completed は started で上書きされない
+ * （読み直しても「おわった」は消えない）。position（しおり）は常に最新を残す。
+ * writeJson 経由なので subscribeProgress の購読者に通知が飛ぶ。
+ */
+export function recordContentProgress(
+  contentId: string,
+  value: ContentProgress,
+  backend: ProgressBackend = defaultBackend(),
+): ContentProgress {
+  const existing = readContentProgress(contentId, backend);
+  const status = existing?.status === "completed" ? "completed" : value.status;
+  const position = value.position ?? existing?.position;
+  const next: ContentProgress = position ? { status, position } : { status };
+  writeJson(backend, `content:${contentId}`, next);
+  return next;
 }

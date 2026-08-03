@@ -12,9 +12,12 @@ import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 import {
   contentSchema,
+  type Article,
+  type Manga,
   type Meeting,
   type QuizSet,
   type Scenario,
+  type Stage,
   type WordStage,
 } from "@/content/schema";
 
@@ -83,4 +86,41 @@ export function listScenarios(): Scenario[] {
 
 export function getScenario(id: string): Scenario | null {
   return listScenarios().find((scenario) => scenario.id === id) ?? null;
+}
+
+/* ------------------------------------------------------------------ *
+ * スタジオ系コンテンツ（stage / manga / article — 設計07）
+ *
+ * ここだけ async: いまはファイル読みだが、後工程で Supabase の下書き・公開分を
+ * 内部で合流させるため、シグネチャを先に非同期に固定しておく。
+ * ------------------------------------------------------------------ */
+
+export async function listStages(): Promise<Stage[]> {
+  return parseAll()
+    .filter((c): c is Stage => c.kind === "stage")
+    .sort((a, b) => a.step - b.step || a.id.localeCompare(b.id));
+}
+
+export async function getStage(id: string): Promise<Stage | null> {
+  return (await listStages()).find((stage) => stage.id === id) ?? null;
+}
+
+export async function listMangas(): Promise<Manga[]> {
+  return parseAll()
+    .filter((c): c is Manga => c.kind === "manga")
+    .sort((a, b) => a.id.localeCompare(b.id));
+}
+
+export async function getManga(id: string): Promise<Manga | null> {
+  return (await listMangas()).find((manga) => manga.id === id) ?? null;
+}
+
+export async function listArticles(): Promise<Article[]> {
+  return parseAll()
+    .filter((c): c is Article => c.kind === "article")
+    .sort((a, b) => a.id.localeCompare(b.id));
+}
+
+export async function getArticle(id: string): Promise<Article | null> {
+  return (await listArticles()).find((article) => article.id === id) ?? null;
 }
