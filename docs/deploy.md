@@ -115,6 +115,25 @@ curl -s -o /dev/null "$SB/auth/v1/authorize?provider=google&redirect_to=$enc"
 `/authorize` の `Location` ヘッダには渡した `redirect_to` がそのまま載るだけで
 判定には使えない（未登録でも同じに見える）。**ログを見ること。**
 
+#### Redirect URLs の全量（2026-08-03 時点）
+
+```
+https://nexmax-academy.nextmake.workers.dev/**
+https://staging-nexmax-academy.nextmake.workers.dev/**
+http://localhost:3000/**
+https://nexmax-academy.vercel.app/**
+https://*.vercel.app/**
+```
+
+下2本は移行完了まで残す。完了時に削除する。
+
+**旧リスト（`/auth/callback` 完全一致）は5本とも機能していなかった。** 実測で
+`http://localhost:3000/auth/callback?code=...` も
+`https://some-branch.vercel.app/auth/callback?code=...` も拒否されることを確認した。
+つまり**ローカル開発のログインもブランチプレビューのログインも、元から
+本番へ飛ばされていた**（§4-1 が「症状」として書いていた現象そのもの）。
+`https://nexmax-academy.vercel.app` だけが動いていたのは Site URL の暗黙許可のため。
+
 ### 0.4 恒久の制約
 
 - **`src/middleware.ts` を `proxy.ts` に改名しない。** `next build` の
@@ -171,9 +190,14 @@ DBを本番と共有するため、検証操作が本番データ・本番ユー
 1. **Google OAuth のリダイレクトURL登録**（Supabase → Authentication → URL Configuration）
    - Site URL: 本番URL（`https://nexmax-academy.vercel.app`）
    - Additional Redirect URLs に検証・プレビューを追加:
-     - `https://nexmax-academy.vercel.app/auth/callback`（本番・明示）
-     - `https://*.vercel.app/auth/callback`（ブランチプレビュー。サブドメインが毎回変わるため）
-     - `http://localhost:3000/auth/callback`（ローカル）
+     - `https://nexmax-academy.vercel.app/**`（本番・明示）
+     - `https://*.vercel.app/**`（ブランチプレビュー。サブドメインが毎回変わるため）
+     - `http://localhost:3000/**`（ローカル）
+
+   > **末尾は `/**` にすること。** 以前ここには `/auth/callback` 完全一致で書いてあったが、
+   > **それでは動かない**。戻り先は `?code=...` が付いた状態で照合されるため一致しない。
+   > 実測で localhost もブランチプレビューも拒否されることを確認済み（§0.3）。
+   > `https://nexmax-academy.vercel.app` だけが動いていたのは Site URL の暗黙許可のため。
    - **未登録のURLに戻そうとすると、Supabase は拒否ではなく Site URL（＝本番）へ
      `?code=` 付きでフォールバックする**。「検証環境でログインしたのに本番に飛ぶ」は
      この症状。ドメインをまたぐためアプリ側では救えず、登録するしかない。
