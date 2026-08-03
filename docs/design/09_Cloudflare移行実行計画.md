@@ -66,13 +66,32 @@ Phase A で判明した追加事項（計画時点では未把握）:
      `NEXT_PUBLIC_*` はクライアント/middleware/server に inline 済み）
 6. ✅ プレビューエイリアス作成済み: **`https://staging-nexmax-academy.nextmake.workers.dev`**
    （`wrangler versions upload --preview-alias staging`）
-   - ✅ Supabase の Redirect URLs 登録も完了（2026-08-03）。**2本とも受理を実測で確認**
+   - Supabase の Redirect URLs は **`/**` 付きで登録する**。
+     `.../auth/callback` の完全一致では動かない（下記）
    - 検証方法: Supabase の auth ログは**採用した戻り先**を `referer` に記録する。
      `/authorize?redirect_to=<URL>` を叩いてログを見れば、Google の認証情報なしに
-     登録の成否が判定できる（手順は `docs/deploy.md` §0.3）。
-     未登録URLで試すと `referer` が Site URL（`https://nexmax-academy.vercel.app`）に
-     なることも確認済み＝フォールバックの再現も取れている
+     登録の成否が判定できる（手順は `docs/deploy.md` §0.3）
    - `/authorize` の `Location` ヘッダは未登録でも同じに見えるので**判定に使えない**
+
+**踏んだ罠: 完全一致で登録すると `?code=` 付きで外れる（2026-08-03）**
+
+最初 `https://nexmax-academy.nextmake.workers.dev/auth/callback` を完全一致で登録し、
+クエリなしの `/authorize` テストが通ったので「登録できた」と判断した。**これは誤判定。**
+実際のログインでは `/authorize` は通るが `/callback` で Site URL（Vercel）へ落ちた。
+
+原因は、戻り先が **`?code=...` が付いた状態で照合される**こと。実測した対照:
+
+| 渡した `redirect_to` | 判定 |
+|---|---|
+| `workers.dev/auth/callback` | 受理 |
+| `workers.dev/auth/callback?code=...` | **拒否** ← 実フロー |
+| `vercel.app/auth/callback?code=...` | 受理 |
+| `vercel.app/anything/deep/path` | 受理 |
+
+**Vercel が今まで動いていたのは Site URL 配下が暗黙に全許可されるためで、
+登録が正しかったからではない。** Site URL 以外へ移すとこの暗黙許可が効かなくなる。
+
+対処: `https://<host>/**` で登録する。検証も**必ず `?code=` を付けて**行う。
 7. ⬜ Google ログイン → 20問 → 保存 → `/admin` の実機確認（deploy.md §4 の再現）
    - **ユーザー本人の Google 認証が必要なため Claude では実施できない**。ここだけ手作業
    - 失敗した場合は Supabase の auth ログ（MCP `get_logs(service:"auth")`）と

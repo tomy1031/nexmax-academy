@@ -59,28 +59,54 @@ workers.dev のホストは `nexmax-academy.nextmake.workers.dev` のように
 `https://*.workers.dev/auth/callback` では一致しない。逐語で登録する。
 
 ```
-https://nexmax-academy.nextmake.workers.dev/auth/callback
-https://staging-nexmax-academy.nextmake.workers.dev/auth/callback
+https://nexmax-academy.nextmake.workers.dev/**
+https://staging-nexmax-academy.nextmake.workers.dev/**
 ```
 
 2行目は `wrangler versions upload --preview-alias staging` で作る固定エイリアス。
 プレビューURLは既定では `<version>-<worker>.<subdomain>.workers.dev` とバージョンごとに
 変わるので、**エイリアスを固定してから登録する**。
-未登録URLの挙動（Site URL へ `?code=` 付きフォールバック）は §4-1 と同じ。
+
+#### 末尾の `/**` が必須。`/auth/callback` の完全一致では動かない（実測）
+
+**戻り先は `?code=...` が付いた状態で照合される。** そのため
+`https://nexmax-academy.nextmake.workers.dev/auth/callback` を完全一致で登録しても、
+実際のログインでは一致せず Site URL へフォールバックする。
+
+実測した対照結果:
+
+| 渡した `redirect_to` | 判定 |
+|---|---|
+| `workers.dev/auth/callback`（クエリなし） | 受理 |
+| `workers.dev/auth/callback?code=...` | **拒否** ← 実フローはこれ |
+| `vercel.app/auth/callback?code=...` | 受理 |
+| `vercel.app/anything/deep/path` | 受理 |
+
+**Vercel が常に動いていたのは登録が正しかったからではなく、Site URL 配下が
+暗黙にすべて許可されるため。** 移行先を Site URL 以外に置くときは、この暗黙の
+許可が効かないことを前提に `/**` を明示する。
+
+`**` は区切り文字（`.` と `/`）を含む任意の文字列に一致する
+（[Redirect URLs](https://supabase.com/docs/guides/auth/redirect-urls) の
+ワイルドカード表）。`*` は区切りを跨がないので `/auth/callback` に届かない。
 
 #### 登録できているかを、ログインせずに確かめる方法
 
 Supabase の auth ログは**実際に採用した戻り先**を `referer` として記録する。
 これを使うと、Google の認証情報なしに登録の成否を判定できる。
 
+**必ず `?code=` を付けて試すこと。** クエリなしで試すと、完全一致登録でも
+通ってしまい**誤って「登録できている」と判定する**（実際にこの誤判定をやらかした）。
+
 ```bash
 SB=https://ytlmwhovgvpdmmxyfmuz.supabase.co
-R="https://nexmax-academy.nextmake.workers.dev/auth/callback"
+R="https://nexmax-academy.nextmake.workers.dev/auth/callback?code=testvalue"
 enc=$(python3 -c "import urllib.parse,sys;print(urllib.parse.quote(sys.argv[1],safe=''))" "$R")
 curl -s -o /dev/null "$SB/auth/v1/authorize?provider=google&redirect_to=$enc"
 ```
 
-叩いたあと Supabase の auth ログ（MCP なら `get_logs(service:"auth")`）を見る。
+叩いたあと Supabase の auth ログ（MCP なら `get_logs(service:"auth")`）で
+`path` が `/authorize` の最新エントリを見る。
 
 - `referer` が**渡したURLそのもの** → **登録できている**
 - `referer` が **Site URL**（例 `https://nexmax-academy.vercel.app`）→ **未登録**。
