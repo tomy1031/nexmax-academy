@@ -113,7 +113,7 @@
     <h1>コンテンツスタジオ設計書</h1>
     <p class="en">Content Studio — dual-path authoring with Codex App Server</p>
     <p class="meta">
-      <span>版: v1.0</span>
+      <span>版: v1.1</span>
       <span>作成日: 2026-07-31</span>
       <span>対象: ステージ／漫画／記事／会議／単語の制作パイプライン</span>
     </p>
@@ -122,12 +122,17 @@
   <details class="changelog" id="changelog">
     <summary>
       <span class="chev">▶</span>変更履歴 / Changelog
-      <span class="latest">最新: v1.0 (2026-07-31)</span>
+      <span class="latest">最新: v1.1 (2026-07-31)</span>
     </summary>
     <div class="cl-body">
       <p>本書への変更を記録する。各エントリの「修正箇所」リンクから該当章へ移動できる。</p>
       <table>
         <tr><th>版</th><th>日付</th><th>変更内容</th><th>修正箇所</th></tr>
+        <tr>
+          <td>v1.1</td><td>2026-07-31</td>
+          <td>漫画をストーリー漫画対応に拡張（<code>format</code> 2形式・場面カード・コマsizeヒント・しおり・2段生成・場面連続性の参照ルール）。</td>
+          <td><a href="#s4-formats">4.0</a> ・ <a href="#s4">4.1</a> ・ <a href="#s6">6.3</a> ・ <a href="#s7">7</a></td>
+        </tr>
         <tr>
           <td>v1.0</td><td>2026-07-31</td><td>初版作成。二経路制作の規格・Codex工房・漫画/記事スキーマ・音声/単語連携・段階計画を定義。</td>
           <td><a href="#s1">1</a>〜<a href="#s13">13</a></td>
@@ -146,7 +151,7 @@
     <h2 class="sec"><span class="num">1</span>目的と全体像</h2>
     <p>本書は、Nexmax Academy の教材（ステージとその中のコンテンツ）を
       <strong>Claude Code からも、ブラウザの管理画面からも、同じ規格で作れる</strong>ようにするための設計である。
-      新しいページ種別として<strong>漫画ページ</strong>と<strong>WYSIWYG の説明ページ（ブログ風）</strong>を追加し、
+      新しいページ種別として<strong>漫画ページ（4コマ／ストーリー漫画の2形式）</strong>と<strong>WYSIWYG の説明ページ（ブログ風）</strong>を追加し、
       どちらの経路でも <strong>Codex App Server</strong> に「一言の依頼＋2〜3問の回答」だけで
       画像込みの完成品まで作らせられるようにする。</p>
 
@@ -293,31 +298,56 @@ erDiagram
       ②ふりがな合成・ふりがなトグル・禁止語検査がそのまま効く
       ③あとからセリフだけ直せる（画像の再生成が不要）。</div>
 
+    <h3 id="s4-formats">4.0 ふたつの形式 — 4コマとストーリー漫画</h3>
+    <p>同じ <code>manga</code> kind の中で、<code>format</code> フィールドにより2形式を扱う。
+      データ構造（pages → panels）は共通で、<strong>形式の違いは「量」と「レイアウトヒント」だけ</strong>にする。
+      エンジンも編集画面も1つで済み、途中で4コマをストーリーに育てることもできる。</p>
+    <table>
+      <tr><th></th><th><code>format: "yonkoma"</code>（4コマ）</th><th><code>format: "story"</code>（ストーリー漫画）</th></tr>
+      <tr><td>規模</td><td>1ページ＝縦4コマ。1〜3本</td><td>複数ページ・章あり。1話 8〜30ページ程度</td></tr>
+      <tr><td>コマ割り</td><td>固定（縦に4等分）</td><td>ページごとに可変。パネルに <code>size</code> ヒント（normal / wide / tall）を持ち、見開き的な「決めゴマ」= wide を作れる</td></tr>
+      <tr><td>場面転換</td><td>なし（1本1場面）</td><td><code>pages[].title</code> による<strong>場面カード</strong>（「その日の午後 — 会議室」など）を挟める</td></tr>
+      <tr><td>読み方</td><td>縦スクロールで1本ずつ</td><td>縦スクロール（Webtoon式）。ページ区切りで余白＋「p.3 / 12」表示。しおり（続きから）つき</td></tr>
+      <tr><td>用途</td><td>導入のつかみ・1概念1本</td><td>シナリオ全体の追体験（例：障害発生から報告・復旧までの一日）</td></tr>
+    </table>
+
     <pre><code>{
   "kind": "manga",
-  "id": "m2-asakai-manga",
-  "title": "はじめての朝会",
-  "description": "ヘンディ先輩の朝会を のぞいてみよう。",
-  "furigana": [["朝会","あさかい"], ["予定","よてい"]],
+  "id": "m7-shogai-manga",
+  "format": "story",                  // "yonkoma" | "story"
+  "title": "サーバーが止まった日",
+  "description": "障害の一日を ヘンディ先輩と いっしょに 追いかけます。",
+  "furigana": [["障害","しょうがい"], ["復旧","ふっきゅう"]],
   "characters": [                     // 登場人物（画像の一貫性にも使う）
     { "id": "hendy", "name": "ヘンディ", "role": "先輩" }
   ],
   "pages": [
-    { "panels": [
-      { "image": { "src": "assets/m2/p1-1.png",
+    { "title": "朝 9:00 — オフィス",     // 場面カード（storyのみ・省略可）
+      "panels": [
+      { "size": "wide",                  // normal | wide | tall（storyのみ意味を持つ）
+        "image": { "src": "assets/m7/p1-1.webp",
                    "prompt": "…gpt-image-genに渡した全文…",   // 再現・再生成用に保存
-                   "refs": ["characters/hendy/reference.png"],
+                   "refs": ["characters/hendy/reference.png",
+                            "assets/m7/p1-0.webp"],           // 同一場面の直前パネルも参照に
                    "status": "done" },                        // empty | generating | done
-        "lines": [ { "speaker": "hendy", "text": "おはようございます。今日の予定を話します。" } ],
-        "caption": "朝9時。チームが集まりました。" }
+        "lines": [ { "speaker": "hendy", "text": "おはようございます。あれ、サーバーの様子が変です。" } ],
+        "caption": "いつもの朝の はずでした。" }
     ] }
   ]
 }</code></pre>
 
+    <div class="callout"><strong>ストーリー漫画の制作は2段生成</strong>（§6.3）：
+      Codex工房はいきなり全ページを描かず、①<strong>あらすじ→場面リスト</strong>（ページ数・各場面の学習ポイント）を先に出して先生の確認を取り、
+      ②承認後に<strong>ネーム（コマ割りJSON＋セリフ）</strong>→ 画像生成、と進む。
+      長尺で方向がずれたまま30ページ生成する事故を防ぎ、途中の場面だけ作り直すこともできる。</div>
+
     <h3>4.1 読む画面（学習者向け）</h3>
     <ul>
-      <li><strong>縦スクロール</strong>（スマホ前提）。パネルは画面に入ったらふわっと表示。</li>
+      <li><strong>縦スクロール</strong>（スマホ前提）。パネルは画面に入ったらふわっと表示。
+        <code>size: wide</code> は横幅いっぱい、<code>tall</code> は縦長で「決めゴマ」の間を作る。</li>
       <li>セリフは吹き出し風のHTMLで表示し、<strong>ふりがなON/OFFトグル</strong>つき（RubyText を使用）。</li>
+      <li><strong>ストーリー形式の追加要素</strong>：場面カード（ページ間の区切り）／「p.3 / 12」の現在地表示／
+        <strong>しおり</strong>（進捗保存層に最終到達パネルを記録し「続きから」で復帰。疲れている学習者が分割して読める）。</li>
       <li>読み終わり判定＝最後のパネル到達。進捗保存層に記録し、ステージ進捗へ反映。</li>
       <li>末尾に「この漫画に出てきたことば」チップ（§9で抽出した語 → 辞書ポップアップ／単語ステージへの導線）。</li>
     </ul>
@@ -406,7 +436,8 @@ sequenceDiagram
       これで「どちらの経路で作っても同じ品質基準」が実現する。プロンプトの改善は通常のコミットとして履歴に残る。</p>
 
     <div class="callout good"><strong>ジョブ一覧（初期セット）</strong>：
-      <code>draft</code>（種別別の下書き生成）／<code>revise</code>（選択範囲への修正指示）／
+      <code>draft</code>（種別別の下書き生成。<strong>ストーリー漫画のみ内部が2段</strong>：場面リスト承認→ネーム生成 §4.0）／
+      <code>revise</code>（選択範囲への修正指示）／
       <code>image</code>（§7）／<code>vocab</code>（§9）／<code>tts-script</code>（§8の原稿整形）。
       すべて入出力がスキーマで固定された「工程」であり、自由会話は存在しない。</div>
   </section>
@@ -422,6 +453,7 @@ sequenceDiagram
       <tr><td>参照画像を必ず渡す</td><td>キャラクター登場パネルは <code>characters/*/reference.png</code> を自動添付。manga の <code>characters[]</code> から解決。</td></tr>
       <tr><td>マスター記述を逐語使用</td><td>キャラごとのマスター記述をリポジトリに置き、ジョブが機械的に連結（人が毎回貼らない）。</td></tr>
       <tr><td>差分は1つだけ</td><td>受付で「ポーズ／小物／背景」を1項目ずつ質問に落とす。</td></tr>
+      <tr><td>場面の連続性（story）</td><td>同一場面のパネルは<strong>直前パネルの完成画像を参照に自動追加</strong>（背景・光・服装のつながりを保つ）。場面カードで区切られたら参照をリセットする。</td></tr>
       <tr><td>文字を描かせない</td><td>全プロンプトに <code>no readable text</code> を強制付与（§4の方針とセット）。</td></tr>
       <tr><td>プロンプト保存</td><td>画像スロットに prompt と参照一覧を保存 → 「少し直して再生成」「シリーズ追加」が安定。</td></tr>
     </table>
@@ -599,7 +631,7 @@ gantt
 
   </div>
 
-  <footer>コンテンツスタジオ設計書 v1.0 ・ 出典: docs/design/01〜04・08（授業サポート表示 §0.1.1 拡張経路）・AGENTS.md・docs/skills/codex_image_generation.md・generating-gemini-live-audio スキル・Codex CLI 0.145.0 (app-server)・scripts/codex_bridge.mjs（character-personality-design ブランチ）</footer>
+  <footer>コンテンツスタジオ設計書 v1.1 ・ 出典: docs/design/01〜04・08（授業サポート表示 §0.1.1 拡張経路）・AGENTS.md・docs/skills/codex_image_generation.md・generating-gemini-live-audio スキル・Codex CLI 0.145.0 (app-server)・scripts/codex_bridge.mjs（character-personality-design ブランチ）</footer>
 </main>
 
 </div>
