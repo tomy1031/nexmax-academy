@@ -1,12 +1,25 @@
 import {
   isPersonalityScores,
   isPersonalityTypeCode,
+  PERSONALITY_QUESTIONS,
   type PersonalityScores,
   type PersonalityTypeCode,
 } from "@/content/personality";
 
 export type Gender = "male" | "female";
 export type MapView = "map" | "cards";
+
+/**
+ * 診断が完了しているか（20問そろっているか）。
+ *
+ * 「profiles に行があるか」で判定してはいけない。名前と性別だけ入って診断が
+ * 未完了の行は正当に存在しうる（DB制約が answers=[] を許している）のに、
+ * 行の有無で弾くと `/welcome` と `/map` を往復して詰む。
+ * 判定はここに一本化する。
+ */
+export function isDiagnosisComplete(answers: unknown): boolean {
+  return Array.isArray(answers) && answers.length === PERSONALITY_QUESTIONS.length;
+}
 
 export interface NexmaxProfile {
   displayName: string;

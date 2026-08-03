@@ -224,16 +224,22 @@ export function WelcomeWizard({
   authReady,
   loggedIn,
   email,
+  saved = null,
+  retake = false,
 }: {
   authReady: boolean;
   loggedIn: boolean;
   email: string | null;
+  /** 保存済みの名前と性別。やり直しのときに入れ直させないため。 */
+  saved?: { displayName: string; gender: Gender } | null;
+  /** 診断のやり直しとして開かれたか。文言の出し分けにだけ使う。 */
+  retake?: boolean;
 }) {
   const router = useRouter();
   const savedGeminiKey = useSyncExternalStore(subscribeToStorage, savedGeminiKeySnapshot, () => "");
   const [step, setStep] = useState<1 | 2 | 3>(1);
-  const [displayName, setDisplayName] = useState("");
-  const [genderChoice, setGenderChoice] = useState<Gender | null>(null);
+  const [displayName, setDisplayName] = useState(saved?.displayName ?? "");
+  const [genderChoice, setGenderChoice] = useState<Gender | null>(saved?.gender ?? null);
   const gender = genderChoice;
   const [geminiValue, setGeminiValue] = useState<string | null>(null);
   const geminiKey = geminiValue ?? savedGeminiKey;
@@ -398,7 +404,7 @@ export function WelcomeWizard({
         {step === 1 && (
           <div className="animate-pop-in relative z-10">
             <h1 className="text-navy mt-7 text-center text-2xl font-black sm:text-3xl">
-              ⭐ はじめての チュートリアル ⭐
+              {retake ? "⭐ せいかくしんだんを もういちど ⭐" : "⭐ はじめての チュートリアル ⭐"}
             </h1>
             <div className="mt-5 rounded-3xl border-2 border-white bg-[#e9f7ff]/90 p-4 shadow-[inset_0_0_24px_rgba(2,136,209,.1)] sm:p-6">
               <h2 className="text-ink text-center text-xl font-extrabold sm:text-2xl">
@@ -1109,7 +1115,10 @@ export function WelcomeWizard({
                 step === 2 ? "rounded-br-md" : "rounded-bl-md"
               }`}
             >
-              {step === 1 && "はじめに せっていを しましょう！"}
+              {step === 1 &&
+                (retake
+                  ? "なんかいでも やりなおせるよ。まえの けっかも のこして あるよ！"
+                  : "はじめに せっていを しましょう！")}
               {step === 2 && "しつもんに こたえると、あなたの タイプが わかるよ！"}
               {step === 3 && "いっしょに がんばろう！"}
             </p>
