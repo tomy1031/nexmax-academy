@@ -116,7 +116,7 @@ export function ArticleEditor({
         <div className="card-island p-3">
           <p className="text-ink-soft text-xs font-black">プレビュー（学習者と同じ画面）</p>
           <div className="mt-2 max-h-[70dvh] overflow-y-auto rounded-2xl bg-white/60">
-            <ArticleView article={value} />
+            <ArticleView article={value} preview />
           </div>
         </div>
       </aside>

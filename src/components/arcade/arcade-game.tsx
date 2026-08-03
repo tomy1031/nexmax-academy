@@ -7,7 +7,11 @@ import { FeedbackMessage } from "@/components/feedback-message";
 import { RubyText } from "@/components/ruby-text";
 import { buildFuriganaIndex } from "@/lib/text/furigana";
 import { isHiraganaInputReady } from "@/lib/text/normalize";
-import { createProgressStore, subscribeProgress } from "@/lib/progress/store";
+import {
+  createProgressStore,
+  recordContentProgress,
+  subscribeProgress,
+} from "@/lib/progress/store";
 import {
   approachSeconds,
   arcadeReducer,
@@ -105,6 +109,13 @@ export function ArcadeGame({
   );
 
   const leave = useCallback(() => router.push("/map"), [router]);
+
+  // ステージの進み具合に反映する（設計07 §3）。けっか画面まで来たら「おわった」。
+  const finished = screen.kind === "result";
+  useEffect(() => {
+    if (!stage) return;
+    recordContentProgress(stage.id, { status: finished ? "completed" : "started" });
+  }, [stage, finished]);
 
   // 舞台の景色。遊んでいる間は問題の進みに合わせて変わる。
   const field =

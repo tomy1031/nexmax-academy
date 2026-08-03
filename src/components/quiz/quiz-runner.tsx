@@ -1,13 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { motion } from "motion/react";
 import type { QuizQuestion, QuizSet } from "@/content/schema";
 import { FeedbackMessage } from "@/components/feedback-message";
 import { NekuMax } from "@/components/nekumax";
 import { RubyText } from "@/components/ruby-text";
 import { buildFuriganaIndex } from "@/lib/text/furigana";
+import { recordContentProgress } from "@/lib/progress/store";
 import { CelebrationBurst, StampRow } from "./celebration";
 import { QuestionBody } from "./question-types";
 import {
@@ -33,6 +34,12 @@ export function QuizRunner({ set }: { set: QuizSet }) {
   const dispatch = useCallback((action: QuizAction) => {
     setState((prev) => quizReducer(prev, action));
   }, []);
+
+  // ステージの進み具合に反映する（設計07 §3）。始めた時点と、終えた時点を残す。
+  const done = state.phase.kind === "finished";
+  useEffect(() => {
+    recordContentProgress(set.id, { status: done ? "completed" : "started" });
+  }, [set.id, done]);
 
   const summary = summarizeQuiz(state);
   const question = currentQuestion(state);

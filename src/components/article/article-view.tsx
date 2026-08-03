@@ -27,7 +27,17 @@ import {
  * /studio のプレビューが同じものを描画するため、ここでデータを取りに行ったり
  * ルーティングの状態を読んだりしない。
  */
-export function ArticleView({ article }: { article: Article }) {
+export function ArticleView({
+  article,
+  /**
+   * スタジオのプレビュー用。true のあいだは進捗を書かない。
+   * 書いてしまうと、先生が ID を1文字打つたびにゴミの進捗レコードが増える。
+   */
+  preview = false,
+}: {
+  article: Article;
+  preview?: boolean;
+}) {
   const furigana = useMemo(() => buildFuriganaIndex(article.furigana ?? []), [article.furigana]);
   const [rubyOn, setRubyOn] = useState(true);
   const headings = useMemo(() => collectHeadings(article.blocks), [article.blocks]);
@@ -35,8 +45,8 @@ export function ArticleView({ article }: { article: Article }) {
 
   // 開いた時点で「よみかけ」。completed は上書きされない（store 側の規則）。
   useEffect(() => {
-    recordContentProgress(article.id, { status: "started" });
-  }, [article.id]);
+    if (!preview) recordContentProgress(article.id, { status: "started" });
+  }, [article.id, preview]);
 
   // 末尾のしるしが見えたら「おわった」。スクロール位置の計算を自前でやらない。
   useEffect(() => {
@@ -45,13 +55,13 @@ export function ArticleView({ article }: { article: Article }) {
 
     const observer = new IntersectionObserver((entries) => {
       if (entries.some((entry) => entry.isIntersecting)) {
-        recordContentProgress(article.id, { status: "completed" });
+        if (!preview) recordContentProgress(article.id, { status: "completed" });
         observer.disconnect();
       }
     });
     observer.observe(sentinel);
     return () => observer.disconnect();
-  }, [article.id]);
+  }, [article.id, preview]);
 
   return (
     <div className="mx-auto w-full max-w-3xl px-4 py-6">

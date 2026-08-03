@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { Meeting } from "@/content/schema";
 import { RubyText } from "@/components/ruby-text";
 import { buildFuriganaIndex } from "@/lib/text/furigana";
+import { recordContentProgress } from "@/lib/progress/store";
 import { CaptionBar, MeetingShell } from "./meeting-shell";
 import { ListeningPanel } from "./listening-panel";
 
@@ -31,6 +32,15 @@ export function PlaybackMeeting({ meeting }: { meeting: Meeting }) {
   const audioRef = useRef<HTMLAudioElement>(null);
 
   const current = meeting.script[line];
+
+  // ステージの進み具合に反映する（設計07 §3）。最後の行まで見たら「おわった」。
+  const done = line >= meeting.script.length - 1;
+  useEffect(() => {
+    recordContentProgress(meeting.id, {
+      status: done ? "completed" : "started",
+      position: { line },
+    });
+  }, [meeting.id, done, line]);
 
   const setSpeed = (value: number) => {
     setRate(value);

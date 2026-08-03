@@ -1,13 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { motion } from "motion/react";
 import type { Scenario } from "@/content/schema";
 import { FeedbackMessage } from "@/components/feedback-message";
 import type { FeedbackKey } from "@/lib/feedback";
 import { RubyText } from "@/components/ruby-text";
 import { buildFuriganaIndex } from "@/lib/text/furigana";
+import { recordContentProgress } from "@/lib/progress/store";
 import { CaptionBar, MeetingShell, MeetingNotReady } from "./meeting-shell";
 import { resolveMatch } from "./req-matcher";
 import { useLiveSession } from "./use-live-session";
@@ -55,6 +56,16 @@ export function LiveMeeting({ scenario }: { scenario: Scenario }) {
     }
   };
 
+  // ステージの進み具合に反映する（設計07 §3）。退出まで行ったら「おわった」。
+  useEffect(() => {
+    recordContentProgress(scenario.id, { status: "started" });
+  }, [scenario.id]);
+
+  const handleLeft = useCallback(() => {
+    live.disconnect();
+    recordContentProgress(scenario.id, { status: "completed" });
+  }, [live, scenario.id]);
+
   const askable = scenario.interview.reqs.filter((r) => !open.has(r.id));
 
   return (
@@ -73,7 +84,7 @@ export function LiveMeeting({ scenario }: { scenario: Scenario }) {
         focus={scenario.mission.goal}
         participants={participants}
         activeSpeaker={live.status === "live" ? "client" : null}
-        onLeft={live.disconnect}
+        onLeft={handleLeft}
         controls={
           <div className="card-island flex flex-wrap items-center gap-2 p-3">
             {live.status === "idle" && (
