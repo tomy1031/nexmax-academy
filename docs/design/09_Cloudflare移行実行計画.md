@@ -66,10 +66,17 @@ Phase A で判明した追加事項（計画時点では未把握）:
      `NEXT_PUBLIC_*` はクライアント/middleware/server に inline 済み）
 6. ✅ プレビューエイリアス作成済み: **`https://staging-nexmax-academy.nextmake.workers.dev`**
    （`wrangler versions upload --preview-alias staging`）
-   - Supabase の Redirect URLs 登録は**ユーザー作業として残**（タスクボード登録済み）。
-     **ワイルドカードは効かない**（§2.7）。登録する2本は `docs/deploy.md` §0.3 に逐語で記載
+   - ✅ Supabase の Redirect URLs 登録も完了（2026-08-03）。**2本とも受理を実測で確認**
+   - 検証方法: Supabase の auth ログは**採用した戻り先**を `referer` に記録する。
+     `/authorize?redirect_to=<URL>` を叩いてログを見れば、Google の認証情報なしに
+     登録の成否が判定できる（手順は `docs/deploy.md` §0.3）。
+     未登録URLで試すと `referer` が Site URL（`https://nexmax-academy.vercel.app`）に
+     なることも確認済み＝フォールバックの再現も取れている
+   - `/authorize` の `Location` ヘッダは未登録でも同じに見えるので**判定に使えない**
 7. ⬜ Google ログイン → 20問 → 保存 → `/admin` の実機確認（deploy.md §4 の再現）
-   - 6 の登録が済むまでログインは動かない
+   - **ユーザー本人の Google 認証が必要なため Claude では実施できない**。ここだけ手作業
+   - 失敗した場合は Supabase の auth ログ（MCP `get_logs(service:"auth")`）と
+     Workers のログ（`wrangler tail`・observability 有効化済み）で追える
 
 Phase B の実機検証結果（本番URLに対して実施）:
 

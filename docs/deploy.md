@@ -68,6 +68,27 @@ https://staging-nexmax-academy.nextmake.workers.dev/auth/callback
 変わるので、**エイリアスを固定してから登録する**。
 未登録URLの挙動（Site URL へ `?code=` 付きフォールバック）は §4-1 と同じ。
 
+#### 登録できているかを、ログインせずに確かめる方法
+
+Supabase の auth ログは**実際に採用した戻り先**を `referer` として記録する。
+これを使うと、Google の認証情報なしに登録の成否を判定できる。
+
+```bash
+SB=https://ytlmwhovgvpdmmxyfmuz.supabase.co
+R="https://nexmax-academy.nextmake.workers.dev/auth/callback"
+enc=$(python3 -c "import urllib.parse,sys;print(urllib.parse.quote(sys.argv[1],safe=''))" "$R")
+curl -s -o /dev/null "$SB/auth/v1/authorize?provider=google&redirect_to=$enc"
+```
+
+叩いたあと Supabase の auth ログ（MCP なら `get_logs(service:"auth")`）を見る。
+
+- `referer` が**渡したURLそのもの** → **登録できている**
+- `referer` が **Site URL**（例 `https://nexmax-academy.vercel.app`）→ **未登録**。
+  フォールバックが起きている
+
+`/authorize` の `Location` ヘッダには渡した `redirect_to` がそのまま載るだけで
+判定には使えない（未登録でも同じに見える）。**ログを見ること。**
+
 ### 0.4 恒久の制約
 
 - **`src/middleware.ts` を `proxy.ts` に改名しない。** `next build` の
