@@ -14,8 +14,18 @@ OpenNext（`@opennextjs/cloudflare`）で Workers 上に載せる。旧 `@cloudf
 ```bash
 npm run cf:preview   # ローカルの workerd で確認（ビルド＋プレビュー）
 npm run cf:deploy    # 本番へデプロイ（秘密ガード＋ビルド＋deploy）
-npm run cf:upload    # バージョンだけ上げる（本番トラフィックは切り替えない）
+npm run cf:staging   # staging エイリアスを更新（本番トラフィックは切り替えない）
+npm run cf:upload    # バージョンだけ上げる（エイリアスは付けない）
 ```
+
+| | URL | 更新コマンド |
+|---|---|---|
+| 本番 | `https://academy.nexmax.workers.dev` | `npm run cf:deploy` |
+| staging | `https://staging-academy.nexmax.workers.dev` | `npm run cf:staging` |
+
+**`cf:upload` では staging は更新されない。** `--preview-alias` を渡していないため、
+新しいバージョンが上がるだけで `staging-` のURLは古い版を指したまま。
+staging を動かしたいときは `cf:staging` を使う。
 
 ### 0.2 環境変数の渡し方 — ここが最大の罠
 
