@@ -112,17 +112,52 @@ Phase B の実機検証結果（本番URLに対して実施）:
 - mokumoku（同一アカウントの別 Worker）は subdomain 変更後も
   `https://mokumoku.nextmake.workers.dev` で 200。再デプロイ不要だった
 
-### Phase C — Tunnel + Access（AI指示出しを本番から使う）
+### Phase C — Tunnel + Access（AI指示出しを本番から使う）→ **保留（ドメインなしでは成立しない）**
+
+**決定（2026-08-03）: ドメインは購入しない。`nextmake.co.jp` も使わない。無料運用が必須。**
+本番URLは `https://nexmax-academy.nextmake.workers.dev` のまま確定。
+
+この決定により Phase C は現状の設計では実施できない。理由:
+
+- 固定ホスト名の Tunnel は、生成される `<UUID>.cfargotunnel.com` へ**自分のゾーンから
+  CNAME を張る**構成が前提。ゾーンにはドメインが要る
+- ドメイン不要の Quick Tunnel（TryCloudflare）は `*.trycloudflare.com` の
+  **ランダムな使い捨てURL**で、固定できず **Access で保護できない**
+- Cloudflare のドキュメント自身が「固定ホスト名や厳格なアクセス制御が要るなら
+  Access で保護した named tunnel を使え」と書いている
+- 保護なしで公開URLに晒すのは不可。ブリッジの先はユーザー個人の Codex サブスク認証
+  （`~/.codex/auth.json`）であり、Access で2メールに絞るのがそもそもの前提だった（§5）
+
+**当面の運用**: `/admin/ai` はローカルで使う（`npm run dev` + `npm run codex:bridge`、
+接続先は既定の `ws://127.0.0.1:8790/codex`）。ブリッジも画面も実装済み・実機検証済みなので
+機能自体は今も使える。**本番から使えないだけ。**
+
+なお本番（https）のページから `ws://127.0.0.1:8790` へ繋ぐのは mixed content の扱いが
+ブラウザ依存なので、当てにしないこと。
+
+再開する条件: ドメインを1つ用意する（無料枠で足りるのは Workers・Tunnel・Access であって、
+ドメイン登録料だけは別）。用意できたら以下をそのまま実施する。
 
 8. `cloudflared` インストール → Tunnel 作成 → `codex.<ドメイン>` を `http://127.0.0.1:8790` に向ける
 9. Zero Trust Access でアプリを作成し、**Google 認証＋管理者2メール**（`supabase/migrations/20260725090000_profiles.sql:46` と同じ2つ）だけ許可
 10. `/admin/ai` の接続先に `wss://codex.<ドメイン>/codex` を入れて実機確認
 11. `docs/deploy.md` を Cloudflare 前提に書き換え（Vercel の節は「旧」として残す）
 
-### 決めごと（ユーザー確認が必要なもの → タスクボード登録済み）
+### 決めごと → **決着済み（2026-08-03）**
 
-- Cloudflare アカウントと**ドメイン**（Tunnel のホスト名に必要。ゾーンは無料プランで可）
-- 本番ドメインを何にするか（workers.dev のままか、独自ドメインか）
+- Cloudflare アカウント: `tomy1031@gmail.com` / `<CLOUDFLARE_ACCOUNT_ID>`
+- **ドメインは購入しない。`nextmake.co.jp` も使わない。無料運用が必須。**
+- 本番URLは **`https://nexmax-academy.nextmake.workers.dev`** で確定
+  - workers.dev のURLは `<Worker名>.<アカウントsubdomain>.workers.dev` という構造で、
+    `workers.dev` もアカウント subdomain の階層も**外せない**。短縮には独自ドメインが要る
+  - アカウント subdomain は既定の `mokumoku-db`（別アプリ由来）から `nextmake` に変更済み
+  - 検討して見送った案: `nexmax.academy` / `nexmax.jp` / `nexmax.app` / `nexmax.school` /
+    `nexmaxacademy.com` はいずれも取得可能だったが、年額費用が発生するため見送り
+    （`nexmax.com` は2014年から登録済みで取得不可）
+  - `academy.nexmax` のような形は**そもそも成立しない**。`.nexmax` は TLD ではないため
+  - `nextmake.co.jp`（Xserver 運用中）を使うにはゾーンごと Cloudflare へ移す必要がある。
+    サブドメインだけ切り出す Subdomain setup は **Enterprise 限定**
+- **その帰結として Phase C は保留**（上記 Phase C の節を見る）
 
 ## 4. 次セッションの開始プロンプト（そのまま貼る）
 
