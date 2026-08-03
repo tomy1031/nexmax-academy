@@ -13,6 +13,7 @@ import { join } from "node:path";
 import {
   contentSchema,
   type Article,
+  type Content,
   type Manga,
   type Meeting,
   type QuizSet,
@@ -20,6 +21,7 @@ import {
   type Stage,
   type WordStage,
 } from "@/content/schema";
+import { fetchDbContents } from "@/lib/content-db";
 
 const CONTENT_DIR = join(process.cwd(), "content");
 
@@ -91,14 +93,39 @@ export function getScenario(id: string): Scenario | null {
 /* ------------------------------------------------------------------ *
  * スタジオ系コンテンツ（stage / manga / article — 設計07）
  *
- * ここだけ async: いまはファイル読みだが、後工程で Supabase の下書き・公開分を
- * 内部で合流させるため、シグネチャを先に非同期に固定しておく。
+ * ここだけ async: git の JSON と Supabase の公開分を内部で合流させるため。
+ * DB未設定のローカル開発では git の JSON だけで全機能が動く（設計07 §11.1）。
  * ------------------------------------------------------------------ */
 
+/**
+ * git 由来とDB由来を合流する。同一IDは DB が勝つ。
+ * 管理画面での修正が常に最新として表示されるようにするためである（設計07 §11.1）。
+ */
+export function mergeContentsById<T extends { id: string }>(
+  gitItems: readonly T[],
+  dbItems: readonly T[],
+): T[] {
+  const byId = new Map<string, T>();
+  for (const item of gitItems) byId.set(item.id, item);
+  for (const item of dbItems) byId.set(item.id, item);
+  return [...byId.values()];
+}
+
+/** DBの公開分から指定 kind だけを取り出す。 */
+async function listPublishedFromDb<K extends Content["kind"]>(
+  kind: K,
+): Promise<Extract<Content, { kind: K }>[]> {
+  const entries = await fetchDbContents();
+  return entries
+    .map((entry) => entry.content)
+    .filter((c): c is Extract<Content, { kind: K }> => c.kind === kind);
+}
+
 export async function listStages(): Promise<Stage[]> {
-  return parseAll()
-    .filter((c): c is Stage => c.kind === "stage")
-    .sort((a, b) => a.step - b.step || a.id.localeCompare(b.id));
+  const git = parseAll().filter((c): c is Stage => c.kind === "stage");
+  return mergeContentsById(git, await listPublishedFromDb("stage")).sort(
+    (a, b) => a.step - b.step || a.id.localeCompare(b.id),
+  );
 }
 
 export async function getStage(id: string): Promise<Stage | null> {
@@ -106,9 +133,10 @@ export async function getStage(id: string): Promise<Stage | null> {
 }
 
 export async function listMangas(): Promise<Manga[]> {
-  return parseAll()
-    .filter((c): c is Manga => c.kind === "manga")
-    .sort((a, b) => a.id.localeCompare(b.id));
+  const git = parseAll().filter((c): c is Manga => c.kind === "manga");
+  return mergeContentsById(git, await listPublishedFromDb("manga")).sort((a, b) =>
+    a.id.localeCompare(b.id),
+  );
 }
 
 export async function getManga(id: string): Promise<Manga | null> {
@@ -116,9 +144,10 @@ export async function getManga(id: string): Promise<Manga | null> {
 }
 
 export async function listArticles(): Promise<Article[]> {
-  return parseAll()
-    .filter((c): c is Article => c.kind === "article")
-    .sort((a, b) => a.id.localeCompare(b.id));
+  const git = parseAll().filter((c): c is Article => c.kind === "article");
+  return mergeContentsById(git, await listPublishedFromDb("article")).sort((a, b) =>
+    a.id.localeCompare(b.id),
+  );
 }
 
 export async function getArticle(id: string): Promise<Article | null> {

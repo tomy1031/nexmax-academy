@@ -521,6 +521,15 @@ export interface WordStageRef {
   title: string;
 }
 
+/**
+ * データ化された公開ステージ（設計07 §3）。step でマップのピンに対応づけ、
+ * ある step だけ「ステージへ すすむ」で /stage/:id を開けるようにする。
+ */
+export interface StageRef {
+  id: string;
+  step: number;
+}
+
 function LessonCard({
   onUnavailable,
   wordStages,
@@ -630,12 +639,15 @@ function StageChip({
   stage,
   current,
   open,
+  stageHref,
   onToggle,
   onUnavailable,
 }: {
   stage: StageDefinition;
   current: boolean;
   open: boolean;
+  /** データ化されたステージがある step だけ、詳細ページへの行き先が入る。 */
+  stageHref: string | null;
   onToggle: () => void;
   onUnavailable: () => void;
 }) {
@@ -668,14 +680,23 @@ function StageChip({
       {open && (
         <div className="border-hairline border-t px-3 pt-2 pb-3">
           <p className="text-ink text-xs font-bold sm:text-sm">{stage.description}</p>
-          <button
-            type="button"
-            onClick={onUnavailable}
-            className="btn-game mt-2 w-full px-3 py-1.5 text-sm [--btn-face:#ffc93c] [--btn-shadow:#f0a819]"
-          >
-            すすむ
-          </button>
-          {!current && (
+          {stageHref ? (
+            <Link
+              href={stageHref}
+              className="btn-game mt-2 w-full px-3 py-1.5 text-sm [--btn-face:#ffc93c] [--btn-shadow:#f0a819]"
+            >
+              ステージへ すすむ
+            </Link>
+          ) : (
+            <button
+              type="button"
+              onClick={onUnavailable}
+              className="btn-game mt-2 w-full px-3 py-1.5 text-sm [--btn-face:#ffc93c] [--btn-shadow:#f0a819]"
+            >
+              すすむ
+            </button>
+          )}
+          {!current && !stageHref && (
             <p className="text-ink-soft mt-2 text-center text-[10px] font-bold">じゅんびちゅう</p>
           )}
         </div>
@@ -686,10 +707,12 @@ function StageChip({
 
 function MapView({
   expandedStage,
+  stageHrefByStep,
   onExpandedStageChange,
   onUnavailable,
 }: {
   expandedStage: string | null;
+  stageHrefByStep: ReadonlyMap<number, string>;
   onExpandedStageChange: (id: string | null) => void;
   onUnavailable: () => void;
 }) {
@@ -764,6 +787,7 @@ function MapView({
                 stage={stage}
                 current={current}
                 open={expandedStage === stage.id}
+                stageHref={stageHrefByStep.get(stage.step) ?? null}
                 onToggle={() => onExpandedStageChange(expandedStage === stage.id ? null : stage.id)}
                 onUnavailable={onUnavailable}
               />
@@ -828,7 +852,13 @@ function CardsView({ onUnavailable }: { onUnavailable: () => void }) {
   );
 }
 
-export function MapShell({ wordStages }: { wordStages: readonly WordStageRef[] }) {
+export function MapShell({
+  wordStages,
+  stages = [],
+}: {
+  wordStages: readonly WordStageRef[];
+  stages?: readonly StageRef[];
+}) {
   const router = useRouter();
   const rawProfile = useSyncExternalStore(
     subscribeToStorage,
@@ -849,6 +879,10 @@ export function MapShell({ wordStages }: { wordStages: readonly WordStageRef[] }
   const [toast, setToast] = useState<string | null>(null);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const view = viewOverride ?? storedView;
+  const stageHrefByStep = useMemo(
+    () => new Map(stages.map((stage) => [stage.step, `/stage/${stage.id}`])),
+    [stages],
+  );
 
   useEffect(() => {
     let active = true;
@@ -939,6 +973,7 @@ export function MapShell({ wordStages }: { wordStages: readonly WordStageRef[] }
       {view === "map" ? (
         <MapView
           expandedStage={expandedStage}
+          stageHrefByStep={stageHrefByStep}
           onExpandedStageChange={setExpandedStage}
           onUnavailable={() => showToast(LONG_WAIT_TOAST)}
         />
