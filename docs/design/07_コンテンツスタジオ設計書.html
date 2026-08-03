@@ -101,7 +101,9 @@
     <li><a href="#s9">9. 単語抽出とステージ紐づけ</a></li>
     <li><a href="#s10">10. 人間側の制作プロセス</a></li>
     <li><a href="#s11">11. 保存とインフラ</a></li>
-    <li style="margin-left:14px"><a href="#s11-2">11.2 学習データの保存形式</a></li>
+    <li style="margin-left:14px"><a href="#s11-2">11.2 学習データ①集計層</a></li>
+    <li style="margin-left:14px"><a href="#s11-3">11.3 学習データ②明細層（対話と間違い）</a></li>
+    <li style="margin-left:14px"><a href="#s11-4">11.4 チーム編成と共有PCの帰属</a></li>
     <li><a href="#s12">12. 段階計画</a></li>
     <li><a href="#s13">13. リスクと未決事項</a></li>
     <li><a href="#changelog">変更履歴 / Changelog</a></li>
@@ -114,7 +116,7 @@
     <h1>コンテンツスタジオ設計書</h1>
     <p class="en">Content Studio — dual-path authoring with Codex App Server</p>
     <p class="meta">
-      <span>版: v1.2</span>
+      <span>版: v1.3</span>
       <span>作成日: 2026-07-31</span>
       <span>対象: ステージ／漫画／記事／会議／単語の制作パイプライン</span>
     </p>
@@ -123,12 +125,17 @@
   <details class="changelog" id="changelog">
     <summary>
       <span class="chev">▶</span>変更履歴 / Changelog
-      <span class="latest">最新: v1.2 (2026-07-31)</span>
+      <span class="latest">最新: v1.3 (2026-07-31)</span>
     </summary>
     <div class="cl-body">
       <p>本書への変更を記録する。各エントリの「修正箇所」リンクから該当章へ移動できる。</p>
       <table>
         <tr><th>版</th><th>日付</th><th>変更内容</th><th>修正箇所</th></tr>
+        <tr>
+          <td>v1.3</td><td>2026-07-31</td>
+          <td>明細層を追加：対話の逐語（live_turns）・1問ごとの誤答の中身（word/quiz/listening_attempts）・activity_sessions。チーム編成（teams/team_members）と共有PCの actor_user_id 帰属、交代ローテーションUI、集計ビュー4本、保持期間の未決を追加。</td>
+          <td><a href="#s11-3">11.3</a> ・ <a href="#s11-4">11.4</a> ・ <a href="#s13">13.1</a></td>
+        </tr>
         <tr>
           <td>v1.2</td><td>2026-07-31</td>
           <td>学習データ（学習者の記録）の保存形式を追加。教材=jsonb／学習記録=実カラムの使い分け、7テーブル定義、進捗保存層の接続方針、RLSと集計ビュー。</td>
@@ -575,7 +582,7 @@ flowchart LR
       「zod変更＋マイグレーションスクリプト」をセットで行う（設計方針03）。DB側 <code>data</code> は jsonb なので、
       マイグレーションは git と DB の両方に同じ変換を適用する。</div>
 
-    <h3 id="s11-2">11.2 学習データ（学習者の記録）の保存形式</h3>
+    <h3 id="s11-2">11.2 学習データ①集計層 — 「どれくらいできたか」</h3>
     <p>教材とは逆の方針を採る。<strong>教材＝jsonb 1枚</strong>（規格の進化が速く、正しさは zod が守る）に対し、
       <strong>学習記録＝実カラムのテーブル</strong>にする。先生が集計する（クラスの弱点・進み具合・成績一覧）対象は
       SQL で直接 GROUP BY できる形でないと、ダッシュボードのたびに jsonb を掘ることになるからである。
@@ -610,7 +617,7 @@ flowchart LR
       <tr><td><code>live_sessions</code></td>
         <td><code>user_id, scenario_id, opened_req_ids(jsonb), duration_sec, completed, taken_at</code></td>
         <td>追記型</td>
-        <td>Live対話。<strong>音声・逐語の文字起こしは保存しない</strong>（プライバシー。開けた項目数と時間だけで指導には足りる）</td></tr>
+        <td>Live対話の集計層。<strong>対話の逐語（テキスト）は §11.3 の <code>live_turns</code></strong> に残す。音声そのものは引き続き保存しない</td></tr>
     </table>
 
     <pre class="mermaid">
@@ -643,9 +650,88 @@ erDiagram
         §9 の単語抽出が作った新ステージの効果測定（導入前後の missed 率）もこのビューで見る。</li>
     </ul>
 
+    <h3 id="s11-3">11.3 学習データ②明細層 — 「どんな対話をして、どこで間違えたか」</h3>
+    <p>集計層は「どれくらいできたか」しか答えられない。指導に使うのは
+      <strong>「実際になにを打ち、なにを選び、なにを話したか」</strong>なので、
+      1回の取り組みを <code>activity_sessions</code> でくくり、その下に明細を全部追記する。
+      明細はすべて追記型（UPDATE/DELETE なし）で、UIの状態管理には使わない——<strong>記録専用</strong>。</p>
+
+    <table>
+      <tr><th>テーブル</th><th>主な列</th><th>これで分かること</th></tr>
+      <tr><td><code>activity_sessions</code></td>
+        <td><code>id, content_id, kind, mode(solo|team), team_id?, login_user_id, started_at, ended_at</code></td>
+        <td>1回の取り組み（アーケード1プレイ・会議1回・Live対話1回）の入れ物。以下の明細はすべてこの id にぶら下がる</td></tr>
+      <tr><td><code>word_attempts</code></td>
+        <td><code>session_id, actor_user_id, stage_id, word_id, phase(reading|meaning), result(correct|miss|timeout), input_text, chosen, expected, combo_after, response_ms, occurred_at</code></td>
+        <td>アーケードの1問ごとの実際。<strong>読みを「じゅうよ」と打った・Websiteを選んだ・時間切ればかり＝速度が合っていない</strong>、まで見える</td></tr>
+      <tr><td><code>quiz_attempts</code></td>
+        <td><code>session_id, actor_user_id, quizset_id, question_id, qtype, result(correct|wrong|partial), answer(jsonb), occurred_at</code></td>
+        <td>問題エンジンの1問ごとの答えの中身（選んだ選択肢・入力文・穴埋めの並び・emotion の気持ち／言い方の2段階それぞれ）</td></tr>
+      <tr><td><code>listening_attempts</code></td>
+        <td><code>session_id, actor_user_id, meeting_id, input_text, hit_kind, points, matched_keywords(jsonb), occurred_at</code></td>
+        <td>聞き取り入力の1回ごと（画面の履歴ログをそのまま永続化）。<strong>「おしい！」(close) の分布</strong>が聞き取りのつまずき教材になる</td></tr>
+      <tr><td><code>live_turns</code></td>
+        <td><code>session_id, turn_no, actor_user_id?, speaker(student|ai), text, matched_req_id?, match_source(ai|local|manual|none), occurred_at</code></td>
+        <td><strong>対話の逐語（テキスト）</strong>。どの発話がどの要件を開けたか・AI判定かローカル救済かも1行ずつ残る。質問の質の指導（あいづち・質問攻め）の材料</td></tr>
+    </table>
+
+    <div class="callout warn"><strong>プライバシーの取り決め</strong>：
+      ①明細（特に <code>live_turns</code>）を読めるのは<strong>本人と先生（is_admin）だけ</strong>（RLS）。
+      ②学習者には「対話は文字で記録され、先生が見る」ことを開始画面に明示する。
+      ③<strong>音声データそのものは保存しない</strong>（残るのはテキストのみ）。
+      ④保持期間は年度単位とし、年度末に前年度分をアーカイブ／削除する運用にする（§13 未決 #6）。</div>
+
+    <h3 id="s11-4">11.4 チーム編成と、共有PCでの「だれの記録か」</h3>
+    <p>ペアワーク教材（報告・相談）や教室運用では<strong>1台のPCを複数人で使う</strong>。
+      ログインが1アカウントでも、<strong>明細行の <code>actor_user_id</code></strong> に「実際にやった人」を入れることで、
+      共有PCでも個人別の間違い・発話量・参加の偏りを集計できるようにする。</p>
+
+    <table>
+      <tr><th>テーブル</th><th>主な列</th><th>備考</th></tr>
+      <tr><td><code>teams</code></td><td><code>id, name, color, created_at</code></td><td>チームの器。編成は先生が管理画面で行う（自己編成は§13 未決 #5）</td></tr>
+      <tr><td><code>team_members</code></td><td><code>team_id, user_id, joined_at</code>（PK=team_id,user_id）</td><td>1人が複数チームに入れる（ペア＋班など）</td></tr>
+    </table>
+
+    <h4>共有セッションの流れ（UIは「交代」を演出にする）</h4>
+    <ol class="body">
+      <li>教材の開始時に「<strong>きょうは だれと やりますか？</strong>」——ソロ／チームを選ぶ。
+        チームなら参加メンバーをタップで選び、<code>activity_sessions.mode=team</code> で開始</li>
+      <li>画面上部に<strong>メンバーチップが常駐</strong>し、光っている人＝いまの回答者。
+        明細行の <code>actor_user_id</code> はこのチップの値で埋まる</li>
+      <li>交代はワンタップ。さらに<strong>既定でローテーション</strong>——アーケードは1問ごと、
+        Live対話は発話ごとに「つぎは ソピアさんの ばん！」と次の人を光らせる
+        （タップし忘れ対策であり、同時に<strong>参加の偏りを防ぐ授業設計</strong>でもある。手動変更はいつでも可）</li>
+      <li>Live対話では発話前に話者チップが点滅し、確定してからマイクが開く
+        → <code>live_turns.actor_user_id</code> が正しく埋まる</li>
+    </ol>
+
+    <pre class="mermaid">
+erDiagram
+  TEAMS ||--o{ TEAM_MEMBERS : ""
+  PROFILES ||--o{ TEAM_MEMBERS : ""
+  TEAMS ||--o{ ACTIVITY_SESSIONS : "mode=team のとき"
+  PROFILES ||--o{ ACTIVITY_SESSIONS : "login_user_id"
+  ACTIVITY_SESSIONS ||--o{ WORD_ATTEMPTS : ""
+  ACTIVITY_SESSIONS ||--o{ QUIZ_ATTEMPTS : ""
+  ACTIVITY_SESSIONS ||--o{ LISTENING_ATTEMPTS : ""
+  ACTIVITY_SESSIONS ||--o{ LIVE_TURNS : ""
+  PROFILES ||--o{ WORD_ATTEMPTS : "actor_user_id"
+  PROFILES ||--o{ LIVE_TURNS : "actor_user_id"
+    </pre>
+
+    <h4>先生ダッシュボードに足す集計ビュー</h4>
+    <table>
+      <tr><th>ビュー</th><th>答える問い</th></tr>
+      <tr><td><code>v_common_mistakes</code></td><td>この語で最も多い誤入力はなにか（<code>word_attempts.input_text</code> の頻度。読み間違いのパターンが見える）</td></tr>
+      <tr><td><code>v_participation</code></td><td>チームセッションで発話・回答が偏っていないか（actor別の明細数。ペアワーク指導の材料）</td></tr>
+      <tr><td><code>v_dialogue_review</code></td><td>Live対話のセッション一覧 → 逐語表示（どの質問が要件を開け、どれが空振りだったか）</td></tr>
+      <tr><td><code>v_timeout_rate</code></td><td>時間切れの比率が高い学習者はだれか（難易度・速度設定の見直し材料）</td></tr>
+    </table>
+
     <div class="callout good"><strong>使い分けの一行まとめ</strong>：
-      進化が速く検査で守るもの（教材）は jsonb、集計して意思決定に使うもの（学習記録）は実カラム。
-      同じDBでも役割で形式を変える。</div>
+      教材=jsonb（進化が速く、検査で守る）／集計層=実カラム（SQLで意思決定）／
+      明細層=セッション＋追記行（対話と間違いの実際を残す）。
+      共有PCは <code>actor_user_id</code> で個人に帰属させる。</div>
   </section>
 
   <!-- ============================================================ -->
@@ -704,12 +790,14 @@ gantt
       <tr><td>2</td><td>ステージの学習順は強制（順にしか進めない）か自由か</td><td>既定は自由・「順に進む」ボタンだけ用意（疲れている学習者を縛らない）</td></tr>
       <tr><td>3</td><td>manga への音声（朗読）対応</td><td>P3の tts をパネル単位に拡張すれば可能。まず meeting を完成させてから判断</td></tr>
       <tr><td>4</td><td>公開の承認フロー（draft→review→published）を入れるか</td><td>当面 draft/published の2状態。運用者が増えたら review を追加</td></tr>
+      <tr><td>5</td><td>チーム編成を学生自身に開放するか</td><td>当面は先生が管理画面で編成。自己編成は運用が回ってから</td></tr>
+      <tr><td>6</td><td>明細ログ（逐語含む）の保持期間</td><td>たたき台：年度末に前年度分をアーカイブ後削除。学校の方針と合わせて確定</td></tr>
     </table>
   </section>
 
   </div>
 
-  <footer>コンテンツスタジオ設計書 v1.2 ・ 出典: docs/design/01〜04・08（授業サポート表示 §0.1.1 拡張経路）・AGENTS.md・docs/skills/codex_image_generation.md・generating-gemini-live-audio スキル・Codex CLI 0.145.0 (app-server)・scripts/codex_bridge.mjs（character-personality-design ブランチ）</footer>
+  <footer>コンテンツスタジオ設計書 v1.3 ・ 出典: docs/design/01〜04・08（授業サポート表示 §0.1.1 拡張経路）・AGENTS.md・docs/skills/codex_image_generation.md・generating-gemini-live-audio スキル・Codex CLI 0.145.0 (app-server)・scripts/codex_bridge.mjs（character-personality-design ブランチ）</footer>
 </main>
 
 </div>
