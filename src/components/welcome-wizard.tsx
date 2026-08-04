@@ -20,7 +20,7 @@ import {
   type PersonalityQuestionOption,
   type PersonalityTypeCode,
 } from "@/content/personality";
-import { NekuMaxFamily, NekuMaxType, TypeEmblem } from "@/components/nekumax-types";
+import { NexMaxFamily, NexMaxType, TypeEmblem } from "@/components/nexmax-types";
 import { GlossaryText } from "@/components/glossary-text";
 import { LearnerText, RubyText, renderRuby } from "@/components/ruby-text";
 import { insertPersonalityResult, upsertOwnProfile } from "@/lib/profile-db";
@@ -484,13 +484,13 @@ export function WelcomeWizard({
                       )}
                       {index === 1 && (
                         <div className="relative flex items-end justify-center">
-                          <NekuMaxFamily
+                          <NexMaxFamily
                             family="heart"
                             gender="female"
                             size={102}
                             className="translate-x-2 -rotate-3"
                           />
-                          <NekuMaxFamily
+                          <NexMaxFamily
                             family="idea"
                             size={96}
                             className="-translate-x-2 rotate-3"
@@ -905,7 +905,7 @@ export function WelcomeWizard({
                   あなたの タイプ
                 </p>
                 <div className="relative z-10 mt-8">
-                  <NekuMaxType code={result.code} gender={gender ?? "male"} size={285} bob />
+                  <NexMaxType code={result.code} gender={gender ?? "male"} size={285} bob />
                 </div>
                 <div className="absolute top-16 right-4 z-20">
                   <TypeEmblem code={result.code} size={72} />
@@ -1099,7 +1099,7 @@ export function WelcomeWizard({
               step === 1 ? "-mb-7 -ml-6" : step === 3 ? "-mb-3 -ml-2" : "-mr-3"
             }`}
           >
-            <NekuMaxFamily
+            <NexMaxFamily
               family={step === 2 ? "idea" : step === 3 ? result.familyId : "leader"}
               gender={step === 3 ? (gender ?? "male") : "male"}
               size={step === 1 ? 170 : step === 2 ? 142 : 108}

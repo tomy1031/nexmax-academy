@@ -3,7 +3,7 @@
 import { useSyncExternalStore } from "react";
 import Link from "next/link";
 import { LearnerText, RubyText } from "@/components/ruby-text";
-import { NekuMaxFamily, NekuMaxType } from "@/components/nekumax-types";
+import { NexMaxFamily, NexMaxType } from "@/components/nexmax-types";
 import {
   PERSONALITY_FAMILIES,
   PERSONALITY_RESULT_READINGS,
@@ -58,7 +58,7 @@ function TypeCard({
       style={{ borderColor: isOwn ? family.color : "transparent" }}
     >
       <header className="flex items-center gap-3">
-        <NekuMaxType code={code} gender={gender} size={116} className="shrink-0" />
+        <NexMaxType code={code} gender={gender} size={116} className="shrink-0" />
         <div className="min-w-0 flex-1">
           <h3 className="text-navy text-base font-black">
             {type.name}
@@ -109,7 +109,7 @@ function FamilySection({
   return (
     <section className="mt-8">
       <header className="flex items-center gap-3">
-        <NekuMaxFamily family={family.id} gender={gender} size={72} className="shrink-0" />
+        <NexMaxFamily family={family.id} gender={gender} size={72} className="shrink-0" />
         <div>
           <h2
             className="inline-block rounded-full px-4 py-1 text-sm font-black text-white"
@@ -146,7 +146,7 @@ function FamilySection({
   );
 }
 
-export function NekuMaxCatalog() {
+export function NexMaxCatalog() {
   const snapshot = useSyncExternalStore(subscribeToStorage, ownSnapshot, () => "|male");
   const [rawCode, rawGender] = snapshot.split("|");
   const ownCode = isPersonalityTypeCode(rawCode) ? rawCode : "";

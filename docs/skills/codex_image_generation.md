@@ -2,12 +2,12 @@
 
 **目的**: このアプリのキャラクター・イラスト画像を、Codex の **image-gen-2** で生成する。
 **最重要ルール**: キャラクターを手描きSVGで自作しない。キャラ画像はすべて本スキルの手順で生成する。
-**正典（スタイルアンカー）**: `public/img/characters/nekumax/reference.png`（ネクマックス原画）
+**正典（スタイルアンカー）**: `public/img/characters/nexmax/reference.png`（ネクマックス原画）
 **原画の入手元**: <https://nextmake.site/wp-content/uploads/2025/08/N.D%E5%B7%A6.png>
 （NEXT MAKE 公式サイトの画像。まだリポジトリに未配置なら、下記コマンドで取得して上記パスに保存する）
 
 ```bash
-curl -L -o public/img/characters/nekumax/reference.png \
+curl -L -o public/img/characters/nexmax/reference.png \
   "https://nextmake.site/wp-content/uploads/2025/08/N.D%E5%B7%A6.png"
 ```
 
@@ -30,7 +30,7 @@ NEXT MAKE のナビゲーター・ロボット。**スマーフ・パターン**
 ## 3. マスター記述ブロック（逐語使用・変更禁止）
 
 ```text
-Character: "NekuMax", the official robot mascot of NEXT MAKE.
+Character: "NexMax", the official robot mascot of NEXT MAKE.
 Style: hand-drawn sketchy black outline (slightly rough, warm line, approx 6-8px at 1024px),
 flat cel colors with soft minimal shading, cute chibi proportion (big head, about 2 heads tall),
 soft drop shadow under feet, plain white background, no readable text anywhere.
@@ -49,7 +49,7 @@ Never: realistic rendering, gradients, extra fingers, readable letters, dark hor
 
 ## 4. バリアント一覧（差分プロンプト）
 
-配置先は `public/img/characters/nekumax/<id>.png`。`src/components/nekumax.tsx` の registry と1対1。
+配置先は `public/img/characters/nexmax/<id>.png`。`src/components/nexmax.tsx` の registry と1対1。
 
 | id | 役割 | 差分プロンプト（マスター記述の後に1行だけ足す） |
 |---|---|---|
@@ -60,16 +60,16 @@ Never: realistic rendering, gradients, extra fingers, readable letters, dark hor
 | `cheer` | おうえん | Prop: holding two small pom-poms up, joyful open-mouth smile, tiny confetti around. |
 | `book` | ものしり | Prop: round glasses resting on the face-screen, holding an open book with blank pages. |
 
-追加バリアントを作るときは、この表に行を足し、`nekumax.tsx` の `NEKUMAX_FAMILY` にも同じ id で追加する（表と registry の同期が契約）。
+追加バリアントを作るときは、この表に行を足し、`nexmax.tsx` の `NEXMAX_FAMILY` にも同じ id で追加する（表と registry の同期が契約）。
 
 ## 5. 実行手順（Codex）
 
 ```bash
 # 例: 「あいさつのネクマックス」を生成する
-codex -i public/img/characters/nekumax/reference.png \
+codex -i public/img/characters/nexmax/reference.png \
   "image-gen-2 でキャラクター画像を1枚生成してください。
    出力: 1024x1024 PNG, 白背景, キャラ中央・全身。
-   保存先: public/img/characters/nekumax/hello.png
+   保存先: public/img/characters/nexmax/hello.png
    プロンプトは以下（逐語使用）:
    <§3のマスター記述ブロックを貼る>
    Pose: waving one hand high in a friendly greeting, other arm relaxed."

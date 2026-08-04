@@ -12,7 +12,7 @@
 
 - [ ] **ネクマックス原画の配置**
   ```bash
-  curl -L -o public/img/characters/nekumax/reference.png \
+  curl -L -o public/img/characters/nexmax/reference.png \
     "https://nextmake.site/wp-content/uploads/2025/08/N.D%E5%B7%A6.png"
   ```
   → commit & push（配置した瞬間、全ページのプレースホルダーが本物に切り替わる）

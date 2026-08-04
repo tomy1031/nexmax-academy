@@ -15,7 +15,7 @@ import {
   axisLabel,
 } from "@/components/admin/admin-ui";
 import { TeachingHintsCard } from "@/components/admin/hints-card";
-import { NekuMaxType, TypeEmblem } from "@/components/nekumax-types";
+import { NexMaxType, TypeEmblem } from "@/components/nexmax-types";
 import {
   PERSONALITY_AXES,
   PERSONALITY_AXIS_META,
@@ -177,7 +177,7 @@ export default function StudentPersonalityReportPage() {
 
         <section className="card-pop flex flex-col items-center gap-5 p-5 sm:flex-row sm:p-7">
           <div className="relative shrink-0">
-            <NekuMaxType code={profile.personality_type} gender={profile.gender} size={128} />
+            <NexMaxType code={profile.personality_type} gender={profile.gender} size={128} />
             <span className="absolute right-0 bottom-0">
               <TypeEmblem code={profile.personality_type} size={44} />
             </span>

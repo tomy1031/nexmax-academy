@@ -69,7 +69,7 @@ export function AdminHeader({ onCsv }: { onCsv?: () => void }) {
         >
           ユーザー
         </Link>
-        <Link href="/nekumax" className={itemClass(pathname === "/nekumax")}>
+        <Link href="/nexmax" className={itemClass(pathname === "/nexmax")}>
           ネクマックス16人
         </Link>
         <Link href="/admin/ai" className={itemClass(pathname === "/admin/ai")}>

@@ -10,16 +10,16 @@ import {
 } from "@/content/personality";
 import type { Gender } from "@/lib/profile";
 
-const FAMILY_DIR = "/img/characters/nekumax/types";
+const FAMILY_DIR = "/img/characters/nexmax/types";
 const EMBLEM_DIR = "/img/emblems";
-const REFERENCE_SRC = "/img/characters/nekumax/reference.png";
+const REFERENCE_SRC = "/img/characters/nexmax/reference.png";
 
 /**
  * 家族の立ち絵。v3 では立ち絵は**家族単位**（4色 × 性別2 の8枚）で、
  * タイプの区別はエンブレム（TypeEmblem）が担う（07 §9）。
  * 画像のファイル名は v2 のまま流用している（`types/{familyId}.webp`）。
  */
-export function NekuMaxFamily({
+export function NexMaxFamily({
   family,
   gender = "male",
   size = 160,
@@ -82,7 +82,7 @@ export function NekuMaxFamily({
  * **フォールバックは4段**: タイプ32枚 → 家族8枚 → 原画 → 絵文字。
  * 32枚が1枚も無くても、家族立ち絵で従来どおり動く。
  */
-export function NekuMaxType({
+export function NexMaxType({
   code,
   gender = "male",
   size = 160,

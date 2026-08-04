@@ -12,7 +12,7 @@ import {
   useSyncExternalStore,
 } from "react";
 import { signOut } from "@/app/auth/actions";
-import { NekuMaxFamily } from "@/components/nekumax-types";
+import { NexMaxFamily } from "@/components/nexmax-types";
 import {
   getFamilyForCode,
   getPersonalityType,
@@ -314,7 +314,7 @@ function Hud({ profile }: { profile: ProfileRow | null }) {
       <div className="flex items-center gap-2 rounded-2xl border-2 border-[#e9bd55] bg-[#fffaf0]/95 p-1.5 pr-3 shadow-[0_4px_0_#d9a839,0_8px_18px_rgba(0,79,141,.16)]">
         {profile ? (
           <>
-            <NekuMaxFamily
+            <NexMaxFamily
               family={getFamilyForCode(profile.personality_type).id}
               gender={profile.gender}
               size={42}
@@ -422,7 +422,7 @@ function Navigation({
   // ネクマックス図鑑への回遊先。診断のあとに16人を見に行けるようにする（07 §7）。
   const catalogLink = (
     <Link
-      href="/nekumax"
+      href="/nexmax"
       onClick={onDrawerClose}
       className="text-ink hover:bg-sky-soft flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl px-3 text-sm font-extrabold transition"
     >
@@ -683,7 +683,7 @@ function MapView({
           className="pointer-events-none absolute z-20 hidden -translate-x-1/2 -translate-y-1/2 sm:block"
           style={{ left: `${character.x}%`, top: `${character.y}%` }}
         >
-          <NekuMaxFamily family={character.id} size={character.size} bob />
+          <NexMaxFamily family={character.id} size={character.size} bob />
         </div>
       ))}
 

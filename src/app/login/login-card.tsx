@@ -3,7 +3,7 @@
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { motion } from "motion/react";
-import { NekuMax } from "@/components/nekumax";
+import { NexMax } from "@/components/nexmax";
 import { DriftingClouds, PaperPlane, Sun } from "@/components/scenery";
 import { createClient } from "@/lib/supabase/client";
 
@@ -64,13 +64,13 @@ export function LoginCard({ authReady }: { authReady: boolean }) {
         className="pointer-events-none absolute -bottom-7 left-1/2 flex -translate-x-1/2 items-end gap-2 opacity-95 sm:gap-8"
       >
         <div className="animate-bob" style={{ animationDelay: "0s" }}>
-          <NekuMax variant="hello" size={92} />
+          <NexMax variant="hello" size={92} />
         </div>
         <div className="animate-bob" style={{ animationDelay: "0.4s" }}>
-          <NekuMax variant="guide" size={112} />
+          <NexMax variant="guide" size={112} />
         </div>
         <div className="animate-bob hidden sm:block" style={{ animationDelay: "0.8s" }}>
-          <NekuMax variant="cheer" size={92} />
+          <NexMax variant="cheer" size={92} />
         </div>
       </div>
 

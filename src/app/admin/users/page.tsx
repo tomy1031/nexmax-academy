@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AdminError, AdminHeader, AdminLoading, AdminPageFrame } from "@/components/admin/admin-ui";
-import { TypeEmblem } from "@/components/nekumax-types";
+import { TypeEmblem } from "@/components/nexmax-types";
 import {
   PERSONALITY_AXES,
   PERSONALITY_AXIS_META,

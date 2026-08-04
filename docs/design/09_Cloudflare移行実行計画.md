@@ -155,7 +155,7 @@ Phase B の実機検証結果（本番URLに対して実施）:
 - **§2.6 の懸念は本番で解消。** `/auth/callback` が
   `https://academy.nexmax.workers.dev/login?...` と**公開ホスト＋https**で解決した。
   `x-forwarded-host` 分岐は使われず、`request.url` 由来のフォールバックが正しく動いている
-- ブラウザ実機で `/`・`/nekumax` の描画・画像・ルビ合成を確認。console エラー 0
+- ブラウザ実機で `/`・`/nexmax` の描画・画像・ルビ合成を確認。console エラー 0
   - 注意: 画像は `loading="lazy"` なので、読み込み途中に `naturalWidth` を測ると
     「壊れている」ように見える。判定は curl か十分待ってから行うこと
 - mokumoku（同一アカウントの別 Worker）は subdomain 変更後も
