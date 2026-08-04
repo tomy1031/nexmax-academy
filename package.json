@@ -23,7 +23,8 @@
     "cf:typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
     "cf:checkenv": "node scripts/check_build_env.mjs",
     "cf:build:local": "opennextjs-cloudflare build",
-    "cf:staging": "npm run cf:build && wrangler versions upload --preview-alias staging"
+    "cf:branch": "npm run cf:build && node scripts/preview_alias.mjs",
+    "cf:staging": "npm run cf:build && node scripts/preview_alias.mjs staging"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.3",

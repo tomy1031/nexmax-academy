@@ -18,18 +18,40 @@ OpenNext（`@opennextjs/cloudflare`）で Workers 上に載せる。旧 `@cloudf
 ```bash
 npm run cf:preview   # ローカルの workerd で確認（ビルド＋プレビュー）
 npm run cf:deploy    # 本番へデプロイ（秘密ガード＋ビルド＋deploy）
-npm run cf:staging   # staging エイリアスを更新（本番トラフィックは切り替えない）
+npm run cf:branch    # 今のブランチ専用の確認URLを更新（作業中はこれを使う）
+npm run cf:staging   # staging を更新。**main でのみ実行できる**
 npm run cf:upload    # バージョンだけ上げる（エイリアスは付けない）
 ```
 
 | | URL | 更新コマンド |
 |---|---|---|
 | 本番 | `https://academy.nexmax.workers.dev` | `npm run cf:deploy` |
-| staging | `https://staging-academy.nexmax.workers.dev` | `npm run cf:staging` |
+| staging（統合版） | `https://staging-academy.nexmax.workers.dev` | `npm run cf:staging`（main のみ） |
+| ブランチ確認用 | `https://<ブランチ名>-academy.nexmax.workers.dev` | `npm run cf:branch` |
 
 **`cf:upload` では staging は更新されない。** `--preview-alias` を渡していないため、
 新しいバージョンが上がるだけで `staging-` のURLは古い版を指したまま。
-staging を動かしたいときは `cf:staging` を使う。
+
+#### なぜ確認URLをブランチごとに分けるのか
+
+**`versions upload` はブランチの中身を確認URL全体に載せる。** 部分デプロイという
+概念が無いので、複数のセッションが同じ `staging` へ上げると、
+**最後に上げた者以外の作業が確認URLから消える。**
+
+2026-08-04、性格診断の文言だけを上げたつもりで main 未取り込みのブランチを
+`staging` へ上げたところ、main にあったマップの7コミット（7エリア構成・雲海・
+蛇行の修正）が staging から巻き戻る事故が実際に起きた。
+バンドルに自分の文字列があることの確認では、**消えたものは検出できない。**
+
+そこで `scripts/preview_alias.mjs` が次を強制する。
+
+- `staging` は main からしか上げられない（作業ブランチからは exit 1 で止まる）
+- 作業ブランチは `npm run cf:branch` で自分専用のURLへ上げる
+- ブランチ名は Cloudflare の制約（英小文字・数字・ダッシュ、先頭は英小文字、
+  Worker名込みで63文字）に合わせて自動変換される
+
+**確認URLが分かれてもデータは分かれない。** Worker のバインディングは同じなので
+Supabase は全ブランチで同一プロジェクトを見る。壊れはしないが「別環境」ではない。
 
 ### 0.2 環境変数の渡し方 — ここが最大の罠
 
@@ -74,12 +96,25 @@ workers.dev のホストは `academy.nexmax.workers.dev` のように
 
 ```
 https://academy.nexmax.workers.dev/**
-https://staging-academy.nexmax.workers.dev/**
+https://*-academy.nexmax.workers.dev/**
 ```
 
-2行目は `wrangler versions upload --preview-alias staging` で作る固定エイリアス。
+2行目が**ブランチごとの確認URLを全部まとめて許可する行**。`staging-academy…` も
+`claude-xxx-academy…` も、将来増えるエイリアスもこれ1行で通るので、
+**エイリアスを増やすたびに登録し直す必要はない。**
+
+#### 効かないのは `*.workers.dev` の形だけ — ホスト名の一部なら効く
+
+見出しの「ワイルドカードが効かない」は**ラベルを跨ぐ場合の話**。
+区切り文字は `.` と `/` で、`*` はそれを跨がない。
+
+| パターン | 判定 | 理由 |
+|---|---|---|
+| `https://*.workers.dev/**` | ✗ | `*` が `academy.nexmax` の `.` を跨げない |
+| `https://*-academy.nexmax.workers.dev/**` | ✓ | `*` が食うのは `staging` など**1ラベル内の一部**だけ |
+
 プレビューURLは既定では `<version>-<worker>.<subdomain>.workers.dev` とバージョンごとに
-変わるので、**エイリアスを固定してから登録する**。
+変わる。versioned のほうも同じラベル内で変わるだけなので、この1行に含まれる。
 
 #### 末尾の `/**` が必須。`/auth/callback` の完全一致では動かない（実測）
 
@@ -129,15 +164,19 @@ curl -s -o /dev/null "$SB/auth/v1/authorize?provider=google&redirect_to=$enc"
 `/authorize` の `Location` ヘッダには渡した `redirect_to` がそのまま載るだけで
 判定には使えない（未登録でも同じに見える）。**ログを見ること。**
 
-#### Redirect URLs の全量（2026-08-03 時点）
+#### Redirect URLs の全量（2026-08-05 時点）
 
 ```
 https://academy.nexmax.workers.dev/**
+https://*-academy.nexmax.workers.dev/**   ← 2026-08-05 追加（要登録）
 https://staging-academy.nexmax.workers.dev/**
 http://localhost:3000/**
 https://nexmax-academy.vercel.app/**
 https://*.vercel.app/**
 ```
+
+2行目は**ブランチごとの確認URL用**。これを入れると3行目は含まれるので、
+登録後は3行目を消してよい（消さなくても害はない）。
 
 下2本は移行完了まで残す。完了時に削除する。
 
@@ -207,6 +246,9 @@ DBを本番と共有するため、検証操作が本番データ・本番ユー
      - `https://nexmax-academy.vercel.app/**`（本番・明示）
      - `https://*.vercel.app/**`（ブランチプレビュー。サブドメインが毎回変わるため）
      - `http://localhost:3000/**`（ローカル）
+
+   > **ここは Vercel 時代の記述。** Cloudflare Workers での現行の登録内容は §0.3 を見ること
+   > （`https://*-academy.nexmax.workers.dev/**` がブランチ確認URLを一括で許可する）。
 
    > **末尾は `/**` にすること。** 以前ここには `/auth/callback` 完全一致で書いてあったが、
    > **それでは動かない**。戻り先は `?code=...` が付いた状態で照合されるため一致しない。

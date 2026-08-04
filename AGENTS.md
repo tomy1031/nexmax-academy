@@ -80,7 +80,8 @@ npm run measure:readability  # 文長・漢字密度の計測レポート
 
 npm run cf:preview           # ローカルの workerd で本番相当の確認
 npm run cf:deploy            # 本番へデプロイ（秘密ガード＋ビルド＋deploy）
-npm run cf:staging           # staging エイリアスを更新（本番は切り替えない）
+npm run cf:branch            # 今のブランチ専用の確認URLを更新（作業中はこれ）
+npm run cf:staging           # staging を更新。main でのみ実行できる
 ```
 
 コミット時は husky + lint-staged が整形・eslint --fix・secretlint・lint:content を自動実行する。
@@ -88,15 +89,16 @@ npm run cf:staging           # staging エイリアスを更新（本番は切�
 
 ## デプロイ先は Cloudflare Workers（Vercel から移行済み・2026-08-03）
 
-|         | URL                                          | 更新コマンド         |
-| ------- | -------------------------------------------- | -------------------- |
-| 本番    | `https://academy.nexmax.workers.dev`         | `npm run cf:deploy`  |
-| staging | `https://staging-academy.nexmax.workers.dev` | `npm run cf:staging` |
+|            | URL                                               | 更新コマンド                      |
+| ---------- | ------------------------------------------------- | --------------------------------- |
+| 本番       | `https://academy.nexmax.workers.dev`              | `npm run cf:deploy`               |
+| staging    | `https://staging-academy.nexmax.workers.dev`      | `npm run cf:staging`（main のみ） |
+| ブランチ用 | `https://<ブランチ名>-academy.nexmax.workers.dev` | `npm run cf:branch`               |
 
 OpenNext（`@opennextjs/cloudflare`）経由。旧 `@cloudflare/next-on-pages` は使わない。
 Supabase（DB・認証）は移していない。手順の詳細は `docs/deploy.md` §0。
 
-**踏むと痛い罠が3つある。触る前に読むこと。**
+**踏むと痛い罠が4つある。触る前に読むこと。**
 
 1. **秘密鍵をビルド環境に置かない。** OpenNext は `.env*` の中身を丸ごと
    `.open-next/cloudflare/next-env.mjs` に書き出し Worker のバンドルに載せる。
@@ -108,6 +110,11 @@ Supabase（DB・認証）は移していない。手順の詳細は `docs/deploy
 3. **Supabase の Redirect URLs は `https://<host>/**` で登録する。**
    `.../auth/callback` の完全一致では**動かない**（戻り先は `?code=...` 付きで照合される）。
    検証も必ず `?code=` を付けて行う（`docs/deploy.md` §0.3 に手順）。
+4. **`staging` へ上げてよいのは main だけ。** `versions upload` は**ブランチの中身を
+   確認URL全体に載せる**ので、作業ブランチから上げると他の作業が確認URLから消える
+   （2026-08-04 に実際に起きた）。作業中の確認は `npm run cf:branch` で
+   自分専用のURLへ上げる。`scripts/preview_alias.mjs` が main 以外からの
+   `cf:staging` を止める。**このガードを外さない。**
 
 **このリポジトリは public。** ドキュメントにアカウントIDなどの内部識別子を直書きしない。
 
