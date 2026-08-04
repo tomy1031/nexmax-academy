@@ -38,6 +38,10 @@ This version has breaking changes — APIs, conventions, and file structure may 
    `logger.error("Node.js middleware is not currently supported...")` → `process.exit(1)`。
    opennextjs-cloudflare#1277 が未解決）。Cloudflare Workers で動かす限り恒久の制約。
    詳細は docs/design/09_Cloudflare移行実行計画.md §2.3。
+9. **「タイ」という国名を使わない**（文言・画像・画像生成プロンプトのいずれでも）。
+   国際情勢を踏まえた運用判断。まなびマップのエリアは**画面に国名を出さず景色の名前で呼ぶ**
+   （`src/content/areas.ts`。ゴールの日本だけは学習の目的地なので例外）。
+   新しい国名を画面や画像に出すときは、事前にユーザーへ確認する。
 
 ## アーキテクチャ原則
 
