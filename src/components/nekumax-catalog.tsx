@@ -58,7 +58,7 @@ function TypeCard({
       style={{ borderColor: isOwn ? family.color : "transparent" }}
     >
       <header className="flex items-center gap-3">
-        <NekuMaxType code={code} gender={gender} size={84} className="shrink-0" />
+        <NekuMaxType code={code} gender={gender} size={116} className="shrink-0" />
         <div className="min-w-0 flex-1">
           <h3 className="text-navy text-base font-black">
             {type.name}
