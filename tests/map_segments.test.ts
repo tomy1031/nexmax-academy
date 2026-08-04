@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { parseMapSegments } from "../src/lib/map-segments";
+import { composeMapBands, parseMapSegments } from "../src/lib/map-segments";
 
 /**
- * マップの背景セグメントの走査。
+ * マップの背景セグメントの走査と帯の合成。
  *
- * ここが崩れると、先生が画像を1枚置いてもマップが伸びない（停留所がふえない）か、
+ * ここが崩れると、先生が画像を1枚置いてもマップが伸びない（ステップを足せない）か、
  * 逆に地図でない絵が途中の段に入り、学習者は道をたどれなくなる。
  * fs はモックせず、ファイル名の一覧を渡す純関数として確かめる。
  */
@@ -60,5 +60,72 @@ describe("公開パス", () => {
     expect(parsed[0]?.src).toBe("/img/scenes/map_seg3_coast.webp");
     expect(parsed[0]?.order).toBe(3);
     expect(parsed[0]?.slug).toBe("coast");
+  });
+});
+
+describe("ステップの絵（map_step）", () => {
+  const TRIO = ["map_seg1_cambodia.webp", "map_seg2_ocean.webp", "map_seg3_coast.webp"];
+
+  it("map_step は kind: step で拾い、番号は受け持つ STEP になる", () => {
+    const parsed = parseMapSegments(["map_step6_tokyo.webp"]);
+    expect(parsed[0]).toEqual({
+      kind: "step",
+      order: 6,
+      slug: "tokyo",
+      src: "/img/scenes/map_step6_tokyo.webp",
+    });
+  });
+
+  it("元の絵（map_seg）が先、ステップの絵が後に並ぶ", () => {
+    const parsed = parseMapSegments(["map_step6_tokyo.webp", ...TRIO]);
+    expect(parsed.map((s) => s.kind)).toEqual(["base", "base", "base", "step"]);
+  });
+});
+
+describe("帯の合成（composeMapBands）", () => {
+  const TRIO = ["map_seg1_cambodia.webp", "map_seg2_ocean.webp", "map_seg3_coast.webp"];
+  const compose = (files: string[], steps: number[]) =>
+    composeMapBands(parseMapSegments(files), steps);
+
+  it("STEP 5 までなら帯は元の絵だけ（いままでと同じ3枚）", () => {
+    const { bands, baseBandCount } = compose(TRIO, [1, 2, 3, 4, 5]);
+    expect(bands.map((b) => b.src)).toEqual([
+      "/img/scenes/map_seg1_cambodia.webp",
+      "/img/scenes/map_seg2_ocean.webp",
+      "/img/scenes/map_seg3_coast.webp",
+    ]);
+    expect(baseBandCount).toBe(3);
+  });
+
+  it("STEP 6 の絵を置くと、その帯が元の絵のあとに足される", () => {
+    const { bands } = compose([...TRIO, "map_step6_tokyo.webp"], [1, 2, 3, 4, 5, 6]);
+    expect(bands).toHaveLength(4);
+    expect(bands[3]?.src).toBe("/img/scenes/map_step6_tokyo.webp");
+  });
+
+  it("絵がまだ無い STEP 6 の帯は src: null（ステージは消さず、色だけの帯で出す）", () => {
+    const { bands } = compose(TRIO, [1, 2, 3, 4, 5, 6]);
+    expect(bands).toHaveLength(4);
+    expect(bands[3]?.src).toBeNull();
+    expect(bands[3]?.id).toBe("step-6");
+  });
+
+  it("帯はステージの step の並びに従う（絵だけあってステージが無い step は帯にならない）", () => {
+    // 絵が先に届いてもマップは伸びない。伸びるのはステージを公開したとき。
+    const { bands } = compose([...TRIO, "map_step9_osaka.webp"], [1, 2, 3]);
+    expect(bands).toHaveLength(3);
+  });
+
+  it("元の絵が1枚も無くてもグラデーションの帯を1つ確保する", () => {
+    const { bands, baseBandCount } = compose([], [1, 2, 6]);
+    expect(baseBandCount).toBe(1);
+    expect(bands.map((b) => b.src)).toEqual([null, null]);
+    expect(bands[0]?.id).toBe("base-fallback");
+  });
+
+  it("STEP 5 以下に map_step の絵が置かれても使わない（元の3枚が優先）", () => {
+    const { bands } = compose([...TRIO, "map_step3_x.webp"], [1, 2, 3, 4, 5]);
+    expect(bands).toHaveLength(3);
+    expect(bands.every((b) => b.src?.includes("map_seg"))).toBe(true);
   });
 });

@@ -1,19 +1,24 @@
 /**
  * マップの座標計算 — 停留所・点線の道・ネクマックスの立ち位置
  *
- * マップは「背景画像を1枚たすと縦に1画面ぶん伸び、停留所が2個ふえる」ように作る。
- * 座標を画面側に書き並べると、画像を足すたびに人の手で打ち直すことになり、必ず
- * どこかがずれる。ずれた結果を見るのは学習者で、「点線が停留所を通っていない地図」
- * や「ステージを作ったのにピンが出ない地図」になる。だから停留所も道もキャラも、
- * すべてこのファイルの1つの式から作る。
+ * マップは「ステージの背景画像を1枚たすと縦に1画面ぶん伸び、その STEP の停留所が
+ * 自分の絵の上に立つ」ように作る。座標を画面側に書き並べると、ステージを足すたびに
+ * 人の手で打ち直すことになり、必ずどこかがずれる。ずれた結果を見るのは学習者で、
+ * 「点線が停留所を通っていない地図」や「ステージを作ったのにピンが出ない地図」に
+ * なる。だから停留所も道もキャラも、すべてこのファイルの1つの式から作る。
  *
  * このモジュールはクライアントコンポーネント（マップ画面）と scripts/ の検収
  * スクリプトの両方から読まれる。どちらでも動くよう、node:fs も React も入れない
  * 純関数だけに保つ。
  */
 
-/** 背景画像1枚が受け持つ停留所の数。画像を1枚足すとこの数だけ増える。 */
-export const STOPS_PER_SEGMENT = 2;
+/**
+ * 元からある3枚の絵（カンボジア→海→港町）が受け持つ停留所の数。
+ * この3枚は1つづきの道として描かれた一点ものなので、STEP 1〜5 を固定で受け持つ。
+ * STEP 6 からは「1ステージ = 1枚の絵」で、map_step6_*.webp のように
+ * 自分専用の背景を持つ（絵があればステップを自由に足せる）。
+ */
+export const BASE_STOP_COUNT = 5;
 
 /** 背景画像1枚ぶんの縦の高さ（vh）。3枚で従来の 260vh になる値。 */
 export const SEGMENT_HEIGHT_VH = 87;
@@ -65,15 +70,16 @@ export interface MapStop {
   readonly y: number;
 }
 
-/**
- * 背景画像の枚数から、置ける停留所の上限を出す。
- *
- * 画像が1枚も無くてもマップはグラデーションで表示されるので、0枚でも1枚ぶんは
- * 確保する。ここが0になると、どのステージも「マップからたどり着けない」と
- * 判定されてしまう。
- */
-export function mapStopCapacity(segmentCount: number): number {
-  return Math.max(segmentCount, 1) * STOPS_PER_SEGMENT;
+/** マップ全体の幾何。停留所は steps と同じ並びで1対1に対応する。 */
+export interface MapGeometry {
+  readonly stops: MapStop[];
+  /** 縦の帯（絵1枚ぶん）の数。マップの高さは 帯数 × SEGMENT_HEIGHT_VH。 */
+  readonly bandCount: number;
+}
+
+/** 左右交互のつづら折り。道の「進んでいる感」はこの往復から生まれる。 */
+function zigzagX(index: number): number {
+  return 50 + (index % 2 === 0 ? SWING : -SWING);
 }
 
 /**
@@ -86,9 +92,47 @@ export function stopPositions(count: number): MapStop[] {
   if (count <= 0) return [];
 
   return Array.from({ length: count }, (_, index) => ({
-    x: 50 + (index % 2 === 0 ? SWING : -SWING),
+    x: zigzagX(index),
     y: TOP + ((index + 0.5) * SPAN) / count,
   }));
+}
+
+/**
+ * ステップの一覧と「元の絵の帯数」から、マップ全体の停留所を組み立てる。
+ *
+ * - STEP 1〜5（BASE_STOP_COUNT まで）: 元の3枚の絵の領域に、いままでどおりの
+ *   式で並べる。y は元の絵の領域の中の割合で決まるので、下にステージが
+ *   いくら増えても、絵の上での立ち位置は動かない（見た目の回帰を防ぐ）。
+ * - STEP 6 以降: 1ステップにつき帯が1つ増え、停留所は自分の帯のまんなかに立つ。
+ *   自分の絵の上に自分のピン、という対応を学習者にも先生にも分かる形にする。
+ *
+ * steps は昇順であること（マップのピンは step 昇順で渡ってくる）。
+ */
+export function mapGeometry(steps: readonly number[], baseBandCount: number): MapGeometry {
+  const baseSteps = steps.filter((step) => step <= BASE_STOP_COUNT);
+  const extraSteps = steps.filter((step) => step > BASE_STOP_COUNT);
+
+  // 絵が1枚も無くてもグラデーションの帯を1つ確保する。0にすると高さが消え、
+  // 停留所が団子になってマップとして読めなくなる。
+  const baseBands = Math.max(baseBandCount, 1);
+  const bandCount = baseBands + extraSteps.length;
+  const baseFraction = baseBands / bandCount;
+
+  const stops: MapStop[] = [];
+  baseSteps.forEach((_, index) => {
+    stops.push({
+      x: zigzagX(index),
+      y: (TOP + ((index + 0.5) * SPAN) / baseSteps.length) * baseFraction,
+    });
+  });
+  extraSteps.forEach((_, index) => {
+    stops.push({
+      x: zigzagX(baseSteps.length + index),
+      y: ((baseBands + index + 0.5) / bandCount) * 100,
+    });
+  });
+
+  return { stops, bandCount };
 }
 
 /**

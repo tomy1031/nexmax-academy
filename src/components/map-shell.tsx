@@ -16,10 +16,10 @@ import { NekuMaxType } from "@/components/nekumax-types";
 import { getPersonalityType, type PersonalityTypeId } from "@/content/personality";
 import { STAGES, type StageColor } from "@/content/stages";
 import { contentKindMeta } from "@/lib/content-kinds";
-import { characterSlots, routePath, SEGMENT_HEIGHT_VH, stopPositions } from "@/lib/map-layout";
+import { characterSlots, mapGeometry, routePath, SEGMENT_HEIGHT_VH } from "@/lib/map-layout";
 // 型だけを借りる。map-segments.ts は node:fs を使うサーバ専用モジュールなので、
 // 値を import するとクライアントバンドルに入って壊れる（ページが読んで props で渡す）。
-import { type MapSegment } from "@/lib/map-segments";
+import { type MapBand } from "@/lib/map-segments";
 import { fetchOwnProfile, type ProfileRow } from "@/lib/profile-db";
 import {
   getMapView,
@@ -228,17 +228,20 @@ function SegmentImage({ src }: { src: string }) {
 }
 
 /**
- * 背景の地形。画像の枚数ぶんに等分して縦に並べる。
- * 枚数を数え打ちにすると、先生が public/img/scenes/ に1枚たしても地図は伸びず、
+ * 背景の地形。帯（絵1枚ぶん）の数で等分して縦に並べる。
+ * 帯の数を数え打ちにすると、先生がステージの絵を1枚たしても地図は伸びず、
  * 増えたはずの停留所だけが空の上に浮くことになる。
+ *
+ * 絵がまだ無い帯（src: null）は海のグラデーションで表示する。絵の遅れで
+ * ステージごと消すと、学習者は昨日あった教材を探しまわることになる。
  */
-function ScenicBackground({ segments }: { segments: readonly MapSegment[] }) {
-  const count = segments.length;
+function ScenicBackground({ bands }: { bands: readonly MapBand[] }) {
+  const count = bands.length;
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden bg-[#2e9fd6]">
-      {segments.map((segment, index) => (
+      {bands.map((band, index) => (
         <div
-          key={segment.src}
+          key={band.id}
           className="absolute inset-x-0"
           // 段は 1px ぶん重ねる。端数の切り捨てで継ぎ目に線が出ると、
           // 一枚の地図ではなく「割れた絵」に見えてしまう。
@@ -247,7 +250,11 @@ function ScenicBackground({ segments }: { segments: readonly MapSegment[] }) {
             top: `calc(${(index * 100) / count}% - ${index}px)`,
           }}
         >
-          <SegmentImage src={segment.src} />
+          {band.src ? (
+            <SegmentImage src={band.src} />
+          ) : (
+            <div className="h-full w-full bg-linear-to-b from-[#45b7df] to-[#2e9fd6]" />
+          )}
         </div>
       ))}
       <div className="absolute inset-0 bg-[#003c6b]/5" />
@@ -749,31 +756,42 @@ function StageChip({
 
 function MapView({
   pins,
-  segments,
+  bands,
+  baseBandCount,
   expandedStage,
   onExpandedStageChange,
   onUnavailable,
 }: {
   pins: readonly StagePin[];
-  segments: readonly MapSegment[];
+  bands: readonly MapBand[];
+  baseBandCount: number;
   expandedStage: string | null;
   onExpandedStageChange: (id: string | null) => void;
   onUnavailable: () => void;
 }) {
   // 停留所・道・キャラは同じ座標のもとから作る。別々に持つと、ステージが増えた
   // ときに道だけ古い形のまま残り、学習者はどこへ進むのか分からなくなる。
-  const stops = useMemo(() => stopPositions(pins.length), [pins.length]);
+  // STEP 6 以降の停留所は、自分の絵の帯のまんなかに立つ。
+  const geometry = useMemo(
+    () =>
+      mapGeometry(
+        pins.map((pin) => pin.step),
+        baseBandCount,
+      ),
+    [pins, baseBandCount],
+  );
+  const stops = geometry.stops;
   const route = useMemo(() => routePath(stops), [stops]);
   const characters = useMemo(() => characterSlots(stops), [stops]);
 
   return (
     <main
       className="relative overflow-hidden pb-[clamp(130px,21vh,230px)]"
-      // 背景画像1枚ぶん＝1画面ぶんの高さ。画像が0枚でも1枚ぶんは確保して、
-      // マップがつぶれて停留所が団子にならないようにする。
-      style={{ minHeight: `${Math.max(segments.length, 1) * SEGMENT_HEIGHT_VH}vh` }}
+      // 帯（絵1枚ぶん）＝1画面ぶんの高さ。帯の数は停留所の割り付けと同じ
+      // geometry から取る。別々に数えると、絵と停留所の対応がずれる。
+      style={{ minHeight: `${geometry.bandCount * SEGMENT_HEIGHT_VH}vh` }}
     >
-      <ScenicBackground segments={segments} />
+      <ScenicBackground bands={bands} />
 
       <WoodenBanner label="START!" className="top-[2.5%] left-1/2">
         アンコールワット／カンボジア
@@ -861,16 +879,16 @@ function MapView({
 
 function CardsView({
   pins,
-  segments,
+  bands,
   onUnavailable,
 }: {
   pins: readonly StagePin[];
-  segments: readonly MapSegment[];
+  bands: readonly MapBand[];
   onUnavailable: () => void;
 }) {
   return (
     <main className="relative min-h-dvh overflow-hidden px-4 pt-36 pb-[clamp(150px,23vh,250px)] sm:px-8 md:pl-48">
-      <ScenicBackground segments={segments} />
+      <ScenicBackground bands={bands} />
       <section className="relative z-10 mx-auto max-w-6xl">
         <div className="rounded-[2rem] border-2 border-white bg-white/80 p-5 shadow-2xl backdrop-blur-md sm:p-8">
           <h1 className="text-navy text-2xl font-black">🃏 カード</h1>
@@ -923,13 +941,16 @@ function CardsView({
 export function MapShell({
   wordStages,
   pins,
-  segments,
+  bands,
+  baseBandCount,
 }: {
   wordStages: readonly WordStageRef[];
   /** マップに出す停留所。定番ステージとデータ化ステージを合流ずみ（step 昇順）。 */
   pins: readonly StagePin[];
-  /** 背景の地形。枚数がそのままマップの長さになる。 */
-  segments: readonly MapSegment[];
+  /** 背景の帯。元の絵＋STEP 6以降のステージの絵（無ければ色だけ）で、長さ＝マップの長さ。 */
+  bands: readonly MapBand[];
+  /** 帯のうち元の絵（STEP 1〜5 を受け持つ）の数。停留所の割り付けに使う。 */
+  baseBandCount: number;
 }) {
   const router = useRouter();
   const rawProfile = useSyncExternalStore(
@@ -1052,17 +1073,14 @@ export function MapShell({
       {view === "map" ? (
         <MapView
           pins={pins}
-          segments={segments}
+          bands={bands}
+          baseBandCount={baseBandCount}
           expandedStage={expandedStage}
           onExpandedStageChange={setExpandedStage}
           onUnavailable={() => showToast(LONG_WAIT_TOAST)}
         />
       ) : (
-        <CardsView
-          pins={pins}
-          segments={segments}
-          onUnavailable={() => showToast(LONG_WAIT_TOAST)}
-        />
+        <CardsView pins={pins} bands={bands} onUnavailable={() => showToast(LONG_WAIT_TOAST)} />
       )}
 
       <GoalBand />

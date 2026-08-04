@@ -1,0 +1,12 @@
+{
+  "kind": "stage",
+  "id": "demo-step6",
+  "step": 6,
+  "title": "しごとの島",
+  "reading": "しごとの しま",
+  "description": "あたらしい しごとの しまに つきました。ほうれんそうを ふくしゅうします。",
+  "color": "sky",
+  "status": "published",
+  "contents": [{ "ref": "sample_horenso", "type": "quizset" }],
+  "wordStageIds": []
+}

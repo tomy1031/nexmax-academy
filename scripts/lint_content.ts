@@ -11,9 +11,9 @@
  *     書かれていたら警告 — 質問で引き出すべき情報は調査素材に書かない）
  *  4. kind別ID重複＋参照整合（stage.contents / wordStageIds の参照切れ — 設計07 §3）
  *  5. 導線の一致（article の link ブロックがステージの学習順の直後を指しているか）
- *  6. マップの停留所とステージの結びつき（step重複・停留所より先の step）。
- *     停留所の上限は public/img/scenes/ の map_seg*.webp の枚数から決まるので、
- *     背景画像を1枚たせばこの検査の閾値もコードを直さずに上がる。
+ *  6. マップの停留所とステージの結びつき（step重複・STEP 6以降の背景画像の有無）。
+ *     STEP 6 以降は「1ステージ = 1枚の絵」（map_step<番号>_*.webp）。絵を置けば
+ *     この検査もコードを直さずに通る。
  *
  * 検査ロジックの実体は src/lib/content-checks.ts（スタジオ側と共用）。
  * このスクリプトはファイル走査とレポートだけを受け持つ。
@@ -34,7 +34,6 @@ import {
   type ContentEntry,
   type Finding,
 } from "../src/lib/content-checks";
-import { mapStopCapacity } from "../src/lib/map-layout";
 import { listMapSegments } from "../src/lib/map-segments";
 
 const ROOT = join(import.meta.dirname, "..");
@@ -166,9 +165,14 @@ function main() {
   findings.push(...checkDuplicateIds(entries));
   findings.push(...checkReferenceIntegrity(entries));
   findings.push(...checkLinkOrder(entries));
-  // 停留所の上限は背景画像の枚数で決まる。ファイル走査ができるのはこのスクリプト側
-  // だけなので、ここで数えて渡す（content-checks.ts は node:fs を持てない）。
-  findings.push(...checkStageSteps(entries, mapStopCapacity(listMapSegments().length)));
+  // どの step の背景画像があるかはファイル走査で決まる。走査ができるのはこの
+  // スクリプト側だけなので、ここで集めて渡す（content-checks.ts は node:fs を持てない）。
+  const stepImages = new Set(
+    listMapSegments()
+      .filter((segment) => segment.kind === "step")
+      .map((segment) => segment.order),
+  );
+  findings.push(...checkStageSteps(entries, stepImages));
 
   const sourceFiles = walkSource(SRC_DIR);
   for (const file of sourceFiles) checkSourceForbiddenWords(file);

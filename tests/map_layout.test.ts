@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
-  STOPS_PER_SEGMENT,
+  BASE_STOP_COUNT,
   characterSlots,
-  mapStopCapacity,
+  mapGeometry,
   routePath,
   stopPositions,
 } from "@/lib/map-layout";
@@ -69,16 +69,66 @@ describe("stopPositions", () => {
   });
 });
 
-describe("mapStopCapacity", () => {
-  it("背景画像1枚につき停留所が2個ふえる", () => {
-    expect(mapStopCapacity(3)).toBe(6);
-    expect(mapStopCapacity(4)).toBe(8);
-    expect(mapStopCapacity(4) - mapStopCapacity(3)).toBe(STOPS_PER_SEGMENT);
+describe("mapGeometry — 1ステージ = 1枚の絵", () => {
+  const BASE_STEPS = [1, 2, 3, 4, 5];
+
+  it("STEP 5 までなら、いままでの並べ方と同じ座標になる", () => {
+    // 帯を増やさない限り、元の3枚の絵の上での立ち位置は1ミリも動かさない。
+    const geometry = mapGeometry(BASE_STEPS, 3);
+    expect(geometry.bandCount).toBe(3);
+    expect(geometry.stops).toEqual(stopPositions(5));
   });
 
-  it("画像が0枚でも1枚ぶんは確保する", () => {
-    // 0を返すと、どのステージも「マップからたどり着けない」と検査に言われてしまう。
-    expect(mapStopCapacity(0)).toBe(STOPS_PER_SEGMENT);
+  it("STEP 6 を足すと帯が1つ増え、停留所は自分の帯のまんなかに立つ", () => {
+    const geometry = mapGeometry([...BASE_STEPS, 6], 3);
+    expect(geometry.bandCount).toBe(4);
+    expect(geometry.stops).toHaveLength(6);
+    // 4帯のうち4つめの帯: 75%〜100%。そのまんなか = 87.5。
+    expect(geometry.stops[5]!.y).toBeCloseTo(87.5, 5);
+  });
+
+  it("下にステージが増えても、STEP 1〜5 の絵の上での立ち位置は動かない", () => {
+    // y は「マップ全体の％」なので、マップが伸びると値は縮む。ただし
+    // 帯の座標（y × 帯数 ÷ 100 = 何枚めの絵のどこか）は変わらないこと。
+    const before = mapGeometry(BASE_STEPS, 3);
+    const after = mapGeometry([...BASE_STEPS, 6, 7], 3);
+    before.stops.forEach((stop, i) => {
+      const bandBefore = (stop.y * before.bandCount) / 100;
+      const bandAfter = (after.stops[i]!.y * after.bandCount) / 100;
+      expect(bandAfter).toBeCloseTo(bandBefore, 5);
+      expect(after.stops[i]!.x).toBe(stop.x);
+    });
+  });
+
+  it("左右のつづら折りは STEP 6 以降も続く", () => {
+    const { stops } = mapGeometry([1, 2, 3, 4, 5, 6, 7, 8], 3);
+    stops.forEach((stop, index) => {
+      if (index % 2 === 0) expect(stop.x).toBeGreaterThan(50);
+      else expect(stop.x).toBeLessThan(50);
+    });
+  });
+
+  it("step がとびとび（6が無くて8だけ）でも帯と停留所は1対1", () => {
+    const geometry = mapGeometry([1, 2, 8], 3);
+    expect(geometry.bandCount).toBe(4);
+    expect(geometry.stops).toHaveLength(3);
+    expect(geometry.stops[2]!.y).toBeCloseTo(87.5, 5);
+  });
+
+  it("元の絵が0枚でもグラデーションの帯を1つ確保する", () => {
+    // 0にすると高さが消え、停留所が団子になってマップとして読めなくなる。
+    const geometry = mapGeometry([1, 2], 0);
+    expect(geometry.bandCount).toBe(1);
+    for (const stop of geometry.stops) {
+      expect(stop.y).toBeGreaterThan(0);
+      expect(stop.y).toBeLessThan(100);
+    }
+  });
+
+  it("BASE_STOP_COUNT は元の3枚の絵が受け持つ 5", () => {
+    // ここが変わると「どの step から絵が1枚いるか」の境目がずれ、
+    // 検査（checkStageSteps）と画面の帯割りが食い違う。
+    expect(BASE_STOP_COUNT).toBe(5);
   });
 });
 
