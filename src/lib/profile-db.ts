@@ -217,6 +217,33 @@ export async function updateProfileAsAdmin(
   return data as ProfileRow;
 }
 
+/**
+ * 診断だけを未受験に戻す。プロフィール行は残すので `personality_results` の
+ * 受験履歴も残る（削除は cascade で履歴ごと消える。§docs/deploy.md ではなく 07 §8.1）。
+ *
+ * `answers` と `scores` は**同時に**空へ戻す必要がある。DBの制約が
+ * 「両方空」か「20問そろっている」かのどちらかしか許さないため、片方だけだと弾かれる。
+ *
+ * `personality_type` は not null で「未診断」を表す値がないため、前回のコードが残る。
+ * 画面の判定は `isDiagnosisComplete(answers)` 側で行うので表示には影響しない。
+ */
+export async function resetDiagnosisAsAdmin(id: string): Promise<ProfileRow> {
+  const supabase = requireClient();
+  const { data, error } = await supabase
+    .from("profiles")
+    .update({ answers: [], scores: {} })
+    .eq("id", id)
+    .select("*")
+    .single();
+  if (error) throw error;
+  return data as ProfileRow;
+}
+
+/**
+ * プロフィールを完全に削除する。
+ * **`personality_results` の受験履歴も cascade で消える**（不可逆）。
+ * 診断をやり直させたいだけなら `resetDiagnosisAsAdmin` を使う。
+ */
 export async function deleteProfileAsAdmin(id: string): Promise<void> {
   const supabase = requireClient();
   const { error } = await supabase.from("profiles").delete().eq("id", id);

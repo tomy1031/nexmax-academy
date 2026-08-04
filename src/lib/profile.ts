@@ -109,6 +109,15 @@ export function saveMapView(view: MapView): void {
   storage()?.setItem(MAP_VIEW_KEY, view);
 }
 
+/**
+ * 表示用プロフィールのキャッシュだけ消す。
+ * 診断がリセットされたときに使う。Gemini キーや表示設定は学習者の持ち物なので残す
+ * （`clearNexmaxCache()` は `nexmax.` で始まる全キーを消すため、ここでは使わない）。
+ */
+export function clearProfile(): void {
+  storage()?.removeItem(PROFILE_KEY);
+}
+
 export function clearNexmaxCache(): void {
   const target = storage();
   if (!target) return;

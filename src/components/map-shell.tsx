@@ -21,8 +21,10 @@ import {
 import { STAGES, type StageDefinition } from "@/content/stages";
 import { fetchOwnProfile, type ProfileRow } from "@/lib/profile-db";
 import {
+  clearProfile,
   getMapView,
   getProfile,
+  isDiagnosisComplete,
   saveMapView,
   saveProfile,
   type MapView,
@@ -827,6 +829,13 @@ export function MapShell() {
       try {
         const stored = await fetchOwnProfile();
         if (!stored) {
+          router.replace("/welcome");
+          return;
+        }
+        // 管理者が診断をリセットすると answers/scores が空で戻る。
+        // profileFromRow が投げるのに任せず、明示的に診断へ送る。
+        if (!isDiagnosisComplete(stored.answers)) {
+          clearProfile();
           router.replace("/welcome");
           return;
         }
