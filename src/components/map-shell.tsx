@@ -53,9 +53,10 @@ const SHORT_WAIT_TOAST = "じゅんびちゅう です。";
  *
  * 座標を手で並べず**番号から決める**。こうするとステージが何個に増えても同じ規則で
  * 蛇行し、並びが崩れない（手打ちだと追加のたびに全部を調整することになる）。
- * 中央から左右へ交互に同じ幅だけ振る。
+ * 中央から左右へ交互に同じ幅だけ振る。振り幅が小さいと道がほぼ直線に見えて
+ * 「蛇行している」と分からなくなるので、はっきり振る。
  */
-const NODE_SWING = 12;
+const NODE_SWING = 19;
 
 function areaNodeX(index: number): number {
   return index % 2 === 0 ? 50 + NODE_SWING : 50 - NODE_SWING;
@@ -868,7 +869,9 @@ function RouteArea({
                   "--panel-right": `calc(${100 - nodeX}% + 3.75rem)`,
                 } as CSSProperties
               }
-              className={`absolute top-[var(--panel-top-narrow)] left-1/2 z-30 w-[min(92vw,22rem)] -translate-x-1/2 md:top-[var(--panel-top)] md:w-[21rem] md:translate-x-0 md:-translate-y-1/2 ${
+              /* md 以上では丸の横に置く。上へ 35% しか出さないのは、1枚目のエリアで
+                 パネルが上に伸びると START の看板に重なってしまうため（中央合わせだと重なる） */
+              className={`absolute top-[var(--panel-top-narrow)] left-1/2 z-30 w-[min(92vw,22rem)] -translate-x-1/2 md:top-[var(--panel-top)] md:w-[21rem] md:translate-x-0 md:-translate-y-[35%] ${
                 chipOnRight
                   ? "md:left-[var(--panel-left)]"
                   : "md:right-[var(--panel-right)] md:left-auto"
@@ -960,15 +963,28 @@ function MapViewPane({
   const firstArea = ROUTE_AREAS[0]!;
   return (
     <main className="relative w-full overflow-x-hidden">
-      {/* 出発の帯。1枚目のエリア画像の上端は平らな空色なので、同じ色で continuous に見える */}
-      <div className="relative h-44 w-full" style={{ backgroundColor: SKY_BLUE }}>
+      {/* 出発の帯。1枚目のエリア画像の上端は平らな空色なので、同じ色で continuous に見える。
+          高さは「看板の下端」と「1枚目のエリアで開く現在のレッスンパネルの上端」が
+          ぶつからない分だけ取る（詰めると看板がパネルに隠れる） */}
+      <div className="relative h-64 w-full" style={{ backgroundColor: SKY_BLUE }}>
         {/* 1枚目のエリアの上端にも雲をかける。看板より先に置いて、看板を隠さないようにする */}
         <CloudBand className="bottom-0 translate-y-1/2" />
         <MapLayer>
-          {/* 看板より上には航路を引かない（出発点なので、道は看板の真下から始まる） */}
+          {/* 看板より上には航路を引かない（出発点なので、道は看板の真下から始まる）。
+              看板の下端から下だけに引いて、1枚目のエリアへ切れ目なくつなぐ */}
           <WoodenBanner label="START!" className="top-20 left-1/2">
             {firstArea.name}
           </WoodenBanner>
+          <div className="absolute inset-x-0 top-[13rem] bottom-0">
+            <AreaTrail
+              xIn={AREA_BOUNDARY_X}
+              xNode={AREA_BOUNDARY_X}
+              xOut={AREA_BOUNDARY_X}
+              nodeT={0.5}
+              areaIndex={-1}
+              flownUntil={flownUntil(progress)}
+            />
+          </div>
         </MapLayer>
       </div>
 
