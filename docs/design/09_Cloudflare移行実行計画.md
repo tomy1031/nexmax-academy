@@ -1,8 +1,26 @@
-# 09. Cloudflare 移行 実行計画（次セッション用）
+# 09. Cloudflare 移行 実行計画
 
 検証・本番とも Vercel から **Cloudflare Workers** へ移す。あわせて **Cloudflare Tunnel + Access** で、管理画面の「AI指示出し」（`/admin/ai`・実装済み）を本番からローカルの Codex に届かせる。**完全無料の範囲で行う**（Workers 無料枠・Tunnel 無料・Access 50人まで無料）。
 
-このセッションで済んでいるもの / 次セッションでやるものを分けて書く。**次セッションは §4 のプロンプトをそのまま使って開始できる。**
+## 0. 現況サマリ（2026-08-03 時点）
+
+| フェーズ | 状態 |
+|---|---|
+| Phase A — Next.js 更新と OpenNext 導入 | ✅ 完了 |
+| Phase B-5 — デプロイ | ✅ 完了（`https://academy.nexmax.workers.dev`） |
+| Phase B-6 — プレビュー＋Redirect URLs | ✅ 完了（`https://staging-academy.nexmax.workers.dev`） |
+| Phase B-7 — ログイン実機確認 | 🟡 **ログイン自体は成功。診断やり直しの通し確認だけ残り**（タスクボード） |
+| Phase C — Tunnel + Access | ⛔ **保留。ドメインを買わない決定により現設計では成立しない**（§Phase C） |
+
+**ホスティングの移行は完了している。** 残るのは:
+
+- Phase B-7 の通し確認（ユーザー操作。Claude では代われない）
+- **Vercel の停止と Site URL の切り替え**。Supabase の Site URL はまだ
+  `https://nexmax-academy.vercel.app` を指しており、未登録URLのフォールバック先になっている。
+  Vercel を止めるときは Site URL も一緒に移すこと（`docs/deploy.md` §0.3）
+- Phase C（ドメインを用意する気になったら再開。手順は下に残してある）
+
+**このリポジトリは public。** 以降もアカウントIDなどの内部識別子は直書きしない。
 
 ---
 
@@ -190,29 +208,12 @@ Phase B の実機検証結果（本番URLに対して実施）:
     サブドメインだけ切り出す Subdomain setup は **Enterprise 限定**
 - **その帰結として Phase C は保留**（上記 Phase C の節を見る）
 
-## 4. 次セッションの開始プロンプト（そのまま貼る）
+## 4. 次セッションの開始プロンプト
 
-### Phase A+B 用
+### Phase A+B 用 → **実施済み。もう使わない**
 
-```
-NexmaxAcademy を Vercel から Cloudflare Workers へ移行してください。
-計画は docs/design/09_Cloudflare移行実行計画.md にあり、この順で進めてください。
-
-前提（計画書 §2 に裏取りあり）:
-- OpenNext (@opennextjs/cloudflare) を使う。next-on-pages は使わない
-- 最初に next を 16.2.12 以上へ更新する（16.2.10 は OpenNext の対応範囲外）
-- middleware.ts を proxy.ts に改名しない（OpenNext が Node middleware を拒否する。恒久の制約として AGENTS.md にも追記する）
-- nodejs_compat + compatibility_date >= 2025-05-05
-- NEXT_PUBLIC_* はビルド時に埋まるので、wrangler secret ではなくビルド変数で渡す
-
-進め方の規律:
-- 各段階で npm test / lint / typecheck / build を通し、証拠を示してから次へ
-- opennextjs-cloudflare preview でログイン以外の全ページをブラウザ確認してからデプロイ
-- デプロイ後、Supabase の Redirect URLs にプレビューエイリアスを登録するまで
-  Google ログインは動かない（docs/deploy.md §4 の罠）。登録が必要なURLを列挙して
-  タスクボード（managing-my-tasks）に登録すること
-- 私の確認が必要になるまで止まらず進める。確認の前に Codex のレビューを通す
-```
+Phase A・B は完了している（§0 のサマリ参照）。移行をもう一度なぞる必要はない。
+当時の前提と手順は §2・§3 に残してあるので、経緯を追いたいときはそちらを読む。
 
 ### Phase C 用
 

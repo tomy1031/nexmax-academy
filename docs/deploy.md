@@ -1,9 +1,13 @@
 # デプロイ / 環境構成
 
-> **移行中（2026-07-30）**: ホスティングを Vercel から **Cloudflare Workers** へ移している。
-> 手順は §0 を見る。§1〜§4 の Vercel 前提の記述は**移行完了までの併存**であり、
-> 完了時に「旧」として畳む（計画: `docs/design/09_Cloudflare移行実行計画.md` §3 Phase C-11）。
-> Supabase（DB・認証）は移さない。移すのはホスティングだけ。
+> **移行済み（2026-08-03）**: ホスティングは **Cloudflare Workers** が本番。手順は §0。
+> Supabase（DB・認証）は移していない。移したのはホスティングだけ。
+>
+> **§1〜§4 は Vercel 時代の記述（旧）。** 完全には畳んでいない。理由は2つ:
+> Vercel のデプロイがまだ生きていること、Supabase の **Site URL がまだ
+> `https://nexmax-academy.vercel.app` を指している**こと（未登録URLのフォールバック先。§0.3）。
+> Vercel を止めて Site URL を Cloudflare に切り替えたら、§1〜§4 は削除してよい。
+> ただし §4 の「同一 Supabase を共有する上での運用注意」は**ホストに依存しない**ので残す。
 
 ## 0. Cloudflare Workers（新・移行先）
 
