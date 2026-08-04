@@ -261,12 +261,15 @@ function AreaImage({ src, fade }: { src: string; fade: "both" | "top" }) {
 }
 
 /**
- * 地図の「中身」を置く層。背景画像は画面いっぱいのまま、看板・足跡・ステージだけを
- * 左のサイドメニューのぶんだけ内側に寄せる（メニューに隠れないようにするため）。
- * 足跡もこの層の中で位置を測るので、ステージの丸と道がずれない。
+ * 地図の「中身」を置く層。背景画像は画面いっぱいのまま、看板・航路・ステージだけを
+ * 内側に寄せる（左のサイドメニューに隠れないようにするため）。
+ *
+ * **左右を同じだけ空ける**のが要点。左だけ空けるとこの層の中央が画面中央からずれ、
+ * 中央に置いたはずの START / GOAL の看板が右に寄って見える。
+ * 航路もこの層の中で位置を測るので、看板・丸・道の中心がすべて画面中央でそろう。
  */
 function MapLayer({ children }: { children: ReactNode }) {
-  return <div className="absolute inset-0 md:left-44">{children}</div>;
+  return <div className="absolute inset-0 md:right-44 md:left-44">{children}</div>;
 }
 
 /**
@@ -902,8 +905,9 @@ function GoalArea({ progress }: { progress: StageProgress }) {
       <AreaImage src={GOAL_AREA.image} fade="top" />
 
       <MapLayer>
-        {/* 航路は看板の手前で終える。看板を突き抜けると着地して見えないため */}
-        <div className="absolute inset-x-0 top-0 bottom-1/2">
+        {/* 航路は看板に触れる手前で終える。看板は中央から上下に約 5.5rem あるので、
+            そのぶん＋余白を空ける。突き抜けると着地して見えない */}
+        <div className="absolute inset-x-0 top-0 bottom-[calc(50%+3.5rem)]">
           <AreaTrail
             xIn={AREA_BOUNDARY_X}
             xNode={50}
