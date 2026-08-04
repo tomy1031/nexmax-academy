@@ -60,12 +60,29 @@ const SHORT_WAIT_TOAST = "じゅんびちゅう です。";
  * 1本の sin で通すと、境目も傾きを持ったまま滑らかに通り抜ける。
  *
  * 出発とゴールの看板は中央にあり、T が整数のところで x = 50 になるので、
- * 看板の真下から道が出入りして自然につながる。
+ * 看板の真下から道が出入りする。
  */
-const NODE_SWING = 13;
+const NODE_SWING = 17;
+
+/**
+ * 波の振れを、道のりの入口と出口だけ 0 まで絞る係数。
+ *
+ * 看板の下の道はまっすぐ縦に降りる（傾き 0）。一方 sin は T=0 で傾きが最大なので、
+ * そのままつなぐと看板を出た瞬間に真横へ折れて見える。端で振幅を 0 にすると
+ * **傾きも 0 になり**、縦の線から波へなめらかに移れる。
+ *
+ * 絞るのは端から半エリアぶんだけ。最初と最後のステージ（T = 0.5, N-0.5）では
+ * すでに 1 に戻っているので、振れ幅は他のステージと変わらない。
+ */
+function swingEnvelope(globalT: number, total: number): number {
+  const edge = Math.min(globalT, total - globalT) / 0.5;
+  const e = Math.max(0, Math.min(1, edge));
+  return e * e * (3 - 2 * e);
+}
 
 function routeX(globalT: number): number {
-  return 50 + NODE_SWING * Math.sin(Math.PI * globalT);
+  const swing = NODE_SWING * swingEnvelope(globalT, ROUTE_AREAS.length);
+  return 50 + swing * Math.sin(Math.PI * globalT);
 }
 
 /** エリア内でステージを置く高さ（%）。波の山＝エリアのまんなかに置く */
@@ -808,7 +825,7 @@ function RouteArea({
       aria-label={area.name}
       /* 狭い画面ではレッスンパネルが丸の真下に縦長で開くので、そのぶん背を高くする。
          詰めるとパネルが次のエリアまではみ出し、エリア名の札に重なる */
-      className="relative h-[860px] w-full md:h-[clamp(600px,58vh,660px)]"
+      className="relative h-[940px] w-full md:h-[clamp(680px,64vh,780px)]"
       style={{ backgroundColor: SKY_BLUE }}
     >
       <AreaImage src={area.image} fade="both" />
