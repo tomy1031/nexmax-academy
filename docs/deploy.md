@@ -164,21 +164,26 @@ curl -s -o /dev/null "$SB/auth/v1/authorize?provider=google&redirect_to=$enc"
 `/authorize` の `Location` ヘッダには渡した `redirect_to` がそのまま載るだけで
 判定には使えない（未登録でも同じに見える）。**ログを見ること。**
 
-#### Redirect URLs の全量（2026-08-05 時点）
+#### Redirect URLs の全量（2026-08-05 時点・ダッシュボードで実物を確認）
 
 ```
-https://academy.nexmax.workers.dev/**
-https://*-academy.nexmax.workers.dev/**   ← 2026-08-05 追加（要登録）
-https://staging-academy.nexmax.workers.dev/**
 http://localhost:3000/**
-https://nexmax-academy.vercel.app/**
-https://*.vercel.app/**
+https://academy.nexmax.workers.dev/**
+https://staging-academy.nexmax.workers.dev/**
+https://*-academy.nexmax.workers.dev/**    ← 2026-08-05 追加。ブランチ確認URL用
 ```
 
-2行目は**ブランチごとの確認URL用**。これを入れると3行目は含まれるので、
-登録後は3行目を消してよい（消さなくても害はない）。
+4行目が**ブランチごとの確認URLを一括で許可する行**。3行目はこれに含まれるので
+消してよい（残しても害はない）。**エイリアスを増やしても追加登録は要らない。**
 
-下2本は移行完了まで残す。完了時に削除する。
+Vercel の2本（`nexmax-academy.vercel.app` / `*.vercel.app`）は移行完了に伴い削除済み。
+
+登録直後に実測した対照（§0.3 の手順そのまま）:
+
+| 叩いた `redirect_to` のホスト | auth ログの `referer` | 判定 |
+|---|---|---|
+| `claude-…-academy.nexmax.workers.dev` | **渡したURLそのもの** | 登録できている |
+| `not-registered-host.example.com` | **Site URL へフォールバック** | 未登録（＝検査が判別できている証拠） |
 
 **旧リスト（`/auth/callback` 完全一致）は5本とも機能していなかった。** 実測で
 `http://localhost:3000/auth/callback?code=...` も
