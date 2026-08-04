@@ -48,8 +48,26 @@ const PROGRESS_SERVER_SNAPSHOT = "[]";
 const LONG_WAIT_TOAST = "じゅんびちゅう です。もうすこし まってね！";
 const SHORT_WAIT_TOAST = "じゅんびちゅう です。";
 
-/** 各エリアの中央に立つステージの x 位置（%）。左右に振って道をうねらせる */
-const AREA_NODE_X = [58, 38, 62, 42, 36, 60] as const;
+/**
+ * ステージの丸を置く x 位置（%）。
+ *
+ * 座標を手で並べず**番号から決める**。こうするとステージが何個に増えても同じ規則で
+ * 蛇行し、並びが崩れない（手打ちだと追加のたびに全部を調整することになる）。
+ * 中央から左右へ交互に同じ幅だけ振る。
+ */
+const NODE_SWING = 12;
+
+function areaNodeX(index: number): number {
+  return index % 2 === 0 ? 50 + NODE_SWING : 50 - NODE_SWING;
+}
+
+/**
+ * エリアの境目は**必ず中央**を通す。
+ * こうすると1エリアがそのまま「中央 → 左右どちらか → 中央」の対称なS字になり、
+ * エリアを足しても引いても、隣との継ぎ目で道が折れない。
+ * 出発とゴールの看板も中央なので、看板の真下から道が出入りする。
+ */
+const AREA_BOUNDARY_X = 50;
 
 /**
  * エリア内でステージを置く高さ（%）。上寄りに置いて、下に「現在のレッスン」パネルを
@@ -68,27 +86,13 @@ const STAGE_COLORS = {
   "sky-soft": "#9bdcf7",
 } satisfies Record<StageDefinition["color"], string>;
 
-/** 装飾のネクマックス。エリアごとに1体、ステージと反対側に立たせる */
-const AREA_CHARACTERS: readonly PersonalityFamilyId[] = [
-  "leader",
-  "idea",
-  "heart",
-  "challenge",
-  "idea",
-  "leader",
-];
+/**
+ * 装飾のネクマックス。エリアごとに1体、ステージと反対側に立たせる。
+ * エリアが増えても足りなくならないよう、番号で循環させる。
+ */
+const AREA_CHARACTERS: readonly PersonalityFamilyId[] = ["leader", "idea", "heart", "challenge"];
 
 const STAGE_BY_ID = new Map(STAGES.map((stage) => [stage.id, stage]));
-
-/**
- * エリアの境目における道の x 座標（%）。
- * 出発点とゴールは中央（看板の真下）、途中はとなり合うステージの中点にすると道が折れない。
- */
-const AREA_BOUNDARY_X = [
-  50,
-  ...AREA_NODE_X.slice(1).map((x, index) => (AREA_NODE_X[index]! + x) / 2),
-  50,
-];
 
 function subscribeToStorage(onStoreChange: () => void) {
   window.addEventListener("storage", onStoreChange);
@@ -794,7 +798,7 @@ function RouteArea({
 }) {
   const stage = area.stageId ? STAGE_BY_ID.get(area.stageId) : undefined;
   const status = stage ? stageStatus(stage.id, progress) : null;
-  const nodeX = AREA_NODE_X[index]!;
+  const nodeX = areaNodeX(index);
   const nodeTop = NODE_TOP;
   const chipOnRight = nodeX <= 50;
   const open = stage ? expandedStage === stage.id : false;
@@ -814,9 +818,9 @@ function RouteArea({
         <AreaLabel area={area} onRight={!chipOnRight} cleared={areaCleared} />
 
         <AreaTrail
-          xIn={AREA_BOUNDARY_X[index]!}
+          xIn={AREA_BOUNDARY_X}
           xNode={nodeX}
-          xOut={AREA_BOUNDARY_X[index + 1]!}
+          xOut={AREA_BOUNDARY_X}
           nodeT={NODE_TOP / 100}
           areaIndex={index}
           flownUntil={flownUntil(progress)}
@@ -834,7 +838,7 @@ function RouteArea({
           className="pointer-events-none absolute z-20 hidden -translate-x-1/2 -translate-y-1/2 lg:block"
           style={{ left: `${chipOnRight ? nodeX + 26 : nodeX - 26}%`, top: `${nodeTop + 22}%` }}
         >
-          <NexMaxFamily family={AREA_CHARACTERS[index]!} size={104} bob />
+          <NexMaxFamily family={AREA_CHARACTERS[index % AREA_CHARACTERS.length]!} size={104} bob />
         </div>
 
         {stage && status && (
@@ -898,14 +902,17 @@ function GoalArea({ progress }: { progress: StageProgress }) {
       <AreaImage src={GOAL_AREA.image} fade="top" />
 
       <MapLayer>
-        <AreaTrail
-          xIn={AREA_BOUNDARY_X[AREA_BOUNDARY_X.length - 1]!}
-          xNode={50}
-          xOut={50}
-          nodeT={0.5}
-          areaIndex={ROUTE_AREAS.length}
-          flownUntil={flownUntil(progress)}
-        />
+        {/* 航路は看板の手前で終える。看板を突き抜けると着地して見えないため */}
+        <div className="absolute inset-x-0 top-0 bottom-1/2">
+          <AreaTrail
+            xIn={AREA_BOUNDARY_X}
+            xNode={50}
+            xOut={50}
+            nodeT={0.5}
+            areaIndex={ROUTE_AREAS.length}
+            flownUntil={flownUntil(progress)}
+          />
+        </div>
 
         <div className="absolute top-1/2 left-1/2 z-20 -translate-x-1/2 -translate-y-1/2 text-center">
           <div className="mx-auto h-7 w-4 bg-linear-to-r from-[#6f3518] via-[#a7622e] to-[#5a2b15] shadow-md" />
@@ -954,17 +961,10 @@ function MapViewPane({
         {/* 1枚目のエリアの上端にも雲をかける。看板より先に置いて、看板を隠さないようにする */}
         <CloudBand className="bottom-0 translate-y-1/2" />
         <MapLayer>
+          {/* 看板より上には航路を引かない（出発点なので、道は看板の真下から始まる） */}
           <WoodenBanner label="START!" className="top-20 left-1/2">
             {firstArea.name}
           </WoodenBanner>
-          <AreaTrail
-            xIn={50}
-            xNode={50}
-            xOut={AREA_BOUNDARY_X[0]!}
-            nodeT={0.5}
-            areaIndex={-1}
-            flownUntil={flownUntil(progress)}
-          />
         </MapLayer>
       </div>
 

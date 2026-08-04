@@ -54,6 +54,11 @@ describe("MAP_AREAS", () => {
     for (const id of STAGE_IDS) expect(assigned.has(id)).toBe(true);
   });
 
+  it("道のりのエリアとステージが1対1になっている（空白の区間を作らない）", () => {
+    expect(ROUTE_AREAS).toHaveLength(STAGES.length);
+    for (const area of ROUTE_AREAS) expect(area.stageId).not.toBeNull();
+  });
+
   it("最後のエリアは日本（ゴール）で、道のりのエリアには含めない", () => {
     expect(MAP_AREAS[MAP_AREAS.length - 1]!.id).toBe("japan");
     expect(ROUTE_AREAS).toHaveLength(MAP_AREAS.length - 1);
