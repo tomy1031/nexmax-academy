@@ -194,6 +194,62 @@ export const GLOSSARY: readonly GlossaryEntry[] = [
     meaning: "みんなを 楽しく、元気に する こと",
     english: "lifting the mood — making everyone lively and cheerful",
   },
+  {
+    term: "性格",
+    kanji: "性格",
+    reading: "せいかく",
+    meaning: "その 人の、いつもの かんがえかたや やりかた",
+    english: "personality — the way a person usually thinks and acts",
+  },
+  {
+    term: "診断",
+    kanji: "診断",
+    reading: "しんだん",
+    meaning: "しつもんに 答えて、じぶんの ことを しらべる こと",
+    english: "a check-up — answering questions to find out about yourself",
+  },
+  {
+    term: "意見",
+    kanji: "意見",
+    reading: "いけん",
+    meaning: "「そう 思う」と じぶんが かんがえた こと",
+    english: "an opinion — what you think about something",
+  },
+  {
+    term: "一生懸命",
+    kanji: "一生懸命",
+    reading: "いっしょうけんめい",
+    meaning: "力を ぜんぶ 出して やる こと",
+    english: "with all your effort",
+  },
+  {
+    term: "安心",
+    kanji: "安心",
+    reading: "あんしん",
+    meaning: "しんぱいが なくなって、きもちが 楽に なる こと",
+    english: "relief — the calm you feel when you stop worrying",
+  },
+  {
+    term: "途中",
+    kanji: "途中",
+    reading: "とちゅう",
+    meaning: "はじめてから おわるまでの あいだ",
+    english: "partway — after starting but before finishing",
+  },
+  {
+    term: "試す",
+    kanji: "試す",
+    reading: "ためす",
+    meaning: "できるか どうか、じっさいに やって みる こと",
+    english: "to try it and see what happens",
+  },
+  {
+    term: "例",
+    kanji: "例",
+    reading: "れい",
+    meaning: "「たとえば こういう こと」と 見せる もの",
+    english: "an example",
+  },
 ] as const;
 
 const BY_TERM = new Map(GLOSSARY.map((entry) => [entry.term, entry]));
@@ -217,6 +273,42 @@ export function findGlossaryTerm(sentence: string): GlossaryEntry | null {
     if (index < foundAt || (index === foundAt && entry.term.length > (found?.term.length ?? 0))) {
       found = entry;
       foundAt = index;
+    }
+  }
+  return found;
+}
+
+/**
+ * 文中に出るすべての語彙メモ対象を、出現順に重複なしで返す。
+ *
+ * `findGlossaryTerm`（1件だけ）は本文に下線を引く用。こちらは**設問カードの下に
+ * 「ことばメモ」を並べる用**（07 §2.5）。Ⓐ/Ⓑ の選択肢は `<button>` の中にあり
+ * ボタンを入れ子にできないので、選択肢の語はここでしか支えられない。
+ *
+ * 同じ位置では長い語を優先し（「仕組み」を「組」に取られない）、
+ * 一致した分だけ読み進めるので語が重ならない。
+ */
+export function findAllGlossaryTerms(...sentences: readonly string[]): GlossaryEntry[] {
+  const found: GlossaryEntry[] = [];
+  const seen = new Set<string>();
+
+  for (const sentence of sentences) {
+    let cursor = 0;
+    while (cursor < sentence.length) {
+      let hit: GlossaryEntry | null = null;
+      for (const entry of GLOSSARY) {
+        if (!sentence.startsWith(entry.term, cursor)) continue;
+        if (!hit || entry.term.length > hit.term.length) hit = entry;
+      }
+      if (hit) {
+        if (!seen.has(hit.term)) {
+          seen.add(hit.term);
+          found.push(hit);
+        }
+        cursor += hit.term.length;
+      } else {
+        cursor += 1;
+      }
     }
   }
   return found;

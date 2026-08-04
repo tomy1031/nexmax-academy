@@ -104,6 +104,64 @@ export interface PersonalityQuestion {
   readonly image: string;
 }
 
+/**
+ * 20問の前に出す導入（07 §3.0）。
+ *
+ * **「性格」という語自体を知らない前提**で書く。学習者は「せいかく」を辞書で引いても
+ * 抽象語に着地して意味が取れないので、先に「人には すきな やりかたが ある」という
+ * 具体で説明してから語を当てる。
+ *
+ * 文言をコンポーネントに直書きせず台帳に置くのは、**文言テストの対象にするため**。
+ * 直書きすると禁止語検査・語彙メモの網羅検査から漏れる。
+ */
+export interface PersonalityIntro {
+  readonly title: string;
+  /** 本文。1行＝1つのことだけ言う。 */
+  readonly lines: readonly string[];
+  /** 正誤の枠組みを持ち込まないための一文（07 §10）。 */
+  readonly note: string;
+  readonly startLabel: string;
+}
+
+export const PERSONALITY_INTRO: Readonly<Record<PersonalityLanguage, PersonalityIntro>> = {
+  easy: {
+    title: "はじめに",
+    lines: [
+      "人は みんな、すきな やりかたが ちがいます。",
+      "はやく きめる 人も います。ゆっくり かんがえる 人も います。どちらも いい やりかたです。",
+      "その 人の いつもの やりかたを 性格と 言います。それを しらべるのが 性格診断です。",
+      "これから、20の しつもんに 答えます。あなたの すきな やりかたが 見えて きます。",
+      "おわると、あなたに にた ネクマックスが 1人 出て きます。",
+    ],
+    note: "どちらが いい・わるいは ありません。あなたに ちかい ほうを えらんで ください。",
+    startLabel: "しつもんを はじめる",
+  },
+  japanese: {
+    title: "はじめに",
+    lines: [
+      "人はみんな、好きなやり方がちがいます。",
+      "早く決める人もいます。ゆっくり考える人もいます。どちらもいいやり方です。",
+      "その人のいつものやり方を性格と言います。それを調べるのが性格診断です。",
+      "これから、20の質問に答えます。あなたの好きなやり方が見えてきます。",
+      "終わると、あなたに似たネクマックスが1人出てきます。",
+    ],
+    note: "どちらがいい・わるいはありません。あなたに近いほうを選んでください。",
+    startLabel: "質問をはじめる",
+  },
+  english: {
+    title: "Before you start",
+    lines: [
+      "Everyone has their own way of doing things.",
+      "Some people decide fast. Some people think slowly. Both are good ways.",
+      "The way a person usually does things is called their personality. Finding out your own is what this check is for.",
+      "You will answer 20 questions. They will show you your own way.",
+      "At the end, one NexMax who is like you will appear.",
+    ],
+    note: "There is no better or worse choice. Just pick the one closer to you.",
+    startLabel: "Start the questions",
+  },
+};
+
 export const PERSONALITY_AXES: readonly PersonalityAxis[] = ["ei", "sn", "tf", "jp"] as const;
 
 export const PERSONALITY_AXIS_META: Readonly<Record<PersonalityAxis, PersonalityAxisMeta>> = {
@@ -578,7 +636,7 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
     english: "In an explanation, which do you prefer?",
     a: {
       pole: "S",
-      easy: "本当に あった れいを 見せて もらう",
+      easy: "本当に あった 例を 見せて もらう",
       japanese: "本当にあった例を見せてもらう",
       english: "Being shown a real example",
     },
@@ -589,6 +647,7 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
       english: "Being told why it is done that way",
     },
     readings: [
+      { text: "例", reading: "れい" },
       { text: "聞く", reading: "きく" },
       { text: "本当", reading: "ほんとう" },
       { text: "見せて", reading: "みせて" },
@@ -599,7 +658,7 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
   {
     id: 7,
     axis: "tf",
-    easy: "チームの いけんが 二つに なりました。どちらが 気に なりますか。",
+    easy: "チームの 意見が 二つに なりました。どちらが 気に なりますか。",
     japanese: "チームの意見が二つになりました。どちらが気になりますか。",
     english: "The team is split in two. Which concerns you?",
     a: {
@@ -615,6 +674,7 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
       english: "Which one gives a better result",
     },
     readings: [
+      { text: "意見", reading: "いけん" },
       { text: "結果", reading: "けっか" },
       { text: "二つ", reading: "ふたつ" },
       { text: "気", reading: "き" },
@@ -629,18 +689,20 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
     english: "This job has a deadline. You are told to finish it by a certain day.",
     a: {
       pole: "J",
-      easy: "早めに おわらせて、あんしんしたい",
+      easy: "早めに おわらせて、安心したい",
       japanese: "早めに終わらせて、安心したい",
       english: "You want to finish early and feel safe",
     },
     b: {
       pole: "P",
       // 「いきおいを つけて やる」はN1慣用句。Ⓐだけ平易だとJ極へ系統的に偏る（07 §3.2）。
-      easy: "さいごの 日に、いっしょうけんめい やる",
+      easy: "さいごの 日に、一生懸命 やる",
       japanese: "最後の日に、いっしょうけんめいやる",
       english: "You give it everything on the last day",
     },
     readings: [
+      { text: "一生懸命", reading: "いっしょうけんめい" },
+      { text: "安心", reading: "あんしん" },
       { text: "締め切り", reading: "しめきり" },
       { text: "日", reading: "ひ" },
       { text: "早め", reading: "はやめ" },
@@ -785,11 +847,12 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
     b: {
       pole: "N",
       // 「だいたいの かんじを つかんで」は「漢字」と誤読され選択肢が崩れる（07 §3.2）。
-      easy: "だいたい わかったら、あとは 自分で ためす",
+      easy: "だいたい わかったら、あとは 自分で 試す",
       japanese: "だいたい分かったら、あとは自分でためす",
       english: "Once you get the gist, you try it yourself",
     },
     readings: [
+      { text: "試す", reading: "ためす" },
       { text: "見ながら", reading: "みながら" },
       { text: "自分", reading: "じぶん" },
     ],
@@ -924,7 +987,7 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
   {
     id: 20,
     axis: "jp",
-    easy: "とちゅうで 「やりかたを 変えよう」と 言われました。",
+    easy: "途中で 「やりかたを 変えよう」と 言われました。",
     japanese: "途中で「やり方を変えよう」と言われました。",
     english: "Mid-way, you are told to change the approach.",
     a: {
@@ -940,6 +1003,7 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
       english: "You want to redo the plan first",
     },
     readings: [
+      { text: "途中", reading: "とちゅう" },
       { text: "変えよう", reading: "かえよう" },
       { text: "言われました", reading: "いわれました" },
       { text: "作りなおしたい", reading: "つくりなおしたい" },
@@ -950,6 +1014,14 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
 
 /** 結果画面（tagline / analysis / teamRoleDetail）の読み辞書。 */
 export const PERSONALITY_RESULT_READINGS: readonly Reading[] = [
+  { text: "一生懸命", reading: "いっしょうけんめい" },
+  { text: "性格", reading: "せいかく" },
+  { text: "診断", reading: "しんだん" },
+  { text: "意見", reading: "いけん" },
+  { text: "安心", reading: "あんしん" },
+  { text: "途中", reading: "とちゅう" },
+  { text: "試す", reading: "ためす" },
+  { text: "例", reading: "れい" },
   // 語彙メモ（glossary.ts）の見出し語は必ずここに置く。本文は漢字で書き、読みはここから合成する。
   // **配列の先頭に置くこと。** RubyText は同じ位置で一致した語のうち配列で先に出たほうを採るので、
   // 「手順」を「手」より後ろに置くと「手」だけにルビが付いて「順」が裸で残る。

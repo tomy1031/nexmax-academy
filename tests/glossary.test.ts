@@ -2,14 +2,15 @@ import { describe, expect, it } from "vitest";
 import { GLOSSARY, findGlossaryTerm, getGlossaryEntry } from "../src/content/glossary";
 import {
   PERSONALITY_FAMILIES,
+  PERSONALITY_INTRO,
   PERSONALITY_QUESTIONS,
   PERSONALITY_RESULT_READINGS,
   PERSONALITY_TYPES,
 } from "../src/content/personality";
 
 describe("語彙メモ台帳（07 §2.5）", () => {
-  it("23語あり、表記が重複しない", () => {
-    expect(GLOSSARY).toHaveLength(23);
+  it("31語あり、表記が重複しない", () => {
+    expect(GLOSSARY).toHaveLength(31);
     expect(new Set(GLOSSARY.map((entry) => entry.term)).size).toBe(GLOSSARY.length);
   });
 
@@ -98,6 +99,13 @@ describe("学習者向け文言との対応", () => {
   it("台帳の語は、実際に学習者向け文言のどこかで使われている", () => {
     // 実データだけを見る。ここにリテラルを足すとテストが自分で自分を通してしまう。
     const corpus = [
+      // 導入は台帳（PERSONALITY_INTRO）に置いてある。コンポーネントに直書きすると
+      // ここに現れず、「性格」「診断」の語彙メモが素通りしてしまう。
+      ...Object.values(PERSONALITY_INTRO).flatMap((intro) => [
+        intro.title,
+        intro.note,
+        ...intro.lines,
+      ]),
       ...PERSONALITY_FAMILIES.map((family) => family.name),
       ...PERSONALITY_TYPES.flatMap((type) => [
         type.name,

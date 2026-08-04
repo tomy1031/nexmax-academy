@@ -1,7 +1,7 @@
 "use client";
 
 import { useId, useRef, useState, type ReactNode } from "react";
-import { findGlossaryTerm } from "@/content/glossary";
+import { findGlossaryTerm, type GlossaryEntry } from "@/content/glossary";
 import type { Reading } from "@/content/personality";
 
 /** 漢字を含む語かどうか。含むなら、台帳の読みでルビを保証する。 */
@@ -114,5 +114,81 @@ export function GlossaryText({
       </span>
       {after && renderText(after, readings)}
     </>
+  );
+}
+
+/**
+ * 設問カードの下に並べる「ことばメモ」のチップ（07 §2.5）。
+ *
+ * **なぜ本文の下線と別に要るか**: Ⓐ/Ⓑ の選択肢は `<button>` の中にあり、
+ * ボタンを入れ子にできないので下線＋タップが使えない。選択肢に出るむずかしい語は
+ * ここでしか支えられない。柱書きの語も一緒に並べて、1か所で引けるようにする。
+ */
+export function GlossaryChip({ entry }: { entry: GlossaryEntry }) {
+  const popoverId = useId();
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const [open, setOpen] = useState(false);
+  const [placeBelow, setPlaceBelow] = useState(false);
+  const [shiftX, setShiftX] = useState(0);
+
+  const toggle = () => {
+    if (!open) {
+      const rect = buttonRef.current?.getBoundingClientRect();
+      if (rect) {
+        setPlaceBelow(rect.top < POPOVER_HEIGHT + EDGE_MARGIN);
+        const centerX = rect.left + rect.width / 2;
+        const overflowLeft = Math.max(0, EDGE_MARGIN - (centerX - POPOVER_WIDTH / 2));
+        const overflowRight = Math.max(
+          0,
+          centerX + POPOVER_WIDTH / 2 - (window.innerWidth - EDGE_MARGIN),
+        );
+        setShiftX(overflowLeft - overflowRight);
+      }
+    }
+    setOpen((current) => !current);
+  };
+
+  return (
+    <span className="relative inline-block">
+      <button
+        ref={buttonRef}
+        type="button"
+        onClick={toggle}
+        aria-expanded={open}
+        aria-controls={popoverId}
+        className="border-hairline text-ink hover:bg-sky-soft cursor-pointer rounded-full border-2 bg-white px-3 py-1 text-xs font-bold"
+      >
+        {HAS_KANJI.test(entry.term) ? (
+          <ruby>
+            {entry.term}
+            <rt>{entry.reading}</rt>
+          </ruby>
+        ) : (
+          entry.term
+        )}
+      </button>
+      {open && (
+        <span
+          id={popoverId}
+          role="note"
+          style={{ transform: `translateX(calc(-50% + ${shiftX}px))` }}
+          className={`border-sky text-ink absolute left-1/2 z-30 w-60 rounded-2xl border-2 bg-white px-3 py-2 text-left text-xs leading-relaxed font-bold shadow-[0_6px_18px_rgba(0,79,141,.22)] ${
+            placeBelow ? "top-full mt-2" : "bottom-full mb-2"
+          }`}
+        >
+          <span className="text-navy block">
+            {entry.term}
+            {entry.reading !== entry.term && (
+              <span className="text-ink-soft ml-1 font-bold">{entry.reading}</span>
+            )}
+          </span>
+          <span className="mt-1 block">{entry.meaning}</span>
+          {/* 英語は最後の受け皿。日本語の意味より下に、控えめに置く（§2.5）。 */}
+          <span className="border-hairline text-ink-soft mt-1.5 block border-t pt-1.5 text-[11px] font-semibold">
+            {entry.english}
+          </span>
+        </span>
+      )}
+    </span>
   );
 }
