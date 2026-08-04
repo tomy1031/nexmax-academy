@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
-  CONTENT_KIND_META,
+  contentKindMeta,
   contentHref,
   decodeStatuses,
   statusCode,
@@ -23,7 +23,7 @@ describe("contentHref", () => {
 
   it("スキーマの全種別に見た目と行き先がある", () => {
     for (const type of CONTENT_REF_TYPES) {
-      expect(CONTENT_KIND_META[type].icon.length).toBeGreaterThan(0);
+      expect(contentKindMeta(type).icon.length).toBeGreaterThan(0);
       expect(contentHref(type, "x")).toMatch(/^\/[a-z/]+\/x$/);
     }
   });

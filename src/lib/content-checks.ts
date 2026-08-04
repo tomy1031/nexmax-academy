@@ -75,21 +75,64 @@ export function checkSecretLeaks(file: string, scenario: Scenario): Finding[] {
   return findings;
 }
 
-/** kind別のID重複をファイル横断で検出する（同じIDが2ファイルにあると進捗保存が壊れる）。 */
+/**
+ * IDの重複をファイル横断で検出する。
+ *
+ * **種別をまたいで一意**であることを求める。理由は、IDを鍵にする下位層が
+ * どちらも種別を持たないからである:
+ *   - 進捗の保存キー（progress/store.ts の `content:<id>`）
+ *   - DBの主キー（contents.id は単独主キー）
+ * 種別ごとの一意性しか見ないと、別種の同じIDが検査を素通りして、
+ * 進捗が混ざり、保存時に既存の教材を黙って上書きする。
+ */
 export function checkDuplicateIds(entries: readonly ContentEntry[]): Finding[] {
   const findings: Finding[] = [];
-  const seen = new Map<string, string>();
+  const seen = new Map<string, { file: string; kind: string }>();
   for (const { file, content } of entries) {
-    const key = `${content.kind}:${content.id}`;
-    const dup = seen.get(key);
+    const dup = seen.get(content.id);
+    if (dup) {
+      const across = dup.kind === content.kind ? "" : `（${dup.kind} と ${content.kind}）`;
+      findings.push({
+        file,
+        level: "error",
+        message: `ID「${content.id}」が ${dup.file} と重複している${across} — IDは種別をまたいで一意にする（進捗キーとDB主キーが種別を持たないため）`,
+      });
+    } else {
+      seen.set(content.id, { file, kind: content.kind });
+    }
+  }
+  return findings;
+}
+
+/**
+ * マップの停留所とステージの結びつき検査（設計07 §3）。
+ *
+ * マップは step でステージを引くため、step が重なると片方が黙って消え、
+ * 停留所の数を超える step は公開しても学習者がたどり着けない。
+ */
+export const MAP_STOP_COUNT = 5;
+
+export function checkStageSteps(entries: readonly ContentEntry[]): Finding[] {
+  const findings: Finding[] = [];
+  const byStep = new Map<number, string>();
+  for (const { file, content } of entries) {
+    if (content.kind !== "stage" || content.status !== "published") continue;
+    const dup = byStep.get(content.step);
     if (dup) {
       findings.push({
         file,
         level: "error",
-        message: `ID「${content.id}」（${content.kind}）が ${dup} と重複している`,
+        message: `step ${content.step} が ${dup} と重なっている — マップは step でステージを引くので、片方がたどり着けなくなる`,
       });
     } else {
-      seen.set(key, file);
+      byStep.set(content.step, file);
+    }
+    if (content.step > MAP_STOP_COUNT) {
+      findings.push({
+        file,
+        level: "warn",
+        message: `step ${content.step} はマップの停留所（${MAP_STOP_COUNT}個）より先 — 公開しても学習者がマップからたどり着けない`,
+      });
     }
   }
   return findings;
@@ -126,6 +169,21 @@ export function checkReferenceIntegrity(entries: readonly ContentEntry[]): Findi
           file,
           level: "error",
           message: `wordStageIds の「${id}」が wordstage として存在しない — ステージの参照切れ（設計07 §3）`,
+        });
+      }
+    });
+  }
+
+  // 記事の「つぎは これ」カードも参照。存在しない教材を指すとタップ先が404になる
+  for (const { file, content } of entries) {
+    if (content.kind !== "article") continue;
+    content.blocks.forEach((block, i) => {
+      if (block.kind !== "link") return;
+      if (!idsByKind.get(block.type)?.has(block.ref)) {
+        findings.push({
+          file,
+          level: "error",
+          message: `blocks[${i}] の link 先「${block.ref}」（${block.type}）が存在しない — 「つぎは これ」のタップ先が404になる（設計07 §5）`,
         });
       }
     });

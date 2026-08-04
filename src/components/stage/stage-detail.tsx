@@ -7,7 +7,7 @@ import { RubyText } from "@/components/ruby-text";
 import { readContentProgress, subscribeProgress } from "@/lib/progress/store";
 import { buildFuriganaIndex, mergeFuriganaEntries, type FuriganaEntry } from "@/lib/text/furigana";
 import {
-  CONTENT_KIND_META,
+  contentKindMeta,
   STATUS_BADGE,
   decodeStatuses,
   statusCode,
@@ -143,7 +143,7 @@ export function StageDetail({
             {items.map((item, index) => {
               const code = codes[index] ?? "0";
               const badge = STATUS_BADGE[code];
-              const meta = CONTENT_KIND_META[item.type];
+              const meta = contentKindMeta(item.type);
               return (
                 <li key={`${item.type}:${item.id}`}>
                   <Link

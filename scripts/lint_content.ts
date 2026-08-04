@@ -26,6 +26,7 @@ import {
   checkForbiddenWords,
   checkLinkOrder,
   checkReferenceIntegrity,
+  checkStageSteps,
   checkSecretLeaks,
   type ContentEntry,
   type Finding,
@@ -160,6 +161,7 @@ function main() {
   findings.push(...checkDuplicateIds(entries));
   findings.push(...checkReferenceIntegrity(entries));
   findings.push(...checkLinkOrder(entries));
+  findings.push(...checkStageSteps(entries));
 
   const sourceFiles = walkSource(SRC_DIR);
   for (const file of sourceFiles) checkSourceForbiddenWords(file);

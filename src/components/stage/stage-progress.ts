@@ -5,39 +5,13 @@
  * ここに JSX を持ち込まないので node 環境の単体テストでそのまま検証できる。
  */
 
-import type { ContentRefType } from "@/content/schema";
 import type { ContentProgress } from "@/lib/progress/store";
 
-/** 種別ごとの見た目と呼び名（学習者向け・分かち書き）。 */
-export const CONTENT_KIND_META: Record<ContentRefType, { icon: string; label: string }> = {
-  manga: { icon: "📖", label: "まんが" },
-  article: { icon: "📰", label: "よみもの" },
-  meeting: { icon: "🎧", label: "ミーティング" },
-  quizset: { icon: "✏️", label: "もんだい" },
-  scenario: { icon: "🎙️", label: "たいわ" },
-  wordstage: { icon: "🕹️", label: "ことば" },
-};
-
 /**
- * コンテンツ種別 → 行き先。
- * ステージはコンテンツを知っているが、コンテンツ側はステージを知らない（付け替え自由）。
+ * 種別の見た目・呼び名・行き先は src/lib/content-kinds.ts が唯一の出どころ。
+ * ここで再定義すると、同じ教材が画面ごとに違う名前で呼ばれる。
  */
-export function contentHref(type: ContentRefType, id: string): string {
-  switch (type) {
-    case "manga":
-      return `/manga/${id}`;
-    case "article":
-      return `/article/${id}`;
-    case "meeting":
-      return `/meeting/${id}`;
-    case "quizset":
-      return `/quiz/${id}`;
-    case "scenario":
-      return `/meeting/live/${id}`;
-    case "wordstage":
-      return `/arcade/${id}`;
-  }
-}
+export { contentHref, contentKindMeta } from "@/lib/content-kinds";
 
 /**
  * 進捗を1文字にたたむ。useSyncExternalStore のスナップショットは

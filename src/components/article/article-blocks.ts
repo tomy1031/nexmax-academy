@@ -6,39 +6,22 @@
  */
 
 import type { ArticleBlock, ContentRefType } from "@/content/schema";
+import { contentKindMeta } from "@/lib/content-kinds";
 
-/** コンテンツ種別 → ルート。ステージ内のどの教材にも同じ規則でつなぐ。 */
-const HREF_BY_TYPE: Record<ContentRefType, (ref: string) => string> = {
-  manga: (ref) => `/manga/${ref}`,
-  article: (ref) => `/article/${ref}`,
-  meeting: (ref) => `/meeting/${ref}`,
-  quizset: (ref) => `/quiz/${ref}`,
-  scenario: (ref) => `/meeting/live/${ref}`,
-  wordstage: (ref) => `/arcade/${ref}`,
-};
+/**
+ * 種別 → 行き先・呼び名は src/lib/content-kinds.ts が唯一の出どころ。
+ * ここに別表を持つと「たいわ」と「おきゃくさまと はなす」のように呼び名がずれる。
+ */
+export { contentHref } from "@/lib/content-kinds";
 
-/** link ブロックの飛び先を作る。 */
-export function contentHref(type: ContentRefType, ref: string): string {
-  return HREF_BY_TYPE[type](ref);
-}
-
-/** カードに出す種別の見た目（学習者向けの呼び名は分かち書き・N4語彙）。 */
 export interface ContentKindLabel {
   readonly emoji: string;
   readonly name: string;
 }
 
-const LABEL_BY_TYPE: Record<ContentRefType, ContentKindLabel> = {
-  manga: { emoji: "📖", name: "まんが" },
-  article: { emoji: "📄", name: "よみもの" },
-  meeting: { emoji: "🎧", name: "ミーティング" },
-  quizset: { emoji: "✏️", name: "もんだい" },
-  scenario: { emoji: "🎤", name: "おきゃくさまと はなす" },
-  wordstage: { emoji: "🎮", name: "ことばの ゲーム" },
-};
-
 export function contentKindLabel(type: ContentRefType): ContentKindLabel {
-  return LABEL_BY_TYPE[type];
+  const meta = contentKindMeta(type);
+  return { emoji: meta.icon, name: meta.label };
 }
 
 /** 見出しの id。記事IDを前に付けて、1画面に2記事（スタジオのプレビュー）でも衝突させない。 */
