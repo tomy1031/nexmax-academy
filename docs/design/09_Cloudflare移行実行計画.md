@@ -56,7 +56,8 @@ Phase A で判明した追加事項（計画時点では未把握）:
 ### Phase B — デプロイと認証 → **5・6 完了（2026-07-31）／7 のみ残り**
 
 5. ✅ デプロイ済み。`NEXT_PUBLIC_*` は**ビルド変数**（`wrangler secret` では手遅れ。バンドルに埋まるため）
-   - `wrangler` 認証済み（`tomy1031@gmail.com` / account `<CLOUDFLARE_ACCOUNT_ID>`）
+   - `wrangler` 認証済み（`tomy1031@gmail.com`）。アカウントIDは `npx wrangler whoami` で確認する
+     — **このリポジトリは public なので直書きしない**
    - 本番URL: **`https://academy.nexmax.workers.dev`**
      （Worker名 `academy` ＋ アカウントsubdomain `nexmax`）
    - 秘密を除いたビルドで投入（`next-env.mjs` が空・バンドルに service_role key なし・
@@ -175,7 +176,7 @@ Phase B の実機検証結果（本番URLに対して実施）:
 
 ### 決めごと → **決着済み（2026-08-03）**
 
-- Cloudflare アカウント: `tomy1031@gmail.com` / `<CLOUDFLARE_ACCOUNT_ID>`
+- Cloudflare アカウント: `tomy1031@gmail.com`（アカウントIDは `npx wrangler whoami` で確認）
 - **ドメインは購入しない。`nextmake.co.jp` も使わない。無料運用が必須。**
 - 本番URLは **`https://academy.nexmax.workers.dev`** で確定
   - workers.dev のURLは `<Worker名>.<アカウントsubdomain>.workers.dev` という構造で、
