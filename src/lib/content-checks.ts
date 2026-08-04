@@ -14,6 +14,9 @@
  */
 
 import { FORBIDDEN_LEARNER_WORDS, type Content, type Scenario } from "../content/schema";
+// map-layout は純関数だけのモジュール（node:fs も React も持たない）ので、
+// スタジオのAPIルートから読まれるこのファイルからでも安全に import できる。
+import { STOPS_PER_SEGMENT } from "./map-layout";
 
 export interface Finding {
   file: string;
@@ -105,14 +108,40 @@ export function checkDuplicateIds(entries: readonly ContentEntry[]): Finding[] {
 }
 
 /**
+ * 停留所のふやし方の案内文。
+ *
+ * 「step を戻すしかない」と思わせないため、増やし方まで書く。
+ * ただし上限からは画像の枚数を割り出せない。上限は max(枚数,1)×STOPS_PER_SEGMENT
+ * なので、0枚と1枚がどちらも同じ上限になる。ここでつぎの番号を決め打ちすると、
+ * 画像が0枚の環境では「その1枚をたしても上限が動かない」案内になり、先生は言われた
+ * とおりにしたのに警告が消えない行き止まりに入る。だから枚数が確実に分かるとき
+ * （上限が1枚ぶんより大きいとき）だけ番号を名ざし、そうでなければ「何枚にそろえるか」
+ * で案内する。
+ */
+function howToAddStops(step: number, stopCapacity: number): string {
+  if (stopCapacity > STOPS_PER_SEGMENT) {
+    const nextSegment = Math.floor(stopCapacity / STOPS_PER_SEGMENT) + 1;
+    return `public/img/scenes/ に map_seg${nextSegment}_*.webp を1枚たすと、停留所が${STOPS_PER_SEGMENT}個ふえる`;
+  }
+  const needed = Math.ceil(step / STOPS_PER_SEGMENT);
+  return `public/img/scenes/ の map_seg<番号>_*.webp を連番でそろえて${needed}枚にすると、停留所が${needed * STOPS_PER_SEGMENT}個になる`;
+}
+
+/**
  * マップの停留所とステージの結びつき検査（設計07 §3）。
  *
- * マップは step でステージを引くため、step が重なると片方が黙って消え、
- * 停留所の数を超える step は公開しても学習者がたどり着けない。
+ * マップは step でステージを引くため、step が重なると片方が黙って消える。
+ * 停留所の上限を超えた step のピンは描かれる（停留所はピンの数だけ作られる）が、
+ * マップの長さは背景画像の枚数で決まっていて伸びないので、停留所が想定より
+ * 詰まって並ぶ。ここで「たどり着けない」と書くと、届いている教材を先生が
+ * 引っこめてしまうため、実際に起きることだけを書く。
+ *
+ * 停留所の上限（stopCapacity）は背景画像の枚数で決まるが、ここでは数えない。
+ * このモジュールはスタジオのAPIルートからも import されるので、node:fs を
+ * 持ち込むとブラウザ向けのバンドルごと壊れる。枚数を知っている呼び出し側
+ * （scripts/lint_content.ts）から渡してもらう。
  */
-export const MAP_STOP_COUNT = 5;
-
-export function checkStageSteps(entries: readonly ContentEntry[]): Finding[] {
+export function checkStageSteps(entries: readonly ContentEntry[], stopCapacity: number): Finding[] {
   const findings: Finding[] = [];
   const byStep = new Map<number, string>();
   for (const { file, content } of entries) {
@@ -127,11 +156,11 @@ export function checkStageSteps(entries: readonly ContentEntry[]): Finding[] {
     } else {
       byStep.set(content.step, file);
     }
-    if (content.step > MAP_STOP_COUNT) {
+    if (content.step > stopCapacity) {
       findings.push({
         file,
         level: "warn",
-        message: `step ${content.step} はマップの停留所（${MAP_STOP_COUNT}個）より先 — 公開しても学習者がマップからたどり着けない`,
+        message: `step ${content.step} は背景画像でまかなえる停留所の数（${stopCapacity}個）より先 — ピンは出るが、マップは伸びないので停留所が詰まって並ぶ。${howToAddStops(content.step, stopCapacity)}`,
       });
     }
   }

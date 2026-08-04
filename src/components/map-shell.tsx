@@ -14,7 +14,12 @@ import {
 import { signOut } from "@/app/auth/actions";
 import { NekuMaxType } from "@/components/nekumax-types";
 import { getPersonalityType, type PersonalityTypeId } from "@/content/personality";
-import { STAGES, type StageDefinition } from "@/content/stages";
+import { STAGES, type StageColor } from "@/content/stages";
+import { contentKindMeta } from "@/lib/content-kinds";
+import { characterSlots, routePath, SEGMENT_HEIGHT_VH, stopPositions } from "@/lib/map-layout";
+// 型だけを借りる。map-segments.ts は node:fs を使うサーバ専用モジュールなので、
+// 値を import するとクライアントバンドルに入って壊れる（ページが読んで props で渡す）。
+import { type MapSegment } from "@/lib/map-segments";
 import { fetchOwnProfile, type ProfileRow } from "@/lib/profile-db";
 import {
   getMapView,
@@ -25,38 +30,25 @@ import {
   type NexmaxProfile,
 } from "@/lib/profile";
 import { createProgressStore, subscribeProgress } from "@/lib/progress/store";
+import { type StagePin } from "@/lib/stage-pins";
 import { createClient } from "@/lib/supabase/client";
 
 const PROFILE_SERVER_SNAPSHOT = "__server__";
 const LONG_WAIT_TOAST = "じゅんびちゅう です。もうすこし まってね！";
 const SHORT_WAIT_TOAST = "じゅんびちゅう です。";
 
-const STAGE_POSITIONS = [
-  { x: 58, y: 20 },
-  { x: 41, y: 34 },
-  { x: 62, y: 49 },
-  { x: 39, y: 65 },
-  { x: 58, y: 80 },
-] as const;
-
-const CHARACTER_POSITIONS: readonly {
-  id: PersonalityTypeId;
-  x: number;
-  y: number;
-  size: number;
-}[] = [
-  { id: "leader", x: 76, y: 27, size: 112 },
-  { id: "idea", x: 17, y: 42, size: 104 },
-  { id: "heart", x: 75, y: 59, size: 108 },
-  { id: "challenge", x: 18, y: 75, size: 112 },
-];
+/**
+ * 道ぞいに立つネクマックスの出る順。停留所がいくつになってもこの4体を順に回す。
+ * 同じ子ばかり並ぶと道のりの長さが伝わらないので、種類を必ず入れかえる。
+ */
+const PERSONALITY_ORDER: readonly PersonalityTypeId[] = ["leader", "idea", "heart", "challenge"];
 
 const STAGE_COLORS = {
   leaf: "#58c273",
   sky: "#4fa8e8",
   coral: "#f26fa7",
   "sky-soft": "#9bdcf7",
-} satisfies Record<StageDefinition["color"], string>;
+} satisfies Record<StageColor, string>;
 
 function subscribeToStorage(onStoreChange: () => void) {
   window.addEventListener("storage", onStoreChange);
@@ -94,54 +86,96 @@ function Logo() {
   );
 }
 
-function StageTitle({ stage }: { stage: StageDefinition }) {
-  switch (stage.id) {
-    case "it-words":
-      return (
-        <>
-          IT
-          <ruby>
-            単語帳<rt>たんごちょう</rt>
-          </ruby>
-        </>
-      );
-    case "company-structure":
-      return (
-        <>
-          <ruby>
-            企業<rt>きぎょう</rt>
-          </ruby>
-          の
-          <ruby>
-            仕組み<rt>しくみ</rt>
-          </ruby>
-        </>
-      );
-    case "report":
-      return (
-        <ruby>
-          報告<rt>ほうこく</rt>
-        </ruby>
-      );
-    case "contact":
-      return (
-        <ruby>
-          連絡<rt>れんらく</rt>
-        </ruby>
-      );
-    case "consult":
-      return (
-        <ruby>
-          相談<rt>そうだん</rt>
-        </ruby>
-      );
-    default:
-      return stage.title;
+/**
+ * 定番ステージのルビ付き見出し。キーは src/content/stages.ts の id。
+ * ルビHTMLはここに組んであるぶんだけを使い、新しく手書きしない（AGENTS.md 規律2）。
+ */
+const SEED_RUBY_TITLES: Record<string, ReactNode> = {
+  "it-words": (
+    <>
+      IT
+      <ruby>
+        単語帳<rt>たんごちょう</rt>
+      </ruby>
+    </>
+  ),
+  "company-structure": (
+    <>
+      <ruby>
+        企業<rt>きぎょう</rt>
+      </ruby>
+      の
+      <ruby>
+        仕組み<rt>しくみ</rt>
+      </ruby>
+    </>
+  ),
+  report: (
+    <ruby>
+      報告<rt>ほうこく</rt>
+    </ruby>
+  ),
+  contact: (
+    <ruby>
+      連絡<rt>れんらく</rt>
+    </ruby>
+  ),
+  consult: (
+    <ruby>
+      相談<rt>そうだん</rt>
+    </ruby>
+  ),
+};
+
+/** 定番ステージを id で引く。上のルビ見出しが今も同じ語かを照らし合わせるために使う。 */
+const SEED_BY_ID = new Map(STAGES.map((seed) => [seed.id, seed]));
+
+/**
+ * 見出し。定番ステージのルビ見出しは、その語がデータ側で言いかえられていない
+ * ときだけ使う。
+ *
+ * 同じ step にデータ化ステージがあると title / reading はデータ側が勝つが、
+ * seedId は定番を指したまま残る。seedId だけでルビ見出しを選ぶと、見出しは定番の
+ * 語・すぐ下の読みと読み上げ（aria-label）とステージ画面はデータ側の語、という
+ * 食い違いになる。漢字と読みを覚えている最中の学習者には、同じステージが画面ごとに
+ * ちがう名前と読みで届き、どちらが正しいのか分からなくなる。先生の側から見ても、
+ * スタジオで見出しを直したのにマップだけ古い語のままになる。
+ *
+ * 語が合わないときは title をそのまま出す（ルビは読み辞書から合成する）。
+ */
+function StageTitle({ pin }: { pin: StagePin }) {
+  const seed = pin.seedId === null ? undefined : SEED_BY_ID.get(pin.seedId);
+  if (seed && seed.title === pin.title && seed.reading === pin.reading) {
+    const ruby = SEED_RUBY_TITLES[seed.id];
+    if (ruby !== undefined) return ruby;
   }
+  return pin.title;
 }
 
-function KindLabel({ stage }: { stage: StageDefinition }) {
-  if (stage.kind === "word") {
+/** 呼び名を出せるか。出せないのに「・」だけ残ると、読みの行が壊れて見える。 */
+function hasKindLabel(pin: StagePin): boolean {
+  return pin.kinds.length > 0 || pin.seedKind !== null;
+}
+
+/**
+ * 何をするステージかの呼び名。
+ *
+ * データ化されていれば、そこに入っている教材の種別をそのまま出す。呼び名は
+ * content-kinds.ts が唯一の対応表で、ここで言い換えると同じ教材がマップと
+ * ステージ画面で違う名前になり、学習者は別のものだと思ってしまう。
+ */
+function KindLabel({ pin }: { pin: StagePin }) {
+  if (pin.kinds.length > 0) {
+    return pin.kinds
+      .map((kind) => {
+        const meta = contentKindMeta(kind);
+        return `${meta.icon}${meta.label}`;
+      })
+      .join("・");
+  }
+  // まだデータ化されていない定番ステージは、予定の種別だけを見せる。
+  if (pin.seedKind === null) return null;
+  if (pin.seedKind === "word") {
     return (
       <>
         🌐
@@ -151,8 +185,8 @@ function KindLabel({ stage }: { stage: StageDefinition }) {
       </>
     );
   }
-  if (stage.kind === "pair") return <>👥 ペアワーク</>;
-  if (stage.kind === "video-reading") {
+  if (pin.seedKind === "pair") return <>👥 ペアワーク</>;
+  if (pin.seedKind === "video-reading") {
     return (
       <>
         ▶
@@ -176,7 +210,7 @@ function KindLabel({ stage }: { stage: StageDefinition }) {
   );
 }
 
-function MapSegment({ src }: { src: string }) {
+function SegmentImage({ src }: { src: string }) {
   const [failed, setFailed] = useState(false);
   if (failed) {
     return <div className="h-full w-full bg-linear-to-b from-[#45b7df] to-[#2e9fd6]" />;
@@ -193,21 +227,27 @@ function MapSegment({ src }: { src: string }) {
   );
 }
 
-function ScenicBackground() {
-  const segments = [
-    "/img/scenes/map_seg1_cambodia.webp",
-    "/img/scenes/map_seg2_ocean.webp",
-    "/img/scenes/map_seg3_coast.webp",
-  ];
+/**
+ * 背景の地形。画像の枚数ぶんに等分して縦に並べる。
+ * 枚数を数え打ちにすると、先生が public/img/scenes/ に1枚たしても地図は伸びず、
+ * 増えたはずの停留所だけが空の上に浮くことになる。
+ */
+function ScenicBackground({ segments }: { segments: readonly MapSegment[] }) {
+  const count = segments.length;
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden bg-[#2e9fd6]">
-      {segments.map((src, index) => (
+      {segments.map((segment, index) => (
         <div
-          key={src}
-          className="absolute inset-x-0 h-[calc(33.3334%+1px)]"
-          style={{ top: `calc(${index * 33.3333}% - ${index}px)` }}
+          key={segment.src}
+          className="absolute inset-x-0"
+          // 段は 1px ぶん重ねる。端数の切り捨てで継ぎ目に線が出ると、
+          // 一枚の地図ではなく「割れた絵」に見えてしまう。
+          style={{
+            height: `calc(${100 / count}% + 1px)`,
+            top: `calc(${(index * 100) / count}% - ${index}px)`,
+          }}
         >
-          <MapSegment src={src} />
+          <SegmentImage src={segment.src} />
         </div>
       ))}
       <div className="absolute inset-0 bg-[#003c6b]/5" />
@@ -521,24 +561,16 @@ export interface WordStageRef {
   title: string;
 }
 
-/**
- * データ化された公開ステージ（設計07 §3）。step でマップのピンに対応づけ、
- * ある step だけ「ステージへ すすむ」で /stage/:id を開けるようにする。
- */
-export interface StageRef {
-  id: string;
-  step: number;
-}
-
 function LessonCard({
   onUnavailable,
   wordStages,
+  pin,
 }: {
   onUnavailable: () => void;
   wordStages: readonly WordStageRef[];
+  /** いま取りかかるステージ（マップの1つめ）。ピンが1つも無ければ null。 */
+  pin: StagePin | null;
 }) {
-  const stage = STAGES[0]!;
-
   // 合格したステージ数を進捗に出す。localStorage は外部の状態として購読する。
   const store = useMemo(() => createProgressStore(), []);
   const clearedKey = useSyncExternalStore(
@@ -563,14 +595,20 @@ function LessonCard({
         </ruby>
         のレッスン ✦
       </p>
-      <p className="text-sky mt-3 text-xs font-black tracking-widest">STEP 01</p>
-      <h2 className="text-navy text-xl font-black">
-        <StageTitle stage={stage} />
-      </h2>
-      <p className="text-ink-soft mt-1 text-xs font-extrabold">
-        <KindLabel stage={stage} />
-      </p>
-      <p className="text-ink mt-2 text-sm font-bold">{stage.description}</p>
+      {pin && (
+        <>
+          <p className="text-sky mt-3 text-xs font-black tracking-widest">
+            STEP {String(pin.step).padStart(2, "0")}
+          </p>
+          <h2 className="text-navy text-xl font-black">
+            <StageTitle pin={pin} />
+          </h2>
+          <p className="text-ink-soft mt-1 text-xs font-extrabold">
+            <KindLabel pin={pin} />
+          </p>
+          <p className="text-ink mt-2 text-sm font-bold">{pin.description}</p>
+        </>
+      )}
       <div className="text-ink-soft mt-3 flex items-center justify-between text-xs font-extrabold">
         <span>
           {cleared} / {total} ステージ
@@ -636,21 +674,20 @@ function LessonCard({
 }
 
 function StageChip({
-  stage,
+  pin,
   current,
   open,
-  stageHref,
   onToggle,
   onUnavailable,
 }: {
-  stage: StageDefinition;
+  pin: StagePin;
   current: boolean;
   open: boolean;
-  /** データ化されたステージがある step だけ、詳細ページへの行き先が入る。 */
-  stageHref: string | null;
   onToggle: () => void;
   onUnavailable: () => void;
 }) {
+  // データ化されたステージだけ詳細ページへ行ける。まだなら「じゅんびちゅう」。
+  const stageHref = pin.href;
   return (
     <div className="card-pop w-[min(39vw,20rem)] overflow-hidden border-white/90 shadow-xl">
       <button
@@ -661,13 +698,18 @@ function StageChip({
       >
         <span className="min-w-0 flex-1">
           <span className="text-sky block text-[10px] font-black tracking-widest sm:text-xs">
-            STEP {String(stage.step).padStart(2, "0")}
+            STEP {String(pin.step).padStart(2, "0")}
           </span>
           <span className="text-navy block truncate text-sm font-black sm:text-base">
-            <StageTitle stage={stage} />
+            <StageTitle pin={pin} />
           </span>
           <span className="text-ink-soft block text-[10px] font-bold sm:text-xs">
-            （{stage.reading}）・ <KindLabel stage={stage} />
+            （{pin.reading}）
+            {hasKindLabel(pin) && (
+              <>
+                ・ <KindLabel pin={pin} />
+              </>
+            )}
           </span>
         </span>
         <span
@@ -679,7 +721,7 @@ function StageChip({
       </button>
       {open && (
         <div className="border-hairline border-t px-3 pt-2 pb-3">
-          <p className="text-ink text-xs font-bold sm:text-sm">{stage.description}</p>
+          <p className="text-ink text-xs font-bold sm:text-sm">{pin.description}</p>
           {stageHref ? (
             <Link
               href={stageHref}
@@ -706,19 +748,32 @@ function StageChip({
 }
 
 function MapView({
+  pins,
+  segments,
   expandedStage,
-  stageHrefByStep,
   onExpandedStageChange,
   onUnavailable,
 }: {
+  pins: readonly StagePin[];
+  segments: readonly MapSegment[];
   expandedStage: string | null;
-  stageHrefByStep: ReadonlyMap<number, string>;
   onExpandedStageChange: (id: string | null) => void;
   onUnavailable: () => void;
 }) {
+  // 停留所・道・キャラは同じ座標のもとから作る。別々に持つと、ステージが増えた
+  // ときに道だけ古い形のまま残り、学習者はどこへ進むのか分からなくなる。
+  const stops = useMemo(() => stopPositions(pins.length), [pins.length]);
+  const route = useMemo(() => routePath(stops), [stops]);
+  const characters = useMemo(() => characterSlots(stops), [stops]);
+
   return (
-    <main className="relative min-h-[260vh] overflow-hidden pb-[clamp(130px,21vh,230px)]">
-      <ScenicBackground />
+    <main
+      className="relative overflow-hidden pb-[clamp(130px,21vh,230px)]"
+      // 背景画像1枚ぶん＝1画面ぶんの高さ。画像が0枚でも1枚ぶんは確保して、
+      // マップがつぶれて停留所が団子にならないようにする。
+      style={{ minHeight: `${Math.max(segments.length, 1) * SEGMENT_HEIGHT_VH}vh` }}
+    >
+      <ScenicBackground segments={segments} />
 
       <WoodenBanner label="START!" className="top-[2.5%] left-1/2">
         アンコールワット／カンボジア
@@ -727,10 +782,12 @@ function MapView({
         aria-hidden
         viewBox="0 0 100 100"
         preserveAspectRatio="none"
-        className="pointer-events-none absolute inset-x-0 top-[8%] z-10 h-[84%] w-full drop-shadow-[0_2px_2px_rgba(0,79,141,.45)]"
+        // 停留所と同じ 0..100 の座標系で全面に敷く。道と停留所の位置あわせを
+        // 目分量でやめたので、停留所が何個になっても道はピンの上を通る。
+        className="pointer-events-none absolute inset-0 z-10 h-full w-full drop-shadow-[0_2px_2px_rgba(0,79,141,.45)]"
       >
         <path
-          d="M50 0 C82 7 76 14 58 15 C22 20 23 27 41 31 C78 37 78 43 62 49 C20 55 20 62 39 68 C76 74 77 81 58 86 C38 91 44 96 50 100"
+          d={route}
           fill="none"
           stroke="white"
           strokeWidth="1.15"
@@ -739,39 +796,43 @@ function MapView({
         />
       </svg>
 
-      {CHARACTER_POSITIONS.map((character) => (
-        <div
-          key={character.id}
-          className="pointer-events-none absolute z-20 hidden -translate-x-1/2 -translate-y-1/2 sm:block"
-          style={{ left: `${character.x}%`, top: `${character.y}%` }}
-        >
-          <NekuMaxType id={character.id} size={character.size} bob />
-        </div>
-      ))}
+      {characters.map((character, index) => {
+        const personality = PERSONALITY_ORDER[index % PERSONALITY_ORDER.length]!;
+        return (
+          <div
+            key={`${personality}-${index}`}
+            className="pointer-events-none absolute z-20 hidden -translate-x-1/2 -translate-y-1/2 sm:block"
+            style={{ left: `${character.x}%`, top: `${character.y}%` }}
+          >
+            <NekuMaxType id={personality} size={index % 2 === 0 ? 112 : 104} bob />
+          </div>
+        );
+      })}
 
-      {STAGES.map((stage, index) => {
-        const position = STAGE_POSITIONS[index]!;
+      {pins.map((pin, index) => {
+        // stops は pins.length ぶん作るので、ピンと停留所は必ず1対1で対応する。
+        const position = stops[index]!;
         const current = index === 0;
         const chipOnRight = index % 2 === 1;
-        const color = current ? "#f26fa7" : STAGE_COLORS[stage.color];
+        const color = current ? "#f26fa7" : STAGE_COLORS[pin.color];
 
         return (
           <div
-            key={stage.id}
+            key={pin.id}
             className="absolute z-30 -translate-x-1/2 -translate-y-1/2"
             style={{ left: `${position.x}%`, top: `${position.y}%` }}
           >
             <button
               type="button"
-              aria-label={`STEP ${String(stage.step).padStart(2, "0")} ${stage.title}`}
+              aria-label={`STEP ${String(pin.step).padStart(2, "0")} ${pin.title}`}
               aria-current={current ? "step" : undefined}
-              onClick={() => onExpandedStageChange(expandedStage === stage.id ? null : stage.id)}
+              onClick={() => onExpandedStageChange(expandedStage === pin.id ? null : pin.id)}
               className={`relative grid h-14 w-20 place-items-center rounded-[50%] border-4 border-white text-xl font-black shadow-[0_8px_0_rgba(0,79,141,.35),0_13px_24px_rgba(0,0,0,.22)] sm:h-17 sm:w-24 ${
                 current ? "animate-pulse text-white" : "text-navy bg-white"
               }`}
               style={current ? { backgroundColor: color } : { borderColor: color }}
             >
-              {String(stage.step).padStart(2, "0")}
+              {String(pin.step).padStart(2, "0")}
               {current && (
                 <span className="absolute -top-3 rounded-full bg-[#e64a5f] px-2 py-0.5 text-[9px] text-white">
                   START
@@ -784,11 +845,10 @@ function MapView({
               }`}
             >
               <StageChip
-                stage={stage}
+                pin={pin}
                 current={current}
-                open={expandedStage === stage.id}
-                stageHref={stageHrefByStep.get(stage.step) ?? null}
-                onToggle={() => onExpandedStageChange(expandedStage === stage.id ? null : stage.id)}
+                open={expandedStage === pin.id}
+                onToggle={() => onExpandedStageChange(expandedStage === pin.id ? null : pin.id)}
                 onUnavailable={onUnavailable}
               />
             </div>
@@ -799,40 +859,48 @@ function MapView({
   );
 }
 
-function CardsView({ onUnavailable }: { onUnavailable: () => void }) {
+function CardsView({
+  pins,
+  segments,
+  onUnavailable,
+}: {
+  pins: readonly StagePin[];
+  segments: readonly MapSegment[];
+  onUnavailable: () => void;
+}) {
   return (
     <main className="relative min-h-dvh overflow-hidden px-4 pt-36 pb-[clamp(150px,23vh,250px)] sm:px-8 md:pl-48">
-      <ScenicBackground />
+      <ScenicBackground segments={segments} />
       <section className="relative z-10 mx-auto max-w-6xl">
         <div className="rounded-[2rem] border-2 border-white bg-white/80 p-5 shadow-2xl backdrop-blur-md sm:p-8">
           <h1 className="text-navy text-2xl font-black">🃏 カード</h1>
           <div className="mt-5 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-            {STAGES.map((stage, index) => (
-              <article key={stage.id} className="card-pop flex flex-col p-5">
+            {pins.map((pin, index) => (
+              <article key={pin.id} className="card-pop flex flex-col p-5">
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <p className="text-sky text-xs font-black tracking-widest">
-                      STEP {String(stage.step).padStart(2, "0")}
+                      STEP {String(pin.step).padStart(2, "0")}
                     </p>
                     <h2 className="text-navy mt-1 text-xl font-black">
-                      <StageTitle stage={stage} />
+                      <StageTitle pin={pin} />
                     </h2>
-                    <p className="text-ink-soft text-xs font-bold">（{stage.reading}）</p>
+                    <p className="text-ink-soft text-xs font-bold">（{pin.reading}）</p>
                   </div>
                   <span
                     className="grid h-11 w-11 place-items-center rounded-full border-4 border-white text-lg shadow-md"
                     style={{
                       backgroundColor: index === 0 ? "#f26fa7" : "#ffffff",
-                      color: index === 0 ? "#ffffff" : STAGE_COLORS[stage.color],
+                      color: index === 0 ? "#ffffff" : STAGE_COLORS[pin.color],
                     }}
                   >
                     {index === 0 ? "▶" : "○"}
                   </span>
                 </div>
                 <p className="text-ink-soft mt-3 text-sm font-extrabold">
-                  <KindLabel stage={stage} />
+                  <KindLabel pin={pin} />
                 </p>
-                <p className="text-ink mt-2 flex-1 text-sm font-bold">{stage.description}</p>
+                <p className="text-ink mt-2 flex-1 text-sm font-bold">{pin.description}</p>
                 <p className="text-ink-soft mt-3 text-xs font-extrabold">
                   {index === 0 ? "いまの ステージ" : "じゅんびちゅう"}
                 </p>
@@ -854,10 +922,14 @@ function CardsView({ onUnavailable }: { onUnavailable: () => void }) {
 
 export function MapShell({
   wordStages,
-  stages = [],
+  pins,
+  segments,
 }: {
   wordStages: readonly WordStageRef[];
-  stages?: readonly StageRef[];
+  /** マップに出す停留所。定番ステージとデータ化ステージを合流ずみ（step 昇順）。 */
+  pins: readonly StagePin[];
+  /** 背景の地形。枚数がそのままマップの長さになる。 */
+  segments: readonly MapSegment[];
 }) {
   const router = useRouter();
   const rawProfile = useSyncExternalStore(
@@ -873,16 +945,15 @@ export function MapShell({
   const [databaseProfile, setDatabaseProfile] = useState<ProfileRow | null>(null);
   const profile = databaseProfile ? profileFromRow(databaseProfile) : cachedProfile;
   const [viewOverride, setViewOverride] = useState<MapView | null>(null);
-  const [expandedStage, setExpandedStage] = useState<string | null>("it-words");
+  // 最初は1つめの停留所を開いておく。IDを決め打ちにすると、step 1 のステージを
+  // 入れかえた先生の画面でどこも開かなくなる。
+  const [expandedStage, setExpandedStage] = useState<string | null>(() => pins[0]?.id ?? null);
   const [collapsed, setCollapsed] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const view = viewOverride ?? storedView;
-  const stageHrefByStep = useMemo(
-    () => new Map(stages.map((stage) => [stage.step, `/stage/${stage.id}`])),
-    [stages],
-  );
+  const currentPin = pins[0] ?? null;
 
   useEffect(() => {
     let active = true;
@@ -963,22 +1034,35 @@ export function MapShell({
       />
 
       <div className="fixed top-28 left-44 z-40 hidden w-sm md:block">
-        <LessonCard onUnavailable={() => showToast(LONG_WAIT_TOAST)} wordStages={wordStages} />
+        <LessonCard
+          onUnavailable={() => showToast(LONG_WAIT_TOAST)}
+          wordStages={wordStages}
+          pin={currentPin}
+        />
       </div>
 
       <div className="relative z-30 px-3 pt-36 pb-2 md:hidden">
-        <LessonCard onUnavailable={() => showToast(LONG_WAIT_TOAST)} wordStages={wordStages} />
+        <LessonCard
+          onUnavailable={() => showToast(LONG_WAIT_TOAST)}
+          wordStages={wordStages}
+          pin={currentPin}
+        />
       </div>
 
       {view === "map" ? (
         <MapView
+          pins={pins}
+          segments={segments}
           expandedStage={expandedStage}
-          stageHrefByStep={stageHrefByStep}
           onExpandedStageChange={setExpandedStage}
           onUnavailable={() => showToast(LONG_WAIT_TOAST)}
         />
       ) : (
-        <CardsView onUnavailable={() => showToast(LONG_WAIT_TOAST)} />
+        <CardsView
+          pins={pins}
+          segments={segments}
+          onUnavailable={() => showToast(LONG_WAIT_TOAST)}
+        />
       )}
 
       <GoalBand />

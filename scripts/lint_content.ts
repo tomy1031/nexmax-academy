@@ -11,6 +11,9 @@
  *     書かれていたら警告 — 質問で引き出すべき情報は調査素材に書かない）
  *  4. kind別ID重複＋参照整合（stage.contents / wordStageIds の参照切れ — 設計07 §3）
  *  5. 導線の一致（article の link ブロックがステージの学習順の直後を指しているか）
+ *  6. マップの停留所とステージの結びつき（step重複・停留所より先の step）。
+ *     停留所の上限は public/img/scenes/ の map_seg*.webp の枚数から決まるので、
+ *     背景画像を1枚たせばこの検査の閾値もコードを直さずに上がる。
  *
  * 検査ロジックの実体は src/lib/content-checks.ts（スタジオ側と共用）。
  * このスクリプトはファイル走査とレポートだけを受け持つ。
@@ -31,6 +34,8 @@ import {
   type ContentEntry,
   type Finding,
 } from "../src/lib/content-checks";
+import { mapStopCapacity } from "../src/lib/map-layout";
+import { listMapSegments } from "../src/lib/map-segments";
 
 const ROOT = join(import.meta.dirname, "..");
 const CONTENT_DIR = join(ROOT, "content");
@@ -161,7 +166,9 @@ function main() {
   findings.push(...checkDuplicateIds(entries));
   findings.push(...checkReferenceIntegrity(entries));
   findings.push(...checkLinkOrder(entries));
-  findings.push(...checkStageSteps(entries));
+  // 停留所の上限は背景画像の枚数で決まる。ファイル走査ができるのはこのスクリプト側
+  // だけなので、ここで数えて渡す（content-checks.ts は node:fs を持てない）。
+  findings.push(...checkStageSteps(entries, mapStopCapacity(listMapSegments().length)));
 
   const sourceFiles = walkSource(SRC_DIR);
   for (const file of sourceFiles) checkSourceForbiddenWords(file);
