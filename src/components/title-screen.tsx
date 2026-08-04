@@ -114,11 +114,12 @@ export function TitleScreen() {
               )}
             </Link>
             {hasProfile && (
+              // `retake=1` が要る。付けないと /welcome が診断済みの人をマップへ送り返す。
               <Link
-                href="/welcome"
+                href="/welcome?retake=1"
                 className="text-navy mt-5 rounded-full bg-white/90 px-5 py-1.5 text-sm font-extrabold underline underline-offset-4 shadow-sm"
               >
-                もういちど せっていする
+                せいかくしんだんを もういちど
               </Link>
             )}
           </div>

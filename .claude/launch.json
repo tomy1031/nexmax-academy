@@ -6,6 +6,12 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev"],
       "port": 3000
+    },
+    {
+      "name": "cf-preview",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["opennextjs-cloudflare", "preview", "--", "--port", "8788"],
+      "port": 8788
     }
   ]
 }

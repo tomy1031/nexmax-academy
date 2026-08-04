@@ -15,25 +15,34 @@
     "test": "vitest run",
     "lint:secrets": "secretlint --secretlintignore .secretlintignore '**/*'",
     "prepare": "husky",
-    "codex:bridge": "node scripts/codex_bridge.mjs"
+    "codex:bridge": "node scripts/codex_bridge.mjs",
+    "cf:build": "node scripts/check_build_env.mjs && opennextjs-cloudflare build",
+    "cf:preview": "npm run cf:build:local && opennextjs-cloudflare preview",
+    "cf:deploy": "npm run cf:build && opennextjs-cloudflare deploy",
+    "cf:upload": "npm run cf:build && opennextjs-cloudflare upload",
+    "cf:typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
+    "cf:checkenv": "node scripts/check_build_env.mjs",
+    "cf:build:local": "opennextjs-cloudflare build",
+    "cf:staging": "npm run cf:build && wrangler versions upload --preview-alias staging"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.3",
     "@supabase/supabase-js": "^2.110.8",
     "motion": "^12.42.2",
-    "next": "16.2.10",
+    "next": "16.2.12",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@opennextjs/cloudflare": "^1.20.2",
     "@secretlint/secretlint-rule-preset-recommend": "^13.0.4",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "16.2.10",
+    "eslint-config-next": "16.2.12",
     "eslint-config-prettier": "^10.1.8",
     "husky": "^9.1.7",
     "lint-staged": "^17.1.1",
@@ -43,7 +52,8 @@
     "tailwindcss": "^4",
     "tsx": "^4.23.1",
     "typescript": "^5",
-    "vitest": "^4.1.10"
+    "vitest": "^4.1.10",
+    "wrangler": "^4.115.0"
   },
   "engines": {
     "node": ">=22"

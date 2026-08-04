@@ -31,6 +31,13 @@ This version has breaking changes — APIs, conventions, and file structure may 
 6. シナリオの秘匿情報（予算等、質問で引き出すべき事実）を調査用模擬ページに書かない。
 7. キャラクター画像を手描きSVGで自作しない。ネクマックスは Codex image-gen-2 で生成する
    （正典 reference.png を参照入力・マスター記述を逐語使用。docs/skills/codex_image_generation.md）。
+8. **`src/middleware.ts` を `proxy.ts` に改名しない**（`npx @next/codemod middleware-to-proxy`
+   を実行しない）。`next build` が出す "middleware is deprecated" 警告は**意図して無視する**。
+   Next.js 16 の proxy は Node ランタイム固定で、OpenNext は Node middleware を拒否して
+   ビルドを止める（`@opennextjs/cloudflare` の `dist/cli/build/build.js`:
+   `logger.error("Node.js middleware is not currently supported...")` → `process.exit(1)`。
+   opennextjs-cloudflare#1277 が未解決）。Cloudflare Workers で動かす限り恒久の制約。
+   詳細は docs/design/09_Cloudflare移行実行計画.md §2.3。
 
 ## アーキテクチャ原則
 
@@ -66,10 +73,39 @@ npm run lint:content         # コンテンツ検収（スキーマ＋禁止語�
 npm run lint:secrets         # 秘密情報（キー・トークン）混入検査
 npm test                     # 単体テスト（Vitest）
 npm run measure:readability  # 文長・漢字密度の計測レポート
+
+npm run cf:preview           # ローカルの workerd で本番相当の確認
+npm run cf:deploy            # 本番へデプロイ（秘密ガード＋ビルド＋deploy）
+npm run cf:staging           # staging エイリアスを更新（本番は切り替えない）
 ```
 
 コミット時は husky + lint-staged が整形・eslint --fix・secretlint・lint:content を自動実行する。
 フックを回避するコミット（--no-verify）はしない。
+
+## デプロイ先は Cloudflare Workers（Vercel から移行済み・2026-08-03）
+
+|         | URL                                          | 更新コマンド         |
+| ------- | -------------------------------------------- | -------------------- |
+| 本番    | `https://academy.nexmax.workers.dev`         | `npm run cf:deploy`  |
+| staging | `https://staging-academy.nexmax.workers.dev` | `npm run cf:staging` |
+
+OpenNext（`@opennextjs/cloudflare`）経由。旧 `@cloudflare/next-on-pages` は使わない。
+Supabase（DB・認証）は移していない。手順の詳細は `docs/deploy.md` §0。
+
+**踏むと痛い罠が3つある。触る前に読むこと。**
+
+1. **秘密鍵をビルド環境に置かない。** OpenNext は `.env*` の中身を丸ごと
+   `.open-next/cloudflare/next-env.mjs` に書き出し Worker のバンドルに載せる。
+   `.env.local` に `SUPABASE_SERVICE_ROLE_KEY` を置いたままビルドすると
+   **service_role key がデプロイ成果物へ同梱される**（実測で確認済み）。
+   `npm run cf:build` が `scripts/check_build_env.mjs` で検査して止める。**ガードを外さない。**
+2. **`NEXT_PUBLIC_*` は逆にビルド時必須。** バンドルへ literal で埋まるので
+   `wrangler secret` では手遅れ。
+3. **Supabase の Redirect URLs は `https://<host>/**` で登録する。**
+   `.../auth/callback` の完全一致では**動かない**（戻り先は `?code=...` 付きで照合される）。
+   検証も必ず `?code=` を付けて行う（`docs/deploy.md` §0.3 に手順）。
+
+**このリポジトリは public。** ドキュメントにアカウントIDなどの内部識別子を直書きしない。
 
 ## レビュー時の役割分担（複数エージェント検収）
 

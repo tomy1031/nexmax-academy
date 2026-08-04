@@ -20,6 +20,7 @@ import {
   deleteProfileAsAdmin,
   fetchAllProfiles,
   fetchOwnProfile,
+  resetDiagnosisAsAdmin,
   updateProfileAsAdmin,
   type ProfileRow,
 } from "@/lib/profile-db";
@@ -147,8 +148,40 @@ export default function AdminUsersPage() {
     }
   }
 
+  async function resetDiagnosis(profile: ProfileRow) {
+    if (
+      !window.confirm(
+        `${profile.email} の診断をリセットします。\n\n` +
+          `・次のログイン時に、この人はもう一度20問に答えます\n` +
+          `・受験履歴は残ります（プロフィールと名前・性別もそのまま）\n\n` +
+          `よろしいですか？`,
+      )
+    ) {
+      return;
+    }
+    setSavingId(profile.id);
+    try {
+      const updated = await resetDiagnosisAsAdmin(profile.id);
+      setProfiles((current) => current.map((item) => (item.id === profile.id ? updated : item)));
+      showToast("診断をリセットしました。");
+    } catch {
+      showToast("診断のリセットに失敗しました。");
+    } finally {
+      setSavingId(null);
+    }
+  }
+
   async function deleteRow(profile: ProfileRow) {
-    if (!window.confirm(`${profile.email} を削除しますか？`)) return;
+    if (
+      !window.confirm(
+        `${profile.email} を完全に削除します。\n\n` +
+          `・受験履歴もすべて消えます（元に戻せません）\n` +
+          `・診断をやり直させたいだけなら「診断リセット」を使ってください\n\n` +
+          `本当に削除しますか？`,
+      )
+    ) {
+      return;
+    }
     setSavingId(profile.id);
     try {
       await deleteProfileAsAdmin(profile.id);
@@ -319,6 +352,16 @@ export default function AdminUsersPage() {
                           className="bg-navy rounded-xl px-4 py-2 font-bold text-white disabled:opacity-35"
                         >
                           保存
+                        </button>
+                        <button
+                          type="button"
+                          // 未診断の人にはリセットするものがない
+                          disabled={savingId === profile.id || !hasCompletedPersonality(profile)}
+                          onClick={() => void resetDiagnosis(profile)}
+                          className="border-hairline text-navy rounded-xl border-2 bg-white px-4 py-2 font-bold disabled:opacity-35"
+                          title="診断だけを未受験に戻します。受験履歴は残ります。"
+                        >
+                          診断リセット
                         </button>
                         <button
                           type="button"
