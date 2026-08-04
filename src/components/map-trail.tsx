@@ -5,8 +5,9 @@ import { useEffect, useMemo, useRef, useState } from "react";
 /**
  * エリア1つぶんの「空路」。
  *
- * 道は エリア上端 (xIn, 0) → ステージのある高さ (xNode, nodeT) → エリア下端 (xOut, 1) を
- * なめらかに結ぶ。上端・下端で傾きが 0 になる曲線なので、エリアをまたいでも航路が折れない。
+ * 曲線そのものは呼び出し側（`map-shell`）が地図全体で1本の波として定義し、ここは
+ * そのエリアぶんを切り出して破線を並べるだけにする。区間ごとに曲線を作ると、
+ * エリアの境目で波が切れて折れ線に見えるため。
  *
  * 航路は「もう飛んだところ」と「これから飛ぶところ」で色を変える。どこまで進んだかが
  * 地図を見ただけで分かるようにするための、進捗そのものの表示（01ガイド P2）。
@@ -20,19 +21,6 @@ const AHEAD_COLOR = "#ffffff";
 /** 破線1本ぶんのおおよその間隔（px）。実寸から本数を決めるので画面幅で密度が変わらない */
 const DASH_SPACING_PX = 22;
 const DEFAULT_DASH_COUNT = 16;
-
-function smoothstep(t: number): number {
-  return t * t * (3 - 2 * t);
-}
-
-/**
- * エリア内の位置 t（0=上端, 1=下端）における航路の x 座標（%）。
- * `nodeT` はステージの丸がある高さ。上端・nodeT・下端で傾きが 0 になる。
- */
-function trailX(t: number, xIn: number, xNode: number, xOut: number, nodeT: number): number {
-  if (t <= nodeT) return xIn + (xNode - xIn) * smoothstep(t / nodeT);
-  return xNode + (xOut - xNode) * smoothstep((t - nodeT) / (1 - nodeT));
-}
 
 function useElementSize<T extends HTMLElement>() {
   const ref = useRef<T | null>(null);
@@ -101,21 +89,19 @@ function Plane({ x, y, angle }: { x: number; y: number; angle: number }) {
 }
 
 export function AreaTrail({
-  xIn,
-  xNode,
-  xOut,
-  nodeT,
+  xAt,
   areaIndex,
   flownUntil,
 }: {
-  xIn: number;
-  xNode: number;
-  xOut: number;
-  /** ステージの丸がある高さ（0=上端, 1=下端）。航路はここで向きを変える */
-  nodeT: number;
+  /**
+   * エリア内の位置 t（0=上端, 1=下端）における航路の x 座標（%）を返す。
+   * 呼び出し側が**地図全体で1本の曲線**として定義し、その一部を切り出して渡す。
+   * ここで区間ごとに補間すると、エリアの境目で波が切れてカクつく。
+   */
+  xAt: (t: number) => number;
   /** このエリアの通し番号。flownUntil と同じ「エリア番号 + エリア内の t」の目盛で比べる */
   areaIndex: number;
-  /** 学習者の現在地。エリア番号 + エリア内の t（例: 2.3 = 3番目のエリアのステージのところ） */
+  /** 学習者の現在地。エリア番号 + エリア内の t（例: 2.5 = 3番目のエリアのステージのところ） */
   flownUntil: number;
 }) {
   const [ref, size] = useElementSize<HTMLDivElement>();
@@ -128,13 +114,12 @@ export function AreaTrail({
       if (!size) return 180;
       const t2 = Math.min(1, t + delta);
       const t1 = Math.max(0, t - delta);
-      const dx =
-        ((trailX(t2, xIn, xNode, xOut, nodeT) - trailX(t1, xIn, xNode, xOut, nodeT)) / 100) * width;
+      const dx = ((xAt(t2) - xAt(t1)) / 100) * width;
       const dy = (t2 - t1) * height;
       // 絵は「上向き」なので、真下に進むとき 180 度になるように測る
       return (Math.atan2(dx, -dy) * 180) / Math.PI;
     };
-  }, [size, xIn, xNode, xOut, nodeT]);
+  }, [size, xAt]);
 
   const dashes = useMemo(() => {
     const count = size
@@ -146,13 +131,13 @@ export function AreaTrail({
       const t = (index + 0.5) / count;
       return {
         key: index,
-        x: trailX(t, xIn, xNode, xOut, nodeT),
+        x: xAt(t),
         y: t * 100,
         angle: angleAt(t, 0.5 / count),
         flown: areaIndex + t <= flownUntil,
       };
     });
-  }, [size, xIn, xNode, xOut, nodeT, areaIndex, flownUntil, angleAt]);
+  }, [size, xAt, areaIndex, flownUntil, angleAt]);
 
   // 現在地がこのエリアの中にあるときだけ飛行機を出す。
   // ステージの丸のわずかに手前に置く（真上に重ねると丸に隠れて見えないため）。
@@ -161,7 +146,7 @@ export function AreaTrail({
   const plane =
     planeT >= 0 && planeT <= 1
       ? {
-          x: trailX(drawT, xIn, xNode, xOut, nodeT),
+          x: xAt(drawT),
           y: drawT * 100,
           angle: angleAt(drawT, 0.02),
         }
