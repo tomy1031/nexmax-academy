@@ -12,16 +12,16 @@ import { useState, type ReactNode } from "react";
  *
  * 画像は手描きSVGではなく、Codex の image-gen-2 で生成した PNG を使う。
  * 生成手順と一貫性ルール: docs/skills/codex_image_generation.md
- * 正典（スタイルアンカー）: public/img/characters/nekumax/reference.png
+ * 正典（スタイルアンカー）: public/img/characters/nexmax/reference.png
  *
  * 未生成のバリアントは reference.png に、それも無ければプレースホルダーに
  * フォールバックするため、画像が揃う前でも画面は壊れない。
  */
 
-export type NekuMaxVariant = "guide" | "hello" | "build" | "listen" | "cheer" | "book";
+export type NexMaxVariant = "guide" | "hello" | "build" | "listen" | "cheer" | "book";
 
-export interface NekuMaxMeta {
-  id: NekuMaxVariant;
+export interface NexMaxMeta {
+  id: NexMaxVariant;
   /** 役割名（ルビ付きJSX） */
   label: ReactNode;
   plainLabel: string;
@@ -32,10 +32,10 @@ export interface NekuMaxMeta {
   accentDeep: string;
 }
 
-const DIR = "/img/characters/nekumax";
-export const NEKUMAX_REFERENCE_SRC = `${DIR}/reference.png`;
+const DIR = "/img/characters/nexmax";
+export const NEXMAX_REFERENCE_SRC = `${DIR}/reference.png`;
 
-export const NEKUMAX_FAMILY: NekuMaxMeta[] = [
+export const NEXMAX_FAMILY: NexMaxMeta[] = [
   {
     id: "guide",
     label: <>ガイドの ネクマックス</>,
@@ -86,27 +86,27 @@ export const NEKUMAX_FAMILY: NekuMaxMeta[] = [
   },
 ];
 
-export function getNekuMax(id: NekuMaxVariant): NekuMaxMeta {
-  const found = NEKUMAX_FAMILY.find((v) => v.id === id);
-  if (!found) throw new Error(`unknown NekuMax variant: ${id}`);
+export function getNexMax(id: NexMaxVariant): NexMaxMeta {
+  const found = NEXMAX_FAMILY.find((v) => v.id === id);
+  if (!found) throw new Error(`unknown NexMax variant: ${id}`);
   return found;
 }
 
-export function NekuMax({
+export function NexMax({
   variant,
   size = 120,
   bob = false,
   className = "",
 }: {
-  variant: NekuMaxVariant;
+  variant: NexMaxVariant;
   size?: number;
   /** ふわふわ上下ゆれ */
   bob?: boolean;
   className?: string;
 }) {
-  const meta = getNekuMax(variant);
+  const meta = getNexMax(variant);
   // フォールバック連鎖: バリアント画像 → 正典reference → プレースホルダー
-  const sources = [`${DIR}/${variant}.webp`, NEKUMAX_REFERENCE_SRC];
+  const sources = [`${DIR}/${variant}.webp`, NEXMAX_REFERENCE_SRC];
   const [srcIndex, setSrcIndex] = useState(0);
   const src = sources[srcIndex];
 

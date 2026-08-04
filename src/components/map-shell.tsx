@@ -14,15 +14,21 @@ import {
 } from "react";
 import { signOut } from "@/app/auth/actions";
 import { AreaTrail } from "@/components/map-trail";
-import { NekuMaxType } from "@/components/nekumax-types";
+import { NexMaxFamily } from "@/components/nexmax-types";
 import { CloudBand, CloudCorners } from "@/components/cloud-band";
 import { GOAL_AREA, ROUTE_AREAS, SKY_BLUE, type MapArea } from "@/content/areas";
-import { getPersonalityType, type PersonalityTypeId } from "@/content/personality";
+import {
+  getFamilyForCode,
+  getPersonalityType,
+  type PersonalityFamilyId,
+} from "@/content/personality";
 import { STAGES, type StageDefinition } from "@/content/stages";
 import { fetchOwnProfile, type ProfileRow } from "@/lib/profile-db";
 import {
+  clearProfile,
   getMapView,
   getProfile,
+  isDiagnosisComplete,
   saveMapView,
   saveProfile,
   type MapView,
@@ -63,7 +69,7 @@ const STAGE_COLORS = {
 } satisfies Record<StageDefinition["color"], string>;
 
 /** 装飾のネクマックス。エリアごとに1体、ステージと反対側に立たせる */
-const AREA_CHARACTERS: readonly PersonalityTypeId[] = [
+const AREA_CHARACTERS: readonly PersonalityFamilyId[] = [
   "leader",
   "idea",
   "heart",
@@ -378,7 +384,11 @@ function Hud({ profile, progress }: { profile: ProfileRow | null; progress: Stag
       <div className="flex items-center gap-2 rounded-2xl border-2 border-[#e9bd55] bg-[#fffaf0]/95 p-1.5 pr-3 shadow-[0_4px_0_#d9a839,0_8px_18px_rgba(0,79,141,.16)]">
         {profile ? (
           <>
-            <NekuMaxType id={profile.personality_type} gender={profile.gender} size={42} />
+            <NexMaxFamily
+              family={getFamilyForCode(profile.personality_type).id}
+              gender={profile.gender}
+              size={42}
+            />
             <span className="hidden leading-tight sm:block">
               <span className="text-ink block text-sm font-black">{profile.display_name}</span>
               <span className="text-ink-soft block text-[10px] font-extrabold">
@@ -479,6 +489,19 @@ function Navigation({
       {!collapsed && <span className="whitespace-nowrap">{<NavigationLabel item={item} />}</span>}
     </button>
   ));
+  // ネクマックス図鑑への回遊先。診断のあとに16人を見に行けるようにする（07 §7）。
+  const catalogLink = (
+    <Link
+      href="/nexmax"
+      onClick={onDrawerClose}
+      className="text-ink hover:bg-sky-soft flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl px-3 text-sm font-extrabold transition"
+    >
+      <span aria-hidden className="text-xl">
+        📖
+      </span>
+      {!collapsed && <span className="whitespace-nowrap">ネクマックス</span>}
+    </Link>
+  );
   const adminLink = isAdmin ? (
     <Link
       href="/admin"
@@ -534,6 +557,7 @@ function Navigation({
           ☰
         </button>
         {navButtons}
+        {catalogLink}
         {adminLink}
         {logoutButton}
         <button
@@ -558,6 +582,7 @@ function Navigation({
             <p className="text-navy mb-4 text-lg font-black">Nexmax Academy</p>
             <div className="space-y-2">
               {navButtons}
+              {catalogLink}
               {adminLink}
               {logoutButton}
             </div>
@@ -809,7 +834,7 @@ function RouteArea({
           className="pointer-events-none absolute z-20 hidden -translate-x-1/2 -translate-y-1/2 lg:block"
           style={{ left: `${chipOnRight ? nodeX + 26 : nodeX - 26}%`, top: `${nodeTop + 22}%` }}
         >
-          <NekuMaxType id={AREA_CHARACTERS[index]!} size={104} bob />
+          <NexMaxFamily family={AREA_CHARACTERS[index]!} size={104} bob />
         </div>
 
         {stage && status && (
@@ -1088,6 +1113,13 @@ export function MapShell() {
         }
         const stored = await fetchOwnProfile();
         if (!stored) {
+          router.replace("/welcome");
+          return;
+        }
+        // 管理者が診断をリセットすると answers/scores が空で戻る。
+        // profileFromRow が投げるのに任せず、明示的に診断へ送る。
+        if (!isDiagnosisComplete(stored.answers)) {
+          clearProfile();
           router.replace("/welcome");
           return;
         }

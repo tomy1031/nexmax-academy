@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState, useSyncExternalStore } from "react";
-import { NekuMaxType } from "@/components/nekumax-types";
+import { NexMaxFamily } from "@/components/nexmax-types";
 import { getProfile } from "@/lib/profile";
 
 export function TitleScreen() {
@@ -82,8 +82,8 @@ export function TitleScreen() {
         </div>
 
         <div className="relative mt-6 flex w-full flex-1 items-end justify-between sm:mt-3">
-          <NekuMaxType
-            id="leader"
+          <NexMaxFamily
+            family="leader"
             size={180}
             bob
             className="-ml-14 max-w-[36vw] drop-shadow-[0_12px_8px_rgba(31,58,86,.25)] sm:ml-0"
@@ -114,17 +114,18 @@ export function TitleScreen() {
               )}
             </Link>
             {hasProfile && (
+              // `retake=1` が要る。付けないと /welcome が診断済みの人をマップへ送り返す。
               <Link
-                href="/welcome"
+                href="/welcome?retake=1"
                 className="text-navy mt-5 rounded-full bg-white/90 px-5 py-1.5 text-sm font-extrabold underline underline-offset-4 shadow-sm"
               >
-                もういちど せっていする
+                せいかくしんだんを もういちど
               </Link>
             )}
           </div>
 
-          <NekuMaxType
-            id="heart"
+          <NexMaxFamily
+            family="heart"
             gender="female"
             size={180}
             bob

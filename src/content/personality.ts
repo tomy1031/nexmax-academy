@@ -1,407 +1,1210 @@
-export type PersonalityTypeId = "leader" | "idea" | "heart" | "challenge";
-export type PersonalityLanguage = "easy" | "japanese" | "english";
-export type PersonalityAnswer = "yes" | "neutral" | "no";
-export type PersonalityScores = Record<PersonalityTypeId, number>;
+/**
+ * 性格タイプ v3 — MBTI 4軸 / 16タイプ。
+ * 仕様: docs/design/07_性格タイプ設計_MBTI16.md
+ *
+ * 各軸5問（奇数）の2択なので、軸の合計は必ず5点になり同点が構造的に起きない。
+ * v2 のタイブレーク（heart > challenge > idea > leader）は不要になったため削除した。
+ */
 
+export type PersonalityAxis = "ei" | "sn" | "tf" | "jp";
+export type PersonalityPole = "E" | "I" | "S" | "N" | "T" | "F" | "J" | "P";
+export type PersonalityAnswer = "a" | "b";
+export type PersonalityLanguage = "easy" | "japanese" | "english";
+
+/** 家族ID。既存の立ち絵・色トークンをそのまま流用するため v2 の4値を維持する（07 §1.2）。 */
+export type PersonalityFamilyId = "leader" | "idea" | "heart" | "challenge";
+
+export type PersonalityTypeCode =
+  | "ISTJ"
+  | "ISFJ"
+  | "ESTJ"
+  | "ESFJ"
+  | "INTJ"
+  | "INTP"
+  | "ENTJ"
+  | "ENTP"
+  | "INFJ"
+  | "INFP"
+  | "ENFJ"
+  | "ENFP"
+  | "ISTP"
+  | "ISFP"
+  | "ESTP"
+  | "ESFP";
+
+/** 軸ごとの「左の極」側の点数（0〜5）。右の極は 5 - 値。 */
+export type PersonalityScores = Record<PersonalityAxis, number>;
+
+/**
+ * 台帳はすべて readonly。要素のプロパティまで固めるのは、スコアリングと家族判定の決定性を
+ * 実行時に書き換えられないようにするため（`PERSONALITY_QUESTIONS[0].a.pole = "I"` を型で防ぐ）。
+ */
 export interface Reading {
-  text: string;
-  reading: string;
+  readonly text: string;
+  readonly reading: string;
+}
+
+export interface PersonalityAxisMeta {
+  readonly id: PersonalityAxis;
+  /** [左の極, 右の極]。左＝スコアが数える側。 */
+  readonly poles: readonly [PersonalityPole, PersonalityPole];
+  /** 学習者に見せる軸の呼び名。 */
+  readonly question: string;
+  /** 極の呼び名。説明文と同じ語を使い、呼び名が自己解説される形にする（07 §1.1）。 */
+  readonly poleLabels: readonly [string, string];
+  readonly poleDescriptions: readonly [string, string];
+}
+
+export interface PersonalityFamily {
+  readonly id: PersonalityFamilyId;
+  /** 学習者向けの呼び名。読みは連濁で「ぐみ」。 */
+  readonly name: string;
+  readonly reading: string;
+  readonly keirsey: "SJ" | "NT" | "NF" | "SP";
+  readonly color: string;
+  /** 家族の性格。 */
+  readonly strengths: readonly string[];
+  readonly codes: readonly PersonalityTypeCode[];
 }
 
 export interface PersonalityType {
-  id: PersonalityTypeId;
-  name: string;
-  heading: string;
-  color: string;
-  badge: string;
-  strengths: readonly string[];
-  resultStrengths: string;
-  analysis: readonly string[];
+  readonly code: PersonalityTypeCode;
+  readonly familyId: PersonalityFamilyId;
+  readonly name: string;
+  /** 表の中やチップなど、狭いところで使う呼び名（「〜の ネクマックス」を外したもの）。 */
+  readonly shortName: string;
+  readonly emblem: string;
+  /** ひとこと。必ず述語で終える（07 §2 文言のきまり）。 */
+  readonly tagline: string;
+  /** チーム役割の呼び名。 */
+  readonly teamRole: string;
+  /** 役割の説明1行（結果画面 §5.2）。 */
+  readonly teamRoleDetail: string;
+  /** 結果画面の ✓4行。 */
+  readonly analysis: readonly string[];
+}
+
+export interface PersonalityQuestionOption {
+  readonly pole: PersonalityPole;
+  readonly easy: string;
+  readonly japanese: string;
+  readonly english: string;
 }
 
 export interface PersonalityQuestion {
-  id: number;
-  axis: PersonalityTypeId;
-  easy: string;
-  japanese: string;
-  english: string;
-  readings: readonly Reading[];
-  image: string;
+  readonly id: number;
+  readonly axis: PersonalityAxis;
+  /** 柱書き。それ自体で完結した文にする（07 §3.1）。 */
+  readonly easy: string;
+  readonly japanese: string;
+  readonly english: string;
+  readonly a: PersonalityQuestionOption;
+  readonly b: PersonalityQuestionOption;
+  readonly readings: readonly Reading[];
+  readonly image: string;
 }
 
-export const PERSONALITY_TYPES: readonly PersonalityType[] = [
+export const PERSONALITY_AXES: readonly PersonalityAxis[] = ["ei", "sn", "tf", "jp"] as const;
+
+export const PERSONALITY_AXIS_META: Readonly<Record<PersonalityAxis, PersonalityAxisMeta>> = {
+  ei: {
+    id: "ei",
+    poles: ["E", "I"],
+    question: "どんな とき、元気に なる?",
+    poleLabels: ["そとで 元気", "ひとりで 元気"],
+    poleDescriptions: ["人と 話すと 元気に なる", "ひとりの 時間で 元気に なる"],
+  },
+  sn: {
+    id: "sn",
+    poles: ["S", "N"],
+    question: "なにを 見て いる?",
+    poleLabels: ["いま", "アイデア"],
+    poleDescriptions: [
+      "目の 前の こと・目で 見える こと",
+      "これからの こと・ふと 出て くる かんがえ",
+    ],
+  },
+  tf: {
+    id: "tf",
+    poles: ["T", "F"],
+    question: "きめる とき、なにを 見る?",
+    poleLabels: ["りゆう", "きもち"],
+    poleDescriptions: ["りゆうが 合って いるか", "みんなが どう 思うか"],
+  },
+  jp: {
+    id: "jp",
+    poles: ["J", "P"],
+    question: "どう すすめる?",
+    poleLabels: ["けいかく", "そのとき"],
+    poleDescriptions: ["先に きめて すすめる", "その ときに えらぶ"],
+  },
+};
+
+export const PERSONALITY_FAMILIES: readonly PersonalityFamily[] = [
   {
     id: "leader",
-    name: "リーダーの ネクマックス",
-    heading: "リーダータイプ",
+    name: "まもり組",
+    reading: "まもりぐみ",
+    keirsey: "SJ",
     color: "#4fa8e8",
-    badge: "🛡️",
-    strengths: ["計画", "まとめる", "信頼"],
-    resultStrengths: "リーダーシップ／計画力・信頼",
-    analysis: [
-      "まじめで、コツコツ がんばれます。",
-      "チームを まとめるのが とくいです。",
-      "けいかくを たてて すすめる タイプです。",
-      "日本の IT の しごとでは、ほうこく・れんらく・そうだんを ひっぱる 人に なれます。",
-    ],
+    strengths: ["ていねい", "じゅんばんを きめる", "まかせて もらえる"],
+    codes: ["ISTJ", "ISFJ", "ESTJ", "ESFJ"],
   },
   {
     id: "idea",
-    name: "ひらめきの ネクマックス",
-    heading: "ひらめきタイプ",
+    name: "かんがえ組",
+    reading: "かんがえぐみ",
+    keirsey: "NT",
     color: "#58c273",
-    badge: "💡",
-    strengths: ["アイデア", "なぜ？", "つくる"],
-    resultStrengths: "アイデア／なぜ？・つくる",
-    analysis: [
-      "あたらしい アイデアが つぎつぎ 出てきます。",
-      "「なぜ？」と かんがえる 力が あります。",
-      "ものを つくるのが 大すきな タイプです。",
-      "日本の IT の しごとでは、かいはつや くふうで かつやくできます。",
-    ],
+    strengths: ["なぜ?", "仕組み", "つくる"],
+    codes: ["INTJ", "INTP", "ENTJ", "ENTP"],
   },
   {
     id: "heart",
-    name: "きづかいの ネクマックス",
-    heading: "きづかいタイプ",
+    name: "きもち組",
+    reading: "きもちぐみ",
+    keirsey: "NF",
     color: "#f26fa7",
-    badge: "💗",
-    strengths: ["気もちに気づく", "きく"],
-    resultStrengths: "気もちに気づく／きく",
-    analysis: [
-      "人の きもちに 気づくのが とくいです。",
-      "はなしを きく 力が あります。",
-      "チームを あたたかく する タイプです。",
-      "日本の IT の しごとでは、お客さまや なかまとの コミュニケーションで かつやくできます。",
-    ],
+    strengths: ["気が つく", "人と 人を つなぐ", "元気に する"],
+    codes: ["INFJ", "INFP", "ENFJ", "ENFP"],
   },
   {
     id: "challenge",
-    name: "チャレンジの ネクマックス",
-    heading: "チャレンジタイプ",
+    name: "うごき組",
+    reading: "うごきぐみ",
+    keirsey: "SP",
     color: "#ffc93c",
-    badge: "🚀",
-    strengths: ["やってみる", "あきらめない"],
-    resultStrengths: "やってみる／あきらめない",
+    strengths: ["やって みる", "すぐに 動く"],
+    codes: ["ISTP", "ISFP", "ESTP", "ESFP"],
+  },
+] as const;
+
+export const PERSONALITY_TYPES: readonly PersonalityType[] = [
+  {
+    code: "ISTJ",
+    familyId: "leader",
+    name: "まじめの ネクマックス",
+    shortName: "まじめ",
+    emblem: "📋",
+    tagline: "きめた ことを さいごまで します",
+    teamRole: "きろく役",
+    teamRoleDetail: "会議で きまった ことを 書いて、あとで 見られるように する。",
     analysis: [
-      "あたらしい ことに どんどん ちょうせんできます。",
-      "うまく いかなくても、あきらめません。",
-      "うごきながら まなぶ タイプです。",
-      "日本の IT の しごとでは、あたらしい ぎじゅつを はやく おぼえて かつやくできます。",
+      "一度 やると 言った ことは、かならず おわらせます。",
+      "小さな ちがいにも 気が つきます。",
+      "ルールや じゅんばんを たいせつに します。",
+      "日本の IT の しごとでは、テストや 手順づくりを まかせて もらえます。",
+    ],
+  },
+  {
+    code: "ISFJ",
+    familyId: "leader",
+    name: "みまもりの ネクマックス",
+    shortName: "みまもり",
+    emblem: "🍵",
+    tagline: "しずかに、みんなを たすけます",
+    teamRole: "ささえ役",
+    teamRoleDetail: "こまって いる 人に 気が ついて、手を かす。",
+    analysis: [
+      "仲間が 元気か どうかを よく 見て います。",
+      "たのまれた ことを さいごまで やります。",
+      "だれも 見て いない ときも、ていねいに やります。",
+      "日本の IT の しごとでは、まいにちの 運用や サポートで チームを ささえます。",
+    ],
+  },
+  {
+    code: "ESTJ",
+    familyId: "leader",
+    name: "まとめの ネクマックス",
+    shortName: "まとめ",
+    emblem: "📣",
+    tagline: "じゅんばんを きめて、すすめます",
+    teamRole: "段取り役",
+    teamRoleDetail: "はじめに「だれが いつ やるか」を きめる。",
+    analysis: [
+      "やる ことを 一つずつ 書いて、じゅんばんを きめます。",
+      "「いつまでに おわるか」を みんなに 言います。",
+      "みんなに 声を かけて、しごとを すすめます。",
+      "日本の IT の しごとでは、チームの しごとが 前に すすむように する 人に なれます。",
+    ],
+  },
+  {
+    code: "ESFJ",
+    familyId: "leader",
+    name: "おせわの ネクマックス",
+    shortName: "おせわ",
+    emblem: "🤝",
+    tagline: "人と 人を つなぎます",
+    teamRole: "つなぎ役",
+    teamRoleDetail: "チームの 中で、人と 人が 話せるように する。",
+    analysis: [
+      "こまって いる 人に、すぐ 気が つきます。",
+      "あいさつや、じぶんから 話しかける ことを たいせつに します。",
+      "チームを 楽しく します。",
+      "日本の IT の しごとでは、お客さまや 仲間と 話す しごとが よく できます。",
+    ],
+  },
+  {
+    code: "INTJ",
+    familyId: "idea",
+    name: "よそうの ネクマックス",
+    shortName: "よそう",
+    emblem: "♟️",
+    tagline: "さきを 見て、みちを つくります",
+    teamRole: "設計役",
+    teamRoleDetail: "むずかしく なりそうな ところを、先に 見つける。",
+    analysis: [
+      "さきの ことを かんがえて、じゅんび します。",
+      "いちばん 早い やりかたを さがします。",
+      "ひとりで 時間を かけて かんがえるのが すきです。",
+      "日本の IT の しごとでは、つくる 前に 設計を かんがえる しごとが よく できます。",
+    ],
+  },
+  {
+    code: "INTP",
+    familyId: "idea",
+    name: "なぜなぜの ネクマックス",
+    shortName: "なぜなぜ",
+    emblem: "🔍",
+    tagline: "仕組みを しらべます",
+    teamRole: "しらべ役",
+    teamRoleDetail: "わからない ことの りゆうを しらべる。",
+    analysis: [
+      "「なぜ そう なるのか」が 気に なります。",
+      "わかるまで しらべます。",
+      "あたらしい 技術を おぼえるのが すきです。",
+      "日本の IT の しごとでは、なぜ うごかないのかを 見つける 人に なれます。",
+    ],
+  },
+  {
+    code: "ENTJ",
+    familyId: "idea",
+    name: "あんないの ネクマックス",
+    shortName: "あんない",
+    emblem: "🧭",
+    tagline: "みんなと ゴールへ すすみます",
+    teamRole: "リーダー役",
+    teamRoleDetail: "ゴールを きめて、みんなを あんない する。",
+    analysis: [
+      "目標を きめて、まよわないで すすみます。",
+      "むずかしい ことでも、きめるのが 早いです。",
+      "みんなで いっしょに がんばれます。",
+      "日本の IT の しごとでは、チームの リーダーに なれます。",
+    ],
+  },
+  {
+    code: "ENTP",
+    familyId: "idea",
+    name: "アイデアの ネクマックス",
+    shortName: "アイデア",
+    emblem: "💡",
+    tagline: "もっと いい やりかたを 見つけます",
+    teamRole: "提案役",
+    teamRoleDetail: "「こう しませんか」と あたらしい やりかたを 出す。",
+    analysis: [
+      "アイデアが たくさん 出て きます。",
+      "「こう しませんか」と 提案 します。",
+      "話しながら かんがえるのが すきです。",
+      "日本の IT の しごとでは、あたらしい ことを かんがえる しごとが よく できます。",
+    ],
+  },
+  {
+    code: "INFJ",
+    familyId: "heart",
+    name: "おもいやりの ネクマックス",
+    shortName: "おもいやり",
+    emblem: "🌙",
+    tagline: "人の きもちを かんがえます",
+    teamRole: "きづき役",
+    teamRoleDetail: "言われて いない ことに 気が つく。",
+    analysis: [
+      "人の きもちが かわる ことに 気が つきます。",
+      "言われて いない ことも、じぶんで かんがえます。",
+      "しずかですが、じぶんの かんがえを もって います。",
+      "日本の IT の しごとでは、つかう 人の きもちを かんがえた ものづくりが できます。",
+    ],
+  },
+  {
+    code: "INFP",
+    familyId: "heart",
+    name: "ゆめの ネクマックス",
+    shortName: "ゆめ",
+    emblem: "🌸",
+    tagline: "すきな ことを だいじに します",
+    teamRole: "ていねい役",
+    teamRoleDetail: "一つ 一つを ていねいに 作る。",
+    analysis: [
+      "「こう したい」と いつも かんがえて います。",
+      "たいせつに 思いながら、ていねいに つくります。",
+      "人の いい ところを 見つけるのが とくいです。",
+      "日本の IT の しごとでは、じぶんの すきな やりかたで いい ものが 作れます。",
+    ],
+  },
+  {
+    code: "ENFJ",
+    familyId: "heart",
+    name: "おうえんの ネクマックス",
+    shortName: "おうえん",
+    emblem: "☀️",
+    tagline: "みんなを 元気に します",
+    teamRole: "おうえん役",
+    teamRoleDetail: "あたらしく 入った 仲間に、さいしょに 話しかける。",
+    analysis: [
+      "仲間を ほめて、元気に します。",
+      "人に 教えるのが とくいです。",
+      "チームの みんなを つなぎます。",
+      "日本の IT の しごとでは、あとから 入る 人に しごとを 教える 人に なれます。",
+    ],
+  },
+  {
+    code: "ENFP",
+    familyId: "heart",
+    name: "わくわくの ネクマックス",
+    shortName: "わくわく",
+    emblem: "🎈",
+    tagline: "あたらしい ことに 人を さそいます",
+    teamRole: "さそい役",
+    teamRoleDetail: "「やって みない?」と 声を かける。",
+    analysis: [
+      "楽しい ことを 見つけるのが 早いです。",
+      "いい かんがえが 出たら、人を さそって はじめます。",
+      "はじめて 会う 人とも すぐ 話せます。",
+      "日本の IT の しごとでは、あたらしい ことを いちばん さいしょに はじめます。",
+    ],
+  },
+  {
+    code: "ISTP",
+    familyId: "challenge",
+    name: "どうぐの ネクマックス",
+    shortName: "どうぐ",
+    emblem: "🔧",
+    tagline: "手を うごかして なおします",
+    teamRole: "なおし役",
+    teamRoleDetail: "うまく うごかない ものを なおす。",
+    analysis: [
+      "こわれた ものを 見ると、なおしたく なります。",
+      "じぶんで やって みて、おぼえます。",
+      "いそがないで、おちついて 対応 します。",
+      "日本の IT の しごとでは、トラブルで とまった システムを もとに もどせます。",
+    ],
+  },
+  {
+    code: "ISFP",
+    familyId: "challenge",
+    name: "デザインの ネクマックス",
+    shortName: "デザイン",
+    emblem: "🎨",
+    tagline: "きれいに つくります",
+    teamRole: "仕上げ役",
+    teamRoleDetail: "さいごに きれいに して、おわらせる。",
+    analysis: [
+      "かたちや 色に、じぶんの すきが あります。",
+      "自分の ペースで ていねいに すすめます。",
+      "みんなが なかよく すすめる やりかたを えらびます。",
+      "日本の IT の しごとでは、がめんの デザインや 仕上げが よく できます。",
+    ],
+  },
+  {
+    code: "ESTP",
+    familyId: "challenge",
+    name: "スタートの ネクマックス",
+    shortName: "スタート",
+    emblem: "⚡",
+    tagline: "まず、やって みます",
+    teamRole: "まず やる役",
+    teamRoleDetail: "だれよりも 先に、やって みる。",
+    analysis: [
+      "かんがえる より 先に、体が うごきます。",
+      "すぐに きめられます。",
+      "スピードが はやいです。",
+      "日本の IT の しごとでは、はやく なおさないと いけない とき、力に なれます。",
+    ],
+  },
+  {
+    code: "ESFP",
+    familyId: "challenge",
+    name: "もりあげの ネクマックス",
+    shortName: "もりあげ",
+    emblem: "🎉",
+    tagline: "いま、ここを 楽しく します",
+    teamRole: "たのしく する役",
+    teamRoleDetail: "みんなが 話しやすい ばを 作る。",
+    analysis: [
+      "まわりの 人を 楽しい きもちに します。",
+      "人の 前で 話すのが すきです。",
+      "体を うごかしながら おぼえます。",
+      "日本の IT の しごとでは、はっぴょうや、みんなを 楽しく する しごとが よく できます。",
     ],
   },
 ] as const;
 
+/**
+ * 20問。出題順は EI → SN → TF → JP を5周。
+ * Ⓐ／Ⓑ がどちらの極かは各問の a.pole / b.pole が持つ（表示順に意味はない）。
+ */
 export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
   {
     id: 1,
-    axis: "leader",
-    easy: "はじめる まえに、けいかくを たてますか。",
-    japanese: "始める前に、計画を立てますか。",
-    english: "Do you make a plan before you start?",
+    axis: "ei",
+    easy: "へやに 入りました。はじめて 会う 人が たくさん います。",
+    japanese: "部屋に入りました。初めて会う人がたくさんいます。",
+    english: "You walk into a room full of people you have never met.",
+    a: {
+      pole: "E",
+      easy: "自分から 「はじめまして」と 声を かける",
+      japanese: "自分から「はじめまして」と声をかける",
+      english: "You greet someone first",
+    },
+    b: {
+      pole: "I",
+      // 「話しかけられるのを まつ」は受身とも可能とも読めるため使わない（07 §3.2）。
+      easy: "だれかが 話しかけて くれるまで まつ",
+      japanese: "だれかが話しかけてくれるまで待つ",
+      english: "You wait until someone speaks to you",
+    },
     readings: [
-      { text: "始める", reading: "はじめる" },
-      { text: "前", reading: "まえ" },
-      { text: "計画", reading: "けいかく" },
-      { text: "立てます", reading: "たてます" },
+      { text: "入りました", reading: "はいりました" },
+      { text: "会う", reading: "あう" },
+      { text: "人", reading: "ひと" },
+      { text: "自分", reading: "じぶん" },
+      { text: "声", reading: "こえ" },
     ],
     image: "/img/quiz/q01.webp",
   },
   {
     id: 2,
-    axis: "idea",
-    easy: "あたらしい アイデアを かんがえるのが すきですか。",
-    japanese: "新しいアイデアを考えるのが好きですか。",
-    english: "Do you like thinking of new ideas?",
+    axis: "sn",
+    easy: "「あたらしい アプリを 作ろう」と 言われました。",
+    japanese: "「新しいアプリを作ろう」と言われました。",
+    english: "You are told to build a new app.",
+    a: {
+      pole: "N",
+      easy: "「こんな ことも できそう」と アイデアを たくさん 出す",
+      japanese: "「こんなこともできそう」とアイデアをたくさん出す",
+      english: "You put out lots of ideas about what it could be",
+    },
+    b: {
+      pole: "S",
+      easy: "はじめに 作る ものを 一つずつ きめる",
+      japanese: "最初に作るものを一つずつ決める",
+      english: "You decide what to build first, one at a time",
+    },
     readings: [
-      { text: "新しい", reading: "あたらしい" },
-      { text: "考える", reading: "かんがえる" },
-      { text: "好き", reading: "すき" },
+      { text: "作ろう", reading: "つくろう" },
+      { text: "言われました", reading: "いわれました" },
+      { text: "出す", reading: "だす" },
+      { text: "一つずつ", reading: "ひとつずつ" },
     ],
     image: "/img/quiz/q02.webp",
   },
   {
     id: 3,
-    axis: "heart",
-    easy: "こまっている 人を みると、こえを かけますか。",
-    japanese: "困っている人を見ると、声をかけますか。",
-    english: "Do you talk to people who look troubled?",
+    axis: "tf",
+    easy: "友だちの プログラムに、直す ところを 見つけました。",
+    japanese: "友だちのプログラムに、直すところを見つけました。",
+    english: "You find something to fix in a friend's program.",
+    a: {
+      pole: "T",
+      easy: "直す ところを 先に つたえる",
+      japanese: "直すところを先に伝える",
+      english: "You mention the fix first",
+    },
+    b: {
+      pole: "F",
+      easy: "いい ところを 先に 言ってから、つたえる",
+      japanese: "いいところを先に言ってから、伝える",
+      english: "You say what is good first, then mention it",
+    },
     readings: [
-      { text: "困って", reading: "こまって" },
-      { text: "人", reading: "ひと" },
-      { text: "見る", reading: "みる" },
-      { text: "声", reading: "こえ" },
+      { text: "友", reading: "とも" },
+      { text: "直す", reading: "なおす" },
+      { text: "見つけました", reading: "みつけました" },
+      { text: "先", reading: "さき" },
+      { text: "言って", reading: "いって" },
     ],
     image: "/img/quiz/q03.webp",
   },
   {
     id: 4,
-    axis: "challenge",
-    easy: "あたらしい ことに すぐ ちょうせんしますか。",
-    japanese: "新しいことにすぐ挑戦しますか。",
-    english: "Do you try new things right away?",
-    readings: [
-      { text: "新しい", reading: "あたらしい" },
-      { text: "挑戦", reading: "ちょうせん" },
-    ],
+    axis: "jp",
+    easy: "しごとは、どう すすめますか。",
+    japanese: "仕事は、どう進めますか。",
+    english: "How do you get work done?",
+    a: {
+      pole: "P",
+      easy: "やりながら、いちばん いい やりかたを きめる",
+      japanese: "やりながら、いちばんいいやり方を決める",
+      english: "You decide the best way as you go",
+    },
+    b: {
+      pole: "J",
+      easy: "さいしょに よていを きめて、おなじように すすめる",
+      japanese: "最初に予定を決めて、そのとおりに進める",
+      english: "You set a plan first and follow it",
+    },
+    readings: [{ text: "仕事", reading: "しごと" }],
     image: "/img/quiz/q04.webp",
   },
   {
     id: 5,
-    axis: "leader",
-    easy: "チームを まとめるのが すきですか。",
-    japanese: "チームをまとめるのが好きですか。",
-    english: "Do you like organizing your team?",
-    readings: [{ text: "好き", reading: "すき" }],
+    axis: "ei",
+    easy: "一日 べんきょうして、つかれました。",
+    japanese: "一日勉強して、つかれました。",
+    english: "You are tired after a full day of study.",
+    a: {
+      pole: "I",
+      easy: "ひとりで ゆっくり やすむと 元気に なる",
+      japanese: "ひとりでゆっくり休むと元気になる",
+      english: "Resting alone gives you energy",
+    },
+    b: {
+      pole: "E",
+      easy: "友だちと 話すと 元気に なる",
+      japanese: "友だちと話すと元気になる",
+      english: "Talking with friends gives you energy",
+    },
+    readings: [
+      { text: "一日", reading: "いちにち" },
+      { text: "元気", reading: "げんき" },
+      { text: "話す", reading: "はなす" },
+    ],
     image: "/img/quiz/q05.webp",
   },
   {
     id: 6,
-    axis: "idea",
-    easy: "「なぜ？」「どうして？」と よく かんがえますか。",
-    japanese: "「なぜ？」「どうして？」とよく考えますか。",
-    english: 'Do you often ask "why?" and "how?"',
-    readings: [{ text: "考えます", reading: "かんがえます" }],
+    axis: "sn",
+    easy: "せつめいを 聞く とき、どちらが うれしいですか。",
+    japanese: "説明を聞くとき、どちらがうれしいですか。",
+    english: "In an explanation, which do you prefer?",
+    a: {
+      pole: "S",
+      easy: "本当に あった れいを 見せて もらう",
+      japanese: "本当にあった例を見せてもらう",
+      english: "Being shown a real example",
+    },
+    b: {
+      pole: "N",
+      easy: "「なぜ そう するのか」を 教えて もらう",
+      japanese: "「なぜそうするのか」を教えてもらう",
+      english: "Being told why it is done that way",
+    },
+    readings: [
+      { text: "聞く", reading: "きく" },
+      { text: "本当", reading: "ほんとう" },
+      { text: "見せて", reading: "みせて" },
+      { text: "教えて", reading: "おしえて" },
+    ],
     image: "/img/quiz/q06.webp",
   },
   {
     id: 7,
-    axis: "heart",
-    easy: "人の はなしを きくのが すきですか。",
-    japanese: "人の話を聞くのが好きですか。",
-    english: "Do you like listening to people?",
+    axis: "tf",
+    easy: "チームの いけんが 二つに なりました。どちらが 気に なりますか。",
+    japanese: "チームの意見が二つになりました。どちらが気になりますか。",
+    english: "The team is split in two. Which concerns you?",
+    a: {
+      pole: "F",
+      easy: "みんなの きもちが どう なるか",
+      japanese: "みんなの気持ちがどうなるか",
+      english: "How everyone will feel",
+    },
+    b: {
+      pole: "T",
+      easy: "どちらが いい 結果に なるか",
+      japanese: "どちらがいい結果になるか",
+      english: "Which one gives a better result",
+    },
     readings: [
-      { text: "人", reading: "ひと" },
-      { text: "話", reading: "はなし" },
-      { text: "聞く", reading: "きく" },
-      { text: "好き", reading: "すき" },
+      { text: "結果", reading: "けっか" },
+      { text: "二つ", reading: "ふたつ" },
+      { text: "気", reading: "き" },
     ],
     image: "/img/quiz/q07.webp",
   },
   {
     id: 8,
-    axis: "challenge",
-    easy: "うまく いかなくても、もういちど やりますか。",
-    japanese: "うまくいかなくても、もう一度やりますか。",
-    english: "When something does not work, do you try again?",
-    readings: [{ text: "一度", reading: "いちど" }],
+    axis: "jp",
+    easy: "締め切りの ある しごとです。「この 日までに おわらせて ください」と 言われました。",
+    japanese: "締め切りのある仕事です。「この日までに終わらせてください」と言われました。",
+    english: "This job has a deadline. You are told to finish it by a certain day.",
+    a: {
+      pole: "J",
+      easy: "早めに おわらせて、あんしんしたい",
+      japanese: "早めに終わらせて、安心したい",
+      english: "You want to finish early and feel safe",
+    },
+    b: {
+      pole: "P",
+      // 「いきおいを つけて やる」はN1慣用句。Ⓐだけ平易だとJ極へ系統的に偏る（07 §3.2）。
+      easy: "さいごの 日に、いっしょうけんめい やる",
+      japanese: "最後の日に、いっしょうけんめいやる",
+      english: "You give it everything on the last day",
+    },
+    readings: [
+      { text: "締め切り", reading: "しめきり" },
+      { text: "日", reading: "ひ" },
+      { text: "早め", reading: "はやめ" },
+    ],
     image: "/img/quiz/q08.webp",
   },
   {
     id: 9,
-    axis: "leader",
-    easy: "やくそくや 時間を きちんと まもりますか。",
-    japanese: "約束や時間をきちんと守りますか。",
-    english: "Do you keep promises and stay on time?",
-    readings: [
-      { text: "約束", reading: "やくそく" },
-      { text: "時間", reading: "じかん" },
-      { text: "守ります", reading: "まもります" },
-    ],
+    axis: "ei",
+    easy: "チームで 話しあいます。",
+    japanese: "チームで話し合います。",
+    english: "You are in a team discussion.",
+    a: {
+      pole: "E",
+      easy: "話しながら、じぶんの かんがえが きまる",
+      japanese: "話しながら、自分の考えが決まる",
+      english: "Your ideas take shape while you talk",
+    },
+    b: {
+      pole: "I",
+      easy: "じぶんの かんがえが きまってから、話す",
+      japanese: "自分の考えが決まってから、話す",
+      english: "You talk after your ideas take shape",
+    },
+    readings: [{ text: "話し", reading: "はなし" }],
     image: "/img/quiz/q09.webp",
   },
   {
     id: 10,
-    axis: "idea",
-    easy: "じぶんで なにかを つくるのが すきですか。",
-    japanese: "自分で何かを作るのが好きですか。",
-    english: "Do you like making things yourself?",
+    axis: "sn",
+    easy: "話を して いる とき、どちらを よく 言いますか。",
+    japanese: "話をしているとき、どちらをよく言いますか。",
+    english: "Which do you say more often?",
+    a: {
+      pole: "N",
+      easy: "「もし ちがう やりかただったら、どう なるかな?」",
+      japanese: "「もしちがうやり方だったら、どうなるかな?」",
+      english: '"What if we did it another way?"',
+    },
+    b: {
+      pole: "S",
+      easy: "「今、どう なって いますか?」",
+      japanese: "「今、どうなっていますか?」",
+      english: '"How is it right now?"',
+    },
     readings: [
-      { text: "自分", reading: "じぶん" },
-      { text: "何", reading: "なに" },
-      { text: "作る", reading: "つくる" },
-      { text: "好き", reading: "すき" },
+      { text: "話", reading: "はなし" },
+      { text: "言います", reading: "いいます" },
+      { text: "今", reading: "いま" },
     ],
     image: "/img/quiz/q10.webp",
   },
   {
     id: 11,
-    axis: "heart",
-    easy: "人の きもちに すぐ 気づく ほうですか。",
-    japanese: "人の気持ちにすぐ気づくほうですか。",
-    english: "Do you notice how others feel?",
+    axis: "tf",
+    easy: "何かを きめる とき、どちらが たいせつですか。",
+    japanese: "何かを決めるとき、どちらが大切ですか。",
+    english: "When you decide, which matters more?",
+    a: {
+      pole: "T",
+      easy: "りゆうを せつめい できる こと",
+      japanese: "理由を説明できること",
+      english: "Being able to explain the reason",
+    },
+    b: {
+      pole: "F",
+      easy: "みんなが 「そうだね」と 言える こと",
+      japanese: "みんなが「そうだね」と言えること",
+      english: "Everyone being able to agree",
+    },
     readings: [
-      { text: "人", reading: "ひと" },
-      { text: "気持ち", reading: "きもち" },
-      { text: "気づく", reading: "きづく" },
+      { text: "何", reading: "なに" },
+      { text: "言える", reading: "いえる" },
     ],
     image: "/img/quiz/q11.webp",
   },
   {
     id: 12,
-    axis: "challenge",
-    easy: "まず やってみてから かんがえますか。",
-    japanese: "まずやってみてから考えますか。",
-    english: "Do you try first and think later?",
-    readings: [{ text: "考えます", reading: "かんがえます" }],
+    axis: "jp",
+    easy: "やすみの 日、どう しますか。",
+    japanese: "休みの日、どうしますか。",
+    english: "What do you do on a day off?",
+    a: {
+      pole: "P",
+      easy: "その 日の きもちで きめたい",
+      japanese: "その日の気持ちで決めたい",
+      english: "You decide by how you feel that day",
+    },
+    b: {
+      pole: "J",
+      easy: "前の 日に よていを 作りたい",
+      japanese: "前の日に予定を作りたい",
+      english: "You make a plan the day before",
+    },
+    readings: [
+      { text: "日", reading: "ひ" },
+      { text: "前", reading: "まえ" },
+      { text: "作りたい", reading: "つくりたい" },
+    ],
     image: "/img/quiz/q12.webp",
   },
   {
     id: 13,
-    axis: "leader",
-    easy: "みんなの いけんを まとめて、ひとつに きめられますか。",
-    japanese: "みんなの意見をまとめて、一つに決められますか。",
-    english: "Can you bring everyone's ideas together and decide?",
+    axis: "ei",
+    easy: "先生が 「しつもんは ありますか」と 聞きました。",
+    japanese: "先生が「質問はありますか」と聞きました。",
+    english: "The teacher asks if anyone has a question.",
+    a: {
+      pole: "I",
+      easy: "手を あげる 前に、頭の 中で 一回 かんがえて みる",
+      japanese: "手をあげる前に、頭の中で一回考えてみる",
+      english: "You think it through in your head first",
+    },
+    b: {
+      pole: "E",
+      easy: "いい かんがえが 出たら、すぐ 手を あげる",
+      japanese: "いい考えが出たら、すぐ手をあげる",
+      english: "You raise your hand as soon as you have an idea",
+    },
     readings: [
-      { text: "意見", reading: "いけん" },
-      { text: "一つ", reading: "ひとつ" },
-      { text: "決められます", reading: "きめられます" },
+      { text: "先生", reading: "せんせい" },
+      { text: "聞きました", reading: "ききました" },
+      { text: "手", reading: "て" },
+      { text: "頭", reading: "あたま" },
+      { text: "中", reading: "なか" },
+      { text: "一回", reading: "いっかい" },
     ],
     image: "/img/quiz/q13.webp",
   },
   {
     id: 14,
-    axis: "idea",
-    easy: "ふつうと ちがう やりかたを ためすのが すきですか。",
-    japanese: "ふつうと違うやり方を試すのが好きですか。",
-    english: "Do you like trying a different way from others?",
+    axis: "sn",
+    easy: "あたらしい しごとの やりかたを おぼえます。",
+    japanese: "新しい仕事のやり方をおぼえます。",
+    english: "You are learning a new way of working.",
+    a: {
+      pole: "S",
+      easy: "やりかたを 見ながら、おなじように やる",
+      japanese: "やり方を見ながら、同じようにやる",
+      english: "You follow the instructions exactly",
+    },
+    b: {
+      pole: "N",
+      // 「だいたいの かんじを つかんで」は「漢字」と誤読され選択肢が崩れる（07 §3.2）。
+      easy: "だいたい わかったら、あとは 自分で ためす",
+      japanese: "だいたい分かったら、あとは自分でためす",
+      english: "Once you get the gist, you try it yourself",
+    },
     readings: [
-      { text: "違う", reading: "ちがう" },
-      { text: "方", reading: "かた" },
-      { text: "試す", reading: "ためす" },
-      { text: "好き", reading: "すき" },
+      { text: "見ながら", reading: "みながら" },
+      { text: "自分", reading: "じぶん" },
     ],
     image: "/img/quiz/q14.webp",
   },
   {
     id: 15,
-    axis: "heart",
-    easy: "チームの ふんいきを よくするのが とくいですか。",
-    japanese: "チームのふんいきをよくするのが得意ですか。",
-    english: "Are you good at making your team's mood better?",
-    readings: [{ text: "得意", reading: "とくい" }],
+    axis: "tf",
+    easy: "友だちが しっぱいして、元気が ありません。",
+    japanese: "友だちが失敗して、元気がありません。",
+    english: "A friend is down after a mistake.",
+    a: {
+      pole: "F",
+      easy: "まず きもちを 聞いて、そばに いる",
+      japanese: "まず気持ちを聞いて、そばにいる",
+      english: "You listen to their feelings and stay near",
+    },
+    b: {
+      pole: "T",
+      easy: "つぎに どう すれば いいかを いっしょに かんがえる",
+      japanese: "次にどうすればいいかをいっしょに考える",
+      english: "You think together about what to do next",
+    },
+    readings: [
+      { text: "友", reading: "とも" },
+      { text: "元気", reading: "げんき" },
+      { text: "聞いて", reading: "きいて" },
+    ],
     image: "/img/quiz/q15.webp",
   },
   {
     id: 16,
-    axis: "challenge",
-    easy: "むずかしい もんだいが 出ると、わくわくしますか。",
-    japanese: "難しい問題が出ると、わくわくしますか。",
-    english: "Do hard problems make you excited?",
+    axis: "jp",
+    easy: "つくえの 上や スマホの 中は、どちらが いいですか。",
+    japanese: "つくえの上やスマホの中は、どちらがいいですか。",
+    english: "Your desk and your phone: which do you prefer?",
+    a: {
+      pole: "J",
+      easy: "いつも きれいに して おきたい",
+      japanese: "いつもきれいにしておきたい",
+      english: "Always kept tidy",
+    },
+    b: {
+      pole: "P",
+      easy: "きれいで なくても、すぐ 見つかれば いい",
+      japanese: "きれいでなくても、すぐ見つかればいい",
+      english: "Not tidy is fine, as long as you can find things",
+    },
     readings: [
-      { text: "難しい", reading: "むずかしい" },
-      { text: "問題", reading: "もんだい" },
-      { text: "出る", reading: "でる" },
+      { text: "上", reading: "うえ" },
+      { text: "中", reading: "なか" },
+      { text: "見つかれば", reading: "みつかれば" },
     ],
     image: "/img/quiz/q16.webp",
   },
   {
     id: 17,
-    axis: "leader",
-    easy: "さいごまで せきにんを もって やりますか。",
-    japanese: "最後まで責任を持ってやりますか。",
-    english: "Do you finish what you are responsible for?",
+    axis: "ei",
+    easy: "やすみの 日、どちらが したいですか。",
+    japanese: "休みの日、どちらがしたいですか。",
+    english: "On a day off, which do you want?",
+    a: {
+      pole: "E",
+      easy: "みんなと 出かけたい",
+      japanese: "みんなと出かけたい",
+      english: "To go out with everyone",
+    },
+    b: {
+      pole: "I",
+      easy: "家で じぶんの したい ことを する",
+      japanese: "家で自分のしたいことをする",
+      english: "To stay home and do your own things",
+    },
     readings: [
-      { text: "最後", reading: "さいご" },
-      { text: "責任", reading: "せきにん" },
-      { text: "持って", reading: "もって" },
+      { text: "日", reading: "ひ" },
+      { text: "出かけたい", reading: "でかけたい" },
+      { text: "家", reading: "いえ" },
     ],
     image: "/img/quiz/q17.webp",
   },
   {
     id: 18,
-    axis: "idea",
-    easy: "え や 図で せつめいするのが すきですか。",
-    japanese: "絵や図で説明するのが好きですか。",
-    english: "Do you like explaining with pictures and charts?",
+    axis: "sn",
+    easy: "あたらしい どうぐを もらいました。",
+    japanese: "新しい道具をもらいました。",
+    english: "You are given a new tool.",
+    a: {
+      pole: "N",
+      easy: "「これで 何が できるかな」と かんがえる",
+      japanese: "「これで何ができるかな」と考える",
+      english: "You think about what it could do",
+    },
+    b: {
+      pole: "S",
+      easy: "つかいかたの かみを 見て、おなじように 使う",
+      japanese: "使い方の紙を見て、同じように使う",
+      english: "You read the instructions and follow them",
+    },
     readings: [
-      { text: "絵", reading: "え" },
-      { text: "図", reading: "ず" },
-      { text: "説明", reading: "せつめい" },
-      { text: "好き", reading: "すき" },
+      { text: "何", reading: "なに" },
+      { text: "見て", reading: "みて" },
+      { text: "使う", reading: "つかう" },
     ],
     image: "/img/quiz/q18.webp",
   },
   {
     id: 19,
-    axis: "heart",
-    easy: "なかまの いい ところを 見つけて、ほめますか。",
-    japanese: "なかまのいいところを見つけて、ほめますか。",
-    english: "Do you notice and praise your friends' good points?",
-    readings: [{ text: "見つけて", reading: "みつけて" }],
+    axis: "tf",
+    easy: "先生に こう 言われたら、どちらが うれしいですか。",
+    japanese: "先生にこう言われたら、どちらがうれしいですか。",
+    english: "Which would you rather hear from your teacher?",
+    a: {
+      pole: "T",
+      easy: "「かんがえかたが いいね」",
+      japanese: "「考え方がいいね」",
+      english: '"You think well"',
+    },
+    b: {
+      pole: "F",
+      // 「やさしいね」単独では「易しい（かんたん）」と誤読されT極が過大になる（07 §3.2）。
+      easy: "「人に やさしいね」",
+      japanese: "「人にやさしいね」",
+      english: '"You are kind to people"',
+    },
+    readings: [
+      { text: "先生", reading: "せんせい" },
+      { text: "言われたら", reading: "いわれたら" },
+      { text: "人", reading: "ひと" },
+    ],
     image: "/img/quiz/q19.webp",
   },
   {
     id: 20,
-    axis: "challenge",
-    easy: "あたらしい 人と はなすのは へいきですか。",
-    japanese: "新しい人と話すのはへいきですか。",
-    english: "Are you comfortable talking with new people?",
+    axis: "jp",
+    easy: "とちゅうで 「やりかたを 変えよう」と 言われました。",
+    japanese: "途中で「やり方を変えよう」と言われました。",
+    english: "Mid-way, you are told to change the approach.",
+    a: {
+      pole: "P",
+      easy: "「あたらしい やりかたを やって みたい」と 思う",
+      japanese: "「新しいやり方をやってみたい」と思う",
+      english: "You think it sounds interesting",
+    },
+    b: {
+      pole: "J",
+      easy: "「先に よていを 作りなおしたい」と 思う",
+      japanese: "「先に予定を作りなおしたい」と思う",
+      english: "You want to redo the plan first",
+    },
     readings: [
-      { text: "新しい", reading: "あたらしい" },
-      { text: "人", reading: "ひと" },
-      { text: "話す", reading: "はなす" },
+      { text: "変えよう", reading: "かえよう" },
+      { text: "言われました", reading: "いわれました" },
+      { text: "作りなおしたい", reading: "つくりなおしたい" },
     ],
     image: "/img/quiz/q20.webp",
   },
 ] as const;
 
-/** 結果文・強み表示で使う共通の読み辞書。 */
+/** 結果画面（tagline / analysis / teamRoleDetail）の読み辞書。 */
 export const PERSONALITY_RESULT_READINGS: readonly Reading[] = [
+  // 語彙メモ（glossary.ts）の見出し語は必ずここに置く。本文は漢字で書き、読みはここから合成する。
+  // **配列の先頭に置くこと。** RubyText は同じ位置で一致した語のうち配列で先に出たほうを採るので、
+  // 「手順」を「手」より後ろに置くと「手」だけにルビが付いて「順」が裸で残る。
+  { text: "仕組み", reading: "しくみ" },
+  { text: "手順", reading: "てじゅん" },
+  { text: "仲間", reading: "なかま" },
+  { text: "運用", reading: "うんよう" },
+  { text: "対応", reading: "たいおう" },
+  { text: "設計", reading: "せっけい" },
+  { text: "技術", reading: "ぎじゅつ" },
+  { text: "提案", reading: "ていあん" },
+  { text: "目標", reading: "もくひょう" },
+  { text: "締め切り", reading: "しめきり" },
+  { text: "段取り", reading: "だんどり" },
+  { text: "仕上げ", reading: "しあげ" },
+  { text: "結果", reading: "けっか" },
   { text: "日本", reading: "にほん" },
-  { text: "計画力", reading: "けいかくりょく" },
-  { text: "計画", reading: "けいかく" },
-  { text: "信頼", reading: "しんらい" },
-  { text: "気もち", reading: "きもち" },
-  { text: "気づく", reading: "きづく" },
-  { text: "出て", reading: "でて" },
-  { text: "力", reading: "ちから" },
-  { text: "大すき", reading: "だいすき" },
-  { text: "お客さま", reading: "おきゃくさま" },
+  { text: "役", reading: "やく" },
+  { text: "会議", reading: "かいぎ" },
+  { text: "一度", reading: "いちど" },
   { text: "人", reading: "ひと" },
+  { text: "小さな", reading: "ちいさな" },
+  { text: "時間", reading: "じかん" },
+  { text: "元気", reading: "げんき" },
+  { text: "気", reading: "き" },
+  { text: "見て", reading: "みて" },
+  { text: "見る", reading: "みる" },
+  { text: "見つける", reading: "みつける" },
+  { text: "声", reading: "こえ" },
+  { text: "話す", reading: "はなす" },
+  { text: "話しかける", reading: "はなしかける" },
+  { text: "教える", reading: "おしえる" },
+  { text: "作れます", reading: "つくれます" },
+  { text: "作る", reading: "つくる" },
+  { text: "書いて", reading: "かいて" },
+  { text: "言います", reading: "いいます" },
+  { text: "言われて", reading: "いわれて" },
+  { text: "思いながら", reading: "おもいながら" },
+  { text: "思う", reading: "おもう" },
+  { text: "一つずつ", reading: "ひとつずつ" },
+  { text: "一つ", reading: "ひとつ" },
+  { text: "自分", reading: "じぶん" },
+  { text: "先", reading: "さき" },
+  { text: "早い", reading: "はやい" },
+  { text: "楽しい", reading: "たのしい" },
+  { text: "楽しく", reading: "たのしく" },
+  { text: "体", reading: "からだ" },
+  { text: "色", reading: "いろ" },
+  { text: "前", reading: "まえ" },
+  { text: "中", reading: "なか" },
+  { text: "入る", reading: "はいる" },
+  { text: "来ます", reading: "きます" },
+  { text: "出て", reading: "でて" },
+  { text: "出たら", reading: "でたら" },
+  { text: "出す", reading: "だす" },
+  { text: "出た", reading: "でた" },
+  { text: "会う", reading: "あう" },
+  { text: "力", reading: "ちから" },
+  { text: "動く", reading: "うごく" },
+  { text: "手", reading: "て" },
+  { text: "お客さま", reading: "おきゃくさま" },
 ] as const;
 
-const ANSWER_POINTS: Record<PersonalityAnswer, number> = {
-  yes: 2,
-  neutral: 1,
-  no: 0,
-};
+const CODES: readonly PersonalityTypeCode[] = PERSONALITY_TYPES.map((type) => type.code);
 
-const TIE_BREAK_ORDER: readonly PersonalityTypeId[] = [
-  "heart",
-  "challenge",
-  "idea",
-  "leader",
-];
+/** コードの何文字目がどの軸か。 */
+const AXIS_INDEX: Readonly<Record<PersonalityAxis, number>> = { ei: 0, sn: 1, tf: 2, jp: 3 };
+
+function isAnswer(value: unknown): value is PersonalityAnswer {
+  return value === "a" || value === "b";
+}
 
 function validateAnswers(answers: readonly PersonalityAnswer[]): void {
-  if (
-    answers.length !== PERSONALITY_QUESTIONS.length ||
-    answers.some((answer) => !(answer in ANSWER_POINTS))
-  ) {
+  if (answers.length !== PERSONALITY_QUESTIONS.length || !answers.every(isAnswer)) {
     throw new Error("20もん すべてに こたえてください。");
   }
 }
 
+/** 選ばれた側の極に1点。値は「左の極（E/S/T/J）」側の点数（0〜5）。 */
 export function calculatePersonalityScores(
   answers: readonly PersonalityAnswer[],
 ): PersonalityScores {
   validateAnswers(answers);
-  const scores: PersonalityScores = {
-    leader: 0,
-    idea: 0,
-    heart: 0,
-    challenge: 0,
-  };
+  const scores: PersonalityScores = { ei: 0, sn: 0, tf: 0, jp: 0 };
 
   PERSONALITY_QUESTIONS.forEach((question, index) => {
-    scores[question.axis] += ANSWER_POINTS[answers[index]!];
+    const chosen = answers[index] === "a" ? question.a : question.b;
+    if (chosen.pole === PERSONALITY_AXIS_META[question.axis].poles[0]) {
+      scores[question.axis] += 1;
+    }
   });
   return scores;
 }
 
-export function pickPersonalityType(scores: PersonalityScores): PersonalityTypeId {
-  return TIE_BREAK_ORDER.reduce((best, candidate) =>
-    scores[candidate] > scores[best] ? candidate : best,
-  );
+/**
+ * DB（jsonb）から読んだ値の検証にも使う型ガード。
+ * ちょうど4キー・各値が0〜5の整数であることまで見る。v2 の `{leader,idea,heart,challenge}` や
+ * 範囲外・小数・欠損はここで落ちる。
+ */
+export function isPersonalityScores(value: unknown): value is PersonalityScores {
+  if (typeof value !== "object" || value === null) return false;
+  const keys = Object.keys(value);
+  if (keys.length !== PERSONALITY_AXES.length) return false;
+  return PERSONALITY_AXES.every((axis) => {
+    const score = (value as Record<string, unknown>)[axis];
+    return typeof score === "number" && Number.isInteger(score) && score >= 0 && score <= 5;
+  });
 }
 
-export function scorePersonality(answers: readonly PersonalityAnswer[]): PersonalityTypeId {
-  return pickPersonalityType(calculatePersonalityScores(answers));
+function assertScores(scores: PersonalityScores): void {
+  if (!isPersonalityScores(scores)) {
+    throw new Error("スコアは ei/sn/tf/jp の 4じくで、0〜5の せいすうで ある ひつようが あります。");
+  }
 }
 
-export function getPersonalityType(id: PersonalityTypeId): PersonalityType {
-  const type = PERSONALITY_TYPES.find((item) => item.id === id);
-  if (!type) throw new Error(`unknown personality type: ${id}`);
+/** 各軸5問（奇数）なので 3 以上か否かで必ず一方に決まる。同点は起きない。 */
+export function pickPersonalityCode(scores: PersonalityScores): PersonalityTypeCode {
+  assertScores(scores);
+  const code = PERSONALITY_AXES.map((axis) => {
+    const [first, second] = PERSONALITY_AXIS_META[axis].poles;
+    return scores[axis] >= 3 ? first : second;
+  }).join("");
+  if (!isPersonalityTypeCode(code)) {
+    throw new Error(`unknown personality type: ${code}`);
+  }
+  return code;
+}
+
+export function scorePersonality(answers: readonly PersonalityAnswer[]): PersonalityTypeCode {
+  return pickPersonalityCode(calculatePersonalityScores(answers));
+}
+
+export function getPersonalityType(code: PersonalityTypeCode): PersonalityType {
+  const type = PERSONALITY_TYPES.find((item) => item.code === code);
+  if (!type) throw new Error(`unknown personality type: ${code}`);
   return type;
+}
+
+export function getPersonalityFamily(id: PersonalityFamilyId): PersonalityFamily {
+  const family = PERSONALITY_FAMILIES.find((item) => item.id === id);
+  if (!family) throw new Error(`unknown personality family: ${id}`);
+  return family;
+}
+
+export function getFamilyForCode(code: PersonalityTypeCode): PersonalityFamily {
+  return getPersonalityFamily(getPersonalityType(code).familyId);
+}
+
+export function isPersonalityTypeCode(value: unknown): value is PersonalityTypeCode {
+  return typeof value === "string" && CODES.includes(value as PersonalityTypeCode);
+}
+
+/** その軸の極が何かをスコアから返す。しきい値は3（各軸5問なので3以上で確定）。 */
+export function getPole(scores: PersonalityScores, axis: PersonalityAxis): PersonalityPole {
+  const [first, second] = PERSONALITY_AXIS_META[axis].poles;
+  return scores[axis] >= 3 ? first : second;
+}
+
+/**
+ * その軸の極をコードの該当文字から返す。
+ *
+ * scores を経由しないので、管理者が `personality_type` だけを手で書き換えた行でも、
+ * 画面に出ているコードと判定が食い違わない。チーム編成の J/F/E 判定はこちらを使う
+ * （scores は表示専用）。
+ */
+export function getPoleFromCode(
+  code: PersonalityTypeCode,
+  axis: PersonalityAxis,
+): PersonalityPole {
+  // DBやadmin経由で壊れた値が来たとき、undefined を極として返さない。
+  if (!isPersonalityTypeCode(code)) {
+    throw new Error(`unknown personality type: ${String(code)}`);
+  }
+  const letter = code[AXIS_INDEX[axis]];
+  const [first, second] = PERSONALITY_AXIS_META[axis].poles;
+  if (letter !== first && letter !== second) {
+    throw new Error(`unknown pole for axis ${axis}: ${String(letter)}`);
+  }
+  return letter;
+}
+
+/**
+ * その軸が 3-2 の僅差か。「僅差」の定義はここ1か所に持つ（08 §3.1）。
+ * 定義が2か所に散ると片方だけ直されて壊れるため、getCloseAxis / getCloseAxes も
+ * この述語の上に載せる。
+ */
+export function isCloseAxis(scores: PersonalityScores, axis: PersonalityAxis): boolean {
+  assertScores(scores);
+  return scores[axis] === 3 || scores[axis] === 2;
+}
+
+/** 僅差の軸すべて（EI→SN→TF→JP の順）。教師向けの授業サポート表示が使う（08 §3.2）。 */
+export function getCloseAxes(scores: PersonalityScores): readonly PersonalityAxis[] {
+  assertScores(scores);
+  return PERSONALITY_AXES.filter((axis) => isCloseAxis(scores, axis));
+}
+
+/**
+ * 3-2 の僅差になっている軸。EI→SN→TF→JP の順で最初の1つだけ返す（07 §4.3）。
+ * 「どちらも あなたの いい ところ」の表示に使う。
+ */
+export function getCloseAxis(scores: PersonalityScores): PersonalityAxis | null {
+  return getCloseAxes(scores)[0] ?? null;
+}
+
+/** 指定した軸だけ極を反転したコードを返す。 */
+function flipAxes(code: PersonalityTypeCode, axes: readonly PersonalityAxis[]): PersonalityTypeCode {
+  const letters = code.split("");
+  for (const axis of axes) {
+    const [first, second] = PERSONALITY_AXIS_META[axis].poles;
+    const index = AXIS_INDEX[axis];
+    letters[index] = letters[index] === first ? second : first;
+  }
+  const flipped = letters.join("");
+  if (!isPersonalityTypeCode(flipped)) {
+    throw new Error(`unknown personality type: ${flipped}`);
+  }
+  return flipped;
+}
+
+export interface CompatibilityCard {
+  readonly code: PersonalityTypeCode;
+  /** カードに添える理由の1行。 */
+  readonly reason: string;
+}
+
+export interface PersonalityCompatibility {
+  /** すぐに 話が できる なかま。 */
+  similar: readonly [CompatibilityCard, CompatibilityCard];
+  /** じぶんに ない ものを もって いる なかま。 */
+  complementary: readonly [CompatibilityCard, CompatibilityCard];
+}
+
+/**
+ * 相性カード4枚。規則で一意に決まり、乱数・表順に依存しない（07 §5.1）。
+ * 「合わない相手」という枠組みは作らない。どの組み合わせにも前向きな意味を与える。
+ */
+export function getCompatibility(code: PersonalityTypeCode): PersonalityCompatibility {
+  if (!isPersonalityTypeCode(code)) {
+    throw new Error(`unknown personality type: ${String(code)}`);
+  }
+  return {
+    similar: [
+      { code: flipAxes(code, ["ei"]), reason: "元気に なる ときだけ ちがう" },
+      { code: flipAxes(code, ["jp"]), reason: "すすめかただけ ちがう" },
+    ],
+    complementary: [
+      {
+        code: flipAxes(code, ["ei", "sn", "tf", "jp"]),
+        reason: "4つ とも ちがう",
+      },
+      {
+        code: flipAxes(code, ["sn", "tf"]),
+        reason: "見て いる ところと、きめる ときに 見る ものが ちがう",
+      },
+    ],
+  };
 }

@@ -1,0 +1,29 @@
+/**
+ * Cloudflare Workers 設定（OpenNext 経由）。docs/design/09_Cloudflare移行実行計画.md を参照。
+ *
+ * - main / assets は `opennextjs-cloudflare build` の出力先。手で書き換えない。
+ * - nodejs_compat は OpenNext の必須要件。
+ * - compatibility_date は 2025-05-05 以降が必須（FinalizationRegistry 対策・計画書 §2.4）。
+ *   OpenNext は「6か月より古い日付」に警告を出すので、更新時は現在に近い日付へ寄せる。
+ * - incrementalCache（R2）は入れない。このアプリは ISR / on-demand revalidate を
+ *   使っておらず（全ページ prerender + SSR 2本）、SSR は設定なしで動く。R2 を足さない
+ *   ことで無料枠に収める（計画書 §3 の「完全無料」方針）。
+ * - 同じ理由で WORKER_SELF_REFERENCE も不要（revalidation 専用のバインディング）。
+ */
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  // 公開URLは `<name>.<アカウントsubdomain>.workers.dev`。
+  // name=academy・subdomain=nexmax で `academy.nexmax.workers.dev` になる。
+  // 改名すると別 Worker になる（旧名のデプロイ履歴は引き継がれない）。
+  "name": "academy",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-07-01",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS",
+  },
+  "observability": {
+    "enabled": true,
+  },
+}
