@@ -49,32 +49,44 @@ const LONG_WAIT_TOAST = "じゅんびちゅう です。もうすこし まっ�
 const SHORT_WAIT_TOAST = "じゅんびちゅう です。";
 
 /**
- * ステージの丸を置く x 位置（%）。
+ * 航路は**地図ぜんたいで1本の正弦波**にする。
  *
- * 座標を手で並べず**番号から決める**。こうするとステージが何個に増えても同じ規則で
- * 蛇行し、並びが崩れない（手打ちだと追加のたびに全部を調整することになる）。
- * 中央から左右へ交互に同じ幅だけ振る。振り幅が小さいと道がほぼ直線に見えて
- * 「蛇行している」と分からなくなるので、はっきり振る。
+ * `T` は「エリア番号 + エリア内の位置(0..1)」の通し目盛。1エリアで半周期進むので、
+ * ステージの丸（T = 番号 + 0.5）が中央から左右へ交互に振れ、エリアの境目（T = 整数）は
+ * ちょうど中央を通る。
+ *
+ * 大事なのは**境目で波を切らない**こと。区間ごとに「中央 → 左右 → 中央」と補間して
+ * 両端の傾きを 0 にすると、境目で道がいったん縦になり、波が細切れの折れ線に見える。
+ * 1本の sin で通すと、境目も傾きを持ったまま滑らかに通り抜ける。
+ *
+ * 出発とゴールの看板は中央にあり、T が整数のところで x = 50 になるので、
+ * 看板の真下から道が出入りする。
  */
-const NODE_SWING = 19;
+const NODE_SWING = 17;
 
-function areaNodeX(index: number): number {
-  return index % 2 === 0 ? 50 + NODE_SWING : 50 - NODE_SWING;
+/**
+ * 波の振れを、道のりの入口と出口だけ 0 まで絞る係数。
+ *
+ * 看板の下の道はまっすぐ縦に降りる（傾き 0）。一方 sin は T=0 で傾きが最大なので、
+ * そのままつなぐと看板を出た瞬間に真横へ折れて見える。端で振幅を 0 にすると
+ * **傾きも 0 になり**、縦の線から波へなめらかに移れる。
+ *
+ * 絞るのは端から半エリアぶんだけ。最初と最後のステージ（T = 0.5, N-0.5）では
+ * すでに 1 に戻っているので、振れ幅は他のステージと変わらない。
+ */
+function swingEnvelope(globalT: number, total: number): number {
+  const edge = Math.min(globalT, total - globalT) / 0.5;
+  const e = Math.max(0, Math.min(1, edge));
+  return e * e * (3 - 2 * e);
 }
 
-/**
- * エリアの境目は**必ず中央**を通す。
- * こうすると1エリアがそのまま「中央 → 左右どちらか → 中央」の対称なS字になり、
- * エリアを足しても引いても、隣との継ぎ目で道が折れない。
- * 出発とゴールの看板も中央なので、看板の真下から道が出入りする。
- */
-const AREA_BOUNDARY_X = 50;
+function routeX(globalT: number): number {
+  const swing = NODE_SWING * swingEnvelope(globalT, ROUTE_AREAS.length);
+  return 50 + swing * Math.sin(Math.PI * globalT);
+}
 
-/**
- * エリア内でステージを置く高さ（%）。上寄りに置いて、下に「現在のレッスン」パネルを
- * 開くぶんの余白を残す（狭い画面ではパネルが丸の真下に来るため）。
- */
-const NODE_TOP = 30;
+/** エリア内でステージを置く高さ（%）。波の山＝エリアのまんなかに置く */
+const NODE_TOP = 50;
 
 /** 進捗の色。歩いた道＝葉、いまここ＝珊瑚ピンク、まだ＝白 */
 const CURRENT_COLOR = "#f26fa7";
@@ -802,7 +814,7 @@ function RouteArea({
 }) {
   const stage = area.stageId ? STAGE_BY_ID.get(area.stageId) : undefined;
   const status = stage ? stageStatus(stage.id, progress) : null;
-  const nodeX = areaNodeX(index);
+  const nodeX = routeX(index + NODE_TOP / 100);
   const nodeTop = NODE_TOP;
   const chipOnRight = nodeX <= 50;
   const open = stage ? expandedStage === stage.id : false;
@@ -811,7 +823,9 @@ function RouteArea({
   return (
     <section
       aria-label={area.name}
-      className="relative h-[clamp(600px,58vh,660px)] w-full"
+      /* 狭い画面ではレッスンパネルが丸の真下に縦長で開くので、そのぶん背を高くする。
+         詰めるとパネルが次のエリアまではみ出し、エリア名の札に重なる */
+      className="relative h-[940px] w-full md:h-[clamp(680px,64vh,780px)]"
       style={{ backgroundColor: SKY_BLUE }}
     >
       <AreaImage src={area.image} fade="both" />
@@ -822,10 +836,7 @@ function RouteArea({
         <AreaLabel area={area} onRight={!chipOnRight} cleared={areaCleared} />
 
         <AreaTrail
-          xIn={AREA_BOUNDARY_X}
-          xNode={nodeX}
-          xOut={AREA_BOUNDARY_X}
-          nodeT={NODE_TOP / 100}
+          xAt={(t) => routeX(index + t)}
           areaIndex={index}
           flownUntil={flownUntil(progress)}
         />
@@ -912,10 +923,7 @@ function GoalArea({ progress }: { progress: StageProgress }) {
             そのぶん＋余白を空ける。突き抜けると着地して見えない */}
         <div className="absolute inset-x-0 top-0 bottom-[calc(50%+3.5rem)]">
           <AreaTrail
-            xIn={AREA_BOUNDARY_X}
-            xNode={50}
-            xOut={50}
-            nodeT={0.5}
+            xAt={() => 50}
             areaIndex={ROUTE_AREAS.length}
             flownUntil={flownUntil(progress)}
           />
@@ -976,14 +984,7 @@ function MapViewPane({
             {firstArea.name}
           </WoodenBanner>
           <div className="absolute inset-x-0 top-[13rem] bottom-0">
-            <AreaTrail
-              xIn={AREA_BOUNDARY_X}
-              xNode={AREA_BOUNDARY_X}
-              xOut={AREA_BOUNDARY_X}
-              nodeT={0.5}
-              areaIndex={-1}
-              flownUntil={flownUntil(progress)}
-            />
+            <AreaTrail xAt={() => 50} areaIndex={-1} flownUntil={flownUntil(progress)} />
           </div>
         </MapLayer>
       </div>
