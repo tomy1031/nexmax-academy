@@ -20,7 +20,7 @@ import {
   type PersonalityQuestionOption,
   type PersonalityTypeCode,
 } from "@/content/personality";
-import { NekuMaxFamily, TypeEmblem } from "@/components/nekumax-types";
+import { NekuMaxFamily, NekuMaxType, TypeEmblem } from "@/components/nekumax-types";
 import { GlossaryText } from "@/components/glossary-text";
 import { LearnerText, RubyText, renderRuby } from "@/components/ruby-text";
 import { insertPersonalityResult, upsertOwnProfile } from "@/lib/profile-db";
@@ -899,12 +899,7 @@ export function WelcomeWizard({
                   あなたの タイプ
                 </p>
                 <div className="relative z-10 mt-8">
-                  <NekuMaxFamily
-                    family={result.familyId}
-                    gender={gender ?? "male"}
-                    size={285}
-                    bob
-                  />
+                  <NekuMaxType code={result.code} gender={gender ?? "male"} size={285} bob />
                 </div>
                 <div className="absolute top-16 right-4 z-20">
                   <TypeEmblem code={result.code} size={72} />

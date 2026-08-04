@@ -74,6 +74,70 @@ export function NekuMaxFamily({
 }
 
 /**
+ * タイプの立ち絵（07 §9.3 フェーズB）。16タイプ × 性別2 の32枚。
+ *
+ * 役割（`teamRole`）を装備とポーズで見せる。RPGのジョブに近い作りで、
+ * 呼び名を読まなくても絵だけで役割が伝わることを狙う。
+ *
+ * **フォールバックは4段**: タイプ32枚 → 家族8枚 → 原画 → 絵文字。
+ * 32枚が1枚も無くても、家族立ち絵で従来どおり動く。
+ */
+export function NekuMaxType({
+  code,
+  gender = "male",
+  size = 160,
+  bob = false,
+  className = "",
+}: {
+  code: PersonalityTypeCode;
+  gender?: Gender;
+  size?: number;
+  bob?: boolean;
+  className?: string;
+}) {
+  const meta = getPersonalityType(code);
+  const family = getPersonalityFamily(meta.familyId);
+  const suffix = gender === "female" ? "_f" : "";
+  const [failedSources, setFailedSources] = useState<string[]>([]);
+
+  const candidates = [
+    `${FAMILY_DIR}/${code}${suffix}.webp`,
+    `${FAMILY_DIR}/${meta.familyId}${suffix}.webp`,
+    REFERENCE_SRC,
+  ];
+  const src = candidates.find((candidate) => !failedSources.includes(candidate));
+  const wrapperClass = `${bob ? "animate-bob" : ""} ${className}`.trim();
+
+  if (!src) {
+    return (
+      <span
+        role="img"
+        aria-label={meta.name}
+        className={`grid place-items-center rounded-3xl bg-white ${wrapperClass}`}
+        style={{ width: size, height: size, border: `3px dashed ${family.color}` }}
+      >
+        <span style={{ fontSize: size * 0.45 }}>{meta.emblem}</span>
+      </span>
+    );
+  }
+
+  return (
+    <Image
+      src={src}
+      alt={meta.name}
+      width={size}
+      height={size}
+      unoptimized
+      onError={() =>
+        setFailedSources((current) => (current.includes(src) ? current : [...current, src]))
+      }
+      className={wrapperClass}
+      style={{ width: size, height: size, objectFit: "contain" }}
+    />
+  );
+}
+
+/**
  * タイプのエンブレム。画像が1枚も無くても診断は完成品として動く必要があるので、
  * 未生成のあいだは §2 の絵文字にフォールバックする（07 §9.1）。
  */

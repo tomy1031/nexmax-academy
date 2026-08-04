@@ -3,7 +3,7 @@
 import { useSyncExternalStore } from "react";
 import Link from "next/link";
 import { LearnerText, RubyText } from "@/components/ruby-text";
-import { NekuMaxFamily, TypeEmblem } from "@/components/nekumax-types";
+import { NekuMaxFamily, NekuMaxType } from "@/components/nekumax-types";
 import {
   PERSONALITY_FAMILIES,
   PERSONALITY_RESULT_READINGS,
@@ -43,10 +43,12 @@ function TypeCard({
   code,
   family,
   isOwn,
+  gender,
 }: {
   code: PersonalityTypeCode;
   family: PersonalityFamily;
   isOwn: boolean;
+  gender: Gender;
 }) {
   const type = getPersonalityType(code);
 
@@ -56,7 +58,7 @@ function TypeCard({
       style={{ borderColor: isOwn ? family.color : "transparent" }}
     >
       <header className="flex items-center gap-3">
-        <TypeEmblem code={code} size={52} className="shrink-0" />
+        <NekuMaxType code={code} gender={gender} size={84} className="shrink-0" />
         <div className="min-w-0 flex-1">
           <h3 className="text-navy text-base font-black">
             {type.name}
@@ -131,7 +133,13 @@ function FamilySection({
 
       <div className="mt-4 grid gap-4 sm:grid-cols-2">
         {family.codes.map((code) => (
-          <TypeCard key={code} code={code} family={family} isOwn={code === ownCode} />
+          <TypeCard
+            key={code}
+            code={code}
+            family={family}
+            isOwn={code === ownCode}
+            gender={gender}
+          />
         ))}
       </div>
     </section>
