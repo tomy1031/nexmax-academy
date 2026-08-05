@@ -10,6 +10,7 @@ import {
   SPEAKER_ME,
   SPEAKER_NARRATION,
 } from "./listening-drafts";
+import { AudioMaker } from "./audio-maker";
 import {
   FuriganaEditor,
   MiniButton,
@@ -256,6 +257,8 @@ export function ListeningEditor({
           />
         </div>
       </StudioSection>
+
+      <AudioMaker value={value} onChange={onChange} />
 
       <FuriganaEditor
         entries={value.furigana ?? []}
