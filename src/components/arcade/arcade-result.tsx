@@ -4,7 +4,7 @@ import { motion } from "motion/react";
 import type { Word } from "@/content/schema";
 import { FeedbackMessage } from "@/components/feedback-message";
 import { RubyText } from "@/components/ruby-text";
-import { NekuMax } from "@/components/nekumax";
+import { NexMax } from "@/components/nexmax";
 import type { FuriganaIndex } from "@/lib/text/furigana";
 import type { ArcadeSummary } from "./arcade-reducer";
 
@@ -42,7 +42,7 @@ export function ArcadeResult({
       className="card-island mx-auto w-full max-w-2xl p-6 sm:p-8"
     >
       <div className="flex items-center gap-4">
-        <NekuMax variant={summary.passed ? "cheer" : "guide"} size={84} bob />
+        <NexMax variant={summary.passed ? "cheer" : "guide"} size={84} bob />
         <div className="flex-1">
           <p className="text-ink-soft text-sm font-extrabold">けっか</p>
           <h2 className="text-ink text-3xl font-extrabold">

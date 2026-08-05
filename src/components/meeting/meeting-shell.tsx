@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { motion } from "motion/react";
 import type { MeetingParticipant } from "@/content/schema";
 import { FeedbackMessage } from "@/components/feedback-message";
-import { NekuMax } from "@/components/nekumax";
+import { NexMax } from "@/components/nexmax";
 
 /**
  * Zoom風のミーティング画面（モードに依存しない外枠）。
@@ -57,7 +57,7 @@ export function MeetingShell({
   if (stage === "leaving") {
     return (
       <div className="card-island mx-auto max-w-md p-6 text-center sm:p-8">
-        <NekuMax variant="listen" size={92} className="mx-auto" bob />
+        <NexMax variant="listen" size={92} className="mx-auto" bob />
         <h2 className="text-ink mt-4 text-2xl font-extrabold">お礼を 言いましたか？</h2>
         <p className="text-ink-soft mt-2 font-bold">
           「ありがとうございました」と ひとこと 言ってから 出ましょう。
@@ -89,7 +89,7 @@ export function MeetingShell({
   if (stage === "left") {
     return (
       <div className="card-island mx-auto max-w-md p-8 text-center">
-        <NekuMax variant="cheer" size={92} className="mx-auto" bob />
+        <NexMax variant="cheer" size={92} className="mx-auto" bob />
         <h2 className="text-ink mt-4 text-2xl font-extrabold">おつかれさま！</h2>
         <p className="text-ink-soft mt-2 font-bold">ミーティングが おわりました。</p>
       </div>
@@ -150,7 +150,7 @@ function Lobby({ title, focus, onEnter }: { title: string; focus: string; onEnte
       animate={{ opacity: 1, y: 0 }}
       className="card-island mx-auto max-w-xl p-6 text-center sm:p-8"
     >
-      <NekuMax variant="listen" size={100} className="mx-auto" bob />
+      <NexMax variant="listen" size={100} className="mx-auto" bob />
       <h1 className="text-ink mt-4 text-2xl font-extrabold">{title}</h1>
 
       <div className="mt-4 text-left">

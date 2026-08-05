@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { Article, ArticleBlock } from "@/content/schema";
-import { NekuMax, type NekuMaxVariant } from "@/components/nekumax";
+import { NexMax, type NexMaxVariant } from "@/components/nexmax";
 import { RubyText } from "@/components/ruby-text";
 import { recordContentProgress } from "@/lib/progress/store";
 import { buildFuriganaIndex, type FuriganaIndex } from "@/lib/text/furigana";
@@ -351,7 +351,7 @@ function ImageBlock({
 
 const CALLOUT_STYLE: Record<
   CalloutBlockData["tone"],
-  { variant: NekuMaxVariant; accent: string; label: string }
+  { variant: NexMaxVariant; accent: string; label: string }
 > = {
   point: { variant: "book", accent: "#8d6ae8", label: "ここが ポイント" },
   care: { variant: "cheer", accent: "#f2654a", label: "ここに きを つけて" },
@@ -372,7 +372,7 @@ function CalloutBlock({
       className="card-island flex items-start gap-3 p-4"
       style={{ borderColor: tone.accent, boxShadow: `0 6px 0 ${tone.accent}33` }}
     >
-      <NekuMax variant={tone.variant} size={56} />
+      <NexMax variant={tone.variant} size={56} />
       <div className="min-w-0">
         <p className="text-xs font-extrabold" style={{ color: tone.accent }}>
           {tone.label}

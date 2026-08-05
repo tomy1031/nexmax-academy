@@ -4,11 +4,23 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AdminError, AdminHeader, AdminLoading, AdminPageFrame } from "@/components/admin/admin-ui";
-import type { PersonalityTypeId } from "@/content/personality";
+import { TypeEmblem } from "@/components/nexmax-types";
+import {
+  PERSONALITY_AXES,
+  PERSONALITY_AXIS_META,
+  PERSONALITY_TYPES,
+  getFamilyForCode,
+  getPersonalityFamily,
+  getPersonalityType,
+  pickPersonalityCode,
+  type PersonalityTypeCode,
+} from "@/content/personality";
+import { hasCompletedPersonality } from "@/lib/personality-stats";
 import {
   deleteProfileAsAdmin,
   fetchAllProfiles,
   fetchOwnProfile,
+  resetDiagnosisAsAdmin,
   updateProfileAsAdmin,
   type ProfileRow,
 } from "@/lib/profile-db";
@@ -18,15 +30,16 @@ import { createClient } from "@/lib/supabase/client";
 interface ProfileDraft {
   displayName: string;
   gender: Gender;
-  personalityType: PersonalityTypeId;
+  personalityType: PersonalityTypeCode;
 }
 
-const TYPE_OPTIONS: readonly { id: PersonalityTypeId; label: string }[] = [
-  { id: "leader", label: "リーダー" },
-  { id: "idea", label: "ひらめき" },
-  { id: "heart", label: "きづかい" },
-  { id: "challenge", label: "チャレンジ" },
-];
+/** 16タイプ。組でまとめて選びやすくする。 */
+const TYPE_OPTIONS: readonly { id: PersonalityTypeCode; label: string }[] = PERSONALITY_TYPES.map(
+  (type) => ({
+    id: type.code,
+    label: `${getPersonalityFamily(type.familyId).name}・${type.shortName}`,
+  }),
+);
 
 function draftFromProfile(profile: ProfileRow): ProfileDraft {
   return {
@@ -135,8 +148,40 @@ export default function AdminUsersPage() {
     }
   }
 
+  async function resetDiagnosis(profile: ProfileRow) {
+    if (
+      !window.confirm(
+        `${profile.email} の診断をリセットします。\n\n` +
+          `・次のログイン時に、この人はもう一度20問に答えます\n` +
+          `・受験履歴は残ります（プロフィールと名前・性別もそのまま）\n\n` +
+          `よろしいですか？`,
+      )
+    ) {
+      return;
+    }
+    setSavingId(profile.id);
+    try {
+      const updated = await resetDiagnosisAsAdmin(profile.id);
+      setProfiles((current) => current.map((item) => (item.id === profile.id ? updated : item)));
+      showToast("診断をリセットしました。");
+    } catch {
+      showToast("診断のリセットに失敗しました。");
+    } finally {
+      setSavingId(null);
+    }
+  }
+
   async function deleteRow(profile: ProfileRow) {
-    if (!window.confirm(`${profile.email} を削除しますか？`)) return;
+    if (
+      !window.confirm(
+        `${profile.email} を完全に削除します。\n\n` +
+          `・受験履歴もすべて消えます（元に戻せません）\n` +
+          `・診断をやり直させたいだけなら「診断リセット」を使ってください\n\n` +
+          `本当に削除しますか？`,
+      )
+    ) {
+      return;
+    }
     setSavingId(profile.id);
     try {
       await deleteProfileAsAdmin(profile.id);
@@ -154,9 +199,10 @@ export default function AdminUsersPage() {
     }
   }
 
-  if (loading) {
-    return errorMessage ? <AdminError message={errorMessage} /> : <AdminLoading />;
-  }
+  // エラーは loading の内外を問わず最優先で出す。ここを loading の内側に入れると、
+  // 取得失敗時に「空の一覧」が正常画面として表示されてしまう。
+  if (errorMessage) return <AdminError message={errorMessage} />;
+  if (loading) return <AdminLoading />;
 
   return (
     <AdminPageFrame>
@@ -171,7 +217,8 @@ export default function AdminUsersPage() {
                 <th className="px-3">メール</th>
                 <th className="px-3">なまえ</th>
                 <th className="px-3">性別</th>
-                <th className="px-3">タイプ</th>
+                <th className="px-3">ネクマックス</th>
+                <th className="px-3">タイプを 変える</th>
                 <th className="px-3">スコア</th>
                 <th className="px-3">管理者</th>
                 <th className="px-3">作成日</th>
@@ -181,6 +228,11 @@ export default function AdminUsersPage() {
             <tbody>
               {profiles.map((profile) => {
                 const draft = drafts[profile.id] ?? draftFromProfile(profile);
+                const diagnosed = hasCompletedPersonality(profile);
+                // 管理者はタイプだけを手で変えられる。スコアは診断の記録なので書き換えない
+                // 代わりに、コードとスコアが食い違っている行をここで可視化する。
+                const mismatched =
+                  diagnosed && pickPersonalityCode(profile.scores) !== profile.personality_type;
                 return (
                   <tr key={profile.id} className="bg-white shadow-sm">
                     <td className="rounded-l-2xl px-3 py-3 font-medium">{profile.email}</td>
@@ -215,12 +267,37 @@ export default function AdminUsersPage() {
                         <option value="female">女性</option>
                       </select>
                     </td>
+                    {/* いま何の人か。診断ずみの行だけ出す。未診断を診断ずみに見せない。 */}
+                    <td className="px-3 py-3">
+                      {diagnosed ? (
+                        <span className="flex items-center gap-2">
+                          <TypeEmblem
+                            code={profile.personality_type}
+                            size={34}
+                            className="shrink-0"
+                          />
+                          <span className="min-w-0">
+                            <span className="text-ink block font-extrabold whitespace-nowrap">
+                              {getPersonalityType(profile.personality_type).shortName}
+                            </span>
+                            <span
+                              className="block text-[10px] font-bold whitespace-nowrap"
+                              style={{ color: getFamilyForCode(profile.personality_type).color }}
+                            >
+                              {getFamilyForCode(profile.personality_type).name}
+                            </span>
+                          </span>
+                        </span>
+                      ) : (
+                        <span className="text-ink-soft font-bold">未診断</span>
+                      )}
+                    </td>
                     <td className="px-3 py-3">
                       <select
                         value={draft.personalityType}
                         onChange={(event) =>
                           updateDraft(profile.id, {
-                            personalityType: event.target.value as PersonalityTypeId,
+                            personalityType: event.target.value as PersonalityTypeCode,
                           })
                         }
                         className="border-hairline rounded-xl border-2 px-3 py-2"
@@ -233,8 +310,30 @@ export default function AdminUsersPage() {
                       </select>
                     </td>
                     <td className="px-3 py-3 font-mono text-xs">
-                      L:{profile.scores.leader} / I:{profile.scores.idea} / H:
-                      {profile.scores.heart} / C:{profile.scores.challenge}
+                      {diagnosed ? (
+                        <>
+                          {PERSONALITY_AXES.map((axis) => {
+                            const [first, second] = PERSONALITY_AXIS_META[axis].poles;
+                            return (
+                              <span key={axis} className="mr-2 inline-block">
+                                {first}
+                                {profile.scores[axis]}/{second}
+                                {5 - profile.scores[axis]}
+                              </span>
+                            );
+                          })}
+                          {mismatched && (
+                            <span
+                              className="ml-1 rounded bg-[#fdf0e4] px-1.5 py-0.5 font-sans text-[10px] font-bold text-[#a5541c]"
+                              title={`回答から求まるのは ${getPersonalityType(pickPersonalityCode(profile.scores)).name} です`}
+                            >
+                              手動変更あり
+                            </span>
+                          )}
+                        </>
+                      ) : (
+                        <span className="text-ink-soft font-sans">未診断</span>
+                      )}
                     </td>
                     <td className="px-3 py-3">{profile.is_admin ? "はい" : "いいえ"}</td>
                     <td className="px-3 py-3">
@@ -253,6 +352,16 @@ export default function AdminUsersPage() {
                           className="bg-navy rounded-xl px-4 py-2 font-bold text-white disabled:opacity-35"
                         >
                           保存
+                        </button>
+                        <button
+                          type="button"
+                          // 未診断の人にはリセットするものがない
+                          disabled={savingId === profile.id || !hasCompletedPersonality(profile)}
+                          onClick={() => void resetDiagnosis(profile)}
+                          className="border-hairline text-navy rounded-xl border-2 bg-white px-4 py-2 font-bold disabled:opacity-35"
+                          title="診断だけを未受験に戻します。受験履歴は残ります。"
+                        >
+                          診断リセット
                         </button>
                         <button
                           type="button"

@@ -5,7 +5,7 @@ import {
   checkStageSteps,
   type ContentEntry,
 } from "../src/lib/content-checks";
-import { BASE_STOP_COUNT } from "../src/lib/map-layout";
+import { ROUTE_AREAS } from "../src/content/areas";
 import { contentSchema, type Content } from "../src/content/schema";
 
 /**
@@ -85,70 +85,61 @@ describe("ID重複の検査", () => {
 });
 
 describe("マップの停留所とステージの結びつき", () => {
-  /** 画像が1枚も無い状態。 */
-  const NO_IMAGES: ReadonlySet<number> = new Set();
+  /** 既定のエリアより先の step。ここから先は自分で土地（area）を決める必要がある。 */
+  const BEYOND_SEEDS = ROUTE_AREAS.length + 1;
+
+  /** マップの土地（景色の名前・絵・一言）。国名を入れない。 */
+  const area = {
+    name: "しごとの しま",
+    reading: "しごとの しま",
+    image: "/img/scenes/area_office_island.webp",
+    note: "あたらしい しごとの しま。",
+  };
 
   it("公開ステージの step が重なったら弾く（片方がたどり着けなくなる）", () => {
-    const findings = checkStageSteps(
-      [
-        entry(stage({ id: "s1", step: 2 }), "s1.json"),
-        entry(stage({ id: "s2", step: 2 }), "s2.json"),
-      ],
-      NO_IMAGES,
-    );
+    const findings = checkStageSteps([
+      entry(stage({ id: "s1", step: 2 }), "s1.json"),
+      entry(stage({ id: "s2", step: 2 }), "s2.json"),
+    ]);
     expect(findings.some((f) => f.level === "error" && f.message.includes("step 2"))).toBe(true);
   });
 
-  it("STEP 6 以降で自分の絵が無いステージは、作り方まで書いて警告する", () => {
-    const step = BASE_STOP_COUNT + 1;
-    const findings = checkStageSteps([entry(stage({ id: "far", step }), "far.json")], NO_IMAGES);
+  it("既定のエリアより先で area が無いステージは、決め方まで書いて警告する", () => {
+    const findings = checkStageSteps([entry(stage({ id: "far", step: BEYOND_SEEDS }), "far.json")]);
     expect(findings).toHaveLength(1);
     expect(findings[0]?.level).toBe("warn");
     // 直し方が書いていないと、先生は step を戻して教材を引っこめるしかないと思ってしまう
-    expect(findings[0]?.message).toContain(`map_step${step}`);
+    expect(findings[0]?.message).toContain("スタジオ");
     expect(findings[0]?.message).toContain("Codex");
   });
 
-  it("絵が無くても「たどり着けない」とは言わない（帯とピンは出るので、消えると書くと先生が公開を取り下げる）", () => {
-    const findings = checkStageSteps(
-      [entry(stage({ id: "far", step: BASE_STOP_COUNT + 1 }), "far.json")],
-      NO_IMAGES,
-    );
+  it("area が無くても「たどり着けない」とは言わない（ステージは出るので、消えると書くと先生が公開を取り下げる）", () => {
+    const findings = checkStageSteps([entry(stage({ id: "far", step: BEYOND_SEEDS }), "far.json")]);
     expect(findings[0]?.message).not.toContain("たどり着けない");
-    expect(findings[0]?.message).toContain("色だけ");
+    expect(findings[0]?.message).toContain("空色の帯");
   });
 
-  it("自分の絵があれば STEP 6 以降も何も出ない — 絵を置くだけでステップを足せる", () => {
-    const step = BASE_STOP_COUNT + 1;
-    const entries = [entry(stage({ id: "far", step }), "far.json")];
-    expect(checkStageSteps(entries, NO_IMAGES)).toHaveLength(1);
-    expect(checkStageSteps(entries, new Set([step]))).toEqual([]);
+  it("area を決めれば既定より先でも何も出ない — スタジオだけでステージを足せる", () => {
+    expect(
+      checkStageSteps([entry(stage({ id: "far", step: BEYOND_SEEDS }), "far.json")]),
+    ).toHaveLength(1);
+    expect(
+      checkStageSteps([entry(stage({ id: "far", step: BEYOND_SEEDS, area }), "far.json")]),
+    ).toEqual([]);
   });
 
-  it("STEP 5 までは絵が無くても何も出ない（元の3枚の絵が受け持つ）", () => {
-    const findings = checkStageSteps(
-      [entry(stage({ id: "last", step: BASE_STOP_COUNT }), "last.json")],
-      NO_IMAGES,
-    );
+  it("既定のエリアの範囲なら area が無くても何も出ない", () => {
+    const findings = checkStageSteps([
+      entry(stage({ id: "last", step: ROUTE_AREAS.length }), "last.json"),
+    ]);
     expect(findings).toEqual([]);
   });
 
-  it("ほかの step の絵では通らない（step 7 の絵は step 6 の代わりにならない）", () => {
-    const findings = checkStageSteps(
-      [entry(stage({ id: "far", step: 6 }), "far.json")],
-      new Set([7]),
-    );
-    expect(findings).toHaveLength(1);
-  });
-
   it("下書きは検査しない（作りかけの step 重複で止めない）", () => {
-    const findings = checkStageSteps(
-      [
-        entry(stage({ id: "s1", step: 2 }), "s1.json"),
-        entry(stage({ id: "s2", step: 2, status: "draft" }), "s2.json"),
-      ],
-      NO_IMAGES,
-    );
+    const findings = checkStageSteps([
+      entry(stage({ id: "s1", step: 2 }), "s1.json"),
+      entry(stage({ id: "s2", step: 2, status: "draft" }), "s2.json"),
+    ]);
     expect(findings).toEqual([]);
   });
 });

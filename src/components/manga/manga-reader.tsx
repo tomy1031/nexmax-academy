@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { motion } from "motion/react";
 import type { Manga, MangaLine, MangaPanel } from "@/content/schema";
-import { NekuMax } from "@/components/nekumax";
+import { NexMax } from "@/components/nexmax";
 import { RubyText } from "@/components/ruby-text";
 import { CelebrationBurst } from "@/components/quiz/celebration";
 import { buildFuriganaIndex, type FuriganaIndex } from "@/lib/text/furigana";
@@ -238,7 +238,7 @@ export function MangaReader({ manga }: { manga: Manga }) {
 
       <section className="card-island p-5 sm:p-6">
         <div className="flex items-start gap-4">
-          <NekuMax variant="book" size={84} bob />
+          <NexMax variant="book" size={84} bob />
           <div className="min-w-0">
             <h1 className="text-ink text-2xl font-extrabold sm:text-3xl">
               <RubyText text={manga.title} index={furigana} show={furiganaOn} />
@@ -324,7 +324,7 @@ export function MangaReader({ manga }: { manga: Manga }) {
       <section className="card-island mt-8 p-6 text-center">
         {justFinished && <CelebrationBurst />}
         <div className="flex justify-center">
-          <NekuMax variant={read ? "cheer" : "book"} size={92} bob />
+          <NexMax variant={read ? "cheer" : "book"} size={92} bob />
         </div>
         <p className="text-ink mt-3 text-2xl font-extrabold">
           {read ? "よみおわり！ おつかれさま" : "ここまで よんだね"}
@@ -454,7 +454,7 @@ function PanelBlock({
         />
       ) : (
         <div className="card-island grid place-items-center gap-2 px-4 py-8">
-          <NekuMax variant="build" size={76} bob />
+          <NexMax variant="build" size={76} bob />
           <p className="text-ink-soft text-sm font-extrabold">え は じゅんびちゅう</p>
         </div>
       )}

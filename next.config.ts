@@ -1,17 +1,13 @@
 import type { NextConfig } from "next";
+import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare";
 
 const nextConfig: NextConfig = {
-  turbopack: {
-    /**
-     * ワークスペースの根をこのリポジトリに固定する。
-     *
-     * 指定しないと、Turbopack は上位ディレクトリの lockfile を見つけて
-     * そちらを根と推測する（開発機のホームに package-lock.json があると
-     * /Users/<name> が根になる）。リポジトリ外のファイルを巻き込んで
-     * ビルドが壊れるため、明示する。
-     */
-    root: import.meta.dirname,
-  },
+  // ホームディレクトリ側の package-lock.json をワークスペース root と誤認させない。
+  // 誤認すると standalone 出力の依存トレースがずれて Workers 上で壊れる。
+  turbopack: { root: import.meta.dirname },
 };
+
+// `next dev` から Cloudflare のバインディングを参照できるようにする（OpenNext 要件）。
+initOpenNextCloudflareForDev();
 
 export default nextConfig;

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { listQuizSets } from "@/lib/content";
-import { NekuMax } from "@/components/nekumax";
+import { NexMax } from "@/components/nexmax";
 
 export const metadata: Metadata = {
   title: "もんだい | Japanese IT Pathway",
@@ -19,7 +19,7 @@ export default function QuizIndexPage() {
       </header>
 
       <div className="card-island flex items-center gap-4 p-5 sm:p-6">
-        <NekuMax variant="hello" size={92} bob />
+        <NexMax variant="hello" size={92} bob />
         <div>
           <h1 className="text-ink text-2xl font-extrabold sm:text-3xl">✏️ もんだい</h1>
           <p className="text-ink-soft mt-1 font-bold">まなんだ ことを、もんだいで たしかめよう。</p>

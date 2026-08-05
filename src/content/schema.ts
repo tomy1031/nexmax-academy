@@ -516,6 +516,27 @@ export const stageContentRefSchema = z.object({
  * コンテンツ側はステージを知らない（付け替え・使い回しが自由）。
  * 参照切れは lint:content の参照整合検査（content-checks.ts）が落とす。
  */
+/**
+ * マップのエリア（そのステージが立つ土地）。設計: src/content/areas.ts
+ *
+ * マップは「1ステージ＝1エリア＝背景画像1枚」。ステージがこれを持つことで、
+ * スタジオからステージを足すとマップの停留所も一緒に増える（コードを触らずに済む）。
+ * 省略すると、既定のエリア（areas.ts の並び）がその step の位置に使われる。
+ *
+ * **表示名に国名を入れない**（areas.ts の方針）。国は情勢で差し替える前提なので、
+ * 画面文言が国に依存していると差し替えのたびに UI を直すことになる。
+ * とくに「タイ」は使用禁止（AGENTS.md）。都市名・遺跡名は国名ではないので使ってよい。
+ */
+export const mapAreaSchema = z.object({
+  /** 画面に出す景色の名前。国名を入れない。 */
+  name: plainText,
+  reading: hiragana,
+  /** 背景画像。`/img/scenes/...` か、スタジオでアップロードした画像のURL。 */
+  image: z.string().min(1),
+  /** 地図に小さく添える一言。 */
+  note: plainText,
+});
+
 export const stageSchema = z.object({
   kind: z.literal("stage"),
   id: z.string().regex(/^[a-z0-9_-]+$/),
@@ -531,6 +552,8 @@ export const stageSchema = z.object({
   contents: z.array(stageContentRefSchema).min(1),
   /** 紐づく単語ステージ（別管理・複数可）。 */
   wordStageIds: z.array(z.string().min(1)).default([]),
+  /** マップでこのステージが立つ土地。省略すると既定のエリアを使う。 */
+  area: mapAreaSchema.optional(),
 });
 
 /**

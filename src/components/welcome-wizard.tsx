@@ -4,18 +4,27 @@ import { Fragment, useMemo, useRef, useState, useSyncExternalStore, type ReactNo
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
 import {
+  PERSONALITY_AXIS_META,
+  PERSONALITY_INTRO,
+  PERSONALITY_FAMILIES,
   PERSONALITY_QUESTIONS,
   PERSONALITY_RESULT_READINGS,
-  PERSONALITY_TYPES,
   calculatePersonalityScores,
+  getCloseAxis,
+  getCompatibility,
+  getFamilyForCode,
   getPersonalityType,
   scorePersonality,
   type PersonalityAnswer,
   type PersonalityLanguage,
   type PersonalityQuestion,
-  type Reading,
+  type PersonalityQuestionOption,
+  type PersonalityTypeCode,
 } from "@/content/personality";
-import { NekuMaxType } from "@/components/nekumax-types";
+import { NexMaxFamily, NexMaxType, TypeEmblem } from "@/components/nexmax-types";
+import { GlossaryChip, GlossaryText } from "@/components/glossary-text";
+import { LearnerText, RubyText, renderRuby } from "@/components/ruby-text";
+import { findAllGlossaryTerms } from "@/content/glossary";
 import { insertPersonalityResult, upsertOwnProfile } from "@/lib/profile-db";
 import { createClient } from "@/lib/supabase/client";
 import { getGeminiKey, saveGeminiKey, saveProfile, type Gender } from "@/lib/profile";
@@ -100,58 +109,17 @@ function QuizIllustration({ src }: { src: string }) {
   );
 }
 
-function RubyText({ text, readings }: { text: string; readings: readonly Reading[] }) {
-  const parts: ReactNode[] = [];
-  let cursor = 0;
-
-  while (cursor < text.length) {
-    let nextReading: Reading | undefined;
-    let nextIndex = text.length;
-
-    for (const reading of readings) {
-      const index = text.indexOf(reading.text, cursor);
-      if (index >= 0 && index < nextIndex) {
-        nextIndex = index;
-        nextReading = reading;
-      }
-    }
-
-    if (!nextReading) {
-      parts.push(text.slice(cursor));
-      break;
-    }
-    if (nextIndex > cursor) parts.push(text.slice(cursor, nextIndex));
-    parts.push(
-      <ruby key={`${nextReading.text}-${cursor}`}>
-        {nextReading.text}
-        <rt>{nextReading.reading}</rt>
-      </ruby>,
-    );
-    cursor = nextIndex + nextReading.text.length;
-  }
-
-  return <>{parts}</>;
-}
-
 function Stepper({ step }: { step: 1 | 2 | 3 }) {
   const numberMarks = ["❶", "❷", "❸", "❹"];
   const items: { number: number; label: ReactNode }[] = [
     { number: 1, label: <>チュートリアル</> },
     {
       number: 2,
-      label: (
-        <ruby>
-          性格診断<rt>せいかく しんだん</rt>
-        </ruby>
-      ),
+      label: <RubyText text="性格診断" readings={PERSONALITY_RESULT_READINGS} />,
     },
     {
       number: 3,
-      label: (
-        <ruby>
-          結果<rt>けっか</rt>
-        </ruby>
-      ),
+      label: <RubyText text="結果" readings={PERSONALITY_RESULT_READINGS} />,
     },
     { number: 4, label: <>はじめる</> },
   ];
@@ -187,39 +155,185 @@ function QuestionText({
   question: PersonalityQuestion;
   language: PersonalityLanguage;
 }) {
+  // 柱書きは <p> の中なので語彙メモ（ボタン）を入れられる。
+  // 選択肢は <button> の中なのでボタンを入れ子にできず、OptionText はルビだけ（§2.5）。
   if (language === "japanese") {
-    return <RubyText text={question.japanese} readings={question.readings} />;
+    return (
+      <GlossaryText text={question.japanese} readings={question.readings} renderText={renderRuby} />
+    );
   }
   if (language === "easy") {
-    return <RubyText text={question.easy} readings={question.readings} />;
+    return (
+      <GlossaryText text={question.easy} readings={question.readings} renderText={renderRuby} />
+    );
   }
   return <>{question.english}</>;
+}
+
+function OptionText({
+  option,
+  question,
+  language,
+}: {
+  option: PersonalityQuestionOption;
+  question: PersonalityQuestion;
+  language: PersonalityLanguage;
+}) {
+  if (language === "japanese") {
+    return <RubyText text={option.japanese} readings={question.readings} />;
+  }
+  if (language === "easy") {
+    return <RubyText text={option.easy} readings={question.readings} />;
+  }
+  return <>{option.english}</>;
+}
+
+/**
+ * 設問1つぶんの「ことばメモ」。柱書きと Ⓐ/Ⓑ に出るN4超えの語を集めて並べる。
+ * 英語モードでは出さない（本文がすでに英語なので二重になる）。
+ */
+function QuestionGlossary({
+  question,
+  language,
+}: {
+  question: PersonalityQuestion;
+  language: PersonalityLanguage;
+}) {
+  if (language === "english") return null;
+  const entries =
+    language === "japanese"
+      ? findAllGlossaryTerms(question.japanese, question.a.japanese, question.b.japanese)
+      : findAllGlossaryTerms(question.easy, question.a.easy, question.b.easy);
+  if (entries.length === 0) return null;
+
+  return (
+    <div className="border-hairline mt-5 flex flex-wrap items-center gap-2 border-t pt-4">
+      <span className="text-ink-soft text-xs font-black">ことばメモ</span>
+      {entries.map((entry) => (
+        <GlossaryChip key={entry.term} entry={entry} />
+      ))}
+    </div>
+  );
+}
+
+/**
+ * 20問の前に出す導入（07 §3.0）。
+ *
+ * **「性格」を知らない前提**で書く。辞書を引いても抽象語に着地して意味が取れないので、
+ * 先に「人には すきな やりかたが ある」という具体を渡してから語を当てる。
+ * 文言は台帳（`PERSONALITY_INTRO`）にあり、文言テストの対象になっている。
+ */
+function QuestionIntro({
+  language,
+  onStart,
+}: {
+  language: PersonalityLanguage;
+  onStart: () => void;
+}) {
+  const intro = PERSONALITY_INTRO[language];
+  const render = (text: string) =>
+    language === "english" ? (
+      text
+    ) : (
+      <GlossaryText text={text} readings={PERSONALITY_RESULT_READINGS} renderText={renderRuby} />
+    );
+
+  return (
+    <div className="animate-pop-in mx-auto mt-6 max-w-3xl">
+      <div className="card-pop border-4 border-white p-5 shadow-[0_8px_0_#c7e6f5,0_20px_36px_rgba(0,79,141,.16)] sm:p-7">
+        <h2 className="text-navy text-xl font-black sm:text-2xl">{intro.title}</h2>
+        <ul className="mt-4 space-y-3">
+          {intro.lines.map((line) => (
+            <li key={line} className="text-ink flex gap-2 leading-loose font-bold">
+              <span className="text-sky shrink-0">●</span>
+              <span className="flex-1">{render(line)}</span>
+            </li>
+          ))}
+        </ul>
+        <p className="bg-sun/25 text-ink mt-5 rounded-2xl px-4 py-3 font-bold">
+          {render(intro.note)}
+        </p>
+        {/* 本文の下線は1文に1語だけなので、「性格診断」のような複合語の後半（診断）が
+            引けない。設問と同じ「ことばメモ」を置いて、導入の語も1か所で引けるようにする。 */}
+        {language !== "english" && (
+          <div className="border-hairline mt-5 flex flex-wrap items-center gap-2 border-t pt-4">
+            <span className="text-ink-soft text-xs font-black">ことばメモ</span>
+            {findAllGlossaryTerms(...intro.lines, intro.note).map((entry) => (
+              <GlossaryChip key={entry.term} entry={entry} />
+            ))}
+          </div>
+        )}
+        <div className="mt-6 text-center">
+          <button type="button" onClick={onStart} className="btn-game px-10 py-4 text-lg">
+            {intro.startLabel}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** 全問共通の問いかけ（07 §3.1）。 */
+const ASK_LABEL: Readonly<Record<PersonalityLanguage, string>> = {
+  easy: "あなたに ちかいのは、どっちですか?",
+  japanese: "あなたに近いのは、どっちですか?",
+  english: "Which one is closer to you?",
+};
+
+function CompatibilityCard({ code, reason }: { code: PersonalityTypeCode; reason: string }) {
+  const type = getPersonalityType(code);
+  const family = getFamilyForCode(code);
+  return (
+    <article
+      className="card-pop flex items-center gap-2 border-3 p-2 text-left shadow-[0_4px_0_rgba(0,79,141,.12)]"
+      style={{ borderColor: family.color }}
+    >
+      <TypeEmblem code={code} size={40} className="shrink-0" />
+      <span className="min-w-0 flex-1">
+        <span className="text-ink block truncate text-xs font-extrabold">{type.name}</span>
+        <span className="text-ink-soft block text-[10px] leading-snug font-bold">
+          <RubyText text={reason} readings={PERSONALITY_RESULT_READINGS} />
+        </span>
+      </span>
+    </article>
+  );
 }
 
 export function WelcomeWizard({
   authReady,
   loggedIn,
   email,
+  saved = null,
+  retake = false,
 }: {
   authReady: boolean;
   loggedIn: boolean;
   email: string | null;
+  /** 保存済みの名前と性別。やり直しのときに入れ直させないため。 */
+  saved?: { displayName: string; gender: Gender } | null;
+  /** 診断のやり直しとして開かれたか。文言の出し分けにだけ使う。 */
+  retake?: boolean;
 }) {
   const router = useRouter();
   const savedGeminiKey = useSyncExternalStore(subscribeToStorage, savedGeminiKeySnapshot, () => "");
   const [step, setStep] = useState<1 | 2 | 3>(1);
-  const [displayName, setDisplayName] = useState("");
-  const [genderChoice, setGenderChoice] = useState<Gender | null>(null);
+  const [displayName, setDisplayName] = useState(saved?.displayName ?? "");
+  const [genderChoice, setGenderChoice] = useState<Gender | null>(saved?.gender ?? null);
   const gender = genderChoice;
   const [geminiValue, setGeminiValue] = useState<string | null>(null);
   const geminiKey = geminiValue ?? savedGeminiKey;
   const [showKey, setShowKey] = useState(false);
   const [busy, setBusy] = useState(false);
   const [language, setLanguage] = useState<PersonalityLanguage>("easy");
+  // 診断の途中で言語を切り替えたか（08 §5.2）。回答言語と一緒に保存する。
+  const languageSwitchedRef = useRef(false);
   const [answers, setAnswers] = useState<(PersonalityAnswer | null)[]>(() =>
     Array.from({ length: PERSONALITY_QUESTIONS.length }, () => null),
   );
   const [questionIndex, setQuestionIndex] = useState(0);
+  // 20問の前に出す導入（07 §3.0）。「性格」という語自体を知らない前提なので、
+  // いきなり Q1 を出さずに、何をする時間なのかを先に渡す。
+  const [introRead, setIntroRead] = useState(false);
   const [questionDirection, setQuestionDirection] = useState(1);
   const [saveError, setSaveError] = useState(false);
   const [showWelcomeBg, setShowWelcomeBg] = useState(true);
@@ -229,8 +343,18 @@ export function WelcomeWizard({
     () => (answers.every((answer) => answer !== null) ? (answers as PersonalityAnswer[]) : null),
     [answers],
   );
-  const resultId = completedAnswers ? scorePersonality(completedAnswers) : "heart";
-  const result = getPersonalityType(resultId);
+  // 20問そろうまでは結果を出さない。既定値は型合わせのためだけのもので画面には出ない。
+  const resultCode: PersonalityTypeCode = completedAnswers
+    ? scorePersonality(completedAnswers)
+    : "ISTJ";
+  const result = getPersonalityType(resultCode);
+  const resultFamily = getFamilyForCode(resultCode);
+  const resultScores = useMemo(
+    () => (completedAnswers ? calculatePersonalityScores(completedAnswers) : null),
+    [completedAnswers],
+  );
+  const closeAxis = resultScores ? getCloseAxis(resultScores) : null;
+  const compatibility = getCompatibility(resultCode);
   const currentQuestion = PERSONALITY_QUESTIONS[questionIndex]!;
   const missingSetupItems = [
     !loggedIn ? "ログイン" : null,
@@ -302,15 +426,19 @@ export function WelcomeWizard({
       const stored = await upsertOwnProfile({
         displayName: displayName.trim(),
         gender,
-        personalityType: resultId,
+        personalityType: resultCode,
         answers: completedAnswers,
         scores,
+        answerLanguage: language,
+        languageSwitched: languageSwitchedRef.current,
       });
       try {
         await insertPersonalityResult({
-          personalityType: resultId,
+          personalityType: resultCode,
           answers: completedAnswers,
           scores,
+          answerLanguage: language,
+          languageSwitched: languageSwitchedRef.current,
         });
       } catch {
         // 最新プロフィールが保存できていれば学習を止めず、記録台帳の失敗だけを許容する。
@@ -358,7 +486,7 @@ export function WelcomeWizard({
         {step === 1 && (
           <div className="animate-pop-in relative z-10">
             <h1 className="text-navy mt-7 text-center text-2xl font-black sm:text-3xl">
-              ⭐ はじめての チュートリアル ⭐
+              {retake ? "⭐ せいかくしんだんを もういちど ⭐" : "⭐ はじめての チュートリアル ⭐"}
             </h1>
             <div className="mt-5 rounded-3xl border-2 border-white bg-[#e9f7ff]/90 p-4 shadow-[inset_0_0_24px_rgba(2,136,209,.1)] sm:p-6">
               <h2 className="text-ink text-center text-xl font-extrabold sm:text-2xl">
@@ -438,13 +566,17 @@ export function WelcomeWizard({
                       )}
                       {index === 1 && (
                         <div className="relative flex items-end justify-center">
-                          <NekuMaxType
-                            id="heart"
+                          <NexMaxFamily
+                            family="heart"
                             gender="female"
                             size={102}
                             className="translate-x-2 -rotate-3"
                           />
-                          <NekuMaxType id="idea" size={96} className="-translate-x-2 rotate-3" />
+                          <NexMaxFamily
+                            family="idea"
+                            size={96}
+                            className="-translate-x-2 rotate-3"
+                          />
                           <span
                             aria-hidden
                             className="absolute top-0 left-1/2 rounded-full bg-white px-2 py-0.5 text-sm shadow-md"
@@ -699,7 +831,10 @@ export function WelcomeWizard({
                   <button
                     key={option.id}
                     type="button"
-                    onClick={() => setLanguage(option.id)}
+                    onClick={() => {
+                      if (option.id !== language) languageSwitchedRef.current = true;
+                      setLanguage(option.id);
+                    }}
                     className={`rounded-full px-3 py-2 text-xs font-extrabold sm:px-4 ${
                       language === option.id ? "bg-navy text-white" : "text-ink-soft"
                     }`}
@@ -717,147 +852,162 @@ export function WelcomeWizard({
               </div>
             </div>
 
-            <div className="mx-auto mt-6 max-w-3xl overflow-hidden">
-              <AnimatePresence mode="wait" custom={questionDirection}>
-                <motion.fieldset
-                  key={currentQuestion.id}
-                  custom={questionDirection}
-                  initial={{ opacity: 0, x: 90 * questionDirection }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -90 * questionDirection }}
-                  transition={{ duration: 0.24, ease: "easeOut" }}
-                  className="card-pop border-4 border-white p-4 shadow-[0_8px_0_#c7e6f5,0_20px_36px_rgba(0,79,141,.16)] sm:p-6"
-                >
-                  <legend className="sr-only">{currentQuestion.id}</legend>
-                  <QuizIllustration src={currentQuestion.image} />
-                  <div className="mt-5 flex items-start gap-3">
-                    <span className="bg-sky grid h-10 w-10 shrink-0 place-items-center rounded-full font-black text-white shadow-[0_4px_0_#0272ae]">
-                      {currentQuestion.id}
-                    </span>
-                    <p className="text-ink flex-1 text-lg font-extrabold sm:text-xl">
-                      <QuestionText question={currentQuestion} language={language} />
-                    </p>
-                  </div>
-                  <div className="mt-6 grid gap-3 sm:grid-cols-3">
-                    {[
-                      {
-                        value: "yes" as const,
-                        label: "はい",
-                        image: "/img/ui/ans_yes.webp",
-                        fallback: "⭕",
-                      },
-                      {
-                        value: "neutral" as const,
-                        label: "どちらでもない",
-                        image: "/img/ui/ans_neutral.webp",
-                        fallback: "🔺",
-                      },
-                      {
-                        value: "no" as const,
-                        label: "いいえ",
-                        image: "/img/ui/ans_no.webp",
-                        fallback: "❌",
-                      },
-                    ].map((option) => (
-                      <button
-                        key={option.value}
-                        type="button"
-                        onClick={() => setAnswer(questionIndex, option.value)}
-                        className={`flex min-h-24 items-center justify-center gap-3 rounded-3xl border-3 px-4 py-3 text-base font-extrabold ${
-                          answers[questionIndex] === option.value
-                            ? "border-sky bg-sky-soft text-navy shadow-[0_5px_0_#9dd8f2]"
-                            : "border-hairline text-ink-soft bg-white shadow-[0_4px_0_#dcebf5]"
-                        }`}
-                      >
-                        <span className="flex h-14 w-14 shrink-0 items-center justify-center">
-                          <FallbackImage
-                            src={option.image}
-                            alt=""
-                            fallback={<span className="text-3xl">{option.fallback}</span>}
-                            className="h-14 w-14 object-contain"
-                          />
-                        </span>
-                        <span>{option.label}</span>
-                      </button>
-                    ))}
-                  </div>
-                </motion.fieldset>
-              </AnimatePresence>
-            </div>
-
-            <div className="mt-6 flex flex-col items-center gap-4">
-              <div className="flex flex-wrap items-center justify-center gap-3 rounded-full border-2 border-white bg-white/95 px-5 py-2 shadow-[0_4px_0_#c7e6f5]">
-                <p className="text-navy font-extrabold">{questionIndex + 1} / 20 もんちゅう</p>
-                <div className="flex flex-wrap justify-center gap-1.5">
-                  {answers.map((answer, index) => (
-                    <button
-                      type="button"
-                      key={index}
-                      disabled={answer === null}
-                      aria-label={`${index + 1}もんめへ`}
-                      aria-current={index === questionIndex ? "step" : undefined}
-                      onClick={() => jumpToAnsweredQuestion(index)}
-                      className={`h-3 w-3 rounded-full border border-white shadow-sm ${
-                        answer === null
-                          ? "bg-hairline"
-                          : index === questionIndex
-                            ? "bg-navy ring-2 ring-white"
-                            : "bg-sky cursor-pointer hover:scale-125"
-                      }`}
-                    />
-                  ))}
-                </div>
-              </div>
-              <div className="flex w-full max-w-3xl items-center justify-between gap-4">
-                <button
-                  type="button"
-                  disabled={questionIndex === 0}
-                  onClick={previousQuestion}
-                  className="text-navy rounded-full bg-white px-5 py-2 font-extrabold shadow-md disabled:opacity-0"
-                >
-                  ← もどる
-                </button>
-                {questionIndex < PERSONALITY_QUESTIONS.length - 1 ? (
-                  <button
-                    type="button"
-                    disabled={answers[questionIndex] === null}
-                    onClick={nextQuestion}
-                    className="btn-game px-8 py-3 text-lg [--btn-face:#ffc93c] [--btn-shadow:#f0a819] disabled:cursor-not-allowed disabled:opacity-45"
-                  >
-                    つぎへ →
-                  </button>
-                ) : (
-                  answers[questionIndex] !== null && (
-                    <button
-                      type="button"
-                      disabled={!completedAnswers}
-                      onClick={showResult}
-                      className="btn-game px-8 py-3 text-lg [--btn-face:#ffc93c] [--btn-shadow:#f0a819] disabled:cursor-not-allowed disabled:opacity-45"
+            {!introRead ? (
+              <QuestionIntro
+                language={language}
+                onStart={() => {
+                  setIntroRead(true);
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }}
+              />
+            ) : (
+              <>
+                <div className="mx-auto mt-6 max-w-3xl overflow-hidden">
+                  <AnimatePresence mode="wait" custom={questionDirection}>
+                    <motion.fieldset
+                      key={currentQuestion.id}
+                      custom={questionDirection}
+                      initial={{ opacity: 0, x: 90 * questionDirection }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -90 * questionDirection }}
+                      transition={{ duration: 0.24, ease: "easeOut" }}
+                      className="card-pop border-4 border-white p-4 shadow-[0_8px_0_#c7e6f5,0_20px_36px_rgba(0,79,141,.16)] sm:p-6"
                     >
-                      けっかを{" "}
-                      <ruby>
-                        見る<rt>みる</rt>
-                      </ruby>
+                      <legend className="sr-only">{currentQuestion.id}</legend>
+                      <QuizIllustration src={currentQuestion.image} />
+                      <div className="mt-5 flex items-start gap-3">
+                        <span className="bg-sky grid h-10 w-10 shrink-0 place-items-center rounded-full font-black text-white shadow-[0_4px_0_#0272ae]">
+                          {currentQuestion.id}
+                        </span>
+                        <p className="text-ink flex-1 text-lg font-extrabold sm:text-xl">
+                          <QuestionText question={currentQuestion} language={language} />
+                        </p>
+                      </div>
+                      <p className="text-ink-soft mt-3 text-center text-sm font-extrabold">
+                        {ASK_LABEL[language]}
+                      </p>
+                      {/* Ⓐ/Ⓑ の2択。どちらが正しいという場面ではないので、優劣を感じさせる色は使わない。 */}
+                      <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                        {(
+                          [
+                            { value: "a" as const, mark: "Ⓐ", option: currentQuestion.a },
+                            { value: "b" as const, mark: "Ⓑ", option: currentQuestion.b },
+                          ] as const
+                        ).map((choice) => (
+                          <button
+                            key={choice.value}
+                            type="button"
+                            onClick={() => setAnswer(questionIndex, choice.value)}
+                            aria-pressed={answers[questionIndex] === choice.value}
+                            className={`flex min-h-28 items-start gap-3 rounded-3xl border-3 px-4 py-4 text-left text-base font-extrabold ${
+                              answers[questionIndex] === choice.value
+                                ? "border-sky bg-sky-soft text-navy shadow-[0_5px_0_#9dd8f2]"
+                                : "border-hairline text-ink bg-white shadow-[0_4px_0_#dcebf5]"
+                            }`}
+                          >
+                            <span
+                              aria-hidden
+                              className="text-sky grid h-9 w-9 shrink-0 place-items-center text-2xl leading-none"
+                            >
+                              {choice.mark}
+                            </span>
+                            <span className="flex-1 leading-relaxed">
+                              <OptionText
+                                option={choice.option}
+                                question={currentQuestion}
+                                language={language}
+                              />
+                            </span>
+                          </button>
+                        ))}
+                      </div>
+                      {/* Ⓐ/Ⓑ は <button> なので中に語彙メモを置けない。
+                      柱書きと選択肢のむずかしい語を、ここに1か所で集める（07 §2.5）。 */}
+                      <QuestionGlossary question={currentQuestion} language={language} />
+                    </motion.fieldset>
+                  </AnimatePresence>
+                </div>
+
+                <div className="mt-6 flex flex-col items-center gap-4">
+                  <div className="flex flex-wrap items-center justify-center gap-3 rounded-full border-2 border-white bg-white/95 px-5 py-2 shadow-[0_4px_0_#c7e6f5]">
+                    <p className="text-navy font-extrabold">
+                      20もんの うち {questionIndex + 1} もんめ
+                    </p>
+                    <div className="flex flex-wrap justify-center gap-1.5">
+                      {answers.map((answer, index) => (
+                        <button
+                          type="button"
+                          key={index}
+                          disabled={answer === null}
+                          aria-label={`${index + 1}もんめへ`}
+                          aria-current={index === questionIndex ? "step" : undefined}
+                          onClick={() => jumpToAnsweredQuestion(index)}
+                          className={`h-3 w-3 rounded-full border border-white shadow-sm ${
+                            answer === null
+                              ? "bg-hairline"
+                              : index === questionIndex
+                                ? "bg-navy ring-2 ring-white"
+                                : "bg-sky cursor-pointer hover:scale-125"
+                          }`}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                  <div className="flex w-full max-w-3xl items-center justify-between gap-4">
+                    <button
+                      type="button"
+                      disabled={questionIndex === 0}
+                      onClick={previousQuestion}
+                      className="text-navy rounded-full bg-white px-5 py-2 font-extrabold shadow-md disabled:opacity-0"
+                    >
+                      ← もどる
                     </button>
-                  )
-                )}
-              </div>
-            </div>
+                    {questionIndex < PERSONALITY_QUESTIONS.length - 1 ? (
+                      <button
+                        type="button"
+                        disabled={answers[questionIndex] === null}
+                        onClick={nextQuestion}
+                        className="btn-game px-8 py-3 text-lg [--btn-face:#ffc93c] [--btn-shadow:#f0a819] disabled:cursor-not-allowed disabled:opacity-45"
+                      >
+                        つぎへ →
+                      </button>
+                    ) : (
+                      answers[questionIndex] !== null && (
+                        <button
+                          type="button"
+                          disabled={!completedAnswers}
+                          onClick={showResult}
+                          className="btn-game px-8 py-3 text-lg [--btn-face:#ffc93c] [--btn-shadow:#f0a819] disabled:cursor-not-allowed disabled:opacity-45"
+                        >
+                          けっかを{" "}
+                          <ruby>
+                            見る<rt>みる</rt>
+                          </ruby>
+                        </button>
+                      )
+                    )}
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         )}
 
         {step === 3 && (
           <div className="animate-pop-in relative z-10">
             <h1 className="text-navy mt-7 text-center text-2xl font-black sm:text-3xl">
-              ⭐ あなたに あう ネクマックス ⭐
+              ⭐ あなたの ネクマックス ⭐
             </h1>
             <div className="mt-6 grid gap-6 lg:grid-cols-[0.9fr_1.2fr]">
               <div className="relative flex min-h-96 flex-col items-center justify-center rounded-[36px] border-2 border-white bg-[radial-gradient(circle,#fff_0%,#e1f2fb_62%,#d8f0fc_100%)] p-5 shadow-[inset_0_0_35px_rgba(2,136,209,.12)]">
                 <p className="bg-sky absolute top-4 z-20 px-8 py-1.5 font-extrabold text-white shadow-[0_5px_0_#0272ae] [clip-path:polygon(0_18%,10%_18%,10%_0,90%_0,90%_18%,100%_18%,93%_100%,7%_100%)]">
-                  おすすめタイプ
+                  あなたの タイプ
                 </p>
                 <div className="relative z-10 mt-8">
-                  <NekuMaxType id={result.id} gender={gender ?? "male"} size={285} bob />
+                  <NexMaxType code={result.code} gender={gender ?? "male"} size={285} bob />
+                </div>
+                <div className="absolute top-16 right-4 z-20">
+                  <TypeEmblem code={result.code} size={72} />
                 </div>
                 <div
                   aria-hidden
@@ -869,7 +1019,7 @@ export function WelcomeWizard({
                   </div>
                   <p className="bg-navy mt-1 rounded-xl px-2 py-1 text-[10px] leading-tight font-extrabold text-white">
                     <RubyText
-                      text={result.resultStrengths}
+                      text={resultFamily.strengths.join("・")}
                       readings={PERSONALITY_RESULT_READINGS}
                     />
                   </p>
@@ -877,59 +1027,139 @@ export function WelcomeWizard({
               </div>
 
               <div>
-                <p className="text-ink font-extrabold">
-                  あなたに ぴったりの ネクマックスは こちらです！
+                <p className="text-ink text-lg font-extrabold">
+                  あなたは
+                  <RubyText
+                    text={`「${resultFamily.name}」`}
+                    readings={[{ text: resultFamily.name, reading: resultFamily.reading }]}
+                  />
+                  の <span className="text-navy">{result.name}</span> です。
                 </p>
-                <h2 className="bg-navy mt-3 flex items-center gap-3 rounded-2xl px-5 py-3 text-xl font-black text-white shadow-[0_5px_0_#003c6b] sm:text-2xl">
-                  <span
-                    aria-hidden
-                    className="text-navy grid h-10 w-10 shrink-0 place-items-center bg-white font-black [clip-path:polygon(25%_7%,75%_7%,100%_50%,75%_93%,25%_93%,0_50%)]"
-                  >
-                    N
+                {/* 家族 → タイプ の2段。16通りでも学習者が迷子にならないための構え（07 §1.3）。 */}
+                <p
+                  className="mt-3 inline-block rounded-full px-4 py-1 text-sm font-black text-white"
+                  style={{ backgroundColor: resultFamily.color }}
+                >
+                  <RubyText
+                    text={resultFamily.name}
+                    readings={[{ text: resultFamily.name, reading: resultFamily.reading }]}
+                  />
+                </p>
+                {/* 4文字コードは出さない。ネクマックス診断として完結させる（07 §1.3）。 */}
+                <h2 className="bg-navy mt-2 flex items-center gap-3 rounded-2xl px-5 py-3 text-xl font-black text-white shadow-[0_5px_0_#003c6b] sm:text-2xl">
+                  <span aria-hidden className="shrink-0 text-2xl">
+                    {result.emblem}
                   </span>
                   <span className="flex-1 text-center">{result.name}</span>
                 </h2>
-                <h3 className="text-navy mt-5 text-lg font-black">
-                  あなたの
-                  <ruby>
-                    性格分析<rt>せいかく ぶんせき</rt>
-                  </ruby>
-                </h3>
+                <p className="text-ink-soft mt-2 text-sm font-extrabold">
+                  <LearnerText text={result.tagline} />
+                </p>
+                <h3 className="text-navy mt-5 text-lg font-black">あなたは こんな 人</h3>
                 <ul className="mt-3 space-y-2">
                   {result.analysis.map((line) => (
                     <li key={line} className="text-ink flex gap-2 font-bold">
                       <span className="text-leaf-deep">✓</span>
-                      <RubyText text={line} readings={PERSONALITY_RESULT_READINGS} />
+                      <LearnerText text={line} />
                     </li>
                   ))}
                 </ul>
 
-                <h3 className="text-navy mt-6 font-black">ほかのタイプも チェック！</h3>
-                <div className="mt-3 grid grid-cols-3 gap-2">
-                  {PERSONALITY_TYPES.filter((type) => type.id !== result.id).map((type) => (
-                    <article
-                      key={type.id}
-                      className="card-pop border-3 p-2 text-center shadow-[0_4px_0_rgba(0,79,141,.12)]"
-                      style={{ borderColor: type.color }}
-                    >
-                      <NekuMaxType
-                        id={type.id}
-                        gender={gender ?? "male"}
-                        size={78}
-                        className="mx-auto"
-                      />
-                      <p className="text-ink text-xs font-extrabold">{type.name}</p>
-                      <p className="text-ink-soft mt-1 text-[10px] font-bold">
-                        <RubyText
-                          text={type.strengths[0] ?? ""}
-                          readings={PERSONALITY_RESULT_READINGS}
-                        />
-                      </p>
-                    </article>
+                {/* 3-2 の僅差だけ「どちらも いい ところ」と出す。決めつけない（07 §4.3）。 */}
+                {closeAxis && (
+                  <p className="bg-sun/25 text-ink mt-4 rounded-2xl px-4 py-3 text-sm font-bold">
+                    「{PERSONALITY_AXIS_META[closeAxis].poleLabels[0]}」と「
+                    {PERSONALITY_AXIS_META[closeAxis].poleLabels[1]}」は、どちらも あなたの いい
+                    ところです。ときに よって、りょうほう つかって いますね。
+                  </p>
+                )}
+
+                <h3 className="text-navy mt-6 font-black">チームで あなたが とくいな しごと</h3>
+                <p className="text-ink mt-2 font-bold">
+                  <span className="bg-navy mr-2 rounded-lg px-2 py-1 text-sm text-white">
+                    <RubyText text={result.teamRole} readings={PERSONALITY_RESULT_READINGS} />
+                  </span>
+                  <LearnerText text={result.teamRoleDetail} />
+                </p>
+
+                {/* 相性。「合わない相手」という枠組みはUIに一切登場させない（07 §5.1）。 */}
+                <h3 className="text-navy mt-6 font-black">
+                  すぐに <LearnerText text="話が できる 仲間" />
+                </h3>
+                <p className="text-ink-soft mt-1 text-xs font-bold">
+                  すこしの ことばでも、わかって もらえます。
+                </p>
+                <div className="mt-2 grid grid-cols-2 gap-2">
+                  {compatibility.similar.map((card) => (
+                    <CompatibilityCard key={card.code} code={card.code} reason={card.reason} />
                   ))}
                 </div>
+
+                <h3 className="text-navy mt-5 font-black">
+                  じぶんに ない ものを もって いる <LearnerText text="仲間" />
+                </h3>
+                <p className="text-ink-soft mt-1 text-xs font-bold">
+                  見て いる ところが ちがうので、二人が いると チームが もっと よく なります。
+                </p>
+                <div className="mt-2 grid grid-cols-2 gap-2">
+                  {compatibility.complementary.map((card) => (
+                    <CompatibilityCard key={card.code} code={card.code} reason={card.reason} />
+                  ))}
+                </div>
+                {/* 載らない11タイプが「合わない」と読まれないようにする受け皿（07 §5）。 */}
+                <p className="text-ink-soft mt-3 text-xs font-bold">
+                  ここに ない タイプとも、いい チームに なれます。
+                </p>
               </div>
             </div>
+
+            {/* N3の学習者の回遊先。自分の1つを見たあと、16通りを眺められるようにする（07 §7）。 */}
+            <details className="card-pop mt-6 p-4">
+              <summary className="text-navy cursor-pointer font-black">
+                ほかの 15タイプも 見て みよう
+              </summary>
+              <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                {PERSONALITY_FAMILIES.map((family) => (
+                  <section key={family.id}>
+                    <h4
+                      className="inline-block rounded-full px-3 py-1 text-xs font-black text-white"
+                      style={{ backgroundColor: family.color }}
+                    >
+                      <RubyText
+                        text={family.name}
+                        readings={[{ text: family.name, reading: family.reading }]}
+                      />
+                    </h4>
+                    <ul className="mt-2 space-y-1.5">
+                      {family.codes.map((code) => {
+                        const type = getPersonalityType(code);
+                        return (
+                          <li key={code} className="flex items-center gap-2">
+                            <TypeEmblem code={code} size={28} className="shrink-0" />
+                            <span className="min-w-0">
+                              <span
+                                className={`text-ink block truncate text-xs ${
+                                  code === result.code ? "font-black" : "font-bold"
+                                }`}
+                              >
+                                {type.name}
+                                {code === result.code && "（あなた）"}
+                              </span>
+                              <span className="text-ink-soft block text-[10px] font-bold">
+                                <RubyText
+                                  text={type.tagline}
+                                  readings={PERSONALITY_RESULT_READINGS}
+                                />
+                              </span>
+                            </span>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </section>
+                ))}
+              </div>
+            </details>
 
             <div className="mt-7 text-center">
               <p className="text-ink-soft mb-3 text-sm font-bold">
@@ -951,7 +1181,7 @@ export function WelcomeWizard({
               </button>
               {saveError && (
                 <p className="text-coral-deep mt-4 font-extrabold">
-                  ほぞんに しっぱいしました。でんぱを かくにんして、もういちど おしてね。
+                  ほぞんに しっぱいしました。インターネットを かくにんして、もういちど おしてね。
                 </p>
               )}
             </div>
@@ -968,8 +1198,8 @@ export function WelcomeWizard({
               step === 1 ? "-mb-7 -ml-6" : step === 3 ? "-mb-3 -ml-2" : "-mr-3"
             }`}
           >
-            <NekuMaxType
-              id={step === 2 ? "idea" : step === 3 ? result.id : "leader"}
+            <NexMaxFamily
+              family={step === 2 ? "idea" : step === 3 ? result.familyId : "leader"}
               gender={step === 3 ? (gender ?? "male") : "male"}
               size={step === 1 ? 170 : step === 2 ? 142 : 108}
               className="shrink-0 drop-shadow-[0_10px_8px_rgba(0,79,141,.2)]"
@@ -979,8 +1209,9 @@ export function WelcomeWizard({
                 step === 2 ? "rounded-br-md" : "rounded-bl-md"
               }`}
             >
-              {step === 1 && "はじめに せっていを しましょう！"}
-              {step === 2 && "しつもんに こたえると、あなたに あう ネクマックスが わかるよ！"}
+              {step === 1 &&
+                (retake ? "せっていを かくにんしましょう！" : "はじめに せっていを しましょう！")}
+              {step === 2 && "しつもんに こたえると、あなたの タイプが わかるよ！"}
               {step === 3 && "いっしょに がんばろう！"}
             </p>
           </div>

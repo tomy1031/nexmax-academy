@@ -14,9 +14,9 @@
  */
 
 import { FORBIDDEN_LEARNER_WORDS, type Content, type Scenario } from "../content/schema";
-// map-layout は純関数だけのモジュール（node:fs も React も持たない）ので、
+// areas.ts は純粋なデータ（node:fs も React も持たない）ので、
 // スタジオのAPIルートから読まれるこのファイルからでも安全に import できる。
-import { BASE_STOP_COUNT } from "./map-layout";
+import { ROUTE_AREAS } from "../content/areas";
 
 export interface Finding {
   file: string;
@@ -110,21 +110,15 @@ export function checkDuplicateIds(entries: readonly ContentEntry[]): Finding[] {
 /**
  * マップの停留所とステージの結びつき検査（設計07 §3）。
  *
- * step の重複は error: マップは step でステージを引くため、重なると片方が黙って消える。
+ * マップは「1ステージ＝1エリア＝背景画像1枚」（src/content/areas.ts）。step が
+ * マップの上から数えた位置になる。
  *
- * STEP 6 以降は「1ステージ = 1枚の絵」（map_step<番号>_*.webp）。絵がまだ無い
- * ステージも帯とピンは出る（色だけの帯になる）ので、消えはしない。だから warn に
- * とどめ、「Codex で作れる」ことまで案内する——先生に step を戻させないため。
- *
- * どの step の絵があるか（stepImages）はファイル走査で決まるが、ここでは数えない。
- * このモジュールはスタジオのAPIルートからも import されるので、node:fs を
- * 持ち込むとブラウザ向けのバンドルごと壊れる。枚数を知っている呼び出し側
- * （scripts/lint_content.ts）から渡してもらう。
+ * - step の重複は error: マップは step でステージを引くため、重なると片方が黙って消える。
+ * - 既定のエリア（ROUTE_AREAS）より先の step で `area` を書いていないのは warn:
+ *   ステージ自体はマップに出る（空色の帯になる）ので消えはしない。だから止めずに、
+ *   絵の付け方まで案内する——先生に step を戻させないため。
  */
-export function checkStageSteps(
-  entries: readonly ContentEntry[],
-  stepImages: ReadonlySet<number>,
-): Finding[] {
+export function checkStageSteps(entries: readonly ContentEntry[]): Finding[] {
   const findings: Finding[] = [];
   const byStep = new Map<number, string>();
   for (const { file, content } of entries) {
@@ -139,11 +133,11 @@ export function checkStageSteps(
     } else {
       byStep.set(content.step, file);
     }
-    if (content.step > BASE_STOP_COUNT && !stepImages.has(content.step)) {
+    if (content.step > ROUTE_AREAS.length && !content.area) {
       findings.push({
         file,
         level: "warn",
-        message: `step ${content.step} の背景画像（public/img/scenes/ の map_step${content.step}_*.webp）がまだ無い — マップには出るが、その停留所の帯が色だけになる。docs/skills/codex_image_generation.md §9 の手順で Codex 生成できる`,
+        message: `step ${content.step} は既定のエリア（${ROUTE_AREAS.length}個）より先なのに area が無い — マップには出るが、その土地が空色の帯になる。スタジオの「マップの土地」で名前と絵を設定する（絵は docs/skills/codex_image_generation.md §7.1 の手順で Codex 生成できる）`,
       });
     }
   }

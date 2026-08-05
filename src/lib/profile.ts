@@ -1,35 +1,45 @@
-import type { PersonalityScores, PersonalityTypeId } from "@/content/personality";
+import {
+  isPersonalityScores,
+  isPersonalityTypeCode,
+  PERSONALITY_QUESTIONS,
+  type PersonalityScores,
+  type PersonalityTypeCode,
+} from "@/content/personality";
 
 export type Gender = "male" | "female";
 export type MapView = "map" | "cards";
 
+/**
+ * 診断が完了しているか（20問そろっているか）。
+ *
+ * 「profiles に行があるか」で判定してはいけない。名前と性別だけ入って診断が
+ * 未完了の行は正当に存在しうる（DB制約が answers=[] を許している）のに、
+ * 行の有無で弾くと `/welcome` と `/map` を往復して詰む。
+ * 判定はここに一本化する。
+ */
+export function isDiagnosisComplete(answers: unknown): boolean {
+  return Array.isArray(answers) && answers.length === PERSONALITY_QUESTIONS.length;
+}
+
 export interface NexmaxProfile {
   displayName: string;
   gender: Gender;
-  type: PersonalityTypeId;
+  type: PersonalityTypeCode;
   scores: PersonalityScores;
   createdAt: string;
 }
 
-const PROFILE_KEY = "nexmax.profile.v2";
-const LEGACY_PROFILE_KEY = "nexmax.profile.v1";
+/** 表示用キャッシュ。正データは Supabase の profiles（07 §8.1）。 */
+const PROFILE_KEY = "nexmax.profile.v3";
+/** v3 で回答形式・スコアの意味が変わったため、旧版は読まずに削除する。 */
+const LEGACY_PROFILE_KEYS = ["nexmax.profile.v1", "nexmax.profile.v2"];
 const GEMINI_KEY = "nexmax.geminiKey";
 const MAP_VIEW_KEY = "nexmax.mapView";
 
 const GENDERS: Gender[] = ["male", "female"];
-const PERSONALITY_TYPES: PersonalityTypeId[] = ["leader", "idea", "heart", "challenge"];
 
 function storage(): Storage | null {
   return typeof window === "undefined" ? null : window.localStorage;
-}
-
-function isScores(value: unknown): value is PersonalityScores {
-  if (!value || typeof value !== "object") return false;
-  const scores = value as Partial<PersonalityScores>;
-  return PERSONALITY_TYPES.every((type) => {
-    const score = scores[type];
-    return typeof score === "number" && Number.isInteger(score) && score >= 0 && score <= 10;
-  });
 }
 
 function isProfile(value: unknown): value is NexmaxProfile {
@@ -40,14 +50,16 @@ function isProfile(value: unknown): value is NexmaxProfile {
     profile.displayName.trim().length > 0 &&
     profile.displayName.length <= 20 &&
     GENDERS.includes(profile.gender as Gender) &&
-    PERSONALITY_TYPES.includes(profile.type as PersonalityTypeId) &&
-    isScores(profile.scores) &&
+    isPersonalityTypeCode(profile.type) &&
+    isPersonalityScores(profile.scores) &&
     typeof profile.createdAt === "string"
   );
 }
 
 function removeLegacyProfile(): void {
-  storage()?.removeItem(LEGACY_PROFILE_KEY);
+  const target = storage();
+  if (!target) return;
+  for (const key of LEGACY_PROFILE_KEYS) target.removeItem(key);
 }
 
 export function getProfile(): NexmaxProfile | null {
@@ -95,6 +107,15 @@ export function getMapView(): MapView {
 
 export function saveMapView(view: MapView): void {
   storage()?.setItem(MAP_VIEW_KEY, view);
+}
+
+/**
+ * 表示用プロフィールのキャッシュだけ消す。
+ * 診断がリセットされたときに使う。Gemini キーや表示設定は学習者の持ち物なので残す
+ * （`clearNexmaxCache()` は `nexmax.` で始まる全キーを消すため、ここでは使わない）。
+ */
+export function clearProfile(): void {
+  storage()?.removeItem(PROFILE_KEY);
 }
 
 export function clearNexmaxCache(): void {

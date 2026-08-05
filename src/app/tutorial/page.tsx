@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { NekuMax, NEKUMAX_FAMILY, type NekuMaxVariant } from "@/components/nekumax";
+import { NexMax, NEXMAX_FAMILY, type NexMaxVariant } from "@/components/nexmax";
 import { DriftingClouds, PaperPlane, Sun } from "@/components/scenery";
 
 /**
@@ -101,8 +101,8 @@ function StepStory() {
 }
 
 function StepFriends() {
-  const [active, setActive] = useState<NekuMaxVariant>("guide");
-  const meta = NEKUMAX_FAMILY.find((v) => v.id === active) ?? NEKUMAX_FAMILY[0]!;
+  const [active, setActive] = useState<NexMaxVariant>("guide");
+  const meta = NEXMAX_FAMILY.find((v) => v.id === active) ?? NEXMAX_FAMILY[0]!;
   const accent = { face: meta.accent, deep: meta.accentDeep };
   return (
     <div className="text-center">
@@ -133,7 +133,7 @@ function StepFriends() {
       </AnimatePresence>
 
       <div className="mt-6 grid grid-cols-3 gap-2 sm:gap-3">
-        {NEKUMAX_FAMILY.map((v) => {
+        {NEXMAX_FAMILY.map((v) => {
           const selected = v.id === active;
           return (
             <motion.button
@@ -150,7 +150,7 @@ function StepFriends() {
               }}
             >
               <span className={selected ? "animate-wiggle" : undefined}>
-                <NekuMax variant={v.id} size={64} />
+                <NexMax variant={v.id} size={64} />
               </span>
               <span className="text-ink mt-1 text-[11px] font-extrabold sm:text-xs">{v.label}</span>
             </motion.button>
@@ -286,8 +286,8 @@ function StepDepart() {
 
       <h2 className="text-navy text-3xl font-extrabold sm:text-4xl">🚀 しゅっぱつ！</h2>
       <div className="mt-4 flex justify-center gap-3">
-        <NekuMax variant="guide" size={96} bob />
-        <NekuMax variant="cheer" size={96} bob />
+        <NexMax variant="guide" size={96} bob />
+        <NexMax variant="cheer" size={96} bob />
       </div>
       <p className="text-ink mt-4 text-lg leading-relaxed font-bold">
         じゅんびは OK！

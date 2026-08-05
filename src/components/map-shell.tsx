@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
+  type CSSProperties,
   type ReactNode,
   useCallback,
   useEffect,
@@ -12,43 +13,97 @@ import {
   useSyncExternalStore,
 } from "react";
 import { signOut } from "@/app/auth/actions";
-import { NekuMaxType } from "@/components/nekumax-types";
-import { getPersonalityType, type PersonalityTypeId } from "@/content/personality";
-import { STAGES, type StageColor } from "@/content/stages";
-import { contentKindMeta } from "@/lib/content-kinds";
-import { characterSlots, mapGeometry, routePath, SEGMENT_HEIGHT_VH } from "@/lib/map-layout";
-// 型だけを借りる。map-segments.ts は node:fs を使うサーバ専用モジュールなので、
-// 値を import するとクライアントバンドルに入って壊れる（ページが読んで props で渡す）。
-import { type MapBand } from "@/lib/map-segments";
+import { AreaTrail } from "@/components/map-trail";
+import { NexMaxFamily } from "@/components/nexmax-types";
+import { CloudBand, CloudCorners } from "@/components/cloud-band";
+import { SKY_BLUE, type MapArea } from "@/content/areas";
+import {
+  getFamilyForCode,
+  getPersonalityType,
+  type PersonalityFamilyId,
+} from "@/content/personality";
+import { type StageDefinition } from "@/content/stages";
 import { fetchOwnProfile, type ProfileRow } from "@/lib/profile-db";
 import {
+  clearProfile,
   getMapView,
   getProfile,
+  isDiagnosisComplete,
   saveMapView,
   saveProfile,
   type MapView,
   type NexmaxProfile,
 } from "@/lib/profile";
-import { createProgressStore, subscribeProgress } from "@/lib/progress/store";
-import { type StagePin } from "@/lib/stage-pins";
+import {
+  deriveProgress,
+  getClearedStageIds,
+  stageStatus,
+  type StageProgress,
+  type StageStatus,
+} from "@/lib/progress";
 import { createClient } from "@/lib/supabase/client";
 
 const PROFILE_SERVER_SNAPSHOT = "__server__";
+const PROGRESS_SERVER_SNAPSHOT = "[]";
 const LONG_WAIT_TOAST = "じゅんびちゅう です。もうすこし まってね！";
 const SHORT_WAIT_TOAST = "じゅんびちゅう です。";
 
 /**
- * 道ぞいに立つネクマックスの出る順。停留所がいくつになってもこの4体を順に回す。
- * 同じ子ばかり並ぶと道のりの長さが伝わらないので、種類を必ず入れかえる。
+ * 航路は**地図ぜんたいで1本の正弦波**にする。
+ *
+ * `T` は「エリア番号 + エリア内の位置(0..1)」の通し目盛。1エリアで半周期進むので、
+ * ステージの丸（T = 番号 + 0.5）が中央から左右へ交互に振れ、エリアの境目（T = 整数）は
+ * ちょうど中央を通る。
+ *
+ * 大事なのは**境目で波を切らない**こと。区間ごとに「中央 → 左右 → 中央」と補間して
+ * 両端の傾きを 0 にすると、境目で道がいったん縦になり、波が細切れの折れ線に見える。
+ * 1本の sin で通すと、境目も傾きを持ったまま滑らかに通り抜ける。
+ *
+ * 出発とゴールの看板は中央にあり、T が整数のところで x = 50 になるので、
+ * 看板の真下から道が出入りする。
  */
-const PERSONALITY_ORDER: readonly PersonalityTypeId[] = ["leader", "idea", "heart", "challenge"];
+const NODE_SWING = 17;
+
+/**
+ * 波の振れを、道のりの入口と出口だけ 0 まで絞る係数。
+ *
+ * 看板の下の道はまっすぐ縦に降りる（傾き 0）。一方 sin は T=0 で傾きが最大なので、
+ * そのままつなぐと看板を出た瞬間に真横へ折れて見える。端で振幅を 0 にすると
+ * **傾きも 0 になり**、縦の線から波へなめらかに移れる。
+ *
+ * 絞るのは端から半エリアぶんだけ。最初と最後のステージ（T = 0.5, N-0.5）では
+ * すでに 1 に戻っているので、振れ幅は他のステージと変わらない。
+ */
+function swingEnvelope(globalT: number, total: number): number {
+  const edge = Math.min(globalT, total - globalT) / 0.5;
+  const e = Math.max(0, Math.min(1, edge));
+  return e * e * (3 - 2 * e);
+}
+
+function routeX(globalT: number, totalAreas: number): number {
+  const swing = NODE_SWING * swingEnvelope(globalT, totalAreas);
+  return 50 + swing * Math.sin(Math.PI * globalT);
+}
+
+/** エリア内でステージを置く高さ（%）。波の山＝エリアのまんなかに置く */
+const NODE_TOP = 50;
+
+/** 進捗の色。歩いた道＝葉、いまここ＝珊瑚ピンク、まだ＝白 */
+const CURRENT_COLOR = "#f26fa7";
+const CLEARED_COLOR = "#3aa458";
 
 const STAGE_COLORS = {
   leaf: "#58c273",
   sky: "#4fa8e8",
   coral: "#f26fa7",
   "sky-soft": "#9bdcf7",
-} satisfies Record<StageColor, string>;
+} satisfies Record<StageDefinition["color"], string>;
+
+/**
+ * 装飾のネクマックス。エリアごとに1体、ステージと反対側に立たせる。
+ * エリアが増えても足りなくならないよう、番号で循環させる。
+ */
+const AREA_CHARACTERS: readonly PersonalityFamilyId[] = ["leader", "idea", "heart", "challenge"];
 
 function subscribeToStorage(onStoreChange: () => void) {
   window.addEventListener("storage", onStoreChange);
@@ -59,6 +114,10 @@ function profileSnapshot() {
   return JSON.stringify(getProfile());
 }
 
+function progressSnapshot() {
+  return JSON.stringify(getClearedStageIds());
+}
+
 function profileFromRow(profile: ProfileRow): NexmaxProfile {
   return {
     displayName: profile.display_name,
@@ -67,6 +126,18 @@ function profileFromRow(profile: ProfileRow): NexmaxProfile {
     scores: profile.scores,
     createdAt: profile.created_at,
   };
+}
+
+/**
+ * 学習者の現在地を「エリア番号＋エリア内の位置」で表す。空路の塗り分けの境目になり、
+ * ここに飛行機が立つ。例: 2.3 = 3番目のエリアのステージのところ。
+ */
+function flownUntil(progress: StageProgress, routeAreas: readonly MapArea[]): number {
+  // すべてクリアなら日本まで飛び切っている（ゴールのエリアの航路も塗る）
+  if (!progress.currentStageId) return routeAreas.length + 1;
+  const index = routeAreas.findIndex((area) => area.stageId === progress.currentStageId);
+  if (index < 0) return routeAreas.length;
+  return index + NODE_TOP / 100;
 }
 
 function Logo() {
@@ -86,96 +157,54 @@ function Logo() {
   );
 }
 
-/**
- * 定番ステージのルビ付き見出し。キーは src/content/stages.ts の id。
- * ルビHTMLはここに組んであるぶんだけを使い、新しく手書きしない（AGENTS.md 規律2）。
- */
-const SEED_RUBY_TITLES: Record<string, ReactNode> = {
-  "it-words": (
-    <>
-      IT
-      <ruby>
-        単語帳<rt>たんごちょう</rt>
-      </ruby>
-    </>
-  ),
-  "company-structure": (
-    <>
-      <ruby>
-        企業<rt>きぎょう</rt>
-      </ruby>
-      の
-      <ruby>
-        仕組み<rt>しくみ</rt>
-      </ruby>
-    </>
-  ),
-  report: (
-    <ruby>
-      報告<rt>ほうこく</rt>
-    </ruby>
-  ),
-  contact: (
-    <ruby>
-      連絡<rt>れんらく</rt>
-    </ruby>
-  ),
-  consult: (
-    <ruby>
-      相談<rt>そうだん</rt>
-    </ruby>
-  ),
-};
-
-/** 定番ステージを id で引く。上のルビ見出しが今も同じ語かを照らし合わせるために使う。 */
-const SEED_BY_ID = new Map(STAGES.map((seed) => [seed.id, seed]));
-
-/**
- * 見出し。定番ステージのルビ見出しは、その語がデータ側で言いかえられていない
- * ときだけ使う。
- *
- * 同じ step にデータ化ステージがあると title / reading はデータ側が勝つが、
- * seedId は定番を指したまま残る。seedId だけでルビ見出しを選ぶと、見出しは定番の
- * 語・すぐ下の読みと読み上げ（aria-label）とステージ画面はデータ側の語、という
- * 食い違いになる。漢字と読みを覚えている最中の学習者には、同じステージが画面ごとに
- * ちがう名前と読みで届き、どちらが正しいのか分からなくなる。先生の側から見ても、
- * スタジオで見出しを直したのにマップだけ古い語のままになる。
- *
- * 語が合わないときは title をそのまま出す（ルビは読み辞書から合成する）。
- */
-function StageTitle({ pin }: { pin: StagePin }) {
-  const seed = pin.seedId === null ? undefined : SEED_BY_ID.get(pin.seedId);
-  if (seed && seed.title === pin.title && seed.reading === pin.reading) {
-    const ruby = SEED_RUBY_TITLES[seed.id];
-    if (ruby !== undefined) return ruby;
+function StageTitle({ stage }: { stage: StageDefinition }) {
+  switch (stage.id) {
+    case "it-words":
+      return (
+        <>
+          IT
+          <ruby>
+            単語帳<rt>たんごちょう</rt>
+          </ruby>
+        </>
+      );
+    case "company-structure":
+      return (
+        <>
+          <ruby>
+            企業<rt>きぎょう</rt>
+          </ruby>
+          の
+          <ruby>
+            仕組み<rt>しくみ</rt>
+          </ruby>
+        </>
+      );
+    case "report":
+      return (
+        <ruby>
+          報告<rt>ほうこく</rt>
+        </ruby>
+      );
+    case "contact":
+      return (
+        <ruby>
+          連絡<rt>れんらく</rt>
+        </ruby>
+      );
+    case "consult":
+      return (
+        <ruby>
+          相談<rt>そうだん</rt>
+        </ruby>
+      );
+    default:
+      return stage.title;
   }
-  return pin.title;
 }
 
-/** 呼び名を出せるか。出せないのに「・」だけ残ると、読みの行が壊れて見える。 */
-function hasKindLabel(pin: StagePin): boolean {
-  return pin.kinds.length > 0 || pin.seedKind !== null;
-}
-
-/**
- * 何をするステージかの呼び名。
- *
- * データ化されていれば、そこに入っている教材の種別をそのまま出す。呼び名は
- * content-kinds.ts が唯一の対応表で、ここで言い換えると同じ教材がマップと
- * ステージ画面で違う名前になり、学習者は別のものだと思ってしまう。
- */
-function KindLabel({ pin }: { pin: StagePin }) {
-  if (pin.kinds.length > 0) {
-    return pin.kinds
-      .map((kind) => {
-        const meta = contentKindMeta(kind);
-        return `${meta.icon}${meta.label}`;
-      })
-      .join("・");
-  }
-  // まだデータ化されていない定番ステージは、予定の種別だけを見せる。
-  if (pin.seedKind === null) return null;
-  if (pin.seedKind === "word") {
+function KindLabel({ stage }: { stage: StageDefinition }) {
+  if (stage.kind === "word") {
     return (
       <>
         🌐
@@ -185,8 +214,8 @@ function KindLabel({ pin }: { pin: StagePin }) {
       </>
     );
   }
-  if (pin.seedKind === "pair") return <>👥 ペアワーク</>;
-  if (pin.seedKind === "video-reading") {
+  if (stage.kind === "pair") return <>👥 ペアワーク</>;
+  if (stage.kind === "video-reading") {
     return (
       <>
         ▶
@@ -210,11 +239,25 @@ function KindLabel({ pin }: { pin: StagePin }) {
   );
 }
 
-function SegmentImage({ src }: { src: string }) {
+/**
+ * エリア背景。
+ *
+ * 画像は `object-cover` なので、画面が横に広いほど上下が切り落とされる。切り口がそのまま
+ * 継ぎ目になると土地が途中で切れて見えるため、上下の端を透明にぼかして下地の空色
+ * （`SKY_BLUE`）に溶かし、その上を `CloudBand` の雲海が覆う。こうすると
+ * 「土地 → 雲 → 土地」に見え、どの画面幅でも継ぎ目が出ない。
+ * 読み込めなかったときも同じ空色が残るので、地図が破れない。
+ */
+function AreaImage({ src, fade }: { src: string; fade: "both" | "top" }) {
   const [failed, setFailed] = useState(false);
-  if (failed) {
-    return <div className="h-full w-full bg-linear-to-b from-[#45b7df] to-[#2e9fd6]" />;
-  }
+  if (failed) return null;
+
+  const mask =
+    fade === "both"
+      ? "linear-gradient(to bottom, transparent 0%, #000 14%, #000 86%, transparent 100%)"
+      : // 日本だけは俯瞰の海ではなく水平線の絵なので、海からの入りを長めにぼかす
+        "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,.5) 14%, #000 30%, #000 100%)";
+
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
@@ -222,72 +265,49 @@ function SegmentImage({ src }: { src: string }) {
       alt=""
       aria-hidden
       onError={() => setFailed(true)}
-      className="h-full w-full object-cover"
+      className="absolute inset-0 h-full w-full object-cover"
+      style={{ maskImage: mask, WebkitMaskImage: mask }}
     />
   );
 }
 
 /**
- * 背景の地形。帯（絵1枚ぶん）の数で等分して縦に並べる。
- * 帯の数を数え打ちにすると、先生がステージの絵を1枚たしても地図は伸びず、
- * 増えたはずの停留所だけが空の上に浮くことになる。
+ * 地図の「中身」を置く層。背景画像は画面いっぱいのまま、看板・航路・ステージだけを
+ * 内側に寄せる（左のサイドメニューに隠れないようにするため）。
  *
- * 絵がまだ無い帯（src: null）は海のグラデーションで表示する。絵の遅れで
- * ステージごと消すと、学習者は昨日あった教材を探しまわることになる。
+ * **左右を同じだけ空ける**のが要点。左だけ空けるとこの層の中央が画面中央からずれ、
+ * 中央に置いたはずの START / GOAL の看板が右に寄って見える。
+ * 航路もこの層の中で位置を測るので、看板・丸・道の中心がすべて画面中央でそろう。
  */
-function ScenicBackground({ bands }: { bands: readonly MapBand[] }) {
-  const count = bands.length;
-  return (
-    <div className="pointer-events-none absolute inset-0 overflow-hidden bg-[#2e9fd6]">
-      {bands.map((band, index) => (
-        <div
-          key={band.id}
-          className="absolute inset-x-0"
-          // 段は 1px ぶん重ねる。端数の切り捨てで継ぎ目に線が出ると、
-          // 一枚の地図ではなく「割れた絵」に見えてしまう。
-          style={{
-            height: `calc(${100 / count}% + 1px)`,
-            top: `calc(${(index * 100) / count}% - ${index}px)`,
-          }}
-        >
-          {band.src ? (
-            <SegmentImage src={band.src} />
-          ) : (
-            <div className="h-full w-full bg-linear-to-b from-[#45b7df] to-[#2e9fd6]" />
-          )}
-        </div>
-      ))}
-      <div className="absolute inset-0 bg-[#003c6b]/5" />
-    </div>
-  );
+function MapLayer({ children }: { children: ReactNode }) {
+  return <div className="absolute inset-0 md:right-44 md:left-44">{children}</div>;
 }
 
-function GoalBand() {
-  const [showImage, setShowImage] = useState(true);
+/**
+ * エリア名の札。ステージと反対側の肩に置く。
+ * 出すのは景色の名前だけで、国名は出さない（`MAP_AREAS` の方針。areas.ts を参照）。
+ */
+function AreaLabel({
+  area,
+  onRight,
+  cleared,
+}: {
+  area: MapArea;
+  onRight: boolean;
+  cleared: boolean;
+}) {
   return (
-    <div className="fixed inset-x-0 bottom-0 z-25 h-[clamp(130px,21vh,230px)] overflow-hidden bg-linear-to-b from-[#d8f0fc] via-[#ffd8d0] to-[#f5b56c] shadow-[0_-8px_30px_rgba(0,79,141,.2)]">
-      {showImage && (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src="/img/scenes/japan_goal.webp"
-          alt=""
-          aria-hidden
-          onError={() => setShowImage(false)}
-          className="absolute inset-0 h-full w-full object-cover"
-        />
-      )}
-      <div className="absolute inset-x-0 top-0 h-12 bg-linear-to-b from-[#8fdcf5] to-transparent" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center">
-        <div className="mx-auto h-6 w-4 bg-linear-to-r from-[#6f3518] via-[#a7622e] to-[#5a2b15]" />
-        <div className="min-w-44 rounded-lg border-4 border-[#fff3cf] bg-linear-to-b from-[#b96a32] to-[#713516] px-6 py-2 text-white shadow-[0_6px_0_#4e250f,0_10px_20px_rgba(0,0,0,.25)]">
-          <p className="text-xl font-black">GOAL!</p>
-          <p className="text-sm font-extrabold">
-            <ruby>
-              日本<rt className="text-white">にほん</rt>
-            </ruby>
-          </p>
-        </div>
-      </div>
+    <div
+      className={`absolute top-6 z-30 flex items-center gap-1.5 rounded-full border-2 px-3 py-1 text-xs font-black shadow-[0_3px_0_rgba(0,79,141,.25)] backdrop-blur-sm sm:text-sm ${
+        onRight ? "right-3 sm:right-6" : "left-3 sm:left-6"
+      } ${
+        cleared
+          ? "border-[#3aa458] bg-[#eafaef]/95 text-[#26714a]"
+          : "text-navy border-white bg-white/90"
+      }`}
+    >
+      <span aria-hidden>{cleared ? "✓" : "📍"}</span>
+      {area.name}
     </div>
   );
 }
@@ -325,12 +345,38 @@ function Toast({ message }: { message: string | null }) {
   );
 }
 
-function Hud({ profile }: { profile: ProfileRow | null }) {
+function ProgressBar({ progress }: { progress: StageProgress }) {
+  return (
+    <>
+      <div className="text-ink-soft mt-3 flex items-center justify-between text-xs font-extrabold">
+        <span>
+          {progress.clearedCount} / {progress.totalCount} ステージ
+        </span>
+        <span>{progress.percent}%</span>
+      </div>
+      <div className="mt-1 h-3 overflow-hidden rounded-full border border-white bg-[#e4eef3] shadow-inner">
+        <div
+          className="bg-leaf h-full rounded-full transition-[width] duration-500"
+          style={{ width: `${progress.percent}%` }}
+        />
+      </div>
+    </>
+  );
+}
+
+function Hud({ profile, progress }: { profile: ProfileRow | null; progress: StageProgress }) {
   return (
     <div className="fixed top-3 right-3 z-50 flex max-w-[calc(100vw-6rem)] flex-wrap justify-end gap-2">
       <div className="flex gap-1.5">
         {[
-          { key: "level", node: <>⭐ Lv.1</> },
+          {
+            key: "stage",
+            node: (
+              <>
+                🚩 {progress.clearedCount}/{progress.totalCount}
+              </>
+            ),
+          },
           {
             key: "coin",
             node: (
@@ -356,7 +402,11 @@ function Hud({ profile }: { profile: ProfileRow | null }) {
       <div className="flex items-center gap-2 rounded-2xl border-2 border-[#e9bd55] bg-[#fffaf0]/95 p-1.5 pr-3 shadow-[0_4px_0_#d9a839,0_8px_18px_rgba(0,79,141,.16)]">
         {profile ? (
           <>
-            <NekuMaxType id={profile.personality_type} gender={profile.gender} size={42} />
+            <NexMaxFamily
+              family={getFamilyForCode(profile.personality_type).id}
+              gender={profile.gender}
+              size={42}
+            />
             <span className="hidden leading-tight sm:block">
               <span className="text-ink block text-sm font-black">{profile.display_name}</span>
               <span className="text-ink-soft block text-[10px] font-extrabold">
@@ -407,8 +457,7 @@ function ViewToggle({ view, onChange }: { view: MapView; onChange: (view: MapVie
 
 const NAV_ITEMS = [
   { icon: "👤", label: "マイページ" },
-  // 単語は単体で開ける。その場合はステージ選択から始まる。
-  { icon: "📖", label: "単語", reading: "たんご", href: "/arcade" },
+  { icon: "📖", label: "単語", reading: "たんご" },
   { icon: "👥", label: "チーム・ペア" },
   { icon: "🛍️", label: "ショップ" },
 ] as const;
@@ -442,37 +491,35 @@ function Navigation({
   onUnavailable: () => void;
   onLogout: () => void;
 }) {
-  const navClass =
-    "text-ink hover:bg-sky-soft flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl px-3 text-sm font-extrabold transition";
-
-  const navButtons = NAV_ITEMS.map((item) => {
-    const body = (
-      <>
-        <span aria-hidden className="text-xl">
-          {item.icon}
-        </span>
-        {!collapsed && <span className="whitespace-nowrap">{<NavigationLabel item={item} />}</span>}
-      </>
-    );
-
-    return "href" in item ? (
-      <Link key={item.label} href={item.href} onClick={onDrawerClose} className={navClass}>
-        {body}
-      </Link>
-    ) : (
-      <button
-        key={item.label}
-        type="button"
-        onClick={() => {
-          onUnavailable();
-          onDrawerClose();
-        }}
-        className={navClass}
-      >
-        {body}
-      </button>
-    );
-  });
+  const navButtons = NAV_ITEMS.map((item) => (
+    <button
+      key={item.label}
+      type="button"
+      onClick={() => {
+        onUnavailable();
+        onDrawerClose();
+      }}
+      className="text-ink hover:bg-sky-soft flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl px-3 text-sm font-extrabold transition"
+    >
+      <span aria-hidden className="text-xl">
+        {item.icon}
+      </span>
+      {!collapsed && <span className="whitespace-nowrap">{<NavigationLabel item={item} />}</span>}
+    </button>
+  ));
+  // ネクマックス図鑑への回遊先。診断のあとに16人を見に行けるようにする（07 §7）。
+  const catalogLink = (
+    <Link
+      href="/nexmax"
+      onClick={onDrawerClose}
+      className="text-ink hover:bg-sky-soft flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl px-3 text-sm font-extrabold transition"
+    >
+      <span aria-hidden className="text-xl">
+        📖
+      </span>
+      {!collapsed && <span className="whitespace-nowrap">ネクマックス</span>}
+    </Link>
+  );
   const adminLink = isAdmin ? (
     <Link
       href="/admin"
@@ -528,6 +575,7 @@ function Navigation({
           ☰
         </button>
         {navButtons}
+        {catalogLink}
         {adminLink}
         {logoutButton}
         <button
@@ -552,6 +600,7 @@ function Navigation({
             <p className="text-navy mb-4 text-lg font-black">Nexmax Academy</p>
             <div className="space-y-2">
               {navButtons}
+              {catalogLink}
               {adminLink}
               {logoutButton}
             </div>
@@ -562,141 +611,87 @@ function Navigation({
   );
 }
 
-/** マップから渡される単語ステージ（進捗と行き先に使う最小限の情報）。 */
-export interface WordStageRef {
-  id: string;
-  title: string;
-}
-
-function LessonCard({
-  onUnavailable,
-  wordStages,
-  pin,
+/** ステージの丸。クリア済み・いまここ・じゅんびちゅうで見た目を変える */
+function StageNode({
+  stage,
+  status,
+  open,
+  onToggle,
 }: {
-  onUnavailable: () => void;
-  wordStages: readonly WordStageRef[];
-  /** いま取りかかるステージ（マップの1つめ）。ピンが1つも無ければ null。 */
-  pin: StagePin | null;
+  stage: StageDefinition;
+  status: StageStatus;
+  open: boolean;
+  onToggle: () => void;
 }) {
-  // 合格したステージ数を進捗に出す。localStorage は外部の状態として購読する。
-  const store = useMemo(() => createProgressStore(), []);
-  const clearedKey = useSyncExternalStore(
-    subscribeProgress,
-    () => wordStages.map((w) => (store.readTestResult(w.id)?.passed ? "1" : "0")).join(""),
-    () => wordStages.map(() => "0").join(""),
-  );
-
-  const total = wordStages.length;
-  const cleared = clearedKey.split("").filter((c) => c === "1").length;
-  const percent = total === 0 ? 0 : Math.round((cleared / total) * 100);
-  // 「続きから」は、まだ合格していない最初のステージへ直行する
-  const nextIndex = clearedKey.indexOf("0");
-  const next = wordStages[nextIndex === -1 ? 0 : nextIndex];
+  const step = String(stage.step).padStart(2, "0");
+  const face =
+    status === "current"
+      ? { backgroundColor: CURRENT_COLOR, borderColor: "#ffffff" }
+      : status === "cleared"
+        ? { backgroundColor: CLEARED_COLOR, borderColor: "#ffffff" }
+        : { backgroundColor: "#ffffff", borderColor: STAGE_COLORS[stage.color] };
 
   return (
-    <section className="w-full max-w-sm rounded-[28px] border-4 border-white bg-[#fffaf0]/97 p-4 shadow-[0_7px_0_#b8deed,0_18px_32px_rgba(0,79,141,.25)] backdrop-blur-sm">
-      <p className="inline-flex rounded-full border-2 border-white bg-[#e64a5f] px-4 py-1 text-sm font-black text-white shadow-[0_3px_0_#bd3148]">
-        ✦{" "}
-        <ruby>
-          現在<rt>げんざい</rt>
-        </ruby>
-        のレッスン ✦
-      </p>
-      {pin && (
-        <>
-          <p className="text-sky mt-3 text-xs font-black tracking-widest">
-            STEP {String(pin.step).padStart(2, "0")}
-          </p>
-          <h2 className="text-navy text-xl font-black">
-            <StageTitle pin={pin} />
-          </h2>
-          <p className="text-ink-soft mt-1 text-xs font-extrabold">
-            <KindLabel pin={pin} />
-          </p>
-          <p className="text-ink mt-2 text-sm font-bold">{pin.description}</p>
-        </>
-      )}
-      <div className="text-ink-soft mt-3 flex items-center justify-between text-xs font-extrabold">
-        <span>
-          {cleared} / {total} ステージ
+    <button
+      type="button"
+      aria-expanded={open}
+      aria-current={status === "current" ? "step" : undefined}
+      aria-label={`STEP ${step} ${stage.title}（${
+        status === "cleared" ? "クリア" : status === "current" ? "いま ここ" : "じゅんびちゅう"
+      }）`}
+      onClick={onToggle}
+      className={`relative grid h-14 w-20 place-items-center rounded-[50%] border-4 text-xl font-black shadow-[0_8px_0_rgba(0,79,141,.35),0_13px_24px_rgba(0,0,0,.22)] transition sm:h-17 sm:w-24 ${
+        status === "locked" ? "text-navy opacity-85" : "text-white"
+      } ${status === "current" ? "ring-4 ring-white/70" : ""}`}
+      style={face}
+    >
+      {status === "cleared" ? <span aria-hidden>✓</span> : step}
+      {status === "current" && (
+        <span className="absolute -top-3 rounded-full border-2 border-white bg-[#e64a5f] px-2 py-0.5 text-[9px] font-black whitespace-nowrap text-white shadow-md">
+          いま ここ
         </span>
-        <span>{percent}%</span>
-      </div>
-      <div className="mt-1 h-3 overflow-hidden rounded-full border border-white bg-[#e4eef3] shadow-inner">
-        <div
-          className="bg-leaf h-full rounded-full transition-[width] duration-500"
-          style={{ width: `${percent}%` }}
-        />
-      </div>
-      <div className="mt-4 grid gap-3">
-        {next ? (
-          <Link
-            href={`/arcade/${next.id}`}
-            className="btn-game flex-col px-4 py-2 leading-tight [--btn-face:#f26fa7] [--btn-shadow:#d94d84]"
-          >
-            <span>
-              ▶{" "}
-              <ruby>
-                続き<rt>つづき</rt>
-              </ruby>
-              から
-            </span>
-            <span className="text-xs">ステージを つづける</span>
-          </Link>
-        ) : (
-          <button
-            type="button"
-            onClick={onUnavailable}
-            className="btn-game flex-col px-4 py-2 leading-tight [--btn-face:#f26fa7] [--btn-shadow:#d94d84]"
-          >
-            <span>
-              ▶{" "}
-              <ruby>
-                続き<rt>つづき</rt>
-              </ruby>
-              から
-            </span>
-            <span className="text-xs">ステージを つづける</span>
-          </button>
-        )}
-        <Link
-          href="/arcade"
-          className="btn-game flex-col px-4 py-2 leading-tight [--btn-face:#ffc93c] [--btn-shadow:#f0a819]"
+      )}
+      {status === "locked" && (
+        <span
+          aria-hidden
+          className="absolute -top-2 -right-1 grid h-6 w-6 place-items-center rounded-full border-2 border-white bg-[#9db0c2] text-[11px] text-white shadow"
         >
-          <span>
-            📖{" "}
-            <ruby>
-              単語<rt>たんご</rt>
-            </ruby>
-            を
-            <ruby>
-              勉強<rt>べんきょう</rt>
-            </ruby>
-          </span>
-          <span className="text-xs">ステージを えらんで れんしゅう</span>
-        </Link>
-      </div>
-    </section>
+          🔒
+        </span>
+      )}
+    </button>
   );
 }
 
-function StageChip({
-  pin,
-  current,
+/**
+ * ステージの説明パネル。
+ * いま取り組むステージのときは、これがそのまま「現在のレッスン」カードになる
+ * （別枠の固定カードを置くとマップが隠れてしまうため、地図の上で一体にしている）。
+ */
+function StagePanel({
+  stage,
+  status,
+  progress,
   open,
   onToggle,
   onUnavailable,
 }: {
-  pin: StagePin;
-  current: boolean;
+  stage: StageDefinition;
+  status: StageStatus;
+  progress: StageProgress;
   open: boolean;
   onToggle: () => void;
   onUnavailable: () => void;
 }) {
-  // データ化されたステージだけ詳細ページへ行ける。まだなら「じゅんびちゅう」。
-  const stageHref = pin.href;
+  const current = status === "current";
+  const step = String(stage.step).padStart(2, "0");
+
   return (
-    <div className="card-pop w-[min(39vw,20rem)] overflow-hidden border-white/90 shadow-xl">
+    <section
+      className={`card-pop overflow-hidden shadow-xl ${
+        current ? "border-[3px] border-[#f9c3da]" : "border-white/90"
+      }`}
+    >
       <button
         type="button"
         aria-expanded={open}
@@ -704,19 +699,28 @@ function StageChip({
         className="flex w-full items-center gap-2 p-3 text-left"
       >
         <span className="min-w-0 flex-1">
+          {current && (
+            <span className="mb-1.5 inline-flex rounded-full border-2 border-white bg-[#e64a5f] px-3 py-0.5 text-[11px] font-black text-white shadow-[0_3px_0_#bd3148]">
+              ✦{" "}
+              <ruby>
+                現在<rt>げんざい</rt>
+              </ruby>
+              のレッスン ✦
+            </span>
+          )}
+          {status === "cleared" && (
+            <span className="mb-1.5 inline-flex rounded-full border-2 border-white bg-[#3aa458] px-3 py-0.5 text-[11px] font-black text-white shadow-[0_3px_0_#26714a]">
+              ✓ クリア
+            </span>
+          )}
           <span className="text-sky block text-[10px] font-black tracking-widest sm:text-xs">
-            STEP {String(pin.step).padStart(2, "0")}
+            STEP {step}
           </span>
           <span className="text-navy block truncate text-sm font-black sm:text-base">
-            <StageTitle pin={pin} />
+            <StageTitle stage={stage} />
           </span>
           <span className="text-ink-soft block text-[10px] font-bold sm:text-xs">
-            （{pin.reading}）
-            {hasKindLabel(pin) && (
-              <>
-                ・ <KindLabel pin={pin} />
-              </>
-            )}
+            （{stage.reading}）・ <KindLabel stage={stage} />
           </span>
         </span>
         <span
@@ -726,211 +730,376 @@ function StageChip({
           ›
         </span>
       </button>
+
       {open && (
         <div className="border-hairline border-t px-3 pt-2 pb-3">
-          <p className="text-ink text-xs font-bold sm:text-sm">{pin.description}</p>
-          {stageHref ? (
-            <Link
-              href={stageHref}
-              className="btn-game mt-2 w-full px-3 py-1.5 text-sm [--btn-face:#ffc93c] [--btn-shadow:#f0a819]"
-            >
-              ステージへ すすむ
-            </Link>
+          <p className="text-ink text-xs font-bold sm:text-sm">{stage.description}</p>
+
+          {current ? (
+            <>
+              <ProgressBar progress={progress} />
+              <div className="mt-3 grid gap-2 sm:grid-cols-2 md:grid-cols-1">
+                <button
+                  type="button"
+                  onClick={onUnavailable}
+                  className="btn-game flex-col px-4 py-2 leading-tight [--btn-face:#f26fa7] [--btn-shadow:#d94d84]"
+                >
+                  <span>
+                    ▶{" "}
+                    <ruby>
+                      続き<rt>つづき</rt>
+                    </ruby>
+                    から
+                  </span>
+                  <span className="text-[11px]">ステージを つづける</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={onUnavailable}
+                  className="btn-game flex-col px-4 py-2 leading-tight [--btn-face:#ffc93c] [--btn-shadow:#f0a819]"
+                >
+                  <span>
+                    📖{" "}
+                    <ruby>
+                      単語<rt>たんご</rt>
+                    </ruby>
+                    を
+                    <ruby>
+                      勉強<rt>べんきょう</rt>
+                    </ruby>
+                  </span>
+                  <span className="text-[11px]">たんごを ふやして レベルアップ！</span>
+                </button>
+              </div>
+            </>
           ) : (
-            <button
-              type="button"
-              onClick={onUnavailable}
-              className="btn-game mt-2 w-full px-3 py-1.5 text-sm [--btn-face:#ffc93c] [--btn-shadow:#f0a819]"
-            >
-              すすむ
-            </button>
-          )}
-          {!current && !stageHref && (
-            <p className="text-ink-soft mt-2 text-center text-[10px] font-bold">じゅんびちゅう</p>
+            <>
+              <button
+                type="button"
+                onClick={onUnavailable}
+                className="btn-game mt-2 w-full px-3 py-1.5 text-sm [--btn-face:#ffc93c] [--btn-shadow:#f0a819]"
+              >
+                {status === "cleared" ? "もういちど" : "すすむ"}
+              </button>
+              {status === "locked" && (
+                <p className="text-ink-soft mt-2 text-center text-[10px] font-bold">
+                  まえの ステージを クリアすると ひらきます。
+                </p>
+              )}
+            </>
           )}
         </div>
       )}
-    </div>
+    </section>
   );
 }
 
-function MapView({
-  pins,
-  bands,
-  baseBandCount,
+/** 道のりのエリア1枚（背景＋足跡＋ステージ）。上下10%が同じ海色なので継ぎ目が見えない */
+function RouteArea({
+  area,
+  index,
+  stage,
+  totalAreas,
+  flown,
+  progress,
   expandedStage,
   onExpandedStageChange,
   onUnavailable,
 }: {
-  pins: readonly StagePin[];
-  bands: readonly MapBand[];
-  baseBandCount: number;
+  area: MapArea;
+  index: number;
+  /** このエリアに立つステージ。通過するだけのエリアは undefined */
+  stage: StageDefinition | undefined;
+  /** 道のりのエリアの総数。航路の波はこれで決まる */
+  totalAreas: number;
+  /** 学習者の現在地（エリア番号 + エリア内の位置） */
+  flown: number;
+  progress: StageProgress;
   expandedStage: string | null;
   onExpandedStageChange: (id: string | null) => void;
   onUnavailable: () => void;
 }) {
-  // 停留所・道・キャラは同じ座標のもとから作る。別々に持つと、ステージが増えた
-  // ときに道だけ古い形のまま残り、学習者はどこへ進むのか分からなくなる。
-  // STEP 6 以降の停留所は、自分の絵の帯のまんなかに立つ。
-  const geometry = useMemo(
-    () =>
-      mapGeometry(
-        pins.map((pin) => pin.step),
-        baseBandCount,
-      ),
-    [pins, baseBandCount],
-  );
-  const stops = geometry.stops;
-  const route = useMemo(() => routePath(stops), [stops]);
-  const characters = useMemo(() => characterSlots(stops), [stops]);
+  const status = stage ? stageStatus(stage.id, progress) : null;
+  const nodeX = routeX(index + NODE_TOP / 100, totalAreas);
+  const nodeTop = NODE_TOP;
+  const chipOnRight = nodeX <= 50;
+  const open = stage ? expandedStage === stage.id : false;
+  const areaCleared = status === "cleared" || (!stage && index < flown);
 
   return (
-    <main
-      className="relative overflow-hidden pb-[clamp(130px,21vh,230px)]"
-      // 帯（絵1枚ぶん）＝1画面ぶんの高さ。帯の数は停留所の割り付けと同じ
-      // geometry から取る。別々に数えると、絵と停留所の対応がずれる。
-      style={{ minHeight: `${geometry.bandCount * SEGMENT_HEIGHT_VH}vh` }}
+    <section
+      aria-label={area.name}
+      /* 狭い画面ではレッスンパネルが丸の真下に縦長で開くので、そのぶん背を高くする。
+         詰めるとパネルが次のエリアまではみ出し、エリア名の札に重なる */
+      className="relative h-[940px] w-full md:h-[clamp(680px,64vh,780px)]"
+      style={{ backgroundColor: SKY_BLUE }}
     >
-      <ScenicBackground bands={bands} />
+      <AreaImage src={area.image} fade="both" />
+      {/* 四隅を雲でぼかして、画像の角が四角く出ないようにする */}
+      <CloudCorners />
 
-      <WoodenBanner label="START!" className="top-[2.5%] left-1/2">
-        アンコールワット／カンボジア
-      </WoodenBanner>
-      <svg
-        aria-hidden
-        viewBox="0 0 100 100"
-        preserveAspectRatio="none"
-        // 停留所と同じ 0..100 の座標系で全面に敷く。道と停留所の位置あわせを
-        // 目分量でやめたので、停留所が何個になっても道はピンの上を通る。
-        className="pointer-events-none absolute inset-0 z-10 h-full w-full drop-shadow-[0_2px_2px_rgba(0,79,141,.45)]"
-      >
-        <path
-          d={route}
-          fill="none"
-          stroke="white"
-          strokeWidth="1.15"
-          strokeLinecap="round"
-          strokeDasharray="0.4 2.1"
+      <MapLayer>
+        <AreaLabel area={area} onRight={!chipOnRight} cleared={areaCleared} />
+
+        <AreaTrail
+          xAt={(t) => routeX(index + t, totalAreas)}
+          areaIndex={index}
+          flownUntil={flown}
         />
-      </svg>
 
-      {characters.map((character, index) => {
-        const personality = PERSONALITY_ORDER[index % PERSONALITY_ORDER.length]!;
-        return (
-          <div
-            key={`${personality}-${index}`}
-            className="pointer-events-none absolute z-20 hidden -translate-x-1/2 -translate-y-1/2 sm:block"
-            style={{ left: `${character.x}%`, top: `${character.y}%` }}
-          >
-            <NekuMaxType id={personality} size={index % 2 === 0 ? 112 : 104} bob />
-          </div>
-        );
-      })}
+        {/* 道中だけのエリアには、一言だけ添えて「なにも無い」感じにしない */}
+        {!stage && (
+          <p className="text-navy absolute bottom-10 left-1/2 z-20 -translate-x-1/2 rounded-full border-2 border-white bg-white/85 px-4 py-1.5 text-xs font-black shadow-md backdrop-blur-sm">
+            ☁ {area.note}
+          </p>
+        )}
 
-      {pins.map((pin, index) => {
-        // stops は pins.length ぶん作るので、ピンと停留所は必ず1対1で対応する。
-        const position = stops[index]!;
-        const current = index === 0;
-        const chipOnRight = index % 2 === 1;
-        const color = current ? "#f26fa7" : STAGE_COLORS[pin.color];
+        <div
+          aria-hidden
+          className="pointer-events-none absolute z-20 hidden -translate-x-1/2 -translate-y-1/2 lg:block"
+          style={{ left: `${chipOnRight ? nodeX + 26 : nodeX - 26}%`, top: `${nodeTop + 22}%` }}
+        >
+          <NexMaxFamily family={AREA_CHARACTERS[index % AREA_CHARACTERS.length]!} size={104} bob />
+        </div>
 
-        return (
-          <div
-            key={pin.id}
-            className="absolute z-30 -translate-x-1/2 -translate-y-1/2"
-            style={{ left: `${position.x}%`, top: `${position.y}%` }}
-          >
-            <button
-              type="button"
-              aria-label={`STEP ${String(pin.step).padStart(2, "0")} ${pin.title}`}
-              aria-current={current ? "step" : undefined}
-              onClick={() => onExpandedStageChange(expandedStage === pin.id ? null : pin.id)}
-              className={`relative grid h-14 w-20 place-items-center rounded-[50%] border-4 border-white text-xl font-black shadow-[0_8px_0_rgba(0,79,141,.35),0_13px_24px_rgba(0,0,0,.22)] sm:h-17 sm:w-24 ${
-                current ? "animate-pulse text-white" : "text-navy bg-white"
-              }`}
-              style={current ? { backgroundColor: color } : { borderColor: color }}
-            >
-              {String(pin.step).padStart(2, "0")}
-              {current && (
-                <span className="absolute -top-3 rounded-full bg-[#e64a5f] px-2 py-0.5 text-[9px] text-white">
-                  START
-                </span>
-              )}
-            </button>
+        {stage && status && (
+          <>
             <div
-              className={`absolute top-1/2 -translate-y-1/2 ${
-                chipOnRight ? "left-[calc(100%+0.6rem)]" : "right-[calc(100%+0.6rem)]"
+              className="absolute z-30 -translate-x-1/2 -translate-y-1/2"
+              style={{ left: `${nodeX}%`, top: `${nodeTop}%` }}
+            >
+              <StageNode
+                stage={stage}
+                status={status}
+                open={open}
+                onToggle={() => onExpandedStageChange(open ? null : stage.id)}
+              />
+            </div>
+
+            <div
+              /* モバイルはステージの丸の「下」、md 以上は丸の「横」に置く */
+              style={
+                {
+                  "--panel-top-narrow": `calc(${nodeTop}% + 3.25rem)`,
+                  "--panel-top": `${nodeTop}%`,
+                  "--panel-left": `calc(${nodeX}% + 3.75rem)`,
+                  "--panel-right": `calc(${100 - nodeX}% + 3.75rem)`,
+                } as CSSProperties
+              }
+              /* md 以上では丸の横に置く。上へ 35% しか出さないのは、1枚目のエリアで
+                 パネルが上に伸びると START の看板に重なってしまうため（中央合わせだと重なる） */
+              className={`absolute top-[var(--panel-top-narrow)] left-1/2 z-30 w-[min(92vw,22rem)] -translate-x-1/2 md:top-[var(--panel-top)] md:w-[21rem] md:translate-x-0 md:-translate-y-[35%] ${
+                chipOnRight
+                  ? "md:left-[var(--panel-left)]"
+                  : "md:right-[var(--panel-right)] md:left-auto"
               }`}
             >
-              <StageChip
-                pin={pin}
-                current={current}
-                open={expandedStage === pin.id}
-                onToggle={() => onExpandedStageChange(expandedStage === pin.id ? null : pin.id)}
+              <StagePanel
+                stage={stage}
+                status={status}
+                progress={progress}
+                open={open}
+                onToggle={() => onExpandedStageChange(open ? null : stage.id)}
                 onUnavailable={onUnavailable}
               />
             </div>
+          </>
+        )}
+      </MapLayer>
+
+      {/* 土地の境目の雲海。エリアの下端にまたがるので、背景画像の切り口が雲に隠れる */}
+      <CloudBand className="bottom-0 translate-y-1/2" />
+    </section>
+  );
+}
+
+/** 最後のエリア＝日本。道のりの終点として、地図の一番下に置く（他の情報を上に重ねない） */
+function GoalArea({
+  goalArea,
+  totalAreas,
+  flown,
+  progress,
+}: {
+  goalArea: MapArea;
+  totalAreas: number;
+  flown: number;
+  progress: StageProgress;
+}) {
+  const complete = progress.currentStageId === null;
+  return (
+    <section
+      aria-label={goalArea.name}
+      className="relative h-[clamp(320px,40vh,460px)] w-full overflow-hidden"
+      style={{ backgroundColor: SKY_BLUE }}
+    >
+      <AreaImage src={goalArea.image} fade="top" />
+
+      <MapLayer>
+        {/* 航路は看板に触れる手前で終える。看板は中央から上下に約 5.5rem あるので、
+            そのぶん＋余白を空ける。突き抜けると着地して見えない */}
+        <div className="absolute inset-x-0 top-0 bottom-[calc(50%+3.5rem)]">
+          <AreaTrail xAt={() => 50} areaIndex={totalAreas} flownUntil={flown} />
+        </div>
+
+        <div className="absolute top-1/2 left-1/2 z-20 -translate-x-1/2 -translate-y-1/2 text-center">
+          <div className="mx-auto h-7 w-4 bg-linear-to-r from-[#6f3518] via-[#a7622e] to-[#5a2b15] shadow-md" />
+          <div
+            className={`min-w-48 rounded-lg border-4 px-6 py-2 text-white shadow-[0_7px_0_#4e250f,0_12px_24px_rgba(0,0,0,.28)] ${
+              complete
+                ? "animate-pulse border-[#ffe477] bg-linear-to-b from-[#e8a33c] to-[#b96a32]"
+                : "border-[#fff3cf] bg-linear-to-b from-[#b96a32] to-[#713516]"
+            }`}
+          >
+            <p className="text-xl font-black tracking-wider">GOAL!</p>
+            <p className="text-sm font-extrabold">
+              <ruby>
+                {goalArea.name}
+                <rt className="text-white">{goalArea.reading}</rt>
+              </ruby>
+            </p>
           </div>
-        );
-      })}
+          <p className="text-navy mt-2 inline-block rounded-full border-2 border-white bg-white/90 px-3 py-1 text-[11px] font-black shadow-md">
+            {complete
+              ? "ぜんぶ クリア！ おつかれさま。"
+              : `のこり ${progress.totalCount - progress.clearedCount} ステージ`}
+          </p>
+        </div>
+      </MapLayer>
+    </section>
+  );
+}
+
+function MapViewPane({
+  routeAreas,
+  goalArea,
+  stageById,
+  progress,
+  expandedStage,
+  onExpandedStageChange,
+  onUnavailable,
+}: {
+  routeAreas: readonly MapArea[];
+  goalArea: MapArea;
+  stageById: ReadonlyMap<string, StageDefinition>;
+  progress: StageProgress;
+  expandedStage: string | null;
+  onExpandedStageChange: (id: string | null) => void;
+  onUnavailable: () => void;
+}) {
+  const firstArea = routeAreas[0];
+  const flown = flownUntil(progress, routeAreas);
+  return (
+    <main className="relative w-full overflow-x-hidden">
+      {/* 出発の帯。1枚目のエリア画像の上端は平らな空色なので、同じ色で continuous に見える。
+          高さは「看板の下端」と「1枚目のエリアで開く現在のレッスンパネルの上端」が
+          ぶつからない分だけ取る（詰めると看板がパネルに隠れる） */}
+      <div className="relative h-64 w-full" style={{ backgroundColor: SKY_BLUE }}>
+        {/* 1枚目のエリアの上端にも雲をかける。看板より先に置いて、看板を隠さないようにする */}
+        <CloudBand className="bottom-0 translate-y-1/2" />
+        <MapLayer>
+          {/* 看板より上には航路を引かない（出発点なので、道は看板の真下から始まる）。
+              看板の下端から下だけに引いて、1枚目のエリアへ切れ目なくつなぐ */}
+          <WoodenBanner label="START!" className="top-20 left-1/2">
+            {firstArea?.name ?? "スタート"}
+          </WoodenBanner>
+          <div className="absolute inset-x-0 top-[13rem] bottom-0">
+            <AreaTrail xAt={() => 50} areaIndex={-1} flownUntil={flown} />
+          </div>
+        </MapLayer>
+      </div>
+
+      {routeAreas.map((area, index) => (
+        <RouteArea
+          key={area.id}
+          area={area}
+          index={index}
+          stage={area.stageId ? stageById.get(area.stageId) : undefined}
+          totalAreas={routeAreas.length}
+          flown={flown}
+          progress={progress}
+          expandedStage={expandedStage}
+          onExpandedStageChange={onExpandedStageChange}
+          onUnavailable={onUnavailable}
+        />
+      ))}
+      <GoalArea
+        goalArea={goalArea}
+        totalAreas={routeAreas.length}
+        flown={flown}
+        progress={progress}
+      />
     </main>
   );
 }
 
 function CardsView({
-  pins,
-  bands,
+  stages,
+  progress,
   onUnavailable,
 }: {
-  pins: readonly StagePin[];
-  bands: readonly MapBand[];
+  stages: readonly StageDefinition[];
+  progress: StageProgress;
   onUnavailable: () => void;
 }) {
   return (
-    <main className="relative min-h-dvh overflow-hidden px-4 pt-36 pb-[clamp(150px,23vh,250px)] sm:px-8 md:pl-48">
-      <ScenicBackground bands={bands} />
+    <main className="bg-bg-sky relative min-h-dvh px-4 pt-36 pb-16 sm:px-8 md:pl-48">
       <section className="relative z-10 mx-auto max-w-6xl">
         <div className="rounded-[2rem] border-2 border-white bg-white/80 p-5 shadow-2xl backdrop-blur-md sm:p-8">
           <h1 className="text-navy text-2xl font-black">🃏 カード</h1>
+          <div className="mx-auto mt-3 max-w-sm">
+            <ProgressBar progress={progress} />
+          </div>
           <div className="mt-5 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-            {pins.map((pin, index) => (
-              <article key={pin.id} className="card-pop flex flex-col p-5">
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <p className="text-sky text-xs font-black tracking-widest">
-                      STEP {String(pin.step).padStart(2, "0")}
-                    </p>
-                    <h2 className="text-navy mt-1 text-xl font-black">
-                      <StageTitle pin={pin} />
-                    </h2>
-                    <p className="text-ink-soft text-xs font-bold">（{pin.reading}）</p>
+            {stages.map((stage) => {
+              const status = stageStatus(stage.id, progress);
+              return (
+                <article key={stage.id} className="card-pop flex flex-col p-5">
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <p className="text-sky text-xs font-black tracking-widest">
+                        STEP {String(stage.step).padStart(2, "0")}
+                      </p>
+                      <h2 className="text-navy mt-1 text-xl font-black">
+                        <StageTitle stage={stage} />
+                      </h2>
+                      <p className="text-ink-soft text-xs font-bold">（{stage.reading}）</p>
+                    </div>
+                    <span
+                      className="grid h-11 w-11 place-items-center rounded-full border-4 border-white text-lg shadow-md"
+                      style={{
+                        backgroundColor:
+                          status === "current"
+                            ? CURRENT_COLOR
+                            : status === "cleared"
+                              ? CLEARED_COLOR
+                              : "#ffffff",
+                        color: status === "locked" ? STAGE_COLORS[stage.color] : "#ffffff",
+                      }}
+                    >
+                      {status === "cleared" ? "✓" : status === "current" ? "▶" : "○"}
+                    </span>
                   </div>
-                  <span
-                    className="grid h-11 w-11 place-items-center rounded-full border-4 border-white text-lg shadow-md"
-                    style={{
-                      backgroundColor: index === 0 ? "#f26fa7" : "#ffffff",
-                      color: index === 0 ? "#ffffff" : STAGE_COLORS[pin.color],
-                    }}
+                  <p className="text-ink-soft mt-3 text-sm font-extrabold">
+                    <KindLabel stage={stage} />
+                  </p>
+                  <p className="text-ink mt-2 flex-1 text-sm font-bold">{stage.description}</p>
+                  <p className="text-ink-soft mt-3 text-xs font-extrabold">
+                    {status === "cleared"
+                      ? "クリア"
+                      : status === "current"
+                        ? "いまの ステージ"
+                        : "じゅんびちゅう"}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={onUnavailable}
+                    className="btn-game mt-4 w-full px-4 py-2 [--btn-face:#ffc93c] [--btn-shadow:#f0a819]"
                   >
-                    {index === 0 ? "▶" : "○"}
-                  </span>
-                </div>
-                <p className="text-ink-soft mt-3 text-sm font-extrabold">
-                  <KindLabel pin={pin} />
-                </p>
-                <p className="text-ink mt-2 flex-1 text-sm font-bold">{pin.description}</p>
-                <p className="text-ink-soft mt-3 text-xs font-extrabold">
-                  {index === 0 ? "いまの ステージ" : "じゅんびちゅう"}
-                </p>
-                <button
-                  type="button"
-                  onClick={onUnavailable}
-                  className="btn-game mt-4 w-full px-4 py-2 [--btn-face:#ffc93c] [--btn-shadow:#f0a819]"
-                >
-                  すすむ
-                </button>
-              </article>
-            ))}
+                    {status === "cleared" ? "もういちど" : "すすむ"}
+                  </button>
+                </article>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -939,61 +1108,80 @@ function CardsView({
 }
 
 export function MapShell({
-  wordStages,
-  pins,
-  bands,
-  baseBandCount,
+  routeAreas,
+  goalArea,
+  stages,
 }: {
-  wordStages: readonly WordStageRef[];
-  /** マップに出す停留所。定番ステージとデータ化ステージを合流ずみ（step 昇順）。 */
-  pins: readonly StagePin[];
-  /** 背景の帯。元の絵＋STEP 6以降のステージの絵（無ければ色だけ）で、長さ＝マップの長さ。 */
-  bands: readonly MapBand[];
-  /** 帯のうち元の絵（STEP 1〜5 を受け持つ）の数。停留所の割り付けに使う。 */
-  baseBandCount: number;
+  /** 道のりのエリア（ゴールを除く）。既定 ∪ スタジオで作ったステージ。 */
+  routeAreas: readonly MapArea[];
+  /** 最後のエリア＝日本。 */
+  goalArea: MapArea;
+  /** マップとカードに出すステージ（step 昇順）。 */
+  stages: readonly StageDefinition[];
 }) {
   const router = useRouter();
+  const stageById = useMemo(() => new Map(stages.map((stage) => [stage.id, stage])), [stages]);
   const rawProfile = useSyncExternalStore(
     subscribeToStorage,
     profileSnapshot,
     () => PROFILE_SERVER_SNAPSHOT,
+  );
+  const rawProgress = useSyncExternalStore(
+    subscribeToStorage,
+    progressSnapshot,
+    () => PROGRESS_SERVER_SNAPSHOT,
   );
   const storedView = useSyncExternalStore<MapView>(subscribeToStorage, getMapView, () => "map");
   const cachedProfile = useMemo(
     () => (rawProfile === PROFILE_SERVER_SNAPSHOT ? null : getProfile()),
     [rawProfile],
   );
+  const progress = useMemo(() => {
+    const parsed: unknown = JSON.parse(rawProgress);
+    return deriveProgress(Array.isArray(parsed) ? (parsed as string[]) : []);
+  }, [rawProgress]);
   const [databaseProfile, setDatabaseProfile] = useState<ProfileRow | null>(null);
   const profile = databaseProfile ? profileFromRow(databaseProfile) : cachedProfile;
   const [viewOverride, setViewOverride] = useState<MapView | null>(null);
-  // 最初は1つめの停留所を開いておく。IDを決め打ちにすると、step 1 のステージを
-  // 入れかえた先生の画面でどこも開かなくなる。
-  const [expandedStage, setExpandedStage] = useState<string | null>(() => pins[0]?.id ?? null);
   const [collapsed, setCollapsed] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
+  const [loadingIsSlow, setLoadingIsSlow] = useState(false);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // undefined = 学習者がまだ触っていない。そのあいだは「いま取り組むステージ」を開いておく
+  const [expandedOverride, setExpandedOverride] = useState<string | null | undefined>(undefined);
   const view = viewOverride ?? storedView;
-  const currentPin = pins[0] ?? null;
+
+  const expandedStage = expandedOverride === undefined ? progress.currentStageId : expandedOverride;
 
   useEffect(() => {
     let active = true;
     void (async () => {
-      const supabase = createClient();
-      if (!supabase) {
-        router.replace("/welcome");
-        return;
-      }
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (!user) {
-        router.replace("/welcome");
-        return;
-      }
+      // 例外は必ずここで拾う。取りこぼすと `void` に握りつぶされ、リダイレクトも
+      // setState も走らないまま「マップを じゅんびしています」から抜けられなくなる。
+      // getUser() は通信断・セッション切れ・トークン不正のいずれでも throw しうる。
       try {
+        const supabase = createClient();
+        if (!supabase) {
+          router.replace("/welcome");
+          return;
+        }
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+        if (!user) {
+          router.replace("/welcome");
+          return;
+        }
         const stored = await fetchOwnProfile();
         if (!stored) {
+          router.replace("/welcome");
+          return;
+        }
+        // 管理者が診断をリセットすると answers/scores が空で戻る。
+        // profileFromRow が投げるのに任せず、明示的に診断へ送る。
+        if (!isDiagnosisComplete(stored.answers)) {
+          clearProfile();
           router.replace("/welcome");
           return;
         }
@@ -1015,6 +1203,14 @@ export function MapShell({
     [],
   );
 
+  // 通信が返ってこないときは例外も起きないので、待ち続けるしかなくなる。
+  // 一定時間で「やりなおす道」を出して、黙って固まったままにしない。
+  useEffect(() => {
+    if (profile) return;
+    const timer = setTimeout(() => setLoadingIsSlow(true), 8000);
+    return () => clearTimeout(timer);
+  }, [profile]);
+
   const showToast = useCallback((message: string) => {
     if (toastTimer.current) clearTimeout(toastTimer.current);
     setToast(message);
@@ -1028,10 +1224,34 @@ export function MapShell({
 
   if (!profile) {
     return (
-      <main className="from-bg-sky to-bg-warm grid min-h-dvh place-items-center bg-linear-to-b">
-        <p className="text-navy rounded-full bg-white px-6 py-3 font-extrabold shadow-lg">
-          マップを じゅんびしています。
-        </p>
+      <main className="from-bg-sky to-bg-warm grid min-h-dvh place-items-center bg-linear-to-b p-6">
+        <div className="text-center">
+          <p className="text-navy inline-block rounded-full bg-white px-6 py-3 font-extrabold shadow-lg">
+            マップを じゅんびしています。
+          </p>
+          {loadingIsSlow && (
+            <div className="mx-auto mt-5 max-w-sm rounded-2xl border-2 border-white bg-white/90 p-5 shadow-lg">
+              <p className="text-ink text-sm font-bold">
+                じかんが かかっています。つうしんの ちょうしを みて、もういちど ためしてください。
+              </p>
+              <div className="mt-4 grid gap-2">
+                <button
+                  type="button"
+                  onClick={() => window.location.reload()}
+                  className="btn-game w-full px-4 py-2 [--btn-face:#ffc93c] [--btn-shadow:#f0a819]"
+                >
+                  もういちど よみこむ
+                </button>
+                <Link
+                  href="/welcome"
+                  className="text-sky text-sm font-extrabold underline underline-offset-4"
+                >
+                  ログインを やりなおす
+                </Link>
+              </div>
+            </div>
+          )}
+        </div>
       </main>
     );
   }
@@ -1039,7 +1259,7 @@ export function MapShell({
   return (
     <div className="bg-bg-sky relative min-h-dvh">
       <Logo />
-      <Hud profile={databaseProfile} />
+      <Hud profile={databaseProfile} progress={progress} />
       <ViewToggle view={view} onChange={changeView} />
       <Navigation
         collapsed={collapsed}
@@ -1054,36 +1274,24 @@ export function MapShell({
         onLogout={() => void signOut()}
       />
 
-      <div className="fixed top-28 left-44 z-40 hidden w-sm md:block">
-        <LessonCard
-          onUnavailable={() => showToast(LONG_WAIT_TOAST)}
-          wordStages={wordStages}
-          pin={currentPin}
-        />
-      </div>
-
-      <div className="relative z-30 px-3 pt-36 pb-2 md:hidden">
-        <LessonCard
-          onUnavailable={() => showToast(LONG_WAIT_TOAST)}
-          wordStages={wordStages}
-          pin={currentPin}
-        />
-      </div>
-
       {view === "map" ? (
-        <MapView
-          pins={pins}
-          bands={bands}
-          baseBandCount={baseBandCount}
+        <MapViewPane
+          routeAreas={routeAreas}
+          goalArea={goalArea}
+          stageById={stageById}
+          progress={progress}
           expandedStage={expandedStage}
-          onExpandedStageChange={setExpandedStage}
+          onExpandedStageChange={setExpandedOverride}
           onUnavailable={() => showToast(LONG_WAIT_TOAST)}
         />
       ) : (
-        <CardsView pins={pins} bands={bands} onUnavailable={() => showToast(LONG_WAIT_TOAST)} />
+        <CardsView
+          stages={stages}
+          progress={progress}
+          onUnavailable={() => showToast(LONG_WAIT_TOAST)}
+        />
       )}
 
-      <GoalBand />
       <Toast message={toast} />
     </div>
   );

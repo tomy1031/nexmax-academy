@@ -5,7 +5,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { motion } from "motion/react";
 import type { QuizQuestion, QuizSet } from "@/content/schema";
 import { FeedbackMessage } from "@/components/feedback-message";
-import { NekuMax } from "@/components/nekumax";
+import { NexMax } from "@/components/nexmax";
 import { RubyText } from "@/components/ruby-text";
 import { buildFuriganaIndex } from "@/lib/text/furigana";
 import { recordContentProgress } from "@/lib/progress/store";
@@ -219,7 +219,7 @@ function QuizResultCard({
     >
       {summary.passed && <CelebrationBurst />}
       <div className="flex items-center gap-4">
-        <NekuMax variant={summary.passed ? "cheer" : set.nekumax} size={84} bob />
+        <NexMax variant={summary.passed ? "cheer" : set.nekumax} size={84} bob />
         <div>
           <p className="text-ink-soft text-sm font-extrabold">けっか</p>
           <h2 className="text-ink text-3xl font-extrabold">

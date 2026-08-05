@@ -1,9 +1,11 @@
 "use client";
 
 import { useId, useState } from "react";
+import { ROUTE_AREAS } from "@/content/areas";
 import type { ContentRefType, Stage, StageContentRef } from "@/content/schema";
 import { CONTENT_TYPE_OPTIONS, STAGE_COLOR_OPTIONS } from "./drafts";
 import { moveItem, removeAt, replaceAt } from "./list-ops";
+import { uploadAsset } from "./studio-api";
 import {
   MiniButton,
   NumberField,
@@ -198,6 +200,138 @@ export function StageEditor({
           onChange={(wordStageIds) => patch({ wordStageIds })}
         />
       </StudioSection>
+
+      <AreaEditor value={value} onChange={onChange} />
     </div>
+  );
+}
+
+/**
+ * マップの土地（設計: src/content/areas.ts）
+ *
+ * マップは「1ステージ＝1エリア＝背景画像1枚」。ここを決めると、そのステージが
+ * マップの上から step 番目の土地として増える。決めなければ既定の土地を使う。
+ *
+ * 名前に国名を入れない。国は情勢で差し替える前提なので、画面文言が国に依存すると
+ * 差し替えのたびに UI を直すことになる（都市名・遺跡名は国名ではないので使ってよい）。
+ */
+function AreaEditor({ value, onChange }: { value: Stage; onChange: (stage: Stage) => void }) {
+  const inputId = useId();
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const area = value.area;
+
+  const patchArea = (part: Partial<NonNullable<Stage["area"]>>) => {
+    onChange({
+      ...value,
+      area: { name: "", reading: "", image: "", note: "", ...area, ...part },
+    });
+  };
+
+  const handleFile = async (file: File | undefined) => {
+    if (!file) return;
+    setBusy(true);
+    setError(null);
+    const result = await uploadAsset(file, `areas/${value.id || "stage"}`);
+    setBusy(false);
+    if (!result.ok) {
+      setError(result.message);
+      return;
+    }
+    patchArea({ image: result.url });
+  };
+
+  if (!area) {
+    return (
+      <StudioSection
+        title="マップの 土地"
+        hint="このステージが マップの どこに 立つかです。きめないと きていの 土地を つかいます。"
+      >
+        <p className="text-ink-soft text-xs font-bold">
+          いまは きていの 土地（{ROUTE_AREAS.length}か所）を つかいます。
+          {value.step > ROUTE_AREAS.length ? (
+            <>
+              <br />
+              このステージは {value.step} ばんめ なので、きていの 土地が ありません。 土地を
+              きめないと、空色の おびに なります。
+            </>
+          ) : null}
+        </p>
+        <MiniButton tone="accent" onClick={() => patchArea({})}>
+          ＋ この ステージの 土地を つくる
+        </MiniButton>
+      </StudioSection>
+    );
+  }
+
+  return (
+    <StudioSection
+      title="マップの 土地"
+      hint="マップの 上から この ステージの ばんごう（ステップ）の ところに 出ます。"
+    >
+      <div className="grid gap-4 sm:grid-cols-2">
+        <TextField
+          label="景色の 名前（国の 名前は 入れない）"
+          value={area.name}
+          onChange={(name) => patchArea({ name })}
+          placeholder="きりの やまなみ"
+          hint="まちの 名前・いせきの 名前は つかえます。"
+        />
+        <TextField
+          label="よみ（ひらがな）"
+          value={area.reading}
+          onChange={(reading) => patchArea({ reading })}
+          placeholder="きりの やまなみ"
+        />
+      </div>
+      <TextField
+        label="地図に そえる ひとこと"
+        value={area.note}
+        onChange={(note) => patchArea({ note })}
+        placeholder="きりの なかを ぬけて いきます。"
+      />
+
+      <div className="border-hairline space-y-2 rounded-2xl border-2 bg-white p-3">
+        <p className="text-navy text-xs font-black">はいけいの 絵（たて長 1024×1536）</p>
+        {area.image ? (
+          // next/image は外部URLの許可設定が要るため、ここは素の img で出す（確認用の小さな見本）
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={area.image}
+            alt=""
+            className="border-hairline h-28 w-auto rounded-xl border-2 object-cover"
+          />
+        ) : (
+          <p className="text-ink-faint text-xs font-bold">
+            まだ ありません。絵が なくても ステージは 出ます（空色の おびに なります）。
+          </p>
+        )}
+        <TextField
+          label="絵の ばしょ（URL か /img/scenes/…）"
+          value={area.image}
+          onChange={(image) => patchArea({ image })}
+          placeholder="/img/scenes/area_misty_peaks.webp"
+        />
+        <div className="flex flex-wrap items-center gap-2">
+          <input
+            id={inputId}
+            type="file"
+            accept="image/*"
+            disabled={busy}
+            onChange={(e) => void handleFile(e.target.files?.[0])}
+            className="text-ink-soft text-xs font-bold"
+          />
+          {busy ? <span className="text-ink-soft text-xs font-black">あげています…</span> : null}
+        </div>
+        {error ? <p className="text-coral-deep text-xs font-black">{error}</p> : null}
+        <p className="text-ink-faint text-xs font-bold">
+          絵は Codex でも つくれます（docs/skills/codex_image_generation.md §7.1）。
+        </p>
+      </div>
+
+      <MiniButton onClick={() => onChange({ ...value, area: undefined })}>
+        この 土地を やめる（きていに もどす）
+      </MiniButton>
+    </StudioSection>
   );
 }
