@@ -10,12 +10,18 @@
  * そこで方針は次の3層:
  *   1. 本文は **漢字＋ふりがな** で書く（N4を超える漢字でもよい。読みは合成で出す）
  *   2. 語には点線の下線。タップで **やさしい日本語の意味** を出す
- *   3. 同じポップオーバーに **英語の意味** を添える。日本語の説明で届かなかったときの最後の受け皿
+ *   3. 同じポップオーバーに **英語** を添える。日本語の説明で届かなかったときの受け皿
  *
  * 英語は本文には出さない。学習者に英語を読ませたいのではなく、
  * 詰まったときに1タップで抜けられる非常口として置く（§2.5）。
  *
- * 表示規則: 該当語に薄い点線の下線 → タップで 読み＋意味＋英語 のポップオーバー。
+ * **ポップオーバーの並びは 日本語 → 英語 → 日本語の意味 → 英語の意味 の4段。**
+ * まだN4を勉強中の学習者は、やさしい日本語の説明でも読み切れないことがある。
+ * 対訳の1語（`englishTerm`）を**説明より先**に置くと、そこで足りた人は
+ * 説明を読まずに設問へ戻れる。説明が要る人だけが下の2段を読めばよい。
+ * 同じ理由で「ことばメモ」のチップにも `日本語 / english` を並べて出す。
+ *
+ * 表示規則: 該当語に薄い点線の下線 → ホバー（またはタップ）でポップオーバー。
  * **1文に2語以上は下線を引かない**（同じ文で2回タップさせない。該当したら文を分ける）。
  */
 
@@ -28,8 +34,13 @@ export interface GlossaryEntry {
   readonly reading: string;
   /** 学習者に出す意味の1文（やさしい日本語）。 */
   readonly meaning: string;
-  /** 意味の英語。日本語の説明で届かなかったときの受け皿。本文には出さない。 */
-  readonly english: string;
+  /**
+   * 対訳の1語。**説明ではなく見出し**なので短く保つ（チップにも並べて出す）。
+   * まだN4を勉強中の学習者が、説明を読まずにここで足りるようにするための段。
+   */
+  readonly englishTerm: string;
+  /** 意味の英語。日本語の説明でも英語1語でも届かなかったときの最後の受け皿。 */
+  readonly englishMeaning: string;
 }
 
 export const GLOSSARY: readonly GlossaryEntry[] = [
@@ -38,217 +49,248 @@ export const GLOSSARY: readonly GlossaryEntry[] = [
     kanji: "組",
     reading: "ぐみ",
     meaning: "おなじ タイプの なかまの グループ",
-    english: "group — the four families of types in this app",
+    englishTerm: "group",
+    englishMeaning: "the four families of types in this app",
   },
   {
     term: "仲間",
     kanji: "仲間",
     reading: "なかま",
     meaning: "いっしょに べんきょうや しごとを する 友だち",
-    english: "teammate — someone you study or work together with",
+    englishTerm: "teammate",
+    englishMeaning: "someone you study or work together with",
   },
   {
     term: "手順",
     kanji: "手順",
     reading: "てじゅん",
     meaning: "しごとの じゅんばん",
-    english: "the steps — the order you do a job in",
+    englishTerm: "steps",
+    englishMeaning: "the order you do a job in",
   },
   {
     term: "運用",
     kanji: "運用",
     reading: "うんよう",
     meaning: "つくった システムを まいにち うごかしつづける しごと",
-    english: "operations — keeping a finished system running every day",
+    englishTerm: "operations",
+    englishMeaning: "keeping a finished system running every day",
   },
   {
     term: "対応",
     kanji: "対応",
     reading: "たいおう",
     meaning: "もんだいが 出た とき、それを なおす しごと",
-    english: "handling it — dealing with a problem when one comes up",
+    englishTerm: "handling",
+    englishMeaning: "dealing with a problem when one comes up",
   },
   {
     term: "仕組み",
     kanji: "仕組み",
     reading: "しくみ",
     meaning: "どう うごいて いるか。なかの つくり",
-    english: "how it works — the mechanism inside",
+    englishTerm: "mechanism",
+    englishMeaning: "how something works inside",
   },
   {
     term: "設計",
     kanji: "設計",
     reading: "せっけい",
     meaning: "つくる 前に、どう つくるかを きめる こと",
-    english: "design — deciding how to build it before you build it",
+    englishTerm: "design",
+    englishMeaning: "deciding how to build it before you build it",
   },
   {
     term: "技術",
     kanji: "技術",
     reading: "ぎじゅつ",
     meaning: "つくる ための ほうほう",
-    english: "technology — the methods and skills used to build things",
+    englishTerm: "technology",
+    englishMeaning: "the methods and skills used to build things",
   },
   {
     term: "提案",
     kanji: "提案",
     reading: "ていあん",
     meaning: "「こう しませんか」と 言う こと",
-    english: "a proposal — saying 「let's do it this way」",
+    englishTerm: "proposal",
+    englishMeaning: "saying 「let's do it this way」",
   },
   {
     term: "目標",
     kanji: "目標",
     reading: "もくひょう",
-    meaning: "めざす こと",
-    english: "a goal — what you are aiming for",
+    meaning: "「ここまで やる」と きめた こと",
+    englishTerm: "goal",
+    englishMeaning: "what you are trying to reach",
   },
   {
     term: "締め切り",
     kanji: "締め切り",
     reading: "しめきり",
     meaning: "「この 日までに おわらせる」と きめた 日",
-    english: "a deadline — the day the work has to be finished by",
+    englishTerm: "deadline",
+    englishMeaning: "the day the work has to be finished by",
   },
   {
     term: "段取り",
     kanji: "段取り",
     reading: "だんどり",
     meaning: "はじめる 前に、しごとの じゅんばんを きめて おく こと",
-    english: "planning ahead — setting up the order of work before starting",
+    englishTerm: "planning ahead",
+    englishMeaning: "setting up the order of work before starting",
   },
   {
     term: "仕上げ",
     kanji: "仕上げ",
     reading: "しあげ",
     meaning: "さいごに きれいに して、おわらせる こと",
-    english: "the finishing touches — the last pass that makes it clean",
+    englishTerm: "finishing touches",
+    englishMeaning: "the last pass that makes it clean",
   },
   {
     term: "結果",
     kanji: "結果",
     reading: "けっか",
     meaning: "やった あとに、どう なるか",
-    english: "the outcome — how it turns out in the end",
+    englishTerm: "outcome",
+    englishMeaning: "how it turns out in the end",
   },
   {
     term: "ものづくり",
     kanji: null,
     reading: "ものづくり",
     meaning: "アプリや せいひんを 作る しごと",
-    english: "making things — building apps and products",
+    englishTerm: "making things",
+    englishMeaning: "building apps and products",
   },
   {
     term: "おもいやり",
     kanji: "思いやり",
     reading: "おもいやり",
     meaning: "あいての きもちを かんがえる こと",
-    english: "considerateness — thinking about how the other person feels",
+    englishTerm: "considerateness",
+    englishMeaning: "thinking about how the other person feels",
   },
   {
     term: "おせわ",
     kanji: "お世話",
     reading: "おせわ",
     meaning: "人を てつだう こと・気を つかう こと",
-    english: "looking after people — helping them and paying attention to them",
+    englishTerm: "looking after people",
+    englishMeaning: "helping them and paying attention to them",
   },
   {
     term: "おうえん",
     kanji: "応援",
     reading: "おうえん",
     meaning: "「がんばって」と 言って、元気に する こと",
-    english: "cheering someone on — saying 「you can do it」",
+    englishTerm: "cheering on",
+    englishMeaning: "saying 「you can do it」",
   },
   {
     term: "わくわく",
     kanji: null,
     reading: "わくわく",
-    meaning: "たのしみで、むねが どきどき する きもち",
-    english: "excited — the feeling of looking forward to something",
+    meaning: "たのしみで、はやく やりたいと 思う きもち",
+    englishTerm: "excited",
+    englishMeaning: "the feeling of looking forward to something",
   },
   {
     term: "トラブル",
     kanji: null,
     reading: "トラブル",
     meaning: "システムが うまく うごかない こと",
-    english: "trouble — when a system stops working properly",
+    englishTerm: "trouble",
+    englishMeaning: "when a system stops working properly",
   },
   {
     term: "スマホ",
     kanji: null,
     reading: "スマホ",
     meaning: "スマートフォン",
-    english: "a smartphone",
+    englishTerm: "smartphone",
+    englishMeaning: "a phone you can use like a small computer",
   },
   {
     term: "よそう",
     kanji: "予想",
     reading: "よそう",
     meaning: "これから どう なるかを、先に かんがえる こと",
-    english: "predicting — thinking ahead about what will happen",
+    englishTerm: "predicting",
+    englishMeaning: "thinking ahead about what will happen",
   },
   {
     term: "もりあげ",
     kanji: null,
     reading: "もりあげ",
     meaning: "みんなを 楽しく、元気に する こと",
-    english: "lifting the mood — making everyone lively and cheerful",
+    englishTerm: "lifting the mood",
+    englishMeaning: "making everyone lively and cheerful",
   },
   {
     term: "性格",
     kanji: "性格",
     reading: "せいかく",
     meaning: "その 人の、いつもの かんがえかたや やりかた",
-    english: "personality — the way a person usually thinks and acts",
+    englishTerm: "personality",
+    englishMeaning: "the way a person usually thinks and acts",
   },
   {
     term: "診断",
     kanji: "診断",
     reading: "しんだん",
     meaning: "しつもんに 答えて、じぶんの ことを しらべる こと",
-    english: "a check-up — answering questions to find out about yourself",
+    englishTerm: "check-up",
+    englishMeaning: "answering questions to find out about yourself",
   },
   {
     term: "意見",
     kanji: "意見",
     reading: "いけん",
     meaning: "「そう 思う」と じぶんが かんがえた こと",
-    english: "an opinion — what you think about something",
+    englishTerm: "opinion",
+    englishMeaning: "what you think about something",
   },
   {
     term: "一生懸命",
     kanji: "一生懸命",
     reading: "いっしょうけんめい",
     meaning: "力を ぜんぶ 出して やる こと",
-    english: "with all your effort",
+    englishTerm: "with all your effort",
+    englishMeaning: "putting all your energy into what you do",
   },
   {
     term: "安心",
     kanji: "安心",
     reading: "あんしん",
     meaning: "しんぱいが なくなって、きもちが 楽に なる こと",
-    english: "relief — the calm you feel when you stop worrying",
+    englishTerm: "relief",
+    englishMeaning: "the calm you feel when you stop worrying",
   },
   {
     term: "途中",
     kanji: "途中",
     reading: "とちゅう",
     meaning: "はじめてから おわるまでの あいだ",
-    english: "partway — after starting but before finishing",
+    englishTerm: "partway",
+    englishMeaning: "after starting but before finishing",
   },
   {
     term: "試す",
     kanji: "試す",
     reading: "ためす",
-    meaning: "できるか どうか、じっさいに やって みる こと",
-    english: "to try it and see what happens",
+    meaning: "できるか どうか、いちど やって みる こと",
+    englishTerm: "to try",
+    englishMeaning: "doing it once to see what happens",
   },
   {
     term: "例",
     kanji: "例",
     reading: "れい",
     meaning: "「たとえば こういう こと」と 見せる もの",
-    english: "an example",
+    englishTerm: "example",
+    englishMeaning: "something shown to explain what you mean",
   },
 ] as const;
 

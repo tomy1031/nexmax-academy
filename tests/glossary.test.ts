@@ -14,12 +14,13 @@ describe("語彙メモ台帳（07 §2.5）", () => {
     expect(new Set(GLOSSARY.map((entry) => entry.term)).size).toBe(GLOSSARY.length);
   });
 
-  it("すべての語に読みと意味と英語がある", () => {
+  it("すべての語に読みと意味と英語（対訳・説明）がある", () => {
     for (const entry of GLOSSARY) {
       expect(entry.term.length).toBeGreaterThan(0);
       expect(entry.reading.length).toBeGreaterThan(0);
       expect(entry.meaning.length).toBeGreaterThan(0);
-      expect(entry.english.length).toBeGreaterThan(0);
+      expect(entry.englishTerm.length).toBeGreaterThan(0);
+      expect(entry.englishMeaning.length).toBeGreaterThan(0);
     }
   });
 
@@ -28,8 +29,24 @@ describe("語彙メモ台帳（07 §2.5）", () => {
     for (const entry of GLOSSARY) {
       // 「「こう しませんか」と 言う こと」のような引用は例外にせず、
       // 英語欄そのものが日本語で書かれていないかを見る。
-      const withoutQuotes = entry.english.replace(/「[^」]*」/g, "");
-      expect(withoutQuotes).not.toMatch(japanese);
+      expect(entry.englishMeaning.replace(/「[^」]*」/g, "")).not.toMatch(japanese);
+      expect(entry.englishTerm).not.toMatch(japanese);
+    }
+  });
+
+  it("englishTerm は説明ではなく見出し（チップに並べるので短く保つ）", () => {
+    // 長い英文を入れると、ことばメモのチップが1行に収まらず設問カードを押し出す。
+    // また「対訳で足りた人はそこで戻れる」という段の役目も果たさなくなる。
+    for (const entry of GLOSSARY) {
+      expect(entry.englishTerm.length).toBeLessThanOrEqual(20);
+      expect(entry.englishTerm).not.toMatch(/[.。—]/);
+    }
+  });
+
+  it("englishTerm と englishMeaning が同じ文言になっていない", () => {
+    // 分割し忘れると、吹き出しに同じ英語が2回出る。
+    for (const entry of GLOSSARY) {
+      expect(entry.englishMeaning).not.toBe(entry.englishTerm);
     }
   });
 
@@ -52,7 +69,10 @@ describe("語彙メモ台帳（07 §2.5）", () => {
   });
 
   it("意味メモ自体に禁止語・難語を持ち込まない", () => {
-    const banned = /不正解|間違い|ダメ|かつやく|はっき|きちんと|はっきり/;
+    // 擬態語は読めても意味が出ないので、ふりがなでも英語でも救えない。
+    // 意味メモは**むずかしい語から逃げてきた先**なので、ここに擬態語があると行き止まりになる。
+    const banned =
+      /不正解|間違い|ダメ|かつやく|はっき|きちんと|はっきり|どきどき|じっくり|つぎつぎ|さっと|まっすぐ|しっかり/;
     for (const entry of GLOSSARY) {
       expect(entry.meaning).not.toMatch(banned);
     }
