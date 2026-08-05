@@ -77,6 +77,7 @@ npm run lint:content         # コンテンツ検収（スキーマ＋禁止語�
 npm run lint:secrets         # 秘密情報（キー・トークン）混入検査
 npm test                     # 単体テスト（Vitest）
 npm run measure:readability  # 文長・漢字密度の計測レポート
+npm run handoff              # 現在地レポート（セッション開始時・ツール切替直後に実行）
 
 npm run cf:preview           # ローカルの workerd で本番相当の確認
 npm run cf:deploy            # 本番へデプロイ（秘密ガード＋ビルド＋deploy）
@@ -128,10 +129,24 @@ Supabase（DB・認証）は移していない。手順の詳細は `docs/deploy
 
 指摘には必ず該当箇所の引用を付ける。引用できない指摘は出さない。
 
-## 多スレッド運用ルール（2026-08-05 導入・全スレッド共通）
+## 多スレッド運用ルール（2026-08-05 導入・Claude / Codex / Gemini 共通）
 
 複数セッション並行開発で起きた事故（staging相互上書き・スコープ逸脱・把握不能）の再発防止。
 背景と全文はローカルの「多スレッド開発運用提案.html」（v1.1）。
+
+**このファイルはどのツールでも読まれる**（Claude は CLAUDE.md 経由、Codex は AGENTS.md を直接、
+Gemini は `.gemini/rules.md` 冒頭の指示で）。ツールを乗り換えても規律は変わらない。
+
+### 作業を始めるとき（ツール切替直後は必須）
+
+```
+npm run handoff
+```
+
+Claude がリミットで途中終了すると引き継ぎメモを書く時間はない。だから**渡す側ではなく
+受け取った側が現在地を引き出す**方式にする。このコマンドが git と台帳から
+「今どのブランチか・origin/main とどれだけズレているか・やりかけの変更・他の並行ブランチ・
+未完了の台帳」を復元して表示する。前のツールの記憶がなくても再開できる。
 
 ### クライアント・モデル
 
@@ -146,12 +161,16 @@ Supabase（DB・認証）は移していない。手順の詳細は `docs/deploy
 
 ### 統合とデプロイ
 
-- **staging・本番の更新は main からのみ**。`cf:staging` / `cf:deploy` をフィーチャーブランチから叩かない。
-  フィーチャーブランチの確認はブランチ用プレビュー
-  （`wrangler versions upload --preview-alias <ブランチ名>`）で行う。
-- 作業開始時と PR 作成前に origin/main を取り込む。ブランチは48時間以内に PR にして閉じる。
+- **staging・本番の更新は main からのみ**。作業中の確認は `npm run cf:branch`（自分専用URL）。
+- **作業開始時と PR 作成前に `origin/main` を取り込む。** ローカルの main は古いことがある
+  （2026-08-05、push されていないローカル main と別スレッドの成果が衝突した）。
+  比較対象は必ず `origin/main`。ブランチは48時間以内に PR にして閉じる。
 - 横断変更（リネーム・docs/design・スキーマ・共有コンポーネント・テーマ・package.json）は
-  自スレッドで行わず、専用タスクとして提案する（`.claude/settings.json` の保護パスフックが機械的に止める）。
+  自スレッドで行わず、専用タスクとして提案する。検問が2重にある:
+  - `.claude/settings.json` の PreToolUse フック … Claude が編集した瞬間に止まる
+  - `scripts/check_protected_paths.mjs` … **pre-commit。Codex でも手作業でも止まる**
+  - 承認を得た変更を通すとき: `touch .claude/allow-shared`（作業後に消す）または
+    `ALLOW_SHARED=1 git commit -m "..."`
 
 ### 検証（引き算まで）と報告
 

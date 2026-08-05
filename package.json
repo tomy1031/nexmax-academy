@@ -10,6 +10,7 @@
     "typecheck": "tsc --noEmit",
     "lint:content": "node --import tsx scripts/lint_content.ts",
     "measure:readability": "tsx scripts/measure_readability.ts",
+    "handoff": "node scripts/handoff.mjs",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "vitest run",

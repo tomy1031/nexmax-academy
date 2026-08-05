@@ -4,8 +4,12 @@
 複数セッション並行開発で「ついで変更」が別スレッドの成果を壊す事故が続いたため、
 共有パスへの編集はユーザーの明示許可を必須にする（AGENTS.md 多スレッド運用ルール）。
 機械的な検問であり、承認済みの変更を禁じるものではない。
+
+承認を得た変更を通すとき（作業が終わったらマーカーを消す）:
+    touch .claude/allow-shared
 """
 import json
+import os
 import sys
 
 PROTECTED = [
@@ -20,6 +24,10 @@ PROTECTED = [
     ".claude/settings.json",
 ]
 
+project = os.environ.get("CLAUDE_PROJECT_DIR", ".")
+if os.path.exists(os.path.join(project, ".claude", "allow-shared")):
+    sys.exit(0)
+
 try:
     data = json.load(sys.stdin)
 except Exception:
@@ -32,7 +40,8 @@ for pat in PROTECTED:
             f"🛑 保護パス: {path}\n"
             f"共有ファイル（{pat}）はスレッド単独で変更しない決まりです"
             "（AGENTS.md 多スレッド運用ルール）。\n"
-            "ユーザーに変更内容を1行で伝えて承認を得るか、専用タスクとして台帳に積んでください。"
+            "ユーザーに変更内容を1行で伝えて承認を得るか、専用タスクとして台帳に積んでください。\n"
+            "承認済みなら `touch .claude/allow-shared` で解除し、作業後に消してください。"
         )
         sys.exit(2)
 sys.exit(0)

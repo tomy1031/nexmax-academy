@@ -46,3 +46,6 @@ next-env.d.ts
 .dev.vars
 .wrangler/
 cloudflare-env.d.ts
+
+# 共有ファイル編集の一時承認マーカー（コミットしない）
+.claude/allow-shared
