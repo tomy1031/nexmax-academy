@@ -21,7 +21,7 @@ vi.mock("@supabase/supabase-js", () => ({ createClient: plainClientMock }));
 vi.mock("@/lib/env", () => ({ getSupabasePublicConfig: configMock }));
 
 const { fetchDbContents } = await import("@/lib/content-db");
-const { listStages, listMangas, mergeContentsById } = await import("@/lib/content");
+const { listStages, listMangas, listQuizSets, mergeContentsById } = await import("@/lib/content");
 
 interface Row {
   id: string;
@@ -276,5 +276,32 @@ describe("ローダーの合流", () => {
     ]);
     const ids = (await listMangas()).map((m) => m.id);
     expect(ids).toContain("db_manga");
+  });
+
+  it("listQuizSets も DB の公開分を合流する", async () => {
+    // ここが git だけを見ていると、スタジオで公開したもんだいが学習者に届かない
+    useRows([
+      row({
+        id: "db_quiz",
+        kind: "quizset",
+        data: {
+          kind: "quizset",
+          id: "db_quiz",
+          title: "テストの もんだい",
+          description: "テストの ための もんだい",
+          questions: [
+            {
+              id: "q1",
+              type: "keyword",
+              q: "ほうれんそうの 「そう」は なんですか。",
+              answer: "そうだん",
+              explain: "そうだん です。こまったら はやく そうだん します。",
+            },
+          ],
+        },
+      }),
+    ]);
+    const ids = (await listQuizSets()).map((s) => s.id);
+    expect(ids).toContain("db_quiz");
   });
 });

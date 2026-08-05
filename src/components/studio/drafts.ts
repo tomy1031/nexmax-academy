@@ -14,6 +14,8 @@ import type {
   Manga,
   MangaPage,
   MangaPanel,
+  QuizQuestion,
+  QuizSet,
   Stage,
 } from "@/content/schema";
 
@@ -86,6 +88,57 @@ export function emptyArticleBlock(kind: ArticleBlock["kind"]): ArticleBlock {
       return { kind: "vocab", items: [{ term: "ことば", reading: "ことば", meaning: "いみ" }] };
     case "link":
       return { kind: "link", ref: "", type: "article", label: "つぎを ひらく" };
+  }
+}
+
+/**
+ * 空の問題セット。
+ *
+ * phase は research（読んだ・聞いたことの確認）から始める。production は
+ * 「自分で日本語を出す」フェーズで、選択式を置けない（AGENTS.md 規律3）ため、
+ * 最初から production にすると1問目の追加でいきなり止まってしまう。
+ */
+export function emptyQuizSet(): QuizSet {
+  return {
+    kind: "quizset",
+    id: "",
+    title: "",
+    description: "",
+    nekumax: "book",
+    phase: "research",
+    passRate: 70,
+    questions: [{ ...emptyQuizQuestion("choose"), id: "q1" }],
+  };
+}
+
+/**
+ * 問題の型 → 追加したときの初期値。
+ *
+ * 選択肢はスキーマの下限の数だけ枠を出す（choose は2・multi は3・emotion は3）。
+ * 足りない状態で生まれると、先生は「なぜ保存できないのか」を保存するまで知れない。
+ * IDは空で返す。連番は追加する側（QuizEditor）が、既にある問題を見て決める。
+ */
+export function emptyQuizQuestion(type: QuizQuestion["type"]): QuizQuestion {
+  const base = { id: "", q: "", explain: "", points: 1 };
+  switch (type) {
+    case "choose":
+      return { ...base, type: "choose", options: ["", ""], answer: 0 };
+    case "multi":
+      return { ...base, type: "multi", options: ["", "", ""], answers: [0, 1] };
+    case "keyword":
+      return { ...base, type: "keyword", answer: "", accept: [] };
+    case "wordbank":
+      return { ...base, type: "wordbank", lines: [""], blanks: [""], bank: ["", ""] };
+    case "emotion":
+      return {
+        ...base,
+        type: "emotion",
+        feelings: ["", "", ""],
+        answerFeeling: 0,
+        replyQ: "",
+        replies: ["", "", ""],
+        answerReply: 0,
+      };
   }
 }
 

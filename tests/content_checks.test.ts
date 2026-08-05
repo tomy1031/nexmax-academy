@@ -1,12 +1,13 @@
 import { describe, expect, it } from "vitest";
 import {
+  checkDanglingRefs,
   checkDuplicateIds,
   checkReferenceIntegrity,
   checkStageSteps,
   type ContentEntry,
 } from "../src/lib/content-checks";
 import { ROUTE_AREAS } from "../src/content/areas";
-import { contentSchema, type Content } from "../src/content/schema";
+import { contentSchema, type Content, type Stage } from "../src/content/schema";
 
 /**
  * 検収の機械検査（設計07 §2）。
@@ -179,5 +180,38 @@ describe("参照整合の検査", () => {
     const findings = checkReferenceIntegrity([entry(stage())]);
     expect(findings).toHaveLength(1);
     expect(findings[0]?.message).toContain("m1");
+  });
+});
+
+describe("保存するときの参照切れ（スタジオの保存経路）", () => {
+  /** stage() は Content を返すので、ステージ1件を受け取る検査に渡せる形に絞る。 */
+  const asStage = (content: Content): Stage => {
+    if (content.kind !== "stage") throw new Error("fixture が stage ではない");
+    return content;
+  };
+  const known = (...ids: string[]): ReadonlySet<string> => new Set(ids);
+
+  it("contents の参照先がまだ無いIDなら1件しらせる", () => {
+    const findings = checkDanglingRefs(asStage(stage()), known());
+    expect(findings).toHaveLength(1);
+    expect(findings[0]?.message).toContain("m1");
+  });
+
+  it("wordStageIds のまだ無いIDもしらせる", () => {
+    const findings = checkDanglingRefs(asStage(stage({ wordStageIds: ["w1"] })), known("m1"));
+    expect(findings).toHaveLength(1);
+    expect(findings[0]?.message).toContain("w1");
+  });
+
+  it("参照先がぜんぶそろっていれば何も出ない", () => {
+    const target = asStage(stage({ wordStageIds: ["w1"] }));
+    expect(checkDanglingRefs(target, known("m1", "w1"))).toEqual([]);
+  });
+
+  it("level は必ず warn（error にすると、先に枠だけ作ったステージを保存できなくなる）", () => {
+    const findings = checkDanglingRefs(asStage(stage({ wordStageIds: ["w1"] })), known());
+    expect(findings).toHaveLength(2);
+    expect(findings.every((f) => f.level === "warn")).toBe(true);
+    expect(findings.some((f) => f.level === "error")).toBe(false);
   });
 });

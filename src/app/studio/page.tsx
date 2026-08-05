@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { StudioShell, type ContentSummary } from "@/components/studio/studio-shell";
+import { StudioShell } from "@/components/studio/studio-shell";
 import { listArticles, listMangas, listMeetings, listQuizSets, listStages } from "@/lib/content";
 
 /**
@@ -13,24 +13,24 @@ import { listArticles, listMangas, listMeetings, listQuizSets, listStages } from
 export const metadata: Metadata = { title: "コンテンツスタジオ" };
 export const dynamic = "force-dynamic";
 
-function toSummary(item: { id: string; title: string; description: string }): ContentSummary {
-  return { id: item.id, title: item.title, description: item.description };
-}
-
 export default async function StudioPage() {
-  const [stages, mangas, articles] = await Promise.all([
+  const [stages, mangas, articles, quizSets, meetings] = await Promise.all([
     listStages(),
     listMangas(),
     listArticles(),
+    listQuizSets(),
+    listMeetings(),
   ]);
 
+  // 一覧に出すだけでなく、そのままエディタで開くので中身ごと渡す
+  //（要約だけ渡すと「見る」しかできず、git 由来の教材を直せない）。
   return (
     <StudioShell
       stages={stages}
       mangas={mangas}
       articles={articles}
-      quizSets={listQuizSets().map(toSummary)}
-      meetings={listMeetings().map(toSummary)}
+      quizSets={quizSets}
+      meetings={meetings}
     />
   );
 }

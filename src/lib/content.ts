@@ -1,9 +1,14 @@
 /**
  * コンテンツの読み込み（サーバ専用）
  *
- * content/ 配下の JSON をスキーマ検証して返す。ページはこれを静的生成の段階で
- * 呼ぶため、実行時のファイルアクセスは発生しない（Cloudflare など Node の fs が
- * 使えない実行環境に載せ替えても動くようにするため — 設計03 §2）。
+ * content/ 配下の JSON をスキーマ検証し、スタジオ（Supabase）で公開された分と
+ * 合流させて返す。ページはこれを静的生成／ISR の段階で呼ぶため、リクエストごとの
+ * ファイルアクセスは発生しない（Cloudflare など Node の fs が使えない実行環境に
+ * 載せ替えても動くようにするため — 設計03 §2）。
+ *
+ * 読み込み関数がすべて async なのは DB を待つため。呼び出し側のページは
+ * `revalidate` で ISR にすること。`force-dynamic` にすると毎リクエストで
+ * ここが走り、Cloudflare 上で fs が使えず画面ごと落ちる（設計07 §11.1）。
  *
  * クライアントコンポーネントから import しないこと。
  */
@@ -50,51 +55,13 @@ function parseAll() {
   });
 }
 
-export function listWordStages(): WordStage[] {
-  return parseAll()
-    .filter((c): c is WordStage => c.kind === "wordstage")
-    .sort((a, b) => a.id.localeCompare(b.id));
-}
-
-export function getWordStage(id: string): WordStage | null {
-  return listWordStages().find((stage) => stage.id === id) ?? null;
-}
-
-export function listQuizSets(): QuizSet[] {
-  return parseAll()
-    .filter((c): c is QuizSet => c.kind === "quizset")
-    .sort((a, b) => a.id.localeCompare(b.id));
-}
-
-export function getQuizSet(id: string): QuizSet | null {
-  return listQuizSets().find((set) => set.id === id) ?? null;
-}
-
-export function listMeetings(): Meeting[] {
-  return parseAll()
-    .filter((c): c is Meeting => c.kind === "meeting")
-    .sort((a, b) => a.id.localeCompare(b.id));
-}
-
-export function getMeeting(id: string): Meeting | null {
-  return listMeetings().find((meeting) => meeting.id === id) ?? null;
-}
-
-export function listScenarios(): Scenario[] {
-  return parseAll()
-    .filter((c): c is Scenario => c.kind === "scenario")
-    .sort((a, b) => a.order - b.order);
-}
-
-export function getScenario(id: string): Scenario | null {
-  return listScenarios().find((scenario) => scenario.id === id) ?? null;
-}
-
 /* ------------------------------------------------------------------ *
- * スタジオ系コンテンツ（stage / manga / article — 設計07）
+ * git と DB の合流（設計07 §11.1）
  *
- * ここだけ async: git の JSON と Supabase の公開分を内部で合流させるため。
- * DB未設定のローカル開発では git の JSON だけで全機能が動く（設計07 §11.1）。
+ * どの kind も「git の JSON ∪ Supabase の公開分」で返す。ここを通さない
+ * 読み込み関数があると、スタジオで保存して「こうかい」した教材が学習者の
+ * 画面に出ず、先生には「保存できたのに開くと見つからない」としか見えない。
+ * DB未設定のローカル開発では git の JSON だけで全機能が動く。
  * ------------------------------------------------------------------ */
 
 /**
@@ -119,6 +86,51 @@ async function listPublishedFromDb<K extends Content["kind"]>(
   return entries
     .map((entry) => entry.content)
     .filter((c): c is Extract<Content, { kind: K }> => c.kind === kind);
+}
+
+export async function listWordStages(): Promise<WordStage[]> {
+  const git = parseAll().filter((c): c is WordStage => c.kind === "wordstage");
+  return mergeContentsById(git, await listPublishedFromDb("wordstage")).sort((a, b) =>
+    a.id.localeCompare(b.id),
+  );
+}
+
+export async function getWordStage(id: string): Promise<WordStage | null> {
+  return (await listWordStages()).find((stage) => stage.id === id) ?? null;
+}
+
+export async function listQuizSets(): Promise<QuizSet[]> {
+  const git = parseAll().filter((c): c is QuizSet => c.kind === "quizset");
+  return mergeContentsById(git, await listPublishedFromDb("quizset")).sort((a, b) =>
+    a.id.localeCompare(b.id),
+  );
+}
+
+export async function getQuizSet(id: string): Promise<QuizSet | null> {
+  return (await listQuizSets()).find((set) => set.id === id) ?? null;
+}
+
+export async function listMeetings(): Promise<Meeting[]> {
+  const git = parseAll().filter((c): c is Meeting => c.kind === "meeting");
+  return mergeContentsById(git, await listPublishedFromDb("meeting")).sort((a, b) =>
+    a.id.localeCompare(b.id),
+  );
+}
+
+export async function getMeeting(id: string): Promise<Meeting | null> {
+  return (await listMeetings()).find((meeting) => meeting.id === id) ?? null;
+}
+
+export async function listScenarios(): Promise<Scenario[]> {
+  const git = parseAll().filter((c): c is Scenario => c.kind === "scenario");
+  // シナリオだけは order 昇順（一覧の並びが学習の順番そのものなので id 順にしない）。
+  return mergeContentsById(git, await listPublishedFromDb("scenario")).sort(
+    (a, b) => a.order - b.order,
+  );
+}
+
+export async function getScenario(id: string): Promise<Scenario | null> {
+  return (await listScenarios()).find((scenario) => scenario.id === id) ?? null;
 }
 
 export async function listStages(): Promise<Stage[]> {

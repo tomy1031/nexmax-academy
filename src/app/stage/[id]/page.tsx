@@ -80,7 +80,7 @@ async function loadRef(ref: StageContentRef): Promise<LoadedRef | null> {
       );
     }
     case "meeting": {
-      const meeting = getMeeting(ref.ref);
+      const meeting = await getMeeting(ref.ref);
       return (
         meeting && {
           title: meeting.title,
@@ -90,11 +90,11 @@ async function loadRef(ref: StageContentRef): Promise<LoadedRef | null> {
       );
     }
     case "quizset": {
-      const set = getQuizSet(ref.ref);
+      const set = await getQuizSet(ref.ref);
       return set && { title: set.title, description: set.description, furigana: set.furigana };
     }
     case "scenario": {
-      const scenario = getScenario(ref.ref);
+      const scenario = await getScenario(ref.ref);
       return (
         scenario && {
           title: scenario.title,
@@ -104,7 +104,7 @@ async function loadRef(ref: StageContentRef): Promise<LoadedRef | null> {
       );
     }
     case "wordstage": {
-      const stage = getWordStage(ref.ref);
+      const stage = await getWordStage(ref.ref);
       return (
         stage && {
           title: stage.title,
@@ -138,16 +138,20 @@ export default async function StagePage({ params }: { params: Promise<{ id: stri
   const resolved = await Promise.all(stage.contents.map(resolveContent));
   const items = resolved.filter((item): item is StageContentItem => item !== null);
 
-  const wordStages = stage.wordStageIds.reduce<StageWordItem[]>((acc, wordStageId) => {
-    const wordStage = getWordStage(wordStageId);
-    if (wordStage)
-      acc.push({
-        id: wordStage.id,
-        title: wordStage.title,
-        description: wordStage.description,
-      });
-    return acc;
-  }, []);
+  // 単語ステージも contents[] と同じ扱い。参照切れはここで落とさず一覧から外す。
+  const loadedWordStages = await Promise.all(
+    stage.wordStageIds.map(async (wordStageId): Promise<StageWordItem | null> => {
+      const wordStage = await getWordStage(wordStageId);
+      return (
+        wordStage && {
+          id: wordStage.id,
+          title: wordStage.title,
+          description: wordStage.description,
+        }
+      );
+    }),
+  );
+  const wordStages = loadedWordStages.filter((item): item is StageWordItem => item !== null);
 
   return (
     <StageDetail

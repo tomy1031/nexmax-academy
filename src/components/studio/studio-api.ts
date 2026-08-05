@@ -9,7 +9,7 @@
 import { z } from "zod";
 import { contentSchema, type Content } from "@/content/schema";
 import { createClient } from "@/lib/supabase/client";
-import { describePath, messageForReason, type SaveIssue } from "./issue-text";
+import { describePath, messageForReason, toWarningMessages, type SaveIssue } from "./issue-text";
 
 /** DB由来のコンテンツ1件（下書きを含む）。 */
 export interface DbEntry {
@@ -32,7 +32,12 @@ export type DbListResult =
   | { ok: false; message: string; preparing: boolean };
 
 export type SaveResult =
-  { ok: true; status: "draft" | "published" } | { ok: false; message: string; issues: SaveIssue[] };
+  /**
+   * warnings = 保存は通ったが 先生に 見てほしい こと（参照切れなど）。
+   * 止める理由ではないので issues とは 別に 持つ。
+   */
+  | { ok: true; status: "draft" | "published"; warnings: string[] }
+  | { ok: false; message: string; issues: SaveIssue[] };
 
 interface FailBody {
   reason?: unknown;
@@ -143,7 +148,57 @@ export async function saveContent(content: Content, publish: boolean): Promise<S
     return { ok: false, message: messageForReason(reason), issues: toIssues(body) };
   }
 
-  return { ok: true, status: publish ? "published" : "draft" };
+  // 成功しても本文を読む。参照切れの「気づき」はここにしか載っていないので、
+  // 読み捨てると先生は公開したあとも気づけない（issue-text の toWarningMessages 参照）。
+  let warnings: string[] = [];
+  try {
+    const body = (await response.json()) as { warnings?: unknown };
+    warnings = toWarningMessages(body.warnings);
+  } catch {
+    // 本文が読めなくても保存そのものは通っている。気づきだけ諦める。
+    warnings = [];
+  }
+  return { ok: true, status: publish ? "published" : "draft", warnings };
+}
+
+export type DeleteResult = { ok: true } | { ok: false; message: string };
+
+/**
+ * 1件けす。消せるのはスタジオが作ったDB版だけ。
+ *
+ * git の content/*.json で作った教材はリポジトリのファイルなので、
+ * サーバが「消せなかった」と返す。ここで理由を言い分けないと、
+ * 先生は一覧から消えない行を何度も押すことになる。
+ */
+export async function deleteContent(id: string): Promise<DeleteResult> {
+  let response: Response;
+  try {
+    response = await fetch(`/api/studio/content?id=${encodeURIComponent(id)}`, {
+      method: "DELETE",
+    });
+  } catch {
+    return { ok: false, message: "つうしんに 失敗しました。ネットワークを たしかめてください。" };
+  }
+
+  if (!response.ok) {
+    const body = await readFailBody(response);
+    const reason = typeof body.reason === "string" ? body.reason : "";
+    if (reason === "gitContent") {
+      return {
+        ok: false,
+        message: "これは git の ファイルで つくった 教材です。スタジオからは けせません。",
+      };
+    }
+    if (reason === "deleteFailed") {
+      return {
+        ok: false,
+        message: "けすのに 失敗しました。少し待って もう一度 ためしてください。",
+      };
+    }
+    return { ok: false, message: messageForReason(reason) };
+  }
+
+  return { ok: true };
 }
 
 export type UploadResult = { ok: true; url: string } | { ok: false; message: string };

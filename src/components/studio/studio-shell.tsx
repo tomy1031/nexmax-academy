@@ -3,41 +3,52 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import type { Article, Content, ContentRefType, Manga, Stage } from "@/content/schema";
+import type {
+  Article,
+  Content,
+  ContentRefType,
+  Manga,
+  Meeting,
+  QuizSet,
+  Stage,
+} from "@/content/schema";
 import { contentHref } from "@/components/article/article-blocks";
 import { AdminError, AdminLoading, AdminPageFrame } from "@/components/admin/admin-ui";
 import { fetchOwnProfile } from "@/lib/profile-db";
 import { createClient } from "@/lib/supabase/client";
 import { ArticleEditor } from "./article-editor";
-import { emptyArticle, emptyManga, emptyStage } from "./drafts";
+import { emptyArticle, emptyManga, emptyQuizSet, emptyStage } from "./drafts";
 import { EditorFrame } from "./editor-frame";
 import { DB_PREPARING_MESSAGE, type SaveIssue } from "./issue-text";
 import { MangaEditor } from "./manga-editor";
+import { emptyMeeting } from "./meeting-drafts";
+import { MeetingEditor } from "./meeting-editor";
+import { QuizEditor } from "./quiz-editor";
 import { StageEditor, type RefOption } from "./stage-editor";
-import { fetchDbList, saveContent, type DbEntry, type DbListResult } from "./studio-api";
-import { Toast } from "./studio-ui";
+import {
+  deleteContent,
+  fetchDbList,
+  saveContent,
+  type DbEntry,
+  type DbListResult,
+} from "./studio-api";
+import { MiniButton, Toast } from "./studio-ui";
 
 /**
  * コンテンツスタジオの外枠（設計07 §10.1）
  *
- * 一覧（git由来＋DB由来）とエディタ3種を1画面で行き来する。
+ * 一覧（git由来＋DB由来）とエディタ5種を1画面で行き来する。
  * 認可は /admin と同じ流儀でクライアント側でも確かめるが、実際の関所はAPIとRLS。
  * Supabase 未設定のローカル開発でも git 由来の教材を開いて確認できるようにしてある
  *（保存・公開だけが「じゅんびちゅう」になる — 設計07 §11.1）。
  */
 
-export interface ContentSummary {
-  id: string;
-  title: string;
-  description: string;
-}
-
 export interface StudioShellProps {
   stages: Stage[];
   mangas: Manga[];
   articles: Article[];
-  quizSets: ContentSummary[];
-  meetings: ContentSummary[];
+  quizSets: QuizSet[];
+  meetings: Meeting[];
 }
 
 type TabKey = "stage" | "manga" | "article" | "quizset" | "meeting";
@@ -54,7 +65,9 @@ type View =
   | { mode: "list" }
   | { mode: "stage"; draft: Stage }
   | { mode: "manga"; draft: Manga }
-  | { mode: "article"; draft: Article };
+  | { mode: "article"; draft: Article }
+  | { mode: "quizset"; draft: QuizSet }
+  | { mode: "meeting"; draft: Meeting };
 
 type Gate = "checking" | "ready" | "unconfigured" | "error";
 
@@ -65,8 +78,12 @@ interface Row {
   /** DBに同じIDがあるか（あればDB版が学習者に出る）。 */
   dbStatus: "draft" | "published" | null;
   href: string;
-  /** エディタで開けるか（stage / manga / article だけ）。 */
-  open: (() => void) | null;
+  open: () => void;
+  /**
+   * けす（DB版だけ）。git の JSON で作った教材はリポジトリのファイルなので、
+   * スタジオからは消せない。押せるボタンを出すと「押しても消えない」になる。
+   */
+  remove: (() => void) | null;
 }
 
 export function StudioShell({ stages, mangas, articles, quizSets, meetings }: StudioShellProps) {
@@ -77,6 +94,8 @@ export function StudioShell({ stages, mangas, articles, quizSets, meetings }: St
   const [tab, setTab] = useState<TabKey>("stage");
   const [view, setView] = useState<View>({ mode: "list" });
   const [issues, setIssues] = useState<SaveIssue[]>([]);
+  /** 保存は通ったが 見てほしい こと（参照切れなど）。「なおすところ」とは 分けて出す。 */
+  const [warnings, setWarnings] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState<{ message: string; tone: "ok" | "ng" } | null>(null);
 
@@ -177,19 +196,68 @@ export function StudioShell({ stages, mangas, articles, quizSets, meetings }: St
     [dbEntries],
   );
 
+  /**
+   * DB版を1件けす。
+   *
+   * 公開中のものを消すと、その場で学習者の画面から消える（ステージが指していれば
+   * リンク先が無くなる）。取り消せないので、押した先で必ず1段はさんで確かめる。
+   */
+  const removeFromDb = useCallback(
+    async (id: string, title: string) => {
+      const name = title.length > 0 ? title : id;
+      if (
+        !window.confirm(
+          `「${name}」を けしますか。こうかい中の ものは 学習者の 画面から すぐ 消えます。`,
+        )
+      ) {
+        return;
+      }
+      const result = await deleteContent(id);
+      if (!result.ok) {
+        setToast({ message: result.message, tone: "ng" });
+        return;
+      }
+      setToast({ message: "けしました。", tone: "ok" });
+      await refreshDb();
+      // 一覧の元になる git ∪ DB（公開分）はサーバで組んで props で来る（studio/page.tsx）。
+      // DB側だけ読み直しても、いま消した教材は props に残ったままなので、行が消えず
+      // 「DB版（こうかい）」から「git版」に化ける。サーバも読み直して幽霊の行を消す。
+      router.refresh();
+    },
+    [refreshDb, router],
+  );
+
   const rows = useMemo<Row[]>(() => {
-    const openStage = (draft: Stage) => () => {
+    // 別の教材を開いたら、前の教材の「なおすところ」と「気づき」は消す
+    //（残ると、いま開いている教材の指摘だと思って直しに行くことになる）。
+    const clearNotes = () => {
       setIssues([]);
+      setWarnings([]);
+    };
+    const openStage = (draft: Stage) => () => {
+      clearNotes();
       setView({ mode: "stage", draft });
     };
     const openManga = (draft: Manga) => () => {
-      setIssues([]);
+      clearNotes();
       setView({ mode: "manga", draft });
     };
     const openArticle = (draft: Article) => () => {
-      setIssues([]);
+      clearNotes();
       setView({ mode: "article", draft });
     };
+    const openQuizSet = (draft: QuizSet) => () => {
+      clearNotes();
+      setView({ mode: "quizset", draft });
+    };
+    const openMeeting = (draft: Meeting) => () => {
+      clearNotes();
+      setView({ mode: "meeting", draft });
+    };
+
+    /** DB版のときだけ「けす」を渡す（git版は消せない）。 */
+    const removeAction = (kind: Content["kind"], item: { id: string; title: string }) =>
+      dbStatusOf(kind, item.id) ? () => void removeFromDb(item.id, item.title) : null;
 
     const fromDb = <K extends Content["kind"]>(kind: K): Extract<Content, { kind: K }>[] =>
       dbEntries
@@ -206,6 +274,7 @@ export function StudioShell({ stages, mangas, articles, quizSets, meetings }: St
           dbStatus: dbStatusOf("stage", item.id),
           href: `/stage/${item.id}`,
           open: openStage(item),
+          remove: removeAction("stage", item),
         }));
       }
       case "manga": {
@@ -217,6 +286,7 @@ export function StudioShell({ stages, mangas, articles, quizSets, meetings }: St
           dbStatus: dbStatusOf("manga", item.id),
           href: contentHref("manga", item.id),
           open: openManga(item),
+          remove: removeAction("manga", item),
         }));
       }
       case "article": {
@@ -228,6 +298,7 @@ export function StudioShell({ stages, mangas, articles, quizSets, meetings }: St
           dbStatus: dbStatusOf("article", item.id),
           href: contentHref("article", item.id),
           open: openArticle(item),
+          remove: removeAction("article", item),
         }));
       }
       case "quizset": {
@@ -238,7 +309,8 @@ export function StudioShell({ stages, mangas, articles, quizSets, meetings }: St
           description: item.description,
           dbStatus: dbStatusOf("quizset", item.id),
           href: contentHref("quizset", item.id),
-          open: null,
+          open: openQuizSet(item),
+          remove: removeAction("quizset", item),
         }));
       }
       case "meeting": {
@@ -249,11 +321,12 @@ export function StudioShell({ stages, mangas, articles, quizSets, meetings }: St
           description: item.description,
           dbStatus: dbStatusOf("meeting", item.id),
           href: contentHref("meeting", item.id),
-          open: null,
+          open: openMeeting(item),
+          remove: removeAction("meeting", item),
         }));
       }
     }
-  }, [tab, stages, mangas, articles, quizSets, meetings, dbEntries, dbStatusOf]);
+  }, [tab, stages, mangas, articles, quizSets, meetings, dbEntries, dbStatusOf, removeFromDb]);
 
   const handleSave = useCallback(
     async (publish: boolean) => {
@@ -264,10 +337,14 @@ export function StudioShell({ stages, mangas, articles, quizSets, meetings }: St
       setSaving(false);
       if (!result.ok) {
         setIssues(result.issues);
+        setWarnings([]);
         setToast({ message: result.message, tone: "ng" });
         return;
       }
       setIssues([]);
+      // 参照切れなどは保存を止めない。ここで受け取って画面に出さないと、
+      // 先生は「まだ無いIDを指しています」に一度も気づけない（設計07 §3）。
+      setWarnings(result.warnings);
       setToast({
         message: publish ? "こうかいしました。" : "したがきを ほぞんしました。",
         tone: "ok",
@@ -282,6 +359,7 @@ export function StudioShell({ stages, mangas, articles, quizSets, meetings }: St
 
   const backToList = () => {
     setIssues([]);
+    setWarnings([]);
     setView({ mode: "list" });
   };
 
@@ -322,6 +400,8 @@ export function StudioShell({ stages, mangas, articles, quizSets, meetings }: St
               stage: () => setView({ mode: "stage", draft: emptyStage() }),
               manga: () => setView({ mode: "manga", draft: emptyManga() }),
               article: () => setView({ mode: "article", draft: emptyArticle() }),
+              quizset: () => setView({ mode: "quizset", draft: emptyQuizSet() }),
+              meeting: () => setView({ mode: "meeting", draft: emptyMeeting() }),
             }}
           />
         ) : null}
@@ -336,6 +416,7 @@ export function StudioShell({ stages, mangas, articles, quizSets, meetings }: St
             disabledNote={db && !db.ok ? db.message : null}
             issues={issues}
           >
+            <SaveWarnings notices={warnings} />
             <StageEditor
               value={view.draft}
               refOptions={refOptions}
@@ -354,6 +435,7 @@ export function StudioShell({ stages, mangas, articles, quizSets, meetings }: St
             disabledNote={db && !db.ok ? db.message : null}
             issues={issues}
           >
+            <SaveWarnings notices={warnings} />
             <MangaEditor
               value={view.draft}
               onChange={(draft) => setView({ mode: "manga", draft })}
@@ -371,9 +453,46 @@ export function StudioShell({ stages, mangas, articles, quizSets, meetings }: St
             disabledNote={db && !db.ok ? db.message : null}
             issues={issues}
           >
+            <SaveWarnings notices={warnings} />
             <ArticleEditor
               value={view.draft}
               onChange={(draft) => setView({ mode: "article", draft })}
+            />
+          </EditorFrame>
+        ) : null}
+
+        {view.mode === "quizset" ? (
+          <EditorFrame
+            title={view.draft.title.length > 0 ? view.draft.title : "あたらしい もんだい"}
+            hint="「じぶんで 日本語を 出す」フェーズには えらぶ もんだいを 置けません。"
+            onBack={backToList}
+            onSave={(publish) => void handleSave(publish)}
+            saving={saving}
+            disabledNote={db && !db.ok ? db.message : null}
+            issues={issues}
+          >
+            <SaveWarnings notices={warnings} />
+            <QuizEditor
+              value={view.draft}
+              onChange={(draft) => setView({ mode: "quizset", draft })}
+            />
+          </EditorFrame>
+        ) : null}
+
+        {view.mode === "meeting" ? (
+          <EditorFrame
+            title={view.draft.title.length > 0 ? view.draft.title : "あたらしい ミーティング"}
+            hint="さがす ことばは 台本に 出てくる ものだけに します。"
+            onBack={backToList}
+            onSave={(publish) => void handleSave(publish)}
+            saving={saving}
+            disabledNote={db && !db.ok ? db.message : null}
+            issues={issues}
+          >
+            <SaveWarnings notices={warnings} />
+            <MeetingEditor
+              value={view.draft}
+              onChange={(draft) => setView({ mode: "meeting", draft })}
             />
           </EditorFrame>
         ) : null}
@@ -381,6 +500,36 @@ export function StudioShell({ stages, mangas, articles, quizSets, meetings }: St
 
       {toast ? <Toast message={toast.message} tone={toast.tone} /> : null}
     </AdminPageFrame>
+  );
+}
+
+/**
+ * 保存できたあとの 気づき（参照切れなど）。
+ *
+ * 保存は通っているので、赤い「なおすところ」とは 分けて 出す。直さなくても
+ * 保存はできる——ただし まだ無いIDを指したまま 公開すると、そのカードは
+ * 学習者の画面に 出てこない（stage/[id] が 参照切れを 一覧から 外すため）。
+ * 「止めないが、必ず気づかせる」ための 置き場（content-checks.ts の checkDanglingRefs）。
+ */
+function SaveWarnings({ notices }: { notices: readonly string[] }) {
+  if (notices.length === 0) return null;
+  return (
+    <section
+      aria-label="見てほしいこと"
+      className="rounded-[20px] border-2 bg-white p-4"
+      style={{ borderColor: "var(--color-sun)" }}
+    >
+      <p className="text-navy text-sm font-black">
+        ほぞんは できました。{notices.length}件 見てほしい ことが あります
+      </p>
+      <ul className="mt-2 space-y-2">
+        {notices.map((notice, index) => (
+          <li key={index} className="bg-panel-tint text-ink rounded-xl px-3 py-2 text-sm font-bold">
+            {notice}
+          </li>
+        ))}
+      </ul>
+    </section>
   );
 }
 
@@ -401,7 +550,13 @@ function ListView({
   tab: TabKey;
   onTab: (tab: TabKey) => void;
   rows: readonly Row[];
-  onNew: { stage: () => void; manga: () => void; article: () => void };
+  onNew: {
+    stage: () => void;
+    manga: () => void;
+    article: () => void;
+    quizset: () => void;
+    meeting: () => void;
+  };
 }) {
   return (
     <div className="space-y-4">
@@ -449,6 +604,20 @@ function ListView({
           >
             ＋ 記事
           </button>
+          <button
+            type="button"
+            onClick={onNew.quizset}
+            className="btn-game px-4 py-2 text-sm [--btn-face:#58c273] [--btn-shadow:#3aa458]"
+          >
+            ＋ もんだい
+          </button>
+          <button
+            type="button"
+            onClick={onNew.meeting}
+            className="btn-game px-4 py-2 text-sm [--btn-face:#a78bfa] [--btn-shadow:#8d6ae8]"
+          >
+            ＋ ミーティング
+          </button>
         </div>
       </div>
 
@@ -490,19 +659,18 @@ function ListView({
                 >
                   見る
                 </Link>
-                {row.open ? (
-                  <button
-                    type="button"
-                    onClick={row.open}
-                    className="btn-game px-4 py-1.5 text-xs [--btn-face:#004f8d] [--btn-shadow:#003c6b]"
-                  >
-                    編集
-                  </button>
-                ) : (
-                  <span className="text-ink-faint text-xs font-bold">
-                    このエディタは まだ ありません
-                  </span>
-                )}
+                <button
+                  type="button"
+                  onClick={row.open}
+                  className="btn-game px-4 py-1.5 text-xs [--btn-face:#004f8d] [--btn-shadow:#003c6b]"
+                >
+                  編集
+                </button>
+                {row.remove ? (
+                  <MiniButton tone="danger" onClick={row.remove} title={`${row.title}をけす`}>
+                    けす
+                  </MiniButton>
+                ) : null}
               </li>
             ))}
           </ul>

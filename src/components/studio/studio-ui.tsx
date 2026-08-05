@@ -163,6 +163,61 @@ export function SelectField<T extends string>({
   );
 }
 
+/**
+ * 「これが こたえ」を1つだけ えらぶ丸（ラジオ）。
+ *
+ * 選択肢の文と同じ行に置くので、単体で置ける形にしてある。name をそろえたものが
+ * 1つの組になり、キーボードの矢印でも移せる（1セットに何問も作るので、
+ * 全部をマウスで押させない）。
+ */
+export function RadioChoice({
+  name,
+  label,
+  checked,
+  onSelect,
+}: {
+  name: string;
+  label: string;
+  checked: boolean;
+  onSelect: () => void;
+}) {
+  return (
+    <label className="text-ink flex items-center gap-1 text-xs font-black whitespace-nowrap">
+      <input
+        type="radio"
+        name={name}
+        checked={checked}
+        onChange={onSelect}
+        className="accent-sky h-4 w-4"
+      />
+      {label}
+    </label>
+  );
+}
+
+/** 「これも こたえ」を いくつでも えらべる四角（チェックボックス）。 */
+export function CheckChoice({
+  label,
+  checked,
+  onToggle,
+}: {
+  label: string;
+  checked: boolean;
+  onToggle: (checked: boolean) => void;
+}) {
+  return (
+    <label className="text-ink flex items-center gap-1 text-xs font-black whitespace-nowrap">
+      <input
+        type="checkbox"
+        checked={checked}
+        onChange={(event) => onToggle(event.target.checked)}
+        className="accent-sky h-4 w-4"
+      />
+      {label}
+    </label>
+  );
+}
+
 /** 小さめの操作ボタン（上へ・下へ・けす など）。 */
 export function MiniButton({
   children,
@@ -310,5 +365,75 @@ export function Toast({ message, tone }: { message: string; tone: "ok" | "ng" })
     >
       {message}
     </div>
+  );
+}
+
+/**
+ * よみ辞書の編集（表示するときに ルビを合成するための もと）。
+ *
+ * ルビHTMLは手書きしない（AGENTS.md 規律2）。ここに ことばと よみ を書いておくと、
+ * 学習者の画面で エンジンが ふりがなを つける。辞書が無いと、漢字に ふりがなが
+ * 1つも付かないまま N4 の学習者に届く。
+ *
+ * もんだい・ミーティングのように furigana を持つ教材で共用する。
+ * 辞書の引き方は最長一致なので、並びの責任は先生に持たせない
+ *（並び順が意味を持つのは性格診断まわりの readings のほう — ruby-text.tsx）。
+ */
+export function FuriganaEditor({
+  entries,
+  onChange,
+  emptyNote,
+}: {
+  entries: readonly (readonly [string, string])[];
+  /** 空になったら undefined を渡す（空配列を残すと 保存データに 意味のない項目が積もる）。 */
+  onChange: (next: [string, string][] | undefined) => void;
+  /** 1つも無いときに出す一言（教材の種類で言い方を変える）。 */
+  emptyNote: string;
+}) {
+  const list = entries.map(([term, reading]) => [term, reading] as [string, string]);
+  const setEntries = (next: [string, string][]) => onChange(next.length > 0 ? next : undefined);
+
+  return (
+    <StudioSection
+      title="よみ辞書"
+      hint="ここに 書いた ことばに ふりがなが つきます。ながい ことばを 先に 書きます。"
+    >
+      <div className="space-y-2">
+        {list.map(([term, reading], index) => (
+          <div
+            key={index}
+            className="border-hairline flex flex-wrap items-end gap-2 rounded-xl border-2 bg-white p-2"
+          >
+            <div className="min-w-[8rem] flex-1">
+              <TextField
+                label="ことば"
+                value={term}
+                onChange={(next) => setEntries(replaceAt(list, index, [next, reading]))}
+                placeholder="報告"
+              />
+            </div>
+            <div className="min-w-[8rem] flex-1">
+              <TextField
+                label="よみ（ひらがな）"
+                value={reading}
+                onChange={(next) => setEntries(replaceAt(list, index, [term, next]))}
+                placeholder="ほうこく"
+              />
+            </div>
+            <RowTools
+              index={index}
+              count={list.length}
+              label="ことば"
+              onMove={(delta) => setEntries(moveItem(list, index, delta))}
+              onRemove={() => setEntries(removeAt(list, index))}
+            />
+          </div>
+        ))}
+        {list.length === 0 ? <p className="text-ink-faint text-xs font-bold">{emptyNote}</p> : null}
+      </div>
+      <MiniButton tone="accent" onClick={() => setEntries([...list, ["", ""]])}>
+        ＋ ことばを 追加
+      </MiniButton>
+    </StudioSection>
   );
 }

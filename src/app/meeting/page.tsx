@@ -8,12 +8,18 @@ export const metadata: Metadata = {
 };
 
 /**
+ * 公開分のDBコンテンツを合流させるため ISR にする（設計07 §11.1
+ * 「gitコンテンツは静的生成のまま。DBコンテンツはリクエスト時取得（ISR/短いキャッシュ）」）。
+ * スタジオで「こうかい」したミーティングは、再デプロイを待たずこの間隔で届く。
+ */
+export const revalidate = 60;
+
+/**
  * ミーティング一覧。
  * 「聞く」教材（meeting）と「話す」教材（scenario / Live対話）を同じ入口に並べる。
  */
-export default function MeetingIndexPage() {
-  const meetings = listMeetings();
-  const scenarios = listScenarios();
+export default async function MeetingIndexPage() {
+  const [meetings, scenarios] = await Promise.all([listMeetings(), listScenarios()]);
 
   return (
     <div className="mx-auto w-full max-w-3xl px-4 py-6">

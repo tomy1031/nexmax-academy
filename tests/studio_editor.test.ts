@@ -6,7 +6,7 @@ import {
   emptyMangaPanel,
   emptyStage,
 } from "@/components/studio/drafts";
-import { describePath, messageForReason } from "@/components/studio/issue-text";
+import { describePath, messageForReason, toWarningMessages } from "@/components/studio/issue-text";
 import { appendItem, moveItem, removeAt, replaceAt } from "@/components/studio/list-ops";
 
 /**
@@ -49,6 +49,38 @@ describe("issue-text", () => {
     );
     expect(describePath("contents.2.ref")).toBe("コンテンツ 3番目 › 参照先のID");
     expect(describePath("")).toBe("ぜんたい");
+  });
+
+  it("もんだい・ミーティングの場所も日本語で出す（データのキーをそのまま出さない）", () => {
+    expect(describePath("questions.1.q")).toBe("もんだい 2番目 › とい");
+    expect(describePath("questions.2.accept.0")).toBe("もんだい 3番目 › べつの 言い方 1番目");
+    expect(describePath("questions.0.options.1")).toBe("もんだい 1番目 › えらぶもの 2番目");
+    expect(describePath("keywords.0")).toBe("さがす ことば 1番目");
+    expect(describePath("participants.0.accent")).toBe("参加者 1番目 › タイルの色");
+    expect(describePath("script.2.at")).toBe("台本 3番目 › はじまる 秒");
+    expect(describePath("revealGoal")).toBe("原稿を ひらく 目標");
+    expect(describePath("focus")).toBe("聞く まえに 配る 見かた");
+  });
+
+  it("同じ lines でも 漫画は「セリフ」、語群の穴埋めは「文」と呼ぶ", () => {
+    // 先生の画面に出ている見出しと同じ名前にする（違う名前だと欄を探せない）
+    expect(describePath("pages.0.panels.0.lines.0.text")).toBe(
+      "ページ 1番目 › コマ 1番目 › セリフ 1番目 › 本文",
+    );
+    expect(describePath("questions.0.lines.0")).toBe("もんだい 1番目 › 文 1番目");
+  });
+
+  it("保存できたあとの気づきは message だけを取り出す", () => {
+    expect(
+      toWarningMessages([
+        { file: "stage:m8", level: "warn", message: "まだ無いIDを指しています: m8-manga" },
+        // 形の違う行が混ざっても、読める気づきは出す（一覧ごと消さない）
+        { file: "stage:m8", level: "warn" },
+        "こわれた行",
+      ]),
+    ).toEqual(["まだ無いIDを指しています: m8-manga"]);
+    expect(toWarningMessages(undefined)).toEqual([]);
+    expect(toWarningMessages([])).toEqual([]);
   });
 
   it("APIのreasonを日本語の説明にする", () => {

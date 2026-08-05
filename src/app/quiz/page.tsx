@@ -7,8 +7,15 @@ export const metadata: Metadata = {
   title: "もんだい | Japanese IT Pathway",
 };
 
-export default function QuizIndexPage() {
-  const sets = listQuizSets();
+/**
+ * 公開分のDBコンテンツを合流させるため ISR にする（設計07 §11.1
+ * 「gitコンテンツは静的生成のまま。DBコンテンツはリクエスト時取得（ISR/短いキャッシュ）」）。
+ * スタジオで「こうかい」したもんだいは、再デプロイを待たずこの間隔で届く。
+ */
+export const revalidate = 60;
+
+export default async function QuizIndexPage() {
+  const sets = await listQuizSets();
 
   return (
     <div className="mx-auto w-full max-w-3xl px-4 py-6">

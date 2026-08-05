@@ -11,9 +11,15 @@
  *  - kind別ID重複（ファイル横断。重複すると進捗保存が壊れる）
  *  - 参照整合（stage.contents / wordStageIds の参照先が存在するか — 設計07 §3）
  *  - 導線の一致（article の「つぎは これ」がステージの学習順の直後を指しているか）
+ *  - 参照切れの気づき（スタジオの保存経路だけ。止めずに warn で知らせる）
  */
 
-import { FORBIDDEN_LEARNER_WORDS, type Content, type Scenario } from "../content/schema";
+import {
+  FORBIDDEN_LEARNER_WORDS,
+  type Content,
+  type Scenario,
+  type Stage,
+} from "../content/schema";
 // areas.ts は純粋なデータ（node:fs も React も持たない）ので、
 // スタジオのAPIルートから読まれるこのファイルからでも安全に import できる。
 import { ROUTE_AREAS } from "../content/areas";
@@ -194,6 +200,46 @@ export function checkReferenceIntegrity(entries: readonly ContentEntry[]): Findi
       }
     });
   }
+  return findings;
+}
+
+/**
+ * ステージ1件ぶんの参照切れ検査（スタジオの保存経路 — 設計07 §3）。
+ *
+ * checkReferenceIntegrity（CI・全件そろっている前提・error）とは役目が違う。
+ * スタジオでは「先にステージの枠を作って、中身をあとから足す」順番で作れることを
+ * 優先するので、ここは **必ず warn** にして保存を止めない。error にすると、
+ * 先生は作りかけのステージを保存できず、教材を作る順番のほうを強いられる。
+ * それでも黙って通すと、公開したステージの途中で学習者がタップした先が404になる。
+ * だから「止めないが、必ず気づかせる」という位置づけにしている。
+ *
+ * knownIds は「いま存在するIDの集合」（git ∪ DB。下書きも含む）。種別まで見ないのは、
+ * 下書きの段階では種別の付け替えがよく起きて、種別違いを error 相当に扱うと
+ * 作りかけを警告で埋めてしまうため。種別の取り違えは公開前に CI の
+ * checkReferenceIntegrity が error として拾う。
+ */
+export function checkDanglingRefs(stage: Stage, knownIds: ReadonlySet<string>): Finding[] {
+  const file = `${stage.kind}:${stage.id}`;
+  const findings: Finding[] = [];
+
+  stage.contents.forEach((item, i) => {
+    if (knownIds.has(item.ref)) return;
+    findings.push({
+      file,
+      level: "warn",
+      message: `まだ無いIDを指しています: ${item.ref}（コンテンツ ${i + 1}番目・${item.type}）— この教材を作るまで、学習者はここで先に進めません`,
+    });
+  });
+
+  stage.wordStageIds.forEach((id) => {
+    if (knownIds.has(id)) return;
+    findings.push({
+      file,
+      level: "warn",
+      message: `まだ無いIDを指しています: ${id}（単語ステージ）— この単語ステージを作るまで、ことばの練習は出てきません`,
+    });
+  });
+
   return findings;
 }
 
