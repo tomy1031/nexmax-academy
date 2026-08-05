@@ -94,7 +94,7 @@ export async function fetchDbContents(opts?: {
   }
   if (!supabase) return [];
 
-  let query = supabase.from("contents").select(SELECT_COLUMNS);
+  let query = supabase.from("studio_contents").select(SELECT_COLUMNS);
   if (!opts?.includeDrafts) query = query.eq("status", "published");
 
   const { data, error } = await query;

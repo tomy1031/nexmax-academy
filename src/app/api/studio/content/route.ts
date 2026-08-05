@@ -113,7 +113,7 @@ export async function POST(request: Request): Promise<NextResponse> {
         ? content.id
         : null;
 
-  const { error } = await gate.supabase.from("contents").upsert(
+  const { error } = await gate.supabase.from("studio_contents").upsert(
     {
       id: content.id,
       kind: content.kind,
