@@ -110,11 +110,13 @@ Supabase（DB・認証）は移していない。手順の詳細は `docs/deploy
 3. **Supabase の Redirect URLs は `https://<host>/**` で登録する。**
    `.../auth/callback` の完全一致では**動かない**（戻り先は `?code=...` 付きで照合される）。
    検証も必ず `?code=` を付けて行う（`docs/deploy.md` §0.3 に手順）。
-4. **`staging` へ上げてよいのは main だけ。** `versions upload` は**ブランチの中身を
+4. **`staging` へ上げてよいのは main の中身だけ。** `versions upload` は**ブランチの中身を
    確認URL全体に載せる**ので、作業ブランチから上げると他の作業が確認URLから消える
    （2026-08-04 に実際に起きた）。作業中の確認は `npm run cf:branch` で
-   自分専用のURLへ上げる。`scripts/preview_alias.mjs` が main 以外からの
-   `cf:staging` を止める。**このガードを外さない。**
+   自分専用のURLへ上げる。`scripts/preview_alias.mjs` が止める。**このガードを外さない。**
+   判定は**ブランチ名ではなく中身**（HEAD が origin/main と同一か）。worktree では main を
+   1か所でしか checkout できず、名前で縛ると「他セッションの未コミット変更ごと
+   staging に載せる」しか手が無くなるため。
 
 **このリポジトリは public。** ドキュメントにアカウントIDなどの内部識別子を直書きしない。
 
