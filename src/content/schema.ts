@@ -281,7 +281,11 @@ export const quizSetSchema = z
   });
 
 /* ------------------------------------------------------------------ *
- * ミーティング（Zoom風の画面で「聞く」教材）
+ * リスニング（Zoom風の画面で「聞く」教材）
+ *
+ * Zoom風の対話（Gemini Live）は別種別の scenario＝「たいわ」。同じ枠を使うが
+ * 教材としては別物なので、内部の kind まで呼び分ける。ここを共通の名前に戻すと、
+ * 先生は一覧のどちらを開けば台本を直せるのか分からなくなる。
  * ------------------------------------------------------------------ */
 
 /** 会議の参加者。自分は "me" 固定なのでここには入れない。 */
@@ -301,9 +305,9 @@ const scriptLineSchema = z.object({
   at: z.number().nonnegative().optional(),
 });
 
-export const meetingSchema = z
+export const listeningSchema = z
   .object({
-    kind: z.literal("meeting"),
+    kind: z.literal("listening"),
     id: z.string().regex(/^[a-z0-9_-]+$/),
     title: plainText,
     description: plainText,
@@ -322,9 +326,9 @@ export const meetingSchema = z
     revealGoal: z.number().int().min(1).max(100).default(30),
     furigana: z.array(furiganaEntrySchema).optional(),
   })
-  .superRefine((meeting, ctx) => {
-    const known = new Set([...meeting.participants.map((p) => p.id), "me", "narration"]);
-    meeting.script.forEach((line, i) => {
+  .superRefine((listening, ctx) => {
+    const known = new Set([...listening.participants.map((p) => p.id), "me", "narration"]);
+    listening.script.forEach((line, i) => {
       if (!known.has(line.speaker)) {
         ctx.addIssue({
           code: "custom",
@@ -334,8 +338,8 @@ export const meetingSchema = z
       }
     });
 
-    const transcript = meeting.script.map((l) => l.text).join("");
-    const missing = meeting.keywords.filter((kw) => !transcript.includes(kw));
+    const transcript = listening.script.map((l) => l.text).join("");
+    const missing = listening.keywords.filter((kw) => !transcript.includes(kw));
     if (missing.length > 0) {
       ctx.addIssue({
         code: "custom",
@@ -497,7 +501,7 @@ export const scenarioSchema = z
 export const CONTENT_REF_TYPES = [
   "manga",
   "article",
-  "meeting",
+  "listening",
   "quizset",
   "scenario",
   "wordstage",
@@ -684,7 +688,7 @@ export const articleSchema = z.object({
 export const contentSchema = z.discriminatedUnion("kind", [
   wordStageSchema,
   quizSetSchema,
-  meetingSchema,
+  listeningSchema,
   scenarioSchema,
   stageSchema,
   mangaSchema,
@@ -695,9 +699,9 @@ export type Word = z.infer<typeof wordSchema>;
 export type WordStage = z.infer<typeof wordStageSchema>;
 export type QuizQuestion = z.infer<typeof quizQuestionSchema>;
 export type QuizSet = z.infer<typeof quizSetSchema>;
-export type Meeting = z.infer<typeof meetingSchema>;
-export type MeetingParticipant = z.infer<typeof participantSchema>;
-export type MeetingScriptLine = z.infer<typeof scriptLineSchema>;
+export type Listening = z.infer<typeof listeningSchema>;
+export type ListeningParticipant = z.infer<typeof participantSchema>;
+export type ListeningScriptLine = z.infer<typeof scriptLineSchema>;
 export type Scenario = z.infer<typeof scenarioSchema>;
 export type Stage = z.infer<typeof stageSchema>;
 export type StageContentRef = z.infer<typeof stageContentRefSchema>;

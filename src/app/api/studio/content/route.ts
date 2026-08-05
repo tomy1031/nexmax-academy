@@ -8,8 +8,8 @@ import {
 } from "@/lib/content-checks";
 import {
   listArticles,
+  listListenings,
   listMangas,
-  listMeetings,
   listQuizSets,
   listScenarios,
   listStages,
@@ -85,13 +85,13 @@ function runContentChecks(content: Content): Finding[] {
  * 「無いID」と言い続けることになる。
  */
 async function collectKnownIds(): Promise<Set<string>> {
-  const [stages, mangas, articles, quizSets, meetings, scenarios, wordStages, dbEntries] =
+  const [stages, mangas, articles, quizSets, listenings, scenarios, wordStages, dbEntries] =
     await Promise.all([
       listStages(),
       listMangas(),
       listArticles(),
       listQuizSets(),
-      listMeetings(),
+      listListenings(),
       listScenarios(),
       listWordStages(),
       fetchDbContents({ includeDrafts: true }),
@@ -103,7 +103,7 @@ async function collectKnownIds(): Promise<Set<string>> {
     ...mangas,
     ...articles,
     ...quizSets,
-    ...meetings,
+    ...listenings,
     ...scenarios,
     ...wordStages,
   ]) {

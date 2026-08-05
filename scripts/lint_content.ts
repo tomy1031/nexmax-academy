@@ -13,7 +13,8 @@
  *  5. 導線の一致（article の link ブロックがステージの学習順の直後を指しているか）
  *  6. マップの停留所とステージの結びつき（step重複・既定エリアより先の area 未設定）。
  *     マップは「1ステージ＝1エリア＝背景画像1枚」（src/content/areas.ts）。
- *  7. 焼き込みモジュールのずれ（src/content/git-contents.generated.ts）。
+ *  7. ふりがなの覆い漏れ（学習者が読む文の漢字が読み辞書で全部覆えているか — 規律2）
+ *  8. 焼き込みモジュールのずれ（src/content/git-contents.generated.ts）。
  *     アプリはこの生成物だけを読むので、ずれると JSON を直しても画面が変わらない。
  *
  * 検査ロジックの実体は src/lib/content-checks.ts（スタジオ側と共用）。
@@ -28,6 +29,7 @@ import { contentSchema, FORBIDDEN_LEARNER_WORDS } from "../src/content/schema";
 import {
   checkDuplicateIds,
   checkForbiddenWords,
+  checkFuriganaCoverage,
   checkLinkOrder,
   checkReferenceIntegrity,
   checkStageSteps,
@@ -200,6 +202,7 @@ function main() {
   findings.push(...checkReferenceIntegrity(entries));
   findings.push(...checkLinkOrder(entries));
   findings.push(...checkStageSteps(entries));
+  findings.push(...checkFuriganaCoverage(entries));
   findings.push(...checkGeneratedIndex());
 
   const sourceFiles = walkSource(SRC_DIR);

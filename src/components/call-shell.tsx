@@ -2,23 +2,26 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion } from "motion/react";
-import type { MeetingParticipant } from "@/content/schema";
+import type { ListeningParticipant } from "@/content/schema";
 import { FeedbackMessage } from "@/components/feedback-message";
 import { NexMax } from "@/components/nexmax";
 
 /**
- * Zoom風のミーティング画面（モードに依存しない外枠）。
+ * Zoom風の通話画面（モードに依存しない外枠）。
  *
- * 「聞く」教材（再生モード）でも「話す」教材（Live対話）でも同じ枠を使う。
+ * リスニング（聞く教材）でも たいわ（Live対話）でも同じ枠を使うので、どちらの
+ * 教材名も名乗らない。ここに片方の名前を付けると、もう片方の画面で言葉と中身が
+ * ずれる（学習者は「リスニング」と書かれた画面でAIと話すことになる）。
+ *
  * 旧アプリの演出を引き継ぐ:
  *   - 入室は「🔔 ドアを ノックする」から（いきなり始めない）
  *   - 自分のタイルは Webカメラの実映像。アバター画像は使わない（設計01 §101）
  *   - 退出のとき「お礼を 言いましたか？」の一呼吸を置く
  */
 
-export type MeetingStage = "lobby" | "inRoom" | "leaving" | "left";
+export type CallStage = "lobby" | "inRoom" | "leaving" | "left";
 
-const ACCENT: Record<MeetingParticipant["accent"], string> = {
+const ACCENT: Record<ListeningParticipant["accent"], string> = {
   sky: "#4fa8e8",
   leaf: "#58c273",
   sun: "#ffc93c",
@@ -26,7 +29,7 @@ const ACCENT: Record<MeetingParticipant["accent"], string> = {
   grape: "#a78bfa",
 };
 
-export function MeetingShell({
+export function CallShell({
   title,
   focus,
   participants,
@@ -40,13 +43,13 @@ export function MeetingShell({
 }: {
   title: string;
   focus: string;
-  participants: readonly MeetingParticipant[];
+  participants: readonly ListeningParticipant[];
   activeSpeaker?: string | null;
   controls?: React.ReactNode;
   children?: React.ReactNode;
   onLeft?: () => void;
 }) {
-  const [stage, setStage] = useState<MeetingStage>("lobby");
+  const [stage, setStage] = useState<CallStage>("lobby");
   const [cameraOn, setCameraOn] = useState(true);
   const [micOn, setMicOn] = useState(false);
 
@@ -91,7 +94,7 @@ export function MeetingShell({
       <div className="card-island mx-auto max-w-md p-8 text-center">
         <NexMax variant="cheer" size={92} className="mx-auto" bob />
         <h2 className="text-ink mt-4 text-2xl font-extrabold">おつかれさま！</h2>
-        <p className="text-ink-soft mt-2 font-bold">ミーティングが おわりました。</p>
+        <p className="text-ink-soft mt-2 font-bold">かいぎが おわりました。</p>
       </div>
     );
   }
@@ -197,7 +200,13 @@ function ToolButton({
   );
 }
 
-function ParticipantTile({ person, speaking }: { person: MeetingParticipant; speaking: boolean }) {
+function ParticipantTile({
+  person,
+  speaking,
+}: {
+  person: ListeningParticipant;
+  speaking: boolean;
+}) {
   const accent = ACCENT[person.accent];
   return (
     <div
@@ -316,6 +325,6 @@ export function CaptionBar({
 }
 
 /** Live対話などが未設定のときに出す「じゅんびちゅう」表示。 */
-export function MeetingNotReady() {
-  return <FeedbackMessage messageKey="meeting.notReady" />;
+export function CallNotReady() {
+  return <FeedbackMessage messageKey="talk.notReady" />;
 }

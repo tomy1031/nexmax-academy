@@ -10,8 +10,8 @@ import { contentHref } from "@/components/stage/stage-progress";
 import type { FuriganaEntry } from "@/lib/text/furigana";
 import {
   getArticle,
+  getListening,
   getManga,
-  getMeeting,
   getQuizSet,
   getScenario,
   getStage,
@@ -79,13 +79,13 @@ async function loadRef(ref: StageContentRef): Promise<LoadedRef | null> {
         }
       );
     }
-    case "meeting": {
-      const meeting = await getMeeting(ref.ref);
+    case "listening": {
+      const listening = await getListening(ref.ref);
       return (
-        meeting && {
-          title: meeting.title,
-          description: meeting.description,
-          furigana: meeting.furigana,
+        listening && {
+          title: listening.title,
+          description: listening.description,
+          furigana: listening.furigana,
         }
       );
     }

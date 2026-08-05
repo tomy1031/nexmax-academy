@@ -22,9 +22,12 @@ export interface ContentKindMeta {
 const META: Record<ContentRefType, ContentKindMeta> = {
   manga: { icon: "📖", label: "まんが", href: (id) => `/manga/${id}` },
   article: { icon: "📄", label: "よみもの", href: (id) => `/article/${id}` },
-  meeting: { icon: "🎧", label: "ミーティング", href: (id) => `/meeting/${id}` },
+  listening: { icon: "🎧", label: "リスニング", href: (id) => `/listening/${id}` },
   quizset: { icon: "✏️", label: "もんだい", href: (id) => `/quiz/${id}` },
-  scenario: { icon: "🎙️", label: "たいわ", href: (id) => `/meeting/live/${id}` },
+  // たいわ（Gemini Live）はリスニングと同じ Zoom風の枠を使うが別の教材なので、
+  // 行き先も /talk に分ける。同じ入口にすると、学習者は「聞くだけ」のつもりで
+  // AIと話す画面に入ってしまう。
+  scenario: { icon: "🎙️", label: "たいわ", href: (id) => `/talk/${id}` },
   wordstage: { icon: "🕹️", label: "ことば", href: (id) => `/arcade/${id}` },
 };
 

@@ -2,45 +2,48 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
-import type { Meeting } from "@/content/schema";
+import type { Listening } from "@/content/schema";
 import { RubyText } from "@/components/ruby-text";
 import { buildFuriganaIndex } from "@/lib/text/furigana";
 import { recordContentProgress } from "@/lib/progress/store";
-import { CaptionBar, MeetingShell } from "./meeting-shell";
+import { CaptionBar, CallShell } from "@/components/call-shell";
 import { ListeningPanel } from "./listening-panel";
 
 /**
- * 再生モード — Zoom風の画面で「聞く」教材。
+ * リスニングの再生モード — Zoom風の画面で「聞く」教材。
  *
  * 音声（audioUrl）があれば速度を落として聞ける。無いときは台本を1行ずつ
  * 進める読み物として成立させる（音声はあとから差し込める）。
  *
  * 聞き取りチェックは旧アプリと同じく、入力欄ひとつ（ListeningPanel）。
  */
-export function PlaybackMeeting({ meeting }: { meeting: Meeting }) {
-  const furigana = useMemo(() => buildFuriganaIndex(meeting.furigana ?? []), [meeting.furigana]);
+export function ListeningPlayer({ listening }: { listening: Listening }) {
+  const furigana = useMemo(
+    () => buildFuriganaIndex(listening.furigana ?? []),
+    [listening.furigana],
+  );
   const nameOf = useMemo(() => {
-    const map = new Map(meeting.participants.map((p) => [p.id, p.name]));
+    const map = new Map(listening.participants.map((p) => [p.id, p.name]));
     map.set("me", "あなた");
     map.set("narration", "せつめい");
     return map;
-  }, [meeting.participants]);
+  }, [listening.participants]);
 
   const [line, setLine] = useState(0);
   const [captionsOn, setCaptionsOn] = useState(true);
   const [rate, setRate] = useState(0.85); // 既定は遅め（P10）
   const audioRef = useRef<HTMLAudioElement>(null);
 
-  const current = meeting.script[line];
+  const current = listening.script[line];
 
   // ステージの進み具合に反映する（設計07 §3）。最後の行まで見たら「おわった」。
-  const done = line >= meeting.script.length - 1;
+  const done = line >= listening.script.length - 1;
   useEffect(() => {
-    recordContentProgress(meeting.id, {
+    recordContentProgress(listening.id, {
       status: done ? "completed" : "started",
       position: { line },
     });
-  }, [meeting.id, done, line]);
+  }, [listening.id, done, line]);
 
   const setSpeed = (value: number) => {
     setRate(value);
@@ -54,23 +57,28 @@ export function PlaybackMeeting({ meeting }: { meeting: Meeting }) {
   return (
     <div className="mx-auto w-full max-w-3xl px-4 py-6">
       <header className="mb-5 flex items-center justify-between gap-3">
-        <Link href="/meeting" className="text-ink-soft hover:text-navy text-sm font-extrabold">
-          ← ミーティング 一覧
+        <Link href="/listening" className="text-ink-soft hover:text-navy text-sm font-extrabold">
+          ← リスニング 一覧
         </Link>
         <span className="bg-sky-soft text-navy rounded-full px-3 py-1 text-xs font-extrabold">
-          🎧 {meeting.title}
+          🎧 {listening.title}
         </span>
       </header>
 
-      <MeetingShell
-        title={meeting.title}
-        focus={meeting.focus}
-        participants={meeting.participants}
+      <CallShell
+        title={listening.title}
+        focus={listening.focus}
+        participants={listening.participants}
         activeSpeaker={current?.speaker ?? null}
         controls={
           <div className="card-island flex flex-wrap items-center gap-2 p-3">
-            {meeting.audioUrl && (
-              <audio ref={audioRef} src={meeting.audioUrl} controls className="w-full sm:w-auto" />
+            {listening.audioUrl && (
+              <audio
+                ref={audioRef}
+                src={listening.audioUrl}
+                controls
+                className="w-full sm:w-auto"
+              />
             )}
             <span className="text-ink-soft text-xs font-extrabold">はやさ</span>
             {[0.7, 0.85, 1].map((value) => (
@@ -121,12 +129,12 @@ export function PlaybackMeeting({ meeting }: { meeting: Meeting }) {
             <span className="text-ink">← まえ</span>
           </button>
           <span className="text-ink-faint text-xs font-extrabold">
-            {line + 1} / {meeting.script.length}
+            {line + 1} / {listening.script.length}
           </span>
           <button
             type="button"
-            disabled={line >= meeting.script.length - 1}
-            onClick={() => setLine((i) => Math.min(meeting.script.length - 1, i + 1))}
+            disabled={line >= listening.script.length - 1}
+            onClick={() => setLine((i) => Math.min(listening.script.length - 1, i + 1))}
             className="btn-island btn-game px-5 py-2.5 text-sm disabled:opacity-40"
           >
             つぎ →
@@ -134,12 +142,12 @@ export function PlaybackMeeting({ meeting }: { meeting: Meeting }) {
         </div>
 
         <ListeningPanel
-          transcript={meeting.script.map((l) => l.text).join("\n")}
-          keywords={meeting.keywords}
-          goal={meeting.revealGoal}
+          transcript={listening.script.map((l) => l.text).join("\n")}
+          keywords={listening.keywords}
+          goal={listening.revealGoal}
           furigana={furigana}
         />
-      </MeetingShell>
+      </CallShell>
     </div>
   );
 }

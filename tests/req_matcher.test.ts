@@ -4,7 +4,7 @@ import {
   matchLocally,
   resolveMatch,
   type MatchableReq,
-} from "../src/components/meeting/req-matcher";
+} from "../src/components/listening/req-matcher";
 
 const REQS: MatchableReq[] = [
   { id: "r1", keywords: ["予算", "よさん", "いくら"] },

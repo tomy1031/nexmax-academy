@@ -327,6 +327,7 @@ export function QuizEditor({
         entries={value.furigana ?? []}
         onChange={(furigana) => onChange({ ...value, furigana })}
         emptyNote="まだ ありません（なくても もんだいは 出ます）。"
+        content={value}
       />
     </div>
   );

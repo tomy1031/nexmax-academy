@@ -84,6 +84,29 @@ export function annotateRuby(text: string, index: FuriganaIndex): RubySegment[] 
 }
 
 /**
+ * 読み辞書で覆えていない漢字を、出てきた順に重複なしで返す。
+ *
+ * 判定は必ず annotateRuby を通す。走査規則をここで書き直すと、「検査は通るのに
+ * 画面ではルビが付かない」というズレが生まれ、学習者だけが裸の漢字に出くわす。
+ * 最長一致・重なりの扱い・打ち切り条件はすべて annotateRuby が正で、
+ * ここは「ルビの付かなかった断片に漢字が残っているか」だけを見る。
+ */
+export function uncoveredKanji(text: string, index: FuriganaIndex): string[] {
+  const uncovered: string[] = [];
+  const seen = new Set<string>();
+  for (const segment of annotateRuby(text, index)) {
+    // reading があればその断片は辞書に当たっている＝画面でルビが付く
+    if (segment.reading) continue;
+    for (const char of segment.text) {
+      if (!KANJI.test(char) || seen.has(char)) continue;
+      seen.add(char);
+      uncovered.push(char);
+    }
+  }
+  return uncovered;
+}
+
+/**
  * ステージ/問題データのローカル辞書と、全体で共有する辞書を重ねて索引にする。
  * 同じ表記があればローカル側（後勝ち）を優先する。
  */

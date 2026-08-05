@@ -117,14 +117,14 @@ export const FEEDBACK = {
     next: "聞こえた ことばを 入れると、もっと 出てくるよ",
   },
 
-  /* --- ミーティング（Live対話） --- */
-  "meeting.itemFound": { tone: "praise", title: "聞き出せたね！", next: "つぎの ことを 聞こう" },
-  "meeting.offTopic": {
+  /* --- たいわ（Live対話） --- */
+  "talk.itemFound": { tone: "praise", title: "聞き出せたね！", next: "つぎの ことを 聞こう" },
+  "talk.offTopic": {
     tone: "hint",
     title: "いまは この しつもんの 番では ないかも",
     next: "ボードの のこりを 見て、聞くことを えらぼう",
   },
-  "meeting.notReady": {
+  "talk.notReady": {
     tone: "info",
     title: "じゅんびちゅう",
     next: "先生に 「AIの せってい」を たのんでね",

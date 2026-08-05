@@ -1,15 +1,15 @@
 "use client";
 
-import type { Meeting, MeetingParticipant, MeetingScriptLine } from "@/content/schema";
+import type { Listening, ListeningParticipant, ListeningScriptLine } from "@/content/schema";
 import { moveItem, removeAt, replaceAt } from "./list-ops";
 import {
   countLinesBySpeaker,
-  emptyMeetingParticipant,
-  MEETING_ACCENT_OPTIONS,
+  emptyListeningParticipant,
+  LISTENING_ACCENT_OPTIONS,
   missingKeywords,
   SPEAKER_ME,
   SPEAKER_NARRATION,
-} from "./meeting-drafts";
+} from "./listening-drafts";
 import {
   FuriganaEditor,
   MiniButton,
@@ -23,22 +23,22 @@ import {
 } from "./studio-ui";
 
 /**
- * ミーティングのエディタ（設計07 §6）
+ * リスニングのエディタ（設計07 §6）
  *
- * ミーティングは「Zoom風の画面で聞く」教材で、参加者・台本・キーワードが噛み合って
+ * リスニングは「Zoom風の画面で聞く」教材で、参加者・台本・キーワードが噛み合って
  * はじめて成立する。噛み合わなくなる形（未登録の話者・台本に無いキーワード）は
  * schema.ts の superRefine が保存で止めるが、止められてから直すのは遅い。
  * だからこのエディタは、話す人を選択式にして未登録を作れないようにし、
  * キーワードのずれと参加者削除の影響を入力中に画面へ出す。
  */
-export function MeetingEditor({
+export function ListeningEditor({
   value,
   onChange,
 }: {
-  value: Meeting;
-  onChange: (meeting: Meeting) => void;
+  value: Listening;
+  onChange: (listening: Listening) => void;
 }) {
-  const patch = (part: Partial<Meeting>) => onChange({ ...value, ...part });
+  const patch = (part: Partial<Listening>) => onChange({ ...value, ...part });
 
   /**
    * 話す人の候補。IDがまだ空の参加者は候補に出さない。
@@ -55,7 +55,7 @@ export function MeetingEditor({
       })),
   ];
 
-  const updateParticipant = (index: number, next: MeetingParticipant) =>
+  const updateParticipant = (index: number, next: ListeningParticipant) =>
     patch({ participants: replaceAt(value.participants, index, next) });
 
   const removeParticipant = (index: number) => {
@@ -75,14 +75,14 @@ export function MeetingEditor({
     patch({ participants: removeAt(value.participants, index) });
   };
 
-  const updateLine = (index: number, next: MeetingScriptLine) =>
+  const updateLine = (index: number, next: ListeningScriptLine) =>
     patch({ script: replaceAt(value.script, index, next) });
 
   const missing = missingKeywords(value);
 
   return (
     <div className="space-y-4">
-      <StudioSection title="きほん" hint="ミーティングの 入口に 出る 文です。">
+      <StudioSection title="きほん" hint="リスニングの 入口に 出る 文です。">
         <div className="grid gap-4 sm:grid-cols-2">
           <TextField
             label="ID（半角の英小文字・数字・- _）"
@@ -127,7 +127,7 @@ export function MeetingEditor({
           <MiniButton
             tone="accent"
             onClick={() =>
-              patch({ participants: [...value.participants, emptyMeetingParticipant()] })
+              patch({ participants: [...value.participants, emptyListeningParticipant()] })
             }
           >
             ＋ 人を 追加
@@ -261,6 +261,7 @@ export function MeetingEditor({
         entries={value.furigana ?? []}
         onChange={(furigana) => onChange({ ...value, furigana })}
         emptyNote="まだ ありません。ないと 台本の 漢字に ふりがなが つきません。"
+        content={value}
       />
     </div>
   );
@@ -275,12 +276,12 @@ function ParticipantRow({
   onMove,
   onRemove,
 }: {
-  person: MeetingParticipant;
+  person: ListeningParticipant;
   index: number;
   count: number;
   /** この人が話す台本の行数（消したときの影響の大きさ）。 */
   lineCount: number;
-  onChange: (person: MeetingParticipant) => void;
+  onChange: (person: ListeningParticipant) => void;
   onMove: (delta: number) => void;
   onRemove: () => void;
 }) {
@@ -314,7 +315,7 @@ function ParticipantRow({
         <SelectField
           label="タイルの色"
           value={person.accent}
-          options={MEETING_ACCENT_OPTIONS}
+          options={LISTENING_ACCENT_OPTIONS}
           onChange={(accent) => onChange({ ...person, accent })}
         />
       </div>
@@ -338,8 +339,8 @@ function TimeField({
   line,
   onChange,
 }: {
-  line: MeetingScriptLine;
-  onChange: (line: MeetingScriptLine) => void;
+  line: ListeningScriptLine;
+  onChange: (line: ListeningScriptLine) => void;
 }) {
   if (line.at === undefined) {
     return (

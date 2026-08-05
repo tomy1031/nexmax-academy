@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { StudioShell } from "@/components/studio/studio-shell";
-import { listArticles, listMangas, listMeetings, listQuizSets, listStages } from "@/lib/content";
+import { listArticles, listListenings, listMangas, listQuizSets, listStages } from "@/lib/content";
 
 /**
  * コンテンツスタジオ（先生向け・管理者だけ — 設計07 §10.1）
@@ -14,12 +14,12 @@ export const metadata: Metadata = { title: "コンテンツスタジオ" };
 export const dynamic = "force-dynamic";
 
 export default async function StudioPage() {
-  const [stages, mangas, articles, quizSets, meetings] = await Promise.all([
+  const [stages, mangas, articles, quizSets, listenings] = await Promise.all([
     listStages(),
     listMangas(),
     listArticles(),
     listQuizSets(),
-    listMeetings(),
+    listListenings(),
   ]);
 
   // 一覧に出すだけでなく、そのままエディタで開くので中身ごと渡す
@@ -30,7 +30,7 @@ export default async function StudioPage() {
       mangas={mangas}
       articles={articles}
       quizSets={quizSets}
-      meetings={meetings}
+      listenings={listenings}
     />
   );
 }

@@ -88,7 +88,7 @@ export interface GameScore {
 }
 
 /**
- * ステージ内コンテンツ（manga / article / meeting / quizset / scenario など）の進捗。
+ * ステージ内コンテンツ（manga / article / listening / quizset / scenario など）の進捗。
  * ステージ詳細の「4つ中2つ おわった」やレッスンカードの n/m がこれを数える（設計07 §3）。
  */
 export interface ContentProgress {
@@ -226,7 +226,7 @@ export function createProgressStore(backend: ProgressBackend = defaultBackend())
 }
 
 /* ------------------------------------------------------------------ *
- * コンテンツ進捗（stage 内の manga / article / meeting / quizset / scenario）
+ * コンテンツ進捗（stage 内の manga / article / listening / quizset / scenario）
  * ------------------------------------------------------------------ */
 
 export function readContentProgress(

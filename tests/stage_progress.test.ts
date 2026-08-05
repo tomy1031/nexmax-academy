@@ -15,9 +15,9 @@ describe("contentHref", () => {
   it("種別ごとに決められたルートへ向ける", () => {
     expect(contentHref("manga", "m2-asakai-manga")).toBe("/manga/m2-asakai-manga");
     expect(contentHref("article", "m2-asakai-article")).toBe("/article/m2-asakai-article");
-    expect(contentHref("meeting", "m2-asakai-meeting")).toBe("/meeting/m2-asakai-meeting");
+    expect(contentHref("listening", "m2-asakai-listening")).toBe("/listening/m2-asakai-listening");
     expect(contentHref("quizset", "m2-asakai-quiz")).toBe("/quiz/m2-asakai-quiz");
-    expect(contentHref("scenario", "s1-hearing")).toBe("/meeting/live/s1-hearing");
+    expect(contentHref("scenario", "s1-hearing")).toBe("/talk/s1-hearing");
     expect(contentHref("wordstage", "stage12_asakai")).toBe("/arcade/stage12_asakai");
   });
 

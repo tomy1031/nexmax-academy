@@ -12,13 +12,13 @@ describe("contentHref", () => {
   it("種別ごとに決まったルートへ飛ばす", () => {
     expect(contentHref("manga", "m2-asakai")).toBe("/manga/m2-asakai");
     expect(contentHref("article", "m2-asakai")).toBe("/article/m2-asakai");
-    expect(contentHref("meeting", "m2-asakai")).toBe("/meeting/m2-asakai");
+    expect(contentHref("listening", "m2-asakai")).toBe("/listening/m2-asakai");
     expect(contentHref("quizset", "m2-asakai")).toBe("/quiz/m2-asakai");
     expect(contentHref("wordstage", "m2-asakai")).toBe("/arcade/m2-asakai");
   });
 
-  it("シナリオはLive対話の入口へ送る（/meeting/live/:id）", () => {
-    expect(contentHref("scenario", "cafe")).toBe("/meeting/live/cafe");
+  it("シナリオはLive対話の入口へ送る（/talk/:id）", () => {
+    expect(contentHref("scenario", "cafe")).toBe("/talk/cafe");
   });
 });
 

@@ -25,6 +25,8 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 1. 学習者向け文言に「不正解」「間違いです」「ダメ」を使わない。フィードバックは励まし＋次の行動。
 2. コンテンツはプレーンテキスト＋読み辞書で持つ。**ルビHTMLを手書きしない**（表示時にエンジンが合成する）。
+   学習者が読む文の漢字は、読み辞書で**全部**覆う（`npm run lint:content` が検査する）。
+   読めない漢字が1つあると、学習者はそこで止まる。
 3. 選択式UIは読解確認（research）のみ。産出フェーズは自由入力・音声のみ。
 4. APIキー・シークレットをクライアントコードに置かない。Gemini呼び出しはサーバプロキシ経由。
 5. コンテンツデータは `src/content/schema.ts` のzodスキーマに準拠（`npm run lint:content` で検証）。

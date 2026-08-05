@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { LiveMeeting } from "@/components/meeting/live-mode";
+import { TalkSession } from "@/components/listening/live-mode";
 import { getScenario, listScenarios } from "@/lib/content";
 
 /**
@@ -25,17 +25,13 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { scenario: id } = await params;
   const scenario = await getScenario(id);
-  return { title: scenario ? `${scenario.title} | ミーティング` : "ミーティング" };
+  return { title: scenario ? `${scenario.title} | たいわ` : "たいわ" };
 }
 
-export default async function LiveMeetingPage({
-  params,
-}: {
-  params: Promise<{ scenario: string }>;
-}) {
+export default async function TalkPage({ params }: { params: Promise<{ scenario: string }> }) {
   const { scenario: id } = await params;
   const scenario = await getScenario(id);
   if (!scenario) notFound();
 
-  return <LiveMeeting scenario={scenario} />;
+  return <TalkSession scenario={scenario} />;
 }

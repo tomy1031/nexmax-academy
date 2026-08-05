@@ -7,7 +7,7 @@ import {
   revealRate,
   submitListening,
   type ListeningState,
-} from "../src/components/meeting/listening-checks";
+} from "../src/components/listening/listening-checks";
 
 const TRANSCRIPT =
   "サーバーが止まっています。原因はまだ分かりません。テストが止まってしまいました。";

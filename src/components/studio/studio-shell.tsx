@@ -7,8 +7,8 @@ import type {
   Article,
   Content,
   ContentRefType,
+  Listening,
   Manga,
-  Meeting,
   QuizSet,
   Stage,
 } from "@/content/schema";
@@ -20,9 +20,9 @@ import { ArticleEditor } from "./article-editor";
 import { emptyArticle, emptyManga, emptyQuizSet, emptyStage } from "./drafts";
 import { EditorFrame } from "./editor-frame";
 import { DB_PREPARING_MESSAGE, type SaveIssue } from "./issue-text";
+import { emptyListening } from "./listening-drafts";
+import { ListeningEditor } from "./listening-editor";
 import { MangaEditor } from "./manga-editor";
-import { emptyMeeting } from "./meeting-drafts";
-import { MeetingEditor } from "./meeting-editor";
 import { QuizEditor } from "./quiz-editor";
 import { StageEditor, type RefOption } from "./stage-editor";
 import {
@@ -48,17 +48,17 @@ export interface StudioShellProps {
   mangas: Manga[];
   articles: Article[];
   quizSets: QuizSet[];
-  meetings: Meeting[];
+  listenings: Listening[];
 }
 
-type TabKey = "stage" | "manga" | "article" | "quizset" | "meeting";
+type TabKey = "stage" | "manga" | "article" | "quizset" | "listening";
 
 const TABS: readonly { key: TabKey; label: string; emoji: string }[] = [
   { key: "stage", label: "ステージ", emoji: "🗺️" },
   { key: "manga", label: "まんが", emoji: "📖" },
   { key: "article", label: "よみもの", emoji: "📄" },
   { key: "quizset", label: "もんだい", emoji: "✏️" },
-  { key: "meeting", label: "ミーティング", emoji: "🎧" },
+  { key: "listening", label: "リスニング", emoji: "🎧" },
 ];
 
 type View =
@@ -67,7 +67,7 @@ type View =
   | { mode: "manga"; draft: Manga }
   | { mode: "article"; draft: Article }
   | { mode: "quizset"; draft: QuizSet }
-  | { mode: "meeting"; draft: Meeting };
+  | { mode: "listening"; draft: Listening };
 
 type Gate = "checking" | "ready" | "unconfigured" | "error";
 
@@ -86,7 +86,7 @@ interface Row {
   remove: (() => void) | null;
 }
 
-export function StudioShell({ stages, mangas, articles, quizSets, meetings }: StudioShellProps) {
+export function StudioShell({ stages, mangas, articles, quizSets, listenings }: StudioShellProps) {
   const router = useRouter();
   const [gate, setGate] = useState<Gate>("checking");
   const [gateError, setGateError] = useState<string | null>(null);
@@ -172,22 +172,22 @@ export function StudioShell({ stages, mangas, articles, quizSets, meetings }: St
         type: "quizset" as ContentRefType,
         title: item.title,
       })),
-      ...meetings.map((item) => ({
+      ...listenings.map((item) => ({
         id: item.id,
-        type: "meeting" as ContentRefType,
+        type: "listening" as ContentRefType,
         title: item.title,
       })),
     ];
     for (const entry of dbEntries) {
       const kind = entry.content.kind;
-      if (kind === "manga" || kind === "article" || kind === "quizset" || kind === "meeting") {
+      if (kind === "manga" || kind === "article" || kind === "quizset" || kind === "listening") {
         if (!options.some((option) => option.id === entry.content.id && option.type === kind)) {
           options.push({ id: entry.content.id, type: kind, title: entry.content.title });
         }
       }
     }
     return options;
-  }, [mangas, articles, quizSets, meetings, dbEntries]);
+  }, [mangas, articles, quizSets, listenings, dbEntries]);
 
   const dbStatusOf = useCallback(
     (kind: string, id: string) =>
@@ -250,9 +250,9 @@ export function StudioShell({ stages, mangas, articles, quizSets, meetings }: St
       clearNotes();
       setView({ mode: "quizset", draft });
     };
-    const openMeeting = (draft: Meeting) => () => {
+    const openListening = (draft: Listening) => () => {
       clearNotes();
-      setView({ mode: "meeting", draft });
+      setView({ mode: "listening", draft });
     };
 
     /** DB版のときだけ「けす」を渡す（git版は消せない）。 */
@@ -313,20 +313,20 @@ export function StudioShell({ stages, mangas, articles, quizSets, meetings }: St
           remove: removeAction("quizset", item),
         }));
       }
-      case "meeting": {
-        const merged = mergeById(meetings, fromDb("meeting"));
+      case "listening": {
+        const merged = mergeById(listenings, fromDb("listening"));
         return merged.map((item) => ({
           id: item.id,
           title: item.title,
           description: item.description,
-          dbStatus: dbStatusOf("meeting", item.id),
-          href: contentHref("meeting", item.id),
-          open: openMeeting(item),
-          remove: removeAction("meeting", item),
+          dbStatus: dbStatusOf("listening", item.id),
+          href: contentHref("listening", item.id),
+          open: openListening(item),
+          remove: removeAction("listening", item),
         }));
       }
     }
-  }, [tab, stages, mangas, articles, quizSets, meetings, dbEntries, dbStatusOf, removeFromDb]);
+  }, [tab, stages, mangas, articles, quizSets, listenings, dbEntries, dbStatusOf, removeFromDb]);
 
   const handleSave = useCallback(
     async (publish: boolean) => {
@@ -401,7 +401,7 @@ export function StudioShell({ stages, mangas, articles, quizSets, meetings }: St
               manga: () => setView({ mode: "manga", draft: emptyManga() }),
               article: () => setView({ mode: "article", draft: emptyArticle() }),
               quizset: () => setView({ mode: "quizset", draft: emptyQuizSet() }),
-              meeting: () => setView({ mode: "meeting", draft: emptyMeeting() }),
+              listening: () => setView({ mode: "listening", draft: emptyListening() }),
             }}
           />
         ) : null}
@@ -479,9 +479,9 @@ export function StudioShell({ stages, mangas, articles, quizSets, meetings }: St
           </EditorFrame>
         ) : null}
 
-        {view.mode === "meeting" ? (
+        {view.mode === "listening" ? (
           <EditorFrame
-            title={view.draft.title.length > 0 ? view.draft.title : "あたらしい ミーティング"}
+            title={view.draft.title.length > 0 ? view.draft.title : "あたらしい リスニング"}
             hint="さがす ことばは 台本に 出てくる ものだけに します。"
             onBack={backToList}
             onSave={(publish) => void handleSave(publish)}
@@ -490,9 +490,9 @@ export function StudioShell({ stages, mangas, articles, quizSets, meetings }: St
             issues={issues}
           >
             <SaveWarnings notices={warnings} />
-            <MeetingEditor
+            <ListeningEditor
               value={view.draft}
-              onChange={(draft) => setView({ mode: "meeting", draft })}
+              onChange={(draft) => setView({ mode: "listening", draft })}
             />
           </EditorFrame>
         ) : null}
@@ -555,7 +555,7 @@ function ListView({
     manga: () => void;
     article: () => void;
     quizset: () => void;
-    meeting: () => void;
+    listening: () => void;
   };
 }) {
   return (
@@ -613,10 +613,10 @@ function ListView({
           </button>
           <button
             type="button"
-            onClick={onNew.meeting}
+            onClick={onNew.listening}
             className="btn-game px-4 py-2 text-sm [--btn-face:#a78bfa] [--btn-shadow:#8d6ae8]"
           >
-            ＋ ミーティング
+            ＋ リスニング
           </button>
         </div>
       </div>

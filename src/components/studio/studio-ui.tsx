@@ -1,6 +1,9 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { useMemo, type ReactNode } from "react";
+import type { Content } from "@/content/schema";
+import { collectLearnerTexts } from "@/lib/content-checks";
+import { buildFuriganaIndex, uncoveredKanji } from "@/lib/text/furigana";
 import { moveItem, removeAt, replaceAt } from "./list-ops";
 import type { SaveIssue } from "./issue-text";
 
@@ -375,7 +378,7 @@ export function Toast({ message, tone }: { message: string; tone: "ok" | "ng" })
  * 学習者の画面で エンジンが ふりがなを つける。辞書が無いと、漢字に ふりがなが
  * 1つも付かないまま N4 の学習者に届く。
  *
- * もんだい・ミーティングのように furigana を持つ教材で共用する。
+ * もんだい・リスニングのように furigana を持つ教材で共用する。
  * 辞書の引き方は最長一致なので、並びの責任は先生に持たせない
  *（並び順が意味を持つのは性格診断まわりの readings のほう — ruby-text.tsx）。
  */
@@ -383,15 +386,32 @@ export function FuriganaEditor({
   entries,
   onChange,
   emptyNote,
+  content,
 }: {
   entries: readonly (readonly [string, string])[];
   /** 空になったら undefined を渡す（空配列を残すと 保存データに 意味のない項目が積もる）。 */
   onChange: (next: [string, string][] | undefined) => void;
   /** 1つも無いときに出す一言（教材の種類で言い方を変える）。 */
   emptyNote: string;
+  /**
+   * いま編集している教材。まだ ふりがなの ついていない 漢字を出すのに使う。
+   * 保存してから `lint:content` に言われるより、書いている最中に見えるほうが直しやすい。
+   */
+  content: Content;
 }) {
   const list = entries.map(([term, reading]) => [term, reading] as [string, string]);
   const setEntries = (next: [string, string][]) => onChange(next.length > 0 ? next : undefined);
+
+  // 判定は検査（lint:content）と画面のルビ合成に使うのと同じ関数を通す。
+  // ここだけ別の数え方にすると「スタジオでは足りているのに保存で止まる」が起きる。
+  const missing = useMemo(() => {
+    const index = buildFuriganaIndex(list.filter(([term, reading]) => term && reading));
+    const seen = new Set<string>();
+    for (const text of collectLearnerTexts(content)) {
+      for (const kanji of uncoveredKanji(text, index)) seen.add(kanji);
+    }
+    return [...seen];
+  }, [list, content]);
 
   return (
     <StudioSection
@@ -431,7 +451,29 @@ export function FuriganaEditor({
         ))}
         {list.length === 0 ? <p className="text-ink-faint text-xs font-bold">{emptyNote}</p> : null}
       </div>
-      <MiniButton tone="accent" onClick={() => setEntries([...list, ["", ""]])}>
+
+      {missing.length > 0 ? (
+        <div
+          className="rounded-xl border-2 bg-white p-3"
+          style={{ borderColor: "var(--color-sun)" }}
+        >
+          <p className="text-navy text-xs font-black">
+            まだ ふりがなが ない 漢字（{missing.length}）
+          </p>
+          <p className="text-ink mt-1 text-sm font-black break-all">{missing.join(" ")}</p>
+          <p className="text-ink-soft mt-1 text-xs font-bold">
+            この 漢字が 出てくる ことばを 下に 足してください。1つでも のこると ほぞんの ときに
+            止まります。
+          </p>
+        </div>
+      ) : null}
+
+      <MiniButton
+        tone="accent"
+        // 足りない漢字があれば、その1字目を入れた行で始める。先生が本文を
+        // 探し直さずに済むようにするため（読みは先生が決める）。
+        onClick={() => setEntries([...list, [missing[0] ?? "", ""]])}
+      >
         ＋ ことばを 追加
       </MiniButton>
     </StudioSection>

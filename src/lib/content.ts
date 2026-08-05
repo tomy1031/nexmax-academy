@@ -19,8 +19,8 @@ import {
   contentSchema,
   type Article,
   type Content,
+  type Listening,
   type Manga,
-  type Meeting,
   type QuizSet,
   type Scenario,
   type Stage,
@@ -105,15 +105,15 @@ export async function getQuizSet(id: string): Promise<QuizSet | null> {
   return (await listQuizSets()).find((set) => set.id === id) ?? null;
 }
 
-export async function listMeetings(): Promise<Meeting[]> {
-  const git = parseAll().filter((c): c is Meeting => c.kind === "meeting");
-  return mergeContentsById(git, await listPublishedFromDb("meeting")).sort((a, b) =>
+export async function listListenings(): Promise<Listening[]> {
+  const git = parseAll().filter((c): c is Listening => c.kind === "listening");
+  return mergeContentsById(git, await listPublishedFromDb("listening")).sort((a, b) =>
     a.id.localeCompare(b.id),
   );
 }
 
-export async function getMeeting(id: string): Promise<Meeting | null> {
-  return (await listMeetings()).find((meeting) => meeting.id === id) ?? null;
+export async function getListening(id: string): Promise<Listening | null> {
+  return (await listListenings()).find((listening) => listening.id === id) ?? null;
 }
 
 export async function listScenarios(): Promise<Scenario[]> {

@@ -9,18 +9,22 @@ import type { FeedbackKey } from "@/lib/feedback";
 import { RubyText } from "@/components/ruby-text";
 import { buildFuriganaIndex } from "@/lib/text/furigana";
 import { recordContentProgress } from "@/lib/progress/store";
-import { CaptionBar, MeetingShell, MeetingNotReady } from "./meeting-shell";
+import { CaptionBar, CallShell, CallNotReady } from "@/components/call-shell";
 import { resolveMatch } from "./req-matcher";
 import { useLiveSession } from "./use-live-session";
 
 /**
- * Live対話モード — 同じ Zoom風シェルの中で、お客さま役のAIと日本語で話す。
+ * たいわ（Live対話）— 同じ Zoom風シェルの中で、お客さま役のAIと日本語で話す。
+ *
+ * リスニング（聞く教材）と枠を共有するが、学習者がすることは正反対（聞く／話す）。
+ * 呼び名も行き先（/talk）も分けてある。混ぜると、学習者は聞くつもりで
+ * マイクに向かうことになる。
  *
  * 要件ボードは最初「？？？」で伏せてあり、聞き出せた項目だけが開く。
  * 判定は3層（AI → ローカルのキーワード救済 → 手動）で、AIの誤判定で
  * 正しい質問が却下されないようにする（設計01 §3）。
  */
-export function LiveMeeting({ scenario }: { scenario: Scenario }) {
+export function TalkSession({ scenario }: { scenario: Scenario }) {
   const furigana = useMemo(() => buildFuriganaIndex(scenario.furigana ?? []), [scenario.furigana]);
   const live = useLiveSession();
   const [open, setOpen] = useState<ReadonlySet<string>>(new Set());
@@ -50,9 +54,9 @@ export function LiveMeeting({ scenario }: { scenario: Scenario }) {
     });
     if (outcome.reqId) {
       setOpen((prev) => new Set([...prev, outcome.reqId!]));
-      setNote("meeting.itemFound");
+      setNote("talk.itemFound");
     } else {
-      setNote("meeting.offTopic");
+      setNote("talk.offTopic");
     }
   };
 
@@ -71,15 +75,20 @@ export function LiveMeeting({ scenario }: { scenario: Scenario }) {
   return (
     <div className="mx-auto w-full max-w-3xl px-4 py-6">
       <header className="mb-5 flex items-center justify-between gap-3">
-        <Link href="/meeting" className="text-ink-soft hover:text-navy text-sm font-extrabold">
-          ← ミーティング 一覧
+        {/*
+          たいわ だけの 一覧は まだ 無く、/listening が「きく」と「はなす」の
+          両方の 入口を 兼ねている。だから ここでは 種別の名前を 言い切らない
+          （「リスニング 一覧」と 書くと、たいわ から 戻る 先の 名前が ずれる）。
+        */}
+        <Link href="/listening" className="text-ink-soft hover:text-navy text-sm font-extrabold">
+          ← いちらんに もどる
         </Link>
         <span className="bg-sky-soft text-navy rounded-full px-3 py-1 text-xs font-extrabold">
           {scenario.emoji} {scenario.title}
         </span>
       </header>
 
-      <MeetingShell
+      <CallShell
         title={scenario.title}
         focus={scenario.mission.goal}
         participants={participants}
@@ -125,7 +134,7 @@ export function LiveMeeting({ scenario }: { scenario: Scenario }) {
         }
       >
         {live.status === "notReady" ? (
-          <MeetingNotReady />
+          <CallNotReady />
         ) : (
           <>
             {/* 文字起こしは必ず見せる（AIの誤判定を目で確かめられるように） */}
@@ -205,7 +214,7 @@ export function LiveMeeting({ scenario }: { scenario: Scenario }) {
             </details>
           )}
         </section>
-      </MeetingShell>
+      </CallShell>
     </div>
   );
 }

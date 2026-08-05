@@ -51,7 +51,7 @@ describe("issue-text", () => {
     expect(describePath("")).toBe("ぜんたい");
   });
 
-  it("もんだい・ミーティングの場所も日本語で出す（データのキーをそのまま出さない）", () => {
+  it("もんだい・リスニングの場所も日本語で出す（データのキーをそのまま出さない）", () => {
     expect(describePath("questions.1.q")).toBe("もんだい 2番目 › とい");
     expect(describePath("questions.2.accept.0")).toBe("もんだい 3番目 › べつの 言い方 1番目");
     expect(describePath("questions.0.options.1")).toBe("もんだい 1番目 › えらぶもの 2番目");

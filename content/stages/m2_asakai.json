@@ -10,7 +10,7 @@
   "contents": [
     { "ref": "m2-asakai-manga", "type": "manga" },
     { "ref": "m2-asakai-article", "type": "article" },
-    { "ref": "sample_asakai", "type": "meeting" },
+    { "ref": "sample_asakai", "type": "listening" },
     { "ref": "sample_horenso", "type": "quizset" }
   ],
   "wordStageIds": ["stage01_orientation"]

@@ -1,25 +1,29 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { listMeetings, listScenarios } from "@/lib/content";
+import { listListenings, listScenarios } from "@/lib/content";
 import { NexMax } from "@/components/nexmax";
 
 export const metadata: Metadata = {
-  title: "ミーティング | Japanese IT Pathway",
+  title: "リスニング | Japanese IT Pathway",
 };
 
 /**
  * 公開分のDBコンテンツを合流させるため ISR にする（設計07 §11.1
  * 「gitコンテンツは静的生成のまま。DBコンテンツはリクエスト時取得（ISR/短いキャッシュ）」）。
- * スタジオで「こうかい」したミーティングは、再デプロイを待たずこの間隔で届く。
+ * スタジオで「こうかい」したリスニングは、再デプロイを待たずこの間隔で届く。
  */
 export const revalidate = 60;
 
 /**
- * ミーティング一覧。
- * 「聞く」教材（meeting）と「話す」教材（scenario / Live対話）を同じ入口に並べる。
+ * リスニング一覧。
+ *
+ * 「きく」教材（listening）と「はなす」教材（scenario＝たいわ / Live対話）を
+ * 同じ入口に並べる。教材としては別物（行き先も /listening と /talk で分けてある）
+ * だが、たいわ 専用の一覧はまだ無い。ここから外すと、たいわ は ステージ経由でしか
+ * 開けなくなる——だから見出しで「きく」「はなす」を はっきり 分けて 並べる。
  */
-export default async function MeetingIndexPage() {
-  const [meetings, scenarios] = await Promise.all([listMeetings(), listScenarios()]);
+export default async function ListeningIndexPage() {
+  const [listenings, scenarios] = await Promise.all([listListenings(), listScenarios()]);
 
   return (
     <div className="mx-auto w-full max-w-3xl px-4 py-6">
@@ -32,7 +36,7 @@ export default async function MeetingIndexPage() {
       <div className="card-island flex items-center gap-4 p-5 sm:p-6">
         <NexMax variant="listen" size={92} bob />
         <div>
-          <h1 className="text-ink text-2xl font-extrabold sm:text-3xl">🎧 ミーティング</h1>
+          <h1 className="text-ink text-2xl font-extrabold sm:text-3xl">🎧 リスニング</h1>
           <p className="text-ink-soft mt-1 font-bold">
             会議の 画面で 日本語を 聞いて、話す れんしゅうを します。
           </p>
@@ -41,22 +45,22 @@ export default async function MeetingIndexPage() {
 
       <section className="mt-6">
         <h2 className="text-ink mb-2 text-lg font-extrabold">きく</h2>
-        {meetings.length === 0 ? (
+        {listenings.length === 0 ? (
           <p className="text-ink-soft font-bold">じゅんびちゅうです。</p>
         ) : (
           <ul className="grid gap-4">
-            {meetings.map((meeting) => (
-              <li key={meeting.id}>
+            {listenings.map((listening) => (
+              <li key={listening.id}>
                 <Link
-                  href={`/meeting/${meeting.id}`}
+                  href={`/listening/${listening.id}`}
                   className="card-island block p-5 transition hover:scale-[1.01]"
                 >
                   <p className="text-sky text-xs font-extrabold">
-                    {meeting.participants.length + 1}人 ／ {meeting.script.length}行
-                    {meeting.audioUrl ? " ／ 音声あり" : ""}
+                    {listening.participants.length + 1}人 ／ {listening.script.length}行
+                    {listening.audioUrl ? " ／ 音声あり" : ""}
                   </p>
-                  <p className="text-ink mt-1 text-lg font-extrabold">{meeting.title}</p>
-                  <p className="text-ink-soft mt-1 text-sm font-bold">{meeting.description}</p>
+                  <p className="text-ink mt-1 text-lg font-extrabold">{listening.title}</p>
+                  <p className="text-ink-soft mt-1 text-sm font-bold">{listening.description}</p>
                 </Link>
               </li>
             ))}
@@ -73,7 +77,7 @@ export default async function MeetingIndexPage() {
             {scenarios.map((scenario) => (
               <li key={scenario.id}>
                 <Link
-                  href={`/meeting/live/${scenario.id}`}
+                  href={`/talk/${scenario.id}`}
                   className="card-island block p-5 transition hover:scale-[1.01]"
                 >
                   <p className="text-sky text-xs font-extrabold">{scenario.subtitle}</p>

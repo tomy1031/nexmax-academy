@@ -11,6 +11,7 @@
  *  - kind別ID重複（ファイル横断。重複すると進捗保存が壊れる）
  *  - 参照整合（stage.contents / wordStageIds の参照先が存在するか — 設計07 §3）
  *  - 導線の一致（article の「つぎは これ」がステージの学習順の直後を指しているか）
+ *  - ふりがなの覆い漏れ（学習者が読む文の漢字が読み辞書で全部覆えているか）
  *  - 参照切れの気づき（スタジオの保存経路だけ。止めずに warn で知らせる）
  */
 
@@ -23,6 +24,9 @@ import {
 // areas.ts は純粋なデータ（node:fs も React も持たない）ので、
 // スタジオのAPIルートから読まれるこのファイルからでも安全に import できる。
 import { ROUTE_AREAS } from "../content/areas";
+// furigana.ts も純粋な関数だけ（node:fs も React も無い）。スタジオのクライアントから
+// この検査を呼べることが「保存前に足りない漢字を出す」画面の前提になっている。
+import { buildFuriganaIndex, uncoveredKanji, type FuriganaEntry } from "./text/furigana";
 
 export interface Finding {
   file: string;
@@ -284,6 +288,272 @@ export function checkLinkOrder(entries: readonly ContentEntry[]): Finding[] {
         file,
         level: "error",
         message: `link ブロックの「${link.ref}」（${link.type}）が、ステージの学習順で直後に来る教材と違う（直後は ${expected}）— 学習者が教材を飛ばす（設計07 §3）`,
+      });
+    }
+  }
+  return findings;
+}
+
+/* ------------------------------------------------------------------ *
+ * ふりがなの覆い漏れ（AGENTS.md 規律2）
+ *
+ * 学習者はカンボジアのIT専攻学生（N5〜N3）。読めない漢字が1つあると、そこで
+ * 学習が止まる。読み辞書は先生が手で書くので「だいたい付いている」状態になりやすく、
+ * 抜けた1語は誰にも見えないまま学習者だけにぶつかる。だから機械で全部数える。
+ * ------------------------------------------------------------------ */
+
+/** 学習者が読む文と、その置き場所（先生が直しに行く場所）。 */
+interface LabeledText {
+  readonly field: string;
+  readonly text: string;
+}
+
+/**
+ * 学習者が読む文を、種別ごとに**対象フィールドを名指しして**集める。
+ *
+ * データ全体を舐めて文字列を拾う書き方（checkForbiddenWords の collectStrings）は
+ * ここでは採らない。ID・画像パス・英語の選択肢・AI判定用キーワード・Liveへの
+ * systemInstruction まで拾ってしまい、先生には直しようのない指摘が大量に出る。
+ * 直せない指摘が並ぶ検査は、やがて丸ごと無視される。
+ *
+ * 「読みを自分で持っているフィールド」（vocab の term など）は、画面でその読みが
+ * 隣に出るとは限らない（記事の ことばチップは読みをタップして初めて出す）ので、
+ * 原則そのまま対象に含める。例外は wordstage の words[].term だけ（下の
+ * coverageEntries を参照）。
+ */
+function collectLabeledTexts(content: Content): LabeledText[] {
+  const out: LabeledText[] = [];
+  const push = (field: string, text: string | undefined) => {
+    if (text) out.push({ field, text });
+  };
+
+  switch (content.kind) {
+    case "stage": {
+      push("title", content.title);
+      push("description", content.description);
+      if (content.area) {
+        push("area.name", content.area.name);
+        push("area.note", content.area.note);
+      }
+      break;
+    }
+
+    case "listening": {
+      push("title", content.title);
+      push("description", content.description);
+      push("focus", content.focus);
+      content.script.forEach((line, i) => push(`script[${i}].text`, line.text));
+      // keywords はスキーマが「台本に出てくること」を保証しているので script 側で数える
+      break;
+    }
+
+    case "quizset": {
+      push("title", content.title);
+      push("description", content.description);
+      content.questions.forEach((q, i) => {
+        const at = (field: string) => `questions[${i}].${field}`;
+        push(at("q"), q.q);
+        push(at("explain"), q.explain);
+        switch (q.type) {
+          case "choose":
+          case "multi":
+            q.options.forEach((option, j) => push(at(`options[${j}]`), option));
+            break;
+          case "keyword":
+            // 答え合わせの画面に出るので、正解・別解も学習者が読む文
+            push(at("answer"), q.answer);
+            q.accept.forEach((accept, j) => push(at(`accept[${j}]`), accept));
+            break;
+          case "wordbank":
+            q.lines.forEach((line, j) => push(at(`lines[${j}]`), line));
+            // blanks はスキーマ上 bank の部分集合なので bank だけ数えれば足りる
+            q.bank.forEach((word, j) => push(at(`bank[${j}]`), word));
+            break;
+          case "emotion":
+            q.feelings.forEach((feeling, j) => push(at(`feelings[${j}]`), feeling));
+            push(at("replyQ"), q.replyQ);
+            q.replies.forEach((reply, j) => push(at(`replies[${j}]`), reply));
+            break;
+        }
+      });
+      break;
+    }
+
+    case "manga": {
+      push("title", content.title);
+      push("description", content.description);
+      content.pages.forEach((page, p) => {
+        push(`pages[${p}].title`, page.title);
+        page.panels.forEach((panel, q) => {
+          const at = (field: string) => `pages[${p}].panels[${q}].${field}`;
+          push(at("caption"), panel.caption);
+          panel.lines.forEach((line, r) => push(at(`lines[${r}].text`), line.text));
+        });
+      });
+      (content.characters ?? []).forEach((character, i) => {
+        push(`characters[${i}].name`, character.name);
+        push(`characters[${i}].role`, character.role);
+      });
+      (content.vocab ?? []).forEach((item, i) => {
+        push(`vocab[${i}].term`, item.term);
+        push(`vocab[${i}].meaning`, item.meaning);
+      });
+      // image の prompt / refs / src は生成の材料であって学習者は読まない
+      break;
+    }
+
+    case "article": {
+      push("title", content.title);
+      push("description", content.description);
+      content.blocks.forEach((block, i) => {
+        const at = (field: string) => `blocks[${i}].${field}`;
+        switch (block.kind) {
+          case "heading":
+          case "paragraph":
+          case "callout":
+            push(at("text"), block.text);
+            break;
+          case "image":
+            push(at("caption"), block.caption);
+            break;
+          case "list":
+          case "steps":
+            block.items.forEach((item, j) => push(at(`items[${j}]`), item));
+            break;
+          case "vocab":
+            block.items.forEach((item, j) => {
+              push(at(`items[${j}].term`), item.term);
+              push(at(`items[${j}].meaning`), item.meaning);
+            });
+            break;
+          case "link":
+            push(at("label"), block.label);
+            break;
+        }
+      });
+      break;
+    }
+
+    case "wordstage": {
+      push("title", content.title);
+      push("description", content.description);
+      content.words.forEach((word, i) => {
+        // term は reading を自分で持つので対象外。meaningEn / wrongMeanings は英語（スキーマが日本語を弾く）
+        push(`words[${i}].explanationJa`, word.explanationJa);
+        push(`words[${i}].example`, word.example);
+      });
+      break;
+    }
+
+    case "scenario": {
+      push("title", content.title);
+      push("subtitle", content.subtitle);
+      push("client.name", content.client.name);
+      push("client.role", content.client.role);
+      push("client.desc", content.client.desc);
+      push("client.tip", content.client.tip);
+      content.mission.chat.forEach((line, i) => push(`mission.chat[${i}].text`, line.text));
+      push("mission.goal", content.mission.goal);
+      content.words.forEach((word, i) => {
+        push(`words[${i}].w`, word.w);
+        push(`words[${i}].m`, word.m);
+      });
+      push("research.intro", content.research.intro);
+      content.research.pages.forEach((page, i) => push(`research.pages[${i}].tab`, page.tab));
+      content.research.quiz.forEach((quiz, i) => {
+        push(`research.quiz[${i}].q`, quiz.q);
+        quiz.options.forEach((option, j) => push(`research.quiz[${i}].options[${j}]`, option));
+        push(`research.quiz[${i}].why`, quiz.why);
+      });
+      content.research.findings.forEach((finding, i) => push(`research.findings[${i}]`, finding));
+      content.interview.reqs.forEach((req, i) => {
+        // fact と keywords は判定の材料（AI・ローカル照合）で、画面には出ない
+        push(`interview.reqs[${i}].label`, req.label);
+        push(`interview.reqs[${i}].secret`, req.secret);
+        push(`interview.reqs[${i}].hint`, req.hint);
+      });
+      push("doc.projectName", content.doc.projectName);
+      push("doc.clientLine", content.doc.clientLine);
+      content.doc.sections.forEach((section, i) => {
+        push(`doc.sections[${i}].title`, section.title);
+        section.items.forEach((item, j) => push(`doc.sections[${i}].items[${j}].text`, item.text));
+      });
+      push("lesson.title", content.lesson.title);
+      content.lesson.points.forEach((point, i) => push(`lesson.points[${i}]`, point));
+      // interview.persona は Live への指示（学習者は読まない）。
+      // research.pages[].html は生HTMLでルビ合成の対象外なので、ここでは数えない。
+      break;
+    }
+  }
+
+  return out;
+}
+
+/**
+ * 学習者が読む文だけを集める（スタジオの「ふりがなを つける」と共用）。
+ *
+ * 画面側が別の集め方をすると、「検査は通るのにスタジオでは足りないと言われる」
+ * （逆もある）ことになり、先生はどちらを信じてよいか分からなくなる。
+ */
+export function collectLearnerTexts(content: Content): string[] {
+  return collectLabeledTexts(content).map((item) => item.text);
+}
+
+/**
+ * その教材のルビ合成に使える読み辞書。
+ *
+ * 原則は `furigana` フィールドだけ。画面（RubyText）も `furigana` から索引を作るので、
+ * ここに他の読みを足すと「検査は通るが画面は裸の漢字」というズレになる。
+ * 例外は2つだけで、どちらも「画面が読みを別に見せている」ことが根拠になっている:
+ *
+ * - stage: `furigana` フィールドを持たない。タイトルは読み（reading）を真下に出し、
+ *   マップの土地も同じく reading を出す。それ以外（description・area.note）は
+ *   読みを出す場所が無いので、ひらがなで書くしかない。
+ * - wordstage: 語カードが term と reading を並べて見せるので、term の読みは学習者に
+ *   届いている。解説文・例文に同じ語が出たときに先生へ二重登録を強いない。
+ */
+function coverageEntries(content: Content): FuriganaEntry[] {
+  switch (content.kind) {
+    case "stage": {
+      const entries: FuriganaEntry[] = [[content.title, content.reading]];
+      if (content.area) entries.push([content.area.name, content.area.reading]);
+      return entries;
+    }
+    case "wordstage":
+      return [
+        ...(content.furigana ?? []),
+        ...content.words.map((word): FuriganaEntry => [word.term, word.reading]),
+      ];
+    default:
+      return [...(content.furigana ?? [])];
+  }
+}
+
+/**
+ * 学習者が読む文の漢字が、読み辞書で全部覆われているか（AGENTS.md 規律2）。
+ *
+ * **level は error。** 「だいたい付いている」を許すと、抜けた1語で学習者が止まる。
+ * 止まった学習者は先生に「ここが読めない」とは言えない（読めないから言葉にできない）ので、
+ * 抜けは教室では発見されない。機械で全部数えるしかない。
+ *
+ * メッセージには「どのフィールドか」と「覆えていない漢字」を必ず入れる。
+ * どちらか欠けると、先生は教材のどこに何を足せばよいか分からず直せない。
+ */
+export function checkFuriganaCoverage(entries: readonly ContentEntry[]): Finding[] {
+  const findings: Finding[] = [];
+  for (const { file, content } of entries) {
+    const index = buildFuriganaIndex(coverageEntries(content));
+    const hint =
+      content.kind === "stage"
+        ? "ステージは読み辞書を持たない（画面もルビを合成しない）ので、ひらがなで書く"
+        : "furigana（読み辞書）に [表記, よみ] を足す";
+    for (const { field, text } of collectLabeledTexts(content)) {
+      const missing = uncoveredKanji(text, index);
+      if (missing.length === 0) continue;
+      findings.push({
+        file,
+        level: "error",
+        message: `ふりがなの ない漢字が ${field} にある: ${missing.join(" ")} — ${hint}。読めない漢字が1つあると、学習者はそこで止まる（規律2）`,
       });
     }
   }
