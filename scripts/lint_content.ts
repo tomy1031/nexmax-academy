@@ -13,6 +13,8 @@
  *  5. 導線の一致（article の link ブロックがステージの学習順の直後を指しているか）
  *  6. マップの停留所とステージの結びつき（step重複・既定エリアより先の area 未設定）。
  *     マップは「1ステージ＝1エリア＝背景画像1枚」（src/content/areas.ts）。
+ *  7. 焼き込みモジュールのずれ（src/content/git-contents.generated.ts）。
+ *     アプリはこの生成物だけを読むので、ずれると JSON を直しても画面が変わらない。
  *
  * 検査ロジックの実体は src/lib/content-checks.ts（スタジオ側と共用）。
  * このスクリプトはファイル走査とレポートだけを受け持つ。
@@ -33,6 +35,8 @@ import {
   type ContentEntry,
   type Finding,
 } from "../src/lib/content-checks";
+// 焼き込みモジュールの作り手と同じ関数で組み立てて比べる（作り方が2つに割れないように）
+import { buildGeneratedSource, GENERATED_PATH } from "./generate_content_index.mjs";
 
 const ROOT = join(import.meta.dirname, "..");
 const CONTENT_DIR = join(ROOT, "content");
@@ -115,6 +119,38 @@ function checkSourceForbiddenWords(file: string) {
   visit(sourceFile);
 }
 
+/**
+ * 焼き込みモジュールが content/ とずれていないかを見る。
+ *
+ * アプリが実際に読むのは content/*.json ではなく
+ * src/content/git-contents.generated.ts のほう（Cloudflare に fs が無いため）。
+ * ずれたままだと、先生が JSON を直しても画面が変わらず、原因も見えない。
+ */
+function checkGeneratedIndex(): Finding[] {
+  const rel = relative(ROOT, GENERATED_PATH);
+  let current: string;
+  try {
+    current = readFileSync(GENERATED_PATH, "utf8");
+  } catch {
+    return [
+      {
+        file: rel,
+        level: "error",
+        message: "焼き込みモジュールが無い — `npm run gen:content` で作る",
+      },
+    ];
+  }
+  if (current === buildGeneratedSource()) return [];
+  return [
+    {
+      file: rel,
+      level: "error",
+      message:
+        "焼き込みモジュールが content/ とずれている — `npm run gen:content` で作り直す（アプリはこちらを読むので、直さないと画面が変わらない）",
+    },
+  ];
+}
+
 function main() {
   let files: string[] = [];
   let contentDirAvailable = true;
@@ -164,6 +200,7 @@ function main() {
   findings.push(...checkReferenceIntegrity(entries));
   findings.push(...checkLinkOrder(entries));
   findings.push(...checkStageSteps(entries));
+  findings.push(...checkGeneratedIndex());
 
   const sourceFiles = walkSource(SRC_DIR);
   for (const file of sourceFiles) checkSourceForbiddenWords(file);

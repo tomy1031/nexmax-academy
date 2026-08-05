@@ -2,19 +2,19 @@
  * コンテンツの読み込み（サーバ専用）
  *
  * content/ 配下の JSON をスキーマ検証し、スタジオ（Supabase）で公開された分と
- * 合流させて返す。ページはこれを静的生成／ISR の段階で呼ぶため、リクエストごとの
- * ファイルアクセスは発生しない（Cloudflare など Node の fs が使えない実行環境に
- * 載せ替えても動くようにするため — 設計03 §2）。
+ * 合流させて返す。
+ *
+ * git 側は**ビルド時にバンドルへ焼き込んだモジュール**（git-contents.generated.ts）を
+ * 読む。fs を実行時に触らないのは、Cloudflare Workers に fs が無く、ISR の再生成が
+ * リクエスト中に走るため。以前 readdirSync で読んでいたときは、デプロイ先で
+ * git 由来の教材が丸ごと消えていた（設計03 §2 / scripts/generate_content_index.mjs）。
  *
  * 読み込み関数がすべて async なのは DB を待つため。呼び出し側のページは
- * `revalidate` で ISR にすること。`force-dynamic` にすると毎リクエストで
- * ここが走り、Cloudflare 上で fs が使えず画面ごと落ちる（設計07 §11.1）。
+ * `revalidate` で ISR にすること（設計07 §11.1）。
  *
  * クライアントコンポーネントから import しないこと。
  */
 
-import { readdirSync, readFileSync, statSync } from "node:fs";
-import { join } from "node:path";
 import {
   contentSchema,
   type Article,
@@ -26,33 +26,28 @@ import {
   type Stage,
   type WordStage,
 } from "@/content/schema";
+import { GIT_CONTENTS } from "@/content/git-contents.generated";
 import { fetchDbContents } from "@/lib/content-db";
 
-const CONTENT_DIR = join(process.cwd(), "content");
+/**
+ * スキーマに通ったものだけを返す（lint:content がCIで先に落とす前提）。
+ *
+ * 元は content/ を readdirSync で読んでいたが、`revalidate` を付けた時点で
+ * ページの再生成がリクエスト中に走るようになり、fs の無い Cloudflare Workers で
+ * 黙って空になっていた（詳細ページが404、マップが既定値に後退）。
+ * いまはバンドルへ焼き込んだ GIT_CONTENTS を読むので、実行環境を選ばない。
+ *
+ * 毎回パースし直さないよう1度だけ組み立てる（同じ配列を使い回す）。
+ */
+let parsedCache: Content[] | null = null;
 
-function readAll(): unknown[] {
-  const files: string[] = [];
-  const walk = (dir: string) => {
-    for (const entry of readdirSync(dir)) {
-      const full = join(dir, entry);
-      if (statSync(full).isDirectory()) walk(full);
-      else if (entry.endsWith(".json")) files.push(full);
-    }
-  };
-  try {
-    walk(CONTENT_DIR);
-  } catch {
-    return [];
-  }
-  return files.map((file) => JSON.parse(readFileSync(file, "utf8")) as unknown);
-}
-
-/** スキーマに通ったものだけを返す（lint:content がCIで先に落とす前提）。 */
-function parseAll() {
-  return readAll().flatMap((raw) => {
+function parseAll(): Content[] {
+  if (parsedCache) return parsedCache;
+  parsedCache = GIT_CONTENTS.flatMap((raw) => {
     const parsed = contentSchema.safeParse(raw);
     return parsed.success ? [parsed.data] : [];
   });
+  return parsedCache;
 }
 
 /* ------------------------------------------------------------------ *
