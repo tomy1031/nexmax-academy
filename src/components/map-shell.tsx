@@ -455,12 +455,21 @@ function ViewToggle({ view, onChange }: { view: MapView; onChange: (view: MapVie
   );
 }
 
+/**
+ * サイドメニュー。href があるものだけ実際に開ける（無いものは「じゅんびちゅう」）。
+ *
+ * 「単語」は ことばアーケード（/arcade）。ステージの中からも開けるが、
+ * ここからも入れないと、単語だけ練習したい学習者が入口を見つけられない。
+ */
 const NAV_ITEMS = [
   { icon: "👤", label: "マイページ" },
-  { icon: "📖", label: "単語", reading: "たんご" },
+  { icon: "📖", label: "単語", reading: "たんご", href: "/arcade" },
   { icon: "👥", label: "チーム・ペア" },
   { icon: "🛍️", label: "ショップ" },
 ] as const;
+
+const NAV_CLASS =
+  "text-ink hover:bg-sky-soft flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl px-3 text-sm font-extrabold transition";
 
 function NavigationLabel({ item }: { item: (typeof NAV_ITEMS)[number] }) {
   if ("reading" in item) {
@@ -491,22 +500,33 @@ function Navigation({
   onUnavailable: () => void;
   onLogout: () => void;
 }) {
-  const navButtons = NAV_ITEMS.map((item) => (
-    <button
-      key={item.label}
-      type="button"
-      onClick={() => {
-        onUnavailable();
-        onDrawerClose();
-      }}
-      className="text-ink hover:bg-sky-soft flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl px-3 text-sm font-extrabold transition"
-    >
-      <span aria-hidden className="text-xl">
-        {item.icon}
-      </span>
-      {!collapsed && <span className="whitespace-nowrap">{<NavigationLabel item={item} />}</span>}
-    </button>
-  ));
+  const navButtons = NAV_ITEMS.map((item) => {
+    const body = (
+      <>
+        <span aria-hidden className="text-xl">
+          {item.icon}
+        </span>
+        {!collapsed && <span className="whitespace-nowrap">{<NavigationLabel item={item} />}</span>}
+      </>
+    );
+    return "href" in item ? (
+      <Link key={item.label} href={item.href} onClick={onDrawerClose} className={NAV_CLASS}>
+        {body}
+      </Link>
+    ) : (
+      <button
+        key={item.label}
+        type="button"
+        onClick={() => {
+          onUnavailable();
+          onDrawerClose();
+        }}
+        className={NAV_CLASS}
+      >
+        {body}
+      </button>
+    );
+  });
   // ネクマックス図鑑への回遊先。診断のあとに16人を見に行けるようにする（07 §7）。
   const catalogLink = (
     <Link
