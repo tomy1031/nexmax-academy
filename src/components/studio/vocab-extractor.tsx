@@ -41,6 +41,7 @@ const NO_KEY_MESSAGE = "さきに はじめの せっていで Gemini の APIキ
 export function VocabExtractor({
   stage,
   textsByRef,
+  knownTerms,
   onCreated,
 }: {
   stage: Stage;
@@ -49,6 +50,15 @@ export function VocabExtractor({
    * ステージが持っているのは参照先のIDだけなので、本文は外から渡してもらう。
    */
   textsByRef: Readonly<Record<string, readonly string[]>>;
+  /**
+   * すでに どこかの単語ステージに ある ことば → その ステージの見出し
+   *（src/lib/dictionary.ts の termOwners）。
+   *
+   * 辞書は単語ステージを畳んだものなので、同じ ことばを2つの課で作っても
+   * 学習者の辞書には1つしか出ない。ただし**説明が2つ育つ**のは困る。
+   * だから既にある ことばは、選ぶ前にここで知らせて、既定では外しておく。
+   */
+  knownTerms?: ReadonlyMap<string, string>;
   /** 作った単語ステージのIDを、編集中のステージの wordStageIds に足してもらう。 */
   onCreated: (wordStageId: string) => void;
 }) {
@@ -97,9 +107,10 @@ export function VocabExtractor({
     try {
       const words = await requestCandidates(apiKey, texts);
       setCandidates(words);
-      // 出てきたものは最初から全部えらんだ状態にする。先生の仕事は
+      // 出てきたものは最初から えらんだ状態にする。先生の仕事は
       // 「いる語を選ぶ」より「この課で使わない語を外す」ほうが速い。
-      setSelected(new Set(words.map((word) => word.id)));
+      // ただし もう辞書に ある ことばは外しておく（説明を2つ育てないため）。
+      setSelected(new Set(words.filter((word) => !knownTerms?.has(word.term)).map((w) => w.id)));
       if (words.length === 0) {
         setNote("ことばが 見つかりませんでした。本文を ふやすと 見つかりやすく なります。");
       }
@@ -203,6 +214,11 @@ export function VocabExtractor({
                 <span className="flex-1">
                   <span className="text-navy block text-sm font-black">
                     {word.term}（{word.reading}）
+                    {knownTerms?.has(word.term) ? (
+                      <span className="text-ink-soft ml-2 text-xs font-black">
+                        すでに「{knownTerms.get(word.term)}」に あります
+                      </span>
+                    ) : null}
                   </span>
                   <span className="text-ink block text-xs font-bold">こたえ: {word.meaningEn}</span>
                   <span className="text-ink-soft block text-xs font-bold">

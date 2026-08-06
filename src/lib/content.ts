@@ -131,7 +131,7 @@ export async function getScenario(id: string): Promise<Scenario | null> {
 export async function listStages(): Promise<Stage[]> {
   const git = parseAll().filter((c): c is Stage => c.kind === "stage");
   return mergeContentsById(git, await listPublishedFromDb("stage")).sort(
-    (a, b) => a.step - b.step || a.id.localeCompare(b.id),
+    (a, b) => a.order - b.order || a.id.localeCompare(b.id),
   );
 }
 

@@ -523,9 +523,9 @@ export const stageContentRefSchema = z.object({
 /**
  * マップのエリア（そのステージが立つ土地）。設計: src/content/areas.ts
  *
- * マップは「1ステージ＝1エリア＝背景画像1枚」。ステージがこれを持つことで、
- * スタジオからステージを足すとマップの停留所も一緒に増える（コードを触らずに済む）。
- * 省略すると、既定のエリア（areas.ts の並び）がその step の位置に使われる。
+ * マップは「1ステージ＝1エリア＝背景画像1枚」。土地はステージが持つ——コードに
+ * 既定の並びを置くのはやめた。既定があると「マップに出ている土地」と「先生が作った
+ * ステージ」がずれ、消したはずの土地が地図に残る。
  *
  * **表示名に国名を入れない**（areas.ts の方針）。国は情勢で差し替える前提なので、
  * 画面文言が国に依存していると差し替えのたびに UI を直すことになる。
@@ -541,11 +541,51 @@ export const mapAreaSchema = z.object({
   note: plainText,
 });
 
+/**
+ * ステージのIDに使えない語。
+ *
+ * ステージのIDはそのまま URL の1段目になる（`/houkoku/listening`）。アプリが
+ * すでに使っている1段目と同じ名前を許すと、そのステージには**永久にたどり着けない**
+ * （Next.js は静的なルートを優先するので、ステージ側は黙って無視される）。
+ * 先生には理由が見えないので、保存の時点で止める。
+ *
+ * `img` は `public/` が配信される場所。1文字も余計に足していない——
+ * ここに無い名前は、増やしたルートの名前がここに足されていないだけ。
+ */
+export const RESERVED_STAGE_IDS = [
+  "admin",
+  "api",
+  "arcade",
+  "article",
+  "auth",
+  "dictionary",
+  "img",
+  "listening",
+  "login",
+  "manga",
+  "map",
+  "nexmax",
+  "quiz",
+  "studio",
+  "talk",
+  "tutorial",
+  "welcome",
+] as const;
+
 export const stageSchema = z.object({
   kind: z.literal("stage"),
-  id: z.string().regex(/^[a-z0-9_-]+$/),
-  /** マップ上の順序（M1〜M12）。 */
-  step: z.number().int().min(1).max(12),
+  /** URL の1段目になる（`/houkoku/listening`）。変えると進捗の記録がつながらなくなる。 */
+  id: z
+    .string()
+    .regex(/^[a-z0-9_-]+$/)
+    .refine((id) => !(RESERVED_STAGE_IDS as readonly string[]).includes(id), {
+      message: `アプリが使っている名前なので URL にできない（${RESERVED_STAGE_IDS.join("・")}）`,
+    }),
+  /**
+   * マップに並べる順（小さいほど手前）。番号そのものに意味はなく、並び替えの結果でしかない。
+   * 飛び番でも構わない——連番に詰め直すと、離れたステージまで巻き込んで保存することになる。
+   */
+  order: z.number().int().min(1),
   title: plainText,
   reading: hiragana,
   description: plainText,
@@ -556,7 +596,7 @@ export const stageSchema = z.object({
   contents: z.array(stageContentRefSchema).min(1),
   /** 紐づく単語ステージ（別管理・複数可）。 */
   wordStageIds: z.array(z.string().min(1)).default([]),
-  /** マップでこのステージが立つ土地。省略すると既定のエリアを使う。 */
+  /** マップでこのステージが立つ土地。 */
   area: mapAreaSchema.optional(),
 });
 

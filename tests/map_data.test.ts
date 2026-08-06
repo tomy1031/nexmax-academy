@@ -1,21 +1,20 @@
 import { describe, expect, it } from "vitest";
-import { ROUTE_AREAS } from "../src/content/areas";
-import { STAGES } from "../src/content/stages";
 import { contentSchema, type Stage } from "../src/content/schema";
-import { toMapAreas, toMapStages } from "../src/lib/map-data";
+import { sortStages, toMapAreas, toMapStages } from "../src/lib/map-data";
 
 /**
- * マップの中身の合流（既定 ∪ スタジオ）。
+ * マップの中身＝公開ステージそのもの。
  *
- * ここが崩れると、先生がスタジオでステージを足しても地図に出ない（または
- * 既定のステージが消える）。どちらも学習者から見ると教材が行方不明になる。
+ * コードに書いた既定の停留所はもう持たない。ここが崩れると、先生が作った
+ * ステージが地図に出ない／消したステージが地図に残る。どちらも学習者から見ると
+ * 教材が行方不明になる。
  */
 
 function stage(over: Record<string, unknown> = {}): Stage {
   const parsed = contentSchema.safeParse({
     kind: "stage",
     id: "studio-stage",
-    step: 3,
+    order: 3,
     title: "スタジオの ステージ",
     reading: "すたじおの すてーじ",
     description: "スタジオで つくった ステージ。",
@@ -36,89 +35,103 @@ const AREA = {
   note: "あたらしい しごとの しま。",
 };
 
+describe("sortStages", () => {
+  it("order の昇順に並ぶ（マップは上から この順に積む）", () => {
+    const sorted = sortStages([
+      stage({ id: "c", order: 9 }),
+      stage({ id: "a", order: 1 }),
+      stage({ id: "b", order: 5 }),
+    ]);
+    expect(sorted.map((item) => item.id)).toEqual(["a", "b", "c"]);
+  });
+
+  it("order が同じでも並びが揺れない（ID順で決まる）", () => {
+    const input = [stage({ id: "z", order: 2 }), stage({ id: "a", order: 2 })];
+    expect(sortStages(input).map((item) => item.id)).toEqual(["a", "z"]);
+    expect(sortStages([...input].reverse()).map((item) => item.id)).toEqual(["a", "z"]);
+  });
+
+  it("もとの配列を書きかえない", () => {
+    const input = [stage({ id: "b", order: 2 }), stage({ id: "a", order: 1 })];
+    sortStages(input);
+    expect(input.map((item) => item.id)).toEqual(["b", "a"]);
+  });
+});
+
 describe("toMapStages", () => {
-  it("スタジオを何も作らなければ、既定のステージがそのまま出る", () => {
-    expect(toMapStages(STAGES, [])).toEqual([...STAGES]);
+  it("ステージが1つも無ければ 停留所も0（既定の飾りは出さない）", () => {
+    expect(toMapStages([])).toEqual([]);
   });
 
-  it("同じ step ならスタジオ側の見出し・説明・色が勝つ", () => {
-    const seed = STAGES[2]!;
-    const [merged] = toMapStages(STAGES, [
-      stage({ step: seed.step, title: "あたらしい 名前" }),
-    ]).filter((s) => s.step === seed.step);
-    expect(merged?.title).toBe("あたらしい 名前");
-    expect(merged?.color).toBe("sky");
+  it("STEP番号は order ではなく 上から数えた位置（order は飛び番になりうる）", () => {
+    const mapStages = toMapStages([stage({ id: "a", order: 1 }), stage({ id: "b", order: 30 })]);
+    expect(mapStages.map((item) => item.number)).toEqual([1, 2]);
   });
 
-  it("既定がある step では ID を変えない（進捗の記録が切れるため）", () => {
-    const seed = STAGES[0]!;
-    const merged = toMapStages(STAGES, [stage({ step: seed.step, id: "studio-new" })]);
-    expect(merged[0]?.id).toBe(seed.id);
+  it("中に入っている教材の種別を そのまま持つ（ラベルを別に持たない）", () => {
+    const [mapStage] = toMapStages([
+      stage({
+        contents: [
+          { ref: "m", type: "manga" },
+          { ref: "q", type: "quizset" },
+        ],
+      }),
+    ]);
+    expect(mapStage?.kinds).toEqual(["manga", "quizset"]);
   });
 
-  it("既定より先の step は新しいステージとして増える", () => {
-    const step = STAGES.length + 1;
-    const merged = toMapStages(STAGES, [stage({ step, id: "studio-new" })]);
-    expect(merged).toHaveLength(STAGES.length + 1);
-    expect(merged[merged.length - 1]?.id).toBe("studio-new");
-  });
-
-  it("step 昇順に並ぶ（マップは上から step 順に積むため）", () => {
-    const merged = toMapStages(STAGES, [stage({ step: 9, id: "a" }), stage({ step: 7, id: "b" })]);
-    const steps = merged.map((s) => s.step);
-    expect(steps).toEqual([...steps].sort((a, b) => a - b));
+  it("同じ種別が2つあっても しるしは1つ", () => {
+    const [mapStage] = toMapStages([
+      stage({
+        contents: [
+          { ref: "a", type: "listening" },
+          { ref: "b", type: "listening" },
+        ],
+      }),
+    ]);
+    expect(mapStage?.kinds).toEqual(["listening"]);
   });
 });
 
 describe("toMapAreas", () => {
   it("ステージ1つにつきエリア1つ（1ステージ＝1エリア）", () => {
-    const stages = [stage({ step: STAGES.length + 1, id: "studio-new", area: AREA })];
-    const mapStages = toMapStages(STAGES, stages);
-    const areas = toMapAreas(ROUTE_AREAS, mapStages, stages);
-    expect(areas).toHaveLength(mapStages.length);
+    const stages = [stage({ id: "a", order: 1, area: AREA }), stage({ id: "b", order: 2 })];
+    expect(toMapAreas(stages)).toHaveLength(stages.length);
   });
 
-  it("スタジオで作らなければ、既定のエリアがそのまま出る", () => {
-    const mapStages = toMapStages(STAGES, []);
-    const areas = toMapAreas(ROUTE_AREAS, mapStages, []);
-    expect(areas.map((a) => a.image)).toEqual(ROUTE_AREAS.map((a) => a.image));
-    expect(areas.map((a) => a.name)).toEqual(ROUTE_AREAS.map((a) => a.name));
+  it("area を決めると、その土地の名前と絵になる", () => {
+    const [area] = toMapAreas([stage({ id: "a", area: AREA })]);
+    expect(area?.name).toBe(AREA.name);
+    expect(area?.image).toBe(AREA.image);
+    expect(area?.note).toBe(AREA.note);
   });
 
-  it("area を決めると、その土地の名前と絵に差し替わる", () => {
-    const seed = STAGES[1]!;
-    const stages = [stage({ step: seed.step, area: AREA })];
-    const areas = toMapAreas(ROUTE_AREAS, toMapStages(STAGES, stages), stages);
-    const target = areas.find((a) => a.stageId === seed.id);
-    expect(target?.name).toBe(AREA.name);
-    expect(target?.image).toBe(AREA.image);
-  });
-
-  it("既定より先で area が無くても、エリアは消えない（絵は空のまま出す）", () => {
+  it("area が無くてもエリアは消えない（絵は空のまま出す）", () => {
     // 絵の用意が遅れただけでステージが消えると、学習者は昨日あった教材を探しまわる。
-    const step = STAGES.length + 1;
-    const stages = [stage({ step, id: "studio-new" })];
-    const areas = toMapAreas(ROUTE_AREAS, toMapStages(STAGES, stages), stages);
-    const added = areas[areas.length - 1]!;
-    expect(added.stageId).toBe("studio-new");
-    expect(added.image).toBe("");
+    const [area] = toMapAreas([stage({ id: "studio-new" })]);
+    expect(area?.stageId).toBe("studio-new");
+    expect(area?.image).toBe("");
+    // 名前が空だと札が消えるので、ステージの見出しで代わりにする
+    expect(area?.name).toBe("スタジオの ステージ");
   });
 
   it("エリアのIDは重複しない（React の key と aria-label に使うため）", () => {
-    const stages = [
-      stage({ step: STAGES.length + 1, id: "a", area: AREA }),
-      stage({ step: STAGES.length + 2, id: "b", area: AREA }),
-    ];
-    const areas = toMapAreas(ROUTE_AREAS, toMapStages(STAGES, stages), stages);
-    expect(new Set(areas.map((a) => a.id)).size).toBe(areas.length);
+    const areas = toMapAreas([
+      stage({ id: "a", order: 1, area: AREA }),
+      stage({ id: "b", order: 2, area: AREA }),
+    ]);
+    expect(new Set(areas.map((item) => item.id)).size).toBe(areas.length);
   });
 
   it("エリアの stageId は、その位置のステージを必ず指す", () => {
     // ここがずれると、ピンが別のステージの土地の上に立つ。
-    const stages = [stage({ step: STAGES.length + 1, id: "studio-new", area: AREA })];
-    const mapStages = toMapStages(STAGES, stages);
-    const areas = toMapAreas(ROUTE_AREAS, mapStages, stages);
-    areas.forEach((area, index) => {
+    const stages = [
+      stage({ id: "b", order: 20 }),
+      stage({ id: "a", order: 10, area: AREA }),
+      stage({ id: "c", order: 30 }),
+    ];
+    const mapStages = toMapStages(stages);
+    toMapAreas(stages).forEach((area, index) => {
       expect(area.stageId).toBe(mapStages[index]!.id);
     });
   });

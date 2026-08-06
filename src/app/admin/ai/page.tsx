@@ -140,7 +140,7 @@ export default function AdminAiPage() {
 
   return (
     <AdminPageFrame>
-      <AdminHeader />
+      <AdminHeader title="AI指示出し" />
       <section className="card-pop mx-auto max-w-4xl p-5 sm:p-8">
         <h1 className="text-navy text-2xl font-black">AI指示出し（実験）</h1>
         <p className="text-ink-soft mt-2 text-sm font-bold">

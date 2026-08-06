@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type {
@@ -10,15 +9,26 @@ import type {
   Listening,
   Manga,
   QuizSet,
+  Scenario,
   Stage,
+  WordStage,
 } from "@/content/schema";
-import { contentHref } from "@/components/article/article-blocks";
-import { AdminError, AdminLoading, AdminPageFrame } from "@/components/admin/admin-ui";
+import { AdminError, AdminHeader, AdminLoading, AdminPageFrame } from "@/components/admin/admin-ui";
 import { collectLearnerTexts } from "@/lib/content-checks";
+import { contentKindMeta } from "@/lib/content-kinds";
+import { termOwners } from "@/lib/dictionary";
+import { sortStages } from "@/lib/map-data";
 import { fetchOwnProfile } from "@/lib/profile-db";
 import { createClient } from "@/lib/supabase/client";
 import { ArticleEditor } from "./article-editor";
-import { emptyArticle, emptyManga, emptyQuizSet, emptyStage } from "./drafts";
+import {
+  emptyArticle,
+  emptyManga,
+  emptyQuizSet,
+  emptyStage,
+  emptyWordStage,
+  nextContentId,
+} from "./drafts";
 import { EditorFrame } from "./editor-frame";
 import { DB_PREPARING_MESSAGE, type SaveIssue } from "./issue-text";
 import { emptyListening } from "./listening-drafts";
@@ -26,6 +36,7 @@ import { ListeningEditor } from "./listening-editor";
 import { MangaEditor } from "./manga-editor";
 import { QuizEditor } from "./quiz-editor";
 import { StageEditor, type RefOption } from "./stage-editor";
+import { StageList } from "./stage-list";
 import {
   deleteContent,
   fetchDbList,
@@ -33,66 +44,95 @@ import {
   type DbEntry,
   type DbListResult,
 } from "./studio-api";
-import { MiniButton, Toast } from "./studio-ui";
+import { DictionaryView } from "./dictionary-view";
+import { MiniButton, SourceBadge, Toast } from "./studio-ui";
+import { WordStageEditor } from "./word-stage-editor";
 
 /**
  * コンテンツスタジオの外枠（設計07 §10.1）
  *
- * 一覧（git由来＋DB由来）とエディタ5種を1画面で行き来する。
+ * 管理画面のサイドバーから3つの入口に分かれる:
+ *  - **ステージ**（stages）… 学習の ながれ を作る。ふだんの作業はここ。
+ *  - **きょうざい**（contents）… 教材そのものの一覧。どのステージにも入っていない
+ *    ものを探すときに使う。
+ *  - **ことば・辞書**（words）… 単語ステージと、それを畳んだ辞書。
+ *
+ * 教材は**ステージの中から作れる**（設計の要）。別画面で作ってから
+ * ステージにIDを打ち込む作り方だと、打ちまちがいが必ず起き、しかも気づくのは
+ * 学習者がタップして 404 を見たときになる。だから子のエディタは
+ * 「どのステージから来たか」（parent）を持って開き、閉じるとそこへ戻る。
+ *
  * 認可は /admin と同じ流儀でクライアント側でも確かめるが、実際の関所はAPIとRLS。
  * Supabase 未設定のローカル開発でも git 由来の教材を開いて確認できるようにしてある
  *（保存・公開だけが「じゅんびちゅう」になる — 設計07 §11.1）。
  */
 
+export type StudioSection = "stages" | "contents" | "words";
+
 export interface StudioShellProps {
+  section: StudioSection;
   stages: Stage[];
   mangas: Manga[];
   articles: Article[];
   quizSets: QuizSet[];
   listenings: Listening[];
+  scenarios: Scenario[];
+  wordStages: WordStage[];
 }
 
-type TabKey = "stage" | "manga" | "article" | "quizset" | "listening";
+/** きょうざい一覧のタブ。 */
+type ContentTab = "manga" | "article" | "quizset" | "listening" | "scenario";
 
-const TABS: readonly { key: TabKey; label: string; emoji: string }[] = [
-  { key: "stage", label: "ステージ", emoji: "🗺️" },
-  { key: "manga", label: "まんが", emoji: "📖" },
-  { key: "article", label: "よみもの", emoji: "📄" },
-  { key: "quizset", label: "もんだい", emoji: "✏️" },
-  { key: "listening", label: "リスニング", emoji: "🎧" },
+const CONTENT_TABS: readonly ContentTab[] = [
+  "manga",
+  "article",
+  "quizset",
+  "listening",
+  "scenario",
 ];
 
+/**
+ * 編集中の1件。`parent` は「このステージの中から作った／開いた」という記憶で、
+ * 閉じるときの戻り先になる。
+ */
 type View =
   | { mode: "list" }
   | { mode: "stage"; draft: Stage }
-  | { mode: "manga"; draft: Manga }
-  | { mode: "article"; draft: Article }
-  | { mode: "quizset"; draft: QuizSet }
-  | { mode: "listening"; draft: Listening };
+  | { mode: "manga"; draft: Manga; parent?: Stage }
+  | { mode: "article"; draft: Article; parent?: Stage }
+  | { mode: "quizset"; draft: QuizSet; parent?: Stage }
+  | { mode: "listening"; draft: Listening; parent?: Stage }
+  | { mode: "wordstage"; draft: WordStage; parent?: Stage };
 
 type Gate = "checking" | "ready" | "unconfigured" | "error";
 
-interface Row {
-  id: string;
-  title: string;
-  description: string;
-  /** DBに同じIDがあるか（あればDB版が学習者に出る）。 */
-  dbStatus: "draft" | "published" | null;
-  href: string;
-  open: () => void;
-  /**
-   * けす（DB版だけ）。git の JSON で作った教材はリポジトリのファイルなので、
-   * スタジオからは消せない。押せるボタンを出すと「押しても消えない」になる。
-   */
-  remove: (() => void) | null;
-}
+const SECTION_META: Record<StudioSection, { title: string; note: string }> = {
+  stages: {
+    title: "🗺️ ステージ",
+    note: "学習の ながれ を つくります。並びは そのまま マップの順です。",
+  },
+  contents: {
+    title: "📚 きょうざい",
+    note: "教材そのものの 一覧です。ふだんは ステージの中から 作れます。",
+  },
+  words: { title: "🕹️ ことば・辞書", note: "単語ステージと、それを 畳んだ 辞書です。" },
+};
 
-export function StudioShell({ stages, mangas, articles, quizSets, listenings }: StudioShellProps) {
+export function StudioShell({
+  section,
+  stages,
+  mangas,
+  articles,
+  quizSets,
+  listenings,
+  scenarios,
+  wordStages,
+}: StudioShellProps) {
   const router = useRouter();
   const [gate, setGate] = useState<Gate>("checking");
   const [gateError, setGateError] = useState<string | null>(null);
   const [db, setDb] = useState<DbListResult | null>(null);
-  const [tab, setTab] = useState<TabKey>("stage");
+  const [tab, setTab] = useState<ContentTab>("manga");
   const [view, setView] = useState<View>({ mode: "list" });
   const [issues, setIssues] = useState<SaveIssue[]>([]);
   /** 保存は通ったが 見てほしい こと（参照切れなど）。「なおすところ」とは 分けて出す。 */
@@ -156,39 +196,46 @@ export function StudioShell({ stages, mangas, articles, quizSets, listenings }: 
   const dbEntries = useMemo<DbEntry[]>(() => (db?.ok ? db.entries : []), [db]);
   const preparingNote = db && !db.ok ? db.message : null;
 
-  const refOptions = useMemo<RefOption[]>(() => {
-    const options: RefOption[] = [
-      ...mangas.map((item) => ({
-        id: item.id,
-        type: "manga" as ContentRefType,
-        title: item.title,
-      })),
-      ...articles.map((item) => ({
-        id: item.id,
-        type: "article" as ContentRefType,
-        title: item.title,
-      })),
-      ...quizSets.map((item) => ({
-        id: item.id,
-        type: "quizset" as ContentRefType,
-        title: item.title,
-      })),
-      ...listenings.map((item) => ({
-        id: item.id,
-        type: "listening" as ContentRefType,
-        title: item.title,
-      })),
-    ];
-    for (const entry of dbEntries) {
-      const kind = entry.content.kind;
-      if (kind === "manga" || kind === "article" || kind === "quizset" || kind === "listening") {
-        if (!options.some((option) => option.id === entry.content.id && option.type === kind)) {
-          options.push({ id: entry.content.id, type: kind, title: entry.content.title });
-        }
-      }
-    }
-    return options;
-  }, [mangas, articles, quizSets, listenings, dbEntries]);
+  /** git ∪ DB。同じIDは1つにまとめる（DB版が学習者に出るので勝つ）。 */
+  const merged = useMemo(() => {
+    const fromDb = <K extends Content["kind"]>(kind: K): Extract<Content, { kind: K }>[] =>
+      dbEntries
+        .map((entry) => entry.content)
+        .filter((content): content is Extract<Content, { kind: K }> => content.kind === kind);
+    return {
+      stage: mergeById(stages, fromDb("stage")),
+      manga: mergeById(mangas, fromDb("manga")),
+      article: mergeById(articles, fromDb("article")),
+      quizset: mergeById(quizSets, fromDb("quizset")),
+      listening: mergeById(listenings, fromDb("listening")),
+      scenario: mergeById(scenarios, fromDb("scenario")),
+      wordstage: mergeById(wordStages, fromDb("wordstage")),
+    };
+  }, [stages, mangas, articles, quizSets, listenings, scenarios, wordStages, dbEntries]);
+
+  /** 「もう ある ものから えらぶ」の候補（全種別）。 */
+  const library = useMemo<RefOption[]>(
+    () =>
+      (
+        [
+          ["manga", merged.manga],
+          ["article", merged.article],
+          ["quizset", merged.quizset],
+          ["listening", merged.listening],
+          ["scenario", merged.scenario],
+          ["wordstage", merged.wordstage],
+        ] as const
+      ).flatMap(([type, items]) =>
+        items.map((item) => ({ id: item.id, type: type as ContentRefType, title: item.title })),
+      ),
+    [merged],
+  );
+
+  /** 保存ずみのID。ステージの ながれ で「まだ ほぞんして いません」を出すのに使う。 */
+  const knownIds = useMemo(() => new Set(library.map((item) => item.id)), [library]);
+
+  /** すでに どこかの単語ステージに ある ことば（重複を先生に知らせる）。 */
+  const knownTerms = useMemo(() => termOwners(merged.wordstage), [merged.wordstage]);
 
   /**
    * 教材ID → 学習者が読む文（ステージ編集の「ことばを ぬき出す」へ渡す）。
@@ -197,25 +244,115 @@ export function StudioShell({ stages, mangas, articles, quizSets, listenings }: 
    * git ∪ DB の全教材を持っているのは shell だけ。集め方は検査・ふりがな編集と
    * 同じ collectLearnerTexts を使う——別の集め方をすると、同じステージなのに
    * 画面ごとに違う本文を見ることになる。
-   *
-   * DB版が git 版に勝つのは一覧と同じ（学習者に出るのは DB版のほう）。
    */
   const textsByRef = useMemo<Record<string, string[]>>(() => {
     const map: Record<string, string[]> = {};
-    for (const item of [...mangas, ...articles, ...quizSets, ...listenings]) {
+    for (const item of [
+      ...merged.manga,
+      ...merged.article,
+      ...merged.quizset,
+      ...merged.listening,
+    ]) {
       map[item.id] = collectLearnerTexts(item);
     }
-    for (const entry of dbEntries) {
-      map[entry.content.id] = collectLearnerTexts(entry.content);
-    }
     return map;
-  }, [mangas, articles, quizSets, listenings, dbEntries]);
+  }, [merged]);
 
   const dbStatusOf = useCallback(
     (kind: string, id: string) =>
       dbEntries.find((entry) => entry.content.kind === kind && entry.content.id === id)?.status ??
       null,
     [dbEntries],
+  );
+
+  const clearNotes = useCallback(() => {
+    setIssues([]);
+    setWarnings([]);
+  }, []);
+
+  /** どの種別でも「その1件を開く」入口を1つにする（開き方が種別ごとに散らない）。 */
+  const openContent = useCallback(
+    (id: string, type: ContentRefType, parent?: Stage) => {
+      clearNotes();
+      const find = <T extends { id: string }>(items: readonly T[]) =>
+        items.find((item) => item.id === id);
+      switch (type) {
+        case "manga": {
+          const draft = find(merged.manga);
+          if (draft) setView({ mode: "manga", draft, parent });
+          return;
+        }
+        case "article": {
+          const draft = find(merged.article);
+          if (draft) setView({ mode: "article", draft, parent });
+          return;
+        }
+        case "quizset": {
+          const draft = find(merged.quizset);
+          if (draft) setView({ mode: "quizset", draft, parent });
+          return;
+        }
+        case "listening": {
+          const draft = find(merged.listening);
+          if (draft) setView({ mode: "listening", draft, parent });
+          return;
+        }
+        case "wordstage": {
+          const draft = find(merged.wordstage);
+          if (draft) setView({ mode: "wordstage", draft, parent });
+          return;
+        }
+        case "scenario":
+          // たいわ（scenario）はまだエディタが無い。押しても何も起きないより、理由を出す。
+          setToast({
+            message:
+              "たいわは まだ スタジオで 直せません（content/scenarios の JSON で 作ります）。",
+            tone: "ng",
+          });
+          return;
+      }
+    },
+    [merged, clearNotes],
+  );
+
+  /**
+   * ステージの中から 新しい教材を作る。
+   *
+   * ここでステージ側にも参照を足しておく——足さずに子だけ作ると、
+   * 作った教材がどこからも開けない「浮いた教材」になる。IDは機械的に決めるので
+   * 打ちまちがいで参照切れになることが無い（drafts.nextContentId）。
+   */
+  const createInStage = useCallback(
+    (parent: Stage, type: ContentRefType) => {
+      const id = nextContentId(parent.id, type, knownIds);
+      const nextParent: Stage = { ...parent, contents: [...parent.contents, { ref: id, type }] };
+      clearNotes();
+      switch (type) {
+        case "manga":
+          setView({ mode: "manga", draft: { ...emptyManga(), id }, parent: nextParent });
+          return;
+        case "article":
+          setView({ mode: "article", draft: { ...emptyArticle(), id }, parent: nextParent });
+          return;
+        case "quizset":
+          setView({ mode: "quizset", draft: { ...emptyQuizSet(), id }, parent: nextParent });
+          return;
+        case "listening":
+          setView({ mode: "listening", draft: { ...emptyListening(), id }, parent: nextParent });
+          return;
+        case "wordstage":
+          setView({ mode: "wordstage", draft: { ...emptyWordStage(), id }, parent: nextParent });
+          return;
+        case "scenario":
+          setToast({
+            message:
+              "たいわは まだ スタジオで 作れません（content/scenarios の JSON で 作ります）。",
+            tone: "ng",
+          });
+          return;
+      }
+    },
+    [knownIds, clearNotes],
   );
 
   /**
@@ -241,114 +378,13 @@ export function StudioShell({ stages, mangas, articles, quizSets, listenings }: 
       }
       setToast({ message: "けしました。", tone: "ok" });
       await refreshDb();
-      // 一覧の元になる git ∪ DB（公開分）はサーバで組んで props で来る（studio/page.tsx）。
+      // 一覧の元になる git ∪ DB（公開分）はサーバで組んで props で来る。
       // DB側だけ読み直しても、いま消した教材は props に残ったままなので、行が消えず
       // 「DB版（こうかい）」から「git版」に化ける。サーバも読み直して幽霊の行を消す。
       router.refresh();
     },
     [refreshDb, router],
   );
-
-  const rows = useMemo<Row[]>(() => {
-    // 別の教材を開いたら、前の教材の「なおすところ」と「気づき」は消す
-    //（残ると、いま開いている教材の指摘だと思って直しに行くことになる）。
-    const clearNotes = () => {
-      setIssues([]);
-      setWarnings([]);
-    };
-    const openStage = (draft: Stage) => () => {
-      clearNotes();
-      setView({ mode: "stage", draft });
-    };
-    const openManga = (draft: Manga) => () => {
-      clearNotes();
-      setView({ mode: "manga", draft });
-    };
-    const openArticle = (draft: Article) => () => {
-      clearNotes();
-      setView({ mode: "article", draft });
-    };
-    const openQuizSet = (draft: QuizSet) => () => {
-      clearNotes();
-      setView({ mode: "quizset", draft });
-    };
-    const openListening = (draft: Listening) => () => {
-      clearNotes();
-      setView({ mode: "listening", draft });
-    };
-
-    /** DB版のときだけ「けす」を渡す（git版は消せない）。 */
-    const removeAction = (kind: Content["kind"], item: { id: string; title: string }) =>
-      dbStatusOf(kind, item.id) ? () => void removeFromDb(item.id, item.title) : null;
-
-    const fromDb = <K extends Content["kind"]>(kind: K): Extract<Content, { kind: K }>[] =>
-      dbEntries
-        .map((entry) => entry.content)
-        .filter((content): content is Extract<Content, { kind: K }> => content.kind === kind);
-
-    switch (tab) {
-      case "stage": {
-        const merged = mergeById(stages, fromDb("stage"));
-        return merged.map((item) => ({
-          id: item.id,
-          title: item.title,
-          description: item.description,
-          dbStatus: dbStatusOf("stage", item.id),
-          href: `/stage/${item.id}`,
-          open: openStage(item),
-          remove: removeAction("stage", item),
-        }));
-      }
-      case "manga": {
-        const merged = mergeById(mangas, fromDb("manga"));
-        return merged.map((item) => ({
-          id: item.id,
-          title: item.title,
-          description: item.description,
-          dbStatus: dbStatusOf("manga", item.id),
-          href: contentHref("manga", item.id),
-          open: openManga(item),
-          remove: removeAction("manga", item),
-        }));
-      }
-      case "article": {
-        const merged = mergeById(articles, fromDb("article"));
-        return merged.map((item) => ({
-          id: item.id,
-          title: item.title,
-          description: item.description,
-          dbStatus: dbStatusOf("article", item.id),
-          href: contentHref("article", item.id),
-          open: openArticle(item),
-          remove: removeAction("article", item),
-        }));
-      }
-      case "quizset": {
-        const merged = mergeById(quizSets, fromDb("quizset"));
-        return merged.map((item) => ({
-          id: item.id,
-          title: item.title,
-          description: item.description,
-          dbStatus: dbStatusOf("quizset", item.id),
-          href: contentHref("quizset", item.id),
-          open: openQuizSet(item),
-          remove: removeAction("quizset", item),
-        }));
-      }
-      case "listening": {
-        const merged = mergeById(listenings, fromDb("listening"));
-        return merged.map((item) => ({
-          id: item.id,
-          title: item.title,
-          description: item.description,
-          dbStatus: dbStatusOf("listening", item.id),
-          href: contentHref("listening", item.id),
-          open: openListening(item),
-          remove: removeAction("listening", item),
-        }));
-      }
-    }
-  }, [tab, stages, mangas, articles, quizSets, listenings, dbEntries, dbStatusOf, removeFromDb]);
 
   const handleSave = useCallback(
     async (publish: boolean) => {
@@ -372,37 +408,65 @@ export function StudioShell({ stages, mangas, articles, quizSets, listenings }: 
         tone: "ok",
       });
       await refreshDb();
+      router.refresh();
     },
-    [view, refreshDb],
+    [view, refreshDb, router],
+  );
+
+  /**
+   * ステージの並び替え。となりと ばんごう を入れ替えて、2件とも保存する。
+   *
+   * 全体を1〜Nに詰め直さないのは、離れたステージまで巻き込んで保存することに
+   * なるため（保存は1件ずつのAPIなので、10件並べ替えるたびに10回書くことになる）。
+   */
+  const reorderStages = useCallback(
+    async (index: number, delta: number) => {
+      const ordered = sortStages(merged.stage);
+      const current = ordered[index];
+      const other = ordered[index + delta];
+      if (!current || !other) return;
+      // 同じ ばんごう だと入れ替えても並びが動かない。位置から作り直す。
+      const [a, b] =
+        current.order === other.order
+          ? [index + 1, index + delta + 1]
+          : [other.order, current.order];
+      setSaving(true);
+      const results = await Promise.all([
+        saveContent({ ...current, order: a }, current.status === "published"),
+        saveContent({ ...other, order: b }, other.status === "published"),
+      ]);
+      setSaving(false);
+      const failed = results.find((result) => !result.ok);
+      if (failed && !failed.ok) {
+        setToast({ message: failed.message, tone: "ng" });
+        return;
+      }
+      await refreshDb();
+      router.refresh();
+    },
+    [merged.stage, refreshDb, router],
   );
 
   if (gate === "checking") return <AdminLoading />;
   if (gate === "error") return <AdminError message={gateError ?? "unknown"} />;
 
+  const meta = SECTION_META[section];
   const backToList = () => {
-    setIssues([]);
-    setWarnings([]);
+    clearNotes();
     setView({ mode: "list" });
   };
+  /** 子の編集をやめる／おわる。ステージから来ていたら そのステージへ戻る。 */
+  const closeChild = (parent: Stage | undefined) => {
+    clearNotes();
+    setView(parent ? { mode: "stage", draft: parent } : { mode: "list" });
+  };
+
+  const editorNote = db && !db.ok ? db.message : null;
 
   return (
     <AdminPageFrame>
-      <div className="mx-auto max-w-[96rem] space-y-4">
-        <header className="card-island flex flex-wrap items-center justify-between gap-3 p-4">
-          <div>
-            <p className="text-ink-soft text-xs font-black">Nexmax Academy</p>
-            <h1 className="text-navy text-2xl font-black">コンテンツスタジオ</h1>
-          </div>
-          <nav className="flex flex-wrap items-center gap-3 text-sm font-black">
-            <Link href="/admin" className="text-sky underline underline-offset-4">
-              管理ダッシュボード
-            </Link>
-            <Link href="/map" className="text-sky underline underline-offset-4">
-              マップへ
-            </Link>
-          </nav>
-        </header>
-
+      <AdminHeader title={meta.title} note={meta.note} />
+      <div className="space-y-4">
         {preparingNote ? (
           <p
             role="status"
@@ -413,111 +477,153 @@ export function StudioShell({ stages, mangas, articles, quizSets, listenings }: 
           </p>
         ) : null}
 
-        {view.mode === "list" ? (
-          <ListView
+        {view.mode === "list" && section === "stages" ? (
+          <StageList
+            stages={sortStages(merged.stage)}
+            dbStatusOf={dbStatusOf}
+            busy={saving}
+            onOpen={(stage) => {
+              clearNotes();
+              setView({ mode: "stage", draft: stage });
+            }}
+            onNew={() => {
+              clearNotes();
+              setView({
+                mode: "stage",
+                draft: { ...emptyStage(), order: merged.stage.length + 1 },
+              });
+            }}
+            onMove={(index, delta) => void reorderStages(index, delta)}
+            onRemove={(stage) => void removeFromDb(stage.id, stage.title)}
+          />
+        ) : null}
+
+        {view.mode === "list" && section === "contents" ? (
+          <ContentList
             tab={tab}
             onTab={setTab}
-            rows={rows}
-            onNew={{
-              stage: () => setView({ mode: "stage", draft: emptyStage() }),
-              manga: () => setView({ mode: "manga", draft: emptyManga() }),
-              article: () => setView({ mode: "article", draft: emptyArticle() }),
-              quizset: () => setView({ mode: "quizset", draft: emptyQuizSet() }),
-              listening: () => setView({ mode: "listening", draft: emptyListening() }),
+            items={merged[tab]}
+            dbStatusOf={dbStatusOf}
+            onOpen={(id) => openContent(id, tab)}
+            onRemove={(id, title) => void removeFromDb(id, title)}
+          />
+        ) : null}
+
+        {view.mode === "list" && section === "words" ? (
+          <DictionaryView
+            wordStages={merged.wordstage}
+            dbStatusOf={dbStatusOf}
+            onOpen={(id) => openContent(id, "wordstage")}
+            onNew={() => {
+              clearNotes();
+              setView({ mode: "wordstage", draft: emptyWordStage() });
             }}
+            onRemove={(id, title) => void removeFromDb(id, title)}
           />
         ) : null}
 
         {view.mode === "stage" ? (
           <EditorFrame
             title={view.draft.title.length > 0 ? view.draft.title : "あたらしい ステージ"}
-            hint="ステージ＝コンテンツの入れ物と順序です。"
+            hint="① きほん → ② エリアの絵 → ③ ながれ の じゅんに つくります。"
             onBack={backToList}
             onSave={(publish) => void handleSave(publish)}
             saving={saving}
-            disabledNote={db && !db.ok ? db.message : null}
+            disabledNote={editorNote}
             issues={issues}
           >
             <SaveWarnings notices={warnings} />
             <StageEditor
               value={view.draft}
-              refOptions={refOptions}
+              library={library}
+              knownIds={knownIds}
+              knownTerms={knownTerms}
               textsByRef={textsByRef}
               onChange={(draft) => setView({ mode: "stage", draft })}
+              onOpenContent={(ref, type) => openContent(ref, type, view.draft)}
+              onCreateContent={(type) => createInStage(view.draft, type)}
             />
           </EditorFrame>
         ) : null}
 
         {view.mode === "manga" ? (
-          <EditorFrame
+          <ChildFrame
             title={view.draft.title.length > 0 ? view.draft.title : "あたらしい まんが"}
             hint="セリフは画像に焼き込まず、データで持ちます。"
-            onBack={backToList}
+            parent={view.parent}
+            onBack={closeChild}
             onSave={(publish) => void handleSave(publish)}
             saving={saving}
-            disabledNote={db && !db.ok ? db.message : null}
+            disabledNote={editorNote}
             issues={issues}
+            warnings={warnings}
           >
-            <SaveWarnings notices={warnings} />
-            <MangaEditor
-              value={view.draft}
-              onChange={(draft) => setView({ mode: "manga", draft })}
-            />
-          </EditorFrame>
+            <MangaEditor value={view.draft} onChange={(draft) => setView({ ...view, draft })} />
+          </ChildFrame>
         ) : null}
 
         {view.mode === "article" ? (
-          <EditorFrame
+          <ChildFrame
             title={view.draft.title.length > 0 ? view.draft.title : "あたらしい よみもの"}
             hint="右のプレビューが 学習者に見える画面です。"
-            onBack={backToList}
+            parent={view.parent}
+            onBack={closeChild}
             onSave={(publish) => void handleSave(publish)}
             saving={saving}
-            disabledNote={db && !db.ok ? db.message : null}
+            disabledNote={editorNote}
             issues={issues}
+            warnings={warnings}
           >
-            <SaveWarnings notices={warnings} />
-            <ArticleEditor
-              value={view.draft}
-              onChange={(draft) => setView({ mode: "article", draft })}
-            />
-          </EditorFrame>
+            <ArticleEditor value={view.draft} onChange={(draft) => setView({ ...view, draft })} />
+          </ChildFrame>
         ) : null}
 
         {view.mode === "quizset" ? (
-          <EditorFrame
+          <ChildFrame
             title={view.draft.title.length > 0 ? view.draft.title : "あたらしい もんだい"}
             hint="「じぶんで 日本語を 出す」フェーズには えらぶ もんだいを 置けません。"
-            onBack={backToList}
+            parent={view.parent}
+            onBack={closeChild}
             onSave={(publish) => void handleSave(publish)}
             saving={saving}
-            disabledNote={db && !db.ok ? db.message : null}
+            disabledNote={editorNote}
             issues={issues}
+            warnings={warnings}
           >
-            <SaveWarnings notices={warnings} />
-            <QuizEditor
-              value={view.draft}
-              onChange={(draft) => setView({ mode: "quizset", draft })}
-            />
-          </EditorFrame>
+            <QuizEditor value={view.draft} onChange={(draft) => setView({ ...view, draft })} />
+          </ChildFrame>
         ) : null}
 
         {view.mode === "listening" ? (
-          <EditorFrame
+          <ChildFrame
             title={view.draft.title.length > 0 ? view.draft.title : "あたらしい リスニング"}
             hint="さがす ことばは 台本に 出てくる ものだけに します。"
-            onBack={backToList}
+            parent={view.parent}
+            onBack={closeChild}
             onSave={(publish) => void handleSave(publish)}
             saving={saving}
-            disabledNote={db && !db.ok ? db.message : null}
+            disabledNote={editorNote}
             issues={issues}
+            warnings={warnings}
           >
-            <SaveWarnings notices={warnings} />
-            <ListeningEditor
-              value={view.draft}
-              onChange={(draft) => setView({ mode: "listening", draft })}
-            />
-          </EditorFrame>
+            <ListeningEditor value={view.draft} onChange={(draft) => setView({ ...view, draft })} />
+          </ChildFrame>
+        ) : null}
+
+        {view.mode === "wordstage" ? (
+          <ChildFrame
+            title={view.draft.title.length > 0 ? view.draft.title : "あたらしい 単語ステージ"}
+            hint="ここで 直した せつめいが、そのまま 辞書に 出ます。"
+            parent={view.parent}
+            onBack={closeChild}
+            onSave={(publish) => void handleSave(publish)}
+            saving={saving}
+            disabledNote={editorNote}
+            issues={issues}
+            warnings={warnings}
+          >
+            <WordStageEditor value={view.draft} onChange={(draft) => setView({ ...view, draft })} />
+          </ChildFrame>
         ) : null}
       </div>
 
@@ -527,11 +633,64 @@ export function StudioShell({ stages, mangas, articles, quizSets, listenings }: 
 }
 
 /**
+ * 子の教材のエディタ枠。ステージから来ていたら、戻り先を「そのステージ」にする。
+ *
+ * 戻り先を一覧に固定すると、ステージの中で3つ教材を作るあいだに3回ステージを
+ * 開き直すことになる。しかもその往復で、まだ保存していないステージの下書きが消える。
+ */
+function ChildFrame({
+  title,
+  hint,
+  parent,
+  onBack,
+  onSave,
+  saving,
+  disabledNote,
+  issues,
+  warnings,
+  children,
+}: {
+  title: string;
+  hint: string;
+  parent: Stage | undefined;
+  onBack: (parent: Stage | undefined) => void;
+  onSave: (publish: boolean) => void;
+  saving: boolean;
+  disabledNote: string | null;
+  issues: readonly SaveIssue[];
+  warnings: readonly string[];
+  children: React.ReactNode;
+}) {
+  return (
+    <EditorFrame
+      title={title}
+      hint={hint}
+      onBack={() => onBack(parent)}
+      onSave={onSave}
+      saving={saving}
+      disabledNote={disabledNote}
+      issues={issues}
+    >
+      {parent ? (
+        <p className="bg-panel-tint text-ink rounded-2xl px-4 py-2 text-xs font-black">
+          「{parent.title.length > 0 ? parent.title : parent.id}」ステージの 中です。
+          <span className="text-ink-soft ml-1 font-bold">
+            ほぞんしたら、上の「もどる」で ステージに もどれます。
+          </span>
+        </p>
+      ) : null}
+      <SaveWarnings notices={warnings} />
+      {children}
+    </EditorFrame>
+  );
+}
+
+/**
  * 保存できたあとの 気づき（参照切れなど）。
  *
  * 保存は通っているので、赤い「なおすところ」とは 分けて 出す。直さなくても
  * 保存はできる——ただし まだ無いIDを指したまま 公開すると、そのカードは
- * 学習者の画面に 出てこない（stage/[id] が 参照切れを 一覧から 外すため）。
+ * 学習者の画面に 出てこない（[stage] のページが 参照切れを 一覧から 外すため）。
  * 「止めないが、必ず気づかせる」ための 置き場（content-checks.ts の checkDanglingRefs）。
  */
 function SaveWarnings({ notices }: { notices: readonly string[] }) {
@@ -564,133 +723,76 @@ function mergeById<T extends { id: string }>(gitItems: readonly T[], dbItems: re
   return [...byId.values()].sort((a, b) => a.id.localeCompare(b.id));
 }
 
-function ListView({
+/**
+ * 教材そのものの一覧。
+ *
+ * ふだんの作りかたは「ステージの中から作る」なので、ここには「＋」を置かない。
+ * 置くと、どのステージにも入らない教材が増え、学習者からは見えないまま溜まる。
+ */
+function ContentList({
   tab,
   onTab,
-  rows,
-  onNew,
+  items,
+  dbStatusOf,
+  onOpen,
+  onRemove,
 }: {
-  tab: TabKey;
-  onTab: (tab: TabKey) => void;
-  rows: readonly Row[];
-  onNew: {
-    stage: () => void;
-    manga: () => void;
-    article: () => void;
-    quizset: () => void;
-    listening: () => void;
-  };
+  tab: ContentTab;
+  onTab: (tab: ContentTab) => void;
+  items: readonly { id: string; title: string; description?: string }[];
+  dbStatusOf: (kind: string, id: string) => "draft" | "published" | null;
+  onOpen: (id: string) => void;
+  onRemove: (id: string, title: string) => void;
 }) {
   return (
     <div className="space-y-4">
-      <div className="card-island flex flex-wrap items-center justify-between gap-3 p-4">
-        <nav aria-label="コンテンツの種類" className="flex flex-wrap gap-2">
-          {TABS.map((item) => (
+      <div className="card-island flex flex-wrap items-center gap-2 p-4">
+        {CONTENT_TABS.map((key) => {
+          const meta = contentKindMeta(key);
+          return (
             <button
-              key={item.key}
+              key={key}
               type="button"
-              onClick={() => onTab(item.key)}
-              aria-pressed={tab === item.key}
+              onClick={() => onTab(key)}
+              aria-pressed={tab === key}
               className={`rounded-full border-2 px-4 py-2 text-sm font-black ${
-                tab === item.key
-                  ? "bg-navy border-navy text-white"
-                  : "border-hairline text-ink bg-white"
+                tab === key ? "bg-navy border-navy text-white" : "border-hairline text-ink bg-white"
               }`}
             >
               <span aria-hidden className="mr-1">
-                {item.emoji}
+                {meta.icon}
               </span>
-              {item.label}
+              {meta.label}
             </button>
-          ))}
-        </nav>
-
-        <div className="flex flex-wrap gap-2">
-          <button
-            type="button"
-            onClick={onNew.stage}
-            className="btn-game px-4 py-2 text-sm [--btn-face:#004f8d] [--btn-shadow:#003c6b]"
-          >
-            ＋ ステージ
-          </button>
-          <button
-            type="button"
-            onClick={onNew.manga}
-            className="btn-island btn-game px-4 py-2 text-sm"
-          >
-            ＋ 漫画
-          </button>
-          <button
-            type="button"
-            onClick={onNew.article}
-            className="btn-game px-4 py-2 text-sm [--btn-face:#0288d1] [--btn-shadow:#0272ae]"
-          >
-            ＋ 記事
-          </button>
-          <button
-            type="button"
-            onClick={onNew.quizset}
-            className="btn-game px-4 py-2 text-sm [--btn-face:#58c273] [--btn-shadow:#3aa458]"
-          >
-            ＋ もんだい
-          </button>
-          <button
-            type="button"
-            onClick={onNew.listening}
-            className="btn-game px-4 py-2 text-sm [--btn-face:#a78bfa] [--btn-shadow:#8d6ae8]"
-          >
-            ＋ リスニング
-          </button>
-        </div>
+          );
+        })}
       </div>
 
       <section className="card-island p-4 sm:p-5">
-        {rows.length === 0 ? (
-          <p className="text-ink-soft font-bold">まだ ありません。右上の「＋」から 作れます。</p>
+        <p className="text-ink-soft mb-3 text-xs font-bold">
+          新しく つくるときは、ステージを ひらいて その中の「＋ ふやす」から つくります （どの
+          ステージにも 入っていない 教材は、学習者から 見えません）。
+        </p>
+        {items.length === 0 ? (
+          <p className="text-ink-soft font-bold">まだ ありません。</p>
         ) : (
           <ul className="space-y-2">
-            {rows.map((row) => (
+            {items.map((item) => (
               <li
-                key={row.id}
+                key={item.id}
                 className="border-hairline flex flex-wrap items-center gap-3 rounded-2xl border-2 bg-white p-3"
               >
                 <div className="min-w-[12rem] flex-1">
-                  <p className="text-navy font-black">{row.title}</p>
-                  <p className="text-ink-soft line-clamp-1 text-xs font-bold">{row.description}</p>
-                  <p className="text-ink-faint text-xs font-bold">{row.id}</p>
+                  <p className="text-navy font-black">{item.title}</p>
+                  <p className="text-ink-soft line-clamp-1 text-xs font-bold">{item.description}</p>
+                  <p className="text-ink-faint text-xs font-bold">{item.id}</p>
                 </div>
-                {row.dbStatus ? (
-                  <span
-                    className="rounded-full px-3 py-1 text-xs font-black text-white"
-                    style={{
-                      background:
-                        row.dbStatus === "published"
-                          ? "var(--color-leaf-deep)"
-                          : "var(--color-sun-deep)",
-                    }}
-                  >
-                    {row.dbStatus === "published" ? "DB版（こうかい）" : "DB版（したがき）"}
-                  </span>
-                ) : (
-                  <span className="border-hairline text-ink-soft rounded-full border-2 px-3 py-1 text-xs font-black">
-                    git版
-                  </span>
-                )}
-                <Link
-                  href={row.href}
-                  className="border-hairline text-navy rounded-full border-2 bg-white px-4 py-1.5 text-xs font-black"
-                >
-                  見る
-                </Link>
-                <button
-                  type="button"
-                  onClick={row.open}
-                  className="btn-game px-4 py-1.5 text-xs [--btn-face:#004f8d] [--btn-shadow:#003c6b]"
-                >
-                  編集
-                </button>
-                {row.remove ? (
-                  <MiniButton tone="danger" onClick={row.remove} title={`${row.title}をけす`}>
+                <SourceBadge status={dbStatusOf(tab, item.id)} />
+                <MiniButton tone="accent" onClick={() => onOpen(item.id)}>
+                  ✎ ひらく
+                </MiniButton>
+                {dbStatusOf(tab, item.id) ? (
+                  <MiniButton tone="danger" onClick={() => onRemove(item.id, item.title)}>
                     けす
                   </MiniButton>
                 ) : null}

@@ -23,7 +23,6 @@ import {
 } from "../content/schema";
 // areas.ts は純粋なデータ（node:fs も React も持たない）ので、
 // スタジオのAPIルートから読まれるこのファイルからでも安全に import できる。
-import { ROUTE_AREAS } from "../content/areas";
 // furigana.ts も純粋な関数だけ（node:fs も React も無い）。スタジオのクライアントから
 // この検査を呼べることが「保存前に足りない漢字を出す」画面の前提になっている。
 import { buildFuriganaIndex, uncoveredKanji, type FuriganaEntry } from "./text/furigana";
@@ -118,36 +117,36 @@ export function checkDuplicateIds(entries: readonly ContentEntry[]): Finding[] {
 }
 
 /**
- * マップの停留所とステージの結びつき検査（設計07 §3）。
+ * マップの停留所の検査（設計07 §3）。
  *
- * マップは「1ステージ＝1エリア＝背景画像1枚」（src/content/areas.ts）。step が
- * マップの上から数えた位置になる。
+ * マップは「1ステージ＝1エリア＝背景画像1枚」（src/content/areas.ts）。並びは
+ * `order` の昇順で、地図に出る停留所は公開ステージだけ（既定の土地はもう無い）。
  *
- * - step の重複は error: マップは step でステージを引くため、重なると片方が黙って消える。
- * - 既定のエリア（ROUTE_AREAS）より先の step で `area` を書いていないのは warn:
- *   ステージ自体はマップに出る（空色の帯になる）ので消えはしない。だから止めずに、
- *   絵の付け方まで案内する——先生に step を戻させないため。
+ * - `order` の重複は warn: 止めるほどではない（同点はIDで安定して並ぶ）が、
+ *   先生が並び替えたつもりで順番が変わらない、という分かりにくい状態になる。
+ * - `area` が無いのは warn: ステージ自体はマップに出る（空色の帯になる）ので消えはしない。
+ *   だから止めずに、絵の付け方まで案内する。
  */
-export function checkStageSteps(entries: readonly ContentEntry[]): Finding[] {
+export function checkStageOrder(entries: readonly ContentEntry[]): Finding[] {
   const findings: Finding[] = [];
-  const byStep = new Map<number, string>();
+  const byOrder = new Map<number, string>();
   for (const { file, content } of entries) {
     if (content.kind !== "stage" || content.status !== "published") continue;
-    const dup = byStep.get(content.step);
+    const dup = byOrder.get(content.order);
     if (dup) {
       findings.push({
         file,
-        level: "error",
-        message: `step ${content.step} が ${dup} と重なっている — マップは step でステージを引くので、片方がたどり着けなくなる`,
+        level: "warn",
+        message: `ならびの ばんごう ${content.order} が ${dup} と同じ — どちらが先に出るかがIDの順で決まるので、並び替えても動かないように見える`,
       });
     } else {
-      byStep.set(content.step, file);
+      byOrder.set(content.order, file);
     }
-    if (content.step > ROUTE_AREAS.length && !content.area) {
+    if (!content.area) {
       findings.push({
         file,
         level: "warn",
-        message: `step ${content.step} は既定のエリア（${ROUTE_AREAS.length}個）より先なのに area が無い — マップには出るが、その土地が空色の帯になる。スタジオの「マップの土地」で名前と絵を設定する（絵は docs/skills/codex_image_generation.md §7.1 の手順で Codex 生成できる）`,
+        message: `エリアの絵（area）が無い — マップには出るが、その土地が空色の帯になる。管理画面のステージ編集「エリアの絵」で選ぶ・あげる・つくるのどれかをする`,
       });
     }
   }

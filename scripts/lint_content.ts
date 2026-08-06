@@ -32,13 +32,14 @@ import {
   checkFuriganaCoverage,
   checkLinkOrder,
   checkReferenceIntegrity,
-  checkStageSteps,
+  checkStageOrder,
   checkSecretLeaks,
   type ContentEntry,
   type Finding,
 } from "../src/lib/content-checks";
 // 焼き込みモジュールの作り手と同じ関数で組み立てて比べる（作り方が2つに割れないように）
 import { buildGeneratedSource, GENERATED_PATH } from "./generate_content_index.mjs";
+import { buildSceneSource, SCENE_GENERATED_PATH } from "./generate_scene_index.mjs";
 
 const ROOT = join(import.meta.dirname, "..");
 const CONTENT_DIR = join(ROOT, "content");
@@ -128,11 +129,11 @@ function checkSourceForbiddenWords(file: string) {
  * src/content/git-contents.generated.ts のほう（Cloudflare に fs が無いため）。
  * ずれたままだと、先生が JSON を直しても画面が変わらず、原因も見えない。
  */
-function checkGeneratedIndex(): Finding[] {
-  const rel = relative(ROOT, GENERATED_PATH);
+function checkGenerated(path: string, expected: () => string, source: string): Finding[] {
+  const rel = relative(ROOT, path);
   let current: string;
   try {
-    current = readFileSync(GENERATED_PATH, "utf8");
+    current = readFileSync(path, "utf8");
   } catch {
     return [
       {
@@ -142,14 +143,20 @@ function checkGeneratedIndex(): Finding[] {
       },
     ];
   }
-  if (current === buildGeneratedSource()) return [];
+  if (current === expected()) return [];
   return [
     {
       file: rel,
       level: "error",
-      message:
-        "焼き込みモジュールが content/ とずれている — `npm run gen:content` で作り直す（アプリはこちらを読むので、直さないと画面が変わらない）",
+      message: `焼き込みモジュールが ${source} とずれている — \`npm run gen:content\` で作り直す（アプリはこちらを読むので、直さないと画面が変わらない）`,
     },
+  ];
+}
+
+function checkGeneratedIndex(): Finding[] {
+  return [
+    ...checkGenerated(GENERATED_PATH, buildGeneratedSource, "content/"),
+    ...checkGenerated(SCENE_GENERATED_PATH, buildSceneSource, "public/img/scenes/"),
   ];
 }
 
@@ -201,7 +208,7 @@ function main() {
   findings.push(...checkDuplicateIds(entries));
   findings.push(...checkReferenceIntegrity(entries));
   findings.push(...checkLinkOrder(entries));
-  findings.push(...checkStageSteps(entries));
+  findings.push(...checkStageOrder(entries));
   findings.push(...checkFuriganaCoverage(entries));
   findings.push(...checkGeneratedIndex());
 

@@ -4,11 +4,10 @@ import {
   checkDuplicateIds,
   checkFuriganaCoverage,
   checkReferenceIntegrity,
-  checkStageSteps,
+  checkStageOrder,
   collectLearnerTexts,
   type ContentEntry,
 } from "../src/lib/content-checks";
-import { ROUTE_AREAS } from "../src/content/areas";
 import { contentSchema, type Content, type Stage } from "../src/content/schema";
 
 /**
@@ -26,7 +25,7 @@ function stage(over: Record<string, unknown> = {}): Content {
   return parse({
     kind: "stage",
     id: "s1",
-    step: 1,
+    order: 1,
     title: "テスト",
     reading: "てすと",
     description: "てすとの ステージ",
@@ -87,10 +86,7 @@ describe("ID重複の検査", () => {
   });
 });
 
-describe("マップの停留所とステージの結びつき", () => {
-  /** 既定のエリアより先の step。ここから先は自分で土地（area）を決める必要がある。 */
-  const BEYOND_SEEDS = ROUTE_AREAS.length + 1;
-
+describe("マップの停留所の検査", () => {
   /** マップの土地（景色の名前・絵・一言）。国名を入れない。 */
   const area = {
     name: "しごとの しま",
@@ -99,49 +95,44 @@ describe("マップの停留所とステージの結びつき", () => {
     note: "あたらしい しごとの しま。",
   };
 
-  it("公開ステージの step が重なったら弾く（片方がたどり着けなくなる）", () => {
-    const findings = checkStageSteps([
-      entry(stage({ id: "s1", step: 2 }), "s1.json"),
-      entry(stage({ id: "s2", step: 2 }), "s2.json"),
+  it("公開ステージの ならびの ばんごう が重なったら知らせる（並び替えても動かないため）", () => {
+    const findings = checkStageOrder([
+      entry(stage({ id: "s1", order: 2, area }), "s1.json"),
+      entry(stage({ id: "s2", order: 2, area }), "s2.json"),
     ]);
-    expect(findings.some((f) => f.level === "error" && f.message.includes("step 2"))).toBe(true);
+    expect(findings.some((f) => f.message.includes("ばんごう 2"))).toBe(true);
   });
 
-  it("既定のエリアより先で area が無いステージは、決め方まで書いて警告する", () => {
-    const findings = checkStageSteps([entry(stage({ id: "far", step: BEYOND_SEEDS }), "far.json")]);
+  it("ばんごう が重なっても止めない（IDの順で安定して並ぶので、教材は消えない）", () => {
+    const findings = checkStageOrder([
+      entry(stage({ id: "s1", order: 2, area }), "s1.json"),
+      entry(stage({ id: "s2", order: 2, area }), "s2.json"),
+    ]);
+    expect(findings.every((f) => f.level === "warn")).toBe(true);
+  });
+
+  it("area が無いステージは、決め方まで書いて警告する", () => {
+    const findings = checkStageOrder([entry(stage({ id: "far" }), "far.json")]);
     expect(findings).toHaveLength(1);
     expect(findings[0]?.level).toBe("warn");
-    // 直し方が書いていないと、先生は step を戻して教材を引っこめるしかないと思ってしまう
-    expect(findings[0]?.message).toContain("スタジオ");
-    expect(findings[0]?.message).toContain("Codex");
+    // 直し方が書いていないと、先生は公開を取り下げるしかないと思ってしまう
+    expect(findings[0]?.message).toContain("エリアの絵");
   });
 
-  it("area が無くても「たどり着けない」とは言わない（ステージは出るので、消えると書くと先生が公開を取り下げる）", () => {
-    const findings = checkStageSteps([entry(stage({ id: "far", step: BEYOND_SEEDS }), "far.json")]);
+  it("area が無くても「たどり着けない」とは言わない（ステージは出るので）", () => {
+    const findings = checkStageOrder([entry(stage({ id: "far" }), "far.json")]);
     expect(findings[0]?.message).not.toContain("たどり着けない");
     expect(findings[0]?.message).toContain("空色の帯");
   });
 
-  it("area を決めれば既定より先でも何も出ない — スタジオだけでステージを足せる", () => {
-    expect(
-      checkStageSteps([entry(stage({ id: "far", step: BEYOND_SEEDS }), "far.json")]),
-    ).toHaveLength(1);
-    expect(
-      checkStageSteps([entry(stage({ id: "far", step: BEYOND_SEEDS, area }), "far.json")]),
-    ).toEqual([]);
+  it("area を決めれば何も出ない — 管理画面だけでステージを足せる", () => {
+    expect(checkStageOrder([entry(stage({ id: "far", area }), "far.json")])).toEqual([]);
   });
 
-  it("既定のエリアの範囲なら area が無くても何も出ない", () => {
-    const findings = checkStageSteps([
-      entry(stage({ id: "last", step: ROUTE_AREAS.length }), "last.json"),
-    ]);
-    expect(findings).toEqual([]);
-  });
-
-  it("下書きは検査しない（作りかけの step 重複で止めない）", () => {
-    const findings = checkStageSteps([
-      entry(stage({ id: "s1", step: 2 }), "s1.json"),
-      entry(stage({ id: "s2", step: 2, status: "draft" }), "s2.json"),
+  it("下書きは検査しない（作りかけの重複で止めない）", () => {
+    const findings = checkStageOrder([
+      entry(stage({ id: "s1", order: 2, area }), "s1.json"),
+      entry(stage({ id: "s2", order: 2, area, status: "draft" }), "s2.json"),
     ]);
     expect(findings).toEqual([]);
   });

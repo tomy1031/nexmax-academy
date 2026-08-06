@@ -1,21 +1,13 @@
 "use client";
 
-import { useId, useState } from "react";
-import { ROUTE_AREAS } from "@/content/areas";
-import type { ContentRefType, Stage, StageContentRef } from "@/content/schema";
-import { CONTENT_TYPE_OPTIONS, STAGE_COLOR_OPTIONS } from "./drafts";
-import { moveItem, removeAt, replaceAt } from "./list-ops";
-import { uploadAsset } from "./studio-api";
-import {
-  MiniButton,
-  NumberField,
-  RowTools,
-  SelectField,
-  StringListEditor,
-  StudioSection,
-  TextAreaField,
-  TextField,
-} from "./studio-ui";
+import { useMemo, useState } from "react";
+import type { ContentRefType, Stage } from "@/content/schema";
+import { contentKindMeta } from "@/lib/content-kinds";
+import { stageContentPath } from "@/lib/stage-routes";
+import { AreaPicker } from "./area-picker";
+import { STAGE_COLOR_OPTIONS } from "./drafts";
+import { moveItem, removeAt } from "./list-ops";
+import { MiniButton, SelectField, StudioSection, TextAreaField, TextField } from "./studio-ui";
 import { VocabExtractor } from "./vocab-extractor";
 
 /** 参照先の候補（IDの打ちまちがいを減らすための入力補助）。 */
@@ -28,64 +20,63 @@ export interface RefOption {
 /**
  * ステージのエディタ（設計07 §3）
  *
- * ステージは「コンテンツの入れ物と順序」でしかない。contents[] の並びがそのまま
- * 学習順になるため、並べ替えを最も触りやすい位置に置く。
+ * ステージは「学習の ながれ」そのもの。報告のステージなら
+ * まんが → よみもの → リスニング → そのリスニングの もんだい、と積んでいく。
+ * だから画面も上から順に、①きほん ②エリアの絵 ③ながれ の3段にする。
+ *
+ * ③では **その場で教材を作れる**ことが要。別画面へ行って作り、戻ってきて
+ * IDを打ち込む、という作り方だと、ID の打ちまちがいが必ず起き、しかも
+ * まちがいに気づくのは学習者がタップして404を見たときになる。
  */
 export function StageEditor({
   value,
   onChange,
-  refOptions,
+  library,
+  knownIds,
   textsByRef,
+  knownTerms,
+  onOpenContent,
+  onCreateContent,
 }: {
   value: Stage;
   onChange: (stage: Stage) => void;
-  refOptions: readonly RefOption[];
+  /** いま存在する教材（git ∪ DB）。「もう ある ものから えらぶ」の候補。 */
+  library: readonly RefOption[];
+  /** 保存ずみのID。ここに無い参照は「まだ ほぞんして いません」と出す。 */
+  knownIds: ReadonlySet<string>;
+  /** すでに どこかの 単語ステージに ある ことば → その ステージの 見出し。 */
+  knownTerms: ReadonlyMap<string, string>;
   /**
    * 教材ID → 学習者が読む文。「ことばを ぬき出す」に渡す。
    * ステージが持っているのは参照先のIDだけなので、本文は studio-shell から届く
    *（shell だけが git ∪ DB の全教材を持っている）。
    */
   textsByRef: Readonly<Record<string, readonly string[]>>;
+  /** その教材のエディタを開く。 */
+  onOpenContent: (ref: string, type: ContentRefType) => void;
+  /** 新しい教材を作って、このステージの ながれ に足す。 */
+  onCreateContent: (type: ContentRefType) => void;
 }) {
-  const listId = useId();
-  const [newRef, setNewRef] = useState("");
-  const [newType, setNewType] = useState<ContentRefType>("manga");
-
   const patch = (part: Partial<Stage>) => onChange({ ...value, ...part });
-
-  const addContent = () => {
-    const ref = newRef.trim();
-    if (ref.length === 0) return;
-    patch({ contents: [...value.contents, { ref, type: newType }] });
-    setNewRef("");
-  };
-
-  const updateContent = (index: number, part: Partial<StageContentRef>) => {
-    const current = value.contents[index];
-    if (!current) return;
-    patch({ contents: replaceAt(value.contents, index, { ...current, ...part }) });
-  };
-
-  const candidates = refOptions.filter((option) => option.type === newType);
 
   return (
     <div className="space-y-4">
-      <StudioSection title="きほん" hint="マップに出るステージの見た目と説明です。">
+      <StudioSection
+        title="① きほん"
+        hint="URL・見出し・マップでの 見え方を きめます。ここから 始めます。"
+      >
+        <TextField
+          label="URL（半角の 英小文字・数字・-）"
+          value={value.id}
+          onChange={(id) => patch({ id })}
+          placeholder="houkoku"
+          hint={
+            value.id
+              ? `学習者は /${value.id} で ひらきます。あとから 変えると 進捗の 記録が つながらなくなります。`
+              : "学習者は /ここに書いた名前 で ひらきます（例: /houkoku）。"
+          }
+        />
         <div className="grid gap-4 sm:grid-cols-2">
-          <TextField
-            label="ID（半角の英小文字・数字・- _）"
-            value={value.id}
-            onChange={(id) => patch({ id })}
-            placeholder="m7-trouble"
-            hint="あとから変えると 進捗の記録が つながらなくなります。"
-          />
-          <NumberField
-            label="ステップ（1〜12）"
-            value={value.step}
-            min={1}
-            max={12}
-            onChange={(step) => patch({ step })}
-          />
           <TextField
             label="タイトル"
             value={value.title}
@@ -109,6 +100,8 @@ export function StageEditor({
           公開かどうかは上の「こうかい」ボタン（editor-frame）だけで決める。
           ここにも状態セレクトを置くと、DBの status 列と中身の status が食い違い
           「こうかいしたのに 地図に出ない」が起きるため、入口を1つにする。
+          ならびの ばんごう も置かない——並び替えは一覧側で ↑↓ を押すだけにする
+          （番号を手で書かせると、2つのステージが同じ番号になって順番が動かなくなる）。
         */}
         <div className="grid gap-4 sm:grid-cols-2">
           <SelectField
@@ -120,94 +113,18 @@ export function StageEditor({
         </div>
       </StudioSection>
 
-      <StudioSection
-        title="コンテンツの じゅんばん"
-        hint="この並びが そのまま 学習の順番になります。"
-      >
-        <ol className="space-y-2">
-          {value.contents.map((item, index) => (
-            <li
-              key={index}
-              className="border-hairline flex flex-wrap items-center gap-2 rounded-2xl border-2 bg-white p-3"
-            >
-              <span className="text-ink-faint w-6 text-sm font-black">{index + 1}</span>
-              <div className="min-w-[10rem] flex-1">
-                <TextField
-                  label="参照先のID"
-                  value={item.ref}
-                  listId={listId}
-                  onChange={(ref) => updateContent(index, { ref })}
-                />
-              </div>
-              <div className="w-44">
-                <SelectField
-                  label="種別"
-                  value={item.type}
-                  options={CONTENT_TYPE_OPTIONS}
-                  onChange={(type) => updateContent(index, { type })}
-                />
-              </div>
-              <RowTools
-                index={index}
-                count={value.contents.length}
-                label="コンテンツ"
-                onMove={(delta) => patch({ contents: moveItem(value.contents, index, delta) })}
-                onRemove={() => patch({ contents: removeAt(value.contents, index) })}
-              />
-            </li>
-          ))}
-        </ol>
-        {value.contents.length === 0 ? (
-          <p className="text-ink-faint text-xs font-bold">
-            まだ ありません。下から 追加してください。
-          </p>
-        ) : null}
+      <AreaPicker stageId={value.id} value={value.area} onChange={(area) => patch({ area })} />
 
-        <div className="bg-panel-tint flex flex-wrap items-end gap-2 rounded-2xl p-3">
-          <div className="min-w-[10rem] flex-1">
-            <TextField
-              label="追加する ID"
-              value={newRef}
-              listId={listId}
-              onChange={setNewRef}
-              placeholder="m7-manga"
-            />
-          </div>
-          <div className="w-44">
-            <SelectField
-              label="種別"
-              value={newType}
-              options={CONTENT_TYPE_OPTIONS}
-              onChange={setNewType}
-            />
-          </div>
-          <MiniButton tone="accent" onClick={addContent}>
-            ＋ コンテンツを 追加
-          </MiniButton>
-        </div>
+      <FlowEditor
+        value={value}
+        onChange={onChange}
+        library={library}
+        knownIds={knownIds}
+        onOpenContent={onOpenContent}
+        onCreateContent={onCreateContent}
+      />
 
-        <datalist id={listId}>
-          {candidates.map((option) => (
-            <option key={`${option.type}:${option.id}`} value={option.id}>
-              {option.title}
-            </option>
-          ))}
-        </datalist>
-      </StudioSection>
-
-      <StudioSection
-        title="ことばのゲーム（単語ステージ）"
-        hint="このステージに ひもづける 単語ステージのIDです。"
-      >
-        <StringListEditor
-          label="単語ステージのID"
-          items={value.wordStageIds}
-          itemLabel="単語ステージ"
-          placeholder="m7-words"
-          addLabel="＋ 単語ステージを 追加"
-          onChange={(wordStageIds) => patch({ wordStageIds })}
-        />
-      </StudioSection>
+      <WordStages value={value} onChange={onChange} library={library} />
 
       {/*
         単語ステージは手で書くと1課ぶんで1時間仕事になる。作られないままだと
@@ -218,140 +135,314 @@ export function StageEditor({
       <VocabExtractor
         stage={value}
         textsByRef={textsByRef}
+        knownTerms={knownTerms}
         onCreated={(id) => patch({ wordStageIds: [...value.wordStageIds, id] })}
       />
+    </div>
+  );
+}
 
-      <AreaEditor value={value} onChange={onChange} />
+/** ながれ に置ける教材（単語ステージは別枠なので入らない）。 */
+const FLOW_TYPES: readonly ContentRefType[] = [
+  "manga",
+  "article",
+  "listening",
+  "quizset",
+  "scenario",
+];
+
+/** その場で作れる種別。たいわ（scenario）はまだエディタが無いので選ぶだけにする。 */
+const CREATABLE: ReadonlySet<ContentRefType> = new Set([
+  "manga",
+  "article",
+  "listening",
+  "quizset",
+]);
+
+/**
+ * 学習の ながれ。上から順に学習者が進む。
+ *
+ * 番号つきの縦並びにして、あいだを線でつなぐ。表よりも「順番がある」ことが伝わる。
+ */
+function FlowEditor({
+  value,
+  onChange,
+  library,
+  knownIds,
+  onOpenContent,
+  onCreateContent,
+}: {
+  value: Stage;
+  onChange: (stage: Stage) => void;
+  library: readonly RefOption[];
+  knownIds: ReadonlySet<string>;
+  onOpenContent: (ref: string, type: ContentRefType) => void;
+  onCreateContent: (type: ContentRefType) => void;
+}) {
+  const [adding, setAdding] = useState<ContentRefType | null>(null);
+  const titleById = useMemo(
+    () => new Map(library.map((item) => [`${item.type}:${item.id}`, item.title])),
+    [library],
+  );
+  const patch = (part: Partial<Stage>) => onChange({ ...value, ...part });
+
+  return (
+    <StudioSection
+      title="③ この ステージの ながれ"
+      hint="上から 順に 学習者が すすみます。ここに 教材を 足して いきます。"
+    >
+      {value.contents.length === 0 ? (
+        <p className="bg-panel-tint text-ink-soft rounded-2xl p-4 text-sm font-bold">
+          まだ 何も ありません。下の「＋ ふやす」から、まんが や リスニングを 足してください。
+        </p>
+      ) : (
+        <ol className="space-y-0">
+          {value.contents.map((item, index) => {
+            const meta = contentKindMeta(item.type);
+            const title = titleById.get(`${item.type}:${item.ref}`);
+            const saved = knownIds.has(item.ref);
+            const href = stageContentPath(value.id, value.contents, index);
+            return (
+              <li key={`${item.type}:${item.ref}:${index}`}>
+                {index > 0 ? (
+                  <div aria-hidden className="ml-6 h-4 w-0.5 bg-[var(--color-hairline,#d5e6f2)]" />
+                ) : null}
+                <div className="border-hairline flex flex-wrap items-center gap-3 rounded-2xl border-2 bg-white p-3">
+                  <span className="bg-navy grid h-8 w-8 shrink-0 place-items-center rounded-full text-sm font-black text-white">
+                    {index + 1}
+                  </span>
+                  <span aria-hidden className="text-xl leading-none">
+                    {meta.icon}
+                  </span>
+                  <div className="min-w-[10rem] flex-1">
+                    <p className="text-navy text-sm font-black">
+                      {title ?? item.ref}
+                      <span className="text-ink-faint ml-2 text-xs font-bold">{meta.label}</span>
+                    </p>
+                    <p className="text-ink-faint text-xs font-bold">
+                      {href ? `${href}　` : ""}
+                      {item.ref}
+                    </p>
+                    {!saved ? (
+                      <p className="text-coral-deep text-xs font-black">
+                        まだ ほぞんして いません — ひらいて ほぞんするまで、学習者には 出ません。
+                      </p>
+                    ) : null}
+                  </div>
+                  <div className="flex flex-wrap gap-1">
+                    <MiniButton
+                      tone="accent"
+                      onClick={() => onOpenContent(item.ref, item.type)}
+                      title={`${meta.label}をひらく`}
+                    >
+                      ✎ ひらく
+                    </MiniButton>
+                    <MiniButton
+                      onClick={() => patch({ contents: moveItem(value.contents, index, -1) })}
+                      disabled={index === 0}
+                      title="上へ"
+                    >
+                      ↑
+                    </MiniButton>
+                    <MiniButton
+                      onClick={() => patch({ contents: moveItem(value.contents, index, 1) })}
+                      disabled={index === value.contents.length - 1}
+                      title="下へ"
+                    >
+                      ↓
+                    </MiniButton>
+                    <MiniButton
+                      tone="danger"
+                      onClick={() => patch({ contents: removeAt(value.contents, index) })}
+                      title="このステージから はずす"
+                    >
+                      はずす
+                    </MiniButton>
+                  </div>
+                </div>
+              </li>
+            );
+          })}
+        </ol>
+      )}
+
+      <div className="bg-panel-tint space-y-3 rounded-2xl p-3">
+        <p className="text-navy text-xs font-black">＋ ふやす</p>
+        <div className="flex flex-wrap gap-2">
+          {FLOW_TYPES.map((type) => {
+            const meta = contentKindMeta(type);
+            return (
+              <button
+                key={type}
+                type="button"
+                onClick={() => setAdding(adding === type ? null : type)}
+                aria-pressed={adding === type}
+                className={`rounded-full border-2 px-4 py-1.5 text-xs font-black ${
+                  adding === type
+                    ? "bg-navy border-navy text-white"
+                    : "border-hairline text-ink bg-white"
+                }`}
+              >
+                {meta.icon} {meta.label}
+              </button>
+            );
+          })}
+        </div>
+
+        {adding ? (
+          <AddPanel
+            type={adding}
+            library={library}
+            onPick={(ref) => {
+              patch({ contents: [...value.contents, { ref, type: adding }] });
+              setAdding(null);
+            }}
+            onCreate={() => {
+              setAdding(null);
+              onCreateContent(adding);
+            }}
+          />
+        ) : null}
+      </div>
+    </StudioSection>
+  );
+}
+
+/** 種別を選んだあとの2択（新しく作る／もうあるものから選ぶ）。 */
+function AddPanel({
+  type,
+  library,
+  onPick,
+  onCreate,
+}: {
+  type: ContentRefType;
+  library: readonly RefOption[];
+  onPick: (ref: string) => void;
+  onCreate: () => void;
+}) {
+  const meta = contentKindMeta(type);
+  const options = library.filter((item) => item.type === type);
+  const [picked, setPicked] = useState("");
+
+  return (
+    <div className="border-hairline space-y-3 rounded-2xl border-2 bg-white p-3">
+      {CREATABLE.has(type) ? (
+        <div>
+          <MiniButton tone="accent" onClick={onCreate}>
+            ＋ あたらしい {meta.label}を つくる
+          </MiniButton>
+          <p className="text-ink-faint mt-1 text-xs font-bold">
+            IDは じどうで つけます。つくったら すぐ 中身を 書く 画面に なります。
+          </p>
+        </div>
+      ) : (
+        <p className="text-ink-soft text-xs font-bold">
+          {meta.label}は まだ スタジオで 作れません。content/ の JSON で 作った ものから
+          えらんでください。
+        </p>
+      )}
+
+      <div className="flex flex-wrap items-end gap-2">
+        <div className="min-w-[12rem] flex-1">
+          <SelectField
+            label={`もう ある ${meta.label}から えらぶ`}
+            value={picked}
+            options={[
+              { value: "", label: "— えらんでください —" },
+              ...options.map((item) => ({ value: item.id, label: `${item.title}（${item.id}）` })),
+            ]}
+            onChange={setPicked}
+          />
+        </div>
+        <MiniButton onClick={() => picked && onPick(picked)} disabled={picked === ""}>
+          この ステージに 入れる
+        </MiniButton>
+      </div>
+      {options.length === 0 ? (
+        <p className="text-ink-faint text-xs font-bold">まだ 1つも ありません。</p>
+      ) : null}
     </div>
   );
 }
 
 /**
- * マップの土地（設計: src/content/areas.ts）
+ * ひもづける単語ステージ。
  *
- * マップは「1ステージ＝1エリア＝背景画像1枚」。ここを決めると、そのステージが
- * マップの上から step 番目の土地として増える。決めなければ既定の土地を使う。
- *
- * 名前に国名を入れない。国は情勢で差し替える前提なので、画面文言が国に依存すると
- * 差し替えのたびに UI を直すことになる（都市名・遺跡名は国名ではないので使ってよい）。
+ * 手で ID を打たせない（打ちまちがえると、ステージから「ことばで あそぶ」が消える）。
+ * 選ぶだけにして、候補は いま存在する単語ステージから出す。
  */
-function AreaEditor({ value, onChange }: { value: Stage; onChange: (stage: Stage) => void }) {
-  const inputId = useId();
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const area = value.area;
-
-  const patchArea = (part: Partial<NonNullable<Stage["area"]>>) => {
-    onChange({
-      ...value,
-      area: { name: "", reading: "", image: "", note: "", ...area, ...part },
-    });
-  };
-
-  const handleFile = async (file: File | undefined) => {
-    if (!file) return;
-    setBusy(true);
-    setError(null);
-    const result = await uploadAsset(file, `areas/${value.id || "stage"}`);
-    setBusy(false);
-    if (!result.ok) {
-      setError(result.message);
-      return;
-    }
-    patchArea({ image: result.url });
-  };
-
-  if (!area) {
-    return (
-      <StudioSection
-        title="マップの 土地"
-        hint="このステージが マップの どこに 立つかです。きめないと きていの 土地を つかいます。"
-      >
-        <p className="text-ink-soft text-xs font-bold">
-          いまは きていの 土地（{ROUTE_AREAS.length}か所）を つかいます。
-          {value.step > ROUTE_AREAS.length ? (
-            <>
-              <br />
-              このステージは {value.step} ばんめ なので、きていの 土地が ありません。 土地を
-              きめないと、空色の おびに なります。
-            </>
-          ) : null}
-        </p>
-        <MiniButton tone="accent" onClick={() => patchArea({})}>
-          ＋ この ステージの 土地を つくる
-        </MiniButton>
-      </StudioSection>
-    );
-  }
+function WordStages({
+  value,
+  onChange,
+  library,
+}: {
+  value: Stage;
+  onChange: (stage: Stage) => void;
+  library: readonly RefOption[];
+}) {
+  const [picked, setPicked] = useState("");
+  const options = library.filter(
+    (item) => item.type === "wordstage" && !value.wordStageIds.includes(item.id),
+  );
+  const titleById = new Map(library.map((item) => [item.id, item.title]));
+  const patch = (ids: string[]) => onChange({ ...value, wordStageIds: ids });
 
   return (
     <StudioSection
-      title="マップの 土地"
-      hint="マップの 上から この ステージの ばんごう（ステップ）の ところに 出ます。"
+      title="🕹️ ことばの ゲーム"
+      hint="この ステージから すぐ ひらける 単語ステージです。"
     >
-      <div className="grid gap-4 sm:grid-cols-2">
-        <TextField
-          label="景色の 名前（国の 名前は 入れない）"
-          value={area.name}
-          onChange={(name) => patchArea({ name })}
-          placeholder="きりの やまなみ"
-          hint="まちの 名前・いせきの 名前は つかえます。"
-        />
-        <TextField
-          label="よみ（ひらがな）"
-          value={area.reading}
-          onChange={(reading) => patchArea({ reading })}
-          placeholder="きりの やまなみ"
-        />
-      </div>
-      <TextField
-        label="地図に そえる ひとこと"
-        value={area.note}
-        onChange={(note) => patchArea({ note })}
-        placeholder="きりの なかを ぬけて いきます。"
-      />
+      {value.wordStageIds.length > 0 ? (
+        <ul className="space-y-2">
+          {value.wordStageIds.map((id, index) => (
+            <li
+              key={id}
+              className="border-hairline flex flex-wrap items-center gap-2 rounded-2xl border-2 bg-white p-3"
+            >
+              <span className="min-w-[10rem] flex-1">
+                <span className="text-navy block text-sm font-black">
+                  {titleById.get(id) ?? id}
+                </span>
+                <span className="text-ink-faint block text-xs font-bold">/arcade/{id}</span>
+              </span>
+              <MiniButton
+                tone="danger"
+                onClick={() => patch(removeAt(value.wordStageIds, index))}
+                title="はずす"
+              >
+                はずす
+              </MiniButton>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="text-ink-faint text-xs font-bold">まだ ありません。</p>
+      )}
 
-      <div className="border-hairline space-y-2 rounded-2xl border-2 bg-white p-3">
-        <p className="text-navy text-xs font-black">はいけいの 絵（たて長 1024×1536）</p>
-        {area.image ? (
-          // next/image は外部URLの許可設定が要るため、ここは素の img で出す（確認用の小さな見本）
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={area.image}
-            alt=""
-            className="border-hairline h-28 w-auto rounded-xl border-2 object-cover"
+      <div className="flex flex-wrap items-end gap-2">
+        <div className="min-w-[12rem] flex-1">
+          <SelectField
+            label="単語ステージを えらぶ"
+            value={picked}
+            options={[
+              { value: "", label: "— えらんでください —" },
+              ...options.map((item) => ({ value: item.id, label: `${item.title}（${item.id}）` })),
+            ]}
+            onChange={setPicked}
           />
-        ) : (
-          <p className="text-ink-faint text-xs font-bold">
-            まだ ありません。絵が なくても ステージは 出ます（空色の おびに なります）。
-          </p>
-        )}
-        <TextField
-          label="絵の ばしょ（URL か /img/scenes/…）"
-          value={area.image}
-          onChange={(image) => patchArea({ image })}
-          placeholder="/img/scenes/area_misty_peaks.webp"
-        />
-        <div className="flex flex-wrap items-center gap-2">
-          <input
-            id={inputId}
-            type="file"
-            accept="image/*"
-            disabled={busy}
-            onChange={(e) => void handleFile(e.target.files?.[0])}
-            className="text-ink-soft text-xs font-bold"
-          />
-          {busy ? <span className="text-ink-soft text-xs font-black">あげています…</span> : null}
         </div>
-        {error ? <p className="text-coral-deep text-xs font-black">{error}</p> : null}
-        <p className="text-ink-faint text-xs font-bold">
-          絵は Codex でも つくれます（docs/skills/codex_image_generation.md §7.1）。
-        </p>
+        <MiniButton
+          tone="accent"
+          onClick={() => {
+            if (!picked) return;
+            patch([...value.wordStageIds, picked]);
+            setPicked("");
+          }}
+          disabled={picked === ""}
+        >
+          ＋ 入れる
+        </MiniButton>
       </div>
-
-      <MiniButton onClick={() => onChange({ ...value, area: undefined })}>
-        この 土地を やめる（きていに もどす）
-      </MiniButton>
     </StudioSection>
   );
 }

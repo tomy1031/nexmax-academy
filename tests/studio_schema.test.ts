@@ -12,7 +12,7 @@ import { checkLinkOrder, checkReferenceIntegrity } from "../src/lib/content-chec
 const stageFixture = {
   kind: "stage",
   id: "m2-asakai",
-  step: 2,
+  order: 2,
   title: "朝会",
   reading: "あさかい",
   description: "あさの かいぎで きょうの よていを つたえます。",

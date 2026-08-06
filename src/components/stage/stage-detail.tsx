@@ -40,7 +40,8 @@ export interface StageWordItem {
 
 export interface StageHeader {
   id: string;
-  step: number;
+  /** マップの上から数えた番号（STEP 01…）。 */
+  number: number;
   title: string;
   reading: string;
   description: string;
@@ -82,7 +83,7 @@ export function StageDetail({
           ← マップ
         </Link>
         <span className="bg-sky-soft text-navy rounded-full px-3 py-1 text-xs font-extrabold">
-          STEP {String(stage.step).padStart(2, "0")}
+          STEP {String(stage.number).padStart(2, "0")}
         </span>
       </header>
 

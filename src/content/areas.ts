@@ -4,27 +4,22 @@
  * 背景画像1枚＝1エリア。エリアは上から順に縦に積まれ、あいだは雲海の帯（`CloudBand`）で
  * 仕切る。学習者は空路で雲を越えて次の土地へ進む。
  *
+ * ## 土地はステージが持つ（既定の並びはもう置かない）
+ * 以前はここに道中のエリアを5つ書いていたが、コードに既定があると
+ * **地図に出ている土地と、先生が作ったステージがずれる**。作っていないステージの土地が
+ * 地図に残り、消したはずのものが学習者に見えてしまう。
+ * いまは道中のエリアを1つも持たない。地図の並びは
+ * 「公開されているステージを `order` の順に並べたもの」がすべて（`src/lib/map-data.ts`）。
+ *
+ * 背景画像は `public/img/scenes/` に置いてあり、スタジオの「エリアの絵」から選べる
+ *（一覧はビルド時に焼き込む — `src/content/scene-images.generated.ts`）。
+ *
  * ## 表示名に国名を出さない（重要）
  * `name` に**国名を入れない**。国は今後の情勢で柔軟に差し替える前提なので、表示文言が国に
- * 依存していると差し替えのたびに UI を直すことになる。国は画像の主題（`imageSubject`）と
- * `id` にだけ残す。※ ゴールの日本だけは学習の目的地そのものなので例外的に国名を出す。
+ * 依存していると差し替えのたびに UI を直すことになる。
+ * ※ ゴールの日本だけは学習の目的地そのものなので例外的に国名を出す。
  *
  * 都市名・遺跡名（アンコールワット、プノンペンなど）は国名ではないので出してよい。
- * 学習者の出発地であるこの2つは、親しみのために実名で呼ぶ。それ以外の土地は景色の名前にする。
- *
- * ## ルート方針
- * 出発地から北上して日本へ向かう「北回り」。南国 → 霧の山 → 温帯の都市 と気候が段階的に
- * 変わるので、絵が単調にならず「日本に近づいている」ことが絵だけで伝わる。
- * エリアを増やすときは、この並びの途中に中継点を挿し込む（末尾に足さない）。
- *
- * ## 1ステージ＝1エリア（重要）
- * ステージ（STAGES）とエリアは**1対1**にする。ステージのないエリアを挟むと、そこが
- * 何も起きない空白のスクロール区間になって進んでいる感じが切れる。
- * ステージを増やすときは、エリアもこの並びの途中に1枚足す。
- * 蛇行は `areaNodeX()` が番号から決めるので、増減しても道の形は崩れない。
- *
- * 使っていない背景画像は消さずに置いてある（次にステージを足すときの候補）:
- * `area5_taiwan.webp`（九份風の階段街と赤提灯、茶畑）。
  */
 export interface MapArea {
   id: string;
@@ -34,9 +29,7 @@ export interface MapArea {
   reading: string;
   /** 背景画像。`public/` からのパス */
   image: string;
-  /** 画像が何をモチーフにしているか。開発者向けの覚書で、画面には出さない */
-  imageSubject: string;
-  /** このエリアに立つステージ。通過するだけのエリアは null */
+  /** このエリアに立つステージ。ゴールだけ null */
   stageId: string | null;
   /** 地図に小さく添える一言 */
   note: string;
@@ -48,66 +41,15 @@ export const CLOUD_WHITE = "#f4fbff";
 /** 雲のすきまから見える空・海の色。画像が読めなかったときの下地にもなる */
 export const SKY_BLUE = "#2e9fd6";
 
-export const MAP_AREAS: readonly MapArea[] = [
-  {
-    id: "angkor",
-    name: "アンコールワット",
-    reading: "あんこーるわっと",
-    image: "/img/scenes/area1_cambodia.webp",
-    imageSubject: "アンコールワット風の石造寺院と熱帯雨林",
-    stageId: "it-words",
-    note: "ここから はじまります。",
-  },
-  {
-    id: "phnom-penh",
-    name: "プノンペン",
-    reading: "ぷのんぺん",
-    image: "/img/scenes/area_riverside_capital.webp",
-    imageSubject: "王宮・高層ビル・リバーサイドの首都",
-    stageId: "company-structure",
-    note: "かわぞいの おおきな まち。",
-  },
-  {
-    id: "vietnam",
-    name: "うみの いわやま",
-    reading: "うみの いわやま",
-    image: "/img/scenes/area3_vietnam.webp",
-    imageSubject: "ハロン湾風の石灰岩の岩山と棚田、提灯の村",
-    stageId: "report",
-    note: "いわやまの あいだを とびます。",
-  },
-  {
-    id: "misty-peaks",
-    name: "きりの やまなみ",
-    reading: "きりの やまなみ",
-    image: "/img/scenes/area_misty_peaks.webp",
-    imageSubject: "水墨画風の霧の岩峰と古い城下町、茶畑",
-    stageId: "contact",
-    note: "きりの なかを ぬけて いきます。",
-  },
-  {
-    id: "palace-town",
-    name: "みやこの まち",
-    reading: "みやこの まち",
-    image: "/img/scenes/area_palace_town.webp",
-    imageSubject: "宮殿と瓦屋根の旧市街、奥に現代のビル群",
-    stageId: "consult",
-    note: "ふるい まちと あたらしい まち。",
-  },
-  {
-    id: "japan",
-    // ゴールだけは学習の目的地そのものなので国名を出す
-    name: "日本",
-    reading: "にほん",
-    image: "/img/scenes/japan_goal.webp",
-    imageSubject: "富士山・桜・東京のスカイライン・鳥居",
-    stageId: null,
-    note: "ゴール。ここで はたらきます。",
-  },
-] as const;
-
-/** 最後のエリア（日本）。ゴール帯として他のエリアと違う描き方をする */
-export const GOAL_AREA = MAP_AREAS[MAP_AREAS.length - 1]!;
-
-/** 日本を除いた、道のりのエリア */
-export const ROUTE_AREAS = MAP_AREAS.slice(0, -1);
+/**
+ * ゴール。ここだけはステージではなく、学習の目的地そのものなのでコードに置く
+ *（先生が消したり並べ替えたりするものではない）。
+ */
+export const GOAL_AREA: MapArea = {
+  id: "japan",
+  name: "日本",
+  reading: "にほん",
+  image: "/img/scenes/japan_goal.webp",
+  stageId: null,
+  note: "ゴール。ここで はたらきます。",
+};

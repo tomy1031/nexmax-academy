@@ -1,7 +1,8 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { MangaReader } from "@/components/manga/manga-reader";
 import { getManga, listMangas } from "@/lib/content";
+import { canonicalContentPath } from "@/lib/stage-lookup";
 
 /**
  * 漫画ページ（設計07 §4）。
@@ -35,6 +36,12 @@ export default async function MangaPage({ params }: { params: Promise<{ id: stri
   const { id } = await params;
   const manga = await getManga(id);
   if (!manga) notFound();
+
+  // ステージに入っている教材は、本来のURL（`/<ステージ>/<種別>`）へ送り返す。
+  // どのステージにも入っていない教材だけ、ここで表示する
+  //（スタジオで作りかけの教材を先生が確認できる必要がある）。
+  const canonical = await canonicalContentPath("manga", id);
+  if (canonical) redirect(canonical);
 
   return <MangaReader manga={manga} />;
 }

@@ -1,7 +1,8 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { ArticleView } from "@/components/article/article-view";
 import { getArticle, listArticles } from "@/lib/content";
+import { canonicalContentPath } from "@/lib/stage-lookup";
 
 /**
  * 公開分のDBコンテンツを合流させるため ISR にする（設計07 §11.1
@@ -35,6 +36,12 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
   const { id } = await params;
   const article = await getArticle(id);
   if (!article) notFound();
+
+  // ステージに入っている教材は、本来のURL（`/<ステージ>/<種別>`）へ送り返す。
+  // どのステージにも入っていない教材だけ、ここで表示する
+  //（スタジオで作りかけの教材を先生が確認できる必要がある）。
+  const canonical = await canonicalContentPath("article", id);
+  if (canonical) redirect(canonical);
 
   return <ArticleView article={article} />;
 }

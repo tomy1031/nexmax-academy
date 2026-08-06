@@ -479,3 +479,29 @@ export function FuriganaEditor({
     </StudioSection>
   );
 }
+
+/**
+ * その教材が git の JSON か、スタジオで作ったDB版か。
+ *
+ * 一覧なら どこでも同じ見た目で出す。消せるのはDB版だけなので、
+ * 「けす」ボタンを出してよいかの判断もこのしるしと一致する。
+ */
+export function SourceBadge({ status }: { status: "draft" | "published" | null }) {
+  if (!status) {
+    return (
+      <span className="border-hairline text-ink-soft rounded-full border-2 px-3 py-1 text-xs font-black">
+        git版
+      </span>
+    );
+  }
+  return (
+    <span
+      className="rounded-full px-3 py-1 text-xs font-black text-white"
+      style={{
+        background: status === "published" ? "var(--color-leaf-deep)" : "var(--color-sun-deep)",
+      }}
+    >
+      {status === "published" ? "DB版（こうかい）" : "DB版（したがき）"}
+    </span>
+  );
+}

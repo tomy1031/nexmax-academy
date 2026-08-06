@@ -17,6 +17,7 @@ import type {
   QuizQuestion,
   QuizSet,
   Stage,
+  WordStage,
 } from "@/content/schema";
 
 /** 画像スロットの初期値（「あとで」の状態）。 */
@@ -28,7 +29,7 @@ export function emptyStage(): Stage {
   return {
     kind: "stage",
     id: "",
-    step: 1,
+    order: 1,
     title: "",
     reading: "",
     description: "",
@@ -36,6 +37,41 @@ export function emptyStage(): Stage {
     status: "draft",
     contents: [],
     wordStageIds: [],
+  };
+}
+
+/**
+ * ステージの中で作る教材のID。
+ *
+ * 先生に打たせない。ステージのURLと種別から機械的に決めれば、打ちまちがいで
+ * 参照切れになることが無い（2つめ以降は末尾に番号を足す）。
+ */
+export function nextContentId(
+  stageId: string,
+  type: ContentRefType,
+  taken: ReadonlySet<string>,
+): string {
+  const base = `${stageId.length > 0 ? stageId : "stage"}-${type}`;
+  if (!taken.has(base)) return base;
+  for (let n = 2; n < 100; n += 1) {
+    const candidate = `${base}-${n}`;
+    if (!taken.has(candidate)) return candidate;
+  }
+  return `${base}-${taken.size + 1}`;
+}
+
+export function emptyWordStage(): WordStage {
+  return {
+    kind: "wordstage",
+    id: "",
+    title: "",
+    description: "",
+    // ことばアーケードの景色。既存の単語ステージと同じ並びにしておく
+    //（ここだけ違うと、同じゲームなのに課によって見た目が変わる）。
+    fieldSequence: ["forest", "sky", "space"],
+    questionCount: 6,
+    passRate: 70,
+    words: [],
   };
 }
 

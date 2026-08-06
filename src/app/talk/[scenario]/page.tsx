@@ -1,7 +1,8 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { TalkSession } from "@/components/listening/live-mode";
 import { getScenario, listScenarios } from "@/lib/content";
+import { canonicalContentPath } from "@/lib/stage-lookup";
 
 /**
  * 公開分のDBコンテンツを合流させるため ISR にする（設計07 §11.1
@@ -32,6 +33,12 @@ export default async function TalkPage({ params }: { params: Promise<{ scenario:
   const { scenario: id } = await params;
   const scenario = await getScenario(id);
   if (!scenario) notFound();
+
+  // ステージに入っている教材は、本来のURL（`/<ステージ>/<種別>`）へ送り返す。
+  // どのステージにも入っていない教材だけ、ここで表示する
+  //（スタジオで作りかけの教材を先生が確認できる必要がある）。
+  const canonical = await canonicalContentPath("scenario", id);
+  if (canonical) redirect(canonical);
 
   return <TalkSession scenario={scenario} />;
 }

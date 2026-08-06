@@ -6,7 +6,6 @@ import {
   type StageContentItem,
   type StageWordItem,
 } from "@/components/stage/stage-detail";
-import { contentHref } from "@/components/stage/stage-progress";
 import type { FuriganaEntry } from "@/lib/text/furigana";
 import {
   getArticle,
@@ -18,6 +17,19 @@ import {
   listStages,
   getWordStage,
 } from "@/lib/content";
+import { sortStages } from "@/lib/map-data";
+import { stageContentPath } from "@/lib/stage-routes";
+
+/**
+ * ステージのトップ（`/asakai`）— コンテンツの入れ物と順序を見せる画面（設計07 §3）
+ *
+ * URLの1段目がそのままステージID。`/stage/<id>` という段を挟まないので、
+ * 中の教材は `/asakai/listening` と、URLを見ただけで場所が分かる形になる。
+ *
+ * 1段目を占めるぶん、アプリのルート（`/map` など）と名前がぶつかりうる。
+ * 静的なルートが必ず勝つので、ぶつかったステージには永久にたどり着けない。
+ * だから `stageSchema` の `RESERVED_STAGE_IDS` が保存の時点で弾く。
+ */
 
 /**
  * 公開分のDBコンテンツを合流させるため ISR にする（設計07 §11.1
@@ -25,21 +37,22 @@ import {
  * スタジオで「こうかい」した教材は、再デプロイを待たずこの間隔で届く。
  */
 export const revalidate = 60;
+
 /**
  * git 由来の教材はビルド時に切り出す（実行時のファイル読みを起こさない）。
  * DB由来（スタジオで公開したもの）はここに現れないが、dynamicParams の既定により
  * 初回アクセスで生成され、以後は revalidate の間隔でキャッシュされる。
  */
 export async function generateStaticParams() {
-  return (await listStages()).map((item) => ({ id: item.id }));
+  return (await listStages()).map((item) => ({ stage: item.id }));
 }
 
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ stage: string }>;
 }): Promise<Metadata> {
-  const { id } = await params;
+  const { stage: id } = await params;
   const stage = await getStage(id);
   return { title: stage ? `${stage.title} | ステージ` : "ステージ" };
 }
@@ -57,7 +70,7 @@ interface LoadedRef {
   furigana?: readonly FuriganaEntry[];
 }
 
-async function loadRef(ref: StageContentRef): Promise<LoadedRef | null> {
+export async function loadRef(ref: StageContentRef): Promise<LoadedRef | null> {
   switch (ref.type) {
     case "manga": {
       const manga = await getManga(ref.ref);
@@ -116,29 +129,40 @@ async function loadRef(ref: StageContentRef): Promise<LoadedRef | null> {
   }
 }
 
-async function resolveContent(ref: StageContentRef): Promise<StageContentItem | null> {
-  const found = await loadRef(ref);
-  if (!found) return null;
-  return {
-    id: ref.ref,
-    type: ref.type,
-    title: found.title,
-    description: found.description,
-    furigana: found.furigana,
-    href: contentHref(ref.type, ref.ref),
-  };
-}
-
-export default async function StagePage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
+export default async function StagePage({ params }: { params: Promise<{ stage: string }> }) {
+  const { stage: id } = await params;
   const stage = await getStage(id);
   if (!stage) notFound();
 
+  /**
+   * マップの上から数えた番号。ステージの `order` そのものではない
+   *（`order` は並び替えの結果でしかなく飛び番になりうる）。
+   * マップと同じ数え方をしないと、地図で「STEP 02」だったものが中に入ると
+   * 「STEP 30」になる。
+   */
+  const published = sortStages((await listStages()).filter((s) => s.status === "published"));
+  const number = published.findIndex((s) => s.id === stage.id) + 1;
+
   // contents[] の並びがそのまま学習順（順序の正はステージ側 — 設計07 §3）。
-  const resolved = await Promise.all(stage.contents.map(resolveContent));
+  const resolved = await Promise.all(
+    stage.contents.map(async (ref, index): Promise<StageContentItem | null> => {
+      const found = await loadRef(ref);
+      const href = stageContentPath(stage.id, stage.contents, index);
+      if (!found || !href) return null;
+      return {
+        id: ref.ref,
+        type: ref.type,
+        title: found.title,
+        description: found.description,
+        furigana: found.furigana,
+        href,
+      };
+    }),
+  );
   const items = resolved.filter((item): item is StageContentItem => item !== null);
 
-  // 単語ステージも contents[] と同じ扱い。参照切れはここで落とさず一覧から外す。
+  // 単語ステージは独立したアプリ（ことばアーケード）なので行き先も /arcade のまま。
+  // ステージからすぐ開けることだけを保証する。参照切れは一覧から外す。
   const loadedWordStages = await Promise.all(
     stage.wordStageIds.map(async (wordStageId): Promise<StageWordItem | null> => {
       const wordStage = await getWordStage(wordStageId);
@@ -157,7 +181,7 @@ export default async function StagePage({ params }: { params: Promise<{ id: stri
     <StageDetail
       stage={{
         id: stage.id,
-        step: stage.step,
+        number: number > 0 ? number : 1,
         title: stage.title,
         reading: stage.reading,
         description: stage.description,

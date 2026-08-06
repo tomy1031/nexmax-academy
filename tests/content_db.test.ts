@@ -63,7 +63,7 @@ function stageData(over: Record<string, unknown> = {}) {
   return {
     kind: "stage",
     id: "db_stage",
-    step: 3,
+    order: 3,
     title: "テストのしま",
     reading: "てすとのしま",
     description: "テストのための ステージ",
@@ -219,20 +219,20 @@ describe("mergeContentsById", () => {
 describe("ローダーの合流", () => {
   it("listStages は DB の公開ステージを含め、下書きは含めない", async () => {
     useRows([
-      row({ id: "db_pub", data: stageData({ id: "db_pub", step: 5 }) }),
-      row({ id: "db_wip", data: stageData({ id: "db_wip", step: 6 }), status: "draft" }),
+      row({ id: "db_pub", data: stageData({ id: "db_pub", order: 5 }) }),
+      row({ id: "db_wip", data: stageData({ id: "db_wip", order: 6 }), status: "draft" }),
     ]);
     const ids = (await listStages()).map((s) => s.id);
     expect(ids).toContain("db_pub");
     expect(ids).not.toContain("db_wip");
   });
 
-  it("listStages は step 順に並べる（DB由来も同じ並びに入る）", async () => {
+  it("listStages は ならびの ばんごう 順に並べる（DB由来も同じ並びに入る）", async () => {
     useRows([
-      row({ id: "later", data: stageData({ id: "later", step: 9 }) }),
-      row({ id: "earlier", data: stageData({ id: "earlier", step: 2 }) }),
+      row({ id: "later", data: stageData({ id: "later", order: 9 }) }),
+      row({ id: "earlier", data: stageData({ id: "earlier", order: 2 }) }),
     ]);
-    const steps = (await listStages()).map((s) => s.step);
+    const steps = (await listStages()).map((s) => s.order);
     expect(steps).toEqual([...steps].sort((a, b) => a - b));
   });
 

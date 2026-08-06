@@ -5,8 +5,10 @@ import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { Article, ArticleBlock } from "@/content/schema";
 import { NexMax, type NexMaxVariant } from "@/components/nexmax";
+import { DictionaryText } from "@/components/dictionary-text";
 import { RubyText } from "@/components/ruby-text";
 import { recordContentProgress } from "@/lib/progress/store";
+import type { DictionaryEntry } from "@/lib/dictionary";
 import { buildFuriganaIndex, type FuriganaIndex } from "@/lib/text/furigana";
 import {
   collectHeadings,
@@ -34,9 +36,15 @@ export function ArticleView({
    * 書いてしまうと、先生が ID を1文字打つたびにゴミの進捗レコードが増える。
    */
   preview = false,
+  /**
+   * 辞書（単語ステージを畳んだもの）。本文の むずかしい ことばに タップで説明を出す。
+   * 渡さなければ 下線は1つも出ない——辞書が無い環境（プレビューなど）でも本文は読める。
+   */
+  dictionary,
 }: {
   article: Article;
   preview?: boolean;
+  dictionary?: readonly DictionaryEntry[];
 }) {
   const furigana = useMemo(() => buildFuriganaIndex(article.furigana ?? []), [article.furigana]);
   const [rubyOn, setRubyOn] = useState(true);
@@ -108,6 +116,7 @@ export function ArticleView({
               articleId={article.id}
               furigana={furigana}
               show={rubyOn}
+              dictionary={dictionary}
             />
           ))}
         </div>
@@ -168,9 +177,10 @@ interface BlockProps {
   articleId: string;
   furigana: FuriganaIndex;
   show: boolean;
+  dictionary?: readonly DictionaryEntry[];
 }
 
-function BlockView({ block, blockIndex, articleId, furigana, show }: BlockProps) {
+function BlockView({ block, blockIndex, articleId, furigana, show, dictionary }: BlockProps) {
   switch (block.kind) {
     case "heading":
       return block.level === 2 ? (
@@ -198,9 +208,14 @@ function BlockView({ block, blockIndex, articleId, furigana, show }: BlockProps)
       );
 
     case "paragraph":
+      /*
+       * 下線つきの説明を出すのは本文だけ。見出し・かじょうがき・ポイント枠にも出すと、
+       * 1画面に下線が何本も並び、「どれを見ればよいか」が伝わらなくなる
+       *（1文につき1語という決まりは DictionaryText 側が守る — 設計07 §2.5）。
+       */
       return (
         <p className="text-ink leading-loose font-bold">
-          <RubyText text={block.text} index={furigana} show={show} />
+          <DictionaryText text={block.text} index={furigana} show={show} dictionary={dictionary} />
         </p>
       );
 
