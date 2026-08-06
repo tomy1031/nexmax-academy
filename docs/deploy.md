@@ -3,11 +3,13 @@
 > **移行済み（2026-08-03）**: ホスティングは **Cloudflare Workers** が本番。手順は §0。
 > Supabase（DB・認証）は移していない。移したのはホスティングだけ。
 >
-> **§1〜§4 は Vercel 時代の記述（旧）。** 完全には畳んでいない。理由は2つ:
-> Vercel のデプロイがまだ生きていること、Supabase の **Site URL がまだ
-> `https://nexmax-academy.vercel.app` を指している**こと（未登録URLのフォールバック先。§0.3）。
-> Vercel を止めて Site URL を Cloudflare に切り替えたら、§1〜§4 は削除してよい。
-> ただし §4 の「同一 Supabase を共有する上での運用注意」は**ホストに依存しない**ので残す。
+> **切り離し済み（2026-08-04）**: Supabase の **Site URL は Cloudflare に切替**、
+> Vercel の **Git 連携は解除**した（push しても再デプロイされない）。
+> プロジェクトと `nexmax-academy.vercel.app` は残置してある（削除は不可逆なため保留）。
+>
+> **§1〜§3 は Vercel 時代の記述（旧）。** もう手順としては使わない。Vercel プロジェクトを
+> 消したら削除してよい。**§4「同一 Supabase を共有する上での運用注意」はホストに
+> 依存しないので残す**（ローカル・staging・本番が同じ DB を見る話）。
 
 ## 0. Cloudflare Workers（新・移行先）
 
@@ -205,15 +207,24 @@ Vercel の2本（`nexmax-academy.vercel.app` / `*.vercel.app`）は移行完了�
 
 ## 1. 環境の位置づけ
 
+現行（Cloudflare 移行後）:
+
 | 環境 | ホスト | 目的 | Supabase |
 |---|---|---|---|
 | ローカル | `npm run dev` | 開発 | 同一プロジェクト |
-| **検証（本書の主対象）** | **Vercel Hobby（無料）** | 常時の動作確認・PRごとのプレビュー | **本番と同一プロジェクト** |
-| 本番 | 設計方針03のとおり（正式運用先） | エンドユーザー提供 | 同一プロジェクト |
+| staging | `staging-academy.nexmax.workers.dev` | 本番前の確認（`npm run cf:staging`） | 同一プロジェクト |
+| 本番 | `academy.nexmax.workers.dev` | エンドユーザー提供 | 同一プロジェクト |
 
 DB・認証は3環境とも**同じ Supabase プロジェクト**を使う（ユーザー方針）。データと認証ユーザーが環境をまたいで共有される点に注意（§4）。
+**保存を伴う実機検証は検証専用アカウントで**行うこと（`docs/skills/browser_e2e_verification.md`）。
 
-## 2. なぜ Vercel Hobby（検証環境）か
+以下は旧構成の記録。
+
+| 環境 | ホスト | 目的 | Supabase |
+|---|---|---|---|
+| 旧・検証 | Vercel Hobby（無料） | 常時の動作確認・PRごとのプレビュー | 本番と同一プロジェクト |
+
+## 2. なぜ Vercel Hobby だったか（旧）
 
 - Next.js 16 の App Router・ミドルウェア・Server Actions・画像最適化を**アダプタ無しでそのまま**動かせる（Next.js 純正ホスト）
 - 無料の Hobby プラン（クレジットカード不要）
@@ -222,7 +233,7 @@ DB・認証は3環境とも**同じ Supabase プロジェクト**を使う（ユ
 
 > 本番を Vercel にするか他ホストにするかは 03 の正式運用の判断に従う。検証環境の選定が本番を縛るものではない。
 
-## 3. セットアップ手順（検証環境・一度きり）
+## 3. セットアップ手順（旧・Vercel。もう使わない）
 
 1. [vercel.com](https://vercel.com) に GitHub アカウントでログイン
 2. **Add New → Project** → `tomy1031/nexmax-academy` を Import
