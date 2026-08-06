@@ -11,6 +11,7 @@
  * クライアントコンポーネントから import しないこと。
  */
 
+import { cache } from "react";
 import { createClient as createPlainClient } from "@supabase/supabase-js";
 import { contentSchema, type Content } from "@/content/schema";
 import { getSupabasePublicConfig } from "@/lib/env";
@@ -79,13 +80,33 @@ function createPublicClient() {
  * - `includeDrafts` は管理画面用。下書きは本人のセッションが要る（RLSで管理者に限られる）。
  * - 行の `data` を contentSchema で検証し、通ったものだけ返す。
  *   規格が進化して古い行が残っていても、学習者の画面は壊れない。
+ *
+ * ## 1リクエスト1回に畳む（重要）
+ * 呼ぶたびにDBへ往復し、返ってきた全行を zod で検証していた。
+ * 1画面で `getStage` → `getManga` → `getArticle` … と種別ごとに呼ぶので、
+ * ステージの教材が5本あるだけで**10回以上**走る。
+ * これで Cloudflare Workers の上限に当たって 500（Error 1102）になった。
+ *
+ * React の `cache()` は**同じリクエストの中でだけ**結果を使い回す
+ *（リクエストをまたいで古い値を返すことはない）。引数で分かれると畳めないので、
+ * 公開分と下書き入りを別の関数に分けてある。
  */
 export async function fetchDbContents(opts?: {
   includeDrafts?: boolean;
 }): Promise<DbContentEntry[]> {
+  return opts?.includeDrafts ? fetchWithDrafts() : fetchPublished();
+}
+
+/** 公開分だけ（学習者の画面・ISR から呼ばれる）。 */
+const fetchPublished = cache(async (): Promise<DbContentEntry[]> => readContents(false));
+
+/** 下書きも含む（管理画面。本人のセッションが要る）。 */
+const fetchWithDrafts = cache(async (): Promise<DbContentEntry[]> => readContents(true));
+
+async function readContents(includeDrafts: boolean): Promise<DbContentEntry[]> {
   let supabase: NonNullable<Awaited<ReturnType<typeof createClient>>> | null;
   try {
-    supabase = opts?.includeDrafts ? await createClient() : createPublicClient();
+    supabase = includeDrafts ? await createClient() : createPublicClient();
   } catch (e) {
     // Next の制御用エラー（動的レンダリングへの切り替え等）は握りつぶさない
     if (isNextControlFlowError(e)) throw e;
@@ -95,7 +116,7 @@ export async function fetchDbContents(opts?: {
   if (!supabase) return [];
 
   let query = supabase.from("studio_contents").select(SELECT_COLUMNS);
-  if (!opts?.includeDrafts) query = query.eq("status", "published");
+  if (!includeDrafts) query = query.eq("status", "published");
 
   const { data, error } = await query;
   // テーブル未作成・権限なし・接続不良のいずれも「DBには何もない」として扱う

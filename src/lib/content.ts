@@ -15,6 +15,7 @@
  * クライアントコンポーネントから import しないこと。
  */
 
+import { cache } from "react";
 import {
   contentSchema,
   type Article,
@@ -28,6 +29,15 @@ import {
 } from "@/content/schema";
 import { GIT_CONTENTS } from "@/content/git-contents.generated";
 import { fetchDbContents } from "@/lib/content-db";
+
+/**
+ * 一覧はどれも `cache()` で包んである。
+ *
+ * 1画面で `getStage` → `getManga` → `getArticle` … と何度も呼ばれ、そのたびに
+ * DBへ往復して全行を zod で検証していた。ステージの教材が5本あるだけで10回以上走り、
+ * Cloudflare Workers の上限に当たって 500（Error 1102）になった。
+ * `cache()` は**同じリクエストの中でだけ**結果を使い回す（またいで古い値は返さない）。
+ */
 
 /**
  * スキーマに通ったものだけを返す（lint:content がCIで先に落とす前提）。
@@ -83,79 +93,79 @@ async function listPublishedFromDb<K extends Content["kind"]>(
     .filter((c): c is Extract<Content, { kind: K }> => c.kind === kind);
 }
 
-export async function listWordStages(): Promise<WordStage[]> {
+export const listWordStages = cache(async (): Promise<WordStage[]> => {
   const git = parseAll().filter((c): c is WordStage => c.kind === "wordstage");
   return mergeContentsById(git, await listPublishedFromDb("wordstage")).sort((a, b) =>
     a.id.localeCompare(b.id),
   );
-}
+});
 
 export async function getWordStage(id: string): Promise<WordStage | null> {
   return (await listWordStages()).find((stage) => stage.id === id) ?? null;
 }
 
-export async function listQuizSets(): Promise<QuizSet[]> {
+export const listQuizSets = cache(async (): Promise<QuizSet[]> => {
   const git = parseAll().filter((c): c is QuizSet => c.kind === "quizset");
   return mergeContentsById(git, await listPublishedFromDb("quizset")).sort((a, b) =>
     a.id.localeCompare(b.id),
   );
-}
+});
 
 export async function getQuizSet(id: string): Promise<QuizSet | null> {
   return (await listQuizSets()).find((set) => set.id === id) ?? null;
 }
 
-export async function listListenings(): Promise<Listening[]> {
+export const listListenings = cache(async (): Promise<Listening[]> => {
   const git = parseAll().filter((c): c is Listening => c.kind === "listening");
   return mergeContentsById(git, await listPublishedFromDb("listening")).sort((a, b) =>
     a.id.localeCompare(b.id),
   );
-}
+});
 
 export async function getListening(id: string): Promise<Listening | null> {
   return (await listListenings()).find((listening) => listening.id === id) ?? null;
 }
 
-export async function listScenarios(): Promise<Scenario[]> {
+export const listScenarios = cache(async (): Promise<Scenario[]> => {
   const git = parseAll().filter((c): c is Scenario => c.kind === "scenario");
   // シナリオだけは order 昇順（一覧の並びが学習の順番そのものなので id 順にしない）。
   return mergeContentsById(git, await listPublishedFromDb("scenario")).sort(
     (a, b) => a.order - b.order,
   );
-}
+});
 
 export async function getScenario(id: string): Promise<Scenario | null> {
   return (await listScenarios()).find((scenario) => scenario.id === id) ?? null;
 }
 
-export async function listStages(): Promise<Stage[]> {
+export const listStages = cache(async (): Promise<Stage[]> => {
   const git = parseAll().filter((c): c is Stage => c.kind === "stage");
   return mergeContentsById(git, await listPublishedFromDb("stage")).sort(
     (a, b) => a.order - b.order || a.id.localeCompare(b.id),
   );
-}
+});
 
 export async function getStage(id: string): Promise<Stage | null> {
   return (await listStages()).find((stage) => stage.id === id) ?? null;
 }
 
-export async function listMangas(): Promise<Manga[]> {
+export const listMangas = cache(async (): Promise<Manga[]> => {
   const git = parseAll().filter((c): c is Manga => c.kind === "manga");
   return mergeContentsById(git, await listPublishedFromDb("manga")).sort((a, b) =>
     a.id.localeCompare(b.id),
   );
-}
+});
 
 export async function getManga(id: string): Promise<Manga | null> {
   return (await listMangas()).find((manga) => manga.id === id) ?? null;
 }
 
-export async function listArticles(): Promise<Article[]> {
+export const listArticles = cache(async (): Promise<Article[]> => {
   const git = parseAll().filter((c): c is Article => c.kind === "article");
   return mergeContentsById(git, await listPublishedFromDb("article")).sort((a, b) =>
     a.id.localeCompare(b.id),
   );
-}
+});
 
 export async function getArticle(id: string): Promise<Article | null> {
   return (await listArticles()).find((article) => article.id === id) ?? null;

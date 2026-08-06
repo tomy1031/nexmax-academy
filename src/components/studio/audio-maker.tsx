@@ -177,7 +177,10 @@ export function AudioMaker({
             </p>
           )}
 
-          {error ? <p className="text-coral-deep text-xs font-black">{error}</p> : null}
+          {error ? (
+            /* モデルごとの理由が複数行で来る。改行を潰すと どれが何か 読めない */
+            <p className="text-coral-deep text-xs font-black whitespace-pre-line">{error}</p>
+          ) : null}
         </>
       )}
     </StudioSection>
