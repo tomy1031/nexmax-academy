@@ -1,2 +1,3 @@
+node scripts/check_protected_paths.mjs
 npx lint-staged
 npm run lint:content
