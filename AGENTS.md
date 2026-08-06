@@ -20,6 +20,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 | `docs/design/review_rubric.md`             | 検収・レビューを行うとき（証拠必須ルーブリック）                           |
 | `docs/design/04_ビジュアルテーマ.md`       | UI・画面・キャラクターに触る前（あおぞらパスウェイ／ネクマックス）         |
 | `docs/skills/codex_image_generation.md`    | 画像アセットを作るとき（image-gen-2・一貫性ルール）                        |
+| `docs/skills/browser_e2e_verification.md`  | ブラウザ自動操作で実機検証をする前（本番データ事故の再発防止）             |
 
 ## 絶対規律（機械検査の対象。違反はCIで落ちる）
 
@@ -120,6 +121,15 @@ Supabase（DB・認証）は移していない。手順の詳細は `docs/deploy
    staging に載せる」しか手が無くなるため。
 
 **このリポジトリは public。** ドキュメントにアカウントIDなどの内部識別子を直書きしない。
+
+## 実機検証で本番の学習者データを書き換えない
+
+ブラウザ自動操作でフローを通すとき、**保存を伴う操作は検証専用アカウントで行う**。
+2026-08-04 に、20問の自動入力が全問「Ⓐ」で完走してユーザー本人の診断結果を
+書き換える事故を起こしている。本人アカウントで通すしかない場合は、**先に SQL で
+現在値を退避**してから始める。作法とハマりどころは
+`docs/skills/browser_e2e_verification.md`（実マウスクリックのみ有効・アニメーション中は
+クリックが吸われる・撤退条件）。
 
 ## レビュー時の役割分担（複数エージェント検収）
 
