@@ -81,8 +81,8 @@ function messageForTokenReason(reason: string | undefined): string {
   switch (reason) {
     case "noKey":
       return "AIの キーが まだ ありません。「AI指示出し」で 登録してください。";
-    case "badKey":
-      return "この キーは つかえませんでした。コピーし直して 登録してください。";
+    case "tokenRejected":
+      return "みじかい きっぷ が つくれませんでした。「AI設定」で「せつぞくを ためす」を おしてください（AQ. で はじまる キーだと 止まることが あります）。";
     case "noPermission":
       return "この キーでは 音声づくりが つかえません。キーの プロジェクトを たしかめてください。";
     case "modelNotFound":

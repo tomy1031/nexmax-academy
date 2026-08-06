@@ -29,9 +29,12 @@ const ADVICE: Record<string, Advice> = {
     next: "「AI指示出し」の 画面で Gemini の APIキーを 登録してください。",
     toSettings: true,
   },
-  badKey: {
-    what: "この キーは つかえませんでした。",
-    next: "キーを コピーし直して、もう一度 登録してください（前後の 空白も 消してください）。",
+  tokenRejected: {
+    what: "キーは 読めましたが、たいわ用の みじかい きっぷ が つくれませんでした。",
+    next:
+      "「AI設定」で「せつぞくを ためす」を おしてください。" +
+      "AQ. で はじまる 新しい キーだと ここで 止まることが あります。" +
+      "その ときは AIzaSy で はじまる キーを つくり直して ください。",
     toSettings: true,
   },
   noPermission: {

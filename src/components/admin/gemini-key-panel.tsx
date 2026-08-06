@@ -34,6 +34,10 @@ type Check =
 const REASON_TEXT: Record<string, string> = {
   noKey: "キーが 入っていません。",
   badKey: "この キーは つかえません。コピーし直して ください（前後の 空白も 消す）。",
+  tokenRejected:
+    "キーは 読めましたが、みじかい きっぷ（トークン）が つくれませんでした。" +
+    "AQ. で はじまる 新しい キーだと ここで 止まることが あります。" +
+    "AIzaSy で はじまる キーを つくり直して ためしてください。",
   noPermission:
     "この キーでは つかえません。キーの プロジェクトで Gemini API が 有効か たしかめてください。",
   modelNotFound: "この モデルは 見つかりませんでした。下の 一覧から えらび直してください。",
@@ -166,6 +170,23 @@ export function GeminiKeyPanel() {
           </span>
         </label>
       </div>
+
+      {/*
+        新しい形式のキー（AQ. で始まる）は、モデル一覧は引けるのに
+        みじかい きっぷ（auth_tokens）だけ作れないことがある。押す前に言う——
+        押してから理由を読むのでは、先生は一度は「自分のキーが悪い」と思ってしまう。
+        参考: discuss.ai.google.dev の authTokens.create INVALID_ARGUMENT スレッド
+      */}
+      {key.startsWith("AQ.") ? (
+        <p
+          className="mt-4 rounded-2xl border-2 bg-white p-3 text-xs font-bold"
+          style={{ borderColor: "var(--color-sun)" }}
+        >
+          この キーは <code>AQ.</code> で はじまっています。この 形式だと たいわ・音声づくりが
+          つかえないことが あります。うまくいかない ときは、Google AI Studio で<code>AIzaSy</code>{" "}
+          で はじまる キーを つくって ためしてください。
+        </p>
+      ) : null}
 
       <div className="mt-5 flex flex-wrap items-center gap-3">
         <button
