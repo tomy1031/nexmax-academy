@@ -302,7 +302,13 @@ function PanelView({
 }) {
   return (
     <figure className="card-island overflow-hidden p-0">
-      <div className="bg-panel-tint relative aspect-[4/3] w-full">
+      {/*
+        高さの上限を付ける理由: 埋め込み時の枠は横に広い（88rem）ので、4:3 のままだと
+        1コマが画面の高さを超え、絵とセリフを同時に見られない。
+        「1コマずつ見る」形の意味が無くなるので、画面の高さで頭打ちにする。
+        object-contain なので、はみ出しは切らずに左右が余るだけ。
+      */}
+      <div className="bg-panel-tint relative aspect-[4/3] max-h-[58vh] w-full">
         {panel.image.src ? (
           <Image
             src={panel.image.src}

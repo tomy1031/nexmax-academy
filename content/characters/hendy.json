@@ -1,0 +1,16 @@
+{
+  "kind": "character",
+  "id": "hendy",
+  "name": "ヘンディ",
+  "reading": "へんでぃ",
+  "role": "先輩エンジニア（入社5年目・チームの相談役）",
+  "looks": "Southeast Asian man in his late twenties. Short black hair, neatly parted on the left. Warm brown eyes, thick straight eyebrows, light stubble-free jaw, gentle smile lines. Wears a light sky-blue (#A9D6F5) button-down shirt with the sleeves rolled to the elbow, tucked into charcoal-grey slacks, a thin navy company ID lanyard around the neck with a plain white blank card. Brown leather belt, white sneakers. Height about 175cm, slim build, relaxed upright posture.",
+  "personality": "おだやかで せっかちでない。人の 話を さいごまで きく。教えるときは まず ほめてから、つぎに することを 1つだけ 言う。",
+  "sheet": {
+    "src": "/img/characters/hendy/sheet.webp",
+    "refs": [],
+    "status": "done"
+  },
+  "references": [],
+  "voice": "Charon"
+}

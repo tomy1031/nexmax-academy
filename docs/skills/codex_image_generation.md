@@ -49,18 +49,27 @@ Never: realistic rendering, gradients, extra fingers, readable letters, dark hor
 
 ## 4. バリアント一覧（差分プロンプト）
 
-配置先は `public/img/characters/nexmax/<id>.png`。`src/components/nexmax.tsx` の registry と1対1。
+配置先は **`public/img/characters/nexmax/<id>.webp`**。`src/components/nexmax.tsx` の registry と1対1。
 
-| id | 役割 | 差分プロンプト（マスター記述の後に1行だけ足す） |
-|---|---|---|
-| `guide` | みちあんない | Pose: standing, one hand raised pointing upward cheerfully (same pose as the reference). |
-| `hello` | あいさつ | Pose: waving one hand high in a friendly greeting, other arm relaxed. |
-| `build` | ものづくり | Prop: wearing a tiny yellow hard hat tilted on the helmet, holding a small wrench. |
-| `listen` | きく | Prop: wearing big round headphones over the ear pods, one hand cupped near the ear. |
-| `cheer` | おうえん | Prop: holding two small pom-poms up, joyful open-mouth smile, tiny confetti around. |
-| `book` | ものしり | Prop: round glasses resting on the face-screen, holding an open book with blank pages. |
+**拡張子に注意**: `nexmax.tsx` が読むのは `.webp` である（`${DIR}/${variant}.webp`）。
+Codex が出すのは PNG なので、保存後に必ず `cwebp -q 82` で変換して PNG を消す。
+PNG のままだと1枚 850KB 前後で、6枚で 5MB になる。`unoptimized` を付けているので
+Next.js の最適化は効かず、そのままの重さが学習者の回線に乗る。
+（`sips` は WebP を書けない。変換は `cwebp` を使う。）
+
+| id | 役割 | 差分プロンプト（マスター記述の後に1行だけ足す） | 生成 |
+|---|---|---|---|
+| `guide` | みちあんない | Pose: standing, one hand raised pointing upward cheerfully (same pose as the reference). | 2026-08-06 |
+| `hello` | あいさつ | Pose: waving one hand high in a friendly greeting, other arm relaxed. | 2026-08-06 |
+| `build` | ものづくり | Prop: wearing a tiny yellow hard hat tilted on the helmet, holding a small wrench. | 2026-08-06 |
+| `listen` | きく | Prop: wearing big round headphones over the ear pods, one hand cupped near the ear. | 2026-08-06 |
+| `cheer` | おうえん | Prop: holding two small pom-poms up, joyful open-mouth smile, tiny confetti around. | 2026-08-06 |
+| `book` | ものしり | Prop: round glasses resting on the face-screen, holding an open book with blank pages. | 2026-08-06 |
 
 追加バリアントを作るときは、この表に行を足し、`nexmax.tsx` の `NEXMAX_FAMILY` にも同じ id で追加する（表と registry の同期が契約）。
+
+`hello` を先に1体だけ撮って受入チェックに通し、**残り5体はその hello.png も参照入力に足して1セッションで**撮った。
+合格した変種を参照に足せる（§2-3）ので、2体目以降のぶれが減る。
 
 ## 5. 実行手順（Codex）
 
@@ -90,6 +99,27 @@ codex -i public/img/characters/nexmax/reference.png \
 - [ ] 表情が友好的（怒り・恐怖・嘲笑がない — 01ガイド R8）
 
 1つでも落ちたら**再生成**（プロンプトの差分行を具体化して撮り直す）。
+
+## 6.5 まんがの登場人物（ネクマックス以外の人間キャラ）
+
+ネクマックスと違い、**正典の原画は無い**。かわりに `content/characters/<id>.json` の
+`looks` が正典になる。だから `looks` はあいまいに書かない（「青いシャツ」ではなく
+「そで を ひじまで まくった 水色(#A9D6F5)のボタンダウン」）。
+
+1. **設定画（model sheet）を先に1枚作る** → `public/img/characters/<id>/sheet.webp`。
+   プロンプトは手書きせず `buildCharacterSheetPrompt()`（`src/lib/manga-prompt.ts`）が
+   出したものを逐語で使う。画面の「AIで つくる」と同じ文字列になり、あとで先生が
+   作り直しても同じ絵柄に戻る。
+   - 三面図（正面T字・側面・背面）＋表情6種、白背景、グリッド線、**文字なし**
+   - 出力は 1536×1024。`cwebp -q 84` で変換する
+2. **コマ絵は設定画を毎回参照入力に渡す。** ここが一貫性のほぼ全て。
+   さらに **1コマ前の絵も参照に足す**と、部屋・光・服がそろう。
+   （panel2 では sheet2枚＋panel1、panel3 では sheet2枚＋panel2 …）
+3. **コマ絵に文字を描かせない。** セリフはアプリが下に重ねる（`manga-slides.tsx`）。
+   作り直してよいのは「読める文字が描かれた」ときだけ。色ムラでは作り直さない。
+
+実績: `hendy` / `nyam` の設定画と、`m2-asakai-manga` の4コマを 2026-08-06 に生成。
+4コマとも1回ずつの生成で、服・髪・部屋がそろった（作り直しゼロ）。
 
 ## 7. シーン・背景イラスト（任意の強化アセット）
 
