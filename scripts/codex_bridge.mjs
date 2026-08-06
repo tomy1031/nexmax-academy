@@ -10,18 +10,41 @@
  *   npm run codex:bridge          # codex app-server も自動起動する
  *   AUTO_START_CODEX=0 npm run codex:bridge
  *
- * 公開するもの:
- *   GET  /api/codex/status  … { portOpen, managed, pid, starting, lastError, command }
+ * 公開するもの（**すべて合言葉が要る**）:
+ *   GET  /api/codex/hello   … { ok, workdir, portOpen, ... } 合言葉の確認もかねる
+ *   PUT  /api/codex/file    … 参照画像を作業フォルダへ置く（?name=）
+ *   GET  /api/codex/file    … 作業フォルダのファイルを返す（?name=）
  *   WS   /codex             … ws://127.0.0.1:17653 への素通しトンネル
  *
- * 本番（Cloudflare Tunnel）では、この 8790 番を cloudflared が公開し、
- * 手前の Cloudflare Access が管理者2人だけを通す（08 §0.1.1）。
- * このスクリプト自体は認証を持たない——loopback か、Access の内側でのみ使うこと。
+ * ## 合言葉が要る理由（ここを外すと危ない）
+ *
+ * 実測（2026-08-06）: **https のページからでも `ws://127.0.0.1` は開ける。**
+ * `127.0.0.1` は「安全なオリジン」に数えられるので、混在コンテンツで弾かれない。
+ * つまりこのブリッジは、公開中のアプリから使えると同時に、**先生が開いた
+ * どのサイトからでも叩ける**。その先にいるのはシェルを実行できる Codex である。
+ *
+ * だから合言葉（トークン）を必須にする。ブラウザは相手のオリジンを詐称できないが、
+ * オリジンの許可リストだけでは不十分で（非ブラウザからは自由に名乗れる）、
+ * **境界は合言葉のほうである**。
+ *
+ * 合言葉は `~/.nexmax/codex-bridge-token` に置き、起動時に画面へ出す。
+ * 先生はそれを「AI設定」に一度だけ貼る。
+ *
+ * ## 読み書きできる場所を1つの箱に閉じる
+ *
+ * ファイルの受け渡しを「好きなパス」で許すと、任意のファイルを読める穴になる。
+ * そこで **作業フォルダ1つの中だけ**を読み書きの対象にし、名前も
+ * `[a-z0-9_-].(png|jpg|jpeg|webp)` に限る（`..` を書きようがない）。
+ * Codex にもこのフォルダを cwd として渡し、絵はここへ保存させる。
  */
 import crypto from "node:crypto";
+import fs from "node:fs";
 import http from "node:http";
 import net from "node:net";
+import os from "node:os";
+import path from "node:path";
 import { spawn } from "node:child_process";
+import { resolveInWorkdir as resolveIn } from "./lib/bridge_paths.mjs";
 
 const PORT = Number(process.env.PORT || 8790);
 const HOST = process.env.HOST || "127.0.0.1";
@@ -29,6 +52,43 @@ const CODEX_WS_HOST = process.env.CODEX_WS_HOST || "127.0.0.1";
 const CODEX_WS_PORT = Number(process.env.CODEX_WS_PORT || 17653);
 const CODEX_BIN = process.env.CODEX_BIN || "codex";
 const AUTO_START_CODEX = process.env.AUTO_START_CODEX !== "0";
+
+/** 合言葉。無ければ作る。ファイルは本人だけが読める権限にする。 */
+const TOKEN = (() => {
+  if (process.env.CODEX_BRIDGE_TOKEN) return process.env.CODEX_BRIDGE_TOKEN;
+  const dir = path.join(os.homedir(), ".nexmax");
+  const file = path.join(dir, "codex-bridge-token");
+  try {
+    const existing = fs.readFileSync(file, "utf8").trim();
+    if (existing) return existing;
+  } catch {
+    // まだ無い。下で作る
+  }
+  const fresh = crypto.randomBytes(24).toString("base64url");
+  fs.mkdirSync(dir, { recursive: true, mode: 0o700 });
+  fs.writeFileSync(file, `${fresh}\n`, { mode: 0o600 });
+  return fresh;
+})();
+
+/**
+ * 参照画像と生成結果を置く箱。ここ**だけ**が読み書きの対象。
+ * 起動のたびに作り直す（前回の絵が残っていると、消し忘れが積もる）。
+ */
+const WORKDIR = path.join(os.tmpdir(), "nexmax-codex-bridge");
+fs.rmSync(WORKDIR, { recursive: true, force: true });
+fs.mkdirSync(WORKDIR, { recursive: true, mode: 0o700 });
+
+/** 1枚あたりの上限。参照画像も生成結果もこれを超えない。 */
+const MAX_FILE_BYTES = 12 * 1024 * 1024;
+
+/** 長さの違いでも漏らさないよう、時間の一定な比較を使う。 */
+function tokenOk(given) {
+  if (typeof given !== "string" || given.length === 0) return false;
+  const a = Buffer.from(given);
+  const b = Buffer.from(TOKEN);
+  if (a.length !== b.length) return false;
+  return crypto.timingSafeEqual(a, b);
+}
 
 const codex = {
   child: null,
@@ -101,31 +161,133 @@ const codex = {
   },
 };
 
-function sendJson(res, status, body) {
+/**
+ * CORS。管理画面は別オリジン（公開中の Workers）なので、返すヘッダが要る。
+ * `*` にはせず、来たオリジンをそのまま返す——資格情報は使わないので安全側に倒れる。
+ * **通してよいかどうかを決めるのはオリジンではなく合言葉**（冒頭の説明）。
+ */
+function corsHeaders(req) {
+  return {
+    "access-control-allow-origin": req.headers.origin ?? "*",
+    "access-control-allow-methods": "GET, PUT, OPTIONS",
+    "access-control-allow-headers": "content-type",
+    "access-control-max-age": "600",
+    vary: "origin",
+  };
+}
+
+function sendJson(req, res, status, body) {
   res.writeHead(status, {
     "content-type": "application/json; charset=utf-8",
     "cache-control": "no-store",
-    // 管理画面（別オリジンの Next.js）から status を読めるようにする。
-    // WS 側はブラウザが CORS を課さないためヘッダ不要。
-    "access-control-allow-origin": "*",
+    ...corsHeaders(req),
   });
   res.end(JSON.stringify(body));
 }
 
+/**
+ * 作業フォルダの中の1ファイルへ解決する。外へ出る名前は null。
+ * 判定そのものは `scripts/lib/bridge_paths.mjs`（テストがある）。
+ */
+function resolveInWorkdir(name) {
+  return resolveIn(WORKDIR, name);
+}
+
+const CONTENT_TYPES = {
+  ".png": "image/png",
+  ".jpg": "image/jpeg",
+  ".jpeg": "image/jpeg",
+  ".webp": "image/webp",
+};
+
 const server = http.createServer((req, res) => {
   const url = new URL(req.url, `http://${req.headers.host}`);
-  if (url.pathname === "/api/codex/status") {
-    codex.status().then((s) => sendJson(res, 200, s));
+
+  if (req.method === "OPTIONS") {
+    res.writeHead(204, corsHeaders(req));
+    res.end();
     return;
   }
-  res.writeHead(404, { "content-type": "text/plain; charset=utf-8" });
-  res.end("codex_bridge: /api/codex/status か WS /codex だけを提供します");
+
+  // 合言葉が合わないものは、ここから先へ1歩も進ませない
+  if (!tokenOk(url.searchParams.get("token"))) {
+    sendJson(req, res, 401, { ok: false, reason: "badToken" });
+    return;
+  }
+
+  if (url.pathname === "/api/codex/hello" && req.method === "GET") {
+    codex.status().then((s) => sendJson(req, res, 200, { ok: true, workdir: WORKDIR, ...s }));
+    return;
+  }
+
+  // 参照画像を置く（キャラクターシートなど。Codex は URL を読めないので実体が要る）
+  if (url.pathname === "/api/codex/file" && req.method === "PUT") {
+    const full = resolveInWorkdir(url.searchParams.get("name"));
+    if (!full) {
+      sendJson(req, res, 400, { ok: false, reason: "badName" });
+      return;
+    }
+    const chunks = [];
+    let size = 0;
+    req.on("data", (chunk) => {
+      size += chunk.length;
+      if (size > MAX_FILE_BYTES) {
+        sendJson(req, res, 413, { ok: false, reason: "tooLarge" });
+        req.destroy();
+        return;
+      }
+      chunks.push(chunk);
+    });
+    req.on("end", () => {
+      if (res.writableEnded) return;
+      try {
+        fs.writeFileSync(full, Buffer.concat(chunks), { mode: 0o600 });
+        sendJson(req, res, 200, { ok: true, path: full });
+      } catch (err) {
+        sendJson(req, res, 500, { ok: false, reason: String(err?.message ?? err) });
+      }
+    });
+    return;
+  }
+
+  // 生成結果を取りに来る（Codex がこのフォルダへ保存したもの）
+  if (url.pathname === "/api/codex/file" && req.method === "GET") {
+    const full = resolveInWorkdir(url.searchParams.get("name"));
+    if (!full) {
+      sendJson(req, res, 400, { ok: false, reason: "badName" });
+      return;
+    }
+    let body;
+    try {
+      body = fs.readFileSync(full);
+    } catch {
+      sendJson(req, res, 404, { ok: false, reason: "notYet" });
+      return;
+    }
+    res.writeHead(200, {
+      "content-type": CONTENT_TYPES[path.extname(full)] ?? "application/octet-stream",
+      "cache-control": "no-store",
+      ...corsHeaders(req),
+    });
+    res.end(body);
+    return;
+  }
+
+  sendJson(req, res, 404, { ok: false, reason: "noSuchEndpoint" });
 });
 
 server.on("upgrade", (req, socket, head) => {
   const url = new URL(req.url, `http://${req.headers.host}`);
   if (url.pathname !== "/codex") {
     socket.destroy();
+    return;
+  }
+  /*
+   * ここが Codex への入口そのもの。合言葉が無い接続は上流に触らせない。
+   * ブラウザの WebSocket は独自ヘッダを付けられないので、合言葉はクエリで受ける。
+   */
+  if (!tokenOk(url.searchParams.get("token"))) {
+    socket.end("HTTP/1.1 401 Unauthorized\r\n\r\ncodex_bridge: 合言葉が違います");
     return;
   }
   const browserKey = req.headers["sec-websocket-key"];
@@ -196,6 +358,16 @@ server.on("upgrade", (req, socket, head) => {
 server.listen(PORT, HOST, async () => {
   console.log(`codex_bridge: http://${HOST}:${PORT}`);
   console.log(`  WS /codex -> ws://${CODEX_WS_HOST}:${CODEX_WS_PORT}`);
+  console.log(`  作業フォルダ: ${WORKDIR}`);
+  console.log("");
+  console.log("  ┌─ 管理画面「AI設定」に貼る合言葉 ────────────────");
+  console.log(`  │  ${TOKEN}`);
+  console.log("  └──────────────────────────────────────────────");
+  console.log(`  （保存先: ${path.join(os.homedir(), ".nexmax", "codex-bridge-token")}）`);
+  console.log(
+    "  この合言葉を知っている相手だけが、あなたの Codex を使えます。人に見せないでください。",
+  );
+  console.log("");
   if (AUTO_START_CODEX) {
     if (await codex.isPortOpen()) {
       console.log("codex app-server: 起動済み");
