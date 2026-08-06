@@ -2,23 +2,23 @@
 
 検証・本番とも Vercel から **Cloudflare Workers** へ移す。あわせて **Cloudflare Tunnel + Access** で、管理画面の「AI指示出し」（`/admin/ai`・実装済み）を本番からローカルの Codex に届かせる。**完全無料の範囲で行う**（Workers 無料枠・Tunnel 無料・Access 50人まで無料）。
 
-## 0. 現況サマリ（2026-08-03 時点）
+## 0. 現況サマリ（2026-08-04 時点）
 
 | フェーズ | 状態 |
 |---|---|
 | Phase A — Next.js 更新と OpenNext 導入 | ✅ 完了 |
 | Phase B-5 — デプロイ | ✅ 完了（`https://academy.nexmax.workers.dev`） |
 | Phase B-6 — プレビュー＋Redirect URLs | ✅ 完了（`https://staging-academy.nexmax.workers.dev`） |
-| Phase B-7 — ログイン実機確認 | 🟡 **ログイン自体は成功。診断やり直しの通し確認だけ残り**（タスクボード） |
+| Phase B-7 — ログイン実機確認 | ✅ **完了（2026-08-04）**。§Phase B-7 に実測結果 |
+| Vercel の切り離し | ✅ Git 連携を解除（自動デプロイ停止）。プロジェクトとURLは残置 |
+| Supabase Site URL | ✅ Cloudflare へ切替済み |
 | Phase C — Tunnel + Access | ⛔ **保留。ドメインを買わない決定により現設計では成立しない**（§Phase C） |
 
-**ホスティングの移行は完了している。** 残るのは:
+**移行は完了。** 本番は Cloudflare Workers で動いており、認証も通っている。残るのは:
 
-- Phase B-7 の通し確認（ユーザー操作。Claude では代われない）
-- **Vercel の停止と Site URL の切り替え**。Supabase の Site URL はまだ
-  `https://nexmax-academy.vercel.app` を指しており、未登録URLのフォールバック先になっている。
-  Vercel を止めるときは Site URL も一緒に移すこと（`docs/deploy.md` §0.3）
 - Phase C（ドメインを用意する気になったら再開。手順は下に残してある）
+- Vercel プロジェクト自体の削除（急がない。`nexmax-academy.vercel.app` は
+  まだ配信されているが、push しても更新されない。消すのは可逆でないので保留）
 
 **このリポジトリは public。** 以降もアカウントIDなどの内部識別子は直書きしない。
 
@@ -141,10 +141,29 @@ Supabase に登録してしまい、その間ログインが Vercel へ落ち続
 登録が正しかったからではない。** Site URL 以外へ移すとこの暗黙許可が効かなくなる。
 
 対処: `https://<host>/**` で登録する。検証も**必ず `?code=` を付けて**行う。
-7. ⬜ Google ログイン → 20問 → 保存 → `/admin` の実機確認（deploy.md §4 の再現）
-   - **ユーザー本人の Google 認証が必要なため Claude では実施できない**。ここだけ手作業
-   - 失敗した場合は Supabase の auth ログ（MCP `get_logs(service:"auth")`）と
-     Workers のログ（`wrangler tail`・observability 有効化済み）で追える
+7. ✅ Google ログイン → 20問 → 保存 → `/admin` の実機確認（deploy.md §4 の再現）
+   → **完了（2026-08-04）**。ログイン済み Chrome を借りて実施した
+
+**Phase B-7 の実測結果（2026-08-04・本番）**
+
+| 確認項目 | 結果 |
+|---|---|
+| Supabase Site URL を Cloudflare へ切替 | ✅ |
+| Vercel の Git 連携解除（自動デプロイ停止） | ✅ URLは維持・可逆 |
+| Google ログイン → `/map` 着地 | ✅ Vercel へ落ちない |
+| やり直し導線 `?retake=1` | ✅ マップへ跳ね返されない |
+| `/welcome` 単体（診断未完了） | ✅ 20問へ。往復して詰む穴も解消 |
+| 名前・性別の引き継ぎ | ✅ 初期表示される |
+| 管理者の診断リセット | ✅ 実行成功・履歴保持を確認 |
+| やり直し→保存→履歴追記 | ✅ 台帳 1件→2件（07 §8.6 に表） |
+
+**この検証でユーザー本人の診断データを壊した。** 20問の自動入力が全問「Ⓐ」で
+完走してしまい、判定が書き換わった。ブラウザ自動操作の作法は
+`docs/skills/browser_e2e_verification.md` に残してある。**保存を伴う検証は
+検証専用アカウントで行うこと。**
+
+失敗時の追跡手段（今回は使わずに済んだが有効）: Supabase の auth ログ
+（MCP `get_logs(service:"auth")`）と Workers のログ（`wrangler tail`・observability 有効化済み）。
 
 Phase B の実機検証結果（本番URLに対して実施）:
 
