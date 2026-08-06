@@ -14,6 +14,7 @@ import type {
 } from "@/content/schema";
 import { contentHref } from "@/components/article/article-blocks";
 import { AdminError, AdminLoading, AdminPageFrame } from "@/components/admin/admin-ui";
+import { collectLearnerTexts } from "@/lib/content-checks";
 import { fetchOwnProfile } from "@/lib/profile-db";
 import { createClient } from "@/lib/supabase/client";
 import { ArticleEditor } from "./article-editor";
@@ -187,6 +188,27 @@ export function StudioShell({ stages, mangas, articles, quizSets, listenings }: 
       }
     }
     return options;
+  }, [mangas, articles, quizSets, listenings, dbEntries]);
+
+  /**
+   * 教材ID → 学習者が読む文（ステージ編集の「ことばを ぬき出す」へ渡す）。
+   *
+   * ステージが持っているのは参照先のIDだけなので、本文はここで集める。
+   * git ∪ DB の全教材を持っているのは shell だけ。集め方は検査・ふりがな編集と
+   * 同じ collectLearnerTexts を使う——別の集め方をすると、同じステージなのに
+   * 画面ごとに違う本文を見ることになる。
+   *
+   * DB版が git 版に勝つのは一覧と同じ（学習者に出るのは DB版のほう）。
+   */
+  const textsByRef = useMemo<Record<string, string[]>>(() => {
+    const map: Record<string, string[]> = {};
+    for (const item of [...mangas, ...articles, ...quizSets, ...listenings]) {
+      map[item.id] = collectLearnerTexts(item);
+    }
+    for (const entry of dbEntries) {
+      map[entry.content.id] = collectLearnerTexts(entry.content);
+    }
+    return map;
   }, [mangas, articles, quizSets, listenings, dbEntries]);
 
   const dbStatusOf = useCallback(
@@ -420,6 +442,7 @@ export function StudioShell({ stages, mangas, articles, quizSets, listenings }: 
             <StageEditor
               value={view.draft}
               refOptions={refOptions}
+              textsByRef={textsByRef}
               onChange={(draft) => setView({ mode: "stage", draft })}
             />
           </EditorFrame>

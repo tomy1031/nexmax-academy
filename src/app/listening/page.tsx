@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { listListenings, listScenarios } from "@/lib/content";
+import { listListenings } from "@/lib/content";
 import { NexMax } from "@/components/nexmax";
 
 export const metadata: Metadata = {
@@ -15,15 +15,17 @@ export const metadata: Metadata = {
 export const revalidate = 60;
 
 /**
- * リスニング一覧。
+ * リスニング一覧（聞く教材だけ）。
  *
- * 「きく」教材（listening）と「はなす」教材（scenario＝たいわ / Live対話）を
- * 同じ入口に並べる。教材としては別物（行き先も /listening と /talk で分けてある）
- * だが、たいわ 専用の一覧はまだ無い。ここから外すと、たいわ は ステージ経由でしか
- * 開けなくなる——だから見出しで「きく」「はなす」を はっきり 分けて 並べる。
+ * 以前は たいわ（scenario＝Live対話）も「話す（AIと 対話）」の節として
+ * ここに並べていた。たいわ 専用の一覧が無く、ここから外すと ステージ経由でしか
+ * 開けなくなるためだったが、いまは /talk に一覧がある。
+ * 聞く教材と話す教材を同じ入口に置くと、学習者は「聞くだけ」のつもりで
+ * マイクの要る画面に入ってしまうので、入口ごと分ける
+ *（行き先を /listening と /talk に分けてあるのと同じ理由 — content-kinds.ts）。
  */
 export default async function ListeningIndexPage() {
-  const [listenings, scenarios] = await Promise.all([listListenings(), listScenarios()]);
+  const listenings = await listListenings();
 
   return (
     <div className="mx-auto w-full max-w-3xl px-4 py-6">
@@ -38,13 +40,12 @@ export default async function ListeningIndexPage() {
         <div>
           <h1 className="text-ink text-2xl font-extrabold sm:text-3xl">🎧 リスニング</h1>
           <p className="text-ink-soft mt-1 font-bold">
-            会議の 画面で 日本語を 聞いて、話す れんしゅうを します。
+            会議の 画面で、日本語を 聞く れんしゅうを します。
           </p>
         </div>
       </div>
 
       <section className="mt-6">
-        <h2 className="text-ink mb-2 text-lg font-extrabold">きく</h2>
         {listenings.length === 0 ? (
           <p className="text-ink-soft font-bold">じゅんびちゅうです。</p>
         ) : (
@@ -68,29 +69,15 @@ export default async function ListeningIndexPage() {
         )}
       </section>
 
-      <section className="mt-8">
-        <h2 className="text-ink mb-2 text-lg font-extrabold">話す（AIと 対話）</h2>
-        {scenarios.length === 0 ? (
-          <p className="text-ink-soft font-bold">じゅんびちゅうです。</p>
-        ) : (
-          <ul className="grid gap-4">
-            {scenarios.map((scenario) => (
-              <li key={scenario.id}>
-                <Link
-                  href={`/talk/${scenario.id}`}
-                  className="card-island block p-5 transition hover:scale-[1.01]"
-                >
-                  <p className="text-sky text-xs font-extrabold">{scenario.subtitle}</p>
-                  <p className="text-ink mt-1 text-lg font-extrabold">
-                    {scenario.emoji} {scenario.title}
-                  </p>
-                  <p className="text-ink-soft mt-1 text-sm font-bold">{scenario.client.desc}</p>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
+      {/*
+        話す教材への行き道。一覧そのものは /talk に移したが、行き先を消すだけだと
+        聞いたあとに話す練習へ進む道が この画面から 見えなくなる。
+      */}
+      <p className="mt-6 text-sm font-bold">
+        <Link href="/talk" className="text-sky-deep hover:text-navy underline">
+          🎙️ AIと 話す れんしゅうは たいわ
+        </Link>
+      </p>
     </div>
   );
 }

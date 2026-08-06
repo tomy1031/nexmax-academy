@@ -41,7 +41,8 @@ function fail(reason: string, status: number, extra?: Record<string, unknown>): 
   return NextResponse.json({ ready: false, reason, ...extra }, { status });
 }
 
-async function requireAdmin(): Promise<Gate> {
+/** スタジオのAPI共通の関門。/api/studio/vocab もこれを通す（関所を2つ書かない）。 */
+export async function requireAdmin(): Promise<Gate> {
   const supabase = await createClient();
   // Supabase 未設定のローカル開発。スタジオは「じゅんびちゅう」に落ちる
   if (!supabase) return { ok: false, response: fail("notConfigured", 503) };

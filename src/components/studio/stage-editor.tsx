@@ -16,6 +16,7 @@ import {
   TextAreaField,
   TextField,
 } from "./studio-ui";
+import { VocabExtractor } from "./vocab-extractor";
 
 /** 参照先の候補（IDの打ちまちがいを減らすための入力補助）。 */
 export interface RefOption {
@@ -34,10 +35,17 @@ export function StageEditor({
   value,
   onChange,
   refOptions,
+  textsByRef,
 }: {
   value: Stage;
   onChange: (stage: Stage) => void;
   refOptions: readonly RefOption[];
+  /**
+   * 教材ID → 学習者が読む文。「ことばを ぬき出す」に渡す。
+   * ステージが持っているのは参照先のIDだけなので、本文は studio-shell から届く
+   *（shell だけが git ∪ DB の全教材を持っている）。
+   */
+  textsByRef: Readonly<Record<string, readonly string[]>>;
 }) {
   const listId = useId();
   const [newRef, setNewRef] = useState("");
@@ -200,6 +208,18 @@ export function StageEditor({
           onChange={(wordStageIds) => patch({ wordStageIds })}
         />
       </StudioSection>
+
+      {/*
+        単語ステージは手で書くと1課ぶんで1時間仕事になる。作られないままだと
+        ステージから「ことばで あそぶ」へ行く道が開かないので、ここから作れるようにする。
+        作ったIDは上の一覧（wordStageIds）に足す——ステージ側に足さないと、
+        単語ステージだけができて、どのステージからも開けないものになる。
+      */}
+      <VocabExtractor
+        stage={value}
+        textsByRef={textsByRef}
+        onCreated={(id) => patch({ wordStageIds: [...value.wordStageIds, id] })}
+      />
 
       <AreaEditor value={value} onChange={onChange} />
     </div>

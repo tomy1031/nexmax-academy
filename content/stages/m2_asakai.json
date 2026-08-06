@@ -11,7 +11,8 @@
     { "ref": "m2-asakai-manga", "type": "manga" },
     { "ref": "m2-asakai-article", "type": "article" },
     { "ref": "sample_asakai", "type": "listening" },
-    { "ref": "sample_horenso", "type": "quizset" }
+    { "ref": "sample_horenso", "type": "quizset" },
+    { "ref": "talk-asakai-report", "type": "scenario" }
   ],
   "wordStageIds": ["stage01_orientation"]
 }
