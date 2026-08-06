@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type {
   Article,
+  Character,
   Content,
   ContentRefType,
   Listening,
@@ -21,8 +22,10 @@ import { sortStages } from "@/lib/map-data";
 import { fetchOwnProfile } from "@/lib/profile-db";
 import { createClient } from "@/lib/supabase/client";
 import { ArticleEditor } from "./article-editor";
+import { CharacterEditor } from "./character-editor";
 import {
   emptyArticle,
+  emptyCharacter,
   emptyManga,
   emptyQuizSet,
   emptyStage,
@@ -67,7 +70,7 @@ import { WordStageEditor } from "./word-stage-editor";
  *（保存・公開だけが「じゅんびちゅう」になる — 設計07 §11.1）。
  */
 
-export type StudioSection = "stages" | "contents" | "words";
+export type StudioSection = "stages" | "contents" | "words" | "characters";
 
 export interface StudioShellProps {
   section: StudioSection;
@@ -78,6 +81,7 @@ export interface StudioShellProps {
   listenings: Listening[];
   scenarios: Scenario[];
   wordStages: WordStage[];
+  characters: Character[];
 }
 
 /** きょうざい一覧のタブ。 */
@@ -102,7 +106,8 @@ type View =
   | { mode: "article"; draft: Article; parent?: Stage }
   | { mode: "quizset"; draft: QuizSet; parent?: Stage }
   | { mode: "listening"; draft: Listening; parent?: Stage }
-  | { mode: "wordstage"; draft: WordStage; parent?: Stage };
+  | { mode: "wordstage"; draft: WordStage; parent?: Stage }
+  | { mode: "character"; draft: Character };
 
 type Gate = "checking" | "ready" | "unconfigured" | "error";
 
@@ -116,6 +121,10 @@ const SECTION_META: Record<StudioSection, { title: string; note: string }> = {
     note: "教材そのものの 一覧です。ふだんは ステージの中から 作れます。",
   },
   words: { title: "🕹️ ことば・辞書", note: "単語ステージと、それを 畳んだ 辞書です。" },
+  characters: {
+    title: "🧑 とうじょう人物",
+    note: "まんがと リスニングで つかいまわす 人。設定画を 作ると 絵が ぶれません。",
+  },
 };
 
 export function StudioShell({
@@ -127,6 +136,7 @@ export function StudioShell({
   listenings,
   scenarios,
   wordStages,
+  characters,
 }: StudioShellProps) {
   const router = useRouter();
   const [gate, setGate] = useState<Gate>("checking");
@@ -210,8 +220,19 @@ export function StudioShell({
       listening: mergeById(listenings, fromDb("listening")),
       scenario: mergeById(scenarios, fromDb("scenario")),
       wordstage: mergeById(wordStages, fromDb("wordstage")),
+      character: mergeById(characters, fromDb("character")),
     };
-  }, [stages, mangas, articles, quizSets, listenings, scenarios, wordStages, dbEntries]);
+  }, [
+    stages,
+    mangas,
+    articles,
+    quizSets,
+    listenings,
+    scenarios,
+    wordStages,
+    characters,
+    dbEntries,
+  ]);
 
   /** 「もう ある ものから えらぶ」の候補（全種別）。 */
   const library = useMemo<RefOption[]>(
@@ -522,6 +543,42 @@ export function StudioShell({
           />
         ) : null}
 
+        {view.mode === "list" && section === "characters" ? (
+          <CharacterList
+            characters={merged.character}
+            dbStatusOf={dbStatusOf}
+            onOpen={(id) => {
+              const draft = merged.character.find((item) => item.id === id);
+              if (!draft) return;
+              clearNotes();
+              setView({ mode: "character", draft });
+            }}
+            onNew={() => {
+              clearNotes();
+              setView({ mode: "character", draft: emptyCharacter() });
+            }}
+            onRemove={(id, name) => void removeFromDb(id, name)}
+          />
+        ) : null}
+
+        {view.mode === "character" ? (
+          <EditorFrame
+            title={view.draft.name.length > 0 ? view.draft.name : "あたらしい 人"}
+            hint="設定画（キャラクターシート）を 作ると、まんがの コマで 顔や服が ぶれません。"
+            onBack={backToList}
+            onSave={(publish) => void handleSave(publish)}
+            saving={saving}
+            disabledNote={editorNote}
+            issues={issues}
+          >
+            <SaveWarnings notices={warnings} />
+            <CharacterEditor
+              value={view.draft}
+              onChange={(draft) => setView({ mode: "character", draft })}
+            />
+          </EditorFrame>
+        ) : null}
+
         {view.mode === "stage" ? (
           <EditorFrame
             title={view.draft.title.length > 0 ? view.draft.title : "あたらしい ステージ"}
@@ -558,7 +615,11 @@ export function StudioShell({
             issues={issues}
             warnings={warnings}
           >
-            <MangaEditor value={view.draft} onChange={(draft) => setView({ ...view, draft })} />
+            <MangaEditor
+              value={view.draft}
+              cast={merged.character}
+              onChange={(draft) => setView({ ...view, draft })}
+            />
           </ChildFrame>
         ) : null}
 
@@ -801,6 +862,94 @@ function ContentList({
           </ul>
         )}
       </section>
+    </div>
+  );
+}
+
+/** とうじょう人物の一覧。 */
+function CharacterList({
+  characters,
+  dbStatusOf,
+  onOpen,
+  onNew,
+  onRemove,
+}: {
+  characters: readonly Character[];
+  dbStatusOf: (kind: string, id: string) => "draft" | "published" | null;
+  onOpen: (id: string) => void;
+  onNew: () => void;
+  onRemove: (id: string, name: string) => void;
+}) {
+  return (
+    <div className="space-y-4">
+      <div className="card-island flex flex-wrap items-center justify-between gap-3 p-4">
+        <p className="text-ink-soft text-sm font-bold">
+          まんがと リスニングで つかいまわす 人です（{characters.length}人）。
+        </p>
+        <button
+          type="button"
+          onClick={onNew}
+          className="btn-game px-4 py-2 text-sm [--btn-face:#004f8d] [--btn-shadow:#003c6b]"
+        >
+          ＋ あたらしい 人
+        </button>
+      </div>
+
+      {characters.length === 0 ? (
+        <section className="card-island p-5">
+          <p className="text-ink-soft font-bold">
+            まだ いません。まんがの コマを 何枚も 作ると、コマごとに 顔や服が 変わって
+            しまいます。さきに ここで 人を 作り、設定画を 1枚 用意してください。
+          </p>
+        </section>
+      ) : (
+        <ul className="grid gap-3 sm:grid-cols-2">
+          {characters.map((character) => (
+            <li
+              key={character.id}
+              className="border-hairline flex items-start gap-3 rounded-2xl border-2 bg-white p-3"
+            >
+              {character.sheet.src ? (
+                // next/image は外部URLの許可設定が要るため、ここは素の img で出す
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={character.sheet.src}
+                  alt=""
+                  className="border-hairline h-20 w-20 shrink-0 rounded-lg border-2 object-cover"
+                />
+              ) : (
+                <span className="border-hairline text-ink-faint grid h-20 w-20 shrink-0 place-items-center rounded-lg border-2 border-dashed text-[10px] font-bold">
+                  設定画なし
+                </span>
+              )}
+              <div className="min-w-0 flex-1">
+                <p className="text-navy font-black">
+                  <ruby>
+                    {character.name}
+                    <rt className="text-ink-soft">{character.reading}</rt>
+                  </ruby>
+                </p>
+                <p className="text-ink-soft text-xs font-bold">{character.role}</p>
+                <p className="text-ink-faint line-clamp-2 text-xs font-bold">{character.looks}</p>
+                <div className="mt-2 flex flex-wrap items-center gap-2">
+                  <SourceBadge status={dbStatusOf("character", character.id)} />
+                  <MiniButton tone="accent" onClick={() => onOpen(character.id)}>
+                    ✎ ひらく
+                  </MiniButton>
+                  {dbStatusOf("character", character.id) ? (
+                    <MiniButton
+                      tone="danger"
+                      onClick={() => onRemove(character.id, character.name)}
+                    >
+                      けす
+                    </MiniButton>
+                  ) : null}
+                </div>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }

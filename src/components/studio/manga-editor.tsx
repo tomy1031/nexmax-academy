@@ -1,7 +1,15 @@
 "use client";
 
-import type { Manga, MangaCharacter, MangaLine, MangaPage, MangaPanel } from "@/content/schema";
+import type {
+  Character,
+  Manga,
+  MangaCharacter,
+  MangaLine,
+  MangaPage,
+  MangaPanel,
+} from "@/content/schema";
 import { emptyMangaPage, emptyMangaPanel, PANEL_SIZE_OPTIONS } from "./drafts";
+import { MangaMaker } from "./manga-maker";
 import { ImageSlotEditor } from "./image-slot-editor";
 import { moveItem, removeAt, replaceAt } from "./list-ops";
 import {
@@ -23,9 +31,12 @@ import {
 export function MangaEditor({
   value,
   onChange,
+  cast = [],
 }: {
   value: Manga;
   onChange: (manga: Manga) => void;
+  /** 使いまわす登場人物（管理画面「とうじょう人物」）。絵の一貫性に使う。 */
+  cast?: readonly Character[];
 }) {
   const patch = (part: Partial<Manga>) => onChange({ ...value, ...part });
   const characters = value.characters ?? [];
@@ -42,6 +53,8 @@ export function MangaEditor({
 
   return (
     <div className="space-y-4">
+      <MangaMaker value={value} onChange={onChange} cast={cast} />
+
       <StudioSection title="きほん">
         <div className="grid gap-4 sm:grid-cols-2">
           <TextField

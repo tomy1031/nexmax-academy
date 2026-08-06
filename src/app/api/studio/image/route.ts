@@ -25,6 +25,13 @@ const ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${IMAG
 /** 受け取るプロンプトの上限。長すぎるものは上流に投げる前に落とす。 */
 const MAX_PROMPT = 4000;
 
+/**
+ * 参照画像の枚数の上限。
+ * Worker の1呼び出しあたりの外部サブリクエストは50本までなので、
+ * 取りに行く枚数は少なく抑える（人物は多くても数人）。
+ */
+const MAX_REFS = 4;
+
 function fail(reason: string, status: number): NextResponse {
   return NextResponse.json({ ready: false, reason }, { status });
 }
@@ -33,7 +40,7 @@ export async function POST(request: Request): Promise<NextResponse> {
   const gate = await requireAdmin();
   if (!gate.ok) return gate.response;
 
-  let body: { apiKey?: unknown; prompt?: unknown };
+  let body: { apiKey?: unknown; prompt?: unknown; references?: unknown };
   try {
     body = (await request.json()) as typeof body;
   } catch {
@@ -47,9 +54,19 @@ export async function POST(request: Request): Promise<NextResponse> {
   const prompt = typeof body.prompt === "string" ? body.prompt.trim() : "";
   if (prompt.length === 0 || prompt.length > MAX_PROMPT) return fail("invalidPrompt", 400);
 
+  /**
+   * 参照画像（キャラクターシートなど）。**コマ間で顔や服が変わらない**ようにする
+   * いちばん確実な方法が、これを毎回渡すことである（プロンプトで容姿を書き直すより効く）。
+   * URL だけ受け取り、サーバが取りに行く——クライアントから巨大な base64 を
+   * 送らせると、Worker の受け口の上限に当たる。
+   */
+  const references = Array.isArray(body.references)
+    ? body.references.filter((url): url is string => typeof url === "string").slice(0, MAX_REFS)
+    : [];
+
   let image: { mimeType: string; data: string } | null;
   try {
-    image = await generateImage({ apiKey, prompt });
+    image = await generateImage({ apiKey, prompt, references });
   } catch (e) {
     const status = e instanceof UpstreamError ? e.status : 502;
     return fail("upstream", status);
@@ -73,15 +90,24 @@ class UpstreamError extends Error {
 async function generateImage({
   apiKey,
   prompt,
+  references,
 }: {
   apiKey: string;
   prompt: string;
+  references: readonly string[];
 }): Promise<{ mimeType: string; data: string } | null> {
+  const refParts = await Promise.all(references.map((url) => fetchInline(url)));
+  const parts = [
+    // 参照画像を先に置く。あとに置くと、モデルが指示より画像を弱く扱うことがある
+    ...refParts.flatMap((part) => (part ? [part] : [])),
+    { text: prompt },
+  ];
+
   const response = await fetch(ENDPOINT, {
     method: "POST",
     headers: { "content-type": "application/json", "x-goog-api-key": apiKey },
     body: JSON.stringify({
-      contents: [{ role: "user", parts: [{ text: prompt }] }],
+      contents: [{ role: "user", parts }],
     }),
   });
 
@@ -100,4 +126,23 @@ async function generateImage({
     if (inline?.data) return { mimeType: inline.mimeType ?? "image/png", data: inline.data };
   }
   return null;
+}
+
+/** 参照画像を1枚取ってきて、そのまま渡せる形にする。取れなければ黙って落とす。 */
+async function fetchInline(
+  url: string,
+): Promise<{ inlineData: { mimeType: string; data: string } } | null> {
+  try {
+    const response = await fetch(url);
+    if (!response.ok) return null;
+    const mimeType = response.headers.get("content-type") ?? "image/png";
+    if (!mimeType.startsWith("image/")) return null;
+    const bytes = new Uint8Array(await response.arrayBuffer());
+    let binary = "";
+    for (const byte of bytes) binary += String.fromCharCode(byte);
+    return { inlineData: { mimeType, data: btoa(binary) } };
+  } catch {
+    // 参照画像が1枚取れなくても生成そのものは続ける（絵は出る）
+    return null;
+  }
 }

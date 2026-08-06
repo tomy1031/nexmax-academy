@@ -10,6 +10,7 @@
 
 import {
   listArticles,
+  listCharacters,
   listListenings,
   listMangas,
   listQuizSets,
@@ -19,8 +20,8 @@ import {
 } from "@/lib/content";
 
 export async function loadStudioData() {
-  const [stages, mangas, articles, quizSets, listenings, scenarios, wordStages] = await Promise.all(
-    [
+  const [stages, mangas, articles, quizSets, listenings, scenarios, wordStages, characters] =
+    await Promise.all([
       listStages(),
       listMangas(),
       listArticles(),
@@ -28,7 +29,7 @@ export async function loadStudioData() {
       listListenings(),
       listScenarios(),
       listWordStages(),
-    ],
-  );
-  return { stages, mangas, articles, quizSets, listenings, scenarios, wordStages };
+      listCharacters(),
+    ]);
+  return { stages, mangas, articles, quizSets, listenings, scenarios, wordStages, characters };
 }

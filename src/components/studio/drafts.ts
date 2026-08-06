@@ -9,6 +9,7 @@
 import type {
   Article,
   ArticleBlock,
+  Character,
   ContentRefType,
   ImageSlot,
   Manga,
@@ -60,6 +61,19 @@ export function nextContentId(
   return `${base}-${taken.size + 1}`;
 }
 
+export function emptyCharacter(): Character {
+  return {
+    kind: "character",
+    id: "",
+    name: "",
+    reading: "",
+    role: "",
+    looks: "",
+    sheet: emptyImageSlot(),
+    references: [],
+  };
+}
+
 export function emptyWordStage(): WordStage {
   return {
     kind: "wordstage",
@@ -83,6 +97,10 @@ export function emptyManga(): Manga {
     title: "",
     description: "",
     characters: [],
+    castIds: [],
+    // 既定はセリフを絵に焼かない。画像に日本語を描かせると漢字が崩れやすく、
+    // ふりがなは実例がゼロ（規律2の機械検査も効かなくなる）。
+    speechInImage: false,
     pages: [emptyMangaPage()],
   };
 }

@@ -645,11 +645,46 @@ const vocabItemSchema = z.object({
   meaning: plainText,
 });
 
-/** 漫画の登場人物（画像の一貫性にも使う）。 */
+/** 漫画の中での登場人物（見出しに出す最小限）。設定と絵は character 側に持つ。 */
 const mangaCharacterSchema = z.object({
   id: z.string().regex(/^[a-z0-9_-]+$/),
   name: plainText,
   role: plainText,
+});
+
+/**
+ * 登場人物（教材をまたいで使い回す設定）。
+ *
+ * まんがのコマを何枚も作ると、**コマごとに顔や服が変わる**のが最大の問題になる。
+ * これを防ぐ確立した方法は「先にキャラクターシート（設定画）を1枚作り、
+ * それを参照画像として毎回渡す」こと——プロンプトで毎回容姿を書くより確実である
+ *（Google の consistent-imagery codelab、および国内の実装記事の一致した結論）。
+ * だから人物は まんがの中ではなく、**独立した保存先**に置く。
+ *
+ * 声も持つ。リスニングの音声づくり（Live TTS）で同じ人物が別の声になると、
+ * 学習者は同じ人だと思えなくなる。
+ */
+export const characterSchema = z.object({
+  kind: z.literal("character"),
+  id: z.string().regex(/^[a-z0-9_-]+$/),
+  name: plainText,
+  reading: hiragana,
+  /** 立場（先輩・リーダーなど）。上下関係が分からないと敬語の宛先が読めない。 */
+  role: plainText,
+  /**
+   * 見た目の決めごと。あいまいな語を避け、色や形を具体的に書く
+   *（「青いジャケット」ではなく「金ボタン3つの紺色ジャケット」）。
+   * 抽象的だとコマ間で解釈がドリフトする。
+   */
+  looks: plainText,
+  /** 性格・話し方。セリフを作らせるときの手がかり。 */
+  personality: plainText.optional(),
+  /** キャラクターシート（三面図＋表情差分）。生成のたびに参照画像として渡す。 */
+  sheet: imageSlotSchema.default({ refs: [], status: "empty" }),
+  /** 先生が持ち込んだ参考画像。シートを作るときの入力になる。 */
+  references: z.array(z.string().min(1)).default([]),
+  /** リスニングの音声づくりで使う声（src/lib/audio/voices.ts の名前）。 */
+  voice: z.string().optional(),
 });
 
 /** セリフ1行。speaker は characters の id、または "narration"。 */
@@ -671,6 +706,11 @@ const mangaPageSchema = z.object({
   /** 場面カード（story のみ・省略可）。例:「その日の午後 — 会議室」。 */
   title: plainText.optional(),
   panels: z.array(mangaPanelSchema).min(1),
+  /**
+   * そのページの補足。絵とセリフだけでは伝わらないこと
+   *（「ここでは まだ 名前を 言っていません」など）を一言そえる。
+   */
+  note: plainText.optional(),
 });
 
 /** 漫画ページ（設計07 §4）。4コマもストーリーも同じ構造で、違いは量とレイアウトヒントだけ。 */
@@ -689,6 +729,20 @@ export const mangaSchema = z
      */
     vocab: z.array(vocabItemSchema).optional(),
     characters: z.array(mangaCharacterSchema).optional(),
+    /** 使い回す登場人物のID（character）。絵を作るとき 参照画像として渡す。 */
+    castIds: z.array(z.string().min(1)).default([]),
+    /**
+     * セリフを**絵の中に**描くか。
+     *
+     * 既定は false（絵は文字なしで作り、セリフは画面で重ねる）。
+     * 画像生成に日本語を描かせると漢字が崩れやすく、**ふりがなは実例がゼロ**で、
+     * 原理的にも最も壊れる（本文より小さい・位置が厳密・画数の多い漢字の真上）。
+     * 焼き込むと `lint:content` のふりがな全覆い検査も効かなくなる（AGENTS.md 規律2）。
+     *
+     * それでも「絵の中に入れたい」ときのために true を用意してある。
+     * true にすると、画面はセリフを別に出さない。
+     */
+    speechInImage: z.boolean().default(false),
     pages: z.array(mangaPageSchema).min(1),
   })
   .superRefine((manga, ctx) => {
@@ -750,6 +804,7 @@ export const articleSchema = z.object({
 });
 
 export const contentSchema = z.discriminatedUnion("kind", [
+  characterSchema,
   wordStageSchema,
   quizSetSchema,
   listeningSchema,
@@ -771,6 +826,7 @@ export type Stage = z.infer<typeof stageSchema>;
 export type StageContentRef = z.infer<typeof stageContentRefSchema>;
 export type ContentRefType = StageContentRef["type"];
 export type ImageSlot = z.infer<typeof imageSlotSchema>;
+export type Character = z.infer<typeof characterSchema>;
 export type Manga = z.infer<typeof mangaSchema>;
 export type MangaCharacter = z.infer<typeof mangaCharacterSchema>;
 export type MangaPage = Manga["pages"][number];

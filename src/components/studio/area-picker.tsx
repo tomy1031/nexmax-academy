@@ -6,6 +6,7 @@ import { SCENE_IMAGES } from "@/content/scene-images.generated";
 import { getGeminiKey } from "@/lib/profile";
 import { buildScenePrompt } from "@/lib/scene-prompt";
 import { MiniButton, StudioSection, TextField } from "./studio-ui";
+import { generateImage } from "./image-api";
 import { uploadAsset } from "./studio-api";
 
 /**
@@ -252,20 +253,20 @@ function MakeImage({
     }
     setBusy(true);
     setError(null);
-    try {
-      const image = await requestImage(apiKey, buildScenePrompt(subject, area.note));
-      // 生成物はそのままだと消える。Storage に置いて、URLをステージに持たせる。
-      const uploaded = await uploadAsset(image, `areas/${stageId || "stage"}`);
-      if (!uploaded.ok) {
-        setError(uploaded.message);
-        return;
-      }
-      onDone(uploaded.url);
-    } catch (e) {
-      setError(e instanceof SceneError ? e.message : "絵を つくれませんでした。");
-    } finally {
+    const made = await generateImage({ apiKey, prompt: buildScenePrompt(subject, area.note) });
+    if (!made.ok) {
       setBusy(false);
+      setError(made.message);
+      return;
     }
+    // 生成物はそのままだと消える。Storage に置いて、URLをステージに持たせる。
+    const uploaded = await uploadAsset(made.file, `areas/${stageId || "stage"}`);
+    setBusy(false);
+    if (!uploaded.ok) {
+      setError(uploaded.message);
+      return;
+    }
+    onDone(uploaded.url);
   };
 
   return (
@@ -286,50 +287,4 @@ function MakeImage({
       </p>
     </div>
   );
-}
-
-class SceneError extends Error {}
-
-/** サーバのプロキシへ頼んで、画像だけ受け取る（キーは返ってこない）。 */
-async function requestImage(apiKey: string, prompt: string): Promise<File> {
-  let response: Response;
-  try {
-    response = await fetch("/api/studio/image", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ apiKey, prompt }),
-    });
-  } catch {
-    throw new SceneError("つうしんに 失敗しました。ネットワークを たしかめてください。");
-  }
-
-  let body: { data?: unknown; mimeType?: unknown; reason?: unknown } = {};
-  try {
-    body = (await response.json()) as typeof body;
-  } catch {
-    // 本文が読めない＝理由も分からない。下の言い分けに任せる
-  }
-  if (!response.ok || typeof body.data !== "string") {
-    throw new SceneError(messageForImageReason(typeof body.reason === "string" ? body.reason : ""));
-  }
-
-  const mimeType = typeof body.mimeType === "string" ? body.mimeType : "image/png";
-  const bytes = Uint8Array.from(atob(body.data), (char) => char.charCodeAt(0));
-  const extension = mimeType.split("/")[1] ?? "png";
-  return new File([bytes], `scene.${extension}`, { type: mimeType });
-}
-
-function messageForImageReason(reason: string): string {
-  switch (reason) {
-    case "noKey":
-      return "AIの キーが まだ ありません。「AI指示出し」で 登録してください。";
-    case "invalidPrompt":
-      return "景色の 説明が ながすぎます。みじかく してください。";
-    case "noImage":
-      return "絵が かえって きませんでした。景色の 書き方を 少し 変えて ためしてください。";
-    case "forbidden":
-      return "この そうさは 先生（管理者）だけです。";
-    default:
-      return "絵を つくれませんでした。少し 待って もう一度 ためしてください。";
-  }
 }

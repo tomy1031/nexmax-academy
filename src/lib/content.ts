@@ -19,6 +19,7 @@ import { cache } from "react";
 import {
   contentSchema,
   type Article,
+  type Character,
   type Content,
   type Listening,
   type Manga,
@@ -91,6 +92,17 @@ async function listPublishedFromDb<K extends Content["kind"]>(
   return entries
     .map((entry) => entry.content)
     .filter((c): c is Extract<Content, { kind: K }> => c.kind === kind);
+}
+
+export const listCharacters = cache(async (): Promise<Character[]> => {
+  const git = parseAll().filter((c): c is Character => c.kind === "character");
+  return mergeContentsById(git, await listPublishedFromDb("character")).sort((a, b) =>
+    a.id.localeCompare(b.id),
+  );
+});
+
+export async function getCharacter(id: string): Promise<Character | null> {
+  return (await listCharacters()).find((character) => character.id === id) ?? null;
 }
 
 export const listWordStages = cache(async (): Promise<WordStage[]> => {

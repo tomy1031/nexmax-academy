@@ -523,6 +523,10 @@ function coverageEntries(content: Content): FuriganaEntry[] {
         ...(content.furigana ?? []),
         ...content.words.map((word): FuriganaEntry => [word.term, word.reading]),
       ];
+    case "character":
+      // 人物カードは 名前の真下に よみ を出す。それ以外（立場・見た目）は
+      // 先生向けの覚書で、学習者の画面には出ない。
+      return [[content.name, content.reading]];
     default:
       return [...(content.furigana ?? [])];
   }

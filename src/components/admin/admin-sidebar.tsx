@@ -30,6 +30,12 @@ const GROUPS: readonly { title: string; items: readonly Item[] }[] = [
       { href: "/admin/stages", icon: "🗺️", label: "ステージ", match: "/admin/stages" },
       { href: "/admin/contents", icon: "📚", label: "きょうざい", match: "/admin/contents" },
       { href: "/admin/words", icon: "🕹️", label: "ことば・辞書", match: "/admin/words" },
+      {
+        href: "/admin/characters",
+        icon: "🧑",
+        label: "とうじょう人物",
+        match: "/admin/characters",
+      },
     ],
   },
   {
