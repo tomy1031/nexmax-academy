@@ -116,8 +116,18 @@ export interface PersonalityQuestion {
  */
 export interface PersonalityIntro {
   readonly title: string;
-  /** 本文。1行＝1つのことだけ言う。 */
+  /** 「性格診断とは何か」の説明。絵より前に置く。1行＝1つのことだけ言う。 */
   readonly lines: readonly string[];
+  /**
+   * 語彙メモの使い方。
+   *
+   * **これが無いと、辞書があること自体に気づかれない。** 点線や
+   * 「ことばメモ」の帯は、知っている人には見えても、初めての学習者には
+   * ただの飾りに見える。最初の画面で一度だけ、使い方を明示する。
+   */
+  readonly dictionaryHint: string;
+  /** 設問の進め方。絵の後に置く。何が出て、何をするのかを先に見せる。 */
+  readonly howTo: string;
   /** 正誤の枠組みを持ち込まないための一文（07 §10）。 */
   readonly note: string;
   readonly startLabel: string;
@@ -125,42 +135,68 @@ export interface PersonalityIntro {
 
 export const PERSONALITY_INTRO: Readonly<Record<PersonalityLanguage, PersonalityIntro>> = {
   easy: {
-    title: "はじめに",
+    title: "性格診断って 何?",
     lines: [
-      "人は みんな、すきな やりかたが ちがいます。",
-      "はやく きめる 人も います。ゆっくり かんがえる 人も います。どちらも いい やりかたです。",
-      "その 人の いつもの やりかたを 性格と 言います。それを しらべるのが 性格診断です。",
-      "これから、20の しつもんに 答えます。あなたの すきな やりかたが 見えて きます。",
+      "人は みんな、すきな やりかたが ちがいます。はやく 決める 人も います。ゆっくり 考える 人も います。",
+      "その 人の いつもの やりかたを 性格と 言います。性格診断は、あなたの いつもの やりかたを しらべる ものです。",
+      "この 診断では、あなたが どんな キャラクターなのかを、質問に 答えて しらべます。",
       "おわると、あなたに にた ネクマックスが 1人 出て きます。",
     ],
-    note: "どちらが いい・わるいは ありません。あなたに ちかい ほうを えらんで ください。",
+    dictionaryHint:
+      "点線の ある ことばと、下の「ことばメモ」は、さわると 意味が 出ます。わからない ことばは、いつでも 見て ください。",
+    howTo: "これから 20回、2つの 絵を 見ます。あなたに ちかい ほうを えらんで ください。",
+    note: "どちらが いい・わるいは ありません。",
     startLabel: "しつもんを はじめる",
   },
   japanese: {
-    title: "はじめに",
+    title: "性格診断って何?",
     lines: [
-      "人はみんな、好きなやり方がちがいます。",
-      "早く決める人もいます。ゆっくり考える人もいます。どちらもいいやり方です。",
-      "その人のいつものやり方を性格と言います。それを調べるのが性格診断です。",
-      "これから、20の質問に答えます。あなたの好きなやり方が見えてきます。",
+      "人はみんな、好きなやり方がちがいます。早く決める人もいます。ゆっくり考える人もいます。",
+      "その人のいつものやり方を性格と言います。性格診断は、あなたのいつものやり方を調べるものです。",
+      "この診断では、あなたがどんなキャラクターなのかを、質問に答えて調べます。",
       "終わると、あなたに似たネクマックスが1人出てきます。",
     ],
-    note: "どちらがいい・わるいはありません。あなたに近いほうを選んでください。",
+    dictionaryHint:
+      "点線のあることばと、下の「ことばメモ」は、さわると意味が出ます。わからないことばは、いつでも見てください。",
+    howTo: "これから20回、2つの絵を見ます。あなたに近いほうを選んでください。",
+    note: "どちらがいい・わるいはありません。",
     startLabel: "質問をはじめる",
   },
   english: {
-    title: "Before you start",
+    title: "What is a personality check?",
     lines: [
-      "Everyone has their own way of doing things.",
-      "Some people decide fast. Some people think slowly. Both are good ways.",
-      "The way a person usually does things is called their personality. Finding out your own is what this check is for.",
-      "You will answer 20 questions. They will show you your own way.",
+      "Everyone has their own way of doing things. Some people decide fast. Some people think slowly.",
+      "The way a person usually does things is called their personality. This check finds out yours.",
+      "By answering questions, you will find out what kind of character you are.",
       "At the end, one NexMax who is like you will appear.",
     ],
-    note: "There is no better or worse choice. Just pick the one closer to you.",
+    dictionaryHint:
+      "Words with a dotted underline, and the word notes below each question, show their meaning when you touch them.",
+    howTo: "You will look at two pictures, 20 times. Pick the one that is closer to you.",
+    note: "There is no better or worse choice.",
     startLabel: "Start the questions",
   },
 };
+
+/**
+ * 設問を表示するときのふりがな辞書。
+ *
+ * 設問ごとの `readings` だけを渡すと、**共通辞書（`PERSONALITY_RESULT_READINGS`）が
+ * 効かず、設問ごとに同じ漢字を登録し直すことになる**。登録し忘れた分は裸の漢字で出て、
+ * その文ごと読み飛ばされる。そこで共通辞書を後ろに足して受け皿にする。
+ *
+ * 並びは「設問固有 → 共通」。`RubyText` は同じ位置なら先に出たほうを採るので、
+ * その設問だけの読み（人名・固有の言い回し）が共通辞書に勝つ。
+ */
+const READINGS_CACHE = new Map<PersonalityQuestion, readonly Reading[]>();
+
+export function questionReadings(question: PersonalityQuestion): readonly Reading[] {
+  const cached = READINGS_CACHE.get(question);
+  if (cached) return cached;
+  const merged = [...question.readings, ...PERSONALITY_RESULT_READINGS];
+  READINGS_CACHE.set(question, merged);
+  return merged;
+}
 
 export const PERSONALITY_AXES: readonly PersonalityAxis[] = ["ei", "sn", "tf", "jp"] as const;
 
@@ -596,7 +632,7 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
     },
     b: {
       pole: "J",
-      easy: "さいしょに よていを きめて、おなじように すすめる",
+      easy: "さいしょに 予定を きめて、おなじように すすめる",
       japanese: "最初に予定を決めて、そのとおりに進める",
       english: "You set a plan first and follow it",
     },
@@ -631,7 +667,7 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
   {
     id: 6,
     axis: "sn",
-    easy: "せつめいを 聞く とき、どちらが うれしいですか。",
+    easy: "説明を 聞く とき、どちらが うれしいですか。",
     japanese: "説明を聞くとき、どちらがうれしいですか。",
     english: "In an explanation, which do you prefer?",
     a: {
@@ -663,7 +699,7 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
     english: "The team is split in two. Which concerns you?",
     a: {
       pole: "F",
-      easy: "みんなの きもちが どう なるか",
+      easy: "みんなの 気持ちが どう なるか",
       japanese: "みんなの気持ちがどうなるか",
       english: "How everyone will feel",
     },
@@ -712,7 +748,7 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
   {
     id: 9,
     axis: "ei",
-    easy: "チームで 話しあいます。",
+    easy: "チームで 話し合います。",
     japanese: "チームで話し合います。",
     english: "You are in a team discussion.",
     a: {
@@ -758,12 +794,12 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
   {
     id: 11,
     axis: "tf",
-    easy: "何かを きめる とき、どちらが たいせつですか。",
+    easy: "何かを きめる とき、どちらが 大切ですか。",
     japanese: "何かを決めるとき、どちらが大切ですか。",
     english: "When you decide, which matters more?",
     a: {
       pole: "T",
-      easy: "りゆうを せつめい できる こと",
+      easy: "理由を 説明 できる こと",
       japanese: "理由を説明できること",
       english: "Being able to explain the reason",
     },
@@ -787,13 +823,13 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
     english: "What do you do on a day off?",
     a: {
       pole: "P",
-      easy: "その 日の きもちで きめたい",
+      easy: "その 日の 気持ちで きめたい",
       japanese: "その日の気持ちで決めたい",
       english: "You decide by how you feel that day",
     },
     b: {
       pole: "J",
-      easy: "前の 日に よていを 作りたい",
+      easy: "前の 日に 予定を 作りたい",
       japanese: "前の日に予定を作りたい",
       english: "You make a plan the day before",
     },
@@ -807,7 +843,7 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
   {
     id: 13,
     axis: "ei",
-    easy: "先生が 「しつもんは ありますか」と 聞きました。",
+    easy: "先生が 「質問は ありますか」と 聞きました。",
     japanese: "先生が「質問はありますか」と聞きました。",
     english: "The teacher asks if anyone has a question.",
     a: {
@@ -861,12 +897,12 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
   {
     id: 15,
     axis: "tf",
-    easy: "友だちが しっぱいして、元気が ありません。",
+    easy: "友だちが 失敗して、元気が ありません。",
     japanese: "友だちが失敗して、元気がありません。",
     english: "A friend is down after a mistake.",
     a: {
       pole: "F",
-      easy: "まず きもちを 聞いて、そばに いる",
+      easy: "まず 気持ちを 聞いて、そばに いる",
       japanese: "まず気持ちを聞いて、そばにいる",
       english: "You listen to their feelings and stay near",
     },
@@ -936,7 +972,7 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
   {
     id: 18,
     axis: "sn",
-    easy: "あたらしい どうぐを もらいました。",
+    easy: "あたらしい 道具を もらいました。",
     japanese: "新しい道具をもらいました。",
     english: "You are given a new tool.",
     a: {
@@ -966,7 +1002,7 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
     english: "Which would you rather hear from your teacher?",
     a: {
       pole: "T",
-      easy: "「かんがえかたが いいね」",
+      easy: "「考え方が いいね」",
       japanese: "「考え方がいいね」",
       english: '"You think well"',
     },
@@ -998,7 +1034,7 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
     },
     b: {
       pole: "J",
-      easy: "「先に よていを 作りなおしたい」と 思う",
+      easy: "「先に 予定を 作りなおしたい」と 思う",
       japanese: "「先に予定を作りなおしたい」と思う",
       english: "You want to redo the plan first",
     },
@@ -1022,6 +1058,22 @@ export const PERSONALITY_RESULT_READINGS: readonly Reading[] = [
   { text: "途中", reading: "とちゅう" },
   { text: "試す", reading: "ためす" },
   { text: "例", reading: "れい" },
+  // 20問に出るN5超えの語（07 §3.0.2）。かな書きをやめて漢字にしたので、読みはここから出す。
+  // 「考え方」は「考え」より前に置く（後ろだと「方」が裸で残る）。
+  { text: "考え方", reading: "かんがえかた" },
+  { text: "気持ち", reading: "きもち" },
+  { text: "話し合います", reading: "はなしあいます" },
+  { text: "点線", reading: "てんせん" },
+  { text: "意味", reading: "いみ" },
+  { text: "説明", reading: "せつめい" },
+  { text: "予定", reading: "よてい" },
+  { text: "理由", reading: "りゆう" },
+  { text: "失敗", reading: "しっぱい" },
+  { text: "道具", reading: "どうぐ" },
+  { text: "大切", reading: "たいせつ" },
+  { text: "質問", reading: "しつもん" },
+  { text: "元気", reading: "げんき" },
+
   // 語彙メモ（glossary.ts）の見出し語は必ずここに置く。本文は漢字で書き、読みはここから合成する。
   // **配列の先頭に置くこと。** RubyText は同じ位置で一致した語のうち配列で先に出たほうを採るので、
   // 「手順」を「手」より後ろに置くと「手」だけにルビが付いて「順」が裸で残る。
@@ -1083,6 +1135,46 @@ export const PERSONALITY_RESULT_READINGS: readonly Reading[] = [
   { text: "動く", reading: "うごく" },
   { text: "手", reading: "て" },
   { text: "お客さま", reading: "おきゃくさま" },
+
+  // --- 読みが割れる漢字は、活用ごとに熟語で持つ ---
+  // 「出」は だ（出して）と で（出て）、「楽」は らく（楽に）と たの（楽しく）、
+  // 「言」は い（言う）と こと（言葉）で読みが変わる。単字で登録すると、
+  // どちらかが必ず間違ったふりがなになる。抜けは
+  // tests/glossary.test.ts の「裸の漢字が残っていない」検査が拾う。
+  { text: "一日", reading: "いちにち" },
+  { text: "出して", reading: "だして" },
+  { text: "楽に", reading: "らくに" },
+  { text: "言う", reading: "いう" },
+  { text: "言って", reading: "いって" },
+  { text: "言われました", reading: "いわれました" },
+  { text: "言える", reading: "いえる" },
+  { text: "言った", reading: "いった" },
+  { text: "入った", reading: "はいった" },
+
+  { text: "決める", reading: "きめる" },
+  { text: "考える", reading: "かんがえる" },
+  { text: "思い", reading: "おもい" },
+  { text: "使う", reading: "つかう" },
+  { text: "書く", reading: "かく" },
+  { text: "動かす", reading: "うごかす" },
+
+  // --- 読みが1つしかない漢字は単字で持つ（活用を書き並べなくて済む） ---
+  // **必ず配列の末尾に置くこと。** 同じ位置なら先に出たほうが勝つので、
+  // 単字を上に置くと「日本」が「日」に食われて「本」が裸で残る。
+  { text: "友", reading: "とも" },
+  { text: "答", reading: "こた" },
+  { text: "見", reading: "み" },
+  { text: "話", reading: "はな" },
+  { text: "日", reading: "ひ" },
+  { text: "何", reading: "なに" },
+  { text: "聞", reading: "き" },
+  { text: "思", reading: "おも" },
+  { text: "回", reading: "かい" },
+  { text: "絵", reading: "え" },
+  { text: "下", reading: "した" },
+  { text: "出", reading: "で" },
+  { text: "持", reading: "も" },
+  { text: "合", reading: "あ" },
 ] as const;
 
 const CODES: readonly PersonalityTypeCode[] = PERSONALITY_TYPES.map((type) => type.code);
