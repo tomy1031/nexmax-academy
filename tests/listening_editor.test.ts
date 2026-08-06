@@ -21,6 +21,8 @@ function listening(part: Partial<Listening> = {}): Listening {
     title: "朝会",
     description: "判定の たしかめ用です。",
     focus: "こまっていることの つたえ方に 注目して 聞きます。",
+    mode: "player",
+    check: { minLength: 3, maxMiss: 3, showScript: false, showTyping: true },
     participants: [
       { id: "fujiki", name: "藤木", role: "リーダー", accent: "sky" },
       { id: "hendy", name: "ヘンディ", role: "先輩", accent: "leaf" },

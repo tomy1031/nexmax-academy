@@ -36,6 +36,9 @@ export function emptyListening(): Listening {
     ],
     keywords: [],
     revealGoal: 30,
+    // 「聞く」教材なので、既定は 顔を並べない再生プレイヤー・台本は隠す
+    mode: "player",
+    check: { minLength: 3, maxMiss: 3, showScript: false, showTyping: true },
   };
 }
 

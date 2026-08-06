@@ -322,8 +322,32 @@ export const listeningSchema = z
     audioUrl: z.string().optional(),
     /** 聞き取りチェック: 聞こえた言葉を入れて見つける。 */
     keywords: z.array(plainText).default([]),
-    /** 隠し原稿リベールのクリア条件（原稿の表示率%）。 */
+    /** 隠し原稿リベールのクリア条件（原稿の表示率%）。ここを超えると答え合わせへ進める。 */
     revealGoal: z.number().int().min(1).max(100).default(30),
+    /**
+     * 画面の型。
+     * - `player` … ふつうの再生プレイヤー。字幕はフロートで追いかける
+     * - `call`   … Zoom風の画面（相手の顔が並ぶ）
+     * 「聞く」だけの教材に人の顔を並べる必要はないので、既定は player。
+     */
+    mode: z.enum(["player", "call"]).default("player"),
+    /** 聞き取りチェックの設定（先生が課ごとに変えられる）。 */
+    check: z
+      .object({
+        /**
+         * 受けつける最小の文字数（ひらがなだけのとき）。
+         * 短すぎる入力は「まぐれ当たり」になるので下限を置くが、
+         * N4以下の学習者には3文字でも長い。課ごとに変えられるようにする。
+         */
+        minLength: z.number().int().min(1).max(8).default(3),
+        /** 何回まちがえたら ヒントを出すか。 */
+        maxMiss: z.number().int().min(1).max(20).default(3),
+        /** 台本を最初から見せるか。既定は**見せない**（見えていると聞く練習にならない）。 */
+        showScript: z.boolean().default(false),
+        /** 聞き取りチェック（タイピング）を出すか。 */
+        showTyping: z.boolean().default(true),
+      })
+      .default({ minLength: 3, maxMiss: 3, showScript: false, showTyping: true }),
     furigana: z.array(furiganaEntrySchema).optional(),
   })
   .superRefine((listening, ctx) => {

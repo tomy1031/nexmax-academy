@@ -31,6 +31,18 @@ export type HitKind =
   /** 本文に出てこない。 */
   | "miss";
 
+/**
+ * 長い言葉ほど点が高い。
+ *
+ * 1語ずつ拾うより、聞こえた**ひとかたまり**を書き取るほうが難しく、
+ * 聞き取りの練習としても価値が高い。短い語の連打で稼げるままだと、
+ * 学習者はいちばん楽な当て方に寄っていく。
+ */
+export function lengthBonus(text: string, rules: ListeningRules): number {
+  const extra = normalizeReading(text).length - rules.minLength;
+  return extra <= 0 ? 0 : Math.min(10, extra);
+}
+
 export const POINTS: Record<HitKind, number> = {
   keyword: 5,
   hiragana: 3,
@@ -41,12 +53,33 @@ export const POINTS: Record<HitKind, number> = {
   miss: 0,
 };
 
-/** ミスできる回数（原典と同じ3回）。 */
+/** ミスできる回数の既定（教材ごとに変えられる — listeningSchema の check）。 */
 export const MAX_MISS = 3;
+
+/** 受けつける最小の文字数の既定。 */
+export const MIN_LENGTH = 3;
+
+/** 聞き取りチェックの設定（教材から渡す）。 */
+export interface ListeningRules {
+  /** ひらがなだけの入力を、何文字から受けつけるか。 */
+  readonly minLength: number;
+  readonly maxMiss: number;
+}
+
+export const DEFAULT_RULES: ListeningRules = { minLength: MIN_LENGTH, maxMiss: MAX_MISS };
 
 export interface ListeningState {
   readonly transcript: string;
   readonly keywords: readonly string[];
+  readonly rules: ListeningRules;
+  /**
+   * 隠せる文字の数（かな・漢字・数字）。表示率の分母。
+   *
+   * 以前は原稿の長さを分母にしていたので、句読点や空白は最初から見えている
+   * ぶんだけ**何も当てていないのに 11% から始まっていた**。
+   * 学習者から見ると「もう1割わかった」と嘘をつかれたことになる。
+   */
+  readonly hideableCount: number;
   /** 見つけたキーワード。 */
   readonly foundKeywords: readonly string[];
   /** 一度当てた入力（同じ語で二度稼げないようにする）。 */
@@ -70,15 +103,23 @@ export interface LogEntry {
   readonly keywords: readonly string[];
 }
 
-export function createListening(transcript: string, keywords: readonly string[]): ListeningState {
+export function createListening(
+  transcript: string,
+  keywords: readonly string[],
+  rules: ListeningRules = DEFAULT_RULES,
+): ListeningState {
   // 記号・空白は最初から見えている（形だけ分かると「発掘」しやすい）
   const revealed = new Set<number>();
+  let hideableCount = 0;
   for (let i = 0; i < transcript.length; i += 1) {
-    if (!/[\p{Letter}\p{Number}]/u.test(transcript[i] ?? "")) revealed.add(i);
+    if (isHideable(transcript[i])) hideableCount += 1;
+    else revealed.add(i);
   }
   return {
     transcript,
     keywords,
+    rules,
+    hideableCount,
     foundKeywords: [],
     usedInputs: [],
     score: 0,
@@ -120,27 +161,42 @@ export function submitListening(state: ListeningState, raw: string): ListeningSt
   if (exact || byReading) {
     const hit = exact ?? byReading!;
     const kind: HitKind = exact ? "keyword" : "hiragana";
-    return award(state, input, needle, kind, POINTS[kind], [hit]);
+    return award(state, input, needle, kind, POINTS[kind] + lengthBonus(input, state.rules), [hit]);
   }
 
   // 2. キーワードを含む言い方
   const contained = remaining.filter((kw) => needle.includes(normalizeReading(kw)));
   if (contained.length > 0) {
     if (isInTranscript(state, needle)) {
-      return award(state, input, needle, "contains", POINTS.contains * contained.length, contained);
+      return award(
+        state,
+        input,
+        needle,
+        "contains",
+        POINTS.contains * contained.length + lengthBonus(input, state.rules),
+        contained,
+      );
     }
     return push(state, { input, kind: "close", points: 0, keywords: contained });
   }
 
-  // 3. 短すぎる入力（ひらがなだけなら3文字、それ以外は2文字から）
+  // 3. 短すぎる入力（ひらがなだけなら minLength、漢字まじりはその1つ手前から）
   const allKana = /^[ぁ-ゖー0-9]+$/.test(needle);
-  if ((allKana && needle.length < 3) || (!allKana && needle.length < 2)) {
+  const floor = allKana ? state.rules.minLength : Math.max(1, state.rules.minLength - 1);
+  if (needle.length < floor) {
     return push(state, { input, kind: "tooShort", points: 0, keywords: [] });
   }
 
   // 4. キーワードではないが本文に出てくる
   if (isInTranscript(state, needle)) {
-    return award(state, input, needle, "partial", POINTS.partial, []);
+    return award(
+      state,
+      input,
+      needle,
+      "partial",
+      POINTS.partial + lengthBonus(input, state.rules),
+      [],
+    );
   }
 
   // 5. 該当なし
@@ -225,10 +281,37 @@ function isInTranscript(state: ListeningState, needle: string): boolean {
   return normalizeReading(state.transcript).includes(needle);
 }
 
-/** 原稿の表示率（%）。クリア条件の判定に使う。 */
+/**
+ * 原稿の表示率（%）。答え合わせへ進めるかの判定に使う。
+ *
+ * **分母は「隠せる文字」だけ**。句読点や空白は最初から見えているので、
+ * それを数に入れると何も当てていないのに 11% から始まる。
+ */
 export function revealRate(state: ListeningState): number {
-  if (state.transcript.length === 0) return 100;
-  return Math.round((state.revealed.size / state.transcript.length) * 100);
+  if (state.hideableCount === 0) return 100;
+  let shown = 0;
+  for (const index of state.revealed) {
+    if (isHideable(state.transcript[index])) shown += 1;
+  }
+  return Math.round((shown / state.hideableCount) * 100);
+}
+
+/** 隠す対象の文字か（かな・漢字・数字）。 */
+function isHideable(char: string | undefined): boolean {
+  return char !== undefined && /[\p{Letter}\p{Number}]/u.test(char);
+}
+
+/**
+ * 保存してある入力を順に流し込んで、続きから始められるようにする。
+ *
+ * 開いた場所そのもの（位置の集合）ではなく**入力した言葉**を保存する。
+ * 位置は台本を1文字直すだけでずれるが、言葉なら意味が変わらない。
+ */
+export function replayListening(state: ListeningState, inputs: readonly string[]): ListeningState {
+  let next = state;
+  for (const input of inputs) next = submitListening(next, input);
+  // やり直しの途中でついたミスは持ち越さない（前回の失敗を今日の回数に足さない）
+  return { ...next, misses: 0, log: [] };
 }
 
 /** あと何こ見つければよいか。「のこり」を主役に出すために使う。 */

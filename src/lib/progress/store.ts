@@ -253,3 +253,35 @@ export function recordContentProgress(
   writeJson(backend, `content:${contentId}`, next);
   return next;
 }
+
+/* ------------------------------------------------------------------ *
+ * リスニングで当てた言葉
+ * ------------------------------------------------------------------ */
+
+/**
+ * 一度ひらいた原稿は、次に来ても ひらいたままにする。
+ *
+ * 保存するのは**開いた位置ではなく入力した言葉**。位置は台本を1文字直すだけで
+ * ずれるが、言葉なら意味が変わらない（listening-checks の replayListening が
+ * これを流し込んで状態を組み直す）。
+ *
+ * DBには置かない。1画面ぶんの「しおり」に毎回の入力を送るのは重すぎるし、
+ * 消えても学習が止まらない種類のデータである。
+ */
+export function readListeningFinds(
+  contentId: string,
+  backend: ProgressBackend = defaultBackend(),
+): string[] {
+  const saved = readJson<unknown>(backend, `listening:${contentId}`, []);
+  return Array.isArray(saved)
+    ? saved.filter((item): item is string => typeof item === "string")
+    : [];
+}
+
+export function saveListeningFinds(
+  contentId: string,
+  inputs: readonly string[],
+  backend: ProgressBackend = defaultBackend(),
+): void {
+  writeJson(backend, `listening:${contentId}`, [...inputs]);
+}

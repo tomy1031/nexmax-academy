@@ -12,6 +12,7 @@ import {
 } from "./listening-drafts";
 import { AudioMaker } from "./audio-maker";
 import {
+  CheckChoice,
   FuriganaEditor,
   MiniButton,
   NumberField,
@@ -83,6 +84,23 @@ export function ListeningEditor({
 
   return (
     <div className="space-y-4">
+      <StudioSection
+        title="画面の かたち"
+        hint="「聞く」だけなら 顔を ならべる 必要は ありません。"
+      >
+        <div className="sm:w-72">
+          <SelectField
+            label="タイプ"
+            value={value.mode}
+            options={[
+              { value: "player", label: "ふつうの 再生プレイヤー" },
+              { value: "call", label: "Zoom風（相手の 顔が ならぶ）" },
+            ]}
+            onChange={(mode) => patch({ mode })}
+          />
+        </div>
+      </StudioSection>
+
       <StudioSection title="きほん" hint="リスニングの 入口に 出る 文です。">
         <div className="grid gap-4 sm:grid-cols-2">
           <TextField
@@ -246,16 +264,49 @@ export function ListeningEditor({
             </span>
           </p>
         ) : null}
-        <div className="sm:w-64">
+        <div className="grid gap-4 sm:grid-cols-3">
           <NumberField
-            label="原稿を ひらく 目標（％）"
+            label="こたえあわせに すすむ 目標（％）"
             value={value.revealGoal}
             min={1}
             max={100}
             onChange={(revealGoal) => patch({ revealGoal })}
-            hint="この 割合まで 原稿が 見えたら クリアです。"
+            hint="原稿が この 割合まで ひらくと つぎへ 進めます。"
+          />
+          <NumberField
+            label="うけつける 文字数"
+            value={value.check.minLength}
+            min={1}
+            max={8}
+            onChange={(minLength) => patch({ check: { ...value.check, minLength } })}
+            hint="ひらがなだけの 入力を 何文字から 受けるか。みじかいと まぐれ当たりが 増えます。"
+          />
+          <NumberField
+            label="ヒントを 出す ミスの 回数"
+            value={value.check.maxMiss}
+            min={1}
+            max={20}
+            onChange={(maxMiss) => patch({ check: { ...value.check, maxMiss } })}
+            hint="この 回数を こえたら「もういちど 聞こう」と 出します。"
           />
         </div>
+
+        <div className="flex flex-wrap gap-3">
+          <CheckChoice
+            label="はじめから げんこうを 見せる"
+            checked={value.check.showScript}
+            onToggle={(showScript) => patch({ check: { ...value.check, showScript } })}
+          />
+          <CheckChoice
+            label="タイピングを 出す"
+            checked={value.check.showTyping}
+            onToggle={(showTyping) => patch({ check: { ...value.check, showTyping } })}
+          />
+        </div>
+        <p className="text-ink-faint text-xs font-bold">
+          げんこうは ふつう 見せません（見えていると 読む れんしゅうに なってしまいます）。 学習者は
+          画面の「げんこう ON」で 出せます。
+        </p>
       </StudioSection>
 
       <AudioMaker value={value} onChange={onChange} />
