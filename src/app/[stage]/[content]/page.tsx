@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import type { Stage, StageContentRef } from "@/content/schema";
+import { RESERVED_STAGE_IDS, type Stage, type StageContentRef } from "@/content/schema";
 import { ArticleView } from "@/components/article/article-view";
 import { TalkSession } from "@/components/listening/live-mode";
 import { ListeningPlayer } from "@/components/listening/playback-mode";
@@ -46,10 +46,24 @@ export async function generateStaticParams() {
 }
 
 /** URL から「どのステージの どの教材か」まで解く。無ければ null。 */
+/**
+ * アプリのルートと同じ1段目は、ここで先に落とす。
+ *
+ * ステージIDは `RESERVED_STAGE_IDS` が保存時に弾くので、ここに来る予約語は
+ * 「存在しないステージ」でしかない。ただしこのページは ISR なので **404 の結果も
+ * キャッシュされる**。新しく `/admin/xxx` のようなルートを足した直後、それ以前に
+ * 誰かが踏んだ 404 がキャッシュに残っていると、しばらく 404 のままになる
+ *（2026-08-06 に /admin/characters で実際に起きた。revalidate の間だけ揺れる）。
+ */
+function isReserved(id: string): boolean {
+  return (RESERVED_STAGE_IDS as readonly string[]).includes(id);
+}
+
 async function resolve(
   stageId: string,
   segment: string,
 ): Promise<{ stage: Stage; ref: StageContentRef; index: number } | null> {
+  if (isReserved(stageId)) return null;
   const stage = await getStage(stageId);
   if (!stage) return null;
   const ref = resolveStageContent(stage.contents, segment);

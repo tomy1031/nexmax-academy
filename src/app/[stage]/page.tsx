@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import type { StageContentRef } from "@/content/schema";
+import { RESERVED_STAGE_IDS, type StageContentRef } from "@/content/schema";
 import {
   StageDetail,
   type StageContentItem,
@@ -129,8 +129,22 @@ export async function loadRef(ref: StageContentRef): Promise<LoadedRef | null> {
   }
 }
 
+/**
+ * アプリのルートと同じ1段目は、ここで先に落とす。
+ *
+ * ステージIDは `RESERVED_STAGE_IDS` が保存時に弾くので、ここに来る予約語は
+ * 「存在しないステージ」でしかない。ただしこのページは ISR なので **404 の結果も
+ * キャッシュされる**。新しく `/admin/xxx` のようなルートを足した直後、それ以前に
+ * 誰かが踏んだ 404 がキャッシュに残っていると、しばらく 404 のままになる
+ *（2026-08-06 に /admin/characters で実際に起きた。revalidate の間だけ揺れる）。
+ */
+function isReserved(id: string): boolean {
+  return (RESERVED_STAGE_IDS as readonly string[]).includes(id);
+}
+
 export default async function StagePage({ params }: { params: Promise<{ stage: string }> }) {
   const { stage: id } = await params;
+  if (isReserved(id)) notFound();
   const stage = await getStage(id);
   if (!stage) notFound();
 

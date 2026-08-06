@@ -159,6 +159,37 @@ export default function AdminAiPage() {
           読んでから使うかどうかを決めてください。目の前の生徒と合わないときは、生徒のほうを優先してください。
         </p>
 
+        {/*
+          つなぎ方の案内。ここが無かったので「未設定なのか壊れているのか」が
+          先生に区別できなかった。ブリッジは**先生のPCで動かす常駐プロセス**で、
+          公開中のアプリからは（いまはまだ）届かない。
+        */}
+        <div className="bg-panel-tint mt-5 rounded-2xl p-4">
+          <p className="text-navy text-sm font-black">つなぎ方</p>
+          <ol className="text-ink mt-2 list-decimal space-y-1 pl-5 text-sm font-bold">
+            <li>
+              手元に Codex を入れる（<code>npm i -g @openai/codex</code> → <code>codex login</code>
+              ）
+            </li>
+            <li>
+              このリポジトリで <code>npm run codex:bridge</code> を動かす （
+              <code>codex app-server</code> も一緒に立ち上がります）
+            </li>
+            <li>
+              下の接続先が <code>ws://127.0.0.1:8790/codex</code> であることを確かめて「接続」
+            </li>
+          </ol>
+          <p className="text-ink-soft mt-2 text-xs font-bold">
+            ブリッジは <strong>この画面を開いている PC の中</strong> で動いている必要があります
+            （ブラウザから直接つなぐため）。公開中のURLから使うには Cloudflare Tunnel を
+            立てる手作業が要ります — 手順と無料枠の条件は <code>docs/codex-backend.md</code>。
+          </p>
+          <p className="text-ink-faint mt-2 text-xs font-bold">
+            絵と文章は Codex なしでも作れます（「とうじょう人物」「まんが」「エリアの絵」は 上の
+            Gemini キーだけで動きます）。Codex が要るのは、ChatGPT の枠内で 画像を作りたいときです。
+          </p>
+        </div>
+
         {/* 接続。ローカルは ws://127.0.0.1:8790/codex、Tunnel経由は wss://…/codex */}
         <div className="mt-6 flex flex-wrap items-center gap-2">
           <input

@@ -20,6 +20,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 | `docs/design/review_rubric.md`             | 検収・レビューを行うとき（証拠必須ルーブリック）                           |
 | `docs/design/04_ビジュアルテーマ.md`       | UI・画面・キャラクターに触る前（あおぞらパスウェイ／ネクマックス）         |
 | `docs/skills/codex_image_generation.md`    | 画像アセットを作るとき（image-gen-2・一貫性ルール）                        |
+| `docs/codex-backend.md`                    | 生成バックエンド（Codex / Cloudflare Tunnel）に触る前                      |
 
 ## 絶対規律（機械検査の対象。違反はCIで落ちる）
 
@@ -84,6 +85,10 @@ docs/design/      # 設計ドキュメント（唯一の知識ソース）
   **`src/app/` に1段目のルートを足したら、この一覧にも足す**（足し忘れると、その名前の
   ステージに永久にたどり着けない。静的ルートが必ず勝つため）。
 - 古いURL（`/stage/<id>`・`/manga/<id>` など）は消さず、本来のURLへリダイレクトする。
+- **`/[stage]` は ISR なので 404 もキャッシュされる。** `src/app/` に新しいルートを
+  足した直後、それ以前に誰かが踏んだ 404 が残っていて `revalidate` の間だけ
+  404 と 200 が揺れることがある（2026-08-06 に `/admin/characters` で発生）。
+  待てば直る。焦って別の原因を探さない。
 - 先生向けの画面は `/admin` に集約（サイドバー）。`/studio` は `/admin/stages` へ送る。
 
 ## コマンド
