@@ -1,11 +1,12 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import type { StageContentRef } from "@/content/schema";
+import type { Stage, StageContentRef } from "@/content/schema";
 import { ArticleView } from "@/components/article/article-view";
 import { TalkSession } from "@/components/listening/live-mode";
 import { ListeningPlayer } from "@/components/listening/playback-mode";
 import { MangaReader } from "@/components/manga/manga-reader";
 import { QuizRunner } from "@/components/quiz/quiz-runner";
+import { ContentFrame, type FrameItem } from "@/components/stage/content-frame";
 import {
   getArticle,
   getListening,
@@ -17,7 +18,9 @@ import {
   listWordStages,
 } from "@/lib/content";
 import { buildDictionary } from "@/lib/dictionary";
-import { resolveStageContent, stageContentSegments } from "@/lib/stage-routes";
+import { sortStages } from "@/lib/map-data";
+import { resolveStageContent, stageContentPath, stageContentSegments } from "@/lib/stage-routes";
+import { loadRef } from "../page";
 
 /**
  * ステージの中の教材（`/asakai/listening`）
@@ -25,6 +28,9 @@ import { resolveStageContent, stageContentSegments } from "@/lib/stage-routes";
  * 教材の engine は種別ごとに別のコンポーネントだが、**ページは1つ**にする。
  * 種別ごとにルートを分けると、ステージの外側（見出し・戻り先・進捗）を
  * 5か所に写して回ることになり、必ずどこか1つが取り残される。
+ *
+ * 外側は `ContentFrame` が持つ（並び・戻り先・つぎへ・順番の制御）。
+ * engine は `embedded` で自前のヘッダを出さない。
  *
  * URLの読み取り規則は src/lib/stage-routes.ts（同じ種別が1つなら ID を付けない）。
  */
@@ -40,10 +46,19 @@ export async function generateStaticParams() {
 }
 
 /** URL から「どのステージの どの教材か」まで解く。無ければ null。 */
-async function resolve(stageId: string, segment: string): Promise<StageContentRef | null> {
+async function resolve(
+  stageId: string,
+  segment: string,
+): Promise<{ stage: Stage; ref: StageContentRef; index: number } | null> {
   const stage = await getStage(stageId);
   if (!stage) return null;
-  return resolveStageContent(stage.contents, segment);
+  const ref = resolveStageContent(stage.contents, segment);
+  if (!ref) return null;
+  // 同じ ref が2回入っている壊れたステージでは最初の1つを現在地にする
+  const index = stage.contents.findIndex(
+    (content) => content.ref === ref.ref && content.type === ref.type,
+  );
+  return { stage, ref, index };
 }
 
 export async function generateMetadata({
@@ -52,8 +67,9 @@ export async function generateMetadata({
   params: Promise<{ stage: string; content: string }>;
 }): Promise<Metadata> {
   const { stage, content } = await params;
-  const ref = await resolve(stage, content);
-  if (!ref) return { title: "きょうざい" };
+  const found = await resolve(stage, content);
+  if (!found) return { title: "きょうざい" };
+  const { ref } = found;
   switch (ref.type) {
     case "manga":
       return { title: `${(await getManga(ref.ref))?.title ?? ""} | まんが` };
@@ -72,20 +88,63 @@ export async function generateMetadata({
   }
 }
 
+/**
+ * 枠に渡す並び。見出しは参照先から引く（IDのままだと、ナビが
+ * 「m2-asakai-manga」の羅列になって、どれが何か分からない）。
+ * 参照切れは一覧から外す——[stage] のトップと同じ扱いにそろえる。
+ */
+async function frameItems(stage: Stage): Promise<FrameItem[]> {
+  const loaded = await Promise.all(
+    stage.contents.map(async (ref, index): Promise<FrameItem | null> => {
+      const found = await loadRef(ref);
+      const href = stageContentPath(stage.id, stage.contents, index);
+      if (!found || !href) return null;
+      return { id: ref.ref, type: ref.type, title: found.title, href };
+    }),
+  );
+  return loaded.filter((item): item is FrameItem => item !== null);
+}
+
 export default async function StageContentPage({
   params,
 }: {
   params: Promise<{ stage: string; content: string }>;
 }) {
-  const { stage, content } = await params;
-  const ref = await resolve(stage, content);
-  if (!ref) notFound();
+  const { stage: stageId, content } = await params;
+  const found = await resolve(stageId, content);
+  if (!found) notFound();
+  const { stage, ref } = found;
 
+  const [items, published] = await Promise.all([
+    frameItems(stage),
+    listStages().then((all) => sortStages(all.filter((item) => item.status === "published"))),
+  ]);
+  const number = published.findIndex((item) => item.id === stage.id) + 1;
+  // 参照切れを外したぶん位置がずれるので、枠の並びの中で数え直す
+  const currentIndex = items.findIndex((item) => item.id === ref.ref && item.type === ref.type);
+
+  return (
+    <ContentFrame
+      stage={{
+        id: stage.id,
+        title: stage.title,
+        reading: stage.reading,
+        number: number > 0 ? number : 1,
+      }}
+      items={items}
+      currentIndex={currentIndex >= 0 ? currentIndex : 0}
+    >
+      {await renderContent(ref)}
+    </ContentFrame>
+  );
+}
+
+async function renderContent(ref: StageContentRef) {
   switch (ref.type) {
     case "manga": {
       const manga = await getManga(ref.ref);
       if (!manga) notFound();
-      return <MangaReader manga={manga} />;
+      return <MangaReader manga={manga} embedded />;
     }
     case "article": {
       const article = await getArticle(ref.ref);
@@ -96,22 +155,28 @@ export default async function StageContentPage({
        * このステージの単語だけに絞ると、いちばん助けが要る「前に習ったが忘れた語」に
        * 説明が出なくなる。
        */
-      return <ArticleView article={article} dictionary={buildDictionary(await listWordStages())} />;
+      return (
+        <ArticleView
+          article={article}
+          dictionary={buildDictionary(await listWordStages())}
+          embedded
+        />
+      );
     }
     case "listening": {
       const listening = await getListening(ref.ref);
       if (!listening) notFound();
-      return <ListeningPlayer listening={listening} />;
+      return <ListeningPlayer listening={listening} embedded />;
     }
     case "quizset": {
       const set = await getQuizSet(ref.ref);
       if (!set) notFound();
-      return <QuizRunner set={set} />;
+      return <QuizRunner set={set} embedded />;
     }
     case "scenario": {
       const scenario = await getScenario(ref.ref);
       if (!scenario) notFound();
-      return <TalkSession scenario={scenario} />;
+      return <TalkSession scenario={scenario} embedded />;
     }
     // 単語ステージは contents[] に入らない（wordStageIds 側・行き先は /arcade）。
     // ここに来るのは壊れたデータなので 404 にする。

@@ -27,7 +27,18 @@ import {
  * カートリッジ棚UI・茶系インク・フクロウは使わない（設計04 §1）。
  * 演出は必ず学習行為に紐づける（正解したときだけ紙吹雪・スタンプが増える）。
  */
-export function QuizRunner({ set }: { set: QuizSet }) {
+export function QuizRunner({
+  set,
+  /**
+   * ステージの枠（ContentFrame）の中に置くとき。自前の外枠と戻りリンクを出さない
+   * ——戻り先は枠が持つ（教材ごとに戻り先が違うと、学習者は1本おわるたびに
+   * 別の一覧へ放り出される）。
+   */
+  embedded = false,
+}: {
+  set: QuizSet;
+  embedded?: boolean;
+}) {
   const furigana = useMemo(() => buildFuriganaIndex(set.furigana ?? []), [set.furigana]);
   const [state, setState] = useState<QuizState>(() => createQuizSession(set));
 
@@ -46,15 +57,17 @@ export function QuizRunner({ set }: { set: QuizSet }) {
   const byId = useMemo(() => new Map(set.questions.map((q) => [q.id, q])), [set.questions]);
 
   return (
-    <div className="mx-auto w-full max-w-3xl px-4 py-6">
-      <header className="mb-5 flex items-center justify-between gap-3">
-        <Link href="/quiz" className="text-ink-soft hover:text-navy text-sm font-extrabold">
-          ← もんだい 一覧
-        </Link>
-        <span className="bg-sky-soft text-navy rounded-full px-3 py-1 text-xs font-extrabold">
-          ✏️ {set.title}
-        </span>
-      </header>
+    <div className={embedded ? "" : "mx-auto w-full max-w-3xl px-4 py-6"}>
+      {embedded ? null : (
+        <header className="mb-5 flex items-center justify-between gap-3">
+          <Link href="/quiz" className="text-ink-soft hover:text-navy text-sm font-extrabold">
+            ← もんだい 一覧
+          </Link>
+          <span className="bg-sky-soft text-navy rounded-full px-3 py-1 text-xs font-extrabold">
+            ✏️ {set.title}
+          </span>
+        </header>
+      )}
 
       {state.phase.kind === "finished" ? (
         <QuizResultCard

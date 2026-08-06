@@ -21,14 +21,35 @@ export interface EphemeralToken {
   readonly expiresAt: string;
 }
 
+/**
+ * 失敗の種類。画面に出す言い方はクライアント側が決める（issue-text と同じ流儀）。
+ * キーそのものや上流の本文は**含めない**。
+ */
+export type LiveTokenReason =
+  "badKey" | "noPermission" | "modelNotFound" | "rateLimited" | "upstream";
+
 export class LiveTokenError extends Error {
   constructor(
-    message: string,
+    readonly reason: LiveTokenReason,
     readonly status: number,
   ) {
-    super(message);
+    super(reason);
     this.name = "LiveTokenError";
   }
+}
+
+/**
+ * 上流のHTTPステータスを、先生が次の一手を決められる粒度に畳む。
+ *
+ * 400 はこのエンドポイントでは実質「キーが違う」（Google は無効キーに 400 を返す。
+ * 実測: `API key not valid` が 400 INVALID_ARGUMENT）。
+ */
+function reasonFor(status: number): LiveTokenReason {
+  if (status === 400) return "badKey";
+  if (status === 401 || status === 403) return "noPermission";
+  if (status === 404) return "modelNotFound";
+  if (status === 429) return "rateLimited";
+  return "upstream";
 }
 
 /**
@@ -64,12 +85,15 @@ export async function createEphemeralToken({
   });
 
   if (!response.ok) {
-    // 応答本文にキーが混ざる可能性があるので、そのまま外へ出さない
-    throw new LiveTokenError("短命トークンの発行に失敗しました", response.status);
+    // 応答本文にキーが混ざる可能性があるので、そのまま外へ出さない。
+    // ただし**なぜ失敗したか**は返す——ここを潰すと、キーを入れた先生には
+    // 「だめだった」としか見えず、キーが違うのか・モデルが無いのか・
+    // 使いすぎなのかを確かめる手が1つも無くなる（実際にそうなった）。
+    throw new LiveTokenError(reasonFor(response.status), response.status);
   }
 
   const data = (await response.json()) as { name?: string };
-  if (!data.name) throw new LiveTokenError("短命トークンの形式が想定と違います", 502);
+  if (!data.name) throw new LiveTokenError("upstream", 502);
 
   return { token: data.name, expiresAt: expireTime };
 }

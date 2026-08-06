@@ -1,7 +1,8 @@
 "use client";
 
 import { useCallback, useRef, useState } from "react";
-import { getGeminiKey } from "@/lib/profile";
+import { DEFAULT_LIVE_TALK_MODEL } from "@/lib/ai/models";
+import { getGeminiKey, getLiveModel } from "@/lib/profile";
 
 /**
  * Gemini Live との対話セッション。
@@ -31,6 +32,14 @@ interface TokenResponse {
 
 export interface LiveSession {
   readonly status: LiveStatus;
+  /**
+   * うまくいかなかった理由の名前（badKey / noPermission / modelNotFound /
+   * rateLimited / upstream / noKey / connect）。画面に出す言い方は呼ぶ側が決める。
+   *
+   * ここを持たずに status だけ返していたころは、キーを入れた先生に
+   * 「じゅんびちゅう」としか出せず、何を直せばよいか分からなかった。
+   */
+  readonly reason: string | null;
   /** 字幕（Q&A表示）。AIの誤判定を学習者が目で確認できるように残す。 */
   readonly transcript: readonly LiveTurn[];
   readonly connect: (systemInstruction: string) => Promise<void>;
@@ -40,6 +49,7 @@ export interface LiveSession {
 
 export function useLiveSession(): LiveSession {
   const [status, setStatus] = useState<LiveStatus>("idle");
+  const [reason, setReason] = useState<string | null>(null);
   const [transcript, setTranscript] = useState<readonly LiveTurn[]>([]);
   const sessionRef = useRef<{
     sendClientContent: (input: unknown) => void;
@@ -50,21 +60,33 @@ export function useLiveSession(): LiveSession {
     sessionRef.current?.close();
     sessionRef.current = null;
     setStatus("idle");
+    setReason(null);
   }, []);
 
   const connect = useCallback(async (systemInstruction: string) => {
     setStatus("connecting");
+    setReason(null);
+
+    const apiKey = getGeminiKey();
+    if (!apiKey) {
+      setStatus("notReady");
+      setReason("noKey");
+      return;
+    }
 
     // 本人のキーはこの端末に保存されている（はじめの設定ウィザードで登録）。
     // サーバへ渡すのは交換のためだけで、Live には短命トークンしか出さない。
     const response = await fetch("/api/live/token", {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ apiKey: getGeminiKey() }),
+      // モデルは「AI指示出し」で選んだもの。選んでいなければ既定。
+      // トークンはこのモデルにだけ有効になるので、接続と同じ名前を渡す。
+      body: JSON.stringify({ apiKey, model: getLiveModel() || DEFAULT_LIVE_TALK_MODEL }),
     });
-    const payload = (await response.json()) as TokenResponse;
+    const payload = (await response.json().catch(() => ({}))) as TokenResponse;
     if (!payload.ready || !payload.token || !payload.model) {
       setStatus("notReady");
+      setReason(payload.reason ?? "upstream");
       return;
     }
 
@@ -98,7 +120,10 @@ export function useLiveSession(): LiveSession {
         close: () => void;
       };
     } catch {
+      // 例外の中身は出さない。短命トークンが混ざりうるうえ、SDK の生メッセージは
+      // 学習者にも先生にも読めない。理由の名前だけ渡す。
       setStatus("error");
+      setReason("connect");
     }
   }, []);
 
@@ -109,7 +134,7 @@ export function useLiveSession(): LiveSession {
     session.sendClientContent({ turns: text, turnComplete: true });
   }, []);
 
-  return { status, transcript, connect, disconnect, send };
+  return { status, reason, transcript, connect, disconnect, send };
 }
 
 /** Live のメッセージから字幕にする1行を取り出す（形が変わっても落ちないようにする）。 */

@@ -23,6 +23,8 @@ import {
   type PersonalityFamilyId,
 } from "@/content/personality";
 import { contentKindMeta } from "@/lib/content-kinds";
+import { readContentProgress, subscribeProgress } from "@/lib/progress/store";
+import { statusCode as contentStatusCode } from "@/components/stage/stage-progress";
 import type { MapStage } from "@/lib/map-data";
 import { fetchOwnProfile, type ProfileRow } from "@/lib/profile-db";
 import {
@@ -43,6 +45,14 @@ import {
   type StageStatus,
 } from "@/lib/progress";
 import { createClient } from "@/lib/supabase/client";
+
+/**
+ * ボタンの中の ふりがな を白にする。
+ *
+ * ボタンの地は濃い色で、文字は白。ルビ（rt）だけ既定の暗い色のままだと、
+ * ふりがなが読めない——ふりがなが読めないボタンは、ふりがなが無いのと同じ。
+ */
+const BUTTON_RUBY = "[&_rt]:text-white";
 
 /** 漢字を含む見出しか。含むならタイトル全体に よみ をふる。 */
 const HAS_KANJI = /[一-鿿]/;
@@ -717,37 +727,7 @@ function StagePanel({
           {current ? (
             <>
               <ProgressBar progress={progress} />
-              <div className="mt-3 grid gap-2 sm:grid-cols-2 md:grid-cols-1">
-                <Link
-                  href={`/${stage.id}`}
-                  className="btn-game flex-col px-4 py-2 leading-tight [--btn-face:#f26fa7] [--btn-shadow:#d94d84]"
-                >
-                  <span>
-                    ▶{" "}
-                    <ruby>
-                      続き<rt>つづき</rt>
-                    </ruby>
-                    から
-                  </span>
-                  <span className="text-[11px]">ステージを つづける</span>
-                </Link>
-                <Link
-                  href="/arcade"
-                  className="btn-game flex-col px-4 py-2 leading-tight [--btn-face:#ffc93c] [--btn-shadow:#f0a819]"
-                >
-                  <span>
-                    📖{" "}
-                    <ruby>
-                      単語<rt>たんご</rt>
-                    </ruby>
-                    を
-                    <ruby>
-                      勉強<rt>べんきょう</rt>
-                    </ruby>
-                  </span>
-                  <span className="text-[11px]">たんごを ふやして レベルアップ！</span>
-                </Link>
-              </div>
+              <StageActions stage={stage} />
             </>
           ) : (
             /*
@@ -756,7 +736,7 @@ function StagePanel({
              */
             <Link
               href={`/${stage.id}`}
-              className="btn-game mt-2 w-full px-3 py-1.5 text-sm [--btn-face:#ffc93c] [--btn-shadow:#f0a819]"
+              className={`btn-game mt-2 w-full px-3 py-1.5 text-sm ${BUTTON_RUBY} [--btn-face:#ffc93c] [--btn-shadow:#f0a819]`}
             >
               {status === "cleared" ? "もういちど" : "すすむ"}
             </Link>
@@ -764,6 +744,108 @@ function StagePanel({
         </div>
       )}
     </section>
+  );
+}
+
+/**
+ * いまのステージで押せるボタン（さいしょから／つづきから／単語）。
+ *
+ * 「つづきから」は**どこから始まるのか**を出し、その画面へ直接行く。
+ * ステージのトップに戻すだけだと、学習者はもう一度どれを開くか選ぶことになり、
+ * 「つづき」と書いてある意味がなくなる。
+ *
+ * 単語は**そのステージにひもづく単語ステージ**へ直行する。一覧に放り出すと、
+ * どの課の単語を選べばよいかは学習者には分からない。
+ */
+function StageActions({ stage }: { stage: MapStage }) {
+  const items = stage.contents;
+  const serverKey = useMemo(() => items.map(() => "0").join(""), [items]);
+  const progressKey = useSyncExternalStore(
+    subscribeProgress,
+    () => items.map((item) => contentStatusCode(readContentProgress(item.id))).join(""),
+    () => serverKey,
+  );
+  const codes = [...progressKey];
+  const firstUnfinished = codes.findIndex((code) => code !== "2");
+  const resume = items[firstUnfinished < 0 ? 0 : firstUnfinished];
+  const first = items[0];
+  const allDone = firstUnfinished < 0 && items.length > 0;
+  const wordStageId = stage.wordStageIds[0];
+
+  return (
+    <div className="mt-3 grid gap-2 sm:grid-cols-2 md:grid-cols-1">
+      {resume ? (
+        <Link
+          href={resume.href}
+          className={`btn-game flex-col px-4 py-2 leading-tight ${BUTTON_RUBY} [--btn-face:#f26fa7] [--btn-shadow:#d94d84]`}
+        >
+          <span>
+            ▶{" "}
+            {allDone ? (
+              "もういちど 見る"
+            ) : (
+              <>
+                <ruby>
+                  続き<rt>つづき</rt>
+                </ruby>
+                から
+              </>
+            )}
+          </span>
+          <span className="text-[11px]">
+            {contentKindMeta(resume.type).icon} {contentKindMeta(resume.type).label}
+            {items.length > 1
+              ? `（${(firstUnfinished < 0 ? 0 : firstUnfinished) + 1}／${items.length}）`
+              : ""}
+          </span>
+        </Link>
+      ) : (
+        <Link
+          href={`/${stage.id}`}
+          className={`btn-game px-4 py-2 ${BUTTON_RUBY} [--btn-face:#f26fa7] [--btn-shadow:#d94d84]`}
+        >
+          ステージを ひらく
+        </Link>
+      )}
+
+      {/* 1本目に戻る道。やり直したい学習者に「進捗を消す」以外の手を用意する */}
+      {first && resume && first.href !== resume.href ? (
+        <Link
+          href={first.href}
+          className={`btn-game flex-col px-4 py-2 leading-tight ${BUTTON_RUBY} [--btn-face:#4fa8e8] [--btn-shadow:#0272ae]`}
+        >
+          <span>
+            ↩{" "}
+            <ruby>
+              最初<rt>さいしょ</rt>
+            </ruby>
+            から
+          </span>
+          <span className="text-[11px]">
+            {contentKindMeta(first.type).icon} {contentKindMeta(first.type).label}
+          </span>
+        </Link>
+      ) : null}
+
+      <Link
+        href={wordStageId ? `/arcade/${wordStageId}` : "/arcade"}
+        className={`btn-game flex-col px-4 py-2 leading-tight ${BUTTON_RUBY} [--btn-face:#ffc93c] [--btn-shadow:#f0a819]`}
+      >
+        <span>
+          📖{" "}
+          <ruby>
+            単語<rt>たんご</rt>
+          </ruby>
+          を
+          <ruby>
+            勉強<rt>べんきょう</rt>
+          </ruby>
+        </span>
+        <span className="text-[11px]">
+          {wordStageId ? "この ステージの ことば" : "ことばアーケードを ひらく"}
+        </span>
+      </Link>
+    </div>
   );
 }
 

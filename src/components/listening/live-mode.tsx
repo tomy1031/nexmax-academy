@@ -9,7 +9,8 @@ import type { FeedbackKey } from "@/lib/feedback";
 import { RubyText } from "@/components/ruby-text";
 import { buildFuriganaIndex } from "@/lib/text/furigana";
 import { recordContentProgress } from "@/lib/progress/store";
-import { CaptionBar, CallShell, CallNotReady } from "@/components/call-shell";
+import { CaptionBar, CallShell } from "@/components/call-shell";
+import { LiveReason } from "./live-reason";
 import { resolveMatch } from "./req-matcher";
 import { useLiveSession } from "./use-live-session";
 
@@ -24,13 +25,33 @@ import { useLiveSession } from "./use-live-session";
  * 判定は3層（AI → ローカルのキーワード救済 → 手動）で、AIの誤判定で
  * 正しい質問が却下されないようにする（設計01 §3）。
  */
-export function TalkSession({ scenario }: { scenario: Scenario }) {
+export function TalkSession({
+  scenario,
+  /**
+   * ステージの枠（ContentFrame）の中に置くとき。自前の外枠と戻りリンクを出さない
+   * ——戻り先は枠が持つ（教材ごとに戻り先が違うと、学習者は1本おわるたびに
+   * 別の一覧へ放り出される）。
+   */
+  embedded = false,
+}: {
+  scenario: Scenario;
+  embedded?: boolean;
+}) {
   const furigana = useMemo(() => buildFuriganaIndex(scenario.furigana ?? []), [scenario.furigana]);
   const live = useLiveSession();
   const [open, setOpen] = useState<ReadonlySet<string>>(new Set());
   // 画面に出す文言は型付きキーだけ（自由文字列を書けなくする — 設計03 §1.3-1）
   const [note, setNote] = useState<FeedbackKey | null>(null);
   const [draft, setDraft] = useState("");
+  /**
+   * いま出しているヒントの項目。
+   *
+   * 以前は「まだ聞けていない項目の**先頭**」を開きっぱなしで出していた。
+   * それだと、上から順に読み上げるだけで全部そろってしまい、
+   * 「自分で聞き出す」練習にならない。押したときに、まだ聞けていない中から
+   * ひとつだけ出す。
+   */
+  const [hintId, setHintId] = useState<string | null>(null);
 
   const participants = useMemo(
     () => [
@@ -71,22 +92,27 @@ export function TalkSession({ scenario }: { scenario: Scenario }) {
   }, [live, scenario.id]);
 
   const askable = scenario.interview.reqs.filter((r) => !open.has(r.id));
+  // 聞き出せた項目のヒントは引っこめる（もう要らないものが残っていると、
+  // 「まだ聞けていない」と勘違いする）
+  const hint = askable.find((req) => req.id === hintId) ?? null;
 
   return (
-    <div className="mx-auto w-full max-w-3xl px-4 py-6">
-      <header className="mb-5 flex items-center justify-between gap-3">
-        {/*
-          たいわ だけの 一覧は まだ 無く、/listening が「きく」と「はなす」の
-          両方の 入口を 兼ねている。だから ここでは 種別の名前を 言い切らない
-          （「リスニング 一覧」と 書くと、たいわ から 戻る 先の 名前が ずれる）。
-        */}
-        <Link href="/listening" className="text-ink-soft hover:text-navy text-sm font-extrabold">
-          ← いちらんに もどる
-        </Link>
-        <span className="bg-sky-soft text-navy rounded-full px-3 py-1 text-xs font-extrabold">
-          {scenario.emoji} {scenario.title}
-        </span>
-      </header>
+    <div className={embedded ? "" : "mx-auto w-full max-w-3xl px-4 py-6"}>
+      {embedded ? null : (
+        <header className="mb-5 flex items-center justify-between gap-3">
+          {/*
+            たいわ だけの 一覧は まだ 無く、/listening が「きく」と「はなす」の
+            両方の 入口を 兼ねている。だから ここでは 種別の名前を 言い切らない
+            （「リスニング 一覧」と 書くと、たいわ から 戻る 先の 名前が ずれる）。
+          */}
+          <Link href="/listening" className="text-ink-soft hover:text-navy text-sm font-extrabold">
+            ← いちらんに もどる
+          </Link>
+          <span className="bg-sky-soft text-navy rounded-full px-3 py-1 text-xs font-extrabold">
+            {scenario.emoji} {scenario.title}
+          </span>
+        </header>
+      )}
 
       <CallShell
         title={scenario.title}
@@ -127,14 +153,14 @@ export function TalkSession({ scenario }: { scenario: Scenario }) {
             )}
             {live.status === "error" && (
               <span className="text-coral-deep text-sm font-extrabold">
-                つながりませんでした。もう一度 ためしてね
+                つながりませんでした。下に りゆうが 出ています
               </span>
             )}
           </div>
         }
       >
-        {live.status === "notReady" ? (
-          <CallNotReady />
+        {live.status === "notReady" || live.status === "error" ? (
+          <LiveReason reason={live.reason} />
         ) : (
           <>
             {/* 文字起こしは必ず見せる（AIの誤判定を目で確かめられるように） */}
@@ -204,14 +230,27 @@ export function TalkSession({ scenario }: { scenario: Scenario }) {
           </ul>
 
           {askable.length > 0 && (
-            <details className="mt-3">
-              <summary className="text-sky cursor-pointer text-sm font-extrabold">
-                こう聞いてみよう（ヒント）
-              </summary>
-              <p className="text-ink-soft mt-2 text-sm font-bold">
-                <RubyText text={askable[0]!.hint} index={furigana} />
-              </p>
-            </details>
+            <div className="mt-3">
+              <button
+                type="button"
+                onClick={() => {
+                  // まだ聞けていないものから ひとつ。同じものが続かないよう、
+                  // いま出しているものは候補から外す。
+                  const pool = askable.filter((req) => req.id !== hintId);
+                  const from = pool.length > 0 ? pool : askable;
+                  setHintId(from[Math.floor(Math.random() * from.length)]!.id);
+                }}
+                className="btn-game px-4 py-2 text-sm [--btn-face:#ffc93c] [--btn-shadow:#f0a819]"
+              >
+                💡 ヒントを 1つ もらう（のこり {askable.length}）
+              </button>
+              {hint && (
+                <p className="bg-panel-tint text-ink mt-2 rounded-2xl px-4 py-2 text-sm font-bold">
+                  <span className="mr-1">{hint.icon}</span>
+                  <RubyText text={hint.hint} index={furigana} />
+                </p>
+              )}
+            </div>
           )}
         </section>
       </CallShell>

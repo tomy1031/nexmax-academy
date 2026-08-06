@@ -117,11 +117,17 @@ export function StageList({
                   >
                     ↓
                   </MiniButton>
+                  {/*
+                    新しいタブで開く。同じタブで飛ぶと、書きかけのステージの下書きが消える
+                    （下書きはブラウザの中にしか無い）。
+                  */}
                   <Link
                     href={`/${stage.id}`}
+                    target="_blank"
+                    rel="noreferrer"
                     className="border-hairline text-navy rounded-full border-2 bg-white px-4 py-1 text-xs font-black"
                   >
-                    見る
+                    見る ↗
                   </Link>
                   <MiniButton tone="accent" onClick={() => onOpen(stage)}>
                     ✎ ひらく

@@ -14,6 +14,7 @@
 
 import type { MapArea } from "@/content/areas";
 import type { ContentRefType, Stage } from "@/content/schema";
+import { stageContentPath } from "@/lib/stage-routes";
 
 /**
  * マップに出すステージ1つ分（カードとピンの中身）。
@@ -36,6 +37,22 @@ export interface MapStage {
   description: string;
   color: Stage["color"];
   kinds: readonly ContentRefType[];
+  /**
+   * 中の教材（学習順）。「さいしょから」「つづきから」の行き先と、
+   * どこまで進んだかの判定に使う。IDは進捗キーでもある。
+   */
+  contents: readonly MapStageContent[];
+  /**
+   * ひもづく単語ステージ。マップの「単語を 勉強」は、どの課の単語かが決まっていないと
+   * 学習者を一覧に放り出すことになるので、**そのステージのもの**へ直行させる。
+   */
+  wordStageIds: readonly string[];
+}
+
+export interface MapStageContent {
+  id: string;
+  type: ContentRefType;
+  href: string;
 }
 
 /** マップの並び順（order の昇順・同点はIDで安定させる）。 */
@@ -53,6 +70,11 @@ export function toMapStages(stages: readonly Stage[]): MapStage[] {
     color: stage.color,
     // 同じ種別が2つあっても、しるしは1つでいい（「まんが・まんが・もんだい」は読みにくい）
     kinds: [...new Set(stage.contents.map((content) => content.type))],
+    contents: stage.contents.flatMap((content, position) => {
+      const href = stageContentPath(stage.id, stage.contents, position);
+      return href ? [{ id: content.ref, type: content.type, href }] : [];
+    }),
+    wordStageIds: stage.wordStageIds,
   }));
 }
 

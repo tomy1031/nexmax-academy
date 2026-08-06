@@ -121,7 +121,17 @@ function resolveImageSrc(panel: MangaPanel): string | null {
   return `/${src}`;
 }
 
-export function MangaReader({ manga }: { manga: Manga }) {
+export function MangaReader({
+  manga,
+  /**
+   * ステージの枠（ContentFrame）の中に置くとき。自前の外枠と戻りリンクを出さない
+   * ——戻り先は枠が持つ。
+   */
+  embedded = false,
+}: {
+  manga: Manga;
+  embedded?: boolean;
+}) {
   const furigana = useMemo(() => buildFuriganaIndex(manga.furigana ?? []), [manga.furigana]);
   const isStory = manga.format === "story";
 
@@ -226,15 +236,17 @@ export function MangaReader({ manga }: { manga: Manga }) {
   const backToStage = backHref.startsWith("/stage/");
 
   return (
-    <div className="mx-auto w-full max-w-3xl px-4 py-6">
-      <header className="mb-5 flex items-center justify-between gap-3">
-        <Link href={backHref} className="text-ink-soft hover:text-navy text-sm font-extrabold">
-          ← {backToStage ? "ステージに もどる" : "まなびマップ"}
-        </Link>
-        <span className="bg-sky-soft text-navy rounded-full px-3 py-1 text-xs font-extrabold">
-          📖 {isStory ? "まんが" : "4コマ まんが"}
-        </span>
-      </header>
+    <div className={embedded ? "" : "mx-auto w-full max-w-3xl px-4 py-6"}>
+      {embedded ? null : (
+        <header className="mb-5 flex items-center justify-between gap-3">
+          <Link href={backHref} className="text-ink-soft hover:text-navy text-sm font-extrabold">
+            ← {backToStage ? "ステージに もどる" : "まなびマップ"}
+          </Link>
+          <span className="bg-sky-soft text-navy rounded-full px-3 py-1 text-xs font-extrabold">
+            📖 {isStory ? "まんが" : "4コマ まんが"}
+          </span>
+        </header>
+      )}
 
       <section className="card-island p-5 sm:p-6">
         <div className="flex items-start gap-4">
@@ -362,13 +374,16 @@ export function MangaReader({ manga }: { manga: Manga }) {
           </div>
         )}
 
-        <Link
-          href={backHref}
-          className="btn-island btn-game mt-6 w-full px-6 py-3.5"
-          style={{ "--btn-face": "#58c273", "--btn-shadow": "#3aa458" } as React.CSSProperties}
-        >
-          {backToStage ? "ステージに もどる" : "まなびマップに もどる"}
-        </Link>
+        {/* 枠の中では「つぎへ」を枠が出すので、ここには置かない（同じ役目のボタンが2つ並ぶ） */}
+        {embedded ? null : (
+          <Link
+            href={backHref}
+            className="btn-island btn-game mt-6 w-full px-6 py-3.5"
+            style={{ "--btn-face": "#58c273", "--btn-shadow": "#3aa458" } as React.CSSProperties}
+          >
+            {backToStage ? "ステージに もどる" : "まなびマップに もどる"}
+          </Link>
+        )}
       </section>
     </div>
   );

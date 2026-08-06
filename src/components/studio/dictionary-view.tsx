@@ -83,11 +83,14 @@ export function DictionaryView({
                   <p className="text-ink-faint text-xs font-bold">/arcade/{stage.id}</p>
                 </div>
                 <SourceBadge status={dbStatusOf("wordstage", stage.id)} />
+                {/* 新しいタブで開く（書きかけの下書きを失わないため） */}
                 <Link
                   href={`/arcade/${stage.id}`}
+                  target="_blank"
+                  rel="noreferrer"
                   className="border-hairline text-navy rounded-full border-2 bg-white px-4 py-1 text-xs font-black"
                 >
-                  あそぶ
+                  あそぶ ↗
                 </Link>
                 <MiniButton tone="accent" onClick={() => onOpen(stage.id)}>
                   ✎ ひらく

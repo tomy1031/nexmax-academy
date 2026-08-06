@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/app/api/studio/content/route";
+import { TEXT_MODEL } from "@/lib/ai/models";
 import {
   buildVocabPrompt,
   parseVocabCandidates,
@@ -23,8 +24,8 @@ import {
  * 落ちた理由が見えないまま選び直しをくり返すことになる。
  */
 
-/** 使うモデル。意味の判断をさせるので、速い flash 系の中では上のものを使う。 */
-const VOCAB_MODEL = "gemini-2.5-flash";
+/** 使うモデル。名前は1か所にまとめてある（src/lib/ai/models.ts）。 */
+const VOCAB_MODEL = TEXT_MODEL;
 
 const GENERATE_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${VOCAB_MODEL}:generateContent`;
 

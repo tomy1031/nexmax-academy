@@ -13,6 +13,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AdminError, AdminHeader, AdminLoading, AdminPageFrame } from "@/components/admin/admin-ui";
+import { GeminiKeyPanel } from "@/components/admin/gemini-key-panel";
 import { CodexTransport, type CodexStatus } from "@/lib/codex-transport";
 import {
   anonymizeCohort,
@@ -140,7 +141,16 @@ export default function AdminAiPage() {
 
   return (
     <AdminPageFrame>
-      <AdminHeader title="AI指示出し" />
+      <AdminHeader title="AI設定" note="APIキーと、Codex への つなぎ" />
+
+      {/*
+        キーの設定は はじめの設定ウィザードにしか無く、入れ直す場所も
+        「効いているか」を確かめる場所も無かった。ここに置く。
+      */}
+      <div className="mx-auto mb-4 max-w-4xl">
+        <GeminiKeyPanel />
+      </div>
+
       <section className="card-pop mx-auto max-w-4xl p-5 sm:p-8">
         <h1 className="text-navy text-2xl font-black">AI指示出し（実験）</h1>
         <p className="text-ink-soft mt-2 text-sm font-bold">

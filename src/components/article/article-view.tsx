@@ -41,10 +41,17 @@ export function ArticleView({
    * 渡さなければ 下線は1つも出ない——辞書が無い環境（プレビューなど）でも本文は読める。
    */
   dictionary,
+  /**
+   * ステージの枠（ContentFrame）の中に置くとき。自前の外枠と「マップに もどる」を
+   * 出さない——戻り先は枠が持つ（教材ごとに戻り先が違うと、学習者は
+   * 1本おわるたびに地図まで放り出される）。
+   */
+  embedded = false,
 }: {
   article: Article;
   preview?: boolean;
   dictionary?: readonly DictionaryEntry[];
+  embedded?: boolean;
 }) {
   const furigana = useMemo(() => buildFuriganaIndex(article.furigana ?? []), [article.furigana]);
   const [rubyOn, setRubyOn] = useState(true);
@@ -71,23 +78,31 @@ export function ArticleView({
     return () => observer.disconnect();
   }, [article.id, preview]);
 
+  const rubyToggle = (
+    <button
+      type="button"
+      onClick={() => setRubyOn((on) => !on)}
+      aria-pressed={rubyOn}
+      className={`rounded-full border-2 px-3 py-1 text-xs font-extrabold ${
+        rubyOn ? "bg-sky border-sky text-white" : "border-hairline text-ink-soft bg-panel"
+      }`}
+    >
+      ふりがな {rubyOn ? "ON" : "OFF"}
+    </button>
+  );
+
   return (
-    <div className="mx-auto w-full max-w-3xl px-4 py-6">
-      <header className="mb-5 flex items-center justify-between gap-3">
-        <Link href="/map" className="text-ink-soft hover:text-navy text-sm font-extrabold">
-          ← マップに もどる
-        </Link>
-        <button
-          type="button"
-          onClick={() => setRubyOn((on) => !on)}
-          aria-pressed={rubyOn}
-          className={`rounded-full border-2 px-3 py-1 text-xs font-extrabold ${
-            rubyOn ? "bg-sky border-sky text-white" : "border-hairline text-ink-soft bg-panel"
-          }`}
-        >
-          ふりがな {rubyOn ? "ON" : "OFF"}
-        </button>
-      </header>
+    <div className={embedded ? "" : "mx-auto w-full max-w-3xl px-4 py-6"}>
+      {embedded ? (
+        <div className="mb-3 flex justify-end">{rubyToggle}</div>
+      ) : (
+        <header className="mb-5 flex items-center justify-between gap-3">
+          <Link href="/map" className="text-ink-soft hover:text-navy text-sm font-extrabold">
+            ← マップに もどる
+          </Link>
+          {rubyToggle}
+        </header>
+      )}
 
       <article className="card-island p-5 sm:p-7">
         <p className="text-ink-faint text-xs font-extrabold">📄 よみもの</p>

@@ -38,7 +38,7 @@ const GROUPS: readonly { title: string; items: readonly Item[] }[] = [
       { href: "/admin", icon: "📊", label: "ダッシュボード" },
       { href: "/admin/users", icon: "👥", label: "ユーザー", match: "/admin/users" },
       { href: "/nexmax", icon: "🧑‍🎨", label: "ネクマックス16人" },
-      { href: "/admin/ai", icon: "🤖", label: "AI指示出し", match: "/admin/ai" },
+      { href: "/admin/ai", icon: "🤖", label: "AI設定", match: "/admin/ai" },
     ],
   },
 ];

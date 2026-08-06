@@ -17,7 +17,17 @@ import { ListeningPanel } from "./listening-panel";
  *
  * 聞き取りチェックは旧アプリと同じく、入力欄ひとつ（ListeningPanel）。
  */
-export function ListeningPlayer({ listening }: { listening: Listening }) {
+export function ListeningPlayer({
+  listening,
+  /**
+   * ステージの枠（ContentFrame）の中に置くとき。自前の外枠と戻りリンクを出さない
+   * ——戻り先は枠が持つ。
+   */
+  embedded = false,
+}: {
+  listening: Listening;
+  embedded?: boolean;
+}) {
   const furigana = useMemo(
     () => buildFuriganaIndex(listening.furigana ?? []),
     [listening.furigana],
@@ -55,15 +65,17 @@ export function ListeningPlayer({ listening }: { listening: Listening }) {
   };
 
   return (
-    <div className="mx-auto w-full max-w-3xl px-4 py-6">
-      <header className="mb-5 flex items-center justify-between gap-3">
-        <Link href="/listening" className="text-ink-soft hover:text-navy text-sm font-extrabold">
-          ← リスニング 一覧
-        </Link>
-        <span className="bg-sky-soft text-navy rounded-full px-3 py-1 text-xs font-extrabold">
-          🎧 {listening.title}
-        </span>
-      </header>
+    <div className={embedded ? "" : "mx-auto w-full max-w-3xl px-4 py-6"}>
+      {embedded ? null : (
+        <header className="mb-5 flex items-center justify-between gap-3">
+          <Link href="/listening" className="text-ink-soft hover:text-navy text-sm font-extrabold">
+            ← リスニング 一覧
+          </Link>
+          <span className="bg-sky-soft text-navy rounded-full px-3 py-1 text-xs font-extrabold">
+            🎧 {listening.title}
+          </span>
+        </header>
+      )}
 
       <CallShell
         title={listening.title}

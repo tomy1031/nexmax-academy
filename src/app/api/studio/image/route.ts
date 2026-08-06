@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/app/api/studio/content/route";
+import { DEFAULT_IMAGE_MODEL } from "@/lib/ai/models";
 
 /**
  * エリアの絵を1枚つくる（管理者専用）。
@@ -16,8 +17,8 @@ import { requireAdmin } from "@/app/api/studio/content/route";
  * ブラウザから RLS 越しに行い、ここは生成だけを受け持つ。
  */
 
-/** 画像生成のモデル。 */
-const IMAGE_MODEL = "gemini-2.5-flash-image";
+/** 画像生成のモデル。名前は1か所にまとめてある（src/lib/ai/models.ts）。 */
+const IMAGE_MODEL = DEFAULT_IMAGE_MODEL;
 
 const ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${IMAGE_MODEL}:generateContent`;
 

@@ -11,10 +11,14 @@
  * あとで1本につなぐ（wav.ts）。行数ぶん時間がかかるので、進み具合を必ず返す。
  */
 
+import { LIVE_TTS_MODELS } from "@/lib/ai/models";
 import { base64ToBytes, joinPcm, pcmToWav, type JoinedPcm } from "./wav";
 
-/** 読み上げに使うモデル。古い順に落としていく（新しい方が声の質が良い）。 */
-const MODELS = ["gemini-live-2.5-flash-preview", "gemini-2.0-flash-live-001"] as const;
+/**
+ * 読み上げに使うモデル。上から順にためす（src/lib/ai/models.ts）。
+ * ここに名前を直書きしていたころ、モデルが差し替わって消えたことに誰も気づけなかった。
+ */
+const MODELS = LIVE_TTS_MODELS;
 
 /**
  * 「書いてあるとおりに読む」ための指示。
@@ -48,18 +52,46 @@ export class TtsError extends Error {
   }
 }
 
-/** 短命トークンを1つもらう。1トークン1接続なので行ごとに取り直す。 */
-async function fetchToken(apiKey: string): Promise<string> {
+/**
+ * 短命トークンを1つもらう。1トークン1接続なので行ごとに取り直す。
+ *
+ * **つなぐモデルを必ず渡す。** トークンは `liveConnectConstraints` で
+ * 1つのモデルに縛られるので、渡さないと たいわ用モデルのトークンが返り、
+ * TTS用モデルでの接続が必ず弾かれる（実際そうなっていた）。
+ */
+async function fetchToken(apiKey: string, model: string): Promise<string> {
   const response = await fetch("/api/live/token", {
     method: "POST",
     headers: { "content-type": "application/json" },
-    body: JSON.stringify({ apiKey }),
+    body: JSON.stringify({ apiKey, model }),
   });
-  const payload = (await response.json()) as { ready?: boolean; token?: string };
+  const payload = (await response.json().catch(() => ({}))) as {
+    ready?: boolean;
+    token?: string;
+    reason?: string;
+  };
   if (!response.ok || !payload.ready || !payload.token) {
-    throw new TtsError("音声の じゅんびが できませんでした。APIキーを たしかめてください。");
+    throw new TtsError(messageForTokenReason(payload.reason));
   }
   return payload.token;
+}
+
+/** 失敗の理由を、先生が次の一手を決められる言い方にする。 */
+function messageForTokenReason(reason: string | undefined): string {
+  switch (reason) {
+    case "noKey":
+      return "AIの キーが まだ ありません。「AI指示出し」で 登録してください。";
+    case "badKey":
+      return "この キーは つかえませんでした。コピーし直して 登録してください。";
+    case "noPermission":
+      return "この キーでは 音声づくりが つかえません。キーの プロジェクトを たしかめてください。";
+    case "modelNotFound":
+      return "音声づくりに つかう モデルが 見つかりません。「AI指示出し」で「せつぞくを ためす」を おしてください。";
+    case "rateLimited":
+      return "きょうは つかいすぎたようです。時間を おいて ためしてください。";
+    default:
+      return "音声の じゅんびが できませんでした。少し 待って もう一度 ためしてください。";
+  }
 }
 
 /** 1行を読み上げて、生PCMを返す。 */
@@ -161,7 +193,9 @@ export const SAMPLE_TEXT = "おはようございます。きょうの よてい
 /** 1行だけ作る（声の試聴に使う）。 */
 export async function synthesizeSample(apiKey: string, voice: string): Promise<Blob> {
   const pcm = await withModelFallback((model) =>
-    fetchToken(apiKey).then((token) => synthesizeLine(token, { text: SAMPLE_TEXT, voice }, model)),
+    fetchToken(apiKey, model).then((token) =>
+      synthesizeLine(token, { text: SAMPLE_TEXT, voice }, model),
+    ),
   );
   return pcmToWav(pcm);
 }
@@ -178,7 +212,7 @@ export async function synthesizeScript(
   const parts: Uint8Array[] = [];
   for (const [index, line] of lines.entries()) {
     const pcm = await withModelFallback((model) =>
-      fetchToken(apiKey).then((token) => synthesizeLine(token, line, model)),
+      fetchToken(apiKey, model).then((token) => synthesizeLine(token, line, model)),
     );
     parts.push(pcm);
     onProgress?.({ done: index + 1, total: lines.length });
