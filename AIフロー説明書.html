@@ -1,0 +1,557 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>AIフロー説明書 — NexmaxAcademy</title>
+<style>
+  :root {
+    --navy:#1b2545; --navy-deep:#121a35; --gold:#c9a45c; --gold-light:#e7cf95;
+    --cream:#f4ecd8; --ink:#243049; --muted:#6b7793; --line:#d8c79c;
+    --blue:#3a5ba0; --green:#3f7d52; --purple:#6b4f9e; --bg:#f7f2e6;
+  }
+  * { box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { margin:0; font-family:"Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,system-ui,sans-serif;
+         color:var(--ink); background:var(--bg); line-height:1.75; }
+  .layout { display:flex; align-items:flex-start; }
+  nav.toc { position:sticky; top:0; width:280px; min-width:280px; height:100vh; overflow-y:auto;
+    background:linear-gradient(180deg,var(--navy),var(--navy-deep)); color:var(--cream);
+    padding:24px 18px; border-right:3px solid var(--gold); }
+  nav.toc h2 { font-size:15px; color:var(--gold-light); margin:0 0 4px; letter-spacing:.08em; }
+  nav.toc .sub { font-size:11px; color:#9fb0d6; margin:0 0 18px; }
+  nav.toc ol { list-style:none; margin:0; padding:0; }
+  nav.toc li { margin:2px 0; }
+  nav.toc a { display:block; color:#cfd8ef; text-decoration:none; font-size:13px;
+    padding:5px 10px; border-radius:6px; border-left:2px solid transparent; }
+  nav.toc a:hover { background:rgba(201,164,92,.16); color:#fff; border-left-color:var(--gold); }
+  main { flex:1; min-width:0; padding:0 0 80px; }
+  .hero { background:linear-gradient(135deg,var(--navy),var(--navy-deep) 70%); color:var(--cream);
+    padding:56px 60px 48px; border-bottom:4px solid var(--gold); }
+  .hero .eyebrow { color:var(--gold-light); letter-spacing:.24em; font-size:12px; margin:0 0 12px; }
+  .hero h1 { font-size:40px; margin:0 0 8px; letter-spacing:.04em; }
+  .hero .en { color:#aebcdf; font-size:18px; margin:0 0 20px; letter-spacing:.12em; }
+  .hero .meta { font-size:13px; color:#c7d1ec; }
+  .hero .meta span { margin-right:18px; }
+  .wrap { padding:0 60px; max-width:1040px; }
+  section.chapter { padding-top:48px; }
+  h2.sec { font-size:26px; color:var(--navy); margin:0 0 6px; padding-bottom:8px;
+    border-bottom:2px solid var(--gold); display:flex; align-items:baseline; gap:12px; }
+  h2.sec .num { background:var(--gold); color:#fff; font-size:15px; border-radius:6px;
+    padding:2px 10px; flex:0 0 auto; }
+  h3 { font-size:19px; color:var(--blue); margin:32px 0 8px; }
+  h4 { font-size:16px; color:var(--ink); margin:20px 0 6px; }
+  p { margin:8px 0; }
+  ul, ol.body { margin:8px 0 8px 4px; padding-left:22px; }
+  li { margin:4px 0; }
+  code { background:#ece3cc; color:#6b4f22; padding:1px 6px; border-radius:4px;
+    font-family:"SF Mono",Menlo,Consolas,monospace; font-size:13px; }
+  pre:not(.mermaid) { background:var(--navy-deep); color:#e7ecf7; padding:16px 18px; border-radius:10px;
+    overflow-x:auto; font-size:13px; line-height:1.6; border-left:4px solid var(--gold); }
+  pre code { background:none; color:inherit; padding:0; }
+  pre.mermaid { background:#fff; border:1px solid var(--line); border-radius:10px; padding:18px;
+    text-align:center; overflow-x:auto; }
+  .callout { border-left:4px solid var(--blue); background:#eaf0fb; padding:12px 18px;
+    border-radius:0 8px 8px 0; margin:16px 0; }
+  .callout.warn { border-color:#c08a2e; background:#fbf3e2; }
+  .callout.good { border-color:var(--green); background:#e9f4ec; }
+  .callout strong { color:var(--navy); }
+  .tablewrap { overflow-x:auto; }
+  table { width:100%; border-collapse:collapse; margin:14px 0; font-size:14px; background:#fff;
+    border-radius:8px; overflow:hidden; box-shadow:0 1px 0 var(--line); }
+  th, td { text-align:left; padding:9px 12px; border-bottom:1px solid #ece3cc; vertical-align:top; }
+  th { background:var(--navy); color:var(--cream); font-weight:600; font-size:13px; }
+  tr:nth-child(even) td { background:#faf6ec; }
+  .badge { display:inline-block; font-size:11px; padding:2px 9px; border-radius:999px; color:#fff;
+    margin-right:4px; font-weight:600; }
+  .b-codex { background:#2f6f4f; } .b-gemini { background:#3a5ba0; } .b-none { background:#8a8f9c; }
+  .b-todo { background:#a8762b; }
+  footer { padding:30px 60px; color:var(--muted); font-size:12px; border-top:1px solid var(--line);
+    margin-top:40px; }
+  details.changelog { margin:24px 60px 0; max-width:1040px; border:1px solid var(--line);
+    border-radius:12px; background:#fff; box-shadow:0 2px 10px rgba(27,37,69,.06); overflow:hidden; }
+  details.changelog > summary { list-style:none; cursor:pointer; user-select:none; padding:14px 22px;
+    background:linear-gradient(90deg,var(--navy),#2a3a6e); color:var(--cream); font-weight:600;
+    font-size:16px; display:flex; align-items:center; gap:10px; }
+  details.changelog > summary::-webkit-details-marker { display:none; }
+  details.changelog > summary .chev { transition:transform .2s; color:var(--gold-light); }
+  details.changelog[open] > summary .chev { transform:rotate(90deg); }
+  details.changelog > summary .latest { margin-left:auto; font-size:12px; font-weight:500; color:#aebcdf; }
+  details.changelog .cl-body { padding:8px 22px 18px; }
+  details.changelog table { margin-top:12px; }
+  @media (max-width:860px) {
+    nav.toc { display:none; }
+    .hero, .wrap, footer, details.changelog { padding-left:24px; padding-right:24px; margin-left:0; margin-right:0; }
+  }
+</style>
+</head>
+<body>
+<div class="layout">
+
+<nav class="toc">
+  <h2>AIフロー説明書</h2>
+  <p class="sub">NexmaxAcademy / 生成機能の全体像</p>
+  <ol>
+    <li><a href="#s1">1. 全体像 — AIは2つ</a></li>
+    <li><a href="#s2">2. なぜ Codex が第一なのか</a></li>
+    <li><a href="#s3">3. つながり方（公開URL→手元のCodex）</a></li>
+    <li><a href="#s4">4. 機能ごとの一覧表</a></li>
+    <li><a href="#s5">5. 絵をつくる</a></li>
+    <li><a href="#s6">6. 文章をつくる</a></li>
+    <li><a href="#s7">7. 音声をつくる</a></li>
+    <li><a href="#s8">8. 学習者が使うAI（たいわ）</a></li>
+    <li><a href="#s9">9. まとめて つくる</a></li>
+    <li><a href="#s10">10. 生成物が通る関門</a></li>
+    <li><a href="#s11">11. まだ できていないこと</a></li>
+    <li><a href="#changelog">変更履歴 / Changelog</a></li>
+  </ol>
+</nav>
+
+<main>
+  <div class="hero">
+    <p class="eyebrow">TECHNICAL REFERENCE</p>
+    <h1>AIフロー説明書</h1>
+    <p class="en">How every AI feature is wired</p>
+    <p class="meta">
+      <span>版: v1.0</span>
+      <span>作成日: 2026-08-07</span>
+      <span>対象: NexmaxAcademy の生成機能ぜんぶ</span>
+    </p>
+  </div>
+
+  <details class="changelog" id="changelog">
+    <summary>
+      <span class="chev">▶</span>変更履歴 / Changelog
+      <span class="latest">最新: v1.0 (2026-08-07)</span>
+    </summary>
+    <div class="cl-body">
+      <p>本書への変更を記録する。各エントリの「修正箇所」リンクから該当章へ移動できる。</p>
+      <div class="tablewrap">
+      <table>
+        <tr><th>版</th><th>日付</th><th>変更内容</th><th>修正箇所</th></tr>
+        <tr>
+          <td>v1.0</td><td>2026-08-07</td>
+          <td>初版作成。実際のコードを読んで、機能ごとの経路・モデル・失敗時の動きを記録した。</td>
+          <td><a href="#s1">1</a> ・ <a href="#s4">4</a> ・ <a href="#s11">11</a></td>
+        </tr>
+      </table>
+      </div>
+      <div class="callout">
+        <strong>運用ルール</strong>：以降の修正は 版(vX.Y)・日付・変更内容・該当章アンカー を<strong>先頭行</strong>に追加すること。
+      </div>
+    </div>
+  </details>
+
+  <div class="wrap">
+
+  <section class="chapter" id="s1">
+    <h2 class="sec"><span class="num">1</span>全体像 — AIは2つある</h2>
+    <p>このアプリが使うAIは <strong>Codex（ChatGPTの枠）</strong> と <strong>Gemini</strong> の2つだけ。
+    どちらを使うかは機能ごとに固定されているのではなく、<strong>設定されているものを上から順に試す</strong>形になっている。</p>
+
+    <pre class="mermaid">
+flowchart TD
+  T["先生が「つくる」を押す"] --> K{"Codex の合言葉が<br/>入っている？"}
+  K -- はい --> C["Codex<br/>gpt-image-2"]
+  K -- いいえ --> G["Gemini<br/>APIキー（BYOK）"]
+  C -- "つながらない" --> G
+  C -- できた --> S["Storage へ保存"]
+  G -- できた --> S
+  G -- "キーも無い" --> E["理由を出して止まる"]
+  S --> V["機械検査を通す"]
+  V --> D["下書きに入る"]
+    </pre>
+
+    <div class="callout good">
+      <strong>ここだけ覚えれば足りる</strong>：<br />
+      ① 絵は Codex が第一、届かなければ Gemini。<br />
+      ② 文章と音声は いまのところ Gemini だけ。<br />
+      ③ どちらも「先生自身のアカウント」で動く（アプリは共有の鍵を持たない）。
+    </div>
+  </section>
+
+  <section class="chapter" id="s2">
+    <h2 class="sec"><span class="num">2</span>なぜ Codex が第一なのか</h2>
+    <p>2つの理由がある。どちらも実測にもとづく。</p>
+    <ol class="body">
+      <li><strong>絵の水準が高い。</strong> Codex の組み込み <code>image_gen</code>（既定モデル <code>gpt-image-2</code>）で、
+      設定画を参照させながら12枚を作り直しゼロで生成できた（ネクマックス6体・登場人物2人・まんが4コマ）。</li>
+      <li><strong>Gemini の無料枠が少ない。</strong> 教材づくりは1本あたり十数回の生成になるので、
+      枠の消費が運用の制約になる。Codex は ChatGPT のサブスク枠で動く。</li>
+    </ol>
+
+    <div class="callout">
+      <strong>Codex は ChatGPT ログインだけで動く</strong>（2026-08-06 実測・codex-cli 0.145.0）。
+      OpenAI の APIキーは要らない。<code>codex login</code> 済みであればよい。
+    </div>
+
+    <h3>Gemini を残してある理由</h3>
+    <p>Codex は<strong>先生のPCで常駐プロセスを動かしている間しか使えない</strong>。
+    ブリッジを止めているとき・別の端末から触るときのために、Gemini の経路を残してある。
+    絵づくりでは、Codex に届かなければ<strong>黙って Gemini に回る</strong>——
+    先生が絵を待っている場面で、ブリッジが止まっているというだけで手が止まるのは割に合わない。</p>
+  </section>
+
+  <section class="chapter" id="s3">
+    <h2 class="sec"><span class="num">3</span>つながり方（公開URL → 手元のCodex）</h2>
+
+    <p>公開中のアプリ（<code>https://…workers.dev</code>）から、先生のPCで動く Codex を使える。
+    <strong>Cloudflare Tunnel もドメインも Access も要らない。</strong></p>
+
+    <pre class="mermaid">
+sequenceDiagram
+  participant B as ブラウザ<br/>(公開URL・https)
+  participant R as codex_bridge<br/>(先生のPC :8790)
+  participant X as codex app-server<br/>(:17653)
+  B->>R: GET /api/codex/hello?token=…
+  R-->>B: { workdir }
+  B->>R: PUT /api/codex/file?token=…&name=ref_x.webp
+  Note over B,R: 設定画を作業フォルダへ置く
+  R-->>B: { path }
+  B->>R: WS /codex?token=…
+  R->>X: ハンドシェイクを肩代わり
+  B->>X: turn/start（localImage + 指示）
+  X-->>B: imageGeneration completed
+  B->>R: GET /api/codex/file?token=…&name=out_y.png
+  R-->>B: PNG（1536×1024）
+    </pre>
+
+    <h3>なぜ https のページから <code>ws://127.0.0.1</code> が開けるのか</h3>
+    <p><code>127.0.0.1</code> はブラウザの規格上「安全なオリジン（potentially trustworthy）」に数えられるため、
+    混在コンテンツの遮断にかからない。2026-08-06 に公開URLのページから接続して <code>OPEN</code> を確認した。</p>
+
+    <div class="callout warn">
+      <strong>だから合言葉が必須になった。</strong>
+      つながるということは、<strong>先生が開いたどのサイトからもこのブリッジを叩ける</strong>ということでもある。
+      その先にいる Codex はパソコンの中でコマンドを実行できる。
+      <ul>
+        <li>ブリッジは起動時に合言葉を作って表示する（<code>~/.nexmax/codex-bridge-token</code>・本人だけ読める権限）</li>
+        <li>WSもHTTPも、合言葉が合わなければ <strong>401</strong>。上流には1バイトも通さない（時間の一定な比較）</li>
+        <li>ファイルの受け渡しは<strong>作業フォルダ1つの中だけ</strong>。名前も <code>[a-z0-9_-]{1,64}.(png|jpg|jpeg|webp)</code> に限る</li>
+      </ul>
+      許可リストではなく合言葉を境界にしたのは、非ブラウザからはオリジンを自由に名乗れるため。
+    </div>
+
+    <h3>先生の手順</h3>
+    <pre><code>cd &lt;リポジトリ&gt; && npm run codex:bridge
+# 画面に出る合言葉を /admin/ai の「合言葉」に貼って「接続」</code></pre>
+  </section>
+
+  <section class="chapter" id="s4">
+    <h2 class="sec"><span class="num">4</span>機能ごとの一覧表</h2>
+    <p>現状の全経路。<span class="badge b-codex">Codex</span><span class="badge b-gemini">Gemini</span><span class="badge b-none">AIなし</span><span class="badge b-todo">未実装</span></p>
+
+    <div class="tablewrap">
+    <table>
+      <tr>
+        <th>機能</th><th>画面</th><th>使うAI</th><th>入口</th><th>モデル</th><th>形の縛り</th>
+      </tr>
+      <tr>
+        <td>エリアの絵</td><td>ステージ編集</td>
+        <td><span class="badge b-codex">Codex</span><span class="badge b-gemini">Gemini</span></td>
+        <td><code>image-api.ts</code></td>
+        <td><code>gpt-image-2</code> / <code>gemini-3.1-flash-image</code></td>
+        <td>—（画像）</td>
+      </tr>
+      <tr>
+        <td>登場人物の設定画</td><td>とうじょう人物</td>
+        <td><span class="badge b-codex">Codex</span><span class="badge b-gemini">Gemini</span></td>
+        <td><code>image-api.ts</code></td>
+        <td>同上</td><td>—（画像）</td>
+      </tr>
+      <tr>
+        <td>まんがのコマ絵</td><td>まんが編集</td>
+        <td><span class="badge b-codex">Codex</span><span class="badge b-gemini">Gemini</span></td>
+        <td><code>image-api.ts</code></td>
+        <td>同上</td><td>—（画像）</td>
+      </tr>
+      <tr>
+        <td>まんがの台本</td><td>まんが編集</td>
+        <td><span class="badge b-gemini">Gemini</span></td>
+        <td><code>/api/studio/manga</code></td>
+        <td><code>gemini-2.5-flash</code></td>
+        <td><code>responseSchema</code></td>
+      </tr>
+      <tr>
+        <td>ことばの抜き出し</td><td>ことば・辞書</td>
+        <td><span class="badge b-gemini">Gemini</span></td>
+        <td><code>/api/studio/vocab</code></td>
+        <td><code>gemini-2.5-flash</code></td>
+        <td><code>responseSchema</code></td>
+      </tr>
+      <tr>
+        <td>リスニングの音声</td><td>リスニング編集</td>
+        <td><span class="badge b-gemini">Gemini</span></td>
+        <td>ブラウザ → Gemini Live</td>
+        <td>Live TTS（複数を上から試す）</td>
+        <td>—（音声）</td>
+      </tr>
+      <tr>
+        <td>学習者との たいわ</td><td>/&lt;ステージ&gt;/talk</td>
+        <td><span class="badge b-gemini">Gemini</span></td>
+        <td>ブラウザ → Gemini Live</td>
+        <td><code>gemini-3.1-flash-live-preview</code> ほか</td>
+        <td>—（音声・双方向）</td>
+      </tr>
+      <tr>
+        <td>先生向けメモ</td><td>AI設定</td>
+        <td><span class="badge b-codex">Codex</span></td>
+        <td><code>CodexTransport.runText</code></td>
+        <td>Codex の既定</td><td>—（文章）</td>
+      </tr>
+      <tr>
+        <td>まとめて つくる</td><td>まとめて つくる</td>
+        <td><span class="badge b-codex">Codex</span><span class="badge b-gemini">Gemini</span></td>
+        <td>上の絵・音声を束ねる</td>
+        <td>同上</td><td>—</td>
+      </tr>
+      <tr>
+        <td>もんだい・よみもの</td><td>各エディタ</td>
+        <td><span class="badge b-none">AIなし</span></td>
+        <td>—</td><td>—</td><td>—</td>
+      </tr>
+      <tr>
+        <td>文章生成の Codex 化</td><td>—</td>
+        <td><span class="badge b-todo">未実装</span></td>
+        <td><code>CodexTransport.runJson</code>（土台のみ）</td>
+        <td>—</td>
+        <td><code>outputSchema</code></td>
+      </tr>
+    </table>
+    </div>
+
+    <div class="callout">
+      <strong>キーは誰のものか（BYOK）</strong>：アプリは共有のGeminiキーを持たない。
+      先生が自分で発行したキーを画面で登録し、その端末に保存される。
+      サーバはそれを受け取って上流を呼ぶだけで、<strong>キーも上流の応答本文もクライアントへ返さない</strong>。
+    </div>
+  </section>
+
+  <section class="chapter" id="s5">
+    <h2 class="sec"><span class="num">5</span>絵をつくる</h2>
+    <p>入口は1つ（<code>src/components/studio/image-api.ts</code> の <code>generateImage()</code>）。
+    エリアの絵・設定画・まんがのコマが、みんなここを通る。呼ぶ場所ごとに書くと、失敗の言い方が画面ごとにばらけるため。</p>
+
+    <pre class="mermaid">
+flowchart TD
+  A["generateImage(prompt, references)"] --> B{"合言葉あり？"}
+  B -- はい --> C["generateWithCodex"]
+  C --> C1["参照画像を PUT"]
+  C1 --> C2["WS で turn/start"]
+  C2 --> C3["GET で受け取る"]
+  C3 --> OK["File を返す"]
+  B -- いいえ --> G
+  C -. "つながらない" .-> G["POST /api/studio/image"]
+  G --> G1["サーバが参照画像を取りに行く<br/>（最大4枚）"]
+  G1 --> G2["Gemini generateContent"]
+  G2 --> OK
+    </pre>
+
+    <h3>一貫性の作り方（これが要）</h3>
+    <ul>
+      <li><strong>設定画（model sheet）を先に1枚作り、コマ絵の生成で毎回参照入力に渡す。</strong>
+      プロンプトで毎回容姿を書き直すより確実。</li>
+      <li>さらに<strong>1コマ前の絵も参照に足す</strong>と、部屋・光・服がそろう。
+      実測では4コマとも1回ずつの生成で、服・髪・部屋が一致した。</li>
+      <li>参照画像は最大4枚（Worker の外部subrequest上限が50本のため少なく抑える）。</li>
+    </ul>
+
+    <div class="callout warn">
+      <strong>絵に日本語を描かせない。</strong>
+      ふりがな入りの画像生成は成功例が1件も見つからなかった。拡散モデルは文字を言語ではなく
+      ピクセル模様として学習するため、ルビは (a) 本文より小さい (b) 位置が厳密
+      (c) 画数の多い漢字の真上 という三重苦になる。
+      <strong>吹き出しは空で描かせ、セリフはアプリが重ねる。</strong>
+    </div>
+  </section>
+
+  <section class="chapter" id="s6">
+    <h2 class="sec"><span class="num">6</span>文章をつくる</h2>
+
+    <h3>いまの経路（Gemini・サーバ側）</h3>
+    <p>まんがの台本と ことばの抜き出しの2つ。どちらもサーバの Route Handler が
+    <code>generationConfig.responseSchema</code> で JSON の形を機械的に縛っている。</p>
+
+    <div class="tablewrap">
+    <table>
+      <tr><th>機能</th><th>入力</th><th>出力</th></tr>
+      <tr><td>まんがの台本</td><td>登場人物＋やりたいこと1行</td><td>コマ割り・セリフ・読み辞書</td></tr>
+      <tr><td>ことばの抜き出し</td><td>ステージの本文</td><td>語・読み・意味・英語</td></tr>
+    </table>
+    </div>
+
+    <h3>Codex へ寄せる土台（実装ずみ・未配線）</h3>
+    <p>Gemini の無料枠が少ないため、文章生成も Codex へ寄せる方針。
+    <code>codex app-server</code> のプロトコルを出して確かめたところ、必要なものは揃っていた。</p>
+
+    <div class="callout good">
+      <strong><code>TurnStartParams.outputSchema</code> が実在する</strong><br />
+      "Optional JSON Schema used to constrain the final assistant message for this turn."<br />
+      つまり <strong>JSON の形をプロトコル層で縛れる</strong>。Gemini の <code>responseSchema</code> に相当するものが
+      Codex に無い、という前提は誤りだった。<code>TurnInterruptParams</code>（= <code>{threadId, turnId}</code>）も実在するので、
+      長い生成に「とめる」を付けられる。
+    </div>
+
+    <p>それでも受け取る側は頑丈にしてある（<code>src/lib/ai/json-reply.ts</code>）。縛っても前置きが混ざる余地は残るため：</p>
+    <ul>
+      <li>コードフェンス <code>```json</code> を外す</li>
+      <li>前置き（「はい、作りました:」）と後書きを飛ばす</li>
+      <li>文字列の中の括弧に釣られない（クォートの中かを見ながら走査する）</li>
+      <li><strong>途中で切れている返事は通さない</strong> — 半端な教材が「作れた」ことにされると、先生が気づかないまま公開してしまう</li>
+      <li>形が違えば<strong>同じスレッドで</strong>言い直させる（新しいスレッドだと同じ崩れ方を繰り返す）。2回で諦める</li>
+    </ul>
+  </section>
+
+  <section class="chapter" id="s7">
+    <h2 class="sec"><span class="num">7</span>音声をつくる</h2>
+    <p>Gemini Live の TTS。<strong>Codex に対応するものが無い</strong>ので、ここは Gemini のまま。</p>
+
+    <pre class="mermaid">
+sequenceDiagram
+  participant B as ブラウザ
+  participant S as /api/live/token
+  participant L as Gemini Live
+  B->>S: POST（先生のキー）
+  S->>L: 短命トークンを発行
+  S-->>B: token だけ返す
+  Note over B,S: キーはクライアントへ返さない
+  B->>L: WebSocket（token）
+  loop 台本の1行ずつ
+    B->>L: テキスト
+    L-->>B: PCM
+  end
+  B->>B: つないで1本の WAV に
+    </pre>
+
+    <p>声は<strong>登場人物DB（<code>character.voice</code>）から名前で引く</strong>。
+    リスニングの <code>participants</code> は声を持たない——同じ人が別の教材に出ても声が変わらないようにするには、
+    人物のほうに1つ持たせるしかないため。</p>
+  </section>
+
+  <section class="chapter" id="s8">
+    <h2 class="sec"><span class="num">8</span>学習者が使うAI（たいわ）</h2>
+    <p>唯一、<strong>学習者が直接AIと話す</strong>機能。Gemini Live の双方向音声。</p>
+    <ul>
+      <li>サーバは<strong>短命トークンを発行するだけ</strong>。長時間の WebSocket を Worker で中継しない
+      （Cloudflare Workers の制約を避ける設計）</li>
+      <li>キーは先生が登録したもの（BYOK）</li>
+      <li>失敗の理由を区別して出す（<code>tokenRejected</code> / <code>noPermission</code> /
+      <code>modelNotFound</code> / <code>rateLimited</code> / <code>upstream</code>）</li>
+    </ul>
+    <div class="callout warn">
+      モデル名は入れ替わりが速い。<code>src/lib/ai/models.ts</code> に1か所だけ書き、
+      上から順に試す。2026-08-06 の不具合は、コードが指していた preview モデルが消えていたのが原因だった。
+    </div>
+  </section>
+
+  <section class="chapter" id="s9">
+    <h2 class="sec"><span class="num">9</span>まとめて つくる</h2>
+    <p><code>/admin/batch</code>。全教材を1回走査して、まだ絵や音の無いところを1つの並びにする。</p>
+
+    <pre class="mermaid">
+flowchart LR
+  A["全教材を走査"] --> B["足りないものの一覧"]
+  B --> C{"上から1件"}
+  C --> D["つくる（絵 or 音）"]
+  D --> E["Storage へ置く"]
+  E --> F["教材へ入れて保存"]
+  F --> C
+  C -- "とめる が押された" --> G["ここまでは保存ずみ"]
+    </pre>
+
+    <div class="callout">
+      <strong>直列にしてある理由</strong>：ブリッジは1接続1操作なので、並列にすると2件目から
+      「前の生成が終わるまで待ってください」で落ちる。直列は遅いが、
+      <strong>失敗した1件だけをやり直せる</strong>。
+    </div>
+    <div class="callout">
+      <strong>1件できるたびに保存する理由</strong>：絵は1枚に1分前後かかる。8枚なら8分。
+      まとめて最後に保存すると、とめたぶんもブラウザを閉じたぶんも全部消える。
+    </div>
+
+    <h3>「無い」の判定は <code>src</code> で見る</h3>
+    <p><code>status</code> は見ない。<code>"generating"</code> はタブを閉じても更新されないので、
+    「作っている最中のまま永久に残った嘘」を掴んでしまう。実体があるかどうかだけが信用できる。</p>
+  </section>
+
+  <section class="chapter" id="s10">
+    <h2 class="sec"><span class="num">10</span>生成物が通る関門</h2>
+    <p>AIが作ったものも、人が書いたものと<strong>同じ検査</strong>を通る。
+    「誰が作ったか」でなく「検査を通ったか」で公開可否を決める。</p>
+
+    <div class="tablewrap">
+    <table>
+      <tr><th>検査</th><th>何を見るか</th><th>下書き</th><th>公開</th></tr>
+      <tr><td>禁止語</td><td>「不正解」「間違いです」「ダメ」</td><td>error</td><td>error</td></tr>
+      <tr><td>ふりがなの覆い</td><td>学習者が読む文の漢字が読み辞書で全部覆えているか</td><td>warn</td><td>error</td></tr>
+      <tr><td>秘匿の漏れ</td><td>質問で引き出す事実が調査ページに書かれていないか</td><td>error</td><td>error</td></tr>
+      <tr><td>国名</td><td>「タイ」は error／ほかの国名は warn（確認の合図）</td><td>error / warn</td><td>error / warn</td></tr>
+      <tr><td>スキーマ</td><td><code>src/content/schema.ts</code>（zod）</td><td>error</td><td>error</td></tr>
+    </table>
+    </div>
+
+    <div class="callout warn">
+      <strong>2026-08-07 に3つの穴を塞いだ。</strong> どれも既存の穴で、AIの生成量が増える前に締めたもの。
+      <ul>
+        <li>保存経路に<strong>ふりがな検査が無かった</strong> — スタジオ製の教材はCIを通らないまま公開できていた</li>
+        <li>秘匿漏れが <strong>warn 止まり</strong>で、終了コードにも保存の可否にも効いていなかった</li>
+        <li>国名の規律に<strong>検査コードが1行も無かった</strong> — 人が読んで気づく前提の規律は、AIが作り始めた瞬間に破れる</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="chapter" id="s11">
+    <h2 class="sec"><span class="num">11</span>まだ できていないこと</h2>
+
+    <div class="tablewrap">
+    <table>
+      <tr><th>項目</th><th>状態</th><th>理由・次にやること</th></tr>
+      <tr>
+        <td>文章生成の Codex 化</td><td><span class="badge b-todo">土台のみ</span></td>
+        <td><code>runJson</code> と <code>outputSchema</code> は用意ずみ。各機能への配線が残っている</td>
+      </tr>
+      <tr>
+        <td>段階フロー（案→承認→生成）</td><td><span class="badge b-todo">設計ずみ</span></td>
+        <td>設計は <code>docs/craft-flow-plan.md</code>。作りかけを教材テーブルとは別に持ち、承認したものだけが下書きに入る形</td>
+      </tr>
+      <tr>
+        <td>まんがのセリフ入り画像</td><td><span class="badge b-todo">未実装</span></td>
+        <td>焼く文字は<strong>かな限定・機械変換</strong>にする方針（漢字はルビを焼けないので学習者が読めない）</td>
+      </tr>
+      <tr>
+        <td>もんだい・よみもののAI生成</td><td><span class="badge b-todo">未実装</span></td>
+        <td>段階フローと同時に入れる</td>
+      </tr>
+      <tr>
+        <td>たいわ（scenario）のAI生成</td><td><span class="badge b-none">やらない</span></td>
+        <td>「秘匿を漏らさない」と「伏線は置く」の境界が未定義。決めないまま作らせるとどちらかを必ず踏む</td>
+      </tr>
+      <tr>
+        <td>音声の Codex 化</td><td><span class="badge b-none">やらない</span></td>
+        <td>Codex に対応物が無い</td>
+      </tr>
+    </table>
+    </div>
+
+    <div class="callout">
+      <strong>Cloudflare Workers AI という選択肢もある</strong>（無料枠 1日10,000 Neurons・
+      <code>flux-2-klein-4b</code> は参照画像4枚まで、1日80枚前後）。
+      キーもログインも要らず完結するが、<strong>絵の水準が Codex に劣る</strong>ため当面は採らない。
+    </div>
+  </section>
+
+  </div>
+
+  <footer>AIフロー説明書 v1.0 ・ 出典: リポジトリ実コード（<code>src/lib/ai/</code>・<code>src/lib/codex-*.ts</code>・<code>src/app/api/</code>・<code>scripts/codex_bridge.mjs</code>）と 2026-08-06〜07 の実測</footer>
+</main>
+
+</div>
+
+<script type="module">
+  import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+  mermaid.initialize({ startOnLoad: true, theme: "base",
+    themeVariables: { primaryColor:"#eaf0fb", primaryBorderColor:"#3a5ba0",
+      lineColor:"#c9a45c", fontFamily:"system-ui, sans-serif" } });
+</script>
+</body>
+</html>
