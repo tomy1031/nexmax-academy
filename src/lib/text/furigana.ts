@@ -84,6 +84,29 @@ export function annotateRuby(text: string, index: FuriganaIndex): RubySegment[] 
 }
 
 /**
+ * 文を「かなだけ」に直す（絵に焼く文字を作るため）。
+ *
+ * ## なぜ機械変換なのか
+ * まんがのセリフを**絵の中に描かせる**モードでは、描く文字列を誰かが決める必要がある。
+ * AIに書かせると、絵に焼いた文字とデータのセリフがずれる余地が生まれ、
+ * ずれると「セリフを直したのに古い字の絵が公開され続ける」ことになる。
+ * 読み辞書からの機械変換にすれば、**セリフが正・絵は写し**という一方向になる。
+ *
+ * ## なぜ漢字を残さないのか
+ * 絵に焼いた漢字にはふりがなを振れない（画像生成でルビは崩れる。実例ゼロ）。
+ * 読めない漢字が1つあると学習者はそこで止まる（規律2）。
+ * だから焼く文字からは漢字を消す——**かなにすれば全員が読める**。
+ *
+ * 覆えていない漢字が残るときは `null` を返す。空文字や漢字混じりを返すと、
+ * そのまま絵に焼かれてしまう。呼ぶ側に「まだ焼けない」と伝えるほうが安全。
+ */
+export function kanaOf(text: string, index: FuriganaIndex): string | null {
+  const segments = annotateRuby(text, index);
+  const kana = segments.map((s) => s.reading ?? s.text).join("");
+  return KANJI.test(kana) ? null : kana;
+}
+
+/**
  * 読み辞書で覆えていない漢字を、出てきた順に重複なしで返す。
  *
  * 判定は必ず annotateRuby を通す。走査規則をここで書き直すと、「検査は通るのに

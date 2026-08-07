@@ -700,6 +700,19 @@ const mangaPanelSchema = z.object({
   /** セリフは画像に焼き込まずデータで持つ（設計07 §4 最重要判断）。 */
   lines: z.array(mangaLineSchema).default([]),
   caption: plainText.optional(),
+  /**
+   * 絵の中に焼いた文字（`speechInImage: true` のときだけ入る）。
+   *
+   * `lines[i]` を読み辞書で かなに直したもの（`kanaOf`）。i番目の吹き出しに対応する。
+   *
+   * **AIに書かせない。** 機械変換にするのは、絵に焼いた文字とデータのセリフが
+   * ずれる余地を無くすため——ずれると「セリフを直したのに古い字の絵が
+   * 公開され続ける」ことになり、先生からは気づけない。セリフが正、絵は写し。
+   *
+   * ここに置く（プロンプトの中に閉じない）理由: 学習者が実際に読むのはこの文字列なので、
+   * **禁止語検査の対象に入っていなければならない**（規律1・`collectStrings` は全文字列を走査する）。
+   */
+  bakedText: z.array(plainText).default([]),
 });
 
 const mangaPageSchema = z.object({
@@ -763,9 +776,86 @@ export const mangaSchema = z
             });
           }
         });
+        checkBakedText(manga.speechInImage, panel, [
+          "pages",
+          pageIndex,
+          "panels",
+          panelIndex,
+        ], ctx);
       });
     });
   });
+
+/** 絵に描かせる日本語は長いほど崩れる。1つの吹き出しの上限。 */
+const MAX_BAKED_CHARS = 20;
+/** 絵に焼いてよい文字。かな・数字・句読点だけ（漢字はルビを焼けないので入れない）。 */
+const KANA_AND_MARKS = /^[ぁ-ゖァ-ヶーゔ0-9０-９、。！？…「」・\s]*$/u;
+const HAS_KANJI = /[㐀-鿿々]/u;
+
+/**
+ * 絵に焼く文字の検査。
+ *
+ * ここが無いと、次の壊れ方が**先生から見えないまま**残る:
+ *   - セリフを直したのに絵が古い（学習者は絵の字を読むので、直した意味がない）
+ *   - 絵に漢字が焼かれ、ふりがなを振れないまま学習者が止まる（規律2）
+ *   - 「絵だけ」に戻したのに焼き文字が残り、絵の字とアプリのセリフが二重に出る
+ */
+function checkBakedText(
+  speechInImage: boolean,
+  panel: { lines: readonly { text: string }[]; bakedText: readonly string[] },
+  path: (string | number)[],
+  ctx: z.RefinementCtx,
+): void {
+  const at = (field: string) => [...path, field];
+
+  if (!speechInImage) {
+    if (panel.bakedText.length > 0) {
+      ctx.addIssue({
+        code: "custom",
+        path: at("bakedText"),
+        message: "「絵だけ」に もどしたら、絵も 作り直す（焼いた 文字が のこっている）",
+      });
+    }
+    return;
+  }
+
+  if (panel.bakedText.length !== panel.lines.length) {
+    ctx.addIssue({
+      code: "custom",
+      path: at("bakedText"),
+      message: `焼いた 文字が ${panel.bakedText.length}こ、セリフが ${panel.lines.length}こ — 数を そろえる`,
+    });
+  }
+  if (panel.lines.length > 2) {
+    ctx.addIssue({
+      code: "custom",
+      path: at("lines"),
+      message: "文字を 絵に 焼くときは 1コマ 2つの 吹き出しまで（多いと 字が くずれる）",
+    });
+  }
+  panel.bakedText.forEach((text, i) => {
+    if (HAS_KANJI.test(text)) {
+      ctx.addIssue({
+        code: "custom",
+        path: at(`bakedText[${i}]`),
+        message: "絵に 焼く 文字に 漢字は 使えない（ふりがなを 焼けないので 学習者が 読めない・規律2）",
+      });
+    } else if (!KANA_AND_MARKS.test(text)) {
+      ctx.addIssue({
+        code: "custom",
+        path: at(`bakedText[${i}]`),
+        message: "絵に 焼く 文字は ひらがな・カタカナ・数字・記号だけ",
+      });
+    }
+    if ([...text].length > MAX_BAKED_CHARS) {
+      ctx.addIssue({
+        code: "custom",
+        path: at(`bakedText[${i}]`),
+        message: `絵に 焼く 文字は ${MAX_BAKED_CHARS}文字まで（長いと 字が くずれる）`,
+      });
+    }
+  });
+}
 
 /**
  * 説明ページのブロック（設計07 §5）。生HTMLは持たない — 禁止語・ルビ・秘匿漏れの

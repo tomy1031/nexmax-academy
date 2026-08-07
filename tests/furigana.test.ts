@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   annotateRuby,
   buildFuriganaIndex,
+  kanaOf,
   mergeFuriganaEntries,
   uncoveredKanji,
   type FuriganaEntry,
@@ -105,5 +106,50 @@ describe("覆えていない漢字の洗い出し", () => {
 
   it("空文字なら空（教材の任意フィールドが空でも壊れない）", () => {
     expect(uncoveredKanji("", index)).toEqual([]);
+  });
+});
+
+describe("かなに直す（絵に焼く文字を作る）", () => {
+  const index = buildFuriganaIndex([
+    ["朝会", "あさかい"],
+    ["報告", "ほうこく"],
+    ["結論", "けつろん"],
+  ]);
+
+  it("辞書にある漢字を よみに 置きかえる", () => {
+    expect(kanaOf("朝会を はじめます。", index)).toBe("あさかいを はじめます。");
+  });
+
+  it("かなの部分は そのまま残す", () => {
+    expect(kanaOf("けさの 朝会", index)).toBe("けさの あさかい");
+  });
+
+  it("複数の語を まとめて置きかえる", () => {
+    expect(kanaOf("朝会で 報告を します。", index)).toBe("あさかいで ほうこくを します。");
+  });
+
+  it("漢字が1つでも残るなら null（そのまま焼くと 学習者が読めない）", () => {
+    expect(kanaOf("朝会の 資料", index)).toBeNull();
+  });
+
+  it("辞書が空でも、漢字が無ければ そのまま返す", () => {
+    expect(kanaOf("おはようございます。", buildFuriganaIndex([]))).toBe("おはようございます。");
+  });
+
+  it("辞書が空で 漢字があれば null", () => {
+    expect(kanaOf("会議", buildFuriganaIndex([]))).toBeNull();
+  });
+
+  it("空の文は 空のまま", () => {
+    expect(kanaOf("", index)).toBe("");
+  });
+
+  it("記号と数字は そのまま通す", () => {
+    expect(kanaOf("9じに 朝会！", index)).toBe("9じに あさかい！");
+  });
+
+  it("辞書にある語のとなりに 辞書に無い漢字があれば null", () => {
+    // 「時」は辞書に無い。1字でも残ったら焼けない——焼くと学習者がそこで止まる
+    expect(kanaOf("9時に 朝会", index)).toBeNull();
   });
 });

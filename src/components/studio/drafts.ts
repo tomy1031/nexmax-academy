@@ -106,7 +106,8 @@ export function emptyManga(): Manga {
 }
 
 export function emptyMangaPanel(): MangaPanel {
-  return { size: "normal", image: emptyImageSlot(), lines: [] };
+  // bakedText は「絵に焼いた文字」。空で始め、焼くモードにしたときだけ機械変換で入る
+  return { size: "normal", image: emptyImageSlot(), lines: [], bakedText: [] };
 }
 
 export function emptyMangaPage(): MangaPage {

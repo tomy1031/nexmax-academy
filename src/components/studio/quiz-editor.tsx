@@ -2,7 +2,7 @@
 
 import { useId, useState } from "react";
 import { NEXMAX_FAMILY } from "@/components/nexmax";
-import { BLANK_MARK, type QuizQuestion, type QuizSet } from "@/content/schema";
+import { BLANK_MARK, type Content, type QuizQuestion, type QuizSet } from "@/content/schema";
 import { emptyQuizQuestion } from "./drafts";
 import { moveItem, removeAt, replaceAt } from "./list-ops";
 import {
@@ -18,6 +18,7 @@ import {
   TextAreaField,
   TextField,
 } from "./studio-ui";
+import { QuizMaker } from "./lesson-maker";
 
 /**
  * 問題セットのエディタ（設計07 §6）
@@ -205,9 +206,12 @@ function typeLabel(type: QuizQuestion["type"]): string {
 export function QuizEditor({
   value,
   onChange,
+  known = [],
 }: {
   value: QuizSet;
   onChange: (set: QuizSet) => void;
+  /** すでに作った教材。AIに「習った ことば」を踏まえさせるために渡す。 */
+  known?: readonly Content[];
 }) {
   const [addType, setAddType] = useState<QuizQuestion["type"]>("choose");
 
@@ -239,6 +243,8 @@ export function QuizEditor({
 
   return (
     <div className="space-y-4">
+      <QuizMaker value={value} onChange={onChange} known={known} />
+
       <StudioSection title="きほん" hint="学習者の画面に出る 名前と、ごうかくの ラインです。">
         <div className="grid gap-4 sm:grid-cols-2">
           <TextField

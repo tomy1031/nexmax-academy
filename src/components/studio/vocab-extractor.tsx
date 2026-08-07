@@ -2,10 +2,12 @@
 
 import { useMemo, useState } from "react";
 import { wordSchema, type Stage, type WordStage } from "@/content/schema";
+import { hasCodex } from "@/lib/codex-settings";
 import { getGeminiKey } from "@/lib/profile";
-import type { VocabCandidate } from "@/lib/vocab/extract";
+import { buildVocabPrompt, VOCAB_RESPONSE_SCHEMA, type VocabCandidate } from "@/lib/vocab/extract";
 import { messageForReason } from "./issue-text";
 import { saveContent } from "./studio-api";
+import { generateStructured } from "./text-api";
 import { MiniButton, StudioSection } from "./studio-ui";
 
 /**
@@ -97,7 +99,8 @@ export function VocabExtractor({
 
   const extract = async () => {
     const apiKey = getGeminiKey();
-    if (!apiKey) {
+    // Codex の合言葉があれば キーは要らない（先に Codex を使うため）
+    if (!apiKey && !hasCodex()) {
       setError(NO_KEY_MESSAGE);
       return;
     }
@@ -270,8 +273,57 @@ export function VocabExtractor({
 /** 画面に出す理由を持った失敗（上流の生メッセージは外に出さない）。 */
 class VocabError extends Error {}
 
-/** サーバのプロキシへ頼んで、そのまま見せてよい候補だけ受け取る。 */
+/**
+ * 候補を作らせる。**Codex を先に使い、届かなければ Gemini。**
+ *
+ * ことばの抜き出しはステージ1本ぶんの本文を丸ごと渡すので、
+ * 1回あたりの消費が大きい。Gemini の無料枠を守るため Codex を先にする。
+ */
 async function requestCandidates(apiKey: string, texts: string[]): Promise<VocabCandidate[]> {
+  const made = await generateStructured<VocabCandidate[]>({
+    prompt: buildVocabPrompt(texts),
+    shape: JSON.stringify(VOCAB_RESPONSE_SCHEMA, null, 2),
+    outputSchema: VOCAB_RESPONSE_SCHEMA,
+    validate: (value) => {
+      const words = toWordList(value);
+      return words.length > 0
+        ? { ok: true, value: words }
+        : { ok: false, problem: "words が 空か、語の形が そろっていません" };
+    },
+    viaGemini: () => requestViaGemini(apiKey, texts),
+  });
+  if (!made.ok) throw new VocabError(made.message);
+  return made.value;
+}
+
+/**
+ * 返ってきたものを語の一覧にする。
+ *
+ * サーバも wordSchema を通しているが、ここでも通す。規格が変わった古い応答が
+ * 混じったときに、壊れた候補を先生に選ばせないため（選んだあとの保存で落ちる）。
+ * Codex 経由はサーバを通らないので、**こちらが唯一の関門**になる。
+ */
+function toWordList(value: unknown): VocabCandidate[] {
+  const raw = Array.isArray(value) ? value : ((value as { words?: unknown } | null)?.words ?? null);
+  if (!Array.isArray(raw)) return [];
+
+  const seen = new Set<string>();
+  return raw.flatMap((item) => {
+    const parsed = wordSchema.safeParse(item);
+    if (!parsed.success) return [];
+    // 同じIDが2つあると、チェックが連動して外れる（一覧のキーが重なる）
+    if (seen.has(parsed.data.id)) return [];
+    seen.add(parsed.data.id);
+    return [parsed.data];
+  });
+}
+
+/** いままでの経路（サーバのプロキシ → Gemini）。 */
+async function requestViaGemini(
+  apiKey: string,
+  texts: string[],
+): Promise<{ ok: true; value: VocabCandidate[] } | { ok: false; message: string }> {
+  if (!apiKey) return { ok: false, message: messageForVocabReason("noKey") };
   let response: Response;
   try {
     response = await fetch("/api/studio/vocab", {
@@ -280,27 +332,17 @@ async function requestCandidates(apiKey: string, texts: string[]): Promise<Vocab
       body: JSON.stringify({ apiKey, texts }),
     });
   } catch {
-    throw new VocabError("つうしんに 失敗しました。ネットワークを たしかめてください。");
+    return { ok: false, message: "つうしんに 失敗しました。ネットワークを たしかめてください。" };
   }
 
   const body = (await readJson(response)) as { words?: unknown; reason?: unknown };
   if (!response.ok) {
-    throw new VocabError(messageForVocabReason(typeof body.reason === "string" ? body.reason : ""));
+    return {
+      ok: false,
+      message: messageForVocabReason(typeof body.reason === "string" ? body.reason : ""),
+    };
   }
-
-  // サーバも wordSchema を通しているが、ここでも通す。規格が変わった古い応答が
-  // 混じったときに、壊れた候補を先生に選ばせないため（選んだあとの保存で落ちる）。
-  const seen = new Set<string>();
-  return Array.isArray(body.words)
-    ? body.words.flatMap((raw) => {
-        const parsed = wordSchema.safeParse(raw);
-        if (!parsed.success) return [];
-        // 同じIDが2つあると、チェックが連動して外れる（一覧のキーが重なる）
-        if (seen.has(parsed.data.id)) return [];
-        seen.add(parsed.data.id);
-        return [parsed.data];
-      })
-    : [];
+  return { ok: true, value: toWordList(body) };
 }
 
 async function readJson(response: Response): Promise<Record<string, unknown>> {

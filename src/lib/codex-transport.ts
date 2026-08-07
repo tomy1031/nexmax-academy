@@ -79,7 +79,12 @@ export class CodexTransport {
     this.onStatus?.(status);
   }
 
-  async connect(url: string): Promise<void> {
+  /**
+   * @param developerInstructions 役割の指示。教材づくりと先生向けメモでは
+   *   守らせたいことが違う（教材には禁止語・やさしい日本語の縛りが要る）ので、
+   *   呼ぶ側が渡せるようにしてある。省くと文章づくりの既定になる。
+   */
+  async connect(url: string, developerInstructions = DEVELOPER_INSTRUCTIONS): Promise<void> {
     this.disconnect();
     this.setStatus("connecting");
     try {
@@ -102,7 +107,7 @@ export class CodexTransport {
         ephemeral: true,
         sessionStartSource: "startup",
         threadSource: "user",
-        developerInstructions: DEVELOPER_INSTRUCTIONS,
+        developerInstructions,
       })) as { thread: { id: string } };
       this.threadId = response.thread.id;
       this.setStatus("connected");
