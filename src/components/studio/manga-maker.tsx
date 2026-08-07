@@ -1,20 +1,35 @@
 "use client";
 
 import { useState } from "react";
-import type { Character, Manga } from "@/content/schema";
+import type { Character, Content, Manga } from "@/content/schema";
 import {
   buildBakedPanelPrompt,
   buildMangaScriptPrompt,
   buildPanelPrompt,
   MANGA_SCRIPT_SCHEMA,
 } from "@/lib/manga-prompt";
+import {
+  buildLayoutPrompt,
+  buildStoryContext,
+  buildStoryPrompt,
+  STORY_OUTLINE_SCHEMA,
+  validateOutline,
+  type StoryOutline,
+} from "@/lib/manga-story";
 import { hasCodex } from "@/lib/codex-settings";
 import { getGeminiKey } from "@/lib/profile";
 import { generateImage } from "./image-api";
 import { generateStructured } from "./text-api";
 import { emptyImageSlot } from "./drafts";
 import { uploadAsset } from "./studio-api";
-import { CheckChoice, MiniButton, NumberField, StudioSection, TextAreaField } from "./studio-ui";
+import {
+  CheckChoice,
+  MiniButton,
+  NumberField,
+  StudioSection,
+  TextAreaField,
+  TextField,
+} from "./studio-ui";
 
 /**
  * 一言の依頼から まんがを 作る
@@ -33,29 +48,91 @@ export function MangaMaker({
   value,
   onChange,
   cast,
+  known = [],
 }: {
   value: Manga;
   onChange: (manga: Manga) => void;
   /** 使える登場人物（管理画面「とうじょう人物」で作ったもの）。 */
   cast: readonly Character[];
+  /**
+   * すでに作った教材。**AIに「過去の内容を踏まえて」作らせる**ために渡す
+   *（習った語・前の話のおわり）。渡さなくても動く。
+   */
+  known?: readonly Content[];
 }) {
   const [request, setRequest] = useState("");
   const [panels, setPanels] = useState(4);
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [note, setNote] = useState<string | null>(null);
+  /** 承認まちの すじがき。null なら まだ 作っていない。 */
+  const [outline, setOutline] = useState<StoryOutline | null>(null);
 
   const chosen = cast.filter((character) => value.castIds.includes(character.id));
 
-  const makeScript = async () => {
-    const apiKey = getGeminiKey();
-    if (!apiKey && !hasCodex()) {
-      setError(
-        "AIが まだ つながっていません。「AI設定」で Codex の 合言葉か Gemini の キーを 入れてください。",
-      );
+  /** AIが つながっているか（Codex の合言葉 か Gemini の キー）。 */
+  const aiReady = () => {
+    if (getGeminiKey() || hasCodex()) return true;
+    setError(
+      "AIが まだ つながっていません。「AI設定」で Codex の 合言葉か Gemini の キーを 入れてください。",
+    );
+    return false;
+  };
+
+  const castBrief = () =>
+    chosen.map((c) => ({ id: c.id, name: c.name, role: c.role, personality: c.personality }));
+
+  /**
+   * 段①→②。**話の骨組みだけ**を作らせる。セリフはまだ作らない。
+   *
+   * 一発で全部作らせると、直したいところが1か所でも全部作り直しになる。
+   * 話の筋が違うのか、コマの割り方が違うのかを分けて直せるようにする。
+   */
+  const makeOutline = async () => {
+    if (!aiReady()) return;
+    if (request.trim().length === 0) {
+      setError("どんな 場面か を 書いてください。");
       return;
     }
-    if (request.trim().length === 0) {
+    setBusy("outline");
+    setError(null);
+    setNote(null);
+
+    const prompt = buildStoryPrompt({
+      request: request.trim(),
+      panels,
+      cast: castBrief(),
+      // すでに作った教材を踏まえる（習った語・前の話のおわり）
+      context: buildStoryContext(known),
+    });
+    const made = await generateStructured<StoryOutline>({
+      prompt,
+      shape: JSON.stringify(STORY_OUTLINE_SCHEMA, null, 2),
+      outputSchema: STORY_OUTLINE_SCHEMA,
+      validate: validateOutline,
+      viaGemini: async () => ({
+        ok: false,
+        message: "すじがきは Codex で 作ります。「AI設定」で 合言葉を 入れてください。",
+      }),
+    });
+
+    setBusy(null);
+    if (!made.ok) {
+      setError(made.message);
+      return;
+    }
+    setOutline(made.value);
+    setNote("すじがきが できました。直してから「これで すすむ」を おしてください。");
+  };
+
+  /**
+   * 段②→③。承認ずみの骨組みがあれば、それを**逐語で**渡す。
+   * 無ければ、いままでどおり依頼から直接コマを作る（急ぐときの近道）。
+   */
+  const makeScript = async (approved?: StoryOutline) => {
+    const apiKey = getGeminiKey();
+    if (!aiReady()) return;
+    if (request.trim().length === 0 && !approved) {
       setError("どんな 場面か を 書いてください。");
       return;
     }
@@ -73,11 +150,16 @@ export function MangaMaker({
 
     /*
      * Codex と Gemini で **同じ頼み文・同じスキーマ**を使う。
-     * 頼み文は `buildMangaScriptPrompt`（純関数）、形は `MANGA_SCRIPT_SCHEMA`。
+     * 頼み文は純関数、形は `MANGA_SCRIPT_SCHEMA`。
      * どちらかにだけ手を入れて片方が古くなる、という壊れ方をしないため。
+     *
+     * 承認ずみの骨組みがあるときは、それを逐語で渡す頼み文に切りかえる。
+     * 言い換えさせないのは、**先生が承認したのは「その文」**だから。
      */
     const made = await generateStructured<Script>({
-      prompt: buildMangaScriptPrompt(brief),
+      prompt: approved
+        ? buildLayoutPrompt({ outline: approved, cast })
+        : buildMangaScriptPrompt(brief),
       shape: JSON.stringify(MANGA_SCRIPT_SCHEMA, null, 2),
       outputSchema: MANGA_SCRIPT_SCHEMA,
       validate: validateScript,
@@ -112,7 +194,9 @@ export function MangaMaker({
       setError(made.message);
       return;
     }
+    // ここではじめて教材に書き込む（承認より前には触らない）
     onChange(applyScript(value, made.value, chosen));
+    setOutline(null);
     setNote(
       `${made.value.panels.length}コマ ぶんの わりつけと セリフを 入れました` +
         `（${made.via === "codex" ? "Codex" : "Gemini"}）。` +
@@ -236,14 +320,91 @@ export function MangaMaker({
           <div className="w-40">
             <NumberField label="コマの 数" value={panels} min={1} max={8} onChange={setPanels} />
           </div>
-          <MiniButton tone="accent" onClick={() => void makeScript()} disabled={busy !== null}>
-            {busy === "script" ? "つくっています…" : "✍️ わりつけと セリフを つくる"}
+          <MiniButton tone="accent" onClick={() => void makeOutline()} disabled={busy !== null}>
+            {busy === "outline" ? "かんがえています…" : "📝 すじがきを つくる"}
           </MiniButton>
+          {outline === null && (
+            <MiniButton onClick={() => void makeScript()} disabled={busy !== null}>
+              {busy === "script" ? "つくっています…" : "すじがきを とばして 作る"}
+            </MiniButton>
+          )}
         </div>
         <p className="text-ink-faint text-xs font-bold">
           漢字には ぜんぶ ふりがなを つけるよう たのみます（1つでも 漏れると 保存できません）。
         </p>
       </div>
+
+      {/*
+        段②。**ここで承認するまで教材に書き込まない。**
+        いまの作りは生成した瞬間に流し込むので、2回目を押すと前のコマと
+        生成ずみの絵が確認なしで消える。先生が「もう一度押すのが怖い」状態になる。
+      */}
+      {outline !== null && (
+        <div className="border-hairline space-y-3 rounded-2xl border-2 bg-[#fffdf5] p-3">
+          <p className="text-navy text-xs font-black">
+            ②-2 すじがき（直してから すすめます・まだ 教材には 入っていません）
+          </p>
+          <TextField
+            label="見出し"
+            value={outline.title}
+            onChange={(title) => setOutline({ ...outline, title })}
+          />
+          <TextField
+            label="この回で 身につくこと"
+            value={outline.teachingPoint}
+            onChange={(teachingPoint) => setOutline({ ...outline, teachingPoint })}
+          />
+          <div className="space-y-2">
+            {outline.beats.map((beat, i) => (
+              <div
+                key={i}
+                className="bg-panel-tint flex flex-wrap items-start gap-2 rounded-xl p-2"
+              >
+                <span className="text-ink-soft w-14 shrink-0 pt-2 text-xs font-black">
+                  {i + 1}コマ目
+                </span>
+                <div className="min-w-52 flex-1">
+                  <TextField
+                    label="何が おきるか"
+                    value={beat.what}
+                    onChange={(what) =>
+                      setOutline({
+                        ...outline,
+                        beats: outline.beats.map((b, j) => (j === i ? { ...b, what } : b)),
+                      })
+                    }
+                  />
+                </div>
+                <MiniButton
+                  onClick={() =>
+                    setOutline({
+                      ...outline,
+                      beats: outline.beats.filter((_, j) => j !== i),
+                    })
+                  }
+                >
+                  けす
+                </MiniButton>
+              </div>
+            ))}
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <MiniButton
+              tone="accent"
+              onClick={() => void makeScript(outline)}
+              disabled={busy !== null || outline.beats.length === 0}
+            >
+              {busy === "script" ? "つくっています…" : "✓ これで すすむ（コマと セリフを つくる）"}
+            </MiniButton>
+            <MiniButton onClick={() => void makeOutline()} disabled={busy !== null}>
+              べつの 案に する
+            </MiniButton>
+            <MiniButton onClick={() => setOutline(null)} disabled={busy !== null}>
+              やめる
+            </MiniButton>
+          </div>
+        </div>
+      )}
 
       {value.pages.some((page) => page.panels.length > 0) ? (
         <div className="border-hairline space-y-2 rounded-2xl border-2 bg-white p-3">

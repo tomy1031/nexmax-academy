@@ -104,6 +104,12 @@ export function buildCharacterSheetPrompt(character: {
  *
  * 画像生成の日本語は長いほど崩れるので、スキーマ側で20文字・1コマ2吹き出しに
  * 絞ってある。ここではその前提で「大きく・はっきり」を頼む。
+ *
+ * ## 実測（2026-08-07・Codex image_gen / gpt-image-2）
+ * 「おはようございます。」「あさかいを はじめます。」の2つの吹き出しを、
+ * **1回の生成で崩れゼロ・分かち書きの空白まで保って**描けた。
+ * かな限定にしたのは学習者が読めるようにするためだが、
+ * **生成の安定にも効いている**（漢字を混ぜないほど字形が崩れない）。
  */
 export function buildBakedPanelPrompt(brief: PanelBrief & { texts: readonly string[] }): string {
   const cast = brief.cast

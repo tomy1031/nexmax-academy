@@ -2,6 +2,7 @@
 
 import type {
   Character,
+  Content,
   Manga,
   MangaCharacter,
   MangaLine,
@@ -34,11 +35,14 @@ export function MangaEditor({
   value,
   onChange,
   cast = [],
+  known = [],
 }: {
   value: Manga;
   onChange: (manga: Manga) => void;
   /** 使いまわす登場人物（管理画面「とうじょう人物」）。絵の一貫性に使う。 */
   cast?: readonly Character[];
+  /** すでに作った教材。AIに「過去の内容を踏まえて」作らせるために渡す。 */
+  known?: readonly Content[];
 }) {
   const patch = (part: Partial<Manga>) => onChange({ ...value, ...part });
   const characters = value.characters ?? [];
@@ -55,7 +59,7 @@ export function MangaEditor({
 
   return (
     <div className="space-y-4">
-      <MangaMaker value={value} onChange={onChange} cast={cast} />
+      <MangaMaker value={value} onChange={onChange} cast={cast} known={known} />
 
       <StudioSection title="きほん">
         <div className="grid gap-4 sm:grid-cols-2">
