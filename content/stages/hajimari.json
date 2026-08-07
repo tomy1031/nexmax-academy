@@ -4,7 +4,7 @@
   "order": 1,
   "title": "はじまり",
   "reading": "はじまり",
-  "description": "ヘンディさんからの メッセージを よみます。ここから はじめましょう。",
+  "description": "ヘンディさんからの てがみを よみます。ちずの あるきかたを しって、へんじを かきます。",
   "color": "sky",
   "status": "draft",
   "area": {
@@ -17,6 +17,14 @@
     {
       "ref": "hajimari_manga",
       "type": "manga"
+    },
+    {
+      "ref": "hajimari_chizu",
+      "type": "article"
+    },
+    {
+      "ref": "hajimari_henji",
+      "type": "quizset"
     }
   ],
   "wordStageIds": [

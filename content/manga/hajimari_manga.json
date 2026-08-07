@@ -13,8 +13,16 @@
   ],
   "pages": [
     {
-      "title": "カンボジア — きょうしつ",
+      "title": "アンコールワット — 手紙が とどく",
       "panels": [
+        {
+          "size": "wide",
+          "image": {
+            "prompt": "a cream envelope with a navy wax seal bearing a double-peak M emblem, resting on warm stone steps; behind it the towers of Angkor Wat under a bright morning sky; a paper airplane flies far above.",
+            "status": "empty"
+          },
+          "caption": "アンコールワットに、手紙が とどきました。ネクストメイクの ヘンディさんからです。"
+        },
         {
           "size": "wide",
           "image": {
@@ -109,6 +117,21 @@
               "text": "それぞれの 場所に、ロボットの 「ネクマックス」が います。みんな、あなたを サポートします。"
             }
           ]
+        },
+        {
+          "image": {
+            "prompt": "a bird's-eye view of a cute illustrated map with a winding white road; four small friendly robots of different colors stand together on the road, waving; bright sky, no letters.",
+            "refs": [
+              "/img/characters/nexmax/reference.png"
+            ],
+            "status": "empty"
+          },
+          "lines": [
+            {
+              "speaker": "hendy",
+              "text": "あなたに にた ネクマックスも いますよ。地図の 上で、いっしょに あるきます。"
+            }
+          ]
         }
       ]
     },
@@ -142,13 +165,13 @@
         },
         {
           "image": {
-            "prompt": "the navy passport lies open on a desk with a pen placed on it; the empty signature line glows softly with small sparkles; hopeful close-up.",
+            "prompt": "close-up of a cream letter sheet and a pen on a wooden desk, ready to be written on; soft morning light, a few sparkles; no letters or writing visible.",
             "status": "empty"
           },
           "lines": [
             {
               "speaker": "hendy",
-              "text": "さあ、はじめましょう。まず、パスポートに 名前を 書いて ください。"
+              "text": "さいごに、わたしに みじかい へんじを 書いて ください。まって います。"
             }
           ]
         }
@@ -207,6 +230,18 @@
     [
       "待",
       "ま"
+    ],
+    [
+      "手紙",
+      "てがみ"
+    ],
+    [
+      "地図",
+      "ちず"
+    ],
+    [
+      "上",
+      "うえ"
     ]
   ],
   "castIds": [
