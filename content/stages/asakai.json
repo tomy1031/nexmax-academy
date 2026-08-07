@@ -1,7 +1,7 @@
 {
   "kind": "stage",
   "id": "asakai",
-  "order": 1,
+  "order": 2,
   "title": "朝会と報告",
   "reading": "あさかいと ほうこく",
   "description": "あさの かいぎで、きょうの よていを つたえます。ほうこくの コツも まなびます。",
@@ -14,11 +14,28 @@
     "note": "ここから はじまります。"
   },
   "contents": [
-    { "ref": "m2-asakai-manga", "type": "manga" },
-    { "ref": "m2-asakai-article", "type": "article" },
-    { "ref": "sample_asakai", "type": "listening" },
-    { "ref": "sample_horenso", "type": "quizset" },
-    { "ref": "talk-asakai-report", "type": "scenario" }
+    {
+      "ref": "m2-asakai-manga",
+      "type": "manga"
+    },
+    {
+      "ref": "m2-asakai-article",
+      "type": "article"
+    },
+    {
+      "ref": "sample_asakai",
+      "type": "listening"
+    },
+    {
+      "ref": "sample_horenso",
+      "type": "quizset"
+    },
+    {
+      "ref": "talk-asakai-report",
+      "type": "scenario"
+    }
   ],
-  "wordStageIds": ["stage01_orientation"]
+  "wordStageIds": [
+    "stage01_orientation"
+  ]
 }

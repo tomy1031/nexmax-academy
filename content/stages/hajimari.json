@@ -1,0 +1,18 @@
+{
+  "kind": "stage",
+  "id": "hajimari",
+  "order": 1,
+  "title": "はじまり",
+  "reading": "はじまり",
+  "description": "ヘンディさんからの メッセージを よみます。ここから はじめましょう。",
+  "color": "sky",
+  "status": "draft",
+  "area": {
+    "name": "プノンペンの そら",
+    "reading": "ぷのんぺんの そら",
+    "image": "/img/scenes/map_cambodia.webp",
+    "note": "ここが スタートです。"
+  },
+  "contents": [{ "ref": "hajimari_manga", "type": "manga" }],
+  "wordStageIds": ["stage23_kaisha"]
+}
