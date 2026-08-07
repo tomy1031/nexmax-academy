@@ -8,11 +8,18 @@
   "color": "sky",
   "status": "draft",
   "area": {
-    "name": "プノンペンの そら",
-    "reading": "ぷのんぺんの そら",
-    "image": "/img/scenes/map_cambodia.webp",
+    "name": "アンコールワット",
+    "reading": "あんこーるわっと",
+    "image": "/img/scenes/area1_cambodia.webp",
     "note": "ここが スタートです。"
   },
-  "contents": [{ "ref": "hajimari_manga", "type": "manga" }],
-  "wordStageIds": ["stage23_kaisha"]
+  "contents": [
+    {
+      "ref": "hajimari_manga",
+      "type": "manga"
+    }
+  ],
+  "wordStageIds": [
+    "stage23_kaisha"
+  ]
 }

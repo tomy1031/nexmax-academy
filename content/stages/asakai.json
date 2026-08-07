@@ -8,10 +8,10 @@
   "color": "coral",
   "status": "published",
   "area": {
-    "name": "アンコールワット",
-    "reading": "あんこーるわっと",
-    "image": "/img/scenes/area1_cambodia.webp",
-    "note": "ここから はじまります。"
+    "name": "かわぞいの みやこ",
+    "reading": "かわぞいの みやこ",
+    "image": "/img/scenes/area_riverside_capital.webp",
+    "note": "かわの ちかくの まちです。"
   },
   "contents": [
     {
