@@ -298,9 +298,18 @@ function AreaLabel({
  * 「いま ここ」に立つ学習者の分身。立札の下や、進んだ先の地点に置く。
  * 名前を添えるのは、分身が自分だと分かるようにするため（診断の結果と同じ絵）。
  */
-function LearnerHere({ learner, className }: { learner: LearnerAvatar; className: string }) {
+function LearnerHere({
+  learner,
+  className = "",
+  style,
+}: {
+  learner: LearnerAvatar;
+  className?: string;
+  /** 位置を数字で決めるとき（エリアの中は % で置くので、クラス名では書けない）。 */
+  style?: CSSProperties;
+}) {
   return (
-    <div className={`absolute z-30 -translate-x-1/2 text-center ${className}`}>
+    <div className={`absolute z-30 -translate-x-1/2 text-center ${className}`} style={style}>
       <NexMaxFamily family={learner.family} gender={learner.gender} size={92} bob />
       <p className="text-navy mx-auto -mt-1 w-max rounded-full border-2 border-white bg-white/90 px-3 py-0.5 text-xs font-black shadow-md">
         {learner.name}
@@ -884,6 +893,7 @@ function RouteArea({
   totalAreas,
   flown,
   progress,
+  learner,
   expandedStage,
   onExpandedStageChange,
 }: {
@@ -896,6 +906,8 @@ function RouteArea({
   /** 学習者の現在地（エリア番号 + エリア内の位置） */
   flown: number;
   progress: StageProgress;
+  /** 学習者じしんの分身。いま取り組むステージのエリアにだけ立つ */
+  learner: LearnerAvatar | null;
   expandedStage: string | null;
   onExpandedStageChange: (id: string | null) => void;
 }) {
@@ -934,13 +946,27 @@ function RouteArea({
           </p>
         )}
 
-        <div
-          aria-hidden
-          className="pointer-events-none absolute z-20 hidden -translate-x-1/2 -translate-y-1/2 lg:block"
-          style={{ left: `${chipOnRight ? nodeX + 26 : nodeX - 26}%`, top: `${nodeTop + 22}%` }}
-        >
-          <NexMaxFamily family={AREA_CHARACTERS[index % AREA_CHARACTERS.length]!} size={104} bob />
-        </div>
+        {/* いま取り組むステージのエリアには学習者の分身を立たせ、それ以外は景色の住人を置く。
+            両方いると「どれが自分か」が分からなくなるので、同じ場所で入れ替える。
+            分身はせまい画面でも出す（自分がどこに居るかは、いつでも見えるべきもの） */}
+        {learner && status === "current" ? (
+          <LearnerHere
+            learner={learner}
+            style={{ left: `${chipOnRight ? nodeX + 24 : nodeX - 24}%`, top: `${nodeTop + 20}%` }}
+          />
+        ) : (
+          <div
+            aria-hidden
+            className="pointer-events-none absolute z-20 hidden -translate-x-1/2 -translate-y-1/2 lg:block"
+            style={{ left: `${chipOnRight ? nodeX + 26 : nodeX - 26}%`, top: `${nodeTop + 22}%` }}
+          >
+            <NexMaxFamily
+              family={AREA_CHARACTERS[index % AREA_CHARACTERS.length]!}
+              size={104}
+              bob
+            />
+          </div>
+        )}
 
         {stage && status && (
           <>
@@ -1100,6 +1126,7 @@ function MapViewPane({
           totalAreas={routeAreas.length}
           flown={flown}
           progress={progress}
+          learner={learner}
           expandedStage={expandedStage}
           onExpandedStageChange={onExpandedStageChange}
         />
