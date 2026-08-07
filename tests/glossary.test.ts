@@ -6,11 +6,13 @@ import {
   PERSONALITY_QUESTIONS,
   PERSONALITY_RESULT_READINGS,
   PERSONALITY_TYPES,
+  questionReadings,
 } from "../src/content/personality";
+import { uncoveredKanji } from "../src/lib/ruby";
 
 describe("語彙メモ台帳（07 §2.5）", () => {
-  it("31語あり、表記が重複しない", () => {
-    expect(GLOSSARY).toHaveLength(31);
+  it("45語あり、表記が重複しない", () => {
+    expect(GLOSSARY).toHaveLength(45);
     expect(new Set(GLOSSARY.map((entry) => entry.term)).size).toBe(GLOSSARY.length);
   });
 
@@ -124,6 +126,8 @@ describe("学習者向け文言との対応", () => {
       ...Object.values(PERSONALITY_INTRO).flatMap((intro) => [
         intro.title,
         intro.note,
+        intro.howTo,
+        intro.dictionaryHint,
         ...intro.lines,
       ]),
       ...PERSONALITY_FAMILIES.map((family) => family.name),
@@ -156,6 +160,49 @@ describe("学習者向け文言との対応", () => {
       if (entry.term === "組") continue; // 「まもり組」など家族名の一部。家族名側でルビを振る
       expect(dictionary.get(entry.term)).toBe(entry.reading);
     }
+  });
+});
+
+describe("学習者に出る文に、ふりがなの付かない漢字が残っていない", () => {
+  // 読めない漢字は「読めない」で止まらず、**その文ごと読み飛ばされる**。
+  // 辞書漏れは字面の問題ではなく、その画面が伝わらなくなる問題として扱う。
+  // 家族名（まもり組 など）は family.reading で別に振るのでここでは見ない。
+
+  it("語彙メモの意味文（＝むずかしい語から逃げてきた先）", () => {
+    const bare = GLOSSARY.filter(
+      (e) => uncoveredKanji(e.meaning, PERSONALITY_RESULT_READINGS).length,
+    ).map((e) => `${e.term}: ${uncoveredKanji(e.meaning, PERSONALITY_RESULT_READINGS).join("")}`);
+    expect(bare).toEqual([]);
+  });
+
+  it("導入（20問の前に最初に読む画面）", () => {
+    const intro = PERSONALITY_INTRO.easy;
+    const texts = [intro.title, intro.note, intro.howTo, intro.dictionaryHint, ...intro.lines];
+    const bare = texts.map((t) => uncoveredKanji(t, PERSONALITY_RESULT_READINGS)).flat();
+    expect(bare).toEqual([]);
+  });
+
+  it("20問の柱書きと選択肢（共通辞書を後ろに足した状態で）", () => {
+    const bare: string[] = [];
+    for (const question of PERSONALITY_QUESTIONS) {
+      const readings = questionReadings(question);
+      for (const text of [question.easy, question.a.easy, question.b.easy]) {
+        const left = uncoveredKanji(text, readings);
+        if (left.length) bare.push(`Q${question.id}: ${left.join("")} <- ${text}`);
+      }
+    }
+    expect(bare).toEqual([]);
+  });
+
+  it("16タイプの結果画面（ひとこと・チーム役割・✓4行）", () => {
+    const bare: string[] = [];
+    for (const type of PERSONALITY_TYPES) {
+      for (const text of [type.name, type.tagline, type.teamRoleDetail, ...type.analysis]) {
+        const left = uncoveredKanji(text, PERSONALITY_RESULT_READINGS);
+        if (left.length) bare.push(`${type.code}: ${left.join("")} <- ${text}`);
+      }
+    }
+    expect(bare).toEqual([]);
   });
 });
 

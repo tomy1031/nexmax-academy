@@ -14,6 +14,7 @@ import {
   getCompatibility,
   getFamilyForCode,
   getPersonalityType,
+  questionReadings,
   scorePersonality,
   type PersonalityAnswer,
   type PersonalityLanguage,
@@ -159,12 +160,20 @@ function QuestionText({
   // 選択肢は <button> の中なのでボタンを入れ子にできず、OptionText はルビだけ（§2.5）。
   if (language === "japanese") {
     return (
-      <GlossaryText text={question.japanese} readings={question.readings} renderText={renderRuby} />
+      <GlossaryText
+        text={question.japanese}
+        readings={questionReadings(question)}
+        renderText={renderRuby}
+      />
     );
   }
   if (language === "easy") {
     return (
-      <GlossaryText text={question.easy} readings={question.readings} renderText={renderRuby} />
+      <GlossaryText
+        text={question.easy}
+        readings={questionReadings(question)}
+        renderText={renderRuby}
+      />
     );
   }
   return <>{question.english}</>;
@@ -180,10 +189,10 @@ function OptionText({
   language: PersonalityLanguage;
 }) {
   if (language === "japanese") {
-    return <RubyText text={option.japanese} readings={question.readings} />;
+    return <RubyText text={option.japanese} readings={questionReadings(question)} />;
   }
   if (language === "easy") {
-    return <RubyText text={option.easy} readings={question.readings} />;
+    return <RubyText text={option.easy} readings={questionReadings(question)} />;
   }
   return <>{option.english}</>;
 }
@@ -250,15 +259,37 @@ function QuestionIntro({
             </li>
           ))}
         </ul>
+
+        {/* 絵。「あなたに にた ネクマックスが 出て きます」を、文だけでなく目で見せる。
+            4つの組を並べるので、「いろいろな キャラクターが いる」が読まずに伝わる。 */}
+        <div className="mt-5 flex items-end justify-center gap-1 sm:gap-4">
+          {PERSONALITY_FAMILIES.map((family) => (
+            <NexMaxFamily key={family.id} family={family.id} size={92} />
+          ))}
+        </div>
+
+        <p className="text-ink mt-4 text-center leading-loose font-bold">{render(intro.howTo)}</p>
+
         <p className="bg-sun/25 text-ink mt-5 rounded-2xl px-4 py-3 font-bold">
           {render(intro.note)}
         </p>
+
+        {/* 辞書があること自体に気づかれないと、下の「ことばメモ」は ただの飾りになる。 */}
+        <p className="text-ink-soft mt-3 text-sm leading-relaxed font-bold">
+          {render(intro.dictionaryHint)}
+        </p>
+
         {/* 本文の下線は1文に1語だけなので、「性格診断」のような複合語の後半（診断）が
             引けない。設問と同じ「ことばメモ」を置いて、導入の語も1か所で引けるようにする。 */}
         {language !== "english" && (
           <div className="border-hairline mt-5 flex flex-wrap items-center gap-2 border-t pt-4">
             <span className="text-ink-soft text-xs font-black">ことばメモ</span>
-            {findAllGlossaryTerms(...intro.lines, intro.note).map((entry) => (
+            {findAllGlossaryTerms(
+              ...intro.lines,
+              intro.howTo,
+              intro.dictionaryHint,
+              intro.note,
+            ).map((entry) => (
               <GlossaryChip key={entry.term} entry={entry} renderText={renderRuby} />
             ))}
           </div>

@@ -2,7 +2,7 @@
 
 import { useCallback, useId, useRef, useState, type ReactNode } from "react";
 import { findGlossaryTerm, type GlossaryEntry } from "@/content/glossary";
-import type { Reading } from "@/content/personality";
+import { PERSONALITY_RESULT_READINGS, type Reading } from "@/content/personality";
 
 /** 漢字を含む語かどうか。含むなら、台帳の読みでルビを保証する。 */
 const HAS_KANJI = /[一-鿿]/;
@@ -77,7 +77,13 @@ function usePopover() {
  * やさしい日本語の説明でも読み切れないことがあるので、
  * **対訳で足りる人はそこで設問へ戻れる**ようにする。説明が要る人だけ下の2段を読む。
  */
-function PopoverBody({ entry }: { entry: GlossaryEntry }) {
+function PopoverBody({
+  entry,
+  renderText,
+}: {
+  entry: GlossaryEntry;
+  renderText: (text: string, readings: readonly Reading[]) => ReactNode;
+}) {
   return (
     <>
       {/* 1段目: 日本語（読みつき） */}
@@ -91,8 +97,11 @@ function PopoverBody({ entry }: { entry: GlossaryEntry }) {
       </span>
       {/* 2段目: 英語（対訳の1語） */}
       <span className="text-sky mt-0.5 block text-[13px]">{entry.englishTerm}</span>
-      {/* 3段目: 日本語の意味 */}
-      <span className="border-hairline mt-1.5 block border-t pt-1.5">{entry.meaning}</span>
+      {/* 3段目: 日本語の意味。**ここにもふりがなが要る。**
+          むずかしい語から逃げてきた先が裸の漢字だと、そこで行き止まりになる。 */}
+      <span className="border-hairline mt-1.5 block border-t pt-1.5">
+        {renderText(entry.meaning, PERSONALITY_RESULT_READINGS)}
+      </span>
       {/* 4段目: 英語の意味。最後の受け皿なので控えめに置く。 */}
       <span className="text-ink-soft mt-1 block text-[11px] font-semibold">
         {entry.englishMeaning}
@@ -107,11 +116,13 @@ function Popover({
   placeBelow,
   shiftX,
   entry,
+  renderText,
 }: {
   id: string;
   placeBelow: boolean;
   shiftX: number;
   entry: GlossaryEntry;
+  renderText: (text: string, readings: readonly Reading[]) => ReactNode;
 }) {
   return (
     <span
@@ -122,7 +133,7 @@ function Popover({
         placeBelow ? "top-full mt-2" : "bottom-full mb-2"
       }`}
     >
-      <PopoverBody entry={entry} />
+      <PopoverBody entry={entry} renderText={renderText} />
     </span>
   );
 }
@@ -179,7 +190,15 @@ export function GlossaryText({
         >
           {renderText(entry.term, termReadings)}
         </button>
-        {open && <Popover id={popoverId} placeBelow={placeBelow} shiftX={shiftX} entry={entry} />}
+        {open && (
+          <Popover
+            id={popoverId}
+            placeBelow={placeBelow}
+            shiftX={shiftX}
+            entry={entry}
+            renderText={renderText}
+          />
+        )}
       </span>
       {after && renderText(after, readings)}
     </>
@@ -220,7 +239,15 @@ export function GlossaryChip({
         {renderText(entry.term, [{ text: entry.term, reading: entry.reading }])}
         <span className="text-ink-soft ml-1.5 font-semibold">/ {entry.englishTerm}</span>
       </button>
-      {open && <Popover id={popoverId} placeBelow={placeBelow} shiftX={shiftX} entry={entry} />}
+      {open && (
+        <Popover
+          id={popoverId}
+          placeBelow={placeBelow}
+          shiftX={shiftX}
+          entry={entry}
+          renderText={renderText}
+        />
+      )}
     </span>
   );
 }
