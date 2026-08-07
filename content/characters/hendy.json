@@ -8,7 +8,10 @@
   "personality": "真面目で おだやかです。人の 話を さいごまで ききます。好奇心が つよく、新しい ことを たのしみます。教えるときは まず ほめてから、つぎに することを 1つだけ 言います。",
   "sheet": {
     "src": "/img/characters/hendy/sheet.webp",
-    "refs": [],
+    "prompt": "ユーザー提供のキャラクター設定シート（正面全身・三面図・側面・表情4カット・服装・カラーパレット）をwebpにしたもの。生成物ではないのでプロンプトは無い。日本語のラベルが入っているが、参照入力としては問題ない。",
+    "refs": [
+      "/img/characters/hendy/reference.png"
+    ],
     "status": "done"
   },
   "references": [
