@@ -12,6 +12,9 @@ package-lock.json
 
 # ドキュメント（手組みの表・整形を保持したいため Prettier 対象外）
 docs/
+# 説明資料のHTML。人とAIが読む資料でコードではないので整形しない
+# （docs/ 配下は上で除外済み。これはリポジトリ直下に置かれたぶん）
+*.html
 
 # コンテンツJSON（lint:content が別途スキーマ検証する）
 content/
