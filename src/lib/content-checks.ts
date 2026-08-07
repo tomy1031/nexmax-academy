@@ -70,7 +70,15 @@ export function checkForbiddenWords(file: string, data: unknown): Finding[] {
   return findings;
 }
 
-/** 秘匿漏れ検査。reqs のキーワードが調査用模擬ページに書かれていたら警告。 */
+/**
+ * 秘匿漏れ検査。reqs のキーワードが調査用模擬ページに書かれていたら落とす。
+ *
+ * **level は error。** 以前は warn だったが、warn は `lint_content.ts` の終了コードにも
+ * 保存APIの可否にも効かないので、実質「何も止めていない」状態だった。
+ * 漏れたシナリオは、学習者が**質問しなくても答えが手に入る**ため、
+ * 「質問で引き出す」という産出練習そのものが成立しなくなる（規律6・P4）。
+ * 教材が壊れているのに動いてしまう類なので、止める側に倒す。
+ */
 export function checkSecretLeaks(file: string, scenario: Scenario): Finding[] {
   const findings: Finding[] = [];
   const pagesHtml = scenario.research.pages.map((p) => p.html).join("\n");
@@ -79,8 +87,117 @@ export function checkSecretLeaks(file: string, scenario: Scenario): Finding[] {
     if (leaked.length > 0) {
       findings.push({
         file,
+        level: "error",
+        message: `${req.id}（${req.label}）のキーワード [${leaked.join(", ")}] が調査ページ内にある — 質問で引き出す情報なら模擬ページから削除する（規律6・P4）`,
+      });
+    }
+  }
+  return findings;
+}
+
+/**
+ * 使ってはいけない国名（規律9が名指しで禁じているもの）。
+ *
+ * AGENTS.md 規律9 が禁じているのは**「タイ」だけ**である。国際情勢を踏まえた運用判断で、
+ * 文言・画像・画像生成プロンプトのいずれでも使わない。
+ */
+const BANNED_PLACE_NAMES: readonly string[] = ["タイ"];
+
+/**
+ * すでに使ってよいと決まっている地名。
+ *
+ * - 日本 … 学習の目的地そのもの（規律9 が明示している例外）
+ * - カンボジア … **学習者自身の国**。「あなたはどこから来ましたか」を扱う教材で
+ *   出ないほうが不自然で、すでに公開ずみの教材にも入っている
+ *   （`content/wordstages/stage11_haizoku.json`）
+ */
+const AGREED_PLACE_NAMES: readonly string[] = [
+  "日本",
+  "にほん",
+  "ニホン",
+  "ニッポン",
+  "カンボジア",
+];
+
+/**
+ * 出てきたら**ユーザーに確認してから**にする国・地域名。
+ *
+ * 規律9 の「新しい国名を画面や画像に出すときは、事前にユーザーへ確認する」を
+ * 機械の合図にしたもの。**error にしない**のは、禁じられてはいないから——
+ * 止めてしまうと、先生が確認を取る前に検査を外す方へ動く。
+ *
+ * まなびマップのエリアが景色の名前で呼ばれている地域を並べてある（設計04・areas.ts）。
+ */
+const CONFIRM_PLACE_NAMES: readonly string[] = [
+  "ベトナム",
+  "台湾",
+  "ミャンマー",
+  "ラオス",
+  "フィリピン",
+  "インドネシア",
+  "マレーシア",
+  "シンガポール",
+  "中国",
+  "韓国",
+];
+
+/**
+ * 「タイ」だけは、ふつうの日本語の語の一部として頻繁に現れる（タイトル・タイプ・
+ * だいたい・タイミング…）。カタカナ語の途中で拾うと、誤検出が多すぎて
+ * 検査そのものが無視されるようになる。
+ *
+ * そこで**前後がカタカナでないときだけ**国名とみなす。
+ * 「タイに行く」は拾い、「タイトル」「タイプ」は拾わない。
+ */
+const KATAKANA = /[ァ-ヶーヴ]/u;
+
+function mentionsPlace(text: string, name: string): boolean {
+  let from = 0;
+  for (;;) {
+    const at = text.indexOf(name, from);
+    if (at < 0) return false;
+    const before = text[at - 1] ?? "";
+    const after = text[at + name.length] ?? "";
+    const glued = KATAKANA.test(name[0] ?? "")
+      ? KATAKANA.test(before) || KATAKANA.test(after)
+      : false;
+    if (!glued) return true;
+    from = at + 1;
+  }
+}
+
+/**
+ * 国名が画面に出ていないか（AGENTS.md 規律9）。
+ *
+ * 規律9は文書にはあったが**検査コードが1行も無かった**。人が読んで気づく前提の
+ * 規律は、AIに教材を作らせ始めた瞬間に破れる（生成量が人の目を超えるため）。
+ *
+ * 学習者に見える文字列だけを見る。先生向けの覚書（登場人物の `looks` など）は
+ * 画面に出ないので対象にしない——ここを分けないと、キャラクター設定に
+ * 「Southeast Asian」と書けなくなって生成の質が落ちる。
+ */
+export function checkCountryNames(file: string, content: Content): Finding[] {
+  const findings: Finding[] = [];
+  for (const text of collectLearnerTexts(content)) {
+    const near = (name: string) => {
+      const at = text.indexOf(name);
+      return text.slice(Math.max(0, at - 12), at + name.length + 12);
+    };
+    for (const name of BANNED_PLACE_NAMES) {
+      if (!mentionsPlace(text, name)) continue;
+      findings.push({
+        file,
+        level: "error",
+        message: `国名「${name}」が 学習者に見える文にある: 「…${near(name)}…」 — この名前は使わない（規律9）。まなびマップと同じく景色の名前で呼ぶ`,
+      });
+    }
+    for (const name of CONFIRM_PLACE_NAMES) {
+      if (AGREED_PLACE_NAMES.includes(name)) continue;
+      if (!mentionsPlace(text, name)) continue;
+      findings.push({
+        file,
         level: "warn",
-        message: `${req.id}（${req.label}）のキーワード [${leaked.join(", ")}] が調査ページ内にある — 質問で引き出す情報なら模擬ページから削除する（P4）`,
+        message: `国名「${name}」が 学習者に見える文にある: 「…${near(name)}…」 — 新しい国名を画面に出す前に、ユーザーへ確認する（規律9）。景色の名前で呼べないか先に考える`,
       });
     }
   }
@@ -543,22 +660,40 @@ function coverageEntries(content: Content): FuriganaEntry[] {
  * どちらか欠けると、先生は教材のどこに何を足せばよいか分からず直せない。
  */
 export function checkFuriganaCoverage(entries: readonly ContentEntry[]): Finding[] {
+  return entries.flatMap(({ file, content }) => checkFuriganaCoverageOf(file, content, "error"));
+}
+
+/**
+ * 1件ぶんのふりがな検査。
+ *
+ * **保存経路にこれが無かった。** `runContentChecks`（`/api/studio/content`）は
+ * 禁止語と秘匿漏れしか見ておらず、規律2（ふりがな全覆い）は CI の `lint:content` に
+ * しか無かった。つまり**スタジオで作った教材は、CIを通らないまま公開できていた**。
+ * AIに教材を作らせ始めると、この穴を通る量が一気に増える。
+ *
+ * `level` を呼ぶ側が決めるのは、下書きと公開で扱いを変えたいから:
+ *   - 公開 … error（読めない漢字が1つあると、学習者はそこで止まる）
+ *   - 下書き … warn（作りかけを保存させないと、先生は途中でやめられない）
+ */
+export function checkFuriganaCoverageOf(
+  file: string,
+  content: Content,
+  level: Finding["level"],
+): Finding[] {
   const findings: Finding[] = [];
-  for (const { file, content } of entries) {
-    const index = buildFuriganaIndex(coverageEntries(content));
-    const hint =
-      content.kind === "stage"
-        ? "ステージは読み辞書を持たない（画面もルビを合成しない）ので、ひらがなで書く"
-        : "furigana（読み辞書）に [表記, よみ] を足す";
-    for (const { field, text } of collectLabeledTexts(content)) {
-      const missing = uncoveredKanji(text, index);
-      if (missing.length === 0) continue;
-      findings.push({
-        file,
-        level: "error",
-        message: `ふりがなの ない漢字が ${field} にある: ${missing.join(" ")} — ${hint}。読めない漢字が1つあると、学習者はそこで止まる（規律2）`,
-      });
-    }
+  const index = buildFuriganaIndex(coverageEntries(content));
+  const hint =
+    content.kind === "stage"
+      ? "ステージは読み辞書を持たない（画面もルビを合成しない）ので、ひらがなで書く"
+      : "furigana（読み辞書）に [表記, よみ] を足す";
+  for (const { field, text } of collectLabeledTexts(content)) {
+    const missing = uncoveredKanji(text, index);
+    if (missing.length === 0) continue;
+    findings.push({
+      file,
+      level,
+      message: `ふりがなの ない漢字が ${field} にある: ${missing.join(" ")} — ${hint}。読めない漢字が1つあると、学習者はそこで止まる（規律2）`,
+    });
   }
   return findings;
 }

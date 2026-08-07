@@ -1,8 +1,10 @@
 import { NextResponse } from "next/server";
 import { contentSchema, type Content, type Stage } from "@/content/schema";
 import {
+  checkCountryNames,
   checkDanglingRefs,
   checkForbiddenWords,
+  checkFuriganaCoverageOf,
   checkSecretLeaks,
   type Finding,
 } from "@/lib/content-checks";
@@ -70,10 +72,22 @@ export async function requireAdmin(): Promise<Gate> {
  * 参照整合とID重複は全コンテンツがそろって初めて判定できるため（未作成の教材を
  * 参照する下書きを止めてしまう）、ここでは1件で判定できる検査だけを走らせる。
  * 横断検査は CI の lint:content が受け持つ。
+ *
+ * **ふりがなの覆いは以前ここに無かった。** 規律2 の検査は CI の `lint:content` に
+ * しか無く、スタジオで作った教材は CI を通らずに公開できていた。
+ * AIに作らせ始めると、この穴を通る量が人の目を超える。
+ *
+ * 下書きと公開で強さを変える:
+ *   - 公開 … ふりがなの抜けは error（読めない漢字が1つあると、学習者はそこで止まる）
+ *   - 下書き … warn（作りかけを保存させないと、先生は途中でやめられない）
+ * 禁止語・秘匿漏れ・国名は**下書きでも error**。これらは「作りかけだから仕方ない」
+ * ものではなく、書いてしまった時点で直すべきものだから。
  */
-function runContentChecks(content: Content): Finding[] {
+function runContentChecks(content: Content, publishing: boolean): Finding[] {
   const label = `${content.kind}:${content.id}`;
   const findings = checkForbiddenWords(label, content);
+  findings.push(...checkCountryNames(label, content));
+  findings.push(...checkFuriganaCoverageOf(label, content, publishing ? "error" : "warn"));
   if (content.kind === "scenario") findings.push(...checkSecretLeaks(label, content));
   return findings;
 }
@@ -159,13 +173,14 @@ export async function POST(request: Request): Promise<NextResponse> {
   }
   const content = parsed.data;
 
-  const findings = runContentChecks(content);
+  const publishing = body.publish === true;
+  const findings = runContentChecks(content, publishing);
   const errors = findings.filter((f) => f.level === "error");
   if (errors.length > 0) {
     return fail("checksFailed", 422, { findings: errors });
   }
 
-  const status = body.publish === true ? "published" : "draft";
+  const status = publishing ? "published" : "draft";
   /**
    * 公開スイッチの正はDBの status 列（＝スタジオの「こうかい」ボタン）。
    * stage は本体にも status を持ち、マップの絞り込みがそちらを見るため、

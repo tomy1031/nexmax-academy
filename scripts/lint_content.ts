@@ -29,6 +29,7 @@ import { contentSchema, FORBIDDEN_LEARNER_WORDS } from "../src/content/schema";
 import {
   checkDuplicateIds,
   checkForbiddenWords,
+  checkCountryNames,
   checkFuriganaCoverage,
   checkLinkOrder,
   checkReferenceIntegrity,
@@ -200,6 +201,7 @@ function main() {
 
     entries.push({ file: rel, content: parsed.data });
     findings.push(...checkForbiddenWords(rel, data));
+    findings.push(...checkCountryNames(rel, parsed.data));
     if (parsed.data.kind === "scenario") {
       findings.push(...checkSecretLeaks(rel, parsed.data));
     }
