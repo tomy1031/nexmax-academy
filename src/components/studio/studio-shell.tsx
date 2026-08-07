@@ -618,6 +618,14 @@ export function StudioShell({
             <MangaEditor
               value={view.draft}
               cast={merged.character}
+              /*
+               * すでに作った教材を渡す。AIに「過去の内容を踏まえて」すじがきを
+               * 作らせるため（習った語・前の話のおわり）。自分自身は除く——
+               * これから作り直すものを「前の話」として渡すと、同じ話になる。
+               */
+              known={[...merged.wordstage, ...merged.manga].filter(
+                (content) => content.id !== view.draft.id,
+              )}
               onChange={(draft) => setView({ ...view, draft })}
             />
           </ChildFrame>
@@ -635,7 +643,12 @@ export function StudioShell({
             issues={issues}
             warnings={warnings}
           >
-            <ArticleEditor value={view.draft} onChange={(draft) => setView({ ...view, draft })} />
+            <ArticleEditor
+              value={view.draft}
+              /* 習った ことばを AIに ふまえさせる（自分自身は 除く） */
+              known={merged.wordstage.filter((c) => c.id !== view.draft.id)}
+              onChange={(draft) => setView({ ...view, draft })}
+            />
           </ChildFrame>
         ) : null}
 
@@ -651,7 +664,12 @@ export function StudioShell({
             issues={issues}
             warnings={warnings}
           >
-            <QuizEditor value={view.draft} onChange={(draft) => setView({ ...view, draft })} />
+            <QuizEditor
+              value={view.draft}
+              /* 習った ことばを AIに ふまえさせる（自分自身は 除く） */
+              known={merged.wordstage.filter((c) => c.id !== view.draft.id)}
+              onChange={(draft) => setView({ ...view, draft })}
+            />
           </ChildFrame>
         ) : null}
 

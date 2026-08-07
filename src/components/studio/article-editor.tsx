@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type { Article, ArticleBlock, ContentRefType } from "@/content/schema";
+import type { Article, ArticleBlock, Content, ContentRefType } from "@/content/schema";
 import { ArticleView } from "@/components/article/article-view";
 import { ARTICLE_BLOCK_OPTIONS, CONTENT_TYPE_OPTIONS, emptyArticleBlock } from "./drafts";
 import { ImageSlotEditor } from "./image-slot-editor";
@@ -15,6 +15,7 @@ import {
   TextAreaField,
   TextField,
 } from "./studio-ui";
+import { ArticleMaker } from "./lesson-maker";
 
 /**
  * 説明ページのエディタ（設計07 §5）
@@ -26,9 +27,12 @@ import {
 export function ArticleEditor({
   value,
   onChange,
+  known = [],
 }: {
   value: Article;
   onChange: (article: Article) => void;
+  /** すでに作った教材。AIに「習った ことば」を踏まえさせるために渡す。 */
+  known?: readonly Content[];
 }) {
   const [addKind, setAddKind] = useState<ArticleBlock["kind"]>("paragraph");
   const patch = (part: Partial<Article>) => onChange({ ...value, ...part });
@@ -36,6 +40,7 @@ export function ArticleEditor({
   return (
     <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(0,26rem)]">
       <div className="space-y-4">
+        <ArticleMaker value={value} onChange={onChange} known={known} />
         <StudioSection title="きほん">
           <div className="grid gap-4 sm:grid-cols-2">
             <TextField

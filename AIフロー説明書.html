@@ -113,7 +113,7 @@
     <h1>AIフロー説明書</h1>
     <p class="en">How every AI feature is wired</p>
     <p class="meta">
-      <span>版: v1.0</span>
+      <span>版: v1.1</span>
       <span>作成日: 2026-08-07</span>
       <span>対象: NexmaxAcademy の生成機能ぜんぶ</span>
     </p>
@@ -122,13 +122,18 @@
   <details class="changelog" id="changelog">
     <summary>
       <span class="chev">▶</span>変更履歴 / Changelog
-      <span class="latest">最新: v1.0 (2026-08-07)</span>
+      <span class="latest">最新: v1.1 (2026-08-07)</span>
     </summary>
     <div class="cl-body">
       <p>本書への変更を記録する。各エントリの「修正箇所」リンクから該当章へ移動できる。</p>
       <div class="tablewrap">
       <table>
         <tr><th>版</th><th>日付</th><th>変更内容</th><th>修正箇所</th></tr>
+        <tr>
+          <td>v1.1</td><td>2026-08-07</td>
+          <td>「まだ できていないこと」の4つを実装。文章生成を Codex へ、まんがに すじがきの段と セリフ入り画像モード、もんだい・よみものの生成。かな限定の焼き込みは実測で崩れゼロ。</td>
+          <td><a href="#s4">4</a> ・ <a href="#s6">6</a> ・ <a href="#s5">5</a> ・ <a href="#s11">11</a></td>
+        </tr>
         <tr>
           <td>v1.0</td><td>2026-08-07</td>
           <td>初版作成。実際のコードを読んで、機能ごとの経路・モデル・失敗時の動きを記録した。</td>
@@ -266,16 +271,37 @@ sequenceDiagram
         <td>同上</td><td>—（画像）</td>
       </tr>
       <tr>
+        <td>まんがの すじがき</td><td>まんが編集</td>
+        <td><span class="badge b-codex">Codex</span></td>
+        <td><code>manga-story.ts</code></td>
+        <td>Codex の既定</td>
+        <td><code>outputSchema</code></td>
+      </tr>
+      <tr>
         <td>まんがの台本</td><td>まんが編集</td>
-        <td><span class="badge b-gemini">Gemini</span></td>
-        <td><code>/api/studio/manga</code></td>
-        <td><code>gemini-2.5-flash</code></td>
-        <td><code>responseSchema</code></td>
+        <td><span class="badge b-codex">Codex</span><span class="badge b-gemini">Gemini</span></td>
+        <td><code>text-api.ts</code></td>
+        <td>Codex / <code>gemini-2.5-flash</code></td>
+        <td><code>outputSchema</code> / <code>responseSchema</code></td>
+      </tr>
+      <tr>
+        <td>もんだい</td><td>もんだい編集</td>
+        <td><span class="badge b-codex">Codex</span></td>
+        <td><code>lesson-prompt.ts</code></td>
+        <td>Codex の既定</td>
+        <td><code>outputSchema</code>（産出では選択式を外す）</td>
+      </tr>
+      <tr>
+        <td>よみもの</td><td>よみもの編集</td>
+        <td><span class="badge b-codex">Codex</span></td>
+        <td><code>lesson-prompt.ts</code></td>
+        <td>Codex の既定</td>
+        <td><code>outputSchema</code></td>
       </tr>
       <tr>
         <td>ことばの抜き出し</td><td>ことば・辞書</td>
-        <td><span class="badge b-gemini">Gemini</span></td>
-        <td><code>/api/studio/vocab</code></td>
+        <td><span class="badge b-codex">Codex</span><span class="badge b-gemini">Gemini</span></td>
+        <td><code>text-api.ts</code></td>
         <td><code>gemini-2.5-flash</code></td>
         <td><code>responseSchema</code></td>
       </tr>
@@ -305,18 +331,7 @@ sequenceDiagram
         <td>上の絵・音声を束ねる</td>
         <td>同上</td><td>—</td>
       </tr>
-      <tr>
-        <td>もんだい・よみもの</td><td>各エディタ</td>
-        <td><span class="badge b-none">AIなし</span></td>
-        <td>—</td><td>—</td><td>—</td>
-      </tr>
-      <tr>
-        <td>文章生成の Codex 化</td><td>—</td>
-        <td><span class="badge b-todo">未実装</span></td>
-        <td><code>CodexTransport.runJson</code>（土台のみ）</td>
-        <td>—</td>
-        <td><code>outputSchema</code></td>
-      </tr>
+
     </table>
     </div>
 
@@ -503,46 +518,45 @@ flowchart LR
   <section class="chapter" id="s11">
     <h2 class="sec"><span class="num">11</span>まだ できていないこと</h2>
 
+    <div class="callout good">
+      <strong>v1.0 で挙げた4つは 実装ずみ。</strong>
+      文章生成の Codex 化／段階フロー（すじがき→承認→コマ）／セリフ入り画像／
+      もんだい・よみものの生成。残っているのは下の2つで、どちらも
+      <strong>やらないと決めたもの</strong>。
+    </div>
+
     <div class="tablewrap">
     <table>
-      <tr><th>項目</th><th>状態</th><th>理由・次にやること</th></tr>
-      <tr>
-        <td>文章生成の Codex 化</td><td><span class="badge b-todo">土台のみ</span></td>
-        <td><code>runJson</code> と <code>outputSchema</code> は用意ずみ。各機能への配線が残っている</td>
-      </tr>
-      <tr>
-        <td>段階フロー（案→承認→生成）</td><td><span class="badge b-todo">設計ずみ</span></td>
-        <td>設計は <code>docs/craft-flow-plan.md</code>。作りかけを教材テーブルとは別に持ち、承認したものだけが下書きに入る形</td>
-      </tr>
-      <tr>
-        <td>まんがのセリフ入り画像</td><td><span class="badge b-todo">未実装</span></td>
-        <td>焼く文字は<strong>かな限定・機械変換</strong>にする方針（漢字はルビを焼けないので学習者が読めない）</td>
-      </tr>
-      <tr>
-        <td>もんだい・よみもののAI生成</td><td><span class="badge b-todo">未実装</span></td>
-        <td>段階フローと同時に入れる</td>
-      </tr>
+      <tr><th>項目</th><th>状態</th><th>理由</th></tr>
       <tr>
         <td>たいわ（scenario）のAI生成</td><td><span class="badge b-none">やらない</span></td>
-        <td>「秘匿を漏らさない」と「伏線は置く」の境界が未定義。決めないまま作らせるとどちらかを必ず踏む</td>
+        <td>「秘匿を漏らさない」（規律6）と「伏線は置く」（P4）の境界が未定義。
+        決めないまま作らせるとどちらかを必ず踏む。加えてスタジオに編集画面が無い</td>
       </tr>
       <tr>
         <td>音声の Codex 化</td><td><span class="badge b-none">やらない</span></td>
-        <td>Codex に対応物が無い</td>
+        <td>Codex に対応物が無い。リスニングの音声は Gemini Live のまま</td>
       </tr>
     </table>
     </div>
 
+    <h3>あとで効いてくるかもしれない選択肢</h3>
     <div class="callout">
-      <strong>Cloudflare Workers AI という選択肢もある</strong>（無料枠 1日10,000 Neurons・
+      <strong>Cloudflare Workers AI</strong>（無料枠 1日10,000 Neurons・
       <code>flux-2-klein-4b</code> は参照画像4枚まで、1日80枚前後）。
       キーもログインも要らず完結するが、<strong>絵の水準が Codex に劣る</strong>ため当面は採らない。
+    </div>
+    <div class="callout warn">
+      <strong>いまの段階フローは まんがだけ。</strong>
+      もんだいと よみものは「1行 → 生成 → 直す」の1段で、すじがきの承認を挟んでいない。
+      話の筋が無いので その場で直すほうが速いと判断したが、
+      使ってみて段が要るようなら足す。
     </div>
   </section>
 
   </div>
 
-  <footer>AIフロー説明書 v1.0 ・ 出典: リポジトリ実コード（<code>src/lib/ai/</code>・<code>src/lib/codex-*.ts</code>・<code>src/app/api/</code>・<code>scripts/codex_bridge.mjs</code>）と 2026-08-06〜07 の実測</footer>
+  <footer>AIフロー説明書 v1.1 ・ 出典: リポジトリ実コード（<code>src/lib/ai/</code>・<code>src/lib/codex-*.ts</code>・<code>src/app/api/</code>・<code>scripts/codex_bridge.mjs</code>）と 2026-08-06〜07 の実測</footer>
 </main>
 
 </div>
