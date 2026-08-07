@@ -1,0 +1,128 @@
+"use client";
+
+import { useId, useRef, useState } from "react";
+import { RubyText } from "@/components/ruby-text";
+import { findDictionaryTerm, type DictionaryEntry } from "@/lib/dictionary";
+import type { FuriganaIndex } from "@/lib/text/furigana";
+
+/**
+ * 本文に 辞書の ことばを 埋める（教材の本文用）
+ *
+ * 職場語は平易語に置き換えない（設計01 R6-1）。かといって ひらがなに開いても、
+ * 意味を知らない語は意味ゼロの かたまり になるだけで解決しない。
+ * 本文は **漢字＋ふりがな** で出し、意味は タップで やさしい日本語＋英語 を出す。
+ *
+ * 辞書は単語ステージを畳んだもの（src/lib/dictionary.ts）。新しい保存先は無い。
+ *
+ * **1文につき下線は1語だけ**（設計07 §2.5）。同じ文で2回タップさせない。
+ * この決まりは `findDictionaryTerm` が「最初の1つしか返さない」ことで守られている。
+ *
+ * 性格診断まわりの `GlossaryText` と役割は似ているが、引く先が違う
+ *（あちらは診断専用の固定台帳、こちらは教材の単語ステージ）。引き当ての規則も
+ * 「配列順に先勝ち」と「最長一致」で違うので、まとめると片方の当たり方が変わる。
+ */
+
+/** 吹き出しの実寸。はみ出し判定に使う（Tailwind の w-60 と合わせる）。 */
+const POPOVER_WIDTH = 240;
+const POPOVER_HEIGHT = 120;
+/** 画面のふちに触れさせない余白。 */
+const EDGE_MARGIN = 12;
+
+export function DictionaryText({
+  text,
+  index,
+  show = true,
+  dictionary,
+  className,
+}: {
+  text: string;
+  index?: FuriganaIndex;
+  show?: boolean;
+  dictionary?: readonly DictionaryEntry[];
+  className?: string;
+}) {
+  const found = dictionary && dictionary.length > 0 ? findDictionaryTerm(text, dictionary) : null;
+  const popoverId = useId();
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const [open, setOpen] = useState(false);
+  // 画面の上のほうでは、上に出すと吹き出しが画面外に切れて何も見えない。
+  // 左右も、ふち近くの語だと はみ出して横スクロールが出る。開くたびに置き場所を決め直す。
+  const [placeBelow, setPlaceBelow] = useState(false);
+  const [shiftX, setShiftX] = useState(0);
+
+  if (!found) {
+    return <RubyText text={text} index={index} show={show} className={className} />;
+  }
+
+  const toggle = () => {
+    if (!open) {
+      const rect = buttonRef.current?.getBoundingClientRect();
+      if (rect) {
+        setPlaceBelow(rect.top < POPOVER_HEIGHT + EDGE_MARGIN);
+        const centerX = rect.left + rect.width / 2;
+        const overflowLeft = Math.max(0, EDGE_MARGIN - (centerX - POPOVER_WIDTH / 2));
+        const overflowRight = Math.max(
+          0,
+          centerX + POPOVER_WIDTH / 2 - (window.innerWidth - EDGE_MARGIN),
+        );
+        setShiftX(overflowLeft - overflowRight);
+      }
+    }
+    setOpen((current) => !current);
+  };
+
+  const { entry, at } = found;
+  const before = text.slice(0, at);
+  const after = text.slice(at + entry.term.length);
+
+  return (
+    <span className={className}>
+      {before ? <RubyText text={before} index={index} show={show} /> : null}
+      <span className="relative inline-block">
+        <button
+          ref={buttonRef}
+          type="button"
+          onClick={toggle}
+          aria-expanded={open}
+          aria-controls={popoverId}
+          className="decoration-sky cursor-pointer underline decoration-dotted decoration-2 underline-offset-4"
+        >
+          {/*
+            下線を引く語こそ いちばん むずかしい。共通の読み辞書に載っていなくても
+            ルビが出るように、辞書の読みでこの語だけルビを保証する。
+          */}
+          {show ? (
+            <ruby>
+              {entry.term}
+              <rt>{entry.reading}</rt>
+            </ruby>
+          ) : (
+            entry.term
+          )}
+        </button>
+        {open && (
+          <span
+            id={popoverId}
+            role="note"
+            style={{ transform: `translateX(calc(-50% + ${shiftX}px))` }}
+            className={`border-sky text-ink absolute left-1/2 z-30 w-60 rounded-2xl border-2 bg-white px-3 py-2 text-left text-xs leading-relaxed font-bold shadow-[0_6px_18px_rgba(0,79,141,.22)] ${
+              placeBelow ? "top-full mt-2" : "bottom-full mb-2"
+            }`}
+          >
+            <span className="text-navy block">
+              {entry.term}
+              <span className="text-ink-soft ml-1 font-bold">{entry.reading}</span>
+            </span>
+            {/* 説明文にも漢字が入る。出典の単語ステージの読み辞書でルビを合成する。 */}
+            <RubyText className="mt-1 block" text={entry.explanationJa} furigana={entry.furigana} />
+            {/* 英語は最後の受け皿。日本語の意味より下に、控えめに置く（設計07 §2.5）。 */}
+            <span className="border-hairline text-ink-soft mt-1.5 block border-t pt-1.5 text-[11px] font-semibold">
+              {entry.meaningEn}
+            </span>
+          </span>
+        )}
+      </span>
+      {after ? <RubyText text={after} index={index} show={show} /> : null}
+    </span>
+  );
+}

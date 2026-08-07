@@ -9,23 +9,42 @@
  *  2. 禁止語（学習者向け文言に「不正解」等を使わない — 理解設計ガイド P8）
  *  3. 秘匿情報の漏れ（シナリオ: reqs のキーワードが調査用模擬ページに
  *     書かれていたら警告 — 質問で引き出すべき情報は調査素材に書かない）
+ *  4. kind別ID重複＋参照整合（stage.contents / wordStageIds の参照切れ — 設計07 §3）
+ *  5. 導線の一致（article の link ブロックがステージの学習順の直後を指しているか）
+ *  6. マップの停留所とステージの結びつき（step重複・既定エリアより先の area 未設定）。
+ *     マップは「1ステージ＝1エリア＝背景画像1枚」（src/content/areas.ts）。
+ *  7. ふりがなの覆い漏れ（学習者が読む文の漢字が読み辞書で全部覆えているか — 規律2）
+ *  8. 焼き込みモジュールのずれ（src/content/git-contents.generated.ts）。
+ *     アプリはこの生成物だけを読むので、ずれると JSON を直しても画面が変わらない。
+ *
+ * 検査ロジックの実体は src/lib/content-checks.ts（スタジオ側と共用）。
+ * このスクリプトはファイル走査とレポートだけを受け持つ。
  *
  * 終了コード: エラーあり=1 / 警告のみ・問題なし=0
  */
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
 import ts from "typescript";
-import { contentSchema, FORBIDDEN_LEARNER_WORDS, type Scenario } from "../src/content/schema";
+import { contentSchema, FORBIDDEN_LEARNER_WORDS } from "../src/content/schema";
+import {
+  checkDuplicateIds,
+  checkForbiddenWords,
+  checkCountryNames,
+  checkFuriganaCoverage,
+  checkLinkOrder,
+  checkReferenceIntegrity,
+  checkStageOrder,
+  checkSecretLeaks,
+  type ContentEntry,
+  type Finding,
+} from "../src/lib/content-checks";
+// 焼き込みモジュールの作り手と同じ関数で組み立てて比べる（作り方が2つに割れないように）
+import { buildGeneratedSource, GENERATED_PATH } from "./generate_content_index.mjs";
+import { buildSceneSource, SCENE_GENERATED_PATH } from "./generate_scene_index.mjs";
 
 const ROOT = join(import.meta.dirname, "..");
 const CONTENT_DIR = join(ROOT, "content");
 const SRC_DIR = join(ROOT, "src");
-
-interface Finding {
-  file: string;
-  level: "error" | "warn";
-  message: string;
-}
 
 const findings: Finding[] = [];
 
@@ -47,48 +66,6 @@ function walkSource(dir: string): string[] {
     else if (entry.endsWith(".ts") || entry.endsWith(".tsx")) files.push(full);
   }
   return files;
-}
-
-function collectStrings(value: unknown, path: string, out: [string, string][]) {
-  if (typeof value === "string") {
-    out.push([path, value]);
-  } else if (Array.isArray(value)) {
-    value.forEach((v, i) => collectStrings(v, `${path}[${i}]`, out));
-  } else if (value && typeof value === "object") {
-    for (const [k, v] of Object.entries(value)) {
-      collectStrings(v, path ? `${path}.${k}` : k, out);
-    }
-  }
-}
-
-function checkForbiddenWords(file: string, data: unknown) {
-  const strings: [string, string][] = [];
-  collectStrings(data, "", strings);
-  for (const [path, text] of strings) {
-    for (const word of FORBIDDEN_LEARNER_WORDS) {
-      if (text.includes(word)) {
-        findings.push({
-          file,
-          level: "error",
-          message: `禁止語「${word}」が ${path} にある — フィードバックは励まし＋次の行動に（P8）`,
-        });
-      }
-    }
-  }
-}
-
-function checkSecretLeaks(file: string, scenario: Scenario) {
-  const pagesHtml = scenario.research.pages.map((p) => p.html).join("\n");
-  for (const req of scenario.interview.reqs) {
-    const leaked = req.keywords.filter((kw) => kw.length >= 2 && pagesHtml.includes(kw));
-    if (leaked.length > 0) {
-      findings.push({
-        file,
-        level: "warn",
-        message: `${req.id}（${req.label}）のキーワード [${leaked.join(", ")}] が調査ページ内にある — 質問で引き出す情報なら模擬ページから削除する（P4）`,
-      });
-    }
-  }
 }
 
 function isForbiddenListDefinition(node: ts.Node): boolean {
@@ -146,6 +123,44 @@ function checkSourceForbiddenWords(file: string) {
   visit(sourceFile);
 }
 
+/**
+ * 焼き込みモジュールが content/ とずれていないかを見る。
+ *
+ * アプリが実際に読むのは content/*.json ではなく
+ * src/content/git-contents.generated.ts のほう（Cloudflare に fs が無いため）。
+ * ずれたままだと、先生が JSON を直しても画面が変わらず、原因も見えない。
+ */
+function checkGenerated(path: string, expected: () => string, source: string): Finding[] {
+  const rel = relative(ROOT, path);
+  let current: string;
+  try {
+    current = readFileSync(path, "utf8");
+  } catch {
+    return [
+      {
+        file: rel,
+        level: "error",
+        message: "焼き込みモジュールが無い — `npm run gen:content` で作る",
+      },
+    ];
+  }
+  if (current === expected()) return [];
+  return [
+    {
+      file: rel,
+      level: "error",
+      message: `焼き込みモジュールが ${source} とずれている — \`npm run gen:content\` で作り直す（アプリはこちらを読むので、直さないと画面が変わらない）`,
+    },
+  ];
+}
+
+function checkGeneratedIndex(): Finding[] {
+  return [
+    ...checkGenerated(GENERATED_PATH, buildGeneratedSource, "content/"),
+    ...checkGenerated(SCENE_GENERATED_PATH, buildSceneSource, "public/img/scenes/"),
+  ];
+}
+
 function main() {
   let files: string[] = [];
   let contentDirAvailable = true;
@@ -159,8 +174,8 @@ function main() {
     console.log("コンテンツファイルがありません。検査対象なし。");
   }
 
-  // kind別のID重複をファイル横断で検出する（同じステージ/シナリオIDが2ファイルにあると進捗保存が壊れる）
-  const seenIds = new Map<string, string>();
+  // スキーマ検証を通ったコンテンツ（横断検査＝ID重複・参照整合の入力）
+  const entries: ContentEntry[] = [];
 
   for (const file of files) {
     const rel = relative(ROOT, file);
@@ -184,23 +199,20 @@ function main() {
       continue;
     }
 
-    const idKey = `${parsed.data.kind}:${parsed.data.id}`;
-    const dup = seenIds.get(idKey);
-    if (dup) {
-      findings.push({
-        file: rel,
-        level: "error",
-        message: `ID「${parsed.data.id}」（${parsed.data.kind}）が ${dup} と重複している`,
-      });
-    } else {
-      seenIds.set(idKey, rel);
-    }
-
-    checkForbiddenWords(rel, data);
+    entries.push({ file: rel, content: parsed.data });
+    findings.push(...checkForbiddenWords(rel, data));
+    findings.push(...checkCountryNames(rel, parsed.data));
     if (parsed.data.kind === "scenario") {
-      checkSecretLeaks(rel, parsed.data);
+      findings.push(...checkSecretLeaks(rel, parsed.data));
     }
   }
+
+  findings.push(...checkDuplicateIds(entries));
+  findings.push(...checkReferenceIntegrity(entries));
+  findings.push(...checkLinkOrder(entries));
+  findings.push(...checkStageOrder(entries));
+  findings.push(...checkFuriganaCoverage(entries));
+  findings.push(...checkGeneratedIndex());
 
   const sourceFiles = walkSource(SRC_DIR);
   for (const file of sourceFiles) checkSourceForbiddenWords(file);

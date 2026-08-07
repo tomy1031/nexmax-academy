@@ -1,0 +1,24 @@
+{
+  "kind": "stage",
+  "id": "asakai",
+  "order": 1,
+  "title": "朝会と報告",
+  "reading": "あさかいと ほうこく",
+  "description": "あさの かいぎで、きょうの よていを つたえます。ほうこくの コツも まなびます。",
+  "color": "coral",
+  "status": "published",
+  "area": {
+    "name": "アンコールワット",
+    "reading": "あんこーるわっと",
+    "image": "/img/scenes/area1_cambodia.webp",
+    "note": "ここから はじまります。"
+  },
+  "contents": [
+    { "ref": "m2-asakai-manga", "type": "manga" },
+    { "ref": "m2-asakai-article", "type": "article" },
+    { "ref": "sample_asakai", "type": "listening" },
+    { "ref": "sample_horenso", "type": "quizset" },
+    { "ref": "talk-asakai-report", "type": "scenario" }
+  ],
+  "wordStageIds": ["stage01_orientation"]
+}

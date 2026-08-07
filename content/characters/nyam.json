@@ -1,0 +1,16 @@
+{
+  "kind": "character",
+  "id": "nyam",
+  "name": "ニャム",
+  "reading": "にゃむ",
+  "role": "同期の新人エンジニア（学習者と同じ立場）",
+  "looks": "Southeast Asian woman in her early twenties. Dark brown bob haircut ending at the jaw, straight fringe just above the eyebrows, one small black hair clip on the right side. Round face, large dark brown eyes, small mouth. Wears a coral (#F2654A) knit cardigan over a plain cream blouse, dark navy ankle-length trousers, and flat beige loafers. Carries a small A6 white notebook and a blue ballpoint pen. Height about 158cm, slight build, slightly hunched shoulders when nervous.",
+  "personality": "まじめで よく メモを とる。きんちょうすると 話が 長くなり、けつろんが あとに なる。まちがえても もう一度 やってみる。",
+  "sheet": {
+    "src": "/img/characters/nyam/sheet.webp",
+    "refs": [],
+    "status": "done"
+  },
+  "references": [],
+  "voice": "Leda"
+}

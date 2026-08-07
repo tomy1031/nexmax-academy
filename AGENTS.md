@@ -20,12 +20,15 @@ This version has breaking changes — APIs, conventions, and file structure may 
 | `docs/design/review_rubric.md`             | 検収・レビューを行うとき（証拠必須ルーブリック）                           |
 | `docs/design/04_ビジュアルテーマ.md`       | UI・画面・キャラクターに触る前（あおぞらパスウェイ／ネクマックス）         |
 | `docs/skills/codex_image_generation.md`    | 画像アセットを作るとき（image-gen-2・一貫性ルール）                        |
+| `docs/codex-backend.md`                    | 生成バックエンド（Codex／Gemini）に触る前                                  |
 | `docs/skills/browser_e2e_verification.md`  | ブラウザ自動操作で実機検証をする前（本番データ事故の再発防止）             |
 
 ## 絶対規律（機械検査の対象。違反はCIで落ちる）
 
 1. 学習者向け文言に「不正解」「間違いです」「ダメ」を使わない。フィードバックは励まし＋次の行動。
 2. コンテンツはプレーンテキスト＋読み辞書で持つ。**ルビHTMLを手書きしない**（表示時にエンジンが合成する）。
+   学習者が読む文の漢字は、読み辞書で**全部**覆う（`npm run lint:content` が検査する）。
+   読めない漢字が1つあると、学習者はそこで止まる。
 3. 選択式UIは読解確認（research）のみ。産出フェーズは自由入力・音声のみ。
 4. APIキー・シークレットをクライアントコードに置かない。Gemini呼び出しはサーバプロキシ経由。
 5. コンテンツデータは `src/content/schema.ts` のzodスキーマに準拠（`npm run lint:content` で検証）。
@@ -64,6 +67,30 @@ docs/design/      # 設計ドキュメント（唯一の知識ソース）
 
 - 環境変数は `process.env` を直接読まず `src/lib/env.ts` を通す。
 - 秘密鍵（`getServerEnv()`）はクライアントコンポーネントから import しない。
+
+## URLの決まり（学習者向け）
+
+学習者のURLは「どのステージの何か」がURLだけで分かる形にする。
+
+```
+/houkoku                 ステージのトップ（ステージIDがURLの1段目）
+/houkoku/manga           その中の教材（同じ種別が1つなら ID を付けない）
+/houkoku/listening-<ID>  同じ種別が2つ以上あるときだけ ID を足す
+/arcade/<ID>             ことばアーケードは独立したアプリなので別（ステージから直行できる）
+/dictionary              辞書＝全単語ステージを term で畳んだもの（保存先は増やさない）
+```
+
+- 組み立てと読み取りは `src/lib/stage-routes.ts` だけで行う（画面が独自に文字列を組まない）。
+- **ステージIDはURLの1段目を占める**ので、アプリのルートと同じ名前は使えない。
+  `stageSchema` の `RESERVED_STAGE_IDS` が保存の時点で弾く。
+  **`src/app/` に1段目のルートを足したら、この一覧にも足す**（足し忘れると、その名前の
+  ステージに永久にたどり着けない。静的ルートが必ず勝つため）。
+- 古いURL（`/stage/<id>`・`/manga/<id>` など）は消さず、本来のURLへリダイレクトする。
+- **`/[stage]` は ISR なので 404 もキャッシュされる。** `src/app/` に新しいルートを
+  足した直後、それ以前に誰かが踏んだ 404 が残っていて `revalidate` の間だけ
+  404 と 200 が揺れることがある（2026-08-06 に `/admin/characters` で発生）。
+  待てば直る。焦って別の原因を探さない。
+- 先生向けの画面は `/admin` に集約（サイドバー）。`/studio` は `/admin/stages` へ送る。
 
 ## コマンド
 

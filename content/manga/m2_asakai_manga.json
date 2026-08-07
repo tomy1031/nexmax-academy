@@ -1,0 +1,202 @@
+{
+  "kind": "manga",
+  "id": "m2-asakai-manga",
+  "format": "yonkoma",
+  "title": "はじめての 朝会",
+  "description": "はじめての 朝会です。報告の コツを 見つけましょう。",
+  "characters": [
+    {
+      "id": "hendy",
+      "name": "ヘンディ",
+      "role": "先輩"
+    },
+    {
+      "id": "nyam",
+      "name": "ニャム",
+      "role": "同期"
+    }
+  ],
+  "furigana": [
+    [
+      "朝会",
+      "あさかい"
+    ],
+    [
+      "報告",
+      "ほうこく"
+    ],
+    [
+      "結論",
+      "けつろん"
+    ],
+    [
+      "昨日",
+      "きのう"
+    ],
+    [
+      "今日",
+      "きょう"
+    ],
+    [
+      "先輩",
+      "せんぱい"
+    ],
+    [
+      "同期",
+      "どうき"
+    ],
+    [
+      "朝",
+      "あさ"
+    ],
+    [
+      "時",
+      "じ"
+    ],
+    [
+      "来",
+      "き"
+    ],
+    [
+      "見",
+      "み"
+    ],
+    [
+      "話",
+      "はなし"
+    ],
+    [
+      "長",
+      "なが"
+    ],
+    [
+      "言",
+      "い"
+    ],
+    [
+      "終",
+      "お"
+    ],
+    [
+      "直",
+      "なお"
+    ],
+    [
+      "分",
+      "わ"
+    ]
+  ],
+  "vocab": [
+    {
+      "term": "朝会",
+      "reading": "あさかい",
+      "meaning": "あさに する みじかい かいぎ"
+    },
+    {
+      "term": "報告",
+      "reading": "ほうこく",
+      "meaning": "したことを つたえること"
+    },
+    {
+      "term": "結論",
+      "reading": "けつろん",
+      "meaning": "いちばん 言いたい こと"
+    }
+  ],
+  "pages": [
+    {
+      "panels": [
+        {
+          "size": "normal",
+          "image": {
+            "prompt": "Anime manga panel, no readable text. A bright modern software office in the morning, large window with soft sunlight, potted plant, whiteboard. A friendly Southeast Asian senior engineer man (Hendy, short black hair, light blue shirt, ID lanyard) stands beside the whiteboard and smiles at his small team during a short stand-up meeting. Next to him a young female junior engineer (Nyam, dark bob hair, coral cardigan) stands holding a small notebook, shoulders tight, a little nervous. Medium wide shot, clean line art, flat cel shading, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. Keep empty space at the bottom of the frame. No text, no letters, no numbers, no signage, no speech bubbles, no readable text.",
+            "refs": [
+              "/img/characters/hendy/sheet.webp",
+              "/img/characters/nyam/sheet.webp"
+            ],
+            "status": "done",
+            "src": "/img/manga/m2-asakai-manga/panel1.webp"
+          },
+          "lines": [
+            {
+              "speaker": "narration",
+              "text": "朝の9時。はじめての朝会がはじまります。"
+            },
+            {
+              "speaker": "hendy",
+              "text": "おはようございます。では、朝会をはじめましょう。"
+            }
+          ]
+        },
+        {
+          "size": "normal",
+          "image": {
+            "prompt": "Anime manga panel, no readable text. Same office, same morning light, same characters and clothing as the previous panel. Close shot on the young female junior engineer (Nyam, dark bob hair, coral cardigan) talking on and on, counting on her fingers, eyes wandering upward as she tries to remember every detail. Behind her the senior engineer (Hendy, light blue shirt) listens patiently with a small polite smile and a tiny sweat drop. Clean line art, flat cel shading, soft pastel sky blue and cream palette. Keep empty space at the bottom of the frame. No text, no letters, no numbers, no signage, no speech bubbles, no readable text.",
+            "refs": [
+              "/img/characters/nyam/sheet.webp",
+              "/img/characters/hendy/sheet.webp"
+            ],
+            "status": "done",
+            "src": "/img/manga/m2-asakai-manga/panel2.webp"
+          },
+          "lines": [
+            {
+              "speaker": "nyam",
+              "text": "えっと、昨日は9時に来て、メールを見て、それから…。"
+            },
+            {
+              "speaker": "hendy",
+              "text": "うん、うん。それで、どうなりましたか。"
+            }
+          ],
+          "caption": "話がどんどん長くなります。"
+        },
+        {
+          "size": "normal",
+          "image": {
+            "prompt": "Anime manga panel, no readable text. Same office and characters as the previous panels. The senior engineer (Hendy, short black hair, light blue shirt, ID lanyard) leans in kindly and holds up three fingers, giving gentle advice. The junior engineer (Nyam, dark bob hair, coral cardigan) looks up at him and listens, pen resting on her notebook. Medium close two-shot, warm and encouraging mood. Clean line art, flat cel shading, soft pastel sky blue, cream and coral palette. Keep empty space at the bottom of the frame. No text, no letters, no numbers, no signage, no speech bubbles, no readable text.",
+            "refs": [
+              "/img/characters/hendy/sheet.webp",
+              "/img/characters/nyam/sheet.webp"
+            ],
+            "status": "done",
+            "src": "/img/manga/m2-asakai-manga/panel3.webp"
+          },
+          "lines": [
+            {
+              "speaker": "hendy",
+              "text": "ニャムさん、結論から言ってみましょう。"
+            },
+            {
+              "speaker": "hendy",
+              "text": "きのう、きょう、こまりごと。この3つだけでいいですよ。"
+            }
+          ]
+        },
+        {
+          "size": "normal",
+          "image": {
+            "prompt": "Anime manga panel, no readable text. Same office and characters as the previous panels. The junior engineer (Nyam, dark bob hair, coral cardigan) now stands straight and speaks with a bright confident smile, notebook closed in one hand. The senior engineer (Hendy, light blue shirt) gives a happy thumbs up beside her, and a teammate in the background smiles too. Cheerful morning light, small sparkle effects around Nyam. Clean line art, flat cel shading, soft pastel sky blue, cream and coral palette. Keep empty space at the bottom of the frame. No text, no letters, no numbers, no signage, no speech bubbles, no readable text.",
+            "refs": [
+              "/img/characters/nyam/sheet.webp",
+              "/img/characters/hendy/sheet.webp"
+            ],
+            "status": "done",
+            "src": "/img/manga/m2-asakai-manga/panel4.webp"
+          },
+          "lines": [
+            {
+              "speaker": "nyam",
+              "text": "昨日はテストが終わりました。今日はバグを直します。"
+            },
+            {
+              "speaker": "hendy",
+              "text": "いいですね。とてもよく分かりました。"
+            }
+          ],
+          "caption": "報告はみじかく、結論から。"
+        }
+      ]
+    }
+  ]
+}

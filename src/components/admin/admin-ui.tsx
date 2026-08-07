@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { useState, type ReactNode } from "react";
 import {
   PERSONALITY_AXES,
@@ -44,60 +43,44 @@ export function axisLabel(axis: PersonalityAxis): string {
 
 export const EMPTY_MESSAGE = "まだ回答がありません。学生が診断を終えると、ここに傾向が出ます。";
 
-export function AdminHeader({ onCsv }: { onCsv?: () => void }) {
-  const pathname = usePathname();
-  const itemClass = (active: boolean) =>
-    `rounded-full px-4 py-2 text-sm font-bold transition ${
-      active ? "bg-navy text-white" : "text-ink hover:bg-sky-soft"
-    }`;
-
+/**
+ * ページ上部の見出し。メニューはここではなくサイドバー（admin-sidebar.tsx）が持つ。
+ *
+ * 以前はここに全メニューを横並びで置いていた。項目が増えて折り返し始めたので、
+ * 並びをサイドバーへ移し、ここは「どのページか」と そのページだけの操作に絞った。
+ */
+export function AdminHeader({ title, note, onCsv }: AdminHeaderProps) {
   return (
-    <header className="card-pop mx-auto mb-6 flex max-w-[96rem] flex-wrap items-center justify-between gap-4 px-5 py-4">
-      <div>
-        <p className="text-navy text-lg font-black">Nexmax Academy</p>
-        <p className="text-ink-soft text-xs font-bold">管理者メニュー</p>
+    <header className="card-pop mb-4 flex flex-wrap items-center justify-between gap-3 px-5 py-4">
+      <div className="min-w-0">
+        <h1 className="text-navy truncate text-xl font-black sm:text-2xl">{title}</h1>
+        {note ? <p className="text-ink-soft text-xs font-bold">{note}</p> : null}
       </div>
-      <nav aria-label="管理者メニュー" className="flex flex-wrap items-center gap-2">
-        <Link href="/admin" className={itemClass(pathname === "/admin")}>
-          ダッシュボード
-        </Link>
-        <Link
-          href="/admin/users"
-          className={itemClass(
-            pathname.startsWith("/admin/users") || pathname.startsWith("/admin/students"),
-          )}
+      {onCsv ? (
+        <button
+          type="button"
+          onClick={onCsv}
+          className="text-ink hover:bg-sky-soft rounded-full px-4 py-2 text-sm font-bold transition"
         >
-          ユーザー
-        </Link>
-        <Link href="/nexmax" className={itemClass(pathname === "/nexmax")}>
-          ネクマックス16人
-        </Link>
-        <Link href="/admin/ai" className={itemClass(pathname === "/admin/ai")}>
-          AI指示出し
-        </Link>
-        {onCsv ? (
-          <button type="button" onClick={onCsv} className={itemClass(false)}>
-            CSV
-          </button>
-        ) : (
-          <Link href="/admin#csv" className={itemClass(false)}>
-            CSV
-          </Link>
-        )}
-        <Link href="/map" className="text-sky px-2 text-sm font-bold underline underline-offset-4">
-          マップへ
-        </Link>
-      </nav>
+          CSV
+        </button>
+      ) : null}
     </header>
   );
 }
 
+interface AdminHeaderProps {
+  title: string;
+  note?: string;
+  onCsv?: () => void;
+}
+
+/**
+ * 中身の枠。背景と余白はレイアウト（src/app/admin/layout.tsx）が付けるので、
+ * ここでは付けない——2重にかけると、サイドバーの横で中身だけが1段沈む。
+ */
 export function AdminPageFrame({ children }: { children: ReactNode }) {
-  return (
-    <main className="from-bg-sky to-bg-warm min-h-dvh bg-linear-to-b px-4 py-6 sm:px-6">
-      {children}
-    </main>
-  );
+  return <main className="min-w-0">{children}</main>;
 }
 
 /**

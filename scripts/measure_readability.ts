@@ -19,8 +19,34 @@ import { join, relative } from "node:path";
 const ROOT = join(import.meta.dirname, "..");
 const CONTENT_DIR = join(ROOT, "content");
 const MAX_SENTENCE = 30;
-/** 文長検査から除外するフィールド（学習者が読む本文ではないもの）。 */
-const EXCLUDED_KEYS = new Set(["html", "persona", "url", "voice", "avatar", "color", "icon", "id"]);
+/**
+ * 計測から除外するフィールド（学習者が読む本文ではないもの）。
+ *
+ * 画像プロンプト（prompt）は英語の長文なので、入れたままだと漢字密度の分母を
+ * 一気に薄め、検収の数値ゲートが鳴らなくなる。列挙値（kind/type/status/level/tone/
+ * speaker）とパス・ID（ref/refs/src/id）も本文ではない。
+ * text は学習者本文なので絶対に除外しない。
+ */
+const EXCLUDED_KEYS = new Set([
+  "html",
+  "persona",
+  "url",
+  "voice",
+  "avatar",
+  "color",
+  "icon",
+  "id",
+  "prompt",
+  "refs",
+  "ref",
+  "src",
+  "status",
+  "kind",
+  "type",
+  "speaker",
+  "level",
+  "tone",
+]);
 
 function walk(dir: string): string[] {
   let files: string[] = [];

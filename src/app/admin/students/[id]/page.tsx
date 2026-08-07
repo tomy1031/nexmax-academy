@@ -122,7 +122,7 @@ export default function StudentPersonalityReportPage() {
   if (notFound || !profile) {
     return (
       <AdminPageFrame>
-        <AdminHeader />
+        <AdminHeader title="学生の記録" />
         <section className="card-pop mx-auto max-w-3xl p-8 text-center">
           <h1 className="text-navy text-2xl font-black">学生が見つかりません</h1>
           <Link
@@ -143,7 +143,7 @@ export default function StudentPersonalityReportPage() {
   if (!hasCompletedPersonality(profile)) {
     return (
       <AdminPageFrame>
-        <AdminHeader />
+        <AdminHeader title="学生の記録" />
         <div className="mx-auto max-w-[96rem] space-y-6">
           <Link
             href="/admin/users"
@@ -166,7 +166,7 @@ export default function StudentPersonalityReportPage() {
 
   return (
     <AdminPageFrame>
-      <AdminHeader />
+      <AdminHeader title="学生の記録" />
       <div className="mx-auto max-w-[96rem] space-y-6">
         <Link
           href="/admin/users"

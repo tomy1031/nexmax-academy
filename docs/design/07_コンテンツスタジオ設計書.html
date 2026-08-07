@@ -1,0 +1,812 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>コンテンツスタジオ設計書</title>
+<style>
+  :root {
+    --navy:#1b2545; --navy-deep:#121a35; --gold:#c9a45c; --gold-light:#e7cf95;
+    --cream:#f4ecd8; --ink:#243049; --muted:#6b7793; --line:#d8c79c;
+    --blue:#3a5ba0; --green:#3f7d52; --purple:#6b4f9e; --bg:#f7f2e6;
+  }
+  * { box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { margin:0; font-family:"Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,system-ui,sans-serif;
+         color:var(--ink); background:var(--bg); line-height:1.75; }
+  .layout { display:flex; align-items:flex-start; }
+  nav.toc { position:sticky; top:0; width:280px; min-width:280px; height:100vh; overflow-y:auto;
+    background:linear-gradient(180deg,var(--navy),var(--navy-deep)); color:var(--cream);
+    padding:24px 18px; border-right:3px solid var(--gold); }
+  nav.toc h2 { font-size:15px; color:var(--gold-light); margin:0 0 4px; letter-spacing:.08em; }
+  nav.toc .sub { font-size:11px; color:#9fb0d6; margin:0 0 18px; }
+  nav.toc ol { list-style:none; margin:0; padding:0; }
+  nav.toc li { margin:2px 0; }
+  nav.toc a { display:block; color:#cfd8ef; text-decoration:none; font-size:13px;
+    padding:5px 10px; border-radius:6px; border-left:2px solid transparent; }
+  nav.toc a:hover { background:rgba(201,164,92,.16); color:#fff; border-left-color:var(--gold); }
+  main { flex:1; min-width:0; padding:0 0 80px; }
+  .hero { background:linear-gradient(135deg,var(--navy),var(--navy-deep) 70%); color:var(--cream);
+    padding:56px 60px 48px; border-bottom:4px solid var(--gold); }
+  .hero .eyebrow { color:var(--gold-light); letter-spacing:.24em; font-size:12px; margin:0 0 12px; }
+  .hero h1 { font-size:40px; margin:0 0 8px; letter-spacing:.04em; }
+  .hero .en { color:#aebcdf; font-size:18px; margin:0 0 20px; letter-spacing:.12em; }
+  .hero .meta { font-size:13px; color:#c7d1ec; }
+  .hero .meta span { margin-right:18px; }
+  .wrap { padding:0 60px; max-width:1040px; }
+  section.chapter { padding-top:48px; }
+  h2.sec { font-size:26px; color:var(--navy); margin:0 0 6px; padding-bottom:8px;
+    border-bottom:2px solid var(--gold); display:flex; align-items:baseline; gap:12px; }
+  h2.sec .num { background:var(--gold); color:#fff; font-size:15px; border-radius:6px;
+    padding:2px 10px; flex:0 0 auto; }
+  h3 { font-size:19px; color:var(--blue); margin:32px 0 8px; }
+  h4 { font-size:16px; color:var(--ink); margin:20px 0 6px; }
+  p { margin:8px 0; }
+  ul, ol.body { margin:8px 0 8px 4px; padding-left:22px; }
+  li { margin:4px 0; }
+  code { background:#ece3cc; color:#6b4f22; padding:1px 6px; border-radius:4px;
+    font-family:"SF Mono",Menlo,Consolas,monospace; font-size:13px; }
+  pre:not(.mermaid) { background:var(--navy-deep); color:#e7ecf7; padding:16px 18px; border-radius:10px;
+    overflow-x:auto; font-size:13px; line-height:1.6; border-left:4px solid var(--gold); }
+  pre code { background:none; color:inherit; padding:0; }
+  pre.mermaid { background:#fff; border:1px solid var(--line); border-radius:10px; padding:18px;
+    text-align:center; }
+  .callout { border-left:4px solid var(--blue); background:#eaf0fb; padding:12px 18px;
+    border-radius:0 8px 8px 0; margin:16px 0; }
+  .callout.warn { border-color:#c08a2e; background:#fbf3e2; }
+  .callout.good { border-color:var(--green); background:#e9f4ec; }
+  .callout strong { color:var(--navy); }
+  table { width:100%; border-collapse:collapse; margin:14px 0; font-size:14px; background:#fff;
+    border-radius:8px; overflow:hidden; box-shadow:0 1px 0 var(--line); }
+  th, td { text-align:left; padding:9px 12px; border-bottom:1px solid #ece3cc; vertical-align:top; }
+  th { background:var(--navy); color:var(--cream); font-weight:600; font-size:13px; }
+  tr:nth-child(even) td { background:#faf6ec; }
+  .badge { display:inline-block; font-size:11px; padding:2px 9px; border-radius:999px; color:#fff;
+    margin-right:4px; font-weight:600; }
+  .b-a { background:var(--green); } .b-b { background:var(--blue); } .b-c { background:var(--purple); }
+  footer { padding:30px 60px; color:var(--muted); font-size:12px; border-top:1px solid var(--line);
+    margin-top:40px; }
+  details.changelog { margin:24px 60px 0; max-width:1040px; border:1px solid var(--line);
+    border-radius:12px; background:#fff; box-shadow:0 2px 10px rgba(27,37,69,.06); overflow:hidden; }
+  details.changelog > summary { list-style:none; cursor:pointer; user-select:none; padding:14px 22px;
+    background:linear-gradient(90deg,var(--navy),#2a3a6e); color:var(--cream); font-weight:600;
+    font-size:16px; display:flex; align-items:center; gap:10px; }
+  details.changelog > summary::-webkit-details-marker { display:none; }
+  details.changelog > summary .chev { transition:transform .2s; color:var(--gold-light); }
+  details.changelog[open] > summary .chev { transform:rotate(90deg); }
+  details.changelog > summary .latest { margin-left:auto; font-size:12px; font-weight:500; color:#aebcdf; }
+  details.changelog .cl-body { padding:8px 22px 18px; }
+  details.changelog table { margin-top:12px; }
+  @media (max-width:860px) {
+    nav.toc { display:none; }
+    .hero, .wrap, footer { padding-left:24px; padding-right:24px; }
+  }
+</style>
+</head>
+<body>
+<div class="layout">
+
+<nav class="toc">
+  <h2>コンテンツスタジオ設計書</h2>
+  <p class="sub">Nexmax Academy — 制作パイプライン設計</p>
+  <ol>
+    <li><a href="#s1">1. 目的と全体像</a></li>
+    <li><a href="#s2">2. コンテンツ規格（唯一の契約）</a></li>
+    <li><a href="#s3">3. ステージ規格</a></li>
+    <li><a href="#s4">4. 漫画ページ（manga）</a></li>
+    <li><a href="#s5">5. 説明ページ（article / WYSIWYG）</a></li>
+    <li><a href="#s6">6. Codex工房（CodexAppServer連携）</a></li>
+    <li><a href="#s7">7. 画像生成と編集（gpt-image-gen）</a></li>
+    <li><a href="#s8">8. 音声生成（Gemini Live TTS）</a></li>
+    <li><a href="#s9">9. 単語抽出とステージ紐づけ</a></li>
+    <li><a href="#s10">10. 人間側の制作プロセス</a></li>
+    <li><a href="#s11">11. 保存とインフラ</a></li>
+    <li style="margin-left:14px"><a href="#s11-2">11.2 学習データ①集計層</a></li>
+    <li style="margin-left:14px"><a href="#s11-3">11.3 学習データ②明細層（対話と間違い）</a></li>
+    <li style="margin-left:14px"><a href="#s11-4">11.4 チーム編成と共有PCの帰属</a></li>
+    <li><a href="#s12">12. 段階計画</a></li>
+    <li><a href="#s13">13. リスクと未決事項</a></li>
+    <li><a href="#changelog">変更履歴 / Changelog</a></li>
+  </ol>
+</nav>
+
+<main>
+  <div class="hero">
+    <p class="eyebrow">DESIGN DOCUMENT</p>
+    <h1>コンテンツスタジオ設計書</h1>
+    <p class="en">Content Studio — dual-path authoring with Codex App Server</p>
+    <p class="meta">
+      <span>版: v1.3</span>
+      <span>作成日: 2026-07-31</span>
+      <span>対象: ステージ／漫画／記事／会議／単語の制作パイプライン</span>
+    </p>
+  </div>
+
+  <details class="changelog" id="changelog">
+    <summary>
+      <span class="chev">▶</span>変更履歴 / Changelog
+      <span class="latest">最新: v1.3 (2026-07-31)</span>
+    </summary>
+    <div class="cl-body">
+      <p>本書への変更を記録する。各エントリの「修正箇所」リンクから該当章へ移動できる。</p>
+      <table>
+        <tr><th>版</th><th>日付</th><th>変更内容</th><th>修正箇所</th></tr>
+        <tr>
+          <td>v1.3</td><td>2026-07-31</td>
+          <td>明細層を追加：対話の逐語（live_turns）・1問ごとの誤答の中身（word/quiz/listening_attempts）・activity_sessions。チーム編成（teams/team_members）と共有PCの actor_user_id 帰属、交代ローテーションUI、集計ビュー4本、保持期間の未決を追加。</td>
+          <td><a href="#s11-3">11.3</a> ・ <a href="#s11-4">11.4</a> ・ <a href="#s13">13.1</a></td>
+        </tr>
+        <tr>
+          <td>v1.2</td><td>2026-07-31</td>
+          <td>学習データ（学習者の記録）の保存形式を追加。教材=jsonb／学習記録=実カラムの使い分け、7テーブル定義、進捗保存層の接続方針、RLSと集計ビュー。</td>
+          <td><a href="#s11-2">11.2</a></td>
+        </tr>
+        <tr>
+          <td>v1.1</td><td>2026-07-31</td>
+          <td>漫画をストーリー漫画対応に拡張（<code>format</code> 2形式・場面カード・コマsizeヒント・しおり・2段生成・場面連続性の参照ルール）。</td>
+          <td><a href="#s4-formats">4.0</a> ・ <a href="#s4">4.1</a> ・ <a href="#s6">6.3</a> ・ <a href="#s7">7</a></td>
+        </tr>
+        <tr>
+          <td>v1.0</td><td>2026-07-31</td><td>初版作成。二経路制作の規格・Codex工房・漫画/記事スキーマ・音声/単語連携・段階計画を定義。</td>
+          <td><a href="#s1">1</a>〜<a href="#s13">13</a></td>
+        </tr>
+      </table>
+      <div class="callout">
+        <strong>運用ルール</strong>：以降の修正は 版(vX.Y)・日付・変更内容・該当章アンカー を<strong>先頭行</strong>に追加すること。
+      </div>
+    </div>
+  </details>
+
+  <div class="wrap">
+
+  <!-- ============================================================ -->
+  <section class="chapter" id="s1">
+    <h2 class="sec"><span class="num">1</span>目的と全体像</h2>
+    <p>本書は、Nexmax Academy の教材（ステージとその中のコンテンツ）を
+      <strong>Claude Code からも、ブラウザの管理画面からも、同じ規格で作れる</strong>ようにするための設計である。
+      新しいページ種別として<strong>漫画ページ（4コマ／ストーリー漫画の2形式）</strong>と<strong>WYSIWYG の説明ページ（ブログ風）</strong>を追加し、
+      どちらの経路でも <strong>Codex App Server</strong> に「一言の依頼＋2〜3問の回答」だけで
+      画像込みの完成品まで作らせられるようにする。</p>
+
+    <h3>1.1 設計の柱（3つ）</h3>
+    <table>
+      <tr><th>柱</th><th>内容</th><th>理由</th></tr>
+      <tr><td><strong>規格は1つ</strong></td>
+        <td>コンテンツの正しさは zod スキーマ（<code>src/content/schema.ts</code>）だけが決める。Claude Code も管理画面も Codex も、全員この契約に従う。</td>
+        <td>経路が増えても品質検査（禁止語・秘匿漏れ・ID重複・ルビHTML禁止）が1か所で効く。既存の設計方針03 §1 の第一原則をそのまま拡張する。</td></tr>
+      <tr><td><strong>経路は2つ</strong></td>
+        <td>① Claude Code：JSONファイルを書いて git → Vercel 自動デプロイ。② 管理画面：ブラウザで編集して Supabase に保存 → 即時反映。</td>
+        <td>開発者（tomy）は会話で高速に、先生は手元のブラウザで安全に。同一IDは DB 優先で合流させる（§11）。</td></tr>
+      <tr><td><strong>AIは「工房」</strong></td>
+        <td>Codex App Server はチャットではなく<strong>定型ジョブの工房</strong>。下書き生成／画像生成／単語抽出／原稿執筆を、決まった入出力（スキーマ準拠JSON）で行う。</td>
+        <td>「簡単な依頼→質問に答える→完成」を成立させるには、自由会話でなく<strong>構造化された受付</strong>が必要（§6）。</td></tr>
+    </table>
+
+    <h3>1.2 全体図</h3>
+    <pre class="mermaid">
+flowchart TB
+  subgraph 制作経路
+    CC["Claude Code<br/>（会話で依頼）"]
+    ADMIN["管理画面 /studio<br/>（ブラウザで編集）"]
+  end
+  subgraph ローカル（先生のMac）
+    BRIDGE["studio-bridge<br/>ローカル常駐プロセス"]
+    CODEX["Codex App Server<br/>下書き・画像・単語抽出"]
+    GEMINI["Gemini Live API<br/>音声合成（先生のキー）"]
+  end
+  SCHEMA["コンテンツ規格<br/>zodスキーマ＋機械検査"]
+  GIT["content/*.json<br/>（git）"]
+  DB["Supabase<br/>contents / assets"]
+  APP["学習アプリ<br/>/map ステージ → 各教材"]
+
+  CC -->|JSONを書く| SCHEMA
+  ADMIN -->|保存時に検証| SCHEMA
+  ADMIN <-->|ジョブ依頼/SSE| BRIDGE
+  BRIDGE <--> CODEX
+  BRIDGE <--> GEMINI
+  BRIDGE -->|下書き/画像/音声を保存| DB
+  SCHEMA --> GIT
+  SCHEMA --> DB
+  GIT --> APP
+  DB --> APP
+    </pre>
+
+    <div class="callout"><strong>Codex App Server の実体と既存資産</strong>：
+      手元に Codex CLI 0.145.0（<code>codex app-server</code>）がインストール済み。さらに
+      <code>claude/character-personality-design-2328fd</code> ブランチに<strong>すでに動く土台がある</strong>——
+      ①<code>scripts/codex_bridge.mjs</code>（app-server への WS 素通しトンネル。Origin 制限の回避と自動起動つき）
+      ②<code>/admin/ai</code> の <code>CodexTransport</code>（ブラウザから app-server プロトコルを直接話す）
+      ③設計08 §0.1.1 の本番経路（Cloudflare Tunnel＋Access で管理者2人に限定・$0）。
+      本書はこれらを<strong>新規に作り直さず土台として拡張する</strong>（§6.2）。鍵・認証はローカルに留まり、Vercel には置かない。</div>
+  </section>
+
+  <!-- ============================================================ -->
+  <section class="chapter" id="s2">
+    <h2 class="sec"><span class="num">2</span>コンテンツ規格（唯一の契約）</h2>
+    <p>既存の <code>contentSchema</code>（判別可能ユニオン）に3種を追加し、全7種にする。
+      <strong>どの経路で作っても、このスキーマを通らないものは存在できない</strong>。</p>
+
+    <table>
+      <tr><th>kind</th><th>内容</th><th>状態</th></tr>
+      <tr><td><code>stage</code></td><td>ステージ定義（§3）。コンテンツの入れ物と順序</td><td><span class="badge b-c">新規</span></td></tr>
+      <tr><td><code>manga</code></td><td>漫画ページ（§4）</td><td><span class="badge b-c">新規</span></td></tr>
+      <tr><td><code>article</code></td><td>説明ページ・ブログ風（§5）</td><td><span class="badge b-c">新規</span></td></tr>
+      <tr><td><code>wordstage</code></td><td>単語ゲームのステージ</td><td><span class="badge b-a">実装済</span></td></tr>
+      <tr><td><code>quizset</code></td><td>問題セット（5型）</td><td><span class="badge b-a">実装済</span></td></tr>
+      <tr><td><code>meeting</code></td><td>Zoom風リスニング（音声・台本・聞き取り）</td><td><span class="badge b-a">実装済</span></td></tr>
+      <tr><td><code>scenario</code></td><td>Live対話（お客さまインタビュー）</td><td><span class="badge b-a">実装済</span></td></tr>
+    </table>
+
+    <h3>2.1 検査の一本化</h3>
+    <p>現在 <code>scripts/lint_content.ts</code> にある検査ロジック（スキーマ・禁止語・秘匿漏れ・ID重複）を
+      <code>src/lib/content-checks.ts</code> に切り出し、<strong>CLI と管理画面APIの両方が同じ関数を呼ぶ</strong>。</p>
+    <table>
+      <tr><th>経路</th><th>検査の入口</th><th>タイミング</th></tr>
+      <tr><td>Claude Code</td><td><code>npm run lint:content</code>（CI・pre-commit）</td><td>コミット時</td></tr>
+      <tr><td>管理画面</td><td><code>POST /api/studio/content</code> がサーバ側で同じ検査を実行</td><td>保存・公開時</td></tr>
+      <tr><td>Codex工房</td><td>bridge が生成直後に同じ検査を実行 → 不合格なら自動修正ループ（最大2回）</td><td>下書き生成時</td></tr>
+    </table>
+
+    <div class="callout good"><strong>決定</strong>：AIが生成したものも人間が書いたものも、<strong>検査だけを信じる</strong>。
+      「誰が作ったか」でなく「スキーマと機械検査を通ったか」で公開可否を決める。学習者向け文言の規律
+      （禁止語なし・ルビHTML手書きなし・選択式は読解のみ）はこの層で守られ続ける。</div>
+  </section>
+
+  <!-- ============================================================ -->
+  <section class="chapter" id="s3">
+    <h2 class="sec"><span class="num">3</span>ステージ規格</h2>
+    <p>現在ハードコードされている <code>src/content/stages.ts</code> の STAGES を、コンテンツ規格上の
+      <code>stage</code> kind に移す。<strong>ステージ＝コンテンツの入れ物と順序</strong>であり、
+      マップ（/map）はこのデータから描画する。</p>
+
+    <pre><code>{
+  "kind": "stage",
+  "id": "m2-asakai",
+  "step": 2,
+  "title": "朝会",                     // 表示名
+  "reading": "あさかい",
+  "description": "あさの かいぎで きょうの よていを つたえます。",
+  "color": "leaf",                     // マップのピン色
+  "status": "draft",                   // draft | published
+  "contents": [                        // ← 学習順そのもの（順序が正）
+    { "ref": "m2-asakai-manga",   "type": "manga" },
+    { "ref": "m2-asakai-article", "type": "article" },
+    { "ref": "m2-asakai-meeting", "type": "meeting" },
+    { "ref": "m2-asakai-quiz",    "type": "quizset" }
+  ],
+  "wordStageIds": ["stage12_asakai"]   // 紐づく単語ステージ（別管理・複数可）
+}</code></pre>
+
+    <table>
+      <tr><th>設計判断</th><th>内容</th></tr>
+      <tr><td>順序の正はステージ側</td><td><code>contents[]</code> の並びが学習順。コンテンツ側はステージを知らない（付け替え・使い回しが自由）。ローダーが参照切れを検査する。</td></tr>
+      <tr><td>単語は別管理・紐づけのみ</td><td>単語ステージは従来どおり独立した <code>wordstage</code>。ステージは <code>wordStageIds</code> で指すだけ。§9 の抽出ジョブがこの紐を使う。</td></tr>
+      <tr><td>ステージ内の進捗</td><td>コンテンツを終えるごとに進捗保存層（<code>progress/store.ts</code>）へ記録。ステージ詳細画面で「4つ中2つ おわった」を出し、レッスンカードの n/m にも反映。</td></tr>
+      <tr><td>マップとの接続</td><td>ピン → ステージ詳細（コンテンツ一覧・順に進むボタン）→ 各教材。既存の「続きから」はステージ内の未完了コンテンツへ直行に拡張。</td></tr>
+    </table>
+
+    <h3>3.1 データ関係図</h3>
+    <pre class="mermaid">
+erDiagram
+  STAGE ||--o{ CONTENT_REF : "contents[] 順序つき"
+  STAGE ||--o{ WORDSTAGE : "wordStageIds[]"
+  CONTENT_REF }o--|| MANGA : "type=manga"
+  CONTENT_REF }o--|| ARTICLE : "type=article"
+  CONTENT_REF }o--|| MEETING : "type=meeting"
+  CONTENT_REF }o--|| QUIZSET : "type=quizset"
+  CONTENT_REF }o--|| SCENARIO : "type=scenario"
+  MANGA ||--o{ IMAGE_SLOT : "panels[].image"
+  MEETING ||--o| AUDIO : "audioUrl"
+  WORDSTAGE ||--o{ WORD : "words[]"
+    </pre>
+  </section>
+
+  <!-- ============================================================ -->
+  <section class="chapter" id="s4">
+    <h2 class="sec"><span class="num">4</span>漫画ページ（manga）</h2>
+
+    <div class="callout warn"><strong>最重要の設計判断：画像に日本語の文字を焼き込まない。</strong>
+      セリフ・ナレーションはデータとして持ち、HTML レイヤーで画像の下（または上）に描画する。
+      理由：①生成画像の文字化け問題を根絶（既存スキルでも文字化けQAが最頻出）
+      ②ふりがな合成・ふりがなトグル・禁止語検査がそのまま効く
+      ③あとからセリフだけ直せる（画像の再生成が不要）。</div>
+
+    <h3 id="s4-formats">4.0 ふたつの形式 — 4コマとストーリー漫画</h3>
+    <p>同じ <code>manga</code> kind の中で、<code>format</code> フィールドにより2形式を扱う。
+      データ構造（pages → panels）は共通で、<strong>形式の違いは「量」と「レイアウトヒント」だけ</strong>にする。
+      エンジンも編集画面も1つで済み、途中で4コマをストーリーに育てることもできる。</p>
+    <table>
+      <tr><th></th><th><code>format: "yonkoma"</code>（4コマ）</th><th><code>format: "story"</code>（ストーリー漫画）</th></tr>
+      <tr><td>規模</td><td>1ページ＝縦4コマ。1〜3本</td><td>複数ページ・章あり。1話 8〜30ページ程度</td></tr>
+      <tr><td>コマ割り</td><td>固定（縦に4等分）</td><td>ページごとに可変。パネルに <code>size</code> ヒント（normal / wide / tall）を持ち、見開き的な「決めゴマ」= wide を作れる</td></tr>
+      <tr><td>場面転換</td><td>なし（1本1場面）</td><td><code>pages[].title</code> による<strong>場面カード</strong>（「その日の午後 — 会議室」など）を挟める</td></tr>
+      <tr><td>読み方</td><td>縦スクロールで1本ずつ</td><td>縦スクロール（Webtoon式）。ページ区切りで余白＋「p.3 / 12」表示。しおり（続きから）つき</td></tr>
+      <tr><td>用途</td><td>導入のつかみ・1概念1本</td><td>シナリオ全体の追体験（例：障害発生から報告・復旧までの一日）</td></tr>
+    </table>
+
+    <pre><code>{
+  "kind": "manga",
+  "id": "m7-shogai-manga",
+  "format": "story",                  // "yonkoma" | "story"
+  "title": "サーバーが止まった日",
+  "description": "障害の一日を ヘンディ先輩と いっしょに 追いかけます。",
+  "furigana": [["障害","しょうがい"], ["復旧","ふっきゅう"]],
+  "characters": [                     // 登場人物（画像の一貫性にも使う）
+    { "id": "hendy", "name": "ヘンディ", "role": "先輩" }
+  ],
+  "pages": [
+    { "title": "朝 9:00 — オフィス",     // 場面カード（storyのみ・省略可）
+      "panels": [
+      { "size": "wide",                  // normal | wide | tall（storyのみ意味を持つ）
+        "image": { "src": "assets/m7/p1-1.webp",
+                   "prompt": "…gpt-image-genに渡した全文…",   // 再現・再生成用に保存
+                   "refs": ["characters/hendy/reference.png",
+                            "assets/m7/p1-0.webp"],           // 同一場面の直前パネルも参照に
+                   "status": "done" },                        // empty | generating | done
+        "lines": [ { "speaker": "hendy", "text": "おはようございます。あれ、サーバーの様子が変です。" } ],
+        "caption": "いつもの朝の はずでした。" }
+    ] }
+  ]
+}</code></pre>
+
+    <div class="callout"><strong>ストーリー漫画の制作は2段生成</strong>（§6.3）：
+      Codex工房はいきなり全ページを描かず、①<strong>あらすじ→場面リスト</strong>（ページ数・各場面の学習ポイント）を先に出して先生の確認を取り、
+      ②承認後に<strong>ネーム（コマ割りJSON＋セリフ）</strong>→ 画像生成、と進む。
+      長尺で方向がずれたまま30ページ生成する事故を防ぎ、途中の場面だけ作り直すこともできる。</div>
+
+    <h3>4.1 読む画面（学習者向け）</h3>
+    <ul>
+      <li><strong>縦スクロール</strong>（スマホ前提）。パネルは画面に入ったらふわっと表示。
+        <code>size: wide</code> は横幅いっぱい、<code>tall</code> は縦長で「決めゴマ」の間を作る。</li>
+      <li>セリフは吹き出し風のHTMLで表示し、<strong>ふりがなON/OFFトグル</strong>つき（RubyText を使用）。</li>
+      <li><strong>ストーリー形式の追加要素</strong>：場面カード（ページ間の区切り）／「p.3 / 12」の現在地表示／
+        <strong>しおり</strong>（進捗保存層に最終到達パネルを記録し「続きから」で復帰。疲れている学習者が分割して読める）。</li>
+      <li>読み終わり判定＝最後のパネル到達。進捗保存層に記録し、ステージ進捗へ反映。</li>
+      <li>末尾に「この漫画に出てきたことば」チップ（§9で抽出した語 → 辞書ポップアップ／単語ステージへの導線）。</li>
+    </ul>
+
+    <h3>4.2 編集（管理画面）</h3>
+    <ul>
+      <li>ページ＝パネルのリスト。<strong>並べ替え・挿入・削除</strong>はドラッグまたは上下ボタン。</li>
+      <li>各パネル：画像スロット（生成する／アップロードする／あとで）＋セリフ行の編集。</li>
+      <li>画像スロットの「生成」は §7 のジョブへ。prompt を保存してあるので<strong>「少し直して再生成」</strong>が一言でできる。</li>
+    </ul>
+  </section>
+
+  <!-- ============================================================ -->
+  <section class="chapter" id="s5">
+    <h2 class="sec"><span class="num">5</span>説明ページ（article / WYSIWYG）</h2>
+    <p>ブログ風の読み物。<strong>保存形式は生HTMLではなくブロックJSON</strong>とし、
+      管理画面のWYSIWYGエディタ（Tiptap を許可ノード限定で使用）はブロックJSONへ相互変換する。
+      Claude Code はブロックJSONを直接書く。</p>
+
+    <table>
+      <tr><th>ブロック</th><th>内容</th><th>備考</th></tr>
+      <tr><td><code>heading</code></td><td>見出し（level 2〜3）</td><td>目次を自動生成</td></tr>
+      <tr><td><code>paragraph</code></td><td>本文（プレーンテキスト＋強調のみ）</td><td>ふりがなは辞書から合成（規律2）</td></tr>
+      <tr><td><code>image</code></td><td>画像スロット（manga と同じ構造）</td><td>生成／アップロード／差し替え可</td></tr>
+      <tr><td><code>callout</code></td><td>ポイント・注意（tone: point | care）</td><td>ネクマックスのアイコン付き</td></tr>
+      <tr><td><code>list</code> / <code>steps</code></td><td>箇条書き／手順（番号つき）</td><td></td></tr>
+      <tr><td><code>vocab</code></td><td>ことばチップ（語・読み・意味）</td><td>タップで辞書ポップアップ</td></tr>
+      <tr><td><code>link</code></td><td>次の教材への誘導カード</td><td>ステージ内コンテンツ限定</td></tr>
+    </table>
+
+    <div class="callout"><strong>生HTMLを許さない理由</strong>：
+      ①禁止語・ルビ・秘匿漏れの機械検査がテキストに対して確実に効く
+      ②XSSの心配なくDB由来コンテンツを描画できる
+      ③Claude Code と WYSIWYG の相互編集で壊れない（HTMLの方言問題が起きない）。
+      表現力はブロックの追加で伸ばす（規格の進化はスキーマ変更＋マイグレーションのセットで行う）。</div>
+  </section>
+
+  <!-- ============================================================ -->
+  <section class="chapter" id="s6">
+    <h2 class="sec"><span class="num">6</span>Codex工房（CodexAppServer連携）</h2>
+    <p>「ただのチャット」にしない。<strong>受付 → 質問 → 生成 → 検査 → 下書き</strong> の定型フローで、
+      先生は<strong>一言の依頼と2〜3個のボタン回答だけ</strong>で画像込みの完成下書きまで到達する。</p>
+
+    <h3>6.1 おまかせ作成フロー</h3>
+    <pre class="mermaid">
+sequenceDiagram
+  actor T as 先生（管理画面）
+  participant B as studio-bridge（ローカル）
+  participant X as Codex App Server
+  participant S as Supabase（下書き/画像）
+
+  T->>B: ① 種別＋一言依頼<br/>「朝会の報告をテーマに4コマ漫画」
+  B->>X: 受付プロンプト（理解設計ガイド要点＋対象スキーマ＋依頼）
+  X-->>B: ② 確認質問 2〜3問（JSON: 質問＋選択肢）
+  B-->>T: 質問カードを表示
+  T->>B: ③ ボタンで回答（「おまかせ」も可）
+  B->>X: 本生成を依頼
+  X-->>B: ④ スキーマ準拠のコンテンツJSON＋画像プロンプト
+  B->>B: ⑤ 機械検査（zod＋禁止語）→ 不合格なら自動修正 最大2回
+  B->>S: ⑥ 下書き保存（status: draft）
+  B->>X: ⑦ 画像スロットを順に gpt-image-gen で生成
+  X-->>B: 画像PNG
+  B->>S: 画像アップロード → スロットに反映（SSEで進捗表示）
+  B-->>T: ⑧ 完成通知 → エディタで開いて微調整 → 公開
+    </pre>
+
+    <h3>6.2 bridge は既存の <code>codex_bridge.mjs</code> を拡張する</h3>
+    <p>新しい常駐プロセスは<strong>作らない</strong>。既存ブリッジ（WS素通し）の設計思想
+      「トンネルは薄く保ち、賢さはクライアント側に置く」を崩さず、足りないものだけを足す。</p>
+    <table>
+      <tr><th>項目</th><th>内容</th><th>状態</th></tr>
+      <tr><td>WSトンネル</td><td><code>WS /codex</code> → <code>codex app-server</code>（ws://127.0.0.1:17653）へ素通し。app-server の自動起動・状態確認（<code>GET /api/codex/status</code>）つき。<code>npm run codex:bridge</code></td><td><span class="badge b-a">実装済</span>（別ブランチ）</td></tr>
+      <tr><td>ジョブの頭脳</td><td>受付→質問→生成→検査のオーケストレーションは<strong>管理画面側のTypeScript</strong>（既存 <code>CodexTransport</code> を拡張した <code>StudioJobs</code>）。bridge にロジックを持たせない</td><td><span class="badge b-c">新規</span></td></tr>
+      <tr><td>アセット搬入口</td><td>唯一の追加API：<code>POST /api/assets</code>。ローカルで生成された画像・音声を受け取り WebP/圧縮変換して Supabase Storage へ上げ、URLを返す（service key は bridge のローカル env のみが持つ）</td><td><span class="badge b-c">新規</span></td></tr>
+      <tr><td>認可</td><td>開発時＝loopback のみ。本番＝<strong>設計08 §0.1.1 のまま</strong>：Cloudflare Tunnel で 8790 を公開し、Access（無料枠）で管理者2人の Google 認証に限定。独自トークン方式は発明しない</td><td><span class="badge b-a">設計済</span>（08）</td></tr>
+      <tr><td>鍵の置き場所</td><td>Codex 認証・先生用 Gemini キー・service key はローカル env のみ。ブラウザ・Vercel には出さない</td><td>—</td></tr>
+      <tr><td>不在時</td><td>管理画面は <code>/api/codex/status</code> 不達を検知したら「おまかせ作成は じゅんびちゅう」を表示。<strong>手作業の編集・公開は bridge なしで全部できる</strong></td><td>—</td></tr>
+    </table>
+    <div class="callout warn"><strong>前提</strong>：<code>codex_bridge.mjs</code>・<code>/admin/ai</code>・設計08/09 は
+      <code>claude/character-personality-design-2328fd</code> ブランチにある。本設計の着手前にこのブランチを合流させる（§13）。</div>
+
+    <h3>6.3 受付プロンプトは共有資産</h3>
+    <p>種別ごとの受付プロンプト（理解設計ガイドの要点・スキーマ・良い例）を
+      <code>docs/studio/prompts/*.md</code> としてリポジトリに置き、
+      <strong>Codex工房と Claude Code が同じものを読む</strong>。
+      これで「どちらの経路で作っても同じ品質基準」が実現する。プロンプトの改善は通常のコミットとして履歴に残る。</p>
+
+    <div class="callout good"><strong>ジョブ一覧（初期セット）</strong>：
+      <code>draft</code>（種別別の下書き生成。<strong>ストーリー漫画のみ内部が2段</strong>：場面リスト承認→ネーム生成 §4.0）／
+      <code>revise</code>（選択範囲への修正指示）／
+      <code>image</code>（§7）／<code>vocab</code>（§9）／<code>tts-script</code>（§8の原稿整形）。
+      すべて入出力がスキーマで固定された「工程」であり、自由会話は存在しない。</div>
+  </section>
+
+  <!-- ============================================================ -->
+  <section class="chapter" id="s7">
+    <h2 class="sec"><span class="num">7</span>画像生成と編集（gpt-image-gen）</h2>
+    <p>画像はすべて Codex の <strong>gpt-image-gen</strong> で生成する（AGENTS.md 規律7を継承。手描きSVG自作は禁止のまま）。
+      既存スキル <code>docs/skills/codex_image_generation.md</code> の一貫性ルールを工房ジョブに組み込む。</p>
+
+    <table>
+      <tr><th>ルール</th><th>工房での実装</th></tr>
+      <tr><td>参照画像を必ず渡す</td><td>キャラクター登場パネルは <code>characters/*/reference.png</code> を自動添付。manga の <code>characters[]</code> から解決。</td></tr>
+      <tr><td>マスター記述を逐語使用</td><td>キャラごとのマスター記述をリポジトリに置き、ジョブが機械的に連結（人が毎回貼らない）。</td></tr>
+      <tr><td>差分は1つだけ</td><td>受付で「ポーズ／小物／背景」を1項目ずつ質問に落とす。</td></tr>
+      <tr><td>場面の連続性（story）</td><td>同一場面のパネルは<strong>直前パネルの完成画像を参照に自動追加</strong>（背景・光・服装のつながりを保つ）。場面カードで区切られたら参照をリセットする。</td></tr>
+      <tr><td>文字を描かせない</td><td>全プロンプトに <code>no readable text</code> を強制付与（§4の方針とセット）。</td></tr>
+      <tr><td>プロンプト保存</td><td>画像スロットに prompt と参照一覧を保存 → 「少し直して再生成」「シリーズ追加」が安定。</td></tr>
+    </table>
+
+    <h3>7.1 あとからの編集</h3>
+    <ul>
+      <li><strong>再生成</strong>：スロットの prompt を開き、差分を一言足して再実行（旧画像は履歴として保持、ワンタップで戻せる）。</li>
+      <li><strong>差し替え</strong>：手元のPNG/WebPをアップロード（自動でWebP化・サイズ検査）。</li>
+      <li><strong>挿入・削除・並べ替え</strong>：パネル／ブロック単位の操作（§4.2・§5）。</li>
+    </ul>
+  </section>
+
+  <!-- ============================================================ -->
+  <section class="chapter" id="s8">
+    <h2 class="sec"><span class="num">8</span>音声生成（Gemini Live TTS）</h2>
+    <p>原稿（台本）は Codex工房が作り、<strong>音声は Gemini Live のプリセットボイス</strong>で合成する。
+      既存スキル <code>generating-gemini-live-audio</code>（話者ごとの声提案・行単位WAV・結合）のロジックを
+      bridge の <code>tts</code> ジョブとして移植する。</p>
+
+    <h3>8.1 フロー</h3>
+    <ol class="body">
+      <li>meeting（または manga の朗読）の台本を確認 → 「音声をつくる」</li>
+      <li><strong>声えらび</strong>：話者ごとにボイスカタログ（名前・特徴・性別）から選択。
+        <strong>サンプル試聴ボタン</strong>つき（固定の短文で各ボイスを一度だけ合成しキャッシュ）。</li>
+      <li>bridge が行単位で合成 → 結合 → Supabase Storage にアップロード</li>
+      <li><code>audioUrl</code> と<strong>各行の開始秒 <code>at</code></strong>（行WAVの長さから自動計算）をコンテンツに書き戻す
+        → 字幕が音声に自動追従（既存の meeting スキーマの <code>at</code> がそのまま生きる）</li>
+      <li>プレビューで通し試聴 → 気になる行だけ再合成（行単位なので部分やり直しが安い）</li>
+    </ol>
+
+    <div class="callout"><strong>キーの整理</strong>：音声合成に使うのは<strong>先生のGeminiキー（ローカル .env.studio）</strong>。
+      学習者がLive対話に使うBYOKキー（端末保存）とは別物で、混ざらない。</div>
+  </section>
+
+  <!-- ============================================================ -->
+  <section class="chapter" id="s9">
+    <h2 class="sec"><span class="num">9</span>単語抽出とステージ紐づけ</h2>
+    <p>ステージのコンテンツ本文から、<strong>「まだ習っていない」×「ビジネス・ITで使う」</strong>語を
+      Codex工房の <code>vocab</code> ジョブで抽出し、紐づく単語ステージの候補にする。
+      理解設計ガイド§6.2「直後の会話で相手が実際に使う語から選ぶ／例文は教材の実文から」を機械化したもの。</p>
+
+    <pre class="mermaid">
+flowchart LR
+  A["ステージ内の全テキスト<br/>(manga/article/meeting/quiz)"] --> J["vocab ジョブ<br/>(Codex)"]
+  B["既習語リスト<br/>= 前ステージまでの wordstage 全語"] --> J
+  J --> C["候補一覧<br/>語・読み・英訳・誤答3つ・<br/>説明・例文(実文から)"]
+  C --> D{"先生がチェックボックスで採否"}
+  D -->|採用| E["紐づく wordstage に追記<br/>（または新規作成）"]
+  E --> F["ことばアーケードの<br/>新ステージとして遊べる"]
+    </pre>
+
+    <table>
+      <tr><th>項目</th><th>内容</th></tr>
+      <tr><td>入力</td><td>ステージ本文（全コンテンツのプレーンテキスト）＋既習語（<code>wordStageIds</code> と step 順から自動集計）</td></tr>
+      <tr><td>出力</td><td><code>wordSchema</code> 準拠の候補配列。例文は<strong>必ず教材の実文</strong>から取る（勝手に作文しない）</td></tr>
+      <tr><td>採否</td><td>全自動追加はしない。先生（または Claude Code 上の tomy）がチェックして確定</td></tr>
+      <tr><td>ふりがな</td><td>候補確定時に読み辞書へも追記 → 抽出語は本文中でもルビが付く</td></tr>
+    </table>
+  </section>
+
+  <!-- ============================================================ -->
+  <section class="chapter" id="s10">
+    <h2 class="sec"><span class="num">10</span>人間側の制作プロセス</h2>
+
+    <h3>10.1 管理画面（先生向け）— 5分でステージの骨組み</h3>
+    <ol class="body">
+      <li><code>/studio</code> → ステージ一覧 → <strong>「＋ステージ」</strong>（題名と一言説明だけ入力）</li>
+      <li>ステージ詳細 → <strong>「＋コンテンツ」</strong> → 種別を選ぶ（漫画／説明／会議／問題／対話）</li>
+      <li><strong>「おまかせで作る」</strong>（Codex工房 §6.1）または<strong>「自分で作る」</strong>（空のエディタ）</li>
+      <li>できた下書きをエディタで微調整（セリフ直し・画像再生成・声えらび）</li>
+      <li><strong>プレビュー</strong>（学習者と同じ画面で通し確認）→ <strong>公開</strong></li>
+      <li>仕上げに「ことばを抽出」（§9）→ チェックして単語ステージへ</li>
+    </ol>
+
+    <h3>10.2 Claude Code（tomy向け）— 会話1往復で下書きまで</h3>
+    <ol class="body">
+      <li>会話で依頼（例：「M7障害対応の説明ページと4コマを作って」）。
+        Claude は <code>docs/studio/prompts/</code> の同じ受付基準を読み、コンテンツJSONを直接書く</li>
+      <li><code>npm run lint:content</code> → dev サーバでプレビュー → スクショ付きで報告</li>
+      <li>画像・音声が要るものは、Claude が bridge のジョブAPIを叩く（起動中なら）か、
+        「画像スロット未生成」のまま commit し、後で管理画面から生成してもよい（スロット方式の利点）</li>
+      <li>commit → push → Vercel。管理画面からはそのまま開いて追記・編集できる（同一規格のため）</li>
+    </ol>
+
+    <table>
+      <tr><th>観点</th><th>管理画面</th><th>Claude Code</th></tr>
+      <tr><td>得意なこと</td><td>目で見ながらの微調整・画像/音声の作り直し・公開管理</td><td>まとまった量の一括作成・既存教材の流用・規格の進化</td></tr>
+      <tr><td>保存先</td><td>Supabase（即時反映）</td><td>git（デプロイで反映）</td></tr>
+      <tr><td>同一IDの衝突</td><td colspan="2">DB優先で表示（§11）。管理画面はgit由来コンテンツを開くと「編集するとDB版ができる」ことを明示</td></tr>
+    </table>
+  </section>
+
+  <!-- ============================================================ -->
+  <section class="chapter" id="s11">
+    <h2 class="sec"><span class="num">11</span>保存とインフラ</h2>
+
+    <table>
+      <tr><th>場所</th><th>持つもの</th><th>備考</th></tr>
+      <tr><td><code>content/*.json</code>（git）</td><td>Claude Code 経由のコンテンツ・サンプル・シード</td><td>ビルド時に読み込み（現行どおり）</td></tr>
+      <tr><td>Supabase <code>contents</code></td><td><code>id(text PK) / kind / data(jsonb) / status(draft|published) / updated_at / updated_by</code></td><td>管理画面・Codex工房の保存先。RLS: 読み=認証済(published のみ) / 書き=is_admin</td></tr>
+      <tr><td>Supabase Storage <code>assets</code></td><td>生成画像（WebP）・音声（WAV→将来Opus）・画像履歴</td><td>公開読み取り。書き込みは bridge（service key）と管理API</td></tr>
+      <tr><td>ローカル <code>.env.studio</code></td><td>Codex認証・先生のGeminiキー・service key・bridgeトークン</td><td>git管理外。Vercelに置かない</td></tr>
+    </table>
+
+    <h3>11.1 ローダーの合流規則</h3>
+    <ul>
+      <li><code>listContents()</code> ＝ git JSON ∪ DB(published)。<strong>同一IDは DB が勝つ</strong>（管理画面での修正が常に最新）。</li>
+      <li>DB未設定のローカル開発では git JSON のみで全機能が動く（現行の性質を維持）。</li>
+      <li>DBコンテンツはリクエスト時取得（ISR/短いキャッシュ）。gitコンテンツは静的生成のまま。</li>
+    </ul>
+
+    <div class="callout warn"><strong>注意</strong>：スキーマ変更は従来どおり
+      「zod変更＋マイグレーションスクリプト」をセットで行う（設計方針03）。DB側 <code>data</code> は jsonb なので、
+      マイグレーションは git と DB の両方に同じ変換を適用する。</div>
+
+    <h3 id="s11-2">11.2 学習データ①集計層 — 「どれくらいできたか」</h3>
+    <p>教材とは逆の方針を採る。<strong>教材＝jsonb 1枚</strong>（規格の進化が速く、正しさは zod が守る）に対し、
+      <strong>学習記録＝実カラムのテーブル</strong>にする。先生が集計する（クラスの弱点・進み具合・成績一覧）対象は
+      SQL で直接 GROUP BY できる形でないと、ダッシュボードのたびに jsonb を掘ることになるからである。
+      kind 固有の細部（しおりの位置など）だけを小さな jsonb 列に逃がす。</p>
+
+    <table>
+      <tr><th>テーブル</th><th>主な列</th><th>型</th><th>対応する教材</th></tr>
+      <tr><td><code>content_progress</code></td>
+        <td><code>user_id, content_id, kind, status(started|completed), position(jsonb), completed_at</code><br/>PK=(user_id, content_id)</td>
+        <td>上書き型</td>
+        <td>全種共通。<code>position</code> の中身は kind 別：manga=<code>{page,panel}</code>（しおり §4.1）／meeting=<code>{line}</code>／article=<code>{block}</code>。ステージ進捗（n/m）はこれを数えるだけ</td></tr>
+      <tr><td><code>test_results</code></td>
+        <td><code>user_id, stage_id, attempt, score, max_score, reading_correct, meaning_correct, total, passed, taken_at</code><br/>UNIQUE=(user_id, stage_id, attempt)</td>
+        <td>追記型</td>
+        <td>ことばアーケード「テスト」。<strong>attempt=1 が正式成績</strong>（P11「初回のみ正式」をDB制約で守る）。再挑戦も残るが上書きできない</td></tr>
+      <tr><td><code>game_scores</code></td>
+        <td><code>user_id, stage_id, best_score, best_combo, plays</code><br/>PK=(user_id, stage_id)</td>
+        <td>上書き型</td>
+        <td>れんしゅうの最高記録。励まし専用で合否に使わない（成績と別テーブルである理由）</td></tr>
+      <tr><td><code>word_mastery</code></td>
+        <td><code>user_id, stage_id, word_id, seen, missed, last_missed_at</code><br/>PK=(user_id, stage_id, word_id)</td>
+        <td>上書き型</td>
+        <td>語ごとの苦手。出題スケジューラの材料（端末をまたいで苦手が引き継がれる）。先生画面の「クラスの弱点語ランキング」もここから集計</td></tr>
+      <tr><td><code>quiz_results</code></td>
+        <td><code>user_id, quizset_id, correct, total, earned, max_points, passed, missed_question_ids(jsonb), taken_at</code></td>
+        <td>追記型</td>
+        <td>問題エンジン。どの問題を落としたかは jsonb（設問IDの配列）で十分</td></tr>
+      <tr><td><code>listening_results</code></td>
+        <td><code>user_id, meeting_id, score, reveal_rate, keyword_hits, misses, cleared, taken_at</code></td>
+        <td>追記型</td>
+        <td>リスニング（スコア・ワード表示率・ミス数 §D）</td></tr>
+      <tr><td><code>live_sessions</code></td>
+        <td><code>user_id, scenario_id, opened_req_ids(jsonb), duration_sec, completed, taken_at</code></td>
+        <td>追記型</td>
+        <td>Live対話の集計層。<strong>対話の逐語（テキスト）は §11.3 の <code>live_turns</code></strong> に残す。音声そのものは引き続き保存しない</td></tr>
+    </table>
+
+    <pre class="mermaid">
+erDiagram
+  PROFILES ||--o{ CONTENT_PROGRESS : "user_id"
+  PROFILES ||--o{ TEST_RESULTS : "user_id"
+  PROFILES ||--o{ GAME_SCORES : "user_id"
+  PROFILES ||--o{ WORD_MASTERY : "user_id"
+  PROFILES ||--o{ QUIZ_RESULTS : "user_id"
+  PROFILES ||--o{ LISTENING_RESULTS : "user_id"
+  PROFILES ||--o{ LIVE_SESSIONS : "user_id"
+  CONTENTS ||--o{ CONTENT_PROGRESS : "content_id"
+  CONTENTS ||--o{ QUIZ_RESULTS : "quizset_id"
+  CONTENTS ||--o{ LISTENING_RESULTS : "meeting_id"
+  WORDSTAGE ||--o{ TEST_RESULTS : "stage_id"
+  WORDSTAGE ||--o{ WORD_MASTERY : "stage_id"
+    </pre>
+
+    <h4>接続方針 — 既存の進捗保存層をそのまま生かす</h4>
+    <ul>
+      <li>アプリは既に <code>src/lib/progress/store.ts</code>（差し替え可能な抽象）越しに読み書きしている。
+        ここに <strong>Supabase バックエンド</strong>を足すだけで、画面側のコードは変えない。
+        保存する形も TypeScript 型（<code>TestResult / GameScore / WordMastery</code>）と上表の列を1対1にする。</li>
+      <li><strong>ログイン中＝DB直書き</strong>（楽観的更新）。<strong>未ログイン＝localStorage のみ</strong>（ゲスト練習）。
+        初回ログイン時に端末の記録を一括アップロードして取り込む（bests は max、回数は加算、attempt は再採番せず端末分を後ろに積む）。</li>
+      <li>RLS：学習者は自分の行のみ読み書き。追記型テーブルは <strong>UPDATE/DELETE を許可しない</strong>
+        （「初回のみ正式」をアプリ規約でなくDB権限で守る）。<code>profiles.is_admin</code> は全行 SELECT 可。</li>
+      <li>先生ダッシュボードは集計ビューで提供：<code>v_stage_completion</code>（ステージ別進捗）・
+        <code>v_weak_words</code>（word_mastery のクラス集計）・<code>v_official_scores</code>（attempt=1 の成績一覧）。
+        §9 の単語抽出が作った新ステージの効果測定（導入前後の missed 率）もこのビューで見る。</li>
+    </ul>
+
+    <h3 id="s11-3">11.3 学習データ②明細層 — 「どんな対話をして、どこで間違えたか」</h3>
+    <p>集計層は「どれくらいできたか」しか答えられない。指導に使うのは
+      <strong>「実際になにを打ち、なにを選び、なにを話したか」</strong>なので、
+      1回の取り組みを <code>activity_sessions</code> でくくり、その下に明細を全部追記する。
+      明細はすべて追記型（UPDATE/DELETE なし）で、UIの状態管理には使わない——<strong>記録専用</strong>。</p>
+
+    <table>
+      <tr><th>テーブル</th><th>主な列</th><th>これで分かること</th></tr>
+      <tr><td><code>activity_sessions</code></td>
+        <td><code>id, content_id, kind, mode(solo|team), team_id?, login_user_id, started_at, ended_at</code></td>
+        <td>1回の取り組み（アーケード1プレイ・会議1回・Live対話1回）の入れ物。以下の明細はすべてこの id にぶら下がる</td></tr>
+      <tr><td><code>word_attempts</code></td>
+        <td><code>session_id, actor_user_id, stage_id, word_id, phase(reading|meaning), result(correct|miss|timeout), input_text, chosen, expected, combo_after, response_ms, occurred_at</code></td>
+        <td>アーケードの1問ごとの実際。<strong>読みを「じゅうよ」と打った・Websiteを選んだ・時間切ればかり＝速度が合っていない</strong>、まで見える</td></tr>
+      <tr><td><code>quiz_attempts</code></td>
+        <td><code>session_id, actor_user_id, quizset_id, question_id, qtype, result(correct|wrong|partial), answer(jsonb), occurred_at</code></td>
+        <td>問題エンジンの1問ごとの答えの中身（選んだ選択肢・入力文・穴埋めの並び・emotion の気持ち／言い方の2段階それぞれ）</td></tr>
+      <tr><td><code>listening_attempts</code></td>
+        <td><code>session_id, actor_user_id, meeting_id, input_text, hit_kind, points, matched_keywords(jsonb), occurred_at</code></td>
+        <td>聞き取り入力の1回ごと（画面の履歴ログをそのまま永続化）。<strong>「おしい！」(close) の分布</strong>が聞き取りのつまずき教材になる</td></tr>
+      <tr><td><code>live_turns</code></td>
+        <td><code>session_id, turn_no, actor_user_id?, speaker(student|ai), text, matched_req_id?, match_source(ai|local|manual|none), occurred_at</code></td>
+        <td><strong>対話の逐語（テキスト）</strong>。どの発話がどの要件を開けたか・AI判定かローカル救済かも1行ずつ残る。質問の質の指導（あいづち・質問攻め）の材料</td></tr>
+    </table>
+
+    <div class="callout warn"><strong>プライバシーの取り決め</strong>：
+      ①明細（特に <code>live_turns</code>）を読めるのは<strong>本人と先生（is_admin）だけ</strong>（RLS）。
+      ②学習者には「対話は文字で記録され、先生が見る」ことを開始画面に明示する。
+      ③<strong>音声データそのものは保存しない</strong>（残るのはテキストのみ）。
+      ④保持期間は年度単位とし、年度末に前年度分をアーカイブ／削除する運用にする（§13 未決 #6）。</div>
+
+    <h3 id="s11-4">11.4 チーム編成と、共有PCでの「だれの記録か」</h3>
+    <p>ペアワーク教材（報告・相談）や教室運用では<strong>1台のPCを複数人で使う</strong>。
+      ログインが1アカウントでも、<strong>明細行の <code>actor_user_id</code></strong> に「実際にやった人」を入れることで、
+      共有PCでも個人別の間違い・発話量・参加の偏りを集計できるようにする。</p>
+
+    <table>
+      <tr><th>テーブル</th><th>主な列</th><th>備考</th></tr>
+      <tr><td><code>teams</code></td><td><code>id, name, color, created_at</code></td><td>チームの器。編成は先生が管理画面で行う（自己編成は§13 未決 #5）</td></tr>
+      <tr><td><code>team_members</code></td><td><code>team_id, user_id, joined_at</code>（PK=team_id,user_id）</td><td>1人が複数チームに入れる（ペア＋班など）</td></tr>
+    </table>
+
+    <h4>共有セッションの流れ（UIは「交代」を演出にする）</h4>
+    <ol class="body">
+      <li>教材の開始時に「<strong>きょうは だれと やりますか？</strong>」——ソロ／チームを選ぶ。
+        チームなら参加メンバーをタップで選び、<code>activity_sessions.mode=team</code> で開始</li>
+      <li>画面上部に<strong>メンバーチップが常駐</strong>し、光っている人＝いまの回答者。
+        明細行の <code>actor_user_id</code> はこのチップの値で埋まる</li>
+      <li>交代はワンタップ。さらに<strong>既定でローテーション</strong>——アーケードは1問ごと、
+        Live対話は発話ごとに「つぎは ソピアさんの ばん！」と次の人を光らせる
+        （タップし忘れ対策であり、同時に<strong>参加の偏りを防ぐ授業設計</strong>でもある。手動変更はいつでも可）</li>
+      <li>Live対話では発話前に話者チップが点滅し、確定してからマイクが開く
+        → <code>live_turns.actor_user_id</code> が正しく埋まる</li>
+    </ol>
+
+    <pre class="mermaid">
+erDiagram
+  TEAMS ||--o{ TEAM_MEMBERS : ""
+  PROFILES ||--o{ TEAM_MEMBERS : ""
+  TEAMS ||--o{ ACTIVITY_SESSIONS : "mode=team のとき"
+  PROFILES ||--o{ ACTIVITY_SESSIONS : "login_user_id"
+  ACTIVITY_SESSIONS ||--o{ WORD_ATTEMPTS : ""
+  ACTIVITY_SESSIONS ||--o{ QUIZ_ATTEMPTS : ""
+  ACTIVITY_SESSIONS ||--o{ LISTENING_ATTEMPTS : ""
+  ACTIVITY_SESSIONS ||--o{ LIVE_TURNS : ""
+  PROFILES ||--o{ WORD_ATTEMPTS : "actor_user_id"
+  PROFILES ||--o{ LIVE_TURNS : "actor_user_id"
+    </pre>
+
+    <h4>先生ダッシュボードに足す集計ビュー</h4>
+    <table>
+      <tr><th>ビュー</th><th>答える問い</th></tr>
+      <tr><td><code>v_common_mistakes</code></td><td>この語で最も多い誤入力はなにか（<code>word_attempts.input_text</code> の頻度。読み間違いのパターンが見える）</td></tr>
+      <tr><td><code>v_participation</code></td><td>チームセッションで発話・回答が偏っていないか（actor別の明細数。ペアワーク指導の材料）</td></tr>
+      <tr><td><code>v_dialogue_review</code></td><td>Live対話のセッション一覧 → 逐語表示（どの質問が要件を開け、どれが空振りだったか）</td></tr>
+      <tr><td><code>v_timeout_rate</code></td><td>時間切れの比率が高い学習者はだれか（難易度・速度設定の見直し材料）</td></tr>
+    </table>
+
+    <div class="callout good"><strong>使い分けの一行まとめ</strong>：
+      教材=jsonb（進化が速く、検査で守る）／集計層=実カラム（SQLで意思決定）／
+      明細層=セッション＋追記行（対話と間違いの実際を残す）。
+      共有PCは <code>actor_user_id</code> で個人に帰属させる。</div>
+  </section>
+
+  <!-- ============================================================ -->
+  <section class="chapter" id="s12">
+    <h2 class="sec"><span class="num">12</span>段階計画</h2>
+
+    <pre class="mermaid">
+gantt
+  dateFormat  YYYY-MM-DD
+  axisFormat  %m/%d
+  section Phase 1 規格と手作業経路
+  スキーマ追加 stage/manga/article ＋検査一本化 :p1a, 2026-08-03, 4d
+  ローダーDB合流＋contentsテーブル            :p1b, after p1a, 3d
+  /studio 骨組み＋ステージ/漫画/記事エディタ   :p1c, after p1b, 6d
+  漫画/記事の学習者画面                        :p1d, after p1a, 5d
+  section Phase 2 Codex工房
+  既存bridge合流＋アセット搬入口               :p2a, after p1c, 3d
+  draft/revise ジョブ＋受付プロンプト整備       :p2b, after p2a, 4d
+  gpt-image-gen ジョブ＋スロット編集           :p2c, after p2b, 4d
+  vocab 抽出ジョブ                             :p2d, after p2c, 3d
+  section Phase 3 音声と仕上げ
+  tts ジョブ＋声えらび/試聴                    :p3a, after p2d, 5d
+  画像履歴・部分再合成・磨き込み               :p3b, after p3a, 4d
+    </pre>
+
+    <table>
+      <tr><th>フェーズ</th><th>出口条件（これができたら次へ）</th></tr>
+      <tr><td><span class="badge b-a">P1</span> 規格と手作業経路</td>
+        <td>Claude Code と管理画面の両方で、漫画つきステージを1本作って公開できる（AIなし・画像はアップロード）。</td></tr>
+      <tr><td><span class="badge b-b">P2</span> Codex工房</td>
+        <td>「一言依頼＋質問回答」だけで画像込み下書きが完成する。単語抽出→単語ステージ追記が回る。</td></tr>
+      <tr><td><span class="badge b-c">P3</span> 音声と仕上げ</td>
+        <td>meeting の台本から声つき教材が作れる（声えらび・試聴・行単位やり直し）。</td></tr>
+    </table>
+  </section>
+
+  <!-- ============================================================ -->
+  <section class="chapter" id="s13">
+    <h2 class="sec"><span class="num">13</span>リスクと未決事項</h2>
+
+    <table>
+      <tr><th>リスク</th><th>影響</th><th>手当て</th></tr>
+      <tr><td>Codex app-server が experimental</td><td>プロトコル変更で工房が壊れる</td><td>CLIバージョンを固定し、<code>generate-ts</code> の型でビルド時に検知。トンネルは素通しなので影響面はクライアント側に限定</td></tr>
+      <tr><td>app-server にタイムアウトが無い（設計08の指摘）</td><td>ジョブが黙って固まる</td><td><code>StudioJobs</code> 側で工程ごとの打ち切り時間と再試行を持つ（bridge には持たせない）</td></tr>
+      <tr><td>依存ブランチ未マージ</td><td>bridge・/admin/ai・設計08/09 が別ブランチ（character-personality-design-2328fd）にある</td><td>P2着手前に合流。衝突面は admin 配下と package.json のみの見込み</td></tr>
+      <tr><td>bridge 不在・障害</td><td>おまかせ作成が使えない</td><td>手作業経路は完全独立で常に動く（P1で先に完成させる理由）</td></tr>
+      <tr><td>生成画像の品質ぶれ</td><td>作り直しコスト</td><td>参照画像＋マスター記述＋差分1つ＋文字禁止（§7）。prompt保存で再現性を確保</td></tr>
+      <tr><td>DBとgitの二重管理の混乱</td><td>「直したのに反映されない」</td><td>同一ID=DB優先を管理画面のUIで明示。gitコンテンツを開いたら「DB版を作って編集」と表示</td></tr>
+      <tr><td>音声のコスト・レート制限</td><td>一括生成が止まる</td><td>行単位合成＋キャッシュ＋失敗行のみ再実行（既存スキルの方式）</td></tr>
+    </table>
+
+    <h3>13.1 未決事項（レビューで決めたい）</h3>
+    <table>
+      <tr><th>#</th><th>問い</th><th>たたき台</th></tr>
+      <tr><td>1</td><td>漫画のセリフ表示は「画像の下」か「画像に重ねる吹き出し」か</td><td>まず「画像の下」で開始（実装が軽く、ふりがなが崩れない）。重ね表示はP3で検討</td></tr>
+      <tr><td>2</td><td>ステージの学習順は強制（順にしか進めない）か自由か</td><td>既定は自由・「順に進む」ボタンだけ用意（疲れている学習者を縛らない）</td></tr>
+      <tr><td>3</td><td>manga への音声（朗読）対応</td><td>P3の tts をパネル単位に拡張すれば可能。まず meeting を完成させてから判断</td></tr>
+      <tr><td>4</td><td>公開の承認フロー（draft→review→published）を入れるか</td><td>当面 draft/published の2状態。運用者が増えたら review を追加</td></tr>
+      <tr><td>5</td><td>チーム編成を学生自身に開放するか</td><td>当面は先生が管理画面で編成。自己編成は運用が回ってから</td></tr>
+      <tr><td>6</td><td>明細ログ（逐語含む）の保持期間</td><td>たたき台：年度末に前年度分をアーカイブ後削除。学校の方針と合わせて確定</td></tr>
+    </table>
+  </section>
+
+  </div>
+
+  <footer>コンテンツスタジオ設計書 v1.3 ・ 出典: docs/design/01〜04・08（授業サポート表示 §0.1.1 拡張経路）・AGENTS.md・docs/skills/codex_image_generation.md・generating-gemini-live-audio スキル・Codex CLI 0.145.0 (app-server)・scripts/codex_bridge.mjs（character-personality-design ブランチ）</footer>
+</main>
+
+</div>
+
+<script type="module">
+  import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+  mermaid.initialize({ startOnLoad: true, theme: "base",
+    themeVariables: { primaryColor:"#eaf0fb", primaryBorderColor:"#3a5ba0",
+      lineColor:"#c9a45c", fontFamily:"system-ui, sans-serif" } });
+</script>
+</body>
+</html>

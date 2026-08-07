@@ -25,9 +25,11 @@
     "cf:checkenv": "node scripts/check_build_env.mjs",
     "cf:build:local": "opennextjs-cloudflare build",
     "cf:branch": "npm run cf:build && node scripts/preview_alias.mjs",
-    "cf:staging": "npm run cf:build && node scripts/preview_alias.mjs staging"
+    "cf:staging": "npm run cf:build && node scripts/preview_alias.mjs staging",
+    "gen:content": "node scripts/generate_content_index.mjs && node scripts/generate_scene_index.mjs"
   },
   "dependencies": {
+    "@google/genai": "^2.13.0",
     "@supabase/ssr": "^0.12.3",
     "@supabase/supabase-js": "^2.110.8",
     "motion": "^12.42.2",

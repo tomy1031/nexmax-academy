@@ -1,0 +1,138 @@
+import { describe, expect, it } from "vitest";
+import { contentSchema, type Stage } from "../src/content/schema";
+import { sortStages, toMapAreas, toMapStages } from "../src/lib/map-data";
+
+/**
+ * マップの中身＝公開ステージそのもの。
+ *
+ * コードに書いた既定の停留所はもう持たない。ここが崩れると、先生が作った
+ * ステージが地図に出ない／消したステージが地図に残る。どちらも学習者から見ると
+ * 教材が行方不明になる。
+ */
+
+function stage(over: Record<string, unknown> = {}): Stage {
+  const parsed = contentSchema.safeParse({
+    kind: "stage",
+    id: "studio-stage",
+    order: 3,
+    title: "スタジオの ステージ",
+    reading: "すたじおの すてーじ",
+    description: "スタジオで つくった ステージ。",
+    color: "sky",
+    status: "published",
+    contents: [{ ref: "sample_horenso", type: "quizset" }],
+    wordStageIds: [],
+    ...over,
+  });
+  if (!parsed.success) throw new Error(`fixture が壊れている: ${parsed.error.message}`);
+  return parsed.data as Stage;
+}
+
+const AREA = {
+  name: "しごとの しま",
+  reading: "しごとの しま",
+  image: "/img/scenes/area_office_island.webp",
+  note: "あたらしい しごとの しま。",
+};
+
+describe("sortStages", () => {
+  it("order の昇順に並ぶ（マップは上から この順に積む）", () => {
+    const sorted = sortStages([
+      stage({ id: "c", order: 9 }),
+      stage({ id: "a", order: 1 }),
+      stage({ id: "b", order: 5 }),
+    ]);
+    expect(sorted.map((item) => item.id)).toEqual(["a", "b", "c"]);
+  });
+
+  it("order が同じでも並びが揺れない（ID順で決まる）", () => {
+    const input = [stage({ id: "z", order: 2 }), stage({ id: "a", order: 2 })];
+    expect(sortStages(input).map((item) => item.id)).toEqual(["a", "z"]);
+    expect(sortStages([...input].reverse()).map((item) => item.id)).toEqual(["a", "z"]);
+  });
+
+  it("もとの配列を書きかえない", () => {
+    const input = [stage({ id: "b", order: 2 }), stage({ id: "a", order: 1 })];
+    sortStages(input);
+    expect(input.map((item) => item.id)).toEqual(["b", "a"]);
+  });
+});
+
+describe("toMapStages", () => {
+  it("ステージが1つも無ければ 停留所も0（既定の飾りは出さない）", () => {
+    expect(toMapStages([])).toEqual([]);
+  });
+
+  it("STEP番号は order ではなく 上から数えた位置（order は飛び番になりうる）", () => {
+    const mapStages = toMapStages([stage({ id: "a", order: 1 }), stage({ id: "b", order: 30 })]);
+    expect(mapStages.map((item) => item.number)).toEqual([1, 2]);
+  });
+
+  it("中に入っている教材の種別を そのまま持つ（ラベルを別に持たない）", () => {
+    const [mapStage] = toMapStages([
+      stage({
+        contents: [
+          { ref: "m", type: "manga" },
+          { ref: "q", type: "quizset" },
+        ],
+      }),
+    ]);
+    expect(mapStage?.kinds).toEqual(["manga", "quizset"]);
+  });
+
+  it("同じ種別が2つあっても しるしは1つ", () => {
+    const [mapStage] = toMapStages([
+      stage({
+        contents: [
+          { ref: "a", type: "listening" },
+          { ref: "b", type: "listening" },
+        ],
+      }),
+    ]);
+    expect(mapStage?.kinds).toEqual(["listening"]);
+  });
+});
+
+describe("toMapAreas", () => {
+  it("ステージ1つにつきエリア1つ（1ステージ＝1エリア）", () => {
+    const stages = [stage({ id: "a", order: 1, area: AREA }), stage({ id: "b", order: 2 })];
+    expect(toMapAreas(stages)).toHaveLength(stages.length);
+  });
+
+  it("area を決めると、その土地の名前と絵になる", () => {
+    const [area] = toMapAreas([stage({ id: "a", area: AREA })]);
+    expect(area?.name).toBe(AREA.name);
+    expect(area?.image).toBe(AREA.image);
+    expect(area?.note).toBe(AREA.note);
+  });
+
+  it("area が無くてもエリアは消えない（絵は空のまま出す）", () => {
+    // 絵の用意が遅れただけでステージが消えると、学習者は昨日あった教材を探しまわる。
+    const [area] = toMapAreas([stage({ id: "studio-new" })]);
+    expect(area?.stageId).toBe("studio-new");
+    expect(area?.image).toBe("");
+    // 名前が空だと札が消えるので、ステージの見出しで代わりにする
+    expect(area?.name).toBe("スタジオの ステージ");
+  });
+
+  it("エリアのIDは重複しない（React の key と aria-label に使うため）", () => {
+    const areas = toMapAreas([
+      stage({ id: "a", order: 1, area: AREA }),
+      stage({ id: "b", order: 2, area: AREA }),
+    ]);
+    expect(new Set(areas.map((item) => item.id)).size).toBe(areas.length);
+  });
+
+  it("エリアの stageId は、その位置のステージを必ず指す", () => {
+    // ここがずれると、ピンが別のステージの土地の上に立つ。
+    const stages = [
+      stage({ id: "b", order: 20 }),
+      stage({ id: "a", order: 10, area: AREA }),
+      stage({ id: "c", order: 30 }),
+    ];
+    const mapStages = toMapStages(stages);
+    toMapAreas(stages).forEach((area, index) => {
+      expect(area.stageId).toBe(mapStages[index]!.id);
+    });
+  });
+});

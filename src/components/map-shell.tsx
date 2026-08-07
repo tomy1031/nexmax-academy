@@ -16,13 +16,16 @@ import { signOut } from "@/app/auth/actions";
 import { AreaTrail } from "@/components/map-trail";
 import { NexMaxFamily } from "@/components/nexmax-types";
 import { CloudBand, CloudCorners } from "@/components/cloud-band";
-import { GOAL_AREA, ROUTE_AREAS, SKY_BLUE, type MapArea } from "@/content/areas";
+import { SKY_BLUE, type MapArea } from "@/content/areas";
 import {
   getFamilyForCode,
   getPersonalityType,
   type PersonalityFamilyId,
 } from "@/content/personality";
-import { STAGES, type StageDefinition } from "@/content/stages";
+import { contentKindMeta } from "@/lib/content-kinds";
+import { readContentProgress, subscribeProgress } from "@/lib/progress/store";
+import { statusCode as contentStatusCode } from "@/components/stage/stage-progress";
+import type { MapStage } from "@/lib/map-data";
 import { fetchOwnProfile, type ProfileRow } from "@/lib/profile-db";
 import {
   clearProfile,
@@ -35,17 +38,27 @@ import {
   type NexmaxProfile,
 } from "@/lib/profile";
 import {
+  clearedIdsSnapshot,
   deriveProgress,
-  getClearedStageIds,
   stageStatus,
   type StageProgress,
   type StageStatus,
 } from "@/lib/progress";
 import { createClient } from "@/lib/supabase/client";
 
+/**
+ * ボタンの中の ふりがな を白にする。
+ *
+ * ボタンの地は濃い色で、文字は白。ルビ（rt）だけ既定の暗い色のままだと、
+ * ふりがなが読めない——ふりがなが読めないボタンは、ふりがなが無いのと同じ。
+ */
+const BUTTON_RUBY = "[&_rt]:text-white";
+
+/** 漢字を含む見出しか。含むならタイトル全体に よみ をふる。 */
+const HAS_KANJI = /[一-鿿]/;
+
 const PROFILE_SERVER_SNAPSHOT = "__server__";
 const PROGRESS_SERVER_SNAPSHOT = "[]";
-const LONG_WAIT_TOAST = "じゅんびちゅう です。もうすこし まってね！";
 const SHORT_WAIT_TOAST = "じゅんびちゅう です。";
 
 /**
@@ -80,8 +93,8 @@ function swingEnvelope(globalT: number, total: number): number {
   return e * e * (3 - 2 * e);
 }
 
-function routeX(globalT: number): number {
-  const swing = NODE_SWING * swingEnvelope(globalT, ROUTE_AREAS.length);
+function routeX(globalT: number, totalAreas: number): number {
+  const swing = NODE_SWING * swingEnvelope(globalT, totalAreas);
   return 50 + swing * Math.sin(Math.PI * globalT);
 }
 
@@ -97,15 +110,13 @@ const STAGE_COLORS = {
   sky: "#4fa8e8",
   coral: "#f26fa7",
   "sky-soft": "#9bdcf7",
-} satisfies Record<StageDefinition["color"], string>;
+} satisfies Record<MapStage["color"], string>;
 
 /**
  * 装飾のネクマックス。エリアごとに1体、ステージと反対側に立たせる。
  * エリアが増えても足りなくならないよう、番号で循環させる。
  */
 const AREA_CHARACTERS: readonly PersonalityFamilyId[] = ["leader", "idea", "heart", "challenge"];
-
-const STAGE_BY_ID = new Map(STAGES.map((stage) => [stage.id, stage]));
 
 function subscribeToStorage(onStoreChange: () => void) {
   window.addEventListener("storage", onStoreChange);
@@ -117,7 +128,7 @@ function profileSnapshot() {
 }
 
 function progressSnapshot() {
-  return JSON.stringify(getClearedStageIds());
+  return clearedIdsSnapshot();
 }
 
 function profileFromRow(profile: ProfileRow): NexmaxProfile {
@@ -134,11 +145,11 @@ function profileFromRow(profile: ProfileRow): NexmaxProfile {
  * 学習者の現在地を「エリア番号＋エリア内の位置」で表す。空路の塗り分けの境目になり、
  * ここに飛行機が立つ。例: 2.3 = 3番目のエリアのステージのところ。
  */
-function flownUntil(progress: StageProgress): number {
+function flownUntil(progress: StageProgress, routeAreas: readonly MapArea[]): number {
   // すべてクリアなら日本まで飛び切っている（ゴールのエリアの航路も塗る）
-  if (!progress.currentStageId) return ROUTE_AREAS.length + 1;
-  const index = ROUTE_AREAS.findIndex((area) => area.stageId === progress.currentStageId);
-  if (index < 0) return ROUTE_AREAS.length;
+  if (!progress.currentStageId) return routeAreas.length + 1;
+  const index = routeAreas.findIndex((area) => area.stageId === progress.currentStageId);
+  if (index < 0) return routeAreas.length;
   return index + NODE_TOP / 100;
 }
 
@@ -159,84 +170,41 @@ function Logo() {
   );
 }
 
-function StageTitle({ stage }: { stage: StageDefinition }) {
-  switch (stage.id) {
-    case "it-words":
-      return (
-        <>
-          IT
-          <ruby>
-            単語帳<rt>たんごちょう</rt>
-          </ruby>
-        </>
-      );
-    case "company-structure":
-      return (
-        <>
-          <ruby>
-            企業<rt>きぎょう</rt>
-          </ruby>
-          の
-          <ruby>
-            仕組み<rt>しくみ</rt>
-          </ruby>
-        </>
-      );
-    case "report":
-      return (
-        <ruby>
-          報告<rt>ほうこく</rt>
-        </ruby>
-      );
-    case "contact":
-      return (
-        <ruby>
-          連絡<rt>れんらく</rt>
-        </ruby>
-      );
-    case "consult":
-      return (
-        <ruby>
-          相談<rt>そうだん</rt>
-        </ruby>
-      );
-    default:
-      return stage.title;
-  }
+/**
+ * ステージの見出し。タイトル全体に よみ をふる。
+ *
+ * 以前はステージIDごとの switch で、語ごとに細かくルビを振り分けていた。
+ * それは既定の5ステージにしか効かず、先生が作ったステージは**漢字が裸のまま**出ていた。
+ * 学習者はそこで止まる（AGENTS.md 規律2）。タイトル全体に よみ を出せば、
+ * ステージがいくつ増えても読めない見出しは出ない。
+ */
+function StageTitle({ stage }: { stage: MapStage }) {
+  if (!HAS_KANJI.test(stage.title)) return <>{stage.title}</>;
+  return (
+    <ruby>
+      {stage.title}
+      <rt>{stage.reading}</rt>
+    </ruby>
+  );
 }
 
-function KindLabel({ stage }: { stage: StageDefinition }) {
-  if (stage.kind === "word") {
-    return (
-      <>
-        🌐
-        <ruby>
-          単語<rt>たんご</rt>
-        </ruby>
-      </>
-    );
-  }
-  if (stage.kind === "pair") return <>👥 ペアワーク</>;
-  if (stage.kind === "video-reading") {
-    return (
-      <>
-        ▶
-        <ruby>
-          動画<rt>どうが</rt>
-        </ruby>
-        /
-        <ruby>
-          読解<rt>どっかい</rt>
-        </ruby>
-      </>
-    );
-  }
+/**
+ * 中に入っている教材のしるし。ステージの `contents` から導く。
+ * コードに書いたラベル（「ペアワーク」など）は中身と一致しなくなるので持たない。
+ */
+function KindLabel({ stage }: { stage: MapStage }) {
+  if (stage.kinds.length === 0) return <>じゅんびちゅう</>;
   return (
     <>
-      ▶
-      <ruby>
-        動画<rt>どうが</rt>
-      </ruby>
+      {stage.kinds.map((kind, index) => {
+        const meta = contentKindMeta(kind);
+        return (
+          <span key={kind}>
+            {index > 0 ? "・" : ""}
+            {meta.icon} {meta.label}
+          </span>
+        );
+      })}
     </>
   );
 }
@@ -457,12 +425,22 @@ function ViewToggle({ view, onChange }: { view: MapView; onChange: (view: MapVie
   );
 }
 
+/**
+ * サイドメニュー。href があるものだけ実際に開ける（無いものは「じゅんびちゅう」）。
+ *
+ * 「単語」は ことばアーケード（/arcade）。ステージの中からも開けるが、
+ * ここからも入れないと、単語だけ練習したい学習者が入口を見つけられない。
+ */
 const NAV_ITEMS = [
   { icon: "👤", label: "マイページ" },
-  { icon: "📖", label: "単語", reading: "たんご" },
+  { icon: "📖", label: "単語", reading: "たんご", href: "/arcade" },
+  { icon: "📚", label: "辞書", reading: "じしょ", href: "/dictionary" },
   { icon: "👥", label: "チーム・ペア" },
   { icon: "🛍️", label: "ショップ" },
 ] as const;
+
+const NAV_CLASS =
+  "text-ink hover:bg-sky-soft flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl px-3 text-sm font-extrabold transition";
 
 function NavigationLabel({ item }: { item: (typeof NAV_ITEMS)[number] }) {
   if ("reading" in item) {
@@ -493,22 +471,33 @@ function Navigation({
   onUnavailable: () => void;
   onLogout: () => void;
 }) {
-  const navButtons = NAV_ITEMS.map((item) => (
-    <button
-      key={item.label}
-      type="button"
-      onClick={() => {
-        onUnavailable();
-        onDrawerClose();
-      }}
-      className="text-ink hover:bg-sky-soft flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl px-3 text-sm font-extrabold transition"
-    >
-      <span aria-hidden className="text-xl">
-        {item.icon}
-      </span>
-      {!collapsed && <span className="whitespace-nowrap">{<NavigationLabel item={item} />}</span>}
-    </button>
-  ));
+  const navButtons = NAV_ITEMS.map((item) => {
+    const body = (
+      <>
+        <span aria-hidden className="text-xl">
+          {item.icon}
+        </span>
+        {!collapsed && <span className="whitespace-nowrap">{<NavigationLabel item={item} />}</span>}
+      </>
+    );
+    return "href" in item ? (
+      <Link key={item.label} href={item.href} onClick={onDrawerClose} className={NAV_CLASS}>
+        {body}
+      </Link>
+    ) : (
+      <button
+        key={item.label}
+        type="button"
+        onClick={() => {
+          onUnavailable();
+          onDrawerClose();
+        }}
+        className={NAV_CLASS}
+      >
+        {body}
+      </button>
+    );
+  });
   // ネクマックス図鑑への回遊先。診断のあとに16人を見に行けるようにする（07 §7）。
   const catalogLink = (
     <Link
@@ -620,12 +609,12 @@ function StageNode({
   open,
   onToggle,
 }: {
-  stage: StageDefinition;
+  stage: MapStage;
   status: StageStatus;
   open: boolean;
   onToggle: () => void;
 }) {
-  const step = String(stage.step).padStart(2, "0");
+  const step = String(stage.number).padStart(2, "0");
   const face =
     status === "current"
       ? { backgroundColor: CURRENT_COLOR, borderColor: "#ffffff" }
@@ -676,17 +665,15 @@ function StagePanel({
   progress,
   open,
   onToggle,
-  onUnavailable,
 }: {
-  stage: StageDefinition;
+  stage: MapStage;
   status: StageStatus;
   progress: StageProgress;
   open: boolean;
   onToggle: () => void;
-  onUnavailable: () => void;
 }) {
   const current = status === "current";
-  const step = String(stage.step).padStart(2, "0");
+  const step = String(stage.number).padStart(2, "0");
 
   return (
     <section
@@ -740,55 +727,19 @@ function StagePanel({
           {current ? (
             <>
               <ProgressBar progress={progress} />
-              <div className="mt-3 grid gap-2 sm:grid-cols-2 md:grid-cols-1">
-                <button
-                  type="button"
-                  onClick={onUnavailable}
-                  className="btn-game flex-col px-4 py-2 leading-tight [--btn-face:#f26fa7] [--btn-shadow:#d94d84]"
-                >
-                  <span>
-                    ▶{" "}
-                    <ruby>
-                      続き<rt>つづき</rt>
-                    </ruby>
-                    から
-                  </span>
-                  <span className="text-[11px]">ステージを つづける</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={onUnavailable}
-                  className="btn-game flex-col px-4 py-2 leading-tight [--btn-face:#ffc93c] [--btn-shadow:#f0a819]"
-                >
-                  <span>
-                    📖{" "}
-                    <ruby>
-                      単語<rt>たんご</rt>
-                    </ruby>
-                    を
-                    <ruby>
-                      勉強<rt>べんきょう</rt>
-                    </ruby>
-                  </span>
-                  <span className="text-[11px]">たんごを ふやして レベルアップ！</span>
-                </button>
-              </div>
+              <StageActions stage={stage} />
             </>
           ) : (
-            <>
-              <button
-                type="button"
-                onClick={onUnavailable}
-                className="btn-game mt-2 w-full px-3 py-1.5 text-sm [--btn-face:#ffc93c] [--btn-shadow:#f0a819]"
-              >
-                {status === "cleared" ? "もういちど" : "すすむ"}
-              </button>
-              {status === "locked" && (
-                <p className="text-ink-soft mt-2 text-center text-[10px] font-bold">
-                  まえの ステージを クリアすると ひらきます。
-                </p>
-              )}
-            </>
+            /*
+             * さきのステージも開ける。鍵は「まだ ここまで 来ていない」というしるしで、
+             * 通せんぼではない——先に見たい学習者を止める理由がない（設計01 P4）。
+             */
+            <Link
+              href={`/${stage.id}`}
+              className={`btn-game mt-2 w-full px-3 py-1.5 text-sm ${BUTTON_RUBY} [--btn-face:#ffc93c] [--btn-shadow:#f0a819]`}
+            >
+              {status === "cleared" ? "もういちど" : "すすむ"}
+            </Link>
           )}
         </div>
       )}
@@ -796,29 +747,137 @@ function StagePanel({
   );
 }
 
+/**
+ * いまのステージで押せるボタン（さいしょから／つづきから／単語）。
+ *
+ * 「つづきから」は**どこから始まるのか**を出し、その画面へ直接行く。
+ * ステージのトップに戻すだけだと、学習者はもう一度どれを開くか選ぶことになり、
+ * 「つづき」と書いてある意味がなくなる。
+ *
+ * 単語は**そのステージにひもづく単語ステージ**へ直行する。一覧に放り出すと、
+ * どの課の単語を選べばよいかは学習者には分からない。
+ */
+function StageActions({ stage }: { stage: MapStage }) {
+  const items = stage.contents;
+  const serverKey = useMemo(() => items.map(() => "0").join(""), [items]);
+  const progressKey = useSyncExternalStore(
+    subscribeProgress,
+    () => items.map((item) => contentStatusCode(readContentProgress(item.id))).join(""),
+    () => serverKey,
+  );
+  const codes = [...progressKey];
+  const firstUnfinished = codes.findIndex((code) => code !== "2");
+  const resume = items[firstUnfinished < 0 ? 0 : firstUnfinished];
+  const first = items[0];
+  const allDone = firstUnfinished < 0 && items.length > 0;
+  const wordStageId = stage.wordStageIds[0];
+
+  return (
+    <div className="mt-3 grid gap-2 sm:grid-cols-2 md:grid-cols-1">
+      {resume ? (
+        <Link
+          href={resume.href}
+          className={`btn-game flex-col px-4 py-2 leading-tight ${BUTTON_RUBY} [--btn-face:#f26fa7] [--btn-shadow:#d94d84]`}
+        >
+          <span>
+            ▶{" "}
+            {allDone ? (
+              "もういちど 見る"
+            ) : (
+              <>
+                <ruby>
+                  続き<rt>つづき</rt>
+                </ruby>
+                から
+              </>
+            )}
+          </span>
+          <span className="text-[11px]">
+            {contentKindMeta(resume.type).icon} {contentKindMeta(resume.type).label}
+            {items.length > 1
+              ? `（${(firstUnfinished < 0 ? 0 : firstUnfinished) + 1}／${items.length}）`
+              : ""}
+          </span>
+        </Link>
+      ) : (
+        <Link
+          href={`/${stage.id}`}
+          className={`btn-game px-4 py-2 ${BUTTON_RUBY} [--btn-face:#f26fa7] [--btn-shadow:#d94d84]`}
+        >
+          ステージを ひらく
+        </Link>
+      )}
+
+      {/* 1本目に戻る道。やり直したい学習者に「進捗を消す」以外の手を用意する */}
+      {first && resume && first.href !== resume.href ? (
+        <Link
+          href={first.href}
+          className={`btn-game flex-col px-4 py-2 leading-tight ${BUTTON_RUBY} [--btn-face:#4fa8e8] [--btn-shadow:#0272ae]`}
+        >
+          <span>
+            ↩{" "}
+            <ruby>
+              最初<rt>さいしょ</rt>
+            </ruby>
+            から
+          </span>
+          <span className="text-[11px]">
+            {contentKindMeta(first.type).icon} {contentKindMeta(first.type).label}
+          </span>
+        </Link>
+      ) : null}
+
+      <Link
+        href={wordStageId ? `/arcade/${wordStageId}` : "/arcade"}
+        className={`btn-game flex-col px-4 py-2 leading-tight ${BUTTON_RUBY} [--btn-face:#ffc93c] [--btn-shadow:#f0a819]`}
+      >
+        <span>
+          📖{" "}
+          <ruby>
+            単語<rt>たんご</rt>
+          </ruby>
+          を
+          <ruby>
+            勉強<rt>べんきょう</rt>
+          </ruby>
+        </span>
+        <span className="text-[11px]">
+          {wordStageId ? "この ステージの ことば" : "ことばアーケードを ひらく"}
+        </span>
+      </Link>
+    </div>
+  );
+}
+
 /** 道のりのエリア1枚（背景＋足跡＋ステージ）。上下10%が同じ海色なので継ぎ目が見えない */
 function RouteArea({
   area,
   index,
+  stage,
+  totalAreas,
+  flown,
   progress,
   expandedStage,
   onExpandedStageChange,
-  onUnavailable,
 }: {
   area: MapArea;
   index: number;
+  /** このエリアに立つステージ。通過するだけのエリアは undefined */
+  stage: MapStage | undefined;
+  /** 道のりのエリアの総数。航路の波はこれで決まる */
+  totalAreas: number;
+  /** 学習者の現在地（エリア番号 + エリア内の位置） */
+  flown: number;
   progress: StageProgress;
   expandedStage: string | null;
   onExpandedStageChange: (id: string | null) => void;
-  onUnavailable: () => void;
 }) {
-  const stage = area.stageId ? STAGE_BY_ID.get(area.stageId) : undefined;
   const status = stage ? stageStatus(stage.id, progress) : null;
-  const nodeX = routeX(index + NODE_TOP / 100);
+  const nodeX = routeX(index + NODE_TOP / 100, totalAreas);
   const nodeTop = NODE_TOP;
   const chipOnRight = nodeX <= 50;
   const open = stage ? expandedStage === stage.id : false;
-  const areaCleared = status === "cleared" || (!stage && index < flownUntil(progress));
+  const areaCleared = status === "cleared" || (!stage && index < flown);
 
   return (
     <section
@@ -836,9 +895,9 @@ function RouteArea({
         <AreaLabel area={area} onRight={!chipOnRight} cleared={areaCleared} />
 
         <AreaTrail
-          xAt={(t) => routeX(index + t)}
+          xAt={(t) => routeX(index + t, totalAreas)}
           areaIndex={index}
-          flownUntil={flownUntil(progress)}
+          flownUntil={flown}
         />
 
         {/* 道中だけのエリアには、一言だけ添えて「なにも無い」感じにしない */}
@@ -894,7 +953,6 @@ function RouteArea({
                 progress={progress}
                 open={open}
                 onToggle={() => onExpandedStageChange(open ? null : stage.id)}
-                onUnavailable={onUnavailable}
               />
             </div>
           </>
@@ -908,25 +966,31 @@ function RouteArea({
 }
 
 /** 最後のエリア＝日本。道のりの終点として、地図の一番下に置く（他の情報を上に重ねない） */
-function GoalArea({ progress }: { progress: StageProgress }) {
+function GoalArea({
+  goalArea,
+  totalAreas,
+  flown,
+  progress,
+}: {
+  goalArea: MapArea;
+  totalAreas: number;
+  flown: number;
+  progress: StageProgress;
+}) {
   const complete = progress.currentStageId === null;
   return (
     <section
-      aria-label={GOAL_AREA.name}
+      aria-label={goalArea.name}
       className="relative h-[clamp(320px,40vh,460px)] w-full overflow-hidden"
       style={{ backgroundColor: SKY_BLUE }}
     >
-      <AreaImage src={GOAL_AREA.image} fade="top" />
+      <AreaImage src={goalArea.image} fade="top" />
 
       <MapLayer>
         {/* 航路は看板に触れる手前で終える。看板は中央から上下に約 5.5rem あるので、
             そのぶん＋余白を空ける。突き抜けると着地して見えない */}
         <div className="absolute inset-x-0 top-0 bottom-[calc(50%+3.5rem)]">
-          <AreaTrail
-            xAt={() => 50}
-            areaIndex={ROUTE_AREAS.length}
-            flownUntil={flownUntil(progress)}
-          />
+          <AreaTrail xAt={() => 50} areaIndex={totalAreas} flownUntil={flown} />
         </div>
 
         <div className="absolute top-1/2 left-1/2 z-20 -translate-x-1/2 -translate-y-1/2 text-center">
@@ -941,8 +1005,8 @@ function GoalArea({ progress }: { progress: StageProgress }) {
             <p className="text-xl font-black tracking-wider">GOAL!</p>
             <p className="text-sm font-extrabold">
               <ruby>
-                {GOAL_AREA.name}
-                <rt className="text-white">{GOAL_AREA.reading}</rt>
+                {goalArea.name}
+                <rt className="text-white">{goalArea.reading}</rt>
               </ruby>
             </p>
           </div>
@@ -958,17 +1022,22 @@ function GoalArea({ progress }: { progress: StageProgress }) {
 }
 
 function MapViewPane({
+  routeAreas,
+  goalArea,
+  stageById,
   progress,
   expandedStage,
   onExpandedStageChange,
-  onUnavailable,
 }: {
+  routeAreas: readonly MapArea[];
+  goalArea: MapArea;
+  stageById: ReadonlyMap<string, MapStage>;
   progress: StageProgress;
   expandedStage: string | null;
   onExpandedStageChange: (id: string | null) => void;
-  onUnavailable: () => void;
 }) {
-  const firstArea = ROUTE_AREAS[0]!;
+  const firstArea = routeAreas[0];
+  const flown = flownUntil(progress, routeAreas);
   return (
     <main className="relative w-full overflow-x-hidden">
       {/* 出発の帯。1枚目のエリア画像の上端は平らな空色なので、同じ色で continuous に見える。
@@ -981,37 +1050,38 @@ function MapViewPane({
           {/* 看板より上には航路を引かない（出発点なので、道は看板の真下から始まる）。
               看板の下端から下だけに引いて、1枚目のエリアへ切れ目なくつなぐ */}
           <WoodenBanner label="START!" className="top-20 left-1/2">
-            {firstArea.name}
+            {firstArea?.name ?? "スタート"}
           </WoodenBanner>
           <div className="absolute inset-x-0 top-[13rem] bottom-0">
-            <AreaTrail xAt={() => 50} areaIndex={-1} flownUntil={flownUntil(progress)} />
+            <AreaTrail xAt={() => 50} areaIndex={-1} flownUntil={flown} />
           </div>
         </MapLayer>
       </div>
 
-      {ROUTE_AREAS.map((area, index) => (
+      {routeAreas.map((area, index) => (
         <RouteArea
           key={area.id}
           area={area}
           index={index}
+          stage={area.stageId ? stageById.get(area.stageId) : undefined}
+          totalAreas={routeAreas.length}
+          flown={flown}
           progress={progress}
           expandedStage={expandedStage}
           onExpandedStageChange={onExpandedStageChange}
-          onUnavailable={onUnavailable}
         />
       ))}
-      <GoalArea progress={progress} />
+      <GoalArea
+        goalArea={goalArea}
+        totalAreas={routeAreas.length}
+        flown={flown}
+        progress={progress}
+      />
     </main>
   );
 }
 
-function CardsView({
-  progress,
-  onUnavailable,
-}: {
-  progress: StageProgress;
-  onUnavailable: () => void;
-}) {
+function CardsView({ stages, progress }: { stages: readonly MapStage[]; progress: StageProgress }) {
   return (
     <main className="bg-bg-sky relative min-h-dvh px-4 pt-36 pb-16 sm:px-8 md:pl-48">
       <section className="relative z-10 mx-auto max-w-6xl">
@@ -1021,14 +1091,14 @@ function CardsView({
             <ProgressBar progress={progress} />
           </div>
           <div className="mt-5 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-            {STAGES.map((stage) => {
+            {stages.map((stage) => {
               const status = stageStatus(stage.id, progress);
               return (
                 <article key={stage.id} className="card-pop flex flex-col p-5">
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <p className="text-sky text-xs font-black tracking-widest">
-                        STEP {String(stage.step).padStart(2, "0")}
+                        STEP {String(stage.number).padStart(2, "0")}
                       </p>
                       <h2 className="text-navy mt-1 text-xl font-black">
                         <StageTitle stage={stage} />
@@ -1061,13 +1131,12 @@ function CardsView({
                         ? "いまの ステージ"
                         : "じゅんびちゅう"}
                   </p>
-                  <button
-                    type="button"
-                    onClick={onUnavailable}
+                  <Link
+                    href={`/${stage.id}`}
                     className="btn-game mt-4 w-full px-4 py-2 [--btn-face:#ffc93c] [--btn-shadow:#f0a819]"
                   >
                     {status === "cleared" ? "もういちど" : "すすむ"}
-                  </button>
+                  </Link>
                 </article>
               );
             })}
@@ -1078,8 +1147,20 @@ function CardsView({
   );
 }
 
-export function MapShell() {
+export function MapShell({
+  routeAreas,
+  goalArea,
+  stages,
+}: {
+  /** 道のりのエリア（ゴールを除く）。既定 ∪ スタジオで作ったステージ。 */
+  routeAreas: readonly MapArea[];
+  /** 最後のエリア＝日本。 */
+  goalArea: MapArea;
+  /** マップとカードに出すステージ（step 昇順）。 */
+  stages: readonly MapStage[];
+}) {
   const router = useRouter();
+  const stageById = useMemo(() => new Map(stages.map((stage) => [stage.id, stage])), [stages]);
   const rawProfile = useSyncExternalStore(
     subscribeToStorage,
     profileSnapshot,
@@ -1095,10 +1176,16 @@ export function MapShell() {
     () => (rawProfile === PROFILE_SERVER_SNAPSHOT ? null : getProfile()),
     [rawProfile],
   );
+  const stageIds = useMemo(() => stages.map((stage) => stage.id), [stages]);
   const progress = useMemo(() => {
-    const parsed: unknown = JSON.parse(rawProgress);
-    return deriveProgress(Array.isArray(parsed) ? (parsed as string[]) : []);
-  }, [rawProgress]);
+    let parsed: unknown = [];
+    try {
+      parsed = JSON.parse(rawProgress);
+    } catch {
+      // 壊れた保存値。読めないだけなので、進捗0として続ける（画面は落とさない）
+    }
+    return deriveProgress(Array.isArray(parsed) ? (parsed as string[]) : [], stageIds);
+  }, [rawProgress, stageIds]);
   const [databaseProfile, setDatabaseProfile] = useState<ProfileRow | null>(null);
   const profile = databaseProfile ? profileFromRow(databaseProfile) : cachedProfile;
   const [viewOverride, setViewOverride] = useState<MapView | null>(null);
@@ -1235,13 +1322,15 @@ export function MapShell() {
 
       {view === "map" ? (
         <MapViewPane
+          routeAreas={routeAreas}
+          goalArea={goalArea}
+          stageById={stageById}
           progress={progress}
           expandedStage={expandedStage}
           onExpandedStageChange={setExpandedOverride}
-          onUnavailable={() => showToast(LONG_WAIT_TOAST)}
         />
       ) : (
-        <CardsView progress={progress} onUnavailable={() => showToast(LONG_WAIT_TOAST)} />
+        <CardsView stages={stages} progress={progress} />
       )}
 
       <Toast message={toast} />

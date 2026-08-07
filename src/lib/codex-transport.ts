@@ -12,6 +12,8 @@
  * - delta のストリーム表示コールバック。
  */
 
+import { buildRetryNote, parseJsonReply } from "@/lib/ai/json-reply";
+
 export type CodexStatus = "disconnected" | "connecting" | "connected" | "busy" | "error";
 
 interface PendingRequest {
@@ -31,10 +33,30 @@ interface ActiveTurn {
 /** 1ターンの上限。教師向けの文章生成に3分かかるならそれは失敗として扱う。 */
 const TURN_TIMEOUT_MS = 180_000;
 
+/** 絵は文章より時間がかかる。1枚に5分かかるならそれは失敗として扱う。 */
+const IMAGE_TIMEOUT_MS = 300_000;
+
 const DEVELOPER_INSTRUCTIONS = [
   "You are a writing assistant for teachers inside an e-learning admin screen.",
   "Do not edit files, run commands, or browse. Text only.",
   "Always answer in Japanese unless asked otherwise.",
+].join(" ");
+
+/**
+ * 絵をつくる用の別スレッド。
+ *
+ * 文章用と分ける理由は権限である。文章用は `read-only`／道具なしで足りるが、
+ * 絵は **保存のためにフォルダへ書ける必要がある**。同じスレッドで兼ねると、
+ * 文章を書かせるだけのときにも書き込み権限を渡すことになる。
+ *
+ * 書ける範囲はブリッジの作業フォルダ1つだけ（cwd に渡す）。
+ */
+const IMAGE_INSTRUCTIONS = [
+  "You generate a single illustration with the built-in image_gen tool.",
+  "Save the result to the exact output path given in the request, inside the current directory.",
+  "Generate exactly once. Never regenerate because of colour variance, line wobble, or size.",
+  "If the produced file is not the requested size, resize it — do not generate again.",
+  "Do not write, read, or modify any other file. Do not browse.",
 ].join(" ");
 
 export class CodexTransport {
@@ -42,6 +64,7 @@ export class CodexTransport {
   private nextId = 1;
   private readonly pending = new Map<number, PendingRequest>();
   private threadId: string | null = null;
+  private imageThreadId: string | null = null;
   private activeTurn: ActiveTurn | null = null;
   private status: CodexStatus = "disconnected";
 
@@ -93,15 +116,105 @@ export class CodexTransport {
     this.socket?.close();
     this.socket = null;
     this.threadId = null;
+    this.imageThreadId = null;
     this.setStatus("disconnected");
+  }
+
+  /**
+   * 絵をつくる。**戻り値はファイル名だけ**で、中身はブリッジから HTTP で取る。
+   *
+   * 画像を JSON-RPC の応答に載せない理由: Codex は保存先の**パス**を返す作りで、
+   * バイト列を返さない。パスをブラウザが好きに読めるようにすると、任意の
+   * ファイルを読める穴になる。だからブリッジの作業フォルダの中だけを見せる。
+   *
+   * @param outName 保存させるファイル名（`[a-z0-9_-].png` の形。呼ぶ側が決める）
+   * @param refPaths 参照画像の**ローカル絶対パス**（先にブリッジへ置いたもの）
+   */
+  async runImage({
+    prompt,
+    outName,
+    workdir,
+    refPaths = [],
+  }: {
+    prompt: string;
+    outName: string;
+    workdir: string;
+    refPaths?: readonly string[];
+  }): Promise<void> {
+    if (!this.socket || this.socket.readyState !== WebSocket.OPEN) {
+      throw new Error("先に接続してください。");
+    }
+    if (this.activeTurn) throw new Error("前の生成が終わるまで待ってください。");
+
+    if (!this.imageThreadId) {
+      const started = (await this.request("thread/start", {
+        cwd: workdir,
+        approvalPolicy: "never",
+        sandbox: "workspace-write",
+        serviceName: "Nexmax Academy",
+        personality: "pragmatic",
+        ephemeral: true,
+        sessionStartSource: "startup",
+        threadSource: "user",
+        developerInstructions: IMAGE_INSTRUCTIONS,
+      })) as { thread: { id: string } };
+      this.imageThreadId = started.thread.id;
+    }
+
+    this.setStatus("busy");
+    const completed = new Promise<string>((resolve, reject) => {
+      this.activeTurn = {
+        buffer: "",
+        itemTexts: new Map(),
+        onDelta: null,
+        timer: setTimeout(() => {
+          this.failTurn(new Error("時間内に絵ができませんでした（5分）。"));
+        }, IMAGE_TIMEOUT_MS),
+        resolve,
+        reject,
+      };
+    });
+
+    // 参照画像を先に置く。あとに置くとモデルが指示より画像を弱く扱うことがある
+    const input = [
+      ...refPaths.map((path) => ({ type: "localImage", path })),
+      { type: "text", text: buildImageTurn(prompt, outName), text_elements: [] },
+    ];
+
+    try {
+      const response = (await this.request("turn/start", {
+        threadId: this.imageThreadId,
+        input,
+        effort: "low",
+        personality: "pragmatic",
+      })) as { turn: { status: string } };
+      if (response.turn.status === "completed") this.settleTurn("");
+      await completed;
+    } catch (error) {
+      this.failTurn(error instanceof Error ? error : new Error(String(error)));
+      await completed;
+    } finally {
+      this.setStatus(this.isReady() ? "connected" : "disconnected");
+    }
   }
 
   isReady(): boolean {
     return this.threadId !== null && this.socket?.readyState === WebSocket.OPEN;
   }
 
-  /** 1ターン実行。delta が来るたび onDelta を呼び、完成した本文を返す。 */
-  async runText(prompt: string, onDelta?: (text: string) => void): Promise<string> {
+  /**
+   * 1ターン実行。delta が来るたび onDelta を呼び、完成した本文を返す。
+   *
+   * `outputSchema` を渡すと、**最後の返事の形をプロトコル層で縛れる**
+   *（`TurnStartParams.outputSchema` = "Optional JSON Schema used to constrain the
+   * final assistant message for this turn"。codex-cli 0.145.0 で実在を確認）。
+   * 縛っても前置きが混ざることはありうるので、読む側（`runJson`）の防御も残す。
+   */
+  async runText(
+    prompt: string,
+    onDelta?: (text: string) => void,
+    outputSchema?: object,
+  ): Promise<string> {
     if (!this.isReady()) throw new Error("先に接続してください。");
     if (this.activeTurn) throw new Error("前の生成が終わるまで待ってください。");
     this.setStatus("busy");
@@ -127,6 +240,7 @@ export class CodexTransport {
         input: [{ type: "text", text: prompt, text_elements: [] }],
         effort: "low",
         personality: "pragmatic",
+        ...(outputSchema ? { outputSchema } : {}),
       })) as { turn: { id: string; status: string; items?: unknown[] } };
       if (response.turn.status === "completed") {
         this.settleTurn(collectAgentText(response.turn as unknown as Record<string, unknown>));
@@ -138,6 +252,53 @@ export class CodexTransport {
     } finally {
       this.setStatus(this.isReady() ? "connected" : "disconnected");
     }
+  }
+
+  /**
+   * 決まった形の JSON を作らせる。
+   *
+   * Codex には Gemini の `responseSchema` のような「形を機械で縛る」仕組みが無いので、
+   * **受け取ってから確かめ、違っていたら同じスレッドで言い直させる**。
+   * 同じスレッドに留めるのは、モデルが自分の前の返事を見た上で直せるようにするため
+   *（新しいスレッドで頼み直すと、同じ崩れ方を繰り返す）。
+   *
+   * 2回試して駄目なら諦めて投げる。3回目以降を試さないのは、
+   * 先生を待たせ続けるより「作れませんでした」と早く言うほうが親切だから。
+   *
+   * @param validate 形の検査。合っていれば値を、違っていれば理由の文字列を返す
+   * @param shape 期待する形（言い直させるときにもう一度見せる）
+   */
+  async runJson<T>({
+    prompt,
+    shape,
+    outputSchema,
+    validate,
+    onProgress,
+  }: {
+    prompt: string;
+    shape: string;
+    /** JSON Schema。渡すとプロトコル層で形を縛れる（それでも下の検査は外さない）。 */
+    outputSchema?: object;
+    validate: (value: unknown) => { ok: true; value: T } | { ok: false; problem: string };
+    onProgress?: (text: string) => void;
+  }): Promise<T> {
+    let ask = prompt;
+    let lastProblem = "";
+
+    for (let attempt = 0; attempt < 2; attempt += 1) {
+      const raw = await this.runText(ask, onProgress, outputSchema);
+      const parsed = parseJsonReply(raw);
+      if (parsed === null) {
+        lastProblem = "JSON として読めませんでした（途中で切れているか、形になっていません）";
+      } else {
+        const checked = validate(parsed);
+        if (checked.ok) return checked.value;
+        lastProblem = checked.problem;
+      }
+      ask = buildRetryNote(lastProblem, shape);
+    }
+
+    throw new Error(`AIの返事の形が そろいませんでした。${lastProblem}`);
   }
 
   private settleTurn(text: string): void {
@@ -249,6 +410,33 @@ export class CodexTransport {
       this.settleTurn(finalText);
     }
   }
+}
+
+/**
+ * 絵の依頼文。
+ *
+ * 保存先を**逐語で1回だけ**書く。ここが揺れると、Codex は自分の
+ * `~/.codex/generated_images/` に置いたまま終わり、ブラウザからは取りに行けない
+ *（作業フォルダの外は見せない作りにしてあるため）。
+ *
+ * 「作り直さない」を毎回書くのは、書かないと単色チェックのようなものに落ちたと
+ * 判断して延々と作り直し、いつまでも保存されないことが実際にあったため
+ *（docs/skills/codex_image_generation.md §7.1）。
+ */
+function buildImageTurn(prompt: string, outName: string): string {
+  return [
+    "Generate ONE image with the built-in image_gen tool and save it as:",
+    `  ./${outName}`,
+    "(relative to the current directory — do not save anywhere else).",
+    "",
+    "Use this prompt verbatim. Do not summarise, rephrase, or translate it:",
+    "---",
+    prompt,
+    "---",
+    "",
+    "Generate exactly once. Do not regenerate because of colour variance or small details.",
+    "When the file is saved, reply with just: saved",
+  ].join("\n");
 }
 
 function collectAgentText(turn: Record<string, unknown> | undefined): string {

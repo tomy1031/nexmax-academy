@@ -34,6 +34,7 @@ const PROFILE_KEY = "nexmax.profile.v3";
 /** v3 で回答形式・スコアの意味が変わったため、旧版は読まずに削除する。 */
 const LEGACY_PROFILE_KEYS = ["nexmax.profile.v1", "nexmax.profile.v2"];
 const GEMINI_KEY = "nexmax.geminiKey";
+const LIVE_MODEL_KEY = "nexmax.liveModel";
 const MAP_VIEW_KEY = "nexmax.mapView";
 
 const GENDERS: Gender[] = ["male", "female"];
@@ -98,6 +99,26 @@ export function saveGeminiKey(key: string): void {
   } else {
     target.removeItem(GEMINI_KEY);
   }
+}
+
+/**
+ * たいわ（Live対話）に使うモデル。
+ *
+ * コードに1つ決め打ちしていたが、Live のモデル名は入れ替わりが速く、
+ * 消えたモデルを指したままだと **キーが正しくても つながらない**。しかも画面には
+ * 「じゅんびちゅう」としか出ないので、先生には原因が分からない。
+ * だから「AI指示出し」の画面で、そのキーで実際に使えるものから選べるようにする。
+ */
+export function getLiveModel(): string {
+  return storage()?.getItem(LIVE_MODEL_KEY) ?? "";
+}
+
+export function saveLiveModel(model: string): void {
+  const target = storage();
+  if (!target) return;
+  const trimmed = model.trim();
+  if (trimmed) target.setItem(LIVE_MODEL_KEY, trimmed);
+  else target.removeItem(LIVE_MODEL_KEY);
 }
 
 export function getMapView(): MapView {

@@ -206,7 +206,7 @@ export default function AdminUsersPage() {
 
   return (
     <AdminPageFrame>
-      <AdminHeader />
+      <AdminHeader title="ユーザー" />
       <section className="card-pop mx-auto max-w-[96rem] p-5 sm:p-8">
         <h1 className="text-navy text-2xl font-black sm:text-3xl">管理者画面 — ユーザー管理</h1>
 

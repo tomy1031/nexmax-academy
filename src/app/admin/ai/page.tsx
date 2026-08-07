@@ -10,10 +10,19 @@
  * - アプリのサーバは経由しない（ブラウザ → codex_bridge → codex app-server）
  * - 送るのは仮名・タイプ名・スコア・回答・回答言語だけ（08 §2.1。名前・メール・性別は送らない）
  */
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { useRouter } from "next/navigation";
 import { AdminError, AdminHeader, AdminLoading, AdminPageFrame } from "@/components/admin/admin-ui";
+import { GeminiKeyPanel } from "@/components/admin/gemini-key-panel";
 import { CodexTransport, type CodexStatus } from "@/lib/codex-transport";
+import {
+  DEFAULT_CODEX_URL,
+  codexSocketUrl,
+  getCodexToken,
+  getCodexUrl,
+  saveCodexSettings,
+  subscribeToCodexSettings,
+} from "@/lib/codex-settings";
 import {
   anonymizeCohort,
   buildClassPrompt,
@@ -22,9 +31,6 @@ import {
 } from "@/lib/codex-prompt";
 import { fetchAllProfiles, fetchOwnProfile } from "@/lib/profile-db";
 import { createClient } from "@/lib/supabase/client";
-
-const CODEX_URL_KEY = "nexmax.codexUrl";
-const DEFAULT_CODEX_URL = "ws://127.0.0.1:8790/codex";
 
 const STATUS_LABELS: Record<CodexStatus, string> = {
   disconnected: "未接続",
@@ -42,11 +48,21 @@ export default function AdminAiPage() {
 
   const transportRef = useRef<CodexTransport | null>(null);
   const [status, setStatus] = useState<CodexStatus>("disconnected");
-  const [url, setUrl] = useState(() =>
-    typeof window === "undefined"
-      ? DEFAULT_CODEX_URL
-      : (window.localStorage.getItem(CODEX_URL_KEY) ?? DEFAULT_CODEX_URL),
+  /*
+   * 保存ずみの値は外部ストア（localStorage）として読む。effect で setState すると
+   * 描画が連鎖するうえ、このプロジェクトの React 規則で弾かれる（GeminiKeyPanel と同じ形）。
+   * 編集中の値は「まだ触っていない = null」で持ち、触られるまでは保存ずみを映す。
+   */
+  const storedUrl = useSyncExternalStore(
+    subscribeToCodexSettings,
+    getCodexUrl,
+    () => DEFAULT_CODEX_URL,
   );
+  const storedToken = useSyncExternalStore(subscribeToCodexSettings, getCodexToken, () => "");
+  const [draftUrl, setUrl] = useState<string | null>(null);
+  const [draftToken, setToken] = useState<string | null>(null);
+  const url = draftUrl ?? storedUrl;
+  const token = draftToken ?? storedToken;
   const [connectError, setConnectError] = useState<string | null>(null);
 
   const [mode, setMode] = useState<"student" | "class">("class");
@@ -103,13 +119,18 @@ export default function AdminAiPage() {
 
   const connect = useCallback(async () => {
     setConnectError(null);
-    window.localStorage.setItem(CODEX_URL_KEY, url);
+    const settings = { url: url.trim(), token: token.trim() };
+    saveCodexSettings(settings);
+    if (!settings.token) {
+      setConnectError("合言葉が 空です。ブリッジの画面に出ている文字を 貼ってください。");
+      return;
+    }
     try {
-      await transportRef.current?.connect(url);
+      await transportRef.current?.connect(codexSocketUrl(settings));
     } catch (error) {
       setConnectError(error instanceof Error ? error.message : String(error));
     }
-  }, [url]);
+  }, [url, token]);
 
   const run = useCallback(async () => {
     const transport = transportRef.current;
@@ -140,7 +161,16 @@ export default function AdminAiPage() {
 
   return (
     <AdminPageFrame>
-      <AdminHeader />
+      <AdminHeader title="AI設定" note="APIキーと、Codex への つなぎ" />
+
+      {/*
+        キーの設定は はじめの設定ウィザードにしか無く、入れ直す場所も
+        「効いているか」を確かめる場所も無かった。ここに置く。
+      */}
+      <div className="mx-auto mb-4 max-w-4xl">
+        <GeminiKeyPanel />
+      </div>
+
       <section className="card-pop mx-auto max-w-4xl p-5 sm:p-8">
         <h1 className="text-navy text-2xl font-black">AI指示出し（実験）</h1>
         <p className="text-ink-soft mt-2 text-sm font-bold">
@@ -149,26 +179,84 @@ export default function AdminAiPage() {
           読んでから使うかどうかを決めてください。目の前の生徒と合わないときは、生徒のほうを優先してください。
         </p>
 
-        {/* 接続。ローカルは ws://127.0.0.1:8790/codex、Tunnel経由は wss://…/codex */}
-        <div className="mt-6 flex flex-wrap items-center gap-2">
-          <input
-            type="text"
-            value={url}
-            onChange={(event) => setUrl(event.target.value)}
-            spellCheck={false}
-            className="border-hairline min-w-72 flex-1 rounded-xl border-2 px-3 py-2 font-mono text-sm"
-            aria-label="Codex の接続先URL"
-          />
+        {/*
+          つなぎ方の案内。ここが無かったので「未設定なのか壊れているのか」が
+          先生に区別できなかった。ブリッジは**先生のPCで動かす常駐プロセス**で、
+          公開中のアプリからは（いまはまだ）届かない。
+        */}
+        <div className="bg-panel-tint mt-5 rounded-2xl p-4">
+          <p className="text-navy text-sm font-black">
+            つなぎ方（公開中のURLからでも つながります）
+          </p>
+          <ol className="text-ink mt-2 list-decimal space-y-1 pl-5 text-sm font-bold">
+            <li>
+              手元に Codex を入れる（<code>npm i -g @openai/codex</code> → <code>codex login</code>
+              ）
+            </li>
+            <li>
+              このリポジトリで <code>npm run codex:bridge</code> を動かす （
+              <code>codex app-server</code> も一緒に立ち上がります）
+            </li>
+            <li>
+              その画面に出る<strong>合言葉</strong>を、下の「合言葉」に貼って「接続」
+            </li>
+          </ol>
+          <p className="text-ink-soft mt-2 text-xs font-bold">
+            ブリッジは <strong>この画面を開いている PC の中</strong> で動いている必要があります。
+            公開中のURL（https）からでも <code>ws://127.0.0.1</code> は開けるので、 Cloudflare
+            Tunnel も ドメインも 要りません。
+          </p>
+          {/*
+            合言葉を必須にした理由を、画面にも書いておく。
+            「なぜもう1つ貼るものが増えたのか」が分からないと、先生は
+            ブリッジ側で CODEX_BRIDGE_TOKEN を空にして回避してしまう。
+          */}
+          <p className="mt-2 rounded-xl bg-white/70 p-2 text-xs font-bold text-[#c2410c]">
+            ⚠ 合言葉は 省けません。<code>ws://127.0.0.1</code> は
+            <strong>あなたが開いた どのサイトからも 開けてしまう</strong>ためです。 その先にいる
+            Codex は パソコンの中で コマンドを 実行できます。 合言葉を 知っている相手だけが
+            通れるように しています。人に見せないでください。
+          </p>
+          <p className="text-ink-faint mt-2 text-xs font-bold">
+            合言葉を入れると、「エリアの絵」「とうじょう人物」「まんが」の絵づくりも Codex（ChatGPT
+            の枠）を 先に使います。つながらないときは 自動で Gemini に 回ります。
+          </p>
+        </div>
+
+        {/* 接続。ローカルは ws://127.0.0.1:8790/codex、Tunnel経由なら wss://…/codex */}
+        <div className="mt-6 grid gap-2 sm:grid-cols-[1fr_1fr_auto_auto]">
+          <label className="flex flex-col gap-1">
+            <span className="text-ink-soft text-xs font-black">つなぎ先</span>
+            <input
+              type="text"
+              value={url}
+              onChange={(event) => setUrl(event.target.value)}
+              spellCheck={false}
+              className="border-hairline rounded-xl border-2 px-3 py-2 font-mono text-sm"
+            />
+          </label>
+          <label className="flex flex-col gap-1">
+            <span className="text-ink-soft text-xs font-black">合言葉</span>
+            <input
+              type="password"
+              value={token}
+              onChange={(event) => setToken(event.target.value)}
+              spellCheck={false}
+              autoComplete="off"
+              placeholder="ブリッジの画面に出る文字"
+              className="border-hairline rounded-xl border-2 px-3 py-2 font-mono text-sm"
+            />
+          </label>
           <button
             type="button"
             onClick={() => void connect()}
             disabled={status === "connecting" || status === "busy"}
-            className="btn-game px-5 py-2 text-sm disabled:opacity-50"
+            className="btn-game self-end px-5 py-2 text-sm disabled:opacity-50"
           >
             接続
           </button>
           <span
-            className={`rounded-full px-3 py-1 text-xs font-black text-white ${
+            className={`self-end rounded-full px-3 py-2 text-xs font-black text-white ${
               ready ? "bg-leaf-deep" : status === "error" ? "bg-[#c2410c]" : "bg-navy"
             }`}
           >
