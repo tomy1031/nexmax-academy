@@ -12,6 +12,8 @@
  * - delta のストリーム表示コールバック。
  */
 
+import { buildRetryNote, parseJsonReply } from "@/lib/ai/json-reply";
+
 export type CodexStatus = "disconnected" | "connecting" | "connected" | "busy" | "error";
 
 interface PendingRequest {
@@ -200,8 +202,19 @@ export class CodexTransport {
     return this.threadId !== null && this.socket?.readyState === WebSocket.OPEN;
   }
 
-  /** 1ターン実行。delta が来るたび onDelta を呼び、完成した本文を返す。 */
-  async runText(prompt: string, onDelta?: (text: string) => void): Promise<string> {
+  /**
+   * 1ターン実行。delta が来るたび onDelta を呼び、完成した本文を返す。
+   *
+   * `outputSchema` を渡すと、**最後の返事の形をプロトコル層で縛れる**
+   *（`TurnStartParams.outputSchema` = "Optional JSON Schema used to constrain the
+   * final assistant message for this turn"。codex-cli 0.145.0 で実在を確認）。
+   * 縛っても前置きが混ざることはありうるので、読む側（`runJson`）の防御も残す。
+   */
+  async runText(
+    prompt: string,
+    onDelta?: (text: string) => void,
+    outputSchema?: object,
+  ): Promise<string> {
     if (!this.isReady()) throw new Error("先に接続してください。");
     if (this.activeTurn) throw new Error("前の生成が終わるまで待ってください。");
     this.setStatus("busy");
@@ -227,6 +240,7 @@ export class CodexTransport {
         input: [{ type: "text", text: prompt, text_elements: [] }],
         effort: "low",
         personality: "pragmatic",
+        ...(outputSchema ? { outputSchema } : {}),
       })) as { turn: { id: string; status: string; items?: unknown[] } };
       if (response.turn.status === "completed") {
         this.settleTurn(collectAgentText(response.turn as unknown as Record<string, unknown>));
@@ -238,6 +252,53 @@ export class CodexTransport {
     } finally {
       this.setStatus(this.isReady() ? "connected" : "disconnected");
     }
+  }
+
+  /**
+   * 決まった形の JSON を作らせる。
+   *
+   * Codex には Gemini の `responseSchema` のような「形を機械で縛る」仕組みが無いので、
+   * **受け取ってから確かめ、違っていたら同じスレッドで言い直させる**。
+   * 同じスレッドに留めるのは、モデルが自分の前の返事を見た上で直せるようにするため
+   *（新しいスレッドで頼み直すと、同じ崩れ方を繰り返す）。
+   *
+   * 2回試して駄目なら諦めて投げる。3回目以降を試さないのは、
+   * 先生を待たせ続けるより「作れませんでした」と早く言うほうが親切だから。
+   *
+   * @param validate 形の検査。合っていれば値を、違っていれば理由の文字列を返す
+   * @param shape 期待する形（言い直させるときにもう一度見せる）
+   */
+  async runJson<T>({
+    prompt,
+    shape,
+    outputSchema,
+    validate,
+    onProgress,
+  }: {
+    prompt: string;
+    shape: string;
+    /** JSON Schema。渡すとプロトコル層で形を縛れる（それでも下の検査は外さない）。 */
+    outputSchema?: object;
+    validate: (value: unknown) => { ok: true; value: T } | { ok: false; problem: string };
+    onProgress?: (text: string) => void;
+  }): Promise<T> {
+    let ask = prompt;
+    let lastProblem = "";
+
+    for (let attempt = 0; attempt < 2; attempt += 1) {
+      const raw = await this.runText(ask, onProgress, outputSchema);
+      const parsed = parseJsonReply(raw);
+      if (parsed === null) {
+        lastProblem = "JSON として読めませんでした（途中で切れているか、形になっていません）";
+      } else {
+        const checked = validate(parsed);
+        if (checked.ok) return checked.value;
+        lastProblem = checked.problem;
+      }
+      ask = buildRetryNote(lastProblem, shape);
+    }
+
+    throw new Error(`AIの返事の形が そろいませんでした。${lastProblem}`);
   }
 
   private settleTurn(text: string): void {
