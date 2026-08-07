@@ -34,6 +34,7 @@ import {
   isDiagnosisComplete,
   saveMapView,
   saveProfile,
+  type Gender,
   type MapView,
   type NexmaxProfile,
 } from "@/lib/profile";
@@ -117,6 +118,17 @@ const STAGE_COLORS = {
  * エリアが増えても足りなくならないよう、番号で循環させる。
  */
 const AREA_CHARACTERS: readonly PersonalityFamilyId[] = ["leader", "idea", "heart", "challenge"];
+
+/**
+ * 学習者じしんの分身（診断で決まったネクマックス）。
+ * 地図に「いま自分がどこに立っているか」を出すために使う。装飾のネクマックス
+ *（`AREA_CHARACTERS`）とは別もの——あちらは景色の住人で、こちらは学習者本人。
+ */
+export interface LearnerAvatar {
+  family: PersonalityFamilyId;
+  gender: Gender;
+  name: string;
+}
 
 function subscribeToStorage(onStoreChange: () => void) {
   window.addEventListener("storage", onStoreChange);
@@ -278,6 +290,21 @@ function AreaLabel({
     >
       <span aria-hidden>{cleared ? "✓" : "📍"}</span>
       {area.name}
+    </div>
+  );
+}
+
+/**
+ * 「いま ここ」に立つ学習者の分身。立札の下や、進んだ先の地点に置く。
+ * 名前を添えるのは、分身が自分だと分かるようにするため（診断の結果と同じ絵）。
+ */
+function LearnerHere({ learner, className }: { learner: LearnerAvatar; className: string }) {
+  return (
+    <div className={`absolute z-30 -translate-x-1/2 text-center ${className}`}>
+      <NexMaxFamily family={learner.family} gender={learner.gender} size={92} bob />
+      <p className="text-navy mx-auto -mt-1 w-max rounded-full border-2 border-white bg-white/90 px-3 py-0.5 text-xs font-black shadow-md">
+        {learner.name}
+      </p>
     </div>
   );
 }
@@ -1026,6 +1053,7 @@ function MapViewPane({
   goalArea,
   stageById,
   progress,
+  learner,
   expandedStage,
   onExpandedStageChange,
 }: {
@@ -1033,11 +1061,15 @@ function MapViewPane({
   goalArea: MapArea;
   stageById: ReadonlyMap<string, MapStage>;
   progress: StageProgress;
+  /** 学習者じしん（診断で決まった分身のネクマックス）。未診断なら null */
+  learner: LearnerAvatar | null;
   expandedStage: string | null;
   onExpandedStageChange: (id: string | null) => void;
 }) {
   const firstArea = routeAreas[0];
   const flown = flownUntil(progress, routeAreas);
+  // 分身が立つ場所。まだ1つも終えていなければ「スタートの立札」のところに立つ
+  const atStart = flown <= 0;
   return (
     <main className="relative w-full overflow-x-hidden">
       {/* 出発の帯。1枚目のエリア画像の上端は平らな空色なので、同じ色で continuous に見える。
@@ -1052,6 +1084,7 @@ function MapViewPane({
           <WoodenBanner label="START!" className="top-20 left-1/2">
             {firstArea?.name ?? "スタート"}
           </WoodenBanner>
+          {learner && atStart && <LearnerHere learner={learner} className="top-40 left-1/2" />}
           <div className="absolute inset-x-0 top-[13rem] bottom-0">
             <AreaTrail xAt={() => 50} areaIndex={-1} flownUntil={flown} />
           </div>
@@ -1188,6 +1221,14 @@ export function MapShell({
   }, [rawProgress, stageIds]);
   const [databaseProfile, setDatabaseProfile] = useState<ProfileRow | null>(null);
   const profile = databaseProfile ? profileFromRow(databaseProfile) : cachedProfile;
+  // 地図に立たせる分身。診断が終わっていない人には出さない（絵が決まらない）
+  const learnerAvatar: LearnerAvatar | null = profile
+    ? {
+        family: getFamilyForCode(profile.type).id,
+        gender: profile.gender,
+        name: profile.displayName,
+      }
+    : null;
   const [viewOverride, setViewOverride] = useState<MapView | null>(null);
   const [collapsed, setCollapsed] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -1326,6 +1367,7 @@ export function MapShell({
           goalArea={goalArea}
           stageById={stageById}
           progress={progress}
+          learner={learnerAvatar}
           expandedStage={expandedStage}
           onExpandedStageChange={setExpandedOverride}
         />
