@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { toAlias } from "../scripts/preview_alias.mjs";
+import { mayPublishShared, toAlias } from "../scripts/preview_alias.mjs";
 
 /** wrangler.jsonc の Worker 名が "academy"（7文字）なので 63 - 7 - 1。 */
 const MAX = 55;
@@ -43,5 +43,32 @@ describe("ブランチ名 → Cloudflare のエイリアス", () => {
   it("英小文字が残らない名前は、黙って変な名前にせずエラーにする", () => {
     expect(() => toAlias("2328", MAX)).toThrow(/エイリアスを作れません/);
     expect(() => toAlias("日本語", MAX)).toThrow(/エイリアスを作れません/);
+  });
+});
+
+describe("staging へ上げてよいかの判定", () => {
+  const MAIN = "aaaaaaa";
+  const OTHER = "bbbbbbb";
+
+  it("main / master からは上げられる", () => {
+    expect(mayPublishShared("main", OTHER, MAIN)).toBe(true);
+    expect(mayPublishShared("master", OTHER, MAIN)).toBe(true);
+  });
+
+  it("main へ早送り済みの作業ブランチからも上げられる（内容が main と同一なので）", () => {
+    // worktree を使っていると main は1か所でしか checkout できない。
+    // ブランチ名だけで判定すると、唯一の逃げ道が「main の worktree から上げる」になり、
+    // そこに他セッションの未コミット変更があるとそれごと staging に載ってしまう。
+    expect(mayPublishShared("claude/feature-x", MAIN, MAIN)).toBe(true);
+  });
+
+  it("main と中身が違う作業ブランチからは上げられない", () => {
+    expect(mayPublishShared("claude/feature-x", OTHER, MAIN)).toBe(false);
+  });
+
+  it("origin/main が取れないときは通さない（古い ref で誤って通さないため）", () => {
+    expect(mayPublishShared("claude/feature-x", OTHER, null)).toBe(false);
+    // main ブランチ自身は、ref が取れなくてもブランチ名で通す
+    expect(mayPublishShared("main", OTHER, null)).toBe(true);
   });
 });

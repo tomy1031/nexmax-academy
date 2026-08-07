@@ -210,7 +210,7 @@ function QuestionGlossary({
     <div className="border-hairline mt-5 flex flex-wrap items-center gap-2 border-t pt-4">
       <span className="text-ink-soft text-xs font-black">ことばメモ</span>
       {entries.map((entry) => (
-        <GlossaryChip key={entry.term} entry={entry} />
+        <GlossaryChip key={entry.term} entry={entry} renderText={renderRuby} />
       ))}
     </div>
   );
@@ -259,7 +259,7 @@ function QuestionIntro({
           <div className="border-hairline mt-5 flex flex-wrap items-center gap-2 border-t pt-4">
             <span className="text-ink-soft text-xs font-black">ことばメモ</span>
             {findAllGlossaryTerms(...intro.lines, intro.note).map((entry) => (
-              <GlossaryChip key={entry.term} entry={entry} />
+              <GlossaryChip key={entry.term} entry={entry} renderText={renderRuby} />
             ))}
           </div>
         )}

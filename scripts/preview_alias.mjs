@@ -16,11 +16,13 @@
  * 使い方:
  *   npm run cf:branch            # 今のブランチ名から確認URLを決めて上げる
  *   npm run cf:branch -- shindan # 名前を明示する
- *   npm run cf:staging           # `staging` へ上げる。**main でのみ許可**
+ *   npm run cf:staging           # `staging` へ上げる。**main の中身のときだけ許可**
  *
  * `staging` を main 専用にしてあるのは、
  * 「staging を見れば統合された最新が分かる」を成り立たせるため。
  * 作業ブランチの確認は各自のエイリアスで行う。
+ * 判定はブランチ名ではなく**中身**（HEAD が origin/main と同一か）で行う。
+ * 理由は `mayPublishShared` を参照。
  *
  * ログインについて:
  *   確認URLはホスト名が変わるので、Supabase の Redirect URLs に
@@ -35,10 +37,33 @@ import path from "node:path";
 /** エイリアス名 + "-" + Worker名 が DNS ラベル上限の63文字を超えられない。 */
 const DNS_LABEL_LIMIT = 63;
 
-/** main から上げるときだけ使える、統合版の確認URL。 */
+/** main の内容を上げるときだけ使える、統合版の確認URL。 */
 const SHARED_ALIAS = "staging";
 
 const MAIN_BRANCHES = new Set(["main", "master"]);
+
+/**
+ * `staging` へ上げてよいか。
+ *
+ * 守りたいのは「staging に載っているのは main だ」という性質であって、
+ * ブランチ名そのものではない。**worktree を使っていると main は1か所でしか
+ * checkout できない**ので、ブランチ名だけで判定すると、
+ * main へ早送り済みの作業ブランチからも上げられなくなる
+ * （そのとき唯一の逃げ道が「main の worktree から上げる」になるが、
+ * そこに他セッションの未コミット変更があると、それごと staging に載ってしまう）。
+ *
+ * そこで**内容で判定する**。HEAD が origin/main と同一なら、
+ * ブランチ名が何であれ staging に載るのは main の中身そのもの。
+ *
+ * @param {string} branch 現在のブランチ名
+ * @param {string} headSha HEAD のコミット
+ * @param {string | null} mainSha origin/main のコミット（取得できなければ null）
+ * @returns {boolean}
+ */
+export function mayPublishShared(branch, headSha, mainSha) {
+  if (MAIN_BRANCHES.has(branch)) return true;
+  return mainSha !== null && headSha === mainSha;
+}
 
 /**
  * ブランチ名を Cloudflare のエイリアスに変換する。
@@ -77,29 +102,45 @@ function readWorkerName() {
   return matched[1];
 }
 
-function currentBranch() {
-  return execFileSync("git", ["rev-parse", "--abbrev-ref", "HEAD"], { encoding: "utf-8" }).trim();
+function git(...args) {
+  return execFileSync("git", args, { encoding: "utf-8" }).trim();
+}
+
+/** origin/main のコミット。取れなければ null（ネットワーク不通など）。 */
+function originMainSha() {
+  try {
+    // 判定を古い ref で通してしまわないよう、比較の直前に取り直す。
+    execFileSync("git", ["fetch", "origin", "main", "--quiet"], { stdio: "ignore" });
+    return git("rev-parse", "origin/main");
+  } catch {
+    return null;
+  }
 }
 
 function main() {
   const workerName = readWorkerName();
   const maxAliasLength = DNS_LABEL_LIMIT - workerName.length - 1; // 連結する "-" のぶん
-  const branch = currentBranch();
+  const branch = git("rev-parse", "--abbrev-ref", "HEAD");
   const requested = process.argv[2];
   const alias = requested ? toAlias(requested, maxAliasLength) : toAlias(branch, maxAliasLength);
 
-  if (alias === SHARED_ALIAS && !MAIN_BRANCHES.has(branch)) {
+  if (
+    alias === SHARED_ALIAS &&
+    !mayPublishShared(branch, git("rev-parse", "HEAD"), originMainSha())
+  ) {
     console.error(
       [
         "",
-        `✗ \`${SHARED_ALIAS}\` は main 専用です（いまは ${branch}）。`,
+        `✗ \`${SHARED_ALIAS}\` に上げられるのは main の中身だけです（いまは ${branch}）。`,
         "",
         "  確認URLは共有なので、ここへ上げると他のセッションの作業が消えます。",
         "  作業ブランチの確認には自分のエイリアスを使ってください:",
         "",
         "      npm run cf:branch",
         "",
-        "  main を上げ直したいときは main に切り替えてから実行してください。",
+        "  main を上げたいときは、main に切り替えるか、",
+        "  このブランチを main へ早送りしてから実行してください",
+        "  （HEAD が origin/main と同一なら、ブランチ名が何でも通ります）。",
         "",
       ].join("\n"),
     );
