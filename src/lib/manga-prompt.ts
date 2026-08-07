@@ -92,6 +92,58 @@ export function buildCharacterSheetPrompt(character: {
     .join("\n");
 }
 
+/**
+ * セリフを**絵の中に焼く**コマの指示。
+ *
+ * 通常の `buildPanelPrompt` と分けてあるのは、禁止事項が正反対になるから。
+ * こちらは「文字を描け」と言う必要がある一方で、
+ * **かな以外は描かせない**（漢字はふりがなを焼けないので学習者が読めない・規律2）。
+ *
+ * 焼く文字は呼ぶ側が機械変換で用意する（`kanaOf`）。ここでは
+ * **逐語で1回だけ**書く——言い換えられると、データのセリフと絵の字がずれる。
+ *
+ * 画像生成の日本語は長いほど崩れるので、スキーマ側で20文字・1コマ2吹き出しに
+ * 絞ってある。ここではその前提で「大きく・はっきり」を頼む。
+ */
+export function buildBakedPanelPrompt(brief: PanelBrief & { texts: readonly string[] }): string {
+  const cast = brief.cast
+    .map((person, index) => `Character ${index + 1} (${person.role}): ${person.looks}`)
+    .join("\n");
+
+  const balloons = brief.texts
+    .map(
+      (text, i) =>
+        `  Balloon ${i + 1} must contain exactly this text, copied character for character:\n    ${text}`,
+    )
+    .join("\n");
+
+  return [
+    "One single manga panel (not a page, not a grid) for a Japanese language-learning lesson.",
+    "",
+    `Scene: ${brief.scene}`,
+    brief.camera ? `Camera: ${brief.camera}` : "",
+    cast ? `\n${cast}` : "",
+    brief.cast.length > 0
+      ? "Keep each character's face, hair and outfit exactly as in the reference model sheets."
+      : "",
+    "",
+    `Draw ${brief.texts.length} speech balloon(s), placed so they do not cover any face.`,
+    balloons,
+    "",
+    "Rules for the text inside the balloons:",
+    "- Copy it EXACTLY. Do not translate, rephrase, shorten, or add anything.",
+    "- It is Japanese hiragana/katakana only. Do NOT add kanji.",
+    "- Do NOT add furigana or any small text above the characters.",
+    "- Write it large and clearly legible, in a plain rounded manga lettering style.",
+    "- No other writing anywhere in the image.",
+    "",
+    `Style: ${STYLE}.`,
+    `Avoid: ${NEGATIVE}, no watermark, no signature, no logo, no frame border.`,
+  ]
+    .filter((line) => line.length > 0)
+    .join("\n");
+}
+
 /** 1コマぶんの指示（先生が書くのはここだけ）。 */
 export interface PanelBrief {
   /** そのコマで何が起きているか。 */

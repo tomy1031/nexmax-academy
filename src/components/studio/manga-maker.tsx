@@ -2,9 +2,16 @@
 
 import { useState } from "react";
 import type { Character, Manga } from "@/content/schema";
-import { buildPanelPrompt } from "@/lib/manga-prompt";
+import {
+  buildBakedPanelPrompt,
+  buildMangaScriptPrompt,
+  buildPanelPrompt,
+  MANGA_SCRIPT_SCHEMA,
+} from "@/lib/manga-prompt";
+import { hasCodex } from "@/lib/codex-settings";
 import { getGeminiKey } from "@/lib/profile";
 import { generateImage } from "./image-api";
+import { generateStructured } from "./text-api";
 import { emptyImageSlot } from "./drafts";
 import { uploadAsset } from "./studio-api";
 import { CheckChoice, MiniButton, NumberField, StudioSection, TextAreaField } from "./studio-ui";
@@ -42,8 +49,10 @@ export function MangaMaker({
 
   const makeScript = async () => {
     const apiKey = getGeminiKey();
-    if (!apiKey) {
-      setError("AIの キーが ありません。「AI設定」で 登録してください。");
+    if (!apiKey && !hasCodex()) {
+      setError(
+        "AIが まだ つながっていません。「AI設定」で Codex の 合言葉か Gemini の キーを 入れてください。",
+      );
       return;
     }
     if (request.trim().length === 0) {
@@ -53,41 +62,62 @@ export function MangaMaker({
     setBusy("script");
     setError(null);
     setNote(null);
-    try {
-      const response = await fetch("/api/studio/manga", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          apiKey,
-          request: request.trim(),
-          panels,
-          cast: chosen.map((c) => ({
-            id: c.id,
-            name: c.name,
-            role: c.role,
-            personality: c.personality,
-          })),
-        }),
-      });
-      const body = (await response.json().catch(() => ({}))) as {
-        ready?: boolean;
-        reason?: string;
-        script?: Script;
-      };
-      if (!response.ok || !body.ready || !body.script) {
-        setError(messageForReason(body.reason ?? ""));
-        return;
-      }
-      onChange(applyScript(value, body.script, chosen));
-      setNote(
-        `${body.script.panels.length}コマ ぶんの わりつけと セリフを 入れました。` +
-          "つぎに 下の「コマの 絵を つくる」で 1枚ずつ 描きます。",
-      );
-    } catch {
-      setError("つうしんに 失敗しました。ネットワークを たしかめてください。");
-    } finally {
-      setBusy(null);
+
+    const cast = chosen.map((c) => ({
+      id: c.id,
+      name: c.name,
+      role: c.role,
+      personality: c.personality,
+    }));
+    const brief = { request: request.trim(), panels, cast };
+
+    /*
+     * Codex と Gemini で **同じ頼み文・同じスキーマ**を使う。
+     * 頼み文は `buildMangaScriptPrompt`（純関数）、形は `MANGA_SCRIPT_SCHEMA`。
+     * どちらかにだけ手を入れて片方が古くなる、という壊れ方をしないため。
+     */
+    const made = await generateStructured<Script>({
+      prompt: buildMangaScriptPrompt(brief),
+      shape: JSON.stringify(MANGA_SCRIPT_SCHEMA, null, 2),
+      outputSchema: MANGA_SCRIPT_SCHEMA,
+      validate: validateScript,
+      viaGemini: async () => {
+        if (!apiKey) return { ok: false, message: messageForReason("noKey") };
+        try {
+          const response = await fetch("/api/studio/manga", {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({ apiKey, ...brief }),
+          });
+          const body = (await response.json().catch(() => ({}))) as {
+            ready?: boolean;
+            reason?: string;
+            script?: Script;
+          };
+          if (!response.ok || !body.ready || !body.script) {
+            return { ok: false, message: messageForReason(body.reason ?? "") };
+          }
+          return { ok: true, value: body.script };
+        } catch {
+          return {
+            ok: false,
+            message: "つうしんに 失敗しました。ネットワークを たしかめてください。",
+          };
+        }
+      },
+    });
+
+    setBusy(null);
+    if (!made.ok) {
+      setError(made.message);
+      return;
     }
+    onChange(applyScript(value, made.value, chosen));
+    setNote(
+      `${made.value.panels.length}コマ ぶんの わりつけと セリフを 入れました` +
+        `（${made.via === "codex" ? "Codex" : "Gemini"}）。` +
+        "つぎに 下の「コマの 絵を つくる」で 1枚ずつ 描きます。",
+    );
   };
 
   /** 1コマぶんの絵。人物の設定画を参照画像として渡す。 */
@@ -107,11 +137,28 @@ export function MangaMaker({
 
     setBusy(`${pageIndex}:${panelIndex}`);
     setError(null);
-    const prompt = buildPanelPrompt({
+    const brief = {
       scene,
       cast: chosen.map((c) => ({ name: c.name, role: c.role, looks: c.looks })),
       balloons: panel.lines.length,
-    });
+    };
+    /*
+     * セリフ入りモードでは、吹き出しの中の文字も描かせる。
+     * 焼く文字は `bakedText`（読み辞書からの機械変換）を**逐語で**渡す——
+     * ここで言い換えると、データのセリフと絵の字がずれる。
+     */
+    const baked = value.speechInImage ? panel.bakedText.filter((t) => t.length > 0) : [];
+    if (value.speechInImage && baked.length !== panel.lines.length) {
+      setBusy(null);
+      setError(
+        "絵に 焼く 文字が そろっていません。「セリフの 出し方」で もう一度 「セリフを 絵に 入れる」を 押してください。",
+      );
+      return;
+    }
+    const prompt =
+      baked.length > 0
+        ? buildBakedPanelPrompt({ ...brief, texts: baked })
+        : buildPanelPrompt(brief);
     // 設定画を渡すのが、コマ間で顔や服をぶれさせない いちばん確実な方法
     const references = chosen.flatMap((c) => (c.sheet.src ? [c.sheet.src] : []));
     const made = await generateImage({ apiKey, prompt, references });
@@ -259,6 +306,65 @@ interface Script {
 }
 
 /**
+ * 台本の形をたしかめる。
+ *
+ * Gemini の `responseSchema` も Codex の `outputSchema` も「たいてい守られる」
+ * であって保証ではない。**まんがに流し込む前に**ここで止める——
+ * 流し込んでから気づくと、先生の作りかけを壊したあとになる。
+ *
+ * 直せる形（zod でなく手書き）にしてあるのは、AIへ返す言い直しの文が
+ * 日本語で1文になっている必要があるため。zod の英語パス表記だけを渡すと
+ * モデルが直しどころを誤る（`json-reply.ts` の `buildRetryNote`）。
+ */
+function validateScript(
+  value: unknown,
+): { ok: true; value: Script } | { ok: false; problem: string } {
+  if (typeof value !== "object" || value === null)
+    return { ok: false, problem: "JSONオブジェクトではありません" };
+  const raw = value as Record<string, unknown>;
+
+  if (typeof raw.title !== "string" || raw.title.length === 0) {
+    return { ok: false, problem: "title が ありません" };
+  }
+  if (typeof raw.description !== "string") {
+    return { ok: false, problem: "description が ありません" };
+  }
+  if (!Array.isArray(raw.panels) || raw.panels.length === 0) {
+    return { ok: false, problem: "panels が 空です" };
+  }
+  for (const [i, panel] of raw.panels.entries()) {
+    if (typeof panel !== "object" || panel === null) {
+      return { ok: false, problem: `panels[${i}] が オブジェクトでは ありません` };
+    }
+    const p = panel as Record<string, unknown>;
+    if (typeof p.scene !== "string" || p.scene.length === 0) {
+      return { ok: false, problem: `panels[${i}].scene が ありません（絵の指示）` };
+    }
+    if (!Array.isArray(p.lines)) {
+      return { ok: false, problem: `panels[${i}].lines が 配列では ありません` };
+    }
+    for (const [j, line] of p.lines.entries()) {
+      const l = line as Record<string, unknown>;
+      if (typeof l?.speaker !== "string" || typeof l?.text !== "string") {
+        return { ok: false, problem: `panels[${i}].lines[${j}] に speaker か text が ありません` };
+      }
+    }
+  }
+  /*
+   * 読み辞書は [表記, よみ] の2要素ちょうど。ここがずれると
+   * ルビの合成が黙って外れる（画面には裸の漢字が出る）ので、形の段階で止める。
+   */
+  if (!Array.isArray(raw.furigana))
+    return { ok: false, problem: "furigana が 配列では ありません" };
+  for (const [i, entry] of raw.furigana.entries()) {
+    if (!Array.isArray(entry) || entry.length !== 2 || entry.some((s) => typeof s !== "string")) {
+      return { ok: false, problem: `furigana[${i}] は [表記, よみ] の2つに してください` };
+    }
+  }
+  return { ok: true, value: raw as unknown as Script };
+}
+
+/**
  * 作った台本を まんがに流し込む。
  *
  * 1コマ＝1ページにする。横スライドの読み手は「コマ」を単位に送るので、
@@ -284,6 +390,8 @@ function applyScript(manga: Manga, script: Script, cast: readonly Character[]): 
         {
           size: "normal" as const,
           image: emptyImageSlot(),
+          // 焼く文字は台本づくりでは作らない。モードを切りかえたときに機械変換で入れる
+          bakedText: [] as string[],
           // 知らない話者は ナレーションに寄せる（保存の検査で止まらないように）
           lines: panel.lines.map((line) => ({
             speaker: known.has(line.speaker) ? line.speaker : "narration",

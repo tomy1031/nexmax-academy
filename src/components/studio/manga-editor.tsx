@@ -8,6 +8,8 @@ import type {
   MangaPage,
   MangaPanel,
 } from "@/content/schema";
+import { useState } from "react";
+import { bakeSpeech, staleBakedPanels, unbakeSpeech, type UnbakeableLine } from "@/lib/manga-baked";
 import { emptyMangaPage, emptyMangaPanel, PANEL_SIZE_OPTIONS } from "./drafts";
 import { MangaMaker } from "./manga-maker";
 import { ImageSlotEditor } from "./image-slot-editor";
@@ -80,6 +82,8 @@ export function MangaEditor({
           />
         </div>
       </StudioSection>
+
+      <SpeechModePanel value={value} onChange={onChange} />
 
       <StudioSection
         title="登場人物"
@@ -353,5 +357,80 @@ function PanelEditor({
         </MiniButton>
       </div>
     </article>
+  );
+}
+
+/**
+ * まんがの2つのモードを 切りかえる帯
+ *
+ * 「絵だけ」（既定・吹き出しは空で描かせ、セリフは画面で重ねる）と
+ * 「セリフ入り」（吹き出しの中の文字も 絵に焼く）。
+ *
+ * 焼く文字は**読み辞書から機械で作る**。AIに書かせないのは、絵の字とデータの
+ * セリフがずれると「セリフを直したのに古い字の絵が公開され続ける」ためで、
+ * これは先生からは見えない壊れ方になる。
+ */
+function SpeechModePanel({ value, onChange }: { value: Manga; onChange: (manga: Manga) => void }) {
+  const [problems, setProblems] = useState<readonly UnbakeableLine[]>([]);
+  const stale = staleBakedPanels(value);
+
+  const toBaked = () => {
+    const result = bakeSpeech(value);
+    setProblems(result.problems);
+    onChange(result.manga);
+  };
+
+  const toPlain = () => {
+    setProblems([]);
+    onChange(unbakeSpeech(value));
+  };
+
+  return (
+    <StudioSection title="セリフの 出し方" hint="絵の中に 文字を 入れるか、画面で 重ねるか。">
+      <div className="flex flex-wrap items-center gap-2">
+        <MiniButton tone={value.speechInImage ? undefined : "accent"} onClick={toPlain}>
+          {value.speechInImage ? "絵だけに もどす" : "✓ 絵だけ（いま これ）"}
+        </MiniButton>
+        <MiniButton tone={value.speechInImage ? "accent" : undefined} onClick={toBaked}>
+          {value.speechInImage ? "✓ セリフ入り（いま これ）" : "セリフを 絵に 入れる"}
+        </MiniButton>
+      </div>
+
+      <p className="text-ink-soft mt-2 text-xs font-bold">
+        絵に 焼く 文字は、読み辞書から <strong>ひらがなに 直して</strong> 作ります。 絵に 焼いた
+        漢字には ふりがなを つけられないので、学習者が そこで 止まります。
+      </p>
+
+      {value.speechInImage && (
+        <p className="text-ink-soft mt-1 text-xs font-bold">
+          切りかえると、字の 入っていない 絵は 消えます。もう一度 コマの 絵を 作ってください。
+        </p>
+      )}
+
+      {problems.length > 0 && (
+        <div className="mt-3 rounded-2xl bg-[#fbf3e2] p-3">
+          <p className="text-xs font-black text-[#8a5a12]">
+            つぎの セリフは、まだ 絵に 入れられません（読み辞書に ない 漢字が あります）
+          </p>
+          <ul className="text-ink mt-1 list-disc pl-5 text-xs font-bold">
+            {problems.map((p, i) => (
+              <li key={i}>
+                {p.page + 1}ページ目 {p.panel + 1}コマ目: 「{p.text}」
+              </li>
+            ))}
+          </ul>
+          <p className="text-ink-soft mt-1 text-xs font-bold">
+            下の「読み辞書」に よみを 足してから、もう一度 押してください。
+          </p>
+        </div>
+      )}
+
+      {problems.length === 0 && stale.length > 0 && (
+        <p className="mt-2 text-xs font-black text-[#c2410c]">
+          セリフを 直したので、{stale.length}こ の コマで 絵の 字が 古いままです。 「セリフを 絵に
+          入れる」を もう一度 押してください。
+        </p>
+      )}
+    </StudioSection>
   );
 }
