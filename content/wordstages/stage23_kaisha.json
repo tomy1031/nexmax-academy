@@ -13,6 +13,10 @@
   "passRate": 80,
   "furigana": [
     [
+      "問い合わせ",
+      "といあわせ"
+    ],
+    [
       "会社概要",
       "かいしゃがいよう"
     ],
@@ -27,10 +31,6 @@
     [
       "客先常駐",
       "きゃくさきじょうちゅう"
-    ],
-    [
-      "問い合わせ",
-      "といあわせ"
     ],
     [
       "会社",
@@ -115,6 +115,18 @@
     [
       "客",
       "きゃく"
+    ],
+    [
+      "年",
+      "とし"
+    ],
+    [
+      "日",
+      "ひ"
+    ],
+    [
+      "書",
+      "か"
     ]
   ],
   "words": [
@@ -257,6 +269,48 @@
       ],
       "explanationJa": "お客さまの 会社の 中で はたらく はたらきかたです。SESとも いいます。",
       "example": "客先常駐は、お客さまの 会社で はたらきます。"
+    },
+    {
+      "id": "enkaku",
+      "term": "沿革",
+      "reading": "えんかく",
+      "romaji": "enkaku",
+      "meaningEn": "Company history",
+      "wrongMeanings": [
+        "Head office",
+        "Contract",
+        "Interview"
+      ],
+      "explanationJa": "会社が して きた ことを、年と ならべた ものです。",
+      "example": "沿革を 見ると、会社が いつ できたか わかります。"
+    },
+    {
+      "id": "setsuritsu",
+      "term": "設立",
+      "reading": "せつりつ",
+      "romaji": "setsuritsu",
+      "meaningEn": "Establishment (founding)",
+      "wrongMeanings": [
+        "Closing",
+        "Moving",
+        "Hiring"
+      ],
+      "explanationJa": "会社が できた ことです。できた 日が 書いて あります。",
+      "example": "設立の ところに、会社が できた 日が あります。"
+    },
+    {
+      "id": "shozaichi",
+      "term": "所在地",
+      "reading": "しょざいち",
+      "romaji": "shozaichi",
+      "meaningEn": "Address / Location",
+      "wrongMeanings": [
+        "Phone number",
+        "Employee",
+        "Product"
+      ],
+      "explanationJa": "会社が ある 場所の ことです。じゅうしょが 書いて あります。",
+      "example": "所在地を 見ると、会社が どこに あるか わかります。"
     }
   ]
 }

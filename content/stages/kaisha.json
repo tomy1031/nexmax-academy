@@ -4,7 +4,7 @@
   "order": 2,
   "title": "かいしゃを しる",
   "reading": "かいしゃを しる",
-  "description": "かいしゃの ホームページの みかたを ならいます。しごとの しかたも 3つ でて きます。",
+  "description": "かいしゃの ホームページの みかたを ならいます。そのあと、ほんものの サイトを しらべて、ヘンディさんに つたえます。",
   "color": "leaf",
   "status": "draft",
   "area": {
@@ -20,6 +20,14 @@
     },
     {
       "ref": "kaisha_shirabekata_check",
+      "type": "quizset"
+    },
+    {
+      "ref": "kaisha_nextmake_shirabe",
+      "type": "article"
+    },
+    {
+      "ref": "kaisha_houkoku",
       "type": "quizset"
     }
   ],
