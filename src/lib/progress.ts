@@ -61,6 +61,28 @@ export function saveClearedStageIds(ids: readonly string[], stageIds: readonly s
   storage()?.setItem(PROGRESS_KEY, JSON.stringify(normalize(ids, stageIds)));
 }
 
+/**
+ * ステージ1つをクリア済みにする。
+ *
+ * ステージの並び（`stageIds`）を要求しない。並びを知っているのはマップだけで、
+ * 教材の画面は自分のステージしか知らないためである。並びが要らないのは
+ * **読むときに正規化している**から（`getClearedStageIds`）——ここでは足すだけでよく、
+ * 消したステージのIDが残っても読み側が捨てる。
+ */
+export function markStageCleared(stageId: string): void {
+  const store = storage();
+  if (!store) return;
+  let ids: string[] = [];
+  try {
+    const parsed: unknown = JSON.parse(store.getItem(PROGRESS_KEY) ?? "[]");
+    if (Array.isArray(parsed)) ids = parsed.filter((id): id is string => typeof id === "string");
+  } catch {
+    ids = [];
+  }
+  if (ids.includes(stageId)) return;
+  store.setItem(PROGRESS_KEY, JSON.stringify([...ids, stageId]));
+}
+
 /** クリア済み id の一覧から、画面表示に使う進捗をまとめて導く */
 export function deriveProgress(
   clearedIds: readonly string[],

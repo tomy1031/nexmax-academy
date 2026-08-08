@@ -38,6 +38,7 @@ import { MiniButton } from "./studio-ui";
 
 const KIND_LABEL: Record<MissingAsset["kind"], string> = {
   mangaPanel: "まんがの コマ",
+  articleImage: "よみものの え",
   characterSheet: "設定画",
   listeningAudio: "音声",
 };
