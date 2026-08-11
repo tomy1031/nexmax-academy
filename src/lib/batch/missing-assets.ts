@@ -20,7 +20,7 @@ import type { Content } from "@/content/schema";
 import { buildCharacterSheetPrompt } from "@/lib/manga-prompt";
 
 /** 作れるものの種類。増やすときは `applyAsset` にも足す（対で持つのが契約）。 */
-export type AssetKind = "mangaPanel" | "characterSheet" | "listeningAudio";
+export type AssetKind = "mangaPanel" | "articleImage" | "characterSheet" | "listeningAudio";
 
 export interface MissingAsset {
   /** 画面の並びで一意。React の key と「選んだもの」の記録に使う。 */
@@ -56,6 +56,17 @@ function panelAtFrom(id: string): { page: number; panel: number } | null {
 }
 
 /**
+ * 読み物の画像ブロックの位置も同じく **id の中に持つ**（`article:<教材ID>:<ブロック番号>`）。
+ * 理由は `panelAtFrom` と同じ——モジュールの外に位置を覚えると、古い位置へ書き戻す。
+ */
+function blockAtFrom(id: string): number | null {
+  const parts = id.split(":");
+  if (parts.length !== 3 || parts[0] !== "article") return null;
+  const block = Number(parts[2]);
+  return Number.isInteger(block) ? block : null;
+}
+
+/**
  * まだ絵や音の無いものを集める。
  *
  * 「無い」の判定は **`src` が空かどうか**にする。`status` は見ない——
@@ -81,6 +92,29 @@ export function collectMissingAssets(contents: readonly Content[]): MissingAsset
               references: panel.image.refs,
               prefix: `manga/${content.id}`,
             });
+          });
+        });
+        break;
+      }
+      case "article": {
+        /**
+         * 読み物の挿絵。番号は**画像ブロックの通し番号ではなく blocks の添字**にする。
+         * 「3まいめの え」を数えるのは先生に見せるラベルだけの話で、書き戻す先は
+         * blocks の位置だから——画像以外のブロックを1つ足したとたんにズレる。
+         */
+        let nth = 0;
+        content.blocks.forEach((block, b) => {
+          if (block.kind !== "image") return;
+          nth += 1;
+          if (block.src) return;
+          found.push({
+            id: `article:${content.id}:${b}`,
+            kind: "articleImage",
+            contentId: content.id,
+            label: `${content.title} — ${nth}まいめの え`,
+            prompt: block.prompt ?? "",
+            references: block.refs,
+            prefix: `article/${content.id}`,
           });
         });
         break;
@@ -149,6 +183,19 @@ export function applyAsset(content: Content, asset: MissingAsset, url: string): 
                     : { ...panel, image: { ...panel.image, src: url, status: "done" as const } },
                 ),
               },
+        ),
+      };
+    }
+    case "articleImage": {
+      if (content.kind !== "article") return content;
+      const at = blockAtFrom(asset.id);
+      if (at === null) return content;
+      return {
+        ...content,
+        blocks: content.blocks.map((block, b) =>
+          b !== at || block.kind !== "image"
+            ? block
+            : { ...block, src: url, status: "done" as const },
         ),
       };
     }

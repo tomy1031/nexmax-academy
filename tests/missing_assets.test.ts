@@ -36,6 +36,26 @@ function manga(panels: unknown[][], over: Record<string, unknown> = {}): Content
 const emptyPanel = { image: { refs: [], status: "empty", prompt: "オフィスの あさ" }, lines: [] };
 const donePanel = { image: { src: "/img/a.webp", refs: [], status: "done" }, lines: [] };
 
+function article(blocks: unknown[], over: Record<string, unknown> = {}): Content {
+  return parse({
+    kind: "article",
+    id: "a1",
+    title: "よみもの",
+    description: "てすとの よみもの",
+    blocks,
+    ...over,
+  });
+}
+
+const emptyImageBlock = {
+  kind: "image",
+  refs: [],
+  status: "empty",
+  prompt: "みちが つづく 地図",
+};
+const doneImageBlock = { kind: "image", refs: [], status: "done", src: "/img/b.webp" };
+const paragraphBlock = { kind: "paragraph", text: "みちは つづいて います。" };
+
 function character(over: Record<string, unknown> = {}): Content {
   return parse({
     kind: "character",
@@ -71,6 +91,17 @@ describe("足りないものを 集める", () => {
     expect(found).toHaveLength(1);
     expect(found[0]?.kind).toBe("mangaPanel");
     expect(found[0]?.label).toContain("1ページ目 2コマ目");
+  });
+
+  it("読み物の 絵の無い画像ブロックを 拾う（挿絵も まとめて つくれる）", () => {
+    const found = collectMissingAssets([
+      article([paragraphBlock, doneImageBlock, paragraphBlock, emptyImageBlock]),
+    ]);
+    expect(found).toHaveLength(1);
+    expect(found[0]?.kind).toBe("articleImage");
+    // 番号は「何まいめの え か」。ブロックの添字（3）ではなく 画像の通し番号（2）
+    expect(found[0]?.label).toContain("2まいめの え");
+    expect(found[0]?.prompt).toBe("みちが つづく 地図");
   });
 
   it("設定画の無い登場人物を 拾う", () => {
@@ -142,6 +173,32 @@ describe("できたものを 書き戻す", () => {
     applyAsset(source, asset!, "/img/new.webp");
     if (source.kind !== "manga") throw new Error("kind が変わった");
     expect(source.pages[0]?.panels[0]?.image.src).toBeUndefined();
+  });
+
+  it("読み物は その画像ブロックだけに 入り、他のブロックは 触らない", () => {
+    const source = article([emptyImageBlock, paragraphBlock, emptyImageBlock]);
+    const [, second] = collectMissingAssets([source]);
+    const updated = applyAsset(source, second!, "/img/new.webp");
+    if (updated.kind !== "article") throw new Error("kind が変わった");
+    const first = updated.blocks[0];
+    const third = updated.blocks[2];
+    if (first?.kind !== "image" || third?.kind !== "image") throw new Error("ブロックが 変わった");
+    expect(first.src).toBeUndefined();
+    expect(third.src).toBe("/img/new.webp");
+    expect(third.status).toBe("done");
+    expect(updated.blocks[1]).toEqual(paragraphBlock);
+  });
+
+  it("読み物の 画像でないブロックを 指していても 壊さない", () => {
+    /*
+     * ブロックを1つ消したり 種類を変えたりすると、id の中の添字が別のブロックを指す。
+     * 投げずに元のまま返す——一括処理の途中で1件おかしくても 残りを続けたいから。
+     */
+    const [asset] = collectMissingAssets([article([emptyImageBlock])]);
+    const swapped = article([paragraphBlock]);
+    const updated = applyAsset(swapped, asset!, "/img/x.webp");
+    if (updated.kind !== "article") throw new Error("kind が変わった");
+    expect(updated.blocks[0]).toEqual(paragraphBlock);
   });
 
   it("設定画は sheet に入り、使った指示も 残す（あとで作り直せる）", () => {

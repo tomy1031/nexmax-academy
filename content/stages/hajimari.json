@@ -1,0 +1,31 @@
+{
+  "kind": "stage",
+  "id": "hajimari",
+  "order": 1,
+  "title": "はじまり",
+  "reading": "はじまり",
+  "description": "ヘンディさんからの てがみを よみます。ちずの あるきかたを しって、へんじを かきます。",
+  "color": "sky",
+  "status": "published",
+  "area": {
+    "name": "アンコールワット",
+    "reading": "あんこーるわっと",
+    "image": "/img/scenes/area1_cambodia.webp",
+    "note": "ここが スタートです。"
+  },
+  "contents": [
+    {
+      "ref": "hajimari_manga",
+      "type": "manga"
+    },
+    {
+      "ref": "hajimari_chizu",
+      "type": "article"
+    },
+    {
+      "ref": "hajimari_henji",
+      "type": "quizset"
+    }
+  ],
+  "wordStageIds": []
+}

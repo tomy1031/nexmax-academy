@@ -1,0 +1,116 @@
+{
+  "kind": "article",
+  "id": "hajimari_chizu",
+  "title": "この ちずの あるきかた",
+  "description": "ちずの すすみかたを 知ります。いっしょに あるく ネクマックスも しょうかいします。",
+  "furigana": [
+    [
+      "場所",
+      "ばしょ"
+    ],
+    [
+      "日本",
+      "にほん"
+    ],
+    [
+      "地図",
+      "ちず"
+    ],
+    [
+      "上",
+      "うえ"
+    ],
+    [
+      "知",
+      "し"
+    ],
+    [
+      "見",
+      "み"
+    ],
+    [
+      "進",
+      "すす"
+    ],
+    [
+      "自分",
+      "じぶん"
+    ],
+    [
+      "名前",
+      "なまえ"
+    ],
+    [
+      "先",
+      "さき"
+    ],
+    [
+      "立",
+      "た"
+    ]
+  ],
+  "blocks": [
+    {
+      "kind": "paragraph",
+      "text": "この 地図は、あなたが すすむ みちです。カンボジアから 日本まで つづいて います。"
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "すすみかた"
+    },
+    {
+      "kind": "steps",
+      "items": [
+        "地図の 場所を タップします",
+        "まんがや もんだいを します",
+        "ぜんぶ おわると、つぎの 場所へ すすめます"
+      ]
+    },
+    {
+      "kind": "image",
+      "prompt": "a bird's-eye view of a cute illustrated map: a winding white road connects small colorful stops over green hills and rivers, and far in the distance a tiny city skyline with a tall tower; bright blue sky with soft clouds; no letters anywhere.",
+      "status": "done",
+      "caption": "みちは、つぎの 場所へ つづいて います。",
+      "src": "/img/articles/hajimari_chizu/b3.webp"
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "いっしょに あるく ネクマックス"
+    },
+    {
+      "kind": "paragraph",
+      "text": "地図の 上に、あなたに にた ネクマックスが 立って います。あなたの 名前も ついて います。"
+    },
+    {
+      "kind": "paragraph",
+      "text": "場所が おわると、ネクマックスが つぎへ すすみます。いま どこに いるかが すぐ わかります。"
+    },
+    {
+      "kind": "callout",
+      "tone": "point",
+      "text": "まちがえても だいじょうぶです。なんども できます。"
+    },
+    {
+      "kind": "vocab",
+      "items": [
+        {
+          "term": "地図",
+          "reading": "ちず",
+          "meaning": "すすむ みちが かいて ある え"
+        },
+        {
+          "term": "場所",
+          "reading": "ばしょ",
+          "meaning": "べんきょうを する ところ"
+        },
+        {
+          "term": "自分",
+          "reading": "じぶん",
+          "meaning": "わたし。あなた じしんの こと"
+        }
+      ]
+    }
+  ]
+}

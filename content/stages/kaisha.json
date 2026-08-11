@@ -1,0 +1,37 @@
+{
+  "kind": "stage",
+  "id": "kaisha",
+  "order": 2,
+  "title": "かいしゃを しる",
+  "reading": "かいしゃを しる",
+  "description": "かいしゃの ホームページの みかたを ならいます。そのあと、ほんものの サイトを しらべます。ヘンディさんに つたえます。",
+  "color": "leaf",
+  "status": "published",
+  "area": {
+    "name": "おうきゅうの まち",
+    "reading": "おうきゅうの まち",
+    "image": "/img/scenes/area_palace_town.webp",
+    "note": "ふるい たてものと たかい ビルが ならぶ まちです。"
+  },
+  "contents": [
+    {
+      "ref": "kaisha_shirabekata",
+      "type": "article"
+    },
+    {
+      "ref": "kaisha_shirabekata_check",
+      "type": "quizset"
+    },
+    {
+      "ref": "kaisha_nextmake_shirabe",
+      "type": "article"
+    },
+    {
+      "ref": "kaisha_houkoku",
+      "type": "quizset"
+    }
+  ],
+  "wordStageIds": [
+    "stage23_kaisha"
+  ]
+}

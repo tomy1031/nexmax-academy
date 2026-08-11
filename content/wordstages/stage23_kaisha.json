@@ -1,0 +1,324 @@
+{
+  "kind": "wordstage",
+  "id": "stage23_kaisha",
+  "title": "かいしゃ（M0: かいしゃを知る）",
+  "description": "会社の ホームページを しらべる ことばです。",
+  "password": "stage23",
+  "fieldSequence": [
+    "forest",
+    "sky",
+    "space"
+  ],
+  "questionCount": 10,
+  "passRate": 80,
+  "furigana": [
+    [
+      "問い合わせ",
+      "といあわせ"
+    ],
+    [
+      "会社概要",
+      "かいしゃがいよう"
+    ],
+    [
+      "受託開発",
+      "じゅたくかいはつ"
+    ],
+    [
+      "自社開発",
+      "じしゃかいはつ"
+    ],
+    [
+      "客先常駐",
+      "きゃくさきじょうちゅう"
+    ],
+    [
+      "会社",
+      "かいしゃ"
+    ],
+    [
+      "事業",
+      "じぎょう"
+    ],
+    [
+      "実績",
+      "じっせき"
+    ],
+    [
+      "採用",
+      "さいよう"
+    ],
+    [
+      "理念",
+      "りねん"
+    ],
+    [
+      "社員",
+      "しゃいん"
+    ],
+    [
+      "本社",
+      "ほんしゃ"
+    ],
+    [
+      "仕事",
+      "しごと"
+    ],
+    [
+      "内容",
+      "ないよう"
+    ],
+    [
+      "質問",
+      "しつもん"
+    ],
+    [
+      "自分",
+      "じぶん"
+    ],
+    [
+      "中心",
+      "ちゅうしん"
+    ],
+    [
+      "大阪",
+      "おおさか"
+    ],
+    [
+      "場所",
+      "ばしょ"
+    ],
+    [
+      "知",
+      "し"
+    ],
+    [
+      "人",
+      "ひと"
+    ],
+    [
+      "見",
+      "み"
+    ],
+    [
+      "作",
+      "つく"
+    ],
+    [
+      "中",
+      "なか"
+    ],
+    [
+      "考",
+      "かんが"
+    ],
+    [
+      "客",
+      "きゃく"
+    ],
+    [
+      "年",
+      "とし"
+    ],
+    [
+      "日",
+      "ひ"
+    ],
+    [
+      "書",
+      "か"
+    ],
+    [
+      "経営理念",
+      "けいえいりねん"
+    ],
+    [
+      "経営",
+      "けいえい"
+    ]
+  ],
+  "words": [
+    {
+      "id": "jigyo",
+      "term": "事業",
+      "reading": "じぎょう",
+      "romaji": "jigyou",
+      "meaningEn": "Business (activities)",
+      "wrongMeanings": [
+        "Office building",
+        "Meeting",
+        "Salary"
+      ],
+      "explanationJa": "会社が している 仕事の 内容の ことです。",
+      "example": "事業の ページで、なにを つくる 会社か わかります。"
+    },
+    {
+      "id": "jisseki",
+      "term": "実績",
+      "reading": "じっせき",
+      "romaji": "jisseki",
+      "meaningEn": "Track record / Past works",
+      "wrongMeanings": [
+        "Future plan",
+        "Company rule",
+        "Price list"
+      ],
+      "explanationJa": "いままでに 作った ものや、した 仕事の ことです。",
+      "example": "実績の ページに、作った ものが のって います。"
+    },
+    {
+      "id": "saiyo",
+      "term": "採用",
+      "reading": "さいよう",
+      "romaji": "saiyou",
+      "meaningEn": "Recruitment / Hiring",
+      "wrongMeanings": [
+        "Retirement",
+        "Training",
+        "Promotion"
+      ],
+      "explanationJa": "会社が いっしょに はたらく 人を えらぶ ことです。",
+      "example": "採用の ページで、どんな 人を さがして いるか わかります。"
+    },
+    {
+      "id": "rinen",
+      "term": "理念",
+      "reading": "りねん",
+      "romaji": "rinen",
+      "meaningEn": "Philosophy / Mission",
+      "wrongMeanings": [
+        "Profit",
+        "Schedule",
+        "Product"
+      ],
+      "explanationJa": "会社が いちばん たいせつに して いる 考えの ことです。",
+      "example": "会社の 理念は、経営理念の ページに あります。"
+    },
+    {
+      "id": "shain",
+      "term": "社員",
+      "reading": "しゃいん",
+      "romaji": "shain",
+      "meaningEn": "Employee",
+      "wrongMeanings": [
+        "President",
+        "Customer",
+        "Visitor"
+      ],
+      "explanationJa": "その 会社で はたらいて いる 人の ことです。",
+      "example": "どんな 社員が いるか、見て みましょう。"
+    },
+    {
+      "id": "honsha",
+      "term": "本社",
+      "reading": "ほんしゃ",
+      "romaji": "honsha",
+      "meaningEn": "Head office",
+      "wrongMeanings": [
+        "Branch office",
+        "Factory",
+        "Warehouse"
+      ],
+      "explanationJa": "会社の 中心に なる オフィスの ことです。",
+      "example": "ネクストメイクの 本社は 大阪に あります。"
+    },
+    {
+      "id": "otoiawase",
+      "term": "お問い合わせ",
+      "reading": "おといあわせ",
+      "romaji": "otoiawase",
+      "meaningEn": "Contact / Inquiry",
+      "wrongMeanings": [
+        "Order",
+        "Login",
+        "Download"
+      ],
+      "explanationJa": "会社に 質問を おくる ことです。",
+      "example": "質問は、お問い合わせの ページから おくります。"
+    },
+    {
+      "id": "jutaku_kaihatsu",
+      "term": "受託開発",
+      "reading": "じゅたくかいはつ",
+      "romaji": "jutaku kaihatsu",
+      "meaningEn": "Contract development",
+      "wrongMeanings": [
+        "In-house development",
+        "Open source",
+        "Sales support"
+      ],
+      "explanationJa": "お客さまの ために システムを 作る はたらきかたです。",
+      "example": "ネクストメイクは 受託開発の 会社です。"
+    },
+    {
+      "id": "jisha_kaihatsu",
+      "term": "自社開発",
+      "reading": "じしゃかいはつ",
+      "romaji": "jisha kaihatsu",
+      "meaningEn": "In-house development",
+      "wrongMeanings": [
+        "Contract development",
+        "Outsourcing",
+        "Consulting"
+      ],
+      "explanationJa": "自分の 会社の サービスを 作る はたらきかたです。",
+      "example": "自社開発の 会社は、自分の サービスを 作ります。"
+    },
+    {
+      "id": "kyakusaki_jochu",
+      "term": "客先常駐",
+      "reading": "きゃくさきじょうちゅう",
+      "romaji": "kyakusaki jouchuu",
+      "meaningEn": "Working at a client site",
+      "wrongMeanings": [
+        "Remote work",
+        "Night shift",
+        "Business trip"
+      ],
+      "explanationJa": "お客さまの 会社の 中で はたらく はたらきかたです。SESとも いいます。",
+      "example": "客先常駐は、お客さまの 会社で はたらきます。"
+    },
+    {
+      "id": "enkaku",
+      "term": "沿革",
+      "reading": "えんかく",
+      "romaji": "enkaku",
+      "meaningEn": "Company history",
+      "wrongMeanings": [
+        "Head office",
+        "Contract",
+        "Interview"
+      ],
+      "explanationJa": "会社が して きた ことを、年と ならべた ものです。",
+      "example": "沿革を 見ると、会社が いつ できたか わかります。"
+    },
+    {
+      "id": "setsuritsu",
+      "term": "設立",
+      "reading": "せつりつ",
+      "romaji": "setsuritsu",
+      "meaningEn": "Establishment (founding)",
+      "wrongMeanings": [
+        "Closing",
+        "Moving",
+        "Hiring"
+      ],
+      "explanationJa": "会社が できた ことです。できた 日が 書いて あります。",
+      "example": "設立の ところに、会社が できた 日が あります。"
+    },
+    {
+      "id": "shozaichi",
+      "term": "所在地",
+      "reading": "しょざいち",
+      "romaji": "shozaichi",
+      "meaningEn": "Address / Location",
+      "wrongMeanings": [
+        "Phone number",
+        "Employee",
+        "Product"
+      ],
+      "explanationJa": "会社が ある 場所の ことです。じゅうしょが 書いて あります。",
+      "example": "所在地を 見ると、会社が どこに あるか わかります。"
+    }
+  ]
+}

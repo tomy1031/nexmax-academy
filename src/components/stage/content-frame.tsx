@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState, useSyncExternalStore, type ReactNode } from "react";
+import { useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from "react";
 import type { ContentRefType } from "@/content/schema";
 import { contentKindMeta } from "@/lib/content-kinds";
+import { markStageCleared } from "@/lib/progress";
 import { readContentProgress, subscribeProgress } from "@/lib/progress/store";
 import { decodeStatuses, statusCode, STATUS_BADGE } from "./stage-progress";
 
@@ -74,6 +75,17 @@ export function ContentFrame({
   const current = items[currentIndex];
   const next = items[currentIndex + 1];
   const currentDone = codes[currentIndex] === "2";
+
+  /*
+    ステージの中身を全部おえたら、ステージをクリア済みにする。
+    ここで書くのは、教材の進捗（コンテンツ単位）とステージの進捗が別の保存先で、
+    後者を書く場所がどこにも無かったため——書かないと地図の現在地が動かず、
+    分身と飛行機が最初のステージに残り続ける。
+  */
+  const stageDone = items.length > 0 && codes.every((code) => code === "2");
+  useEffect(() => {
+    if (stageDone) markStageCleared(stage.id);
+  }, [stageDone, stage.id]);
 
   return (
     <div className="mx-auto w-full max-w-[88rem] px-3 py-4 sm:px-5">
