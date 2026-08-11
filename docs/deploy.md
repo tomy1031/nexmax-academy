@@ -257,14 +257,8 @@ DB・認証は3環境とも**同じ Supabase プロジェクト**を使う（ユ
 DBを本番と共有するため、検証操作が本番データ・本番ユーザーに影響する。以下を守る。
 
 1. **Google OAuth のリダイレクトURL登録**（Supabase → Authentication → URL Configuration）
-   - Site URL: 本番URL（`https://nexmax-academy.vercel.app`）
-   - Additional Redirect URLs に検証・プレビューを追加:
-     - `https://nexmax-academy.vercel.app/**`（本番・明示）
-     - `https://*.vercel.app/**`（ブランチプレビュー。サブドメインが毎回変わるため）
-     - `http://localhost:3000/**`（ローカル）
-
-   > **ここは Vercel 時代の記述。** Cloudflare Workers での現行の登録内容は §0.3 を見ること
-   > （`https://*-academy.nexmax.workers.dev/**` がブランチ確認URLを一括で許可する）。
+   - **現行の登録内容は §0.3 が正**（Site URL は本番 `https://academy.nexmax.workers.dev`、
+     Additional Redirect URLs は `https://*-academy.nexmax.workers.dev/**` がブランチ確認URLを一括許可）。
 
    > **末尾は `/**` にすること。** 以前ここには `/auth/callback` 完全一致で書いてあったが、
    > **それでは動かない**。戻り先は `?code=...` が付いた状態で照合されるため一致しない。
@@ -279,7 +273,9 @@ DBを本番と共有するため、検証操作が本番データ・本番ユー
    - 保険として、`?code=` がどのページに落ちても `src/middleware.ts` が
      `/auth/callback` へ回送する（同一オリジン内のみ有効）。
 2. **破壊的な検証は本番データに直撃する**。テーブル追加・RLS変更・大量データ投入は、まず Supabase の別プロジェクト（無料でもう1つ作れる）か、本番に影響しない専用テーブル/スキーマで行うことを推奨。「同一で大丈夫」の範囲は日常の閲覧・ログイン確認・少量の学習データまで、と運用で線引きする
-3. **service_role key は検証環境にも置く**が、クライアントには決して出さない（`getServerEnv()` 経由・サーバ専用）。露出したら Supabase ダッシュボードで即ローテーション
+3. **service_role key はどの環境にも置かない**（現在コードから参照されていない）。
+   `.env*` に置くと OpenNext がバンドルへ焼き込む（§0.1 罠①・`check_build_env.mjs` が止める）。
+   実行時に必要になったら `wrangler secret put` を使い、露出したら Supabase ダッシュボードで即ローテーション
 4. RLS を有効化し、学生ロールは自分の行のみ・教師は自クラスのみ（03 §3.3）。検証と本番でユーザーが混ざっても、権限は RLS が守る
 5. **DBマイグレーション**: `supabase/migrations/*.sql` を Supabase SQL Editor で実行する
 
@@ -290,4 +286,4 @@ npm run format:check && npm run lint && npm run typecheck \
   && npm run lint:secrets && npm run lint:content && npm test && npm run build
 ```
 
-GitHub Actions（`.github/workflows/ci.yml`）が push/PR で同じ検査を実行する。Vercel のビルドが通る前に CI で落とす二重化。
+GitHub Actions（`.github/workflows/ci.yml`）が push/PR で同じ検査を実行する。デプロイ（`cf:*`）前に CI で落とす二重化。
