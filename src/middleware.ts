@@ -3,7 +3,18 @@ import { NextResponse, type NextRequest } from "next/server";
 import { getSupabasePublicConfig } from "@/lib/env";
 
 /**
- * リクエストごとに Supabase セッションを更新する。
+ * ログインしていない人を、最初の画面（タイトル＝ログイン）へ返す。
+ *
+ * タイトル画面そのものと、OAuth の戻り道は通す。API は通す——
+ * ここで返すと HTML が返り、呼び出し側は「JSONが壊れた」としか分からなくなる。
+ * 認証は各 API 自身の仕事にする。
+ */
+function isOpenToVisitors(pathname: string): boolean {
+  return pathname === "/" || pathname.startsWith("/auth/") || pathname.startsWith("/api/");
+}
+
+/**
+ * リクエストごとに Supabase セッションを更新し、未ログインを最初の画面へ返す（願い #13）。
  * 未設定なら何もしない（デモモードでもアプリは動く）。
  *
  * あわせて OAuth の `?code=` を取りこぼさない。Supabase の Redirect URLs に
@@ -44,7 +55,19 @@ export async function middleware(request: NextRequest) {
     },
   });
 
-  await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user && !isOpenToVisitors(pathname)) {
+    const title = request.nextUrl.clone();
+    title.pathname = "/";
+    title.search = "";
+    // ログインのあと、開こうとしていた場所へ戻す。
+    title.searchParams.set("next", pathname);
+    return NextResponse.redirect(title);
+  }
+
   return response;
 }
 

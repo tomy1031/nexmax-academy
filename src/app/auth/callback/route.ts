@@ -14,11 +14,20 @@ function redirectTarget(request: Request, path: string): string {
   return `${new URL(request.url).origin}${path}`;
 }
 
+/**
+ * 戻り先はこのサイトの中だけに限る。
+ * `next` はURLから来るので、外のサイトを指されたらそのまま使わない。
+ */
+function safeNext(value: string | null): string {
+  if (!value || !value.startsWith("/") || value.startsWith("//")) return "/welcome";
+  return value;
+}
+
 /** Google OAuth のコールバック。code をセッションに交換して戻す。 */
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const code = searchParams.get("code");
-  const next = searchParams.get("next") ?? "/welcome";
+  const next = safeNext(searchParams.get("next"));
 
   if (code) {
     const supabase = await createClient();
@@ -28,5 +37,6 @@ export async function GET(request: Request) {
     }
   }
 
-  return NextResponse.redirect(redirectTarget(request, "/login?error=auth&next=/welcome"));
+  // 失敗したら最初の画面（タイトル＝ログイン）へ。そこで もう一度 ためせる。
+  return NextResponse.redirect(redirectTarget(request, "/?error=auth"));
 }

@@ -2,10 +2,32 @@
 
 import Link from "next/link";
 import { useState, useSyncExternalStore } from "react";
+import { GoogleG } from "@/components/google-g";
 import { NexMaxFamily } from "@/components/nexmax-types";
 import { getProfile } from "@/lib/profile";
+import { createClient } from "@/lib/supabase/client";
 
-export function TitleScreen() {
+/**
+ * タイトル画面。**ここが ログインの画面でもある**（願い #13）。
+ *
+ * ログインしていない人には「Google で ログインして はじめる」だけを出す。
+ * ログインの画面を別に置かないのは、最初に見える画面を1枚に決めるため
+ *（2026-08-11 の指定。旧 `/login` は消してここへ送っている）。
+ */
+export function TitleScreen({
+  authReady,
+  loggedIn,
+  hadAuthError = false,
+  next = "/welcome",
+}: {
+  /** Supabase の設定がそろっているか。未設定なら「じゅんびちゅう」を出す。 */
+  authReady: boolean;
+  loggedIn: boolean;
+  /** ログインの戻りが失敗したか（`/?error=auth`）。 */
+  hadAuthError?: boolean;
+  /** ログインしたあとに開く場所。ミドルウェアが弾いた行き先を持ってくる。 */
+  next?: string;
+}) {
   const hasProfile = useSyncExternalStore(
     (onStoreChange) => {
       window.addEventListener("storage", onStoreChange);
@@ -15,6 +37,19 @@ export function TitleScreen() {
     () => false,
   );
   const [showKeyart, setShowKeyart] = useState(true);
+  const [busy, setBusy] = useState(false);
+
+  async function signInWithGoogle() {
+    const supabase = createClient();
+    if (!supabase) return;
+    setBusy(true);
+    await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`,
+      },
+    });
+  }
 
   return (
     <main className="relative isolate flex min-h-dvh flex-col items-center overflow-hidden bg-[linear-gradient(180deg,#69c7f1_0%,#bdeaff_48%,#78d4da_70%,#f5d68b_100%)] px-4 py-5 text-center sm:py-8">
@@ -90,37 +125,81 @@ export function TitleScreen() {
           />
 
           <div className="absolute bottom-10 left-1/2 z-10 flex w-[min(92%,430px)] -translate-x-1/2 flex-col items-center">
-            <Link
-              href={hasProfile ? "/map" : "/welcome"}
-              className="btn-game w-full border-4 border-white px-6 py-5 text-xl font-black sm:text-2xl"
-              style={
-                {
-                  "--btn-face": "#ffc93c",
-                  "--btn-shadow": "#f0a819",
-                  color: "#1f3a56",
-                } as React.CSSProperties
-              }
-            >
-              {hasProfile ? (
-                <span className="whitespace-nowrap">⭐ つづきから ⭐</span>
-              ) : (
-                <span className="whitespace-nowrap">
-                  ⭐ ゲームを
+            {hadAuthError && (
+              <p className="bg-coral/95 mb-3 rounded-2xl border-2 border-white px-4 py-2 text-sm font-extrabold text-white shadow-lg">
+                🙏 ログインが うまく いきませんでした。もう一度 ためして みてね。
+              </p>
+            )}
+
+            {loggedIn ? (
+              <>
+                <Link
+                  href={hasProfile ? "/map" : "/welcome"}
+                  className="btn-game w-full border-4 border-white px-6 py-5 text-xl font-black sm:text-2xl"
+                  style={
+                    {
+                      "--btn-face": "#ffc93c",
+                      "--btn-shadow": "#f0a819",
+                      color: "#1f3a56",
+                    } as React.CSSProperties
+                  }
+                >
+                  {hasProfile ? (
+                    <span className="whitespace-nowrap">⭐ つづきから ⭐</span>
+                  ) : (
+                    <span className="whitespace-nowrap">
+                      ⭐ ゲームを
+                      <ruby>
+                        始<rt>はじ</rt>
+                      </ruby>
+                      める ⭐
+                    </span>
+                  )}
+                </Link>
+                {hasProfile && (
+                  // `retake=1` が要る。付けないと /welcome が診断済みの人をマップへ送り返す。
+                  <Link
+                    href="/welcome?retake=1"
+                    className="text-navy mt-5 rounded-full bg-white/90 px-5 py-1.5 text-sm font-extrabold underline underline-offset-4 shadow-sm"
+                  >
+                    せいかくしんだんを もういちど
+                  </Link>
+                )}
+              </>
+            ) : authReady ? (
+              <>
+                <button
+                  type="button"
+                  onClick={() => void signInWithGoogle()}
+                  disabled={busy}
+                  className="btn-game w-full border-4 border-white px-6 py-5 text-lg font-black disabled:opacity-60 sm:text-xl"
+                  style={
+                    {
+                      "--btn-face": "#ffffff",
+                      "--btn-shadow": "#c9d8e4",
+                      color: "#1f3a56",
+                    } as React.CSSProperties
+                  }
+                >
+                  <GoogleG size={24} />
+                  <span className="whitespace-nowrap">
+                    {busy ? "ひらいて います…" : "Google で ログインして はじめる"}
+                  </span>
+                </button>
+                <p className="text-navy mt-4 rounded-2xl bg-white/90 px-4 py-2 text-center text-xs font-extrabold shadow-sm">
+                  ログインすると、がんばった きろく（
                   <ruby>
-                    始<rt>はじ</rt>
+                    進<rt>しん</rt>
                   </ruby>
-                  める ⭐
-                </span>
-              )}
-            </Link>
-            {hasProfile && (
-              // `retake=1` が要る。付けないと /welcome が診断済みの人をマップへ送り返す。
-              <Link
-                href="/welcome?retake=1"
-                className="text-navy mt-5 rounded-full bg-white/90 px-5 py-1.5 text-sm font-extrabold underline underline-offset-4 shadow-sm"
-              >
-                せいかくしんだんを もういちど
-              </Link>
+                  ちょくや ⭐）が のこるよ。
+                </p>
+              </>
+            ) : (
+              <p className="text-navy rounded-2xl border-2 border-white bg-white/90 px-5 py-4 text-center text-sm font-extrabold shadow-lg">
+                🔧 ログインは いま じゅんびちゅう です。
+                <br />
+                もうすこし まってね！
+              </p>
             )}
           </div>
 

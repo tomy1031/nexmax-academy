@@ -18,7 +18,12 @@ const nextConfig: NextConfig = {
    * ページ側で調べて redirect する（src/lib/stage-lookup.ts）。
    */
   async redirects() {
-    return [{ source: "/stage/:id", destination: "/:id", permanent: true }];
+    return [
+      { source: "/stage/:id", destination: "/:id", permanent: true },
+      // ログインの画面は無くなり、タイトル画面（＝最初の画面）がログインを兼ねる（願い #13）。
+      // 配ったリンクとブックマークを 404 にしないため、消さずに送る。
+      { source: "/login", destination: "/", permanent: false },
+    ];
   },
 };
 
