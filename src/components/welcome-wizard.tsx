@@ -27,6 +27,7 @@ import { LearnerText, RubyText, renderRuby } from "@/components/ruby-text";
 import { findAllGlossaryTerms } from "@/content/glossary";
 import { insertPersonalityResult, updateOwnNames, upsertOwnProfile } from "@/lib/profile-db";
 import { areNamesValid, katakanaNotice, MAX_NAME_LENGTH, type LearnerNames } from "@/lib/name";
+import { COHORTS, isSchoolChosen, UNIVERSITIES, type LearnerSchool } from "@/lib/school";
 import { getGeminiKey, saveGeminiKey, saveProfile, type Gender } from "@/lib/profile";
 
 function subscribeToStorage(onStoreChange: () => void) {
@@ -349,7 +350,7 @@ export function WelcomeWizard({
   loggedIn: boolean;
   email: string | null;
   /** 保存済みの名前と性別。やり直しのときに入れ直させないため。 */
-  saved?: { names: LearnerNames; gender: Gender } | null;
+  saved?: { names: LearnerNames; school: LearnerSchool; gender: Gender } | null;
   /** 診断のやり直しとして開かれたか。文言の出し分けにだけ使う。 */
   retake?: boolean;
   /**
@@ -369,6 +370,12 @@ export function WelcomeWizard({
     nickname: saved?.names.nickname ?? "",
   }));
   const namesReady = areNamesValid(names);
+  // 学校と期生。先生がクラスを見分けるために使う（願い #27）。
+  const [school, setSchool] = useState<LearnerSchool>(() => ({
+    university: saved?.school.university ?? "",
+    cohort: saved?.school.cohort ?? 0,
+  }));
+  const schoolReady = isSchoolChosen(school);
   const [genderChoice, setGenderChoice] = useState<Gender | null>(saved?.gender ?? null);
   const gender = genderChoice;
   const [geminiValue, setGeminiValue] = useState<string | null>(null);
@@ -410,11 +417,12 @@ export function WelcomeWizard({
   const missingSetupItems = [
     !loggedIn ? "ログイン" : null,
     !namesReady ? "なまえ" : null,
+    !schoolReady ? "がっこう" : null,
     !namesOnly && !gender ? "せいべつ" : null,
   ].filter((item): item is string => item !== null);
 
   function goToQuestions() {
-    if (!loggedIn || !namesReady || !gender) return;
+    if (!loggedIn || !namesReady || !schoolReady || !gender) return;
     saveGeminiKey(geminiInput.current?.value ?? geminiKey);
     setStep(2);
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -425,12 +433,12 @@ export function WelcomeWizard({
    * 診断の結果には触らない——20問はもう終わっているので、消してはいけない。
    */
   async function saveNames() {
-    if (!namesReady) return;
+    if (!namesReady || !schoolReady) return;
     setBusy(true);
     setSaveError(false);
     saveGeminiKey(geminiInput.current?.value ?? geminiKey);
     try {
-      const stored = await updateOwnNames(names);
+      const stored = await updateOwnNames(names, school);
       // 表示用キャッシュも新しい呼び名にしておく。放っておくと、マップが返事を待つあいだ
       // 古い名前が出る。診断は終わっている場面なので scores も型どおりそろっている。
       saveProfile({
@@ -491,6 +499,7 @@ export function WelcomeWizard({
     try {
       const stored = await upsertOwnProfile({
         names,
+        school,
         gender,
         personalityType: resultCode,
         answers: completedAnswers,
@@ -555,7 +564,7 @@ export function WelcomeWizard({
           <div className="animate-pop-in relative z-10">
             <h1 className="text-navy mt-7 text-center text-2xl font-black sm:text-3xl">
               {namesOnly
-                ? "⭐ なまえを おしえてね ⭐"
+                ? "⭐ なまえと がっこうを おしえてね ⭐"
                 : retake
                   ? "⭐ せいかくしんだんを もういちど ⭐"
                   : "⭐ はじめての チュートリアル ⭐"}
@@ -563,6 +572,7 @@ export function WelcomeWizard({
             {namesOnly && (
               <p className="text-ink-soft mt-3 text-center font-bold">
                 なまえの かきかたが かわりました。カタカナで もういちど おしえてください。
+                がっこうも えらんでね。
                 <br />
                 しんだんは おわって いるので、しつもんは ありません。
               </p>
@@ -771,6 +781,61 @@ export function WelcomeWizard({
                 </div>
               </article>
 
+              {/* 学校と期生（願い #27）。先生がクラスを見分けるのに使う。
+                  なまえと同じく、この列を足す前に作られた行にも入れてもらう必要があるので、
+                  「なまえだけ」の場面（namesOnly）でも隠さない。 */}
+              <article className="card-pop border-white p-5 shadow-[0_6px_0_#d7eaf5]">
+                <h2 className="text-navy font-extrabold">
+                  ⭐ がっこう{" "}
+                  <span className="text-coral-deep text-xs">
+                    （
+                    <ruby>
+                      必須<rt>ひっす</rt>
+                    </ruby>
+                    ）
+                  </span>
+                </h2>
+                <p className="text-ink-soft mt-2 text-sm font-bold">
+                  あなたの がっこうと、なんきせいかを えらんでね。
+                </p>
+                <div className="mt-4 grid grid-cols-2 gap-2">
+                  {UNIVERSITIES.map((name) => (
+                    <button
+                      key={name}
+                      type="button"
+                      aria-pressed={school.university === name}
+                      onClick={() => setSchool((current) => ({ ...current, university: name }))}
+                      className={`rounded-2xl border-3 px-2 py-3 text-sm font-extrabold shadow-sm transition-transform hover:-translate-y-1 ${
+                        school.university === name
+                          ? "border-sky bg-sky-soft text-navy"
+                          : "border-hairline text-ink-soft bg-white"
+                      }`}
+                    >
+                      🎓 {name}
+                    </button>
+                  ))}
+                </div>
+                <p className="text-ink-soft mt-4 text-sm font-bold">なんきせい？</p>
+                <div className="mt-2 grid grid-cols-5 gap-1.5">
+                  {COHORTS.map((year) => (
+                    <button
+                      key={year}
+                      type="button"
+                      aria-pressed={school.cohort === year}
+                      onClick={() => setSchool((current) => ({ ...current, cohort: year }))}
+                      className={`rounded-2xl border-3 py-2 text-sm font-extrabold shadow-sm transition-transform hover:-translate-y-1 ${
+                        school.cohort === year
+                          ? "border-sky bg-sky-soft text-navy"
+                          : "border-hairline text-ink-soft bg-white"
+                      }`}
+                    >
+                      {year}
+                      <span className="block text-[10px]">きせい</span>
+                    </button>
+                  ))}
+                </div>
+              </article>
+
               <article
                 className={`card-pop border-white p-5 shadow-[0_6px_0_#d7eaf5] ${
                   namesOnly ? "hidden" : ""
@@ -893,7 +958,9 @@ export function WelcomeWizard({
             <div className="mt-4 text-center">
               <button
                 type="button"
-                disabled={busy || !loggedIn || !namesReady || (!namesOnly && !gender)}
+                disabled={
+                  busy || !loggedIn || !namesReady || !schoolReady || (!namesOnly && !gender)
+                }
                 onClick={namesOnly ? () => void saveNames() : goToQuestions}
                 className="btn-game text-ink min-w-64 px-10 py-4 text-xl disabled:cursor-not-allowed disabled:opacity-45"
                 style={
@@ -1323,7 +1390,7 @@ export function WelcomeWizard({
             >
               {step === 1 &&
                 (namesOnly
-                  ? "なまえを カタカナで おしえてね！"
+                  ? "なまえと がっこうを おしえてね！"
                   : retake
                     ? "せっていを かくにんしましょう！"
                     : "はじめに せっていを しましょう！")}

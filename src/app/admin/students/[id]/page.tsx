@@ -37,6 +37,7 @@ import {
   type ProfileRow,
 } from "@/lib/profile-db";
 import { buildFullName } from "@/lib/name";
+import { formatSchool } from "@/lib/school";
 import { createClient } from "@/lib/supabase/client";
 
 const ANSWER_MARK = { a: "Ⓐ", b: "Ⓑ" } as const;
@@ -144,6 +145,8 @@ export default function StudentPersonalityReportPage() {
     familyName: profile.family_name ?? "",
     givenName: profile.given_name ?? "",
   });
+  // 学校と期生（願い #27）。名簿と突き合わせるときに要る。
+  const school = formatSchool({ university: profile.university, cohort: profile.cohort });
 
   // 未診断・壊れた行でも画面を落とさない。ここを通さないと getFamilyForCode 等が
   // render 中に throw して、1行の不整合でページ全体が白くなる。
@@ -208,6 +211,10 @@ export default function StudentPersonalityReportPage() {
               <div>
                 <dt className="text-ink-soft font-bold">メール</dt>
                 <dd className="break-all">{profile.email}</dd>
+              </div>
+              <div>
+                <dt className="text-ink-soft font-bold">学校</dt>
+                <dd>{school || "（未設定）"}</dd>
               </div>
               <div>
                 <dt className="text-ink-soft font-bold">性別</dt>

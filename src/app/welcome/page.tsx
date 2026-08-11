@@ -4,6 +4,7 @@ import { WelcomeWizard } from "@/components/welcome-wizard";
 import { AUTH_STATE_HEADER } from "@/lib/auth-cookie";
 import { hasLearnerNames, katakanaOrEmpty, type LearnerNames } from "@/lib/name";
 import { isDiagnosisComplete, type Gender } from "@/lib/profile";
+import { isSchoolChosen, type LearnerSchool, type University } from "@/lib/school";
 import { createClient } from "@/lib/supabase/server";
 
 /**
@@ -35,15 +36,15 @@ export default async function WelcomePage({
   const user = supabase ? (await supabase.auth.getUser()).data.user : null;
   if (supabase && !user) redirect("/");
 
-  let saved: { names: LearnerNames; gender: Gender } | null = null;
-  // 診断は終わっているのに、なまえが「苗字・名前」に分かれていない行。
-  // 20問をやり直させず、なまえだけ入れ直してもらう。
+  let saved: { names: LearnerNames; school: LearnerSchool; gender: Gender } | null = null;
+  // 診断は終わっているのに、なまえや学校がそろっていない行（列を足す前に作られたもの）。
+  // 20問をやり直させず、足りない項目だけ入れてもらう。
   let namesOnly = false;
 
   if (supabase && user) {
     const { data: profile } = await supabase
       .from("profiles")
-      .select("family_name, given_name, nickname, gender, answers")
+      .select("family_name, given_name, nickname, university, cohort, gender, answers")
       .eq("id", user.id)
       .maybeSingle();
 
@@ -53,15 +54,20 @@ export default async function WelcomePage({
         givenName: profile.given_name ?? "",
         nickname: profile.nickname ?? "",
       };
+      const school: LearnerSchool = {
+        university: (profile.university ?? "") as University | "",
+        cohort: profile.cohort ?? 0,
+      };
       const diagnosed = isDiagnosisComplete(profile.answers);
+      const detailsReady = hasLearnerNames(names) && isSchoolChosen(school);
 
-      // 診断が終わっていて、なまえもそろっている人だけマップへ返す。行の存在だけで判定すると、
-      // 名前と性別だけ入って診断が未完了の行が /map と /welcome を往復して詰む。
-      if (diagnosed && hasLearnerNames(names) && !retake) redirect("/map");
+      // 診断が終わっていて、なまえと学校もそろっている人だけマップへ返す。行の存在だけで
+      // 判定すると、名前と性別だけ入って診断が未完了の行が /map と /welcome を往復して詰む。
+      if (diagnosed && detailsReady && !retake) redirect("/map");
 
-      namesOnly = diagnosed && !hasLearnerNames(names) && !retake;
-      // やり直しでも なまえと性別は入れ直させない。
-      saved = { names, gender: profile.gender };
+      namesOnly = diagnosed && !detailsReady && !retake;
+      // やり直しでも なまえ・学校・性別は入れ直させない。
+      saved = { names, school, gender: profile.gender };
     }
   }
 

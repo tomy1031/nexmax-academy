@@ -5,6 +5,7 @@ import type {
   PersonalityTypeCode,
 } from "@/content/personality";
 import { buildDisplayName, normalizeNames, type LearnerNames } from "@/lib/name";
+import type { LearnerSchool } from "@/lib/school";
 import type { Gender } from "@/lib/profile";
 import { createClient } from "@/lib/supabase/client";
 
@@ -27,6 +28,10 @@ export interface ProfileRow {
   given_name: string;
   /** 先生に呼んでほしい名前（カタカナ・任意）。 */
   nickname: string;
+  /** 学校（AUPP / CADT）。空文字はこの列を足す前の行。 */
+  university: string;
+  /** 何期生（1〜5）。0 はこの列を足す前の行。 */
+  cohort: number;
   gender: Gender;
   personality_type: PersonalityTypeCode;
   answers: PersonalityAnswer[];
@@ -43,6 +48,7 @@ export interface ProfileRow {
 
 export interface OwnProfileInput {
   names: LearnerNames;
+  school: LearnerSchool;
   gender: Gender;
   personalityType: PersonalityTypeCode;
   answers: PersonalityAnswer[];
@@ -74,6 +80,7 @@ export interface PersonalityResultInput {
 export interface AdminProfilePatch {
   /** 3つまとめて渡す（呼び名を組み立て直すため、部分更新にしない）。 */
   names?: LearnerNames;
+  school?: LearnerSchool;
   gender?: Gender;
   personalityType?: PersonalityTypeCode;
 }
@@ -128,6 +135,8 @@ export async function upsertOwnProfile(data: OwnProfileInput): Promise<ProfileRo
       {
         id: user.id,
         ...nameColumns(data.names),
+        university: data.school.university,
+        cohort: data.school.cohort,
         gender: data.gender,
         personality_type: data.personalityType,
         answers: data.answers,
@@ -145,12 +154,16 @@ export async function upsertOwnProfile(data: OwnProfileInput): Promise<ProfileRo
 }
 
 /**
- * なまえ3欄だけを書き換える。
+ * なまえと学校だけを書き換える。
  *
- * 診断が終わっている人に20問をやり直させずに、なまえを分けて入れ直してもらうための道
- *（なまえを分ける前に作られた行は `family_name` が空。§src/lib/name.ts `hasLearnerNames`）。
+ * 診断が終わっている人に20問をやり直させずに、あとから足りない項目を入れてもらう道
+ *（なまえを分ける前に作られた行は `family_name` が空、学校の列を足す前の行は
+ *  `university` が空。§src/lib/name.ts `hasLearnerNames` / src/lib/school.ts `isSchoolChosen`）。
  */
-export async function updateOwnNames(names: LearnerNames): Promise<ProfileRow> {
+export async function updateOwnNames(
+  names: LearnerNames,
+  school: LearnerSchool,
+): Promise<ProfileRow> {
   const supabase = requireClient();
   const {
     data: { user },
@@ -161,7 +174,11 @@ export async function updateOwnNames(names: LearnerNames): Promise<ProfileRow> {
 
   const { data, error } = await supabase
     .from("profiles")
-    .update(nameColumns(names))
+    .update({
+      ...nameColumns(names),
+      university: school.university,
+      cohort: school.cohort,
+    })
     .eq("id", user.id)
     .select("*")
     .single();
@@ -247,8 +264,12 @@ export async function updateProfileAsAdmin(
   patch: AdminProfilePatch,
 ): Promise<ProfileRow> {
   const supabase = requireClient();
-  const update: Record<string, string> = {};
+  const update: Record<string, string | number> = {};
   if (patch.names !== undefined) Object.assign(update, nameColumns(patch.names));
+  if (patch.school !== undefined) {
+    update.university = patch.school.university;
+    update.cohort = patch.school.cohort;
+  }
   if (patch.gender !== undefined) update.gender = patch.gender;
   if (patch.personalityType !== undefined) update.personality_type = patch.personalityType;
 
