@@ -17,12 +17,12 @@ import { readContentProgress, recordContentProgress } from "@/lib/progress/store
  * セリフを読まないまま下まで行ける。1コマずつ出せば、
  * **次へ進むのに1回タップが要る**ので、そのコマを読んだことになる。
  *
- * ## セリフの出し方は2通り
- * 既定は「絵は文字なしで作り、セリフは画面で重ねる」。理由は ふりがな である。
- * 画像生成に日本語を描かせると漢字が崩れやすく、ルビ（親文字より小さく・位置が厳密・
- * 画数の多い漢字の真上）は成功例が見つからない。焼き込むと `lint:content` の
- * ふりがな全覆い検査も効かなくなる（AGENTS.md 規律2）。
- * 絵の中にセリフを入れたい教材は `speechInImage: true` にすると、ここでは出さない。
+ * ## セリフは「絵の中」と「絵の下」の両方に出す
+ * `speechInImage: true` の教材は、絵の吹き出しにも文字が焼いてある（まんがとして
+ * 読めるように）。それでも**下のセリフは消さない**。焼いた字はふりがなを持てず
+ *（画像生成のルビは崩れる）、語彙ポップアップも読み上げも効かないので、
+ * 規律2（読めない漢字で学習者を止めない）を守るのは下のテキストの役目である。
+ * つまり `speechInImage` は「絵に焼くかどうか」だけを意味する。
  *
  * 進捗はコマ単位。見たいちばん先のコマを しおり に残し、最後まで行ったら「よみおわり」。
  */
@@ -135,8 +135,6 @@ export function MangaSlides({ manga, embedded }: { manga: Manga; embedded: boole
     return () => window.removeEventListener("keydown", onKey);
   }, [go, index]);
 
-  const showLines = !manga.speechInImage;
-
   return (
     <div className={embedded ? "" : "mx-auto w-full max-w-4xl px-4 py-6"}>
       <section className="card-island p-5 sm:p-6">
@@ -183,7 +181,6 @@ export function MangaSlides({ manga, embedded }: { manga: Manga; embedded: boole
           >
             <PanelView
               panel={slide.panel}
-              showLines={showLines}
               speakerOf={speakerOf}
               furigana={furigana}
               furiganaOn={furiganaOn}
@@ -286,16 +283,20 @@ export function MangaSlides({ manga, embedded }: { manga: Manga; embedded: boole
   );
 }
 
-/** 1コマ。絵と、その下のセリフ。 */
+/**
+ * 1コマ。絵と、その下のセリフ。
+ *
+ * セリフは**絵に焼いてあっても下に出す**。焼いた字はふりがなを持てないので
+ *（画像生成でルビは崩れる）、ルビ・語彙ポップアップ・読み上げは下のテキストが担う。
+ * `speechInImage` は「絵に焼くかどうか」だけを意味し、下に出すかは左右しない。
+ */
 function PanelView({
   panel,
-  showLines,
   speakerOf,
   furigana,
   furiganaOn,
 }: {
   panel: MangaPanel;
-  showLines: boolean;
   speakerOf: ReadonlyMap<string, Speaker>;
   furigana: FuriganaIndex;
   furiganaOn: boolean;
@@ -331,7 +332,7 @@ function PanelView({
         </figcaption>
       ) : null}
 
-      {showLines && panel.lines.length > 0 ? (
+      {panel.lines.length > 0 ? (
         <div className="space-y-2 p-4">
           {panel.lines.map((line, i) => (
             <LineBubble
