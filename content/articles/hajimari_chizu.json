@@ -70,8 +70,9 @@
     {
       "kind": "image",
       "prompt": "a bird's-eye view of a cute illustrated map: a winding white road connects small colorful stops over green hills and rivers, and far in the distance a tiny city skyline with a tall tower; bright blue sky with soft clouds; no letters anywhere.",
-      "status": "empty",
-      "caption": "みちは、つぎの 場所へ つづいて います。"
+      "status": "done",
+      "caption": "みちは、つぎの 場所へ つづいて います。",
+      "src": "/img/articles/hajimari_chizu/b3.webp"
     },
     {
       "kind": "heading",

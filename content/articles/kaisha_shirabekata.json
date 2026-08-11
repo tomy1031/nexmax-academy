@@ -142,8 +142,9 @@
     {
       "kind": "image",
       "prompt": "a simple flat illustration of three friendly cartoon eyes in a row on a soft cream card, each eye inside a rounded pastel circle (mint, sky blue, coral); clean vector style, thick soft outlines, no letters anywhere.",
-      "status": "empty",
-      "caption": "3つの 目で 見ます。"
+      "status": "done",
+      "caption": "3つの 目で 見ます。",
+      "src": "/img/articles/kaisha_shirabekata/b3.webp"
     },
     {
       "kind": "paragraph",
