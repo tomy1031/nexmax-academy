@@ -38,6 +38,9 @@ const SPEAKER_ACCENTS = [
 
 const NARRATION_ACCENT = "var(--color-ink-soft)";
 
+/** まんがが持つ語彙の1件（schema.ts の vocabItemSchema）。型だけここで名前を付ける。 */
+type VocabItem = NonNullable<Manga["vocab"]>[number];
+
 interface Speaker {
   name: string;
   role?: string;
@@ -181,6 +184,7 @@ export function MangaSlides({ manga, embedded }: { manga: Manga; embedded: boole
           >
             <PanelView
               panel={slide.panel}
+              vocab={manga.vocab ?? []}
               speakerOf={speakerOf}
               furigana={furigana}
               furiganaOn={furiganaOn}
@@ -292,11 +296,13 @@ export function MangaSlides({ manga, embedded }: { manga: Manga; embedded: boole
  */
 function PanelView({
   panel,
+  vocab,
   speakerOf,
   furigana,
   furiganaOn,
 }: {
   panel: MangaPanel;
+  vocab: readonly VocabItem[];
   speakerOf: ReadonlyMap<string, Speaker>;
   furigana: FuriganaIndex;
   furiganaOn: boolean;
@@ -327,8 +333,13 @@ function PanelView({
       </div>
 
       {panel.caption ? (
-        <figcaption className="text-ink-soft border-hairline border-t px-4 py-2 text-xs font-bold break-words">
-          <RubyText text={panel.caption} index={furigana} show={furiganaOn} />
+        <figcaption className="border-hairline border-t p-4">
+          <LineBubble
+            line={{ speaker: "narration", text: panel.caption }}
+            speaker={speakerOf.get("narration")}
+            furigana={furigana}
+            furiganaOn={furiganaOn}
+          />
         </figcaption>
       ) : null}
 
@@ -345,7 +356,48 @@ function PanelView({
           ))}
         </div>
       ) : null}
+
+      <PanelVocab panel={panel} vocab={vocab} furigana={furigana} furiganaOn={furiganaOn} />
     </figure>
+  );
+}
+
+/**
+ * そのコマに出てきた ことばだけを、絵の下に置く。
+ *
+ * まんが全体の語彙を毎コマ並べると、読むべき2〜3語が20語に埋もれる。
+ * **いま読んだ文に出てきた語だけ**に絞ると、学習者は目の前の文と結びつけられる。
+ * 意味は英語も添える——やさしい日本語で言い換えても、その言い換えが読めない
+ * ことがある（学習者は日本語1年目）。最後の受け皿として英語を残す。
+ */
+function PanelVocab({
+  panel,
+  vocab,
+  furigana,
+  furiganaOn,
+}: {
+  panel: MangaPanel;
+  vocab: readonly VocabItem[];
+  furigana: FuriganaIndex;
+  furiganaOn: boolean;
+}) {
+  const text = [panel.caption ?? "", ...panel.lines.map((l) => l.text)].join("");
+  const shown = vocab.filter((v) => text.includes(v.term));
+  if (shown.length === 0) return null;
+
+  return (
+    <dl className="border-hairline bg-panel-tint border-t px-4 py-3">
+      {shown.map((item) => (
+        <div key={item.term} className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5 py-0.5">
+          <dt className="text-navy text-base font-black">
+            <RubyText text={item.term} index={furigana} show={furiganaOn} />
+          </dt>
+          <dd className="text-ink-soft min-w-0 flex-1 text-sm font-bold break-words">
+            {item.meaning}
+          </dd>
+        </div>
+      ))}
+    </dl>
   );
 }
 
@@ -370,7 +422,8 @@ function LineBubble({
         {speaker?.name ?? line.speaker}
         {speaker?.role ? <span className="ml-1 font-bold opacity-80">{speaker.role}</span> : null}
       </span>
-      <span className="text-ink min-w-0 flex-1 leading-relaxed font-bold break-words">
+      {/* 絵の下の文は、絵に焼いた字と同じくらい大きく読める必要がある（学習者はここでルビを読む） */}
+      <span className="text-ink min-w-0 flex-1 text-lg leading-loose font-bold break-words sm:text-xl">
         <RubyText text={line.text} index={furigana} show={furiganaOn} />
       </span>
     </p>
