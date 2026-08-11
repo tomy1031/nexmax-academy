@@ -1,5 +1,7 @@
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { WelcomeWizard } from "@/components/welcome-wizard";
+import { AUTH_STATE_HEADER } from "@/lib/auth-cookie";
 import { hasLearnerNames, katakanaOrEmpty, type LearnerNames } from "@/lib/name";
 import { isDiagnosisComplete, type Gender } from "@/lib/profile";
 import { createClient } from "@/lib/supabase/server";
@@ -24,10 +26,13 @@ export default async function WelcomePage({
 }) {
   const retake = (await searchParams)[RETAKE_PARAM] === "1";
   const supabase = await createClient();
-  const user = supabase ? (await supabase.auth.getUser()).data.user : null;
 
   // ログインしてはじめて始められる（願い #13）。未ログインはタイトル画面＝ログインへ返す。
-  // ミドルウェアも同じ判断をするが、ここでも見る（キャッシュや直リンクで素通りさせないため）。
+  // ミドルウェアが確認ずみの結果を先に見て、未ログインなら Supabase へ問い合わせない（願い #17）。
+  const authState = (await headers()).get(AUTH_STATE_HEADER);
+  if (supabase && authState === "0") redirect("/");
+
+  const user = supabase ? (await supabase.auth.getUser()).data.user : null;
   if (supabase && !user) redirect("/");
 
   let saved: { names: LearnerNames; gender: Gender } | null = null;

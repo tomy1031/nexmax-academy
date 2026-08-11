@@ -1,3 +1,4 @@
+import { markReady } from "@/lib/auth-cookie";
 import {
   isPersonalityScores,
   isPersonalityTypeCode,
@@ -82,6 +83,9 @@ export function saveProfile(profile: NexmaxProfile): void {
   }
   removeLegacyProfile();
   storage()?.setItem(PROFILE_KEY, JSON.stringify(profile));
+  // タイトル画面が「つづきから」を出せるように、サーバからも見える印を付ける。
+  // ここを通るのは、診断もなまえも そろっていることを確認した後だけ（願い #17）。
+  markReady(true);
 }
 
 export function getGeminiKey(): string {
@@ -137,6 +141,7 @@ export function saveMapView(view: MapView): void {
  */
 export function clearProfile(): void {
   storage()?.removeItem(PROFILE_KEY);
+  markReady(false);
 }
 
 export function clearNexmaxCache(): void {
@@ -147,4 +152,5 @@ export function clearNexmaxCache(): void {
     const key = target.key(index);
     if (key?.startsWith("nexmax.")) target.removeItem(key);
   }
+  markReady(false);
 }
