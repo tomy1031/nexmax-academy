@@ -284,8 +284,11 @@ export default function AdminUsersPage() {
                             </label>
                           );
                         })}
+                        {/* なまえを分ける前に作られた行は3欄が空。そのときは「—」ではなく、
+                            いま実際に画面へ出ている呼び名（display_name）を見せる。 */}
                         <p className="text-ink-soft text-[11px] font-bold">
-                          画面に出る呼び名: {buildDisplayName(draft.names) || "—"}
+                          画面に出る呼び名:{" "}
+                          {buildDisplayName(draft.names) || profile.display_name || "—"}
                         </p>
                       </div>
                       <Link

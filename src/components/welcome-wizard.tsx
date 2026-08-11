@@ -430,7 +430,16 @@ export function WelcomeWizard({
     setSaveError(false);
     saveGeminiKey(geminiInput.current?.value ?? geminiKey);
     try {
-      await updateOwnNames(names);
+      const stored = await updateOwnNames(names);
+      // 表示用キャッシュも新しい呼び名にしておく。放っておくと、マップが返事を待つあいだ
+      // 古い名前が出る。診断は終わっている場面なので scores も型どおりそろっている。
+      saveProfile({
+        displayName: stored.display_name,
+        gender: stored.gender,
+        type: stored.personality_type,
+        scores: stored.scores,
+        createdAt: stored.created_at,
+      });
       router.push("/map");
     } catch {
       setSaveError(true);

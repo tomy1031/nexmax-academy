@@ -1,10 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useSyncExternalStore } from "react";
+import { useState } from "react";
 import { GoogleG } from "@/components/google-g";
 import { NexMaxFamily } from "@/components/nexmax-types";
-import { getProfile } from "@/lib/profile";
 import { createClient } from "@/lib/supabase/client";
 
 /**
@@ -17,25 +16,23 @@ import { createClient } from "@/lib/supabase/client";
 export function TitleScreen({
   authReady,
   loggedIn,
+  canContinue = false,
   hadAuthError = false,
   next = "/welcome",
 }: {
   /** Supabase の設定がそろっているか。未設定なら「じゅんびちゅう」を出す。 */
   authReady: boolean;
   loggedIn: boolean;
+  /**
+   * 「つづきから」を出してよいか（診断ずみ＋なまえあり）。
+   * この端末の記憶ではなくDBで決める（page.tsx）。別の端末で開いても同じ答えになる。
+   */
+  canContinue?: boolean;
   /** ログインの戻りが失敗したか（`/?error=auth`）。 */
   hadAuthError?: boolean;
   /** ログインしたあとに開く場所。ミドルウェアが弾いた行き先を持ってくる。 */
   next?: string;
 }) {
-  const hasProfile = useSyncExternalStore(
-    (onStoreChange) => {
-      window.addEventListener("storage", onStoreChange);
-      return () => window.removeEventListener("storage", onStoreChange);
-    },
-    () => getProfile() !== null,
-    () => false,
-  );
   const [showKeyart, setShowKeyart] = useState(true);
   const [busy, setBusy] = useState(false);
 
@@ -134,7 +131,7 @@ export function TitleScreen({
             {loggedIn ? (
               <>
                 <Link
-                  href={hasProfile ? "/map" : "/welcome"}
+                  href={canContinue ? "/map" : "/welcome"}
                   className="btn-game w-full border-4 border-white px-6 py-5 text-xl font-black sm:text-2xl"
                   style={
                     {
@@ -144,7 +141,7 @@ export function TitleScreen({
                     } as React.CSSProperties
                   }
                 >
-                  {hasProfile ? (
+                  {canContinue ? (
                     <span className="whitespace-nowrap">⭐ つづきから ⭐</span>
                   ) : (
                     <span className="whitespace-nowrap">
@@ -156,7 +153,7 @@ export function TitleScreen({
                     </span>
                   )}
                 </Link>
-                {hasProfile && (
+                {canContinue && (
                   // `retake=1` が要る。付けないと /welcome が診断済みの人をマップへ送り返す。
                   <Link
                     href="/welcome?retake=1"
