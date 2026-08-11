@@ -24,6 +24,7 @@ import {
 } from "@/content/personality";
 import { contentKindMeta } from "@/lib/content-kinds";
 import { hasLearnerNames } from "@/lib/name";
+import { isSchoolChosen } from "@/lib/school";
 import { readContentProgress, subscribeProgress } from "@/lib/progress/store";
 import { statusCode as contentStatusCode } from "@/components/stage/stage-progress";
 import type { MapStage } from "@/lib/map-data";
@@ -1346,7 +1347,10 @@ export function MapShell({
         }
         // なまえを「苗字・名前」に分ける前に作られた行。カタカナで入れ直してもらう（願い #14）。
         // 診断はもう終わっているので、/welcome はなまえの欄だけを出す（20問はやり直さない）。
-        if (!hasLearnerNames({ familyName: stored.family_name, givenName: stored.given_name })) {
+        if (
+          !hasLearnerNames({ familyName: stored.family_name, givenName: stored.given_name }) ||
+          !isSchoolChosen({ university: stored.university, cohort: stored.cohort })
+        ) {
           router.replace("/welcome");
           return;
         }

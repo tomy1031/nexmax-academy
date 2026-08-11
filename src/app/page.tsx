@@ -4,6 +4,7 @@ import { AUTH_STATE_HEADER, READY_COOKIE } from "@/lib/auth-cookie";
 import { isSupabaseConfigured } from "@/lib/env";
 import { hasLearnerNames } from "@/lib/name";
 import { isDiagnosisComplete } from "@/lib/profile";
+import { isSchoolChosen } from "@/lib/school";
 import { createClient } from "@/lib/supabase/server";
 
 /**
@@ -34,7 +35,7 @@ export default async function Home({
     if (supabase && user) {
       const { data: profile } = await supabase
         .from("profiles")
-        .select("answers, family_name, given_name")
+        .select("answers, family_name, given_name, university, cohort")
         .eq("id", user.id)
         .maybeSingle();
       canContinue = Boolean(
