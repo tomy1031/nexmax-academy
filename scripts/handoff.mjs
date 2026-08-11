@@ -47,7 +47,10 @@ const dirtyCount = dirty ? dirty.split("\n").length : 0;
 // ── デプロイ状態（/api/version にビルド時SHAが焼き込まれている。未デプロイ期間は「確認不可」）
 async function deployState(url) {
   try {
-    const res = await fetch(`${url}/api/version`, { signal: AbortSignal.timeout(4000) });
+    // クエリはエッジキャッシュ避け（/api/version は s-maxage が長く、素のURLは古い版を返しうる）
+    const res = await fetch(`${url}/api/version?t=${Date.now()}`, {
+      signal: AbortSignal.timeout(4000),
+    });
     if (!res.ok) return { label: "確認不可（/api/version 未デプロイ。次回デプロイ後に有効）" };
     const { sha } = await res.json();
     if (!sha) return { label: "確認不可（SHAなし）" };
