@@ -1,7 +1,23 @@
 import type { NextConfig } from "next";
+import { execSync } from "node:child_process";
 import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare";
 
+// ビルド時のコミットSHAを /api/version に焼き込む（handoff が本番/STG=main かを照合する。願い #5）。
+// git が無い環境でもビルドは止めない。
+function buildGitSha(): string {
+  try {
+    return execSync("git rev-parse HEAD", { encoding: "utf8" }).trim();
+  } catch {
+    return "";
+  }
+}
+
 const nextConfig: NextConfig = {
+  env: {
+    BUILD_GIT_SHA: buildGitSha(),
+    BUILD_TIME: new Date().toISOString(),
+  },
+
   // ホームディレクトリ側の package-lock.json をワークスペース root と誤認させない。
   // 誤認すると standalone 出力の依存トレースがずれて Workers 上で壊れる。
   turbopack: { root: import.meta.dirname },

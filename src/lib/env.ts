@@ -63,3 +63,12 @@ export function getSupabasePublicConfig(): { url: string; anonKey: string } | nu
     anonKey: publicEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY,
   };
 }
+
+/**
+ * ビルド時に next.config.ts が焼き込むビルド情報（/api/version が返す）。
+ * 秘密ではない（public リポジトリのコミットSHAとビルド時刻）。
+ */
+export const buildInfo = {
+  sha: process.env.BUILD_GIT_SHA || null,
+  builtAt: process.env.BUILD_TIME || null,
+};
