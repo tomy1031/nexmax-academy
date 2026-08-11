@@ -311,8 +311,14 @@ function LearnerHere({
 }) {
   return (
     <div className={`absolute z-30 -translate-x-1/2 text-center ${className}`} style={style}>
-      <NexMaxFamily family={learner.family} gender={learner.gender} size={92} bob />
-      <p className="text-navy mx-auto -mt-1 w-max rounded-full border-2 border-white bg-white/90 px-3 py-0.5 text-xs font-black shadow-md">
+      <NexMaxFamily
+        family={learner.family}
+        gender={learner.gender}
+        size={84}
+        bob
+        className="drop-shadow-[0_8px_6px_rgba(0,79,141,.25)]"
+      />
+      <p className="text-navy mx-auto -mt-1 w-max rounded-full border-2 border-white bg-white/95 px-3 py-0.5 text-xs font-black shadow-md">
         {learner.name}
       </p>
     </div>
@@ -371,90 +377,116 @@ function ProgressBar({ progress }: { progress: StageProgress }) {
   );
 }
 
-function Hud({ profile, progress }: { profile: ProfileRow | null; progress: StageProgress }) {
+/**
+ * 右上の持ち物と分身の札（HUD）。
+ *
+ * 高さを1つに決めて全部そろえる。以前は数値のピルとアバターの札で高さも角丸も別々で、
+ * 同じ列に並んでいるのに揃って見えなかった。切り替えも別の `fixed` で位置を直接
+ * 指定していたので、上の札の高さが変わるたびに隙間がずれる。**縦に積むひと組**にして、
+ * 隙間は指定でなく積み方から出す。
+ */
+const HUD_PILL =
+  "text-navy flex h-11 items-center gap-1.5 rounded-2xl border-2 border-[#e9bd55] bg-[#fffaf0]/95 px-3 text-sm font-black shadow-[0_3px_0_#d9a839,0_7px_15px_rgba(0,79,141,.14)] backdrop-blur-sm";
+
+function Hud({
+  profile,
+  progress,
+  view,
+  onViewChange,
+}: {
+  profile: ProfileRow | null;
+  progress: StageProgress;
+  view: MapView;
+  onViewChange: (view: MapView) => void;
+}) {
   return (
-    <div className="fixed top-3 right-3 z-50 flex max-w-[calc(100vw-6rem)] flex-wrap justify-end gap-2">
-      <div className="flex gap-1.5">
-        {[
-          {
-            key: "stage",
-            node: (
-              <>
-                🚩 {progress.clearedCount}/{progress.totalCount}
-              </>
-            ),
-          },
-          {
-            key: "coin",
-            node: (
-              <>
+    <div className="fixed top-3 right-3 z-50 flex max-w-[calc(100vw-6rem)] flex-col items-end gap-2">
+      <div className="flex flex-wrap justify-end gap-2">
+        <div className="flex gap-1.5">
+          {[
+            {
+              key: "stage",
+              icon: <span aria-hidden>🚩</span>,
+              // 数字は等幅にする。桁が変わるたびに札の幅が動くと、目が落ち着かない。
+              value: `${progress.clearedCount}/${progress.totalCount}`,
+            },
+            {
+              key: "coin",
+              icon: (
                 <span
                   aria-hidden
-                  className="inline-block h-3.5 w-3.5 rounded-full border-2 border-[#d9a839] bg-[linear-gradient(180deg,#ffe37a,#f5b70f)] align-[-2px]"
-                />{" "}
-                0
-              </>
-            ),
-          },
-          { key: "gem", node: <>💎 0</> },
-        ].map((item) => (
-          <span
-            key={item.key}
-            className="text-navy rounded-full border-2 border-[#e9bd55] bg-[#fffaf0]/95 px-3 py-1 text-xs font-black shadow-[0_3px_0_#d9a839,0_7px_15px_rgba(0,79,141,.14)] backdrop-blur-sm sm:text-sm"
-          >
-            {item.node}
-          </span>
-        ))}
-      </div>
-      <div className="flex items-center gap-2 rounded-2xl border-2 border-[#e9bd55] bg-[#fffaf0]/95 p-1.5 pr-3 shadow-[0_4px_0_#d9a839,0_8px_18px_rgba(0,79,141,.16)]">
-        {profile ? (
-          <>
-            <NexMaxFamily
-              family={getFamilyForCode(profile.personality_type).id}
-              gender={profile.gender}
-              size={42}
-            />
-            <span className="hidden leading-tight sm:block">
-              <span className="text-ink block text-sm font-black">{profile.display_name}</span>
-              <span className="text-ink-soft block text-[10px] font-extrabold">
-                {getPersonalityType(profile.personality_type).name}
+                  className="inline-block h-4 w-4 shrink-0 rounded-full border-2 border-[#d9a839] bg-[linear-gradient(180deg,#ffe37a,#f5b70f)]"
+                />
+              ),
+              value: "0",
+            },
+            { key: "gem", icon: <span aria-hidden>💎</span>, value: "0" },
+          ].map((item) => (
+            <span key={item.key} className={HUD_PILL}>
+              {item.icon}
+              <span className="tabular-nums">{item.value}</span>
+            </span>
+          ))}
+        </div>
+
+        <div className={`${HUD_PILL} max-w-56 gap-2 py-0 pr-3 pl-1.5`}>
+          {profile ? (
+            <>
+              <NexMaxFamily
+                family={getFamilyForCode(profile.personality_type).id}
+                gender={profile.gender}
+                size={34}
+                className="shrink-0"
+              />
+              <span className="hidden min-w-0 leading-tight sm:block">
+                <span className="text-ink block truncate text-sm font-black">
+                  {profile.display_name}
+                </span>
+                <span className="text-ink-soft block truncate text-[10px] font-extrabold">
+                  {getPersonalityType(profile.personality_type).name}
+                </span>
               </span>
-            </span>
-            <span aria-label="オンライン" className="bg-leaf h-2.5 w-2.5 rounded-full" />
-          </>
-        ) : (
-          <>
-            <span aria-hidden className="bg-hairline block h-10 w-10 animate-pulse rounded-full" />
-            <span className="hidden min-w-20 leading-tight sm:block">
-              <span className="text-ink block text-sm font-black">…</span>
-              <span className="text-ink-soft block text-[10px] font-extrabold">…</span>
-            </span>
-          </>
-        )}
+              <span aria-label="オンライン" className="bg-leaf h-2.5 w-2.5 shrink-0 rounded-full" />
+            </>
+          ) : (
+            <>
+              <span
+                aria-hidden
+                className="bg-hairline h-8 w-8 shrink-0 animate-pulse rounded-full"
+              />
+              <span className="hidden min-w-20 leading-tight sm:block">
+                <span className="text-ink block text-sm font-black">…</span>
+                <span className="text-ink-soft block text-[10px] font-extrabold">…</span>
+              </span>
+            </>
+          )}
+        </div>
       </div>
+
+      <ViewToggle view={view} onChange={onViewChange} />
     </div>
   );
 }
 
 function ViewToggle({ view, onChange }: { view: MapView; onChange: (view: MapView) => void }) {
   return (
-    <div className="fixed top-[4.75rem] right-3 z-50 flex rounded-full border-2 border-[#e9bd55] bg-[#fffaf0]/95 p-1 text-xs font-black shadow-[0_3px_0_#d9a839] sm:top-[4.25rem] sm:text-sm">
+    <div className="flex rounded-2xl border-2 border-[#e9bd55] bg-[#fffaf0]/95 p-1 text-xs font-black shadow-[0_3px_0_#d9a839] sm:text-sm">
       <button
         type="button"
         aria-pressed={view === "map"}
         onClick={() => onChange("map")}
-        className={`rounded-full px-3 py-1.5 ${view === "map" ? "bg-navy text-white" : "text-ink-soft"}`}
+        className={`rounded-xl px-3 py-1.5 ${view === "map" ? "bg-navy text-white" : "text-ink-soft"}`}
       >
         🗺️ マップ
       </button>
-      <span aria-hidden className="text-ink-faint self-center">
+      <span aria-hidden className="text-ink-faint self-center px-0.5">
         ⇄
       </span>
       <button
         type="button"
         aria-pressed={view === "cards"}
         onClick={() => onChange("cards")}
-        className={`rounded-full px-3 py-1.5 ${view === "cards" ? "bg-navy text-white" : "text-ink-soft"}`}
+        className={`rounded-xl px-3 py-1.5 ${view === "cards" ? "bg-navy text-white" : "text-ink-soft"}`}
       >
         🃏 カード
       </button>
@@ -949,11 +981,17 @@ function RouteArea({
 
         {/* いま取り組むステージのエリアには学習者の分身を立たせ、それ以外は景色の住人を置く。
             両方いると「どれが自分か」が分からなくなるので、同じ場所で入れ替える。
-            分身はせまい画面でも出す（自分がどこに居るかは、いつでも見えるべきもの） */}
+            分身はせまい画面でも出す（自分がどこに居るかは、いつでも見えるべきもの）。
+
+            置き場所は**ステージの丸のとなり・レッスンパネルの反対側**。以前は
+            パネルと同じ側の少し下に置いていて、実測でパネルの裏に完全に隠れていた
+            （分身 x701-793 に対しパネル x605-900）。丸より少し上に出すのは、
+            せまい画面でパネルが丸の真下に開くため。 */}
         {learner && status === "current" ? (
           <LearnerHere
             learner={learner}
-            style={{ left: `${chipOnRight ? nodeX + 24 : nodeX - 24}%`, top: `${nodeTop + 20}%` }}
+            className="z-40"
+            style={{ left: `${chipOnRight ? nodeX - 14 : nodeX + 14}%`, top: `${nodeTop - 8}%` }}
           />
         ) : (
           <div
@@ -1380,8 +1418,7 @@ export function MapShell({
   return (
     <div className="bg-bg-sky relative min-h-dvh">
       <Logo />
-      <Hud profile={databaseProfile} progress={progress} />
-      <ViewToggle view={view} onChange={changeView} />
+      <Hud profile={databaseProfile} progress={progress} view={view} onViewChange={changeView} />
       <Navigation
         collapsed={collapsed}
         drawerOpen={drawerOpen}
