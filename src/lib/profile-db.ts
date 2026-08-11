@@ -4,6 +4,7 @@ import type {
   PersonalityScores,
   PersonalityTypeCode,
 } from "@/content/personality";
+import { buildDisplayName, normalizeNames, type LearnerNames } from "@/lib/name";
 import type { Gender } from "@/lib/profile";
 import { createClient } from "@/lib/supabase/client";
 
@@ -18,7 +19,14 @@ export const PERSONALITY_VERSION = 3;
 export interface ProfileRow {
   id: string;
   email: string;
+  /** 呼び名。`nickname` → `given_name` の順でアプリが組み立てて書く（src/lib/name.ts）。 */
   display_name: string;
+  /** 苗字（カタカナ）。分けて持つ前に作られた行は空。 */
+  family_name: string;
+  /** 名前（カタカナ）。 */
+  given_name: string;
+  /** 先生に呼んでほしい名前（カタカナ・任意）。 */
+  nickname: string;
   gender: Gender;
   personality_type: PersonalityTypeCode;
   answers: PersonalityAnswer[];
@@ -34,7 +42,7 @@ export interface ProfileRow {
 }
 
 export interface OwnProfileInput {
-  displayName: string;
+  names: LearnerNames;
   gender: Gender;
   personalityType: PersonalityTypeCode;
   answers: PersonalityAnswer[];
@@ -64,9 +72,21 @@ export interface PersonalityResultInput {
 }
 
 export interface AdminProfilePatch {
-  displayName?: string;
+  /** 3つまとめて渡す（呼び名を組み立て直すため、部分更新にしない）。 */
+  names?: LearnerNames;
   gender?: Gender;
   personalityType?: PersonalityTypeCode;
+}
+
+/** なまえ3欄を、保存する形（整形＋呼び名）にそろえる。 */
+function nameColumns(names: LearnerNames) {
+  const normalized = normalizeNames(names);
+  return {
+    family_name: normalized.familyName,
+    given_name: normalized.givenName,
+    nickname: normalized.nickname,
+    display_name: buildDisplayName(normalized),
+  };
 }
 
 function requireClient() {
@@ -107,7 +127,7 @@ export async function upsertOwnProfile(data: OwnProfileInput): Promise<ProfileRo
     .upsert(
       {
         id: user.id,
-        display_name: data.displayName,
+        ...nameColumns(data.names),
         gender: data.gender,
         personality_type: data.personalityType,
         answers: data.answers,
@@ -122,6 +142,31 @@ export async function upsertOwnProfile(data: OwnProfileInput): Promise<ProfileRo
     .single();
   if (error) throw error;
   return profile as ProfileRow;
+}
+
+/**
+ * なまえ3欄だけを書き換える。
+ *
+ * 診断が終わっている人に20問をやり直させずに、なまえを分けて入れ直してもらうための道
+ *（なまえを分ける前に作られた行は `family_name` が空。§src/lib/name.ts `hasLearnerNames`）。
+ */
+export async function updateOwnNames(names: LearnerNames): Promise<ProfileRow> {
+  const supabase = requireClient();
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+  if (userError) throw userError;
+  if (!user) throw new Error("Authentication is required.");
+
+  const { data, error } = await supabase
+    .from("profiles")
+    .update(nameColumns(names))
+    .eq("id", user.id)
+    .select("*")
+    .single();
+  if (error) throw error;
+  return data as ProfileRow;
 }
 
 export async function insertPersonalityResult(
@@ -203,7 +248,7 @@ export async function updateProfileAsAdmin(
 ): Promise<ProfileRow> {
   const supabase = requireClient();
   const update: Record<string, string> = {};
-  if (patch.displayName !== undefined) update.display_name = patch.displayName;
+  if (patch.names !== undefined) Object.assign(update, nameColumns(patch.names));
   if (patch.gender !== undefined) update.gender = patch.gender;
   if (patch.personalityType !== undefined) update.personality_type = patch.personalityType;
 

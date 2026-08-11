@@ -26,7 +26,9 @@ export function buildPersonalityCsv(
   const latest = latestResultsByProfile(results);
   const headers = [
     "メール",
-    "なまえ",
+    "苗字",
+    "名前",
+    "よび名",
     "性別",
     "タイプ",
     "組",
@@ -46,6 +48,9 @@ export function buildPersonalityCsv(
 
     return [
       profile.email,
+      profile.family_name ?? "",
+      profile.given_name ?? "",
+      // 呼び名。名簿として使うので、なまえを分ける前に作られた行でも空欄にしない。
       profile.display_name,
       profile.gender === "male" ? "男性" : "女性",
       complete && isPersonalityTypeCode(profile.personality_type)

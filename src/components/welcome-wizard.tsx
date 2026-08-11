@@ -25,8 +25,9 @@ import { NexMaxFamily, NexMaxType, TypeEmblem } from "@/components/nexmax-types"
 import { GlossaryChip, GlossaryText } from "@/components/glossary-text";
 import { LearnerText, RubyText, renderRuby } from "@/components/ruby-text";
 import { findAllGlossaryTerms } from "@/content/glossary";
-import { insertPersonalityResult, upsertOwnProfile } from "@/lib/profile-db";
+import { insertPersonalityResult, updateOwnNames, upsertOwnProfile } from "@/lib/profile-db";
 import { createClient } from "@/lib/supabase/client";
+import { areNamesValid, katakanaNotice, MAX_NAME_LENGTH, type LearnerNames } from "@/lib/name";
 import { getGeminiKey, saveGeminiKey, saveProfile, type Gender } from "@/lib/profile";
 
 function subscribeToStorage(onStoreChange: () => void) {
@@ -273,6 +274,67 @@ function QuestionIntro({
   );
 }
 
+/**
+ * なまえの入力欄1つ分。
+ *
+ * カタカナで書く決まり（願い #14）。書き直しの案内は打ち終わってから出す——
+ * 1文字打つたびに注意が出ると、打っている最中に「合っていない」と見えてしまう。
+ * 判定そのものは `src/lib/name.ts` に置く（画面ごとに書かない）。
+ */
+function NameField({
+  label,
+  hint,
+  placeholder,
+  value,
+  onChange,
+  optional = false,
+}: {
+  label: ReactNode;
+  hint?: string;
+  placeholder: string;
+  value: string;
+  onChange: (value: string) => void;
+  optional?: boolean;
+}) {
+  const [touched, setTouched] = useState(false);
+  const notice = touched ? katakanaNotice(value) : null;
+
+  return (
+    <label className="block">
+      <span className="text-ink block text-sm font-extrabold">
+        {label}
+        {optional ? (
+          <span className="text-ink-soft ml-1 text-xs">（じゆう）</span>
+        ) : (
+          <span className="text-coral-deep ml-1 text-xs">
+            （
+            <ruby>
+              必須<rt>ひっす</rt>
+            </ruby>
+            ）
+          </span>
+        )}
+      </span>
+      {hint && <span className="text-ink-soft mt-0.5 block text-xs font-bold">{hint}</span>}
+      <input
+        type="text"
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        onBlur={() => setTouched(true)}
+        placeholder={placeholder}
+        maxLength={MAX_NAME_LENGTH}
+        aria-invalid={notice !== null}
+        className={`mt-1.5 w-full rounded-2xl border-2 bg-white px-4 py-2 font-bold ${
+          notice ? "border-coral" : "border-hairline"
+        }`}
+      />
+      {notice && (
+        <span className="text-coral-deep mt-1 block text-xs font-extrabold">🙏 {notice}</span>
+      )}
+    </label>
+  );
+}
+
 /** 全問共通の問いかけ（07 §3.1）。 */
 const ASK_LABEL: Readonly<Record<PersonalityLanguage, string>> = {
   easy: "あなたに ちかいのは、どっちですか?",
@@ -305,19 +367,33 @@ export function WelcomeWizard({
   email,
   saved = null,
   retake = false,
+  namesOnly = false,
+  googleNames,
 }: {
   authReady: boolean;
   loggedIn: boolean;
   email: string | null;
   /** 保存済みの名前と性別。やり直しのときに入れ直させないため。 */
-  saved?: { displayName: string; gender: Gender } | null;
+  saved?: { names: LearnerNames; gender: Gender } | null;
   /** 診断のやり直しとして開かれたか。文言の出し分けにだけ使う。 */
   retake?: boolean;
+  /**
+   * なまえだけを入れ直してもらう場面か（診断は終わっている）。
+   * なまえを「苗字・名前」に分ける前に作られた行のための道。20問はやり直させない。
+   */
+  namesOnly?: boolean;
+  /** Google に登録された名前。カタカナの欄だけ初期値に入る（page.tsx で判定ずみ）。 */
+  googleNames: { familyName: string; givenName: string; fullName: string };
 }) {
   const router = useRouter();
   const savedGeminiKey = useSyncExternalStore(subscribeToStorage, savedGeminiKeySnapshot, () => "");
   const [step, setStep] = useState<1 | 2 | 3>(1);
-  const [displayName, setDisplayName] = useState(saved?.displayName ?? "");
+  const [names, setNames] = useState<LearnerNames>(() => ({
+    familyName: saved?.names.familyName || googleNames.familyName,
+    givenName: saved?.names.givenName || googleNames.givenName,
+    nickname: saved?.names.nickname ?? "",
+  }));
+  const namesReady = areNamesValid(names);
   const [genderChoice, setGenderChoice] = useState<Gender | null>(saved?.gender ?? null);
   const gender = genderChoice;
   const [geminiValue, setGeminiValue] = useState<string | null>(null);
@@ -358,8 +434,8 @@ export function WelcomeWizard({
   const currentQuestion = PERSONALITY_QUESTIONS[questionIndex]!;
   const missingSetupItems = [
     !loggedIn ? "ログイン" : null,
-    !displayName.trim() ? "なまえ" : null,
-    !gender ? "せいべつ" : null,
+    !namesReady ? "なまえ" : null,
+    !namesOnly && !gender ? "せいべつ" : null,
   ].filter((item): item is string => item !== null);
 
   async function signInWithGoogle() {
@@ -375,10 +451,28 @@ export function WelcomeWizard({
   }
 
   function goToQuestions() {
-    if (!loggedIn || !displayName.trim() || !gender) return;
+    if (!loggedIn || !namesReady || !gender) return;
     saveGeminiKey(geminiInput.current?.value ?? geminiKey);
     setStep(2);
     window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  /**
+   * なまえだけ保存してマップへ戻る（`namesOnly` の場面）。
+   * 診断の結果には触らない——20問はもう終わっているので、消してはいけない。
+   */
+  async function saveNames() {
+    if (!namesReady) return;
+    setBusy(true);
+    setSaveError(false);
+    saveGeminiKey(geminiInput.current?.value ?? geminiKey);
+    try {
+      await updateOwnNames(names);
+      router.push("/map");
+    } catch {
+      setSaveError(true);
+      setBusy(false);
+    }
   }
 
   function setAnswer(index: number, value: PersonalityAnswer) {
@@ -424,7 +518,7 @@ export function WelcomeWizard({
     const scores = calculatePersonalityScores(completedAnswers);
     try {
       const stored = await upsertOwnProfile({
-        displayName: displayName.trim(),
+        names,
         gender,
         personalityType: resultCode,
         answers: completedAnswers,
@@ -479,16 +573,33 @@ export function WelcomeWizard({
           <MiniGameLogo />
         </header>
 
-        <div className="relative z-10">
-          <Stepper step={step} />
-        </div>
+        {!namesOnly && (
+          <div className="relative z-10">
+            <Stepper step={step} />
+          </div>
+        )}
 
         {step === 1 && (
           <div className="animate-pop-in relative z-10">
             <h1 className="text-navy mt-7 text-center text-2xl font-black sm:text-3xl">
-              {retake ? "⭐ せいかくしんだんを もういちど ⭐" : "⭐ はじめての チュートリアル ⭐"}
+              {namesOnly
+                ? "⭐ なまえを おしえてね ⭐"
+                : retake
+                  ? "⭐ せいかくしんだんを もういちど ⭐"
+                  : "⭐ はじめての チュートリアル ⭐"}
             </h1>
-            <div className="mt-5 rounded-3xl border-2 border-white bg-[#e9f7ff]/90 p-4 shadow-[inset_0_0_24px_rgba(2,136,209,.1)] sm:p-6">
+            {namesOnly && (
+              <p className="text-ink-soft mt-3 text-center font-bold">
+                なまえの かきかたが かわりました。カタカナで もういちど おしえてください。
+                <br />
+                しんだんは おわって いるので、しつもんは ありません。
+              </p>
+            )}
+            <div
+              className={`mt-5 rounded-3xl border-2 border-white bg-[#e9f7ff]/90 p-4 shadow-[inset_0_0_24px_rgba(2,136,209,.1)] sm:p-6 ${
+                namesOnly ? "hidden" : ""
+              }`}
+            >
               <h2 className="text-ink text-center text-xl font-extrabold sm:text-2xl">
                 ネクマックスアカデミーで、
                 <ruby>
@@ -605,8 +716,16 @@ export function WelcomeWizard({
               </div>
             </div>
 
-            <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-              <article className="card-pop border-white p-5 shadow-[0_6px_0_#d7eaf5]">
+            <div
+              className={`mt-5 grid gap-4 ${
+                namesOnly ? "mx-auto max-w-2xl" : "md:grid-cols-2 xl:grid-cols-4"
+              }`}
+            >
+              <article
+                className={`card-pop border-white p-5 shadow-[0_6px_0_#d7eaf5] ${
+                  namesOnly ? "hidden" : ""
+                }`}
+              >
                 <h2 className="text-navy font-extrabold">
                   ⭐ Googleでログイン{" "}
                   <span className="text-coral-deep text-xs">
@@ -648,7 +767,11 @@ export function WelcomeWizard({
                 )}
               </article>
 
-              <article className="card-pop border-white p-5 shadow-[0_6px_0_#d7eaf5]">
+              <article
+                className={`card-pop border-white p-5 shadow-[0_6px_0_#d7eaf5] ${
+                  namesOnly ? "" : "md:col-span-2"
+                }`}
+              >
                 <h2 className="text-navy font-extrabold">
                   ⭐ なまえ{" "}
                   <span className="text-coral-deep text-xs">
@@ -660,19 +783,63 @@ export function WelcomeWizard({
                   </span>
                 </h2>
                 <p className="text-ink-soft mt-2 text-sm font-bold">
-                  マップで つかう なまえだよ。ニックネームでも OK！
+                  <span className="text-navy">カタカナ</span>で かいてね。せんせいが よぶ ときに
+                  つかいます。
                 </p>
-                <input
-                  type="text"
-                  value={displayName}
-                  onChange={(event) => setDisplayName(event.target.value)}
-                  placeholder="れい：ソピア"
-                  maxLength={20}
-                  className="border-hairline mt-4 w-full rounded-2xl border-2 bg-white px-4 py-2 font-bold"
-                />
+                {/* Google の名前がカタカナでないときは、欄に入れずに見本として見せる。
+                    開いた いきなり 赤い字が出ないようにするため（2026-08-11 の指定）。 */}
+                {googleNames.fullName && !googleNames.givenName && (
+                  <p className="bg-sun/25 text-ink mt-3 rounded-2xl px-3 py-2 text-xs font-bold">
+                    💡 Google の なまえは「{googleNames.fullName}」です。これを カタカナで
+                    かいてね。
+                  </p>
+                )}
+                <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                  <NameField
+                    label={
+                      <ruby>
+                        苗字<rt>みょうじ</rt>
+                      </ruby>
+                    }
+                    placeholder="れい：ソク"
+                    value={names.familyName}
+                    onChange={(value) => setNames((current) => ({ ...current, familyName: value }))}
+                  />
+                  <NameField
+                    label={
+                      <ruby>
+                        名前<rt>なまえ</rt>
+                      </ruby>
+                    }
+                    placeholder="れい：ソピア"
+                    value={names.givenName}
+                    onChange={(value) => setNames((current) => ({ ...current, givenName: value }))}
+                  />
+                </div>
+                <div className="mt-3">
+                  <NameField
+                    label={
+                      <>
+                        <ruby>
+                          先生<rt>せんせい</rt>
+                        </ruby>
+                        に よんで ほしい なまえ
+                      </>
+                    }
+                    hint="かかなくても だいじょうぶ。そのときは じぶんの なまえで よぶよ。"
+                    placeholder="れい：ピア"
+                    value={names.nickname}
+                    onChange={(value) => setNames((current) => ({ ...current, nickname: value }))}
+                    optional
+                  />
+                </div>
               </article>
 
-              <article className="card-pop border-white p-5 shadow-[0_6px_0_#d7eaf5]">
+              <article
+                className={`card-pop border-white p-5 shadow-[0_6px_0_#d7eaf5] ${
+                  namesOnly ? "hidden" : ""
+                }`}
+              >
                 <h2 className="text-navy font-extrabold">
                   ⭐ Google Gemini APIキー{" "}
                   <span className="text-ink-soft text-xs">
@@ -717,7 +884,11 @@ export function WelcomeWizard({
                 </p>
               </article>
 
-              <article className="card-pop border-white p-5 shadow-[0_6px_0_#d7eaf5]">
+              <article
+                className={`card-pop border-white p-5 shadow-[0_6px_0_#d7eaf5] ${
+                  namesOnly ? "hidden" : ""
+                }`}
+              >
                 <h2 className="text-navy font-extrabold">
                   ⭐{" "}
                   <ruby>
@@ -786,8 +957,8 @@ export function WelcomeWizard({
             <div className="mt-4 text-center">
               <button
                 type="button"
-                disabled={!loggedIn || !displayName.trim() || !gender}
-                onClick={goToQuestions}
+                disabled={busy || !loggedIn || !namesReady || (!namesOnly && !gender)}
+                onClick={namesOnly ? () => void saveNames() : goToQuestions}
                 className="btn-game text-ink min-w-64 px-10 py-4 text-xl disabled:cursor-not-allowed disabled:opacity-45"
                 style={
                   {
@@ -796,11 +967,16 @@ export function WelcomeWizard({
                   } as React.CSSProperties
                 }
               >
-                ⭐ つぎへ ⭐
+                {namesOnly ? "⭐ ほぞんして すすむ ⭐" : "⭐ つぎへ ⭐"}
               </button>
               {missingSetupItems.length > 0 && (
                 <p className="text-coral-deep mt-3 text-sm font-extrabold">
                   {missingSetupItems.join("と ")}を おねがいね
+                </p>
+              )}
+              {namesOnly && saveError && (
+                <p className="text-coral-deep mt-4 font-extrabold">
+                  ほぞんに しっぱいしました。インターネットを かくにんして、もういちど おしてね。
                 </p>
               )}
             </div>
@@ -1210,7 +1386,11 @@ export function WelcomeWizard({
               }`}
             >
               {step === 1 &&
-                (retake ? "せっていを かくにんしましょう！" : "はじめに せっていを しましょう！")}
+                (namesOnly
+                  ? "なまえを カタカナで おしえてね！"
+                  : retake
+                    ? "せっていを かくにんしましょう！"
+                    : "はじめに せっていを しましょう！")}
               {step === 2 && "しつもんに こたえると、あなたの タイプが わかるよ！"}
               {step === 3 && "いっしょに がんばろう！"}
             </p>

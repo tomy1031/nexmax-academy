@@ -23,6 +23,7 @@ import {
   type PersonalityFamilyId,
 } from "@/content/personality";
 import { contentKindMeta } from "@/lib/content-kinds";
+import { hasLearnerNames } from "@/lib/name";
 import { readContentProgress, subscribeProgress } from "@/lib/progress/store";
 import { statusCode as contentStatusCode } from "@/components/stage/stage-progress";
 import type { MapStage } from "@/lib/map-data";
@@ -1296,6 +1297,12 @@ export function MapShell({
         // profileFromRow が投げるのに任せず、明示的に診断へ送る。
         if (!isDiagnosisComplete(stored.answers)) {
           clearProfile();
+          router.replace("/welcome");
+          return;
+        }
+        // なまえを「苗字・名前」に分ける前に作られた行。カタカナで入れ直してもらう（願い #14）。
+        // 診断はもう終わっているので、/welcome はなまえの欄だけを出す（20問はやり直さない）。
+        if (!hasLearnerNames({ familyName: stored.family_name, givenName: stored.given_name })) {
           router.replace("/welcome");
           return;
         }
