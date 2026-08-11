@@ -26,7 +26,6 @@ import { GlossaryChip, GlossaryText } from "@/components/glossary-text";
 import { LearnerText, RubyText, renderRuby } from "@/components/ruby-text";
 import { findAllGlossaryTerms } from "@/content/glossary";
 import { insertPersonalityResult, updateOwnNames, upsertOwnProfile } from "@/lib/profile-db";
-import { createClient } from "@/lib/supabase/client";
 import { areNamesValid, katakanaNotice, MAX_NAME_LENGTH, type LearnerNames } from "@/lib/name";
 import { getGeminiKey, saveGeminiKey, saveProfile, type Gender } from "@/lib/profile";
 
@@ -37,29 +36,6 @@ function subscribeToStorage(onStoreChange: () => void) {
 
 function savedGeminiKeySnapshot(): string {
   return getGeminiKey();
-}
-
-function GoogleG() {
-  return (
-    <svg viewBox="0 0 48 48" width="20" height="20" aria-hidden>
-      <path
-        fill="#EA4335"
-        d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"
-      />
-      <path
-        fill="#4285F4"
-        d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"
-      />
-      <path
-        fill="#FBBC05"
-        d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"
-      />
-      <path
-        fill="#34A853"
-        d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"
-      />
-    </svg>
-  );
 }
 
 function MiniGameLogo() {
@@ -362,7 +338,6 @@ function CompatibilityCard({ code, reason }: { code: PersonalityTypeCode; reason
 }
 
 export function WelcomeWizard({
-  authReady,
   loggedIn,
   email,
   saved = null,
@@ -370,7 +345,7 @@ export function WelcomeWizard({
   namesOnly = false,
   googleNames,
 }: {
-  authReady: boolean;
+  /** ログインずみか。ここへ来られる時点で ふつうは true（未ログインは最初の画面へ返る）。 */
   loggedIn: boolean;
   email: string | null;
   /** 保存済みの名前と性別。やり直しのときに入れ直させないため。 */
@@ -437,18 +412,6 @@ export function WelcomeWizard({
     !namesReady ? "なまえ" : null,
     !namesOnly && !gender ? "せいべつ" : null,
   ].filter((item): item is string => item !== null);
-
-  async function signInWithGoogle() {
-    const supabase = createClient();
-    if (!supabase) return;
-    setBusy(true);
-    await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
-      },
-    });
-  }
 
   function goToQuestions() {
     if (!loggedIn || !namesReady || !gender) return;
@@ -716,57 +679,21 @@ export function WelcomeWizard({
               </div>
             </div>
 
+            {/* ログインはもう最初の画面で済んでいる（願い #13）。ここにログインの入口は置かない。
+                いまどのアカウントで入っているかだけを、小さく見せる。 */}
+            <p className="border-hairline bg-panel-tint text-ink-soft mt-5 rounded-2xl border-2 px-4 py-2 text-center text-xs font-bold">
+              {loggedIn ? (
+                <>✅ ログインずみ{email && <span className="ml-1 break-all">（{email}）</span>}</>
+              ) : (
+                <>🔧 ログインは いま じゅんびちゅう です。</>
+              )}
+            </p>
+
             <div
-              className={`mt-5 grid gap-4 ${
-                namesOnly ? "mx-auto max-w-2xl" : "md:grid-cols-2 xl:grid-cols-4"
+              className={`mt-4 grid gap-4 ${
+                namesOnly ? "mx-auto max-w-2xl" : "md:grid-cols-2 xl:grid-cols-3"
               }`}
             >
-              <article
-                className={`card-pop border-white p-5 shadow-[0_6px_0_#d7eaf5] ${
-                  namesOnly ? "hidden" : ""
-                }`}
-              >
-                <h2 className="text-navy font-extrabold">
-                  ⭐ Googleでログイン{" "}
-                  <span className="text-coral-deep text-xs">
-                    （
-                    <ruby>
-                      必須<rt>ひっす</rt>
-                    </ruby>
-                    ）
-                  </span>
-                </h2>
-                <p className="text-ink-soft mt-2 text-sm font-bold">
-                  アカウントで ログインして、データを あんぜんに のこそう！
-                </p>
-                {loggedIn ? (
-                  <div className="bg-leaf/15 text-leaf-deep mt-4 rounded-2xl px-4 py-3 text-center font-extrabold">
-                    <p>✅ ログインできました！</p>
-                    {email && <p className="text-ink-soft mt-1 text-xs break-all">{email}</p>}
-                  </div>
-                ) : authReady ? (
-                  <button
-                    type="button"
-                    disabled={busy}
-                    onClick={() => void signInWithGoogle()}
-                    className="btn-game border-hairline mt-4 w-full border-2 px-4 py-3 disabled:opacity-60"
-                    style={
-                      {
-                        "--btn-face": "#ffffff",
-                        "--btn-shadow": "#c9d8e4",
-                        color: "#1f3a56",
-                      } as React.CSSProperties
-                    }
-                  >
-                    <GoogleG /> {busy ? "ひらいて います…" : "Google で ログイン"}
-                  </button>
-                ) : (
-                  <p className="bg-sky-soft text-navy mt-4 rounded-2xl px-4 py-3 text-center font-extrabold">
-                    じゅんびちゅう
-                  </p>
-                )}
-              </article>
-
               <article
                 className={`card-pop border-white p-5 shadow-[0_6px_0_#d7eaf5] ${
                   namesOnly ? "" : "md:col-span-2"

@@ -1,6 +1,5 @@
 import { redirect } from "next/navigation";
 import { WelcomeWizard } from "@/components/welcome-wizard";
-import { isSupabaseConfigured } from "@/lib/env";
 import { hasLearnerNames, katakanaOrEmpty, type LearnerNames } from "@/lib/name";
 import { isDiagnosisComplete, type Gender } from "@/lib/profile";
 import { createClient } from "@/lib/supabase/server";
@@ -68,7 +67,6 @@ export default async function WelcomePage({
 
   return (
     <WelcomeWizard
-      authReady={isSupabaseConfigured}
       loggedIn={Boolean(user)}
       email={user?.email ?? null}
       saved={saved}
