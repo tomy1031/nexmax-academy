@@ -1,8 +1,22 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useState, type ReactNode } from "react";
 import { ARCADE_INK } from "./fields";
-import { ArcadeCanvas, type ArcadeWorldProps } from "./arcade-canvas";
+import type { ArcadeWorldProps } from "./arcade-canvas";
+
+/**
+ * 3Dの世界は**ブラウザでだけ**読み込む（`ssr: false`）。
+ *
+ * ふつうに import すると、three.js（708KB）が**サーバ側のバンドルにも**入る。
+ * このアプリの Worker は無料プランの上限 3 MiB に対してすでに 3056KiB（99.5%）で、
+ * 足した瞬間に上限を超えてデプロイが落ちた（実測）。3Dはブラウザでしか動かないので、
+ * サーバに置く意味がない。ブラウザ専用にすると、three は静的アセット側だけに載る
+ *（アセットは Worker のサイズに数えられない）。
+ */
+const ArcadeCanvas = dynamic(() => import("./arcade-canvas").then((m) => m.ArcadeCanvas), {
+  ssr: false,
+});
 
 /**
  * ことばアーケードの舞台。画面いっぱいを使う。
