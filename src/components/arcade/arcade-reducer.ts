@@ -35,10 +35,13 @@ export const DIFFICULTY: Record<Difficulty, { speed: number; time: number; label
 /** 既定は遅め（理解設計ガイド P10）。 */
 export const DEFAULT_DIFFICULTY: Difficulty = "easy";
 
-/** 用語が奥から目の前に届くまでの基準秒数。難しさの speed で割る。 */
-export const BASE_APPROACH_SECONDS = 9;
-/** 4択の基準持ち時間。難しさの time を掛ける。 */
-export const BASE_CHOICE_SECONDS = 8;
+/**
+ * 4択の基準持ち時間。難しさの time を掛ける（旧 mcqLimit の 9000ms）。
+ *
+ * 読みのフェーズに秒数は無い。用語がカメラに届いた時が時間切れで、
+ * それは3Dの世界が距離と速さから決める（旧 gameLoop の `enemyZ > 30`）。
+ */
+export const BASE_CHOICE_SECONDS = 9;
 
 export const START_LIFE = 5;
 
@@ -283,9 +286,13 @@ export function currentWord(state: ArcadeState): Word | null {
   return currentQuestion(state)?.word ?? null;
 }
 
-/** 用語が目の前に届くまでの秒数。 */
-export function approachSeconds(difficulty: Difficulty): number {
-  return BASE_APPROACH_SECONDS / DIFFICULTY[difficulty].speed;
+/**
+ * 景色の流れと用語の近づく速さ（旧 currentSpeed）。
+ * テストはゆっくり一定、れんしゅうは速め。難易度で倍率をかける。
+ */
+export function sceneSpeed(mode: ArcadeMode, difficulty: Difficulty): number {
+  const base = mode === "test" ? 0.45 : 0.7;
+  return base * DIFFICULTY[difficulty].speed;
 }
 
 /** 4択の持ち時間。 */

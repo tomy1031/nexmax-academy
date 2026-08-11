@@ -1,15 +1,8 @@
 "use client";
 
-import { useSyncExternalStore, type ReactNode } from "react";
-import { fieldPreset } from "./fields";
-import {
-  FieldWorld,
-  IMMINENT_PROGRESS,
-  PERSPECTIVE_PX,
-  projectedScale,
-  termDepth,
-  WORLD_CSS,
-} from "./arcade-world";
+import { useState, type ReactNode } from "react";
+import { ARCADE_INK } from "./fields";
+import { ArcadeCanvas, type ArcadeWorldProps } from "./arcade-canvas";
 
 /**
  * ことばアーケードの舞台。画面いっぱいを使う。
@@ -18,179 +11,52 @@ import {
  * これはページの中の小さな枠では成立しない（枠に入れた瞬間に緊張感が消える）。
  * だから舞台は fixed inset-0 の全画面オーバーレイにする。
  *
- * 舞台そのものが遠近法の箱になっている。奥に並べた木やビルは arcade-world.tsx が
- * 手前へ流し、用語は同じ遠近法の曲線で近づく。奥行きが本物なので、
- * 旧アプリと同じく目の前に来る直前で一気に大きくなる。
- *
- * 視線の階層は コントラストで作る:
- *   用語（最大・最強コントラスト） > 入力欄 > 四隅のHUD（影を弱めた小カード）
- * 画面中央は用語のために空けておき、そこに情報を置かない。
+ * 中身の重ね順は旧 index.html / styles.css のまま:
+ *   #game-canvas(1) → #fx-vignette(4) → #damage-flash(5) → 時計(6) → #fx-popups(8) → #ui-layer(10)
  */
-
-/** 舞台ごと動かす手ごたえ（旧: shake-screen / damage-shake / kickFov）。 */
-export type StageEffect = "none" | "near" | "damage" | "kick";
-
-const EFFECT_CLASS: Record<StageEffect, string> = {
-  none: "",
-  near: "arc-quake",
-  damage: "arc-damage",
-  kick: "arc-kick",
-};
-
 export function ArcadeScene({
-  field,
-  /** 難しさの速度倍率。景色の流れる速さになる（旧 currentSpeed）。 */
-  speed = 0.5,
-  effect = "none",
-  /** ゆれ始めるまでの秒数。用語がぶつかる直前まで待たせる。 */
-  effectDelay = 0,
+  world,
+  /** 被弾したら舞台をひと揺らしする（旧 .damage-shake）。 */
+  impact = false,
   children,
 }: {
-  field: string;
-  speed?: number;
-  effect?: StageEffect;
-  effectDelay?: number;
+  world: Omit<ArcadeWorldProps, "onNear">;
+  impact?: boolean;
   children: ReactNode;
 }) {
-  const preset = fieldPreset(field);
+  // 用語が目の前に来ている間（旧 .shake-screen）。世界の側だけが知っている。
+  const [near, setNear] = useState(false);
+
+  // 旧アプリは body ごと揺らしていた。ここでは3Dの層だけを揺らす。
+  // 舞台は画面いっぱいの重ね物なので、外枠ごと動かすと縁に下のページが覗く。
+  // 揺れて見えるものは同じ（画面いっぱいの世界）なので見え方は変わらない。
+  const shake = impact ? "arc-damage" : near ? "arc-quake" : "";
 
   return (
-    <div
-      className="fixed inset-0 z-40 overflow-hidden"
-      style={{
-        background: `linear-gradient(180deg, ${preset.sky[0]} 0%, ${preset.sky[1]} 52%)`,
-        perspective: `${PERSPECTIVE_PX}px`,
-      }}
-    >
-      <style>{WORLD_CSS}</style>
+    <div className="fixed inset-0 z-40 overflow-hidden" style={{ background: ARCADE_INK }}>
+      <style>{STAGE_CSS}</style>
 
-      {/*
-       * 奥から流れてくる世界。ゆれ・加速はこの層だけを動かす（入力欄は揺らさない）。
-       * 遠近法はここに置く。中の床と物はそれぞれ別の3D空間になり、
-       * 前後関係が混ざらない（この div を preserve-3d にすると混ざる）。
-       */}
-      <div
-        className={`pointer-events-none absolute inset-0 ${EFFECT_CLASS[effect]}`}
-        style={{
-          perspective: `${PERSPECTIVE_PX}px`,
-          animationDelay: `${effectDelay.toFixed(2)}s`,
-        }}
-      >
-        <FieldWorld field={field} speed={speed} />
+      <div className={`absolute inset-0 ${shake}`}>
+        <ArcadeCanvas {...world} onNear={setNear} />
       </div>
 
-      {/* 遠くのかすみ（旧 THREE.Fog）。用語が出てくる水平線をここで隠す。 */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-1/2 h-56 -translate-y-1/2"
-        style={{
-          background: `radial-gradient(70% 100% at 50% 50%, ${preset.fog} 0%, transparent 72%)`,
-          opacity: 0.9,
-        }}
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-1/2 h-24 -translate-y-1/2"
-        style={{
-          background: `radial-gradient(50% 100% at 50% 50%, ${preset.glow}, transparent 70%)`,
-        }}
-      />
-
-      {/* 画面の四隅をしめる（旧 #fx-vignette）。中央の用語に目が行くようにする。 */}
+      {/* 画面周辺を締めるビネット＋上下のシネマグラデーション（旧 #fx-vignette） */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0"
         style={{
-          background:
-            "radial-gradient(120% 90% at 50% 50%, transparent 56%, rgba(6,26,44,.22) 100%)",
+          zIndex: 4,
+          background: `radial-gradient(120% 90% at 50% 45%, transparent 55%, rgba(4, 6, 14, 0.42) 100%),
+            linear-gradient(to bottom, rgba(4, 6, 14, 0.35), transparent 12%, transparent 88%, rgba(4, 6, 14, 0.45))`,
         }}
       />
 
-      {/* 景色の名前 */}
-      <span
-        className="absolute top-3 left-1/2 -translate-x-1/2 rounded-full bg-white/80 px-4 py-1 text-xs font-black"
-        style={{ color: preset.ink }}
-      >
-        {preset.label}
-      </span>
-
-      {children}
-    </div>
-  );
-}
-
-/**
- * 迫ってくる用語。
- *
- * 遠くの小さくかすんだ文字から、目の前の巨大な文字へ。
- * 大きさは舞台と同じ遠近法の式（P /（P − 奥行き））で出す。
- * 一定の割合で拡大するのとは見え方が違い、最後の一瞬でぐっと近づく。
- */
-export function ApproachingTerm({
-  term,
-  reading,
-  showFurigana,
-  /** 1（水平線）→ 0（目の前）。カウントダウンの残り割合をそのまま渡す。 */
-  remaining,
-  field,
-  /** 読みが決まったあと。用語を手前で止める。 */
-  frozen = false,
-  /** 取りそこねた。水に落とす。 */
-  missed = false,
-}: {
-  term: string;
-  reading: string;
-  showFurigana: boolean;
-  remaining: number;
-  field: string;
-  frozen?: boolean;
-  missed?: boolean;
-}) {
-  const preset = fieldPreset(field);
-  const reduced = usePrefersReducedMotion();
-
-  const progress = reduced || frozen ? 1 : 1 - remaining;
-  const scale = frozen ? 0.85 : projectedScale(termDepth(progress));
-  // 遠くではふわっと漂い、近づくほど落ち着く（旧 gameLoop の bobAmp と同じ）。
-  const bob = frozen || reduced ? 0 : Math.sin(progress * 26) * 8 * (1 - progress);
-  // かすみの中から出てくる。読める明るさまでは早めに上げる。
-  const opacity = Math.min(1, 0.45 + progress * 2);
-  // 目の前に届く直前だけ、わずかに震える
-  const imminent = !frozen && !reduced && remaining > 0 && progress > IMMINENT_PROGRESS;
-
-  return (
-    <div className="pointer-events-none absolute inset-0 grid place-items-center px-6">
-      <div
-        className={`text-center ${imminent ? "animate-term-jitter" : ""}`}
-        style={{
-          transform: missed
-            ? "translate3d(0, 26%, 0) scale(1.05) rotate(-4deg)"
-            : frozen
-              ? `translate3d(0, -34%, 0) scale(${scale})`
-              : `translate3d(0, ${bob.toFixed(1)}px, 0) scale(${scale.toFixed(3)})`,
-          opacity: missed ? 0 : opacity,
-          transition: missed ? "transform .28s ease-in, opacity .28s ease-in" : undefined,
-        }}
-      >
-        <span
-          className="inline-block max-w-[92vw] text-5xl leading-tight font-black break-words sm:text-8xl"
-          style={{
-            color: preset.ink,
-            WebkitTextStroke: `3px ${preset.inkEdge}`,
-            paintOrder: "stroke fill",
-            // 世界の発光色を後光にする（旧 makeEnemyTexture のネオングロー）
-            textShadow: `0 6px 0 rgba(0,0,0,.10), 0 0 ${(16 + progress * 44).toFixed(0)}px ${preset.aura}`,
-          }}
-        >
-          {showFurigana ? (
-            <ruby>
-              {term}
-              <rt style={{ color: preset.ink, opacity: 0.9, WebkitTextStroke: "0" }}>{reading}</rt>
-            </ruby>
-          ) : (
-            term
-          )}
-        </span>
+      {/*
+        旧 #ui-layer（z-index 10）。時計や用語（6）より上に来るようにまとめる。
+        操作できるのは中の .pointer-events-auto だけ（旧 .interactive と同じ考え）。
+      */}
+      <div className="pointer-events-none absolute inset-0" style={{ zIndex: 10 }}>
+        {children}
       </div>
     </div>
   );
@@ -222,17 +88,27 @@ export function HudChip({
   );
 }
 
-const REDUCED_MOTION = "(prefers-reduced-motion: reduce)";
-
-function usePrefersReducedMotion(): boolean {
-  // 外部（OSの設定）の状態なので、エフェクトで同期せず購読する
-  return useSyncExternalStore(
-    (onChange) => {
-      const query = window.matchMedia(REDUCED_MOTION);
-      query.addEventListener("change", onChange);
-      return () => query.removeEventListener("change", onChange);
-    },
-    () => window.matchMedia(REDUCED_MOTION).matches,
-    () => false,
-  );
-}
+/**
+ * 舞台だけで使うキーフレーム（旧 styles.css の .shake-screen / .damage-shake）。
+ * globals.css は共有ファイルなので、ここに閉じ込めて持ち歩く。
+ */
+const STAGE_CSS = `
+@keyframes arc-shake{
+  0%{translate:1px 1px;rotate:0deg}
+  25%{translate:-3px 0;rotate:1deg}
+  50%{translate:-1px 2px;rotate:-1deg}
+  75%{translate:3px 1px;rotate:0deg}
+  100%{translate:1px -2px;rotate:-1deg}}
+.arc-quake{animation:arc-shake .5s infinite}
+@keyframes arc-damage{
+  0%{translate:0 0;rotate:0deg}
+  15%{translate:-14px 6px;rotate:-1.5deg}
+  30%{translate:13px -7px;rotate:1.5deg}
+  45%{translate:-11px 5px;rotate:-1deg}
+  60%{translate:9px -5px;rotate:1deg}
+  75%{translate:-6px 3px;rotate:0deg}
+  100%{translate:0 0;rotate:0deg}}
+.arc-damage{animation:arc-damage .48s ease-out}
+.arc-outline{text-shadow:-2px -2px 0 #000,2px -2px 0 #000,-2px 2px 0 #000,2px 2px 0 #000,0 0 10px rgba(0,0,0,.8)}
+@media (prefers-reduced-motion:reduce){.arc-quake,.arc-damage{animation:none}}
+`;

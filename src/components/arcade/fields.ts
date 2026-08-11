@@ -1,164 +1,128 @@
 /**
- * 景色（フィールド）の見た目。
+ * 景色（フィールド）の設定。
  *
- * 旧アプリは Three.js で世界を組んでいた。WebGL と 500KB のライブラリを足さずに
- * 同じ世界を出したいので、ここは CSS の遠近法（perspective + translateZ）で組む。
- * 奥行きは本物なので、旧アプリと同じく近づくほど加速して見える。
- * 立てる物（木・ビル・柱…）の作り方は arcade-world.tsx にある。
+ * 旧 wordtest（nextmake_onboarding_training/wordtest/src/main.js）の `FIELD_CONFIG` を
+ * そのまま移した。色・霧の距離・世界の種類は原典の数値のまま変えていない。
+ * 世界の見た目は three.js が組む（arcade-three.ts）。
  *
- * 配色は島マップ（/map）と地続きの明るいトロピカルに寄せる。
- * 旧アプリの暗いサイバー調には戻さない。緊張感は暗さではなく距離と速度で出す。
+ * 足したのは `label` だけ。旧アプリは世界の名前を画面に出さなかったが、
+ * 現行はステージ上部に景色の名前を出しているので、その表示用にやさしい日本語で持つ。
  *
- * 名前はやさしい日本語。ビジュアルテーマ04 §1 の規律により
- * 「冒険・探検・クエスト」系の比喩は使わない。
+ * ビジュアルテーマ04 §1 の規律により「冒険・探検・クエスト」系の比喩は使わない。
  */
 
-/** 立てる物の作り分け。旧アプリの FIELD_BUILDERS と1対1で対応する。 */
+/** 旧 FIELD_CONFIG の `kind`。どの物を並べるかを決める。 */
 export type FieldKind =
-  "forest" | "sky" | "sea" | "sunset" | "future" | "dungeon" | "castle" | "cyber";
+  "forest" | "sky" | "sea" | "space" | "future" | "dungeon" | "castle" | "cyber";
 
 export interface FieldPreset {
+  /** 画面に出す景色の名前。旧 `jp` をやさしい日本語にしたもの。 */
   readonly label: string;
-  /** どの物を立てるか。 */
-  readonly kind: FieldKind;
-  /** 空のグラデーション [天頂, 水平線ぎわ]。 */
-  readonly sky: readonly [string, string];
-  /** 地面（床）の色 [手前, 奥]。 */
-  readonly ground: readonly [string, string];
-  /** 床の目地の色。奥行きを作る線。 */
-  readonly grid: string;
-  /** 水平線のかすみ・用語のうしろの光。 */
-  readonly glow: string;
-  /** 用語の文字色。背景の上でいちばん強いコントラストにする。 */
-  readonly ink: string;
-  /** 用語の縁取り（明るい背景で文字を浮かせる）。 */
-  readonly inkEdge: string;
-  /** その世界の発光色。用語のうしろの光・出現の輪・撃破の粒に使う（旧 aura）。 */
+  /** スカイドームのグラデーション [上, 下]。 */
+  readonly sky: readonly [number, number];
+  readonly fog: number;
+  readonly fogFar: number;
+  /** 地面がある世界だけ持つ。空・宇宙には地面がない。 */
+  readonly ground?: number;
+  readonly grid?: number;
+  /** その世界の発光色。迫る用語のネオン縁と出現の輪に使う。 */
   readonly aura: string;
-  /** 遠くをかすませる色（旧 THREE.Fog の色）。 */
-  readonly fog: string;
-  /** 全世界に通る「データハイウェイ」の色（旧 hw）。旅がつながっている印。 */
-  readonly highway: string;
-  /** ただよう光の粒の色（旧 makeMotes）。 */
-  readonly mote: string;
+  /** データハイウェイ（全世界に通る一本道）の色。 */
+  readonly hw: number;
+  readonly kind: FieldKind;
 }
 
 export const FIELDS: Record<string, FieldPreset> = {
   forest: {
-    label: "もりの みち",
+    label: "データの もり",
+    sky: [0x53b7f0, 0xd8f7e2],
+    fog: 0xbfe4d4,
+    fogFar: 1500,
+    ground: 0x2e7d4f,
+    grid: 0x7dffb0,
+    aura: "#c8ff5e",
+    hw: 0x7dffb0,
     kind: "forest",
-    sky: ["#a8e4ff", "#eaffd6"],
-    ground: ["#2f8b52", "#7fc98d"],
-    grid: "#d9ffc2",
-    glow: "#ffffff",
-    ink: "#0f3f27",
-    inkEdge: "#ffffff",
-    aura: "#8de84f",
-    fog: "#e9ffe4",
-    highway: "#2f9e63",
-    mote: "#fff2a0",
   },
   sky: {
-    label: "そらの うえ",
+    label: "ゆうやけの そら",
+    sky: [0x5b3fa0, 0xff9a5c],
+    fog: 0xd88a70,
+    fogFar: 1600,
+    aura: "#ffd27d",
+    hw: 0xffb37e,
     kind: "sky",
-    sky: ["#7ec9ff", "#ffe9bd"],
-    ground: ["#6fb4e6", "#bfe4ff"],
-    grid: "#ffffff",
-    glow: "#fff6d5",
-    ink: "#0b3a5c",
-    inkEdge: "#ffffff",
-    aura: "#ffd166",
-    fog: "#eaf6ff",
-    highway: "#2f86c4",
-    mote: "#ffffff",
   },
   sea: {
-    label: "うみの うえ",
+    label: "ふかい うみ",
+    sky: [0x021c38, 0x0a7fae],
+    fog: 0x06507a,
+    fogFar: 1300,
+    ground: 0x032c4a,
+    grid: 0x2fd6ff,
+    aura: "#7df9ff",
+    hw: 0x2fd6ff,
     kind: "sea",
-    sky: ["#8fe0ff", "#d9f7ff"],
-    ground: ["#1f86c4", "#79d4f2"],
-    grid: "#ccf6ff",
-    glow: "#ffffff",
-    ink: "#04395c",
-    inkEdge: "#ffffff",
-    aura: "#35d6ff",
-    fog: "#daf6ff",
-    highway: "#0f6fa8",
-    mote: "#d6f8ff",
   },
-  // ラベルは「ゆうやけの そら」なので、立てる物は旧アプリの sky（夕焼け）を使う。
   space: {
-    label: "ゆうやけの そら",
-    kind: "sunset",
-    sky: ["#8f7fe0", "#ffc3a0"],
-    ground: ["#6b5bb5", "#c9a3e8"],
-    grid: "#ffe2c9",
-    glow: "#fff0d8",
-    ink: "#2b1a52",
-    inkEdge: "#ffffff",
-    aura: "#ffa25c",
-    fog: "#ffe0cc",
-    highway: "#c96f9e",
-    mote: "#ffe9c9",
+    label: "うちゅう",
+    sky: [0x000005, 0x241454],
+    fog: 0x0a0618,
+    fogFar: 2600,
+    aura: "#c58cff",
+    hw: 0x8c5cff,
+    kind: "space",
   },
   future: {
     label: "みらいの まち",
+    sky: [0x040b2a, 0x2a3f8f],
+    fog: 0x101d4a,
+    fogFar: 1500,
+    ground: 0x0a1030,
+    grid: 0x00ffe0,
+    aura: "#00ffe0",
+    hw: 0x00ffe0,
     kind: "future",
-    sky: ["#9fd8ff", "#e6f6ff"],
-    ground: ["#4f7bd6", "#a9c9f5"],
-    grid: "#e8fbff",
-    glow: "#ffffff",
-    ink: "#102f66",
-    inkEdge: "#ffffff",
-    aura: "#37c8ff",
-    fog: "#e9f6ff",
-    highway: "#2f6fd0",
-    mote: "#cfefff",
   },
   dungeon: {
     label: "いしの みち",
+    sky: [0x0a0604, 0x2e1a0c],
+    fog: 0x1c110a,
+    fogFar: 1100,
+    ground: 0x241407,
+    grid: 0xff9d4d,
+    aura: "#ffb057",
+    hw: 0xff9d4d,
     kind: "dungeon",
-    sky: ["#ffd9a3", "#fff0d0"],
-    ground: ["#a9713f", "#d9a76d"],
-    grid: "#ffe9c6",
-    glow: "#fff6e2",
-    ink: "#4a2a0d",
-    inkEdge: "#ffffff",
-    aura: "#ff9d4d",
-    fog: "#ffeccf",
-    highway: "#8a5427",
-    mote: "#ffd08a",
   },
   castle: {
-    label: "しろの にわ",
+    label: "よるの しろ",
+    sky: [0x150d33, 0x5b3f8f],
+    fog: 0x2c2050,
+    fogFar: 1400,
+    ground: 0x3a3352,
+    grid: 0xd9b8ff,
+    aura: "#ffd700",
+    hw: 0xc9a5ff,
     kind: "castle",
-    sky: ["#b9a6f0", "#ffe0ef"],
-    ground: ["#7a68c4", "#c3b2f0"],
-    grid: "#ffeaf5",
-    glow: "#fff2c9",
-    ink: "#2e1f63",
-    inkEdge: "#ffffff",
-    aura: "#ffcf3d",
-    fog: "#f3e6ff",
-    highway: "#6a54ad",
-    mote: "#ffe9a8",
   },
   cyber: {
     label: "でんのう くうかん",
+    sky: [0x000803, 0x03301a],
+    fog: 0x021409,
+    fogFar: 1500,
+    ground: 0x01140a,
+    grid: 0x00ff88,
+    aura: "#00ff88",
+    hw: 0xff2fd6,
     kind: "cyber",
-    sky: ["#8ef0d0", "#e8fffa"],
-    ground: ["#1f9c78", "#84e3c6"],
-    grid: "#d8fff2",
-    glow: "#ffffff",
-    ink: "#06412f",
-    inkEdge: "#ffffff",
-    aura: "#10d894",
-    fog: "#e2fff5",
-    highway: "#0f8f6e",
-    mote: "#b6ffe4",
   },
 };
 
+/** 旧 fieldConf()。知らない名前が来たら森にする。 */
 export function fieldPreset(id: string): FieldPreset {
   return FIELDS[id] ?? FIELDS.forest!;
 }
+
+/** 舞台の下地。3Dが出るまでの一瞬と、WebGLが使えない端末で見える色（旧 --ink）。 */
+export const ARCADE_INK = "#070b18";

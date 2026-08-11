@@ -1,25 +1,21 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Word, WordStage } from "@/content/schema";
 import { FeedbackMessage } from "@/components/feedback-message";
 import { RubyText } from "@/components/ruby-text";
 import { buildFuriganaIndex } from "@/lib/text/furigana";
 import { isHiraganaInputReady } from "@/lib/text/normalize";
+import { createProgressStore, recordContentProgress } from "@/lib/progress/store";
 import {
-  createProgressStore,
-  recordContentProgress,
-  subscribeProgress,
-} from "@/lib/progress/store";
-import {
-  approachSeconds,
   arcadeReducer,
   choiceSeconds,
   createSession,
   currentQuestion,
   DEFAULT_DIFFICULTY,
   DIFFICULTY,
+  sceneSpeed,
   START_LIFE,
   summarize,
   type ArcadeAction,
@@ -27,11 +23,10 @@ import {
   type ArcadeState,
   type Difficulty,
 } from "./arcade-reducer";
-import { ApproachingTerm, ArcadeScene, HudChip, type StageEffect } from "./arcade-scene";
-import { IMMINENT_PROGRESS } from "./arcade-world";
-import { fieldPreset } from "./fields";
+import { ArcadeScene, HudChip } from "./arcade-scene";
+import type { TermOutcome } from "./arcade-three";
 import { ArcadeButton, ArcadePanel } from "./arcade-panel";
-import { ApproachClock, Burst, DamageFlash, HitRing, PortalRing, ScorePop } from "./arcade-fx";
+import { ApproachClock, DamageFlash, McqTerm, ScorePop } from "./arcade-fx";
 import { ArcadeResult } from "./arcade-result";
 import { FlashcardDeck } from "./flashcard-deck";
 import { MeaningChoice } from "./meaning-choice";
@@ -47,14 +42,16 @@ import { useCountdown } from "./use-countdown";
  *   全画面の舞台の上に、四隅のHUD・中央の用語・下端の入力。
  *   画面の中の小さな枠に収めない。「迫ってくる」は画面を占有してこそ成立する。
  *
- * 変えたのは配色（暗いサイバー調 → 島の明るいトロピカル）と、
- * 実装（グローバル変数 → 純関数reducer・WebGL → CSS遠近法）だけ。
+ * 世界と迫る用語は three.js（arcade-three.ts）。旧アプリのシーンをそのまま移した。
+ * 変えたのは進行の持ち方だけ（グローバル変数 → 純関数reducer）で、
  * 遊び方・得点式・5モード・難易度の効き方は原典どおり。
+ *
+ * 読みの時間切れは秒数ではなく、用語がカメラに届いたとき（旧 `enemyZ > 30`）。
+ * 距離と速さが時間を決めるので、難しさを変えると迫る速さがそのまま変わる。
  */
 
 type Screen =
   | { kind: "stageSelect" }
-  | { kind: "password"; stageId: string }
   | { kind: "mode"; stageId: string }
   | { kind: "hiraCheck"; stageId: string; mode: ArcadeMode }
   | { kind: "play"; stageId: string }
@@ -100,15 +97,11 @@ export function ArcadeGame({
     [difficulty, store],
   );
 
-  const openStage = useCallback(
-    (target: WordStage) => {
-      const locked = Boolean(target.password) && !store.isUnlocked(target.id);
-      setScreen(
-        locked ? { kind: "password", stageId: target.id } : { kind: "mode", stageId: target.id },
-      );
-    },
-    [store],
-  );
+  // ロックは置かない（願い #26）。どのグループもすぐ開ける。
+  // データの `password` は残っているが、もう見ない。
+  const openStage = useCallback((target: WordStage) => {
+    setScreen({ kind: "mode", stageId: target.id });
+  }, []);
 
   const leave = useCallback(() => router.push("/map"), [router]);
 
@@ -119,27 +112,34 @@ export function ArcadeGame({
     recordContentProgress(stage.id, { status: finished ? "completed" : "started" });
   }, [stage, finished]);
 
-  // 舞台の景色。遊んでいる間は問題の進みに合わせて変わる。
+  // 舞台の景色。遊んでいる間は問題の進みに合わせて変わる（旧 fieldForIndex）。
   const playing = screen.kind === "play" && session !== null;
   const field =
     session && screen.kind === "play"
       ? fieldForIndex(session.fieldSequence, session.index, session.questions.length)
-      : (stage?.fieldSequence[0] ?? "sea");
-  // 景色の流れる速さ。旧アプリと同じく難しさで変わる（メニュー中はゆっくり）。
-  const speed = playing && session ? DIFFICULTY[session.difficulty].speed : 0.45;
-  const stageEffect = playing && session ? stageEffectOf(session) : "none";
-  // ゆれ始めるのは用語が目の前に来てから（旧 gameLoop の `enemyZ > -250`）。
-  // 残り時間を毎フレーム上げ直さず、アニメーションの開始を遅らせて同じ間合いを作る。
-  const effectDelay =
-    session && stageEffect === "near" ? approachSeconds(session.difficulty) * IMMINENT_PROGRESS : 0;
+      : (stage?.fieldSequence[0] ?? "forest");
+  const question = session ? currentQuestion(session) : null;
 
   return (
-    <ArcadeScene field={field} speed={speed} effect={stageEffect} effectDelay={effectDelay}>
+    <ArcadeScene
+      world={{
+        field,
+        speed: session ? sceneSpeed(session.mode, session.difficulty) : 0.7,
+        // 旧 gameLoop は PLAY / MCQ / MESSAGE / EVAL の間だけ景色を流していた。
+        moving: playing,
+        termKey: playing && session && question ? `${session.stageId}:${session.index}` : null,
+        termText: question?.word.term ?? "",
+        termReading: question?.word.reading ?? "",
+        showFurigana: session?.furiganaOn ?? false,
+        outcome: session ? termOutcomeOf(session) : null,
+        onCollide: () => dispatch({ type: "readingTimeout" }),
+      }}
+      impact={session ? tookDamage(session) : false}
+    >
       {screen.kind === "play" && session && stage ? (
         <PlayLayer
           state={session}
           furigana={furigana}
-          field={field}
           dispatch={dispatch}
           onFinished={() => setScreen({ kind: "result", stageId: stage.id })}
         />
@@ -147,18 +147,7 @@ export function ArcadeGame({
         <div className="pointer-events-none absolute inset-0 grid place-items-center overflow-y-auto p-4">
           <div className="pointer-events-none w-full max-w-2xl">
             {screen.kind === "stageSelect" && (
-              <StageSelect stages={stages} store={store} onPick={openStage} onLeave={leave} />
-            )}
-
-            {screen.kind === "password" && stage && (
-              <PasswordGate
-                stage={stage}
-                onUnlock={() => {
-                  store.unlock(stage.id);
-                  setScreen({ kind: "mode", stageId: stage.id });
-                }}
-                onBack={() => setScreen({ kind: "stageSelect" })}
-              />
+              <StageSelect stages={stages} onPick={openStage} onLeave={leave} />
             )}
 
             {screen.kind === "mode" && stage && (
@@ -225,19 +214,24 @@ export function ArcadeGame({
 }
 
 /**
- * いま舞台をどう動かすか。進行の状態だけから決まるので、毎フレームの
- * 残り時間を親まで持ち上げなくてよい（CSSアニメーションが時間を持つ）。
+ * 迫っている用語の決着のつき方（旧 resolveReading → startMcqPhase の分岐）。
+ * null は「まだ迫っている最中」。
  */
-function stageEffectOf(state: ArcadeState): StageEffect {
+function termOutcomeOf(state: ArcadeState): TermOutcome | null {
   const phase = state.phase;
-  // 用語が迫っている間。ぶつかる直前からゆれ出す。
-  if (phase.kind === "reading") return "near";
-  // 読みが決まった瞬間の一発。正解は前へぐっと加速（旧 kickFov）、
-  // 取りそこねは被弾のゆれ（旧 damage-shake）。
-  if (phase.kind === "meaning" && phase.readingOk !== null) {
-    return phase.readingOk ? "kick" : "damage";
-  }
-  return "none";
+  if (phase.kind !== "meaning") return null;
+  // 問題だけモードは読みを聞かないので、迫らせずにそのまま砕く（旧 mode === "quiz"）。
+  if (phase.readingOk === null) return "skipped";
+  return phase.readingOk ? "hit" : "missed";
+}
+
+/** ライフが減った瞬間か（旧 takeDamage）。れんしゅうのときだけ痛い。 */
+function tookDamage(state: ArcadeState): boolean {
+  if (state.mode !== "practice") return false;
+  const phase = state.phase;
+  if (phase.kind === "meaning") return phase.readingOk === false;
+  if (phase.kind === "explain") return phase.feedback === "meaning.retry";
+  return false;
 }
 
 /* ------------------------------------------------------------------ *
@@ -247,30 +241,22 @@ function stageEffectOf(state: ArcadeState): StageEffect {
 function PlayLayer({
   state,
   furigana,
-  field,
   dispatch,
   onFinished,
 }: {
   state: ArcadeState;
   furigana: ReturnType<typeof buildFuriganaIndex>;
-  field: string;
   dispatch: (action: ArcadeAction) => void;
   onFinished: () => void;
 }) {
   const question = currentQuestion(state);
   const phase = state.phase;
   const resetKey = `${state.index}:${phase.kind}`;
-  const aura = fieldPreset(field).aura;
 
-  const onReadingExpire = useCallback(() => dispatch({ type: "readingTimeout" }), [dispatch]);
   const onMeaningExpire = useCallback(() => dispatch({ type: "meaningTimeout" }), [dispatch]);
 
-  const readingLeft = useCountdown({
-    seconds: approachSeconds(state.difficulty),
-    active: phase.kind === "reading",
-    onExpire: onReadingExpire,
-    resetKey,
-  });
+  // 読みのフェーズに秒数のカウントは無い。用語がカメラに届いた時が時間切れで、
+  // それは3Dの世界が知らせてくる（ArcadeScene の onCollide）。
   const meaningLeft = useCountdown({
     seconds: choiceSeconds(state.difficulty),
     active: phase.kind === "meaning",
@@ -306,33 +292,22 @@ function PlayLayer({
 
   return (
     <>
-      {/* 4択の残り時間。用語のうしろで時計が近づいてくる（旧 #mcq-clock）。 */}
-      {phase.kind === "meaning" && <ApproachClock remaining={meaningLeft} />}
-
-      <ApproachingTerm
-        term={word.term}
-        reading={word.reading}
-        showFurigana={state.furiganaOn}
-        remaining={readingLeft}
-        field={field}
-        frozen={phase.kind !== "reading"}
-        missed={readingMissed}
-      />
-
-      {/* 用語が奥に現れる合図の輪（旧 spawnFxRing "portal"） */}
-      {phase.kind === "reading" && <PortalRing id={resetKey} color={aura} />}
-
-      {/* 用語を止めた瞬間に砕け散る（旧 explode）。
-          問題だけモードは用語が迫ってこないので出さない。 */}
-      {verdict !== null && <Burst id={resetKey} color={aura} />}
-
-      {/* 正解・加点の演出（旧アプリの scorePop / リング を移植） */}
-      {state.lastGain > 0 && (
+      {/*
+        4択の間。旧アプリは時計だけを近づけ、用語は撃破して消していた。
+        ここでは旧「問題だけ」モードの #mcq-term をどのモードでも出しておく。
+        選んでいる間も言葉が見えるほうが覚えられる。時計はその後ろで近づく。
+      */}
+      {phase.kind === "meaning" && (
         <>
-          <HitRing id={`${resetKey}-ring`} combo={state.combo} />
-          <ScorePop id={resetKey} label={`+${state.lastGain}`} />
+          <ApproachClock remaining={meaningLeft} />
+          <McqTerm term={word.term} reading={word.reading} />
         </>
       )}
+
+      {/* 迫ってくる用語・出現の輪・撃破の粒は three.js の中（arcade-three.ts）。 */}
+
+      {/* 加点ポップ（旧 scorePop） */}
+      {state.lastGain > 0 && <ScorePop id={resetKey} label={`+${state.lastGain}`} />}
       {/* テストは点が入らないので、旧アプリと同じく「OK!」だけ出す。 */}
       {verdict === true && state.lastGain === 0 && <ScorePop id={resetKey} label="OK!" quiet />}
       {isPractice && readingMissed && <DamageFlash id={resetKey} />}
@@ -481,30 +456,20 @@ const MODE_LABEL: Record<ArcadeMode, string> = {
 
 function StageSelect({
   stages,
-  store,
   onPick,
   onLeave,
 }: {
   stages: readonly WordStage[];
-  store: ReturnType<typeof createProgressStore>;
   onPick: (stage: WordStage) => void;
   onLeave: () => void;
 }) {
-  // 解錠状態は外部ストア（localStorage）を購読する
-  const unlockedKey = useSyncExternalStore(
-    subscribeProgress,
-    () => stages.map((s) => (store.isUnlocked(s.id) ? "1" : "0")).join(""),
-    () => stages.map(() => "0").join(""),
-  );
-
   return (
     <ArcadePanel kicker="Select Stage" title="グループを えらぶ">
       <p className="text-ink-soft mt-1 text-sm font-bold">
         まなびたい ことばの グループを えらんでね。
       </p>
       <ul className="mt-4 grid gap-3 sm:grid-cols-2">
-        {stages.map((stage, i) => {
-          const locked = Boolean(stage.password) && unlockedKey[i] === "0";
+        {stages.map((stage) => {
           return (
             <li key={stage.id}>
               <button
@@ -515,10 +480,7 @@ function StageSelect({
                 <p className="text-sky text-xs font-black">
                   ことば {stage.words.length}こ ／ 合格 {stage.passRate}%
                 </p>
-                <p className="text-ink mt-1 text-lg font-black">
-                  {stage.title}
-                  {locked && <span className="ml-2 text-sm">🔒</span>}
-                </p>
+                <p className="text-ink mt-1 text-lg font-black">{stage.title}</p>
                 <p className="text-ink-soft mt-1 text-sm font-bold">{stage.description}</p>
               </button>
             </li>
@@ -528,57 +490,6 @@ function StageSelect({
       <ArcadeButton tone="quiet" className="mt-4 w-full" onClick={onLeave}>
         マップに もどる
       </ArcadeButton>
-    </ArcadePanel>
-  );
-}
-
-function PasswordGate({
-  stage,
-  onUnlock,
-  onBack,
-}: {
-  stage: WordStage;
-  onUnlock: () => void;
-  onBack: () => void;
-}) {
-  const [password, setPassword] = useState("");
-  const [wrong, setWrong] = useState(false);
-
-  return (
-    <ArcadePanel
-      kicker="Locked"
-      title="この グループは まだ ひらいていません"
-      className="text-center"
-    >
-      <div className="mt-3">
-        <FeedbackMessage messageKey="stage.locked" />
-      </div>
-      <input
-        type="text"
-        value={password}
-        onChange={(e) => {
-          setPassword(e.target.value);
-          setWrong(false);
-        }}
-        autoComplete="off"
-        spellCheck={false}
-        placeholder="パスワード"
-        aria-label="パスワード"
-        className="border-hairline bg-panel text-ink mt-4 w-full rounded-[var(--radius-button)] border-2 px-4 py-3 text-center text-xl font-black"
-      />
-      {wrong && (
-        <div className="mt-3">
-          <FeedbackMessage messageKey="stage.passwordRetry" />
-        </div>
-      )}
-      <div className="mt-4 flex justify-center gap-2">
-        <ArcadeButton onClick={() => (password === stage.password ? onUnlock() : setWrong(true))}>
-          ひらく
-        </ArcadeButton>
-        <ArcadeButton tone="quiet" onClick={onBack}>
-          もどる
-        </ArcadeButton>
-      </div>
     </ArcadePanel>
   );
 }
