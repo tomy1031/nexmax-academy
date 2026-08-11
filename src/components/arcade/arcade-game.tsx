@@ -27,9 +27,11 @@ import {
   type ArcadeState,
   type Difficulty,
 } from "./arcade-reducer";
-import { ApproachingTerm, ArcadeScene, HudChip } from "./arcade-scene";
+import { ApproachingTerm, ArcadeScene, HudChip, type StageEffect } from "./arcade-scene";
+import { IMMINENT_PROGRESS } from "./arcade-world";
+import { fieldPreset } from "./fields";
 import { ArcadeButton, ArcadePanel } from "./arcade-panel";
-import { DamageFlash, HitRing, ScorePop } from "./arcade-fx";
+import { ApproachClock, Burst, DamageFlash, HitRing, PortalRing, ScorePop } from "./arcade-fx";
 import { ArcadeResult } from "./arcade-result";
 import { FlashcardDeck } from "./flashcard-deck";
 import { MeaningChoice } from "./meaning-choice";
@@ -118,13 +120,21 @@ export function ArcadeGame({
   }, [stage, finished]);
 
   // 舞台の景色。遊んでいる間は問題の進みに合わせて変わる。
+  const playing = screen.kind === "play" && session !== null;
   const field =
     session && screen.kind === "play"
       ? fieldForIndex(session.fieldSequence, session.index, session.questions.length)
       : (stage?.fieldSequence[0] ?? "sea");
+  // 景色の流れる速さ。旧アプリと同じく難しさで変わる（メニュー中はゆっくり）。
+  const speed = playing && session ? DIFFICULTY[session.difficulty].speed : 0.45;
+  const stageEffect = playing && session ? stageEffectOf(session) : "none";
+  // ゆれ始めるのは用語が目の前に来てから（旧 gameLoop の `enemyZ > -250`）。
+  // 残り時間を毎フレーム上げ直さず、アニメーションの開始を遅らせて同じ間合いを作る。
+  const effectDelay =
+    session && stageEffect === "near" ? approachSeconds(session.difficulty) * IMMINENT_PROGRESS : 0;
 
   return (
-    <ArcadeScene field={field}>
+    <ArcadeScene field={field} speed={speed} effect={stageEffect} effectDelay={effectDelay}>
       {screen.kind === "play" && session && stage ? (
         <PlayLayer
           state={session}
@@ -214,6 +224,22 @@ export function ArcadeGame({
   );
 }
 
+/**
+ * いま舞台をどう動かすか。進行の状態だけから決まるので、毎フレームの
+ * 残り時間を親まで持ち上げなくてよい（CSSアニメーションが時間を持つ）。
+ */
+function stageEffectOf(state: ArcadeState): StageEffect {
+  const phase = state.phase;
+  // 用語が迫っている間。ぶつかる直前からゆれ出す。
+  if (phase.kind === "reading") return "near";
+  // 読みが決まった瞬間の一発。正解は前へぐっと加速（旧 kickFov）、
+  // 取りそこねは被弾のゆれ（旧 damage-shake）。
+  if (phase.kind === "meaning" && phase.readingOk !== null) {
+    return phase.readingOk ? "kick" : "damage";
+  }
+  return "none";
+}
+
 /* ------------------------------------------------------------------ *
  * プレイ中 — 四隅HUD・中央の用語・下端の入力
  * ------------------------------------------------------------------ */
@@ -234,6 +260,7 @@ function PlayLayer({
   const question = currentQuestion(state);
   const phase = state.phase;
   const resetKey = `${state.index}:${phase.kind}`;
+  const aura = fieldPreset(field).aura;
 
   const onReadingExpire = useCallback(() => dispatch({ type: "readingTimeout" }), [dispatch]);
   const onMeaningExpire = useCallback(() => dispatch({ type: "meaningTimeout" }), [dispatch]);
@@ -269,6 +296,9 @@ function PlayLayer({
     if (phase.kind === "finished") onFinished();
   }, [phase.kind, onFinished]);
 
+  // 読みを聞いた結果。null は「聞いていない」（問題だけモード）。
+  const verdict = phase.kind === "meaning" ? phase.readingOk : null;
+
   if (!question) return null;
   const { word, choices } = question;
   const isPractice = state.mode === "practice";
@@ -276,6 +306,9 @@ function PlayLayer({
 
   return (
     <>
+      {/* 4択の残り時間。用語のうしろで時計が近づいてくる（旧 #mcq-clock）。 */}
+      {phase.kind === "meaning" && <ApproachClock remaining={meaningLeft} />}
+
       <ApproachingTerm
         term={word.term}
         reading={word.reading}
@@ -286,6 +319,13 @@ function PlayLayer({
         missed={readingMissed}
       />
 
+      {/* 用語が奥に現れる合図の輪（旧 spawnFxRing "portal"） */}
+      {phase.kind === "reading" && <PortalRing id={resetKey} color={aura} />}
+
+      {/* 用語を止めた瞬間に砕け散る（旧 explode）。
+          問題だけモードは用語が迫ってこないので出さない。 */}
+      {verdict !== null && <Burst id={resetKey} color={aura} />}
+
       {/* 正解・加点の演出（旧アプリの scorePop / リング を移植） */}
       {state.lastGain > 0 && (
         <>
@@ -293,6 +333,8 @@ function PlayLayer({
           <ScorePop id={resetKey} label={`+${state.lastGain}`} />
         </>
       )}
+      {/* テストは点が入らないので、旧アプリと同じく「OK!」だけ出す。 */}
+      {verdict === true && state.lastGain === 0 && <ScorePop id={resetKey} label="OK!" quiet />}
       {isPractice && readingMissed && <DamageFlash id={resetKey} />}
 
       {/* 四隅のHUD（旧アプリと同じ配置。中央は用語のために空ける） */}
