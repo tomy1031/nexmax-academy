@@ -311,14 +311,20 @@ function LearnerHere({
 }) {
   return (
     <div className={`absolute z-30 -translate-x-1/2 text-center ${className}`} style={style}>
+      {/* 足元の白い地面。背景が濃い緑のエリアだと、緑や青の分身が景色に溶けて見えない
+          （実測でそうなっていた）。丸い地面を敷くと、どのエリアでも輪郭が立つ。 */}
+      <span
+        aria-hidden
+        className="absolute bottom-6 left-1/2 h-5 w-20 -translate-x-1/2 rounded-[50%] bg-white/70 blur-[2px]"
+      />
       <NexMaxFamily
         family={learner.family}
         gender={learner.gender}
         size={84}
         bob
-        className="drop-shadow-[0_8px_6px_rgba(0,79,141,.25)]"
+        className="relative drop-shadow-[0_6px_5px_rgba(0,60,107,.45)]"
       />
-      <p className="text-navy mx-auto -mt-1 w-max rounded-full border-2 border-white bg-white/95 px-3 py-0.5 text-xs font-black shadow-md">
+      <p className="text-navy relative mx-auto -mt-1 w-max rounded-full border-2 border-white bg-white/95 px-3 py-0.5 text-xs font-black shadow-md">
         {learner.name}
       </p>
     </div>
@@ -991,7 +997,7 @@ function RouteArea({
           <LearnerHere
             learner={learner}
             className="z-40"
-            style={{ left: `${chipOnRight ? nodeX - 14 : nodeX + 14}%`, top: `${nodeTop - 8}%` }}
+            style={{ left: `${chipOnRight ? nodeX - 9 : nodeX + 9}%`, top: `${nodeTop - 5}%` }}
           />
         ) : (
           <div
