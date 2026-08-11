@@ -53,8 +53,8 @@ This version has breaking changes — APIs, conventions, and file structure may 
 src/app/          # ルーティング・ページ（App Router）。サーバ処理は API Route に限定
 src/components/   # 学習エンジンの再利用UI部品（クライアントコンポーネント中心）
 src/lib/          # 横断ユーティリティ（env アクセサ・正規化・ルビ合成など）。再実装しない
-src/content/      # コンテンツのzodスキーマ（schema.ts）
-content/          # スキーマ準拠のコンテンツデータ（*.json）
+src/content/      # zodスキーマ（schema.ts）とTS台帳（personality / glossary / areas 等）
+content/          # スキーマ準拠のコンテンツデータ（*.json）。DBと同一IDならDBが勝つ（先生の直し反映）
 scripts/          # 検収・運用スクリプト（lint_content / handoff / ガード類）
 docs/design/      # 設計ドキュメント（唯一の知識ソース）
 docs/skills/      # 作業手順書（ツール共通の本体。.claude/skills/ は薄い発火ラッパー）
