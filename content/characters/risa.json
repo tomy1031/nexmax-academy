@@ -1,0 +1,20 @@
+{
+  "kind": "character",
+  "id": "risa",
+  "name": "りさ",
+  "reading": "りさ",
+  "role": "日本語の先生",
+  "looks": "Japanese-style anime character, woman in her early twenties, slim, lively posture. Long straight black hair tied in a low ponytail, with a straight fringe across the forehead. Fair skin, dark brown eyes, bright open smile. Outfit: navy short-sleeve polo shirt (#26355B) with a small white embroidered mark on the left chest, long black pleated skirt to mid-calf, white sneakers. No glasses.",
+  "personality": "あかるくて 元気です。ゆっくり はっきり 話します。よく ほめます。",
+  "sheet": {
+    "prompt": "A character model sheet for a Japanese language-learning manga.\nLayout: front view (full body, T-pose) on the left, right side view and back view next to it,\nand a column of 6 bust-up facial expressions on the right\n(neutral, smiling, worried, surprised, thinking, apologetic).\nWhite background. Light grid lines overlay to keep eye level consistent across views.\nCharacter: 日本語の先生 — Japanese-style anime character, woman in her early twenties, slim, lively posture. Long straight black hair tied in a low ponytail, with a straight fringe across the forehead. Fair skin, dark brown eyes, bright open smile. Outfit: navy short-sleeve polo shirt (#26355B) with a small white embroidered mark on the left chest, long black pleated skirt to mid-calf, white sneakers. No glasses.\nPersonality (affects posture and expression): あかるくて 元気です。ゆっくり はっきり 話します。よく ほめます。\nStyle: clean modern Japanese manga / anime style, soft cel shading, bright friendly palette, rounded shapes, no harsh shadows, office and school settings, contemporary Japan.\nAvoid: no text, no letters, no kanji, no kana, no numbers anywhere in the image, speech balloons must be completely EMPTY (white inside, no writing), no watermark, no signature, no logo, no frame border, no six fingers, no extra limbs, no costume changes between panels, no duplicate faces of the same character in one panel.\nDo NOT write the character's name or any label on the sheet.",
+    "refs": [
+      "/img/characters/risa/reference.jpg"
+    ],
+    "status": "done",
+    "src": "/img/characters/risa/sheet.webp"
+  },
+  "references": [
+    "/img/characters/risa/reference.jpg"
+  ]
+}

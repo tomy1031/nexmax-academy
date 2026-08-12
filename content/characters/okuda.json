@@ -1,0 +1,20 @@
+{
+  "kind": "character",
+  "id": "okuda",
+  "name": "奥田",
+  "reading": "おくだ",
+  "role": "社員（エンジニア）",
+  "looks": "Japanese-style anime character, man in his mid twenties, medium build, relaxed posture. Wavy messy black hair with volume. Black rectangular thick-rimmed glasses. Fair skin, dark brown eyes, calm gentle smile. Outfit: dark green pullover hoodie (#2E4034) with drawstrings and no writing on it, dark trousers, grey sneakers.",
+  "personality": "おちついて います。ひとつの ことに しゅうちゅうします。聞かれると ていねいに 教えます。",
+  "sheet": {
+    "prompt": "A character model sheet for a Japanese language-learning manga.\nLayout: front view (full body, T-pose) on the left, right side view and back view next to it,\nand a column of 6 bust-up facial expressions on the right\n(neutral, smiling, worried, surprised, thinking, apologetic).\nWhite background. Light grid lines overlay to keep eye level consistent across views.\nCharacter: 社員（エンジニア） — Japanese-style anime character, man in his mid twenties, medium build, relaxed posture. Wavy messy black hair with volume. Black rectangular thick-rimmed glasses. Fair skin, dark brown eyes, calm gentle smile. Outfit: dark green pullover hoodie (#2E4034) with drawstrings and no writing on it, dark trousers, grey sneakers.\nPersonality (affects posture and expression): おちついて います。ひとつの ことに しゅうちゅうします。聞かれると ていねいに 教えます。\nStyle: clean modern Japanese manga / anime style, soft cel shading, bright friendly palette, rounded shapes, no harsh shadows, office and school settings, contemporary Japan.\nAvoid: no text, no letters, no kanji, no kana, no numbers anywhere in the image, speech balloons must be completely EMPTY (white inside, no writing), no watermark, no signature, no logo, no frame border, no six fingers, no extra limbs, no costume changes between panels, no duplicate faces of the same character in one panel.\nDo NOT write the character's name or any label on the sheet.",
+    "refs": [
+      "/img/characters/okuda/reference.jpg"
+    ],
+    "status": "done",
+    "src": "/img/characters/okuda/sheet.webp"
+  },
+  "references": [
+    "/img/characters/okuda/reference.jpg"
+  ]
+}

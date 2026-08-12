@@ -13,94 +13,89 @@
   ],
   "pages": [
     {
-      "title": "手紙が とどく",
+      "title": "手紙が とどきました",
       "panels": [
         {
           "size": "wide",
           "image": {
-            "prompt": "a cream envelope with a navy wax seal bearing a double-peak M emblem, resting on warm stone steps; behind it the towers of Angkor Wat under a bright morning sky; a paper airplane flies far above. This panel has NO speech balloon and NO empty white bubble of any kind — the narration is placed by the app underneath the picture. This panel has NO speech balloon and NO empty white bubble of any kind — the narration is placed by the app underneath the picture. This panel has NO speech balloon and NO empty white bubble of any kind — the narration is placed by the app underneath the picture.",
+            "prompt": "a cream envelope with a navy wax seal bearing a double-peak M emblem, resting on warm stone steps; behind it the towers of Angkor Wat under a bright morning sky; a paper airplane flies far above. This panel has NO speech balloon and NO empty white bubble of any kind — the narration is placed by the app underneath the picture. This panel has NO speech balloon and NO empty white bubble of any kind — the narration is placed by the app underneath the picture. This panel has NO speech balloon and NO empty white bubble of any kind — the narration is placed by the app underneath the picture. This panel has NO speech balloon and NO empty white bubble of any kind — the narration is placed by the app underneath the picture.",
             "status": "done",
-            "src": "/img/manga/hajimari_manga/p1c1.webp"
+            "src": "/img/manga/hajimari_manga/p1c1.webp",
+            "refs": []
           },
           "caption": "あなたの ところに、手紙が とどきました。",
           "lines": [],
-          "bakedText": []
+          "bakedText": [],
+          "_reuse": "p1c1"
         },
         {
           "image": {
-            "prompt": "close-up of two hands opening a cream letter on a wooden desk; a small photograph is clipped to the letter showing a friendly young man in a navy business suit smiling; warm morning light; no readable text anywhere. This panel has NO speech balloon and NO empty white bubble of any kind — the narration is placed by the app underneath the picture.",
+            "prompt": "close-up of a cream letter sheet lying half out of its opened envelope on a wooden desk, a fountain pen beside it; warm morning light; the letter paper is blank. No people. No readable text anywhere. This panel has NO speech balloon and NO empty white bubble of any kind — the narration is placed by the app underneath the picture.",
             "status": "done",
             "src": "/img/manga/hajimari_manga/p1c2.webp",
             "refs": []
           },
-          "caption": "ネクストメイクの ヘンディさんからです。",
+          "caption": "ネクストメイクの ヘンディさんからの 手紙です。ヘンディさんは、あなたの 先輩に なる 人です。",
           "lines": [],
           "bakedText": []
         },
         {
           "image": {
-            "prompt": "Hendy stands in a bright modern office, facing the viewer with a warm friendly smile, arms relaxed at his sides; desks and green plants softly blurred behind him. This panel has NO speech balloon and NO empty white bubble of any kind — the narration is placed by the app underneath the picture.",
+            "prompt": "Hendy sits at an office desk working on a laptop, one hand on the keyboard, looking at the screen with a calm focused smile; behind him a whiteboard covered with blank sticky notes and blank diagram shapes. This panel has NO speech balloon and NO empty white bubble of any kind — the narration is placed by the app underneath the picture. This panel has NO speech balloon and NO empty white bubble of any kind — the narration is placed by the app underneath the picture.",
             "status": "done",
             "src": "/img/manga/hajimari_manga/p1c3.webp",
             "refs": [
               "/img/characters/hendy/sheet.webp"
             ]
           },
-          "caption": "ヘンディさんは ネクストメイクの 先輩です。",
+          "caption": "ヘンディさんは プロジェクトマネージャです。プログラマーでも あります。",
           "lines": [],
-          "bakedText": []
+          "bakedText": [],
+          "_reuse": "p1c4"
         },
         {
           "image": {
-            "prompt": "Hendy sits at an office desk working on a laptop, one hand on the keyboard, looking at the screen with a calm focused smile; behind him a whiteboard covered with blank sticky notes and blank diagram shapes. This panel has NO speech balloon and NO empty white bubble of any kind — the narration is placed by the app underneath the picture.",
+            "prompt": "Hendy walks through a bright airport terminal pulling a suitcase, smiling; through the big window an airplane waits on the runway under a blue sky. This panel has NO speech balloon and NO empty white bubble of any kind — the narration is placed by the app underneath the picture. This panel has NO speech balloon and NO empty white bubble of any kind — the narration is placed by the app underneath the picture.",
             "status": "done",
             "src": "/img/manga/hajimari_manga/p1c4.webp",
             "refs": [
               "/img/characters/hendy/sheet.webp"
             ]
           },
-          "caption": "しごとは プロジェクトマネージャと プログラマーです。",
+          "caption": "インドネシアから 日本に 来ました。日本語が とても 上手です。",
           "lines": [],
-          "bakedText": []
+          "bakedText": [],
+          "_reuse": "p1c5"
         },
         {
+          "size": "wide",
           "image": {
-            "prompt": "Hendy walks through a bright airport terminal pulling a suitcase, smiling; through the big window an airplane waits on the runway under a blue sky. This panel has NO speech balloon and NO empty white bubble of any kind — the narration is placed by the app underneath the picture.",
+            "prompt": "Hendy stands at the front of a bright university classroom in Cambodia waving warmly; several Cambodian students at desks smile and wave back; sunlight through tall windows. This panel has NO speech balloon and NO empty white bubble of any kind — the narration is placed by the app underneath the picture. This panel has NO speech balloon and NO empty white bubble of any kind — the narration is placed by the app underneath the picture.",
             "status": "done",
             "src": "/img/manga/hajimari_manga/p1c5.webp",
             "refs": [
               "/img/characters/hendy/sheet.webp"
             ]
           },
-          "caption": "インドネシアから 日本に 来ました。日本語が とても 上手です。",
-          "lines": [],
-          "bakedText": []
-        },
-        {
-          "size": "wide",
-          "image": {
-            "prompt": "Hendy stands at the front of a bright university classroom in Cambodia waving warmly; several Cambodian students at desks smile and wave back; sunlight through tall windows. This panel has NO speech balloon and NO empty white bubble of any kind — the narration is placed by the app underneath the picture.",
-            "status": "done",
-            "src": "/img/manga/hajimari_manga/p1c6.webp",
-            "refs": [
-              "/img/characters/hendy/sheet.webp"
-            ]
-          },
           "caption": "AUPPにも 2回 来て くれました。",
           "lines": [],
-          "bakedText": []
+          "bakedText": [],
+          "_reuse": "p1c6"
         }
       ]
     },
     {
-      "title": "ヘンディさんの メッセージ",
+      "title": "手紙の なかみ",
       "panels": [
         {
           "size": "wide",
           "image": {
             "prompt": "Hendy, a friendly senior engineer, greets the viewer with a big welcoming smile and one raised hand, upper body facing the viewer; bright sky-blue background with soft clouds. Key panel of the scene.",
             "status": "done",
-            "src": "/img/manga/hajimari_manga/p2c1.webp"
+            "src": "/img/manga/hajimari_manga/p2c1.webp",
+            "refs": [
+              "/img/characters/hendy/sheet.webp"
+            ]
           },
           "lines": [
             {
@@ -109,12 +104,12 @@
             },
             {
               "speaker": "hendy",
-              "text": "ここから サポートします！"
+              "text": "よろしく おねがいします。"
             }
           ],
           "bakedText": [
             "こんにちは！ ヘンディです。",
-            "ここから サポートします！"
+            "よろしく おねがいします。"
           ]
         },
         {
@@ -131,13 +126,14 @@
             },
             {
               "speaker": "hendy",
-              "text": "たくさん 勉強しました。"
+              "text": "たくさん 勉強しましたね。"
             }
           ],
           "bakedText": [
             "みなさんは 1ねんかん にほんごを",
-            "たくさん べんきょうしました。"
-          ]
+            "たくさん べんきょうしましたね。"
+          ],
+          "_reuse": "p2c2"
         },
         {
           "image": {
@@ -153,12 +149,12 @@
             },
             {
               "speaker": "hendy",
-              "text": "テストも がんばりましたね。"
+              "text": "テストも がんばりました。"
             }
           ],
           "bakedText": [
             "ひらがな、カタカナ、かんじ。",
-            "テストも がんばりましたね。"
+            "テストも がんばりました。"
           ]
         },
         {
@@ -171,16 +167,16 @@
           "lines": [
             {
               "speaker": "hendy",
-              "text": "つぎの 目標は"
+              "text": "つぎは 日本の 会社で"
             },
             {
               "speaker": "hendy",
-              "text": "日本の 会社で はたらきます。"
+              "text": "はたらく ことが 目標です。"
             }
           ],
           "bakedText": [
-            "つぎの もくひょうは",
-            "にほんの かいしゃで はたらきます。"
+            "つぎは にほんの かいしゃで",
+            "はたらく ことが もくひょうです。"
           ]
         },
         {
@@ -197,24 +193,105 @@
             },
             {
               "speaker": "hendy",
-              "text": "まだ 知りませんね。"
+              "text": "まだ わかりませんね。"
             }
           ],
           "bakedText": [
             "でも、しごとの にほんごは",
-            "まだ しりませんね。"
+            "まだ わかりませんね。"
           ]
         },
         {
           "image": {
-            "prompt": "a bright university classroom in Cambodia in daylight; several Cambodian students studying Japanese together at desks with notebooks and textbooks; sunlight through the windows; hopeful and lively.",
+            "prompt": "Hendy faces the viewer with a calm reassuring smile, one open hand raised gently at chest height as if to say 'it's alright'; bright office softly blurred behind him.",
             "status": "done",
-            "src": "/img/manga/hajimari_manga/p2c6.webp"
+            "src": "/img/manga/hajimari_manga/p2c6.webp",
+            "refs": [
+              "/img/characters/hendy/sheet.webp"
+            ]
           },
           "lines": [
             {
               "speaker": "hendy",
-              "text": "2つ わたします。"
+              "text": "だいじょうぶです。"
+            },
+            {
+              "speaker": "hendy",
+              "text": "わたしたちが 教えます。"
+            }
+          ],
+          "bakedText": [
+            "だいじょうぶです。",
+            "わたしたちが おしえます。"
+          ]
+        },
+        {
+          "image": {
+            "prompt": "a Cambodian student raises one hand to ask a question at a desk while Hendy leans in and listens with a warm encouraging smile; bright classroom; other students working behind them.",
+            "status": "done",
+            "src": "/img/manga/hajimari_manga/p2c7.webp",
+            "refs": [
+              "/img/characters/hendy/sheet.webp"
+            ]
+          },
+          "lines": [
+            {
+              "speaker": "hendy",
+              "text": "わからない ことは"
+            },
+            {
+              "speaker": "hendy",
+              "text": "はずかしがらずに 聞いて ください。"
+            }
+          ],
+          "bakedText": [
+            "わからない ことは",
+            "はずかしがらずに きいて ください。"
+          ]
+        },
+        {
+          "size": "wide",
+          "image": {
+            "prompt": "Hendy, in his navy business suit and tie, stands on the left beside a young Cambodian university student on the right — the student is clearly a student, not a businessman: a white short-sleeve school polo shirt, a canvas backpack on one shoulder, a notebook held under the arm, no jacket and no necktie. Both look ahead at a bright horizon and smile; a winding white road stretches forward across green fields under a wide sunny sky; hopeful mood.",
+            "status": "done",
+            "refs": [
+              "/img/characters/hendy/sheet.webp"
+            ],
+            "src": "/img/manga/hajimari_manga/p2c8.webp"
+          },
+          "lines": [
+            {
+              "speaker": "hendy",
+              "text": "失敗も 勉強です。"
+            },
+            {
+              "speaker": "hendy",
+              "text": "いっしょに 進みましょう。"
+            }
+          ],
+          "bakedText": [
+            "しっぱいも べんきょうです。",
+            "いっしょに すすみましょう。"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "パスポートと チケット",
+      "panels": [
+        {
+          "image": {
+            "prompt": "Hendy offers toward the viewer, with both hands, a navy-blue passport booklet and a yellow ticket; inviting gesture; plain warm background.",
+            "status": "done",
+            "src": "/img/manga/hajimari_manga/p3c1.webp",
+            "refs": [
+              "/img/characters/hendy/sheet.webp"
+            ]
+          },
+          "lines": [
+            {
+              "speaker": "hendy",
+              "text": "あなたに 2つ わたします。"
             },
             {
               "speaker": "hendy",
@@ -222,16 +299,38 @@
             }
           ],
           "bakedText": [
-            "2つ わたします。",
+            "あなたに 2つ わたします。",
             "パスポートと チケットです。"
+          ]
+        },
+        {
+          "image": {
+            "prompt": "close-up of a navy-blue passport lying on a wooden desk; on its cover, embossed in gold, the words 'Japanese IT Pathway' in clean simple capital letters and nothing else; a few soft sparkles; warm light.",
+            "status": "done",
+            "src": "/img/manga/hajimari_manga/p3c2.webp",
+            "refs": []
+          },
+          "lines": [
+            {
+              "speaker": "hendy",
+              "text": "日本の いろいろな 会社で"
+            },
+            {
+              "speaker": "hendy",
+              "text": "はたらく ための パスポートです。"
+            }
+          ],
+          "bakedText": [
+            "にほんの いろいろな かいしゃで",
+            "はたらく ための パスポートです。"
           ]
         },
         {
           "size": "wide",
           "image": {
-            "prompt": "a wide colourful illustrated world map path: several stylised countries in a row, each with a small icon floating above it — one shows three people talking in a circle, one shows a report document passing from hand to hand, one shows stacked building blocks of a software process, one shows two people shaking hands; the winding road runs through them all and ends at Japan on the right, drawn with Mount Fuji and a city skyline glowing warmly; a yellow ticket in the lower left corner; bright sky; no letters or country names anywhere.",
+            "prompt": "a wide colourful illustrated map path: several stylised countries in a row, each with a small icon floating above it — one shows three people talking in a circle, one shows a report document passing from hand to hand, one shows stacked building blocks of a software process, one shows two people shaking hands; a winding road runs through them all; a yellow ticket in the lower left corner; bright sky; no letters or country names anywhere.",
             "status": "done",
-            "src": "/img/manga/hajimari_manga/p2c7.webp",
+            "src": "/img/manga/hajimari_manga/p3c3.webp",
             "refs": []
           },
           "lines": [
@@ -241,85 +340,93 @@
             },
             {
               "speaker": "hendy",
-              "text": "日本が 待って います。"
+              "text": "大切な ことを 勉強します。"
             }
           ],
           "bakedText": [
             "チケットで いろいろな くにへ。",
-            "にほんが まって います。"
+            "たいせつな ことを べんきょうします。"
           ]
         },
         {
           "image": {
-            "prompt": "a friendly NexMax robot standing on a winding white road beside a small signpost, waving at the viewer; green hills and a bright sky behind. Every robot must match the reference image exactly: rounded helmet-like head, wider than tall, light sky-blue (#A9D6F5) with soft shading (#7FB8E8); two small rounded ear pods on the sides of the head; a large white rounded face-screen covering most of the face, with a soft notch dipping at the top center; two black oval eyes, thin curved eyebrow marks on the helmet above the screen, small gentle smile; a small trapezoid torso in the same sky-blue bearing a navy (#004F8D) double-peak M mark; segmented ball-joint arms with round elbows and mitten hands; short segmented legs with rounded boots; cute chibi proportion, big head, about 2 heads tall. No antennae, no cat ears, no five-fingered hands.",
+            "prompt": "three friendly NexMax robots stand at different stops along a winding white road across green hills, each waving at the viewer; bright sky. Every robot must match the reference image exactly: rounded helmet-like head, wider than tall, light sky-blue (#A9D6F5) with soft shading (#7FB8E8); two small rounded ear pods on the sides of the head; a large white rounded face-screen covering most of the face, with a soft notch dipping at the top center; two black oval eyes, thin curved eyebrow marks on the helmet above the screen, small gentle smile; a small trapezoid torso in the same sky-blue bearing a navy (#004F8D) double-peak M mark; segmented ball-joint arms with round elbows and mitten hands; short segmented legs with rounded boots; cute chibi proportion, big head, about 2 heads tall. No antennae, no cat ears, no five-fingered hands.",
             "refs": [
               "/img/characters/nexmax/reference.png"
             ],
             "status": "done",
-            "src": "/img/manga/hajimari_manga/p2c8.webp"
+            "src": "/img/manga/hajimari_manga/p3c4.webp"
           },
           "lines": [
             {
               "speaker": "hendy",
-              "text": "どの 場所にも います。"
+              "text": "それぞれの 国で ネクマックスが"
             },
             {
               "speaker": "hendy",
-              "text": "あなたを 助けて くれます。"
+              "text": "あなたを サポートします。"
             }
           ],
           "bakedText": [
-            "どの ばしょにも います。",
-            "あなたを たすけて くれます。"
+            "それぞれの くにで ネクマックスが",
+            "あなたを サポートします。"
           ]
-        }
-      ]
-    },
-    {
-      "title": "さいしょの 場所",
-      "panels": [
+        },
         {
+          "size": "wide",
           "image": {
-            "prompt": "the inside of a bright modern IT office seen from the entrance: rows of desks with computers, green plants, a meeting corner with a sofa, warm daylight from large windows; no signboard, no logo, no letters anywhere.",
+            "prompt": "the end of the winding road arrives in Japan: Mount Fuji behind a warm glowing city skyline with cherry blossoms in the foreground; a bright welcoming sunrise; no letters anywhere.",
             "status": "done",
-            "src": "/img/manga/hajimari_manga/p3c1.webp",
+            "src": "/img/manga/hajimari_manga/p3c5.webp",
             "refs": []
           },
           "lines": [
             {
               "speaker": "hendy",
-              "text": "ここが ネクストメイクです。"
+              "text": "さいごは 日本です。"
+            },
+            {
+              "speaker": "hendy",
+              "text": "あなたの 仕事が 待って います。"
             }
           ],
           "bakedText": [
-            "ここが ネクストメイクです。"
+            "さいごは にほんです。",
+            "あなたの しごとが まって います。"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "ネクストメイクへ",
+      "panels": [
+        {
+          "image": {
+            "prompt": "a bright split illustration of two Japanese city skylines side by side, with NO people at all: on the left a Tokyo skyline with a tall red-and-white lattice tower, on the right an Osaka skyline with a silver lattice tower and a wide river with arched bridges; in each city a small modern office building carries a simple navy double-peak M shape on its roof; clear blue sky; no letters anywhere.",
+            "status": "done",
+            "refs": [],
+            "src": "/img/manga/hajimari_manga/p4c1.webp"
+          },
+          "lines": [
+            {
+              "speaker": "hendy",
+              "text": "日本の 東京と 大阪に"
+            },
+            {
+              "speaker": "hendy",
+              "text": "ネクストメイクが あります。"
+            }
+          ],
+          "bakedText": [
+            "にほんの とうきょうと おおさかに",
+            "ネクストメイクが あります。"
           ]
         },
         {
           "image": {
             "prompt": "Hendy stands beside a large office window and points out at the Osaka cityscape, smiling at the viewer; through the glass: a tall lattice-frame tower with an observation ring at its centre, a wide river with arched bridges, dense low buildings and distant hills; clear blue sky; a desk edge and a potted plant in the foreground; no letters anywhere.",
             "status": "done",
-            "refs": [
-              "/img/characters/hendy/sheet.webp"
-            ],
-            "src": "/img/manga/hajimari_manga/p3c2.webp"
-          },
-          "lines": [
-            {
-              "speaker": "hendy",
-              "text": "窓から 大阪の まちが 見えます。"
-            }
-          ],
-          "bakedText": [
-            "まどから おおさかの まちが みえます。"
-          ]
-        },
-        {
-          "size": "wide",
-          "image": {
-            "prompt": "inside the same bright office: Hendy in the middle waving warmly at the viewer, surrounded by a diverse team of five colleagues of different ages and genders — some standing, some sitting at desks — all smiling and waving; warm daylight.",
-            "status": "done",
-            "src": "/img/manga/hajimari_manga/p3c3.webp",
+            "src": "/img/manga/hajimari_manga/p4c2.webp",
             "refs": [
               "/img/characters/hendy/sheet.webp"
             ]
@@ -327,16 +434,58 @@
           "lines": [
             {
               "speaker": "hendy",
-              "text": "待って います！"
-            },
-            {
-              "speaker": "hendy",
-              "text": "いっしょに 仕事を しましょう！"
+              "text": "まどから 大阪の まちが 見えます。"
             }
           ],
           "bakedText": [
-            "まって います！",
-            "いっしょに しごとを しましょう！"
+            "まどから おおさかの まちが みえます。"
+          ]
+        },
+        {
+          "image": {
+            "prompt": "the inside of a bright modern IT office: Hendy stands beside an empty desk with a computer and gestures warmly toward it, inviting the viewer to sit down and join; green plants and colleagues working softly blurred behind; no signboard, no logo, no letters anywhere.",
+            "status": "done",
+            "src": "/img/manga/hajimari_manga/p4c3.webp",
+            "refs": [
+              "/img/characters/hendy/sheet.webp"
+            ]
+          },
+          "lines": [
+            {
+              "speaker": "hendy",
+              "text": "社員に なった つもりで"
+            },
+            {
+              "speaker": "hendy",
+              "text": "いっしょに はたらきましょう。"
+            }
+          ],
+          "bakedText": [
+            "しゃいんに なった つもりで",
+            "いっしょに はたらきましょう。"
+          ]
+        },
+        {
+          "size": "wide",
+          "image": {
+            "prompt": "inside a bright modern IT office, a warm group shot facing the viewer, everyone smiling and waving: Hendy stands in the middle in his navy suit and tie; to his left a man in his forties with very short cropped hair and a tanned face, wearing a navy blazer over a white crew-neck T-shirt; beside him a man in his forties with fuller side-swept hair, wearing a navy blazer over a white T-shirt; to Hendy's right a young woman with long light-brown hair in a cream turtleneck sweater; a young man with wavy black hair and black rectangular glasses in a dark green hoodie sits at a desk; a young woman with long brown ombre hair in a light grey pearl-button cardigan stands at the end; desks, computers and green plants behind them; warm daylight; no signboard, no logo, no letters anywhere.",
+            "status": "done",
+            "refs": [
+              "/img/characters/hendy/sheet.webp",
+              "/img/characters/fujiki/sheet.webp",
+              "/img/characters/okuda/sheet.webp",
+              "/img/characters/yukawa/sheet.webp"
+            ],
+            "src": "/img/manga/hajimari_manga/p4c4.webp"
+          },
+          "lines": [
+            {
+              "speaker": "hendy",
+              "text": "みんなで 待って います！"
+            }
+          ],
+          "bakedText": [
+            "みんなで まって います！"
           ]
         }
       ]
@@ -454,6 +603,38 @@
     [
       "回",
       "かい"
+    ],
+    [
+      "東京",
+      "とうきょう"
+    ],
+    [
+      "社員",
+      "しゃいん"
+    ],
+    [
+      "失敗",
+      "しっぱい"
+    ],
+    [
+      "大切",
+      "たいせつ"
+    ],
+    [
+      "進",
+      "すす"
+    ],
+    [
+      "教",
+      "おし"
+    ],
+    [
+      "聞",
+      "き"
+    ],
+    [
+      "人",
+      "ひと"
     ]
   ],
   "castIds": [
@@ -472,19 +653,19 @@
       "meaning": "senior colleague（さきに いた ひと）"
     },
     {
-      "term": "目標",
-      "reading": "もくひょう",
-      "meaning": "goal — めざす こと"
+      "term": "プロジェクトマネージャ",
+      "reading": "ぷろじぇくとまねーじゃ",
+      "meaning": "project manager — しごとを まとめる ひと"
     },
     {
-      "term": "仕事",
-      "reading": "しごと",
-      "meaning": "work / job"
+      "term": "プログラマー",
+      "reading": "ぷろぐらまー",
+      "meaning": "programmer — コンピューターを つくる ひと"
     },
     {
-      "term": "会社",
-      "reading": "かいしゃ",
-      "meaning": "company"
+      "term": "上手",
+      "reading": "じょうず",
+      "meaning": "good at it"
     },
     {
       "term": "勉強",
@@ -497,9 +678,54 @@
       "meaning": "kanji（むずかしい もじ）"
     },
     {
-      "term": "上手",
-      "reading": "じょうず",
-      "meaning": "good at it"
+      "term": "テスト",
+      "reading": "てすと",
+      "meaning": "test / exam"
+    },
+    {
+      "term": "会社",
+      "reading": "かいしゃ",
+      "meaning": "company"
+    },
+    {
+      "term": "目標",
+      "reading": "もくひょう",
+      "meaning": "goal — めざす こと"
+    },
+    {
+      "term": "仕事",
+      "reading": "しごと",
+      "meaning": "work / job"
+    },
+    {
+      "term": "教",
+      "reading": "おし",
+      "meaning": "to teach（教えます）"
+    },
+    {
+      "term": "聞",
+      "reading": "き",
+      "meaning": "to ask / to listen（聞きます）"
+    },
+    {
+      "term": "失敗",
+      "reading": "しっぱい",
+      "meaning": "mistake / failure"
+    },
+    {
+      "term": "進",
+      "reading": "すす",
+      "meaning": "to go forward（進みます）"
+    },
+    {
+      "term": "パスポート",
+      "reading": "ぱすぽーと",
+      "meaning": "passport — くにへ 行く ときに いる もの"
+    },
+    {
+      "term": "チケット",
+      "reading": "ちけっと",
+      "meaning": "ticket"
     },
     {
       "term": "国",
@@ -507,14 +733,29 @@
       "meaning": "country"
     },
     {
+      "term": "大切",
+      "reading": "たいせつ",
+      "meaning": "important"
+    },
+    {
+      "term": "ネクマックス",
+      "reading": "ねくまっくす",
+      "meaning": "NexMax — あなたを たすける ロボット"
+    },
+    {
+      "term": "サポート",
+      "reading": "さぽーと",
+      "meaning": "support — たすける こと"
+    },
+    {
+      "term": "社員",
+      "reading": "しゃいん",
+      "meaning": "employee — 会社で はたらく ひと"
+    },
+    {
       "term": "窓",
       "reading": "まど",
       "meaning": "window"
-    },
-    {
-      "term": "助",
-      "reading": "たす",
-      "meaning": "to help（助けます）"
     }
   ]
 }

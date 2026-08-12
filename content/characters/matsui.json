@@ -1,0 +1,20 @@
+{
+  "kind": "character",
+  "id": "matsui",
+  "name": "松井",
+  "reading": "まつい",
+  "role": "社長（代表取締役社長）",
+  "looks": "Japanese-style anime character, man in his forties, average build, calm confident posture. Black hair with volume on top and a soft side-swept fringe. Fair skin, oval face with soft cheeks, dark brown eyes, straight eyebrows, gentle friendly closed-lip smile. Outfit: navy single-breasted blazer (#1F2A44) worn open over a plain white crew-neck T-shirt, dark navy trousers, brown leather shoes. No tie, no glasses.",
+  "personality": "おだやかで たよりに なります。人の 話を よく ききます。大きな 目標を たのしそうに 話します。",
+  "sheet": {
+    "prompt": "A character model sheet for a Japanese language-learning manga.\nLayout: front view (full body, T-pose) on the left, right side view and back view next to it,\nand a column of 6 bust-up facial expressions on the right\n(neutral, smiling, worried, surprised, thinking, apologetic).\nWhite background. Light grid lines overlay to keep eye level consistent across views.\nCharacter: 社長（代表取締役社長） — Japanese-style anime character, man in his forties, average build, calm confident posture. Black hair with volume on top and a soft side-swept fringe. Fair skin, oval face with soft cheeks, dark brown eyes, straight eyebrows, gentle friendly closed-lip smile. Outfit: navy single-breasted blazer (#1F2A44) worn open over a plain white crew-neck T-shirt, dark navy trousers, brown leather shoes. No tie, no glasses.\nPersonality (affects posture and expression): おだやかで たよりに なります。人の 話を よく ききます。大きな 目標を たのしそうに 話します。\nStyle: clean modern Japanese manga / anime style, soft cel shading, bright friendly palette, rounded shapes, no harsh shadows, office and school settings, contemporary Japan.\nAvoid: no text, no letters, no kanji, no kana, no numbers anywhere in the image, speech balloons must be completely EMPTY (white inside, no writing), no watermark, no signature, no logo, no frame border, no six fingers, no extra limbs, no costume changes between panels, no duplicate faces of the same character in one panel.\nDo NOT write the character's name or any label on the sheet.",
+    "refs": [
+      "/img/characters/matsui/reference.jpg"
+    ],
+    "status": "done",
+    "src": "/img/characters/matsui/sheet.webp"
+  },
+  "references": [
+    "/img/characters/matsui/reference.jpg"
+  ]
+}
