@@ -62,6 +62,13 @@ export async function middleware(request: NextRequest) {
     return isOpenToVisitors(pathname) ? passThrough(false) : redirectToTitle();
   }
 
+  // API と OAuth の戻り道は、ログイン済みでも Supabase へ往復しない（願い #17）。
+  // 認証は各 API 自身の仕事で、AUTH_STATE_HEADER の読み手も `/` と /welcome だけ。
+  // 未検証のまま「ログイン済み」を渡さないよう、ヘッダは "0" で上書きする。
+  if (pathname.startsWith("/api/") || pathname.startsWith("/auth/")) {
+    return passThrough(false);
+  }
+
   // 更新されたセッションクッキー。どの応答にも必ず載せ直す（載せ忘れると毎回ログインし直しになる）。
   let refreshed: { name: string; value: string; options?: Record<string, unknown> }[] = [];
 

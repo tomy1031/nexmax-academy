@@ -1,3 +1,4 @@
+import { Buffer } from "node:buffer";
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/app/api/studio/content/route";
 import { DEFAULT_IMAGE_MODEL } from "@/lib/ai/models";
@@ -137,10 +138,10 @@ async function fetchInline(
     if (!response.ok) return null;
     const mimeType = response.headers.get("content-type") ?? "image/png";
     if (!mimeType.startsWith("image/")) return null;
-    const bytes = new Uint8Array(await response.arrayBuffer());
-    let binary = "";
-    for (const byte of bytes) binary += String.fromCharCode(byte);
-    return { inlineData: { mimeType, data: btoa(binary) } };
+    // 1文字ずつの文字列連結は 1.7MB の参照画像で数MBの中間文字列を生む
+    //（参照4枚で 128MB のメモリ上限に迫る）。Buffer で一発変換する。
+    const data = Buffer.from(await response.arrayBuffer()).toString("base64");
+    return { inlineData: { mimeType, data } };
   } catch {
     // 参照画像が1枚取れなくても生成そのものは続ける（絵は出る）
     return null;
