@@ -5,10 +5,11 @@ import { motion } from "motion/react";
 import type { Meeting } from "@/content/schema";
 import { CallShell, CaptionBar } from "@/components/call-shell";
 import { RubyText } from "@/components/ruby-text";
-import { buildFuriganaIndex } from "@/lib/text/furigana";
+import { buildFuriganaIndex, kanaOf } from "@/lib/text/furigana";
 import { normalizeReading } from "@/lib/text/normalize";
 import { recordContentProgress } from "@/lib/progress/store";
 import { checkJapanese, coreOf, type AdviceText } from "./japanese-check";
+import { VisemeFace } from "./viseme-face";
 
 /**
  * ミーティング — Zoom風の画面で、相手の質問に自分の日本語で答える。
@@ -44,6 +45,12 @@ export function MeetingSession({
 
   const question = meeting.questions[index];
   const done = index >= meeting.questions.length;
+
+  /** いま読み上げている文（かな）。口の形はここから取る。 */
+  const spokenKana = useMemo(() => {
+    const text = reply?.echo || question?.ask || "";
+    return kanaOf(text, furigana) ?? text;
+  }, [reply, question, furigana]);
 
   const submit = useCallback(() => {
     if (!question) return;
@@ -99,6 +106,14 @@ export function MeetingSession({
     </div>
   ) : (
     <div className="space-y-3">
+      <div className="flex justify-center">
+        <VisemeFace
+          dir="/img/characters/hendy/mouth"
+          utterance={spokenKana}
+          size={200}
+          alt={meeting.host.name}
+        />
+      </div>
       <CaptionBar
         speaker={meeting.host.name}
         text={<RubyText text={question!.ask} index={furigana} show />}
