@@ -201,9 +201,16 @@ Vercel の2本（`nexmax-academy.vercel.app` / `*.vercel.app`）は移行完了�
   Node ランタイム固定で、OpenNext は Node middleware を検出してビルドを止める
   （AGENTS.md 絶対規律 8・計画書 §2.3）
 - `compatibility_date` は `2025-05-05` 以降が必須（`FinalizationRegistry` 対策）
-- `incrementalCache`（R2）は入れていない。ISR / on-demand revalidate を使っておらず、
-  SSR は設定なしで動くため。**R2 を足さない = 無料枠に収まる**。ISR を使い始めたら
-  ここを見直す
+- `incrementalCache` は **KV**（2026-08-13 導入）。学習者ページ14ルートが
+  `revalidate = 60` の ISR なのにキャッシュが無く、全アクセス＋全プリフェッチが
+  フルSSRになって CPU 上限超過（Error 1102）が多発したため。KV は無料枠内
+  （読み 10万/日・書き 1000/日。書きは60秒経過後の再生成時のみ）。R2 は
+  アカウント未有効（有効化に課金設定が必要）なので使わない。
+  ネームスペース: `academy-next-inc-cache`（wrangler.jsonc に ID 直書き）。
+  裏側の再生成は `WORKER_SELF_REFERENCE`（自分自身へのサービスバインディング）
+  経由。**ブランチ確認URLでは再生成が本番 Worker に飛ぶため、ブランチURLの
+  ISR ページは古いままになることがある**（本番・STG は正常）。設定本体は
+  `open-next.config.ts`
 
 ## 1. 環境の位置づけ
 

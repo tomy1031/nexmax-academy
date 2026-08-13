@@ -156,7 +156,21 @@ function main() {
   const result = spawnSync("wrangler", ["versions", "upload", "--preview-alias", alias], {
     stdio: "inherit",
   });
-  process.exit(result.status ?? 1);
+  if ((result.status ?? 1) !== 0) process.exit(result.status ?? 1);
+
+  // ビルド時プリレンダーを KV の incrementalCache へ投入する（open-next.config.ts 参照）。
+  // `opennextjs-cloudflare deploy`（cf:deploy）は自動でやるが、ここは素の
+  // `wrangler versions upload` なので自前で呼ぶ。忘れても初回アクセス時に
+  // 各ページが自己修復する（＝落ちない）が、その初回だけフルSSRで重くなる。
+  const populate = spawnSync("npx", ["opennextjs-cloudflare", "populateCache", "remote"], {
+    stdio: "inherit",
+  });
+  if ((populate.status ?? 1) !== 0) {
+    console.warn(
+      "⚠ KVキャッシュの投入に失敗（アップロード自体は完了。初回アクセスで自己修復されます）",
+    );
+  }
+  process.exit(0);
 }
 
 // テストから import したときは実行しない。
