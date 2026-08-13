@@ -64,3 +64,17 @@ export function isModelName(value: unknown): value is string {
 export function looksLiveCapable(name: string): boolean {
   return name.includes("live") || name.includes("native-audio");
 }
+
+/**
+ * 使えるモデルの中から、**こちらの並び順で**選ぶ。
+ *
+ * 「せつぞくを ためす」で拾った一覧の先頭をそのまま採っていたため、
+ * Google が返す順しだいで古いモデルが既定になっていた（新しい 3.1 が
+ * 使えるのに 2.5 で話していた、という状態が起きる）。
+ * 順番を決めるのはこちら側の一覧（`LIVE_TALK_MODELS`）で、
+ * そこに1つも無いときだけ、相手の一覧の先頭に従う（知らない新型を締め出さない）。
+ */
+export function preferredLiveModel(available: readonly string[]): string {
+  const wanted = LIVE_TALK_MODELS.find((name) => available.includes(name));
+  return wanted ?? available[0] ?? DEFAULT_LIVE_TALK_MODEL;
+}

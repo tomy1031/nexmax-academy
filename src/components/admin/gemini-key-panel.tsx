@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useSyncExternalStore } from "react";
-import { DEFAULT_LIVE_TALK_MODEL } from "@/lib/ai/models";
+import { DEFAULT_LIVE_TALK_MODEL, preferredLiveModel } from "@/lib/ai/models";
 import { getGeminiKey, getLiveModel, saveGeminiKey, saveLiveModel } from "@/lib/profile";
 
 /**
@@ -109,10 +109,15 @@ export function GeminiKeyPanel() {
         liveModels,
         live: body.live ?? null,
       });
-      // いま選んでいるモデルが一覧に無ければ、使えるものへ寄せる
-      if (liveModels.length > 0 && !liveModels.includes(model)) {
-        setModel(liveModels[0]!);
-        saveLiveModel(liveModels[0]!);
+      /*
+       * いま選んでいるモデルが一覧に無ければ、使えるものへ寄せる。
+       * 寄せ先は**こちらの並び順**で決める（preferredLiveModel）。相手の一覧の
+       * 先頭を採っていたころ、新しい 3.1 が使えるのに古い 2.5 が既定になっていた。
+       */
+      const preferred = preferredLiveModel(liveModels);
+      if (liveModels.length > 0 && model !== preferred && !liveModels.includes(model)) {
+        setModel(preferred);
+        saveLiveModel(preferred);
       }
     } catch {
       setCheck({ state: "failed", reason: "upstream" });

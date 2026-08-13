@@ -10,6 +10,7 @@ import { QuizRunner } from "@/components/quiz/quiz-runner";
 import { ContentFrame, type FrameItem } from "@/components/stage/content-frame";
 import {
   getArticle,
+  getCharacter,
   getListening,
   getManga,
   getQuizSet,
@@ -199,7 +200,13 @@ async function renderContent(ref: StageContentRef) {
     case "meeting": {
       const meeting = await getMeeting(ref.ref);
       if (!meeting) notFound();
-      return <MeetingSession meeting={meeting} embedded />;
+      /*
+       * 声は**人物カード**が持つ（characters の voice）。ミーティング側に
+       * 別に書かせると、まんがのヘンディさんと声が食い違ったときに
+       * どちらが正しいのか誰にも分からなくなる。人物カードを1つの正にする。
+       */
+      const host = await getCharacter(meeting.host.id);
+      return <MeetingSession meeting={meeting} hostVoice={host?.voice} embedded />;
     }
     // 単語ステージは contents[] に入らない（wordStageIds 側・行き先は /arcade）。
     // ここに来るのは壊れたデータなので 404 にする。

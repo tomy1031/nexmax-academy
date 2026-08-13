@@ -14,6 +14,7 @@ import { checkJapanese, coreOf, type AdviceText } from "./japanese-check";
 import { judgeFailNote, requestJudge } from "./judge-api";
 import { JudgeCard } from "./judge-card";
 import { VisemeFace } from "./viseme-face";
+import { useClipPlayer } from "./use-clip-player";
 import { useLiveVoice } from "./use-live-voice";
 
 /**
@@ -71,10 +72,13 @@ interface Reply {
 
 export function MeetingSession({
   meeting,
+  /** 相手の声（人物カードの voice）。Live に渡して、まんがと同じ声で話させる。 */
+  hostVoice,
   /** ステージの枠の中に置くとき。戻り先は枠が持つ。 */
   embedded = false,
 }: {
   meeting: Meeting;
+  hostVoice?: string;
   embedded?: boolean;
 }) {
   const furigana = useMemo(() => buildFuriganaIndex(meeting.furigana ?? []), [meeting.furigana]);
@@ -95,6 +99,8 @@ export function MeetingSession({
    */
   const learnerName = useSyncExternalStore(subscribeToProfile, readName, readNameOnServer);
   const voice = useLiveVoice();
+  /** 作り置きの音声（質問・おわりの ひとこと）。 */
+  const clip = useClipPlayer();
   /** 判定ずみの発話ID（同じ発話を二度見ない）。 */
   const judgedRef = useRef(0);
 
@@ -205,6 +211,20 @@ export function MeetingSession({
     },
     [question, meeting, attempt, learnerName, withName],
   );
+
+  /**
+   * 質問が変わったら、作り置きの音声を鳴らす。
+   *
+   * Live につながっているときは鳴らさない——相手が自分で質問を読むので、
+   * 2つの声が重なる。つながっていない学習者（キーが無い・マイクが無い）にとっては、
+   * ここが**唯一 声を聞ける場所**になる。
+   */
+  const clipUrl = done ? meeting.closingAudioUrl : question?.audioUrl;
+  const playClip = clip.play;
+  useEffect(() => {
+    if (live || !clipUrl) return;
+    playClip(clipUrl);
+  }, [clipUrl, live, playClip]);
 
   // 声で話したぶんを見る。相手が話しはじめた合図で1つに束ねてから届く
   useEffect(() => {
@@ -366,13 +386,23 @@ export function MeetingSession({
       {live ? null : (
         <button
           type="button"
-          onClick={() => void voice.start(instruction)}
+          onClick={() => void voice.start(instruction, hostVoice)}
           disabled={voice.status === "connecting"}
           className="border-hairline text-navy rounded-full border-2 bg-white px-4 py-2 text-sm font-black disabled:opacity-40"
         >
           {voice.status === "connecting" ? "つないで います…" : "🎤 声で 話す"}
         </button>
       )}
+      {/* 作り置きの音がある質問は、何度でも聞き直せる（聞き取りは くり返しが効く） */}
+      {clipUrl && !live ? (
+        <button
+          type="button"
+          onClick={() => clip.play(clipUrl)}
+          className="border-hairline text-navy rounded-full border-2 bg-white px-4 py-2 text-sm font-black"
+        >
+          🔊 もう いちど 聞く
+        </button>
+      ) : null}
       {!hintShown ? (
         <button
           type="button"
@@ -405,7 +435,8 @@ export function MeetingSession({
             <VisemeFace
               dir={`/img/characters/${meeting.host.id}/mouth`}
               utterance={spokenKana}
-              analyser={voice.analyser}
+              /* 作り置きを鳴らしているあいだは そちらの音で 口を動かす */
+              analyser={clip.playing ? clip.analyser : voice.analyser}
               alt={meeting.host.name}
             />
           ),

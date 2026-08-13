@@ -719,7 +719,11 @@ export function StudioShell({
             issues={issues}
             warnings={warnings}
           >
-            <MeetingEditor value={view.draft} onChange={(draft) => setView({ ...view, draft })} />
+            <MeetingEditor
+              value={view.draft}
+              cast={merged.character}
+              onChange={(draft) => setView({ ...view, draft })}
+            />
           </ChildFrame>
         ) : null}
 

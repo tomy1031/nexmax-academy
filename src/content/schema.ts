@@ -914,6 +914,15 @@ const meetingQuestionSchema = z.object({
   keywords: z.array(plainText).default([]),
   /** 受け答え。`◯◯` が学習者の答えに置きかわる（おうむ返し＋共感）。 */
   echo: plainText,
+  /**
+   * 質問を読み上げた音声（作り置き）。
+   *
+   * 質問は**毎回おなじ文**なので、その場でAIに読ませる必要が無い。作り置きすると
+   * 3つ良くなる: ①開いた瞬間に鳴る（毎回2〜3秒待たない）②毎回おなじ声・おなじ
+   * 速さで聞ける（聞き取りの練習は「同じ音」の繰り返しが効く）③キーが無い学習者にも
+   * 声が届く。空なら Live が読む。
+   */
+  audioUrl: z.string().optional(),
 });
 
 /**
@@ -951,6 +960,8 @@ export const meetingSchema = z.object({
   questions: z.array(meetingQuestionSchema).min(3),
   /** ぜんぶ答えたあとに出す ひとこと。 */
   closing: plainText,
+  /** おわりの ひとことを読み上げた音声（作り置き。質問の audioUrl と同じ考え方）。 */
+  closingAudioUrl: z.string().optional(),
   furigana: z.array(furiganaEntrySchema).optional(),
 });
 

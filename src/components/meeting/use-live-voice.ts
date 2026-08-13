@@ -1,9 +1,10 @@
 "use client";
 
 import { useCallback, useRef, useState } from "react";
-import { DEFAULT_LIVE_TALK_MODEL } from "@/lib/ai/models";
+import { DEFAULT_LIVE_TALK_MODEL, LIVE_TALK_MODELS } from "@/lib/ai/models";
 import { getGeminiKey, getLiveModel } from "@/lib/profile";
 import { base64ToBytes } from "@/lib/audio/wav";
+import { startMicCapture, IN_RATE, type MicCapture } from "./mic-capture";
 
 /**
  * Gemini Live と**声で**話すセッション。
@@ -39,12 +40,8 @@ interface TokenResponse {
   model?: string;
 }
 
-/** 送る音声のサンプリングレート（Live API の決まり）。 */
-const IN_RATE = 16_000;
-/** 返る音声のサンプリングレート（同上）。 */
+/** 返る音声のサンプリングレート（Live API の決まり）。送る側は mic-capture.ts が持つ。 */
 const OUT_RATE = 24_000;
-/** 1回に送る長さ。短すぎると通信が増え、長すぎると返事が遅れる。 */
-const CHUNK = 2048;
 
 export interface LiveVoice {
   readonly status: VoiceStatus;
@@ -61,7 +58,8 @@ export interface LiveVoice {
   readonly lastUtterance: { id: number; text: string } | null;
   /** 口パクを動かすための解析器（再生の手前）。 */
   readonly analyser: AnalyserNode | null;
-  readonly start: (systemInstruction: string) => Promise<void>;
+  /** `voice` は人物カードで決めた声（characters の voice）。 */
+  readonly start: (systemInstruction: string, voice?: string) => Promise<void>;
   readonly stop: () => void;
   /** 声が使えないときの補い。テキストで送る（相手は声で返す）。 */
   readonly sendText: (text: string) => void;
@@ -84,14 +82,14 @@ export function useLiveVoice(): LiveVoice {
     sendClientContent: (input: unknown) => void;
     close: () => void;
   } | null>(null);
-  const micRef = useRef<{ ctx: AudioContext; stream: MediaStream } | null>(null);
+  const micRef = useRef<{ capture: MicCapture; stream: MediaStream } | null>(null);
   const outRef = useRef<{ ctx: AudioContext; node: AnalyserNode; playAt: number } | null>(null);
 
   const stop = useCallback(() => {
     sessionRef.current?.close();
     sessionRef.current = null;
+    micRef.current?.capture.stop();
     micRef.current?.stream.getTracks().forEach((t) => t.stop());
-    void micRef.current?.ctx.close();
     micRef.current = null;
     void outRef.current?.ctx.close();
     outRef.current = null;
@@ -99,7 +97,7 @@ export function useLiveVoice(): LiveVoice {
     setStatus("idle");
   }, []);
 
-  const start = useCallback(async (systemInstruction: string) => {
+  const start = useCallback(async (systemInstruction: string, voice?: string) => {
     setStatus("connecting");
     setReason(null);
     setTurns([]);
@@ -114,15 +112,35 @@ export function useLiveVoice(): LiveVoice {
       return;
     }
 
-    const response = await fetch("/api/live/token", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ apiKey, model: getLiveModel() || DEFAULT_LIVE_TALK_MODEL }),
-    });
-    const payload = (await response.json().catch(() => ({}))) as TokenResponse;
-    if (!payload.ready || !payload.token || !payload.model) {
+    /*
+     * 設定してあるモデル → 既定（新しいほう）の順にためす。
+     * Live の preview モデルは**名前ごと入れ替わる**ので、前に選んだ名前が
+     * 消えていることがある。1つで諦めると、画面には「声は まだ つかえません」
+     * としか出ず、キーを疑い続けることになる（2026-08-06 に実際に起きた）。
+     */
+    const wanted = [getLiveModel(), ...LIVE_TALK_MODELS].filter(
+      (name, index, all): name is string => Boolean(name) && all.indexOf(name) === index,
+    );
+    let payload: TokenResponse | null = null;
+    let lastReason = "upstream";
+    for (const model of wanted.length > 0 ? wanted : [DEFAULT_LIVE_TALK_MODEL]) {
+      const response = await fetch("/api/live/token", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ apiKey, model }),
+      });
+      const body = (await response.json().catch(() => ({}))) as TokenResponse;
+      if (body.ready && body.token && body.model) {
+        payload = body;
+        break;
+      }
+      lastReason = body.reason ?? "upstream";
+      // キーそのものが無い・通らないなら、モデルを変えても同じ
+      if (lastReason === "noKey" || lastReason === "noPermission") break;
+    }
+    if (!payload?.token || !payload.model) {
       setStatus("notReady");
-      setReason(payload.reason ?? "upstream");
+      setReason(lastReason);
       return;
     }
 
@@ -131,7 +149,13 @@ export function useLiveVoice(): LiveVoice {
     let stream: MediaStream;
     try {
       stream = await navigator.mediaDevices.getUserMedia({
-        audio: { channelCount: 1, echoCancellation: true, noiseSuppression: true },
+        audio: {
+          channelCount: 1,
+          // 相手の声がスピーカーから回り込むと、そのまま聞き取りに混ざる
+          echoCancellation: true,
+          noiseSuppression: true,
+          autoGainControl: true,
+        },
       });
     } catch {
       setStatus("notReady");
@@ -145,6 +169,8 @@ export function useLiveVoice(): LiveVoice {
 
       // 再生側。解析器を挟んでから出す
       const outCtx = new AudioContext({ sampleRate: OUT_RATE });
+      // 自動再生の制限で止まったまま始まることがある。動かさないと1音も出ない
+      if (outCtx.state === "suspended") await outCtx.resume();
       const node = outCtx.createAnalyser();
       node.fftSize = 512;
       node.connect(outCtx.destination);
@@ -158,6 +184,16 @@ export function useLiveVoice(): LiveVoice {
           systemInstruction,
           inputAudioTranscription: {},
           outputAudioTranscription: {},
+          /*
+           * 声は**人物カードで決めたもの**を使う（characters の voice）。
+           * 決めていないときは Live の既定に任せる——ここで別の声を勝手に
+           * 当てると、まんがのヘンディさんと声が違う人になる。
+           * 言語を伝えるのは、日本語として聞き取らせるため。
+           */
+          speechConfig: {
+            languageCode: "ja-JP",
+            ...(voice ? { voiceConfig: { prebuiltVoiceConfig: { voiceName: voice } } } : {}),
+          },
         },
         callbacks: {
           onopen: () => setStatus("live"),
@@ -195,31 +231,20 @@ export function useLiveVoice(): LiveVoice {
       });
       sessionRef.current = session as unknown as NonNullable<typeof sessionRef.current>;
 
-      // マイク → 16kHz PCM → 送信
-      const inCtx = new AudioContext({ sampleRate: IN_RATE });
-      const source = inCtx.createMediaStreamSource(stream);
-      const pump = inCtx.createScriptProcessor(CHUNK, 1, 1);
-      pump.onaudioprocess = (event) => {
-        const input = event.inputBuffer.getChannelData(0);
-        const pcm = new Int16Array(input.length);
-        for (let i = 0; i < input.length; i += 1) {
-          const clamped = Math.max(-1, Math.min(1, input[i]!));
-          pcm[i] = clamped < 0 ? clamped * 0x8000 : clamped * 0x7fff;
-        }
+      /*
+       * マイク → 16kHz PCM → 送信。落とす処理は mic-capture.ts が持つ
+       *（音声スレッドで動かすため。メインスレッドで作っていたころは、画面が
+       * 忙しいと語の途中が丸ごと落ちて、何を言っても書き起こしが崩れていた）。
+       */
+      const capture = await startMicCapture(stream, (pcm) => {
         sessionRef.current?.sendRealtimeInput({
           audio: {
-            data: bytesToBase64(new Uint8Array(pcm.buffer)),
+            data: bytesToBase64(new Uint8Array(pcm.buffer, pcm.byteOffset, pcm.byteLength)),
             mimeType: `audio/pcm;rate=${IN_RATE}`,
           },
         });
-      };
-      source.connect(pump);
-      // ScriptProcessor は出力へつながないと動かない。音は出さないので無音へ落とす
-      const mute = inCtx.createGain();
-      mute.gain.value = 0;
-      pump.connect(mute);
-      mute.connect(inCtx.destination);
-      micRef.current = { ctx: inCtx, stream };
+      });
+      micRef.current = { capture, stream };
     } catch {
       stream.getTracks().forEach((t) => t.stop());
       setStatus("error");

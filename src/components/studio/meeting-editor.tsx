@@ -1,8 +1,9 @@
 "use client";
 
-import type { Meeting, MeetingQuestion } from "@/content/schema";
+import type { Character, Meeting, MeetingQuestion } from "@/content/schema";
 import { emptyMeetingQuestion } from "./drafts";
 import { LISTENING_ACCENT_OPTIONS } from "./listening-drafts";
+import { MeetingAudioMaker } from "./meeting-audio-maker";
 import { moveItem, removeAt, replaceAt } from "./list-ops";
 import {
   FuriganaEditor,
@@ -40,9 +41,12 @@ const ECHO_MARK = "◯◯";
 
 export function MeetingEditor({
   value,
+  cast,
   onChange,
 }: {
   value: Meeting;
+  /** とうじょう人物（声は人物カードが持つ）。 */
+  cast: readonly Character[];
   onChange: (meeting: Meeting) => void;
 }) {
   const patch = (part: Partial<Meeting>) => onChange({ ...value, ...part });
@@ -251,6 +255,8 @@ export function MeetingEditor({
           placeholder="ありがとう ございました。よく できましたね！ また 話しましょう。"
         />
       </StudioSection>
+
+      <MeetingAudioMaker value={value} cast={cast} onChange={onChange} />
 
       <FuriganaEditor
         content={value}
