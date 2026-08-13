@@ -1,7 +1,22 @@
 "use client";
 
-import { useSyncExternalStore, type ReactNode } from "react";
-import { fieldPreset } from "./fields";
+import dynamic from "next/dynamic";
+import { useState, type ReactNode } from "react";
+import { ARCADE_INK } from "./fields";
+import type { ArcadeWorldProps } from "./arcade-canvas";
+
+/**
+ * 3Dの世界は**ブラウザでだけ**読み込む（`ssr: false`）。
+ *
+ * ふつうに import すると、three.js（708KB）が**サーバ側のバンドルにも**入る。
+ * このアプリの Worker は無料プランの上限 3 MiB に対してすでに 3056KiB（99.5%）で、
+ * 足した瞬間に上限を超えてデプロイが落ちた（実測）。3Dはブラウザでしか動かないので、
+ * サーバに置く意味がない。ブラウザ専用にすると、three は静的アセット側だけに載る
+ *（アセットは Worker のサイズに数えられない）。
+ */
+const ArcadeCanvas = dynamic(() => import("./arcade-canvas").then((m) => m.ArcadeCanvas), {
+  ssr: false,
+});
 
 /**
  * ことばアーケードの舞台。画面いっぱいを使う。
@@ -10,135 +25,52 @@ import { fieldPreset } from "./fields";
  * これはページの中の小さな枠では成立しない（枠に入れた瞬間に緊張感が消える）。
  * だから舞台は fixed inset-0 の全画面オーバーレイにする。
  *
- * 視線の階層は コントラストで作る:
- *   用語（最大・最強コントラスト） > 入力欄 > 四隅のHUD（影を弱めた小カード）
- * 画面中央は用語のために空けておき、そこに情報を置かない。
+ * 中身の重ね順は旧 index.html / styles.css のまま:
+ *   #game-canvas(1) → #fx-vignette(4) → #damage-flash(5) → 時計(6) → #fx-popups(8) → #ui-layer(10)
  */
-export function ArcadeScene({ field, children }: { field: string; children: ReactNode }) {
-  const preset = fieldPreset(field);
+export function ArcadeScene({
+  world,
+  /** 被弾したら舞台をひと揺らしする（旧 .damage-shake）。 */
+  impact = false,
+  children,
+}: {
+  world: Omit<ArcadeWorldProps, "onNear">;
+  impact?: boolean;
+  children: ReactNode;
+}) {
+  // 用語が目の前に来ている間（旧 .shake-screen）。世界の側だけが知っている。
+  const [near, setNear] = useState(false);
+
+  // 旧アプリは body ごと揺らしていた。ここでは3Dの層だけを揺らす。
+  // 舞台は画面いっぱいの重ね物なので、外枠ごと動かすと縁に下のページが覗く。
+  // 揺れて見えるものは同じ（画面いっぱいの世界）なので見え方は変わらない。
+  const shake = impact ? "arc-damage" : near ? "arc-quake" : "";
 
   return (
-    <div
-      className="fixed inset-0 z-40 overflow-hidden"
-      style={{
-        background: `linear-gradient(180deg, ${preset.sky[0]} 0%, ${preset.sky[1]} 52%)`,
-        perspective: "760px",
-      }}
-    >
-      {/* 床 — 地平線に向かって目地がすぼまり、手前ほど広がる */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-[52%] overflow-hidden"
-        style={{
-          background: `linear-gradient(180deg, ${preset.ground[1]} 0%, ${preset.ground[0]} 100%)`,
-          // 地平線ぎわは空となじませ、境目の直線を消す
-          maskImage: "linear-gradient(to bottom, transparent 0%, black 12%)",
-        }}
-      >
-        <div
-          className="absolute inset-x-[-60%] bottom-0 h-[280%]"
-          style={{
-            background: `repeating-linear-gradient(to right, ${preset.grid} 0 3px, transparent 3px 120px),
-                         repeating-linear-gradient(to bottom, ${preset.grid} 0 3px, transparent 3px 96px)`,
-            opacity: 0.5,
-            transform: "rotateX(76deg)",
-            transformOrigin: "bottom center",
-            maskImage: "linear-gradient(to bottom, transparent 0%, black 22%)",
-          }}
-        />
+    <div className="fixed inset-0 z-40 overflow-hidden" style={{ background: ARCADE_INK }}>
+      <style>{STAGE_CSS}</style>
+
+      <div className={`absolute inset-0 ${shake}`}>
+        <ArcadeCanvas {...world} onNear={setNear} />
       </div>
 
-      {/* 水平線のかすみ — 用語が出てくる場所を示す */}
+      {/* 画面周辺を締めるビネット＋上下のシネマグラデーション（旧 #fx-vignette） */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-[36%] h-40"
+        className="pointer-events-none absolute inset-0"
         style={{
-          background: `radial-gradient(60% 100% at 50% 78%, ${preset.glow}, transparent 70%)`,
-          opacity: 0.85,
+          zIndex: 4,
+          background: `radial-gradient(120% 90% at 50% 45%, transparent 55%, rgba(4, 6, 14, 0.42) 100%),
+            linear-gradient(to bottom, rgba(4, 6, 14, 0.35), transparent 12%, transparent 88%, rgba(4, 6, 14, 0.45))`,
         }}
       />
 
-      {/* 景色の名前 */}
-      <span
-        className="absolute top-3 left-1/2 -translate-x-1/2 rounded-full bg-white/80 px-4 py-1 text-xs font-black"
-        style={{ color: preset.ink }}
-      >
-        {preset.label}
-      </span>
-
-      {children}
-    </div>
-  );
-}
-
-/**
- * 迫ってくる用語。
- *
- * 遠くの小さく薄い文字から、手前の巨大な文字へ。
- * 変化させる transform は1つ（scale と translateY の合成）だけにして、
- * 低スペック端末でもコマ落ちしにくくする。
- */
-export function ApproachingTerm({
-  term,
-  reading,
-  showFurigana,
-  /** 1（水平線）→ 0（目の前）。カウントダウンの残り割合をそのまま渡す。 */
-  remaining,
-  field,
-  /** 読みが決まったあと。用語を手前で止める。 */
-  frozen = false,
-  /** 取りそこねた。水に落とす。 */
-  missed = false,
-}: {
-  term: string;
-  reading: string;
-  showFurigana: boolean;
-  remaining: number;
-  field: string;
-  frozen?: boolean;
-  missed?: boolean;
-}) {
-  const preset = fieldPreset(field);
-  const reduced = usePrefersReducedMotion();
-
-  const progress = reduced || frozen ? 1 : 1 - remaining;
-  // 読みが決まったら、旧アプリと同じく用語を上へ逃がして下半分を4択に明け渡す
-  const scale = frozen ? 0.78 : 0.22 + progress * 1.03;
-  const lift = frozen ? -34 : (1 - progress) * -26;
-  const opacity = 0.45 + progress * 0.55;
-  // 目の前に届く直前だけ、わずかに震える
-  const imminent = !frozen && !reduced && remaining > 0 && remaining < 0.12;
-
-  return (
-    <div className="pointer-events-none absolute inset-0 grid place-items-center px-6">
-      <div
-        className={`text-center will-change-transform ${imminent ? "animate-term-jitter" : ""}`}
-        style={{
-          transform: missed
-            ? "translate3d(0, 26%, 0) scale(1.05) rotate(-4deg)"
-            : `translate3d(0, ${lift}%, 0) scale(${scale})`,
-          opacity: missed ? 0 : opacity,
-          transition: missed ? "transform .28s ease-in, opacity .28s ease-in" : undefined,
-        }}
-      >
-        <span
-          className="inline-block max-w-[92vw] text-6xl leading-tight font-black break-words sm:text-8xl"
-          style={{
-            color: preset.ink,
-            WebkitTextStroke: `3px ${preset.inkEdge}`,
-            paintOrder: "stroke fill",
-            textShadow: `0 6px 0 rgba(0,0,0,.10), 0 0 32px ${preset.glow}`,
-          }}
-        >
-          {showFurigana ? (
-            <ruby>
-              {term}
-              <rt style={{ color: preset.ink, opacity: 0.9, WebkitTextStroke: "0" }}>{reading}</rt>
-            </ruby>
-          ) : (
-            term
-          )}
-        </span>
+      {/*
+        旧 #ui-layer（z-index 10）。時計や用語（6）より上に来るようにまとめる。
+        操作できるのは中の .pointer-events-auto だけ（旧 .interactive と同じ考え）。
+      */}
+      <div className="pointer-events-none absolute inset-0" style={{ zIndex: 10 }}>
+        {children}
       </div>
     </div>
   );
@@ -170,17 +102,27 @@ export function HudChip({
   );
 }
 
-const REDUCED_MOTION = "(prefers-reduced-motion: reduce)";
-
-function usePrefersReducedMotion(): boolean {
-  // 外部（OSの設定）の状態なので、エフェクトで同期せず購読する
-  return useSyncExternalStore(
-    (onChange) => {
-      const query = window.matchMedia(REDUCED_MOTION);
-      query.addEventListener("change", onChange);
-      return () => query.removeEventListener("change", onChange);
-    },
-    () => window.matchMedia(REDUCED_MOTION).matches,
-    () => false,
-  );
-}
+/**
+ * 舞台だけで使うキーフレーム（旧 styles.css の .shake-screen / .damage-shake）。
+ * globals.css は共有ファイルなので、ここに閉じ込めて持ち歩く。
+ */
+const STAGE_CSS = `
+@keyframes arc-shake{
+  0%{translate:1px 1px;rotate:0deg}
+  25%{translate:-3px 0;rotate:1deg}
+  50%{translate:-1px 2px;rotate:-1deg}
+  75%{translate:3px 1px;rotate:0deg}
+  100%{translate:1px -2px;rotate:-1deg}}
+.arc-quake{animation:arc-shake .5s infinite}
+@keyframes arc-damage{
+  0%{translate:0 0;rotate:0deg}
+  15%{translate:-14px 6px;rotate:-1.5deg}
+  30%{translate:13px -7px;rotate:1.5deg}
+  45%{translate:-11px 5px;rotate:-1deg}
+  60%{translate:9px -5px;rotate:1deg}
+  75%{translate:-6px 3px;rotate:0deg}
+  100%{translate:0 0;rotate:0deg}}
+.arc-damage{animation:arc-damage .48s ease-out}
+.arc-outline{text-shadow:-2px -2px 0 #000,2px -2px 0 #000,-2px 2px 0 #000,2px 2px 0 #000,0 0 10px rgba(0,0,0,.8)}
+@media (prefers-reduced-motion:reduce){.arc-quake,.arc-damage{animation:none}}
+`;

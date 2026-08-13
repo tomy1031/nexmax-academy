@@ -7,6 +7,7 @@ import {
   isPersonalityTypeCode,
 } from "@/content/personality";
 import { hasCompletedPersonality, latestResultsByProfile } from "@/lib/personality-stats";
+import { formatSchool } from "@/lib/school";
 import type { PersonalityResultRow, ProfileRow } from "@/lib/profile-db";
 
 function escapeCsv(value: string | number): string {
@@ -26,7 +27,10 @@ export function buildPersonalityCsv(
   const latest = latestResultsByProfile(results);
   const headers = [
     "メール",
-    "なまえ",
+    "苗字",
+    "名前",
+    "よび名",
+    "学校",
     "性別",
     "タイプ",
     "組",
@@ -46,7 +50,11 @@ export function buildPersonalityCsv(
 
     return [
       profile.email,
+      profile.family_name ?? "",
+      profile.given_name ?? "",
+      // 呼び名。名簿として使うので、なまえを分ける前に作られた行でも空欄にしない。
       profile.display_name,
+      formatSchool({ university: profile.university, cohort: profile.cohort }),
       profile.gender === "male" ? "男性" : "女性",
       complete && isPersonalityTypeCode(profile.personality_type)
         ? getPersonalityType(profile.personality_type).name

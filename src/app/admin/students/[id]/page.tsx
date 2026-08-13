@@ -36,6 +36,8 @@ import {
   type PersonalityResultRow,
   type ProfileRow,
 } from "@/lib/profile-db";
+import { buildFullName } from "@/lib/name";
+import { formatSchool } from "@/lib/school";
 import { createClient } from "@/lib/supabase/client";
 
 const ANSWER_MARK = { a: "Ⓐ", b: "Ⓑ" } as const;
@@ -137,6 +139,14 @@ export default function StudentPersonalityReportPage() {
   }
 
   const examDate = results[0]?.created_at ?? profile.updated_at;
+  // 見出しは学習者の呼び名。苗字と名前がそろっていれば、そのすぐ下に本名を出す
+  // （先生が名簿と突き合わせられるように）。分ける前に作られた行では空になる。
+  const fullName = buildFullName({
+    familyName: profile.family_name ?? "",
+    givenName: profile.given_name ?? "",
+  });
+  // 学校と期生（願い #27）。名簿と突き合わせるときに要る。
+  const school = formatSchool({ university: profile.university, cohort: profile.cohort });
 
   // 未診断・壊れた行でも画面を落とさない。ここを通さないと getFamilyForCode 等が
   // render 中に throw して、1行の不整合でページ全体が白くなる。
@@ -153,6 +163,7 @@ export default function StudentPersonalityReportPage() {
           </Link>
           <section className="card-pop p-5 sm:p-7">
             <h1 className="text-navy text-3xl font-black">{profile.display_name}</h1>
+            {fullName && <p className="text-ink-soft mt-1 text-sm font-bold">{fullName}</p>}
             <p className="text-ink-soft mt-1 text-sm break-all">{profile.email}</p>
             <p className="bg-panel-tint text-ink-soft mt-5 rounded-2xl p-5 font-bold">
               この学生はまだ診断を終えていないか、記録の形式が現在の診断方式と合いません。
@@ -185,6 +196,7 @@ export default function StudentPersonalityReportPage() {
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-3">
               <h1 className="text-navy text-3xl font-black">{profile.display_name}</h1>
+              {fullName && <span className="text-ink-soft text-sm font-bold">（{fullName}）</span>}
               <span
                 className="rounded-full px-3 py-1 text-sm font-bold text-white"
                 style={{
@@ -199,6 +211,10 @@ export default function StudentPersonalityReportPage() {
               <div>
                 <dt className="text-ink-soft font-bold">メール</dt>
                 <dd className="break-all">{profile.email}</dd>
+              </div>
+              <div>
+                <dt className="text-ink-soft font-bold">学校</dt>
+                <dd>{school || "（未設定）"}</dd>
               </div>
               <div>
                 <dt className="text-ink-soft font-bold">性別</dt>

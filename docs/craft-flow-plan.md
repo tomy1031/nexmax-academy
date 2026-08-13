@@ -4,7 +4,7 @@
 
 # AI教材づくりの段階フロー — 実装計画（そうだんテーブル / craft）
 
-リポジトリ: `/Users/tomy/program/claude/NexmaxAcademy/.claude/worktrees/supabase-profiles-inspection-2ce21d`（以下の相対表記はすべてこの下）。実測ベースライン: `npx vitest run` = 34ファイル / 496テスト green、`npm run lint:content` = エラー0 / 警告0。
+相対表記はすべてリポジトリルート基準（計画作成時は作業worktree `supabase-profiles-inspection-2ce21d` 上で計測した）。実測ベースライン（2026-08-07時点）: `npx vitest run` = 34ファイル / 496テスト green、`npm run lint:content` = エラー0 / 警告0。
 
 ---
 

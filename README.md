@@ -7,8 +7,9 @@
 ## 技術スタック
 
 - Next.js (App Router) + TypeScript + Tailwind CSS
+- デプロイ先は **Cloudflare Workers**（OpenNext 経由。2026-08-03 に Vercel から移行）
+- DB・認証は Supabase（Google ログイン）。Gemini 呼び出しはサーバプロキシ経由
 - コンテンツは zod スキーマ準拠の JSON（`content/`）。学習エンジンとコンテンツを分離する（`docs/design/03` §1）
-- DB/認証・Gemini プロキシはフェーズ1で導入予定
 
 ## 開発
 
@@ -21,7 +22,7 @@ npm run dev                  # 開発サーバ http://localhost:3000
 npm run lint                 # ESLint（品質）
 npm run format               # Prettier で整形
 npm run typecheck            # tsc --noEmit
-npm run lint:content         # コンテンツ検収（スキーマ＋禁止語＋秘匿漏れ＋ID重複）
+npm run lint:content         # コンテンツ検収（スキーマ＋禁止語＋ふりがな覆い 他）
 npm run lint:secrets         # 秘密情報混入検査（secretlint）
 npm test                     # 単体テスト（Vitest）
 npm run measure:readability  # 文長・漢字密度レポート
@@ -35,30 +36,37 @@ npm run measure:readability  # 文長・漢字密度レポート
 2. Google Cloud Console で OAuth クライアントを作成し、リダイレクトURIに
    `https://<プロジェクトID>.supabase.co/auth/v1/callback` を登録
 3. Supabase ダッシュボード → Authentication → Providers → Google を有効化し、クライアントID/シークレットを入力
-4. アプリ側のコールバックは `/auth/callback`（実装済み）
+4. アプリ側のコールバックは `/auth/callback`（実装済み）。Redirect URLs は `https://<host>/**` 形式で登録する（`docs/deploy.md` §0.3）
 
-環境変数が未設定の間は「たいけんモード」で全ページを閲覧できます。
+ログインが最初の画面です（ログインするまで学習画面は開けません）。
 
-## デプロイ（検証環境）
+## デプロイ（Cloudflare Workers）
 
-常時の動作確認用に **Vercel Hobby（無料）** を検証環境として使う。`git push` で本番URL、PRごとにプレビューURLが自動発行される。DB・認証は本番と同じ Supabase を共有する。
+| 環境       | URL                                               | 更新コマンド                      |
+| ---------- | ------------------------------------------------- | --------------------------------- |
+| 本番       | `https://academy.nexmax.workers.dev`              | `npm run cf:deploy`               |
+| staging    | `https://staging-academy.nexmax.workers.dev`      | `npm run cf:staging`（main のみ） |
+| ブランチ用 | `https://<ブランチ名>-academy.nexmax.workers.dev` | `npm run cf:branch`               |
 
-セットアップと運用注意（OAuthリダイレクトURL登録・同一DB共有の線引き）は `docs/deploy.md` を参照。本番環境は `docs/design/03` の正式運用に従う。
+手順・環境変数・踏みやすい罠は `docs/deploy.md` §0 を参照。
 
 ## キャラクター画像（ネクマックス）
 
 ナビゲーターのネクマックスは Codex の image-gen-2 で生成します（手描きSVG禁止）。
-正典 `public/img/characters/nekumax/reference.png` を置いたうえで、
+正典 `public/img/characters/nexmax/reference.png` を参照入力にして、
 `docs/skills/codex_image_generation.md` の手順でバリアントを生成してください。
 
 ## ドキュメント
 
 | ファイル                                   | 内容                                                                       |
 | ------------------------------------------ | -------------------------------------------------------------------------- |
+| `AGENTS.md`                                | AIエージェント向けの規律（CLAUDE.md / .gemini からも参照される単一ソース） |
 | `docs/design/01_理解設計ガイド.md`         | 教材設計の13原則・アンチパターン・制作レシピ（教材を書く前に必読）         |
 | `docs/design/02_拡張カリキュラム設計書.md` | 「ネクストメイク1年目」12モジュールのカリキュラム計画                      |
 | `docs/design/03_リニューアル設計方針.md`   | アーキテクチャ・DB要件・検収パイプライン・移行手順                         |
-| `docs/design/review_rubric.md`             | 検収ルーブリック（証拠必須）                                               |
 | `docs/design/04_ビジュアルテーマ.md`       | ビジュアル・文言トーン・ネクマックスの規律（UIに触る前に必読）             |
-| `docs/deploy.md`                           | 検証環境（Vercel）と Supabase 共有の運用                                   |
-| `AGENTS.md`                                | AIエージェント向けの規律（CLAUDE.md / .gemini からも参照される単一ソース） |
+| `docs/design/09_Cloudflare移行実行計画.md` | Vercel → Cloudflare Workers 移行の計画と制約                               |
+| `docs/design/review_rubric.md`             | 検収ルーブリック（証拠必須）                                               |
+| `docs/deploy.md`                           | デプロイ／環境構成（Cloudflare Workers・Supabase 共有の運用）              |
+| `docs/constraints.md`                      | ユーザーが伝えた制約・好みの永続台帳（作業前に必読）                       |
+| `docs/codex-backend.md`                    | 生成バックエンド（Codex／Gemini）の構成                                    |

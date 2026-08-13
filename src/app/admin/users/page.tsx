@@ -24,11 +24,20 @@ import {
   updateProfileAsAdmin,
   type ProfileRow,
 } from "@/lib/profile-db";
+import {
+  areNamesValid,
+  buildDisplayName,
+  katakanaNotice,
+  MAX_NAME_LENGTH,
+  type LearnerNames,
+} from "@/lib/name";
 import type { Gender } from "@/lib/profile";
+import { COHORTS, UNIVERSITIES, type LearnerSchool, type University } from "@/lib/school";
 import { createClient } from "@/lib/supabase/client";
 
 interface ProfileDraft {
-  displayName: string;
+  names: LearnerNames;
+  school: LearnerSchool;
   gender: Gender;
   personalityType: PersonalityTypeCode;
 }
@@ -43,7 +52,15 @@ const TYPE_OPTIONS: readonly { id: PersonalityTypeCode; label: string }[] = PERS
 
 function draftFromProfile(profile: ProfileRow): ProfileDraft {
   return {
-    displayName: profile.display_name,
+    names: {
+      familyName: profile.family_name ?? "",
+      givenName: profile.given_name ?? "",
+      nickname: profile.nickname ?? "",
+    },
+    school: {
+      university: (profile.university ?? "") as University | "",
+      cohort: profile.cohort ?? 0,
+    },
     gender: profile.gender,
     personalityType: profile.personality_type,
   };
@@ -123,7 +140,11 @@ export default function AdminUsersPage() {
     const draft = drafts[profile.id];
     return Boolean(
       draft &&
-      (draft.displayName !== profile.display_name ||
+      (draft.names.familyName !== (profile.family_name ?? "") ||
+        draft.names.givenName !== (profile.given_name ?? "") ||
+        draft.names.nickname !== (profile.nickname ?? "") ||
+        draft.school.university !== (profile.university ?? "") ||
+        draft.school.cohort !== (profile.cohort ?? 0) ||
         draft.gender !== profile.gender ||
         draft.personalityType !== profile.personality_type),
     );
@@ -216,6 +237,7 @@ export default function AdminUsersPage() {
               <tr className="text-ink-soft text-left">
                 <th className="px-3">メール</th>
                 <th className="px-3">なまえ</th>
+                <th className="px-3">学校</th>
                 <th className="px-3">性別</th>
                 <th className="px-3">ネクマックス</th>
                 <th className="px-3">タイプを 変える</th>
@@ -237,21 +259,93 @@ export default function AdminUsersPage() {
                   <tr key={profile.id} className="bg-white shadow-sm">
                     <td className="rounded-l-2xl px-3 py-3 font-medium">{profile.email}</td>
                     <td className="px-3 py-3">
-                      <input
-                        type="text"
-                        maxLength={20}
-                        value={draft.displayName}
-                        onChange={(event) =>
-                          updateDraft(profile.id, { displayName: event.target.value })
-                        }
-                        className="border-hairline w-40 rounded-xl border-2 px-3 py-2"
-                      />
+                      {/* 苗字・名前・呼んでほしい名前の3つ。カタカナで持つ（願い #14）。
+                          呼び名（display_name）はこの3つから組み立てるので直接は編集しない。 */}
+                      <div className="grid w-48 gap-1.5">
+                        {(
+                          [
+                            { key: "familyName", label: "苗字", placeholder: "ソク" },
+                            { key: "givenName", label: "名前", placeholder: "ソピア" },
+                            { key: "nickname", label: "よび名", placeholder: "（任意）" },
+                          ] as const
+                        ).map((field) => {
+                          const value = draft.names[field.key];
+                          const invalid = katakanaNotice(value) !== null;
+                          return (
+                            <label key={field.key} className="flex items-center gap-1.5">
+                              <span className="text-ink-soft w-11 shrink-0 text-[11px] font-bold">
+                                {field.label}
+                              </span>
+                              <input
+                                type="text"
+                                maxLength={MAX_NAME_LENGTH}
+                                value={value}
+                                placeholder={field.placeholder}
+                                onChange={(event) =>
+                                  updateDraft(profile.id, {
+                                    names: { ...draft.names, [field.key]: event.target.value },
+                                  })
+                                }
+                                className={`w-full rounded-xl border-2 px-2 py-1.5 ${
+                                  invalid ? "border-coral" : "border-hairline"
+                                }`}
+                              />
+                            </label>
+                          );
+                        })}
+                        {/* なまえを分ける前に作られた行は3欄が空。そのときは「—」ではなく、
+                            いま実際に画面へ出ている呼び名（display_name）を見せる。 */}
+                        <p className="text-ink-soft text-[11px] font-bold">
+                          画面に出る呼び名:{" "}
+                          {buildDisplayName(draft.names) || profile.display_name || "—"}
+                        </p>
+                      </div>
                       <Link
                         href={`/admin/students/${profile.id}`}
                         className="text-sky mt-1 block text-xs font-bold underline underline-offset-2"
                       >
                         個別レポート
                       </Link>
+                    </td>
+                    {/* 学校と期生（願い #27）。クラスを見分けるために先生も直せる。 */}
+                    <td className="px-3 py-3">
+                      <div className="flex flex-col gap-1.5">
+                        <select
+                          value={draft.school.university}
+                          onChange={(event) =>
+                            updateDraft(profile.id, {
+                              school: {
+                                ...draft.school,
+                                university: event.target.value as University | "",
+                              },
+                            })
+                          }
+                          className="border-hairline rounded-xl border-2 px-3 py-2"
+                        >
+                          <option value="">（みせってい）</option>
+                          {UNIVERSITIES.map((name) => (
+                            <option key={name} value={name}>
+                              {name}
+                            </option>
+                          ))}
+                        </select>
+                        <select
+                          value={draft.school.cohort}
+                          onChange={(event) =>
+                            updateDraft(profile.id, {
+                              school: { ...draft.school, cohort: Number(event.target.value) },
+                            })
+                          }
+                          className="border-hairline rounded-xl border-2 px-3 py-2"
+                        >
+                          <option value={0}>（みせってい）</option>
+                          {COHORTS.map((year) => (
+                            <option key={year} value={year}>
+                              {year}期生
+                            </option>
+                          ))}
+                        </select>
+                      </div>
                     </td>
                     <td className="px-3 py-3">
                       <select
@@ -345,7 +439,7 @@ export default function AdminUsersPage() {
                           type="button"
                           disabled={
                             !isChanged(profile) ||
-                            !draft.displayName.trim() ||
+                            !areNamesValid(draft.names) ||
                             savingId === profile.id
                           }
                           onClick={() => void saveRow(profile)}
