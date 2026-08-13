@@ -206,7 +206,14 @@ async function renderContent(ref: StageContentRef) {
        * どちらが正しいのか誰にも分からなくなる。人物カードを1つの正にする。
        */
       const host = await getCharacter(meeting.host.id);
-      return <MeetingSession meeting={meeting} hostVoice={host?.voice} embedded />;
+      return (
+        <MeetingSession
+          meeting={meeting}
+          hostVoice={host?.voice}
+          hostMouth={host?.mouth}
+          embedded
+        />
+      );
     }
     // 単語ステージは contents[] に入らない（wordStageIds 側・行き先は /arcade）。
     // ここに来るのは壊れたデータなので 404 にする。

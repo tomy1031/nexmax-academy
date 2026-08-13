@@ -684,8 +684,29 @@ export const characterSchema = z.object({
   sheet: imageSlotSchema.default({ refs: [], status: "empty" }),
   /** 先生が持ち込んだ参考画像。シートを作るときの入力になる。 */
   references: z.array(z.string().min(1)).default([]),
-  /** リスニングの音声づくりで使う声（src/lib/audio/voices.ts の名前）。 */
+  /**
+   * この人の声（src/lib/audio/voices.ts の名前）。
+   * リスニングの音声づくりにも、ミーティングで Live が話すときにも使う。
+   * **人物カードを1つの正**にしておかないと、教材ごとに声が食い違う。
+   */
   voice: z.string().optional(),
+  /**
+   * 口パクの絵（母音5つ＋閉じ）。ミーティングで音に合わせて口を動かすのに使う。
+   *
+   * 省略したときは `/img/characters/<id>/mouth/<形>.webp` を見る（先に置いた分と
+   * 互換）。**背景と顔は6枚で同じにする**こと——1枚でも違うと、切り替えのたびに
+   * 画面がちらつく（実際に起きた。スタジオで作るときは口の部分だけを重ねている）。
+   */
+  mouth: z
+    .object({
+      closed: z.string().optional(),
+      a: z.string().optional(),
+      i: z.string().optional(),
+      u: z.string().optional(),
+      e: z.string().optional(),
+      o: z.string().optional(),
+    })
+    .optional(),
 });
 
 /** セリフ1行。speaker は characters の id、または "narration"。 */

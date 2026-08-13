@@ -47,6 +47,12 @@ const MAX_MS = 6000;
 export function VisemeFace({
   /** 口の画像が入っているフォルダ（`/img/characters/hendy/mouth`）。 */
   dir,
+  /**
+   * 人物カードで決めた口の絵（形 → URL）。決めていない形は `dir` を見る。
+   * 先生がスタジオで差し替えられるようにするための入口で、
+   * 置き場所の決まり（フォルダ名）に縛られない。
+   */
+  sources,
   /** いま読み上げている文（かな）。変わるたびに話しはじめる。空なら閉じたまま。 */
   utterance,
   /** Live音声の解析器。あれば音の大きさで開けるかを決める。 */
@@ -56,6 +62,7 @@ export function VisemeFace({
   alt = "",
 }: {
   dir: string;
+  sources?: Partial<Record<Viseme, string>>;
   utterance: string;
   analyser?: AnalyserNode | null;
   size?: number;
@@ -139,7 +146,7 @@ export function VisemeFace({
         SHAPES.map((key) => (
           <Image
             key={key}
-            src={`${dir}/${key}.webp`}
+            src={sources?.[key] || `${dir}/${key}.webp`}
             alt={key === "closed" ? alt : ""}
             fill
             sizes={size === undefined ? "50vw" : `${size}px`}

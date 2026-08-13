@@ -13,7 +13,7 @@ import { recordContentProgress } from "@/lib/progress/store";
 import { checkJapanese, coreOf, type AdviceText } from "./japanese-check";
 import { judgeFailNote, requestJudge } from "./judge-api";
 import { JudgeCard } from "./judge-card";
-import { VisemeFace } from "./viseme-face";
+import { VisemeFace, type Viseme } from "./viseme-face";
 import { useClipPlayer } from "./use-clip-player";
 import { useLiveVoice } from "./use-live-voice";
 
@@ -74,11 +74,14 @@ export function MeetingSession({
   meeting,
   /** 相手の声（人物カードの voice）。Live に渡して、まんがと同じ声で話させる。 */
   hostVoice,
+  /** 相手の口パクの絵（人物カードの mouth）。無ければ置き場の決まりに従う。 */
+  hostMouth,
   /** ステージの枠の中に置くとき。戻り先は枠が持つ。 */
   embedded = false,
 }: {
   meeting: Meeting;
   hostVoice?: string;
+  hostMouth?: Partial<Record<Viseme, string>>;
   embedded?: boolean;
 }) {
   const furigana = useMemo(() => buildFuriganaIndex(meeting.furigana ?? []), [meeting.furigana]);
@@ -434,6 +437,7 @@ export function MeetingSession({
           [meeting.host.id]: (
             <VisemeFace
               dir={`/img/characters/${meeting.host.id}/mouth`}
+              sources={hostMouth}
               utterance={spokenKana}
               /* 作り置きを鳴らしているあいだは そちらの音で 口を動かす */
               analyser={clip.playing ? clip.analyser : voice.analyser}

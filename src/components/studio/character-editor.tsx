@@ -2,10 +2,12 @@
 
 import { useId, useState } from "react";
 import type { Character } from "@/content/schema";
+import { synthesizeSample, TtsError } from "@/lib/audio/live-tts";
 import { LIVE_VOICES } from "@/lib/audio/voices";
 import { buildCharacterSheetPrompt } from "@/lib/manga-prompt";
 import { getGeminiKey } from "@/lib/profile";
 import { generateImage } from "./image-api";
+import { MouthMaker } from "./mouth-maker";
 import { uploadAsset } from "./studio-api";
 import { MiniButton, SelectField, StudioSection, TextAreaField, TextField } from "./studio-ui";
 
@@ -38,18 +40,7 @@ export function CharacterEditor({
             onChange={(id) => patch({ id })}
             placeholder="hendy"
           />
-          <SelectField
-            label="声（リスニングの 音声づくりで つかう）"
-            value={value.voice ?? ""}
-            options={[
-              { value: "", label: "— きめない —" },
-              ...LIVE_VOICES.map((voice) => ({
-                value: voice.name,
-                label: `${voice.label}（${voice.hint}）`,
-              })),
-            ]}
-            onChange={(voice) => patch({ voice: voice.length > 0 ? voice : undefined })}
-          />
+          <VoicePicker value={value} onChange={onChange} />
         </div>
         <div className="grid gap-4 sm:grid-cols-2">
           <TextField
@@ -90,6 +81,78 @@ export function CharacterEditor({
       </StudioSection>
 
       <SheetMaker value={value} onChange={onChange} />
+      <MouthMaker value={value} onChange={onChange} />
+    </div>
+  );
+}
+
+/**
+ * 声。**この人の声はここで決める**（教材ごとに持たせない）。
+ *
+ * リスニングの読み上げにも、ミーティングで Live が話すときにも同じ声を使う。
+ * 教材側に書けるようにすると、まんがのヘンディさんとミーティングのヘンディさんで
+ * 声が食い違ったときに、どちらが正しいのか誰にも分からなくなる。
+ *
+ * その場で試聴できるようにしてあるのは、**名前だけでは決められない**から
+ *（「Charon」がどんな声かは、聞くまで分からない）。
+ */
+function VoicePicker({
+  value,
+  onChange,
+}: {
+  value: Character;
+  onChange: (character: Character) => void;
+}) {
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [sampleUrl, setSampleUrl] = useState<string | null>(null);
+
+  const playSample = async () => {
+    const apiKey = getGeminiKey();
+    if (!apiKey) {
+      setError("AIの キーが ありません。「AI設定」で 登録してください。");
+      return;
+    }
+    if (!value.voice) {
+      setError("さきに 声を えらんでください。");
+      return;
+    }
+    setBusy(true);
+    setError(null);
+    try {
+      const wav = await synthesizeSample(apiKey, value.voice);
+      // 前の試聴のURLは必ず捨てる。押すたびに増えるとメモリを食う
+      if (sampleUrl) URL.revokeObjectURL(sampleUrl);
+      setSampleUrl(URL.createObjectURL(wav));
+    } catch (e) {
+      setError(e instanceof TtsError ? e.message : "音声の 作成に しっぱいしました。");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <div className="space-y-2">
+      <SelectField
+        label="声（リスニングの 読み上げと ミーティングの 会話）"
+        value={value.voice ?? ""}
+        options={[
+          { value: "", label: "— きめない —" },
+          ...LIVE_VOICES.map((voice) => ({
+            value: voice.name,
+            label: `${voice.label}（${voice.hint}）`,
+          })),
+        ]}
+        onChange={(voice) => onChange({ ...value, voice: voice.length > 0 ? voice : undefined })}
+        hint="ここで きめた 声で、この人は どの 教材でも 話します。"
+      />
+      <MiniButton onClick={() => void playSample()} disabled={busy}>
+        {busy ? "つくっています…" : "▶ 声を ためす"}
+      </MiniButton>
+      {sampleUrl ? <audio controls src={sampleUrl} className="w-full" /> : null}
+      {error ? (
+        <p className="text-coral-deep text-xs font-black whitespace-pre-line">{error}</p>
+      ) : null}
     </div>
   );
 }

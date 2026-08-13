@@ -92,6 +92,48 @@ export function buildCharacterSheetPrompt(character: {
     .join("\n");
 }
 
+/** 口の形（母音5つ＋閉じ）と、絵に頼む言い方。 */
+export const MOUTH_SHAPES = [
+  { key: "closed", mouth: "mouth closed, relaxed gentle smile" },
+  { key: "a", mouth: 'mouth wide open saying "AH", jaw dropped, tongue visible' },
+  { key: "i", mouth: 'mouth stretched wide saying "EE", upper and lower teeth visible' },
+  { key: "u", mouth: 'lips pursed forward in a small circle saying "OO"' },
+  { key: "e", mouth: 'mouth half open saying "EH", upper teeth visible' },
+  { key: "o", mouth: 'lips rounded in an oval saying "OH"' },
+] as const;
+
+export type MouthShapeKey = (typeof MOUTH_SHAPES)[number]["key"];
+
+/**
+ * 口パク用のバストアップ。**口以外は動かさない**ことが全部。
+ *
+ * 6枚を切り替えて口を動かすので、背景・髪・目・服が1枚でも違うと、
+ * 切り替えのたびに画面がちらつく（2026-08-13 に実際に起きた——背景が
+ * 青と白で混ざっていた）。だから絵にも「同じにしろ」と強く言い、
+ * そのうえでスタジオ側が**口の部分だけを重ねて**作り直す。
+ */
+export function buildMouthPrompt(
+  character: { role: string; looks: string },
+  shape: (typeof MOUTH_SHAPES)[number],
+): string {
+  return [
+    "A bust-up portrait for a talking-head animation frame.",
+    "",
+    `Character: ${character.role} — ${character.looks}`,
+    "",
+    "Framing: head and shoulders, facing the camera straight on, centered,",
+    "eyes looking at the camera, neutral friendly expression.",
+    "Background: a single flat light blue color (#dbeafe). No gradient, no pattern, no props.",
+    "",
+    `Mouth: ${shape.mouth}.`,
+    "Everything else (background color, hair, eyes, eyebrows, head angle, clothing, framing, lighting)",
+    "must be EXACTLY the same as the reference image. Change ONLY the mouth.",
+    "",
+    `Style: ${STYLE}.`,
+    `Avoid: ${NO_TEXT}, ${NEGATIVE}.`,
+  ].join("\n");
+}
+
 /**
  * セリフを**絵の中に焼く**コマの指示。
  *
