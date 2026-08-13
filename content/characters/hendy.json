@@ -17,5 +17,13 @@
   "references": [
     "/img/characters/hendy/reference.png"
   ],
-  "voice": "Puck"
+  "voice": "Puck",
+  "mouth": {
+    "closed": "/img/characters/hendy/mouth/closed.webp",
+    "a": "/img/characters/hendy/mouth/a.webp",
+    "i": "/img/characters/hendy/mouth/i.webp",
+    "u": "/img/characters/hendy/mouth/u.webp",
+    "e": "/img/characters/hendy/mouth/e.webp",
+    "o": "/img/characters/hendy/mouth/o.webp"
+  }
 }

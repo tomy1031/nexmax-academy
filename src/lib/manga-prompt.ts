@@ -123,7 +123,12 @@ export function buildMouthPrompt(
     "",
     "Framing: head and shoulders, facing the camera straight on, centered,",
     "eyes looking at the camera, neutral friendly expression.",
-    "Background: a single flat light blue color (#dbeafe). No gradient, no pattern, no props.",
+    /*
+     * 背景は1色。**濃いめの青灰色**にする——Zoomの枠が濃紺なので、淡い水色だと
+     * 切り抜きを貼ったように浮いて見えた（実測して 2026-08-13 に差し替えた）。
+     */
+    "Background: a single flat muted blue-grey color (#b8c9db), like a plain office wall.",
+    "No gradient, no pattern, no props.",
     "",
     `Mouth: ${shape.mouth}.`,
     "Everything else (background color, hair, eyes, eyebrows, head angle, clothing, framing, lighting)",
