@@ -3,9 +3,9 @@
   "id": "yukawa",
   "name": "湯川",
   "reading": "ゆかわ",
-  "role": "社員",
+  "role": "広報営業",
   "looks": "Japanese-style anime character, woman in her mid twenties, slim, friendly posture. Long brown hair with lighter ombre ends, side-parted with no fringe. Fair skin, dark brown eyes, bright open smile. Outfit: light grey knit cardigan (#B9B9B9) with round pearl buttons over a matching grey top, cream-white long skirt, beige flat shoes. No glasses.",
-  "personality": "人なつっこくて よく わらいます。はじめての 人にも すぐ 話しかけます。",
+  "personality": "未経験から 挑戦して います。会社の ことを 外に つたえる しごとです。人なつっこくて よく わらいます。はじめての 人にも すぐ 話しかけます。",
   "sheet": {
     "prompt": "A character model sheet for a Japanese language-learning manga.\nLayout: front view (full body, T-pose) on the left, right side view and back view next to it,\nand a column of 6 bust-up facial expressions on the right\n(neutral, smiling, worried, surprised, thinking, apologetic).\nWhite background. Light grid lines overlay to keep eye level consistent across views.\nCharacter: 社員 — Japanese-style anime character, woman in her mid twenties, slim, friendly posture. Long brown hair with lighter ombre ends, side-parted with no fringe. Fair skin, dark brown eyes, bright open smile. Outfit: light grey knit cardigan (#B9B9B9) with round pearl buttons over a matching grey top, cream-white long skirt, beige flat shoes. No glasses.\nPersonality (affects posture and expression): 人なつっこくて よく わらいます。はじめての 人にも すぐ 話しかけます。\nStyle: clean modern Japanese manga / anime style, soft cel shading, bright friendly palette, rounded shapes, no harsh shadows, office and school settings, contemporary Japan.\nAvoid: no text, no letters, no kanji, no kana, no numbers anywhere in the image, speech balloons must be completely EMPTY (white inside, no writing), no watermark, no signature, no logo, no frame border, no six fingers, no extra limbs, no costume changes between panels, no duplicate faces of the same character in one panel.\nDo NOT write the character's name or any label on the sheet.",
     "refs": [

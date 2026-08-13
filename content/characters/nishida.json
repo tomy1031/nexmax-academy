@@ -3,9 +3,9 @@
   "id": "nishida",
   "name": "西田",
   "reading": "にしだ",
-  "role": "社員",
+  "role": "事務",
   "looks": "Japanese-style anime character, woman in her mid twenties, slim, gentle posture. Long light-brown hair falling past the shoulders with a soft straight fringe. Fair skin, dark brown eyes, warm closed-lip smile. Outfit: cream-white chunky-knit turtleneck sweater (#F0E6D2), beige wide trousers, white shoes. No glasses.",
-  "personality": "しずかで ていねいです。こまかい ところに よく 気が つきます。",
+  "personality": "会社の じむの しごとを して います。出勤は 週2日で、ほかは 家で はたらきます。しずかで ていねいです。こまかい ところに よく 気が つきます。",
   "sheet": {
     "prompt": "A character model sheet for a Japanese language-learning manga.\nLayout: front view (full body, T-pose) on the left, right side view and back view next to it,\nand a column of 6 bust-up facial expressions on the right\n(neutral, smiling, worried, surprised, thinking, apologetic).\nWhite background. Light grid lines overlay to keep eye level consistent across views.\nCharacter: 社員 — Japanese-style anime character, woman in her mid twenties, slim, gentle posture. Long light-brown hair falling past the shoulders with a soft straight fringe. Fair skin, dark brown eyes, warm closed-lip smile. Outfit: cream-white chunky-knit turtleneck sweater (#F0E6D2), beige wide trousers, white shoes. No glasses.\nPersonality (affects posture and expression): しずかで ていねいです。こまかい ところに よく 気が つきます。\nStyle: clean modern Japanese manga / anime style, soft cel shading, bright friendly palette, rounded shapes, no harsh shadows, office and school settings, contemporary Japan.\nAvoid: no text, no letters, no kanji, no kana, no numbers anywhere in the image, speech balloons must be completely EMPTY (white inside, no writing), no watermark, no signature, no logo, no frame border, no six fingers, no extra limbs, no costume changes between panels, no duplicate faces of the same character in one panel.\nDo NOT write the character's name or any label on the sheet.",
     "refs": [
