@@ -35,6 +35,12 @@ export function CallShell({
   participants,
   /** いま話している人の id（タイルを光らせる）。 */
   activeSpeaker,
+  /**
+   * タイルの中に出す顔（参加者id → 中身）。
+   * 渡さなければ従来どおり頭文字の丸を出す。Live対話のように**顔が要る教材**だけが渡す
+   *（リスニングは声だけなので、顔を作る手間をかけない）。
+   */
+  faces,
   /** 画面下に置く操作パネル（再生／Live で中身が変わる）。 */
   controls,
   /** タイルの下に置く学習パネル（字幕・単語チェックなど）。 */
@@ -45,6 +51,7 @@ export function CallShell({
   focus: string;
   participants: readonly ListeningParticipant[];
   activeSpeaker?: string | null;
+  faces?: Readonly<Record<string, React.ReactNode>>;
   controls?: React.ReactNode;
   children?: React.ReactNode;
   onLeft?: () => void;
@@ -118,6 +125,7 @@ export function CallShell({
               key={person.id}
               person={person}
               speaking={activeSpeaker === person.id}
+              face={faces?.[person.id]}
             />
           ))}
           <SelfTile cameraOn={cameraOn} />
@@ -203,9 +211,11 @@ function ToolButton({
 function ParticipantTile({
   person,
   speaking,
+  face,
 }: {
   person: ListeningParticipant;
   speaking: boolean;
+  face?: React.ReactNode;
 }) {
   const accent = ACCENT[person.accent];
   return (
@@ -217,12 +227,17 @@ function ParticipantTile({
         outlineOffset: speaking ? "-3px" : "-1px",
       }}
     >
-      <span
-        className="grid h-14 w-14 place-items-center rounded-full text-xl font-extrabold text-white"
-        style={{ background: accent }}
-      >
-        {person.name.slice(0, 1)}
-      </span>
+      {face ? (
+        // 顔はタイルいっぱいに置く（Zoomの映像と同じ見え方にする）
+        <div className="absolute inset-0 overflow-hidden rounded-2xl">{face}</div>
+      ) : (
+        <span
+          className="grid h-14 w-14 place-items-center rounded-full text-xl font-extrabold text-white"
+          style={{ background: accent }}
+        >
+          {person.name.slice(0, 1)}
+        </span>
+      )}
       <span className="absolute bottom-1.5 left-2 rounded-full bg-black/45 px-2 py-0.5 text-[11px] font-bold text-white">
         {person.name}
         <span className="ml-1 opacity-70">{person.role}</span>

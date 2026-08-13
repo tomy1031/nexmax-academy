@@ -331,6 +331,13 @@ export function StudioShell({
             tone: "ng",
           });
           return;
+        case "meeting":
+          setToast({
+            message:
+              "ミーティングは まだ スタジオで 直せません（content/meetings の JSON で 直します）。",
+            tone: "ng",
+          });
+          return;
       }
     },
     [merged, clearNotes],
@@ -368,6 +375,13 @@ export function StudioShell({
           setToast({
             message:
               "たいわは まだ スタジオで 作れません（content/scenarios の JSON で 作ります）。",
+            tone: "ng",
+          });
+          return;
+        case "meeting":
+          setToast({
+            message:
+              "ミーティングは まだ スタジオで 作れません（content/meetings の JSON で 作ります）。",
             tone: "ng",
           });
           return;

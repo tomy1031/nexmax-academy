@@ -10,6 +10,7 @@ import { normalizeReading } from "@/lib/text/normalize";
 import { recordContentProgress } from "@/lib/progress/store";
 import { checkJapanese, coreOf, type AdviceText } from "./japanese-check";
 import { VisemeFace } from "./viseme-face";
+import { useLiveVoice } from "./use-live-voice";
 
 /**
  * ミーティング — Zoom風の画面で、相手の質問に自分の日本語で答える。
@@ -42,6 +43,11 @@ export function MeetingSession({
     null,
   );
   const [answers, setAnswers] = useState<string[]>([]);
+  /**
+   * 声で話すセッション。**話すのが主で、下の入力は補い**。
+   * キーやマイクが無いときは status が notReady になり、テキストだけで進められる。
+   */
+  const voice = useLiveVoice();
 
   const question = meeting.questions[index];
   const done = index >= meeting.questions.length;
@@ -51,6 +57,20 @@ export function MeetingSession({
     const text = reply?.echo || question?.ask || "";
     return kanaOf(text, furigana) ?? text;
   }, [reply, question, furigana]);
+
+  /** 相手に渡す指示。人格と、いま聞いている質問をひとまとめにする。 */
+  const instruction = useMemo(
+    () =>
+      [
+        meeting.persona,
+        "",
+        "きょう 聞く ことは つぎの とおりです。上から 順に 1つずつ 聞いて ください。",
+        ...meeting.questions.map((q, i) => `${i + 1}. ${q.ask}`),
+        "",
+        meeting.judgePrompt,
+      ].join("\n"),
+    [meeting],
+  );
 
   const submit = useCallback(() => {
     if (!question) return;
@@ -106,18 +126,32 @@ export function MeetingSession({
     </div>
   ) : (
     <div className="space-y-3">
-      <div className="flex justify-center">
-        <VisemeFace
-          dir="/img/characters/hendy/mouth"
-          utterance={spokenKana}
-          size={200}
-          alt={meeting.host.name}
-        />
-      </div>
       <CaptionBar
         speaker={meeting.host.name}
         text={<RubyText text={question!.ask} index={furigana} show />}
       />
+
+      {voice.turns.length > 0 ? (
+        <div className="card-island space-y-1 p-3">
+          <p className="text-ink-soft text-xs font-extrabold">聞こえた ことば</p>
+          {voice.turns.slice(-4).map((t, i) => (
+            <p key={i} className="text-ink text-sm font-bold break-words">
+              <span className={t.from === "me" ? "text-leaf mr-2" : "text-sky mr-2"}>
+                {t.from === "me" ? "あなた" : meeting.host.name}
+              </span>
+              {t.text}
+            </p>
+          ))}
+        </div>
+      ) : null}
+
+      {voice.status === "notReady" ? (
+        <p className="bg-sun-soft text-ink rounded-[var(--radius-card)] px-4 py-2 text-sm font-bold">
+          {voice.reason === "noMic"
+            ? "マイクが つかえません。下の 入力で 答えても だいじょうぶです。"
+            : "声は まだ つかえません。下の 入力で 答えて ください。"}
+        </p>
+      ) : null}
 
       {reply ? (
         <motion.div
@@ -171,6 +205,16 @@ export function MeetingSession({
         aria-label="こたえを 入力する"
         className="border-hairline text-ink min-w-0 flex-1 rounded-full border-2 bg-white px-4 py-2 font-bold"
       />
+      {voice.status === "live" ? null : (
+        <button
+          type="button"
+          onClick={() => void voice.start(instruction)}
+          disabled={voice.status === "connecting"}
+          className="border-hairline text-navy rounded-full border-2 bg-white px-4 py-2 text-sm font-black disabled:opacity-40"
+        >
+          {voice.status === "connecting" ? "つないで います…" : "🎤 声で 話す"}
+        </button>
+      )}
       {!hintShown ? (
         <button
           type="button"
@@ -193,6 +237,16 @@ export function MeetingSession({
         focus={meeting.focus}
         participants={[meeting.host]}
         activeSpeaker={reply ? meeting.host.id : null}
+        faces={{
+          [meeting.host.id]: (
+            <VisemeFace
+              dir="/img/characters/hendy/mouth"
+              utterance={spokenKana}
+              analyser={voice.analyser}
+              alt={meeting.host.name}
+            />
+          ),
+        }}
         controls={controls}
       >
         {body}

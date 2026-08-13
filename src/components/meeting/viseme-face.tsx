@@ -26,6 +26,8 @@ import { useEffect, useRef, useState } from "react";
 
 export type Viseme = "closed" | "a" | "i" | "u" | "e" | "o";
 const SHAPES = ["closed", "a", "i", "u", "e", "o"] as const;
+/** かなが取れないときに順に送る母音。 */
+const VOWELS: Viseme[] = ["a", "i", "u", "e", "o"];
 
 /** かな1文字 → 母音。拗音の小書きは直前ではなく自分の母音に従う。 */
 function vowelOf(kana: string): Viseme | null {
@@ -49,7 +51,8 @@ export function VisemeFace({
   utterance,
   /** Live音声の解析器。あれば音の大きさで開けるかを決める。 */
   analyser,
-  size = 200,
+  /** 正方形で置きたいときの一辺。省略すると**親いっぱい**に広がる（Zoomのタイル用）。 */
+  size,
   alt = "",
 }: {
   dir: string;
@@ -85,12 +88,14 @@ export function VisemeFace({
   // タイマーは1本だけ。state を変えるのは この中（＝効果の同期実行ではない）
   useEffect(() => {
     const timer = setInterval(() => {
-      const shapes = shapesRef.current;
-      if (shapes.length === 0 || Date.now() > endsAtRef.current) {
+      const node = analyserRef.current;
+      // 音が来ているときは、かなが取れなくても（漢字まじりの字幕でも）口を動かす。
+      // 開き具合は下の音量で決まるので、形は5母音を順に送れば自然に見える
+      const shapes = shapesRef.current.length > 0 ? shapesRef.current : node ? VOWELS : [];
+      if (shapes.length === 0 || (!node && Date.now() > endsAtRef.current)) {
         setViseme("closed");
         return;
       }
-      const node = analyserRef.current;
       if (node) {
         const buffer = new Uint8Array(node.fftSize);
         node.getByteTimeDomainData(buffer);
@@ -110,8 +115,12 @@ export function VisemeFace({
 
   return (
     <div
-      className="border-hairline relative overflow-hidden rounded-[var(--radius-card)] border-2 bg-white"
-      style={{ width: size, height: size }}
+      className={
+        size === undefined
+          ? "absolute inset-0 overflow-hidden"
+          : "border-hairline relative overflow-hidden rounded-[var(--radius-card)] border-2 bg-white"
+      }
+      style={size === undefined ? undefined : { width: size, height: size }}
     >
       {/*
         6枚すべてを重ねて置き、出すものだけ不透明にする。
@@ -123,7 +132,7 @@ export function VisemeFace({
           src={`${dir}/${key}.webp`}
           alt={key === "closed" ? alt : ""}
           fill
-          sizes={`${size}px`}
+          sizes={size === undefined ? "50vw" : `${size}px`}
           priority={key === "closed"}
           unoptimized
           className="object-cover"

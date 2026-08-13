@@ -933,6 +933,18 @@ export const meetingSchema = z.object({
   description: plainText,
   /** 入室前に見せる「きょう やること」。 */
   focus: plainText,
+  /**
+   * 相手の人格（Live の systemInstruction 全文）。
+   * **おうむ返し＋共感**で受けてから次を聞く、という進め方をここに書く。
+   * 先生が管理画面で直せる（言い方の相性は教室ごとに違う）。
+   */
+  persona: plainText,
+  /**
+   * 学習者の発話をどう見るかの指示。
+   * 判定を人格と分けるのは、**話し方を直しても採点の基準は動かない**ようにするため。
+   * 「何を言えたら言えたことにするか」「どう助言するか」をここに書く。
+   */
+  judgePrompt: plainText,
   /** 相手（画面のタイルに出る人）。characters の id と name を写す。 */
   host: participantSchema,
   /** 質問。**並びが学習順**（閉じた質問 → 開いた質問）。 */
