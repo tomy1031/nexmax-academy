@@ -1,9 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { contentSchema } from "@/content/schema";
+import { contentSchema, FORBIDDEN_LEARNER_WORDS } from "@/content/schema";
 import {
   emptyArticleBlock,
   emptyManga,
   emptyMangaPanel,
+  emptyMeeting,
   emptyStage,
 } from "@/components/studio/drafts";
 import { describePath, messageForReason, toWarningMessages } from "@/components/studio/issue-text";
@@ -59,6 +60,19 @@ describe("issue-text", () => {
     expect(describePath("participants.0.accent")).toBe("参加者 1番目 › タイルの色");
     expect(describePath("script.2.at")).toBe("台本 3番目 › はじまる 秒");
     expect(describePath("revealGoal")).toBe("原稿を ひらく 目標");
+    expect(describePath("focus")).toBe("聞く まえに 配る 見かた");
+  });
+
+  it("教材の種類で欄の呼び名が変わる（同じ questions でも もんだい／しつもん）", () => {
+    // 画面の見出しと同じ言葉でないと、先生は指摘された欄を探せない
+    expect(describePath("questions.0.q", "quizset")).toBe("もんだい 1番目 › とい");
+    expect(describePath("questions.0.ask", "meeting")).toBe(
+      "しつもん 1番目 › しつもん（あいてが 言う ことば）",
+    );
+    expect(describePath("focus", "meeting")).toBe("きょう やること");
+    expect(describePath("focus", "listening")).toBe("聞く まえに 配る 見かた");
+    expect(describePath("judgePrompt", "meeting")).toBe("日本語の 見かた");
+    // 種類を渡さないときは今までどおり
     expect(describePath("focus")).toBe("聞く まえに 配る 見かた");
   });
 
@@ -119,6 +133,35 @@ describe("drafts", () => {
       };
       const parsed = contentSchema.safeParse(article);
       expect(parsed.success, `${kind} が通らない`).toBe(true);
+    }
+  });
+
+  /**
+   * ミーティングだけ、空欄で始めないところがある。
+   *
+   * persona（相手の話し方）が空の Live は、ふつうのAIとして長い日本語で話し出す。
+   * N5の学習者は1問目で置いていかれるので、進め方のひな型を入れて生まれる。
+   * judgePrompt も同じ理由で、空にしない。
+   */
+  it("空のミーティングは 話し方と 見かたが 入った 状態で 生まれる", () => {
+    const meeting = emptyMeeting();
+    expect(meeting.kind).toBe("meeting");
+    expect(meeting.persona.length).toBeGreaterThan(0);
+    expect(meeting.judgePrompt.length).toBeGreaterThan(0);
+    // 人格と判定は別物。同じ文を両方に入れると、話し方を直すたびに基準が動く
+    expect(meeting.persona).not.toBe(meeting.judgePrompt);
+    // スキーマの下限ぶんの枠を先に出す（保存を押すまで「3つ要る」と知らせないのは遅い）
+    expect(meeting.questions).toHaveLength(3);
+    // 中身（ID・質問文）は空なので、このままでは保存の検査で止まる = 意図どおり
+    expect(contentSchema.safeParse(meeting).success).toBe(false);
+  });
+
+  it("ミーティングの ひな型に 禁止語が 入っていない", () => {
+    // 先生がそのまま公開できる文で生まれる（保存で止まる初期値を配らない）
+    const meeting = emptyMeeting();
+    for (const word of FORBIDDEN_LEARNER_WORDS) {
+      expect(meeting.persona).not.toContain(word);
+      expect(meeting.judgePrompt).not.toContain(word);
     }
   });
 });

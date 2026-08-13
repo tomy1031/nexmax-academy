@@ -13,6 +13,7 @@ import {
   listCharacters,
   listListenings,
   listMangas,
+  listMeetings,
   listQuizSets,
   listScenarios,
   listStages,
@@ -20,16 +21,36 @@ import {
 } from "@/lib/content";
 
 export async function loadStudioData() {
-  const [stages, mangas, articles, quizSets, listenings, scenarios, wordStages, characters] =
-    await Promise.all([
-      listStages(),
-      listMangas(),
-      listArticles(),
-      listQuizSets(),
-      listListenings(),
-      listScenarios(),
-      listWordStages(),
-      listCharacters(),
-    ]);
-  return { stages, mangas, articles, quizSets, listenings, scenarios, wordStages, characters };
+  const [
+    stages,
+    mangas,
+    articles,
+    quizSets,
+    listenings,
+    scenarios,
+    meetings,
+    wordStages,
+    characters,
+  ] = await Promise.all([
+    listStages(),
+    listMangas(),
+    listArticles(),
+    listQuizSets(),
+    listListenings(),
+    listScenarios(),
+    listMeetings(),
+    listWordStages(),
+    listCharacters(),
+  ]);
+  return {
+    stages,
+    mangas,
+    articles,
+    quizSets,
+    listenings,
+    scenarios,
+    meetings,
+    wordStages,
+    characters,
+  };
 }

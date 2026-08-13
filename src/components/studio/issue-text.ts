@@ -97,9 +97,37 @@ const LABELS_BY_PARENT: Record<string, Record<string, string>> = {
   questions: { lines: "文" },
 };
 
-/** zod のパスを「ページ 1 › コマ 2 › セリフ 1 › 本文」の形にする。 */
-export function describePath(path: string): string {
+/**
+ * 教材の種類で呼び名が変わるもの。
+ *
+ * `questions` は もんだい では「もんだい」だが、ミーティングでは「しつもん」。
+ * `focus` も リスニングの「聞く まえに 配る 見かた」と ミーティングの
+ * 「きょう やること」で別物である。同じ名前で出すと、先生は指摘された欄を
+ * 画面で探せない（見出しがその言葉になっていないため）。
+ */
+const LABELS_BY_KIND: Record<string, Record<string, string>> = {
+  meeting: {
+    focus: "きょう やること",
+    host: "あいての 人",
+    persona: "あいての 話し方",
+    judgePrompt: "日本語の 見かた",
+    questions: "しつもん",
+    ask: "しつもん（あいてが 言う ことば）",
+    hint: "ヒント",
+    echo: "うけこたえ",
+    keywords: "言えたら うれしい ことば",
+    closing: "おわりの ひとこと",
+  },
+};
+
+/**
+ * zod のパスを「ページ 1 › コマ 2 › セリフ 1 › 本文」の形にする。
+ *
+ * `kind` を渡すと、その教材の画面に出ている見出しの言葉で返す。
+ */
+export function describePath(path: string, kind?: string): string {
   if (!path) return "ぜんたい";
+  const byKind = kind ? (LABELS_BY_KIND[kind] ?? {}) : {};
   // 直前のキー（数字は飛ばす）。lines のように親で呼び名が変わる語のために持ち回る。
   let parent = "";
   const parts = path
@@ -107,7 +135,7 @@ export function describePath(path: string): string {
     .filter((part) => part.length > 0)
     .map((part) => {
       if (/^\d+$/.test(part)) return `${Number(part) + 1}番目`;
-      const label = LABELS_BY_PARENT[parent]?.[part] ?? FIELD_LABELS[part] ?? part;
+      const label = byKind[part] ?? LABELS_BY_PARENT[parent]?.[part] ?? FIELD_LABELS[part] ?? part;
       parent = part;
       return label;
     });

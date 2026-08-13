@@ -238,9 +238,14 @@ export function MeetingSession({
         participants={[meeting.host]}
         activeSpeaker={reply ? meeting.host.id : null}
         faces={{
+          /*
+           * 口の絵は**相手のIDから引く**（人物の id と同じ場所に置く決まり）。
+           * ここを1人ぶん決め打ちにすると、先生がスタジオで別の相手の
+           * ミーティングを作ったとき、顔だけヘンディさんのままになる。
+           */
           [meeting.host.id]: (
             <VisemeFace
-              dir="/img/characters/hendy/mouth"
+              dir={`/img/characters/${meeting.host.id}/mouth`}
               utterance={spokenKana}
               analyser={voice.analyser}
               alt={meeting.host.name}

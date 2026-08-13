@@ -62,6 +62,11 @@ export function VisemeFace({
   alt?: string;
 }) {
   const [viseme, setViseme] = useState<Viseme>("closed");
+  /**
+   * 口の絵が置かれていない相手のとき（先生が新しく作ったミーティングなど）。
+   * 6枚の壊れた画像を並べるより、名前の頭文字だけ出すほうが Zoomらしく見える。
+   */
+  const [missing, setMissing] = useState(false);
 
   // 描画で読むのは state だけ。下の値は タイマーの中からしか読まないので ref に置く
   const shapesRef = useRef<Viseme[]>([]);
@@ -122,23 +127,31 @@ export function VisemeFace({
       }
       style={size === undefined ? undefined : { width: size, height: size }}
     >
-      {/*
-        6枚すべてを重ねて置き、出すものだけ不透明にする。
-        切り替えるときに読み込む作りだと、最初の1周だけ画像が間に合わず口が飛ぶ。
-      */}
-      {SHAPES.map((key) => (
-        <Image
-          key={key}
-          src={`${dir}/${key}.webp`}
-          alt={key === "closed" ? alt : ""}
-          fill
-          sizes={size === undefined ? "50vw" : `${size}px`}
-          priority={key === "closed"}
-          unoptimized
-          className="object-cover"
-          style={{ opacity: viseme === key ? 1 : 0 }}
-        />
-      ))}
+      {missing ? (
+        <span className="grid h-full w-full place-items-center text-2xl font-extrabold text-white">
+          {alt.slice(0, 1)}
+        </span>
+      ) : (
+        /*
+          6枚すべてを重ねて置き、出すものだけ不透明にする。
+          切り替えるときに読み込む作りだと、最初の1周だけ画像が間に合わず口が飛ぶ。
+        */
+        SHAPES.map((key) => (
+          <Image
+            key={key}
+            src={`${dir}/${key}.webp`}
+            alt={key === "closed" ? alt : ""}
+            fill
+            sizes={size === undefined ? "50vw" : `${size}px`}
+            priority={key === "closed"}
+            unoptimized
+            // 閉じた口だけ見張れば足りる（同じフォルダの6枚は まとめて 有る／無い）
+            onError={key === "closed" ? () => setMissing(true) : undefined}
+            className="object-cover"
+            style={{ opacity: viseme === key ? 1 : 0 }}
+          />
+        ))
+      )}
     </div>
   );
 }

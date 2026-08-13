@@ -443,6 +443,64 @@ describe("ふりがなの覆い漏れ検査", () => {
     };
   }
 
+  /**
+   * ミーティングを型に足したとき、この switch に case を書き忘れると
+   * **1件も数えないまま素通りする**（漢字だらけの質問が検査を通ってしまう）。
+   * 実際に一度そうなっていたので、両側から留める。
+   */
+  function meeting(over: Record<string, unknown> = {}): Content {
+    return parse({
+      kind: "meeting",
+      id: "mt1",
+      title: "ミーティング",
+      description: "Zoomで はなします",
+      focus: "じこしょうかいを します",
+      host: { id: "hendy", name: "ヘンディ", role: "せんぱい", accent: "sky" },
+      persona: "あなたは 会社の 先輩です。やさしい 日本語で 話します。",
+      judgePrompt: "できた ところを 1つ ほめて、直す ところを 1つ 言います。",
+      questions: Array.from({ length: 3 }, (_, i) => ({
+        id: `q${i + 1}`,
+        ask: "おなまえを おしえて ください",
+        hint: "「わたしは ◯◯です。」",
+        keywords: ["名前"],
+        echo: "◯◯さんですね。おぼえました。",
+      })),
+      closing: "ありがとう ございました。",
+      ...over,
+    });
+  }
+
+  it("ミーティングの persona・judgePrompt・keywords は対象にしない（AIへの指示）", () => {
+    // どれも漢字を含むが、先生が学習者向けに直すものではない
+    expect(checkFuriganaCoverage([entry(meeting())])).toEqual([]);
+  });
+
+  it("ミーティングでも学習者が読む文（質問・受け答え）は数える", () => {
+    const withKanji = meeting({
+      questions: [
+        {
+          id: "q1",
+          ask: "学校は どこですか",
+          hint: "「◯◯です。」",
+          keywords: [],
+          echo: "そうですか",
+        },
+        { id: "q2", ask: "げんきですか", hint: "「はい。」", keywords: [], echo: "よかったです" },
+        {
+          id: "q3",
+          ask: "また はなしましょう",
+          hint: "「はい。」",
+          keywords: [],
+          echo: "たのしみです",
+        },
+      ],
+    });
+    const findings = checkFuriganaCoverage([entry(withKanji)]);
+    expect(findings).toHaveLength(1);
+    expect(findings[0]?.message).toContain("questions[0].ask");
+    expect(findings[0]?.message).toContain("学 校");
+  });
+
   it("集める文はスタジオと検査で同じ（collectLearnerTexts が同じ本文を返す）", () => {
     const texts = collectLearnerTexts(mangaSaying("会議の 資料です"));
     expect(texts).toContain("会議の 資料です");

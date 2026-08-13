@@ -9,6 +9,7 @@ import type {
   ContentRefType,
   Listening,
   Manga,
+  Meeting,
   QuizSet,
   Scenario,
   Stage,
@@ -27,6 +28,7 @@ import {
   emptyArticle,
   emptyCharacter,
   emptyManga,
+  emptyMeeting,
   emptyQuizSet,
   emptyStage,
   emptyWordStage,
@@ -37,6 +39,7 @@ import { DB_PREPARING_MESSAGE, type SaveIssue } from "./issue-text";
 import { emptyListening } from "./listening-drafts";
 import { ListeningEditor } from "./listening-editor";
 import { MangaEditor } from "./manga-editor";
+import { MeetingEditor } from "./meeting-editor";
 import { QuizEditor } from "./quiz-editor";
 import { StageEditor, type RefOption } from "./stage-editor";
 import { StageList } from "./stage-list";
@@ -80,12 +83,13 @@ export interface StudioShellProps {
   quizSets: QuizSet[];
   listenings: Listening[];
   scenarios: Scenario[];
+  meetings: Meeting[];
   wordStages: WordStage[];
   characters: Character[];
 }
 
 /** きょうざい一覧のタブ。 */
-type ContentTab = "manga" | "article" | "quizset" | "listening" | "scenario";
+type ContentTab = "manga" | "article" | "quizset" | "listening" | "scenario" | "meeting";
 
 const CONTENT_TABS: readonly ContentTab[] = [
   "manga",
@@ -93,6 +97,7 @@ const CONTENT_TABS: readonly ContentTab[] = [
   "quizset",
   "listening",
   "scenario",
+  "meeting",
 ];
 
 /**
@@ -106,6 +111,7 @@ type View =
   | { mode: "article"; draft: Article; parent?: Stage }
   | { mode: "quizset"; draft: QuizSet; parent?: Stage }
   | { mode: "listening"; draft: Listening; parent?: Stage }
+  | { mode: "meeting"; draft: Meeting; parent?: Stage }
   | { mode: "wordstage"; draft: WordStage; parent?: Stage }
   | { mode: "character"; draft: Character };
 
@@ -135,6 +141,7 @@ export function StudioShell({
   quizSets,
   listenings,
   scenarios,
+  meetings,
   wordStages,
   characters,
 }: StudioShellProps) {
@@ -219,6 +226,7 @@ export function StudioShell({
       quizset: mergeById(quizSets, fromDb("quizset")),
       listening: mergeById(listenings, fromDb("listening")),
       scenario: mergeById(scenarios, fromDb("scenario")),
+      meeting: mergeById(meetings, fromDb("meeting")),
       wordstage: mergeById(wordStages, fromDb("wordstage")),
       character: mergeById(characters, fromDb("character")),
     };
@@ -229,6 +237,7 @@ export function StudioShell({
     quizSets,
     listenings,
     scenarios,
+    meetings,
     wordStages,
     characters,
     dbEntries,
@@ -244,6 +253,7 @@ export function StudioShell({
           ["quizset", merged.quizset],
           ["listening", merged.listening],
           ["scenario", merged.scenario],
+          ["meeting", merged.meeting],
           ["wordstage", merged.wordstage],
         ] as const
       ).flatMap(([type, items]) =>
@@ -318,6 +328,11 @@ export function StudioShell({
           if (draft) setView({ mode: "listening", draft, parent });
           return;
         }
+        case "meeting": {
+          const draft = find(merged.meeting);
+          if (draft) setView({ mode: "meeting", draft, parent });
+          return;
+        }
         case "wordstage": {
           const draft = find(merged.wordstage);
           if (draft) setView({ mode: "wordstage", draft, parent });
@@ -328,13 +343,6 @@ export function StudioShell({
           setToast({
             message:
               "たいわは まだ スタジオで 直せません（content/scenarios の JSON で 作ります）。",
-            tone: "ng",
-          });
-          return;
-        case "meeting":
-          setToast({
-            message:
-              "ミーティングは まだ スタジオで 直せません（content/meetings の JSON で 直します）。",
             tone: "ng",
           });
           return;
@@ -368,6 +376,9 @@ export function StudioShell({
         case "listening":
           setView({ mode: "listening", draft: { ...emptyListening(), id }, parent: nextParent });
           return;
+        case "meeting":
+          setView({ mode: "meeting", draft: { ...emptyMeeting(), id }, parent: nextParent });
+          return;
         case "wordstage":
           setView({ mode: "wordstage", draft: { ...emptyWordStage(), id }, parent: nextParent });
           return;
@@ -375,13 +386,6 @@ export function StudioShell({
           setToast({
             message:
               "たいわは まだ スタジオで 作れません（content/scenarios の JSON で 作ります）。",
-            tone: "ng",
-          });
-          return;
-        case "meeting":
-          setToast({
-            message:
-              "ミーティングは まだ スタジオで 作れません（content/meetings の JSON で 作ります）。",
             tone: "ng",
           });
           return;
@@ -700,6 +704,22 @@ export function StudioShell({
             warnings={warnings}
           >
             <ListeningEditor value={view.draft} onChange={(draft) => setView({ ...view, draft })} />
+          </ChildFrame>
+        ) : null}
+
+        {view.mode === "meeting" ? (
+          <ChildFrame
+            title={view.draft.title.length > 0 ? view.draft.title : "あたらしい ミーティング"}
+            hint="あいての 話し方と、日本語の 見かたを ここで 直せます。"
+            parent={view.parent}
+            onBack={closeChild}
+            onSave={(publish) => void handleSave(publish)}
+            saving={saving}
+            disabledNote={editorNote}
+            issues={issues}
+            warnings={warnings}
+          >
+            <MeetingEditor value={view.draft} onChange={(draft) => setView({ ...view, draft })} />
           </ChildFrame>
         ) : null}
 

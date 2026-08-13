@@ -600,6 +600,25 @@ function collectLabeledTexts(content: Content): LabeledText[] {
       // research.pages[].html は生HTMLでルビ合成の対象外なので、ここでは数えない。
       break;
     }
+
+    case "meeting": {
+      push("title", content.title);
+      push("description", content.description);
+      push("focus", content.focus);
+      push("host.name", content.host.name);
+      push("host.role", content.host.role);
+      content.questions.forEach((question, i) => {
+        const at = (field: string) => `questions[${i}].${field}`;
+        push(at("ask"), question.ask);
+        push(at("hint"), question.hint);
+        // echo は答えたあとに画面へ出る（相手の受け答え）ので学習者が読む
+        push(at("echo"), question.echo);
+        // keywords は当たり判定の材料で、画面には出ない
+      });
+      push("closing", content.closing);
+      // persona / judgePrompt は Live への指示（scenario の interview.persona と同じ扱い）
+      break;
+    }
   }
 
   return out;

@@ -53,14 +53,14 @@ async function readFailBody(response: Response): Promise<FailBody> {
   }
 }
 
-function toIssues(body: FailBody): SaveIssue[] {
+function toIssues(body: FailBody, kind?: string): SaveIssue[] {
   const issues: SaveIssue[] = [];
   if (Array.isArray(body.issues)) {
     for (const raw of body.issues) {
       if (raw && typeof raw === "object") {
         const { path, message } = raw as { path?: unknown; message?: unknown };
         issues.push({
-          where: describePath(typeof path === "string" ? path : ""),
+          where: describePath(typeof path === "string" ? path : "", kind),
           message: typeof message === "string" ? message : "なおしてください。",
         });
       }
@@ -114,8 +114,12 @@ export async function fetchDbList(): Promise<DbListResult> {
 export function validateContent(draft: unknown): SaveIssue[] {
   const parsed = contentSchema.safeParse(draft);
   if (parsed.success) return [];
+  // 種類ごとに欄の呼び名が違う（もんだいの「もんだい」＝ミーティングの「しつもん」）。
+  // 検査で落ちた下書きでも kind だけは読めるので、そこから画面の言葉に合わせる。
+  const kind = draft && typeof draft === "object" ? (draft as { kind?: unknown }).kind : undefined;
+  const kindName = typeof kind === "string" ? kind : undefined;
   return parsed.error.issues.map((issue) => ({
-    where: describePath(issue.path.map((part) => String(part)).join(".")),
+    where: describePath(issue.path.map((part) => String(part)).join("."), kindName),
     message: issue.message,
   }));
 }
@@ -145,7 +149,7 @@ export async function saveContent(content: Content, publish: boolean): Promise<S
   if (!response.ok) {
     const body = await readFailBody(response);
     const reason = typeof body.reason === "string" ? body.reason : "";
-    return { ok: false, message: messageForReason(reason), issues: toIssues(body) };
+    return { ok: false, message: messageForReason(reason), issues: toIssues(body, content.kind) };
   }
 
   // 成功しても本文を読む。参照切れの「気づき」はここにしか載っていないので、

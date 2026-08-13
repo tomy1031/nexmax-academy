@@ -15,6 +15,8 @@ import type {
   Manga,
   MangaPage,
   MangaPanel,
+  Meeting,
+  MeetingQuestion,
   QuizQuestion,
   QuizSet,
   Stage,
@@ -197,6 +199,63 @@ export function emptyQuizQuestion(type: QuizQuestion["type"]): QuizQuestion {
   }
 }
 
+/**
+ * ミーティングの相手（Live）に渡す 話し方の ひな型。
+ *
+ * 空で始めない。persona が空の Live は「ふつうのAI」として長い日本語で話し出し、
+ * N5の学習者は1問目で置いていかれる。**おうむ返し＋共感→次の質問**という
+ * 進め方が この教材の芯なので、それを最初から入れておく（先生は言い回しを直せばよい）。
+ */
+const DEFAULT_MEETING_PERSONA = [
+  "あなたは 日本の 会社の 先輩です。日本語を 勉強して いる 学生と Zoomで はじめて 話します。",
+  "やさしい 日本語で、みじかく 話して ください。1回の 返事は 2文までです。",
+  "学生が 答えたら、かならず おうむ返し（聞いた ことを くりかえす）を してから、共感（いいですね／わたしも そうでした）を 言います。",
+  "そのあとで つぎの 質問を 1つだけ します。",
+  "学生が だまったら、答え方の れいを 1つ 見せて ください。",
+  "学生を 否定する 言い方は しません。できた ことを 先に 言って ください。",
+].join("");
+
+/**
+ * 学習者の日本語を どう見るかの ひな型。
+ *
+ * 人格と分けてあるのは、**話し方を直しても採点の基準は動かない**ようにするため。
+ * 直すところを1つに絞るのは、3つ返すと学習者はどれから直すか決められないからである。
+ */
+const DEFAULT_MEETING_JUDGE = [
+  "学生の 日本語を 見て、つぎの 3つを 短く 返して ください。",
+  "1) できた ところを 1つ ほめる。",
+  "2) 直すと もっと よく なる ところを 1つだけ 言う（多く 言わない）。",
+  "3) その 直した 言い方の れいを 1つ 見せる。",
+  "見るのは「ていねいさ（です・ます）」「文の 長さ」「つたわるか」です。",
+  "文法の 名前（助詞・活用など）は 使わないで、言い方の れいで 見せて ください。",
+].join("");
+
+/** ミーティングの質問1つぶんの空欄。 */
+export function emptyMeetingQuestion(): MeetingQuestion {
+  return { id: "", ask: "", hint: "", keywords: [], echo: "" };
+}
+
+/**
+ * 「＋ミーティング」を押した直後の形。
+ *
+ * 質問は3つから（`meetingSchema` の下限）。下限より少ない枠で始めると、
+ * 先生は保存を押すまで「3つ要る」ことを知れない。
+ */
+export function emptyMeeting(): Meeting {
+  return {
+    kind: "meeting",
+    id: "",
+    title: "",
+    description: "",
+    focus: "",
+    persona: DEFAULT_MEETING_PERSONA,
+    judgePrompt: DEFAULT_MEETING_JUDGE,
+    host: { id: "", name: "", role: "", accent: "sky" },
+    questions: [emptyMeetingQuestion(), emptyMeetingQuestion(), emptyMeetingQuestion()],
+    closing: "",
+  };
+}
+
 /** エディタの選択肢（先生向けの表示名）。 */
 export const ARTICLE_BLOCK_OPTIONS: readonly { value: ArticleBlock["kind"]; label: string }[] = [
   { value: "heading", label: "見出し" },
@@ -215,6 +274,7 @@ export const CONTENT_TYPE_OPTIONS: readonly { value: ContentRefType; label: stri
   { value: "listening", label: "リスニング" },
   { value: "quizset", label: "もんだい" },
   { value: "scenario", label: "おきゃくさまと はなす" },
+  { value: "meeting", label: "ミーティング（Zoom）" },
   { value: "wordstage", label: "ことばのゲーム" },
 ];
 
