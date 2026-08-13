@@ -23,6 +23,7 @@ import {
   type Content,
   type Listening,
   type Manga,
+  type Meeting,
   type QuizSet,
   type Scenario,
   type Stage,
@@ -148,6 +149,17 @@ export const listScenarios = cache(async (): Promise<Scenario[]> => {
 
 export async function getScenario(id: string): Promise<Scenario | null> {
   return (await listScenarios()).find((scenario) => scenario.id === id) ?? null;
+}
+
+export const listMeetings = cache(async (): Promise<Meeting[]> => {
+  const git = parseAll().filter((c): c is Meeting => c.kind === "meeting");
+  return mergeContentsById(git, await listPublishedFromDb("meeting")).sort((a, b) =>
+    a.id.localeCompare(b.id),
+  );
+});
+
+export async function getMeeting(id: string): Promise<Meeting | null> {
+  return (await listMeetings()).find((meeting) => meeting.id === id) ?? null;
 }
 
 export const listStages = cache(async (): Promise<Stage[]> => {

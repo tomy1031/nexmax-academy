@@ -528,6 +528,7 @@ export const CONTENT_REF_TYPES = [
   "listening",
   "quizset",
   "scenario",
+  "meeting",
   "wordstage",
 ] as const;
 
@@ -893,8 +894,57 @@ export const articleSchema = z.object({
   blocks: z.array(articleBlockSchema).min(1),
 });
 
+/**
+ * ミーティングの質問1つ。
+ *
+ * **閉じた質問から開いた質問へ**並べる。いきなり「なぜ ITですか」を聞くと、
+ * 答えられずに黙る——そこで会話が終わる。名前・出身のような1語で答えられる問いから
+ * 始めて、答えられた実績を積んでから理由や気持ちに進む。
+ */
+const meetingQuestionSchema = z.object({
+  id: z.string().min(1),
+  /** 相手（ヘンディさん）の質問。 */
+  ask: plainText,
+  /** 答え方の足場。穴あきの型文にする（「わたしは ◯◯です。」）。 */
+  hint: plainText,
+  /**
+   * 言えたことにする手がかり。空なら**何を書いても先へ進む**
+   *（自己紹介に「正解」は無い。詰まらせないほうが大事）。
+   */
+  keywords: z.array(plainText).default([]),
+  /** 受け答え。`◯◯` が学習者の答えに置きかわる（おうむ返し＋共感）。 */
+  echo: plainText,
+});
+
+/**
+ * ミーティング（Zoomの練習）— 相手の質問に、自分の日本語で答える。
+ *
+ * `scenario`（たいわ）と分けてある理由は目的である。たいわは**聞き出す**練習で、
+ * 模擬ページと要件10件が要る。こちらは**自分のことを話す**練習で、調べる相手も
+ * 要件も無い。同じ型に押し込むと、空の模擬ページを作ることになる。
+ *
+ * 画面は `call-shell.tsx`（Zoom風の枠）を共有する。入室のノックから退出のお礼まで、
+ * **Zoomの操作そのものにも慣れる**のがねらい。
+ */
+export const meetingSchema = z.object({
+  kind: z.literal("meeting"),
+  id: z.string().regex(/^[a-z0-9_-]+$/),
+  title: plainText,
+  description: plainText,
+  /** 入室前に見せる「きょう やること」。 */
+  focus: plainText,
+  /** 相手（画面のタイルに出る人）。characters の id と name を写す。 */
+  host: participantSchema,
+  /** 質問。**並びが学習順**（閉じた質問 → 開いた質問）。 */
+  questions: z.array(meetingQuestionSchema).min(3),
+  /** ぜんぶ答えたあとに出す ひとこと。 */
+  closing: plainText,
+  furigana: z.array(furiganaEntrySchema).optional(),
+});
+
 export const contentSchema = z.discriminatedUnion("kind", [
   characterSchema,
+  meetingSchema,
   wordStageSchema,
   quizSetSchema,
   listeningSchema,
@@ -912,6 +962,8 @@ export type Listening = z.infer<typeof listeningSchema>;
 export type ListeningParticipant = z.infer<typeof participantSchema>;
 export type ListeningScriptLine = z.infer<typeof scriptLineSchema>;
 export type Scenario = z.infer<typeof scenarioSchema>;
+export type Meeting = z.infer<typeof meetingSchema>;
+export type MeetingQuestion = z.infer<typeof meetingQuestionSchema>;
 export type Stage = z.infer<typeof stageSchema>;
 export type StageContentRef = z.infer<typeof stageContentRefSchema>;
 export type ContentRefType = StageContentRef["type"];

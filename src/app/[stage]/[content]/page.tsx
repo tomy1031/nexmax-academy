@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { RESERVED_STAGE_IDS, type Stage, type StageContentRef } from "@/content/schema";
 import { ArticleView } from "@/components/article/article-view";
+import { MeetingSession } from "@/components/meeting/meeting-session";
 import { TalkSession } from "@/components/listening/live-mode";
 import { ListeningPlayer } from "@/components/listening/playback-mode";
 import { MangaReader } from "@/components/manga/manga-reader";
@@ -12,6 +13,7 @@ import {
   getListening,
   getManga,
   getQuizSet,
+  getMeeting,
   getScenario,
   getStage,
   listStages,
@@ -97,6 +99,8 @@ export async function generateMetadata({
       return { title: `${(await getQuizSet(ref.ref))?.title ?? ""} | もんだい` };
     case "scenario":
       return { title: `${(await getScenario(ref.ref))?.title ?? ""} | たいわ` };
+    case "meeting":
+      return { title: `${(await getMeeting(ref.ref))?.title ?? ""} | ミーティング` };
     case "wordstage":
       return { title: "ことば" };
   }
@@ -191,6 +195,11 @@ async function renderContent(ref: StageContentRef) {
       const scenario = await getScenario(ref.ref);
       if (!scenario) notFound();
       return <TalkSession scenario={scenario} embedded />;
+    }
+    case "meeting": {
+      const meeting = await getMeeting(ref.ref);
+      if (!meeting) notFound();
+      return <MeetingSession meeting={meeting} embedded />;
     }
     // 単語ステージは contents[] に入らない（wordStageIds 側・行き先は /arcade）。
     // ここに来るのは壊れたデータなので 404 にする。

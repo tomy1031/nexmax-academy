@@ -12,6 +12,7 @@ import {
   getListening,
   getManga,
   getQuizSet,
+  getMeeting,
   getScenario,
   getStage,
   listStages,
@@ -113,6 +114,16 @@ export async function loadRef(ref: StageContentRef): Promise<LoadedRef | null> {
           title: scenario.title,
           description: scenario.subtitle,
           furigana: scenario.furigana,
+        }
+      );
+    }
+    case "meeting": {
+      const meeting = await getMeeting(ref.ref);
+      return (
+        meeting && {
+          title: meeting.title,
+          description: meeting.description,
+          furigana: meeting.furigana,
         }
       );
     }

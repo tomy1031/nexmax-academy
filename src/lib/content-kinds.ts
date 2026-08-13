@@ -28,6 +28,9 @@ const META: Record<ContentRefType, ContentKindMeta> = {
   // 行き先も /talk に分ける。同じ入口にすると、学習者は「聞くだけ」のつもりで
   // AIと話す画面に入ってしまう。
   scenario: { icon: "🎙️", label: "たいわ", href: (id) => `/talk/${id}` },
+  // ミーティングは たいわ と同じ Zoom風の枠だが、聞き出すのではなく自分のことを話す。
+  // 呼び名も行き先も分ける（学習者が「調べて聞く」つもりで入らないように）。
+  meeting: { icon: "💬", label: "ミーティング", href: (id) => `/meeting/${id}` },
   wordstage: { icon: "🕹️", label: "ことば", href: (id) => `/arcade/${id}` },
 };
 
