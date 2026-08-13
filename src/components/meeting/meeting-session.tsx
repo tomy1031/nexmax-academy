@@ -37,7 +37,9 @@ export function MeetingSession({
   const [draft, setDraft] = useState("");
   const [hintShown, setHintShown] = useState(false);
   /** 直前の答えに対する受け答え。null なら まだ答えていない。 */
-  const [reply, setReply] = useState<{ echo: string; advice: AdviceText } | null>(null);
+  const [reply, setReply] = useState<{ echo: string; advice: AdviceText; hit: boolean } | null>(
+    null,
+  );
   const [answers, setAnswers] = useState<string[]>([]);
 
   const question = meeting.questions[index];
@@ -48,16 +50,21 @@ export function MeetingSession({
     const advice = checkJapanese(draft).text;
     // 何も書いていないときは進めない（会話にならない）。助言だけ返す
     if (draft.trim().length === 0) {
-      setReply({ echo: "", advice });
+      setReply({ echo: "", advice, hit: false });
       return;
     }
     const core = coreOf(draft);
+    /*
+     * `keywords` に当たったかは**進めるかどうかには使わない**（自己紹介に正解は無い）。
+     * 当たったときだけ、受け答えのあとに ひとこと足す——「聞いていた」ことが伝わる。
+     */
     const hit =
-      question.keywords.length === 0 ||
+      question.keywords.length > 0 &&
       question.keywords.some((kw) => normalizeReading(draft).includes(normalizeReading(kw)));
     setReply({
       echo: question.echo.replaceAll("◯◯", core || draft.trim()),
-      advice: hit ? advice : advice,
+      advice,
+      hit,
     });
     setAnswers((prev) => [...prev, draft.trim()]);
   }, [draft, question]);
@@ -110,6 +117,9 @@ export function MeetingSession({
             </p>
           ) : null}
           <p className="text-leaf text-sm font-extrabold">🌸 {reply.advice.praise}</p>
+          {reply.hit ? (
+            <p className="text-leaf text-sm font-extrabold">👂 だいじな ことばが 言えました。</p>
+          ) : null}
           {reply.advice.fix ? (
             <p className="text-ink-soft text-sm font-bold break-words">💡 {reply.advice.fix}</p>
           ) : null}
