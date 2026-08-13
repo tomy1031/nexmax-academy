@@ -137,13 +137,23 @@ export function ContentFrame({
                       すすめます
                     </span>
                   )
-                ) : (
+                ) : currentDone ? (
                   <Link
                     href={`/${stage.id}`}
                     className="btn-game px-5 py-2 text-sm [--btn-face:#58c273] [--btn-shadow:#3aa458]"
                   >
                     ステージを おえる 🎉
                   </Link>
+                ) : (
+                  /*
+                    最後の教材でも、終わる前は出さない。会話の途中で
+                    「ステージを おえる」が光っていると、途中で押して終われる——
+                    押した学習者は、やっていないことを やったことにされる。
+                  */
+                  <span className="bg-panel-tint text-ink-soft rounded-2xl px-5 py-2 text-sm font-black">
+                    この {contentKindMeta(current?.type ?? "article").label}が おわると ステージを
+                    おえられます
+                  </span>
                 )}
               </nav>
             </>

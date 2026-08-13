@@ -44,6 +44,12 @@ const GROUPS: readonly { title: string; items: readonly Item[] }[] = [
     items: [
       { href: "/admin", icon: "📊", label: "ダッシュボード" },
       { href: "/admin/users", icon: "👥", label: "ユーザー", match: "/admin/users" },
+      {
+        href: "/admin/meetings",
+        icon: "💬",
+        label: "ミーティングの きろく",
+        match: "/admin/meetings",
+      },
       { href: "/nexmax", icon: "🧑‍🎨", label: "ネクマックス16人" },
       { href: "/admin/ai", icon: "🤖", label: "AI設定", match: "/admin/ai" },
     ],

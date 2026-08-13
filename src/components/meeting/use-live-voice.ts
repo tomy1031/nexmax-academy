@@ -51,11 +51,19 @@ export interface LiveVoice {
   readonly reason: string | null;
   /** 字幕。AIの聞き取り違いを学習者が目で確かめられるように残す。 */
   readonly turns: readonly VoiceTurn[];
+  /**
+   * 学習者が**言い終わった**ひとまとまり。判定はこれに対して行う。
+   *
+   * 聞き取りは細切れで届くので、届いたそばから判定すると「わたしは」だけで
+   * 見られることになる。相手が話しはじめた合図（返事の文字起こし）で1つに束ねる。
+   * `id` は同じ文をもう一度言ったときにも変わる（判定をやり直せるように）。
+   */
+  readonly lastUtterance: { id: number; text: string } | null;
   /** 口パクを動かすための解析器（再生の手前）。 */
   readonly analyser: AnalyserNode | null;
   readonly start: (systemInstruction: string) => Promise<void>;
   readonly stop: () => void;
-  /** 声が使えないときの補い。テキストで送る。 */
+  /** 声が使えないときの補い。テキストで送る（相手は声で返す）。 */
   readonly sendText: (text: string) => void;
 }
 
@@ -63,7 +71,13 @@ export function useLiveVoice(): LiveVoice {
   const [status, setStatus] = useState<VoiceStatus>("idle");
   const [reason, setReason] = useState<string | null>(null);
   const [turns, setTurns] = useState<readonly VoiceTurn[]>([]);
+  const [lastUtterance, setLastUtterance] = useState<{ id: number; text: string } | null>(null);
   const [analyser, setAnalyser] = useState<AnalyserNode | null>(null);
+
+  /** 聞き取りの途中。相手が話しはじめたら1つに束ねて流す。 */
+  const heardRef = useRef("");
+  const saidRef = useRef("");
+  const utteranceIdRef = useRef(0);
 
   const sessionRef = useRef<{
     sendRealtimeInput: (input: unknown) => void;
@@ -89,6 +103,9 @@ export function useLiveVoice(): LiveVoice {
     setStatus("connecting");
     setReason(null);
     setTurns([]);
+    setLastUtterance(null);
+    heardRef.current = "";
+    saidRef.current = "";
 
     const apiKey = getGeminiKey();
     if (!apiKey) {
@@ -145,8 +162,31 @@ export function useLiveVoice(): LiveVoice {
         callbacks: {
           onopen: () => setStatus("live"),
           onmessage: (message: unknown) => {
-            const turn = readTranscript(message);
-            if (turn) setTurns((prev) => [...prev, turn]);
+            /*
+             * 文字起こしは**細切れで**届く（「わたしは」「プノンペン」…）。
+             * 1つずつ字幕にすると読めないし、途中で判定すると言い終える前に
+             * 見られることになる。だから:
+             *   聞き取り（学習者）… 相手が話しはじめた合図で 1つに束ねて流す
+             *   返事（相手）      … turnComplete で 1つに束ねる
+             */
+            const piece = readTranscript(message);
+            if (piece?.from === "me") heardRef.current += piece.text;
+            if (piece?.from === "client") {
+              const heard = heardRef.current.trim();
+              if (heard) {
+                heardRef.current = "";
+                utteranceIdRef.current += 1;
+                const id = utteranceIdRef.current;
+                setTurns((prev) => [...prev, { from: "me", text: heard }]);
+                setLastUtterance({ id, text: heard });
+              }
+              saidRef.current += piece.text;
+            }
+            if (isTurnComplete(message) && saidRef.current.trim()) {
+              const said = saidRef.current.trim();
+              saidRef.current = "";
+              setTurns((prev) => [...prev, { from: "client", text: said }]);
+            }
             for (const pcm of readAudio(message)) play(outRef.current, pcm);
           },
           onerror: () => setStatus("error"),
@@ -187,13 +227,24 @@ export function useLiveVoice(): LiveVoice {
     }
   }, []);
 
+  /**
+   * 書いて送る。**相手は声で返す**（Live は入力が文字でも音声で答える）。
+   * マイクが無い・使いたくない学習者にも、同じ会話の体験を残すため。
+   */
   const sendText = useCallback((text: string) => {
     if (!text.trim()) return;
     setTurns((prev) => [...prev, { from: "me", text }]);
     sessionRef.current?.sendClientContent({ turns: text, turnComplete: true });
   }, []);
 
-  return { status, reason, turns, analyser, start, stop, sendText };
+  return { status, reason, turns, lastUtterance, analyser, start, stop, sendText };
+}
+
+/** 相手が話し終わったか（返事を1つに束ねる合図）。 */
+function isTurnComplete(message: unknown): boolean {
+  if (!message || typeof message !== "object") return false;
+  const content = (message as { serverContent?: { turnComplete?: unknown } }).serverContent;
+  return content?.turnComplete === true;
 }
 
 /** 返ってきた24kHzのPCMを、切れ目なく順に鳴らす。 */

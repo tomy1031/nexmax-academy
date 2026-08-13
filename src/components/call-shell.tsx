@@ -1,10 +1,13 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { motion } from "motion/react";
 import type { ListeningParticipant } from "@/content/schema";
+import { getFamilyForCode } from "@/content/personality";
 import { FeedbackMessage } from "@/components/feedback-message";
 import { NexMax } from "@/components/nexmax";
+import { NexMaxFamily } from "@/components/nexmax-types";
+import { getProfile, type NexmaxProfile } from "@/lib/profile";
 
 /**
  * Zoom風の通話画面（モードに依存しない外枠）。
@@ -299,15 +302,69 @@ function SelfTile({ cameraOn }: { cameraOn: boolean }) {
           style={{ transform: "scaleX(-1)" }}
         />
       ) : (
-        <span className="px-3 text-center text-[11px] font-bold text-white/70">
-          {error ?? "カメラ OFF"}
-        </span>
+        /*
+          カメラを切っているあいだは「カメラ OFF」の字だけが残っていた。
+          相手の顔は出ているのに自分の枠だけ真っ暗だと、会話の場に居る感じが消える。
+          診断で決まった**自分のネクマックス**を置く（Zoomのプロフィール画像と同じ役）。
+        */
+        <SelfAvatar note={error} />
       )}
       <span className="absolute bottom-1.5 left-2 rounded-full bg-black/45 px-2 py-0.5 text-[11px] font-bold text-white">
         あなた
       </span>
     </div>
   );
+}
+
+/**
+ * カメラを切っているときの自分のタイル。
+ *
+ * 端末に保存された診断の結果から自分のネクマックスを出す。まだ診断していない人には
+ * 出しようがないので、そのときだけ字を残す（別のネクマックスで代用しない——
+ * 自分の分身は診断で決まるもので、他人の絵を自分として見せない）。
+ */
+function SelfAvatar({ note }: { note: string | null }) {
+  const profile = useSyncExternalStore(subscribeToProfile, readProfile, readProfileOnServer);
+  if (!profile) {
+    return (
+      <span className="px-3 text-center text-[11px] font-bold text-white/70">
+        {note ?? "カメラ OFF"}
+      </span>
+    );
+  }
+  return (
+    <div className="grid place-items-center">
+      <NexMaxFamily
+        family={getFamilyForCode(profile.type).id}
+        gender={profile.gender}
+        size={72}
+        bob
+      />
+      {note ? (
+        <span className="px-3 text-center text-[10px] font-bold text-white/60">{note}</span>
+      ) : null}
+    </div>
+  );
+}
+
+/**
+ * 端末の保存値は「外の入れ物」なので購読して読む。
+ * 効果の中で読んで state に入れると、描画のたびに書き込みが連鎖する。
+ */
+function subscribeToProfile(onChange: () => void) {
+  window.addEventListener("storage", onChange);
+  return () => window.removeEventListener("storage", onChange);
+}
+/** 同じ中身なら同じ参照を返す（毎回作ると購読が回り続ける）。 */
+let profileCache: { raw: string; value: NexmaxProfile | null } = { raw: "", value: null };
+function readProfile(): NexmaxProfile | null {
+  const value = getProfile();
+  const raw = JSON.stringify(value);
+  if (raw !== profileCache.raw) profileCache = { raw, value };
+  return profileCache.value;
+}
+function readProfileOnServer(): NexmaxProfile | null {
+  return null;
 }
 
 /** 相手の発話を出す字幕バー。速度や表示の切り替えは呼び出し側が持つ。 */
