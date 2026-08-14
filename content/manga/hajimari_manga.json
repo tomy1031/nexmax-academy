@@ -468,13 +468,16 @@
         {
           "size": "wide",
           "image": {
-            "prompt": "inside a bright modern IT office, a warm group shot facing the viewer, everyone smiling and waving: Hendy stands in the middle in his navy suit and tie; to his left a man in his forties with very short cropped hair and a tanned face, wearing a navy blazer over a white crew-neck T-shirt; beside him a man in his forties with fuller side-swept hair, wearing a navy blazer over a white T-shirt; to Hendy's right a young woman with long light-brown hair in a cream turtleneck sweater; a young man with wavy black hair and black rectangular glasses in a dark green hoodie sits at a desk; a young woman with long brown ombre hair in a light grey pearl-button cardigan stands at the end; desks, computers and green plants behind them; warm daylight; no signboard, no logo, no letters anywhere.",
+            "prompt": "inside a bright modern IT office, a warm group shot facing the viewer, seven colleagues smiling and waving at the camera. From the left: (1) a man in his late twenties, lean athletic build, very short cropped black hair, lightly tanned skin drawn completely smooth with no nasolabial folds and no wrinkles, youthful rounded jaw, wide cheerful open-mouth smile, navy blazer (#1F2A44) worn open over a plain white crew-neck T-shirt; (2) a man in his forties, ordinary build with normal shoulders, black hair with volume on top and a soft fringe falling across the forehead, oval face with gently rounded cheeks and a slightly soft jawline, narrow gentle eyes, calm friendly closed-lip smile, navy blazer (#1F2A44) worn open over a plain white crew-neck T-shirt; (3) in the middle, a man in his late twenties, slim, short black hair slightly tousled with soft spiky tips and a loose fringe, gentle smile, navy single-breasted suit with a crisp white dress shirt and a solid navy necktie; (4) a woman in her mid twenties, slim, long light-brown hair falling past the shoulders with a soft straight fringe, warm closed-lip smile, cream-white chunky-knit turtleneck sweater (#F0E6D2) and beige wide trousers; (5) a woman in her early twenties, slim, long straight black hair tied in a low ponytail with a straight fringe across the forehead, bright open smile, navy short-sleeve polo shirt (#26355B) and a long black pleated skirt; (6) a woman in her mid twenties, slim, long brown hair with lighter ombre ends, side-parted with no fringe, bright open smile, light grey knit cardigan (#B9B9B9) with round pearl buttons over a matching grey top and a cream-white long skirt; (7) seated at a desk in front of the group, a man in his mid twenties, medium build, wavy messy black hair with volume, black rectangular thick-rimmed glasses, calm gentle smile, dark green pullover hoodie (#2E4034); desks, computers and green plants behind them; warm daylight; keep the upper right area clear and empty for one speech balloon; no signboard, no logo, no letters anywhere in the office.",
             "status": "done",
             "refs": [
-              "/img/characters/hendy/sheet.webp",
-              "/img/characters/fujiki/sheet.webp",
+              "/img/characters/yukawa/sheet.webp",
               "/img/characters/okuda/sheet.webp",
-              "/img/characters/yukawa/sheet.webp"
+              "/img/characters/nishida/sheet.webp",
+              "/img/characters/risa/sheet.webp",
+              "/img/characters/hendy/sheet.webp",
+              "/img/characters/matsui/sheet.webp",
+              "/img/characters/fujiki/sheet.webp"
             ],
             "src": "/img/manga/hajimari_manga/p4c4.webp"
           },

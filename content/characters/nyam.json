@@ -17,5 +17,13 @@
   "references": [
     "/img/characters/nyam/reference.jpg"
   ],
-  "voice": "Charon"
+  "voice": "Charon",
+  "mouth": {
+    "closed": "/img/characters/nyam/mouth/closed.webp",
+    "a": "/img/characters/nyam/mouth/a.webp",
+    "i": "/img/characters/nyam/mouth/i.webp",
+    "u": "/img/characters/nyam/mouth/u.webp",
+    "e": "/img/characters/nyam/mouth/e.webp",
+    "o": "/img/characters/nyam/mouth/o.webp"
+  }
 }
