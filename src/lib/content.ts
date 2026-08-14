@@ -26,6 +26,7 @@ import {
   type Meeting,
   type QuizSet,
   type Scenario,
+  type Slides,
   type Stage,
   type WordStage,
 } from "@/content/schema";
@@ -193,4 +194,15 @@ export const listArticles = cache(async (): Promise<Article[]> => {
 
 export async function getArticle(id: string): Promise<Article | null> {
   return (await listArticles()).find((article) => article.id === id) ?? null;
+}
+
+export const listSlides = cache(async (): Promise<Slides[]> => {
+  const git = parseAll().filter((c): c is Slides => c.kind === "slides");
+  return mergeContentsById(git, await listPublishedFromDb("slides")).sort((a, b) =>
+    a.id.localeCompare(b.id),
+  );
+});
+
+export async function getSlides(id: string): Promise<Slides | null> {
+  return (await listSlides()).find((slides) => slides.id === id) ?? null;
 }

@@ -27,6 +27,7 @@ import type { ContentRefType, StageContentRef } from "@/content/schema";
 export const CONTENT_SEGMENTS = {
   manga: "manga",
   article: "article",
+  slides: "slides",
   listening: "listening",
   quizset: "quiz",
   scenario: "talk",

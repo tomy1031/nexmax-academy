@@ -19,6 +19,7 @@ import type {
   MeetingQuestion,
   QuizQuestion,
   QuizSet,
+  Slides,
   Stage,
   WordStage,
 } from "@/content/schema";
@@ -123,6 +124,25 @@ export function emptyArticle(): Article {
     title: "",
     description: "",
     blocks: [],
+  };
+}
+
+/**
+ * 空のスライド教材。
+ *
+ * `fileUrl` は空で始める（PDFを上げるまで 保存で止まる＝意図どおり）。
+ * `pageCount` は 1 から。上げた PDF を ブラウザが読んで 正しい枚数に置きかえるので、
+ * 先生が数えることは無い。
+ */
+export function emptySlides(): Slides {
+  return {
+    kind: "slides",
+    id: "",
+    title: "",
+    description: "",
+    fileUrl: "",
+    pageCount: 1,
+    notes: [],
   };
 }
 
@@ -271,6 +291,7 @@ export const ARTICLE_BLOCK_OPTIONS: readonly { value: ArticleBlock["kind"]; labe
 export const CONTENT_TYPE_OPTIONS: readonly { value: ContentRefType; label: string }[] = [
   { value: "manga", label: "まんが" },
   { value: "article", label: "よみもの" },
+  { value: "slides", label: "スライド（PDF）" },
   { value: "listening", label: "リスニング" },
   { value: "quizset", label: "もんだい" },
   { value: "scenario", label: "おきゃくさまと はなす" },

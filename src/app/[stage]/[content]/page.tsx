@@ -7,6 +7,7 @@ import { TalkSession } from "@/components/listening/live-mode";
 import { ListeningPlayer } from "@/components/listening/playback-mode";
 import { MangaReader } from "@/components/manga/manga-reader";
 import { QuizRunner } from "@/components/quiz/quiz-runner";
+import { SlideDeck } from "@/components/slides/slide-deck";
 import { ContentFrame, type FrameItem } from "@/components/stage/content-frame";
 import {
   getArticle,
@@ -16,6 +17,7 @@ import {
   getQuizSet,
   getMeeting,
   getScenario,
+  getSlides,
   getStage,
   listStages,
   listWordStages,
@@ -93,6 +95,10 @@ export async function generateMetadata({
     case "article": {
       const article = await getArticle(ref.ref);
       return { title: `${article?.title ?? ""} | よみもの`, description: article?.description };
+    }
+    case "slides": {
+      const slides = await getSlides(ref.ref);
+      return { title: `${slides?.title ?? ""} | スライド`, description: slides?.description };
     }
     case "listening":
       return { title: `${(await getListening(ref.ref))?.title ?? ""} | リスニング` };
@@ -181,6 +187,11 @@ async function renderContent(ref: StageContentRef) {
           embedded
         />
       );
+    }
+    case "slides": {
+      const slides = await getSlides(ref.ref);
+      if (!slides) notFound();
+      return <SlideDeck slides={slides} embedded />;
     }
     case "listening": {
       const listening = await getListening(ref.ref);

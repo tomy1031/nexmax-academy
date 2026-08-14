@@ -146,6 +146,7 @@ export function StageEditor({
 const FLOW_TYPES: readonly ContentRefType[] = [
   "manga",
   "article",
+  "slides",
   "listening",
   "quizset",
   "scenario",
@@ -155,6 +156,7 @@ const FLOW_TYPES: readonly ContentRefType[] = [
 const CREATABLE: ReadonlySet<ContentRefType> = new Set([
   "manga",
   "article",
+  "slides",
   "listening",
   "quizset",
 ]);

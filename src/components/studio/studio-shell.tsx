@@ -12,6 +12,7 @@ import type {
   Meeting,
   QuizSet,
   Scenario,
+  Slides,
   Stage,
   WordStage,
 } from "@/content/schema";
@@ -30,6 +31,7 @@ import {
   emptyManga,
   emptyMeeting,
   emptyQuizSet,
+  emptySlides,
   emptyStage,
   emptyWordStage,
   nextContentId,
@@ -42,6 +44,7 @@ import { ListeningEditor } from "./listening-editor";
 import { MangaEditor } from "./manga-editor";
 import { MeetingEditor } from "./meeting-editor";
 import { QuizEditor } from "./quiz-editor";
+import { SlidesEditor } from "./slides-editor";
 import { StageEditor, type RefOption } from "./stage-editor";
 import { StageList } from "./stage-list";
 import {
@@ -81,6 +84,7 @@ export interface StudioShellProps {
   stages: Stage[];
   mangas: Manga[];
   articles: Article[];
+  slides: Slides[];
   quizSets: QuizSet[];
   listenings: Listening[];
   scenarios: Scenario[];
@@ -90,11 +94,12 @@ export interface StudioShellProps {
 }
 
 /** きょうざい一覧のタブ。 */
-type ContentTab = "manga" | "article" | "quizset" | "listening" | "scenario" | "meeting";
+type ContentTab = "manga" | "article" | "slides" | "quizset" | "listening" | "scenario" | "meeting";
 
 const CONTENT_TABS: readonly ContentTab[] = [
   "manga",
   "article",
+  "slides",
   "quizset",
   "listening",
   "scenario",
@@ -110,6 +115,7 @@ type View =
   | { mode: "stage"; draft: Stage }
   | { mode: "manga"; draft: Manga; parent?: Stage }
   | { mode: "article"; draft: Article; parent?: Stage }
+  | { mode: "slides"; draft: Slides; parent?: Stage }
   | { mode: "quizset"; draft: QuizSet; parent?: Stage }
   | { mode: "listening"; draft: Listening; parent?: Stage }
   | { mode: "meeting"; draft: Meeting; parent?: Stage }
@@ -139,6 +145,7 @@ export function StudioShell({
   stages,
   mangas,
   articles,
+  slides,
   quizSets,
   listenings,
   scenarios,
@@ -224,6 +231,7 @@ export function StudioShell({
       stage: mergeById(stages, fromDb("stage")),
       manga: mergeById(mangas, fromDb("manga")),
       article: mergeById(articles, fromDb("article")),
+      slides: mergeById(slides, fromDb("slides")),
       quizset: mergeById(quizSets, fromDb("quizset")),
       listening: mergeById(listenings, fromDb("listening")),
       scenario: mergeById(scenarios, fromDb("scenario")),
@@ -235,6 +243,7 @@ export function StudioShell({
     stages,
     mangas,
     articles,
+    slides,
     quizSets,
     listenings,
     scenarios,
@@ -251,6 +260,7 @@ export function StudioShell({
         [
           ["manga", merged.manga],
           ["article", merged.article],
+          ["slides", merged.slides],
           ["quizset", merged.quizset],
           ["listening", merged.listening],
           ["scenario", merged.scenario],
@@ -282,6 +292,7 @@ export function StudioShell({
     for (const item of [
       ...merged.manga,
       ...merged.article,
+      ...merged.slides,
       ...merged.quizset,
       ...merged.listening,
     ]) {
@@ -317,6 +328,11 @@ export function StudioShell({
         case "article": {
           const draft = find(merged.article);
           if (draft) setView({ mode: "article", draft, parent });
+          return;
+        }
+        case "slides": {
+          const draft = find(merged.slides);
+          if (draft) setView({ mode: "slides", draft, parent });
           return;
         }
         case "quizset": {
@@ -370,6 +386,9 @@ export function StudioShell({
           return;
         case "article":
           setView({ mode: "article", draft: { ...emptyArticle(), id }, parent: nextParent });
+          return;
+        case "slides":
+          setView({ mode: "slides", draft: { ...emptySlides(), id }, parent: nextParent });
           return;
         case "quizset":
           setView({ mode: "quizset", draft: { ...emptyQuizSet(), id }, parent: nextParent });
@@ -668,6 +687,22 @@ export function StudioShell({
               known={merged.wordstage.filter((c) => c.id !== view.draft.id)}
               onChange={(draft) => setView({ ...view, draft })}
             />
+          </ChildFrame>
+        ) : null}
+
+        {view.mode === "slides" ? (
+          <ChildFrame
+            title={view.draft.title.length > 0 ? view.draft.title : "あたらしい スライド"}
+            hint="パワポは PDF で 書き出してから 上げます。学習者は 1まいずつ 全画面で 見ます。"
+            parent={view.parent}
+            onBack={closeChild}
+            onSave={(publish) => void handleSave(publish)}
+            saving={saving}
+            disabledNote={editorNote}
+            issues={issues}
+            warnings={warnings}
+          >
+            <SlidesEditor value={view.draft} onChange={(draft) => setView({ ...view, draft })} />
           </ChildFrame>
         ) : null}
 

@@ -49,3 +49,6 @@ cloudflare-env.d.ts
 
 # 共有ファイル編集の一時承認マーカー（コミットしない）
 .claude/allow-shared
+
+# pdf.js の worker（npm install のたびに scripts/copy_pdf_worker.mjs が写す生成物）
+/public/pdfjs/

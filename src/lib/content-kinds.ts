@@ -22,6 +22,10 @@ export interface ContentKindMeta {
 const META: Record<ContentRefType, ContentKindMeta> = {
   manga: { icon: "📖", label: "まんが", href: (id) => `/manga/${id}` },
   article: { icon: "📄", label: "よみもの", href: (id) => `/article/${id}` },
+  // 先生が授業で使う資料（PDF）を そのまま全画面で見せる教材。
+  // 「よみもの」と分けるのは、直せる文（article）と 直せない資料（PDF）で
+  // 学習者にできることが違うため——スライドは ふりがなを 出せない。
+  slides: { icon: "🖥️", label: "スライド", href: (id) => `/slides/${id}` },
   listening: { icon: "🎧", label: "リスニング", href: (id) => `/listening/${id}` },
   quizset: { icon: "✏️", label: "もんだい", href: (id) => `/quiz/${id}` },
   // たいわ（Gemini Live）はリスニングと同じ Zoom風の枠を使うが別の教材なので、
