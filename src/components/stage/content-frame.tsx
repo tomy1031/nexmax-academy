@@ -6,7 +6,7 @@ import type { ContentRefType } from "@/content/schema";
 import { contentKindMeta } from "@/lib/content-kinds";
 import { markStageCleared } from "@/lib/progress";
 import { readContentProgress, subscribeProgress } from "@/lib/progress/store";
-import { decodeStatuses, statusCode, STATUS_BADGE } from "./stage-progress";
+import { decodeStatuses, gateStage, statusCode, STATUS_BADGE } from "./stage-progress";
 
 /**
  * 教材の外枠 — どのステージのどこにいるかを、教材の種類によらず同じ形で見せる
@@ -66,15 +66,23 @@ export function ContentFrame({
   );
   const codes = decodeStatuses(progressKey);
 
-  /** 最初の「まだ おわっていない」教材。ここより先へは進めない。 */
-  const firstUnfinished = codes.findIndex((code) => code !== "2");
-  const openUntil = firstUnfinished < 0 ? items.length - 1 : firstUnfinished;
-  const locked = currentIndex > openUntil && !forced;
-  const blocker = items[openUntil];
+  /**
+   * どこまで開けるか。**関門でない種別（スライド）は ここを素通りする**
+   *（content-kinds.ts の `gates` / stage-progress.ts の gateStage）。
+   * 先生の しりょうを 通行の条件にすると、資料1枚で ステージ全体が止まる。
+   */
+  const gating = gateStage(
+    codes,
+    items.map((item) => contentKindMeta(item.type).gates),
+  );
+  const locked = !gating.openable[currentIndex] && !forced;
+  // 止めている当人（まだ通っていない最初の関門）。無ければ先頭を指す
+  const blocker = items[gating.blockedAt < 0 ? 0 : gating.blockedAt];
 
   const current = items[currentIndex];
   const next = items[currentIndex + 1];
-  const currentDone = codes[currentIndex] === "2";
+  /** つぎへ進んでよいか。スライドは 見ていなくても true。 */
+  const currentDone = gating.passed[currentIndex] === true;
 
   /*
     ステージの中身を全部おえたら、ステージをクリア済みにする。
@@ -82,7 +90,7 @@ export function ContentFrame({
     後者を書く場所がどこにも無かったため——書かないと地図の現在地が動かず、
     分身と飛行機が最初のステージに残り続ける。
   */
-  const stageDone = items.length > 0 && codes.every((code) => code === "2");
+  const stageDone = gating.allPassed;
   useEffect(() => {
     if (stageDone) markStageCleared(stage.id);
   }, [stageDone, stage.id]);
@@ -95,7 +103,7 @@ export function ContentFrame({
           items={items}
           codes={codes}
           currentIndex={currentIndex}
-          openUntil={openUntil}
+          openable={gating.openable}
           open={navOpen}
           onToggle={() => setNavOpen((value) => !value)}
         />
@@ -170,7 +178,7 @@ function StageRail({
   items,
   codes,
   currentIndex,
-  openUntil,
+  openable,
   open,
   onToggle,
 }: {
@@ -178,7 +186,8 @@ function StageRail({
   items: readonly FrameItem[];
   codes: readonly string[];
   currentIndex: number;
-  openUntil: number;
+  /** その教材を いま ひらけるか（関門でない種別は いつでも true）。 */
+  openable: readonly boolean[];
   open: boolean;
   onToggle: () => void;
 }) {
@@ -188,7 +197,7 @@ function StageRail({
         const meta = contentKindMeta(item.type);
         const badge = STATUS_BADGE[(codes[index] ?? "0") as "0" | "1" | "2"];
         const here = index === currentIndex;
-        const reachable = index <= openUntil;
+        const reachable = openable[index] === true;
         const inner = (
           <span className="flex items-center gap-2">
             <span

@@ -18,3 +18,6 @@ docs/
 
 # コンテンツJSON（lint:content が別途スキーマ検証する）
 content/
+
+# pdf.js の worker（npm install のたびに写す他人のコード。整形しない）
+public/pdfjs/

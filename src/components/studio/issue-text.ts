@@ -76,6 +76,12 @@ const FIELD_LABELS: Record<string, string> = {
   passRate: "ごうかくの ライン",
   nekumax: "たんとうの ネクマックス",
 
+  // スライド（slides）
+  fileUrl: "PDFの ばしょ",
+  pageCount: "まいすう",
+  notes: "ひとこと",
+  page: "何まい目",
+
   // リスニング（listening）
   participants: "参加者",
   accent: "タイルの色",

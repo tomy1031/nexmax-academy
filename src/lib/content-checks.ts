@@ -550,6 +550,16 @@ function collectLabeledTexts(content: Content): LabeledText[] {
       break;
     }
 
+    case "slides": {
+      push("title", content.title);
+      push("description", content.description);
+      // PDF の中の字は アプリから触れない（ルビを振れない）。
+      // 学習者が読む「アプリの文」は ひとこと だけなので、そこは全部覆う。
+      content.notes.forEach((note, i) => push(`notes[${i}].text`, note.text));
+      // fileUrl は ファイルの置き場所。学習者は読まない
+      break;
+    }
+
     case "wordstage": {
       push("title", content.title);
       push("description", content.description);

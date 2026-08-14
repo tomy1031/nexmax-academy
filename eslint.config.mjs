@@ -63,6 +63,9 @@ const eslintConfig = defineConfig([
     ".open-next/**",
     ".wrangler/**",
     "cloudflare-env.d.ts",
+    // pdf.js の worker（scripts/copy_pdf_worker.mjs が写す他人のコード）。
+    // 1行1.3MBの圧縮ずみファイルなので、検査しても直す先が無い。
+    "public/pdfjs/**",
   ]),
 ]);
 
