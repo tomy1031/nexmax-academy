@@ -58,18 +58,26 @@ jobs:
           node-version: 22
           cache: npm
 
+      # 足りないときは「いま登録されている名前」も出す。
+      # 名前の打ちまちがい（CLOUDFLARE_TOKEN / SUPABASE_URL など）や、Variables 側・
+      # Environment 側へ入れてしまった場合、「足りません」だけでは原因が見えないため。
+      # **出すのは名前だけ**（`keys[]`）。値は1文字も出さない。
       - name: 鍵と公開値がそろっているか
         env:
           CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
           SUPABASE_ANON: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          SECRET_NAMES: ${{ toJSON(secrets) }}
         run: |
           missing=""
           [ -n "$CF_TOKEN" ] || missing="$missing CLOUDFLARE_API_TOKEN"
           [ -n "$SUPABASE_URL" ] || missing="$missing NEXT_PUBLIC_SUPABASE_URL"
           [ -n "$SUPABASE_ANON" ] || missing="$missing NEXT_PUBLIC_SUPABASE_ANON_KEY"
           if [ -n "$missing" ]; then
-            echo "::error::Secrets が足りません:$missing — リポジトリの Settings → Secrets and variables → Actions に登録してください（1度だけ）。"
+            echo "── いま このリポジトリに 登録されている Secret の名前（値は出しません）──"
+            printf '%s' "$SECRET_NAMES" | jq -r 'keys[]' | sed 's/^/  - /'
+            echo "───────────────────────────────────────────────"
+            echo "::error::Secrets が足りません:$missing — 名前が1文字でも違うと 見つかりません。上の一覧と 見くらべてください。"
             exit 1
           fi
           echo "✓ 鍵と公開値はそろっています"
