@@ -109,7 +109,7 @@
         {
           "size": "normal",
           "image": {
-            "prompt": "Anime manga panel, no readable text. A bright modern software office in the morning, large window with soft sunlight, potted plant, whiteboard. A friendly Southeast Asian senior engineer man (Hendy, short black hair, light blue shirt, ID lanyard) stands beside the whiteboard and smiles at his small team during a short stand-up meeting. Next to him a young female junior engineer (Nyam, dark bob hair, coral cardigan) stands holding a small notebook, shoulders tight, a little nervous. Medium wide shot, clean line art, flat cel shading, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. Keep empty space at the bottom of the frame. No text, no letters, no numbers, no signage, no speech bubbles, no readable text.",
+            "prompt": "Anime manga panel, no readable text. A bright modern software office in the morning, large window with soft sunlight, potted plant, whiteboard. A friendly Southeast Asian senior engineer man (Hendy, short black hair, light blue shirt, ID lanyard) stands beside the whiteboard and smiles at his small team during a short stand-up meeting. Next to him a young Southeast Asian junior engineer man (Nyam, short black hair swept up off the forehead, coral cardigan over a cream button-down shirt) stands holding a small notebook, shoulders tight, a little nervous. Medium wide shot, clean line art, flat cel shading, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. Keep empty space at the bottom of the frame. No text, no letters, no numbers, no signage, no speech bubbles, no readable text.",
             "refs": [
               "/img/characters/hendy/sheet.webp",
               "/img/characters/nyam/sheet.webp"
@@ -131,7 +131,7 @@
         {
           "size": "normal",
           "image": {
-            "prompt": "Anime manga panel, no readable text. Same office, same morning light, same characters and clothing as the previous panel. Close shot on the young female junior engineer (Nyam, dark bob hair, coral cardigan) talking on and on, counting on her fingers, eyes wandering upward as she tries to remember every detail. Behind her the senior engineer (Hendy, light blue shirt) listens patiently with a small polite smile and a tiny sweat drop. Clean line art, flat cel shading, soft pastel sky blue and cream palette. Keep empty space at the bottom of the frame. No text, no letters, no numbers, no signage, no speech bubbles, no readable text.",
+            "prompt": "Anime manga panel, no readable text. Same office, same morning light, same characters and clothing as the previous panel. Close shot on the young junior engineer man (Nyam, short black hair swept up off the forehead, coral cardigan over a cream button-down shirt) talking on and on, counting on his fingers, eyes wandering upward as he tries to remember every detail. Behind him the senior engineer (Hendy, light blue shirt) listens patiently with a small polite smile and a tiny sweat drop. Clean line art, flat cel shading, soft pastel sky blue and cream palette. Keep empty space at the bottom of the frame. No text, no letters, no numbers, no signage, no speech bubbles, no readable text.",
             "refs": [
               "/img/characters/nyam/sheet.webp",
               "/img/characters/hendy/sheet.webp"
@@ -154,7 +154,7 @@
         {
           "size": "normal",
           "image": {
-            "prompt": "Anime manga panel, no readable text. Same office and characters as the previous panels. The senior engineer (Hendy, short black hair, light blue shirt, ID lanyard) leans in kindly and holds up three fingers, giving gentle advice. The junior engineer (Nyam, dark bob hair, coral cardigan) looks up at him and listens, pen resting on her notebook. Medium close two-shot, warm and encouraging mood. Clean line art, flat cel shading, soft pastel sky blue, cream and coral palette. Keep empty space at the bottom of the frame. No text, no letters, no numbers, no signage, no speech bubbles, no readable text.",
+            "prompt": "Anime manga panel, no readable text. Same office and characters as the previous panels. The senior engineer (Hendy, short black hair, light blue shirt, ID lanyard) leans in kindly and holds up three fingers, giving gentle advice. The junior engineer man (Nyam, short black hair swept up off the forehead, coral cardigan over a cream button-down shirt) looks up at him and listens, pen resting on his notebook. Medium close two-shot, warm and encouraging mood. Clean line art, flat cel shading, soft pastel sky blue, cream and coral palette. Keep empty space at the bottom of the frame. No text, no letters, no numbers, no signage, no speech bubbles, no readable text.",
             "refs": [
               "/img/characters/hendy/sheet.webp",
               "/img/characters/nyam/sheet.webp"
@@ -176,7 +176,7 @@
         {
           "size": "normal",
           "image": {
-            "prompt": "Anime manga panel, no readable text. Same office and characters as the previous panels. The junior engineer (Nyam, dark bob hair, coral cardigan) now stands straight and speaks with a bright confident smile, notebook closed in one hand. The senior engineer (Hendy, light blue shirt) gives a happy thumbs up beside her, and a teammate in the background smiles too. Cheerful morning light, small sparkle effects around Nyam. Clean line art, flat cel shading, soft pastel sky blue, cream and coral palette. Keep empty space at the bottom of the frame. No text, no letters, no numbers, no signage, no speech bubbles, no readable text.",
+            "prompt": "Anime manga panel, no readable text. Same office and characters as the previous panels. The junior engineer man (Nyam, short black hair swept up off the forehead, coral cardigan over a cream button-down shirt) now stands straight and speaks with a bright confident smile, notebook closed in one hand. The senior engineer (Hendy, light blue shirt) gives a happy thumbs up beside him, and a teammate in the background smiles too. Cheerful morning light, small sparkle effects around Nyam. Clean line art, flat cel shading, soft pastel sky blue, cream and coral palette. Keep empty space at the bottom of the frame. No text, no letters, no numbers, no signage, no speech bubbles, no readable text.",
             "refs": [
               "/img/characters/nyam/sheet.webp",
               "/img/characters/hendy/sheet.webp"

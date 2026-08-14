@@ -27,7 +27,7 @@
     {
       "kind": "image",
       "prompt": "Anime illustration, no readable text. A small friendly software team having a short morning stand-up meeting in a bright office: four people standing in a loose half circle near a whiteboard, coffee cups on a nearby desk, big window with soft morning light and a blue sky outside. Everyone looks relaxed and attentive; one person is speaking briefly while the others listen. Wide shot, clean line art, flat cel shading, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. No text, no letters, no numbers, no signage, no speech bubbles, no readable text.",
-      "refs": ["characters/hendy/reference.png", "characters/nyam/reference.png"],
+      "refs": ["characters/hendy/reference.png", "characters/nyam/reference.jpg"],
       "status": "empty",
       "caption": "朝会は 立ったまま、みじかく します。"
     },
