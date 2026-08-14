@@ -35,6 +35,7 @@ import {
   nextContentId,
 } from "./drafts";
 import { EditorFrame } from "./editor-frame";
+import { HoverZoomImage } from "./hover-zoom-image";
 import { DB_PREPARING_MESSAGE, type SaveIssue } from "./issue-text";
 import { emptyListening } from "./listening-drafts";
 import { ListeningEditor } from "./listening-editor";
@@ -966,11 +967,11 @@ function CharacterList({
               className="border-hairline flex items-start gap-3 rounded-2xl border-2 bg-white p-3"
             >
               {character.sheet.src ? (
-                // next/image は外部URLの許可設定が要るため、ここは素の img で出す
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
+                // 80px では 顔も 服の色も 見分けが つかない。のせている あいだ 大きく 出す
+                <HoverZoomImage
                   src={character.sheet.src}
-                  alt=""
+                  alt={character.name}
+                  label={`${character.name}の 設定画`}
                   className="border-hairline h-20 w-20 shrink-0 rounded-lg border-2 object-cover"
                 />
               ) : (
