@@ -3,11 +3,12 @@ import {
   contentKindMeta,
   contentHref,
   decodeStatuses,
+  gateStage,
   statusCode,
   summarizeStageProgress,
   type ContentStatusCode,
 } from "@/components/stage/stage-progress";
-import { CONTENT_REF_TYPES } from "@/content/schema";
+import { CONTENT_REF_TYPES, type ContentRefType } from "@/content/schema";
 
 const codes = (key: string): ContentStatusCode[] => decodeStatuses(key);
 
@@ -76,5 +77,41 @@ describe("summarizeStageProgress", () => {
 
   it("割り切れない割合は四捨五入する", () => {
     expect(summarizeStageProgress(codes("200")).percent).toBe(33);
+  });
+});
+
+describe("gateStage（関門）", () => {
+  /** 種別ごとの「関門か」を、実際の対応表から引く（テストで別表を作らない）。 */
+  const gatesOf = (types: readonly ContentRefType[]) =>
+    types.map((type) => contentKindMeta(type).gates);
+
+  it("おわっていない教材の先へは進めない", () => {
+    const gating = gateStage(codes("200"), gatesOf(["manga", "article", "quizset"]));
+    expect(gating.openable).toEqual([true, true, false]);
+    expect(gating.blockedAt).toBe(1);
+    expect(gating.allPassed).toBe(false);
+  });
+
+  it("スライドは 見ていなくても 通ったことにする（その先も 開ける）", () => {
+    // まんが=おわった / スライド=見ていない / もんだい
+    const gating = gateStage(codes("200"), gatesOf(["manga", "slides", "quizset"]));
+    expect(gating.passed).toEqual([true, true, false]);
+    expect(gating.openable).toEqual([true, true, true]);
+    expect(gating.blockedAt).toBe(2);
+  });
+
+  it("スライド自身は 前がおわっていなくても いつでも開ける", () => {
+    // まんが=見ていない → ふつうなら その先は ロック
+    const gating = gateStage(codes("000"), gatesOf(["manga", "slides", "quizset"]));
+    expect(gating.openable).toEqual([true, true, false]);
+  });
+
+  it("のこりが スライドだけなら ステージを おえられる", () => {
+    const gating = gateStage(codes("20"), gatesOf(["manga", "slides"]));
+    expect(gating.allPassed).toBe(true);
+  });
+
+  it("教材が1つも無いステージは おえたことにしない", () => {
+    expect(gateStage([], []).allPassed).toBe(false);
   });
 });

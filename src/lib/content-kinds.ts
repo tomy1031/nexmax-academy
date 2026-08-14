@@ -17,25 +17,39 @@ export interface ContentKindMeta {
   readonly label: string;
   /** その種別のページへの行き先を作る。 */
   readonly href: (id: string) => string;
+  /**
+   * 学習の**関門**になるか。
+   *
+   * true の教材は、おわるまで その先へ進めない（飛ばし読みを止めるため）。
+   * false の教材は、見ていなくても先へ進めるし、その教材自身も いつでも開ける。
+   *
+   * 関門にしてよいのは「おわり」が学習者にも分かるものだけである。スライドは
+   * 先生の しりょうで、授業中に必要な所だけを開くことも、あとで見直すこともある。
+   * 「最後の1枚まで送ったか」を通行の条件にすると、資料1枚のせいで
+   * ステージ全体が止まる（2026-08-14 ユーザー指定）。
+   */
+  readonly gates: boolean;
 }
 
 const META: Record<ContentRefType, ContentKindMeta> = {
-  manga: { icon: "📖", label: "まんが", href: (id) => `/manga/${id}` },
-  article: { icon: "📄", label: "よみもの", href: (id) => `/article/${id}` },
+  manga: { icon: "📖", label: "まんが", href: (id) => `/manga/${id}`, gates: true },
+  article: { icon: "📄", label: "よみもの", href: (id) => `/article/${id}`, gates: true },
   // 先生が授業で使う資料（PDF）を そのまま全画面で見せる教材。
   // 「よみもの」と分けるのは、直せる文（article）と 直せない資料（PDF）で
   // 学習者にできることが違うため——スライドは ふりがなを 出せない。
-  slides: { icon: "🖥️", label: "スライド", href: (id) => `/slides/${id}` },
-  listening: { icon: "🎧", label: "リスニング", href: (id) => `/listening/${id}` },
-  quizset: { icon: "✏️", label: "もんだい", href: (id) => `/quiz/${id}` },
+  // 関門にしない（gates: false）。先生の しりょうなので、必要な所だけ 開くことも、
+  // あとで 見直すことも ある。ここで 止めると ステージが 進まなくなる。
+  slides: { icon: "🖥️", label: "スライド", href: (id) => `/slides/${id}`, gates: false },
+  listening: { icon: "🎧", label: "リスニング", href: (id) => `/listening/${id}`, gates: true },
+  quizset: { icon: "✏️", label: "もんだい", href: (id) => `/quiz/${id}`, gates: true },
   // たいわ（Gemini Live）はリスニングと同じ Zoom風の枠を使うが別の教材なので、
   // 行き先も /talk に分ける。同じ入口にすると、学習者は「聞くだけ」のつもりで
   // AIと話す画面に入ってしまう。
-  scenario: { icon: "🎙️", label: "たいわ", href: (id) => `/talk/${id}` },
+  scenario: { icon: "🎙️", label: "たいわ", href: (id) => `/talk/${id}`, gates: true },
   // ミーティングは たいわ と同じ Zoom風の枠だが、聞き出すのではなく自分のことを話す。
   // 呼び名も行き先も分ける（学習者が「調べて聞く」つもりで入らないように）。
-  meeting: { icon: "💬", label: "ミーティング", href: (id) => `/meeting/${id}` },
-  wordstage: { icon: "🕹️", label: "ことば", href: (id) => `/arcade/${id}` },
+  meeting: { icon: "💬", label: "ミーティング", href: (id) => `/meeting/${id}`, gates: true },
+  wordstage: { icon: "🕹️", label: "ことば", href: (id) => `/arcade/${id}`, gates: true },
 };
 
 export function contentKindMeta(type: ContentRefType): ContentKindMeta {

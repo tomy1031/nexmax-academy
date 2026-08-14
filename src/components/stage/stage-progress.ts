@@ -35,6 +35,44 @@ export function decodeStatuses(key: string): ContentStatusCode[] {
   return [...key].map((c) => (c === "1" || c === "2" ? c : "0"));
 }
 
+/**
+ * 関門の計算（どこまで開けるか）
+ *
+ * 学習者が まだ おわっていない教材を 飛ばして 先へ 行けないようにするための土台。
+ * ただし**関門にしない種別**がある（`gates: false` — いまは スライド）。
+ * その教材は「見ていなくても先へ進めるし、自分自身も いつでも開ける」。
+ * 先生の しりょうを 通行の条件にすると、資料1枚で ステージ全体が止まるため
+ *（2026-08-14 ユーザー指定）。
+ *
+ * JSX を持たない純関数なので、node 環境の単体テストでそのまま検証できる。
+ */
+export interface StageGating {
+  /** その教材を「通った」とみなすか（おわった、または 関門でない）。 */
+  readonly passed: readonly boolean[];
+  /** いま その教材を ひらけるか。 */
+  readonly openable: readonly boolean[];
+  /** まだ通っていない 最初の関門の位置。ぜんぶ通っていたら -1。 */
+  readonly blockedAt: number;
+  /** ステージを おえたことに してよいか（関門をぜんぶ通ったか）。 */
+  readonly allPassed: boolean;
+}
+
+/**
+ * @param codes  教材ごとの進捗（statusCode）
+ * @param gates  教材ごとに 関門か（content-kinds.ts の `gates`）
+ */
+export function gateStage(
+  codes: readonly ContentStatusCode[],
+  gates: readonly boolean[],
+): StageGating {
+  const passed = codes.map((code, index) => code === "2" || gates[index] === false);
+  const blockedAt = passed.findIndex((ok) => !ok);
+  // 関門の手前までは開ける。関門そのものも開ける（開けないと おわらせられない）
+  const openUntil = blockedAt < 0 ? passed.length - 1 : blockedAt;
+  const openable = passed.map((_, index) => index <= openUntil || gates[index] === false);
+  return { passed, openable, blockedAt, allPassed: codes.length > 0 && blockedAt < 0 };
+}
+
 export interface StageProgressSummary {
   readonly done: number;
   readonly total: number;
