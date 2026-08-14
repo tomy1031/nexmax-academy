@@ -525,6 +525,7 @@ export const scenarioSchema = z
 export const CONTENT_REF_TYPES = [
   "manga",
   "article",
+  "slides",
   "listening",
   "quizset",
   "scenario",
@@ -591,6 +592,7 @@ export const RESERVED_STAGE_IDS = [
   "map",
   "nexmax",
   "quiz",
+  "slides",
   "studio",
   "talk",
   "tutorial",
@@ -915,6 +917,95 @@ export const articleSchema = z.object({
   blocks: z.array(articleBlockSchema).min(1),
 });
 
+/* ------------------------------------------------------------------ *
+ * スライド（先生が授業で使う資料を、そのまま全画面で見せる）
+ * ------------------------------------------------------------------ */
+
+/** スライド1枚ぶんの ひとこと。全部の枚数ぶん書かなくてよい（書いた枚だけ出る）。 */
+const slideNoteSchema = z.object({
+  /** 何枚目か（1始まり＝PDFのページ番号と同じ）。 */
+  page: z.number().int().min(1),
+  /** その1枚で 見るところ。学習者が読む文なので ふりがな検査の対象になる。 */
+  text: plainText,
+});
+
+/**
+ * PDF らしい置き場所か。`?token=` のような問い合わせが付いていても通す。
+ *
+ * 拡張子まで見るのは、**先生が .pptx を そのまま上げても画面には何も出ない**から。
+ * 変換はサーバでできない（Cloudflare Workers の無料枠に変換の置き場が無い）ので、
+ * 上げた瞬間に理由を出すしかない。ここで止めないと、先生は「保存できたのに
+ * 学習者の画面が真っ白」という、いちばん原因の見えない壊れ方に出会う。
+ */
+const pdfLocation = z
+  .string()
+  .min(1)
+  .refine((url) => /\.pdf(\?|#|$)/i.test(url), {
+    message:
+      "PDF だけ 置けます（パワポは PowerPoint の「PDFとして ほぞん」で 書き出してから 上げてください）",
+  });
+
+/**
+ * スライド教材 — パワポから書き出した PDF を1枚ずつ全画面で見せる。
+ *
+ * ## なぜ PDF か（他の道を採らなかった理由）
+ * - **パワポのまま置いて外部のビューアに渡す**やり方は採らない。ファイルのURLを
+ *   外の会社が取りに来られる状態にする必要があり、教材が実質公開になる。
+ * - **サーバで変換**もしない。Cloudflare Workers に LibreOffice は載らず、
+ *   変換サービスは無料枠に収まらない（docs/constraints.md「無料枠内で運用する」）。
+ * - **ブラウザで pptx を直接描く**のも採らない。日本語のフォントと段組みが崩れ、
+ *   先生が作った見た目のまま出ない——「そのまま表示できる」という目的に反する。
+ *
+ * 残るのは PDF で、これは**先生の見た目がそのまま出る**唯一の道である。
+ * 書き出しの ひと手間は先生に残るが、崩れた資料を授業で使うほうが高くつく。
+ *
+ * ## 絵ではなく1つのファイルで持つ
+ * 1枚ずつ画像にして並べる持ち方もあるが、先生は書き出しを何十回も繰り返すことになる。
+ * PDF なら1ファイルで済み、差し替えも1回で終わる。
+ *
+ * ## 読めない字は ひとこと で助ける
+ * PDF の中の文字にはふりがなを振れない（画像と同じで、アプリは中身に触れない）。
+ * だから `notes` を持つ。**その1枚で何を見るか**を先生の言葉で添えると、
+ * 資料が読み切れない学習者でも、その枚で掴むことが1つ残る（規律2 の受け皿）。
+ */
+export const slidesSchema = z
+  .object({
+    kind: z.literal("slides"),
+    id: z.string().regex(/^[a-z0-9_-]+$/),
+    title: plainText,
+    description: plainText,
+    /** PDFの場所（スタジオで上げたファイルの公開URL、または public/ のパス）。 */
+    fileUrl: pdfLocation,
+    /**
+     * ぜんぶで何枚か。開く前に「ぜんぶで 12まい」と出すために持つ。
+     * 先生に数えさせない——上げたときにブラウザが PDF から読んで入れる。
+     */
+    pageCount: z.number().int().min(1),
+    /** 1枚ずつの ひとこと（書いた枚だけ出る）。 */
+    notes: z.array(slideNoteSchema).default([]),
+    furigana: z.array(furiganaEntrySchema).optional(),
+  })
+  .superRefine((slides, ctx) => {
+    const seen = new Set<number>();
+    slides.notes.forEach((note, i) => {
+      if (note.page > slides.pageCount) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["notes", i, "page"],
+          message: `${note.page}まい目の ひとことですが、スライドは ${slides.pageCount}まいです`,
+        });
+      }
+      if (seen.has(note.page)) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["notes", i, "page"],
+          message: `${note.page}まい目の ひとことが 2つ あります（1まいに 1つです）`,
+        });
+      }
+      seen.add(note.page);
+    });
+  });
+
 /**
  * ミーティングの質問1つ。
  *
@@ -996,6 +1087,7 @@ export const contentSchema = z.discriminatedUnion("kind", [
   stageSchema,
   mangaSchema,
   articleSchema,
+  slidesSchema,
 ]);
 
 export type Word = z.infer<typeof wordSchema>;
@@ -1020,4 +1112,6 @@ export type MangaPanel = MangaPage["panels"][number];
 export type MangaLine = z.infer<typeof mangaLineSchema>;
 export type Article = z.infer<typeof articleSchema>;
 export type ArticleBlock = z.infer<typeof articleBlockSchema>;
+export type Slides = z.infer<typeof slidesSchema>;
+export type SlideNote = z.infer<typeof slideNoteSchema>;
 export type Content = z.infer<typeof contentSchema>;

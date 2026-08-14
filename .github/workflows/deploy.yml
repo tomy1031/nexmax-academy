@@ -1,0 +1,122 @@
+name: デプロイ
+
+# STG と 本番への反映を GitHub 側で完結させる。
+#
+# なぜ必要か:
+#   デプロイに Cloudflare の鍵が要るため、鍵を持たない環境（AIのセッション等）からは
+#   `npm run cf:staging` を実行できず、**ユーザーが毎回 手で叩く**ことになっていた。
+#   これは「ユーザーは PR・マージをしない（クライアント方式）／AI が STG 更新まで
+#   進める」という運用（AGENTS.md・docs/constraints.md）と食い違う。
+#   鍵を GitHub の Secrets に1度だけ預ければ、以後の反映はここが受け持つ。
+#
+# 使い方:
+#   - main へ入った時点で **STG は自動**で更新される（staging に載るのは main だけ、を守る）
+#   - **本番は手動**（Actions タブ → このワークフロー → Run workflow → production）。
+#     STG で確認してから出す、という順番を機械の側でも崩さないため。
+#
+# 必要な Secrets（Settings → Secrets and variables → Actions）:
+#   - CLOUDFLARE_API_TOKEN         … Workers のデプロイ権限を持つトークン
+#   - NEXT_PUBLIC_SUPABASE_URL     … ビルド時に**バンドルへ埋まる**公開値
+#   - NEXT_PUBLIC_SUPABASE_ANON_KEY … 同上（`wrangler secret` では手遅れ）
+#   - CLOUDFLARE_ACCOUNT_ID        … 任意（トークンが複数アカウントに通るときだけ）
+#
+# **秘密鍵（SUPABASE_SERVICE_ROLE_KEY・GEMINI_API_KEY）はここに渡さない。**
+# 渡すと OpenNext がバンドルへ焼き込む。`scripts/check_build_env.mjs` が検査して
+# ビルドを止めるので、うっかり足しても本番には出ない（ガードを外さないこと）。
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      target:
+        description: どこへ出すか
+        type: choice
+        options:
+          - staging
+          - production
+        default: staging
+
+# 同じ行き先へ同時に上げない（あとから上げたほうが前のを消す事故を防ぐ）
+concurrency:
+  group: deploy-${{ github.event.inputs.target || 'staging' }}
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      # preview_alias.mjs は HEAD と origin/main を**中身で**比べるので、
+      # 浅いクローンだと判定できない（fetch-depth: 0 が要る）。
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: 鍵と公開値がそろっているか
+        env:
+          CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SUPABASE_ANON: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+        run: |
+          missing=""
+          [ -n "$CF_TOKEN" ] || missing="$missing CLOUDFLARE_API_TOKEN"
+          [ -n "$SUPABASE_URL" ] || missing="$missing NEXT_PUBLIC_SUPABASE_URL"
+          [ -n "$SUPABASE_ANON" ] || missing="$missing NEXT_PUBLIC_SUPABASE_ANON_KEY"
+          if [ -n "$missing" ]; then
+            echo "::error::Secrets が足りません:$missing — リポジトリの Settings → Secrets and variables → Actions に登録してください（1度だけ）。"
+            exit 1
+          fi
+          echo "✓ 鍵と公開値はそろっています"
+
+      # postinstall で pdf.js の実体を public/ へ写す（スライド教材が使う）
+      - run: npm ci
+
+      # 赤い main をそのまま出さないための最後の関所（数秒で終わる）
+      - name: 単体テスト
+        run: npm test
+
+      - name: STG へ反映
+        if: github.event_name == 'push' || github.event.inputs.target == 'staging'
+        run: npm run cf:staging
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+
+      - name: 本番へ反映
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.target == 'production'
+        run: npm run cf:deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+
+      # 上げっぱなしにしない。出した中身が本当に載ったかを、そのURLで確かめる
+      #（/api/version はビルド時のコミットSHAを返す — next.config.ts）。
+      - name: 生きているか・中身が載ったか
+        run: |
+          if [ "${{ github.event.inputs.target }}" = "production" ]; then
+            url="https://academy.nexmax.workers.dev"
+          else
+            url="https://staging-academy.nexmax.workers.dev"
+          fi
+          echo "→ $url を たしかめます"
+          for i in 1 2 3 4 5 6; do
+            sha=$(curl -sf --max-time 20 "$url/api/version" | sed -n 's/.*"sha":"\([^"]*\)".*/\1/p' || true)
+            [ "$sha" = "${{ github.sha }}" ] && break
+            echo "  まだ 反映されていません（いま: ${sha:-取得できず}）。20秒 待ちます"
+            sleep 20
+          done
+          if [ "$sha" != "${{ github.sha }}" ]; then
+            echo "::error::$url の中身が ${{ github.sha }} になりません（いま: ${sha:-取得できず}）"
+            exit 1
+          fi
+          echo "✓ $url は ${{ github.sha }} で 生きています"

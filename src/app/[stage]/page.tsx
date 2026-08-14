@@ -14,6 +14,7 @@ import {
   getQuizSet,
   getMeeting,
   getScenario,
+  getSlides,
   getStage,
   listStages,
   getWordStage,
@@ -90,6 +91,16 @@ export async function loadRef(ref: StageContentRef): Promise<LoadedRef | null> {
           title: article.title,
           description: article.description,
           furigana: article.furigana,
+        }
+      );
+    }
+    case "slides": {
+      const slides = await getSlides(ref.ref);
+      return (
+        slides && {
+          title: slides.title,
+          description: slides.description,
+          furigana: slides.furigana,
         }
       );
     }
