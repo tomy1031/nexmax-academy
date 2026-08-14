@@ -4,13 +4,18 @@
   "name": "ニャム",
   "reading": "にゃむ",
   "role": "同期の新人エンジニア（学習者と同じ立場）",
-  "looks": "Southeast Asian woman in her early twenties. Dark brown bob haircut ending at the jaw, straight fringe just above the eyebrows, one small black hair clip on the right side. Round face, large dark brown eyes, small mouth. Wears a coral (#F2654A) knit cardigan over a plain cream blouse, dark navy ankle-length trousers, and flat beige loafers. Carries a small A6 white notebook and a blue ballpoint pen. Height about 158cm, slight build, slightly hunched shoulders when nervous.",
+  "looks": "Southeast Asian man in his twenties. Short black hair, tapered close at the sides and left longer on top so it sweeps up and back off a clear forehead, no fringe. Light tan skin, oval face with high cheekbones and a narrow chin, warm dark brown eyes, thick straight eyebrows, an easy open smile. Wears a coral (#F2654A) knit cardigan over a plain cream button-down shirt with the collar open, dark navy ankle-length trousers, and beige low-top sneakers. Carries a small A6 white notebook and a blue ballpoint pen. Height about 170cm, slim build, slightly hunched shoulders when nervous.",
   "personality": "まじめで よく メモを とる。きんちょうすると 話が 長くなり、けつろんが あとに なる。まちがえても もう一度 やってみる。",
   "sheet": {
     "src": "/img/characters/nyam/sheet.webp",
-    "refs": [],
-    "status": "done"
+    "refs": [
+      "/img/characters/nyam/reference.jpg"
+    ],
+    "status": "done",
+    "prompt": "A character model sheet for a Japanese language-learning manga.\nLayout: front view (full body, T-pose) on the left, right side view and back view next to it,\nand a column of 6 bust-up facial expressions on the right\n(neutral, smiling, worried, surprised, thinking, apologetic).\nWhite background. Light grid lines overlay to keep eye level consistent across views.\nCharacter: 同期の新人エンジニア（学習者と同じ立場） — Southeast Asian man in his twenties. Short black hair, tapered close at the sides and left longer on top so it sweeps up and back off a clear forehead, no fringe. Light tan skin, oval face with high cheekbones and a narrow chin, warm dark brown eyes, thick straight eyebrows, an easy open smile. Wears a coral (#F2654A) knit cardigan over a plain cream button-down shirt with the collar open, dark navy ankle-length trousers, and beige low-top sneakers. Carries a small A6 white notebook and a blue ballpoint pen. Height about 170cm, slim build, slightly hunched shoulders when nervous.\nPersonality (affects posture and expression): まじめで よく メモを とる。きんちょうすると 話が 長くなり、けつろんが あとに なる。まちがえても もう一度 やってみる。\nStyle: clean modern Japanese manga / anime style, soft cel shading, bright friendly palette, rounded shapes, no harsh shadows, office and school settings, contemporary Japan.\nAvoid: no text, no letters, no kanji, no kana, no numbers anywhere in the image, speech balloons must be completely EMPTY (white inside, no writing), no watermark, no signature, no logo, no frame border, no six fingers, no extra limbs, no costume changes between panels, no duplicate faces of the same character in one panel.\nDo NOT write the character's name or any label on the sheet."
   },
-  "references": [],
-  "voice": "Leda"
+  "references": [
+    "/img/characters/nyam/reference.jpg"
+  ],
+  "voice": "Charon"
 }
