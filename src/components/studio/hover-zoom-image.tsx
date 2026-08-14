@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { hoverZoomSpot, type HoverZoomSpot } from "./hover-zoom-spot";
 
 /**
  * マウスを のせている あいだだけ 大きく 出す 絵。
@@ -25,18 +26,8 @@ import { useCallback, useEffect, useState } from "react";
  * `shrink-0` や `h-20 w-20` が 効く相手が ずれて、並びが 崩れる。
  */
 
-/** 出す絵の 一辺（px）。画面が 小さい ときは 画面に あわせて 縮める。 */
-const MAX_SIZE = 480;
-/** 小さい絵と ポップアップの すきま（px）。画面のふちからも これだけ 空ける。 */
-const GAP = 12;
 /** わく・すきま・見出しの ぶん。絵の 高さは この ぶん 引いて 収める。 */
 const CHROME = 48;
-
-interface Spot {
-  left: number;
-  top: number;
-  size: number;
-}
 
 export function HoverZoomImage({
   src,
@@ -51,16 +42,15 @@ export function HoverZoomImage({
   /** 大きい絵の 下に 出す 一言（だれの 絵か・どの 口か）。 */
   label?: string;
 }) {
-  const [spot, setSpot] = useState<Spot | null>(null);
+  const [spot, setSpot] = useState<HoverZoomSpot | null>(null);
 
   const show = useCallback((target: HTMLElement) => {
-    const rect = target.getBoundingClientRect();
-    const size = Math.min(MAX_SIZE, window.innerWidth - GAP * 2, window.innerHeight - GAP * 2);
-    const right = rect.right + GAP;
-    const left = right + size <= window.innerWidth ? right : Math.max(GAP, rect.left - GAP - size);
-    const wanted = rect.top + rect.height / 2 - size / 2;
-    const top = Math.max(GAP, Math.min(wanted, window.innerHeight - size - GAP));
-    setSpot({ left, top, size });
+    setSpot(
+      hoverZoomSpot(target.getBoundingClientRect(), {
+        width: window.innerWidth,
+        height: window.innerHeight,
+      }),
+    );
   }, []);
 
   const hide = useCallback(() => setSpot(null), []);
