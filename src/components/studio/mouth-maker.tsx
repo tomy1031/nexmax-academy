@@ -4,6 +4,7 @@ import { useState } from "react";
 import type { Character } from "@/content/schema";
 import { buildMouthPrompt, MOUTH_SHAPES, type MouthShapeKey } from "@/lib/manga-prompt";
 import { getGeminiKey } from "@/lib/profile";
+import { HoverZoomImage } from "./hover-zoom-image";
 import { generateImage } from "./image-api";
 import { compositeMouth } from "./mouth-composite";
 import { uploadAsset } from "./studio-api";
@@ -24,6 +25,11 @@ import { MiniButton, StudioSection } from "./studio-ui";
  *
  * 先生が自分で用意した絵に差し替えることもできる（URL欄・ファイル選択）。
  */
+/** 口の 形の 見出し。一覧の 見出しと ホバーの 一言で 同じ 呼び方に する。 */
+function mouthLabel(key: MouthShapeKey): string {
+  return key === "closed" ? "とじる" : key.toUpperCase();
+}
+
 export function MouthMaker({
   value,
   onChange,
@@ -156,41 +162,43 @@ export function MouthMaker({
       </p>
 
       <ul className="grid gap-3 sm:grid-cols-2">
-        {MOUTH_SHAPES.map((shape) => (
-          <li
-            key={shape.key}
-            className="border-hairline flex items-start gap-3 rounded-2xl border-2 bg-white p-3"
-          >
-            {mouth[shape.key] ? (
-              // next/image は外部URLの許可設定が要るため、ここは素の img で出す
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={mouth[shape.key]}
-                alt=""
-                className="border-hairline h-20 w-20 shrink-0 rounded-lg border-2 object-cover"
-              />
-            ) : (
-              <span className="border-hairline text-ink-faint grid h-20 w-20 shrink-0 place-items-center rounded-lg border-2 border-dashed text-[10px] font-bold">
-                まだ
-              </span>
-            )}
-            <div className="min-w-0 flex-1 space-y-1">
-              <p className="text-navy text-sm font-black">
-                {shape.key === "closed" ? "とじる" : shape.key.toUpperCase()}
-              </p>
-              <input
-                type="file"
-                accept="image/*"
-                disabled={busy !== null}
-                onChange={(event) => void upload(shape.key, event.target.files?.[0])}
-                className="text-ink-soft w-full text-xs font-bold"
-              />
-              {mouth[shape.key] ? (
-                <MiniButton onClick={() => setMouth(shape.key, undefined)}>はずす</MiniButton>
-              ) : null}
-            </div>
-          </li>
-        ))}
+        {MOUTH_SHAPES.map((shape) => {
+          const src = mouth[shape.key];
+          const label = mouthLabel(shape.key);
+          return (
+            <li
+              key={shape.key}
+              className="border-hairline flex items-start gap-3 rounded-2xl border-2 bg-white p-3"
+            >
+              {src ? (
+                // 口の 形の ちがいは 80px では ほとんど 見えない。のせている あいだ 大きく 出す
+                <HoverZoomImage
+                  src={src}
+                  alt={label}
+                  label={`口：${label}`}
+                  className="border-hairline h-20 w-20 shrink-0 rounded-lg border-2 object-cover"
+                />
+              ) : (
+                <span className="border-hairline text-ink-faint grid h-20 w-20 shrink-0 place-items-center rounded-lg border-2 border-dashed text-[10px] font-bold">
+                  まだ
+                </span>
+              )}
+              <div className="min-w-0 flex-1 space-y-1">
+                <p className="text-navy text-sm font-black">{label}</p>
+                <input
+                  type="file"
+                  accept="image/*"
+                  disabled={busy !== null}
+                  onChange={(event) => void upload(shape.key, event.target.files?.[0])}
+                  className="text-ink-soft w-full text-xs font-bold"
+                />
+                {src ? (
+                  <MiniButton onClick={() => setMouth(shape.key, undefined)}>はずす</MiniButton>
+                ) : null}
+              </div>
+            </li>
+          );
+        })}
       </ul>
 
       {!value.mouth ? (

@@ -6,6 +6,7 @@ import { synthesizeSample, TtsError } from "@/lib/audio/live-tts";
 import { LIVE_VOICES } from "@/lib/audio/voices";
 import { buildCharacterSheetPrompt } from "@/lib/manga-prompt";
 import { getGeminiKey } from "@/lib/profile";
+import { HoverZoomImage } from "./hover-zoom-image";
 import { generateImage } from "./image-api";
 import { MouthMaker } from "./mouth-maker";
 import { uploadAsset } from "./studio-api";
@@ -221,11 +222,12 @@ function SheetMaker({
     >
       <div className="flex flex-wrap items-start gap-4">
         {value.sheet.src ? (
-          // next/image は外部URLの許可設定が要るため、ここは素の img で出す
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
+          // 設定画は 9カット入りなので、160px では 表情の ちがいが 読めない。
+          // のせている あいだ 大きく 出して、開き直さずに 確かめられるようにする
+          <HoverZoomImage
             src={value.sheet.src}
-            alt=""
+            alt={value.name.length > 0 ? `${value.name}の 設定画` : "設定画"}
+            label="設定画（キャラクターシート）"
             className="border-hairline h-40 w-auto rounded-xl border-2 object-contain"
           />
         ) : (
@@ -267,10 +269,10 @@ function SheetMaker({
           <ul className="flex flex-wrap gap-2">
             {value.references.map((url, index) => (
               <li key={url} className="relative">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                <HoverZoomImage
                   src={url}
-                  alt=""
+                  alt={`参考の 絵 ${index + 1}`}
+                  label={`参考の 絵 ${index + 1}`}
                   className="border-hairline h-20 w-20 rounded-lg border-2 object-cover"
                 />
                 <MiniButton
