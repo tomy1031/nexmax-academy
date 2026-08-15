@@ -264,6 +264,25 @@ function BlockEditor({
                   }
                 />
               </div>
+              {/*
+                英語は N5 を超える語の 最後の 受け皿。ひらがなに 開いても 意味は
+                伝わらないので、漢字＋ふりがな＋英語で 支える（docs/constraints.md）。
+              */}
+              <div className="w-40">
+                <TextField
+                  label="えいご（なくてもよい）"
+                  value={item.en ?? ""}
+                  onChange={(en) =>
+                    onChange({
+                      ...block,
+                      items: replaceAt(block.items, index, {
+                        ...item,
+                        en: en.length > 0 ? en : undefined,
+                      }),
+                    })
+                  }
+                />
+              </div>
               <RowTools
                 index={index}
                 count={block.items.length}
@@ -307,6 +326,31 @@ function BlockEditor({
             label="リンクの文字"
             value={block.label}
             onChange={(label) => onChange({ ...block, label })}
+          />
+        </div>
+      );
+
+    case "extlink":
+      /*
+       * 外のサイトは この ブロックで 置く。本文に URL の 文字を 書いても
+       * 学習者は タップできない（改善#24）。
+       */
+      return (
+        <div className="grid gap-3 sm:grid-cols-3">
+          <TextField
+            label="URL（https:// から）"
+            value={block.url}
+            onChange={(url) => onChange({ ...block, url })}
+          />
+          <TextField
+            label="リンクの文字"
+            value={block.label}
+            onChange={(label) => onChange({ ...block, label })}
+          />
+          <TextField
+            label="ひとこと（なくてもよい）"
+            value={block.note ?? ""}
+            onChange={(note) => onChange({ ...block, note: note.length > 0 ? note : undefined })}
           />
         </div>
       );

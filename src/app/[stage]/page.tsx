@@ -6,7 +6,7 @@ import {
   type StageContentItem,
   type StageWordItem,
 } from "@/components/stage/stage-detail";
-import type { FuriganaEntry } from "@/lib/text/furigana";
+import { mergeFuriganaEntries, type FuriganaEntry } from "@/lib/text/furigana";
 import {
   getArticle,
   getListening,
@@ -207,6 +207,16 @@ export default async function StagePage({ params }: { params: Promise<{ stage: s
           id: wordStage.id,
           title: wordStage.title,
           description: wordStage.description,
+          /*
+           * ことばカードにも ルビを 合成する（規律2 — 裸の漢字を 出さない）。
+           * 単語ステージは 語ごとに (表記, よみ) を 持っているので、それも 混ぜる
+           *（読み辞書に 載っていない 語の 漢字が 見出しに 出るのを 防ぐ）。
+           * 同じ表記が ぶつかったら 読み辞書側が 勝つ（複合語の 読みが 正）。
+           */
+          furigana: mergeFuriganaEntries(
+            wordStage.words.map((word): FuriganaEntry => [word.term, word.reading]),
+            wordStage.furigana,
+          ),
         }
       );
     }),

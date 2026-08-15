@@ -7,6 +7,7 @@ import type { Article, ArticleBlock } from "@/content/schema";
 import { NexMax, type NexMaxVariant } from "@/components/nexmax";
 import { DictionaryText } from "@/components/dictionary-text";
 import { RubyText } from "@/components/ruby-text";
+import { SpeakButton } from "@/components/speak-button";
 import { recordContentProgress } from "@/lib/progress/store";
 import type { DictionaryEntry } from "@/lib/dictionary";
 import { buildFuriganaIndex, type FuriganaIndex } from "@/lib/text/furigana";
@@ -229,9 +230,18 @@ function BlockView({ block, blockIndex, articleId, furigana, show, dictionary }:
        *（1文につき1語という決まりは DictionaryText 側が守る — 設計07 §2.5）。
        */
       return (
-        <p className="text-ink leading-loose font-bold">
-          <DictionaryText text={block.text} index={furigana} show={show} dictionary={dictionary} />
-        </p>
+        <div className="flex items-start gap-2">
+          <p className="text-ink min-w-0 flex-1 leading-loose font-bold">
+            <DictionaryText
+              text={block.text}
+              index={furigana}
+              show={show}
+              dictionary={dictionary}
+            />
+          </p>
+          {/* 読み上げるのは データのまま（ルビ合成前）の本文。 */}
+          <SpeakButton text={block.text} label="この ぶんを よみあげる" />
+        </div>
       );
 
     case "image":
@@ -317,6 +327,41 @@ function BlockView({ block, blockIndex, articleId, furigana, show, dictionary }:
         </Link>
       );
     }
+
+    case "extlink":
+      /*
+       * 外のサイトへは **必ず この カード**で行く。本文に URL の文字を 書いても
+       * タップできず、「先生が リンクを 出します」が 自宅で 成立しない（改善#24）。
+       * 別タブで ひらくのは、読みかけの 教材を 見失わせないため。
+       */
+      return (
+        <a
+          href={block.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="card-island flex items-center gap-3 p-4"
+        >
+          <span aria-hidden className="text-2xl">
+            🌐
+          </span>
+          <span className="min-w-0">
+            {/* ひとこと（note）で「あたらしい タブで ひらきます」を 言う教材が
+                多いので、ここは 見出しだけ 短く出して 同じ文を くり返さない。 */}
+            <span className="text-ink-soft block text-xs font-extrabold">そとの サイト</span>
+            <span className="text-navy block font-extrabold">
+              <RubyText text={block.label} index={furigana} show={show} />
+            </span>
+            {block.note && (
+              <span className="text-ink-soft mt-1 block text-xs font-bold">
+                <RubyText text={block.note} index={furigana} show={show} />
+              </span>
+            )}
+          </span>
+          <span aria-hidden className="text-sky ml-auto text-xl font-extrabold">
+            ↗
+          </span>
+        </a>
+      );
   }
 }
 
@@ -415,7 +460,12 @@ function CalloutBlock({
   );
 }
 
-/** ことばチップ。タップで 語・読み・意味 を出す小さな辞書。 */
+/** 吹き出しの実寸。はみ出し判定に使う（Tailwind の w-60 と合わせる）。 */
+const VOCAB_POPOVER_WIDTH = 240;
+/** 画面のふちに触れさせない余白。 */
+const EDGE_MARGIN = 12;
+
+/** ことばチップ。タップで 語・読み・英語・意味 を出す小さな辞書。 */
 function VocabChip({
   item,
   furigana,
@@ -426,6 +476,13 @@ function VocabChip({
   show: boolean;
 }) {
   const [open, setOpen] = useState(false);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  /*
+   * 左そろえのままだと、行の 右はしの ことばで 吹き出しが 画面の外に 出て
+   * 読めない（スマホ375px では 240px の 吹き出しが すぐ はみ出す）。
+   * ひらくたびに 置き場所を 決め直す（dictionary-text.tsx と 同じ考え方）。
+   */
+  const [alignRight, setAlignRight] = useState(false);
 
   useEffect(() => {
     if (!open) return;
@@ -436,11 +493,22 @@ function VocabChip({
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [open]);
 
+  const toggle = () => {
+    if (!open) {
+      const rect = buttonRef.current?.getBoundingClientRect();
+      if (rect) {
+        setAlignRight(rect.left + VOCAB_POPOVER_WIDTH > window.innerWidth - EDGE_MARGIN);
+      }
+    }
+    setOpen((v) => !v);
+  };
+
   return (
     <span className="relative inline-block">
       <button
+        ref={buttonRef}
         type="button"
-        onClick={() => setOpen((v) => !v)}
+        onClick={toggle}
         aria-expanded={open}
         className="bg-panel text-ink rounded-full border-2 px-3 py-1 text-sm font-extrabold"
         style={{ borderColor: "var(--color-grape)" }}
@@ -449,11 +517,27 @@ function VocabChip({
       </button>
 
       {open && (
-        <span className="card-island animate-pop-in absolute top-full left-0 z-20 mt-2 block w-60 p-3 text-left">
-          <span className="text-ink block font-extrabold">
-            <RubyText text={item.term} index={furigana} show={show} />
+        <span
+          className={`card-island animate-pop-in absolute top-full z-20 mt-2 block w-60 p-3 text-left ${
+            alignRight ? "right-0" : "left-0"
+          }`}
+        >
+          <span className="flex items-start gap-2">
+            <span className="min-w-0 flex-1">
+              <span className="text-ink block font-extrabold">
+                <RubyText text={item.term} index={furigana} show={show} />
+              </span>
+              {/*
+                読みの となりに 英語を 置く。むずかしい語を ひらがなに 開いても
+                意味は 伝わらない——漢字＋ふりがな＋英語で 支える（規律2）。
+              */}
+              <span className="text-ink-soft block text-xs font-bold">
+                {item.reading}
+                {item.en ? ` — ${item.en}` : ""}
+              </span>
+            </span>
+            <SpeakButton text={item.reading} label="この ことばを よみあげる" />
           </span>
-          <span className="text-ink-soft block text-xs font-bold">{item.reading}</span>
           <span className="text-ink mt-1 block text-sm leading-relaxed font-bold">
             <RubyText text={item.meaning} index={furigana} show={show} />
           </span>

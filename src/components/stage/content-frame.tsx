@@ -3,8 +3,10 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from "react";
 import type { ContentRefType } from "@/content/schema";
+import { NexMax } from "@/components/nexmax";
+import { CelebrationBurst } from "@/components/quiz/celebration";
 import { contentKindMeta } from "@/lib/content-kinds";
-import { markStageCleared } from "@/lib/progress";
+import { getClearedStageIds, markStageCleared } from "@/lib/progress";
 import { readContentProgress, subscribeProgress } from "@/lib/progress/store";
 import { decodeStatuses, gateStage, statusCode, STATUS_BADGE } from "./stage-progress";
 
@@ -95,6 +97,19 @@ export function ContentFrame({
     if (stageDone) markStageCleared(stage.id);
   }, [stageDone, stage.id]);
 
+  /*
+    ステージ1本を おえたことは、1問の正解より ずっと 大きな 節目なので、
+    演出も 大きくする（設計04 §5 — 演出は かならず 学習行為に ひもづける）。
+
+    出すのは **その場で 完走した とき だけ**。クリア済みの ステージを 見返すたびに
+    出すと、お祝いが「進んだ しるし」でなくなる。だから「この画面を ひらいた時点で
+    もう クリア済みだったか」を 最初の1回だけ 読み、あとは そこからの 変化を見る
+    （読むのは 上の markStageCleared より 前に 起きる — 初期化は 描画のとき）。
+  */
+  const [clearedOnArrival] = useState(() => getClearedStageIds([stage.id]).length > 0);
+  const [celebrationClosed, setCelebrationClosed] = useState(false);
+  const celebrating = stageDone && !clearedOnArrival && !celebrationClosed;
+
   return (
     <div className="mx-auto w-full max-w-[88rem] px-3 py-4 sm:px-5">
       <div className="flex flex-col gap-4 lg:flex-row">
@@ -168,6 +183,46 @@ export function ContentFrame({
           )}
         </div>
       </div>
+
+      {celebrating && (
+        <StageClearCard stageId={stage.id} onStay={() => setCelebrationClosed(true)} />
+      )}
+    </div>
+  );
+}
+
+/** 完走の お祝い。ここから ステージへ もどれる（行き止まりを 作らない）。 */
+function StageClearCard({ stageId, onStay }: { stageId: string; onStay: () => void }) {
+  return (
+    <div
+      className="fixed inset-0 z-40 grid place-items-center px-4"
+      style={{ background: "rgba(0,79,141,.35)" }}
+    >
+      <section
+        role="dialog"
+        aria-label="ステージ クリア"
+        className="card-island w-full max-w-sm p-6 text-center"
+      >
+        <CelebrationBurst pieces={20} />
+        <NexMax variant="cheer" size={96} bob className="mx-auto" />
+        <h2 className="text-navy mt-2 text-2xl font-black">ステージ クリア！🎉</h2>
+        <p className="text-ink mt-2 text-sm leading-relaxed font-bold">
+          さいごまで やりきったね。よく がんばりました！
+        </p>
+        <Link
+          href={`/${stageId}`}
+          className="btn-game mt-5 inline-flex px-6 py-3 [--btn-face:#58c273] [--btn-shadow:#3aa458]"
+        >
+          ステージに もどる ▶
+        </Link>
+        <button
+          type="button"
+          onClick={onStay}
+          className="text-ink-soft mt-3 block w-full text-xs font-extrabold"
+        >
+          ここに のこる
+        </button>
+      </section>
     </div>
   );
 }

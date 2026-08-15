@@ -1,9 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { motion } from "motion/react";
 import type { Word } from "@/content/schema";
 import { RubyText } from "@/components/ruby-text";
+import { SpeakButton } from "@/components/speak-button";
 import type { FuriganaIndex } from "@/lib/text/furigana";
 import { shuffle } from "./scheduler";
 
@@ -24,20 +25,12 @@ export function FlashcardDeck({
   const [index, setIndex] = useState(0);
   const [flipped, setFlipped] = useState(false);
 
-  const canSpeak = useMemo(() => typeof window !== "undefined" && "speechSynthesis" in window, []);
   const word = order[index];
   if (!word) return null;
 
   const go = (delta: number) => {
     setIndex((i) => (i + delta + order.length) % order.length);
     setFlipped(false);
-  };
-
-  const speak = () => {
-    const utterance = new SpeechSynthesisUtterance(word.reading);
-    utterance.lang = "ja-JP";
-    utterance.rate = 0.85; // 既定は遅め（理解設計ガイド P10）
-    window.speechSynthesis.speak(utterance);
   };
 
   return (
@@ -78,11 +71,14 @@ export function FlashcardDeck({
 
       <div className="mt-4 flex flex-wrap justify-center gap-2">
         <DeckButton onClick={() => go(-1)}>← まえ</DeckButton>
-        {canSpeak && (
-          <DeckButton onClick={speak} face="#8d6ae8" shadow="#7452cc">
-            🔊 よみあげ
-          </DeckButton>
-        )}
+        {/* 読み上げは共通部品。音声合成が無い環境では ボタンごと 出ない。 */}
+        <SpeakButton
+          text={word.reading}
+          className="btn-island btn-game px-5 py-2.5 text-sm"
+          style={{ "--btn-face": "#8d6ae8", "--btn-shadow": "#7452cc" } as React.CSSProperties}
+        >
+          🔊 よみあげ
+        </SpeakButton>
         <DeckButton onClick={() => go(1)}>つぎ →</DeckButton>
       </div>
       <div className="mt-2 flex flex-wrap justify-center gap-2">
