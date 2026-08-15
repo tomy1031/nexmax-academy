@@ -646,6 +646,11 @@ const vocabItemSchema = z.object({
   term: plainText,
   reading: hiragana,
   meaning: plainText,
+  /**
+   * 英語の意味。N5を超える語には必ず添える（docs/constraints.md 製品の制約——
+   * ひらがなに開いても意味は伝わらない。漢字＋ふりがな＋英語で支える）。
+   */
+  en: z.string().optional(),
 });
 
 /** 漫画の中での登場人物（見出しに出す最小限）。設定と絵は character 側に持つ。 */
@@ -905,6 +910,18 @@ export const articleBlockSchema = z.discriminatedUnion("kind", [
     type: contentRefTypeSchema,
     label: plainText,
   }),
+  /**
+   * 外部サイトへのリンクカード（実サイト調査用）。本文中の URL 文字列は
+   * タップできない——「先生が リンクを 出します」が自宅で成立しない事故を防ぐ
+   *（願い #43・改善 #24）。学習者向けの誘導は必ずこのブロックで置く。
+   */
+  z.object({
+    kind: z.literal("extlink"),
+    url: z.string().url(),
+    label: plainText,
+    /** リンクの下に出す ひとこと（「あたらしい タブで ひらくよ」等）。 */
+    note: plainText.optional(),
+  }),
 ]);
 
 /** 説明ページ（article / WYSIWYG — 設計07 §5）。保存形式はブロックJSON。 */
@@ -1074,6 +1091,21 @@ export const meetingSchema = z.object({
   closing: plainText,
   /** おわりの ひとことを読み上げた音声（作り置き。質問の audioUrl と同じ考え方）。 */
   closingAudioUrl: z.string().optional(),
+  /**
+   * 好感度モード（恋愛ゲーム風・願い #43）。設定があるときだけハートのメーターが出る。
+   * ハートは**上がるだけで下がらない**（P8: 罰を見せない）。判定の3段階
+   *（veryGood/good/miss）を加点に写し、miss でも会話が進めば少し上がる。
+   */
+  affection: z
+    .object({
+      /** メーターの満タン値（ハートの数）。 */
+      maxHearts: z.number().int().min(3).max(20).default(10),
+      /** ここまで貯まると reward が開く。 */
+      threshold: z.number().int().min(1),
+      /** 開いたときに相手が話す「とっておきの話」（報酬は物語 — P2×P7）。 */
+      reward: plainText,
+    })
+    .optional(),
   furigana: z.array(furiganaEntrySchema).optional(),
 });
 

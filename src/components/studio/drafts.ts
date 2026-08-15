@@ -165,6 +165,8 @@ export function emptyArticleBlock(kind: ArticleBlock["kind"]): ArticleBlock {
       return { kind: "vocab", items: [{ term: "ことば", reading: "ことば", meaning: "いみ" }] };
     case "link":
       return { kind: "link", ref: "", type: "article", label: "つぎを ひらく" };
+    case "extlink":
+      return { kind: "extlink", url: "https://", label: "サイトを ひらく" };
   }
 }
 
@@ -286,6 +288,7 @@ export const ARTICLE_BLOCK_OPTIONS: readonly { value: ArticleBlock["kind"]; labe
   { value: "steps", label: "てじゅん" },
   { value: "vocab", label: "ことばチップ" },
   { value: "link", label: "つぎへのリンク" },
+  { value: "extlink", label: "外部リンク" },
 ];
 
 export const CONTENT_TYPE_OPTIONS: readonly { value: ContentRefType; label: string }[] = [

@@ -4,14 +4,14 @@
   "order": 2,
   "title": "かいしゃを しる",
   "reading": "かいしゃを しる",
-  "description": "かいしゃの ホームページの みかたを ならいます。そのあと、ほんものの サイトを しらべます。ヘンディさんに つたえます。",
+  "description": "かいしゃの しらべかたを ならって、ほんものの サイトで たからさがしを します。みつけた ことを ヘンディさんに ほうこくして、さいごは しゃちょうと はなします。",
   "color": "leaf",
   "status": "published",
   "area": {
     "name": "おうきゅうの まち",
     "reading": "おうきゅうの まち",
     "image": "/img/scenes/area_palace_town.webp",
-    "note": "ふるい たてものと たかい ビルが ならぶ まちです。"
+    "note": "ふるい たてものと たかい ビルが ならぶ まちです。この まちにも、たくさんの かいしゃが あります。"
   },
   "contents": [
     {
@@ -29,6 +29,14 @@
     {
       "ref": "kaisha_houkoku",
       "type": "quizset"
+    },
+    {
+      "ref": "kaisha_houkoku_meeting",
+      "type": "meeting"
+    },
+    {
+      "ref": "kaisha_matsui",
+      "type": "meeting"
     }
   ],
   "wordStageIds": [
