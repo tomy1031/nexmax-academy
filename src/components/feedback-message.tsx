@@ -1,12 +1,23 @@
 "use client";
 
 import { motion } from "motion/react";
-import { getFeedback, type FeedbackKey, type FeedbackTone } from "@/lib/feedback";
+import { RubyText } from "@/components/ruby-text";
+import {
+  FEEDBACK_FURIGANA,
+  getFeedback,
+  type FeedbackKey,
+  type FeedbackTone,
+} from "@/lib/feedback";
+import { buildFuriganaIndex } from "@/lib/text/furigana";
 
 /**
  * フィードバック表示 — 受け取れるのは FeedbackKey だけ（設計03 §1.3-1）。
  * 画面側で「不正解です」のような文字列を書く余地をなくすための構造。
+ *
+ * 文言は辞書に固定なので、索引もモジュールで1回だけ組む（画面ごとに組み直さない）。
+ * ルビを必ず通すのは、いちばん読まれる文なのに教材データの読み辞書が届かないため（規律2）。
  */
+const FURIGANA = buildFuriganaIndex(FEEDBACK_FURIGANA);
 
 const TONE_STYLE: Record<FeedbackTone, { emoji: string; face: string; ink: string }> = {
   praise: { emoji: "🎉", face: "var(--color-leaf)", ink: "#1c5f31" },
@@ -44,10 +55,12 @@ export function FeedbackMessage({
       </span>
       <span className="leading-snug">
         <span className="block font-extrabold" style={{ color: tone.ink }}>
-          {feedback.title}
+          <RubyText text={feedback.title} index={FURIGANA} />
         </span>
         {feedback.next && (
-          <span className="text-ink-soft block text-sm font-bold">{feedback.next}</span>
+          <span className="text-ink-soft block text-sm font-bold">
+            <RubyText text={feedback.next} index={FURIGANA} />
+          </span>
         )}
       </span>
     </motion.div>

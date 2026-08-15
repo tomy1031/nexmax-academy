@@ -54,6 +54,34 @@ describe("表記ゆれ正規化（唯一の実装）", () => {
   });
 });
 
+describe("自由入力の救済（学習者有利・P8）", () => {
+  it("文末の「です」「でした」の有無で落とさない", () => {
+    expect(answerMatches("大阪です", ["大阪"])).toBe(true);
+    // 逆向き（accept 側に「です」が付いている）でも落とさない
+    expect(answerMatches("おおさか", ["おおさかです"])).toBe(true);
+    expect(answerMatches("受託開発でした", ["受託開発"])).toBe(true);
+  });
+
+  it("文で答えても、こたえの語が入っていれば正解", () => {
+    expect(answerMatches("ホームページを つくります", ["ホームページ"])).toBe(true);
+    expect(answerMatches("しゃちょうは まついさんです", ["まつい"])).toBe(true);
+    // 長音のゆれも包含のときに吸収する
+    expect(answerMatches("さあばあを つくる しごと", ["サーバー"])).toBe(true);
+  });
+
+  it("1文字のこたえは包含で通さない（「人」がどこにでも当たってしまう）", () => {
+    expect(answerMatches("人", ["人"])).toBe(true);
+    expect(answerMatches("三人の 人が いました", ["人"])).toBe(false);
+  });
+
+  it("ゆるめても 別の語までは通さない", () => {
+    expect(answerMatches("そうだん", ["報連相", "ほうれんそう"])).toBe(false);
+    expect(answerMatches("れんらく", ["ほうこく"])).toBe(false);
+    expect(answerMatches("です", ["大阪"])).toBe(false);
+    expect(answerMatches("   ", ["大阪"])).toBe(false);
+  });
+});
+
 describe("入力の見守り", () => {
   it("漢字・英字・カタカナをそれぞれ見分ける", () => {
     expect(inspectReadingInput("要件定義")).toBe("kanji");

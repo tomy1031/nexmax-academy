@@ -7,6 +7,8 @@
  * ここの文言は lint:content ではなく単体テストで禁止語を機械検査する。
  */
 
+import type { FuriganaEntry } from "@/lib/text/furigana";
+
 /** 見た目（色・アイコン）を決めるトーン。意味は文言側が持つ。 */
 export type FeedbackTone = "praise" | "encourage" | "hint" | "info";
 
@@ -80,6 +82,21 @@ export const FEEDBACK = {
     title: "相手の 気もちが わかったね",
     next: "つぎは、その ときの 言い方を えらぼう",
   },
+  /**
+   * 気持ちを外したときの2段階目。「外した」ことには触れず、同じ次の行動へ送る
+   *（P8: 失敗を指さない。2段階目に進めた事実だけを前向きに置く）。
+   */
+  "quiz.emotionStepMiss": {
+    tone: "info",
+    title: "気もちを たしかめて いこう",
+    next: "つぎは、その ときの 言い方を えらぼう",
+  },
+  /** 問題セットを終えたが合格に届かなかったとき（もんだい単位の言い方）。 */
+  "quiz.keepGoing": {
+    tone: "encourage",
+    title: "ここまで すすんだね",
+    next: "「まちがえた もんだいだけ」で もう一度 やってみよう",
+  },
 
   /* --- ステージ・結果 --- */
   "stage.passed": { tone: "praise", title: "合格！ よく がんばったね", next: "つぎの ステージへ" },
@@ -124,6 +141,12 @@ export const FEEDBACK = {
     title: "いまは この しつもんの 番では ないかも",
     next: "ボードの のこりを 見て、聞くことを えらぼう",
   },
+  /** 言えていることに近いが、もう一言たりないとき（Live対話の判定が使う）。 */
+  "talk.close": {
+    tone: "hint",
+    title: "おしい！ちかい ことばだよ",
+    next: "もう ひとこと たして、聞いてみよう",
+  },
   "talk.notReady": {
     tone: "info",
     title: "じゅんびちゅう",
@@ -136,6 +159,42 @@ export type FeedbackKey = keyof typeof FEEDBACK;
 export function getFeedback(key: FeedbackKey): Feedback {
   return FEEDBACK[key];
 }
+
+/**
+ * FEEDBACK の文言に出てくる漢字の読み辞書（規律2）。
+ *
+ * フィードバックは**いちばん読まれる文**なのに、教材データの読み辞書が届かない
+ * 場所に置かれている（画面ではなく辞書型で持つため）。ここに辞書を同梱して
+ * FeedbackMessage が必ずルビを合成する。覆い漏れは tests/feedback.test.ts が機械検査する。
+ *
+ * 同じ漢字でも読みが変わるところだけ、送りがなまで表記に含める
+ *（「出てくる」＝で ／「聞き出せた」＝だせ）。最長一致なので長い表記が先に当たる。
+ */
+export const FEEDBACK_FURIGANA: FuriganaEntry[] = [
+  ["日本語", "にほんご"],
+  ["入力", "にゅうりょく"],
+  ["一度", "いちど"],
+  ["意味", "いみ"],
+  ["漢字", "かんじ"],
+  ["相手", "あいて"],
+  ["合格", "ごうかく"],
+  ["先生", "せんせい"],
+  ["原稿", "げんこう"],
+  ["入っ", "はいっ"],
+  ["出せ", "だせ"],
+  ["入", "い"],
+  ["出", "で"],
+  ["正", "ただ"],
+  ["見", "み"],
+  ["読", "よ"],
+  ["書", "か"],
+  ["聞", "き"],
+  ["言", "い"],
+  ["方", "かた"],
+  ["気", "き"],
+  ["下", "した"],
+  ["番", "ばん"],
+];
 
 /** 入力の問題（normalize.ts の InputIssue）を文言キーに写す。 */
 export const INPUT_ISSUE_FEEDBACK = {

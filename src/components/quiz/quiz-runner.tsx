@@ -41,6 +41,9 @@ export function QuizRunner({
 }) {
   const furigana = useMemo(() => buildFuriganaIndex(set.furigana ?? []), [set.furigana]);
   const [state, setState] = useState<QuizState>(() => createQuizSession(set));
+  // 1問目をいきなり出さない。「何をするのか・全部できなくてよい」を先に置く
+  //（いきなり問われると、答えられない不安のほうが先に立つ — P8）。
+  const [started, setStarted] = useState(false);
 
   const dispatch = useCallback((action: QuizAction) => {
     setState((prev) => quizReducer(prev, action));
@@ -69,9 +72,12 @@ export function QuizRunner({
         </header>
       )}
 
-      {state.phase.kind === "finished" ? (
+      {!started ? (
+        <StartCard set={set} furigana={furigana} onStart={() => setStarted(true)} />
+      ) : state.phase.kind === "finished" ? (
         <QuizResultCard
           set={set}
+          embedded={embedded}
           summary={summary}
           missed={summary.missedQuestionIds
             .map((id) => byId.get(id))
@@ -109,13 +115,24 @@ export function QuizRunner({
                     furigana={furigana}
                     feedback={state.phase.feedback}
                     correct={state.phase.correct}
+                    input={state.phase.input}
                     onNext={() => dispatch({ type: "next" })}
                   />
                 ) : (
                   <>
                     {state.phase.kind === "emotionReply" && (
                       <div className="mb-4">
-                        <FeedbackMessage messageKey="quiz.emotionStep" />
+                        {/* 気持ちを外していても止めない。同じ次の行動へ送る言い方に替える */}
+                        <FeedbackMessage
+                          messageKey={
+                            state.phase.feelingOk ? "quiz.emotionStep" : "quiz.emotionStepMiss"
+                          }
+                        />
+                      </div>
+                    )}
+                    {state.phase.kind === "ask" && state.phase.inputIssue && (
+                      <div className="mb-4">
+                        <FeedbackMessage messageKey={state.phase.inputIssue} />
                       </div>
                     )}
                     <QuestionBody
@@ -132,6 +149,54 @@ export function QuizRunner({
         )
       )}
     </div>
+  );
+}
+
+/**
+ * 「これから やること」カード。
+ * 枠の中（embedded）でも出す——先に何をするか分かっているかどうかは、
+ * どこから来たかに関係なく効くため。
+ */
+function StartCard({
+  set,
+  furigana,
+  onStart,
+}: {
+  set: QuizSet;
+  furigana: ReturnType<typeof buildFuriganaIndex>;
+  onStart: () => void;
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 14 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="card-island p-6 sm:p-8"
+    >
+      <p className="text-ink-soft text-sm font-extrabold">これから やること</p>
+      <div className="mt-3 flex items-start gap-4">
+        <NexMax variant={set.nekumax} size={84} bob />
+        <div>
+          <h2 className="text-ink text-2xl font-extrabold">
+            <RubyText text={set.title} index={furigana} />
+          </h2>
+          <p className="text-ink-soft mt-2 leading-relaxed font-bold">
+            <RubyText text={set.description} index={furigana} />
+          </p>
+        </div>
+      </div>
+
+      <p className="border-hairline bg-panel-tint text-ink mt-5 rounded-[var(--radius-card)] border-2 px-4 py-3 font-extrabold">
+        ぜんぶ できなくても だいじょうぶ
+      </p>
+
+      <button
+        type="button"
+        onClick={onStart}
+        className="btn-island btn-game mt-5 w-full px-6 py-3.5"
+      >
+        はじめる
+      </button>
+    </motion.div>
   );
 }
 
@@ -161,20 +226,32 @@ function ExplainCard({
   furigana,
   feedback,
   correct,
+  input,
   onNext,
 }: {
   question: QuizQuestion;
   furigana: ReturnType<typeof buildFuriganaIndex>;
   feedback: Parameters<typeof FeedbackMessage>[0]["messageKey"];
   correct: boolean;
+  /** 自由入力で書いた文字。正解のときだけ見せる。 */
+  input?: string;
   onNext: () => void;
 }) {
+  // 「自分の書き方でも通った」を見せる。代表解と同じ表記なら二度書きになるので出さない
+  const own = input?.trim();
+  const showOwn = Boolean(correct && own && own !== answerText(question));
+
   return (
     <div>
       {correct && <CelebrationBurst />}
       <FeedbackMessage messageKey={feedback} />
 
       <div className="border-hairline bg-panel-tint mt-4 rounded-[var(--radius-card)] border-2 p-4">
+        {showOwn && (
+          <p className="text-ink-soft mb-3 text-xs font-bold">
+            あなたの こたえ: <span className="text-ink font-extrabold">{own}</span>
+          </p>
+        )}
         <p className="text-ink-soft text-xs font-extrabold">こたえ</p>
         <p className="text-ink mt-1 font-extrabold">
           <RubyText text={answerText(question)} index={furigana} />
@@ -211,6 +288,7 @@ function answerText(question: QuizQuestion): string {
 
 function QuizResultCard({
   set,
+  embedded,
   summary,
   missed,
   furigana,
@@ -218,6 +296,7 @@ function QuizResultCard({
   onRetryAll,
 }: {
   set: QuizSet;
+  embedded: boolean;
   summary: ReturnType<typeof summarizeQuiz>;
   missed: readonly QuizQuestion[];
   furigana: ReturnType<typeof buildFuriganaIndex>;
@@ -242,7 +321,7 @@ function QuizResultCard({
       </div>
 
       <div className="mt-5">
-        <FeedbackMessage messageKey={summary.passed ? "stage.passed" : "stage.keepGoing"} />
+        <FeedbackMessage messageKey={summary.passed ? "stage.passed" : "quiz.keepGoing"} />
       </div>
 
       <p className="text-ink mt-5 text-center text-2xl font-extrabold">
@@ -289,13 +368,16 @@ function QuizResultCard({
         >
           もう一度
         </button>
-        <Link
-          href="/quiz"
-          className="btn-island btn-game px-6 py-3"
-          style={{ "--btn-face": "#4fa8e8", "--btn-shadow": "#0272ae" } as React.CSSProperties}
-        >
-          もんだいを えらぶ
-        </Link>
+        {/* 枠の中では戻り先は枠が持つ。ここで別の一覧へ放り出さない */}
+        {!embedded && (
+          <Link
+            href="/quiz"
+            className="btn-island btn-game px-6 py-3"
+            style={{ "--btn-face": "#4fa8e8", "--btn-shadow": "#0272ae" } as React.CSSProperties}
+          >
+            もんだいを えらぶ
+          </Link>
+        )}
       </div>
     </motion.div>
   );
