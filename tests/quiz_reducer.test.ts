@@ -6,6 +6,7 @@ import {
   createQuizSession,
   currentQuestion,
   quizReducer,
+  resumeQuizSession,
   summarizeQuiz,
   type QuizAction,
   type QuizState,
@@ -230,6 +231,24 @@ describe("問題エンジンの状態機械", () => {
   it("解説を見ずに次の問題へ飛べない", () => {
     const s = createQuizSession(set);
     expect(quizReducer(s, { type: "next" })).toBe(s);
+  });
+});
+
+describe("つづきから 復元する（resumeQuizSession）", () => {
+  it("途中の 番号・結果を そのまま 積んで、出題中の 状態で 始める", () => {
+    const results = [
+      { questionId: set.questions[0]!.id, correct: true, earned: set.questions[0]!.points },
+      { questionId: set.questions[1]!.id, correct: false, earned: 0 },
+    ];
+    const s = resumeQuizSession(set, 2, results);
+    expect(s.index).toBe(2);
+    expect(s.phase).toEqual({ kind: "ask" });
+    expect(s.results).toEqual(results);
+    expect(currentQuestion(s)).toBe(set.questions[2]);
+  });
+
+  it("答えて いない 状態は createQuizSession と 同じ 形になる", () => {
+    expect(resumeQuizSession(set, 0, [])).toEqual(createQuizSession(set));
   });
 });
 

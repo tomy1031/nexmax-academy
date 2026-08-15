@@ -40,6 +40,19 @@ export type CallStage = "lobby" | "inRoom" | "leaving" | "left";
  */
 export type CallPurpose = "listen" | "speak";
 
+/**
+ * 操作パネル（`controls`）を タイルの すぐ下に 置くか、いちばん 下に 置くか。
+ *
+ * ミーティングの `controls` は **答える ところ**（型文＋入力欄）なので、
+ * 上に 置くと スマホでは「こう 言えます」と 入力欄が 先に 来て、**相手の しつもんが
+ * その 下**に なる——毎回 スクロールして 何を 聞かれたかを 探す ことに なっていた。
+ * 目線を「聞かれたこと → 言い方 → 打つ」の 順に 流すため、こちらは "bottom"。
+ *
+ * たいわ（Live）の `controls` は **つなぐ ボタン**で、会話が 始まる 前に 押す ものだから
+ * 会話の 上に 要る。既定は これまでどおり "top"。
+ */
+export type CallControlsAt = "top" | "bottom";
+
 const BEFORE_LABEL: Record<CallPurpose, string> = {
   listen: "きくまえに",
   speak: "はなす まえに",
@@ -92,10 +105,12 @@ export function CallShell({
    *（リスニングは声だけなので、顔を作る手間をかけない）。
    */
   faces,
-  /** 画面下に置く操作パネル（再生／Live で中身が変わる）。 */
+  /** 操作パネル（再生／Live／答える ところ で中身が変わる）。置き場は `controlsAt`。 */
   controls,
   /** タイルの下に置く学習パネル（字幕・単語チェックなど）。 */
   children,
+  /** 操作パネルの置き場（既定は タイルの すぐ下）。 */
+  controlsAt = "top",
   /** 教材の読み辞書。渡すと 題・きょう やること・名札に ふりがなが つく。 */
   furigana,
   /** 入る前の見出し。話す教材は "speak"（既定は "listen"）。 */
@@ -112,6 +127,7 @@ export function CallShell({
   faces?: Readonly<Record<string, React.ReactNode>>;
   controls?: React.ReactNode;
   children?: React.ReactNode;
+  controlsAt?: CallControlsAt;
   furigana?: FuriganaIndex | readonly FuriganaEntry[];
   purpose?: CallPurpose;
   mic?: CallMic;
@@ -229,8 +245,9 @@ export function CallShell({
         </div>
       </div>
 
-      {controls}
+      {controlsAt === "top" ? controls : null}
       {children}
+      {controlsAt === "bottom" ? controls : null}
     </div>
   );
 }

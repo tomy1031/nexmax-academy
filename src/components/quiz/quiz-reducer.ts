@@ -70,6 +70,29 @@ export function createQuizSession(set: QuizSet, questions = set.questions): Quiz
   };
 }
 
+/**
+ * 端末に 残って いた「つづきから」で 組み立てる（`@/lib/quiz/resume` の QuizStart から）。
+ *
+ * `results` は すでに 採点ずみなので、そのまま 積み直す——answer系の action を
+ * 再生する 必要は ない（1問が 答えた 瞬間に 確定する、もんだいの 設計上）。
+ * `index` が 問題数の 範囲外に なる ことは `startFrom` が 防ぐので、ここでは
+ * 呼び出し側の 契約（`QuizStart`）を そのまま 信じる。
+ */
+export function resumeQuizSession(
+  set: QuizSet,
+  index: number,
+  results: readonly QuizResult[],
+): QuizState {
+  return {
+    setId: set.id,
+    passRate: set.passRate,
+    questions: set.questions,
+    index,
+    phase: set.questions.length === 0 ? { kind: "finished" } : { kind: "ask" },
+    results,
+  };
+}
+
 export function currentQuestion(state: QuizState): QuizQuestion | null {
   return state.questions[state.index] ?? null;
 }

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { fillAnswer, fillName, NAME_MARK, NO_NAME } from "../src/lib/meeting/speech";
+import { answerCore, fillAnswer, fillName, NAME_MARK, NO_NAME } from "../src/lib/meeting/speech";
 import { needsJapaneseInput } from "../src/lib/meeting/input";
 import { hintPatterns, hintSegments } from "../src/lib/meeting/hint";
 
@@ -23,9 +23,77 @@ describe("呼び名の 差し込み（ask / closing / reward）", () => {
     expect(fillName("◯◯さん、◯◯さん。", "ソカ")).not.toContain(NAME_MARK);
   });
 
-  it("名前が まだ 無い 学習者には「あなた」（◯◯ の ままには しない）", () => {
-    expect(fillName("◯◯さん、こんにちは。", "")).toBe(`${NO_NAME}さん、こんにちは。`);
-    expect(fillName("◯◯さん、こんにちは。", "   ")).toBe(`${NO_NAME}さん、こんにちは。`);
+  /*
+   * 名前が まだ 無い 端末（診断を して いない・端末を 替えた）では、呼びかけに
+   * 「あなた」を 入れると **「あなたさん」**に なって いた（実機で 出ていた）。
+   * 日本語では 呼びかけは 落としても 文が 立つので、呼びかけごと 落とす。
+   */
+  it("名前が まだ 無い ときは 呼びかけごと 落とす（「あなたさん」に しない）", () => {
+    expect(fillName("◯◯さんは、日本で どんな しごとを して みたいですか。", "")).toBe(
+      "日本で どんな しごとを して みたいですか。",
+    );
+    expect(fillName("◯◯さん、こんにちは。", "")).toBe("こんにちは。");
+    expect(fillName("◯◯さん、こんにちは。", "   ")).toBe("こんにちは。");
+    expect(fillName("◯◯さんは、どこから 来ましたか。", "")).not.toContain(`${NO_NAME}さん`);
+  });
+
+  it("文の 途中の 呼びかけも 落とす（前の 文は 残す）", () => {
+    expect(fillName("こんにちは。◯◯さんは、どこから 来ましたか。", "")).toBe(
+      "こんにちは。どこから 来ましたか。",
+    );
+  });
+
+  it("呼びかけで ない ◯◯ は「あなた」で 埋める（目印を 画面に 残さない）", () => {
+    expect(fillName("きょうの ◯◯の 話、よかったです。", "")).toBe(
+      `きょうの ${NO_NAME}の 話、よかったです。`,
+    );
+    expect(fillName("きょうの ◯◯の 話、よかったです。", "")).not.toContain(NAME_MARK);
+  });
+});
+
+/*
+ * おうむ返しに 入れる「答えの 中身」。
+ *
+ * 末尾の「します。」だけを 削る 作りだった ころ、型文どおりの 答え
+ * 「ソピアです。よろしく おねがいします。」が「ソピアです。よろしく おねがいし」に なり、
+ * 「◯◯さんですね。」へ 差し込まれて **「ソピアです。よろしく おねがいしさんですね。」**
+ * と 表示されて いた（2回目の 通し検収で 実機再現）。
+ */
+describe("答えの 中身の 取り出し（answerCore）", () => {
+  it("複数の 文は はじめの 1文だけ 見る（型文どおりの 答えが 壊れない）", () => {
+    expect(answerCore("ソピアです。よろしく おねがいします。")).toBe("ソピア");
+  });
+
+  it("名詞＋です は コピュラだけ 落とす", () => {
+    expect(answerCore("ホームページです。")).toBe("ホームページ");
+    expect(answerCore("大阪と 東京です。")).toBe("大阪と 東京");
+    expect(answerCore("ネクストメイクは、ホームページを 作る 会社です。")).toBe(
+      "ネクストメイクは、ホームページを 作る 会社",
+    );
+  });
+
+  it("文の あたまの「わたしは」は 中身では ない", () => {
+    expect(answerCore("わたしは ソカです。")).toBe("ソカ");
+  });
+
+  it("動詞で 終わる 文は 述語を 文節ごと 落とす（語幹だけ 残さない）", () => {
+    expect(answerCore("わたしは カンボジアから 来ました。")).toBe("カンボジア");
+    expect(answerCore("わたしは プログラミングを 勉強して います。")).toBe("プログラミング");
+  });
+
+  it("あいづちだけの 文は 読みとばす（中身は そのつぎに ある）", () => {
+    expect(answerCore("はい。ほうこくします。")).toBe("ほうこくします");
+  });
+
+  it("名詞の 並びは そのまま（述語が 無ければ 削らない）", () => {
+    expect(answerCore("ホームページ")).toBe("ホームページ");
+    expect(answerCore("ホームページを 作る 会社")).toBe("ホームページを 作る 会社");
+  });
+
+  it("空の 答えからは 中身が 取れない", () => {
+    expect(answerCore("")).toBe("");
+    expect(answerCore("   ")).toBe("");
+    expect(answerCore("。")).toBe("");
   });
 });
 
@@ -34,6 +102,16 @@ describe("答えの 差し込み（echo）", () => {
     expect(
       fillAnswer("そうです、◯◯ですね。サービスの ページを 見たんですね。", "ホームページ"),
     ).toBe("そうです、ホームページですね。サービスの ページを 見たんですね。");
+  });
+
+  it("差し込む 前に 中身を 取り出す（生の 発話を そのまま 入れない）", () => {
+    // 松井社長の 1問目。学習者は 画面の 型文どおりに 答える
+    expect(
+      fillAnswer(
+        "◯◯さんですね。きょうは よく 来て くれました。",
+        "ソピアです。よろしく おねがいします。",
+      ),
+    ).toBe("ソピアさんですね。きょうは よく 来て くれました。");
   });
 
   it("答えが 空の ときは おうむ返しを 作らない（画面に 出す 文が 無い）", () => {

@@ -7,6 +7,7 @@ import { CallShell, CaptionBar } from "@/components/call-shell";
 import { RubyText } from "@/components/ruby-text";
 import { buildFuriganaIndex, kanaOf } from "@/lib/text/furigana";
 import {
+  HINT_BLANK,
   hintPatterns,
   hintSegments,
   readHintShown,
@@ -42,7 +43,7 @@ import { fillAnswer, fillName } from "@/lib/meeting/speech";
 import { getProfile } from "@/lib/profile";
 import { recordContentProgress } from "@/lib/progress/store";
 import { AffectionMeter } from "./affection-meter";
-import { checkJapanese, coreOf, type AdviceText } from "./japanese-check";
+import { checkJapanese, type AdviceText } from "./japanese-check";
 import { judgeFailNote, requestJudge } from "./judge-api";
 import { JudgeCard } from "./judge-card";
 import { QuestionBoard } from "./question-board";
@@ -107,14 +108,13 @@ import { useLiveVoice } from "./use-live-voice";
  */
 
 /**
- * 画面の飾り（型文のボタン・見出し・見守りの ことば）に出る漢字の読み。
+ * 画面の飾り（「こう 言えます」の つまみ・見出し・見守りの ことば）に出る漢字の読み。
  *
  * 教材の読み辞書（`meeting.furigana`）は 教材の 本文の ための ものなので、
  * 画面が自分で出す語はここで覆う（規律2: 学習者が読む漢字を裸で出さない）。
  * 教材の索引と混ぜないのは、混ぜると教材側のルビの当たり方が変わるため。
  */
 const CHROME_FURIGANA = buildFuriganaIndex([
-  ["型文", "かたぶん"],
   ["日本語", "にほんご"],
   ["入力", "にゅうりょく"],
   ["言", "い"],
@@ -285,7 +285,14 @@ export function MeetingSession({
       [
         meeting.persona,
         "",
-        `話す 相手の 呼び名は「${learnerName || "あなた"}」です。名前で 呼んで ください。`,
+        /*
+         * 名前が 無い 端末に「あなた」を 渡すと、相手は それを 名前だと 受け取り
+         *「あなたさん」と 呼びはじめる（画面の 差し込みで 実際に 起きて いた）。
+         * 名前が 無い ことは 無い ことと して 伝える。
+         */
+        learnerName
+          ? `話す 相手の 呼び名は「${learnerName}」です。名前で 呼んで ください。`
+          : "話す 相手の 名前は まだ 分かりません。名前では 呼ばずに 話して ください。",
         "きょう 聞く ことは つぎの とおりです。上から 順に 1つずつ 聞いて ください。",
         ...meeting.questions.map((q, i) => `${i + 1}. ${withName(q.ask)}`),
       ].join("\n"),
@@ -373,8 +380,10 @@ export function MeetingSession({
          * おうむ返しは **学習者の 答え**を 返す。ここで 呼び名を 差し込む 関数を
          * 通していた ため、`◯◯` が 先に 名前で 埋まり、相手が
          * 「そうです、ソピアですね。」と 名前を 答えとして 復唱していた。
+         * 中身の 取り出しは `fillAnswer` の 中（`answerCore`）——画面で 別の 関数を
+         * かませて いた ころ、末尾だけを 削って 文が 壊れていた。
          */
-        echo: spoken ? "" : fillAnswer(question.echo, coreOf(utterance)),
+        echo: spoken ? "" : fillAnswer(question.echo, utterance),
         judge: null,
         fallback: { advice, note: judgeFailNote(result.reason) },
       });
@@ -549,6 +558,17 @@ export function MeetingSession({
    */
   const hintLines = useMemo(() => hintPatterns(question?.hint ?? ""), [question]);
 
+  /**
+   * 型文に 穴が あるか。
+   * 「はい。ほうこくします。」の ように そのまま 言える 型文でも
+   * 「◯◯ は あなたの ことばです。」を 出して いたので、指す 先の 無い
+   * 注意書きだけが 残って いた。穴が ある ときだけ 添える。
+   */
+  const hintHasBlank = useMemo(
+    () => hintLines.some((line) => line.includes(HINT_BLANK)),
+    [hintLines],
+  );
+
   /** いま持っているハート。教材に affection が無いときは画面のどこにも出ない。 */
   const hearts = heartsOf(affection);
 
@@ -690,7 +710,8 @@ export function MeetingSession({
   );
 
   /*
-   * 答えるところ（型文＋入力欄）。**型文は入力欄のすぐ上**に置く。
+   * 答えるところ（型文＋入力欄）。**会話の 下**に、型文は 入力欄の すぐ上に 置く
+   *（CallShell に `controlsAt="bottom"` を 渡す）。
    * 目線が「聞かれたこと → 言い方 → 打つ／話す」の順で下へ流れ、
    * 足場を見るために画面を探し回らなくてよくなる。
    */
@@ -698,8 +719,7 @@ export function MeetingSession({
     <div className="space-y-2">
       {/*
         途中から 戻って きた ことを 先に 言う（同じ 質問が 出て 戸惑わない ように）。
-        置き場が 入力の 上なのは、CallShell が controls を 会話より 先に 描くから
-        ——入った 直後に いちばん 目に 入る ところに 置く。
+        置き場が 答える ところの あたまなのは、ここが 学習者の 手が 止まる 場所だから。
       */}
       {resumed ? (
         <p className="bg-cream border-hairline text-ink rounded-[var(--radius-card)] border-2 px-4 py-2 text-sm font-bold">
@@ -712,6 +732,8 @@ export function MeetingSession({
           足場を いるか いらないか 決めるのは 学習者（設計01 P11）。
           はじめは 見えている ので、この つまみは「かくす」から 始まる。
           隠しているあいだは 目に つく 色にして、気づかないまま 固まらないようにする。
+          ラベルは **箱の 見出しと 同じ ことば**にする——「型文」と「こう 言えます」で
+          呼び分けて いた ころは、同じ ものが 2つ ある ように 見えて いた。
         */}
         <button
           type="button"
@@ -724,7 +746,7 @@ export function MeetingSession({
           }`}
         >
           <RubyText
-            text={hintShown ? "型文を かくす" : "型文を 見る"}
+            text={hintShown ? "「こう 言えます」を かくす" : "「こう 言えます」を 見る"}
             index={CHROME_FURIGANA}
             show
           />
@@ -761,7 +783,12 @@ export function MeetingSession({
               </li>
             ))}
           </ul>
-          <p className="text-ink-faint mt-2 text-xs font-bold">◯◯ は あなたの ことばです。</p>
+          {/* 穴の 無い 型文（「はい。ほうこくします。」）では、指す 先が 無い ので 出さない */}
+          {hintHasBlank ? (
+            <p className="text-ink-faint mt-2 text-xs font-bold">
+              {HINT_BLANK} は あなたの ことばです。
+            </p>
+          ) : null}
         </div>
       ) : null}
 
@@ -882,6 +909,12 @@ export function MeetingSession({
           ),
         }}
         controls={controls}
+        /*
+         * 答える ところは **会話の 下**。上に 置いて いた ころは、スマホで
+         * 「こう 言えます」と 入力欄が 先に 来て、相手の しつもんが その 下に あった
+         * ——何を 聞かれたかを 見るのに、毎回 スクロールで 探す ことに なる。
+         */
+        controlsAt="bottom"
       >
         {body}
       </CallShell>
