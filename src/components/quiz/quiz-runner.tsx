@@ -1,14 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "motion/react";
 import type { QuizQuestion, QuizSet } from "@/content/schema";
 import { FeedbackMessage } from "@/components/feedback-message";
 import { NexMax } from "@/components/nexmax";
 import { RubyText } from "@/components/ruby-text";
 import { buildFuriganaIndex } from "@/lib/text/furigana";
-import { recordContentProgress } from "@/lib/progress/store";
+import { createProgressStore, recordContentProgress } from "@/lib/progress/store";
 import { CelebrationBurst, StampRow } from "./celebration";
 import { QuestionBody } from "./question-types";
 import {
@@ -56,6 +56,34 @@ export function QuizRunner({
   }, [set.id, done]);
 
   const summary = summarizeQuiz(state);
+
+  /*
+   * 点数を **先生が見る成績**（TestResult）にも残す。
+   *
+   * これまで もんだいは 進捗（おわった／とちゅう）しか 書いておらず、何点だったかは
+   * 画面を閉じた瞬間に 消えていた。同じ「テスト」なのに ことばアーケードの点だけが
+   * 残る、という 割れ方をしていた。
+   *
+   * **初回だけが正式**（store の recordFirstTestResult が2回目以降を捨てる）。
+   * だから「まちがえた もんだいだけ」の やり直しで 点が 上書きされる心配は無い
+   * ——やり直しは 学びのためで、成績のためではない（P11）。
+   * 読み／意味の内わけは ことばの テスト だけの数え方なので、ここでは 書かない。
+   */
+  const store = useMemo(() => createProgressStore(), []);
+  const savedRef = useRef<string | null>(null);
+  useEffect(() => {
+    if (!done) return;
+    if (savedRef.current === set.id) return;
+    savedRef.current = set.id;
+    store.recordFirstTestResult({
+      stageId: set.id,
+      score: summary.earned,
+      maxScore: summary.maxPoints,
+      total: summary.total,
+      passed: summary.passed,
+      at: new Date().toISOString(),
+    });
+  }, [done, set.id, store, summary]);
   const question = currentQuestion(state);
   const byId = useMemo(() => new Map(set.questions.map((q) => [q.id, q])), [set.questions]);
 

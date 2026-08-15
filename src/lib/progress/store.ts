@@ -65,14 +65,27 @@ export function defaultBackend(): ProgressBackend {
  * 保存するかたち
  * ------------------------------------------------------------------ */
 
-/** 教師が見る成績。初回のみ正式（P11・旧 wordtest 改修指示書 §18）。 */
+/**
+ * 教師が見る成績。初回のみ正式（P11・旧 wordtest 改修指示書 §18）。
+ *
+ * 記録するのは ことばの テストだけではない。もんだい（quizset）の点も ここに残す
+ * ——同じ「テスト」なのに、ことばの点だけが残って もんだいの点が消えるのは、
+ * 先生から見ると 成績の 半分が 欠けているのと同じである。
+ */
 export interface TestResult {
+  /** 成績のキー。ことばのテストは 単語ステージID、もんだいは 問題セットID。 */
   readonly stageId: string;
-  /** 読み1点＋意味1点＝1問2点。 */
+  /** ことばのテストは 読み1点＋意味1点＝1問2点。もんだいは 配点の合計。 */
   readonly score: number;
   readonly maxScore: number;
-  readonly readingCorrect: number;
-  readonly meaningCorrect: number;
+  /**
+   * 読み／意味の内わけ。**ことばのテストにしか無い**数え方なので任意にする。
+   * もんだい側に 0 を書かせると、先生の画面では「読みが 全部だめだった」と
+   * 見分けが つかなくなる（無いことと 0点は ちがう）。
+   */
+  readonly readingCorrect?: number;
+  readonly meaningCorrect?: number;
+  /** 問題数（ことばのテストは 語の数）。 */
   readonly total: number;
   readonly passed: boolean;
   /** ISO8601。 */

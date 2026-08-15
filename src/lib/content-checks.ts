@@ -458,6 +458,12 @@ function collectLabeledTexts(content: Content): LabeledText[] {
       push("title", content.title);
       push("description", content.description);
       push("focus", content.focus);
+      // 話す人の名前と立場は Zoom風のタイルに出る（call-shell.tsx）。
+      // meeting の host.name / host.role と同じ扱いにそろえる。
+      content.participants.forEach((person, i) => {
+        push(`participants[${i}].name`, person.name);
+        push(`participants[${i}].role`, person.role);
+      });
       content.script.forEach((line, i) => push(`script[${i}].text`, line.text));
       // keywords はスキーマが「台本に出てくること」を保証しているので script 側で数える
       break;
@@ -545,6 +551,12 @@ function collectLabeledTexts(content: Content): LabeledText[] {
           case "link":
             push(at("label"), block.label);
             break;
+          case "extlink":
+            // 外のサイトへ行くカード。見出しも ひとことも 学習者が読む
+            //（article-view.tsx が どちらも RubyText で出す）。
+            push(at("label"), block.label);
+            push(at("note"), block.note);
+            break;
         }
       });
       break;
@@ -626,6 +638,13 @@ function collectLabeledTexts(content: Content): LabeledText[] {
         // keywords は当たり判定の材料で、画面には出ない
       });
       push("closing", content.closing);
+      /*
+       * 好感度が満タンになったときに相手が話す「とっておきの話」。
+       * ここが対象から漏れていると、**いちばん嬉しい場面だけ 規律2 の外**になる。
+       * 学習者はハートを貯めきった直後にこれを読むので、読めない漢字が1つでも
+       * あると、いちばん効く報酬がその場でしぼむ。
+       */
+      push("affection.reward", content.affection?.reward);
       // persona / judgePrompt は Live への指示（scenario の interview.persona と同じ扱い）
       break;
     }

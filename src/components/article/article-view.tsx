@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import type { Article, ArticleBlock } from "@/content/schema";
 import { NexMax, type NexMaxVariant } from "@/components/nexmax";
 import { DictionaryText } from "@/components/dictionary-text";
@@ -16,6 +16,7 @@ import {
   contentHref,
   contentKindLabel,
   headingId,
+  joinItemsForSpeech,
   shouldShowToc,
   type HeadingEntry,
 } from "./article-blocks";
@@ -252,41 +253,45 @@ function BlockView({ block, blockIndex, articleId, furigana, show, dictionary }:
 
     case "list":
       return (
-        <ul className="space-y-2">
-          {block.items.map((item, i) => (
-            <li key={i} className="text-ink flex items-start gap-2 leading-relaxed font-bold">
-              <span aria-hidden className="text-sky pt-0.5">
-                ●
-              </span>
-              <span>
-                <RubyText text={item} index={furigana} show={show} />
-              </span>
-            </li>
-          ))}
-        </ul>
+        <SpeakableGroup items={block.items} label="この かじょうがきを ぜんぶ よみあげる">
+          <ul className="space-y-2">
+            {block.items.map((item, i) => (
+              <li key={i} className="text-ink flex items-start gap-2 leading-relaxed font-bold">
+                <span aria-hidden className="text-sky pt-0.5">
+                  ●
+                </span>
+                <span>
+                  <RubyText text={item} index={furigana} show={show} />
+                </span>
+              </li>
+            ))}
+          </ul>
+        </SpeakableGroup>
       );
 
     case "steps":
       return (
-        <ol className="space-y-3">
-          {block.items.map((item, i) => (
-            <li key={i} className="flex items-start gap-3">
-              <span
-                aria-hidden
-                className="grid h-8 w-8 shrink-0 place-items-center rounded-full text-sm font-extrabold text-white"
-                style={{
-                  background: "var(--color-sky)",
-                  boxShadow: "0 3px 0 var(--color-sky-deep)",
-                }}
-              >
-                {i + 1}
-              </span>
-              <span className="text-ink pt-1 leading-relaxed font-bold">
-                <RubyText text={item} index={furigana} show={show} />
-              </span>
-            </li>
-          ))}
-        </ol>
+        <SpeakableGroup items={block.items} label="この てじゅんを ぜんぶ よみあげる">
+          <ol className="space-y-3">
+            {block.items.map((item, i) => (
+              <li key={i} className="flex items-start gap-3">
+                <span
+                  aria-hidden
+                  className="grid h-8 w-8 shrink-0 place-items-center rounded-full text-sm font-extrabold text-white"
+                  style={{
+                    background: "var(--color-sky)",
+                    boxShadow: "0 3px 0 var(--color-sky-deep)",
+                  }}
+                >
+                  {i + 1}
+                </span>
+                <span className="text-ink pt-1 leading-relaxed font-bold">
+                  <RubyText text={item} index={furigana} show={show} />
+                </span>
+              </li>
+            ))}
+          </ol>
+        </SpeakableGroup>
       );
 
     case "vocab":
@@ -366,8 +371,37 @@ function BlockView({ block, blockIndex, articleId, furigana, show, dictionary }:
 }
 
 /* ------------------------------------------------------------------ *
- * 画像スロット・ポイント枠・ことばチップ
+ * まとまりの読み上げ・画像スロット・ポイント枠・ことばチップ
  * ------------------------------------------------------------------ */
+
+/**
+ * かじょうがき・てじゅんの まとまりに 読み上げを 1つ 付ける。
+ *
+ * 読めない学習者ほど 音に 逃げたいのに、以前は 本文（paragraph）にしか
+ * 🔊 が 無く、**いちばん むずかしい 行に かぎって 音が 無かった**。
+ * 項目ごとに ボタンを 置かないのは、5項目で 🔊 が 5個 並ぶと、
+ * どれを 押すか 選ぶ手間が 「音に 逃げる」 助けを 打ち消すため。
+ * 置き場所は 右下に そろえる（読む列を またがない）。
+ */
+function SpeakableGroup({
+  items,
+  label,
+  children,
+}: {
+  items: readonly string[];
+  label: string;
+  children: ReactNode;
+}) {
+  return (
+    <div>
+      {children}
+      <div className="mt-1 flex justify-end">
+        {/* 読み上げるのは データのまま（ルビ合成前）の項目をつないだ文。 */}
+        <SpeakButton text={joinItemsForSpeech(items)} label={label} />
+      </div>
+    </div>
+  );
+}
 
 type ImageBlockData = Extract<ArticleBlock, { kind: "image" }>;
 type CalloutBlockData = Extract<ArticleBlock, { kind: "callout" }>;
@@ -448,7 +482,7 @@ function CalloutBlock({
       style={{ borderColor: tone.accent, boxShadow: `0 6px 0 ${tone.accent}33` }}
     >
       <NexMax variant={tone.variant} size={56} />
-      <div className="min-w-0">
+      <div className="min-w-0 flex-1">
         <p className="text-xs font-extrabold" style={{ color: tone.accent }}>
           {tone.label}
         </p>
@@ -456,6 +490,11 @@ function CalloutBlock({
           <RubyText text={block.text} index={furigana} show={show} />
         </p>
       </div>
+      {/*
+        ポイント枠は 1本の文に 教材の 山場が 入る（「他の 会社と 違う…」）。
+        本文と 同じく ルビ合成前の 文字列を そのまま 読ませる。
+      */}
+      <SpeakButton text={block.text} label="この ぶんを よみあげる" />
     </aside>
   );
 }

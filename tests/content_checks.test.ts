@@ -501,6 +501,68 @@ describe("ふりがなの覆い漏れ検査", () => {
     expect(findings[0]?.message).toContain("学 校");
   });
 
+  /**
+   * 好感度の「とっておきの話」は、ハートを貯めきった学習者が読む文なのに、
+   * 長いあいだ集める対象から漏れていた（**いちばん嬉しい場面だけ規律2の外**）。
+   */
+  it("ミーティングの とっておきの話（affection.reward）も数える", () => {
+    const withReward = meeting({
+      affection: { maxHearts: 10, threshold: 7, reward: "世界中に すごい 人が います" },
+    });
+    const findings = checkFuriganaCoverage([entry(withReward)]);
+    expect(findings).toHaveLength(1);
+    expect(findings[0]?.message).toContain("affection.reward");
+    expect(findings[0]?.message).toContain("世 界 中");
+  });
+
+  it("読み辞書で覆えば とっておきの話も通る", () => {
+    const covered = meeting({
+      affection: { maxHearts: 10, threshold: 7, reward: "世界中に すごい 人が います" },
+      furigana: [
+        ["世界中", "せかいじゅう"],
+        ["人", "ひと"],
+      ],
+    });
+    expect(checkFuriganaCoverage([entry(covered)])).toEqual([]);
+  });
+
+  it("そとの サイトへ行くカード（extlink）の見出しと ひとことも数える", () => {
+    const findings = checkFuriganaCoverage([
+      entry(
+        article([
+          {
+            kind: "extlink",
+            url: "https://example.com",
+            label: "会社の ページ",
+            note: "あたらしい タブで ひらきます",
+          },
+        ]),
+      ),
+    ]);
+    expect(findings).toHaveLength(1);
+    expect(findings[0]?.message).toContain("blocks[0].label");
+    expect(findings[0]?.message).toContain("会 社");
+  });
+
+  it("リスニングの 話す人の 名前と 立場も数える（Zoom風のタイルに出る）", () => {
+    const listening = parse({
+      kind: "listening",
+      id: "ls1",
+      title: "あさかい",
+      description: "あさの ミーティング",
+      focus: "だれが なにを はなすか きく",
+      participants: [{ id: "p1", name: "藤木", role: "せんぱい", accent: "sky" }],
+      script: [
+        { speaker: "p1", text: "おはよう ございます" },
+        { speaker: "me", text: "おはよう ございます" },
+      ],
+    });
+    const findings = checkFuriganaCoverage([entry(listening)]);
+    expect(findings).toHaveLength(1);
+    expect(findings[0]?.message).toContain("participants[0].name");
+    expect(findings[0]?.message).toContain("藤 木");
+  });
+
   it("集める文はスタジオと検査で同じ（collectLearnerTexts が同じ本文を返す）", () => {
     const texts = collectLearnerTexts(mangaSaying("会議の 資料です"));
     expect(texts).toContain("会議の 資料です");

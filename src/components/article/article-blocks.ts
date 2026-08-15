@@ -50,3 +50,20 @@ export function collectHeadings(blocks: readonly ArticleBlock[]): HeadingEntry[]
 export function shouldShowToc(headings: readonly HeadingEntry[]): boolean {
   return headings.length >= 3;
 }
+
+/**
+ * かじょうがき・てじゅんを **1回で読み上げる**ための1本の文にする。
+ *
+ * 項目ごとにボタンを置かないのは、5項目なら 🔊 が5個並び、どれを押すのか
+ * 選ぶ手間が「音に逃げる」という助けを打ち消すため。まとまりで読ませる。
+ *
+ * 句点は足しなおす。項目は「〜します。」で終わるものと終わらないものが混ざるので、
+ * そのまま つなぐと 文の切れ目が音にならず、5つの項目が一息で流れてしまう。
+ */
+export function joinItemsForSpeech(items: readonly string[]): string {
+  return items
+    .map((item) => item.trim().replace(/[。．]+$/u, ""))
+    .filter((item) => item.length > 0)
+    .map((item) => `${item}。`)
+    .join("");
+}

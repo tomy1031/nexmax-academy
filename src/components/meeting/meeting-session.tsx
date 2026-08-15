@@ -6,11 +6,18 @@ import type { Meeting } from "@/content/schema";
 import { CallShell, CaptionBar } from "@/components/call-shell";
 import { RubyText } from "@/components/ruby-text";
 import { buildFuriganaIndex, kanaOf } from "@/lib/text/furigana";
+import {
+  hintPatterns,
+  hintSegments,
+  readHintShown,
+  readHintShownOnServer,
+  saveHintShown,
+  subscribeHintShown,
+} from "@/lib/meeting/hint";
 import { MAX_ATTEMPTS, type JudgeResult } from "@/lib/meeting/judge";
 import {
   awardAnswer,
   awardCompletion,
-  EMPTY_AFFECTION,
   heartsOf,
   rewardOpen,
   type AffectionState,
@@ -24,6 +31,14 @@ import {
   subscribeMeetingRecord,
   type MeetingRecord,
 } from "@/lib/meeting/record";
+import { needsJapaneseInput } from "@/lib/meeting/input";
+import {
+  clearMeetingResume,
+  restoreMeeting,
+  saveMeetingResume,
+  type MeetingStart,
+} from "@/lib/meeting/resume";
+import { fillAnswer, fillName } from "@/lib/meeting/speech";
 import { getProfile } from "@/lib/profile";
 import { recordContentProgress } from "@/lib/progress/store";
 import { AffectionMeter } from "./affection-meter";
@@ -59,6 +74,14 @@ import { useLiveVoice } from "./use-live-voice";
  * 言い直しは最大2回まで（`MAX_ATTEMPTS`）。そのあとは判定を残したまま必ず先へ進む。
  * ここが崩れると、いちばん助けが要る学習者だけが会話を終われなくなる。
  *
+ * ## 型文（かたぶん）は はじめから 見えている
+ * 答え方の足場（`question.hint`）を「ヒント」ボタンの向こうに隠していたが、
+ * 声で日本語を話すのが いちばん こわい学習者は、**ボタンの存在に気づかないまま固まる**。
+ * だから既定で入力欄のすぐ上に出し、隠すかどうかは学習者が握るつまみにする
+ *（設計05 §5.5 の初級＝常時表示／設計01 P11 の「負荷の調整装置は学習者の手に」）。
+ * 選んだ状態は端末に残るので、次の質問でも 次の教材でも 追いかけてくる
+ *（判定と保存は `src/lib/meeting/hint.ts`）。
+ *
  * ## 進み具合を「開く箱」で見せる（設計01 P2）
  * 画面の脇に **？？？ポイントボード**を置く。きょう聞かれることが伏せ札で並び、
  * 答えられた札だけがフリップして開く。何問めかを数字で言うより、
@@ -72,10 +95,45 @@ import { useLiveVoice } from "./use-live-voice";
  * ## おわりに 手が 空にならない（P13）
  * 話しきったら「きょう 話せた こと」を1枚のカードにして端末に残す。
  * 次に来たときは「まえの きろく」として読める。
+ *
+ * ## 途中で やめても、つづきから（`@/lib/meeting/resume`）
+ * 進んだところを保存するだけで**読んでいなかった**ので、6問目まで進めて閉じた
+ * 学習者は次に開くと1問目からだった。いまは 位置・開いた札・ハート・答えた
+ * ことばを まとめて 戻す。完走したあとに開き直したときは はじめから 話せる。
+ *
+ * ## 差し込みの 役（`@/lib/meeting/speech`）
+ * `ask` は 呼び名、`echo` は **学習者の答え**、`hint` は どちらでもない。
+ * 1つの関数で 順に 置換すると 先に 呼び名が 全部 食べてしまう（実際に 起きていた）。
  */
 
-/** 相手の質問・受け答えの中で、学習者の呼び名に置きかわる目印。 */
-const NAME_MARK = "◯◯";
+/**
+ * 画面の飾り（型文のボタン・見出し・見守りの ことば）に出る漢字の読み。
+ *
+ * 教材の読み辞書（`meeting.furigana`）は 教材の 本文の ための ものなので、
+ * 画面が自分で出す語はここで覆う（規律2: 学習者が読む漢字を裸で出さない）。
+ * 教材の索引と混ぜないのは、混ぜると教材側のルビの当たり方が変わるため。
+ */
+const CHROME_FURIGANA = buildFuriganaIndex([
+  ["型文", "かたぶん"],
+  ["日本語", "にほんご"],
+  ["入力", "にゅうりょく"],
+  ["言", "い"],
+  ["見", "み"],
+  ["書", "か"],
+  ["文", "ぶん"],
+]);
+
+/**
+ * 見守りの ことば（送る前に 気づいて ほしい こと）。
+ *
+ * 「不正解」ではなく **次の 一手**を書く。どちらも 画面から 消えるのは
+ * 学習者が 次の 操作を した ときだけで、答えは 消さない（打ち直しに ならない）。
+ */
+const NOTICE = {
+  empty: "だいじょうぶです。「こう 言えます」の 文を そのまま 書いても いいですよ。",
+  latin: "キーボードが 日本語入力に なって いないかも しれません。たしかめて みましょう。",
+} as const;
+type NoticeKey = keyof typeof NOTICE;
 
 /** 端末に保存された呼び名を読む（別のタブで変わったら追いつく）。 */
 function subscribeToProfile(onChange: () => void) {
@@ -118,9 +176,21 @@ export function MeetingSession({
   embedded?: boolean;
 }) {
   const furigana = useMemo(() => buildFuriganaIndex(meeting.furigana ?? []), [meeting.furigana]);
-  const [index, setIndex] = useState(0);
+  /*
+   * 端末に 残って いる「いまの ところ」。**入室前（ロビー）は 何も 描かない**ので、
+   * サーバで 描いた HTML と 食い違わない（ロビーの 中身は 保存値に 依らない）。
+   * 保存値の 読み方は listening-panel と 同じ流儀（useState の 初期化で 1度だけ）。
+   */
+  const [start] = useState<MeetingStart>(() =>
+    restoreMeeting(
+      meeting.id,
+      meeting.questions.map((q) => q.id),
+    ),
+  );
+  const [index, setIndex] = useState(start.index);
+  /** 途中から 戻って きた ことを 学習者に 伝えるか（1歩 進んだら 消す）。 */
+  const [resumed, setResumed] = useState(start.resumed);
   const [draft, setDraft] = useState("");
-  const [hintShown, setHintShown] = useState(false);
   const [reply, setReply] = useState<Reply | null>(null);
   const [thinking, setThinking] = useState(false);
   /** 同じ質問への何回目の発話か（1始まり）。言い直しの上限に使う。 */
@@ -132,13 +202,21 @@ export function MeetingSession({
    * 質問の並びと一致しなくなる（同じ質問で2つ入る・入らない質問がある）。
    * きろくカードは「どの質問に 何と 答えたか」を見せるものなので、質問IDで持つ。
    */
-  const [answers, setAnswers] = useState<Readonly<Record<string, string>>>({});
+  const [answers, setAnswers] = useState<Readonly<Record<string, string>>>(start.answers);
   /** 開いた札（＝言い直しを求められずに 答えられた質問）。 */
-  const [openIds, setOpenIds] = useState<ReadonlySet<string>>(new Set());
+  const [openIds, setOpenIds] = useState<ReadonlySet<string>>(() => new Set(start.openIds));
   /** いちばん最近ひらいた札。祝いの ✨ と 相手タイルの発光の的。 */
   const [justOpenedId, setJustOpenedId] = useState<string | null>(null);
   /** 好感度。教材に affection が無いときは触られないまま残る。 */
-  const [affection, setAffection] = useState<AffectionState>(EMPTY_AFFECTION);
+  const [affection, setAffection] = useState<AffectionState>(start.affection);
+  /** 送る前の 見守り（からっぽ・日本語入力で ない）。答えは 消さない。 */
+  const [notice, setNotice] = useState<NoticeKey | null>(null);
+  /**
+   * 見守りを 出した ことば。**同じ ことばで もう一度 押したら そのまま 送る**。
+   * ここを 止め続けると、ローマ字で しか 打てない 端末の 学習者が 進めなくなる
+   *（見守りは 関所では なく 気づきの ひとこと）。
+   */
+  const [noticedText, setNoticedText] = useState<string | null>(null);
   /** いま増えたハート（メーターのポップ用）。つぎの質問へ行くと 0 に戻る。 */
   const [gained, setGained] = useState(0);
   /**
@@ -163,6 +241,14 @@ export function MeetingSession({
     () => readMeetingRecord(meeting.id),
     readMeetingRecordOnServer,
   );
+  /**
+   * 型文を 見せるか。**既定は 見える**。
+   *
+   * state に持たない理由は2つある。①端末の保存値は「外の入れ物」なので購読して読む
+   * ②state だと 質問が変わるたび・教材を開くたびに 初期値へ戻ってしまう
+   *（前の実装は `next()` のたびに false に戻していた）。
+   */
+  const hintShown = useSyncExternalStore(subscribeHintShown, readHintShown, readHintShownOnServer);
   const voice = useLiveVoice();
   /** 作り置きの音声（質問・おわりの ひとこと）。 */
   const clip = useClipPlayer();
@@ -173,11 +259,11 @@ export function MeetingSession({
   const done = index >= meeting.questions.length;
   const live = voice.status === "live";
 
-  /** 呼び名を差し込む。名前がまだ無いときは「あなた」にする（◯◯のままにしない）。 */
-  const withName = useCallback(
-    (text: string) => text.replaceAll(NAME_MARK, learnerName || "あなた"),
-    [learnerName],
-  );
+  /**
+   * 呼び名を差し込む（`ask` / `closing` / `reward` 用）。
+   * **`echo` には 通さない**——あちらの `◯◯` は 学習者の 答えの 場所（`fillAnswer`）。
+   */
+  const withName = useCallback((text: string) => fillName(text, learnerName), [learnerName]);
 
   const askText = question ? withName(question.ask) : "";
 
@@ -283,7 +369,12 @@ export function MeetingSession({
        */
       const advice = checkJapanese(utterance).text;
       setReply({
-        echo: spoken ? "" : withName(question.echo).replaceAll(NAME_MARK, coreOf(utterance)),
+        /*
+         * おうむ返しは **学習者の 答え**を 返す。ここで 呼び名を 差し込む 関数を
+         * 通していた ため、`◯◯` が 先に 名前で 埋まり、相手が
+         * 「そうです、ソピアですね。」と 名前を 答えとして 復唱していた。
+         */
+        echo: spoken ? "" : fillAnswer(question.echo, coreOf(utterance)),
         judge: null,
         fallback: { advice, note: judgeFailNote(result.reason) },
       });
@@ -329,26 +420,41 @@ export function MeetingSession({
   const submit = useCallback(() => {
     const text = draft.trim();
     if (!question || thinking) return;
-    // 何も書いていないときは、AIを呼ばずに同じ言葉で受ける（待たせない・毎回同じ）
+    /*
+     * 何も書いていないときは、AIを呼ばずに 見守りの ひとことを 出す（待たせない）。
+     * ここで `reply` を 作って いた ころは、送りボタンが 「つぎへ →」に 変わり、
+     * **書いて みましょうと 言った 直後に 書いた 答えが 捨てられて いた**。
+     * 見守りは `reply` と 別の 入れ物で 持ち、ボタンは「はなす」の ままにする。
+     */
     if (text.length === 0) {
-      setReply({
-        echo: "",
-        judge: null,
-        fallback: { advice: checkJapanese("").text, note: "" },
-      });
+      setNotice("empty");
       return;
     }
+    /*
+     * 日本語入力に なって いない ときだけ 声を かける（クイズの inspectReadingInput と
+     * 同じ 配慮）。ミーティングの 答えは 漢字・カタカナ混じりが 正常なので、
+     * 弾くのは「日本語の 文字が 1つも 無い」ときに 限る。
+     * 同じ ことばで もう一度 押されたら そのまま 送る——止め続けない。
+     */
+    if (needsJapaneseInput(text) && noticedText !== text) {
+      setNotice("latin");
+      setNoticedText(text);
+      return;
+    }
+    setNotice(null);
+    setNoticedText(null);
     setDraft("");
     // Live につながっていれば、書いた文でも相手は**声で**返す
     if (live) voice.sendText(text);
     void judgeUtterance(text, live);
-  }, [draft, question, thinking, live, voice, judgeUtterance]);
+  }, [draft, question, thinking, live, voice, judgeUtterance, noticedText]);
 
   /** 同じ質問をもう一度。回数だけ増やして、質問は変えない。 */
   const retry = useCallback(() => {
     setAttempt((n) => Math.min(n + 1, MAX_ATTEMPTS));
     setReply(null);
     setDraft("");
+    setNotice(null);
     setGained(0);
   }, []);
 
@@ -357,10 +463,13 @@ export function MeetingSession({
     const finishing = at >= meeting.questions.length;
     setIndex(at);
     setDraft("");
-    setHintShown(false);
+    // 型文は ここで 隠さない。学習者が 決めた 見せ方は 質問を またいで 続く
     setReply(null);
     setAttempt(1);
     setJustOpenedId(null);
+    setNotice(null);
+    setNoticedText(null);
+    setResumed(false);
 
     if (finishing) {
       // さいごまで話しきったぶんのハートと、手に残るきろくは ここで一度だけ作る
@@ -393,11 +502,52 @@ export function MeetingSession({
     });
   }, [index, meeting, answers, affection, withName]);
 
+  /**
+   * 答えられない ときの 逃げ道。**札は 開かない**まま つぎの 質問へ。
+   *
+   * 空のまま「はなす」を押すと 実際には 進めたのに、画面には 助言しか 出ず
+   * 「進める」とは どこにも 書いて いなかった。答えられない 学習者は そこで
+   * 座り込む——90分の 授業では それが いちばん 起きる（P8: 詰まらせない）。
+   */
+  const skip = useCallback(() => {
+    if (thinking) return;
+    next();
+  }, [thinking, next]);
+
+  /**
+   * いまの ところを 端末に 残す（つぎに 開いたとき つづきから 始めるため）。
+   *
+   * 保存だけを する 効果——ここで state を 読んで state に 書くと、描画のたびに
+   * 書き込みが 連鎖する。話しきったら 消す：完走した 人が もう一度 開いたら
+   * **はじめから 話せる**のが 正しい。
+   */
+  useEffect(() => {
+    if (done) {
+      clearMeetingResume(meeting.id);
+      return;
+    }
+    if (index === 0 && openIds.size === 0 && Object.keys(answers).length === 0) return;
+    saveMeetingResume({
+      meetingId: meeting.id,
+      index,
+      openIds: [...openIds],
+      answers,
+      affection: { perQuestion: affection.perQuestion, finished: affection.finished },
+    });
+  }, [meeting.id, done, index, openIds, answers, affection]);
+
   /** 伏せ札に出す並び。ラベルはきろくカードと同じ短縮を使う（同じ質問の名前をそろえる）。 */
   const boardItems = useMemo(
     () => meeting.questions.map((q) => ({ id: q.id, short: shortAsk(withName(q.ask)) })),
     [meeting.questions, withName],
   );
+
+  /**
+   * いまの質問の型文。「そのまま 口に 出せる 文」の並びにして持つ。
+   * **呼び名を差し込まない**（`withName` を通さない）——`hint` の `◯◯` は
+   * 学習者が自分のことばを入れる穴で、名前の目印ではない。
+   */
+  const hintLines = useMemo(() => hintPatterns(question?.hint ?? ""), [question]);
 
   /** いま持っているハート。教材に affection が無いときは画面のどこにも出ない。 */
   const hearts = heartsOf(affection);
@@ -428,6 +578,13 @@ export function MeetingSession({
     </div>
   ) : (
     <div className="space-y-3">
+      {/* 途中から 戻って きた ことを 先に 言う（同じ 質問が 出て 戸惑わない ように） */}
+      {resumed ? (
+        <p className="bg-cream border-hairline text-ink rounded-[var(--radius-card)] border-2 px-4 py-2 text-sm font-bold">
+          🔖 まえの つづきから はじめます。
+        </p>
+      ) : null}
+
       <CaptionBar
         speaker={meeting.host.name}
         text={<RubyText text={askText} index={furigana} show />}
@@ -448,7 +605,8 @@ export function MeetingSession({
       ) : null}
 
       {voice.status === "notReady" ? (
-        <p className="bg-sun-soft text-ink rounded-[var(--radius-card)] px-4 py-2 text-sm font-bold">
+        /* bg-sun-soft は globals.css に 無い（＝色が つかない）。実在する トークンを 使う */
+        <p className="bg-cream text-ink rounded-[var(--radius-card)] px-4 py-2 text-sm font-bold">
           {voice.reason === "noMic"
             ? "マイクが つかえません。下の 入力で 答えても だいじょうぶです。"
             : "声は まだ つかえません。下の 入力で 答えて ください。"}
@@ -490,13 +648,23 @@ export function MeetingSession({
           {reply.fallback.note ? (
             <p className="text-ink-faint text-xs font-bold">{reply.fallback.note}</p>
           ) : null}
+          {/*
+            AIが 見られない あいだの ハートは ゆっくり（miss と 同じ 1点）。
+            黙って 減らすと「なぜ 貯まらないのか」が 分からないまま 終わるので、
+            理由を 前向きに 1行 置く（責める ことばは 使わない）。
+          */}
+          {meeting.affection ? (
+            <p className="text-ink-faint text-xs font-bold">
+              いまは AIが おやすみです。ハートは ゆっくり たまります。
+            </p>
+          ) : null}
         </div>
       ) : null}
 
-      {hintShown ? (
-        <p className="bg-sun-soft text-ink rounded-[var(--radius-card)] px-4 py-2 text-sm font-bold break-words">
-          ヒント：
-          <RubyText text={withName(question!.hint)} index={furigana} show />
+      {/* 送る前の 見守り。答えは 消さない・進む 道も 消さない */}
+      {notice ? (
+        <p className="bg-cream border-hairline text-ink rounded-[var(--radius-card)] border-2 px-4 py-2 text-sm font-bold">
+          <RubyText text={NOTICE[notice]} index={CHROME_FURIGANA} show />
         </p>
       ) : null}
     </div>
@@ -535,56 +703,134 @@ export function MeetingSession({
     </div>
   );
 
+  /*
+   * 答えるところ（型文＋入力欄）。**型文は入力欄のすぐ上**に置く。
+   * 目線が「聞かれたこと → 言い方 → 打つ／話す」の順で下へ流れ、
+   * 足場を見るために画面を探し回らなくてよくなる。
+   */
   const controls = done ? null : (
-    <form
-      className="flex flex-wrap items-center gap-2"
-      onSubmit={(e) => {
-        e.preventDefault();
-        if (askedRetry) retry();
-        else if (reply) next();
-        else submit();
-      }}
-    >
-      <input
-        value={draft}
-        onChange={(e) => setDraft(e.target.value)}
-        placeholder="日本語で 答えて ください"
-        aria-label="こたえを 入力する"
-        className="border-hairline text-ink min-w-0 flex-1 rounded-full border-2 bg-white px-4 py-2 font-bold"
-      />
-      {live ? null : (
+    <div className="space-y-2">
+      <div className="flex justify-end">
+        {/*
+          足場を いるか いらないか 決めるのは 学習者（設計01 P11）。
+          はじめは 見えている ので、この つまみは「かくす」から 始まる。
+          隠しているあいだは 目に つく 色にして、気づかないまま 固まらないようにする。
+        */}
         <button
           type="button"
-          onClick={() => void voice.start(instruction, hostVoice)}
-          disabled={voice.status === "connecting"}
-          className="border-hairline text-navy rounded-full border-2 bg-white px-4 py-2 text-sm font-black disabled:opacity-40"
+          onClick={() => saveHintShown(!hintShown)}
+          aria-pressed={hintShown}
+          className={`rounded-full border-2 px-3 py-1 text-xs font-extrabold ${
+            hintShown
+              ? "border-hairline text-ink-soft bg-panel"
+              : "border-sun-deep bg-cream text-navy"
+          }`}
         >
-          {voice.status === "connecting" ? "つないで います…" : "🎤 声で 話す"}
+          <RubyText
+            text={hintShown ? "型文を かくす" : "型文を 見る"}
+            index={CHROME_FURIGANA}
+            show
+          />
         </button>
-      )}
-      {/* 作り置きの音がある質問は、何度でも聞き直せる（聞き取りは くり返しが効く） */}
-      {clipUrl && !live ? (
-        <button
-          type="button"
-          onClick={() => clip.play(clipUrl)}
-          className="border-hairline text-navy rounded-full border-2 bg-white px-4 py-2 text-sm font-black"
-        >
-          🔊 もう いちど 聞く
-        </button>
+      </div>
+
+      {/*
+        「ヒント：〜」という出し方は 答えの 予告に 見えて、読むだけで 終わって いた。
+        「こう 言えます →「◯◯です。」」にして、**そのまま 口に 出せる 文**として 見せる。
+      */}
+      {hintShown && hintLines.length > 0 ? (
+        <div className="bg-cream border-hairline rounded-[var(--radius-card)] border-2 px-4 py-3">
+          <p className="text-ink-soft text-xs font-extrabold">
+            <RubyText text="こう 言えます" index={CHROME_FURIGANA} show />
+          </p>
+          <ul className="mt-1 space-y-1">
+            {hintLines.map((line, at) => (
+              <li key={`${at}-${line}`} className="text-ink text-base font-black break-words">
+                「
+                {hintSegments(line).map((seg, i) =>
+                  seg.blank ? (
+                    // 穴は「自分の ことばを 入れる ところ」だと 見た目で 分かるようにする
+                    <span
+                      key={i}
+                      className="border-sky text-sky mx-0.5 border-b-2 border-dashed px-0.5"
+                    >
+                      {seg.text}
+                    </span>
+                  ) : (
+                    <RubyText key={i} text={seg.text} index={furigana} show />
+                  ),
+                )}
+                」
+              </li>
+            ))}
+          </ul>
+          <p className="text-ink-faint mt-2 text-xs font-bold">◯◯ は あなたの ことばです。</p>
+        </div>
       ) : null}
-      {!hintShown ? (
-        <button
-          type="button"
-          onClick={() => setHintShown(true)}
-          className="border-hairline text-navy rounded-full border-2 bg-white px-4 py-2 text-sm font-black"
-        >
-          ヒント
+
+      <form
+        className="flex flex-wrap items-center gap-2"
+        onSubmit={(e) => {
+          e.preventDefault();
+          if (askedRetry) retry();
+          else if (reply) next();
+          else submit();
+        }}
+      >
+        <input
+          value={draft}
+          onChange={(e) => setDraft(e.target.value)}
+          placeholder="日本語で 答えて ください"
+          aria-label="こたえを 入力する"
+          className="border-hairline text-ink min-w-0 flex-1 rounded-full border-2 bg-white px-4 py-2 font-bold"
+        />
+        {live ? null : (
+          <button
+            type="button"
+            onClick={() => void voice.start(instruction, hostVoice)}
+            disabled={voice.status === "connecting"}
+            className="border-hairline text-navy rounded-full border-2 bg-white px-4 py-2 text-sm font-black disabled:opacity-40"
+          >
+            {voice.status === "connecting" ? "つないで います…" : "🎤 声で 話す"}
+          </button>
+        )}
+        {/* 作り置きの音がある質問は、何度でも聞き直せる（聞き取りは くり返しが効く） */}
+        {clipUrl && !live ? (
+          <button
+            type="button"
+            onClick={() => clip.play(clipUrl)}
+            className="border-hairline text-navy rounded-full border-2 bg-white px-4 py-2 text-sm font-black"
+          >
+            🔊 もう いちど 聞く
+          </button>
+        ) : null}
+        <button type="submit" disabled={thinking} className="btn-game px-5 py-2 text-sm">
+          {askedRetry ? "もう いちど 言う" : reply ? "つぎへ →" : "はなす"}
         </button>
+      </form>
+
+      {/*
+        答えられない ときの 出口。**答えた あと（つぎへ が 出ている とき）は 出さない**
+        ——同じ 場所に 進む ボタンが 2つ 並ぶと、どちらが 何なのか 分からなくなる。
+        言い直しを 求められて いる ときは 出す（そこが いちばん 詰まる ところ）。
+      */}
+      {!reply || askedRetry ? (
+        <div className="flex flex-wrap items-center justify-end gap-2">
+          {/* 押すと 何が 起きるかを 先に 書く（押してから 知る ことを 減らす） */}
+          <span className="text-ink-faint text-xs font-bold">
+            🎴 は ？？？の まま、つぎの しつもんへ いきます
+          </span>
+          <button
+            type="button"
+            onClick={skip}
+            disabled={thinking}
+            className="border-hairline text-ink-soft bg-panel rounded-full border-2 px-4 py-1.5 text-xs font-extrabold disabled:opacity-40"
+          >
+            <RubyText text="まだ 言えない（つぎへ）" index={CHROME_FURIGANA} show />
+          </button>
+        </div>
       ) : null}
-      <button type="submit" disabled={thinking} className="btn-game px-5 py-2 text-sm">
-        {askedRetry ? "もう いちど 言う" : reply ? "つぎへ →" : "はなす"}
-      </button>
-    </form>
+    </div>
   );
 
   return (
@@ -592,6 +838,22 @@ export function MeetingSession({
       <CallShell
         title={meeting.title}
         focus={meeting.focus}
+        /* 題・きょう やること・名札の 漢字に ふりがなを つける（教材の 読み辞書） */
+        furigana={furigana}
+        /* 話す 教材なので 見出しは「はなす まえに」 */
+        purpose="speak"
+        /*
+         * マイクの ボタンを Live の 開始／終了に つなぐ。
+         * 渡さなければ ボタンは 出ない——押しても 何も 起きない ボタンを 置かない。
+         */
+        mic={{
+          on: live,
+          busy: voice.status === "connecting",
+          onToggle: () => {
+            if (live) voice.stop();
+            else void voice.start(instruction, hostVoice);
+          },
+        }}
         participants={[meeting.host]}
         activeSpeaker={reply ? meeting.host.id : null}
         /* 発光は学習行為に紐づける（札が開いた・ハートが増えた瞬間だけ光る） */

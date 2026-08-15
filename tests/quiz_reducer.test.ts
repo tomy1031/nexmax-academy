@@ -139,6 +139,64 @@ describe("問題エンジンの状態機械", () => {
     expect(reversed.results[0]?.correct).toBe(true);
   });
 
+  /**
+   * 全か無かだと「あと すこし」と言いながら 点は 0 になる。
+   * 言っていることと 点を そろえる（配点2点以上のときに 割れる）。
+   */
+  it("複数選択は そろった ぶんだけ 点が 入る（満点は そろったときだけ）", () => {
+    const q = quizSetSchema.parse({
+      kind: "quizset",
+      id: "multi_partial_fixture",
+      title: "ぶぶんてんの かくにん",
+      description: "そろった ぶんだけ 点が 入る",
+      questions: [
+        {
+          id: "q_multi",
+          type: "multi",
+          q: "しらべる ときに する ことは どれですか",
+          options: ["ひとつめ", "ふたつめ", "みっつめ", "よっつめ", "いつつめ"],
+          answers: [0, 1, 2, 3],
+          explain: "4つが どうぐです",
+          points: 2,
+        },
+      ],
+    });
+    const earnedFor = (indexes: number[]) =>
+      quizReducer(createQuizSession(q), { type: "answerMulti", indexes }).results[0]?.earned;
+
+    expect(earnedFor([0, 1, 2, 3])).toBe(2); // そろった
+    expect(earnedFor([0, 1, 2])).toBe(1); // 1つ 足りない — 0 にしない
+    expect(earnedFor([0])).toBe(0); // 1つだけでは まだ
+    // ぜんぶ 選ぶ（誤選択1つ）を 満点にしない。読まずに 点が 入る 道を 作らない
+    expect(earnedFor([0, 1, 2, 3, 4])).toBe(1);
+    expect(earnedFor([4])).toBe(0);
+  });
+
+  it("配点1点の 複数選択は これまでどおり 満点か 0（点は 整数で 持つ）", () => {
+    const q = quizSetSchema.parse({
+      kind: "quizset",
+      id: "multi_single_point_fixture",
+      title: "1てんの ふくすう",
+      description: "わけられない 配点",
+      questions: [
+        {
+          id: "q_multi1",
+          type: "multi",
+          q: "どれですか",
+          options: ["ひとつめ", "ふたつめ", "みっつめ"],
+          answers: [0, 1],
+          explain: "2つです",
+          points: 1,
+        },
+      ],
+    });
+    const earnedFor = (indexes: number[]) =>
+      quizReducer(createQuizSession(q), { type: "answerMulti", indexes }).results[0]?.earned;
+
+    expect(earnedFor([0, 1])).toBe(1);
+    expect(earnedFor([0])).toBe(0);
+  });
+
   it("語群穴埋めは全部そろって正解", () => {
     const q = set.questions.find((x) => x.type === "wordbank")!;
     if (q.type !== "wordbank") throw new Error("wordbank 問題が見つからない");
