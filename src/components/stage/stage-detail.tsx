@@ -36,6 +36,11 @@ export interface StageWordItem {
   id: string;
   title: string;
   description?: string;
+  /**
+   * 単語ステージの読み辞書。ことばカードの見出し・説明にルビを合成する。
+   * 語ごとの (表記, よみ) も混ぜて渡す（組み立ては app/[stage]/page.tsx）。
+   */
+  furigana?: readonly FuriganaEntry[];
 }
 
 export interface StageHeader {
@@ -64,6 +69,14 @@ export function StageDetail({
   const itemFurigana = useMemo(
     () => buildFuriganaIndex(mergeFuriganaEntries(...items.map((item) => item.furigana))),
     [items],
+  );
+  /*
+   * ことばカードの辞書は別に組む。教材の辞書と混ぜないのは、単語ステージが
+   * 語ごとの読みを大量に持つためで、混ぜると本文側の最長一致の当たり方が変わる。
+   */
+  const wordFurigana = useMemo(
+    () => buildFuriganaIndex(mergeFuriganaEntries(...wordStages.map((word) => word.furigana))),
+    [wordStages],
   );
   const [furiganaOn, setFuriganaOn] = useState(true);
   const serverKey = useMemo(() => items.map(() => "0").join(""), [items]);
@@ -198,11 +211,19 @@ export function StageDetail({
                 className="card-island flex flex-col p-4 transition hover:-translate-y-0.5"
               >
                 <span className="text-sky text-[10px] font-black tracking-widest">🕹️ ことば</span>
-                <span className="text-navy mt-1 text-base font-black">{word.title}</span>
+                <RubyText
+                  className="text-navy mt-1 block text-base font-black"
+                  text={word.title}
+                  index={wordFurigana}
+                  show={furiganaOn}
+                />
                 {word.description && (
-                  <span className="text-ink-soft mt-1 flex-1 text-xs font-bold">
-                    {word.description}
-                  </span>
+                  <RubyText
+                    className="text-ink-soft mt-1 block flex-1 text-xs font-bold"
+                    text={word.description}
+                    index={wordFurigana}
+                    show={furiganaOn}
+                  />
                 )}
                 <span className="btn-game mt-3 w-full px-3 py-1.5 text-sm [--btn-face:#ffc93c] [--btn-shadow:#f0a819]">
                   あそぶ

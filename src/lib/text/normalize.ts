@@ -125,9 +125,55 @@ export function readingMatches(input: string, expected: string): boolean {
   return looseReading(input) === looseReading(expected);
 }
 
-/** 自由入力（キーワード・穴埋め）の一致判定。候補のいずれかに当たれば正解。 */
+/** 文末の丁寧語。正規化後の末尾から1回だけ落とす（「大阪です」＝「大阪」）。 */
+const POLITE_TAIL = /(?:でした|です)$/;
+
+/** 包含一致を許す accept の最短の長さ。1文字（「人」等）は完全一致だけにする。 */
+const MIN_CONTAIN_LENGTH = 2;
+
+function withoutPoliteTail(normalized: string): string {
+  return normalized.replace(POLITE_TAIL, "");
+}
+
+/** accept 1つとの照合。読み一致 → 丁寧語落とし → 包含、の順に手をゆるめる。 */
+function acceptMatches(input: string, accept: string): boolean {
+  if (readingMatches(input, accept)) return true;
+
+  // 「です」「でした」の有無で落とさない。両側から落として比べる
+  //（学習者は「大阪」とも「大阪です」とも書く。どちらも同じ理解）。
+  const plainInput = withoutPoliteTail(normalizeReading(input));
+  const plainAccept = withoutPoliteTail(normalizeReading(accept));
+  if (plainInput && plainAccept && plainInput === plainAccept) return true;
+
+  const looseInput = withoutPoliteTail(looseReading(input));
+  const looseAccept = withoutPoliteTail(looseReading(accept));
+  if (looseInput && looseAccept && looseInput === looseAccept) return true;
+
+  // 文で答えても落とさない（「ホームページを つくります」← accept「ホームページ」）。
+  const contains = (haystack: string, needle: string) =>
+    needle.length >= MIN_CONTAIN_LENGTH && haystack.includes(needle);
+  return (
+    contains(normalizeReading(input), normalizeReading(accept)) ||
+    contains(looseReading(input), looseReading(accept))
+  );
+}
+
+/**
+ * 自由入力（キーワード・穴埋め）の一致判定。候補のいずれかに当たれば正解。
+ *
+ * ## なぜ readingMatches より甘いのか（学習者有利＝P8。偽陰性＞偽陽性）
+ * ここで見たいのは「内容が分かったか」であって、日本語の正確さではない。
+ * 分かっているのに弾かれる（偽陰性）と、学習者は「合っているはずなのに」と
+ * 手が止まり、「間違えたら恥ずかしい」不安がそのまま自由入力の回避になる。
+ * 逆に少し甘く通る（偽陽性）ぶんは、直後に必ず読ませる解説が受け止める。
+ * だから **迷ったら正解に倒す**——丁寧語の有無・文で答えたかどうかでは落とさない。
+ *
+ * ただし ことばアーケードの読み判定（readingMatches）はここを通さない。
+ * あちらは「読みそのもの」を見る場なので、厳密さを保つ。
+ */
 export function answerMatches(input: string, accepted: readonly string[]): boolean {
-  return accepted.some((a) => readingMatches(input, a));
+  if (!input.trim()) return false;
+  return accepted.some((a) => acceptMatches(input, a));
 }
 
 /* ------------------------------------------------------------------ *

@@ -21,6 +21,27 @@ function loadSet(): QuizSet {
 
 const set = loadSet();
 
+/**
+ * ラテン文字の正解を持つ問題（「AUPP」「Japanese IT Pathway」等）。
+ * 実データを名指しすると、教材が直された日にこの検査が消える。契約だけを固定する。
+ */
+const latinAnswerSet: QuizSet = quizSetSchema.parse({
+  kind: "quizset",
+  id: "latin_accept_fixture",
+  title: "ラテン文字の こたえ",
+  description: "IMEの 注意より 判定が 先に 来ることを 見る",
+  questions: [
+    {
+      id: "q_latin",
+      type: "keyword",
+      q: "プログラムの 名前は なに？",
+      explain: "Japanese IT Pathway は 日本語と ITを いっしょに 学ぶ プログラム。",
+      answer: "Japanese IT Pathway",
+      accept: ["AUPP"],
+    },
+  ],
+});
+
 function run(state: QuizState, actions: QuizAction[]): QuizState {
   return actions.reduce(quizReducer, state);
 }
@@ -151,6 +172,59 @@ describe("問題エンジンの状態機械", () => {
   it("解説を見ずに次の問題へ飛べない", () => {
     const s = createQuizSession(set);
     expect(quizReducer(s, { type: "next" })).toBe(s);
+  });
+});
+
+describe("自由入力の救済（IME・こたえを見る）", () => {
+  const keyword = set.questions.find((x) => x.type === "keyword")!;
+
+  it("ローマ字のままなら回答を消費せず、入力の直しだけをお願いする", () => {
+    const s = quizReducer(createQuizSession(set, [keyword]), {
+      type: "answerKeyword",
+      input: "horenso",
+    });
+    expect(s.phase).toEqual({ kind: "ask", inputIssue: "reading.hasLatin" });
+    expect(s.results).toHaveLength(0); // 1問を IME のせいで失わせない
+  });
+
+  it("次の入力で 入力の注意は消える", () => {
+    let s = quizReducer(createQuizSession(set, [keyword]), {
+      type: "answerKeyword",
+      input: "horenso",
+    });
+    s = quizReducer(s, { type: "answerKeyword", input: "ほうれんそう" });
+    expect(s.phase).toMatchObject({ kind: "explain", correct: true });
+  });
+
+  it("ラテン文字の正解は先に正解として通す（IMEの注意より判定が先）", () => {
+    const s0 = createQuizSession(latinAnswerSet);
+    expect(quizReducer(s0, { type: "answerKeyword", input: "AUPP" }).phase).toMatchObject({
+      kind: "explain",
+      correct: true,
+    });
+    expect(
+      quizReducer(s0, { type: "answerKeyword", input: "Japanese IT Pathway" }).phase,
+    ).toMatchObject({ kind: "explain", correct: true });
+  });
+
+  it("書いた文字を解説に持っていく（「あなたの こたえ」に出すため）", () => {
+    const s = quizReducer(createQuizSession(set, [keyword]), {
+      type: "answerKeyword",
+      input: "ホウレンソウ",
+    });
+    expect(s.phase).toMatchObject({ kind: "explain", input: "ホウレンソウ" });
+  });
+
+  it("「こたえを 見る」は点が入らないが解説へ進む", () => {
+    const s = quizReducer(createQuizSession(set, [keyword]), { type: "skipKeyword" });
+    expect(s.phase).toMatchObject({ kind: "explain", correct: false, feedback: "quiz.review" });
+    expect(s.results[0]?.earned).toBe(0);
+  });
+
+  it("「こたえを 見る」は自由入力の出題中だけ効く", () => {
+    const choose = set.questions.find((x) => x.type === "choose")!;
+    const s = createQuizSession(set, [choose]);
+    expect(quizReducer(s, { type: "skipKeyword" })).toBe(s);
   });
 });
 

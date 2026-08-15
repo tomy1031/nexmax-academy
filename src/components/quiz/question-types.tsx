@@ -4,8 +4,11 @@ import { useMemo, useState } from "react";
 import { motion } from "motion/react";
 import { BLANK_MARK, type QuizQuestion } from "@/content/schema";
 import { RubyText } from "@/components/ruby-text";
-import type { FuriganaIndex } from "@/lib/text/furigana";
+import { buildFuriganaIndex, type FuriganaIndex } from "@/lib/text/furigana";
 import type { QuizAction } from "./quiz-reducer";
+
+/** 部品じたいの文言の読み辞書（教材データの辞書はUIの文言まで覆わない・規律2）。 */
+const UI_FURIGANA = buildFuriganaIndex([["文", "ぶん"]]);
 
 /**
  * 問題の型ごとの表示。
@@ -74,6 +77,7 @@ export function QuestionBody({ question, furigana, dispatch, emotionStep2, disab
         <KeywordInput
           disabled={disabled}
           onSubmit={(input) => dispatch({ type: "answerKeyword", input })}
+          onSkip={() => dispatch({ type: "skipKeyword" })}
         />
       );
 
@@ -204,38 +208,66 @@ function MultiPicker({
 
 /* ---------------- 自由入力 ---------------- */
 
+/**
+ * 自由入力。「間違えたら恥ずかしい」を軽くするため、書き始める前に
+ * **どこまで書けばいいか**（ひらがなでも・全文でなくても）を常に見せておく。
+ * 判定側（normalize.ts の answerMatches）もそのとおりに緩めてある。
+ */
 function KeywordInput({
   onSubmit,
+  onSkip,
   disabled,
 }: {
   onSubmit: (input: string) => void;
+  onSkip: () => void;
   disabled?: boolean;
 }) {
   const [value, setValue] = useState("");
+  const empty = value.trim().length === 0;
 
   return (
     <form
-      className="flex flex-col gap-3 sm:flex-row"
       onSubmit={(e) => {
         e.preventDefault();
-        if (!disabled) onSubmit(value);
+        if (!disabled && !empty) onSubmit(value);
       }}
     >
-      <input
-        type="text"
-        value={value}
-        disabled={disabled}
-        onChange={(e) => setValue(e.target.value)}
-        autoComplete="off"
-        autoCorrect="off"
-        spellCheck={false}
-        placeholder="こたえを 書いてね"
-        aria-label="こたえを 入力する"
-        className="border-hairline bg-panel text-ink w-full rounded-[var(--radius-button)] border-2 px-4 py-3 text-center text-xl font-extrabold"
-      />
-      <button type="submit" disabled={disabled} className="btn-island btn-game shrink-0 px-8 py-3">
-        こたえる
-      </button>
+      <div className="flex flex-col gap-3 sm:flex-row">
+        <input
+          type="text"
+          value={value}
+          disabled={disabled}
+          onChange={(e) => setValue(e.target.value)}
+          autoComplete="off"
+          autoCorrect="off"
+          spellCheck={false}
+          placeholder="こたえを 書いてね"
+          aria-label="こたえを 入力する"
+          className="border-hairline bg-panel text-ink w-full rounded-[var(--radius-button)] border-2 px-4 py-3 text-center text-xl font-extrabold"
+        />
+        <button
+          type="submit"
+          disabled={disabled || empty}
+          className="btn-island btn-game shrink-0 px-8 py-3 disabled:opacity-50"
+        >
+          こたえる
+        </button>
+      </div>
+
+      <p className="text-ink-faint mt-2 text-xs font-bold">
+        <RubyText text="ひらがなでも OK。ぜんぶの 文で なくて OK" index={UI_FURIGANA} />
+      </p>
+
+      <div className="mt-3">
+        <button
+          type="button"
+          disabled={disabled}
+          onClick={onSkip}
+          className="text-ink-soft hover:text-navy text-sm font-extrabold underline underline-offset-4"
+        >
+          こたえを 見る
+        </button>
+      </div>
     </form>
   );
 }

@@ -7,12 +7,31 @@ import { CallShell, CaptionBar } from "@/components/call-shell";
 import { RubyText } from "@/components/ruby-text";
 import { buildFuriganaIndex, kanaOf } from "@/lib/text/furigana";
 import { MAX_ATTEMPTS, type JudgeResult } from "@/lib/meeting/judge";
+import {
+  awardAnswer,
+  awardCompletion,
+  EMPTY_AFFECTION,
+  heartsOf,
+  rewardOpen,
+  type AffectionState,
+} from "@/lib/meeting/affection";
 import { recordMeetingTurn } from "@/lib/meeting/log";
+import {
+  readMeetingRecord,
+  readMeetingRecordOnServer,
+  saveMeetingRecord,
+  shortAsk,
+  subscribeMeetingRecord,
+  type MeetingRecord,
+} from "@/lib/meeting/record";
 import { getProfile } from "@/lib/profile";
 import { recordContentProgress } from "@/lib/progress/store";
+import { AffectionMeter } from "./affection-meter";
 import { checkJapanese, coreOf, type AdviceText } from "./japanese-check";
 import { judgeFailNote, requestJudge } from "./judge-api";
 import { JudgeCard } from "./judge-card";
+import { QuestionBoard } from "./question-board";
+import { MeetingResultCard, PreviousRecordCard, RewardCard } from "./result-card";
 import { VisemeFace, type Viseme } from "./viseme-face";
 import { useClipPlayer } from "./use-clip-player";
 import { useLiveVoice } from "./use-live-voice";
@@ -39,6 +58,20 @@ import { useLiveVoice } from "./use-live-voice";
  * ## 詰まらせない
  * 言い直しは最大2回まで（`MAX_ATTEMPTS`）。そのあとは判定を残したまま必ず先へ進む。
  * ここが崩れると、いちばん助けが要る学習者だけが会話を終われなくなる。
+ *
+ * ## 進み具合を「開く箱」で見せる（設計01 P2）
+ * 画面の脇に **？？？ポイントボード**を置く。きょう聞かれることが伏せ札で並び、
+ * 答えられた札だけがフリップして開く。何問めかを数字で言うより、
+ * 「札が1枚 開いた」ほうが、次の一言を出す理由になる。
+ *
+ * ## 好感度は 教材が 決める（`meeting.affection` があるときだけ）
+ * ハートは**上がるだけ**（P8）。点の配り方と閾値の判定は
+ * `src/lib/meeting/affection.ts` の純粋な関数が持つ——ここに書くと、
+ * 画面を直すたびに黙って基準が動き、テストで固定できない。
+ *
+ * ## おわりに 手が 空にならない（P13）
+ * 話しきったら「きょう 話せた こと」を1枚のカードにして端末に残す。
+ * 次に来たときは「まえの きろく」として読める。
  */
 
 /** 相手の質問・受け答えの中で、学習者の呼び名に置きかわる目印。 */
@@ -92,7 +125,27 @@ export function MeetingSession({
   const [thinking, setThinking] = useState(false);
   /** 同じ質問への何回目の発話か（1始まり）。言い直しの上限に使う。 */
   const [attempt, setAttempt] = useState(1);
-  const [answers, setAnswers] = useState<string[]>([]);
+  /**
+   * 質問ID → 学習者が さいごに 言った ことば。
+   *
+   * 以前は配列に押し込んでいたが、言い直しや判定の落ちかたによって
+   * 質問の並びと一致しなくなる（同じ質問で2つ入る・入らない質問がある）。
+   * きろくカードは「どの質問に 何と 答えたか」を見せるものなので、質問IDで持つ。
+   */
+  const [answers, setAnswers] = useState<Readonly<Record<string, string>>>({});
+  /** 開いた札（＝言い直しを求められずに 答えられた質問）。 */
+  const [openIds, setOpenIds] = useState<ReadonlySet<string>>(new Set());
+  /** いちばん最近ひらいた札。祝いの ✨ と 相手タイルの発光の的。 */
+  const [justOpenedId, setJustOpenedId] = useState<string | null>(null);
+  /** 好感度。教材に affection が無いときは触られないまま残る。 */
+  const [affection, setAffection] = useState<AffectionState>(EMPTY_AFFECTION);
+  /** いま増えたハート（メーターのポップ用）。つぎの質問へ行くと 0 に戻る。 */
+  const [gained, setGained] = useState(0);
+  /**
+   * きょうの きろく。**話しきった ときに 1度だけ 組み立てる**。
+   * 描画のたびに作ると日付が動き続けるし、保存したものと画面のものがずれる。
+   */
+  const [record, setRecord] = useState<MeetingRecord | null>(null);
   /**
    * 学習者の呼び名。診断のときに決めた名前を、相手が呼べるようにする。
    *
@@ -101,6 +154,15 @@ export function MeetingSession({
    * 購読して読む形にする（マップの分身と同じやり方）。
    */
   const learnerName = useSyncExternalStore(subscribeToProfile, readName, readNameOnServer);
+  /**
+   * 前に来たときの きろく。端末の保存値は「外の入れ物」なので購読して読む。
+   * 出すのは会話の途中だけ——おわりの画面では、いま作ったカードのほうを見せる。
+   */
+  const previous = useSyncExternalStore(
+    subscribeMeetingRecord,
+    () => readMeetingRecord(meeting.id),
+    readMeetingRecordOnServer,
+  );
   const voice = useLiveVoice();
   /** 作り置きの音声（質問・おわりの ひとこと）。 */
   const clip = useClipPlayer();
@@ -145,6 +207,32 @@ export function MeetingSession({
   );
 
   /**
+   * 1つの発話ぶんの「ごほうび」をまとめて更新する。
+   *
+   * 札を開くのは**言い直しを求められなかったとき**だけ（まだ直している最中に
+   * 開くと、開いた札の意味が薄まる）。ハートは判定に関わらず足す——miss でも
+   * 会話が前に進んだことは変わらないので（P8: 罰を見せない）。
+   */
+  const rewardTurn = useCallback(
+    (
+      questionId: string,
+      utterance: string,
+      grade: JudgeResult["grade"] | null,
+      opened: boolean,
+    ) => {
+      setAnswers((prev) => ({ ...prev, [questionId]: utterance }));
+      if (opened) {
+        setOpenIds((prev) => new Set([...prev, questionId]));
+        setJustOpenedId(questionId);
+      }
+      const next = awardAnswer(affection, questionId, grade);
+      setAffection(next);
+      setGained(heartsOf(next) - heartsOf(affection));
+    },
+    [affection],
+  );
+
+  /**
    * 1つの発話を見る。声でも文字でも、ここを通る。
    *
    * `spoken` が true のときは Live が声で返しているので、画面には返事を出さない
@@ -173,7 +261,7 @@ export function MeetingSession({
           judge: result.judge,
           fallback: null,
         });
-        if (!result.judge.retry) setAnswers((prev) => [...prev, utterance]);
+        rewardTurn(question.id, utterance, result.judge.grade, !result.judge.retry);
         void recordMeetingTurn({
           meetingId: meeting.id,
           questionId: question.id,
@@ -199,7 +287,8 @@ export function MeetingSession({
         judge: null,
         fallback: { advice, note: judgeFailNote(result.reason) },
       });
-      setAnswers((prev) => [...prev, utterance]);
+      // 判定に通せなくても、答えた事実は残る。札は開き、ハートも足す
+      rewardTurn(question.id, utterance, null, true);
       void recordMeetingTurn({
         meetingId: meeting.id,
         questionId: question.id,
@@ -212,7 +301,7 @@ export function MeetingSession({
         latencyMs: Date.now() - at,
       });
     },
-    [question, meeting, attempt, learnerName, withName],
+    [question, meeting, attempt, learnerName, withName, rewardTurn],
   );
 
   /**
@@ -260,38 +349,82 @@ export function MeetingSession({
     setAttempt((n) => Math.min(n + 1, MAX_ATTEMPTS));
     setReply(null);
     setDraft("");
+    setGained(0);
   }, []);
 
   const next = useCallback(() => {
     const at = index + 1;
+    const finishing = at >= meeting.questions.length;
     setIndex(at);
     setDraft("");
     setHintShown(false);
     setReply(null);
     setAttempt(1);
+    setJustOpenedId(null);
+
+    if (finishing) {
+      // さいごまで話しきったぶんのハートと、手に残るきろくは ここで一度だけ作る
+      const finished = awardCompletion(affection);
+      setAffection(finished);
+      setGained(heartsOf(finished) - heartsOf(affection));
+      const today: MeetingRecord = {
+        meetingId: meeting.id,
+        at: new Date().toISOString(),
+        lines: meeting.questions
+          .filter((q) => (answers[q.id] ?? "") !== "")
+          .map((q) => ({
+            questionId: q.id,
+            ask: shortAsk(withName(q.ask)),
+            answer: answers[q.id] ?? "",
+          })),
+        hearts: meeting.affection ? heartsOf(finished) : undefined,
+        maxHearts: meeting.affection?.maxHearts,
+      };
+      setRecord(today);
+      // 保存が できない 端末（プライベートモード等）でも、画面の カードは 出る
+      saveMeetingRecord(today);
+    } else {
+      setGained(0);
+    }
+
     recordContentProgress(meeting.id, {
-      status: at >= meeting.questions.length ? "completed" : "started",
+      status: finishing ? "completed" : "started",
       position: { panel: at },
     });
-  }, [index, meeting.id, meeting.questions.length]);
+  }, [index, meeting, answers, affection, withName]);
+
+  /** 伏せ札に出す並び。ラベルはきろくカードと同じ短縮を使う（同じ質問の名前をそろえる）。 */
+  const boardItems = useMemo(
+    () => meeting.questions.map((q) => ({ id: q.id, short: shortAsk(withName(q.ask)) })),
+    [meeting.questions, withName],
+  );
+
+  /** いま持っているハート。教材に affection が無いときは画面のどこにも出ない。 */
+  const hearts = heartsOf(affection);
 
   const askedRetry = reply?.judge?.retry === true;
 
-  const body = done ? (
-    <div className="card-island space-y-3 p-5">
-      <p className="text-navy text-lg font-black">
-        <RubyText text={withName(meeting.closing)} index={furigana} show />
-      </p>
-      <div className="bg-panel-tint rounded-[var(--radius-card)] p-4">
-        <p className="text-ink-soft text-xs font-extrabold">きょう 話した こと</p>
-        <ul className="mt-2 space-y-1">
-          {answers.map((a, i) => (
-            <li key={i} className="text-ink text-sm font-bold break-words">
-              ・{a}
-            </li>
-          ))}
-        </ul>
+  const main = done ? (
+    <div className="space-y-3">
+      <div className="card-island p-5">
+        <p className="text-navy text-lg font-black">
+          <RubyText text={withName(meeting.closing)} index={furigana} show />
+        </p>
       </div>
+
+      {record ? <MeetingResultCard record={record} furigana={furigana} /> : null}
+
+      {/*
+        とっておきの話は closing の あと。届かなかったときは 何も出さない
+        ——「開かなかった箱」を見せるのは、この教材では 罰にしかならない（P8）。
+      */}
+      {meeting.affection && rewardOpen(affection, meeting.affection.threshold) ? (
+        <RewardCard
+          text={withName(meeting.affection.reward)}
+          hostName={meeting.host.name}
+          furigana={furigana}
+        />
+      ) : null}
     </div>
   ) : (
     <div className="space-y-3">
@@ -369,6 +502,39 @@ export function MeetingSession({
     </div>
   );
 
+  /*
+   * 脇の列（広い画面では右、スマホでは会話の下）。
+   * 会話そのものを上に置くのは、答えを入力する場所が いちばん 近くに あってほしいため。
+   * 札のボードは <details> なので、どの画面でも たたんで しまえる。
+   */
+  const body = (
+    <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_17rem] lg:items-start">
+      {main}
+      <aside className="space-y-3">
+        {meeting.affection ? (
+          <AffectionMeter
+            hearts={hearts}
+            maxHearts={meeting.affection.maxHearts}
+            gained={gained}
+            threshold={meeting.affection.threshold}
+            hostName={meeting.host.name}
+          />
+        ) : null}
+        <QuestionBoard
+          items={boardItems}
+          openIds={openIds}
+          currentId={question?.id ?? null}
+          justOpenedId={justOpenedId}
+          furigana={furigana}
+        />
+        {/* まえの きろくは 会話の あいだ だけ。おわりの 画面では きょうの カードを 見せる */}
+        {!done && previous && previous.lines.length > 0 ? (
+          <PreviousRecordCard record={previous} furigana={furigana} />
+        ) : null}
+      </aside>
+    </div>
+  );
+
   const controls = done ? null : (
     <form
       className="flex flex-wrap items-center gap-2"
@@ -428,6 +594,10 @@ export function MeetingSession({
         focus={meeting.focus}
         participants={[meeting.host]}
         activeSpeaker={reply ? meeting.host.id : null}
+        /* 発光は学習行為に紐づける（札が開いた・ハートが増えた瞬間だけ光る） */
+        celebrate={
+          justOpenedId !== null || (meeting.affection && gained > 0) ? meeting.host.id : null
+        }
         faces={{
           /*
            * 口の絵は**相手のIDから引く**（人物の id と同じ場所に置く決まり）。

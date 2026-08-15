@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import { motion } from "motion/react";
 
 /**
  * 口パクする顔 — 母音5つ＋閉じの6枚を切り替える。
@@ -22,6 +23,13 @@ import { useEffect, useRef, useState } from "react";
  * 呼ぶ側に「いま話している」フラグを持たせると、その状態を効果の中で切り替えることになり、
  * 描画が連鎖する（React Compiler が禁じる）。`utterance` が変わったら話しはじめ、
  * 長さぶん経ったら閉じる——という寿命をここに閉じ込める。
+ *
+ * ## 口の絵が無い相手でも 会話は 続く
+ * 人物カードに口の6枚が置かれていない相手（先生がスタジオで新しく作った相手、
+ * まだ絵が届いていない人）でも、壊れた画像を並べずに静かな丸を出す。
+ * **顔を手描きSVGで作らない**（規律7 — キャラクターの絵は image-gen-2 が正典）。
+ * 代わりに「話しているあいだ だけ ゆっくり 広がる 波紋」で、誰が話しているかを見せる。
+ * あとから絵を置けば `dir` の6枚が読めるようになり、自動でフル口パクに戻る。
  */
 
 export type Viseme = "closed" | "a" | "i" | "u" | "e" | "o";
@@ -74,6 +82,8 @@ export function VisemeFace({
    * 6枚の壊れた画像を並べるより、名前の頭文字だけ出すほうが Zoomらしく見える。
    */
   const [missing, setMissing] = useState(false);
+  /** 口が動いている＝いま話している。代替表示の波紋はこれに合わせる。 */
+  const speaking = viseme !== "closed";
 
   // 描画で読むのは state だけ。下の値は タイマーの中からしか読まないので ref に置く
   const shapesRef = useRef<Viseme[]>([]);
@@ -135,9 +145,7 @@ export function VisemeFace({
       style={size === undefined ? undefined : { width: size, height: size }}
     >
       {missing ? (
-        <span className="grid h-full w-full place-items-center text-2xl font-extrabold text-white">
-          {alt.slice(0, 1)}
-        </span>
+        <QuietFace initial={alt.slice(0, 1)} speaking={speaking} />
       ) : (
         /*
           6枚すべてを重ねて置き、出すものだけ不透明にする。
@@ -160,5 +168,40 @@ export function VisemeFace({
         ))
       )}
     </div>
+  );
+}
+
+/**
+ * 口の絵が まだ 無い相手の 代役。
+ *
+ * 頭文字（無ければ 丸アイコン）の 丸を1つ置き、話しているあいだだけ 波紋を 広げる。
+ * 顔つきを 描かないのは、**そのキャラの 顔は 生成した 絵だけが 正典**だから（規律7）。
+ * ここで似顔絵を作ると、あとで本物の絵が来たときに別人が2人いることになる。
+ */
+function QuietFace({ initial, speaking }: { initial: string; speaking: boolean }) {
+  return (
+    <span className="relative grid h-full w-full place-items-center">
+      <motion.span
+        aria-hidden
+        className="absolute rounded-full"
+        style={{
+          width: "46%",
+          aspectRatio: "1 / 1",
+          border: "2px solid rgba(255,255,255,0.55)",
+        }}
+        animate={speaking ? { scale: [1, 1.5], opacity: [0.5, 0] } : { scale: 1, opacity: 0 }}
+        transition={
+          speaking ? { duration: 1.4, repeat: Infinity, ease: "easeOut" } : { duration: 0.3 }
+        }
+      />
+      <motion.span
+        className="grid place-items-center rounded-full text-2xl font-extrabold text-white"
+        style={{ width: "46%", aspectRatio: "1 / 1", background: "rgba(255,255,255,0.16)" }}
+        animate={{ boxShadow: speaking ? "0 0 22px rgba(255,255,255,0.45)" : "0 0 0 transparent" }}
+        transition={{ duration: 0.35 }}
+      >
+        {initial === "" ? "🧑‍💼" : initial}
+      </motion.span>
+    </span>
   );
 }

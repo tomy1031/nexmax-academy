@@ -39,6 +39,12 @@ export function CallShell({
   /** いま話している人の id（タイルを光らせる）。 */
   activeSpeaker,
   /**
+   * いま祝っている人の id（タイルを短く発光させる）。
+   * 話している合図（activeSpeaker）と分けるのは、**発光が学習行為に紐づく**ため
+   * ——ハートが増えた・札が開いた瞬間にだけ光らせる（設計01 P2）。
+   */
+  celebrate,
+  /**
    * タイルの中に出す顔（参加者id → 中身）。
    * 渡さなければ従来どおり頭文字の丸を出す。Live対話のように**顔が要る教材**だけが渡す
    *（リスニングは声だけなので、顔を作る手間をかけない）。
@@ -54,6 +60,7 @@ export function CallShell({
   focus: string;
   participants: readonly ListeningParticipant[];
   activeSpeaker?: string | null;
+  celebrate?: string | null;
   faces?: Readonly<Record<string, React.ReactNode>>;
   controls?: React.ReactNode;
   children?: React.ReactNode;
@@ -128,6 +135,7 @@ export function CallShell({
               key={person.id}
               person={person}
               speaking={activeSpeaker === person.id}
+              celebrating={celebrate === person.id}
               face={faces?.[person.id]}
             />
           ))}
@@ -214,10 +222,12 @@ function ToolButton({
 function ParticipantTile({
   person,
   speaking,
+  celebrating = false,
   face,
 }: {
   person: ListeningParticipant;
   speaking: boolean;
+  celebrating?: boolean;
   face?: React.ReactNode;
 }) {
   const accent = ACCENT[person.accent];
@@ -230,6 +240,17 @@ function ParticipantTile({
         outlineOffset: speaking ? "-3px" : "-1px",
       }}
     >
+      {/* 祝いの発光。2回ふくらんで止まる（鳴りっぱなしにすると 会話より 目立つ） */}
+      {celebrating ? (
+        <motion.span
+          aria-hidden
+          className="pointer-events-none absolute inset-0 rounded-2xl"
+          style={{ border: `2px solid ${accent}` }}
+          initial={{ opacity: 0.85, boxShadow: `0 0 0 0 ${accent}` }}
+          animate={{ opacity: 0, boxShadow: `0 0 18px 6px ${accent}` }}
+          transition={{ duration: 1.1, repeat: 1, ease: "easeOut" }}
+        />
+      ) : null}
       {face ? (
         // 顔はタイルいっぱいに置く（Zoomの映像と同じ見え方にする）
         <div className="absolute inset-0 overflow-hidden rounded-2xl">{face}</div>

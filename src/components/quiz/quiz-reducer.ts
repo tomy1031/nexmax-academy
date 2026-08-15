@@ -9,15 +9,28 @@
  */
 
 import type { QuizQuestion, QuizSet } from "@/content/schema";
-import type { FeedbackKey } from "@/lib/feedback";
-import { answerMatches } from "@/lib/text/normalize";
+import { INPUT_ISSUE_FEEDBACK, type FeedbackKey } from "@/lib/feedback";
+import { answerMatches, inspectReadingInput } from "@/lib/text/normalize";
 
 export type QuizPhase =
   /** 出題中（emotion は1段階目の「気持ち」を聞いている）。 */
-  | { readonly kind: "ask" }
+  | {
+      readonly kind: "ask";
+      /**
+       * 回答としては受け取らず、入力の直しだけをお願いしている状態。
+       * IME が英語のままなど「答えは分かっているのに打てない」ときに使う。
+       */
+      readonly inputIssue?: FeedbackKey;
+    }
   /** emotion の2段階目。気持ちが分かったうえで「言い方」を聞く。 */
   | { readonly kind: "emotionReply"; readonly feelingOk: boolean }
-  | { readonly kind: "explain"; readonly correct: boolean; readonly feedback: FeedbackKey }
+  | {
+      readonly kind: "explain";
+      readonly correct: boolean;
+      readonly feedback: FeedbackKey;
+      /** 自由入力のとき、学習者が書いた文字（「あなたの こたえ」に出す）。 */
+      readonly input?: string;
+    }
   | { readonly kind: "finished" };
 
 export interface QuizResult {
@@ -39,6 +52,8 @@ export type QuizAction =
   | { readonly type: "answerChoice"; readonly index: number }
   | { readonly type: "answerMulti"; readonly indexes: readonly number[] }
   | { readonly type: "answerKeyword"; readonly input: string }
+  /** 「こたえを 見る」。点は入らないが解説へ進む（分からないまま止まらせない）。 */
+  | { readonly type: "skipKeyword" }
   | { readonly type: "answerWordbank"; readonly filled: readonly (string | null)[] }
   | { readonly type: "answerFeeling"; readonly index: number }
   | { readonly type: "answerReply"; readonly index: number }
@@ -82,11 +97,22 @@ export function quizReducer(state: QuizState, action: QuizAction): QuizState {
     case "answerKeyword": {
       if (state.phase.kind !== "ask" || question.type !== "keyword") return state;
       if (!action.input.trim()) return state;
-      return close(
-        state,
-        question,
-        answerMatches(action.input, [question.answer, ...question.accept]),
-      );
+      const correct = answerMatches(action.input, [question.answer, ...question.accept]);
+
+      // IME が英語のままの取りこぼしを救う。**必ず判定を済ませてから**見る——
+      // accept には「AUPP」「Japanese IT Pathway」のようなラテン文字の正解があり、
+      // 先に弾くと正解を「打ち直して」と突き返すことになる。
+      // ここでは回答を消費しない（1問を IME のせいで失わせない）。
+      if (!correct && inspectReadingInput(action.input) === "latin") {
+        return { ...state, phase: { kind: "ask", inputIssue: INPUT_ISSUE_FEEDBACK.latin } };
+      }
+      return close(state, question, correct, undefined, action.input);
+    }
+
+    case "skipKeyword": {
+      if (state.phase.kind !== "ask" || question.type !== "keyword") return state;
+      // 分からないときの逃げ道。点は入らないが、解説を読んで次へ行ける。
+      return close(state, question, false);
     }
 
     case "answerWordbank": {
@@ -131,6 +157,8 @@ function close(
   question: QuizQuestion,
   correct: boolean,
   missFeedback: FeedbackKey = "quiz.review",
+  /** 自由入力のときだけ渡す（解説で「あなたの こたえ」を見せるため）。 */
+  input?: string,
 ): QuizState {
   return {
     ...state,
@@ -142,6 +170,7 @@ function close(
       kind: "explain",
       correct,
       feedback: correct ? "quiz.correct" : missFeedback,
+      ...(input === undefined ? {} : { input }),
     },
   };
 }
