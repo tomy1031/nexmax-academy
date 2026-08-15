@@ -578,13 +578,6 @@ export function MeetingSession({
     </div>
   ) : (
     <div className="space-y-3">
-      {/* 途中から 戻って きた ことを 先に 言う（同じ 質問が 出て 戸惑わない ように） */}
-      {resumed ? (
-        <p className="bg-cream border-hairline text-ink rounded-[var(--radius-card)] border-2 px-4 py-2 text-sm font-bold">
-          🔖 まえの つづきから はじめます。
-        </p>
-      ) : null}
-
       <CaptionBar
         speaker={meeting.host.name}
         text={<RubyText text={askText} index={furigana} show />}
@@ -660,13 +653,6 @@ export function MeetingSession({
           ) : null}
         </div>
       ) : null}
-
-      {/* 送る前の 見守り。答えは 消さない・進む 道も 消さない */}
-      {notice ? (
-        <p className="bg-cream border-hairline text-ink rounded-[var(--radius-card)] border-2 px-4 py-2 text-sm font-bold">
-          <RubyText text={NOTICE[notice]} index={CHROME_FURIGANA} show />
-        </p>
-      ) : null}
     </div>
   );
 
@@ -710,6 +696,17 @@ export function MeetingSession({
    */
   const controls = done ? null : (
     <div className="space-y-2">
+      {/*
+        途中から 戻って きた ことを 先に 言う（同じ 質問が 出て 戸惑わない ように）。
+        置き場が 入力の 上なのは、CallShell が controls を 会話より 先に 描くから
+        ——入った 直後に いちばん 目に 入る ところに 置く。
+      */}
+      {resumed ? (
+        <p className="bg-cream border-hairline text-ink rounded-[var(--radius-card)] border-2 px-4 py-2 text-sm font-bold">
+          🔖 まえの つづきから はじめます。
+        </p>
+      ) : null}
+
       <div className="flex justify-end">
         {/*
           足場を いるか いらないか 決めるのは 学習者（設計01 P11）。
@@ -766,6 +763,13 @@ export function MeetingSession({
           </ul>
           <p className="text-ink-faint mt-2 text-xs font-bold">◯◯ は あなたの ことばです。</p>
         </div>
+      ) : null}
+
+      {/* 送る前の 見守り。入力欄の すぐ 上に 出す（答えは 消さない・進む 道も 消さない） */}
+      {notice ? (
+        <p className="bg-cream border-hairline text-ink rounded-[var(--radius-card)] border-2 px-4 py-2 text-sm font-bold">
+          <RubyText text={NOTICE[notice]} index={CHROME_FURIGANA} show />
+        </p>
       ) : null}
 
       <form

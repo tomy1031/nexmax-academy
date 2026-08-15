@@ -95,12 +95,16 @@ export function startFrom(
   panel: number | undefined,
   questionIds: readonly string[],
 ): MeetingStart {
+  /*
+   * 内訳（保存された もの）を 先に 見る。しおりは 進捗ストアの もので、
+   * 位置しか 持たない——両方 ある ときに しおりを 採ると、位置と 札が ずれる。
+   */
   const candidate = saved?.index ?? panel;
   if (typeof candidate !== "number" || !Number.isInteger(candidate)) return FRESH_START;
   if (candidate < 0 || candidate >= questionIds.length) return FRESH_START;
 
   // しおりだけの ときは 位置だけ 戻す（内訳が 無いので 札と ハートは 空のまま）
-  if (!saved || saved.index !== candidate) {
+  if (!saved) {
     return candidate === 0 ? FRESH_START : { ...FRESH_START, index: candidate, resumed: true };
   }
 

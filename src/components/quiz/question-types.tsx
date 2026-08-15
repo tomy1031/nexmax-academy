@@ -8,7 +8,19 @@ import { buildFuriganaIndex, type FuriganaIndex } from "@/lib/text/furigana";
 import type { QuizAction } from "./quiz-reducer";
 
 /** 部品じたいの文言の読み辞書（教材データの辞書はUIの文言まで覆わない・規律2）。 */
-const UI_FURIGANA = buildFuriganaIndex([["文", "ぶん"]]);
+const UI_FURIGANA = buildFuriganaIndex([
+  ["文", "ぶん"],
+  ["入", "はい"],
+]);
+
+/**
+ * いま ことばが 入る あなの しるし。
+ *
+ * 以前は 枠の 色（`borderColor`）だけで 見分けていた。外の 明るい ところや
+ * 色の 見え方が ちがう 目には 差が 消え、2つの あなに 入れ替えて 置いてから
+ * 気づくことになる。**色に 頼らない しるし**を 足す。
+ */
+const ACTIVE_BLANK_MARK = "▶";
 
 /**
  * 問題の型ごとの表示。
@@ -334,7 +346,12 @@ function WordBank({
                     type="button"
                     disabled={disabled}
                     onClick={() => setActive(part.blank!)}
-                    aria-label={`${part.blank + 1}ばんめの あな`}
+                    aria-current={active === part.blank ? "true" : undefined}
+                    aria-label={
+                      active === part.blank
+                        ? `${part.blank + 1}ばんめの あな — いま ここに 入ります`
+                        : `${part.blank + 1}ばんめの あな`
+                    }
                     className="mx-1 min-w-28 rounded-full border-2 px-3 py-1 text-sm font-extrabold"
                     style={{
                       borderColor:
@@ -345,7 +362,18 @@ function WordBank({
                       color: filled[part.blank] ? "var(--color-navy)" : "var(--color-ink-faint)",
                     }}
                   >
-                    {filled[part.blank] ?? `（${part.blank + 1}）`}
+                    {/* いま入る あなの しるし。色が 見分けられなくても 分かる */}
+                    {active === part.blank && (
+                      <span aria-hidden className="mr-0.5">
+                        {ACTIVE_BLANK_MARK}
+                      </span>
+                    )}
+                    {/*
+                      番号は 入れたあとも 消さない。消すと、2つの あなに 入れ替えて
+                      置いたことに 気づけない（どちらが 何ばんめか 分からなくなる）。
+                    */}
+                    <span className="text-ink-faint mr-0.5 text-xs">（{part.blank + 1}）</span>
+                    {filled[part.blank] ?? "＿＿"}
                   </button>
                 )}
               </span>
@@ -354,7 +382,13 @@ function WordBank({
         ))}
       </div>
 
-      <p className="text-ink-soft mt-4 text-sm font-extrabold">ことばを えらんでね</p>
+      {/* しるしの 意味を 先に 言う。記号だけ 置いても、何の しるしか 伝わらない */}
+      <p className="text-ink-soft mt-4 text-sm font-extrabold">
+        <RubyText
+          text={`ことばを えらんでね。${ACTIVE_BLANK_MARK} の あなに 入ります`}
+          index={UI_FURIGANA}
+        />
+      </p>
       <div className="mt-2 flex flex-wrap gap-2">
         {bank.map((word) => (
           <button
