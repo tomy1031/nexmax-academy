@@ -1,17 +1,18 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "motion/react";
 import type { Scenario } from "@/content/schema";
 import { FeedbackMessage } from "@/components/feedback-message";
 import type { FeedbackKey } from "@/lib/feedback";
 import { RubyText } from "@/components/ruby-text";
 import { buildFuriganaIndex } from "@/lib/text/furigana";
+import { getGeminiKey } from "@/lib/profile";
 import { recordContentProgress } from "@/lib/progress/store";
 import { CaptionBar, CallShell } from "@/components/call-shell";
 import { LiveReason } from "./live-reason";
-import { resolveMatch } from "./req-matcher";
+import { resolveMatch, type JudgeableReq } from "./req-matcher";
 import { useLiveSession } from "./use-live-session";
 
 /**
@@ -24,7 +25,19 @@ import { useLiveSession } from "./use-live-session";
  * 要件ボードは最初「？？？」で伏せてあり、聞き出せた項目だけが開く。
  * 判定は3層（AI → ローカルのキーワード救済 → 手動）で、AIの誤判定で
  * 正しい質問が却下されないようにする（設計01 §3）。
+ *
+ * ## 声も 文字も、同じ judge() を通る
+ * 以前は判定がテキスト送信のときにしか走らず、**声で話した学習者は何をしても
+ * ボードが1つも開かなかった**。いまは聞き取り（相手が話しはじめた合図で1つに
+ * 束ねた発話）も同じ入口へ流す。判定の道を2本持つと、必ず片方が腐る。
  */
+
+/**
+ * キーワードが1語だけ当たった（＝あと ひとこと）ときの文言。
+ * 「番ちがい」ではなく「おしい」を返す——1語 当てた 学習者を 迷子に しない。
+ */
+const CLOSE_NOTE: FeedbackKey = "talk.close";
+
 export function TalkSession({
   scenario,
   /**
@@ -52,6 +65,19 @@ export function TalkSession({
    * ひとつだけ出す。
    */
   const [hintId, setHintId] = useState<string | null>(null);
+  /** AIに見てもらっている最中か。声で話したあと「無反応」に見えないようにする。 */
+  const [thinking, setThinking] = useState(false);
+  /** 「はじめの 一言」カードを閉じたか。 */
+  const [openerClosed, setOpenerClosed] = useState(false);
+  /**
+   * すでに開いた項目。判定はAIを待つあいだに進むので、**待つ前の写しではなく
+   * ここを見る**（待っているあいだに開いた項目を、もう一度開けにいかないため）。
+   */
+  const openRef = useRef<ReadonlySet<string>>(new Set());
+  /** 判定ずみの発話ID（同じ発話を二度見ない）。 */
+  const judgedRef = useRef(0);
+  /** 見てもらっている最中の発話の数（続けて話したときに、表示が先に消えないように）。 */
+  const pendingRef = useRef(0);
 
   const participants = useMemo(
     () => [
@@ -65,21 +91,52 @@ export function TalkSession({
     [scenario.client],
   );
 
-  /** 発話を判定し、開いた項目があればボードをめくる。 */
-  const judge = (utterance: string, aiReqId: string | null = null) => {
-    const outcome = resolveMatch({
-      utterance,
-      reqs: scenario.interview.reqs,
-      openIds: open,
-      aiReqId,
-    });
-    if (outcome.reqId) {
-      setOpen((prev) => new Set([...prev, outcome.reqId!]));
-      setNote("talk.itemFound");
-    } else {
-      setNote("talk.offTopic");
-    }
-  };
+  /**
+   * 発話を1つ判定し、開いた項目があればボードをめくる。
+   * **声でも 文字でも ここを通る**（判定の道を分けない）。
+   */
+  const judge = useCallback(
+    async (utterance: string) => {
+      const reqs = scenario.interview.reqs;
+      const closed = reqs.filter((req) => !openRef.current.has(req.id));
+      if (closed.length === 0 || !utterance.trim()) return;
+
+      // 層1: AI。キーが無い・つながらないときは null が返り、層2（ローカル）だけで続く
+      pendingRef.current += 1;
+      setThinking(true);
+      const aiReqId = await askAiForReq(utterance, closed);
+      pendingRef.current -= 1;
+      if (pendingRef.current === 0) setThinking(false);
+
+      const outcome = resolveMatch({
+        utterance,
+        reqs,
+        openIds: openRef.current,
+        aiReqId,
+      });
+      if (outcome.reqId) {
+        const opened = new Set([...openRef.current, outcome.reqId]);
+        openRef.current = opened;
+        setOpen(opened);
+        setNote("talk.itemFound");
+        return;
+      }
+      // 1語だけ当たった＝話題は合っている。「ずれている」ではなく「あと ひとこと」へ
+      setNote(outcome.near ? CLOSE_NOTE : "talk.offTopic");
+    },
+    [scenario],
+  );
+
+  /*
+   * 声で話したぶんを見る。相手が話しはじめた合図で1つに束ねてから届くので、
+   * 「わたしは」の途中で判定されることはない（use-live-session の lastUtterance）。
+   */
+  useEffect(() => {
+    const heard = live.lastUtterance;
+    if (!heard || heard.id === judgedRef.current) return;
+    judgedRef.current = heard.id;
+    void judge(heard.text);
+  }, [live.lastUtterance, judge]);
 
   // ステージの進み具合に反映する（設計07 §3）。退出まで行ったら「おわった」。
   useEffect(() => {
@@ -95,6 +152,15 @@ export function TalkSession({
   // 聞き出せた項目のヒントは引っこめる（もう要らないものが残っていると、
   // 「まだ聞けていない」と勘違いする）
   const hint = askable.find((req) => req.id === hintId) ?? null;
+
+  /** あいさつの型文（教材の言い回しから借りる）。無ければカードは goal と tip だけ。 */
+  const openingLine = useMemo(() => buildOpeningLine(scenario), [scenario]);
+  /**
+   * 「はじめの 一言」を出すか。つながった直後で、まだ一度も話していないとき。
+   * 何を言えばよいか分からないまま画面と向き合う時間を作らないため。
+   */
+  const showOpener =
+    live.status === "live" && !openerClosed && !live.transcript.some((turn) => turn.from === "me");
 
   return (
     <div className={embedded ? "" : "mx-auto w-full max-w-3xl px-4 py-6"}>
@@ -125,7 +191,8 @@ export function TalkSession({
             {live.status === "idle" && (
               <button
                 type="button"
-                onClick={() => void live.connect(scenario.interview.persona)}
+                // 声は人物カードで決めたもの（まんが・ミーティングと同じ人の声にする）
+                onClick={() => void live.connect(scenario.interview.persona, scenario.client.voice)}
                 className="btn-island btn-game px-6 py-2.5 text-sm"
               >
                 🎙️ 話しはじめる
@@ -139,6 +206,15 @@ export function TalkSession({
                 <span className="bg-leaf/15 text-leaf-deep rounded-full px-3 py-1 text-xs font-extrabold">
                   ● つながっています
                 </span>
+                {/*
+                  マイクを 断られても つないだまま 続ける（劣化運転）。
+                  ここで 何も 言わないと、声が 届いていない ことに 気づけない。
+                */}
+                {!live.voiceOn && (
+                  <span className="text-ink-soft text-xs font-extrabold">
+                    マイクは つかえません。下に 書いて 送れば、そのまま すすめます
+                  </span>
+                )}
                 <button
                   type="button"
                   onClick={live.disconnect}
@@ -163,6 +239,51 @@ export function TalkSession({
           <LiveReason reason={live.reason} />
         ) : (
           <>
+            {/*
+              はじめの 一言。つながった直後の「何を 言えば いいか わからない」を
+              いちばん 短い 道で 越えさせる（設計01 P8: 次の行動を 見せる）。
+              文は 教材データから 借りる——ここで 新しい 日本語を 書くと、その漢字の
+              読みが 読み辞書に 無く、学習者が そこで 止まる（規律2）。
+            */}
+            {showOpener && (
+              <section className="card-island p-4" aria-label="はじめの 一言">
+                <div className="flex items-start justify-between gap-2">
+                  <h3 className="text-ink font-extrabold">🌱 はじめの 一言</h3>
+                  <button
+                    type="button"
+                    onClick={() => setOpenerClosed(true)}
+                    aria-label="はじめの 一言を とじる"
+                    className="text-ink-soft hover:text-ink shrink-0 px-2 text-sm font-black"
+                  >
+                    ✕
+                  </button>
+                </div>
+                <p className="text-ink-soft mt-1 text-sm font-bold">
+                  🎯 <RubyText text={scenario.mission.goal} index={furigana} />
+                </p>
+                <p className="text-ink-soft mt-1 text-sm font-bold">
+                  💡 <RubyText text={scenario.client.tip} index={furigana} />
+                </p>
+                {openingLine && (
+                  <button
+                    type="button"
+                    /*
+                     * あいさつは「聞き出す こと」では ないので、ボードは 動かさない
+                     *（判定に かけると、あいさつした だけで ヒントが 出て とまどう）。
+                     */
+                    onClick={() => {
+                      live.send(openingLine);
+                      setOpenerClosed(true);
+                    }}
+                    className="border-hairline bg-panel-tint text-ink mt-3 rounded-full border-2 px-4 py-2 text-sm font-extrabold"
+                  >
+                    <RubyText text={openingLine} index={furigana} />
+                    <span className="text-sky ml-2">▶ これを 送る</span>
+                  </button>
+                )}
+              </section>
+            )}
+
             {/* 文字起こしは必ず見せる（AIの誤判定を目で確かめられるように） */}
             <section className="flex flex-col gap-2">
               {live.transcript.slice(-4).map((turn, i) => (
@@ -181,7 +302,7 @@ export function TalkSession({
                 e.preventDefault();
                 if (!draft.trim()) return;
                 live.send(draft);
-                judge(draft);
+                void judge(draft);
                 setDraft("");
               }}
             >
@@ -197,6 +318,13 @@ export function TalkSession({
                 きく
               </button>
             </form>
+
+            {/* 声で話したあと「無反応」に見えないように、見ている最中だけ出す */}
+            {thinking && (
+              <p className="text-ink-soft text-sm font-extrabold" role="status">
+                🤖 いま 見ています…
+              </p>
+            )}
 
             {note && <FeedbackMessage messageKey={note} />}
           </>
@@ -256,4 +384,77 @@ export function TalkSession({
       </CallShell>
     </div>
   );
+}
+
+/**
+ * 判定3層の**層1**（AI）を呼ぶ。返るのは項目ID（該当なしは null）。
+ *
+ * キーは本人のもの（BYOK）で端末に保存されている。ここで載せて送り、サーバは
+ * 受け取って Gemini を呼ぶだけ——キーも上流の応答も返ってこない（規律4）。
+ *
+ * **失敗しても画面には何も出さない**。キーが無い教室・上流が混んでいるときは、
+ * そのままローカルのキーワード判定だけで会話が続く（設計01 P12 劣化運転）。
+ * ここでエラーを見せると、学習者は自分の日本語が悪かったのだと受け取る。
+ */
+async function askAiForReq(
+  utterance: string,
+  reqs: readonly JudgeableReq[],
+): Promise<string | null> {
+  const apiKey = getGeminiKey();
+  if (!apiKey || reqs.length === 0) return null;
+
+  try {
+    const response = await fetch("/api/talk/judge", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        apiKey,
+        utterance,
+        // 判定に要る4つだけ渡す（ボードに伏せてある secret や 絵文字は送らない）
+        reqs: reqs.map((req) => ({
+          id: req.id,
+          label: req.label,
+          fact: req.fact,
+          keywords: req.keywords,
+        })),
+      }),
+    });
+    const body = (await response.json().catch(() => ({}))) as {
+      ready?: boolean;
+      reqId?: unknown;
+    };
+    if (!response.ok || !body.ready) return null;
+    return typeof body.reqId === "string" ? body.reqId : null;
+  } catch {
+    return null;
+  }
+}
+
+/** 型文を引くための引用（『』「」）。教材が見せている言い回しをそのまま借りる。 */
+const QUOTED = /[『「]([^』」]{2,40})[』」]/u;
+
+/**
+ * 「はじめの 一言」の型文を教材データから作る。見つからなければ null。
+ *
+ * ここで新しい文を書かない。教材が『相談が あります』のように**かぎ括弧で
+ * 見せている言い方**を1つ借り、あいさつに継ぐだけにする——書き下ろすと、
+ * その漢字の読みが読み辞書に無く、学習者がそこで止まる（規律2）。
+ * あいさつは相手の場面に合わせる（朝会なら「おはようございます。」）。
+ */
+export function buildOpeningLine(scenario: Scenario): string | null {
+  const sources = [
+    // 教訓（lesson）→ 先輩の助言（mission.chat）→ 攻略ひとこと（tip）の順に探す
+    ...scenario.lesson.points,
+    ...scenario.mission.chat.filter((line) => line.from === "hendy").map((line) => line.text),
+    scenario.client.tip,
+  ];
+  const greeting = scenario.interview.persona.includes("おはよう")
+    ? "おはようございます。"
+    : "しつれいします。";
+
+  for (const source of sources) {
+    const phrase = QUOTED.exec(source)?.[1]?.trim();
+    if (phrase) return `${greeting}${phrase.replace(/[。、]+$/u, "")}。`;
+  }
+  return null;
 }

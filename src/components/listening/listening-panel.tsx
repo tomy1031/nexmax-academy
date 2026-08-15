@@ -54,7 +54,14 @@ export function ListeningPanel({
     replayListening(createListening(transcript, keywords, rules), readListeningFinds(contentId)),
   );
   const [value, setValue] = useState("");
-  const [shake, setShake] = useState(0);
+  /**
+   * 当たらなかったときに 入力欄を 小さく 首ふりさせるか（減点はしない）。
+   *
+   * 以前は `key` を 変えて 入力欄を 作り直して いた。作り直すと **スマホの
+   * キーボードが 閉じる**ので、外すたびに 画面の 下から 打ち直しに なった。
+   * いまは class を 付け外しするだけで、入力欄は そのまま 残す。
+   */
+  const [shaking, setShaking] = useState(false);
   const notified = useRef<ListeningState | null>(null);
 
   // 表示率は外（つぎへの関所）でも使う。描画のたびに呼ばないよう、変わったときだけ渡す
@@ -77,7 +84,7 @@ export function ListeningPanel({
       saveListeningFinds(contentId, next.usedInputs);
     }
     if (entry && (entry.kind === "miss" || entry.kind === "tooShort" || entry.kind === "close")) {
-      setShake((n) => n + 1); // 当たらなかったときは入力欄が小さく首をふるだけ（減点なし）
+      setShaking(true); // 当たらなかったときは入力欄が小さく首をふるだけ（減点なし）
     } else {
       setValue("");
     }
@@ -141,16 +148,17 @@ export function ListeningPanel({
         }}
       >
         <input
-          key={`input-${shake}`}
           type="text"
           value={value}
           onChange={(e) => setValue(e.target.value)}
+          // 首ふりが おわったら class を 外す。つぎに 外した ときに もう一度 動く
+          onAnimationEnd={() => setShaking(false)}
           autoComplete="off"
           spellCheck={false}
           placeholder={`きこえた ことば（${rules.minLength}文字いじょう）`}
           aria-label="聞こえた ことばを 入力する"
           className={`text-ink min-w-0 flex-1 rounded-[var(--radius-button)] border-2 bg-white px-4 py-2.5 font-bold ${
-            shake > 0 && latest && latest.points === 0 ? "shake-input" : ""
+            shaking ? "shake-input" : ""
           }`}
           style={{ borderColor: "var(--color-hairline)" }}
         />
