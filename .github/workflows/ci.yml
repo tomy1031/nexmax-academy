@@ -34,3 +34,76 @@ jobs:
         run: npm test
       - name: ビルド
         run: npm run build
+
+  # ── 通しの自動検証（Playwright） ───────────────────────────────────────
+  #
+  # なぜ 要るか:
+  #   ユーザー（クライアント）が 毎回 手で 6教材を さわって 確かめていた。
+  #   Supabase の 環境変数が 無ければ アプリは **デモモード**（ログイン不要）で
+  #   動く（src/middleware.ts）ので、**鍵ゼロで** CI が 学習者と同じ道を 通せる。
+  #
+  # 鍵について:
+  #   GEMINI_API_KEY は Environment「Preview」に 置いてある。
+  #   これは **Playwright の ステップにだけ** 渡す（ビルドに 渡すと OpenNext が
+  #   バンドルへ 焼き込む — docs/deploy.md §0.2）。鍵が 無ければ AIの 1往復だけ
+  #   とばして、ほかは そのまま 走る（フォークからの PR でも 通る）。
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    environment: Preview
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+
+      # @playwright/test は devDependencies に 入って いる（版は ブラウザと 組で 固定）。
+      # ここでは ブラウザ本体だけ 入れる。
+      - name: ブラウザを 用意する
+        run: npx playwright install --with-deps chromium
+
+      - name: 型（通し検証のぶん）
+        run: npx tsc -p tests/e2e --noEmit
+
+      - name: ビルド
+        run: npm run build
+
+      # webServer（playwright.config.ts）が `next start` を 立てて 待つ
+      - name: 通し検証
+        run: npx playwright test
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+
+      # 人が 見たいときだけ 見られるように 置いておく（開かなくても 合否は 分かる）
+      - name: 画面と レポートを 成果物に する
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-画面とレポート
+          path: |
+            e2e-screens/
+            playwright-report/
+            test-results/
+          retention-days: 14
+          if-no-files-found: ignore
+
+  # ── 上げる 大きさの 見張り（無料枠 gzip 3MiB） ────────────────────────
+  #
+  # 2026-08-16、のこり 5KiB まで 来ていたことに 誰も 気づけないまま デプロイが
+  # code:10027 で 止まった。dry-run は **資格情報なしで動く**ので、PR ごとに 測る。
+  size:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - name: Cloudflare 向けに 束ねる
+        run: npm run cf:build:local
+      - name: 上げる 大きさ（2.8MiB で 警告・3.0MiB で 落とす）
+        run: node scripts/check_worker_size.mjs

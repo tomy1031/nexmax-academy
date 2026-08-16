@@ -1,0 +1,17 @@
+{
+  // 通しの自動検証だけを見る型設定。
+  //
+  // ルートの tsconfig からは tests/e2e を外してある——@playwright/test は
+  // E2E のジョブでだけ入れる（package.json の devDependencies には無い）ので、
+  // ルートの `npm run typecheck` がそれを探しに行くと落ちるため。
+  // こちらは Playwright を入れたあとに `tsc -p tests/e2e --noEmit` で使う。
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "types": ["node"],
+    "noEmit": true
+  },
+  // ルートの exclude（tests/e2e と playwright.config.ts）を 引き継がない。
+  // 引き継ぐと ここで 見るものが 1つも 無くなる（TS18003）。
+  "exclude": [],
+  "include": ["**/*.ts", "../../playwright.config.ts"]
+}
