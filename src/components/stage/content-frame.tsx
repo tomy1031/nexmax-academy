@@ -402,7 +402,14 @@ function LockedNotice({
             href={blocker.href}
             className="btn-game mt-5 inline-flex px-6 py-3 [--btn-face:#f26fa7] [--btn-shadow:#d94d84] [&_rt]:text-white"
           >
-            ▶ <RubyText text={blocker.title} index={furigana} />を ひらく
+            {/*
+             * ボタンの中身は1つのまとまりにする。ばらばらの要素にすると、狭い画面で
+             * それぞれが別々に折り返し、「しらべか／た」「を ひら／く」のように
+             * 語の途中で割れる（390px の実機で発生）。
+             */}
+            <span className="text-center leading-snug">
+              ▶ <RubyText text={blocker.title} index={furigana} />を ひらく
+            </span>
           </Link>
         </>
       ) : (

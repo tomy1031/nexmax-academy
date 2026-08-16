@@ -137,7 +137,7 @@ export function CallShell({
   /*
    * カメラは **OFFから 始める**。入った 瞬間に 自分の 顔が 出ると、声を 出すのも
    * こわい 学習者には それだけで 障壁になる（教室では 隣の 画面も 見える）。
-   * 見せるか どうかは 学習者が 自分で 決める——下の「📷 カメラ OFF」を 押せば ONになる。
+   * 見せるか どうかは 学習者が 自分で 決める——下の「📷 カメラを つける」を 押せば ONになる。
    */
   const [cameraOn, setCameraOn] = useState(false);
   const index = useFuriganaIndex(furigana);
@@ -232,8 +232,13 @@ export function CallShell({
               {mic.on ? "🎤 マイク ON" : "🔇 マイク OFF"}
             </ToolButton>
           ) : null}
+          {/*
+           * ボタンの文字は「いまの じょうたい」ではなく「押すと どうなるか」にする。
+           * OFFのときに「カメラ OFF」と出ていると、押して よいのか 分からず、
+           * 案内文（「うつしたい ときは…」）とも 食いちがう（390px の実機で確認）。
+           */}
           <ToolButton on={cameraOn} onClick={() => setCameraOn((v) => !v)}>
-            {cameraOn ? "📷 カメラ ON" : "📷 カメラ OFF"}
+            {cameraOn ? "📷 カメラを けす" : "📷 カメラを つける"}
           </ToolButton>
           <button
             type="button"
@@ -292,7 +297,7 @@ function Lobby({
       </button>
       {/* カメラは OFFから 始まる。ONに する 場所を ここで 先に 伝える（探させない） */}
       <p className="text-ink-faint mt-2 text-xs font-bold">
-        カメラは OFFで はじまります。うつしたい ときは「📷 カメラ OFF」を おしてね
+        カメラは OFFで はじまります。うつしたい ときは「📷 カメラを つける」を おしてね
       </p>
     </motion.div>
   );
