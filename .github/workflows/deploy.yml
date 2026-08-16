@@ -45,6 +45,13 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    # 鍵は **Environment「Preview」** に置いてある（Settings → Environments）。
+    # ここで名指ししないと、リポジトリ直下の Secrets しか見えず、
+    # 「Secrets が足りません」で止まる（2026-08-14 に実発生。名前は3つとも正しかった）。
+    #
+    # 承認は増えない: この Environment には Required reviewers も Wait timer も
+    # 付いていない（Deployment branches and tags も No restriction）。
+    environment: Preview
     timeout-minutes: 30
     steps:
       # preview_alias.mjs は HEAD と origin/main を**中身で**比べるので、
