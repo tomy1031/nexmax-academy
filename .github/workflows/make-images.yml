@@ -1,0 +1,85 @@
+name: 絵をつくる
+
+# 読み物の「え は じゅんびちゅう」を 埋める。
+#
+# なぜ ここに あるか:
+#   絵の 生成には 鍵が 要る。鍵は Environment「Preview」に あり、AIの 作業環境には 無い。
+#   **ユーザーに 手を 動かさせない**（docs/constraints.md 運用の制約）ので、
+#   鍵の 要る 仕事は ここに 寄せる。AI が Actions から 起こせる。
+#
+# できること:
+#   `content/articles/*.json` の image ブロックの うち `status: "empty"` の ものを、
+#   **すでに 書いてある プロンプトの まま** 描いて、webp にして 置き、JSON を 直す。
+#   結果は **PR に して 出す**（main へ 直接 入れない）。
+#
+# できない こと:
+#   **人物の 絵は ここでは 作らない。** 設定画を 参照入力に 渡す 決まり（絶対規律7・
+#   docs/skills/codex_image_generation.md §6.5）で、生成器も Codex image-gen-2 が 第一。
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 下見だけ（作らずに 対象を 数える）
+        type: boolean
+        default: false
+
+concurrency:
+  group: make-images
+  cancel-in-progress: false
+
+jobs:
+  make:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: Preview
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+
+      # webp へ 縮めるのに 使う（無ければ そのまま png で 置く）
+      - name: 画像を 縮める 道具
+        run: npm install --no-save --no-audit --no-fund sharp
+
+      - name: 絵を つくる
+        run: npm run make:images ${{ inputs.dry_run && '-- --dry-run' || '' }}
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+
+      # 焼き込みの ずれを 直してから 検査に かける（content を 触ったため）
+      - name: 焼き込みを 直す
+        if: ${{ !inputs.dry_run }}
+        run: npm run gen:content
+
+      - name: コンテンツ検収
+        if: ${{ !inputs.dry_run }}
+        run: npm run lint:content
+
+      - name: PR に して 出す
+        if: ${{ !inputs.dry_run }}
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: images/auto
+          title: "content(絵): 読み物の 「え は じゅんびちゅう」を 埋める"
+          commit-message: |
+            content(絵): 読み物の 絵を つくる
+
+            `status: "empty"` の image ブロックを、教材データに 書いてある
+            プロンプトの まま 描いて 置いた（絵をつくる ワークフロー）。
+
+            Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
+          body: |
+            「絵をつくる」ワークフローが つくりました。
+
+            - 教材データに **すでに 書いてある プロンプト**の まま 描いています（書き足していません）
+            - `npm run lint:content` を 通してから 出しています
+
+            **見るところ**: 絵の 中に 文字が 入って いないか、教材の 説明と 合って いるか。
+            合わなければ、教材データの `prompt` を 直して もう一度 このワークフローを 走らせてください。
