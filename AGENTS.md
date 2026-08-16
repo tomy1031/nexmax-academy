@@ -117,7 +117,7 @@ npm run cf:staging           # staging を更新。main の中身でのみ実行
 | staging    | `https://staging-academy.nexmax.workers.dev`      | `npm run cf:staging`（main のみ） |
 | ブランチ用 | `https://<ブランチ名>-academy.nexmax.workers.dev` | `npm run cf:branch`               |
 
-OpenNext（`@opennextjs/cloudflare`）経由。手順の詳細は `docs/deploy.md` §0。**罠は4つ**:
+OpenNext（`@opennextjs/cloudflare`）経由。手順の詳細は `docs/deploy.md` §0。**罠は6つ**:
 
 1. **秘密鍵をビルド環境に置かない**。OpenNext は `.env*` をバンドルへ焼き込む。
    `scripts/check_build_env.mjs` が検査して止める — **ガードを外さない**。
@@ -126,6 +126,14 @@ OpenNext（`@opennextjs/cloudflare`）経由。手順の詳細は `docs/deploy.m
    機械検査なし — `docs/deploy.md` §0.3 必読。検証は `?code=` を付けて行う）。
 4. **staging へ上げてよいのは main の中身だけ**（ブランチの中身を上げると他の作業が消える。
    `scripts/preview_alias.mjs` が止める — **ガードを外さない**。作業中は `npm run cf:branch`）。
+5. **Worker の大きさは無料枠 gzip 3MiB が上限**（超えると `code:10027` で deploy が止まる）。
+   これは**コードの大きさ**の上限で、通信量・保存量・アクセス数とは別。D1/KV/R2 に
+   データを逃がしても効かない。効くのは**重複をなくす・圧縮する・サーバで動かないコードを載せない**。
+   `npm run check:size` で確認（2.8MiB 警告・3.0MiB で失敗。CI にも同じ見張りがある）。
+   2026-08-16 に 3066→1822 KiB へ削減した経緯と内訳は `docs/deploy.md` §0.5。
+6. **鍵は GitHub の Environment Secrets（環境名 `Preview`）に置く**。ジョブに
+   `environment: Preview` を書かないと**見えない**（リポジトリ直下の Secrets とは別物）。
+   検証用の `GEMINI_API_KEY` も同じ場所。**ビルドのステップには渡さない**（罠1と同じ理由）。
 
 **このリポジトリは public。** ドキュメントにアカウントIDなどの内部識別子を直書きしない。
 
@@ -195,6 +203,17 @@ git と台帳から現在地（ブランチ・origin/main との差・やりか�
 
 ### 検証（引き算まで）と報告
 
+- **ユーザーは動作確認をしない。通しの確認は機械がやる**（2026-08-16 の指定）。
+  アプリは **Supabase 未設定なら鍵ゼロのデモモードで起動する**（`src/middleware.ts`）ので、
+  AI もCIも**いつでもアプリを立てて通しプレイできる**。ユーザーに見てもらうのは
+  **STG の中身（教材の良し悪し）だけ**で、「動くかどうか」を確かめさせない。
+  - `npm run e2e` … 通しの自動検証（Playwright。開発コンテナでは
+    `E2E_CHROMIUM_PATH=/opt/pw-browsers/chromium-1194/chrome-linux/chrome` を付ける）
+  - `npm run check:size` … Worker の大きさの見張り（デプロイ §罠5）
+  - CI では PR ごとに `check` / `e2e` / `size` の3つが走り、**画面の写真が成果物として残る**
+  - 何が自動で確かめられ、**何がまだ人に残るか**は `docs/自動でたしかめる1枚.md`
+- **AI自身も手で確認しない**。画面を見たいときは、このコンテナでアプリを立てて
+  Playwright で撮る（390px の実機幅で撮ると、実際に文字の折返しの崩れが見つかった）。
 - 「変えた所が動く証拠」に加えて**「変えていない所が変わっていない証拠」**を示す
   （UIは before/after スクショ、デプロイは主要ページの生存確認、diff の全ファイル一覧）。
 - 不具合を指摘されたら、まず**自分の変更が原因である可能性**から調べる。

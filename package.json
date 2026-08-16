@@ -19,6 +19,8 @@
     "postinstall": "node scripts/copy_pdf_worker.mjs",
     "codex:bridge": "node scripts/codex_bridge.mjs",
     "cf:build": "node scripts/check_build_env.mjs && node scripts/copy_pdf_worker.mjs && opennextjs-cloudflare build",
+    "check:size": "node scripts/check_worker_size.mjs",
+    "e2e": "playwright test",
     "cf:preview": "npm run cf:build:local && opennextjs-cloudflare preview",
     "cf:deploy": "npm run cf:build && opennextjs-cloudflare deploy",
     "cf:upload": "npm run cf:build && opennextjs-cloudflare upload",
