@@ -36,6 +36,16 @@ export const CONTENT_SEGMENTS = {
   wordstage: "words",
 } as const satisfies Record<ContentRefType, string>;
 
+/**
+ * 案内ステージ「はじめに」のID。タイトル画面の「はじめに を よむ」の行き先。
+ *
+ * ここに書いた名前で `/intro` へ行く。**タイトル画面は全員が必ず通る画面**なので、
+ * 行き先を出すためにデータを引きに行かない（引くと DB への往復が1つ増える —
+ * src/app/page.tsx の方針）。代わりに、この名前のステージが本当にあるかは
+ * `lint:content` が検査する（消すと機械が止める）。
+ */
+export const INTRO_STAGE_ID = "intro";
+
 /** contents[] に入りうる種別だけ（単語ステージは別扱い）。 */
 const IN_STAGE_TYPES = (Object.keys(CONTENT_SEGMENTS) as ContentRefType[]).filter(
   (type) => type !== "wordstage",

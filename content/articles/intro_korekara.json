@@ -1,6 +1,6 @@
 {
   "kind": "article",
-  "id": "hajimeni_korekara",
+  "id": "intro_korekara",
   "title": "これから 勉強すること",
   "description": "この 1年で 何が できるように なるのかを 見ます。ゴールを 先に 知ってから 始めます。",
   "furigana": [
@@ -136,7 +136,7 @@
     },
     {
       "kind": "link",
-      "ref": "hajimeni_hitobito",
+      "ref": "intro_hitobito",
       "type": "article",
       "label": "いっしょに 進む 人たち"
     }

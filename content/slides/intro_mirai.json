@@ -1,9 +1,9 @@
 {
   "kind": "slides",
-  "id": "hajimeni_mirai",
+  "id": "intro_mirai",
   "title": "IT の みらいと 日本で 働くこと",
   "description": "なぜ 日本の 会社が エンジニアを さがして いるのか、そして あなたの 強みは 何かを 見ます。",
-  "fileUrl": "/slides/hajimeni-mirai.pdf",
+  "fileUrl": "/slides/intro-mirai.pdf",
   "pageCount": 8,
   "notes": [
     { "page": 1, "text": "きょうから あなたは この 道を あるきます。" },
