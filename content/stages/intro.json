@@ -1,6 +1,6 @@
 {
   "kind": "stage",
-  "id": "hajimeni",
+  "id": "intro",
   "order": 900,
   "title": "はじめに",
   "reading": "はじめに",
@@ -10,15 +10,15 @@
   "listed": false,
   "contents": [
     {
-      "ref": "hajimeni_mirai",
+      "ref": "intro_mirai",
       "type": "slides"
     },
     {
-      "ref": "hajimeni_korekara",
+      "ref": "intro_korekara",
       "type": "article"
     },
     {
-      "ref": "hajimeni_hitobito",
+      "ref": "intro_hitobito",
       "type": "article"
     }
   ],

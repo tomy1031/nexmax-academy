@@ -31,6 +31,7 @@ import {
   checkForbiddenWords,
   checkCountryNames,
   checkFuriganaCoverage,
+  checkIntroStage,
   checkLinkOrder,
   checkReferenceIntegrity,
   checkStageOrder,
@@ -211,6 +212,7 @@ function main() {
   findings.push(...checkReferenceIntegrity(entries));
   findings.push(...checkLinkOrder(entries));
   findings.push(...checkStageOrder(entries));
+  findings.push(...checkIntroStage(entries));
   findings.push(...checkFuriganaCoverage(entries));
   findings.push(...checkGeneratedIndex());
 

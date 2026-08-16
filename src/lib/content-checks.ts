@@ -26,6 +26,8 @@ import {
 // furigana.ts も純粋な関数だけ（node:fs も React も無い）。スタジオのクライアントから
 // この検査を呼べることが「保存前に足りない漢字を出す」画面の前提になっている。
 import { buildFuriganaIndex, uncoveredKanji, type FuriganaEntry } from "./text/furigana";
+// stage-routes.ts も純関数と定数だけ（node:fs も React も持たない）。
+import { INTRO_STAGE_ID } from "./stage-routes";
 
 export interface Finding {
   file: string;
@@ -272,6 +274,28 @@ export function checkStageOrder(entries: readonly ContentEntry[]): Finding[] {
     }
   }
   return findings;
+}
+
+/**
+ * タイトル画面の「はじめに」ボタンの行き先があるか（設計07 §3）。
+ *
+ * タイトル画面は行き先を実行時に引かない（全員が通る画面で DB への往復を増やさない
+ * ため — `INTRO_STAGE_ID` のコメント）。引かないぶん、消されても画面は黙って
+ * 404 を出すだけになる。**地図に出ないステージなので、消えても誰も気づかない**——
+ * だからここで止める。
+ */
+export function checkIntroStage(entries: readonly ContentEntry[]): Finding[] {
+  const found = entries.some(
+    ({ content }) => content.kind === "stage" && content.id === INTRO_STAGE_ID,
+  );
+  if (found) return [];
+  return [
+    {
+      file: `content/stages/${INTRO_STAGE_ID}.json`,
+      level: "error",
+      message: `タイトル画面の「はじめに」ボタンの行き先（/${INTRO_STAGE_ID}）が無い — 押すと 404 になる。ステージを戻すか、title-screen.tsx のリンクを外す`,
+    },
+  ];
 }
 
 /**

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { GoogleG } from "@/components/google-g";
 import { NexMaxFamily } from "@/components/nexmax-types";
+import { INTRO_STAGE_ID } from "@/lib/stage-routes";
 import { createClient } from "@/lib/supabase/client";
 
 /**
@@ -158,11 +159,23 @@ export function TitleScreen({
                     </span>
                   )}
                 </Link>
+                {/*
+                  案内ステージ「はじめに」への道。まなびマップには出さないので、
+                  ここに置かないと**先生がリンクを配るまで誰もたどり着けない**。
+                  はじめての人にも、もう一度読みたい人にも要るので、
+                  「つづきから」が出るかに関わらず出す。
+                */}
+                <Link
+                  href={`/${INTRO_STAGE_ID}`}
+                  className="text-navy mt-5 rounded-full bg-white/90 px-5 py-1.5 text-sm font-extrabold underline underline-offset-4 shadow-sm"
+                >
+                  はじめに（この プログラムに ついて）
+                </Link>
                 {canContinue && (
                   // `retake=1` が要る。付けないと /welcome が診断済みの人をマップへ送り返す。
                   <Link
                     href="/welcome?retake=1"
-                    className="text-navy mt-5 rounded-full bg-white/90 px-5 py-1.5 text-sm font-extrabold underline underline-offset-4 shadow-sm"
+                    className="text-navy mt-3 rounded-full bg-white/90 px-5 py-1.5 text-sm font-extrabold underline underline-offset-4 shadow-sm"
                   >
                     せいかくしんだんを もういちど
                   </Link>
