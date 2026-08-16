@@ -86,6 +86,11 @@ export function StageList({
                     {stage.status === "draft" ? (
                       <span className="text-ink-soft ml-2 text-xs font-black">したがき</span>
                     ) : null}
+                    {/* 地図に出ないステージ。「消えている」のか「そういう設定」なのかが
+                        一覧で分からないと、先生は毎回 中を開いて確かめることになる。 */}
+                    {!stage.listed ? (
+                      <span className="text-ink-soft ml-2 text-xs font-black">地図に 出さない</span>
+                    ) : null}
                   </p>
                   <p className="text-ink-faint text-xs font-bold">/{stage.id}</p>
                   <p className="text-ink-soft text-xs font-bold">

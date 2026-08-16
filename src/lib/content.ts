@@ -196,6 +196,28 @@ export async function getArticle(id: string): Promise<Article | null> {
   return (await listArticles()).find((article) => article.id === id) ?? null;
 }
 
+/**
+ * 記事の しょうかいカード（`characters` ブロック）が 呼んでいる 人物を引く。
+ *
+ * 記事が持つのは id だけで、絵と名前は 人物カードが正（schema.ts）。だから
+ * 表示の直前に ここで 引き合わせる。**見つからない id は 黙って落とす**——
+ * 参照切れは lint:content が先に error で落とす契約なので、画面のほうは
+ * 1人 欠けただけで 記事ぜんぶを 失わせない（loadRef と同じ考え方）。
+ */
+export async function getArticleCharacters(article: Article) {
+  const refs = new Set(
+    article.blocks.flatMap((block) =>
+      block.kind === "characters" ? block.items.map((item) => item.ref) : [],
+    ),
+  );
+  const found = await Promise.all([...refs].map((id) => getCharacter(id)));
+  return found.flatMap((person) =>
+    person
+      ? [{ id: person.id, name: person.name, reading: person.reading, portrait: person.portrait }]
+      : [],
+  );
+}
+
 export const listSlides = cache(async (): Promise<Slides[]> => {
   const git = parseAll().filter((c): c is Slides => c.kind === "slides");
   return mergeContentsById(git, await listPublishedFromDb("slides")).sort((a, b) =>

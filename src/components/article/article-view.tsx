@@ -10,7 +10,12 @@ import { RubyText } from "@/components/ruby-text";
 import { SpeakButton } from "@/components/speak-button";
 import { recordContentProgress } from "@/lib/progress/store";
 import type { DictionaryEntry } from "@/lib/dictionary";
-import { buildFuriganaIndex, type FuriganaIndex } from "@/lib/text/furigana";
+import {
+  buildFuriganaIndex,
+  mergeFuriganaEntries,
+  type FuriganaEntry,
+  type FuriganaIndex,
+} from "@/lib/text/furigana";
 import {
   collectHeadings,
   contentHref,
@@ -18,6 +23,7 @@ import {
   headingId,
   joinItemsForSpeech,
   shouldShowToc,
+  type ArticleCharacter,
   type HeadingEntry,
 } from "./article-blocks";
 
@@ -49,13 +55,34 @@ export function ArticleView({
    * 1本おわるたびに地図まで放り出される）。
    */
   embedded = false,
+  /**
+   * `characters` ブロックが呼んでいる人物カード（絵と名前）。
+   * 渡さなければ しょうかいカードは 名前だけになる——記事が読めなくなるより良い。
+   * 取りに行くのはページ側（この部品はデータを取りに行かない）。
+   */
+  characters,
 }: {
   article: Article;
   preview?: boolean;
   dictionary?: readonly DictionaryEntry[];
   embedded?: boolean;
+  characters?: readonly ArticleCharacter[];
 }) {
-  const furigana = useMemo(() => buildFuriganaIndex(article.furigana ?? []), [article.furigana]);
+  /*
+   * 人物の名前の よみも 索引に混ぜる（「藤木」に ふりがなを 出すため）。記事の
+   * 読み辞書のほうを あとに置いて 勝たせる——記事が「藤木さん」の読みを 上書きしたい
+   * ときに 書けるようにする（単語ステージのカードと同じ組み立て — StageDetail）。
+   */
+  const furigana = useMemo(
+    () =>
+      buildFuriganaIndex(
+        mergeFuriganaEntries(
+          (characters ?? []).map((person): FuriganaEntry => [person.name, person.reading]),
+          article.furigana ?? [],
+        ),
+      ),
+    [article.furigana, characters],
+  );
   const [rubyOn, setRubyOn] = useState(true);
   const headings = useMemo(() => collectHeadings(article.blocks), [article.blocks]);
   const endRef = useRef<HTMLDivElement>(null);
@@ -134,6 +161,7 @@ export function ArticleView({
               furigana={furigana}
               show={rubyOn}
               dictionary={dictionary}
+              characters={characters}
             />
           ))}
         </div>
@@ -195,9 +223,18 @@ interface BlockProps {
   furigana: FuriganaIndex;
   show: boolean;
   dictionary?: readonly DictionaryEntry[];
+  characters?: readonly ArticleCharacter[];
 }
 
-function BlockView({ block, blockIndex, articleId, furigana, show, dictionary }: BlockProps) {
+function BlockView({
+  block,
+  blockIndex,
+  articleId,
+  furigana,
+  show,
+  dictionary,
+  characters,
+}: BlockProps) {
   switch (block.kind) {
     case "heading":
       return block.level === 2 ? (
@@ -367,6 +404,9 @@ function BlockView({ block, blockIndex, articleId, furigana, show, dictionary }:
           </span>
         </a>
       );
+
+    case "characters":
+      return <CharactersBlock block={block} furigana={furigana} show={show} people={characters} />;
   }
 }
 
@@ -406,6 +446,79 @@ function SpeakableGroup({
 type ImageBlockData = Extract<ArticleBlock, { kind: "image" }>;
 type CalloutBlockData = Extract<ArticleBlock, { kind: "callout" }>;
 type VocabItem = Extract<ArticleBlock, { kind: "vocab" }>["items"][number];
+type CharactersBlockData = Extract<ArticleBlock, { kind: "characters" }>;
+
+/**
+ * 登場人物の しょうかいカード。
+ *
+ * 絵と 名前は 人物カード（`people`）から、立場と ひとことは 記事から引く。
+ * 人物カードが 見つからない ときも カードは 出す——**名前が 記事側の `ref` しか
+ * 無い**ので id を そのまま 出すが、紹介文は 読める。1人 読み込めなかっただけで
+ * 「キャラクター紹介」が 空の ページに なるほうが 困る。
+ *
+ * 1列（せまい画面）→2列。3列にしないのは、顔が 小さくなりすぎて
+ * 「だれの 絵か」が 分からなくなるため。
+ */
+function CharactersBlock({
+  block,
+  furigana,
+  show,
+  people,
+}: {
+  block: CharactersBlockData;
+  furigana: FuriganaIndex;
+  show: boolean;
+  people?: readonly ArticleCharacter[];
+}) {
+  const byId = new Map((people ?? []).map((person) => [person.id, person]));
+  return (
+    <div className="grid gap-3 sm:grid-cols-2">
+      {block.items.map((item, i) => {
+        const person = byId.get(item.ref);
+        return (
+          <section
+            key={i}
+            className="border-hairline bg-panel-tint flex gap-3 rounded-[var(--radius-card)] border-2 p-3"
+          >
+            <div
+              className="relative h-24 w-20 shrink-0 overflow-hidden rounded-[var(--radius-card)]"
+              style={{ background: "var(--color-sky-soft)" }}
+            >
+              {person?.portrait ? (
+                <Image
+                  src={person.portrait}
+                  alt=""
+                  fill
+                  sizes="80px"
+                  className="object-cover object-top"
+                />
+              ) : (
+                /* 絵が まだ 無い人。顔の場所を 空けたまま しるしだけ 置く。 */
+                <span
+                  aria-hidden
+                  className="text-navy grid h-full w-full place-items-center text-2xl"
+                >
+                  🙂
+                </span>
+              )}
+            </div>
+            <div className="min-w-0">
+              <p className="text-ink-soft text-xs font-extrabold">
+                <RubyText text={item.role} index={furigana} show={show} />
+              </p>
+              <p className="text-navy text-lg font-black">
+                <RubyText text={person?.name ?? item.ref} index={furigana} show={show} />
+              </p>
+              <p className="text-ink mt-1 text-sm leading-relaxed font-bold">
+                <RubyText text={item.note} index={furigana} show={show} />
+              </p>
+            </div>
+          </section>
+        );
+      })}
+    </div>
+  );
+}
 
 /** 画像は「まだ無い」状態が普通にある（生成待ち）。空でも読み進められる形にする。 */
 function ImageBlock({

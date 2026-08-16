@@ -19,7 +19,7 @@ import {
   listStages,
   getWordStage,
 } from "@/lib/content";
-import { sortStages } from "@/lib/map-data";
+import { stageStepNumber } from "@/lib/map-data";
 import { stageContentPath } from "@/lib/stage-routes";
 
 /**
@@ -174,10 +174,10 @@ export default async function StagePage({ params }: { params: Promise<{ stage: s
    * マップの上から数えた番号。ステージの `order` そのものではない
    *（`order` は並び替えの結果でしかなく飛び番になりうる）。
    * マップと同じ数え方をしないと、地図で「STEP 02」だったものが中に入ると
-   * 「STEP 30」になる。
+   * 「STEP 30」になる。地図に出ないステージ（`listed: false`）は null になり、
+   * STEP の札そのものが出ない。
    */
-  const published = sortStages((await listStages()).filter((s) => s.status === "published"));
-  const number = published.findIndex((s) => s.id === stage.id) + 1;
+  const number = stageStepNumber(await listStages(), stage.id);
 
   // contents[] の並びがそのまま学習順（順序の正はステージ側 — 設計07 §3）。
   const resolved = await Promise.all(
@@ -227,7 +227,7 @@ export default async function StagePage({ params }: { params: Promise<{ stage: s
     <StageDetail
       stage={{
         id: stage.id,
-        number: number > 0 ? number : 1,
+        number,
         title: stage.title,
         reading: stage.reading,
         description: stage.description,

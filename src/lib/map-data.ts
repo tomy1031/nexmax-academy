@@ -60,6 +60,34 @@ export function sortStages(stages: readonly Stage[]): Stage[] {
   return [...stages].sort((a, b) => a.order - b.order || a.id.localeCompare(b.id));
 }
 
+/**
+ * 地図に停留所として出るステージか。
+ *
+ * 2つの問いの積である——**完成しているか**（status）と **地図に出すか**（listed）。
+ * 「はじめに」のような案内は完成していても地図には出さない。URLは生きているので、
+ * 先生がリンクを配れば開ける（`listed` の由来は schema.ts のコメント）。
+ */
+export function isOnMap(stage: Stage): boolean {
+  return stage.status === "published" && stage.listed;
+}
+
+/** 地図に出るステージだけを、地図の並び順で。 */
+export function mapListedStages(stages: readonly Stage[]): Stage[] {
+  return sortStages(stages.filter(isOnMap));
+}
+
+/**
+ * 地図の上から数えた STEP 番号。**地図に出ないステージは null**。
+ *
+ * 数え方をここ1か所に閉じるのは、ステージのトップと教材の枠で別々に数えていたのを
+ * そろえるため。以前はどちらも「見つからなければ 1」に倒していたので、地図に無い
+ * ステージが本物の STEP 01 と同じ札を出していた。番号が無いことは、番号 1 ではない。
+ */
+export function stageStepNumber(stages: readonly Stage[], stageId: string): number | null {
+  const index = mapListedStages(stages).findIndex((stage) => stage.id === stageId);
+  return index < 0 ? null : index + 1;
+}
+
 export function toMapStages(stages: readonly Stage[]): MapStage[] {
   return sortStages(stages).map((stage, index) => ({
     id: stage.id,

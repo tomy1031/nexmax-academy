@@ -685,6 +685,8 @@ export function StudioShell({
               value={view.draft}
               /* 習った ことばを AIに ふまえさせる（自分自身は 除く） */
               known={merged.wordstage.filter((c) => c.id !== view.draft.id)}
+              /* しょうかいカードで だれを 出すか えらぶ・プレビューに絵を出す */
+              characters={merged.character}
               onChange={(draft) => setView({ ...view, draft })}
             />
           </ChildFrame>

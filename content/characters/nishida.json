@@ -14,6 +14,7 @@
     "status": "done",
     "src": "/img/characters/nishida/sheet.webp"
   },
+  "portrait": "/img/characters/nishida/portrait.webp",
   "references": [
     "/img/characters/nishida/reference.jpg"
   ]

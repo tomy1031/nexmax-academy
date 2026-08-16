@@ -619,6 +619,20 @@ export const stageSchema = z.object({
   /** マップのピン色。 */
   color: z.enum(["leaf", "sky", "coral", "sky-soft"]),
   status: z.enum(["draft", "published"]).default("published"),
+  /**
+   * まなびマップに 並べるか。**既定は true**（作ったステージは 地図に出る）。
+   *
+   * false にすると **地図から消えるが URL は生きる**。「はじめに」のように、
+   * 学習の道すじには載せず、先生がリンクを配って見せる案内のための状態である。
+   * 中の教材も `/<ステージ>/<種別>` でこれまでどおり開ける。
+   *
+   * `status`（したがき か こうかい か＝**完成度**）とは別の軸にした。draft を
+   * 流用すると、完成しているのに未完成として扱われる——ふりがなの覆い検査が
+   * warn に緩み（checkFuriganaCoverageOf）、DB経由では学習者から読めなくなり
+   *（content-db の RLS）、先生がスタジオで「こうかい」を押した瞬間に地図へ出る。
+   * 「完成しているか」と「地図に出すか」は、そもそも別の問いである。
+   */
+  listed: z.boolean().default(true),
   /** 学習順そのもの（並びが正）。 */
   contents: z.array(stageContentRefSchema).min(1),
   /** 紐づく単語ステージ（別管理・複数可）。 */
@@ -689,6 +703,17 @@ export const characterSchema = z.object({
   personality: plainText.optional(),
   /** キャラクターシート（三面図＋表情差分）。生成のたびに参照画像として渡す。 */
   sheet: imageSlotSchema.default({ refs: [], status: "empty" }),
+  /**
+   * 学習者に見せる 顔の絵（しょうかいカード用）。
+   *
+   * `sheet` を そのまま出せない。あれは**生成のための設計画**で、三面図と表情差分が
+   * 1枚に並んでいる——カードに入れると「後ろ姿と 泣き顔が 並んだ絵」になる。
+   * だから 正面の1体を 切り出したものを 別に持つ（`portrait.webp`）。
+   *
+   * 無ければ しょうかいカードは 絵を出さずに 名前だけを 出す（絵の用意が
+   * 遅れただけで 人物が 消えるほうが 困る — マップのエリアと同じ考え方）。
+   */
+  portrait: z.string().min(1).optional(),
   /** 先生が持ち込んだ参考画像。シートを作るときの入力になる。 */
   references: z.array(z.string().min(1)).default([]),
   /**
@@ -921,6 +946,32 @@ export const articleBlockSchema = z.discriminatedUnion("kind", [
     label: plainText,
     /** リンクの下に出す ひとこと（「あたらしい タブで ひらくよ」等）。 */
     note: plainText.optional(),
+  }),
+  /**
+   * 登場人物の しょうかいカード（「キャラクター紹介」のためのブロック）。
+   *
+   * 絵と 名前は **人物カード（`content/characters/*.json`）から引く**。記事に
+   * 書き写すと、人物カードの絵を差し替えたときに記事だけ古い絵のまま残る——
+   * ミーティングの声を人物カードに一本化したのと同じ理由（`[stage]/[content]`）。
+   *
+   * 立場と ひとことは **記事側に持つ**。人物カードの `role` / `personality` は
+   * 先生向けの覚書で（`looks` にいたっては英語の生成プロンプト）、学習者が読む
+   * 言葉ではない。ここに書けば記事の読み辞書でふりがなを覆える（規律2）。
+   */
+  z.object({
+    kind: z.literal("characters"),
+    items: z
+      .array(
+        z.object({
+          /** 人物カードの id（`content/characters/<id>.json`）。 */
+          ref: z.string().min(1),
+          /** 学習者に見せる立場。「せんぱい」「しゃちょう」など、やさしい言い方で。 */
+          role: plainText,
+          /** ひとこと しょうかい。 */
+          note: plainText,
+        }),
+      )
+      .min(1),
   }),
 ]);
 

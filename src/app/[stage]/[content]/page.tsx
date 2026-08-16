@@ -11,6 +11,7 @@ import { SlideDeck } from "@/components/slides/slide-deck";
 import { ContentFrame, type FrameItem } from "@/components/stage/content-frame";
 import {
   getArticle,
+  getArticleCharacters,
   getCharacter,
   getListening,
   getManga,
@@ -23,7 +24,7 @@ import {
   listWordStages,
 } from "@/lib/content";
 import { buildDictionary } from "@/lib/dictionary";
-import { sortStages } from "@/lib/map-data";
+import { stageStepNumber } from "@/lib/map-data";
 import { resolveStageContent, stageContentPath, stageContentSegments } from "@/lib/stage-routes";
 import { loadRef } from "../page";
 
@@ -150,11 +151,9 @@ export default async function StageContentPage({
   if (!found) notFound();
   const { stage, ref } = found;
 
-  const [items, published] = await Promise.all([
-    frameItems(stage),
-    listStages().then((all) => sortStages(all.filter((item) => item.status === "published"))),
-  ]);
-  const number = published.findIndex((item) => item.id === stage.id) + 1;
+  const [items, allStages] = await Promise.all([frameItems(stage), listStages()]);
+  // 地図に出ないステージ（`listed: false`）は null。STEP の札を出さない
+  const number = stageStepNumber(allStages, stage.id);
   // 参照切れを外したぶん位置がずれるので、枠の並びの中で数え直す
   const currentIndex = items.findIndex((item) => item.id === ref.ref && item.type === ref.type);
 
@@ -164,7 +163,7 @@ export default async function StageContentPage({
         id: stage.id,
         title: stage.title,
         reading: stage.reading,
-        number: number > 0 ? number : 1,
+        number,
       }}
       items={items}
       currentIndex={currentIndex >= 0 ? currentIndex : 0}
@@ -194,6 +193,7 @@ async function renderContent(ref: StageContentRef) {
         <ArticleView
           article={article}
           dictionary={buildDictionary(await listWordStages())}
+          characters={await getArticleCharacters(article)}
           embedded
         />
       );

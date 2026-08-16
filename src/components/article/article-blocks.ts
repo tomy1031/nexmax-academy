@@ -60,6 +60,21 @@ export function shouldShowToc(headings: readonly HeadingEntry[]): boolean {
  * 句点は足しなおす。項目は「〜します。」で終わるものと終わらないものが混ざるので、
  * そのまま つなぐと 文の切れ目が音にならず、5つの項目が一息で流れてしまう。
  */
+/**
+ * しょうかいカードに出す 登場人物1人ぶん。
+ *
+ * `content/characters/*.json` から **絵と名前だけ**を持ってくる。立場と ひとことは
+ * 記事側（`characters` ブロック）にある——人物カードの `role` / `personality` は
+ * 先生向けの覚書で、学習者に読ませる言葉ではない（schema.ts のコメント）。
+ */
+export interface ArticleCharacter {
+  readonly id: string;
+  readonly name: string;
+  readonly reading: string;
+  /** 顔の絵。無ければ カードは 名前だけになる。 */
+  readonly portrait?: string;
+}
+
 export function joinItemsForSpeech(items: readonly string[]): string {
   return items
     .map((item) => item.trim().replace(/[。．]+$/u, ""))

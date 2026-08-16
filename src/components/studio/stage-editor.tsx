@@ -5,7 +5,7 @@ import type { ContentRefType, Stage } from "@/content/schema";
 import { contentKindMeta } from "@/lib/content-kinds";
 import { stageContentPath } from "@/lib/stage-routes";
 import { AreaPicker } from "./area-picker";
-import { STAGE_COLOR_OPTIONS } from "./drafts";
+import { LISTED_OPTIONS, STAGE_COLOR_OPTIONS } from "./drafts";
 import { moveItem, removeAt } from "./list-ops";
 import { MiniButton, SelectField, StudioSection, TextAreaField, TextField } from "./studio-ui";
 import { VocabExtractor } from "./vocab-extractor";
@@ -109,6 +109,22 @@ export function StageEditor({
             value={value.color}
             options={STAGE_COLOR_OPTIONS}
             onChange={(color) => patch({ color })}
+          />
+          {/*
+            「こうかい」（完成度）とは別の軸。こうかいしても 地図に出さない、が
+            この選択である——案内のページを 学習の道すじに 混ぜないため。
+            出さないほうを選んでも URL は生きるので、リンクを配れば ひらける。
+          */}
+          <SelectField
+            label="まなびマップ"
+            value={value.listed ? "map" : "url"}
+            options={LISTED_OPTIONS}
+            onChange={(where) => patch({ listed: where === "map" })}
+            hint={
+              value.listed
+                ? "地図に 停留所として ならびます。"
+                : `地図には 出ません。${value.id ? `/${value.id}` : "URL"} を リンクで 配って ひらいてもらいます。`
+            }
           />
         </div>
       </StudioSection>

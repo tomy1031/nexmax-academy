@@ -14,6 +14,7 @@
     "status": "done",
     "src": "/img/characters/yukawa/sheet.webp"
   },
+  "portrait": "/img/characters/yukawa/portrait.webp",
   "references": [
     "/img/characters/yukawa/reference.jpg"
   ]

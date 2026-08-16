@@ -14,6 +14,7 @@
     "status": "done",
     "src": "/img/characters/matsui/sheet.webp"
   },
+  "portrait": "/img/characters/matsui/portrait.webp",
   "references": [
     "/img/characters/matsui/reference.jpg"
   ],

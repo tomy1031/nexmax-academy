@@ -39,6 +39,8 @@ export function emptyStage(): Stage {
     description: "",
     color: "sky",
     status: "draft",
+    // 新しいステージは 地図に出す（外すのは「はじめに」のような案内だけ）。
+    listed: true,
     contents: [],
     wordStageIds: [],
   };
@@ -167,6 +169,12 @@ export function emptyArticleBlock(kind: ArticleBlock["kind"]): ArticleBlock {
       return { kind: "link", ref: "", type: "article", label: "つぎを ひらく" };
     case "extlink":
       return { kind: "extlink", url: "https://", label: "サイトを ひらく" };
+    case "characters":
+      // ref は空で始める。先生が人物カードを選ぶまで、参照切れの警告が出て気づける。
+      return {
+        kind: "characters",
+        items: [{ ref: "", role: "せんぱい", note: "ここに しょうかいを 書きます。" }],
+      };
   }
 }
 
@@ -289,6 +297,7 @@ export const ARTICLE_BLOCK_OPTIONS: readonly { value: ArticleBlock["kind"]; labe
   { value: "vocab", label: "ことばチップ" },
   { value: "link", label: "つぎへのリンク" },
   { value: "extlink", label: "外部リンク" },
+  { value: "characters", label: "とうじょう人物カード" },
 ];
 
 export const CONTENT_TYPE_OPTIONS: readonly { value: ContentRefType; label: string }[] = [
@@ -307,6 +316,15 @@ export const STAGE_COLOR_OPTIONS: readonly { value: Stage["color"]; label: strin
   { value: "sky", label: "そら" },
   { value: "coral", label: "コーラル" },
   { value: "sky-soft", label: "うすい そら" },
+];
+
+/**
+ * 地図に出すか（`listed`）。true/false のままだと どちらが どちらか 読めないので、
+ * 先生の画面では「どこに 置くか」の選択にする。
+ */
+export const LISTED_OPTIONS: readonly { value: "map" | "url"; label: string }[] = [
+  { value: "map", label: "地図に ならべる" },
+  { value: "url", label: "地図に 出さない（URLだけ）" },
 ];
 
 export const PANEL_SIZE_OPTIONS: readonly { value: MangaPanel["size"]; label: string }[] = [

@@ -52,8 +52,12 @@ export interface FrameStage {
   id: string;
   title: string;
   reading: string;
-  /** マップの上から数えた番号（STEP 01…）。 */
-  number: number;
+  /**
+   * マップの上から数えた番号（STEP 01…）。
+   * **地図に出ないステージは null**。上に戻るリンクは残し、札の字だけ変える
+   *（`stageStepNumber` — 番号が無いことを 1 に倒さない）。
+   */
+  number: number | null;
 }
 
 export function ContentFrame({
@@ -332,7 +336,7 @@ function StageRail({
   const heading = (
     <div>
       <Link href={`/${stage.id}`} className="text-sky text-[11px] font-black tracking-widest">
-        STEP {String(stage.number).padStart(2, "0")}
+        {stage.number === null ? "もくじ" : `STEP ${String(stage.number).padStart(2, "0")}`}
       </Link>
       <p className="text-navy text-sm font-black">
         <ruby>

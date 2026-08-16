@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type { Article, ArticleBlock, Content, ContentRefType } from "@/content/schema";
+import type { Article, ArticleBlock, Character, Content, ContentRefType } from "@/content/schema";
 import { ArticleView } from "@/components/article/article-view";
 import { ARTICLE_BLOCK_OPTIONS, CONTENT_TYPE_OPTIONS, emptyArticleBlock } from "./drafts";
 import { ImageSlotEditor } from "./image-slot-editor";
@@ -28,11 +28,17 @@ export function ArticleEditor({
   value,
   onChange,
   known = [],
+  characters = [],
 }: {
   value: Article;
   onChange: (article: Article) => void;
   /** すでに作った教材。AIに「習った ことば」を踏まえさせるために渡す。 */
   known?: readonly Content[];
+  /**
+   * 人物カードの一覧。しょうかいカードで だれを 出すか えらぶのと、
+   * 右のプレビューに **本物の 絵**を 出すのに使う（「見えているもの＝出るもの」）。
+   */
+  characters?: readonly Character[];
 }) {
   const [addKind, setAddKind] = useState<ArticleBlock["kind"]>("paragraph");
   const patch = (part: Partial<Article>) => onChange({ ...value, ...part });
@@ -86,6 +92,7 @@ export function ArticleEditor({
                     block={block}
                     articleId={value.id}
                     onChange={(next) => patch({ blocks: replaceAt(value.blocks, index, next) })}
+                    characters={characters}
                   />
                 </div>
               </article>
@@ -121,7 +128,7 @@ export function ArticleEditor({
         <div className="card-island p-3">
           <p className="text-ink-soft text-xs font-black">プレビュー（学習者と同じ画面）</p>
           <div className="mt-2 max-h-[70dvh] overflow-y-auto rounded-2xl bg-white/60">
-            <ArticleView article={value} preview />
+            <ArticleView article={value} preview characters={characters} />
           </div>
         </div>
       </aside>
@@ -137,10 +144,13 @@ function BlockEditor({
   block,
   articleId,
   onChange,
+  characters,
 }: {
   block: ArticleBlock;
   articleId: string;
   onChange: (block: ArticleBlock) => void;
+  /** 人物カードの一覧（しょうかいカードで だれを 出すか えらぶ）。 */
+  characters: readonly Character[];
 }) {
   switch (block.kind) {
     case "heading":
@@ -352,6 +362,75 @@ function BlockEditor({
             value={block.note ?? ""}
             onChange={(note) => onChange({ ...block, note: note.length > 0 ? note : undefined })}
           />
+        </div>
+      );
+
+    case "characters":
+      /*
+       * 絵と 名前は 人物カードから 引くので、ここで 書くのは **学習者に見せる
+       * 立場と ひとこと**だけ。人物カードの `role` は 先生向けの 覚書なので
+       * そのまま 出さない（schema.ts）。
+       */
+      return (
+        <div className="space-y-2">
+          {block.items.map((item, index) => (
+            <div
+              key={index}
+              className="border-hairline flex flex-wrap items-end gap-2 rounded-xl border-2 bg-white p-2"
+            >
+              <div className="w-44">
+                <SelectField
+                  label="だれ（人物カード）"
+                  value={item.ref}
+                  options={[
+                    { value: "", label: "えらんでください" },
+                    ...characters.map((person) => ({
+                      value: person.id,
+                      label: person.name.length > 0 ? person.name : person.id,
+                    })),
+                  ]}
+                  onChange={(ref) =>
+                    onChange({ ...block, items: replaceAt(block.items, index, { ...item, ref }) })
+                  }
+                />
+              </div>
+              <div className="w-40">
+                <TextField
+                  label="立場（学習者に見せる）"
+                  value={item.role}
+                  onChange={(role) =>
+                    onChange({ ...block, items: replaceAt(block.items, index, { ...item, role }) })
+                  }
+                />
+              </div>
+              <div className="min-w-[12rem] flex-1">
+                <TextField
+                  label="ひとこと しょうかい"
+                  value={item.note}
+                  onChange={(note) =>
+                    onChange({ ...block, items: replaceAt(block.items, index, { ...item, note }) })
+                  }
+                />
+              </div>
+              <RowTools
+                index={index}
+                count={block.items.length}
+                label="人物"
+                onMove={(delta) =>
+                  onChange({ ...block, items: moveItem(block.items, index, delta) })
+                }
+                onRemove={() => onChange({ ...block, items: removeAt(block.items, index) })}
+              />
+            </div>
+          ))}
+          <MiniButton
+            tone="accent"
+            onClick={() =>
+              onChange({ ...block, items: [...block.items, { ref: "", role: "", note: "" }] })
+            }
+          >
+            ＋ 人物を 追加
+          </MiniButton>
         </div>
       );
   }
