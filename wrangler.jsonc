@@ -20,6 +20,10 @@
   // 改名すると別 Worker になる（旧名のデプロイ履歴は引き継がれない）。
   "name": "academy",
   "main": ".open-next/worker.js",
+  // Wrangler は OpenNext が作った handler を **もう一度 束ね直す**。ここを指定しないと
+  // その 最終束ねだけ 圧縮されず、上げる大きさが gzip で 333KiB ふくらむ（実測）。
+  // 無料枠の スクリプト上限は gzip 3MiB で、超えると deploy が code:10027 で 止まる。
+  "minify": true,
   "compatibility_date": "2026-07-01",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
   "assets": {

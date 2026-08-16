@@ -2,12 +2,21 @@ import type { Metadata } from "next";
 import { M_PLUS_Rounded_1c, Noto_Sans_JP } from "next/font/google";
 import "./globals.css";
 
-// 丸ゴシック（見出し・UI・本文の主フォント）
+/*
+ * 丸ゴシック（見出し・UI・本文の主フォント）
+ *
+ * `preload: false` にしてある。和文フォントは Google 側で **358個に分割**されており、
+ * preload を有効にすると ①全ページぶんの ファイル一覧（700KB）が Worker に 焼き込まれ
+ * ②HTML の 先頭に preload の タグが 310本（1ページ ~31KB）出る。学習者の 回線にも
+ * デプロイの 大きさにも 効く（実測）。`display: "swap"` があるので、読み込みの あいだは
+ * 代わりの 字で 表示され、あとから 差し替わる。
+ */
 const rounded = M_PLUS_Rounded_1c({
   variable: "--font-rounded",
   weight: ["400", "500", "700", "800"],
   subsets: ["latin"],
   display: "swap",
+  preload: false,
 });
 
 // 和文の予備（重い漢字組みのフォールバック）
