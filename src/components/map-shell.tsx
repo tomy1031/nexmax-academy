@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -167,19 +168,29 @@ function flownUntil(progress: StageProgress, routeAreas: readonly MapArea[]): nu
   return index + NODE_TOP / 100;
 }
 
+/**
+ * 左上のロゴ。押すと最初の画面へもどる。
+ *
+ * せまい画面の一番上の段は**メニューの ☰ と きろくの おび（Hud）で ふさがっている**ので、
+ * ロゴは**一段下げる**。同じ段に置くと、どちらかの下に隠れて「見えないのに押せる場所」になる
+ *（幅 390px で実際に隠れていた）。広い画面はメニューが横に出るので、一番上に置ける。
+ */
 function Logo() {
   return (
     <Link
       href="/"
       aria-label="Nexmax Academy"
-      className="fixed top-3 left-3 z-50 rounded-2xl bg-white/90 px-3 py-2 text-center leading-none shadow-lg backdrop-blur-sm"
+      className="fixed top-[4.5rem] left-3 z-50 rounded-2xl bg-white/85 px-2 py-1.5 shadow-lg backdrop-blur-sm md:top-3"
     >
-      <span className="block bg-linear-to-b from-[#55c7ff] to-[#005fa8] bg-clip-text text-sm font-black text-transparent [-webkit-text-stroke:1px_white]">
-        Nexmax
-      </span>
-      <span className="block bg-linear-to-b from-[#ffe477] to-[#f0a819] bg-clip-text text-xs font-black text-transparent [-webkit-text-stroke:1px_white]">
-        Academy
-      </span>
+      <Image
+        src="/img/ui/map_logo.webp"
+        alt=""
+        width={900}
+        height={300}
+        priority
+        unoptimized
+        className="h-auto w-20 md:w-32"
+      />
     </Link>
   );
 }
