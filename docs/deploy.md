@@ -194,6 +194,35 @@ Vercel の2本（`nexmax-academy.vercel.app` / `*.vercel.app`）は移行完了�
 本番へ飛ばされていた**（§4-1 が「症状」として書いていた現象そのもの）。
 `https://nexmax-academy.vercel.app` だけが動いていたのは Site URL の暗黙許可のため。
 
+### 0.5 Worker の大きさ（無料枠 gzip 3MiB）— 2026-08-16 に一度これで止まった
+
+**この上限は「サーバで動くコードを zip した大きさ」**で、通信量・保存量・アクセス数とは別。
+超えると deploy が `code: 10027 / Your Worker exceeded the size limit of 3 MiB` で止まる。
+**D1・KV・R2 にデータを逃がしても効かない**（コードは実行時にストレージから読めない）。
+静的アセット（`.open-next/assets/` の画像・クライアントJS・フォント）は**この上限に含まれない**。
+
+見張り: `npm run check:size`（**2.8MiB 警告・3.0MiB で失敗**）。CI の `size` ジョブが同じものを走らせる。
+資格情報は要らない（`wrangler deploy --dry-run` で測る）。
+
+**2026-08-16 の実例**: 上限まで残り 5 KiB（3066/3072）まで来ていたことに誰も気づかず、
+教材追加の PR をマージした瞬間に STG が止まった。原因は機能の量ではなく**ビルドの無駄3つ**:
+
+| 直したこと | 削減（gzip・実測） | どこ |
+| ---------- | ------------------ | ---- |
+| Wrangler が OpenNext の出力を**束ね直すときに圧縮していなかった** | ▲333 KiB | `wrangler.jsonc` の `minify: true` |
+| ビルド道具（Turbopack）が**同じ塊を何度も出していた**（zod 6コピー・supabase-js 3コピー） | ▲892 KiB | `package.json` の `build: next build --webpack` |
+| 和文フォントの `preload` で**358分割のファイル一覧**が全ページぶん焼き込まれていた | ▲19 KiB（raw ▲607 KiB） | `src/app/layout.tsx` の `preload: false` |
+
+結果 **3066 → 1822 KiB（59%）**。フォントの方は副次効果が大きく、**各HTMLから preload タグが
+310本（1ページ約31KB）消えた**——学習者の回線にも効く。
+
+> **`--webpack` を外さないこと。** Turbopack に戻すと zod が6コピーに戻り、また上限に近づく。
+> ビルドは webpack のぶん遅いが、それは意図した取引。
+
+まだ残っている無駄（次に効く順）: Live の SDK がサーバ側にも入っている（gzip ~130 KiB。
+クライアント専用にすれば消える）／焼き込みコンテンツが2コピー（~78 KiB）／
+先生向け `/admin`・`/studio` の SSR（~50〜100 KiB）。
+
 ### 0.4 恒久の制約
 
 - **`src/middleware.ts` を `proxy.ts` に改名しない。** `next build` の

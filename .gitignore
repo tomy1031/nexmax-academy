@@ -52,3 +52,10 @@ cloudflare-env.d.ts
 
 # pdf.js の worker（npm install のたびに scripts/copy_pdf_worker.mjs が写す生成物）
 /public/pdfjs/
+
+# 通しの自動検証（Playwright）の出力。CI では成果物として上げる
+/test-results/
+/playwright-report/
+/blob-report/
+/e2e-screens/
+/playwright/.cache/
