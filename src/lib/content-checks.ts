@@ -243,12 +243,16 @@ export function checkDuplicateIds(entries: readonly ContentEntry[]): Finding[] {
  *   先生が並び替えたつもりで順番が変わらない、という分かりにくい状態になる。
  * - `area` が無いのは warn: ステージ自体はマップに出る（空色の帯になる）ので消えはしない。
  *   だから止めずに、絵の付け方まで案内する。
+ *
+ * どちらも「地図に並んだときに困ること」なので、地図に出ないステージ
+ *（`listed: false`）は対象外にする。「はじめに」に エリアの絵が無いのは
+ * 抜けではなく、そもそも立つ土地が無いという意味である。
  */
 export function checkStageOrder(entries: readonly ContentEntry[]): Finding[] {
   const findings: Finding[] = [];
   const byOrder = new Map<number, string>();
   for (const { file, content } of entries) {
-    if (content.kind !== "stage" || content.status !== "published") continue;
+    if (content.kind !== "stage" || content.status !== "published" || !content.listed) continue;
     const dup = byOrder.get(content.order);
     if (dup) {
       findings.push({
@@ -310,12 +314,29 @@ export function checkReferenceIntegrity(entries: readonly ContentEntry[]): Findi
   for (const { file, content } of entries) {
     if (content.kind !== "article") continue;
     content.blocks.forEach((block, i) => {
-      if (block.kind !== "link") return;
-      if (!idsByKind.get(block.type)?.has(block.ref)) {
-        findings.push({
-          file,
-          level: "error",
-          message: `blocks[${i}] の link 先「${block.ref}」（${block.type}）が存在しない — 「つぎは これ」のタップ先が404になる（設計07 §5）`,
+      if (block.kind === "link") {
+        if (!idsByKind.get(block.type)?.has(block.ref)) {
+          findings.push({
+            file,
+            level: "error",
+            message: `blocks[${i}] の link 先「${block.ref}」（${block.type}）が存在しない — 「つぎは これ」のタップ先が404になる（設計07 §5）`,
+          });
+        }
+        return;
+      }
+      /*
+       * しょうかいカードも参照。欠けても記事は出る（名前の代わりに id が出る）ので
+       * 画面は壊れないが、**学習者には「hendy」という字が見える**。黙って通さない。
+       */
+      if (block.kind === "characters") {
+        block.items.forEach((item, j) => {
+          if (!idsByKind.get("character")?.has(item.ref)) {
+            findings.push({
+              file,
+              level: "error",
+              message: `blocks[${i}].items[${j}] の しょうかいカード「${item.ref}」が character として存在しない — 絵と名前が出ず、IDがそのまま学習者に見える`,
+            });
+          }
         });
       }
     });
@@ -556,6 +577,14 @@ function collectLabeledTexts(content: Content): LabeledText[] {
             //（article-view.tsx が どちらも RubyText で出す）。
             push(at("label"), block.label);
             push(at("note"), block.note);
+            break;
+          case "characters":
+            // しょうかいカード。立場と ひとことは 記事が持つ＝学習者が読む文。
+            // 名前は 人物カード側の (name, reading) で ルビが付くので ここでは見ない。
+            block.items.forEach((item, j) => {
+              push(at(`items[${j}].role`), item.role);
+              push(at(`items[${j}].note`), item.note);
+            });
             break;
         }
       });

@@ -1,0 +1,26 @@
+{
+  "kind": "stage",
+  "id": "hajimeni",
+  "order": 900,
+  "title": "はじめに",
+  "reading": "はじめに",
+  "description": "この プログラムの いりぐちです。これから なにを べんきょうするのか、だれと いっしょに あるくのかを みます。",
+  "color": "sky-soft",
+  "status": "published",
+  "listed": false,
+  "contents": [
+    {
+      "ref": "hajimeni_mirai",
+      "type": "slides"
+    },
+    {
+      "ref": "hajimeni_korekara",
+      "type": "article"
+    },
+    {
+      "ref": "hajimeni_hitobito",
+      "type": "article"
+    }
+  ],
+  "wordStageIds": []
+}

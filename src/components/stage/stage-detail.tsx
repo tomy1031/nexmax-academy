@@ -45,8 +45,12 @@ export interface StageWordItem {
 
 export interface StageHeader {
   id: string;
-  /** マップの上から数えた番号（STEP 01…）。 */
-  number: number;
+  /**
+   * マップの上から数えた番号（STEP 01…）。
+   * **地図に出ないステージは null**——札そのものを出さない。1 に倒すと、
+   * 案内のページが本物の STEP 01 と同じ顔で並ぶ（`stageStepNumber`）。
+   */
+  number: number | null;
   title: string;
   reading: string;
   description: string;
@@ -95,9 +99,11 @@ export function StageDetail({
         <Link href="/map" className="text-ink-soft hover:text-navy text-sm font-extrabold">
           ← マップ
         </Link>
-        <span className="bg-sky-soft text-navy rounded-full px-3 py-1 text-xs font-extrabold">
-          STEP {String(stage.number).padStart(2, "0")}
-        </span>
+        {stage.number !== null && (
+          <span className="bg-sky-soft text-navy rounded-full px-3 py-1 text-xs font-extrabold">
+            STEP {String(stage.number).padStart(2, "0")}
+          </span>
+        )}
       </header>
 
       <section className="card-island p-5 sm:p-6">

@@ -14,6 +14,7 @@
     "status": "done",
     "src": "/img/characters/okuda/sheet.webp"
   },
+  "portrait": "/img/characters/okuda/portrait.webp",
   "references": [
     "/img/characters/okuda/reference.jpg"
   ]

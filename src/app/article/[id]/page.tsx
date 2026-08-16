@@ -1,7 +1,7 @@
 import { notFound, redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { ArticleView } from "@/components/article/article-view";
-import { getArticle, listArticles } from "@/lib/content";
+import { getArticle, getArticleCharacters, listArticles } from "@/lib/content";
 import { canonicalContentPath } from "@/lib/stage-lookup";
 
 /**
@@ -43,5 +43,5 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
   const canonical = await canonicalContentPath("article", id);
   if (canonical) redirect(canonical);
 
-  return <ArticleView article={article} />;
+  return <ArticleView article={article} characters={await getArticleCharacters(article)} />;
 }

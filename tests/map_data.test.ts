@@ -1,6 +1,13 @@
 import { describe, expect, it } from "vitest";
 import { contentSchema, type Stage } from "../src/content/schema";
-import { sortStages, toMapAreas, toMapStages } from "../src/lib/map-data";
+import {
+  isOnMap,
+  mapListedStages,
+  sortStages,
+  stageStepNumber,
+  toMapAreas,
+  toMapStages,
+} from "../src/lib/map-data";
 
 /**
  * マップの中身＝公開ステージそのもの。
@@ -55,6 +62,58 @@ describe("sortStages", () => {
     const input = [stage({ id: "b", order: 2 }), stage({ id: "a", order: 1 })];
     sortStages(input);
     expect(input.map((item) => item.id)).toEqual(["b", "a"]);
+  });
+});
+
+/**
+ * 「地図に出す」は「完成している」とは別の問い。
+ *
+ * 「はじめに」のような案内は、完成していても地図には出さず、URLで配る。ここが
+ * 崩れると、案内が学習の道すじに割り込むか（出しすぎ）、先生が配ったリンクの先が
+ * 消える（出さなすぎ）。
+ */
+describe("isOnMap / mapListedStages", () => {
+  it("既定では地図に出る（listed を書かない既存のステージが消えない）", () => {
+    expect(isOnMap(stage())).toBe(true);
+  });
+
+  it("したがきは 地図に出ない", () => {
+    expect(isOnMap(stage({ status: "draft" }))).toBe(false);
+  });
+
+  it("こうかいしていても listed:false なら 地図に出ない", () => {
+    expect(isOnMap(stage({ status: "published", listed: false }))).toBe(false);
+  });
+
+  it("地図に並ぶのは 出す指定のものだけ", () => {
+    const stages = [
+      stage({ id: "guide", order: 1, listed: false }),
+      stage({ id: "a", order: 2 }),
+      stage({ id: "b", order: 3 }),
+    ];
+    expect(mapListedStages(stages).map((item) => item.id)).toEqual(["a", "b"]);
+  });
+});
+
+describe("stageStepNumber", () => {
+  it("地図の上から数えた番号（地図に出ないステージは 数に入らない）", () => {
+    const stages = [
+      stage({ id: "guide", order: 1, listed: false }),
+      stage({ id: "a", order: 2 }),
+      stage({ id: "b", order: 3 }),
+    ];
+    expect(stageStepNumber(stages, "a")).toBe(1);
+    expect(stageStepNumber(stages, "b")).toBe(2);
+  });
+
+  it("地図に出ないステージは null（1 に倒さない）", () => {
+    // 1 に倒すと、案内のページが 本物の STEP 01 と同じ札を出す。
+    const stages = [stage({ id: "guide", order: 1, listed: false }), stage({ id: "a", order: 2 })];
+    expect(stageStepNumber(stages, "guide")).toBeNull();
+  });
+
+  it("知らないIDも null", () => {
+    expect(stageStepNumber([stage({ id: "a" })], "nowhere")).toBeNull();
   });
 });
 
