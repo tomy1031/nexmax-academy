@@ -28,6 +28,32 @@ describe("進捗の保存層", () => {
     expect(store.readTestResult("stage01")?.score).toBe(34);
   });
 
+  /**
+   * もんだい（quizset）の点も ここに残す。読み／意味の内わけは
+   * ことばのテストにしか無い数え方なので、無いまま記録できることを固定する。
+   */
+  it("読み／意味の内わけが無い成績（もんだい）も、初回だけ残す", () => {
+    const store = createProgressStore(createMemoryBackend());
+    store.recordFirstTestResult({
+      stageId: "kaisha_shirabekata_check",
+      score: 6,
+      maxScore: 7,
+      total: 6,
+      passed: true,
+      at: "2026-08-15T00:00:00.000Z",
+    });
+    const retried = store.recordFirstTestResult({
+      stageId: "kaisha_shirabekata_check",
+      score: 7,
+      maxScore: 7,
+      total: 6,
+      passed: true,
+      at: "2026-08-15T01:00:00.000Z",
+    });
+    expect(retried.score).toBe(6);
+    expect(store.readTestResult("kaisha_shirabekata_check")?.readingCorrect).toBeUndefined();
+  });
+
   it("ゲームスコアはテスト成績とは別に、最高記録だけ伸ばす", () => {
     const store = createProgressStore(createMemoryBackend());
     store.recordGameScore("stage01", 100, 3);

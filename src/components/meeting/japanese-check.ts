@@ -74,17 +74,10 @@ export function checkJapanese(raw: string): { key: AdviceKey; text: AdviceText }
   return { key: "good", text: ADVICE.good(answer) };
 }
 
-/**
- * 学習者の答えを、相手の受け答えに差し込む形に整える。
- *
- * 「わたしは ソカです。」と書かれたら、おうむ返しは「ソカ**さん**ですね」でありたい。
- * 文の飾り（わたしは／です／。）を落として、中身だけ取り出す。
+/*
+ * おうむ返しに 差し込む「答えの 中身」の 取り出しは ここに 置かない。
+ * 以前 ここに あった `coreOf` は 末尾の「します。」だけを 削る 作りで、
+ * 「ソピアです。よろしく おねがいします。」を「ソピアです。よろしく おねがいし」に
+ * していた。文の 切り出しは 差し込みと ひとつづきの 仕事なので、
+ * `src/lib/meeting/speech.ts` の `answerCore`（`fillAnswer` が 中で 呼ぶ）が 持つ。
  */
-export function coreOf(raw: string): string {
-  return raw
-    .trim()
-    .replace(/^(わたしは|私は|ぼくは|僕は)\s*/u, "")
-    .replace(/(です|ます|でした|ました)[。！？!?]?\s*$/u, "")
-    .replace(/[。！？!?]\s*$/u, "")
-    .trim();
-}

@@ -398,14 +398,38 @@ const HUD_PILL =
 function Hud({
   profile,
   progress,
+  stages,
   view,
   onViewChange,
 }: {
   profile: ProfileRow | null;
   progress: StageProgress;
+  /** 💎を数えるもと（マップに出ている全ステージの教材）。 */
+  stages: readonly MapStage[];
   view: MapView;
   onViewChange: (view: MapView) => void;
 }) {
+  /*
+   * 💎は **おえた教材の数**。ずっと "0" の 焼き付けだったが、教材は
+   *「見つけた 💎は あなたの もの」と 約束している。増えない たからを 出し続けると、
+   * つぎの ステージで さがす 気持ちが つづかない。
+   *
+   * 数える もとは すでに ある 進捗（`content:<id>` の completed）にする。
+   * 🚩の 札が ステージの 数を 出しているので、💎は そのうちの 1本ずつ——
+   * 1本 おえるたびに 増え、同じ 数を 2か所で 言わない。
+   */
+  const contentIds = useMemo(
+    () => stages.flatMap((stage) => stage.contents.map((content) => content.id)),
+    [stages],
+  );
+  const serverKey = useMemo(() => contentIds.map(() => "0").join(""), [contentIds]);
+  const gemKey = useSyncExternalStore(
+    subscribeProgress,
+    () => contentIds.map((id) => contentStatusCode(readContentProgress(id))).join(""),
+    () => serverKey,
+  );
+  const gems = [...gemKey].filter((code) => code === "2").length;
+
   return (
     <div className="fixed top-3 right-3 z-50 flex max-w-[calc(100vw-6rem)] flex-col items-end gap-2">
       <div className="flex flex-wrap justify-end gap-2">
@@ -416,6 +440,7 @@ function Hud({
               icon: <span aria-hidden>🚩</span>,
               // 数字は等幅にする。桁が変わるたびに札の幅が動くと、目が落ち着かない。
               value: `${progress.clearedCount}/${progress.totalCount}`,
+              title: "おえた ステージ",
             },
             {
               key: "coin",
@@ -426,10 +451,16 @@ function Hud({
                 />
               ),
               value: "0",
+              title: "コイン",
             },
-            { key: "gem", icon: <span aria-hidden>💎</span>, value: "0" },
+            {
+              key: "gem",
+              icon: <span aria-hidden>💎</span>,
+              value: `${gems}`,
+              title: "みつけた たから",
+            },
           ].map((item) => (
-            <span key={item.key} className={HUD_PILL}>
+            <span key={item.key} className={HUD_PILL} title={item.title}>
               {item.icon}
               <span className="tabular-nums">{item.value}</span>
             </span>
@@ -1428,7 +1459,13 @@ export function MapShell({
   return (
     <div className="bg-bg-sky relative min-h-dvh">
       <Logo />
-      <Hud profile={databaseProfile} progress={progress} view={view} onViewChange={changeView} />
+      <Hud
+        profile={databaseProfile}
+        progress={progress}
+        stages={stages}
+        view={view}
+        onViewChange={changeView}
+      />
       <Navigation
         collapsed={collapsed}
         drawerOpen={drawerOpen}

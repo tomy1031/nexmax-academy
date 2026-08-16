@@ -1,20 +1,22 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "motion/react";
 import type { QuizQuestion, QuizSet } from "@/content/schema";
 import { FeedbackMessage } from "@/components/feedback-message";
 import { NexMax } from "@/components/nexmax";
 import { RubyText } from "@/components/ruby-text";
 import { buildFuriganaIndex } from "@/lib/text/furigana";
-import { recordContentProgress } from "@/lib/progress/store";
+import { createProgressStore, recordContentProgress } from "@/lib/progress/store";
+import { clearQuizResume, restoreQuiz, saveQuizResume, type QuizStart } from "@/lib/quiz/resume";
 import { CelebrationBurst, StampRow } from "./celebration";
 import { QuestionBody } from "./question-types";
 import {
   createQuizSession,
   currentQuestion,
   quizReducer,
+  resumeQuizSession,
   summarizeQuiz,
   type QuizAction,
   type QuizState,
@@ -40,22 +42,96 @@ export function QuizRunner({
   embedded?: boolean;
 }) {
   const furigana = useMemo(() => buildFuriganaIndex(set.furigana ?? []), [set.furigana]);
-  const [state, setState] = useState<QuizState>(() => createQuizSession(set));
+  /*
+   * 端末に 残って いる「いまの ところ」。1度だけ 読む（`meeting-session.tsx` と 同じ
+   * useState 初期化の 流儀）。ロビー（StartCard）の 中身は この 値に 依るので、
+   * ここで 読んで おかないと 何問目からかが 分からない。
+   */
+  const [start] = useState<QuizStart>(() =>
+    restoreQuiz(
+      set.id,
+      set.questions.map((q) => q.id),
+    ),
+  );
+  const [state, setState] = useState<QuizState>(() =>
+    resumeQuizSession(set, start.index, start.results),
+  );
   // 1問目をいきなり出さない。「何をするのか・全部できなくてよい」を先に置く
   //（いきなり問われると、答えられない不安のほうが先に立つ — P8）。
   const [started, setStarted] = useState(false);
+  /** 途中から 戻って きた ことを StartCard に 伝えるか（「はじめから」を 選ぶと 消える）。 */
+  const [resumed, setResumed] = useState(start.resumed);
 
   const dispatch = useCallback((action: QuizAction) => {
     setState((prev) => quizReducer(prev, action));
   }, []);
 
-  // ステージの進み具合に反映する（設計07 §3）。始めた時点と、終えた時点を残す。
+  /*
+   * 「まちがえた もんだいだけ」の 再挑戦は 問題を 絞った 別セッション（onRetryWrong）。
+   * しおりは 教材まるごとの 出題順を 前提に するので、絞った セッションの 途中経過は
+   * 保存しない——中途半端な 内訳を 次回 誤って 読み込ませない ための 線引き。
+   */
+  const isFullSession = state.questions.length === set.questions.length;
+
+  /*
+   * ステージの進み具合に反映する（設計07 §3）。しおり（position）は
+   * `slide-deck.tsx` と 同じ 置き場（`position.question`）に 常に 同期する
+   * ——「はじめから」で 内訳を 消した あとに 書かないままだと、しおりだけ 前の
+   * 番号に 残る（次に 開いたとき「はじめから」が「つづきから」に 化けてしまう）。
+   * 絞った セッション（まちがえた もんだいだけ）では しおりを **動かさない**
+   * ——教材まるごとの 何問目とは 対応しない 数だから。
+   */
   const done = state.phase.kind === "finished";
   useEffect(() => {
-    recordContentProgress(set.id, { status: done ? "completed" : "started" });
-  }, [set.id, done]);
+    recordContentProgress(set.id, {
+      status: done ? "completed" : "started",
+      ...(isFullSession ? { position: { question: state.results.length } } : {}),
+    });
+  }, [set.id, done, isFullSession, state.results]);
+
+  /**
+   * いまの ところを 端末に 残す（つぎに 開いたとき つづきから 始めるため）。
+   * 完走したら 消す——完走した 人が もう一度 開いたら はじめから 挑戦できるのが 正しい。
+   */
+  useEffect(() => {
+    if (!isFullSession) return;
+    if (done) {
+      clearQuizResume(set.id);
+      return;
+    }
+    if (state.results.length === 0) return; // 何も 答えて いなければ 書かない
+    saveQuizResume({ quizSetId: set.id, results: [...state.results] });
+  }, [set.id, done, isFullSession, state.results]);
 
   const summary = summarizeQuiz(state);
+
+  /*
+   * 点数を **先生が見る成績**（TestResult）にも残す。
+   *
+   * これまで もんだいは 進捗（おわった／とちゅう）しか 書いておらず、何点だったかは
+   * 画面を閉じた瞬間に 消えていた。同じ「テスト」なのに ことばアーケードの点だけが
+   * 残る、という 割れ方をしていた。
+   *
+   * **初回だけが正式**（store の recordFirstTestResult が2回目以降を捨てる）。
+   * だから「まちがえた もんだいだけ」の やり直しで 点が 上書きされる心配は無い
+   * ——やり直しは 学びのためで、成績のためではない（P11）。
+   * 読み／意味の内わけは ことばの テスト だけの数え方なので、ここでは 書かない。
+   */
+  const store = useMemo(() => createProgressStore(), []);
+  const savedRef = useRef<string | null>(null);
+  useEffect(() => {
+    if (!done) return;
+    if (savedRef.current === set.id) return;
+    savedRef.current = set.id;
+    store.recordFirstTestResult({
+      stageId: set.id,
+      score: summary.earned,
+      maxScore: summary.maxPoints,
+      total: summary.total,
+      passed: summary.passed,
+      at: new Date().toISOString(),
+    });
+  }, [done, set.id, store, summary]);
   const question = currentQuestion(state);
   const byId = useMemo(() => new Map(set.questions.map((q) => [q.id, q])), [set.questions]);
 
@@ -73,7 +149,19 @@ export function QuizRunner({
       )}
 
       {!started ? (
-        <StartCard set={set} furigana={furigana} onStart={() => setStarted(true)} />
+        <StartCard
+          set={set}
+          furigana={furigana}
+          resumed={resumed}
+          answeredCount={start.results.length}
+          onContinue={() => setStarted(true)}
+          onRestart={() => {
+            clearQuizResume(set.id);
+            setState(createQuizSession(set));
+            setResumed(false);
+            setStarted(true);
+          }}
+        />
       ) : state.phase.kind === "finished" ? (
         <QuizResultCard
           set={set}
@@ -156,15 +244,29 @@ export function QuizRunner({
  * 「これから やること」カード。
  * 枠の中（embedded）でも出す——先に何をするか分かっているかどうかは、
  * どこから来たかに関係なく効くため。
+ *
+ * 途中から 戻って きた ときは、ミーティング（`meeting-session.tsx` の 🔖）と
+ * 同じ 案内を ここで 出す。始める 前の この 1画面が いちばん 自然な 分かれ道
+ * ——「つづきから」か「はじめから」かを、問題が 出る前に 選べる。
  */
 function StartCard({
   set,
   furigana,
-  onStart,
+  resumed,
+  answeredCount,
+  onContinue,
+  onRestart,
 }: {
   set: QuizSet;
   furigana: ReturnType<typeof buildFuriganaIndex>;
-  onStart: () => void;
+  /** 途中の 続きが あるか。 */
+  resumed: boolean;
+  /** ここまで 答えた 問題の 数（案内の 文に 出す）。 */
+  answeredCount: number;
+  /** 続きから（保存された ところから）始める。 */
+  onContinue: () => void;
+  /** 保存を 消して、1問目から 始める。 */
+  onRestart: () => void;
 }) {
   return (
     <motion.div
@@ -185,17 +287,38 @@ function StartCard({
         </div>
       </div>
 
-      <p className="border-hairline bg-panel-tint text-ink mt-5 rounded-[var(--radius-card)] border-2 px-4 py-3 font-extrabold">
-        ぜんぶ できなくても だいじょうぶ
-      </p>
+      {resumed ? (
+        <p className="bg-cream border-hairline text-ink mt-5 rounded-[var(--radius-card)] border-2 px-4 py-3 font-extrabold">
+          🔖 まえの つづきから はじめます。（{answeredCount}もん こたえました）
+        </p>
+      ) : (
+        <p className="border-hairline bg-panel-tint text-ink mt-5 rounded-[var(--radius-card)] border-2 px-4 py-3 font-extrabold">
+          ぜんぶ できなくても だいじょうぶ
+        </p>
+      )}
 
-      <button
-        type="button"
-        onClick={onStart}
-        className="btn-island btn-game mt-5 w-full px-6 py-3.5"
-      >
-        はじめる
-      </button>
+      {resumed ? (
+        <div className="mt-5 grid gap-3">
+          <button type="button" onClick={onContinue} className="btn-island btn-game px-6 py-3.5">
+            つづきから
+          </button>
+          <button
+            type="button"
+            onClick={onRestart}
+            className="border-hairline text-ink-soft bg-panel rounded-full border-2 px-6 py-2.5 text-sm font-extrabold"
+          >
+            はじめから やる
+          </button>
+        </div>
+      ) : (
+        <button
+          type="button"
+          onClick={onContinue}
+          className="btn-island btn-game mt-5 w-full px-6 py-3.5"
+        >
+          はじめる
+        </button>
+      )}
     </motion.div>
   );
 }

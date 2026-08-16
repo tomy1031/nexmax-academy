@@ -117,6 +117,10 @@ export async function generateMetadata({
  * 枠に渡す並び。見出しは参照先から引く（IDのままだと、ナビが
  * 「m2-asakai-manga」の羅列になって、どれが何か分からない）。
  * 参照切れは一覧から外す——[stage] のトップと同じ扱いにそろえる。
+ *
+ * 読み辞書も一緒に持ち帰る。ステージのトップ（StageDetail）だけがルビを合成し、
+ * 枠の中の並びは裸の漢字、という割れ方をさせない（規律2 — loadRef が
+ * トップと同じ furigana を返すので、渡し方もそこに合わせる）。
  */
 async function frameItems(stage: Stage): Promise<FrameItem[]> {
   const loaded = await Promise.all(
@@ -124,7 +128,13 @@ async function frameItems(stage: Stage): Promise<FrameItem[]> {
       const found = await loadRef(ref);
       const href = stageContentPath(stage.id, stage.contents, index);
       if (!found || !href) return null;
-      return { id: ref.ref, type: ref.type, title: found.title, href };
+      return {
+        id: ref.ref,
+        type: ref.type,
+        title: found.title,
+        furigana: found.furigana,
+        href,
+      };
     }),
   );
   return loaded.filter((item): item is FrameItem => item !== null);

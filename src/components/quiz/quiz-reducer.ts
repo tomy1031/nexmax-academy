@@ -70,6 +70,29 @@ export function createQuizSession(set: QuizSet, questions = set.questions): Quiz
   };
 }
 
+/**
+ * 端末に 残って いた「つづきから」で 組み立てる（`@/lib/quiz/resume` の QuizStart から）。
+ *
+ * `results` は すでに 採点ずみなので、そのまま 積み直す——answer系の action を
+ * 再生する 必要は ない（1問が 答えた 瞬間に 確定する、もんだいの 設計上）。
+ * `index` が 問題数の 範囲外に なる ことは `startFrom` が 防ぐので、ここでは
+ * 呼び出し側の 契約（`QuizStart`）を そのまま 信じる。
+ */
+export function resumeQuizSession(
+  set: QuizSet,
+  index: number,
+  results: readonly QuizResult[],
+): QuizState {
+  return {
+    setId: set.id,
+    passRate: set.passRate,
+    questions: set.questions,
+    index,
+    phase: set.questions.length === 0 ? { kind: "finished" } : { kind: "ask" },
+    results,
+  };
+}
+
 export function currentQuestion(state: QuizState): QuizQuestion | null {
   return state.questions[state.index] ?? null;
 }
@@ -91,7 +114,14 @@ export function quizReducer(state: QuizState, action: QuizAction): QuizState {
         picked.length === expected.length && picked.every((v, i) => v === expected[i]);
       // 一部だけ合っているときは「あと すこし」に寄せる
       const partial = !correct && picked.some((v) => expected.includes(v));
-      return close(state, question, correct, partial ? "quiz.partial" : undefined);
+      return close(
+        state,
+        question,
+        correct,
+        partial ? "quiz.partial" : undefined,
+        undefined,
+        multiPoints(picked, expected, question.points, correct),
+      );
     }
 
     case "answerKeyword": {
@@ -152,6 +182,35 @@ export function quizReducer(state: QuizState, action: QuizAction): QuizState {
   }
 }
 
+/**
+ * 複数選択の 部分点。
+ *
+ * 全か無かだと、5つ中4つ 選ぶ問題で 1つ 足りないだけで 配点が まるごと 消える。
+ * 画面は「あと すこし」と 言うのに 点は 0——**言っていることと 点が 食い違う**。
+ * 合計が 小さい 問題セットでは、それだけで 合格の 見込みが 消える。
+ *
+ * 決めごとは2つ:
+ *  - 誤選択は 正解1つぶんを 打ち消す（`hits - wrongs`）。打ち消さないと、
+ *    ぜんぶ 選ぶのが いちばん 点の 高い 答え方になり、読まなくても 点が 入る。
+ *  - **満点は そろったときだけ**。按分の 結果が 満点に 届いても 1点 下げる
+ *    （そろっていないのに 満点だと、どこが 足りないのかが 点から 消える）。
+ *
+ * 点は 整数で 持つ（画面は「◯/◯ てん」と 出す。小数は 読む負担を 増やす）。
+ * そのため 配点1点の 問題は 割れず、これまでどおり 満点か 0 になる。
+ */
+function multiPoints(
+  picked: readonly number[],
+  expected: readonly number[],
+  points: number,
+  correct: boolean,
+): number {
+  if (correct) return points;
+  const hits = picked.filter((index) => expected.includes(index)).length;
+  const wrongs = picked.length - hits;
+  const ratio = Math.max(0, hits - wrongs) / expected.length;
+  return Math.min(points - 1, Math.floor(points * ratio));
+}
+
 function close(
   state: QuizState,
   question: QuizQuestion,
@@ -159,13 +218,12 @@ function close(
   missFeedback: FeedbackKey = "quiz.review",
   /** 自由入力のときだけ渡す（解説で「あなたの こたえ」を見せるため）。 */
   input?: string,
+  /** 部分点があるとき（複数選択）だけ渡す。省略すると 全か無か。 */
+  earned = correct ? question.points : 0,
 ): QuizState {
   return {
     ...state,
-    results: [
-      ...state.results,
-      { questionId: question.id, correct, earned: correct ? question.points : 0 },
-    ],
+    results: [...state.results, { questionId: question.id, correct, earned }],
     phase: {
       kind: "explain",
       correct,

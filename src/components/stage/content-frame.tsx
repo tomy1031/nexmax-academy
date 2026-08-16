@@ -4,10 +4,17 @@ import Link from "next/link";
 import { useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from "react";
 import type { ContentRefType } from "@/content/schema";
 import { NexMax } from "@/components/nexmax";
+import { RubyText } from "@/components/ruby-text";
 import { CelebrationBurst } from "@/components/quiz/celebration";
 import { contentKindMeta } from "@/lib/content-kinds";
 import { getClearedStageIds, markStageCleared } from "@/lib/progress";
 import { readContentProgress, subscribeProgress } from "@/lib/progress/store";
+import {
+  buildFuriganaIndex,
+  mergeFuriganaEntries,
+  type FuriganaEntry,
+  type FuriganaIndex,
+} from "@/lib/text/furigana";
 import { decodeStatuses, gateStage, statusCode, STATUS_BADGE } from "./stage-progress";
 
 /**
@@ -32,6 +39,12 @@ export interface FrameItem {
   id: string;
   type: ContentRefType;
   title: string;
+  /**
+   * 参照先の読み辞書。枠の並びと「つぎは」に ルビを合成するのに使う（規律2）。
+   * ステージのトップ（StageDetail）と同じ扱いにそろえる——同じ教材名が、
+   * トップでは ふりがな つき、枠の中では 裸の漢字、という割れ方をさせない。
+   */
+  furigana?: readonly FuriganaEntry[];
   href: string;
 }
 
@@ -59,6 +72,15 @@ export function ContentFrame({
 }) {
   const [navOpen, setNavOpen] = useState(false);
   const [forced, setForced] = useState(false);
+
+  /*
+   * 並びに出る教材ぜんぶの読み辞書を1つの索引にまとめる（StageDetail と同じ組み方）。
+   * ここは教材名しか出さないので、単語ステージの語まで混ぜる必要はない。
+   */
+  const itemFurigana = useMemo(
+    () => buildFuriganaIndex(mergeFuriganaEntries(...items.map((item) => item.furigana))),
+    [items],
+  );
 
   const serverKey = useMemo(() => items.map(() => "0").join(""), [items]);
   const progressKey = useSyncExternalStore(
@@ -119,6 +141,7 @@ export function ContentFrame({
           codes={codes}
           currentIndex={currentIndex}
           openable={gating.openable}
+          furigana={itemFurigana}
           open={navOpen}
           onToggle={() => setNavOpen((value) => !value)}
         />
@@ -127,7 +150,12 @@ export function ContentFrame({
           {tools ? <div className="mb-3 flex flex-wrap justify-end gap-2">{tools}</div> : null}
 
           {locked ? (
-            <LockedNotice stage={stage} blocker={blocker} onForce={() => setForced(true)} />
+            <LockedNotice
+              stage={stage}
+              blocker={blocker}
+              furigana={itemFurigana}
+              onForce={() => setForced(true)}
+            />
           ) : (
             <>
               {children}
@@ -146,9 +174,10 @@ export function ContentFrame({
                   currentDone ? (
                     <Link
                       href={next.href}
-                      className="btn-game px-5 py-2 text-sm [--btn-face:#f26fa7] [--btn-shadow:#d94d84]"
+                      className="btn-game px-5 py-2 text-sm [--btn-face:#f26fa7] [--btn-shadow:#d94d84] [&_rt]:text-white"
                     >
-                      つぎは {contentKindMeta(next.type).icon} {next.title} ▶
+                      つぎは {contentKindMeta(next.type).icon}{" "}
+                      <RubyText text={next.title} index={itemFurigana} /> ▶
                     </Link>
                   ) : (
                     /*
@@ -234,6 +263,7 @@ function StageRail({
   codes,
   currentIndex,
   openable,
+  furigana,
   open,
   onToggle,
 }: {
@@ -243,6 +273,8 @@ function StageRail({
   currentIndex: number;
   /** その教材を いま ひらけるか（関門でない種別は いつでも true）。 */
   openable: readonly boolean[];
+  /** 教材名の読み辞書（枠に出る教材ぜんぶをまとめた索引）。 */
+  furigana: FuriganaIndex;
   open: boolean;
   onToggle: () => void;
 }) {
@@ -264,14 +296,16 @@ function StageRail({
               {index + 1}
             </span>
             <span className="min-w-0 flex-1 truncate">
-              {meta.icon} {item.title}
+              {meta.icon} <RubyText text={item.title} index={furigana} />
             </span>
             <span aria-hidden className="shrink-0 text-xs">
               {reachable ? badge.mark : "🔒"}
             </span>
           </span>
         );
-        const className = `block rounded-xl px-2 py-2 text-xs font-black ${
+        // leading-relaxed は ルビの ぶんの 行の 高さ。行間を つめたままだと、
+        // 合成した ふりがなが 行の 上で 切れる（StageDetail と 同じ組み方）。
+        const className = `block rounded-xl px-2 py-2 text-xs leading-relaxed font-black ${
           here ? "bg-navy text-white" : reachable ? "text-ink hover:bg-sky-soft" : "text-ink-faint"
         }`;
         return (
@@ -341,10 +375,12 @@ function StageRail({
 function LockedNotice({
   stage,
   blocker,
+  furigana,
   onForce,
 }: {
   stage: FrameStage;
   blocker: FrameItem | undefined;
+  furigana: FuriganaIndex;
   onForce: () => void;
 }) {
   return (
@@ -357,14 +393,23 @@ function LockedNotice({
       </h1>
       {blocker ? (
         <>
-          <p className="text-ink mt-2 text-sm font-bold">
-            さきに「{contentKindMeta(blocker.type).icon} {blocker.title}」を おわらせましょう。
+          <p className="text-ink mt-2 text-sm leading-relaxed font-bold">
+            さきに「{contentKindMeta(blocker.type).icon}{" "}
+            <RubyText text={blocker.title} index={furigana} />
+            」を おわらせましょう。
           </p>
           <Link
             href={blocker.href}
-            className="btn-game mt-5 inline-flex px-6 py-3 [--btn-face:#f26fa7] [--btn-shadow:#d94d84]"
+            className="btn-game mt-5 inline-flex px-6 py-3 [--btn-face:#f26fa7] [--btn-shadow:#d94d84] [&_rt]:text-white"
           >
-            ▶ {blocker.title}を ひらく
+            {/*
+             * ボタンの中身は1つのまとまりにする。ばらばらの要素にすると、狭い画面で
+             * それぞれが別々に折り返し、「しらべか／た」「を ひら／く」のように
+             * 語の途中で割れる（390px の実機で発生）。
+             */}
+            <span className="text-center leading-snug">
+              ▶ <RubyText text={blocker.title} index={furigana} />を ひらく
+            </span>
           </Link>
         </>
       ) : (

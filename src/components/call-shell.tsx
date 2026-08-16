@@ -1,13 +1,15 @@
 "use client";
 
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { motion } from "motion/react";
 import type { ListeningParticipant } from "@/content/schema";
 import { getFamilyForCode } from "@/content/personality";
 import { FeedbackMessage } from "@/components/feedback-message";
 import { NexMax } from "@/components/nexmax";
 import { NexMaxFamily } from "@/components/nexmax-types";
+import { RubyText } from "@/components/ruby-text";
 import { getProfile, type NexmaxProfile } from "@/lib/profile";
+import { buildFuriganaIndex, type FuriganaEntry, type FuriganaIndex } from "@/lib/text/furigana";
 
 /**
  * Zoom風の通話画面（モードに依存しない外枠）。
@@ -20,9 +22,62 @@ import { getProfile, type NexmaxProfile } from "@/lib/profile";
  *   - 入室は「🔔 ドアを ノックする」から（いきなり始めない）
  *   - 自分のタイルは Webカメラの実映像。アバター画像は使わない（設計01 §101）
  *   - 退出のとき「お礼を 言いましたか？」の一呼吸を置く
+ *
+ * ## 教材の 漢字は ルビ合成を 通す（規律2）
+ * ここに出る 題・きょう やること・名札は **教材の文**なので、読み辞書（`furigana`）を
+ * 受け取って `RubyText` で描く。以前は `{title}` `{focus}` `{person.name}` を そのまま
+ * 出していたので、データに 読みが あるのに「ヘンディさんに **報告**する」「松井 **社長**」が
+ * 裸で出ていた——入室の 直前、いちばん 緊張する ところで 読めない字が 出る。
+ * 辞書は 任意。渡さない 呼び出し側（リスニング）は これまでどおり 地の文で描く。
  */
 
 export type CallStage = "lobby" | "inRoom" | "leaving" | "left";
+
+/**
+ * 入る前の 見出しを どちらにするか。
+ * 「きくまえに」は 聞く教材の 言い方で、自分が 話す 教材（ミーティング・たいわ）では
+ * 中身と 合わない。既定は これまでどおり「きく」。
+ */
+export type CallPurpose = "listen" | "speak";
+
+/**
+ * 操作パネル（`controls`）を タイルの すぐ下に 置くか、いちばん 下に 置くか。
+ *
+ * ミーティングの `controls` は **答える ところ**（型文＋入力欄）なので、
+ * 上に 置くと スマホでは「こう 言えます」と 入力欄が 先に 来て、**相手の しつもんが
+ * その 下**に なる——毎回 スクロールして 何を 聞かれたかを 探す ことに なっていた。
+ * 目線を「聞かれたこと → 言い方 → 打つ」の 順に 流すため、こちらは "bottom"。
+ *
+ * たいわ（Live）の `controls` は **つなぐ ボタン**で、会話が 始まる 前に 押す ものだから
+ * 会話の 上に 要る。既定は これまでどおり "top"。
+ */
+export type CallControlsAt = "top" | "bottom";
+
+const BEFORE_LABEL: Record<CallPurpose, string> = {
+  listen: "きくまえに",
+  speak: "はなす まえに",
+};
+
+/**
+ * マイクの ボタン（親が 声の 出し入れを 持って いるときだけ 出す）。
+ *
+ * 以前は `micOn` という state が この中に あったが、**どこにも 繋がって いなかった**
+ * ——押すと ラベルだけ「🎤 マイク ON」に 変わり、音は 何も 変わらない。
+ * 押しても 何も 起きない ボタンは、学習者に「自分の 操作が 間違って いる」と
+ * 思わせる。繋げられる 画面（ミーティング）は ここに Live の 開始／終了を 渡し、
+ * 渡さない 画面（リスニングの 再生）では ボタン自体を 出さない。
+ */
+export interface CallMic {
+  /** いま 声が つながって いるか。 */
+  readonly on: boolean;
+  /** 押されたとき（つなぐ／切る）。 */
+  readonly onToggle: () => void;
+  /** つないで いる 最中（押せない）。 */
+  readonly busy?: boolean;
+}
+
+/** 読み辞書を渡されなかったとき（ふりがな無しで地の文だけ描く）。 */
+const EMPTY_INDEX: FuriganaIndex = buildFuriganaIndex([]);
 
 const ACCENT: Record<ListeningParticipant["accent"], string> = {
   sky: "#4fa8e8",
@@ -50,10 +105,18 @@ export function CallShell({
    *（リスニングは声だけなので、顔を作る手間をかけない）。
    */
   faces,
-  /** 画面下に置く操作パネル（再生／Live で中身が変わる）。 */
+  /** 操作パネル（再生／Live／答える ところ で中身が変わる）。置き場は `controlsAt`。 */
   controls,
   /** タイルの下に置く学習パネル（字幕・単語チェックなど）。 */
   children,
+  /** 操作パネルの置き場（既定は タイルの すぐ下）。 */
+  controlsAt = "top",
+  /** 教材の読み辞書。渡すと 題・きょう やること・名札に ふりがなが つく。 */
+  furigana,
+  /** 入る前の見出し。話す教材は "speak"（既定は "listen"）。 */
+  purpose = "listen",
+  /** マイクのボタン。渡さないと **ボタン自体を出さない**（繋がっていない飾りを置かない）。 */
+  mic,
   onLeft,
 }: {
   title: string;
@@ -64,14 +127,31 @@ export function CallShell({
   faces?: Readonly<Record<string, React.ReactNode>>;
   controls?: React.ReactNode;
   children?: React.ReactNode;
+  controlsAt?: CallControlsAt;
+  furigana?: FuriganaIndex | readonly FuriganaEntry[];
+  purpose?: CallPurpose;
+  mic?: CallMic;
   onLeft?: () => void;
 }) {
   const [stage, setStage] = useState<CallStage>("lobby");
-  const [cameraOn, setCameraOn] = useState(true);
-  const [micOn, setMicOn] = useState(false);
+  /*
+   * カメラは **OFFから 始める**。入った 瞬間に 自分の 顔が 出ると、声を 出すのも
+   * こわい 学習者には それだけで 障壁になる（教室では 隣の 画面も 見える）。
+   * 見せるか どうかは 学習者が 自分で 決める——下の「📷 カメラを つける」を 押せば ONになる。
+   */
+  const [cameraOn, setCameraOn] = useState(false);
+  const index = useFuriganaIndex(furigana);
 
   if (stage === "lobby") {
-    return <Lobby title={title} focus={focus} onEnter={() => setStage("inRoom")} />;
+    return (
+      <Lobby
+        title={title}
+        focus={focus}
+        furigana={index}
+        purpose={purpose}
+        onEnter={() => setStage("inRoom")}
+      />
+    );
   }
 
   if (stage === "leaving") {
@@ -123,7 +203,9 @@ export function CallShell({
         style={{ borderColor: "var(--color-hairline)", background: "#0f2233" }}
       >
         <div className="flex items-center justify-between px-4 py-2">
-          <span className="text-xs font-extrabold text-white/80">🔴 {title}</span>
+          <span className="text-xs font-extrabold text-white/80">
+            🔴 <RubyText text={title} index={index} show />
+          </span>
           <span className="text-xs font-bold text-white/60">
             {participants.length + 1}人が さんかちゅう
           </span>
@@ -137,17 +219,26 @@ export function CallShell({
               speaking={activeSpeaker === person.id}
               celebrating={celebrate === person.id}
               face={faces?.[person.id]}
+              furigana={index}
             />
           ))}
           <SelfTile cameraOn={cameraOn} />
         </div>
 
         <div className="flex items-center justify-center gap-2 border-t border-white/10 px-3 py-2">
-          <ToolButton on={micOn} onClick={() => setMicOn((v) => !v)}>
-            {micOn ? "🎤 マイク ON" : "🔇 マイク OFF"}
-          </ToolButton>
+          {/* マイクは 繋がって いる 画面だけ（親が mic を 渡した ときだけ）出す */}
+          {mic ? (
+            <ToolButton on={mic.on} onClick={mic.onToggle} disabled={mic.busy}>
+              {mic.on ? "🎤 マイク ON" : "🔇 マイク OFF"}
+            </ToolButton>
+          ) : null}
+          {/*
+           * ボタンの文字は「いまの じょうたい」ではなく「押すと どうなるか」にする。
+           * OFFのときに「カメラ OFF」と出ていると、押して よいのか 分からず、
+           * 案内文（「うつしたい ときは…」）とも 食いちがう（390px の実機で確認）。
+           */}
           <ToolButton on={cameraOn} onClick={() => setCameraOn((v) => !v)}>
-            {cameraOn ? "📷 カメラ ON" : "📷 カメラ OFF"}
+            {cameraOn ? "📷 カメラを けす" : "📷 カメラを つける"}
           </ToolButton>
           <button
             type="button"
@@ -159,13 +250,26 @@ export function CallShell({
         </div>
       </div>
 
-      {controls}
+      {controlsAt === "top" ? controls : null}
       {children}
+      {controlsAt === "bottom" ? controls : null}
     </div>
   );
 }
 
-function Lobby({ title, focus, onEnter }: { title: string; focus: string; onEnter: () => void }) {
+function Lobby({
+  title,
+  focus,
+  furigana,
+  purpose,
+  onEnter,
+}: {
+  title: string;
+  focus: string;
+  furigana: FuriganaIndex;
+  purpose: CallPurpose;
+  onEnter: () => void;
+}) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
@@ -173,11 +277,15 @@ function Lobby({ title, focus, onEnter }: { title: string; focus: string; onEnte
       className="card-island mx-auto max-w-xl p-6 text-center sm:p-8"
     >
       <NexMax variant="listen" size={100} className="mx-auto" bob />
-      <h1 className="text-ink mt-4 text-2xl font-extrabold">{title}</h1>
+      <h1 className="text-ink mt-4 text-2xl font-extrabold">
+        <RubyText text={title} index={furigana} show />
+      </h1>
 
       <div className="mt-4 text-left">
-        <p className="text-ink-soft text-sm font-extrabold">きくまえに</p>
-        <p className="text-ink mt-1 leading-relaxed font-bold">{focus}</p>
+        <p className="text-ink-soft text-sm font-extrabold">{BEFORE_LABEL[purpose]}</p>
+        <p className="text-ink mt-1 leading-relaxed font-bold">
+          <RubyText text={focus} index={furigana} show />
+        </p>
       </div>
 
       <button
@@ -187,8 +295,9 @@ function Lobby({ title, focus, onEnter }: { title: string; focus: string; onEnte
       >
         🔔 ドアを ノックする
       </button>
+      {/* カメラは OFFから 始まる。ONに する 場所を ここで 先に 伝える（探させない） */}
       <p className="text-ink-faint mt-2 text-xs font-bold">
-        カメラを つかうときは、ブラウザの きょかを おしてね
+        カメラは OFFで はじまります。うつしたい ときは「📷 カメラを つける」を おしてね
       </p>
     </motion.div>
   );
@@ -197,10 +306,12 @@ function Lobby({ title, focus, onEnter }: { title: string; focus: string; onEnte
 function ToolButton({
   on,
   onClick,
+  disabled = false,
   children,
 }: {
   on: boolean;
   onClick: () => void;
+  disabled?: boolean;
   children: React.ReactNode;
 }) {
   return (
@@ -208,7 +319,8 @@ function ToolButton({
       type="button"
       onClick={onClick}
       aria-pressed={on}
-      className="rounded-full px-4 py-1.5 text-xs font-extrabold"
+      disabled={disabled}
+      className="rounded-full px-4 py-1.5 text-xs font-extrabold disabled:opacity-40"
       style={{
         background: on ? "rgba(255,255,255,0.18)" : "rgba(255,255,255,0.06)",
         color: on ? "#fff" : "rgba(255,255,255,0.6)",
@@ -219,16 +331,30 @@ function ToolButton({
   );
 }
 
+/**
+ * 読み辞書を 索引に そろえる。
+ * 呼び出し側は 索引（組み立てずみ）でも 配列（教材の `furigana` そのまま）でも
+ * 渡せる——どちらか 一方だけに すると、片方の 呼び出し側が 毎回 組み直す ことになる。
+ */
+function useFuriganaIndex(source: FuriganaIndex | readonly FuriganaEntry[] | undefined) {
+  return useMemo(() => {
+    if (source === undefined) return EMPTY_INDEX;
+    return Array.isArray(source) ? buildFuriganaIndex(source) : (source as FuriganaIndex);
+  }, [source]);
+}
+
 function ParticipantTile({
   person,
   speaking,
   celebrating = false,
   face,
+  furigana,
 }: {
   person: ListeningParticipant;
   speaking: boolean;
   celebrating?: boolean;
   face?: React.ReactNode;
+  furigana: FuriganaIndex;
 }) {
   const accent = ACCENT[person.accent];
   return (
@@ -262,9 +388,12 @@ function ParticipantTile({
           {person.name.slice(0, 1)}
         </span>
       )}
+      {/* 名札も 教材の 文（「松井」「社長」）。読み辞書が あれば ふりがなを つける */}
       <span className="absolute bottom-1.5 left-2 rounded-full bg-black/45 px-2 py-0.5 text-[11px] font-bold text-white">
-        {person.name}
-        <span className="ml-1 opacity-70">{person.role}</span>
+        <RubyText text={person.name} index={furigana} show />
+        <span className="ml-1 opacity-70">
+          <RubyText text={person.role} index={furigana} show />
+        </span>
       </span>
     </div>
   );

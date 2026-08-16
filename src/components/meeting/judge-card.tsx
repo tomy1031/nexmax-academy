@@ -74,7 +74,8 @@ export function JudgeCard({ judge, hostName }: { judge: JudgeResult; hostName: s
       ) : null}
 
       {judge.retry ? (
-        <p className="bg-sun-soft text-ink rounded-xl px-3 py-2 text-sm font-black break-words">
+        /* bg-sun-soft は globals.css に 無い（＝色が つかない）。実在する トークンを 使う */
+        <p className="bg-cream text-ink rounded-xl px-3 py-2 text-sm font-black break-words">
           もう いちど、うえの れいを みながら いって みましょう。
         </p>
       ) : null}

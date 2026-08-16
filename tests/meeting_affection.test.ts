@@ -5,6 +5,7 @@ import {
   awardCompletion,
   COMPLETION_BONUS,
   EMPTY_AFFECTION,
+  FALLBACK_POINTS,
   filledHearts,
   heartsOf,
   minimumHearts,
@@ -69,6 +70,17 @@ describe("点の配り方", () => {
     expect(pointsForGrade(null)).toBeGreaterThanOrEqual(pointsForGrade("miss"));
   });
 
+  it("判定が 無い 教室でも 満タンには しない（miss と 同じ 1点）", () => {
+    // ここを good（2点）に していたので、キー未登録の 教室では
+    // 5問×2＋完走2＝12＝maxHearts。何を 書いても 必ず 満タンで、
+    // がんばった 学習者と 手を 抜いた 学習者が 画面の 上で 同じに なっていた
+    expect(FALLBACK_POINTS).toBe(AFFECTION_POINTS.miss);
+    const fallbackAll = awardCompletion(runAll(["q1", "q2", "q3", "q4", "q5"], null));
+    expect(heartsOf(fallbackAll)).toBeLessThan(12);
+    // AIが 見て くれた 教室のほうが 高く なる（差が 画面に 出る）
+    expect(heartsOf(awardCompletion(runAll(["q1", "q2", "q3", "q4", "q5"], "good")))).toBe(12);
+  });
+
   it("完走ボーナスは さいごに 1度だけ", () => {
     const answered = runAll(["q1", "q2"], "good");
     expect(heartsOf(awardCompletion(answered))).toBe(heartsOf(answered) + COMPLETION_BONUS);
@@ -97,6 +109,20 @@ describe("とっておきの話が 開く 条件", () => {
 
   it("最低ラインは「miss×全問＋完走ボーナス」", () => {
     expect(minimumHearts(6)).toBe(6 * AFFECTION_POINTS.miss + COMPLETION_BONUS);
+  });
+
+  /**
+   * 教材 `kaisha_matsui`（5問・threshold 7 ＝ minimumHearts(5)）の 不変条件。
+   * AIが 居ない 教室（判定なし＝FALLBACK_POINTS）でも、**ぜんぶ 答えて 完走すれば
+   * かならず 開く**。ここが 崩れると、いちばん 助けが 要る 学習者だけが
+   * とっておきの 話を 見られない。
+   */
+  it("AIが 居ない 教室でも、5問 答えて 完走すれば threshold 7 に 届く", () => {
+    const five = ["q1", "q2", "q3", "q4", "q5"];
+    expect(minimumHearts(five.length)).toBe(7);
+    const finished = awardCompletion(runAll(five, null));
+    expect(heartsOf(finished)).toBe(7);
+    expect(rewardOpen(finished, 7)).toBe(true);
   });
 });
 

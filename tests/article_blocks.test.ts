@@ -5,6 +5,7 @@ import {
   contentHref,
   contentKindLabel,
   headingId,
+  joinItemsForSpeech,
   shouldShowToc,
 } from "@/components/article/article-blocks";
 
@@ -64,5 +65,21 @@ describe("shouldShowToc", () => {
     const headings = [heading(2, "い"), heading(2, "ろ"), heading(2, "は")];
     expect(shouldShowToc(collectHeadings(headings.slice(0, 2)))).toBe(false);
     expect(shouldShowToc(collectHeadings(headings))).toBe(true);
+  });
+});
+
+describe("joinItemsForSpeech", () => {
+  it("かじょうがきを 1本の文に つないで 読ませる（項目ごとに 🔊 を 置かない）", () => {
+    expect(joinItemsForSpeech(["受託開発", "自社開発"])).toBe("受託開発。自社開発。");
+  });
+
+  it("もともと 句点が ある項目でも 二重に しない", () => {
+    expect(joinItemsForSpeech(["お客さまの ものを 作ります。", "じぶんの ものを 作ります"])).toBe(
+      "お客さまの ものを 作ります。じぶんの ものを 作ります。",
+    );
+  });
+
+  it("空の項目は 読まない（無音の 間が できない）", () => {
+    expect(joinItemsForSpeech(["  ", "みる"])).toBe("みる。");
   });
 });
