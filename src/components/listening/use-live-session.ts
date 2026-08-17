@@ -160,7 +160,22 @@ export function useLiveSession(): LiveSession {
       // キーそのものが無い・通らないなら、モデルを変えても同じ
       if (lastReason === "noKey" || lastReason === "noPermission") break;
     }
-    if (!payload?.token || !payload.model) {
+    /*
+     * 短命トークンが作れないキーでも、たいわを止めない（2026-08-17）
+     *
+     * Google は APIキーを 新形式（`AQ.` で はじまる auth key）へ 移している。
+     * 新形式は **authTokens.create だけ 通らない**ことが 知られていて、旧形式は
+     * 2026年9月に 廃止される。ここで 諦めると、その日に たいわが 全滅する。
+     *
+     * 最後の手段として、本人のキーで 直接つなぐ。キーは もともと この端末に
+     * ある（BYOK）ので 新しく 配るわけでは ないが、「漏れても30分で 切れる」
+     * 効き目は 失う。だから **トークンが 作れなかったときだけ**に 限る。
+     * 権限・使いすぎ・場所の問題は 直接つないでも 同じなので 落ちるに まかせる。
+     */
+    const canUseKeyDirectly = lastReason === "tokenRejected" || lastReason === "invalidRequest";
+    const auth = payload?.token ?? (canUseKeyDirectly ? apiKey : null);
+    const liveModel = payload?.model ?? wanted[0] ?? DEFAULT_LIVE_TALK_MODEL;
+    if (!auth) {
       setStatus("notReady");
       setReason(lastReason);
       return;
@@ -189,7 +204,7 @@ export function useLiveSession(): LiveSession {
     try {
       // SDK は接続時にだけ要る。初期表示のバンドルに載せない。
       const { GoogleGenAI, Modality } = await import("@google/genai");
-      const ai = new GoogleGenAI({ apiKey: payload.token, apiVersion: "v1beta" });
+      const ai = new GoogleGenAI({ apiKey: auth, apiVersion: "v1beta" });
 
       // 再生側。24kHz で受けて、切れ目なく順に鳴らす
       const outCtx = new AudioContext({ sampleRate: OUT_RATE });
@@ -200,7 +215,7 @@ export function useLiveSession(): LiveSession {
       outRef.current = { ctx: outCtx, node, playAt: 0 };
 
       const session = await ai.live.connect({
-        model: payload.model,
+        model: liveModel,
         config: {
           responseModalities: [Modality.AUDIO],
           systemInstruction,
