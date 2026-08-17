@@ -11,8 +11,16 @@ import { buildFuriganaIndex } from "@/lib/text/furigana";
 import { getGeminiKey } from "@/lib/profile";
 import { recordContentProgress } from "@/lib/progress/store";
 import { CaptionBar, CallShell } from "@/components/call-shell";
+import { generateFromBrowser } from "@/lib/ai/generate-browser";
+import { TEXT_MODEL } from "@/lib/ai/models";
 import { LiveReason } from "./live-reason";
-import { resolveMatch, type JudgeableReq } from "./req-matcher";
+import {
+  buildReqJudgePrompt,
+  parseReqJudge,
+  reqJudgeResponseSchema,
+  resolveMatch,
+  type JudgeableReq,
+} from "./req-matcher";
 import { useLiveSession } from "./use-live-session";
 
 /**
@@ -403,28 +411,30 @@ async function askAiForReq(
   const apiKey = getGeminiKey();
   if (!apiKey || reqs.length === 0) return null;
 
+  return await askFromBrowser(apiKey, utterance, reqs);
+}
+
+/**
+ * この端末から Google に直接聞く（2026-08-17 から サーバは 通さない）。
+ * うちの Worker は香港で動くことがあり、そこを通すと Google に断られるうえ、
+ * キーが香港で復号される。BYOK のキーはこの端末にあるので、ここから聞けばよい。
+ */
+async function askFromBrowser(
+  apiKey: string,
+  utterance: string,
+  reqs: readonly JudgeableReq[],
+): Promise<string | null> {
+  const result = await generateFromBrowser({
+    apiKey,
+    model: TEXT_MODEL,
+    prompt: buildReqJudgePrompt(utterance, reqs),
+    schema: reqJudgeResponseSchema(reqs),
+    // 選ぶのは id ひとつ。思いつきは要らない（route と同じ）
+    temperature: 0,
+  });
+  if (!result.ok || !result.text) return null;
   try {
-    const response = await fetch("/api/talk/judge", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({
-        apiKey,
-        utterance,
-        // 判定に要る4つだけ渡す（ボードに伏せてある secret や 絵文字は送らない）
-        reqs: reqs.map((req) => ({
-          id: req.id,
-          label: req.label,
-          fact: req.fact,
-          keywords: req.keywords,
-        })),
-      }),
-    });
-    const body = (await response.json().catch(() => ({}))) as {
-      ready?: boolean;
-      reqId?: unknown;
-    };
-    if (!response.ok || !body.ready) return null;
-    return typeof body.reqId === "string" ? body.reqId : null;
+    return parseReqJudge(JSON.parse(result.text), reqs);
   } catch {
     return null;
   }

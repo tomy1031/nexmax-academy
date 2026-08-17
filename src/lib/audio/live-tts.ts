@@ -11,6 +11,7 @@
  * あとで1本につなぐ（wav.ts）。行数ぶん時間がかかるので、進み具合を必ず返す。
  */
 
+import { createLiveToken } from "@/lib/ai/live-token";
 import { LIVE_TTS_MODELS } from "@/lib/ai/models";
 import { base64ToBytes, joinPcm, pcmToWav, type JoinedPcm } from "./wav";
 
@@ -50,24 +51,20 @@ export class TtsError extends Error {
 }
 
 /**
- * 短命トークンを1つもらう。1トークン1接続（uses:1）なので行ごとに取り直す。
- * つなぐつもりのモデル名も渡す——サーバが理由を返すときの手がかりになる。
+ * 短命トークンを1つ作る。1トークン1接続（uses:1）なので行ごとに取り直す。
+ *
+ * **キーはサーバへ渡さない**（2026-08-17）。この端末で作って、この端末から使う。
+ * 作れないキー（新形式で報告あり）のときだけ本人のキーで直接つなぐ——
+ * 「漏れても30分で切れる」効き目は失うので、そのときだけに限る
+ * （たいわ側 use-live-session.ts と同じ判断）。
  */
-async function fetchToken(apiKey: string, model: string): Promise<string> {
-  const response = await fetch("/api/live/token", {
-    method: "POST",
-    headers: { "content-type": "application/json" },
-    body: JSON.stringify({ apiKey, model }),
-  });
-  const payload = (await response.json().catch(() => ({}))) as {
-    ready?: boolean;
-    token?: string;
-    reason?: string;
-  };
-  if (!response.ok || !payload.ready || !payload.token) {
-    throw new TtsError(messageForTokenReason(payload.reason));
-  }
-  return payload.token;
+async function fetchToken(apiKey: string): Promise<string> {
+  const minted = await createLiveToken({ apiKey });
+  if (minted.ok) return minted.token;
+  // 新形式（AQ.）のキーは authTokens.create だけ通らないことがある。そのときは
+  // 本人のキーで直接つなぐ（キーはもともとこの端末にある）
+  if (minted.reason === "tokenRejected" || minted.reason === "invalidRequest") return apiKey;
+  throw new TtsError(messageForTokenReason(minted.reason));
 }
 
 /** 失敗の理由を、先生が次の一手を決められる言い方にする。 */
@@ -77,12 +74,20 @@ function messageForTokenReason(reason: string | undefined): string {
       return "AIの キーが まだ ありません。「AI指示出し」で 登録してください。";
     case "tokenRejected":
       return "みじかい きっぷ が つくれませんでした。「AI設定」で「せつぞくを ためす」を おしてください（AQ. で はじまる キーだと 止まることが あります）。";
+    case "badKey":
+      return "この キーを Google が 受け取りませんでした。AI Studio の キー一覧で 制限を かけてから、もう一度 ためしてください。";
+    case "wrongKeyType":
+      return "この 文字列は APIキーとして 受け取ってもらえませんでした（AQ. で はじまる 新しい 形式）。「AI設定」で キーを えらび直して ください。";
+    case "locationNotSupported":
+      return "キーでは なく「呼んだ 場所」が はじかれました。先生に つたえてください。";
     case "noPermission":
       return "この キーでは 音声づくりが つかえません。キーの プロジェクトを たしかめてください。";
     case "modelNotFound":
       return "音声づくりに つかう モデルが 見つかりません。「AI指示出し」で「せつぞくを ためす」を おしてください。";
     case "rateLimited":
       return "きょうは つかいすぎたようです。時間を おいて ためしてください。";
+    case "overloaded":
+      return "AIが いま こんで います。少し 待って もう一度 ためしてください。";
     default:
       return "音声の じゅんびが できませんでした。少し 待って もう一度 ためしてください。";
   }
@@ -104,7 +109,7 @@ function messageForTokenReason(reason: string | undefined): string {
 async function synthesizeLine(apiKey: string, line: TtsLine, model: string): Promise<Uint8Array> {
   // SDK は接続時にだけ要る。初期表示のバンドルに載せない
   const { GoogleGenAI, Modality } = await import("@google/genai");
-  const token = await fetchToken(apiKey, model);
+  const token = await fetchToken(apiKey);
   const ai = new GoogleGenAI({ apiKey: token });
 
   return new Promise<Uint8Array>((resolve, reject) => {

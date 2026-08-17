@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useRef, useState } from "react";
+import { createLiveToken } from "@/lib/ai/live-token";
 import { DEFAULT_LIVE_TALK_MODEL, LIVE_TALK_MODELS } from "@/lib/ai/models";
 import { getGeminiKey, getLiveModel } from "@/lib/profile";
 import { base64ToBytes } from "@/lib/audio/wav";
@@ -31,13 +32,6 @@ export type VoiceStatus = "idle" | "connecting" | "live" | "notReady" | "error";
 export interface VoiceTurn {
   readonly from: "me" | "client";
   readonly text: string;
-}
-
-interface TokenResponse {
-  ready: boolean;
-  reason?: string;
-  token?: string;
-  model?: string;
 }
 
 /** 返る音声のサンプリングレート（Live API の決まり）。送る側は mic-capture.ts が持つ。 */
@@ -121,24 +115,20 @@ export function useLiveVoice(): LiveVoice {
     const wanted = [getLiveModel(), ...LIVE_TALK_MODELS].filter(
       (name, index, all): name is string => Boolean(name) && all.indexOf(name) === index,
     );
-    let payload: TokenResponse | null = null;
-    let lastReason = "upstream";
-    for (const model of wanted.length > 0 ? wanted : [DEFAULT_LIVE_TALK_MODEL]) {
-      const response = await fetch("/api/live/token", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ apiKey, model }),
-      });
-      const body = (await response.json().catch(() => ({}))) as TokenResponse;
-      if (body.ready && body.token && body.model) {
-        payload = body;
-        break;
-      }
-      lastReason = body.reason ?? "upstream";
-      // キーそのものが無い・通らないなら、モデルを変えても同じ
-      if (lastReason === "noKey" || lastReason === "noPermission") break;
-    }
-    if (!payload?.token || !payload.model) {
+    /*
+     * **キーはサーバへ渡さない**（2026-08-17）。短命トークンもこの端末で作る——
+     * うちの Worker は香港で動くことがあり、そこを通すと (1) Google に断られ、
+     * (2) キーが香港のデータセンターで復号される。通さなければどちらも起きない。
+     *
+     * 作れないキー（新形式 AQ. で報告あり）のときだけ、本人のキーで直接つなぐ。
+     */
+    const models = wanted.length > 0 ? wanted : [DEFAULT_LIVE_TALK_MODEL];
+    const minted = await createLiveToken({ apiKey });
+    const lastReason = minted.ok ? "upstream" : minted.reason;
+    const canUseKeyDirectly = lastReason === "tokenRejected" || lastReason === "invalidRequest";
+    const auth = minted.ok ? minted.token : canUseKeyDirectly ? apiKey : null;
+    const liveModel = models[0] ?? DEFAULT_LIVE_TALK_MODEL;
+    if (!auth) {
       setStatus("notReady");
       setReason(lastReason);
       return;
@@ -165,7 +155,7 @@ export function useLiveVoice(): LiveVoice {
 
     try {
       const { GoogleGenAI, Modality } = await import("@google/genai");
-      const ai = new GoogleGenAI({ apiKey: payload.token, apiVersion: "v1beta" });
+      const ai = new GoogleGenAI({ apiKey: auth, apiVersion: "v1beta" });
 
       // 再生側。解析器を挟んでから出す
       const outCtx = new AudioContext({ sampleRate: OUT_RATE });
@@ -178,7 +168,7 @@ export function useLiveVoice(): LiveVoice {
       setAnalyser(node);
 
       const session = await ai.live.connect({
-        model: payload.model,
+        model: liveModel,
         config: {
           responseModalities: [Modality.AUDIO],
           systemInstruction,

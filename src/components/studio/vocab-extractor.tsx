@@ -4,7 +4,14 @@ import { useMemo, useState } from "react";
 import { wordSchema, type Stage, type WordStage } from "@/content/schema";
 import { hasCodex } from "@/lib/codex-settings";
 import { getGeminiKey } from "@/lib/profile";
-import { buildVocabPrompt, VOCAB_RESPONSE_SCHEMA, type VocabCandidate } from "@/lib/vocab/extract";
+import { generateFromBrowser } from "@/lib/ai/generate-browser";
+import { TEXT_MODEL } from "@/lib/ai/models";
+import {
+  buildVocabPrompt,
+  parseVocabCandidates,
+  VOCAB_RESPONSE_SCHEMA,
+  type VocabCandidate,
+} from "@/lib/vocab/extract";
 import { messageForReason } from "./issue-text";
 import { saveContent } from "./studio-api";
 import { generateStructured } from "./text-api";
@@ -19,11 +26,12 @@ import { MiniButton, StudioSection } from "./studio-ui";
  * 「🕹️ ことばで あそぶ」へ行く道は開かないままになる。
  *
  * どの語が難しいか（N4を超えるか・仕事でくり返し使うか）は意味の判断なので
- * AIに任せる（/api/studio/vocab → Gemini）。ただし**選ぶのは先生**にする。
+ * AIに任せる（この端末から Gemini へ直接）。ただし**選ぶのは先生**にする。
  * AIが出した20語をそのまま教材にすると、その課で使わない語まで学習者に届く。
  *
- * キーは先生本人のもの（BYOK）で、この画面から出るのはサーバのプロキシへだけ
- *（AGENTS.md 規律4。audio-maker.tsx / use-live-session.ts と同じ流儀）。
+ * キーは先生本人のもの（BYOK）で、**サーバには渡さない**（2026-08-17）。
+ * うちの Worker は香港で動くことがあり、そこを通すと Google に断られるうえ、
+ * キーが香港で復号される（audio-maker.tsx / use-live-session.ts と同じ流儀）。
  */
 
 /** 単語ステージの最低語数（wordStageSchema の words.min(6)）。 */
@@ -324,33 +332,29 @@ async function requestViaGemini(
   texts: string[],
 ): Promise<{ ok: true; value: VocabCandidate[] } | { ok: false; message: string }> {
   if (!apiKey) return { ok: false, message: messageForVocabReason("noKey") };
-  let response: Response;
-  try {
-    response = await fetch("/api/studio/vocab", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ apiKey, texts }),
-    });
-  } catch {
-    return { ok: false, message: "つうしんに 失敗しました。ネットワークを たしかめてください。" };
-  }
-
-  const body = (await readJson(response)) as { words?: unknown; reason?: unknown };
-  if (!response.ok) {
-    return {
-      ok: false,
-      message: messageForVocabReason(typeof body.reason === "string" ? body.reason : ""),
-    };
-  }
-  return { ok: true, value: toWordList(body) };
+  return await vocabFromBrowser(apiKey, texts);
 }
 
-async function readJson(response: Response): Promise<Record<string, unknown>> {
-  try {
-    return (await response.json()) as Record<string, unknown>;
-  } catch {
-    return {};
-  }
+/**
+ * この端末から Google に直接聞く（2026-08-17 から サーバは 通さない）。
+ * うちの Worker は香港で動くことがあり、そこを通すと Google に断られるうえ、
+ * キーが香港で復号される。BYOK のキーはこの端末にあるので、ここから聞けばよい。
+ */
+async function vocabFromBrowser(
+  apiKey: string,
+  texts: string[],
+): Promise<{ ok: true; value: VocabCandidate[] } | { ok: false; message: string }> {
+  const result = await generateFromBrowser({
+    apiKey,
+    model: TEXT_MODEL,
+    prompt: buildVocabPrompt(texts),
+    schema: VOCAB_RESPONSE_SCHEMA,
+    // 教材づくりなので、思いつきよりも本文に忠実な方を採る（route と同じ）
+    temperature: 0.2,
+    timeoutMs: 30_000,
+  });
+  if (!result.ok) return { ok: false, message: messageForVocabReason(result.reason) };
+  return { ok: true, value: toWordList({ words: parseVocabCandidates(result.text) }) };
 }
 
 /** 抜き出し固有の理由だけ言い換え、共通の理由は保存と同じ言い方にそろえる。 */
@@ -362,6 +366,8 @@ function messageForVocabReason(reason: string): string {
       return "この ステージの 教材に、まだ 本文が ありません。さきに 本文を 書いてください。";
     case "upstream":
       return "AIの 返事を 受け取れませんでした。少し 待って もう一度 ためしてください。";
+    case "overloaded":
+      return "AIが いま こんで います（Google 側の 混雑）。少し 待って もう一度 ためしてください。";
     default:
       return messageForReason(reason);
   }
