@@ -15,7 +15,8 @@
     },
     {
       "ref": "ai_jidai_check",
-      "type": "quizset"
+      "type": "quizset",
+      "gates": false
     },
     {
       "ref": "intro_mirai",

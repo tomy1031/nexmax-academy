@@ -134,6 +134,10 @@ async function frameItems(stage: Stage): Promise<FrameItem[]> {
         type: ref.type,
         title: found.title,
         furigana: found.furigana,
+        // 教材ごとの 関門指定は **ステージが 持つ**（参照側 = ref）。
+        // 同じ教材を べつの ステージで 関門に する／しないが 分かれるため、
+        // 教材本体（found）ではなく ここから 運ぶ。
+        gates: ref.gates,
         href,
       };
     }),

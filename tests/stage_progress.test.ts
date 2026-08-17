@@ -4,6 +4,7 @@ import {
   contentHref,
   decodeStatuses,
   gateStage,
+  resolveGates,
   statusCode,
   summarizeStageProgress,
   type ContentStatusCode,
@@ -11,6 +12,10 @@ import {
 import { CONTENT_REF_TYPES, type ContentRefType } from "@/content/schema";
 
 const codes = (key: string): ContentStatusCode[] => decodeStatuses(key);
+
+/** 種別ごとの「関門か」を、実際の対応表から引く（テストで別表を作らない）。 */
+const gatesOf = (types: readonly ContentRefType[]) =>
+  types.map((type) => contentKindMeta(type).gates);
 
 describe("contentHref", () => {
   it("種別ごとに決められたルートへ向ける", () => {
@@ -81,10 +86,6 @@ describe("summarizeStageProgress", () => {
 });
 
 describe("gateStage（関門）", () => {
-  /** 種別ごとの「関門か」を、実際の対応表から引く（テストで別表を作らない）。 */
-  const gatesOf = (types: readonly ContentRefType[]) =>
-    types.map((type) => contentKindMeta(type).gates);
-
   it("おわっていない教材の先へは進めない", () => {
     const gating = gateStage(codes("200"), gatesOf(["manga", "article", "quizset"]));
     expect(gating.openable).toEqual([true, true, false]);
@@ -113,5 +114,35 @@ describe("gateStage（関門）", () => {
 
   it("教材が1つも無いステージは おえたことにしない", () => {
     expect(gateStage([], []).allPassed).toBe(false);
+  });
+});
+
+describe("resolveGates（ステージ側の 関門指定）", () => {
+  it("書いていなければ 種別の 既定に したがう", () => {
+    expect(resolveGates("quizset")).toBe(true);
+    expect(resolveGates("slides")).toBe(false);
+    expect(resolveGates("article", undefined)).toBe(true);
+  });
+
+  it("書いてあれば 既定より 優先する（false も ちゃんと 効く）", () => {
+    // `??` を `||` に すると ここが true に 戻る（false は falsy）
+    expect(resolveGates("quizset", false)).toBe(false);
+    expect(resolveGates("slides", true)).toBe(true);
+  });
+
+  it("「はじめに」の 並びで、テストの 先の よみものが 🔒 に 戻らない", () => {
+    // スライド / かくにんテスト(gates:false) / スライド / よみもの / よみもの
+    // すでに よみもの2本を 読み終えた 学習者（テストは これから）
+    const types = ["slides", "quizset", "slides", "article", "article"] as const;
+    const overrides = [undefined, false, undefined, undefined, undefined];
+    const gates = types.map((type, i) => resolveGates(type, overrides[i]));
+
+    const withOverride = gateStage(codes("00022"), gates);
+    expect(withOverride.openable).toEqual([true, true, true, true, true]);
+
+    // 指定が 無ければ テストが 関門になり、**読み終えた よみもの2本が 閉じる**
+    //（3枚目の スライドだけは gates:false なので 開いたまま）
+    const withoutOverride = gateStage(codes("00022"), gatesOf(types));
+    expect(withoutOverride.openable).toEqual([true, true, true, false, false]);
   });
 });
