@@ -56,12 +56,12 @@ const REASON_TEXT: Record<string, string> = {
    */
   badKey:
     "Google が この キーを 受け取りませんでした。AIza で はじまる 古い キーは、" +
-    "制限を かけていないと もう つかえません（Google Cloud で「Generative Language API だけ」に 制限する）。" +
-    "作りたての キーなら 2〜3分 待って もう一度 ためしてください。",
+    "制限を かけていないと もう つかえません。AI Studio の キー一覧で「Unrestricted」の 印を さがして、" +
+    "Add restrictions →「Restrict to Gemini API only」を えらんで ください（2〜3分で 効きます）。",
   wrongKeyType:
     "この 文字列は APIキーとして 受け取ってもらえませんでした（AQ. で はじまる 新しい 形式）。" +
     "Google は これを ログインの きっぷ だと 見なします。" +
-    "AIza で はじまる キーに 制限を かけて つかうか、キーを 作り直して ください。",
+    "AI Studio の キー一覧で、いま つかえる キーを えらび直して ください。",
   keyExpired: "この キーは 期限切れです。AI Studio で 作り直して ください。",
   keyRestricted:
     "この キーには 制限が かかっています（つかえる サイト・IP・API の しばり）。" +

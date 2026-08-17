@@ -44,7 +44,7 @@ const ADVICE: Record<string, Advice> = {
    */
   badKey: {
     what: "この キーを Google が 受け取りませんでした。",
-    next: "AIza で はじまる 古い キーは、制限を かけていないと もう つかえません。「AI設定」で ためしてください。",
+    next: "AI Studio の キー一覧で「Unrestricted」の 印の キーに 制限を かけてから、「AI設定」で ためしてください。",
     toSettings: true,
   },
   wrongKeyType: {
