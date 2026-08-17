@@ -4,7 +4,14 @@ import { useMemo, useState } from "react";
 import { wordSchema, type Stage, type WordStage } from "@/content/schema";
 import { hasCodex } from "@/lib/codex-settings";
 import { getGeminiKey } from "@/lib/profile";
-import { buildVocabPrompt, VOCAB_RESPONSE_SCHEMA, type VocabCandidate } from "@/lib/vocab/extract";
+import { generateFromBrowser, isLocationBlocked } from "@/lib/ai/generate-browser";
+import { TEXT_MODEL } from "@/lib/ai/models";
+import {
+  buildVocabPrompt,
+  parseVocabCandidates,
+  VOCAB_RESPONSE_SCHEMA,
+  type VocabCandidate,
+} from "@/lib/vocab/extract";
 import { messageForReason } from "./issue-text";
 import { saveContent } from "./studio-api";
 import { generateStructured } from "./text-api";
@@ -337,12 +344,33 @@ async function requestViaGemini(
 
   const body = (await readJson(response)) as { words?: unknown; reason?: unknown };
   if (!response.ok) {
-    return {
-      ok: false,
-      message: messageForVocabReason(typeof body.reason === "string" ? body.reason : ""),
-    };
+    const reason = typeof body.reason === "string" ? body.reason : "";
+    /*
+     * サーバ（Cloudflare の 香港）から Google に 出られないときは、この端末から直接 聞く。
+     * 先生の パソコンは 日本・カンボジアで、どちらも 対応地域（2026-08-17）。
+     */
+    if (isLocationBlocked(reason)) return await vocabFromBrowser(apiKey, texts);
+    return { ok: false, message: messageForVocabReason(reason) };
   }
   return { ok: true, value: toWordList(body) };
+}
+
+/** サーバの逃げ道。サーバ側 route と同じ材料（プロンプト・スキーマ・解釈）を使う。 */
+async function vocabFromBrowser(
+  apiKey: string,
+  texts: string[],
+): Promise<{ ok: true; value: VocabCandidate[] } | { ok: false; message: string }> {
+  const result = await generateFromBrowser({
+    apiKey,
+    model: TEXT_MODEL,
+    prompt: buildVocabPrompt(texts),
+    schema: VOCAB_RESPONSE_SCHEMA,
+    // 教材づくりなので、思いつきよりも本文に忠実な方を採る（route と同じ）
+    temperature: 0.2,
+    timeoutMs: 30_000,
+  });
+  if (!result.ok) return { ok: false, message: messageForVocabReason(result.reason) };
+  return { ok: true, value: toWordList({ words: parseVocabCandidates(result.text) }) };
 }
 
 async function readJson(response: Response): Promise<Record<string, unknown>> {

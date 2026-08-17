@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { TEXT_MODEL } from "@/lib/ai/models";
+import { classifyUpstreamResponse } from "@/lib/ai/upstream-error";
 import {
   buildJudgePrompt,
   isKanaOnly,
@@ -115,8 +116,17 @@ async function askOnce(
   });
 
   if (!response.ok) {
-    // 応答本文にはキーが混ざりうるので、そのまま外へ出さない
-    throw new UpstreamError(response.status === 429 ? "quota" : "upstream", response.status);
+    /*
+     * 応答本文にはキーが混ざりうるので、そのまま外へ出さない。ただし上流が付けた
+     * **機械向けの名前**は読む——うちの Worker は香港で動くことがあり、Google は
+     * 香港を対象地域に入れていない。ここを `upstream` で潰すと、画面は
+     * ブラウザから直接ためす手（逃げ道）に気づけない（2026-08-17）。
+     */
+    const { reason } = await classifyUpstreamResponse(response);
+    throw new UpstreamError(
+      reason ?? (response.status === 429 ? "quota" : "upstream"),
+      response.status,
+    );
   }
 
   const data = (await response.json()) as {

@@ -1,6 +1,12 @@
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/app/api/studio/content/route";
+import { MODELS_ENDPOINT, modelNamesFrom } from "@/lib/ai/list-models";
 import { isModelName, looksLiveCapable } from "@/lib/ai/models";
+import {
+  classifyUpstreamResponse,
+  NO_UPSTREAM_CODE,
+  type UpstreamCode,
+} from "@/lib/ai/upstream-error";
 import { createEphemeralToken, LiveTokenError } from "@/lib/live/token";
 
 /**
@@ -18,15 +24,37 @@ import { createEphemeralToken, LiveTokenError } from "@/lib/live/token";
  * トークン発行で落ちたのかで、次にやることがまるで違う。だから
  * **step（どの段で落ちたか）と upstreamStatus（上流のHTTP番号）**を返す。
  * どちらもキーを含まないし、上流の本文も出さない（AGENTS.md 規律4）。
+ *
+ * ## 400 を「キーが違う」と言い切らない（2026-08-17）
+ * 以前はモデル一覧が 400 なら無条件に `badKey` と言っていた。この API の 400 は
+ * **正しいキーでも**返る（発行したて・呼び出し元の国が対象外・引数の不備）。
+ * 正しいキーを持つ先生が、何度もコピーし直す羽目になった。いまは上流の
+ * **機械向けの名前だけ**（`API_KEY_INVALID` などの記号）を読んで理由を分け、
+ * 読み取れないときは `invalidRequest`（＝キーの正しさは不明）に留める。
+ * 詳しくは src/lib/ai/upstream-error.ts。
  */
-
-const MODELS_ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models?pageSize=200";
 
 /** どの段で落ちたか。 */
 type Step = "auth" | "listModels" | "createToken";
 
-function fail(step: Step, reason: string, status: number, upstreamStatus?: number): NextResponse {
-  return NextResponse.json({ ok: false, step, reason, upstreamStatus }, { status });
+function fail(
+  step: Step,
+  reason: string,
+  status: number,
+  upstream?: { status: number; code: UpstreamCode },
+): NextResponse {
+  return NextResponse.json(
+    {
+      ok: false,
+      step,
+      reason,
+      upstreamStatus: upstream?.status,
+      // 上流が付けた名前（記号だけ）。原因の切り分けに要る。文章もキーも含まない
+      upstreamCode: upstream?.code.status ?? undefined,
+      upstreamReason: upstream?.code.reason ?? undefined,
+    },
+    { status },
+  );
 }
 
 export async function POST(request: Request): Promise<NextResponse> {
@@ -48,7 +76,7 @@ export async function POST(request: Request): Promise<NextResponse> {
     models = await listModels(apiKey);
   } catch (e) {
     if (e instanceof CheckError) {
-      return fail("listModels", e.reason, 502, e.upstreamStatus);
+      return fail("listModels", e.reason, 502, { status: e.upstreamStatus, code: e.code });
     }
     // fetch そのものが投げた（ネットワーク・DNS・タイムアウト）。上流の番号は無い
     return fail("listModels", "network", 502);
@@ -62,14 +90,26 @@ export async function POST(request: Request): Promise<NextResponse> {
     return NextResponse.json({ ok: true, step: "listModels", models, liveModels, live: null });
   }
 
-  let live: { ok: boolean; reason: string | null; upstreamStatus?: number };
+  let live: {
+    ok: boolean;
+    reason: string | null;
+    upstreamStatus?: number;
+    upstreamCode?: string;
+    upstreamReason?: string;
+  };
   try {
     await createEphemeralToken({ apiKey, model });
     live = { ok: true, reason: null };
   } catch (e) {
     live =
       e instanceof LiveTokenError
-        ? { ok: false, reason: e.reason, upstreamStatus: e.status }
+        ? {
+            ok: false,
+            reason: e.reason,
+            upstreamStatus: e.status,
+            upstreamCode: e.code.status ?? undefined,
+            upstreamReason: e.code.reason ?? undefined,
+          }
         : { ok: false, reason: "network" };
   }
 
@@ -80,23 +120,28 @@ class CheckError extends Error {
   constructor(
     readonly reason: string,
     readonly upstreamStatus: number,
+    readonly code: UpstreamCode = NO_UPSTREAM_CODE,
   ) {
     super(reason);
     this.name = "CheckError";
   }
 }
 
+/** 名前が読めなかったときだけ使う、HTTP番号からの当て推量。 */
+function fallbackReason(status: number): string {
+  if (status === 400) return "invalidRequest"; // キーが違うとは限らない
+  if (status === 401 || status === 403) return "noPermission";
+  if (status === 404) return "modelNotFound";
+  if (status === 429) return "rateLimited";
+  return "upstream";
+}
+
 /** そのキーで見えるモデルの名前（`models/` の接頭辞は落とす）。 */
 async function listModels(apiKey: string): Promise<string[]> {
   const response = await fetch(MODELS_ENDPOINT, { headers: { "x-goog-api-key": apiKey } });
   if (!response.ok) {
-    // Google は無効キーに 400 を返す（実測: API key not valid / INVALID_ARGUMENT）
-    if (response.status === 400) throw new CheckError("badKey", 400);
-    if (response.status === 401 || response.status === 403) {
-      throw new CheckError("noPermission", response.status);
-    }
-    if (response.status === 429) throw new CheckError("rateLimited", 429);
-    throw new CheckError("upstream", response.status);
+    const { reason, code } = await classifyUpstreamResponse(response);
+    throw new CheckError(reason ?? fallbackReason(response.status), response.status, code);
   }
   let data: { models?: { name?: string }[] };
   try {
@@ -105,8 +150,5 @@ async function listModels(apiKey: string): Promise<string[]> {
     // 200 なのに本文が読めない。ここを黙って空にすると「モデルが0個」に化ける
     throw new CheckError("badResponse", response.status);
   }
-  return (data.models ?? [])
-    .map((item) => (item.name ?? "").replace(/^models\//, ""))
-    .filter((name) => name.length > 0)
-    .sort();
+  return modelNamesFrom(data);
 }

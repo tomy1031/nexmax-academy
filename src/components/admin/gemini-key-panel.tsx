@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useSyncExternalStore } from "react";
-import { DEFAULT_LIVE_TALK_MODEL, preferredLiveModel } from "@/lib/ai/models";
+import { listModelsFromBrowser } from "@/lib/ai/list-models";
+import { DEFAULT_LIVE_TALK_MODEL, looksLiveCapable, preferredLiveModel } from "@/lib/ai/models";
 import { getGeminiKey, getLiveModel, saveGeminiKey, saveLiveModel } from "@/lib/profile";
 
 /**
@@ -20,20 +21,65 @@ import { getGeminiKey, getLiveModel, saveGeminiKey, saveLiveModel } from "@/lib/
  * コードが指していた preview モデルのほうが消えていた。
  */
 
+/** 上流が付けた名前（記号だけ）。原因の切り分けに使う。 */
+interface UpstreamHint {
+  readonly upstreamStatus?: number;
+  readonly upstreamCode?: string;
+  readonly upstreamReason?: string;
+}
+
 type Check =
   | { state: "idle" }
   | { state: "running" }
-  | { state: "failed"; reason: string }
+  | ({ state: "failed"; reason: string } & UpstreamHint)
   | {
       state: "done";
       models: string[];
       liveModels: string[];
-      live: { ok: boolean; reason: string | null } | null;
+      live: ({ ok: boolean; reason: string | null } & UpstreamHint) | null;
+      /** サーバからは出られず、このパソコンから直接たしかめたか。 */
+      direct?: boolean;
     };
+
+/** 画面のすみに出す手がかり（`reason: badKey / 400 API_KEY_INVALID`）。 */
+function hintText(reason: string | null | undefined, hint: UpstreamHint): string {
+  const codes = [hint.upstreamStatus, hint.upstreamCode, hint.upstreamReason]
+    .filter((value) => value !== undefined && value !== null && value !== "")
+    .join(" ");
+  return codes ? `reason: ${reason ?? "unknown"} / ${codes}` : `reason: ${reason ?? "unknown"}`;
+}
 
 const REASON_TEXT: Record<string, string> = {
   noKey: "キーが 入っていません。",
-  badKey: "この キーは つかえません。コピーし直して ください（前後の 空白も 消す）。",
+  /*
+   * 2026-08-17: ここは「コピーし直して（前後の 空白も 消す）」と言っていたが、
+   * 空白はサーバが受け取った時点で落としている（gemini-check の route）。
+   * つまり空白は原因になりえず、正しいキーを持つ先生に無駄な手直しをさせていた。
+   * いまは Google が API_KEY_INVALID と名指ししたときだけ この文が出る。
+   */
+  badKey:
+    "Google が この キーを 受け取りませんでした。AIza で はじまる 古い キーは、" +
+    "制限を かけていないと もう つかえません。AI Studio の キー一覧で「Unrestricted」の 印を さがして、" +
+    "Add restrictions →「Restrict to Gemini API only」を えらんで ください（2〜3分で 効きます）。",
+  wrongKeyType:
+    "この 文字列は APIキーとして 受け取ってもらえませんでした（AQ. で はじまる 新しい 形式）。" +
+    "Google は これを ログインの きっぷ だと 見なします。" +
+    "AI Studio の キー一覧で、いま つかえる キーを えらび直して ください。",
+  keyExpired: "この キーは 期限切れです。AI Studio で 作り直して ください。",
+  keyRestricted:
+    "この キーには 制限が かかっています（つかえる サイト・IP・API の しばり）。" +
+    "Google Cloud の キーの 設定を たしかめてください。",
+  apiDisabled:
+    "この キーの プロジェクトで Gemini API が まだ ON に なっていません。Google Cloud で 有効に してください。",
+  locationNotSupported:
+    "キーでは なく「呼んだ 場所」が はじかれました（Google が まだ 対応していない 国から の 呼び出し）。" +
+    "この 確認は サーバから 投げるので、先生の パソコンの 国とは 別です。",
+  invalidRequest:
+    "Google が 400 を 返しましたが、キーが 悪いとは 言っていません。" +
+    "下の コードを 見て ください（作りたての キーなら 2〜3分 待つと 通る ことが あります）。",
+  network: "Google に つながりませんでした。ネットワークを たしかめてください。",
+  badResponse: "Google の 返事が 読めませんでした。少し 待って ためしてください。",
+  invalidJson: "送った 中身が 読めませんでした。画面を 読み込み直して ください。",
   tokenRejected:
     "キーは 読めましたが、みじかい きっぷ（トークン）が つくれませんでした。" +
     "AQ. で はじまる 新しい キーだと ここで 止まることが あります。" +
@@ -96,10 +142,41 @@ export function GeminiKeyPanel() {
         reason?: string;
         models?: string[];
         liveModels?: string[];
-        live?: { ok: boolean; reason: string | null } | null;
-      };
+        live?: ({ ok: boolean; reason: string | null } & UpstreamHint) | null;
+      } & UpstreamHint;
       if (!response.ok || !body.ok) {
-        setCheck({ state: "failed", reason: body.reason ?? "upstream" });
+        /*
+         * サーバの居場所が Google の対象外（2026-08-17 実測）。うちの Worker は
+         * Cloudflare の香港（HKG）で動いていて、Google は香港からの呼び出しを
+         * 受け付けない。**先生のパソコンは日本・カンボジアで、どちらも対象内**なので、
+         * ここから直接ためせば答えが出る。キーはこの端末にあるものをそのまま使う。
+         */
+        if (body.reason === "locationNotSupported") {
+          const direct = await listModelsFromBrowser(key.trim());
+          if (direct.ok) {
+            const liveModels = direct.models.filter(looksLiveCapable);
+            setCheck({
+              state: "done",
+              models: direct.models,
+              liveModels,
+              live: null,
+              direct: true,
+            });
+            const preferred = preferredLiveModel(liveModels);
+            if (liveModels.length > 0 && !liveModels.includes(model)) {
+              setModel(preferred);
+              saveLiveModel(preferred);
+            }
+            return;
+          }
+        }
+        setCheck({
+          state: "failed",
+          reason: body.reason ?? "upstream",
+          upstreamStatus: body.upstreamStatus,
+          upstreamCode: body.upstreamCode,
+          upstreamReason: body.upstreamReason,
+        });
         return;
       }
       const liveModels = body.liveModels ?? [];
@@ -219,7 +296,9 @@ export function GeminiKeyPanel() {
           style={{ borderColor: "var(--color-coral)", color: "var(--color-ink)" }}
         >
           ✖ {reasonText(check.reason)}
-          <span className="text-ink-faint ml-2 text-xs font-bold">reason: {check.reason}</span>
+          <span className="text-ink-faint ml-2 text-xs font-bold">
+            {hintText(check.reason, check)}
+          </span>
         </p>
       ) : null}
 
@@ -228,7 +307,23 @@ export function GeminiKeyPanel() {
           <p className="text-leaf-deep text-sm font-black">
             ✓ キーは つかえます（モデルが {check.models.length}こ 見えました）。
           </p>
-          {check.live ? (
+          {check.direct ? (
+            <p className="text-ink-soft text-xs font-bold">
+              ※ この アプリの サーバ（香港）からは Google に 出られないので、この パソコンから 直接
+              たしかめました。たいわ・音声づくりも この パソコンから 直接 つなぎます。
+            </p>
+          ) : null}
+          {/*
+            「たいわに つかえる モデルが 無い」と「ここでは ためせなかった」を 混ぜない。
+            サーバから 出られないときは トークンを 作る 段が そもそも 走らないので、
+            モデルが 5つ 見えているのに「モデルが ありません」と 出ていた（2026-08-17 実発生）。
+          */}
+          {check.liveModels.length > 0 && check.live === null && check.direct ? (
+            <p className="text-navy text-sm font-black">
+              ✓ たいわに つかえる モデルは あります（下の 一覧）。つなぎ具合は 教材の 画面で
+              たしかめます。
+            </p>
+          ) : check.live ? (
             check.live.ok ? (
               <p className="text-leaf-deep text-sm font-black">
                 ✓ 「{model}」で たいわ・音声づくりが つかえます。
@@ -236,6 +331,9 @@ export function GeminiKeyPanel() {
             ) : (
               <p className="text-coral-deep text-sm font-black">
                 ✖ 「{model}」では つながりませんでした。{reasonText(check.live.reason)}
+                <span className="text-ink-faint ml-2 text-xs font-bold">
+                  {hintText(check.live.reason, check.live)}
+                </span>
               </p>
             )
           ) : (

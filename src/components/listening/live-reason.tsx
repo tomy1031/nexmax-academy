@@ -37,6 +37,26 @@ const ADVICE: Record<string, Advice> = {
       "その ときは AIzaSy で はじまる キーを つくり直して ください。",
     toSettings: true,
   },
+  /*
+   * キーの「形式」の問題（2026-08-17）。Google は AIza（旧）を 制限なしでは 受け取らず、
+   * AQ.（新）は APIキーとして 投げると ログインの きっぷ と 見なされる。
+   * 「権限が 無い」と 言うと プロジェクトの 設定を 見に行ってしまうので 分けて言う。
+   */
+  badKey: {
+    what: "この キーを Google が 受け取りませんでした。",
+    next: "AI Studio の キー一覧で「Unrestricted」の 印の キーに 制限を かけてから、「AI設定」で ためしてください。",
+    toSettings: true,
+  },
+  wrongKeyType: {
+    what: "この 文字列は APIキーとして 受け取ってもらえませんでした（AQ. で はじまる 新しい 形式）。",
+    next: "「AI設定」で キーを 入れ直して、「せつぞくを ためす」を おしてください。",
+    toSettings: true,
+  },
+  locationNotSupported: {
+    what: "キーでは なく「呼んだ 場所」が はじかれました。",
+    next: "先生に つたえてください（サーバの 国が Google の 対象外です）。",
+    toSettings: false,
+  },
   noPermission: {
     what: "この キーでは たいわの きのうが つかえません。",
     next: "Google AI Studio で、そのキーの プロジェクトが Gemini API を つかえるか たしかめてください。",

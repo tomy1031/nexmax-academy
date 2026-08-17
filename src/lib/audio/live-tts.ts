@@ -52,6 +52,12 @@ export class TtsError extends Error {
 /**
  * 短命トークンを1つもらう。1トークン1接続（uses:1）なので行ごとに取り直す。
  * つなぐつもりのモデル名も渡す——サーバが理由を返すときの手がかりになる。
+ *
+ * **トークンが作れないキーでは、本人のキーをそのまま返す**（2026-08-17）。
+ * 新形式（`AQ.`）のキーは authTokens.create だけ通らないことが知られていて、
+ * 旧形式は 2026年9月に廃止される。ここで諦めると、その日に音声づくりが全滅する。
+ * 「漏れても30分で切れる」効き目は失うので、**作れなかったときだけ**に限る
+ * （たいわ側 use-live-session.ts と同じ判断）。
  */
 async function fetchToken(apiKey: string, model: string): Promise<string> {
   const response = await fetch("/api/live/token", {
@@ -65,6 +71,14 @@ async function fetchToken(apiKey: string, model: string): Promise<string> {
     reason?: string;
   };
   if (!response.ok || !payload.ready || !payload.token) {
+    // locationNotSupported = サーバ（香港）が Google の対象外。このパソコンからなら通る
+    if (
+      payload.reason === "tokenRejected" ||
+      payload.reason === "invalidRequest" ||
+      payload.reason === "locationNotSupported"
+    ) {
+      return apiKey;
+    }
     throw new TtsError(messageForTokenReason(payload.reason));
   }
   return payload.token;
@@ -77,6 +91,12 @@ function messageForTokenReason(reason: string | undefined): string {
       return "AIの キーが まだ ありません。「AI指示出し」で 登録してください。";
     case "tokenRejected":
       return "みじかい きっぷ が つくれませんでした。「AI設定」で「せつぞくを ためす」を おしてください（AQ. で はじまる キーだと 止まることが あります）。";
+    case "badKey":
+      return "この キーを Google が 受け取りませんでした。AI Studio の キー一覧で 制限を かけてから、もう一度 ためしてください。";
+    case "wrongKeyType":
+      return "この 文字列は APIキーとして 受け取ってもらえませんでした（AQ. で はじまる 新しい 形式）。「AI設定」で キーを えらび直して ください。";
+    case "locationNotSupported":
+      return "キーでは なく「呼んだ 場所」が はじかれました。先生に つたえてください。";
     case "noPermission":
       return "この キーでは 音声づくりが つかえません。キーの プロジェクトを たしかめてください。";
     case "modelNotFound":

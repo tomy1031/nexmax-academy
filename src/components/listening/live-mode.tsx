@@ -11,8 +11,16 @@ import { buildFuriganaIndex } from "@/lib/text/furigana";
 import { getGeminiKey } from "@/lib/profile";
 import { recordContentProgress } from "@/lib/progress/store";
 import { CaptionBar, CallShell } from "@/components/call-shell";
+import { generateFromBrowser, isLocationBlocked } from "@/lib/ai/generate-browser";
+import { TEXT_MODEL } from "@/lib/ai/models";
 import { LiveReason } from "./live-reason";
-import { resolveMatch, type JudgeableReq } from "./req-matcher";
+import {
+  buildReqJudgePrompt,
+  parseReqJudge,
+  reqJudgeResponseSchema,
+  resolveMatch,
+  type JudgeableReq,
+} from "./req-matcher";
 import { useLiveSession } from "./use-live-session";
 
 /**
@@ -422,9 +430,39 @@ async function askAiForReq(
     const body = (await response.json().catch(() => ({}))) as {
       ready?: boolean;
       reqId?: unknown;
+      reason?: string;
     };
-    if (!response.ok || !body.ready) return null;
+    if (!response.ok || !body.ready) {
+      /*
+       * サーバ（Cloudflare の 香港）から Google に 出られないときは、この端末から
+       * 直接 聞く。学習者の 端末は 日本・カンボジアで、どちらも 対応地域。
+       */
+      if (isLocationBlocked(body.reason)) return await askFromBrowser(apiKey, utterance, reqs);
+      return null;
+    }
     return typeof body.reqId === "string" ? body.reqId : null;
+  } catch {
+    return null;
+  }
+}
+
+/** サーバの逃げ道。サーバ側 route と同じ材料（プロンプト・スキーマ・解釈）を使う。 */
+async function askFromBrowser(
+  apiKey: string,
+  utterance: string,
+  reqs: readonly JudgeableReq[],
+): Promise<string | null> {
+  const result = await generateFromBrowser({
+    apiKey,
+    model: TEXT_MODEL,
+    prompt: buildReqJudgePrompt(utterance, reqs),
+    schema: reqJudgeResponseSchema(reqs),
+    // 選ぶのは id ひとつ。思いつきは要らない（route と同じ）
+    temperature: 0,
+  });
+  if (!result.ok || !result.text) return null;
+  try {
+    return parseReqJudge(JSON.parse(result.text), reqs);
   } catch {
     return null;
   }

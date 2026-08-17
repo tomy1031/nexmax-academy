@@ -2,6 +2,7 @@ import { Buffer } from "node:buffer";
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/app/api/studio/content/route";
 import { DEFAULT_IMAGE_MODEL } from "@/lib/ai/models";
+import { classifyUpstreamResponse } from "@/lib/ai/upstream-error";
 
 /**
  * エリアの絵を1枚つくる（管理者専用）。
@@ -70,7 +71,7 @@ export async function POST(request: Request): Promise<NextResponse> {
     image = await generateImage({ apiKey, prompt, references });
   } catch (e) {
     const status = e instanceof UpstreamError ? e.status : 502;
-    return fail("upstream", status);
+    return fail(e instanceof UpstreamError ? e.reason : "upstream", status);
   }
   // モデルが文字だけ返すことがある（安全ブロックなど）。画面には理由の名前だけ渡す。
   if (!image) return fail("noImage", 502);
@@ -82,6 +83,8 @@ class UpstreamError extends Error {
   constructor(
     message: string,
     readonly status: number,
+    /** 上流が付けた名前（`locationNotSupported` など）。画面が逃げ道を選ぶのに要る。 */
+    readonly reason: string = "upstream",
   ) {
     super(message);
     this.name = "UpstreamError";
@@ -113,8 +116,12 @@ async function generateImage({
   });
 
   if (!response.ok) {
-    // 応答本文にキーが混ざる可能性があるので、そのまま外へ出さない
-    throw new UpstreamError("絵の生成に失敗しました", response.status);
+    /*
+     * 応答本文にキーが混ざる可能性があるので、そのまま外へ出さない。名前（記号）だけ読む——
+     * うちの Worker は香港で動くことがあり、Google は香港を対象地域に入れていない（2026-08-17）。
+     */
+    const { reason } = await classifyUpstreamResponse(response);
+    throw new UpstreamError("絵の生成に失敗しました", response.status, reason ?? "upstream");
   }
 
   const data = (await response.json()) as {

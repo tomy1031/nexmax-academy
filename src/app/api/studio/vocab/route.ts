@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/app/api/studio/content/route";
 import { TEXT_MODEL } from "@/lib/ai/models";
+import { classifyUpstreamResponse } from "@/lib/ai/upstream-error";
 import {
   buildVocabPrompt,
   parseVocabCandidates,
@@ -59,7 +60,7 @@ export async function POST(request: Request): Promise<NextResponse> {
     words = await extractWords({ apiKey, texts });
   } catch (e) {
     const status = e instanceof UpstreamError ? e.status : 502;
-    return fail("upstream", status);
+    return fail(e instanceof UpstreamError ? e.reason : "upstream", status);
   }
 
   return NextResponse.json({ ready: true, model: VOCAB_MODEL, words });
@@ -69,6 +70,8 @@ class UpstreamError extends Error {
   constructor(
     message: string,
     readonly status: number,
+    /** 上流が付けた名前（`locationNotSupported` など）。画面が逃げ道を選ぶのに要る。 */
+    readonly reason: string = "upstream",
   ) {
     super(message);
     this.name = "UpstreamError";
@@ -101,8 +104,17 @@ async function extractWords({
   });
 
   if (!response.ok) {
-    // 応答本文にキーが混ざる可能性があるので、そのまま外へ出さない
-    throw new UpstreamError("ことばの抜き出しに失敗しました", response.status);
+    /*
+     * 応答本文にキーが混ざる可能性があるので、そのまま外へ出さない。名前（記号）だけ読む——
+     * うちの Worker は香港で動くことがあり、Google は香港を対象地域に入れていない。
+     * ここを `upstream` で潰すと、画面はブラウザから直接ためす手に気づけない（2026-08-17）。
+     */
+    const { reason } = await classifyUpstreamResponse(response);
+    throw new UpstreamError(
+      "ことばの抜き出しに失敗しました",
+      response.status,
+      reason ?? "upstream",
+    );
   }
 
   const data = (await response.json()) as {
