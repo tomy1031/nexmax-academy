@@ -12,15 +12,15 @@
  *    公開中のURLからでも、先生のPCで動く `codex:bridge` を通して使える
  *    （`ws://127.0.0.1` は https のページからでも開けることを実測した）。
  * 2. **Gemini**（BYOK）— 合言葉が無いとき、または Codex に届かないとき。
- *    サーバのプロキシ（/api/studio/image）へ頼み、画像だけ受け取る。
- *    キーも上流の応答本文も返ってこない（AGENTS.md 規律4）。
+ *    **この端末から Google へ直接**頼む（2026-08-17）。サーバのプロキシを通すと、
+ *    香港のデータセンターで キーが 復号されるうえ、Google に 断られる。
  *
  * Codex を先にするのは、絵の水準がこちらのほうが高いため。ただし
  * **落ちたら黙って Gemini に回す**——先生が絵を待っている場面で、
  * ブリッジが止まっているというだけで手が止まるのは割に合わない。
  */
 
-import { generateImageFromBrowser, isLocationBlocked } from "@/lib/ai/generate-browser";
+import { generateImageFromBrowser } from "@/lib/ai/generate-browser";
 import { DEFAULT_IMAGE_MODEL } from "@/lib/ai/models";
 import { generateWithCodex } from "@/lib/codex-image";
 import { hasCodex } from "@/lib/codex-settings";
@@ -44,44 +44,19 @@ export async function generateImage({
     if (!apiKey) return viaCodex;
   }
 
-  let response: Response;
-  try {
-    response = await fetch("/api/studio/image", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ apiKey, prompt, references }),
-    });
-  } catch {
-    return { ok: false, message: "つうしんに 失敗しました。ネットワークを たしかめてください。" };
-  }
-
-  let body: { data?: unknown; mimeType?: unknown; reason?: unknown } = {};
-  try {
-    body = (await response.json()) as typeof body;
-  } catch {
-    // 本文が読めない＝理由も分からない。下の言い分けに任せる
-  }
-  if (!response.ok || typeof body.data !== "string") {
-    const reason = typeof body.reason === "string" ? body.reason : "";
-    /*
-     * サーバ（Cloudflare の 香港）から Google に 出られないときは、この端末から直接 描く。
-     * 先生の パソコンは 日本・カンボジアで、どちらも 対応地域（2026-08-17）。
-     */
-    if (isLocationBlocked(reason)) {
-      const direct = await generateImageFromBrowser({
-        apiKey,
-        model: DEFAULT_IMAGE_MODEL,
-        prompt,
-        references,
-      });
-      if (!direct.ok) return { ok: false, message: messageForReason(direct.reason) };
-      return { ok: true, file: fileFrom(direct.mimeType, direct.data) };
-    }
-    return { ok: false, message: messageForReason(reason) };
-  }
-
-  const mimeType = typeof body.mimeType === "string" ? body.mimeType : "image/png";
-  return { ok: true, file: fileFrom(mimeType, body.data) };
+  /*
+   * この端末から Google に直接描いてもらう（2026-08-17 から サーバは 通さない）。
+   * うちの Worker は香港で動くことがあり、そこを通すと Google に断られるうえ、
+   * キーが香港で復号される。BYOK のキーはこの端末にある。
+   */
+  const direct = await generateImageFromBrowser({
+    apiKey,
+    model: DEFAULT_IMAGE_MODEL,
+    prompt,
+    references,
+  });
+  if (!direct.ok) return { ok: false, message: messageForReason(direct.reason) };
+  return { ok: true, file: fileFrom(direct.mimeType, direct.data) };
 }
 
 /** base64 の絵を File にする。 */

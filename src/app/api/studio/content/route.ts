@@ -18,7 +18,7 @@ import {
   listWordStages,
 } from "@/lib/content";
 import { fetchDbContents } from "@/lib/content-db";
-import { createClient } from "@/lib/supabase/server";
+import { fail, requireAdmin } from "@/lib/studio/admin-gate";
 
 /**
  * コンテンツスタジオの保存API（管理者専用）。
@@ -32,40 +32,6 @@ import { createClient } from "@/lib/supabase/server";
  * 認可はRLSに任せきりにせずサーバ側でも profiles.is_admin を確かめる（二重の関所）。
  * 失敗応答には接続情報・DBの生メッセージを載せない（AGENTS.md 規律4）。
  */
-
-type ServerClient = NonNullable<Awaited<ReturnType<typeof createClient>>>;
-
-type Gate =
-  | { ok: true; supabase: ServerClient; userId: string }
-  | { ok: false; response: NextResponse };
-
-function fail(reason: string, status: number, extra?: Record<string, unknown>): NextResponse {
-  return NextResponse.json({ ready: false, reason, ...extra }, { status });
-}
-
-/** スタジオのAPI共通の関門。/api/studio/vocab もこれを通す（関所を2つ書かない）。 */
-export async function requireAdmin(): Promise<Gate> {
-  const supabase = await createClient();
-  // Supabase 未設定のローカル開発。スタジオは「じゅんびちゅう」に落ちる
-  if (!supabase) return { ok: false, response: fail("notConfigured", 503) };
-
-  const {
-    data: { user },
-    error: userError,
-  } = await supabase.auth.getUser();
-  if (userError || !user) return { ok: false, response: fail("unauthorized", 401) };
-
-  const { data: profile, error: profileError } = await supabase
-    .from("profiles")
-    .select("is_admin")
-    .eq("id", user.id)
-    .maybeSingle();
-  if (profileError || profile?.is_admin !== true) {
-    return { ok: false, response: fail("forbidden", 403) };
-  }
-
-  return { ok: true, supabase, userId: user.id };
-}
 
 /**
  * 保存前の機械検査。

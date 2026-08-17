@@ -2,6 +2,7 @@
 
 import { useState, useSyncExternalStore } from "react";
 import { listModelsFromBrowser } from "@/lib/ai/list-models";
+import { createLiveToken } from "@/lib/ai/live-token";
 import { DEFAULT_LIVE_TALK_MODEL, looksLiveCapable, preferredLiveModel } from "@/lib/ai/models";
 import { getGeminiKey, getLiveModel, saveGeminiKey, saveLiveModel } from "@/lib/profile";
 
@@ -131,73 +132,37 @@ export function GeminiKeyPanel() {
     setCheck({ state: "running" });
     // 押した時点の中身で試す。保存を忘れていても確かめられるようにする
     saveGeminiKey(key);
-    try {
-      const response = await fetch("/api/studio/gemini-check", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ apiKey: key, model }),
-      });
-      const body = (await response.json().catch(() => ({}))) as {
-        ok?: boolean;
-        reason?: string;
-        models?: string[];
-        liveModels?: string[];
-        live?: ({ ok: boolean; reason: string | null } & UpstreamHint) | null;
-      } & UpstreamHint;
-      if (!response.ok || !body.ok) {
-        /*
-         * サーバの居場所が Google の対象外（2026-08-17 実測）。うちの Worker は
-         * Cloudflare の香港（HKG）で動いていて、Google は香港からの呼び出しを
-         * 受け付けない。**先生のパソコンは日本・カンボジアで、どちらも対象内**なので、
-         * ここから直接ためせば答えが出る。キーはこの端末にあるものをそのまま使う。
-         */
-        if (body.reason === "locationNotSupported") {
-          const direct = await listModelsFromBrowser(key.trim());
-          if (direct.ok) {
-            const liveModels = direct.models.filter(looksLiveCapable);
-            setCheck({
-              state: "done",
-              models: direct.models,
-              liveModels,
-              live: null,
-              direct: true,
-            });
-            const preferred = preferredLiveModel(liveModels);
-            if (liveModels.length > 0 && !liveModels.includes(model)) {
-              setModel(preferred);
-              saveLiveModel(preferred);
-            }
-            return;
-          }
-        }
-        setCheck({
-          state: "failed",
-          reason: body.reason ?? "upstream",
-          upstreamStatus: body.upstreamStatus,
-          upstreamCode: body.upstreamCode,
-          upstreamReason: body.upstreamReason,
-        });
-        return;
-      }
-      const liveModels = body.liveModels ?? [];
-      setCheck({
-        state: "done",
-        models: body.models ?? [],
-        liveModels,
-        live: body.live ?? null,
-      });
-      /*
-       * いま選んでいるモデルが一覧に無ければ、使えるものへ寄せる。
-       * 寄せ先は**こちらの並び順**で決める（preferredLiveModel）。相手の一覧の
-       * 先頭を採っていたころ、新しい 3.1 が使えるのに古い 2.5 が既定になっていた。
-       */
-      const preferred = preferredLiveModel(liveModels);
-      if (liveModels.length > 0 && model !== preferred && !liveModels.includes(model)) {
-        setModel(preferred);
-        saveLiveModel(preferred);
-      }
-    } catch {
-      setCheck({ state: "failed", reason: "upstream" });
+    /*
+     * **キーはサーバへ渡さない**（2026-08-17）。この画面から Google へ直接聞く。
+     * 理由は2つ: うちの Worker は香港で動くことがあり、(1) Google に断られる、
+     * (2) キーが香港のデータセンターで復号される。通さなければどちらも起きない。
+     *
+     * 見るのは3つ。1) キーは通るか（モデル一覧）2) たいわに使えるモデルはあるか
+     * 3) みじかい きっぷ（短命トークン）は作れるか。
+     */
+    const trimmed = key.trim();
+    const listed = await listModelsFromBrowser(trimmed);
+    if (!listed.ok) {
+      setCheck({ state: "failed", reason: listed.reason });
+      return;
+    }
+    const liveModels = listed.models.filter(looksLiveCapable);
+    const minted = await createLiveToken({ apiKey: trimmed });
+    setCheck({
+      state: "done",
+      models: listed.models,
+      liveModels,
+      live: minted.ok ? { ok: true, reason: null } : { ok: false, reason: minted.reason },
+    });
+    /*
+     * いま選んでいるモデルが一覧に無ければ、使えるものへ寄せる。
+     * 寄せ先は**こちらの並び順**で決める（preferredLiveModel）。相手の一覧の
+     * 先頭を採っていたころ、新しい 3.1 が使えるのに古い 2.5 が既定になっていた。
+     */
+    const preferred = preferredLiveModel(liveModels);
+    if (liveModels.length > 0 && model !== preferred && !liveModels.includes(model)) {
+      setModel(preferred);
+      saveLiveModel(preferred);
     }
   };
 
