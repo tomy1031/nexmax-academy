@@ -112,6 +112,8 @@ const BANNED_PLACE_NAMES: readonly string[] = ["タイ"];
  * - カンボジア … **学習者自身の国**。「あなたはどこから来ましたか」を扱う教材で
  *   出ないほうが不自然で、すでに公開ずみの教材にも入っている
  *   （`content/wordstages/stage11_haizoku.json`）
+ * - アメリカ・中国 … AI時代のスライド（`content/slides/ai_jidai.json`）で
+ *   人員削減・会社数のデータに使うことをユーザーが承認（2026-08-17・台帳#59）
  */
 const AGREED_PLACE_NAMES: readonly string[] = [
   "日本",
@@ -119,6 +121,8 @@ const AGREED_PLACE_NAMES: readonly string[] = [
   "ニホン",
   "ニッポン",
   "カンボジア",
+  "アメリカ",
+  "中国",
 ];
 
 /**
