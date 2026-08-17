@@ -123,6 +123,18 @@ describe("教材データ以外の文も 同じ判定で見る（スライド原
   it("カタカナ語の誤検出よけも同じに働く", () => {
     expect(checkCountryNamesInTexts("f", ["タイトルを 書きます。"])).toEqual([]);
   });
+
+  it("引用は 当たった出現箇所を指す（1つ目の「タイトル」ではなく）", () => {
+    /*
+     * 原稿は1スライドが1行に畳まれるので、同じ行に「タイトル」と「タイ」が並ぶ。
+     * 引用が「タイトル」側を指すと、既知の誤検出に見えて指摘が握りつぶされる。
+     */
+    const findings = checkCountryNamesInTexts("f", [
+      "タイトルを 書きます。らいねん タイに 行きます。",
+    ]);
+    expect(findings).toHaveLength(1);
+    expect(findings[0]?.message).toContain("タイに 行きます");
+  });
 });
 
 describe("1件ぶんのふりがな検査（保存経路で使う）", () => {

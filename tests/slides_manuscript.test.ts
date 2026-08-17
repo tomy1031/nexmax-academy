@@ -42,6 +42,49 @@ describe("原稿から 学習者が読む文を 取り出す", () => {
     expect(texts).toEqual(["こんにちは"]);
   });
 
+  it("rt の閉じタグが 省略されていても、読みだけを除く（HTML5 では省略が合法）", () => {
+    // Chromium は省略でも正しく描くので、原稿としては通ってしまう形。
+    // ここで次の </rt> まで飲み込むと、間の本文が検査から静かに消える。
+    const texts = extractManuscriptTexts(
+      manuscript(
+        `<div class="slide"><p><ruby>時代<rt>じだい</ruby>は ここから <ruby>始<rt>はじ</rt></ruby>まる</p></div>`,
+      ),
+    );
+    expect(texts).toEqual(["時代は ここから 始まる"]);
+  });
+
+  it("属性値の中の > で タグの除去が 壊れない", () => {
+    const texts = extractManuscriptTexts(
+      manuscript(`<div class="slide"><p title="人 > AI">こんにちは</p></div>`),
+    );
+    expect(texts).toEqual(["こんにちは"]);
+  });
+
+  it("一覧に無いブロックタグ（header/main など）でも 行が貼り付かない", () => {
+    // 貼り付くと カタカナ境界のガードが狂い、国名検査が黙る（逆の誤検出もある）
+    const texts = extractManuscriptTexts(
+      manuscript(`<header>タイ</header><main>ランチが 好きです</main>`),
+    );
+    expect(texts).toEqual(["タイ", "ランチが 好きです"]);
+  });
+
+  it("CSS の content: の文字列は 印字されるので 検査対象に入れる", () => {
+    // 実原稿の .pageno::before { content: counter(slide) " / 22" } が現用の経路。
+    // justify-content: center のような値は 拾わない
+    const html = `<!doctype html><html><head><style>
+      .x { justify-content: center; }
+      .pageno::before { content: counter(slide) " / 22"; }
+      .bad::after { content: "だから 不正解"; }
+    </style></head><body><div class="slide"><p>こんにちは</p></div></body></html>`;
+    const texts = extractManuscriptTexts(html);
+    expect(texts).toContain("だから 不正解");
+    expect(texts).toContain("/ 22");
+    expect(texts).not.toContain("center");
+    const findings = checkManuscript("f.html", html);
+    expect(findings).toHaveLength(1);
+    expect(findings[0]?.message).toContain("不正解");
+  });
+
   it("br や ブロックの閉じで 行を分け、別の行の字を 貼り付けない", () => {
     const texts = extractManuscriptTexts(
       manuscript(`<div class="slide"><div>アメリカ<br />約566万</div><div>べつの 行</div></div>`),

@@ -23,8 +23,10 @@
  *     PDF は焼き上がりで検査できないので、原稿の側で見る（規律1・9）。
  *
  * 検査ロジックの実体は src/lib/content-checks.ts（スタジオ側と共用）。
- * このスクリプトはファイル走査とレポートだけを受け持つ
- * （fs に依存する検査 8〜10 はスタジオでは動かないので、この側に置く）。
+ * このスクリプトはファイル走査とレポートだけを受け持つ。
+ * 8〜9 は fs に依存するのでこの側に置く。10 のロジックは純関数だが、原稿は
+ * このリポジトリにしか無い（スタジオからは見えない）ので、走査ごと
+ * scripts/slides/manuscript_checks.ts に置く（語のリストと判定は共用）。
  *
  * 終了コード: エラーあり=1 / 警告のみ・問題なし=0
  */
@@ -182,40 +184,57 @@ function checkGeneratedIndex(): Finding[] {
  *   直したとき（枚数の書きまちがい）はここでしか捕まらない。
  */
 async function checkSlidesFiles(entries: readonly ContentEntry[]): Promise<Finding[]> {
-  const findings: Finding[] = [];
-  for (const { file, content } of entries) {
-    if (content.kind !== "slides" || !content.fileUrl.startsWith("/")) continue;
-    const pdfPath = join(PUBLIC_DIR, content.fileUrl.replace(/[?#].*$/, ""));
+  const out: Finding[] = [];
+  const targets = entries.filter(
+    ({ content }) => content.kind === "slides" && content.fileUrl.startsWith("/"),
+  );
+  if (targets.length === 0) return out;
+
+  // pdfjs は対象があるときだけ・1回だけ読み込む。教材ごとの try の外に置くのは、
+  // 依存の壊れ（メジャー更新でのパス移動など）を「この PDF が読めない」と
+  // 教材のせいにして誤報しないため（その場合はそのまま落として原因を見せる）。
+  const { getDocument } = await import("pdfjs-dist/legacy/build/pdf.mjs");
+
+  for (const { file, content } of targets) {
+    if (content.kind !== "slides") continue;
+    // fileUrl は URL なので、ファイルの場所に直すときは %20 などを戻す
+    const urlPath = content.fileUrl.replace(/[?#].*$/, "");
+    let decoded = urlPath;
+    try {
+      decoded = decodeURIComponent(urlPath);
+    } catch {
+      // 壊れた %xx はそのまま探す（無ければ次の実在検査が知らせる）
+    }
+    const pdfPath = join(PUBLIC_DIR, decoded);
     if (!existsSync(pdfPath)) {
-      findings.push({
+      out.push({
         file,
         level: "error",
         message: `fileUrl「${content.fileUrl}」の PDF が public/ に無い — 学習者の画面にスライドが出ない。render_pdf.mjs で作るか fileUrl を直す`,
       });
       continue;
     }
+    const task = getDocument({ data: new Uint8Array(readFileSync(pdfPath)) });
     try {
-      // pdfjs は PDF を開く必要があるときだけ読み込む（コミットごとに動く検査なので）
-      const { getDocument } = await import("pdfjs-dist/legacy/build/pdf.mjs");
-      const task = getDocument({ data: new Uint8Array(readFileSync(pdfPath)) });
       const pages = (await task.promise).numPages;
-      await task.destroy();
       if (pages !== content.pageCount) {
-        findings.push({
+        out.push({
           file,
           level: "error",
           message: `pageCount(${content.pageCount}) が PDF の実ページ数(${pages}) とずれている — 「ぜんぶで nまい」の表示としおりが壊れる。JSON か PDF を直す`,
         });
       }
     } catch (e) {
-      findings.push({
+      out.push({
         file,
         level: "error",
         message: `fileUrl「${content.fileUrl}」が PDF として読めない: ${e}`,
       });
+    } finally {
+      await task.destroy();
     }
   }
-  return findings;
+  return out;
 }
 
 /**
@@ -225,13 +244,8 @@ async function checkSlidesFiles(entries: readonly ContentEntry[]): Promise<Findi
  * 対応する教材がまだ無い原稿も、ある限り全部検査する。
  */
 function listManuscripts(): string[] {
-  let names: string[] = [];
-  try {
-    names = readdirSync(SLIDES_MANUSCRIPT_DIR);
-  } catch {
-    return [];
-  }
-  return names
+  // scripts/slides/ はこのスクリプトが import している場所なので、必ず在る
+  return readdirSync(SLIDES_MANUSCRIPT_DIR)
     .map((name) => join(SLIDES_MANUSCRIPT_DIR, name, "index.html"))
     .filter((path) => existsSync(path));
 }
