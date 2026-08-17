@@ -86,6 +86,8 @@ function messageForTokenReason(reason: string | undefined): string {
       return "音声づくりに つかう モデルが 見つかりません。「AI指示出し」で「せつぞくを ためす」を おしてください。";
     case "rateLimited":
       return "きょうは つかいすぎたようです。時間を おいて ためしてください。";
+    case "overloaded":
+      return "AIが いま こんで います。少し 待って もう一度 ためしてください。";
     default:
       return "音声の じゅんびが できませんでした。少し 待って もう一度 ためしてください。";
   }

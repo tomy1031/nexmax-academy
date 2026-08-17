@@ -37,7 +37,27 @@ function fallbackReason(status: number): string {
   if (status === 429) return "quota";
   if (status === 401 || status === 403) return "noPermission";
   if (status === 404) return "modelNotFound";
+  // 503 は Google 側の 混雑（UNAVAILABLE）。使いすぎ（429）と 混ぜない——
+  // 学習者に 言う ことも、次の 一手も 違う
+  if (status === 503) return "overloaded";
   return "upstream";
+}
+
+/**
+ * 混んでいるとき（503 / UNAVAILABLE）だけ、1回だけ 待って やり直す
+ *
+ * 2026-08-17 の 本番確認で、同じ 問いを 3回 投げて 2回 503 が 返った。Google 側の
+ * 一時的な 混雑で、少し 待つと 通る。会話の 途中で 使う 判定なので、
+ * **長く 粘らない**（待たせるより 落ちて、規則ベースの 受け止めに 回すほうがよい）。
+ * 使いすぎ（429）は やり直しても 悪化するだけなので 対象に しない。
+ */
+const RETRY_WAIT_MS = 700;
+
+async function sendWithRetry(request: () => Promise<Response>): Promise<Response> {
+  const first = await request();
+  if (first.status !== 503) return first;
+  await new Promise((resolve) => setTimeout(resolve, RETRY_WAIT_MS));
+  return await request();
 }
 
 /**
@@ -61,18 +81,20 @@ export async function generateFromBrowser({
 }): Promise<BrowserGenerateResult> {
   let response: Response;
   try {
-    response = await fetch(endpointFor(model), {
-      method: "POST",
-      headers: { "content-type": "application/json", "x-goog-api-key": apiKey },
-      signal: AbortSignal.timeout(timeoutMs),
-      body: JSON.stringify({
-        contents: [{ role: "user", parts: [{ text: prompt }] }],
-        generationConfig: {
-          ...(schema ? { responseMimeType: "application/json", responseSchema: schema } : {}),
-          temperature,
-        },
+    response = await sendWithRetry(() =>
+      fetch(endpointFor(model), {
+        method: "POST",
+        headers: { "content-type": "application/json", "x-goog-api-key": apiKey },
+        signal: AbortSignal.timeout(timeoutMs),
+        body: JSON.stringify({
+          contents: [{ role: "user", parts: [{ text: prompt }] }],
+          generationConfig: {
+            ...(schema ? { responseMimeType: "application/json", responseSchema: schema } : {}),
+            temperature,
+          },
+        }),
       }),
-    });
+    );
   } catch {
     // 時間切れ・CORS・回線。どれも「つながらなかった」で同じ手当てになる
     return { ok: false, reason: "network" };
@@ -145,12 +167,14 @@ export async function generateImageFromBrowser({
 
   let response: Response;
   try {
-    response = await fetch(endpointFor(model), {
-      method: "POST",
-      headers: { "content-type": "application/json", "x-goog-api-key": apiKey },
-      signal: AbortSignal.timeout(timeoutMs),
-      body: JSON.stringify({ contents: [{ role: "user", parts }] }),
-    });
+    response = await sendWithRetry(() =>
+      fetch(endpointFor(model), {
+        method: "POST",
+        headers: { "content-type": "application/json", "x-goog-api-key": apiKey },
+        signal: AbortSignal.timeout(timeoutMs),
+        body: JSON.stringify({ contents: [{ role: "user", parts }] }),
+      }),
+    );
   } catch {
     return { ok: false, reason: "network" };
   }
