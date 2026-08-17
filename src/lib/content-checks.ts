@@ -184,8 +184,21 @@ function mentionsPlace(text: string, name: string): boolean {
  * 「Southeast Asian」と書けなくなって生成の質が落ちる。
  */
 export function checkCountryNames(file: string, content: Content): Finding[] {
+  return checkCountryNamesInTexts(file, collectLearnerTexts(content));
+}
+
+/**
+ * 国名検査の本体。文字列の列を直接受ける形。
+ *
+ * 教材データ（Content）は checkCountryNames から入るが、スライドの組版原稿
+ * （scripts/slides/<教材ID>/index.html — 学習者が読む字の大半は PDF 側にある）は
+ * Content ではないので、抽出済みの文をこちらへ渡す（scripts/slides/manuscript_checks.ts）。
+ * 判定と文言はこの1か所に閉じる——原稿側が国名リストを別に持つと、
+ * 合意リストを直したときに片方だけ古いままになる。
+ */
+export function checkCountryNamesInTexts(file: string, texts: readonly string[]): Finding[] {
   const findings: Finding[] = [];
-  for (const text of collectLearnerTexts(content)) {
+  for (const text of texts) {
     const near = (name: string) => {
       const at = text.indexOf(name);
       return text.slice(Math.max(0, at - 12), at + name.length + 12);

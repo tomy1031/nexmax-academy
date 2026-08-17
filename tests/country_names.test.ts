@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { checkCountryNames, checkFuriganaCoverageOf } from "../src/lib/content-checks";
+import {
+  checkCountryNames,
+  checkCountryNamesInTexts,
+  checkFuriganaCoverageOf,
+} from "../src/lib/content-checks";
 import { contentSchema, type Content } from "../src/content/schema";
 
 /**
@@ -101,6 +105,23 @@ describe("先生だけが見る覚書は 対象にしない", () => {
       looks: "Southeast Asian woman. Grew up near the Mekong in ベトナム.",
     });
     expect(checkCountryNames("f", character)).toEqual([]);
+  });
+});
+
+describe("教材データ以外の文も 同じ判定で見る（スライド原稿の入口）", () => {
+  /*
+   * スライドの組版原稿（scripts/slides/<教材ID>/index.html）は Content ではないので、
+   * 抽出した文をこちらへ渡す。判定を2重に持つと合意リストの更新が片方に落ちるため、
+   * checkCountryNames はこの関数へ委譲している。
+   */
+  it("文字列の列を直接受けて、同じ error を出す", () => {
+    const findings = checkCountryNamesInTexts("f", ["らいねん タイに 行きます。"]);
+    expect(findings).toHaveLength(1);
+    expect(findings[0]?.level).toBe("error");
+  });
+
+  it("カタカナ語の誤検出よけも同じに働く", () => {
+    expect(checkCountryNamesInTexts("f", ["タイトルを 書きます。"])).toEqual([]);
   });
 });
 
