@@ -112,8 +112,10 @@ const BANNED_PLACE_NAMES: readonly string[] = ["タイ"];
  * - カンボジア … **学習者自身の国**。「あなたはどこから来ましたか」を扱う教材で
  *   出ないほうが不自然で、すでに公開ずみの教材にも入っている
  *   （`content/wordstages/stage11_haizoku.json`）
- * - アメリカ・中国 … AI時代のスライド（`content/slides/ai_jidai.json`）で
- *   人員削減・会社数のデータに使うことをユーザーが承認（2026-08-17・台帳#59）
+ * - アメリカ・中国 … AI時代のスライド（`content/slides/ai_jidai.json`）を機に、
+ *   **以後は教材を問わず確認なしで使ってよい**とユーザーが決めた
+ *   （2026-08-17・台帳#59。「合意リストにも追加して以後の確認を不要にする」を選択）。
+ *   アメリカは元々 CONFIRM の一覧に無く検査は素通りだったので、この行は記録として働く。
  */
 const AGREED_PLACE_NAMES: readonly string[] = [
   "日本",
@@ -143,7 +145,6 @@ const CONFIRM_PLACE_NAMES: readonly string[] = [
   "インドネシア",
   "マレーシア",
   "シンガポール",
-  "中国",
   "韓国",
 ];
 

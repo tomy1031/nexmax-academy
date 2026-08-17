@@ -173,11 +173,13 @@ codex -i public/img/characters/nexmax/reference.png \
   PDF は JPEG をそのまま抱き込むが、webp/PNG は可逆ビットマップ化されて
   10MB 超になる（ai_jidai で実測 22MB→3MB）。アプリが読まない組版素材なので
   `public/img/` には置かない
-- プロンプトの台帳は **`scripts/slides/<教材ID>/prompts.json`**（Style節＋シーン差分。
-  再生成はこのファイルと scratchpad のドライバで同じ絵柄に戻せる）
+- プロンプトの台帳は **`scripts/slides/<教材ID>/prompts.json`**（Style節＋シーン差分）。
+  再生成は `node scripts/slides/gen_images.mjs <prompts.json> <出力フォルダ>`
+  （bridge 起動が前提。途中で止まっても再実行で続きから走る）
 - ネクマックスが登場するシーンは reference.png を参照入力に渡し、1枚目の合格画像を
   以後の参照に足して1セッションで撮る（§2 と同じ）
-- 受入基準は §9.2 のクイズ絵と同じ（読める文字・実在ロゴが1つでもあれば再生成）
+- 受入基準はクイズ絵（`docs/design/07_性格タイプ設計_MBTI16.md` §9.2）と同じ
+  （読める文字・実在ロゴが1つでもあれば再生成）
 
 | 教材ID | 枚数 | 生成 |
 |---|---|---|

@@ -30,11 +30,15 @@ const absHtml = path.resolve(htmlPath);
 const absPdf = path.resolve(pdfPath);
 
 const browser = await chromium.launch();
+let pdfBytes;
 try {
   const page = await browser.newPage({ viewport: { width: 960, height: 540 } });
   await page.goto(`file://${absHtml}`, { waitUntil: "networkidle" });
 
-  // Webフォントと画像が揃う前に印刷すると、豆腐や空白の絵で固まった PDF ができる
+  // Webフォントと画像が揃う前に印刷すると、豆腐や空白の絵で固まった PDF ができる。
+  // fonts.ready と onload/onerror は「失敗しても解決する」ので、待つだけでは足りない——
+  // 待ったあとに実在を確かめ、欠けていたら成功終了せずここで止める
+  //（白抜け・豆腐の PDF が「wrote OK」で配布されるのが最悪の失敗のため）。
   await page.evaluate(() => document.fonts.ready);
   await page.evaluate(async () => {
     await Promise.all(
@@ -44,18 +48,39 @@ try {
     );
   });
 
+  const fontOk = await page.evaluate(() => document.fonts.check('16px "M PLUS Rounded 1c"'));
+  if (!fontOk) {
+    console.error(
+      "フォント M PLUS Rounded 1c が読み込めていない（ネットワーク？）。代替フォントのまま出さずに中止する。",
+    );
+    process.exit(1);
+  }
+  const broken = await page.evaluate(() =>
+    [...document.images]
+      .filter((img) => !img.complete || img.naturalWidth === 0)
+      .map((img) => img.getAttribute("src")),
+  );
+  if (broken.length > 0) {
+    console.error(`読み込めない画像がある: ${broken.join(", ")}`);
+    process.exit(1);
+  }
+
   fs.mkdirSync(path.dirname(absPdf), { recursive: true });
-  await page.pdf({ path: absPdf, width: "960px", height: "540px", printBackground: true });
+  pdfBytes = await page.pdf({
+    path: absPdf,
+    width: "960px",
+    height: "540px",
+    printBackground: true,
+  });
 } finally {
   await browser.close();
 }
 
-const bytes = fs.statSync(absPdf).size;
-console.log(`wrote ${pdfPath} (${(bytes / 1024 / 1024).toFixed(2)} MB)`);
+console.log(`wrote ${pdfPath} (${(pdfBytes.length / 1024 / 1024).toFixed(2)} MB)`);
 
 if (jsonPath) {
   const { getDocument } = await import("pdfjs-dist/legacy/build/pdf.mjs");
-  const doc = await getDocument({ data: new Uint8Array(fs.readFileSync(absPdf)) }).promise;
+  const doc = await getDocument({ data: new Uint8Array(pdfBytes) }).promise;
   const expected = JSON.parse(fs.readFileSync(jsonPath, "utf8")).pageCount;
   if (doc.numPages !== expected) {
     console.error(`pageCount がずれています: PDF=${doc.numPages}枚 / JSON=${expected}枚`);

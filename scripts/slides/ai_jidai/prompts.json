@@ -1,5 +1,5 @@
 {
-  "_comment": "スライド教材 ai_jidai の挿絵プロンプト台帳。docs/skills/codex_image_generation.md §7 に従い、Style 節はマスター記述から流用。生成は 1 セッション一括（scratchpad のドライバが本ファイルを読む）。番号はスライド番号に対応（図解スライドは HTML/CSS 描画のため欠番）。",
+  "_comment": "スライド教材 ai_jidai の挿絵プロンプト台帳。docs/skills/codex_image_generation.md §7 に従い、Style 節はマスター記述から流用。生成は 1 セッション一括（scripts/slides/gen_images.mjs が本ファイルを読む）。番号はスライド番号に対応（図解スライドは HTML/CSS 描画のため欠番）。",
   "output": "1536x1024 PNG, landscape",
   "saveDir": "scripts/slides/ai_jidai/img（PNGで受けて 1080px・JPEG q72 に変換して置く。PDFがJPEGをそのまま抱き込むので、webp/PNGのまま組むとPDFが10MB超になる）",
   "style": "Style: clean modern Japanese manga / anime style, hand-drawn warm line, soft cel shading, bright friendly pastel palette (soft sky blue #A9D6F5, cream #FFF7E8, warm sun yellow #FFC93C, leaf green #58C273, coral #FF8A70), rounded shapes, no harsh shadows, warm daylight, kid-safe e-learning illustration.",

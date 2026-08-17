@@ -43,7 +43,11 @@
     font-size: 14.5px; padding: 5px 16px; border-radius: 999px; margin-top: 16px; margin-right: 8px;
   }
   .footnote { position: absolute; bottom: 12px; left: 48px; font-size: 10.5px; color: #7189a3; }
+  /* ページ番号は数えて出す（手書きだと1枚の挿入で以降が全部ずれる）。分母だけここで1回書く */
+  body { counter-reset: slide; }
+  .slide { counter-increment: slide; }
   .pageno { position: absolute; bottom: 12px; right: 20px; font-size: 11px; font-weight: 700; color: #8aa2ba; }
+  .pageno::before { content: counter(slide) " / 22"; }
 
   /* --- 絵が主役のスライド（左テキスト・右画像） --- */
   .with-pic { padding-right: 0; }
@@ -139,7 +143,7 @@
     <div class="sub" style="margin-top: 8px;">プログラマーから PMへ</div>
     <span class="en-chip">PM = Project Manager</span>
   </div>
-  <div class="pageno">1 / 22</div>
+  <div class="pageno"></div>
 </section>
 
 <!-- 2: 問いかけ -->
@@ -151,7 +155,7 @@
     <div><span class="en-chip">program = プログラム</span></div>
   </div>
   <img class="pic" src="img/s02.jpg" alt="" />
-  <div class="pageno">2 / 22</div>
+  <div class="pageno"></div>
 </section>
 
 <!-- 3: 前はAIが手つだい -->
@@ -163,7 +167,7 @@
     <div><span class="en-chip">assistant = 手つだい</span></div>
   </div>
   <img class="pic" src="img/s03.jpg" alt="" />
-  <div class="pageno">3 / 22</div>
+  <div class="pageno"></div>
 </section>
 
 <!-- 4: 今はAIが書く（データ） -->
@@ -192,7 +196,7 @@
   </div>
   <img class="nexmax-corner" src="img/nexmax_book.jpg" alt="" />
   <div class="footnote"><ruby>出典<rt>しゅってん</rt></ruby>: <ruby>各社<rt>かくしゃ</rt></ruby>の <ruby>発表<rt>はっぴょう</rt></ruby>（2025–2026）</div>
-  <div class="pageno">4 / 22</div>
+  <div class="pageno"></div>
 </section>
 
 <!-- 5: 人のチェックもへる -->
@@ -204,7 +208,7 @@
     <div><span class="en-chip">check = たしかめる こと</span></div>
   </div>
   <img class="pic" src="img/s05.jpg" alt="" />
-  <div class="pageno">5 / 22</div>
+  <div class="pageno"></div>
 </section>
 
 <!-- 6: 今までのチーム -->
@@ -216,7 +220,7 @@
     <div><span class="en-chip">client = お客さま</span></div>
   </div>
   <img class="pic" src="img/s06.jpg" alt="" />
-  <div class="pageno">6 / 22</div>
+  <div class="pageno"></div>
 </section>
 
 <!-- 7: これからのチーム（図） -->
@@ -236,19 +240,19 @@
     </div>
     <div class="team-note">あなたの <ruby>仕事<rt>しごと</rt></ruby>は、<ruby>作<rt>つく</rt></ruby>る ことから 「まとめる こと」へ。</div>
   </div>
-  <div class="pageno">7 / 22</div>
+  <div class="pageno"></div>
 </section>
 
 <!-- 8: だからPMの力 -->
 <section class="slide with-pic">
   <div class="txt">
     <div class="kicker">だから</div>
-    <h2>みなさんに PMの<br /><ruby>力<rt>ちから</rt></ruby>が ひつようです</h2>
+    <h2>みなさんに PMの<br /><ruby>力<rt>ちから</rt></ruby>が <ruby>必要<rt>ひつよう</rt></ruby>です</h2>
     <div class="sub">クライアントの そばに<br /><ruby>立<rt>た</rt></ruby>つ <ruby>仕事<rt>しごと</rt></ruby>です。</div>
     <div><span class="en-chip">PM = Project Manager</span></div>
   </div>
   <img class="pic" src="img/s08.jpg" alt="" />
-  <div class="pageno">8 / 22</div>
+  <div class="pageno"></div>
 </section>
 
 <!-- 9: アメリカの人員削減（データ＋絵） -->
@@ -270,7 +274,7 @@
   </div>
   <img class="pic" src="img/s09.jpg" alt="" style="width: 48%;" />
   <div class="footnote"><ruby>出典<rt>しゅってん</rt></ruby>: <ruby>各社<rt>かくしゃ</rt></ruby>の <ruby>発表<rt>はっぴょう</rt></ruby>・<ruby>報道<rt>ほうどう</rt></ruby>（2025–2026）</div>
-  <div class="pageno">9 / 22</div>
+  <div class="pageno"></div>
 </section>
 
 <!-- 10: 中国 -->
@@ -282,7 +286,7 @@
     <div class="sub">1<ruby>年<rt>ねん</rt></ruby>で へりました。<br />Alibabaは <ruby>社員<rt>しゃいん</rt></ruby>が 約3<ruby>分<rt>ぶん</rt></ruby>の1 へりました。</div>
   </div>
   <div class="footnote"><ruby>出典<rt>しゅってん</rt></ruby>: <ruby>報道<rt>ほうどう</rt></ruby>（2025–2026）</div>
-  <div class="pageno">10 / 22</div>
+  <div class="pageno"></div>
 </section>
 
 <!-- 11: ハーバード -->
@@ -296,11 +300,11 @@
       <div class="person"><div class="p-head"></div><div class="p-body"></div></div>
       <div class="person hit"><div class="p-head"></div><div class="p-body"></div></div>
     </div>
-    <div class="sub">4<ruby>人<rt>にん</rt></ruby>に 1<ruby>人<rt>ひとり</rt></ruby>は、そつぎょうの 3か<ruby>月後<rt>げつご</rt></ruby>も <ruby>仕事<rt>しごと</rt></ruby>が <ruby>見<rt>み</rt></ruby>つかりません。</div>
-    <div><span class="en-chip">Harvard = アメリカの ゆうめいな 大学（だいがく）</span></div>
+    <div class="sub">4<ruby>人<rt>にん</rt></ruby>に <ruby>1人<rt>ひとり</rt></ruby>は、<ruby>卒業<rt>そつぎょう</rt></ruby>の 3か<ruby>月後<rt>げつご</rt></ruby>も <ruby>仕事<rt>しごと</rt></ruby>が <ruby>見<rt>み</rt></ruby>つかりません。</div>
+    <div><span class="en-chip">Harvard = アメリカの <ruby>有名<rt>ゆうめい</rt></ruby>な <ruby>大学<rt>だいがく</rt></ruby></span></div>
   </div>
   <div class="footnote"><ruby>出典<rt>しゅってん</rt></ruby>: Harvard Business School の <ruby>発表<rt>はっぴょう</rt></ruby>（2024<ruby>年度<rt>ねんど</rt></ruby>・MBA）</div>
-  <div class="pageno">11 / 22</div>
+  <div class="pageno"></div>
 </section>
 
 <!-- 12: でも日本にチャンス -->
@@ -310,7 +314,7 @@
     <h1 style="font-size: 40px;">でも、<ruby>日本<rt>にほん</rt></ruby>には<br />チャンスが あります！</h1>
     <span class="en-chip">chance = チャンス</span>
   </div>
-  <div class="pageno">12 / 22</div>
+  <div class="pageno"></div>
 </section>
 
 <!-- 13: 理由1 -->
@@ -321,7 +325,7 @@
     <div class="sub"><ruby>長<rt>なが</rt></ruby>く <ruby>安心<rt>あんしん</rt></ruby>して<br /><ruby>働<rt>はたら</rt></ruby>けます。</div>
   </div>
   <img class="pic" src="img/s13.jpg" alt="" />
-  <div class="pageno">13 / 22</div>
+  <div class="pageno"></div>
 </section>
 
 <!-- 14: 理由2 -->
@@ -334,7 +338,7 @@
   </div>
   <img class="pic" src="img/s14.jpg" alt="" />
   <div class="footnote"><ruby>出典<rt>しゅってん</rt></ruby>: <ruby>経済産業省<rt>けいざいさんぎょうしょう</rt></ruby>の <ruby>調査<rt>ちょうさ</rt></ruby>（2019）</div>
-  <div class="pageno">14 / 22</div>
+  <div class="pageno"></div>
 </section>
 
 <!-- 15: 理由3 -->
@@ -353,13 +357,13 @@
   </div>
   <img class="nexmax-corner" src="img/nexmax_cheer.jpg" alt="" />
   <div class="footnote"><ruby>出典<rt>しゅってん</rt></ruby>: <ruby>総務省<rt>そうむしょう</rt></ruby> <ruby>情報通信白書<rt>じょうほうつうしんはくしょ</rt></ruby>（2025）</div>
-  <div class="pageno">15 / 22</div>
+  <div class="pageno"></div>
 </section>
 
 <!-- 16: 会社の数 -->
 <section class="slide">
   <div class="center" style="text-align: center;">
-    <div class="kicker">もう ひとつの ヒミツ</div>
+    <div class="kicker">もう ひとつの <ruby>秘密<rt>ひみつ</rt></ruby></div>
     <h2><ruby>日本<rt>にほん</rt></ruby>は <ruby>会社<rt>かいしゃ</rt></ruby>の <ruby>数<rt>かず</rt></ruby>が とても <ruby>多<rt>おお</rt></ruby>い</h2>
     <div class="circles">
       <div class="circle-item">
@@ -378,25 +382,25 @@
     <div class="sub"><ruby>人口<rt>じんこう</rt></ruby>は アメリカの <ruby>半分<rt>はんぶん</rt></ruby>。でも <ruby>会社<rt>かいしゃ</rt></ruby>の <ruby>数<rt>かず</rt></ruby>は ほぼ <ruby>同<rt>おな</rt></ruby>じ。</div>
   </div>
   <div class="footnote"><ruby>出典<rt>しゅってん</rt></ruby>: <ruby>各国<rt>かっこく</rt></ruby>の <ruby>統計<rt>とうけい</rt></ruby>（<ruby>会社<rt>かいしゃ</rt></ruby>の <ruby>数<rt>かず</rt></ruby>の <ruby>数<rt>かぞ</rt></ruby>え<ruby>方<rt>かた</rt></ruby>は <ruby>国<rt>くに</rt></ruby>で <ruby>少<rt>すこ</rt></ruby>し ちがいます）</div>
-  <div class="pageno">16 / 22</div>
+  <div class="pageno"></div>
 </section>
 
 <!-- 17: 小さい会社にチャンス -->
 <section class="slide with-pic">
   <div class="txt">
     <div class="kicker">だから</div>
-    <h2><ruby>小<rt>ちい</rt></ruby>さい <ruby>会社<rt>かいしゃ</rt></ruby>に ビジネスチャンス！</h2>
+    <h2><ruby>小<rt>ちい</rt></ruby>さい <ruby>会社<rt>かいしゃ</rt></ruby>に<br />ビジネスチャンス！</h2>
     <div class="sub"><ruby>今<rt>いま</rt></ruby>まで アプリを <ruby>作<rt>つく</rt></ruby>る お<ruby>金<rt>かね</rt></ruby>が なかった <ruby>会社<rt>かいしゃ</rt></ruby>も、AIと いっしょなら <ruby>作<rt>つく</rt></ruby>れます。</div>
-    <div><span class="en-chip">business chance = しょうばいの チャンス</span></div>
+    <div><span class="en-chip">business chance = <ruby>商売<rt>しょうばい</rt></ruby>の チャンス</span></div>
   </div>
   <img class="pic" src="img/s17.jpg" alt="" />
-  <div class="pageno">17 / 22</div>
+  <div class="pageno"></div>
 </section>
 
 <!-- 18: 3つの力 -->
 <section class="slide">
   <div class="center">
-    <div class="kicker">これから みがく <ruby>力<rt>ちから</rt></ruby></div>
+    <div class="kicker">これから <ruby>磨<rt>みが</rt></ruby>く <ruby>力<rt>ちから</rt></ruby></div>
     <h2>PMに <ruby>大事<rt>だいじ</rt></ruby>な ことは 3つ</h2>
     <div class="three">
       <div class="card" style="border-top-color: #0288d1;">
@@ -418,7 +422,7 @@
     <div class="sub" style="text-align: center;">①が <ruby>一番<rt>いちばん</rt></ruby> <ruby>大事<rt>だいじ</rt></ruby>です。</div>
   </div>
   <img class="nexmax-corner" src="img/nexmax_guide.jpg" alt="" style="height: 110px;" />
-  <div class="pageno">18 / 22</div>
+  <div class="pageno"></div>
 </section>
 
 <!-- 19: コミュニケーション -->
@@ -430,7 +434,7 @@
     <div><span class="en-chip">communication</span><span class="en-chip">client = お客さま</span></div>
   </div>
   <img class="pic" src="img/s19.jpg" alt="" />
-  <div class="pageno">19 / 22</div>
+  <div class="pageno"></div>
 </section>
 
 <!-- 20: 時間のマネジメント -->
@@ -442,7 +446,7 @@
     <div><span class="en-chip">time management</span></div>
   </div>
   <img class="pic" src="img/s20.jpg" alt="" />
-  <div class="pageno">20 / 22</div>
+  <div class="pageno"></div>
 </section>
 
 <!-- 21: お金のマネジメント -->
@@ -454,17 +458,17 @@
     <div><span class="en-chip">money management</span></div>
   </div>
   <img class="pic" src="img/s21.jpg" alt="" />
-  <div class="pageno">21 / 22</div>
+  <div class="pageno"></div>
 </section>
 
 <!-- 22: まとめ -->
 <section class="slide full-pic">
   <img class="bg" src="img/s22.jpg" alt="" />
   <div class="panel" style="bottom: 24px; width: 820px; padding: 22px 40px;">
-    <h1 style="font-size: 32px;">この じゅぎょうでは、<br />コミュニケーションを <ruby>中心<rt>ちゅうしん</rt></ruby>に <ruby>練習<rt>れんしゅう</rt></ruby>します！</h1>
+    <h1 style="font-size: 32px;">この <ruby>授業<rt>じゅぎょう</rt></ruby>では、<br />コミュニケーションを <ruby>中心<rt>ちゅうしん</rt></ruby>に <ruby>練習<rt>れんしゅう</rt></ruby>します！</h1>
     <div class="sub" style="margin-top: 6px;">いっしょに がんばりましょう。</div>
   </div>
-  <div class="pageno">22 / 22</div>
+  <div class="pageno"></div>
 </section>
 
 </body>
