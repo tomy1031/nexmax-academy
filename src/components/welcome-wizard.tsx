@@ -21,6 +21,7 @@ import {
   type PersonalityQuestionOption,
   type PersonalityTypeCode,
 } from "@/content/personality";
+import { AcademyLogo } from "@/components/academy-logo";
 import { NexMaxFamily, NexMaxType, TypeEmblem } from "@/components/nexmax-types";
 import { GlossaryChip, GlossaryText } from "@/components/glossary-text";
 import { LearnerText, RubyText, renderRuby } from "@/components/ruby-text";
@@ -37,19 +38,6 @@ function subscribeToStorage(onStoreChange: () => void) {
 
 function savedGeminiKeySnapshot(): string {
   return getGeminiKey();
-}
-
-function MiniGameLogo() {
-  return (
-    <div className="relative -rotate-2 text-center leading-[0.78] drop-shadow-[0_3px_1px_rgba(0,60,107,.35)]">
-      <span className="block bg-linear-to-b from-[#4fc7f5] via-[#0288d1] to-[#004f8d] bg-clip-text text-xl font-black tracking-tight text-transparent [-webkit-text-stroke:1.5px_white] [paint-order:stroke_fill] sm:text-2xl">
-        Nexmax
-      </span>
-      <span className="mt-1 block bg-linear-to-b from-[#ffd94f] via-[#f5b70f] to-[#e08a00] bg-clip-text text-base font-black tracking-wide text-transparent [-webkit-text-stroke:1.5px_white] [paint-order:stroke_fill] sm:text-xl">
-        Academy
-      </span>
-    </div>
-  );
 }
 
 function FallbackImage({
@@ -551,7 +539,7 @@ export function WelcomeWizard({
         />
 
         <header className="relative z-10 mb-4 flex items-start">
-          <MiniGameLogo />
+          <AcademyLogo className="h-auto w-28 drop-shadow-[0_3px_1px_rgba(0,60,107,.2)] sm:w-36" />
         </header>
 
         {!namesOnly && (
