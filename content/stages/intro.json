@@ -10,6 +10,10 @@
   "listed": false,
   "contents": [
     {
+      "ref": "ai_jidai",
+      "type": "slides"
+    },
+    {
       "ref": "intro_mirai",
       "type": "slides"
     },
