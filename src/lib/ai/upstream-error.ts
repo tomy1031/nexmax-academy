@@ -79,6 +79,17 @@ export function reasonFromCode(code: UpstreamCode): string | null {
       return "keyRestricted";
     case "SERVICE_DISABLED":
       return "apiDisabled";
+    /*
+     * キーの「形式」が受け付けられていない（2026-08-17 に実測）。
+     * Google は APIキーを 2種類に分けている:
+     *   - Standard key（`AIza` で始まる。旧）… 制限が無いものは**すでに拒否**。2026年9月に全廃
+     *   - Auth key（`AQ.` で始まる。新）… Google Cloud のサービスアカウントに紐づく
+     * `AQ.` の文字列を APIキーとして投げると、上流は OAuth のトークンだと解釈して
+     * この名前で 401 を返す。「キーが違う」でも「権限が無い」でもないので分ける。
+     * 出典: https://ai.google.dev/gemini-api/docs/api-key
+     */
+    case "ACCESS_TOKEN_TYPE_UNSUPPORTED":
+      return "wrongKeyType";
     default:
       break;
   }

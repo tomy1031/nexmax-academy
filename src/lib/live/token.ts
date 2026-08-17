@@ -61,7 +61,8 @@ export type LiveTokenReason =
   | "keyExpired"
   | "keyRestricted"
   | "apiDisabled"
-  | "locationNotSupported";
+  | "locationNotSupported"
+  | "wrongKeyType";
 
 export class LiveTokenError extends Error {
   constructor(

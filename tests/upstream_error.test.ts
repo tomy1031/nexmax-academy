@@ -92,6 +92,30 @@ describe("reasonFromCode", () => {
     expect(reasonFromCode({ status: null, reason: "SERVICE_DISABLED" })).toBe("apiDisabled");
   });
 
+  /*
+   * 2026-08-17 の実測。AQ. で はじまる 新形式（auth key）を APIキーとして 投げると、
+   * 上流は OAuth の トークンだと 解釈して 401 を返す。「権限が 無い」と 言うと
+   * 先生は プロジェクトの 設定を 見に行ってしまうので、キーの 形式の 問題だと 分けて言う。
+   */
+  it("キーの 形式が 受け付けられないときは wrongKeyType（noPermission に 混ぜない）", () => {
+    const body = {
+      error: {
+        code: 401,
+        message:
+          "Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential.",
+        status: "UNAUTHENTICATED",
+        details: [
+          {
+            "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+            reason: "ACCESS_TOKEN_TYPE_UNSUPPORTED",
+            metadata: { service: "generativelanguage.googleapis.com" },
+          },
+        ],
+      },
+    };
+    expect(reasonFromCode(readUpstreamCode(body))).toBe("wrongKeyType");
+  });
+
   it("名前が 読めない 400 は null（呼ぶ側の 受け皿に まわす）", () => {
     expect(reasonFromCode({ status: "INVALID_ARGUMENT", reason: null })).toBeNull();
     expect(reasonFromCode({ status: null, reason: null })).toBeNull();
