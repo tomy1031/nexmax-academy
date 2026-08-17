@@ -51,6 +51,12 @@ const GROUPS: readonly { title: string; items: readonly Item[] }[] = [
         label: "ミーティングの きろく",
         match: "/admin/meetings",
       },
+      {
+        href: "/admin/quizzes",
+        icon: "✏️",
+        label: "テストの きろく",
+        match: "/admin/quizzes",
+      },
       { href: "/nexmax", icon: "🧑‍🎨", label: "ネクマックス16人" },
       { href: "/admin/ai", icon: "🤖", label: "AI設定", match: "/admin/ai" },
     ],

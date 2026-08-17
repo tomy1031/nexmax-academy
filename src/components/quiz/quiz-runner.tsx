@@ -10,6 +10,8 @@ import { RubyText } from "@/components/ruby-text";
 import { buildFuriganaIndex } from "@/lib/text/furigana";
 import { createProgressStore, recordContentProgress } from "@/lib/progress/store";
 import { clearQuizResume, restoreQuiz, saveQuizResume, type QuizStart } from "@/lib/quiz/resume";
+import { newAttemptId, saveQuizResults } from "@/lib/quiz/results-db";
+import { fetchOwnProfile } from "@/lib/profile-db";
 import { CelebrationBurst, StampRow } from "./celebration";
 import { QuestionBody } from "./question-types";
 import {
@@ -132,6 +134,44 @@ export function QuizRunner({
       at: new Date().toISOString(),
     });
   }, [done, set.id, store, summary]);
+
+  /*
+   * 1問ごとの こたえを **先生の 画面**（/admin/quizzes）へ 送る。
+   *
+   * 端末の TestResult は 合計点だけなので、「どの もんだいで 止まったか」「その子が
+   * 何と 書いたか」は これまで どこにも 残らなかった。ここで はじめて 残る。
+   *
+   * 送りっぱなしにする（`void`・await しない）。記録の ために 学習が 止まるのが
+   * いちばん まずいので、ログインして いない デモモードでも、通信が 落ちても、
+   * 画面は そのまま 進む。
+   *
+   * `attemptId` は **この 1回の 挑戦**をまとめる鍵。effect が 2回 走っても
+   * 同じ鍵を 使うよう ref に 抱える——鍵が 変わると DB の一意制約をすり抜けて
+   * 二重に 入り、正答率が 狂う。
+   */
+  // 鍵は **useState の 初期化**で 1回だけ 作る（ref に レンダー中に 書くと
+  // 描き直しの たびに 走りうる ——同じ 1回の 挑戦が 別々の 鍵で 二重に 入る）。
+  const [attemptId] = useState(() => newAttemptId());
+  const sentRef = useRef(false);
+  useEffect(() => {
+    if (!done || sentRef.current) return;
+    sentRef.current = true;
+    void fetchOwnProfile()
+      .then((profile) =>
+        saveQuizResults({
+          profileId: profile?.id ?? null,
+          quizSetId: set.id,
+          questions: set.questions,
+          results: state.results,
+          attemptId,
+          // 絞ったセッション（まちがえた もんだいだけ）は 合否を数えてよい回ではない
+          fullSet: isFullSession,
+        }),
+      )
+      .catch(() => {
+        /* 記録できなくても 学習は 止めない */
+      });
+  }, [attemptId, done, isFullSession, set.id, set.questions, state.results]);
   const question = currentQuestion(state);
   const byId = useMemo(() => new Map(set.questions.map((q) => [q.id, q])), [set.questions]);
 
