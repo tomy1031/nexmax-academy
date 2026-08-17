@@ -4,75 +4,231 @@
   "title": "AIの 時代 — プログラマーから PMへ",
   "description": "AIで プログラムの 仕事は どう 変わったか、なぜ PMの 力が 大事かを 見ます。",
   "fileUrl": "/slides/ai-jidai.pdf",
-  "pageCount": 22,
+  "pageCount": 29,
   "notes": [
-    { "page": 1, "text": "きょうは AIの 時代の 話を します。" },
-    { "page": 2, "text": "先に 考えて みて ください。答えは つぎの ページです。" },
-    { "page": 3, "text": "前は 人が 書いて、AIは 手つだいでした。" },
-    { "page": 4, "text": "いまは AIが ほとんど 書いて います。ほんとうの 数字です。" },
-    { "page": 5, "text": "人の チェックも へって います。" },
-    { "page": 6, "text": "今までの チームの 形です。" },
-    { "page": 7, "text": "同じ 図で、ここだけ 変わります。" },
-    { "page": 8, "text": "あなたも PMの 仕事を して いきます。" },
-    { "page": 9, "text": "アメリカの 大きな 会社の 話です。" },
-    { "page": 10, "text": "中国でも 同じ ことが おきて います。" },
-    { "page": 11, "text": "有名な 大学を 出ても、仕事さがしは 大変です。" },
-    { "page": 12, "text": "ここからが 一番 大事な 話です。" },
-    { "page": 13, "text": "日本は 長く 働ける 国です。" },
-    { "page": 14, "text": "日本は ITの 人を さがして います。" },
-    { "page": 15, "text": "だから これから 仕事が 生まれます。" },
-    { "page": 16, "text": "人口は 半分なのに、会社の 数は ほぼ 同じです。" },
-    { "page": 17, "text": "小さい 会社に チャンスが あります。" },
-    { "page": 18, "text": "3つを おぼえて ください。" },
-    { "page": 19, "text": "まず 聞く ことから 始まります。" },
-    { "page": 20, "text": "約束の 日を 守る ことも PMの 仕事です。" },
-    { "page": 21, "text": "お金の 計画も PMの 仕事です。" },
-    { "page": 22, "text": "いっしょに 練習して いきましょう。" }
+    {
+      "page": 1,
+      "text": "きょうは AIの 時代の 話を します。【ことば】時代 / era ・ プログラム / program ・ 書く / to write ・ 力 / skill, power ・ 足りない / not enough ・ 必要 / necessary ・ PM / Project Manager ・ プログラマー / programmer"
+    },
+    {
+      "page": 2,
+      "text": "まず、いまの ITの 世界を 見ます。【ことば】おきる / to happen ・ 世界 / world"
+    },
+    {
+      "page": 3,
+      "text": "先に 考えて みましょう。こたえは つぎの ページです。【ことば】クイズ / quiz ・ 会社 / company ・ 書く / to write ・ 思う / to think ・ 聞く / to ask, to listen ・ コード / code (the text of a program) ・ 見る / to check, to look ・ 先に / first ・ 考える / to think ・ アプリ / app"
+    },
+    {
+      "page": 4,
+      "text": "今年の はじめは B でしたが、いまは C です。【ことば】こたえ / answer ・ 今年 / this year ・ はじめ / the beginning ・ 読む / to read ・ 増える / to increase ・ コード / code"
+    },
+    {
+      "page": 5,
+      "text": "AIの 役割は この 2〜3年で 大きく 変わりました。【ことば】役割 / role ・ 変わる / to change ・ むかし / long ago ・ 前 / before ・ チャット / chat ・ アドバイス / advice ・ アシスタント / assistant ・ エージェント / agent (it works by itself) ・ テスト / test ・ 公開 / release, deploy"
+    },
+    {
+      "page": 6,
+      "text": "大きな 会社の ほんとうの 数字です。【ことば】ほんとう / true, real ・ 数字 / number ・ わりあい / percentage, share ・ 以上 / more than ・ 出典 / source ・ 各社 / each company ・ 発表 / announcement ・ 多い / many"
+    },
+    {
+      "page": 7,
+      "text": "つぎは チームの かたちの 話です。【ことば】チーム / team ・ かたち / shape, form ・ 変わる / to change"
+    },
+    {
+      "page": 8,
+      "text": "今までの チームの かたちです。【ことば】クライアント / client (the company that asks for the work) ・ 客 / customer ・ 話す / to talk ・ 仕事 / work, job ・ まとめる / to bring together, to manage ・ 新人 / new employee ・ プログラミング / programming ・ 始める / to start"
+    },
+    {
+      "page": 9,
+      "text": "同じ 図で、ここだけ 変わります。【ことば】仕事 / work, job ・ 作る / to make ・ まとめる / to bring together, to manage ・ クライアント / client"
+    },
+    {
+      "page": 10,
+      "text": "あなたも PMの 仕事を して いきます。【ことば】必要 / necessary ・ そば / near, beside ・ 立つ / to stand ・ 力 / skill"
+    },
+    {
+      "page": 11,
+      "text": "つぎは 世界の 話です。【ことば】世界 / world"
+    },
+    {
+      "page": 12,
+      "text": "アメリカの 大きな 会社の 話です。【ことば】大きい / big ・ たくさん / a lot ・ 減らす / to cut, to reduce ・ 社員 / employee ・ 報道 / news report ・ 出典 / source"
+    },
+    {
+      "page": 13,
+      "text": "有名な 大学を 出ても、仕事さがしは かんたんでは ありません。【ことば】ハーバード / Harvard ・ 大学 / university ・ 卒業 / graduation ・ たつ / to pass (time) ・ 見つかる / to be found ・ 年度 / school year"
+    },
+    {
+      "page": 14,
+      "text": "中国でも 同じ ことが おきて います。【ことば】中国 / China ・ 減る / to decrease ・ 社員 / employee ・ 3分の1 / one third"
+    },
+    {
+      "page": 15,
+      "text": "ここからが 一番 大事な 話です。【ことば】チャンス / chance, opportunity"
+    },
+    {
+      "page": 16,
+      "text": "日本は 長く 働ける 国です。【ことば】理由 / reason ・ かんたん / easy ・ やめさせる / to make someone quit (to fire) ・ 長い / long ・ 安心 / peace of mind ・ 働く / to work"
+    },
+    {
+      "page": 17,
+      "text": "足りない 人は これから もっと 増えます。【ことば】足りない / not enough ・ どんどん / more and more ・ 増える / to increase ・ さがす / to look for ・ 経済産業省 / METI (a ministry of Japan) ・ 人材 / people with skills ・ 需給 / supply and demand ・ 関する / about ・ 調査 / survey"
+    },
+    {
+      "page": 18,
+      "text": "だから これから 仕事が たくさん 生まれます。【ことば】使う / to use ・ 半分 / half ・ 少ない / few ・ 生まれる / to appear, to be born ・ 総務省 / MIC (a ministry of Japan) ・ 情報通信白書 / white paper on ICT"
+    },
+    {
+      "page": 19,
+      "text": "人口は 半分なのに、会社の 数は ほぼ 同じです。【ことば】数 / number, count ・ 人口 / population ・ ほぼ / almost ・ 同じ / same ・ 各国 / each country ・ 統計 / statistics ・ 数え方 / how to count"
+    },
+    {
+      "page": 20,
+      "text": "小さい 会社に チャンスが あります。【ことば】ビジネスチャンス / business chance ・ 金 / money ・ 安い / cheap ・ 作る / to make ・ 小さい / small"
+    },
+    {
+      "page": 21,
+      "text": "日本で 経験を 積んで、世界へ 行きましょう。【ことば】未来 / future ・ 動かす / to direct, to move ・ 経験 / experience ・ 積む / to build up ・ 羽ばたく / to spread your wings"
+    },
+    {
+      "page": 22,
+      "text": "ここからは PMの 力の 話です。【ことば】大事 / important ・ 力 / skill"
+    },
+    {
+      "page": 23,
+      "text": "まず この 3つから 始めましょう。【ことば】みがく / to polish, to make better ・ コミュニケーション / communication ・ マネジメント / management ・ 時間 / time ・ 金 / money"
+    },
+    {
+      "page": 24,
+      "text": "まず 聞く ことから 始まります。【ことば】コミュニケーション / communication ・ ミーティング / meeting ・ メッセージ / message ・ 聞く / to listen, to ask"
+    },
+    {
+      "page": 25,
+      "text": "日本語は あなたの 強い ところに なります。【ことば】道具 / tool ・ 日本語 / Japanese language ・ 強い / strong ・ 勉強 / study ・ つづける / to continue"
+    },
+    {
+      "page": 26,
+      "text": "約束の 日を 守る ための 図です。【ことば】決める / to decide ・ 週 / week ・ 設計 / design (making the plan) ・ 公開 / release ・ 図 / diagram ・ ガントチャート / Gantt chart ・ WBS / work breakdown structure ・ 言う / to say, to call ・ 約束 / promise ・ 守る / to keep"
+    },
+    {
+      "page": 27,
+      "text": "お金の 計画も PMの 大事な 仕事です。【ことば】見積もり / estimate, quotation ・ いくら / how much ・ かかる / to cost, to take ・ 紙 / paper ・ 見せる / to show ・ サーバー / server ・ 計算 / calculation"
+    },
+    {
+      "page": 28,
+      "text": "得意な ものが 1つ あると、それが 強みに なります。【ことば】強み / strong point ・ 得意 / good at ・ デザイン / design ・ サーバー / server ・ セキュリティ / security ・ ＋α / plus something extra"
+    },
+    {
+      "page": 29,
+      "text": "いっしょに 練習して いきましょう。【ことば】授業 / class, lesson ・ 時代 / era ・ 必要 / necessary ・ 身に つける / to learn and keep (a skill)"
+    }
   ],
   "furigana": [
     ["時代", "じだい"],
+    ["時間", "じかん"],
+    ["話す", "はなす"],
     ["話", "はなし"],
+    ["力", "ちから"],
+    ["必要", "ひつよう"],
+    ["世界", "せかい"],
+    ["見つかる", "みつかる"],
+    ["見積", "みつ"],
+    ["見せる", "みせる"],
+    ["見る", "みる"],
+    ["見", "み"],
+    ["書く", "かく"],
+    ["書", "か"],
+    ["思", "おも"],
+    ["人口", "じんこう"],
+    ["人材", "じんざい"],
+    ["人", "ひと"],
     ["先", "さき"],
     ["考", "かんが"],
-    ["答", "こた"],
-    ["前", "まえ"],
-    ["人口", "じんこう"],
-    ["人", "ひと"],
-    ["書", "か"],
-    ["手", "て"],
-    ["数字", "すうじ"],
-    ["数", "かず"],
+    ["今年", "ことし"],
     ["今", "いま"],
-    ["形", "かたち"],
-    ["同", "おな"],
-    ["図", "ず"],
+    ["読", "よ"],
+    ["増", "ふ"],
+    ["役割", "やくわり"],
+    ["変", "か"],
+    ["公開", "こうかい"],
     ["大学", "だいがく"],
-    ["大変", "たいへん"],
     ["大事", "だいじ"],
     ["大", "おお"],
     ["会社", "かいしゃ"],
-    ["中国", "ちゅうごく"],
-    ["有名", "ゆうめい"],
+    ["数字", "すうじ"],
+    ["数え方", "かぞえかた"],
+    ["数", "かず"],
+    ["以上", "いじょう"],
+    ["出典", "しゅってん"],
     ["出", "で"],
+    ["発表", "はっぴょう"],
+    ["各社", "かくしゃ"],
+    ["各国", "かっこく"],
+    ["多", "おお"],
+    ["客", "きゃく"],
+    ["仕事", "しごと"],
+    ["新人", "しんじん"],
+    ["始", "はじ"],
+    ["同", "おな"],
+    ["図", "ず"],
+    ["作", "つく"],
+    ["立", "た"],
+    ["減", "へ"],
+    ["社員", "しゃいん"],
+    ["報道", "ほうどう"],
+    ["有名", "ゆうめい"],
+    ["卒業", "そつぎょう"],
+    ["年度", "ねんど"],
+    ["年", "ねん"],
+    ["中国", "ちゅうごく"],
+    ["分", "ぶん"],
     ["一番", "いちばん"],
+    ["日本語", "にほんご"],
     ["日本", "にほん"],
+    ["日", "ひ"],
     ["長", "なが"],
     ["働", "はたら"],
     ["国", "くに"],
+    ["理由", "りゆう"],
+    ["安心", "あんしん"],
+    ["安", "やす"],
+    ["足", "た"],
+    ["経済産業省", "けいざいさんぎょうしょう"],
+    ["経験", "けいけん"],
+    ["需給", "じゅきゅう"],
+    ["調査", "ちょうさ"],
+    ["生", "う"],
+    ["使", "つか"],
     ["半分", "はんぶん"],
+    ["少", "すく"],
+    ["総務省", "そうむしょう"],
+    ["情報通信白書", "じょうほうつうしんはくしょ"],
+    ["統計", "とうけい"],
     ["小", "ちい"],
-    ["聞", "き"],
-    ["始", "はじ"],
-    ["約束", "やくそく"],
-    ["日", "ひ"],
-    ["守", "まも"],
     ["金", "かね"],
+    ["未来", "みらい"],
+    ["動", "うご"],
+    ["積", "つ"],
+    ["行", "い"],
+    ["聞", "き"],
+    ["強", "つよ"],
+    ["道具", "どうぐ"],
+    ["勉強", "べんきょう"],
+    ["約束", "やくそく"],
+    ["守", "まも"],
+    ["決", "き"],
+    ["週", "しゅう"],
+    ["設計", "せっけい"],
     ["計画", "けいかく"],
+    ["計算", "けいさん"],
+    ["紙", "かみ"],
+    ["得意", "とくい"],
     ["練習", "れんしゅう"],
-    ["仕事", "しごと"],
-    ["変", "か"],
-    ["力", "ちから"],
-    ["見", "み"],
-    ["生", "う"]
+    ["言", "い"],
+    ["関", "かん"],
+    ["前", "まえ"],
+    ["授業", "じゅぎょう"],
+    ["身", "み"],
+    ["羽", "は"]
   ]
 }
