@@ -74,6 +74,8 @@ function messageForReason(reason: string): string {
       return "説明が ながすぎます。みじかく してください。";
     case "noImage":
       return "絵が かえって きませんでした。書き方を 少し 変えて ためしてください。";
+    case "overloaded":
+      return "AIが いま こんで います。少し 待って もう一度 ためしてください。";
     case "forbidden":
       return "この そうさは 先生（管理者）だけです。";
     default:

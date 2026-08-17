@@ -89,6 +89,8 @@ const REASON_TEXT: Record<string, string> = {
     "この キーでは つかえません。キーの プロジェクトで Gemini API が 有効か たしかめてください。",
   modelNotFound: "この モデルは 見つかりませんでした。下の 一覧から えらび直してください。",
   rateLimited: "きょうは つかいすぎです。時間を おいて ためしてください。",
+  overloaded:
+    "AIが いま こんで います（Google 側の 混雑）。少し 待って もう一度 ためしてください。",
   forbidden: "この そうさは 先生（管理者）だけです。",
   upstream: "AIの サービスから 返事が ありませんでした。",
 };

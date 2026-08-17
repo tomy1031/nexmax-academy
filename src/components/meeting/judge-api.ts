@@ -85,7 +85,12 @@ export function judgeFailNote(reason: string): string {
   switch (reason) {
     case "noKey":
       return "AIの せっていが まだです。じぶんで こたえを かいて すすめられます。";
+    // 上流が 名前を 付けてきたら rateLimited、番号だけなら quota。どちらも 使いすぎ
     case "quota":
+    case "rateLimited":
+      return "きょうは AIを つかいすぎました。あしたに なると また つかえます。";
+    // 503 = Google 側の 混雑。1回 やり直しても だめだった ときだけ ここに 来る
+    case "overloaded":
       return "AIが いま こんで います。すこし まってから もう いちど おねがいします。";
     case "network":
       return "つうしんが うまく いきませんでした。もう いちど おねがいします。";

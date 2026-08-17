@@ -366,6 +366,8 @@ function messageForVocabReason(reason: string): string {
       return "この ステージの 教材に、まだ 本文が ありません。さきに 本文を 書いてください。";
     case "upstream":
       return "AIの 返事を 受け取れませんでした。少し 待って もう一度 ためしてください。";
+    case "overloaded":
+      return "AIが いま こんで います（Google 側の 混雑）。少し 待って もう一度 ためしてください。";
     default:
       return messageForReason(reason);
   }
