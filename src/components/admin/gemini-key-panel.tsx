@@ -313,7 +313,17 @@ export function GeminiKeyPanel() {
               たしかめました。たいわ・音声づくりも この パソコンから 直接 つなぎます。
             </p>
           ) : null}
-          {check.live ? (
+          {/*
+            「たいわに つかえる モデルが 無い」と「ここでは ためせなかった」を 混ぜない。
+            サーバから 出られないときは トークンを 作る 段が そもそも 走らないので、
+            モデルが 5つ 見えているのに「モデルが ありません」と 出ていた（2026-08-17 実発生）。
+          */}
+          {check.liveModels.length > 0 && check.live === null && check.direct ? (
+            <p className="text-navy text-sm font-black">
+              ✓ たいわに つかえる モデルは あります（下の 一覧）。つなぎ具合は 教材の 画面で
+              たしかめます。
+            </p>
+          ) : check.live ? (
             check.live.ok ? (
               <p className="text-leaf-deep text-sm font-black">
                 ✓ 「{model}」で たいわ・音声づくりが つかえます。

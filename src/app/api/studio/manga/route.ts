@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/app/api/studio/content/route";
 import { TEXT_MODEL } from "@/lib/ai/models";
+import { classifyUpstreamResponse } from "@/lib/ai/upstream-error";
 import { buildMangaScriptPrompt, MANGA_SCRIPT_SCHEMA } from "@/lib/manga-prompt";
 
 /**
@@ -75,7 +76,10 @@ export async function POST(request: Request): Promise<NextResponse> {
       prompt: buildMangaScriptPrompt({ request: ask, cast, panels }),
     });
   } catch (e) {
-    return fail("upstream", e instanceof UpstreamError ? e.status : 502);
+    return fail(
+      e instanceof UpstreamError ? e.reason : "upstream",
+      e instanceof UpstreamError ? e.status : 502,
+    );
   }
   if (!script) return fail("badResponse", 502);
 
@@ -83,8 +87,12 @@ export async function POST(request: Request): Promise<NextResponse> {
 }
 
 class UpstreamError extends Error {
-  constructor(readonly status: number) {
-    super("upstream");
+  constructor(
+    readonly status: number,
+    /** 上流が付けた名前（`locationNotSupported` など）。画面が逃げ道を選ぶのに要る。 */
+    readonly reason: string = "upstream",
+  ) {
+    super(reason);
     this.name = "UpstreamError";
   }
 }
@@ -112,8 +120,12 @@ async function generateScript({
   });
 
   if (!response.ok) {
-    // 応答本文にキーが混ざる可能性があるので、そのまま外へ出さない
-    throw new UpstreamError(response.status);
+    /*
+     * 応答本文にキーが混ざる可能性があるので、そのまま外へ出さない。名前（記号）だけ読む——
+     * うちの Worker は香港で動くことがあり、Google は香港を対象地域に入れていない（2026-08-17）。
+     */
+    const { reason } = await classifyUpstreamResponse(response);
+    throw new UpstreamError(response.status, reason ?? "upstream");
   }
 
   const data = (await response.json()) as {

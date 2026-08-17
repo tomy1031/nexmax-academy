@@ -1,7 +1,16 @@
 "use client";
 
+import { generateFromBrowser, isLocationBlocked } from "@/lib/ai/generate-browser";
+import { TEXT_MODEL } from "@/lib/ai/models";
 import { getGeminiKey } from "@/lib/profile";
-import type { JudgeResult } from "@/lib/meeting/judge";
+import {
+  buildJudgePrompt,
+  isKanaOnly,
+  JUDGE_RESPONSE_SCHEMA,
+  parseJudge,
+  type JudgeContext,
+  type JudgeResult,
+} from "@/lib/meeting/judge";
 
 /**
  * 判定APIの呼び出し（ブラウザ側）。
@@ -49,9 +58,44 @@ export async function requestJudge(request: JudgeRequest): Promise<JudgeApiResul
     reason?: string;
   };
   if (!response.ok || !body.ready || !body.judge) {
+    /*
+     * サーバ（Cloudflare の 香港）から Google に 出られないときは、この端末から
+     * 直接 聞く。学習者の 端末は 日本・カンボジアで、どちらも 対応地域。
+     * キーは もともと この端末に ある（BYOK）ので、新しく 配るものは 無い。
+     */
+    if (isLocationBlocked(body.reason)) return await judgeFromBrowser(apiKey, request);
     return { ok: false, reason: body.reason ?? "upstream" };
   }
   return { ok: true, judge: body.judge, model: body.model ?? "" };
+}
+
+/** サーバの逃げ道。サーバ側 route と同じ材料（プロンプト・スキーマ・解釈）を使う。 */
+async function judgeFromBrowser(apiKey: string, request: JudgeRequest): Promise<JudgeApiResult> {
+  const context: JudgeContext = { ...request, attempt: Math.min(Math.max(request.attempt, 1), 9) };
+
+  const ask = async (kanaRetry: boolean): Promise<JudgeResult | null> => {
+    const result = await generateFromBrowser({
+      apiKey,
+      model: TEXT_MODEL,
+      prompt: buildJudgePrompt(context, kanaRetry),
+      schema: JUDGE_RESPONSE_SCHEMA,
+      // 学習者の言ったことに寄せたいので、思いつきは抑える（route と同じ）
+      temperature: 0.4,
+    });
+    if (!result.ok || !result.text) return null;
+    try {
+      return parseJudge(JSON.parse(result.text), context.attempt);
+    } catch {
+      return null;
+    }
+  };
+
+  let judge = await ask(false);
+  // 漢字が混ざっていたら、混ざっていたことを伝えてもう一度だけ頼む（route と同じ）
+  if (judge && !isKanaOnly(judge)) judge = await ask(true);
+  if (!judge) return { ok: false, reason: "badShape" };
+  if (!isKanaOnly(judge)) return { ok: false, reason: "kanaRetryFailed" };
+  return { ok: true, judge, model: TEXT_MODEL };
 }
 
 /** 失敗の理由 → 学習者に見せる一言（責めない・次の行動を書く）。 */

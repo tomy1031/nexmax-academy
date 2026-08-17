@@ -20,6 +20,8 @@
  * ブリッジが止まっているというだけで手が止まるのは割に合わない。
  */
 
+import { generateImageFromBrowser, isLocationBlocked } from "@/lib/ai/generate-browser";
+import { DEFAULT_IMAGE_MODEL } from "@/lib/ai/models";
 import { generateWithCodex } from "@/lib/codex-image";
 import { hasCodex } from "@/lib/codex-settings";
 
@@ -60,16 +62,33 @@ export async function generateImage({
     // 本文が読めない＝理由も分からない。下の言い分けに任せる
   }
   if (!response.ok || typeof body.data !== "string") {
-    return {
-      ok: false,
-      message: messageForReason(typeof body.reason === "string" ? body.reason : ""),
-    };
+    const reason = typeof body.reason === "string" ? body.reason : "";
+    /*
+     * サーバ（Cloudflare の 香港）から Google に 出られないときは、この端末から直接 描く。
+     * 先生の パソコンは 日本・カンボジアで、どちらも 対応地域（2026-08-17）。
+     */
+    if (isLocationBlocked(reason)) {
+      const direct = await generateImageFromBrowser({
+        apiKey,
+        model: DEFAULT_IMAGE_MODEL,
+        prompt,
+        references,
+      });
+      if (!direct.ok) return { ok: false, message: messageForReason(direct.reason) };
+      return { ok: true, file: fileFrom(direct.mimeType, direct.data) };
+    }
+    return { ok: false, message: messageForReason(reason) };
   }
 
   const mimeType = typeof body.mimeType === "string" ? body.mimeType : "image/png";
-  const bytes = Uint8Array.from(atob(body.data), (char) => char.charCodeAt(0));
+  return { ok: true, file: fileFrom(mimeType, body.data) };
+}
+
+/** base64 の絵を File にする。 */
+function fileFrom(mimeType: string, data: string): File {
+  const bytes = Uint8Array.from(atob(data), (char) => char.charCodeAt(0));
   const extension = mimeType.split("/")[1] ?? "png";
-  return { ok: true, file: new File([bytes], `image.${extension}`, { type: mimeType }) };
+  return new File([bytes], `image.${extension}`, { type: mimeType });
 }
 
 function messageForReason(reason: string): string {
