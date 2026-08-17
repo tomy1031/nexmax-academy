@@ -23,7 +23,7 @@ import { createMemoryBackend, recordContentProgress } from "../src/lib/progress/
 const IDS = ["q1", "q2", "q3", "q4", "q5", "q6", "q7", "q8", "q9"];
 
 function resultAt(id: string, correct = true, earned = 1) {
-  return { questionId: id, correct, earned };
+  return { questionId: id, correct, earned, answer: `こたえ-${id}` };
 }
 
 function savedThrough(count: number, ids: readonly string[] = IDS): QuizResume {
@@ -43,7 +43,12 @@ describe("どこから 始めるか", () => {
   it("それまでの 結果（正解した 問題の ID・得点）も いっしょに 戻る", () => {
     const start = startFrom(savedThrough(5), undefined, IDS);
     expect(start.results).toHaveLength(5);
-    expect(start.results[0]).toEqual({ questionId: "q1", correct: true, earned: 1 });
+    expect(start.results[0]).toEqual({
+      questionId: "q1",
+      correct: true,
+      earned: 1,
+      answer: "こたえ-q1",
+    });
     expect(start.results.map((r) => r.questionId)).toEqual(["q1", "q2", "q3", "q4", "q5"]);
   });
 

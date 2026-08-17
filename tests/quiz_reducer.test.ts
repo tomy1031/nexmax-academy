@@ -86,7 +86,11 @@ describe("問題エンジンの状態機械", () => {
     if (q.type !== "emotion") throw new Error("emotion 問題が見つからない");
 
     s = quizReducer(s, { type: "answerFeeling", index: q.answerFeeling });
-    expect(s.phase).toEqual({ kind: "emotionReply", feelingOk: true });
+    expect(s.phase).toEqual({
+      kind: "emotionReply",
+      feelingOk: true,
+      feelingIndex: q.answerFeeling,
+    });
     expect(s.results).toHaveLength(0); // まだ採点しない
 
     s = quizReducer(s, { type: "answerReply", index: q.answerReply });
@@ -101,7 +105,11 @@ describe("問題エンジンの状態機械", () => {
 
     let s = createQuizSession(set, [q]);
     s = quizReducer(s, { type: "answerFeeling", index: wrongFeeling });
-    expect(s.phase).toEqual({ kind: "emotionReply", feelingOk: false });
+    expect(s.phase).toEqual({
+      kind: "emotionReply",
+      feelingOk: false,
+      feelingIndex: wrongFeeling,
+    });
 
     s = quizReducer(s, { type: "answerReply", index: q.answerReply });
     expect(s.results[0]?.correct).toBe(false); // 両方そろって正解
@@ -237,8 +245,13 @@ describe("問題エンジンの状態機械", () => {
 describe("つづきから 復元する（resumeQuizSession）", () => {
   it("途中の 番号・結果を そのまま 積んで、出題中の 状態で 始める", () => {
     const results = [
-      { questionId: set.questions[0]!.id, correct: true, earned: set.questions[0]!.points },
-      { questionId: set.questions[1]!.id, correct: false, earned: 0 },
+      {
+        questionId: set.questions[0]!.id,
+        correct: true,
+        earned: set.questions[0]!.points,
+        answer: "はい",
+      },
+      { questionId: set.questions[1]!.id, correct: false, earned: 0, answer: "いいえ" },
     ];
     const s = resumeQuizSession(set, 2, results);
     expect(s.index).toBe(2);

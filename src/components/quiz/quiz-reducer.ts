@@ -22,8 +22,18 @@ export type QuizPhase =
        */
       readonly inputIssue?: FeedbackKey;
     }
-  /** emotion の2段階目。気持ちが分かったうえで「言い方」を聞く。 */
-  | { readonly kind: "emotionReply"; readonly feelingOk: boolean }
+  /**
+   * emotion の2段階目。気持ちが分かったうえで「言い方」を聞く。
+   *
+   * `feelingIndex` は **選んだ気持ちの番号**。合っていたか（`feelingOk`）だけでなく
+   * 番号も持つのは、先生が見たいのが「外したか」ではなく **どれを選んだか**だから
+   * （記録に残す文を2段階目で組み立てる — `answerReply`）。
+   */
+  | {
+      readonly kind: "emotionReply";
+      readonly feelingOk: boolean;
+      readonly feelingIndex: number;
+    }
   | {
       readonly kind: "explain";
       readonly correct: boolean;
@@ -37,6 +47,15 @@ export interface QuizResult {
   readonly questionId: string;
   readonly correct: boolean;
   readonly earned: number;
+  /**
+   * 学習者が 出した こたえ（自由入力の 文字・えらんだ 選択肢の 文）。
+   * 空文字 = 何も 書かずに「こたえを 見る」を 押した。
+   *
+   * **番号ではなく 文そのもの**を 持つ。教材の 選択肢を 1行 入れ替えると 番号の 意味が
+   * 変わり、去年の 記録が 読めなく なる。先生が 読みたいのも「2」ではなく 学生の 言葉である。
+   * 自由入力は **正規化せず 生のまま**——表記ゆれこそ 先生が 見たいもの。
+   */
+  readonly answer: string;
 }
 
 export interface QuizState {
@@ -104,7 +123,12 @@ export function quizReducer(state: QuizState, action: QuizAction): QuizState {
   switch (action.type) {
     case "answerChoice":
       if (state.phase.kind !== "ask" || question.type !== "choose") return state;
-      return close(state, question, action.index === question.answer);
+      return close(
+        state,
+        question,
+        action.index === question.answer,
+        question.options[action.index] ?? "",
+      );
 
     case "answerMulti": {
       if (state.phase.kind !== "ask" || question.type !== "multi") return state;
@@ -118,6 +142,7 @@ export function quizReducer(state: QuizState, action: QuizAction): QuizState {
         state,
         question,
         correct,
+        picked.map((i) => question.options[i] ?? "").join(" ／ "),
         partial ? "quiz.partial" : undefined,
         undefined,
         multiPoints(picked, expected, question.points, correct),
@@ -133,16 +158,24 @@ export function quizReducer(state: QuizState, action: QuizAction): QuizState {
       // accept には「AUPP」「Japanese IT Pathway」のようなラテン文字の正解があり、
       // 先に弾くと正解を「打ち直して」と突き返すことになる。
       // ここでは回答を消費しない（1問を IME のせいで失わせない）。
-      if (!correct && inspectReadingInput(action.input) === "latin") {
+      //
+      // **正解がラテン文字の設問では出さない**（`PM`・`AI` のように「アルファベットで
+      // 答えて ください」と聞いている問題）。そこで「ひらがなで 入力してね」と出すと、
+      // 設問と正反対の案内になり、学習者は打ち直しようがなくなる。
+      const wantsLatin = [question.answer, ...question.accept].some(
+        (a) => inspectReadingInput(a) === "latin",
+      );
+      if (!correct && !wantsLatin && inspectReadingInput(action.input) === "latin") {
         return { ...state, phase: { kind: "ask", inputIssue: INPUT_ISSUE_FEEDBACK.latin } };
       }
-      return close(state, question, correct, undefined, action.input);
+      return close(state, question, correct, action.input, undefined, action.input);
     }
 
     case "skipKeyword": {
       if (state.phase.kind !== "ask" || question.type !== "keyword") return state;
       // 分からないときの逃げ道。点は入らないが、解説を読んで次へ行ける。
-      return close(state, question, false);
+      // こたえは空文字で残す——「書けずに 見た」ことも、先生には 意味の ある記録。
+      return close(state, question, false, "");
     }
 
     case "answerWordbank": {
@@ -152,7 +185,13 @@ export function quizReducer(state: QuizState, action: QuizAction): QuizState {
         question.blanks.every((expected, i) => action.filled[i] === expected);
       const partial =
         !correct && question.blanks.some((expected, i) => action.filled[i] === expected);
-      return close(state, question, correct, partial ? "quiz.partial" : undefined);
+      return close(
+        state,
+        question,
+        correct,
+        action.filled.map((v, i) => `（${i + 1}）${v ?? ""}`).join("　"),
+        partial ? "quiz.partial" : undefined,
+      );
     }
 
     case "answerFeeling": {
@@ -160,14 +199,20 @@ export function quizReducer(state: QuizState, action: QuizAction): QuizState {
       // 気持ちを外しても2段階目には進む。ここで止めると学びが切れる。
       return {
         ...state,
-        phase: { kind: "emotionReply", feelingOk: action.index === question.answerFeeling },
+        phase: {
+          kind: "emotionReply",
+          feelingOk: action.index === question.answerFeeling,
+          feelingIndex: action.index,
+        },
       };
     }
 
     case "answerReply": {
       if (state.phase.kind !== "emotionReply" || question.type !== "emotion") return state;
       const replyOk = action.index === question.answerReply;
-      return close(state, question, state.phase.feelingOk && replyOk);
+      const feeling = question.feelings[state.phase.feelingIndex] ?? "";
+      const reply = question.replies[action.index] ?? "";
+      return close(state, question, state.phase.feelingOk && replyOk, `${feeling} → ${reply}`);
     }
 
     case "next": {
@@ -215,6 +260,12 @@ function close(
   state: QuizState,
   question: QuizQuestion,
   correct: boolean,
+  /**
+   * 学習者が 出した こたえ（記録に 残す文）。**必須**にしてある——任意にすると、
+   * 6つ目の 設問型を 足した日に 黙って 空文字が 入り、先生の 画面から その型だけ
+   * 消える。必須なら tsc が「渡していない」と 止めてくれる。
+   */
+  answer: string,
   missFeedback: FeedbackKey = "quiz.review",
   /** 自由入力のときだけ渡す（解説で「あなたの こたえ」を見せるため）。 */
   input?: string,
@@ -223,7 +274,7 @@ function close(
 ): QuizState {
   return {
     ...state,
-    results: [...state.results, { questionId: question.id, correct, earned }],
+    results: [...state.results, { questionId: question.id, correct, earned, answer }],
     phase: {
       kind: "explain",
       correct,

@@ -36,6 +36,14 @@ const resultSchema = z.object({
   questionId: z.string(),
   correct: z.boolean(),
   earned: z.number(),
+  /**
+   * 学習者が 出した こたえ。`.optional()` ではなく `.default("")` にする理由が2つある。
+   * (a) zod は 知らない鍵を 黙って 落とすので、ここに 無いと「つづきから」で 戻った回の
+   *     こたえが 消える。(b) 出力の 型が `string` に なるので、必須プロパティの
+   *     `QuizResult[]` へ そのまま 渡せる（任意だと 型が 合わない）。
+   * 既定を 空文字に すると、この鍵が 無かった 頃の 保存値も そのまま 読める。
+   */
+  answer: z.string().default(""),
 });
 
 const resumeSchema = z.object({

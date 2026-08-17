@@ -10,6 +10,8 @@ import { RubyText } from "@/components/ruby-text";
 import { buildFuriganaIndex } from "@/lib/text/furigana";
 import { createProgressStore, recordContentProgress } from "@/lib/progress/store";
 import { clearQuizResume, restoreQuiz, saveQuizResume, type QuizStart } from "@/lib/quiz/resume";
+import { newAttemptId, saveQuizResults } from "@/lib/quiz/results-db";
+import { fetchOwnProfile } from "@/lib/profile-db";
 import { CelebrationBurst, StampRow } from "./celebration";
 import { QuestionBody } from "./question-types";
 import {
@@ -132,6 +134,52 @@ export function QuizRunner({
       at: new Date().toISOString(),
     });
   }, [done, set.id, store, summary]);
+
+  /*
+   * 1問ごとの こたえを **先生の 画面**（/admin/quizzes）へ 送る。
+   *
+   * 端末の TestResult は 合計点だけなので、「どの もんだいで 止まったか」「その子が
+   * 何と 書いたか」は これまで どこにも 残らなかった。ここで はじめて 残る。
+   *
+   * 送りっぱなしにする（`void`・await しない）。記録の ために 学習が 止まるのが
+   * いちばん まずいので、ログインして いない デモモードでも、通信が 落ちても、
+   * 画面は そのまま 進む。
+   *
+   * `attemptId` は **この 1回の 挑戦**をまとめる鍵。effect が 2回 走っても
+   * 同じ鍵を 使うよう ref に 抱える——鍵が 変わると DB の一意制約をすり抜けて
+   * 二重に 入り、正答率が 狂う。
+   */
+  /*
+   * 鍵は **1回の挑戦につき1つ**。やり直し（はじめから／まちがえた もんだいだけ／もう一度）は
+   * 同じ画面のまま `setState(createQuizSession(...))` で 作り直すので、鍵を そのままに すると
+   * 2回目以降が 1行も 残らない（送っても 一意制約に 弾かれる）。だから 作り直しと 同時に
+   * `startAttempt()` で 新しい鍵に する。
+   *
+   * 「もう送ったか」は 真偽値では なく **送った鍵**で 覚える。真偽値だと やり直しの ときに
+   * 戻し忘れが 起きるが、鍵で 比べれば 新しい鍵に なった 時点で 自動的に 送れる状態に 戻る。
+   */
+  const [attemptId, setAttemptId] = useState(() => newAttemptId());
+  const startAttempt = useCallback(() => setAttemptId(newAttemptId()), []);
+  const sentRef = useRef<string | null>(null);
+  useEffect(() => {
+    if (!done || sentRef.current === attemptId) return;
+    sentRef.current = attemptId;
+    void fetchOwnProfile()
+      .then((profile) =>
+        saveQuizResults({
+          profileId: profile?.id ?? null,
+          quizSetId: set.id,
+          questions: set.questions,
+          results: state.results,
+          attemptId,
+          // 絞ったセッション（まちがえた もんだいだけ）は 合否を数えてよい回ではない
+          fullSet: isFullSession,
+        }),
+      )
+      .catch(() => {
+        /* 記録できなくても 学習は 止めない */
+      });
+  }, [attemptId, done, isFullSession, set.id, set.questions, state.results]);
   const question = currentQuestion(state);
   const byId = useMemo(() => new Map(set.questions.map((q) => [q.id, q])), [set.questions]);
 
@@ -158,6 +206,7 @@ export function QuizRunner({
           onRestart={() => {
             clearQuizResume(set.id);
             setState(createQuizSession(set));
+            startAttempt();
             setResumed(false);
             setStarted(true);
           }}
@@ -171,15 +220,19 @@ export function QuizRunner({
             .map((id) => byId.get(id))
             .filter((q): q is QuizQuestion => Boolean(q))}
           furigana={furigana}
-          onRetryWrong={() =>
+          onRetryWrong={() => {
             setState(
               createQuizSession(
                 set,
                 set.questions.filter((q) => summary.missedQuestionIds.includes(q.id)),
               ),
-            )
-          }
-          onRetryAll={() => setState(createQuizSession(set))}
+            );
+            startAttempt();
+          }}
+          onRetryAll={() => {
+            setState(createQuizSession(set));
+            startAttempt();
+          }}
         />
       ) : (
         question && (

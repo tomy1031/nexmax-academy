@@ -79,6 +79,10 @@ let missingTotal = 0;
 
 sections.forEach((section, i) => {
   const text = section
+    // 出典（脚注）とページ番号は 学習者が覚える言葉ではないので 数えない
+    // （「経済産業省」「情報通信白書」まで辞書に載せると、覚える語が 出典に埋もれる）
+    .replace(/<div class="footnote">[\s\S]*?<\/div>/g, "")
+    .replace(/<div class="pageno">[\s\S]*?<\/div>/g, "")
     .replace(/<rt>.*?<\/rt>/g, "") // ルビの読みは語ではない
     .replace(/<!--[\s\S]*?-->/g, "")
     .replace(/<[^>]+>/g, " ")
@@ -91,9 +95,9 @@ sections.forEach((section, i) => {
     ]),
   ].filter((w) => !SKIP.has(core(w)) && !SKIP.has(w));
 
-  const glossed = (notes.find((n) => n.page === i + 1)?.text.split("【ことば】")[1] ?? "")
-    .split("・")
-    .map((entry) => core(entry.split("/")[0].trim()))
+  // ノートは 語彙メモだけを持つ（`【語】English　【語】English …`）。見出し語は 【】 の中。
+  const glossed = [...(notes.find((n) => n.page === i + 1)?.text ?? "").matchAll(/【(.+?)】/g)]
+    .map((m) => core(m[1].trim()))
     .filter(Boolean);
   glossed.forEach((g) => seen.add(g));
 

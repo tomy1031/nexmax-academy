@@ -5,6 +5,8 @@
  * ここに JSX を持ち込まないので node 環境の単体テストでそのまま検証できる。
  */
 
+import type { ContentRefType } from "@/content/schema";
+import { contentKindMeta } from "@/lib/content-kinds";
 import type { ContentProgress } from "@/lib/progress/store";
 
 /**
@@ -12,6 +14,18 @@ import type { ContentProgress } from "@/lib/progress/store";
  * ここで再定義すると、同じ教材が画面ごとに違う名前で呼ばれる。
  */
 export { contentHref, contentKindMeta } from "@/lib/content-kinds";
+
+/**
+ * その教材が 関門か を決める。**ステージ側の 指定が 種別の 既定に 勝つ**
+ *（ステージの `contents[].gates` — schema.ts）。
+ *
+ * 1行で 書ける式を わざわざ 関数に したのは、`??` を `||` に 書き換えると
+ * **`gates: false` が 素通りして 既定の true に 戻る**ため（false は falsy）。
+ * 画面の中に 埋めたままだと この取り違えを テストで 捕まえられない。
+ */
+export function resolveGates(type: ContentRefType, override?: boolean): boolean {
+  return override ?? contentKindMeta(type).gates;
+}
 
 /**
  * 進捗を1文字にたたむ。useSyncExternalStore のスナップショットは

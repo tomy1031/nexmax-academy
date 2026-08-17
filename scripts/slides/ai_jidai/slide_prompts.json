@@ -1,0 +1,82 @@
+{
+  "_comment": "スライドを **丸ごと1枚の絵として** 作らせる台帳（文字・ふりがな・図まで画像の中）。挿絵だけの台帳は prompts.json。2026-08-17 の試作で、gpt-image-2 が 日本語の漢字・かな・カタカナ と **ふりがな（漢字の真上に小さく）** を 正しく描けることを確認したので この形にした。文字を画像に焼くと lint のふりがな検査が効かないので、原稿HTML側に hidden の 読み合わせ用テキストを必ず添える（scripts/slides/ai_jidai/index.html の .alt）。数字を出すスライドは、出典（.footnote）を絵の上にHTMLで重ねる——絵に焼くと直せないため。",
+  "output": "1536x864 PNG, 16:9 landscape",
+  "style": "A COMPLETE 16:9 PRESENTATION SLIDE, drawn as one finished design. Style: bright friendly Japanese e-learning slide, clean modern flat design with soft cel-shaded cartoon illustration, pastel palette (sky blue #A9D6F5, deep navy #1F3A56 and #004F8D for text, cream #FFF7E8, sun yellow #FFC93C, leaf green #58C273, coral #FF8A70, grape #A78BFA), rounded white cards with soft drop shadows, generous white space, background a soft vertical gradient from pale sky blue at the top to cream at the bottom, with a few small flat decorations (a smiling sun, soft clouds, simple leaves and flowers) around the edges only.",
+  "nexmax": "Include the tiny NexMax robot small in a bottom corner, matching the attached reference image exactly: rounded sky-blue (#A9D6F5) helmet-like head wider than tall, two small ear pods, large white rounded face-screen with a soft notch at the top center, two black oval eyes, gentle smile, sky-blue trapezoid torso with a navy (#004F8D) double-peak M chest mark, ball-joint arms with mitten hands, short legs with rounded boots.",
+  "noText": "CRITICAL — FURIGANA: every kanji must carry its hiragana reading printed directly ABOVE it, much smaller (about 40% of the main text height), centred over its own kanji, like Japanese children's textbook ruby. Never place a reading beside or below its kanji. Render every character exactly as specified — correct, well-formed and clearly legible — in a rounded gothic Japanese font. Do not invent, add, drop or garble any character, and add no text that is not listed.",
+  "negative": "Never: broken or nonsense characters, missing furigana, furigana beside or below the kanji, realistic photo rendering, dark tone, angry or crying faces.",
+  "scenes": [
+    {
+      "out": "w05_era",
+      "title": "5: AIの役割の変化（3段階）",
+      "nexmaxInScene": true,
+      "scene": "Slide content — a three-step flow slide. Small blue label at the top left: この 2〜3年で (reading ねん above 年). Large bold navy headline under it: AIの 役割が 大きく 変わりました (reading やくわり above 役割, おお above 大, か above 変). Below, three equal rounded white cards in a row, joined by two thick blue right-pointing arrows between them. Each card holds a simple cartoon illustration at the top and two lines of text under it. Card 1 illustration: a person at a laptop looking at one empty speech bubble from a tiny sky-blue robot; text lines: むかし then チャットで 聞く (reading き above 聞) then a smaller grey line アドバイス. Card 2 illustration: the tiny robot typing on a small keyboard while a person points at the monitor; text lines: すこし前 (reading まえ above 前) then AIが コードを 書く (reading か above 書) then a smaller grey line アシスタント. Card 3 illustration: three tiny robots working together around a computer with a small rocket; text lines: いま then テストも 公開も AIが する (reading こうかい above 公開) then a smaller grey line エージェント."
+    },
+    {
+      "out": "w06_data",
+      "title": "6: AIが書いたコードのわりあい（棒グラフ・ロゴ入り）",
+      "nexmaxInScene": true,
+      "scene": "Slide content — a horizontal bar chart slide. Small blue label at the top left: ほんとうの 数字 (reading すうじ above 数字). Large bold navy headline under it: AIが 書いた コードの わりあい (reading か above 書). Below, a white rounded panel holding three bar rows on pale tracks; at the left of each row the company's own well-known logo mark drawn small, accurate and clean, and at the right the number: row 1 the Google G logo, a deep blue bar filled to 75%, and 75% ; row 2 the Anthropic mark, a purple bar filled to 90%, and 90% ; row 3 the Microsoft four-square logo, a green bar filled to 30%, and 30% . Under the panel one small grey line: Google は 2年で 25% から 75% に なりました (reading ねん above 年)."
+    },
+    {
+      "out": "w08_orgnow",
+      "title": "8: 今までのチーム（組織図）",
+      "nexmaxInScene": false,
+      "scene": "Slide content — an organisation chart slide. Small blue label at the top left: 今までの チーム (reading いま above 今). Large bold navy headline under it: PMが お客さまと 話します (reading きゃく above 客, はな above 話). Below, three rounded white cards in a row joined by thick blue arrows pointing right. Card 1: a friendly older client character bust in a cardigan and glasses, with the caption under him クライアント and a smaller grey line お客さま (reading きゃく above 客). Card 2: a smiling Southeast Asian woman project manager in a blazer holding a blank clipboard, caption PM and a smaller grey line 仕事を まとめる 人 (reading しごと above 仕事, ひと above 人). Card 3: two young programmer characters at small laptops, caption プログラマー and a smaller grey line プログラムを 書く 人 (reading か above 書, ひと above 人)."
+    },
+    {
+      "out": "w09_orgai",
+      "title": "9: これからのチーム（組織図・対比）",
+      "nexmaxInScene": false,
+      "scene": "Slide content — an organisation chart slide in exactly the same layout, card size, arrow size and arrow style as the previous org-chart slide (w08) so the two read as a strict before/after pair. Small blue label at the top left: これからの チーム. Large bold navy headline under it: プログラムは AIの 仕事に なります (reading しごと above 仕事). Below, three rounded white cards joined by thick blue arrows of the same size as the previous slide. Card 1 MUST be the SAME PERSON as card 1 of the previous org-chart slide: an ELDERLY male client, WHITE / GREY HAIR, ROUND GLASSES, wearing a light blue CARDIGAN over a white collared shirt, friendly smile — do not draw a young person here. Caption クライアント and a smaller grey line お客さま (reading きゃく above 客). Card 2: a smiling YOUNG Southeast Asian student with BLACK hair in a smart shirt holding a blank clipboard — clearly a different, much younger person than card 1. This card has a warm yellow border. Caption PM and a smaller grey line あなた！. Card 3: two tiny sky-blue NexMax robots at small laptops, green border, caption AI and a smaller grey line プログラムを 書く (reading か above 書)."
+    },
+    {
+      "out": "w13_harvard",
+      "title": "13: ハーバード大学（4人に1人の図）",
+      "nexmaxInScene": true,
+      "scene": "Slide content — a pictogram slide, everything centred. Small blue label at the top: 世界の いま (reading せかい above 世界). Large bold navy headline under it: ハーバード大学を 卒業しても、仕事が できません (reading だいがく above 大学, そつぎょう above 卒業, しごと above 仕事). Below, four simple flat human pictogram figures in a row — a round head above a rounded body — the first three in muted blue-grey and the fourth in coral so it stands out. Under them one line: 4人に 1人は、卒業して 3か月 たっても 仕事が 見つかりません (reading にん above 人 in 4人, ひとり above 1人, そつぎょう above 卒業, げつ above 月, しごと above 仕事, み above 見)."
+    },
+    {
+      "out": "w14_china",
+      "title": "14: 中国の会社（130,000人）",
+      "nexmaxInScene": true,
+      "scene": "Slide content — a number slide, everything centred. Small blue label at the top: 世界の いま (reading せかい above 世界). Large bold navy headline under it: 中国の 大きな 会社も 人を 減らして います (reading ちゅうごく above 中国, おお above 大, かいしゃ above 会社, ひと above 人, へ above 減). Below, three small rounded white cards in a row holding only the Latin company names: Alibaba , Tencent , ByteDance . Under the cards, one very large bold navy number with a coral downward arrow beside it: 130,000人 (reading にん above 人). Under that, one smaller line: 1年で 減りました (reading ねん above 年, へ above 減)."
+    },
+    {
+      "out": "w17_shortage",
+      "title": "17: ITの人が足りない（3本の棒グラフ）",
+      "nexmaxInScene": true,
+      "scene": "Slide content — a bar chart slide. Small blue label at the top left: 理由 2 (reading りゆう above 理由). Large bold navy headline under it: 日本は ITの 人が 足りません (reading にほん above 日本, ひと above 人, た above 足). Below, a white rounded panel with three horizontal bar rows on pale grey tracks of IDENTICAL length, each with its year label at the left and its number written inside the coloured filled part. THE FILLED LENGTHS MUST BE STRICTLY PROPORTIONAL TO THE NUMBERS — this is the point of the slide: row 1 label 2018年ごろ, number 170,000, pale blue fill covering ONLY ABOUT ONE FIFTH (21%) of the track — a short stub; row 2 label 2020年, number 370,000, mid blue fill covering SLIGHTLY LESS THAN HALF (47%) of the track; row 3 label 2030年, number 790,000, coral fill covering the FULL track (100%). Row 2 must be clearly more than twice row 1, and row 3 clearly more than four times row 1. Reading ねん above 年 in every row label. To the right of the panel, a simple cartoon of a bright office with several empty desks and chairs and one person shading their eyes as if searching for people; every object rests on the floor or hangs on a wall — nothing floats in mid air."
+    },
+    {
+      "out": "w18_adoption",
+      "title": "18: AIを使っていない会社が多い（41.2%）",
+      "nexmaxInScene": true,
+      "scene": "Slide content. Small blue label at the top left: 理由 3 (reading りゆう above 理由). Large bold navy headline under it: AIを まだ 使って いない 会社が 多い (reading つか above 使, かいしゃ above 会社, おお above 多). Below, ONE wide horizontal bar on a pale grey track. THE FILLED PART MUST BE CLEARLY LESS THAN HALF of the track — fill exactly 41.2%, so the deep blue part stops well short of the midpoint and the empty grey part is visibly longer than the filled part. Write 41.2% inside the filled part. Under the bar, one line: 半分より 少ないです (reading はんぶん above 半分, すく above 少) — the picture must agree with this sentence. Under that, one bold navy line with a right arrow: これから AIの 仕事が たくさん 生まれます (reading しごと above 仕事, う above 生). To the right, a simple cartoon row of small Japanese town buildings: two of them open with a tiny sky-blue NexMax robot helping a worker outside, and three with their shutters half down. ALL SHOP SIGNS, AWNINGS AND BOARDS MUST BE COMPLETELY BLANK — do not write any shop name or any other word on the buildings. Every robot hand is a simple rounded mitten, never separate fingers."
+    },
+    {
+      "out": "w19_companies",
+      "title": "19: 日本の会社の数（円の比較）",
+      "nexmaxInScene": true,
+      "scene": "Slide content — a proportional circle chart slide. Small blue label at the top left: 日本の チャンス (reading にほん above 日本). Large bold navy headline under it: 会社の 数が とても 多い (reading かいしゃ above 会社, かず above 数, おお above 多). Below, three flat filled circles side by side on a white rounded panel, sitting on a common base line, each with two lines of caption under it: a large coral circle captioned 日本 (reading にほん above 日本) and 5,530,000 ; a large deep blue circle very slightly bigger than the coral one captioned アメリカ and 5,660,000 ; and a tiny green dot captioned カンボジア and 46,000 . Under the panel one line: 人口は アメリカの 半分。でも 会社の 数は ほぼ 同じ (reading じんこう above 人口, はんぶん above 半分, かいしゃ above 会社, かず above 数, おな above 同)."
+    },
+    {
+      "out": "w21_youpm",
+      "title": "21: あなたがPMになって世界へ",
+      "nexmaxInScene": true,
+      "scene": "Slide content. Small blue label at the top left: あなたの 未来 (reading みらい above 未来). Large bold navy headline under it: あなたが PMに なって、AIを 動かします (reading うご above 動). Below on the left, three small rounded cards in a row joined by arrows: お客さま (reading きゃく above 客), then a card with a warm yellow border reading PM with a smaller grey line あなた, then a card with a green border reading AI. On the right half, a cartoon of a confident young Southeast Asian person standing on a green hill shading their eyes toward a bright sunrise, a small Mount Fuji behind and a white paper airplane arcing across the sky. Under the cards one line: 日本で 経験を 積んで、世界へ 羽ばたきましょう (reading にほん above 日本, けいけん above 経験, つ above 積, せかい above 世界, は above 羽)."
+    },
+    {
+      "out": "w23_pmskills",
+      "title": "23: PMに大事なこと（イラスト3つ）",
+      "nexmaxInScene": true,
+      "scene": "Slide content. Small blue label at the top left: これから みがく 力 (reading ちから above 力). Large bold navy headline under it: PMに 大事な こと (reading だいじ above 大事). Below, three equal rounded white cards in a row, each with a big simple cartoon illustration at the top and a caption under it. Card 1 has a blue top edge, a small orange banner above it reading いちばん 大事 (reading だいじ above 大事), an illustration of two people talking warmly with empty speech bubbles, and the caption コミュニケーション. Card 2 has a green top edge, an illustration of a wall clock beside a calendar with a coral marker on one day, and the caption 時間の マネジメント (reading じかん above 時間). Card 3 has a yellow top edge, an illustration of neat stacks of gold coins beside a pink piggy bank, and the caption お金の マネジメント (reading かね above 金). Under the cards one grey line: ほかにも いろいろ あります."
+    },
+    {
+      "out": "w26_gantt",
+      "title": "26: 時間のマネジメント（ガントチャート）",
+      "nexmaxInScene": true,
+      "scene": "Slide content — a Gantt chart slide. Small blue label at the top left: 時間の マネジメント (reading じかん above 時間). Large bold navy headline under it: だれが いつ 何を するかを 決めます (reading なに above 何, き above 決). Below, a white rounded panel. Along the top of the panel a row of eight small grey week labels evenly spaced: 1週 2週 3週 4週 5週 6週 7週 8週 (reading しゅう above 週). Under them five task rows, each a Japanese task name at the left and one coloured rounded bar on a pale track, the bars stepping to the right like a staircase: お客さまに 聞く (reading きゃく above 客, き above 聞) with a deep blue bar at the far left; 設計する (reading せっけい above 設計) with a light blue bar; プログラム with a green bar in the middle; テスト with a yellow bar; 公開する (reading こうかい above 公開) with a coral bar at the far right. Under the panel one small grey line: この 図を ガントチャート（WBS）と 言います (reading ず above 図, い above 言)."
+    }
+  ]
+}

@@ -65,6 +65,27 @@ try {
     process.exit(1);
   }
 
+  /*
+   * 使われなくなった絵の 置き去りを 知らせる（止めはしない）。
+   *
+   * スライドを 差し替えると 古い絵が img/ に 残る。PDF は 原稿からしか 組まれないので
+   * 出力は 変わらず、**次の担当者が どちらが 現用か 分からなくなる**（org_now.jpg と
+   * w08_orgnow.jpg のような 並びが できる）。2026-08-17 に 実際に 13枚 積もった
+   * ——しかも squash merge の 3-way が 一度 消した 9枚を 黙って 生き返らせていた。
+   */
+  const used = new Set(
+    await page.evaluate(() =>
+      [...document.images].map((img) => (img.getAttribute("src") ?? "").split("/").pop() ?? ""),
+    ),
+  );
+  const imgDir = path.join(path.dirname(absHtml), "img");
+  if (fs.existsSync(imgDir)) {
+    const orphans = fs.readdirSync(imgDir).filter((name) => !used.has(name));
+    if (orphans.length > 0) {
+      console.warn(`⚠ 原稿から 参照されていない 絵が ${orphans.length}枚: ${orphans.join(", ")}`);
+    }
+  }
+
   fs.mkdirSync(path.dirname(absPdf), { recursive: true });
   pdfBytes = await page.pdf({
     path: absPdf,

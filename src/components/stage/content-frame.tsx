@@ -15,7 +15,13 @@ import {
   type FuriganaEntry,
   type FuriganaIndex,
 } from "@/lib/text/furigana";
-import { decodeStatuses, gateStage, statusCode, STATUS_BADGE } from "./stage-progress";
+import {
+  decodeStatuses,
+  gateStage,
+  resolveGates,
+  statusCode,
+  STATUS_BADGE,
+} from "./stage-progress";
 
 /**
  * 教材の外枠 — どのステージのどこにいるかを、教材の種類によらず同じ形で見せる
@@ -45,6 +51,12 @@ export interface FrameItem {
    * トップでは ふりがな つき、枠の中では 裸の漢字、という割れ方をさせない。
    */
   furigana?: readonly FuriganaEntry[];
+  /**
+   * その1本だけの 関門指定（ステージの contents[].gates）。
+   * **省略＝種別の 既定**（content-kinds.ts）。undefined と false を 分けたいので
+   * ここで false に 倒さない——倒すと 全部の 教材が 関門でなくなる。
+   */
+  gates?: boolean;
   href: string;
 }
 
@@ -98,10 +110,14 @@ export function ContentFrame({
    * どこまで開けるか。**関門でない種別（スライド）は ここを素通りする**
    *（content-kinds.ts の `gates` / stage-progress.ts の gateStage）。
    * 先生の しりょうを 通行の条件にすると、資料1枚で ステージ全体が止まる。
+   *
+   * ステージ側に 書いてあれば そちらが 勝つ（contents[].gates — schema.ts）。
+   * 「はじめに」の かくにんテストのように、**同じ種別でも 1本だけ 関門から
+   * 外したい**ことがある。`??` なので、書いていない教材は これまでどおり。
    */
   const gating = gateStage(
     codes,
-    items.map((item) => contentKindMeta(item.type).gates),
+    items.map((item) => resolveGates(item.type, item.gates)),
   );
   const locked = !gating.openable[currentIndex] && !forced;
   // 止めている当人（まだ通っていない最初の関門）。無ければ先頭を指す
