@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { AcademyLogo } from "@/components/academy-logo";
 
 /**
  * 管理画面のサイドバー
@@ -69,8 +70,8 @@ export function AdminSidebar() {
   const nav = (
     <nav aria-label="管理メニュー" className="space-y-5">
       <div>
-        <p className="text-navy text-lg font-black">Nexmax Academy</p>
-        <p className="text-ink-soft text-xs font-bold">管理画面</p>
+        <AcademyLogo className="h-auto w-36" />
+        <p className="text-ink-soft mt-1 text-xs font-bold">管理画面</p>
       </div>
       {GROUPS.map((group) => (
         <div key={group.title}>

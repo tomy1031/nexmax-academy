@@ -1,29 +1,12 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { AcademyLogo } from "@/components/academy-logo";
 import { GoogleG } from "@/components/google-g";
 import { NexMaxFamily } from "@/components/nexmax-types";
 import { INTRO_STAGE_ID } from "@/lib/stage-routes";
 import { createClient } from "@/lib/supabase/client";
-
-/**
- * ロゴの絵が出せなかったときの控え。**文字だけでも同じ名前が読める**ようにしておく
- *（絵が1枚でも落ちると最初の画面が名無しになるため。キーアートと同じ考え方）。
- */
-function TitleWordmark() {
-  return (
-    <span className="block leading-[0.86]">
-      <span className="block bg-gradient-to-b from-[#71ddff] via-[#078ed6] to-[#003c79] bg-clip-text text-5xl font-black tracking-tight text-transparent [filter:drop-shadow(0_8px_0_#003c6b)_drop-shadow(0_10px_18px_rgba(31,58,86,.3))] [-webkit-text-stroke:5px_white] [paint-order:stroke_fill] sm:text-7xl">
-        Nexmax
-      </span>
-      <span className="mt-3 block bg-gradient-to-b from-[#fffbd0] via-[#ffdb35] to-[#f3980b] bg-clip-text text-4xl font-black tracking-wide text-transparent [filter:drop-shadow(0_7px_0_#b9680d)_drop-shadow(0_9px_16px_rgba(31,58,86,.28))] [-webkit-text-stroke:5px_white] [paint-order:stroke_fill] sm:text-6xl">
-        Academy
-      </span>
-    </span>
-  );
-}
 
 /**
  * タイトル画面。**ここが ログインの画面でもある**（願い #13）。
@@ -53,7 +36,6 @@ export function TitleScreen({
   next?: string;
 }) {
   const [showKeyart, setShowKeyart] = useState(true);
-  const [showLogo, setShowLogo] = useState(true);
   const [busy, setBusy] = useState(false);
 
   async function signInWithGoogle() {
@@ -88,20 +70,11 @@ export function TitleScreen({
       <section className="flex w-full max-w-5xl flex-1 flex-col items-center justify-between">
         <div className="animate-pop-in">
           <h1>
-            {showLogo ? (
-              <Image
-                src="/img/ui/title_logo.webp"
-                alt="Nexmax Academy"
-                width={800}
-                height={800}
-                priority
-                unoptimized
-                onError={() => setShowLogo(false)}
-                className="mx-auto h-auto w-56 drop-shadow-[0_10px_16px_rgba(31,58,86,.3)] sm:w-[22rem]"
-              />
-            ) : (
-              <TitleWordmark />
-            )}
+            <AcademyLogo
+              variant="title"
+              priority
+              className="mx-auto h-auto w-56 drop-shadow-[0_10px_16px_rgba(31,58,86,.3)] sm:w-[22rem]"
+            />
           </h1>
           <p className="bg-navy/90 mt-4 -rotate-1 rounded-full border-4 border-white px-5 py-2 text-sm font-extrabold text-white shadow-lg sm:text-lg">
             <ruby>

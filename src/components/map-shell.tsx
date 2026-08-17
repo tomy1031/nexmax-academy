@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -14,6 +13,7 @@ import {
   useSyncExternalStore,
 } from "react";
 import { signOut } from "@/app/auth/actions";
+import { AcademyLogo } from "@/components/academy-logo";
 import { AreaTrail } from "@/components/map-trail";
 import { NexMaxFamily } from "@/components/nexmax-types";
 import { CloudBand, CloudCorners } from "@/components/cloud-band";
@@ -182,15 +182,7 @@ function Logo() {
       aria-label="Nexmax Academy"
       className="fixed top-[4.5rem] left-3 z-50 rounded-2xl bg-white/85 px-2 py-1.5 shadow-lg backdrop-blur-sm md:top-3"
     >
-      <Image
-        src="/img/ui/map_logo.webp"
-        alt=""
-        width={900}
-        height={300}
-        priority
-        unoptimized
-        className="h-auto w-20 md:w-32"
-      />
+      <AcademyLogo alt="" priority className="h-auto w-20 md:w-32" />
     </Link>
   );
 }
@@ -706,7 +698,7 @@ function Navigation({
             className="bg-navy/45 absolute inset-0"
           />
           <aside className="absolute inset-y-0 left-0 w-72 bg-white p-5 pt-20 shadow-2xl">
-            <p className="text-navy mb-4 text-lg font-black">Nexmax Academy</p>
+            <AcademyLogo className="mb-4 h-auto w-36" />
             <div className="space-y-2">
               {navButtons}
               {catalogLink}
