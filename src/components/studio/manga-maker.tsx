@@ -16,7 +16,7 @@ import {
   validateOutline,
   type StoryOutline,
 } from "@/lib/manga-story";
-import { generateFromBrowser, isLocationBlocked } from "@/lib/ai/generate-browser";
+import { generateFromBrowser } from "@/lib/ai/generate-browser";
 import { TEXT_MODEL } from "@/lib/ai/models";
 import { hasCodex } from "@/lib/codex-settings";
 import { getGeminiKey } from "@/lib/profile";
@@ -167,49 +167,27 @@ export function MangaMaker({
       validate: validateScript,
       viaGemini: async () => {
         if (!apiKey) return { ok: false, message: messageForReason("noKey") };
+        /*
+         * この端末から Google に直接頼む（2026-08-17 から サーバは 通さない）。
+         * うちの Worker は香港で動くことがあり、そこを通すと Google に断られるうえ、
+         * キーが香港のデータセンターで復号される。BYOK のキーはこの端末にある。
+         */
+        const direct = await generateFromBrowser({
+          apiKey,
+          model: TEXT_MODEL,
+          prompt: approved
+            ? buildLayoutPrompt({ outline: approved, cast })
+            : buildMangaScriptPrompt(brief),
+          schema: MANGA_SCRIPT_SCHEMA,
+          // 教材づくりなので、思いつきより依頼に忠実な方を採る
+          temperature: 0.4,
+          timeoutMs: 60_000,
+        });
+        if (!direct.ok) return { ok: false, message: messageForReason(direct.reason) };
         try {
-          const response = await fetch("/api/studio/manga", {
-            method: "POST",
-            headers: { "content-type": "application/json" },
-            body: JSON.stringify({ apiKey, ...brief }),
-          });
-          const body = (await response.json().catch(() => ({}))) as {
-            ready?: boolean;
-            reason?: string;
-            script?: Script;
-          };
-          if (!response.ok || !body.ready || !body.script) {
-            /*
-             * サーバ（Cloudflare の 香港）から Google に 出られないときは、この端末から
-             * 直接 頼む。先生の パソコンは 日本・カンボジアで、どちらも 対応地域（2026-08-17）。
-             */
-            if (isLocationBlocked(body.reason)) {
-              const direct = await generateFromBrowser({
-                apiKey,
-                model: TEXT_MODEL,
-                prompt: approved
-                  ? buildLayoutPrompt({ outline: approved, cast })
-                  : buildMangaScriptPrompt(brief),
-                schema: MANGA_SCRIPT_SCHEMA,
-                // 教材づくりなので、思いつきより依頼に忠実な方を採る（route と同じ）
-                temperature: 0.4,
-                timeoutMs: 60_000,
-              });
-              if (!direct.ok) return { ok: false, message: messageForReason(direct.reason) };
-              try {
-                return { ok: true, value: JSON.parse(direct.text) as Script };
-              } catch {
-                return { ok: false, message: messageForReason("badResponse") };
-              }
-            }
-            return { ok: false, message: messageForReason(body.reason ?? "") };
-          }
-          return { ok: true, value: body.script };
+          return { ok: true, value: JSON.parse(direct.text) as Script };
         } catch {
-          return {
-            ok: false,
-            message: "つうしんに 失敗しました。ネットワークを たしかめてください。",
-          };
+          return { ok: false, message: messageForReason("badResponse") };
         }
       },
     });

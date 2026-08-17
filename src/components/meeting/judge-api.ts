@@ -1,6 +1,6 @@
 "use client";
 
-import { generateFromBrowser, isLocationBlocked } from "@/lib/ai/generate-browser";
+import { generateFromBrowser } from "@/lib/ai/generate-browser";
 import { TEXT_MODEL } from "@/lib/ai/models";
 import { getGeminiKey } from "@/lib/profile";
 import {
@@ -15,8 +15,9 @@ import {
 /**
  * 判定APIの呼び出し（ブラウザ側）。
  *
- * キーは本人のもの（BYOK）で端末に保存されている。ここで載せて送り、
- * サーバは受け取って Gemini を呼ぶだけ——キーも上流の応答も返ってこない。
+ * キーは本人のもの（BYOK）で端末に保存されている。**サーバには渡さない**——
+ * この端末から Google へ直接聞く（2026-08-17）。うちの Worker は香港で動くことが
+ * あり、そこを通すと Google に断られるうえ、キーが香港で復号されるため。
  *
  * 失敗は**理由の名前**で返す。「だめでした」しか出ないと、キーを入れた学習者は
  * 自分のキーを疑い続けることになる（2026-08-06 に実際に起きた）。
@@ -39,37 +40,18 @@ export type JudgeApiResult =
 export async function requestJudge(request: JudgeRequest): Promise<JudgeApiResult> {
   const apiKey = getGeminiKey();
   if (!apiKey) return { ok: false, reason: "noKey" };
-
-  let response: Response;
-  try {
-    response = await fetch("/api/meeting/judge", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ apiKey, ...request }),
-    });
-  } catch {
-    return { ok: false, reason: "network" };
-  }
-
-  const body = (await response.json().catch(() => ({}))) as {
-    ready?: boolean;
-    judge?: JudgeResult;
-    model?: string;
-    reason?: string;
-  };
-  if (!response.ok || !body.ready || !body.judge) {
-    /*
-     * サーバ（Cloudflare の 香港）から Google に 出られないときは、この端末から
-     * 直接 聞く。学習者の 端末は 日本・カンボジアで、どちらも 対応地域。
-     * キーは もともと この端末に ある（BYOK）ので、新しく 配るものは 無い。
-     */
-    if (isLocationBlocked(body.reason)) return await judgeFromBrowser(apiKey, request);
-    return { ok: false, reason: body.reason ?? "upstream" };
-  }
-  return { ok: true, judge: body.judge, model: body.model ?? "" };
+  return await judgeFromBrowser(apiKey, request);
 }
 
-/** サーバの逃げ道。サーバ側 route と同じ材料（プロンプト・スキーマ・解釈）を使う。 */
+/**
+ * この端末から Google に直接聞く。
+ *
+ * ## かなだけで返ってくるまで、1回だけ言い直させる
+ * 動的に作った文にはふりがなを合成できない（読み辞書は教材データが持つ）。
+ * 漢字が1つ混ざると、そこで学習者が止まる。構造化出力でも「漢字を使うな」は
+ * ときどき破られるので、**検査 → 1回だけ言い直し → それでも駄目なら ok:false**。
+ * 画面はそのとき規則ベース（japanese-check.ts）へ落ちる。会話は止めない。
+ */
 async function judgeFromBrowser(apiKey: string, request: JudgeRequest): Promise<JudgeApiResult> {
   const context: JudgeContext = { ...request, attempt: Math.min(Math.max(request.attempt, 1), 9) };
 

@@ -11,6 +11,7 @@
  * あとで1本につなぐ（wav.ts）。行数ぶん時間がかかるので、進み具合を必ず返す。
  */
 
+import { createLiveToken } from "@/lib/ai/live-token";
 import { LIVE_TTS_MODELS } from "@/lib/ai/models";
 import { base64ToBytes, joinPcm, pcmToWav, type JoinedPcm } from "./wav";
 
@@ -50,38 +51,20 @@ export class TtsError extends Error {
 }
 
 /**
- * 短命トークンを1つもらう。1トークン1接続（uses:1）なので行ごとに取り直す。
- * つなぐつもりのモデル名も渡す——サーバが理由を返すときの手がかりになる。
+ * 短命トークンを1つ作る。1トークン1接続（uses:1）なので行ごとに取り直す。
  *
- * **トークンが作れないキーでは、本人のキーをそのまま返す**（2026-08-17）。
- * 新形式（`AQ.`）のキーは authTokens.create だけ通らないことが知られていて、
- * 旧形式は 2026年9月に廃止される。ここで諦めると、その日に音声づくりが全滅する。
- * 「漏れても30分で切れる」効き目は失うので、**作れなかったときだけ**に限る
+ * **キーはサーバへ渡さない**（2026-08-17）。この端末で作って、この端末から使う。
+ * 作れないキー（新形式で報告あり）のときだけ本人のキーで直接つなぐ——
+ * 「漏れても30分で切れる」効き目は失うので、そのときだけに限る
  * （たいわ側 use-live-session.ts と同じ判断）。
  */
-async function fetchToken(apiKey: string, model: string): Promise<string> {
-  const response = await fetch("/api/live/token", {
-    method: "POST",
-    headers: { "content-type": "application/json" },
-    body: JSON.stringify({ apiKey, model }),
-  });
-  const payload = (await response.json().catch(() => ({}))) as {
-    ready?: boolean;
-    token?: string;
-    reason?: string;
-  };
-  if (!response.ok || !payload.ready || !payload.token) {
-    // locationNotSupported = サーバ（香港）が Google の対象外。このパソコンからなら通る
-    if (
-      payload.reason === "tokenRejected" ||
-      payload.reason === "invalidRequest" ||
-      payload.reason === "locationNotSupported"
-    ) {
-      return apiKey;
-    }
-    throw new TtsError(messageForTokenReason(payload.reason));
-  }
-  return payload.token;
+async function fetchToken(apiKey: string): Promise<string> {
+  const minted = await createLiveToken({ apiKey });
+  if (minted.ok) return minted.token;
+  // 新形式（AQ.）のキーは authTokens.create だけ通らないことがある。そのときは
+  // 本人のキーで直接つなぐ（キーはもともとこの端末にある）
+  if (minted.reason === "tokenRejected" || minted.reason === "invalidRequest") return apiKey;
+  throw new TtsError(messageForTokenReason(minted.reason));
 }
 
 /** 失敗の理由を、先生が次の一手を決められる言い方にする。 */
@@ -124,7 +107,7 @@ function messageForTokenReason(reason: string | undefined): string {
 async function synthesizeLine(apiKey: string, line: TtsLine, model: string): Promise<Uint8Array> {
   // SDK は接続時にだけ要る。初期表示のバンドルに載せない
   const { GoogleGenAI, Modality } = await import("@google/genai");
-  const token = await fetchToken(apiKey, model);
+  const token = await fetchToken(apiKey);
   const ai = new GoogleGenAI({ apiKey: token });
 
   return new Promise<Uint8Array>((resolve, reject) => {
