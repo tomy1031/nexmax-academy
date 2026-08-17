@@ -53,6 +53,15 @@ function collectStrings(value: unknown, path: string, out: [string, string][]) {
   }
 }
 
+/**
+ * 見つけた語の前後を添えて引用する（先生が直す場所を探せるように）。
+ * `at` は**実際に判定が当たった位置**を渡す。別の出現箇所（「タイトル」の
+ * 「タイ」など）を引用すると、既知の誤検出に見えて指摘が握りつぶされる。
+ */
+function near(text: string, at: number, length: number): string {
+  return text.slice(Math.max(0, at - 12), at + length + 12);
+}
+
 /** 禁止語検査。データ内の全文字列を走査する。 */
 export function checkForbiddenWords(file: string, data: unknown): Finding[] {
   const findings: Finding[] = [];
@@ -158,17 +167,21 @@ const CONFIRM_PLACE_NAMES: readonly string[] = [
  */
 const KATAKANA = /[ァ-ヶーヴ]/u;
 
-function mentionsPlace(text: string, name: string): boolean {
+/**
+ * 国名として当たった位置を返す（無ければ -1）。位置まで返すのは、エラーの引用が
+ * **当たった出現箇所**を指すため（1つ目の「タイトル」を引用すると誤検出に見える）。
+ */
+function indexOfPlace(text: string, name: string): number {
   let from = 0;
   for (;;) {
     const at = text.indexOf(name, from);
-    if (at < 0) return false;
+    if (at < 0) return -1;
     const before = text[at - 1] ?? "";
     const after = text[at + name.length] ?? "";
     const glued = KATAKANA.test(name[0] ?? "")
       ? KATAKANA.test(before) || KATAKANA.test(after)
       : false;
-    if (!glued) return true;
+    if (!glued) return at;
     from = at + 1;
   }
 }
@@ -184,27 +197,62 @@ function mentionsPlace(text: string, name: string): boolean {
  * 「Southeast Asian」と書けなくなって生成の質が落ちる。
  */
 export function checkCountryNames(file: string, content: Content): Finding[] {
+  return checkCountryNamesInTexts(file, collectLearnerTexts(content));
+}
+
+/**
+ * 国名検査の本体。文字列の列を直接受ける形。
+ *
+ * 教材データ（Content）は checkCountryNames から入るが、スライドの組版原稿
+ * （scripts/slides/<教材ID>/index.html — 学習者が読む字の大半は PDF 側にある）は
+ * Content ではないので、抽出済みの文をこちらへ渡す（scripts/slides/manuscript_checks.ts）。
+ * 判定と文言はこの1か所に閉じる——原稿側が国名リストを別に持つと、
+ * 合意リストを直したときに片方だけ古いままになる。
+ */
+export function checkCountryNamesInTexts(file: string, texts: readonly string[]): Finding[] {
   const findings: Finding[] = [];
-  for (const text of collectLearnerTexts(content)) {
-    const near = (name: string) => {
-      const at = text.indexOf(name);
-      return text.slice(Math.max(0, at - 12), at + name.length + 12);
-    };
+  for (const text of texts) {
     for (const name of BANNED_PLACE_NAMES) {
-      if (!mentionsPlace(text, name)) continue;
+      const at = indexOfPlace(text, name);
+      if (at < 0) continue;
       findings.push({
         file,
         level: "error",
-        message: `国名「${name}」が 学習者に見える文にある: 「…${near(name)}…」 — この名前は使わない（規律9）。まなびマップと同じく景色の名前で呼ぶ`,
+        message: `国名「${name}」が 学習者に見える文にある: 「…${near(text, at, name.length)}…」 — この名前は使わない（規律9）。まなびマップと同じく景色の名前で呼ぶ`,
       });
     }
     for (const name of CONFIRM_PLACE_NAMES) {
       if (AGREED_PLACE_NAMES.includes(name)) continue;
-      if (!mentionsPlace(text, name)) continue;
+      const at = indexOfPlace(text, name);
+      if (at < 0) continue;
       findings.push({
         file,
         level: "warn",
-        message: `国名「${name}」が 学習者に見える文にある: 「…${near(name)}…」 — 新しい国名を画面に出す前に、ユーザーへ確認する（規律9）。景色の名前で呼べないか先に考える`,
+        message: `国名「${name}」が 学習者に見える文にある: 「…${near(text, at, name.length)}…」 — 新しい国名を画面に出す前に、ユーザーへ確認する（規律9）。景色の名前で呼べないか先に考える`,
+      });
+    }
+  }
+  return findings;
+}
+
+/**
+ * 禁止語検査の、文字列の列を直接受ける形（checkCountryNamesInTexts と対になる入口）。
+ *
+ * スライドの組版原稿（scripts/slides/<教材ID>/index.html）が使う。checkForbiddenWords
+ * （JSON全体を舐めてフィールドの場所で知らせる形）とはメッセージの出し方が違うだけで、
+ * 語のリストと判定はここに1本化する——原稿側が別のループを持つと、語に文脈の
+ * ガード（「タイ」のカタカナ境界のような）を足したとき片方だけ古いままになる。
+ */
+export function checkForbiddenWordsInTexts(file: string, texts: readonly string[]): Finding[] {
+  const findings: Finding[] = [];
+  for (const text of texts) {
+    for (const word of FORBIDDEN_LEARNER_WORDS) {
+      const at = text.indexOf(word);
+      if (at < 0) continue;
+      findings.push({
+        file,
+        level: "error",
+        message: `禁止語「${word}」が 学習者に見える文にある: 「…${near(text, at, word.length)}…」 — フィードバックは励まし＋次の行動に（P8）`,
       });
     }
   }
