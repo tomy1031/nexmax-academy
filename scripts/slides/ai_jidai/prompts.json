@@ -1,7 +1,7 @@
 {
-  "_comment": "スライド教材 ai_jidai の挿絵プロンプト台帳。docs/skills/codex_image_generation.md §7 に従い、Style 節はマスター記述から流用。生成は 1 セッション一括（scripts/slides/gen_images.mjs が本ファイルを読む）。番号はスライド番号に対応（図解スライドは HTML/CSS 描画のため欠番）。",
+  "_comment": "スライド教材 ai_jidai の挿絵プロンプト台帳。docs/skills/codex_image_generation.md §7.2 に従い、Style 節はマスター記述から流用。生成は 1 セッション一括（scripts/slides/gen_images.mjs が本ファイルを読む）。絵に文字を入れない——数字・グラフ・組織図のラベルは HTML 組版側が重ねる。",
   "output": "1536x1024 PNG, landscape",
-  "saveDir": "scripts/slides/ai_jidai/img（PNGで受けて 1080px・JPEG q72 に変換して置く。PDFがJPEGをそのまま抱き込むので、webp/PNGのまま組むとPDFが10MB超になる）",
+  "saveDir": "scripts/slides/ai_jidai/img（PNGで受けて 1024px・JPEG q66 に変換して置く。PDFがJPEGをそのまま抱き込むので、webp/PNGのまま組むとPDFが10MB超になる）",
   "style": "Style: clean modern Japanese manga / anime style, hand-drawn warm line, soft cel shading, bright friendly pastel palette (soft sky blue #A9D6F5, cream #FFF7E8, warm sun yellow #FFC93C, leaf green #58C273, coral #FF8A70), rounded shapes, no harsh shadows, warm daylight, kid-safe e-learning illustration.",
   "nexmax": "The tiny cute NexMax robot mascot appears SMALL in the scene, matching the attached reference image exactly: rounded sky-blue (#A9D6F5) helmet-like head wider than tall, two small ear pods, large white rounded face-screen with a soft notch at the top center, two black oval eyes, gentle smile, sky-blue trapezoid torso with a navy (#004F8D) double-peak M chest mark, segmented ball-joint arms with mitten hands, short legs with rounded boots.",
   "noText": "No text, no letters, no kanji, no kana, no numbers anywhere in the image. All laptop lids, phone screens, monitors, whiteboards, papers, books, boxes and signs are plain or show only abstract colour blocks and soft squiggle lines. No watermark, no signature, no logo, no frame border.",
@@ -9,108 +9,172 @@
   "scenes": [
     {
       "out": "s01",
-      "slide": 1,
       "title": "タイトル: 道の入口に立つ学生たち",
       "nexmaxInScene": true,
       "scene": "Scene: three cheerful Southeast Asian university students (two young men, one young woman, casual smart clothes, backpacks) standing at the start of a wide bright road that curves toward a distant modern city skyline with a small Mount Fuji on the horizon, blue sky with soft clouds and one white paper airplane. The tiny NexMax robot walks beside them waving one hand high."
     },
     {
       "out": "s02",
-      "slide": 2,
-      "title": "問いかけ: 考える学生",
+      "title": "章扉1 / 問いかけ: 考える学生",
       "nexmaxInScene": true,
       "scene": "Scene: one Southeast Asian student sitting at a tidy desk with a plain open laptop, hand on chin, looking up at one big completely empty thought bubble floating above their head. The tiny NexMax robot peeks curiously over the edge of the desk, also looking up at the empty bubble."
     },
     {
-      "out": "s03",
-      "slide": 3,
-      "title": "前: AIは手つだい",
-      "nexmaxInScene": true,
-      "scene": "Scene: a focused programmer typing with both hands on a plain laptop at a tidy desk; the tiny NexMax robot stands ON the desk beside the laptop, politely holding up one small jigsaw puzzle piece to help. The human clearly leads the work; the robot is a small helper. Warm office light, a potted plant."
-    },
-    {
-      "out": "s05",
-      "slide": 5,
-      "title": "今: 人は見ているだけ",
-      "nexmaxInScene": true,
-      "scene": "Scene: a relaxed programmer leaning back in an office chair holding a warm mug with both hands, calmly watching a large plain desktop monitor; on the desk the tiny NexMax robot happily types on a small keyboard, and the monitor shows only soft abstract colour blocks flowing. Cozy evening office light."
-    },
-    {
       "out": "s06",
-      "slide": 6,
-      "title": "今までのチーム",
+      "title": "章扉2: 打ち合わせの場面",
       "nexmaxInScene": false,
       "scene": "Scene: a bright meeting room seen from the side; on the left, a project manager (Southeast Asian woman in a blazer) shakes hands across a small table with a client (older man in a cardigan); on the right, two programmers type on plain laptops and a young newcomer holding a notebook stands beside them watching and learning. Office plants and big windows with daylight."
     },
     {
       "out": "s08",
-      "slide": 8,
       "title": "学生がクライアントと向き合う",
       "nexmaxInScene": true,
       "scene": "Scene: a young Southeast Asian student in a smart shirt sits across a small round table from a client (middle-aged shop owner woman wearing an apron), leaning forward and taking notes in a plain notebook while the client talks with open hands. The tiny NexMax robot sits beside the notebook holding a tiny pencil. Warm cafe-like light."
     },
     {
       "out": "s09",
-      "slide": 9,
       "title": "アメリカ: 静かなオフィス街",
       "nexmaxInScene": false,
       "scene": "Scene: a wide calm view of large modern glass office towers under a soft pale evening sky; a few small office workers quietly walk away from the entrance carrying plain cardboard boxes with potted plants inside; gentle and quiet mood, softly lit, not scary, no sad crying faces."
     },
     {
       "out": "s12",
-      "slide": 12,
-      "title": "日本にチャンス: 朝日と富士山",
+      "title": "章扉4: 日本にチャンス・朝日と富士山",
       "nexmaxInScene": true,
       "scene": "Scene: a bright warm sunrise over Mount Fuji, cherry blossom branches framing the top corners, a red torii gate on a green hill and a modern city skyline far below, soft rays of morning light across the sky. The tiny NexMax robot stands on the hill in the foreground raising both arms cheerfully toward the sunrise."
     },
     {
       "out": "s13",
-      "slide": 13,
       "title": "理由1: 会社の傘が守る",
       "nexmaxInScene": false,
       "scene": "Scene: a giant friendly sky-blue umbrella held above a group of five diverse smiling office workers walking together; light gentle rain falls around the umbrella but everyone under it stays dry and calm; behind them a soft silhouette of an office building holds the umbrella pole with a big gentle cartoon hand."
     },
     {
       "out": "s14",
-      "slide": 14,
       "title": "理由2: 人が足りないオフィス",
       "nexmaxInScene": false,
       "scene": "Scene: a bright open-plan office with many empty desks and empty chairs, monitors plain and dark; in the middle one kind manager stands looking around and shading his eyes as if searching for people, with a hopeful expression; only two desks in the corner are occupied by busy workers. Warm daylight, no dark mood."
     },
     {
       "out": "s17",
-      "slide": 17,
       "title": "小さい会社にチャンス",
       "nexmaxInScene": true,
       "scene": "Scene: in front of a small cozy bakery shop with a striped awning, the smiling owner (Southeast Asian woman with an apron) holds up a plain smartphone showing only soft abstract colour blocks; beside her a young IT student points at the phone and explains happily. The tiny NexMax robot peeks out of the student's shoulder bag. Bread loaves without any letters in the window."
     },
     {
       "out": "s19",
-      "slide": 19,
-      "title": "①コミュニケーション: 聞く",
+      "title": "章扉5: 聞く場面",
       "nexmaxInScene": true,
       "scene": "Scene: a warm close scene at a table: a client speaks with open hands and one completely empty speech bubble above, while a young Southeast Asian student leans forward listening carefully, pen over a plain notebook, eyes on the client. The tiny NexMax robot wearing big round headphones sits on the table, one mitten hand cupped near its ear, listening too."
     },
     {
-      "out": "s20",
-      "slide": 20,
-      "title": "②時間のマネジメント",
-      "nexmaxInScene": true,
-      "scene": "Scene: two team members stand at an office wall with a large plain wall calendar (a grid of completely empty squares) and a round wall clock with a plain face and no numerals; one of them places a small round coral sticker on the calendar grid. The tiny NexMax robot stands on a shelf below holding a tiny ringing alarm clock with both hands."
-    },
-    {
-      "out": "s21",
-      "slide": 21,
-      "title": "③お金のマネジメント",
-      "nexmaxInScene": true,
-      "scene": "Scene: two team members at a table calmly counting plain golden coins with no markings into neat stacks, next to a smiling pink piggy bank and a clear jar of coins; on the table lies one paper showing only soft abstract bar shapes. The tiny NexMax robot proudly lifts one big plain coin over its head with both mitten hands."
-    },
-    {
       "out": "s22",
-      "slide": 22,
       "title": "まとめ: 教室でいっしょに練習",
       "nexmaxInScene": true,
       "scene": "Scene: a bright classroom with six diverse Southeast Asian students at desks smiling and raising hands, a friendly teacher standing at the front beside a plain whiteboard showing only soft squiggle lines and abstract shapes, sunlight through big windows. The tiny NexMax robot stands on the teacher's desk cheering with two small pom-poms, tiny confetti around it."
+    },
+
+    {
+      "out": "q_a",
+      "title": "クイズA: AIに聞いて 自分で書く",
+      "nexmaxInScene": true,
+      "scene": "Scene: SIMPLE composition with plenty of empty cream space. A young Southeast Asian programmer sits at a small desk and types on a plain laptop with BOTH HANDS, clearly doing the work himself. Beside the laptop the tiny NexMax robot stands and holds up one empty rounded speech bubble, as if giving a short hint. Only two characters, no background clutter."
+    },
+    {
+      "out": "q_b",
+      "title": "クイズB: AIが書いて 人がコードを見る",
+      "nexmaxInScene": true,
+      "scene": "Scene: SIMPLE composition with plenty of empty cream space. The tiny NexMax robot sits ON the desk typing fast on a small keyboard, while a young Southeast Asian programmer leans in very close to a large plain monitor and traces the screen with one index finger, checking carefully, a magnifying glass in the other hand. The monitor shows only soft abstract colour-block stripes."
+    },
+    {
+      "out": "q_c",
+      "title": "クイズC: AIが全部作り 人はアプリを見る",
+      "nexmaxInScene": true,
+      "scene": "Scene: SIMPLE composition with plenty of empty cream space. In the background the tiny NexMax robot works busily at a plain desktop computer. In the foreground a relaxed young Southeast Asian person holds a plain smartphone with both hands and taps its screen with a satisfied smile, checking a finished app. The phone screen shows only soft abstract colour blocks."
+    },
+    {
+      "out": "era_chat",
+      "title": "むかし: チャットで 聞く（アドバイス）",
+      "nexmaxInScene": true,
+      "scene": "Scene: VERY SIMPLE composition, single subject, plenty of empty cream space around it. A person sits with a plain laptop, one hand raised in a questioning gesture, looking at one empty rounded speech bubble that floats up from the tiny NexMax robot standing on the desk. The person's other hand rests on a plain open notebook. Nothing else in the frame."
+    },
+    {
+      "out": "era_assist",
+      "title": "すこし前: AIがコードを書く（アシスタント）",
+      "nexmaxInScene": true,
+      "scene": "Scene: VERY SIMPLE composition, single subject, plenty of empty cream space around it. The tiny NexMax robot sits on the desk and types on a small keyboard wired to a plain monitor, while a person sitting beside it points at the monitor with one finger and nods. The monitor shows only soft abstract colour-block stripes. Nothing else in the frame."
+    },
+    {
+      "out": "era_agent",
+      "title": "いま: AIが 全部する（エージェント）",
+      "nexmaxInScene": true,
+      "scene": "Scene: VERY SIMPLE composition, plenty of empty cream space. THREE tiny NexMax robots work as a team around one plain computer: one types, one holds up a small board with only empty check boxes, one presses a big round launch button attached to a small cartoon rocket. A person sits back in a chair holding a warm mug, watching calmly. Nothing else in the frame."
+    },
+    {
+      "out": "org_now",
+      "title": "組織図: 今までのチーム（文字なし）",
+      "nexmaxInScene": false,
+      "scene": "A FLAT VECTOR INFOGRAPHIC DIAGRAM, not a photo-like scene. Three rounded rectangle cards sit side by side on a plain cream background, joined by thick simple arrows pointing left-to-right. Left card: bust of a friendly older client character in a cardigan. Middle card: bust of a smiling project manager, a Southeast Asian woman in a blazer holding a small blank clipboard. Right card: two young programmer characters sitting side by side at plain laptops. Cards have soft drop shadows and thin sky-blue outlines. Leave a generous EMPTY band across the lower third of every card so a caption can be added later. Simple, clean, evenly spaced."
+    },
+    {
+      "out": "org_ai",
+      "title": "組織図: これからのチーム（文字なし・対比）",
+      "nexmaxInScene": true,
+      "scene": "A FLAT VECTOR INFOGRAPHIC DIAGRAM in exactly the same layout, style, card size and arrow style as the previous org-chart image, so the two can be shown side by side as a before/after pair. Three rounded rectangle cards on plain cream, joined by thick arrows. Left card: bust of the same friendly older client character. Middle card: bust of a young smiling Southeast Asian student in a smart shirt, holding a small blank clipboard. Right card: TWO tiny NexMax robots sitting at plain laptops in place of the human programmers. Same soft shadows, same thin sky-blue outlines, same generous EMPTY band across the lower third of each card."
+    },
+    {
+      "out": "data_ai",
+      "title": "データ: AIがものすごい速さで書く",
+      "nexmaxInScene": true,
+      "scene": "Scene: the tiny NexMax robot sits at a plain desk typing at extreme speed, with cartoon motion lines and a few sheets of paper covered only in abstract squiggles flying up around it; behind, a person stands holding a mug with wide amazed eyes and a small smile. Bright, energetic, cheerful mood."
+    },
+    {
+      "out": "world",
+      "title": "章扉3: 世界のいま",
+      "nexmaxInScene": false,
+      "scene": "Scene: a wide calm panorama of a stylised world city — glass towers, a long bridge, a harbour with small ships, distant mountains — under a wide pale sky with soft clouds and a few birds. A handful of tiny office workers walk along the waterfront. Neutral and quiet; no flags, no national symbols."
+    },
+    {
+      "out": "reason3",
+      "title": "理由3: AIを まだ 使って いない 会社が 多い",
+      "nexmaxInScene": true,
+      "scene": "Scene: a cheerful row of small Japanese town buildings — a shop, a small factory, a two-floor office, a cafe. In FRONT of the first two buildings a tiny NexMax robot happily helps a smiling worker carry boxes. The other four buildings have their shutters half down and no robot beside them. On the right a young Southeast Asian IT person walks toward those quiet buildings carrying a toolbox, smiling hopefully. Bright daytime, plenty of sky."
+    },
+    {
+      "out": "japan_companies",
+      "title": "日本のチャンス: 会社が とても 多い",
+      "nexmaxInScene": true,
+      "scene": "Scene: a friendly toy-town view packed edge to edge with many tiny cute buildings — shops, cafes, small factories, two-floor offices, warehouses — drawn small and dense so the sheer number is obvious. In the middle a simple flagpole flies a plain white flag with one solid red circle in the center and no other marking. The tiny NexMax robot stands in the foreground waving both arms. Bright blue sky above."
+    },
+    {
+      "out": "world_fly",
+      "title": "日本で 経験を 積んで 世界へ",
+      "nexmaxInScene": true,
+      "scene": "Scene: a confident young Southeast Asian person in smart clothes stands on a green hill looking toward a bright sunrise, one hand shading the eyes; a small Mount Fuji sits in the middle distance and a large white paper airplane arcs across the sky toward a soft round globe shape drawn simply in the clouds, with no country borders or letters. The tiny NexMax robot stands beside waving one hand high."
+    },
+    {
+      "out": "comm",
+      "title": "コミュニケーション: 話す・聞く・書く",
+      "nexmaxInScene": true,
+      "scene": "Scene: a lively meeting around a round table, drawn large and close so faces read clearly. A client talks with both hands open; a young Southeast Asian project manager leans in listening and writing on a plain notepad; a third person sticks a blank sticky note on a small board. FOUR completely EMPTY rounded speech bubbles float above the group, and a plain smartphone lying on the table shows only empty message bubbles. The tiny NexMax robot wearing big round headphones sits on the table with one mitten hand cupped near its ear."
+    },
+    {
+      "out": "nihongo",
+      "title": "日本語で 話せると 強い",
+      "nexmaxInScene": true,
+      "scene": "Scene: a young Southeast Asian student and a friendly Japanese senior colleague stand facing each other in a bright office, both smiling, two empty rounded speech bubbles floating between them. On the desk beside them lie a plain open notebook and a plain textbook with completely blank pages. The tiny NexMax robot sits on the desk holding up a small pencil cheerfully. Warm daylight, hopeful mood."
+    },
+    {
+      "out": "estimate",
+      "title": "お金の マネジメント: 見積もり",
+      "nexmaxInScene": true,
+      "scene": "Scene: a project manager and a client sit at a table looking together at a printed document the manager holds up. The document shows ONLY neat abstract rows of blank ruled lines and small empty boxes, with one wider band at the bottom — no readable characters at all. A calculator with blank keys, a few plain gold coins and a small stack of paper sit on the table. The tiny NexMax robot stands on the table pointing at the document's bottom band with one mitten hand."
+    },
+    {
+      "out": "plus",
+      "title": "プログラムだけでなく +αの 力",
+      "nexmaxInScene": true,
+      "scene": "Scene: FOUR tiny NexMax robots stand in a friendly evenly spaced row on a plain cream background, each holding one simple prop: the first a small blank clipboard, the second a paint palette and brush, the third a small server rack box with tiny round blinking lights, the fourth a rounded shield. Behind them a young Southeast Asian person stands smiling with both arms open wide. Leave clear empty space under each robot for a caption to be added later."
     }
   ]
 }
