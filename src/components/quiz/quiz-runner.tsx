@@ -149,13 +149,21 @@ export function QuizRunner({
    * 同じ鍵を 使うよう ref に 抱える——鍵が 変わると DB の一意制約をすり抜けて
    * 二重に 入り、正答率が 狂う。
    */
-  // 鍵は **useState の 初期化**で 1回だけ 作る（ref に レンダー中に 書くと
-  // 描き直しの たびに 走りうる ——同じ 1回の 挑戦が 別々の 鍵で 二重に 入る）。
-  const [attemptId] = useState(() => newAttemptId());
-  const sentRef = useRef(false);
+  /*
+   * 鍵は **1回の挑戦につき1つ**。やり直し（はじめから／まちがえた もんだいだけ／もう一度）は
+   * 同じ画面のまま `setState(createQuizSession(...))` で 作り直すので、鍵を そのままに すると
+   * 2回目以降が 1行も 残らない（送っても 一意制約に 弾かれる）。だから 作り直しと 同時に
+   * `startAttempt()` で 新しい鍵に する。
+   *
+   * 「もう送ったか」は 真偽値では なく **送った鍵**で 覚える。真偽値だと やり直しの ときに
+   * 戻し忘れが 起きるが、鍵で 比べれば 新しい鍵に なった 時点で 自動的に 送れる状態に 戻る。
+   */
+  const [attemptId, setAttemptId] = useState(() => newAttemptId());
+  const startAttempt = useCallback(() => setAttemptId(newAttemptId()), []);
+  const sentRef = useRef<string | null>(null);
   useEffect(() => {
-    if (!done || sentRef.current) return;
-    sentRef.current = true;
+    if (!done || sentRef.current === attemptId) return;
+    sentRef.current = attemptId;
     void fetchOwnProfile()
       .then((profile) =>
         saveQuizResults({
@@ -198,6 +206,7 @@ export function QuizRunner({
           onRestart={() => {
             clearQuizResume(set.id);
             setState(createQuizSession(set));
+            startAttempt();
             setResumed(false);
             setStarted(true);
           }}
@@ -211,15 +220,19 @@ export function QuizRunner({
             .map((id) => byId.get(id))
             .filter((q): q is QuizQuestion => Boolean(q))}
           furigana={furigana}
-          onRetryWrong={() =>
+          onRetryWrong={() => {
             setState(
               createQuizSession(
                 set,
                 set.questions.filter((q) => summary.missedQuestionIds.includes(q.id)),
               ),
-            )
-          }
-          onRetryAll={() => setState(createQuizSession(set))}
+            );
+            startAttempt();
+          }}
+          onRetryAll={() => {
+            setState(createQuizSession(set));
+            startAttempt();
+          }}
         />
       ) : (
         question && (

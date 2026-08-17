@@ -39,7 +39,12 @@
   h1 { font-size: 40px; font-weight: 800; line-height: 1.55; }
   h2 { font-size: 30px; font-weight: 800; line-height: 1.6; }
   .sub { font-size: 19px; font-weight: 700; color: #3c5877; line-height: 1.7; margin-top: 14px; }
-  .footnote { position: absolute; bottom: 12px; left: 48px; font-size: 10.5px; color: #7189a3; }
+  /* 丸ごと絵のスライドでは 絵の上に 重なるので、ページ番号と 同じ 薄い下地を 敷く。
+     数字を 出す スライドには 出どころが 要る（絵にしたときに 落とさない）。 */
+  .footnote {
+    position: absolute; bottom: 10px; left: 24px; font-size: 10.5px; color: #7189a3;
+    background: rgba(255, 253, 250, 0.78); padding: 2px 10px; border-radius: 999px;
+  }
   /* ページ番号は数えて出す（手書きだと1枚の挿入で以降が全部ずれる）。分母だけここで1回書く */
   body { counter-reset: slide; }
   .slide { counter-increment: slide; }
@@ -290,6 +295,7 @@
 <section class="slide full-pic">
   <img class="bg" src="img/w06_data.jpg" alt="" />
   <div class="alt">ほんとうの 数字。AIが 書いた コードの わりあい。Google 75%、Anthropic 90%、Microsoft 30%。Google は 2年で 25% から 75% に なりました。</div>
+  <div class="footnote"><ruby>出典<rt>しゅってん</rt></ruby>: <ruby>各社<rt>かくしゃ</rt></ruby>の <ruby>発表<rt>はっぴょう</rt></ruby>。Microsoft は 2025<ruby>年<rt>ねん</rt></ruby>4<ruby>月<rt>がつ</rt></ruby>の <ruby>数字<rt>すうじ</rt></ruby>です</div>
   <div class="pageno"></div>
 </section>
 
@@ -364,6 +370,7 @@
 <section class="slide full-pic">
   <img class="bg" src="img/w13_harvard.jpg" alt="" />
   <div class="alt">世界の いま。ハーバード大学を 卒業しても、仕事が できません。4人に 1人は、卒業して 3か月 たっても 仕事が 見つかりません。</div>
+  <div class="footnote"><ruby>出典<rt>しゅってん</rt></ruby>: Harvard Business School の <ruby>発表<rt>はっぴょう</rt></ruby>（2024<ruby>年度<rt>ねんど</rt></ruby>・MBA）</div>
   <div class="pageno"></div>
 </section>
 
@@ -371,6 +378,7 @@
 <section class="slide full-pic">
   <img class="bg" src="img/w14_china.jpg" alt="" />
   <div class="alt">世界の いま。中国の 大きな 会社も 人を 減らして います。Alibaba、Tencent、ByteDance。130,000人。1年で 減りました。</div>
+  <div class="footnote"><ruby>出典<rt>しゅってん</rt></ruby>: <ruby>報道<rt>ほうどう</rt></ruby>（2025〜2026<ruby>年<rt>ねん</rt></ruby>）</div>
   <div class="pageno"></div>
 </section>
 
@@ -399,6 +407,7 @@
 <section class="slide full-pic">
   <img class="bg" src="img/w17_shortage.jpg" alt="" />
   <div class="alt">理由 2。日本は ITの 人が 足りません。2018年ごろ 170,000、2020年 370,000、2030年 790,000。</div>
+  <div class="footnote"><ruby>出典<rt>しゅってん</rt></ruby>: <ruby>経済産業省<rt>けいざいさんぎょうしょう</rt></ruby>「IT<ruby>人材<rt>じんざい</rt></ruby><ruby>需給<rt>じゅきゅう</rt></ruby>に <ruby>関<rt>かん</rt></ruby>する <ruby>調査<rt>ちょうさ</rt></ruby>」（2019<ruby>年<rt>ねん</rt></ruby>）</div>
   <div class="pageno"></div>
 </section>
 
@@ -406,6 +415,7 @@
 <section class="slide full-pic">
   <img class="bg" src="img/w18_adoption.jpg" alt="" />
   <div class="alt">理由 3。AIを まだ 使って いない 会社が 多い。41.2%。半分より 少ないです。これから AIの 仕事が たくさん 生まれます。</div>
+  <div class="footnote"><ruby>出典<rt>しゅってん</rt></ruby>: <ruby>総務省<rt>そうむしょう</rt></ruby>「<ruby>情報通信白書<rt>じょうほうつうしんはくしょ</rt></ruby>」（2025<ruby>年<rt>ねん</rt></ruby>）</div>
   <div class="pageno"></div>
 </section>
 
@@ -413,6 +423,7 @@
 <section class="slide full-pic">
   <img class="bg" src="img/w19_companies.jpg" alt="" />
   <div class="alt">日本の チャンス。会社の 数が とても 多い。日本 5,530,000、アメリカ 5,660,000、カンボジア 46,000。人口は アメリカの 半分。でも 会社の 数は ほぼ 同じ。</div>
+  <div class="footnote"><ruby>出典<rt>しゅってん</rt></ruby>: <ruby>各国<rt>かっこく</rt></ruby>の <ruby>統計<rt>とうけい</rt></ruby>（<ruby>数<rt>かぞ</rt></ruby>え<ruby>方<rt>かた</rt></ruby>は <ruby>国<rt>くに</rt></ruby>で <ruby>少<rt>すこ</rt></ruby>し ちがいます）</div>
   <div class="pageno"></div>
 </section>
 

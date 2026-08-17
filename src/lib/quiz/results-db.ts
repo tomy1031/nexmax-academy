@@ -31,8 +31,14 @@ import { createClient } from "@/lib/supabase/client";
 /** 表の名前は1か所に置く（読みと書きの2か所で使うので、文字列を2度書くと片方だけ直す事故が起きる）。 */
 const TABLE = "quiz_results";
 
-/** テーブルがまだ無いときの Postgres のコード（`meeting_turn_logs` の読み側と同じ扱い）。 */
-const UNDEFINED_TABLE = "42P01";
+/**
+ * テーブルがまだ無いときのコード。**2つある**。
+ * - `42P01` … Postgres が返す「そんな表は無い」
+ * - `PGRST205` … PostgREST 12.2 以降が、スキーマキャッシュに無い表に対して先に返す
+ * 片方しか見ないと、マイグレーション未実行のときに「じゅんびちゅう」ではなく
+ * 生のエラー文が先生の画面に出る。
+ */
+const MISSING_TABLE_CODES = new Set(["42P01", "PGRST205"]);
 
 /** 1問ぶんの行（DBの列名とそろえる。ここがずれると1行も入らない）。 */
 export interface QuizResultRow {
@@ -159,7 +165,7 @@ export async function fetchQuizResults({
 
   const { data, error } = await query;
   if (error) {
-    if (error.code === UNDEFINED_TABLE) return { state: "preparing" };
+    if (MISSING_TABLE_CODES.has(error.code)) return { state: "preparing" };
     return { state: "error", message: error.message };
   }
   return { state: "ready", rows: (data ?? []) as QuizResultRow[] };

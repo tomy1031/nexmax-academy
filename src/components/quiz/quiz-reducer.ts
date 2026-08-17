@@ -158,7 +158,14 @@ export function quizReducer(state: QuizState, action: QuizAction): QuizState {
       // accept には「AUPP」「Japanese IT Pathway」のようなラテン文字の正解があり、
       // 先に弾くと正解を「打ち直して」と突き返すことになる。
       // ここでは回答を消費しない（1問を IME のせいで失わせない）。
-      if (!correct && inspectReadingInput(action.input) === "latin") {
+      //
+      // **正解がラテン文字の設問では出さない**（`PM`・`AI` のように「アルファベットで
+      // 答えて ください」と聞いている問題）。そこで「ひらがなで 入力してね」と出すと、
+      // 設問と正反対の案内になり、学習者は打ち直しようがなくなる。
+      const wantsLatin = [question.answer, ...question.accept].some(
+        (a) => inspectReadingInput(a) === "latin",
+      );
+      if (!correct && !wantsLatin && inspectReadingInput(action.input) === "latin") {
         return { ...state, phase: { kind: "ask", inputIssue: INPUT_ISSUE_FEEDBACK.latin } };
       }
       return close(state, question, correct, action.input, undefined, action.input);
