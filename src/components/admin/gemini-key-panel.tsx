@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useSyncExternalStore } from "react";
-import { DEFAULT_LIVE_TALK_MODEL, preferredLiveModel } from "@/lib/ai/models";
+import { listModelsFromBrowser } from "@/lib/ai/list-models";
+import { DEFAULT_LIVE_TALK_MODEL, looksLiveCapable, preferredLiveModel } from "@/lib/ai/models";
 import { getGeminiKey, getLiveModel, saveGeminiKey, saveLiveModel } from "@/lib/profile";
 
 /**
@@ -36,6 +37,8 @@ type Check =
       models: string[];
       liveModels: string[];
       live: ({ ok: boolean; reason: string | null } & UpstreamHint) | null;
+      /** サーバからは出られず、このパソコンから直接たしかめたか。 */
+      direct?: boolean;
     };
 
 /** 画面のすみに出す手がかり（`reason: badKey / 400 API_KEY_INVALID`）。 */
@@ -142,6 +145,31 @@ export function GeminiKeyPanel() {
         live?: ({ ok: boolean; reason: string | null } & UpstreamHint) | null;
       } & UpstreamHint;
       if (!response.ok || !body.ok) {
+        /*
+         * サーバの居場所が Google の対象外（2026-08-17 実測）。うちの Worker は
+         * Cloudflare の香港（HKG）で動いていて、Google は香港からの呼び出しを
+         * 受け付けない。**先生のパソコンは日本・カンボジアで、どちらも対象内**なので、
+         * ここから直接ためせば答えが出る。キーはこの端末にあるものをそのまま使う。
+         */
+        if (body.reason === "locationNotSupported") {
+          const direct = await listModelsFromBrowser(key.trim());
+          if (direct.ok) {
+            const liveModels = direct.models.filter(looksLiveCapable);
+            setCheck({
+              state: "done",
+              models: direct.models,
+              liveModels,
+              live: null,
+              direct: true,
+            });
+            const preferred = preferredLiveModel(liveModels);
+            if (liveModels.length > 0 && !liveModels.includes(model)) {
+              setModel(preferred);
+              saveLiveModel(preferred);
+            }
+            return;
+          }
+        }
         setCheck({
           state: "failed",
           reason: body.reason ?? "upstream",
@@ -279,6 +307,12 @@ export function GeminiKeyPanel() {
           <p className="text-leaf-deep text-sm font-black">
             ✓ キーは つかえます（モデルが {check.models.length}こ 見えました）。
           </p>
+          {check.direct ? (
+            <p className="text-ink-soft text-xs font-bold">
+              ※ この アプリの サーバ（香港）からは Google に 出られないので、この パソコンから 直接
+              たしかめました。たいわ・音声づくりも この パソコンから 直接 つなぎます。
+            </p>
+          ) : null}
           {check.live ? (
             check.live.ok ? (
               <p className="text-leaf-deep text-sm font-black">

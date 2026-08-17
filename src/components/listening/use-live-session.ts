@@ -172,7 +172,16 @@ export function useLiveSession(): LiveSession {
      * 効き目は 失う。だから **トークンが 作れなかったときだけ**に 限る。
      * 権限・使いすぎ・場所の問題は 直接つないでも 同じなので 落ちるに まかせる。
      */
-    const canUseKeyDirectly = lastReason === "tokenRejected" || lastReason === "invalidRequest";
+    const canUseKeyDirectly =
+      lastReason === "tokenRejected" ||
+      lastReason === "invalidRequest" ||
+      /*
+       * サーバの居場所が Google の 対象外（2026-08-17 実測）。うちの Worker は
+       * Cloudflare の 香港（HKG）で 動いていて、Google は そこからの 呼び出しを
+       * 断る。**先生の パソコンは 日本・カンボジアで、どちらも 対象内**なので、
+       * ブラウザから 直接つなげば 通る。ここが たいわの 生命線。
+       */
+      lastReason === "locationNotSupported";
     const auth = payload?.token ?? (canUseKeyDirectly ? apiKey : null);
     const liveModel = payload?.model ?? wanted[0] ?? DEFAULT_LIVE_TALK_MODEL;
     if (!auth) {

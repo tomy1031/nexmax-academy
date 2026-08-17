@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/app/api/studio/content/route";
+import { MODELS_ENDPOINT, modelNamesFrom } from "@/lib/ai/list-models";
 import { isModelName, looksLiveCapable } from "@/lib/ai/models";
 import {
   classifyUpstreamResponse,
@@ -32,8 +33,6 @@ import { createEphemeralToken, LiveTokenError } from "@/lib/live/token";
  * 読み取れないときは `invalidRequest`（＝キーの正しさは不明）に留める。
  * 詳しくは src/lib/ai/upstream-error.ts。
  */
-
-const MODELS_ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models?pageSize=200";
 
 /** どの段で落ちたか。 */
 type Step = "auth" | "listModels" | "createToken";
@@ -151,8 +150,5 @@ async function listModels(apiKey: string): Promise<string[]> {
     // 200 なのに本文が読めない。ここを黙って空にすると「モデルが0個」に化ける
     throw new CheckError("badResponse", response.status);
   }
-  return (data.models ?? [])
-    .map((item) => (item.name ?? "").replace(/^models\//, ""))
-    .filter((name) => name.length > 0)
-    .sort();
+  return modelNamesFrom(data);
 }

@@ -71,7 +71,14 @@ async function fetchToken(apiKey: string, model: string): Promise<string> {
     reason?: string;
   };
   if (!response.ok || !payload.ready || !payload.token) {
-    if (payload.reason === "tokenRejected" || payload.reason === "invalidRequest") return apiKey;
+    // locationNotSupported = サーバ（香港）が Google の対象外。このパソコンからなら通る
+    if (
+      payload.reason === "tokenRejected" ||
+      payload.reason === "invalidRequest" ||
+      payload.reason === "locationNotSupported"
+    ) {
+      return apiKey;
+    }
     throw new TtsError(messageForTokenReason(payload.reason));
   }
   return payload.token;
