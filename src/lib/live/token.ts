@@ -27,6 +27,12 @@
  * 同時に直すこと。
  */
 
+import {
+  classifyUpstreamResponse,
+  NO_UPSTREAM_CODE,
+  type UpstreamCode,
+} from "@/lib/ai/upstream-error";
+
 const AUTH_TOKENS_ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/auth_tokens";
 
 /** トークンの有効時間。授業1コマ分より短く、使い回されないようにする。 */
@@ -45,12 +51,23 @@ export interface EphemeralToken {
  * キーそのものや上流の本文は**含めない**。
  */
 export type LiveTokenReason =
-  "tokenRejected" | "noPermission" | "modelNotFound" | "rateLimited" | "upstream";
+  | "tokenRejected"
+  | "noPermission"
+  | "modelNotFound"
+  | "rateLimited"
+  | "upstream"
+  // 上流が名前を付けてきたとき（src/lib/ai/upstream-error.ts）
+  | "badKey"
+  | "keyExpired"
+  | "keyRestricted"
+  | "apiDisabled"
+  | "locationNotSupported";
 
 export class LiveTokenError extends Error {
   constructor(
     readonly reason: LiveTokenReason,
     readonly status: number,
+    readonly code: UpstreamCode = NO_UPSTREAM_CODE,
   ) {
     super(reason);
     this.name = "LiveTokenError";
@@ -59,6 +76,8 @@ export class LiveTokenError extends Error {
 
 /**
  * 上流のHTTPステータスを、先生が次の一手を決められる粒度に畳む。
+ * **上流が名前を付けてきたときはそちらが勝つ**（`reasonFromCode`）。ここは
+ * 名前が読めなかったときの受け皿。
  *
  * 400 を「キーが違う」と言い切らない。このエンドポイントの 400 は
  * 「キーが無効」でも「本文の形が違う」でも返るうえ、**キーの形式が新しい
@@ -106,7 +125,13 @@ export async function createEphemeralToken({
     // 応答本文にキーが混ざる可能性があるので、そのまま外へ出さない。
     // ただし**なぜ失敗したか**は返す——ここを潰すと、キーを入れた先生には
     // 「だめだった」としか見えず、原因を確かめる手が1つも無くなる（実際にそうなった）。
-    throw new LiveTokenError(reasonFor(response.status), response.status);
+    // 名前（記号）だけは読み取って、読めたらそれを理由にする。
+    const { reason, code } = await classifyUpstreamResponse(response);
+    throw new LiveTokenError(
+      (reason as LiveTokenReason | null) ?? reasonFor(response.status),
+      response.status,
+      code,
+    );
   }
 
   const data = (await response.json()) as { name?: string };
