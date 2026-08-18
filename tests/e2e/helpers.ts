@@ -202,26 +202,34 @@ export async function joinCall(page: Page): Promise<void> {
 /** 文字で答える（声は 実機のマイクが要るので 自動では通らない）。 */
 export async function speakByText(page: Page, text: string): Promise<void> {
   await page.getByLabel("こたえを 入力する").fill(text);
-  /*
-   * 「はなす」で 厳密に 一致させる。Zoom の 中の こえの ボタンにも
-   * 「はなす」が 入る ので、部分一致だと どちらを 押すのか 決まらない。
-   */
-  await page.getByRole("button", { name: "はなす", exact: true }).click();
+  await page.getByRole("button", { name: "おくる" }).click();
 }
 
-/** 相手の受け止めを読んで つぎの しつもんへ。 */
-export async function goNextAsk(page: Page): Promise<void> {
-  await page.getByRole("button", { name: "つぎへ →" }).click();
+/**
+ * つぎの しつもんが 出るまで 待つ。
+ *
+ * 「つぎへ →」ボタンは 無くなった（判定が 通れば 自分で 進む）。会話の 教材で
+ * 進む ために ボタンを 押させない、という 作りに 合わせて、**画面に しつもんが
+ * 1つ 増えた こと**を 待つ。
+ */
+export async function waitForAsk(page: Page, count: number): Promise<void> {
+  await expect(page.locator('[data-kind="ask"]')).toHaveCount(count);
 }
 
-/** 答えられないときの出口（札は ？？？ のまま すすむ）。 */
+/**
+ * 答えられないときの出口。**ボタンでは なく ことば**で 言う
+ *（実際の 会議で 使う 救援の 言い方を そのまま 練習に する）。
+ */
 export async function skipAsk(page: Page): Promise<void> {
-  await page.getByRole("button", { name: "（つぎへ）" }).click();
+  await speakByText(page, "すみません、つぎを おねがいします");
 }
 
-/** 開いた札の数（🎴 きょうの しつもん（n / m））。 */
+/** 話せた しつもんの 数（はなせた こと（n / m））。 */
 export async function openedCards(page: Page): Promise<number> {
-  const label = await page.locator("details summary").first().innerText();
+  const label = await page
+    .getByText(/はなせた こと（\s*\d+\s*\/\s*\d+\s*）/)
+    .first()
+    .innerText();
   const match = /（\s*(\d+)\s*\/\s*(\d+)\s*）/.exec(label);
   return match ? Number(match[1]) : -1;
 }

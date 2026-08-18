@@ -7,6 +7,7 @@ import {
   seedGeminiKey,
   shot,
   speakByText,
+  waitForAsk,
 } from "./helpers";
 
 /**
@@ -42,8 +43,11 @@ test("鍵が 無くても、規則ベースの 受け止めで 会話が 止ま�
   await expect(page.getByText("🌸").first()).toBeVisible();
   // なぜ AIの みかたが 出ないのかを、責めずに 1行 伝える
   await expect(page.getByText("AIの せっていが まだです")).toBeVisible();
-  // そして つぎへ 進める（＝止まらない）
-  await expect(page.getByRole("button", { name: "つぎへ →" })).toBeEnabled();
+  /*
+   * そして **ボタンを 押さなくても** つぎの しつもんが 出る（＝止まらない）。
+   * 「つぎへ →」ボタンは 会話の じゃまだった ので 消し、進むのは 判定に まかせた。
+   */
+  await waitForAsk(page, 2);
   await shot(page, "22-judge-fallback");
 });
 

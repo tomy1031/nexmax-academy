@@ -60,17 +60,39 @@ export interface LiveVoice {
   readonly lastUtterance: { id: number; text: string } | null;
   /** 口パクを動かすための解析器（再生の手前）。 */
   readonly analyser: AnalyserNode | null;
-  /** `voice` は人物カードで決めた声（characters の voice）。 */
-  readonly start: (systemInstruction: string, voice?: string) => Promise<void>;
+  /**
+   * `voice` は人物カードで決めた声（characters の voice）。
+   * `opening` は **つないだ 直後に 相手へ 渡す 合図**（画面には 出さない）。
+   * これが 無いと、Live は 学習者が 何か 言うまで **黙って いる**——学習者からは
+   * 「つないだのに 第一声が 無い」に なる（2026-08-18 の指摘）。
+   */
+  readonly start: (systemInstruction: string, voice?: string, opening?: string) => Promise<void>;
   readonly stop: () => void;
   /** 声が使えないときの補い。テキストで送る（相手は声で返す）。 */
   readonly sendText: (text: string) => void;
+  /**
+   * 進行の 合図（画面には 出さない）。
+   *
+   * 相手（Live）は 自分の 人格で 自由に 話すので、放っておくと **教材の 質問の 順と
+   * ずれる**——画面の 字幕は「お名前を おしえて ください」なのに、相手は
+   * 別の 話を 続けて いた（2026-08-18 の指摘）。運転手を 1人に する ため、
+   * つぎに 聞く ことは アプリが ここから 伝える。
+   * 学習者の 発話では ないので、字幕（`turns`）には 足さない。
+   */
+  readonly control: (text: string) => void;
   /** いま こえを 送って いるか（ボタンを おしている あいだ）。 */
   readonly talking: boolean;
   /** 送りはじめる（相手が 話して いたら 止める＝割り込み）。 */
   readonly startTalking: () => void;
   /** 送りおわる。ここで「言い終わった」を 相手に 伝える。 */
   readonly stopTalking: () => void;
+  /**
+   * 相手の 声を 鳴らす 速さ（1 が そのまま）。
+   *
+   * Live の 設定に 速さの つまみは 無い ので、**鳴らす 側**で 変える。
+   * 話して いる 途中でも 変えられる（つぎの ひとことから 効く）。
+   */
+  readonly setRate: (rate: number) => void;
 }
 
 export function useLiveVoice(): LiveVoice {
@@ -101,6 +123,8 @@ export function useLiveVoice(): LiveVoice {
    */
   const talkingRef = useRef(false);
   const [talking, setTalking] = useState(false);
+  /** 鳴らす 速さ。つなぐ 前に 決めた ぶんも 覚えて おく（入る 前の 画面で 選べる）。 */
+  const rateRef = useRef(1);
 
   const stop = useCallback(() => {
     talkingRef.current = false;
@@ -116,7 +140,7 @@ export function useLiveVoice(): LiveVoice {
     setStatus("idle");
   }, []);
 
-  const start = useCallback(async (systemInstruction: string, voice?: string) => {
+  const start = useCallback(async (systemInstruction: string, voice?: string, opening?: string) => {
     setStatus("connecting");
     setReason(null);
     setTurns([]);
@@ -191,7 +215,7 @@ export function useLiveVoice(): LiveVoice {
       const node = outCtx.createAnalyser();
       node.fftSize = 512;
       node.connect(outCtx.destination);
-      outRef.current = { ctx: outCtx, node, playAt: 0, sources: [] };
+      outRef.current = { ctx: outCtx, node, playAt: 0, sources: [], rate: rateRef.current };
       setAnalyser(node);
 
       const session = await ai.live.connect({
@@ -271,6 +295,19 @@ export function useLiveVoice(): LiveVoice {
         });
       });
       micRef.current = { capture, stream };
+
+      /*
+       * つないだ ら、こちらから **1回だけ** 合図を 送る。
+       * Live は 話しかけられるまで 黙って いる ので、これが 無いと
+       * 学習者は「つないだのに 何も 起きない」画面を 見る ことに なる。
+       * 合図そのものは 字幕に 足さない（学習者が 言った ことでは ない）。
+       */
+      if (opening) {
+        session.sendClientContent({
+          turns: [{ role: "user", parts: [{ text: opening }] }],
+          turnComplete: true,
+        });
+      }
     } catch {
       stream.getTracks().forEach((t) => t.stop());
       setStatus("error");
@@ -316,6 +353,20 @@ export function useLiveVoice(): LiveVoice {
     sessionRef.current?.sendRealtimeInput({ audioStreamEnd: true });
   }, []);
 
+  /** 進行の 合図。学習者の ことばでは ないので 字幕に 残さない。 */
+  const control = useCallback((text: string) => {
+    if (!text.trim()) return;
+    sessionRef.current?.sendClientContent({
+      turns: [{ role: "user", parts: [{ text }] }],
+      turnComplete: true,
+    });
+  }, []);
+
+  const setRate = useCallback((rate: number) => {
+    rateRef.current = rate;
+    if (outRef.current) outRef.current.rate = rate;
+  }, []);
+
   return {
     status,
     reason,
@@ -325,9 +376,11 @@ export function useLiveVoice(): LiveVoice {
     start,
     stop,
     sendText,
+    control,
     talking,
     startTalking,
     stopTalking,
+    setRate,
   };
 }
 
@@ -337,6 +390,8 @@ interface Output {
   node: AnalyserNode;
   playAt: number;
   sources: AudioBufferSourceNode[];
+  /** 鳴らす 速さ（学習者が 選ぶ）。 */
+  rate: number;
 }
 
 /** 相手の セリフが 割り込まれたか。 */
@@ -379,11 +434,14 @@ function play(out: Output | null, pcm: Uint8Array) {
 
   const source = out.ctx.createBufferSource();
   source.buffer = buffer;
+  // ゆっくりに すると 声は 少し 低くなる。聞き取れる ことを 先に とる
+  source.playbackRate.value = out.rate;
   source.connect(out.node);
   // 前の音の終わりに継ぐ。now を毎回使うと、細かい塊が重なって濁る
   const at = Math.max(out.ctx.currentTime, out.playAt);
   source.start(at);
-  out.playAt = at + buffer.duration;
+  // 遅く 鳴らすと そのぶん 長く かかる。ここを 素の 長さの ままに すると 音が 重なる
+  out.playAt = at + buffer.duration / out.rate;
   // 割り込みで 捨てられるように 覚えておく（鳴り終わったら 自分で 抜ける）
   out.sources.push(source);
   source.onended = () => {
