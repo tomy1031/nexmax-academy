@@ -563,13 +563,13 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
     english: "You find something to fix in a friend's program.",
     a: {
       pole: "T",
-      easy: "直す ところを 先に つたえる",
+      easy: "直す ところを 先に 伝える",
       japanese: "直すところを先に伝える",
       english: "You mention the fix first",
     },
     b: {
       pole: "F",
-      easy: "いい ところを 先に 言ってから、つたえる",
+      easy: "いい ところを 先に 言ってから、伝える",
       japanese: "いいところを先に言ってから、伝える",
       english: "You say what is good first, then mention it",
     },
@@ -596,7 +596,7 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
     },
     b: {
       pole: "J",
-      easy: "さいしょに よていを きめて、おなじように すすめる",
+      easy: "さいしょに 予定を きめて、おなじように すすめる",
       japanese: "最初に予定を決めて、そのとおりに進める",
       english: "You set a plan first and follow it",
     },
@@ -631,7 +631,7 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
   {
     id: 6,
     axis: "sn",
-    easy: "せつめいを 聞く とき、どちらが うれしいですか。",
+    easy: "説明を 聞く とき、どちらが うれしいですか。",
     japanese: "説明を聞くとき、どちらがうれしいですか。",
     english: "In an explanation, which do you prefer?",
     a: {
@@ -663,7 +663,7 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
     english: "The team is split in two. Which concerns you?",
     a: {
       pole: "F",
-      easy: "みんなの きもちが どう なるか",
+      easy: "みんなの 気持ちが どう なるか",
       japanese: "みんなの気持ちがどうなるか",
       english: "How everyone will feel",
     },
@@ -677,6 +677,8 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
       { text: "意見", reading: "いけん" },
       { text: "結果", reading: "けっか" },
       { text: "二つ", reading: "ふたつ" },
+      // 「気持ち」は「気」より先に置く。うしろだと「気」だけにルビが付いて「持ち」が裸で残る。
+      { text: "気持ち", reading: "きもち" },
       { text: "気", reading: "き" },
     ],
     image: "/img/quiz/q07.webp",
@@ -717,13 +719,13 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
     english: "You are in a team discussion.",
     a: {
       pole: "E",
-      easy: "話しながら、じぶんの かんがえが きまる",
+      easy: "話しながら、じぶんの 考えが きまる",
       japanese: "話しながら、自分の考えが決まる",
       english: "Your ideas take shape while you talk",
     },
     b: {
       pole: "I",
-      easy: "じぶんの かんがえが きまってから、話す",
+      easy: "じぶんの 考えが きまってから、話す",
       japanese: "自分の考えが決まってから、話す",
       english: "You talk after your ideas take shape",
     },
@@ -758,12 +760,12 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
   {
     id: 11,
     axis: "tf",
-    easy: "何かを きめる とき、どちらが たいせつですか。",
+    easy: "何かを きめる とき、どちらが 大切ですか。",
     japanese: "何かを決めるとき、どちらが大切ですか。",
     english: "When you decide, which matters more?",
     a: {
       pole: "T",
-      easy: "りゆうを せつめい できる こと",
+      easy: "理由を 説明 できる こと",
       japanese: "理由を説明できること",
       english: "Being able to explain the reason",
     },
@@ -787,13 +789,13 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
     english: "What do you do on a day off?",
     a: {
       pole: "P",
-      easy: "その 日の きもちで きめたい",
+      easy: "その 日の 気持ちで きめたい",
       japanese: "その日の気持ちで決めたい",
       english: "You decide by how you feel that day",
     },
     b: {
       pole: "J",
-      easy: "前の 日に よていを 作りたい",
+      easy: "前の 日に 予定を 作りたい",
       japanese: "前の日に予定を作りたい",
       english: "You make a plan the day before",
     },
@@ -812,13 +814,13 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
     english: "The teacher asks if anyone has a question.",
     a: {
       pole: "I",
-      easy: "手を あげる 前に、頭の 中で 一回 かんがえて みる",
+      easy: "手を あげる 前に、頭の 中で 一回 考えて みる",
       japanese: "手をあげる前に、頭の中で一回考えてみる",
       english: "You think it through in your head first",
     },
     b: {
       pole: "E",
-      easy: "いい かんがえが 出たら、すぐ 手を あげる",
+      easy: "いい 考えが 出たら、すぐ 手を あげる",
       japanese: "いい考えが出たら、すぐ手をあげる",
       english: "You raise your hand as soon as you have an idea",
     },
@@ -848,7 +850,7 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
       pole: "N",
       // 「だいたいの かんじを つかんで」は「漢字」と誤読され選択肢が崩れる（07 §3.2）。
       easy: "だいたい わかったら、あとは 自分で 試す",
-      japanese: "だいたい分かったら、あとは自分でためす",
+      japanese: "だいたい分かったら、あとは自分で試す",
       english: "Once you get the gist, you try it yourself",
     },
     readings: [
@@ -861,18 +863,18 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
   {
     id: 15,
     axis: "tf",
-    easy: "友だちが しっぱいして、元気が ありません。",
+    easy: "友だちが 失敗して、元気が ありません。",
     japanese: "友だちが失敗して、元気がありません。",
     english: "A friend is down after a mistake.",
     a: {
       pole: "F",
-      easy: "まず きもちを 聞いて、そばに いる",
+      easy: "まず 気持ちを 聞いて、そばに いる",
       japanese: "まず気持ちを聞いて、そばにいる",
       english: "You listen to their feelings and stay near",
     },
     b: {
       pole: "T",
-      easy: "つぎに どう すれば いいかを いっしょに かんがえる",
+      easy: "つぎに どう すれば いいかを いっしょに 考える",
       japanese: "次にどうすればいいかをいっしょに考える",
       english: "You think together about what to do next",
     },
@@ -936,18 +938,18 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
   {
     id: 18,
     axis: "sn",
-    easy: "あたらしい どうぐを もらいました。",
+    easy: "あたらしい 道具を もらいました。",
     japanese: "新しい道具をもらいました。",
     english: "You are given a new tool.",
     a: {
       pole: "N",
-      easy: "「これで 何が できるかな」と かんがえる",
+      easy: "「これで 何が できるかな」と 考える",
       japanese: "「これで何ができるかな」と考える",
       english: "You think about what it could do",
     },
     b: {
       pole: "S",
-      easy: "つかいかたの かみを 見て、おなじように 使う",
+      easy: "使い方の かみを 見て、おなじように 使う",
       japanese: "使い方の紙を見て、同じように使う",
       english: "You read the instructions and follow them",
     },
@@ -966,7 +968,7 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
     english: "Which would you rather hear from your teacher?",
     a: {
       pole: "T",
-      easy: "「かんがえかたが いいね」",
+      easy: "「考え方が いいね」",
       japanese: "「考え方がいいね」",
       english: '"You think well"',
     },
@@ -1038,6 +1040,31 @@ export const PERSONALITY_RESULT_READINGS: readonly Reading[] = [
   { text: "段取り", reading: "だんどり" },
   { text: "仕上げ", reading: "しあげ" },
   { text: "結果", reading: "けっか" },
+  // 熟語・複合語は **1字の読みより先**に置く（同位置なら配列で先に出たほうが勝つ）。
+  // 「気持ち」を「気」より後ろに置くと、「気」だけにルビが付いて「持ち」が裸で残る。
+  { text: "気持ち", reading: "きもち" },
+  { text: "伝える", reading: "つたえる" },
+  { text: "質問", reading: "しつもん" },
+  { text: "説明", reading: "せつめい" },
+  { text: "理由", reading: "りゆう" },
+  { text: "大切", reading: "たいせつ" },
+  { text: "仕事", reading: "しごと" },
+  { text: "予定", reading: "よてい" },
+  { text: "勉強", reading: "べんきょう" },
+  { text: "部屋", reading: "へや" },
+  { text: "道具", reading: "どうぐ" },
+  { text: "最初", reading: "さいしょ" },
+  { text: "最後", reading: "さいご" },
+  { text: "失敗", reading: "しっぱい" },
+  { text: "一回", reading: "いっかい" },
+  // 「1人」「二人」は「人」より先。うしろに置くと「1人（ひと）」と読ませてしまう。
+  { text: "1人", reading: "ひとり" },
+  { text: "二人", reading: "ふたり" },
+  // 「〜方」は語のまとまりで読む（「方」1字だと やりかた/ほう の どちらか決まらない）。
+  { text: "やり方", reading: "やりかた" },
+  { text: "使い方", reading: "つかいかた" },
+  { text: "考え方", reading: "かんがえかた" },
+  { text: "考え", reading: "かんがえ" },
   { text: "日本", reading: "にほん" },
   { text: "役", reading: "やく" },
   { text: "会議", reading: "かいぎ" },
@@ -1078,12 +1105,75 @@ export const PERSONALITY_RESULT_READINGS: readonly Reading[] = [
   { text: "出たら", reading: "でたら" },
   { text: "出す", reading: "だす" },
   { text: "出た", reading: "でた" },
+  { text: "出し", reading: "だし" },
   { text: "会う", reading: "あう" },
   { text: "力", reading: "ちから" },
   { text: "動く", reading: "うごく" },
   { text: "手", reading: "て" },
   { text: "お客さま", reading: "おきゃくさま" },
+  // ---- 1字の読み（活用でかたちが変わる語）----
+  // 「見る／見て」のように活用形を並べても、「見られる」「見えて」で また 裸に なる。
+  // 送りがなの前で切って **漢字1字＋読み** を置けば、どの活用でも ルビが 付く。
+  // **必ず最後に置く**（上の熟語・活用形が先に一致するように）。
+  { text: "見", reading: "み" },
+  { text: "話", reading: "はな" },
+  { text: "作", reading: "つく" },
+  { text: "書", reading: "か" },
+  { text: "言", reading: "い" },
+  { text: "思", reading: "おも" },
+  { text: "早", reading: "はや" },
+  { text: "入", reading: "はい" },
+  { text: "答", reading: "こた" },
+  { text: "決", reading: "き" },
+  { text: "考", reading: "かんが" },
+  { text: "調", reading: "しら" },
+  { text: "終", reading: "お" },
+  { text: "似", reading: "に" },
+  { text: "近", reading: "ちか" },
+  { text: "選", reading: "えら" },
+  { text: "好", reading: "す" },
+  { text: "目", reading: "め" },
+  { text: "合", reading: "あ" },
+  { text: "初", reading: "はじ" },
+  { text: "待", reading: "ま" },
+  { text: "新", reading: "あたら" },
+  { text: "伝", reading: "つた" },
+  { text: "進", reading: "すす" },
+  { text: "休", reading: "やす" },
+  { text: "友", reading: "とも" },
+  { text: "同", reading: "おな" },
+  { text: "分", reading: "わ" },
+  { text: "次", reading: "つぎ" },
+  { text: "使", reading: "つか" },
+  { text: "紙", reading: "かみ" },
+  { text: "何", reading: "なに" },
+  { text: "日", reading: "ひ" },
+  { text: "楽", reading: "らく" },
+  { text: "方", reading: "かた" },
 ] as const;
+
+/**
+ * 設問1問ぶんの読み辞書。**設問ごとの読みを先に、共通の読み辞書をうしろに**置く。
+ *
+ * `RubyText` は同じ位置で一致した語のうち配列で先に出たほうを採るので、この並びなら
+ * 設問固有の読み（「一回」など）が勝ち、そこに無い語は共通辞書が拾う。
+ *
+ * 設問には**やさしい日本語と日本語の2つの本文**があり、画面はどちらでも同じ読み辞書を
+ * 使う。20問×2言語ぶんの語をすべて設問側に書くと台帳が二重になるので、共通の語は
+ * `PERSONALITY_RESULT_READINGS` に1回だけ置いて、ここで足す。
+ * 覆えているかは `tests/personality_furigana.test.ts` が総当たりで見張る。
+ */
+export function questionReadings(question: PersonalityQuestion): readonly Reading[] {
+  // 同じ表記が両方に載っていたら**設問側の読みを採る**（文脈に合わせた読みを上書きさせない）。
+  const merged = new Map<string, Reading>();
+  for (const reading of [...question.readings, ...PERSONALITY_RESULT_READINGS]) {
+    if (!merged.has(reading.text)) merged.set(reading.text, reading);
+  }
+  // **長い語を先に並べる。** `RubyText` は同じ位置で一致したら配列で先に出たほうを採るので、
+  // 2つの辞書をつないだだけだと、設問側の「日」が共通側の「日本」を食べてしまう。
+  // 同じ位置なら長い語が正しいので、長さの降順に直してから渡す（同じ長さは元の並びのまま）。
+  return [...merged.values()].sort((a, b) => b.text.length - a.text.length);
+}
 
 const CODES: readonly PersonalityTypeCode[] = PERSONALITY_TYPES.map((type) => type.code);
 

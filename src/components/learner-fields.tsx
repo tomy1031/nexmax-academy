@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type ReactNode, type RefObject } from "react";
+import { CARD_EDGE_SM } from "@/components/card-edge";
 import { katakanaNotice, MAX_NAME_LENGTH, type LearnerNames } from "@/lib/name";
 import { COHORTS, UNIVERSITIES, type LearnerSchool } from "@/lib/school";
 import type { Gender } from "@/lib/profile";
@@ -110,7 +111,7 @@ export function NameCard({
   className?: string;
 }) {
   return (
-    <article className={`card-pop border-white p-5 shadow-[0_6px_0_#d7eaf5] ${className}`}>
+    <article className={`card-pop p-5 ${CARD_EDGE_SM} ${className}`}>
       <h2 className="text-navy font-extrabold">
         ⭐ なまえ{" "}
         <span className="text-coral-deep text-xs">
@@ -187,7 +188,7 @@ export function SchoolCard({
   className?: string;
 }) {
   return (
-    <article className={`card-pop border-white p-5 shadow-[0_6px_0_#d7eaf5] ${className}`}>
+    <article className={`card-pop p-5 ${CARD_EDGE_SM} ${className}`}>
       <h2 className="text-navy font-extrabold">
         ⭐ がっこう{" "}
         <span className="text-coral-deep text-xs">
@@ -251,7 +252,7 @@ export function GenderCard({
   className?: string;
 }) {
   return (
-    <article className={`card-pop border-white p-5 shadow-[0_6px_0_#d7eaf5] ${className}`}>
+    <article className={`card-pop p-5 ${CARD_EDGE_SM} ${className}`}>
       <h2 className="text-navy font-extrabold">
         ⭐{" "}
         <ruby>
@@ -335,7 +336,7 @@ export function GeminiKeyCard({
   const [showKey, setShowKey] = useState(false);
 
   return (
-    <article className={`card-pop border-white p-5 shadow-[0_6px_0_#d7eaf5] ${className}`}>
+    <article className={`card-pop p-5 ${CARD_EDGE_SM} ${className}`}>
       <h2 className="text-navy font-extrabold">
         ⭐ Google Gemini APIキー{" "}
         <span className="text-ink-soft text-xs">
