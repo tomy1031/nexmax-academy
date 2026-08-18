@@ -136,42 +136,6 @@ const CHROME_FURIGANA = buildFuriganaIndex([
  * 学習者が 次の 操作を した ときだけで、答えは 消さない（打ち直しに ならない）。
  */
 /**
- * 相手（Live）へ 渡す **進行の 合図**。
- *
- * 運転手を 1人に する ための 仕組み（2026-08-18・fable と 相談）。相手の 人格には
- *「自分から つぎの 質問を しない。『（しんこう）』の 合図で 聞く」と 書いて あり、
- * 何を いつ 聞くかは この 文で アプリが 決める。合図そのものは 読み上げさせない。
- *
- * これが 無かった ころは、画面の 字幕（教材の 質問）と 相手が 実際に 話す ことが
- * 食い違い、学習者は **どちらに 答えれば よいか 分からなかった**。
- */
-const SIGNAL = {
-  /** つないだ 直後。あいさつ から 1問目まで。 */
-  open: (ask: string) =>
-    `（しんこう）ミーティングが 始まりました。みじかく あいさつを して、つぎの しつもんを して ください: 「${ask}」`,
-  /** つぎの しつもんへ。 */
-  next: (ask: string) => `（しんこう）つぎの しつもんを して ください: 「${ask}」`,
-  /** 言い直しを たのむ とき（例を 見せてから、同じ ことを もう いちど）。 */
-  again: (ask: string) =>
-    `（しんこう）学生が こまって います。答え方の れいを 1つ 見せて、同じ しつもんを もう いちど して ください: 「${ask}」`,
-  /** ぜんぶ 聞けた とき。 */
-  close: (closing: string) =>
-    `（しんこう）ぜんぶ 聞けました。つぎの ことばで 会を おわりに して ください: 「${closing}」`,
-  /** 名乗って もらった あと（ここで はじめて 名前を 渡す）。 */
-  name: (name: string) =>
-    `（しんこう）学生の 呼び名は「${name}」です。これからは 名前で 呼んで ください。`,
-  /**
-   * ぜんぶ 聞けた あとの 自由な おしゃべり。
-   *
-   * 決まった しつもんを 6つ 終えたら、あとは 好きに 話せる ように する
-   *（2026-08-18 の 指定）。ここから 先は 合図を 出さないので、相手も
-   * 自分から 話して よい ことを 伝える。
-   */
-  free: () =>
-    "（しんこう）ここから 先は 合図を 出しません。学生と 自由に 話して ください。みじかく、やさしい 日本語で、1回の 返事は 2文までです。",
-} as const;
-
-/**
  * チャット欄の 1行。
  *
  * 相手の ことば（`ask`・`host`）／自分の ことば（`me`）／日本語の 見かた（`coach`）を
@@ -388,7 +352,16 @@ export function MeetingSession({
          * 相手は 自分の 判断で 先へ 進み、同じ ことを くり返したり 飛ばしたり した。
          * 聞く ことは 1つずつ 合図で 渡す（人格の 側にも 同じ 決まりを 書いて ある）。
          */
-        "しつもんは 進行が 1つずつ 合図で 渡します。合図に 書いて ある しつもんだけを して ください。",
+        /*
+         * **しつもんは 画面が する**（2026-08-18）。
+         * 相手に 合図（「（しんこう）…」）を 送って 聞かせて いた ころは、
+         * その 合図の ことばを **そのまま 読み上げる** ことが あった
+         *（学習者には「進行」と 言われた ように 聞こえる）。
+         * 裏の やりとりが 表に 出る 作りは やめ、しつもんは 作り置きの こえと
+         * 画面の 字で 出す。相手は **受け止めて 返すだけ**に する。
+         */
+        "しつもんは 画面が します。あなたは しつもんを しないで ください。",
+        "学生の ことばを 受け止めて、みじかく 返して ください。1回の 返事は 2文までです。",
       ].join("\n"),
     [meeting],
   );
@@ -533,9 +506,9 @@ export function MeetingSession({
   const clipUrl = done ? meeting.closingAudioUrl : question?.audioUrl;
   const playClip = clip.play;
   useEffect(() => {
-    if (!joined || live || !clipUrl) return;
+    if (!joined || !clipUrl) return;
     playClip(clipUrl);
-  }, [joined, clipUrl, live, playClip]);
+  }, [joined, clipUrl, playClip]);
 
   // 声で話したぶんを見る。相手が話しはじめた合図で1つに束ねてから届く
   useEffect(() => {
@@ -554,21 +527,6 @@ export function MeetingSession({
      * 出したり 出さなかったり する）。
      */
     const ask = meeting.questions[at];
-    if (live) {
-      if (finishing) {
-        voice.control(SIGNAL.close(withName(meeting.closing)));
-        // ここから 先は 合図を 出さない（決まった しつもんは ぜんぶ 終わった）
-        voice.control(SIGNAL.free());
-      } else {
-        /*
-         * 名乗って もらった 直後に、はじめて 名前を 渡す。
-         * つなぐ ときに 渡して いた ころは、学生が 名乗る 前から その 名前で
-         * 呼ばれて いた（2026-08-18 の 指摘）。
-         */
-        if (at === 1 && learnerName) voice.control(SIGNAL.name(learnerName));
-        voice.control(SIGNAL.next(withName(ask?.ask ?? "")));
-      }
-    }
     // つぎの しつもんは チャットにも 積む（あとから 読み返せる）
     if (ask) {
       pushChat({
@@ -616,7 +574,7 @@ export function MeetingSession({
       status: finishing ? "completed" : "started",
       position: { panel: at },
     });
-  }, [index, meeting, answers, affection, withName, live, voice, pushChat, learnerName]);
+  }, [index, meeting, answers, affection, withName, pushChat]);
 
   const submit = useCallback(() => {
     const text = draft.trim();
@@ -680,9 +638,7 @@ export function MeetingSession({
     setDraft("");
     setNotice(null);
     setGained(0);
-    // 相手にも「れいを 見せて、もう いちど 同じ ことを 聞く」を たのむ
-    if (live && question) voice.control(SIGNAL.again(withName(question.ask)));
-  }, [live, question, voice, withName]);
+  }, []);
 
   /**
    * 答えられない ときの 逃げ道。**札は 開かない**まま つぎの 質問へ。
@@ -994,14 +950,7 @@ export function MeetingSession({
               status={voice.status}
               reason={voice.reason}
               talking={voice.talking}
-              /* つないだ その場で あいさつと 1問目を 言わせる（第一声が 無い のを 直す） */
-              onConnect={() =>
-                void voice.start(
-                  instruction,
-                  hostVoice,
-                  SIGNAL.open(withName(meeting.questions[index]?.ask ?? "")),
-                )
-              }
+              onConnect={() => void voice.start(instruction, hostVoice)}
               onStartTalking={() => {
                 // いま 答えようと して いる しつもんを 覚える（判定が ずれない ように）
                 answeringRef.current = question ?? null;

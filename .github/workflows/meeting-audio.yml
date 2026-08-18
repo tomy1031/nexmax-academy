@@ -91,4 +91,8 @@ jobs:
             echo "- 教材の audioUrl / closingAudioUrl を 更新"
             echo "- 学習者は チャットの 🔊 で 何度でも 聞き直せる"
           } > /tmp/audio-pr.txt
-          gh pr create --base main --head "$BRANCH" --title "feat(ミーティング): ${MEETING} の こえを 作り置きする" --body-file /tmp/audio-pr.txt
+          # PR を 作れない 設定の ことが ある（Actions に PR 作成の 権限が 無い）。
+          # そこで 落とすと **作った 音まで 無かった ことに 見える**ので、
+          # 作れなかった ときは ブランチへの 行き方を 出して 終わる。
+          gh pr create --base main --head "$BRANCH" --title "feat(ミーティング): ${MEETING} の こえを 作り置きする" --body-file /tmp/audio-pr.txt \
+            || echo "PR は 作れませんでした。ブランチ: $BRANCH（${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/compare/main...$BRANCH）"
