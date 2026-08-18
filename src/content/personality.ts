@@ -127,14 +127,14 @@ export const PERSONALITY_INTRO: Readonly<Record<PersonalityLanguage, Personality
   easy: {
     title: "はじめに",
     lines: [
-      "人は みんな、すきな やりかたが ちがいます。",
-      "はやく きめる 人も います。ゆっくり かんがえる 人も います。どちらも いい やりかたです。",
-      "その 人の いつもの やりかたを 性格と 言います。それを しらべるのが 性格診断です。",
-      "これから、20の しつもんに 答えます。あなたの すきな やりかたが 見えて きます。",
+      "人は みんな、すきな やり方が ちがいます。",
+      "はやく きめる 人も います。ゆっくり かんがえる 人も います。どちらも いい やり方です。",
+      "その 人の いつもの やり方を 性格と 言います。それを しらべるのが 性格診断です。",
+      "これから、20の 質問に 答えます。あなたの すきな やり方が 見えて きます。",
       "おわると、あなたに にた ネクマックスが 1人 出て きます。",
     ],
     note: "どちらが いい・わるいは ありません。あなたに ちかい ほうを えらんで ください。",
-    startLabel: "しつもんを はじめる",
+    startLabel: "質問を はじめる",
   },
   japanese: {
     title: "はじめに",
@@ -313,7 +313,7 @@ export const PERSONALITY_TYPES: readonly PersonalityType[] = [
     teamRoleDetail: "むずかしく なりそうな ところを、先に 見つける。",
     analysis: [
       "さきの ことを かんがえて、じゅんび します。",
-      "いちばん 早い やりかたを さがします。",
+      "いちばん 早い やり方を さがします。",
       "ひとりで 時間を かけて かんがえるのが すきです。",
       "日本の IT の しごとでは、つくる 前に 設計を かんがえる しごとが よく できます。",
     ],
@@ -356,9 +356,9 @@ export const PERSONALITY_TYPES: readonly PersonalityType[] = [
     name: "アイデアの ネクマックス",
     shortName: "アイデア",
     emblem: "💡",
-    tagline: "もっと いい やりかたを 見つけます",
+    tagline: "もっと いい やり方を 見つけます",
     teamRole: "提案役",
-    teamRoleDetail: "「こう しませんか」と あたらしい やりかたを 出す。",
+    teamRoleDetail: "「こう しませんか」と あたらしい やり方を 出す。",
     analysis: [
       "アイデアが たくさん 出て きます。",
       "「こう しませんか」と 提案 します。",
@@ -395,7 +395,7 @@ export const PERSONALITY_TYPES: readonly PersonalityType[] = [
       "「こう したい」と いつも かんがえて います。",
       "たいせつに 思いながら、ていねいに つくります。",
       "人の いい ところを 見つけるのが とくいです。",
-      "日本の IT の しごとでは、じぶんの すきな やりかたで いい ものが 作れます。",
+      "日本の IT の しごとでは、じぶんの すきな やり方で いい ものが 作れます。",
     ],
   },
   {
@@ -458,7 +458,7 @@ export const PERSONALITY_TYPES: readonly PersonalityType[] = [
     analysis: [
       "かたちや 色に、じぶんの すきが あります。",
       "自分の ペースで ていねいに すすめます。",
-      "みんなが なかよく すすめる やりかたを えらびます。",
+      "みんなが なかよく すすめる やり方を えらびます。",
       "日本の IT の しごとでは、がめんの デザインや 仕上げが よく できます。",
     ],
   },
@@ -504,7 +504,7 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
   {
     id: 1,
     axis: "ei",
-    easy: "へやに 入りました。はじめて 会う 人が たくさん います。",
+    easy: "部屋に 入りました。はじめて 会う 人が たくさん います。",
     japanese: "部屋に入りました。初めて会う人がたくさんいます。",
     english: "You walk into a room full of people you have never met.",
     a: {
@@ -590,7 +590,7 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
     english: "How do you get work done?",
     a: {
       pole: "P",
-      easy: "やりながら、いちばん いい やりかたを きめる",
+      easy: "やりながら、いちばん いい やり方を きめる",
       japanese: "やりながら、いちばんいいやり方を決める",
       english: "You decide the best way as you go",
     },
@@ -740,7 +740,7 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
     english: "Which do you say more often?",
     a: {
       pole: "N",
-      easy: "「もし ちがう やりかただったら、どう なるかな?」",
+      easy: "「もし ちがう やり方だったら、どう なるかな?」",
       japanese: "「もしちがうやり方だったら、どうなるかな?」",
       english: '"What if we did it another way?"',
     },
@@ -809,7 +809,7 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
   {
     id: 13,
     axis: "ei",
-    easy: "先生が 「しつもんは ありますか」と 聞きました。",
+    easy: "先生が 「質問は ありますか」と 聞きました。",
     japanese: "先生が「質問はありますか」と聞きました。",
     english: "The teacher asks if anyone has a question.",
     a: {
@@ -837,12 +837,12 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
   {
     id: 14,
     axis: "sn",
-    easy: "あたらしい しごとの やりかたを おぼえます。",
+    easy: "あたらしい しごとの やり方を おぼえます。",
     japanese: "新しい仕事のやり方をおぼえます。",
     english: "You are learning a new way of working.",
     a: {
       pole: "S",
-      easy: "やりかたを 見ながら、おなじように やる",
+      easy: "やり方を 見ながら、おなじように やる",
       japanese: "やり方を見ながら、同じようにやる",
       english: "You follow the instructions exactly",
     },
@@ -888,8 +888,8 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
   {
     id: 16,
     axis: "jp",
-    easy: "つくえの 上や スマホの 中は、どちらが いいですか。",
-    japanese: "つくえの上やスマホの中は、どちらがいいですか。",
+    easy: "机の 上や スマホの 中は、どちらが いいですか。",
+    japanese: "机の上やスマホの中は、どちらがいいですか。",
     english: "Your desk and your phone: which do you prefer?",
     a: {
       pole: "J",
@@ -949,7 +949,7 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
     },
     b: {
       pole: "S",
-      easy: "使い方の かみを 見て、おなじように 使う",
+      easy: "使い方の 紙を 見て、おなじように 使う",
       japanese: "使い方の紙を見て、同じように使う",
       english: "You read the instructions and follow them",
     },
@@ -989,18 +989,18 @@ export const PERSONALITY_QUESTIONS: readonly PersonalityQuestion[] = [
   {
     id: 20,
     axis: "jp",
-    easy: "途中で 「やりかたを 変えよう」と 言われました。",
+    easy: "途中で 「やり方を 変えよう」と 言われました。",
     japanese: "途中で「やり方を変えよう」と言われました。",
     english: "Mid-way, you are told to change the approach.",
     a: {
       pole: "P",
-      easy: "「あたらしい やりかたを やって みたい」と 思う",
+      easy: "「あたらしい やり方を やって みたい」と 思う",
       japanese: "「新しいやり方をやってみたい」と思う",
       english: "You think it sounds interesting",
     },
     b: {
       pole: "J",
-      easy: "「先に よていを 作りなおしたい」と 思う",
+      easy: "「先に 予定を 作りなおしたい」と 思う",
       japanese: "「先に予定を作りなおしたい」と思う",
       english: "You want to redo the plan first",
     },
@@ -1048,6 +1048,7 @@ export const PERSONALITY_RESULT_READINGS: readonly Reading[] = [
   { text: "説明", reading: "せつめい" },
   { text: "理由", reading: "りゆう" },
   { text: "大切", reading: "たいせつ" },
+  { text: "本当", reading: "ほんとう" },
   { text: "仕事", reading: "しごと" },
   { text: "予定", reading: "よてい" },
   { text: "勉強", reading: "べんきょう" },
@@ -1057,6 +1058,7 @@ export const PERSONALITY_RESULT_READINGS: readonly Reading[] = [
   { text: "最後", reading: "さいご" },
   { text: "失敗", reading: "しっぱい" },
   { text: "一回", reading: "いっかい" },
+  { text: "一日", reading: "いちにち" },
   // 「1人」「二人」は「人」より先。うしろに置くと「1人（ひと）」と読ませてしまう。
   { text: "1人", reading: "ひとり" },
   { text: "二人", reading: "ふたり" },
@@ -1093,9 +1095,13 @@ export const PERSONALITY_RESULT_READINGS: readonly Reading[] = [
   { text: "自分", reading: "じぶん" },
   { text: "先", reading: "さき" },
   { text: "早い", reading: "はやい" },
+  { text: "早め", reading: "はやめ" },
   { text: "楽しい", reading: "たのしい" },
   { text: "楽しく", reading: "たのしく" },
   { text: "体", reading: "からだ" },
+  { text: "頭", reading: "あたま" },
+  { text: "家", reading: "いえ" },
+  { text: "机", reading: "つくえ" },
   { text: "色", reading: "いろ" },
   { text: "前", reading: "まえ" },
   { text: "中", reading: "なか" },
