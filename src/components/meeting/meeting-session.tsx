@@ -21,6 +21,7 @@ import { MAX_ATTEMPTS, type JudgeResult } from "@/lib/meeting/judge";
 import {
   awardAnswer,
   awardCompletion,
+  EMPTY_AFFECTION,
   heartsOf,
   rewardOpen,
   type AffectionState,
@@ -35,12 +36,6 @@ import {
   type MeetingRecord,
 } from "@/lib/meeting/record";
 import { needsJapaneseInput } from "@/lib/meeting/input";
-import {
-  clearMeetingResume,
-  restoreMeeting,
-  saveMeetingResume,
-  type MeetingStart,
-} from "@/lib/meeting/resume";
 import { fillAnswer, fillName } from "@/lib/meeting/speech";
 import { getProfile } from "@/lib/profile";
 import { recordContentProgress } from "@/lib/progress/store";
@@ -50,6 +45,7 @@ import { judgeFailNote, requestJudge } from "./judge-api";
 import { JudgeCard } from "./judge-card";
 import { QuestionBoard } from "./question-board";
 import { MeetingResultCard, PreviousRecordCard, RewardCard } from "./result-card";
+import { SpeakButton } from "./speak-button";
 import { VisemeFace, type Viseme } from "./viseme-face";
 import { useClipPlayer } from "./use-clip-player";
 import { useLiveVoice } from "./use-live-voice";
@@ -99,10 +95,10 @@ import { useLiveVoice } from "./use-live-voice";
  * 話しきったら「きょう 話せた こと」を1枚のカードにして端末に残す。
  * 次に来たときは「まえの きろく」として読める。
  *
- * ## 途中で やめても、つづきから（`@/lib/meeting/resume`）
- * 進んだところを保存するだけで**読んでいなかった**ので、6問目まで進めて閉じた
- * 学習者は次に開くと1問目からだった。いまは 位置・開いた札・ハート・答えた
- * ことばを まとめて 戻す。完走したあとに開き直したときは はじめから 話せる。
+ * ## いつも はじめから（2026-08-18 の指定）
+ * 途中を 端末に 残して「まえの つづきから はじめます」と 出して いたが、やめた。
+ * この 教材で いちばん 練習したい のは あいさつと 名乗りで、そこを 飛ばして
+ * 4問目から 始まる 会議には 意味が 無い（Zoom の 会議も 途中から 始まらない）。
  *
  * ## 差し込みの 役（`@/lib/meeting/speech`）
  * `ask` は 呼び名、`echo` は **学習者の答え**、`hint` は どちらでもない。
@@ -189,19 +185,21 @@ export function MeetingSession({
 }) {
   const furigana = useMemo(() => buildFuriganaIndex(meeting.furigana ?? []), [meeting.furigana]);
   /*
-   * 端末に 残って いる「いまの ところ」。**入室前（ロビー）は 何も 描かない**ので、
-   * サーバで 描いた HTML と 食い違わない（ロビーの 中身は 保存値に 依らない）。
-   * 保存値の 読み方は listening-panel と 同じ流儀（useState の 初期化で 1度だけ）。
+   * ミーティングは **いつも はじめから**（2026-08-18 の指定）。
+   * 途中を 端末に 残して「まえの つづきから はじめます」と 出して いたが、
+   * この 教材で いちばん 練習したい のは あいさつと 名乗りで、そこを 飛ばして
+   * 4問目から 始まる 会議には 意味が 無い。Zoom の 会議も 途中から 始まらない。
    */
-  const [start] = useState<MeetingStart>(() =>
-    restoreMeeting(
-      meeting.id,
-      meeting.questions.map((q) => q.id),
-    ),
-  );
-  const [index, setIndex] = useState(start.index);
-  /** 途中から 戻って きた ことを 学習者に 伝えるか（1歩 進んだら 消す）。 */
-  const [resumed, setResumed] = useState(start.resumed);
+  const [index, setIndex] = useState(0);
+  /**
+   * 部屋に 入ったか。**音は 入ってから 鳴らす**。
+   *
+   * ロビーに いる あいだも この 部品は 動いて いるので、入る 前に 1問目の 声を
+   * 鳴らして いた——ブラウザは 人が さわる 前の 音を 止めるので **鳴らないまま
+   * 鳴った ことに なり**、入った ときには もう 二度と 鳴らなかった
+   *（「セリフが 再生されない ときが ある」の 正体の ひとつ）。
+   */
+  const [joined, setJoined] = useState(false);
   const [draft, setDraft] = useState("");
   const [reply, setReply] = useState<Reply | null>(null);
   const [thinking, setThinking] = useState(false);
@@ -214,13 +212,13 @@ export function MeetingSession({
    * 質問の並びと一致しなくなる（同じ質問で2つ入る・入らない質問がある）。
    * きろくカードは「どの質問に 何と 答えたか」を見せるものなので、質問IDで持つ。
    */
-  const [answers, setAnswers] = useState<Readonly<Record<string, string>>>(start.answers);
+  const [answers, setAnswers] = useState<Readonly<Record<string, string>>>({});
   /** 開いた札（＝言い直しを求められずに 答えられた質問）。 */
-  const [openIds, setOpenIds] = useState<ReadonlySet<string>>(() => new Set(start.openIds));
+  const [openIds, setOpenIds] = useState<ReadonlySet<string>>(() => new Set<string>());
   /** いちばん最近ひらいた札。祝いの ✨ と 相手タイルの発光の的。 */
   const [justOpenedId, setJustOpenedId] = useState<string | null>(null);
   /** 好感度。教材に affection が無いときは触られないまま残る。 */
-  const [affection, setAffection] = useState<AffectionState>(start.affection);
+  const [affection, setAffection] = useState<AffectionState>(EMPTY_AFFECTION);
   /** 送る前の 見守り（からっぽ・日本語入力で ない）。答えは 消さない。 */
   const [notice, setNotice] = useState<NoticeKey | null>(null);
   /**
@@ -426,9 +424,9 @@ export function MeetingSession({
   const clipUrl = done ? meeting.closingAudioUrl : question?.audioUrl;
   const playClip = clip.play;
   useEffect(() => {
-    if (live || !clipUrl) return;
+    if (!joined || live || !clipUrl) return;
     playClip(clipUrl);
-  }, [clipUrl, live, playClip]);
+  }, [joined, clipUrl, live, playClip]);
 
   // 声で話したぶんを見る。相手が話しはじめた合図で1つに束ねてから届く
   useEffect(() => {
@@ -490,7 +488,6 @@ export function MeetingSession({
     setJustOpenedId(null);
     setNotice(null);
     setNoticedText(null);
-    setResumed(false);
 
     if (finishing) {
       // さいごまで話しきったぶんのハートと、手に残るきろくは ここで一度だけ作る
@@ -534,28 +531,6 @@ export function MeetingSession({
     if (thinking) return;
     next();
   }, [thinking, next]);
-
-  /**
-   * いまの ところを 端末に 残す（つぎに 開いたとき つづきから 始めるため）。
-   *
-   * 保存だけを する 効果——ここで state を 読んで state に 書くと、描画のたびに
-   * 書き込みが 連鎖する。話しきったら 消す：完走した 人が もう一度 開いたら
-   * **はじめから 話せる**のが 正しい。
-   */
-  useEffect(() => {
-    if (done) {
-      clearMeetingResume(meeting.id);
-      return;
-    }
-    if (index === 0 && openIds.size === 0 && Object.keys(answers).length === 0) return;
-    saveMeetingResume({
-      meetingId: meeting.id,
-      index,
-      openIds: [...openIds],
-      answers,
-      affection: { perQuestion: affection.perQuestion, finished: affection.finished },
-    });
-  }, [meeting.id, done, index, openIds, answers, affection]);
 
   /** 伏せ札に出す並び。ラベルはきろくカードと同じ短縮を使う（同じ質問の名前をそろえる）。 */
   const boardItems = useMemo(
@@ -638,15 +613,11 @@ export function MeetingSession({
         </div>
       ) : null}
 
-      {voice.status === "notReady" ? (
-        /* bg-sun-soft は globals.css に 無い（＝色が つかない）。実在する トークンを 使う */
-        <p className="bg-cream text-ink rounded-[var(--radius-card)] px-4 py-2 text-sm font-bold">
-          {voice.reason === "noMic"
-            ? "マイクが つかえません。下の 入力で 答えても だいじょうぶです。"
-            : "声は まだ つかえません。下の 入力で 答えて ください。"}
-        </p>
-      ) : null}
-
+      {/*
+        こえが 使えない ときの 案内は **こえの ボタンの 真下**（Zoom の 中）に 出す。
+        ここにも 出して いた ころは、同じ ことを 2か所で 別の 言い方で 言って いた
+        ——学習者は 2つの 文を 読み比べて、どちらが 本当かを 考える ことに なる。
+      */}
       {thinking ? (
         <p className="bg-panel-tint text-ink-soft rounded-[var(--radius-card)] px-4 py-2 text-sm font-black">
           {meeting.host.name}さんが 聞いて います…
@@ -738,16 +709,6 @@ export function MeetingSession({
    */
   const controls = done ? null : (
     <div className="space-y-2">
-      {/*
-        途中から 戻って きた ことを 先に 言う（同じ 質問が 出て 戸惑わない ように）。
-        置き場が 答える ところの あたまなのは、ここが 学習者の 手が 止まる 場所だから。
-      */}
-      {resumed ? (
-        <p className="bg-cream border-hairline text-ink rounded-[var(--radius-card)] border-2 px-4 py-2 text-sm font-bold">
-          🔖 まえの つづきから はじめます。
-        </p>
-      ) : null}
-
       <div className="flex justify-end">
         {/*
           足場を いるか いらないか 決めるのは 学習者（設計01 P11）。
@@ -836,16 +797,6 @@ export function MeetingSession({
           aria-label="こたえを 入力する"
           className="border-hairline text-ink min-w-0 flex-1 rounded-full border-2 bg-white px-4 py-2 font-bold"
         />
-        {live ? null : (
-          <button
-            type="button"
-            onClick={() => void voice.start(instruction, hostVoice)}
-            disabled={voice.status === "connecting"}
-            className="border-hairline text-navy rounded-full border-2 bg-white px-4 py-2 text-sm font-black disabled:opacity-40"
-          >
-            {voice.status === "connecting" ? "つないで います…" : "🎤 声で 話す"}
-          </button>
-        )}
         {/* 作り置きの音がある質問は、何度でも聞き直せる（聞き取りは くり返しが効く） */}
         {clipUrl && !live ? (
           <button
@@ -897,17 +848,25 @@ export function MeetingSession({
         /* 話す 教材なので 見出しは「はなす まえに」 */
         purpose="speak"
         /*
-         * マイクの ボタンを Live の 開始／終了に つなぐ。
-         * 渡さなければ ボタンは 出ない——押しても 何も 起きない ボタンを 置かない。
+         * 話す ところは **Zoom の 画面の 中**（相手の 顔の すぐ下）。
+         * 押して いる あいだ だけ こえを 送る——押しっぱなしで 話し、はなすと
+         * 相手が 答える。ずっと 送って いた ころは、まわりの 音で 相手の セリフが
+         * 途中で 止まって いた。
          */
-        mic={{
-          on: live,
-          busy: voice.status === "connecting",
-          onToggle: () => {
-            if (live) voice.stop();
-            else void voice.start(instruction, hostVoice);
-          },
-        }}
+        speak={
+          <SpeakButton
+            status={voice.status}
+            reason={voice.reason}
+            talking={voice.talking}
+            onConnect={() => void voice.start(instruction, hostVoice)}
+            onStartTalking={voice.startTalking}
+            onStopTalking={voice.stopTalking}
+          />
+        }
+        /* 音は 入ってから 鳴らす（人が さわる 前の 音は ブラウザに 止められる） */
+        onJoined={() => setJoined(true)}
+        /* 出たら つないだ ものを 閉じる（マイクを 開いた ままに しない） */
+        onLeft={() => voice.stop()}
         participants={[meeting.host]}
         activeSpeaker={reply ? meeting.host.id : null}
         /* 発光は学習行為に紐づける（札が開いた・ハートが増えた瞬間だけ光る） */

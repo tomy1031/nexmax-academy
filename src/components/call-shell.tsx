@@ -64,24 +64,6 @@ const BEFORE_LABEL: Record<CallPurpose, string> = {
   speak: "はなす まえに",
 };
 
-/**
- * マイクの ボタン（親が 声の 出し入れを 持って いるときだけ 出す）。
- *
- * 以前は `micOn` という state が この中に あったが、**どこにも 繋がって いなかった**
- * ——押すと ラベルだけ「🎤 マイク ON」に 変わり、音は 何も 変わらない。
- * 押しても 何も 起きない ボタンは、学習者に「自分の 操作が 間違って いる」と
- * 思わせる。繋げられる 画面（ミーティング）は ここに Live の 開始／終了を 渡し、
- * 渡さない 画面（リスニングの 再生）では ボタン自体を 出さない。
- */
-export interface CallMic {
-  /** いま 声が つながって いるか。 */
-  readonly on: boolean;
-  /** 押されたとき（つなぐ／切る）。 */
-  readonly onToggle: () => void;
-  /** つないで いる 最中（押せない）。 */
-  readonly busy?: boolean;
-}
-
 /** 読み辞書を渡されなかったとき（ふりがな無しで地の文だけ描く）。 */
 const EMPTY_INDEX: FuriganaIndex = buildFuriganaIndex([]);
 
@@ -129,8 +111,23 @@ export function CallShell({
   dictionary,
   /** 入る前の見出し。話す教材は "speak"（既定は "listen"）。 */
   purpose = "listen",
-  /** マイクのボタン。渡さないと **ボタン自体を出さない**（繋がっていない飾りを置かない）。 */
-  mic,
+  /**
+   * 「話す」ところ（Zoom の 画面の **中**に 置く）。
+   *
+   * 小さな ボタンを 入力欄の 横に 置いて いた ころは、**どれを 押せば 声で 話せるのか**が
+   * 分からなかった（2026-08-18 の指定）。話すのは 会話の 中心の 操作なので、
+   * 相手の 顔の すぐ下——Zoom の 画面の 中——に 大きく 置く。
+   * 渡さない 画面（リスニングの 再生）では 何も 出ない。
+   */
+  speak,
+  /**
+   * 部屋に 入った 瞬間（さんかする を 押した とき）。
+   *
+   * 音を 鳴らす 教材は これを 待つ。ロビーに いる あいだに 鳴らすと、
+   * ブラウザに 止められる（人が さわる 前の 音は 鳴らせない 決まり）か、
+   * 入る 前に 鳴り終わって しまう——どちらでも「セリフが 流れない」に なる。
+   */
+  onJoined,
   onLeft,
 }: {
   title: string;
@@ -145,7 +142,8 @@ export function CallShell({
   furigana?: FuriganaIndex | readonly FuriganaEntry[];
   dictionary?: readonly DictionaryEntry[];
   purpose?: CallPurpose;
-  mic?: CallMic;
+  speak?: React.ReactNode;
+  onJoined?: () => void;
   onLeft?: () => void;
 }) {
   const [stage, setStage] = useState<CallStage>("lobby");
@@ -178,7 +176,10 @@ export function CallShell({
         camera={camera}
         cameraOn={cameraOn}
         onToggleCamera={() => setCameraOn((v) => !v)}
-        onEnter={() => setStage("inRoom")}
+        onEnter={() => {
+          setStage("inRoom");
+          onJoined?.();
+        }}
       />
     );
   }
@@ -254,17 +255,14 @@ export function CallShell({
           <SelfTile stream={camera.stream} error={camera.error} />
         </div>
 
+        {/* 話す ところは 相手の 顔の すぐ下（Zoom の 画面の 中）。渡されたときだけ 出す */}
+        {speak ? <div className="px-3 pb-3">{speak}</div> : null}
+
         {/*
-          390px の 実機では、ボタン3つが 1行に 入りきらず「カメラを け」で
+          390px の 実機では、ボタンが 1行に 入りきらず「カメラを け」で
           切れて いた。折り返して 全部の 字を 見せる（押せても 読めなければ 押せない）。
         */}
         <div className="flex flex-wrap items-center justify-center gap-2 border-t border-white/10 px-3 py-2">
-          {/* マイクは 繋がって いる 画面だけ（親が mic を 渡した ときだけ）出す */}
-          {mic ? (
-            <ToolButton on={mic.on} onClick={mic.onToggle} disabled={mic.busy}>
-              {mic.on ? "🎤 マイク ON" : "🔇 マイク OFF"}
-            </ToolButton>
-          ) : null}
           {/*
            * ボタンの文字は「いまの じょうたい」ではなく「押すと どうなるか」にする。
            * OFFのときに「カメラ OFF」と出ていると、押して よいのか 分からず、
