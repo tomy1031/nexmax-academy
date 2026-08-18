@@ -22,8 +22,6 @@ const KNOWN_BARE_KANJI: readonly string[] = [
   "ことば — タップ すると いみが 出るよ",
   // src/components/call-shell.tsx — 通話の 人数
   "人が さんかちゅう",
-  // src/components/meeting/meeting-session.tsx — 声で 話す ボタン
-  "🎤 声で 話す",
   // src/components/stage/content-frame.tsx — 関門の 逃げ道
   "それでも 見る",
 ];

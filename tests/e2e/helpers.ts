@@ -202,7 +202,11 @@ export async function joinCall(page: Page): Promise<void> {
 /** 文字で答える（声は 実機のマイクが要るので 自動では通らない）。 */
 export async function speakByText(page: Page, text: string): Promise<void> {
   await page.getByLabel("こたえを 入力する").fill(text);
-  await page.getByRole("button", { name: "はなす" }).click();
+  /*
+   * 「はなす」で 厳密に 一致させる。Zoom の 中の こえの ボタンにも
+   * 「はなす」が 入る ので、部分一致だと どちらを 押すのか 決まらない。
+   */
+  await page.getByRole("button", { name: "はなす", exact: true }).click();
 }
 
 /** 相手の受け止めを読んで つぎの しつもんへ。 */

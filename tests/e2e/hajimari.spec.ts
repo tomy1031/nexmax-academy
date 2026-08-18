@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { joinCall, seedCompleted, shot } from "./helpers";
+import { joinCall, seedCompleted, shot, speakByText } from "./helpers";
 
 /**
  * はじまりステージ — ヘンディさんとの ミーティング（Zoom の 入りかた・ことばの 辞書）
@@ -44,6 +44,45 @@ test("入る 前の 画面が Zoom と 同じで、カメラと マイクを 先
   await page.getByRole("button", { name: "カメラを けす" }).click();
   await expect(page.locator("video")).toHaveCount(0);
   await expect(page.getByRole("button", { name: "カメラを つける" })).toBeVisible();
+});
+
+test("こえの ボタンは Zoom の 画面の 中に 大きく ある（鍵が 無くても 行き止まりに しない）", async ({
+  page,
+  context,
+}) => {
+  await seedCompleted(context, BEFORE);
+  await page.goto(MEETING);
+  await joinCall(page);
+
+  /*
+   * ボタンは **相手の 顔と 同じ 枠の 中**（Zoom の 画面の 中）に ある。
+   * 入力欄の 横の 小さな ボタンでは、どれを 押せば 声で 話せるのか 分からなかった。
+   */
+  const speak = page.getByRole("button", { name: "🎤 こえを つかう" });
+  await expect(speak).toBeVisible();
+  await expect(page.getByText("ボタンを おしている あいだだけ")).toHaveCount(0);
+
+  // 押しても 鍵が 無い 端末では、責めずに 書く道を 案内する（止まらせない）
+  await speak.click();
+  await expect(page.getByText("いまは したの らんに かいて こたえて ください")).toBeVisible();
+  await expect(page.getByLabel("こたえを 入力する")).toBeEnabled();
+  await shot(page, "32-hajimari-meeting-speak");
+});
+
+test("つぎに 開いても、いつも 1問目から はじまる", async ({ page, context }) => {
+  await seedCompleted(context, BEFORE);
+  await page.goto(MEETING);
+  await joinCall(page);
+  await speakByText(page, "わたしは ソクです。");
+  await expect(page.getByText("🌸").first()).toBeVisible();
+
+  // 途中で 閉じて、開き直す
+  await page.goto(MEETING);
+  await joinCall(page);
+
+  // 「まえの つづきから」は 出さない。1問目（名前）から もう いちど
+  await expect(page.getByText("まえの つづきから")).toHaveCount(0);
+  await expect(page.getByRole("button", { name: /名前/ })).toBeVisible();
 });
 
 test("しつもんの ことばを タップすると、いみが 出る", async ({ page, context }) => {
