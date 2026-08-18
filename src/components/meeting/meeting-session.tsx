@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { motion } from "motion/react";
-import type { Meeting } from "@/content/schema";
+import type { Meeting, MeetingQuestion } from "@/content/schema";
 import { CallShell } from "@/components/call-shell";
 import { DictionaryText } from "@/components/dictionary-text";
 import { RubyText } from "@/components/ruby-text";
@@ -157,6 +157,18 @@ const SIGNAL = {
   /** ぜんぶ 聞けた とき。 */
   close: (closing: string) =>
     `（しんこう）ぜんぶ 聞けました。つぎの ことばで 会を おわりに して ください: 「${closing}」`,
+  /** 名乗って もらった あと（ここで はじめて 名前を 渡す）。 */
+  name: (name: string) =>
+    `（しんこう）学生の 呼び名は「${name}」です。これからは 名前で 呼んで ください。`,
+  /**
+   * ぜんぶ 聞けた あとの 自由な おしゃべり。
+   *
+   * 決まった しつもんを 6つ 終えたら、あとは 好きに 話せる ように する
+   *（2026-08-18 の 指定）。ここから 先は 合図を 出さないので、相手も
+   * 自分から 話して よい ことを 伝える。
+   */
+  free: () =>
+    "（しんこう）ここから 先は 合図を 出しません。学生と 自由に 話して ください。みじかく、やさしい 日本語で、1回の 返事は 2文までです。",
 } as const;
 
 /**
@@ -257,6 +269,11 @@ export function MeetingSession({
     readSpeechSpeed,
     readSpeechSpeedOnServer,
   );
+  /**
+   * **話しはじめた ときの しつもん**。声の 答えは 言い終わってから 届くので、
+   * 届いた ころには 画面が つぎへ 進んで いる ことが ある。判定は これで 見る。
+   */
+  const answeringRef = useRef<MeetingQuestion | null>(null);
   /** チャット欄に 積む 記録（相手の しつもん・自分の 答え・見かた）。 */
   const [chat, setChat] = useState<readonly ChatEntry[]>([]);
   const pushChat = useCallback((entry: ChatBody) => {
@@ -358,17 +375,22 @@ export function MeetingSession({
         meeting.persona,
         "",
         /*
-         * 名前が 無い 端末に「あなた」を 渡すと、相手は それを 名前だと 受け取り
-         *「あなたさん」と 呼びはじめる（画面の 差し込みで 実際に 起きて いた）。
-         * 名前が 無い ことは 無い ことと して 伝える。
+         * **名前を 先に 渡さない**（2026-08-18 の 指摘）。
+         * 端末に 登録された 呼び名を つなぐ ときに 渡して いたので、相手は
+         * 学生が 名乗る 前から その 名前で 呼びはじめて いた——1問目が
+         *「お名前を おしえて ください」なのに、もう 知って いる 人が 聞く 形に なる。
+         * 名前は **1問目に 答えた あと**に 合図で 渡す（SIGNAL.name）。
          */
-        learnerName
-          ? `話す 相手の 呼び名は「${learnerName}」です。名前で 呼んで ください。`
-          : "話す 相手の 名前は まだ 分かりません。名前では 呼ばずに 話して ください。",
-        "きょう 聞く ことは つぎの とおりです。上から 順に 1つずつ 聞いて ください。",
-        ...meeting.questions.map((q, i) => `${i + 1}. ${withName(q.ask)}`),
+        "学生が 自分で 名乗るまで、名前や あだ名で 呼ばないで ください。",
+        /*
+         * **しつもんの 一覧も 渡さない**。渡して いた ころは
+         *「上から 順に 1つずつ 聞いて ください」と 書いて あった ので、
+         * 相手は 自分の 判断で 先へ 進み、同じ ことを くり返したり 飛ばしたり した。
+         * 聞く ことは 1つずつ 合図で 渡す（人格の 側にも 同じ 決まりを 書いて ある）。
+         */
+        "しつもんは 進行が 1つずつ 合図で 渡します。合図に 書いて ある しつもんだけを して ください。",
       ].join("\n"),
-    [meeting, learnerName, withName],
+    [meeting],
   );
 
   /**
@@ -404,15 +426,25 @@ export function MeetingSession({
    *（同じキャラが2つの違うことを言うのを防ぐ）。
    */
   const judgeUtterance = useCallback(
-    async (utterance: string, spoken: boolean) => {
-      if (!question) return;
+    async (utterance: string, spoken: boolean, target?: MeetingQuestion) => {
+      /*
+       * **どの しつもんへの 答えか**を 呼ぶ側から 受け取る。
+       *
+       * いまの しつもん（`question`）で 見て いた ころは、こんな ことが 起きて いた:
+       * 声で 答える → 相手が 話しはじめた 合図で 判定に 出す → その 少し 前に
+       * 画面は つぎの しつもんへ 進んで いる ——「どこから 来ましたか」の 画面で
+       *「わたしは トミー です。」と 直され（＝1問目の 基準で 見られ）て いた
+       *（2026-08-18 の 指摘）。答えは **話しはじめた ときの しつもん**で 見る。
+       */
+      const asked = target ?? question;
+      if (!asked) return;
       const at = Date.now();
       pushChat({ kind: "me", text: utterance });
       setThinking(true);
       const result = await requestJudge({
-        ask: withName(question.ask),
-        hint: question.hint,
-        keywords: question.keywords,
+        ask: withName(asked.ask),
+        hint: asked.hint,
+        keywords: asked.keywords,
         judgePrompt: meeting.judgePrompt,
         hostName: meeting.host.name,
         learnerName,
@@ -432,10 +464,10 @@ export function MeetingSession({
           pushChat({ kind: "host", text: result.judge.reply });
         }
         pushChat({ kind: "coach", judge: result.judge });
-        rewardTurn(question.id, utterance, result.judge.grade, !result.judge.retry);
+        rewardTurn(asked.id, utterance, result.judge.grade, !result.judge.retry);
         void recordMeetingTurn({
           meetingId: meeting.id,
-          questionId: question.id,
+          questionId: asked.id,
           attempt,
           mode: spoken ? "voice" : "text",
           utterance,
@@ -453,7 +485,7 @@ export function MeetingSession({
        * 平常時の返事にはしない。
        */
       const advice = checkJapanese(utterance).text;
-      const echo = spoken ? "" : fillAnswer(question.echo, utterance);
+      const echo = spoken ? "" : fillAnswer(asked.echo, utterance);
       if (echo) pushChat({ kind: "host", text: echo });
       pushChat({ kind: "coach", fallback: { advice, note: judgeFailNote(result.reason) } });
       setReply({
@@ -464,15 +496,15 @@ export function MeetingSession({
          * 中身の 取り出しは `fillAnswer` の 中（`answerCore`）——画面で 別の 関数を
          * かませて いた ころ、末尾だけを 削って 文が 壊れていた。
          */
-        echo: spoken ? "" : fillAnswer(question.echo, utterance),
+        echo: spoken ? "" : fillAnswer(asked.echo, utterance),
         judge: null,
         fallback: { advice, note: judgeFailNote(result.reason) },
       });
       // 判定に通せなくても、答えた事実は残る。札は開き、ハートも足す
-      rewardTurn(question.id, utterance, null, true);
+      rewardTurn(asked.id, utterance, null, true);
       void recordMeetingTurn({
         meetingId: meeting.id,
-        questionId: question.id,
+        questionId: asked.id,
         attempt,
         mode: spoken ? "voice" : "text",
         utterance,
@@ -510,7 +542,7 @@ export function MeetingSession({
     const heard = voice.lastUtterance;
     if (!heard || heard.id === judgedRef.current) return;
     judgedRef.current = heard.id;
-    void judgeUtterance(heard.text, true);
+    void judgeUtterance(heard.text, true, answeringRef.current ?? undefined);
   }, [voice.lastUtterance, judgeUtterance]);
 
   const next = useCallback(() => {
@@ -523,9 +555,19 @@ export function MeetingSession({
      */
     const ask = meeting.questions[at];
     if (live) {
-      voice.control(
-        finishing ? SIGNAL.close(withName(meeting.closing)) : SIGNAL.next(withName(ask?.ask ?? "")),
-      );
+      if (finishing) {
+        voice.control(SIGNAL.close(withName(meeting.closing)));
+        // ここから 先は 合図を 出さない（決まった しつもんは ぜんぶ 終わった）
+        voice.control(SIGNAL.free());
+      } else {
+        /*
+         * 名乗って もらった 直後に、はじめて 名前を 渡す。
+         * つなぐ ときに 渡して いた ころは、学生が 名乗る 前から その 名前で
+         * 呼ばれて いた（2026-08-18 の 指摘）。
+         */
+        if (at === 1 && learnerName) voice.control(SIGNAL.name(learnerName));
+        voice.control(SIGNAL.next(withName(ask?.ask ?? "")));
+      }
     }
     // つぎの しつもんは チャットにも 積む（あとから 読み返せる）
     if (ask) {
@@ -574,11 +616,23 @@ export function MeetingSession({
       status: finishing ? "completed" : "started",
       position: { panel: at },
     });
-  }, [index, meeting, answers, affection, withName, live, voice, pushChat]);
+  }, [index, meeting, answers, affection, withName, live, voice, pushChat, learnerName]);
 
   const submit = useCallback(() => {
     const text = draft.trim();
-    if (!question || thinking) return;
+    if (thinking) return;
+    /*
+     * 決まった しつもんが ぜんぶ 終わった あとは **自由な おしゃべり**。
+     * 判定も 進行も しない——相手に そのまま 渡して、返事を 待つ（2026-08-18 の 指定）。
+     */
+    if (done) {
+      if (text.length === 0) return;
+      setDraft("");
+      pushChat({ kind: "me", text });
+      if (live) voice.sendText(text);
+      return;
+    }
+    if (!question) return;
     /*
      * 何も書いていないときは、AIを呼ばずに 見守りの ひとことを 出す（待たせない）。
      * ここで `reply` を 作って いた ころは、送りボタンが 「つぎへ →」に 変わり、
@@ -614,9 +668,10 @@ export function MeetingSession({
       return;
     }
     // Live につながっていれば、書いた文でも相手は**声で**返す
+    answeringRef.current = question;
     if (live) voice.sendText(text);
-    void judgeUtterance(text, live);
-  }, [draft, question, thinking, live, voice, judgeUtterance, noticedText, next, pushChat]);
+    void judgeUtterance(text, live, question);
+  }, [draft, question, thinking, live, voice, judgeUtterance, noticedText, next, pushChat, done]);
 
   /** 同じ質問をもう一度。回数だけ増やして、質問は変えない。 */
   const retry = useCallback(() => {
@@ -687,7 +742,7 @@ export function MeetingSession({
     const again = reply.judge?.retry === true;
     const timer = setTimeout(
       () => (again ? retryRef.current() : nextRef.current()),
-      again ? 3200 : 2000,
+      again ? 2400 : 1200,
     );
     return () => clearTimeout(timer);
   }, [reply, done]);
@@ -695,39 +750,12 @@ export function MeetingSession({
   /** いま持っているハート。教材に affection が無いときは画面のどこにも出ない。 */
   const hearts = heartsOf(affection);
 
-  const main = done ? (
-    <div className="space-y-3">
-      <div className="card-island p-5">
-        <p className="text-navy text-lg font-black">
-          <DictionaryText
-            text={withName(meeting.closing)}
-            index={furigana}
-            show
-            dictionary={dictionary}
-          />
-        </p>
-      </div>
-
-      {record ? <MeetingResultCard record={record} furigana={furigana} /> : null}
-
-      {/*
-        とっておきの話は closing の あと。届かなかったときは 何も出さない
-        ——「開かなかった箱」を見せるのは、この教材では 罰にしかならない（P8）。
-      */}
-      {meeting.affection && rewardOpen(affection, meeting.affection.threshold) ? (
-        <RewardCard
-          text={withName(meeting.affection.reward)}
-          hostName={meeting.host.name}
-          furigana={furigana}
-        />
-      ) : null}
-    </div>
-  ) : (
-    /*
-     * チャット欄。**ここだけが スクロールする**（設計: fable と 相談 2026-08-18）。
-     * 高さを 決め打ちに しないのは、390px の 実機でも デスクトップでも
-     * 「いまの しつもん」が いちばん 下に 見えて いて ほしいため。
-     */
+  /*
+   * チャット欄。**ここだけが スクロールする**。おわった あとも 出しつづける——
+   * 決まった しつもんが 終わったら **自由な おしゃべり**に なるので、
+   * ここが 閉じると 話す ところが 無くなる（2026-08-18 の 指定）。
+   */
+  const chatPanel = (
     <div
       ref={chatRef}
       role="log"
@@ -756,6 +784,47 @@ export function MeetingSession({
     </div>
   );
 
+  const main = done ? (
+    <div className="space-y-3">
+      <div className="card-island p-5">
+        <p className="text-navy text-lg font-black">
+          <DictionaryText
+            text={withName(meeting.closing)}
+            index={furigana}
+            show
+            dictionary={dictionary}
+          />
+        </p>
+      </div>
+
+      {record ? <MeetingResultCard record={record} furigana={furigana} /> : null}
+
+      {/*
+        とっておきの話は closing の あと。届かなかったときは 何も出さない
+        ——「開かなかった箱」を見せるのは、この教材では 罰にしかならない（P8）。
+      */}
+      {meeting.affection && rewardOpen(affection, meeting.affection.threshold) ? (
+        <RewardCard
+          text={withName(meeting.affection.reward)}
+          hostName={meeting.host.name}
+          furigana={furigana}
+        />
+      ) : null}
+
+      {/* ここからは 決まった しつもんが 無い。話したい ことを 話せる */}
+      <p className="text-ink-soft text-sm font-extrabold">
+        <RubyText
+          text="ここからは、じゆうに 話せます。聞きたい ことを 聞いて みましょう。"
+          index={CHROME_FURIGANA}
+          show
+        />
+      </p>
+      {chatPanel}
+    </div>
+  ) : (
+    chatPanel
+  );
+
   const body = (
     <div className="space-y-3">
       {meeting.affection ? (
@@ -780,7 +849,27 @@ export function MeetingSession({
    * ボタンは「おくる」1つだけ——「つぎへ」「もう いちど」「まだ 言えない」は
    * 会話の 中に 溶かした（進むのは 判定が 決め、逃げ道は ことばで 言う）。
    */
-  const controls = done ? null : (
+  const controls = done ? (
+    /* 自由な おしゃべり。ヒントも 判定も 出さない——ここは 会話だけの 場 */
+    <form
+      className="flex flex-wrap items-center gap-2"
+      onSubmit={(e) => {
+        e.preventDefault();
+        submit();
+      }}
+    >
+      <input
+        value={draft}
+        onChange={(e) => setDraft(e.target.value)}
+        placeholder="じゆうに 書いて みましょう"
+        aria-label="こたえを 入力する"
+        className="border-hairline text-ink min-w-0 flex-1 rounded-full border-2 bg-white px-4 py-2 font-bold"
+      />
+      <button type="submit" className="btn-game px-5 py-2 text-sm">
+        おくる
+      </button>
+    </form>
+  ) : (
     <div className="space-y-2">
       <div className="flex justify-end">
         <button
@@ -913,7 +1002,11 @@ export function MeetingSession({
                   SIGNAL.open(withName(meeting.questions[index]?.ask ?? "")),
                 )
               }
-              onStartTalking={voice.startTalking}
+              onStartTalking={() => {
+                // いま 答えようと して いる しつもんを 覚える（判定が ずれない ように）
+                answeringRef.current = question ?? null;
+                voice.startTalking();
+              }}
               onStopTalking={voice.stopTalking}
             />
             <SpeechSpeedPicker value={speed} onChange={saveSpeechSpeed} />
