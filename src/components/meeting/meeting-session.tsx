@@ -611,7 +611,27 @@ export function MeetingSession({
       if (text.length === 0) return;
       setDraft("");
       pushChat({ kind: "me", text });
-      if (live) voice.sendText(text);
+      if (live) {
+        voice.sendText(text);
+      } else {
+        /*
+         * 声で つないで いない 学習者は、**誰も いない 部屋に 話しかけて いた**
+         *（2026-08-18 fable の 指摘）。返事の ふりを する のでは なく、
+         * どうすれば 答えて もらえるか と、書いた ことが むだに ならない ことを
+         * その場で 言う（責めない・次の 一手を 書く）。
+         */
+        pushChat({
+          kind: "coach",
+          fallback: {
+            advice: {
+              praise: "しつもんが 言えましたね。",
+              fix: "こえで つなぐと、ヘンディさんが 答えて くれます。",
+              example: "",
+            },
+            note: "かいた ことばは「きょう はなせた こと」に のこります。",
+          },
+        });
+      }
       return;
     }
     if (!question) return;
