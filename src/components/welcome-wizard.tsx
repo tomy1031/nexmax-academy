@@ -218,8 +218,13 @@ function QuestionIntro({
           </div>
         )}
         <div className="mt-6 text-center">
-          <button type="button" onClick={onStart} className="btn-game px-10 py-4 text-lg">
-            {intro.startLabel}
+          {/* ボタンの文言も 台帳の文。**色の面なので ふりがなは 白**（docs/constraints.md）。 */}
+          <button
+            type="button"
+            onClick={onStart}
+            className={`btn-game px-10 py-4 text-lg ${RUBY_ON_COLOR}`}
+          >
+            <RubyText text={intro.startLabel} readings={PERSONALITY_RESULT_READINGS} />
           </button>
         </div>
       </div>
