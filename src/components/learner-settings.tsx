@@ -177,6 +177,34 @@ export function LearnerSettings({
               }
             />
             <GenderCard gender={gender} onChange={setGender} />
+
+            {/* 診断の やり直しは タイトル画面にしか 入口が 無かった（2026-08-18 の指定で ここにも 足した）。
+                ここは 保存だけの 画面なので、**やり直しは この画面では 始めない**——
+                20問は はじめの せっていの 画面が 受け持つ（`/welcome?retake=1`）。 */}
+            <article className="card-pop border-white p-5 shadow-[0_6px_0_#d7eaf5]">
+              <h2 className="text-navy font-extrabold">
+                ⭐ せいかくしんだん{" "}
+                <span className="text-ink-soft text-xs">
+                  （
+                  <ruby>
+                    任意<rt>にんい</rt>
+                  </ruby>
+                  ）
+                </span>
+              </h2>
+              <p className="text-ink-soft mt-2 text-sm font-bold">
+                もういちど 20もんに こたえると、あなたの ネクマックスが かわることが あります。
+              </p>
+              <p className="bg-sun/25 text-ink mt-3 rounded-2xl px-3 py-2 text-xs font-bold">
+                💡 いま かいた ことは、さきに「ほぞんする」を おしてね。
+              </p>
+              <Link
+                href="/welcome?retake=1"
+                className="border-sky text-navy mt-4 flex min-h-12 items-center justify-center gap-2 rounded-2xl border-3 bg-white px-3 text-sm font-extrabold shadow-[0_4px_0_#9dd8f2]"
+              >
+                🔄 せいかくしんだんを もういちど
+              </Link>
+            </article>
           </div>
 
           <p className="text-ink-soft mt-5 text-center text-xs font-bold">
@@ -232,7 +260,7 @@ export function LearnerSettings({
             </p>
           </div>
           <p className="border-hairline bg-panel-tint text-ink-soft mb-3 hidden rounded-2xl border-2 px-4 py-3 text-xs font-bold md:block">
-            🔒 せいかくしんだんの けっかは、ここでは かわりません。
+            🔒 「ほぞんする」では、せいかくしんだんの けっかは かわりません。
           </p>
         </div>
       </section>

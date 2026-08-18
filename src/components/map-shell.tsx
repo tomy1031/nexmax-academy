@@ -8,7 +8,6 @@ import {
   useCallback,
   useEffect,
   useMemo,
-  useRef,
   useState,
   useSyncExternalStore,
 } from "react";
@@ -63,7 +62,6 @@ const HAS_KANJI = /[一-鿿]/;
 
 const PROFILE_SERVER_SNAPSHOT = "__server__";
 const PROGRESS_SERVER_SNAPSHOT = "[]";
-const SHORT_WAIT_TOAST = "じゅんびちゅう です。";
 
 /**
  * 航路は**地図ぜんたいで1本の正弦波**にする。
@@ -355,19 +353,6 @@ function WoodenBanner({
   );
 }
 
-function Toast({ message }: { message: string | null }) {
-  if (!message) return null;
-  return (
-    <div
-      role="status"
-      aria-live="polite"
-      className="bg-navy fixed bottom-6 left-1/2 z-[80] w-[min(90vw,34rem)] -translate-x-1/2 rounded-2xl border-2 border-white px-5 py-3 text-center font-extrabold text-white shadow-2xl"
-    >
-      {message}
-    </div>
-  );
-}
-
 function ProgressBar({ progress }: { progress: StageProgress }) {
   return (
     <>
@@ -536,33 +521,17 @@ function ViewToggle({ view, onChange }: { view: MapView; onChange: (view: MapVie
 }
 
 /**
- * サイドメニュー。href があるものだけ実際に開ける（無いものは「じゅんびちゅう」）。
+ * サイドメニュー。**開ける行き先だけを並べる**（2026-08-18 の指定）。
+ *
+ * 中身の無い項目（マイページ・ショップ・チーム・ペア）と 辞書は 一覧から外した。
+ * 押しても「じゅんびちゅう」としか返らない項目は、学習者に 何度も 空振りを させる。
+ * 辞書の 画面（`/dictionary`）は 消していない——URLでは これまでどおり 開ける。
  *
  * 「単語」は ことばアーケード（/arcade）。ステージの中からも開けるが、
  * ここからも入れないと、単語だけ練習したい学習者が入口を見つけられない。
  */
-const NAV_ITEMS = [
-  { icon: "👤", label: "マイページ" },
-  { icon: "📖", label: "単語", reading: "たんご", href: "/arcade" },
-  { icon: "📚", label: "辞書", reading: "じしょ", href: "/dictionary" },
-  { icon: "👥", label: "チーム・ペア" },
-  { icon: "🛍️", label: "ショップ" },
-] as const;
-
 const NAV_CLASS =
   "text-ink hover:bg-sky-soft flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl px-3 text-sm font-extrabold transition";
-
-function NavigationLabel({ item }: { item: (typeof NAV_ITEMS)[number] }) {
-  if ("reading" in item) {
-    return (
-      <ruby>
-        {item.label}
-        <rt>{item.reading}</rt>
-      </ruby>
-    );
-  }
-  return item.label;
-}
 
 function Navigation({
   collapsed,
@@ -570,7 +539,6 @@ function Navigation({
   isAdmin,
   onCollapsedChange,
   onDrawerClose,
-  onUnavailable,
   onLogout,
 }: {
   collapsed: boolean;
@@ -578,74 +546,33 @@ function Navigation({
   isAdmin: boolean;
   onCollapsedChange: (value: boolean) => void;
   onDrawerClose: () => void;
-  onUnavailable: () => void;
   onLogout: () => void;
 }) {
-  const navButtons = NAV_ITEMS.map((item) => {
-    const body = (
-      <>
+  /** メニューの1行。たたんでいるときは 絵だけ、ひらいているときは 絵と ことば。 */
+  function navLink(href: string, icon: string, label: ReactNode) {
+    return (
+      <Link href={href} onClick={onDrawerClose} className={NAV_CLASS}>
         <span aria-hidden className="text-xl">
-          {item.icon}
+          {icon}
         </span>
-        {!collapsed && <span className="whitespace-nowrap">{<NavigationLabel item={item} />}</span>}
-      </>
-    );
-    return "href" in item ? (
-      <Link key={item.label} href={item.href} onClick={onDrawerClose} className={NAV_CLASS}>
-        {body}
+        {!collapsed && <span className="whitespace-nowrap">{label}</span>}
       </Link>
-    ) : (
-      <button
-        key={item.label}
-        type="button"
-        onClick={() => {
-          onUnavailable();
-          onDrawerClose();
-        }}
-        className={NAV_CLASS}
-      >
-        {body}
-      </button>
     );
-  });
+  }
+
+  const arcadeLink = navLink(
+    "/arcade",
+    "📖",
+    <ruby>
+      単語<rt>たんご</rt>
+    </ruby>,
+  );
   // ネクマックス図鑑への回遊先。診断のあとに16人を見に行けるようにする（07 §7）。
-  const catalogLink = (
-    <Link
-      href="/nexmax"
-      onClick={onDrawerClose}
-      className="text-ink hover:bg-sky-soft flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl px-3 text-sm font-extrabold transition"
-    >
-      <span aria-hidden className="text-xl">
-        📖
-      </span>
-      {!collapsed && <span className="whitespace-nowrap">ネクマックス</span>}
-    </Link>
-  );
+  // 絵文字は 🤖（2026-08-18 の指定）。単語の 📖 と 同じ 絵だと 見分けが つかない。
+  const catalogLink = navLink("/nexmax", "🤖", "ネクマックス");
   // せっていの入口。なまえ・がっこう・せいべつ・APIキーを あとから 直す（`/map/settings`）。
-  const settingsLink = (
-    <Link
-      href="/map/settings"
-      onClick={onDrawerClose}
-      className="text-ink hover:bg-sky-soft flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl px-3 text-sm font-extrabold transition"
-    >
-      <span aria-hidden className="text-xl">
-        ⚙️
-      </span>
-      {!collapsed && <span className="whitespace-nowrap">せってい</span>}
-    </Link>
-  );
-  const adminLink = isAdmin ? (
-    <Link
-      href="/admin"
-      onClick={onDrawerClose}
-      className="text-ink hover:bg-sky-soft flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl px-3 text-sm font-extrabold transition"
-    >
-      <span aria-hidden className="text-xl">
-        🛡️
-      </span>
-      {!collapsed && <span className="whitespace-nowrap">かんり</span>}
-    </Link>
-  ) : null;
+  const settingsLink = navLink("/map/settings", "⚙️", "せってい");
+  const adminLink = isAdmin ? navLink("/admin", "🛡️", "かんり") : null;
   const logoutButton = (
     <button
       type="button"
@@ -653,7 +580,7 @@ function Navigation({
         onDrawerClose();
         onLogout();
       }}
-      className="text-ink hover:bg-sky-soft flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl px-3 text-sm font-extrabold transition"
+      className={NAV_CLASS}
     >
       <span aria-hidden className="text-xl">
         ↪
@@ -688,7 +615,7 @@ function Navigation({
         >
           ☰
         </button>
-        {navButtons}
+        {arcadeLink}
         {catalogLink}
         {settingsLink}
         {adminLink}
@@ -714,7 +641,7 @@ function Navigation({
           <aside className="absolute inset-y-0 left-0 w-72 bg-white p-5 pt-20 shadow-2xl">
             <AcademyLogo className="mb-4 h-auto w-36" />
             <div className="space-y-2">
-              {navButtons}
+              {arcadeLink}
               {catalogLink}
               {settingsLink}
               {adminLink}
@@ -1354,9 +1281,7 @@ export function MapShell({
   const [viewOverride, setViewOverride] = useState<MapView | null>(null);
   const [collapsed, setCollapsed] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [toast, setToast] = useState<string | null>(null);
   const [loadingIsSlow, setLoadingIsSlow] = useState(false);
-  const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   // undefined = 学習者がまだ触っていない。そのあいだは「いま取り組むステージ」を開いておく
   const [expandedOverride, setExpandedOverride] = useState<string | null | undefined>(undefined);
   const view = viewOverride ?? storedView;
@@ -1414,13 +1339,6 @@ export function MapShell({
     };
   }, [router]);
 
-  useEffect(
-    () => () => {
-      if (toastTimer.current) clearTimeout(toastTimer.current);
-    },
-    [],
-  );
-
   // 通信が返ってこないときは例外も起きないので、待ち続けるしかなくなる。
   // 一定時間で「やりなおす道」を出して、黙って固まったままにしない。
   useEffect(() => {
@@ -1428,12 +1346,6 @@ export function MapShell({
     const timer = setTimeout(() => setLoadingIsSlow(true), 8000);
     return () => clearTimeout(timer);
   }, [profile]);
-
-  const showToast = useCallback((message: string) => {
-    if (toastTimer.current) clearTimeout(toastTimer.current);
-    setToast(message);
-    toastTimer.current = setTimeout(() => setToast(null), 3200);
-  }, []);
 
   const changeView = useCallback((nextView: MapView) => {
     saveMapView(nextView);
@@ -1493,7 +1405,6 @@ export function MapShell({
           if (!value && window.innerWidth < 768) setDrawerOpen(true);
         }}
         onDrawerClose={() => setDrawerOpen(false)}
-        onUnavailable={() => showToast(SHORT_WAIT_TOAST)}
         onLogout={() => void signOut()}
       />
 
@@ -1510,8 +1421,6 @@ export function MapShell({
       ) : (
         <CardsView stages={stages} progress={progress} />
       )}
-
-      <Toast message={toast} />
     </div>
   );
 }

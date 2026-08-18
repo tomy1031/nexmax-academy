@@ -45,10 +45,23 @@ test("せっていの画面では 性格診断を しない（20問が 出てこ
   await expect(page.getByText("しんだんは しません")).toBeVisible();
   await expect(page.getByText("20もんの うち")).toHaveCount(0);
   await expect(page.getByRole("button", { name: /けっかを/ })).toHaveCount(0);
-  // 診断の結果に 触らないことを、画面の言葉でも 伝えている。
+  // 「ほぞんする」では 診断の結果に 触らないことを、画面の言葉でも 伝えている。
   await expect(
-    page.getByText("せいかくしんだんの けっかは、ここでは かわりません。"),
+    page.getByText("「ほぞんする」では、せいかくしんだんの けっかは かわりません。"),
   ).toBeVisible();
+});
+
+test("やり直したい人は、せっていから 診断へ 行ける（20問は /welcome が 受け持つ）", async ({
+  page,
+}) => {
+  await page.goto("/map/settings");
+
+  await expect(page.getByRole("link", { name: /せいかくしんだんを もういちど/ })).toHaveAttribute(
+    "href",
+    "/welcome?retake=1",
+  );
+  // 打ちかけを 消さないよう、先に 保存するよう 伝えている。
+  await expect(page.getByText(/さきに「ほぞんする」を おしてね/)).toBeVisible();
 });
 
 test("ログインが 無いあいだは、足りない ものを 伝えて 保存を 待つ", async ({ page }) => {
