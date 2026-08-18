@@ -123,12 +123,22 @@ export function useLiveVoice(): LiveVoice {
    */
   const talkingRef = useRef(false);
   const [talking, setTalking] = useState(false);
+  /**
+   * 押して いる あいだに ためた 音（まだ 送って いない）。
+   *
+   * つなぎっぱなしで 流すのを やめ、**止めた ときに まとめて 送る**
+   *（2026-08-18 の 指定「もう一度 ストップさせた ときに 音声を 飛ばす」）。
+   * 流しながら 送ると、言い直しの 途中の ことばや 息の 音まで 相手に 届き、
+   * 言い終わる 前に 返事が 始まる。ためて から 送れば、**言い切ってから 渡せる**。
+   */
+  const pendingRef = useRef<string[]>([]);
   /** 鳴らす 速さ。つなぐ 前に 決めた ぶんも 覚えて おく（入る 前の 画面で 選べる）。 */
   const rateRef = useRef(1);
 
   const stop = useCallback(() => {
     talkingRef.current = false;
     setTalking(false);
+    pendingRef.current = [];
     sessionRef.current?.close();
     sessionRef.current = null;
     micRef.current?.capture.stop();
@@ -285,14 +295,11 @@ export function useLiveVoice(): LiveVoice {
        * 忙しいと語の途中が丸ごと落ちて、何を言っても書き起こしが崩れていた）。
        */
       const capture = await startMicCapture(stream, (pcm) => {
-        // 押して いない あいだは 捨てる（口は 開いた まま・音だけ 送らない）
+        // 押して いない あいだは 捨てる（口は 開いた まま・音だけ ためない）
         if (!talkingRef.current) return;
-        sessionRef.current?.sendRealtimeInput({
-          audio: {
-            data: bytesToBase64(new Uint8Array(pcm.buffer, pcm.byteOffset, pcm.byteLength)),
-            mimeType: `audio/pcm;rate=${IN_RATE}`,
-          },
-        });
+        pendingRef.current.push(
+          bytesToBase64(new Uint8Array(pcm.buffer, pcm.byteOffset, pcm.byteLength)),
+        );
       });
       micRef.current = { capture, stream };
 
@@ -330,6 +337,7 @@ export function useLiveVoice(): LiveVoice {
    * 止めないと、自分の こえと 相手の こえが 重なった まま 聞き取りに 入る。
    */
   const startTalking = useCallback(() => {
+    pendingRef.current = [];
     clearScheduled(outRef.current);
     /*
      * 鳴らす 側が 止まって いる ことが ある（別の タブを 見て 戻って きた あとなど）。
@@ -350,7 +358,13 @@ export function useLiveVoice(): LiveVoice {
     if (!talkingRef.current) return;
     talkingRef.current = false;
     setTalking(false);
-    sessionRef.current?.sendRealtimeInput({ audioStreamEnd: true });
+    // ためた ぶんを まとめて 送ってから、「言い終わった」を 伝える
+    const session = sessionRef.current;
+    for (const data of pendingRef.current) {
+      session?.sendRealtimeInput({ audio: { data, mimeType: `audio/pcm;rate=${IN_RATE}` } });
+    }
+    pendingRef.current = [];
+    session?.sendRealtimeInput({ audioStreamEnd: true });
   }, []);
 
   /** 進行の 合図。学習者の ことばでは ないので 字幕に 残さない。 */

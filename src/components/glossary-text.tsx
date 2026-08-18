@@ -7,6 +7,11 @@ import { PERSONALITY_RESULT_READINGS, type Reading } from "@/content/personality
 /** 漢字を含む語かどうか。含むなら、台帳の読みでルビを保証する。 */
 const HAS_KANJI = /[一-鿿]/;
 
+/** 見出し語に 振る ふりがな。かな・カタカナだけの 語には 振らない（同じ文字が2段になる）。 */
+function headwordReadings(entry: GlossaryEntry): readonly Reading[] {
+  return HAS_KANJI.test(entry.term) ? [{ text: entry.term, reading: entry.reading }] : [];
+}
+
 /** 吹き出しの実寸。はみ出し判定に使う（Tailwind の w-60 と合わせる）。 */
 const POPOVER_WIDTH = 240;
 /** 4段（日本語・英語・日本語の意味・英語の意味）ぶんの高さ。上に出せるかの判定に使う。 */
@@ -90,7 +95,7 @@ function PopoverBody({
       {/* 1段目: 日本語（読みつき）。読みは**ルビで**出す——見出しだけ読みを横に並べると、
           そこだけ裸の漢字になって規律2の検査に引っかかる（画面でも語形が二重に見える）。 */}
       <span className="text-navy block text-sm">
-        {renderText(entry.term, [{ text: entry.term, reading: entry.reading }])}
+        {renderText(entry.term, headwordReadings(entry))}
         {entry.kanji && entry.kanji !== entry.term && `（${entry.kanji}）`}
       </span>
       {/* 2段目: 英語（対訳の1語） */}
@@ -234,7 +239,7 @@ export function GlossaryChip({
         aria-controls={popoverId}
         className="border-hairline text-ink hover:bg-sky-soft cursor-pointer rounded-full border-2 bg-white px-3.5 py-1.5 text-xs leading-snug font-bold"
       >
-        {renderText(entry.term, [{ text: entry.term, reading: entry.reading }])}
+        {renderText(entry.term, headwordReadings(entry))}
         <span className="text-ink-soft ml-1.5 font-semibold">/ {entry.englishTerm}</span>
       </button>
       {open && (

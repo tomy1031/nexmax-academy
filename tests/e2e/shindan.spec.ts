@@ -23,7 +23,7 @@ async function startQuestions(page: Page) {
   await page.getByRole("button", { name: /1\s*きせい/ }).click();
   await page.getByRole("button").filter({ hasText: "男性" }).first().click();
   await page.getByRole("button", { name: /つぎへ/ }).click();
-  await expect(page.getByRole("button", { name: /しつもんを はじめる/ })).toBeVisible();
+  await expect(page.getByRole("button", { name: /質問.*はじめる/ })).toBeVisible();
 }
 
 /** Ⓐ を 選び続けて 次の 設問へ。選ぶと 自動で 進む。 */
@@ -35,7 +35,7 @@ test("診断のどの画面にも 裸の漢字が 無い（やさしい日本語
   await startQuestions(page);
   expect(await bareKanjiTexts(page)).toEqual([]);
 
-  await page.getByRole("button", { name: /しつもんを はじめる/ }).click();
+  await page.getByRole("button", { name: /質問.*はじめる/ }).click();
   for (let index = 0; index < 20; index += 1) {
     expect(await bareKanjiTexts(page), `Q${index + 1}`).toEqual([]);
     await answer(page);
@@ -48,7 +48,7 @@ test("診断のどの画面にも 裸の漢字が 無い（やさしい日本語
 
 test("日本語モードでも 裸の漢字が 無い", async ({ page }) => {
   await startQuestions(page);
-  await page.getByRole("button", { name: /しつもんを はじめる/ }).click();
+  await page.getByRole("button", { name: /質問.*はじめる/ }).click();
   await page
     .getByRole("button")
     .filter({ hasText: /^日本語/ })
@@ -62,7 +62,7 @@ test("日本語モードでも 裸の漢字が 無い", async ({ page }) => {
 
 test("ことばメモを 押すと、日本語の 意味が 出る", async ({ page }) => {
   await startQuestions(page);
-  await page.getByRole("button", { name: /しつもんを はじめる/ }).click();
+  await page.getByRole("button", { name: /質問.*はじめる/ }).click();
   for (let index = 0; index < 10; index += 1) await answer(page);
 
   // Q11「何かを きめる とき、どちらが 大切ですか。」＝ 語彙メモが 3つ 出る設問。
