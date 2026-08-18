@@ -194,7 +194,7 @@ export function ContentFrame({
                   currentDone ? (
                     <Link
                       href={next.href}
-                      className="btn-game px-5 py-2 text-sm [--btn-face:#f26fa7] [--btn-shadow:#d94d84] [&_rt]:text-white"
+                      className="btn-game px-5 py-2 text-sm [--btn-face:#f26fa7] [--btn-shadow:#d94d84] [&_rt]:text-white!"
                     >
                       つぎは {contentKindMeta(next.type).icon}{" "}
                       <RubyText text={next.title} index={itemFurigana} /> ▶
@@ -420,7 +420,7 @@ function LockedNotice({
           </p>
           <Link
             href={blocker.href}
-            className="btn-game mt-5 inline-flex px-6 py-3 [--btn-face:#f26fa7] [--btn-shadow:#d94d84] [&_rt]:text-white"
+            className="btn-game mt-5 inline-flex px-6 py-3 [--btn-face:#f26fa7] [--btn-shadow:#d94d84] [&_rt]:text-white!"
           >
             {/*
              * ボタンの中身は1つのまとまりにする。ばらばらの要素にすると、狭い画面で

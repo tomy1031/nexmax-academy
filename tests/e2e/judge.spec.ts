@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 import {
   itemsBefore,
   KAISHA,
-  knock,
+  joinCall,
   seedCompleted,
   seedGeminiKey,
   shot,
@@ -34,7 +34,7 @@ test.use({ trace: "off", video: "off" });
 test("鍵が 無くても、規則ベースの 受け止めで 会話が 止まらない", async ({ page, context }) => {
   await seedCompleted(context, itemsBefore(4));
   await page.goto(KAISHA.meetingHendy.path);
-  await knock(page);
+  await joinCall(page);
 
   await speakByText(page, "はい。ほうこくします。");
 
@@ -59,7 +59,7 @@ test.describe("AIの みかた（鍵が あるときだけ）", () => {
     await seedGeminiKey(context, key);
     await seedCompleted(context, itemsBefore(4));
     await page.goto(KAISHA.meetingHendy.path);
-    await knock(page);
+    await joinCall(page);
 
     await speakByText(page, "はい。ほうこくします。");
 

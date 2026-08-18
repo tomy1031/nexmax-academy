@@ -4,7 +4,21 @@
   "order": 1,
   "title": "はじまり",
   "reading": "はじまり",
-  "description": "ヘンディさんからの てがみを よみます。ちずの あるきかたを しって、へんじを かきます。",
+  "description": "ヘンディさんからの 手紙を 読みます。そのあと、Zoomで ヘンディさんと 話します。",
+  "furigana": [
+    [
+      "手紙",
+      "てがみ"
+    ],
+    [
+      "読",
+      "よ"
+    ],
+    [
+      "話",
+      "はな"
+    ]
+  ],
   "color": "sky",
   "status": "published",
   "area": {
@@ -17,10 +31,6 @@
     {
       "ref": "hajimari_manga",
       "type": "manga"
-    },
-    {
-      "ref": "hajimari_chizu",
-      "type": "article"
     },
     {
       "ref": "hajimari_meeting",

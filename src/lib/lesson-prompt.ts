@@ -1,5 +1,5 @@
 /**
- * もんだい と よみもの を AIに作らせるときの頼み文と形
+ * もんだい と ページ を AIに作らせるときの頼み文と形
  *
  * まんが（`manga-prompt.ts`）と同じ流儀にそろえてある:
  *   - 頼み文は純関数。Codex にも Gemini にも同じものを渡す
@@ -14,7 +14,7 @@
 
 import type { Content } from "@/content/schema";
 
-/** 学習者に見える文の決まり。もんだいも よみものも同じ。 */
+/** 学習者に見える文の決まり。もんだいも ページも同じ。 */
 const LEARNER_RULES = [
   "- 1文は 30字いない。長い文は 分ける",
   "- 学習者を 否定する 言い方を しない。うまくいかないときも、次に する ことを 1つ 見せる",
@@ -152,11 +152,11 @@ export function buildQuizPrompt(brief: {
 }
 
 /* ------------------------------------------------------------------ */
-/* よみもの（article）                                                  */
+/* ページ（article）                                                  */
 /* ------------------------------------------------------------------ */
 
 /**
- * よみものの形。
+ * ページの形。
  *
  * **`link` ブロックは作らせない。** 「つぎは これ」の行き先はステージの学習順で
  * 決まるもので、AIには知りようがない。作らせると導線一致の検査（`checkLinkOrder`）が
@@ -165,7 +165,7 @@ export function buildQuizPrompt(brief: {
 export const ARTICLE_SCHEMA = {
   type: "object",
   properties: {
-    title: { type: "string", description: "よみものの見出し（15文字いない）" },
+    title: { type: "string", description: "ページの見出し（15文字いない）" },
     description: { type: "string", description: "1文の説明" },
     furigana: FURIGANA_SCHEMA,
     blocks: {
@@ -213,7 +213,7 @@ export function buildArticlePrompt(brief: {
 }): string {
   return [
     "あなたは、カンボジアのIT専攻学生（日本語 N5〜N3）向けの教材を作る先生です。",
-    `つぎの ねらいで、よみものを ${brief.sections}つの 見出しで 作ってください。`,
+    `つぎの ねらいで、ページを ${brief.sections}つの 見出しで 作ってください。`,
     "",
     "## 先生の依頼",
     brief.request,
@@ -246,7 +246,7 @@ export const MAX_CONTEXT_CHARS = 1200;
 /**
  * すでに習った ことば を集めて渡す。
  *
- * まんがと違って「前の話のおわり」は使わない——もんだいと よみものは
+ * まんがと違って「前の話のおわり」は使わない——もんだいと ページは
  * 話の続きではないので、**語の重なり**だけが効く。
  */
 export function buildLessonContext(contents: readonly Content[]): string {

@@ -25,7 +25,7 @@ export const KAISHA = {
   article1: {
     id: "kaisha_shirabekata",
     path: "/kaisha/article-kaisha_shirabekata",
-    kind: "よみもの",
+    kind: "ページ",
   },
   quiz1: {
     id: "kaisha_shirabekata_check",
@@ -35,7 +35,7 @@ export const KAISHA = {
   article2: {
     id: "kaisha_nextmake_shirabe",
     path: "/kaisha/article-kaisha_nextmake_shirabe",
-    kind: "よみもの",
+    kind: "ページ",
   },
   quiz2: { id: "kaisha_houkoku", path: "/kaisha/quiz-kaisha_houkoku", kind: "もんだい" },
   meetingHendy: {
@@ -194,15 +194,19 @@ export async function expectQuizCorrect(page: Page): Promise<void> {
  * ミーティングの操作
  * ------------------------------------------------------------------ */
 
-/** ロビーから 入室する。 */
-export async function knock(page: Page): Promise<void> {
-  await page.getByRole("button", { name: "ドアを ノックする" }).click();
+/** さんかする 前の 画面から 入室する（Zoom と 同じ 入りかた）。 */
+export async function joinCall(page: Page): Promise<void> {
+  await page.getByRole("button", { name: "ミーティングに さんかする" }).click();
 }
 
 /** 文字で答える（声は 実機のマイクが要るので 自動では通らない）。 */
 export async function speakByText(page: Page, text: string): Promise<void> {
   await page.getByLabel("こたえを 入力する").fill(text);
-  await page.getByRole("button", { name: "はなす" }).click();
+  /*
+   * 「はなす」で 厳密に 一致させる。Zoom の 中の こえの ボタンにも
+   * 「はなす」が 入る ので、部分一致だと どちらを 押すのか 決まらない。
+   */
+  await page.getByRole("button", { name: "はなす", exact: true }).click();
 }
 
 /** 相手の受け止めを読んで つぎの しつもんへ。 */

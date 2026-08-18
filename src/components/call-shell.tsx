@@ -7,7 +7,9 @@ import { getFamilyForCode } from "@/content/personality";
 import { FeedbackMessage } from "@/components/feedback-message";
 import { NexMax } from "@/components/nexmax";
 import { NexMaxFamily } from "@/components/nexmax-types";
+import { DictionaryText } from "@/components/dictionary-text";
 import { RubyText } from "@/components/ruby-text";
+import type { DictionaryEntry } from "@/lib/dictionary";
 import { getProfile, type NexmaxProfile } from "@/lib/profile";
 import { buildFuriganaIndex, type FuriganaEntry, type FuriganaIndex } from "@/lib/text/furigana";
 
@@ -18,8 +20,12 @@ import { buildFuriganaIndex, type FuriganaEntry, type FuriganaIndex } from "@/li
  * 教材名も名乗らない。ここに片方の名前を付けると、もう片方の画面で言葉と中身が
  * ずれる（学習者は「リスニング」と書かれた画面でAIと話すことになる）。
  *
- * 旧アプリの演出を引き継ぐ:
- *   - 入室は「🔔 ドアを ノックする」から（いきなり始めない）
+ * 演出:
+ *   - 入室は **Zoom と同じ「さんかする 前の 画面」**から（いきなり始めない）。
+ *     ここで 自分の 顔を 先に 見て、カメラを けすか どうかを 決め、マイクが
+ *     きこえるかを ためせる。ドアを ノックする 絵は やめた——学習者が これから
+ *     出るのは 会議室では なく **Zoom** で、練習すべき 操作も Zoom の 操作である
+ *     （2026-08-18 の指定）。
  *   - 自分のタイルは Webカメラの実映像。アバター画像は使わない（設計01 §101）
  *   - 退出のとき「お礼を 言いましたか？」の一呼吸を置く
  *
@@ -58,24 +64,6 @@ const BEFORE_LABEL: Record<CallPurpose, string> = {
   speak: "はなす まえに",
 };
 
-/**
- * マイクの ボタン（親が 声の 出し入れを 持って いるときだけ 出す）。
- *
- * 以前は `micOn` という state が この中に あったが、**どこにも 繋がって いなかった**
- * ——押すと ラベルだけ「🎤 マイク ON」に 変わり、音は 何も 変わらない。
- * 押しても 何も 起きない ボタンは、学習者に「自分の 操作が 間違って いる」と
- * 思わせる。繋げられる 画面（ミーティング）は ここに Live の 開始／終了を 渡し、
- * 渡さない 画面（リスニングの 再生）では ボタン自体を 出さない。
- */
-export interface CallMic {
-  /** いま 声が つながって いるか。 */
-  readonly on: boolean;
-  /** 押されたとき（つなぐ／切る）。 */
-  readonly onToggle: () => void;
-  /** つないで いる 最中（押せない）。 */
-  readonly busy?: boolean;
-}
-
 /** 読み辞書を渡されなかったとき（ふりがな無しで地の文だけ描く）。 */
 const EMPTY_INDEX: FuriganaIndex = buildFuriganaIndex([]);
 
@@ -113,10 +101,33 @@ export function CallShell({
   controlsAt = "top",
   /** 教材の読み辞書。渡すと 題・きょう やること・名札に ふりがなが つく。 */
   furigana,
+  /**
+   * ことばの 辞書（単語ステージを 畳んだもの）。渡すと「きょう やること」の
+   * ことばに 下線が つき、タップで 意味が 出る。
+   *
+   * 保存先を 増やさない——先生が スタジオ（DB）で 直した 単語ステージが
+   * そのまま ここに 出る（`src/lib/dictionary.ts`）。
+   */
+  dictionary,
   /** 入る前の見出し。話す教材は "speak"（既定は "listen"）。 */
   purpose = "listen",
-  /** マイクのボタン。渡さないと **ボタン自体を出さない**（繋がっていない飾りを置かない）。 */
-  mic,
+  /**
+   * 「話す」ところ（Zoom の 画面の **中**に 置く）。
+   *
+   * 小さな ボタンを 入力欄の 横に 置いて いた ころは、**どれを 押せば 声で 話せるのか**が
+   * 分からなかった（2026-08-18 の指定）。話すのは 会話の 中心の 操作なので、
+   * 相手の 顔の すぐ下——Zoom の 画面の 中——に 大きく 置く。
+   * 渡さない 画面（リスニングの 再生）では 何も 出ない。
+   */
+  speak,
+  /**
+   * 部屋に 入った 瞬間（さんかする を 押した とき）。
+   *
+   * 音を 鳴らす 教材は これを 待つ。ロビーに いる あいだに 鳴らすと、
+   * ブラウザに 止められる（人が さわる 前の 音は 鳴らせない 決まり）か、
+   * 入る 前に 鳴り終わって しまう——どちらでも「セリフが 流れない」に なる。
+   */
+  onJoined,
   onLeft,
 }: {
   title: string;
@@ -129,17 +140,29 @@ export function CallShell({
   children?: React.ReactNode;
   controlsAt?: CallControlsAt;
   furigana?: FuriganaIndex | readonly FuriganaEntry[];
+  dictionary?: readonly DictionaryEntry[];
   purpose?: CallPurpose;
-  mic?: CallMic;
+  speak?: React.ReactNode;
+  onJoined?: () => void;
   onLeft?: () => void;
 }) {
   const [stage, setStage] = useState<CallStage>("lobby");
   /*
-   * カメラは **OFFから 始める**。入った 瞬間に 自分の 顔が 出ると、声を 出すのも
-   * こわい 学習者には それだけで 障壁になる（教室では 隣の 画面も 見える）。
-   * 見せるか どうかは 学習者が 自分で 決める——下の「📷 カメラを つける」を 押せば ONになる。
+   * カメラは **ONから 始める**（2026-08-18 の指定）。Zoom は 既定で 映るので、
+   * 練習も 同じに する——ここで 学習者が やる ことは「うつる 画面で、けす／つける を
+   * 自分で 選ぶ」であって、はじめから 消えて いると その 練習に ならない。
+   *
+   * こわさは「順番」で ほどく。**さんかする 前の 画面**で 自分の 顔が 出るので、
+   * 相手に 見られる 前に 見て、けしてから 入れる。
+   * （以前は OFF 始まりだった。理由は「入った 瞬間に 顔が 出ると こわい」で、
+   *   その 心配は さんかの 前に 見せる ことで 消える。）
    */
-  const [cameraOn, setCameraOn] = useState(false);
+  const [cameraOn, setCameraOn] = useState(true);
+  /*
+   * カメラの 映像は **この 階で 1つだけ** 持つ。ロビーと 部屋で 別々に 取ると、
+   * 入室の たびに 取り直し（端末に よっては きょかを 聞き直す）になる。
+   */
+  const camera = useCameraStream(cameraOn);
   const index = useFuriganaIndex(furigana);
 
   if (stage === "lobby") {
@@ -148,8 +171,15 @@ export function CallShell({
         title={title}
         focus={focus}
         furigana={index}
+        dictionary={dictionary}
         purpose={purpose}
-        onEnter={() => setStage("inRoom")}
+        camera={camera}
+        cameraOn={cameraOn}
+        onToggleCamera={() => setCameraOn((v) => !v)}
+        onEnter={() => {
+          setStage("inRoom");
+          onJoined?.();
+        }}
       />
     );
   }
@@ -222,16 +252,17 @@ export function CallShell({
               furigana={index}
             />
           ))}
-          <SelfTile cameraOn={cameraOn} />
+          <SelfTile stream={camera.stream} error={camera.error} />
         </div>
 
-        <div className="flex items-center justify-center gap-2 border-t border-white/10 px-3 py-2">
-          {/* マイクは 繋がって いる 画面だけ（親が mic を 渡した ときだけ）出す */}
-          {mic ? (
-            <ToolButton on={mic.on} onClick={mic.onToggle} disabled={mic.busy}>
-              {mic.on ? "🎤 マイク ON" : "🔇 マイク OFF"}
-            </ToolButton>
-          ) : null}
+        {/* 話す ところは 相手の 顔の すぐ下（Zoom の 画面の 中）。渡されたときだけ 出す */}
+        {speak ? <div className="px-3 pb-3">{speak}</div> : null}
+
+        {/*
+          390px の 実機では、ボタンが 1行に 入りきらず「カメラを け」で
+          切れて いた。折り返して 全部の 字を 見せる（押せても 読めなければ 押せない）。
+        */}
+        <div className="flex flex-wrap items-center justify-center gap-2 border-t border-white/10 px-3 py-2">
           {/*
            * ボタンの文字は「いまの じょうたい」ではなく「押すと どうなるか」にする。
            * OFFのときに「カメラ OFF」と出ていると、押して よいのか 分からず、
@@ -261,45 +292,137 @@ function Lobby({
   title,
   focus,
   furigana,
+  dictionary,
   purpose,
+  camera,
+  cameraOn,
+  onToggleCamera,
   onEnter,
 }: {
   title: string;
   focus: string;
   furigana: FuriganaIndex;
+  dictionary?: readonly DictionaryEntry[];
   purpose: CallPurpose;
+  camera: CameraStream;
+  cameraOn: boolean;
+  onToggleCamera: () => void;
   onEnter: () => void;
 }) {
+  /*
+   * マイクは **おした ときだけ** ためす。カメラと 同時に 取りに いくと、
+   * きょかを 聞く 窓が 2つ 重なって、どちらに 答えたのか 分からなくなる。
+   */
+  const [micTrying, setMicTrying] = useState(false);
+  const mic = useMicLevel(micTrying);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       className="card-island mx-auto max-w-xl p-6 text-center sm:p-8"
     >
-      <NexMax variant="listen" size={100} className="mx-auto" bob />
-      <h1 className="text-ink mt-4 text-2xl font-extrabold">
+      <h1 className="text-ink text-2xl font-extrabold">
         <RubyText text={title} index={furigana} show />
       </h1>
 
       <div className="mt-4 text-left">
         <p className="text-ink-soft text-sm font-extrabold">{BEFORE_LABEL[purpose]}</p>
         <p className="text-ink mt-1 leading-relaxed font-bold">
-          <RubyText text={focus} index={furigana} show />
+          {/* 「きょう やること」は 教材の 文。ことばの 意味は タップで 出す（規律2・辞書） */}
+          <DictionaryText text={focus} index={furigana} show dictionary={dictionary} />
         </p>
       </div>
+
+      {/*
+        さんかする 前の 自分の 画面（Zoom の 待機の 画面と 同じ役）。
+        相手に 見られる 前に 自分の うつり方を 見て、けすか どうかを 決める。
+      */}
+      <div className="mt-4 overflow-hidden rounded-2xl" style={{ background: "#0f2233" }}>
+        <div className="relative mx-auto grid aspect-video place-items-center">
+          {cameraOn && camera.stream && !camera.error ? (
+            <CameraVideo stream={camera.stream} />
+          ) : (
+            <SelfAvatar note={cameraOn ? camera.error : null} />
+          )}
+          <span className="absolute bottom-1.5 left-2 rounded-full bg-black/45 px-2 py-0.5 text-[11px] font-bold text-white">
+            あなた
+          </span>
+        </div>
+
+        <div className="flex flex-wrap items-center justify-center gap-2 border-t border-white/10 px-3 py-2">
+          {/* ボタンの 字は「いまの じょうたい」ではなく「おすと どうなるか」 */}
+          <ToolButton on={cameraOn} onClick={onToggleCamera}>
+            {cameraOn ? "📷 カメラを けす" : "📷 カメラを つける"}
+          </ToolButton>
+          {/*
+            マイクの ためしは **じぶんが 話す 教材だけ**（`purpose: "speak"`）。
+            聞くだけの 教材に 置くと、どこにも つながらない ボタンに なる。
+          */}
+          {purpose === "speak" ? (
+            <ToolButton on={micTrying} onClick={() => setMicTrying((v) => !v)}>
+              {micTrying ? "🎤 マイクを とめる" : "🎤 マイクを ためす"}
+            </ToolButton>
+          ) : null}
+        </div>
+      </div>
+
+      {micTrying ? <MicMeter level={mic.level} error={mic.error} /> : null}
 
       <button
         type="button"
         onClick={onEnter}
-        className="btn-island btn-game mt-6 w-full px-6 py-4 text-lg"
+        className="btn-island btn-game mt-5 w-full px-6 py-4 text-lg"
       >
-        🔔 ドアを ノックする
+        ミーティングに さんかする
       </button>
-      {/* カメラは OFFから 始まる。ONに する 場所を ここで 先に 伝える（探させない） */}
+      {/* カメラは ONで 始まる。けす 場所を ここで 先に 伝える（探させない） */}
       <p className="text-ink-faint mt-2 text-xs font-bold">
-        カメラは OFFで はじまります。うつしたい ときは「📷 カメラを つける」を おしてね
+        カメラは ONで はじまります。うつしたくない ときは「📷 カメラを けす」を おしてね
       </p>
     </motion.div>
+  );
+}
+
+/**
+ * マイクの ものさし。
+ *
+ * 「マイクが つかえます」と 字で 書くだけでは、**自分の こえが 届いて いるか**は
+ * 分からない（きょかが おりても、端末の 音量が 0 の ことが ある）。
+ * こえを 出すと 棒が のびる——耳の 代わりに 目で たしかめられる ように する。
+ */
+function MicMeter({ level, error }: { level: number; error: string | null }) {
+  if (error) {
+    return (
+      <p className="bg-cream text-ink mt-3 rounded-[var(--radius-card)] px-4 py-2 text-sm font-bold">
+        {error}
+      </p>
+    );
+  }
+  const heard = level >= HEARD_LEVEL;
+  return (
+    <div className="bg-panel-tint mt-3 rounded-[var(--radius-card)] px-4 py-3">
+      <p className="text-ink-soft text-xs font-extrabold">
+        {heard ? "🎤 きこえて います！" : "🎤 こえを だして みて ください"}
+      </p>
+      <div
+        className="mt-2 h-3 w-full overflow-hidden rounded-full"
+        style={{ background: "rgba(15,34,51,0.12)" }}
+        role="meter"
+        aria-label="マイクの おおきさ"
+        aria-valuenow={Math.round(level * 100)}
+        aria-valuemin={0}
+        aria-valuemax={100}
+      >
+        <div
+          className="h-full rounded-full transition-[width] duration-100"
+          style={{
+            width: `${Math.round(level * 100)}%`,
+            background: heard ? "var(--color-leaf)" : "#8fc6ea",
+          }}
+        />
+      </div>
+    </div>
   );
 }
 
@@ -341,6 +464,150 @@ function useFuriganaIndex(source: FuriganaIndex | readonly FuriganaEntry[] | und
     if (source === undefined) return EMPTY_INDEX;
     return Array.isArray(source) ? buildFuriganaIndex(source) : (source as FuriganaIndex);
   }, [source]);
+}
+
+/** こえが 届いて いると 見なす 大きさ（ものさしの 色が 変わる）。 */
+const HEARD_LEVEL = 0.12;
+
+/** カメラの 映像と、取れなかった ときの 言いわけ。 */
+export interface CameraStream {
+  readonly stream: MediaStream | null;
+  readonly error: string | null;
+}
+
+/** マイクの 大きさ（0〜1）と、取れなかった ときの 言いわけ。 */
+interface MicLevel {
+  readonly level: number;
+  readonly error: string | null;
+}
+
+/** 消して いる あいだの 値。同じ 参照を 使い回す（毎回 作ると 描き直しが 連鎖する）。 */
+const CAMERA_OFF: CameraStream = { stream: null, error: null };
+const MIC_OFF: MicLevel = { level: 0, error: null };
+
+/**
+ * カメラを 1つだけ 開く（ロビー → 部屋 で 使い回す）。
+ *
+ * 状態の 更新は すべて Promise の あと（効果の 本体では setState しない）。
+ * 消した ときは 必ず track を 止める——止め忘れると、教材を 出た あとも
+ * 端末の カメラの ランプが ついたままに なる。
+ */
+function useCameraStream(on: boolean): CameraStream {
+  const [state, setState] = useState<CameraStream>(CAMERA_OFF);
+
+  useEffect(() => {
+    if (!on) return;
+    let live: MediaStream | null = null;
+    let cancelled = false;
+
+    const request = async (): Promise<CameraStream> => {
+      if (!navigator.mediaDevices?.getUserMedia) {
+        return { stream: null, error: "この ブラウザでは カメラが つかえません。" };
+      }
+      try {
+        return { stream: await navigator.mediaDevices.getUserMedia({ video: true }), error: null };
+      } catch {
+        return { stream: null, error: "カメラを つかう きょかが ありません。" };
+      }
+    };
+
+    void request().then((next) => {
+      if (cancelled) {
+        next.stream?.getTracks().forEach((t) => t.stop());
+        return;
+      }
+      live = next.stream;
+      setState(next);
+    });
+
+    return () => {
+      cancelled = true;
+      live?.getTracks().forEach((t) => t.stop());
+    };
+  }, [on]);
+
+  /*
+   * 消して いる あいだは 中身を 返さない（保存値を 消しに いかない）。
+   * つけ直した 直後の ひと呼吸は 前の 映像の 最後の 1枚が 残る——
+   * ここで 真っ黒に 落とすより、絵が 続いて いる ほうが 落ち着く。
+   */
+  return on ? state : CAMERA_OFF;
+}
+
+/**
+ * マイクの 大きさ（0〜1）。ロビーの ものさしだけが 使う。
+ *
+ * 部屋の 中の 声（Live）は 別の 道（`mic-capture.ts`）で 取る。ここで 開いた
+ * マイクは **ロビーを 出る ときに 必ず 閉じる**——開いたままだと、Live が
+ * つなぐ ときに 同じ 端末を 二重に つかむ ことに なる。
+ */
+function useMicLevel(on: boolean): MicLevel {
+  const [state, setState] = useState<MicLevel>(MIC_OFF);
+
+  useEffect(() => {
+    if (!on) return;
+    let cancelled = false;
+    let live: MediaStream | null = null;
+    let context: AudioContext | null = null;
+    let frame = 0;
+
+    const request = async (): Promise<{ stream: MediaStream | null; error: string | null }> => {
+      if (!navigator.mediaDevices?.getUserMedia) {
+        return { stream: null, error: "この ブラウザでは マイクが つかえません。" };
+      }
+      try {
+        return { stream: await navigator.mediaDevices.getUserMedia({ audio: true }), error: null };
+      } catch {
+        return { stream: null, error: "マイクを つかう きょかが ありません。" };
+      }
+    };
+
+    void request().then(({ stream, error: reason }) => {
+      if (cancelled) {
+        stream?.getTracks().forEach((t) => t.stop());
+        return;
+      }
+      live = stream;
+      setState({ level: 0, error: reason });
+      if (!stream) return;
+
+      context = new AudioContext();
+      // 自動再生の 制限で 止まった まま 始まる ことが ある（1つも 数えられない）
+      void context.resume();
+      const analyser = context.createAnalyser();
+      analyser.fftSize = 1024;
+      context.createMediaStreamSource(stream).connect(analyser);
+      const samples = new Uint8Array(analyser.fftSize);
+
+      const tick = () => {
+        analyser.getByteTimeDomainData(samples);
+        let sum = 0;
+        for (const sample of samples) {
+          // 128 が むおん。そこからの ずれの 二乗を ならす（RMS）
+          const shift = (sample - 128) / 128;
+          sum += shift * shift;
+        }
+        const loudness = Math.min(1, Math.sqrt(sum / samples.length) * 3);
+        /*
+         * 0.05 きざみに 丸めてから 入れる。毎フレーム そのまま 入れると
+         * 1秒に 60回 描き直す ことに なり、ロビーだけで 端末が 熱くなる。
+         */
+        const stepped = Math.round(loudness * 20) / 20;
+        setState((prev) => (prev.level === stepped ? prev : { ...prev, level: stepped }));
+        frame = requestAnimationFrame(tick);
+      };
+      frame = requestAnimationFrame(tick);
+    });
+
+    return () => {
+      cancelled = true;
+      cancelAnimationFrame(frame);
+      live?.getTracks().forEach((t) => t.stop());
+      void context?.close();
+    };
+  }, [on]);
+
+  return on ? state : MIC_OFF;
 }
 
 function ParticipantTile({
@@ -400,69 +667,35 @@ function ParticipantTile({
 }
 
 /** 自分のタイル。Webカメラの実映像を映す（アバター画像は使わない）。 */
-function SelfTile({ cameraOn }: { cameraOn: boolean }) {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!cameraOn) return;
-    let live: MediaStream | null = null;
-    let cancelled = false;
-
-    // 状態の更新はすべて Promise の後（エフェクト本体では setState しない）
-    const request = async (): Promise<{ stream: MediaStream | null; error: string | null }> => {
-      if (!navigator.mediaDevices?.getUserMedia) {
-        return { stream: null, error: "この ブラウザでは カメラが つかえません。" };
-      }
-      try {
-        return { stream: await navigator.mediaDevices.getUserMedia({ video: true }), error: null };
-      } catch {
-        return { stream: null, error: "カメラを つかう きょかが ありません。" };
-      }
-    };
-
-    void request().then(({ stream, error: reason }) => {
-      if (cancelled) {
-        stream?.getTracks().forEach((t) => t.stop());
-        return;
-      }
-      live = stream;
-      setError(reason);
-      if (stream && videoRef.current) videoRef.current.srcObject = stream;
-    });
-
-    return () => {
-      cancelled = true;
-      live?.getTracks().forEach((t) => t.stop());
-    };
-  }, [cameraOn]);
-
+function SelfTile({ stream, error }: { stream: MediaStream | null; error: string | null }) {
   return (
     <div
       className="relative grid aspect-video place-items-center overflow-hidden rounded-2xl"
       style={{ background: "#16324a", outline: "1px solid rgba(255,255,255,0.08)" }}
     >
-      {cameraOn && !error ? (
-        <video
-          ref={videoRef}
-          autoPlay
-          playsInline
-          muted
-          className="h-full w-full object-cover"
-          style={{ transform: "scaleX(-1)" }}
-        />
-      ) : (
-        /*
-          カメラを切っているあいだは「カメラ OFF」の字だけが残っていた。
-          相手の顔は出ているのに自分の枠だけ真っ暗だと、会話の場に居る感じが消える。
-          診断で決まった**自分のネクマックス**を置く（Zoomのプロフィール画像と同じ役）。
-        */
-        <SelfAvatar note={error} />
-      )}
+      {stream && !error ? <CameraVideo stream={stream} /> : <SelfAvatar note={error} />}
       <span className="absolute bottom-1.5 left-2 rounded-full bg-black/45 px-2 py-0.5 text-[11px] font-bold text-white">
         あなた
       </span>
     </div>
+  );
+}
+
+/** 受け取った 映像を 流すだけの 箱（鏡なので 左右を 反す）。 */
+function CameraVideo({ stream }: { stream: MediaStream }) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  useEffect(() => {
+    if (videoRef.current) videoRef.current.srcObject = stream;
+  }, [stream]);
+  return (
+    <video
+      ref={videoRef}
+      autoPlay
+      playsInline
+      muted
+      className="h-full w-full object-cover"
+      style={{ transform: "scaleX(-1)" }}
+    />
   );
 }
 
