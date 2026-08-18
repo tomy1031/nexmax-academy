@@ -230,6 +230,17 @@ Vercel の2本（`nexmax-academy.vercel.app` / `*.vercel.app`）は移行完了�
   Node ランタイム固定で、OpenNext は Node middleware を検出してビルドを止める
   （AGENTS.md 絶対規律 8・計画書 §2.3）
 - `compatibility_date` は `2025-05-05` 以降が必須（`FinalizationRegistry` 対策）
+- **`public/_headers` を消さない。** `/_next/static/*` に
+  `Cache-Control: public,max-age=31536000,immutable` を付けている。Workers の静的アセットは
+  既定が `max-age=0, must-revalidate` で、①画面を開くたび全部品をサーバへ問い合わせる
+  （回線の細い学習者に効く）②デプロイ直後はその問い合わせが 404 になり、**手元に持っている
+  部品まで使えなくなる**。`/_next/static/` の名前には中身のハッシュが入るので immutable で安全
+  （2026-08-18「This page couldn't load が頻発する」で導入）
+- **デプロイ直後の `ChunkLoadError` は 0 にはできない。** Workers の静的アセットは
+  **いま出ているデプロイのぶんしか置かれない**ので、開きっぱなしのタブが次のページへ進むと
+  古い名前（`app/map/page-<ハッシュ>.js`）が 404 になる。受け止めは
+  `src/app/global-error.tsx` — 部品の取りこぼしと分かったときだけ**自動で1回だけ読み直す**
+  （`src/lib/stale-asset.ts`。二度目からは学習者が押すボタンに落とす）
 - `incrementalCache` は **KV**（2026-08-13 導入）。学習者ページ14ルートが
   `revalidate = 60` の ISR なのにキャッシュが無く、全アクセス＋全プリフェッチが
   フルSSRになって CPU 上限超過（Error 1102）が多発したため。KV は無料枠内

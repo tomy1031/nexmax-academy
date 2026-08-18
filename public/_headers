@@ -1,0 +1,16 @@
+# Cloudflare Workers の 静的アセットに 付ける ヘッダ（この ファイルは 配信されない）。
+#   https://developers.cloudflare.com/workers/static-assets/headers/
+#   https://opennext.js.org/cloudflare/caching#static-assets-caching
+#
+# `/_next/static/` の ファイル名には **中身のハッシュ**が 入る（中身が 変われば 名前も
+# 変わる）ので、いちど 取った ものは ずっと 使い回してよい。
+#
+# 既定のままだと Workers は `max-age=0, must-revalidate` を 付ける。すると
+#  - 画面を 開くたび すべての 部品を サーバに 問い合わせる（回線の 細い 学習者に 効く）
+#  - デプロイの あとは その 問い合わせが 404 になり、手元に 持っている 部品まで
+#    使えなくなって `ChunkLoadError` に なる
+# immutable にすると 問い合わせ自体が 消えるので、両方 起きなくなる。
+#
+# HTML と RSC は ここに 入れない（Worker 側が 出す ヘッダに まかせる）。
+/_next/static/*
+  Cache-Control: public,max-age=31536000,immutable
