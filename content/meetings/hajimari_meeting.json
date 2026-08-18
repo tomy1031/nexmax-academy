@@ -17,14 +17,16 @@
       "ask": "はじめまして。わたしは ヘンディです。お名前を おしえて ください。",
       "hint": "「わたしは ◯◯です。」",
       "keywords": [],
-      "echo": "◯◯さんですね。おぼえました。よろしく おねがいします。"
+      "echo": "◯◯さんですね。おぼえました。よろしく おねがいします。",
+      "audioUrl": "/audio/meetings/hajimari_meeting/q1_name.wav"
     },
     {
       "id": "q2_from",
       "ask": "◯◯さんは、どこから 来ましたか。",
       "hint": "「わたしは ◯◯から 来ました。」",
       "keywords": [],
-      "echo": "◯◯ですか。いい ところですね。行って みたいです。"
+      "echo": "◯◯ですか。いい ところですね。行って みたいです。",
+      "audioUrl": "/audio/meetings/hajimari_meeting/q2_from.wav"
     },
     {
       "id": "q3_school",
@@ -37,21 +39,24 @@
         "日本語",
         "にほんご"
       ],
-      "echo": "◯◯を 勉強して いるんですね。すごいです。"
+      "echo": "◯◯を 勉強して いるんですね。すごいです。",
+      "audioUrl": "/audio/meetings/hajimari_meeting/q3_school.wav"
     },
     {
       "id": "q4_japanese",
       "ask": "日本語の 勉強は、どうですか。むずかしいですか。",
       "hint": "「すこし むずかしいです。」／「たのしいです。」",
       "keywords": [],
-      "echo": "◯◯なんですね。わたしも 日本語を おぼえる とき、おなじ 気もちでした。"
+      "echo": "◯◯なんですね。わたしも 日本語を おぼえる とき、おなじ 気もちでした。",
+      "audioUrl": "/audio/meetings/hajimari_meeting/q4_japanese.wav"
     },
     {
       "id": "q5_why",
       "ask": "どうして ITの しごとを えらびましたか。",
       "hint": "「◯◯が すきだからです。」",
       "keywords": [],
-      "echo": "◯◯。いい りゆうですね。その 気もちは 大切です。"
+      "echo": "◯◯。いい りゆうですね。その 気もちは 大切です。",
+      "audioUrl": "/audio/meetings/hajimari_meeting/q5_why.wav"
     },
     {
       "id": "q6_dream",
