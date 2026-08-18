@@ -283,6 +283,7 @@ export function emptyMeeting(): Meeting {
     host: { id: "", name: "", role: "", accent: "sky" },
     questions: [emptyMeetingQuestion(), emptyMeetingQuestion(), emptyMeetingQuestion()],
     closing: "",
+    discover: [],
   };
 }
 

@@ -264,6 +264,14 @@ export function MeetingSession({
   const answeringRef = useRef<MeetingQuestion | null>(null);
   /** チャット欄に 積む 記録（相手の しつもん・自分の 答え・見かた）。 */
   const [chat, setChat] = useState<readonly ChatEntry[]>([]);
+  /**
+   * 聞き出せた こと（願い #94）。
+   *
+   * ぜんぶ 答えた あとの おしゃべりを「相手の ことを 見つける」練習に する。
+   * 開くのは **学習者の しつもんが 当たった とき**だけ——自分で 引き出した から
+   * 開く 価値が ある（設計01 P2）。判定は この 端末の 中で 済ませる。
+   */
+  const [found, setFound] = useState<ReadonlySet<string>>(() => new Set<string>());
   const pushChat = useCallback((entry: ChatBody) => {
     setChat((prev) => [...prev, { ...entry, id: `${prev.length}-${entry.kind}` }]);
   }, []);
@@ -611,8 +619,20 @@ export function MeetingSession({
       if (text.length === 0) return;
       setDraft("");
       pushChat({ kind: "me", text });
+      /*
+       * 聞き出せたか を 見る。当たった ら 札を 開く。
+       * 声が つながって いない ときは、教材に 書いた 答えを そのまま 出す
+       *（**聞けば 答えが 返る**という 会話の 形を、声の あるなしで 変えない）。
+       */
+      const hit = meeting.discover.find(
+        (item) => !found.has(item.id) && item.keywords.some((word) => text.includes(word)),
+      );
+      if (hit) setFound((prev) => new Set([...prev, hit.id]));
+
       if (live) {
         voice.sendText(text);
+      } else if (hit) {
+        pushChat({ kind: "host", text: hit.answer });
       } else {
         /*
          * 声で つないで いない 学習者は、**誰も いない 部屋に 話しかけて いた**
@@ -673,7 +693,20 @@ export function MeetingSession({
     answeringRef.current = question;
     if (live) voice.sendText(text);
     void judgeUtterance(text, live, question);
-  }, [draft, question, thinking, live, voice, judgeUtterance, noticedText, next, pushChat, done]);
+  }, [
+    draft,
+    question,
+    thinking,
+    live,
+    voice,
+    judgeUtterance,
+    noticedText,
+    next,
+    pushChat,
+    done,
+    meeting.discover,
+    found,
+  ]);
 
   /** 同じ質問をもう一度。回数だけ増やして、質問は変えない。 */
   const retry = useCallback(() => {
@@ -822,6 +855,31 @@ export function MeetingSession({
           show
         />
       </p>
+      {meeting.discover.length > 0 ? (
+        <div className="card-island p-4">
+          <p className="text-ink-soft text-xs font-extrabold">
+            <RubyText
+              text={`🔎 ${meeting.host.name}さんの ことを 見つけよう（${found.size} / ${meeting.discover.length}）`}
+              index={CHROME_FURIGANA}
+              show
+            />
+          </p>
+          <ul className="mt-2 space-y-1">
+            {meeting.discover.map((item) => (
+              <li key={item.id} className="text-ink text-sm font-black">
+                {found.has(item.id) ? (
+                  <>
+                    ✅ <RubyText text={item.label} index={furigana} show />
+                  </>
+                ) : (
+                  <span className="text-ink-faint">？？？</span>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
+
       {chatPanel}
     </div>
   ) : (

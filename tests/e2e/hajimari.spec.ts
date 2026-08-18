@@ -136,7 +136,17 @@ test("6つ おわると「聞く ばん」に なり、こえが 無くても �
   const box = page.getByLabel("こたえを 入力する");
   await box.fill("ヘンディさんは、どんな しごとを して いますか。");
   await box.press("Enter");
+  /*
+   * 「しごと」の ことばが 当たった ので、**聞き出せた**ことに なる——
+   * 声が つながって いなくても、教材に 書いた 答えが 返る。
+   */
+  await expect(page.getByText("知らない 人が わたしの 作った")).toBeVisible();
+  /* 見出しの 漢字には ルビが 入る ので、数の ところで 見る */
+  await expect(page.getByText(/（1 \/ 3）/)).toBeVisible();
+
+  // 当たらない ことばの ときは、責めずに 次の 一手を 出す
+  await box.fill("きょうは あついですね。");
+  await box.press("Enter");
   await expect(page.getByText("しつもんが 言えましたね。")).toBeVisible();
-  await expect(page.getByText("きょう はなせた こと」に のこります")).toBeVisible();
   await shot(page, "33-hajimari-free-talk");
 });
