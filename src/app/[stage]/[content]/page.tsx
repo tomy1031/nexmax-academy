@@ -236,6 +236,13 @@ async function renderContent(ref: StageContentRef) {
           meeting={meeting}
           hostVoice={host?.voice}
           hostMouth={host?.mouth}
+          /*
+           * ことばの 意味は 読みものと 同じ 辞書から 出す（単語ステージを 畳んだもの）。
+           * このステージの ぶんだけに 絞らないのは、しつもんに 出る ことばは
+           * 前の 課で 習った ものが 多いため——絞ると、いちばん 助けが 要る
+           * 「前に 習ったが 忘れた語」に 説明が 出なくなる。
+           */
+          dictionary={buildDictionary(await listWordStages())}
           embedded
         />
       );

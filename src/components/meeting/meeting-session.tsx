@@ -4,7 +4,9 @@ import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore
 import { motion } from "motion/react";
 import type { Meeting } from "@/content/schema";
 import { CallShell, CaptionBar } from "@/components/call-shell";
+import { DictionaryText } from "@/components/dictionary-text";
 import { RubyText } from "@/components/ruby-text";
+import type { DictionaryEntry } from "@/lib/dictionary";
 import { buildFuriganaIndex, kanaOf } from "@/lib/text/furigana";
 import {
   HINT_BLANK,
@@ -167,12 +169,22 @@ export function MeetingSession({
   hostVoice,
   /** 相手の口パクの絵（人物カードの mouth）。無ければ置き場の決まりに従う。 */
   hostMouth,
+  /**
+   * ことばの 辞書（単語ステージを 畳んだもの）。相手の しつもんと
+   * 「きょう やること」の ことばに 下線が つき、タップで 意味が 出る。
+   *
+   * 読みもの（`article-view`）と 同じ 引き先を 使う——ミーティング専用の
+   * 用語集を 別に 持つと、同じ「先輩」の 説明が 2つに 割れて 育つ。
+   * 中身は 先生が スタジオ（DB）で 直せる（`src/lib/dictionary.ts`）。
+   */
+  dictionary,
   /** ステージの枠の中に置くとき。戻り先は枠が持つ。 */
   embedded = false,
 }: {
   meeting: Meeting;
   hostVoice?: string;
   hostMouth?: Partial<Record<Viseme, string>>;
+  dictionary?: readonly DictionaryEntry[];
   embedded?: boolean;
 }) {
   const furigana = useMemo(() => buildFuriganaIndex(meeting.furigana ?? []), [meeting.furigana]);
@@ -578,7 +590,12 @@ export function MeetingSession({
     <div className="space-y-3">
       <div className="card-island p-5">
         <p className="text-navy text-lg font-black">
-          <RubyText text={withName(meeting.closing)} index={furigana} show />
+          <DictionaryText
+            text={withName(meeting.closing)}
+            index={furigana}
+            show
+            dictionary={dictionary}
+          />
         </p>
       </div>
 
@@ -600,7 +617,11 @@ export function MeetingSession({
     <div className="space-y-3">
       <CaptionBar
         speaker={meeting.host.name}
-        text={<RubyText text={askText} index={furigana} show />}
+        /*
+         * しつもんの ことばは タップで 意味が 出る（辞書）。いちばん 読む 文が
+         * ここで、読めない 1語で 学習者は 答えられなくなる。
+         */
+        text={<DictionaryText text={askText} index={furigana} show dictionary={dictionary} />}
       />
 
       {voice.turns.length > 0 ? (
@@ -871,6 +892,8 @@ export function MeetingSession({
         focus={meeting.focus}
         /* 題・きょう やること・名札の 漢字に ふりがなを つける（教材の 読み辞書） */
         furigana={furigana}
+        /* 「きょう やること」の ことばに 意味の 吹き出しを つける */
+        dictionary={dictionary}
         /* 話す 教材なので 見出しは「はなす まえに」 */
         purpose="speak"
         /*

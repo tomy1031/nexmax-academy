@@ -4,7 +4,7 @@
   "order": 1,
   "title": "はじまり",
   "reading": "はじまり",
-  "description": "ヘンディさんからの てがみを よみます。ちずの あるきかたを しって、へんじを かきます。",
+  "description": "ヘンディさんからの てがみを よみます。そのあと、Zoomで ヘンディさんと はなします。",
   "color": "sky",
   "status": "published",
   "area": {
@@ -17,10 +17,6 @@
     {
       "ref": "hajimari_manga",
       "type": "manga"
-    },
-    {
-      "ref": "hajimari_chizu",
-      "type": "article"
     },
     {
       "ref": "hajimari_meeting",
