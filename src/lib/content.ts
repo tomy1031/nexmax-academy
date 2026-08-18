@@ -21,6 +21,7 @@ import {
   type Article,
   type Character,
   type Content,
+  type LinkContent,
   type Listening,
   type Manga,
   type Meeting,
@@ -227,4 +228,15 @@ export const listSlides = cache(async (): Promise<Slides[]> => {
 
 export async function getSlides(id: string): Promise<Slides | null> {
   return (await listSlides()).find((slides) => slides.id === id) ?? null;
+}
+
+export const listLinks = cache(async (): Promise<LinkContent[]> => {
+  const git = parseAll().filter((c): c is LinkContent => c.kind === "link");
+  return mergeContentsById(git, await listPublishedFromDb("link")).sort((a, b) =>
+    a.id.localeCompare(b.id),
+  );
+});
+
+export async function getLink(id: string): Promise<LinkContent | null> {
+  return (await listLinks()).find((link) => link.id === id) ?? null;
 }

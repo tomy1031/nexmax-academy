@@ -4,6 +4,7 @@ import { RESERVED_STAGE_IDS, type Stage, type StageContentRef } from "@/content/
 import { ArticleView } from "@/components/article/article-view";
 import { MeetingSession } from "@/components/meeting/meeting-session";
 import { TalkSession } from "@/components/listening/live-mode";
+import { LinkView } from "@/components/link/link-view";
 import { ListeningPlayer } from "@/components/listening/playback-mode";
 import { MangaReader } from "@/components/manga/manga-reader";
 import { QuizRunner } from "@/components/quiz/quiz-runner";
@@ -13,6 +14,7 @@ import {
   getArticle,
   getArticleCharacters,
   getCharacter,
+  getLink,
   getListening,
   getManga,
   getQuizSet,
@@ -111,6 +113,10 @@ export async function generateMetadata({
       return { title: `${(await getMeeting(ref.ref))?.title ?? ""} | ミーティング` };
     case "wordstage":
       return { title: "ことば" };
+    case "link": {
+      const link = await getLink(ref.ref);
+      return { title: `${link?.title ?? ""} | リンク`, description: link?.description };
+    }
   }
 }
 
@@ -246,6 +252,11 @@ async function renderContent(ref: StageContentRef) {
           embedded
         />
       );
+    }
+    case "link": {
+      const link = await getLink(ref.ref);
+      if (!link) notFound();
+      return <LinkView link={link} embedded />;
     }
     // 単語ステージは contents[] に入らない（wordStageIds 側・行き先は /arcade）。
     // ここに来るのは壊れたデータなので 404 にする。

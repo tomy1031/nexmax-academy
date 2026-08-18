@@ -32,6 +32,7 @@ export const CONTENT_SEGMENTS = {
   quizset: "quiz",
   scenario: "talk",
   meeting: "meeting",
+  link: "link",
   /** 単語ステージは contents[] ではなく wordStageIds に入る（行き先は /arcade）。 */
   wordstage: "words",
 } as const satisfies Record<ContentRefType, string>;

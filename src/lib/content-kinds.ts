@@ -50,6 +50,11 @@ const META: Record<ContentRefType, ContentKindMeta> = {
   // 呼び名も行き先も分ける（学習者が「調べて聞く」つもりで入らないように）。
   meeting: { icon: "💬", label: "ミーティング", href: (id) => `/meeting/${id}`, gates: true },
   wordstage: { icon: "🕹️", label: "ことば", href: (id) => `/arcade/${id}`, gates: true },
+  // リンク（1枚で完結する練習ページ・外のサイト）。行き先はステージの中だけにある
+  // ——単独のURL（/link/<id>）は作っていないので、ここはステージ経由の道を返す。
+  // 関門にしない理由はスライドと同じで、**中で何が起きたかがアプリから見えない**から
+  // （schema.ts の linkSchema）。おわった記録は残すが、先へは進める。
+  link: { icon: "🔗", label: "リンク", href: (id) => `/link/${id}`, gates: false },
 };
 
 export function contentKindMeta(type: ContentRefType): ContentKindMeta {

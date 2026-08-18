@@ -759,6 +759,16 @@ function collectLabeledTexts(content: Content): LabeledText[] {
       // persona / judgePrompt は Live への指示（scenario の interview.persona と同じ扱い）
       break;
     }
+
+    case "link": {
+      push("title", content.title);
+      push("description", content.description);
+      // 開く前に出す ひとこと。ここまでが「アプリの文」で、この先（リンクの中）は
+      // アプリから触れない——スライドの PDF と同じ立場である。
+      push("note", content.note);
+      // url は 行き先。学習者は読まない
+      break;
+    }
   }
 
   return out;

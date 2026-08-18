@@ -36,6 +36,10 @@
   "listed": false,
   "contents": [
     {
+      "ref": "romaji_nyuuryoku",
+      "type": "link"
+    },
+    {
       "ref": "it_orientation",
       "type": "slides"
     },
