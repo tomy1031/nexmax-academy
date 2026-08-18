@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { bareKanjiTexts, itemsBefore, KAISHA, knock, seedCompleted } from "./helpers";
+import { bareKanjiTexts, itemsBefore, KAISHA, joinCall, seedCompleted } from "./helpers";
 
 /**
  * ふりがなの 覆い（規律2）を **実画面で** 見張る
@@ -52,7 +52,7 @@ for (const screen of SCREENS) {
 test("ミーティングの 中（入室後・答える前）にも 裸の漢字が 無い", async ({ page, context }) => {
   await seedCompleted(context, itemsBefore(4));
   await page.goto(KAISHA.meetingHendy.path);
-  await knock(page);
+  await joinCall(page);
 
   const bare = await bareKanjiTexts(page);
   expect(bare.filter((text) => !KNOWN_BARE_KANJI.includes(text))).toEqual([]);

@@ -33,7 +33,7 @@ test("それでも 見る を おせば、先生も 中身を たしかめられ
   await page.getByRole("button", { name: "それでも 見る" }).click();
 
   await expect(page.getByText("はなす まえに")).toBeVisible();
-  await expect(page.getByRole("button", { name: "ドアを ノックする" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "ミーティングに さんかする" })).toBeVisible();
 });
 
 test("5番目まで おわった 端末では、5番目が ひらき、6番目は まだ ひらかない", async ({
