@@ -1,0 +1,94 @@
+name: ミーティングの 音声づくり
+
+# 教材の しつもんと おわりの ひとことを 音に して、PR に する。
+#
+# なぜ GitHub Actions で やるか:
+#   音づくりには Gemini の 鍵が 要るが、この プロジェクトは BYOK 方式で
+#   サーバにも `.env` にも Cloudflare にも 鍵を 置かない（docs/deploy.md の 表・
+#   scripts/check_build_env.mjs の 検査）。唯一 置いて ある のは
+#   **Environment「Preview」の Secrets** なので、鍵の 要る 作業は ここで 回す。
+#   ユーザーに コマンドを 叩かせない ため（docs/constraints.md 運用の制約）。
+#
+# 使い方: Actions タブ → この ワークフロー → Run workflow → 教材ID を 入れる。
+#   出来上がりは **PR** で 届く（main へ 直接 入れない）。
+
+on:
+  workflow_dispatch:
+    inputs:
+      meeting:
+        description: どの ミーティングか（content/meetings/<ID>.json の ID）
+        type: string
+        required: true
+        default: hajimari_meeting
+
+concurrency:
+  group: meeting-audio-${{ github.event.inputs.meeting }}
+  cancel-in-progress: false
+
+jobs:
+  make:
+    runs-on: ubuntu-latest
+    # 鍵は Environment「Preview」に ある（リポジトリ直下の Secrets とは 別物）
+    environment: Preview
+    timeout-minutes: 30
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+
+      # 音づくり本体。**ビルドには 鍵を 渡さない**（OpenNext が バンドルへ 焼き込む）
+      - name: 音を つくる
+        run: node --import tsx scripts/make_meeting_audio.ts "${{ github.event.inputs.meeting }}"
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+
+      # 教材データを 直したので、焼き込みモジュールも 作り直す
+      - name: 焼き込みを 作り直す
+        run: npm run gen:content
+
+      - name: 検収
+        run: npm run lint:content
+
+      - name: PR に する
+        env:
+          GH_TOKEN: ${{ github.token }}
+          MEETING: ${{ github.event.inputs.meeting }}
+        run: |
+          set -euo pipefail
+          # 名義を そろえる（Actions の 実行が 承認待ちで 止まらない ように）
+          git config user.name tomy1031
+          git config user.email 33148568+tomy1031@users.noreply.github.com
+          BRANCH="audio/${MEETING}-${GITHUB_RUN_ID}"
+          git switch -c "$BRANCH"
+          git add public/audio "content/meetings/${MEETING}.json" src/content/git-contents.generated.ts
+          if git diff --cached --quiet; then
+            echo "変わった ものが ありません（音は すでに あります）"
+            exit 0
+          fi
+          {
+            echo "feat(ミーティング): ${MEETING} の こえを 作り置きする"
+            echo
+            echo "しつもんと おわりの ひとことを 音に して、教材に audioUrl を 付けた。"
+            echo "つないで いない 学習者にも 声が 届き、開いた 瞬間に 鳴る。"
+            echo
+            echo "Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"
+          } > /tmp/audio-commit.txt
+          # 共有ファイルの 検問は 承認済みの 変更として 通す（生成物だけを 入れる）
+          ALLOW_SHARED=1 git commit -F /tmp/audio-commit.txt
+          git push -u origin "$BRANCH"
+          {
+            echo "Actions の「ミーティングの 音声づくり」で 作りました。声は 人物カードの voice。"
+            echo
+            echo "- 置き場: public/audio/meetings/${MEETING}/"
+            echo "- 教材の audioUrl / closingAudioUrl を 更新"
+            echo "- 学習者は チャットの 🔊 で 何度でも 聞き直せる"
+          } > /tmp/audio-pr.txt
+          gh pr create --base main --head "$BRANCH" --title "feat(ミーティング): ${MEETING} の こえを 作り置きする" --body-file /tmp/audio-pr.txt
