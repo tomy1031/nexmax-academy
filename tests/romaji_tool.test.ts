@@ -15,7 +15,7 @@
 import { describe, expect, it } from "vitest";
 import { FORBIDDEN_LEARNER_WORDS } from "@/content/schema";
 import { buildFuriganaIndex, uncoveredKanji } from "@/lib/text/furigana";
-// @ts-expect-error -- 静的ページの素の JS モジュール（型定義は持たない）
+// 静的ページの素の JS モジュール（tsconfig の allowJs で そのまま 読める）
 import {
   FURIGANA,
   GLOSSARY,
@@ -23,7 +23,7 @@ import {
   MESSAGES,
   SCREEN_TEXT,
 } from "../public/tools/romaji/lessons.js";
-// @ts-expect-error -- 同上（じゅんびのマニュアル）
+// 同上（じゅんびのマニュアル）
 import { MANUAL } from "../public/tools/romaji/manual.js";
 
 interface PracticeItem {

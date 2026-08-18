@@ -393,8 +393,16 @@ function renderManual() {
     const num = document.createElement("span");
     num.className = "manual-step-num";
     num.textContent = String(index + 1);
-    head.append(num);
-    head.append(ruby(step.title));
+    /*
+     * 見出しの 文は かならず 1つの span に 入れる。flex の 中に 地の文と
+     * ruby を そのまま 置くと、**1語ずつ ばらばらの 部品に なって 横に 並ぶ**——
+     * 「「あ」が 無い ときは、日本語を たす」が すきまだらけで 割れる
+     *（ユーザー報告 2026-08-18。手順の li でも 同じことが 起きた）。
+     */
+    const label = document.createElement("span");
+    label.className = "manual-step-label";
+    label.append(ruby(step.title));
+    head.append(num, label);
     section.append(head);
 
     const body = document.createElement("p");
