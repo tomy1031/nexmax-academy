@@ -11,14 +11,12 @@ import type { VoiceStatus } from "./use-live-voice";
  * 送信ボタンと 同じ 大きさで 並んで いたので、**どれを 押せば 声で 話せるのか**が
  * 分からなかった（2026-08-18 の指定）。相手の 顔の すぐ下に、いちばん 大きく 置く。
  *
- * ## なぜ「おしている あいだ だけ」か
- * つないだ あいだ ずっと マイクを 送って いたので、教室の ざわめきが
- * 「学習者が 話しはじめた」と 受け取られ、**相手の セリフが 途中で 止まって** いた。
- * 押している あいだ だけ 送れば、言いたい ときに 言い、聞きたい ときに 聞ける。
- *
- * ## 指が すべっても 切れない
- * `setPointerCapture` で 指を この ボタンに 結びつける。押したまま 指が 外へ 出ても
- * 「はなした」合図は 必ず ここへ 返る——出た ところで 切れると、送りっぱなしに なる。
+ * ## なぜ「押している あいだ だけ」では ないのか（2026-08-18 に 変更）
+ * はじめは 押しっぱなし（押している あいだだけ 送る）に した。指を はなす タイミングが
+ * 分からない・長い 文の 途中で 指が すべる、と 使いにくかった ので、
+ * **1回 押したら 会話モード、もう 1回 押したら おわり**の トグルに した。
+ * 送るのを 止められる 仕組み自体は 同じなので、ざわめきで 相手の セリフが
+ * 途中で 止まる ことも 起きない（話し終えたら もう いちど 押す）。
  */
 
 /** 押している あいだの 色（赤）と、待って いる あいだの 色（緑）。 */
@@ -84,27 +82,7 @@ export function SpeakButton({
       <motion.button
         type="button"
         aria-pressed={talking}
-        /* 長おしの メニューや 字の 選択が 出ると、押しっぱなしが 途切れる */
-        onContextMenu={(event) => event.preventDefault()}
-        onPointerDown={(event) => {
-          event.currentTarget.setPointerCapture(event.pointerId);
-          onStartTalking();
-        }}
-        onPointerUp={onStopTalking}
-        onPointerCancel={onStopTalking}
-        /* キーボードの 人も 同じ「おしている あいだ」で 話せる */
-        onKeyDown={(event) => {
-          if ((event.key === " " || event.key === "Enter") && !event.repeat) {
-            event.preventDefault();
-            onStartTalking();
-          }
-        }}
-        onKeyUp={(event) => {
-          if (event.key === " " || event.key === "Enter") {
-            event.preventDefault();
-            onStopTalking();
-          }
-        }}
+        onClick={talking ? onStopTalking : onStartTalking}
         animate={talking ? { scale: [1, 1.03, 1] } : { scale: 1 }}
         transition={talking ? { duration: 1.1, repeat: Infinity } : { duration: 0.15 }}
         className="btn-island btn-game w-full touch-none px-6 py-5 text-xl select-none"
@@ -115,12 +93,12 @@ export function SpeakButton({
           } as React.CSSProperties
         }
       >
-        {talking ? "🔴 いま きいて います" : "🎤 おしながら はなす"}
+        {talking ? "🔴 いま きいて います（おすと おわり）" : "🎤 おして はなす"}
       </motion.button>
       <p className="mt-1.5 text-xs font-bold break-keep text-white/70">
         {talking
-          ? "はなしおわったら、ゆびを あげて ください"
-          : "ボタンを おしている あいだだけ、こえを おくります"}
+          ? "はなしおわったら、もう いちど おして ください"
+          : "おすと、こえを おくります。はなしおわったら もう いちど おします"}
       </p>
     </div>
   );

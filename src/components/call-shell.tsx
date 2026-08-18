@@ -121,6 +121,12 @@ export function CallShell({
    */
   speak,
   /**
+   * 入る 前の 画面に 置く つまみ（話す 速さ など）。
+   * **入る 前に 決められる** ことが 大事な もの だけを ここに 置く
+   *（はじめの ひとことから 効かせたい つまみは、入って からでは 遅い）。
+   */
+  settings,
+  /**
    * 部屋に 入った 瞬間（さんかする を 押した とき）。
    *
    * 音を 鳴らす 教材は これを 待つ。ロビーに いる あいだに 鳴らすと、
@@ -143,6 +149,7 @@ export function CallShell({
   dictionary?: readonly DictionaryEntry[];
   purpose?: CallPurpose;
   speak?: React.ReactNode;
+  settings?: React.ReactNode;
   onJoined?: () => void;
   onLeft?: () => void;
 }) {
@@ -173,6 +180,7 @@ export function CallShell({
         furigana={index}
         dictionary={dictionary}
         purpose={purpose}
+        settings={settings}
         camera={camera}
         cameraOn={cameraOn}
         onToggleCamera={() => setCameraOn((v) => !v)}
@@ -294,6 +302,7 @@ function Lobby({
   furigana,
   dictionary,
   purpose,
+  settings,
   camera,
   cameraOn,
   onToggleCamera,
@@ -304,6 +313,7 @@ function Lobby({
   furigana: FuriganaIndex;
   dictionary?: readonly DictionaryEntry[];
   purpose: CallPurpose;
+  settings?: React.ReactNode;
   camera: CameraStream;
   cameraOn: boolean;
   onToggleCamera: () => void;
@@ -368,6 +378,9 @@ function Lobby({
       </div>
 
       {micTrying ? <MicMeter level={mic.level} error={mic.error} /> : null}
+
+      {/* 入る 前に 決めて おける つまみ（話す 速さ など） */}
+      {settings ? <div className="mt-3">{settings}</div> : null}
 
       <button
         type="button"

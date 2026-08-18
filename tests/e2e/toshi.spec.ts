@@ -3,7 +3,7 @@ import {
   expectQuizCorrect,
   choiceButtons,
   fillWordBank,
-  goNextAsk,
+  waitForAsk,
   goNextQuestion,
   hearts,
   KAISHA_ITEMS,
@@ -215,10 +215,11 @@ test("かいしゃステージを 6教材 通しで あそべる（端末に 何
       await speakByText(page, answer);
       await expect(page.getByText("🌸").first()).toBeVisible();
       expect(await openedCards(page)).toBe(index + 1);
-      await goNextAsk(page);
+      // ボタンを 押さなくても つぎの しつもんが 出る（会話が 止まらない）
+      await waitForAsk(page, index + 2);
     }
 
-    // さいごの1問は 答えずに 通れる（答えられない 学習者を 座り込ませない）
+    // さいごの1問は「すみません、つぎを おねがいします」と 言えば 通れる
     await skipAsk(page);
     expect(await openedCards(page)).toBe(HENDY_ANSWERS.length);
 
@@ -234,13 +235,13 @@ test("かいしゃステージを 6教材 通しで あそべる（端末に 何
 
     expect(await hearts(page)).toBe(0);
     let before = 0;
-    for (const answer of MATSUI_ANSWERS) {
+    for (const [index, answer] of MATSUI_ANSWERS.entries()) {
       await speakByText(page, answer);
       await expect(page.getByText("🌸").first()).toBeVisible();
       const now = await hearts(page);
       expect(now).toBeGreaterThan(before);
       before = now;
-      await goNextAsk(page);
+      if (index + 2 <= MATSUI_ANSWERS.length) await waitForAsk(page, index + 2);
     }
 
     // 完走で とっておきの話が 開く（教材の threshold は 4）
