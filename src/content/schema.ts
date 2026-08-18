@@ -569,7 +569,7 @@ export const stageContentRefSchema = z.object({
    * 「はじめに」の かくにんテストが その例で、授業の 流れは
    * 「スライド → すぐ テスト」だから 並びは スライドの 直後で なければ ならない。
    * ところが もんだい（quizset）の 既定は 関門なので、そこに 置くと
-   * **その先の よみもの2本が 合格するまで 🔒 に 戻る**——すでに 読み終えた
+   * **その先の ページ2本が 合格するまで 🔒 に 戻る**——すでに 読み終えた
    * 学習者の 画面から、読めていた ものが 消える。
    *
    * かといって 既定そのものを false にすると、朝会・会社見学の もんだいまで
@@ -656,6 +656,15 @@ export const stageSchema = z.object({
   title: plainText,
   reading: hiragana,
   description: plainText,
+  /**
+   * 見出しと 説明の 読み辞書（最長一致）。
+   *
+   * 説明文は **漢字＋ふりがな**で書く（規律2・constraints「ひらがなに開かない」）。
+   * ひらがなに開いた 説明文は、読めても 意味が 取れない——2026-08-18 に
+   * マップの カードで 実際に そうなっていた。ルビは 画面が この辞書から 合成する
+   *（`RubyText`。ルビHTMLは 手書きしない）。
+   */
+  furigana: z.array(furiganaEntrySchema).optional(),
   /** マップのピン色。 */
   color: z.enum(["leaf", "sky", "coral", "sky-soft"]),
   status: z.enum(["draft", "published"]).default("published"),

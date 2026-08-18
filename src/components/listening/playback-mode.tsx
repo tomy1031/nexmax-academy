@@ -212,7 +212,7 @@ function Intro({
       <button
         type="button"
         onClick={onStart}
-        className="btn-game mt-5 w-full px-6 py-3.5 text-lg [--btn-face:#f26fa7] [--btn-shadow:#d94d84] [&_rt]:text-white"
+        className="btn-game mt-5 w-full px-6 py-3.5 text-lg [--btn-face:#f26fa7] [--btn-shadow:#d94d84] [&_rt]:text-white!"
       >
         ▶ はじめる
       </button>
@@ -338,7 +338,7 @@ function NextGate({
           <button
             type="button"
             onClick={onNext}
-            className="btn-game mt-3 w-full px-6 py-3 [--btn-face:#58c273] [--btn-shadow:#3aa458] [&_rt]:text-white"
+            className="btn-game mt-3 w-full px-6 py-3 [--btn-face:#58c273] [--btn-shadow:#3aa458] [&_rt]:text-white!"
           >
             ✅ こたえあわせに すすむ
           </button>

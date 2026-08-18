@@ -131,7 +131,7 @@
         <tr><th>版</th><th>日付</th><th>変更内容</th><th>修正箇所</th></tr>
         <tr>
           <td>v1.1</td><td>2026-08-07</td>
-          <td>「まだ できていないこと」の4つを実装。文章生成を Codex へ、まんがに すじがきの段と セリフ入り画像モード、もんだい・よみものの生成。かな限定の焼き込みは実測で崩れゼロ。</td>
+          <td>「まだ できていないこと」の4つを実装。文章生成を Codex へ、まんがに すじがきの段と セリフ入り画像モード、もんだい・ページの生成。かな限定の焼き込みは実測で崩れゼロ。</td>
           <td><a href="#s4">4</a> ・ <a href="#s6">6</a> ・ <a href="#s5">5</a> ・ <a href="#s11">11</a></td>
         </tr>
         <tr>
@@ -292,7 +292,7 @@ sequenceDiagram
         <td><code>outputSchema</code>（産出では選択式を外す）</td>
       </tr>
       <tr>
-        <td>よみもの</td><td>よみもの編集</td>
+        <td>ページ</td><td>ページ編集</td>
         <td><span class="badge b-codex">Codex</span></td>
         <td><code>lesson-prompt.ts</code></td>
         <td>Codex の既定</td>
@@ -521,7 +521,7 @@ flowchart LR
     <div class="callout good">
       <strong>v1.0 で挙げた4つは 実装ずみ。</strong>
       文章生成の Codex 化／段階フロー（すじがき→承認→コマ）／セリフ入り画像／
-      もんだい・よみものの生成。残っているのは下の2つで、どちらも
+      もんだい・ページの生成。残っているのは下の2つで、どちらも
       <strong>やらないと決めたもの</strong>。
     </div>
 
@@ -548,7 +548,7 @@ flowchart LR
     </div>
     <div class="callout warn">
       <strong>いまの段階フローは まんがだけ。</strong>
-      もんだいと よみものは「1行 → 生成 → 直す」の1段で、すじがきの承認を挟んでいない。
+      もんだいと ページは「1行 → 生成 → 直す」の1段で、すじがきの承認を挟んでいない。
       話の筋が無いので その場で直すほうが速いと判断したが、
       使ってみて段が要るようなら足す。
     </div>

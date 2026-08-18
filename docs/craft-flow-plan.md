@@ -32,7 +32,7 @@
 | C6 | 3案を①に置くのは判断材料が無い比較 | **案の提示を②へ移動**。①は1案＋その場編集、②で **2案**（3枚は読み比べが重い） |
 | C7 | 文脈カードが128個のチェックボックスになる | 語彙は**ステージ単位のグループ**でON/OFF。外した内容は各段のヘッダに1行常時表示 |
 | C8 | stale が段単位だと1行直して8枚が古くなる | stale は **beat 単位／コマ単位**（`craft.assets[].beatId` と `sourceHash`） |
-| C9 | まんが・よみものに FuriganaEditor が無く、誤読ルビを直せない | 段③の画面に `FuriganaEditor` を必ず出す＋ manga-editor / article-editor にも足す。AIが付けた読みには「AIが つけました」の印（先生が触ると消える） |
+| C9 | まんが・ページに FuriganaEditor が無く、誤読ルビを直せない | 段③の画面に `FuriganaEditor` を必ず出す＋ manga-editor / article-editor にも足す。AIが付けた読みには「AIが つけました」の印（先生が触ると消える） |
 | C10 | JSONが2回壊れたとき先生の行動が無い | 失敗カードに「Gemini で ためす」「②に もどる」を必ず出す |
 | E1 | **`checkFuriganaCoverage` が保存経路で1度も走らない**（＝規律2がAI生成の全経路で不在） | `runContentChecks` に足す。**公開時 error / 下書き warn**（作りかけを守る） |
 | E2 | `checkSecretLeaks` が warn で CI も保存も止まらない | **error に昇格**。現状 lint:content が 0/0 なので既存データは落ちない（実測確認済み） |
@@ -53,7 +53,7 @@
 | **まんが** | 完成形を3択（4コマ／よこ長1枚絵／文字入り1枚絵）＝ `shape` | 場面の流れ | ページ・コマ割り・セリフ・各コマの絵の指示・読み辞書 | コマごとに1枚。文字入りモードは `kanaOf` で焼く文字を機械生成 | 焼き文字とセリフの一致（error）／コマ絵の欠けを表示 |
 | **リスニング** | 場面・話者・行数 | 会話の展開 | participants・script・keywords（**台本に実在**をその場で検査）・読み辞書 | Gemini Live TTS で台本ぜんぶ→1本の wav。話者の声は `character.voice` から引く | 音の有無・`script[].at` |
 | **もんだい** | **読解確認 / 産出**を選ぶ（＝`phase`） | 出題の並び（何を確かめるか） | questions[]（production では選択式を shape から外す）・読み辞書 | **なし**（段は消さず「絵と音は ありません」と出して自動承認） | 規律3を既存 superRefine が二重に担保 |
-| **よみもの** | 見出しの数・ねらい | 見出し構成 | blocks[]（**link ブロックはAIに作らせない**＝導線一致検査で必ず落ちるので先生が付ける）・読み辞書 | 挿絵（任意・1枚ずつ） | 導線の一致は CI の `checkLinkOrder` |
+| **ページ** | 見出しの数・ねらい | 見出し構成 | blocks[]（**link ブロックはAIに作らせない**＝導線一致検査で必ず落ちるので先生が付ける）・読み辞書 | 挿絵（任意・1枚ずつ） | 導線の一致は CI の `checkLinkOrder` |
 | **ことば** | 元にする教材を選ぶ（既存の抽出プロンプトを流用） | 語のグループ分け | words[]（meaningEn / wrongMeanings×3 は英語・スキーマが日本語を弾く） | **なし** | 出題数 ≤ 語数 |
 | **たいわ** | — | — | — | — | **やらない**（§8） |
 
@@ -522,7 +522,7 @@ export async function craftGenerate<T>(args: {...}): Promise<
 | **10** | `feat(studio): AIと つくる帯（まんが）` ＋ 旧 MangaMaker の生成UIを外す | `src/components/studio/craft-panel.tsx`(新)、`src/components/studio/studio-shell.tsx`、`src/components/studio/manga-maker.tsx`(削除)、`src/app/api/studio/manga/route.ts`(削除)、`src/components/studio/editor-frame.tsx`（状態のしるし） | `tests/studio_editor.test.ts` +（段の遷移・承認するまで下書きに入らない） |
 | **11** | `feat(craft): 絵と 音を 1つずつ 作る（とめられる）` | `src/lib/craft/asset-queue.ts`(新)、`src/lib/codex-image.ts`（transport を呼び側に渡せるように＝「とめる」導線） | `tests/craft_queue.test.ts`（直列・1件ごと保存・中断で作った分は残る・2回失敗で絵だけに落ちる） |
 | **12** | `feat(manga): 文字入りモード（かな限定・機械変換）` | `src/lib/manga-prompt.ts`（`buildBakedPanelPrompt`）、`src/lib/craft/asset-queue.ts` | `tests/manga_prompt.test.ts` +6（焼く文字が逐語1回・ルビを頼まない・モード切替で全コマ stale） |
-| **13** | `feat(craft): のこり4種別（リスニング・もんだい・よみもの・ことば）` ＋ VocabExtractor の公開保存を廃止 | `src/lib/craft/shapes/*`、`src/lib/craft/assemble.ts`、`src/components/studio/vocab-extractor.tsx`、`src/app/api/studio/vocab/route.ts`(削除) | 種別ごとの assemble テスト +4本（keywords 実在・phase・link ブロックを作らない・wrongMeanings×3） |
+| **13** | `feat(craft): のこり4種別（リスニング・もんだい・ページ・ことば）` ＋ VocabExtractor の公開保存を廃止 | `src/lib/craft/shapes/*`、`src/lib/craft/assemble.ts`、`src/components/studio/vocab-extractor.tsx`、`src/app/api/studio/vocab/route.ts`(削除) | 種別ごとの assemble テスト +4本（keywords 実在・phase・link ブロックを作らない・wrongMeanings×3） |
 | **14** | `feat(studio): 公開する前に 学習者と同じ画面で 見る` ＋ AI設定の接続表示・Gemini既定トグル・呼び名統一 | `src/app/admin/preview/[kind]/[id]/page.tsx`(新)、`src/components/studio/stage-list.tsx`、`src/components/admin/gemini-key-panel.tsx`、`src/components/studio/{area-picker,audio-maker}.tsx`、`src/components/studio/craft-panel.tsx`（先生の目でみる3つ） | `tests/preview_routes.test.ts`（下書きは preview へ・公開は実URLへ） |
 
 コミット2・3・4は**生成機能より先**に入れる（規律の関門を締めてからAI経路を開ける）。10より前はすべて既存UIに影響しないので、いつ止めても壊れない。
@@ -531,7 +531,7 @@ export async function craftGenerate<T>(args: {...}): Promise<
 
 ## 8. やらないこと（明示）
 
-1. **たいわ（scenario）のAI生成。** `reqs`×10・persona・調査用模擬ページと重く、そもそもスタジオに編集画面が無い（`studio-shell.tsx:328` が断る）。加えて**規律6（秘匿を模擬ページに書かない）とP4（伏線は置く・答えはページから引ける）の境界が未定義**で、境界を決めないままAIに作らせるとどちらかを必ず踏む。**まんが・リスニング・もんだい・よみもの・ことばの5種で始める。** `craftSchema.target` にも scenario を入れない。※ `checkSecretLeaks` の error 昇格（コミット2）は、既存データが 0/0 なので予定どおり実施する。
+1. **たいわ（scenario）のAI生成。** `reqs`×10・persona・調査用模擬ページと重く、そもそもスタジオに編集画面が無い（`studio-shell.tsx:328` が断る）。加えて**規律6（秘匿を模擬ページに書かない）とP4（伏線は置く・答えはページから引ける）の境界が未定義**で、境界を決めないままAIに作らせるとどちらかを必ず踏む。**まんが・リスニング・もんだい・ページ・ことばの5種で始める。** `craftSchema.target` にも scenario を入れない。※ `checkSecretLeaks` の error 昇格（コミット2）は、既存データが 0/0 なので予定どおり実施する。
 2. **第3の公開状態（draft→review→published）。** 承認は制作工程（craft の段）で表し、学習者に出るかどうかの関門は `studio_contents.status` の2値のまま。`route.ts` の三項演算子・RLS・`content-db.ts` の2分岐リーダ・`EditorFrame` の2ボタンは触らない。
 3. **`z.toJSONSchema()` の利用。** 実測で Gemini responseSchema に通らない語彙を吐く。shape は手書き＋テストで固定する。
 4. **`imageSlot.status = "generating"` を書くこと。** 誰も読まず、タブを閉じると消えない嘘の状態が残る。生成中は `craft.assets[].state` が正。

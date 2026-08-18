@@ -78,15 +78,15 @@ export function TitleScreen({
           </h1>
           <p className="bg-navy/90 mt-4 -rotate-1 rounded-full border-4 border-white px-5 py-2 text-sm font-extrabold text-white shadow-lg sm:text-lg">
             <ruby>
-              日本<rt className="text-white">にほん</rt>
+              日本<rt className="text-white!">にほん</rt>
             </ruby>
             の IT ワークを{" "}
             <ruby>
-              楽<rt className="text-white">たの</rt>
+              楽<rt className="text-white!">たの</rt>
             </ruby>
             しく{" "}
             <ruby>
-              学<rt className="text-white">まな</rt>
+              学<rt className="text-white!">まな</rt>
             </ruby>
             ぼう
           </p>

@@ -14,6 +14,7 @@ import {
 import { signOut } from "@/app/auth/actions";
 import { AcademyLogo } from "@/components/academy-logo";
 import { AreaTrail } from "@/components/map-trail";
+import { RubyText } from "@/components/ruby-text";
 import { NexMaxFamily } from "@/components/nexmax-types";
 import { CloudBand, CloudCorners } from "@/components/cloud-band";
 import { SKY_BLUE, type MapArea } from "@/content/areas";
@@ -54,8 +55,16 @@ import { createClient } from "@/lib/supabase/client";
  *
  * ボタンの地は濃い色で、文字は白。ルビ（rt）だけ既定の暗い色のままだと、
  * ふりがなが読めない——ふりがなが読めないボタンは、ふりがなが無いのと同じ。
+ *
+ * **`!` が要る**（2026-08-18）。`globals.css` の `rt { color: … }` は どの
+ * `@layer` にも 入っていない＝**レイヤー無しの規則**なので、詳細度に 関わらず
+ * Tailwind の ユーティリティ（`@layer utilities`）より 強い。`!` を 付けるまで、
+ * この 決まりは 1か所も 効いていなかった（色つきの ボタンの ふりがなが
+ * 濃い灰色の ままで、赤い 札の 上では ほぼ 見えなかった）。
+ * 大もとを 直すには `globals.css` の `rt` を `@layer base` に 入れる——
+ * 共有のテーマなので 別タスクとして 出す（AGENTS.md 横断変更）。
  */
-const BUTTON_RUBY = "[&_rt]:text-white";
+const BUTTON_RUBY = "[&_rt]:text-white!";
 
 /** 漢字を含む見出しか。含むならタイトル全体に よみ をふる。 */
 const HAS_KANJI = /[一-鿿]/;
@@ -741,7 +750,9 @@ function StagePanel({
       >
         <span className="min-w-0 flex-1">
           {current && (
-            <span className="mb-1.5 inline-flex rounded-full border-2 border-white bg-[#e64a5f] px-3 py-0.5 text-[11px] font-black text-white shadow-[0_3px_0_#bd3148]">
+            <span
+              className={`mb-1.5 inline-flex rounded-full border-2 border-white bg-[#e64a5f] px-3 py-0.5 text-[11px] font-black text-white shadow-[0_3px_0_#bd3148] ${BUTTON_RUBY}`}
+            >
               ✦{" "}
               <ruby>
                 現在<rt>げんざい</rt>
@@ -774,7 +785,9 @@ function StagePanel({
 
       {open && (
         <div className="border-hairline border-t px-3 pt-2 pb-3">
-          <p className="text-ink text-xs font-bold sm:text-sm">{stage.description}</p>
+          <p className="text-ink text-xs font-bold sm:text-sm">
+            <RubyText text={stage.description} furigana={stage.furigana} />
+          </p>
 
           {current ? (
             <>
@@ -1081,7 +1094,7 @@ function GoalArea({
             <p className="text-sm font-extrabold">
               <ruby>
                 {goalArea.name}
-                <rt className="text-white">{goalArea.reading}</rt>
+                <rt className="text-white!">{goalArea.reading}</rt>
               </ruby>
             </p>
           </div>
@@ -1205,7 +1218,9 @@ function CardsView({ stages, progress }: { stages: readonly MapStage[]; progress
                   <p className="text-ink-soft mt-3 text-sm font-extrabold">
                     <KindLabel stage={stage} />
                   </p>
-                  <p className="text-ink mt-2 flex-1 text-sm font-bold">{stage.description}</p>
+                  <p className="text-ink mt-2 flex-1 text-sm font-bold">
+                    <RubyText text={stage.description} furigana={stage.furigana} />
+                  </p>
                   <p className="text-ink-soft mt-3 text-xs font-extrabold">
                     {status === "cleared"
                       ? "クリア"

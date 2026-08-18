@@ -10,7 +10,7 @@ import {
 import { contentSchema, type Content } from "@/content/schema";
 
 /**
- * もんだい と よみもの の 頼み文
+ * もんだい と ページ の 頼み文
  *
  * いちばん大事なのは**産出フェーズに選択式を作らせない**こと（規律3）。
  * 保存時の superRefine が落としてくれるが、落ちてから作り直すと
@@ -86,7 +86,7 @@ describe("もんだい — 学習者に見える文の決まりを 毎回 書く
   });
 });
 
-describe("よみもの", () => {
+describe("ページ", () => {
   const prompt = buildArticlePrompt({ request: "ほうれんそう", sections: 3, context: "" });
 
   it("行き先（link）は 作らせない（導線の検査が 必ず落ちるので）", () => {

@@ -231,6 +231,7 @@ export default async function StagePage({ params }: { params: Promise<{ stage: s
         title: stage.title,
         reading: stage.reading,
         description: stage.description,
+        furigana: stage.furigana,
       }}
       items={items}
       wordStages={wordStages}

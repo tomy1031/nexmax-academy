@@ -776,16 +776,21 @@ export function collectLearnerTexts(content: Content): string[] {
  * ここに他の読みを足すと「検査は通るが画面は裸の漢字」というズレになる。
  * 例外は2つだけで、どちらも「画面が読みを別に見せている」ことが根拠になっている:
  *
- * - stage: `furigana` フィールドを持たない。タイトルは読み（reading）を真下に出し、
- *   マップの土地も同じく reading を出す。それ以外（description・area.note）は
- *   読みを出す場所が無いので、ひらがなで書くしかない。
+ * - stage: `furigana` に加えて、タイトルの読み（reading）と土地の読みも数える。
+ *   タイトルは読みを真下に出し、マップの土地も同じく reading を出すためで、
+ *   同じ読みを2度書かせない。説明文（description）は **`furigana` で覆う**——
+ *   2026-08-18 に ステージへ 読み辞書を 足し、マップのカードと ステージの見出しが
+ *   そこから ルビを 合成するようにした（それまでは ひらがなで 書くしかなかった）。
  * - wordstage: 語カードが term と reading を並べて見せるので、term の読みは学習者に
  *   届いている。解説文・例文に同じ語が出たときに先生へ二重登録を強いない。
  */
 function coverageEntries(content: Content): FuriganaEntry[] {
   switch (content.kind) {
     case "stage": {
-      const entries: FuriganaEntry[] = [[content.title, content.reading]];
+      const entries: FuriganaEntry[] = [
+        ...(content.furigana ?? []),
+        [content.title, content.reading],
+      ];
       if (content.area) entries.push([content.area.name, content.area.reading]);
       return entries;
     }
@@ -836,10 +841,7 @@ export function checkFuriganaCoverageOf(
 ): Finding[] {
   const findings: Finding[] = [];
   const index = buildFuriganaIndex(coverageEntries(content));
-  const hint =
-    content.kind === "stage"
-      ? "ステージは読み辞書を持たない（画面もルビを合成しない）ので、ひらがなで書く"
-      : "furigana（読み辞書）に [表記, よみ] を足す";
+  const hint = "furigana（読み辞書）に [表記, よみ] を足す";
   for (const { field, text } of collectLabeledTexts(content)) {
     const missing = uncoveredKanji(text, index);
     if (missing.length === 0) continue;
