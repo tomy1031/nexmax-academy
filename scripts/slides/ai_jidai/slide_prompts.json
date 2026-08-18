@@ -14,9 +14,9 @@
     },
     {
       "out": "w06_data",
-      "title": "6: AIが書いたコードのわりあい（棒グラフ・ロゴ入り）",
+      "title": "6: AIが書いたコードのわりあい（棒グラフ・ロゴ入り・いつの数字かを 各行に）",
       "nexmaxInScene": true,
-      "scene": "Slide content — a horizontal bar chart slide. Small blue label at the top left: ほんとうの 数字 (reading すうじ above 数字). Large bold navy headline under it: AIが 書いた コードの わりあい (reading か above 書). Below, a white rounded panel holding three bar rows on pale tracks; at the left of each row the company's own well-known logo mark drawn small, accurate and clean, and at the right the number: row 1 the Google G logo, a deep blue bar filled to 75%, and 75% ; row 2 the Anthropic mark, a purple bar filled to 90%, and 90% ; row 3 the Microsoft four-square logo, a green bar filled to 30%, and 30% . Under the panel one small grey line: Google は 2年で 25% から 75% に なりました (reading ねん above 年)."
+      "scene": "Slide content — a horizontal bar chart slide. Small blue label at the top left: ほんとうの 数字 (reading すうじ above 数字). Large bold navy headline under it: AIが 書いた コードの わりあい (reading か above 書). Below, a white rounded panel holding three bar rows on pale tracks, ordered from the shortest bar at the top to the longest at the bottom. At the left of each row the company's own well-known logo mark drawn small, accurate and clean; at the right of each row the percentage in large bold navy, and directly under the percentage a much smaller grey year label. Row 1: the Microsoft four-square logo, a green bar filled to exactly 30% of the track width, 30% , and under it the small grey label 2025年4月 (reading ねん above 年, がつ above 月). Row 2: the Google G logo, a deep blue bar filled to exactly 75% of the track width, 75% , and under it the small grey label 2026年 (reading ねん above 年). Row 3: the Claude logo — the orange many-pointed starburst mark — a warm orange bar filled to exactly 90% of the track width, 90% , and under it the small grey label 2025年 (reading ねん above 年). The three bar lengths must be truly proportional to 30, 75 and 90. Under the panel one small grey line: Google は 2年で 25% から 75% に なりました (reading ねん above 年)."
     },
     {
       "out": "w08_orgnow",
@@ -32,9 +32,9 @@
     },
     {
       "out": "w13_harvard",
-      "title": "13: ハーバード大学（4人に1人の図）",
+      "title": "13: ハーバード大学（4人に1人＋危機感のある絵）",
       "nexmaxInScene": true,
-      "scene": "Slide content — a pictogram slide, everything centred. Small blue label at the top: 世界の いま (reading せかい above 世界). Large bold navy headline under it: ハーバード大学を 卒業しても、仕事が できません (reading だいがく above 大学, そつぎょう above 卒業, しごと above 仕事). Below, four simple flat human pictogram figures in a row — a round head above a rounded body — the first three in muted blue-grey and the fourth in coral so it stands out. Under them one line: 4人に 1人は、卒業して 3か月 たっても 仕事が 見つかりません (reading にん above 人 in 4人, ひとり above 1人, そつぎょう above 卒業, げつ above 月, しごと above 仕事, み above 見)."
+      "scene": "Slide content — a serious, tense slide, split left and right. Small blue label at the top: 世界の いま (reading せかい above 世界). Large bold navy headline under it: ハーバード大学を 卒業しても、仕事が できません (reading だいがく above 大学, そつぎょう above 卒業, しごと above 仕事). Left half: four simple flat human pictogram figures in a row — a round head above a rounded body — the first three in muted blue-grey and the fourth in strong coral so it stands out sharply. Right half: a cartoon illustration of a single young graduate in a black cap and gown sitting alone on the wide stone steps of a grand old university building, shoulders dropped, looking down at a phone held in both hands; a few plain unopened envelopes rest beside them on the step; the sky above is heavy overcast grey and the whole right half is lit in cool desaturated tones, so it reads as worried and uncertain — but the face stays calm, no tears, no despair. Under both halves one line: 4人に 1人は、卒業して 3か月 たっても 仕事が 見つかりません (reading にん above 人 in 4人, ひとり above 1人, そつぎょう above 卒業, げつ above 月, しごと above 仕事, み above 見)."
     },
     {
       "out": "w14_china",

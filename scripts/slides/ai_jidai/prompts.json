@@ -33,9 +33,9 @@
     },
     {
       "out": "s09",
-      "title": "アメリカ: 静かなオフィス街",
+      "title": "アメリカ: 人を減らすオフィス（緊張感のある絵）",
       "nexmaxInScene": false,
-      "scene": "Scene: a wide calm view of large modern glass office towers under a soft pale evening sky; a few small office workers quietly walk away from the entrance carrying plain cardboard boxes with potted plants inside; gentle and quiet mood, softly lit, not scary, no sad crying faces."
+      "scene": "Scene: a huge modern glass office tower at dusk under a heavy grey sky; a long line of many office workers streams out of the entrance carrying plain cardboard boxes, stretching far into the distance; most of the tower's windows have already gone dark, only a few upper floors still lit; through the ground-floor glass a row of empty desks with empty chairs is visible; cold blue-grey light, a serious and tense mood; faces are quiet and tired, no crying, no shouting, nothing violent."
     },
     {
       "out": "s12",
@@ -73,7 +73,6 @@
       "nexmaxInScene": true,
       "scene": "Scene: a bright classroom with six diverse Southeast Asian students at desks smiling and raising hands, a friendly teacher standing at the front beside a plain whiteboard showing only soft squiggle lines and abstract shapes, sunlight through big windows. The tiny NexMax robot stands on the teacher's desk cheering with two small pom-poms, tiny confetti around it."
     },
-
     {
       "out": "q_a",
       "title": "クイズA: AIに聞いて 自分で書く",
