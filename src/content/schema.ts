@@ -115,13 +115,36 @@ const quizCommon = {
 };
 
 /** 4択（読解確認）。 */
-const chooseSchema = z.object({
-  ...quizCommon,
-  type: z.literal("choose"),
-  options: z.array(plainText).min(2).max(6),
-  /** options のインデックス。 */
-  answer: z.number().int().min(0),
-});
+const chooseSchema = z
+  .object({
+    ...quizCommon,
+    type: z.literal("choose"),
+    options: z.array(plainText).min(2).max(6),
+    /** options のインデックス。 */
+    answer: z.number().int().min(0),
+    /**
+     * 選択肢ごとの 絵（省略できる）。`options` と **同じ 並び・同じ 数**で 書く。
+     *
+     * 字だけの 選択肢は、N4の 学習者には **読むだけで 力を 使い切る**。
+     * スライドで 絵つきで 見せた 問いを、テストでは 字だけで 聞くと、
+     * 分かって いても 選べない——測っているのが 理解ではなく 読む速さに なる。
+     *
+     * 並びの 配列に したのは、`options` の 形（ただの 文字列）を 変えないため。
+     * 選択肢を オブジェクトに すると、いま ある 教材ぜんぶの 書き直しに なる。
+     */
+    optionImages: z.array(z.string().min(1)).optional(),
+  })
+  .superRefine((question, ctx) => {
+    // 数が ずれた ままでも 画面は 出るが、**絵と 文が 1つずつ ずれる**——
+    // いちばん 気づきにくい 壊れ方なので、ここで 止める。
+    if (question.optionImages && question.optionImages.length !== question.options.length) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["optionImages"],
+        message: `選択肢は ${question.options.length}つ ですが、絵は ${question.optionImages.length}枚です（同じ数で 書く）`,
+      });
+    }
+  });
 
 /** 複数選択。「ぜんぶ えらぶ」。 */
 const multiSchema = z.object({

@@ -352,3 +352,53 @@ describe("問題セットのスキーマ（検収の契約）", () => {
     expect(quizSetSchema.safeParse(broken).success).toBe(false);
   });
 });
+
+describe("back（まえの もんだいを 読み直す）", () => {
+  /** 2問 答えて 3問目に いる 状態。 */
+  const afterTwo = () => {
+    let state = createQuizSession(set);
+    for (let i = 0; i < 2; i += 1) {
+      state = answerCorrectly(state);
+      state = quizReducer(state, { type: "next" });
+    }
+    return state;
+  };
+
+  it("1問目では 戻らない", () => {
+    const state = createQuizSession(set);
+    expect(quizReducer(state, { type: "back" })).toBe(state);
+  });
+
+  it("戻ると 前の問題の 解説が 出る（点も 記録も 動かない）", () => {
+    const state = afterTwo();
+    const back = quizReducer(state, { type: "back" });
+    expect(back.index).toBe(1);
+    expect(back.phase.kind).toBe("explain");
+    expect(back.results).toEqual(state.results);
+  });
+
+  it("戻って つぎへ を 押しても、同じ問題を もう一度 答えさせない", () => {
+    // ここが 壊れると 1問の 記録が 2行 でき、先生の 見る 正答率が 狂う
+    const state = afterTwo();
+    const returned = run(state, [{ type: "back" }, { type: "next" }]);
+    expect(returned.index).toBe(2);
+    expect(returned.results).toHaveLength(2);
+  });
+
+  it("2つ 戻って 2つ 進むと、もとの 場所に 帰る", () => {
+    const state = afterTwo();
+    const round = run(state, [
+      { type: "back" },
+      { type: "back" },
+      { type: "next" },
+      { type: "next" },
+    ]);
+    expect(round.index).toBe(state.index);
+    expect(round.results).toEqual(state.results);
+  });
+
+  it("答えて いない ところへは 戻らない（しおりで 途中から 始めた とき）", () => {
+    const resumed = resumeQuizSession(set, 2, []);
+    expect(quizReducer(resumed, { type: "back" })).toBe(resumed);
+  });
+});

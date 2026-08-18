@@ -44,6 +44,7 @@ export function QuestionBody({ question, furigana, dispatch, emotionStep2, disab
       return (
         <OptionList
           options={question.options}
+          images={question.optionImages}
           furigana={furigana}
           disabled={disabled}
           onPick={(index) => dispatch({ type: "answerChoice", index })}
@@ -111,11 +112,14 @@ export function QuestionBody({ question, furigana, dispatch, emotionStep2, disab
 
 function OptionList({
   options,
+  images,
   furigana,
   onPick,
   disabled,
 }: {
   options: readonly string[];
+  /** 選択肢ごとの絵（教材が指定したときだけ）。options と同じ並び。 */
+  images?: readonly string[];
   furigana: FuriganaIndex;
   onPick: (index: number) => void;
   disabled?: boolean;
@@ -139,6 +143,20 @@ function OptionList({
             <span className="bg-sky-soft text-navy grid h-7 w-7 shrink-0 place-items-center rounded-full text-sm font-extrabold">
               {index + 1}
             </span>
+            {images?.[index] && (
+              /*
+               * 絵は 押せる 面の 中に 置く（絵だけ 押しても 選べる）。
+               * 次の 問題へ 進むと すぐ 消えるので `loading="eager"` のまま——
+               * lazy に すると 表示の 瞬間に 白い 枠が 出て、選択肢が 一瞬 ずれる。
+               * next/image を 使わないのは、教材が 外の URL も 指せるため。
+               */
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={images[index]}
+                alt=""
+                className="border-hairline h-16 w-24 shrink-0 rounded-[var(--radius-chip)] border-2 object-cover sm:h-20 sm:w-32"
+              />
+            )}
             <span className="text-ink font-bold">
               <RubyText text={option} index={furigana} />
             </span>

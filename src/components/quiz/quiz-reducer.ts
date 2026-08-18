@@ -76,7 +76,15 @@ export type QuizAction =
   | { readonly type: "answerWordbank"; readonly filled: readonly (string | null)[] }
   | { readonly type: "answerFeeling"; readonly index: number }
   | { readonly type: "answerReply"; readonly index: number }
-  | { readonly type: "next" };
+  | { readonly type: "next" }
+  /**
+   * 「まえの もんだい」。**答え直しでは なく 読み直し**。
+   *
+   * 点も 記録も 動かさない——動かせるように すると、先生が 見る「どの設問で 止まるか」が
+   * 学習者の 迷いの ぶんだけ 変わってしまう。前の問題は **答えと 解説の ついた 形**で
+   * 出て、「つぎへ」で もとの 位置に 帰る。
+   */
+  | { readonly type: "back" };
 
 export function createQuizSession(set: QuizSet, questions = set.questions): QuizState {
   return {
@@ -219,12 +227,45 @@ export function quizReducer(state: QuizState, action: QuizAction): QuizState {
       if (state.phase.kind !== "explain") return state;
       const next = state.index + 1;
       if (next >= state.questions.length) return { ...state, phase: { kind: "finished" } };
-      return { ...state, index: next, phase: { kind: "ask" } };
+      // **もう 答えた問題に 戻ってきた**ときは、もう一度 聞かない（"back" の 帰り道）。
+      // ここで ask に すると 同じ問題の 記録が 2行 できる。
+      return { ...state, index: next, phase: answeredPhase(state, next) ?? { kind: "ask" } };
+    }
+
+    case "back": {
+      if (state.index === 0) return state;
+      const prev = state.index - 1;
+      const phase = answeredPhase(state, prev);
+      // 答えて いない ところへは 戻らない（しおりから 途中に 入った ときに 起きる）
+      if (!phase) return state;
+      return { ...state, index: prev, phase };
     }
 
     default:
       return state;
   }
+}
+
+/**
+ * すでに 答えた問題の「解説の 画面」を 組み直す（読み直し用）。まだ 答えて いなければ null。
+ *
+ * 記録（`results`）から 作るので、**点も 記録も 動かない**。
+ * ひとつだけ 落ちるものが ある: 複数選択の「あと すこし」（`quiz.partial`）は
+ * 記録に 残していないので、読み直しでは ふつうの 見直しの 言い方に なる。
+ * 言い方の ために 記録の 形を 増やすほどでは ない、と 判断した。
+ */
+function answeredPhase(state: QuizState, index: number): QuizPhase | null {
+  const question = state.questions[index];
+  if (!question) return null;
+  const result = state.results.find((r) => r.questionId === question.id);
+  if (!result) return null;
+  return {
+    kind: "explain",
+    correct: result.correct,
+    feedback: result.correct ? "quiz.correct" : "quiz.review",
+    // 「あなたの こたえ」は 自由入力の ときだけ 出る欄なので、そこだけ 渡す
+    ...(question.type === "keyword" ? { input: result.answer } : {}),
+  };
 }
 
 /**

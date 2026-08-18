@@ -245,6 +245,21 @@ export function QuizRunner({
               animate={{ opacity: 1, y: 0 }}
               className="card-island mt-4 p-5 sm:p-6"
             >
+              {/*
+                まえの もんだいを 読み直す。**答え直しでは ない**（reducer の "back"）。
+                1問目には 出さない——押せない ボタンを 置くと、押せる ものを さがす。
+                しおりで 途中から 始めた 人にも 出さない（前の 記録が 無い）。
+              */}
+              {state.index > 0 && state.results.length >= state.index && (
+                <button
+                  type="button"
+                  onClick={() => dispatch({ type: "back" })}
+                  className="text-ink-soft hover:text-ink -mt-1 mb-2 text-xs font-extrabold"
+                >
+                  ← まえの もんだい
+                </button>
+              )}
+
               <p className="text-ink text-lg leading-relaxed font-extrabold">
                 <RubyText text={question.q} index={furigana} />
               </p>
