@@ -127,7 +127,31 @@ const CHROME_FURIGANA = buildFuriganaIndex([
   ["見", "み"],
   ["書", "か"],
   ["文", "ぶん"],
+  ["聞", "き"],
+  ["話", "はな"],
+  ["来", "き"],
 ]);
+
+/**
+ * ぜんぶ 答えた あとの「聞く ばん」の 型文。
+ *
+ * ## なぜ 足場を 残すのか
+ * ここまでは ヒント（型文）が ずっと 見えて いたのに、しつもんが 終わった
+ * とたんに 消えて、白い 入力欄だけが 残って いた——**いちばん 足場が 要る
+ * ところで、いちばん 足場が 少ない**（設計01 P6 の アンチパターン
+ *「足場なしの『自由に 書いて みましょう』」を 自分で 踏んで いた）。
+ *
+ * ## 中身が「聞く 文」なのは わざと
+ * 学習者は 直前に 同じ 形の しつもんを 6回 聞いて いる。それを 相手に
+ * 聞き返すのは、きょうの 入力を そのまま 産出に する 練習に なる
+ *（設計05 §5.3(g) の「しつもん力」への 布石）。
+ * 相手は しつもんを しない 役なので、**聞く 相手として ちょうど よい**。
+ */
+const FREE_TALK_HINTS = [
+  "ヘンディさんは、どこから 来ましたか。",
+  "ヘンディさんは、どんな しごとを して いますか。",
+  "◯◯は、なんですか。",
+] as const;
 
 /**
  * 見守りの ことば（送る前に 気づいて ほしい こと）。
@@ -767,10 +791,13 @@ export function MeetingSession({
         />
       ) : null}
 
-      {/* ここからは 決まった しつもんが 無い。話したい ことを 話せる */}
-      <p className="text-ink-soft text-sm font-extrabold">
+      {/*
+        ここからは **役が 入れかわる**。「じゆうに どうぞ」だけでは 白紙の 前で
+        止まるので、何を する 時間なのかを 先に 言う（設計01 P1: 役割の 付与）。
+      */}
+      <p className="text-navy text-base font-black">
         <RubyText
-          text="ここからは、じゆうに 話せます。聞きたい ことを 聞いて みましょう。"
+          text={`こんどは、あなたが 聞く ばんです。${meeting.host.name}さんに しつもんして みましょう。`}
           index={CHROME_FURIGANA}
           show
         />
@@ -806,25 +833,40 @@ export function MeetingSession({
    * 会話の 中に 溶かした（進むのは 判定が 決め、逃げ道は ことばで 言う）。
    */
   const controls = done ? (
-    /* 自由な おしゃべり。ヒントも 判定も 出さない——ここは 会話だけの 場 */
-    <form
-      className="flex flex-wrap items-center gap-2"
-      onSubmit={(e) => {
-        e.preventDefault();
-        submit();
-      }}
-    >
-      <input
-        value={draft}
-        onChange={(e) => setDraft(e.target.value)}
-        placeholder="じゆうに 書いて みましょう"
-        aria-label="こたえを 入力する"
-        className="border-hairline text-ink min-w-0 flex-1 rounded-full border-2 bg-white px-4 py-2 font-bold"
-      />
-      <button type="submit" className="btn-game px-5 py-2 text-sm">
-        おくる
-      </button>
-    </form>
+    /* 自由な おしゃべり。判定は しないが、**足場は 残す**（聞く ための 型文） */
+    <div className="space-y-2">
+      <div className="bg-cream border-hairline rounded-[var(--radius-card)] border-2 px-4 py-3">
+        <p className="text-ink-soft text-xs font-extrabold">
+          <RubyText text="💡 こう 聞けます" index={CHROME_FURIGANA} show />
+        </p>
+        <ul className="mt-1 space-y-1">
+          {FREE_TALK_HINTS.map((line) => (
+            <li key={line} className="text-ink text-base font-black break-words">
+              「
+              <RubyText text={line} index={CHROME_FURIGANA} show />」
+            </li>
+          ))}
+        </ul>
+      </div>
+      <form
+        className="flex flex-wrap items-center gap-2"
+        onSubmit={(e) => {
+          e.preventDefault();
+          submit();
+        }}
+      >
+        <input
+          value={draft}
+          onChange={(e) => setDraft(e.target.value)}
+          placeholder="ヘンディさんに 聞いて みましょう"
+          aria-label="こたえを 入力する"
+          className="border-hairline text-ink min-w-0 flex-1 rounded-full border-2 bg-white px-4 py-2 font-bold"
+        />
+        <button type="submit" className="btn-game px-5 py-2 text-sm">
+          おくる
+        </button>
+      </form>
+    </div>
   ) : (
     <div className="space-y-2">
       <div className="flex justify-end">
