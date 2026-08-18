@@ -8,43 +8,35 @@
   "notes": [
     {
       "page": 1,
-      "text": "【時代】era　【プログラム】program　【書く】to write　【力】skill, power　【足りない】not enough　【必要】necessary　【PM】Project Manager　【プログラマー】programmer"
+      "text": "【時代】era　【プログラマー】programmer　【PM】Project Manager　【足りない】not enough　【必要】necessary"
     },
     {
       "page": 2,
-      "text": "【おきる】to happen　【世界】world"
-    },
-    {
-      "page": 3,
-      "text": "【クイズ】quiz　【会社】company　【書く】to write　【思う】to think　【聞く】to ask, to listen　【コード】code (the text of a program)　【見る】to check, to look　【先に】first　【考える】to think　【アプリ】app"
+      "text": "【おきる】to happen"
     },
     {
       "page": 4,
-      "text": "【こたえ】answer　【今年】this year　【はじめ】the beginning　【読む】to read　【増える】to increase　【コード】code"
+      "text": "【増える】to increase"
     },
     {
       "page": 5,
-      "text": "【役割】role　【変わる】to change　【むかし】long ago　【前】before　【チャット】chat　【アドバイス】advice　【アシスタント】assistant　【エージェント】agent (it works by itself)　【テスト】test　【公開】release, deploy"
+      "text": "【役割】role　【変わる】to change　【むかし】long ago　【エージェント】agent (it works by itself)　【公開】release, deploy"
     },
     {
       "page": 6,
-      "text": "【ほんとう】true, real　【数字】number　【わりあい】percentage, share　【以上】more than　【多い】many"
+      "text": "【数字】number　【わりあい】percentage, share"
     },
     {
       "page": 7,
-      "text": "【チーム】team　【かたち】shape, form　【変わる】to change"
+      "text": "【かたち】shape, form"
     },
     {
       "page": 8,
-      "text": "【クライアント】client (the company that asks for the work)　【客】customer　【話す】to talk　【仕事】work, job　【まとめる】to bring together, to manage　【新人】new employee　【プログラミング】programming　【始める】to start"
-    },
-    {
-      "page": 9,
-      "text": "【仕事】work, job　【作る】to make　【まとめる】to bring together, to manage　【クライアント】client"
+      "text": "【まとめる】to bring together, to manage"
     },
     {
       "page": 10,
-      "text": "【必要】necessary　【そば】near, beside　【立つ】to stand　【力】skill"
+      "text": "【そば】near, beside"
     },
     {
       "page": 11,
@@ -52,39 +44,23 @@
     },
     {
       "page": 12,
-      "text": "【大きい】big　【たくさん】a lot　【減らす】to cut, to reduce　【社員】employee"
+      "text": "【減らす】to cut, to reduce　【社員】employee"
     },
     {
       "page": 13,
-      "text": "【ハーバード】Harvard　【大学】university　【卒業】graduation　【たつ】to pass (time)　【見つかる】to be found"
-    },
-    {
-      "page": 14,
-      "text": "【中国】China　【減る】to decrease　【社員】employee　【3分の1】one third"
-    },
-    {
-      "page": 15,
-      "text": "【チャンス】chance, opportunity"
+      "text": "【ハーバード】Harvard　【卒業】graduation　【たつ】to pass (time)　【見つかる】to be found"
     },
     {
       "page": 16,
-      "text": "【理由】reason　【かんたん】easy　【やめさせる】to make someone quit (to fire)　【長い】long　【安心】peace of mind　【働く】to work"
-    },
-    {
-      "page": 17,
-      "text": "【足りない】not enough　【どんどん】more and more　【増える】to increase　【さがす】to look for"
+      "text": "【理由】reason　【やめさせる】to make someone quit (to fire)　【安心】peace of mind"
     },
     {
       "page": 18,
-      "text": "【使う】to use　【半分】half　【少ない】few　【生まれる】to appear, to be born"
+      "text": "【生まれる】to appear, to be born"
     },
     {
       "page": 19,
-      "text": "【数】number, count　【人口】population　【ほぼ】almost　【同じ】same"
-    },
-    {
-      "page": 20,
-      "text": "【ビジネスチャンス】business chance　【金】money　【安い】cheap　【作る】to make　【小さい】small"
+      "text": "【人口】population　【ほぼ】almost"
     },
     {
       "page": 21,
@@ -92,35 +68,31 @@
     },
     {
       "page": 22,
-      "text": "【大事】important　【力】skill"
+      "text": "【大事】important"
     },
     {
       "page": 23,
-      "text": "【みがく】to polish, to make better　【コミュニケーション】communication　【マネジメント】management　【時間】time　【金】money"
-    },
-    {
-      "page": 24,
-      "text": "【コミュニケーション】communication　【ミーティング】meeting　【メッセージ】message　【聞く】to listen, to ask"
+      "text": "【みがく】to polish, to make better"
     },
     {
       "page": 25,
-      "text": "【道具】tool　【日本語】Japanese language　【強い】strong　【勉強】study　【つづける】to continue"
+      "text": "【道具】tool"
     },
     {
       "page": 26,
-      "text": "【決める】to decide　【週】week　【設計】design (making the plan)　【公開】release　【図】diagram　【ガントチャート】Gantt chart　【WBS】work breakdown structure　【言う】to say, to call　【約束】promise　【守る】to keep"
+      "text": "【設計】design (making the plan)　【ガントチャート】Gantt chart　【WBS】work breakdown structure"
     },
     {
       "page": 27,
-      "text": "【見積もり】estimate, quotation　【いくら】how much　【かかる】to cost, to take　【紙】paper　【見せる】to show　【サーバー】server　【計算】calculation"
+      "text": "【見積もり】estimate, quotation　【かかる】to cost, to take"
     },
     {
       "page": 28,
-      "text": "【強み】strong point　【得意】good at　【デザイン】design　【サーバー】server　【セキュリティ】security　【＋α】plus something extra"
+      "text": "【強み】strong point　【得意】good at　【＋α】plus something extra"
     },
     {
       "page": 29,
-      "text": "【授業】class, lesson　【時代】era　【必要】necessary　【身に つける】to learn and keep (a skill)"
+      "text": "【授業】class, lesson　【身に つける】to learn and keep (a skill)"
     }
   ],
   "furigana": [
