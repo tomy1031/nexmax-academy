@@ -621,6 +621,19 @@ function Navigation({
       {!collapsed && <span className="whitespace-nowrap">ネクマックス</span>}
     </Link>
   );
+  // せっていの入口。なまえ・がっこう・せいべつ・APIキーを あとから 直す（`/map/settings`）。
+  const settingsLink = (
+    <Link
+      href="/map/settings"
+      onClick={onDrawerClose}
+      className="text-ink hover:bg-sky-soft flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl px-3 text-sm font-extrabold transition"
+    >
+      <span aria-hidden className="text-xl">
+        ⚙️
+      </span>
+      {!collapsed && <span className="whitespace-nowrap">せってい</span>}
+    </Link>
+  );
   const adminLink = isAdmin ? (
     <Link
       href="/admin"
@@ -677,6 +690,7 @@ function Navigation({
         </button>
         {navButtons}
         {catalogLink}
+        {settingsLink}
         {adminLink}
         {logoutButton}
         <button
@@ -702,6 +716,7 @@ function Navigation({
             <div className="space-y-2">
               {navButtons}
               {catalogLink}
+              {settingsLink}
               {adminLink}
               {logoutButton}
             </div>

@@ -22,13 +22,20 @@ import {
   type PersonalityTypeCode,
 } from "@/content/personality";
 import { AcademyLogo } from "@/components/academy-logo";
+import {
+  FallbackImage,
+  GeminiKeyCard,
+  GenderCard,
+  NameCard,
+  SchoolCard,
+} from "@/components/learner-fields";
 import { NexMaxFamily, NexMaxType, TypeEmblem } from "@/components/nexmax-types";
 import { GlossaryChip, GlossaryText } from "@/components/glossary-text";
 import { LearnerText, RubyText, renderRuby } from "@/components/ruby-text";
 import { findAllGlossaryTerms } from "@/content/glossary";
-import { insertPersonalityResult, updateOwnNames, upsertOwnProfile } from "@/lib/profile-db";
-import { areNamesValid, katakanaNotice, MAX_NAME_LENGTH, type LearnerNames } from "@/lib/name";
-import { COHORTS, isSchoolChosen, UNIVERSITIES, type LearnerSchool } from "@/lib/school";
+import { insertPersonalityResult, updateOwnDetails, upsertOwnProfile } from "@/lib/profile-db";
+import { areNamesValid, type LearnerNames } from "@/lib/name";
+import { isSchoolChosen, type LearnerSchool } from "@/lib/school";
 import { getGeminiKey, saveGeminiKey, saveProfile, type Gender } from "@/lib/profile";
 
 function subscribeToStorage(onStoreChange: () => void) {
@@ -38,26 +45,6 @@ function subscribeToStorage(onStoreChange: () => void) {
 
 function savedGeminiKeySnapshot(): string {
   return getGeminiKey();
-}
-
-function FallbackImage({
-  src,
-  alt,
-  fallback,
-  className,
-}: {
-  src: string;
-  alt: string;
-  fallback: ReactNode;
-  className: string;
-}) {
-  const [failed, setFailed] = useState(false);
-
-  if (failed) return <>{fallback}</>;
-  return (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img src={src} alt={alt} onError={() => setFailed(true)} className={className} />
-  );
 }
 
 function QuizIllustration({ src }: { src: string }) {
@@ -239,67 +226,6 @@ function QuestionIntro({
   );
 }
 
-/**
- * なまえの入力欄1つ分。
- *
- * カタカナで書く決まり（願い #14）。書き直しの案内は打ち終わってから出す——
- * 1文字打つたびに注意が出ると、打っている最中に「合っていない」と見えてしまう。
- * 判定そのものは `src/lib/name.ts` に置く（画面ごとに書かない）。
- */
-function NameField({
-  label,
-  hint,
-  placeholder,
-  value,
-  onChange,
-  optional = false,
-}: {
-  label: ReactNode;
-  hint?: string;
-  placeholder: string;
-  value: string;
-  onChange: (value: string) => void;
-  optional?: boolean;
-}) {
-  const [touched, setTouched] = useState(false);
-  const notice = touched ? katakanaNotice(value) : null;
-
-  return (
-    <label className="block">
-      <span className="text-ink block text-sm font-extrabold">
-        {label}
-        {optional ? (
-          <span className="text-ink-soft ml-1 text-xs">（じゆう）</span>
-        ) : (
-          <span className="text-coral-deep ml-1 text-xs">
-            （
-            <ruby>
-              必須<rt>ひっす</rt>
-            </ruby>
-            ）
-          </span>
-        )}
-      </span>
-      {hint && <span className="text-ink-soft mt-0.5 block text-xs font-bold">{hint}</span>}
-      <input
-        type="text"
-        value={value}
-        onChange={(event) => onChange(event.target.value)}
-        onBlur={() => setTouched(true)}
-        placeholder={placeholder}
-        maxLength={MAX_NAME_LENGTH}
-        aria-invalid={notice !== null}
-        className={`mt-1.5 w-full rounded-2xl border-2 bg-white px-4 py-2 font-bold ${
-          notice ? "border-coral" : "border-hairline"
-        }`}
-      />
-      {notice && (
-        <span className="text-coral-deep mt-1 block text-xs font-extrabold">🙏 {notice}</span>
-      )}
-    </label>
-  );
-}
-
 /** 全問共通の問いかけ（07 §3.1）。 */
 const ASK_LABEL: Readonly<Record<PersonalityLanguage, string>> = {
   easy: "あなたに ちかいのは、どっちですか?",
@@ -368,7 +294,6 @@ export function WelcomeWizard({
   const gender = genderChoice;
   const [geminiValue, setGeminiValue] = useState<string | null>(null);
   const geminiKey = geminiValue ?? savedGeminiKey;
-  const [showKey, setShowKey] = useState(false);
   const [busy, setBusy] = useState(false);
   const [language, setLanguage] = useState<PersonalityLanguage>("easy");
   // 診断の途中で言語を切り替えたか（08 §5.2）。回答言語と一緒に保存する。
@@ -426,7 +351,7 @@ export function WelcomeWizard({
     setSaveError(false);
     saveGeminiKey(geminiInput.current?.value ?? geminiKey);
     try {
-      const stored = await updateOwnNames(names, school);
+      const stored = await updateOwnDetails(names, school);
       // 表示用キャッシュも新しい呼び名にしておく。放っておくと、マップが返事を待つあいだ
       // 古い名前が出る。診断は終わっている場面なので scores も型どおりそろっている。
       saveProfile({
@@ -701,243 +626,32 @@ export function WelcomeWizard({
                 namesOnly ? "mx-auto max-w-2xl" : "md:grid-cols-2 xl:grid-cols-3"
               }`}
             >
-              <article
-                className={`card-pop border-white p-5 shadow-[0_6px_0_#d7eaf5] ${
-                  namesOnly ? "" : "md:col-span-2"
-                }`}
-              >
-                <h2 className="text-navy font-extrabold">
-                  ⭐ なまえ{" "}
-                  <span className="text-coral-deep text-xs">
-                    （
-                    <ruby>
-                      必須<rt>ひっす</rt>
-                    </ruby>
-                    ）
-                  </span>
-                </h2>
-                <p className="text-ink-soft mt-2 text-sm font-bold">
-                  <span className="text-navy">カタカナ</span>で かいてね。せんせいが よぶ ときに
-                  つかいます。
-                </p>
-                {/* Google の名前がカタカナでないときは、欄に入れずに見本として見せる。
-                    開いた いきなり 赤い字が出ないようにするため（2026-08-11 の指定）。 */}
-                {googleNames.fullName && !googleNames.givenName && (
-                  <p className="bg-sun/25 text-ink mt-3 rounded-2xl px-3 py-2 text-xs font-bold">
-                    💡 Google の なまえは「{googleNames.fullName}」です。これを カタカナで
-                    かいてね。
-                  </p>
-                )}
-                <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                  <NameField
-                    label={
-                      <ruby>
-                        苗字<rt>みょうじ</rt>
-                      </ruby>
-                    }
-                    placeholder="れい：ソク"
-                    value={names.familyName}
-                    onChange={(value) => setNames((current) => ({ ...current, familyName: value }))}
-                  />
-                  <NameField
-                    label={
-                      <ruby>
-                        名前<rt>なまえ</rt>
-                      </ruby>
-                    }
-                    placeholder="れい：ソピア"
-                    value={names.givenName}
-                    onChange={(value) => setNames((current) => ({ ...current, givenName: value }))}
-                  />
-                </div>
-                <div className="mt-3">
-                  <NameField
-                    label={
-                      <>
-                        <ruby>
-                          先生<rt>せんせい</rt>
-                        </ruby>
-                        に よんで ほしい なまえ
-                      </>
-                    }
-                    hint="かかなくても だいじょうぶ。そのときは じぶんの なまえで よぶよ。"
-                    placeholder="れい：ピア"
-                    value={names.nickname}
-                    onChange={(value) => setNames((current) => ({ ...current, nickname: value }))}
-                    optional
-                  />
-                </div>
-              </article>
+              <NameCard
+                names={names}
+                onChange={setNames}
+                googleFullName={
+                  googleNames.fullName && !googleNames.givenName ? googleNames.fullName : ""
+                }
+                className={namesOnly ? "" : "md:col-span-2"}
+              />
 
               {/* 学校と期生（願い #27）。先生がクラスを見分けるのに使う。
                   なまえと同じく、この列を足す前に作られた行にも入れてもらう必要があるので、
                   「なまえだけ」の場面（namesOnly）でも隠さない。 */}
-              <article className="card-pop border-white p-5 shadow-[0_6px_0_#d7eaf5]">
-                <h2 className="text-navy font-extrabold">
-                  ⭐ がっこう{" "}
-                  <span className="text-coral-deep text-xs">
-                    （
-                    <ruby>
-                      必須<rt>ひっす</rt>
-                    </ruby>
-                    ）
-                  </span>
-                </h2>
-                <p className="text-ink-soft mt-2 text-sm font-bold">
-                  あなたの がっこうと、なんきせいかを えらんでね。
-                </p>
-                <div className="mt-4 grid grid-cols-2 gap-2">
-                  {UNIVERSITIES.map((name) => (
-                    <button
-                      key={name}
-                      type="button"
-                      aria-pressed={school.university === name}
-                      onClick={() => setSchool((current) => ({ ...current, university: name }))}
-                      className={`rounded-2xl border-3 px-2 py-3 text-sm font-extrabold shadow-sm transition-transform hover:-translate-y-1 ${
-                        school.university === name
-                          ? "border-sky bg-sky-soft text-navy"
-                          : "border-hairline text-ink-soft bg-white"
-                      }`}
-                    >
-                      🎓 {name}
-                    </button>
-                  ))}
-                </div>
-                <p className="text-ink-soft mt-4 text-sm font-bold">なんきせい？</p>
-                <div className="mt-2 grid grid-cols-5 gap-1.5">
-                  {COHORTS.map((year) => (
-                    <button
-                      key={year}
-                      type="button"
-                      aria-pressed={school.cohort === year}
-                      onClick={() => setSchool((current) => ({ ...current, cohort: year }))}
-                      className={`rounded-2xl border-3 py-2 text-sm font-extrabold shadow-sm transition-transform hover:-translate-y-1 ${
-                        school.cohort === year
-                          ? "border-sky bg-sky-soft text-navy"
-                          : "border-hairline text-ink-soft bg-white"
-                      }`}
-                    >
-                      {year}
-                      <span className="block text-[10px]">きせい</span>
-                    </button>
-                  ))}
-                </div>
-              </article>
+              <SchoolCard school={school} onChange={setSchool} />
 
-              <article
-                className={`card-pop border-white p-5 shadow-[0_6px_0_#d7eaf5] ${
-                  namesOnly ? "hidden" : ""
-                }`}
-              >
-                <h2 className="text-navy font-extrabold">
-                  ⭐ Google Gemini APIキー{" "}
-                  <span className="text-ink-soft text-xs">
-                    （
-                    <ruby>
-                      任意<rt>にんい</rt>
-                    </ruby>
-                    ）
-                  </span>
-                </h2>
-                <p className="text-ink-soft mt-2 text-sm font-bold">
-                  Gemini と つなぐと、AI が まなびを サポートします！
-                </p>
-                <div className="mt-3 flex gap-2">
-                  <div className="relative min-w-0 flex-1">
-                    <span
-                      aria-hidden
-                      className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2"
-                    >
-                      🔑
-                    </span>
-                    <input
-                      ref={geminiInput}
-                      type={showKey ? "text" : "password"}
-                      value={geminiKey}
-                      onChange={(event) => setGeminiValue(event.target.value)}
-                      className="border-hairline w-full rounded-2xl border-2 bg-white py-2 pr-3 pl-10 font-mono text-sm"
-                      aria-label="Google Gemini APIキー"
-                    />
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setShowKey((current) => !current)}
-                    className="border-hairline rounded-2xl border-2 bg-white px-3"
-                    aria-label={showKey ? "APIキーを かくす" : "APIキーを 見る"}
-                  >
-                    {showKey ? "🙈" : "👁️"}
-                  </button>
-                </div>
-                <p className="text-ink-soft mt-2 text-xs font-bold">
-                  ？ Gemini APIキーは、あとから せっていすることも できます。
-                </p>
-              </article>
+              <GeminiKeyCard
+                value={geminiKey}
+                onChange={setGeminiValue}
+                inputRef={geminiInput}
+                className={namesOnly ? "hidden" : ""}
+              />
 
-              <article
-                className={`card-pop border-white p-5 shadow-[0_6px_0_#d7eaf5] ${
-                  namesOnly ? "hidden" : ""
-                }`}
-              >
-                <h2 className="text-navy font-extrabold">
-                  ⭐{" "}
-                  <ruby>
-                    性別<rt>せいべつ</rt>
-                  </ruby>{" "}
-                  <span className="text-coral-deep text-xs">
-                    （
-                    <ruby>
-                      必須<rt>ひっす</rt>
-                    </ruby>
-                    ）
-                  </span>
-                </h2>
-                <p className="text-ink-soft mt-2 text-sm font-bold">
-                  あなたの せいべつを えらんでね。
-                </p>
-                <div className="mt-4 grid grid-cols-2 gap-2">
-                  {[
-                    {
-                      id: "male" as const,
-                      icon: "👨",
-                      image: "/img/ui/gender_male.webp",
-                      label: "男性",
-                      color: "#0288d1",
-                    },
-                    {
-                      id: "female" as const,
-                      icon: "👩",
-                      image: "/img/ui/gender_female.webp",
-                      label: "女性",
-                      color: "#f26fa7",
-                    },
-                  ].map((choice) => (
-                    <button
-                      key={choice.id}
-                      type="button"
-                      onClick={() => setGenderChoice(choice.id)}
-                      className="rounded-2xl border-3 bg-white px-1 py-2 text-sm font-extrabold shadow-sm transition-transform hover:-translate-y-1"
-                      style={{
-                        borderColor: gender === choice.id ? choice.color : "#dcebf5",
-                        backgroundColor: gender === choice.id ? `${choice.color}18` : "#ffffff",
-                        color: choice.color,
-                      }}
-                    >
-                      <span className="mx-auto flex h-14 items-center justify-center">
-                        <FallbackImage
-                          src={choice.image}
-                          alt=""
-                          fallback={<span className="text-3xl">{choice.icon}</span>}
-                          className="h-14 w-14 object-contain"
-                        />
-                      </span>
-                      <ruby>
-                        {choice.label}
-                        <rt>{choice.id === "male" ? "だんせい" : "じょせい"}</rt>
-                      </ruby>
-                    </button>
-                  ))}
-                </div>
-              </article>
+              <GenderCard
+                gender={gender}
+                onChange={setGenderChoice}
+                className={namesOnly ? "hidden" : ""}
+              />
             </div>
 
             <p className="text-ink-soft mt-5 text-center text-xs font-bold">
