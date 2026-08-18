@@ -10,6 +10,7 @@ import { RubyText } from "@/components/ruby-text";
 import { SpeakButton } from "@/components/speak-button";
 import { recordContentProgress } from "@/lib/progress/store";
 import type { DictionaryEntry } from "@/lib/dictionary";
+import { canHover } from "@/lib/pointer";
 import {
   buildFuriganaIndex,
   mergeFuriganaEntries,
@@ -45,7 +46,8 @@ export function ArticleView({
    */
   preview = false,
   /**
-   * 辞書（単語ステージを畳んだもの）。本文の むずかしい ことばに タップで説明を出す。
+   * 辞書（単語ステージを畳んだもの）。本文の むずかしい ことばに、マウスを のせる
+   *（指の きかいは タップ）と説明を出す。
    * 渡さなければ 下線は1つも出ない——辞書が無い環境（プレビューなど）でも本文は読める。
    */
   dictionary,
@@ -134,7 +136,7 @@ export function ArticleView({
       )}
 
       <article className="card-island p-5 sm:p-7">
-        <p className="text-ink-faint text-xs font-extrabold">📄 よみもの</p>
+        <p className="text-ink-faint text-xs font-extrabold">📄 ページ</p>
         <h1 className="text-ink mt-1 text-2xl font-extrabold sm:text-3xl">
           <RubyText text={article.title} index={furigana} show={rubyOn} />
         </h1>
@@ -335,7 +337,11 @@ function BlockView({
       return (
         <section className="border-hairline bg-panel-tint rounded-[var(--radius-card)] border-2 p-4">
           <p className="text-ink-soft text-xs font-extrabold">
-            ことば — タップ すると いみが 出るよ
+            ことば — マウスを のせる（スマホは タップ）と いみが{" "}
+            <ruby>
+              出<rt>で</rt>
+            </ruby>
+            るよ
           </p>
           <div className="mt-2 flex flex-wrap gap-2">
             {block.items.map((item, i) => (
@@ -617,7 +623,10 @@ const VOCAB_POPOVER_WIDTH = 240;
 /** 画面のふちに触れさせない余白。 */
 const EDGE_MARGIN = 12;
 
-/** ことばチップ。タップで 語・読み・英語・意味 を出す小さな辞書。 */
+/**
+ * ことばチップ。**マウスを のせる**（指の きかいは タップ）で
+ * 語・読み・英語・意味 を出す小さな辞書（2026-08-18 の指定）。
+ */
 function VocabChip({
   item,
   furigana,
@@ -645,22 +654,45 @@ function VocabChip({
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [open]);
 
+  /** ひらく前に 置き場所を 決める（行の 右はしで はみ出さないように）。 */
+  const place = () => {
+    const rect = buttonRef.current?.getBoundingClientRect();
+    if (rect) setAlignRight(rect.left + VOCAB_POPOVER_WIDTH > window.innerWidth - EDGE_MARGIN);
+  };
+
+  const openChip = () => {
+    place();
+    setOpen(true);
+  };
+
+  /** 押したとき。マウスの ある きかいでは 押しても 閉じない（dictionary-text.tsx と同じ）。 */
   const toggle = () => {
-    if (!open) {
-      const rect = buttonRef.current?.getBoundingClientRect();
-      if (rect) {
-        setAlignRight(rect.left + VOCAB_POPOVER_WIDTH > window.innerWidth - EDGE_MARGIN);
-      }
+    if (canHover()) {
+      openChip();
+      return;
     }
+    if (!open) place();
     setOpen((v) => !v);
   };
 
+  /** マウスの ある きかいだけ、のせただけで ひらく（指の きかいは タップのまま）。 */
+  const hoverProps = {
+    onMouseEnter: () => {
+      if (canHover()) openChip();
+    },
+    onMouseLeave: () => {
+      if (canHover()) setOpen(false);
+    },
+  };
+
   return (
-    <span className="relative inline-block">
+    <span className="relative inline-block" {...hoverProps}>
       <button
         ref={buttonRef}
         type="button"
         onClick={toggle}
+        onFocus={openChip}
+        onBlur={() => setOpen(false)}
         aria-expanded={open}
         className="bg-panel text-ink rounded-full border-2 px-3 py-1 text-sm font-extrabold"
         style={{ borderColor: "var(--color-grape)" }}

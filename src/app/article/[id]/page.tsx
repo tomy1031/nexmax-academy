@@ -27,7 +27,7 @@ export async function generateMetadata({
   const { id } = await params;
   const article = await getArticle(id);
   return {
-    title: article ? `${article.title} | よみもの` : "よみもの",
+    title: article ? `${article.title} | ページ` : "ページ",
     description: article?.description,
   };
 }

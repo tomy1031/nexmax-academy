@@ -125,6 +125,16 @@ function IndexRuby({
   );
 }
 
+/**
+ * 色の面（濃い地に白文字）に置く ふりがなの 色。
+ *
+ * `globals.css` の 既定は `rt { color: ink-soft }`（濃い灰）なので、紺や 緑の チップの 上では
+ * **ふりがなだけ 沈んで 読めない**（2026-08-18 の指摘）。地の 文字が 白の ところは ふりがなも
+ * 白にする。`globals.css` は 共有ファイルで 単独スレッドから 触れない決まりなので、
+ * 使う側で この クラスを 足す形にしてある。
+ */
+export const RUBY_ON_COLOR = "[&_rt]:text-white";
+
 /** `GlossaryText` の `renderText` に渡す用。 */
 export function renderRuby(text: string, readings: readonly Reading[]) {
   return <RubyText text={text} readings={readings} />;

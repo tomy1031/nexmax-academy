@@ -78,7 +78,9 @@ export default async function WelcomePage({
 
   return (
     <WelcomeWizard
-      loggedIn={Boolean(user)}
+      // 鍵ゼロのデモモード（Supabase 未設定）では関所そのものが無いので、ここは通す。
+      // そうしないと「ログインずみ」にならず、機械が診断を通しで歩けない（AGENTS.md 検証の節）。
+      loggedIn={supabase ? Boolean(user) : true}
       email={user?.email ?? null}
       saved={saved}
       retake={retake}

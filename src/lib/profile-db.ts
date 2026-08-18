@@ -154,15 +154,20 @@ export async function upsertOwnProfile(data: OwnProfileInput): Promise<ProfileRo
 }
 
 /**
- * なまえと学校だけを書き換える。
+ * じぶんの なまえ・学校（・せいべつ）だけを書き換える。**診断の結果には触らない**。
  *
- * 診断が終わっている人に20問をやり直させずに、あとから足りない項目を入れてもらう道
- *（なまえを分ける前に作られた行は `family_name` が空、学校の列を足す前の行は
- *  `university` が空。§src/lib/name.ts `hasLearnerNames` / src/lib/school.ts `isSchoolChosen`）。
+ * 使う場面は2つ:
+ *  1. 診断が終わっている人に20問をやり直させずに、あとから足りない項目を入れてもらう
+ *    （なまえを分ける前に作られた行は `family_name` が空、学校の列を足す前の行は
+ *     `university` が空。§src/lib/name.ts `hasLearnerNames` / src/lib/school.ts `isSchoolChosen`）。
+ *  2. せっていの画面（`/map/settings`）から、あとで直す。
+ *
+ * `gender` を渡さなければ その列は触らない（1の場面は せいべつを 入れ直させないため）。
  */
-export async function updateOwnNames(
+export async function updateOwnDetails(
   names: LearnerNames,
   school: LearnerSchool,
+  gender?: Gender,
 ): Promise<ProfileRow> {
   const supabase = requireClient();
   const {
@@ -178,6 +183,7 @@ export async function updateOwnNames(
       ...nameColumns(names),
       university: school.university,
       cohort: school.cohort,
+      ...(gender ? { gender } : {}),
     })
     .eq("id", user.id)
     .select("*")

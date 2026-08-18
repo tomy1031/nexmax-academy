@@ -84,7 +84,8 @@ test("かいしゃステージを 6教材 通しで あそべる（端末に 何
 }) => {
   await test.step("1. ステージのトップに 6教材が 順に ならぶ", async () => {
     await page.goto("/kaisha");
-    await expect(page.getByRole("heading", { name: "かいしゃを しる" })).toBeVisible();
+    // 見出しは 漢字＋ふりがな。ルビが 合成されるので 名前で 引く（会社かいしゃを 知しる）。
+    await expect(page.getByRole("heading", { name: /会社.*知/ })).toBeVisible();
 
     const list = page.locator("ol > li > a");
     await expect(list).toHaveCount(KAISHA_ITEMS.length);
@@ -97,7 +98,7 @@ test("かいしゃステージを 6教材 通しで あそべる（端末に 何
     await list.first().click();
   });
 
-  await test.step("2. よみもの「かいしゃの しらべかた」— 🔊 と ことばチップ", async () => {
+  await test.step("2. ページ「かいしゃの しらべかた」— 🔊 と ことばチップ", async () => {
     await expect(page).toHaveURL(/article-kaisha_shirabekata$/);
 
     // 読み上げは 本文にも かじょうがきにも 付いている（音に 逃げる 道を ふさがない）
@@ -134,7 +135,7 @@ test("かいしゃステージを 6教材 通しで あそべる（端末に 何
     await page.getByRole("link", { name: "つぎは" }).click();
   });
 
-  await test.step("4. よみもの「ネクストメイクを しらべよう」— 外のサイトへの カード", async () => {
+  await test.step("4. ページ「ネクストメイクを しらべよう」— 外のサイトへの カード", async () => {
     await expect(page).toHaveURL(/article-kaisha_nextmake_shirabe$/);
 
     const external = page.locator('a[target="_blank"]');
@@ -261,7 +262,7 @@ test("かいしゃステージを 6教材 通しで あそべる（端末に 何
 });
 
 /**
- * よみものを さいごまで 読む。
+ * ページを さいごまで 読む。
  *
  * 「おわった」は 末尾の しるしが 見えた ことで 決まる（article-view.tsx の
  * IntersectionObserver）。だから スクロールを 本当に 起こして、枠の

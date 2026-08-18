@@ -33,9 +33,9 @@ export interface ContentKindMeta {
 
 const META: Record<ContentRefType, ContentKindMeta> = {
   manga: { icon: "📖", label: "まんが", href: (id) => `/manga/${id}`, gates: true },
-  article: { icon: "📄", label: "よみもの", href: (id) => `/article/${id}`, gates: true },
+  article: { icon: "📄", label: "ページ", href: (id) => `/article/${id}`, gates: true },
   // 先生が授業で使う資料（PDF）を そのまま全画面で見せる教材。
-  // 「よみもの」と分けるのは、直せる文（article）と 直せない資料（PDF）で
+  // 「ページ」と分けるのは、直せる文（article）と 直せない資料（PDF）で
   // 学習者にできることが違うため——スライドは ふりがなを 出せない。
   // 関門にしない（gates: false）。先生の しりょうなので、必要な所だけ 開くことも、
   // あとで 見直すことも ある。ここで 止めると ステージが 進まなくなる。

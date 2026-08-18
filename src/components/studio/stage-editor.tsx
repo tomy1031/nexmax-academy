@@ -7,7 +7,14 @@ import { stageContentPath } from "@/lib/stage-routes";
 import { AreaPicker } from "./area-picker";
 import { LISTED_OPTIONS, STAGE_COLOR_OPTIONS } from "./drafts";
 import { moveItem, removeAt } from "./list-ops";
-import { MiniButton, SelectField, StudioSection, TextAreaField, TextField } from "./studio-ui";
+import {
+  FuriganaEditor,
+  MiniButton,
+  SelectField,
+  StudioSection,
+  TextAreaField,
+  TextField,
+} from "./studio-ui";
 import { VocabExtractor } from "./vocab-extractor";
 
 /** 参照先の候補（IDの打ちまちがいを減らすための入力補助）。 */
@@ -21,7 +28,7 @@ export interface RefOption {
  * ステージのエディタ（設計07 §3）
  *
  * ステージは「学習の ながれ」そのもの。報告のステージなら
- * まんが → よみもの → リスニング → そのリスニングの もんだい、と積んでいく。
+ * まんが → ページ → リスニング → そのリスニングの もんだい、と積んでいく。
  * だから画面も上から順に、①きほん ②エリアの絵 ③ながれ の3段にする。
  *
  * ③では **その場で教材を作れる**ことが要。別画面へ行って作り、戻ってきて
@@ -94,7 +101,17 @@ export function StageEditor({
           label="せつめい"
           value={value.description}
           onChange={(description) => patch({ description })}
-          placeholder="こまったことが 起きたとき、先輩に つたえる ことばを ならいます。"
+          placeholder="こまった ことが 起きたとき、先輩に 伝える ことばを 習います。"
+        />
+        {/*
+          せつめいは 漢字＋ふりがなで 書く（ひらがなに 開かない・docs/constraints.md）。
+          マップの カードと ステージの 見出しが、この 読み辞書から ルビを 合成する。
+        */}
+        <FuriganaEditor
+          entries={value.furigana ?? []}
+          onChange={(furigana) => patch({ furigana })}
+          emptyNote="まだ ありません。ないと せつめいの 漢字に ふりがなが つきません。"
+          content={value}
         />
         {/*
           公開かどうかは上の「こうかい」ボタン（editor-frame）だけで決める。

@@ -302,7 +302,7 @@ export const ARTICLE_BLOCK_OPTIONS: readonly { value: ArticleBlock["kind"]; labe
 
 export const CONTENT_TYPE_OPTIONS: readonly { value: ContentRefType; label: string }[] = [
   { value: "manga", label: "まんが" },
-  { value: "article", label: "よみもの" },
+  { value: "article", label: "ページ" },
   { value: "slides", label: "スライド（PDF）" },
   { value: "listening", label: "リスニング" },
   { value: "quizset", label: "もんだい" },
