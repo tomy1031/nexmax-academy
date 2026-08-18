@@ -175,13 +175,43 @@ async function main(): Promise<void> {
   mkdirSync(outDir, { recursive: true });
 
   const urls: Record<string, string> = {};
+  const failed: string[] = [];
+
   for (const [index, line] of lines.entries()) {
-    process.stdout.write(`(${index + 1}/${lines.length}) ${line.key} … `);
-    const pcm = await synthesizeWithFallback(line.text);
     const file = join(outDir, `${line.key}.wav`);
-    writeFileSync(file, toWav(pcm));
-    urls[line.key] = `/audio/meetings/${meetingId}/${line.key}.wav`;
-    console.log(`${(pcm.byteLength / OUT_RATE / 2).toFixed(1)}秒`);
+    const url = `/audio/meetings/${meetingId}/${line.key}.wav`;
+    /*
+     * すでに ある ものは 作り直さない。
+     * 1回目で 6つ 作れて 7つ目で 落ちた ことが ある（2026-08-18）。
+     * 作り直しに すると、もう一度 走らせる たびに 全部 作る ことに なり、
+     * 上限に ぶつかる 回数も 増える。
+     */
+    if (existsSync(file)) {
+      console.log(`(${index + 1}/${lines.length}) ${line.key} … すでに あります`);
+      urls[line.key] = url;
+      continue;
+    }
+
+    process.stdout.write(`(${index + 1}/${lines.length}) ${line.key} … `);
+    try {
+      const pcm = await synthesizeWithFallback(line.text);
+      writeFileSync(file, toWav(pcm));
+      urls[line.key] = url;
+      console.log(`${(pcm.byteLength / OUT_RATE / 2).toFixed(1)}秒`);
+    } catch (error) {
+      /*
+       * 1つ 作れなくても **そこで 全部を 捨てない**。
+       * 前は ここで 投げて いた ので、6つ 作れて いたのに 何も 残らなかった。
+       * 作れた ぶんは 教材に 書き、作れなかった ものだけを 報告する
+       *（もう一度 走らせれば、足りない ものだけを 作る）。
+       */
+      console.log("できませんでした");
+      console.error(`  ${error instanceof Error ? error.message : String(error)}`);
+      failed.push(line.key);
+    }
+
+    // つづけて つなぐと 断られる ことが ある。ひと呼吸 置く
+    await new Promise((wait) => setTimeout(wait, 1_500));
   }
 
   meeting.questions = meeting.questions.map((q: { id: string }) =>
@@ -189,7 +219,19 @@ async function main(): Promise<void> {
   );
   if (urls.closing) meeting.closingAudioUrl = urls.closing;
   writeFileSync(meetingPath, `${JSON.stringify(meeting, null, 2)}\n`);
-  console.log(`${meetingPath} に audioUrl を 書きました（声: ${voice}）`);
+  console.log(
+    `${meetingPath} に audioUrl を 書きました（声: ${voice}・${Object.keys(urls).length}/${lines.length}）`,
+  );
+
+  if (failed.length > 0) {
+    console.warn(
+      `⚠ 作れなかった もの: ${failed.join(" ")}（もう一度 走らせると 足りない ぶんだけ 作ります）`,
+    );
+  }
+  if (Object.keys(urls).length === 0) {
+    console.error("1つも 作れませんでした");
+    process.exit(1);
+  }
 }
 
 void main().catch((error: unknown) => {
