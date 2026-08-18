@@ -554,6 +554,7 @@ export const CONTENT_REF_TYPES = [
   "scenario",
   "meeting",
   "wordstage",
+  "link",
 ] as const;
 
 const contentRefTypeSchema = z.enum(CONTENT_REF_TYPES);
@@ -1114,6 +1115,71 @@ export const slidesSchema = z
     });
   });
 
+/* ------------------------------------------------------------------ *
+ * リンク教材（外の1ページを そのまま 学習の1本にする）
+ * ------------------------------------------------------------------ */
+
+/**
+ * 埋め込める行き先か。
+ *
+ * `http://` を弾くのは、アプリが https で動くから。混在した中身はブラウザが
+ * 黙って落とすので、学習者の画面は**理由の出ない白い枠**になる。上げた時点で言う。
+ */
+const embeddableUrl = z
+  .string()
+  .min(1)
+  .refine((url) => url.startsWith("/") || url.startsWith("https://"), {
+    message:
+      "行き先は `/` で はじまる アプリの中の 場所か、`https://` の URL にする（http:// は ブラウザが 埋め込みを 止めます）",
+  });
+
+/**
+ * リンク教材 — 1枚で完結する練習ページを、ステージの ながれ の中に置く
+ *
+ * ## なぜ「開くだけ」の種別が要るか
+ * ローマ字入力の練習のように、**キーボードと IME を相手にする教材**は、
+ * まんが・よみもの・もんだいの どの型にも入らない。無理に article の中へ
+ * 押し込むと、記事の本文の中に入力欄が生えることになり、学習者は
+ * 「これは読むものか、打つものか」が分からなくなる。
+ *
+ * 中身は1枚のページ（`public/tools/...` に置いた自前の練習や、外のサイト）で、
+ * アプリは**入れ物と行き先だけ**を持つ。教材を1本足すのに React の画面を
+ * 増やさなくてよい——ステージの ながれ に 🔗 が1つ増えるだけになる。
+ *
+ * ## 既定は全画面（`view`）
+ * 練習ページは**画面いっぱいで使う**ほうが手が動く。枠の中の小さな窓に
+ * 入力欄が沈むと、キーボードを見ながら打つ学習者の視線が行ったり来たりする。
+ * だから既定は全画面で、資料のように「並べて見せたい」ものだけ `inline` にする。
+ *
+ * ## 関門にしない（content-kinds.ts の `gates: false`）
+ * 行き先の中で何が起きたかは、アプリからは見えない（外のサイトなら なおさら）。
+ * 見えないものを通行の条件にすると、スライドのときと同じで**1本の教材で
+ * ステージ全体が止まる**。「おわった」の記録は残すが、先へは進める。
+ */
+export const linkSchema = z.object({
+  kind: z.literal("link"),
+  id: z.string().regex(/^[a-z0-9_-]+$/),
+  title: plainText,
+  description: plainText,
+  /** 行き先（アプリの中の `/tools/...` か、外の `https://...`）。 */
+  url: embeddableUrl,
+  /** 開いたときの見せ方。既定は全画面。 */
+  view: z.enum(["fullscreen", "inline"]).default("fullscreen"),
+  /** `inline` のときの高さ（px）。全画面のときは使わない。 */
+  height: z.number().int().min(320).max(2000).default(720),
+  /**
+   * 埋め込まず、別のタブで開くか。
+   *
+   * 外のサイトには**埋め込みを断る設定**（X-Frame-Options / CSP frame-ancestors）が
+   * あり、断られると学習者には白い枠しか見えない。そういう行き先は最初から
+   * 別のタブにする。自前のページ（`/tools/...`）では false のままでよい。
+   */
+  newTab: z.boolean().default(false),
+  /** 開く前に添える ひとこと（そこで何をするのか）。 */
+  note: plainText.optional(),
+  furigana: z.array(furiganaEntrySchema).optional(),
+});
+
 /**
  * ミーティングの質問1つ。
  *
@@ -1211,6 +1277,7 @@ export const contentSchema = z.discriminatedUnion("kind", [
   mangaSchema,
   articleSchema,
   slidesSchema,
+  linkSchema,
 ]);
 
 export type Word = z.infer<typeof wordSchema>;
@@ -1237,4 +1304,5 @@ export type Article = z.infer<typeof articleSchema>;
 export type ArticleBlock = z.infer<typeof articleBlockSchema>;
 export type Slides = z.infer<typeof slidesSchema>;
 export type SlideNote = z.infer<typeof slideNoteSchema>;
+export type LinkContent = z.infer<typeof linkSchema>;
 export type Content = z.infer<typeof contentSchema>;

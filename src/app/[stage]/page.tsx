@@ -9,6 +9,7 @@ import {
 import { mergeFuriganaEntries, type FuriganaEntry } from "@/lib/text/furigana";
 import {
   getArticle,
+  getLink,
   getListening,
   getManga,
   getQuizSet,
@@ -145,6 +146,16 @@ export async function loadRef(ref: StageContentRef): Promise<LoadedRef | null> {
           title: stage.title,
           description: stage.description,
           furigana: stage.furigana,
+        }
+      );
+    }
+    case "link": {
+      const link = await getLink(ref.ref);
+      return (
+        link && {
+          title: link.title,
+          description: link.description,
+          furigana: link.furigana,
         }
       );
     }

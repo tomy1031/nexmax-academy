@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ローマ字入力れんしゅう | Nexmax Academy</title>
+    <meta
+      name="description"
+      content="キーボードで 日本語を 打つ れんしゅう。あいうえおから 漢字変換まで、じゅんばんに すすみます。"
+    />
+    <link rel="stylesheet" href="./style.css" />
+    <!--
+      この1枚は「リンク教材」として アプリの中から 全画面で 開かれる
+      （content/links/romaji_nyuuryoku.json → src/components/link/link-view.tsx）。
+
+      画面に出る 文は すべて lessons.js / manual.js の プレーンテキストで、
+      ふりがなは app.js が 読み辞書から 合成する（AGENTS.md 規律2 と同じ持ち方）。
+      ここに 本文を 直接 書かない——書くと 検査の 外に 文が こぼれる。
+
+      画面は3つ: タイトル → （じゅんびの マニュアル）→ れんしゅう。
+    -->
+  </head>
+  <body>
+    <!-- ================= タイトル ================= -->
+    <section class="screen title-screen" id="screen-title">
+      <div class="title-inner">
+        <img class="title-logo" src="/img/ui/title_logo.webp" alt="Nexmax Academy" />
+
+        <div class="title-card card">
+          <img
+            class="title-nexmax"
+            src="/img/characters/nexmax/hello.webp"
+            alt=""
+            aria-hidden="true"
+          />
+          <h1 class="title-name">ローマ字入力<br />れんしゅう</h1>
+          <p class="title-lead" id="title-lead"></p>
+          <p class="title-why" id="title-why"></p>
+
+          <ol class="road" id="road" aria-label="みちのり"></ol>
+
+          <div class="goal" id="goal">
+            <span class="goal-medal" aria-hidden="true">🏅</span>
+            <span class="goal-text" id="goal-text"></span>
+          </div>
+
+          <!-- キーボードの チェック（英字キーボードの 学習者が いちばん 最初に つまずく所） -->
+          <div class="check-box">
+            <p class="check-q" id="check-q"></p>
+            <input
+              id="check-input"
+              class="check-input"
+              type="text"
+              aria-label="ここに あ と 打つ"
+              placeholder="a"
+              autocomplete="off"
+              autocorrect="off"
+              autocapitalize="off"
+              spellcheck="false"
+              maxlength="8"
+            />
+            <p class="check-result" id="check-result"></p>
+          </div>
+
+          <div class="title-actions">
+            <button type="button" class="btn btn-go" id="start">▶ はじめる</button>
+            <button type="button" class="btn btn-sky" id="resume" hidden></button>
+          </div>
+          <div class="title-links">
+            <button type="button" class="btn-ghost" id="open-manual">
+              ⌨️ キーボードの じゅんび
+            </button>
+            <button type="button" class="btn-ghost" id="open-dict-title">📖 ローマ字じてん</button>
+            <button type="button" class="btn-ghost ghost-quiet" id="reset" hidden>
+              はじめから やりなおす
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= じゅんびの マニュアル ================= -->
+    <section class="screen shell" id="screen-manual" hidden>
+      <header class="topbar">
+        <button type="button" class="btn-ghost" id="manual-back">← もどる</button>
+        <h1 id="manual-title"></h1>
+      </header>
+
+      <div class="card">
+        <p class="manual-lead" id="manual-lead"></p>
+        <div class="tabs" id="manual-tabs" role="tablist"></div>
+        <div id="manual-steps"></div>
+      </div>
+
+      <div class="nav">
+        <button type="button" class="btn-ghost" id="manual-back2">← タイトルに もどる</button>
+        <button type="button" class="btn btn-go" id="manual-start">れんしゅうを はじめる ▶</button>
+      </div>
+    </section>
+
+    <!-- ================= れんしゅう ================= -->
+    <div class="screen shell" id="screen-lesson" hidden>
+      <header class="topbar">
+        <button type="button" class="btn-ghost" id="to-title">🏠</button>
+        <h1>⌨️ ローマ字入力れんしゅう</h1>
+        <span class="spacer"></span>
+        <button type="button" class="btn-ghost" id="furigana-toggle" aria-pressed="true">
+          ふりがな ON
+        </button>
+        <button type="button" class="btn-ghost" id="dict-open">📖 ローマ字じてん</button>
+      </header>
+
+      <div class="progress-wrap">
+        <div class="progress-bar" role="progressbar" aria-labelledby="progress-text">
+          <span id="progress-fill"></span>
+        </div>
+        <span class="progress-text" id="progress-text"></span>
+      </div>
+
+      <div class="layout">
+        <nav class="card toc" aria-label="もくじ">
+          <button type="button" class="btn-ghost toc-toggle" id="toc-toggle" aria-expanded="false">
+            <span>📋 もくじ</span>
+            <span id="toc-toggle-mark">▼</span>
+          </button>
+          <div class="toc-body" id="toc-body">
+            <h2>もくじ</h2>
+            <div id="toc-list"></div>
+          </div>
+        </nav>
+
+        <main>
+          <section class="card" id="lesson-card">
+            <div class="lesson-head">
+              <div style="min-width: 0; flex: 1 1 auto">
+                <p class="lesson-chip" id="lesson-chip"></p>
+                <h2 class="lesson-title" id="lesson-title"></h2>
+                <p class="lesson-lead" id="lesson-lead"></p>
+              </div>
+            </div>
+
+            <div id="lesson-blocks"></div>
+
+            <!-- れんしゅう -->
+            <section class="practice" id="practice" hidden>
+              <div class="dots" id="dots" aria-hidden="true"></div>
+
+              <div class="target-row">
+                <p class="target" id="target"></p>
+                <button type="button" class="btn-ghost listen" id="listen" aria-label="音を きく">
+                  🔊
+                </button>
+              </div>
+              <p class="target-reading" id="target-reading" hidden></p>
+              <p class="target-en" id="target-en" hidden></p>
+
+              <div class="hint-row">
+                <span class="hint" id="hint"></span>
+                <button type="button" class="btn-ghost" id="hint-toggle" aria-pressed="true">
+                  ヒント ON
+                </button>
+              </div>
+
+              <input
+                id="answer"
+                class="answer"
+                type="text"
+                aria-label="ここに 打つ"
+                autocomplete="off"
+                autocorrect="off"
+                autocapitalize="off"
+                spellcheck="false"
+                placeholder="ここに 打つ"
+              />
+
+              <div class="actions">
+                <button type="button" class="btn btn-go" id="check">こたえあわせ ✓</button>
+                <button type="button" class="btn-ghost" id="skip">この もんだいは あとで</button>
+              </div>
+
+              <div class="feedback" id="feedback" role="status" aria-live="polite"></div>
+            </section>
+
+            <!-- レッスンを おえた -->
+            <div class="done-card" id="lesson-done" hidden>
+              <p class="done-title" id="done-title">この レッスンは クリア！ 🏆</p>
+              <p class="done-sub" id="done-sub">つぎへ すすみましょう。</p>
+              <button type="button" class="btn-ghost" id="replay">もう一回 れんしゅう</button>
+            </div>
+
+            <!-- 修了証 -->
+            <div class="cert" id="cert" hidden>
+              <p style="font-size: 1.1rem; color: var(--navy); margin: 0 0 4px">
+                ぜんぶ おわりました！ 🎉
+              </p>
+              <p style="color: var(--ink-soft); font-size: 0.9rem; margin: 0 0 14px" id="cert-lead">
+                なまえを 書くと、修了証を もらえます。
+              </p>
+              <input id="cert-name" type="text" placeholder="ソピア" autocomplete="off" />
+              <div class="actions">
+                <button type="button" class="btn btn-sky" id="cert-download" disabled>
+                  🏅 修了証を もらう
+                </button>
+              </div>
+              <canvas id="cert-canvas" width="1000" height="700"></canvas>
+            </div>
+
+            <nav class="nav">
+              <button type="button" class="btn-ghost" id="prev">← まえ</button>
+              <button type="button" class="btn btn-sky" id="next">つぎ →</button>
+            </nav>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <dialog id="dict">
+      <div class="dialog-head">
+        <h2>📖 ローマ字じてん</h2>
+        <button type="button" class="btn-ghost" id="dict-close">とじる ✕</button>
+      </div>
+      <div class="dialog-body" id="dict-body"></div>
+    </dialog>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
