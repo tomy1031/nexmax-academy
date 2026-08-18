@@ -10,11 +10,11 @@
   "listed": false,
   "contents": [
     {
-      "ref": "ai_jidai",
+      "ref": "it_orientation",
       "type": "slides"
     },
     {
-      "ref": "ai_jidai_check",
+      "ref": "it_orientation_check",
       "type": "quizset",
       "gates": false
     },

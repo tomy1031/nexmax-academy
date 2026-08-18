@@ -1,0 +1,58 @@
+{
+  "_comment": "スライドを **丸ごと1枚の絵として** 作らせる台帳（文字・ふりがな・図まで画像の中）。挿絵だけの台帳は prompts.json。2026-08-17 の試作で、gpt-image-2 が 日本語の漢字・かな・カタカナ と **ふりがな（漢字の真上に小さく）** を 正しく描けることを確認したので この形にした。文字を画像に焼くと lint のふりがな検査が効かないので、原稿HTML側に hidden の 読み合わせ用テキストを必ず添える（scripts/slides/it_orientation/index.html の .alt）。数字を出すスライドは、出典（.footnote）を絵の上にHTMLで重ねる——絵に焼くと直せないため。",
+  "output": "1536x864 PNG, 16:9 landscape",
+  "style": "A COMPLETE 16:9 PRESENTATION SLIDE, drawn as one finished design. Style: bright friendly Japanese e-learning slide, clean modern flat design with soft cel-shaded cartoon illustration, pastel palette (sky blue #A9D6F5, deep navy #1F3A56 and #004F8D for text, cream #FFF7E8, sun yellow #FFC93C, leaf green #58C273, coral #FF8A70, grape #A78BFA), rounded white cards with soft drop shadows, generous white space, background a soft vertical gradient from pale sky blue at the top to cream at the bottom, with a few small flat decorations (a smiling sun, soft clouds, simple leaves and flowers) around the edges only.",
+  "nexmax": "Include the tiny NexMax robot small in a bottom corner, matching the attached reference image exactly: rounded sky-blue (#A9D6F5) helmet-like head wider than tall, two small ear pods, large white rounded face-screen with a soft notch at the top center, two black oval eyes, gentle smile, sky-blue trapezoid torso with a navy (#004F8D) double-peak M chest mark, ball-joint arms with mitten hands, short legs with rounded boots.",
+  "noText": "CRITICAL — FURIGANA: every kanji must carry its hiragana reading printed directly ABOVE it, much smaller (about 40% of the main text height), centred over its own kanji, like Japanese children's textbook ruby. Never place a reading beside or below its kanji. Render every character exactly as specified — correct, well-formed and clearly legible — in a rounded gothic Japanese font. Do not invent, add, drop or garble any character, and add no text that is not listed.",
+  "negative": "Never: broken or nonsense characters, missing furigana, furigana beside or below the kanji, realistic photo rendering, dark tone, angry or crying faces.",
+  "scenes": [
+    {
+      "out": "w05_yontsu",
+      "title": "5: 仕事で つかう 4つの 力",
+      "nexmaxInScene": true,
+      "scene": "Slide content — a four-card slide. Small blue label at the top left: 仕事で つかう (reading しごと above 仕事, つか above 使 — write 仕事で つかう). Large bold navy headline under it: 4つの 力 (reading ちから above 力). Below, four equal rounded white cards in a row. Each card has a simple flat pictogram at the top, then one large bold navy word, then one small grey line under it. Card 1: an eye pictogram; 読む (reading よ above 読); small line 仕様書・メール (reading しようしょ above 仕様書). Card 2: a hand holding a pen; 書く (reading か above 書); small line 報告書・チャット (reading ほうこくしょ above 報告書). Card 3: a mouth speaking with small sound marks; 話す (reading はな above 話); small line 会議・相談 (reading かいぎ above 会議, そうだん above 相談). Card 4: an ear with sound waves; 聞く (reading き above 聞); small line 指示・お客さまの 話 (reading しじ above 指示, きゃく above 客, はなし above 話). Under the four cards one centred line: どれも 同じくらい 大切です (reading おな above 同, たいせつ above 大切)."
+    },
+    {
+      "out": "w07_business",
+      "title": "7: むずかしさ①ビジネスの日本語（対比）",
+      "nexmaxInScene": true,
+      "scene": "Slide content — a left-right comparison slide with a thick blue arrow pointing right in the middle. Small blue label at the top left: むずかしさ 1. Large bold navy headline under it: ビジネスの 日本語 (reading にほんご above 日本語). Left side, a pale green rounded card titled 学校の 日本語 (reading がっこう above 学校, にほんご above 日本語) with a small cartoon of two smiling students talking, and two white speech bubbles below holding わかります and すみません. Right side, a pale blue rounded card titled 会社の 日本語 (reading かいしゃ above 会社, にほんご above 日本語) with a small cartoon of two office workers in suits bowing politely, and two white speech bubbles below holding 承知しました (reading しょうち above 承知) and 申し訳 ございません (reading もう above 申, わけ above 訳). Under both cards one centred line: 意味は 同じでも、言い方が 変わります (reading いみ above 意味, おな above 同, い above 言, かた above 方, か above 変)."
+    },
+    {
+      "out": "w08_itwords",
+      "title": "8: むずかしさ②IT専門の日本語",
+      "nexmaxInScene": true,
+      "scene": "Slide content — a word-cloud style slide. Small blue label at the top left: むずかしさ 2. Large bold navy headline under it: IT専門の 日本語 (reading せんもん above 専門, にほんご above 日本語). Below, five rounded white word chips scattered in a loose, balanced arrangement over a pale sky-blue panel, each chip holding one term in large bold navy: 要件定義 (reading ようけんていぎ above 要件定義), 設計書 (reading せっけいしょ above 設計書), アプリケーション, データベース, ソースコード. A small flat illustration of a desktop computer showing a plain blue-grey screen with no readable text sits behind the chips, faded. Under the panel one centred line: 知らない 言葉は、自分で 調べて みましょう (reading し above 知, ことば above 言葉, じぶん above 自分, しら above 調)."
+    },
+    {
+      "out": "w12_horenso",
+      "title": "12: ほうれんそう（報・連・相の輪）",
+      "nexmaxInScene": true,
+      "scene": "Slide content — a cycle diagram slide. Small blue label at the top left: 日本の 会社の ルール (reading にほん above 日本, かいしゃ above 会社). Large bold navy headline under it: ほうれんそう. Below, three round white cards arranged in a triangle, joined by three thick curved blue arrows forming a clockwise circle. Each card holds a small friendly cartoon bust of an office worker at the top, one large bold navy word, and one small grey English word under it. Top card: 報告 (reading ほうこく above 報告) with Report under it. Right card: 連絡 (reading れんらく above 連絡) with Contact under it. Left card: 相談 (reading そうだん above 相談) with Consult under it. Under the diagram one centred line: 困ったら、すぐに 相談します (reading こま above 困, そうだん above 相談)."
+    },
+    {
+      "out": "w14_ai",
+      "title": "14: AIの時代（1枚にまとめ）",
+      "nexmaxInScene": true,
+      "scene": "Slide content — a two-step slide with a thick blue arrow pointing right in the middle. Small blue label at the top left: AIの 時代 (reading じだい above 時代). Large bold navy headline under it: AIが プログラムを 書きます (reading か above 書). Left side, a rounded white card with a friendly cartoon robot typing at a laptop, and under it one line: プログラムは AIの 仕事 (reading しごと above 仕事). Right side, a rounded white card with a cartoon young engineer smiling and talking with a customer across a small table, and under it one line: 人の 仕事は コミュニケーション (reading ひと above 人, しごと above 仕事). Under both cards one centred line in slightly larger bold navy: だから 日本語が 大切です (reading にほんご above 日本語, たいせつ above 大切)."
+    },
+    {
+      "out": "w16_salary",
+      "title": "16: 給料（日本の20代＝カンボジアのトップクラス）",
+      "nexmaxInScene": true,
+      "scene": "Slide content — a balance-comparison slide. Small blue label at the top left: チャンス 1. Large bold navy headline under it: 給料が 大きく 変わります (reading きゅうりょう above 給料, おお above 大, か above 変). Below, two rounded white cards side by side joined by a large bold navy equals sign in the middle. Left card: a cartoon young engineer in a light shirt smiling, with a small coin-and-bill icon above, and under it 日本で 働く 20代 (reading にほん above 日本, はたら above 働, だい above 代). Right card: a cartoon senior manager in a suit smiling, with the same coin-and-bill icon above, and under it カンボジアの トップクラス. Under both cards one centred line: 同じくらいの 給料に なります (reading おな above 同, きゅうりょう above 給料)."
+    },
+    {
+      "out": "w18_city",
+      "title": "18: 住みたい街（大阪・東京）",
+      "nexmaxInScene": true,
+      "scene": "Slide content — a two-city slide. Small blue label at the top left: チャンス 3. Large bold navy headline under it: 住みやすい 街です (reading す above 住, まち above 街). Below, two rounded white cards side by side. Left card: a clean flat illustration of Osaka Castle with cherry blossom, and under it 大阪 (reading おおさか above 大阪). Right card: a clean flat illustration of Tokyo Tower and modern buildings, and under it 東京 (reading とうきょう above 東京). Under both cards one centred line: 安全で、電車が 時間どおりに 来ます (reading あんぜん above 安全, でんしゃ above 電車, じかん above 時間, き above 来)."
+    },
+    {
+      "out": "w20_year",
+      "title": "20: 就職活動まで あと1年",
+      "nexmaxInScene": true,
+      "scene": "Slide content — a timeline slide. Small blue label at the top left: これからの 1年 (reading ねん above 年). Large bold navy headline under it: 仕事さがしまで、あと 1年 (reading しごと above 仕事, ねん above 年). Below, a long thick horizontal blue arrow running from left to right across a white rounded panel. At the left end a round white marker labelled いま. At the right end a round white marker labelled 1年後 (reading ねんご above 1年後) with a small cartoon graduate in a suit running happily toward a finish ribbon. Above the middle of the arrow three small flat icons in a row — a stack of books, a laptop, a speech bubble — and under the arrow one line: ITと 日本語を いっしょに 勉強します (reading にほんご above 日本語, べんきょう above 勉強). Under the panel one centred line: この 1年が、あなたの 未来を つくります (reading ねん above 年, みらい above 未来)."
+    }
+  ]
+}
