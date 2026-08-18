@@ -3,6 +3,7 @@
 import { useId, useRef, useState } from "react";
 import { RubyText } from "@/components/ruby-text";
 import { findDictionaryTerm, type DictionaryEntry } from "@/lib/dictionary";
+import { canHover } from "@/lib/pointer";
 import type { FuriganaIndex } from "@/lib/text/furigana";
 
 /**
@@ -10,7 +11,8 @@ import type { FuriganaIndex } from "@/lib/text/furigana";
  *
  * 職場語は平易語に置き換えない（設計01 R6-1）。かといって ひらがなに開いても、
  * 意味を知らない語は意味ゼロの かたまり になるだけで解決しない。
- * 本文は **漢字＋ふりがな** で出し、意味は タップで やさしい日本語＋英語 を出す。
+ * 本文は **漢字＋ふりがな** で出し、意味は **マウスを のせる**（指の きかいは タップ）で
+ * やさしい日本語＋英語 を出す（2026-08-18 の指定）。読みながら 手を 止めずに 引けるようにする。
  *
  * 辞書は単語ステージを畳んだもの（src/lib/dictionary.ts）。新しい保存先は無い。
  *
@@ -54,21 +56,49 @@ export function DictionaryText({
     return <RubyText text={text} index={index} show={show} className={className} />;
   }
 
+  /** ひらく前に 置き場所を 決める（画面の ふちで 切れないように）。 */
+  const placePopover = () => {
+    const rect = buttonRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    setPlaceBelow(rect.top < POPOVER_HEIGHT + EDGE_MARGIN);
+    const centerX = rect.left + rect.width / 2;
+    const overflowLeft = Math.max(0, EDGE_MARGIN - (centerX - POPOVER_WIDTH / 2));
+    const overflowRight = Math.max(
+      0,
+      centerX + POPOVER_WIDTH / 2 - (window.innerWidth - EDGE_MARGIN),
+    );
+    setShiftX(overflowLeft - overflowRight);
+  };
+
+  const openPopover = () => {
+    placePopover();
+    setOpen(true);
+  };
+
+  /**
+   * 押したとき。
+   *
+   * マウスの ある きかいでは **押しても 閉じない**——のせた 時点で もう ひらいて
+   * いるので、押すたびに 閉じると「押したのに 消えた」に なる。
+   * 閉じるのは マウスが 離れたとき。指の きかいは これまでどおり タップで 開け閉め。
+   */
   const toggle = () => {
-    if (!open) {
-      const rect = buttonRef.current?.getBoundingClientRect();
-      if (rect) {
-        setPlaceBelow(rect.top < POPOVER_HEIGHT + EDGE_MARGIN);
-        const centerX = rect.left + rect.width / 2;
-        const overflowLeft = Math.max(0, EDGE_MARGIN - (centerX - POPOVER_WIDTH / 2));
-        const overflowRight = Math.max(
-          0,
-          centerX + POPOVER_WIDTH / 2 - (window.innerWidth - EDGE_MARGIN),
-        );
-        setShiftX(overflowLeft - overflowRight);
-      }
+    if (canHover()) {
+      openPopover();
+      return;
     }
+    if (!open) placePopover();
     setOpen((current) => !current);
+  };
+
+  /** マウスの ある きかいだけ、のせただけで ひらく（指の きかいは タップのまま）。 */
+  const hoverProps = {
+    onMouseEnter: () => {
+      if (canHover()) openPopover();
+    },
+    onMouseLeave: () => {
+      if (canHover()) setOpen(false);
+    },
   };
 
   const { entry, at } = found;
@@ -78,11 +108,13 @@ export function DictionaryText({
   return (
     <span className={className}>
       {before ? <RubyText text={before} index={index} show={show} /> : null}
-      <span className="relative inline-block">
+      <span className="relative inline-block" {...hoverProps}>
         <button
           ref={buttonRef}
           type="button"
           onClick={toggle}
+          onFocus={openPopover}
+          onBlur={() => setOpen(false)}
           aria-expanded={open}
           aria-controls={popoverId}
           className="decoration-sky cursor-pointer underline decoration-dotted decoration-2 underline-offset-4"

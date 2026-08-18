@@ -14,6 +14,7 @@
 
 import type { MapArea } from "@/content/areas";
 import type { ContentRefType, Stage } from "@/content/schema";
+import type { FuriganaEntry } from "@/lib/text/furigana";
 import { stageContentPath } from "@/lib/stage-routes";
 
 /**
@@ -35,6 +36,8 @@ export interface MapStage {
   title: string;
   reading: string;
   description: string;
+  /** 説明文の 読み辞書。カードは これで ルビを 合成する（規律2）。 */
+  furigana: readonly FuriganaEntry[];
   color: Stage["color"];
   kinds: readonly ContentRefType[];
   /**
@@ -95,6 +98,7 @@ export function toMapStages(stages: readonly Stage[]): MapStage[] {
     title: stage.title,
     reading: stage.reading,
     description: stage.description,
+    furigana: stage.furigana ?? [],
     color: stage.color,
     // 同じ種別が2つあっても、しるしは1つでいい（「まんが・まんが・もんだい」は読みにくい）
     kinds: [...new Set(stage.contents.map((content) => content.type))],

@@ -671,7 +671,7 @@ export function StudioShell({
 
         {view.mode === "article" ? (
           <ChildFrame
-            title={view.draft.title.length > 0 ? view.draft.title : "あたらしい よみもの"}
+            title={view.draft.title.length > 0 ? view.draft.title : "あたらしい ページ"}
             hint="右のプレビューが 学習者に見える画面です。"
             parent={view.parent}
             onBack={closeChild}

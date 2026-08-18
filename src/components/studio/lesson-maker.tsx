@@ -1,12 +1,12 @@
 "use client";
 
 /**
- * もんだい と よみもの を AIで つくる
+ * もんだい と ページ を AIで つくる
  *
  * まんがの `MangaMaker` と同じ形にそろえてある（先生が1回覚えれば両方つかえる）:
  *   ① 何を つくるか を 1行 → ② AIが 作る → ③ 直して 保存
  *
- * まんがと違って**すじがきの段を 置いていない**。もんだいと よみものは
+ * まんがと違って**すじがきの段を 置いていない**。もんだいと ページは
  * 話の筋が無く、出てきたものを その場で 直すほうが 早いため。
  * 段を増やすのは、増やした分だけ先生の待ちが増えるときだけにする。
  *
@@ -127,7 +127,7 @@ export function QuizMaker({
 }
 
 /* ------------------------------------------------------------------ */
-/* よみもの                                                             */
+/* ページ                                                             */
 /* ------------------------------------------------------------------ */
 
 export function ArticleMaker({
@@ -151,7 +151,7 @@ export function ArticleMaker({
       return;
     }
     if (request.trim().length === 0) {
-      setError("どんな ことを つたえる よみものか を 書いてください。");
+      setError("どんな ことを つたえる ページか を 書いてください。");
       return;
     }
     setBusy(true);
@@ -169,7 +169,7 @@ export function ArticleMaker({
       validate: validateArticle,
       viaGemini: async () => ({
         ok: false,
-        message: "よみものづくりは Codex で 行います。「AI設定」で 合言葉を 入れてください。",
+        message: "ページづくりは Codex で 行います。「AI設定」で 合言葉を 入れてください。",
       }),
     });
 
@@ -196,7 +196,7 @@ export function ArticleMaker({
   };
 
   return (
-    <StudioSection title="AIで つくる" hint="つたえたい ことを 1行 書くと、よみものを 作ります。">
+    <StudioSection title="AIで つくる" hint="つたえたい ことを 1行 書くと、ページを 作ります。">
       <TextAreaField
         label="やりたいこと（1〜3行）"
         value={request}
@@ -214,7 +214,7 @@ export function ArticleMaker({
           />
         </div>
         <MiniButton tone="accent" onClick={() => void make()} disabled={busy}>
-          {busy ? "つくっています…" : "✍️ よみものを つくる"}
+          {busy ? "つくっています…" : "✍️ ページを つくる"}
         </MiniButton>
       </div>
       {note && <p className="text-navy text-xs font-black">{note}</p>}
@@ -328,7 +328,7 @@ function toQuestions(raw: RawQuiz, phase: "research" | "production"): QuizQuesti
   });
 }
 
-/** よみものへ。`link` は作らせていないので、来ても落とす。 */
+/** ページへ。`link` は作らせていないので、来ても落とす。 */
 function toBlocks(raw: RawArticle): ArticleBlock[] {
   return raw.blocks.flatMap((b): ArticleBlock[] => {
     const kind = typeof b.kind === "string" ? b.kind : "";
