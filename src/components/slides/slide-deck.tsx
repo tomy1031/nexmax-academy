@@ -6,7 +6,7 @@ import type { Slides } from "@/content/schema";
 import { NexMax } from "@/components/nexmax";
 import { RubyText } from "@/components/ruby-text";
 import { CelebrationBurst } from "@/components/quiz/celebration";
-import { buildFuriganaIndex } from "@/lib/text/furigana";
+import { buildFuriganaIndex, type FuriganaIndex } from "@/lib/text/furigana";
 import { readContentProgress, recordContentProgress } from "@/lib/progress/store";
 
 /**
@@ -240,13 +240,13 @@ export function SlideDeck({ slides, embedded }: { slides: Slides; embedded?: boo
         とっては、ここだけが「読める文」だから（規律2）。
       */}
       {note ? (
-        <p
-          className={`rounded-2xl px-4 py-2 text-sm leading-loose font-bold break-words sm:text-base ${
+        <div
+          className={`rounded-2xl px-4 py-2.5 ${
             wide ? "shrink-0 bg-white/95 text-[#0b2138]" : "bg-panel-tint text-ink"
           }`}
         >
-          💡 <RubyText text={note.text} index={furigana} show={furiganaOn} />
-        </p>
+          <GlossaryNote text={note.text} furigana={furigana} show={furiganaOn} />
+        </div>
       ) : null}
     </div>
   );
@@ -374,5 +374,62 @@ function EdgeButton({
         {side === "left" ? "←" : "→"}
       </span>
     </button>
+  );
+}
+
+/**
+ * 1枚ぶんの ひとこと（語彙メモ）。
+ *
+ * データは `【時代】era　【必要】necessary` の1本の文で持っている。そのまま 出すと
+ * **日本語と 英語が 同じ 太さで 一列に つながり**、目が どこで 切れるのかを 探すことになる。
+ * 学習者は 分からない語を 1つ さがしに 来るのに、行を 頭から 読む羽目に なる。
+ *
+ * そこで **1語＝1枚の 札**に して、日本語を 上（太字・ルビ）、英語を 下（小さく 薄く）に 置く。
+ * 縦に 分かれると 目は 日本語だけを 拾って 走れる——英語は 見つけた あとで 読めばよい。
+ *
+ * データは 変えない。`【】` は 語彙メモの 印なので、**印が 無い ひとことは 文として
+ * そのまま 出す**（他の 教材の notes は ふつうの 文で 書いてある）。
+ */
+function GlossaryNote({
+  text,
+  furigana,
+  show,
+}: {
+  text: string;
+  furigana: FuriganaIndex;
+  show: boolean;
+}) {
+  const words = useMemo(
+    () =>
+      [...text.matchAll(/【(.+?)】([^【]*)/g)].map((m) => ({
+        jp: m[1] ?? "",
+        en: (m[2] ?? "").trim(),
+      })),
+    [text],
+  );
+
+  if (words.length === 0) {
+    return (
+      <p className="text-sm leading-loose font-bold break-words sm:text-base">
+        💡 <RubyText text={text} index={furigana} show={show} />
+      </p>
+    );
+  }
+
+  return (
+    <div className="flex flex-wrap items-start gap-x-2 gap-y-1.5">
+      <span className="pt-1 text-sm leading-none">💡</span>
+      {words.map((word) => (
+        <span
+          key={word.jp}
+          className="border-hairline inline-flex flex-col rounded-[var(--radius-chip)] border bg-white/70 px-2 py-0.5 leading-tight"
+        >
+          <span className="text-sm font-extrabold sm:text-base">
+            <RubyText text={word.jp} index={furigana} show={show} />
+          </span>
+          <span className="text-[11px] font-bold opacity-65 sm:text-xs">{word.en}</span>
+        </span>
+      ))}
+    </div>
   );
 }

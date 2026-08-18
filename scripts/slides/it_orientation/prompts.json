@@ -1,0 +1,89 @@
+{
+  "_comment": "スライド it_orientation の挿絵台帳（絵だけ・文字は原稿HTML側で組む）。丸ごと生成の台帳は slide_prompts.json。",
+  "output": "1536x1024 PNG, landscape",
+  "saveDir": "scripts/slides/it_orientation/img（PNGで受けて 1080px・JPEG q72 に変換して置く）",
+  "style": "Style: clean modern Japanese manga / anime style, hand-drawn warm line, soft cel shading, bright friendly pastel palette (soft sky blue #A9D6F5, cream #FFF7E8, warm sun yellow #FFC93C, leaf green #58C273, coral #FF8A70), rounded shapes, no harsh shadows, warm daylight, kid-safe e-learning illustration.",
+  "nexmax": "The tiny cute NexMax robot mascot appears SMALL in the scene, matching the attached reference image exactly: rounded sky-blue (#A9D6F5) helmet-like head wider than tall, two small ear pods, large white rounded face-screen with a soft notch at the top center, two black oval eyes, gentle smile, sky-blue trapezoid torso with a navy (#004F8D) double-peak M chest mark, segmented ball-joint arms with mitten hands, short legs with rounded boots.",
+  "noText": "No text, no letters, no kanji, no kana, no numbers anywhere in the image. All laptop lids, phone screens, monitors, whiteboards, papers, books, boxes and signs are plain or show only abstract colour blocks and soft squiggle lines. No watermark, no signature, no logo, no frame border.",
+  "negative": "Never: realistic rendering, harsh gradients, six fingers, extra limbs, readable letters, dark horror tone, angry or crying faces.",
+  "scenes": [
+    {
+      "out": "t01_title",
+      "title": "タイトル: 日本とカンボジアを結ぶ橋",
+      "nexmaxInScene": true,
+      "scene": "Scene: a wide bright morning view of a long graceful bridge over calm water; on the left end a modern Japanese city skyline with a distant snow-capped mountain, on the right end green fields with the silhouette of an ancient stone temple; a group of six cheerful young Cambodian students in casual clothes and light shirts walk together across the bridge toward the city, some carrying laptop bags, all smiling and looking forward; warm sunrise light, small birds in the sky. The tiny NexMax robot walks beside them in the foreground, waving."
+    },
+    {
+      "out": "t02_ch1",
+      "title": "章扉1: いまとこれから",
+      "nexmaxInScene": false,
+      "scene": "Scene: a young Cambodian student sitting at a tidy desk by a bright window, looking up thoughtfully from a plain open notebook toward the window where a modern office building is visible in the distance; soft morning light, plants on the windowsill; calm and hopeful mood."
+    },
+    {
+      "out": "t03_study",
+      "title": "今まで: 教室の勉強",
+      "nexmaxInScene": false,
+      "scene": "Scene: a cheerful classroom scene — three young students at desks with plain notebooks and pencils, a plain whiteboard behind them with only soft abstract squiggles, a teacher gesturing kindly; bright daylight through big windows; friendly studious mood."
+    },
+    {
+      "out": "t04_office",
+      "title": "これから: 仕事の現場",
+      "nexmaxInScene": true,
+      "scene": "Scene: a bright modern IT office — four colleagues of mixed background gathered around a desk with two laptops, one standing and pointing at a plain whiteboard covered only with abstract coloured blocks and arrows, everyone attentive and smiling; large windows, plants, warm daylight. The tiny NexMax robot sits small on the desk corner."
+    },
+    {
+      "out": "t06_ch2",
+      "title": "章扉2: 2つのむずかしさ",
+      "nexmaxInScene": false,
+      "scene": "Scene: a young engineer at a laptop pausing with a slightly puzzled but calm expression, one hand on the chin, two soft empty thought bubbles floating above; warm desk lamp light, plants nearby; gentle, not distressed."
+    },
+    {
+      "out": "t09_trouble",
+      "title": "わからないと どうなるか",
+      "nexmaxInScene": false,
+      "scene": "Scene: a small meeting room where a young engineer sits at a laptop looking worried while three teammates around him gesture and talk past each other, and a customer across the table looks confused with open hands; soft empty speech bubbles float between them, none connecting; muted cool colours, tense but gentle mood, no angry shouting faces."
+    },
+    {
+      "out": "t10_ch3",
+      "title": "章扉3: 日本の会社のルール",
+      "nexmaxInScene": true,
+      "scene": "Scene: the bright entrance hall of a modern Japanese office building in the morning; several employees in neat clothes greeting each other with small bows as they arrive, a large plain wall clock above the reception desk; clean, calm, orderly mood. The tiny NexMax robot stands small near the entrance, waving."
+    },
+    {
+      "out": "t11_time",
+      "title": "時間をまもる",
+      "nexmaxInScene": false,
+      "scene": "Scene: a young engineer in neat clothes arriving early at a modern office entrance, smiling, checking a wristwatch; a large plain round wall clock is visible behind; other colleagues walk in calmly; bright morning light, relaxed and confident mood."
+    },
+    {
+      "out": "t13_ch4",
+      "title": "章扉4: AIの時代",
+      "nexmaxInScene": false,
+      "scene": "Scene: a friendly small cartoon robot and a young engineer sitting side by side at one desk, both facing a plain glowing monitor showing only abstract colour blocks; the robot types while the person talks and gestures toward the screen; soft blue light, cooperative and warm mood."
+    },
+    {
+      "out": "t15_ch5",
+      "title": "章扉5: 日本にはチャンスがある",
+      "nexmaxInScene": true,
+      "scene": "Scene: a bright sunrise over a wide Japanese landscape — a distant snow-capped mountain, cherry blossom branches at the top corners, a modern city skyline below, soft golden rays across the sky; a young engineer stands on a green hill in the foreground with a bag over the shoulder, looking toward the sunrise with a hopeful smile. The tiny NexMax robot stands beside them raising both arms cheerfully."
+    },
+    {
+      "out": "t17_tech",
+      "title": "最新のIT技術を学ぶ",
+      "nexmaxInScene": true,
+      "scene": "Scene: a bright modern lab-like workspace — a young engineer wearing a VR headset smiling, beside a desk with a plain-screened laptop, a small friendly robot arm, and a glowing abstract cloud-and-circuit shape floating above; clean white surfaces, plants, warm daylight. The tiny NexMax robot watches from the desk corner."
+    },
+    {
+      "out": "t19_bring",
+      "title": "日本の仕事をカンボジアへ持ち帰る",
+      "nexmaxInScene": false,
+      "scene": "Scene: a confident young engineer in a light jacket walking to the right carrying a large sturdy briefcase, from a modern Japanese cityscape on the left toward green fields and an ancient stone temple on the right; a wide soft arrow of light sweeps along the ground behind them; bright daylight, proud and hopeful mood."
+    },
+    {
+      "out": "t21_end",
+      "title": "さいご: いっしょにがんばりましょう",
+      "nexmaxInScene": true,
+      "scene": "Scene: a warm group portrait — seven cheerful young students and one teacher standing together outdoors in soft evening light, several raising a fist or a hand in encouragement, cherry blossom petals drifting; a modern city and green fields blend softly in the background; hopeful, energetic, celebratory mood. The tiny NexMax robot stands in the front centre raising both arms cheerfully."
+    }
+  ]
+}
