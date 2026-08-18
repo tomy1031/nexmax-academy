@@ -127,7 +127,7 @@ function Popover({
       id={id}
       role="note"
       style={{ transform: `translateX(calc(-50% + ${shiftX}px))` }}
-      className={`border-sky text-ink absolute left-1/2 z-30 w-60 rounded-2xl border-2 bg-white px-3 py-2 text-left text-xs leading-relaxed font-bold shadow-[0_6px_18px_rgba(0,79,141,.22)] ${
+      className={`border-sky text-ink absolute left-1/2 z-30 w-60 rounded-2xl border-2 bg-white px-4 py-3 text-left text-xs leading-relaxed font-bold shadow-[0_6px_18px_rgba(0,79,141,.22)] ${
         placeBelow ? "top-full mt-2" : "bottom-full mb-2"
       }`}
     >
@@ -232,7 +232,7 @@ export function GlossaryChip({
         {...handlers}
         aria-expanded={open}
         aria-controls={popoverId}
-        className="border-hairline text-ink hover:bg-sky-soft cursor-pointer rounded-full border-2 bg-white px-3 py-1 text-xs font-bold"
+        className="border-hairline text-ink hover:bg-sky-soft cursor-pointer rounded-full border-2 bg-white px-3.5 py-1.5 text-xs leading-snug font-bold"
       >
         {renderText(entry.term, [{ text: entry.term, reading: entry.reading }])}
         <span className="text-ink-soft ml-1.5 font-semibold">/ {entry.englishTerm}</span>

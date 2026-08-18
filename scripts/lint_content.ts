@@ -14,6 +14,7 @@
  *  6. マップの停留所とステージの結びつき（step重複・既定エリアより先の area 未設定）。
  *     マップは「1ステージ＝1エリア＝背景画像1枚」（src/content/areas.ts）。
  *  7. ふりがなの覆い漏れ（学習者が読む文の漢字が読み辞書で全部覆えているか — 規律2）
+ *  7b. 熟語が2語に割れた読み（「報告書」→「報告」＋「書」＝ほうこくか）
  *  8. 焼き込みモジュールのずれ（src/content/git-contents.generated.ts）。
  *     アプリはこの生成物だけを読むので、ずれると JSON を直しても画面が変わらない。
  *  9. スライドのファイル面（fileUrl の PDF が public/ に実在するか・pageCount が
@@ -39,6 +40,7 @@ import {
   checkForbiddenWords,
   checkCountryNames,
   checkFuriganaCoverage,
+  checkSplitCompoundReadings,
   checkIntroStage,
   checkLinkOrder,
   checkReferenceIntegrity,
@@ -302,6 +304,7 @@ async function main() {
   findings.push(...checkStageOrder(entries));
   findings.push(...checkIntroStage(entries));
   findings.push(...checkFuriganaCoverage(entries));
+  findings.push(...checkSplitCompoundReadings(entries));
   findings.push(...checkGeneratedIndex());
   findings.push(...(await checkSlidesFiles(entries)));
 

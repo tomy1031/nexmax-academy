@@ -25,7 +25,12 @@ import {
 // スタジオのAPIルートから読まれるこのファイルからでも安全に import できる。
 // furigana.ts も純粋な関数だけ（node:fs も React も無い）。スタジオのクライアントから
 // この検査を呼べることが「保存前に足りない漢字を出す」画面の前提になっている。
-import { buildFuriganaIndex, uncoveredKanji, type FuriganaEntry } from "./text/furigana";
+import {
+  annotateRuby,
+  buildFuriganaIndex,
+  uncoveredKanji,
+  type FuriganaEntry,
+} from "./text/furigana";
 // stage-routes.ts も純関数と定数だけ（node:fs も React も持たない）。
 import { INTRO_STAGE_ID } from "./stage-routes";
 
@@ -801,6 +806,71 @@ function coverageEntries(content: Content): FuriganaEntry[] {
     default:
       return [...(content.furigana ?? [])];
   }
+}
+
+/* ------------------------------------------------------------------ *
+ * 熟語が 読み辞書で 2語に 割れて、まちがった 読みに なっていないか
+ *
+ * ふりがなの覆い検査は「漢字にルビが付いたか」しか見ない。付いてさえいれば通るので、
+ * 「報告書」に「報告」＋「書」が当たって **ほうこくか** と読ませていても素通りする
+ *（2026-08-18 に学習者向け画面で実発生）。読めない漢字より始末が悪い——学習者は
+ * まちがった読みを正しいものとして覚え、先生も画面を見ただけでは気づけない。
+ *
+ * そこで **漢字の かたまりが 2語以上に 割れて 組み立てられたとき**に知らせる。
+ * 割れること自体は正しいことも多い（「松井社長」＝「松井」＋「社長」）ので、
+ * 確かめ終わったものは下の一覧に書いて黙らせる。**一覧に足す＝読みを目で確かめた印**。
+ * ------------------------------------------------------------------ */
+
+/** 割れているが読みは正しいと確かめ終わった熟語（2026-08-18 に全件を目で確認）。 */
+const VERIFIED_SPLIT_COMPOUNDS: ReadonlySet<string> = new Set([
+  "動作確認用",
+  "学生自身",
+  "松井社長",
+  "日本語",
+  "日本語教育",
+  "日本語学習",
+  "全部終",
+  "礼儀正",
+  "挨拶回",
+  "配属初日",
+]);
+
+const KANJI_RUN = /[々一-鿿]{2,}/g;
+
+/**
+ * 熟語が 2語に 割れて 読まれていないか。
+ *
+ * **level は warn。** 割れること自体は正しい場合が多く、error にすると
+ * 正しい教材まで止めてしまい、やがて検査ごと外される。組み立てた読みを
+ * そのまま出すので、先生は1秒で「合っている／いない」を判断できる。
+ */
+export function checkSplitCompoundReadings(entries: readonly ContentEntry[]): Finding[] {
+  return entries.flatMap(({ file, content }) => {
+    const dictionary = new Map(coverageEntries(content));
+    if (dictionary.size === 0) return [];
+    const index = buildFuriganaIndex(coverageEntries(content));
+    const seen = new Set<string>();
+    const findings: Finding[] = [];
+
+    for (const { field, text } of collectLabeledTexts(content)) {
+      for (const run of text.match(KANJI_RUN) ?? []) {
+        if (dictionary.has(run) || VERIFIED_SPLIT_COMPOUNDS.has(run) || seen.has(run)) continue;
+        const segments = annotateRuby(run, index);
+        // 覆えていない漢字は 覆い検査の 担当。ここは **全部に ルビが 付いた うえで
+        // 2つ以上に 割れた** ものだけを見る。
+        if (segments.length < 2 || segments.some((segment) => !segment.reading)) continue;
+        seen.add(run);
+        const assembled = segments.map((segment) => segment.reading).join("");
+        const split = segments.map((segment) => segment.text).join("＋");
+        findings.push({
+          file,
+          level: "warn",
+          message: `「${run}」（${field}）が ${split} に 割れて「${assembled}」と 読まれる — 読みが 合っているか 確かめ、合っていれば furigana に ["${run}", "…"] を 足すか VERIFIED_SPLIT_COMPOUNDS に 書く`,
+        });
+      }
+    }
+    return findings;
+  });
 }
 
 /**
