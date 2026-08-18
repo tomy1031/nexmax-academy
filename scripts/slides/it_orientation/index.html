@@ -53,7 +53,7 @@
     position: absolute; bottom: 10px; right: 16px; font-size: 11px; font-weight: 700; color: #7189a3;
     background: rgba(255, 253, 250, 0.78); padding: 2px 9px; border-radius: 999px;
   }
-  .pageno::before { content: counter(slide) " / 21"; }
+  .pageno::before { content: counter(slide) " / 19"; }
 
   /* --- 絵が主役のスライド（左テキスト・右画像） --- */
   .with-pic { padding-right: 0; }
@@ -73,6 +73,16 @@
    * （scripts/slides/manuscript_checks.ts / check_glossary.mjs）。
    */
   .alt { display: none; }
+
+  /* 絵の中の カードの 上に 重ねる 順位バッジ。**数字は 絵に 焼かない**
+     （出どころも 年も あとから 直せる形で 持つ。slide_prompts.json の 決まり）。 */
+  .rank {
+    position: absolute; z-index: 2;
+    background: #f26fa7; color: #fff; font-size: 18px; font-weight: 800;
+    padding: 5px 16px; border-radius: 999px;
+    box-shadow: 0 4px 0 #d94d84, 0 8px 14px rgba(31, 58, 86, 0.25);
+  }
+  .rank rt { color: rgba(255, 255, 255, 0.9); }
 
   /* --- 全面イラスト＋パネル（タイトル・章扉・転換点） --- */
   .full-pic { padding: 0; }
@@ -197,31 +207,12 @@
   <div class="pageno"></div>
 </section>
 
-<section class="slide full-pic chapter">
-  <img class="bg" src="img/t02_ch1.jpg" alt="" />
-  <div class="panel" style="bottom: 46px; width: 700px;">
-    <div class="num">1</div>
-    <h1>いま と これから</h1>
-  </div>
-  <div class="alt">いま と これから。</div>
-  <div class="pageno"></div>
-</section>
-
 <section class="slide with-pic">
-  <div class="txt">
-    <div class="kicker">いままで</div>
-    <h2><ruby>今<rt>いま</rt></ruby>までの <ruby>勉強<rt>べんきょう</rt></ruby>は<br />「N5・N4に <ruby>合格<rt>ごうかく</rt></ruby>する ため」でした</h2>
-    <div class="sub"><ruby>教科書<rt>きょうかしょ</rt></ruby>の <ruby>日本語<rt>にほんご</rt></ruby>です。まず ここまで <ruby>来<rt>き</rt></ruby>ました。すごい ことです。</div>
-  </div>
-  <img class="pic" src="img/t03_study.jpg" alt="" />
-  <div class="pageno"></div>
-</section>
-
-<section class="slide with-pic">
-  <div class="txt">
-    <div class="kicker">これから</div>
-    <h2>これからは <ruby>会社<rt>かいしゃ</rt></ruby>で<br /><ruby>使<rt>つか</rt></ruby>う <ruby>日本語<rt>にほんご</rt></ruby>です</h2>
-    <div class="sub"><ruby>仕事<rt>しごと</rt></ruby>の <ruby>場所<rt>ばしょ</rt></ruby>では、<ruby>教科書<rt>きょうかしょ</rt></ruby>に ない <ruby>言葉<rt>ことば</rt></ruby>が たくさん <ruby>出<rt>で</rt></ruby>て きます。</div>
+  <!-- いままで と これから を 1枚に まとめた ぶん、文字の 列を 少し 広げて 行を 折らない -->
+  <div class="txt" style="width: 45%;">
+    <div class="kicker">いま と これから</div>
+    <h2 style="font-size: 25px;"><ruby>今<rt>いま</rt></ruby>までの <ruby>勉強<rt>べんきょう</rt></ruby>は<br />「N4・N3に <ruby>合格<rt>ごうかく</rt></ruby>する ため」<br />これからは <ruby>会社<rt>かいしゃ</rt></ruby>で <ruby>使<rt>つか</rt></ruby>う <ruby>日本語<rt>にほんご</rt></ruby></h2>
+    <div class="sub"><ruby>教科書<rt>きょうかしょ</rt></ruby>に ない <ruby>言葉<rt>ことば</rt></ruby>が たくさん <ruby>出<rt>で</rt></ruby>て きます。</div>
   </div>
   <img class="pic" src="img/t04_office.jpg" alt="" />
   <div class="pageno"></div>
@@ -336,14 +327,17 @@
 
 <section class="slide full-pic">
   <img class="bg" src="img/w18_city.jpg" alt="" />
-  <div class="alt">チャンス3。日本は 住みやすい 街です。大阪、東京。安全で、電車が 時間どおりに 来ます。</div>
+  <div class="rank" style="left: 92px; top: 176px;"><ruby>世界<rt>せかい</rt></ruby> 2<ruby>位<rt>い</rt></ruby></div>
+  <div class="rank" style="left: 500px; top: 176px;"><ruby>世界<rt>せかい</rt></ruby> 4<ruby>位<rt>い</rt></ruby></div>
+  <div class="footnote">「<ruby>住<rt>す</rt></ruby>みやすい <ruby>世界<rt>せかい</rt></ruby>の <ruby>都市<rt>とし</rt></ruby>」ランキング（エコノミスト・2021<ruby>年<rt>ねん</rt></ruby>の しらべ）</div>
+  <div class="alt">チャンス3。日本は 住みやすい 街です。大阪は 世界 2位、東京は 世界 4位。安全で、電車が 時間どおりに 来ます。</div>
   <div class="pageno"></div>
 </section>
 
 <section class="slide with-pic">
   <div class="txt">
     <div class="kicker">チャンス 4</div>
-    <h2><ruby>経験<rt>けいけん</rt></ruby>を カンボジアへ<br /><ruby>持<rt>も</rt></ruby>って <ruby>帰<rt>かえ</rt></ruby>れます</h2>
+    <h2><ruby>仕事<rt>しごと</rt></ruby>や <ruby>経験<rt>けいけん</rt></ruby>を<br />カンボジアへ<br /><ruby>持<rt>も</rt></ruby>って <ruby>帰<rt>かえ</rt></ruby>れます</h2>
     <div class="sub"><ruby>日本<rt>にほん</rt></ruby>の <ruby>大<rt>おお</rt></ruby>きな <ruby>仕事<rt>しごと</rt></ruby>の やり<ruby>方<rt>かた</rt></ruby>は、<ruby>国<rt>くに</rt></ruby>に <ruby>帰<rt>かえ</rt></ruby>っても <ruby>使<rt>つか</rt></ruby>えます。</div>
   </div>
   <img class="pic" src="img/t19_bring.jpg" alt="" />
