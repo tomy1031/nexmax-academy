@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { joinCall, seedCompleted, shot, speakByText } from "./helpers";
+import { joinCall, seedCompleted, shot, skipAsk, speakByText } from "./helpers";
 
 /**
  * はじまりステージ — ヘンディさんとの ミーティング（Zoom の 入りかた・ことばの 辞書）
@@ -104,4 +104,39 @@ test("しつもんの ことばを タップすると、いみが 出る", async
   await expect(note).toContainText("よぶ ときの");
   await expect(note).toContainText("Name");
   await shot(page, "31-hajimari-meeting-dictionary");
+});
+
+test("6つ おわると「聞く ばん」に なり、こえが 無くても 返事が ある", async ({ page, context }) => {
+  await seedCompleted(context, BEFORE);
+  await page.goto(MEETING);
+  await joinCall(page);
+
+  // 6問を ことばで 通す（「すみません、つぎを おねがいします」）
+  for (let i = 0; i < 6; i += 1) {
+    await skipAsk(page);
+    await page.waitForTimeout(300);
+  }
+
+  /*
+   * ここからは 役が 入れかわる。**足場（型文）を 消さない**——
+   * 白い 入力欄だけ 残すのは、設計01 P6 の アンチパターン。
+   */
+  await expect(page.getByText("こんどは、あなたが")).toBeVisible();
+  /* 見出しの 漢字には ルビが 合成される ので、型文の かなの ところで 見る */
+  await expect(page.getByText("どんな しごとを して いますか")).toBeVisible();
+
+  /*
+   * 声で つないで いない 学習者にも 返事が ある（誰も いない 部屋に しない）。
+   * 責めずに、どうすれば 答えて もらえるかと、ことばが のこる ことを 伝える。
+   */
+  /*
+   * おわりの 画面は 絵が ゆっくり 動きつづける ので、ボタンが「止まる」のを
+   * 待つ 押し方だと 待ちきれない。ここは Enter で 送る（学習者も 同じ ように 送れる）。
+   */
+  const box = page.getByLabel("こたえを 入力する");
+  await box.fill("ヘンディさんは、どんな しごとを して いますか。");
+  await box.press("Enter");
+  await expect(page.getByText("しつもんが 言えましたね。")).toBeVisible();
+  await expect(page.getByText("きょう はなせた こと」に のこります")).toBeVisible();
+  await shot(page, "33-hajimari-free-talk");
 });
