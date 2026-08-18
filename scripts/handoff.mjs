@@ -100,11 +100,27 @@ const [prod, stg] = await Promise.all([
   deployState("https://staging-academy.nexmax.workers.dev"),
 ]);
 
+// ── 本番待ち: main に入ったのに本番へ出ていない変更（= ユーザーのSTG確認と「本番OK」待ち）。
+//    チャットの確認依頼は流れて消えるので、ここに毎回出して忘れられなくする（docs/deploy.md §0.6）
+let pendingProd = [];
+if (prod.sha && prod.sha !== baseSha) {
+  const raw = sh(
+    `git log --first-parent --format='  %h %ad %s' --date=format:'%m-%d %H:%M' ${prod.sha}..${base}`,
+  );
+  // sh() が全体を trim するので、1行目だけ字下げが落ちる。そろえ直す
+  if (raw) pendingProd = raw.split("\n").map((l) => (l.startsWith("  ") ? l : `  ${l}`));
+}
+
 // ── 次の一手（状態から機械的に導出）
 let next = "台帳から次の願いを選ぶ";
 if (Number(behind) > 0) next = `origin/main を取り込む（${behind} コミット遅れ）`;
 else if (dirtyCount > 0) next = "未コミットの変更を確認してから続きを判断する";
-else if (prod.sha && prod.sha !== baseSha) next = "本番と main の差を確認する（台帳 #5）";
+else if (pendingProd.length)
+  next =
+    `本番待ち ${pendingProd.length} 件 — ユーザーへSTG確認を依頼し、` +
+    "「本番OK」が出たら gh workflow run deploy.yml -f target=production（§0.6）";
+else if (prod.sha && prod.sha !== baseSha)
+  next = "本番と main の差を確認する（docs/deploy.md §0.6）";
 
 console.log(`\n${line}\n 現在地レポート（handoff）\n${line}`);
 console.log(`\n■ サマリ`);
@@ -113,6 +129,12 @@ console.log(`  本番   : ${prod.label}`);
 console.log(`  STG    : ${stg.label}`);
 if (mainWarning) console.log(`  ${mainWarning}`);
 console.log(`  次の一手: ${next}`);
+
+if (pendingProd.length) {
+  console.log(`\n■ 本番待ち（STGで確認 → ユーザーの「本番OK」→ 本番へ。docs/deploy.md §0.6）`);
+  for (const l of pendingProd.slice(0, 12)) console.log(l);
+  if (pendingProd.length > 12) console.log(`  …ほか ${pendingProd.length - 12} 件`);
+}
 
 const recent = sh("git log -3 --format='  %h %ad %s' --date=format:'%m-%d %H:%M'");
 if (recent) console.log(`\n■ 直近のコミット\n${recent}`);
