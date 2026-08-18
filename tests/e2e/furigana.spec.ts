@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { bareKanjiTexts, itemsBefore, KAISHA, knock, seedCompleted } from "./helpers";
+import { bareKanjiTexts, itemsBefore, KAISHA, joinCall, seedCompleted } from "./helpers";
 
 /**
  * ふりがなの 覆い（規律2）を **実画面で** 見張る
@@ -20,8 +20,6 @@ import { bareKanjiTexts, itemsBefore, KAISHA, knock, seedCompleted } from "./hel
 const KNOWN_BARE_KANJI: readonly string[] = [
   // src/components/call-shell.tsx — 通話の 人数
   "人が さんかちゅう",
-  // src/components/meeting/meeting-session.tsx — 声で 話す ボタン
-  "🎤 声で 話す",
   // src/components/stage/content-frame.tsx — 関門の 逃げ道
   "それでも 見る",
 ];
@@ -50,7 +48,7 @@ for (const screen of SCREENS) {
 test("ミーティングの 中（入室後・答える前）にも 裸の漢字が 無い", async ({ page, context }) => {
   await seedCompleted(context, itemsBefore(4));
   await page.goto(KAISHA.meetingHendy.path);
-  await knock(page);
+  await joinCall(page);
 
   const bare = await bareKanjiTexts(page);
   expect(bare.filter((text) => !KNOWN_BARE_KANJI.includes(text))).toEqual([]);

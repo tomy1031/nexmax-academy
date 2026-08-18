@@ -48,9 +48,17 @@ export default defineConfig({
     screenshot: "only-on-failure",
     video: "off",
     trace: "retain-on-failure",
-    launchOptions: process.env.E2E_CHROMIUM_PATH
-      ? { executablePath: process.env.E2E_CHROMIUM_PATH }
-      : {},
+    launchOptions: {
+      ...(process.env.E2E_CHROMIUM_PATH ? { executablePath: process.env.E2E_CHROMIUM_PATH } : {}),
+      /*
+       * にせの カメラ・マイクを 使う。
+       * ミーティングの 入室の 画面は **カメラが 既定で ON**（Zoom と同じ）なので、
+       * 何も 渡さないと 機械の ブラウザは きょかを 断り、画面が いつも
+       * 「きょかが ありません」に なる——つまり 学習者が 見る 画面を 一度も
+       * 確かめられない。にせの 映像を 渡して、うつっている ほうを 検査する。
+       */
+      args: ["--use-fake-ui-for-media-stream", "--use-fake-device-for-media-stream"],
+    },
   },
   webServer: {
     command: `npx next start --port ${PORT}`,

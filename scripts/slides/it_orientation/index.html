@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<title>日本で エンジニアに なる ために（スライド原稿）</title>
+<!--
+  スライド教材 it_orientation の組版原稿。
+  scripts/slides/render_pdf.mjs が 960×540 のまま印刷して public/slides/it-orientation.pdf を作る。
+  PDF の中はふりがなトグルが効かないため、漢字にはすべて <ruby> を直書きする。
+  語彙の意味（日本語 / English）は**スライドに載せず**、content/slides/it_orientation.json の
+  notes 側に全ページぶん置く（アプリのノート欄。ルビも語彙ポップアップも効く場所）。
+  数字・グラフ・組織図のラベルはすべてここで描く。生成画像（img/）には文字を入れない。
+  画像は JPEG で持つ（PDF が JPEG をそのまま抱き込む。webp/PNG だと可逆ビットマップ化で 22MB になった）。
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;700;800&display=swap" rel="stylesheet" />
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  @page { size: 960px 540px; margin: 0; }
+  html, body { background: #d8f0fc; }
+  body { font-family: "M PLUS Rounded 1c", "Hiragino Maru Gothic ProN", sans-serif; color: #1f3a56; }
+
+  .slide {
+    position: relative;
+    width: 960px;
+    height: 540px;
+    overflow: hidden;
+    page-break-after: always;
+    background: linear-gradient(180deg, #d8f0fc 0%, #f4fbff 55%, #fff7e8 100%);
+    padding: 38px 48px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  ruby > rt { font-size: 0.42em; color: #56718e; font-weight: 500; letter-spacing: 0; }
+
+  .kicker { font-size: 16px; font-weight: 800; color: #0288d1; letter-spacing: 0.1em; margin-bottom: 10px; }
+  h1 { font-size: 40px; font-weight: 800; line-height: 1.55; }
+  h2 { font-size: 30px; font-weight: 800; line-height: 1.6; }
+  .sub { font-size: 19px; font-weight: 700; color: #3c5877; line-height: 1.7; margin-top: 14px; }
+  /* 丸ごと絵のスライドでは 絵の上に 重なるので、ページ番号と 同じ 薄い下地を 敷く。
+     数字を 出す スライドには 出どころが 要る（絵にしたときに 落とさない）。 */
+  .footnote {
+    position: absolute; bottom: 10px; left: 24px; font-size: 10.5px; color: #7189a3;
+    background: rgba(255, 253, 250, 0.78); padding: 2px 10px; border-radius: 999px;
+  }
+  /* ページ番号は数えて出す（手書きだと1枚の挿入で以降が全部ずれる）。分母だけここで1回書く */
+  body { counter-reset: slide; }
+  .slide { counter-increment: slide; }
+  /* 丸ごと絵のスライドでは 絵の中のネクマックスと 重なるので、薄い下地を敷いて読めるようにする */
+  .pageno {
+    position: absolute; bottom: 10px; right: 16px; font-size: 11px; font-weight: 700; color: #7189a3;
+    background: rgba(255, 253, 250, 0.78); padding: 2px 9px; border-radius: 999px;
+  }
+  .pageno::before { content: counter(slide) " / 21"; }
+
+  /* --- 絵が主役のスライド（左テキスト・右画像） --- */
+  .with-pic { padding-right: 0; }
+  .with-pic .txt { width: 44%; display: flex; flex-direction: column; justify-content: center; height: 100%; }
+  .with-pic .pic {
+    position: absolute; right: 0; top: 0; width: 53%; height: 100%;
+    object-fit: cover; border-radius: 28px 0 0 28px;
+    box-shadow: -8px 0 24px rgba(31, 58, 86, 0.12);
+  }
+
+  /*
+   * --- スライドを丸ごと1枚の絵にしたもの（図・データ・PMの力） ---
+   * 文字も ふりがなも 図も 絵の中にある（gpt-image-2 が 日本語とルビを 正しく描けることを
+   * 2026-08-17 に確認した。台帳は slide_prompts.json）。
+   * 絵の中の字は 機械検査から見えないので、同じ文を .alt に置く——
+   * 印刷にも画面にも出ないが、禁止語・国名・語彙メモの検査はここを読む
+   * （scripts/slides/manuscript_checks.ts / check_glossary.mjs）。
+   */
+  .alt { display: none; }
+
+  /* --- 全面イラスト＋パネル（タイトル・章扉・転換点） --- */
+  .full-pic { padding: 0; }
+  .full-pic .bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .full-pic .panel {
+    position: absolute; left: 50%; transform: translateX(-50%);
+    background: rgba(255, 253, 250, 0.93); border-radius: 26px;
+    padding: 24px 44px; text-align: center;
+    box-shadow: 0 10px 30px rgba(31, 58, 86, 0.22);
+  }
+
+  /* --- 章扉 --- */
+  .chapter .num {
+    display: inline-block; background: #004f8d; color: #fffdfa; font-weight: 800;
+    font-size: 15px; letter-spacing: 0.14em; padding: 5px 20px; border-radius: 999px; margin-bottom: 12px;
+  }
+  .chapter h1 { font-size: 38px; }
+
+  /* --- データ・図解スライド --- */
+  .center { display: flex; flex-direction: column; justify-content: center; height: 100%; }
+
+  .bars { margin-top: 22px; display: flex; flex-direction: column; gap: 14px; width: 100%; }
+  .bar-row { display: flex; align-items: center; gap: 14px; }
+  .bar-label { width: 190px; font-size: 17px; font-weight: 800; text-align: right; color: #33506f; }
+  .bar-track { flex: 1; height: 32px; background: #e8f2fa; border-radius: 999px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 999px; display: flex; align-items: center; justify-content: flex-end; padding-right: 14px; color: #fffdfa; font-weight: 800; font-size: 16px; }
+  .bar-note { width: 96px; font-size: 12.5px; color: #7189a3; font-weight: 700; }
+
+  .cards { display: flex; gap: 16px; margin-top: 20px; }
+  .card {
+    flex: 1; background: #fffdfa; border-radius: 20px; padding: 16px 14px; text-align: center;
+    box-shadow: 0 6px 16px rgba(31, 58, 86, 0.1); border-top: 6px solid #0288d1;
+  }
+  .card .co { font-size: 15px; font-weight: 800; color: #56718e; }
+  .card .num { font-size: 27px; font-weight: 800; color: #004f8d; margin-top: 4px; line-height: 1.3; }
+  .card .yr { font-size: 12px; color: #7189a3; font-weight: 700; margin-top: 4px; }
+
+  .bignum { font-size: 58px; font-weight: 800; color: #004f8d; line-height: 1.25; }
+  .bignum .unit { font-size: 30px; }
+
+  /* キャラ画像は白背景のまま「ステッカー風」に見せる */
+  .nexmax-corner {
+    position: absolute; right: 26px; bottom: 22px; height: 112px; width: 112px;
+    object-fit: cover; border-radius: 50%; border: 4px solid #fffdfa;
+    box-shadow: 0 6px 16px rgba(31, 58, 86, 0.18); background: #fffdfa;
+  }
+
+  /* --- クイズの3択（絵つき） --- */
+  .choices { display: flex; gap: 16px; margin-top: 18px; }
+  .choice {
+    flex: 1; background: #fffdfa; border-radius: 20px; overflow: hidden;
+    box-shadow: 0 6px 16px rgba(31, 58, 86, 0.12); border: 3px solid #cfe6f7;
+    display: flex; flex-direction: column;
+  }
+  .choice.correct { border-color: #58c273; box-shadow: 0 8px 22px rgba(88, 194, 115, 0.35); }
+  .choice img { width: 100%; height: 148px; object-fit: cover; }
+  .choice .body { padding: 10px 12px 12px; text-align: center; }
+  .choice .mark {
+    display: inline-block; width: 30px; height: 30px; line-height: 30px; border-radius: 50%;
+    background: #0288d1; color: #fffdfa; font-weight: 800; font-size: 16px; margin-bottom: 6px;
+  }
+  .choice.correct .mark { background: #58c273; }
+  .choice .label { font-size: 15.5px; font-weight: 800; line-height: 1.55; }
+
+  /* --- 3段階の流れ（AIの役割） --- */
+  .steps { display: flex; align-items: stretch; gap: 8px; margin-top: 18px; }
+  .step { flex: 1; background: #fffdfa; border-radius: 20px; overflow: hidden; box-shadow: 0 6px 16px rgba(31, 58, 86, 0.12); }
+  .step img { width: 100%; height: 150px; object-fit: cover; }
+  .step .body { padding: 10px 12px 14px; text-align: center; }
+  .step .when { font-size: 13px; font-weight: 800; color: #0288d1; }
+  .step .what { font-size: 17px; font-weight: 800; margin-top: 4px; line-height: 1.5; }
+  .step .role { font-size: 13.5px; font-weight: 700; color: #7189a3; margin-top: 5px; }
+  .step-arrow { align-self: center; font-size: 26px; color: #0288d1; font-weight: 800; }
+
+  /* --- 組織図（生成した図の下にラベルを3等分で置く） --- */
+  .org { margin-top: 12px; }
+  .org img { width: 100%; height: 268px; object-fit: cover; border-radius: 22px; box-shadow: 0 8px 20px rgba(31, 58, 86, 0.14); }
+  .org-labels { display: flex; margin-top: 10px; }
+  .org-labels div { flex: 1; text-align: center; font-size: 19px; font-weight: 800; }
+  .org-labels div span { display: block; font-size: 12.5px; font-weight: 700; color: #7189a3; margin-top: 2px; }
+  .org-labels .hi { color: #004f8d; }
+  .org-labels .ai { color: #2f8f52; }
+
+  /* --- ピクトグラム（4人に1人） --- */
+  .people { display: flex; gap: 28px; justify-content: center; margin-top: 20px; align-items: flex-end; }
+  .person { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+  .p-head { width: 38px; height: 38px; border-radius: 50%; background: #9fb9d0; }
+  .p-body { width: 58px; height: 68px; border-radius: 24px 24px 10px 10px; background: #9fb9d0; }
+  .person.hit .p-head, .person.hit .p-body { background: #ff8a70; }
+
+  /* --- 会社の数のくらべ --- */
+  .circles { display: flex; align-items: flex-end; justify-content: center; gap: 48px; margin-top: 14px; height: 210px; }
+  .circle-item { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .circle { border-radius: 50%; }
+  .circle-label { font-size: 16px; font-weight: 800; color: #33506f; text-align: center; line-height: 1.5; }
+
+  /* --- PMの力・+α のカード --- */
+  .three { display: flex; gap: 16px; margin-top: 20px; }
+  .three .card { border-top-width: 8px; padding: 18px 12px; }
+  .three .name { font-size: 19px; font-weight: 800; line-height: 1.5; }
+  .three .lead { font-size: 13px; font-weight: 800; color: #0288d1; }
+
+  /* --- ガントチャート（時間のマネジメント） --- */
+  .gantt { margin-top: 18px; background: #fffdfa; border-radius: 22px; padding: 22px 24px 20px; box-shadow: 0 6px 16px rgba(31, 58, 86, 0.1); }
+  .gantt-head { display: flex; font-size: 13px; font-weight: 800; color: #7189a3; margin-bottom: 10px; }
+  .gantt-head .task { width: 172px; }
+  .gantt-head .weeks { flex: 1; display: flex; }
+  .gantt-head .weeks span { flex: 1; text-align: center; }
+  .gantt-row { display: flex; align-items: center; margin-bottom: 12px; }
+  .gantt-row .task { width: 172px; font-size: 17px; font-weight: 800; }
+  .gantt-row .track { flex: 1; height: 30px; background: #eef5fb; border-radius: 10px; position: relative; }
+  .gantt-row .barx { position: absolute; top: 0; height: 100%; border-radius: 10px; }
+  .gantt-legend { font-size: 14px; color: #56718e; font-weight: 700; margin-top: 12px; }
+</style>
+</head>
+<body>
+
+<section class="slide full-pic">
+  <img class="bg" src="img/t01_title.jpg" alt="" />
+  <div class="panel" style="bottom: 40px; width: 760px;"><h1><ruby>日本<rt>にほん</rt></ruby>で エンジニアに なる ために</h1><div class="sub" style="margin-top:8px; font-size:18px;"><ruby>学校<rt>がっこう</rt></ruby>の <ruby>日本語<rt>にほんご</rt></ruby>から、<ruby>仕事<rt>しごと</rt></ruby>の <ruby>日本語<rt>にほんご</rt></ruby>へ</div></div>
+  <div class="alt">日本で エンジニアに なる ために。学校の 日本語から、仕事の 日本語へ。</div>
+  <div class="pageno"></div>
+</section>
+
+<section class="slide full-pic chapter">
+  <img class="bg" src="img/t02_ch1.jpg" alt="" />
+  <div class="panel" style="bottom: 46px; width: 700px;">
+    <div class="num">1</div>
+    <h1>いま と これから</h1>
+  </div>
+  <div class="alt">いま と これから。</div>
+  <div class="pageno"></div>
+</section>
+
+<section class="slide with-pic">
+  <div class="txt">
+    <div class="kicker">いままで</div>
+    <h2><ruby>今<rt>いま</rt></ruby>までの <ruby>勉強<rt>べんきょう</rt></ruby>は<br />「N5・N4に <ruby>合格<rt>ごうかく</rt></ruby>する ため」でした</h2>
+    <div class="sub"><ruby>教科書<rt>きょうかしょ</rt></ruby>の <ruby>日本語<rt>にほんご</rt></ruby>です。まず ここまで <ruby>来<rt>き</rt></ruby>ました。すごい ことです。</div>
+  </div>
+  <img class="pic" src="img/t03_study.jpg" alt="" />
+  <div class="pageno"></div>
+</section>
+
+<section class="slide with-pic">
+  <div class="txt">
+    <div class="kicker">これから</div>
+    <h2>これからは <ruby>会社<rt>かいしゃ</rt></ruby>で<br /><ruby>使<rt>つか</rt></ruby>う <ruby>日本語<rt>にほんご</rt></ruby>です</h2>
+    <div class="sub"><ruby>仕事<rt>しごと</rt></ruby>の <ruby>場所<rt>ばしょ</rt></ruby>では、<ruby>教科書<rt>きょうかしょ</rt></ruby>に ない <ruby>言葉<rt>ことば</rt></ruby>が たくさん <ruby>出<rt>で</rt></ruby>て きます。</div>
+  </div>
+  <img class="pic" src="img/t04_office.jpg" alt="" />
+  <div class="pageno"></div>
+</section>
+
+<section class="slide full-pic">
+  <img class="bg" src="img/w05_yontsu.jpg" alt="" />
+  <div class="alt">仕事で つかう 4つの 力。読む（仕様書・メール）。書く（報告書・チャット）。話す（会議・相談）。聞く（指示・お客さまの 話）。どれも 同じくらい 大切です。</div>
+  <div class="pageno"></div>
+</section>
+
+<section class="slide full-pic chapter">
+  <img class="bg" src="img/t06_ch2.jpg" alt="" />
+  <div class="panel" style="bottom: 46px; width: 700px;">
+    <div class="num">2</div>
+    <h1>2つの むずかしさ</h1>
+  </div>
+  <div class="alt">2つの むずかしさ。</div>
+  <div class="pageno"></div>
+</section>
+
+<section class="slide full-pic">
+  <img class="bg" src="img/w07_business.jpg" alt="" />
+  <div class="alt">むずかしさ1。ビジネスの 日本語。学校の 日本語は「わかります」「すみません」。会社の 日本語は「承知しました」「申し訳 ございません」。意味は 同じでも、言い方が 変わります。</div>
+  <div class="pageno"></div>
+</section>
+
+<section class="slide full-pic">
+  <img class="bg" src="img/w08_itwords.jpg" alt="" />
+  <div class="alt">むずかしさ2。IT専門の 日本語。要件定義、設計書、アプリケーション、データベース、ソースコード。知らない 言葉は、自分で 調べて みましょう。</div>
+  <div class="pageno"></div>
+</section>
+
+<section class="slide with-pic">
+  <div class="txt">
+    <div class="kicker">もし わからなかったら</div>
+    <h2><ruby>言葉<rt>ことば</rt></ruby>が <ruby>分<rt>わ</rt></ruby>からないと<br /><ruby>仕事<rt>しごと</rt></ruby>が <ruby>止<rt>と</rt></ruby>まります</h2>
+    <div class="sub">チームの <ruby>人<rt>ひと</rt></ruby>と <ruby>相談<rt>そうだん</rt></ruby>できません。お<ruby>客<rt>きゃく</rt></ruby>さまの「<ruby>言<rt>い</rt></ruby>いたい こと」も <ruby>分<rt>わ</rt></ruby>かりません。<br />→ ほしい アプリを <ruby>作<rt>つく</rt></ruby>れません。</div>
+  </div>
+  <img class="pic" src="img/t09_trouble.jpg" alt="" />
+  <div class="pageno"></div>
+</section>
+
+<section class="slide full-pic chapter">
+  <img class="bg" src="img/t10_ch3.jpg" alt="" />
+  <div class="panel" style="bottom: 46px; width: 700px;">
+    <div class="num">3</div>
+    <h1><ruby>日本<rt>にほん</rt></ruby>の <ruby>会社<rt>かいしゃ</rt></ruby>の ルール</h1>
+  </div>
+  <div class="alt">日本の 会社の ルール。</div>
+  <div class="pageno"></div>
+</section>
+
+<section class="slide with-pic">
+  <div class="txt">
+    <div class="kicker">ルール 1</div>
+    <h2><ruby>時間<rt>じかん</rt></ruby>を まもります</h2>
+    <div class="sub"><ruby>約束<rt>やくそく</rt></ruby>の <ruby>時間<rt>じかん</rt></ruby>の 5<ruby>分前<rt>ふんまえ</rt></ruby>に <ruby>着<rt>つ</rt></ruby>きます。<ruby>遅<rt>おく</rt></ruby>れる ときは、<ruby>必<rt>かなら</rt></ruby>ず <ruby>先<rt>さき</rt></ruby>に <ruby>連絡<rt>れんらく</rt></ruby>します。</div>
+  </div>
+  <img class="pic" src="img/t11_time.jpg" alt="" />
+  <div class="pageno"></div>
+</section>
+
+<section class="slide full-pic">
+  <img class="bg" src="img/w12_horenso.jpg" alt="" />
+  <div class="alt">日本の 会社の ルール。ほうれんそう。報告 Report、連絡 Contact、相談 Consult。困ったら、すぐに 相談します。</div>
+  <div class="pageno"></div>
+</section>
+
+<section class="slide full-pic chapter">
+  <img class="bg" src="img/t13_ch4.jpg" alt="" />
+  <div class="panel" style="bottom: 46px; width: 700px;">
+    <div class="num">4</div>
+    <h1>AIの <ruby>時代<rt>じだい</rt></ruby></h1>
+  </div>
+  <div class="alt">AIの 時代。</div>
+  <div class="pageno"></div>
+</section>
+
+<section class="slide full-pic">
+  <img class="bg" src="img/w14_ai.jpg" alt="" />
+  <div class="alt">AIの 時代。AIが プログラムを 書きます。プログラムは AIの 仕事。人の 仕事は コミュニケーション。だから 日本語が 大切です。</div>
+  <div class="pageno"></div>
+</section>
+
+<section class="slide full-pic chapter">
+  <img class="bg" src="img/t15_ch5.jpg" alt="" />
+  <div class="panel" style="bottom: 46px; width: 700px;">
+    <div class="num">5</div>
+    <h1><ruby>日本<rt>にほん</rt></ruby>には チャンスが あります</h1>
+  </div>
+  <div class="alt">日本には チャンスが あります。</div>
+  <div class="pageno"></div>
+</section>
+
+<section class="slide full-pic">
+  <img class="bg" src="img/w16_salary.jpg" alt="" />
+  <div class="alt">チャンス1。給料が 大きく 変わります。日本で 働く 20代は、カンボジアの トップクラスと 同じくらいの 給料に なります。</div>
+  <div class="footnote"><ruby>会社<rt>かいしゃ</rt></ruby>や <ruby>仕事<rt>しごと</rt></ruby>で 大きく ちがいます。だいたいの 話です</div>
+  <div class="pageno"></div>
+</section>
+
+<section class="slide with-pic">
+  <div class="txt">
+    <div class="kicker">チャンス 2</div>
+    <h2><ruby>新<rt>あたら</rt></ruby>しい <ruby>技術<rt>ぎじゅつ</rt></ruby>を<br /><ruby>先<rt>さき</rt></ruby>に <ruby>学<rt>まな</rt></ruby>べます</h2>
+    <div class="sub">AI・クラウド・VR。<ruby>日本<rt>にほん</rt></ruby>の <ruby>会社<rt>かいしゃ</rt></ruby>では、<ruby>新<rt>あたら</rt></ruby>しい <ruby>道具<rt>どうぐ</rt></ruby>を <ruby>仕事<rt>しごと</rt></ruby>で <ruby>使<rt>つか</rt></ruby>えます。</div>
+  </div>
+  <img class="pic" src="img/t17_tech.jpg" alt="" />
+  <div class="pageno"></div>
+</section>
+
+<section class="slide full-pic">
+  <img class="bg" src="img/w18_city.jpg" alt="" />
+  <div class="alt">チャンス3。日本は 住みやすい 街です。大阪、東京。安全で、電車が 時間どおりに 来ます。</div>
+  <div class="pageno"></div>
+</section>
+
+<section class="slide with-pic">
+  <div class="txt">
+    <div class="kicker">チャンス 4</div>
+    <h2><ruby>経験<rt>けいけん</rt></ruby>を カンボジアへ<br /><ruby>持<rt>も</rt></ruby>って <ruby>帰<rt>かえ</rt></ruby>れます</h2>
+    <div class="sub"><ruby>日本<rt>にほん</rt></ruby>の <ruby>大<rt>おお</rt></ruby>きな <ruby>仕事<rt>しごと</rt></ruby>の やり<ruby>方<rt>かた</rt></ruby>は、<ruby>国<rt>くに</rt></ruby>に <ruby>帰<rt>かえ</rt></ruby>っても <ruby>使<rt>つか</rt></ruby>えます。</div>
+  </div>
+  <img class="pic" src="img/t19_bring.jpg" alt="" />
+  <div class="pageno"></div>
+</section>
+
+<section class="slide full-pic">
+  <img class="bg" src="img/w20_year.jpg" alt="" />
+  <div class="alt">これからの 1年。仕事さがしまで、あと 1年。ITと 日本語を いっしょに 勉強します。この 1年が、あなたの 未来を つくります。</div>
+  <div class="pageno"></div>
+</section>
+
+<section class="slide full-pic">
+  <img class="bg" src="img/t21_end.jpg" alt="" />
+  <div class="panel" style="bottom: 40px; width: 760px;"><h1>いっしょに がんばりましょう</h1><div class="sub" style="margin-top:8px; font-size:18px;">あなたの ゆめを、ぜんぶの <ruby>力<rt>ちから</rt></ruby>で <ruby>応援<rt>おうえん</rt></ruby>します</div></div>
+  <div class="alt">さいご。いっしょに がんばりましょう。あなたの ゆめを、ぜんぶの 力で 応援します。</div>
+  <div class="pageno"></div>
+</section>
+
+</body>
+</html>
