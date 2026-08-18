@@ -42,12 +42,12 @@ const NARRATOR =
   "あなたはナレーターです。渡された文を、書いてあるとおりに、自然な速さで読み上げてください。" +
   "あいづち・言い換え・説明・感想を足さないでください。読み上げ以外は何もしないでください。";
 
-const meetingId = process.argv[2];
+const meetingId: string = process.argv[2] ?? "";
 if (!meetingId) {
   console.error("使い方: node --import tsx scripts/make_meeting_audio.ts <教材ID>");
   process.exit(1);
 }
-const apiKey = process.env.GEMINI_API_KEY;
+const apiKey: string = process.env.GEMINI_API_KEY ?? "";
 if (!apiKey) {
   console.error("GEMINI_API_KEY が ありません（GitHub の Environment「Preview」に あります）");
   process.exit(1);
@@ -165,22 +165,34 @@ async function synthesizeWithFallback(text: string): Promise<Uint8Array> {
   throw new Error(`音に できませんでした:\n  ${failures.join("\n  ")}`);
 }
 
-const outDir = join("public", "audio", "meetings", meetingId);
-mkdirSync(outDir, { recursive: true });
+/**
+ * 本体。**トップレベルの await を 使わない**——このリポジトリの `.ts` は
+ * CJS として 読まれる ので（package.json に type: module が 無い）、
+ * トップレベルで await すると 変換の 時点で 落ちる（2026-08-18 に 実発生）。
+ */
+async function main(): Promise<void> {
+  const outDir = join("public", "audio", "meetings", meetingId);
+  mkdirSync(outDir, { recursive: true });
 
-const urls: Record<string, string> = {};
-for (const [index, line] of lines.entries()) {
-  process.stdout.write(`(${index + 1}/${lines.length}) ${line.key} … `);
-  const pcm = await synthesizeWithFallback(line.text);
-  const file = join(outDir, `${line.key}.wav`);
-  writeFileSync(file, toWav(pcm));
-  urls[line.key] = `/audio/meetings/${meetingId}/${line.key}.wav`;
-  console.log(`${(pcm.byteLength / OUT_RATE / 2).toFixed(1)}秒`);
+  const urls: Record<string, string> = {};
+  for (const [index, line] of lines.entries()) {
+    process.stdout.write(`(${index + 1}/${lines.length}) ${line.key} … `);
+    const pcm = await synthesizeWithFallback(line.text);
+    const file = join(outDir, `${line.key}.wav`);
+    writeFileSync(file, toWav(pcm));
+    urls[line.key] = `/audio/meetings/${meetingId}/${line.key}.wav`;
+    console.log(`${(pcm.byteLength / OUT_RATE / 2).toFixed(1)}秒`);
+  }
+
+  meeting.questions = meeting.questions.map((q: { id: string }) =>
+    urls[q.id] ? { ...q, audioUrl: urls[q.id] } : q,
+  );
+  if (urls.closing) meeting.closingAudioUrl = urls.closing;
+  writeFileSync(meetingPath, `${JSON.stringify(meeting, null, 2)}\n`);
+  console.log(`${meetingPath} に audioUrl を 書きました（声: ${voice}）`);
 }
 
-meeting.questions = meeting.questions.map((q: { id: string }) =>
-  urls[q.id] ? { ...q, audioUrl: urls[q.id] } : q,
-);
-if (urls.closing) meeting.closingAudioUrl = urls.closing;
-writeFileSync(meetingPath, `${JSON.stringify(meeting, null, 2)}\n`);
-console.log(`${meetingPath} に audioUrl を 書きました（声: ${voice}）`);
+void main().catch((error: unknown) => {
+  console.error(error instanceof Error ? error.message : String(error));
+  process.exit(1);
+});
