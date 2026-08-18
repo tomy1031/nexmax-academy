@@ -52,12 +52,26 @@ export function SlideDeck({ slides, embedded }: { slides: Slides; embedded?: boo
   /** 実際に開けた枚数。データの pageCount より**開いたPDFのほうが正しい**（差し替えられていることがある）。 */
   const [pageCount, setPageCount] = useState(slides.pageCount);
 
-  /** しおり。前に見た いちばん先の1枚から始める。 */
+  /**
+   * しおり。**最後に開いた1枚**から始める（2026-08-18 の指定）。
+   *
+   * 前は「いちばん先まで見た1枚」を開いていた。授業では 前のページへ 戻って
+   * 話す ことが 多く、戻った ところで 閉じても つぎに 開くと いちばん 先へ
+   * 飛ばされて、話の 続きを 探し直す ことに なっていた。
+   *
+   * 「いちばん先」は 見おわりの 判定と 点の 色に 要るので、別に `furthest` で 持つ。
+   * 古い きろく（`slide` に いちばん先が 入っている）でも そのまま しおりとして
+   * 使えるので、作り直しは 要らない。
+   */
   const [index, setIndex] = useState(() => {
     const saved = readContentProgress(slides.id)?.position?.slide;
     return typeof saved === "number" && saved >= 0 && saved < slides.pageCount ? saved : 0;
   });
-  const [furthest, setFurthest] = useState(index);
+  const [furthest, setFurthest] = useState(() => {
+    const saved = readContentProgress(slides.id)?.position;
+    const reached = saved?.furthest ?? saved?.slide;
+    return typeof reached === "number" && reached >= 0 && reached < slides.pageCount ? reached : 0;
+  });
   const [finished, setFinished] = useState(false);
   const [wide, setWide] = useState(false);
 
@@ -85,7 +99,8 @@ export function SlideDeck({ slides, embedded }: { slides: Slides; embedded?: boo
       if (done && !finished) setFinished(true);
       recordContentProgress(slides.id, {
         status: done ? "completed" : "started",
-        position: { slide: reached },
+        // slide = つぎに 開く ところ（最後に 開いた1枚）/ furthest = どこまで 見たか
+        position: { slide: clamped, furthest: reached },
       });
     },
     [last, furthest, finished, slides.id],
@@ -95,7 +110,7 @@ export function SlideDeck({ slides, embedded }: { slides: Slides; embedded?: boo
   useEffect(() => {
     recordContentProgress(slides.id, {
       status: pageCount <= 1 ? "completed" : "started",
-      position: { slide: index },
+      position: { slide: index, furthest },
     });
     // 初回だけ。以降は go() が記録する
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -285,14 +300,27 @@ export function SlideDeck({ slides, embedded }: { slides: Slides; embedded?: boo
           aria-label="スライドを おくる"
           className="card-island mt-3 flex flex-wrap items-center justify-between gap-3 p-3"
         >
-          <button
-            type="button"
-            onClick={() => go(index - 1)}
-            disabled={index === 0}
-            className="border-hairline text-navy rounded-full border-2 bg-white px-5 py-2 text-sm font-black disabled:opacity-40"
-          >
-            ← まえ
-          </button>
+          <div className="flex items-center gap-2">
+            {/* 授業では「はじめに もどって」「さいごの まとめを 出して」が よく 起きる。
+                1枚ずつ 送らせない（21枚を 20回 押させない）。 */}
+            <button
+              type="button"
+              onClick={() => go(0)}
+              disabled={index === 0}
+              aria-label="さいしょの 1まいへ"
+              className="border-hairline text-navy rounded-full border-2 bg-white px-3 py-2 text-sm font-black disabled:opacity-40"
+            >
+              ⏮
+            </button>
+            <button
+              type="button"
+              onClick={() => go(index - 1)}
+              disabled={index === 0}
+              className="border-hairline text-navy rounded-full border-2 bg-white px-5 py-2 text-sm font-black disabled:opacity-40"
+            >
+              ← まえ
+            </button>
+          </div>
           <button
             type="button"
             onClick={expand}
@@ -300,14 +328,25 @@ export function SlideDeck({ slides, embedded }: { slides: Slides; embedded?: boo
           >
             ⛶ ひろげて 見る
           </button>
-          <button
-            type="button"
-            onClick={() => go(index + 1)}
-            disabled={index >= last}
-            className="btn-game px-6 py-2 text-sm [--btn-face:#f26fa7] [--btn-shadow:#d94d84] disabled:opacity-40"
-          >
-            つぎ →
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => go(index + 1)}
+              disabled={index >= last}
+              className="btn-game px-6 py-2 text-sm [--btn-face:#f26fa7] [--btn-shadow:#d94d84] disabled:opacity-40"
+            >
+              つぎ →
+            </button>
+            <button
+              type="button"
+              onClick={() => go(last)}
+              disabled={index >= last}
+              aria-label="さいごの 1まいへ"
+              className="border-hairline text-navy rounded-full border-2 bg-white px-3 py-2 text-sm font-black disabled:opacity-40"
+            >
+              ⏭
+            </button>
+          </div>
         </nav>
       ) : null}
 
@@ -422,7 +461,9 @@ function GlossaryNote({
       {words.map((word) => (
         <span
           key={word.jp}
-          className="border-hairline inline-flex flex-col rounded-[var(--radius-chip)] border bg-white/70 px-2 py-0.5 leading-tight"
+          // ふりがなは 文字の 上に 出るので、`py-0.5` だと 上に はみ出して 見える
+          // （2026-08-18 の指摘）。上下に 余白を 足し、行送りも 詰めすぎない。
+          className="border-hairline inline-flex flex-col rounded-[var(--radius-chip)] border bg-white/70 px-3 py-1.5 leading-snug"
         >
           <span className="text-sm font-extrabold sm:text-base">
             <RubyText text={word.jp} index={furigana} show={show} />

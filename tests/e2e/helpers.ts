@@ -25,7 +25,7 @@ export const KAISHA = {
   article1: {
     id: "kaisha_shirabekata",
     path: "/kaisha/article-kaisha_shirabekata",
-    kind: "よみもの",
+    kind: "ページ",
   },
   quiz1: {
     id: "kaisha_shirabekata_check",
@@ -35,7 +35,7 @@ export const KAISHA = {
   article2: {
     id: "kaisha_nextmake_shirabe",
     path: "/kaisha/article-kaisha_nextmake_shirabe",
-    kind: "よみもの",
+    kind: "ページ",
   },
   quiz2: { id: "kaisha_houkoku", path: "/kaisha/quiz-kaisha_houkoku", kind: "もんだい" },
   meetingHendy: {

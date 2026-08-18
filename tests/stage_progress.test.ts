@@ -130,9 +130,9 @@ describe("resolveGates（ステージ側の 関門指定）", () => {
     expect(resolveGates("slides", true)).toBe(true);
   });
 
-  it("「はじめに」の 並びで、テストの 先の よみものが 🔒 に 戻らない", () => {
-    // スライド / かくにんテスト(gates:false) / スライド / よみもの / よみもの
-    // すでに よみもの2本を 読み終えた 学習者（テストは これから）
+  it("「はじめに」の 並びで、テストの 先の ページが 🔒 に 戻らない", () => {
+    // スライド / かくにんテスト(gates:false) / スライド / ページ / ページ
+    // すでに ページ2本を 読み終えた 学習者（テストは これから）
     const types = ["slides", "quizset", "slides", "article", "article"] as const;
     const overrides = [undefined, false, undefined, undefined, undefined];
     const gates = types.map((type, i) => resolveGates(type, overrides[i]));
@@ -140,7 +140,7 @@ describe("resolveGates（ステージ側の 関門指定）", () => {
     const withOverride = gateStage(codes("00022"), gates);
     expect(withOverride.openable).toEqual([true, true, true, true, true]);
 
-    // 指定が 無ければ テストが 関門になり、**読み終えた よみもの2本が 閉じる**
+    // 指定が 無ければ テストが 関門になり、**読み終えた ページ2本が 閉じる**
     //（3枚目の スライドだけは gates:false なので 開いたまま）
     const withoutOverride = gateStage(codes("00022"), gatesOf(types));
     expect(withoutOverride.openable).toEqual([true, true, true, false, false]);

@@ -95,7 +95,7 @@ export async function generateMetadata({
       return { title: `${(await getManga(ref.ref))?.title ?? ""} | まんが` };
     case "article": {
       const article = await getArticle(ref.ref);
-      return { title: `${article?.title ?? ""} | よみもの`, description: article?.description };
+      return { title: `${article?.title ?? ""} | ページ`, description: article?.description };
     }
     case "slides": {
       const slides = await getSlides(ref.ref);

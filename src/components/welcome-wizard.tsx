@@ -14,6 +14,7 @@ import {
   getCompatibility,
   getFamilyForCode,
   getPersonalityType,
+  questionReadings,
   scorePersonality,
   type PersonalityAnswer,
   type PersonalityLanguage,
@@ -22,13 +23,21 @@ import {
   type PersonalityTypeCode,
 } from "@/content/personality";
 import { AcademyLogo } from "@/components/academy-logo";
+import {
+  FallbackImage,
+  GeminiKeyCard,
+  GenderCard,
+  NameCard,
+  SchoolCard,
+} from "@/components/learner-fields";
 import { NexMaxFamily, NexMaxType, TypeEmblem } from "@/components/nexmax-types";
 import { GlossaryChip, GlossaryText } from "@/components/glossary-text";
-import { LearnerText, RubyText, renderRuby } from "@/components/ruby-text";
+import { LearnerText, RUBY_ON_COLOR, RubyText, renderRuby } from "@/components/ruby-text";
+import { CARD_EDGE, CARD_EDGE_SM, CHIP_EDGE } from "@/components/card-edge";
 import { findAllGlossaryTerms } from "@/content/glossary";
-import { insertPersonalityResult, updateOwnNames, upsertOwnProfile } from "@/lib/profile-db";
-import { areNamesValid, katakanaNotice, MAX_NAME_LENGTH, type LearnerNames } from "@/lib/name";
-import { COHORTS, isSchoolChosen, UNIVERSITIES, type LearnerSchool } from "@/lib/school";
+import { insertPersonalityResult, updateOwnDetails, upsertOwnProfile } from "@/lib/profile-db";
+import { areNamesValid, type LearnerNames } from "@/lib/name";
+import { isSchoolChosen, type LearnerSchool } from "@/lib/school";
 import { getGeminiKey, saveGeminiKey, saveProfile, type Gender } from "@/lib/profile";
 
 function subscribeToStorage(onStoreChange: () => void) {
@@ -38,26 +47,6 @@ function subscribeToStorage(onStoreChange: () => void) {
 
 function savedGeminiKeySnapshot(): string {
   return getGeminiKey();
-}
-
-function FallbackImage({
-  src,
-  alt,
-  fallback,
-  className,
-}: {
-  src: string;
-  alt: string;
-  fallback: ReactNode;
-  className: string;
-}) {
-  const [failed, setFailed] = useState(false);
-
-  if (failed) return <>{fallback}</>;
-  return (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img src={src} alt={alt} onError={() => setFailed(true)} className={className} />
-  );
 }
 
 function QuizIllustration({ src }: { src: string }) {
@@ -97,7 +86,7 @@ function Stepper({ step }: { step: 1 | 2 | 3 }) {
           <li
             className={`shrink-0 rounded-full border-2 px-3 py-1.5 text-[10px] font-extrabold shadow-[0_3px_0_rgba(0,79,141,.12)] sm:px-5 sm:py-2 sm:text-sm ${
               item.number === step
-                ? "border-navy bg-navy text-white"
+                ? `border-navy bg-navy text-white ${RUBY_ON_COLOR}`
                 : "border-navy text-navy bg-white"
             }`}
           >
@@ -123,15 +112,13 @@ function QuestionText({
 }) {
   // 柱書きは <p> の中なので語彙メモ（ボタン）を入れられる。
   // 選択肢は <button> の中なのでボタンを入れ子にできず、OptionText はルビだけ（§2.5）。
+  // 読み辞書は設問固有＋共通を合わせたもの。やさしい日本語と日本語で同じものを使う。
+  const readings = questionReadings(question);
   if (language === "japanese") {
-    return (
-      <GlossaryText text={question.japanese} readings={question.readings} renderText={renderRuby} />
-    );
+    return <GlossaryText text={question.japanese} readings={readings} renderText={renderRuby} />;
   }
   if (language === "easy") {
-    return (
-      <GlossaryText text={question.easy} readings={question.readings} renderText={renderRuby} />
-    );
+    return <GlossaryText text={question.easy} readings={readings} renderText={renderRuby} />;
   }
   return <>{question.english}</>;
 }
@@ -145,11 +132,12 @@ function OptionText({
   question: PersonalityQuestion;
   language: PersonalityLanguage;
 }) {
+  const readings = questionReadings(question);
   if (language === "japanese") {
-    return <RubyText text={option.japanese} readings={question.readings} />;
+    return <RubyText text={option.japanese} readings={readings} />;
   }
   if (language === "easy") {
-    return <RubyText text={option.easy} readings={question.readings} />;
+    return <RubyText text={option.easy} readings={readings} />;
   }
   return <>{option.english}</>;
 }
@@ -206,7 +194,7 @@ function QuestionIntro({
 
   return (
     <div className="animate-pop-in mx-auto mt-6 max-w-3xl">
-      <div className="card-pop border-4 border-white p-5 shadow-[0_8px_0_#c7e6f5,0_20px_36px_rgba(0,79,141,.16)] sm:p-7">
+      <div className={`card-pop p-5 sm:p-7 ${CARD_EDGE}`}>
         <h2 className="text-navy text-xl font-black sm:text-2xl">{intro.title}</h2>
         <ul className="mt-4 space-y-3">
           {intro.lines.map((line) => (
@@ -239,67 +227,6 @@ function QuestionIntro({
   );
 }
 
-/**
- * なまえの入力欄1つ分。
- *
- * カタカナで書く決まり（願い #14）。書き直しの案内は打ち終わってから出す——
- * 1文字打つたびに注意が出ると、打っている最中に「合っていない」と見えてしまう。
- * 判定そのものは `src/lib/name.ts` に置く（画面ごとに書かない）。
- */
-function NameField({
-  label,
-  hint,
-  placeholder,
-  value,
-  onChange,
-  optional = false,
-}: {
-  label: ReactNode;
-  hint?: string;
-  placeholder: string;
-  value: string;
-  onChange: (value: string) => void;
-  optional?: boolean;
-}) {
-  const [touched, setTouched] = useState(false);
-  const notice = touched ? katakanaNotice(value) : null;
-
-  return (
-    <label className="block">
-      <span className="text-ink block text-sm font-extrabold">
-        {label}
-        {optional ? (
-          <span className="text-ink-soft ml-1 text-xs">（じゆう）</span>
-        ) : (
-          <span className="text-coral-deep ml-1 text-xs">
-            （
-            <ruby>
-              必須<rt>ひっす</rt>
-            </ruby>
-            ）
-          </span>
-        )}
-      </span>
-      {hint && <span className="text-ink-soft mt-0.5 block text-xs font-bold">{hint}</span>}
-      <input
-        type="text"
-        value={value}
-        onChange={(event) => onChange(event.target.value)}
-        onBlur={() => setTouched(true)}
-        placeholder={placeholder}
-        maxLength={MAX_NAME_LENGTH}
-        aria-invalid={notice !== null}
-        className={`mt-1.5 w-full rounded-2xl border-2 bg-white px-4 py-2 font-bold ${
-          notice ? "border-coral" : "border-hairline"
-        }`}
-      />
-      {notice && (
-        <span className="text-coral-deep mt-1 block text-xs font-extrabold">🙏 {notice}</span>
-      )}
-    </label>
-  );
-}
-
 /** 全問共通の問いかけ（07 §3.1）。 */
 const ASK_LABEL: Readonly<Record<PersonalityLanguage, string>> = {
   easy: "あなたに ちかいのは、どっちですか?",
@@ -312,7 +239,7 @@ function CompatibilityCard({ code, reason }: { code: PersonalityTypeCode; reason
   const family = getFamilyForCode(code);
   return (
     <article
-      className="card-pop flex items-center gap-2 border-3 p-2 text-left shadow-[0_4px_0_rgba(0,79,141,.12)]"
+      className="card-pop flex items-center gap-2 border-3 p-2 text-left shadow-[0_5px_0_rgba(0,79,141,.14),0_12px_18px_-12px_rgba(0,79,141,.4)]"
       style={{ borderColor: family.color }}
     >
       <TypeEmblem code={code} size={40} className="shrink-0" />
@@ -368,7 +295,6 @@ export function WelcomeWizard({
   const gender = genderChoice;
   const [geminiValue, setGeminiValue] = useState<string | null>(null);
   const geminiKey = geminiValue ?? savedGeminiKey;
-  const [showKey, setShowKey] = useState(false);
   const [busy, setBusy] = useState(false);
   const [language, setLanguage] = useState<PersonalityLanguage>("easy");
   // 診断の途中で言語を切り替えたか（08 §5.2）。回答言語と一緒に保存する。
@@ -426,7 +352,7 @@ export function WelcomeWizard({
     setSaveError(false);
     saveGeminiKey(geminiInput.current?.value ?? geminiKey);
     try {
-      const stored = await updateOwnNames(names, school);
+      const stored = await updateOwnDetails(names, school);
       // 表示用キャッシュも新しい呼び名にしておく。放っておくと、マップが返事を待つあいだ
       // 古い名前が出る。診断は終わっている場面なので scores も型どおりそろっている。
       saveProfile({
@@ -627,7 +553,7 @@ export function WelcomeWizard({
                 ].map((card, index) => (
                   <article
                     key={index}
-                    className="card-pop relative overflow-hidden border-white p-4 pt-3 text-center shadow-[0_6px_0_#c5e8f8,0_14px_24px_rgba(0,79,141,.12)]"
+                    className={`card-pop relative overflow-hidden p-4 pt-3 text-center ${CARD_EDGE_SM}`}
                   >
                     <span aria-hidden className="text-sun absolute top-2 left-2">
                       ⭐
@@ -701,243 +627,32 @@ export function WelcomeWizard({
                 namesOnly ? "mx-auto max-w-2xl" : "md:grid-cols-2 xl:grid-cols-3"
               }`}
             >
-              <article
-                className={`card-pop border-white p-5 shadow-[0_6px_0_#d7eaf5] ${
-                  namesOnly ? "" : "md:col-span-2"
-                }`}
-              >
-                <h2 className="text-navy font-extrabold">
-                  ⭐ なまえ{" "}
-                  <span className="text-coral-deep text-xs">
-                    （
-                    <ruby>
-                      必須<rt>ひっす</rt>
-                    </ruby>
-                    ）
-                  </span>
-                </h2>
-                <p className="text-ink-soft mt-2 text-sm font-bold">
-                  <span className="text-navy">カタカナ</span>で かいてね。せんせいが よぶ ときに
-                  つかいます。
-                </p>
-                {/* Google の名前がカタカナでないときは、欄に入れずに見本として見せる。
-                    開いた いきなり 赤い字が出ないようにするため（2026-08-11 の指定）。 */}
-                {googleNames.fullName && !googleNames.givenName && (
-                  <p className="bg-sun/25 text-ink mt-3 rounded-2xl px-3 py-2 text-xs font-bold">
-                    💡 Google の なまえは「{googleNames.fullName}」です。これを カタカナで
-                    かいてね。
-                  </p>
-                )}
-                <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                  <NameField
-                    label={
-                      <ruby>
-                        苗字<rt>みょうじ</rt>
-                      </ruby>
-                    }
-                    placeholder="れい：ソク"
-                    value={names.familyName}
-                    onChange={(value) => setNames((current) => ({ ...current, familyName: value }))}
-                  />
-                  <NameField
-                    label={
-                      <ruby>
-                        名前<rt>なまえ</rt>
-                      </ruby>
-                    }
-                    placeholder="れい：ソピア"
-                    value={names.givenName}
-                    onChange={(value) => setNames((current) => ({ ...current, givenName: value }))}
-                  />
-                </div>
-                <div className="mt-3">
-                  <NameField
-                    label={
-                      <>
-                        <ruby>
-                          先生<rt>せんせい</rt>
-                        </ruby>
-                        に よんで ほしい なまえ
-                      </>
-                    }
-                    hint="かかなくても だいじょうぶ。そのときは じぶんの なまえで よぶよ。"
-                    placeholder="れい：ピア"
-                    value={names.nickname}
-                    onChange={(value) => setNames((current) => ({ ...current, nickname: value }))}
-                    optional
-                  />
-                </div>
-              </article>
+              <NameCard
+                names={names}
+                onChange={setNames}
+                googleFullName={
+                  googleNames.fullName && !googleNames.givenName ? googleNames.fullName : ""
+                }
+                className={namesOnly ? "" : "md:col-span-2"}
+              />
 
               {/* 学校と期生（願い #27）。先生がクラスを見分けるのに使う。
                   なまえと同じく、この列を足す前に作られた行にも入れてもらう必要があるので、
                   「なまえだけ」の場面（namesOnly）でも隠さない。 */}
-              <article className="card-pop border-white p-5 shadow-[0_6px_0_#d7eaf5]">
-                <h2 className="text-navy font-extrabold">
-                  ⭐ がっこう{" "}
-                  <span className="text-coral-deep text-xs">
-                    （
-                    <ruby>
-                      必須<rt>ひっす</rt>
-                    </ruby>
-                    ）
-                  </span>
-                </h2>
-                <p className="text-ink-soft mt-2 text-sm font-bold">
-                  あなたの がっこうと、なんきせいかを えらんでね。
-                </p>
-                <div className="mt-4 grid grid-cols-2 gap-2">
-                  {UNIVERSITIES.map((name) => (
-                    <button
-                      key={name}
-                      type="button"
-                      aria-pressed={school.university === name}
-                      onClick={() => setSchool((current) => ({ ...current, university: name }))}
-                      className={`rounded-2xl border-3 px-2 py-3 text-sm font-extrabold shadow-sm transition-transform hover:-translate-y-1 ${
-                        school.university === name
-                          ? "border-sky bg-sky-soft text-navy"
-                          : "border-hairline text-ink-soft bg-white"
-                      }`}
-                    >
-                      🎓 {name}
-                    </button>
-                  ))}
-                </div>
-                <p className="text-ink-soft mt-4 text-sm font-bold">なんきせい？</p>
-                <div className="mt-2 grid grid-cols-5 gap-1.5">
-                  {COHORTS.map((year) => (
-                    <button
-                      key={year}
-                      type="button"
-                      aria-pressed={school.cohort === year}
-                      onClick={() => setSchool((current) => ({ ...current, cohort: year }))}
-                      className={`rounded-2xl border-3 py-2 text-sm font-extrabold shadow-sm transition-transform hover:-translate-y-1 ${
-                        school.cohort === year
-                          ? "border-sky bg-sky-soft text-navy"
-                          : "border-hairline text-ink-soft bg-white"
-                      }`}
-                    >
-                      {year}
-                      <span className="block text-[10px]">きせい</span>
-                    </button>
-                  ))}
-                </div>
-              </article>
+              <SchoolCard school={school} onChange={setSchool} />
 
-              <article
-                className={`card-pop border-white p-5 shadow-[0_6px_0_#d7eaf5] ${
-                  namesOnly ? "hidden" : ""
-                }`}
-              >
-                <h2 className="text-navy font-extrabold">
-                  ⭐ Google Gemini APIキー{" "}
-                  <span className="text-ink-soft text-xs">
-                    （
-                    <ruby>
-                      任意<rt>にんい</rt>
-                    </ruby>
-                    ）
-                  </span>
-                </h2>
-                <p className="text-ink-soft mt-2 text-sm font-bold">
-                  Gemini と つなぐと、AI が まなびを サポートします！
-                </p>
-                <div className="mt-3 flex gap-2">
-                  <div className="relative min-w-0 flex-1">
-                    <span
-                      aria-hidden
-                      className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2"
-                    >
-                      🔑
-                    </span>
-                    <input
-                      ref={geminiInput}
-                      type={showKey ? "text" : "password"}
-                      value={geminiKey}
-                      onChange={(event) => setGeminiValue(event.target.value)}
-                      className="border-hairline w-full rounded-2xl border-2 bg-white py-2 pr-3 pl-10 font-mono text-sm"
-                      aria-label="Google Gemini APIキー"
-                    />
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setShowKey((current) => !current)}
-                    className="border-hairline rounded-2xl border-2 bg-white px-3"
-                    aria-label={showKey ? "APIキーを かくす" : "APIキーを 見る"}
-                  >
-                    {showKey ? "🙈" : "👁️"}
-                  </button>
-                </div>
-                <p className="text-ink-soft mt-2 text-xs font-bold">
-                  ？ Gemini APIキーは、あとから せっていすることも できます。
-                </p>
-              </article>
+              <GeminiKeyCard
+                value={geminiKey}
+                onChange={setGeminiValue}
+                inputRef={geminiInput}
+                className={namesOnly ? "hidden" : ""}
+              />
 
-              <article
-                className={`card-pop border-white p-5 shadow-[0_6px_0_#d7eaf5] ${
-                  namesOnly ? "hidden" : ""
-                }`}
-              >
-                <h2 className="text-navy font-extrabold">
-                  ⭐{" "}
-                  <ruby>
-                    性別<rt>せいべつ</rt>
-                  </ruby>{" "}
-                  <span className="text-coral-deep text-xs">
-                    （
-                    <ruby>
-                      必須<rt>ひっす</rt>
-                    </ruby>
-                    ）
-                  </span>
-                </h2>
-                <p className="text-ink-soft mt-2 text-sm font-bold">
-                  あなたの せいべつを えらんでね。
-                </p>
-                <div className="mt-4 grid grid-cols-2 gap-2">
-                  {[
-                    {
-                      id: "male" as const,
-                      icon: "👨",
-                      image: "/img/ui/gender_male.webp",
-                      label: "男性",
-                      color: "#0288d1",
-                    },
-                    {
-                      id: "female" as const,
-                      icon: "👩",
-                      image: "/img/ui/gender_female.webp",
-                      label: "女性",
-                      color: "#f26fa7",
-                    },
-                  ].map((choice) => (
-                    <button
-                      key={choice.id}
-                      type="button"
-                      onClick={() => setGenderChoice(choice.id)}
-                      className="rounded-2xl border-3 bg-white px-1 py-2 text-sm font-extrabold shadow-sm transition-transform hover:-translate-y-1"
-                      style={{
-                        borderColor: gender === choice.id ? choice.color : "#dcebf5",
-                        backgroundColor: gender === choice.id ? `${choice.color}18` : "#ffffff",
-                        color: choice.color,
-                      }}
-                    >
-                      <span className="mx-auto flex h-14 items-center justify-center">
-                        <FallbackImage
-                          src={choice.image}
-                          alt=""
-                          fallback={<span className="text-3xl">{choice.icon}</span>}
-                          className="h-14 w-14 object-contain"
-                        />
-                      </span>
-                      <ruby>
-                        {choice.label}
-                        <rt>{choice.id === "male" ? "だんせい" : "じょせい"}</rt>
-                      </ruby>
-                    </button>
-                  ))}
-                </div>
-              </article>
+              <GenderCard
+                gender={gender}
+                onChange={setGenderChoice}
+                className={namesOnly ? "hidden" : ""}
+              />
             </div>
 
             <p className="text-ink-soft mt-5 text-center text-xs font-bold">
@@ -1003,7 +718,9 @@ export function WelcomeWizard({
                       setLanguage(option.id);
                     }}
                     className={`rounded-full px-3 py-2 text-xs font-extrabold sm:px-4 ${
-                      language === option.id ? "bg-navy text-white" : "text-ink-soft"
+                      language === option.id
+                        ? `bg-navy text-white ${RUBY_ON_COLOR}`
+                        : "text-ink-soft"
                     }`}
                   >
                     {option.id === "english" ? (
@@ -1038,7 +755,7 @@ export function WelcomeWizard({
                       animate={{ opacity: 1, x: 0 }}
                       exit={{ opacity: 0, x: -90 * questionDirection }}
                       transition={{ duration: 0.24, ease: "easeOut" }}
-                      className="card-pop border-4 border-white p-4 shadow-[0_8px_0_#c7e6f5,0_20px_36px_rgba(0,79,141,.16)] sm:p-6"
+                      className={`card-pop p-4 sm:p-6 ${CARD_EDGE}`}
                     >
                       <legend className="sr-only">{currentQuestion.id}</legend>
                       <QuizIllustration src={currentQuestion.image} />
@@ -1051,7 +768,14 @@ export function WelcomeWizard({
                         </p>
                       </div>
                       <p className="text-ink-soft mt-3 text-center text-sm font-extrabold">
-                        {ASK_LABEL[language]}
+                        {language === "english" ? (
+                          ASK_LABEL[language]
+                        ) : (
+                          <RubyText
+                            text={ASK_LABEL[language]}
+                            readings={PERSONALITY_RESULT_READINGS}
+                          />
+                        )}
                       </p>
                       {/* Ⓐ/Ⓑ の2択。どちらが正しいという場面ではないので、優劣を感じさせる色は使わない。 */}
                       <div className="mt-4 grid gap-3 sm:grid-cols-2">
@@ -1068,8 +792,8 @@ export function WelcomeWizard({
                             aria-pressed={answers[questionIndex] === choice.value}
                             className={`flex min-h-28 items-start gap-3 rounded-3xl border-3 px-4 py-4 text-left text-base font-extrabold ${
                               answers[questionIndex] === choice.value
-                                ? "border-sky bg-sky-soft text-navy shadow-[0_5px_0_#9dd8f2]"
-                                : "border-hairline text-ink bg-white shadow-[0_4px_0_#dcebf5]"
+                                ? "border-sky bg-sky-soft text-navy shadow-[0_5px_0_#7cc6ea]"
+                                : "text-ink border-[#a9d9f0] bg-white shadow-[0_5px_0_#d7eaf5]"
                             }`}
                           >
                             <span
@@ -1096,7 +820,9 @@ export function WelcomeWizard({
                 </div>
 
                 <div className="mt-6 flex flex-col items-center gap-4">
-                  <div className="flex flex-wrap items-center justify-center gap-3 rounded-full border-2 border-white bg-white/95 px-5 py-2 shadow-[0_4px_0_#c7e6f5]">
+                  <div
+                    className={`flex flex-wrap items-center justify-center gap-3 rounded-full bg-white/95 px-5 py-2 ${CHIP_EDGE}`}
+                  >
                     <p className="text-navy font-extrabold">
                       20もんの うち {questionIndex + 1} もんめ
                     </p>
@@ -1144,7 +870,7 @@ export function WelcomeWizard({
                           type="button"
                           disabled={!completedAnswers}
                           onClick={showResult}
-                          className="btn-game px-8 py-3 text-lg [--btn-face:#ffc93c] [--btn-shadow:#f0a819] disabled:cursor-not-allowed disabled:opacity-45"
+                          className={`btn-game px-8 py-3 text-lg [--btn-face:#ffc93c] [--btn-shadow:#f0a819] disabled:cursor-not-allowed disabled:opacity-45 ${RUBY_ON_COLOR}`}
                         >
                           けっかを{" "}
                           <ruby>
@@ -1184,7 +910,9 @@ export function WelcomeWizard({
                   <div className="grid h-16 w-16 place-items-center rounded-[42%_42%_50%_50%] border-4 border-white bg-linear-to-b from-[#078ed6] to-[#004f8d] text-2xl text-white shadow-[0_5px_0_#003c6b]">
                     ⭐
                   </div>
-                  <p className="bg-navy mt-1 rounded-xl px-2 py-1 text-[10px] leading-tight font-extrabold text-white">
+                  <p
+                    className={`bg-navy mt-1 rounded-xl px-2 py-1 text-[10px] leading-tight font-extrabold text-white ${RUBY_ON_COLOR}`}
+                  >
                     <RubyText
                       text={resultFamily.strengths.join("・")}
                       readings={PERSONALITY_RESULT_READINGS}
@@ -1204,7 +932,7 @@ export function WelcomeWizard({
                 </p>
                 {/* 家族 → タイプ の2段。16通りでも学習者が迷子にならないための構え（07 §1.3）。 */}
                 <p
-                  className="mt-3 inline-block rounded-full px-4 py-1 text-sm font-black text-white"
+                  className={`mt-3 inline-block rounded-full px-4 py-1 text-sm font-black text-white ${RUBY_ON_COLOR}`}
                   style={{ backgroundColor: resultFamily.color }}
                 >
                   <RubyText
@@ -1213,7 +941,9 @@ export function WelcomeWizard({
                   />
                 </p>
                 {/* 4文字コードは出さない。ネクマックス診断として完結させる（07 §1.3）。 */}
-                <h2 className="bg-navy mt-2 flex items-center gap-3 rounded-2xl px-5 py-3 text-xl font-black text-white shadow-[0_5px_0_#003c6b] sm:text-2xl">
+                <h2
+                  className={`bg-navy mt-2 flex items-center gap-3 rounded-2xl px-5 py-3 text-xl font-black text-white shadow-[0_5px_0_#003c6b] sm:text-2xl ${RUBY_ON_COLOR}`}
+                >
                   <span aria-hidden className="shrink-0 text-2xl">
                     {result.emblem}
                   </span>
@@ -1222,7 +952,9 @@ export function WelcomeWizard({
                 <p className="text-ink-soft mt-2 text-sm font-extrabold">
                   <LearnerText text={result.tagline} />
                 </p>
-                <h3 className="text-navy mt-5 text-lg font-black">あなたは こんな 人</h3>
+                <h3 className="text-navy mt-5 text-lg font-black">
+                  あなたは こんな <LearnerText text="人" />
+                </h3>
                 <ul className="mt-3 space-y-2">
                   {result.analysis.map((line) => (
                     <li key={line} className="text-ink flex gap-2 font-bold">
@@ -1235,15 +967,19 @@ export function WelcomeWizard({
                 {/* 3-2 の僅差だけ「どちらも いい ところ」と出す。決めつけない（07 §4.3）。 */}
                 {closeAxis && (
                   <p className="bg-sun/25 text-ink mt-4 rounded-2xl px-4 py-3 text-sm font-bold">
-                    「{PERSONALITY_AXIS_META[closeAxis].poleLabels[0]}」と「
-                    {PERSONALITY_AXIS_META[closeAxis].poleLabels[1]}」は、どちらも あなたの いい
-                    ところです。ときに よって、りょうほう つかって いますね。
+                    「<LearnerText text={PERSONALITY_AXIS_META[closeAxis].poleLabels[0]} />
+                    」と「
+                    <LearnerText text={PERSONALITY_AXIS_META[closeAxis].poleLabels[1]} />
+                    」は、どちらも あなたの いい ところです。ときに よって、りょうほう つかって
+                    いますね。
                   </p>
                 )}
 
                 <h3 className="text-navy mt-6 font-black">チームで あなたが とくいな しごと</h3>
                 <p className="text-ink mt-2 font-bold">
-                  <span className="bg-navy mr-2 rounded-lg px-2 py-1 text-sm text-white">
+                  <span
+                    className={`bg-navy mr-2 rounded-lg px-2 py-1 text-sm text-white ${RUBY_ON_COLOR}`}
+                  >
                     <RubyText text={result.teamRole} readings={PERSONALITY_RESULT_READINGS} />
                   </span>
                   <LearnerText text={result.teamRoleDetail} />
@@ -1266,7 +1002,7 @@ export function WelcomeWizard({
                   じぶんに ない ものを もって いる <LearnerText text="仲間" />
                 </h3>
                 <p className="text-ink-soft mt-1 text-xs font-bold">
-                  見て いる ところが ちがうので、二人が いると チームが もっと よく なります。
+                  <LearnerText text="見て いる ところが ちがうので、二人が いると チームが もっと よく なります。" />
                 </p>
                 <div className="mt-2 grid grid-cols-2 gap-2">
                   {compatibility.complementary.map((card) => (
@@ -1281,15 +1017,15 @@ export function WelcomeWizard({
             </div>
 
             {/* N3の学習者の回遊先。自分の1つを見たあと、16通りを眺められるようにする（07 §7）。 */}
-            <details className="card-pop mt-6 p-4">
+            <details className={`card-pop mt-6 p-4 ${CARD_EDGE}`}>
               <summary className="text-navy cursor-pointer font-black">
-                ほかの 15タイプも 見て みよう
+                ほかの 15タイプも <LearnerText text="見て みよう" />
               </summary>
               <div className="mt-4 grid gap-4 sm:grid-cols-2">
                 {PERSONALITY_FAMILIES.map((family) => (
                   <section key={family.id}>
                     <h4
-                      className="inline-block rounded-full px-3 py-1 text-xs font-black text-white"
+                      className={`inline-block rounded-full px-3 py-1 text-xs font-black text-white ${RUBY_ON_COLOR}`}
                       style={{ backgroundColor: family.color }}
                     >
                       <RubyText
@@ -1372,7 +1108,7 @@ export function WelcomeWizard({
               className="shrink-0 drop-shadow-[0_10px_8px_rgba(0,79,141,.2)]"
             />
             <p
-              className={`text-navy relative mb-5 max-w-xs rounded-3xl border-2 border-white bg-white px-4 py-3 text-sm font-extrabold shadow-[0_5px_0_#bfe4f5] ${
+              className={`text-navy relative mb-5 max-w-xs rounded-3xl bg-white px-4 py-3 text-sm font-extrabold ${CHIP_EDGE} ${
                 step === 2 ? "rounded-br-md" : "rounded-bl-md"
               }`}
             >

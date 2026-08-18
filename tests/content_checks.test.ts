@@ -53,8 +53,8 @@ function article(blocks: unknown[], over: Record<string, unknown> = {}): Content
   return parse({
     kind: "article",
     id: "a1",
-    title: "よみもの",
-    description: "てすとの よみもの",
+    title: "ページ",
+    description: "てすとの ページ",
     blocks,
     ...over,
   });
@@ -395,11 +395,22 @@ describe("ふりがなの覆い漏れ検査", () => {
     expect(collectLearnerTexts(wordstage())).not.toContain("report 0");
   });
 
-  it("ステージには読み辞書が無いので、直し方を「ひらがなで書く」と案内する", () => {
+  it("ステージの説明文も、読み辞書で覆えていなければ出す（直し方は furigana）", () => {
     const findings = checkFuriganaCoverage([entry(stage({ description: "朝の 会議" }))]);
     expect(findings).toHaveLength(1);
     expect(findings[0]?.message).toContain("description");
-    expect(findings[0]?.message).toContain("ひらがな");
+    expect(findings[0]?.message).toContain("furigana");
+  });
+
+  it("ステージの説明文は furigana で覆えば通る（漢字＋ふりがなで書ける）", () => {
+    const covered = stage({
+      description: "朝の 会議",
+      furigana: [
+        ["朝", "あさ"],
+        ["会議", "かいぎ"],
+      ],
+    });
+    expect(checkFuriganaCoverage([entry(covered)])).toEqual([]);
   });
 
   it("ステージのタイトルは reading が読みになるので、漢字のままでも通る", () => {

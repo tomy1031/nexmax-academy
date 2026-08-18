@@ -9,8 +9,8 @@ import {
 } from "../src/content/personality";
 
 describe("語彙メモ台帳（07 §2.5）", () => {
-  it("31語あり、表記が重複しない", () => {
-    expect(GLOSSARY).toHaveLength(31);
+  it("42語あり、表記が重複しない", () => {
+    expect(GLOSSARY).toHaveLength(42);
     expect(new Set(GLOSSARY.map((entry) => entry.term)).size).toBe(GLOSSARY.length);
   });
 

@@ -43,6 +43,9 @@ export interface StageWordItem {
   furigana?: readonly FuriganaEntry[];
 }
 
+/** 漢字を含む見出しか。含むならタイトル全体に よみ をふる（map-shell と同じ判定）。 */
+const HAS_KANJI = /[一-鿿]/;
+
 export interface StageHeader {
   id: string;
   /**
@@ -54,6 +57,8 @@ export interface StageHeader {
   title: string;
   reading: string;
   description: string;
+  /** 見出しと説明の読み辞書（ステージ自身が持つ。schema.ts stageSchema）。 */
+  furigana?: readonly FuriganaEntry[];
 }
 
 export function StageDetail({
@@ -107,9 +112,28 @@ export function StageDetail({
       </header>
 
       <section className="card-island p-5 sm:p-6">
-        <h1 className="text-navy text-2xl font-black">{stage.title}</h1>
-        <p className="text-ink-soft text-xs font-bold">（{stage.reading}）</p>
-        <p className="text-ink mt-2 text-sm font-bold">{stage.description}</p>
+        {/*
+          見出しは **タイトル全体に よみ** をふる（2026-08-18）。ステージの 名前も
+          漢字＋ふりがなで 書けるようにしたので、読みは ルビで 出す。
+          漢字が 無い ときだけ、これまでどおり「（よみ）」の行で 見せる——
+          かなの 上に かなを 重ねても 読みやすくは ならない。
+        */}
+        <h1 className="text-navy text-2xl font-black">
+          {HAS_KANJI.test(stage.title) ? (
+            <ruby>
+              {stage.title}
+              <rt className="text-ink-soft">{stage.reading}</rt>
+            </ruby>
+          ) : (
+            stage.title
+          )}
+        </h1>
+        {!HAS_KANJI.test(stage.title) && (
+          <p className="text-ink-soft text-xs font-bold">（{stage.reading}）</p>
+        )}
+        <p className="text-ink mt-2 text-sm font-bold">
+          <RubyText text={stage.description} furigana={stage.furigana} show={furiganaOn} />
+        </p>
 
         <div className="text-ink-soft mt-4 flex items-center justify-between text-xs font-extrabold">
           <span>

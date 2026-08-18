@@ -40,8 +40,8 @@ function article(blocks: unknown[], over: Record<string, unknown> = {}): Content
   return parse({
     kind: "article",
     id: "a1",
-    title: "よみもの",
-    description: "てすとの よみもの",
+    title: "ページ",
+    description: "てすとの ページ",
     blocks,
     ...over,
   });
