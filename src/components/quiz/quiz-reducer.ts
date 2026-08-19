@@ -338,7 +338,11 @@ export function summarizeQuiz(state: QuizState): QuizSummary {
   const answered = state.results.length;
   const correct = state.results.filter((r) => r.correct).length;
   const earned = state.results.reduce((sum, r) => sum + r.earned, 0);
-  const maxPoints = state.questions.slice(0, answered).reduce((sum, q) => sum + q.points, 0);
+  // 満点は **答えた 問題の 配点**を 足す。「先頭から N問」で 数えると、しおりだけで
+  // 途中から 始めた 回（`@/lib/quiz/resume` の 規則5）が 別の 問題の 配点を 数え、
+  // 配点の ちがう 教材では「6 / 5 てん」のような 数が 出る。
+  const pointsOf = new Map(state.questions.map((q) => [q.id, q.points]));
+  const maxPoints = state.results.reduce((sum, r) => sum + (pointsOf.get(r.questionId) ?? 0), 0);
   return {
     total: answered,
     correct,
@@ -347,4 +351,20 @@ export function summarizeQuiz(state: QuizState): QuizSummary {
     passed: maxPoints > 0 && (earned / maxPoints) * 100 >= state.passRate,
     missedQuestionIds: state.results.filter((r) => !r.correct).map((r) => r.questionId),
   };
+}
+
+/**
+ * 教材の 問題 **ぜんぶに 触れた回**か。
+ *
+ * 成績（TestResult）・DBの `full_set`・ステージの「おわった」は、どれも この1つで 決める
+ * ——同じ 判断を 3か所で 別々に 書くと、いつか 1か所だけ ずれる。
+ *
+ * false に なるのは 2つ:
+ *  - 「まちがえた もんだいだけ」の やり直し（問題を 絞った セッション）
+ *  - しおりだけが 残って いて **途中から 始めた 回**（`@/lib/quiz/resume` の 規則5）。
+ *    3問しか 見て いない 回を 完走に すると、5問の 教材が「3 / 3・合格」で 固まる
+ *    ——成績は 初回だけが 正式（`recordFirstTestResult`）なので、あとから 直せない。
+ */
+export function isWholeSetRun(state: QuizState, setSize: number): boolean {
+  return setSize > 0 && state.questions.length === setSize && state.results.length === setSize;
 }

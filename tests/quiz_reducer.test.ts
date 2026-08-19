@@ -5,6 +5,7 @@ import { quizSetSchema, type QuizSet } from "../src/content/schema";
 import {
   createQuizSession,
   currentQuestion,
+  isWholeSetRun,
   quizReducer,
   resumeQuizSession,
   summarizeQuiz,
@@ -262,6 +263,56 @@ describe("つづきから 復元する（resumeQuizSession）", () => {
 
   it("答えて いない 状態は createQuizSession と 同じ 形になる", () => {
     expect(resumeQuizSession(set, 0, [])).toEqual(createQuizSession(set));
+  });
+});
+
+/**
+ * 「この回を 成績に 残してよいか」（`isWholeSetRun`）。
+ *
+ * しおり（`position.question`）だけが 残って いる ときは 内訳なしで 途中から 始まる
+ *（`@/lib/quiz/resume` の 規則5）。その回も 最後まで 行けるので、答えた 数を 分母に
+ * すると 5問の 教材が「3 / 3・合格」で 固まった——成績は 初回だけが 正式で、あとから
+ * 直せない。**触った 問題の 数では なく、教材ぜんぶを 通したか**で 分ける。
+ */
+describe("成績に 残してよい回か（isWholeSetRun）", () => {
+  /** その番号から 最後まで 正解して 通す（しおりだけの 再開＝内訳は 空）。 */
+  function playFrom(index: number): QuizState {
+    let s = resumeQuizSession(set, index, []);
+    while (s.phase.kind !== "finished") {
+      s = s.phase.kind === "explain" ? quizReducer(s, { type: "next" }) : answerCorrectly(s);
+    }
+    return s;
+  }
+
+  it("1問目から 全問 通した回は true", () => {
+    expect(isWholeSetRun(playFrom(0), set.questions.length)).toBe(true);
+  });
+
+  it("しおりだけで 途中から 始めた 回は、最後まで 行っても false", () => {
+    const s = playFrom(2);
+    const summary = summarizeQuiz(s);
+    expect(summary.total).toBe(3); // 見たのは 3問だけ
+    expect(summary.passed).toBe(true); // その3問は 全部 正解——画面は ほめてよい
+    expect(isWholeSetRun(s, set.questions.length)).toBe(false); // が、成績には 残さない
+  });
+
+  it("満点は 答えた 問題の 配点で 数える（先頭から N問 では ない）", () => {
+    const summary = summarizeQuiz(playFrom(2));
+    const answered = set.questions.slice(2);
+    expect(summary.maxPoints).toBe(answered.reduce((sum, q) => sum + q.points, 0));
+    expect(summary.earned).toBe(summary.maxPoints); // 「8 / 7 てん」に ならない
+  });
+
+  it("「まちがえた もんだいだけ」の やり直しも false", () => {
+    let s = createQuizSession(set, [set.questions[0]!]);
+    while (s.phase.kind !== "finished") {
+      s = s.phase.kind === "explain" ? quizReducer(s, { type: "next" }) : answerCorrectly(s);
+    }
+    expect(isWholeSetRun(s, set.questions.length)).toBe(false);
+  });
+
+  it("問題の 無い セットは 数えない（0問で 合格を 作らない）", () => {
+    expect(isWholeSetRun(createQuizSession(set, []), 0)).toBe(false);
   });
 });
 

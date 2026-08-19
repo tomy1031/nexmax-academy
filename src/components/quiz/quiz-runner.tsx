@@ -17,6 +17,7 @@ import { QuestionBody } from "./question-types";
 import {
   createQuizSession,
   currentQuestion,
+  isWholeSetRun,
   quizReducer,
   resumeQuizSession,
   summarizeQuiz,
@@ -75,6 +76,23 @@ export function QuizRunner({
    */
   const isFullSession = state.questions.length === set.questions.length;
 
+  /**
+   * この回が **見ないまま 飛ばして 始めた** 問題の 数。
+   *
+   * しおり（`position.question`）だけが 残って いる ときは、答えの 内訳が 無いまま
+   * 途中から 始まる（`@/lib/quiz/resume` の 規則5）。飛ばした ぶんは この回の 点にも
+   * 記録にも 出て こないので、数だけ ここで 覚えて おく——しおりを どこまで 進めるか
+   * （飛ばした ぶん ＋ 答えた 数）と、けっかで「まだ やって いない もんだいが Nもん」と
+   * 伝えるのに 要る。「はじめから」「もう一度」を えらんだら 0に 戻す。
+   */
+  const [skipped, setSkipped] = useState(start.index - start.results.length);
+
+  /**
+   * 教材ぜんぶを 通した回か。**成績・DB・「おわった」の 3つとも これで 決める**
+   *（判断は `quiz-reducer.ts` の `isWholeSetRun` 1か所）。
+   */
+  const wholeRun = isWholeSetRun(state, set.questions.length);
+
   /*
    * ステージの進み具合に反映する（設計07 §3）。しおり（position）は
    * `slide-deck.tsx` と 同じ 置き場（`position.question`）に 常に 同期する
@@ -82,14 +100,22 @@ export function QuizRunner({
    * 番号に 残る（次に 開いたとき「はじめから」が「つづきから」に 化けてしまう）。
    * 絞った セッション（まちがえた もんだいだけ）では しおりを **動かさない**
    * ——教材まるごとの 何問目とは 対応しない 数だから。
+   *
+   * 数える のは 「答えた 数」では なく **飛ばした ぶん ＋ 答えた 数**。しおりだけで
+   * 8問目から 始めた 回で 1問 答えて 閉じた とき、「1」を 書くと しおりが 前へ 戻り、
+   * 次に 開いた 人は 2問目に 座らされる。
+   *
+   * 「おわった」に するのは **全問に 触れた回だけ**。途中から 始めて 最後まで 行った 回は
+   * とちゅうのまま に する——見て いない 問題が 残って いるのに ステージが 済んだ 顔を
+   * すると、その子は もう そこへ 戻らない。
    */
   const done = state.phase.kind === "finished";
   useEffect(() => {
     recordContentProgress(set.id, {
-      status: done ? "completed" : "started",
-      ...(isFullSession ? { position: { question: state.results.length } } : {}),
+      status: done && wholeRun ? "completed" : "started",
+      ...(isFullSession ? { position: { question: skipped + state.results.length } } : {}),
     });
-  }, [set.id, done, isFullSession, state.results]);
+  }, [set.id, done, wholeRun, isFullSession, skipped, state.results]);
 
   /**
    * いまの ところを 端末に 残す（つぎに 開いたとき つづきから 始めるため）。
@@ -102,8 +128,15 @@ export function QuizRunner({
       return;
     }
     if (state.results.length === 0) return; // 何も 答えて いなければ 書かない
+    /*
+     * しおりだけで 途中から 始めた 回は 内訳を 書かない。保存の 形は
+     * 「1問目から 順に N問」を 前提に して いて（`startFrom` は 出題順で 突き合わせる）、
+     * 8問目からの 内訳を 書くと 次に 開いた とき 突き合わせに 落ち、**1問目に 戻される**。
+     * この回の 続きは しおり（上の effect）だけで 足りる。
+     */
+    if (skipped > 0) return;
     saveQuizResume({ quizSetId: set.id, results: [...state.results] });
-  }, [set.id, done, isFullSession, state.results]);
+  }, [set.id, done, isFullSession, skipped, state.results]);
 
   const summary = summarizeQuiz(state);
 
@@ -118,11 +151,16 @@ export function QuizRunner({
    * だから「まちがえた もんだいだけ」の やり直しで 点が 上書きされる心配は無い
    * ——やり直しは 学びのためで、成績のためではない（P11）。
    * 読み／意味の内わけは ことばの テスト だけの数え方なので、ここでは 書かない。
+   *
+   * 残すのは **教材ぜんぶを 通した回だけ**（`isWholeSetRun`）。しおりだけで 8問目から
+   * 始めた 回も 最後まで 行けてしまうので、そのまま 残すと 9問の 教材が「2 / 2・合格」で
+   * 固まる——初回だけが 正式＝**あとから 直せない**。その回は 何も 書かず、1問目から
+   * 通した ときに はじめて 正式な 点が 入る（けっかの 画面で そこへ 誘う）。
    */
   const store = useMemo(() => createProgressStore(), []);
   const savedRef = useRef<string | null>(null);
   useEffect(() => {
-    if (!done) return;
+    if (!done || !wholeRun) return;
     if (savedRef.current === set.id) return;
     savedRef.current = set.id;
     store.recordFirstTestResult({
@@ -133,7 +171,7 @@ export function QuizRunner({
       passed: summary.passed,
       at: new Date().toISOString(),
     });
-  }, [done, set.id, store, summary]);
+  }, [done, wholeRun, set.id, store, summary]);
 
   /*
    * 1問ごとの こたえを **先生の 画面**（/admin/quizzes）へ 送る。
@@ -172,14 +210,15 @@ export function QuizRunner({
           questions: set.questions,
           results: state.results,
           attemptId,
-          // 絞ったセッション（まちがえた もんだいだけ）は 合否を数えてよい回ではない
-          fullSet: isFullSession,
+          // 絞ったセッション（まちがえた もんだいだけ）と、しおりだけで 途中から 始めた 回は
+          // 合否を数えてよい回ではない（先生の画面では「（一部）」として 並ぶ）
+          fullSet: wholeRun,
         }),
       )
       .catch(() => {
         /* 記録できなくても 学習は 止めない */
       });
-  }, [attemptId, done, isFullSession, set.id, set.questions, state.results]);
+  }, [attemptId, done, wholeRun, set.id, set.questions, state.results]);
   const question = currentQuestion(state);
   const byId = useMemo(() => new Map(set.questions.map((q) => [q.id, q])), [set.questions]);
 
@@ -202,11 +241,13 @@ export function QuizRunner({
           furigana={furigana}
           resumed={resumed}
           answeredCount={start.results.length}
+          skipped={skipped}
           onContinue={() => setStarted(true)}
           onRestart={() => {
             clearQuizResume(set.id);
             setState(createQuizSession(set));
             startAttempt();
+            setSkipped(0);
             setResumed(false);
             setStarted(true);
           }}
@@ -219,6 +260,7 @@ export function QuizRunner({
           missed={summary.missedQuestionIds
             .map((id) => byId.get(id))
             .filter((q): q is QuizQuestion => Boolean(q))}
+          skipped={skipped}
           furigana={furigana}
           onRetryWrong={() => {
             setState(
@@ -228,10 +270,12 @@ export function QuizRunner({
               ),
             );
             startAttempt();
+            setSkipped(0);
           }}
           onRetryAll={() => {
             setState(createQuizSession(set));
             startAttempt();
+            setSkipped(0);
           }}
         />
       ) : (
@@ -322,6 +366,7 @@ function StartCard({
   furigana,
   resumed,
   answeredCount,
+  skipped,
   onContinue,
   onRestart,
 }: {
@@ -331,6 +376,8 @@ function StartCard({
   resumed: boolean;
   /** ここまで 答えた 問題の 数（案内の 文に 出す）。 */
   answeredCount: number;
+  /** しおりだけが 残って いた ぶん（答えの 内訳が 無い＝「◯もん こたえました」と 言えない）。 */
+  skipped: number;
   /** 続きから（保存された ところから）始める。 */
   onContinue: () => void;
   /** 保存を 消して、1問目から 始める。 */
@@ -357,7 +404,14 @@ function StartCard({
 
       {resumed ? (
         <p className="bg-cream border-hairline text-ink mt-5 rounded-[var(--radius-card)] border-2 px-4 py-3 font-extrabold">
-          🔖 まえの つづきから はじめます。（{answeredCount}もん こたえました）
+          {/*
+            内訳が 残って いない ときは「◯もん こたえました」と 言えない
+            （0もん こたえました に なる）。どこから 始まるかだけを 伝える。
+          */}
+          🔖{" "}
+          {skipped > 0
+            ? `${skipped + 1}もんめ から はじめます。`
+            : `まえの つづきから はじめます。（${answeredCount}もん こたえました）`}
         </p>
       ) : (
         <p className="border-hairline bg-panel-tint text-ink mt-5 rounded-[var(--radius-card)] border-2 px-4 py-3 font-extrabold">
@@ -482,6 +536,7 @@ function QuizResultCard({
   embedded,
   summary,
   missed,
+  skipped,
   furigana,
   onRetryWrong,
   onRetryAll,
@@ -490,29 +545,53 @@ function QuizResultCard({
   embedded: boolean;
   summary: ReturnType<typeof summarizeQuiz>;
   missed: readonly QuizQuestion[];
+  /** この回が 見ないまま 飛ばした 問題の 数（しおりから 途中で 始めた ときだけ 0より 大きい）。 */
+  skipped: number;
   furigana: ReturnType<typeof buildFuriganaIndex>;
   onRetryWrong: () => void;
   onRetryAll: () => void;
 }) {
+  /**
+   * 「合格」と 言ってよい回か。**とちゅうから 始めた 回では 言わない**
+   * ——見て いない 問題が 残って いるので、教材を 通した ことには ならない
+   *（成績にも ステージの「おわった」にも 残さない — `isWholeSetRun`）。
+   * 点と スタンプは そのまま 出す。答えた 分を 取り上げは しない。
+   */
+  const praised = summary.passed && skipped === 0;
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 18 }}
       animate={{ opacity: 1, y: 0 }}
       className="card-island p-6 sm:p-8"
     >
-      {summary.passed && <CelebrationBurst />}
+      {praised && <CelebrationBurst />}
       <div className="flex items-center gap-4">
-        <NexMax variant={summary.passed ? "cheer" : set.nekumax} size={84} bob />
+        <NexMax variant={praised ? "cheer" : set.nekumax} size={84} bob />
         <div>
           <p className="text-ink-soft text-sm font-extrabold">けっか</p>
           <h2 className="text-ink text-3xl font-extrabold">
-            {summary.passed ? "よく できました！" : "ここまで すすんだね"}
+            {praised ? "よく できました！" : "ここまで すすんだね"}
           </h2>
         </div>
       </div>
 
+      {/*
+        とちゅうから 始めた 回は、見て いない 問題を 残した まま 最後に 着く。
+        点だけ 出して 黙って いると「ぜんぶ できた」と 読めるので、残りの 数と
+        つぎの 一手を **合格の 言い方の 代わりに** ここへ 置く
+        ——「合格！ つぎの ステージへ」と「まだ 7もん あります」が 並ぶと、
+        どちらを 信じてよいか 分からなくなる（この回は 成績にも ステージにも 残さない）。
+      */}
       <div className="mt-5">
-        <FeedbackMessage messageKey={summary.passed ? "stage.passed" : "quiz.keepGoing"} />
+        {skipped > 0 ? (
+          <p className="bg-cream border-hairline text-ink rounded-[var(--radius-card)] border-2 px-4 py-3 font-extrabold">
+            🔖 とちゅうから はじめました。まだ やって いない もんだいが {skipped}もん あります。
+            「もう一度」を おすと、1もんめから できます。
+          </p>
+        ) : (
+          <FeedbackMessage messageKey={summary.passed ? "stage.passed" : "quiz.keepGoing"} />
+        )}
       </div>
 
       <p className="text-ink mt-5 text-center text-2xl font-extrabold">

@@ -94,6 +94,43 @@ export async function seedCompleted(
 }
 
 /**
+ * もんだいの **しおりだけ**を 置く（答えの 内訳＝`quiz-resume` は 置かない）。
+ *
+ * この 形は 実際に できる: 内訳の 保存が 壊れて zod に 落ちた とき、内訳を 持たない
+ * 古い 保存が 残って いた とき。もんだいは 位置だけ 戻して 途中から 始まる
+ *（`src/lib/quiz/resume.ts` の 規則5）ので、**見て いない 問題を 残した まま
+ * 最後に 着く 回**が ここから 作れる。
+ *
+ * `seedCompleted` と ちがって **1度だけ 書く**（`addInitScript` は ページを 開くたび
+ * 走るので、そのあと 学習者の 手で 動いた 進捗を 次の ページで 押し戻して しまう
+ * ——「おわった／とちゅう」を 確かめる テストが 何も 見て いない ことに なる）。
+ * 同じ オリジンの ページを 開いてから 呼ぶ。
+ */
+export async function seedQuizBookmark(
+  page: Page,
+  contentId: string,
+  question: number,
+): Promise<void> {
+  await page.evaluate(
+    ([id, at]: [string, number]) => {
+      window.localStorage.setItem(
+        `nexmax:v1:content:${id}`,
+        JSON.stringify({ status: "started", position: { question: at } }),
+      );
+    },
+    [contentId, question] as [string, number],
+  );
+}
+
+/** 端末に 残った 正式な成績（`src/lib/progress/store.ts` の TestResult）。無ければ null。 */
+export async function readTestResult(page: Page, stageId: string): Promise<unknown> {
+  return page.evaluate((id: string) => {
+    const raw = window.localStorage.getItem(`nexmax:v1:test:${id}`);
+    return raw === null ? null : JSON.parse(raw);
+  }, stageId);
+}
+
+/**
  * Gemini の鍵を **学習者と同じ経路（BYOK・端末の中）** に置く。
  *
  * サーバの環境変数には足さない。`src/lib/profile.ts` の `getGeminiKey()` は
@@ -177,6 +214,12 @@ export async function fillWordBank(page: Page, words: readonly string[]): Promis
   for (const word of words) {
     await page.getByRole("button", { name: word }).first().click();
   }
+  await page.getByRole("button", { name: "こたえる" }).click();
+}
+
+/** 自由入力で 答える（言い回しの 救済は `src/lib/text/normalize.ts`）。 */
+export async function answerKeyword(page: Page, written: string): Promise<void> {
+  await page.getByLabel("こたえを 入力する").fill(written);
   await page.getByRole("button", { name: "こたえる" }).click();
 }
 
