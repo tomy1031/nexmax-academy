@@ -63,7 +63,20 @@ export default defineConfig({
   webServer: {
     command: `npx next start --port ${PORT}`,
     url: `${BASE_URL}/kaisha`,
-    reuseExistingServer: !process.env.CI,
+    /*
+     * **立てたら 必ず 落とす。前に 立てた ものを 使い回さない。**
+     *
+     * 理由が 2つ ある。
+     * (a) 使い回すと **直す前の ビルドに 合格を 出す**（2026-08-19 に 実発生。
+     *     直した はずの 式で 直す前の 値が 1回だけ 出た。原因は 前のセッションの
+     *     `next start` が ポートに 残って いた こと）。
+     * (b) 残った サーバが 積み上がると **手もとの PC が 重くなる**
+     *     （2026-08-19 ユーザー指定「チェックが終わったら一度閉じるようにしてほしい」）。
+     *
+     * ポートが ふさがって いると ここで 止まる。それは 正しい——黙って 古い ものを
+     * 使うより、気づける ほうが よい（`lsof -nP -iTCP:3311` で 見て 落とす）。
+     */
+    reuseExistingServer: false,
     timeout: 120_000,
     stdout: "ignore",
     stderr: "pipe",

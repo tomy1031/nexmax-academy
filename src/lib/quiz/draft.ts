@@ -136,9 +136,17 @@ export function gradeDraft(question: QuizQuestion, draft: QuizDraft | undefined)
       const expected = [...question.answers].sort((a, b) => a - b);
       const correct =
         picked.length === expected.length && picked.every((v, i) => v === expected[i]);
+      /*
+       * **そろって いる ときだけ 点が 入る**（部分点は 置かない）。
+       *
+       * 以前は 合って いる ぶんを 按分して いた。5択4正解の ような 形では
+       * **ぜんぶ 選ぶだけで 半分の 点が 入り**、読まなくても 点が 取れた。
+       * 2026-08-19 ユーザー指定「複数選択の問題は正解したらポイントとしてください」。
+       * 一部だけ 合って いる ことは 点では なく 言い方（`partial` →「あと すこし」）で 返す。
+       */
       return {
         correct,
-        earned: multiPoints(picked, expected, question.points, correct),
+        earned: correct ? question.points : 0,
         answer: picked.map((i) => question.options[i] ?? "").join(" ／ "),
         partial: !correct && picked.some((v) => expected.includes(v)),
       };
@@ -207,33 +215,4 @@ export function correctAnswerText(question: QuizQuestion): string {
         question.replies[question.answerReply] ?? ""
       }`;
   }
-}
-
-/**
- * 複数選択の 部分点。
- *
- * 全か無かだと、5つ中4つ 選ぶ問題で 1つ 足りないだけで 配点が まるごと 消える。
- * 画面は「あと すこし」と 言うのに 点は 0——**言っていることと 点が 食い違う**。
- * 合計が 小さい 問題セットでは、それだけで 合格の 見込みが 消える。
- *
- * 決めごとは2つ:
- *  - 誤選択は 正解1つぶんを 打ち消す（`hits - wrongs`）。打ち消さないと、
- *    ぜんぶ 選ぶのが いちばん 点の 高い 答え方になり、読まなくても 点が 入る。
- *  - **満点は そろったときだけ**。按分の 結果が 満点に 届いても 1点 下げる
- *    （そろっていないのに 満点だと、どこが 足りないのかが 点から 消える）。
- *
- * 点は 整数で 持つ（画面は「◯/◯ てん」と 出す。小数は 読む負担を 増やす）。
- * そのため 配点1点の 問題は 割れず、これまでどおり 満点か 0 になる。
- */
-function multiPoints(
-  picked: readonly number[],
-  expected: readonly number[],
-  points: number,
-  correct: boolean,
-): number {
-  if (correct) return points;
-  const hits = picked.filter((index) => expected.includes(index)).length;
-  const wrongs = picked.length - hits;
-  const ratio = Math.max(0, hits - wrongs) / expected.length;
-  return Math.min(points - 1, Math.floor(points * ratio));
 }

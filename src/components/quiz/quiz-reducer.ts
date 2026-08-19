@@ -441,6 +441,8 @@ export interface QuizSummary {
   readonly correct: number;
   readonly earned: number;
   readonly maxPoints: number;
+  /** 何問中 何問 正解かの 割合（%・整数）。画面に 出すのも 合否も この数。 */
+  readonly percent: number;
   readonly passed: boolean;
   readonly missedQuestionIds: readonly string[];
 }
@@ -459,12 +461,22 @@ export function summarizeQuiz(state: QuizState): QuizSummary {
    */
   const points = new Map(state.questions.map((q) => [q.id, q.points]));
   const maxPoints = state.results.reduce((sum, r) => sum + (points.get(r.questionId) ?? 0), 0);
+  /*
+   * 合否も 画面も **何問中 何問**で 数える（2026-08-19 ユーザー指定
+   * 「満点というより何問中何問正解の何％かがわかればよい」）。
+   *
+   * 点（`earned` / `maxPoints`）は 先生に 残す 1問ごとの 記録の ために 持ち続けるが、
+   * 学習者に 見せる 数とは 分ける。丸めた 割合で 判定するのは、**画面に 出た 数と
+   * 合否が 食い違わない ようにする**ため（67% と 出して 不合格、を 起こさない）。
+   */
+  const percent = answered > 0 ? Math.round((correct / answered) * 100) : 0;
   return {
     total: answered,
     correct,
     earned,
     maxPoints,
-    passed: maxPoints > 0 && (earned / maxPoints) * 100 >= state.passRate,
+    percent,
+    passed: answered > 0 && percent >= state.passRate,
     missedQuestionIds: state.results.filter((r) => !r.correct).map((r) => r.questionId),
   };
 }

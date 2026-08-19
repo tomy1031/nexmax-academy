@@ -150,15 +150,16 @@ describe("問題エンジンの状態機械", () => {
   });
 
   /**
-   * 全か無かだと「あと すこし」と言いながら 点は 0 になる。
-   * 言っていることと 点を そろえる（配点2点以上のときに 割れる）。
+   * **そろって いる ときだけ 点が 入る**（2026-08-19 ユーザー指定）。
+   * 按分すると、5択4正解の ような 形では ぜんぶ 選ぶだけで 半分の 点が 入り、
+   * 読まなくても 点が 取れて しまう。一部だけ 合って いる ことは 言い方で 返す。
    */
-  it("複数選択は そろった ぶんだけ 点が 入る（満点は そろったときだけ）", () => {
+  it("複数選択は そろった ときだけ 点が 入る（ぜんぶ 選んでも 点は 入らない）", () => {
     const q = quizSetSchema.parse({
       kind: "quizset",
-      id: "multi_partial_fixture",
-      title: "ぶぶんてんの かくにん",
-      description: "そろった ぶんだけ 点が 入る",
+      id: "multi_all_or_nothing_fixture",
+      title: "ふくすう えらぶ",
+      description: "そろった ときだけ 点が 入る",
       questions: [
         {
           id: "q_multi",
@@ -175,36 +176,11 @@ describe("問題エンジンの状態機械", () => {
       quizReducer(createQuizSession(q), { type: "answerMulti", indexes }).results[0]?.earned;
 
     expect(earnedFor([0, 1, 2, 3])).toBe(2); // そろった
-    expect(earnedFor([0, 1, 2])).toBe(1); // 1つ 足りない — 0 にしない
-    expect(earnedFor([0])).toBe(0); // 1つだけでは まだ
-    // ぜんぶ 選ぶ（誤選択1つ）を 満点にしない。読まずに 点が 入る 道を 作らない
-    expect(earnedFor([0, 1, 2, 3, 4])).toBe(1);
-    expect(earnedFor([4])).toBe(0);
-  });
-
-  it("配点1点の 複数選択は これまでどおり 満点か 0（点は 整数で 持つ）", () => {
-    const q = quizSetSchema.parse({
-      kind: "quizset",
-      id: "multi_single_point_fixture",
-      title: "1てんの ふくすう",
-      description: "わけられない 配点",
-      questions: [
-        {
-          id: "q_multi1",
-          type: "multi",
-          q: "どれですか",
-          options: ["ひとつめ", "ふたつめ", "みっつめ"],
-          answers: [0, 1],
-          explain: "2つです",
-          points: 1,
-        },
-      ],
-    });
-    const earnedFor = (indexes: number[]) =>
-      quizReducer(createQuizSession(q), { type: "answerMulti", indexes }).results[0]?.earned;
-
-    expect(earnedFor([0, 1])).toBe(1);
+    expect(earnedFor([0, 1, 2])).toBe(0); // 1つ 足りない
     expect(earnedFor([0])).toBe(0);
+    // ぜんぶ 選ぶ（読まなくても できる 答え方）で 点は 入らない
+    expect(earnedFor([0, 1, 2, 3, 4])).toBe(0);
+    expect(earnedFor([4])).toBe(0);
   });
 
   it("語群穴埋めは全部そろって正解", () => {
@@ -222,6 +198,40 @@ describe("問題エンジンの状態機械", () => {
       filled: q.blanks,
     });
     expect(filled.results[0]?.correct).toBe(true);
+  });
+
+  it("合否は 何問中 何問（％）で 決まる。画面に 出す 数と 同じ", () => {
+    const q = quizSetSchema.parse({
+      kind: "quizset",
+      id: "percent_fixture",
+      title: "わりあいの かくにん",
+      description: "点では なく 問題の 数で 数える",
+      passRate: 70,
+      questions: [
+        // 配点は ばらばら。それでも 合否は 問題の 数で 決まる
+        { id: "p1", type: "keyword", q: "ひとつめ", explain: "せつめい", answer: "あ", points: 5 },
+        { id: "p2", type: "keyword", q: "ふたつめ", explain: "せつめい", answer: "い", points: 1 },
+        { id: "p3", type: "keyword", q: "みっつめ", explain: "せつめい", answer: "う", points: 1 },
+        { id: "p4", type: "keyword", q: "よっつめ", explain: "せつめい", answer: "え", points: 1 },
+      ],
+    });
+    // 配点の 大きい 1問だけ 落とす → 点では 3/8=37% だが、問題の 数では 3/4=75%
+    let s = createQuizSession(q);
+    s = run(s, [
+      { type: "answerKeyword", input: "ちがう" },
+      { type: "next" },
+      { type: "answerKeyword", input: "い" },
+      { type: "next" },
+      { type: "answerKeyword", input: "う" },
+      { type: "next" },
+      { type: "answerKeyword", input: "え" },
+      { type: "next" },
+    ]);
+    const summary = summarizeQuiz(s);
+    expect(summary.correct).toBe(3);
+    expect(summary.total).toBe(4);
+    expect(summary.percent).toBe(75);
+    expect(summary.passed).toBe(true);
   });
 
   it("全問正解なら満点で合格し、まちがえた問題は残らない", () => {

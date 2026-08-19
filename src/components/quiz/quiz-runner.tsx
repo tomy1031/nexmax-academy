@@ -191,8 +191,9 @@ export function QuizRunner({
     savedRef.current = set.id;
     store.recordFirstTestResult({
       stageId: set.id,
-      score: summary.earned,
-      maxScore: summary.maxPoints,
+      // 画面と 同じ 数え方（何問中 何問）で 残す。点では 何問できたかが 読めない
+      score: summary.correct,
+      maxScore: summary.total,
       total: summary.total,
       passed: summary.passed,
       at: new Date().toISOString(),
@@ -875,10 +876,8 @@ function QuizResultCard({
       </div>
 
       <p className="text-ink mt-5 text-center text-2xl font-extrabold">
-        {summary.correct} / {summary.total} もん
-        <span className="text-sky ml-3 text-lg">
-          {summary.earned} / {summary.maxPoints} てん
-        </span>
+        {summary.correct} / {summary.total} もん せいかい
+        <span className="text-sky ml-3 text-lg">{summary.percent}%</span>
       </p>
       <div className="mt-3 flex justify-center">
         <StampRow count={summary.correct} />
