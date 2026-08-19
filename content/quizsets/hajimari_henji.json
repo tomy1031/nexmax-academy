@@ -2,7 +2,7 @@
   "kind": "quizset",
   "id": "hajimari_henji",
   "title": "ヘンディさんに へんじを 書く",
-  "description": "手紙の へんじを 書きます。はじめて、日本語で 書いて おくります。",
+  "description": "手紙の 返事を 書きます。初めて、日本語で 書いて 送ります。",
   "nekumax": "hello",
   "phase": "production",
   "passRate": 50,
@@ -94,6 +94,18 @@
     [
       "致",
       "いた"
+    ],
+    [
+      "返事",
+      "へんじ"
+    ],
+    [
+      "初",
+      "はじ"
+    ],
+    [
+      "送",
+      "おく"
     ]
   ],
   "questions": [

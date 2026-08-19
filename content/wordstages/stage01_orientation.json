@@ -2,7 +2,7 @@
   "kind": "wordstage",
   "id": "stage01_orientation",
   "title": "オリエンテーション",
-  "description": "日本のIT会社で働くための、はじめの言葉を勉強します。",
+  "description": "日本のIT会社で働くための、初めの言葉を勉強します。",
   "password": "stage1",
   "fieldSequence": [
     "forest",
@@ -303,6 +303,10 @@
     [
       "困",
       "こま"
+    ],
+    [
+      "初",
+      "はじ"
     ]
   ],
   "words": [
