@@ -159,6 +159,11 @@ export async function bareKanjiTexts(page: Page): Promise<string[]> {
 /**
  * 4択の選択肢。ルビが合成されるので文字では選ばず、**並びの番号**で選ぶ
  *（「会社か 見る」が画面では「会社かいしゃか 見みる」になるため）。
+ *
+ * **漢字を含むボタンは `getByRole("button", { name })` では掴めない。**
+ * アクセシブル名がルビの境目で割れる（「えらび直す」→「えらび 直 なお す」）ので、
+ * 名前での部分一致も外れる。`getByText()` か 並び順で掴むこと
+ *（画面には見えているのにテストだけタイムアウトする——2026-08-19 に2度踏んだ）。
  */
 export function choiceButtons(page: Page): Locator {
   return page.locator("ul li button");
