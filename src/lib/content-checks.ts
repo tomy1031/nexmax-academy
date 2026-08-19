@@ -756,6 +756,15 @@ function collectLabeledTexts(content: Content): LabeledText[] {
        * あると、いちばん効く報酬がその場でしぼむ。
        */
       push("affection.reward", content.affection?.reward);
+      /*
+       * 聞き出す もの（願い #94）。**見出しも 答えも 学習者が 読む**
+       *（自由な おしゃべりで 画面に 出る）ので、ふりがなの 覆いの 対象に する。
+       * keywords は 当たり判定の 材料で、画面には 出ない。
+       */
+      content.discover.forEach((item, i) => {
+        push(`discover[${i}].label`, item.label);
+        push(`discover[${i}].answer`, item.answer);
+      });
       // persona / judgePrompt は Live への指示（scenario の interview.persona と同じ扱い）
       break;
     }
