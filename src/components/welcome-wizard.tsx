@@ -239,6 +239,23 @@ const ASK_LABEL: Readonly<Record<PersonalityLanguage, string>> = {
   english: "Which one is closer to you?",
 };
 
+/**
+ * よみかたの きりかえに 出す ふだ。
+ *
+ * **English は 画面に 出さない**（2026-08-19 の指定）。ただし 切り替えの型
+ * （`PersonalityLanguage`）・台帳の 英文・保存ずみの `answer_language: "english"` は
+ * 消さない——過去の 回答が 読めなくなるのを 避けるため、また 出すことに なったら
+ * ここへ 1行 戻すだけで 済むようにするため。
+ */
+const LANGUAGE_CHOICES = [
+  { id: "easy", label: "やさしい日本語", reading: "やさしい にほんご" },
+  { id: "japanese", label: "日本語", reading: "にほんご" },
+] as const satisfies readonly {
+  id: PersonalityLanguage;
+  label: string;
+  reading: string;
+}[];
+
 function CompatibilityCard({ code, reason }: { code: PersonalityTypeCode; reason: string }) {
   const type = getPersonalityType(code);
   const family = getFamilyForCode(code);
@@ -709,33 +726,29 @@ export function WelcomeWizard({
                   しつもんに こたえて、あなたの せいかくを しろう！
                 </p>
               </div>
-              <div className="bg-panel-tint flex flex-wrap justify-center rounded-full p-1">
-                {[
-                  { id: "easy" as const, label: "やさしい日本語" },
-                  { id: "japanese" as const, label: "日本語" },
-                  { id: "english" as const, label: "English" },
-                ].map((option) => (
+              {/* 2つに なったので、幅の そろった 2択の スイッチに する（文字数の ちがう
+                  札を 並べると 片側だけ 太って、どちらが 選ばれているかが 読みにくい）。
+                  押す面は 44px 角を 確保して、指でも 外さないようにする。 */}
+              <div className="bg-panel-tint grid grid-cols-2 gap-1 rounded-full p-1 shadow-[0_3px_0_rgba(0,79,141,.10)]">
+                {LANGUAGE_CHOICES.map((option) => (
                   <button
                     key={option.id}
                     type="button"
+                    aria-pressed={language === option.id}
                     onClick={() => {
                       if (option.id !== language) languageSwitchedRef.current = true;
                       setLanguage(option.id);
                     }}
-                    className={`rounded-full px-3 py-2 text-xs font-extrabold sm:px-4 ${
+                    className={`grid min-h-11 place-items-center rounded-full px-4 text-sm font-extrabold sm:px-6 ${
                       language === option.id
-                        ? `bg-navy text-white ${RUBY_ON_COLOR}`
+                        ? `bg-navy text-white shadow-[0_3px_0_var(--color-navy-deep)] ${RUBY_ON_COLOR}`
                         : "text-ink-soft"
                     }`}
                   >
-                    {option.id === "english" ? (
-                      option.label
-                    ) : (
-                      <ruby>
-                        {option.label}
-                        <rt>{option.id === "easy" ? "やさしい にほんご" : "にほんご"}</rt>
-                      </ruby>
-                    )}
+                    <ruby>
+                      {option.label}
+                      <rt>{option.reading}</rt>
+                    </ruby>
                   </button>
                 ))}
               </div>
@@ -962,9 +975,13 @@ export function WelcomeWizard({
                 </h3>
                 <ul className="mt-3 space-y-2">
                   {result.analysis.map((line) => (
-                    <li key={line} className="text-ink flex gap-2 font-bold">
-                      <span className="text-leaf-deep">✓</span>
-                      <LearnerText text={line} />
+                    <li key={line} className="text-ink flex gap-2 leading-loose font-bold">
+                      <span className="text-leaf-deep shrink-0">✓</span>
+                      {/* 図鑑（nexmax-catalog）と 同じ 4行。本文を 箱に 入れずに flex の
+                          直下へ 置くと、ルビや 語彙メモが 1つずつ 横に 並んで 段に 割れる。 */}
+                      <span className="min-w-0 flex-1">
+                        <LearnerText text={line} />
+                      </span>
                     </li>
                   ))}
                 </ul>

@@ -138,11 +138,25 @@ export function TitleScreen({
                   はじめての人にも、もう一度読みたい人にも要るので、
                   「つづきから」が出るかに関わらず出す。
                 */}
+                {/* 下線の文字リンクだと、色とりどりの 絵の 上では 沈んで 気づかれない
+                    （2026-08-19「目立たない」）。**押せる 面**を 持つ ボタンに して、
+                    ①白い ふち ②下の 影 ③2段の 文字 で 見つけやすくする。
+                    面の 色は 上の CTA（黄色）と 変えて、どちらが 先かを 保つ。 */}
                 <Link
                   href={`/${INTRO_STAGE_ID}`}
-                  className="text-navy mt-5 rounded-full bg-white/90 px-5 py-1.5 text-sm font-extrabold underline underline-offset-4 shadow-sm"
+                  className="btn-game mt-4 w-full flex-col gap-0.5 border-4 border-white px-5 py-3 text-base font-black sm:text-lg"
+                  style={
+                    {
+                      "--btn-face": "#ffffff",
+                      "--btn-shadow": "#c9d8e4",
+                      color: "#1f3a56",
+                    } as React.CSSProperties
+                  }
                 >
-                  はじめに（この プログラムに ついて）
+                  <span className="whitespace-nowrap">📖 はじめに を よむ</span>
+                  <span className="text-ink-soft text-[11px] font-extrabold sm:text-xs">
+                    この プログラムに ついて
+                  </span>
                 </Link>
                 {canContinue && (
                   // `retake=1` が要る。付けないと /welcome が診断済みの人をマップへ送り返す。
