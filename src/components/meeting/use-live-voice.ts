@@ -179,6 +179,18 @@ export function useLiveVoice(): LiveVoice {
       opening?: string,
       tools?: readonly unknown[],
     ) => {
+      /*
+       * **つなぐ前に、前の つなぎを 閉じる**。閉じずに もう一度 押せた ため、
+       * ヘンディさんが 2人ぶん 同時に 話して 声が 混ざった（2026-08-18 の 実発生）。
+       */
+      sessionRef.current?.close();
+      sessionRef.current = null;
+      micRef.current?.capture.stop();
+      micRef.current?.stream.getTracks().forEach((t) => t.stop());
+      micRef.current = null;
+      void outRef.current?.ctx.close();
+      outRef.current = null;
+
       setStatus("connecting");
       setReason(null);
       setTurns([]);
