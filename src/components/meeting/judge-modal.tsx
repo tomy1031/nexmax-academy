@@ -57,7 +57,12 @@ export function JudgeModal({
     <div
       role="dialog"
       aria-modal="true"
-      aria-label="にほんごの みかた"
+      /*
+       * 名前を チャットの カード（`judge-card.tsx`）と 分ける。
+       * 同じ 名前に して いた ため、検査が「どちらの ことか」を 決められず
+       * 落ちた（CI・2026-08-18）。人にも 機械にも 別の ものだと 分かる 名前に する。
+       */
+      aria-label="はんていの ポップアップ"
       className="fixed inset-0 z-50 grid place-items-center p-4"
       style={{ background: "rgba(15,34,51,0.55)" }}
     >

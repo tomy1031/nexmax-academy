@@ -27,7 +27,7 @@ export interface ClipPlayer {
   readonly analyser: AnalyserNode | null;
   /** いま鳴っているか。 */
   readonly playing: boolean;
-  readonly play: (url: string) => void;
+  readonly play: (url: string, rate?: number) => void;
   readonly stop: () => void;
 }
 
@@ -46,7 +46,7 @@ export function useClipPlayer(): ClipPlayer {
     setPlaying(false);
   }, []);
 
-  const play = useCallback((url: string) => {
+  const play = useCallback((url: string, rate = 1) => {
     void (async () => {
       // 1つの <audio> を使い回す。曲ごとに作ると、Web Audio のつなぎ先が増え続ける
       let audio = audioRef.current;
@@ -69,6 +69,14 @@ export function useClipPlayer(): ClipPlayer {
       if (node) setAnalyser(node);
       audio.src = url;
       audio.currentTime = 0;
+      /*
+       * 速さだけを 変えて、**声の 高さは 変えない**。
+       * Web Audio の `playbackRate` は 音を そのまま 引きのばす ので、
+       * ゆっくりに すると 声まで 低くなる（2026-08-18 の 指摘）。
+       * `<audio>` の 側は `preservesPitch` が 既定で 効くので、高さが 保たれる。
+       */
+      audio.preservesPitch = true;
+      audio.playbackRate = rate;
       try {
         await audio.play();
         setPlaying(true);

@@ -403,10 +403,19 @@ export function MeetingSession({
          * 裏の やりとりが 表に 出る 作りは やめ、しつもんは 作り置きの こえと
          * 画面の 字で 出す。相手は **受け止めて 返すだけ**に する。
          */
+        /*
+         * 話す 速さは **ことばで たのむ**。音を 引きのばすと 声の 高さまで 下がって
+         * 別人に なる（2026-08-18 の 指摘）。
+         */
+        speed === "slow"
+          ? "ゆっくり、はっきり 話して ください。"
+          : speed === "fast"
+            ? "少し 早めに 話して ください。"
+            : "ふつうの 速さで 話して ください。",
         "しつもんは 画面が します。あなたは しつもんを しないで ください。",
         "学生の ことばを 受け止めて、みじかく 返して ください。1回の 返事は 2文までです。",
       ].join("\n"),
-    [meeting],
+    [meeting, speed],
   );
 
   /**
@@ -562,8 +571,8 @@ export function MeetingSession({
   const playClip = clip.play;
   useEffect(() => {
     if (!joined || !clipUrl) return;
-    playClip(clipUrl);
-  }, [joined, clipUrl, playClip]);
+    playClip(clipUrl, rateOf(speed));
+  }, [joined, clipUrl, playClip, speed]);
 
   // 声で話したぶんを見る。相手が話しはじめた合図で1つに束ねてから届く
   useEffect(() => {
@@ -830,7 +839,7 @@ export function MeetingSession({
           dictionary={dictionary}
           onReplay={
             entry.kind === "ask" && entry.audioUrl
-              ? () => clip.play(entry.audioUrl as string)
+              ? () => clip.play(entry.audioUrl as string, rateOf(speed))
               : undefined
           }
         />
