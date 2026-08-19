@@ -1272,6 +1272,31 @@ export const meetingSchema = z.object({
       reward: plainText,
     })
     .optional(),
+  /**
+   * ぜんぶ 答えた あとに「聞き出す」もの（願い #94）。
+   *
+   * しつもんが 終わった あとの 自由な おしゃべりが、ただの 雑談で 終わって いた。
+   * **相手の ことを 3つ 見つける**という 目あてを 置くと、聞く 練習に なる
+   *（設計01 P2: 自分で 引き出した ものだから 開く 価値が ある）。
+   *
+   * 判定は **この 端末の 中だけ**（`keywords` の 照合）。AIを 足さないのは、
+   * 鍵の 無い 学習者にも 同じ 体験を 残す ため。声が つながって いない ときは
+   * `answer` を そのまま 相手の ことばとして 出す——**聞けば 答えが 返る**
+   * という 会話の 形は、声の あるなしで 変えない。
+   */
+  discover: z
+    .array(
+      z.object({
+        id: z.string().min(1),
+        /** 何を 見つけるか（伏せ札の 表に 出す 短い ことば）。 */
+        label: plainText,
+        /** 学習者の しつもんに 出る ことば（どれか 1つ 当たれば 開く）。 */
+        keywords: z.array(z.string().min(1)).min(1),
+        /** 相手の 答え（声が つながって いない ときに 画面が 出す）。 */
+        answer: plainText,
+      }),
+    )
+    .default([]),
   furigana: z.array(furiganaEntrySchema).optional(),
 });
 

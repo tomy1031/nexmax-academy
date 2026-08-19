@@ -36,7 +36,7 @@ export function ProgressChips({
   return (
     <div className="flex flex-wrap items-center justify-center gap-1.5">
       <span className="mr-1 text-xs font-extrabold text-white/70">
-        はなせた こと（{openIds.size} / {total}）
+        ラウンド 1・はなせた こと（{openIds.size} / {total}）
       </span>
       {order.map((id, at) => {
         const open = openIds.has(id);
