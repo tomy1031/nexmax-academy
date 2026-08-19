@@ -178,6 +178,16 @@ const seen = new Set();
  *  ——「見つかる」と「見積もり」は 芯が どちらも「見」に 寄るため。 */
 const glossedBefore = new Map();
 
+/**
+ * 規則4（一度 紹介した語は 2回目から 載せない）の 例外。
+ *
+ * **セットで 覚える 語は、欠けると 意味が 変わる。** 「ほうれんそう」は
+ * 報告・連絡・相談の 3つで 1つの ことばなので、相談だけ 前のページで 紹介ずみでも
+ * その 1枚では 3つ そろえて 出す（2026-08-19 の 指定。2つしか 出ていないのを
+ * ユーザーが 見つけた）。ここに 載せた 語は 重複として 数えない。
+ */
+const DUP_OK = new Set(["相談"]);
+
 let missingTotal = 0;
 const dups = [];
 const ghosts = [];
@@ -208,7 +218,8 @@ sections.forEach((section, i) => {
 
   for (const head of heads) {
     const first = glossedBefore.get(head);
-    if (first !== undefined) dups.push(`p${page}: 【${head}】 は p${first} で 紹介ずみ`);
+    if (first !== undefined && !DUP_OK.has(head))
+      dups.push(`p${page}: 【${head}】 は p${first} で 紹介ずみ`);
     else glossedBefore.set(head, page);
     seen.add(core(head));
 
