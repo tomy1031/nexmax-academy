@@ -37,6 +37,7 @@ import {
 } from "@/lib/meeting/record";
 import { asksToSkip, needsJapaneseInput } from "@/lib/meeting/input";
 import { fillAnswer, fillName } from "@/lib/meeting/speech";
+import { normalizeReading } from "@/lib/text/normalize";
 import {
   rateOf,
   readSpeechSpeed,
@@ -624,8 +625,17 @@ export function MeetingSession({
        * 声が つながって いない ときは、教材に 書いた 答えを そのまま 出す
        *（**聞けば 答えが 返る**という 会話の 形を、声の あるなしで 変えない）。
        */
+      /*
+       * 表記ゆれを 吸収してから 見る（`normalizeReading` は アプリで 唯一の 実装）。
+       * 素の 文字くらべに して いた ころは、「サイフを おとしました」と カタカナで
+       * 書いた 学習者の 札が 開かなかった——聞けて いるのに 開かないのは、
+       * いちばん がっかりする 外れ方（規約: 正規化を 再実装しない）。
+       */
+      const asked = normalizeReading(text);
       const hit = meeting.discover.find(
-        (item) => !found.has(item.id) && item.keywords.some((word) => text.includes(word)),
+        (item) =>
+          !found.has(item.id) &&
+          item.keywords.some((word) => asked.includes(normalizeReading(word))),
       );
       if (hit) setFound((prev) => new Set([...prev, hit.id]));
 
@@ -848,6 +858,7 @@ export function MeetingSession({
         ここからは **役が 入れかわる**。「じゆうに どうぞ」だけでは 白紙の 前で
         止まるので、何を する 時間なのかを 先に 言う（設計01 P1: 役割の 付与）。
       */}
+      <p className="text-sky text-xs font-extrabold">ラウンド 2</p>
       <p className="text-navy text-base font-black">
         <RubyText
           text={`こんどは、あなたが 聞く ばんです。${meeting.host.name}さんに しつもんして みましょう。`}

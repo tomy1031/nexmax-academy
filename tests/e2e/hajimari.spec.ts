@@ -134,13 +134,13 @@ test("6つ おわると「聞く ばん」に なり、こえが 無くても �
    * 待つ 押し方だと 待ちきれない。ここは Enter で 送る（学習者も 同じ ように 送れる）。
    */
   const box = page.getByLabel("こたえを 入力する");
-  await box.fill("かいぎで「はい」と 言うのは どうしてですか。");
+  await box.fill("しごとで いちばん うれしかった ことは 何ですか。");
   await box.press("Enter");
   /*
    * 「しごと」の ことばが 当たった ので、**聞き出せた**ことに なる——
    * 声が つながって いなくても、教材に 書いた 答えが 返る。
    */
-  await expect(page.getByText("あれは「わかりました」では なく")).toBeVisible();
+  await expect(page.getByText("知らない 人が わたしの 作った")).toBeVisible();
   /* 見出しの 漢字には ルビが 入る ので、数の ところで 見る */
   await expect(page.getByText(/（1 \/ 8）/)).toBeVisible();
 
