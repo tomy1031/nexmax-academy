@@ -21,8 +21,8 @@ test("「はじめに」の ことばカードは 1枚だけ 出る", async ({ p
 test("/arcade/intro は 2つの グループを まとめて 出す", async ({ page }) => {
   await page.goto("/arcade/intro");
 
-  // はじめに の 25語 ＋ オリエンテーション の 20語
-  await expect(page.getByText("ことば 45こ ／ 1回の もんだい 10こ ／ 合格 80%")).toBeVisible();
+  // はじめに の 24語 ＋ オリエンテーション の 20語
+  await expect(page.getByText("ことば 44こ ／ 1回の もんだい 10こ ／ 合格 80%")).toBeVisible();
 
   // 「もんだいだけ」＝ 入力なしの 意味クイズ（ひらがな入力チェックを はさまない）
   await page.getByRole("button", { name: /もんだいだけ/ }).click();
@@ -31,5 +31,5 @@ test("/arcade/intro は 2つの グループを まとめて 出す", async ({ p
 
 test("単語ステージの URL は これまでどおり 開ける", async ({ page }) => {
   await page.goto("/arcade/intro_kotoba");
-  await expect(page.getByText("ことば 25こ ／ 1回の もんだい 10こ ／ 合格 80%")).toBeVisible();
+  await expect(page.getByText("ことば 24こ ／ 1回の もんだい 10こ ／ 合格 80%")).toBeVisible();
 });

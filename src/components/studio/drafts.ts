@@ -193,6 +193,8 @@ export function emptyQuizSet(): QuizSet {
     description: "",
     nekumax: "book",
     phase: "research",
+    // 既定は まとめて 出す（schema.ts の answerMode と そろえる）
+    answerMode: "submit",
     passRate: 70,
     questions: [{ ...emptyQuizQuestion("choose"), id: "q1" }],
   };

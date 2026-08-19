@@ -216,6 +216,18 @@ export const quizSetSchema = z
      * 選択式は research でだけ使える（AGENTS.md 規律3）。
      */
     phase: z.enum(["research", "production"]).default("research"),
+    /**
+     * こたえの 出しかた。**決めるのは 先生（管理画面）**で、学習者は 選べない。
+     *
+     * - `"submit"`（**既定**）… ぜんぶ 書いてから まとめて 出す。途中では 正誤を 見せず、
+     *   「こたえを 見る」も 置かない。採点は 出した あとの 1回だけ。
+     * - `"one"` … 1問 こたえるたびに こたえと せつめいを 読む。
+     *
+     * 学習者に 選ばせない のは、同じ 教材を 同じ 条件で 受けさせたい 先生の 都合が
+     * 先に 立つため（2026-08-19 指定「まとめて出すかをきめるのは管理画面。
+     * デフォルトは全てまとめて出す」）。
+     */
+    answerMode: z.enum(["one", "submit"]).default("submit"),
     passRate: z.number().int().min(1).max(100).default(70),
     furigana: z.array(furiganaEntrySchema).optional(),
     questions: z.array(quizQuestionSchema).min(1),

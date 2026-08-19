@@ -45,15 +45,6 @@
     position: absolute; bottom: 10px; left: 24px; font-size: 10.5px; color: #7189a3;
     background: rgba(255, 253, 250, 0.78); padding: 2px 10px; border-radius: 999px;
   }
-  /* ページ番号は数えて出す（手書きだと1枚の挿入で以降が全部ずれる）。分母だけここで1回書く */
-  body { counter-reset: slide; }
-  .slide { counter-increment: slide; }
-  /* 丸ごと絵のスライドでは 絵の中のネクマックスと 重なるので、薄い下地を敷いて読めるようにする */
-  .pageno {
-    position: absolute; bottom: 10px; right: 16px; font-size: 11px; font-weight: 700; color: #7189a3;
-    background: rgba(255, 253, 250, 0.78); padding: 2px 9px; border-radius: 999px;
-  }
-  .pageno::before { content: counter(slide) " / 11"; }
 
 
   /* --- 左右で 見くらべる スライド（今まで ⇄ これから のような 対比） ---
@@ -262,7 +253,6 @@
   <img class="bg" src="img/t01_title.jpg" alt="" />
   <div class="panel" style="bottom: 40px; width: 760px;"><h1><ruby>日本<rt>にほん</rt></ruby>で エンジニアに なる ために</h1><div class="sub" style="margin-top:8px; font-size:18px;"><ruby>学校<rt>がっこう</rt></ruby>の <ruby>日本語<rt>にほんご</rt></ruby>から、<ruby>仕事<rt>しごと</rt></ruby>の <ruby>日本語<rt>にほんご</rt></ruby>へ</div></div>
   <div class="alt">日本で エンジニアに なる ために。学校の 日本語から、仕事の 日本語へ。</div>
-  <div class="pageno"></div>
 </section>
 
 <section class="slide compare">
@@ -281,25 +271,21 @@
     </div>
   </div>
   <div class="alt">いま と これから。学校の 日本語。今までの 勉強は「N4・N3に 合格する ため」の ものでした。会社で 使う 日本語。教科書に ない 言葉が たくさん 出て きます。</div>
-  <div class="pageno"></div>
 </section>
 
 <section class="slide full-pic">
   <img class="bg" src="img/w05_yontsu.jpg" alt="" />
   <div class="alt">仕事で つかう 4つの 力。読む（仕様書・メッセージ）。書く（報告書・チャット）。話す（会議・相談）。聞く（指示・お客さまの 話）。どれも 同じくらい 大切です。</div>
-  <div class="pageno"></div>
 </section>
 
 <section class="slide full-pic">
   <img class="bg" src="img/w07_business.jpg" alt="" />
   <div class="alt">むずかしさ1。ビジネスの 日本語。学校の 日本語は「わかりました」「すみません」。会社の 日本語は「承知しました」「申し訳 ございません」。意味は 同じでも、言い方が 変わります。</div>
-  <div class="pageno"></div>
 </section>
 
 <section class="slide full-pic">
   <img class="bg" src="img/w08_itwords.jpg" alt="" />
   <div class="alt">むずかしさ2。IT専門の 日本語。要件定義、設計書、アプリケーション、データベース、ソースコード。知らない 言葉は、自分で 調べて みましょう。</div>
-  <div class="pageno"></div>
 </section>
 
 <section class="slide full-pic">
@@ -312,13 +298,11 @@
     <div class="sub" style="margin-top: 6px; font-size: 17px;">チームの <ruby>人<rt>ひと</rt></ruby>と <ruby>相談<rt>そうだん</rt></ruby>できません。お<ruby>客<rt>きゃく</rt></ruby>さまの「<ruby>言<rt>い</rt></ruby>いたい こと」も <ruby>分<rt>わ</rt></ruby>かりません。<br />→ ほしい アプリを <ruby>作<rt>つく</rt></ruby>れません。</div>
   </div>
   <div class="alt">もし、日本語が 分からなかったら。チームの 人と 相談できません。お客さまの「言いたい こと」も 分かりません。ほしい アプリを 作れません。</div>
-  <div class="pageno"></div>
 </section>
 
 <section class="slide full-pic">
   <img class="bg" src="img/w14_ai.jpg" alt="" />
   <div class="alt">AIの 時代。AIが プログラムを 書きます。プログラムは AIの 仕事。人の 仕事は コミュニケーション。だから 日本語が 大切です。</div>
-  <div class="pageno"></div>
 </section>
 
 <section class="slide compare">
@@ -337,7 +321,6 @@
     </div>
   </div>
   <div class="alt">日本の 会社の ルール。ルール1 時間を まもります。約束の 時間の 5分前に 着きます。遅れる ときは、必ず 先に 連絡します。ルール2 ほうれんそう。報告、連絡、相談。困ったら、すぐに 相談します。</div>
-  <div class="pageno"></div>
 </section>
 
 <section class="slide cardset">
@@ -367,20 +350,17 @@
   </div>
   <div class="footnote"><ruby>給料<rt>きゅうりょう</rt></ruby>は <ruby>会社<rt>かいしゃ</rt></ruby>や <ruby>仕事<rt>しごと</rt></ruby>で 大きく ちがう、だいたいの <ruby>話<rt>はなし</rt></ruby>／「<ruby>住<rt>す</rt></ruby>みやすい <ruby>世界<rt>せかい</rt></ruby>の <ruby>都市<rt>とし</rt></ruby>」ランキング（エコノミスト・2021<ruby>年<rt>ねん</rt></ruby>の しらべ）</div>
   <div class="alt">日本には 大きな チャンスが あります。給料が 大きく 変わります。日本で 働く 20代は、カンボジアの トップクラスと 同じくらいに なります。新しい 技術を 先に 学べます。AI・クラウド・VR。新しい 道具を 仕事で 使えます。住みやすい 街です。大阪は 世界2位、東京は 4位。安全で、電車が 時間どおりに 来ます。日本の 大きな 仕事の やり方は、国に 帰っても 使えます。</div>
-  <div class="pageno"></div>
 </section>
 
 <section class="slide full-pic">
   <img class="bg" src="img/w20_year.jpg" alt="" />
   <div class="alt">これからの 1年。仕事さがしまで、あと 1年。ITと 日本語を いっしょに 勉強します。この 1年が、あなたの 未来を つくります。</div>
-  <div class="pageno"></div>
 </section>
 
 <section class="slide full-pic">
   <img class="bg" src="img/t21_end.jpg" alt="" />
   <div class="panel" style="bottom: 40px; width: 760px;"><h1>いっしょに がんばりましょう</h1><div class="sub" style="margin-top:8px; font-size:18px;">あなたの ゆめを、ぜんぶの <ruby>力<rt>ちから</rt></ruby>で <ruby>応援<rt>おうえん</rt></ruby>します</div></div>
   <div class="alt">さいご。いっしょに がんばりましょう。あなたの ゆめを、ぜんぶの 力で 応援します。</div>
-  <div class="pageno"></div>
 </section>
 
 </body>

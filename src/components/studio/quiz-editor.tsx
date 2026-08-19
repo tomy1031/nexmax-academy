@@ -194,6 +194,15 @@ const PHASE_OPTIONS: readonly { value: QuizSet["phase"]; label: string }[] = [
   { value: "production", label: "じぶんで 日本語を 出す" },
 ];
 
+/**
+ * こたえの 出しかた。**学習者には 選ばせない**——同じ 教材を 同じ 条件で 受けさせるため、
+ * 決めるのは 先生（2026-08-19 指定）。既定は「まとめて 出す」。
+ */
+const ANSWER_MODE_OPTIONS: readonly { value: QuizSet["answerMode"]; label: string }[] = [
+  { value: "submit", label: "まとめて 出す（テストの やりかた）" },
+  { value: "one", label: "1問ずつ こたえあわせ" },
+];
+
 /** 担当キャラの選択肢は正典（nexmax.tsx）から作る。名前をここに書き写すとズレる。 */
 const NEKUMAX_OPTIONS: readonly { value: QuizSet["nekumax"]; label: string }[] = NEXMAX_FAMILY.map(
   (meta) => ({ value: meta.id, label: meta.plainLabel }),
@@ -289,6 +298,13 @@ export function QuizEditor({
             onChange={(passRate) => patch({ passRate })}
           />
         </div>
+        <SelectField
+          label="こたえの 出しかた"
+          value={value.answerMode}
+          options={ANSWER_MODE_OPTIONS}
+          onChange={(answerMode) => patch({ answerMode })}
+          hint="「まとめて 出す」は ぜんぶ 書いてから 1回で 採点します（途中で 正解は 見せず、「こたえを 見る」も 出ません）。「1問ずつ」は こたえるたびに せつめいを 読みます。"
+        />
         <NoticeList notices={phaseNotices} />
       </StudioSection>
 

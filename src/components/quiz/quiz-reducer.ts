@@ -78,7 +78,7 @@ export interface QuizResult {
   readonly earned: number;
   /**
    * 学習者が 出した こたえ（自由入力の 文字・えらんだ 選択肢の 文）。
-   * 空文字 = 何も 書かずに「こたえを 見る」を 押した／出した。
+   * 空文字 = 何も 書かずに 出した（そこで 詰まった 記録として 残す）。
    *
    * **番号ではなく 文そのもの**を 持つ。教材の 選択肢を 1行 入れ替えると 番号の 意味が
    * 変わり、去年の 記録が 読めなく なる。先生が 読みたいのも「2」ではなく 学生の 言葉である。
@@ -106,8 +106,6 @@ export type QuizAction =
   | { readonly type: "answerChoice"; readonly index: number }
   | { readonly type: "answerMulti"; readonly indexes: readonly number[] }
   | { readonly type: "answerKeyword"; readonly input: string }
-  /** 「こたえを 見る」。点は入らないが解説へ進む（分からないまま止まらせない）。 */
-  | { readonly type: "skipKeyword" }
   | { readonly type: "answerWordbank"; readonly filled: readonly (string | null)[] }
   | { readonly type: "answerFeeling"; readonly index: number }
   | { readonly type: "answerReply"; readonly index: number }
@@ -268,15 +266,6 @@ export function quizReducer(state: QuizState, action: QuizAction): QuizState {
         return { ...state, phase: { kind: "ask", inputIssue: INPUT_ISSUE_FEEDBACK.latin } };
       }
       return put(state, question, draft);
-    }
-
-    case "skipKeyword": {
-      if (state.mode !== "one" || state.phase.kind !== "ask" || question.type !== "keyword")
-        return state;
-      // 分からないときの逃げ道。点は入らないが、解説を読んで次へ行ける。
-      // こたえは空文字で残す——「書けずに 見た」ことも、先生には 意味の ある記録。
-      // まとめて 出す ときは この 逃げ道を 置かない（こたえが 先に 見えて しまうため）。
-      return closeOne(state, question, { correct: false, earned: 0, answer: "", partial: false });
     }
 
     case "answerWordbank": {
