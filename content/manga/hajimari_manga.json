@@ -424,25 +424,6 @@
         },
         {
           "image": {
-            "prompt": "Hendy stands beside a large office window and points out at the Osaka cityscape, smiling at the viewer; through the glass: a tall lattice-frame tower with an observation ring at its centre, a wide river with arched bridges, dense low buildings and distant hills; clear blue sky; a desk edge and a potted plant in the foreground; no letters anywhere.",
-            "status": "done",
-            "src": "/img/manga/hajimari_manga/p4c2.webp",
-            "refs": [
-              "/img/characters/hendy/sheet.webp"
-            ]
-          },
-          "lines": [
-            {
-              "speaker": "hendy",
-              "text": "まどから 大阪の まちが 見えます。"
-            }
-          ],
-          "bakedText": [
-            "まどから おおさかの まちが みえます。"
-          ]
-        },
-        {
-          "image": {
             "prompt": "the inside of a bright modern IT office: Hendy stands beside an empty desk with a computer and gestures warmly toward it, inviting the viewer to sit down and join; green plants and colleagues working softly blurred behind; no signboard, no logo, no letters anywhere.",
             "status": "done",
             "src": "/img/manga/hajimari_manga/p4c3.webp",
@@ -463,6 +444,49 @@
           "bakedText": [
             "しゃいんに なった つもりで",
             "いっしょに はたらきましょう。"
+          ]
+        },
+        {
+          "image": {
+            "prompt": "the same bright modern IT office as the previous panel: Hendy stands beside a desk and gestures with one open hand toward an open laptop on the desk, smiling at the viewer as if inviting them to join a video call; the laptop screen shows a simple video-call layout — a dark blue interface with four empty rounded tiles and a small round camera lens shape, with no writing, no icons with letters and no faces on the screen; green plants and colleagues working softly blurred behind; keep the upper right area clear and empty for two speech balloons; no signboard, no logo, no letters anywhere in the office.",
+            "status": "done",
+            "src": "/img/manga/hajimari_manga/p4c5.webp",
+            "refs": [
+              "/img/characters/hendy/sheet.webp"
+            ]
+          },
+          "lines": [
+            {
+              "speaker": "hendy",
+              "text": "これから 私と ズームで"
+            },
+            {
+              "speaker": "hendy",
+              "text": "ミーティングを しましょう。"
+            }
+          ],
+          "bakedText": [
+            "これから わたしと ズームで",
+            "ミーティングを しましょう。"
+          ]
+        },
+        {
+          "image": {
+            "prompt": "the same bright modern IT office as the previous panel: a bust-up of Hendy facing the viewer, leaning slightly forward with both hands open at chest height in a warm welcoming gesture, bright encouraging smile, eyes looking straight at the viewer; desks, computers and green plants softly blurred behind him; keep the upper right area clear and empty for one speech balloon; no signboard, no logo, no letters anywhere in the office.",
+            "status": "done",
+            "src": "/img/manga/hajimari_manga/p4c6.webp",
+            "refs": [
+              "/img/characters/hendy/sheet.webp"
+            ]
+          },
+          "lines": [
+            {
+              "speaker": "hendy",
+              "text": "あなたの ことを 教えて ください！"
+            }
+          ],
+          "bakedText": [
+            "あなたの ことを おしえて ください！"
           ]
         },
         {
@@ -638,6 +662,10 @@
     [
       "人",
       "ひと"
+    ],
+    [
+      "私",
+      "わたし"
     ]
   ],
   "castIds": [
@@ -756,9 +784,14 @@
       "meaning": "employee — 会社で はたらく ひと"
     },
     {
-      "term": "窓",
-      "reading": "まど",
-      "meaning": "window"
+      "term": "ズーム",
+      "reading": "ずーむ",
+      "meaning": "Zoom — インターネットで かおを みて はなす アプリ"
+    },
+    {
+      "term": "ミーティング",
+      "reading": "みーてぃんぐ",
+      "meaning": "meeting — あつまって はなす こと"
     }
   ]
 }
