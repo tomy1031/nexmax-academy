@@ -9,20 +9,38 @@ import { NexMax } from "@/components/nexmax";
 import { RubyText } from "@/components/ruby-text";
 import { buildFuriganaIndex } from "@/lib/text/furigana";
 import { createProgressStore, recordContentProgress } from "@/lib/progress/store";
+import { correctAnswerText, draftAnswerText, draftAnswered } from "@/lib/quiz/draft";
 import { clearQuizResume, restoreQuiz, saveQuizResume, type QuizStart } from "@/lib/quiz/resume";
 import { newAttemptId, saveQuizResults } from "@/lib/quiz/results-db";
 import { fetchOwnProfile } from "@/lib/profile-db";
 import { CelebrationBurst, StampRow } from "./celebration";
 import { QuestionBody } from "./question-types";
 import {
+  answeredCount,
   createQuizSession,
+  currentDraft,
   currentQuestion,
   quizReducer,
   resumeQuizSession,
   summarizeQuiz,
   type QuizAction,
+  type QuizMode,
+  type QuizResult,
   type QuizState,
 } from "./quiz-reducer";
+
+/**
+ * 画面じたいの文言の読み辞書（教材データの辞書はUIの文言まで覆わない・規律2）。
+ * むずかしい語を ひらがなに 開かず、漢字＋ふりがなで 出す（docs/constraints.md）。
+ */
+const UI_FURIGANA = buildFuriganaIndex([
+  ["正解", "せいかい"],
+  ["一度", "いちど"],
+  ["問", "もん"],
+  ["出", "だ"],
+  ["見", "み"],
+  ["書", "か"],
+]);
 
 /**
  * 問題エンジンの画面。
@@ -30,6 +48,13 @@ import {
  * 引き継いだのは「やさしさ」と「ごほうび感」の設計思想で、旧アプリの
  * カートリッジ棚UI・茶系インク・フクロウは使わない（設計04 §1）。
  * 演出は必ず学習行為に紐づける（正解したときだけ紙吹雪・スタンプが増える）。
+ *
+ * ## やりかたは 学習者が えらぶ（設計01 P11）
+ * - **1問ずつ**（これまでどおり・既定）… 答えるたびに こたえと せつめいを 読む
+ * - **まとめて 出す** … ぜんぶ 書いてから 出す。採点は 出した あと 1回だけ
+ *
+ * レベル別に 教材を 分けるのでは なく、**同じ 教材の 別モード**として 負荷の
+ * 調整装置を 学習者に 握らせる。どちらでも 教材データは 同じ。
  */
 export function QuizRunner({
   set,
@@ -56,7 +81,7 @@ export function QuizRunner({
     ),
   );
   const [state, setState] = useState<QuizState>(() =>
-    resumeQuizSession(set, start.index, start.results),
+    resumeQuizSession(set, start.index, start.results, start.mode, start.drafts),
   );
   // 1問目をいきなり出さない。「何をするのか・全部できなくてよい」を先に置く
   //（いきなり問われると、答えられない不安のほうが先に立つ — P8）。
@@ -74,6 +99,9 @@ export function QuizRunner({
    * 保存しない——中途半端な 内訳を 次回 誤って 読み込ませない ための 線引き。
    */
   const isFullSession = state.questions.length === set.questions.length;
+  const submitMode = state.mode === "submit";
+  /** まとめて 出す ときに「何問 書いたか」（しおりにも 案内の 文にも 使う）。 */
+  const written = useMemo(() => answeredCount(state), [state]);
 
   /*
    * ステージの進み具合に反映する（設計07 §3）。しおり（position）は
@@ -87,12 +115,17 @@ export function QuizRunner({
   useEffect(() => {
     recordContentProgress(set.id, {
       status: done ? "completed" : "started",
-      ...(isFullSession ? { position: { question: state.results.length } } : {}),
+      ...(isFullSession
+        ? { position: { question: submitMode ? written : state.results.length } }
+        : {}),
     });
-  }, [set.id, done, isFullSession, state.results]);
+  }, [set.id, done, isFullSession, submitMode, written, state.results]);
 
   /**
    * いまの ところを 端末に 残す（つぎに 開いたとき つづきから 始めるため）。
+   *
+   * **まとめて 出す**は 採点まえの 下書きを 残す——これが 無いと、他の ページへ
+   * 行って 戻った だけで 書いた ものが ぜんぶ 消える（このモードの 生命線）。
    * 完走したら 消す——完走した 人が もう一度 開いたら はじめから 挑戦できるのが 正しい。
    */
   useEffect(() => {
@@ -101,9 +134,20 @@ export function QuizRunner({
       clearQuizResume(set.id);
       return;
     }
-    if (state.results.length === 0) return; // 何も 答えて いなければ 書かない
+    if (submitMode) {
+      if (written === 0) return; // 何も 書いて いなければ 書かない
+      saveQuizResume({
+        quizSetId: set.id,
+        results: [],
+        mode: "submit",
+        drafts: state.drafts,
+        index: state.index,
+      });
+      return;
+    }
+    if (state.results.length === 0) return;
     saveQuizResume({ quizSetId: set.id, results: [...state.results] });
-  }, [set.id, done, isFullSession, state.results]);
+  }, [set.id, done, isFullSession, submitMode, written, state.drafts, state.index, state.results]);
 
   const summary = summarizeQuiz(state);
 
@@ -183,6 +227,25 @@ export function QuizRunner({
   const question = currentQuestion(state);
   const byId = useMemo(() => new Map(set.questions.map((q) => [q.id, q])), [set.questions]);
 
+  /** 出したあとに 見せる 一覧（こたえた 順）。設問が 見つからない 行は 落とす。 */
+  const review = useMemo(
+    () =>
+      state.results.flatMap((result) => {
+        const q = byId.get(result.questionId);
+        return q ? [{ result, question: q }] : [];
+      }),
+    [state.results, byId],
+  );
+
+  /** やり直し（同じ やりかたの まま 作り直す）。 */
+  const restart = useCallback(
+    (questions: readonly QuizQuestion[], mode: QuizMode) => {
+      setState(createQuizSession(set, [...questions], mode));
+      startAttempt();
+    },
+    [set, startAttempt],
+  );
+
   return (
     <div className={embedded ? "" : "mx-auto w-full max-w-3xl px-4 py-6"}>
       {embedded ? null : (
@@ -201,12 +264,12 @@ export function QuizRunner({
           set={set}
           furigana={furigana}
           resumed={resumed}
-          answeredCount={start.results.length}
+          resumedMode={state.mode}
+          answeredCount={submitMode ? written : start.results.length}
           onContinue={() => setStarted(true)}
-          onRestart={() => {
+          onStart={(mode) => {
             clearQuizResume(set.id);
-            setState(createQuizSession(set));
-            startAttempt();
+            restart(set.questions, mode);
             setResumed(false);
             setStarted(true);
           }}
@@ -216,28 +279,34 @@ export function QuizRunner({
           set={set}
           embedded={embedded}
           summary={summary}
-          missed={summary.missedQuestionIds
-            .map((id) => byId.get(id))
-            .filter((q): q is QuizQuestion => Boolean(q))}
+          review={review}
           furigana={furigana}
-          onRetryWrong={() => {
-            setState(
-              createQuizSession(
-                set,
-                set.questions.filter((q) => summary.missedQuestionIds.includes(q.id)),
-              ),
-            );
-            startAttempt();
-          }}
-          onRetryAll={() => {
-            setState(createQuizSession(set));
-            startAttempt();
-          }}
+          onRetryWrong={() =>
+            restart(
+              set.questions.filter((q) => summary.missedQuestionIds.includes(q.id)),
+              state.mode,
+            )
+          }
+          onRetryAll={() => restart(set.questions, state.mode)}
+        />
+      ) : state.phase.kind === "confirm" ? (
+        <ConfirmCard
+          questions={state.questions}
+          drafts={state.drafts}
+          furigana={furigana}
+          onGoto={(index) => dispatch({ type: "goto", index })}
+          onBack={() => dispatch({ type: "back" })}
+          onSubmit={() => dispatch({ type: "submit" })}
         />
       ) : (
         question && (
           <>
-            <Progress index={state.index} total={state.questions.length} earned={summary.correct} />
+            <Progress
+              index={state.index}
+              total={state.questions.length}
+              earned={summary.correct}
+              written={submitMode ? written : undefined}
+            />
 
             <motion.section
               key={`${question.id}:${state.phase.kind}`}
@@ -246,11 +315,12 @@ export function QuizRunner({
               className="card-island mt-4 p-5 sm:p-6"
             >
               {/*
-                まえの もんだいを 読み直す。**答え直しでは ない**（reducer の "back"）。
-                1問目には 出さない——押せない ボタンを 置くと、押せる ものを さがす。
-                しおりで 途中から 始めた 人にも 出さない（前の 記録が 無い）。
+                まえの もんだいへ。**1問ずつ**では 答え直しでは なく 読み直し
+                （reducer の "back"）。1問目には 出さない——押せない ボタンを 置くと、
+                押せる ものを さがす。しおりで 途中から 始めた 人にも 出さない
+                （前の 記録が 無い）。まとめて 出す ときは いつでも 戻れる。
               */}
-              {state.index > 0 && state.results.length >= state.index && (
+              {state.index > 0 && (submitMode || state.results.length >= state.index) && (
                 <button
                   type="button"
                   onClick={() => dispatch({ type: "back" })}
@@ -271,7 +341,7 @@ export function QuizRunner({
                     furigana={furigana}
                     feedback={state.phase.feedback}
                     correct={state.phase.correct}
-                    input={state.phase.input}
+                    answer={state.phase.answer}
                     onNext={() => dispatch({ type: "next" })}
                   />
                 ) : (
@@ -296,7 +366,25 @@ export function QuizRunner({
                       furigana={furigana}
                       dispatch={dispatch}
                       emotionStep2={state.phase.kind === "emotionReply"}
+                      mode={state.mode}
+                      draft={currentDraft(state)}
                     />
+                    {/*
+                      まとめて 出す ときは 押した 瞬間に 進まないので、進む ボタンを 置く。
+                      **こたえて いなくても 進める**——分からない もんだいで 足止めせず、
+                      出す まえの かくにんで 戻って これる ように する。
+                    */}
+                    {submitMode && (
+                      <button
+                        type="button"
+                        onClick={() => dispatch({ type: "next" })}
+                        className="btn-island btn-game mt-5 w-full px-6 py-3"
+                      >
+                        {state.index === state.questions.length - 1
+                          ? "さいごに かくにん →"
+                          : "つぎ →"}
+                      </button>
+                    )}
                   </>
                 )}
               </div>
@@ -316,26 +404,36 @@ export function QuizRunner({
  * 途中から 戻って きた ときは、ミーティング（`meeting-session.tsx` の 🔖）と
  * 同じ 案内を ここで 出す。始める 前の この 1画面が いちばん 自然な 分かれ道
  * ——「つづきから」か「はじめから」かを、問題が 出る前に 選べる。
+ *
+ * やりかた（1問ずつ／まとめて 出す）も ここで 選ぶ。**既定は これまでどおり
+ * 1問ずつ**で、大きい「はじめる」を 押せば 何も 変わらない。
  */
 function StartCard({
   set,
   furigana,
   resumed,
+  resumedMode,
   answeredCount,
   onContinue,
-  onRestart,
+  onStart,
 }: {
   set: QuizSet;
   furigana: ReturnType<typeof buildFuriganaIndex>;
   /** 途中の 続きが あるか。 */
   resumed: boolean;
-  /** ここまで 答えた 問題の 数（案内の 文に 出す）。 */
+  /** 途中の 続きが ある ときの やりかた。 */
+  resumedMode: QuizMode;
+  /** ここまで 答えた（書いた）問題の 数（案内の 文に 出す）。 */
   answeredCount: number;
   /** 続きから（保存された ところから）始める。 */
   onContinue: () => void;
   /** 保存を 消して、1問目から 始める。 */
-  onRestart: () => void;
+  onStart: (mode: QuizMode) => void;
 }) {
+  /** 「べつの やりかたで はじめる」を 押して、えらび直して いる 最中か。 */
+  const [choosing, setChoosing] = useState(false);
+  const showChoice = !resumed || choosing;
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 14 }}
@@ -357,7 +455,12 @@ function StartCard({
 
       {resumed ? (
         <p className="bg-cream border-hairline text-ink mt-5 rounded-[var(--radius-card)] border-2 px-4 py-3 font-extrabold">
-          🔖 まえの つづきから はじめます。（{answeredCount}もん こたえました）
+          🔖 まえの つづきから はじめます。（{answeredCount}もん{" "}
+          <RubyText
+            text={resumedMode === "submit" ? "書きました" : "こたえました"}
+            index={UI_FURIGANA}
+          />
+          ）
         </p>
       ) : (
         <p className="border-hairline bg-panel-tint text-ink mt-5 rounded-[var(--radius-card)] border-2 px-4 py-3 font-extrabold">
@@ -365,33 +468,78 @@ function StartCard({
         </p>
       )}
 
-      {resumed ? (
+      {showChoice ? (
+        <div className="mt-5 grid gap-4">
+          <div>
+            <button
+              type="button"
+              onClick={() => onStart("one")}
+              className="btn-island btn-game w-full px-6 py-3.5"
+            >
+              はじめる
+            </button>
+            <p className="text-ink-soft mt-2 text-center text-sm font-bold">
+              <RubyText text="1問 こたえるたびに、こたえと せつめいを 見ます" index={UI_FURIGANA} />
+            </p>
+          </div>
+          <div>
+            <button
+              type="button"
+              onClick={() => onStart("submit")}
+              className="btn-island btn-game w-full px-6 py-3.5"
+              style={{ "--btn-face": "#f7c948", "--btn-shadow": "#d99e1f" } as React.CSSProperties}
+            >
+              <RubyText text="まとめて 出す" index={UI_FURIGANA} />
+            </button>
+            <p className="text-ink-soft mt-2 text-center text-sm font-bold">
+              <RubyText
+                text="ぜんぶ こたえてから 出します。けっかは さいごに まとめて 見ます"
+                index={UI_FURIGANA}
+              />
+            </p>
+          </div>
+        </div>
+      ) : (
         <div className="mt-5 grid gap-3">
           <button type="button" onClick={onContinue} className="btn-island btn-game px-6 py-3.5">
             つづきから
           </button>
           <button
             type="button"
-            onClick={onRestart}
+            onClick={() => onStart(resumedMode)}
             className="border-hairline text-ink-soft bg-panel rounded-full border-2 px-6 py-2.5 text-sm font-extrabold"
           >
             はじめから やる
           </button>
+          <button
+            type="button"
+            onClick={() => setChoosing(true)}
+            className="text-ink-soft hover:text-navy text-sm font-extrabold underline underline-offset-4"
+          >
+            べつの やりかたで はじめる
+          </button>
         </div>
-      ) : (
-        <button
-          type="button"
-          onClick={onContinue}
-          className="btn-island btn-game mt-5 w-full px-6 py-3.5"
-        >
-          はじめる
-        </button>
       )}
     </motion.div>
   );
 }
 
-function Progress({ index, total, earned }: { index: number; total: number; earned: number }) {
+function Progress({
+  index,
+  total,
+  earned,
+  written,
+}: {
+  index: number;
+  total: number;
+  earned: number;
+  /**
+   * まとめて 出す ときの「書いた 数」。
+   * このモードでは 正解の 数を 見せないので、スタンプの かわりに ここを 出す
+   * ——進みが 何も 見えないと、何問 のこって いるかが 分からなくなる。
+   */
+  written?: number;
+}) {
   return (
     <div className="flex items-center gap-3">
       <span className="border-hairline bg-panel text-ink rounded-full border-2 px-3 py-1 text-sm font-extrabold">
@@ -407,7 +555,13 @@ function Progress({ index, total, earned }: { index: number; total: number; earn
           animate={{ width: `${(index / total) * 100}%` }}
         />
       </div>
-      <StampRow count={earned} />
+      {written === undefined ? (
+        <StampRow count={earned} />
+      ) : (
+        <span className="bg-sky-soft text-navy rounded-full px-3 py-1 text-sm font-extrabold">
+          こたえた {written} / {total}
+        </span>
+      )}
     </div>
   );
 }
@@ -417,36 +571,24 @@ function ExplainCard({
   furigana,
   feedback,
   correct,
-  input,
+  answer,
   onNext,
 }: {
   question: QuizQuestion;
   furigana: ReturnType<typeof buildFuriganaIndex>;
   feedback: Parameters<typeof FeedbackMessage>[0]["messageKey"];
   correct: boolean;
-  /** 自由入力で書いた文字。正解のときだけ見せる。 */
-  input?: string;
+  /** 学習者が 出した こたえ（型を 問わず 出す）。 */
+  answer?: string;
   onNext: () => void;
 }) {
-  // 「自分の書き方でも通った」を見せる。代表解と同じ表記なら二度書きになるので出さない
-  const own = input?.trim();
-  const showOwn = Boolean(correct && own && own !== answerText(question));
-
   return (
     <div>
       {correct && <CelebrationBurst />}
       <FeedbackMessage messageKey={feedback} />
 
       <div className="border-hairline bg-panel-tint mt-4 rounded-[var(--radius-card)] border-2 p-4">
-        {showOwn && (
-          <p className="text-ink-soft mb-3 text-xs font-bold">
-            あなたの こたえ: <span className="text-ink font-extrabold">{own}</span>
-          </p>
-        )}
-        <p className="text-ink-soft text-xs font-extrabold">こたえ</p>
-        <p className="text-ink mt-1 font-extrabold">
-          <RubyText text={answerText(question)} index={furigana} />
-        </p>
+        <AnswerPair question={question} answer={answer} furigana={furigana} />
         <p className="text-ink-soft mt-3 leading-relaxed font-bold">
           <RubyText text={question.explain} index={furigana} />
         </p>
@@ -459,29 +601,166 @@ function ExplainCard({
   );
 }
 
-/** 型ごとに「正解の見せ方」を組み立てる。 */
-function answerText(question: QuizQuestion): string {
-  switch (question.type) {
-    case "choose":
-      return question.options[question.answer] ?? "";
-    case "multi":
-      return question.answers.map((i) => question.options[i] ?? "").join(" ／ ");
-    case "keyword":
-      return question.answer;
-    case "wordbank":
-      return question.blanks.map((b, i) => `（${i + 1}）${b}`).join("　");
-    case "emotion":
-      return `${question.feelings[question.answerFeeling] ?? ""} → ${
-        question.replies[question.answerReply] ?? ""
-      }`;
-  }
+/**
+ * 「あなたの こたえ」と「正解」を 並べて 見せる。
+ *
+ * これまでは 自由入力で 正解した ときだけ 自分の 書いた ものが 出て いた。
+ * えらんだ 選択肢が どこにも 残らないので、**外した ときほど 自分が 何を 選んだか
+ * 分からない**——直しようが ない（2026-08-19 の 指摘）。だから 型を 問わず 出す。
+ *
+ * 同じ 文なら 2度 書かない（「自分の 書き方でも 通った」が 伝わる ときだけ 並べる）。
+ */
+function AnswerPair({
+  question,
+  answer,
+  furigana,
+}: {
+  question: QuizQuestion;
+  answer?: string;
+  furigana: ReturnType<typeof buildFuriganaIndex>;
+}) {
+  const own = answer?.trim() ?? "";
+  const right = correctAnswerText(question);
+
+  return (
+    <>
+      <p className="text-ink-soft text-xs font-bold">
+        あなたの こたえ:{" "}
+        {own ? (
+          // 自分の こたえも **読める** ように ルビを 合成する（規律2）。自由入力の
+          // 文字にも 効く——辞書に ある 語だけ 覆われ、無い 語は そのまま 出る。
+          <span className="text-ink font-extrabold">
+            <RubyText text={own} index={furigana} />
+          </span>
+        ) : (
+          <span className="text-ink-faint font-extrabold">
+            <RubyText text="（書いて いません）" index={UI_FURIGANA} />
+          </span>
+        )}
+      </p>
+      {own !== right && (
+        <>
+          <p className="text-ink-soft mt-3 text-xs font-extrabold">
+            <RubyText text="正解" index={UI_FURIGANA} />
+          </p>
+          <p className="text-ink mt-1 font-extrabold">
+            <RubyText text={right} index={furigana} />
+          </p>
+        </>
+      )}
+    </>
+  );
+}
+
+/**
+ * 出す まえの かくにん。
+ *
+ * ぜんぶ 書いてから 出す やりかたでは、**出す ボタンの 前に 一覧が 要る**
+ * ——どこが のこって いるかを 見ないまま「出す」を 押させると、書き忘れに
+ * 気づく 機会が 一度も 無いまま 採点に 入る。行を 押せば その もんだいへ 戻る。
+ */
+function ConfirmCard({
+  questions,
+  drafts,
+  furigana,
+  onGoto,
+  onBack,
+  onSubmit,
+}: {
+  questions: readonly QuizQuestion[];
+  drafts: Readonly<Record<string, Parameters<typeof draftAnswerText>[1]>>;
+  furigana: ReturnType<typeof buildFuriganaIndex>;
+  onGoto: (index: number) => void;
+  onBack: () => void;
+  onSubmit: () => void;
+}) {
+  const left = questions.filter((q) => !draftAnswered(q, drafts[q.id])).length;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 14 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="card-island p-6 sm:p-8"
+    >
+      <h2 className="text-ink text-2xl font-extrabold">
+        <RubyText text="出す まえの かくにん" index={UI_FURIGANA} />
+      </h2>
+      <p className="text-ink-soft mt-2 font-bold">
+        {left === 0 ? (
+          <RubyText text="ぜんぶ 書けました。出しても だいじょうぶ" index={UI_FURIGANA} />
+        ) : (
+          <RubyText
+            text={`のこり ${left}もん。おしても いいし、書いてからでも いいよ`}
+            index={UI_FURIGANA}
+          />
+        )}
+      </p>
+
+      <ul className="border-hairline divide-hairline mt-5 divide-y rounded-[var(--radius-card)] border-2">
+        {questions.map((q, index) => {
+          const written = draftAnswered(q, drafts[q.id]);
+          return (
+            <li key={q.id}>
+              <button
+                type="button"
+                onClick={() => onGoto(index)}
+                className="flex w-full items-start gap-3 px-4 py-3 text-left"
+              >
+                <span
+                  className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full text-xs font-extrabold"
+                  style={{
+                    background: written ? "var(--color-sky)" : "var(--color-panel-tint)",
+                    color: written ? "#fff" : "var(--color-ink-faint)",
+                  }}
+                >
+                  {index + 1}
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="text-ink-soft block text-sm font-bold">
+                    <RubyText text={q.q} index={furigana} />
+                  </span>
+                  <span className="mt-1 block text-sm font-extrabold">
+                    {written ? (
+                      <span className="text-ink">
+                        <RubyText text={draftAnswerText(q, drafts[q.id])} index={furigana} />
+                      </span>
+                    ) : (
+                      <span className="text-ink-faint">まだ です</span>
+                    )}
+                  </span>
+                </span>
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+
+      <div className="mt-6 grid gap-3">
+        <button
+          type="button"
+          onClick={onSubmit}
+          className="btn-island btn-game px-6 py-3.5"
+          style={{ "--btn-face": "#58c273", "--btn-shadow": "#3aa458" } as React.CSSProperties}
+        >
+          <RubyText text="こたえを 出す" index={UI_FURIGANA} />
+        </button>
+        <button
+          type="button"
+          onClick={onBack}
+          className="border-hairline text-ink-soft bg-panel rounded-full border-2 px-6 py-2.5 text-sm font-extrabold"
+        >
+          <RubyText text="もんだいに もどって 見なおす" index={UI_FURIGANA} />
+        </button>
+      </div>
+    </motion.div>
+  );
 }
 
 function QuizResultCard({
   set,
   embedded,
   summary,
-  missed,
+  review,
   furigana,
   onRetryWrong,
   onRetryAll,
@@ -489,11 +768,14 @@ function QuizResultCard({
   set: QuizSet;
   embedded: boolean;
   summary: ReturnType<typeof summarizeQuiz>;
-  missed: readonly QuizQuestion[];
+  /** 出した ぜんぶの こたえ（設問・結果の 組）。 */
+  review: readonly { result: QuizResult; question: QuizQuestion }[];
   furigana: ReturnType<typeof buildFuriganaIndex>;
   onRetryWrong: () => void;
   onRetryAll: () => void;
 }) {
+  const missed = summary.missedQuestionIds.length;
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 18 }}
@@ -525,15 +807,44 @@ function QuizResultCard({
         <StampRow count={summary.correct} />
       </div>
 
-      {missed.length > 0 && (
+      {/*
+        **ぜんぶの もんだいを 出す**（合っていた ものも）。自分が 何と 答え、正解が
+        何だったのかが 1画面で 分かるように する。まとめて 出す やりかたでは、
+        せつめいを 読める 場所は ここしか 無い。
+      */}
+      {review.length > 0 && (
         <section className="mt-6">
           <h3 className="text-ink mb-2 font-extrabold">
-            もう一度 見る もんだい（{missed.length}こ）
+            <RubyText text="ぜんぶの こたえ" index={UI_FURIGANA} />
+            {missed > 0 && (
+              <span className="text-ink-soft ml-2 text-sm">
+                <RubyText text={`（もう一度 見る もんだい ${missed}こ）`} index={UI_FURIGANA} />
+              </span>
+            )}
           </h3>
           <ul className="border-hairline divide-hairline divide-y rounded-[var(--radius-card)] border-2">
-            {missed.map((q) => (
-              <li key={q.id} className="text-ink-soft px-4 py-3 text-sm font-bold">
-                <RubyText text={q.q} index={furigana} />
+            {review.map(({ result, question }, index) => (
+              <li key={question.id} className="px-4 py-3">
+                <p className="flex items-start gap-2">
+                  <span
+                    className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full text-xs font-extrabold"
+                    style={{
+                      background: result.correct ? "#58c273" : "var(--color-panel-tint)",
+                      color: result.correct ? "#fff" : "var(--color-ink-faint)",
+                    }}
+                  >
+                    {result.correct ? "✓" : index + 1}
+                  </span>
+                  <span className="text-ink text-sm font-extrabold">
+                    <RubyText text={question.q} index={furigana} />
+                  </span>
+                </p>
+                <div className="border-hairline bg-panel-tint mt-2 rounded-[var(--radius-card)] border-2 p-3">
+                  <AnswerPair question={question} answer={result.answer} furigana={furigana} />
+                  <p className="text-ink-soft mt-2 text-sm leading-relaxed font-bold">
+                    <RubyText text={question.explain} index={furigana} />
+                  </p>
+                </div>
               </li>
             ))}
           </ul>
@@ -541,7 +852,7 @@ function QuizResultCard({
       )}
 
       <div className="mt-6 grid gap-3">
-        {missed.length > 0 && (
+        {missed > 0 && (
           <button
             type="button"
             onClick={onRetryWrong}
@@ -557,7 +868,8 @@ function QuizResultCard({
           className="btn-island btn-game px-6 py-3.5"
           style={{ "--btn-face": "#58c273", "--btn-shadow": "#3aa458" } as React.CSSProperties}
         >
-          もう一度
+          {/* 見出しの「もう一度 見る もんだい」と 同じ 語なので、ふりがなも そろえる（規律2） */}
+          <RubyText text="もう一度" index={UI_FURIGANA} />
         </button>
         {/* 枠の中では戻り先は枠が持つ。ここで別の一覧へ放り出さない */}
         {!embedded && (

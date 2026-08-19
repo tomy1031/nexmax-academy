@@ -3,6 +3,7 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { quizSetSchema, type QuizSet } from "../src/content/schema";
 import {
+  answeredCount,
   createQuizSession,
   currentQuestion,
   quizReducer,
@@ -302,7 +303,7 @@ describe("自由入力の救済（IME・こたえを見る）", () => {
       type: "answerKeyword",
       input: "ホウレンソウ",
     });
-    expect(s.phase).toMatchObject({ kind: "explain", input: "ホウレンソウ" });
+    expect(s.phase).toMatchObject({ kind: "explain", answer: "ホウレンソウ" });
   });
 
   it("「こたえを 見る」は点が入らないが解説へ進む", () => {
@@ -400,5 +401,134 @@ describe("back（まえの もんだいを 読み直す）", () => {
   it("答えて いない ところへは 戻らない（しおりで 途中から 始めた とき）", () => {
     const resumed = resumeQuizSession(set, 2, []);
     expect(quizReducer(resumed, { type: "back" })).toBe(resumed);
+  });
+});
+
+/**
+ * まとめて 出す（提出モード）
+ *
+ * 1問ずつと ちがい、**出すまで 採点しない**。ここで 見張るのは 3つ:
+ *  - 途中で 正誤が 漏れない（漏れたら テストの やりかたに ならない）
+ *  - 行ったり 来たり しても 書いた ものが 消えない
+ *  - 出した ときに **ぜんぶの 問題が 1行ずつ 残る**（書かなかった ものも 記録に 残す）
+ */
+describe("まとめて 出す（提出モード）", () => {
+  const submitSession = (questions = set.questions) => createQuizSession(set, questions, "submit");
+
+  it("こたえても 採点しない（解説に 行かず、下書きだけ たまる）", () => {
+    const choose = set.questions.find((q) => q.type === "choose")!;
+    const s = quizReducer(submitSession([choose]), { type: "answerChoice", index: 0 });
+    expect(s.phase).toEqual({ kind: "ask" });
+    expect(s.results).toEqual([]);
+    expect(s.drafts[choose.id]).toEqual({ kind: "choice", index: 0 });
+  });
+
+  it("さいごの もんだいの つぎは「出す まえの かくにん」（いきなり 採点しない）", () => {
+    let s = submitSession(set.questions.slice(0, 2));
+    s = quizReducer(s, { type: "next" });
+    expect(s.index).toBe(1);
+    s = quizReducer(s, { type: "next" });
+    expect(s.phase).toEqual({ kind: "confirm" });
+    expect(s.results).toEqual([]);
+  });
+
+  it("行ったり 来たり しても 書いた ものは 消えない", () => {
+    const [q1, q2] = [set.questions[0]!, set.questions[1]!];
+    let s = submitSession([q1, q2]);
+    s = answerCorrectly(s);
+    s = run(s, [{ type: "next" }, { type: "back" }]);
+    expect(s.index).toBe(0);
+    expect(s.drafts[q1.id]).toBeDefined();
+    // かくにん画面から その もんだいへ 飛べる
+    s = run(s, [{ type: "next" }, { type: "next" }, { type: "goto", index: 0 }]);
+    expect(s.phase).toEqual({ kind: "ask" });
+    expect(s.index).toBe(0);
+    expect(s.drafts[q1.id]).toBeDefined();
+  });
+
+  it("出した ときに ぜんぶの 問題が 1行ずつ 残る（書かなかった ものは 0点）", () => {
+    const [q1, q2] = [set.questions[0]!, set.questions[1]!];
+    let s = submitSession([q1, q2]);
+    s = answerCorrectly(s); // 1問目だけ 書く
+    s = run(s, [{ type: "next" }, { type: "next" }, { type: "submit" }]);
+    expect(s.phase).toEqual({ kind: "finished" });
+    expect(s.results).toHaveLength(2);
+    expect(s.results[0]).toMatchObject({ questionId: q1.id, correct: true });
+    expect(s.results[1]).toMatchObject({
+      questionId: q2.id,
+      correct: false,
+      earned: 0,
+      answer: "",
+    });
+  });
+
+  it("点は 全問ぶんで 数える（書かなかった ぶんも 分母に 入る）", () => {
+    const [q1, q2] = [set.questions[0]!, set.questions[1]!];
+    let s = submitSession([q1, q2]);
+    s = answerCorrectly(s);
+    s = run(s, [{ type: "next" }, { type: "next" }, { type: "submit" }]);
+    const summary = summarizeQuiz(s);
+    expect(summary.total).toBe(2);
+    expect(summary.correct).toBe(1);
+    expect(summary.maxPoints).toBe(q1.points + q2.points);
+    expect(summary.missedQuestionIds).toEqual([q2.id]);
+  });
+
+  it("出したら もう 動かない（出しなおしで 記録が 増えない）", () => {
+    let s = submitSession(set.questions.slice(0, 1));
+    s = run(s, [{ type: "next" }, { type: "submit" }]);
+    const after = quizReducer(s, { type: "submit" });
+    expect(after).toBe(s);
+    expect(quizReducer(s, { type: "answerChoice", index: 0 })).toBe(s);
+  });
+
+  it("「こたえを 見る」は 置かない（出す 前に こたえが 見えない）", () => {
+    const keyword = set.questions.find((q) => q.type === "keyword")!;
+    const s = submitSession([keyword]);
+    expect(quizReducer(s, { type: "skipKeyword" })).toBe(s);
+  });
+
+  it("ローマ字の 注意は 出すが、合って いるかは 漏らさない（書いた ものは 残る）", () => {
+    const keyword = set.questions.find((q) => q.type === "keyword")!;
+    const s = quizReducer(submitSession([keyword]), {
+      type: "answerKeyword",
+      input: "houkoku",
+    });
+    expect(s.phase).toMatchObject({ kind: "ask" });
+    expect(s.results).toEqual([]);
+    expect(s.drafts[keyword.id]).toEqual({ kind: "keyword", input: "houkoku" });
+  });
+
+  it("気もちを えらび直すと、言い方は えらび直しに なる", () => {
+    const emotion = set.questions.find((q) => q.type === "emotion")!;
+    if (emotion.type !== "emotion") throw new Error("emotion の 設問が ない");
+    let s = submitSession([emotion]);
+    s = run(s, [
+      { type: "answerFeeling", index: 0 },
+      { type: "answerReply", index: 1 },
+    ]);
+    expect(s.drafts[emotion.id]).toEqual({ kind: "emotion", feeling: 0, reply: 1 });
+    // 同じ 気もちを 押し直しても 言い方は 残る
+    s = quizReducer(s, { type: "answerFeeling", index: 0 });
+    expect(s.drafts[emotion.id]).toEqual({ kind: "emotion", feeling: 0, reply: 1 });
+    // ちがう 気もちに 変えたら、その 気もちの 言い方を えらび直す
+    s = quizReducer(s, { type: "answerFeeling", index: 1 });
+    expect(s.drafts[emotion.id]).toEqual({ kind: "emotion", feeling: 1, reply: null });
+  });
+
+  it("気もちだけでは「こたえた」に しない（2段階 そろって はじめて 数える）", () => {
+    const emotion = set.questions.find((q) => q.type === "emotion")!;
+    let s = submitSession([emotion]);
+    expect(answeredCount(s)).toBe(0);
+    s = quizReducer(s, { type: "answerFeeling", index: 0 });
+    expect(answeredCount(s)).toBe(0);
+    s = quizReducer(s, { type: "answerReply", index: 0 });
+    expect(answeredCount(s)).toBe(1);
+  });
+
+  it("1問ずつでは かくにん画面・出すは 効かない（やりかたが 混ざらない）", () => {
+    const s = createQuizSession(set);
+    expect(quizReducer(s, { type: "submit" })).toBe(s);
+    expect(quizReducer(s, { type: "goto", index: 3 })).toBe(s);
   });
 });
