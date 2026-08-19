@@ -536,6 +536,20 @@ function StartCard({
               />
             </p>
           </div>
+          {/*
+            えらび直しを やめる 道。**どちらの ボタンも 途中の 保存を 消す**ので、
+            まちがえて「べつの やりかたで はじめる」を 押した 人が、開き直すまで
+            つづきに 戻れない ことに なって いた（別の目 検収 気E）。
+          */}
+          {resumed && (
+            <button
+              type="button"
+              onClick={() => setChoosing(false)}
+              className="text-ink-soft hover:text-navy text-sm font-extrabold underline underline-offset-4"
+            >
+              ← つづきの がめんに もどる
+            </button>
+          )}
         </div>
       ) : (
         <div className="mt-5 grid gap-3">

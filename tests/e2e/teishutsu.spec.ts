@@ -220,3 +220,25 @@ test("しおりだけ 残って いる ときは「◯もんめから」と 言�
   await expect(page.getByText(/3もんめから/)).toBeVisible();
   await expect(page.getByText(/0もん/)).toHaveCount(0);
 });
+
+test("やりかたを えらび直すのを やめて、つづきに 帰れる", async ({ page, context }) => {
+  await seedCompleted(context, itemsBefore(1));
+  await page.goto(KAISHA.quiz1.path);
+  await page.getByRole("button", { name: "はじめる" }).click();
+
+  // 2問 こたえて 離脱（つづきが ある 状態を 作る）
+  await choiceButtons(page).nth(0).click();
+  await page.getByRole("button", { name: "つぎへ" }).click();
+  await choiceButtons(page).nth(0).click();
+  await page.getByRole("button", { name: "つぎへ" }).click();
+  await page.goto("/kaisha");
+  await page.goto(KAISHA.quiz1.path);
+  await expect(page.getByText("まえの つづきから")).toBeVisible();
+
+  // まちがえて「べつの やりかた」を 押しても、消さずに 帰れる
+  await page.getByRole("button", { name: "べつの やりかたで はじめる" }).click();
+  await expect(page.getByRole("button", { name: "つづきから" })).toHaveCount(0);
+  await page.getByRole("button", { name: /つづきの がめんに/ }).click();
+  await page.getByRole("button", { name: "つづきから" }).click();
+  await expect(page.getByText("もんだい 3 / 6")).toBeVisible();
+});
