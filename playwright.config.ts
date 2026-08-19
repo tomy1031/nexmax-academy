@@ -34,7 +34,12 @@ export default defineConfig({
   forbidOnly: Boolean(process.env.CI),
   /* 1度だけ やり直す。落ち続けるものだけを 落とす（CIの ゆらぎで PR を止めない）。 */
   retries: process.env.CI ? 1 : 0,
-  workers: process.env.CI ? 2 : undefined,
+  /*
+   * **2本まで**。既定（CPUの半分）だと 手もとの Mac では `next start` が
+   * 落ちる ことが あり（2026-08-19 に 実発生。ERR_CONNECTION_REFUSED が 数本）、
+   * PC も 重くなる。CI と 同じ 数に そろえて、どこで 走らせても 同じ 結果に する。
+   */
+  workers: 2,
   reporter: process.env.CI
     ? [["list"], ["html", { open: "never" }], ["github"]]
     : [["list"], ["html", { open: "never" }]],

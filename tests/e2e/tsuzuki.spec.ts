@@ -1,13 +1,5 @@
 import { expect, test } from "@playwright/test";
-import {
-  expectQuizCorrect,
-  fillWordBank,
-  goNextQuestion,
-  itemsBefore,
-  KAISHA,
-  seedCompleted,
-  shot,
-} from "./helpers";
+import { goNext, itemsBefore, KAISHA, placeWords, seedCompleted, shot } from "./helpers";
 
 /**
  * 途中で 離れても、つづきから — もんだい（quizset）の しおり
@@ -15,20 +7,21 @@ import {
  * 授業の チャイムで 中断した 班が、次に 開くと また 1問目から だった
  * （`src/lib/quiz/resume.ts` の 経緯）。**直った ことでは なく、直った ままである ことを**
  * 機械が 見張る。教材の 並びを 1つ 足しただけで しおりの 前提は 崩れうる。
+ *
+ * やりかたの 既定は「まとめて 出す」（先生が 管理画面で 決める）。このモードでは
+ * 採点まえの 下書きが 端末に 残るので、**書いた ものが 消えない ことが 生命線**になる。
  */
 
-test("2問 答えて 離れ、もどると「つづきから」が 出る", async ({ page, context }) => {
+test("2問 書いて 離れ、もどると「つづきから」が 出る", async ({ page, context }) => {
   await seedCompleted(context, itemsBefore(3));
 
   await page.goto(KAISHA.quiz2.path);
   await page.getByRole("button", { name: "はじめる" }).click();
 
-  await fillWordBank(page, ["ホームページや アプリ"]);
-  await expectQuizCorrect(page);
-  await goNextQuestion(page);
-  await fillWordBank(page, ["大阪", "東京"]);
-  await expectQuizCorrect(page);
-  await goNextQuestion(page);
+  await placeWords(page, ["ホームページや アプリ"]);
+  await goNext(page);
+  await placeWords(page, ["大阪", "東京"]);
+  await goNext(page);
   await expect(page.getByText("もんだい 3 / 9")).toBeVisible();
 
   // ステージへ 離脱（進み具合には「とちゅう」として 出る）
@@ -39,11 +32,13 @@ test("2問 答えて 離れ、もどると「つづきから」が 出る", asyn
   // もどると ロビーで 分かれ道を 見せる（つづきから／はじめから）
   await page.goto(KAISHA.quiz2.path);
   await expect(page.getByText("まえの つづきから はじめます")).toBeVisible();
-  await expect(page.getByText("2もん こたえました")).toBeVisible();
+  await expect(page.getByText(/2もん/)).toBeVisible();
   await shot(page, "21-quiz-resume");
 
   await page.getByRole("button", { name: "つづきから" }).click();
   await expect(page.getByText("もんだい 3 / 9")).toBeVisible();
+  // 書いた ものも 戻って いる
+  await expect(page.getByText("こたえた 2 / 9")).toBeVisible();
 });
 
 test("「はじめから やる」を えらべば 1問目に もどる", async ({ page, context }) => {
@@ -51,11 +46,11 @@ test("「はじめから やる」を えらべば 1問目に もどる", async 
 
   await page.goto(KAISHA.quiz2.path);
   await page.getByRole("button", { name: "はじめる" }).click();
-  await fillWordBank(page, ["ホームページや アプリ"]);
-  await expectQuizCorrect(page);
-  await goNextQuestion(page);
+  await placeWords(page, ["ホームページや アプリ"]);
+  await goNext(page);
 
   await page.goto(KAISHA.quiz2.path);
   await page.getByRole("button", { name: "はじめから やる" }).click();
   await expect(page.getByText("もんだい 1 / 9")).toBeVisible();
+  await expect(page.getByText("こたえた 0 / 9")).toBeVisible();
 });
