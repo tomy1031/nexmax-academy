@@ -485,6 +485,25 @@ export function MeetingSession({
         pushChat({ kind: "me", text: utterance });
         setLastSaid(utterance);
         setThinking(true);
+        /*
+         * 道具が **呼ばれない ターン**が ある。待ちっぱなしに すると
+         *「ヘンディさんが 聞いて います…」で 止まる（2026-08-18 の 実発生）。
+         * 数秒 待って 来なければ、規則ベースの 見かたに 落として 先へ 進める。
+         */
+        const waited = judgedCallRef.current;
+        window.setTimeout(() => {
+          if (judgedCallRef.current !== waited) return;
+          setThinking(false);
+          pushChat({
+            kind: "coach",
+            fallback: {
+              advice: checkJapanese(utterance).text,
+              note: "いまの ぶんは AIの みかたが つきませんでした。つぎへ すすめます。",
+            },
+          });
+          rewardTurn(asked.id, utterance, null, true);
+          nextRef.current();
+        }, 9_000);
         return;
       }
       const at = Date.now();
