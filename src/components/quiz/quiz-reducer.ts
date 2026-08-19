@@ -71,8 +71,6 @@ export type QuizAction =
   | { readonly type: "answerChoice"; readonly index: number }
   | { readonly type: "answerMulti"; readonly indexes: readonly number[] }
   | { readonly type: "answerKeyword"; readonly input: string }
-  /** 「こたえを 見る」。点は入らないが解説へ進む（分からないまま止まらせない）。 */
-  | { readonly type: "skipKeyword" }
   | { readonly type: "answerWordbank"; readonly filled: readonly (string | null)[] }
   | { readonly type: "answerFeeling"; readonly index: number }
   | { readonly type: "answerReply"; readonly index: number }
@@ -177,13 +175,6 @@ export function quizReducer(state: QuizState, action: QuizAction): QuizState {
         return { ...state, phase: { kind: "ask", inputIssue: INPUT_ISSUE_FEEDBACK.latin } };
       }
       return close(state, question, correct, action.input, undefined, action.input);
-    }
-
-    case "skipKeyword": {
-      if (state.phase.kind !== "ask" || question.type !== "keyword") return state;
-      // 分からないときの逃げ道。点は入らないが、解説を読んで次へ行ける。
-      // こたえは空文字で残す——「書けずに 見た」ことも、先生には 意味の ある記録。
-      return close(state, question, false, "");
     }
 
     case "answerWordbank": {

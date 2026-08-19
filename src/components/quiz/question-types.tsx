@@ -90,7 +90,6 @@ export function QuestionBody({ question, furigana, dispatch, emotionStep2, disab
         <KeywordInput
           disabled={disabled}
           onSubmit={(input) => dispatch({ type: "answerKeyword", input })}
-          onSkip={() => dispatch({ type: "skipKeyword" })}
         />
       );
 
@@ -245,11 +244,9 @@ function MultiPicker({
  */
 function KeywordInput({
   onSubmit,
-  onSkip,
   disabled,
 }: {
   onSubmit: (input: string) => void;
-  onSkip: () => void;
   disabled?: boolean;
 }) {
   const [value, setValue] = useState("");
@@ -287,17 +284,6 @@ function KeywordInput({
       <p className="text-ink-faint mt-2 text-xs font-bold">
         <RubyText text="ひらがなでも OK。ぜんぶの 文で なくて OK" index={UI_FURIGANA} />
       </p>
-
-      <div className="mt-3">
-        <button
-          type="button"
-          disabled={disabled}
-          onClick={onSkip}
-          className="text-ink-soft hover:text-navy text-sm font-extrabold underline underline-offset-4"
-        >
-          こたえを 見る
-        </button>
-      </div>
     </form>
   );
 }

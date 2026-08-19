@@ -304,18 +304,6 @@ describe("自由入力の救済（IME・こたえを見る）", () => {
     });
     expect(s.phase).toMatchObject({ kind: "explain", input: "ホウレンソウ" });
   });
-
-  it("「こたえを 見る」は点が入らないが解説へ進む", () => {
-    const s = quizReducer(createQuizSession(set, [keyword]), { type: "skipKeyword" });
-    expect(s.phase).toMatchObject({ kind: "explain", correct: false, feedback: "quiz.review" });
-    expect(s.results[0]?.earned).toBe(0);
-  });
-
-  it("「こたえを 見る」は自由入力の出題中だけ効く", () => {
-    const choose = set.questions.find((x) => x.type === "choose")!;
-    const s = createQuizSession(set, [choose]);
-    expect(quizReducer(s, { type: "skipKeyword" })).toBe(s);
-  });
 });
 
 describe("問題セットのスキーマ（検収の契約）", () => {
