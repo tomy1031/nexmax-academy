@@ -50,8 +50,7 @@
     }
   ],
   "wordStageIds": [
-    "intro_bijinesu_kotoba",
-    "intro_it_kotoba",
+    "intro_kotoba",
     "stage01_orientation"
   ]
 }
