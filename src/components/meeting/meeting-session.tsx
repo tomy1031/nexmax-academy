@@ -291,6 +291,10 @@ export function MeetingSession({
   const nextRef = useRef<() => void>(() => {});
   /** すでに 受け取った 道具の 呼び出し（同じ ものを 2回 見ない）。 */
   const judgedCallRef = useRef(0);
+  /** 判定の 手（道具が 来なかった ときの 落とし先）。 */
+  const judgeRef = useRef<
+    (u: string, spoken: boolean, target?: MeetingQuestion, logged?: boolean) => Promise<void>
+  >(async () => {});
   const pushChat = useCallback((entry: ChatBody) => {
     setChat((prev) => [...prev, { ...entry, id: `${prev.length}-${entry.kind}` }]);
   }, []);
@@ -465,7 +469,13 @@ export function MeetingSession({
    *（同じキャラが2つの違うことを言うのを防ぐ）。
    */
   const judgeUtterance = useCallback(
-    async (utterance: string, spoken: boolean, target?: MeetingQuestion) => {
+    async (
+      utterance: string,
+      spoken: boolean,
+      target?: MeetingQuestion,
+      /** すでに チャットに 出して ある（二重に 積まない）。 */
+      logged = false,
+    ) => {
       /*
        * **どの しつもんへの 答えか**を 呼ぶ側から 受け取る。
        *
@@ -493,21 +503,17 @@ export function MeetingSession({
         const waited = judgedCallRef.current;
         window.setTimeout(() => {
           if (judgedCallRef.current !== waited) return;
-          setThinking(false);
-          pushChat({
-            kind: "coach",
-            fallback: {
-              advice: checkJapanese(utterance).text,
-              note: "いまの ぶんは AIの みかたが つきませんでした。つぎへ すすめます。",
-            },
-          });
-          rewardTurn(asked.id, utterance, null, true);
-          nextRef.current();
+          /*
+           * 道具が 来なかった ときは、**これまでの 道（文字の 判定）**に 落とす。
+           * 規則ベースだけに すると ポップアップが 出ず、声で 答えた 人だけ
+           * 見かたが 見られない ことに なる（2026-08-18 の 実発生）。
+           */
+          void judgeRef.current(utterance, false, asked, true);
         }, 9_000);
         return;
       }
       const at = Date.now();
-      pushChat({ kind: "me", text: utterance });
+      if (!logged) pushChat({ kind: "me", text: utterance });
       setLastSaid(utterance);
       setThinking(true);
       const result = await requestJudge({
@@ -849,6 +855,7 @@ export function MeetingSession({
    */
   useEffect(() => {
     nextRef.current = next;
+    judgeRef.current = judgeUtterance;
   });
 
   /*
