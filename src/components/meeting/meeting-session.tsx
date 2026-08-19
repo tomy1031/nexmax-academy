@@ -37,6 +37,7 @@ import {
 } from "@/lib/meeting/record";
 import { asksToSkip, needsJapaneseInput } from "@/lib/meeting/input";
 import { fillAnswer, fillName } from "@/lib/meeting/speech";
+import { normalizeReading } from "@/lib/text/normalize";
 import {
   rateOf,
   readSpeechSpeed,
@@ -52,6 +53,7 @@ import { judgeFailNote, requestJudge } from "./judge-api";
 import { JudgeCard } from "./judge-card";
 import { ProgressChips } from "./question-board";
 import { MeetingResultCard, PreviousRecordCard, RewardCard } from "./result-card";
+import { JudgeModal } from "./judge-modal";
 import { SpeakButton } from "./speak-button";
 import { SpeechSpeedPicker } from "./speech-speed-picker";
 import { VisemeFace, type Viseme } from "./viseme-face";
@@ -264,6 +266,23 @@ export function MeetingSession({
   const answeringRef = useRef<MeetingQuestion | null>(null);
   /** チャット欄に 積む 記録（相手の しつもん・自分の 答え・見かた）。 */
   const [chat, setChat] = useState<readonly ChatEntry[]>([]);
+  /**
+   * 聞き出せた こと（願い #94）。
+   *
+   * ぜんぶ 答えた あとの おしゃべりを「相手の ことを 見つける」練習に する。
+   * 開くのは **学習者の しつもんが 当たった とき**だけ——自分で 引き出した から
+   * 開く 価値が ある（設計01 P2）。判定は この 端末の 中で 済ませる。
+   */
+  const [found, setFound] = useState<ReadonlySet<string>>(() => new Set<string>());
+  /** 日本語の 見かたを ポップアップで 出して いるか。 */
+  const [judgeOpen, setJudgeOpen] = useState(false);
+  /** ポップアップに そのまま 見せる「あなたの ことば」。 */
+  const [lastSaid, setLastSaid] = useState("");
+  /**
+   * つぎへ 進む 手（`next` は この 下で 作られる ので、参照で 受け取る）。
+   * 判定の 中から 呼ぶ ため——宣言の 前の 名前は そのままでは 使えない。
+   */
+  const nextRef = useRef<() => void>(() => {});
   const pushChat = useCallback((entry: ChatBody) => {
     setChat((prev) => [...prev, { ...entry, id: `${prev.length}-${entry.kind}` }]);
   }, []);
@@ -384,10 +403,19 @@ export function MeetingSession({
          * 裏の やりとりが 表に 出る 作りは やめ、しつもんは 作り置きの こえと
          * 画面の 字で 出す。相手は **受け止めて 返すだけ**に する。
          */
+        /*
+         * 話す 速さは **ことばで たのむ**。音を 引きのばすと 声の 高さまで 下がって
+         * 別人に なる（2026-08-18 の 指摘）。
+         */
+        speed === "slow"
+          ? "ゆっくり、はっきり 話して ください。"
+          : speed === "fast"
+            ? "少し 早めに 話して ください。"
+            : "ふつうの 速さで 話して ください。",
         "しつもんは 画面が します。あなたは しつもんを しないで ください。",
         "学生の ことばを 受け止めて、みじかく 返して ください。1回の 返事は 2文までです。",
       ].join("\n"),
-    [meeting],
+    [meeting, speed],
   );
 
   /**
@@ -437,6 +465,7 @@ export function MeetingSession({
       if (!asked) return;
       const at = Date.now();
       pushChat({ kind: "me", text: utterance });
+      setLastSaid(utterance);
       setThinking(true);
       const result = await requestJudge({
         ask: withName(asked.ask),
@@ -461,6 +490,7 @@ export function MeetingSession({
           pushChat({ kind: "host", text: result.judge.reply });
         }
         pushChat({ kind: "coach", judge: result.judge });
+        setJudgeOpen(true);
         rewardTurn(asked.id, utterance, result.judge.grade, !result.judge.retry);
         void recordMeetingTurn({
           meetingId: meeting.id,
@@ -485,6 +515,10 @@ export function MeetingSession({
       const echo = spoken ? "" : fillAnswer(asked.echo, utterance);
       if (echo) pushChat({ kind: "host", text: echo });
       pushChat({ kind: "coach", fallback: { advice, note: judgeFailNote(result.reason) } });
+      /*
+       * AIに 通せなかった ときは 判定が 無い ので、ポップアップは 出さずに
+       * そのまま つぎへ 進める（止めない。P8）。
+       */
       setReply({
         /*
          * おうむ返しは **学習者の 答え**を 返す。ここで 呼び名を 差し込む 関数を
@@ -499,6 +533,12 @@ export function MeetingSession({
       });
       // 判定に通せなくても、答えた事実は残る。札は開き、ハートも足す
       rewardTurn(asked.id, utterance, null, true);
+      /*
+       * AIに 通せなかった ときは 判定が 無い ので、ポップアップは 出さずに
+       * そのまま つぎへ 進める（止めない。P8）。**ごほうびを 足した あと**に
+       * 進める——先に 進めると、さいごの 1回ぶんの ハートが 数に 入らない。
+       */
+      nextRef.current();
       void recordMeetingTurn({
         meetingId: meeting.id,
         questionId: asked.id,
@@ -531,8 +571,8 @@ export function MeetingSession({
   const playClip = clip.play;
   useEffect(() => {
     if (!joined || !clipUrl) return;
-    playClip(clipUrl);
-  }, [joined, clipUrl, playClip]);
+    playClip(clipUrl, rateOf(speed));
+  }, [joined, clipUrl, playClip, speed]);
 
   // 声で話したぶんを見る。相手が話しはじめた合図で1つに束ねてから届く
   useEffect(() => {
@@ -611,8 +651,29 @@ export function MeetingSession({
       if (text.length === 0) return;
       setDraft("");
       pushChat({ kind: "me", text });
+      /*
+       * 聞き出せたか を 見る。当たった ら 札を 開く。
+       * 声が つながって いない ときは、教材に 書いた 答えを そのまま 出す
+       *（**聞けば 答えが 返る**という 会話の 形を、声の あるなしで 変えない）。
+       */
+      /*
+       * 表記ゆれを 吸収してから 見る（`normalizeReading` は アプリで 唯一の 実装）。
+       * 素の 文字くらべに して いた ころは、「サイフを おとしました」と カタカナで
+       * 書いた 学習者の 札が 開かなかった——聞けて いるのに 開かないのは、
+       * いちばん がっかりする 外れ方（規約: 正規化を 再実装しない）。
+       */
+      const asked = normalizeReading(text);
+      const hit = meeting.discover.find(
+        (item) =>
+          !found.has(item.id) &&
+          item.keywords.some((word) => asked.includes(normalizeReading(word))),
+      );
+      if (hit) setFound((prev) => new Set([...prev, hit.id]));
+
       if (live) {
         voice.sendText(text);
+      } else if (hit) {
+        pushChat({ kind: "host", text: hit.answer });
       } else {
         /*
          * 声で つないで いない 学習者は、**誰も いない 部屋に 話しかけて いた**
@@ -673,7 +734,20 @@ export function MeetingSession({
     answeringRef.current = question;
     if (live) voice.sendText(text);
     void judgeUtterance(text, live, question);
-  }, [draft, question, thinking, live, voice, judgeUtterance, noticedText, next, pushChat, done]);
+  }, [
+    draft,
+    question,
+    thinking,
+    live,
+    voice,
+    judgeUtterance,
+    noticedText,
+    next,
+    pushChat,
+    done,
+    meeting.discover,
+    found,
+  ]);
 
   /** 同じ質問をもう一度。回数だけ増やして、質問は変えない。 */
   const retry = useCallback(() => {
@@ -724,28 +798,22 @@ export function MeetingSession({
   }, [chat.length, thinking]);
 
   /**
-   * 判定が 出たら **自分で つぎへ 進む**（ボタンを 押させない）。
+   * 判定は **ポップアップ**で 見せ、つぎに 進むのは 学習者が 押して 決める。
    *
-   * 「つぎへ →」「もう いちど 言う」「まだ 言えない」の 3つの ボタンは、押すまで
-   * 会話が 止まる 作りだった。会話の 教材で いちばん 大事なのは 話す ことなので、
-   * 進み方は 判定に まかせる: 通ったら つぎの しつもんへ、言い直しなら 例を 見せて
-   * もう いちど 同じ しつもんへ。読む 時間は 少し 置く（カードは 記録に 残る）。
+   * 時間で 自動に 進めて いた ころは、つたわったのか もう いちどなのかが
+   * 流れて しまい、**正しく 言っても 進まない**ように 見える ことが あった
+   *（2026-08-18 の 指摘）。押した ぶんだけ 進む 形なら、迷いも 取りこぼしも 無い。
    */
-  const nextRef = useRef(next);
-  const retryRef = useRef(retry);
   useEffect(() => {
     nextRef.current = next;
-    retryRef.current = retry;
   });
-  useEffect(() => {
-    if (!reply || done) return;
-    const again = reply.judge?.retry === true;
-    const timer = setTimeout(
-      () => (again ? retryRef.current() : nextRef.current()),
-      again ? 2400 : 1200,
-    );
-    return () => clearTimeout(timer);
-  }, [reply, done]);
+
+  const closeJudge = useCallback(() => {
+    const again = reply?.judge?.retry === true;
+    setJudgeOpen(false);
+    if (again) retry();
+    else next();
+  }, [reply, retry, next]);
 
   /** いま持っているハート。教材に affection が無いときは画面のどこにも出ない。 */
   const hearts = heartsOf(affection);
@@ -771,7 +839,7 @@ export function MeetingSession({
           dictionary={dictionary}
           onReplay={
             entry.kind === "ask" && entry.audioUrl
-              ? () => clip.play(entry.audioUrl as string)
+              ? () => clip.play(entry.audioUrl as string, rateOf(speed))
               : undefined
           }
         />
@@ -815,6 +883,7 @@ export function MeetingSession({
         ここからは **役が 入れかわる**。「じゆうに どうぞ」だけでは 白紙の 前で
         止まるので、何を する 時間なのかを 先に 言う（設計01 P1: 役割の 付与）。
       */}
+      <p className="text-sky text-xs font-extrabold">ラウンド 2</p>
       <p className="text-navy text-base font-black">
         <RubyText
           text={`こんどは、あなたが 聞く ばんです。${meeting.host.name}さんに しつもんして みましょう。`}
@@ -822,6 +891,31 @@ export function MeetingSession({
           show
         />
       </p>
+      {meeting.discover.length > 0 ? (
+        <div className="card-island p-4">
+          <p className="text-ink-soft text-xs font-extrabold">
+            <RubyText
+              text={`🔎 ${meeting.host.name}さんの ことを 見つけよう（${found.size} / ${meeting.discover.length}）`}
+              index={CHROME_FURIGANA}
+              show
+            />
+          </p>
+          <ul className="mt-2 space-y-1">
+            {meeting.discover.map((item) => (
+              <li key={item.id} className="text-ink text-sm font-black">
+                {found.has(item.id) ? (
+                  <>
+                    ✅ <RubyText text={item.label} index={furigana} show />
+                  </>
+                ) : (
+                  <span className="text-ink-faint">？？？</span>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
+
       {chatPanel}
     </div>
   ) : (
@@ -1076,6 +1170,16 @@ export function MeetingSession({
       >
         {body}
       </CallShell>
+
+      {/* 日本語の 見かた。いちばん 前に 出して、つぎに 何を するかを 押して 決める */}
+      {judgeOpen && reply?.judge ? (
+        <JudgeModal
+          judge={reply.judge}
+          utterance={lastSaid}
+          hostName={meeting.host.name}
+          onNext={closeJudge}
+        />
+      ) : null}
     </div>
   );
 }

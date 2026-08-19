@@ -448,14 +448,17 @@ function play(out: Output | null, pcm: Uint8Array) {
 
   const source = out.ctx.createBufferSource();
   source.buffer = buffer;
-  // ゆっくりに すると 声は 少し 低くなる。聞き取れる ことを 先に とる
-  source.playbackRate.value = out.rate;
+  /*
+   * **音は 引きのばさない**。`playbackRate` で 遅くすると 声の 高さまで 下がり、
+   * 別人の 声に なる（2026-08-18 の 指摘）。Live の 速さは
+   * 「ゆっくり 話して ください」と **指示で** 伝える（`meeting-session.tsx`）。
+   */
   source.connect(out.node);
   // 前の音の終わりに継ぐ。now を毎回使うと、細かい塊が重なって濁る
   const at = Math.max(out.ctx.currentTime, out.playAt);
   source.start(at);
   // 遅く 鳴らすと そのぶん 長く かかる。ここを 素の 長さの ままに すると 音が 重なる
-  out.playAt = at + buffer.duration / out.rate;
+  out.playAt = at + buffer.duration;
   // 割り込みで 捨てられるように 覚えておく（鳴り終わったら 自分で 抜ける）
   out.sources.push(source);
   source.onended = () => {
