@@ -2,7 +2,7 @@
   "kind": "wordstage",
   "id": "stage11_haizoku",
   "title": "はいぞく（M1: 配属初日）",
-  "description": "研修が終わって、開発チームに配属されます。初日に使うことばを覚えましょう。",
+  "description": "研修が終わって、開発チームに配属されます。初日に使う言葉を覚えましょう。",
   "password": "stage11",
   "fieldSequence": ["forest", "sky", "space"],
   "questionCount": 8,
@@ -53,7 +53,8 @@
     ["最後", "さいご"],
     ["一言", "ひとこと"],
     ["早", "はや"],
-    ["力", "ちから"]
+    ["力", "ちから"],
+    ["言葉", "ことば"]
   ],
   "words": [
     {

@@ -2,7 +2,7 @@
   "kind": "quizset",
   "id": "it_orientation_check",
   "title": "きょうの かくにん",
-  "description": "スライド「日本で エンジニアに なる ために」の かくにんです。IT専門の 言葉は、自分で 調べて 答えて ください。",
+  "description": "スライド「日本で エンジニアに なる ために」の 確認です。IT専門の 言葉は、自分で 調べて 答えて ください。",
   "nekumax": "book",
   "phase": "research",
   "passRate": 60,
@@ -462,6 +462,10 @@
     [
       "使",
       "つか"
+    ],
+    [
+      "確認",
+      "かくにん"
     ]
   ],
   "questions": [

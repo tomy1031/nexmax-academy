@@ -2,7 +2,7 @@
   "kind": "slides",
   "id": "it_orientation",
   "title": "日本で エンジニアに なる ために",
-  "description": "学校の 日本語から、仕事の 日本語へ。日本の 会社で はたらく ために 大切な ことを 見ます。",
+  "description": "学校の 日本語から、仕事の 日本語へ。日本の 会社で 働く ために 大切な ことを 見ます。",
   "fileUrl": "/slides/it-orientation.pdf",
   "pageCount": 11,
   "notes": [
@@ -215,6 +215,10 @@
     [
       "位",
       "い"
+    ],
+    [
+      "働",
+      "はたら"
     ]
   ]
 }
