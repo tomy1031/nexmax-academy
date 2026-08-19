@@ -449,7 +449,16 @@ export function summarizeQuiz(state: QuizState): QuizSummary {
   const answered = state.results.length;
   const correct = state.results.filter((r) => r.correct).length;
   const earned = state.results.reduce((sum, r) => sum + r.earned, 0);
-  const maxPoints = state.questions.slice(0, answered).reduce((sum, q) => sum + q.points, 0);
+  /*
+   * 満点は **答えた 問題の 配点**を 足す。
+   *
+   * 以前は「先頭から N問」で 数えて いた。しおり（位置）だけが 残って いた 回は
+   * 答えた 問題と 先頭が ずれるので、配点の ちがう 教材では 取った 点が 満点を
+   * 超える（実際に「6 / 5 てん」で 合格！ と 出た）。記録は 問題IDを 持って いるので、
+   * 並びに 頼らず 引き当てる。
+   */
+  const points = new Map(state.questions.map((q) => [q.id, q.points]));
+  const maxPoints = state.results.reduce((sum, r) => sum + (points.get(r.questionId) ?? 0), 0);
   return {
     total: answered,
     correct,

@@ -113,3 +113,68 @@ test("1問ずつ でも、自分が えらんだ ものが 見える", async ({ 
   await expect(page.getByText("受託開発").first()).toBeVisible();
   await shot(page, "26-quiz-one-by-one-answer");
 });
+
+test("1問も 書かずに「出す」道は ない（7回 おすだけで おわらない）", async ({ page, context }) => {
+  await seedCompleted(context, itemsBefore(1));
+  await page.goto(KAISHA.quiz1.path);
+  await page.getByRole("button", { name: START_SUBMIT }).click();
+
+  // 一度も 選択肢に さわらずに かくにん画面まで 行く
+  for (let i = 0; i < 5; i += 1) {
+    await page.getByRole("button", { name: "つぎ →" }).click();
+  }
+  await page.getByRole("button", { name: "さいごに かくにん →" }).click();
+
+  // 出す ボタンは 出さない。もんだいへ 帰る 道だけを 出す
+  await expect(page.getByRole("button", { name: SUBMIT_ANSWERS })).toHaveCount(0);
+  await expect(page.getByText(/1もんも/)).toBeVisible();
+  await page.getByRole("button", { name: /もどって/ }).click();
+  await expect(page.getByText("もんだい 6 / 6")).toBeVisible();
+});
+
+test("出した あとに 開き直しても、にせの「つづき」に ならない", async ({ page, context }) => {
+  await seedCompleted(context, itemsBefore(1));
+  await page.goto(KAISHA.quiz1.path);
+  await page.getByRole("button", { name: START_SUBMIT }).click();
+
+  // 1問だけ 書いて 出す（＝書いた数と 問題数が ちがう まま おわる）
+  await choiceButtons(page).nth(0).click();
+  for (let i = 0; i < 5; i += 1) {
+    await page.getByRole("button", { name: "つぎ →" }).click();
+  }
+  await page.getByRole("button", { name: "さいごに かくにん →" }).click();
+  await page.getByRole("button", { name: SUBMIT_ANSWERS }).click();
+  await expect(page.getByText("ぜんぶの こたえ")).toBeVisible();
+
+  // 開き直したら「はじめから」。2問目から 始まって 1問目に 戻れない、が 起きない
+  await page.reload();
+  await expect(page.getByText("まえの つづきから")).toHaveCount(0);
+  await page.getByRole("button", { name: START_SUBMIT }).click();
+  await expect(page.getByText("もんだい 1 / 6")).toBeVisible();
+  await expect(page.getByText("こたえた 0 / 6")).toBeVisible();
+});
+
+test("きもち→言い方の 2段階も、まとめて 出す で えらび直せる", async ({ page, context }) => {
+  await seedCompleted(context, ["m2-asakai-manga", "m2-asakai-article", "sample_asakai"]);
+  await page.goto("/asakai/quiz");
+  await page.getByRole("button", { name: START_SUBMIT }).click();
+
+  // 1問目（4択）を こたえて 2問目（きもち）へ
+  await choiceButtons(page).nth(0).click();
+  await page.getByRole("button", { name: "つぎ →" }).click();
+  await expect(page.getByText("もんだい 2 / 5")).toBeVisible();
+
+  // きもちを えらぶと 言い方の 段に 進む（合って いるかは 出さない）
+  await choiceButtons(page).nth(0).click();
+  await expect(page.getByText("よく できました")).toHaveCount(0);
+  // ルビの まわりに 空白が 入る ことが あるので、ふりがなの 手前で さがす
+  const redo = page.getByRole("button", { name: /きもちを えらび/ });
+  await expect(redo).toBeVisible();
+
+  // きもちを えらび直せる。言い方を えらぶまでは「こたえた」に 数えない
+  await expect(page.getByText("こたえた 1 / 5")).toBeVisible();
+  await redo.click();
+  await choiceButtons(page).nth(1).click();
+  await choiceButtons(page).nth(0).click();
+  await expect(page.getByText("こたえた 2 / 5")).toBeVisible();
+});

@@ -547,7 +547,16 @@ function WordBank({
                       置いたことに 気づけない（どちらが 何ばんめか 分からなくなる）。
                     */}
                     <span className="text-ink-faint mr-0.5 text-xs">（{part.blank + 1}）</span>
-                    {filled[part.blank] ?? "＿＿"}
+                    {/*
+                      入れた 語にも ルビを 合成する（規律2）。語群の ボタンは 覆えて
+                      いるのに、あなに 置いた 瞬間だけ 裸の 漢字に 戻って いた
+                      （「大阪」が ふりがな なしで 文の 中に 残る）。
+                    */}
+                    {filled[part.blank] ? (
+                      <RubyText text={filled[part.blank]!} index={furigana} />
+                    ) : (
+                      "＿＿"
+                    )}
                   </button>
                 )}
               </span>

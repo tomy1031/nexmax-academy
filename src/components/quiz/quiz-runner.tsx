@@ -110,16 +110,25 @@ export function QuizRunner({
    * 番号に 残る（次に 開いたとき「はじめから」が「つづきから」に 化けてしまう）。
    * 絞った セッション（まちがえた もんだいだけ）では しおりを **動かさない**
    * ——教材まるごとの 何問目とは 対応しない 数だから。
+   *
+   * **おわった ときは 必ず「全問ぶん」を 書く**。まとめて 出す では 書いた 数しか
+   * 進んで いない ことが あり（1問だけ 書いて 出す）、そのまま しおりに すると
+   * 次に 開いた ときに「つづきが ある」と 誤読される——完走した 教材が
+   * 「2問目から つづき」に 化け、1問目に 二度と 戻れなく なる（別の目 検収で 実発生）。
    */
   const done = state.phase.kind === "finished";
   useEffect(() => {
     recordContentProgress(set.id, {
       status: done ? "completed" : "started",
       ...(isFullSession
-        ? { position: { question: submitMode ? written : state.results.length } }
+        ? {
+            position: {
+              question: done ? state.questions.length : submitMode ? written : state.results.length,
+            },
+          }
         : {}),
     });
-  }, [set.id, done, isFullSession, submitMode, written, state.results]);
+  }, [set.id, done, isFullSession, submitMode, written, state.questions, state.results]);
 
   /**
    * いまの ところを 端末に 残す（つぎに 開いたとき つづきから 始めるため）。
@@ -675,6 +684,15 @@ function ConfirmCard({
   onSubmit: () => void;
 }) {
   const left = questions.filter((q) => !draftAnswered(q, drafts[q.id])).length;
+  /*
+   * 1問も 書かずに 出す 道を 閉じる。
+   *
+   * 分からない もんだいで 足止めしないのが この モードの 決めごとだが、**1問も
+   * 触らずに 7回 押すだけで 教材が「おわった」に なり、関門が 開き、0点が 初回の
+   * 成績として 固定される**（初回だけが 正式なので あとから 直せない）。
+   * それは 学びでは ないので、ここだけは 出すのを 待つ。1問でも 書けば 出せる。
+   */
+  const nothingWritten = left === questions.length;
 
   return (
     <motion.div
@@ -688,6 +706,11 @@ function ConfirmCard({
       <p className="text-ink-soft mt-2 font-bold">
         {left === 0 ? (
           <RubyText text="ぜんぶ 書けました。出しても だいじょうぶ" index={UI_FURIGANA} />
+        ) : nothingWritten ? (
+          <RubyText
+            text="まだ 1もんも 書いて いません。1もんでも 書いてから 出しましょう"
+            index={UI_FURIGANA}
+          />
         ) : (
           <RubyText
             text={`のこり ${left}もん。おしても いいし、書いてからでも いいよ`}
@@ -708,9 +731,14 @@ function ConfirmCard({
               >
                 <span
                   className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full text-xs font-extrabold"
+                  /*
+                   * のこりを さがす 画面なので、**のこりの ほうを 薄くしない**。
+                   * 書いた ものは 済んだ 印（青）、まだの ものは 目を 引く 枠に する。
+                   */
                   style={{
-                    background: written ? "var(--color-sky)" : "var(--color-panel-tint)",
-                    color: written ? "#fff" : "var(--color-ink-faint)",
+                    background: written ? "var(--color-sky)" : "var(--color-panel)",
+                    color: written ? "#fff" : "var(--color-ink-soft)",
+                    boxShadow: written ? "none" : "inset 0 0 0 2px var(--color-ink-faint)",
                   }}
                 >
                   {index + 1}
@@ -725,7 +753,7 @@ function ConfirmCard({
                         <RubyText text={draftAnswerText(q, drafts[q.id])} index={furigana} />
                       </span>
                     ) : (
-                      <span className="text-ink-faint">まだ です</span>
+                      <span className="text-ink-soft">まだ です</span>
                     )}
                   </span>
                 </span>
@@ -736,18 +764,24 @@ function ConfirmCard({
       </ul>
 
       <div className="mt-6 grid gap-3">
-        <button
-          type="button"
-          onClick={onSubmit}
-          className="btn-island btn-game px-6 py-3.5"
-          style={{ "--btn-face": "#58c273", "--btn-shadow": "#3aa458" } as React.CSSProperties}
-        >
-          <RubyText text="こたえを 出す" index={UI_FURIGANA} />
-        </button>
+        {!nothingWritten && (
+          <button
+            type="button"
+            onClick={onSubmit}
+            className="btn-island btn-game px-6 py-3.5"
+            style={{ "--btn-face": "#58c273", "--btn-shadow": "#3aa458" } as React.CSSProperties}
+          >
+            <RubyText text="こたえを 出す" index={UI_FURIGANA} />
+          </button>
+        )}
         <button
           type="button"
           onClick={onBack}
-          className="border-hairline text-ink-soft bg-panel rounded-full border-2 px-6 py-2.5 text-sm font-extrabold"
+          className={
+            nothingWritten
+              ? "btn-island btn-game px-6 py-3.5"
+              : "border-hairline text-ink-soft bg-panel rounded-full border-2 px-6 py-2.5 text-sm font-extrabold"
+          }
         >
           <RubyText text="もんだいに もどって 見なおす" index={UI_FURIGANA} />
         </button>

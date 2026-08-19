@@ -264,6 +264,25 @@ describe("つづきから 復元する（resumeQuizSession）", () => {
   it("答えて いない 状態は createQuizSession と 同じ 形になる", () => {
     expect(resumeQuizSession(set, 0, [])).toEqual(createQuizSession(set));
   });
+
+  /**
+   * しおり（位置）だけが 残って いた 回は、**答えた 問題と 出題順の 先頭が ずれる**。
+   * 満点を「先頭から N問」で 数えると、配点の ちがう 教材では 取った 点が 満点を
+   * 超える（「6 / 5 てん」で 合格！ と 出る）。満点は **答えた 問題の 配点**で 数える。
+   */
+  it("途中から 始めた 回でも、満点は 答えた 問題の 配点で 数える", () => {
+    let s = resumeQuizSession(set, 1, []);
+    while (currentQuestion(s)) {
+      s = answerCorrectly(s);
+      s = quizReducer(s, { type: "next" });
+      if (s.phase.kind === "finished") break;
+    }
+    const summary = summarizeQuiz(s);
+    const answered = set.questions.slice(1).reduce((sum, q) => sum + q.points, 0);
+    expect(summary.maxPoints).toBe(answered);
+    expect(summary.earned).toBe(answered);
+    expect(summary.earned).toBeLessThanOrEqual(summary.maxPoints);
+  });
 });
 
 describe("自由入力の救済（IME・こたえを見る）", () => {
