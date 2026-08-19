@@ -142,7 +142,7 @@ test("6つ おわると「聞く ばん」に なり、こえが 無くても �
    */
   await expect(page.getByText("あれは「わかりました」では なく")).toBeVisible();
   /* 見出しの 漢字には ルビが 入る ので、数の ところで 見る */
-  await expect(page.getByText(/（1 \/ 6）/)).toBeVisible();
+  await expect(page.getByText(/（1 \/ 8）/)).toBeVisible();
 
   // 当たらない ことばの ときは、責めずに 次の 一手を 出す
   await box.fill("きょうは あついですね。");
