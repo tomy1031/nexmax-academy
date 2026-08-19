@@ -47,18 +47,6 @@
       "ref": "it_orientation_check",
       "type": "quizset",
       "gates": false
-    },
-    {
-      "ref": "intro_mirai",
-      "type": "slides"
-    },
-    {
-      "ref": "intro_korekara",
-      "type": "article"
-    },
-    {
-      "ref": "intro_hitobito",
-      "type": "article"
     }
   ],
   "wordStageIds": []
