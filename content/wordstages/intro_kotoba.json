@@ -1,8 +1,8 @@
 {
   "kind": "wordstage",
-  "id": "intro_bijinesu_kotoba",
-  "title": "ビジネスの ことば",
-  "description": "「はじめに」に 出て きた、会社で 毎日 つかう ことばです。",
+  "id": "intro_kotoba",
+  "title": "はじめに の ことば",
+  "description": "「はじめに」に 出て きた、会社と IT の ことばです。",
   "fieldSequence": [
     "forest",
     "sky",
@@ -18,6 +18,14 @@
     [
       "大丈夫",
       "だいじょうぶ"
+    ],
+    [
+      "日本語",
+      "にほんご"
+    ],
+    [
+      "報告書",
+      "ほうこくしょ"
     ],
     [
       "報告",
@@ -78,6 +86,30 @@
     [
       "分前",
       "ふんまえ"
+    ],
+    [
+      "漢字",
+      "かんじ"
+    ],
+    [
+      "指示",
+      "しじ"
+    ],
+    [
+      "名前",
+      "なまえ"
+    ],
+    [
+      "数字",
+      "すうじ"
+    ],
+    [
+      "中身",
+      "なかみ"
+    ],
+    [
+      "時代",
+      "じだい"
     ],
     [
       "出",
@@ -186,6 +218,70 @@
     [
       "方",
       "かた"
+    ],
+    [
+      "文",
+      "ぶん"
+    ],
+    [
+      "書",
+      "か"
+    ],
+    [
+      "多",
+      "おお"
+    ],
+    [
+      "言",
+      "い"
+    ],
+    [
+      "考",
+      "かんが"
+    ],
+    [
+      "変",
+      "か"
+    ],
+    [
+      "新",
+      "あたら"
+    ],
+    [
+      "中",
+      "なか"
+    ],
+    [
+      "力",
+      "ちから"
+    ],
+    [
+      "学",
+      "まな"
+    ],
+    [
+      "字",
+      "じ"
+    ],
+    [
+      "打",
+      "う"
+    ],
+    [
+      "入",
+      "い"
+    ],
+    [
+      "絵",
+      "え"
+    ],
+    [
+      "送",
+      "おく"
+    ],
+    [
+      "場",
+      "ば"
     ]
   ],
   "words": [
@@ -356,6 +452,188 @@
       ],
       "explanationJa": "はなしたり 聞いたり して、つたえ合う ことです。",
       "example": "これからの エンジニアの 大切な 仕事は コミュニケーションです。"
+    },
+    {
+      "id": "so-suko-do",
+      "term": "ソースコード",
+      "reading": "そーすこーど",
+      "romaji": "so-suko-do",
+      "meaningEn": "Source code",
+      "wrongMeanings": [
+        "A money receipt",
+        "A meeting plan",
+        "A sound file"
+      ],
+      "explanationJa": "プログラムの 文です。人が 書いた ものです。",
+      "example": "ソースコードは、いまは AIが 書く ことも 多く なりました。"
+    },
+    {
+      "id": "apurike-shon",
+      "term": "アプリケーション",
+      "reading": "あぷりけーしょん",
+      "romaji": "apurike-shon",
+      "meaningEn": "Application",
+      "wrongMeanings": [
+        "Keyboard",
+        "Company rule",
+        "Paper file"
+      ],
+      "explanationJa": "スマホや パソコンで うごく ソフトです。「アプリ」とも 言います。",
+      "example": "アプリケーションは、英語で application と 書きます。"
+    },
+    {
+      "id": "puroguramu",
+      "term": "プログラム",
+      "reading": "ぷろぐらむ",
+      "romaji": "puroguramu",
+      "meaningEn": "Program",
+      "wrongMeanings": [
+        "A paper report",
+        "A meeting room",
+        "A salary"
+      ],
+      "explanationJa": "コンピューターへの 指示を ならべた ものです。",
+      "example": "プログラムは AIの 仕事に なりました。"
+    },
+    {
+      "id": "de-ta",
+      "term": "データ",
+      "reading": "でーた",
+      "romaji": "de-ta",
+      "meaningEn": "Data",
+      "wrongMeanings": [
+        "A tool box",
+        "A design paper",
+        "A team leader"
+      ],
+      "explanationJa": "名前や 数字など、コンピューターが あつかう 中身です。",
+      "example": "データベースは、データを ためて、あとから さがす ものです。"
+    },
+    {
+      "id": "e-ai",
+      "term": "AI",
+      "reading": "えーあい",
+      "romaji": "e-ai",
+      "meaningEn": "Artificial intelligence",
+      "wrongMeanings": [
+        "A design document",
+        "An office building",
+        "A team meeting"
+      ],
+      "explanationJa": "人の かわりに 考えたり 作ったりする コンピューターです。",
+      "example": "AIの 時代は、人の 大切な 仕事が 変わります。"
+    },
+    {
+      "id": "kuraudo",
+      "term": "クラウド",
+      "reading": "くらうど",
+      "romaji": "kuraudo",
+      "meaningEn": "Cloud (computing)",
+      "wrongMeanings": [
+        "A weather report",
+        "A paper document",
+        "A train station"
+      ],
+      "explanationJa": "じぶんの パソコンでは なく、ネットの むこうで うごく しくみです。",
+      "example": "AI・クラウド・VRなどの 新しい 道具を 仕事の 中で さわれます。"
+    },
+    {
+      "id": "gijutsu",
+      "term": "技術",
+      "reading": "ぎじゅつ",
+      "romaji": "gijutsu",
+      "meaningEn": "Technology / Technical skill",
+      "wrongMeanings": [
+        "Salary",
+        "Holiday",
+        "Customer"
+      ],
+      "explanationJa": "ものを 作る やり方や、その 力の ことです。",
+      "example": "新しい 技術を、仕事の 中で 先に 学べます。"
+    },
+    {
+      "id": "dougu",
+      "term": "道具",
+      "reading": "どうぐ",
+      "romaji": "dougu",
+      "meaningEn": "Tool",
+      "wrongMeanings": [
+        "Salary",
+        "Meeting",
+        "Report"
+      ],
+      "explanationJa": "仕事を する ときに つかう ものです。",
+      "example": "AIや クラウドは、エンジニアの 新しい 道具です。"
+    },
+    {
+      "id": "nyuuryoku",
+      "term": "入力",
+      "reading": "にゅうりょく",
+      "romaji": "nyuuryoku",
+      "meaningEn": "Input / Typing in",
+      "wrongMeanings": [
+        "Output",
+        "Deleting",
+        "Printing"
+      ],
+      "explanationJa": "キーボードで 字を 打って、コンピューターに 入れる ことです。",
+      "example": "キーボードで 日本語を 入力する れんしゅうを します。"
+    },
+    {
+      "id": "kanjihenkan",
+      "term": "漢字変換",
+      "reading": "かんじへんかん",
+      "romaji": "kanjihenkan",
+      "meaningEn": "Kanji conversion (while typing)",
+      "wrongMeanings": [
+        "Reading aloud",
+        "Handwriting",
+        "Translation"
+      ],
+      "explanationJa": "ひらがなで 打った 字を、漢字に 変える ことです。",
+      "example": "漢字変換を つかって、「会社」と 書きます。"
+    },
+    {
+      "id": "ki-bo-do",
+      "term": "キーボード",
+      "reading": "きーぼーど",
+      "romaji": "ki-bo-do",
+      "meaningEn": "Keyboard",
+      "wrongMeanings": [
+        "Screen",
+        "Printer",
+        "Speaker"
+      ],
+      "explanationJa": "字を 打つ ための 道具です。",
+      "example": "キーボードを 日本語に して、あいうえおから はじめます。"
+    },
+    {
+      "id": "gamen",
+      "term": "画面",
+      "reading": "がめん",
+      "romaji": "gamen",
+      "meaningEn": "Screen / Display",
+      "wrongMeanings": [
+        "Keyboard",
+        "Cable",
+        "Folder"
+      ],
+      "explanationJa": "パソコンや スマホの、字や 絵が 見える ところです。",
+      "example": "画面の はしの「A」を「あ」に すると、じゅんびが おわります。"
+    },
+    {
+      "id": "chatto",
+      "term": "チャット",
+      "reading": "ちゃっと",
+      "romaji": "chatto",
+      "meaningEn": "Chat (short messages at work)",
+      "wrongMeanings": [
+        "Phone call",
+        "Paper letter",
+        "Video meeting"
+      ],
+      "explanationJa": "みじかい 文を 送って、その場で やりとりする ことです。",
+      "example": "書く 仕事は、報告書や チャットです。"
     }
   ]
 }
