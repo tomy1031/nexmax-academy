@@ -292,6 +292,10 @@ export function MeetingSession({
   /** すでに 受け取った 道具の 呼び出し（同じ ものを 2回 見ない）。 */
   const judgedCallRef = useRef(0);
   /** 判定の 手（道具が 来なかった ときの 落とし先）。 */
+  /** 道具を 待つ タイマー（見かたが 届いたら 消す）。 */
+  const waitRef = useRef(0);
+  /** チャットに 積んだ 相手の ことばの 数（字幕の どこまでを 出したか）。 */
+  const spokenSeenRef = useRef(0);
   const judgeRef = useRef<
     (u: string, spoken: boolean, target?: MeetingQuestion, logged?: boolean) => Promise<void>
   >(async () => {});
@@ -501,7 +505,8 @@ export function MeetingSession({
          * 数秒 待って 来なければ、規則ベースの 見かたに 落として 先へ 進める。
          */
         const waited = judgedCallRef.current;
-        window.setTimeout(() => {
+        window.clearTimeout(waitRef.current);
+        waitRef.current = window.setTimeout(() => {
           if (judgedCallRef.current !== waited) return;
           /*
            * 道具が 来なかった ときは、**これまでの 道（文字の 判定）**に 落とす。
@@ -610,6 +615,22 @@ export function MeetingSession({
    * 2つの声が重なる。つながっていない学習者（キーが無い・マイクが無い）にとっては、
    * ここが**唯一 声を聞ける場所**になる。
    */
+  /*
+   * 相手が **声で** 言った ことを チャットにも 残す（2026-08-18 の 指定）。
+   * 字幕（`voice.turns`）は 流れて いく ので、あとから 読み返せない。
+   * 自分の ことばは 判定の ところで 積んで いる ので、ここは 相手のぶんだけ。
+   */
+  useEffect(() => {
+    const fresh = voice.turns.slice(spokenSeenRef.current);
+    if (fresh.length === 0) return;
+    spokenSeenRef.current = voice.turns.length;
+    const said = fresh.filter((turn) => turn.from === "client");
+    if (said.length === 0) return;
+    void Promise.resolve().then(() => {
+      for (const turn of said) pushChat({ kind: "host", text: turn.text });
+    });
+  }, [voice.turns, pushChat]);
+
   /* 選んだ 速さは つないだ あとでも 効く（つぎの ひとことから） */
   const setRate = voice.setRate;
   useEffect(() => {
@@ -868,6 +889,7 @@ export function MeetingSession({
     const asked = answeringRef.current;
     if (!call || call.id === judgedCallRef.current || !asked) return;
     judgedCallRef.current = call.id;
+    window.clearTimeout(waitRef.current);
     const parsed = judgeOutputSchema.safeParse(call.data);
     if (!parsed.success) return;
     const judge: JudgeResult = { ...parsed.data, v: 1, grade: gradeOf(parsed.data) };
@@ -884,9 +906,15 @@ export function MeetingSession({
   const closeJudge = useCallback(() => {
     const again = reply?.judge?.retry === true;
     setJudgeOpen(false);
+    window.clearTimeout(waitRef.current);
+    /*
+     * おわった あとは 進めない。さいごの しつもんの あとに もう一度 進めて
+     * しまい、同じ ところを ぐるぐる 回って いた（2026-08-18 の 実発生）。
+     */
+    if (done) return;
     if (again) retry();
     else next();
-  }, [reply, retry, next]);
+  }, [reply, retry, next, done]);
 
   /** いま持っているハート。教材に affection が無いときは画面のどこにも出ない。 */
   const hearts = heartsOf(affection);
