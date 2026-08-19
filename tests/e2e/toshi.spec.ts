@@ -1,10 +1,11 @@
 import { expect, test, type Page } from "@playwright/test";
 import {
-  expectQuizCorrect,
   choiceButtons,
-  fillWordBank,
+  goNext,
+  goToConfirm,
+  placeWords,
+  submitAnswers,
   waitForAsk,
-  goNextQuestion,
   hearts,
   KAISHA_ITEMS,
   joinCall,
@@ -119,16 +120,15 @@ test("かいしゃステージを 6教材 通しで あそべる（端末に 何
     await expect(page).toHaveURL(/quiz-kaisha_shirabekata_check$/);
     await page.getByRole("button", { name: "はじめる" }).click();
 
+    // 既定の やりかたは「まとめて 出す」——途中では 採点しない（先生が 管理画面で 決める）
     for (const answer of CHECK_ANSWERS) {
       await choiceButtons(page).nth(answer).click();
-      await expectQuizCorrect(page);
-      await goNextQuestion(page);
+      await goNext(page);
     }
     // さいごは 複数えらぶ（3つの目＋💎）
     for (const index of [0, 1, 2, 3]) await multiButtons(page).nth(index).click();
-    await page.getByRole("button", { name: "こたえる" }).click();
-    await expectQuizCorrect(page);
-    await goNextQuestion(page);
+    await goToConfirm(page);
+    await submitAnswers(page);
 
     await expect(page.getByText("6 / 6 もん")).toBeVisible();
     await shot(page, "03-quiz-check-result");
@@ -154,22 +154,23 @@ test("かいしゃステージを 6教材 通しで あそべる（端末に 何
     await page.getByRole("button", { name: "はじめる" }).click();
 
     for (const words of HOUKOKU_WORDS) {
-      await fillWordBank(page, words);
-      await expectQuizCorrect(page);
-      await goNextQuestion(page);
+      await placeWords(page, words);
+      await goNext(page);
     }
     await shot(page, "05-quiz-wordbank");
 
-    for (const written of HOUKOKU_FREE_INPUT) {
+    for (const [index, written] of HOUKOKU_FREE_INPUT.entries()) {
       await page.getByLabel("こたえを 入力する").fill(written);
-      await page.getByRole("button", { name: "こたえる" }).click();
-      await expectQuizCorrect(page);
-      // 自分の書き方のまま通ったことを 画面が 見せる（救済が 生きている証拠）
-      await expect(page.getByText(`あなたの こたえ: ${written}`)).toBeVisible();
-      await goNextQuestion(page);
+      if (index === HOUKOKU_FREE_INPUT.length - 1) await goToConfirm(page);
+      else await goNext(page);
     }
+    await submitAnswers(page);
 
     await expect(page.getByText("9 / 9 もん")).toBeVisible();
+    // 自分の書き方のまま通ったことを 画面が 見せる（救済が 生きている証拠）
+    for (const written of HOUKOKU_FREE_INPUT) {
+      await expect(page.getByText(`あなたの こたえ: ${written}`)).toBeVisible();
+    }
     await shot(page, "06-quiz-houkoku-result");
     await page.getByRole("link", { name: "つぎは" }).click();
   });

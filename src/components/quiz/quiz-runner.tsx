@@ -49,12 +49,12 @@ const UI_FURIGANA = buildFuriganaIndex([
  * カートリッジ棚UI・茶系インク・フクロウは使わない（設計04 §1）。
  * 演出は必ず学習行為に紐づける（正解したときだけ紙吹雪・スタンプが増える）。
  *
- * ## やりかたは 学習者が えらぶ（設計01 P11）
- * - **1問ずつ**（これまでどおり・既定）… 答えるたびに こたえと せつめいを 読む
- * - **まとめて 出す** … ぜんぶ 書いてから 出す。採点は 出した あと 1回だけ
+ * ## やりかたは 先生が 決める（`QuizSet.answerMode`・管理画面）
+ * - **まとめて 出す**（既定）… ぜんぶ 書いてから 出す。採点は 出した あと 1回だけ
+ * - **1問ずつ** … 答えるたびに こたえと せつめいを 読む
  *
- * レベル別に 教材を 分けるのでは なく、**同じ 教材の 別モード**として 負荷の
- * 調整装置を 学習者に 握らせる。どちらでも 教材データは 同じ。
+ * 学習者には 選ばせない——同じ 教材を 同じ 条件で 受けさせたい 先生の 都合が 先に 立つ
+ * （2026-08-19 指定「まとめて出すかをきめるのは管理画面。デフォルトは全てまとめて出す」）。
  */
 export function QuizRunner({
   set,
@@ -78,10 +78,11 @@ export function QuizRunner({
     restoreQuiz(
       set.id,
       set.questions.map((q) => q.id),
+      set.answerMode,
     ),
   );
   const [state, setState] = useState<QuizState>(() =>
-    resumeQuizSession(set, start.index, start.results, start.mode, start.drafts),
+    resumeQuizSession(set, start.index, start.results, set.answerMode, start.drafts),
   );
   // 1問目をいきなり出さない。「何をするのか・全部できなくてよい」を先に置く
   //（いきなり問われると、答えられない不安のほうが先に立つ — P8）。
@@ -258,10 +259,10 @@ export function QuizRunner({
     [state.results, byId],
   );
 
-  /** やり直し（同じ やりかたの まま 作り直す）。 */
+  /** やり直し（教材の やりかたの まま 作り直す）。 */
   const restart = useCallback(
-    (questions: readonly QuizQuestion[], mode: QuizMode) => {
-      setState(createQuizSession(set, [...questions], mode));
+    (questions: readonly QuizQuestion[]) => {
+      setState(createQuizSession(set, [...questions], set.answerMode));
       startAttempt();
     },
     [set, startAttempt],
@@ -285,13 +286,13 @@ export function QuizRunner({
           set={set}
           furigana={furigana}
           resumed={resumed}
-          resumedMode={state.mode}
+          answerMode={set.answerMode}
           answeredCount={submitMode ? written : start.results.length}
           startIndex={state.index}
           onContinue={() => setStarted(true)}
-          onStart={(mode) => {
+          onStart={() => {
             clearQuizResume(set.id);
-            restart(set.questions, mode);
+            restart(set.questions);
             setResumed(false);
             setStarted(true);
           }}
@@ -304,12 +305,9 @@ export function QuizRunner({
           review={review}
           furigana={furigana}
           onRetryWrong={() =>
-            restart(
-              set.questions.filter((q) => summary.missedQuestionIds.includes(q.id)),
-              state.mode,
-            )
+            restart(set.questions.filter((q) => summary.missedQuestionIds.includes(q.id)))
           }
-          onRetryAll={() => restart(set.questions, state.mode)}
+          onRetryAll={() => restart(set.questions)}
         />
       ) : state.phase.kind === "confirm" ? (
         <ConfirmCard
@@ -427,14 +425,14 @@ export function QuizRunner({
  * 同じ 案内を ここで 出す。始める 前の この 1画面が いちばん 自然な 分かれ道
  * ——「つづきから」か「はじめから」かを、問題が 出る前に 選べる。
  *
- * やりかた（1問ずつ／まとめて 出す）も ここで 選ぶ。**既定は これまでどおり
- * 1問ずつ**で、大きい「はじめる」を 押せば 何も 変わらない。
+ * やりかた（1問ずつ／まとめて 出す）は **先生が 管理画面で 決める**ので、ここでは
+ * 選ばせない。かわりに「これから どう 進むか」を 1行で 伝える。
  */
 function StartCard({
   set,
   furigana,
   resumed,
-  resumedMode,
+  answerMode,
   answeredCount,
   startIndex,
   onContinue,
@@ -444,8 +442,8 @@ function StartCard({
   furigana: ReturnType<typeof buildFuriganaIndex>;
   /** 途中の 続きが あるか。 */
   resumed: boolean;
-  /** 途中の 続きが ある ときの やりかた。 */
-  resumedMode: QuizMode;
+  /** 教材の やりかた（先生が 管理画面で 決める）。 */
+  answerMode: QuizMode;
   /** ここまで 答えた（書いた）問題の 数（案内の 文に 出す）。 */
   answeredCount: number;
   /** これから 出す 問題の 番号（0始まり）。内訳が 無い ときの 案内に 使う。 */
@@ -453,12 +451,8 @@ function StartCard({
   /** 続きから（保存された ところから）始める。 */
   onContinue: () => void;
   /** 保存を 消して、1問目から 始める。 */
-  onStart: (mode: QuizMode) => void;
+  onStart: () => void;
 }) {
-  /** 「べつの やりかたで はじめる」を 押して、えらび直して いる 最中か。 */
-  const [choosing, setChoosing] = useState(false);
-  const showChoice = !resumed || choosing;
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 14 }}
@@ -494,7 +488,7 @@ function StartCard({
             <>
               🔖 まえの つづきから はじめます。（{answeredCount}もん{" "}
               <RubyText
-                text={resumedMode === "submit" ? "書きました" : "こたえました"}
+                text={answerMode === "submit" ? "書きました" : "こたえました"}
                 index={UI_FURIGANA}
               />
               ）
@@ -507,50 +501,31 @@ function StartCard({
         </p>
       )}
 
-      {showChoice ? (
-        <div className="mt-5 grid gap-4">
-          <div>
-            <button
-              type="button"
-              onClick={() => onStart("one")}
-              className="btn-island btn-game w-full px-6 py-3.5"
-            >
-              はじめる
-            </button>
-            <p className="text-ink-soft mt-2 text-center text-sm font-bold">
-              <RubyText text="1問 こたえるたびに、こたえと せつめいを 見ます" index={UI_FURIGANA} />
-            </p>
-          </div>
-          <div>
-            <button
-              type="button"
-              onClick={() => onStart("submit")}
-              className="btn-island btn-game w-full px-6 py-3.5"
-              style={{ "--btn-face": "#f7c948", "--btn-shadow": "#d99e1f" } as React.CSSProperties}
-            >
-              <RubyText text="まとめて 出す" index={UI_FURIGANA} />
-            </button>
-            <p className="text-ink-soft mt-2 text-center text-sm font-bold">
-              <RubyText
-                text="ぜんぶ こたえてから 出します。けっかは さいごに まとめて 見ます"
-                index={UI_FURIGANA}
-              />
-            </p>
-          </div>
+      {!resumed ? (
+        <div className="mt-5">
+          <button
+            type="button"
+            onClick={onStart}
+            className="btn-island btn-game w-full px-6 py-3.5"
+          >
+            はじめる
+          </button>
           {/*
-            えらび直しを やめる 道。**どちらの ボタンも 途中の 保存を 消す**ので、
-            まちがえて「べつの やりかたで はじめる」を 押した 人が、開き直すまで
-            つづきに 戻れない ことに なって いた（別の目 検収 気E）。
+            やりかた（1問ずつ／まとめて 出す）は **先生が 管理画面で 決める**ので、
+            ここでは 選ばせない。ただし「これから 何が 起きるか」は 先に 言う
+            ——まとめて 出す では 途中で こたえあわせが 無い ことを 知らずに
+            始めると、答えた あと 何も 起きない ことに 驚く（P8）。
           */}
-          {resumed && (
-            <button
-              type="button"
-              onClick={() => setChoosing(false)}
-              className="text-ink-soft hover:text-navy text-sm font-extrabold underline underline-offset-4"
-            >
-              ← つづきの がめんに もどる
-            </button>
-          )}
+          <p className="text-ink-soft mt-2 text-center text-sm font-bold">
+            <RubyText
+              text={
+                answerMode === "submit"
+                  ? "ぜんぶ こたえてから 出します。けっかは さいごに まとめて 見ます"
+                  : "1問 こたえるたびに、こたえと せつめいを 見ます"
+              }
+              index={UI_FURIGANA}
+            />
+          </p>
         </div>
       ) : (
         <div className="mt-5 grid gap-3">
@@ -559,17 +534,10 @@ function StartCard({
           </button>
           <button
             type="button"
-            onClick={() => onStart(resumedMode)}
+            onClick={onStart}
             className="border-hairline text-ink-soft bg-panel rounded-full border-2 px-6 py-2.5 text-sm font-extrabold"
           >
             はじめから やる
-          </button>
-          <button
-            type="button"
-            onClick={() => setChoosing(true)}
-            className="text-ink-soft hover:text-navy text-sm font-extrabold underline underline-offset-4"
-          >
-            べつの やりかたで はじめる
           </button>
         </div>
       )}

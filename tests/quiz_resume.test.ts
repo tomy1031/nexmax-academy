@@ -38,13 +38,13 @@ function savedThrough(count: number, ids: readonly string[] = IDS): QuizResume {
 
 describe("どこから 始めるか", () => {
   it("5問 答えた ところで 閉じたら、6問目から（1問目に 戻さない）", () => {
-    const start = startFrom(savedThrough(5), undefined, IDS);
+    const start = startFrom(savedThrough(5), undefined, IDS, "one");
     expect(start.index).toBe(5);
     expect(start.resumed).toBe(true);
   });
 
   it("それまでの 結果（正解した 問題の ID・得点）も いっしょに 戻る", () => {
-    const start = startFrom(savedThrough(5), undefined, IDS);
+    const start = startFrom(savedThrough(5), undefined, IDS, "one");
     expect(start.results).toHaveLength(5);
     expect(start.results[0]).toEqual({
       questionId: "q1",
@@ -56,33 +56,45 @@ describe("どこから 始めるか", () => {
   });
 
   it("完走した あとに 開き直したら はじめから（何度でも 挑戦できる）", () => {
-    expect(startFrom(savedThrough(IDS.length), undefined, IDS)).toEqual(FRESH_QUIZ_START);
+    expect(startFrom(savedThrough(IDS.length), undefined, IDS, "one")).toEqual({
+      ...FRESH_QUIZ_START,
+      mode: "one",
+    });
   });
 
   it("教材が 直されて 問題が 減って いたら はじめから（はみ出す 位置に 座らせない）", () => {
     const shorter = IDS.slice(0, 3);
-    expect(startFrom(savedThrough(5), undefined, shorter)).toEqual(FRESH_QUIZ_START);
+    expect(startFrom(savedThrough(5), undefined, shorter, "one")).toEqual({
+      ...FRESH_QUIZ_START,
+      mode: "one",
+    });
   });
 
   it("問題の 並びが 入れかわって いたら はじめから（出題順が 前提の 内訳を 信じない）", () => {
     const reordered = [...IDS];
     [reordered[0], reordered[1]] = [reordered[1]!, reordered[0]!];
-    expect(startFrom(savedThrough(5), undefined, reordered)).toEqual(FRESH_QUIZ_START);
+    expect(startFrom(savedThrough(5), undefined, reordered, "one")).toEqual({
+      ...FRESH_QUIZ_START,
+      mode: "one",
+    });
   });
 
   it("壊れた・存在しない 保存値は 無視して はじめから", () => {
-    expect(startFrom(null, undefined, IDS)).toEqual(FRESH_QUIZ_START);
-    expect(startFrom(null, -2, IDS)).toEqual(FRESH_QUIZ_START);
-    expect(startFrom(null, 2.5, IDS)).toEqual(FRESH_QUIZ_START);
+    expect(startFrom(null, undefined, IDS, "one")).toEqual({ ...FRESH_QUIZ_START, mode: "one" });
+    expect(startFrom(null, -2, IDS, "one")).toEqual({ ...FRESH_QUIZ_START, mode: "one" });
+    expect(startFrom(null, 2.5, IDS, "one")).toEqual({ ...FRESH_QUIZ_START, mode: "one" });
   });
 
   it("1問も 答えて いない ときは「つづき」と 言わない", () => {
-    expect(startFrom(savedThrough(0), undefined, IDS)).toEqual(FRESH_QUIZ_START);
-    expect(startFrom(null, 0, IDS)).toEqual(FRESH_QUIZ_START);
+    expect(startFrom(savedThrough(0), undefined, IDS, "one")).toEqual({
+      ...FRESH_QUIZ_START,
+      mode: "one",
+    });
+    expect(startFrom(null, 0, IDS, "one")).toEqual({ ...FRESH_QUIZ_START, mode: "one" });
   });
 
   it("しおり（進捗ストアの 位置）だけ 残って いても 位置は 戻る", () => {
-    const start = startFrom(null, 5, IDS);
+    const start = startFrom(null, 5, IDS, "one");
     expect(start.index).toBe(5);
     expect(start.resumed).toBe(true);
     expect(start.results).toEqual([]);
@@ -128,7 +140,7 @@ describe("しおりと 内訳を 突き合わせる（restoreQuiz）", () => {
       { status: "started", position: { question: 5 } },
       backend,
     );
-    const start = restoreQuiz("kaisha_houkoku", IDS, backend);
+    const start = restoreQuiz("kaisha_houkoku", IDS, "one", backend);
     expect(start.index).toBe(5);
     expect(start.resumed).toBe(true);
     expect(start.results).toEqual([]);
@@ -142,13 +154,16 @@ describe("しおりと 内訳を 突き合わせる（restoreQuiz）", () => {
       backend,
     );
     saveQuizResume(savedThrough(5), backend);
-    const start = restoreQuiz("kaisha_houkoku", IDS, backend);
+    const start = restoreQuiz("kaisha_houkoku", IDS, "one", backend);
     expect(start.index).toBe(5);
     expect(start.results).toHaveLength(5);
   });
 
   it("何も 無ければ はじめから", () => {
-    expect(restoreQuiz("kaisha_houkoku", IDS, createMemoryBackend())).toEqual(FRESH_QUIZ_START);
+    expect(restoreQuiz("kaisha_houkoku", IDS, "one", createMemoryBackend())).toEqual({
+      ...FRESH_QUIZ_START,
+      mode: "one",
+    });
   });
 
   it("完走の しおり（問題数と 同じ 位置）だけが 残って いても はじめから", () => {
@@ -158,7 +173,10 @@ describe("しおりと 内訳を 突き合わせる（restoreQuiz）", () => {
       { status: "completed", position: { question: IDS.length } },
       backend,
     );
-    expect(restoreQuiz("kaisha_houkoku", IDS, backend)).toEqual(FRESH_QUIZ_START);
+    expect(restoreQuiz("kaisha_houkoku", IDS, "one", backend)).toEqual({
+      ...FRESH_QUIZ_START,
+      mode: "one",
+    });
   });
 });
 
