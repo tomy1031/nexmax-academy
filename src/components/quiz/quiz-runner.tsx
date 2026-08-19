@@ -144,7 +144,18 @@ export function QuizRunner({
       return;
     }
     if (submitMode) {
-      if (written === 0) return; // 何も 書いて いなければ 書かない
+      /*
+       * 書いた ものが 0に 戻った ときは **消す**。
+       *
+       * 前は そのまま return して いた。すると 唯一 書いた こたえを 自分で 消しても
+       * 前の 保存が 残り、他の ページから 戻ると「1もん 書きました」と 言われて
+       * **消した はずの こたえが 生き返る**（別の目 検収で 実発生）。
+       * 画面が 0と 言う ときは、端末の 中も 0で ある。
+       */
+      if (written === 0) {
+        clearQuizResume(set.id);
+        return;
+      }
       saveQuizResume({
         quizSetId: set.id,
         results: [],
@@ -275,6 +286,7 @@ export function QuizRunner({
           resumed={resumed}
           resumedMode={state.mode}
           answeredCount={submitMode ? written : start.results.length}
+          startIndex={state.index}
           onContinue={() => setStarted(true)}
           onStart={(mode) => {
             clearQuizResume(set.id);
@@ -423,6 +435,7 @@ function StartCard({
   resumed,
   resumedMode,
   answeredCount,
+  startIndex,
   onContinue,
   onStart,
 }: {
@@ -434,6 +447,8 @@ function StartCard({
   resumedMode: QuizMode;
   /** ここまで 答えた（書いた）問題の 数（案内の 文に 出す）。 */
   answeredCount: number;
+  /** これから 出す 問題の 番号（0始まり）。内訳が 無い ときの 案内に 使う。 */
+  startIndex: number;
   /** 続きから（保存された ところから）始める。 */
   onContinue: () => void;
   /** 保存を 消して、1問目から 始める。 */
@@ -464,12 +479,26 @@ function StartCard({
 
       {resumed ? (
         <p className="bg-cream border-hairline text-ink mt-5 rounded-[var(--radius-card)] border-2 px-4 py-3 font-extrabold">
-          🔖 まえの つづきから はじめます。（{answeredCount}もん{" "}
-          <RubyText
-            text={resumedMode === "submit" ? "書きました" : "こたえました"}
-            index={UI_FURIGANA}
-          />
-          ）
+          {answeredCount === 0 ? (
+            /*
+             * しおり（位置）だけが 残って いた 回。内訳が 無いので「0もん こたえました」
+             * に なって いた——**答えて いないのに つづき**は 学習者には 読めない。
+             * 何が 戻るのかを そのまま 言う。
+             */
+            <RubyText
+              text={`🔖 まえに 見て いた ${startIndex + 1}もんめから はじめます。`}
+              index={UI_FURIGANA}
+            />
+          ) : (
+            <>
+              🔖 まえの つづきから はじめます。（{answeredCount}もん{" "}
+              <RubyText
+                text={resumedMode === "submit" ? "書きました" : "こたえました"}
+                index={UI_FURIGANA}
+              />
+              ）
+            </>
+          )}
         </p>
       ) : (
         <p className="border-hairline bg-panel-tint text-ink mt-5 rounded-[var(--radius-card)] border-2 px-4 py-3 font-extrabold">

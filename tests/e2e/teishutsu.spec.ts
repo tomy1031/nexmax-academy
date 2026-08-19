@@ -167,6 +167,8 @@ test("きもち→言い方の 2段階も、まとめて 出す で えらび直
   // きもちを えらぶと 言い方の 段に 進む（合って いるかは 出さない）
   await choiceButtons(page).nth(0).click();
   await expect(page.getByText("よく できました")).toHaveCount(0);
+  // 合って いるかは 出さない かわりに、**えらんだ ものは 残す**
+  await expect(page.getByText(/えらんだ きもち/)).toBeVisible();
   // ルビの まわりに 空白が 入る ことが あるので、ふりがなの 手前で さがす
   const redo = page.getByRole("button", { name: /きもちを えらび/ });
   await expect(redo).toBeVisible();
@@ -177,4 +179,44 @@ test("きもち→言い方の 2段階も、まとめて 出す で えらび直
   await choiceButtons(page).nth(1).click();
   await choiceButtons(page).nth(0).click();
   await expect(page.getByText("こたえた 2 / 5")).toBeVisible();
+});
+
+test("書いた こたえを 消したら、つぎに 開いても 生き返らない", async ({ page, context }) => {
+  await seedCompleted(context, itemsBefore(3));
+  await page.goto(KAISHA.quiz2.path);
+  await page.getByRole("button", { name: START_SUBMIT }).click();
+
+  // 自由入力の もんだいまで 進んで、書いてから 自分で 消す
+  for (let i = 0; i < 5; i += 1) {
+    await page.getByRole("button", { name: "つぎ →" }).click();
+  }
+  const box = page.getByLabel("こたえを 入力する");
+  await box.fill("くるま");
+  await expect(page.getByText("こたえた 1 / 9")).toBeVisible();
+  await box.fill("");
+  await expect(page.getByText("こたえた 0 / 9")).toBeVisible();
+
+  // 離脱して 戻る。画面が 0と 言った なら、端末の 中も 0で ある
+  await page.goto("/kaisha");
+  await page.goto(KAISHA.quiz2.path);
+  await expect(page.getByText("まえの つづきから")).toHaveCount(0);
+  await expect(page.getByText(/書きました/)).toHaveCount(0);
+});
+
+test("しおりだけ 残って いる ときは「◯もんめから」と 言う（0もん こたえました と 言わない）", async ({
+  page,
+  context,
+}) => {
+  await seedCompleted(context, itemsBefore(1));
+  // 内訳（下書き・結果）が 無く、位置だけ 残って いる 状態を 作る
+  await context.addInitScript(() => {
+    window.localStorage.setItem(
+      "nexmax:v1:content:kaisha_shirabekata_check",
+      JSON.stringify({ status: "started", position: { question: 2 } }),
+    );
+  });
+
+  await page.goto(KAISHA.quiz1.path);
+  await expect(page.getByText(/3もんめから/)).toBeVisible();
+  await expect(page.getByText(/0もん/)).toHaveCount(0);
 });

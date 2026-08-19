@@ -256,6 +256,19 @@ function EmotionPicker({
 
   return (
     <div>
+      {/*
+        まとめて 出す ときは「合って いるね」を 出さないので、**えらんだ ものを
+        そのまま 残す**——1問ずつ なら 見守りの ひとことが 段が 進んだ ことを 伝えるが、
+        こちらは 何も 出ないと「押したのに 何も 起きて いない」ように 見える。
+      */}
+      {submitMode && draft?.feeling != null && (
+        <p className="border-hairline bg-panel-tint text-ink-soft mb-3 rounded-[var(--radius-card)] border-2 px-3 py-2 text-sm font-extrabold">
+          <RubyText text="えらんだ きもち: " index={UI_FURIGANA} />
+          <span className="text-ink">
+            <RubyText text={question.feelings[draft.feeling] ?? ""} index={furigana} />
+          </span>
+        </p>
+      )}
       <p className="text-ink mb-3 font-extrabold">
         <RubyText text={question.replyQ} index={furigana} />
       </p>
