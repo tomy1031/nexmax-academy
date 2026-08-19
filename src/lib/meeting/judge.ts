@@ -186,6 +186,25 @@ export interface JudgeContext {
  * 学習者の発話は**データとして囲って渡す**。発話の中に「これまでの指示を忘れて」と
  * 書かれても指示として読まれないようにするため（構造化出力の強制と二重の守り）。
  */
+/**
+ * Live に 持たせる 道具（見かたを 返す ため）。
+ *
+ * Live は 1つの つなぎで 音声か 文字の 一方しか 返せない。声で 受け止めさせながら
+ * 中身も 受け取る ために、**道具の 呼び出し**で JSON を もらう（2026-08-18 の 指定）。
+ * 形は `JUDGE_RESPONSE_SCHEMA` と 同じ——2つに 分かれると、片方だけ 直して
+ * 画面と 食い違う。
+ */
+export const JUDGE_TOOL = {
+  functionDeclarations: [
+    {
+      name: "nihongo_no_mikata",
+      description:
+        "学生の 発話を 見て、日本語の 見かたを 返す。声で 受け止めた あと、毎回 かならず 1回 呼ぶ。",
+      parameters: JUDGE_RESPONSE_SCHEMA,
+    },
+  ],
+} as const;
+
 export function buildJudgePrompt(context: JudgeContext, kanaRetry = false): string {
   const lines = [
     "あなたは 日本語の 先生です。日本で はたらきたい 学生（日本語N5〜N4・英語は読める）の",
