@@ -89,7 +89,13 @@ function TypeCard({
         {type.analysis.map((line) => (
           <li key={line} className="text-ink flex gap-2 text-sm leading-loose font-bold">
             <span className="text-leaf-deep shrink-0">✓</span>
-            <LearnerText text={line} />
+            {/* **本文は1つの箱に入れてから並べる。** `LearnerText` は ルビや 語彙メモの
+                ボタンを **ばらばらの 要素として** 返すので、flex の 直下に 置くと
+                1つ1つが 横に 並ぶ 箱に なり、文が 段に 割れて 読めなくなる
+                （2026-08-19「/nexmax の 表示くずれ」）。 */}
+            <span className="min-w-0 flex-1">
+              <LearnerText text={line} />
+            </span>
           </li>
         ))}
       </ul>

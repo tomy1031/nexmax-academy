@@ -4,7 +4,7 @@
   "title": "日本で エンジニアに なる ために",
   "description": "学校の 日本語から、仕事の 日本語へ。日本の 会社で はたらく ために 大切な ことを 見ます。",
   "fileUrl": "/slides/it-orientation.pdf",
-  "pageCount": 19,
+  "pageCount": 11,
   "notes": [
     {
       "page": 2,
@@ -15,51 +15,35 @@
       "text": "【仕様書】specification (what to make)　【報告書】report　【会議】meeting　【相談】consulting someone　【指示】instruction"
     },
     {
-      "page": 5,
+      "page": 4,
       "text": "【承知しました】Understood (business Japanese)　【申し訳 ございません】I am very sorry (business Japanese)　【意味】meaning　【言い方】way of saying"
     },
     {
-      "page": 6,
+      "page": 5,
       "text": "【専門】specialised, expert　【要件定義】requirements definition (deciding what to make)　【設計書】design document　【調べる】to look up"
     },
     {
-      "page": 7,
+      "page": 6,
       "text": "【止まる】to stop"
     },
     {
-      "page": 9,
-      "text": "【約束】promise, appointment　【着く】to arrive　【遅れる】to be late　【必ず】always, without fail　【連絡】contact, letting someone know"
-    },
-    {
-      "page": 10,
-      "text": "【報告】reporting what happened　【困る】to be in trouble, to be stuck"
-    },
-    {
-      "page": 11,
+      "page": 7,
       "text": "【時代】era"
     },
     {
-      "page": 14,
-      "text": "【給料】salary"
+      "page": 8,
+      "text": "【約束】promise, appointment　【着く】to arrive　【遅れる】to be late　【必ず】always, without fail　【連絡】contact, letting someone know　【報告】reporting what happened　【困る】to be in trouble, to be stuck"
     },
     {
-      "page": 15,
-      "text": "【技術】technology, skill　【学ぶ】to learn　【道具】tool"
+      "page": 9,
+      "text": "【給料】salary　【技術】technology, skill　【学ぶ】to learn　【道具】tool　【安全】safe　【世界】world　【位】rank, place　【経験】experience　【やり方】the way of doing something"
     },
     {
-      "page": 16,
-      "text": "【安全】safe"
-    },
-    {
-      "page": 17,
-      "text": "【経験】experience　【やり方】the way of doing something"
-    },
-    {
-      "page": 18,
+      "page": 10,
       "text": "【未来】future"
     },
     {
-      "page": 19,
+      "page": 11,
       "text": "【応援】cheering for you, support"
     }
   ],
@@ -227,6 +211,14 @@
     [
       "方",
       "かた"
+    ],
+    [
+      "世界",
+      "せかい"
+    ],
+    [
+      "位",
+      "い"
     ]
   ]
 }
