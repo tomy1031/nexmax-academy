@@ -53,6 +53,7 @@ import { judgeFailNote, requestJudge } from "./judge-api";
 import { JudgeCard } from "./judge-card";
 import { ProgressChips } from "./question-board";
 import { MeetingResultCard, PreviousRecordCard, RewardCard } from "./result-card";
+import { JudgeModal } from "./judge-modal";
 import { SpeakButton } from "./speak-button";
 import { SpeechSpeedPicker } from "./speech-speed-picker";
 import { VisemeFace, type Viseme } from "./viseme-face";
@@ -273,6 +274,15 @@ export function MeetingSession({
    * 開く 価値が ある（設計01 P2）。判定は この 端末の 中で 済ませる。
    */
   const [found, setFound] = useState<ReadonlySet<string>>(() => new Set<string>());
+  /** 日本語の 見かたを ポップアップで 出して いるか。 */
+  const [judgeOpen, setJudgeOpen] = useState(false);
+  /** ポップアップに そのまま 見せる「あなたの ことば」。 */
+  const [lastSaid, setLastSaid] = useState("");
+  /**
+   * つぎへ 進む 手（`next` は この 下で 作られる ので、参照で 受け取る）。
+   * 判定の 中から 呼ぶ ため——宣言の 前の 名前は そのままでは 使えない。
+   */
+  const nextRef = useRef<() => void>(() => {});
   const pushChat = useCallback((entry: ChatBody) => {
     setChat((prev) => [...prev, { ...entry, id: `${prev.length}-${entry.kind}` }]);
   }, []);
@@ -446,6 +456,7 @@ export function MeetingSession({
       if (!asked) return;
       const at = Date.now();
       pushChat({ kind: "me", text: utterance });
+      setLastSaid(utterance);
       setThinking(true);
       const result = await requestJudge({
         ask: withName(asked.ask),
@@ -470,6 +481,7 @@ export function MeetingSession({
           pushChat({ kind: "host", text: result.judge.reply });
         }
         pushChat({ kind: "coach", judge: result.judge });
+        setJudgeOpen(true);
         rewardTurn(asked.id, utterance, result.judge.grade, !result.judge.retry);
         void recordMeetingTurn({
           meetingId: meeting.id,
@@ -494,6 +506,10 @@ export function MeetingSession({
       const echo = spoken ? "" : fillAnswer(asked.echo, utterance);
       if (echo) pushChat({ kind: "host", text: echo });
       pushChat({ kind: "coach", fallback: { advice, note: judgeFailNote(result.reason) } });
+      /*
+       * AIに 通せなかった ときは 判定が 無い ので、ポップアップは 出さずに
+       * そのまま つぎへ 進める（止めない。P8）。
+       */
       setReply({
         /*
          * おうむ返しは **学習者の 答え**を 返す。ここで 呼び名を 差し込む 関数を
@@ -508,6 +524,12 @@ export function MeetingSession({
       });
       // 判定に通せなくても、答えた事実は残る。札は開き、ハートも足す
       rewardTurn(asked.id, utterance, null, true);
+      /*
+       * AIに 通せなかった ときは 判定が 無い ので、ポップアップは 出さずに
+       * そのまま つぎへ 進める（止めない。P8）。**ごほうびを 足した あと**に
+       * 進める——先に 進めると、さいごの 1回ぶんの ハートが 数に 入らない。
+       */
+      nextRef.current();
       void recordMeetingTurn({
         meetingId: meeting.id,
         questionId: asked.id,
@@ -767,28 +789,22 @@ export function MeetingSession({
   }, [chat.length, thinking]);
 
   /**
-   * 判定が 出たら **自分で つぎへ 進む**（ボタンを 押させない）。
+   * 判定は **ポップアップ**で 見せ、つぎに 進むのは 学習者が 押して 決める。
    *
-   * 「つぎへ →」「もう いちど 言う」「まだ 言えない」の 3つの ボタンは、押すまで
-   * 会話が 止まる 作りだった。会話の 教材で いちばん 大事なのは 話す ことなので、
-   * 進み方は 判定に まかせる: 通ったら つぎの しつもんへ、言い直しなら 例を 見せて
-   * もう いちど 同じ しつもんへ。読む 時間は 少し 置く（カードは 記録に 残る）。
+   * 時間で 自動に 進めて いた ころは、つたわったのか もう いちどなのかが
+   * 流れて しまい、**正しく 言っても 進まない**ように 見える ことが あった
+   *（2026-08-18 の 指摘）。押した ぶんだけ 進む 形なら、迷いも 取りこぼしも 無い。
    */
-  const nextRef = useRef(next);
-  const retryRef = useRef(retry);
   useEffect(() => {
     nextRef.current = next;
-    retryRef.current = retry;
   });
-  useEffect(() => {
-    if (!reply || done) return;
-    const again = reply.judge?.retry === true;
-    const timer = setTimeout(
-      () => (again ? retryRef.current() : nextRef.current()),
-      again ? 2400 : 1200,
-    );
-    return () => clearTimeout(timer);
-  }, [reply, done]);
+
+  const closeJudge = useCallback(() => {
+    const again = reply?.judge?.retry === true;
+    setJudgeOpen(false);
+    if (again) retry();
+    else next();
+  }, [reply, retry, next]);
 
   /** いま持っているハート。教材に affection が無いときは画面のどこにも出ない。 */
   const hearts = heartsOf(affection);
@@ -1145,6 +1161,16 @@ export function MeetingSession({
       >
         {body}
       </CallShell>
+
+      {/* 日本語の 見かた。いちばん 前に 出して、つぎに 何を するかを 押して 決める */}
+      {judgeOpen && reply?.judge ? (
+        <JudgeModal
+          judge={reply.judge}
+          utterance={lastSaid}
+          hostName={meeting.host.name}
+          onNext={closeJudge}
+        />
+      ) : null}
     </div>
   );
 }
