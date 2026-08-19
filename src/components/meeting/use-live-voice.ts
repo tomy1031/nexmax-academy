@@ -340,9 +340,18 @@ export function useLiveVoice(): LiveVoice {
         const capture = await startMicCapture(stream, (pcm) => {
           // 押して いない あいだは 捨てる（口は 開いた まま・音だけ ためない）
           if (!talkingRef.current) return;
-          pendingRef.current.push(
-            bytesToBase64(new Uint8Array(pcm.buffer, pcm.byteOffset, pcm.byteLength)),
-          );
+          /*
+           * **ためずに その場で 送る**。ためて 最後に まとめて 送って いた ころは、
+           * 1回目の 返事が 来ない／あとで 2つ まとめて 来る ことが あった
+           *（2026-08-18 の 指摘）——相手は 音が 流れて いる あいだに 区切りを
+           * 見て いるので、まとめ送りは その 見かたと 合わない。
+           */
+          sessionRef.current?.sendRealtimeInput({
+            audio: {
+              data: bytesToBase64(new Uint8Array(pcm.buffer, pcm.byteOffset, pcm.byteLength)),
+              mimeType: `audio/pcm;rate=${IN_RATE}`,
+            },
+          });
         });
         micRef.current = { capture, stream };
 
@@ -403,13 +412,8 @@ export function useLiveVoice(): LiveVoice {
     if (!talkingRef.current) return;
     talkingRef.current = false;
     setTalking(false);
-    // ためた ぶんを まとめて 送ってから、「言い終わった」を 伝える
-    const session = sessionRef.current;
-    for (const data of pendingRef.current) {
-      session?.sendRealtimeInput({ audio: { data, mimeType: `audio/pcm;rate=${IN_RATE}` } });
-    }
-    pendingRef.current = [];
-    session?.sendRealtimeInput({ audioStreamEnd: true });
+    // 「言い終わった」を 伝える（ここで 相手が 返事を 作りはじめる）
+    sessionRef.current?.sendRealtimeInput({ audioStreamEnd: true });
   }, []);
 
   /** 進行の 合図。学習者の ことばでは ないので 字幕に 残さない。 */
