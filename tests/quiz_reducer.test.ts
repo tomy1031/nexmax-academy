@@ -334,18 +334,6 @@ describe("自由入力の救済（IME・こたえを見る）", () => {
     });
     expect(s.phase).toMatchObject({ kind: "explain", answer: "ホウレンソウ" });
   });
-
-  it("「こたえを 見る」は点が入らないが解説へ進む", () => {
-    const s = quizReducer(createQuizSession(set, [keyword]), { type: "skipKeyword" });
-    expect(s.phase).toMatchObject({ kind: "explain", correct: false, feedback: "quiz.review" });
-    expect(s.results[0]?.earned).toBe(0);
-  });
-
-  it("「こたえを 見る」は自由入力の出題中だけ効く", () => {
-    const choose = set.questions.find((x) => x.type === "choose")!;
-    const s = createQuizSession(set, [choose]);
-    expect(quizReducer(s, { type: "skipKeyword" })).toBe(s);
-  });
 });
 
 describe("問題セットのスキーマ（検収の契約）", () => {
@@ -511,10 +499,14 @@ describe("まとめて 出す（提出モード）", () => {
     expect(quizReducer(s, { type: "answerChoice", index: 0 })).toBe(s);
   });
 
-  it("「こたえを 見る」は 置かない（出す 前に こたえが 見えない）", () => {
-    const keyword = set.questions.find((q) => q.type === "keyword")!;
-    const s = submitSession([keyword]);
-    expect(quizReducer(s, { type: "skipKeyword" })).toBe(s);
+  it("「こたえを 見る」の 逃げ道は どこにも 置かない（2度 消えた ものが 戻らないように）", () => {
+    // 2026-08-19 の 指定で 機能ごと 外した（前にも 一度 消して、直しの ついでに 戻っていた）。
+    // reducer の 行き先も UI も 無い ことを、字で 見張る。
+    const ui = readFileSync(join(__dirname, "../src/components/quiz/question-types.tsx"), "utf8");
+    const reducer = readFileSync(join(__dirname, "../src/components/quiz/quiz-reducer.ts"), "utf8");
+    expect(ui).not.toContain("こたえを 見る");
+    expect(ui).not.toContain("onSkip");
+    expect(reducer).not.toContain("skipKeyword");
   });
 
   it("ローマ字の 注意は 出すが、合って いるかは 漏らさない（書いた ものは 残る）", () => {

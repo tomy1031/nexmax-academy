@@ -45,15 +45,6 @@
     position: absolute; bottom: 10px; left: 24px; font-size: 10.5px; color: #7189a3;
     background: rgba(255, 253, 250, 0.78); padding: 2px 10px; border-radius: 999px;
   }
-  /* ページ番号は数えて出す（手書きだと1枚の挿入で以降が全部ずれる）。分母だけここで1回書く */
-  body { counter-reset: slide; }
-  .slide { counter-increment: slide; }
-  /* 丸ごと絵のスライドでは 絵の中のネクマックスと 重なるので、薄い下地を敷いて読めるようにする */
-  .pageno {
-    position: absolute; bottom: 10px; right: 16px; font-size: 11px; font-weight: 700; color: #7189a3;
-    background: rgba(255, 253, 250, 0.78); padding: 2px 9px; border-radius: 999px;
-  }
-  .pageno::before { content: counter(slide) " / 29"; }
 
   /* --- 絵が主役のスライド（左テキスト・右画像） --- */
   .with-pic { padding-right: 0; }
@@ -202,7 +193,6 @@
       これからは PMの <ruby>力<rt>ちから</rt></ruby>が <ruby>必要<rt>ひつよう</rt></ruby>です。
     </div>
   </div>
-  <div class="pageno"></div>
 </section>
 
 <!-- 2: 章扉1 -->
@@ -212,7 +202,6 @@
     <div class="num">1</div>
     <h1>AI・ITに いま なにが<br />おきて いますか？</h1>
   </div>
-  <div class="pageno"></div>
 </section>
 
 <!-- 3: クイズ（3択） -->
@@ -243,7 +232,6 @@
     </div>
   </div>
   <div class="sub" style="text-align: center; margin-top: 14px;"><ruby>先<rt>さき</rt></ruby>に <ruby>考<rt>かんが</rt></ruby>えて みましょう。</div>
-  <div class="pageno"></div>
 </section>
 
 <!-- 4: 正解 -->
@@ -277,7 +265,6 @@
     <ruby>今年<rt>ことし</rt></ruby>の はじめは <strong>B</strong> でした。でも いまは <strong>C</strong> に なって きて います。<br />
     コードを <ruby>読<rt>よ</rt></ruby>まない プログラマーも <ruby>増<rt>ふ</rt></ruby>えて います。
   </div>
-  <div class="pageno"></div>
 </section>
 
 <!-- 5: AIの役割の変化（3段階）— スライド丸ごと生成 -->
@@ -288,7 +275,6 @@
     むかし: チャットで 聞く（アドバイス）。すこし前: AIが コードを 書く（アシスタント）。
     いま: テストも 公開も AIが する（エージェント）。
   </div>
-  <div class="pageno"></div>
 </section>
 
 <!-- 6: データ（AIが書いたコードのわりあい） — スライド丸ごと生成 -->
@@ -296,7 +282,6 @@
   <img class="bg" src="img/w06_data.jpg" alt="" />
   <div class="alt">ほんとうの 数字。AIが 書いた コードの わりあい。Microsoft 30%（2025年4月）、Google 75%（2026年）、Claude 90%（2025年）。Google は 2年で 25% から 75% に なりました。</div>
   <div class="footnote"><ruby>出典<rt>しゅってん</rt></ruby>: <ruby>各社<rt>かくしゃ</rt></ruby>の <ruby>発表<rt>はっぴょう</rt></ruby>（いつの <ruby>数字<rt>すうじ</rt></ruby>かは <ruby>図<rt>ず</rt></ruby>の <ruby>中<rt>なか</rt></ruby>に あります）</div>
-  <div class="pageno"></div>
 </section>
 
 <!-- 7: 章扉2 -->
@@ -306,21 +291,18 @@
     <div class="num">2</div>
     <h1>チームの かたちが <ruby>変<rt>か</rt></ruby>わります</h1>
   </div>
-  <div class="pageno"></div>
 </section>
 
 <!-- 8: 今までのチーム（組織図） — スライド丸ごと生成 -->
 <section class="slide full-pic">
   <img class="bg" src="img/w08_orgnow.jpg" alt="" />
   <div class="alt">今までの チーム。PMが お客さまと 話します。クライアント（お客さま）／ PM（仕事を まとめる 人）／ プログラマー（プログラムを 書く 人）。</div>
-  <div class="pageno"></div>
 </section>
 
 <!-- 9: これからのチーム（組織図・対比） — スライド丸ごと生成 -->
 <section class="slide full-pic">
   <img class="bg" src="img/w09_orgai.jpg" alt="" />
   <div class="alt">これからの チーム。プログラムは AIの 仕事に なります。クライアント（お客さま）／ PM（あなた！）／ AI（プログラムを 書く）。</div>
-  <div class="pageno"></div>
 </section>
 
 <!-- 10: だから PMの力 -->
@@ -331,7 +313,6 @@
     <div class="sub">お<ruby>客<rt>きゃく</rt></ruby>さまの そばに <ruby>立<rt>た</rt></ruby>つ <ruby>仕事<rt>しごと</rt></ruby>です。</div>
   </div>
   <img class="pic" src="img/s08.jpg" alt="" />
-  <div class="pageno"></div>
 </section>
 
 <!-- 11: 章扉3 -->
@@ -341,7 +322,6 @@
     <div class="num">3</div>
     <h1><ruby>世界<rt>せかい</rt></ruby>の いま</h1>
   </div>
-  <div class="pageno"></div>
 </section>
 
 <!-- 12: アメリカ -->
@@ -363,7 +343,6 @@
   </div>
   <img class="pic" src="img/s09.jpg" alt="" style="width: 46%;" />
   <div class="footnote"><ruby>出典<rt>しゅってん</rt></ruby>: <ruby>各社<rt>かくしゃ</rt></ruby>の <ruby>発表<rt>はっぴょう</rt></ruby>・<ruby>報道<rt>ほうどう</rt></ruby>（2025〜2026<ruby>年<rt>ねん</rt></ruby>）</div>
-  <div class="pageno"></div>
 </section>
 
 <!-- 13: ハーバード大学（4人に1人） — スライド丸ごと生成 -->
@@ -371,7 +350,6 @@
   <img class="bg" src="img/w13_harvard.jpg" alt="" />
   <div class="alt">世界の いま。ハーバード大学を 卒業しても、仕事が できません。4人に 1人は、卒業して 3か月 たっても 仕事が 見つかりません。</div>
   <div class="footnote"><ruby>出典<rt>しゅってん</rt></ruby>: Harvard Business School の <ruby>発表<rt>はっぴょう</rt></ruby>（2024<ruby>年度<rt>ねんど</rt></ruby>・MBA）</div>
-  <div class="pageno"></div>
 </section>
 
 <!-- 14: 中国の会社（130,000人） — スライド丸ごと生成 -->
@@ -379,7 +357,6 @@
   <img class="bg" src="img/w14_china.jpg" alt="" />
   <div class="alt">世界の いま。中国の 大きな 会社も 人を 減らして います。Alibaba、Tencent、ByteDance。130,000人。1年で 減りました。</div>
   <div class="footnote"><ruby>出典<rt>しゅってん</rt></ruby>: <ruby>報道<rt>ほうどう</rt></ruby>（2025〜2026<ruby>年<rt>ねん</rt></ruby>）</div>
-  <div class="pageno"></div>
 </section>
 
 <!-- 15: 章扉4 -->
@@ -389,7 +366,6 @@
     <div class="num">4</div>
     <h1>でも、<ruby>日本<rt>にほん</rt></ruby>には<br />チャンスが あります！</h1>
   </div>
-  <div class="pageno"></div>
 </section>
 
 <!-- 16: 理由1 -->
@@ -400,7 +376,6 @@
     <div class="sub"><ruby>長<rt>なが</rt></ruby>く <ruby>安心<rt>あんしん</rt></ruby>して <ruby>働<rt>はたら</rt></ruby>けます。</div>
   </div>
   <img class="pic" src="img/s13.jpg" alt="" />
-  <div class="pageno"></div>
 </section>
 
 <!-- 17: 理由2: ITの人が足りない — スライド丸ごと生成 -->
@@ -408,7 +383,6 @@
   <img class="bg" src="img/w17_shortage.jpg" alt="" />
   <div class="alt">理由 2。日本は ITの 人が 足りません。2018年ごろ 170,000、2020年 370,000、2030年 790,000。</div>
   <div class="footnote"><ruby>出典<rt>しゅってん</rt></ruby>: <ruby>経済産業省<rt>けいざいさんぎょうしょう</rt></ruby>「IT<ruby>人材<rt>じんざい</rt></ruby><ruby>需給<rt>じゅきゅう</rt></ruby>に <ruby>関<rt>かん</rt></ruby>する <ruby>調査<rt>ちょうさ</rt></ruby>」（2019<ruby>年<rt>ねん</rt></ruby>）</div>
-  <div class="pageno"></div>
 </section>
 
 <!-- 18: 理由3: AIを使っていない会社が多い — スライド丸ごと生成 -->
@@ -416,7 +390,6 @@
   <img class="bg" src="img/w18_adoption.jpg" alt="" />
   <div class="alt">理由 3。AIを まだ 使って いない 会社が 多い。41.2%。半分より 少ないです。これから AIの 仕事が たくさん 生まれます。</div>
   <div class="footnote"><ruby>出典<rt>しゅってん</rt></ruby>: <ruby>総務省<rt>そうむしょう</rt></ruby>「<ruby>情報通信白書<rt>じょうほうつうしんはくしょ</rt></ruby>」（2025<ruby>年<rt>ねん</rt></ruby>）</div>
-  <div class="pageno"></div>
 </section>
 
 <!-- 19: 日本のチャンス（会社の数） — スライド丸ごと生成 -->
@@ -424,7 +397,6 @@
   <img class="bg" src="img/w19_companies.jpg" alt="" />
   <div class="alt">日本の チャンス。会社の 数が とても 多い。日本 5,530,000、アメリカ 5,660,000、カンボジア 46,000。人口は アメリカの 半分。でも 会社の 数は ほぼ 同じ。</div>
   <div class="footnote"><ruby>出典<rt>しゅってん</rt></ruby>: <ruby>各国<rt>かっこく</rt></ruby>の <ruby>統計<rt>とうけい</rt></ruby>（<ruby>数<rt>かぞ</rt></ruby>え<ruby>方<rt>かた</rt></ruby>は <ruby>国<rt>くに</rt></ruby>で <ruby>少<rt>すこ</rt></ruby>し ちがいます）</div>
-  <div class="pageno"></div>
 </section>
 
 <!-- 20: ビジネスチャンス -->
@@ -436,14 +408,12 @@
     <div class="sub" style="font-size: 16px;"><ruby>今<rt>いま</rt></ruby>まで アプリを <ruby>作<rt>つく</rt></ruby>れなかった <ruby>小<rt>ちい</rt></ruby>さい <ruby>会社<rt>かいしゃ</rt></ruby>が、お<ruby>客<rt>きゃく</rt></ruby>さまに なります。</div>
   </div>
   <img class="pic" src="img/s17.jpg" alt="" />
-  <div class="pageno"></div>
 </section>
 
 <!-- 21: あなたがPMになって世界へ — スライド丸ごと生成 -->
 <section class="slide full-pic">
   <img class="bg" src="img/w21_youpm.jpg" alt="" />
   <div class="alt">あなたの 未来。あなたが PMに なって、AIを 動かします。お客さま ／ PM（あなた）／ AI。日本で 経験を 積んで、世界へ 羽ばたきましょう。</div>
-  <div class="pageno"></div>
 </section>
 
 <!-- 22: 章扉5 -->
@@ -453,14 +423,12 @@
     <div class="num">5</div>
     <h1>PMに <ruby>大事<rt>だいじ</rt></ruby>な こと</h1>
   </div>
-  <div class="pageno"></div>
 </section>
 
 <!-- 23: PMに大事なこと — スライド丸ごと生成 -->
 <section class="slide full-pic">
   <img class="bg" src="img/w23_pmskills.jpg" alt="" />
   <div class="alt">これから みがく 力。PMに 大事な こと。いちばん 大事: コミュニケーション。時間の マネジメント。お金の マネジメント。ほかにも いろいろ あります。</div>
-  <div class="pageno"></div>
 </section>
 
 <!-- 24: コミュニケーション -->
@@ -474,7 +442,6 @@
       お<ruby>客<rt>きゃく</rt></ruby>さまの やりたい ことを <ruby>聞<rt>き</rt></ruby>きます。
     </div>
   </div>
-  <div class="pageno"></div>
 </section>
 
 <!-- 25: 日本語 -->
@@ -486,14 +453,12 @@
     <div class="sub" style="font-size: 18px;">だから これからも<br /><ruby>日本語<rt>にほんご</rt></ruby>の <ruby>勉強<rt>べんきょう</rt></ruby>を つづけましょう。</div>
   </div>
   <img class="pic" src="img/nihongo.jpg" alt="" />
-  <div class="pageno"></div>
 </section>
 
 <!-- 26: 時間のマネジメント（ガントチャート） — スライド丸ごと生成 -->
 <section class="slide full-pic">
   <img class="bg" src="img/w26_gantt.jpg" alt="" />
   <div class="alt">時間の マネジメント。だれが いつ 何を するかを 決めます。1週から 8週。お客さまに 聞く／設計する／プログラム／テスト／公開する。この 図を ガントチャート（WBS）と 言います。</div>
-  <div class="pageno"></div>
 </section>
 
 <!-- 27: お金のマネジメント -->
@@ -505,7 +470,6 @@
     <div class="sub" style="font-size: 16px;"><ruby>人<rt>ひと</rt></ruby>の <ruby>時間<rt>じかん</rt></ruby>・サーバーの お<ruby>金<rt>かね</rt></ruby>を <ruby>計算<rt>けいさん</rt></ruby>して <ruby>決<rt>き</rt></ruby>めます。</div>
   </div>
   <img class="pic" src="img/estimate.jpg" alt="" />
-  <div class="pageno"></div>
 </section>
 
 <!-- 28: +αの力 -->
@@ -523,7 +487,6 @@
   </div>
   <!-- 4体を横に並べた絵なので、切らずに全部見せる（下地は絵と同じクリーム色） -->
   <img class="pic" src="img/plus.jpg" alt="" style="width: 51%; object-fit: contain; background: #fdf6e6;" />
-  <div class="pageno"></div>
 </section>
 
 <!-- 29: まとめ -->
@@ -533,7 +496,6 @@
     <h1 style="font-size: 31px;">この <ruby>授業<rt>じゅぎょう</rt></ruby>では、<br />AIの <ruby>時代<rt>じだい</rt></ruby>に <ruby>必要<rt>ひつよう</rt></ruby>な <ruby>力<rt>ちから</rt></ruby>を <ruby>身<rt>み</rt></ruby>に つけます！</h1>
     <div class="sub" style="margin-top: 6px; font-size: 17px;">いっしょに がんばりましょう。</div>
   </div>
-  <div class="pageno"></div>
 </section>
 
 </body>
