@@ -1,0 +1,361 @@
+{
+  "kind": "wordstage",
+  "id": "intro_bijinesu_kotoba",
+  "title": "ビジネスの ことば",
+  "description": "「はじめに」に 出て きた、会社で 毎日 つかう ことばです。",
+  "fieldSequence": [
+    "forest",
+    "sky",
+    "space"
+  ],
+  "questionCount": 10,
+  "passRate": 80,
+  "furigana": [
+    [
+      "言い方",
+      "いいかた"
+    ],
+    [
+      "大丈夫",
+      "だいじょうぶ"
+    ],
+    [
+      "報告",
+      "ほうこく"
+    ],
+    [
+      "連絡",
+      "れんらく"
+    ],
+    [
+      "相談",
+      "そうだん"
+    ],
+    [
+      "会社",
+      "かいしゃ"
+    ],
+    [
+      "会議",
+      "かいぎ"
+    ],
+    [
+      "毎日",
+      "まいにち"
+    ],
+    [
+      "日本",
+      "にほん"
+    ],
+    [
+      "時間",
+      "じかん"
+    ],
+    [
+      "大切",
+      "たいせつ"
+    ],
+    [
+      "仕事",
+      "しごと"
+    ],
+    [
+      "言葉",
+      "ことば"
+    ],
+    [
+      "自分",
+      "じぶん"
+    ],
+    [
+      "英語",
+      "えいご"
+    ],
+    [
+      "一人",
+      "ひとり"
+    ],
+    [
+      "分前",
+      "ふんまえ"
+    ],
+    [
+      "出",
+      "で"
+    ],
+    [
+      "客",
+      "きゃく"
+    ],
+    [
+      "会",
+      "あ"
+    ],
+    [
+      "決",
+      "き"
+    ],
+    [
+      "人",
+      "ひと"
+    ],
+    [
+      "作",
+      "つく"
+    ],
+    [
+      "話",
+      "はなし"
+    ],
+    [
+      "聞",
+      "き"
+    ],
+    [
+      "見",
+      "み"
+    ],
+    [
+      "積",
+      "つ"
+    ],
+    [
+      "国",
+      "くに"
+    ],
+    [
+      "帰",
+      "かえ"
+    ],
+    [
+      "金",
+      "かね"
+    ],
+    [
+      "月",
+      "つき"
+    ],
+    [
+      "回",
+      "かい"
+    ],
+    [
+      "知",
+      "し"
+    ],
+    [
+      "調",
+      "しら"
+    ],
+    [
+      "読",
+      "よ"
+    ],
+    [
+      "紙",
+      "かみ"
+    ],
+    [
+      "前",
+      "まえ"
+    ],
+    [
+      "何",
+      "なに"
+    ],
+    [
+      "先",
+      "さき"
+    ],
+    [
+      "早",
+      "はや"
+    ],
+    [
+      "着",
+      "つ"
+    ],
+    [
+      "困",
+      "こま"
+    ],
+    [
+      "合",
+      "あ"
+    ],
+    [
+      "方",
+      "かた"
+    ]
+  ],
+  "words": [
+    {
+      "id": "hourensou",
+      "term": "ほうれんそう",
+      "reading": "ほうれんそう",
+      "romaji": "hourensou",
+      "meaningEn": "Report, contact and consult — the three basics of work",
+      "wrongMeanings": [
+        "A kind of meeting room",
+        "A yearly exam",
+        "A company uniform"
+      ],
+      "explanationJa": "報告・連絡・相談の 3つを まとめた 言い方です。",
+      "example": "「ほうれんそう」の「ほう」は 報告です。"
+    },
+    {
+      "id": "yakusoku",
+      "term": "約束",
+      "reading": "やくそく",
+      "romaji": "yakusoku",
+      "meaningEn": "Promise / Appointment",
+      "wrongMeanings": [
+        "Present",
+        "Holiday",
+        "Mistake"
+      ],
+      "explanationJa": "「いつ 会う」「いつまでに おわらせる」と 決めた ことです。",
+      "example": "日本の 会社では、時間の 約束を 大切に します。"
+    },
+    {
+      "id": "okyakusama",
+      "term": "お客さま",
+      "reading": "おきゃくさま",
+      "romaji": "okyakusama",
+      "meaningEn": "Customer / Client",
+      "wrongMeanings": [
+        "Neighbour",
+        "Classmate",
+        "Family"
+      ],
+      "explanationJa": "仕事を たのむ 人です。その 人の ために ものを 作ります。",
+      "example": "お客さまの 話を 聞いて、ほしい ものを 見つけます。"
+    },
+    {
+      "id": "keiken",
+      "term": "経験",
+      "reading": "けいけん",
+      "romaji": "keiken",
+      "meaningEn": "Experience",
+      "wrongMeanings": [
+        "Promise",
+        "Salary",
+        "Question"
+      ],
+      "explanationJa": "じっさいに やった ことから おぼえた ものです。",
+      "example": "日本で 積んだ 経験は、国に 帰ってからも つかえます。"
+    },
+    {
+      "id": "kyuuryou",
+      "term": "給料",
+      "reading": "きゅうりょう",
+      "romaji": "kyuuryou",
+      "meaningEn": "Salary / Pay",
+      "wrongMeanings": [
+        "Holiday",
+        "Contract",
+        "Meeting"
+      ],
+      "explanationJa": "はたらいて もらう お金です。ふつうは 月に 1回 もらいます。",
+      "example": "日本の 会社の 給料の 話を、スライドで 見ました。"
+    },
+    {
+      "id": "senmon",
+      "term": "専門",
+      "reading": "せんもん",
+      "romaji": "senmon",
+      "meaningEn": "Speciality / Expertise",
+      "wrongMeanings": [
+        "Beginner",
+        "Hobby",
+        "Holiday"
+      ],
+      "explanationJa": "その 仕事だけを ふかく 知って いる ことです。",
+      "example": "IT専門の 言葉は、自分で 調べます。"
+    },
+    {
+      "id": "shiryou",
+      "term": "資料",
+      "reading": "しりょう",
+      "romaji": "shiryou",
+      "meaningEn": "Materials / Handout documents",
+      "wrongMeanings": [
+        "Furniture",
+        "Ticket",
+        "Uniform"
+      ],
+      "explanationJa": "読む ための 紙や ファイルです。会議の 前に くばります。",
+      "example": "英語の 資料も 読めるように なります。"
+    },
+    {
+      "id": "yotei",
+      "term": "予定",
+      "reading": "よてい",
+      "romaji": "yotei",
+      "meaningEn": "Schedule / Plan",
+      "wrongMeanings": [
+        "Result",
+        "Reason",
+        "Price"
+      ],
+      "explanationJa": "いつ 何を するかを、先に 決めた ものです。",
+      "example": "会議の 予定を チームに 連絡します。"
+    },
+    {
+      "id": "aite",
+      "term": "相手",
+      "reading": "あいて",
+      "romaji": "aite",
+      "meaningEn": "The other person / Counterpart",
+      "wrongMeanings": [
+        "Myself",
+        "Teacher",
+        "Machine"
+      ],
+      "explanationJa": "いっしょに 話を する、もう 一人の 人です。",
+      "example": "早すぎても 相手が こまります。5分前に 着きます。"
+    },
+    {
+      "id": "shippai",
+      "term": "失敗",
+      "reading": "しっぱい",
+      "romaji": "shippai",
+      "meaningEn": "Failure / Slip-up",
+      "wrongMeanings": [
+        "Success",
+        "Practice",
+        "Promise"
+      ],
+      "explanationJa": "うまく いかなかった ことです。だれにでも あります。",
+      "example": "失敗しても、すぐ 相談すれば 大丈夫です。"
+    },
+    {
+      "id": "chi-mu",
+      "term": "チーム",
+      "reading": "ちーむ",
+      "romaji": "chi-mu",
+      "meaningEn": "Team",
+      "wrongMeanings": [
+        "Customer",
+        "Building",
+        "Machine"
+      ],
+      "explanationJa": "いっしょに 仕事を する 人たちです。",
+      "example": "困ったら、すぐ チームの 人に 相談します。"
+    },
+    {
+      "id": "komyunike-shon",
+      "term": "コミュニケーション",
+      "reading": "こみゅにけーしょん",
+      "romaji": "komyunike-shon",
+      "meaningEn": "Communication",
+      "wrongMeanings": [
+        "Calculation",
+        "Construction",
+        "Translation"
+      ],
+      "explanationJa": "はなしたり 聞いたり して、つたえ合う ことです。",
+      "example": "これからの エンジニアの 大切な 仕事は コミュニケーションです。"
+    }
+  ]
+}
