@@ -962,9 +962,13 @@ export function WelcomeWizard({
                 </h3>
                 <ul className="mt-3 space-y-2">
                   {result.analysis.map((line) => (
-                    <li key={line} className="text-ink flex gap-2 font-bold">
-                      <span className="text-leaf-deep">✓</span>
-                      <LearnerText text={line} />
+                    <li key={line} className="text-ink flex gap-2 leading-loose font-bold">
+                      <span className="text-leaf-deep shrink-0">✓</span>
+                      {/* 図鑑（nexmax-catalog）と 同じ 4行。本文を 箱に 入れずに flex の
+                          直下へ 置くと、ルビや 語彙メモが 1つずつ 横に 並んで 段に 割れる。 */}
+                      <span className="min-w-0 flex-1">
+                        <LearnerText text={line} />
+                      </span>
                     </li>
                   ))}
                 </ul>
