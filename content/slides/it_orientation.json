@@ -4,7 +4,7 @@
   "title": "日本で エンジニアに なる ために",
   "description": "学校の 日本語から、仕事の 日本語へ。日本の 会社で はたらく ために 大切な ことを 見ます。",
   "fileUrl": "/slides/it-orientation.pdf",
-  "pageCount": 15,
+  "pageCount": 11,
   "notes": [
     {
       "page": 2,
@@ -28,38 +28,22 @@
     },
     {
       "page": 7,
-      "text": "【約束】promise, appointment　【着く】to arrive　【遅れる】to be late　【必ず】always, without fail　【連絡】contact, letting someone know"
-    },
-    {
-      "page": 8,
-      "text": "【報告】reporting what happened　【困る】to be in trouble, to be stuck"
-    },
-    {
-      "page": 9,
       "text": "【時代】era"
     },
     {
+      "page": 8,
+      "text": "【約束】promise, appointment　【着く】to arrive　【遅れる】to be late　【必ず】always, without fail　【連絡】contact, letting someone know　【報告】reporting what happened　【困る】to be in trouble, to be stuck"
+    },
+    {
+      "page": 9,
+      "text": "【給料】salary　【技術】technology, skill　【学ぶ】to learn　【道具】tool　【安全】safe　【世界】world　【位】rank, place　【経験】experience　【やり方】the way of doing something"
+    },
+    {
       "page": 10,
-      "text": "【給料】salary"
-    },
-    {
-      "page": 11,
-      "text": "【技術】technology, skill　【学ぶ】to learn　【道具】tool"
-    },
-    {
-      "page": 12,
-      "text": "【安全】safe　【世界】world　【位】rank, place"
-    },
-    {
-      "page": 13,
-      "text": "【経験】experience　【やり方】the way of doing something"
-    },
-    {
-      "page": 14,
       "text": "【未来】future"
     },
     {
-      "page": 15,
+      "page": 11,
       "text": "【応援】cheering for you, support"
     }
   ],

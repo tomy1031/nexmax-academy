@@ -1,5 +1,5 @@
 {
-  "_comment": "スライド it_orientation の挿絵台帳（絵だけ・文字は原稿HTML側で組む）。丸ごと生成の台帳は slide_prompts.json。",
+  "_comment": "スライド it_orientation の挿絵台帳（絵だけ・文字は原稿HTML側で組む）。丸ごと生成の台帳は slide_prompts.json。 2026-08-19: 元スライドの 1枚構成に 戻すため t22〜t25 を 追加（t25 だけは お客さまの 困り顔が 山場なので、negative の『怒った顔を描かない』を 外して 撮った）。",
   "output": "1536x1024 PNG, landscape",
   "saveDir": "scripts/slides/it_orientation/img（PNGで受けて 1080px・JPEG q72 に変換して置く）",
   "style": "Style: clean modern Japanese manga / anime style, hand-drawn warm line, soft cel shading, bright friendly pastel palette (soft sky blue #A9D6F5, cream #FFF7E8, warm sun yellow #FFC93C, leaf green #58C273, coral #FF8A70), rounded shapes, no harsh shadows, warm daylight, kid-safe e-learning illustration.",
@@ -84,6 +84,30 @@
       "title": "さいご: いっしょにがんばりましょう",
       "nexmaxInScene": true,
       "scene": "Scene: a warm group portrait — seven cheerful young students and one teacher standing together outdoors in soft evening light, several raising a fist or a hand in encouragement, cherry blossom petals drifting; a modern city and green fields blend softly in the background; hopeful, energetic, celebratory mood. The tiny NexMax robot stands in the front centre raising both arms cheerfully."
+    },
+    {
+      "out": "t22_horenso",
+      "title": "ほうれんそうの 輪（文字なし）",
+      "nexmaxInScene": false,
+      "scene": "Scene: a clean flat diagram on a plain cream background — three separate round bust portraits arranged in a triangle with generous empty space between them: at the top a young man in a navy suit holding a plain sheet of paper, raising one index finger as if reporting, bright confident smile; at the lower right a young woman in a light blazer speaking cheerfully into a telephone handset; at the lower left two colleagues seated facing each other leaning in, one listening with a warm reassuring nod, the other explaining with open hands and a slightly relieved expression; three wide soft blue arrows curve clockwise in the gaps between the portraits; no desks or room background, just the three circles and the arrows."
+    },
+    {
+      "out": "t23_salary",
+      "title": "給料の くらべ（文字なし）",
+      "nexmaxInScene": false,
+      "scene": "Scene: two figures facing the viewer on a plain cream background with a wide empty gap in the middle — on the left a cheerful young engineer in a light blue shirt seated at a plain-lidded laptop, eyes bright with hope, a gold coin and a folded banknote floating beside his shoulder; on the right a distinguished older executive in a dark navy suit with grey hair and glasses, arms folded, proud calm smile, the same gold coin and banknote floating beside his shoulder; both drawn at the same size and the same height, flat clean layout, plenty of empty space in the middle."
+    },
+    {
+      "out": "t24_city",
+      "title": "住みたい 街（文字なし）",
+      "nexmaxInScene": false,
+      "scene": "Scene: a bright cheerful cityscape with no people — on the left a Japanese castle with white walls and green tiled roofs standing beside modern glass office towers; on the right a tall red-and-white lattice communication tower among high-rise buildings; cherry blossom trees in bloom and a calm river with a bridge across the foreground; clear blue sky with soft clouds, warm daylight, no flags, no signboards."
+    },
+    {
+      "out": "t25_trouble",
+      "title": "分からないと どうなるか（感情のある現場）",
+      "nexmaxInScene": false,
+      "scene": "Scene: a meeting room seen from the side, two moods facing each other across a table — on the left a young engineer at a plain-lidded laptop with a visibly worried face, eyebrows pulled up, a sweat drop on his temple, shoulders tense, while three teammates around him look puzzled and lost, one shrugging with both palms up, one frowning with a hand on the chin, one leaning back with wide uncertain eyes; on the right, across the table, a client in a grey jacket leans forward clearly annoyed and impatient, eyebrows sharply furrowed, mouth set in a hard line, both hands raised and open in exasperation, a small cartoon anger mark near his temple; several empty speech bubbles float in the gap between them, none of them touching; cool muted colours on the left, warm tense red-orange light on the right, gentle cartoon style, not scary."
     }
   ]
 }

@@ -17,7 +17,13 @@ import {
   saveHintShown,
   subscribeHintShown,
 } from "@/lib/meeting/hint";
-import { MAX_ATTEMPTS, type JudgeResult } from "@/lib/meeting/judge";
+import {
+  JUDGE_TOOL,
+  MAX_ATTEMPTS,
+  gradeOf,
+  judgeOutputSchema,
+  type JudgeResult,
+} from "@/lib/meeting/judge";
 import {
   awardAnswer,
   awardCompletion,
@@ -283,6 +289,16 @@ export function MeetingSession({
    * 判定の 中から 呼ぶ ため——宣言の 前の 名前は そのままでは 使えない。
    */
   const nextRef = useRef<() => void>(() => {});
+  /** すでに 受け取った 道具の 呼び出し（同じ ものを 2回 見ない）。 */
+  const judgedCallRef = useRef(0);
+  /** 判定の 手（道具が 来なかった ときの 落とし先）。 */
+  /** 道具を 待つ タイマー（見かたが 届いたら 消す）。 */
+  const waitRef = useRef(0);
+  /** チャットに 積んだ 相手の ことばの 数（字幕の どこまでを 出したか）。 */
+  const spokenSeenRef = useRef(0);
+  const judgeRef = useRef<
+    (u: string, spoken: boolean, target?: MeetingQuestion, logged?: boolean) => Promise<void>
+  >(async () => {});
   const pushChat = useCallback((entry: ChatBody) => {
     setChat((prev) => [...prev, { ...entry, id: `${prev.length}-${entry.kind}` }]);
   }, []);
@@ -413,6 +429,12 @@ export function MeetingSession({
             ? "少し 早めに 話して ください。"
             : "ふつうの 速さで 話して ください。",
         "しつもんは 画面が します。あなたは しつもんを しないで ください。",
+        /*
+         * 見かたは **道具で** 返して もらう（声では 言わせない）。
+         * 声で 直しはじめると、画面の 見かたと 2人で 別の ことを 言う。
+         */
+        "学生が 話した あとは、声で みじかく 受け止めてから、かならず 1回" +
+          " nihongo_no_mikata を 呼んで ください。直しの 中身は 声では 言わないで ください。",
         "学生の ことばを 受け止めて、みじかく 返して ください。1回の 返事は 2文までです。",
       ].join("\n"),
     [meeting, speed],
@@ -451,7 +473,13 @@ export function MeetingSession({
    *（同じキャラが2つの違うことを言うのを防ぐ）。
    */
   const judgeUtterance = useCallback(
-    async (utterance: string, spoken: boolean, target?: MeetingQuestion) => {
+    async (
+      utterance: string,
+      spoken: boolean,
+      target?: MeetingQuestion,
+      /** すでに チャットに 出して ある（二重に 積まない）。 */
+      logged = false,
+    ) => {
       /*
        * **どの しつもんへの 答えか**を 呼ぶ側から 受け取る。
        *
@@ -463,8 +491,34 @@ export function MeetingSession({
        */
       const asked = target ?? question;
       if (!asked) return;
+      /*
+       * 声で つながって いる ときは、見かたは **道具**で 届く（上の 効果が 拾う）。
+       * ここで もう1回 外へ 聞きに 行くと、同じ ことを 2回 数える ことに なる。
+       */
+      if (spoken) {
+        pushChat({ kind: "me", text: utterance });
+        setLastSaid(utterance);
+        setThinking(true);
+        /*
+         * 道具が **呼ばれない ターン**が ある。待ちっぱなしに すると
+         *「ヘンディさんが 聞いて います…」で 止まる（2026-08-18 の 実発生）。
+         * 数秒 待って 来なければ、規則ベースの 見かたに 落として 先へ 進める。
+         */
+        const waited = judgedCallRef.current;
+        window.clearTimeout(waitRef.current);
+        waitRef.current = window.setTimeout(() => {
+          if (judgedCallRef.current !== waited) return;
+          /*
+           * 道具が 来なかった ときは、**これまでの 道（文字の 判定）**に 落とす。
+           * 規則ベースだけに すると ポップアップが 出ず、声で 答えた 人だけ
+           * 見かたが 見られない ことに なる（2026-08-18 の 実発生）。
+           */
+          void judgeRef.current(utterance, false, asked, true);
+        }, 9_000);
+        return;
+      }
       const at = Date.now();
-      pushChat({ kind: "me", text: utterance });
+      if (!logged) pushChat({ kind: "me", text: utterance });
       setLastSaid(utterance);
       setThinking(true);
       const result = await requestJudge({
@@ -561,6 +615,22 @@ export function MeetingSession({
    * 2つの声が重なる。つながっていない学習者（キーが無い・マイクが無い）にとっては、
    * ここが**唯一 声を聞ける場所**になる。
    */
+  /*
+   * 相手が **声で** 言った ことを チャットにも 残す（2026-08-18 の 指定）。
+   * 字幕（`voice.turns`）は 流れて いく ので、あとから 読み返せない。
+   * 自分の ことばは 判定の ところで 積んで いる ので、ここは 相手のぶんだけ。
+   */
+  useEffect(() => {
+    const fresh = voice.turns.slice(spokenSeenRef.current);
+    if (fresh.length === 0) return;
+    spokenSeenRef.current = voice.turns.length;
+    const said = fresh.filter((turn) => turn.from === "client");
+    if (said.length === 0) return;
+    void Promise.resolve().then(() => {
+      for (const turn of said) pushChat({ kind: "host", text: turn.text });
+    });
+  }, [voice.turns, pushChat]);
+
   /* 選んだ 速さは つないだ あとでも 効く（つぎの ひとことから） */
   const setRate = voice.setRate;
   useEffect(() => {
@@ -806,14 +876,45 @@ export function MeetingSession({
    */
   useEffect(() => {
     nextRef.current = next;
+    judgeRef.current = judgeUtterance;
   });
+
+  /*
+   * 相手が **道具**で 返して きた 見かたを 受け取る（2026-08-18 の 指定）。
+   * これが 来る かぎり、判定の ための 別の 呼び出しは 要らない。
+   * 形が こわれて いる ときは 何も しない——控え（規則ベース）が 別に 動く。
+   */
+  useEffect(() => {
+    const call = voice.lastJudgeCall;
+    const asked = answeringRef.current;
+    if (!call || call.id === judgedCallRef.current || !asked) return;
+    judgedCallRef.current = call.id;
+    window.clearTimeout(waitRef.current);
+    const parsed = judgeOutputSchema.safeParse(call.data);
+    if (!parsed.success) return;
+    const judge: JudgeResult = { ...parsed.data, v: 1, grade: gradeOf(parsed.data) };
+    // 状態の 更新は 効果の 本体では せず、1呼吸 おいてから（描き直しの 連鎖を 避ける）
+    void Promise.resolve().then(() => {
+      setThinking(false);
+      setReply({ echo: "", judge, fallback: null });
+      pushChat({ kind: "coach", judge });
+      rewardTurn(asked.id, lastSaid, judge.grade, !judge.retry);
+      setJudgeOpen(true);
+    });
+  }, [voice.lastJudgeCall, pushChat, rewardTurn, lastSaid]);
 
   const closeJudge = useCallback(() => {
     const again = reply?.judge?.retry === true;
     setJudgeOpen(false);
+    window.clearTimeout(waitRef.current);
+    /*
+     * おわった あとは 進めない。さいごの しつもんの あとに もう一度 進めて
+     * しまい、同じ ところを ぐるぐる 回って いた（2026-08-18 の 実発生）。
+     */
+    if (done) return;
     if (again) retry();
     else next();
-  }, [reply, retry, next]);
+  }, [reply, retry, next, done]);
 
   /** いま持っているハート。教材に affection が無いときは画面のどこにも出ない。 */
   const hearts = heartsOf(affection);
@@ -1106,7 +1207,12 @@ export function MeetingSession({
               status={voice.status}
               reason={voice.reason}
               talking={voice.talking}
-              onConnect={() => void voice.start(instruction, hostVoice)}
+              /*
+               * 道具を 持たせて つなぐ。声で 受け止めた あと、同じ ターンで
+               * 見かた（JSON）を 道具で 返して もらう——判定の ための
+               * 別の 呼び出しが 要らなくなる（無料枠に いちばん 効く）。
+               */
+              onConnect={() => void voice.start(instruction, hostVoice, undefined, [JUDGE_TOOL])}
               onStartTalking={() => {
                 // いま 答えようと して いる しつもんを 覚える（判定が ずれない ように）
                 answeringRef.current = question ?? null;

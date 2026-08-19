@@ -268,3 +268,92 @@ describe("まとめて 出す の 下書き", () => {
     expect(saved?.drafts).toEqual({});
   });
 });
+
+/**
+ * まとめて 出す（提出モード）の 下書き
+ *
+ * このモードは 出すまで 採点しないので、**書いた ものが 端末に 残る ことが 生命線**
+ * ——他の ページへ 行って 戻った だけで 消えるなら、9問を まとめて 出す やりかたは
+ * 成り立たない。下書きは **問題IDを 鍵に** 持つので、教材の 並びが 変わっても ずれない。
+ */
+describe("まとめて 出す の 下書き", () => {
+  function savedDrafts(): QuizResume {
+    return {
+      quizSetId: "kaisha_houkoku",
+      results: [],
+      mode: "submit",
+      drafts: {
+        q1: { kind: "choice", index: 2 },
+        q3: { kind: "keyword", input: "ほうれんそう" },
+      },
+      index: 4,
+    };
+  }
+
+  it("書いた ものと 見て いた 番号が そのまま 戻る", () => {
+    const start = startFrom(savedDrafts(), undefined, IDS);
+    expect(start.mode).toBe("submit");
+    expect(start.index).toBe(4);
+    expect(start.resumed).toBe(true);
+    expect(start.drafts).toEqual({
+      q1: { kind: "choice", index: 2 },
+      q3: { kind: "keyword", input: "ほうれんそう" },
+    });
+  });
+
+  it("並びが 入れかわっても 下書きは 生きる（IDで 持って いる）", () => {
+    const reordered = [...IDS].reverse();
+    const start = startFrom(savedDrafts(), undefined, reordered);
+    expect(Object.keys(start.drafts).sort()).toEqual(["q1", "q3"]);
+  });
+
+  it("いま 教材に 無い 問題の 下書きは 落とす", () => {
+    const shorter = ["q1", "q2"];
+    const start = startFrom(savedDrafts(), undefined, shorter);
+    expect(Object.keys(start.drafts)).toEqual(["q1"]);
+    expect(start.index).toBeLessThan(shorter.length);
+  });
+
+  it("1つも 残らなければ はじめから（やりかたは そのまま）", () => {
+    const start = startFrom(savedDrafts(), undefined, ["zz1", "zz2"]);
+    expect(start.drafts).toEqual({});
+    expect(start.resumed).toBe(false);
+    expect(start.mode).toBe("submit");
+  });
+
+  it("しおり（位置だけ）より 下書きを 信じる", () => {
+    const start = startFrom(savedDrafts(), 8, IDS);
+    expect(start.index).toBe(4);
+  });
+
+  it("書いた ものが そのまま 読み書きできる", () => {
+    const backend = createMemoryBackend();
+    saveQuizResume(savedDrafts(), backend);
+    expect(readQuizResume("kaisha_houkoku", backend)).toEqual(savedDrafts());
+  });
+
+  it("壊れた 下書きは 無かった ことに する（学習は 止めない）", () => {
+    const backend = createMemoryBackend();
+    backend.set(
+      "nexmax:v1:quiz-resume:kaisha_houkoku",
+      JSON.stringify({
+        quizSetId: "kaisha_houkoku",
+        results: [],
+        mode: "submit",
+        drafts: { q1: { kind: "nope" } },
+      }),
+    );
+    expect(readQuizResume("kaisha_houkoku", backend)).toBeNull();
+  });
+
+  it("この鍵が 無かった 頃の 保存値は これまでどおり 1問ずつ として 読める", () => {
+    const backend = createMemoryBackend();
+    backend.set(
+      "nexmax:v1:quiz-resume:kaisha_houkoku",
+      JSON.stringify({ quizSetId: "kaisha_houkoku", results: [resultAt("q1")] }),
+    );
+    const saved = readQuizResume("kaisha_houkoku", backend);
+    expect(saved?.mode).toBe("one");
+    expect(saved?.drafts).toEqual({});
+  });
+});
