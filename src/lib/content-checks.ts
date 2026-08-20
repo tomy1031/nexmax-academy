@@ -379,15 +379,22 @@ export function checkReferenceIntegrity(entries: readonly ContentEntry[]): Findi
       content.kind === "vocab" ? content.words.map((w) => w.id) : [],
     ),
   );
+  const reportMissing = (file: string, ids: readonly string[]) => {
+    const missing = ids.filter((id) => !vocabIds.has(id));
+    if (missing.length === 0) return;
+    findings.push({
+      file,
+      level: "error",
+      message: `ことばの 正に 無い id を 参照して いる: ${missing.join(" ")} — content/vocab/ に 足すか、参照から 外す`,
+    });
+  };
   for (const { file, content } of entries) {
-    if (content.kind !== "wordstage" || !content.wordIds) continue;
-    const missing = content.wordIds.filter((id) => !vocabIds.has(id));
-    if (missing.length > 0) {
-      findings.push({
-        file,
-        level: "error",
-        message: `ことばの 正に 無い id を 参照して いる: ${missing.join(" ")} — content/vocab/ に 足すか、wordIds から 外す`,
-      });
+    if (content.kind === "wordstage" && content.wordIds) reportMissing(file, content.wordIds);
+    if (content.kind === "manga" && content.vocabIds) reportMissing(file, content.vocabIds);
+    if (content.kind === "article") {
+      for (const block of content.blocks) {
+        if (block.kind === "vocab" && block.wordIds) reportMissing(file, block.wordIds);
+      }
     }
   }
 
@@ -667,7 +674,8 @@ function collectLabeledTexts(content: Content): LabeledText[] {
             block.items.forEach((item, j) => push(at(`items[${j}]`), item));
             break;
           case "vocab":
-            block.items.forEach((item, j) => {
+            // 参照で 書かれた ぶんは 正の 側（kind: vocab）で 検査される
+            (block.items ?? []).forEach((item, j) => {
               push(at(`items[${j}].term`), item.term);
               push(at(`items[${j}].meaning`), item.meaning);
             });

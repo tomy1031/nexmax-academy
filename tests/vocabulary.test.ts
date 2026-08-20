@@ -2,7 +2,14 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { vocabSchema, wordStageSchema, type VocabBook } from "../src/content/schema";
-import { gameWordsOf, isPlayable, toGameWord, vocabByTerm } from "../src/lib/vocabulary";
+import {
+  gameWordsOf,
+  hydrateArticle,
+  hydrateManga,
+  isPlayable,
+  toGameWord,
+  vocabByTerm,
+} from "../src/lib/vocabulary";
 
 const book: VocabBook = vocabSchema.parse(
   JSON.parse(readFileSync(join(__dirname, "..", "content", "vocab", "vocabulary.json"), "utf8")),
@@ -64,5 +71,32 @@ describe("ことばの 正", () => {
       .slice(0, 3)
       .map((w) => w.id);
     expect(gameWordsOf(ids, book.words).words.map((w) => w.id)).toEqual(ids);
+  });
+});
+
+describe("記事・まんがの ことばも 正から 引く", () => {
+  it("記事の ことばブロックは 参照から 中身が 埋まる", () => {
+    const article = {
+      blocks: [
+        { kind: "paragraph", text: "そのまま" },
+        { kind: "vocab", wordIds: [book.words[0]!.id, "nai-id"] },
+      ],
+    };
+    const hydrated = hydrateArticle(article, book.words);
+    expect(hydrated.blocks[0]).toBe(article.blocks[0]); // 触らない
+    const items = (hydrated.blocks[1] as unknown as { items: { term: string }[] }).items;
+    expect(items).toHaveLength(1); // 参照切れは 落とす（画面を 白く しない）
+    expect(items[0]!.term).toBe(book.words[0]!.term);
+  });
+
+  it("まんがの 復習語彙も 参照から 埋まる", () => {
+    const manga = { vocabIds: [book.words[1]!.id], vocab: undefined as unknown };
+    const hydrated = hydrateManga(manga, book.words) as unknown as { vocab: { term: string }[] };
+    expect(hydrated.vocab[0]!.term).toBe(book.words[1]!.term);
+  });
+
+  it("参照を 持たない 古い かたちは そのまま 通す", () => {
+    const manga = { vocab: [{ term: "むかしの", reading: "むかしの", meaning: "…" }] };
+    expect(hydrateManga(manga, book.words)).toBe(manga);
   });
 });

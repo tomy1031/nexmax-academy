@@ -110,22 +110,10 @@
     },
     {
       "kind": "vocab",
-      "items": [
-        {
-          "term": "地図",
-          "reading": "ちず",
-          "meaning": "すすむ みちが かいて ある え"
-        },
-        {
-          "term": "場所",
-          "reading": "ばしょ",
-          "meaning": "べんきょうを する ところ"
-        },
-        {
-          "term": "自分",
-          "reading": "じぶん",
-          "meaning": "わたし。あなた じしんの こと"
-        }
+      "wordIds": [
+        "chizu",
+        "basho",
+        "jibun"
       ]
     }
   ]
