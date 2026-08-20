@@ -40,16 +40,24 @@ export const LIVE_TTS_MODELS = [
 ] as const;
 
 /**
- * 文字だけを 返して もらう Live（見かたの JSON を もらう つなぎ）。
+ * 見かたの JSON を もらう Live（判定専用の 使い捨ての つなぎ）。
  *
- * たいわ用の 並びを そのまま 使うと、**声に 特化した モデルが 先**に 来る。
- * 文字で 返せない 名前を 先に ためすと、そこで 待ち時間を 使い切って
- * 文字で 返せる 名前まで たどり着けない（2026-08-20 の 通し検証で
- * reason=modelNotFound が 続いた）。**文字を 返せる ものを 先頭**に する。
+ * ## Live は **文字だけの 返し（TEXT）に 対応して いない**
+ * `responseModalities: [TEXT]` で つなごうと して、どの 名前でも 開けなかった
+ *（鍵ありの 通し検証で reason=modelNotFound が 続いた・2026-08-20）。
+ * 先に 同じ ことを した 実装（相槌の 練習）にも そう 書いて ある——
+ *「Live系モデルは TEXT出力 非対応のため、AUDIO で答えさせ
+ *  outputAudioTranscription（自分の発話の文字起こし）から 読み取る」。
+ *
+ * だから **AUDIO で 答えさせて、その 文字起こしから JSON を 読む**。
+ * 音は 鳴らさない（判定の つなぎは 再生先を 持たない）。
+ *
+ * 並びは 実績の ある ものを 先頭に する（3.1 は 文字起こしが 話した 文と
+ * そのまま 一致する ことが 先の 実装で 確かめられて いる）。
  */
 export const LIVE_TEXT_MODELS = [
-  "gemini-2.5-flash-live",
   "gemini-3.1-flash-live-preview",
+  "gemini-2.5-flash-live",
   "gemini-2.5-flash-native-audio-preview-12-2025",
 ] as const;
 

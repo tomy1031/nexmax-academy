@@ -232,7 +232,14 @@ async function openTextSession(auth: string, model: string): Promise<LiveTextSes
     ai.live.connect({
       model,
       config: {
-        responseModalities: [Modality.TEXT],
+        /*
+         * **AUDIO で 答えさせる**（TEXT は Live が 受け付けない）。
+         * 中身は `outputAudioTranscription`（相手が 話した ことの 文字起こし）から
+         * 読む。音は 鳴らさない——この つなぎは 再生先を 持たない。
+         */
+        responseModalities: [Modality.AUDIO],
+        outputAudioTranscription: {},
+        speechConfig: { languageCode: "ja-JP" },
         systemInstruction: JSON_ONLY,
         // 学習者の言ったことに寄せたいので、思いつきは抑える
         temperature: 0.4,
@@ -298,13 +305,21 @@ async function openTextSession(auth: string, model: string): Promise<LiveTextSes
   };
 }
 
-/** 返事の 文字を 取り出す（形が 変わっても 落ちない ように 必要な ところだけ 見る）。 */
+/**
+ * 返事の 文字を 取り出す。
+ *
+ * AUDIO で 答えさせて いるので、中身は **相手の 文字起こし**
+ *（`outputTranscription`）に 来る。細切れで 届くので、呼ぶ側が つなぎ合わせる。
+ * 念のため `modelTurn.parts[].text` も 見る——将来 TEXT が 通る ように なっても
+ * 動きつづける（形が 変わっても 落ちない ように 必要な ところだけ 見る）。
+ */
 function readText(message: unknown): string {
   if (!message || typeof message !== "object") return "";
   const content = (message as { serverContent?: Record<string, unknown> }).serverContent;
-  const parts = (content?.modelTurn as { parts?: { text?: string }[] } | undefined)?.parts;
-  if (!parts) return "";
-  return parts.map((part) => part.text ?? "").join("");
+  if (!content) return "";
+  const spoken = (content.outputTranscription as { text?: string } | undefined)?.text ?? "";
+  const parts = (content.modelTurn as { parts?: { text?: string }[] } | undefined)?.parts ?? [];
+  return spoken + parts.map((part) => part.text ?? "").join("");
 }
 
 /** 相手の したくが 済んだか（ここから 送ってよい）。 */
