@@ -184,6 +184,20 @@ function add(word, from) {
   if (word.englishTerm === "") delete word.englishTerm;
   const existing = byTerm.get(word.term);
   if (existing) {
+    /*
+     * **語彙メモ（glossary.ts）の 説明が 勝つ。**
+     *
+     * 語彙メモは 性格診断の 画面に 出る 文で、2026-08-18 に 学習者の レベルへ 合わせて
+     * 手で ととのえた もの である。集めた ついでに 別の 文へ 差し替えると、
+     * 頼まれて いない 画面が 黙って 変わる（AGENTS.md「ついでの変更は禁止」）。
+     */
+    if (from === "src/content/glossary.ts") {
+      if (word.meaningJa) existing.meaningJa = word.meaningJa;
+      // 対訳も 語彙メモ側が 勝つ。チップに 並べる **見出し**なので 20字までに
+      // 保つ 決まりが ある（tests/glossary.test.ts）。単語ゲームの
+      //「Technology / Technical skill」は 説明であって 見出しでは ない。
+      if (word.englishTerm) existing.englishTerm = word.englishTerm;
+    }
     // 先に 出たほうが 勝つ。ただし **空いている 欄だけは 埋める**
     //（単語ステージには 対訳が 無く、glossary には 例文が 無い、など）。
     for (const key of ["romaji", "englishMeaning", "example", "wrongMeanings"]) {
@@ -258,7 +272,7 @@ const fromBlocks = [
   ...read("articles").flatMap(({ file, json }) =>
     (json.blocks ?? [])
       .filter((b) => b.kind === "vocab")
-      .flatMap((b) => b.items.map((i) => ({ file, item: i }))),
+      .flatMap((b) => (b.items ?? []).map((i) => ({ file, item: i }))),
   ),
   ...read("manga").flatMap(({ file, json }) => (json.vocab ?? []).map((i) => ({ file, item: i }))),
 ];
