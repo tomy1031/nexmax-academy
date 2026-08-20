@@ -31,8 +31,11 @@ test("ことばは 教材より 先に、1枚だけ 出る", async ({ page }) =>
 test("単語ゲームの 見出しは「はじめに」", async ({ page }) => {
   await page.goto("/arcade/intro");
 
-  await expect(page.getByRole("heading", { name: "はじめに" })).toBeVisible();
-  await expect(page.getByText("の ことば")).toHaveCount(0);
+  /*
+   * 見出しが **ちょうど「はじめに」**であること（「はじめに の ことば」に 戻らない）。
+   * 見るのは 見出しだけ——説明文の「IT の ことばです」は 正しい 文なので 巻きこまない。
+   */
+  await expect(page.getByRole("heading", { name: "はじめに", exact: true })).toBeVisible();
   await expect(page.getByText("ことば 44こ ／ 1回の もんだい 10こ ／ 合格 80%")).toBeVisible();
 
   // 「もんだいだけ」＝ 入力なしの 意味クイズ（ひらがな入力チェックを はさまない）
