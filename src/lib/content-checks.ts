@@ -683,6 +683,16 @@ function collectLabeledTexts(content: Content): LabeledText[] {
       break;
     }
 
+    case "vocab": {
+      // 語の 正。学習者が 読むのは 見出しと 説明・例文（対訳は 英語なので 対象外）。
+      push("title", content.title);
+      content.words.forEach((word, i) => {
+        push(`words[${i}].meaningJa`, word.meaningJa);
+        push(`words[${i}].example`, word.example);
+      });
+      break;
+    }
+
     case "wordstage": {
       push("title", content.title);
       push("description", content.description);
@@ -818,6 +828,7 @@ function coverageEntries(content: Content): FuriganaEntry[] {
       if (content.area) entries.push([content.area.name, content.area.reading]);
       return entries;
     }
+    case "vocab":
     case "wordstage":
       return [
         ...(content.furigana ?? []),

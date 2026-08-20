@@ -30,6 +30,8 @@ import {
   type Slides,
   type Stage,
   type WordStage,
+  type VocabBook,
+  type VocabWord,
 } from "@/content/schema";
 import { GIT_CONTENTS } from "@/content/git-contents.generated";
 import { fetchDbContents } from "@/lib/content-db";
@@ -106,6 +108,22 @@ export const listCharacters = cache(async (): Promise<Character[]> => {
 
 export async function getCharacter(id: string): Promise<Character | null> {
   return (await listCharacters()).find((character) => character.id === id) ?? null;
+}
+
+/**
+ * ことばの 正（`content/vocab/vocabulary.json`）。語彙は ここからしか 引かない。
+ * DBに 同じ id の 行が あれば そちらが 勝つ（先生の 直しが 常に 上）。
+ */
+export const listVocabBooks = cache(async (): Promise<VocabBook[]> => {
+  const git = parseAll().filter((c): c is VocabBook => c.kind === "vocab");
+  return mergeContentsById(git, await listPublishedFromDb("vocab")).sort((a, b) =>
+    a.id.localeCompare(b.id),
+  );
+});
+
+/** すべての ことば（束を ならべた もの）。 */
+export async function listVocabWords(): Promise<VocabWord[]> {
+  return (await listVocabBooks()).flatMap((book) => book.words);
 }
 
 export const listWordStages = cache(async (): Promise<WordStage[]> => {

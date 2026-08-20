@@ -58,6 +58,96 @@ export const wordSchema = z.object({
   example: plainText,
 });
 
+/* ------------------------------------------------------------------ *
+ * ことばの 正（vocab）— 語彙の 置き場は ここ 1つ
+ *
+ * これまで 語彙は **5か所**に あった（単語ステージ／記事の vocab ブロック／
+ * まんがの vocab／スライドの ノート／`src/content/glossary.ts`）。同じ
+ * 「要件定義」が いくつも あり、**説明が 別々に 育つ**。先生が 直せるのは
+ * そのうち 単語ステージだけで、直しても 他の 4か所は 古いままだった。
+ *
+ * そこで **語は ここにしか 置かない**。教材（ステージ・記事・まんが・スライド）は
+ * `id` で 参照するだけに する（2026-08-20 ユーザー判断「まだボリュームが少ない
+ * 今こそ 1か所に すべき」）。
+ * ------------------------------------------------------------------ */
+
+/** ことば 1語。学習者に 出す ものは ぜんぶ ここに 持つ。 */
+export const vocabWordSchema = z.object({
+  /**
+   * 語の id。**進み具合（mastery）の 保存キー**なので あとから 変えない。
+   * 単語ステージから 移した 語は、そのときの id を そのまま 引き継ぐ
+   *（変えると 学習履歴が 切れる）。
+   */
+  id: z.string().regex(/^[a-z0-9_-]+$/),
+  term: plainText,
+  reading: hiragana,
+  romaji: z.string().optional(),
+  /** やさしい日本語の 説明（1文）。 */
+  meaningJa: plainText,
+  /**
+   * 対訳の1語。**説明ではなく 見出し**なので 短く 保つ。
+   * まだN4を 勉強中の 学習者が、説明を 読まずに ここで 足りるように するための 段。
+   *
+   * 教材から 拾ったばかりの 語には まだ 無い ことが ある（先生が あとで 足す）。
+   * ただし **単語ゲームに 出す 語（`wrongMeanings` を 持つ 語）には 必ず 要る**
+   *——4択の 正解が これだからである。
+   */
+  englishTerm: noJapanese.optional(),
+  /** 意味の 英語。日本語の 説明でも 英語1語でも 届かなかった ときの 受け皿。 */
+  englishMeaning: noJapanese.optional(),
+  /** 出典教材と 同じ 文脈の 例文。 */
+  example: plainText.optional(),
+  /**
+   * 単語ゲームの 誤答3つ。**ゲームに 出す 語だけ** 持つ
+   *（持たない 語は 辞書・ツールチップにだけ 出る）。
+   */
+  wrongMeanings: z.array(noJapanese).length(3).optional(),
+});
+
+/** ことばの 束（いまは 1ファイル）。 */
+export const vocabSchema = z
+  .object({
+    kind: z.literal("vocab"),
+    id: z.string().regex(/^[a-z0-9_-]+$/),
+    title: plainText,
+    /** 複合語優先の読み辞書（説明文・例文の 漢字を 覆う）。 */
+    furigana: z.array(furiganaEntrySchema).optional(),
+    words: z.array(vocabWordSchema).min(1),
+  })
+  .superRefine((book, ctx) => {
+    const ids = book.words.map((w) => w.id);
+    if (new Set(ids).size !== ids.length) {
+      ctx.addIssue({ code: "custom", path: ["words"], message: "words の id が重複している" });
+    }
+    const terms = book.words.map((w) => w.term);
+    if (new Set(terms).size !== terms.length) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["words"],
+        message: "同じ 表記の ことばが 2つ ある — 説明が 2つ 育つので 1つに まとめる",
+      });
+    }
+    book.words.forEach((w, i) => {
+      if (!w.wrongMeanings) return;
+      if (!w.englishTerm) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["words", i, "englishTerm"],
+          message: `「${w.term}」は 単語ゲームに 出る（誤答が ある）ので 対訳の1語が 要る`,
+        });
+        return;
+      }
+      const meanings = [w.englishTerm, ...w.wrongMeanings].map((m) => m.trim().toLowerCase());
+      if (new Set(meanings).size !== meanings.length) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["words", i, "wrongMeanings"],
+          message: `「${w.term}」の選択肢に重複がある（誤答同士、または誤答＝正解）`,
+        });
+      }
+    });
+  });
+
 /** 単語ステージ（課ごとに1ステージ追加するだけでゲーム化される）。 */
 export const wordStageSchema = z
   .object({
@@ -1313,6 +1403,7 @@ export const meetingSchema = z.object({
 });
 
 export const contentSchema = z.discriminatedUnion("kind", [
+  vocabSchema,
   characterSchema,
   meetingSchema,
   wordStageSchema,
@@ -1326,6 +1417,8 @@ export const contentSchema = z.discriminatedUnion("kind", [
   linkSchema,
 ]);
 
+export type VocabWord = z.infer<typeof vocabWordSchema>;
+export type VocabBook = z.infer<typeof vocabSchema>;
 export type Word = z.infer<typeof wordSchema>;
 export type WordStage = z.infer<typeof wordStageSchema>;
 export type QuizQuestion = z.infer<typeof quizQuestionSchema>;
