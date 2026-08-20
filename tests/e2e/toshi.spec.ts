@@ -203,12 +203,15 @@ test("かいしゃステージを 6教材 通しで あそべる（端末に 何
       "true",
     );
 
-    // 型文（「こう 言えます」）は 最初から 見えている
-    await expect(page.getByRole("button", { name: "を かくす" })).toHaveAttribute(
-      "aria-pressed",
-      "true",
-    );
-    await expect(page.getByText("はい。ほうこくします。")).toBeVisible();
+    /*
+     * 型文は **ポップアップ**（2026-08-20 の 指定）。出しっぱなしを やめた ので、
+     * 「押すと 出る／読んだら 閉じる」を 見る。
+     */
+    await page.getByRole("button", { name: "ヒントを 見る" }).click();
+    const hint = page.getByRole("dialog", { name: "ヒントの ポップアップ" });
+    await expect(hint.getByText("はい。ほうこくします。")).toBeVisible();
+    await hint.getByRole("button", { name: "とじる" }).click();
+    await expect(hint).toHaveCount(0);
     await shot(page, "08-meeting-inroom");
 
     expect(await openedCards(page)).toBe(0);

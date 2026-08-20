@@ -58,7 +58,7 @@ test("こえの ボタンは Zoom の 画面の 中に 大きく ある（鍵が
    * ボタンは **相手の 顔と 同じ 枠の 中**（Zoom の 画面の 中）に ある。
    * 入力欄の 横の 小さな ボタンでは、どれを 押せば 声で 話せるのか 分からなかった。
    */
-  const speak = page.getByRole("button", { name: "🎤 こえを つかう" });
+  const speak = page.getByRole("button", { name: /スタート（マイクを つなぐ）/ });
   await expect(speak).toBeVisible();
   await expect(page.getByText("ボタンを おしている あいだだけ")).toHaveCount(0);
 

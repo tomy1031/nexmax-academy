@@ -31,10 +31,38 @@ const FURIGANA = buildFuriganaIndex([
   ["次", "つぎ"],
 ]);
 
-const LOOK: Record<JudgeResult["grade"], { title: string; face: string; stars: number }> = {
-  veryGood: { title: "つたわりました！", face: "🌸", stars: 3 },
-  good: { title: "つたわりました", face: "🙆", stars: 2 },
-  miss: { title: "もう いちど 言って みましょう", face: "🔁", stars: 1 },
+/**
+ * 3段の 見え方。
+ *
+ * **合格と やり直しは、色・絵・ボタンの ことばの ぜんぶで 分ける**
+ *（2026-08-20 の 指定「合格と やり直しの 見た目の ちがいが はっきり わかるように」）。
+ * 星の 数だけで 分けて いた ころは、どちらなのか 一目で 分からなかった。
+ */
+const LOOK: Record<
+  JudgeResult["grade"],
+  { title: string; face: string; stars: number; band: string; next: string }
+> = {
+  veryGood: {
+    title: "よく できました！",
+    face: "🌸",
+    stars: 3,
+    band: "var(--color-leaf-deep)",
+    next: "つぎの しつもんへ →",
+  },
+  good: {
+    title: "つたわりました！",
+    face: "🙆",
+    stars: 2,
+    band: "var(--color-leaf-deep)",
+    next: "つぎの しつもんへ →",
+  },
+  miss: {
+    title: "もう 少し！",
+    face: "💪",
+    stars: 1,
+    band: "var(--color-sky-deep)",
+    next: "もう いちど 練習しよう",
+  },
 };
 
 export function JudgeModal({
@@ -88,14 +116,19 @@ export function JudgeModal({
         animate={{ opacity: 1, scale: 1, y: 0 }}
         className="card-island max-h-[88vh] w-full max-w-md overflow-y-auto p-5"
       >
-        {/* つたわったか、もう いちどか。いちばん 上に、いちばん 大きく */}
-        <p className="text-center text-4xl">{look.face}</p>
-        <h2
-          className="mt-1 text-center text-xl font-black"
-          style={{ color: again ? "var(--color-sky-deep)" : "var(--color-leaf-deep)" }}
+        {/*
+          いちばん 上に **色の 帯**を 置く。合格は みどり・やり直しは あお——
+          読む 前に 目の はしで どちらか 分かる。
+        */}
+        <div
+          className="-mx-5 -mt-5 mb-3 rounded-t-[var(--radius-card)] px-5 py-4 text-center"
+          style={{ background: again ? LOOK.miss.band : look.band }}
         >
-          {look.title}
-        </h2>
+          <p className="text-4xl">{again ? LOOK.miss.face : look.face}</p>
+          <h2 className="mt-1 text-xl font-black text-white">
+            {again ? LOOK.miss.title : look.title}
+          </h2>
+        </div>
         <p className="mt-1 text-center text-lg" aria-label={`ほし ${look.stars}つ`}>
           {"⭐".repeat(look.stars)}
           <span className="opacity-25">{"⭐".repeat(3 - look.stars)}</span>
@@ -158,7 +191,7 @@ export function JudgeModal({
               : undefined
           }
         >
-          {again ? "もう いちど 言う" : "つぎの しつもんへ"}
+          {again ? LOOK.miss.next : look.next}
         </button>
       </motion.div>
     </div>
