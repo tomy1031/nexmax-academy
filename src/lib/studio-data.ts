@@ -18,6 +18,7 @@ import {
   listScenarios,
   listSlides,
   listStages,
+  listVocabBooks,
   listWordStages,
 } from "@/lib/content";
 
@@ -33,6 +34,7 @@ export async function loadStudioData() {
     meetings,
     wordStages,
     characters,
+    vocabBooks,
   ] = await Promise.all([
     listStages(),
     listMangas(),
@@ -44,6 +46,7 @@ export async function loadStudioData() {
     listMeetings(),
     listWordStages(),
     listCharacters(),
+    listVocabBooks(),
   ]);
   return {
     stages,
@@ -56,5 +59,10 @@ export async function loadStudioData() {
     meetings,
     wordStages,
     characters,
+    /**
+     * ことばの 正。抜き出した 語だけでなく **辞書ぜんたいから 選べる**ように するため
+     *（2026-08-20 の指定）。語の 置き場は ここ 1つ しか 無い。
+     */
+    vocabBooks,
   };
 }

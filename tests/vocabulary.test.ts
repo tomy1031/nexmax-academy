@@ -7,6 +7,7 @@ import {
   hydrateArticle,
   hydrateManga,
   isPlayable,
+  hydrateWordStage,
   toGameWord,
   vocabByTerm,
 } from "../src/lib/vocabulary";
@@ -98,5 +99,56 @@ describe("記事・まんがの ことばも 正から 引く", () => {
   it("参照を 持たない 古い かたちは そのまま 通す", () => {
     const manga = { vocab: [{ term: "むかしの", reading: "むかしの", meaning: "…" }] };
     expect(hydrateManga(manga, book.words)).toBe(manga);
+  });
+});
+
+describe("スタジオが 作る かたち", () => {
+  it("抜き出した ことばは 正の かたちに 直せて、そのまま 遊べる", () => {
+    // vocab-extractor が 作る 語（VocabCandidate 相当）
+    const candidate = {
+      id: "tmp",
+      term: "納期",
+      reading: "のうき",
+      romaji: "nouki",
+      meaningEn: "Deadline",
+      wrongMeanings: ["Salary", "Meeting", "Holiday"],
+      explanationJa: "いつまでに 出すか、の 日です。",
+      example: "納期を 先に 決めます。",
+    };
+    const moved = {
+      id: candidate.romaji,
+      term: candidate.term,
+      reading: candidate.reading,
+      romaji: candidate.romaji,
+      meaningJa: candidate.explanationJa,
+      englishTerm: candidate.meaningEn,
+      example: candidate.example,
+      wrongMeanings: candidate.wrongMeanings,
+    };
+    // 正の スキーマを 通る
+    expect(vocabSchema.safeParse({ ...book, words: [...book.words, moved] }).success).toBe(true);
+    // そのまま ゲームに 出せる
+    expect(isPlayable(moved)).toBe(true);
+    expect(toGameWord(moved)!.meaningEn).toBe("Deadline");
+  });
+
+  it("参照だけの 単語ステージが スキーマを 通る（スタジオの 保存形）", () => {
+    const stored = {
+      kind: "wordstage",
+      id: "atarashii-words",
+      title: "あたらしい ステージ",
+      description: "この ステージに 出てくる しごとの ことばと ITの ことばです。",
+      fieldSequence: ["forest", "sky", "space"],
+      questionCount: 6,
+      passRate: 70,
+      wordIds: book.words
+        .filter(isPlayable)
+        .slice(0, 6)
+        .map((w) => w.id),
+    };
+    const parsed = wordStageSchema.safeParse(stored);
+    expect(parsed.success).toBe(true);
+    // 読み出せば 語が 入る
+    expect(hydrateWordStage(parsed.data!, book.words, book.furigana)!.words).toHaveLength(6);
   });
 });

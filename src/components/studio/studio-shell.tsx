@@ -14,12 +14,12 @@ import type {
   Scenario,
   Slides,
   Stage,
+  VocabBook,
   WordStage,
 } from "@/content/schema";
 import { AdminError, AdminHeader, AdminLoading, AdminPageFrame } from "@/components/admin/admin-ui";
 import { collectLearnerTexts } from "@/lib/content-checks";
 import { contentKindMeta } from "@/lib/content-kinds";
-import { termOwners } from "@/lib/dictionary";
 import { sortStages } from "@/lib/map-data";
 import { fetchOwnProfile } from "@/lib/profile-db";
 import { createClient } from "@/lib/supabase/client";
@@ -91,6 +91,8 @@ export interface StudioShellProps {
   meetings: Meeting[];
   wordStages: WordStage[];
   characters: Character[];
+  /** ことばの 正（語の 置き場は これ 1つ）。 */
+  vocabBooks: VocabBook[];
 }
 
 /** きょうざい一覧のタブ。 */
@@ -152,6 +154,7 @@ export function StudioShell({
   meetings,
   wordStages,
   characters,
+  vocabBooks,
 }: StudioShellProps) {
   const router = useRouter();
   const [gate, setGate] = useState<Gate>("checking");
@@ -285,7 +288,6 @@ export function StudioShell({
   const knownIds = useMemo(() => new Set(library.map((item) => item.id)), [library]);
 
   /** すでに どこかの単語ステージに ある ことば（重複を先生に知らせる）。 */
-  const knownTerms = useMemo(() => termOwners(merged.wordstage), [merged.wordstage]);
 
   /**
    * 教材ID → 学習者が読む文（ステージ編集の「ことばを ぬき出す」へ渡す）。
@@ -640,7 +642,7 @@ export function StudioShell({
               value={view.draft}
               library={library}
               knownIds={knownIds}
-              knownTerms={knownTerms}
+              vocabBooks={vocabBooks}
               textsByRef={textsByRef}
               onChange={(draft) => setView({ mode: "stage", draft })}
               onOpenContent={(ref, type) => openContent(ref, type, view.draft)}
