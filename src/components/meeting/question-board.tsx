@@ -1,66 +1,87 @@
 "use client";
 
 import { motion } from "motion/react";
+import { RubyText } from "@/components/ruby-text";
+import type { FuriganaIndex } from "@/lib/text/furigana";
 
 /**
- * はなせた こと — 進み具合を 1行で 見せる チップ
+ * 「6つの しつもん」 — 答えると ひらく カードの 列
  *
- * ## 伏せ札を やめた（2026-08-18）
- * もとは「🎴 きょうの しつもん」という 伏せ札の 並びだった。P2 の「開く箱」は
- * **学習者が 自分で 引き出した もの**を 開けるから 効くのであって、順番に 聞かれる
- * 質問を 伏せても 発見は 起きない。しかも 名前が「きょうの しつもん」だったので、
- * **自分が 質問を するのか** と 読めた（クライアント指摘）。
+ * ## 伏せ札を やめ、そして 戻って きた（2026-08-20）
+ * もとは 伏せ札 →「はなせた こと（n/m）」の 小さな チップ → いまの カード列。
+ * チップは 場所を 取らない かわりに、**きょう 何を するのかが 分からなかった**。
+ * 添付の 画面（2026-08-20 の 指定）に そろえて、
+ * **答えた ものは しつもんの ことばが 見え、まだの ものは ？ で 伏せる**形に する。
  *
- * いまは「はなせた こと」。**自分が 話せた 記録**として 見せる——数が ふえる ことが
- * そのまま ごほうびに なる（P2）。開かない ままの ものは 番号だけで 静かに 置く
- *（できなかった ことを 数えて 見せない — P8）。
+ * これは P2 の「開く箱」——できなかった ことを 数えるのでは なく、
+ * **ひらいた 数が そのまま ごほうびに なる**（P8: 罰を 見せない）。
  */
-export function ProgressChips({
-  total,
-  openIds,
+export function QuestionCards({
   order,
+  labels,
+  openIds,
   currentId,
   justOpenedId,
+  furigana,
 }: {
-  /** ぜんぶで いくつ 聞かれるか。 */
-  total: number;
-  /** 話せた しつもんの id。 */
-  openIds: ReadonlySet<string>;
   /** しつもんの 並び（id）。 */
   order: readonly string[];
+  /** id → カードに 出す みじかい ことば。 */
+  labels: Readonly<Record<string, string>>;
+  /** 話せた しつもんの id。 */
+  openIds: ReadonlySet<string>;
   /** いま 聞かれて いる しつもんの id。 */
   currentId: string | null;
   /** いま 開いた ばかりの id（1回だけ 光らせる）。 */
   justOpenedId: string | null;
+  /** 教材の 読み辞書（カードの 漢字に ふりがなを 合成する）。 */
+  furigana: FuriganaIndex;
 }) {
   return (
-    <div className="flex flex-wrap items-center justify-center gap-1.5">
-      <span className="mr-1 text-xs font-extrabold text-white/70">
-        ラウンド 1・はなせた こと（{openIds.size} / {total}）
-      </span>
-      {order.map((id, at) => {
-        const open = openIds.has(id);
-        const now = currentId === id;
-        return (
-          <motion.span
-            key={id}
-            aria-label={open ? `${at + 1}ばんめ はなせました` : `${at + 1}ばんめ`}
-            animate={justOpenedId === id ? { scale: [1, 1.35, 1] } : { scale: 1 }}
-            transition={{ duration: 0.5 }}
-            className="grid h-6 min-w-6 place-items-center rounded-full px-1.5 text-[11px] font-extrabold"
-            style={{
-              background: open
-                ? "var(--color-leaf)"
-                : now
-                  ? "rgba(255,255,255,0.28)"
-                  : "rgba(255,255,255,0.10)",
-              color: open || now ? "#fff" : "rgba(255,255,255,0.55)",
-            }}
-          >
-            {open ? "✓" : at + 1}
-          </motion.span>
-        );
-      })}
+    <div className="rounded-[var(--radius-card)] bg-white/10 p-2.5">
+      <p className="mb-2 text-xs font-extrabold text-white/80">
+        🎁 {order.length}つの しつもん
+        <span className="ml-2 font-bold text-white/60">
+          こたえると、カードが ひらきます（{openIds.size} / {order.length}）
+        </span>
+      </p>
+      <ol className="grid grid-cols-3 gap-1.5 sm:grid-cols-6">
+        {order.map((id, at) => {
+          const open = openIds.has(id);
+          const now = currentId === id;
+          return (
+            <motion.li
+              key={id}
+              aria-label={open ? `${at + 1}ばんめ こたえました` : `${at + 1}ばんめ まだです`}
+              animate={justOpenedId === id ? { scale: [1, 1.12, 1] } : { scale: 1 }}
+              transition={{ duration: 0.5 }}
+              className="relative min-h-[62px] rounded-xl px-1.5 py-4 text-center"
+              style={{
+                background: open
+                  ? "#fff"
+                  : now
+                    ? "rgba(255,255,255,0.30)"
+                    : "rgba(255,255,255,0.12)",
+                outline: now ? "2px solid var(--color-sun)" : "none",
+              }}
+            >
+              <span
+                className="absolute -top-1.5 -left-1.5 grid h-5 w-5 place-items-center rounded-full text-[10px] font-black text-white"
+                style={{ background: open ? "var(--color-leaf)" : "var(--color-sky-deep)" }}
+              >
+                {open ? "✓" : at + 1}
+              </span>
+              {open ? (
+                <span className="text-ink block text-[11px] leading-snug font-black break-words">
+                  <RubyText text={labels[id] ?? ""} index={furigana} show />
+                </span>
+              ) : (
+                <span className="block text-lg font-black text-white/60">？</span>
+              )}
+            </motion.li>
+          );
+        })}
+      </ol>
     </div>
   );
 }

@@ -26,8 +26,14 @@
 import { z } from "zod";
 import { FORBIDDEN_LEARNER_WORDS } from "@/content/schema";
 
-/** 何回まで言い直させるか（同じ質問への発話回数の上限）。 */
-export const MAX_ATTEMPTS = 3;
+/**
+ * 何回まで言い直させるか（同じ質問への発話回数の上限）。
+ *
+ * **その場で 1回 練習すれば 先へ 進む**（2026-08-20 の 指定「採点が きびしすぎる。
+ * その場で 一度 練習すれば OK という 形に して」）。2回目の 発話の あとは、
+ * どんな 見かたでも 必ず つぎへ 進む。
+ */
+export const MAX_ATTEMPTS = 2;
 
 /** 学習者が読む文の上限（英語の語釈の数）。多いと語釈の壁で読む気が失せる。 */
 const MAX_GLOSSARY = 8;
@@ -138,7 +144,15 @@ export const JUDGE_TOOL = {
 export function gradeOf(judge: JudgeOutput): JudgeGrade {
   if (judge.language !== "ja") return "miss";
   if (judge.relevance === "offTopic") return "miss";
-  if (judge.form === "hard") return "miss";
+  /*
+   * **意味が つたわって いれば 合格**（2026-08-20 の 指定）。
+   *
+   * 前は `form === "hard"` だけで やり直しに して いた。文の 形が くずれて いても
+   * 質問に かみ合って いる（onTopic）なら、**言いたい ことは 届いて いる**——
+   * そこで 止めると、いちばん 勇気の いる 学習者を 何度も 座らせる ことに なる。
+   * 形の 直しは アドバイス（fix）で 見せて、会話は 先へ 進める。
+   */
+  if (judge.form === "hard" && judge.relevance !== "onTopic") return "miss";
   if (judge.relevance === "onTopic" && judge.form === "natural") return "veryGood";
   return "good";
 }
@@ -275,7 +289,9 @@ export function buildJudgePrompt(context: JudgeContext, kanaRetry = false): stri
     "- exampleAnswer: お手本の 答え。学習者の 中身を 活かす。かみ合って いない ときは",
     "  上の「型」から 作る。**すでに よい 答えの ときは、学習者の 文を そのまま 書きます**",
     "  （べつの 言い方に 変えません）",
-    "- retry: もう一度 言い直して もらうと よいか",
+    "- retry: もう一度 言い直して もらうと よいか。**意味が つたわって いれば false**。",
+    "  文法の 小さな まちがい・ていねいさの 不足だけでは true に しません",
+    "  （直す ところは fix で 見せます。会話は 止めません）",
     "- glossary: 上の 文に 出てくる、N5には むずかしい ことばの 英語。term は 文と",
     "  同じ 書き方に する。学習者が じぶんで 使えた ことばは 入れない。多くて 8つ",
     "",

@@ -8,15 +8,7 @@ import { DictionaryText } from "@/components/dictionary-text";
 import { RubyText } from "@/components/ruby-text";
 import type { DictionaryEntry } from "@/lib/dictionary";
 import { buildFuriganaIndex, kanaOf, type FuriganaIndex } from "@/lib/text/furigana";
-import {
-  HINT_BLANK,
-  hintPatterns,
-  hintSegments,
-  readHintShown,
-  readHintShownOnServer,
-  saveHintShown,
-  subscribeHintShown,
-} from "@/lib/meeting/hint";
+import { HINT_BLANK, hintPatterns } from "@/lib/meeting/hint";
 import { MAX_ATTEMPTS, type JudgeResult } from "@/lib/meeting/judge";
 import {
   awardAnswer,
@@ -51,8 +43,9 @@ import { AffectionMeter } from "./affection-meter";
 import { localJudge, type AdviceText } from "./japanese-check";
 import { dropJudgeSession, judgeFailNote, requestJudge, type JudgeApiResult } from "./judge-api";
 import { JudgeCard } from "./judge-card";
-import { ProgressChips } from "./question-board";
+import { QuestionCards } from "./question-board";
 import { MeetingResultCard, PreviousRecordCard, RewardCard } from "./result-card";
+import { HintModal } from "./hint-modal";
 import { JudgeModal } from "./judge-modal";
 import { SpeakButton } from "./speak-button";
 import { SpeechSpeedPicker } from "./speech-speed-picker";
@@ -306,6 +299,8 @@ export function MeetingSession({
   const [judgedAsk, setJudgedAsk] = useState("");
   /** ラウンド2で 出した みちびきの しつもんの 数（押した ぶんだけ 増える）。 */
   const [shownHints, setShownHints] = useState(0);
+  /** ヒントの ポップアップを 出して いるか。 */
+  const [hintOpen, setHintOpen] = useState(false);
   /** チャットに 積んだ 相手の ことばの 数（字幕の どこまでを 出したか）。 */
   const spokenSeenRef = useRef(0);
   /** AIに 通せなかった 理由（ポップアップの 下に 小さく 出す）。 */
@@ -364,14 +359,11 @@ export function MeetingSession({
     () => readMeetingRecord(meeting.id),
     readMeetingRecordOnServer,
   );
-  /**
-   * 型文を 見せるか。**既定は 見える**。
-   *
-   * state に持たない理由は2つある。①端末の保存値は「外の入れ物」なので購読して読む
-   * ②state だと 質問が変わるたび・教材を開くたびに 初期値へ戻ってしまう
-   *（前の実装は `next()` のたびに false に戻していた）。
+  /*
+   * 型文を 見せるかの 保存は やめた（2026-08-20）。ヒントは **ポップアップ**に なり、
+   * 「出しっぱなしに するか」という つまみ自体が 無くなった ので、
+   * 端末に 残す ものも 無い（`src/lib/meeting/hint.ts` の 保存は 他で 使う）。
    */
-  const hintShown = useSyncExternalStore(subscribeHintShown, readHintShown, readHintShownOnServer);
   const voice = useLiveVoice();
   /** 作り置きの音声（質問・おわりの ひとこと）。 */
   const clip = useClipPlayer();
@@ -431,6 +423,19 @@ export function MeetingSession({
   const withName = useCallback((text: string) => fillName(text, learnerName), [learnerName]);
 
   const askText = question ? withName(question.ask) : "";
+
+  /*
+   * カードに 出す **みじかい ことば**。しつもんの 文を そのまま 入れると
+   * 6枚の カードが 文字で うまる ので、`shortAsk` で 切る（きろくカードと 同じ 切り方）。
+   */
+  const cardLabels = useMemo(
+    () =>
+      Object.fromEntries(meeting.questions.map((q) => [q.id, shortAsk(withName(q.ask))])) as Record<
+        string,
+        string
+      >,
+    [meeting.questions, withName],
+  );
 
   /** いま読み上げている文（かな）。口の形はここから取る。 */
   const spokenKana = useMemo(() => {
@@ -1129,59 +1134,22 @@ export function MeetingSession({
     </div>
   ) : (
     <div className="space-y-2">
+      {/*
+        ヒントは **ポップアップ**（2026-08-20 の 指定）。出しっぱなしに して いた ころは
+        画面の 下半分が 型文で うまり、会話の 記録と 話す ボタンが 押し出されて いた。
+      */}
       <div className="flex justify-end">
         <button
           type="button"
-          onClick={() => saveHintShown(!hintShown)}
-          aria-pressed={hintShown}
+          onClick={() => setHintOpen(true)}
           /* 見かたを 待って いる 間・ポップアップの 間は 触らない */
-          disabled={phase === "みている" || phase === "みかた"}
-          className={`rounded-full border-2 px-3 py-1 text-xs font-extrabold disabled:opacity-40 ${
-            hintShown
-              ? "border-hairline text-ink-soft bg-panel"
-              : "border-sun-deep bg-cream text-navy"
-          }`}
+          disabled={phase === "みている" || phase === "みかた" || hintLines.length === 0}
+          aria-label="ヒントを 見る"
+          className="border-sun-deep bg-cream text-navy rounded-full border-2 px-3 py-1 text-xs font-extrabold disabled:opacity-40"
         >
-          <RubyText
-            text={hintShown ? "ヒントを かくす" : "ヒントを 見る"}
-            index={CHROME_FURIGANA}
-            show
-          />
+          <RubyText text="💡 ヒントを 見る" index={CHROME_FURIGANA} show />
         </button>
       </div>
-
-      {hintShown && hintLines.length > 0 ? (
-        <div className="bg-cream border-hairline rounded-[var(--radius-card)] border-2 px-4 py-3">
-          <p className="text-ink-soft text-xs font-extrabold">
-            <RubyText text="💡 ヒント" index={CHROME_FURIGANA} show />
-          </p>
-          <ul className="mt-1 space-y-1">
-            {hintLines.map((line, at) => (
-              <li key={`${at}-${line}`} className="text-ink text-base font-black break-words">
-                「
-                {hintSegments(line).map((seg, i) =>
-                  seg.blank ? (
-                    <span
-                      key={i}
-                      className="border-sky text-sky mx-0.5 border-b-2 border-dashed px-0.5"
-                    >
-                      {seg.text}
-                    </span>
-                  ) : (
-                    <RubyText key={i} text={seg.text} index={furigana} show />
-                  ),
-                )}
-                」
-              </li>
-            ))}
-          </ul>
-          {hintHasBlank ? (
-            <p className="text-ink-faint mt-1 text-xs font-bold">
-              <RubyText text="◯◯ は あなたの ことばです。" index={CHROME_FURIGANA} show />
-            </p>
-          ) : null}
-        </div>
-      ) : null}
 
       {notice ? (
         <p className="bg-cream border-hairline text-ink rounded-[var(--radius-card)] border-2 px-4 py-2 text-sm font-bold">
@@ -1249,13 +1217,37 @@ export function MeetingSession({
         speak={
           <div className="space-y-2">
             {/* 進み具合は 相手の 顔の すぐ下（会話から 目を 離さずに 見える） */}
-            <ProgressChips
-              total={meeting.questions.length}
-              openIds={openIds}
+            <QuestionCards
               order={meeting.questions.map((q) => q.id)}
+              labels={cardLabels}
+              openIds={openIds}
               currentId={question?.id ?? null}
               justOpenedId={justOpenedId}
+              furigana={furigana}
             />
+            {/*
+              **いまの しつもんを 大きく 出す**（2026-08-20 の 指定・添付の 画面）。
+              チャット欄の いちばん 下にも 同じ ものが あるが、話す ボタンの すぐ上に
+              無いと、**答える 直前に もう 一度 読む**ことが できない。
+            */}
+            {!done && askText ? (
+              <div className="flex items-start gap-2 rounded-[var(--radius-card)] bg-white/90 px-3 py-2.5">
+                <p className="text-navy min-w-0 flex-1 text-base font-black break-words">
+                  <RubyText text={askText} index={furigana} show />
+                </p>
+                {question?.audioUrl ? (
+                  <button
+                    type="button"
+                    aria-label="もう いちど 聞く"
+                    disabled={!canAnswer}
+                    onClick={() => clip.play(question.audioUrl as string, rateOf(speed))}
+                    className="text-sky shrink-0 text-xl disabled:opacity-40"
+                  >
+                    🔊
+                  </button>
+                ) : null}
+              </div>
+            ) : null}
             <SpeakButton
               status={voice.status}
               reason={voice.reason}
@@ -1344,6 +1336,16 @@ export function MeetingSession({
       >
         {body}
       </CallShell>
+
+      {/* ヒントは 要る ときに 呼ぶ（出しっぱなしに しない） */}
+      {hintOpen && hintLines.length > 0 ? (
+        <HintModal
+          lines={hintLines}
+          hasBlank={hintHasBlank}
+          furigana={furigana}
+          onClose={() => setHintOpen(false)}
+        />
+      ) : null}
 
       {/* 日本語の 見かた。いちばん 前に 出して、つぎに 何を するかを 押して 決める */}
       {judgeOpen && reply?.judge ? (

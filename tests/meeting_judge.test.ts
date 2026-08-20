@@ -45,8 +45,17 @@ describe("3段の判定", () => {
     expect(gradeOf(judge({ relevance: "offTopic", form: "rough" }))).toBe("miss");
   });
 
-  it("文として取れなければ もう いちど", () => {
-    expect(gradeOf(judge({ form: "hard" }))).toBe("miss");
+  /*
+   * **意味が つたわって いれば 合格**（2026-08-20 の 指定）。
+   * 形が くずれて いても 質問に かみ合って いるなら、言いたい ことは 届いて いる。
+   * かみ合って いない ときだけ「もう いちど」。
+   */
+  it("形が くずれて いても、かみ合って いれば 合格に する", () => {
+    expect(gradeOf(judge({ form: "hard" }))).toBe("good");
+  });
+
+  it("形が くずれて いて、かみ合っても いなければ もう いちど", () => {
+    expect(gradeOf(judge({ form: "hard", relevance: "unclear" }))).toBe("miss");
   });
 
   it("母語で答えたときも もう いちど（日本語を出す練習なので）", () => {
@@ -59,7 +68,12 @@ describe("3段の判定", () => {
 describe("言い直しの上限", () => {
   it("もう いちど なら、上限までは かならず 促す（AIが false でも）", () => {
     expect(clampRetry(judge({ retry: false }), "miss", 1)).toBe(true);
-    expect(clampRetry(judge({ retry: false }), "miss", 2)).toBe(true);
+  });
+
+  /* 上限は 2。**その場で 1回 練習すれば 先へ 進む**（2026-08-20 の 指定） */
+  it("練習は 1回だけ（2回目の あとは かならず 進む）", () => {
+    expect(MAX_ATTEMPTS).toBe(2);
+    expect(clampRetry(judge({ retry: true }), "miss", 2)).toBe(false);
   });
 
   it("上限に とどいたら 促さない（会話は かならず 前へ進む）", () => {

@@ -70,7 +70,12 @@ export function SpeakButton({
           className="btn-island btn-game w-full px-6 py-4 text-lg disabled:opacity-50"
           style={{ "--btn-face": READY_FACE, "--btn-shadow": READY_SHADOW } as React.CSSProperties}
         >
-          {connecting ? "つないで います…" : "🎤 こえを つかう"}
+          {/*
+            **押した ときに マイクを つなぐ**。つながって はじめて 丸い マイクが 出る
+            （2026-08-20 の 指定）。つなぐ 前に マイクを 見せると、押しても 何も
+            起きない ボタンを 押させる ことに なる。
+          */}
+          {connecting ? "マイクを つないで います…" : "🎤 スタート（マイクを つなぐ）"}
         </button>
         {/*
           折り返しは **ことばの 切れ目**で（`break-keep`）。既定では 390px の 実機で
@@ -89,6 +94,11 @@ export function SpeakButton({
     );
   }
 
+  /*
+   * **丸い マイク**（2026-08-20 の 指定・添付の 画面に 寄せる）。
+   * 横に 長い ボタンだと「押す ところ」に 見えず、周りの ボタンと 区別が つかない。
+   * 会話の 中心の 操作なので、形からして ほかと ちがう ものに する。
+   */
   return (
     <div className="text-center">
       <motion.button
@@ -96,24 +106,26 @@ export function SpeakButton({
         aria-pressed={talking}
         disabled={disabled}
         onClick={talking ? onStopTalking : onStartTalking}
-        animate={talking ? { scale: [1, 1.03, 1] } : { scale: 1 }}
+        aria-label={talking ? "はなすのを おわる" : "おして はなす"}
+        animate={talking ? { scale: [1, 1.06, 1] } : { scale: 1 }}
         transition={talking ? { duration: 1.1, repeat: Infinity } : { duration: 0.15 }}
-        className="btn-island btn-game w-full touch-none px-6 py-5 text-xl select-none disabled:opacity-40"
-        style={
-          {
-            "--btn-face": talking ? TALKING_FACE : READY_FACE,
-            "--btn-shadow": talking ? TALKING_SHADOW : READY_SHADOW,
-          } as React.CSSProperties
-        }
+        className="mx-auto grid h-24 w-24 touch-none place-items-center rounded-full text-4xl text-white shadow-lg transition select-none disabled:opacity-40"
+        style={{
+          background: talking ? TALKING_FACE : READY_FACE,
+          boxShadow: `0 6px 0 ${talking ? TALKING_SHADOW : READY_SHADOW}`,
+        }}
       >
-        {talking ? "🔴 いま きいて います（おすと おわり）" : "🎤 おして はなす"}
+        {talking ? "⏹" : "🎤"}
       </motion.button>
-      <p className="mt-1.5 text-xs font-bold break-keep text-white/70">
+      <p className="text-navy mt-2 text-sm font-black">
+        {disabled ? "…" : talking ? "はなしおわったら おす" : "おして はなす"}
+      </p>
+      <p className="mt-1 text-xs font-bold break-keep text-white/70">
         {disabled
           ? (waitNote ?? "いまは まって ください")
           : talking
             ? "はなしおわったら、もう いちど おして ください"
-            : "おすと、こえを おくります。はなしおわったら もう いちど おします"}
+            : "こえで こたえましょう！"}
       </p>
     </div>
   );

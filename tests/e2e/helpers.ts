@@ -286,10 +286,10 @@ export async function skipAsk(page: Page): Promise<void> {
   await sendAnswer(page, "すみません、つぎを おねがいします");
 }
 
-/** 話せた しつもんの 数（はなせた こと（n / m））。 */
+/** ひらいた カードの 数（「こたえると、カードが ひらきます（n / m）」）。 */
 export async function openedCards(page: Page): Promise<number> {
   const label = await page
-    .getByText(/はなせた こと（\s*\d+\s*\/\s*\d+\s*）/)
+    .getByText(/カードが ひらきます（\s*\d+\s*\/\s*\d+\s*）/)
     .first()
     .innerText();
   const match = /（\s*(\d+)\s*\/\s*(\d+)\s*）/.exec(label);
