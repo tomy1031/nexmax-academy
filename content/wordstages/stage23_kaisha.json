@@ -2,7 +2,7 @@
   "kind": "wordstage",
   "id": "stage23_kaisha",
   "title": "かいしゃの ことば",
-  "description": "会社の ホームページを しらべる ことばです。",
+  "description": "会社の ホームページを 調べる 言葉です。",
   "password": "stage23",
   "fieldSequence": [
     "forest",
@@ -139,6 +139,14 @@
     [
       "経営",
       "けいえい"
+    ],
+    [
+      "調",
+      "しら"
+    ],
+    [
+      "言葉",
+      "ことば"
     ]
   ],
   "words": [

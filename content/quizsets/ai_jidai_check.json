@@ -2,7 +2,7 @@
   "kind": "quizset",
   "id": "ai_jidai_check",
   "title": "きょうの かくにん",
-  "description": "スライド「AIの 時代」の かくにんです。だいじな ことばだけ 聞きます。漢字でも ひらがなでも いいです。",
+  "description": "スライド「AIの 時代」の 確認です。大事な 言葉だけ 聞きます。漢字でも ひらがなでも いいです。",
   "nekumax": "book",
   "phase": "research",
   "passRate": 60,
@@ -282,6 +282,10 @@
     [
       "料理",
       "りょうり"
+    ],
+    [
+      "確認",
+      "かくにん"
     ]
   ],
   "questions": [

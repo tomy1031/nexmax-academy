@@ -28,6 +28,7 @@
 
 import { z } from "zod";
 import { defaultBackend, readContentProgress, type ProgressBackend } from "@/lib/progress/store";
+import { quizDraftSchema, type QuizDraft } from "@/lib/quiz/draft";
 
 /** 進捗ストアと同じ名前空間（あちらの定数は非公開なので、鍵の形だけ合わせる）。 */
 const NAMESPACE = "nexmax:v1";
@@ -48,25 +49,59 @@ const resultSchema = z.object({
 
 const resumeSchema = z.object({
   quizSetId: z.string(),
-  /** 答え終えた 問題だけ。並びは 出題順。 */
+  /** 答え終えた 問題だけ。並びは 出題順（1問ずつ の とき）。 */
   results: z.array(resultSchema),
+  /**
+   * どちらの やりかたで 始めたか。**既定は 1問ずつ**——この鍵が 無かった 頃の
+   * 保存値も そのまま 読める（`.default()` に する 理由は `answer` と 同じ）。
+   */
+  mode: z.enum(["one", "submit"]).default("one"),
+  /**
+   * まとめて 出す ときの 採点まえの こたえ。**問題IDを 鍵に する**——並びで 持つと、
+   * 教材に 1問 足した 日に ぜんぶ 1つずつ ずれる。
+   */
+  drafts: z.record(z.string(), quizDraftSchema).default({}),
+  /** まとめて 出す ときに 見て いた 問題の 番号（0始まり）。 */
+  index: z.number().int().min(0).default(0),
 });
 
 export type QuizResumeResult = z.infer<typeof resultSchema>;
+/** 読み終えた 形（既定が 埋まって いる）。 */
 export type QuizResume = z.infer<typeof resumeSchema>;
+/**
+ * 書くときの 形（既定は 省ける）。
+ * 1問ずつの 保存に `drafts: {}` を 毎回 書かせないための 入口。
+ */
+export type QuizResumeInput = z.input<typeof resumeSchema>;
 
 /** 画面が これから 始める ところ。 */
 export interface QuizStart {
   /** つぎに 出す 問題の 番号（0始まり）。 */
   readonly index: number;
-  /** ここまでの 結果（正解した 問題の ID・得点）。 */
+  /** ここまでの 結果（正解した 問題の ID・得点）。1問ずつ の とき だけ 中身が 入る。 */
   readonly results: readonly QuizResumeResult[];
   /** 途中から 戻ったか（「つづきから」の 案内を 出すか の 判断に 使う）。 */
   readonly resumed: boolean;
+  /** 前回 えらんだ やりかた。 */
+  readonly mode: QuizMode;
+  /** まとめて 出す ときの 採点まえの こたえ（問題IDごと）。 */
+  readonly drafts: Readonly<Record<string, QuizDraft>>;
 }
 
-/** はじめから。 */
-export const FRESH_QUIZ_START: QuizStart = { index: 0, results: [], resumed: false };
+/** もんだいの やりかた（`@/components/quiz/quiz-reducer` の QuizMode と同じ 2つ）。 */
+export type QuizMode = "one" | "submit";
+
+/**
+ * はじめから。`mode` は 教材の 既定（まとめて 出す）を 置くが、`startFrom` は
+ * かならず 教材の やりかたで 上書きする——ここの 値は 目印でしかない。
+ */
+export const FRESH_QUIZ_START: QuizStart = {
+  index: 0,
+  results: [],
+  resumed: false,
+  mode: "submit",
+  drafts: {},
+};
 
 function keyOf(quizSetId: string): string {
   return `${NAMESPACE}:quiz-resume:${quizSetId}`;
@@ -79,6 +114,19 @@ function keyOf(quizSetId: string): string {
 /**
  * 保存されて いた ものと しおりから、始める ところを 決める。
  *
+ * ## やりかたは 教材が 決める
+ * 「1問ずつ」か「まとめて 出す」かは **先生が 管理画面で 決める**（`QuizSet.answerMode`）。
+ * だから ここでは 引数の `mode` が 正で、端末に 残って いた `mode` は
+ * **その 保存が 今の やりかたの ものか**を 見分ける ためだけに 使う。
+ * 先生が やりかたを 切り替えたら、前の 保存は もう 前提が ちがうので はじめから にする
+ * （1問ずつの 採点ずみ 内訳を まとめて 出す の 下書きとして 読む ことは できない）。
+ *
+ * ## まとめて 出す（mode: "submit"）
+ * 採点まえの 下書きを そのまま 戻す。**問題IDを 鍵に して 持って いる**ので、
+ * 教材の 並びが 変わっても ずれない——いま 無い 問題の 下書きだけ 落とす。
+ * 見て いた 番号は 問題数の 中に 収める（教材が 短く なった ときの ため）。
+ *
+ * ## 1問ずつ（mode: "one"）
  * 規則は 5つ:
  * 1. 手がかりが 無い・整数で ない なら はじめから
  * 2. 結果の 数が **問題の 数に 届いて いれば** はじめから（＝完走ずみ。もう一度 挑戦できる）
@@ -104,19 +152,39 @@ export function startFrom(
   saved: QuizResume | null,
   panel: number | undefined,
   questionIds: readonly string[],
+  mode: QuizMode = "submit",
 ): QuizStart {
-  const candidate = saved ? saved.results.length : panel;
-  if (typeof candidate !== "number" || !Number.isInteger(candidate)) return FRESH_QUIZ_START;
-  if (candidate <= 0 || candidate >= questionIds.length) return FRESH_QUIZ_START;
+  const fresh: QuizStart = { ...FRESH_QUIZ_START, mode };
+  if (questionIds.length === 0) return fresh;
+  // 先生が やりかたを 切り替えた あとの 保存は 読まない（前提が ちがう）
+  const own = saved?.mode === mode ? saved : null;
+
+  if (mode === "submit") {
+    if (!own) return fresh;
+    // いま 教材に 無い 問題の 下書きは 落とす（並びが 変わっても ID なので ずれない）
+    const alive = Object.entries(own.drafts).filter(([id]) => questionIds.includes(id));
+    if (alive.length === 0) return fresh;
+    return {
+      index: Math.min(Math.max(own.index, 0), questionIds.length - 1),
+      results: [],
+      resumed: true,
+      mode,
+      drafts: Object.fromEntries(alive),
+    };
+  }
+
+  const candidate = own ? own.results.length : panel;
+  if (typeof candidate !== "number" || !Number.isInteger(candidate)) return fresh;
+  if (candidate <= 0 || candidate >= questionIds.length) return fresh;
 
   // しおりだけの ときは 位置だけ 戻す（内訳が 無いので 結果は 空のまま）
-  if (!saved) return { index: candidate, results: [], resumed: true };
+  if (!own) return { ...fresh, index: candidate, resumed: true };
 
   // 教材が 問題を 入れかえて いたら、答えの 内訳は もう 前提に 合わない
-  const stillMatches = saved.results.every((r, i) => questionIds[i] === r.questionId);
-  if (!stillMatches) return FRESH_QUIZ_START;
+  const stillMatches = own.results.every((r, i) => questionIds[i] === r.questionId);
+  if (!stillMatches) return fresh;
 
-  return { index: candidate, results: saved.results, resumed: true };
+  return { ...fresh, index: candidate, results: own.results, resumed: true };
 }
 
 /* ------------------------------------------------------------------ *
@@ -139,7 +207,7 @@ export function readQuizResume(
 }
 
 export function saveQuizResume(
-  resume: QuizResume,
+  resume: QuizResumeInput,
   backend: ProgressBackend = defaultBackend(),
 ): void {
   backend.set(keyOf(resume.quizSetId), JSON.stringify(resume));
@@ -163,11 +231,13 @@ export function clearQuizResume(
 export function restoreQuiz(
   quizSetId: string,
   questionIds: readonly string[],
+  mode: QuizMode = "submit",
   backend: ProgressBackend = defaultBackend(),
 ): QuizStart {
   return startFrom(
     readQuizResume(quizSetId, backend),
     readContentProgress(quizSetId, backend)?.position?.question,
     questionIds,
+    mode,
   );
 }

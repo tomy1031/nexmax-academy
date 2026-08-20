@@ -49,5 +49,8 @@
       "gates": false
     }
   ],
-  "wordStageIds": []
+  "wordStageIds": [
+    "intro_kotoba",
+    "stage01_orientation"
+  ]
 }

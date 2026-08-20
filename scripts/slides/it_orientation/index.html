@@ -45,15 +45,64 @@
     position: absolute; bottom: 10px; left: 24px; font-size: 10.5px; color: #7189a3;
     background: rgba(255, 253, 250, 0.78); padding: 2px 10px; border-radius: 999px;
   }
-  /* ページ番号は数えて出す（手書きだと1枚の挿入で以降が全部ずれる）。分母だけここで1回書く */
-  body { counter-reset: slide; }
-  .slide { counter-increment: slide; }
-  /* 丸ごと絵のスライドでは 絵の中のネクマックスと 重なるので、薄い下地を敷いて読めるようにする */
-  .pageno {
-    position: absolute; bottom: 10px; right: 16px; font-size: 11px; font-weight: 700; color: #7189a3;
-    background: rgba(255, 253, 250, 0.78); padding: 2px 9px; border-radius: 999px;
+
+
+  /* --- 左右で 見くらべる スライド（今まで ⇄ これから のような 対比） ---
+   * **対比は 1枚に 並べる。** 2枚に 分けると、目が 行ったり来たり できず
+   * 「何と 何を くらべているのか」が 消える（2026-08-19 の 指摘）。
+   * 学校＝みどり / 会社＝あお の 地色は 元スライドの 約束を 引き継ぐ。 */
+  .compare { padding: 26px 40px 30px; }
+  .compare h1 { font-size: 34px; text-align: center; line-height: 1.35; }
+  .compare .cols { display: flex; gap: 16px; align-items: stretch; margin-top: 12px; flex: 1; }
+  .compare .col {
+    flex: 1; display: flex; flex-direction: column; justify-content: space-between;
+    border-radius: 22px; padding: 14px 18px 18px; box-shadow: 0 6px 18px rgba(31, 58, 86, 0.1);
   }
-  .pageno::before { content: counter(slide) " / 15"; }
+  .compare .col.now { background: rgba(222, 242, 211, 0.85); }
+  .compare .col.next { background: rgba(217, 238, 252, 0.9); }
+  .compare .col h3 { font-size: 22px; font-weight: 800; text-align: center; line-height: 1.4; }
+  .compare .col img { width: 100%; height: 236px; object-fit: cover; border-radius: 14px; margin: 11px 0; }
+  .compare .col p { font-size: 17px; font-weight: 700; line-height: 1.65; }
+  .compare .arrow { align-self: center; font-size: 34px; color: #f2654a; font-weight: 800; }
+
+
+  /* 対比ではない 2つ並べ（ルール1・ルール2）。地色は 中立の 白。 */
+  .compare .col.plain { background: rgba(255, 255, 255, 0.82); }
+  .compare .col .tags { display: flex; gap: 8px; justify-content: center; margin: 2px 0 6px; }
+  .compare .col .tags span {
+    background: #004f8d; color: #fff; border-radius: 999px;
+    padding: 13px 16px 5px; font-size: 15px; font-weight: 800; line-height: 1.05;
+  }
+  /* **色の面の 上では ふりがなも 白**（2026-08-19 の 指定。アプリ側の RUBY_ON_COLOR と
+     同じ 決まり）。既定の rt は 濃い灰なので、紺の チップの 上では 沈んで 読めない。 */
+  .compare .col .tags span rt { color: #fff; }
+
+  /* --- 3つを 1枚に 並べる スライド（チャンス） ---
+   * 元スライドは 3つの カードが 1枚に 並んでいた。1つずつ 別の 枚に すると
+   * 「3つ ある」ことが 見えなくなる（2026-08-19 の 指摘）。 */
+  .cardset { padding: 24px 34px 26px; }
+  .cardset h1 { font-size: 32px; text-align: center; }
+  .cardset .cards { display: flex; gap: 14px; margin-top: 12px; }
+  .cardset .card {
+    flex: 1; background: rgba(255, 255, 255, 0.86); border-radius: 20px;
+    padding: 10px 12px 12px; box-shadow: 0 6px 16px rgba(31, 58, 86, 0.1);
+    display: flex; flex-direction: column; position: relative;
+  }
+  .cardset .card img { width: 100%; height: 128px; object-fit: cover; border-radius: 13px; }
+  /* 給料の カードは「日本の 20代 ＝ 現地の トップクラス」の 対比。イコールは
+     絵に 焼かず ここで 重ねる（数字と 同じ 理由。あとから 直せる形で 持つ）。 */
+  .cardset .card .eq {
+    position: absolute; left: 50%; top: 62px; transform: translate(-50%, -50%);
+    font-size: 34px; font-weight: 800; color: #004f8d;
+  }
+  .cardset .card h3 { font-size: 17px; font-weight: 800; margin-top: 8px; line-height: 1.4; text-align: center; }
+  .cardset .card p { font-size: 13.5px; font-weight: 700; line-height: 1.55; margin-top: 6px; color: #3c5877; }
+  .cardset .band {
+    display: flex; align-items: center; gap: 14px; margin-top: 12px;
+    background: rgba(255, 201, 60, 0.22); border-radius: 18px; padding: 8px 16px;
+  }
+  .cardset .band img { width: 148px; height: 62px; object-fit: cover; border-radius: 12px; }
+  .cardset .band p { font-size: 17px; font-weight: 800; }
 
   /* --- 絵が主役のスライド（左テキスト・右画像） --- */
   .with-pic { padding-right: 0; }
@@ -204,117 +253,114 @@
   <img class="bg" src="img/t01_title.jpg" alt="" />
   <div class="panel" style="bottom: 40px; width: 760px;"><h1><ruby>日本<rt>にほん</rt></ruby>で エンジニアに なる ために</h1><div class="sub" style="margin-top:8px; font-size:18px;"><ruby>学校<rt>がっこう</rt></ruby>の <ruby>日本語<rt>にほんご</rt></ruby>から、<ruby>仕事<rt>しごと</rt></ruby>の <ruby>日本語<rt>にほんご</rt></ruby>へ</div></div>
   <div class="alt">日本で エンジニアに なる ために。学校の 日本語から、仕事の 日本語へ。</div>
-  <div class="pageno"></div>
 </section>
 
-<section class="slide with-pic">
-  <!-- いままで と これから を 1枚に まとめた ぶん、文字の 列を 少し 広げて 行を 折らない -->
-  <div class="txt" style="width: 45%;">
-    <div class="kicker">いま と これから</div>
-    <h2 style="font-size: 25px;"><ruby>今<rt>いま</rt></ruby>までの <ruby>勉強<rt>べんきょう</rt></ruby>は<br />「N4・N3に <ruby>合格<rt>ごうかく</rt></ruby>する ため」<br />これからは <ruby>会社<rt>かいしゃ</rt></ruby>で <ruby>使<rt>つか</rt></ruby>う <ruby>日本語<rt>にほんご</rt></ruby></h2>
-    <div class="sub"><ruby>教科書<rt>きょうかしょ</rt></ruby>に ない <ruby>言葉<rt>ことば</rt></ruby>が たくさん <ruby>出<rt>で</rt></ruby>て きます。</div>
+<section class="slide compare">
+  <h1>いま と これから</h1>
+  <div class="cols">
+    <div class="col now">
+      <h3><ruby>学校<rt>がっこう</rt></ruby>の <ruby>日本語<rt>にほんご</rt></ruby></h3>
+      <img src="img/t03_study.jpg" alt="" />
+      <p><ruby>今<rt>いま</rt></ruby>までの <ruby>勉強<rt>べんきょう</rt></ruby>は「N4・N3に <ruby>合格<rt>ごうかく</rt></ruby>する ため」の ものでした。</p>
+    </div>
+    <div class="arrow">➡</div>
+    <div class="col next">
+      <h3><ruby>会社<rt>かいしゃ</rt></ruby>で <ruby>使<rt>つか</rt></ruby>う <ruby>日本語<rt>にほんご</rt></ruby></h3>
+      <img src="img/t04_office.jpg" alt="" />
+      <p><ruby>教科書<rt>きょうかしょ</rt></ruby>に ない <ruby>言葉<rt>ことば</rt></ruby>が たくさん <ruby>出<rt>で</rt></ruby>て きます。</p>
+    </div>
   </div>
-  <img class="pic" src="img/t04_office.jpg" alt="" />
-  <div class="pageno"></div>
+  <div class="alt">いま と これから。学校の 日本語。今までの 勉強は「N4・N3に 合格する ため」の ものでした。会社で 使う 日本語。教科書に ない 言葉が たくさん 出て きます。</div>
 </section>
 
 <section class="slide full-pic">
   <img class="bg" src="img/w05_yontsu.jpg" alt="" />
   <div class="alt">仕事で つかう 4つの 力。読む（仕様書・メッセージ）。書く（報告書・チャット）。話す（会議・相談）。聞く（指示・お客さまの 話）。どれも 同じくらい 大切です。</div>
-  <div class="pageno"></div>
 </section>
 
 <section class="slide full-pic">
   <img class="bg" src="img/w07_business.jpg" alt="" />
   <div class="alt">むずかしさ1。ビジネスの 日本語。学校の 日本語は「わかりました」「すみません」。会社の 日本語は「承知しました」「申し訳 ございません」。意味は 同じでも、言い方が 変わります。</div>
-  <div class="pageno"></div>
 </section>
 
 <section class="slide full-pic">
   <img class="bg" src="img/w08_itwords.jpg" alt="" />
   <div class="alt">むずかしさ2。IT専門の 日本語。要件定義、設計書、アプリケーション、データベース、ソースコード。知らない 言葉は、自分で 調べて みましょう。</div>
-  <div class="pageno"></div>
-</section>
-
-<section class="slide with-pic">
-  <div class="txt">
-    <div class="kicker">もし わからなかったら</div>
-    <h2><ruby>言葉<rt>ことば</rt></ruby>が <ruby>分<rt>わ</rt></ruby>からないと<br /><ruby>仕事<rt>しごと</rt></ruby>が <ruby>止<rt>と</rt></ruby>まります</h2>
-    <div class="sub">チームの <ruby>人<rt>ひと</rt></ruby>と <ruby>相談<rt>そうだん</rt></ruby>できません。お<ruby>客<rt>きゃく</rt></ruby>さまの「<ruby>言<rt>い</rt></ruby>いたい こと」も <ruby>分<rt>わ</rt></ruby>かりません。<br />→ ほしい アプリを <ruby>作<rt>つく</rt></ruby>れません。</div>
-  </div>
-  <img class="pic" src="img/t09_trouble.jpg" alt="" />
-  <div class="pageno"></div>
-</section>
-
-<section class="slide with-pic">
-  <div class="txt">
-    <div class="kicker">ルール 1</div>
-    <h2><ruby>時間<rt>じかん</rt></ruby>を まもります</h2>
-    <div class="sub"><ruby>約束<rt>やくそく</rt></ruby>の <ruby>時間<rt>じかん</rt></ruby>の 5<ruby>分前<rt>ふんまえ</rt></ruby>に <ruby>着<rt>つ</rt></ruby>きます。<ruby>遅<rt>おく</rt></ruby>れる ときは、<ruby>必<rt>かなら</rt></ruby>ず <ruby>先<rt>さき</rt></ruby>に <ruby>連絡<rt>れんらく</rt></ruby>します。</div>
-  </div>
-  <img class="pic" src="img/t11_time.jpg" alt="" />
-  <div class="pageno"></div>
 </section>
 
 <section class="slide full-pic">
-  <img class="bg" src="img/w12_horenso.jpg" alt="" />
-  <div class="alt">日本の 会社の ルール。ほうれんそう。報告 Report、連絡 Contact、相談 Consult。困ったら、すぐに 相談します。</div>
-  <div class="pageno"></div>
+  <!-- 山場の 1枚。**絵を 切らない**——困っている チームと、怒っている お客さまが
+       同じ 画面に 収まって はじめて「通じないと どうなるか」が 伝わる
+       （2026-08-19「表情がフラット・感情の きびが 伝わらない」）。 -->
+  <img class="bg" src="img/t25_trouble.jpg" alt="" />
+  <div class="panel" style="bottom: 26px; width: 800px; padding: 16px 30px;">
+    <h2 style="font-size: 26px;">もし、<ruby>日本語<rt>にほんご</rt></ruby>が <ruby>分<rt>わ</rt></ruby>からなかったら…？</h2>
+    <div class="sub" style="margin-top: 6px; font-size: 17px;">チームの <ruby>人<rt>ひと</rt></ruby>と <ruby>相談<rt>そうだん</rt></ruby>できません。お<ruby>客<rt>きゃく</rt></ruby>さまの「<ruby>言<rt>い</rt></ruby>いたい こと」も <ruby>分<rt>わ</rt></ruby>かりません。<br />→ ほしい アプリを <ruby>作<rt>つく</rt></ruby>れません。</div>
+  </div>
+  <div class="alt">もし、日本語が 分からなかったら。チームの 人と 相談できません。お客さまの「言いたい こと」も 分かりません。ほしい アプリを 作れません。</div>
 </section>
 
 <section class="slide full-pic">
   <img class="bg" src="img/w14_ai.jpg" alt="" />
   <div class="alt">AIの 時代。AIが プログラムを 書きます。プログラムは AIの 仕事。人の 仕事は コミュニケーション。だから 日本語が 大切です。</div>
-  <div class="pageno"></div>
 </section>
 
-<section class="slide full-pic">
-  <img class="bg" src="img/w16_salary.jpg" alt="" />
-  <div class="alt">チャンス1。給料が 大きく 変わります。日本で 働く 20代は、カンボジアの トップクラスと 同じくらいの 給料に なります。</div>
-  <div class="footnote"><ruby>会社<rt>かいしゃ</rt></ruby>や <ruby>仕事<rt>しごと</rt></ruby>で 大きく ちがいます。だいたいの 話です</div>
-  <div class="pageno"></div>
-</section>
-
-<section class="slide with-pic">
-  <div class="txt">
-    <div class="kicker">チャンス 2</div>
-    <h2><ruby>新<rt>あたら</rt></ruby>しい <ruby>技術<rt>ぎじゅつ</rt></ruby>を<br /><ruby>先<rt>さき</rt></ruby>に <ruby>学<rt>まな</rt></ruby>べます</h2>
-    <div class="sub">AI・クラウド・VR。<ruby>日本<rt>にほん</rt></ruby>の <ruby>会社<rt>かいしゃ</rt></ruby>では、<ruby>新<rt>あたら</rt></ruby>しい <ruby>道具<rt>どうぐ</rt></ruby>を <ruby>仕事<rt>しごと</rt></ruby>で <ruby>使<rt>つか</rt></ruby>えます。</div>
+<section class="slide compare">
+  <h1><ruby>日本<rt>にほん</rt></ruby>の <ruby>会社<rt>かいしゃ</rt></ruby>の ルール</h1>
+  <div class="cols">
+    <div class="col plain">
+      <h3>ルール1　<ruby>時間<rt>じかん</rt></ruby>を まもります</h3>
+      <img src="img/t11_time.jpg" alt="" />
+      <p><ruby>約束<rt>やくそく</rt></ruby>の <ruby>時間<rt>じかん</rt></ruby>の 5<ruby>分前<rt>ふんまえ</rt></ruby>に <ruby>着<rt>つ</rt></ruby>きます。<ruby>遅<rt>おく</rt></ruby>れる ときは、<ruby>必<rt>かなら</rt></ruby>ず <ruby>先<rt>さき</rt></ruby>に <ruby>連絡<rt>れんらく</rt></ruby>します。</p>
+    </div>
+    <div class="col plain">
+      <h3>ルール2　ほうれんそう</h3>
+      <img src="img/t22_horenso.jpg" alt="" />
+      <p class="tags"><span><ruby>報告<rt>ほうこく</rt></ruby></span><span><ruby>連絡<rt>れんらく</rt></ruby></span><span><ruby>相談<rt>そうだん</rt></ruby></span></p>
+      <p><ruby>困<rt>こま</rt></ruby>ったら、すぐに <ruby>相談<rt>そうだん</rt></ruby>します。</p>
+    </div>
   </div>
-  <img class="pic" src="img/t17_tech.jpg" alt="" />
-  <div class="pageno"></div>
+  <div class="alt">日本の 会社の ルール。ルール1 時間を まもります。約束の 時間の 5分前に 着きます。遅れる ときは、必ず 先に 連絡します。ルール2 ほうれんそう。報告、連絡、相談。困ったら、すぐに 相談します。</div>
 </section>
 
-<section class="slide full-pic">
-  <img class="bg" src="img/w18_city.jpg" alt="" />
-  <div class="rank" style="left: 92px; top: 176px;"><ruby>世界<rt>せかい</rt></ruby> 2<ruby>位<rt>い</rt></ruby></div>
-  <div class="rank" style="left: 500px; top: 176px;"><ruby>世界<rt>せかい</rt></ruby> 4<ruby>位<rt>い</rt></ruby></div>
-  <div class="footnote">「<ruby>住<rt>す</rt></ruby>みやすい <ruby>世界<rt>せかい</rt></ruby>の <ruby>都市<rt>とし</rt></ruby>」ランキング（エコノミスト・2021<ruby>年<rt>ねん</rt></ruby>の しらべ）</div>
-  <div class="alt">チャンス3。日本は 住みやすい 街です。大阪は 世界 2位、東京は 世界 4位。安全で、電車が 時間どおりに 来ます。</div>
-  <div class="pageno"></div>
-</section>
-
-<section class="slide with-pic">
-  <div class="txt">
-    <div class="kicker">チャンス 4</div>
-    <h2><ruby>仕事<rt>しごと</rt></ruby>や <ruby>経験<rt>けいけん</rt></ruby>を<br />カンボジアへ<br /><ruby>持<rt>も</rt></ruby>って <ruby>帰<rt>かえ</rt></ruby>れます</h2>
-    <div class="sub"><ruby>日本<rt>にほん</rt></ruby>の <ruby>大<rt>おお</rt></ruby>きな <ruby>仕事<rt>しごと</rt></ruby>の やり<ruby>方<rt>かた</rt></ruby>は、<ruby>国<rt>くに</rt></ruby>に <ruby>帰<rt>かえ</rt></ruby>っても <ruby>使<rt>つか</rt></ruby>えます。</div>
+<section class="slide cardset">
+  <h1><ruby>日本<rt>にほん</rt></ruby>には <ruby>大<rt>おお</rt></ruby>きな チャンスが あります</h1>
+  <div class="cards">
+    <div class="card">
+      <img src="img/t23_salary.jpg" alt="" />
+      <div class="eq">=</div>
+      <h3><ruby>給料<rt>きゅうりょう</rt></ruby>が <ruby>大<rt>おお</rt></ruby>きく <ruby>変<rt>か</rt></ruby>わります</h3>
+      <p><ruby>日本<rt>にほん</rt></ruby>で <ruby>働<rt>はたら</rt></ruby>く 20<ruby>代<rt>だい</rt></ruby>は、カンボジアの トップクラスと <ruby>同<rt>おな</rt></ruby>じくらいに なります。</p>
+    </div>
+    <div class="card">
+      <img src="img/t17_tech.jpg" alt="" />
+      <h3><ruby>新<rt>あたら</rt></ruby>しい <ruby>技術<rt>ぎじゅつ</rt></ruby>を <ruby>先<rt>さき</rt></ruby>に <ruby>学<rt>まな</rt></ruby>べます</h3>
+      <p>AI・クラウド・VR。<ruby>新<rt>あたら</rt></ruby>しい <ruby>道具<rt>どうぐ</rt></ruby>を <ruby>仕事<rt>しごと</rt></ruby>で <ruby>使<rt>つか</rt></ruby>えます。</p>
+    </div>
+    <div class="card">
+      <div class="rank" style="left: 14px; top: 12px;"><ruby>世界<rt>せかい</rt></ruby> 2<ruby>位<rt>い</rt></ruby></div>
+      <img src="img/t24_city.jpg" alt="" />
+      <h3><ruby>住<rt>す</rt></ruby>みやすい <ruby>街<rt>まち</rt></ruby>です</h3>
+      <p><ruby>大阪<rt>おおさか</rt></ruby>は <ruby>世界<rt>せかい</rt></ruby>2<ruby>位<rt>い</rt></ruby>、<ruby>東京<rt>とうきょう</rt></ruby>は 4<ruby>位<rt>い</rt></ruby>。<ruby>安全<rt>あんぜん</rt></ruby>で、<ruby>電車<rt>でんしゃ</rt></ruby>が <ruby>時間<rt>じかん</rt></ruby>どおりに <ruby>来<rt>き</rt></ruby>ます。</p>
+    </div>
   </div>
-  <img class="pic" src="img/t19_bring.jpg" alt="" />
-  <div class="pageno"></div>
+  <div class="band">
+    <img src="img/t19_bring.jpg" alt="" />
+    <p><ruby>日本<rt>にほん</rt></ruby>の <ruby>大<rt>おお</rt></ruby>きな <ruby>仕事<rt>しごと</rt></ruby>の やり<ruby>方<rt>かた</rt></ruby>は、<ruby>国<rt>くに</rt></ruby>に <ruby>帰<rt>かえ</rt></ruby>っても <ruby>使<rt>つか</rt></ruby>えます。</p>
+  </div>
+  <div class="footnote"><ruby>給料<rt>きゅうりょう</rt></ruby>は <ruby>会社<rt>かいしゃ</rt></ruby>や <ruby>仕事<rt>しごと</rt></ruby>で 大きく ちがう、だいたいの <ruby>話<rt>はなし</rt></ruby>／「<ruby>住<rt>す</rt></ruby>みやすい <ruby>世界<rt>せかい</rt></ruby>の <ruby>都市<rt>とし</rt></ruby>」ランキング（エコノミスト・2021<ruby>年<rt>ねん</rt></ruby>の しらべ）</div>
+  <div class="alt">日本には 大きな チャンスが あります。給料が 大きく 変わります。日本で 働く 20代は、カンボジアの トップクラスと 同じくらいに なります。新しい 技術を 先に 学べます。AI・クラウド・VR。新しい 道具を 仕事で 使えます。住みやすい 街です。大阪は 世界2位、東京は 4位。安全で、電車が 時間どおりに 来ます。日本の 大きな 仕事の やり方は、国に 帰っても 使えます。</div>
 </section>
 
 <section class="slide full-pic">
   <img class="bg" src="img/w20_year.jpg" alt="" />
   <div class="alt">これからの 1年。仕事さがしまで、あと 1年。ITと 日本語を いっしょに 勉強します。この 1年が、あなたの 未来を つくります。</div>
-  <div class="pageno"></div>
 </section>
 
 <section class="slide full-pic">
   <img class="bg" src="img/t21_end.jpg" alt="" />
   <div class="panel" style="bottom: 40px; width: 760px;"><h1>いっしょに がんばりましょう</h1><div class="sub" style="margin-top:8px; font-size:18px;">あなたの ゆめを、ぜんぶの <ruby>力<rt>ちから</rt></ruby>で <ruby>応援<rt>おうえん</rt></ruby>します</div></div>
   <div class="alt">さいご。いっしょに がんばりましょう。あなたの ゆめを、ぜんぶの 力で 応援します。</div>
-  <div class="pageno"></div>
 </section>
 
 </body>

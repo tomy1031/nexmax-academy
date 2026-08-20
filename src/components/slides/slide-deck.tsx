@@ -236,7 +236,11 @@ export function SlideDeck({ slides, embedded }: { slides: Slides; embedded?: boo
           <>
             <EdgeButton side="left" disabled={index === 0} onClick={() => go(index - 1)} />
             <EdgeButton side="right" disabled={index >= last} onClick={() => go(index + 1)} />
-            <span className="pointer-events-none absolute bottom-2 left-1/2 -translate-x-1/2 rounded-full bg-black/55 px-3 py-1 text-xs font-black text-white">
+            {/* 何まいめかは **右下に 1つだけ**（2026-08-19 の 指定）。
+                以前は ここが 下の まん中で、PDF の 中にも 焼いた 番号が 右下に あり、
+                同じ ことが 2か所に 出ていた。焼き込みの ほうを 消して、
+                読みやすい こちら（黒の 札）を 右下へ 移した。 */}
+            <span className="pointer-events-none absolute right-2 bottom-2 rounded-full bg-black/55 px-3 py-1 text-xs font-black text-white">
               {index + 1} / {pageCount} まい
             </span>
             <button

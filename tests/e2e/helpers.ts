@@ -93,35 +93,6 @@ export async function seedCompleted(
   );
 }
 
-/**
- * もんだいの **しおりだけ**を 置く（答えの 内訳＝`quiz-resume` は 置かない）。
- *
- * この 形は 実際に できる: 内訳の 保存が 壊れて zod に 落ちた とき、内訳を 持たない
- * 古い 保存が 残って いた とき。もんだいは 位置だけ 戻して 途中から 始まる
- *（`src/lib/quiz/resume.ts` の 規則5）ので、**見て いない 問題を 残した まま
- * 最後に 着く 回**が ここから 作れる。
- *
- * `seedCompleted` と ちがって **1度だけ 書く**（`addInitScript` は ページを 開くたび
- * 走るので、そのあと 学習者の 手で 動いた 進捗を 次の ページで 押し戻して しまう
- * ——「おわった／とちゅう」を 確かめる テストが 何も 見て いない ことに なる）。
- * 同じ オリジンの ページを 開いてから 呼ぶ。
- */
-export async function seedQuizBookmark(
-  page: Page,
-  contentId: string,
-  question: number,
-): Promise<void> {
-  await page.evaluate(
-    ([id, at]: [string, number]) => {
-      window.localStorage.setItem(
-        `nexmax:v1:content:${id}`,
-        JSON.stringify({ status: "started", position: { question: at } }),
-      );
-    },
-    [contentId, question] as [string, number],
-  );
-}
-
 /** 端末に 残った 正式な成績（`src/lib/progress/store.ts` の TestResult）。無ければ null。 */
 export async function readTestResult(page: Page, stageId: string): Promise<unknown> {
   return page.evaluate((id: string) => {
@@ -196,6 +167,11 @@ export async function bareKanjiTexts(page: Page): Promise<string[]> {
 /**
  * 4択の選択肢。ルビが合成されるので文字では選ばず、**並びの番号**で選ぶ
  *（「会社か 見る」が画面では「会社かいしゃか 見みる」になるため）。
+ *
+ * **漢字を含むボタンは `getByRole("button", { name })` では掴めない。**
+ * アクセシブル名がルビの境目で割れる（「えらび直す」→「えらび 直 なお す」）ので、
+ * 名前での部分一致も外れる。`getByText()` か 並び順で掴むこと
+ *（画面には見えているのにテストだけタイムアウトする——2026-08-19 に2度踏んだ）。
  */
 export function choiceButtons(page: Page): Locator {
   return page.locator("ul li button");
@@ -207,25 +183,47 @@ export function multiButtons(page: Page): Locator {
 }
 
 /**
- * 語群の穴埋め。語のボタンは 表記で選べる
+ * 語群の あなを 埋める。語のボタンは 表記で選べる
  *（あなのボタンは aria-label が付いていて、語の名前では当たらない）。
+ *
+ * **押した だけでは 出さない**。既定の やりかた（まとめて 出す）には
+ * 「こたえる」ボタンが 無く、進むのは `goNext()` だから。
  */
-export async function fillWordBank(page: Page, words: readonly string[]): Promise<void> {
+export async function placeWords(page: Page, words: readonly string[]): Promise<void> {
   for (const word of words) {
     await page.getByRole("button", { name: word }).first().click();
   }
+}
+
+/** 語群を 埋めて「こたえる」まで（1問ずつ の やりかたの 教材だけ）。 */
+export async function fillWordBank(page: Page, words: readonly string[]): Promise<void> {
+  await placeWords(page, words);
   await page.getByRole("button", { name: "こたえる" }).click();
 }
 
-/** 自由入力で 答える（言い回しの 救済は `src/lib/text/normalize.ts`）。 */
-export async function answerKeyword(page: Page, written: string): Promise<void> {
-  await page.getByLabel("こたえを 入力する").fill(written);
-  await page.getByRole("button", { name: "こたえる" }).click();
-}
-
-/** 解説を読んで つぎの問題へ。 */
+/** 解説を読んで つぎの問題へ（1問ずつ の やりかた）。 */
 export async function goNextQuestion(page: Page): Promise<void> {
   await page.getByRole("button", { name: "つぎへ" }).click();
+}
+
+/* ---- まとめて 出す（既定の やりかた）の 操作 ---- */
+
+/** つぎの もんだいへ（ここでは 採点しない）。 */
+export async function goNext(page: Page): Promise<void> {
+  await page.getByRole("button", { name: "つぎ →" }).click();
+}
+
+/** さいごの もんだいから「出す まえの かくにん」へ。 */
+export async function goToConfirm(page: Page): Promise<void> {
+  await page.getByRole("button", { name: "さいごに かくにん →" }).click();
+}
+
+/**
+ * ぜんぶ 出して 採点させる。
+ * ルビが 合成されて「こたえを 出だす」に なるので 部分一致で さがす。
+ */
+export async function submitAnswers(page: Page): Promise<void> {
+  await page.getByRole("button", { name: /こたえを 出/ }).click();
 }
 
 /** 正解したことを 画面の言葉で 確かめる（禁止語は使わない・規律1）。 */

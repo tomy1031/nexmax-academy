@@ -21,6 +21,7 @@ import {
   getWordStage,
 } from "@/lib/content";
 import { stageStepNumber } from "@/lib/map-data";
+import { mergeWordStages } from "@/lib/wordstage-merge";
 import { stageContentPath } from "@/lib/stage-routes";
 
 /**
@@ -208,16 +209,24 @@ export default async function StagePage({ params }: { params: Promise<{ stage: s
   );
   const items = resolved.filter((item): item is StageContentItem => item !== null);
 
-  // 単語ステージは独立したアプリ（ことばアーケード）なので行き先も /arcade のまま。
-  // ステージからすぐ開けることだけを保証する。参照切れは一覧から外す。
-  const loadedWordStages = await Promise.all(
-    stage.wordStageIds.map(async (wordStageId): Promise<StageWordItem | null> => {
-      const wordStage = await getWordStage(wordStageId);
-      return (
-        wordStage && {
-          id: wordStage.id,
-          title: wordStage.title,
-          description: wordStage.description,
+  /*
+   * 単語ステージは独立したアプリ（ことばアーケード）なので行き先も /arcade のまま。
+   *
+   * **カードは 1枚**にする。ことばの グループが 2つ 付いていても、学習者から 見れば
+   * その ステージで ならった ことばは 1かたまりで、どちらを やるかの 判断は 学習では
+   * ない（2026-08-19 の指定）。まとめた ぶんは `/arcade/<ステージID>` で 開く。
+   * 参照切れは 落とす。
+   */
+  const loaded = await Promise.all(stage.wordStageIds.map((id) => getWordStage(id)));
+  const found = loaded.filter((item): item is NonNullable<typeof item> => item !== null);
+  const merged = mergeWordStages(stage.id, found);
+  const wordStages: StageWordItem[] = merged
+    ? [
+        {
+          // 1つだけの ときは その 単語ステージへ、まとめた ときは ステージIDへ
+          id: merged.id,
+          title: merged.title,
+          description: merged.description,
           /*
            * ことばカードにも ルビを 合成する（規律2 — 裸の漢字を 出さない）。
            * 単語ステージは 語ごとに (表記, よみ) を 持っているので、それも 混ぜる
@@ -225,14 +234,12 @@ export default async function StagePage({ params }: { params: Promise<{ stage: s
            * 同じ表記が ぶつかったら 読み辞書側が 勝つ（複合語の 読みが 正）。
            */
           furigana: mergeFuriganaEntries(
-            wordStage.words.map((word): FuriganaEntry => [word.term, word.reading]),
-            wordStage.furigana,
+            merged.words.map((word): FuriganaEntry => [word.term, word.reading]),
+            merged.furigana,
           ),
-        }
-      );
-    }),
-  );
-  const wordStages = loadedWordStages.filter((item): item is StageWordItem => item !== null);
+        },
+      ]
+    : [];
 
   return (
     <StageDetail

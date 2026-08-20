@@ -34,7 +34,12 @@ export default defineConfig({
   forbidOnly: Boolean(process.env.CI),
   /* 1度だけ やり直す。落ち続けるものだけを 落とす（CIの ゆらぎで PR を止めない）。 */
   retries: process.env.CI ? 1 : 0,
-  workers: process.env.CI ? 2 : undefined,
+  /*
+   * **2本まで**。既定（CPUの半分）だと 手もとの Mac では `next start` が
+   * 落ちる ことが あり（2026-08-19 に 実発生。ERR_CONNECTION_REFUSED が 数本）、
+   * PC も 重くなる。CI と 同じ 数に そろえて、どこで 走らせても 同じ 結果に する。
+   */
+  workers: 2,
   reporter: process.env.CI
     ? [["list"], ["html", { open: "never" }], ["github"]]
     : [["list"], ["html", { open: "never" }]],
@@ -63,7 +68,20 @@ export default defineConfig({
   webServer: {
     command: `npx next start --port ${PORT}`,
     url: `${BASE_URL}/kaisha`,
-    reuseExistingServer: !process.env.CI,
+    /*
+     * **立てたら 必ず 落とす。前に 立てた ものを 使い回さない。**
+     *
+     * 理由が 2つ ある。
+     * (a) 使い回すと **直す前の ビルドに 合格を 出す**（2026-08-19 に 実発生。
+     *     直した はずの 式で 直す前の 値が 1回だけ 出た。原因は 前のセッションの
+     *     `next start` が ポートに 残って いた こと）。
+     * (b) 残った サーバが 積み上がると **手もとの PC が 重くなる**
+     *     （2026-08-19 ユーザー指定「チェックが終わったら一度閉じるようにしてほしい」）。
+     *
+     * ポートが ふさがって いると ここで 止まる。それは 正しい——黙って 古い ものを
+     * 使うより、気づける ほうが よい（`lsof -nP -iTCP:3311` で 見て 落とす）。
+     */
+    reuseExistingServer: false,
     timeout: 120_000,
     stdout: "ignore",
     stderr: "pipe",
