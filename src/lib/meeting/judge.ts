@@ -68,13 +68,66 @@ export interface JudgeResult extends JudgeOutput {
   grade: JudgeGrade;
 }
 
-/*
- * 構造化出力（responseSchema）は **Live の 設定に 無い**。
- * ここに 置いて いた OpenAPI 風の 形（`JUDGE_RESPONSE_SCHEMA`）は、
- * `generateContent` と 道具の 呼び出しの ため の ものだった——どちらも やめたので
- * 消した。形の 正は 上の zod（`judgeOutputSchema`）1つだけに する。
- * 返し方の 頼み方は `buildJudgePrompt` が ことばで 持つ。
+/**
+ * 判定の つなぎに 持たせる **道具**（function calling）の 形。
+ *
+ * ## なぜ 道具に 戻すか
+ * Live は 構造化出力（responseSchema）を 持たず、文字だけの 返し（TEXT）にも
+ * 対応して いない。JSON を 声の 文字起こしから 拾う やり方も できるが、
+ * **道具なら 構造の まま 届く**（先に 同じ ことを した 実装が、判定専用の
+ * つなぎ＋道具で 3秒ほどで 返して いた・2026-08-20）。
+ *
+ * ## 声の つなぎには 絶対に 持たせない
+ * 会話する 相手に 道具を 持たせた ときは、呼び出しが **声の 本文として** 漏れ、
+ * チャット欄に `call:nihongo_no_mikata{…}` が 出た（実発生）。
+ * 道具は **判定専用の 別の つなぎ**にだけ 持たせ、その つなぎには
+ *「声では 返事を しない」と 言い渡す。
  */
+export const JUDGE_RESPONSE_SCHEMA = {
+  type: "OBJECT",
+  properties: {
+    language: { type: "STRING", enum: ["ja", "en", "km", "mixed", "none"] },
+    relevance: { type: "STRING", enum: ["onTopic", "offTopic", "unclear"] },
+    form: { type: "STRING", enum: ["natural", "rough", "hard"] },
+    reply: { type: "STRING", description: "相手役の 返事。かなだけ。2文まで" },
+    praise: { type: "STRING", description: "できた ことを 1つ。かなだけ" },
+    fix: { type: "STRING", description: "直す ところを 1つだけ。かなだけ。無ければ 空文字" },
+    exampleAnswer: { type: "STRING", description: "お手本の 答え。かなだけ" },
+    retry: { type: "BOOLEAN", description: "もう一度 言い直して もらうと よいか" },
+    glossary: {
+      type: "ARRAY",
+      description: "上の 文に 出てくる、N5には むずかしい ことばの 英語。多くて 8つ",
+      items: {
+        type: "OBJECT",
+        properties: { term: { type: "STRING" }, en: { type: "STRING" } },
+        required: ["term", "en"],
+      },
+    },
+  },
+  required: [
+    "language",
+    "relevance",
+    "form",
+    "reply",
+    "praise",
+    "fix",
+    "exampleAnswer",
+    "retry",
+    "glossary",
+  ],
+} as const;
+
+/** 判定の つなぎに 渡す 道具（見かたを 構造の まま 返して もらう）。 */
+export const JUDGE_TOOL = {
+  functionDeclarations: [
+    {
+      name: "nihongo_no_mikata",
+      description:
+        "学生の 発話を 見て、日本語の 見かたを 返す。学生が 話すたびに かならず 1回だけ 呼ぶ。",
+      parameters: JUDGE_RESPONSE_SCHEMA,
+    },
+  ],
+} as const;
 
 /**
  * 3段の境界。**プロンプトではなくコードが持つ**ので、テストで固定できる。
@@ -122,9 +175,18 @@ export function kanjiOffenders(judge: JudgeOutput): string[] {
   return learnerFacingTexts(judge).filter((text) => KANJI.test(text));
 }
 
-/** AIの返事を検証して、画面に出せる形にする。通らなければ null（呼ぶ側が落とす）。 */
+/**
+ * AIの返事を検証して、画面に出せる形にする。通らなければ null（呼ぶ側が落とす）。
+ *
+ * 道具（function calling）の 引数は **null を 持てない**ので、直す ところが
+ * 無い ときは 空文字で 返る。ここで null に そろえる——画面は「無い」で 分けて いる。
+ */
 export function parseJudge(raw: unknown, attempt: number): JudgeResult | null {
-  const parsed = judgeOutputSchema.safeParse(raw);
+  const shaped =
+    raw && typeof raw === "object" && (raw as { fix?: unknown }).fix === ""
+      ? { ...(raw as Record<string, unknown>), fix: null }
+      : raw;
+  const parsed = judgeOutputSchema.safeParse(shaped);
   if (!parsed.success) return null;
   const grade = gradeOf(parsed.data);
   return {
