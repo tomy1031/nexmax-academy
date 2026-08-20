@@ -49,7 +49,7 @@ import { getProfile } from "@/lib/profile";
 import { recordContentProgress } from "@/lib/progress/store";
 import { AffectionMeter } from "./affection-meter";
 import { localJudge, type AdviceText } from "./japanese-check";
-import { judgeFailNote, requestJudge, type JudgeApiResult } from "./judge-api";
+import { dropJudgeSession, judgeFailNote, requestJudge, type JudgeApiResult } from "./judge-api";
 import { JudgeCard } from "./judge-card";
 import { ProgressChips } from "./question-board";
 import { MeetingResultCard, PreviousRecordCard, RewardCard } from "./result-card";
@@ -622,6 +622,12 @@ export function MeetingSession({
       for (const turn of said) pushChat({ kind: "host", text: turn.text });
     });
   }, [voice.turns, pushChat]);
+
+  /*
+   * 判定の つなぎは **画面を 離れる ときに 閉じる**。
+   * 張りっぱなしに して 学習者を 待たせない かわりに、置き去りにも しない。
+   */
+  useEffect(() => dropJudgeSession, []);
 
   /* 選んだ 速さは つないだ あとでも 効く（つぎの ひとことから） */
   const setRate = voice.setRate;

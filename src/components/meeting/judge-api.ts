@@ -1,9 +1,10 @@
 "use client";
 
 import { createLiveToken } from "@/lib/ai/live-token";
-import { DEFAULT_LIVE_TALK_MODEL, LIVE_TALK_MODELS } from "@/lib/ai/models";
-import { getGeminiKey, getLiveModel } from "@/lib/profile";
+import { LIVE_TEXT_MODELS } from "@/lib/ai/models";
+import { getGeminiKey } from "@/lib/profile";
 import {
+  JUDGE_TOOL,
   buildJudgePrompt,
   isKanaOnly,
   parseJudge,
@@ -12,26 +13,29 @@ import {
 } from "@/lib/meeting/judge";
 
 /**
- * 判定APIの呼び出し（ブラウザ側）。
+ * 日本語の 見かた（判定）を もらう — **判定専用の Live セッション**
  *
  * キーは本人のもの（BYOK）で端末に保存されている。**サーバには渡さない**——
- * この端末から Google へ直接聞く（2026-08-17）。うちの Worker は香港で動くことが
+ * この端末から Google へ直接つなぐ（2026-08-17）。うちの Worker は香港で動くことが
  * あり、そこを通すと Google に断られるうえ、キーが香港で復号されるため。
  *
  * ## `generateContent` は つかわない（2026-08-20・絶対）
- * 以前は `gemini-2.5-flash` の `generateContent` に 聞いて いた。**これは Live とは
- * 別勘定の 無料枠**で、学習者 1人の 1回の ミーティングで 使い切る
- *（「すぐ limit に なる」——同日 クライアント指定）。
- * いまは **Live の つなぎの 中**で 文字だけを 返して もらう。Live の 枠は
- * 会話で どのみち 使うので、判定の ぶんで 別の 枠を 減らさない。
+ * `gemini-2.5-flash` の `generateContent` は **Live とは 別勘定の 無料枠**で、
+ * 学習者 1人の 1回の ミーティングで 使い切る（「すぐ limit に なる」——同日の 指定）。
  *
- * ## 会話の つなぎとは **別の つなぎ**にする
- * 声の セッションに 道具（function calling）を 持たせて 判定させて いたが、
- * その 道具の 呼び出しが **相手の 文字起こしに 混ざって** チャット欄に
- * `call:nihongo_no_mikata{…}` として 出た（2026-08-20 の 実発生。
- * fable の 調べで、tool call は `toolCall` という 別の 場所に 来るはずで、
- * 文字に 出た＝モデルが 本文へ 漏らした、と 分かった）。
- * だから **声の つなぎは 会話だけ**・**判定は 使い捨ての 文字の つなぎ**に 分ける。
+ * ## つくりは、先に 動いて いた 実装に そろえる（2026-08-20）
+ * 同じ ことを 先に やって いた 実装（質問ゲーム）は こう 作って あった:
+ *
+ * - **判定専用の つなぎを 1本、張りっぱなしに する**。毎回 つなぎ直すと
+ *   1回 数秒 かかり、そのぶん 学習者を 待たせる（先方は「~3秒」で 返して いた）
+ * - **AUDIO で つなぎ、道具（function calling）で 構造の まま 受け取る**。
+ *   Live は 文字だけの 返し（TEXT）に 対応せず、構造化出力も 持たない
+ * - 指示の さいごに **「声では 返事を しない（道具を 呼ぶだけ）」**と 言い渡す
+ *
+ * ## 声の つなぎには 道具を 持たせない
+ * 会話する 相手に 道具を 持たせた ときは、呼び出しが 声の 本文として 漏れ、
+ * チャット欄に `call:nihongo_no_mikata{…}` が 出た（実発生）。
+ * **話す 役と 見る 役を、つなぎごと 分ける**のが この 設計の 要。
  *
  * 失敗は**理由の名前**で返す。「だめでした」しか出ないと、キーを入れた学習者は
  * 自分のキーを疑い続けることになる（2026-08-06 に実際に起きた）。
@@ -52,49 +56,35 @@ export type JudgeApiResult =
   { ok: true; judge: JudgeResult; model: string } | { ok: false; reason: string };
 
 /** 1つの 頼みの 返事を 待つ 上限。 */
-const REPLY_TIMEOUT_MS = 10_000;
+const REPLY_TIMEOUT_MS = 12_000;
 
-/**
- * **判定ぜんぶの 上限**（つなぐ ところも 含む）。
- *
- * つなぐ ところに 上限が 無かった ため、相手が 応じない ときに
- * **画面が「聞いて います…」の まま 止まった**（CI・2026-08-20）。
- * 触れる ものを ばんで 絞って いる ぶん、1か所 止まると 全部 止まる。
- * 見かたは 出なくても よいので、**必ず ここで 打ち切って** 先へ 進める。
- */
+/** つないで したくが 済むまでの 上限（過ぎたら つぎの モデル名を ためす）。 */
+const CONNECT_TIMEOUT_MS = 9_000;
+
+/** 判定ぜんぶの 上限。どこで 詰まっても 必ず 返す（画面を 止めない）。 */
 const OVERALL_TIMEOUT_MS = 25_000;
 
-/** つなぐ ところの 上限（過ぎたら つぎの モデル名を ためす）。 */
-const CONNECT_TIMEOUT_MS = 6_000;
-
-/** 相手の したくが 済むのを 待つ 上限。 */
-const SETUP_TIMEOUT_MS = 6_000;
-
-/** 約束に 期限を つける（過ぎたら 投げる）。 */
-async function withTimeout<T>(work: Promise<T>, ms: number): Promise<T> {
-  return await Promise.race([
-    work,
-    new Promise<T>((_, reject) => setTimeout(() => reject(new JudgeError("timeout")), ms)),
-  ]);
-}
-
 /**
- * Live に 「JSON だけ」を 返させる ための 前置き。
+ * 判定係への 言い渡し。
  *
- * 構造化出力（responseSchema）は **Live の 設定に 無い**（`LiveConnectConfig` を
- * 見ても `responseSchema` は 存在しない）。だから 形は ことばで 頼み、
- * 受け取った あと `parseJudge`（zod）で 必ず 検査する。
+ * **その回の 中身は ここに 書かない**（それは `buildJudgePrompt` が 毎回 渡す）。
+ * ここに 置くのは、つなぎの あいだ ずっと 変わらない 決まりだけ。
  */
-const JSON_ONLY =
-  "あなたは JSON だけを 返します。前後に 説明・あいさつ・```などの 印は 書きません。" +
-  "返すのは { } で かこんだ オブジェクト 1つだけです。";
+const JUDGE_SYSTEM = [
+  "あなたは 日本語の 先生です。日本で はたらきたい 学生（日本語N5〜N4・英語は読める）の",
+  "れんしゅうを 見ます。",
+  "学生の ことばが とどいたら、かならず 1回だけ 道具 nihongo_no_mikata を 呼びます。",
+  "声では 返事を しません（道具を 呼ぶだけ）。",
+  "学生が 読む 文（reply・praise・fix・exampleAnswer）は ひらがなと カタカナだけで",
+  "書きます。漢字は 1文字も つかいません。ことばの あいだに 空白を 入れます。",
+].join("\n");
 
 export async function requestJudge(request: JudgeRequest): Promise<JudgeApiResult> {
   const apiKey = getGeminiKey();
   if (!apiKey) return { ok: false, reason: "noKey" };
-  // どこで 詰まっても 必ず 返る（止まらない ことを 品質より 上に 置く）
+  // どこで 詰まっても 必ず 返る（止まらない ことを 見かたの 質より 上に 置く）
   return await Promise.race([
-    judgeFromBrowser(apiKey, request),
+    askJudge(apiKey, request),
     new Promise<JudgeApiResult>((resolve) =>
       setTimeout(() => resolve({ ok: false, reason: "timeout" }), OVERALL_TIMEOUT_MS),
     ),
@@ -102,77 +92,31 @@ export async function requestJudge(request: JudgeRequest): Promise<JudgeApiResul
 }
 
 /**
- * この端末から Google に直接聞く（文字だけの Live セッション・使い捨て）。
- *
  * ## かなだけで返ってくるまで、1回だけ言い直させる
  * 動的に作った文にはふりがなを合成できない（読み辞書は教材データが持つ）。
  * 漢字が1つ混ざると、そこで学習者が止まる。「漢字を使うな」は ときどき破られるので、
  * **検査 → 1回だけ言い直し → それでも駄目なら ok:false**。
  * 画面はそのとき規則ベース（japanese-check.ts）へ落ちる。会話は止めない。
- * 言い直しは **同じ つなぎの 中で** 頼む（つなぎ直すと また 数秒 待たせる）。
  */
-async function judgeFromBrowser(apiKey: string, request: JudgeRequest): Promise<JudgeApiResult> {
+async function askJudge(apiKey: string, request: JudgeRequest): Promise<JudgeApiResult> {
   const context: JudgeContext = { ...request, attempt: Math.min(Math.max(request.attempt, 1), 9) };
+  const opened = await openJudge(apiKey);
+  if (!opened.ok) return { ok: false, reason: opened.reason };
+  const session = opened.session;
 
-  /*
-   * 短命トークンは **1回 使い切り**（live-token.ts の `uses: 1`）。
-   * だから モデル名を ためすたびに 作り直す——1つ作って 使い回すと、
-   * 2つ目の 名前は 必ず 断られる。作るのは モデルを 呼ぶ 数には 入らない
-   *（auth_tokens は 別の 入口）。
-   */
-  let lastReason = "upstream";
-  const authFor = async (): Promise<string | null> => {
-    const minted = await createLiveToken({ apiKey });
-    if (minted.ok) return minted.token;
-    lastReason = minted.reason;
-    // 作れない キー（新形式 AQ.）の ときだけ、本人の キーで 直接 つなぐ
-    return minted.reason === "tokenRejected" || minted.reason === "invalidRequest" ? apiKey : null;
-  };
-
-  /*
-   * 設定してある モデル → 既定の 順に ためす。preview の モデルは **名前ごと
-   * 入れ替わる**うえ、文字だけの 返しに 応じない ものも ありうる。1つで 諦めると
-   * 学習者には「AIの みかたは いま つかえません」しか 見えない（2026-08-06 の 教訓）。
-   */
-  const models = [getLiveModel(), ...LIVE_TALK_MODELS].filter(
-    (name, index, all): name is string => Boolean(name) && all.indexOf(name) === index,
-  );
-  const wanted = models.length > 0 ? models : [DEFAULT_LIVE_TALK_MODEL];
-
-  let session: LiveTextSession | null = null;
-  let model = wanted[0] ?? DEFAULT_LIVE_TALK_MODEL;
   try {
-    for (const name of wanted) {
-      const auth = await authFor();
-      if (!auth) break;
-      try {
-        session = await openTextSession(auth, name);
-        model = name;
-        break;
-      } catch {
-        // つぎの 名前を ためす（ぜんぶ 駄目なら 下の判定で 落ちる）
-        lastReason = "modelNotFound";
-      }
-    }
-    if (!session) return { ok: false, reason: lastReason };
-    let judge = parseJudge(
-      readObject(await session.ask(buildJudgePrompt(context))),
-      context.attempt,
-    );
+    let judge = parseJudge(await session.ask(buildJudgePrompt(context)), context.attempt);
     // 漢字が混ざっていたら、混ざっていたことを伝えてもう一度だけ頼む
     if (judge && !isKanaOnly(judge)) {
-      judge = parseJudge(
-        readObject(await session.ask(buildJudgePrompt(context, true))),
-        context.attempt,
-      );
+      judge = parseJudge(await session.ask(buildJudgePrompt(context, true)), context.attempt);
     }
     if (!judge) return { ok: false, reason: "badShape" };
     if (!isKanaOnly(judge)) return { ok: false, reason: "kanaRetryFailed" };
-    return { ok: true, judge, model };
+    return { ok: true, judge, model: session.model };
   } catch (error) {
+    // 切れて いる ことが ある。つぎの 呼び出しで 張り直せる ように 捨てる
+    dropJudgeSession();
     return { ok: false, reason: error instanceof JudgeError ? error.reason : "network" };
-  } finally {
-    session?.close();
   }
 }
 
@@ -183,158 +127,212 @@ class JudgeError extends Error {
   }
 }
 
-interface LiveTextSession {
-  /** 1つ 頼んで、返事の 文字を まとめて 受け取る。 */
-  ask: (prompt: string) => Promise<string>;
-  close: () => void;
+interface JudgeSession {
+  readonly model: string;
+  /** 1つ 頼んで、道具の 引数（見かた）を 受け取る。 */
+  readonly ask: (prompt: string) => Promise<Record<string, unknown>>;
+  readonly close: () => void;
+  readonly alive: () => boolean;
 }
 
 /**
- * 文字だけの Live セッションを 開く。
+ * 張りっぱなしの 判定の つなぎ（この 画面で 1本）。
  *
- * 声の セッション（`use-live-voice.ts`）とは **別の つなぎ**。
- * 音は 出さず、道具も 持たせない——どちらも 混ざりの 元だった。
+ * 毎回 つなぎ直すと **1回 数秒**を 学習者が 待つ。先に 動いて いた 実装も、
+ * 問題が 変わるまでは 同じ つなぎを 使い回して いた。
  */
-async function openTextSession(auth: string, model: string): Promise<LiveTextSession> {
+let current: JudgeSession | null = null;
+/** いま 張って いる 途中の もの（続けて 頼まれても つなぎは 1本に する）。 */
+let opening: Promise<OpenResult> | null = null;
+
+type OpenResult = { ok: true; session: JudgeSession } | { ok: false; reason: string };
+
+/** つなぎを 捨てる（切れた とき・画面を 離れる とき）。 */
+export function dropJudgeSession(): void {
+  current?.close();
+  current = null;
+  opening = null;
+}
+
+async function openJudge(apiKey: string): Promise<OpenResult> {
+  const live = current;
+  if (live?.alive()) return { ok: true, session: live };
+  current = null;
+  opening ??= connectJudge(apiKey);
+  const opened = await opening;
+  opening = null;
+  if (opened.ok) current = opened.session;
+  return opened;
+}
+
+async function connectJudge(apiKey: string): Promise<OpenResult> {
+  let lastReason = "upstream";
+  for (const model of LIVE_TEXT_MODELS) {
+    /*
+     * 短命トークンは **1回 使い切り**（live-token.ts の `uses: 1`）。
+     * 名前を ためすたびに 作り直す——1つを 使い回すと 2つ目は 必ず 断られる。
+     * 作るのは モデルを 呼ぶ 数には 入らない（auth_tokens は 別の 入口）。
+     */
+    const minted = await createLiveToken({ apiKey });
+    // 作れない キー（新形式 AQ.）の ときだけ、本人の キーで 直接 つなぐ
+    const canUseKey =
+      !minted.ok && (minted.reason === "tokenRejected" || minted.reason === "invalidRequest");
+    const auth = minted.ok ? minted.token : canUseKey ? apiKey : null;
+    if (!auth) return { ok: false, reason: minted.ok ? "upstream" : minted.reason };
+    try {
+      return { ok: true, session: await openSession(auth, model) };
+    } catch (error) {
+      lastReason = error instanceof JudgeError ? error.reason : "modelNotFound";
+    }
+  }
+  return { ok: false, reason: lastReason };
+}
+
+/**
+ * 判定の つなぎを 1本 開く。
+ *
+ * **AUDIO で つなぐ**（Live は TEXT を 受け付けない）。声は 鳴らさない——
+ * この つなぎは 再生先を 持たず、相手にも「声では 返事を しない」と 言って ある。
+ */
+async function openSession(auth: string, model: string): Promise<JudgeSession> {
   const { GoogleGenAI, Modality } = await import("@google/genai");
-  /*
-   * **v1beta で つなぐ**（短命トークンでも）。
-   *
-   * 古い SDK の 警告に 従って v1alpha に して みたが、通し検証（鍵あり）で
-   * **どの モデル名でも つながらなかった**（reason=modelNotFound・2026-08-20）。
-   * v1beta に 戻すと 声の つなぎは これまでどおり 動いて いる ので、
-   * 警告は いまの SDK（v2.16）には 当てはまらない と 判断する。
-   */
   const ai = new GoogleGenAI({ apiKey: auth, apiVersion: "v1beta" });
 
-  let buffer = "";
-  let settle: ((text: string) => void) | null = null;
+  let alive = true;
+  let settle: ((args: Record<string, unknown>) => void) | null = null;
   let fail: ((error: Error) => void) | null = null;
-  /*
-   * **「したくが できました」を 待ってから 頼む**。
-   *
-   * つないだ 直後に 送って いた ため、相手は それを 受け取らず、こちらは
-   * 返事を 待ちつづけて 期限切れに なって いた（CI の 画面に
-   *「AIの へんじが おそいので、さきに すすみます」が 出た・2026-08-20）。
-   * つなぎが 開いた こと（onopen）と 相手の したくが 済んだ こと（setupComplete）は
-   * 別の 合図なので、後者を 待つ。
-   */
   let ready: () => void = () => {};
   const setupDone = new Promise<void>((resolve) => {
     ready = resolve;
   });
+  let session: Session | null = null;
 
-  /*
-   * つなぐ ところにも 上限を 置く。ここが 返って こないと、つぎの モデルを
-   * ためす ところまで 行けない（全体の 上限だけだと 1つ目で 使い切る）。
-   */
-  const session = await withTimeout(
-    ai.live.connect({
-      model,
-      config: {
-        responseModalities: [Modality.TEXT],
-        systemInstruction: JSON_ONLY,
-        // 学習者の言ったことに寄せたいので、思いつきは抑える
-        temperature: 0.4,
+  const connected = ai.live.connect({
+    model,
+    config: {
+      responseModalities: [Modality.AUDIO],
+      systemInstruction: JUDGE_SYSTEM,
+      tools: [JUDGE_TOOL] as never,
+      // 学習者の言ったことに寄せたいので、思いつきは抑える
+      temperature: 0.4,
+    },
+    callbacks: {
+      onopen: () => {
+        // したくの 合図は SDK が 内側で 受け取る ことが ある。開いた ら 進む
+        setTimeout(ready, 400);
       },
-      callbacks: {
-        onopen: () => {
-          // 合図が 来ない ときの 保険（開いた 少し あとには 送れる）
-          setTimeout(ready, 400);
-        },
-        onmessage: (message: unknown) => {
-          if (isSetupComplete(message)) ready();
-          buffer += readText(message);
-          if (isTurnComplete(message)) {
-            const text = buffer;
-            buffer = "";
-            settle?.(text);
-            settle = null;
-            fail = null;
-          }
-        },
-        onerror: () => {
-          ready();
-          fail?.(new JudgeError("upstream"));
-          settle = null;
-          fail = null;
-        },
-        onclose: () => {
-          ready();
-          fail?.(new JudgeError("network"));
-          settle = null;
-          fail = null;
-        },
+      onmessage: (message: unknown) => {
+        if (isSetupComplete(message)) ready();
+        const call = readToolCall(message);
+        if (!call) return;
+        // 返事を 返さないと 相手が 待ちつづける。空の 返事を すぐ 返す
+        session?.sendToolResponse?.({
+          functionResponses: [{ id: call.id, name: call.name, response: { ok: true } }],
+        });
+        const answer = settle;
+        settle = null;
+        fail = null;
+        answer?.(call.args);
       },
-    }),
-    CONNECT_TIMEOUT_MS,
-  );
+      onerror: () => {
+        alive = false;
+        ready();
+        const bad = fail;
+        settle = null;
+        fail = null;
+        bad?.(new JudgeError("upstream"));
+      },
+      onclose: () => {
+        alive = false;
+        ready();
+        const bad = fail;
+        settle = null;
+        fail = null;
+        bad?.(new JudgeError("network"));
+      },
+    },
+  });
 
-  // したくが 済むまで 待つ（済まない ときは つぎの モデル名へ）
-  await withTimeout(setupDone, SETUP_TIMEOUT_MS);
+  session = (await withTimeout(connected, CONNECT_TIMEOUT_MS)) as unknown as Session;
+  await withTimeout(setupDone, CONNECT_TIMEOUT_MS);
 
   return {
+    model,
+    alive: () => alive,
+    close: () => {
+      alive = false;
+      try {
+        session?.close();
+      } catch {
+        // もう 閉じて いる ものは 閉じられない（それで よい）
+      }
+    },
     ask: (prompt: string) =>
-      new Promise<string>((resolve, reject) => {
+      new Promise<Record<string, unknown>>((resolve, reject) => {
+        if (!alive) {
+          reject(new JudgeError("network"));
+          return;
+        }
         const timer = setTimeout(() => {
           settle = null;
           fail = null;
           reject(new JudgeError("timeout"));
         }, REPLY_TIMEOUT_MS);
-        settle = (text) => {
+        settle = (args) => {
           clearTimeout(timer);
-          resolve(text);
+          resolve(args);
         };
         fail = (error) => {
           clearTimeout(timer);
           reject(error);
         };
-        session.sendClientContent({
+        session?.sendClientContent({
           turns: [{ role: "user", parts: [{ text: prompt }] }],
           turnComplete: true,
         });
       }),
-    close: () => session.close(),
   };
 }
 
-/** 返事の 文字を 取り出す（形が 変わっても 落ちない ように 必要な ところだけ 見る）。 */
-function readText(message: unknown): string {
-  if (!message || typeof message !== "object") return "";
-  const content = (message as { serverContent?: Record<string, unknown> }).serverContent;
-  const parts = (content?.modelTurn as { parts?: { text?: string }[] } | undefined)?.parts;
-  if (!parts) return "";
-  return parts.map((part) => part.text ?? "").join("");
+/** つなぎの うち、ここで 使う ぶんだけ（SDK の 形が 変わっても 追いやすい）。 */
+interface Session {
+  sendClientContent: (input: unknown) => void;
+  sendToolResponse?: (input: unknown) => void;
+  close: () => void;
+}
+
+/** 約束に 期限を つける（過ぎたら 投げる）。 */
+async function withTimeout<T>(work: Promise<T>, ms: number): Promise<T> {
+  return await Promise.race([
+    work,
+    new Promise<T>((_, reject) => setTimeout(() => reject(new JudgeError("timeout")), ms)),
+  ]);
+}
+
+/** 道具の 呼び出しを 取り出す（形が 変わっても 落ちない ように 必要な ところだけ 見る）。 */
+function readToolCall(
+  message: unknown,
+): { id: string; name: string; args: Record<string, unknown> } | null {
+  if (!message || typeof message !== "object") return null;
+  const calls = (
+    message as { toolCall?: { functionCalls?: { id?: string; name?: string; args?: unknown }[] } }
+  ).toolCall?.functionCalls;
+  for (const call of calls ?? []) {
+    if (call?.args && typeof call.args === "object") {
+      return {
+        id: call.id ?? "",
+        name: call.name ?? "",
+        args: call.args as Record<string, unknown>,
+      };
+    }
+  }
+  return null;
 }
 
 /** 相手の したくが 済んだか（ここから 送ってよい）。 */
 function isSetupComplete(message: unknown): boolean {
   if (!message || typeof message !== "object") return false;
   return (message as { setupComplete?: unknown }).setupComplete !== undefined;
-}
-
-/** 相手が 言い終わったか。 */
-function isTurnComplete(message: unknown): boolean {
-  if (!message || typeof message !== "object") return false;
-  const content = (message as { serverContent?: { turnComplete?: unknown } }).serverContent;
-  return content?.turnComplete === true;
-}
-
-/**
- * 返って きた 文字から オブジェクトを 取り出す。
- *
- * 「JSON だけ」と 頼んでも ```json で かこんで 返す ことが ある。
- * 構造化出力が 使えない ぶん、ここで 受け止める（失敗は null → 呼ぶ側が 落とす）。
- */
-function readObject(text: string): unknown {
-  const start = text.indexOf("{");
-  const end = text.lastIndexOf("}");
-  if (start < 0 || end <= start) return null;
-  try {
-    return JSON.parse(text.slice(start, end + 1));
-  } catch {
-    return null;
-  }
 }
 
 /** 失敗の 理由 → 学習者に見せる一言（責めない・次の行動を書く）。 */
