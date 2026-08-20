@@ -52,6 +52,11 @@ import {
 // 焼き込みモジュールの作り手と同じ関数で組み立てて比べる（作り方が2つに割れないように）
 import { buildGeneratedSource, GENERATED_PATH } from "./generate_content_index.mjs";
 import { buildSceneSource, SCENE_GENERATED_PATH } from "./generate_scene_index.mjs";
+import {
+  buildGlossarySource,
+  collectGlossaryEntries,
+  GLOSSARY_GENERATED_PATH,
+} from "./generate_glossary.mjs";
 import { checkManuscript } from "./slides/manuscript_checks";
 
 const ROOT = join(import.meta.dirname, "..");
@@ -172,6 +177,15 @@ function checkGeneratedIndex(): Finding[] {
   return [
     ...checkGenerated(GENERATED_PATH, buildGeneratedSource, "content/"),
     ...checkGenerated(SCENE_GENERATED_PATH, buildSceneSource, "public/img/scenes/"),
+    /*
+     * 語彙メモは 正（content/vocab/）から 焼く。ずれると **診断の 画面だけ 古い 説明**が
+     * 出続ける——語を 1か所に した 意味が 無くなるので、機械で 止める。
+     */
+    ...checkGenerated(
+      GLOSSARY_GENERATED_PATH,
+      () => buildGlossarySource(collectGlossaryEntries()),
+      "content/vocab/",
+    ),
   ];
 }
 
