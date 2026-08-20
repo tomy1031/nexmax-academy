@@ -54,6 +54,13 @@ export function useClipPlayer(): ClipPlayer {
         audio = new Audio();
         audio.crossOrigin = "anonymous";
         audio.onended = () => setPlaying(false);
+        /*
+         * **鳴らせなかった ときも 必ず 終わりに する**。
+         * 画面は「鳴って いる あいだは 触れない」で 動いて いるので、ここで
+         * 止まったままに なると **学習者が 何も 押せなく なる**。
+         */
+        audio.onerror = () => setPlaying(false);
+        audio.onstalled = () => setPlaying(false);
         audioRef.current = audio;
       }
       let node: AnalyserNode | null = null;

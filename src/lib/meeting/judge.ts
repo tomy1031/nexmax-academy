@@ -68,39 +68,13 @@ export interface JudgeResult extends JudgeOutput {
   grade: JudgeGrade;
 }
 
-/** Gemini の responseSchema（OpenAPI風）。zod と同じ形を手で持つ。 */
-export const JUDGE_RESPONSE_SCHEMA = {
-  type: "object",
-  properties: {
-    language: { type: "string", enum: ["ja", "en", "km", "mixed", "none"] },
-    relevance: { type: "string", enum: ["onTopic", "offTopic", "unclear"] },
-    form: { type: "string", enum: ["natural", "rough", "hard"] },
-    reply: { type: "string" },
-    praise: { type: "string" },
-    fix: { type: "string", nullable: true },
-    exampleAnswer: { type: "string" },
-    retry: { type: "boolean" },
-    glossary: {
-      type: "array",
-      items: {
-        type: "object",
-        properties: { term: { type: "string" }, en: { type: "string" } },
-        required: ["term", "en"],
-      },
-    },
-  },
-  required: [
-    "language",
-    "relevance",
-    "form",
-    "reply",
-    "praise",
-    "fix",
-    "exampleAnswer",
-    "retry",
-    "glossary",
-  ],
-} as const;
+/*
+ * 構造化出力（responseSchema）は **Live の 設定に 無い**。
+ * ここに 置いて いた OpenAPI 風の 形（`JUDGE_RESPONSE_SCHEMA`）は、
+ * `generateContent` と 道具の 呼び出しの ため の ものだった——どちらも やめたので
+ * 消した。形の 正は 上の zod（`judgeOutputSchema`）1つだけに する。
+ * 返し方の 頼み方は `buildJudgePrompt` が ことばで 持つ。
+ */
 
 /**
  * 3段の境界。**プロンプトではなくコードが持つ**ので、テストで固定できる。
@@ -186,24 +160,15 @@ export interface JudgeContext {
  * 学習者の発話は**データとして囲って渡す**。発話の中に「これまでの指示を忘れて」と
  * 書かれても指示として読まれないようにするため（構造化出力の強制と二重の守り）。
  */
-/**
- * Live に 持たせる 道具（見かたを 返す ため）。
+/*
+ * 声の セッションに **道具（function calling）は 持たせない**（2026-08-20）。
  *
- * Live は 1つの つなぎで 音声か 文字の 一方しか 返せない。声で 受け止めさせながら
- * 中身も 受け取る ために、**道具の 呼び出し**で JSON を もらう（2026-08-18 の 指定）。
- * 形は `JUDGE_RESPONSE_SCHEMA` と 同じ——2つに 分かれると、片方だけ 直して
- * 画面と 食い違う。
+ * 「受け止めた あと かならず 1回 呼べ」と 縛って いた ころ、相手は その 呼び出しを
+ * **声の 本文として** 出しはじめ、チャット欄に `call:nihongo_no_mikata{…}` が
+ * そのまま 出た（実発生）。道具の 呼び出しは 本来 `toolCall` という 別の 場所に
+ * 来る ものなので、文字に 出た＝本文へ 漏れた、と 分かる。
+ * 見かたは **文字だけの 別の つなぎ**で もらう（`judge-api.ts`）。
  */
-export const JUDGE_TOOL = {
-  functionDeclarations: [
-    {
-      name: "nihongo_no_mikata",
-      description:
-        "学生の 発話を 見て、日本語の 見かたを 返す。声で 受け止めた あと、毎回 かならず 1回 呼ぶ。",
-      parameters: JUDGE_RESPONSE_SCHEMA,
-    },
-  ],
-} as const;
 
 export function buildJudgePrompt(context: JudgeContext, kanaRetry = false): string {
   const lines = [

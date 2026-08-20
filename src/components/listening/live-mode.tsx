@@ -8,19 +8,10 @@ import { FeedbackMessage } from "@/components/feedback-message";
 import type { FeedbackKey } from "@/lib/feedback";
 import { RubyText } from "@/components/ruby-text";
 import { buildFuriganaIndex } from "@/lib/text/furigana";
-import { getGeminiKey } from "@/lib/profile";
 import { recordContentProgress } from "@/lib/progress/store";
 import { CaptionBar, CallShell } from "@/components/call-shell";
-import { generateFromBrowser } from "@/lib/ai/generate-browser";
-import { TEXT_MODEL } from "@/lib/ai/models";
 import { LiveReason } from "./live-reason";
-import {
-  buildReqJudgePrompt,
-  parseReqJudge,
-  reqJudgeResponseSchema,
-  resolveMatch,
-  type JudgeableReq,
-} from "./req-matcher";
+import { resolveMatch } from "./req-matcher";
 import { useLiveSession } from "./use-live-session";
 
 /**
@@ -73,8 +64,6 @@ export function TalkSession({
    * ひとつだけ出す。
    */
   const [hintId, setHintId] = useState<string | null>(null);
-  /** AIに見てもらっている最中か。声で話したあと「無反応」に見えないようにする。 */
-  const [thinking, setThinking] = useState(false);
   /** 「はじめの 一言」カードを閉じたか。 */
   const [openerClosed, setOpenerClosed] = useState(false);
   /**
@@ -84,8 +73,6 @@ export function TalkSession({
   const openRef = useRef<ReadonlySet<string>>(new Set());
   /** 判定ずみの発話ID（同じ発話を二度見ない）。 */
   const judgedRef = useRef(0);
-  /** 見てもらっている最中の発話の数（続けて話したときに、表示が先に消えないように）。 */
-  const pendingRef = useRef(0);
 
   const participants = useMemo(
     () => [
@@ -104,23 +91,27 @@ export function TalkSession({
    * **声でも 文字でも ここを通る**（判定の道を分けない）。
    */
   const judge = useCallback(
-    async (utterance: string) => {
+    (utterance: string) => {
       const reqs = scenario.interview.reqs;
       const closed = reqs.filter((req) => !openRef.current.has(req.id));
       if (closed.length === 0 || !utterance.trim()) return;
 
-      // 層1: AI。キーが無い・つながらないときは null が返り、層2（ローカル）だけで続く
-      pendingRef.current += 1;
-      setThinking(true);
-      const aiReqId = await askAiForReq(utterance, closed);
-      pendingRef.current -= 1;
-      if (pendingRef.current === 0) setThinking(false);
-
+      /*
+       * 判定は **端末の 中だけ**で 済ませる（2026-08-20・絶対ルール）。
+       *
+       * ここは `gemini-2.5-flash` の `generateContent` に 聞いて いた。
+       * それは Live とは **別勘定の 無料枠**で、学習者が 何度か 話しただけで
+       * 使い切る（「すぐ limit に なる」——同日 クライアント指定）。
+       * 落ちても 会話が 続く ように 元から 二層に して あった ので、
+       * 層2（ことばの 照合）だけで 動かす。
+       * 意味の 見かたを 戻す ときは、**Live の つなぎの 中**で もらう
+       *（ミーティングの `judge-api.ts` と 同じ やり方）。
+       */
       const outcome = resolveMatch({
         utterance,
         reqs,
         openIds: openRef.current,
-        aiReqId,
+        aiReqId: null,
       });
       if (outcome.reqId) {
         const opened = new Set([...openRef.current, outcome.reqId]);
@@ -143,7 +134,7 @@ export function TalkSession({
     const heard = live.lastUtterance;
     if (!heard || heard.id === judgedRef.current) return;
     judgedRef.current = heard.id;
-    void judge(heard.text);
+    judge(heard.text);
   }, [live.lastUtterance, judge]);
 
   // ステージの進み具合に反映する（設計07 §3）。退出まで行ったら「おわった」。
@@ -327,13 +318,6 @@ export function TalkSession({
               </button>
             </form>
 
-            {/* 声で話したあと「無反応」に見えないように、見ている最中だけ出す */}
-            {thinking && (
-              <p className="text-ink-soft text-sm font-extrabold" role="status">
-                🤖 いま 見ています…
-              </p>
-            )}
-
             {note && <FeedbackMessage messageKey={note} />}
           </>
         )}
@@ -392,52 +376,6 @@ export function TalkSession({
       </CallShell>
     </div>
   );
-}
-
-/**
- * 判定3層の**層1**（AI）を呼ぶ。返るのは項目ID（該当なしは null）。
- *
- * キーは本人のもの（BYOK）で端末に保存されている。ここで載せて送り、サーバは
- * 受け取って Gemini を呼ぶだけ——キーも上流の応答も返ってこない（規律4）。
- *
- * **失敗しても画面には何も出さない**。キーが無い教室・上流が混んでいるときは、
- * そのままローカルのキーワード判定だけで会話が続く（設計01 P12 劣化運転）。
- * ここでエラーを見せると、学習者は自分の日本語が悪かったのだと受け取る。
- */
-async function askAiForReq(
-  utterance: string,
-  reqs: readonly JudgeableReq[],
-): Promise<string | null> {
-  const apiKey = getGeminiKey();
-  if (!apiKey || reqs.length === 0) return null;
-
-  return await askFromBrowser(apiKey, utterance, reqs);
-}
-
-/**
- * この端末から Google に直接聞く（2026-08-17 から サーバは 通さない）。
- * うちの Worker は香港で動くことがあり、そこを通すと Google に断られるうえ、
- * キーが香港で復号される。BYOK のキーはこの端末にあるので、ここから聞けばよい。
- */
-async function askFromBrowser(
-  apiKey: string,
-  utterance: string,
-  reqs: readonly JudgeableReq[],
-): Promise<string | null> {
-  const result = await generateFromBrowser({
-    apiKey,
-    model: TEXT_MODEL,
-    prompt: buildReqJudgePrompt(utterance, reqs),
-    schema: reqJudgeResponseSchema(reqs),
-    // 選ぶのは id ひとつ。思いつきは要らない（route と同じ）
-    temperature: 0,
-  });
-  if (!result.ok || !result.text) return null;
-  try {
-    return parseReqJudge(JSON.parse(result.text), reqs);
-  } catch {
-    return null;
-  }
 }
 
 /** 型文を引くための引用（『』「」）。教材が見せている言い回しをそのまま借りる。 */

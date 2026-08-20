@@ -95,7 +95,7 @@ const BEFORE_PARTICLE =
  * - 「◯◯から 来ました」… 述語の 文節を 丸ごと 落とす（→「カンボジア」）。
  *   「ました」だけを 削ると「来」という 語幹が 残り、日本語で なくなる。
  *
- * 規則で 分かる ぶんだけを 見る（意味の 判定は `/api/meeting/judge` の 役）。
+ * 規則で 分かる ぶんだけを 見る（意味の 判定は `judge-api.ts` の 役）。
  * ここは AI判定に 通せなかった ときの 受け答えなので、正しさより **壊れない こと**を 取る。
  */
 export function answerCore(raw: string): string {

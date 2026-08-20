@@ -13,15 +13,23 @@ export function SpeechSpeedPicker({
   value,
   onChange,
   tone = "dark",
+  disabled = false,
 }: {
   value: SpeechSpeedId;
   onChange: (id: SpeechSpeedId) => void;
   /** 置く 場所の 地の色。暗い 枠の 中（Zoom）と 明るい カードの 上で 字の色を 変える。 */
   tone?: "dark" | "light";
+  /**
+   * いま 触れない ばんか（話して いる 間・見かたを 待って いる 間）。
+   * **消さずに 灰色で 残す**——消えると「さっき あった ものが 無い」と 探しはじめる。
+   */
+  disabled?: boolean;
 }) {
   const dark = tone === "dark";
   return (
-    <div className="flex flex-wrap items-center justify-center gap-1.5">
+    <div
+      className={`flex flex-wrap items-center justify-center gap-1.5 ${disabled ? "opacity-40" : ""}`}
+    >
       <span className={`text-xs font-extrabold ${dark ? "text-white/70" : "text-ink-soft"}`}>
         はなす はやさ
       </span>
@@ -33,6 +41,7 @@ export function SpeechSpeedPicker({
             type="button"
             onClick={() => onChange(speed.id)}
             aria-pressed={on}
+            disabled={disabled}
             className="rounded-full px-3 py-1 text-xs font-extrabold"
             style={{
               background: on

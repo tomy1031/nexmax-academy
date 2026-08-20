@@ -17,13 +17,7 @@ import {
   saveHintShown,
   subscribeHintShown,
 } from "@/lib/meeting/hint";
-import {
-  JUDGE_TOOL,
-  MAX_ATTEMPTS,
-  gradeOf,
-  judgeOutputSchema,
-  type JudgeResult,
-} from "@/lib/meeting/judge";
+import { MAX_ATTEMPTS, type JudgeResult } from "@/lib/meeting/judge";
 import {
   awardAnswer,
   awardCompletion,
@@ -42,7 +36,7 @@ import {
   type MeetingRecord,
 } from "@/lib/meeting/record";
 import { asksToSkip, needsJapaneseInput } from "@/lib/meeting/input";
-import { fillAnswer, fillName } from "@/lib/meeting/speech";
+import { fillName } from "@/lib/meeting/speech";
 import { normalizeReading } from "@/lib/text/normalize";
 import {
   rateOf,
@@ -54,8 +48,8 @@ import {
 import { getProfile } from "@/lib/profile";
 import { recordContentProgress } from "@/lib/progress/store";
 import { AffectionMeter } from "./affection-meter";
-import { checkJapanese, type AdviceText } from "./japanese-check";
-import { judgeFailNote, requestJudge } from "./judge-api";
+import { localJudge, type AdviceText } from "./japanese-check";
+import { judgeFailNote, requestJudge, type JudgeApiResult } from "./judge-api";
 import { JudgeCard } from "./judge-card";
 import { ProgressChips } from "./question-board";
 import { MeetingResultCard, PreviousRecordCard, RewardCard } from "./result-card";
@@ -77,7 +71,7 @@ import { useLiveVoice } from "./use-live-voice";
  * 以前は `echo` の `◯◯` を学習者の答えで置き換えていた。だから
  * 「どこから 来ましたか」に「うるさい」と答えると
  * 「うるさいですか。いい ところですね。」と返っていた——**噛み合っているかを
- * 誰も見ていなかった**。いまは `/api/meeting/judge` に通し、意味と形の2軸で見て、
+ * 誰も見ていなかった**。いまは 判定に通し、意味と形の2軸で見て、
  * すばらしい／つたわった／もう いちど を返す（src/lib/meeting/judge.ts）。
  *
  * ## 声でも 書いても、同じ会話になる
@@ -182,7 +176,18 @@ type ChatBody =
   /** 学習者が 言った こと。 */
   | { kind: "me"; text: string }
   /** 日本語の 見かた（相手の ことばでは ない）。 */
-  | { kind: "coach"; judge?: JudgeResult; fallback?: Fallback };
+  | {
+      kind: "coach";
+      judge?: JudgeResult;
+      fallback?: Fallback;
+      note?: string | null;
+      /**
+       * AIに 通せなかった **理由の 名前**（学習者には 見せない）。
+       * 画面に 出す ことばは 理由を まとめて しまうので、どこで つまずいたのかが
+       * 通し検証の 写真から 読めなかった（2026-08-20）。印だけ 残す。
+       */
+      reason?: string | null;
+    };
 
 type ChatEntry = ChatBody & { id: string };
 
@@ -217,6 +222,9 @@ interface Reply {
   judge: JudgeResult | null;
   fallback: Fallback | null;
 }
+
+/** 画面の ばん（上の コメントの 5つ）。 */
+type Phase = "きく" | "こたえる" | "はなす" | "みている" | "みかた";
 
 export function MeetingSession({
   meeting,
@@ -284,21 +292,10 @@ export function MeetingSession({
   const [judgeOpen, setJudgeOpen] = useState(false);
   /** ポップアップに そのまま 見せる「あなたの ことば」。 */
   const [lastSaid, setLastSaid] = useState("");
-  /**
-   * つぎへ 進む 手（`next` は この 下で 作られる ので、参照で 受け取る）。
-   * 判定の 中から 呼ぶ ため——宣言の 前の 名前は そのままでは 使えない。
-   */
-  const nextRef = useRef<() => void>(() => {});
-  /** すでに 受け取った 道具の 呼び出し（同じ ものを 2回 見ない）。 */
-  const judgedCallRef = useRef(0);
-  /** 判定の 手（道具が 来なかった ときの 落とし先）。 */
-  /** 道具を 待つ タイマー（見かたが 届いたら 消す）。 */
-  const waitRef = useRef(0);
   /** チャットに 積んだ 相手の ことばの 数（字幕の どこまでを 出したか）。 */
   const spokenSeenRef = useRef(0);
-  const judgeRef = useRef<
-    (u: string, spoken: boolean, target?: MeetingQuestion, logged?: boolean) => Promise<void>
-  >(async () => {});
+  /** AIに 通せなかった 理由（ポップアップの 下に 小さく 出す）。 */
+  const [judgeNote, setJudgeNote] = useState<string | null>(null);
   const pushChat = useCallback((entry: ChatBody) => {
     setChat((prev) => [...prev, { ...entry, id: `${prev.length}-${entry.kind}` }]);
   }, []);
@@ -371,6 +368,48 @@ export function MeetingSession({
   const done = index >= meeting.questions.length;
   const live = voice.status === "live";
 
+  /*
+   * **いまは 誰の ばんか**（2026-08-20 の 指定「1個ずつ 確実に フローが 進むように」）。
+   *
+   * これまでは 触れる ものが いつでも 全部 押せた。相手が 話して いる 途中で
+   * マイクを 開けたり、見かたを 待って いる 間に もう一度 送れたり する ので、
+   * 対話の 回数が 増えるほど 状態が 食い違って いった。
+   * 5つの ばんに 分け、**そのばんに 意味の ある ものだけ**を 触れる ようにする。
+   *
+   *   きく    … 相手が **こえで** 話して いる（機械の ばん）
+   *   こたえる … 話しても 書いても よい（学習者の ばん）
+   *   はなす  … マイクが 開いて いる（止める 操作だけ）
+   *   みている … 見かたを 待って いる（機械の ばん）
+   *   みかた  … ポップアップが 出て いる（読んで 押す だけ）
+   *
+   * 状態は **持たずに 導く**。別に 持つと、更新の 抜けで 画面と 中身が ずれる。
+   *
+   * ## 作り置きの しつもんの 音は「ばん」に 数えない
+   * はじめは これも「きく」ばんに して いたが、**答えが 分かって いる 学習者を
+   * 音が 鳴り終わるまで 待たせる**ことに なる（自動検証でも 6問 続けて 答えられなく
+   * なった）。作り置きの 音は こちらの 都合なので、**答えはじめたら 止める**——
+   * 待たせるのは、相手が 生の こえで 話して いる あいだ だけに する。
+   */
+  const phase: Phase = judgeOpen
+    ? "みかた"
+    : thinking
+      ? "みている"
+      : voice.talking
+        ? "はなす"
+        : voice.speaking
+          ? "きく"
+          : "こたえる";
+  /** 学習者が 答えを **出せる** ばんか（送る・話しはじめる）。 */
+  const canAnswer = phase === "こたえる";
+  /**
+   * 書く こと自体は、相手が 話して いる あいだも 許す。
+   *
+   * 送るのは 1つずつでも、**考えを 書きとめる のを 止める 理由は 無い**——
+   * 聞きながら 打ちはじめる 学習者は 多い。止めるのは マイクが 開いて いる 間と、
+   * 見かたを 待って いる 間だけ。
+   */
+  const canType = phase === "こたえる" || phase === "きく";
+
   /**
    * 呼び名を差し込む（`ask` / `closing` / `reward` 用）。
    * **`echo` には 通さない**——あちらの `◯◯` は 学習者の 答えの 場所（`fillAnswer`）。
@@ -390,7 +429,7 @@ export function MeetingSession({
    *
    * **`judgePrompt` はここに入れない。** 入れると、相手が声で直しはじめ、
    * 画面の見かた（JudgeCard）と2人で別々のことを言う。相手は会話を続ける役、
-   * 教えるのは画面の役、と分けておく（判定は /api/meeting/judge が持つ）。
+   * 教えるのは画面の役、と分けておく（判定は `judge-api.ts` の 別の つなぎが 持つ）。
    */
   const instruction = useMemo(
     () =>
@@ -430,12 +469,15 @@ export function MeetingSession({
             : "ふつうの 速さで 話して ください。",
         "しつもんは 画面が します。あなたは しつもんを しないで ください。",
         /*
-         * 見かたは **道具で** 返して もらう（声では 言わせない）。
-         * 声で 直しはじめると、画面の 見かたと 2人で 別の ことを 言う。
+         * **道具（function calling）は 持たせない**（2026-08-20）。
+         * 「かならず 1回 nihongo_no_mikata を 呼んで」と 毎ターン 縛って いた ため、
+         * 相手は それを **声の 本文として** 出しはじめ、チャット欄に
+         * `call:nihongo_no_mikata{…}` が そのまま 出た（実発生）。
+         * 見かたは **別の つなぎ**（judge-api.ts の 文字だけの セッション）で もらう。
+         * ここでの 相手の 仕事は「受け止めて みじかく 返す」だけ。
          */
-        "学生が 話した あとは、声で みじかく 受け止めてから、かならず 1回" +
-          " nihongo_no_mikata を 呼んで ください。直しの 中身は 声では 言わないで ください。",
         "学生の ことばを 受け止めて、みじかく 返して ください。1回の 返事は 2文までです。",
+        "日本語の 直しは 言わないで ください（直しは 画面が 出します）。",
       ].join("\n"),
     [meeting, speed],
   );
@@ -491,36 +533,20 @@ export function MeetingSession({
        */
       const asked = target ?? question;
       if (!asked) return;
-      /*
-       * 声で つながって いる ときは、見かたは **道具**で 届く（上の 効果が 拾う）。
-       * ここで もう1回 外へ 聞きに 行くと、同じ ことを 2回 数える ことに なる。
-       */
-      if (spoken) {
-        pushChat({ kind: "me", text: utterance });
-        setLastSaid(utterance);
-        setThinking(true);
-        /*
-         * 道具が **呼ばれない ターン**が ある。待ちっぱなしに すると
-         *「ヘンディさんが 聞いて います…」で 止まる（2026-08-18 の 実発生）。
-         * 数秒 待って 来なければ、規則ベースの 見かたに 落として 先へ 進める。
-         */
-        const waited = judgedCallRef.current;
-        window.clearTimeout(waitRef.current);
-        waitRef.current = window.setTimeout(() => {
-          if (judgedCallRef.current !== waited) return;
-          /*
-           * 道具が 来なかった ときは、**これまでの 道（文字の 判定）**に 落とす。
-           * 規則ベースだけに すると ポップアップが 出ず、声で 答えた 人だけ
-           * 見かたが 見られない ことに なる（2026-08-18 の 実発生）。
-           */
-          void judgeRef.current(utterance, false, asked, true);
-        }, 9_000);
-        return;
-      }
       const at = Date.now();
       if (!logged) pushChat({ kind: "me", text: utterance });
       setLastSaid(utterance);
       setThinking(true);
+      /*
+       * 見かたは **声とは 別の つなぎ**で もらう（judge-api.ts）。
+       * 声で 答えても 書いて 答えても、通る 道は 1本——道が 2本 あった ころは、
+       * 声の 人だけ ポップアップが 出ない ことが あった（2026-08-18 の 実発生）。
+       */
+      /*
+       * ここで 投げられると `thinking` が 立った ままに なり、**画面が 二度と
+       * 動かなく なる**（触れる ものを ばんで 絞って いる ぶん、止まると 全部 止まる）。
+       * 見かたは 出なくても いいが、止まるのは だめ——必ず 受け止める。
+       */
       const result = await requestJudge({
         ask: withName(asked.ask),
         hint: asked.hint,
@@ -530,78 +556,32 @@ export function MeetingSession({
         learnerName,
         utterance,
         attempt,
-      });
+      }).catch((): JudgeApiResult => ({ ok: false, reason: "network" }));
       setThinking(false);
 
-      if (result.ok) {
-        setReply({
-          echo: spoken ? "" : result.judge.reply,
-          judge: result.judge,
-          fallback: null,
-        });
-        // 声で 返して いる ときは、相手の ことばは 字幕（voice.turns）で 届く
-        if (!spoken && result.judge.reply) {
-          pushChat({ kind: "host", text: result.judge.reply });
-        }
-        pushChat({ kind: "coach", judge: result.judge });
-        setJudgeOpen(true);
-        rewardTurn(asked.id, utterance, result.judge.grade, !result.judge.retry);
-        void recordMeetingTurn({
-          meetingId: meeting.id,
-          questionId: asked.id,
-          attempt,
-          mode: spoken ? "voice" : "text",
-          utterance,
-          judge: result.judge,
-          fallback: "none",
-          model: result.model,
-          latencyMs: Date.now() - at,
-        });
-        return;
-      }
-
       /*
-       * AIに通せなかったとき。規則ベースの助言（ていねいさ・長さ・文の終わり）に落ちる。
-       * 教材の `echo` はここでだけ使う——噛み合いを見ていないテンプレートなので、
-       * 平常時の返事にはしない。
+       * AIに 通せた ときも 通せなかった ときも、**同じ 形**で ポップアップを 出す。
+       * 通せなかった ときだけ 黙って 進めて いた ころは、学習者から 見て
+       *「言った のに 何も 出ない ときが ある」に なって いた（2026-08-20 の 指定）。
        */
-      const advice = checkJapanese(utterance).text;
-      const echo = spoken ? "" : fillAnswer(asked.echo, utterance);
-      if (echo) pushChat({ kind: "host", text: echo });
-      pushChat({ kind: "coach", fallback: { advice, note: judgeFailNote(result.reason) } });
-      /*
-       * AIに 通せなかった ときは 判定が 無い ので、ポップアップは 出さずに
-       * そのまま つぎへ 進める（止めない。P8）。
-       */
-      setReply({
-        /*
-         * おうむ返しは **学習者の 答え**を 返す。ここで 呼び名を 差し込む 関数を
-         * 通していた ため、`◯◯` が 先に 名前で 埋まり、相手が
-         * 「そうです、ソピアですね。」と 名前を 答えとして 復唱していた。
-         * 中身の 取り出しは `fillAnswer` の 中（`answerCore`）——画面で 別の 関数を
-         * かませて いた ころ、末尾だけを 削って 文が 壊れていた。
-         */
-        echo: spoken ? "" : fillAnswer(asked.echo, utterance),
-        judge: null,
-        fallback: { advice, note: judgeFailNote(result.reason) },
-      });
-      // 判定に通せなくても、答えた事実は残る。札は開き、ハートも足す
-      rewardTurn(asked.id, utterance, null, true);
-      /*
-       * AIに 通せなかった ときは 判定が 無い ので、ポップアップは 出さずに
-       * そのまま つぎへ 進める（止めない。P8）。**ごほうびを 足した あと**に
-       * 進める——先に 進めると、さいごの 1回ぶんの ハートが 数に 入らない。
-       */
-      nextRef.current();
+      const judge = result.ok ? result.judge : localJudge(utterance);
+      const note = result.ok ? null : judgeFailNote(result.reason);
+      setJudgeNote(note);
+      setReply({ echo: spoken ? "" : judge.reply, judge, fallback: null });
+      // 声で 返して いる ときは、相手の ことばは 字幕（voice.turns）で 届く
+      if (!spoken && judge.reply) pushChat({ kind: "host", text: judge.reply });
+      pushChat({ kind: "coach", judge, note, reason: result.ok ? null : result.reason });
+      setJudgeOpen(true);
+      rewardTurn(asked.id, utterance, result.ok ? judge.grade : null, !judge.retry);
       void recordMeetingTurn({
         meetingId: meeting.id,
         questionId: asked.id,
         attempt,
         mode: spoken ? "voice" : "text",
         utterance,
-        judge: null,
-        fallback: result.reason,
-        model: "",
+        judge: result.ok ? judge : null,
+        fallback: result.ok ? "none" : result.reason,
+        model: result.ok ? result.model : "",
         latencyMs: Date.now() - at,
       });
     },
@@ -639,10 +619,26 @@ export function MeetingSession({
 
   const clipUrl = done ? meeting.closingAudioUrl : question?.audioUrl;
   const playClip = clip.play;
+  const stopClip = clip.stop;
+  const hush = voice.hush;
+  /*
+   * 選んだ 速さは **ref で 持つ**。効果の 引き金に すると、速さを 変えた だけで
+   * いまの しつもんが 鳴り直す——「触って いない ものが 動く」の 実物だった
+   *（fable の 指摘・2026-08-20）。速さは つぎに 鳴る ものから 効く。
+   */
+  const clipRateRef = useRef(rateOf(speed));
+  useEffect(() => {
+    clipRateRef.current = rateOf(speed);
+  }, [speed]);
   useEffect(() => {
     if (!joined || !clipUrl) return;
-    playClip(clipUrl, rateOf(speed));
-  }, [joined, clipUrl, playClip, speed]);
+    /*
+     * **相手の こえを 先に 黙らせる**。受け止めの こえが 鳴って いる 途中で
+     * つぎの しつもんを 鳴らすと、2つの 声が 重なる（2026-08-20 の 指摘）。
+     */
+    hush();
+    playClip(clipUrl, clipRateRef.current);
+  }, [joined, clipUrl, playClip, hush]);
 
   // 声で話したぶんを見る。相手が話しはじめた合図で1つに束ねてから届く
   useEffect(() => {
@@ -713,6 +709,11 @@ export function MeetingSession({
   const submit = useCallback(() => {
     const text = draft.trim();
     if (thinking) return;
+    /*
+     * 作り置きの しつもんが まだ 鳴って いたら **止める**。
+     * 答えはじめた 学習者を 待たせない かわりに、返事と 重ならない ように する。
+     */
+    stopClip();
     /*
      * 決まった しつもんが ぜんぶ 終わった あとは **自由な おしゃべり**。
      * 判定も 進行も しない——相手に そのまま 渡して、返事を 待つ（2026-08-18 の 指定）。
@@ -817,6 +818,7 @@ export function MeetingSession({
     done,
     meeting.discover,
     found,
+    stopClip,
   ]);
 
   /** 同じ質問をもう一度。回数だけ増やして、質問は変えない。 */
@@ -874,39 +876,10 @@ export function MeetingSession({
    * 流れて しまい、**正しく 言っても 進まない**ように 見える ことが あった
    *（2026-08-18 の 指摘）。押した ぶんだけ 進む 形なら、迷いも 取りこぼしも 無い。
    */
-  useEffect(() => {
-    nextRef.current = next;
-    judgeRef.current = judgeUtterance;
-  });
-
-  /*
-   * 相手が **道具**で 返して きた 見かたを 受け取る（2026-08-18 の 指定）。
-   * これが 来る かぎり、判定の ための 別の 呼び出しは 要らない。
-   * 形が こわれて いる ときは 何も しない——控え（規則ベース）が 別に 動く。
-   */
-  useEffect(() => {
-    const call = voice.lastJudgeCall;
-    const asked = answeringRef.current;
-    if (!call || call.id === judgedCallRef.current || !asked) return;
-    judgedCallRef.current = call.id;
-    window.clearTimeout(waitRef.current);
-    const parsed = judgeOutputSchema.safeParse(call.data);
-    if (!parsed.success) return;
-    const judge: JudgeResult = { ...parsed.data, v: 1, grade: gradeOf(parsed.data) };
-    // 状態の 更新は 効果の 本体では せず、1呼吸 おいてから（描き直しの 連鎖を 避ける）
-    void Promise.resolve().then(() => {
-      setThinking(false);
-      setReply({ echo: "", judge, fallback: null });
-      pushChat({ kind: "coach", judge });
-      rewardTurn(asked.id, lastSaid, judge.grade, !judge.retry);
-      setJudgeOpen(true);
-    });
-  }, [voice.lastJudgeCall, pushChat, rewardTurn, lastSaid]);
-
   const closeJudge = useCallback(() => {
     const again = reply?.judge?.retry === true;
     setJudgeOpen(false);
-    window.clearTimeout(waitRef.current);
+    setJudgeNote(null);
     /*
      * おわった あとは 進めない。さいごの しつもんの あとに もう一度 進めて
      * しまい、同じ ところを ぐるぐる 回って いた（2026-08-18 の 実発生）。
@@ -938,8 +911,9 @@ export function MeetingSession({
           hostName={meeting.host.name}
           furigana={furigana}
           dictionary={dictionary}
+          /* もう いちど 聞けるのは「こたえる」ばんだけ（音が 重ならない） */
           onReplay={
-            entry.kind === "ask" && entry.audioUrl
+            entry.kind === "ask" && entry.audioUrl && canAnswer
               ? () => clip.play(entry.audioUrl as string, rateOf(speed))
               : undefined
           }
@@ -1075,9 +1049,15 @@ export function MeetingSession({
           onChange={(e) => setDraft(e.target.value)}
           placeholder="ヘンディさんに 聞いて みましょう"
           aria-label="こたえを 入力する"
-          className="border-hairline text-ink min-w-0 flex-1 rounded-full border-2 bg-white px-4 py-2 font-bold"
+          /* 書くのは「きく」ばんでも よい。送るのは「こたえる」ばんだけ */
+          disabled={!canType}
+          className="border-hairline text-ink min-w-0 flex-1 rounded-full border-2 bg-white px-4 py-2 font-bold disabled:opacity-50"
         />
-        <button type="submit" className="btn-game px-5 py-2 text-sm">
+        <button
+          type="submit"
+          disabled={!canAnswer}
+          className="btn-game px-5 py-2 text-sm disabled:opacity-40"
+        >
           おくる
         </button>
       </form>
@@ -1089,7 +1069,9 @@ export function MeetingSession({
           type="button"
           onClick={() => saveHintShown(!hintShown)}
           aria-pressed={hintShown}
-          className={`rounded-full border-2 px-3 py-1 text-xs font-extrabold ${
+          /* 見かたを 待って いる 間・ポップアップの 間は 触らない */
+          disabled={phase === "みている" || phase === "みかた"}
+          className={`rounded-full border-2 px-3 py-1 text-xs font-extrabold disabled:opacity-40 ${
             hintShown
               ? "border-hairline text-ink-soft bg-panel"
               : "border-sun-deep bg-cream text-navy"
@@ -1154,9 +1136,15 @@ export function MeetingSession({
           onChange={(e) => setDraft(e.target.value)}
           placeholder="日本語で 答えて ください"
           aria-label="こたえを 入力する"
-          className="border-hairline text-ink min-w-0 flex-1 rounded-full border-2 bg-white px-4 py-2 font-bold"
+          /* 書くのは「きく」ばんでも よい。送るのは「こたえる」ばんだけ */
+          disabled={!canType}
+          className="border-hairline text-ink min-w-0 flex-1 rounded-full border-2 bg-white px-4 py-2 font-bold disabled:opacity-50"
         />
-        <button type="submit" disabled={thinking} className="btn-game px-5 py-2 text-sm">
+        <button
+          type="submit"
+          disabled={!canAnswer}
+          className="btn-game px-5 py-2 text-sm disabled:opacity-40"
+        >
           おくる
         </button>
       </form>
@@ -1207,20 +1195,35 @@ export function MeetingSession({
               status={voice.status}
               reason={voice.reason}
               talking={voice.talking}
+              /* 話せる のは「こたえる」ばんと、いま 話して いる あいだ だけ */
+              disabled={!canAnswer && phase !== "はなす"}
+              waitNote={
+                phase === "きく"
+                  ? "いまは きく ばんです。おわるまで まちましょう"
+                  : phase === "みている"
+                    ? "いま みて います。すこし まって ください"
+                    : "ポップアップを よんで、ボタンを おして ください"
+              }
               /*
-               * 道具を 持たせて つなぐ。声で 受け止めた あと、同じ ターンで
-               * 見かた（JSON）を 道具で 返して もらう——判定の ための
-               * 別の 呼び出しが 要らなくなる（無料枠に いちばん 効く）。
+               * **道具は 持たせない**。声の つなぎは 会話だけに する
+               *（見かたは judge-api.ts の 文字だけの つなぎで もらう）。
                */
-              onConnect={() => void voice.start(instruction, hostVoice, undefined, [JUDGE_TOOL])}
+              onConnect={() => void voice.start(instruction, hostVoice)}
               onStartTalking={() => {
                 // いま 答えようと して いる しつもんを 覚える（判定が ずれない ように）
                 answeringRef.current = question ?? null;
+                // 作り置きの しつもんが 鳴って いたら 止める（マイクに 入らない ように）
+                stopClip();
                 voice.startTalking();
               }}
               onStopTalking={voice.stopTalking}
             />
-            <SpeechSpeedPicker value={speed} onChange={saveSpeechSpeed} />
+            <SpeechSpeedPicker
+              value={speed}
+              onChange={saveSpeechSpeed}
+              /* 話して いる 間・見かたの 間は 触らない（つぎに 鳴る ものから 効く） */
+              disabled={phase === "はなす" || phase === "みている" || phase === "みかた"}
+            />
           </div>
         }
         /* 入る 前にも 速さを 決められる（はじめの ひとことから 効く） */
@@ -1283,6 +1286,7 @@ export function MeetingSession({
           judge={reply.judge}
           utterance={lastSaid}
           hostName={meeting.host.name}
+          note={judgeNote}
           onNext={closeJudge}
         />
       ) : null}
@@ -1312,8 +1316,17 @@ function ChatLine({
 }) {
   if (entry.kind === "coach") {
     return (
-      <motion.div data-kind="coach" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}>
+      <motion.div
+        data-kind="coach"
+        data-fallback={entry.reason ?? undefined}
+        initial={{ opacity: 0, y: 6 }}
+        animate={{ opacity: 1, y: 0 }}
+      >
         {entry.judge ? <JudgeCard judge={entry.judge} hostName={hostName} /> : null}
+        {/* AIに 通せなかった 理由。あとから 読み返せる ように チャットにも 残す */}
+        {entry.note ? (
+          <p className="text-ink-faint mt-1 text-xs font-bold break-words">{entry.note}</p>
+        ) : null}
         {entry.fallback ? (
           <div className="bg-panel-tint space-y-1 rounded-[var(--radius-card)] p-3">
             <p className="text-leaf text-sm font-extrabold">🌸 {entry.fallback.advice.praise}</p>

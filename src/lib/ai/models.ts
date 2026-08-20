@@ -39,6 +39,20 @@ export const LIVE_TTS_MODELS = [
   "gemini-2.5-flash-live",
 ] as const;
 
+/**
+ * 文字だけを 返して もらう Live（見かたの JSON を もらう つなぎ）。
+ *
+ * たいわ用の 並びを そのまま 使うと、**声に 特化した モデルが 先**に 来る。
+ * 文字で 返せない 名前を 先に ためすと、そこで 待ち時間を 使い切って
+ * 文字で 返せる 名前まで たどり着けない（2026-08-20 の 通し検証で
+ * reason=modelNotFound が 続いた）。**文字を 返せる ものを 先頭**に する。
+ */
+export const LIVE_TEXT_MODELS = [
+  "gemini-2.5-flash-live",
+  "gemini-3.1-flash-live-preview",
+  "gemini-2.5-flash-native-audio-preview-12-2025",
+] as const;
+
 /** エリアの絵・まんがのコマ。 */
 export const IMAGE_MODELS = ["gemini-3.1-flash-image", "gemini-2.5-flash-image"] as const;
 

@@ -44,8 +44,9 @@ test("鍵が 無くても、規則ベースの 受け止めで 会話が 止ま�
   // なぜ AIの みかたが 出ないのかを、責めずに 1行 伝える
   await expect(page.getByText("AIの せっていが まだです")).toBeVisible();
   /*
-   * そして **ボタンを 押さなくても** つぎの しつもんが 出る（＝止まらない）。
-   * 「つぎへ →」ボタンは 会話の じゃまだった ので 消し、進むのは 判定に まかせた。
+   * そして **ポップアップを 1回 押すだけで** つぎの しつもんが 出る（＝止まらない）。
+   * 鍵が あっても 無くても 出る ものは 同じ 形——「言った のに 何も 出ない ときが
+   * ある」を 無くす ため（2026-08-20 の 指定）。`speakByText` が その 1押しを 含む。
    */
   await waitForAsk(page, 2);
   await shot(page, "22-judge-fallback");
@@ -77,20 +78,31 @@ test.describe("AIの みかた（鍵が あるときだけ）", () => {
      * 2026-08-18 に 何度も 止まった）。**出なかったのは 出なかったと 分かる
      * ように skip で 残す**——緑で 通して 黙って 消すのは しない。
      */
+    /*
+     * みかたの カードは **落ちた ときも 出る**（規則ベースで 同じ 形に 組む）。
+     * だから「出たか」では なく、**落ちた 印（理由の ひとこと）が 無いか**で 見る。
+     */
     const card = page.getByLabel("にほんごの みかた");
     const fellBack = page.getByText(
-      /AIの みかたは いま つかえません|きょうは AIを つかいすぎました|AIが いま こんで います|つうしんが うまく いきませんでした/,
+      /AIの みかたは いま つかえません|きょうは AIを つかいすぎました|AIが いま こんで います|つうしんが うまく いきませんでした|AIの へんじが おそいので/,
     );
-    await expect(card.or(fellBack).first()).toBeVisible({ timeout: 45_000 });
+    await expect(card.first()).toBeVisible({ timeout: 45_000 });
 
-    if ((await card.count()) === 0) {
+    if ((await fellBack.count()) > 0) {
       // 会話が 止まらない ことだけは ここでも 確かめる（学習者に とって いちばん 大事）
       await waitForAsk(page, 2);
       await shot(page, "23-judge-fallback-live");
-      test.skip(
-        true,
-        `AIが みかたを 返しませんでした: ${(await fellBack.first().innerText()).trim()}`,
-      );
+      /*
+       * **理由の 名前**まで 残す（`data-fallback`）。画面の ことばは 理由を
+       * まとめて しまうので、写真だけでは どこで つまずいたのかが 分からなかった。
+       */
+      const reason = await page.locator("[data-fallback]").first().getAttribute("data-fallback");
+      /*
+       * skip の 理由は 通し検証の 記録に 残らない ので、**出力にも 出す**。
+       * どこで つまずいたのかが 分からないと、直しようが 無い（2026-08-20）。
+       */
+      console.log(`[judge] AIが みかたを 返しませんでした reason=${reason ?? "?"}`);
+      test.skip(true, `AIが みかたを 返しませんでした（reason=${reason ?? "?"}）`);
     }
 
     // 3段（すばらしい／つたわりました／もう いちど）の どれかが 出る

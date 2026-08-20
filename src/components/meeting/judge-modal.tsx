@@ -41,12 +41,18 @@ export function JudgeModal({
   judge,
   utterance,
   hostName,
+  note,
   onNext,
 }: {
   judge: JudgeResult;
   /** 学習者が 言った ことば（そのまま 見せる）。 */
   utterance: string;
   hostName: string;
+  /**
+   * AIに 通せなかった ときの ひとこと（理由と つぎの 一手）。
+   * 責める 言い方に しない——学習者は 自分の 日本語の せいだと 受け取る。
+   */
+  note?: string | null;
   /** 「つぎへ」／「もう いちど」を 押した とき。 */
   onNext: () => void;
 }) {
@@ -111,6 +117,8 @@ export function JudgeModal({
             </dd>
           </div>
         </dl>
+
+        {note ? <p className="text-ink-faint mt-3 text-xs font-bold break-words">{note}</p> : null}
 
         {/* つぎに 何を するかは、この ボタンの 字で 分かるようにする */}
         <button
