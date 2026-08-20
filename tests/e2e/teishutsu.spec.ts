@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { choiceButtons, itemsBefore, KAISHA, seedCompleted, shot } from "./helpers";
+import { choiceButtons, itemsBefore, KAISHA, readTestResult, seedCompleted, shot } from "./helpers";
 
 /**
  * まとめて 出す（提出モード）— ぜんぶ 書いてから 1回だけ 採点する やりかた
@@ -13,8 +13,11 @@ import { choiceButtons, itemsBefore, KAISHA, seedCompleted, shot } from "./helpe
  * ——外した ときほど、自分の 選択が 画面に 残って いないと 直しようが ない。
  */
 
-/** ふりがなが 合成されるので、名前は 部分一致で さがす（helpers 冒頭の 注意と 同じ）。 */
-const START_SUBMIT = /まとめて/;
+/**
+ * やりかた（まとめて 出す／1問ずつ）は **先生が 管理画面で 決める**ので、学習者の
+ * 画面に 選択は 無い。既定は まとめて 出す なので「はじめる」で このモードに 入る。
+ */
+const START_SUBMIT = "はじめる";
 const SUBMIT_ANSWERS = /こたえを 出/;
 
 test("まとめて 出す は 途中で 採点しない（えらんだ ところは 残る）", async ({ page, context }) => {
@@ -97,21 +100,6 @@ test("出す まえに かくにんして、出すと 自分の こたえと 正
   await page.getByRole("button", { name: "まちがえた もんだいだけ" }).click();
   await expect(page.getByText("もんだい 1 / 6")).toBeVisible();
   await expect(page.getByRole("button", { name: /つぎ →|さいごに かくにん →/ })).toBeVisible();
-});
-
-test("1問ずつ でも、自分が えらんだ ものが 見える", async ({ page, context }) => {
-  await seedCompleted(context, itemsBefore(1));
-  await page.goto(KAISHA.quiz1.path);
-  await page.getByRole("button", { name: "はじめる" }).click();
-
-  // 外した ときこそ、自分の こたえと 正解が 並んで いないと 直せない
-  await choiceButtons(page).nth(2).click();
-  await expect(page.getByText("あなたの こたえ")).toBeVisible();
-  // 1文字ずつ ルビが 入る 語（客きゃく先さき…）なので、あいだを 空けて さがす
-  await expect(page.getByText(/客.*先.*常.*駐/).first()).toBeVisible();
-  await expect(page.getByText(/正解/).first()).toBeVisible();
-  await expect(page.getByText("受託開発").first()).toBeVisible();
-  await shot(page, "26-quiz-one-by-one-answer");
 });
 
 test("1問も 書かずに「出す」道は ない（7回 おすだけで おわらない）", async ({ page, context }) => {
@@ -203,42 +191,42 @@ test("書いた こたえを 消したら、つぎに 開いても 生き返ら�
   await expect(page.getByText(/書きました/)).toHaveCount(0);
 });
 
-test("しおりだけ 残って いる ときは「◯もんめから」と 言う（0もん こたえました と 言わない）", async ({
-  page,
-  context,
-}) => {
+/*
+ * 「しおり（位置）だけが 残って いる」回の 案内（「まえに 見て いた ◯もんめから」）は
+ * **1問ずつ の 教材でしか 起きない**——まとめて 出す では 下書きが 無ければ はじめから で、
+ * どこからでも 行き来できるので 位置を 戻す 意味が 無い。いま 1問ずつ に して いる
+ * 教材が 無いので、ここでは 通せない（`tests/quiz_resume.test.ts` が 純関数で 見ている）。
+ */
+
+/**
+ * 出した 回は **成績に 残り、ステージも おわる**。
+ *
+ * 成績を 残すかどうかは「教材ぜんぶに 触れた回か」で 決めている
+ *（`quiz-reducer.ts` の `isWholeSetRun`。しおりだけで 途中から 始めた 回を
+ * 「全問正解・合格」で 固めない ための 線引き）。まとめて 出す は 書かなかった 問題も
+ * 1行 残す ので **触れた回**であり、ここが 落ちると **既定の やりかたで 成績が
+ * まるごと 消える**。線引きの 内側に いる ことを 機械で 押さえておく。
+ */
+test("出した 回は 成績に 残り、ステージも おわりに なる", async ({ page, context }) => {
   await seedCompleted(context, itemsBefore(1));
-  // 内訳（下書き・結果）が 無く、位置だけ 残って いる 状態を 作る
-  await context.addInitScript(() => {
-    window.localStorage.setItem(
-      "nexmax:v1:content:kaisha_shirabekata_check",
-      JSON.stringify({ status: "started", position: { question: 2 } }),
-    );
+  await page.goto(KAISHA.quiz1.path);
+  await page.getByRole("button", { name: START_SUBMIT }).click();
+
+  // 1問だけ 書いて 出す（書かなかった 5問も「書けずに 出した」として 数に 入る）
+  await choiceButtons(page).nth(0).click();
+  for (let i = 0; i < 5; i += 1) {
+    await page.getByRole("button", { name: "つぎ →" }).click();
+  }
+  await page.getByRole("button", { name: "さいごに かくにん →" }).click();
+  await page.getByRole("button", { name: SUBMIT_ANSWERS }).click();
+  await expect(page.getByText("ぜんぶの こたえ")).toBeVisible();
+
+  expect(await readTestResult(page, KAISHA.quiz1.id)).toMatchObject({
+    stageId: KAISHA.quiz1.id,
+    total: 6,
+    passed: false,
   });
 
-  await page.goto(KAISHA.quiz1.path);
-  await expect(page.getByText(/3もんめから/)).toBeVisible();
-  await expect(page.getByText(/0もん/)).toHaveCount(0);
-});
-
-test("やりかたを えらび直すのを やめて、つづきに 帰れる", async ({ page, context }) => {
-  await seedCompleted(context, itemsBefore(1));
-  await page.goto(KAISHA.quiz1.path);
-  await page.getByRole("button", { name: "はじめる" }).click();
-
-  // 2問 こたえて 離脱（つづきが ある 状態を 作る）
-  await choiceButtons(page).nth(0).click();
-  await page.getByRole("button", { name: "つぎへ" }).click();
-  await choiceButtons(page).nth(0).click();
-  await page.getByRole("button", { name: "つぎへ" }).click();
   await page.goto("/kaisha");
-  await page.goto(KAISHA.quiz1.path);
-  await expect(page.getByText("まえの つづきから")).toBeVisible();
-
-  // まちがえて「べつの やりかた」を 押しても、消さずに 帰れる
-  await page.getByRole("button", { name: "べつの やりかたで はじめる" }).click();
-  await expect(page.getByRole("button", { name: "つづきから" })).toHaveCount(0);
-  await page.getByRole("button", { name: /つづきの がめんに/ }).click();
-  await page.getByRole("button", { name: "つづきから" }).click();
-  await expect(page.getByText("もんだい 3 / 6")).toBeVisible();
+  await expect(page.getByText("6つ の うち 2つ おわりました")).toBeVisible();
 });

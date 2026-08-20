@@ -93,6 +93,14 @@ export async function seedCompleted(
   );
 }
 
+/** 端末に 残った 正式な成績（`src/lib/progress/store.ts` の TestResult）。無ければ null。 */
+export async function readTestResult(page: Page, stageId: string): Promise<unknown> {
+  return page.evaluate((id: string) => {
+    const raw = window.localStorage.getItem(`nexmax:v1:test:${id}`);
+    return raw === null ? null : JSON.parse(raw);
+  }, stageId);
+}
+
 /**
  * Gemini の鍵を **学習者と同じ経路（BYOK・端末の中）** に置く。
  *
@@ -175,19 +183,47 @@ export function multiButtons(page: Page): Locator {
 }
 
 /**
- * 語群の穴埋め。語のボタンは 表記で選べる
+ * 語群の あなを 埋める。語のボタンは 表記で選べる
  *（あなのボタンは aria-label が付いていて、語の名前では当たらない）。
+ *
+ * **押した だけでは 出さない**。既定の やりかた（まとめて 出す）には
+ * 「こたえる」ボタンが 無く、進むのは `goNext()` だから。
  */
-export async function fillWordBank(page: Page, words: readonly string[]): Promise<void> {
+export async function placeWords(page: Page, words: readonly string[]): Promise<void> {
   for (const word of words) {
     await page.getByRole("button", { name: word }).first().click();
   }
+}
+
+/** 語群を 埋めて「こたえる」まで（1問ずつ の やりかたの 教材だけ）。 */
+export async function fillWordBank(page: Page, words: readonly string[]): Promise<void> {
+  await placeWords(page, words);
   await page.getByRole("button", { name: "こたえる" }).click();
 }
 
-/** 解説を読んで つぎの問題へ。 */
+/** 解説を読んで つぎの問題へ（1問ずつ の やりかた）。 */
 export async function goNextQuestion(page: Page): Promise<void> {
   await page.getByRole("button", { name: "つぎへ" }).click();
+}
+
+/* ---- まとめて 出す（既定の やりかた）の 操作 ---- */
+
+/** つぎの もんだいへ（ここでは 採点しない）。 */
+export async function goNext(page: Page): Promise<void> {
+  await page.getByRole("button", { name: "つぎ →" }).click();
+}
+
+/** さいごの もんだいから「出す まえの かくにん」へ。 */
+export async function goToConfirm(page: Page): Promise<void> {
+  await page.getByRole("button", { name: "さいごに かくにん →" }).click();
+}
+
+/**
+ * ぜんぶ 出して 採点させる。
+ * ルビが 合成されて「こたえを 出だす」に なるので 部分一致で さがす。
+ */
+export async function submitAnswers(page: Page): Promise<void> {
+  await page.getByRole("button", { name: /こたえを 出/ }).click();
 }
 
 /** 正解したことを 画面の言葉で 確かめる（禁止語は使わない・規律1）。 */

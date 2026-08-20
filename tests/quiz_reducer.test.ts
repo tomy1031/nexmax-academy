@@ -6,6 +6,7 @@ import {
   answeredCount,
   createQuizSession,
   currentQuestion,
+  isWholeSetRun,
   quizReducer,
   resumeQuizSession,
   summarizeQuiz,
@@ -295,6 +296,64 @@ describe("つづきから 復元する（resumeQuizSession）", () => {
   });
 });
 
+/**
+ * 「この回を 成績に 残してよいか」（`isWholeSetRun`）。
+ *
+ * しおり（`position.question`）だけが 残って いる ときは 内訳なしで 途中から 始まる
+ *（`@/lib/quiz/resume` の 規則5）。その回も 最後まで 行けるので、答えた 数を 分母に
+ * すると 5問の 教材が「3 / 3・合格」で 固まった——成績は 初回だけが 正式で、あとから
+ * 直せない。**触った 問題の 数では なく、教材ぜんぶを 通したか**で 分ける。
+ *
+ * まとめて 出す（既定）は 書かなかった 問題も 1行 残す ので、この 線引きの 内側に いる。
+ */
+describe("成績に 残してよい回か（isWholeSetRun）", () => {
+  /** その番号から 最後まで 正解して 通す（しおりだけの 再開＝内訳は 空）。 */
+  function playFrom(index: number): QuizState {
+    let s = resumeQuizSession(set, index, []);
+    while (s.phase.kind !== "finished") {
+      s = s.phase.kind === "explain" ? quizReducer(s, { type: "next" }) : answerCorrectly(s);
+    }
+    return s;
+  }
+
+  it("1問目から 全問 通した回は true", () => {
+    expect(isWholeSetRun(playFrom(0), set.questions.length)).toBe(true);
+  });
+
+  it("しおりだけで 途中から 始めた 回は、最後まで 行っても false", () => {
+    const s = playFrom(2);
+    const summary = summarizeQuiz(s);
+    expect(summary.total).toBe(3); // 見たのは 3問だけ
+    expect(summary.passed).toBe(true); // その3問は 全部 正解——画面は ほめてよい
+    expect(isWholeSetRun(s, set.questions.length)).toBe(false); // が、成績には 残さない
+  });
+
+  it("満点は 答えた 問題の 配点で 数える（先頭から N問 では ない）", () => {
+    const summary = summarizeQuiz(playFrom(2));
+    const answered = set.questions.slice(2);
+    expect(summary.maxPoints).toBe(answered.reduce((sum, q) => sum + q.points, 0));
+    expect(summary.earned).toBe(summary.maxPoints); // 「8 / 7 てん」に ならない
+  });
+
+  it("「まちがえた もんだいだけ」の やり直しも false", () => {
+    let s = createQuizSession(set, [set.questions[0]!]);
+    while (s.phase.kind !== "finished") {
+      s = s.phase.kind === "explain" ? quizReducer(s, { type: "next" }) : answerCorrectly(s);
+    }
+    expect(isWholeSetRun(s, set.questions.length)).toBe(false);
+  });
+
+  it("問題の 無い セットは 数えない（0問で 合格を 作らない）", () => {
+    expect(isWholeSetRun(createQuizSession(set, []), 0)).toBe(false);
+  });
+
+  it("まとめて 出す は true（書かなかった 問題も 1行 残るので、教材ぜんぶに 触れた回）", () => {
+    const s = quizReducer(createQuizSession(set, set.questions, "submit"), { type: "submit" });
+    expect(s.phase.kind).toBe("finished");
+    expect(isWholeSetRun(s, set.questions.length)).toBe(true); // 既定の やりかたの 成績を 止めない
+  });
+});
+
 describe("自由入力の救済（IME・こたえを見る）", () => {
   const keyword = set.questions.find((x) => x.type === "keyword")!;
 
@@ -333,18 +392,6 @@ describe("自由入力の救済（IME・こたえを見る）", () => {
       input: "ホウレンソウ",
     });
     expect(s.phase).toMatchObject({ kind: "explain", answer: "ホウレンソウ" });
-  });
-
-  it("「こたえを 見る」は点が入らないが解説へ進む", () => {
-    const s = quizReducer(createQuizSession(set, [keyword]), { type: "skipKeyword" });
-    expect(s.phase).toMatchObject({ kind: "explain", correct: false, feedback: "quiz.review" });
-    expect(s.results[0]?.earned).toBe(0);
-  });
-
-  it("「こたえを 見る」は自由入力の出題中だけ効く", () => {
-    const choose = set.questions.find((x) => x.type === "choose")!;
-    const s = createQuizSession(set, [choose]);
-    expect(quizReducer(s, { type: "skipKeyword" })).toBe(s);
   });
 });
 
@@ -511,10 +558,14 @@ describe("まとめて 出す（提出モード）", () => {
     expect(quizReducer(s, { type: "answerChoice", index: 0 })).toBe(s);
   });
 
-  it("「こたえを 見る」は 置かない（出す 前に こたえが 見えない）", () => {
-    const keyword = set.questions.find((q) => q.type === "keyword")!;
-    const s = submitSession([keyword]);
-    expect(quizReducer(s, { type: "skipKeyword" })).toBe(s);
+  it("「こたえを 見る」の 逃げ道は どこにも 置かない（2度 消えた ものが 戻らないように）", () => {
+    // 2026-08-19 の 指定で 機能ごと 外した（前にも 一度 消して、直しの ついでに 戻っていた）。
+    // reducer の 行き先も UI も 無い ことを、字で 見張る。
+    const ui = readFileSync(join(__dirname, "../src/components/quiz/question-types.tsx"), "utf8");
+    const reducer = readFileSync(join(__dirname, "../src/components/quiz/quiz-reducer.ts"), "utf8");
+    expect(ui).not.toContain("こたえを 見る");
+    expect(ui).not.toContain("onSkip");
+    expect(reducer).not.toContain("skipKeyword");
   });
 
   it("ローマ字の 注意は 出すが、合って いるかは 漏らさない（書いた ものは 残る）", () => {

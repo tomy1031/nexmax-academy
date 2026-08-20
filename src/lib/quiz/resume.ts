@@ -91,12 +91,15 @@ export interface QuizStart {
 /** もんだいの やりかた（`@/components/quiz/quiz-reducer` の QuizMode と同じ 2つ）。 */
 export type QuizMode = "one" | "submit";
 
-/** はじめから。 */
+/**
+ * はじめから。`mode` は 教材の 既定（まとめて 出す）を 置くが、`startFrom` は
+ * かならず 教材の やりかたで 上書きする——ここの 値は 目印でしかない。
+ */
 export const FRESH_QUIZ_START: QuizStart = {
   index: 0,
   results: [],
   resumed: false,
-  mode: "one",
+  mode: "submit",
   drafts: {},
 };
 
@@ -111,6 +114,13 @@ function keyOf(quizSetId: string): string {
 /**
  * 保存されて いた ものと しおりから、始める ところを 決める。
  *
+ * ## やりかたは 教材が 決める
+ * 「1問ずつ」か「まとめて 出す」かは **先生が 管理画面で 決める**（`QuizSet.answerMode`）。
+ * だから ここでは 引数の `mode` が 正で、端末に 残って いた `mode` は
+ * **その 保存が 今の やりかたの ものか**を 見分ける ためだけに 使う。
+ * 先生が やりかたを 切り替えたら、前の 保存は もう 前提が ちがうので はじめから にする
+ * （1問ずつの 採点ずみ 内訳を まとめて 出す の 下書きとして 読む ことは できない）。
+ *
  * ## まとめて 出す（mode: "submit"）
  * 採点まえの 下書きを そのまま 戻す。**問題IDを 鍵に して 持って いる**ので、
  * 教材の 並びが 変わっても ずれない——いま 無い 問題の 下書きだけ 落とす。
@@ -124,41 +134,57 @@ function keyOf(quizSetId: string): string {
  * 4. 教材が 直されて 問題の 並びが 変わった ときも はじめから
  *    （答えの 内訳は 出題順を 前提に するので、並びが ずれた ものは 数え直せない）
  * 5. しおり（進捗ストアの `position.question`）だけが 残って いる ときは、
- *    内訳が 無くても 位置だけ 戻す——0点 扱いに なっても、9問目から 再開できる ほうが
- *    1問目に 戻すより ずっと よい。
+ *    内訳が 無くても 位置だけ 戻す——9問目から 再開できる ほうが 1問目に 戻すより ずっと よい。
+ *
+ * ## 規則5で 始めた 回は「成績を 数えない 回」
+ * この回は **見て いない 問題を 残した まま 最後に 着く**。当初は「0点 扱いに なっても
+ * よい」と 考えて いたが、実際に 起きるのは 逆で、答えた 2問だけで 100%・合格に なった
+ *（成績は 答えた 数を 分母に する ため）。しかも 成績は 初回だけが 正式
+ *（`recordFirstTestResult`）＝**あとから 直せない**。
+ * かと いって 分母を 全問に 固定すると、途中から 戻った 人が 合格できない 回に なる。
+ * だから 点の 数え方では なく **回の 数え方**で 分ける: 全問に 触れて いない 回は
+ * 「まちがえた もんだいだけ」の やり直しと 同じ 扱いに して、成績にも ステージの
+ * 「おわった」にも 残さない（判断は `quiz-reducer.ts` の `isWholeSetRun` 1か所）。
+ * 位置は 戻す・点は 数えない——**中断した 人を 1問目に 戻さない**という 規則5の 値打ちは
+ * そのまま 残る。
  */
 export function startFrom(
   saved: QuizResume | null,
   panel: number | undefined,
   questionIds: readonly string[],
+  mode: QuizMode = "submit",
 ): QuizStart {
-  if (questionIds.length === 0) return FRESH_QUIZ_START;
+  const fresh: QuizStart = { ...FRESH_QUIZ_START, mode };
+  if (questionIds.length === 0) return fresh;
+  // 先生が やりかたを 切り替えた あとの 保存は 読まない（前提が ちがう）
+  const own = saved?.mode === mode ? saved : null;
 
-  if (saved?.mode === "submit") {
+  if (mode === "submit") {
+    if (!own) return fresh;
     // いま 教材に 無い 問題の 下書きは 落とす（並びが 変わっても ID なので ずれない）
-    const alive = Object.entries(saved.drafts).filter(([id]) => questionIds.includes(id));
-    if (alive.length === 0) return { ...FRESH_QUIZ_START, mode: "submit" };
+    const alive = Object.entries(own.drafts).filter(([id]) => questionIds.includes(id));
+    if (alive.length === 0) return fresh;
     return {
-      index: Math.min(Math.max(saved.index, 0), questionIds.length - 1),
+      index: Math.min(Math.max(own.index, 0), questionIds.length - 1),
       results: [],
       resumed: true,
-      mode: "submit",
+      mode,
       drafts: Object.fromEntries(alive),
     };
   }
 
-  const candidate = saved ? saved.results.length : panel;
-  if (typeof candidate !== "number" || !Number.isInteger(candidate)) return FRESH_QUIZ_START;
-  if (candidate <= 0 || candidate >= questionIds.length) return FRESH_QUIZ_START;
+  const candidate = own ? own.results.length : panel;
+  if (typeof candidate !== "number" || !Number.isInteger(candidate)) return fresh;
+  if (candidate <= 0 || candidate >= questionIds.length) return fresh;
 
   // しおりだけの ときは 位置だけ 戻す（内訳が 無いので 結果は 空のまま）
-  if (!saved) return { ...FRESH_QUIZ_START, index: candidate, resumed: true };
+  if (!own) return { ...fresh, index: candidate, resumed: true };
 
   // 教材が 問題を 入れかえて いたら、答えの 内訳は もう 前提に 合わない
-  const stillMatches = saved.results.every((r, i) => questionIds[i] === r.questionId);
-  if (!stillMatches) return FRESH_QUIZ_START;
+  const stillMatches = own.results.every((r, i) => questionIds[i] === r.questionId);
+  if (!stillMatches) return fresh;
 
-  return { ...FRESH_QUIZ_START, index: candidate, results: saved.results, resumed: true };
+  return { ...fresh, index: candidate, results: own.results, resumed: true };
 }
 
 /* ------------------------------------------------------------------ *
@@ -205,11 +231,13 @@ export function clearQuizResume(
 export function restoreQuiz(
   quizSetId: string,
   questionIds: readonly string[],
+  mode: QuizMode = "submit",
   backend: ProgressBackend = defaultBackend(),
 ): QuizStart {
   return startFrom(
     readQuizResume(quizSetId, backend),
     readContentProgress(quizSetId, backend)?.position?.question,
     questionIds,
+    mode,
   );
 }

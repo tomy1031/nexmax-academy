@@ -3,7 +3,7 @@
   "id": "m2-asakai-manga",
   "format": "yonkoma",
   "title": "はじめての 朝会",
-  "description": "はじめての 朝会です。報告の コツを 見つけましょう。",
+  "description": "初めての 朝会です。報告の コツを 見つけましょう。",
   "characters": [
     {
       "id": "hendy",
@@ -84,6 +84,10 @@
     [
       "分",
       "わ"
+    ],
+    [
+      "初",
+      "はじ"
     ]
   ],
   "vocab": [

@@ -42,7 +42,6 @@ interface Props {
    * やりかた。`"submit"`（まとめて 出す）のときは
    *  - 押した 瞬間に 採点しない（下書きに 置くだけ）ので、**選んだ ところを 出し続ける**
    *  - 「こたえる」ボタンを 置かない（進むのは 外の「つぎ →」）
-   *  - 「こたえを 見る」を 置かない（出す 前に こたえが 見えて しまう）
    */
   mode?: QuizMode;
   /** いまの 下書き（まとめて 出す のとき、書いた ものを 画面に 出し直す ため）。 */
@@ -105,7 +104,6 @@ export function QuestionBody({
           submitMode={submitMode}
           draft={draft?.kind === "keyword" ? draft : undefined}
           onSubmit={(input) => dispatch({ type: "answerKeyword", input })}
-          onSkip={() => dispatch({ type: "skipKeyword" })}
         />
       );
 
@@ -386,13 +384,11 @@ function MultiPicker({
  */
 function KeywordInput({
   onSubmit,
-  onSkip,
   disabled,
   submitMode,
   draft,
 }: {
   onSubmit: (input: string) => void;
-  onSkip: () => void;
   disabled?: boolean;
   submitMode?: boolean;
   draft?: Extract<QuizDraft, { kind: "keyword" }>;
@@ -444,20 +440,6 @@ function KeywordInput({
       <p className="text-ink-faint mt-2 text-xs font-bold">
         <RubyText text="ひらがなでも OK。ぜんぶの 文で なくて OK" index={UI_FURIGANA} />
       </p>
-
-      {/* まとめて 出す ときは 置かない（出す 前に こたえが 見えて しまう） */}
-      {!submitMode && (
-        <div className="mt-3">
-          <button
-            type="button"
-            disabled={disabled}
-            onClick={onSkip}
-            className="text-ink-soft hover:text-navy text-sm font-extrabold underline underline-offset-4"
-          >
-            こたえを 見る
-          </button>
-        </div>
-      )}
     </form>
   );
 }
