@@ -304,8 +304,20 @@ export function useLiveVoice(): LiveVoice {
           },
         },
         callbacks: {
-          onopen: () => setStatus("live"),
+          /*
+           * **「したくが できました」まで 話せる ことに しない**（2026-08-20）。
+           *
+           * つなぎが 開いた 瞬間に ボタンを 生かして いた ため、いちばん 早い
+           * 学習者の **1回目の ひとことだけ 拾われなかった**（2回目からは 通る）。
+           * したくの 前に 送った 音と 合図は 受け取られない。
+           * 合図（`setupComplete`）は SDK が 内側で 受け取る ことも あるので、
+           * 開いた あと 少し 待つ 保険も 置く。
+           */
+          onopen: () => {
+            window.setTimeout(() => setStatus("live"), 800);
+          },
           onmessage: (message: unknown) => {
+            if (isSetupComplete(message)) setStatus("live");
             /*
              * 文字起こしは**細切れで**届く（「わたしは」「プノンペン」…）。
              * 1つずつ字幕にすると読めないし、途中で判定すると言い終える前に
@@ -495,6 +507,12 @@ interface Output {
   rate: number;
   /** 鳴って いる／いないを 画面へ 伝える（「聞く ばん」の 判定に 使う）。 */
   setBusy: (busy: boolean) => void;
+}
+
+/** 相手の したくが 済んだか（ここから 送ってよい）。 */
+function isSetupComplete(message: unknown): boolean {
+  if (!message || typeof message !== "object") return false;
+  return (message as { setupComplete?: unknown }).setupComplete !== undefined;
 }
 
 /** 相手の セリフが 割り込まれたか。 */

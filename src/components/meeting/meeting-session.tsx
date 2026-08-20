@@ -149,10 +149,20 @@ const CHROME_FURIGANA = buildFuriganaIndex([
  *（設計05 §5.3(g) の「しつもん力」への 布石）。
  * 相手は しつもんを しない 役なので、**聞く 相手として ちょうど よい**。
  */
+/**
+ * ラウンド2で「何を 聞けば いいか」が 分からない ときの **みちびきの しつもん**。
+ *
+ * ずっと 並べて 見せて いたが、上から 読んで 打つだけに なりやすい。
+ * **隠して おいて、こまった ときに 1つずつ 出す**（2026-08-20 の 指定
+ *「導く ための ヒント質問が 隠れて いると よいかも」）。
+ * 聞き出す 練習なので、答えは 見せない——出すのは **聞き方**だけ。
+ */
 const FREE_TALK_HINTS = [
-  "ヘンディさんは、どこから 来ましたか。",
-  "ヘンディさんは、どんな しごとを して いますか。",
-  "◯◯は、なんですか。",
+  "はじめて 日本に 来た 日は、どうでしたか。",
+  "しごとで いちばん うれしかった 日は、いつですか。",
+  "日本で びっくりした ことは、ありますか。",
+  "日本の 春は、どんな かんじですか。",
+  "日本の ごはんで すきな ものは、なんですか。",
 ] as const;
 
 /**
@@ -292,6 +302,10 @@ export function MeetingSession({
   const [judgeOpen, setJudgeOpen] = useState(false);
   /** ポップアップに そのまま 見せる「あなたの ことば」。 */
   const [lastSaid, setLastSaid] = useState("");
+  /** ポップアップに 見せる「その とき 聞かれて いた しつもん」。 */
+  const [judgedAsk, setJudgedAsk] = useState("");
+  /** ラウンド2で 出した みちびきの しつもんの 数（押した ぶんだけ 増える）。 */
+  const [shownHints, setShownHints] = useState(0);
   /** チャットに 積んだ 相手の ことばの 数（字幕の どこまでを 出したか）。 */
   const spokenSeenRef = useRef(0);
   /** AIに 通せなかった 理由（ポップアップの 下に 小さく 出す）。 */
@@ -548,6 +562,7 @@ export function MeetingSession({
       const at = Date.now();
       if (!logged) pushChat({ kind: "me", text: utterance });
       setLastSaid(utterance);
+      setJudgedAsk(withName(asked.ask));
       setThinking(true);
       /*
        * 見かたは **声とは 別の つなぎ**で もらう（judge-api.ts）。
@@ -638,7 +653,6 @@ export function MeetingSession({
   const clipUrl = done ? meeting.closingAudioUrl : question?.audioUrl;
   const playClip = clip.play;
   const stopClip = clip.stop;
-  const hush = voice.hush;
   /*
    * 選んだ 速さは **ref で 持つ**。効果の 引き金に すると、速さを 変えた だけで
    * いまの しつもんが 鳴り直す——「触って いない ものが 動く」の 実物だった
@@ -648,15 +662,22 @@ export function MeetingSession({
   useEffect(() => {
     clipRateRef.current = rateOf(speed);
   }, [speed]);
+  /** すでに 鳴らした しつもん（同じ ものを 二度 鳴らさない）。 */
+  const playedRef = useRef<string | null>(null);
   useEffect(() => {
-    if (!joined || !clipUrl) return;
+    if (!joined || !clipUrl || playedRef.current === clipUrl) return;
     /*
-     * **相手の こえを 先に 黙らせる**。受け止めの こえが 鳴って いる 途中で
-     * つぎの しつもんを 鳴らすと、2つの 声が 重なる（2026-08-20 の 指摘）。
+     * **相手が 話し終わるまで 待つ**（2026-08-20 の 指定）。
+     *
+     * 前は 相手の こえを 途中で 黙らせて から つぎの しつもんを 鳴らして いた。
+     * 声は 重ならなく なった が、こんどは **ヘンディさんの ことばが 途中で
+     * 切れる**——学習者が ポップアップを 早く 閉じるほど 切れる。
+     * 鳴らすのは「相手が 話しおわって から」に して、順番で 重なりを 防ぐ。
      */
-    hush();
+    if (voice.speaking) return;
+    playedRef.current = clipUrl;
     playClip(clipUrl, clipRateRef.current);
-  }, [joined, clipUrl, playClip, hush]);
+  }, [joined, clipUrl, playClip, voice.speaking]);
 
   // 声で話したぶんを見る。相手が話しはじめた合図で1つに束ねてから届く
   useEffect(() => {
@@ -1042,19 +1063,45 @@ export function MeetingSession({
   const controls = done ? (
     /* 自由な おしゃべり。判定は しないが、**足場は 残す**（聞く ための 型文） */
     <div className="space-y-2">
-      <div className="bg-cream border-hairline rounded-[var(--radius-card)] border-2 px-4 py-3">
-        <p className="text-ink-soft text-xs font-extrabold">
-          <RubyText text="💡 こう 聞けます" index={CHROME_FURIGANA} show />
-        </p>
-        <ul className="mt-1 space-y-1">
-          {FREE_TALK_HINTS.map((line) => (
-            <li key={line} className="text-ink text-base font-black break-words">
-              「
-              <RubyText text={line} index={CHROME_FURIGANA} show />」
-            </li>
-          ))}
-        </ul>
-      </div>
+      {/*
+        みちびきの しつもんは **隠して おく**。押した ぶんだけ 1つずつ 出る——
+        並べて 見せると 上から 読んで 打つだけに なり、聞き出す 練習に ならない。
+      */}
+      {shownHints > 0 ? (
+        <div className="bg-cream border-hairline rounded-[var(--radius-card)] border-2 px-4 py-3">
+          <p className="text-ink-soft text-xs font-extrabold">
+            <RubyText text="💡 こう 聞けます" index={CHROME_FURIGANA} show />
+          </p>
+          <ul className="mt-1 space-y-1">
+            {FREE_TALK_HINTS.slice(0, shownHints).map((line) => (
+              <li key={line} className="text-ink text-base font-black break-words">
+                「
+                <RubyText text={line} index={CHROME_FURIGANA} show />」
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
+      {shownHints < FREE_TALK_HINTS.length ? (
+        <div className="flex justify-end">
+          <button
+            type="button"
+            onClick={() => setShownHints((n) => n + 1)}
+            /*
+             * 名前を 手で 付ける。字は ルビが 合成されて「何なにを 聞きけば」の
+             * ように 割れるので、読み上げ・検査から 見た 名前が 安定しない。
+             */
+            aria-label="ヒントの しつもんを 見る"
+            className="border-sun-deep bg-cream text-navy rounded-full border-2 px-3 py-1 text-xs font-extrabold"
+          >
+            <RubyText
+              text={shownHints === 0 ? "何を 聞けば いい？" : "べつの 聞き方を 見る"}
+              index={CHROME_FURIGANA}
+              show
+            />
+          </button>
+        </div>
+      ) : null}
       <form
         className="flex flex-wrap items-center gap-2"
         onSubmit={(e) => {
@@ -1302,6 +1349,9 @@ export function MeetingSession({
       {judgeOpen && reply?.judge ? (
         <JudgeModal
           judge={reply.judge}
+          /* 何に 答えた のかが ポップアップだけで 分かる ように する */
+          ask={judgedAsk}
+          askFurigana={furigana}
           utterance={lastSaid}
           hostName={meeting.host.name}
           note={judgeNote}

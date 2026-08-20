@@ -118,12 +118,25 @@ test("6つ おわると「聞く ばん」に なり、こえが 無くても �
   }
 
   /*
-   * ここからは 役が 入れかわる。**足場（型文）を 消さない**——
+   * ここからは 役が 入れかわる。**足場（聞き方）を 消さない**——
    * 白い 入力欄だけ 残すのは、設計01 P6 の アンチパターン。
+   * ただし **並べて 見せない**（2026-08-20 の 指定）。上から 読んで 打つだけに
+   * なると 聞き出す 練習に ならない ので、こまった ときに 1つずつ 出す。
    */
   await expect(page.getByText("こんどは、あなたが")).toBeVisible();
-  /* 見出しの 漢字には ルビが 合成される ので、型文の かなの ところで 見る */
-  await expect(page.getByText("どんな しごとを して いますか")).toBeVisible();
+  /* はじめは 隠れて いる */
+  await expect(page.getByText("どうでしたか")).toHaveCount(0);
+  /*
+   * 6問 終えた ところで「ステージ クリア」の しらせが かぶさる。
+   * 学習者も ここで 1回 閉じてから ラウンド2に 入るので、同じ 順で 進む。
+   */
+  const clear = page.getByRole("dialog", { name: "ステージ クリア" });
+  if (await clear.isVisible()) await clear.getByRole("button", { name: "ここに のこる" }).click();
+
+  /* 押すと 1つ 出る（見出しの 漢字には ルビが 合成されるので かなの ところで 見る） */
+  await page.getByRole("button", { name: "ヒントの しつもんを 見る" }).click();
+  /* ルビが 合成されて 文が 割れる ので、かなだけの ところで 見る */
+  await expect(page.getByText("どうでしたか").first()).toBeVisible();
 
   /*
    * 声で つないで いない 学習者にも 返事が ある（誰も いない 部屋に しない）。
