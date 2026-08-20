@@ -62,10 +62,13 @@ const REPLY_TIMEOUT_MS = 10_000;
  * 触れる ものを ばんで 絞って いる ぶん、1か所 止まると 全部 止まる。
  * 見かたは 出なくても よいので、**必ず ここで 打ち切って** 先へ 進める。
  */
-const OVERALL_TIMEOUT_MS = 20_000;
+const OVERALL_TIMEOUT_MS = 25_000;
 
 /** つなぐ ところの 上限（過ぎたら つぎの モデル名を ためす）。 */
-const CONNECT_TIMEOUT_MS = 8_000;
+const CONNECT_TIMEOUT_MS = 6_000;
+
+/** 相手の したくが 済むのを 待つ 上限。 */
+const SETUP_TIMEOUT_MS = 6_000;
 
 /** 約束に 期限を つける（過ぎたら 投げる）。 */
 async function withTimeout<T>(work: Promise<T>, ms: number): Promise<T> {
@@ -112,15 +115,19 @@ async function judgeFromBrowser(apiKey: string, request: JudgeRequest): Promise<
   const context: JudgeContext = { ...request, attempt: Math.min(Math.max(request.attempt, 1), 9) };
 
   /*
-   * 短命トークンは **1回 使い切り・新しい つなぎは 2分 以内**（live-token.ts）なので、
-   * 会話の ときに 作った ものは 使い回せない。判定の たびに 作り直す——
-   * これは モデルを 呼ぶ 数には 入らない（auth_tokens は 別の 入口）。
+   * 短命トークンは **1回 使い切り**（live-token.ts の `uses: 1`）。
+   * だから モデル名を ためすたびに 作り直す——1つ作って 使い回すと、
+   * 2つ目の 名前は 必ず 断られる。作るのは モデルを 呼ぶ 数には 入らない
+   *（auth_tokens は 別の 入口）。
    */
-  const minted = await createLiveToken({ apiKey });
-  const failReason = minted.ok ? "upstream" : minted.reason;
-  const canUseKeyDirectly = failReason === "tokenRejected" || failReason === "invalidRequest";
-  const auth = minted.ok ? minted.token : canUseKeyDirectly ? apiKey : null;
-  if (!auth) return { ok: false, reason: failReason };
+  let lastReason = "upstream";
+  const authFor = async (): Promise<string | null> => {
+    const minted = await createLiveToken({ apiKey });
+    if (minted.ok) return minted.token;
+    lastReason = minted.reason;
+    // 作れない キー（新形式 AQ.）の ときだけ、本人の キーで 直接 つなぐ
+    return minted.reason === "tokenRejected" || minted.reason === "invalidRequest" ? apiKey : null;
+  };
 
   /*
    * 設定してある モデル → 既定の 順に ためす。preview の モデルは **名前ごと
@@ -136,15 +143,18 @@ async function judgeFromBrowser(apiKey: string, request: JudgeRequest): Promise<
   let model = wanted[0] ?? DEFAULT_LIVE_TALK_MODEL;
   try {
     for (const name of wanted) {
+      const auth = await authFor();
+      if (!auth) break;
       try {
         session = await openTextSession(auth, auth === apiKey, name);
         model = name;
         break;
       } catch {
         // つぎの 名前を ためす（ぜんぶ 駄目なら 下の判定で 落ちる）
+        lastReason = "modelNotFound";
       }
     }
-    if (!session) return { ok: false, reason: "modelNotFound" };
+    if (!session) return { ok: false, reason: lastReason };
     let judge = parseJudge(
       readObject(await session.ask(buildJudgePrompt(context))),
       context.attempt,
@@ -200,6 +210,19 @@ async function openTextSession(
   let buffer = "";
   let settle: ((text: string) => void) | null = null;
   let fail: ((error: Error) => void) | null = null;
+  /*
+   * **「したくが できました」を 待ってから 頼む**。
+   *
+   * つないだ 直後に 送って いた ため、相手は それを 受け取らず、こちらは
+   * 返事を 待ちつづけて 期限切れに なって いた（CI の 画面に
+   *「AIの へんじが おそいので、さきに すすみます」が 出た・2026-08-20）。
+   * つなぎが 開いた こと（onopen）と 相手の したくが 済んだ こと（setupComplete）は
+   * 別の 合図なので、後者を 待つ。
+   */
+  let ready: () => void = () => {};
+  const setupDone = new Promise<void>((resolve) => {
+    ready = resolve;
+  });
 
   /*
    * つなぐ ところにも 上限を 置く。ここが 返って こないと、つぎの モデルを
@@ -216,6 +239,7 @@ async function openTextSession(
       },
       callbacks: {
         onmessage: (message: unknown) => {
+          if (isSetupComplete(message)) ready();
           buffer += readText(message);
           if (isTurnComplete(message)) {
             const text = buffer;
@@ -226,11 +250,13 @@ async function openTextSession(
           }
         },
         onerror: () => {
+          ready();
           fail?.(new JudgeError("upstream"));
           settle = null;
           fail = null;
         },
         onclose: () => {
+          ready();
           fail?.(new JudgeError("network"));
           settle = null;
           fail = null;
@@ -239,6 +265,9 @@ async function openTextSession(
     }),
     CONNECT_TIMEOUT_MS,
   );
+
+  // したくが 済むまで 待つ（済まない ときは つぎの モデル名へ）
+  await withTimeout(setupDone, SETUP_TIMEOUT_MS);
 
   return {
     ask: (prompt: string) =>
@@ -272,6 +301,12 @@ function readText(message: unknown): string {
   const parts = (content?.modelTurn as { parts?: { text?: string }[] } | undefined)?.parts;
   if (!parts) return "";
   return parts.map((part) => part.text ?? "").join("");
+}
+
+/** 相手の したくが 済んだか（ここから 送ってよい）。 */
+function isSetupComplete(message: unknown): boolean {
+  if (!message || typeof message !== "object") return false;
+  return (message as { setupComplete?: unknown }).setupComplete !== undefined;
 }
 
 /** 相手が 言い終わったか。 */
