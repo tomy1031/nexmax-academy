@@ -3,7 +3,7 @@
 import { motion } from "motion/react";
 import { RubyText } from "@/components/ruby-text";
 import type { JudgeResult } from "@/lib/meeting/judge";
-import { buildFuriganaIndex } from "@/lib/text/furigana";
+import { buildFuriganaIndex, type FuriganaIndex } from "@/lib/text/furigana";
 
 /**
  * 日本語の 見かた（ポップアップ）
@@ -39,12 +39,23 @@ const LOOK: Record<JudgeResult["grade"], { title: string; face: string; stars: n
 
 export function JudgeModal({
   judge,
+  ask,
+  askFurigana,
   utterance,
   hostName,
   note,
   onNext,
 }: {
   judge: JudgeResult;
+  /**
+   * その とき 聞かれて いた しつもん。
+   *
+   * ポップアップだけを 見て「何に 答えた のか」が 分かるように する
+   *（2026-08-20 の 指定）。チャット欄を さかのぼらせない。
+   */
+  ask: string;
+  /** しつもんの 読み（教材の 読み辞書）。ここだけ ルビを 合成できる。 */
+  askFurigana: FuriganaIndex;
   /** 学習者が 言った ことば（そのまま 見せる）。 */
   utterance: string;
   hostName: string;
@@ -92,11 +103,26 @@ export function JudgeModal({
 
         <dl className="mt-4 space-y-3 text-left">
           <div>
+            <dt className="text-ink-soft text-xs font-extrabold">{hostName}さんの しつもん</dt>
+            <dd className="text-ink-soft mt-1 text-sm font-bold break-words">
+              <RubyText text={ask} index={askFurigana} show />
+            </dd>
+          </div>
+
+          <div>
             <dt className="text-ink-soft text-xs font-extrabold">あなたの ことば</dt>
             <dd className="bg-panel-tint text-ink mt-1 rounded-xl px-3 py-2 font-bold break-words">
               {utterance}
             </dd>
           </div>
+
+          {/* 相手が どう 受け止めたか。声を 聞きのがしても ここで 読める */}
+          {judge.reply ? (
+            <div>
+              <dt className="text-ink-soft text-xs font-extrabold">{hostName}さんの へんじ</dt>
+              <dd className="text-ink mt-1 font-bold break-words">{judge.reply}</dd>
+            </div>
+          ) : null}
 
           <div>
             <dt className="text-ink-soft text-xs font-extrabold">
@@ -110,7 +136,7 @@ export function JudgeModal({
 
           <div>
             <dt className="text-ink-soft text-xs font-extrabold">
-              <RubyText text="言い方の れい" index={FURIGANA} show />
+              <RubyText text="もっと よく なる 言い方" index={FURIGANA} show />
             </dt>
             <dd className="bg-cream text-ink mt-1 rounded-xl px-3 py-2 font-black break-words">
               「{judge.exampleAnswer}」
