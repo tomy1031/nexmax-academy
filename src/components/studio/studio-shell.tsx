@@ -236,7 +236,15 @@ export function StudioShell({
       listening: mergeById(listenings, fromDb("listening")),
       scenario: mergeById(scenarios, fromDb("scenario")),
       meeting: mergeById(meetings, fromDb("meeting")),
-      wordstage: mergeById(wordStages, fromDb("wordstage")),
+      /*
+       * DB の 単語ステージは **保存の かたち**（語を 参照で 持つ ことが ある）。
+       * スタジオの 一覧・編集は `words` を 見るので、ここで 空を 埋めておく。
+       * 正から 引いて 中身を 出すのは 次の STEP（スタジオを ことば対応に する）。
+       */
+      wordstage: mergeById(
+        wordStages,
+        fromDb("wordstage").map((stage) => ({ ...stage, words: stage.words ?? [] })),
+      ),
       character: mergeById(characters, fromDb("character")),
     };
   }, [

@@ -4,138 +4,59 @@
   "title": "はいぞく（M1: 配属初日）",
   "description": "研修が終わって、開発チームに配属されます。初日に使う言葉を覚えましょう。",
   "password": "stage11",
-  "fieldSequence": ["forest", "sky", "space"],
+  "fieldSequence": [
+    "forest",
+    "sky",
+    "space"
+  ],
   "questionCount": 8,
   "passRate": 80,
   "furigana": [
-    ["挨拶回り", "あいさつまわり"],
-    ["意気込み", "いきごみ"],
-    ["配属", "はいぞく"],
-    ["部署", "ぶしょ"],
-    ["出身", "しゅっしん"],
-    ["得意", "とくい"],
-    ["先輩", "せんぱい"],
-    ["同期", "どうき"],
-    ["初日", "しょにち"],
-    ["研修", "けんしゅう"],
-    ["終", "お"],
-    ["開発", "かいはつ"],
-    ["使", "つか"],
-    ["覚", "おぼ"],
-    ["会社", "かいしゃ"],
-    ["中", "なか"],
-    ["働", "はたら"],
-    ["決", "き"],
-    ["営業", "えいぎょう"],
-    ["生", "う"],
-    ["場所", "ばしょ"],
-    ["来", "き"],
-    ["国", "くに"],
-    ["自己紹介", "じこしょうかい"],
-    ["上手", "じょうず"],
-    ["言", "い"],
-    ["私", "わたし"],
-    ["自分", "じぶん"],
-    ["先", "さき"],
-    ["入", "はい"],
-    ["人", "ひと"],
-    ["仕事", "しごと"],
-    ["教", "おし"],
-    ["相談", "そうだん"],
-    ["同", "おな"],
-    ["年", "とし"],
-    ["仲間", "なかま"],
-    ["一緒", "いっしょ"],
-    ["行", "い"],
-    ["挨拶", "あいさつ"],
-    ["回", "まわ"],
-    ["気持", "きも"],
-    ["最後", "さいご"],
-    ["一言", "ひとこと"],
-    ["早", "はや"],
-    ["力", "ちから"],
-    ["言葉", "ことば"]
+    [
+      "配属",
+      "はいぞく"
+    ],
+    [
+      "初日",
+      "しょにち"
+    ],
+    [
+      "研修",
+      "けんしゅう"
+    ],
+    [
+      "終",
+      "お"
+    ],
+    [
+      "開発",
+      "かいはつ"
+    ],
+    [
+      "使",
+      "つか"
+    ],
+    [
+      "覚",
+      "おぼ"
+    ],
+    [
+      "言",
+      "い"
+    ],
+    [
+      "言葉",
+      "ことば"
+    ]
   ],
-  "words": [
-    {
-      "id": "haizoku",
-      "term": "配属",
-      "reading": "はいぞく",
-      "romaji": "haizoku",
-      "meaningEn": "Assignment (to a team)",
-      "wrongMeanings": ["Salary", "Vacation", "Delivery"],
-      "explanationJa": "会社の中で、働くチームが決まることです。",
-      "example": "研修が終わって、開発チームに配属されました。"
-    },
-    {
-      "id": "busho",
-      "term": "部署",
-      "reading": "ぶしょ",
-      "romaji": "busho",
-      "meaningEn": "Department / Team",
-      "wrongMeanings": ["Weapon", "Document", "Schedule"],
-      "explanationJa": "会社の中のグループのことです。開発、営業などがあります。",
-      "example": "あなたの部署はどこですか？"
-    },
-    {
-      "id": "shusshin",
-      "term": "出身",
-      "reading": "しゅっしん",
-      "romaji": "shusshin",
-      "meaningEn": "Hometown / Origin",
-      "wrongMeanings": ["Graduation", "Business trip", "Promotion"],
-      "explanationJa": "生まれた場所や、来た国のことです。自己紹介で使います。",
-      "example": "カンボジアのプノンペン出身です。"
-    },
-    {
-      "id": "tokui",
-      "term": "得意",
-      "reading": "とくい",
-      "romaji": "tokui",
-      "meaningEn": "Good at / Strong point",
-      "wrongMeanings": ["Special price", "Weak point", "Customer"],
-      "explanationJa": "上手にできることです。自己紹介で「◯◯が得意です」と言います。",
-      "example": "私はフロントエンドの開発が得意です。"
-    },
-    {
-      "id": "senpai",
-      "term": "先輩",
-      "reading": "せんぱい",
-      "romaji": "senpai",
-      "meaningEn": "Senior colleague",
-      "wrongMeanings": ["President", "Customer", "Teacher"],
-      "explanationJa": "自分より先に会社に入った人です。仕事を教えてくれます。",
-      "example": "わからないことは、先輩に相談しましょう。"
-    },
-    {
-      "id": "douki",
-      "term": "同期",
-      "reading": "どうき",
-      "romaji": "douki",
-      "meaningEn": "Colleagues who joined in the same year",
-      "wrongMeanings": ["Motivation", "Synchronization", "Meeting"],
-      "explanationJa": "同じ年に会社に入った仲間のことです。",
-      "example": "同期のニャムさんと一緒にランチに行きました。"
-    },
-    {
-      "id": "aisatsumawari",
-      "term": "挨拶回り",
-      "reading": "あいさつまわり",
-      "romaji": "aisatsumawari",
-      "meaningEn": "Going around to greet everyone",
-      "wrongMeanings": ["Cleaning duty", "Night shift", "Paperwork"],
-      "explanationJa": "配属の初日に、チームのみんなに挨拶をして回ることです。",
-      "example": "初日はヘンディ先輩と一緒に挨拶回りをしました。"
-    },
-    {
-      "id": "ikigomi",
-      "term": "意気込み",
-      "reading": "いきごみ",
-      "romaji": "ikigomi",
-      "meaningEn": "Enthusiasm / Aspiration",
-      "wrongMeanings": ["Breathing", "Complaint", "Resignation"],
-      "explanationJa": "「がんばりたい」という気持ちです。自己紹介の最後に一言いいます。",
-      "example": "早くチームの力になれるよう、がんばります。"
-    }
+  "wordIds": [
+    "haizoku",
+    "busho",
+    "shusshin",
+    "tokui",
+    "senpai",
+    "douki",
+    "aisatsumawari",
+    "ikigomi"
   ]
 }

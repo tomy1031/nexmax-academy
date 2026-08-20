@@ -16,282 +16,38 @@
       "てがみ"
     ],
     [
-      "返事",
-      "へんじ"
-    ],
-    [
       "地図",
       "ちず"
-    ],
-    [
-      "場所",
-      "ばしょ"
-    ],
-    [
-      "自分",
-      "じぶん"
-    ],
-    [
-      "勉強",
-      "べんきょう"
-    ],
-    [
-      "名前",
-      "なまえ"
-    ],
-    [
-      "願",
-      "ねが"
-    ],
-    [
-      "書",
-      "か"
     ],
     [
       "紙",
       "かみ"
     ],
     [
-      "読",
-      "よ"
-    ],
-    [
-      "先輩",
-      "せんぱい"
-    ],
-    [
-      "来",
-      "き"
-    ],
-    [
-      "日本語",
-      "にほんご"
-    ],
-    [
-      "返",
-      "かえ"
-    ],
-    [
       "言葉",
       "ことば"
-    ],
-    [
-      "道",
-      "みち"
-    ],
-    [
-      "絵",
-      "え"
-    ],
-    [
-      "今",
-      "いま"
     ],
     [
       "歩",
       "ある"
     ],
     [
-      "進",
-      "すす"
-    ],
-    [
-      "人",
-      "ひと"
-    ],
-    [
-      "会",
-      "あ"
-    ],
-    [
-      "自己紹介",
-      "じこしょうかい"
-    ],
-    [
-      "最初",
-      "さいしょ"
-    ],
-    [
       "言",
       "い"
-    ],
-    [
-      "毎日",
-      "まいにち"
-    ],
-    [
-      "仕事",
-      "しごと"
-    ],
-    [
-      "一年間",
-      "いちねんかん"
-    ],
-    [
-      "日本",
-      "にほん"
-    ],
-    [
-      "国",
-      "くに"
-    ],
-    [
-      "中",
-      "なか"
-    ],
-    [
-      "立",
-      "た"
-    ],
-    [
-      "私",
-      "わたし"
-    ],
-    [
-      "何",
-      "なに"
-    ],
-    [
-      "聞",
-      "き"
-    ],
-    [
-      "時",
-      "とき"
-    ],
-    [
-      "使",
-      "つか"
-    ],
-    [
-      "話",
-      "はなし"
-    ],
-    [
-      "見",
-      "み"
-    ],
-    [
-      "上",
-      "うえ"
     ],
     [
       "方",
       "かた"
     ]
   ],
-  "words": [
-    {
-      "id": "tegami",
-      "term": "手紙",
-      "reading": "てがみ",
-      "romaji": "tegami",
-      "meaningEn": "Letter",
-      "wrongMeanings": [
-        "Ticket",
-        "Map",
-        "Photo"
-      ],
-      "explanationJa": "紙に 書いて、人に おくる ものです。",
-      "example": "ヘンディ先輩から 手紙が 来ました。"
-    },
-    {
-      "id": "henji",
-      "term": "返事",
-      "reading": "へんじ",
-      "romaji": "henji",
-      "meaningEn": "Reply / Answer",
-      "wrongMeanings": [
-        "Question",
-        "Promise",
-        "Signature"
-      ],
-      "explanationJa": "手紙や 話に、自分から 返す 言葉です。",
-      "example": "ヘンディ先輩に 日本語で 返事を 書きました。"
-    },
-    {
-      "id": "chizu",
-      "term": "地図",
-      "reading": "ちず",
-      "romaji": "chizu",
-      "meaningEn": "Map",
-      "wrongMeanings": [
-        "Calendar",
-        "Menu",
-        "Dictionary"
-      ],
-      "explanationJa": "進む 道が 書いて ある 絵です。",
-      "example": "地図を 見ると、今 どこに いるか わかります。"
-    },
-    {
-      "id": "basho",
-      "term": "場所",
-      "reading": "ばしょ",
-      "romaji": "basho",
-      "meaningEn": "Place / Location",
-      "wrongMeanings": [
-        "Time",
-        "Reason",
-        "Price"
-      ],
-      "explanationJa": "勉強を する ところです。",
-      "example": "つぎの 場所へ 進みましょう。"
-    },
-    {
-      "id": "jibun",
-      "term": "自分",
-      "reading": "じぶん",
-      "romaji": "jibun",
-      "meaningEn": "Oneself / Myself",
-      "wrongMeanings": [
-        "Everyone",
-        "Partner",
-        "Company"
-      ],
-      "explanationJa": "わたし。あなた じしんの ことです。",
-      "example": "地図の 上に、自分の ネクマックスが 立って います。"
-    },
-    {
-      "id": "benkyou",
-      "term": "勉強",
-      "reading": "べんきょう",
-      "romaji": "benkyou",
-      "meaningEn": "Study",
-      "wrongMeanings": [
-        "Holiday",
-        "Meeting",
-        "Payment"
-      ],
-      "explanationJa": "あたらしい ことばや やりかたを おぼえる ことです。",
-      "example": "一年間、日本語を 勉強しました。"
-    },
-    {
-      "id": "namae",
-      "term": "名前",
-      "reading": "なまえ",
-      "romaji": "namae",
-      "meaningEn": "Name",
-      "wrongMeanings": [
-        "Address",
-        "Number",
-        "Country"
-      ],
-      "explanationJa": "その 人を よぶ ときの 言葉です。",
-      "example": "自己紹介は、最初に 名前を 言います。"
-    },
-    {
-      "id": "yoroshiku",
-      "term": "よろしくお願いします",
-      "reading": "よろしくおねがいします",
-      "romaji": "yoroshiku onegai shimasu",
-      "meaningEn": "Nice to meet you / I look forward to working with you",
-      "wrongMeanings": [
-        "Thank you very much",
-        "Excuse me",
-        "See you tomorrow"
-      ],
-      "explanationJa": "はじめて 会う 人に 言う 言葉です。仕事でも 毎日 使います。",
-      "example": "はじめまして。よろしくお願いします。"
-    }
+  "wordIds": [
+    "tegami",
+    "henji",
+    "chizu",
+    "basho",
+    "jibun",
+    "benkyou",
+    "namae",
+    "yoroshiku"
   ]
 }

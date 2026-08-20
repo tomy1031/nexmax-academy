@@ -26,26 +26,26 @@ describe("ことばの 正", () => {
     expect(terms.has("ほうれんそう")).toBe(true); // はじめに の ことば
   });
 
-  it("単語ステージの 語は 語IDごと 引き継がれる（学習履歴が 切れない）", () => {
+  it("単語ステージが 参照する 語は ぜんぶ 正に ある（参照切れが 無い）", () => {
     const ids = new Set(book.words.map((w) => w.id));
     for (const id of ["intro_kotoba", "hajimari_kotoba", "stage23_kaisha"]) {
-      for (const word of wordStage(id).words) expect(ids).toContain(word.id);
+      for (const wordId of wordStage(id).wordIds ?? []) expect(ids).toContain(wordId);
     }
   });
 
-  it("単語ステージ由来の 語は そのまま 遊べる かたちに 戻る", () => {
-    const source = wordStage("intro_kotoba").words[0]!;
-    const moved = book.words.find((w) => w.id === source.id)!;
+  it("参照した 語は そのまま 遊べる かたちに 戻る", () => {
+    const first = wordStage("intro_kotoba").wordIds![0]!;
+    const moved = book.words.find((w) => w.id === first)!;
     expect(isPlayable(moved)).toBe(true);
     expect(toGameWord(moved)).toEqual({
-      id: source.id,
-      term: source.term,
-      reading: source.reading,
-      romaji: source.romaji,
-      meaningEn: source.meaningEn,
-      wrongMeanings: source.wrongMeanings,
-      explanationJa: source.explanationJa,
-      example: source.example,
+      id: moved.id,
+      term: moved.term,
+      reading: moved.reading,
+      romaji: moved.romaji,
+      meaningEn: moved.englishTerm,
+      wrongMeanings: moved.wrongMeanings,
+      explanationJa: moved.meaningJa,
+      example: moved.example,
     });
   });
 

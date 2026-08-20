@@ -207,10 +207,17 @@ function uniqueId(base) {
   return id;
 }
 
-/* 1. 単語ステージ — いちばん 中身が 濃い。語IDは 引き継ぐ */
+/* 0. いまの 正 — すでに 集めた ぶんが いちばん 強い（先生の 直しを 踏まない） */
+if (existsSync(OUT)) {
+  const current = JSON.parse(readFileSync(OUT, "utf8"));
+  for (const [surface, reading] of current.furigana ?? []) furigana.set(surface, reading);
+  for (const w of current.words) add({ ...w }, "content/vocab/vocabulary.json");
+}
+
+/* 1. 単語ステージ — 語を 直に 持って いた ころの かたち（`wordIds` に 移ったら 素通り） */
 for (const { file, json } of read("wordstages")) {
   for (const [surface, reading] of json.furigana ?? []) furigana.set(surface, reading);
-  for (const w of json.words) {
+  for (const w of json.words ?? []) {
     add(
       {
         id: w.id,
@@ -347,7 +354,8 @@ writeFileSync(
       id: "vocabulary",
       title: "ことば",
       furigana: merged,
-      words: words.map(({ from, ...w }) => w),
+      // `from`（出どころ）は 数える ためだけの もの。書き出す ファイルには 入れない
+      words: words.map(({ from: _from, ...w }) => w),
     },
     null,
     2,
