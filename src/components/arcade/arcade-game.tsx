@@ -480,8 +480,11 @@ function StageSelect({
                 <p className="text-sky text-xs font-black">
                   ことば {stage.words.length}こ ／ 合格 {stage.passRate}%
                 </p>
-                <p className="text-ink mt-1 text-lg font-black">{stage.title}</p>
-                <p className="text-ink-soft mt-1 text-sm font-bold">{stage.description}</p>
+                <RubyText
+                  className="text-ink mt-1 block text-lg font-black"
+                  text={stage.title}
+                  index={buildFuriganaIndex(stage.furigana)}
+                />
               </button>
             </li>
           );
@@ -520,7 +523,12 @@ function ModeSelect({
   onBack: () => void;
 }) {
   return (
-    <ArcadePanel kicker="Mission Select" title={stage.title} className="text-center">
+    <ArcadePanel
+      kicker="Mission Select"
+      /* 見出しは ステージの 名前。漢字が 入りうるので ルビを 合成する（規律2）。 */
+      title={<RubyText text={stage.title} index={furigana} />}
+      className="text-center"
+    >
       <p className="text-ink-soft mt-1 text-sm font-bold">
         <RubyText text={stage.description} index={furigana} />
       </p>

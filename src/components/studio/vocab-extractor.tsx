@@ -385,10 +385,14 @@ function messageForVocabReason(reason: string): string {
  */
 function buildWordStage(stage: Stage, words: VocabCandidate[]): WordStage {
   const title = stage.title.trim();
+  /*
+   * 見出しは **ステージの 名前 そのもの**（2026-08-20 の指定「のことばは 冗長」）。
+   * 学習者の 画面では どのみち ステージ名に そろえて 出すので、種の 側も そろえる。
+   */
   return {
     kind: "wordstage",
     id: nextWordStageId(stage),
-    title: title.length > 0 ? `${title} の ことば` : "この ステージの ことば",
+    title: title.length > 0 ? title : "この ステージの ことば",
     description: "この ステージに 出てくる しごとの ことばと ITの ことばです。",
     fieldSequence: [...FIELD_SEQUENCE],
     questionCount: words.length,

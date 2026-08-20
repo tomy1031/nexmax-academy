@@ -21,7 +21,7 @@ import {
   getWordStage,
 } from "@/lib/content";
 import { stageStepNumber } from "@/lib/map-data";
-import { mergeWordStages } from "@/lib/wordstage-merge";
+import { stageWordStage } from "@/lib/wordstage-merge";
 import { stageContentPath } from "@/lib/stage-routes";
 
 /**
@@ -219,14 +219,14 @@ export default async function StagePage({ params }: { params: Promise<{ stage: s
    */
   const loaded = await Promise.all(stage.wordStageIds.map((id) => getWordStage(id)));
   const found = loaded.filter((item): item is NonNullable<typeof item> => item !== null);
-  const merged = mergeWordStages(stage.id, found);
+  const merged = stageWordStage(stage, found);
   const wordStages: StageWordItem[] = merged
     ? [
         {
           // 1つだけの ときは その 単語ステージへ、まとめた ときは ステージIDへ
           id: merged.id,
           title: merged.title,
-          description: merged.description,
+          wordCount: merged.words.length,
           /*
            * ことばカードにも ルビを 合成する（規律2 — 裸の漢字を 出さない）。
            * 単語ステージは 語ごとに (表記, よみ) を 持っているので、それも 混ぜる

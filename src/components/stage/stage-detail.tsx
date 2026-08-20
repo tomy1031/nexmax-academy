@@ -35,7 +35,8 @@ export interface StageContentItem {
 export interface StageWordItem {
   id: string;
   title: string;
-  description?: string;
+  /** ことばの 数。カードに「44この ことば」と 出す。 */
+  wordCount: number;
   /**
    * 単語ステージの読み辞書。ことばカードの見出し・説明にルビを合成する。
    * 語ごとの (表記, よみ) も混ぜて渡す（組み立ては app/[stage]/page.tsx）。
@@ -164,6 +165,39 @@ export function StageDetail({
         )}
       </section>
 
+      {/*
+        ことばは **教材より 先**に置く（2026-08-20 の指定「コンテンツの前に単語を学習したい」）。
+        カードは ステージに 1枚しか 出ないので、見出しと 語数だけの 1行に する
+        ——選ぶものが 1つしか 無い画面に、大きな カードを 2列で 並べる 意味は 無い。
+      */}
+      {wordStages.map((word) => (
+        <section key={word.id} className="mt-6">
+          <h2 className="text-navy text-lg font-black">🕹️ さいしょに ことばを おぼえる</h2>
+          <Link
+            href={`/arcade/${word.id}`}
+            className="card-island mt-3 flex items-center gap-3 p-4 transition hover:-translate-y-0.5"
+          >
+            <span aria-hidden className="text-2xl leading-none">
+              🕹️
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="text-sky block text-[10px] font-black tracking-widest">
+                ことば {word.wordCount}こ
+              </span>
+              <RubyText
+                className="text-navy block text-base leading-relaxed font-black"
+                text={word.title}
+                index={wordFurigana}
+                show={furiganaOn}
+              />
+            </span>
+            <span className="btn-game shrink-0 px-4 py-1.5 text-sm [--btn-face:#ffc93c] [--btn-shadow:#f0a819]">
+              あそぶ
+            </span>
+          </Link>
+        </section>
+      ))}
+
       <section className="mt-6">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <h2 className="text-navy text-lg font-black">📚 この ステージで やること</h2>
@@ -229,40 +263,6 @@ export function StageDetail({
           </ol>
         )}
       </section>
-
-      {wordStages.length > 0 && (
-        <section className="mt-6">
-          <h2 className="text-navy text-lg font-black">🕹️ ことばで あそぶ</h2>
-          <div className="mt-3 grid gap-3 sm:grid-cols-2">
-            {wordStages.map((word) => (
-              <Link
-                key={word.id}
-                href={`/arcade/${word.id}`}
-                className="card-island flex flex-col p-4 transition hover:-translate-y-0.5"
-              >
-                <span className="text-sky text-[10px] font-black tracking-widest">🕹️ ことば</span>
-                <RubyText
-                  className="text-navy mt-1 block text-base font-black"
-                  text={word.title}
-                  index={wordFurigana}
-                  show={furiganaOn}
-                />
-                {word.description && (
-                  <RubyText
-                    className="text-ink-soft mt-1 block flex-1 text-xs font-bold"
-                    text={word.description}
-                    index={wordFurigana}
-                    show={furiganaOn}
-                  />
-                )}
-                <span className="btn-game mt-3 w-full px-3 py-1.5 text-sm [--btn-face:#ffc93c] [--btn-shadow:#f0a819]">
-                  あそぶ
-                </span>
-              </Link>
-            ))}
-          </div>
-        </section>
-      )}
     </div>
   );
 }

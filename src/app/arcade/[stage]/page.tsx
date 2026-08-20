@@ -1,8 +1,8 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { ArcadeGame } from "@/components/arcade/arcade-game";
-import { getStage, getWordStage, listStages, listWordStages } from "@/lib/content";
-import { mergeWordStages } from "@/lib/wordstage-merge";
+import { listStages, listWordStages } from "@/lib/content";
+import { findLearnerWordStage, learnerWordStages } from "@/lib/wordstage-merge";
 
 /**
  * 公開分のDBコンテンツを合流させるため ISR にする（設計07 §11.1
@@ -10,38 +10,25 @@ import { mergeWordStages } from "@/lib/wordstage-merge";
  * スタジオで「こうかい」した単語ステージは、再デプロイを待たずこの間隔で届く。
  */
 export const revalidate = 60;
+
 /**
- * git 由来の単語ステージはビルド時に切り出す（実行時のファイル読みを起こさない）。
+ * git 由来の ことばはビルド時に切り出す（実行時のファイル読みを起こさない）。
+ * ステージIDと 単語ステージID の どちらでも 開けるように、両方を 並べる
+ *（古いリンク `/arcade/<単語ステージID>` を 切らない）。
  * DB由来（スタジオで公開したもの）はここに現れないが、dynamicParams の既定により
  * 初回アクセスで生成され、以後は revalidate の間隔でキャッシュされる。
  */
 export async function generateStaticParams() {
-  const words = (await listWordStages()).map((stage) => stage.id);
-  /*
-   * ことばの グループを 2つ以上 持つ ステージは、まとめた ぶんの 行き先
-   *（`/arcade/<ステージID>`）も 先に 作る。ステージの 画面の カードが ここへ 来る。
-   */
-  const merged = (await listStages())
-    .filter((stage) => stage.wordStageIds.length > 1 && !words.includes(stage.id))
-    .map((stage) => stage.id);
-  return [...words, ...merged].map((id) => ({ stage: id }));
+  const [stages, words] = await Promise.all([listStages(), listWordStages()]);
+  const ids = new Set<string>();
+  for (const stage of learnerWordStages(stages, words)) ids.add(stage.id);
+  for (const stage of words) ids.add(stage.id);
+  return [...ids].map((id) => ({ stage: id }));
 }
 
-/**
- * URLの1段目が **単語ステージ**なら それを、**ステージ**なら その ステージの
- * ことばを まとめた ものを 返す。単語ステージを 先に 見るので、名前が ぶつかっても
- * これまでの `/arcade/<単語ステージID>` は 変わらない。
- */
-async function resolveArcadeStage(id: string) {
-  const own = await getWordStage(id);
-  if (own) return own;
-  const stage = await getStage(id);
-  if (!stage) return null;
-  const loaded = await Promise.all(stage.wordStageIds.map((ref) => getWordStage(ref)));
-  return mergeWordStages(
-    stage.id,
-    loaded.filter((item): item is NonNullable<typeof item> => item !== null),
-  );
+async function resolve(id: string) {
+  const [stages, words] = await Promise.all([listStages(), listWordStages()]);
+  return findLearnerWordStage(id, stages, words);
 }
 
 export async function generateMetadata({
@@ -50,21 +37,16 @@ export async function generateMetadata({
   params: Promise<{ stage: string }>;
 }): Promise<Metadata> {
   const { stage: id } = await params;
-  const stage = await resolveArcadeStage(id);
+  const stage = await resolve(id);
   return { title: stage ? `${stage.title} | ことばアーケード` : "ことばアーケード" };
 }
 
 export default async function ArcadeStagePage({ params }: { params: Promise<{ stage: string }> }) {
   const { stage: id } = await params;
-  const stage = await resolveArcadeStage(id);
+  const [stages, words] = await Promise.all([listStages(), listWordStages()]);
+  const all = learnerWordStages(stages, words);
+  const stage = findLearnerWordStage(id, stages, words);
   if (!stage) notFound();
-
-  /*
-   * まとめた ぶんは 保存された 単語ステージでは 無いので、一覧にも 混ぜて 渡す
-   *（渡さないと ことばアーケードが 「そんな グループは 無い」と 見なす）。
-   */
-  const stages = await listWordStages();
-  const all = stages.some((item) => item.id === stage.id) ? stages : [stage, ...stages];
 
   return <ArcadeGame stages={all} initialStageId={stage.id} />;
 }
