@@ -365,13 +365,19 @@ export function MeetingSession({
    * 対話の 回数が 増えるほど 状態が 食い違って いった。
    * 5つの ばんに 分け、**そのばんに 意味の ある ものだけ**を 触れる ようにする。
    *
-   *   きく    … しつもんや 相手の こえが 鳴って いる（機械の ばん）
+   *   きく    … 相手が **こえで** 話して いる（機械の ばん）
    *   こたえる … 話しても 書いても よい（学習者の ばん）
    *   はなす  … マイクが 開いて いる（止める 操作だけ）
    *   みている … 見かたを 待って いる（機械の ばん）
    *   みかた  … ポップアップが 出て いる（読んで 押す だけ）
    *
    * 状態は **持たずに 導く**。別に 持つと、更新の 抜けで 画面と 中身が ずれる。
+   *
+   * ## 作り置きの しつもんの 音は「ばん」に 数えない
+   * はじめは これも「きく」ばんに して いたが、**答えが 分かって いる 学習者を
+   * 音が 鳴り終わるまで 待たせる**ことに なる（自動検証でも 6問 続けて 答えられなく
+   * なった）。作り置きの 音は こちらの 都合なので、**答えはじめたら 止める**——
+   * 待たせるのは、相手が 生の こえで 話して いる あいだ だけに する。
    */
   const phase: Phase = judgeOpen
     ? "みかた"
@@ -379,17 +385,17 @@ export function MeetingSession({
       ? "みている"
       : voice.talking
         ? "はなす"
-        : clip.playing || voice.speaking
+        : voice.speaking
           ? "きく"
           : "こたえる";
   /** 学習者が 答えを **出せる** ばんか（送る・話しはじめる）。 */
   const canAnswer = phase === "こたえる";
   /**
-   * 書く こと自体は「きく」ばんでも 許す。
+   * 書く こと自体は、相手が 話して いる あいだも 許す。
    *
    * 送るのは 1つずつでも、**考えを 書きとめる のを 止める 理由は 無い**——
-   * しつもんを 聞きながら 打ちはじめる 学習者は 多い。止めるのは
-   * マイクが 開いて いる 間と、見かたを 待って いる 間だけ。
+   * 聞きながら 打ちはじめる 学習者は 多い。止めるのは マイクが 開いて いる 間と、
+   * 見かたを 待って いる 間だけ。
    */
   const canType = phase === "こたえる" || phase === "きく";
 
@@ -602,6 +608,7 @@ export function MeetingSession({
 
   const clipUrl = done ? meeting.closingAudioUrl : question?.audioUrl;
   const playClip = clip.play;
+  const stopClip = clip.stop;
   const hush = voice.hush;
   /*
    * 選んだ 速さは **ref で 持つ**。効果の 引き金に すると、速さを 変えた だけで
@@ -691,6 +698,11 @@ export function MeetingSession({
   const submit = useCallback(() => {
     const text = draft.trim();
     if (thinking) return;
+    /*
+     * 作り置きの しつもんが まだ 鳴って いたら **止める**。
+     * 答えはじめた 学習者を 待たせない かわりに、返事と 重ならない ように する。
+     */
+    stopClip();
     /*
      * 決まった しつもんが ぜんぶ 終わった あとは **自由な おしゃべり**。
      * 判定も 進行も しない——相手に そのまま 渡して、返事を 待つ（2026-08-18 の 指定）。
@@ -795,6 +807,7 @@ export function MeetingSession({
     done,
     meeting.discover,
     found,
+    stopClip,
   ]);
 
   /** 同じ質問をもう一度。回数だけ増やして、質問は変えない。 */
@@ -1188,6 +1201,8 @@ export function MeetingSession({
               onStartTalking={() => {
                 // いま 答えようと して いる しつもんを 覚える（判定が ずれない ように）
                 answeringRef.current = question ?? null;
+                // 作り置きの しつもんが 鳴って いたら 止める（マイクに 入らない ように）
+                stopClip();
                 voice.startTalking();
               }}
               onStopTalking={voice.stopTalking}
