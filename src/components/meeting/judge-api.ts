@@ -238,6 +238,10 @@ async function openTextSession(auth: string, model: string): Promise<LiveTextSes
         temperature: 0.4,
       },
       callbacks: {
+        onopen: () => {
+          // 合図が 来ない ときの 保険（開いた 少し あとには 送れる）
+          setTimeout(ready, 400);
+        },
         onmessage: (message: unknown) => {
           if (isSetupComplete(message)) ready();
           buffer += readText(message);
