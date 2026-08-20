@@ -227,7 +227,7 @@ function BlockEditor({
       return (
         <StringListEditor
           label={block.kind === "list" ? "かじょうがき" : "てじゅん"}
-          items={block.items}
+          items={block.items ?? []}
           itemLabel="行"
           onChange={(items) => onChange({ ...block, items })}
         />
@@ -236,7 +236,7 @@ function BlockEditor({
     case "vocab":
       return (
         <div className="space-y-2">
-          {block.items.map((item, index) => (
+          {(block.items ?? []).map((item, index) => (
             <div
               key={index}
               className="border-hairline flex flex-wrap items-end gap-2 rounded-xl border-2 bg-white p-2"
@@ -246,7 +246,10 @@ function BlockEditor({
                   label="ことば"
                   value={item.term}
                   onChange={(term) =>
-                    onChange({ ...block, items: replaceAt(block.items, index, { ...item, term }) })
+                    onChange({
+                      ...block,
+                      items: replaceAt(block.items ?? [], index, { ...item, term }),
+                    })
                   }
                 />
               </div>
@@ -257,7 +260,7 @@ function BlockEditor({
                   onChange={(reading) =>
                     onChange({
                       ...block,
-                      items: replaceAt(block.items, index, { ...item, reading }),
+                      items: replaceAt(block.items ?? [], index, { ...item, reading }),
                     })
                   }
                 />
@@ -269,7 +272,7 @@ function BlockEditor({
                   onChange={(meaning) =>
                     onChange({
                       ...block,
-                      items: replaceAt(block.items, index, { ...item, meaning }),
+                      items: replaceAt(block.items ?? [], index, { ...item, meaning }),
                     })
                   }
                 />
@@ -285,7 +288,7 @@ function BlockEditor({
                   onChange={(en) =>
                     onChange({
                       ...block,
-                      items: replaceAt(block.items, index, {
+                      items: replaceAt(block.items ?? [], index, {
                         ...item,
                         en: en.length > 0 ? en : undefined,
                       }),
@@ -295,12 +298,12 @@ function BlockEditor({
               </div>
               <RowTools
                 index={index}
-                count={block.items.length}
+                count={(block.items ?? []).length}
                 label="ことば"
                 onMove={(delta) =>
-                  onChange({ ...block, items: moveItem(block.items, index, delta) })
+                  onChange({ ...block, items: moveItem(block.items ?? [], index, delta) })
                 }
-                onRemove={() => onChange({ ...block, items: removeAt(block.items, index) })}
+                onRemove={() => onChange({ ...block, items: removeAt(block.items ?? [], index) })}
               />
             </div>
           ))}
@@ -309,7 +312,7 @@ function BlockEditor({
             onClick={() =>
               onChange({
                 ...block,
-                items: [...block.items, { term: "", reading: "", meaning: "" }],
+                items: [...(block.items ?? []), { term: "", reading: "", meaning: "" }],
               })
             }
           >
@@ -373,7 +376,7 @@ function BlockEditor({
        */
       return (
         <div className="space-y-2">
-          {block.items.map((item, index) => (
+          {(block.items ?? []).map((item, index) => (
             <div
               key={index}
               className="border-hairline flex flex-wrap items-end gap-2 rounded-xl border-2 bg-white p-2"
@@ -390,7 +393,10 @@ function BlockEditor({
                     })),
                   ]}
                   onChange={(ref) =>
-                    onChange({ ...block, items: replaceAt(block.items, index, { ...item, ref }) })
+                    onChange({
+                      ...block,
+                      items: replaceAt(block.items ?? [], index, { ...item, ref }),
+                    })
                   }
                 />
               </div>
@@ -399,7 +405,10 @@ function BlockEditor({
                   label="立場（学習者に見せる）"
                   value={item.role}
                   onChange={(role) =>
-                    onChange({ ...block, items: replaceAt(block.items, index, { ...item, role }) })
+                    onChange({
+                      ...block,
+                      items: replaceAt(block.items ?? [], index, { ...item, role }),
+                    })
                   }
                 />
               </div>
@@ -408,25 +417,31 @@ function BlockEditor({
                   label="ひとこと しょうかい"
                   value={item.note}
                   onChange={(note) =>
-                    onChange({ ...block, items: replaceAt(block.items, index, { ...item, note }) })
+                    onChange({
+                      ...block,
+                      items: replaceAt(block.items ?? [], index, { ...item, note }),
+                    })
                   }
                 />
               </div>
               <RowTools
                 index={index}
-                count={block.items.length}
+                count={(block.items ?? []).length}
                 label="人物"
                 onMove={(delta) =>
-                  onChange({ ...block, items: moveItem(block.items, index, delta) })
+                  onChange({ ...block, items: moveItem(block.items ?? [], index, delta) })
                 }
-                onRemove={() => onChange({ ...block, items: removeAt(block.items, index) })}
+                onRemove={() => onChange({ ...block, items: removeAt(block.items ?? [], index) })}
               />
             </div>
           ))}
           <MiniButton
             tone="accent"
             onClick={() =>
-              onChange({ ...block, items: [...block.items, { ref: "", role: "", note: "" }] })
+              onChange({
+                ...block,
+                items: [...(block.items ?? []), { ref: "", role: "", note: "" }],
+              })
             }
           >
             ＋ 人物を 追加

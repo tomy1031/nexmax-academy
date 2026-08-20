@@ -4,21 +4,66 @@
   "title": "朝会と 報告の コツ",
   "description": "朝会で 話すことと、報告の 形を 学びます。",
   "furigana": [
-    ["朝会", "あさかい"],
-    ["報告", "ほうこく"],
-    ["結論", "けつろん"],
-    ["予定", "よてい"],
-    ["毎日", "まいにち"],
-    ["順調", "じゅんちょう"],
-    ["数字", "すうじ"],
-    ["立", "た"],
-    ["話", "はな"],
-    ["言", "い"],
-    ["終", "お"],
-    ["形", "かたち"],
-    ["日", "ひ"],
-    ["聞", "き"],
-    ["学", "まな"]
+    [
+      "朝会",
+      "あさかい"
+    ],
+    [
+      "報告",
+      "ほうこく"
+    ],
+    [
+      "結論",
+      "けつろん"
+    ],
+    [
+      "予定",
+      "よてい"
+    ],
+    [
+      "毎日",
+      "まいにち"
+    ],
+    [
+      "順調",
+      "じゅんちょう"
+    ],
+    [
+      "数字",
+      "すうじ"
+    ],
+    [
+      "立",
+      "た"
+    ],
+    [
+      "話",
+      "はな"
+    ],
+    [
+      "言",
+      "い"
+    ],
+    [
+      "終",
+      "お"
+    ],
+    [
+      "形",
+      "かたち"
+    ],
+    [
+      "日",
+      "ひ"
+    ],
+    [
+      "聞",
+      "き"
+    ],
+    [
+      "学",
+      "まな"
+    ]
   ],
   "blocks": [
     {
@@ -28,11 +73,18 @@
     {
       "kind": "image",
       "prompt": "Anime illustration, no readable text. A small friendly software team having a short morning stand-up meeting in a bright office: four people standing in a loose half circle near a whiteboard, coffee cups on a nearby desk, big window with soft morning light and a blue sky outside. Everyone looks relaxed and attentive; one person is speaking briefly while the others listen. Wide shot, clean line art, flat cel shading, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. No text, no letters, no numbers, no signage, no speech bubbles, no readable text.",
-      "refs": ["characters/hendy/reference.png", "characters/nyam/reference.jpg"],
+      "refs": [
+        "characters/hendy/reference.png",
+        "characters/nyam/reference.jpg"
+      ],
       "status": "empty",
       "caption": "朝会は 立ったまま、みじかく します。"
     },
-    { "kind": "heading", "level": 2, "text": "朝会で 話す 3つのこと" },
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "朝会で 話す 3つのこと"
+    },
     {
       "kind": "paragraph",
       "text": "話すことは 3つ です。きのう したこと、きょう すること、こまっていることです。"
@@ -50,7 +102,11 @@
       "tone": "point",
       "text": "はじめに 結論を 言います。りゆうは あとです。"
     },
-    { "kind": "heading", "level": 2, "text": "こまりごとは はやく つたえる" },
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "こまりごとは はやく つたえる"
+    },
     {
       "kind": "paragraph",
       "text": "こまっていることは、はやく 言うほど たすかります。「順調です」だけで 終わると、あとで こまります。"
@@ -62,11 +118,11 @@
     },
     {
       "kind": "vocab",
-      "items": [
-        { "term": "報告", "reading": "ほうこく", "meaning": "したことを つたえること" },
-        { "term": "結論", "reading": "けつろん", "meaning": "いちばん 言いたい こと" },
-        { "term": "予定", "reading": "よてい", "meaning": "これから する ことです" },
-        { "term": "順調", "reading": "じゅんちょう", "meaning": "よてい どおりに すすんで いること" }
+      "wordIds": [
+        "houkoku",
+        "ketsuron",
+        "yotei",
+        "junchou"
       ]
     },
     {

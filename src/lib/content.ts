@@ -36,7 +36,7 @@ import {
 } from "@/content/schema";
 import { GIT_CONTENTS } from "@/content/git-contents.generated";
 import { fetchDbContents } from "@/lib/content-db";
-import { hydrateWordStage } from "@/lib/vocabulary";
+import { hydrateArticle, hydrateManga, hydrateWordStage } from "@/lib/vocabulary";
 
 /**
  * 一覧はどれも `cache()` で包んである。
@@ -211,9 +211,12 @@ export async function getStage(id: string): Promise<Stage | null> {
 
 export const listMangas = cache(async (): Promise<Manga[]> => {
   const git = parseAll().filter((c): c is Manga => c.kind === "manga");
-  return mergeContentsById(git, await listPublishedFromDb("manga")).sort((a, b) =>
+  const merged = mergeContentsById(git, await listPublishedFromDb("manga")).sort((a, b) =>
     a.id.localeCompare(b.id),
   );
+  // 復習語彙が 参照で 書かれて いたら、正から 中身を 埋める
+  const words = await listVocabWords();
+  return merged.map((manga) => hydrateManga(manga, words));
 });
 
 export async function getManga(id: string): Promise<Manga | null> {
@@ -222,9 +225,12 @@ export async function getManga(id: string): Promise<Manga | null> {
 
 export const listArticles = cache(async (): Promise<Article[]> => {
   const git = parseAll().filter((c): c is Article => c.kind === "article");
-  return mergeContentsById(git, await listPublishedFromDb("article")).sort((a, b) =>
+  const merged = mergeContentsById(git, await listPublishedFromDb("article")).sort((a, b) =>
     a.id.localeCompare(b.id),
   );
+  // ことばブロックが 参照で 書かれて いたら、正から 中身を 埋める（読む側は 触らない）
+  const words = await listVocabWords();
+  return merged.map((article) => hydrateArticle(article, words));
 });
 
 export async function getArticle(id: string): Promise<Article | null> {

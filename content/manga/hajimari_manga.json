@@ -680,126 +680,30 @@
     "hendy"
   ],
   "speechInImage": true,
-  "vocab": [
-    {
-      "term": "手紙",
-      "reading": "てがみ",
-      "meaning": "letter — おくる かみ"
-    },
-    {
-      "term": "先輩",
-      "reading": "せんぱい",
-      "meaning": "senior colleague（さきに いた ひと）"
-    },
-    {
-      "term": "プロジェクトマネージャ",
-      "reading": "ぷろじぇくとまねーじゃ",
-      "meaning": "project manager — しごとを まとめる ひと"
-    },
-    {
-      "term": "プログラマー",
-      "reading": "ぷろぐらまー",
-      "meaning": "programmer — コンピューターを つくる ひと"
-    },
-    {
-      "term": "上手",
-      "reading": "じょうず",
-      "meaning": "good at it"
-    },
-    {
-      "term": "勉強",
-      "reading": "べんきょう",
-      "meaning": "study"
-    },
-    {
-      "term": "漢字",
-      "reading": "かんじ",
-      "meaning": "kanji（むずかしい もじ）"
-    },
-    {
-      "term": "テスト",
-      "reading": "てすと",
-      "meaning": "test / exam"
-    },
-    {
-      "term": "会社",
-      "reading": "かいしゃ",
-      "meaning": "company"
-    },
-    {
-      "term": "目標",
-      "reading": "もくひょう",
-      "meaning": "goal — めざす こと"
-    },
-    {
-      "term": "仕事",
-      "reading": "しごと",
-      "meaning": "work / job"
-    },
-    {
-      "term": "教",
-      "reading": "おし",
-      "meaning": "to teach（教えます）"
-    },
-    {
-      "term": "聞",
-      "reading": "き",
-      "meaning": "to ask / to listen（聞きます）"
-    },
-    {
-      "term": "失敗",
-      "reading": "しっぱい",
-      "meaning": "mistake / failure"
-    },
-    {
-      "term": "進",
-      "reading": "すす",
-      "meaning": "to go forward（進みます）"
-    },
-    {
-      "term": "パスポート",
-      "reading": "ぱすぽーと",
-      "meaning": "passport — くにへ 行く ときに いる もの"
-    },
-    {
-      "term": "チケット",
-      "reading": "ちけっと",
-      "meaning": "ticket"
-    },
-    {
-      "term": "国",
-      "reading": "くに",
-      "meaning": "country"
-    },
-    {
-      "term": "大切",
-      "reading": "たいせつ",
-      "meaning": "important"
-    },
-    {
-      "term": "ネクマックス",
-      "reading": "ねくまっくす",
-      "meaning": "NexMax — あなたを たすける ロボット"
-    },
-    {
-      "term": "サポート",
-      "reading": "さぽーと",
-      "meaning": "support — たすける こと"
-    },
-    {
-      "term": "社員",
-      "reading": "しゃいん",
-      "meaning": "employee — 会社で はたらく ひと"
-    },
-    {
-      "term": "Zoom",
-      "reading": "ずーむ",
-      "meaning": "Zoom — インターネットで かおを みて はなす アプリ"
-    },
-    {
-      "term": "ミーティング",
-      "reading": "みーてぃんぐ",
-      "meaning": "meeting — あつまって はなす こと"
-    }
+  "vocabIds": [
+    "tegami",
+    "senpai",
+    "purojiekutomane-ja",
+    "purogurama-",
+    "jouzu",
+    "benkyou",
+    "kanji",
+    "tesuto",
+    "kaisha",
+    "mokuhyou",
+    "shigoto",
+    "oshi",
+    "ki",
+    "shippai",
+    "susu",
+    "pasupo-to",
+    "chiketsuto",
+    "kuni",
+    "taisetsu",
+    "nekumatsukusu",
+    "sapo-to",
+    "shain",
+    "zu-mu",
+    "mi-teingu"
   ]
 }

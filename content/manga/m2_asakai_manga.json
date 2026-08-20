@@ -90,23 +90,6 @@
       "はじ"
     ]
   ],
-  "vocab": [
-    {
-      "term": "朝会",
-      "reading": "あさかい",
-      "meaning": "あさに する みじかい かいぎ"
-    },
-    {
-      "term": "報告",
-      "reading": "ほうこく",
-      "meaning": "したことを つたえること"
-    },
-    {
-      "term": "結論",
-      "reading": "けつろん",
-      "meaning": "いちばん 言いたい こと"
-    }
-  ],
   "pages": [
     {
       "panels": [
@@ -202,5 +185,10 @@
         }
       ]
     }
+  ],
+  "vocabIds": [
+    "asakai",
+    "houkoku",
+    "ketsuron"
   ]
 }

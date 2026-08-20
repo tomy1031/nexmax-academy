@@ -973,6 +973,8 @@ export const mangaSchema = z
      *（意味を1行で書ける語だけをここに載せる — 設計07 §4）。
      */
     vocab: z.array(vocabItemSchema).optional(),
+    /** 復習に出す語彙（正への 参照）。`vocab` の 代わりに こちらを 使う。 */
+    vocabIds: z.array(z.string().min(1)).optional(),
     characters: z.array(mangaCharacterSchema).optional(),
     /** 使い回す登場人物のID（character）。絵を作るとき 参照画像として渡す。 */
     castIds: z.array(z.string().min(1)).default([]),
@@ -1105,7 +1107,20 @@ export const articleBlockSchema = z.discriminatedUnion("kind", [
   z.object({ kind: z.literal("callout"), tone: z.enum(["point", "care"]), text: plainText }),
   z.object({ kind: z.literal("list"), items: z.array(plainText).min(1) }),
   z.object({ kind: z.literal("steps"), items: z.array(plainText).min(1) }),
-  z.object({ kind: z.literal("vocab"), items: z.array(vocabItemSchema).min(1) }),
+  /*
+   * ことばの ブロック。**これからは `wordIds`（正への 参照）で 書く**。
+   * `items` は 語を 直に 持って いた ころの かたちで、まだ 残って いる 記事の ため。
+   */
+  z
+    .object({
+      kind: z.literal("vocab"),
+      wordIds: z.array(z.string().min(1)).min(1).optional(),
+      items: z.array(vocabItemSchema).min(1).optional(),
+    })
+    .refine((block) => Boolean(block.wordIds ?? block.items), {
+      message: "ことばが 無い — wordIds（正への 参照）を 書く",
+      path: ["wordIds"],
+    }),
   /** 次の教材への誘導カード（ステージ内コンテンツ限定）。 */
   z.object({
     kind: z.literal("link"),

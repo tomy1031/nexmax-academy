@@ -292,9 +292,9 @@ function BlockView({
 
     case "list":
       return (
-        <SpeakableGroup items={block.items} label="この かじょうがきを ぜんぶ よみあげる">
+        <SpeakableGroup items={block.items ?? []} label="この かじょうがきを ぜんぶ よみあげる">
           <ul className="space-y-2">
-            {block.items.map((item, i) => (
+            {(block.items ?? []).map((item, i) => (
               <li key={i} className="text-ink flex items-start gap-2 leading-relaxed font-bold">
                 <span aria-hidden className="text-sky pt-0.5">
                   ●
@@ -310,9 +310,9 @@ function BlockView({
 
     case "steps":
       return (
-        <SpeakableGroup items={block.items} label="この てじゅんを ぜんぶ よみあげる">
+        <SpeakableGroup items={block.items ?? []} label="この てじゅんを ぜんぶ よみあげる">
           <ol className="space-y-3">
-            {block.items.map((item, i) => (
+            {(block.items ?? []).map((item, i) => (
               <li key={i} className="flex items-start gap-3">
                 <span
                   aria-hidden
@@ -344,7 +344,7 @@ function BlockView({
             るよ
           </p>
           <div className="mt-2 flex flex-wrap gap-2">
-            {block.items.map((item, i) => (
+            {(block.items ?? []).map((item, i) => (
               <VocabChip key={i} item={item} furigana={furigana} show={show} />
             ))}
           </div>
@@ -451,7 +451,8 @@ function SpeakableGroup({
 
 type ImageBlockData = Extract<ArticleBlock, { kind: "image" }>;
 type CalloutBlockData = Extract<ArticleBlock, { kind: "callout" }>;
-type VocabItem = Extract<ArticleBlock, { kind: "vocab" }>["items"][number];
+/* 読み出し後は かならず items が ある（参照は src/lib/content.ts が 埋める）。 */
+type VocabItem = NonNullable<Extract<ArticleBlock, { kind: "vocab" }>["items"]>[number];
 type CharactersBlockData = Extract<ArticleBlock, { kind: "characters" }>;
 
 /**
@@ -479,7 +480,7 @@ function CharactersBlock({
   const byId = new Map((people ?? []).map((person) => [person.id, person]));
   return (
     <div className="grid gap-3 sm:grid-cols-2">
-      {block.items.map((item, i) => {
+      {(block.items ?? []).map((item, i) => {
         const person = byId.get(item.ref);
         return (
           <section
