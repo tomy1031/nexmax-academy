@@ -176,7 +176,18 @@ type ChatBody =
   /** 学習者が 言った こと。 */
   | { kind: "me"; text: string }
   /** 日本語の 見かた（相手の ことばでは ない）。 */
-  | { kind: "coach"; judge?: JudgeResult; fallback?: Fallback; note?: string | null };
+  | {
+      kind: "coach";
+      judge?: JudgeResult;
+      fallback?: Fallback;
+      note?: string | null;
+      /**
+       * AIに 通せなかった **理由の 名前**（学習者には 見せない）。
+       * 画面に 出す ことばは 理由を まとめて しまうので、どこで つまずいたのかが
+       * 通し検証の 写真から 読めなかった（2026-08-20）。印だけ 残す。
+       */
+      reason?: string | null;
+    };
 
 type ChatEntry = ChatBody & { id: string };
 
@@ -559,7 +570,7 @@ export function MeetingSession({
       setReply({ echo: spoken ? "" : judge.reply, judge, fallback: null });
       // 声で 返して いる ときは、相手の ことばは 字幕（voice.turns）で 届く
       if (!spoken && judge.reply) pushChat({ kind: "host", text: judge.reply });
-      pushChat({ kind: "coach", judge, note });
+      pushChat({ kind: "coach", judge, note, reason: result.ok ? null : result.reason });
       setJudgeOpen(true);
       rewardTurn(asked.id, utterance, result.ok ? judge.grade : null, !judge.retry);
       void recordMeetingTurn({
@@ -1305,7 +1316,12 @@ function ChatLine({
 }) {
   if (entry.kind === "coach") {
     return (
-      <motion.div data-kind="coach" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}>
+      <motion.div
+        data-kind="coach"
+        data-fallback={entry.reason ?? undefined}
+        initial={{ opacity: 0, y: 6 }}
+        animate={{ opacity: 1, y: 0 }}
+      >
         {entry.judge ? <JudgeCard judge={entry.judge} hostName={hostName} /> : null}
         {/* AIに 通せなかった 理由。あとから 読み返せる ように チャットにも 残す */}
         {entry.note ? (

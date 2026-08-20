@@ -92,10 +92,12 @@ test.describe("AIの みかた（鍵が あるときだけ）", () => {
       // 会話が 止まらない ことだけは ここでも 確かめる（学習者に とって いちばん 大事）
       await waitForAsk(page, 2);
       await shot(page, "23-judge-fallback-live");
-      test.skip(
-        true,
-        `AIが みかたを 返しませんでした: ${(await fellBack.first().innerText()).trim()}`,
-      );
+      /*
+       * **理由の 名前**まで 残す（`data-fallback`）。画面の ことばは 理由を
+       * まとめて しまうので、写真だけでは どこで つまずいたのかが 分からなかった。
+       */
+      const reason = await page.locator("[data-fallback]").first().getAttribute("data-fallback");
+      test.skip(true, `AIが みかたを 返しませんでした（reason=${reason ?? "?"}）`);
     }
 
     // 3段（すばらしい／つたわりました／もう いちど）の どれかが 出る
