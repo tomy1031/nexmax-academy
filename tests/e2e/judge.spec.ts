@@ -97,6 +97,11 @@ test.describe("AIの みかた（鍵が あるときだけ）", () => {
        * まとめて しまうので、写真だけでは どこで つまずいたのかが 分からなかった。
        */
       const reason = await page.locator("[data-fallback]").first().getAttribute("data-fallback");
+      /*
+       * skip の 理由は 通し検証の 記録に 残らない ので、**出力にも 出す**。
+       * どこで つまずいたのかが 分からないと、直しようが 無い（2026-08-20）。
+       */
+      console.log(`[judge] AIが みかたを 返しませんでした reason=${reason ?? "?"}`);
       test.skip(true, `AIが みかたを 返しませんでした（reason=${reason ?? "?"}）`);
     }
 
