@@ -23,12 +23,18 @@ export function DictionaryView({
   onOpen,
   onNew,
   onRemove,
+  onOpenVocab,
 }: {
   wordStages: readonly WordStage[];
   dbStatusOf: (kind: string, id: string) => "draft" | "published" | null;
   onOpen: (id: string) => void;
   onNew: () => void;
   onRemove: (id: string, title: string) => void;
+  /**
+   * ことばの 正（辞書）を ひらく。語は もう 教材の 中に 無いので、
+   * ここが 無いと 読めない 漢字に 気づいても 直せない。
+   */
+  onOpenVocab?: () => void;
 }) {
   const [query, setQuery] = useState("");
   const dictionary = useMemo(() => buildDictionary(wordStages), [wordStages]);
@@ -53,6 +59,15 @@ export function DictionaryView({
       <section className="card-island p-4 sm:p-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h2 className="text-navy text-lg font-black">単語ステージ（{wordStages.length}こ）</h2>
+          {onOpenVocab ? (
+            <button
+              type="button"
+              onClick={onOpenVocab}
+              className="btn-game px-4 py-2 text-sm [--btn-face:#ffc93c] [--btn-shadow:#f0a819]"
+            >
+              📚 ことば（辞書）を なおす
+            </button>
+          ) : null}
           <button
             type="button"
             onClick={onNew}

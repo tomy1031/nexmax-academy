@@ -647,10 +647,20 @@ function collectLabeledTexts(content: Content): LabeledText[] {
         push(`characters[${i}].name`, character.name);
         push(`characters[${i}].role`, character.role);
       });
-      (content.vocab ?? []).forEach((item, i) => {
-        push(`vocab[${i}].term`, item.term);
-        push(`vocab[${i}].meaning`, item.meaning);
-      });
+      /*
+       * ことばは **持ち主の 側で 検査する**。
+       *
+       * `vocabIds` で 正から 借りて いる ぶんは、説明文も 読み辞書も 正が 持って いる。
+       * それを 借り手（まんが）の 読み辞書で 見ると、当たるはずの ない 漢字が
+       * 「ふりがなが 無い」と 出る——先生には 直しようが ない 指摘に なる
+       *（2026-08-20 実発生。まんが自身は 0件なのに、読み出したあとだけ 3件 出た）。
+       */
+      if (!content.vocabIds) {
+        (content.vocab ?? []).forEach((item, i) => {
+          push(`vocab[${i}].term`, item.term);
+          push(`vocab[${i}].meaning`, item.meaning);
+        });
+      }
       // image の prompt / refs / src は生成の材料であって学習者は読まない
       break;
     }
@@ -674,7 +684,8 @@ function collectLabeledTexts(content: Content): LabeledText[] {
             block.items.forEach((item, j) => push(at(`items[${j}]`), item));
             break;
           case "vocab":
-            // 参照で 書かれた ぶんは 正の 側（kind: vocab）で 検査される
+            // 参照で 借りた ぶんは 持ち主（kind: vocab）の 側で 検査される
+            if (block.wordIds) break;
             (block.items ?? []).forEach((item, j) => {
               push(at(`items[${j}].term`), item.term);
               push(at(`items[${j}].meaning`), item.meaning);
@@ -859,6 +870,13 @@ function coverageEntries(content: Content): FuriganaEntry[] {
       return entries;
     }
     case "vocab":
+      // 束の 読み辞書 ＋ **語ごとの 読み辞書** ＋ 語そのものの よみ。
+      // 語ごとに 持てるのは、説明文を 直す 人が 同じ 場所で 読みも 足せるように するため。
+      return [
+        ...(content.furigana ?? []),
+        ...content.words.flatMap((word) => word.furigana ?? []),
+        ...content.words.map((word): FuriganaEntry => [word.term, word.reading]),
+      ];
     case "wordstage":
       return [
         ...(content.furigana ?? []),

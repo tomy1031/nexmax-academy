@@ -102,6 +102,14 @@ export const vocabWordSchema = z.object({
    *（持たない 語は 辞書・ツールチップにだけ 出る）。
    */
   wrongMeanings: z.array(noJapanese).length(3).optional(),
+  /**
+   * この語の 説明文・例文に 要る 読み辞書。
+   *
+   * 束（`vocab.furigana`）は みんなで 使う 土台で、ここは **その語だけの 足し前**。
+   * 説明文を 直す 人が 同じ 場所で 読みも 足せるように、語の となりに 置く
+   *（別ファイルへ 行かないと 直せないと、読めない 漢字は 直らないまま 残る）。
+   */
+  furigana: z.array(furiganaEntrySchema).optional(),
 });
 
 /** ことばの 束（いまは 1ファイル）。 */
