@@ -146,7 +146,7 @@ async function judgeFromBrowser(apiKey: string, request: JudgeRequest): Promise<
       const auth = await authFor();
       if (!auth) break;
       try {
-        session = await openTextSession(auth, auth === apiKey, name);
+        session = await openTextSession(auth, name);
         model = name;
         break;
       } catch {
@@ -195,17 +195,17 @@ interface LiveTextSession {
  * 声の セッション（`use-live-voice.ts`）とは **別の つなぎ**。
  * 音は 出さず、道具も 持たせない——どちらも 混ざりの 元だった。
  */
-async function openTextSession(
-  auth: string,
-  usingRawKey: boolean,
-  model: string,
-): Promise<LiveTextSession> {
+async function openTextSession(auth: string, model: string): Promise<LiveTextSession> {
   const { GoogleGenAI, Modality } = await import("@google/genai");
   /*
-   * **短命トークンは v1alpha でしか 通らない**（SDK の 警告どおり）。
-   * 本人の キーで 直接 つなぐ ときは v1beta。
+   * **v1beta で つなぐ**（短命トークンでも）。
+   *
+   * 古い SDK の 警告に 従って v1alpha に して みたが、通し検証（鍵あり）で
+   * **どの モデル名でも つながらなかった**（reason=modelNotFound・2026-08-20）。
+   * v1beta に 戻すと 声の つなぎは これまでどおり 動いて いる ので、
+   * 警告は いまの SDK（v2.16）には 当てはまらない と 判断する。
    */
-  const ai = new GoogleGenAI({ apiKey: auth, apiVersion: usingRawKey ? "v1beta" : "v1alpha" });
+  const ai = new GoogleGenAI({ apiKey: auth, apiVersion: "v1beta" });
 
   let buffer = "";
   let settle: ((text: string) => void) | null = null;

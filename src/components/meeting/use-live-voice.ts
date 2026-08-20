@@ -246,17 +246,15 @@ export function useLiveVoice(): LiveVoice {
     try {
       const { GoogleGenAI, Modality } = await import("@google/genai");
       /*
-       * **短命トークンで つなぐ ときは v1alpha**（SDK が 警告で そう言う——
-       * 「The SDK's ephemeral token support is in v1alpha only」）。
-       * 本人の キーで 直接 つなぐ ときは これまでどおり v1beta。
+       * **v1beta で つなぐ**（短命トークンでも）。
        *
-       * 2026-08-19 に 直した ことに なって いたが、**コードは 変わって いなかった**
-       *（bc2d4a7 は 本文だけが 直っていた）。ここで 実際に 直す。
+       * SDK の 古い 警告（「ephemeral token support is in v1alpha only」）に
+       * 従って v1alpha に して みたが、判定の つなぎが **どの モデル名でも
+       * つながらなかった**（通し検証・鍵あり・2026-08-20 / reason=modelNotFound）。
+       * v1beta の ままの 声の つなぎは 動いて いるので、いまの SDK（v2.16）には
+       * この 警告は 当てはまらない と 判断する。
        */
-      const ai = new GoogleGenAI({
-        apiKey: auth,
-        apiVersion: auth === apiKey ? "v1beta" : "v1alpha",
-      });
+      const ai = new GoogleGenAI({ apiKey: auth, apiVersion: "v1beta" });
 
       // 再生側。解析器を挟んでから出す
       const outCtx = new AudioContext({ sampleRate: OUT_RATE });
