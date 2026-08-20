@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { choiceButtons, itemsBefore, KAISHA, seedCompleted, shot } from "./helpers";
+import { choiceButtons, itemsBefore, KAISHA, readTestResult, seedCompleted, shot } from "./helpers";
 
 /**
  * まとめて 出す（提出モード）— ぜんぶ 書いてから 1回だけ 採点する やりかた
@@ -197,3 +197,36 @@ test("書いた こたえを 消したら、つぎに 開いても 生き返ら�
  * どこからでも 行き来できるので 位置を 戻す 意味が 無い。いま 1問ずつ に して いる
  * 教材が 無いので、ここでは 通せない（`tests/quiz_resume.test.ts` が 純関数で 見ている）。
  */
+
+/**
+ * 出した 回は **成績に 残り、ステージも おわる**。
+ *
+ * 成績を 残すかどうかは「教材ぜんぶに 触れた回か」で 決めている
+ *（`quiz-reducer.ts` の `isWholeSetRun`。しおりだけで 途中から 始めた 回を
+ * 「全問正解・合格」で 固めない ための 線引き）。まとめて 出す は 書かなかった 問題も
+ * 1行 残す ので **触れた回**であり、ここが 落ちると **既定の やりかたで 成績が
+ * まるごと 消える**。線引きの 内側に いる ことを 機械で 押さえておく。
+ */
+test("出した 回は 成績に 残り、ステージも おわりに なる", async ({ page, context }) => {
+  await seedCompleted(context, itemsBefore(1));
+  await page.goto(KAISHA.quiz1.path);
+  await page.getByRole("button", { name: START_SUBMIT }).click();
+
+  // 1問だけ 書いて 出す（書かなかった 5問も「書けずに 出した」として 数に 入る）
+  await choiceButtons(page).nth(0).click();
+  for (let i = 0; i < 5; i += 1) {
+    await page.getByRole("button", { name: "つぎ →" }).click();
+  }
+  await page.getByRole("button", { name: "さいごに かくにん →" }).click();
+  await page.getByRole("button", { name: SUBMIT_ANSWERS }).click();
+  await expect(page.getByText("ぜんぶの こたえ")).toBeVisible();
+
+  expect(await readTestResult(page, KAISHA.quiz1.id)).toMatchObject({
+    stageId: KAISHA.quiz1.id,
+    total: 6,
+    passed: false,
+  });
+
+  await page.goto("/kaisha");
+  await expect(page.getByText("6つ の うち 2つ おわりました")).toBeVisible();
+});

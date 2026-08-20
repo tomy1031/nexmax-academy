@@ -93,6 +93,14 @@ export async function seedCompleted(
   );
 }
 
+/** 端末に 残った 正式な成績（`src/lib/progress/store.ts` の TestResult）。無ければ null。 */
+export async function readTestResult(page: Page, stageId: string): Promise<unknown> {
+  return page.evaluate((id: string) => {
+    const raw = window.localStorage.getItem(`nexmax:v1:test:${id}`);
+    return raw === null ? null : JSON.parse(raw);
+  }, stageId);
+}
+
 /**
  * Gemini の鍵を **学習者と同じ経路（BYOK・端末の中）** に置く。
  *

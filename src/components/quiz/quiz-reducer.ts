@@ -469,3 +469,19 @@ export function summarizeQuiz(state: QuizState): QuizSummary {
     missedQuestionIds: state.results.filter((r) => !r.correct).map((r) => r.questionId),
   };
 }
+
+/**
+ * 教材の 問題 **ぜんぶに 触れた回**か。
+ *
+ * 成績（TestResult）・DBの `full_set`・ステージの「おわった」は、どれも この1つで 決める
+ * ——同じ 判断を 3か所で 別々に 書くと、いつか 1か所だけ ずれる。
+ *
+ * false に なるのは 2つ:
+ *  - 「まちがえた もんだいだけ」の やり直し（問題を 絞った セッション）
+ *  - しおりだけが 残って いて **途中から 始めた 回**（`@/lib/quiz/resume` の 規則5）。
+ *    3問しか 見て いない 回を 完走に すると、5問の 教材が「3 / 3・合格」で 固まる
+ *    ——成績は 初回だけが 正式（`recordFirstTestResult`）なので、あとから 直せない。
+ */
+export function isWholeSetRun(state: QuizState, setSize: number): boolean {
+  return setSize > 0 && state.questions.length === setSize && state.results.length === setSize;
+}
