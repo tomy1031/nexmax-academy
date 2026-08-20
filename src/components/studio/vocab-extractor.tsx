@@ -1,7 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { wordSchema, type Stage, type WordStage } from "@/content/schema";
+import type { StoredWordStage, VocabBook, VocabWord } from "@/content/schema";
+import { wordSchema, type Stage } from "@/content/schema";
 import { hasCodex } from "@/lib/codex-settings";
 import { getGeminiKey } from "@/lib/profile";
 import { generateFromBrowser } from "@/lib/ai/generate-browser";
@@ -51,7 +52,7 @@ const NO_KEY_MESSAGE = "さきに はじめの せっていで Gemini の APIキ
 export function VocabExtractor({
   stage,
   textsByRef,
-  knownTerms,
+  vocabBooks,
   onCreated,
 }: {
   stage: Stage;
@@ -61,18 +62,24 @@ export function VocabExtractor({
    */
   textsByRef: Readonly<Record<string, readonly string[]>>;
   /**
-   * すでに どこかの単語ステージに ある ことば → その ステージの見出し
-   *（src/lib/dictionary.ts の termOwners）。
+   * ことばの 正（`content/vocab/*.json`）。
    *
-   * 辞書は単語ステージを畳んだものなので、同じ ことばを2つの課で作っても
-   * 学習者の辞書には1つしか出ない。ただし**説明が2つ育つ**のは困る。
-   * だから既にある ことばは、選ぶ前にここで知らせて、既定では外しておく。
+   * 語の 置き場は ここ 1つ しか 無い（2026-08-20）。だから 先生は
+   * **抜き出した ことばだけでなく、辞書に ある ことばからも 選べる**——
+   * 同じ ことばを もう一度 作らせない ための 形である。
    */
-  knownTerms?: ReadonlyMap<string, string>;
+  vocabBooks: readonly VocabBook[];
   /** 作った単語ステージのIDを、編集中のステージの wordStageIds に足してもらう。 */
   onCreated: (wordStageId: string) => void;
 }) {
   const [busy, setBusy] = useState<"extract" | "create" | null>(null);
+  const [query, setQuery] = useState("");
+  /** 辞書から えらんだ ことばの id。抜き出した ぶんとは 別に 持つ。 */
+  const [fromVocab, setFromVocab] = useState<ReadonlySet<string>>(new Set());
+
+  /** ことばの 正（束を ならべた もの）と、表記からの 引き当て。 */
+  const vocabWords = useMemo(() => vocabBooks.flatMap((book) => book.words), [vocabBooks]);
+  const vocabTerms = useMemo(() => new Map(vocabWords.map((w) => [w.term, w])), [vocabWords]);
   const [error, setError] = useState<string | null>(null);
   const [note, setNote] = useState<string | null>(null);
   const [candidates, setCandidates] = useState<VocabCandidate[]>([]);
@@ -121,7 +128,7 @@ export function VocabExtractor({
       // 出てきたものは最初から えらんだ状態にする。先生の仕事は
       // 「いる語を選ぶ」より「この課で使わない語を外す」ほうが速い。
       // ただし もう辞書に ある ことばは外しておく（説明を2つ育てないため）。
-      setSelected(new Set(words.filter((word) => !knownTerms?.has(word.term)).map((w) => w.id)));
+      setSelected(new Set(words.filter((word) => !vocabTerms.has(word.term)).map((w) => w.id)));
       if (words.length === 0) {
         setNote("ことばが 見つかりませんでした。本文を ふやすと 見つかりやすく なります。");
       }
@@ -134,19 +141,55 @@ export function VocabExtractor({
     }
   };
 
+  /** 抜き出した ぶんで、まだ 正に 無い ことば。 */
+  const freshWords = chosen.filter((word) => !vocabTerms.has(word.term));
+  /** 保存に 使う 語ID（辞書から えらんだ ぶん ＋ 抜き出した ぶん）。 */
+  const chosenIds = [
+    ...fromVocab,
+    ...chosen.map((word) => vocabTerms.get(word.term)?.id ?? vocabIdFor(word, vocabWords)),
+  ];
+  const totalChosen = new Set(chosenIds).size;
+
   const create = async () => {
-    if (chosen.length < MIN_WORDS) return;
-    const draft = buildWordStage(stage, chosen);
+    if (totalChosen < MIN_WORDS) return;
     setError(null);
     setNote(null);
     setBusy("create");
+
+    /*
+     * まず **ことばの 正**に 足す。ここを 先に するのは、あとで ステージが 指す
+     * 参照が 切れないように するため（先に ステージを 保存すると、失敗した とき
+     * 「指しているのに 無い 語」が 残る）。
+     */
+    const book = vocabBooks[0];
+    if (freshWords.length > 0) {
+      if (!book) {
+        setBusy(null);
+        setError("ことばの 正（content/vocab）が 見つかりません。");
+        return;
+      }
+      const added = freshWords.map((word) => toVocabWord(word, vocabWords));
+      const saved = await saveContent({ ...book, words: [...book.words, ...added] }, true);
+      if (!saved.ok) {
+        setBusy(null);
+        setError(
+          [
+            "ことばを 辞書に 足せませんでした。",
+            saved.message,
+            ...saved.issues.map((i) => `${i.where}: ${i.message}`),
+          ].join(" / "),
+        );
+        return;
+      }
+    }
+
     /**
      * したがきではなく**こうかい**で保存する。
-     * いまのスタジオには単語ステージの編集画面が無いので、したがきで置くと
-     * あとから公開する手段が無く、ステージの wordStageIds は参照切れのまま残る
-     *（学習者の画面では「ことばで あそぶ」が出てこない）。
+     * したがきで置くと あとから公開する手段が乏しく、ステージの wordStageIds は
+     * 参照切れのまま残る（学習者の画面では「ことばで あそぶ」が出てこない）。
      * 語は先生が1つずつ見てチェックしたものなので、ここで公開してよい。
      */
+    const draft = buildWordStage(stage, [...new Set(chosenIds)]);
     const result = await saveContent(draft, true);
     setBusy(null);
     if (!result.ok) {
@@ -157,10 +200,23 @@ export function VocabExtractor({
     }
     onCreated(draft.id);
     setNote(
-      `単語ステージ「${draft.title}」を つくりました（${draft.words.length}語）。` +
+      `単語ステージ「${draft.title}」を つくりました（${draft.wordIds?.length ?? 0}語` +
+        `${freshWords.length > 0 ? `・うち ${freshWords.length}語を 辞書に 足しました` : ""}）。` +
         "上の「したがきを ほぞん」か「こうかい」を おすと、この ステージから 開けるように なります。",
     );
   };
+
+  /** 辞書の 一覧（さがす 欄で しぼる）。 */
+  const vocabList = useMemo(() => {
+    const q = query.trim();
+    if (!q) return vocabWords;
+    return vocabWords.filter(
+      (word) =>
+        word.term.includes(q) ||
+        word.reading.includes(q) ||
+        (word.englishTerm ?? "").toLowerCase().includes(q.toLowerCase()),
+    );
+  }, [query, vocabWords]);
 
   return (
     <StudioSection
@@ -225,9 +281,9 @@ export function VocabExtractor({
                 <span className="flex-1">
                   <span className="text-navy block text-sm font-black">
                     {word.term}（{word.reading}）
-                    {knownTerms?.has(word.term) ? (
+                    {vocabTerms.has(word.term) ? (
                       <span className="text-ink-soft ml-2 text-xs font-black">
-                        すでに「{knownTerms.get(word.term)}」に あります
+                        すでに 辞書に あります（下から えらべます）
                       </span>
                     ) : null}
                   </span>
@@ -248,29 +304,89 @@ export function VocabExtractor({
         </ul>
       ) : null}
 
-      {candidates.length > 0 ? (
-        <div className="bg-panel-tint space-y-2 rounded-2xl p-3">
-          <MiniButton
-            tone="accent"
-            onClick={() => void create()}
-            disabled={busy !== null || chosen.length < MIN_WORDS}
-          >
-            {busy === "create"
-              ? "つくっています…"
-              : `🕹️ えらんだ ことばで 単語ステージを つくる（${chosen.length}語）`}
-          </MiniButton>
-          {/*
-            6語に届かないと wordStageSchema で止まる。押せるボタンのまま出すと、
-            先生は保存の画面まで行って初めて理由の分からない指摘を受けることになる。
-          */}
-          {chosen.length < MIN_WORDS ? (
-            <p className="text-ink-soft text-xs font-bold">
-              単語ステージは {MIN_WORDS}語から つくれます。あと {MIN_WORDS - chosen.length}語
-              えらんでください。
-            </p>
-          ) : null}
+      {/*
+        **辞書に ある ことばからも 選べる**（2026-08-20 の指定）。
+        語の 置き場は 1つ しか 無いので、同じ ことばを もう一度 作らせない。
+      */}
+      <div className="border-hairline space-y-2 rounded-2xl border-2 p-3">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-navy text-sm font-black">📚 辞書から えらぶ</span>
+          <span className="text-ink-soft text-xs font-black">
+            {fromVocab.size} / {vocabWords.length}語
+          </span>
+          <input
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="ことば・よみ・英語で さがす"
+            className="border-hairline min-w-40 flex-1 rounded-full border-2 px-3 py-1 text-xs font-bold"
+          />
         </div>
-      ) : null}
+        <ul className="max-h-64 space-y-1 overflow-y-auto">
+          {vocabList.map((word) => (
+            <li key={word.id}>
+              <label className="hover:bg-panel-tint flex items-start gap-2 rounded-lg p-1">
+                <input
+                  type="checkbox"
+                  checked={fromVocab.has(word.id)}
+                  onChange={(event) =>
+                    setFromVocab((prev) => {
+                      const next = new Set(prev);
+                      if (event.target.checked) next.add(word.id);
+                      else next.delete(word.id);
+                      return next;
+                    })
+                  }
+                  className="accent-sky mt-1 h-4 w-4"
+                />
+                <span className="flex-1">
+                  <span className="text-navy block text-xs font-black">
+                    {word.term}（{word.reading}）
+                    {word.englishTerm ? (
+                      <span className="text-ink-soft ml-2 font-bold">{word.englishTerm}</span>
+                    ) : null}
+                    {!word.wrongMeanings ? (
+                      <span className="text-coral-deep ml-2 font-bold">
+                        ゲームには 出せません（まよう こたえが ありません）
+                      </span>
+                    ) : null}
+                  </span>
+                  <span className="text-ink-soft block text-xs font-bold">{word.meaningJa}</span>
+                </span>
+              </label>
+            </li>
+          ))}
+        </ul>
+        {vocabList.length === 0 ? (
+          <p className="text-ink-faint text-xs font-bold">見つかりませんでした。</p>
+        ) : null}
+      </div>
+
+      <div className="bg-panel-tint space-y-2 rounded-2xl p-3">
+        <MiniButton
+          tone="accent"
+          onClick={() => void create()}
+          disabled={busy !== null || totalChosen < MIN_WORDS}
+        >
+          {busy === "create"
+            ? "つくっています…"
+            : `🕹️ えらんだ ことばで 単語ステージを つくる（${totalChosen}語）`}
+        </MiniButton>
+        {/*
+          6語に届かないと wordStageSchema で止まる。押せるボタンのまま出すと、
+          先生は保存の画面まで行って初めて理由の分からない指摘を受けることになる。
+        */}
+        {totalChosen < MIN_WORDS ? (
+          <p className="text-ink-soft text-xs font-bold">
+            単語ステージは {MIN_WORDS}語から つくれます。あと {MIN_WORDS - totalChosen}語
+            えらんでください。
+          </p>
+        ) : null}
+        {freshWords.length > 0 ? (
+          <p className="text-ink-soft text-xs font-bold">
+            あたらしい {freshWords.length}語は、辞書にも 足します。
+          </p>
+        ) : null}
+      </div>
 
       {note ? <p className="text-navy text-xs font-black">{note}</p> : null}
       {error ? <p className="text-coral-deep text-xs font-black">{error}</p> : null}
@@ -383,11 +499,11 @@ function messageForVocabReason(reason: string): string {
  * 語そのものは読める。解説と例文の読みは機械で決められないので、
  * ここで思いつきの読みを入れない（AGENTS.md 規律2）。
  */
-function buildWordStage(stage: Stage, words: VocabCandidate[]): WordStage {
+function buildWordStage(stage: Stage, wordIds: readonly string[]): StoredWordStage {
   const title = stage.title.trim();
   /*
    * 見出しは **ステージの 名前 そのもの**（2026-08-20 の指定「のことばは 冗長」）。
-   * 学習者の 画面では どのみち ステージ名に そろえて 出すので、種の 側も そろえる。
+   * 語は **持たずに 指す**（`wordIds`）。語の 正は content/vocab の 1つだけ。
    */
   return {
     kind: "wordstage",
@@ -395,10 +511,39 @@ function buildWordStage(stage: Stage, words: VocabCandidate[]): WordStage {
     title: title.length > 0 ? title : "この ステージの ことば",
     description: "この ステージに 出てくる しごとの ことばと ITの ことばです。",
     fieldSequence: [...FIELD_SEQUENCE],
-    questionCount: words.length,
+    questionCount: Math.min(wordIds.length, 10),
     passRate: PASS_RATE,
-    words,
+    wordIds: [...wordIds],
   };
+}
+
+/** 抜き出した ことばを、正の かたちに 直す。 */
+function toVocabWord(word: VocabCandidate, existing: readonly VocabWord[]): VocabWord {
+  return {
+    id: vocabIdFor(word, existing),
+    term: word.term,
+    reading: word.reading,
+    romaji: word.romaji,
+    meaningJa: word.explanationJa,
+    englishTerm: word.meaningEn,
+    example: word.example,
+    wrongMeanings: word.wrongMeanings,
+  };
+}
+
+/**
+ * 正に 入れる ときの 語ID。**あとから 変えない**（`mastery` の 保存キー）。
+ * すでに 同じ id が あれば 番号を 足す。
+ */
+function vocabIdFor(word: VocabCandidate, existing: readonly VocabWord[]): string {
+  const base = slug(word.romaji ?? word.id) || "kotoba";
+  let id = base;
+  let n = 2;
+  while (existing.some((w) => w.id === id)) {
+    id = `${base}${n}`;
+    n += 1;
+  }
+  return id;
 }
 
 /**

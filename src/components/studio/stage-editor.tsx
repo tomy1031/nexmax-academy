@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import type { ContentRefType, Stage } from "@/content/schema";
+import type { ContentRefType, Stage, VocabBook } from "@/content/schema";
 import { contentKindMeta } from "@/lib/content-kinds";
 import { stageContentPath } from "@/lib/stage-routes";
 import { AreaPicker } from "./area-picker";
@@ -41,7 +41,7 @@ export function StageEditor({
   library,
   knownIds,
   textsByRef,
-  knownTerms,
+  vocabBooks,
   onOpenContent,
   onCreateContent,
 }: {
@@ -52,7 +52,8 @@ export function StageEditor({
   /** 保存ずみのID。ここに無い参照は「まだ ほぞんして いません」と出す。 */
   knownIds: ReadonlySet<string>;
   /** すでに どこかの 単語ステージに ある ことば → その ステージの 見出し。 */
-  knownTerms: ReadonlyMap<string, string>;
+  /** ことばの 正。辞書ぜんたいから 選べるように するため 渡す。 */
+  vocabBooks: readonly VocabBook[];
   /**
    * 教材ID → 学習者が読む文。「ことばを ぬき出す」に渡す。
    * ステージが持っているのは参照先のIDだけなので、本文は studio-shell から届く
@@ -168,7 +169,7 @@ export function StageEditor({
       <VocabExtractor
         stage={value}
         textsByRef={textsByRef}
-        knownTerms={knownTerms}
+        vocabBooks={vocabBooks}
         onCreated={(id) => patch({ wordStageIds: [...value.wordStageIds, id] })}
       />
     </div>

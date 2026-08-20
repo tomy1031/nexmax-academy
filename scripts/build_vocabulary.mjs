@@ -369,7 +369,11 @@ writeFileSync(
       title: "ことば",
       furigana: merged,
       // `from`（出どころ）は 数える ためだけの もの。書き出す ファイルには 入れない
-      words: words.map(({ from: _from, ...w }) => w),
+      words: words.map((w) => {
+        const copy = { ...w };
+        delete copy.from; // 出どころは 数える ためだけ。書き出す ファイルには 入れない
+        return copy;
+      }),
     },
     null,
     2,
