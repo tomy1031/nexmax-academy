@@ -564,7 +564,7 @@ export function MeetingSession({
        * 通せなかった ときだけ 黙って 進めて いた ころは、学習者から 見て
        *「言った のに 何も 出ない ときが ある」に なって いた（2026-08-20 の 指定）。
        */
-      const judge = result.ok ? result.judge : localJudge(utterance, asked.hint);
+      const judge = result.ok ? result.judge : localJudge(utterance);
       const note = result.ok ? null : judgeFailNote(result.reason);
       setJudgeNote(note);
       setReply({ echo: spoken ? "" : judge.reply, judge, fallback: null });

@@ -119,7 +119,7 @@ export function checkJapanese(raw: string): { key: AdviceKey; text: AdviceText }
  * 見られない ものを 理由に 言い直させると、答えられて いる 学習者を 止める。
  * だから ここでは 必ず 先へ 進める（P8: 詰まらせない）。
  */
-export function localJudge(utterance: string, fallbackExample: string): JudgeResult {
+export function localJudge(utterance: string): JudgeResult {
   const advice = checkJapanese(utterance).text;
   return {
     v: 1,
@@ -130,7 +130,13 @@ export function localJudge(utterance: string, fallbackExample: string): JudgeRes
     reply: "",
     praise: advice.praise,
     fix: advice.fix,
-    exampleAnswer: advice.example ?? fallbackExample ?? tidySpacing(utterance),
+    /*
+     * お手本が 無い ときは **学習者の ことば そのまま**を 出す。
+     * 教材の 型文（`hint`）を 入れて いた ころは、ポップアップに **ふりがなの
+     * 付かない 漢字**が 出て いた——動的に 作る 文には ルビを 合成できないので、
+     * ここに 教材の 文を 持ち込まない（規律2）。
+     */
+    exampleAnswer: advice.example ?? tidySpacing(utterance),
     retry: false,
     glossary: [],
   };
