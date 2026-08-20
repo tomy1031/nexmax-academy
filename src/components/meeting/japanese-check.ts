@@ -13,6 +13,8 @@
  * 意味の当否や自然さの助言は、AIを足すときにこの層の外側へ重ねる。
  */
 
+import type { JudgeResult } from "@/lib/meeting/judge";
+
 /** 助言の種類。文言は下の ADVICE が持つ（自由文字列を画面に書かない）。 */
 export type AdviceKey = "empty" | "tooShort" | "notPolite" | "noPeriod" | "good";
 
@@ -53,6 +55,23 @@ const ADVICE: Record<AdviceKey, (answer: string) => AdviceText> = {
   }),
 };
 
+/**
+ * 見る前に **すき間を そろえる**。
+ *
+ * こえの 聞き取りは「日本語 と IT です 。」のように 語の あいだと 句点の 前に
+ * すき間を 入れて 返す。そのままだと 文の おわりの 型（`です。`）に 当たらず、
+ * ていねいに 言えて いるのに「です を つけましょう」と 返し、例文が
+ *「日本語 と IT です 。です。」に なって いた（2026-08-20 の 実発生）。
+ * 語の あいだの すき間は この アプリの 書き方（分かち書き）なので 残し、
+ * **句読点の 前の すき間だけ**詰める。
+ */
+export function tidySpacing(raw: string): string {
+  return raw
+    .replace(/[\t\u3000 ]+/gu, " ")
+    .replace(/ +([。、．，！？!?])/gu, "$1")
+    .trim();
+}
+
 /** 文の終わりが ていねい形か。 */
 const POLITE_END = /(です|ます|でした|ました|ですか|ますか)[。！？!?]?\s*$/u;
 /** 句点で終わっているか。 */
@@ -65,10 +84,13 @@ const HAS_PERIOD = /[。！？!?]\s*$/u;
  * 上から順に1つ目で止めるのは、いちばん効く1つだけ返すため。
  */
 export function checkJapanese(raw: string): { key: AdviceKey; text: AdviceText } {
-  const answer = raw.trim();
+  const answer = tidySpacing(raw);
   if (answer.length === 0) return { key: "empty", text: ADVICE.empty(answer) };
   // 1〜2文字は名前や国名のこともあるので「まちがい」にはしない。長くする提案に留める
-  if ([...answer].length <= 3) return { key: "tooShort", text: ADVICE.tooShort(answer) };
+  // 数えるのは すき間を 抜いた ぶん（「日 本 語」で 5文字に しない）
+  if ([...answer.replace(/ /gu, "")].length <= 3) {
+    return { key: "tooShort", text: ADVICE.tooShort(answer) };
+  }
   if (!POLITE_END.test(answer)) return { key: "notPolite", text: ADVICE.notPolite(answer) };
   if (!HAS_PERIOD.test(answer)) return { key: "noPeriod", text: ADVICE.noPeriod(answer) };
   return { key: "good", text: ADVICE.good(answer) };
@@ -81,3 +103,35 @@ export function checkJapanese(raw: string): { key: AdviceKey; text: AdviceText }
  * していた。文の 切り出しは 差し込みと ひとつづきの 仕事なので、
  * `src/lib/meeting/speech.ts` の `answerCore`（`fillAnswer` が 中で 呼ぶ）が 持つ。
  */
+
+/**
+ * AIに 通せなかった ときの 見かた（規則だけで 組み立てる）。
+ *
+ * ## なぜ 「見かた」の 形に そろえるか
+ * 前は AIに 通せなかった ときだけ **ポップアップを 出さずに** 先へ 進めて いた。
+ * 学習者から 見ると「言った のに 何も 出ない ときが ある」——同じ 操作で
+ * 起きる ことが 2通り あると、そこで 手が 止まる（2026-08-20 の 指定
+ *「1個ずつ 確実に フローが 進むように」）。だから **どんな ときも 同じ 形**で
+ * ポップアップを 出し、進むのは 学習者が 押して 決める。
+ *
+ * ## なぜ「もう いちど」に しないか
+ * 規則だけでは **噛み合って いるか**が 見られない（形しか 見て いない）。
+ * 見られない ものを 理由に 言い直させると、答えられて いる 学習者を 止める。
+ * だから ここでは 必ず 先へ 進める（P8: 詰まらせない）。
+ */
+export function localJudge(utterance: string, fallbackExample: string): JudgeResult {
+  const advice = checkJapanese(utterance).text;
+  return {
+    v: 1,
+    grade: "good",
+    language: "ja",
+    relevance: "unclear",
+    form: advice.fix ? "rough" : "natural",
+    reply: "",
+    praise: advice.praise,
+    fix: advice.fix,
+    exampleAnswer: advice.example ?? fallbackExample ?? tidySpacing(utterance),
+    retry: false,
+    glossary: [],
+  };
+}

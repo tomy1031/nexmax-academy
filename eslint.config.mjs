@@ -49,6 +49,43 @@ const eslintConfig = defineConfig([
     },
   },
 
+  /*
+   * 制約台帳の 絶対ルール「Gemini flash の テキスト生成を 学習者の 画面で 使わない」を
+   * 機械検査に する（2026-08-20）。
+   *
+   * 文章だけの 決まりに して いたら、**判定の 落とし先**として 静かに 戻って いた。
+   * Live の 枠と `generateContent` の 枠は 別勘定で、後者は 学習者1人の
+   * 1回の ミーティングで 使い切る。学習者が 通る コードからは 呼べなく する。
+   *
+   * 先生の 道具（`src/components/studio/**`）は 対象外。あちらは Codex が 本命で、
+   * Gemini は 先生が 自分で 押した ときの 控えに 留まる（台帳 2026-08-07）。
+   */
+  {
+    files: ["src/**/*.{ts,tsx}"],
+    ignores: ["src/components/studio/**", "src/lib/ai/**"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          paths: [
+            {
+              name: "@/lib/ai/generate-browser",
+              importNames: ["generateFromBrowser"],
+              message:
+                "学習者の 画面で Gemini の generateContent（flash）を 呼ばない。無料枠を すぐ 使い切る。文字だけの 判断は Live の つなぎの 中で もらう（src/components/meeting/judge-api.ts の やり方）か、端末の 規則ベースで 済ませる。",
+            },
+            {
+              name: "@/lib/ai/models",
+              importNames: ["TEXT_MODEL"],
+              message:
+                "学習者の 画面で テキスト生成の モデルを 名指ししない（Gemini flash の 無料枠は すぐ 尽きる）。",
+            },
+          ],
+        },
+      ],
+    },
+  },
+
   // Override default ignores of eslint-config-next.
   globalIgnores([
     // Default ignores of eslint-config-next:

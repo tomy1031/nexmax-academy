@@ -61,28 +61,22 @@ export interface LiveVoice {
   /** 口パクを動かすための解析器（再生の手前）。 */
   readonly analyser: AnalyserNode | null;
   /**
-   * 相手が **道具**で 返して きた 見かた（JSON）。
+   * 相手の こえが **いま 鳴って いるか**。
    *
-   * Live は 1つの つなぎで「音声か 文字か」どちらか しか 返せない ので、
-   * **声で 受け止めつつ 中身も 受け取る**には 道具の 呼び出しを 使う
-   *（2026-08-18 の 指定）。これが 届けば、判定の ための 別の 呼び出し
-   *（`generateContent`）が 要らなくなる——無料枠に いちばん 効く。
-   * 届かない ターンも ある ので、呼ぶ 側は 必ず 控えを 持つ。
+   * 画面は これを 見て「聞く ばん」と「話す ばん」を 分ける。相手が 話して いる
+   * あいだに マイクを 開けると、スピーカーの 音が 回り込んで そのまま
+   * 聞き取りに 混ざる（2026-08-20 に「いろんな 声が 混ざる」として 出た）。
    */
-  readonly lastJudgeCall: { id: number; data: Record<string, unknown> } | null;
+  readonly speaking: boolean;
+  /** 予約ずみの こえを 捨てて 黙らせる（つぎの しつもんへ 進む ときに 使う）。 */
+  readonly hush: () => void;
   /**
    * `voice` は人物カードで決めた声（characters の voice）。
    * `opening` は **つないだ 直後に 相手へ 渡す 合図**（画面には 出さない）。
    * これが 無いと、Live は 学習者が 何か 言うまで **黙って いる**——学習者からは
    * 「つないだのに 第一声が 無い」に なる（2026-08-18 の指摘）。
    */
-  readonly start: (
-    systemInstruction: string,
-    voice?: string,
-    opening?: string,
-    /** 相手に 持たせる 道具（見かたを 返す ため）。 */
-    tools?: readonly unknown[],
-  ) => Promise<void>;
+  readonly start: (systemInstruction: string, voice?: string, opening?: string) => Promise<void>;
   readonly stop: () => void;
   /** 声が使えないときの補い。テキストで送る（相手は声で返す）。 */
   readonly sendText: (text: string) => void;
@@ -117,11 +111,7 @@ export function useLiveVoice(): LiveVoice {
   const [turns, setTurns] = useState<readonly VoiceTurn[]>([]);
   const [lastUtterance, setLastUtterance] = useState<{ id: number; text: string } | null>(null);
   const [analyser, setAnalyser] = useState<AnalyserNode | null>(null);
-  const [lastJudgeCall, setLastJudgeCall] = useState<{
-    id: number;
-    data: Record<string, unknown>;
-  } | null>(null);
-  const judgeCallIdRef = useRef(0);
+  const [speaking, setSpeaking] = useState(false);
 
   /** 聞き取りの途中。相手が話しはじめたら1つに束ねて流す。 */
   const heardRef = useRef("");
@@ -131,7 +121,6 @@ export function useLiveVoice(): LiveVoice {
   const sessionRef = useRef<{
     sendRealtimeInput: (input: unknown) => void;
     sendClientContent: (input: unknown) => void;
-    sendToolResponse?: (input: unknown) => void;
     close: () => void;
   } | null>(null);
   const micRef = useRef<{ capture: MicCapture; stream: MediaStream } | null>(null);
@@ -157,9 +146,15 @@ export function useLiveVoice(): LiveVoice {
   /** 鳴らす 速さ。つなぐ 前に 決めた ぶんも 覚えて おく（入る 前の 画面で 選べる）。 */
   const rateRef = useRef(1);
 
+  /** 予約ずみの こえを 捨てて 黙らせる。つぎの しつもんへ 移る ときに 使う。 */
+  const hush = useCallback(() => {
+    clearScheduled(outRef.current);
+  }, []);
+
   const stop = useCallback(() => {
     talkingRef.current = false;
     setTalking(false);
+    setSpeaking(false);
     pendingRef.current = [];
     sessionRef.current?.close();
     sessionRef.current = null;
@@ -172,221 +167,237 @@ export function useLiveVoice(): LiveVoice {
     setStatus("idle");
   }, []);
 
-  const start = useCallback(
-    async (
-      systemInstruction: string,
-      voice?: string,
-      opening?: string,
-      tools?: readonly unknown[],
-    ) => {
-      /*
-       * **つなぐ前に、前の つなぎを 閉じる**。閉じずに もう一度 押せた ため、
-       * ヘンディさんが 2人ぶん 同時に 話して 声が 混ざった（2026-08-18 の 実発生）。
-       */
-      sessionRef.current?.close();
-      sessionRef.current = null;
-      micRef.current?.capture.stop();
-      micRef.current?.stream.getTracks().forEach((t) => t.stop());
-      micRef.current = null;
-      void outRef.current?.ctx.close();
-      outRef.current = null;
+  const start = useCallback(async (systemInstruction: string, voice?: string, opening?: string) => {
+    /*
+     * **つなぐ前に、前の つなぎを 閉じる**。閉じずに もう一度 押せた ため、
+     * ヘンディさんが 2人ぶん 同時に 話して 声が 混ざった（2026-08-18 の 実発生）。
+     */
+    sessionRef.current?.close();
+    sessionRef.current = null;
+    micRef.current?.capture.stop();
+    micRef.current?.stream.getTracks().forEach((t) => t.stop());
+    micRef.current = null;
+    void outRef.current?.ctx.close();
+    outRef.current = null;
 
-      setStatus("connecting");
-      setReason(null);
-      setTurns([]);
-      setLastUtterance(null);
-      heardRef.current = "";
-      saidRef.current = "";
-      talkingRef.current = false;
-      setTalking(false);
+    setStatus("connecting");
+    setReason(null);
+    setTurns([]);
+    setLastUtterance(null);
+    heardRef.current = "";
+    saidRef.current = "";
+    talkingRef.current = false;
+    setTalking(false);
 
-      const apiKey = getGeminiKey();
-      if (!apiKey) {
-        setStatus("notReady");
-        setReason("noKey");
-        return;
-      }
+    const apiKey = getGeminiKey();
+    if (!apiKey) {
+      setStatus("notReady");
+      setReason("noKey");
+      return;
+    }
 
+    /*
+     * 設定してあるモデル → 既定（新しいほう）の順にためす。
+     * Live の preview モデルは**名前ごと入れ替わる**ので、前に選んだ名前が
+     * 消えていることがある。1つで諦めると、画面には「声は まだ つかえません」
+     * としか出ず、キーを疑い続けることになる（2026-08-06 に実際に起きた）。
+     */
+    const wanted = [getLiveModel(), ...LIVE_TALK_MODELS].filter(
+      (name, index, all): name is string => Boolean(name) && all.indexOf(name) === index,
+    );
+    /*
+     * **キーはサーバへ渡さない**（2026-08-17）。短命トークンもこの端末で作る——
+     * うちの Worker は香港で動くことがあり、そこを通すと (1) Google に断られ、
+     * (2) キーが香港のデータセンターで復号される。通さなければどちらも起きない。
+     *
+     * 作れないキー（新形式 AQ. で報告あり）のときだけ、本人のキーで直接つなぐ。
+     */
+    const models = wanted.length > 0 ? wanted : [DEFAULT_LIVE_TALK_MODEL];
+    const minted = await createLiveToken({ apiKey });
+    const lastReason = minted.ok ? "upstream" : minted.reason;
+    const canUseKeyDirectly = lastReason === "tokenRejected" || lastReason === "invalidRequest";
+    const auth = minted.ok ? minted.token : canUseKeyDirectly ? apiKey : null;
+    const liveModel = models[0] ?? DEFAULT_LIVE_TALK_MODEL;
+    if (!auth) {
+      setStatus("notReady");
+      setReason(lastReason);
+      return;
+    }
+
+    // マイクは**つなぐ前**に許可を取る。つないでから断られると、
+    // 相手だけが話して学習者が答えられない状態で残る
+    let stream: MediaStream;
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({
+        audio: {
+          channelCount: 1,
+          // 相手の声がスピーカーから回り込むと、そのまま聞き取りに混ざる
+          echoCancellation: true,
+          noiseSuppression: true,
+          autoGainControl: true,
+        },
+      });
+    } catch {
+      setStatus("notReady");
+      setReason("noMic");
+      return;
+    }
+
+    try {
+      const { GoogleGenAI, Modality } = await import("@google/genai");
       /*
-       * 設定してあるモデル → 既定（新しいほう）の順にためす。
-       * Live の preview モデルは**名前ごと入れ替わる**ので、前に選んだ名前が
-       * 消えていることがある。1つで諦めると、画面には「声は まだ つかえません」
-       * としか出ず、キーを疑い続けることになる（2026-08-06 に実際に起きた）。
-       */
-      const wanted = [getLiveModel(), ...LIVE_TALK_MODELS].filter(
-        (name, index, all): name is string => Boolean(name) && all.indexOf(name) === index,
-      );
-      /*
-       * **キーはサーバへ渡さない**（2026-08-17）。短命トークンもこの端末で作る——
-       * うちの Worker は香港で動くことがあり、そこを通すと (1) Google に断られ、
-       * (2) キーが香港のデータセンターで復号される。通さなければどちらも起きない。
+       * **短命トークンで つなぐ ときは v1alpha**（SDK が 警告で そう言う——
+       * 「The SDK's ephemeral token support is in v1alpha only」）。
+       * 本人の キーで 直接 つなぐ ときは これまでどおり v1beta。
        *
-       * 作れないキー（新形式 AQ. で報告あり）のときだけ、本人のキーで直接つなぐ。
+       * 2026-08-19 に 直した ことに なって いたが、**コードは 変わって いなかった**
+       *（bc2d4a7 は 本文だけが 直っていた）。ここで 実際に 直す。
        */
-      const models = wanted.length > 0 ? wanted : [DEFAULT_LIVE_TALK_MODEL];
-      const minted = await createLiveToken({ apiKey });
-      const lastReason = minted.ok ? "upstream" : minted.reason;
-      const canUseKeyDirectly = lastReason === "tokenRejected" || lastReason === "invalidRequest";
-      const auth = minted.ok ? minted.token : canUseKeyDirectly ? apiKey : null;
-      const liveModel = models[0] ?? DEFAULT_LIVE_TALK_MODEL;
-      if (!auth) {
-        setStatus("notReady");
-        setReason(lastReason);
-        return;
-      }
+      const ai = new GoogleGenAI({
+        apiKey: auth,
+        apiVersion: auth === apiKey ? "v1beta" : "v1alpha",
+      });
 
-      // マイクは**つなぐ前**に許可を取る。つないでから断られると、
-      // 相手だけが話して学習者が答えられない状態で残る
-      let stream: MediaStream;
-      try {
-        stream = await navigator.mediaDevices.getUserMedia({
-          audio: {
-            channelCount: 1,
-            // 相手の声がスピーカーから回り込むと、そのまま聞き取りに混ざる
-            echoCancellation: true,
-            noiseSuppression: true,
-            autoGainControl: true,
-          },
-        });
-      } catch {
-        setStatus("notReady");
-        setReason("noMic");
-        return;
-      }
+      // 再生側。解析器を挟んでから出す
+      const outCtx = new AudioContext({ sampleRate: OUT_RATE });
+      // 自動再生の制限で止まったまま始まることがある。動かさないと1音も出ない
+      if (outCtx.state === "suspended") await outCtx.resume();
+      const node = outCtx.createAnalyser();
+      node.fftSize = 512;
+      node.connect(outCtx.destination);
+      outRef.current = {
+        ctx: outCtx,
+        node,
+        playAt: 0,
+        sources: [],
+        rate: rateRef.current,
+        setBusy: setSpeaking,
+      };
+      setAnalyser(node);
 
-      try {
-        const { GoogleGenAI, Modality } = await import("@google/genai");
-        const ai = new GoogleGenAI({ apiKey: auth, apiVersion: "v1beta" });
-
-        // 再生側。解析器を挟んでから出す
-        const outCtx = new AudioContext({ sampleRate: OUT_RATE });
-        // 自動再生の制限で止まったまま始まることがある。動かさないと1音も出ない
-        if (outCtx.state === "suspended") await outCtx.resume();
-        const node = outCtx.createAnalyser();
-        node.fftSize = 512;
-        node.connect(outCtx.destination);
-        outRef.current = { ctx: outCtx, node, playAt: 0, sources: [], rate: rateRef.current };
-        setAnalyser(node);
-
-        const session = await ai.live.connect({
-          model: liveModel,
-          config: {
-            responseModalities: [Modality.AUDIO],
-            systemInstruction,
-            inputAudioTranscription: {},
-            outputAudioTranscription: {},
-            /*
-             * 声は**人物カードで決めたもの**を使う（characters の voice）。
-             * 決めていないときは Live の既定に任せる——ここで別の声を勝手に
-             * 当てると、まんがのヘンディさんと声が違う人になる。
-             * 言語を伝えるのは、日本語として聞き取らせるため。
-             */
-            speechConfig: {
-              languageCode: "ja-JP",
-              ...(voice ? { voiceConfig: { prebuiltVoiceConfig: { voiceName: voice } } } : {}),
-            },
-            // 見かたを 返す ための 道具（渡された ときだけ）
-            ...(tools && tools.length > 0 ? { tools: [...tools] as never } : {}),
-          },
-          callbacks: {
-            onopen: () => setStatus("live"),
-            onmessage: (message: unknown) => {
-              /*
-               * 文字起こしは**細切れで**届く（「わたしは」「プノンペン」…）。
-               * 1つずつ字幕にすると読めないし、途中で判定すると言い終える前に
-               * 見られることになる。だから:
-               *   聞き取り（学習者）… 相手が話しはじめた合図で 1つに束ねて流す
-               *   返事（相手）      … turnComplete で 1つに束ねる
-               */
-              const piece = readTranscript(message);
-              if (piece?.from === "me") heardRef.current += piece.text;
-              if (piece?.from === "client") {
-                const heard = heardRef.current.trim();
-                if (heard) {
-                  heardRef.current = "";
-                  utteranceIdRef.current += 1;
-                  const id = utteranceIdRef.current;
-                  setTurns((prev) => [...prev, { from: "me", text: heard }]);
-                  setLastUtterance({ id, text: heard });
-                }
-                saidRef.current += piece.text;
-              }
-              /*
-               * 相手の セリフを 途中で 止められた とき（割り込み）。
-               * **予約ずみの 音を 捨てる**。捨てないと `playAt` が 先へ 進んだ ままで、
-               * つぎの 返事は「前の セリフが 鳴り終わる 時刻」から 予約される
-               * ——学習者には **返事が 来ない** ように 見える（実際は 何秒も あとに 鳴る）。
-               */
-              if (isInterrupted(message)) clearScheduled(outRef.current);
-              if (isTurnComplete(message) && saidRef.current.trim()) {
-                const said = saidRef.current.trim();
-                saidRef.current = "";
-                setTurns((prev) => [...prev, { from: "client", text: said }]);
-              }
-              /*
-               * 道具の 呼び出し（見かた）。**声とは 別の 道**で 届くので、
-               * 受け止めは 声の まま、中身は ここで 受け取れる。
-               * 返事を 返さないと 相手が 待ち続ける ので、空の 返事を すぐ 返す。
-               */
-              const call = readJudgeCall(message);
-              if (call) {
-                judgeCallIdRef.current += 1;
-                setLastJudgeCall({ id: judgeCallIdRef.current, data: call.args });
-                sessionRef.current?.sendToolResponse?.({
-                  functionResponses: [{ id: call.id, name: call.name, response: { ok: true } }],
-                });
-              }
-              for (const pcm of readAudio(message)) play(outRef.current, pcm);
-            },
-            onerror: () => setStatus("error"),
-            onclose: () => setStatus("idle"),
-          },
-        });
-        sessionRef.current = session as unknown as NonNullable<typeof sessionRef.current>;
-
-        /*
-         * マイク → 16kHz PCM → 送信。落とす処理は mic-capture.ts が持つ
-         *（音声スレッドで動かすため。メインスレッドで作っていたころは、画面が
-         * 忙しいと語の途中が丸ごと落ちて、何を言っても書き起こしが崩れていた）。
-         */
-        const capture = await startMicCapture(stream, (pcm) => {
-          // 押して いない あいだは 捨てる（口は 開いた まま・音だけ ためない）
-          if (!talkingRef.current) return;
+      const session = await ai.live.connect({
+        model: liveModel,
+        config: {
+          responseModalities: [Modality.AUDIO],
+          systemInstruction,
+          inputAudioTranscription: {},
+          outputAudioTranscription: {},
           /*
-           * **ためずに その場で 送る**。ためて 最後に まとめて 送って いた ころは、
-           * 1回目の 返事が 来ない／あとで 2つ まとめて 来る ことが あった
-           *（2026-08-18 の 指摘）——相手は 音が 流れて いる あいだに 区切りを
-           * 見て いるので、まとめ送りは その 見かたと 合わない。
+           * **区切りは こちらが 決める**（自動の 声の 検出を 切る）。
+           *
+           * 既定では 相手の サーバが 音を 聞いて「話しはじめた・話しおわった」を
+           * 自分で 決める。押して 話す 画面と 組み合わせると、押して いる あいだの
+           * 息つぎ・教室の ざわめきの たびに 区切りが 立ち、**1回 押しただけで
+           * 返事が 2つ 3つ 返って きた**（2026-08-20 の 実発生。前の 話題が
+           * 蘇る・声が 重なるのは これが 元）。
+           * `activityStart` / `activityEnd` を こちらから 送る 形に すると、
+           * **1回 押す ＝ 1つの ターン**が 機械的に 保証される。
            */
-          sessionRef.current?.sendRealtimeInput({
-            audio: {
-              data: bytesToBase64(new Uint8Array(pcm.buffer, pcm.byteOffset, pcm.byteLength)),
-              mimeType: `audio/pcm;rate=${IN_RATE}`,
-            },
-          });
-        });
-        micRef.current = { capture, stream };
+          realtimeInputConfig: { automaticActivityDetection: { disabled: true } },
+          /*
+           * 声は**人物カードで決めたもの**を使う（characters の voice）。
+           * 決めていないときは Live の既定に任せる——ここで別の声を勝手に
+           * 当てると、まんがのヘンディさんと声が違う人になる。
+           * 言語を伝えるのは、日本語として聞き取らせるため。
+           */
+          speechConfig: {
+            languageCode: "ja-JP",
+            ...(voice ? { voiceConfig: { prebuiltVoiceConfig: { voiceName: voice } } } : {}),
+          },
+        },
+        callbacks: {
+          onopen: () => setStatus("live"),
+          onmessage: (message: unknown) => {
+            /*
+             * 文字起こしは**細切れで**届く（「わたしは」「プノンペン」…）。
+             * 1つずつ字幕にすると読めないし、途中で判定すると言い終える前に
+             * 見られることになる。だから:
+             *   聞き取り（学習者）… 相手が話しはじめた合図で 1つに束ねて流す
+             *   返事（相手）      … turnComplete で 1つに束ねる
+             */
+            const piece = readTranscript(message);
+            if (piece?.from === "me") heardRef.current += piece.text;
+            if (piece?.from === "client") {
+              const heard = heardRef.current.trim();
+              if (heard) {
+                heardRef.current = "";
+                utteranceIdRef.current += 1;
+                const id = utteranceIdRef.current;
+                setTurns((prev) => [...prev, { from: "me", text: heard }]);
+                setLastUtterance({ id, text: heard });
+              }
+              saidRef.current += piece.text;
+            }
+            /*
+             * 相手の セリフを 途中で 止められた とき（割り込み）。
+             * **予約ずみの 音を 捨てる**。捨てないと `playAt` が 先へ 進んだ ままで、
+             * つぎの 返事は「前の セリフが 鳴り終わる 時刻」から 予約される
+             * ——学習者には **返事が 来ない** ように 見える（実際は 何秒も あとに 鳴る）。
+             */
+            /*
+             * 途中で 止められた ぶんの **字幕も 捨てる**。捨てないと、言いかけの
+             * ことばが `saidRef` に 残り、つぎの 返事と つながって チャット欄に
+             * 出る——「話した ことばと 画面の 字が ちがう」の 正体の ひとつ
+             *（2026-08-20 の 指摘）。
+             */
+            if (isInterrupted(message)) {
+              clearScheduled(outRef.current);
+              saidRef.current = "";
+            }
+            if (isTurnComplete(message) && saidRef.current.trim()) {
+              const said = saidRef.current.trim();
+              saidRef.current = "";
+              setTurns((prev) => [...prev, { from: "client", text: said }]);
+            }
+            for (const pcm of readAudio(message)) play(outRef.current, pcm);
+          },
+          onerror: () => setStatus("error"),
+          onclose: () => setStatus("idle"),
+        },
+      });
+      sessionRef.current = session as unknown as NonNullable<typeof sessionRef.current>;
 
+      /*
+       * マイク → 16kHz PCM → 送信。落とす処理は mic-capture.ts が持つ
+       *（音声スレッドで動かすため。メインスレッドで作っていたころは、画面が
+       * 忙しいと語の途中が丸ごと落ちて、何を言っても書き起こしが崩れていた）。
+       */
+      const capture = await startMicCapture(stream, (pcm) => {
+        // 押して いない あいだは 捨てる（口は 開いた まま・音だけ ためない）
+        if (!talkingRef.current) return;
         /*
-         * つないだ ら、こちらから **1回だけ** 合図を 送る。
-         * Live は 話しかけられるまで 黙って いる ので、これが 無いと
-         * 学習者は「つないだのに 何も 起きない」画面を 見る ことに なる。
-         * 合図そのものは 字幕に 足さない（学習者が 言った ことでは ない）。
+         * **ためずに その場で 送る**。ためて 最後に まとめて 送って いた ころは、
+         * 1回目の 返事が 来ない／あとで 2つ まとめて 来る ことが あった
+         *（2026-08-18 の 指摘）——相手は 音が 流れて いる あいだに 区切りを
+         * 見て いるので、まとめ送りは その 見かたと 合わない。
          */
-        if (opening) {
-          session.sendClientContent({
-            turns: [{ role: "user", parts: [{ text: opening }] }],
-            turnComplete: true,
-          });
-        }
-      } catch {
-        stream.getTracks().forEach((t) => t.stop());
-        setStatus("error");
-        setReason("connect");
+        sessionRef.current?.sendRealtimeInput({
+          audio: {
+            data: bytesToBase64(new Uint8Array(pcm.buffer, pcm.byteOffset, pcm.byteLength)),
+            mimeType: `audio/pcm;rate=${IN_RATE}`,
+          },
+        });
+      });
+      micRef.current = { capture, stream };
+
+      /*
+       * つないだ ら、こちらから **1回だけ** 合図を 送る。
+       * Live は 話しかけられるまで 黙って いる ので、これが 無いと
+       * 学習者は「つないだのに 何も 起きない」画面を 見る ことに なる。
+       * 合図そのものは 字幕に 足さない（学習者が 言った ことでは ない）。
+       */
+      if (opening) {
+        session.sendClientContent({
+          turns: [{ role: "user", parts: [{ text: opening }] }],
+          turnComplete: true,
+        });
       }
-    },
-    [],
-  );
+    } catch {
+      stream.getTracks().forEach((t) => t.stop());
+      setStatus("error");
+      setReason("connect");
+    }
+  }, []);
 
   /**
    * 書いて送る。**相手は声で返す**（Live は入力が文字でも音声で答える）。
@@ -406,6 +417,15 @@ export function useLiveVoice(): LiveVoice {
     pendingRef.current = [];
     clearScheduled(outRef.current);
     /*
+     * 前の ターンの **言いかけの 字**を 捨てる。
+     * 文字起こしは ターンの 区切りとは **別の 順で** 届く（SDK の 型注記:
+     * 「The transcription is independent to the model turn」）ので、残して おくと
+     * 遅れて 届いた 断片が つぎの 吹き出しに つながる——「話した ことばと
+     * 画面の 字が ちがう」の もう ひとつの 元（2026-08-20 の 指摘）。
+     */
+    saidRef.current = "";
+    heardRef.current = "";
+    /*
      * 鳴らす 側が 止まって いる ことが ある（別の タブを 見て 戻って きた あとなど）。
      * 止まった ままだと **予約は 通るのに 音は 1つも 出ない**——画面は 何も 言わない
      * ので、学習者には「返事が 来ない」と しか 見えない。話しはじめる ここで 起こす。
@@ -413,6 +433,8 @@ export function useLiveVoice(): LiveVoice {
     void outRef.current?.ctx.resume();
     talkingRef.current = true;
     setTalking(true);
+    // 「ここから 話す」を こちらから 伝える（自動の 検出は 切って ある）
+    sessionRef.current?.sendRealtimeInput({ activityStart: {} });
   }, []);
 
   /**
@@ -424,8 +446,12 @@ export function useLiveVoice(): LiveVoice {
     if (!talkingRef.current) return;
     talkingRef.current = false;
     setTalking(false);
-    // 「言い終わった」を 伝える（ここで 相手が 返事を 作りはじめる）
-    sessionRef.current?.sendRealtimeInput({ audioStreamEnd: true });
+    /*
+     * 「言い終わった」を 伝える（ここで 相手が 返事を 作りはじめる）。
+     * `audioStreamEnd` は **自動の 検出が 生きて いる ときだけ**の 合図なので、
+     * 区切りを こちらで 決める いまは `activityEnd` を 送る（SDK の 型注記どおり）。
+     */
+    sessionRef.current?.sendRealtimeInput({ activityEnd: {} });
   }, []);
 
   /** 進行の 合図。学習者の ことばでは ないので 字幕に 残さない。 */
@@ -447,7 +473,8 @@ export function useLiveVoice(): LiveVoice {
     reason,
     turns,
     lastUtterance,
-    lastJudgeCall,
+    speaking,
+    hush,
     analyser,
     start,
     stop,
@@ -468,29 +495,8 @@ interface Output {
   sources: AudioBufferSourceNode[];
   /** 鳴らす 速さ（学習者が 選ぶ）。 */
   rate: number;
-}
-
-/**
- * 見かたの 道具の 呼び出しを 取り出す。
- * 形が 変わっても 落ちない ように、必要な ところだけ 見る。
- */
-function readJudgeCall(
-  message: unknown,
-): { id: string; name: string; args: Record<string, unknown> } | null {
-  if (!message || typeof message !== "object") return null;
-  const calls = (
-    message as { toolCall?: { functionCalls?: { id?: string; name?: string; args?: unknown }[] } }
-  ).toolCall?.functionCalls;
-  for (const call of calls ?? []) {
-    if (call?.args && typeof call.args === "object") {
-      return {
-        id: call.id ?? "",
-        name: call.name ?? "",
-        args: call.args as Record<string, unknown>,
-      };
-    }
-  }
-  return null;
+  /** 鳴って いる／いないを 画面へ 伝える（「聞く ばん」の 判定に 使う）。 */
+  setBusy: (busy: boolean) => void;
 }
 
 /** 相手の セリフが 割り込まれたか。 */
@@ -512,6 +518,7 @@ function clearScheduled(out: Output | null): void {
   }
   out.sources = [];
   out.playAt = 0;
+  out.setBusy(false);
 }
 
 /** 相手が話し終わったか（返事を1つに束ねる合図）。 */
@@ -546,9 +553,20 @@ function play(out: Output | null, pcm: Uint8Array) {
   out.playAt = at + buffer.duration;
   // 割り込みで 捨てられるように 覚えておく（鳴り終わったら 自分で 抜ける）
   out.sources.push(source);
+  out.setBusy(true);
   source.onended = () => {
     const live = out.sources.indexOf(source);
     if (live >= 0) out.sources.splice(live, 1);
+    /*
+     * さいごの ひとかけらが 鳴り終わったら「相手は 話しおわった」。
+     * **少し 待ってから**にするのは、音の かけらは 通信の 都合で とぎれる ことが
+     * あり、その 一瞬を「話しおわった」と 読むと、文の 途中で 話す ボタンが
+     * 生き返って しまう ため（学習者が そこで 割り込むと 声が 重なる）。
+     */
+    if (out.sources.length > 0) return;
+    window.setTimeout(() => {
+      if (out.sources.length === 0) out.setBusy(false);
+    }, 300);
   };
 }
 

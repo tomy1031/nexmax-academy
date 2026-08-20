@@ -204,10 +204,30 @@ export async function joinCall(page: Page): Promise<void> {
   await page.getByRole("button", { name: "ミーティングに さんかする" }).click();
 }
 
-/** 文字で答える（声は 実機のマイクが要るので 自動では通らない）。 */
-export async function speakByText(page: Page, text: string): Promise<void> {
+/** 文字を 入れて 送るだけ（判定の ポップアップは 待たない）。 */
+async function sendAnswer(page: Page, text: string): Promise<void> {
   await page.getByLabel("こたえを 入力する").fill(text);
   await page.getByRole("button", { name: "おくる" }).click();
+}
+
+/**
+ * 文字で答える（声は 実機のマイクが要るので 自動では通らない）。
+ *
+ * 判定は **AIに 通せた ときも 通せなかった ときも** ポップアップで 出る
+ *（2026-08-20 の 指定「1個ずつ 確実に フローが 進むように」）。鍵の 無い
+ * 検証でも 同じ ポップアップが 出るので、読んで 押す ところまでを 1つの 操作に する。
+ */
+export async function speakByText(page: Page, text: string): Promise<void> {
+  await sendAnswer(page, text);
+  await dismissJudge(page);
+}
+
+/** 判定の ポップアップを 読んで 閉じる（つぎへ／もう いちど）。 */
+export async function dismissJudge(page: Page): Promise<void> {
+  const popup = page.getByRole("dialog", { name: "はんていの ポップアップ" });
+  await expect(popup).toBeVisible({ timeout: 45_000 });
+  await popup.getByRole("button").click();
+  await expect(popup).toHaveCount(0);
 }
 
 /**
@@ -226,7 +246,8 @@ export async function waitForAsk(page: Page, count: number): Promise<void> {
  *（実際の 会議で 使う 救援の 言い方を そのまま 練習に する）。
  */
 export async function skipAsk(page: Page): Promise<void> {
-  await speakByText(page, "すみません、つぎを おねがいします");
+  // 逃げの ひとことは 判定に かけない（ポップアップは 出ない）
+  await sendAnswer(page, "すみません、つぎを おねがいします");
 }
 
 /** 話せた しつもんの 数（はなせた こと（n / m））。 */

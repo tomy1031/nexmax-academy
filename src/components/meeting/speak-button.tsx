@@ -29,6 +29,8 @@ export function SpeakButton({
   status,
   reason,
   talking,
+  disabled = false,
+  waitNote,
   onConnect,
   onStartTalking,
   onStopTalking,
@@ -37,6 +39,16 @@ export function SpeakButton({
   /** つながらなかった 理由（`noMic` だけ 言い方を 変える）。 */
   reason?: string | null;
   talking: boolean;
+  /**
+   * いま 押しても 意味が 無い ばんか（相手が 話して いる・見かたを 待って いる）。
+   *
+   * **消さずに 灰色で 残す**。押せる ものが 場面ごとに 現れたり 消えたり すると、
+   * 学習者は 何が 起きたのか 分からず 手が 止まる（2026-08-20 の 指定
+   *「必要ないときは さわれないように して、1個ずつ 確実に フローが 進むように」）。
+   */
+  disabled?: boolean;
+  /** 灰色の あいだに 出す ひとこと（なぜ いま 押せないか）。 */
+  waitNote?: string | null;
   onConnect: () => void;
   onStartTalking: () => void;
   onStopTalking: () => void;
@@ -82,10 +94,11 @@ export function SpeakButton({
       <motion.button
         type="button"
         aria-pressed={talking}
+        disabled={disabled}
         onClick={talking ? onStopTalking : onStartTalking}
         animate={talking ? { scale: [1, 1.03, 1] } : { scale: 1 }}
         transition={talking ? { duration: 1.1, repeat: Infinity } : { duration: 0.15 }}
-        className="btn-island btn-game w-full touch-none px-6 py-5 text-xl select-none"
+        className="btn-island btn-game w-full touch-none px-6 py-5 text-xl select-none disabled:opacity-40"
         style={
           {
             "--btn-face": talking ? TALKING_FACE : READY_FACE,
@@ -96,9 +109,11 @@ export function SpeakButton({
         {talking ? "🔴 いま きいて います（おすと おわり）" : "🎤 おして はなす"}
       </motion.button>
       <p className="mt-1.5 text-xs font-bold break-keep text-white/70">
-        {talking
-          ? "はなしおわったら、もう いちど おして ください"
-          : "おすと、こえを おくります。はなしおわったら もう いちど おします"}
+        {disabled
+          ? (waitNote ?? "いまは まって ください")
+          : talking
+            ? "はなしおわったら、もう いちど おして ください"
+            : "おすと、こえを おくります。はなしおわったら もう いちど おします"}
       </p>
     </div>
   );
