@@ -51,8 +51,29 @@ export interface JudgeRequest {
 export type JudgeApiResult =
   { ok: true; judge: JudgeResult; model: string } | { ok: false; reason: string };
 
-/** 返事を 待つ 上限。ここを 過ぎたら 規則ベースの 見かたへ 落として 会話を 進める。 */
-const REPLY_TIMEOUT_MS = 12_000;
+/** 1つの 頼みの 返事を 待つ 上限。 */
+const REPLY_TIMEOUT_MS = 10_000;
+
+/**
+ * **判定ぜんぶの 上限**（つなぐ ところも 含む）。
+ *
+ * つなぐ ところに 上限が 無かった ため、相手が 応じない ときに
+ * **画面が「聞いて います…」の まま 止まった**（CI・2026-08-20）。
+ * 触れる ものを ばんで 絞って いる ぶん、1か所 止まると 全部 止まる。
+ * 見かたは 出なくても よいので、**必ず ここで 打ち切って** 先へ 進める。
+ */
+const OVERALL_TIMEOUT_MS = 20_000;
+
+/** つなぐ ところの 上限（過ぎたら つぎの モデル名を ためす）。 */
+const CONNECT_TIMEOUT_MS = 8_000;
+
+/** 約束に 期限を つける（過ぎたら 投げる）。 */
+async function withTimeout<T>(work: Promise<T>, ms: number): Promise<T> {
+  return await Promise.race([
+    work,
+    new Promise<T>((_, reject) => setTimeout(() => reject(new JudgeError("timeout")), ms)),
+  ]);
+}
 
 /**
  * Live に 「JSON だけ」を 返させる ための 前置き。
@@ -68,7 +89,13 @@ const JSON_ONLY =
 export async function requestJudge(request: JudgeRequest): Promise<JudgeApiResult> {
   const apiKey = getGeminiKey();
   if (!apiKey) return { ok: false, reason: "noKey" };
-  return await judgeFromBrowser(apiKey, request);
+  // どこで 詰まっても 必ず 返る（止まらない ことを 品質より 上に 置く）
+  return await Promise.race([
+    judgeFromBrowser(apiKey, request),
+    new Promise<JudgeApiResult>((resolve) =>
+      setTimeout(() => resolve({ ok: false, reason: "timeout" }), OVERALL_TIMEOUT_MS),
+    ),
+  ]);
 }
 
 /**
@@ -95,13 +122,29 @@ async function judgeFromBrowser(apiKey: string, request: JudgeRequest): Promise<
   const auth = minted.ok ? minted.token : canUseKeyDirectly ? apiKey : null;
   if (!auth) return { ok: false, reason: failReason };
 
-  const model =
-    [getLiveModel(), ...LIVE_TALK_MODELS].find((name): name is string => Boolean(name)) ??
-    DEFAULT_LIVE_TALK_MODEL;
+  /*
+   * 設定してある モデル → 既定の 順に ためす。preview の モデルは **名前ごと
+   * 入れ替わる**うえ、文字だけの 返しに 応じない ものも ありうる。1つで 諦めると
+   * 学習者には「AIの みかたは いま つかえません」しか 見えない（2026-08-06 の 教訓）。
+   */
+  const models = [getLiveModel(), ...LIVE_TALK_MODELS].filter(
+    (name, index, all): name is string => Boolean(name) && all.indexOf(name) === index,
+  );
+  const wanted = models.length > 0 ? models : [DEFAULT_LIVE_TALK_MODEL];
 
   let session: LiveTextSession | null = null;
+  let model = wanted[0] ?? DEFAULT_LIVE_TALK_MODEL;
   try {
-    session = await openTextSession(auth, auth === apiKey, model);
+    for (const name of wanted) {
+      try {
+        session = await openTextSession(auth, auth === apiKey, name);
+        model = name;
+        break;
+      } catch {
+        // つぎの 名前を ためす（ぜんぶ 駄目なら 下の判定で 落ちる）
+      }
+    }
+    if (!session) return { ok: false, reason: "modelNotFound" };
     let judge = parseJudge(
       readObject(await session.ask(buildJudgePrompt(context))),
       context.attempt,
@@ -158,37 +201,44 @@ async function openTextSession(
   let settle: ((text: string) => void) | null = null;
   let fail: ((error: Error) => void) | null = null;
 
-  const session = await ai.live.connect({
-    model,
-    config: {
-      responseModalities: [Modality.TEXT],
-      systemInstruction: JSON_ONLY,
-      // 学習者の言ったことに寄せたいので、思いつきは抑える
-      temperature: 0.4,
-    },
-    callbacks: {
-      onmessage: (message: unknown) => {
-        buffer += readText(message);
-        if (isTurnComplete(message)) {
-          const text = buffer;
-          buffer = "";
-          settle?.(text);
+  /*
+   * つなぐ ところにも 上限を 置く。ここが 返って こないと、つぎの モデルを
+   * ためす ところまで 行けない（全体の 上限だけだと 1つ目で 使い切る）。
+   */
+  const session = await withTimeout(
+    ai.live.connect({
+      model,
+      config: {
+        responseModalities: [Modality.TEXT],
+        systemInstruction: JSON_ONLY,
+        // 学習者の言ったことに寄せたいので、思いつきは抑える
+        temperature: 0.4,
+      },
+      callbacks: {
+        onmessage: (message: unknown) => {
+          buffer += readText(message);
+          if (isTurnComplete(message)) {
+            const text = buffer;
+            buffer = "";
+            settle?.(text);
+            settle = null;
+            fail = null;
+          }
+        },
+        onerror: () => {
+          fail?.(new JudgeError("upstream"));
           settle = null;
           fail = null;
-        }
+        },
+        onclose: () => {
+          fail?.(new JudgeError("network"));
+          settle = null;
+          fail = null;
+        },
       },
-      onerror: () => {
-        fail?.(new JudgeError("upstream"));
-        settle = null;
-        fail = null;
-      },
-      onclose: () => {
-        fail?.(new JudgeError("network"));
-        settle = null;
-        fail = null;
-      },
-    },
-  });
+    }),
+    CONNECT_TIMEOUT_MS,
+  );
 
   return {
     ask: (prompt: string) =>
