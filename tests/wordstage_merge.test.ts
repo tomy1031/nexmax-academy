@@ -1,7 +1,8 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { wordStageSchema, type WordStage } from "../src/content/schema";
+import { vocabSchema, wordStageSchema, type WordStage } from "../src/content/schema";
+import { hydrateWordStage } from "../src/lib/vocabulary";
 import {
   findLearnerWordStage,
   learnerWordStages,
@@ -16,10 +17,16 @@ import {
   type ArcadeState,
 } from "../src/components/arcade/arcade-reducer";
 
+const VOCAB = vocabSchema.parse(
+  JSON.parse(readFileSync(join(__dirname, "..", "content", "vocab", "vocabulary.json"), "utf8")),
+);
+
+/** 保存の かたち（参照）を、アプリが 受け取る かたちに 直してから 使う。 */
 function load(id: string): WordStage {
-  return wordStageSchema.parse(
+  const stored = wordStageSchema.parse(
     JSON.parse(readFileSync(join(__dirname, "..", "content", "wordstages", `${id}.json`), "utf8")),
   );
+  return hydrateWordStage(stored, VOCAB.words, VOCAB.furigana)!;
 }
 
 const intro = load("intro_kotoba");

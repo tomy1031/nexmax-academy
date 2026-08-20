@@ -11,7 +11,8 @@
  * 純関数だけ。node:fs も React も 持たない。
  */
 
-import type { VocabWord, Word } from "@/content/schema";
+import type { StoredWordStage, VocabWord, Word, WordStage } from "@/content/schema";
+import { mergeFuriganaEntries, type FuriganaEntry } from "@/lib/text/furigana";
 
 /** id → ことば。 */
 export function vocabById(words: readonly VocabWord[]): ReadonlyMap<string, VocabWord> {
@@ -79,4 +80,39 @@ export function gameWordsOf(
     out.push(game);
   }
   return { words: out, missing, notPlayable };
+}
+
+/**
+ * 保存の かたち（`wordIds` の 参照）を、読み出しの かたち（`words` が ある）に 直す。
+ *
+ * **境目は ここ 1つ**。ゲーム・辞書・スタジオは これまでどおり `words` を 見る。
+ * 参照が 切れて いたら その語を 落とす——1語 消えても 遊べるが、
+ * 画面が 真っ白に なると 学習者は 何も できない。切れた ぶんは `lint:content` が 止める。
+ */
+export function hydrateWordStage(
+  stored: StoredWordStage,
+  vocab: readonly VocabWord[],
+  /** 正の 読み辞書（説明文・例文の 漢字を 覆う）。 */
+  vocabFurigana: readonly FuriganaEntry[] = [],
+): WordStage | null {
+  const { wordIds, words, furigana, ...rest } = stored;
+  if (!wordIds) return words ? { ...rest, furigana, words } : null;
+
+  const picked = gameWordsOf(wordIds, vocab);
+  if (picked.words.length === 0) return null;
+
+  /*
+   * 読み辞書は **正の 側**が 運ぶ（説明文・例文の 漢字は 正に 書いて あるため）。
+   * ステージが 自分の 読み辞書を 持って いれば、そちらを 後ろに 置いて 勝たせる。
+   */
+  const fromVocab = vocab
+    .filter((word) => wordIds.includes(word.id))
+    .map((word): FuriganaEntry => [word.term, word.reading]);
+  return {
+    ...rest,
+    furigana: mergeFuriganaEntries(fromVocab, vocabFurigana, furigana).map(
+      ([surface, reading]): [string, string] => [surface, reading],
+    ),
+    words: picked.words,
+  };
 }

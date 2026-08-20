@@ -251,7 +251,8 @@ export const MAX_CONTEXT_CHARS = 1200;
  */
 export function buildLessonContext(contents: readonly Content[]): string {
   const terms = contents.flatMap((content) =>
-    content.kind === "wordstage" ? content.words.map((w) => w.term) : [],
+    // 参照で 持つ ステージの 語は、読み出しの ときに 埋まる（ここは 生の Content）
+    content.kind === "wordstage" ? (content.words ?? []).map((w) => w.term) : [],
   );
   if (terms.length === 0) return "";
 

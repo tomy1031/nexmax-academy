@@ -160,18 +160,44 @@ export const wordStageSchema = z
     fieldSequence: z.array(z.string()).min(1),
     questionCount: z.number().int().positive(),
     passRate: z.number().int().min(1).max(100),
-    /** 複合語優先の読み辞書（表示ルビ用）。 */
+    /** 複合語優先の読み辞書（表示ルビ用）。語を 参照で 持つ ときは 正の 側が 運ぶ。 */
     furigana: z.array(furiganaEntrySchema).optional(),
-    words: z.array(wordSchema).min(6),
+    /**
+     * ことばの id（`content/vocab/vocabulary.json`）。**これが これからの 持ちかた**。
+     * 読み出すとき（`src/lib/content.ts`）に 正から 引いて `words` を 埋める——
+     * だから ゲームも 辞書も スタジオも これまでどおり `words` を 見れば よい。
+     */
+    wordIds: z.array(z.string().min(1)).min(6).optional(),
+    /**
+     * 語を 直に 持つ 古い かたち。スタジオが 作った ものが まだ この形なので 残す。
+     * 新しく 足すなら `wordIds` を 使う（語の 説明が 2つ 育つのを 防ぐため）。
+     */
+    words: z.array(wordSchema).min(6).optional(),
   })
   .superRefine((stage, ctx) => {
-    if (stage.questionCount > stage.words.length) {
+    if (!stage.wordIds && !stage.words) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["wordIds"],
+        message: "ことばが 無い — wordIds（正への 参照）を 書く",
+      });
+      return;
+    }
+    const count = stage.wordIds?.length ?? stage.words?.length ?? 0;
+    if (stage.wordIds) {
+      const ids = stage.wordIds;
+      if (new Set(ids).size !== ids.length) {
+        ctx.addIssue({ code: "custom", path: ["wordIds"], message: "wordIds が重複している" });
+      }
+    }
+    if (stage.questionCount > count) {
       ctx.addIssue({
         code: "custom",
         path: ["questionCount"],
-        message: `questionCount(${stage.questionCount}) が語数(${stage.words.length})を超えている — 出題は語彙の部分集合`,
+        message: `questionCount(${stage.questionCount}) が語数(${count})を超えている — 出題は語彙の部分集合`,
       });
     }
+    if (!stage.words) return;
     const ids = stage.words.map((w) => w.id);
     if (new Set(ids).size !== ids.length) {
       ctx.addIssue({ code: "custom", path: ["words"], message: "words の id が重複している" });
@@ -1420,7 +1446,19 @@ export const contentSchema = z.discriminatedUnion("kind", [
 export type VocabWord = z.infer<typeof vocabWordSchema>;
 export type VocabBook = z.infer<typeof vocabSchema>;
 export type Word = z.infer<typeof wordSchema>;
-export type WordStage = z.infer<typeof wordStageSchema>;
+/**
+ * **保存の かたち**（JSON / DB）。`wordIds`（正への 参照）か、古い `words` の どちらか。
+ */
+export type StoredWordStage = z.infer<typeof wordStageSchema>;
+
+/**
+ * **読み出したあとの かたち**。`words` は かならず ある。
+ *
+ * 保存が 参照でも、`src/lib/content.ts` が 正から 引いて 埋めてから 返すので、
+ * ゲーム・辞書・スタジオは これまでどおり `words` だけを 見れば よい
+ *（語の 置き場を 1か所に した ときに、読む側 12か所を 書き換えずに 済ませる ための 境目）。
+ */
+export type WordStage = Omit<StoredWordStage, "words" | "wordIds"> & { words: Word[] };
 export type QuizQuestion = z.infer<typeof quizQuestionSchema>;
 export type QuizSet = z.infer<typeof quizSetSchema>;
 export type Listening = z.infer<typeof listeningSchema>;

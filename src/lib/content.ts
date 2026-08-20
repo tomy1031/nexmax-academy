@@ -32,9 +32,11 @@ import {
   type WordStage,
   type VocabBook,
   type VocabWord,
+  type StoredWordStage,
 } from "@/content/schema";
 import { GIT_CONTENTS } from "@/content/git-contents.generated";
 import { fetchDbContents } from "@/lib/content-db";
+import { hydrateWordStage } from "@/lib/vocabulary";
 
 /**
  * 一覧はどれも `cache()` で包んである。
@@ -126,11 +128,25 @@ export async function listVocabWords(): Promise<VocabWord[]> {
   return (await listVocabBooks()).flatMap((book) => book.words);
 }
 
+/**
+ * 単語ステージ。**保存は 参照（`wordIds`）でも、返すのは 語が 入った かたち**。
+ *
+ * 語の 正は `content/vocab/vocabulary.json` 1つ。ここで 引いて 埋めるので、
+ * ゲームも 辞書も スタジオも これまでどおり `words` を 見れば よい
+ *（境目は `src/lib/vocabulary.ts` の `hydrateWordStage` 1つ）。
+ * 参照が 切れた ステージは 一覧から 落ちる（`lint:content` が 別に 止める）。
+ */
 export const listWordStages = cache(async (): Promise<WordStage[]> => {
-  const git = parseAll().filter((c): c is WordStage => c.kind === "wordstage");
-  return mergeContentsById(git, await listPublishedFromDb("wordstage")).sort((a, b) =>
+  const git = parseAll().filter((c): c is StoredWordStage => c.kind === "wordstage");
+  const stored = mergeContentsById(git, await listPublishedFromDb("wordstage")).sort((a, b) =>
     a.id.localeCompare(b.id),
   );
+  const books = await listVocabBooks();
+  const words = books.flatMap((book) => book.words);
+  const furigana = books.flatMap((book) => book.furigana ?? []);
+  return stored
+    .map((stage) => hydrateWordStage(stage, words, furigana))
+    .filter((stage): stage is WordStage => stage !== null);
 });
 
 export async function getWordStage(id: string): Promise<WordStage | null> {

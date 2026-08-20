@@ -370,6 +370,27 @@ export function checkReferenceIntegrity(entries: readonly ContentEntry[]): Findi
     idsByKind.set(content.kind, set);
   }
 
+  /*
+   * 単語ステージ → ことばの 正（kind: vocab）。参照が 切れると その語が 画面から
+   * 黙って 消える——学習者は「出るはずの ことばが 出ない」と 言えないので、機械で 止める。
+   */
+  const vocabIds = new Set(
+    entries.flatMap(({ content }) =>
+      content.kind === "vocab" ? content.words.map((w) => w.id) : [],
+    ),
+  );
+  for (const { file, content } of entries) {
+    if (content.kind !== "wordstage" || !content.wordIds) continue;
+    const missing = content.wordIds.filter((id) => !vocabIds.has(id));
+    if (missing.length > 0) {
+      findings.push({
+        file,
+        level: "error",
+        message: `ことばの 正に 無い id を 参照して いる: ${missing.join(" ")} — content/vocab/ に 足すか、wordIds から 外す`,
+      });
+    }
+  }
+
   for (const { file, content } of entries) {
     if (content.kind !== "stage") continue;
     content.contents.forEach((item, i) => {
@@ -696,7 +717,8 @@ function collectLabeledTexts(content: Content): LabeledText[] {
     case "wordstage": {
       push("title", content.title);
       push("description", content.description);
-      content.words.forEach((word, i) => {
+      // 参照で 持つ ステージの 語は 正の 側（kind: vocab）で 検査される
+      (content.words ?? []).forEach((word, i) => {
         // term は reading を自分で持つので対象外。meaningEn / wrongMeanings は英語（スキーマが日本語を弾く）
         push(`words[${i}].explanationJa`, word.explanationJa);
         push(`words[${i}].example`, word.example);
@@ -832,7 +854,7 @@ function coverageEntries(content: Content): FuriganaEntry[] {
     case "wordstage":
       return [
         ...(content.furigana ?? []),
-        ...content.words.map((word): FuriganaEntry => [word.term, word.reading]),
+        ...(content.words ?? []).map((word): FuriganaEntry => [word.term, word.reading]),
       ];
     case "character":
       // 人物カードは 名前の真下に よみ を出す。それ以外（立場・見た目）は

@@ -1,7 +1,8 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { wordStageSchema, type WordStage } from "../src/content/schema";
+import { vocabSchema, wordStageSchema, type WordStage } from "../src/content/schema";
+import { hydrateWordStage } from "../src/lib/vocabulary";
 import {
   arcadeReducer,
   createSession,
@@ -16,7 +17,11 @@ function loadStage(): WordStage {
     join(__dirname, "..", "content", "wordstages", "stage01_orientation.json"),
     "utf8",
   );
-  return wordStageSchema.parse(JSON.parse(raw));
+  const vocab = vocabSchema.parse(
+    JSON.parse(readFileSync(join(__dirname, "..", "content", "vocab", "vocabulary.json"), "utf8")),
+  );
+  // 保存は 参照（wordIds）。アプリが 受け取る かたちに 直してから 使う
+  return hydrateWordStage(wordStageSchema.parse(JSON.parse(raw)), vocab.words, vocab.furigana)!;
 }
 
 const stage = loadStage();

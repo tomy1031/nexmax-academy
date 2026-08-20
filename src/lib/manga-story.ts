@@ -91,7 +91,7 @@ export function buildStoryContext(contents: readonly Content[]): string {
 
   for (const content of contents) {
     if (content.kind === "wordstage") {
-      terms.push(...content.words.map((w) => w.term));
+      terms.push(...(content.words ?? []).map((w) => w.term));
     } else if (content.kind === "manga") {
       const last = content.pages.at(-1)?.panels.at(-1)?.lines.at(-1)?.text;
       if (last) endings.push(`「${content.title}」の さいご: ${last}`);
