@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { vocabSchema, wordStageSchema, type VocabBook } from "../src/content/schema";
+import { checkFuriganaCoverageOf } from "../src/lib/content-checks";
 import {
   gameWordsOf,
   hydrateArticle,
@@ -150,5 +151,53 @@ describe("スタジオが 作る かたち", () => {
     expect(parsed.success).toBe(true);
     // 読み出せば 語が 入る
     expect(hydrateWordStage(parsed.data!, book.words, book.furigana)!.words).toHaveLength(6);
+  });
+});
+
+describe("読みを 足せる（語ごとの よみ辞書）", () => {
+  it("語ごとの よみ辞書で 説明文の 漢字を 覆える", () => {
+    const word = {
+      id: "nouki",
+      term: "納期",
+      reading: "のうき",
+      meaningJa: "いつまでに 出すか、の 日です。",
+      englishTerm: "Deadline",
+      furigana: [
+        ["出", "だ"],
+        ["日", "ひ"],
+      ] as [string, string][],
+    };
+    const draft = { ...book, words: [word] };
+    expect(vocabSchema.safeParse(draft).success).toBe(true);
+    // 検査（lint と 同じ 関数）が 通る
+    expect(checkFuriganaCoverageOf("v.json", vocabSchema.parse(draft), "error")).toEqual([]);
+  });
+
+  it("よみが 足りないと 検査が 止める（足す 場所が あることの 裏返し）", () => {
+    const word = {
+      id: "nouki",
+      term: "納期",
+      reading: "のうき",
+      meaningJa: "いつまでに 出すか、の 日です。",
+      englishTerm: "Deadline",
+    };
+    const draft = vocabSchema.parse({ ...book, words: [word], furigana: [] });
+    const found = checkFuriganaCoverageOf("v.json", draft, "error");
+    expect(found.length).toBeGreaterThan(0);
+    expect(found[0]!.message).toContain("出");
+  });
+
+  it("借りた ことばは 借り手で 検査しない（まんが・記事）", () => {
+    const borrowed = {
+      kind: "manga" as const,
+      id: "m",
+      title: "テスト",
+      description: "テスト",
+      pages: [],
+      vocabIds: [book.words[0]!.id],
+      // 読み出しで 埋まった ぶん（正の 文なので 借り手の 読み辞書には 無い）
+      vocab: [{ term: book.words[0]!.term, reading: book.words[0]!.reading, meaning: "紙に 書く" }],
+    };
+    expect(checkFuriganaCoverageOf("m.json", borrowed as never, "error")).toEqual([]);
   });
 });

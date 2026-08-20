@@ -57,6 +57,7 @@ import {
 import { DictionaryView } from "./dictionary-view";
 import { MiniButton, SourceBadge, Toast } from "./studio-ui";
 import { WordStageEditor } from "./word-stage-editor";
+import { VocabEditor } from "./vocab-editor";
 
 /**
  * コンテンツスタジオの外枠（設計07 §10.1）
@@ -122,7 +123,9 @@ type View =
   | { mode: "listening"; draft: Listening; parent?: Stage }
   | { mode: "meeting"; draft: Meeting; parent?: Stage }
   | { mode: "wordstage"; draft: WordStage; parent?: Stage }
-  | { mode: "character"; draft: Character };
+  | { mode: "character"; draft: Character }
+  /** ことばの 正（辞書）。語を 直す 唯一の 場所。 */
+  | { mode: "vocab"; draft: VocabBook };
 
 type Gate = "checking" | "ready" | "unconfigured" | "error";
 
@@ -588,6 +591,18 @@ export function StudioShell({
               setView({ mode: "wordstage", draft: emptyWordStage() });
             }}
             onRemove={(id, title) => void removeFromDb(id, title)}
+            /*
+             * ことばの 正を ひらく 道。ここが 無いと、読めない 漢字に 気づいても
+             * 先生は 直せない（語は もう 教材の 中に 無い）。
+             */
+            onOpenVocab={
+              vocabBooks[0]
+                ? () => {
+                    clearNotes();
+                    setView({ mode: "vocab", draft: vocabBooks[0]! });
+                  }
+                : undefined
+            }
           />
         ) : null}
 
@@ -788,6 +803,22 @@ export function StudioShell({
             warnings={warnings}
           >
             <WordStageEditor value={view.draft} onChange={(draft) => setView({ ...view, draft })} />
+          </ChildFrame>
+        ) : null}
+
+        {view.mode === "vocab" ? (
+          <ChildFrame
+            title="ことば（辞書）"
+            hint="語の 正です。ここを 直すと、単語ゲーム・記事・まんが・ことばメモの ぜんぶに 届きます。"
+            parent={undefined}
+            onBack={closeChild}
+            onSave={(publish) => void handleSave(publish)}
+            saving={saving}
+            disabledNote={editorNote}
+            issues={issues}
+            warnings={warnings}
+          >
+            <VocabEditor value={view.draft} onChange={(draft) => setView({ ...view, draft })} />
           </ChildFrame>
         ) : null}
       </div>
