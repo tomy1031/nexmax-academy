@@ -157,3 +157,21 @@ export function fillAnswer(echo: string, answer: string): string {
   if (core === "") return "";
   return echo.replaceAll(NAME_MARK, core);
 }
+
+/**
+ * 「もう いちど」を 押した とき、しつもんを 鳴らし直すか。
+ *
+ * ## なぜ 鳴らし直すか
+ * 言い直しを 頼まれた 学習者は、**何を 聞かれて いたか**を もう一度 確かめたい
+ *（2026-08-21 の 指定）。字は 画面に 残って いるが、聞き取りの 練習なので 音で 要る。
+ *
+ * ## なぜ 相手が 話して いる 間は 鳴らさないか
+ * 受け止めの こえと 重なる。声が 2つに なるのは、この 教材で 何度も 起きた 事故。
+ *
+ * 純関数に して あるのは、**鍵の 無い 通し検証では ここを 通れない**ため
+ *（鍵が 無いと 規則ベースの 見かたに なり、「もう いちど」が 出ない）。
+ * 画面で 確かめられない ぶん、条件だけは テストで 固定する。
+ */
+export function shouldReplayAsk(state: { hasAudio: boolean; hostSpeaking: boolean }): boolean {
+  return state.hasAudio && !state.hostSpeaking;
+}
