@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Slides } from "@/content/schema";
 import { NexMax } from "@/components/nexmax";
@@ -272,6 +273,24 @@ export function SlideDeck({ slides, embedded }: { slides: Slides; embedded?: boo
 
   return (
     <div className={embedded ? "" : "mx-auto w-full max-w-4xl px-4 py-6"}>
+      {/*
+        ステージの 枠（ContentFrame）の 外で 開いたときの 戻り道。
+        ここに 来るのは **どの ステージにも 入っていない スライド**だけなので
+        （`/slides/<id>` — ステージに 入って いれば 本来の URL へ 送り返される）、
+        戻り先は マップ。まんが・読みものの 一枚ページと 同じ 組み方に そろえる。
+        これが 無い あいだ、この 画面は 行き先が 1つも 無い 行き止まりだった。
+      */}
+      {embedded ? null : (
+        <header className="mb-5 flex items-center justify-between gap-3">
+          <Link href="/map" className="text-ink-soft hover:text-navy text-sm font-extrabold">
+            ← まなびマップ
+          </Link>
+          <span className="bg-sky-soft text-navy rounded-full px-3 py-1 text-xs font-extrabold">
+            🖼️ スライド
+          </span>
+        </header>
+      )}
+
       <section className="card-island p-5 sm:p-6">
         <div className="flex flex-wrap items-start gap-4">
           <NexMax variant="book" size={72} bob />

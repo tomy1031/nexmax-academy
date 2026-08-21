@@ -166,12 +166,17 @@ export function TalkSession({
       {embedded ? null : (
         <header className="mb-5 flex items-center justify-between gap-3">
           {/*
-            たいわ だけの 一覧は まだ 無く、/listening が「きく」と「はなす」の
-            両方の 入口を 兼ねている。だから ここでは 種別の名前を 言い切らない
-            （「リスニング 一覧」と 書くと、たいわ から 戻る 先の 名前が ずれる）。
+            戻り先は **たいわの 一覧**。/listening を 指していた——たいわ 専用の
+            一覧が まだ 無かった ころの 名残りで、いまは /talk が ある。
+            話す 教材を おえた 学習者を 聞く 教材の 一覧へ 出すと、さっき やった
+            ものが どこにも 無い 画面に 立たされる（一覧どうしの 行き来は
+            それぞれの 一覧の 下に ある）。
           */}
-          <Link href="/listening" className="text-ink-soft hover:text-navy text-sm font-extrabold">
-            ← いちらんに もどる
+          <Link href="/talk" className="text-ink-soft hover:text-navy text-sm font-extrabold">
+            ← たいわ{" "}
+            <ruby>
+              一覧<rt>いちらん</rt>
+            </ruby>
           </Link>
           <span className="bg-sky-soft text-navy rounded-full px-3 py-1 text-xs font-extrabold">
             {scenario.emoji} {scenario.title}

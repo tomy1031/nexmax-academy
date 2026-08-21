@@ -1,6 +1,7 @@
 "use client";
 
 import { Fragment, useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
 import {
@@ -785,6 +786,25 @@ export function WelcomeWizard({
                 <p className="text-coral-deep mt-4 font-extrabold">
                   ほぞんに しっぱいしました。インターネットを かくにんして、もういちど おしてね。
                 </p>
+              )}
+              {/*
+                やり直しの ときだけ 出す 逃げ道。
+
+                「せいかくしんだんを もういちど」は タイトル画面と せっていの 両方に
+                あるが、押した あと **やめる 道が どこにも 無かった**——気が 変わった
+                学習者は、20問を 通すか ブラウザの 戻るを 知って いるかしか なかった。
+
+                はじめての とき（`retake` なし）と なまえの 入れ直し（`namesOnly`）には
+                出さない。そこは まだ 中に 入れて いない／足りない ものが ある 場面で、
+                通り抜けて もらわないと 先へ 行けない（設定は 願い #13・#14）。
+              */}
+              {retake && !namesOnly && (
+                <Link
+                  href="/map"
+                  className="text-ink-soft hover:text-navy mt-5 inline-block text-sm font-extrabold underline underline-offset-4"
+                >
+                  やめて まなびマップへ もどる
+                </Link>
               )}
             </div>
           </div>

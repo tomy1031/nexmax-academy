@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { ArcadeGame } from "@/components/arcade/arcade-game";
 import { listStages, listWordStages } from "@/lib/content";
-import { findLearnerWordStage, learnerWordStages } from "@/lib/wordstage-merge";
+import { findLearnerWordStage, learnerWordStages, wordStageOwner } from "@/lib/wordstage-merge";
 
 /**
  * 公開分のDBコンテンツを合流させるため ISR にする（設計07 §11.1
@@ -48,5 +48,24 @@ export default async function ArcadeStagePage({ params }: { params: Promise<{ st
   const stage = findLearnerWordStage(id, stages, words);
   if (!stage) notFound();
 
-  return <ArcadeGame stages={all} initialStageId={stage.id} />;
+  /*
+   * 出るときの 行き先は **その ことばを 持って いる ステージ**。
+   *
+   * ここは ステージの「さいしょに ことばを おぼえる」から 直行して 来る 画面なのに、
+   * 出口が マップしか 無く、つづきの 教材が ある ステージを 地図の 上から
+   * 探し直させて いた。URL（`/arcade/<id>`）だけ 覚えて 開いた 人にも 同じ 道が
+   * 出るよう、出どころは クエリでなく データから 引く。
+   *
+   * どの ステージにも 付いて いない ことば（先生が 作りかけの もの）は null なので、
+   * これまでどおり マップへ 出る。
+   */
+  const owner = wordStageOwner(stage.id, stages) ?? wordStageOwner(id, stages);
+
+  return (
+    <ArcadeGame
+      stages={all}
+      initialStageId={stage.id}
+      backTo={owner ? `/${owner.id}` : undefined}
+    />
+  );
 }
