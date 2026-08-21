@@ -1,5 +1,11 @@
 import { expect, test } from "@playwright/test";
+import meeting from "../../content/meetings/hajimari_meeting.json";
 import { joinCall, seedCompleted, shot, skipAsk, speakByText } from "./helpers";
+
+/** しつもんの 数（教材が 正）。 */
+const MEETING_QUESTIONS = meeting.questions.length;
+/** 見つける ことの 数（ラウンド2）。 */
+const MEETING_DISCOVER = meeting.discover.length;
 
 /**
  * はじまりステージ — ヘンディさんとの ミーティング（Zoom の 入りかた・ことばの 辞書）
@@ -106,13 +112,19 @@ test("しつもんの ことばを タップすると、いみが 出る", async
   await shot(page, "31-hajimari-meeting-dictionary");
 });
 
-test("6つ おわると「聞く ばん」に なり、こえが 無くても 返事が ある", async ({ page, context }) => {
+test("ぜんぶ おわると「聞く ばん」に なり、こえが 無くても 返事が ある", async ({
+  page,
+  context,
+}) => {
   await seedCompleted(context, BEFORE);
   await page.goto(MEETING);
   await joinCall(page);
 
-  // 6問を ことばで 通す（「すみません、つぎを おねがいします」）
-  for (let i = 0; i < 6; i += 1) {
+  /*
+   * しつもんの 数は **教材から 取る**。ここに 数字を 書くと、しつもんを 足した 日に
+   * かならず 落ちる（2026-08-21 に 6→12 で 実際に そうなった）。
+   */
+  for (let i = 0; i < MEETING_QUESTIONS; i += 1) {
     await skipAsk(page);
     await page.waitForTimeout(300);
   }
@@ -155,7 +167,7 @@ test("6つ おわると「聞く ばん」に なり、こえが 無くても �
    */
   await expect(page.getByText("知らない 人が わたしの 作った")).toBeVisible();
   /* 見出しの 漢字には ルビが 入る ので、数の ところで 見る */
-  await expect(page.getByText(/（1 \/ 8）/)).toBeVisible();
+  await expect(page.getByText(new RegExp(`（1 / ${MEETING_DISCOVER}）`))).toBeVisible();
 
   // 当たらない ことばの ときは、責めずに 次の 一手を 出す
   await box.fill("きょうは あついですね。");
