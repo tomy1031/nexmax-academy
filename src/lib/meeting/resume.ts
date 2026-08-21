@@ -126,9 +126,26 @@ export function startFrom(
    */
   if (candidate < 0 || candidate > questionIds.length) return FRESH_START;
 
-  // しおりだけの ときは 位置だけ 戻す（内訳が 無いので 札と ハートは 空のまま）
+  /*
+   * **通りすぎた しつもんの 札は 開いた ことに する**（2026-08-21 の 指摘
+   *「途中から 始めたら 4つ目しか 開かれて いませんでした」）。
+   *
+   * 札を 開くのは これまで **言い直しを 求められずに 答えられた とき だけ**だった。
+   * つまり 1回で 言えなかった しつもんは、答えて 先へ 進んだ あとも ？ の まま 残る。
+   * 途中から 戻って きた 学習者の 目には、**やった はずの ところが 消えて いる**——
+   * できなかった ことを 数える 板に なって いて、P8（罰を 見せない）に 反する。
+   *
+   * いま どこに いるかが N 問目なら、その 前の N 問は 聞かれて 答えて 通りすぎて いる。
+   * だから 位置から 開く 札を 起こす。しおりしか 無い ときも 同じ（内訳が 無くても
+   * 位置は 分かる）。
+   */
+  const passed = questionIds.slice(0, Math.min(candidate, questionIds.length));
+
+  // しおりだけの ときは 位置と 通りすぎた 札を 戻す（答え・ハートは 内訳が 無いので 空）
   if (!saved) {
-    return candidate === 0 ? FRESH_START : { ...FRESH_START, index: candidate, resumed: true };
+    return candidate === 0
+      ? FRESH_START
+      : { ...FRESH_START, index: candidate, openIds: passed, resumed: true };
   }
   const listening = saved.round === "listen" || candidate >= questionIds.length;
 
@@ -136,10 +153,13 @@ export function startFrom(
   const pick = <T>(source: Readonly<Record<string, T>>): Record<string, T> =>
     Object.fromEntries(Object.entries(source).filter(([id]) => known.has(id)));
 
-  const openIds = saved.openIds.filter((id) => known.has(id));
+  const savedOpen = saved.openIds.filter((id) => known.has(id));
   const answers = pick(saved.answers);
-  const nothingYet = candidate === 0 && openIds.length === 0 && Object.keys(answers).length === 0;
+  const nothingYet = candidate === 0 && savedOpen.length === 0 && Object.keys(answers).length === 0;
   if (nothingYet) return FRESH_START;
+  // 通りすぎた ぶん ∪ 保存されて いた ぶん（並びは しつもんの 順に そろえる）
+  const open = new Set([...passed, ...savedOpen]);
+  const openIds = questionIds.filter((id) => open.has(id));
 
   return {
     index: candidate,

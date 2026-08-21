@@ -737,6 +737,22 @@ export function MeetingSession({
     const at = index + 1;
     const finishing = at >= meeting.questions.length;
     /*
+     * **通りすぎる しつもんの 札を 開く**（2026-08-21 の 指摘
+     *「途中から 始めたら 4つ目しか 開かれて いませんでした」）。
+     *
+     * 札は これまで **1回で 言えた とき だけ** 開いて いた（`rewardTurn` の `opened`）。
+     * 言い直しを して から 答えた しつもんは、先へ 進んだ あとも ？ の まま 残る。
+     * 「こたえると、カードが ひらきます」と 書いて ある 板が、実際には
+     * **1回で 言えた 数**を 数えて いた——できなかった ことを 数える 板は P8 に 反する。
+     *
+     * 直しの 最中に 開かない ことは 変えない（`rewardTurn` は そのまま）。
+     * 開くのは **その しつもんを 離れる とき**で、ひとことでも 言って いれば 開く。
+     */
+    const leaving = meeting.questions[index];
+    if (leaving && (answers[leaving.id] ?? "") !== "") {
+      setOpenIds((prev) => (prev.has(leaving.id) ? prev : new Set([...prev, leaving.id])));
+    }
+    /*
      * 相手に つぎを 言わせる。**画面の 質問と 相手の ことばを 1つに 保つ**ため、
      * 進むのと 同じ ところで 合図を 出す（別の 効果に すると、進み方に よって
      * 出したり 出さなかったり する）。
