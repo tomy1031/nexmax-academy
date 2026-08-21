@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
+import type { ReactNode } from "react";
 import type { Word } from "@/content/schema";
 import { FeedbackMessage } from "@/components/feedback-message";
 import { RubyText } from "@/components/ruby-text";
@@ -24,6 +25,8 @@ export function ArcadeResult({
   onRetryWrong,
   onRetryAll,
   onBack,
+  onLeave,
+  leaveLabel,
 }: {
   summary: ArcadeSummary;
   gameScore: number;
@@ -34,6 +37,16 @@ export function ArcadeResult({
   onRetryWrong: () => void;
   onRetryAll: () => void;
   onBack: () => void;
+  /**
+   * ことばアーケードから 出る 道。ステージから 来た ときだけ 渡る
+   *（arcade-game.tsx の `backTo`）。
+   *
+   * ここが いちばん 「つぎへ 行きたい」瞬間なのに、出口が 無かった——
+   * けっか →「あそびかたを えらぶ」→ 一覧 → マップ と 3回 押して、
+   * さらに 地図の 上から 元の ステージを 探し直す ことに なっていた。
+   */
+  onLeave?: () => void;
+  leaveLabel?: ReactNode;
 }) {
   return (
     <motion.div
@@ -121,14 +134,35 @@ export function ArcadeResult({
         >
           もう一度
         </button>
+        {/*
+          行き先は **この ことばの あそびかた選び**（れんしゅう／テスト／
+          フラッシュカード…）で、ステージ選びでは ない。札が「ステージを えらぶ」
+          だったので、押した学習者は 出口の つもりで 同じ ことばの 画面に 戻っていた。
+        */}
         <button
           type="button"
           onClick={onBack}
           className="btn-island btn-game px-6 py-3 text-base"
           style={{ "--btn-face": "#4fa8e8", "--btn-shadow": "#0272ae" } as React.CSSProperties}
         >
-          ステージを えらぶ
+          ← あそびかたを えらぶ
         </button>
+        {onLeave && (
+          <button
+            type="button"
+            onClick={onLeave}
+            className="btn-island btn-game px-6 py-3 text-base"
+            style={
+              {
+                "--btn-face": "#ffffff",
+                "--btn-shadow": "#cfe6f3",
+                color: "#1f3a56",
+              } as React.CSSProperties
+            }
+          >
+            {leaveLabel}
+          </button>
+        )}
       </div>
     </motion.div>
   );

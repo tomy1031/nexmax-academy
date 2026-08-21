@@ -30,7 +30,9 @@ export default async function ListeningIndexPage() {
   return (
     <div className="mx-auto w-full max-w-3xl px-4 py-6">
       <header className="mb-5">
-        <Link href="/" className="text-ink-soft hover:text-navy text-sm font-extrabold">
+        {/* 行き先は **まなびマップ**（札の字のとおり）。ここは `/` を指していて、
+            押した学習者は ログイン直後の タイトル画面まで 放り出されていた。 */}
+        <Link href="/map" className="text-ink-soft hover:text-navy text-sm font-extrabold">
           ← まなびマップ
         </Link>
       </header>

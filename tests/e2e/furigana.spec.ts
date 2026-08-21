@@ -43,6 +43,18 @@ for (const screen of SCREENS) {
   });
 }
 
+/*
+ * 見つからなかった ときの 画面（`src/app/not-found.tsx`）。
+ * **どの URL からでも 来る**ので、学習者が どの 課に いても 目に 入る。
+ * 上の SCREENS と 分けて 書くのは、進み具合の 種まきが 要らないため。
+ */
+test("ルビの 外に 裸の漢字が 無い — ページが 見つからないとき", async ({ page }) => {
+  await page.goto("/kore-wa-nai-page");
+
+  const bare = await bareKanjiTexts(page);
+  expect(bare.filter((text) => !KNOWN_BARE_KANJI.includes(text))).toEqual([]);
+});
+
 test("ミーティングの 中（入室後・答える前）にも 裸の漢字が 無い", async ({ page, context }) => {
   await seedCompleted(context, itemsBefore(4));
   await page.goto(KAISHA.meetingHendy.path);

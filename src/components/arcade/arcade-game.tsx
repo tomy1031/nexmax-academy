@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import type { Word, WordStage } from "@/content/schema";
 import { FeedbackMessage } from "@/components/feedback-message";
 import { RubyText } from "@/components/ruby-text";
@@ -66,9 +66,22 @@ export function ArcadeGame({
   stages,
   /** レッスンから直接呼ばれたときの入り口。単語だけで開いたときは未指定。 */
   initialStageId,
+  /**
+   * 出るときの 行き先（ふつうは `/<ステージID>`）。
+   *
+   * ことばアーケードは **ステージから 直行できる**（`/[stage]` の
+   * 「さいしょに ことばを おぼえる」）。そこから 来た 学習者を マップへ 出すと、
+   * つづきの 教材が ある ステージを 地図の 上から 探し直す ことに なる。
+   * 出どころは クエリでなく データから 引く（`wordStageOwner`）ので、
+   * URLを 直接 開いた 人にも 同じ 戻り道が 出る。
+   *
+   * どの ステージにも 付いて いない ことばでは 未指定。そのときは これまでどおり マップ。
+   */
+  backTo,
 }: {
   stages: readonly WordStage[];
   initialStageId?: string;
+  backTo?: string;
 }) {
   const router = useRouter();
   const store = useMemo(() => createProgressStore(), []);
@@ -103,7 +116,7 @@ export function ArcadeGame({
     setScreen({ kind: "mode", stageId: target.id });
   }, []);
 
-  const leave = useCallback(() => router.push("/map"), [router]);
+  const leave = useCallback(() => router.push(backTo ?? "/map"), [router, backTo]);
 
   // ステージの進み具合に反映する（設計07 §3）。けっか画面まで来たら「おわった」。
   const finished = screen.kind === "result";
@@ -155,7 +168,21 @@ export function ArcadeGame({
                 stage={stage}
                 furigana={furigana}
                 difficulty={difficulty}
-                canGoBack={stages.length > 1}
+                /*
+                  ステージから 来た ときは **そのステージへ 帰す**。
+                  「グループを えらびなおす」は 出さない——ステージの ことばを
+                  やりに 来た 人に、よその 課の ことばを 選ばせる 画面では ない
+                  （ぜんぶ 見たい 人の 入口は /arcade のまま 残って いる）。
+                */
+                backLabel={
+                  backTo ? (
+                    <BackToStage title={stage.title} furigana={furigana} />
+                  ) : stages.length > 1 ? (
+                    "グループを えらびなおす"
+                  ) : (
+                    "マップに もどる"
+                  )
+                }
                 onDifficulty={setDifficulty}
                 onPick={(mode) => {
                   if (mode === "test") setScreen({ kind: "hiraCheck", stageId: stage.id, mode });
@@ -163,7 +190,9 @@ export function ArcadeGame({
                 }}
                 onFlashcard={() => setScreen({ kind: "flashcard", stageId: stage.id })}
                 onDictionary={() => setScreen({ kind: "dictionary", stageId: stage.id })}
-                onBack={() => (stages.length > 1 ? setScreen({ kind: "stageSelect" }) : leave())}
+                onBack={() =>
+                  !backTo && stages.length > 1 ? setScreen({ kind: "stageSelect" }) : leave()
+                }
               />
             )}
 
@@ -184,6 +213,9 @@ export function ArcadeGame({
                 onRetryWrong={(ids) => start(stage, session.mode, ids)}
                 onRetryAll={() => start(stage, session.mode)}
                 onBack={() => setScreen({ kind: "mode", stageId: stage.id })}
+                /* おわった 直後が いちばん 出たい 瞬間。ステージから 来た ときだけ 出す */
+                onLeave={backTo ? leave : undefined}
+                leaveLabel={backTo ? <BackToStage title={stage.title} furigana={furigana} /> : null}
               />
             )}
 
@@ -497,6 +529,28 @@ function StageSelect({
   );
 }
 
+/**
+ * 「← <ステージ名>に もどる」の 札。
+ *
+ * 中身を **1つの span に まとめる**のは、狭い画面で ばらばらの 要素が
+ * それぞれ 折り返し、「ほう／こく に もどる」のように 語の 途中で 割れるため
+ *（content-frame.tsx の LockedNotice と 同じ 理由。390px の 実機で 発生）。
+ * ステージ名には 漢字が 入りうるので ルビを 合成する（規律2）。
+ */
+function BackToStage({
+  title,
+  furigana,
+}: {
+  title: string;
+  furigana: ReturnType<typeof buildFuriganaIndex>;
+}) {
+  return (
+    <span className="text-center leading-relaxed">
+      ← <RubyText text={title} index={furigana} />に もどる
+    </span>
+  );
+}
+
 /* ------------------------------------------------------------------ *
  * モード選択（旧アプリの5モード＋難易度をそのまま）
  * ------------------------------------------------------------------ */
@@ -505,7 +559,7 @@ function ModeSelect({
   stage,
   furigana,
   difficulty,
-  canGoBack,
+  backLabel,
   onDifficulty,
   onPick,
   onFlashcard,
@@ -515,7 +569,8 @@ function ModeSelect({
   stage: WordStage;
   furigana: ReturnType<typeof buildFuriganaIndex>;
   difficulty: Difficulty;
-  canGoBack: boolean;
+  /** 出る ボタンの 字。行き先を 決める 親が 言葉も 決める（ここで 場合分けしない）。 */
+  backLabel: ReactNode;
   onDifficulty: (d: Difficulty) => void;
   onPick: (mode: ArcadeMode) => void;
   onFlashcard: () => void;
@@ -585,7 +640,7 @@ function ModeSelect({
       </div>
 
       <ArcadeButton tone="quiet" className="mt-4 px-6 py-2 text-sm" onClick={onBack}>
-        {canGoBack ? "グループを えらびなおす" : "マップに もどる"}
+        {backLabel}
       </ArcadeButton>
     </ArcadePanel>
   );
@@ -663,6 +718,8 @@ function ResultLayer({
   onRetryWrong,
   onRetryAll,
   onBack,
+  onLeave,
+  leaveLabel,
 }: {
   stage: WordStage;
   state: ArcadeState;
@@ -672,6 +729,8 @@ function ResultLayer({
   onRetryWrong: (ids: readonly string[]) => void;
   onRetryAll: () => void;
   onBack: () => void;
+  onLeave?: () => void;
+  leaveLabel?: ReactNode;
 }) {
   const summary = useMemo(() => summarize(state), [state]);
   const byId = useMemo(() => new Map(stage.words.map((w) => [w.id, w])), [stage.words]);
@@ -718,6 +777,8 @@ function ResultLayer({
         onRetryWrong={() => onRetryWrong(summary.missedWordIds)}
         onRetryAll={onRetryAll}
         onBack={onBack}
+        onLeave={onLeave}
+        leaveLabel={leaveLabel}
       />
     </div>
   );

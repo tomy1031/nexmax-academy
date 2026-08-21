@@ -131,6 +131,24 @@ export function learnerWordStages(
 }
 
 /**
+ * その ことばを 持って いる ステージ。どこにも 付いて いなければ null。
+ *
+ * ことばアーケードから **来た ステージへ 戻る**ために 使う。URLの 1段目は
+ * ステージID の ことも 単語ステージID の ことも あるので（`findLearnerWordStage`
+ * と 同じ）、どちらでも 引けるように 両方を 見る。
+ *
+ * 戻り先を クエリ（`?from=`）で 運ばないのは、**URLを 覚えた 学習者**にも
+ * 同じ 戻り道を 出すため——`/arcade/<id>` を そのまま 開いても、その ことばが
+ * どの ステージの ものかは データから 分かる。
+ */
+export function wordStageOwner<T extends StageWithWords>(
+  id: string,
+  stages: readonly T[],
+): T | null {
+  return stages.find((stage) => stage.id === id || stage.wordStageIds.includes(id)) ?? null;
+}
+
+/**
  * URLの1段目（ステージID でも 単語ステージID でも よい）から、
  * 学習者に 出す ことばを 引く。単語ステージを 名指しされても、それが 付いて いる
  * **ステージの まとまり**を 返す（1ステージ＝1つ を どの入口でも 崩さない）。
