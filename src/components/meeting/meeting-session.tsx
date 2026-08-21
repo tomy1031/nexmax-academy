@@ -13,7 +13,6 @@ import { MAX_ATTEMPTS, type JudgeResult } from "@/lib/meeting/judge";
 import {
   awardAnswer,
   awardCompletion,
-  EMPTY_AFFECTION,
   heartsOf,
   rewardOpen,
   type AffectionState,
@@ -28,6 +27,7 @@ import {
   type MeetingRecord,
 } from "@/lib/meeting/record";
 import { asksToSkip, needsJapaneseInput } from "@/lib/meeting/input";
+import { clearMeetingResume, restoreMeeting, saveMeetingResume } from "@/lib/meeting/resume";
 import { fillName, shouldReplayAsk } from "@/lib/meeting/speech";
 import { normalizeReading } from "@/lib/text/normalize";
 import {
@@ -46,6 +46,7 @@ import { JudgeCard } from "./judge-card";
 import { QuestionCards } from "./question-board";
 import { MeetingResultCard, PreviousRecordCard, RewardCard } from "./result-card";
 import { HintModal } from "./hint-modal";
+import { CertificateModal } from "./certificate-modal";
 import { JudgeModal } from "./judge-modal";
 import { SpeakButton } from "./speak-button";
 import { SpeechSpeedPicker } from "./speech-speed-picker";
@@ -259,7 +260,15 @@ export function MeetingSession({
    * この 教材で いちばん 練習したい のは あいさつと 名乗りで、そこを 飛ばして
    * 4問目から 始まる 会議には 意味が 無い。Zoom の 会議も 途中から 始まらない。
    */
-  const [index, setIndex] = useState(0);
+  /**
+   * 端末に 残って いた ところ。**開いた ときに 1回だけ 読む**。
+   *
+   * 購読（`useSyncExternalStore`）に しないのは、別の タブで 保存された ときに
+   * 会話の 途中で 位置が 飛ぶ ため。しおりは 初期値の ための もの。
+   */
+  const questionIds = useMemo(() => meeting.questions.map((q) => q.id), [meeting.questions]);
+  const [resume] = useState(() => restoreMeeting(meeting.id, questionIds));
+  const [index, setIndex] = useState(resume.index);
   /**
    * 部屋に 入ったか。**音は 入ってから 鳴らす**。
    *
@@ -289,7 +298,7 @@ export function MeetingSession({
    * 開くのは **学習者の しつもんが 当たった とき**だけ——自分で 引き出した から
    * 開く 価値が ある（設計01 P2）。判定は この 端末の 中で 済ませる。
    */
-  const [found, setFound] = useState<ReadonlySet<string>>(() => new Set<string>());
+  const [found, setFound] = useState<ReadonlySet<string>>(() => new Set(resume.found));
   /** 日本語の 見かたを ポップアップで 出して いるか。 */
   const [judgeOpen, setJudgeOpen] = useState(false);
   /** ポップアップに そのまま 見せる「あなたの ことば」。 */
@@ -298,6 +307,8 @@ export function MeetingSession({
   const [judgedAsk, setJudgedAsk] = useState("");
   /** ヒントの ポップアップを 出して いるか。 */
   const [hintOpen, setHintOpen] = useState(false);
+  /** しゅうりょうしょうを 出して いるか（どちらの ばんの ぶんか）。 */
+  const [certificate, setCertificate] = useState<"round1" | "round2" | null>(null);
   /** チャットに 積んだ 相手の ことばの 数（字幕の どこまでを 出したか）。 */
   const spokenSeenRef = useRef(0);
   /** AIに 通せなかった 理由（ポップアップの 下に 小さく 出す）。 */
@@ -317,13 +328,13 @@ export function MeetingSession({
    * 質問の並びと一致しなくなる（同じ質問で2つ入る・入らない質問がある）。
    * きろくカードは「どの質問に 何と 答えたか」を見せるものなので、質問IDで持つ。
    */
-  const [answers, setAnswers] = useState<Readonly<Record<string, string>>>({});
+  const [answers, setAnswers] = useState<Readonly<Record<string, string>>>(resume.answers);
   /** 開いた札（＝言い直しを求められずに 答えられた質問）。 */
-  const [openIds, setOpenIds] = useState<ReadonlySet<string>>(() => new Set<string>());
+  const [openIds, setOpenIds] = useState<ReadonlySet<string>>(() => new Set(resume.openIds));
   /** いちばん最近ひらいた札。祝いの ✨ と 相手タイルの発光の的。 */
   const [justOpenedId, setJustOpenedId] = useState<string | null>(null);
   /** 好感度。教材に affection が無いときは触られないまま残る。 */
-  const [affection, setAffection] = useState<AffectionState>(EMPTY_AFFECTION);
+  const [affection, setAffection] = useState<AffectionState>(resume.affection);
   /** 送る前の 見守り（からっぽ・日本語入力で ない）。答えは 消さない。 */
   const [notice, setNotice] = useState<NoticeKey | null>(null);
   /**
@@ -378,7 +389,7 @@ export function MeetingSession({
    */
   const round1Done = index >= meeting.questions.length;
   /** **いま 見て いる ばん**——学習者が 帯を 押して 選ぶ。 */
-  const [round, setRound] = useState<"ask" | "listen">("ask");
+  const [round, setRound] = useState<"ask" | "listen">(resume.round);
   /** 聞く ばん（ラウンド2）を 見て いるか。画面の 出し分けは これで 決める。 */
   const done = round === "listen";
   const live = voice.status === "live";
@@ -545,6 +556,27 @@ export function MeetingSession({
     },
     [affection],
   );
+
+  /*
+   * **しおりを 書く**（2026-08-21 の 指定「画面更新などした 場合でも 途中から
+   * プレイできる ように」）。
+   *
+   * 1か所（効果）で まとめて 書く。答えた ところ・進んだ ところ・ばんを 変えた ところ、と
+   * 別々に 書いて いた ら、**どれか 1つ 書き忘れた 瞬間に ずれる**——ずれた しおりは
+   * 学習者を 変な ところに 座らせる ので、消えて いる より たちが 悪い。
+   */
+  useEffect(() => {
+    if (!joined) return;
+    saveMeetingResume({
+      meetingId: meeting.id,
+      index,
+      openIds: [...openIds],
+      answers,
+      affection,
+      round,
+      found: [...found],
+    });
+  }, [joined, meeting.id, index, openIds, answers, affection, round, found]);
 
   /**
    * 1つの発話を見る。声でも文字でも、ここを通る。
@@ -754,12 +786,23 @@ export function MeetingSession({
       setRecord(today);
       // 保存が できない 端末（プライベートモード等）でも、画面の カードは 出る
       saveMeetingRecord(today);
+      // ぜんぶ 答えた ことを 1枚に して 見せる（つぎは 聞く ばん）
+      setCertificate("round1");
     } else {
       setGained(0);
     }
 
+    /*
+     * **`completed` は ここでは 書かない**（2026-08-21）。
+     *
+     * ヘンディさんからの しつもんが 終わった 瞬間に「ステージ クリア」の しらせが
+     * 出て、**聞く ばんの 上に かぶさって** いた。順番の 問題なので、重ねる 順番では
+     * なく **書く ところ**で 直す——おわりは ラウンド2の しゅうりょうしょうを
+     * 閉じた とき（`finishMeeting`）。
+     * ついでに 意味の ずれも 直る（前は 聞く ばんを 1度も やらない 人も 完走扱いだった）。
+     */
     recordContentProgress(meeting.id, {
-      status: finishing ? "completed" : "started",
+      status: "started",
       position: { panel: at },
     });
   }, [index, meeting, answers, affection, withName, pushChat]);
@@ -943,6 +986,48 @@ export function MeetingSession({
    * 流れて しまい、**正しく 言っても 進まない**ように 見える ことが あった
    *（2026-08-18 の 指摘）。押した ぶんだけ 進む 形なら、迷いも 取りこぼしも 無い。
    */
+  /**
+   * 聞く ばんを おえる。
+   *
+   * 「ぜんぶ 見つけた」を おわりに できない 教材が ある（見つける ことが 0の
+   * ミーティングも ある）ので、**学習者が 押して 決める**。
+   * 話しきったと 本人が 思った ところが おわり（設計01 P13）。
+   */
+  const finishMeeting = useCallback(() => {
+    const today: MeetingRecord = {
+      meetingId: meeting.id,
+      at: new Date().toISOString(),
+      lines: meeting.questions
+        .filter((q) => (answers[q.id] ?? "") !== "")
+        .map((q) => ({
+          questionId: q.id,
+          ask: shortAsk(withName(q.ask)),
+          answer: answers[q.id] ?? "",
+        })),
+      hearts: meeting.affection ? heartsOf(affection) : undefined,
+      maxHearts: meeting.affection?.maxHearts,
+    };
+    setRecord(today);
+    saveMeetingRecord(today);
+    setCertificate("round2");
+  }, [meeting, answers, affection, withName]);
+
+  /**
+   * しゅうりょうしょうを 閉じた とき。
+   *
+   * **ここで はじめて `completed` を 書く**。ステージ クリアの しらせは
+   * `completed` で 出る ので、閉じた あとに 出る 順番が これで 決まる
+   *（重ねる 順番では なく、書く 順番で 直す）。
+   */
+  const closeCertificate = useCallback(() => {
+    const which = certificate;
+    setCertificate(null);
+    if (which !== "round2") return;
+    recordContentProgress(meeting.id, { status: "completed" });
+    // 話しきった。つぎに 開いた ときは はじめから 話せる
+    clearMeetingResume(meeting.id);
+  }, [certificate, meeting.id]);
+
   const closeJudge = useCallback(() => {
     const again = reply?.judge?.retry === true;
     setJudgeOpen(false);
@@ -1198,6 +1283,18 @@ export function MeetingSession({
           }}
           onStopTalking={voice.stopTalking}
         />
+        {/*
+          聞く ばんの おわりは **学習者が 決める**。見つける ことが 0の 教材も ある ので、
+          「ぜんぶ 見つけた」を おわりに できない。
+        */}
+        <button
+          type="button"
+          onClick={finishMeeting}
+          aria-label="ミーティングを おわる"
+          className="btn-game shrink-0 rounded-full px-4 py-2 text-xs whitespace-nowrap"
+        >
+          <RubyText text="ミーティングを おわる" index={CHROME_FURIGANA} show />
+        </button>
       </div>
     </div>
   ) : (
@@ -1382,6 +1479,22 @@ export function MeetingSession({
           hasBlank={hintHasBlank}
           furigana={furigana}
           onClose={() => setHintOpen(false)}
+        />
+      ) : null}
+
+      {/* しゅうりょうしょう。ひとまとまり 話しきった ことを 1枚に して 見せる */}
+      {certificate && record ? (
+        <CertificateModal
+          record={record}
+          learnerName={learnerName}
+          hostName={meeting.host.name}
+          furigana={furigana}
+          nextLabel={
+            certificate === "round1"
+              ? `${meeting.host.name}さんに 聞いて みる →`
+              : "ステージに もどる →"
+          }
+          onNext={closeCertificate}
         />
       ) : null}
 

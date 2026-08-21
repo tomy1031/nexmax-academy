@@ -227,9 +227,29 @@ test("かいしゃステージを 6教材 通しで あそべる（端末に 何
     await skipAsk(page);
     expect(await openedCards(page)).toBe(HENDY_ANSWERS.length);
 
+    /*
+     * ぜんぶ 答えると **しゅうりょうしょう**が 出る（2026-08-21）。
+     * ここでは まだ「ステージ クリア」は 出て いない——おわりを 書くのは
+     * 聞く ばんを おえた ときに 移した（かぶりを 重なりでは なく 順番で 直した）。
+     */
+    const cert1 = page.getByRole("dialog", { name: "しゅうりょうしょうの ポップアップ" });
+    await expect(cert1).toBeVisible();
+    await cert1.getByRole("button").click();
+    await expect(cert1).toHaveCount(0);
+
     await expect(page.getByText("とても よかったです")).toBeVisible();
     await expect(page.getByLabel("きょう はなせた こと")).toBeVisible();
     await shot(page, "09-meeting-hendy-done");
+
+    /*
+     * **聞く ばんを おえるまで つぎへ 進めない**。おわりは 学習者が 押して 決める
+     *（見つける ことが 0の 教材も あるので「ぜんぶ 見つけた」を おわりに できない）。
+     */
+    await page.getByRole("button", { name: "ミーティングを おわる" }).click();
+    const cert2 = page.getByRole("dialog", { name: "しゅうりょうしょうの ポップアップ" });
+    await expect(cert2).toBeVisible();
+    await cert2.getByRole("button").click();
+
     await page.getByRole("link", { name: "つぎは" }).click();
   });
 
@@ -252,6 +272,13 @@ test("かいしゃステージを 6教材 通しで あそべる（端末に 何
     await expect(page.getByLabel("とっておきの はなし")).toBeVisible();
     expect(await hearts(page)).toBeGreaterThanOrEqual(4);
     await shot(page, "10-meeting-matsui-reward");
+
+    /* こちらの ミーティングも、おえるのは 学習者が 押して 決める */
+    const cert = page.getByRole("dialog", { name: "しゅうりょうしょうの ポップアップ" });
+    if (await cert.isVisible()) await cert.getByRole("button").click();
+    await page.getByRole("button", { name: "ミーティングを おわる" }).click();
+    await expect(cert).toBeVisible();
+    await cert.getByRole("button").click();
   });
 
   await test.step("8. ステージを おえる", async () => {
