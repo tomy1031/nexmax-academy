@@ -197,6 +197,10 @@ test("ぜんぶ おわると「聞く ばん」に なり、こえが 無くて�
   // 当たらない ことばの ときは、責めずに 次の 一手を 出す
   await box.fill("きょうは あついですね。");
   await box.press("Enter");
-  await expect(page.getByText("しつもんが 言えましたね。")).toBeVisible();
+  /*
+   * 「言えましたね」の 漢字には ルビが 入る ので、地の文だけの 一致は 当たらない
+   *（画面の 字は「しつもんが 言いえましたね。」に なる）。上の 数の ところと 同じ 逃し方。
+   */
+  await expect(page.getByText(/しつもんが .*えましたね/)).toBeVisible();
   await shot(page, "33-hajimari-free-talk");
 });
