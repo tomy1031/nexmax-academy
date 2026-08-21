@@ -161,16 +161,28 @@ test("ぜんぶ おわると「聞く ばん」に なり、こえが 無くて�
    */
   const listenTab = page.getByRole("button", { name: /さんに しつもん/ });
   await expect(listenTab).toBeEnabled();
-  await page.getByRole("button", { name: /さんから しつもん/ }).click();
-  await expect(page.getByText("こたえると ひらきます")).toHaveCount(0);
-  await listenTab.click();
 
   /*
-   * 聞き方の ヒントは **はじめから 見えて いる**（2026-08-21 の 指定で 隠すのを やめた）。
+   * **板は ばんに ついて くる**（2026-08-21 の 指定「02の 場合は 02の カードを
+   * 表示して」）。帯だけ 02 に して 板が 01 の ままだと、画面の いちばん 目立つ
+   * ところが 01 を 指しつづける。
+   */
+  await page.getByRole("button", { name: /さんから しつもん/ }).click();
+  await expect(page.getByLabel(/ひらいた カード/)).toBeVisible();
+  await expect(page.getByLabel(/きけた カード/)).toHaveCount(0);
+  await listenTab.click();
+  await expect(page.getByLabel(new RegExp(`きけた カード 0 / ${MEETING_DISCOVER}`))).toBeVisible();
+  await expect(page.getByLabel(/ひらいた カード/)).toHaveCount(0);
+
+  /*
+   * 聞ける ことは **はじめから 見えて いる**（伏せない）。文の 案内は 消して
+   * 板に 一本化した ので、板の ことばが そのまま 足場に なる。
    * ルビが 合成されて 文が 割れる ので、かなだけの ところで 見る。
    */
-  await expect(page.getByText("どうでしたか").first()).toBeVisible();
+  await expect(page.getByText("しっぱい").first()).toBeVisible();
   await expect(page.getByRole("button", { name: "ヒントの しつもんを 見る" })).toHaveCount(0);
+  /* 「ミーティングを おわる」は 消した（たいしつ が おわりの 道） */
+  await expect(page.getByRole("button", { name: "ミーティングを おわる" })).toHaveCount(0);
 
   /* 「こまったら →」の 一行は 消した（言って みても 役に 立たなかった） */
   await expect(page.getByText("こまったら")).toHaveCount(0);

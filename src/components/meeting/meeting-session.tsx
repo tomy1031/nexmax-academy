@@ -44,7 +44,7 @@ import { AffectionMeter } from "./affection-meter";
 import { localJudge, type AdviceText } from "./japanese-check";
 import { dropJudgeSession, judgeFailNote, requestJudge, type JudgeApiResult } from "./judge-api";
 import { JudgeCard } from "./judge-card";
-import { QuestionCards } from "./question-board";
+import { DiscoverCards, QuestionCards } from "./question-board";
 import { MeetingResultCard, PreviousRecordCard, RewardCard } from "./result-card";
 import { HintModal } from "./hint-modal";
 import { CertificateModal } from "./certificate-modal";
@@ -100,10 +100,11 @@ import { useLiveVoice } from "./use-live-voice";
  * 話しきったら「きょう 話せた こと」を1枚のカードにして端末に残す。
  * 次に来たときは「まえの きろく」として読める。
  *
- * ## いつも はじめから（2026-08-18 の指定）
- * 途中を 端末に 残して「まえの つづきから はじめます」と 出して いたが、やめた。
- * この 教材で いちばん 練習したい のは あいさつと 名乗りで、そこを 飛ばして
- * 4問目から 始まる 会議には 意味が 無い（Zoom の 会議も 途中から 始まらない）。
+ * ## だまって つづきから（2026-08-21 の指定）
+ * 一度は「いつも はじめから」に した（2026-08-18）。いまは **端末に 残った
+ * ところから、確認を 出さずに 座り直す**——12問に なって から、途中で 閉じた
+ * 学習者を 1問目に 戻すのは 一日ぶんの 授業を 消すのと 同じに なった。
+ * 復元の 決まりは `src/lib/meeting/resume.ts` が 1か所で 持つ。
  *
  * ## 差し込みの 役（`@/lib/meeting/speech`）
  * `ask` は 呼び名、`echo` は **学習者の答え**、`hint` は どちらでもない。
@@ -120,6 +121,13 @@ import { useLiveVoice } from "./use-live-voice";
 const CHROME_FURIGANA = buildFuriganaIndex([
   ["日本語", "にほんご"],
   ["入力", "にゅうりょく"],
+  ["全部", "ぜんぶ"],
+  ["答", "こた"],
+  ["開", "ひら"],
+  ["声", "こえ"],
+  ["今度", "こんど"],
+  ["番", "ばん"],
+  ["質問", "しつもん"],
   ["言", "い"],
   ["見", "み"],
   ["書", "か"],
@@ -129,35 +137,16 @@ const CHROME_FURIGANA = buildFuriganaIndex([
   ["来", "き"],
 ]);
 
-/**
- * ぜんぶ 答えた あとの「聞く ばん」の 型文。
+/*
+ * ラウンド2の **足場**は 板の カード（`DiscoverCards`）に 一本化した
+ *（2026-08-21 の 指定「聞いて みましょう は カードの 内容と 被るので 不要」）。
  *
- * ## なぜ 足場を 残すのか
- * ここまでは ヒント（型文）が ずっと 見えて いたのに、しつもんが 終わった
- * とたんに 消えて、白い 入力欄だけが 残って いた——**いちばん 足場が 要る
- * ところで、いちばん 足場が 少ない**（設計01 P6 の アンチパターン
- *「足場なしの『自由に 書いて みましょう』」を 自分で 踏んで いた）。
- *
- * ## 中身が「聞く 文」なのは わざと
- * 学習者は 直前に 同じ 形の しつもんを 6回 聞いて いる。それを 相手に
- * 聞き返すのは、きょうの 入力を そのまま 産出に する 練習に なる
- *（設計05 §5.3(g) の「しつもん力」への 布石）。
- * 相手は しつもんを しない 役なので、**聞く 相手として ちょうど よい**。
+ * 足場そのものを 消した わけでは ない。しつもんが 終わった とたんに ヒントが
+ * 消えて 白い 入力欄だけが 残るのは、設計01 P6 の アンチパターン
+ *「足場なしの『自由に 聞いて みましょう』」——ここは いまも 踏まない。
+ * 変えたのは 置き場所で、**聞ける ことを 板に 出して、文は 消した**。
+ * 板と 文の 2か所に 置くと、ちがう ことを 2回 案内する ことに なる。
  */
-/**
- * ラウンド2で「何を 聞けば いいか」が 分からない ときの **みちびきの しつもん**。
- *
- * 一度は「隠して おいて 押すと 1つずつ」に したが、**あらかじめ 4つ 見せる**に
- * 戻した（2026-08-21 の 指定）。何を 聞けば いいか 分からない ところで 止まるより、
- * 見えて いる ほうが 動ける。聞き出す 練習なので、**答えは 見せない**——
- * 出すのは 聞き方だけ。
- */
-const FREE_TALK_HINTS = [
-  "はじめて 日本に 来た 日は、どうでしたか。",
-  "しごとで いちばん うれしかった 日は、いつですか。",
-  "日本で びっくりした ことは、ありますか。",
-  "日本の 春は、どんな かんじですか。",
-] as const;
 
 /**
  * 見守りの ことば（送る前に 気づいて ほしい こと）。
@@ -255,12 +244,6 @@ export function MeetingSession({
   embedded?: boolean;
 }) {
   const furigana = useMemo(() => buildFuriganaIndex(meeting.furigana ?? []), [meeting.furigana]);
-  /*
-   * ミーティングは **いつも はじめから**（2026-08-18 の指定）。
-   * 途中を 端末に 残して「まえの つづきから はじめます」と 出して いたが、
-   * この 教材で いちばん 練習したい のは あいさつと 名乗りで、そこを 飛ばして
-   * 4問目から 始まる 会議には 意味が 無い。Zoom の 会議も 途中から 始まらない。
-   */
   /**
    * 端末に 残って いた ところ。**開いた ときに 1回だけ 読む**。
    *
@@ -300,6 +283,8 @@ export function MeetingSession({
    * 開く 価値が ある（設計01 P2）。判定は この 端末の 中で 済ませる。
    */
   const [found, setFound] = useState<ReadonlySet<string>>(() => new Set(resume.found));
+  /** いま 聞けた ばかりの 札（板の カードを 1回だけ 光らせる）。 */
+  const [justFoundId, setJustFoundId] = useState<string | null>(null);
   /** 日本語の 見かたを ポップアップで 出して いるか。 */
   const [judgeOpen, setJudgeOpen] = useState(false);
   /** ポップアップに そのまま 見せる「あなたの ことば」。 */
@@ -462,7 +447,10 @@ export function MeetingSession({
           !found.has(item.id) &&
           item.keywords.some((word) => asked.includes(normalizeReading(word))),
       );
-      if (hit) setFound((prev) => new Set([...prev, hit.id]));
+      if (hit) {
+        setFound((prev) => new Set([...prev, hit.id]));
+        setJustFoundId(hit.id);
+      }
       return hit ?? null;
     },
     [meeting, found],
@@ -481,6 +469,13 @@ export function MeetingSession({
         string
       >,
     [meeting.questions, withName],
+  );
+
+  /** ラウンド2の 板に 出す ことば（`discover.label` を そのまま つかう）。 */
+  const discoverLabels = useMemo(
+    () =>
+      Object.fromEntries(meeting.discover.map((d) => [d.id, d.label])) as Record<string, string>,
+    [meeting.discover],
   );
 
   /** いま読み上げている文（かな）。口の形はここから取る。 */
@@ -895,6 +890,12 @@ export function MeetingSession({
        * 別の 効果に すると、進み方に よって 切りかわったり しなかったり する。
        */
       setRound("listen");
+      /*
+       * **ばんの 変わり目の ことばを チャットに 残す**（2026-08-21 の 指定）。
+       * 画面の 上には 同じ 文が 大きく 出て いるが、あれは 先へ 進むと 流れて しまう。
+       * 会話の 記録の 側にも 置いて おくと、あとから 読み返せる。
+       */
+      pushChat({ kind: "host", text: withName(meeting.closing) });
       // さいごまで話しきったぶんのハートと、手に残るきろくは ここで一度だけ作る
       const finished = awardCompletion(affection);
       setAffection(finished);
@@ -1271,35 +1272,16 @@ export function MeetingSession({
       <p className="text-sky text-xs font-extrabold">ラウンド 2</p>
       <p className="text-navy text-base font-black">
         <RubyText
-          text={`こんどは、あなたが 聞く ばんです。${meeting.host.name}さんに しつもんして みましょう。`}
+          text={`今度は、あなたが 聞く 番です。${meeting.host.name}さんに 質問して みましょう。`}
           index={CHROME_FURIGANA}
           show
         />
       </p>
-      {meeting.discover.length > 0 ? (
-        <div className="card-island p-4">
-          <p className="text-ink-soft text-xs font-extrabold">
-            <RubyText
-              text={`🔎 ${meeting.host.name}さんの ことを 見つけよう（${found.size} / ${meeting.discover.length}）`}
-              index={CHROME_FURIGANA}
-              show
-            />
-          </p>
-          <ul className="mt-2 space-y-1">
-            {meeting.discover.map((item) => (
-              <li key={item.id} className="text-ink text-sm font-black">
-                {found.has(item.id) ? (
-                  <>
-                    ✅ <RubyText text={item.label} index={furigana} show />
-                  </>
-                ) : (
-                  <span className="text-ink-faint">？？？</span>
-                )}
-              </li>
-            ))}
-          </ul>
-        </div>
-      ) : null}
+      {/*
+        見つける ことの 一覧は **相手の 顔の すぐ下の 板**（`DiscoverCards`）へ 移した
+        （2026-08-21 の 指定「02の 場合は 02の カードを 表示して」）。
+        ここに もう一度 出すと、同じ ものが 画面に 2つ 並ぶ。
+      */}
     </div>
   ) : null;
 
@@ -1349,7 +1331,7 @@ export function MeetingSession({
       })}
       {!round1Done ? (
         <span className="text-ink-faint ml-1 shrink-0 text-[11px] font-bold">
-          <RubyText text="ぜんぶ こたえると ひらきます" index={CHROME_FURIGANA} show />
+          <RubyText text="全部 答えると 開きます" index={CHROME_FURIGANA} show />
         </span>
       ) : null}
     </div>
@@ -1375,47 +1357,29 @@ export function MeetingSession({
   );
 
   const controls = done ? (
+    /*
+     * 聞く ばんの 操作は **マイクだけ**（2026-08-21 の 指定）。
+     *
+     * 消した ものが 2つ ある。
+     * ①「ヘンディさんに 聞いて みましょう」＋ 聞き方の 4つ … 板（`DiscoverCards`）が
+     *   同じ ことを もっと 具体的に 出す ように なった ので、二重に なって いた。
+     * ②「ミーティングを おわる」 … Zoom と 同じ「たいしつ」が 上に ある。
+     *   おわる 道が 2つ ある 画面は、どちらを 押せば よいのか 分からない。
+     *   おわりの しゅうりょうしょうは たいしつ から 出す（`onLeft`）。
+     */
     <div className="card-island space-y-2 p-4">
-      <p className="text-navy text-sm font-black">
-        💬 <RubyText text="ヘンディさんに 聞いて みましょう" index={CHROME_FURIGANA} show />
-      </p>
-      <ul className="mt-1 space-y-1">
-        {FREE_TALK_HINTS.map((line) => (
-          <li
-            key={line}
-            className="bg-cream text-ink rounded-xl px-3 py-2 text-sm font-black break-words"
-          >
-            「
-            <RubyText text={line} index={CHROME_FURIGANA} show />」
-          </li>
-        ))}
-      </ul>
-      <div className="flex items-center justify-between gap-2">
-        <SpeakButton
-          status={voice.status}
-          reason={voice.reason}
-          talking={voice.talking}
-          disabled={!canAnswer && phase !== "はなす"}
-          onConnect={() => void voice.start(instruction, hostVoice)}
-          onStartTalking={() => {
-            stopClip();
-            voice.startTalking();
-          }}
-          onStopTalking={voice.stopTalking}
-        />
-        {/*
-          聞く ばんの おわりは **学習者が 決める**。見つける ことが 0の 教材も ある ので、
-          「ぜんぶ 見つけた」を おわりに できない。
-        */}
-        <button
-          type="button"
-          onClick={finishMeeting}
-          aria-label="ミーティングを おわる"
-          className="btn-game shrink-0 rounded-full px-4 py-2 text-xs whitespace-nowrap"
-        >
-          <RubyText text="ミーティングを おわる" index={CHROME_FURIGANA} show />
-        </button>
-      </div>
+      <SpeakButton
+        status={voice.status}
+        reason={voice.reason}
+        talking={voice.talking}
+        disabled={!canAnswer && phase !== "はなす"}
+        onConnect={() => void voice.start(instruction, hostVoice)}
+        onStartTalking={() => {
+          stopClip();
+          voice.startTalking();
+        }}
+        onStopTalking={voice.stopTalking}
+      />
     </div>
   ) : (
     <div className="card-island space-y-3 p-4">
@@ -1442,7 +1406,7 @@ export function MeetingSession({
       ) : null}
 
       <p className="text-ink-soft text-center text-xs font-extrabold">
-        <RubyText text="こえで こたえましょう！" index={CHROME_FURIGANA} show />
+        <RubyText text="声で 答えましょう！" index={CHROME_FURIGANA} show />
       </p>
 
       {/* 速さ｜丸い マイク｜ヒント の 3つ（添付の 画面と 同じ 並び） */}
@@ -1519,15 +1483,30 @@ export function MeetingSession({
          * 途中で 止まって いた。
          */
         speak={
-          /* しつもんの カードは 相手の 顔の すぐ下（会話から 目を 離さずに 見える） */
-          <QuestionCards
-            order={meeting.questions.map((q) => q.id)}
-            labels={cardLabels}
-            openIds={openIds}
-            currentId={question?.id ?? null}
-            justOpenedId={justOpenedId}
-            furigana={furigana}
-          />
+          /*
+           * しつもんの カードは 相手の 顔の すぐ下（会話から 目を 離さずに 見える）。
+           * **見ている ばんの 板**を 出す（`round1Done` では なく `round`）——
+           * 帯は 行き来できるので、押した ばんの 板が 出ないと 押した 意味が 無い。
+           */
+          round === "listen" && meeting.discover.length > 0 ? (
+            <DiscoverCards
+              order={meeting.discover.map((d) => d.id)}
+              labels={discoverLabels}
+              foundIds={found}
+              justFoundId={justFoundId}
+              hostName={meeting.host.name}
+              furigana={furigana}
+            />
+          ) : (
+            <QuestionCards
+              order={meeting.questions.map((q) => q.id)}
+              labels={cardLabels}
+              openIds={openIds}
+              currentId={question?.id ?? null}
+              justOpenedId={justOpenedId}
+              furigana={furigana}
+            />
+          )
         }
         /* 入る 前にも 速さを 決められる（はじめの ひとことから 効く） */
         settings={<SpeechSpeedPicker value={speed} onChange={saveSpeechSpeed} tone="light" />}
@@ -1548,7 +1527,15 @@ export function MeetingSession({
           }
         }}
         /* 出たら つないだ ものを 閉じる（マイクを 開いた ままに しない） */
-        onLeft={() => voice.stop()}
+        /*
+         * たいしつ が **おわりの 道**（2026-08-21 の 指定で「ミーティングを おわる」を
+         * 消した）。ラウンド2まで 来て いる ときだけ しゅうりょうしょうを 出す——
+         * 途中で 出た 人に「よく 話せました」を 見せるのは 嘘に なる。
+         */
+        onLeft={() => {
+          voice.stop();
+          if (round1Done) finishMeeting();
+        }}
         participants={[meeting.host]}
         activeSpeaker={reply ? meeting.host.id : null}
         /* 発光は学習行為に紐づける（札が開いた・ハートが増えた瞬間だけ光る） */

@@ -18,8 +18,6 @@ import { bareKanjiTexts, itemsBefore, KAISHA, joinCall, seedCompleted } from "./
  *（だから かなだけで 返させている — judge-card.tsx）。答える 前の 画面だけを 見る。
  */
 const KNOWN_BARE_KANJI: readonly string[] = [
-  // src/components/call-shell.tsx — 通話の 人数
-  "人が さんかちゅう",
   // src/components/stage/content-frame.tsx — 関門の 逃げ道
   "それでも 見る",
 ];
