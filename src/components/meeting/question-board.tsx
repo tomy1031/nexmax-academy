@@ -38,10 +38,10 @@ export function QuestionCards({
   furigana: FuriganaIndex;
 }) {
   return (
-    <div className="rounded-[var(--radius-card)] bg-white/10 p-2.5">
-      <p className="mb-2 text-xs font-extrabold text-white/80">
+    <div className="rounded-[var(--radius-card)] bg-[color-mix(in_srgb,var(--color-sky)_14%,white)] p-3">
+      <p className="text-navy mb-2 text-sm font-black">
         🎁 {order.length}つの しつもん
-        <span className="ml-2 font-bold text-white/60">
+        <span className="text-ink-soft ml-2 text-xs font-bold">
           こたえると、カードが ひらきます（{openIds.size} / {order.length}）
         </span>
       </p>
@@ -55,14 +55,10 @@ export function QuestionCards({
               aria-label={open ? `${at + 1}ばんめ こたえました` : `${at + 1}ばんめ まだです`}
               animate={justOpenedId === id ? { scale: [1, 1.12, 1] } : { scale: 1 }}
               transition={{ duration: 0.5 }}
-              className="relative min-h-[62px] rounded-xl px-1.5 py-4 text-center"
+              className="relative min-h-[72px] rounded-xl border-2 px-1.5 py-4 text-center"
               style={{
-                background: open
-                  ? "#fff"
-                  : now
-                    ? "rgba(255,255,255,0.30)"
-                    : "rgba(255,255,255,0.12)",
-                outline: now ? "2px solid var(--color-sun)" : "none",
+                background: open ? "#fff" : "color-mix(in srgb, var(--color-sky) 22%, white)",
+                borderColor: now ? "var(--color-sky-deep)" : "transparent",
               }}
             >
               <span
@@ -76,7 +72,7 @@ export function QuestionCards({
                   <RubyText text={labels[id] ?? ""} index={furigana} show />
                 </span>
               ) : (
-                <span className="block text-lg font-black text-white/60">？</span>
+                <span className="text-sky-deep block text-lg font-black opacity-70">？</span>
               )}
             </motion.li>
           );

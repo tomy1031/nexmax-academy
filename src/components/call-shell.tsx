@@ -112,6 +112,14 @@ export function CallShell({
   /** 入る前の見出し。話す教材は "speak"（既定は "listen"）。 */
   purpose = "listen",
   /**
+   * 枠の 地の色。既定は Zoom に 寄せた 濃い 紺。
+   * ミーティングだけ 添付の 画面に 合わせて **明るい 白の カード**に する
+   *（2026-08-20 の 指定）。ほかの 教材は 触らない。
+   */
+  tone = "dark",
+  /** 右の 列に 置く もの（チャット欄など）。渡すと 2列に なる。 */
+  side,
+  /**
    * 「話す」ところ（Zoom の 画面の **中**に 置く）。
    *
    * 小さな ボタンを 入力欄の 横に 置いて いた ころは、**どれを 押せば 声で 話せるのか**が
@@ -148,6 +156,8 @@ export function CallShell({
   furigana?: FuriganaIndex | readonly FuriganaEntry[];
   dictionary?: readonly DictionaryEntry[];
   purpose?: CallPurpose;
+  tone?: "dark" | "light";
+  side?: React.ReactNode;
   speak?: React.ReactNode;
   settings?: React.ReactNode;
   onJoined?: () => void;
@@ -234,18 +244,35 @@ export function CallShell({
     );
   }
 
+  /*
+   * 明るい 枠（`tone="light"`）は 添付の 画面に 合わせた もの。
+   * 濃い 紺の Zoom 風の 枠は、そのままだと 中の 白い カードが 浮いて 見えた。
+   */
+  const light = tone === "light";
   return (
     <div className="flex flex-col gap-4">
       <div
         className="overflow-hidden rounded-[var(--radius-card)] border-2"
-        style={{ borderColor: "var(--color-hairline)", background: "#0f2233" }}
+        style={{
+          borderColor: light ? "var(--color-hairline)" : "var(--color-hairline)",
+          background: light ? "#fff" : "#0f2233",
+        }}
       >
-        <div className="flex items-center justify-between px-4 py-2">
-          <span className="text-xs font-extrabold text-white/80">
-            🔴 <RubyText text={title} index={index} show />
+        <div className="flex items-center justify-between px-4 py-2.5">
+          <span
+            className={`text-sm font-black ${light ? "text-navy" : "text-xs font-extrabold text-white/80"}`}
+          >
+            {light ? "🎥 " : "🔴 "}
+            <RubyText text={title} index={index} show />
           </span>
-          <span className="text-xs font-bold text-white/60">
-            {participants.length + 1}人が さんかちゅう
+          <span
+            className={
+              light
+                ? "bg-panel-tint text-ink-soft rounded-full px-3 py-1 text-xs font-extrabold"
+                : "text-xs font-bold text-white/60"
+            }
+          >
+            👥 {participants.length + 1}人が さんかちゅう
           </span>
         </div>
 
@@ -270,13 +297,15 @@ export function CallShell({
           390px の 実機では、ボタンが 1行に 入りきらず「カメラを け」で
           切れて いた。折り返して 全部の 字を 見せる（押せても 読めなければ 押せない）。
         */}
-        <div className="flex flex-wrap items-center justify-center gap-2 border-t border-white/10 px-3 py-2">
+        <div
+          className={`flex flex-wrap items-center justify-center gap-2 border-t px-3 py-2 ${light ? "border-hairline" : "border-white/10"}`}
+        >
           {/*
            * ボタンの文字は「いまの じょうたい」ではなく「押すと どうなるか」にする。
            * OFFのときに「カメラ OFF」と出ていると、押して よいのか 分からず、
            * 案内文（「うつしたい ときは…」）とも 食いちがう（390px の実機で確認）。
            */}
-          <ToolButton on={cameraOn} onClick={() => setCameraOn((v) => !v)}>
+          <ToolButton light={light} on={cameraOn} onClick={() => setCameraOn((v) => !v)}>
             {cameraOn ? "📷 カメラを けす" : "📷 カメラを つける"}
           </ToolButton>
           <button
@@ -289,9 +318,26 @@ export function CallShell({
         </div>
       </div>
 
-      {controlsAt === "top" ? controls : null}
-      {children}
-      {controlsAt === "bottom" ? controls : null}
+      {/*
+        右の 列が あれば **2列**（左＝話す ところ／右＝会話の 記録）。
+        画面が せまい ときは 縦に 積む——横に 押し込むと どちらも 読めなくなる。
+      */}
+      {side ? (
+        <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,22rem)]">
+          <div className="flex min-w-0 flex-col gap-4">
+            {controlsAt === "top" ? controls : null}
+            {children}
+            {controlsAt === "bottom" ? controls : null}
+          </div>
+          <div className="min-w-0">{side}</div>
+        </div>
+      ) : (
+        <>
+          {controlsAt === "top" ? controls : null}
+          {children}
+          {controlsAt === "bottom" ? controls : null}
+        </>
+      )}
     </div>
   );
 }
@@ -443,11 +489,14 @@ function ToolButton({
   on,
   onClick,
   disabled = false,
+  /** 明るい 枠の 中では 白い 字が 消える（2026-08-21 の 実機写真で 判明）。 */
+  light = false,
   children,
 }: {
   on: boolean;
   onClick: () => void;
   disabled?: boolean;
+  light?: boolean;
   children: React.ReactNode;
 }) {
   return (
@@ -458,8 +507,20 @@ function ToolButton({
       disabled={disabled}
       className="rounded-full px-4 py-1.5 text-xs font-extrabold disabled:opacity-40"
       style={{
-        background: on ? "rgba(255,255,255,0.18)" : "rgba(255,255,255,0.06)",
-        color: on ? "#fff" : "rgba(255,255,255,0.6)",
+        background: light
+          ? on
+            ? "var(--color-panel-tint)"
+            : "var(--color-panel)"
+          : on
+            ? "rgba(255,255,255,0.18)"
+            : "rgba(255,255,255,0.06)",
+        color: light
+          ? on
+            ? "var(--color-navy)"
+            : "var(--color-ink-soft)"
+          : on
+            ? "#fff"
+            : "rgba(255,255,255,0.6)",
       }}
     >
       {children}

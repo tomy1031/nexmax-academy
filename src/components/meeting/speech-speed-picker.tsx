@@ -14,6 +14,7 @@ export function SpeechSpeedPicker({
   onChange,
   tone = "dark",
   disabled = false,
+  vertical = false,
 }: {
   value: SpeechSpeedId;
   onChange: (id: SpeechSpeedId) => void;
@@ -24,14 +25,21 @@ export function SpeechSpeedPicker({
    * **消さずに 灰色で 残す**——消えると「さっき あった ものが 無い」と 探しはじめる。
    */
   disabled?: boolean;
+  /**
+   * 縦に 並べるか（添付の 画面は マイクの 左に 縦の 3つ）。
+   * 横に 並べると 丸い マイクと 同じ 行に 収まらず、押す ところが 分からなくなる。
+   */
+  vertical?: boolean;
 }) {
   const dark = tone === "dark";
   return (
     <div
-      className={`flex flex-wrap items-center justify-center gap-1.5 ${disabled ? "opacity-40" : ""}`}
+      className={`flex gap-1.5 ${
+        vertical ? "flex-col items-start" : "flex-wrap items-center justify-center"
+      } ${disabled ? "opacity-40" : ""}`}
     >
       <span className={`text-xs font-extrabold ${dark ? "text-white/70" : "text-ink-soft"}`}>
-        はなす はやさ
+        {vertical ? "スピード" : "はなす はやさ"}
       </span>
       {SPEECH_SPEEDS.map((speed) => {
         const on = speed.id === value;
