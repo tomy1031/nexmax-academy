@@ -346,3 +346,84 @@ export function buildJudgePrompt(context: JudgeContext, kanaRetry = false): stri
   }
   return lines.filter((line) => line !== "").join("\n");
 }
+
+/* ------------------------------------------------------------------ *
+ * 札の 当たり判定（ラウンド2）
+ * ------------------------------------------------------------------ */
+
+/**
+ * 学習者の しつもんが **どの 札に あたるか**を 返す 道具。
+ *
+ * ## なぜ ことばの 照合だけでは 足りないか
+ * 札は これまで `discover.keywords` の 部分一致だけで 開いて いた。
+ * 短い ことばを 並べると **関係の 無い しつもんで 開く**（「はな」が
+ *「日本の はなしを して ください」に 当たる）。長い ことばだけに すると、
+ * 言いかえに 届かない——「日本の 人は しんせつですか」は どの 札にも
+ * 当たらないが、学習者は たしかに 財布の 話を 引き出して いる。
+ *
+ * ## 失敗の 向きを 決める
+ * ことばの 照合は **決定的で 速い**ので 先に 通し、外れた ときだけ ここに 聞く。
+ * つまり AI が 救うのは「開くべき なのに 開かない」側だけ。
+ * 「開くべきで ないのに 開く」は こちらの 決定的な 側が 抑える（設計01 P8）。
+ * 鍵の 無い 学習者は ここを 通らないので、教室の 既定は これまでと 同じ。
+ */
+export const CARD_TOOL = {
+  functionDeclarations: [
+    {
+      name: "fuda_no_hantei",
+      description:
+        "学生の しつもんが、用意された 話題の どれに あたるかを 返す。学生が 話すたびに かならず 1回だけ 呼ぶ。",
+      parameters: {
+        type: "OBJECT",
+        properties: {
+          cardId: {
+            type: "STRING",
+            description: "あたった 話題の id。どれにも あたらない ときは none。",
+          },
+        },
+        required: ["cardId"],
+      },
+    },
+  ],
+} as const;
+
+/** 札1枚ぶんの 見出し（中身は 渡さない——判定に 要るのは 話題だけ）。 */
+export interface CardTopic {
+  readonly id: string;
+  readonly label: string;
+}
+
+/**
+ * 札の 判定を たのむ 文。
+ *
+ * **迷ったら none**に 寄せる。ここが ゆるいと、1つ しつもんしただけで
+ * 札が 何枚も 開き、聞き出した という 手ごたえが 消える。
+ */
+export function buildCardPrompt(topics: readonly CardTopic[], utterance: string): string {
+  return [
+    "学生の しつもんが、下の 話題の どれかに あたるかを 見て ください。",
+    "",
+    "# 話題",
+    ...topics.map((topic) => `- ${topic.id}: ${topic.label}`),
+    "",
+    "# 学生の しつもん",
+    utterance,
+    "",
+    "その 話題を 聞いて いると はっきり 分かる ときだけ、その id を 返します。",
+    "少しでも 迷う ときは none を 返します。あたるのは 多くても 1つです。",
+  ].join("\n");
+}
+
+/**
+ * 道具の 引数から 札の id を 取り出す。
+ *
+ * 知らない id・`none`・形が 崩れた ものは **すべて 当たり無し**に する
+ *（あいまいな ものを 開くより、開かない ほうが まし）。
+ */
+export function parseCardHit(args: unknown, topics: readonly CardTopic[]): string | null {
+  if (!args || typeof args !== "object") return null;
+  const id = (args as { cardId?: unknown }).cardId;
+  if (typeof id !== "string") return null;
+  const trimmed = id.trim();
+  return topics.some((topic) => topic.id === trimmed) ? trimmed : null;
+}

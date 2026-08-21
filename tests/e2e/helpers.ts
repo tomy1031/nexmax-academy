@@ -286,14 +286,31 @@ export async function skipAsk(page: Page): Promise<void> {
   await sendAnswer(page, "すみません、つぎを おねがいします");
 }
 
-/** ひらいた カードの 数（「こたえると、カードが ひらきます（n / m）」）。 */
+/**
+ * ひらいた カードの 数。
+ *
+ * 板の 見出しは 漢字＋ふりがなに なった（2026-08-21）ので、**地の 文では 数えない**
+ *——ルビが 入ると 字づらが「答こたえると」に なり、書いた とおりには 当たらない。
+ * 板が 自分で 名のる 名前（`aria-label`）で 見る。
+ */
 export async function openedCards(page: Page): Promise<number> {
   const label = await page
-    .getByText(/カードが ひらきます（\s*\d+\s*\/\s*\d+\s*）/)
+    .getByLabel(/ひらいた カード \d+ \/ \d+/)
     .first()
-    .innerText();
-  const match = /（\s*(\d+)\s*\/\s*(\d+)\s*）/.exec(label);
+    .getAttribute("aria-label");
+  const match = /(\d+) \/ (\d+)/.exec(label ?? "");
   return match ? Number(match[1]) : -1;
+}
+
+/**
+ * ミーティングを おえる（Zoom と 同じ「たいしつ」から 出る）。
+ *
+ * 「ミーティングを おわる」ボタンは 消した（2026-08-21 の 指定「たいしつ が あるので
+ * 不要」）。おわりの しゅうりょうしょうは この 道から 出る。
+ */
+export async function leaveCall(page: Page): Promise<void> {
+  await page.getByRole("button", { name: "たいしつ" }).click();
+  await page.getByRole("button", { name: "言いました。おわる" }).click();
 }
 
 /** いま貯まっているハート（松井社長のミーティングだけに出る）。 */

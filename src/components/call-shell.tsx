@@ -67,6 +67,22 @@ const BEFORE_LABEL: Record<CallPurpose, string> = {
 /** 読み辞書を渡されなかったとき（ふりがな無しで地の文だけ描く）。 */
 const EMPTY_INDEX: FuriganaIndex = buildFuriganaIndex([]);
 
+/**
+ * **画面が 自分で 出す 字**の 読み（教材の 読み辞書とは 混ぜない・規律2）。
+ *
+ * ひらがなに 開いて いた ことばを 漢字＋ふりがなに 戻した（2026-08-21 の 指定
+ *「けす・たいしつ など、かえって 分かりにくい」）。開くと 語の 切れ目が 消えて
+ * 「たいしつ」が 一続きの かなに なる——読み手は まず ことばを 探す ところから
+ * 始める ことに なる。漢字は 形で 意味が 立つ ので、ふりがなさえ あれば 速い
+ *（AGENTS.md 規律2「難しい語を ひらがなに 開かない」と 同じ 向き）。
+ */
+const SHELL_FURIGANA: FuriganaIndex = buildFuriganaIndex([
+  ["消", "け"],
+  ["退室", "たいしつ"],
+  ["人", "にん"],
+  ["参加中", "さんかちゅう"],
+]);
+
 const ACCENT: Record<ListeningParticipant["accent"], string> = {
   sky: "#4fa8e8",
   leaf: "#58c273",
@@ -273,10 +289,7 @@ export function CallShell({
             }
           >
             👥{" "}
-            <ruby>
-              {participants.length + 1}人<rt>にん</rt>
-            </ruby>
-            が さんかちゅう
+            <RubyText text={`${participants.length + 1}人が 参加中`} index={SHELL_FURIGANA} show />
           </span>
         </div>
 
@@ -309,15 +322,25 @@ export function CallShell({
            * OFFのときに「カメラ OFF」と出ていると、押して よいのか 分からず、
            * 案内文（「うつしたい ときは…」）とも 食いちがう（390px の実機で確認）。
            */}
-          <ToolButton light={light} on={cameraOn} onClick={() => setCameraOn((v) => !v)}>
-            {cameraOn ? "📷 カメラを けす" : "📷 カメラを つける"}
+          <ToolButton
+            light={light}
+            on={cameraOn}
+            label={cameraOn ? "カメラを けす" : "カメラを つける"}
+            onClick={() => setCameraOn((v) => !v)}
+          >
+            <RubyText
+              text={cameraOn ? "📷 カメラを 消す" : "📷 カメラを つける"}
+              index={SHELL_FURIGANA}
+              show
+            />
           </ToolButton>
           <button
             type="button"
             onClick={() => setStage("leaving")}
+            aria-label="たいしつ"
             className="rounded-full bg-[#e64a5f] px-4 py-1.5 text-xs font-extrabold text-white"
           >
-            たいしつ
+            <RubyText text="退室" index={SHELL_FURIGANA} show />
           </button>
         </div>
       </div>
@@ -412,15 +435,27 @@ function Lobby({
 
         <div className="flex flex-wrap items-center justify-center gap-2 border-t border-white/10 px-3 py-2">
           {/* ボタンの 字は「いまの じょうたい」ではなく「おすと どうなるか」 */}
-          <ToolButton on={cameraOn} onClick={onToggleCamera}>
-            {cameraOn ? "📷 カメラを けす" : "📷 カメラを つける"}
+          <ToolButton
+            on={cameraOn}
+            label={cameraOn ? "カメラを けす" : "カメラを つける"}
+            onClick={onToggleCamera}
+          >
+            <RubyText
+              text={cameraOn ? "📷 カメラを 消す" : "📷 カメラを つける"}
+              index={SHELL_FURIGANA}
+              show
+            />
           </ToolButton>
           {/*
             マイクの ためしは **じぶんが 話す 教材だけ**（`purpose: "speak"`）。
             聞くだけの 教材に 置くと、どこにも つながらない ボタンに なる。
           */}
           {purpose === "speak" ? (
-            <ToolButton on={micTrying} onClick={() => setMicTrying((v) => !v)}>
+            <ToolButton
+              on={micTrying}
+              label={micTrying ? "マイクを とめる" : "マイクを ためす"}
+              onClick={() => setMicTrying((v) => !v)}
+            >
               {micTrying ? "🎤 マイクを とめる" : "🎤 マイクを ためす"}
             </ToolButton>
           ) : null}
@@ -441,7 +476,11 @@ function Lobby({
       </button>
       {/* カメラは ONで 始まる。けす 場所を ここで 先に 伝える（探させない） */}
       <p className="text-ink-faint mt-2 text-xs font-bold">
-        カメラは ONで はじまります。うつしたくない ときは「📷 カメラを けす」を おしてね
+        <RubyText
+          text="カメラは ONで はじまります。うつしたくない ときは「📷 カメラを 消す」を おしてね"
+          index={SHELL_FURIGANA}
+          show
+        />
       </p>
     </motion.div>
   );
@@ -495,18 +534,27 @@ function ToolButton({
   disabled = false,
   /** 明るい 枠の 中では 白い 字が 消える（2026-08-21 の 実機写真で 判明）。 */
   light = false,
+  /**
+   * 読み上げと 検査に つかう 名前。
+   *
+   * 中の 字に ふりがなを 合成する と、ボタンの 名前は「カメラを 消けす」の ように
+   * 読みが 混ざる（`<rt>` も 名前に 数えられる）。**見た目と 名前を 切り離す**。
+   */
+  label,
   children,
 }: {
   on: boolean;
   onClick: () => void;
   disabled?: boolean;
   light?: boolean;
+  label: string;
   children: React.ReactNode;
 }) {
   return (
     <button
       type="button"
       onClick={onClick}
+      aria-label={label}
       aria-pressed={on}
       disabled={disabled}
       className="rounded-full px-4 py-1.5 text-xs font-extrabold disabled:opacity-40"

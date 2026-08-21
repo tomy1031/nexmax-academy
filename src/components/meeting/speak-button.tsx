@@ -1,7 +1,12 @@
 "use client";
 
 import { motion } from "motion/react";
+import { RubyText } from "@/components/ruby-text";
+import { buildFuriganaIndex } from "@/lib/text/furigana";
 import type { VoiceStatus } from "./use-live-voice";
+
+/** ボタンの まわりに 出る 字の 読み（画面の ことば・教材の 辞書とは 混ぜない）。 */
+const BUTTON_FURIGANA = buildFuriganaIndex([["繋", "つな"]]);
 
 /**
  * 「おしながら はなす」— Zoom の 画面の 中に 置く、声の ボタン
@@ -83,12 +88,19 @@ export function SpeakButton({
           そこで 一度 つまずく。この アプリの 文は 分かち書きなので、空白で 折り返せば よい。
         */}
         <p className="text-ink-soft mt-1.5 text-xs font-bold break-keep">
-          {/* 画面が 自分で 出す 字は かなで 書く（教材と ちがい 読み辞書を 持てない） */}
-          {blocked
-            ? reason === "noMic"
-              ? "マイクが つかえません。いまは したの らんに かいて こたえて ください"
-              : "いまは したの らんに かいて こたえて ください"
-            : "おすと マイクが つながります。かいて こたえても だいじょうぶです"}
+          {/*
+            つないだ あとに 何が できるかを 並べて いたが、**押す 前に 要る 情報では
+            なかった**（2026-08-21 の 指定）。ボタンの 説明は、押すと どうなるかの 1つだけ。
+          */}
+          {blocked ? (
+            reason === "noMic" ? (
+              "マイクが つかえません。いまは したの らんに かいて こたえて ください"
+            ) : (
+              "いまは したの らんに かいて こたえて ください"
+            )
+          ) : (
+            <RubyText text="マイクを つなげます" index={BUTTON_FURIGANA} show />
+          )}
         </p>
       </div>
     );

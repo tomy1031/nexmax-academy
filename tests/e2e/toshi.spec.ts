@@ -9,6 +9,7 @@ import {
   hearts,
   KAISHA_ITEMS,
   joinCall,
+  leaveCall,
   multiButtons,
   openedCards,
   shot,
@@ -237,15 +238,30 @@ test("かいしゃステージを 6教材 通しで あそべる（端末に 何
     await cert1.getByRole("button").click();
     await expect(cert1).toHaveCount(0);
 
-    await expect(page.getByText("とても よかったです")).toBeVisible();
-    await expect(page.getByLabel("きょう はなせた こと")).toBeVisible();
+    /*
+     * ばんの 変わり目の ことばは **2か所に 出る**（2026-08-21 の 指定で チャットにも
+     * 積む ように した）。大きい 板と、あとから 読み返せる チャットの 記録。
+     */
+    await expect(page.getByText("とても よかったです").first()).toBeVisible();
+    await expect(page.getByText("とても よかったです")).toHaveCount(2);
+    /*
+     * 話せた ことは **ポップアップ**に 移した（2026-08-21）。ラウンド1で 答えた ぶんと
+     * ラウンド2で 聞き出した ぶんを 分けて 並べる。
+     */
+    const seeRecord = page.getByRole("button", { name: "話せた ことを 見る" });
+    await expect(seeRecord).toBeVisible();
+    await seeRecord.click();
+    const review = page.getByRole("dialog", { name: "しゅうりょうしょうの ポップアップ" });
+    await expect(review.getByLabel(/さんに 話した こと/)).toBeVisible();
+    await review.getByRole("button", { name: "とじる" }).click();
+    await expect(review).toHaveCount(0);
     await shot(page, "09-meeting-hendy-done");
 
     /*
      * **聞く ばんを おえるまで つぎへ 進めない**。おわりは 学習者が 押して 決める
      *（見つける ことが 0の 教材も あるので「ぜんぶ 見つけた」を おわりに できない）。
      */
-    await page.getByRole("button", { name: "ミーティングを おわる" }).click();
+    await leaveCall(page);
     const cert2 = page.getByRole("dialog", { name: "しゅうりょうしょうの ポップアップ" });
     await expect(cert2).toBeVisible();
     await cert2.getByRole("button").click();
@@ -276,7 +292,7 @@ test("かいしゃステージを 6教材 通しで あそべる（端末に 何
     /* こちらの ミーティングも、おえるのは 学習者が 押して 決める */
     const cert = page.getByRole("dialog", { name: "しゅうりょうしょうの ポップアップ" });
     if (await cert.isVisible()) await cert.getByRole("button").click();
-    await page.getByRole("button", { name: "ミーティングを おわる" }).click();
+    await leaveCall(page);
     await expect(cert).toBeVisible();
     await cert.getByRole("button").click();
   });
