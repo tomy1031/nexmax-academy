@@ -22,10 +22,22 @@ function keywordHit(text: string): string | null {
 
 describe("ことばの 照合", () => {
   it("その 話題を 聞いた ときは 開く", () => {
-    expect(keywordHit("はじめて 日本に 来た 日は、どうでしたか。")).toBe("eki");
+    expect(keywordHit("はじめて 日本に 来た ときは、どうでしたか。")).toBe("eki");
     expect(keywordHit("しごとで いちばん うれしかった ことは 何ですか。")).toBe("ureshii");
-    expect(keywordHit("さいふを おとした ことは ありますか。")).toBe("otoshimono");
+    expect(keywordHit("日本で びっくりした ことは ありますか。")).toBe("otoshimono");
     expect(keywordHit("日本の 春は、どんな かんじですか。")).toBe("sakura");
+    expect(keywordHit("日本語で むずかしい ところは ありますか。")).toBe("sumimasen");
+  });
+
+  /*
+   * 札の 表は **聞く ための 話題**で、中身（エピソード）は 出さない
+   *（2026-08-21 の 指定「カードの 内容が 具体的すぎます」）。
+   * だから 表の ことばを そのまま 読んで 聞いても 当たる、という ことを 固定する。
+   */
+  it("札に 書いて ある とおりに 聞いても 当たる", () => {
+    for (const item of meeting.discover) {
+      expect(keywordHit(`${item.label}を 教えて ください。`)).toBe(item.id);
+    }
   });
 
   it("カタカナで 書いても 開く（表記ゆれは 正規化が 吸収する）", () => {
@@ -45,13 +57,13 @@ describe("ことばの 照合", () => {
 
 describe("AIの 二の手", () => {
   const topics: readonly CardTopic[] = [
-    { id: "eki", label: "はじめて 日本に 来た 日の しっぱい" },
-    { id: "yuki", label: "はじめて 雪を 見た 日" },
+    { id: "eki", label: "日本に 来た ばかりの ころ" },
+    { id: "yuki", label: "日本の 冬の こと" },
   ];
 
   it("たのむ 文に 話題の id と 見出しが 並ぶ", () => {
     const prompt = buildCardPrompt(topics, "日本に 来て、こまった ことは ありますか。");
-    expect(prompt).toContain("- eki: はじめて 日本に 来た 日の しっぱい");
+    expect(prompt).toContain("- eki: 日本に 来た ばかりの ころ");
     expect(prompt).toContain("日本に 来て、こまった ことは ありますか。");
     // 迷ったら 開かない 側に 寄せる（1つ しつもんして 何枚も 開かない）
     expect(prompt).toContain("none");

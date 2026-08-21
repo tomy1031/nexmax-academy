@@ -179,7 +179,7 @@ test("ぜんぶ おわると「聞く ばん」に なり、こえが 無くて�
    * 板に 一本化した ので、板の ことばが そのまま 足場に なる。
    * ルビが 合成されて 文が 割れる ので、かなだけの ところで 見る。
    */
-  await expect(page.getByText("しっぱい").first()).toBeVisible();
+  await expect(page.getByText("むずかしい ところ").first()).toBeVisible();
   await expect(page.getByRole("button", { name: "ヒントの しつもんを 見る" })).toHaveCount(0);
   /* 「ミーティングを おわる」は 消した（たいしつ が おわりの 道） */
   await expect(page.getByRole("button", { name: "ミーティングを おわる" })).toHaveCount(0);
