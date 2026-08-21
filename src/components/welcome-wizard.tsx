@@ -32,7 +32,13 @@ import {
 } from "@/components/learner-fields";
 import { NexMaxFamily, NexMaxType, TypeEmblem } from "@/components/nexmax-types";
 import { GlossaryChip, GlossaryText } from "@/components/glossary-text";
-import { LearnerText, RUBY_ON_COLOR, RubyText, renderRuby } from "@/components/ruby-text";
+import {
+  LearnerText,
+  RUBY_CHIP,
+  RUBY_ON_COLOR,
+  RubyText,
+  renderRuby,
+} from "@/components/ruby-text";
 import { CARD_EDGE, CARD_EDGE_SM, CHIP_EDGE } from "@/components/card-edge";
 import { findAllGlossaryTerms } from "@/content/glossary";
 import { insertPersonalityResult, updateOwnDetails, upsertOwnProfile } from "@/lib/profile-db";
@@ -194,10 +200,13 @@ function QuestionIntro({
   language,
   gender,
   onStart,
+  onBack,
 }: {
   language: PersonalityLanguage;
   gender: Gender;
   onStart: () => void;
+  /** なまえ・がっこうの 画面へ 戻る（願い #153-3）。 */
+  onBack: () => void;
 }) {
   const intro = PERSONALITY_INTRO[language];
   const render = (text: string) =>
@@ -258,7 +267,7 @@ function QuestionIntro({
             ))}
           </div>
         )}
-        <div className="mt-6 text-center">
+        <div className="mt-6 flex flex-col items-center gap-3">
           {/* ボタンの文言も 台帳の文。**色の面なので ふりがなは 白**（docs/constraints.md）。 */}
           <button
             type="button"
@@ -266,6 +275,15 @@ function QuestionIntro({
             className={`btn-game px-10 py-4 text-lg ${RUBY_ON_COLOR}`}
           >
             <RubyText text={intro.startLabel} readings={PERSONALITY_RESULT_READINGS} />
+          </button>
+          {/* 戻る道（願い #153-3）。**進む ボタンより 弱い 見た目**にして、
+              始める 前に「もう 一度 なまえを 直したい」だけを 拾う。 */}
+          <button
+            type="button"
+            onClick={onBack}
+            className="text-ink-soft text-sm font-extrabold underline underline-offset-4"
+          >
+            ← なまえの がめんに もどる
           </button>
         </div>
       </div>
@@ -465,6 +483,26 @@ export function WelcomeWizard({
   function showResult() {
     if (!completedAnswers) return;
     setStep(3);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  /**
+   * 前の 段へ 戻る（願い #153-3）。**答えは 消さない**——state に 持ったままなので、
+   * 戻って 進み直しても 20問を 打ち直す ことには ならない。
+   * 段は 3つとも 一本道なので、戻り先も 1つに 決まる:
+   *   結果 → しつもん（最後の1問）／1問目 → 導入／導入 → なまえの 画面
+   */
+  function goBackAStep() {
+    if (step === 3) {
+      setStep(2);
+    } else if (!introRead) {
+      setStep(1);
+    } else if (questionIndex === 0) {
+      setIntroRead(false);
+    } else {
+      previousQuestion();
+      return;
+    }
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
@@ -803,6 +841,7 @@ export function WelcomeWizard({
                   setIntroRead(true);
                   window.scrollTo({ top: 0, behavior: "smooth" });
                 }}
+                onBack={goBackAStep}
               />
             ) : (
               <>
@@ -907,13 +946,14 @@ export function WelcomeWizard({
                     </div>
                   </div>
                   <div className="flex w-full max-w-3xl items-center justify-between gap-4">
+                    {/* 1問目でも 消さない（願い #153-3）。ここが 消えていたので、
+                        20問に 入ったら なまえ・がっこうの 画面へ 戻る道が 無かった。 */}
                     <button
                       type="button"
-                      disabled={questionIndex === 0}
-                      onClick={previousQuestion}
-                      className="text-navy rounded-full bg-white px-5 py-2 font-extrabold shadow-md disabled:opacity-0"
+                      onClick={goBackAStep}
+                      className="text-navy rounded-full bg-white px-5 py-2 font-extrabold shadow-md"
                     >
-                      ← もどる
+                      {questionIndex === 0 ? "← まえに もどる" : "← もどる"}
                     </button>
                     {questionIndex < PERSONALITY_QUESTIONS.length - 1 ? (
                       <button
@@ -932,7 +972,10 @@ export function WelcomeWizard({
                           onClick={showResult}
                           className={`btn-game px-8 py-3 text-lg [--btn-face:#ffc93c] [--btn-shadow:#f0a819] disabled:cursor-not-allowed disabled:opacity-45 ${RUBY_ON_COLOR}`}
                         >
-                          けっかを{" "}
+                          <ruby>
+                            結果<rt>けっか</rt>
+                          </ruby>
+                          を{" "}
                           <ruby>
                             見る<rt>みる</rt>
                           </ruby>
@@ -971,7 +1014,7 @@ export function WelcomeWizard({
                     ⭐
                   </div>
                   <p
-                    className={`bg-navy mt-1 rounded-xl px-2 py-1 text-[10px] leading-tight font-extrabold text-white ${RUBY_ON_COLOR}`}
+                    className={`bg-navy mt-1 rounded-xl px-2 py-1 text-[10px] font-extrabold text-white ${RUBY_ON_COLOR} [&_ruby]:leading-[2.4]`}
                   >
                     <RubyText
                       text={resultFamily.strengths.join("・")}
@@ -992,7 +1035,7 @@ export function WelcomeWizard({
                 </p>
                 {/* 家族 → タイプ の2段。16通りでも学習者が迷子にならないための構え（07 §1.3）。 */}
                 <p
-                  className={`mt-3 inline-block rounded-full px-4 py-1 text-sm font-black text-white ${RUBY_ON_COLOR}`}
+                  className={`mt-3 rounded-full px-4 text-sm font-black text-white ${RUBY_ON_COLOR} ${RUBY_CHIP}`}
                   style={{ backgroundColor: resultFamily.color }}
                 >
                   <RubyText
@@ -1039,10 +1082,15 @@ export function WelcomeWizard({
                   </p>
                 )}
 
-                <h3 className="text-navy mt-6 font-black">チームで あなたが とくいな しごと</h3>
+                <h3 className="text-navy mt-6 font-black">
+                  <RubyText
+                    text="チームで あなたが 得意な 仕事"
+                    readings={PERSONALITY_RESULT_READINGS}
+                  />
+                </h3>
                 <p className="text-ink mt-2 font-bold">
                   <span
-                    className={`bg-navy mr-2 rounded-lg px-2 py-1 text-sm text-white ${RUBY_ON_COLOR}`}
+                    className={`bg-navy mr-2 rounded-lg px-2.5 text-sm text-white ${RUBY_ON_COLOR} ${RUBY_CHIP}`}
                   >
                     <RubyText text={result.teamRole} readings={PERSONALITY_RESULT_READINGS} />
                   </span>
@@ -1130,7 +1178,10 @@ export function WelcomeWizard({
 
             <div className="mt-7 text-center">
               <p className="text-ink-soft mb-3 text-sm font-bold">
-                このけっかは あなたの こたえから つくられました。
+                <RubyText
+                  text="この 結果は あなたの 答えから 作られました。"
+                  readings={PERSONALITY_RESULT_READINGS}
+                />
               </p>
               <button
                 type="button"
@@ -1151,6 +1202,16 @@ export function WelcomeWizard({
                   ほぞんに しっぱいしました。インターネットを かくにんして、もういちど おしてね。
                 </p>
               )}
+              {/* まだ 保存していない 段なので、しつもんへ 戻って 答え直せる（願い #153-3）。 */}
+              <div className="mt-4">
+                <button
+                  type="button"
+                  onClick={goBackAStep}
+                  className="text-ink-soft text-sm font-extrabold underline underline-offset-4"
+                >
+                  ← しつもんに もどる
+                </button>
+              </div>
             </div>
           </div>
         )}

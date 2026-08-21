@@ -83,6 +83,13 @@ export interface AdminProfilePatch {
   school?: LearnerSchool;
   gender?: Gender;
   personalityType?: PersonalityTypeCode;
+  /**
+   * 管理者かどうか（願い #153-5）。
+   * **申告どおりに入るとは限らない。** DBの `enforce_profile_identity()` が
+   * 「種の2メールは常に管理者」「管理者でない人の更新は前の値のまま」を強制する。
+   * 画面は返ってきた行（`is_admin`）を正として表示し直すこと。
+   */
+  isAdmin?: boolean;
 }
 
 /** なまえ3欄を、保存する形（整形＋呼び名）にそろえる。 */
@@ -270,7 +277,7 @@ export async function updateProfileAsAdmin(
   patch: AdminProfilePatch,
 ): Promise<ProfileRow> {
   const supabase = requireClient();
-  const update: Record<string, string | number> = {};
+  const update: Record<string, string | number | boolean> = {};
   if (patch.names !== undefined) Object.assign(update, nameColumns(patch.names));
   if (patch.school !== undefined) {
     update.university = patch.school.university;
@@ -278,6 +285,7 @@ export async function updateProfileAsAdmin(
   }
   if (patch.gender !== undefined) update.gender = patch.gender;
   if (patch.personalityType !== undefined) update.personality_type = patch.personalityType;
+  if (patch.isAdmin !== undefined) update.is_admin = patch.isAdmin;
 
   const { data, error } = await supabase
     .from("profiles")

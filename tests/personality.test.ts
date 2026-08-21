@@ -155,10 +155,12 @@ describe("タイプ台帳", () => {
     }
   });
 
-  it("分析は4行で、最後の1行が「日本の IT の しごとでは」で始まる", () => {
+  it("分析は4行で、最後の1行が「日本の IT の 仕事では」で始まる", () => {
+    // 2026-08-21「ひらがなが 多すぎる。漢字＋ふりがなで よい」で かな から 漢字に 直した。
+    // 4行目の 書き出しを そろえる きまり 自体は そのまま（07 §2）。
     for (const type of PERSONALITY_TYPES) {
       expect(type.analysis).toHaveLength(4);
-      expect(type.analysis[3]).toMatch(/^日本の IT の しごとでは、/);
+      expect(type.analysis[3]).toMatch(/^日本の IT の 仕事では、/);
     }
   });
 

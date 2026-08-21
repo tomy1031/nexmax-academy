@@ -44,7 +44,7 @@ test("せっていの画面では 性格診断を しない（20問が 出てこ
 
   await expect(page.getByText("しんだんは しません")).toBeVisible();
   await expect(page.getByText("20もんの うち")).toHaveCount(0);
-  await expect(page.getByRole("button", { name: /けっかを/ })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: /結果.*見/ })).toHaveCount(0);
   // 「ほぞんする」では 診断の結果に 触らないことを、画面の言葉でも 伝えている。
   await expect(
     page.getByText("「ほぞんする」では、せいかくしんだんの けっかは かわりません。"),

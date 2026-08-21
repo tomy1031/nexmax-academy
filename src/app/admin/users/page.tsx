@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AdminError, AdminHeader, AdminLoading, AdminPageFrame } from "@/components/admin/admin-ui";
-import { TypeEmblem } from "@/components/nexmax-types";
+import { NexMaxType, TypeEmblem } from "@/components/nexmax-types";
 import {
   PERSONALITY_AXES,
   PERSONALITY_AXIS_META,
@@ -32,7 +32,7 @@ import {
   type LearnerNames,
 } from "@/lib/name";
 import type { Gender } from "@/lib/profile";
-import { COHORTS, UNIVERSITIES, type LearnerSchool, type University } from "@/lib/school";
+import { AFFILIATIONS, COHORTS, isStaff, type LearnerSchool, type University } from "@/lib/school";
 import { createClient } from "@/lib/supabase/client";
 
 interface ProfileDraft {
@@ -40,6 +40,7 @@ interface ProfileDraft {
   school: LearnerSchool;
   gender: Gender;
   personalityType: PersonalityTypeCode;
+  isAdmin: boolean;
 }
 
 /** 16タイプ。組でまとめて選びやすくする。 */
@@ -63,6 +64,7 @@ function draftFromProfile(profile: ProfileRow): ProfileDraft {
     },
     gender: profile.gender,
     personalityType: profile.personality_type,
+    isAdmin: profile.is_admin,
   };
 }
 
@@ -146,7 +148,8 @@ export default function AdminUsersPage() {
         draft.school.university !== (profile.university ?? "") ||
         draft.school.cohort !== (profile.cohort ?? 0) ||
         draft.gender !== profile.gender ||
-        draft.personalityType !== profile.personality_type),
+        draft.personalityType !== profile.personality_type ||
+        draft.isAdmin !== profile.is_admin),
     );
   }
 
@@ -317,28 +320,35 @@ export default function AdminUsersPage() {
                               school: {
                                 ...draft.school,
                                 university: event.target.value as University | "",
+                                // 講師・スタッフに 期生は 無いので、選び直した ときに 消す。
+                                cohort: isStaff(event.target.value) ? 0 : draft.school.cohort,
                               },
                             })
                           }
                           className="border-hairline rounded-xl border-2 px-3 py-2"
                         >
                           <option value="">（みせってい）</option>
-                          {UNIVERSITIES.map((name) => (
+                          {AFFILIATIONS.map((name) => (
                             <option key={name} value={name}>
                               {name}
                             </option>
                           ))}
                         </select>
+                        {/* 講師・スタッフに 期生は 無い。欄を 消さずに 押せなくして、
+                            列の 高さが 行ごとに ずれないようにする。 */}
                         <select
-                          value={draft.school.cohort}
+                          value={isStaff(draft.school.university) ? 0 : draft.school.cohort}
+                          disabled={isStaff(draft.school.university)}
                           onChange={(event) =>
                             updateDraft(profile.id, {
                               school: { ...draft.school, cohort: Number(event.target.value) },
                             })
                           }
-                          className="border-hairline rounded-xl border-2 px-3 py-2"
+                          className="border-hairline rounded-xl border-2 px-3 py-2 disabled:opacity-40"
                         >
-                          <option value={0}>（みせってい）</option>
+                          <option value={0}>
+                            {isStaff(draft.school.university) ? "—" : "（みせってい）"}
+                          </option>
                           {COHORTS.map((year) => (
                             <option key={year} value={year}>
                               {year}期生
@@ -365,9 +375,18 @@ export default function AdminUsersPage() {
                     <td className="px-3 py-3">
                       {diagnosed ? (
                         <span className="flex items-center gap-2">
+                          {/* その人の ネクマックス。**性別で 絵を 出し分ける**（願い #153-4）。
+                              いま画面で 選んでいる 性別（draft）に 追従させる。保存する前に
+                              「この人は どちらの 絵に なるか」が 見えるようにするため。 */}
+                          <NexMaxType
+                            code={profile.personality_type}
+                            gender={draft.gender}
+                            size={52}
+                            className="shrink-0"
+                          />
                           <TypeEmblem
                             code={profile.personality_type}
-                            size={34}
+                            size={28}
                             className="shrink-0"
                           />
                           <span className="min-w-0">
@@ -429,7 +448,21 @@ export default function AdminUsersPage() {
                         <span className="text-ink-soft font-sans">未診断</span>
                       )}
                     </td>
-                    <td className="px-3 py-3">{profile.is_admin ? "はい" : "いいえ"}</td>
+                    {/* 管理者の 付け外し（願い #153-5）。DB 側の しかけで
+                        「種の2メールは いつも 管理者」「管理者でない人は 自分を 上げられない」
+                        が 守られる。画面は 保存後に 返ってきた 行を 正として 出し直す。 */}
+                    <td className="px-3 py-3">
+                      <select
+                        value={draft.isAdmin ? "yes" : "no"}
+                        onChange={(event) =>
+                          updateDraft(profile.id, { isAdmin: event.target.value === "yes" })
+                        }
+                        className="border-hairline rounded-xl border-2 px-3 py-2"
+                      >
+                        <option value="no">いいえ</option>
+                        <option value="yes">はい</option>
+                      </select>
+                    </td>
                     <td className="px-3 py-3">
                       {new Date(profile.created_at).toLocaleDateString("ja-JP")}
                     </td>

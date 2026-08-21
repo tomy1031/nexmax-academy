@@ -9,8 +9,10 @@ import {
 } from "../src/content/personality";
 
 describe("語彙メモ台帳（07 §2.5）", () => {
-  it("60語あり、表記が重複しない", () => {
-    expect(GLOSSARY).toHaveLength(60);
+  it("86語あり、表記が重複しない", () => {
+    // 2026-08-21「辞書の数が少ないので、もっともっと作って」で 60 → 86 語。
+    // 本文を ひらがなから 漢字＋ふりがなに 戻した ぶん、意味を 引ける 語も 増やした。
+    expect(GLOSSARY).toHaveLength(86);
     expect(new Set(GLOSSARY.map((entry) => entry.term)).size).toBe(GLOSSARY.length);
   });
 
