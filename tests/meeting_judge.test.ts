@@ -58,6 +58,21 @@ describe("3段の判定", () => {
     expect(gradeOf(judge({ form: "hard", relevance: "unclear" }))).toBe("miss");
   });
 
+  /*
+   * 「どうして ITの しごとを えらびましたか」→「ITだからです」（2026-08-21 の 指摘）。
+   * 形は きれいでも 理由の 中身が 無い＝意味が つたわって いない。
+   */
+  it("答えに なって いない ものは、形が きれいでも もう いちど", () => {
+    expect(gradeOf(judge({ relevance: "unclear", form: "natural" }))).toBe("miss");
+    expect(gradeOf(judge({ relevance: "unclear", form: "rough" }))).toBe("miss");
+  });
+
+  /* 締めすぎの 番人。ここが 赤く なったら「意味が つたわれば 合格」を 壊して いる */
+  it("かみ合って いれば、形が くずれて いても 合格の まま", () => {
+    expect(gradeOf(judge({ relevance: "onTopic", form: "hard" }))).toBe("good");
+    expect(gradeOf(judge({ relevance: "onTopic", form: "rough" }))).toBe("good");
+  });
+
   it("母語で答えたときも もう いちど（日本語を出す練習なので）", () => {
     expect(gradeOf(judge({ language: "en" }))).toBe("miss");
     expect(gradeOf(judge({ language: "km" }))).toBe("miss");

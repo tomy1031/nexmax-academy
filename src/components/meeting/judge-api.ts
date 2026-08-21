@@ -42,6 +42,9 @@ import {
  */
 
 export interface JudgeRequest {
+  /** どの 教材の どの しつもんか（つなぎを 張り直す 目印）。 */
+  meetingId: string;
+  questionId: string;
   ask: string;
   hint: string;
   keywords: readonly string[];
@@ -100,7 +103,7 @@ export async function requestJudge(request: JudgeRequest): Promise<JudgeApiResul
  */
 async function askJudge(apiKey: string, request: JudgeRequest): Promise<JudgeApiResult> {
   const context: JudgeContext = { ...request, attempt: Math.min(Math.max(request.attempt, 1), 9) };
-  const opened = await openJudge(apiKey);
+  const opened = await openJudge(apiKey, `${request.meetingId}:${request.questionId}`);
   if (!opened.ok) return { ok: false, reason: opened.reason };
   const session = opened.session;
 
@@ -111,7 +114,11 @@ async function askJudge(apiKey: string, request: JudgeRequest): Promise<JudgeApi
       judge = parseJudge(await session.ask(buildJudgePrompt(context, true)), context.attempt);
     }
     if (!judge) return { ok: false, reason: "badShape" };
-    if (!isKanaOnly(judge)) return { ok: false, reason: "kanaRetryFailed" };
+    if (!isKanaOnly(judge)) {
+      // 形が 崩れた つなぎを 引きずらない（つぎの しつもんは まっさらから）
+      dropJudgeSession();
+      return { ok: false, reason: "kanaRetryFailed" };
+    }
     return { ok: true, judge, model: session.model };
   } catch (error) {
     // 切れて いる ことが ある。つぎの 呼び出しで 張り直せる ように 捨てる
@@ -142,6 +149,16 @@ interface JudgeSession {
  * 問題が 変わるまでは 同じ つなぎを 使い回して いた。
  */
 let current: JudgeSession | null = null;
+/**
+ * いま 張って いる つなぎが **どの しつもんの もの**か。
+ *
+ * 画面を 離れるまで 1本を 使い回して いた ため、しつもんを またいで 履歴が 積もり、
+ * 相手は **1問目の 返事文を そのまま くり返す**ように なって いた
+ *（2026-08-21「返答だけが 最初の 会話に 戻る」）。
+ * 先に 動いて いた 実装は `LJ.problemId === problem.id` で **問題が 変わったら
+ * 必ず 張り直して**いた。同じ 形に する。
+ */
+let currentKey = "";
 /** いま 張って いる 途中の もの（続けて 頼まれても つなぎは 1本に する）。 */
 let opening: Promise<OpenResult> | null = null;
 
@@ -151,13 +168,17 @@ type OpenResult = { ok: true; session: JudgeSession } | { ok: false; reason: str
 export function dropJudgeSession(): void {
   current?.close();
   current = null;
+  currentKey = "";
   opening = null;
 }
 
-async function openJudge(apiKey: string): Promise<OpenResult> {
+async function openJudge(apiKey: string, key: string): Promise<OpenResult> {
   const live = current;
-  if (live?.alive()) return { ok: true, session: live };
+  if (live?.alive() && currentKey === key) return { ok: true, session: live };
+  // しつもんが 変わった（＝前の 話の 続きに しない）
+  if (live && currentKey !== key) dropJudgeSession();
   current = null;
+  currentKey = key;
   opening ??= connectJudge(apiKey);
   const opened = await opening;
   opening = null;
