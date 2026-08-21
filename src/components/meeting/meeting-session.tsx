@@ -28,7 +28,7 @@ import {
   type MeetingRecord,
 } from "@/lib/meeting/record";
 import { asksToSkip, needsJapaneseInput } from "@/lib/meeting/input";
-import { fillName } from "@/lib/meeting/speech";
+import { fillName, shouldReplayAsk } from "@/lib/meeting/speech";
 import { normalizeReading } from "@/lib/text/normalize";
 import {
   rateOf,
@@ -145,17 +145,16 @@ const CHROME_FURIGANA = buildFuriganaIndex([
 /**
  * ラウンド2で「何を 聞けば いいか」が 分からない ときの **みちびきの しつもん**。
  *
- * ずっと 並べて 見せて いたが、上から 読んで 打つだけに なりやすい。
- * **隠して おいて、こまった ときに 1つずつ 出す**（2026-08-20 の 指定
- *「導く ための ヒント質問が 隠れて いると よいかも」）。
- * 聞き出す 練習なので、答えは 見せない——出すのは **聞き方**だけ。
+ * 一度は「隠して おいて 押すと 1つずつ」に したが、**あらかじめ 4つ 見せる**に
+ * 戻した（2026-08-21 の 指定）。何を 聞けば いいか 分からない ところで 止まるより、
+ * 見えて いる ほうが 動ける。聞き出す 練習なので、**答えは 見せない**——
+ * 出すのは 聞き方だけ。
  */
 const FREE_TALK_HINTS = [
   "はじめて 日本に 来た 日は、どうでしたか。",
   "しごとで いちばん うれしかった 日は、いつですか。",
   "日本で びっくりした ことは、ありますか。",
   "日本の 春は、どんな かんじですか。",
-  "日本の ごはんで すきな ものは、なんですか。",
 ] as const;
 
 /**
@@ -297,8 +296,6 @@ export function MeetingSession({
   const [lastSaid, setLastSaid] = useState("");
   /** ポップアップに 見せる「その とき 聞かれて いた しつもん」。 */
   const [judgedAsk, setJudgedAsk] = useState("");
-  /** ラウンド2で 出した みちびきの しつもんの 数（押した ぶんだけ 増える）。 */
-  const [shownHints, setShownHints] = useState(0);
   /** ヒントの ポップアップを 出して いるか。 */
   const [hintOpen, setHintOpen] = useState(false);
   /** チャットに 積んだ 相手の ことばの 数（字幕の どこまでを 出したか）。 */
@@ -371,7 +368,19 @@ export function MeetingSession({
   const judgedRef = useRef(0);
 
   const question = meeting.questions[index];
-  const done = index >= meeting.questions.length;
+  /**
+   * **進みぐあい**——ヘンディさんからの しつもんを ぜんぶ 答えたか。後戻りしない。
+   *
+   * ここと 下の `round` は **別の もの**（2026-08-21）。
+   * 前は 1つの `done` に 畳んで いた ため、「ぜんぶ 答えた」と「いま 聞く ばんを
+   * 見て いる」が 同じ 値に なって いて、**ばんを 選べる ように できなかった**。
+   * 畳み直したく なったら、この 2行を 読んでから に する。
+   */
+  const round1Done = index >= meeting.questions.length;
+  /** **いま 見て いる ばん**——学習者が 帯を 押して 選ぶ。 */
+  const [round, setRound] = useState<"ask" | "listen">("ask");
+  /** 聞く ばん（ラウンド2）を 見て いるか。画面の 出し分けは これで 決める。 */
+  const done = round === "listen";
   const live = voice.status === "live";
 
   /*
@@ -655,7 +664,7 @@ export function MeetingSession({
     setRate(rateOf(speed));
   }, [speed, setRate]);
 
-  const clipUrl = done ? meeting.closingAudioUrl : question?.audioUrl;
+  const clipUrl = round1Done ? meeting.closingAudioUrl : question?.audioUrl;
   const playClip = clip.play;
   const stopClip = clip.stop;
   /*
@@ -720,6 +729,11 @@ export function MeetingSession({
     setNoticedText(null);
 
     if (finishing) {
+      /*
+       * ぜんぶ 答えた。**進むのと ばんの 切りかえを 1か所で やる**——
+       * 別の 効果に すると、進み方に よって 切りかわったり しなかったり する。
+       */
+      setRound("listen");
       // さいごまで話しきったぶんのハートと、手に残るきろくは ここで一度だけ作る
       const finished = awardCompletion(affection);
       setAffection(finished);
@@ -872,7 +886,16 @@ export function MeetingSession({
     setDraft("");
     setNotice(null);
     setGained(0);
-  }, []);
+    /*
+     * **しつもんを もう一度 鳴らす**（2026-08-21 の 指定）。
+     * 言い直しを 頼まれた 人が いちばん 知りたいのは「何を 聞かれて いたか」。
+     * 相手が 受け止めの こえを 話して いる 間は 鳴らさない（声が 重なる）。
+     */
+    const url = question?.audioUrl;
+    if (url && shouldReplayAsk({ hasAudio: true, hostSpeaking: voice.speaking })) {
+      clip.play(url, rateOf(speed));
+    }
+  }, [question, voice.speaking, clip, speed]);
 
   /**
    * 答えられない ときの 逃げ道。**札は 開かない**まま つぎの 質問へ。
@@ -928,10 +951,10 @@ export function MeetingSession({
      * おわった あとは 進めない。さいごの しつもんの あとに もう一度 進めて
      * しまい、同じ ところを ぐるぐる 回って いた（2026-08-18 の 実発生）。
      */
-    if (done) return;
+    if (round1Done) return;
     if (again) retry();
     else next();
-  }, [reply, retry, next, done]);
+  }, [reply, retry, next, round1Done]);
 
   /** いま持っているハート。教材に affection が無いときは画面のどこにも出ない。 */
   const hearts = heartsOf(affection);
@@ -1076,44 +1099,55 @@ export function MeetingSession({
   ) : null;
 
   /*
-   * **いま どの ばんか**を 3つで 見せる（添付の 画面の 左の 帯）。
+   * **いま どの ばんか**の 帯（2つ）。
    *
-   * ステージの サイドバーは「教材の 一覧」なので、**この ミーティングの 中の
-   * 道すじ**は 別に 要る。クライアントは「絵の サイドバーは 通常サイドバーの 下でも
-   * OK」と 言って いるが、まず 会話の すぐ上に 置く——目を 動かす 距離が いちばん 短い。
+   * 「はじまり」は 消した（2026-08-21 の 指定）——この 画面まで 来て いる 時点で
+   * 済んで いる ことなので、いつも ✅ が 1つ 並ぶだけ だった。
+   *
+   * 押して **切り替えられる**。ただし 聞く ばんは、ヘンディさんの しつもんを
+   * ぜんぶ 答えるまで **押せない**（消さずに 灰色で 残す——消えると
+   * 「さっき あった ものが 無い」と 探しはじめる）。
    */
   const roundSteps = (
-    <ol className="card-island flex items-center gap-1.5 overflow-x-auto p-2">
-      {[
-        { label: "はじまり", state: "done" as const },
-        { label: `${meeting.host.name}さんから しつもん`, state: done ? "done" : "now" },
-        { label: `${meeting.host.name}さんに しつもん`, state: done ? "now" : "yet" },
-      ].map((step, at) => (
-        <li
-          key={step.label}
-          aria-current={step.state === "now" ? "step" : undefined}
-          className="flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-extrabold"
-          style={{
-            background:
-              step.state === "now"
+    <div className="card-island flex items-center gap-1.5 overflow-x-auto p-2">
+      {(
+        [
+          { key: "ask", label: `${meeting.host.name}さんから しつもん`, locked: false },
+          { key: "listen", label: `${meeting.host.name}さんに しつもん`, locked: !round1Done },
+        ] as const
+      ).map((step, at) => {
+        const now = round === step.key;
+        const cleared = step.key === "ask" && round1Done;
+        return (
+          <button
+            key={step.key}
+            type="button"
+            onClick={() => setRound(step.key)}
+            disabled={step.locked}
+            aria-current={now ? "step" : undefined}
+            aria-label={`${step.label}${step.locked ? "（まだ ひらきません）" : ""}`}
+            className="flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-extrabold disabled:opacity-45"
+            style={{
+              background: now
                 ? "var(--color-sky-deep)"
-                : step.state === "done"
+                : cleared
                   ? "var(--color-panel-tint)"
                   : "transparent",
-            color:
-              step.state === "now"
-                ? "#fff"
-                : step.state === "done"
-                  ? "var(--color-ink-soft)"
-                  : "var(--color-ink-faint)",
-          }}
-        >
-          <span className="opacity-70">{`0${at + 1}`}</span>
-          <RubyText text={step.label} index={furigana} show />
-          {step.state === "done" ? <span>✅</span> : null}
-        </li>
-      ))}
-    </ol>
+              color: now ? "#fff" : cleared ? "var(--color-ink-soft)" : "var(--color-ink-faint)",
+            }}
+          >
+            <span className="opacity-70">{`0${at + 1}`}</span>
+            <RubyText text={step.label} index={furigana} show />
+            {step.locked ? <span>🔒</span> : cleared ? <span>✅</span> : null}
+          </button>
+        );
+      })}
+      {!round1Done ? (
+        <span className="text-ink-faint ml-1 shrink-0 text-[11px] font-bold">
+          <RubyText text="ぜんぶ こたえると ひらきます" index={CHROME_FURIGANA} show />
+        </span>
+      ) : null}
+    </div>
   );
 
   const body = (
@@ -1129,42 +1163,28 @@ export function MeetingSession({
       ) : null}
       {main}
       {/* まえの きろくは おわりの 画面では 出さない（きょうの カードを 見せる） */}
-      {!done && previous && previous.lines.length > 0 ? (
+      {!round1Done && previous && previous.lines.length > 0 ? (
         <PreviousRecordCard record={previous} furigana={furigana} />
       ) : null}
     </div>
   );
 
-  /*
-   * 答えるところ。**ヒントは 入力欄の すぐ上に ピン留め**（スクロールで 逃がさない）。
-   * ボタンは「おくる」1つだけ——「つぎへ」「もう いちど」「まだ 言えない」は
-   * 会話の 中に 溶かした（進むのは 判定が 決め、逃げ道は ことばで 言う）。
-   */
-  /*
-   * 話す ところ（添付の 画面の 左の 列）。
-   *
-   * 「しつもんの 吹き出し → 声で こたえましょう → 丸い マイク」を **1つの カード**に
-   * まとめる。前は しつもんが Zoom の 枠の 中、書く 欄が 画面の いちばん 下、と
-   * ばらばらで、目が 何度も 行き来して いた。
-   */
   const controls = done ? (
     <div className="card-island space-y-2 p-4">
       <p className="text-navy text-sm font-black">
         💬 <RubyText text="ヘンディさんに 聞いて みましょう" index={CHROME_FURIGANA} show />
       </p>
-      {shownHints > 0 ? (
-        <ul className="mt-1 space-y-1">
-          {FREE_TALK_HINTS.slice(0, shownHints).map((line) => (
-            <li
-              key={line}
-              className="bg-cream text-ink rounded-xl px-3 py-2 text-sm font-black break-words"
-            >
-              「
-              <RubyText text={line} index={CHROME_FURIGANA} show />」
-            </li>
-          ))}
-        </ul>
-      ) : null}
+      <ul className="mt-1 space-y-1">
+        {FREE_TALK_HINTS.map((line) => (
+          <li
+            key={line}
+            className="bg-cream text-ink rounded-xl px-3 py-2 text-sm font-black break-words"
+          >
+            「
+            <RubyText text={line} index={CHROME_FURIGANA} show />」
+          </li>
+        ))}
+      </ul>
       <div className="flex items-center justify-between gap-2">
         <SpeakButton
           status={voice.status}
@@ -1178,20 +1198,6 @@ export function MeetingSession({
           }}
           onStopTalking={voice.stopTalking}
         />
-        {shownHints < FREE_TALK_HINTS.length ? (
-          <button
-            type="button"
-            onClick={() => setShownHints((n) => n + 1)}
-            aria-label="ヒントの しつもんを 見る"
-            className="border-sun-deep bg-cream text-navy shrink-0 rounded-full border-2 px-3 py-2 text-xs font-extrabold"
-          >
-            <RubyText
-              text={shownHints === 0 ? "💡 何を 聞けば いい？" : "💡 べつの 聞き方"}
-              index={CHROME_FURIGANA}
-              show
-            />
-          </button>
-        ) : null}
       </div>
     </div>
   ) : (
@@ -1270,13 +1276,11 @@ export function MeetingSession({
         </p>
       ) : null}
 
-      <p className="text-ink-faint text-center text-xs font-bold">
-        <RubyText
-          text="こまったら →「すみません、つぎを おねがいします」"
-          index={CHROME_FURIGANA}
-          show
-        />
-      </p>
+      {/*
+        「こまったら →「すみません、つぎを おねがいします」」の 一行は 消した
+        （2026-08-21 の 指定「その 文字自体が いらない。言って みたけど 何の 役にも
+        立たなかった」）。**逃げ道の 仕組みは 残す**——言えば 通れる ことは 変わらない。
+      */}
     </div>
   );
 
