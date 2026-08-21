@@ -1,11 +1,12 @@
 import { describe, expect, it } from "vitest";
 import {
+  NAME_MARK,
+  NO_NAME,
   answerCore,
   fillAnswer,
   fillName,
-  NAME_MARK,
-  NO_NAME,
   shouldReplayAsk,
+  stripDirections,
 } from "../src/lib/meeting/speech";
 import { needsJapaneseInput } from "../src/lib/meeting/input";
 import { hintPatterns, hintSegments } from "../src/lib/meeting/hint";
@@ -186,5 +187,24 @@ describe("もう いちどで しつもんを 鳴らし直すか", () => {
 
   it("音が 無い しつもんでは 鳴らさない", () => {
     expect(shouldReplayAsk({ hasAudio: false, hostSpeaking: false })).toBe(false);
+  });
+});
+
+describe("stripDirections（ト書きを 字に 残さない）", () => {
+  it("説明として 長い かっこを 落とす", () => {
+    expect(stripDirections("そうですか、よかったです。（学生の言葉を受け止めて、共感する）")).toBe(
+      "そうですか、よかったです。",
+    );
+    expect(stripDirections("(the student should answer here) はい、そうです。")).toBe(
+      "はい、そうです。",
+    );
+  });
+
+  it("みじかい 言いかえは 残す（教材の ことばを 欠けさせない）", () => {
+    expect(stripDirections("花見（はなみ）を します。")).toBe("花見（はなみ）を します。");
+  });
+
+  it("かっこが 無ければ そのまま", () => {
+    expect(stripDirections("たこやき、おいしいですよね。")).toBe("たこやき、おいしいですよね。");
   });
 });

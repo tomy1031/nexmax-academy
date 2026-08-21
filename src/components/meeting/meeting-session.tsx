@@ -28,7 +28,8 @@ import {
 } from "@/lib/meeting/record";
 import { asksToSkip, needsJapaneseInput } from "@/lib/meeting/input";
 import { clearMeetingResume, restoreMeeting, saveMeetingResume } from "@/lib/meeting/resume";
-import { fillName, shouldReplayAsk } from "@/lib/meeting/speech";
+import { JUDGE_FURIGANA } from "@/components/meeting/ui-furigana";
+import { fillName, shouldReplayAsk, stripDirections } from "@/lib/meeting/speech";
 import { normalizeReading } from "@/lib/text/normalize";
 import {
   rateOf,
@@ -527,6 +528,22 @@ export function MeetingSession({
          */
         "学生に 向けて 話す ことばだけを 言って ください。" +
           "かっこの 中の 説明・やり方・じょうけんは 声に 出しません。",
+        /*
+         * **かっこ そのものを 禁じる**（2026-08-21 の 指摘）。
+         * 「声に 出さない」と 書いても、相手は ト書きを かっこに 入れて 読み上げた
+         *（「そうですか、よかったです。（学生の言葉を受け止めて、共感する）」）。
+         * 出して よい ものと だめな ものを 見分けさせるより、**かっこを 使わない**の
+         * ほうが 守れる。
+         */
+        "かっこ（）は つかわないで ください。",
+        /*
+         * **聞かれて いない ことを 足さない**（2026-08-21 の 指摘
+         *「ドローンいいですよね と 外国から来ました は 何の 関係も ない」）。
+         * 人格に 書いた「自分の ことも 少し 話す」を、相手は 毎回の 返事の
+         * 終わりに くっつけて いた。受け止めた ところで 止めさせる。
+         */
+        "学生の ことばを 受け止めたら、そこで 止めて ください。" +
+          "聞かれて いない 自分の 話（しごと・国・けいけん）を 足しません。",
       ].join("\n"),
     [meeting],
   );
@@ -680,7 +697,11 @@ export function MeetingSession({
     const said = fresh.filter((turn) => turn.from === "client");
     if (said.length === 0) return;
     void Promise.resolve().then(() => {
-      for (const turn of said) pushChat({ kind: "host", text: turn.text });
+      for (const turn of said) {
+        // ト書きを 字に 残さない（`stripDirections` の 説明を 参照）
+        const text = stripDirections(turn.text);
+        if (text !== "") pushChat({ kind: "host", text });
+      }
     });
   }, [voice.turns, pushChat]);
 
@@ -1100,7 +1121,11 @@ export function MeetingSession({
         ))}
         {thinking ? (
           <p className="bg-panel-tint text-ink-soft rounded-[var(--radius-card)] px-4 py-2 text-sm font-black">
-            {meeting.host.name}さんが 聞いて います…
+            {meeting.host.name}さんが{" "}
+            <ruby>
+              聞<rt>き</rt>
+            </ruby>
+            いて います…
           </p>
         ) : null}
       </div>
@@ -1523,6 +1548,14 @@ export function MeetingSession({
           askFurigana={furigana}
           utterance={lastSaid}
           hostName={meeting.host.name}
+          /*
+           * **画面が 出した ことば だけ**を 渡す（`echo` は 声の ときは 空）。
+           * 判定の `reply` を そのまま 出して いた ため、相手の こえと
+           * ポップアップの 字が 食いちがって いた（2026-08-21 の 指摘）。
+           */
+          reply={reply.echo}
+          /* 相手が 話しおわるまで つぎへ 行かせない（2026-08-21 の 指定） */
+          waiting={voice.speaking}
           note={judgeNote}
           onNext={closeJudge}
         />
@@ -1566,7 +1599,9 @@ function ChatLine({
         ) : null}
         {entry.fallback ? (
           <div className="bg-panel-tint space-y-1 rounded-[var(--radius-card)] p-3">
-            <p className="text-leaf text-sm font-extrabold">🌸 {entry.fallback.advice.praise}</p>
+            <p className="text-leaf text-sm font-extrabold">
+              🌸 <RubyText text={entry.fallback.advice.praise} index={JUDGE_FURIGANA} show />
+            </p>
             {entry.fallback.advice.fix ? (
               <p className="text-ink-soft text-sm font-bold break-words">
                 💡 {entry.fallback.advice.fix}

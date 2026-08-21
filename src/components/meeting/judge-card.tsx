@@ -1,6 +1,8 @@
 "use client";
 
 import { motion } from "motion/react";
+import { RubyText } from "@/components/ruby-text";
+import { JUDGE_FURIGANA } from "@/components/meeting/ui-furigana";
 import type { JudgeGrade, JudgeResult } from "@/lib/meeting/judge";
 
 /**
@@ -45,12 +47,22 @@ export function JudgeCard({ judge, hostName }: { judge: JudgeResult; hostName: s
         >
           {badge.label}
         </span>
-        <span className="text-ink-faint text-xs font-bold">{hostName}さんが 聞いて います</span>
+        <span className="text-ink-faint text-xs font-bold">
+          {hostName}さんが{" "}
+          <ruby>
+            聞<rt>き</rt>
+          </ruby>
+          いて います
+        </span>
       </div>
 
-      <p className="text-leaf text-sm font-extrabold break-words">🌸 {judge.praise}</p>
+      <p className="text-leaf text-sm font-extrabold break-words">
+        🌸 <RubyText text={judge.praise} index={JUDGE_FURIGANA} show />
+      </p>
       {judge.fix ? (
-        <p className="text-ink-soft text-sm font-bold break-words">💡 {judge.fix}</p>
+        <p className="text-ink-soft text-sm font-bold break-words">
+          💡 <RubyText text={judge.fix} index={JUDGE_FURIGANA} show />
+        </p>
       ) : null}
       <p className="bg-panel-tint text-ink rounded-xl px-3 py-2 text-sm font-bold break-words">
         こう いうと もっと いいです →「{judge.exampleAnswer}」
