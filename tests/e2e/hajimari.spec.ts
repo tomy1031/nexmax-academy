@@ -75,7 +75,7 @@ test("こえの ボタンは Zoom の 画面の 中に 大きく ある（鍵が
   await shot(page, "32-hajimari-meeting-speak");
 });
 
-test("つぎに 開いても、いつも 1問目から はじまる", async ({ page, context }) => {
+test("画面を 開き直しても、だまって つづきから はじまる", async ({ page, context }) => {
   await seedCompleted(context, BEFORE);
   await page.goto(MEETING);
   await joinCall(page);
@@ -86,9 +86,15 @@ test("つぎに 開いても、いつも 1問目から はじまる", async ({ p
   await page.goto(MEETING);
   await joinCall(page);
 
-  // 「まえの つづきから」は 出さない。1問目（名前）から もう いちど
-  await expect(page.getByText("まえの つづきから")).toHaveCount(0);
-  await expect(page.getByRole("button", { name: /名前/ })).toBeVisible();
+  /*
+   * **だまって つづきから**（2026-08-21 の 指定）。
+   * 「つづきから 始めますか」の 確認は 出さず、2問目に 座って いる。
+   */
+  await expect(page.getByText("つづきから")).toHaveCount(0);
+  /* ルビが 合成されて 文が 割れる ので、かなだけの ところで 見る */
+  await expect(page.getByText("あなたは、どこから").first()).toBeVisible();
+  /* 1問目の カードは ひらいた まま（答えた ことが 残って いる） */
+  await expect(page.getByRole("listitem", { name: /1ばんめ こたえました/ })).toBeVisible();
 });
 
 test("しつもんの ことばを タップすると、いみが 出る", async ({ page, context }) => {
@@ -137,12 +143,17 @@ test("ぜんぶ おわると「聞く ばん」に なり、こえが 無くて�
    */
   await expect(page.getByText("こんどは、あなたが")).toBeVisible();
   /*
-   * ぜんぶ 終えた ところで「ステージ クリア」の しらせが かぶさる。
-   * 学習者も ここで 1回 閉じてから ラウンド2に 入るので、同じ 順で 進む。
+   * ぜんぶ 終えると **しゅうりょうしょう**が 出る。
+   * この とき「ステージ クリア」は **まだ 出て いない**——順番を 重なりでは なく
+   * 「`completed` を 書く ところ」で 決めて いる ことの 見張り（2026-08-21）。
    */
-  const clear = page.getByRole("dialog", { name: "ステージ クリア" });
-  if (await clear.isVisible()) await clear.getByRole("button", { name: "ここに のこる" }).click();
-  await expect(clear).toHaveCount(0);
+  const certificate = page.getByRole("dialog", { name: "しゅうりょうしょうの ポップアップ" });
+  await expect(certificate).toBeVisible();
+  await expect(page.getByRole("dialog", { name: "ステージ クリア" })).toHaveCount(0);
+  await expect(certificate.getByText("こ 話せました")).toBeVisible();
+  await shot(page, "34-hajimari-certificate");
+  await certificate.getByRole("button").click();
+  await expect(certificate).toHaveCount(0);
 
   /*
    * ばんの 帯は **2つ**（「はじまり」は 消した）。ぜんぶ 答えた あとは
