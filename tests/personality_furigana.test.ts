@@ -65,7 +65,13 @@ function introLines(): Line[] {
   const lines: Line[] = [];
   for (const [language, intro] of Object.entries(PERSONALITY_INTRO)) {
     if (language === "english") continue;
-    for (const text of [intro.title, intro.note, intro.startLabel, ...intro.lines]) {
+    for (const text of [
+      intro.title,
+      intro.note,
+      intro.startLabel,
+      ...intro.lines,
+      ...intro.examples.map((example) => example.text),
+    ]) {
       lines.push({ where: `導入（${language}）`, text, readings: R });
     }
   }

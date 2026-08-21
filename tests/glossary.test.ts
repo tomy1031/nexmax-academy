@@ -9,8 +9,8 @@ import {
 } from "../src/content/personality";
 
 describe("語彙メモ台帳（07 §2.5）", () => {
-  it("57語あり、表記が重複しない", () => {
-    expect(GLOSSARY).toHaveLength(57);
+  it("60語あり、表記が重複しない", () => {
+    expect(GLOSSARY).toHaveLength(60);
     expect(new Set(GLOSSARY.map((entry) => entry.term)).size).toBe(GLOSSARY.length);
   });
 
@@ -125,6 +125,9 @@ describe("学習者向け文言との対応", () => {
         intro.title,
         intro.note,
         ...intro.lines,
+        // 得意の例も学習者に出る文（絵の となりの 1行）。ここを 入れないと、
+        // 例にしか 出ない語（「得意」など）が「使われていない語」に 見えてしまう。
+        ...intro.examples.map((example) => example.text),
       ]),
       ...PERSONALITY_FAMILIES.map((family) => family.name),
       ...PERSONALITY_TYPES.flatMap((type) => [

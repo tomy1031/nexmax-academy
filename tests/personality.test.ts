@@ -3,6 +3,7 @@ import {
   PERSONALITY_AXES,
   PERSONALITY_AXIS_META,
   PERSONALITY_FAMILIES,
+  PERSONALITY_INTRO,
   PERSONALITY_QUESTIONS,
   PERSONALITY_TYPES,
   calculatePersonalityScores,
@@ -104,14 +105,25 @@ describe("タイプ台帳", () => {
   it("学習者に見せる文に4文字コードが混ざっていない", () => {
     // 診断はネクマックスの世界で完結させる（07 §1.3）。台帳の文言側にコードが漏れていないか。
     const codes = PERSONALITY_TYPES.map((type) => type.code);
-    const learnerText = PERSONALITY_TYPES.flatMap((type) => [
-      type.name,
-      type.shortName,
-      type.tagline,
-      type.teamRole,
-      type.teamRoleDetail,
-      ...type.analysis,
-    ]).join("\n");
+    const learnerText = [
+      ...PERSONALITY_TYPES.flatMap((type) => [
+        type.name,
+        type.shortName,
+        type.tagline,
+        type.teamRole,
+        type.teamRoleDetail,
+        ...type.analysis,
+      ]),
+      // 導入も学習者に出る文。例は `code` を持つが、それは絵を選ぶためのデータで、
+      // 文のほうに 4文字が 混ざっては いけない。
+      ...Object.values(PERSONALITY_INTRO).flatMap((intro) => [
+        intro.title,
+        intro.note,
+        intro.startLabel,
+        ...intro.lines,
+        ...intro.examples.map((example) => example.text),
+      ]),
+    ].join("\n");
     for (const code of codes) {
       expect(learnerText).not.toContain(code);
     }
