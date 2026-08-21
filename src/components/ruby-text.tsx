@@ -146,8 +146,13 @@ export const RUBY_ON_COLOR = "[&_rt]:text-white";
  * 直しかたは 2つ: 行の 高さを 広げる（`leading`）ことと、高さが 効く 箱に する
  * （`inline-block`）こと。**両方 いる**——`leading` だけでは inline の 箱に 効かず、
  * `inline-block` だけでは 既定の 行の 高さが ふりがなの ぶんに 足りない。
+ *
+ * 数字は 目分量では 決まらない。`rt` は 字の 大きさ 0.55em に 加えて **rt 自身の
+ * 行の 高さ**（およそ 1.2倍）を 使うので、2.2 では 0.7px ほど 足りず、CI が
+ * 「どの 札も 1px はみ出し」を 出した。実測に 合わせて 2.6 に する
+ * （見張りは tests/e2e/zukan.spec.ts）。
  */
-export const RUBY_CHIP = "inline-block leading-[2.2]";
+export const RUBY_CHIP = "inline-block leading-[2.6]";
 
 /** `GlossaryText` の `renderText` に渡す用。 */
 export function renderRuby(text: string, readings: readonly Reading[]) {
