@@ -171,17 +171,32 @@ function QuestionGlossary({
 }
 
 /**
+ * 「得意な ことが ちがう」の 例を 何行目の あとに 出すか。
+ *
+ * 例は 3行目（「人に よって、得意な ことが ちがいます」）の 絵解きなので、
+ * その 直後に 置かないと 何の 例か 分からなくなる。台帳の 並びが 変わったら
+ * ここも 直す（`tests/personality.test.ts` が 3行目に「得意」が あることを 見張る）。
+ */
+const INTRO_EXAMPLES_AFTER = 3;
+
+/**
  * 20問の前に出す導入（07 §3.0）。
  *
- * **「性格」を知らない前提**で書く。辞書を引いても抽象語に着地して意味が取れないので、
- * 先に「人には すきな やりかたが ある」という具体を渡してから語を当てる。
+ * **抽象語から入らない。** 辞書を引いても「せいかく」「タイプ」は抽象語に着地して
+ * 意味が取れないので、先に「人に よって 得意な ことが ちがう」という具体を渡してから
+ * 語を当てる。入口を チームに 置くのは 2026-08-21 の指定（台帳の コメント参照）。
+ *
+ * 得意の 例には **近い ネクマックスの 絵**を 添える。呼び名は 出さない——
+ * 16の 呼び名に 会うのは 結果画面が 最初、という 順番を くずさないため。
  * 文言は台帳（`PERSONALITY_INTRO`）にあり、文言テストの対象になっている。
  */
 function QuestionIntro({
   language,
+  gender,
   onStart,
 }: {
   language: PersonalityLanguage;
+  gender: Gender;
   onStart: () => void;
 }) {
   const intro = PERSONALITY_INTRO[language];
@@ -191,19 +206,40 @@ function QuestionIntro({
     ) : (
       <GlossaryText text={text} readings={PERSONALITY_RESULT_READINGS} renderText={renderRuby} />
     );
+  const renderLines = (lines: readonly string[]) =>
+    lines.map((line) => (
+      <li key={line} className="text-ink flex gap-2 leading-loose font-bold">
+        <span className="text-sky shrink-0">●</span>
+        <span className="flex-1">{render(line)}</span>
+      </li>
+    ));
 
   return (
     <div className="animate-pop-in mx-auto mt-6 max-w-3xl">
       <div className={`card-pop p-5 sm:p-7 ${CARD_EDGE}`}>
-        <h2 className="text-navy text-xl font-black sm:text-2xl">{intro.title}</h2>
+        <h2 className="text-navy text-xl font-black sm:text-2xl">{render(intro.title)}</h2>
         <ul className="mt-4 space-y-3">
-          {intro.lines.map((line) => (
-            <li key={line} className="text-ink flex gap-2 leading-loose font-bold">
-              <span className="text-sky shrink-0">●</span>
-              <span className="flex-1">{render(line)}</span>
-            </li>
-          ))}
+          {renderLines(intro.lines.slice(0, INTRO_EXAMPLES_AFTER))}
         </ul>
+        {/* 得意の 例。絵が 4人 並ぶと、読む 前に「ちがう 人が いる」が 伝わる。 */}
+        <ul className="mt-4 grid gap-3 sm:grid-cols-2">
+          {intro.examples.map((example) => {
+            const family = getFamilyForCode(example.code);
+            return (
+              <li
+                key={example.code}
+                className={`card-pop flex items-center gap-3 border-3 p-3 ${CARD_EDGE_SM}`}
+                style={{ borderColor: family.color }}
+              >
+                <NexMaxType code={example.code} gender={gender} size={56} className="shrink-0" />
+                <span className="text-ink flex-1 text-sm leading-loose font-bold">
+                  {render(example.text)}
+                </span>
+              </li>
+            );
+          })}
+        </ul>
+        <ul className="mt-4 space-y-3">{renderLines(intro.lines.slice(INTRO_EXAMPLES_AFTER))}</ul>
         <p className="bg-sun/25 text-ink mt-5 rounded-2xl px-4 py-3 font-bold">
           {render(intro.note)}
         </p>
@@ -212,7 +248,12 @@ function QuestionIntro({
         {language !== "english" && (
           <div className="border-hairline mt-5 flex flex-wrap items-center gap-2 border-t pt-4">
             <span className="text-ink-soft text-xs font-black">ことばメモ</span>
-            {findAllGlossaryTerms(...intro.lines, intro.note).map((entry) => (
+            {findAllGlossaryTerms(
+              intro.title,
+              ...intro.lines,
+              ...intro.examples.map((example) => example.text),
+              intro.note,
+            ).map((entry) => (
               <GlossaryChip key={entry.term} entry={entry} renderText={renderRuby} />
             ))}
           </div>
@@ -757,6 +798,7 @@ export function WelcomeWizard({
             {!introRead ? (
               <QuestionIntro
                 language={language}
+                gender={gender ?? "male"}
                 onStart={() => {
                   setIntroRead(true);
                   window.scrollTo({ top: 0, behavior: "smooth" });

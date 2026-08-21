@@ -107,17 +107,37 @@ export interface PersonalityQuestion {
 /**
  * 20問の前に出す導入（07 §3.0）。
  *
- * **「性格」という語自体を知らない前提**で書く。学習者は「せいかく」を辞書で引いても
- * 抽象語に着地して意味が取れないので、先に「人には すきな やりかたが ある」という
- * 具体で説明してから語を当てる。
+ * **抽象語から入らない。** 学習者が「せいかく」や「タイプ」を辞書で引いても
+ * character / personality のような抽象語に着地して、何を聞かれているのか分からない。
+ * だから **具体（人に よって 得意な ことが ちがう）を先に渡してから語を当てる**。
+ *
+ * 入口を「性格」ではなく **チーム**に置いてある（2026-08-21 の指定）。
+ * 学習者がこれから入るのは「性格を知る場」ではなく「チームで する しごと」で、
+ * 診断を受ける理由（自分と なかまの 得意を 知る）がそこにしか無いため。
  *
  * 文言をコンポーネントに直書きせず台帳に置くのは、**文言テストの対象にするため**。
  * 直書きすると禁止語検査・語彙メモの網羅検査から漏れる。
  */
+export interface PersonalityIntroExample {
+  /** いちばん 近い ネクマックス。絵を 出すためだけに 持つ（呼び名は 出さない）。 */
+  readonly code: PersonalityTypeCode;
+  /** 得意な ことの 例。述語で 終える（07 §2 文言のきまり）。 */
+  readonly text: string;
+}
+
 export interface PersonalityIntro {
   readonly title: string;
   /** 本文。1行＝1つのことだけ言う。 */
   readonly lines: readonly string[];
+  /**
+   * 「得意な ことが ちがう」の 例。
+   *
+   * ここだけ 本文から 出して 持つのは、**近い ネクマックスの 絵を 添えて 見せる**ため。
+   * 「よく 考える」「すぐに 動く」は 語だけだと どれも 同じ かたさに 見えるが、
+   * 絵が 4人 並ぶと「ちがう 人が いる」が 読む 前に 伝わる。
+   * 絵は 呼び名を 出さない（16の 呼び名は 結果画面で 初めて 会う）。
+   */
+  readonly examples: readonly PersonalityIntroExample[];
   /** 正誤の枠組みを持ち込まないための一文（07 §10）。 */
   readonly note: string;
   readonly startLabel: string;
@@ -125,37 +145,67 @@ export interface PersonalityIntro {
 
 export const PERSONALITY_INTRO: Readonly<Record<PersonalityLanguage, PersonalityIntro>> = {
   easy: {
-    title: "はじめに",
+    title: "あなたは チームの 中で どんな タイプ?",
     lines: [
-      "人は みんな、すきな やり方が ちがいます。",
-      "はやく きめる 人も います。ゆっくり かんがえる 人も います。どちらも いい やり方です。",
-      "その 人の いつもの やり方を 性格と 言います。それを しらべるのが 性格診断です。",
-      "これから、20の 質問に 答えます。あなたの すきな やり方が 見えて きます。",
-      "おわると、あなたに にた ネクマックスが 1人 出て きます。",
+      "IT の しごとは、1人で する しごとでは ありません。",
+      "いろいろな 人と いっしょに、チームで します。",
+      "人に よって、得意な ことが ちがいます。",
+      "大切なのは、どの タイプが 一番 いいかでは ありません。",
+      "自分の 得意な ことと、チームの 人の 得意な ことを 知る ことです。",
+      "この 性格診断では、20の 質問に 答えます。",
+      "そして、あなたの しごとの タイプを 見つけます。",
+      "最後に、あなたに 近い ネクマックスが 出て きます。",
+      "これから チームで 動く ときの 参考に しましょう!",
     ],
-    note: "どちらが いい・わるいは ありません。あなたに ちかい ほうを えらんで ください。",
+    examples: [
+      { code: "INTP", text: "よく 考えるのが 得意です" },
+      { code: "ESTP", text: "すぐに 動くのが 得意です" },
+      { code: "INFJ", text: "人の 話を 聞くのが 得意です" },
+      { code: "ENTP", text: "新しい アイデアを 考えるのが 得意です" },
+    ],
+    note: "どちらが いい・わるいは ありません。あなたに 近い ほうを えらんで ください。",
     startLabel: "質問を はじめる",
   },
   japanese: {
-    title: "はじめに",
+    title: "あなたはチームの中でどんなタイプ?",
     lines: [
-      "人はみんな、好きなやり方がちがいます。",
-      "早く決める人もいます。ゆっくり考える人もいます。どちらもいいやり方です。",
-      "その人のいつものやり方を性格と言います。それを調べるのが性格診断です。",
-      "これから、20の質問に答えます。あなたの好きなやり方が見えてきます。",
-      "終わると、あなたに似たネクマックスが1人出てきます。",
+      "ITの仕事は、1人でする仕事ではありません。",
+      "いろいろな人といっしょに、チームでします。",
+      "人によって、得意なことがちがいます。",
+      "大切なのは、どのタイプが一番いいかではありません。",
+      "自分の得意なことと、チームの人の得意なことを知ることです。",
+      "この性格診断では、20の質問に答えます。",
+      "そして、あなたの仕事のタイプを見つけます。",
+      "最後に、あなたに近いネクマックスが出てきます。",
+      "これからチームで動くときの参考にしましょう!",
+    ],
+    examples: [
+      { code: "INTP", text: "よく考えるのが得意です" },
+      { code: "ESTP", text: "すぐに動くのが得意です" },
+      { code: "INFJ", text: "人の話を聞くのが得意です" },
+      { code: "ENTP", text: "新しいアイデアを考えるのが得意です" },
     ],
     note: "どちらがいい・わるいはありません。あなたに近いほうを選んでください。",
     startLabel: "質問をはじめる",
   },
   english: {
-    title: "Before you start",
+    title: "What kind of teammate are you?",
     lines: [
-      "Everyone has their own way of doing things.",
-      "Some people decide fast. Some people think slowly. Both are good ways.",
-      "The way a person usually does things is called their personality. Finding out your own is what this check is for.",
-      "You will answer 20 questions. They will show you your own way.",
+      "IT work is not something you do alone.",
+      "You work together with other people, as a team.",
+      "Everyone is good at different things.",
+      "What matters is not which type is the best.",
+      "It is knowing what you are good at, and what your teammates are good at.",
+      "In this personality check, you answer 20 questions.",
+      "Then you find your own work type.",
       "At the end, one NexMax who is like you will appear.",
+      "Use it when you work with your team from now on.",
+    ],
+    examples: [
+      { code: "INTP", text: "Good at thinking carefully" },
+      { code: "ESTP", text: "Good at moving right away" },
+      { code: "INFJ", text: "Good at listening to people" },
+      { code: "ENTP", text: "Good at coming up with new ideas" },
     ],
     note: "There is no better or worse choice. Just pick the one closer to you.",
     startLabel: "Start the questions",
@@ -1027,6 +1077,8 @@ export const PERSONALITY_RESULT_READINGS: readonly Reading[] = [
   // 語彙メモ（glossary.ts）の見出し語は必ずここに置く。本文は漢字で書き、読みはここから合成する。
   // **配列の先頭に置くこと。** RubyText は同じ位置で一致した語のうち配列で先に出たほうを採るので、
   // 「手順」を「手」より後ろに置くと「手」だけにルビが付いて「順」が裸で残る。
+  { text: "得意", reading: "とくい" },
+  { text: "参考", reading: "さんこう" },
   { text: "仕組み", reading: "しくみ" },
   { text: "手順", reading: "てじゅん" },
   { text: "仲間", reading: "なかま" },
@@ -1058,6 +1110,7 @@ export const PERSONALITY_RESULT_READINGS: readonly Reading[] = [
   { text: "最後", reading: "さいご" },
   { text: "失敗", reading: "しっぱい" },
   { text: "一回", reading: "いっかい" },
+  { text: "一番", reading: "いちばん" },
   { text: "一日", reading: "いちにち" },
   // 「1人」「二人」は「人」より先。うしろに置くと「1人（ひと）」と読ませてしまう。
   { text: "1人", reading: "ひとり" },
@@ -1083,6 +1136,8 @@ export const PERSONALITY_RESULT_READINGS: readonly Reading[] = [
   { text: "話す", reading: "はなす" },
   { text: "話しかける", reading: "はなしかける" },
   { text: "教える", reading: "おしえる" },
+  { text: "聞く", reading: "きく" },
+  { text: "知る", reading: "しる" },
   { text: "作れます", reading: "つくれます" },
   { text: "作る", reading: "つくる" },
   { text: "書いて", reading: "かいて" },
@@ -1156,6 +1211,8 @@ export const PERSONALITY_RESULT_READINGS: readonly Reading[] = [
   { text: "日", reading: "ひ" },
   { text: "楽", reading: "らく" },
   { text: "方", reading: "かた" },
+  { text: "聞", reading: "き" },
+  { text: "知", reading: "し" },
 ] as const;
 
 /**

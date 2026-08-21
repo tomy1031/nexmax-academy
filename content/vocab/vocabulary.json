@@ -1670,14 +1670,15 @@
       "term": "得意",
       "reading": "とくい",
       "romaji": "tokui",
-      "meaningJa": "上手にできることです。自己紹介で「◯◯が得意です」と言います。",
-      "englishTerm": "Good at / Strong point",
+      "meaningJa": "ほかの ことより、うまく できる ことです。",
+      "englishTerm": "Strong point",
       "example": "私はフロントエンドの開発が得意です。",
       "wrongMeanings": [
         "Special price",
         "Weak point",
         "Customer"
-      ]
+      ],
+      "englishMeaning": "something you can do well"
     },
     {
       "id": "senpai",
@@ -2172,6 +2173,24 @@
       "meaningJa": "しつもんに 答えて、じぶんの ことを しらべる こと",
       "englishTerm": "check-up",
       "englishMeaning": "answering questions to find out about yourself"
+    },
+    {
+      "id": "taipu",
+      "term": "タイプ",
+      "reading": "たいぷ",
+      "romaji": "taipu",
+      "meaningJa": "にた ところが ある 人の グループ",
+      "englishTerm": "type",
+      "englishMeaning": "a group of people who are alike"
+    },
+    {
+      "id": "sankou",
+      "term": "参考",
+      "reading": "さんこう",
+      "romaji": "sankou",
+      "meaningJa": "つぎに どう するかを きめる とき、たすけに する こと",
+      "englishTerm": "reference",
+      "englishMeaning": "something you look at to help you decide"
     },
     {
       "id": "iken",

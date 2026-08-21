@@ -180,6 +180,18 @@ rt {
   letter-spacing: 0;
 }
 
+/* 色の面（濃い地）の ふりがなは、地の文と 同じ色で 出す。
+   既定の rt は 濃い灰なので、紺・桃・金の ボタンや ラベルの 上では **ふりがなだけ 沈む**。
+   currentColor に すると、白文字の 面では 白、濃い文字の 面では その色に そろう。
+   （docs/constraints.md 2026-08-18「ボタンのカラーの場合のふりがなは白に」
+     2026-08-21「ボタンやラベルの色が濃いもののふりがなは白で」）
+   個別の指定（RUBY_ON_COLOR = [&_rt]:text-white）は そのまま 効く。 */
+.btn-game rt,
+.text-on-accent rt,
+.text-white rt {
+  color: currentColor;
+}
+
 /* 動きを減らす設定を尊重 */
 @media (prefers-reduced-motion: reduce) {
   *,
