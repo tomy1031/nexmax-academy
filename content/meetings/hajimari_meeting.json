@@ -71,42 +71,48 @@
       "ask": "休みの 日は、何を して いますか。",
       "hint": "「休みの 日は ◯◯を して います。」",
       "keywords": [],
-      "echo": "◯◯ですか。いいですね。わたしも やって みたいです。"
+      "echo": "◯◯ですか。いいですね。わたしも やって みたいです。",
+      "audioUrl": "/audio/meetings/hajimari_meeting/q7_holiday.wav"
     },
     {
       "id": "q8_food",
       "ask": "すきな 食べものは 何ですか。",
       "hint": "「わたしは ◯◯が すきです。」",
       "keywords": [],
-      "echo": "◯◯が すきなんですね。おいしそうです。"
+      "echo": "◯◯が すきなんですね。おいしそうです。",
+      "audioUrl": "/audio/meetings/hajimari_meeting/q8_food.wav"
     },
     {
       "id": "q9_music",
       "ask": "すきな 音楽や 映画は ありますか。",
       "hint": "「◯◯が すきです。」",
       "keywords": [],
-      "echo": "◯◯ですか。こんど 教えて ください。"
+      "echo": "◯◯ですか。こんど 教えて ください。",
+      "audioUrl": "/audio/meetings/hajimari_meeting/q9_music.wav"
     },
     {
       "id": "q10_place",
       "ask": "日本で 行って みたい ところは、どこですか。",
       "hint": "「◯◯に 行って みたいです。」",
       "keywords": [],
-      "echo": "◯◯ですか。いっしょに 行きましょう。"
+      "echo": "◯◯ですか。いっしょに 行きましょう。",
+      "audioUrl": "/audio/meetings/hajimari_meeting/q10_place.wav"
     },
     {
       "id": "q11_friend",
       "ask": "友だちから、どんな 人だと 言われますか。",
       "hint": "「よく ◯◯と 言われます。」",
       "keywords": [],
-      "echo": "◯◯なんですね。仕事でも 強みに なりますよ。"
+      "echo": "◯◯なんですね。仕事でも 強みに なりますよ。",
+      "audioUrl": "/audio/meetings/hajimari_meeting/q11_friend.wav"
     },
     {
       "id": "q12_treasure",
       "ask": "あなたが 大切に して いる ことは 何ですか。",
       "hint": "「わたしは ◯◯を 大切に して います。」",
       "keywords": [],
-      "echo": "◯◯を 大切に して いるんですね。すてきな 考えです。"
+      "echo": "◯◯を 大切に して いるんですね。すてきな 考えです。",
+      "audioUrl": "/audio/meetings/hajimari_meeting/q12_treasure.wav"
     }
   ],
   "furigana": [
