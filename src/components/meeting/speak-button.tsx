@@ -82,7 +82,7 @@ export function SpeakButton({
           「だいじょ／うぶです」の ように 語の 途中で 切れて いた——読み慣れない 学習者は
           そこで 一度 つまずく。この アプリの 文は 分かち書きなので、空白で 折り返せば よい。
         */}
-        <p className="mt-1.5 text-xs font-bold break-keep text-white/70">
+        <p className="text-ink-soft mt-1.5 text-xs font-bold break-keep">
           {/* 画面が 自分で 出す 字は かなで 書く（教材と ちがい 読み辞書を 持てない） */}
           {blocked
             ? reason === "noMic"
@@ -120,7 +120,7 @@ export function SpeakButton({
       <p className="text-navy mt-2 text-sm font-black">
         {disabled ? "…" : talking ? "はなしおわったら おす" : "おして はなす"}
       </p>
-      <p className="mt-1 text-xs font-bold break-keep text-white/70">
+      <p className="text-ink-soft mt-1 text-xs font-bold break-keep">
         {disabled
           ? (waitNote ?? "いまは まって ください")
           : talking

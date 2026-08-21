@@ -941,33 +941,71 @@ export function MeetingSession({
    * 決まった しつもんが 終わったら **自由な おしゃべり**に なるので、
    * ここが 閉じると 話す ところが 無くなる（2026-08-18 の 指定）。
    */
+  /*
+   * **テキストチャット**（添付の 画面の 右の 列）。
+   *
+   * 見出し・記録・書いて 送る 欄を 1つの カードに まとめる。前は 記録だけが
+   * 会話の 下に あり、書く 欄は さらに その 下に あった ので、**話す ところと
+   * 書く ところが 画面の 端と 端**に 離れて いた。
+   */
   const chatPanel = (
-    <div
-      ref={chatRef}
-      role="log"
-      aria-label="かいわ"
-      className="card-island h-[46vh] min-h-64 space-y-2 overflow-y-auto p-3 sm:h-[52vh]"
-    >
-      {chat.map((entry) => (
-        <ChatLine
-          key={entry.id}
-          entry={entry}
-          hostName={meeting.host.name}
-          furigana={furigana}
-          dictionary={dictionary}
-          /* もう いちど 聞けるのは「こたえる」ばんだけ（音が 重ならない） */
-          onReplay={
-            entry.kind === "ask" && entry.audioUrl && canAnswer
-              ? () => clip.play(entry.audioUrl as string, rateOf(speed))
-              : undefined
-          }
+    <div className="card-island flex h-[46vh] min-h-64 flex-col p-0 sm:h-[62vh]">
+      <p className="text-navy border-hairline border-b px-3 py-2 text-sm font-black">
+        💬 テキストチャット
+      </p>
+      <div
+        ref={chatRef}
+        role="log"
+        aria-label="かいわ"
+        className="min-h-0 flex-1 space-y-2 overflow-y-auto p-3"
+      >
+        {chat.map((entry) => (
+          <ChatLine
+            key={entry.id}
+            entry={entry}
+            hostName={meeting.host.name}
+            furigana={furigana}
+            dictionary={dictionary}
+            /* もう いちど 聞けるのは「こたえる」ばんだけ（音が 重ならない） */
+            onReplay={
+              entry.kind === "ask" && entry.audioUrl && canAnswer
+                ? () => clip.play(entry.audioUrl as string, rateOf(speed))
+                : undefined
+            }
+          />
+        ))}
+        {thinking ? (
+          <p className="bg-panel-tint text-ink-soft rounded-[var(--radius-card)] px-4 py-2 text-sm font-black">
+            {meeting.host.name}さんが 聞いて います…
+          </p>
+        ) : null}
+      </div>
+
+      {/* 書いて 送る 欄は チャットの 足もと（添付の 画面と 同じ） */}
+      <form
+        className="border-hairline flex items-center gap-2 border-t p-2"
+        onSubmit={(e) => {
+          e.preventDefault();
+          submit();
+        }}
+      >
+        <input
+          value={draft}
+          onChange={(e) => setDraft(e.target.value)}
+          placeholder={done ? "ヘンディさんに 聞いて みましょう" : "メッセージを 入力…"}
+          aria-label="こたえを 入力する"
+          disabled={!canType}
+          className="border-hairline text-ink min-w-0 flex-1 rounded-full border-2 bg-white px-3 py-1.5 text-sm font-bold disabled:opacity-50"
         />
-      ))}
-      {thinking ? (
-        <p className="bg-panel-tint text-ink-soft rounded-[var(--radius-card)] px-4 py-2 text-sm font-black">
-          {meeting.host.name}さんが 聞いて います…
-        </p>
-      ) : null}
+        <button
+          type="submit"
+          disabled={!canAnswer}
+          aria-label="おくる"
+          className="btn-game shrink-0 rounded-full px-3 py-1.5 text-sm disabled:opacity-40"
+        >
+          ➤
+        </button>
+      </form>
     </div>
   );
 
@@ -1034,11 +1072,48 @@ export function MeetingSession({
           </ul>
         </div>
       ) : null}
-
-      {chatPanel}
     </div>
-  ) : (
-    chatPanel
+  ) : null;
+
+  /*
+   * **いま どの ばんか**を 3つで 見せる（添付の 画面の 左の 帯）。
+   *
+   * ステージの サイドバーは「教材の 一覧」なので、**この ミーティングの 中の
+   * 道すじ**は 別に 要る。クライアントは「絵の サイドバーは 通常サイドバーの 下でも
+   * OK」と 言って いるが、まず 会話の すぐ上に 置く——目を 動かす 距離が いちばん 短い。
+   */
+  const roundSteps = (
+    <ol className="card-island flex items-center gap-1.5 overflow-x-auto p-2">
+      {[
+        { label: "はじまり", state: "done" as const },
+        { label: `${meeting.host.name}さんから しつもん`, state: done ? "done" : "now" },
+        { label: `${meeting.host.name}さんに しつもん`, state: done ? "now" : "yet" },
+      ].map((step, at) => (
+        <li
+          key={step.label}
+          aria-current={step.state === "now" ? "step" : undefined}
+          className="flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-extrabold"
+          style={{
+            background:
+              step.state === "now"
+                ? "var(--color-sky-deep)"
+                : step.state === "done"
+                  ? "var(--color-panel-tint)"
+                  : "transparent",
+            color:
+              step.state === "now"
+                ? "#fff"
+                : step.state === "done"
+                  ? "var(--color-ink-soft)"
+                  : "var(--color-ink-faint)",
+          }}
+        >
+          <span className="opacity-70">{`0${at + 1}`}</span>
+          <RubyText text={step.label} index={furigana} show />
+          {step.state === "done" ? <span>✅</span> : null}
+        </li>
+      ))}
+    </ol>
   );
 
   const body = (
@@ -1065,90 +1140,128 @@ export function MeetingSession({
    * ボタンは「おくる」1つだけ——「つぎへ」「もう いちど」「まだ 言えない」は
    * 会話の 中に 溶かした（進むのは 判定が 決め、逃げ道は ことばで 言う）。
    */
+  /*
+   * 話す ところ（添付の 画面の 左の 列）。
+   *
+   * 「しつもんの 吹き出し → 声で こたえましょう → 丸い マイク」を **1つの カード**に
+   * まとめる。前は しつもんが Zoom の 枠の 中、書く 欄が 画面の いちばん 下、と
+   * ばらばらで、目が 何度も 行き来して いた。
+   */
   const controls = done ? (
-    /* 自由な おしゃべり。判定は しないが、**足場は 残す**（聞く ための 型文） */
-    <div className="space-y-2">
-      {/*
-        みちびきの しつもんは **隠して おく**。押した ぶんだけ 1つずつ 出る——
-        並べて 見せると 上から 読んで 打つだけに なり、聞き出す 練習に ならない。
-      */}
+    <div className="card-island space-y-2 p-4">
+      <p className="text-navy text-sm font-black">
+        💬 <RubyText text="ヘンディさんに 聞いて みましょう" index={CHROME_FURIGANA} show />
+      </p>
       {shownHints > 0 ? (
-        <div className="bg-cream border-hairline rounded-[var(--radius-card)] border-2 px-4 py-3">
-          <p className="text-ink-soft text-xs font-extrabold">
-            <RubyText text="💡 こう 聞けます" index={CHROME_FURIGANA} show />
-          </p>
-          <ul className="mt-1 space-y-1">
-            {FREE_TALK_HINTS.slice(0, shownHints).map((line) => (
-              <li key={line} className="text-ink text-base font-black break-words">
-                「
-                <RubyText text={line} index={CHROME_FURIGANA} show />」
-              </li>
-            ))}
-          </ul>
-        </div>
+        <ul className="mt-1 space-y-1">
+          {FREE_TALK_HINTS.slice(0, shownHints).map((line) => (
+            <li
+              key={line}
+              className="bg-cream text-ink rounded-xl px-3 py-2 text-sm font-black break-words"
+            >
+              「
+              <RubyText text={line} index={CHROME_FURIGANA} show />」
+            </li>
+          ))}
+        </ul>
       ) : null}
-      {shownHints < FREE_TALK_HINTS.length ? (
-        <div className="flex justify-end">
+      <div className="flex items-center justify-between gap-2">
+        <SpeakButton
+          status={voice.status}
+          reason={voice.reason}
+          talking={voice.talking}
+          disabled={!canAnswer && phase !== "はなす"}
+          onConnect={() => void voice.start(instruction, hostVoice)}
+          onStartTalking={() => {
+            stopClip();
+            voice.startTalking();
+          }}
+          onStopTalking={voice.stopTalking}
+        />
+        {shownHints < FREE_TALK_HINTS.length ? (
           <button
             type="button"
             onClick={() => setShownHints((n) => n + 1)}
-            /*
-             * 名前を 手で 付ける。字は ルビが 合成されて「何なにを 聞きけば」の
-             * ように 割れるので、読み上げ・検査から 見た 名前が 安定しない。
-             */
             aria-label="ヒントの しつもんを 見る"
-            className="border-sun-deep bg-cream text-navy rounded-full border-2 px-3 py-1 text-xs font-extrabold"
+            className="border-sun-deep bg-cream text-navy shrink-0 rounded-full border-2 px-3 py-2 text-xs font-extrabold"
           >
             <RubyText
-              text={shownHints === 0 ? "何を 聞けば いい？" : "べつの 聞き方を 見る"}
+              text={shownHints === 0 ? "💡 何を 聞けば いい？" : "💡 べつの 聞き方"}
               index={CHROME_FURIGANA}
               show
             />
           </button>
-        </div>
-      ) : null}
-      <form
-        className="flex flex-wrap items-center gap-2"
-        onSubmit={(e) => {
-          e.preventDefault();
-          submit();
-        }}
-      >
-        <input
-          value={draft}
-          onChange={(e) => setDraft(e.target.value)}
-          placeholder="ヘンディさんに 聞いて みましょう"
-          aria-label="こたえを 入力する"
-          /* 書くのは「きく」ばんでも よい。送るのは「こたえる」ばんだけ */
-          disabled={!canType}
-          className="border-hairline text-ink min-w-0 flex-1 rounded-full border-2 bg-white px-4 py-2 font-bold disabled:opacity-50"
-        />
-        <button
-          type="submit"
-          disabled={!canAnswer}
-          className="btn-game px-5 py-2 text-sm disabled:opacity-40"
-        >
-          おくる
-        </button>
-      </form>
+        ) : null}
+      </div>
     </div>
   ) : (
-    <div className="space-y-2">
-      {/*
-        ヒントは **ポップアップ**（2026-08-20 の 指定）。出しっぱなしに して いた ころは
-        画面の 下半分が 型文で うまり、会話の 記録と 話す ボタンが 押し出されて いた。
-      */}
-      <div className="flex justify-end">
-        <button
-          type="button"
-          onClick={() => setHintOpen(true)}
-          /* 見かたを 待って いる 間・ポップアップの 間は 触らない */
-          disabled={phase === "みている" || phase === "みかた" || hintLines.length === 0}
-          aria-label="ヒントを 見る"
-          className="border-sun-deep bg-cream text-navy rounded-full border-2 px-3 py-1 text-xs font-extrabold disabled:opacity-40"
-        >
-          <RubyText text="💡 ヒントを 見る" index={CHROME_FURIGANA} show />
-        </button>
+    <div className="card-island space-y-3 p-4">
+      <p className="text-sky-deep text-sm font-black">💬 {meeting.host.name}さんから しつもん</p>
+
+      {/* しつもんの 吹き出し。答える 直前に もう一度 読める ように 大きく 出す */}
+      {askText ? (
+        <div className="flex items-start gap-2">
+          <p className="border-hairline text-navy min-w-0 flex-1 rounded-2xl border-2 bg-white px-4 py-3 text-lg font-black break-words">
+            <RubyText text={askText} index={furigana} show />
+          </p>
+          {question?.audioUrl ? (
+            <button
+              type="button"
+              aria-label="もう いちど 聞く"
+              disabled={!canAnswer}
+              onClick={() => clip.play(question.audioUrl as string, rateOf(speed))}
+              className="text-sky shrink-0 self-center text-2xl disabled:opacity-40"
+            >
+              🔊
+            </button>
+          ) : null}
+        </div>
+      ) : null}
+
+      <p className="text-ink-soft text-center text-xs font-extrabold">
+        <RubyText text="こえで こたえましょう！" index={CHROME_FURIGANA} show />
+      </p>
+
+      {/* 速さ｜丸い マイク｜ヒント の 3つ（添付の 画面と 同じ 並び） */}
+      <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
+        <SpeechSpeedPicker
+          value={speed}
+          onChange={saveSpeechSpeed}
+          tone="light"
+          vertical
+          disabled={phase === "はなす" || phase === "みている" || phase === "みかた"}
+        />
+        <SpeakButton
+          status={voice.status}
+          reason={voice.reason}
+          talking={voice.talking}
+          disabled={!canAnswer && phase !== "はなす"}
+          waitNote={
+            phase === "きく"
+              ? "いまは きく ばんです"
+              : phase === "みている"
+                ? "いま みて います"
+                : "ポップアップを よんで ください"
+          }
+          onConnect={() => void voice.start(instruction, hostVoice)}
+          onStartTalking={() => {
+            answeringRef.current = question ?? null;
+            stopClip();
+            voice.startTalking();
+          }}
+          onStopTalking={voice.stopTalking}
+        />
+        <div className="flex justify-end">
+          <button
+            type="button"
+            onClick={() => setHintOpen(true)}
+            disabled={phase === "みている" || phase === "みかた" || hintLines.length === 0}
+            aria-label="ヒントを 見る"
+            className="border-sun-deep bg-cream text-navy rounded-full border-2 px-3 py-2 text-xs font-extrabold whitespace-nowrap disabled:opacity-40"
+          >
+            <RubyText text="💡 ヒント" index={CHROME_FURIGANA} show />
+          </button>
+        </div>
       </div>
 
       {notice ? (
@@ -1157,39 +1270,9 @@ export function MeetingSession({
         </p>
       ) : null}
 
-      <form
-        className="flex flex-wrap items-center gap-2"
-        onSubmit={(e) => {
-          e.preventDefault();
-          submit();
-        }}
-      >
-        <input
-          value={draft}
-          onChange={(e) => setDraft(e.target.value)}
-          placeholder="日本語で 答えて ください"
-          aria-label="こたえを 入力する"
-          /* 書くのは「きく」ばんでも よい。送るのは「こたえる」ばんだけ */
-          disabled={!canType}
-          className="border-hairline text-ink min-w-0 flex-1 rounded-full border-2 bg-white px-4 py-2 font-bold disabled:opacity-50"
-        />
-        <button
-          type="submit"
-          disabled={!canAnswer}
-          className="btn-game px-5 py-2 text-sm disabled:opacity-40"
-        >
-          おくる
-        </button>
-      </form>
-
-      {/*
-        こまった ときの 出口は **ボタンでは なく ことば**に した。
-        「まだ 言えない（つぎへ）」は 何のための ボタンか 読み取れなかった（指摘）。
-        実際の 会議で 使う 救援の 言い方を そのまま 練習に する（P6・P10）。
-      */}
-      <p className="text-ink-faint text-xs font-bold">
+      <p className="text-ink-faint text-center text-xs font-bold">
         <RubyText
-          text="こまったら →「すみません、つぎを おねがいします」と 言って ください"
+          text="こまったら →「すみません、つぎを おねがいします」"
           index={CHROME_FURIGANA}
           show
         />
@@ -1215,73 +1298,15 @@ export function MeetingSession({
          * 途中で 止まって いた。
          */
         speak={
-          <div className="space-y-2">
-            {/* 進み具合は 相手の 顔の すぐ下（会話から 目を 離さずに 見える） */}
-            <QuestionCards
-              order={meeting.questions.map((q) => q.id)}
-              labels={cardLabels}
-              openIds={openIds}
-              currentId={question?.id ?? null}
-              justOpenedId={justOpenedId}
-              furigana={furigana}
-            />
-            {/*
-              **いまの しつもんを 大きく 出す**（2026-08-20 の 指定・添付の 画面）。
-              チャット欄の いちばん 下にも 同じ ものが あるが、話す ボタンの すぐ上に
-              無いと、**答える 直前に もう 一度 読む**ことが できない。
-            */}
-            {!done && askText ? (
-              <div className="flex items-start gap-2 rounded-[var(--radius-card)] bg-white/90 px-3 py-2.5">
-                <p className="text-navy min-w-0 flex-1 text-base font-black break-words">
-                  <RubyText text={askText} index={furigana} show />
-                </p>
-                {question?.audioUrl ? (
-                  <button
-                    type="button"
-                    aria-label="もう いちど 聞く"
-                    disabled={!canAnswer}
-                    onClick={() => clip.play(question.audioUrl as string, rateOf(speed))}
-                    className="text-sky shrink-0 text-xl disabled:opacity-40"
-                  >
-                    🔊
-                  </button>
-                ) : null}
-              </div>
-            ) : null}
-            <SpeakButton
-              status={voice.status}
-              reason={voice.reason}
-              talking={voice.talking}
-              /* 話せる のは「こたえる」ばんと、いま 話して いる あいだ だけ */
-              disabled={!canAnswer && phase !== "はなす"}
-              waitNote={
-                phase === "きく"
-                  ? "いまは きく ばんです。おわるまで まちましょう"
-                  : phase === "みている"
-                    ? "いま みて います。すこし まって ください"
-                    : "ポップアップを よんで、ボタンを おして ください"
-              }
-              /*
-               * **道具は 持たせない**。声の つなぎは 会話だけに する
-               *（見かたは judge-api.ts の 文字だけの つなぎで もらう）。
-               */
-              onConnect={() => void voice.start(instruction, hostVoice)}
-              onStartTalking={() => {
-                // いま 答えようと して いる しつもんを 覚える（判定が ずれない ように）
-                answeringRef.current = question ?? null;
-                // 作り置きの しつもんが 鳴って いたら 止める（マイクに 入らない ように）
-                stopClip();
-                voice.startTalking();
-              }}
-              onStopTalking={voice.stopTalking}
-            />
-            <SpeechSpeedPicker
-              value={speed}
-              onChange={saveSpeechSpeed}
-              /* 話して いる 間・見かたの 間は 触らない（つぎに 鳴る ものから 効く） */
-              disabled={phase === "はなす" || phase === "みている" || phase === "みかた"}
-            />
-          </div>
+          /* しつもんの カードは 相手の 顔の すぐ下（会話から 目を 離さずに 見える） */
+          <QuestionCards
+            order={meeting.questions.map((q) => q.id)}
+            labels={cardLabels}
+            openIds={openIds}
+            currentId={question?.id ?? null}
+            justOpenedId={justOpenedId}
+            furigana={furigana}
+          />
         }
         /* 入る 前にも 速さを 決められる（はじめの ひとことから 効く） */
         settings={<SpeechSpeedPicker value={speed} onChange={saveSpeechSpeed} tone="light" />}
@@ -1326,13 +1351,22 @@ export function MeetingSession({
             />
           ),
         }}
-        controls={controls}
+        /* 添付の 画面に 合わせて **明るい 白の カード**にし、右に チャットを 置く */
+        tone="light"
+        side={chatPanel}
+        controls={
+          <div className="space-y-3">
+            {roundSteps}
+            {controls}
+          </div>
+        }
         /*
          * 答える ところは **会話の 下**。上に 置いて いた ころは、スマホで
          * 「こう 言えます」と 入力欄が 先に 来て、相手の しつもんが その 下に あった
          * ——何を 聞かれたかを 見るのに、毎回 スクロールで 探す ことに なる。
          */
-        controlsAt="bottom"
+        /* 話す ところは 会話の 上（添付の 画面と 同じ 並び） */
+        controlsAt="top"
       >
         {body}
       </CallShell>
