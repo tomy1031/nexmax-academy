@@ -32,7 +32,13 @@ import {
 } from "@/components/learner-fields";
 import { NexMaxFamily, NexMaxType, TypeEmblem } from "@/components/nexmax-types";
 import { GlossaryChip, GlossaryText } from "@/components/glossary-text";
-import { LearnerText, RUBY_ON_COLOR, RubyText, renderRuby } from "@/components/ruby-text";
+import {
+  LearnerText,
+  RUBY_CHIP,
+  RUBY_ON_COLOR,
+  RubyText,
+  renderRuby,
+} from "@/components/ruby-text";
 import { CARD_EDGE, CARD_EDGE_SM, CHIP_EDGE } from "@/components/card-edge";
 import { findAllGlossaryTerms } from "@/content/glossary";
 import { insertPersonalityResult, updateOwnDetails, upsertOwnProfile } from "@/lib/profile-db";
@@ -966,7 +972,10 @@ export function WelcomeWizard({
                           onClick={showResult}
                           className={`btn-game px-8 py-3 text-lg [--btn-face:#ffc93c] [--btn-shadow:#f0a819] disabled:cursor-not-allowed disabled:opacity-45 ${RUBY_ON_COLOR}`}
                         >
-                          けっかを{" "}
+                          <ruby>
+                            結果<rt>けっか</rt>
+                          </ruby>
+                          を{" "}
                           <ruby>
                             見る<rt>みる</rt>
                           </ruby>
@@ -1005,7 +1014,7 @@ export function WelcomeWizard({
                     ⭐
                   </div>
                   <p
-                    className={`bg-navy mt-1 rounded-xl px-2 py-1 text-[10px] leading-tight font-extrabold text-white ${RUBY_ON_COLOR}`}
+                    className={`bg-navy mt-1 rounded-xl px-2 py-1 text-[10px] font-extrabold text-white ${RUBY_ON_COLOR} [&_ruby]:leading-[2.4]`}
                   >
                     <RubyText
                       text={resultFamily.strengths.join("・")}
@@ -1026,7 +1035,7 @@ export function WelcomeWizard({
                 </p>
                 {/* 家族 → タイプ の2段。16通りでも学習者が迷子にならないための構え（07 §1.3）。 */}
                 <p
-                  className={`mt-3 inline-block rounded-full px-4 py-1 text-sm font-black text-white ${RUBY_ON_COLOR}`}
+                  className={`mt-3 rounded-full px-4 text-sm font-black text-white ${RUBY_ON_COLOR} ${RUBY_CHIP}`}
                   style={{ backgroundColor: resultFamily.color }}
                 >
                   <RubyText
@@ -1073,10 +1082,15 @@ export function WelcomeWizard({
                   </p>
                 )}
 
-                <h3 className="text-navy mt-6 font-black">チームで あなたが とくいな しごと</h3>
+                <h3 className="text-navy mt-6 font-black">
+                  <RubyText
+                    text="チームで あなたが 得意な 仕事"
+                    readings={PERSONALITY_RESULT_READINGS}
+                  />
+                </h3>
                 <p className="text-ink mt-2 font-bold">
                   <span
-                    className={`bg-navy mr-2 rounded-lg px-2 py-1 text-sm text-white ${RUBY_ON_COLOR}`}
+                    className={`bg-navy mr-2 rounded-lg px-2.5 text-sm text-white ${RUBY_ON_COLOR} ${RUBY_CHIP}`}
                   >
                     <RubyText text={result.teamRole} readings={PERSONALITY_RESULT_READINGS} />
                   </span>
@@ -1164,7 +1178,10 @@ export function WelcomeWizard({
 
             <div className="mt-7 text-center">
               <p className="text-ink-soft mb-3 text-sm font-bold">
-                このけっかは あなたの こたえから つくられました。
+                <RubyText
+                  text="この 結果は あなたの 答えから 作られました。"
+                  readings={PERSONALITY_RESULT_READINGS}
+                />
               </p>
               <button
                 type="button"

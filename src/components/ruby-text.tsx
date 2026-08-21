@@ -135,6 +135,20 @@ function IndexRuby({
  */
 export const RUBY_ON_COLOR = "[&_rt]:text-white";
 
+/**
+ * ルビの 入る 札（チップ・丸い ラベル）に 付ける。
+ *
+ * `rt` は 行の **上**に はみ出して 描かれる。inline のままだと 札の 高さは
+ * 文字の 大きさで 決まるので、左右に いくら 余白を 足しても ふりがなは
+ * 色の 面から 出てしまう（2026-08-21「ささえやく などの ラベルの padding が
+ * 小さいので ふりがなが はみ出ている」）。
+ *
+ * 直しかたは 2つ: 行の 高さを 広げる（`leading`）ことと、高さが 効く 箱に する
+ * （`inline-block`）こと。**両方 いる**——`leading` だけでは inline の 箱に 効かず、
+ * `inline-block` だけでは 既定の 行の 高さが ふりがなの ぶんに 足りない。
+ */
+export const RUBY_CHIP = "inline-block leading-[2.2]";
+
 /** `GlossaryText` の `renderText` に渡す用。 */
 export function renderRuby(text: string, readings: readonly Reading[]) {
   return <RubyText text={text} readings={readings} />;

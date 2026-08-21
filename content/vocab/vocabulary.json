@@ -4,6 +4,62 @@
   "title": "ことば",
   "furigana": [
     [
+      "急がないで",
+      "いそがないで"
+    ],
+    [
+      "直したく",
+      "なおしたく"
+    ],
+    [
+      "小さな",
+      "ちいさな"
+    ],
+    [
+      "小さい",
+      "ちいさい"
+    ],
+    [
+      "始める",
+      "はじめる"
+    ],
+    [
+      "一番",
+      "いちばん"
+    ],
+    [
+      "残す",
+      "のこす"
+    ],
+    [
+      "後で",
+      "あとで"
+    ],
+    [
+      "後に",
+      "あとに"
+    ],
+    [
+      "元に",
+      "もとに"
+    ],
+    [
+      "声",
+      "こえ"
+    ],
+    [
+      "音",
+      "おと"
+    ],
+    [
+      "下から",
+      "したから"
+    ],
+    [
+      "大きい",
+      "おおきい"
+    ],
+    [
       "申し訳ございません",
       "もうしわけございません"
     ],
@@ -1341,7 +1397,8 @@
         "Keyboard",
         "Cable",
         "Folder"
-      ]
+      ],
+      "englishMeaning": "the part of a computer or phone that shows things"
     },
     {
       "id": "enjinia",
@@ -1530,14 +1587,15 @@
       "term": "丁寧",
       "reading": "ていねい",
       "romaji": "teinei",
-      "meaningJa": "丁寧は、礼儀正しく、ことばや動作が優しいことです。",
+      "meaningJa": "急がないで、こまかい ところまで 気を つける ようすです。",
       "englishTerm": "Polite / Careful",
       "example": "授業とは違う、丁寧な言葉を使います。",
       "wrongMeanings": [
         "Rude",
         "Loud",
         "Fast"
-      ]
+      ],
+      "englishMeaning": "doing something slowly and with care"
     },
     {
       "id": "youkenteigi",
@@ -2553,7 +2611,8 @@
       "term": "大事",
       "reading": "だいじ",
       "meaningJa": "important の ことばです。",
-      "englishTerm": "important"
+      "englishTerm": "important",
+      "englishMeaning": "something that matters a lot to you"
     },
     {
       "id": "jugyou",
@@ -2603,6 +2662,236 @@
       "reading": "おうえん",
       "meaningJa": "cheering for you, support の ことばです。",
       "englishTerm": "cheering for you, support"
+    },
+    {
+      "id": "junban",
+      "term": "順番",
+      "reading": "じゅんばん",
+      "romaji": "junban",
+      "meaningJa": "どれを 先に、どれを 後に するかの ならび方です。",
+      "englishTerm": "order / sequence",
+      "example": "会議で 話す 順番を 決めます。",
+      "englishMeaning": "which one comes first and which comes next"
+    },
+    {
+      "id": "kiroku",
+      "term": "記録",
+      "reading": "きろく",
+      "romaji": "kiroku",
+      "meaningJa": "後で 見られるように、書いて 残す ことです。",
+      "englishTerm": "a record",
+      "example": "会議で 決まった ことを 記録します。",
+      "englishMeaning": "writing something down so you can look at it later"
+    },
+    {
+      "id": "junbi",
+      "term": "準備",
+      "reading": "じゅんび",
+      "romaji": "junbi",
+      "meaningJa": "始める 前に、いる ものを そろえる ことです。",
+      "englishTerm": "preparation",
+      "example": "始める 前に 道具を 準備します。",
+      "englishMeaning": "getting ready before you start"
+    },
+    {
+      "id": "annai",
+      "term": "案内",
+      "reading": "あんない",
+      "romaji": "annai",
+      "meaningJa": "行き方や やり方を、その 人に 見せる ことです。",
+      "englishTerm": "guiding someone",
+      "example": "新しい 人に 会社の 中を 案内します。",
+      "englishMeaning": "showing someone the way or how to do it"
+    },
+    {
+      "id": "happyou",
+      "term": "発表",
+      "reading": "はっぴょう",
+      "romaji": "happyou",
+      "meaningJa": "みんなの 前で、調べた ことや 考えを 話す ことです。",
+      "englishTerm": "a presentation",
+      "example": "チームの 前で 発表します。",
+      "englishMeaning": "telling a group what you found or thought"
+    },
+    {
+      "id": "chigai",
+      "term": "違い",
+      "reading": "ちがい",
+      "romaji": "chigai",
+      "meaningJa": "2つを くらべた とき、同じでは ない ところです。",
+      "englishTerm": "a difference",
+      "example": "小さな 違いにも 気が つきます。",
+      "englishMeaning": "the part where two things are not the same"
+    },
+    {
+      "id": "kanarazu",
+      "term": "必ず",
+      "reading": "かならず",
+      "romaji": "kanarazu",
+      "meaningJa": "ぜったいに そう する、という ことです。",
+      "englishTerm": "always",
+      "example": "言った ことは 必ず 終わらせます。",
+      "englishMeaning": "for sure, every time, with no exception"
+    },
+    {
+      "id": "shizuka",
+      "term": "静か",
+      "reading": "しずか",
+      "romaji": "shizuka",
+      "meaningJa": "音が 小さい ようすです。",
+      "englishTerm": "quiet",
+      "example": "静かに、みんなを 助けます。",
+      "englishMeaning": "with little or no sound"
+    },
+    {
+      "id": "hayai_speed",
+      "term": "速い",
+      "reading": "はやい",
+      "romaji": "hayai",
+      "meaningJa": "進む スピードが 大きい ことです。",
+      "englishTerm": "fast",
+      "example": "スピードが 速いです。",
+      "englishMeaning": "moving or working at high speed"
+    },
+    {
+      "id": "kawaru",
+      "term": "変わる",
+      "reading": "かわる",
+      "romaji": "kawaru",
+      "meaningJa": "前と 同じでは なく なる ことです。",
+      "englishTerm": "to change",
+      "example": "人の 気持ちが 変わる ことに 気が つきます。",
+      "englishMeaning": "to become different from before"
+    },
+    {
+      "id": "tasukemasu",
+      "term": "助けます",
+      "reading": "たすけます",
+      "romaji": "tasukemasu",
+      "meaningJa": "困って いる 人に 力を かす ことです。",
+      "englishTerm": "to help",
+      "example": "静かに、みんなを 助けます。",
+      "englishMeaning": "to give your strength to someone in trouble"
+    },
+    {
+      "id": "sasaemasu",
+      "term": "支えます",
+      "reading": "ささえます",
+      "romaji": "sasaemasu",
+      "meaningJa": "下から 力を 出して、たおれないように する ことです。",
+      "englishTerm": "to support",
+      "example": "毎日の 運用で チームを 支えます。",
+      "englishMeaning": "to hold something up so it does not fall"
+    },
+    {
+      "id": "makasete",
+      "term": "任せて",
+      "reading": "まかせて",
+      "romaji": "makasete",
+      "meaningJa": "その 人に やって もらうように する ことです。",
+      "englishTerm": "to entrust",
+      "example": "手順づくりを 任せて もらえます。",
+      "englishMeaning": "to let another person do the work and trust them"
+    },
+    {
+      "id": "tanomareta",
+      "term": "頼まれた",
+      "reading": "たのまれた",
+      "romaji": "tanomareta",
+      "meaningJa": "人から「やって ください」と 言われた ことです。",
+      "englishTerm": "asked to do",
+      "example": "頼まれた ことを 最後まで やります。",
+      "englishMeaning": "when someone has asked you to do something"
+    },
+    {
+      "id": "komatte",
+      "term": "困って",
+      "reading": "こまって",
+      "romaji": "komatte",
+      "meaningJa": "どう すれば いいか わからない ようすです。",
+      "englishTerm": "in trouble",
+      "example": "困って いる 人に すぐ 気が つきます。",
+      "englishMeaning": "not knowing what to do and needing help"
+    },
+    {
+      "id": "oboemasu",
+      "term": "覚えます",
+      "reading": "おぼえます",
+      "romaji": "oboemasu",
+      "meaningJa": "見た ことや 聞いた ことを、頭に 入れる ことです。",
+      "englishTerm": "to learn / remember",
+      "example": "体を 動かしながら 覚えます。",
+      "englishMeaning": "to put what you saw or heard into your head"
+    },
+    {
+      "id": "sagashimasu",
+      "term": "探します",
+      "reading": "さがします",
+      "romaji": "sagashimasu",
+      "meaningJa": "見つけるために、あちこちを 見る ことです。",
+      "englishTerm": "to look for",
+      "example": "一番 早い やり方を 探します。",
+      "englishMeaning": "to try to find something"
+    },
+    {
+      "id": "sasoimasu",
+      "term": "誘います",
+      "reading": "さそいます",
+      "romaji": "sasoimasu",
+      "meaningJa": "「いっしょに やりませんか」と 声を かける ことです。",
+      "englishTerm": "to invite",
+      "example": "新しい ことに 人を 誘います。",
+      "englishMeaning": "to ask someone to join you"
+    },
+    {
+      "id": "naoshimasu",
+      "term": "直します",
+      "reading": "なおします",
+      "romaji": "naoshimasu",
+      "meaningJa": "壊れた ものを 元に もどす ことです。",
+      "englishTerm": "to fix",
+      "example": "手を 動かして 直します。",
+      "englishMeaning": "to make a broken thing work again"
+    },
+    {
+      "id": "kowareta",
+      "term": "壊れた",
+      "reading": "こわれた",
+      "romaji": "kowareta",
+      "meaningJa": "うまく 動かなく なった ようすです。",
+      "englishTerm": "broken",
+      "example": "壊れた ものを 見ると、直したく なります。",
+      "englishMeaning": "no longer working the way it should"
+    },
+    {
+      "id": "tomatta",
+      "term": "止まった",
+      "reading": "とまった",
+      "romaji": "tomatta",
+      "meaningJa": "動いて いた ものが、動かなく なった ことです。",
+      "englishTerm": "stopped",
+      "example": "止まった システムを 元に もどせます。",
+      "englishMeaning": "something that was moving is not moving now"
+    },
+    {
+      "id": "hajimemasu",
+      "term": "始めます",
+      "reading": "はじめます",
+      "romaji": "hajimemasu",
+      "meaningJa": "まだ やって いない ことを、これから やる ことです。",
+      "englishTerm": "to start",
+      "example": "新しい ことを 一番 最初に 始めます。",
+      "englishMeaning": "to begin doing something new"
+    },
+    {
+      "id": "ochitsuite",
+      "term": "落ち着いて",
+      "reading": "おちついて",
+      "romaji": "ochitsuite",
+      "meaningJa": "急がないで、気持ちを 静かに して いる ようすです。",
+      "englishTerm": "calmly",
+      "example": "急がないで、落ち着いて 対応 します。",
+      "englishMeaning": "without hurrying or panicking"
     }
   ]
 }

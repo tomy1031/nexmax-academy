@@ -2,7 +2,7 @@
 
 import { useSyncExternalStore } from "react";
 import Link from "next/link";
-import { LearnerText, RubyText } from "@/components/ruby-text";
+import { LearnerText, RUBY_CHIP, RubyText } from "@/components/ruby-text";
 import { NexMaxFamily, NexMaxType } from "@/components/nexmax-types";
 import {
   PERSONALITY_FAMILIES,
@@ -118,7 +118,7 @@ function TypeCard({
       </header>
 
       <p className="text-ink mt-3 text-sm font-bold">
-        <span className="bg-navy mr-2 rounded-lg px-2 py-1 text-xs text-white">
+        <span className={`bg-navy mr-2 rounded-lg px-2.5 text-xs text-white ${RUBY_CHIP}`}>
           <RubyText text={type.teamRole} readings={PERSONALITY_RESULT_READINGS} />
         </span>
         <LearnerText text={type.teamRoleDetail} />
@@ -158,7 +158,7 @@ function FamilySection({
         <NexMaxFamily family={family.id} gender={gender} size={72} className="shrink-0" />
         <div>
           <h2
-            className="inline-block rounded-full px-4 py-1 text-sm font-black text-white"
+            className={`rounded-full px-4 text-sm font-black text-white ${RUBY_CHIP}`}
             style={{ backgroundColor: family.color }}
           >
             <RubyText
