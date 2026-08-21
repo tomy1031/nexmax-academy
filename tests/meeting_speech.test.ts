@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { answerCore, fillAnswer, fillName, NAME_MARK, NO_NAME } from "../src/lib/meeting/speech";
+import {
+  answerCore,
+  fillAnswer,
+  fillName,
+  NAME_MARK,
+  NO_NAME,
+  shouldReplayAsk,
+} from "../src/lib/meeting/speech";
 import { needsJapaneseInput } from "../src/lib/meeting/input";
 import { hintPatterns, hintSegments } from "../src/lib/meeting/hint";
 
@@ -160,5 +167,24 @@ describe("日本語入力に なって いるか の 見守り", () => {
     expect(needsJapaneseInput("")).toBe(false);
     expect(needsJapaneseInput("   ")).toBe(false);
     expect(needsJapaneseInput("……")).toBe(false);
+  });
+});
+
+/*
+ * 「もう いちど」で しつもんを 鳴らし直す 条件（2026-08-21 の 指定）。
+ * 鍵の 無い 通し検証では ここを 通れない（「もう いちど」が 出ない）ので、
+ * **画面で 確かめられない ぶんを ここで 固定する**。
+ */
+describe("もう いちどで しつもんを 鳴らし直すか", () => {
+  it("作り置きの 音が あって、相手が 話して いなければ 鳴らす", () => {
+    expect(shouldReplayAsk({ hasAudio: true, hostSpeaking: false })).toBe(true);
+  });
+
+  it("相手が 話して いる 間は 鳴らさない（声が 重なる）", () => {
+    expect(shouldReplayAsk({ hasAudio: true, hostSpeaking: true })).toBe(false);
+  });
+
+  it("音が 無い しつもんでは 鳴らさない", () => {
+    expect(shouldReplayAsk({ hasAudio: false, hostSpeaking: false })).toBe(false);
   });
 });
