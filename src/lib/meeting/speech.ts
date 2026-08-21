@@ -175,3 +175,24 @@ export function fillAnswer(echo: string, answer: string): string {
 export function shouldReplayAsk(state: { hasAudio: boolean; hostSpeaking: boolean }): boolean {
   return state.hasAudio && !state.hostSpeaking;
 }
+
+/**
+ * ト書き（かっこの 中の 説明）を 取りのぞく。
+ *
+ * 人格には「学生の ことばを 受け止めて、みじかく 返す」の ような **やり方の 指示**が
+ * 書いて ある。相手役は それを **そのまま 声に 出す ことが ある**——学習者には
+ *「そうですか、よかったです。（学生の言葉を受け止めて、共感する）」と 届いた
+ *（2026-08-21 の 指摘。2026-08-20 にも 別の 文で 起きて いる）。
+ *
+ * 指示文で 止めるだけでは 取りこぼす ので、**画面に 出す ところで 落とす**。
+ * こえは 止められないが、少なくとも 字には 残さない。
+ *
+ * 落とすのは **説明として 長い かっこ**だけに する（「すみません（ありがとう）」の
+ * ような 短い 言いかえまで 消すと、教材の ことばが 欠ける）。
+ */
+export function stripDirections(text: string): string {
+  return text
+    .replace(/[（(][^）)]{6,}[）)]/g, "")
+    .replace(/[ \u3000]{2,}/g, " ")
+    .trim();
+}

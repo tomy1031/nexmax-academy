@@ -43,7 +43,9 @@ describe("どこから 始めるか", () => {
   it("開いた札・答え・ハートも いっしょに 戻る", () => {
     const start = startFrom(savedAt(5), 5, IDS);
     expect(start.index).toBe(5);
-    expect(start.openIds).toEqual(["q1", "q2"]);
+    // 6問目に いる＝1〜5問目は 通りすぎて いる。1回で 言えなかった しつもんの 札も
+    // 開いた ことに する（2026-08-21 の 指摘。P8: できなかった ことを 数えない）
+    expect(start.openIds).toEqual(["q1", "q2", "q3", "q4", "q5"]);
     expect(start.answers).toEqual({ q1: "ホームページです。", q2: "アプリです。" });
     expect(heartsOf(start.affection)).toBe(3);
   });
@@ -82,9 +84,11 @@ describe("どこから 始めるか", () => {
     expect(saved?.found).toEqual([]);
   });
 
-  it("消えた 質問の 札・答え・ハートは 戻さない（先生が 入れかえた あと）", () => {
+  it("消えた 質問の 答え・ハートは 戻さない（先生が 入れかえた あと）", () => {
     const start = startFrom(savedAt(2), 2, ["q1", "q3", "q4"]);
-    expect(start.openIds).toEqual(["q1"]);
+    // 札は「位置より 前は 開く」で 決まるので、入れかえの あとは いまの 並びに 従う
+    //（答え・ハートは 消えた 質問の ぶんを 落とす。こちらが 先生の 成績に つながる）
+    expect(start.openIds).toEqual(["q1", "q3"]);
     expect(start.answers).toEqual({ q1: "ホームページです。" });
     expect(heartsOf(start.affection)).toBe(2);
   });
@@ -164,7 +168,8 @@ describe("しおりと 内訳を 突き合わせる（restoreMeeting）", () => 
     const start = restoreMeeting("kaisha_houkoku_meeting", IDS, backend);
     expect(start.index).toBe(5);
     expect(start.resumed).toBe(true);
-    expect(start.openIds).toEqual([]);
+    // 内訳が 無くても 位置は 分かる。通りすぎた 5問は 開く
+    expect(start.openIds).toEqual(["q1", "q2", "q3", "q4", "q5"]);
   });
 
   it("両方 あれば 札も ハートも 戻る", () => {
@@ -177,7 +182,7 @@ describe("しおりと 内訳を 突き合わせる（restoreMeeting）", () => 
     saveMeetingResume(savedAt(5), backend);
     const start = restoreMeeting("kaisha_houkoku_meeting", IDS, backend);
     expect(start.index).toBe(5);
-    expect(start.openIds).toEqual(["q1", "q2"]);
+    expect(start.openIds).toEqual(["q1", "q2", "q3", "q4", "q5"]);
     expect(heartsOf(start.affection)).toBe(3);
   });
 

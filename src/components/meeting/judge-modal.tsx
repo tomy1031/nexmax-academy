@@ -3,7 +3,8 @@
 import { motion } from "motion/react";
 import { RubyText } from "@/components/ruby-text";
 import type { JudgeResult } from "@/lib/meeting/judge";
-import { buildFuriganaIndex, type FuriganaIndex } from "@/lib/text/furigana";
+import { JUDGE_FURIGANA as FURIGANA } from "@/components/meeting/ui-furigana";
+import { type FuriganaIndex } from "@/lib/text/furigana";
 
 /**
  * 日本語の 見かた（ポップアップ）
@@ -14,22 +15,17 @@ import { buildFuriganaIndex, type FuriganaIndex } from "@/lib/text/furigana";
  *（2026-08-18 の 指定）。いちばん 大事な 分かれ道なので、画面の 前に 出して
  * 1つずつ 読ませ、つぎに 何を するかを 学習者が 押して 決める。
  *
- * ## 項目を 分ける
- * 「あなたの ことば」「アドバイス」「言い方の れい」を 見出しで 分ける。
- * 1つの 文に まとめて いた ころは、どこが 自分の ことばで どこが 直しなのかが
- * 混ざって 読めなかった。
+ * ## 見出しを 絵と 色で 分ける（2026-08-21 の 指定「読みにくい」）
+ * `dl` に 小さな 灰色の 見出しを 並べて いた ころは、**どこが 自分の ことばで
+ * どこが 直しなのか**が 字の 大きさでしか 分からなかった。
+ * 見出しに 丸い 絵を 付け、中身を それぞれ 箱に 入れる。
+ * アドバイスは **ほめる ところ（桃）と 直す ところ（橙）を 線で 分ける**——
+ * 続けて 書くと、ほめられて いるのか 直されて いるのかが 混ざる。
  *
  * ## 点は「できた ところ」だけ 数える（P8）
  * ✕ を 数えない。3段（すばらしい／つたわりました／もう いちど）を 星に 写して、
  * **上がる ことだけ**を 見せる。
  */
-
-/** 画面が 自分で 出す 字の 読み（教材の 読み辞書とは 混ぜない・規律2）。 */
-const FURIGANA = buildFuriganaIndex([
-  ["言", "い"],
-  ["方", "かた"],
-  ["次", "つぎ"],
-]);
 
 /**
  * 3段の 見え方。
@@ -40,30 +36,61 @@ const FURIGANA = buildFuriganaIndex([
  */
 const LOOK: Record<
   JudgeResult["grade"],
-  { title: string; face: string; stars: number; band: string; next: string }
+  {
+    title: string;
+    /** 見出しの 下の 1行（つぎに 何を するかを 先に 言う）。 */
+    lead: string;
+    face: string;
+    stars: number;
+    band: string;
+    next: string;
+    /** ボタンの 下の 小さな ひとこと。 */
+    footnote: string | null;
+  }
 > = {
   veryGood: {
     title: "よく できました！",
+    lead: "そのまま つぎへ すすめます",
     face: "🌸",
     stars: 3,
     band: "var(--color-leaf-deep)",
     next: "つぎの しつもんへ →",
+    footnote: null,
   },
   good: {
     title: "つたわりました！",
+    lead: "そのまま つぎへ すすめます",
     face: "🙆",
     stars: 2,
     band: "var(--color-leaf-deep)",
     next: "つぎの しつもんへ →",
+    footnote: null,
   },
   miss: {
     title: "もう 少し！",
-    face: "💪",
+    lead: "もういちど れんしゅうしよう！",
+    face: "🔄",
     stars: 1,
     band: "var(--color-sky-deep)",
     next: "もう いちど 練習しよう",
+    footnote: "もう一回 こたえて みよう！",
   },
 };
+
+/** 見出し1つぶん（丸い 絵 ＋ 色の ついた 字）。 */
+function SectionLabel({ face, text, tone }: { face: string; text: string; tone: string }) {
+  return (
+    <p className="flex items-center gap-1.5 text-xs font-black" style={{ color: tone }}>
+      <span
+        className="grid h-5 w-5 shrink-0 place-items-center rounded-full text-[11px]"
+        style={{ background: `color-mix(in srgb, ${tone} 18%, white)` }}
+      >
+        {face}
+      </span>
+      <RubyText text={text} index={FURIGANA} show />
+    </p>
+  );
+}
 
 export function JudgeModal({
   judge,
@@ -71,6 +98,8 @@ export function JudgeModal({
   askFurigana,
   utterance,
   hostName,
+  reply,
+  waiting = false,
   note,
   onNext,
 }: {
@@ -88,6 +117,23 @@ export function JudgeModal({
   utterance: string;
   hostName: string;
   /**
+   * 相手の へんじ。**画面が 出した ことば だけ**を 受け取る。
+   *
+   * 声で 答えた ときは 相手が こえで 返して いて、その ことばは 判定の `reply` とは
+   * ちがう。ここに 判定の `reply` を 出して いた ため、**こえと 字が 食いちがって
+   * いた**（2026-08-21 の 指摘）。声の ときは 空で 受け取り、この 欄を 出さない
+   *（相手が 言った ことは チャット欄に 残る）。
+   */
+  reply: string;
+  /**
+   * 相手が まだ 話して いるか。
+   *
+   * **話し終わるまで つぎへ 行かせない**（2026-08-21 の 指定）。前は 押した 瞬間に
+   * つぎの しつもんが 出て いたので、ヘンディさんの 返事の 上に つぎの しつもんが
+   * かぶさって いた——学習者は どちらを 聞けば よいか 分からない。
+   */
+  waiting?: boolean;
+  /**
    * AIに 通せなかった ときの ひとこと（理由と つぎの 一手）。
    * 責める 言い方に しない——学習者は 自分の 日本語の せいだと 受け取る。
    */
@@ -95,8 +141,9 @@ export function JudgeModal({
   /** 「つぎへ」／「もう いちど」を 押した とき。 */
   onNext: () => void;
 }) {
-  const look = LOOK[judge.grade];
+  const base = LOOK[judge.grade];
   const again = judge.retry;
+  const look = again ? LOOK.miss : base;
 
   return (
     <div
@@ -119,63 +166,94 @@ export function JudgeModal({
         {/*
           いちばん 上に **色の 帯**を 置く。合格は みどり・やり直しは あお——
           読む 前に 目の はしで どちらか 分かる。
+          帯の 中は **絵・大きな 字・つぎの 一手**の 3つで、読む 順番を 決める。
         */}
         <div
-          className="-mx-5 -mt-5 mb-3 rounded-t-[var(--radius-card)] px-5 py-4 text-center"
-          style={{ background: again ? LOOK.miss.band : look.band }}
+          className="-mx-5 -mt-5 mb-3 rounded-t-[var(--radius-card)] px-4 py-4"
+          style={{ background: look.band }}
         >
-          <p className="text-4xl">{again ? LOOK.miss.face : look.face}</p>
-          <h2 className="mt-1 text-xl font-black text-white">
-            {again ? LOOK.miss.title : look.title}
-          </h2>
+          <div className="flex items-center gap-3">
+            <span className="grid h-14 w-14 shrink-0 place-items-center rounded-full bg-white/20 text-3xl">
+              {look.face}
+            </span>
+            <span className="min-w-0 flex-1">
+              <h2 className="text-2xl leading-tight font-black text-white">
+                <RubyText text={look.title} index={FURIGANA} show />
+              </h2>
+              <p className="text-sun mt-0.5 text-sm leading-snug font-black">{look.lead}</p>
+            </span>
+          </div>
         </div>
-        <p className="mt-1 text-center text-lg" aria-label={`ほし ${look.stars}つ`}>
+        <p className="text-center text-lg" aria-label={`ほし ${look.stars}つ`}>
           {"⭐".repeat(look.stars)}
           <span className="opacity-25">{"⭐".repeat(3 - look.stars)}</span>
         </p>
 
-        <dl className="mt-4 space-y-3 text-left">
+        <div className="mt-3 space-y-3 text-left">
           <div>
-            <dt className="text-ink-soft text-xs font-extrabold">{hostName}さんの しつもん</dt>
-            <dd className="text-ink-soft mt-1 text-sm font-bold break-words">
+            <SectionLabel face="❓" text={`${hostName}さんの しつもん`} tone="var(--color-sky)" />
+            <p className="border-hairline bg-panel text-ink mt-1 rounded-xl border px-3 py-2 text-sm font-bold break-words">
               <RubyText text={ask} index={askFurigana} show />
-            </dd>
+            </p>
           </div>
 
           <div>
-            <dt className="text-ink-soft text-xs font-extrabold">あなたの ことば</dt>
-            <dd className="bg-panel-tint text-ink mt-1 rounded-xl px-3 py-2 font-bold break-words">
+            <SectionLabel face="🧑" text="あなたの ことば" tone="var(--color-sky)" />
+            <p className="bg-panel-tint text-ink mt-1 rounded-xl px-3 py-2 font-bold break-words">
               {utterance}
-            </dd>
+            </p>
           </div>
 
-          {/* 相手が どう 受け止めたか。声を 聞きのがしても ここで 読める */}
-          {judge.reply ? (
+          {/* 相手が どう 受け止めたか。**画面が 出した ことば だけ**（こえの ときは 出さない） */}
+          {reply ? (
             <div>
-              <dt className="text-ink-soft text-xs font-extrabold">{hostName}さんの へんじ</dt>
-              <dd className="text-ink mt-1 font-bold break-words">{judge.reply}</dd>
+              <SectionLabel
+                face="💬"
+                text={`${hostName}さんの へんじ`}
+                tone="var(--color-leaf-deep)"
+              />
+              <p className="border-hairline bg-panel text-ink mt-1 rounded-xl border px-3 py-2 font-bold break-words">
+                <RubyText text={reply} index={FURIGANA} show />
+              </p>
             </div>
           ) : null}
 
           <div>
-            <dt className="text-ink-soft text-xs font-extrabold">
-              {hostName}さんからの アドバイス
-            </dt>
-            <dd className="text-ink mt-1 font-bold break-words">🌸 {judge.praise}</dd>
-            {judge.fix ? (
-              <dd className="text-ink-soft mt-1 font-bold break-words">💡 {judge.fix}</dd>
-            ) : null}
+            <SectionLabel
+              face="💡"
+              text={`${hostName}さんからの アドバイス`}
+              tone="var(--color-coral-deep)"
+            />
+            {/* ほめる ところと 直す ところを **線で 分ける**（続けて 書くと 混ざる） */}
+            <div className="border-hairline bg-panel mt-1 rounded-xl border px-3 py-2">
+              <p className="text-ink flex gap-2 font-bold break-words">
+                <span aria-hidden className="shrink-0">
+                  💗
+                </span>
+                <span className="flex-1">
+                  <RubyText text={judge.praise} index={FURIGANA} show />
+                </span>
+              </p>
+              {judge.fix ? (
+                <p className="border-hairline text-ink mt-2 flex gap-2 border-t border-dashed pt-2 font-bold break-words">
+                  <span aria-hidden className="shrink-0">
+                    ❗
+                  </span>
+                  <span className="flex-1">
+                    <RubyText text={judge.fix} index={FURIGANA} show />
+                  </span>
+                </p>
+              ) : null}
+            </div>
           </div>
 
           <div>
-            <dt className="text-ink-soft text-xs font-extrabold">
-              <RubyText text="もっと よく なる 言い方" index={FURIGANA} show />
-            </dt>
-            <dd className="bg-cream text-ink mt-1 rounded-xl px-3 py-2 font-black break-words">
-              「{judge.exampleAnswer}」
-            </dd>
+            <SectionLabel face="⭐" text="もっと よく なる 言い方" tone="var(--color-sun-deep)" />
+            <p className="bg-cream text-ink mt-1 rounded-xl px-3 py-2 font-black break-words">
+              「<RubyText text={judge.exampleAnswer} index={FURIGANA} show />」
+            </p>
           </div>
-        </dl>
+        </div>
 
         {note ? <p className="text-ink-faint mt-3 text-xs font-bold break-words">{note}</p> : null}
 
@@ -184,15 +262,25 @@ export function JudgeModal({
           type="button"
           onClick={onNext}
           autoFocus
-          className="btn-island btn-game mt-5 w-full px-6 py-3 text-base"
+          disabled={waiting}
+          className="btn-island btn-game mt-5 w-full px-6 py-3 text-base disabled:cursor-not-allowed disabled:opacity-45 disabled:shadow-none [&_rt]:text-white"
           style={
             again
-              ? ({ "--btn-face": "#4fa8e8", "--btn-shadow": "#2f86c4" } as React.CSSProperties)
+              ? ({ "--btn-face": "#f2654a", "--btn-shadow": "#d24a31" } as React.CSSProperties)
               : undefined
           }
         >
-          {again ? LOOK.miss.next : look.next}
+          <RubyText text={look.next} index={FURIGANA} show />
         </button>
+        {waiting ? (
+          <p className="text-ink-soft mt-2 text-center text-xs font-black">
+            🔊 {hostName}さんが 話して います
+          </p>
+        ) : look.footnote ? (
+          <p className="text-coral-deep mt-2 text-center text-xs font-black">
+            <RubyText text={look.footnote} index={FURIGANA} show />
+          </p>
+        ) : null}
       </motion.div>
     </div>
   );

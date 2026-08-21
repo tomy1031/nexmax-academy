@@ -80,6 +80,8 @@ export interface LiveVoice {
    * 「つないだのに 第一声が 無い」に なる（2026-08-18 の指摘）。
    */
   readonly start: (systemInstruction: string, voice?: string, opening?: string) => Promise<void>;
+  /** 指示文を 入れ替えて 黙って つなぎ直す（ラウンドの 境目）。 */
+  readonly swapInstruction: (systemInstruction: string, voice?: string) => Promise<void>;
   readonly stop: () => void;
   /** 声が使えないときの補い。テキストで送る（相手は声で返す）。 */
   readonly sendText: (text: string) => void;
@@ -540,6 +542,30 @@ export function useLiveVoice(): LiveVoice {
   );
 
   /**
+   * 指示文を 入れ替えて **黙って** つなぎ直す（ラウンドの 境目で 使う）。
+   *
+   * Live の systemInstruction は **つなぐ ときにしか 渡せない**。会話の 途中で
+   * 差し替える 道は 無い ので、入れ替えるには 張り直すしか ない。
+   *
+   * 合図（`control`）で「ここから ラウンド2」と 送る 道は **採らない**。
+   * このやり方は 3回 燃えて いる——「（しんこう）」の 読み上げ・
+   * `call:nihongo_no_mikata{…}` の 字幕流出・裏の やりとりが 字に 出る 事故
+   *（docs/constraints.md 2026-08-20）。
+   *
+   * 学習者には 見せない（`silent`）。ラウンドの 境目は **しゅうりょうしょうが
+   * 開いて いる 間**で、そこは どのみち マイクに 触れない ので 気づかれない。
+   */
+  const swapInstruction = useCallback(
+    async (systemInstruction: string, voice?: string) => {
+      // つないで いない ときは 何も しない（つぎに 押した ときの 指示文が 新しい）
+      if (!sessionRef.current) return;
+      retriesRef.current = 0;
+      await connect(systemInstruction, voice, undefined, true);
+    },
+    [connect],
+  );
+
+  /**
    * 書いて送る。**相手は声で返す**（Live は入力が文字でも音声で答える）。
    * マイクが無い・使いたくない学習者にも、同じ会話の体験を残すため。
    */
@@ -620,6 +646,7 @@ export function useLiveVoice(): LiveVoice {
     hush,
     analyser,
     start,
+    swapInstruction,
     stop,
     sendText,
     control,

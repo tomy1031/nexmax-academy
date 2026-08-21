@@ -28,7 +28,8 @@ import {
 } from "@/lib/meeting/record";
 import { asksToSkip, needsJapaneseInput } from "@/lib/meeting/input";
 import { clearMeetingResume, restoreMeeting, saveMeetingResume } from "@/lib/meeting/resume";
-import { fillName, shouldReplayAsk } from "@/lib/meeting/speech";
+import { JUDGE_FURIGANA } from "@/components/meeting/ui-furigana";
+import { fillName, shouldReplayAsk, stripDirections } from "@/lib/meeting/speech";
 import { normalizeReading } from "@/lib/text/normalize";
 import {
   rateOf,
@@ -442,6 +443,31 @@ export function MeetingSession({
    */
   const withName = useCallback((text: string) => fillName(text, learnerName), [learnerName]);
 
+  /**
+   * 聞き出せたか を 見て、当たった 札を 開く。
+   *
+   * **文字でも こえでも ここを 通す**。前は 書いて 送った ときだけ 見て いたので、
+   * こえで 聞いた 学習者は 札が 1枚も 開かなかった（2026-08-21 に fable が 指摘）。
+   *
+   * 表記ゆれを 吸収してから 見る（`normalizeReading` は アプリで 唯一の 実装）。
+   * 素の 文字くらべに して いた ころは、「サイフを おとしました」と カタカナで
+   * 書いた 学習者の 札が 開かなかった——聞けて いるのに 開かないのは、
+   * いちばん がっかりする 外れ方（規約: 正規化を 再実装しない）。
+   */
+  const noteDiscovered = useCallback(
+    (text: string) => {
+      const asked = normalizeReading(text);
+      const hit = meeting.discover.find(
+        (item) =>
+          !found.has(item.id) &&
+          item.keywords.some((word) => asked.includes(normalizeReading(word))),
+      );
+      if (hit) setFound((prev) => new Set([...prev, hit.id]));
+      return hit ?? null;
+    },
+    [meeting, found],
+  );
+
   const askText = question ? withName(question.ask) : "";
 
   /*
@@ -470,66 +496,140 @@ export function MeetingSession({
    * 画面の見かた（JudgeCard）と2人で別々のことを言う。相手は会話を続ける役、
    * 教えるのは画面の役、と分けておく（判定は `judge-api.ts` の 別の つなぎが 持つ）。
    */
-  const instruction = useMemo(
+  /**
+   * **両方の ばんに 同じ 文で 置く もの**（人格＋出力の 衛生）。
+   *
+   * ここに 置いて よいのは「誰か」と「どう 話すか」だけ。**進み方の 決まりは
+   * 置かない**——ばんが 変われば 仕事が 変わる ので、混ぜた 瞬間に どちらかが
+   * 嘘に なる（ラウンド1の「自分の 話を 足さない」と ラウンド2の「聞かれたら
+   * 話す」は 正面から ぶつかる）。
+   */
+  const commonRules = useMemo(
     () =>
       [
         meeting.persona,
         "",
+        "日本語の 直しは 言わないで ください（直しは 画面が 出します）。",
         /*
-         * **名前を 先に 渡さない**（2026-08-18 の 指摘）。
-         * 端末に 登録された 呼び名を つなぐ ときに 渡して いたので、相手は
-         * 学生が 名乗る 前から その 名前で 呼びはじめて いた——1問目が
-         *「お名前を おしえて ください」なのに、もう 知って いる 人が 聞く 形に なる。
-         * 名前は **1問目に 答えた あと**に 合図で 渡す（SIGNAL.name）。
+         * **ト書きを 読み上げさせない**（2026-08-20 の 指摘）。
+         * 人格に「学生が だまったら、答え方の れいを 見せて」と 書いて あった ため、
+         * 相手は それを **そのまま 声に 出した**。条件の 書き方は 台本の ト書きと
+         * 見分けが つかないので、**かっこ そのものを 禁じる**（2026-08-21）。
+         * 出して よい ものと だめな ものを 見分けさせるより、こちらの ほうが 守れる。
          */
-        "学生が 自分で 名乗るまで、名前や あだ名で 呼ばないで ください。",
-        /*
-         * **しつもんの 一覧も 渡さない**。渡して いた ころは
-         *「上から 順に 1つずつ 聞いて ください」と 書いて あった ので、
-         * 相手は 自分の 判断で 先へ 進み、同じ ことを くり返したり 飛ばしたり した。
-         * 聞く ことは 1つずつ 合図で 渡す（人格の 側にも 同じ 決まりを 書いて ある）。
-         */
-        /*
-         * **しつもんは 画面が する**（2026-08-18）。
-         * 相手に 合図（「（しんこう）…」）を 送って 聞かせて いた ころは、
-         * その 合図の ことばを **そのまま 読み上げる** ことが あった
-         *（学習者には「進行」と 言われた ように 聞こえる）。
-         * 裏の やりとりが 表に 出る 作りは やめ、しつもんは 作り置きの こえと
-         * 画面の 字で 出す。相手は **受け止めて 返すだけ**に する。
-         */
-        /*
-         * 話す 速さは **もう ことばで たのまない**（2026-08-21）。
-         * 鳴らす 側で 高さを 保った まま 変えられる ように なった ので、
-         * 二重に かけると 遅すぎに なる。指示文から 速さを 外した ぶん、
-         * **会話の 途中で 速さを 変えても つなぎ直しが 要らなく なる**
-         *（指示文が 変わると 張り直しに なって いた）。
-         */
-        "しつもんは 画面が します。あなたは しつもんを しないで ください。",
+        "学生に 向けて 話す ことばだけを 言って ください。せつめいや やり方は 言いません。",
+        "かっこ（）は つかわないで ください。",
         /*
          * **道具（function calling）は 持たせない**（2026-08-20）。
          * 「かならず 1回 nihongo_no_mikata を 呼んで」と 毎ターン 縛って いた ため、
          * 相手は それを **声の 本文として** 出しはじめ、チャット欄に
          * `call:nihongo_no_mikata{…}` が そのまま 出た（実発生）。
          * 見かたは **別の つなぎ**（judge-api.ts の 文字だけの セッション）で もらう。
-         * ここでの 相手の 仕事は「受け止めて みじかく 返す」だけ。
          */
-        "学生の ことばを 受け止めて、みじかく 返して ください。1回の 返事は 2文までです。",
-        "日本語の 直しは 言わないで ください（直しは 画面が 出します）。",
-        /*
-         * **ト書きを 読み上げさせない**（2026-08-20 の 指摘）。
-         *
-         * 人格に「学生が だまったら、答え方の れいを 見せて」と 書いて あった ため、
-         * 相手は それを **そのまま 声に 出した**——学習者には
-         *「(学生がだまったら:例えば、…と聞いてもいいですよ)」と 届いた。
-         * 条件の 書き方は 台本の ト書きと 見分けが つかないので、
-         * ①人格から 条件つきの 指示を 消し（教材データ側）、
-         * ②ここで「学生に 向けた ことば だけ」と 念を 押す。
-         */
-        "学生に 向けて 話す ことばだけを 言って ください。" +
-          "かっこの 中の 説明・やり方・じょうけんは 声に 出しません。",
+        "あなたから 学生に しつもんを しては いけません。",
       ].join("\n"),
     [meeting],
   );
+
+  /**
+   * **ラウンド1**（ヘンディさんの しつもんに 答える ばん）の 指示文。
+   *
+   * 相手の 仕事は **受け止めて 返す ことだけ**。自分の 話・つぎの 話を 足させない
+   *（2026-08-21 の 指摘「ドローンいいですよね と 外国から来ました は 何の 関係も ない」）。
+   * 学習者の 名前は **渡さない**——1問目が「お名前を おしえて ください」なので、
+   * もう 知って いる 人が 聞く 形に なる（2026-08-18 の 実発生）。
+   */
+  const askInstruction = useMemo(
+    () =>
+      [
+        commonRules,
+        "",
+        "いまは「" + meeting.host.name + "さんから しつもん」の 時間です。",
+        /*
+         * **しつもんの 一覧も 渡さない**。渡して いた ころは 相手が 自分の 判断で
+         * 先へ 進み、同じ ことを くり返したり 飛ばしたり した。聞く ことは 画面が 出す。
+         */
+        "しつもんは 画面が します。あなたは しつもんを しないで ください。",
+        "あなたの しごとは 1つだけです。学生の ことばを 受け止めて、みじかく 返します。",
+        "返しは「くりかえし ＋ 共感の ひとこと」の 形に します。れい:「◯◯ですか。いいですね。」",
+        "1回の 返事は 2文までです。",
+        "返したら そこで 止めます。自分の 話（しごと・国・けいけん）や、つづきの 話を 足しません。",
+        /*
+         * ラウンド1の 途中で 学生が 逆に 聞いて きた ときの **逃げ道を ことばで 用意する**。
+         * 無いと、そこから 自分語りが 始まる（ラウンド2の 楽しみも 先に 使って しまう）。
+         */
+        "学生から 何かを 聞かれたら、「ありがとう ございます。その 話は、あとの しつもんの 時間で しましょう。」と 返します。",
+        "学生が 自分で 名乗るまで、名前や あだ名で 呼ばないで ください。",
+      ].join("\n"),
+    [commonRules, meeting],
+  );
+
+  /**
+   * **ラウンド2**（学習者が ヘンディさんに 聞く ばん）の 指示文。
+   *
+   * ここで はじめて **話せる 話（`discover`）を 渡す**。ラウンド1で 渡すと、
+   * 受け止めの 返事に くっつけて 勝手に 話しはじめる（＝先に ネタが 割れる）。
+   * 中身は 教材の 答えを そのまま 使わせる——画面が 出す 札の ことばと
+   * 相手の こえが ちがうと、学習者は どちらを 信じて よいか 分からない。
+   *
+   * 名前は **こちらでは 渡す**。もう 名乗って いるし、張り直しで 相手の 記憶は
+   * 消えて いる（呼べないと「さっき 言ったのに」に なる）。
+   */
+  const listenInstruction = useMemo(
+    () =>
+      [
+        commonRules,
+        "",
+        "いまは「" +
+          meeting.host.name +
+          "さんに しつもん」の 時間です。こんどは 学生が あなたに しつもんを します。",
+        learnerName
+          ? `学生の 名前は ${learnerName}さんです。${learnerName}さんと 呼んで ください。`
+          : "",
+        "聞かれた ことに 答えて ください。聞かれて いない ことは 話しません。",
+        "あなたが 話せる 話は、下の「はなせる こと」に 書いて あります。",
+        "聞かれたら、書いて ある 中身の とおりに 話して ください。できごとや 数を 変えたり、足したり しません。",
+        "1回の 返事で 話すのは、1つの 話だけです。聞かれる 前に、自分から 話を はじめません。",
+        "「はなせる こと」に ない ことを 聞かれたら、2文までで みじかく 答えます。" +
+          "知らない ことは「わかりません」、決まって いない ことは「まだ 決めて いません」と 答えます。",
+        "話しおわったら、「ほかにも 聞いて ください。」と さそって ください。",
+        "学生の しつもんが 聞きとれなかったら、「すみません、もう いちど おねがいします。」と 言って ください。",
+        (meeting.discover ?? []).length > 0
+          ? [
+              "",
+              "# はなせる こと",
+              ...(meeting.discover ?? []).map((d) => `- ${d.label}: ${d.answer}`),
+            ].join("\n")
+          : "",
+      ]
+        .filter((line) => line !== "")
+        .join("\n"),
+    [commonRules, meeting, learnerName],
+  );
+
+  /**
+   * いま つなぐ ときに 渡す 指示文。
+   *
+   * 選ぶ 基準は **表示中の 帯（`round`）ではなく `round1Done`**。帯は 行き来できるので、
+   * 帯で 決めると 見るたびに 張り直しが 起きる。`round1Done` は 後戻りしないので
+   * 張り直しは 一生に 1回で 済む。
+   */
+  const instruction = round1Done ? listenInstruction : askInstruction;
+
+  /*
+   * **ばんが 変わったら 黙って つなぎ直す**（指示文は つなぐ ときにしか 渡せない）。
+   *
+   * しゅうりょうしょうが 開いて いる 間なので、学習者は マイクに 触れない
+   *（docs/constraints.md 2026-08-20）。相手が 話しおわるのを 待ってから 張り直す——
+   * 途中で 切ると さいごの 受け止めの こえが 尻切れに なる。
+   */
+  const swapInstruction = voice.swapInstruction;
+  const swappedRef = useRef(false);
+  useEffect(() => {
+    if (!round1Done || swappedRef.current || voice.speaking) return;
+    swappedRef.current = true;
+    void swapInstruction(listenInstruction, hostVoice);
+  }, [round1Done, voice.speaking, swapInstruction, listenInstruction, hostVoice]);
 
   /**
    * 1つの発話ぶんの「ごほうび」をまとめて更新する。
@@ -680,7 +780,11 @@ export function MeetingSession({
     const said = fresh.filter((turn) => turn.from === "client");
     if (said.length === 0) return;
     void Promise.resolve().then(() => {
-      for (const turn of said) pushChat({ kind: "host", text: turn.text });
+      for (const turn of said) {
+        // ト書きを 字に 残さない（`stripDirections` の 説明を 参照）
+        const text = stripDirections(turn.text);
+        if (text !== "") pushChat({ kind: "host", text });
+      }
     });
   }, [voice.turns, pushChat]);
 
@@ -730,12 +834,37 @@ export function MeetingSession({
     const heard = voice.lastUtterance;
     if (!heard || heard.id === judgedRef.current) return;
     judgedRef.current = heard.id;
+    /*
+     * 聞く ばんは **判定を しない**（自由に 聞く 時間なので 点を つけない）。
+     * かわりに 聞き出せたかを 見て 札を 開く。答えは 相手が こえで 返す。
+     */
+    if (round1Done) {
+      // 効果の 中で そのまま 状態を 変えない（描き直しが 連なる）。1つ 後ろへ ずらす
+      void Promise.resolve().then(() => noteDiscovered(heard.text));
+      return;
+    }
     void judgeUtterance(heard.text, true, answeringRef.current ?? undefined);
-  }, [voice.lastUtterance, judgeUtterance]);
+  }, [voice.lastUtterance, judgeUtterance, round1Done, noteDiscovered]);
 
   const next = useCallback(() => {
     const at = index + 1;
     const finishing = at >= meeting.questions.length;
+    /*
+     * **通りすぎる しつもんの 札を 開く**（2026-08-21 の 指摘
+     *「途中から 始めたら 4つ目しか 開かれて いませんでした」）。
+     *
+     * 札は これまで **1回で 言えた とき だけ** 開いて いた（`rewardTurn` の `opened`）。
+     * 言い直しを して から 答えた しつもんは、先へ 進んだ あとも ？ の まま 残る。
+     * 「こたえると、カードが ひらきます」と 書いて ある 板が、実際には
+     * **1回で 言えた 数**を 数えて いた——できなかった ことを 数える 板は P8 に 反する。
+     *
+     * 直しの 最中に 開かない ことは 変えない（`rewardTurn` は そのまま）。
+     * 開くのは **その しつもんを 離れる とき**で、ひとことでも 言って いれば 開く。
+     */
+    const leaving = meeting.questions[index];
+    if (leaving && (answers[leaving.id] ?? "") !== "") {
+      setOpenIds((prev) => (prev.has(leaving.id) ? prev : new Set([...prev, leaving.id])));
+    }
     /*
      * 相手に つぎを 言わせる。**画面の 質問と 相手の ことばを 1つに 保つ**ため、
      * 進むのと 同じ ところで 合図を 出す（別の 効果に すると、進み方に よって
@@ -828,19 +957,7 @@ export function MeetingSession({
        * 声が つながって いない ときは、教材に 書いた 答えを そのまま 出す
        *（**聞けば 答えが 返る**という 会話の 形を、声の あるなしで 変えない）。
        */
-      /*
-       * 表記ゆれを 吸収してから 見る（`normalizeReading` は アプリで 唯一の 実装）。
-       * 素の 文字くらべに して いた ころは、「サイフを おとしました」と カタカナで
-       * 書いた 学習者の 札が 開かなかった——聞けて いるのに 開かないのは、
-       * いちばん がっかりする 外れ方（規約: 正規化を 再実装しない）。
-       */
-      const asked = normalizeReading(text);
-      const hit = meeting.discover.find(
-        (item) =>
-          !found.has(item.id) &&
-          item.keywords.some((word) => asked.includes(normalizeReading(word))),
-      );
-      if (hit) setFound((prev) => new Set([...prev, hit.id]));
+      const hit = noteDiscovered(text);
 
       if (live) {
         voice.sendText(text);
@@ -917,8 +1034,7 @@ export function MeetingSession({
     next,
     pushChat,
     done,
-    meeting.discover,
-    found,
+    noteDiscovered,
     stopClip,
   ]);
 
@@ -1084,7 +1200,11 @@ export function MeetingSession({
         ))}
         {thinking ? (
           <p className="bg-panel-tint text-ink-soft rounded-[var(--radius-card)] px-4 py-2 text-sm font-black">
-            {meeting.host.name}さんが 聞いて います…
+            {meeting.host.name}さんが{" "}
+            <ruby>
+              聞<rt>き</rt>
+            </ruby>
+            いて います…
           </p>
         ) : null}
       </div>
@@ -1507,6 +1627,14 @@ export function MeetingSession({
           askFurigana={furigana}
           utterance={lastSaid}
           hostName={meeting.host.name}
+          /*
+           * **画面が 出した ことば だけ**を 渡す（`echo` は 声の ときは 空）。
+           * 判定の `reply` を そのまま 出して いた ため、相手の こえと
+           * ポップアップの 字が 食いちがって いた（2026-08-21 の 指摘）。
+           */
+          reply={reply.echo}
+          /* 相手が 話しおわるまで つぎへ 行かせない（2026-08-21 の 指定） */
+          waiting={voice.speaking}
           note={judgeNote}
           onNext={closeJudge}
         />
@@ -1550,7 +1678,9 @@ function ChatLine({
         ) : null}
         {entry.fallback ? (
           <div className="bg-panel-tint space-y-1 rounded-[var(--radius-card)] p-3">
-            <p className="text-leaf text-sm font-extrabold">🌸 {entry.fallback.advice.praise}</p>
+            <p className="text-leaf text-sm font-extrabold">
+              🌸 <RubyText text={entry.fallback.advice.praise} index={JUDGE_FURIGANA} show />
+            </p>
             {entry.fallback.advice.fix ? (
               <p className="text-ink-soft text-sm font-bold break-words">
                 💡 {entry.fallback.advice.fix}

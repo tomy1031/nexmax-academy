@@ -272,7 +272,11 @@ export function CallShell({
                 : "text-xs font-bold text-white/60"
             }
           >
-            👥 {participants.length + 1}人が さんかちゅう
+            👥{" "}
+            <ruby>
+              {participants.length + 1}人<rt>にん</rt>
+            </ruby>
+            が さんかちゅう
           </span>
         </div>
 
