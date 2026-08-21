@@ -41,7 +41,7 @@ test("診断のどの画面にも 裸の漢字が 無い（やさしい日本語
     await answer(page);
   }
 
-  await page.getByRole("button", { name: /結果を/ }).click();
+  await page.getByRole("button", { name: /結果.*見/ }).click();
   await expect(page.getByRole("heading", { name: /あなたの ネクマックス/ })).toBeVisible();
   expect(await bareKanjiTexts(page)).toEqual([]);
 });
