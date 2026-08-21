@@ -165,7 +165,8 @@ type ChatBody =
   /** 教材の しつもん（作り置きの こえが あれば 聞き直せる）。 */
   | { kind: "ask"; questionId: string; text: string; audioUrl?: string }
   /** 相手の 受け止め（文字で 返った ぶん。声の ぶんは 字幕で 届く）。 */
-  | { kind: "host"; text: string }
+  /** 相手の ことば。`audioUrl` が あれば 🔊 で 聞き返せる（作り置き・その場の こえ 両方）。 */
+  | { kind: "host"; text: string; audioUrl?: string }
   /** 学習者が 言った こと。 */
   | { kind: "me"; text: string }
   /** 日本語の 見かた（相手の ことばでは ない）。 */
@@ -774,14 +775,22 @@ export function MeetingSession({
     spokenSeenRef.current = voice.turns.length;
     const said = fresh.filter((turn) => turn.from === "client");
     if (said.length === 0) return;
+    /*
+     * その ターンの こえを **🔊 で 聞き返せる ように する**（2026-08-21 の 指定）。
+     * 生の こえは そのままの 速さで 流れて いく ので、聞きとれなかった 学習者の
+     * 逃げ道が ここに なる——押すと 選んだ 速さで、高さは 変えずに 鳴る。
+     * 音は 1ターンに 1つ なので、さいごの ひとことに つける。
+     */
+    const url = voice.lastAudio?.url;
     void Promise.resolve().then(() => {
-      for (const turn of said) {
+      said.forEach((turn, at) => {
         // ト書きを 字に 残さない（`stripDirections` の 説明を 参照）
         const text = stripDirections(turn.text);
-        if (text !== "") pushChat({ kind: "host", text });
-      }
+        if (text === "") return;
+        pushChat({ kind: "host", text, audioUrl: at === said.length - 1 ? url : undefined });
+      });
     });
-  }, [voice.turns, pushChat]);
+  }, [voice.turns, voice.lastAudio, pushChat]);
 
   /*
    * 判定の つなぎは **画面を 離れる ときに 閉じる**。
@@ -789,11 +798,11 @@ export function MeetingSession({
    */
   useEffect(() => dropJudgeSession, []);
 
-  /* 選んだ 速さは つないだ あとでも 効く（つぎの ひとことから） */
-  const setRate = voice.setRate;
-  useEffect(() => {
-    setRate(rateOf(speed));
-  }, [speed, setRate]);
+  /*
+   * 選んだ 速さは **聞き返す ときに 効く**（2026-08-21 の 指定）。
+   * 生の こえは 届いた そばから そのままの 速さで 鳴らす——ここで 速さを
+   * 合わせようと すると、ターンぶん ためる ことに なり、返事までの 間が 空く。
+   */
 
   const clipUrl = round1Done ? meeting.closingAudioUrl : question?.audioUrl;
   const playClip = clip.play;
@@ -834,12 +843,21 @@ export function MeetingSession({
      * かわりに 聞き出せたかを 見て 札を 開く。答えは 相手が こえで 返す。
      */
     if (round1Done) {
-      // 効果の 中で そのまま 状態を 変えない（描き直しが 連なる）。1つ 後ろへ ずらす
-      void Promise.resolve().then(() => noteDiscovered(heard.text));
+      /*
+       * **自分が 言った ことも チャットに 残す**（2026-08-21 の 指摘
+       *「ヘンディさんに 質問で 自分が 話した 内容が テキストチャットに 表示されない」）。
+       * ラウンド1は 判定の ところで 積んで いるが、ここは 判定を 通らない ので
+       * どこでも 積まれず、学習者の ことばだけが 記録から 抜けて いた。
+       * 効果の 中で そのまま 状態を 変えない（描き直しが 連なる）。1つ 後ろへ ずらす。
+       */
+      void Promise.resolve().then(() => {
+        pushChat({ kind: "me", text: heard.text });
+        noteDiscovered(heard.text);
+      });
       return;
     }
     void judgeUtterance(heard.text, true, answeringRef.current ?? undefined);
-  }, [voice.lastUtterance, judgeUtterance, round1Done, noteDiscovered]);
+  }, [voice.lastUtterance, judgeUtterance, round1Done, noteDiscovered, pushChat]);
 
   const next = useCallback(() => {
     const at = index + 1;
@@ -1191,9 +1209,17 @@ export function MeetingSession({
             hostName={meeting.host.name}
             furigana={furigana}
             dictionary={dictionary}
-            /* もう いちど 聞けるのは「こたえる」ばんだけ（音が 重ならない） */
+            /*
+             * もう いちど 聞く。**相手が 話して いる あいだは 押せない**（音が 重なる）。
+             * しつもん（作り置き）は「こたえる」ばんだけ、その場の こえは
+             * 相手が 黙って いれば いつでも——聞きとれなかった ときに 押す ものなので、
+             * 判定を 待って いる あいだも 使える ほうが よい。
+             */
             onReplay={
-              entry.kind === "ask" && entry.audioUrl && canAnswer
+              (entry.kind === "ask" || entry.kind === "host") &&
+              entry.audioUrl &&
+              !voice.speaking &&
+              (entry.kind !== "ask" || canAnswer)
                 ? () => clip.play(entry.audioUrl as string, rateOf(speed))
                 : undefined
             }

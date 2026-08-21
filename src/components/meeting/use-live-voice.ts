@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { createLiveToken } from "@/lib/ai/live-token";
 import { DEFAULT_LIVE_TALK_MODEL, LIVE_TALK_MODELS } from "@/lib/ai/models";
 import { getGeminiKey, getLiveModel } from "@/lib/profile";
-import { base64ToBytes, pcmToWav } from "@/lib/audio/wav";
+import { base64ToBytes, pcmToWav, SAMPLE_RATE } from "@/lib/audio/wav";
 import { startMicCapture, IN_RATE, type MicCapture } from "./mic-capture";
 
 /**
@@ -102,12 +102,17 @@ export interface LiveVoice {
   /** 送りおわる。ここで「言い終わった」を 相手に 伝える。 */
   readonly stopTalking: () => void;
   /**
-   * 相手の 声を 鳴らす 速さ（1 が そのまま）。
+   * **さいごの ひとことを 聞き返す ための 音**（WAV の URL）。
    *
-   * Live の 設定に 速さの つまみは 無い ので、**鳴らす 側**で 変える。
-   * 話して いる 途中でも 変えられる（つぎの ひとことから 効く）。
+   * 生の 声は 届いた そばから 鳴らす ので、速さは そのまま——
+   * ここで 待つと ラグに なる（2026-08-21 の 指摘「音声が 出てくるまでの ラグが
+   * 大きすぎる」）。**速さを 変えて 聞くのは 聞き返す とき**で、その ための 音を
+   * ターンの おわりに 1つの WAV に して 渡す。`<audio>` なら `preservesPitch` が
+   * 効くので、高さを 保った まま ゆっくりに できる。
+   *
+   * `id` は ターンごとに 増える（同じ 文を もう一度 話した ときも 変わる）。
    */
-  readonly setRate: (rate: number) => void;
+  readonly lastAudio: { id: number; url: string } | null;
 }
 
 export function useLiveVoice(): LiveVoice {
@@ -117,6 +122,11 @@ export function useLiveVoice(): LiveVoice {
   const [lastUtterance, setLastUtterance] = useState<{ id: number; text: string } | null>(null);
   const [analyser, setAnalyser] = useState<AnalyserNode | null>(null);
   const [speaking, setSpeaking] = useState(false);
+  const [lastAudio, setLastAudio] = useState<{ id: number; url: string } | null>(null);
+  /** 作った 聞き返し用の URL（古い ものから 返す）。 */
+  const urlsRef = useRef<string[]>([]);
+  /** 聞き返し用の 音の 番号（ターンごとに 増える）。 */
+  const turnAudioIdRef = useRef(0);
 
   /** 聞き取りの途中。相手が話しはじめたら1つに束ねて流す。 */
   const heardRef = useRef("");
@@ -148,9 +158,6 @@ export function useLiveVoice(): LiveVoice {
    * 言い終わる 前に 返事が 始まる。ためて から 送れば、**言い切ってから 渡せる**。
    */
   const pendingRef = useRef<string[]>([]);
-  /** 鳴らす 速さ。つなぐ 前に 決めた ぶんも 覚えて おく（入る 前の 画面で 選べる）。 */
-  const rateRef = useRef(1);
-
   /* ---- 切れた ときに 黙って 張り直す ための 覚え書き（2026-08-21） ---- */
   /** 人が 出た（＝張り直しては いけない）。 */
   const closingRef = useRef(false);
@@ -185,10 +192,20 @@ export function useLiveVoice(): LiveVoice {
     micRef.current?.stream.getTracks().forEach((t) => t.stop());
     micRef.current = null;
     if (outRef.current) {
-      releaseUrl(outRef.current);
+      clearScheduled(outRef.current);
       void outRef.current.ctx.close();
     }
     outRef.current = null;
+    /*
+     * 聞き返し用の 音を 返す。**張り直しの ときは 返さない**——チャットに 残った
+     * 🔊 が 鳴らなく なる（黙って つなぎ直した だけ なのに、前の ことばが
+     * 聞けなく なるのは 学習者には 説明が つかない）。
+     */
+    if (closingRef.current) {
+      for (const url of urlsRef.current) URL.revokeObjectURL(url);
+      urlsRef.current = [];
+      setLastAudio(null);
+    }
   }, []);
 
   /**
@@ -331,9 +348,6 @@ export function useLiveVoice(): LiveVoice {
 
         /*
          * 再生側。解析器を挟んでから出す（口の形は ここの 音の 大きさで 決まる）。
-         *
-         * 鳴らす 口は `<audio>` 1つ。**要素ごとに つなぎ先を 作れるのは 1回だけ**なので、
-         * ここで 1度だけ `createMediaElementSource` する（`use-clip-player.ts` と 同じ 形）。
          */
         const outCtx = new AudioContext();
         // 自動再生の制限で止まったまま始まることがある。動かさないと1音も出ない
@@ -341,28 +355,28 @@ export function useLiveVoice(): LiveVoice {
         const node = outCtx.createAnalyser();
         node.fftSize = 512;
         node.connect(outCtx.destination);
-        const audio = new Audio();
-        outCtx.createMediaElementSource(audio).connect(node);
         const out: Output = {
           ctx: outCtx,
           node,
+          playAt: 0,
+          sources: [],
           chunks: [],
-          audio,
-          url: null,
-          rate: rateRef.current,
           setBusy: setSpeaking,
+          /*
+           * 聞き返し用の 音。**貯めっぱなしに しない**——1回の ミーティングで
+           * 何十ターンも 話す ので、古い ものから 返す（12ターンぶんだけ 残す）。
+           * 残す 数を 減らしすぎると、少し 前の 🔊 が 鳴らなく なる。
+           */
+          onTurnAudio: (url) => {
+            urlsRef.current = [...urlsRef.current, url];
+            while (urlsRef.current.length > 12) {
+              const old = urlsRef.current.shift();
+              if (old) URL.revokeObjectURL(old);
+            }
+            turnAudioIdRef.current += 1;
+            setLastAudio({ id: turnAudioIdRef.current, url });
+          },
         };
-        /*
-         * 鳴り終わり・鳴らせなかった ときは **かならず**「話す ばん」へ 戻す。
-         * ここが 落ちないと、画面の 触れる ものが 全部 灰色の まま 止まる
-         *（`use-clip-player.ts` が 同じ 保険を 持って いる）。
-         */
-        audio.onended = () => {
-          releaseUrl(out);
-          out.setBusy(false);
-        };
-        audio.onerror = () => out.setBusy(false);
-        audio.onstalled = () => out.setBusy(false);
         outRef.current = out;
         setAnalyser(node);
 
@@ -456,10 +470,10 @@ export function useLiveVoice(): LiveVoice {
                   saidRef.current = "";
                   setTurns((prev) => [...prev, { from: "client", text: said }]);
                 }
-                // ためた かけらを 1つの WAV に して 鳴らす（速さは 高さを 保った まま）
+                // ためた かけらを 1つの WAV に して 画面へ 渡す（🔊 で 聞き返す ため）
                 flushTurn(outRef.current);
               }
-              for (const pcm of readAudio(message)) keepAudio(outRef.current, pcm);
+              for (const pcm of readAudio(message)) play(outRef.current, pcm);
               /*
                * 「そろそろ 切ります」の 予告。切れる 前に こちらから 張り直す
                *（切れて からだと、その ひとことが 途中で 消える）。
@@ -629,14 +643,6 @@ export function useLiveVoice(): LiveVoice {
     });
   }, []);
 
-  const setRate = useCallback((rate: number) => {
-    rateRef.current = rate;
-    if (!outRef.current) return;
-    outRef.current.rate = rate;
-    // 鳴って いる 途中でも すぐ 効く（高さは `preservesPitch` が 守る）
-    outRef.current.audio.playbackRate = rate;
-  }, []);
-
   return {
     status,
     reason,
@@ -653,36 +659,40 @@ export function useLiveVoice(): LiveVoice {
     talking,
     startTalking,
     stopTalking,
-    setRate,
+    lastAudio,
   };
 }
 
 /**
  * 鳴らす側の 入れ物。
  *
- * ## かけらを ためて、ターンの おわりに 1つの 音に する（2026-08-21）
- * 前は 届いた かけらを Web Audio で 順に 予約して いた。それだと **速さを 変えると
- * 声の 高さまで 変わる**（`playbackRate` は 音を そのまま 引きのばす）ので、
- * 「ゆっくり」は プロンプトで 頼むしか なく、効いたり 効かなかったり して いた。
+ * ## 鳴らしながら、ためる（2026-08-21）
+ * ここは 一度 **ためてから 鳴らす**に した。速さを 変えても 声の 高さが 変わらない
+ * ようにする ため（`<audio>` の `preservesPitch` は Web Audio の `playbackRate` と
+ * ちがって 高さを 守る）。ところが ターンぶん ためると、**返事が 始まるまでの 間が
+ * 長くなった**——1文 話すだけで 数秒 黙る 相手に なった（2026-08-21 の 指摘）。
  *
- * いまは **ターンぶんを ためて WAV に し、`<audio>` で 鳴らす**。
- * `<audio>` は `preservesPitch` が 効くので、**高さを 保った まま 速さだけ** 変わる
- *（作り置きの 音＝`use-clip-player.ts` と 同じ やり方）。
- * 先に 同じ ことを した 実装（質問ゲーム）も この 形で 本番運用して いた。
+ * いまは 両方 やる。
+ * - **届いた かけらは その場で 予約して 鳴らす**（間が 空かない。速さは そのまま）
+ * - **同じ かけらを ためて おき**、ターンの おわりに WAV に して 画面へ 渡す
+ *
+ * 速さを 変えて 聞きたい 学習者は 🔊 で **聞き返す**。聞き返しは `<audio>` なので
+ * 高さは 変わらない。「はじめて 聞く ときは ふつうの 速さ、分からなかったら
+ * ゆっくり 聞き直す」——授業で 先生が やって いる ことと 同じ 形に なる。
  */
 interface Output {
   ctx: AudioContext;
   node: AnalyserNode;
-  /** ターンぶんの かけら（`turnComplete` で 1つに して 鳴らす）。 */
+  /** つぎの かけらを 鳴らしはじめる 時刻（前の 音の おわりに 継ぐ）。 */
+  playAt: number;
+  /** 予約ずみの 音（割り込みで 捨てられる ように 覚えて おく）。 */
+  sources: AudioBufferSourceNode[];
+  /** ターンぶんの かけら（聞き返し用の WAV を 作る ため に ためる）。 */
   chunks: Uint8Array[];
-  /** 鳴らす 口。**1つを 使い回す**（要素ごとに つなぎ先を 作れるのは 1回だけ）。 */
-  audio: HTMLAudioElement;
-  /** いま 鳴らして いる Blob の URL（鳴り終わったら 捨てる）。 */
-  url: string | null;
-  /** 鳴らす 速さ（学習者が 選ぶ）。 */
-  rate: number;
   /** 鳴って いる／いないを 画面へ 伝える（「聞く ばん」の 判定に 使う）。 */
   setBusy: (busy: boolean) => void;
+  /** ターンぶんの 音が できた ときに 呼ぶ（聞き返し用）。 */
+  onTurnAudio: (url: string) => void;
 }
 
 /** 相手の したくが 済んだか（ここから 送ってよい）。 */
@@ -707,21 +717,21 @@ function isInterrupted(message: unknown): boolean {
 /** 鳴って いる 音と、ためて いる かけらを 捨てる（割り込み・つぎの しつもんへ 進む とき）。 */
 function clearScheduled(out: Output | null): void {
   if (!out) return;
-  out.chunks = [];
-  try {
-    out.audio.pause();
-  } catch {
-    // もう 止まって いる ものは 止められない（それで よい）
+  for (const source of out.sources) {
+    try {
+      source.stop();
+    } catch {
+      // もう 鳴り終わって いる ものは 止められない（それで よい）
+    }
   }
-  releaseUrl(out);
+  out.sources = [];
+  out.playAt = 0;
+  /*
+   * 途中で 止められた ぶんは **聞き返せる ように しない**。
+   * 言いかけの 音を 🔊 に 残すと、画面の 字（捨てた）と 音（残った）が 食いちがう。
+   */
+  out.chunks = [];
   out.setBusy(false);
-}
-
-/** 鳴らし終わった Blob の URL を 返す（ターンの たびに 増やさない）。 */
-function releaseUrl(out: Output): void {
-  if (!out.url) return;
-  URL.revokeObjectURL(out.url);
-  out.url = null;
 }
 
 /** 相手が話し終わったか（返事を1つに束ねる合図）。 */
@@ -732,23 +742,55 @@ function isTurnComplete(message: unknown): boolean {
 }
 
 /**
- * 届いた かけらを ためる。
+ * 届いた かけらを **その場で 鳴らし**、同時に ためる。
  *
- * **ためて いる あいだも「相手の ばん」に する**（`setBusy(true)`）。
- * 鳴って いない＝話す ばん、に して しまうと、返事が 始まる 前に 学習者が
- * マイクを 開けて しまう（ためる 作りに した ことで 生まれた 穴）。
+ * 鳴らすのは Web Audio の 予約（前の 音の おわりに 継ぐ）。`now` を 毎回 使うと
+ * 細かい 塊が 重なって 濁る。ためる ほうは 聞き返し用の WAV を 作る ため。
  */
-function keepAudio(out: Output | null, pcm: Uint8Array) {
+function play(out: Output | null, pcm: Uint8Array) {
   if (!out) return;
+  // 止まって いたら 起こす（止まった ままの ときは 予約しても 音が 出ない）
+  if (out.ctx.state === "suspended") void out.ctx.resume();
   out.chunks.push(pcm);
+
+  const samples = new Int16Array(pcm.buffer, pcm.byteOffset, Math.floor(pcm.byteLength / 2));
+  const buffer = out.ctx.createBuffer(1, samples.length, SAMPLE_RATE);
+  const channel = buffer.getChannelData(0);
+  for (let i = 0; i < samples.length; i += 1) channel[i] = samples[i]! / 0x8000;
+
+  const source = out.ctx.createBufferSource();
+  source.buffer = buffer;
+  /*
+   * **ここでは 引きのばさない**。`playbackRate` で 遅くすると 声の 高さまで 下がり、
+   * 別人の 声に なる（2026-08-18 の 指摘）。ゆっくり 聞くのは 🔊 の ほう。
+   */
+  source.connect(out.node);
+  const at = Math.max(out.ctx.currentTime, out.playAt);
+  source.start(at);
+  out.playAt = at + buffer.duration;
+  out.sources.push(source);
   out.setBusy(true);
+  source.onended = () => {
+    const live = out.sources.indexOf(source);
+    if (live >= 0) out.sources.splice(live, 1);
+    /*
+     * さいごの ひとかけらが 鳴り終わったら「相手は 話しおわった」。
+     * **少し 待ってから**にするのは、音の かけらは 通信の 都合で とぎれる ことが
+     * あり、その 一瞬を「話しおわった」と 読むと、文の 途中で 話す ボタンが
+     * 生き返って しまう ため（学習者が そこで 割り込むと 声が 重なる）。
+     */
+    if (out.sources.length > 0) return;
+    window.setTimeout(() => {
+      if (out.sources.length === 0) out.setBusy(false);
+    }, 300);
+  };
 }
 
 /**
- * ためた かけらを 1つの WAV に して 鳴らす（ターンの おわり）。
+ * ためた かけらを 1つの WAV に して **画面へ 渡す**（ターンの おわり）。
  *
- * 速さは `<audio>` の `playbackRate`。`preservesPitch` が 効くので
- * **声の 高さは 変わらない**（2026-08-18 に「トーンまで 下がる」と 指摘された ところ）。
+ * ここでは 鳴らさない——その 音は もう 鳴り終わって いる。渡すのは
+ * 🔊 で 聞き返す ため の もの。
  */
 function flushTurn(out: Output | null) {
   if (!out || out.chunks.length === 0) return;
@@ -760,20 +802,7 @@ function flushTurn(out: Output | null) {
     at += part.byteLength;
   }
   out.chunks = [];
-
-  // 止まって いたら 起こす（別の タブから 戻った あとは 止まって いる ことが ある）
-  if (out.ctx.state === "suspended") void out.ctx.resume();
-  releaseUrl(out);
-  out.url = URL.createObjectURL(pcmToWav(pcm));
-  out.audio.src = out.url;
-  out.audio.currentTime = 0;
-  out.audio.preservesPitch = true;
-  out.audio.playbackRate = out.rate;
-  out.setBusy(true);
-  void out.audio.play().catch(() => {
-    // 鳴らせなかった ときも「相手の ばん」で 止めない（字幕は 出て いる）
-    out.setBusy(false);
-  });
+  out.onTurnAudio(URL.createObjectURL(pcmToWav(pcm)));
 }
 
 function bytesToBase64(bytes: Uint8Array): string {
