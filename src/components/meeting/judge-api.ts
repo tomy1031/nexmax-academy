@@ -4,10 +4,14 @@ import { createLiveToken } from "@/lib/ai/live-token";
 import { LIVE_TEXT_MODELS } from "@/lib/ai/models";
 import { getGeminiKey } from "@/lib/profile";
 import {
+  CARD_TOOL,
   JUDGE_TOOL,
+  buildCardPrompt,
   buildJudgePrompt,
   isKanaOnly,
+  parseCardHit,
   parseJudge,
+  type CardTopic,
   type JudgeContext,
   type JudgeResult,
 } from "@/lib/meeting/judge";
@@ -82,6 +86,45 @@ const JUDGE_SYSTEM = [
   "書きます。漢字は 1文字も つかいません。ことばの あいだに 空白を 入れます。",
 ].join("\n");
 
+/**
+ * 札の 判定係への 言い渡し。
+ *
+ * 見かたの 係とは **別の つなぎ**に する（渡す 決まりも 道具も ちがう）。
+ * 声で 返させない のは 同じ——この つなぎは 鳴らす 先を 持たない。
+ */
+const CARD_SYSTEM = [
+  "あなたは 学生の しつもんが どの 話題に あたるかを 決める 係です。",
+  "学生の ことばが とどいたら、かならず 1回だけ 道具 fuda_no_hantei を 呼びます。",
+  "声では 返事を しません（道具を 呼ぶだけ）。",
+  "どれに あたるか はっきり しない ときは none を 返します。",
+].join("\n");
+
+/**
+ * 学習者の しつもんが **どの 札に あたるか**を 聞く。
+ *
+ * ことばの 照合が 外れた ときの 二の手なので、**失敗は 黙って 当たり無し**に する
+ *（鍵が 無い・混んで いる・切れた——どれも 学習者の せいでは ない）。
+ * 待たせない ことも 大事で、ここが 遅れて いる あいだも 相手は 声で 答えて いる。
+ */
+export async function requestCardHit(
+  meetingId: string,
+  topics: readonly CardTopic[],
+  utterance: string,
+): Promise<string | null> {
+  const apiKey = getGeminiKey();
+  if (!apiKey || topics.length === 0) return null;
+  try {
+    const opened = await openJudge(apiKey, "cards", meetingId);
+    if (!opened.ok) return null;
+    const args = await opened.session.ask(buildCardPrompt(topics, utterance));
+    return parseCardHit(args, topics);
+  } catch {
+    // 切れて いる ことが ある。つぎの 呼び出しで 張り直せる ように 捨てる
+    dropSlot(SLOTS.cards);
+    return null;
+  }
+}
+
 export async function requestJudge(request: JudgeRequest): Promise<JudgeApiResult> {
   const apiKey = getGeminiKey();
   if (!apiKey) return { ok: false, reason: "noKey" };
@@ -103,7 +146,7 @@ export async function requestJudge(request: JudgeRequest): Promise<JudgeApiResul
  */
 async function askJudge(apiKey: string, request: JudgeRequest): Promise<JudgeApiResult> {
   const context: JudgeContext = { ...request, attempt: Math.min(Math.max(request.attempt, 1), 9) };
-  const opened = await openJudge(apiKey, `${request.meetingId}:${request.questionId}`);
+  const opened = await openJudge(apiKey, "judge", `${request.meetingId}:${request.questionId}`);
   if (!opened.ok) return { ok: false, reason: opened.reason };
   const session = opened.session;
 
@@ -148,45 +191,83 @@ interface JudgeSession {
  * 毎回 つなぎ直すと **1回 数秒**を 学習者が 待つ。先に 動いて いた 実装も、
  * 問題が 変わるまでは 同じ つなぎを 使い回して いた。
  */
-let current: JudgeSession | null = null;
-/**
- * いま 張って いる つなぎが **どの しつもんの もの**か。
- *
- * 画面を 離れるまで 1本を 使い回して いた ため、しつもんを またいで 履歴が 積もり、
- * 相手は **1問目の 返事文を そのまま くり返す**ように なって いた
- *（2026-08-21「返答だけが 最初の 会話に 戻る」）。
- * 先に 動いて いた 実装は `LJ.problemId === problem.id` で **問題が 変わったら
- * 必ず 張り直して**いた。同じ 形に する。
- */
-let currentKey = "";
-/** いま 張って いる 途中の もの（続けて 頼まれても つなぎは 1本に する）。 */
-let opening: Promise<OpenResult> | null = null;
-
-type OpenResult = { ok: true; session: JudgeSession } | { ok: false; reason: string };
-
-/** つなぎを 捨てる（切れた とき・画面を 離れる とき）。 */
-export function dropJudgeSession(): void {
-  current?.close();
-  current = null;
-  currentKey = "";
-  opening = null;
+interface Slot {
+  /** つなぎの 中身（相手に 渡す 決まりと 道具）。 */
+  readonly system: string;
+  readonly tool: unknown;
+  readonly temperature: number;
+  session: JudgeSession | null;
+  /** いま 張って いる つなぎが **どの しつもんの もの**か。 */
+  key: string;
+  /** いま 張って いる 途中の もの（続けて 頼まれても つなぎは 1本に する）。 */
+  opening: Promise<OpenResult> | null;
 }
 
-async function openJudge(apiKey: string, key: string): Promise<OpenResult> {
-  const live = current;
-  if (live?.alive() && currentKey === key) return { ok: true, session: live };
+/**
+ * つなぎは **役ごとに 別**（2026-08-21）。
+ *
+ * 日本語の 見かたと 札の 当たり判定は、渡す 決まりも 道具も ちがう。
+ * 1本を 使い回すと、どちらかの 道具が もう一方の ターンで 呼ばれる。
+ */
+const SLOTS: Record<"judge" | "cards", Slot> = {
+  judge: {
+    system: JUDGE_SYSTEM,
+    tool: JUDGE_TOOL,
+    temperature: 0.4,
+    session: null,
+    key: "",
+    opening: null,
+  },
+  /* 話題を 選ぶだけ なので 思いつきは 要らない（同じ しつもんは 同じ 答えに） */
+  cards: {
+    system: CARD_SYSTEM,
+    tool: CARD_TOOL,
+    temperature: 0,
+    session: null,
+    key: "",
+    opening: null,
+  },
+};
+type OpenResult = { ok: true; session: JudgeSession } | { ok: false; reason: string };
+
+/**
+ * つなぎを 捨てる（切れた とき・画面を 離れる とき）。
+ *
+ * しつもんを またいで 1本を 使い回して いた ため、履歴が 積もって 相手は
+ * **1問目の 返事文を そのまま くり返す**ように なって いた
+ *（2026-08-21「返答だけが 最初の 会話に 戻る」）。鍵（`key`）が 変わったら 張り直す。
+ */
+export function dropJudgeSession(): void {
+  for (const slot of Object.values(SLOTS)) dropSlot(slot);
+}
+
+function dropSlot(slot: Slot): void {
+  slot.session?.close();
+  slot.session = null;
+  slot.key = "";
+  slot.opening = null;
+}
+
+async function openJudge(
+  apiKey: string,
+  kind: "judge" | "cards",
+  key: string,
+): Promise<OpenResult> {
+  const slot = SLOTS[kind];
+  const live = slot.session;
+  if (live?.alive() && slot.key === key) return { ok: true, session: live };
   // しつもんが 変わった（＝前の 話の 続きに しない）
-  if (live && currentKey !== key) dropJudgeSession();
-  current = null;
-  currentKey = key;
-  opening ??= connectJudge(apiKey);
-  const opened = await opening;
-  opening = null;
-  if (opened.ok) current = opened.session;
+  if (live && slot.key !== key) dropSlot(slot);
+  slot.session = null;
+  slot.key = key;
+  slot.opening ??= connectJudge(apiKey, slot);
+  const opened = await slot.opening;
+  slot.opening = null;
+  if (opened.ok) slot.session = opened.session;
   return opened;
 }
 
-async function connectJudge(apiKey: string): Promise<OpenResult> {
+async function connectJudge(apiKey: string, slot: Slot): Promise<OpenResult> {
   let lastReason = "upstream";
   for (const model of LIVE_TEXT_MODELS) {
     /*
@@ -201,7 +282,7 @@ async function connectJudge(apiKey: string): Promise<OpenResult> {
     const auth = minted.ok ? minted.token : canUseKey ? apiKey : null;
     if (!auth) return { ok: false, reason: minted.ok ? "upstream" : minted.reason };
     try {
-      return { ok: true, session: await openSession(auth, model) };
+      return { ok: true, session: await openSession(auth, model, slot) };
     } catch (error) {
       lastReason = error instanceof JudgeError ? error.reason : "modelNotFound";
     }
@@ -215,7 +296,7 @@ async function connectJudge(apiKey: string): Promise<OpenResult> {
  * **AUDIO で つなぐ**（Live は TEXT を 受け付けない）。声は 鳴らさない——
  * この つなぎは 再生先を 持たず、相手にも「声では 返事を しない」と 言って ある。
  */
-async function openSession(auth: string, model: string): Promise<JudgeSession> {
+async function openSession(auth: string, model: string, slot: Slot): Promise<JudgeSession> {
   const { GoogleGenAI, Modality } = await import("@google/genai");
   const ai = new GoogleGenAI({ apiKey: auth, apiVersion: "v1beta" });
 
@@ -232,10 +313,10 @@ async function openSession(auth: string, model: string): Promise<JudgeSession> {
     model,
     config: {
       responseModalities: [Modality.AUDIO],
-      systemInstruction: JUDGE_SYSTEM,
-      tools: [JUDGE_TOOL] as never,
+      systemInstruction: slot.system,
+      tools: [slot.tool] as never,
       // 学習者の言ったことに寄せたいので、思いつきは抑える
-      temperature: 0.4,
+      temperature: slot.temperature,
     },
     callbacks: {
       onopen: () => {

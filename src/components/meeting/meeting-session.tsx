@@ -42,7 +42,13 @@ import { getProfile } from "@/lib/profile";
 import { recordContentProgress } from "@/lib/progress/store";
 import { AffectionMeter } from "./affection-meter";
 import { localJudge, type AdviceText } from "./japanese-check";
-import { dropJudgeSession, judgeFailNote, requestJudge, type JudgeApiResult } from "./judge-api";
+import {
+  dropJudgeSession,
+  judgeFailNote,
+  requestCardHit,
+  requestJudge,
+  type JudgeApiResult,
+} from "./judge-api";
 import { JudgeCard } from "./judge-card";
 import { DiscoverCards, QuestionCards } from "./question-board";
 import { MeetingResultCard, PreviousRecordCard, RewardCard } from "./result-card";
@@ -440,6 +446,11 @@ export function MeetingSession({
    * 書いた 学習者の 札が 開かなかった——聞けて いるのに 開かないのは、
    * いちばん がっかりする 外れ方（規約: 正規化を 再実装しない）。
    */
+  const openCard = useCallback((id: string) => {
+    setFound((prev) => (prev.has(id) ? prev : new Set([...prev, id])));
+    setJustFoundId(id);
+  }, []);
+
   const noteDiscovered = useCallback(
     (text: string) => {
       const asked = normalizeReading(text);
@@ -449,12 +460,28 @@ export function MeetingSession({
           item.keywords.some((word) => asked.includes(normalizeReading(word))),
       );
       if (hit) {
-        setFound((prev) => new Set([...prev, hit.id]));
-        setJustFoundId(hit.id);
+        openCard(hit.id);
+        return hit;
       }
-      return hit ?? null;
+      /*
+       * ことばが 当たらなかった ときだけ **AIに 聞く**（2026-08-21 の 指定
+       *「カードの 内容の 質問が できたかの 判定は しっかり 行って」）。
+       *
+       * 言いかえは ことばの 照合では 拾えない——「日本の 人は しんせつですか」は
+       * どの ことばにも 当たらないが、学習者は たしかに 財布の 話を 引き出して いる。
+       * 返事を **待たない**のは、その あいだも 相手が 声で 答えて いる ため。
+       * 遅れて 札が 開くのは、ちょうど 相手が 話し終える ころに なる。
+       * 鍵の 無い 学習者は ここを 通らない（`requestCardHit` が すぐ null を 返す）。
+       */
+      const left = meeting.discover
+        .filter((item) => !found.has(item.id))
+        .map((item) => ({ id: item.id, label: item.label }));
+      void requestCardHit(meeting.id, left, text).then((id) => {
+        if (id) openCard(id);
+      });
+      return null;
     },
-    [meeting, found],
+    [meeting, found, openCard],
   );
 
   const askText = question ? withName(question.ask) : "";
@@ -563,10 +590,26 @@ export function MeetingSession({
   /**
    * **ラウンド2**（学習者が ヘンディさんに 聞く ばん）の 指示文。
    *
-   * ここで はじめて **話せる 話（`discover`）を 渡す**。ラウンド1で 渡すと、
-   * 受け止めの 返事に くっつけて 勝手に 話しはじめる（＝先に ネタが 割れる）。
-   * 中身は 教材の 答えを そのまま 使わせる——画面が 出す 札の ことばと
-   * 相手の こえが ちがうと、学習者は どちらを 信じて よいか 分からない。
+   * ## 台本を 読ませるのを やめた（2026-08-21）
+   * 前は 8つの 話を 渡して「書いて ある 中身の とおりに 話して ください」と 縛って
+   * いた。この 2つが 合わさると、相手は **どんな しつもんにも 8つの 中から
+   * いちばん 近い ものを 選んで 読み上げる**——休みの 日の ことを 聞いたのに
+   * 電車の 話が 返る（2026-08-21 の 指摘「質問に 対する 答えとして ブレる」）。
+   *
+   * 直したのは **渡し方では なく 縛り方**。話は そのまま 渡し、
+   *「合う ものが ある ときだけ 使う・自分の ことばで 話して よい・
+   * できごとと 数は 変えない」に する。事実は 教材が 固定し、言い回しと
+   * 使いどころは 相手に 返す。
+   *
+   * ## 話を 見出しだけに しない
+   * 見出しだけ 渡して 中身を 作らせると、**鍵の 無い 学習者に 見える 教材の 文**
+   *（`discover.answer`）と 相手の こえが ちがう ことを 言う。先生が 書いた ものが
+   * 使われなく なる。
+   *
+   * ## 相手から しつもんは させない（緩めない）
+   * 札の 当たり判定は **学習者が 言った ことだけ**を 見る。相手が 聞き返すと、
+   * それに 答えた ことばで 札が 開く——聞き出して いないのに 開く。
+   * 誘いは 疑問形で ない 固定句（「ほかにも 聞いて ください。」）で 回す。
    *
    * 名前は **こちらでは 渡す**。もう 名乗って いるし、張り直しで 相手の 記憶は
    * 消えて いる（呼べないと「さっき 言ったのに」に なる）。
@@ -582,18 +625,27 @@ export function MeetingSession({
         learnerName
           ? `学生の 名前は ${learnerName}さんです。${learnerName}さんと 呼んで ください。`
           : "",
-        "聞かれた ことに 答えて ください。聞かれて いない ことは 話しません。",
-        "あなたが 話せる 話は、下の「はなせる こと」に 書いて あります。",
-        "聞かれたら、書いて ある 中身の とおりに 話して ください。できごとや 数を 変えたり、足したり しません。",
-        "1回の 返事で 話すのは、1つの 話だけです。聞かれる 前に、自分から 話を はじめません。",
-        "「はなせる こと」に ない ことを 聞かれたら、2文までで みじかく 答えます。" +
-          "知らない ことは「わかりません」、決まって いない ことは「まだ 決めて いません」と 答えます。",
+        "いちばん 大事な 決まりです。聞かれた ことに、まっすぐ 答えます。聞かれて いない 話は しません。",
+        "れい。休みの 日の ことを 聞かれたら、休みの 日の 話だけを します。しごとの 話は しません。",
+        "まず、しつもんに 合う 答えを 1文で 言います。その あとに、くわしい 話を つづけます。",
+        (meeting.discover ?? []).length > 0
+          ? [
+              "下の「おもいで」は、あなたが ほんとうに けいけんした ことです。",
+              "学生の しつもんに 合う おもいでが ある ときだけ、その おもいでを 話します。",
+              "おもいでは 自分の ことばで 話して いいです。ただし、できごとと 数は 変えません。足しません。",
+              "学生が おもいでの つづきを 聞いたら、おなじ おもいでの つづきを 話します。",
+              "合う おもいでが ない ときは、おもいでを つかいません。あなたの ままで、2文までで みじかく 答えます。",
+              "聞かれる 前に、自分から おもいでを 話しはじめません。",
+            ].join("\n")
+          : "知らない ことを 聞かれたら、2文までで みじかく 答えます。",
+        "知らない ことは「わかりません」、決まって いない ことは「まだ 決めて いません」と 答えます。",
+        "1回の 返事で 話すのは 1つの 話だけです。長さは 4文までです。",
         "話しおわったら、「ほかにも 聞いて ください。」と さそって ください。",
         "学生の しつもんが 聞きとれなかったら、「すみません、もう いちど おねがいします。」と 言って ください。",
         (meeting.discover ?? []).length > 0
           ? [
               "",
-              "# はなせる こと",
+              "# おもいで",
               ...(meeting.discover ?? []).map((d) => `- ${d.label}: ${d.answer}`),
             ].join("\n")
           : "",
