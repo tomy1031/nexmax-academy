@@ -478,14 +478,12 @@ export function MeetingSession({
          * 画面の 字で 出す。相手は **受け止めて 返すだけ**に する。
          */
         /*
-         * 話す 速さは **ことばで たのむ**。音を 引きのばすと 声の 高さまで 下がって
-         * 別人に なる（2026-08-18 の 指摘）。
+         * 話す 速さは **もう ことばで たのまない**（2026-08-21）。
+         * 鳴らす 側で 高さを 保った まま 変えられる ように なった ので、
+         * 二重に かけると 遅すぎに なる。指示文から 速さを 外した ぶん、
+         * **会話の 途中で 速さを 変えても つなぎ直しが 要らなく なる**
+         *（指示文が 変わると 張り直しに なって いた）。
          */
-        speed === "slow"
-          ? "ゆっくり、はっきり 話して ください。"
-          : speed === "fast"
-            ? "少し 早めに 話して ください。"
-            : "ふつうの 速さで 話して ください。",
         "しつもんは 画面が します。あなたは しつもんを しないで ください。",
         /*
          * **道具（function calling）は 持たせない**（2026-08-20）。
@@ -510,7 +508,7 @@ export function MeetingSession({
         "学生に 向けて 話す ことばだけを 言って ください。" +
           "かっこの 中の 説明・やり方・じょうけんは 声に 出しません。",
       ].join("\n"),
-    [meeting, speed],
+    [meeting],
   );
 
   /**
@@ -580,6 +578,8 @@ export function MeetingSession({
        * 見かたは 出なくても いいが、止まるのは だめ——必ず 受け止める。
        */
       const result = await requestJudge({
+        meetingId: meeting.id,
+        questionId: asked.id,
         ask: withName(asked.ask),
         hint: asked.hint,
         keywords: asked.keywords,

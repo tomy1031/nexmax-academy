@@ -152,6 +152,17 @@ export function gradeOf(judge: JudgeOutput): JudgeGrade {
    * そこで 止めると、いちばん 勇気の いる 学習者を 何度も 座らせる ことに なる。
    * 形の 直しは アドバイス（fix）で 見せて、会話は 先へ 進める。
    */
+  /*
+   * **答えに なって いない ものは 合格に しない**（2026-08-21 の 指摘）。
+   *
+   *「どうして ITの しごとを えらびましたか」に「ITだからです」で
+   *「つたわりました」が 出て いた。質問の ことばを 返しただけで、理由の 中身は 無い。
+   *
+   * これは「意味が つたわれば 合格」（2026-08-20 の 指定）と ぶつからない——
+   * `relevance` は **意味が つたわったか**の 軸で、`unclear` は つたわって いない 側。
+   * あの 指定が 守るのは 下の 行（**形だけでは 落とさない**）で、そこは 据え置く。
+   */
+  if (judge.relevance === "unclear") return "miss";
   if (judge.form === "hard" && judge.relevance !== "onTopic") return "miss";
   if (judge.relevance === "onTopic" && judge.form === "natural") return "veryGood";
   return "good";
@@ -274,6 +285,15 @@ export function buildJudgePrompt(context: JudgeContext, kanaRetry = false): stri
     "- relevance: 質問に かみ合って いるか。onTopic / offTopic / unclear",
     "  かみ合って いるかは **この 質問** で 決めます（別の 質問なら よい 答えでも、",
     "  いま 聞いた ことに 答えて いなければ offTopic です）",
+    "  **unclear に する のは つぎの とき**:",
+    "  ・「なぜ／どうして」と 聞いたのに、**理由の 中身が 無い**",
+    "    （例:「どうして ITの しごとを えらびましたか」→「ITだからです」。",
+    "     質問の ことばを 返した だけで、何が すきなのか・何が したいのかが 無い）",
+    "  ・質問の ことばを そのまま くり返した だけ",
+    "  ・1語だけで、何を 指して いるか 決められない",
+    "  **中身が 1つでも あれば onTopic です**（例:「コンピューターが すきだからです」",
+    "  「ゲームを 作りたいからです」）。ことばが 少ない・形が くずれて いる ことを",
+    "  理由に unclear に しないで ください——それは form で 見ます。",
     "- form: 日本語の 形。natural（そのままで つうじる）/ rough（つうじるが 1つ 直せる）/",
     "  hard（文として 取れない）",
     "- reply: 相手役の 返事。学習者の ことばを 一度 受け取って から 共感し、2文まで。",
