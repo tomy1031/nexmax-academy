@@ -39,6 +39,32 @@ function ownSnapshot(): string {
   return `${profile.type}|${profile.gender}`;
 }
 
+/**
+ * 立ち絵 1体ぶんの 入れもの。
+ * 自分の タイプの カードでは、選んだ 性別の 側だけに 組の 色の わくを 付ける
+ * （どちらが 自分かを 絵の 横で 見せる。文字を 足さずに 分かるように する）。
+ */
+function TypePortrait({
+  code,
+  gender,
+  marked,
+  family,
+}: {
+  code: PersonalityTypeCode;
+  gender: Gender;
+  marked: boolean;
+  family: PersonalityFamily;
+}) {
+  return (
+    <span
+      className="shrink-0 rounded-3xl border-3 p-0.5"
+      style={{ borderColor: marked ? family.color : "transparent" }}
+    >
+      <NexMaxType code={code} gender={gender} size={84} />
+    </span>
+  );
+}
+
 function TypeCard({
   code,
   family,
@@ -57,9 +83,17 @@ function TypeCard({
       className="card-pop border-3 p-4 text-left"
       style={{ borderColor: isOwn ? family.color : "transparent" }}
     >
-      <header className="flex items-center gap-3">
-        <NexMaxType code={code} gender={gender} size={116} className="shrink-0" />
-        <div className="min-w-0 flex-1">
+      {/* 図鑑なので **男女の 2体を 並べる**（左＝男子・まん中＝呼び名・右＝女子）。
+          結果画面や 先生の 画面は「その人の 1体」なので これまでどおり 性別で 出し分ける。
+          自分の タイプの カードだけ、選んだ 性別の 側に 色の わくを 付ける。 */}
+      <header className="flex items-center gap-2">
+        <TypePortrait
+          code={code}
+          gender="male"
+          marked={isOwn && gender === "male"}
+          family={family}
+        />
+        <div className="min-w-0 flex-1 text-center">
           <h3 className="text-navy text-base font-black">
             {type.name}
             {isOwn && (
@@ -75,6 +109,12 @@ function TypeCard({
             <LearnerText text={type.tagline} />
           </p>
         </div>
+        <TypePortrait
+          code={code}
+          gender="female"
+          marked={isOwn && gender === "female"}
+          family={family}
+        />
       </header>
 
       <p className="text-ink mt-3 text-sm font-bold">
