@@ -244,7 +244,17 @@ test("かいしゃステージを 6教材 通しで あそべる（端末に 何
      */
     await expect(page.getByText("とても よかったです").first()).toBeVisible();
     await expect(page.getByText("とても よかったです")).toHaveCount(2);
-    await expect(page.getByLabel("きょう はなせた こと")).toBeVisible();
+    /*
+     * 話せた ことは **ポップアップ**に 移した（2026-08-21）。ラウンド1で 答えた ぶんと
+     * ラウンド2で 聞き出した ぶんを 分けて 並べる。
+     */
+    const seeRecord = page.getByRole("button", { name: "話せた ことを 見る" });
+    await expect(seeRecord).toBeVisible();
+    await seeRecord.click();
+    const review = page.getByRole("dialog", { name: "しゅうりょうしょうの ポップアップ" });
+    await expect(review.getByLabel(/さんに 話した こと/)).toBeVisible();
+    await review.getByRole("button", { name: "とじる" }).click();
+    await expect(review).toHaveCount(0);
     await shot(page, "09-meeting-hendy-done");
 
     /*

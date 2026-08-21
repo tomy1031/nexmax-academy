@@ -8,6 +8,11 @@ import type { FuriganaIndex } from "@/lib/text/furigana";
 /**
  * 会話の おわりに 手に残る もの（設計01 P13）
  *
+ * ## いまは しゅうりょうしょうが 一覧を 持つ
+ * 「きょう 話せた こと」の カードは `certificate-modal.tsx` に 移した
+ *（2026-08-21 の 指定「ポップアップで 出せる ように・ラウンド1と 2で 出し分ける」）。
+ * ここに 残るのは **まえの きろく**と **とっておきの話**。
+ *
  * ## なぜ「話せた こと」の 一覧なのか
  * 点数や星は、終わった瞬間から意味が薄れる。**自分が言った日本語そのもの**が
  * 並んでいれば、次に来たときの台本になり、教室では先生に見せられる。
@@ -30,46 +35,6 @@ function Hearts({ hearts, maxHearts }: { hearts: number; maxHearts: number }) {
         {hearts} / {maxHearts}
       </span>
     </p>
-  );
-}
-
-export function MeetingResultCard({
-  record,
-  furigana,
-}: {
-  record: MeetingRecord;
-  furigana: FuriganaIndex;
-}) {
-  return (
-    <motion.section
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="card-island p-5"
-      aria-label="きょう はなせた こと"
-    >
-      <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <h3 className="text-navy text-base font-black">🗒️ きょう 話せた こと</h3>
-        <span className="text-ink-faint text-xs font-bold">{formatRecordDate(record.at)}</span>
-      </div>
-
-      <ul className="mt-3 space-y-2">
-        {record.lines.map((line) => (
-          <li
-            key={line.questionId}
-            className="bg-panel-tint rounded-[var(--radius-card)] px-3 py-2"
-          >
-            <p className="text-ink-soft text-xs font-extrabold break-words">
-              <RubyText text={line.ask} index={furigana} />
-            </p>
-            <p className="text-ink mt-0.5 text-sm font-bold break-words">→ {line.answer}</p>
-          </li>
-        ))}
-      </ul>
-
-      {record.hearts !== undefined && record.maxHearts !== undefined ? (
-        <Hearts hearts={record.hearts} maxHearts={record.maxHearts} />
-      ) : null}
-    </motion.section>
   );
 }
 

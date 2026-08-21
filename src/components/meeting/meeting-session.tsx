@@ -51,7 +51,7 @@ import {
 } from "./judge-api";
 import { JudgeCard } from "./judge-card";
 import { DiscoverCards, QuestionCards } from "./question-board";
-import { MeetingResultCard, PreviousRecordCard, RewardCard } from "./result-card";
+import { PreviousRecordCard, RewardCard } from "./result-card";
 import { HintModal } from "./hint-modal";
 import { CertificateModal } from "./certificate-modal";
 import { JudgeModal } from "./judge-modal";
@@ -301,7 +301,7 @@ export function MeetingSession({
   /** ヒントの ポップアップを 出して いるか。 */
   const [hintOpen, setHintOpen] = useState(false);
   /** しゅうりょうしょうを 出して いるか（どちらの ばんの ぶんか）。 */
-  const [certificate, setCertificate] = useState<"round1" | "round2" | null>(null);
+  const [certificate, setCertificate] = useState<"round1" | "round2" | "review" | null>(null);
   /** チャットに 積んだ 相手の ことばの 数（字幕の どこまでを 出したか）。 */
   const spokenSeenRef = useRef(0);
   /** AIに 通せなかった 理由（ポップアップの 下に 小さく 出す）。 */
@@ -497,6 +497,12 @@ export function MeetingSession({
         string
       >,
     [meeting.questions, withName],
+  );
+
+  /** 聞き出せた ことの 見出し（しゅうりょうしょうに 並べる）。 */
+  const foundLabels = useMemo(
+    () => meeting.discover.filter((d) => found.has(d.id)).map((d) => d.label),
+    [meeting.discover, found],
   );
 
   /** ラウンド2の 板に 出す ことば（`discover.label` を そのまま つかう）。 */
@@ -1049,7 +1055,7 @@ export function MeetingSession({
               fix: "こえで つなぐと、ヘンディさんが 答えて くれます。",
               example: "",
             },
-            note: "かいた ことばは「きょう はなせた こと」に のこります。",
+            note: "かいた ことばは「話せた こと」に のこります。",
           },
         });
       }
@@ -1209,6 +1215,7 @@ export function MeetingSession({
   const closeCertificate = useCallback(() => {
     const which = certificate;
     setCertificate(null);
+    // 見返して いただけの ときは 何も 起こさない（まだ おわって いない）
     if (which !== "round2") return;
     recordContentProgress(meeting.id, { status: "completed" });
     // 話しきった。つぎに 開いた ときは はじめから 話せる
@@ -1329,7 +1336,24 @@ export function MeetingSession({
         </p>
       </div>
 
-      {record ? <MeetingResultCard record={record} furigana={furigana} /> : null}
+      {/*
+        話せた ことは **ポップアップで 見る**（2026-08-21 の 指定）。
+        画面に 出しっぱなしに すると、ラウンド2の しつもんの 場所が その ぶん
+        下へ 追いやられる——いま やる ことは 聞く ことで、見返すのは ときどきで よい。
+      */}
+      {record ? (
+        <button
+          type="button"
+          onClick={() => setCertificate("review")}
+          aria-label="話せた ことを 見る"
+          className="card-island text-navy w-full px-4 py-3 text-left text-sm font-black"
+        >
+          🗒️ <RubyText text="話せた ことを 見る" index={CHROME_FURIGANA} show />
+          <span className="text-ink-soft ml-2 text-xs font-bold">
+            （{record.lines.length} ／ {found.size}）
+          </span>
+        </button>
+      ) : null}
 
       {/*
         とっておきの話は closing の あと。届かなかったときは 何も出さない
@@ -1671,13 +1695,17 @@ export function MeetingSession({
       {certificate && record ? (
         <CertificateModal
           record={record}
+          discovered={foundLabels}
+          mode={certificate === "review" ? "review" : "certificate"}
           learnerName={learnerName}
           hostName={meeting.host.name}
           furigana={furigana}
           nextLabel={
             certificate === "round1"
               ? `${meeting.host.name}さんに 聞いて みる →`
-              : "ステージに もどる →"
+              : certificate === "review"
+                ? "とじる"
+                : "ステージに もどる →"
           }
           onNext={closeCertificate}
         />
