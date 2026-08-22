@@ -279,6 +279,19 @@ export function emptyMeetingQuestion(): MeetingQuestion {
 }
 
 /**
+ * 「＋ 話題を 追加」を 押した 直後の 形（ラウンド2で 聞き出す こと）。
+ *
+ * 表に 出すのは **聞く ための 話題**で、エピソードの 題では ない
+ *（2026-08-21 の 指定「カードの 内容が 具体的すぎます」）。答えが 先に 見えると
+ * 聞き出す 練習に ならない。
+ */
+export type MeetingDiscover = Meeting["discover"][number];
+
+export function emptyMeetingDiscover(): MeetingDiscover {
+  return { id: "", label: "", keywords: [], answer: "" };
+}
+
+/**
  * 「＋ミーティング」を押した直後の形。
  *
  * 質問は3つから（`meetingSchema` の下限）。下限より少ない枠で始めると、
