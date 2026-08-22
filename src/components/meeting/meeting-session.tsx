@@ -537,7 +537,18 @@ export function MeetingSession({
     }),
     [meeting],
   );
-  const askInstruction = useMemo(() => buildAskInstruction(source), [source]);
+  /*
+   * **いま どこまで 進んだか**を 指示文に 入れる（2026-08-22 の 指摘
+   *「時間が たつと 名前は 何？の ものに 戻って いる」）。
+   *
+   * つなぎは 30分で 切れる ので、途中で 黙って 張り直す。張り直した 相手は
+   * **記憶が まっさら**で、人格の 1行目には「はじめて 話します」と 書いて ある
+   * ——だから 会の 途中なのに はじめの あいさつに 戻って いた。
+   */
+  const askInstruction = useMemo(
+    () => buildAskInstruction(source, { done: index, total: meeting.questions.length }),
+    [source, index, meeting.questions.length],
+  );
   const listenInstruction = useMemo(
     () => buildListenInstruction(source, learnerName),
     [source, learnerName],
@@ -551,6 +562,16 @@ export function MeetingSession({
    * 張り直しは 一生に 1回で 済む。
    */
   const instruction = round1Done ? listenInstruction : askInstruction;
+
+  /*
+   * 進みぐあいが 変わる たびに **張り直しの ための 文だけ** 差しかえる。
+   * つなぎ直さない ので 会話は 切れない——つぎに 黙って 張り直す ときに、
+   * 新しい 文（何問目まで 進んだか）で つながる。
+   */
+  const refreshInstruction = voice.refreshInstruction;
+  useEffect(() => {
+    refreshInstruction(instruction);
+  }, [instruction, refreshInstruction]);
 
   /*
    * **ばんが 変わったら 黙って つなぎ直す**（指示文は つなぐ ときにしか 渡せない）。

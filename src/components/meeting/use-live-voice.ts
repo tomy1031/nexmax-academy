@@ -82,6 +82,8 @@ export interface LiveVoice {
   readonly start: (systemInstruction: string, voice?: string, opening?: string) => Promise<void>;
   /** 指示文を 入れ替えて 黙って つなぎ直す（ラウンドの 境目）。 */
   readonly swapInstruction: (systemInstruction: string, voice?: string) => Promise<void>;
+  /** 張り直す ときの 指示文だけ 差しかえる（つなぎ直さない）。 */
+  readonly refreshInstruction: (systemInstruction: string) => void;
   readonly stop: () => void;
   /** 声が使えないときの補い。テキストで送る（相手は声で返す）。 */
   readonly sendText: (text: string) => void;
@@ -585,6 +587,19 @@ export function useLiveVoice(): LiveVoice {
    * 学習者には 見せない（`silent`）。ラウンドの 境目は **しゅうりょうしょうが
    * 開いて いる 間**で、そこは どのみち マイクに 触れない ので 気づかれない。
    */
+  /**
+   * **張り直す ときの 指示文だけ 差しかえる**（つなぎ直さない）。
+   *
+   * 進みぐあいは しつもんの たびに 変わるが、その たびに 張り直すのは 高い
+   *（1回 数秒・相手の 記憶も 消える）。ここは **argsRef を 書きかえるだけ**で、
+   * つぎに 黙って 張り直す ときに 新しい 文が 使われる。
+   */
+  const refreshInstruction = useCallback((systemInstruction: string) => {
+    const args = argsRef.current;
+    if (!args) return;
+    argsRef.current = { ...args, systemInstruction };
+  }, []);
+
   const swapInstruction = useCallback(
     async (systemInstruction: string, voice?: string) => {
       // つないで いない ときは 何も しない（つぎに 押した ときの 指示文が 新しい）
@@ -669,6 +684,7 @@ export function useLiveVoice(): LiveVoice {
     analyser,
     start,
     swapInstruction,
+    refreshInstruction,
     stop,
     sendText,
     control,

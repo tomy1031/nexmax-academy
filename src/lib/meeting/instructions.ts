@@ -20,6 +20,38 @@
  * `tests/meeting_instructions.test.ts` が 中身を 固定して いる。
  */
 
+/**
+ * **いま どこまで 進んだか**。
+ *
+ * つなぎは 30分で 切れる ので、長い ミーティングでは 途中で 黙って 張り直す。
+ * 張り直した 相手は **記憶が まっさら**で、しかも 人格の 1行目には
+ *「はじめて 話します」と 書いて ある——だから 会の 途中なのに **はじめの
+ * あいさつに 戻る**（2026-08-22「時間が たつと 名前は 何？の ものに 戻って いる」）。
+ *
+ * 直しかたは 2つ あった。①会話の 記録を 送り直す ②いまの 位置だけ 伝える。
+ * ①は 長さが 際限なく のび、字幕と 食い違う 危険も ある。**②を 採る**——
+ * 相手の 仕事は 受け止めて 返す ことだけ なので、位置さえ 分かれば 足りる。
+ */
+export interface Progress {
+  /** もう おわった しつもんの 数。 */
+  readonly done: number;
+  /** ぜんぶの しつもんの 数。 */
+  readonly total: number;
+}
+
+/**
+ * 進みぐあいを ことばに する。**はじめの ときは 何も 足さない**
+ *（0問目に「0問 おわりました」と 言うと、かえって 話が こんがらがる）。
+ */
+function progressLine(progress?: Progress): string {
+  if (!progress || progress.done <= 0) return "";
+  return [
+    "この ミーティングは もう はじまって います。あいさつは おわりました。",
+    `${progress.total}この しつもんの うち、${progress.done}こまで 答えて もらいました。`,
+    "はじめの あいさつや 名前の しつもんを、もう一度 しないで ください。",
+  ].join("\n");
+}
+
 /** 指示文に 差しこむ もの（教材データの うち、ここで 要る ぶんだけ）。 */
 export interface InstructionSource {
   /** あいての 話し方（先生が 管理画面で 直せる）。 */
@@ -78,10 +110,11 @@ export function commonRules(source: InstructionSource): string {
  * 学習者の 名前は **渡さない**——1問目が「お名前を おしえて ください」なので、
  * もう 知って いる 人が 聞く 形に なる（2026-08-18 の 実発生）。
  */
-export function askInstruction(source: InstructionSource): string {
+export function askInstruction(source: InstructionSource, progress?: Progress): string {
   return [
     commonRules(source),
     "",
+    progressLine(progress),
     "いまは「" + source.hostName + "さんから しつもん」の 時間です。",
     /*
      * **しつもんの 一覧も 渡さない**。渡して いた ころは 相手が 自分の 判断で
@@ -98,7 +131,9 @@ export function askInstruction(source: InstructionSource): string {
      */
     "学生から 何かを 聞かれたら、「ありがとう ございます。その 話は、あとの しつもんの 時間で しましょう。」と 返します。",
     "学生が 自分で 名乗るまで、名前や あだ名で 呼ばないで ください。",
-  ].join("\n");
+  ]
+    .filter((line) => line !== "")
+    .join("\n");
 }
 
 /**
