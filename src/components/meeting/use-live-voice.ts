@@ -238,6 +238,22 @@ export function useLiveVoice(): LiveVoice {
     clearScheduled(outRef.current);
   }, []);
 
+  /*
+   * **画面から 消える ときは 必ず 閉じる**（2026-08-22）。
+   *
+   * 閉じるのは これまで「たいしつ」を 押した ときだけ だった。管理画面の
+   * ためし会話の ように **部品ごと 消える** 使い方だと、つなぎが 開いた まま 残る
+   *（相手は 待ちつづけ、こちらの 音も 止まらない）。学習者の 画面でも、
+   * 画面の 切りかえで 同じ ことが 起きうる。
+   */
+  useEffect(() => {
+    return () => {
+      closingRef.current = true;
+      window.clearTimeout(retryTimerRef.current);
+      teardown();
+    };
+  }, [teardown]);
+
   const stop = useCallback(() => {
     // 人が 出た。切れた ときの 張り直しと 区別する
     closingRef.current = true;
