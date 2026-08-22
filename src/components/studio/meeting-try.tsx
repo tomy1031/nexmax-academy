@@ -32,6 +32,12 @@ import { MiniButton, SelectField, StudioSection, TextAreaField } from "./studio-
  * ## 送った 文も 出す
  * 返事だけ 見せても、直す ところは 分からない。**実際に 送った 文**を 隣に 置いて、
  * 自分の 書いた ところが どこに 入ったかを 見えるように する。
+ *
+ * ## 直す 欄も ここに 置く（2026-08-22）
+ * はじめは「ためす」だけを 置いて いたが、**直す 欄が 遠くて 輪に ならなかった**
+ *（見かたを 直す → 上へ 戻る → また 下へ 来て ためす）。
+ * 見かたの 文と、その しつもんの 文・ヒントを **この 場に 出す**。
+ * 中身は エディタの 下書きと 同じ ものなので、ここで 直して そのまま 保存できる。
  */
 
 /** 見本の 学習者名（本番では 診断の ときに 決めた 呼び名が 入る）。 */
@@ -39,7 +45,13 @@ const SAMPLE_LEARNER = "ソク";
 
 type Phase = "idle" | "asking";
 
-export function MeetingTryPanel({ value }: { value: Meeting }) {
+export function MeetingTryPanel({
+  value,
+  onChange,
+}: {
+  value: Meeting;
+  onChange: (meeting: Meeting) => void;
+}) {
   const [open, setOpen] = useState(false);
   const [at, setAt] = useState(0);
   const [utterance, setUtterance] = useState("");
@@ -55,6 +67,16 @@ export function MeetingTryPanel({ value }: { value: Meeting }) {
 
   const question = value.questions[at];
   const topics = (value.discover ?? []).map((item) => ({ id: item.id, label: item.label }));
+
+  /** その しつもんの 中身を 直す（エディタの 下書きを そのまま 書きかえる）。 */
+  function patchQuestion(part: { ask?: string; hint?: string }) {
+    const current = value.questions[at];
+    if (!current) return;
+    const questions = value.questions.map((item, index) =>
+      index === at ? { ...item, ...part } : item,
+    );
+    onChange({ ...value, questions });
+  }
 
   async function tryJudge() {
     if (!question || utterance.trim() === "") return;
@@ -147,9 +169,36 @@ export function MeetingTryPanel({ value }: { value: Meeting }) {
             }))}
           />
 
-          {question?.hint ? (
-            <p className="text-ink-faint text-xs font-bold">ヒント: {question.hint}</p>
+          {/*
+            **直す 欄を その場に 置く**。しつもんの 文と ヒントは 1問ずつ 判定の 文に
+            入る ので、ここを 直すと 送る 文が すぐ 変わる。見かたは 教材で 1つ。
+          */}
+          {question ? (
+            <div className="border-hairline space-y-3 rounded-2xl border-2 bg-white p-3">
+              <p className="text-ink-soft text-xs font-black">この しつもんの ぶん</p>
+              <TextAreaField
+                label="しつもん（あいてが 言う ことば）"
+                value={question.ask}
+                onChange={(ask) => patchQuestion({ ask })}
+                rows={2}
+              />
+              <TextAreaField
+                label="ヒント（答え方の 型）"
+                value={question.hint}
+                onChange={(hint) => patchQuestion({ hint })}
+                rows={2}
+                hint="判定の 文に 入ります。ここを 変えると 見かたの きびしさも 変わります。"
+              />
+            </div>
           ) : null}
+
+          <TextAreaField
+            label="日本語の 見かた（教材ぜんぶで 1つ）"
+            value={value.judgePrompt}
+            onChange={(judgePrompt) => onChange({ ...value, judgePrompt })}
+            rows={4}
+            hint="直したら すぐ 下の「AIに きく」で ためせます。上の 欄と 同じ ものなので、そのまま 保存できます。"
+          />
 
           <TextAreaField
             label="学生の こたえ"
