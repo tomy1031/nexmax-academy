@@ -1,9 +1,10 @@
 "use client";
 
 import type { Character, Meeting, MeetingQuestion } from "@/content/schema";
-import { emptyMeetingQuestion } from "./drafts";
+import { emptyMeetingDiscover, emptyMeetingQuestion, type MeetingDiscover } from "./drafts";
 import { LISTENING_ACCENT_OPTIONS } from "./listening-drafts";
 import { MeetingAudioMaker } from "./meeting-audio-maker";
+import { MeetingPromptPreview } from "./meeting-prompt-preview";
 import { moveItem, removeAt, replaceAt } from "./list-ops";
 import {
   FuriganaEditor,
@@ -55,6 +56,13 @@ export function MeetingEditor({
     const current = value.questions[index];
     if (!current) return;
     patch({ questions: replaceAt(value.questions, index, { ...current, ...part }) });
+  };
+
+  const updateDiscover = (index: number, part: Partial<MeetingDiscover>) => {
+    const list = value.discover ?? [];
+    const current = list[index];
+    if (!current) return;
+    patch({ discover: replaceAt(list, index, { ...current, ...part }) });
   };
 
   return (
@@ -255,6 +263,86 @@ export function MeetingEditor({
           placeholder="ありがとう ございました。よく できましたね！ また 話しましょう。"
         />
       </StudioSection>
+
+      {/*
+        **ラウンド2で 聞き出す こと**（2026-08-22 に 編集欄を 足した）。
+        ここが 無い あいだ、8つの 話題は JSON を 直せる 人しか 変えられなかった。
+
+        表に 出すのは **聞く ための 話題**で、エピソードの 題では ない
+        ——答えが 先に 見えると 聞き出す 練習に ならない（2026-08-21 の 指定）。
+      */}
+      <StudioSection
+        title={`聞き出す こと（${(value.discover ?? []).length}つ）`}
+        hint="ぜんぶ 答えた あとの ばんで、学生が 聞くと 答えて くれる ことです。カードの 表に 出ます。"
+      >
+        <ol className="space-y-3">
+          {(value.discover ?? []).map((item, index) => (
+            <li key={index} className="border-hairline space-y-3 rounded-2xl border-2 bg-white p-3">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-ink-faint w-6 text-sm font-black">{index + 1}</span>
+                <div className="min-w-[8rem] flex-1">
+                  <TextField
+                    label="ID（半角）"
+                    value={item.id}
+                    onChange={(id) => updateDiscover(index, { id })}
+                    placeholder="sumimasen"
+                  />
+                </div>
+                <RowTools
+                  index={index}
+                  count={(value.discover ?? []).length}
+                  label="話題"
+                  onMove={(delta) =>
+                    patch({ discover: moveItem(value.discover ?? [], index, delta) })
+                  }
+                  onRemove={() => patch({ discover: removeAt(value.discover ?? [], index) })}
+                />
+              </div>
+
+              <TextField
+                label="カードの 表（聞く ための 話題）"
+                value={item.label}
+                onChange={(label) => updateDiscover(index, { label })}
+                placeholder="日本語の むずかしい ところ"
+              />
+              <p className="text-ink-faint text-xs font-bold">
+                中身が 分かる 題（「すみません」の 3つの 意味）は ここに 書きません。 答えが 先に
+                見えると、聞き出す 練習に なりません。
+              </p>
+
+              <TextAreaField
+                label="聞かれたら 話す こと"
+                value={item.answer}
+                onChange={(answer) => updateDiscover(index, { answer })}
+                rows={3}
+                placeholder="あやまる ときにも、ありがとうの ときにも つかいます。"
+              />
+
+              <StringListEditor
+                label="当たる ことば"
+                items={item.keywords}
+                placeholder="むずかし"
+                itemLabel="ことば"
+                addLabel="＋ ことばを 追加"
+                onChange={(keywords) => updateDiscover(index, { keywords })}
+              />
+              <p className="text-ink-faint text-xs font-bold">
+                みじかすぎる ことばは 気を つけて ください。「はな」は「日本の はなしを」にも
+                当たって しまいます。当たらなかった ときは AIが もう一度 見ます。
+              </p>
+            </li>
+          ))}
+        </ol>
+
+        <MiniButton
+          tone="accent"
+          onClick={() => patch({ discover: [...(value.discover ?? []), emptyMeetingDiscover()] })}
+        >
+          ＋ 話題を 追加
+        </MiniButton>
+      </StudioSection>
+
+      <MeetingPromptPreview value={value} />
 
       <MeetingAudioMaker value={value} cast={cast} onChange={onChange} />
 
