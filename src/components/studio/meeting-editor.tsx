@@ -5,6 +5,7 @@ import { emptyMeetingDiscover, emptyMeetingQuestion, type MeetingDiscover } from
 import { LISTENING_ACCENT_OPTIONS } from "./listening-drafts";
 import { MeetingAudioMaker } from "./meeting-audio-maker";
 import { MeetingPromptPreview } from "./meeting-prompt-preview";
+import { MeetingTalkPanel } from "./meeting-talk";
 import { MeetingTryPanel } from "./meeting-try";
 import { moveItem, removeAt, replaceAt } from "./list-ops";
 import {
@@ -346,6 +347,8 @@ export function MeetingEditor({
       <MeetingPromptPreview value={value} />
 
       <MeetingTryPanel value={value} />
+
+      <MeetingTalkPanel value={value} cast={cast} />
 
       <MeetingAudioMaker value={value} cast={cast} onChange={onChange} />
 
