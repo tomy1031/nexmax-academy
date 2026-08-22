@@ -5,6 +5,7 @@ import { emptyMeetingDiscover, emptyMeetingQuestion, type MeetingDiscover } from
 import { LISTENING_ACCENT_OPTIONS } from "./listening-drafts";
 import { MeetingAudioMaker } from "./meeting-audio-maker";
 import { MeetingPromptPreview } from "./meeting-prompt-preview";
+import { MeetingTryPanel } from "./meeting-try";
 import { moveItem, removeAt, replaceAt } from "./list-ops";
 import {
   FuriganaEditor,
@@ -343,6 +344,8 @@ export function MeetingEditor({
       </StudioSection>
 
       <MeetingPromptPreview value={value} />
+
+      <MeetingTryPanel value={value} />
 
       <MeetingAudioMaker value={value} cast={cast} onChange={onChange} />
 

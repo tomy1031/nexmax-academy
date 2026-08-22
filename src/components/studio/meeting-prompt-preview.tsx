@@ -9,7 +9,7 @@ import {
   type InstructionSource,
 } from "@/lib/meeting/instructions";
 import { buildCardPrompt, buildJudgePrompt } from "@/lib/meeting/judge";
-import { MiniButton, StudioSection } from "./studio-ui";
+import { MiniButton, SelectField, StudioSection } from "./studio-ui";
 
 /**
  * AIに 何を 渡して いるか を そのまま 見せる
@@ -69,6 +69,12 @@ const PANES: readonly { key: Pane; label: string; note: string }[] = [
 export function MeetingPromptPreview({ value }: { value: Meeting }) {
   const [pane, setPane] = useState<Pane>("ask");
   const [open, setOpen] = useState(false);
+  /*
+   * **どの しつもんの ぶんを 見るか**（2026-08-22 の 依頼「質問ごとだと いいのですが」）。
+   * 見かたの 指示文は 1つでも、**入る しつもん・ヒント・ことばが しつもんごとに ちがう**
+   * ので、1問目だけ 見ても 効き方は 分からない。
+   */
+  const [at, setAt] = useState(0);
 
   const source: InstructionSource = {
     persona: value.persona,
@@ -76,7 +82,7 @@ export function MeetingPromptPreview({ value }: { value: Meeting }) {
     discover: value.discover ?? [],
   };
   const topics = (value.discover ?? []).map((item) => ({ id: item.id, label: item.label }));
-  const first = value.questions[0];
+  const picked = value.questions[at] ?? value.questions[0];
 
   const text =
     pane === "ask"
@@ -89,11 +95,11 @@ export function MeetingPromptPreview({ value }: { value: Meeting }) {
               "",
               "--- ここから 1回ごとに 送る 文 ---",
               "",
-              first
+              picked
                 ? buildJudgePrompt({
-                    ask: first.ask,
-                    hint: first.hint,
-                    keywords: first.keywords,
+                    ask: picked.ask,
+                    hint: picked.hint,
+                    keywords: picked.keywords,
                     judgePrompt: value.judgePrompt,
                     hostName: value.host.name,
                     learnerName: SAMPLE_LEARNER,
@@ -145,6 +151,17 @@ export function MeetingPromptPreview({ value }: { value: Meeting }) {
             ))}
           </div>
           {now ? <p className="text-ink-soft text-xs font-bold">{now.note}</p> : null}
+          {pane === "judge" && value.questions.length > 0 ? (
+            <SelectField
+              label="どの しつもんの ぶんを 見るか"
+              value={String(at)}
+              onChange={(next) => setAt(Number(next))}
+              options={value.questions.map((item, index) => ({
+                value: String(index),
+                label: `${index + 1}. ${item.ask || "（まだ 書いて いません）"}`,
+              }))}
+            />
+          ) : null}
           {/*
             **等幅で、折り返して 出す**。指示文は 1行が 長い ので、横に 流すと
             右端が 読めない。読む ための 面なので 選んで コピーも できる ように する。
