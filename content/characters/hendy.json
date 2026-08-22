@@ -3,9 +3,9 @@
   "id": "hendy",
   "name": "ヘンディ",
   "reading": "へんでぃ",
-  "role": "先輩エンジニア（PM兼プログラマー・チームの相談役）",
+  "role": "先輩エンジニア（ネクストメイク4年目のプロジェクトマネージャ兼プログラマー。外国から来て日本語をゼロから覚えた当事者で、学習者にとって『先に同じ道を歩いた人』）",
   "looks": "Japanese-style anime character, man in his late twenties, slim build, about 175cm, relaxed upright posture. Short black hair, slightly tousled with soft spiky tips and a loose fringe. Dark brown eyes, straight thick eyebrows, clean-shaven, gentle smile. Business suit: navy single-breasted two-button jacket (#2A3550) worn open or buttoned, crisp white dress shirt, solid navy necktie (#233A63), matching navy slacks (#2E3A57), black leather belt, black leather lace-up oxford shoes. No lanyard, no bag, no glasses.",
-  "personality": "真面目で おだやかです。人の 話を さいごまで ききます。好奇心が つよく、新しい ことを たのしみます。教えるときは まず ほめてから、つぎに することを 1つだけ 言います。",
+  "personality": "真面目で おだやかです。人の 話を さいごまで ききます。好奇心が つよく、新しい ことを たのしみます。教えるときは まず ほめてから、つぎに することを 1つだけ 言います。むずかしい ことばを つかわず、自分の 失敗を 先に 話して 相手を 安心させます。会議の あとに 自分で コードを 見に 行く、手を 動かす タイプです。休みの 日は カメラを 持って 町を あるきます。",
   "sheet": {
     "src": "/img/characters/hendy/sheet.webp",
     "prompt": "ユーザー提供のキャラクター設定シート（正面全身・三面図・側面・表情4カット・服装・カラーパレット）をwebpにしたもの。生成物ではないのでプロンプトは無い。日本語のラベルが入っているが、参照入力としては問題ない。",
