@@ -86,3 +86,32 @@ describe("ラウンド2（聞く ばん）", () => {
     expect(bare).toContain("知らない ことを 聞かれたら、2文までで みじかく 答えます。");
   });
 });
+
+/**
+ * つなぎ直しの あとに はじめへ 戻らない（2026-08-22 の 指摘）
+ *
+ * 短命トークンは 30分で 切れる ので、長い ミーティングでは 途中で 黙って
+ * 張り直す。張り直した 相手は **記憶が まっさら**で、人格の 1行目には
+ *「はじめて 話します」と 書いて ある——だから 会の 途中なのに あいさつに 戻る。
+ * 位置を ことばで 渡して、そこを 止める。
+ */
+describe("いま どこまで 進んだか", () => {
+  it("はじめは 何も 足さない", () => {
+    const text = askInstruction(source, { done: 0, total: 12 });
+    expect(text).toBe(askInstruction(source));
+    expect(text).not.toContain("もう はじまって います");
+  });
+
+  it("途中なら「もう はじまって いる」ことと 数を 渡す", () => {
+    const text = askInstruction(source, { done: 5, total: 12 });
+    expect(text).toContain("この ミーティングは もう はじまって います。");
+    expect(text).toContain("12この しつもんの うち、5こまで 答えて もらいました。");
+    expect(text).toContain("はじめの あいさつや 名前の しつもんを、もう一度 しないで ください。");
+  });
+
+  it("位置を 足しても 衛生の 行は 消えない", () => {
+    const text = askInstruction(source, { done: 5, total: 12 });
+    expect(text).toContain("かっこ（）は つかわないで ください。");
+    expect(text).toContain("しつもんは 画面が します。");
+  });
+});
