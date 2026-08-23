@@ -5,6 +5,7 @@
   "description": "調べた ことを、報告の 文に して いきます。もんだいは ぜんぶ 1ページに 出ます。サイトを 見ながら 書いて、さいごに 出しましょう。3つ できたら 合格。",
   "nekumax": "build",
   "phase": "production",
+  "answerMode": "all",
   "passRate": 30,
   "questions": [
     {

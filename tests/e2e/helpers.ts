@@ -67,6 +67,16 @@ export const KAISHA_ITEMS: readonly KaishaItem[] = [
 ];
 
 /**
+ * ステージのトップに 出る 進みぐあいの 文（「7つ の うち 2つ おわりました」）。
+ *
+ * 数を **ベタ書きしない**。前は「6つ の うち …」と 書いて いて、ステージに 教材を
+ * 1本 足した 日に 4つの spec が いっせいに 落ちた（2026-08-23）。
+ */
+export function progressText(done: number): string {
+  return `${KAISHA_ITEMS.length}つ の うち ${done}つ おわりました`;
+}
+
+/**
  * その教材より前の教材のID（関門を開けるために「おわった」ことにする分）。
  *
  * **番号ではなく教材そのものを受ける。** 前は `itemsBefore(4)` のように番号で

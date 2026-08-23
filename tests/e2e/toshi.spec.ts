@@ -12,13 +12,14 @@ import {
   leaveCall,
   multiButtons,
   openedCards,
+  progressText,
   shot,
   skipAsk,
   speakByText,
 } from "./helpers";
 
 /**
- * かいしゃステージ（企業調査）の 通し — 6教材を 学習者と同じ順に あそぶ
+ * かいしゃステージ（企業調査）の 通し — 全教材を 学習者と同じ順に あそぶ
  *
  * **端末には何も置かずに始める。** 関門（前の教材を終えるまで開かない）も
  * 本物のまま通る——つまりこの1本が緑なら、学習者が最初から最後まで
@@ -43,7 +44,7 @@ const HOUKOKU_WORDS: readonly (readonly string[])[] = [
   ["大阪", "東京"],
   ["2018"],
   ["受託開発"],
-  ["エンジニア"],
+  ["ベトナム"],
 ];
 
 /**
@@ -60,16 +61,18 @@ const HOUKOKU_FREE_INPUT = [
 
 /** ヘンディさんに 話す こたえ（型文を なぞった、学習者が 書きそうな文）。 */
 const HENDY_ANSWERS = [
-  "はい。ほうこくします。",
-  "ネクストメイクは、ホームページや アプリを 作る 会社です。",
-  "お客さまは、たとえば くるまの 会社です。",
-  "いろいろな 国の エンジニアが はたらいて います。",
-  "お客さまの ものを 作る、受託開発です。",
-  "本社は 大阪に あります。",
-  "2018年に できました。",
-  "日本語と ITの 教育を して います。",
-  "たとえば、「文化」が ありました。",
-  // 10問目は「まだ 言えない（つぎへ）」で 通る（答えられなくても 詰まらない証拠）
+  "はい。ほうこくします。", // 定型句
+  "はい、見ました。", // はい／いいえ
+  "本社は 大阪に あります。", // 1語（場所）
+  "2018年に できました。", // 1語（数）
+  "ベトナムにも オフィスが あります。", // 1語（国）
+  "ネクストメイクは、ホームページや アプリを 作る 会社です。", // 語句
+  "お客さまは、たとえば くるまの 会社です。", // 語句
+  "お客さまの ものを 作る、受託開発です。", // 用語
+  "日本語と ITの 教育を して います。", // 文
+  "わたしは、カンボジアの ページが おもしろいと 思いました。", // 全開
+  // さいごの「どうして？」は「まだ 言えない（つぎへ）」で 通る
+  //（いちばん 開いた 問いに 答えられなくても 詰まらない 証拠）
 ];
 
 /** 松井社長に 話す 5問ぶんの こたえ。 */
@@ -81,10 +84,8 @@ const MATSUI_ANSWERS = [
   "社長は、どうして この 会社を 作りましたか。",
 ];
 
-test("かいしゃステージを 6教材 通しで あそべる（端末に 何も 置かずに 始める）", async ({
-  page,
-}) => {
-  await test.step("1. ステージのトップに 6教材が 順に ならぶ", async () => {
+test("かいしゃステージを 通しで あそべる（端末に 何も 置かずに 始める）", async ({ page }) => {
+  await test.step("1. ステージのトップに 教材が 順に ならぶ", async () => {
     await page.goto("/kaisha");
     // 見出しは 漢字＋ふりがな。ルビが 合成されるので 名前で 引く（会社かいしゃを 知しる）。
     await expect(page.getByRole("heading", { name: /会社.*知/ })).toBeVisible();
@@ -94,7 +95,7 @@ test("かいしゃステージを 6教材 通しで あそべる（端末に 何
     for (const [index, item] of KAISHA_ITEMS.entries()) {
       await expect(list.nth(index)).toContainText(item.kind);
     }
-    await expect(page.getByText("6つ の うち 0つ おわりました")).toBeVisible();
+    await expect(page.getByText(progressText(0))).toBeVisible();
     await shot(page, "01-stage-top");
 
     await list.first().click();
@@ -114,7 +115,7 @@ test("かいしゃステージを 6教材 通しで あそべる（端末に 何
     await page.getByRole("button", { name: "とじる" }).click();
 
     await readToEnd(page);
-    await page.getByRole("link", { name: "つぎは" }).click();
+    await frameNext(page).click();
   });
 
   await test.step("3. もんだい「しらべかたの かくにん」— 6問", async () => {
@@ -133,38 +134,91 @@ test("かいしゃステージを 6教材 通しで あそべる（端末に 何
 
     await expect(page.getByText("6 / 6 もん")).toBeVisible();
     await shot(page, "03-quiz-check-result");
-    await page.getByRole("link", { name: "つぎは" }).click();
+    await frameNext(page).click();
   });
 
   await test.step("4. ページ「ネクストメイクを しらべよう」— 外のサイトへの カード", async () => {
     await expect(page).toHaveURL(/article-kaisha_nextmake_shirabe$/);
 
+    /*
+     * 本物の サイトへの リンクは **1本だけ 残して「上級」に 降格**した
+     *（リニューアルで N4 学習者には 読みにくく なった ため。調べる 先は 学習用サイト）。
+     */
     const external = page.locator('a[target="_blank"]');
     await expect(external).toHaveCount(1);
     await expect(external).toHaveAttribute("href", "https://nextmake.site/");
     await expect(external).toHaveAttribute("rel", /noopener/);
     await expect(external).toContainText("そとの サイト");
+
+    /*
+     * 調べる 先（学習用サイト）へは、**本文の 中の カード**から 行ける。
+     * 名前で さがすと 目次の 見出しリンクと 紛れる ので、行き先で さがす。
+     */
+    const toSite = page.locator('article a[href="/link/nextmake_gakushu_site"]');
+    await expect(toSite).toBeVisible();
     await shot(page, "04-article-extlink");
 
     await readToEnd(page);
-    await page.getByRole("link", { name: "つぎは" }).click();
+
+    /*
+     * カードを **実際に 押して** みる。ここは 2026-08-23 まで 404 だった
+     *（`/link/<id>` の ルートが 無いのに `contentHref` が それを 返していた）。
+     * 押せば ステージの 中の 本来のURLへ 送り返される。
+     */
+    await toSite.click();
+    await expect(page).toHaveURL(/\/kaisha\/link$/);
   });
 
-  await test.step("5. もんだい「ほうこくの じゅんび」— 語群と 自由入力", async () => {
+  await test.step("4b. リンク「学習用サイト」— 開いて、読んで、おわる", async () => {
+    // 入れ物の カードに、切りかえの 案内が 出て いる（気づかないと 使われない）
+    await expect(page.getByText(/やさしい 日本語/)).toBeVisible();
+    await shot(page, "04b-link-card");
+
+    // 学習者と 同じ 道: ひらく → 中を 読む → おわりました
+    await page
+      .getByRole("button", { name: /ひらく/ })
+      .first()
+      .click();
+    const site = page.frameLocator("iframe");
+    /*
+     * 学習用サイトが ほんとうに 出る（切りかえの ボタンが 2つ）。
+     * ここが 白い 枠に なると、学習者は 調べる もの そのものに たどり着けない。
+     */
+    await expect(site.getByRole("button", { name: /やさしい/ })).toBeVisible();
+    await expect(site.getByRole("button", { name: /ふりがな/ })).toBeVisible();
+    await shot(page, "04c-link-site");
+
+    await page.getByRole("button", { name: "おわりました", exact: true }).click();
+    await expect(page.getByText("✅ おわりました").first()).toBeVisible();
+
+    // 全画面から もどす（もどさないと 枠の「つぎは」が 覆われて 押せない）
+    await page.getByRole("button", { name: /もどす/ }).click();
+    await frameNext(page).click();
+  });
+
+  await test.step("5. もんだい「ほうこくの じゅんび」— ぜんぶ 1ページに 出る", async () => {
     await expect(page).toHaveURL(/quiz-kaisha_houkoku$/);
     await page.getByRole("button", { name: "はじめる" }).click();
 
+    /*
+     * この 教材は `answerMode: "all"`。学習用サイトと 行き来しながら 書く ので、
+     * **進まずに** 上から 下まで 書ける。9問が 同時に 見えて いる ことを 先に 見る。
+     */
+    await expect(page.getByText("1/9")).toBeVisible();
+    await expect(page.getByText("9/9")).toBeVisible();
+    await expect(page.getByRole("button", { name: "つぎ →" })).toHaveCount(0);
+
     for (const words of HOUKOKU_WORDS) {
       await placeWords(page, words);
-      await goNext(page);
     }
     await shot(page, "05-quiz-wordbank");
 
+    // 自由入力は 上から 順に 4つ 並んで いる
+    const boxes = page.getByLabel("こたえを 入力する");
     for (const [index, written] of HOUKOKU_FREE_INPUT.entries()) {
-      await page.getByLabel("こたえを 入力する").fill(written);
-      if (index === HOUKOKU_FREE_INPUT.length - 1) await goToConfirm(page);
-      else await goNext(page);
+      await boxes.nth(index).fill(written);
     }
+    await expect(page.getByText("こたえた 9 / 9")).toBeVisible();
     await submitAnswers(page);
 
     await expect(page.getByText("9 / 9 もん")).toBeVisible();
@@ -173,7 +227,7 @@ test("かいしゃステージを 6教材 通しで あそべる（端末に 何
       await expect(page.getByText(`あなたの こたえ: ${written}`)).toBeVisible();
     }
     await shot(page, "06-quiz-houkoku-result");
-    await page.getByRole("link", { name: "つぎは" }).click();
+    await frameNext(page).click();
   });
 
   await test.step("6. ミーティング「ヘンディさんに 報告する」— 型文を 見ながら 文字で 話す", async () => {
@@ -224,9 +278,15 @@ test("かいしゃステージを 6教材 通しで あそべる（端末に 何
       await waitForAsk(page, index + 2);
     }
 
-    // さいごの1問は「すみません、つぎを おねがいします」と 言えば 通れる
-    await skipAsk(page);
+    /*
+     * さいごの1問（いちばん 開いた「どうして？」）は
+     * 「すみません、つぎを おねがいします」と 言えば 通れる。
+     *
+     * 通した ぶんの カードは 開かない ことを、**通す 前に** 押さえる
+     *——通した あとは 聞く ばんに 移り、板が 聞き出す ぶんに 入れかわる（discover）。
+     */
     expect(await openedCards(page)).toBe(HENDY_ANSWERS.length);
+    await skipAsk(page);
 
     /*
      * ぜんぶ 答えると **しゅうりょうしょう**が 出る（2026-08-21）。
@@ -266,7 +326,7 @@ test("かいしゃステージを 6教材 通しで あそべる（端末に 何
     await expect(cert2).toBeVisible();
     await cert2.getByRole("button").click();
 
-    await page.getByRole("link", { name: "つぎは" }).click();
+    await frameNext(page).click();
   });
 
   await test.step("7. ミーティング「松井社長と 話す」— ハートと とっておきの話", async () => {
@@ -303,7 +363,7 @@ test("かいしゃステージを 6教材 通しで あそべる（端末に 何
     await shot(page, "11-stage-clear");
     await clear.getByRole("link", { name: "ステージに もどる" }).click();
 
-    await expect(page.getByText("6つ の うち 6つ おわりました")).toBeVisible();
+    await expect(page.getByText(progressText(KAISHA_ITEMS.length))).toBeVisible();
     await expect(page.getByText("100%")).toBeVisible();
     await shot(page, "12-stage-top-done");
   });
@@ -319,5 +379,16 @@ test("かいしゃステージを 6教材 通しで あそべる（端末に 何
 async function readToEnd(page: Page): Promise<void> {
   await page.getByText("さいごまで よんだね").scrollIntoViewIfNeeded();
   await page.mouse.wheel(0, 2000);
-  await expect(page.getByRole("link", { name: "つぎは" })).toBeVisible();
+  await expect(frameNext(page)).toBeVisible();
+}
+
+/**
+ * 枠（ContentFrame）の「つぎは …」。
+ *
+ * **名前だけで さがさない**——記事の 中にも「つぎは これ — リンク …」という
+ * 案内カード（articleBlock の `link`）が 出る ことが あり、名前で 引くと 2つ 当たる。
+ * 枠の ほうは ゲームボタン（`btn-game`）なので、そこで 分ける。
+ */
+function frameNext(page: Page) {
+  return page.locator("a.btn-game").filter({ hasText: "つぎは" });
 }

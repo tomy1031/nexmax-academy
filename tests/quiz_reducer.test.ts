@@ -612,3 +612,107 @@ describe("まとめて 出す（提出モード）", () => {
     expect(quizReducer(s, { type: "goto", index: 3 })).toBe(s);
   });
 });
+
+/* ------------------------------------------------------------------ *
+ * ぜんぶ 1ページ（mode: "all"）
+ * ------------------------------------------------------------------ */
+
+describe("ぜんぶ 1ページ — こたえは 問題IDで 受け取る", () => {
+  /*
+   * 全問が 画面に 出て いるので、番号（`state.index`）では どの 行に 書いたかが
+   * 決まらない。書いた 行の ID を そのまま 渡す。
+   */
+  const all = () => createQuizSession(set, set.questions, "all");
+
+  it("見て いる 番号と ちがう もんだいにも 書ける", () => {
+    // いま 見て いるのは 0番。5番目（複数えらぶ）に 直に 書く
+    const last = set.questions[4]!;
+    const state = quizReducer(all(), {
+      type: "answerMulti",
+      indexes: [0],
+      questionId: last.id,
+    } as QuizAction);
+    expect(state.drafts[last.id]).toEqual({ kind: "multi", indexes: [0] });
+  });
+
+  it("さいごに さわった もんだいを index が 追いかける（しおりが そこを 指す）", () => {
+    const last = set.questions[4]!;
+    const state = quizReducer(all(), {
+      type: "answerMulti",
+      indexes: [0],
+      questionId: last.id,
+    } as QuizAction);
+    expect(state.index).toBe(4);
+  });
+
+  it("知らない ID は 何も しない（教材から 消えた 問題の 取りこぼし）", () => {
+    const state = quizReducer(all(), {
+      type: "answerChoice",
+      index: 0,
+      questionId: "no_such_question",
+    } as QuizAction);
+    expect(state.drafts).toEqual({});
+  });
+
+  it("型の ちがう こたえは 受け取らない（choose に 語群を 置かない）", () => {
+    const choose = set.questions.find((q) => q.type === "choose")!;
+    const state = quizReducer(all(), {
+      type: "answerWordbank",
+      filled: ["x"],
+      questionId: choose.id,
+    } as QuizAction);
+    expect(state.drafts[choose.id]).toBeUndefined();
+  });
+
+  it("questionId を 付けなければ、これまでどおり 見て いる もんだい", () => {
+    const first = set.questions[0]!;
+    const state = quizReducer(all(), { type: "answerChoice", index: 0 });
+    expect(state.drafts[first.id]).toBeDefined();
+  });
+
+  it("書いた 順に かかわらず、出したら 全問ぶんの 記録が 1行ずつ 残る", () => {
+    // うしろから 書く（1ページなので 学習者は どの 順でも 書ける）
+    let state = all();
+    for (const q of [...set.questions].reverse()) {
+      state = answerCorrectlyAt(state, q.id);
+    }
+    state = quizReducer(state, { type: "submit" });
+    expect(state.phase.kind).toBe("finished");
+    expect(state.results).toHaveLength(set.questions.length);
+    expect(state.results.map((r) => r.questionId)).toEqual(set.questions.map((q) => q.id));
+  });
+
+  it("IMEの 注意は どの もんだいの ものかを 持つ（欄が 決まらないと 直せない）", () => {
+    const keyword = set.questions.find((q) => q.type === "keyword");
+    if (!keyword) return;
+    const state = quizReducer(all(), {
+      type: "answerKeyword",
+      input: "houkoku",
+      questionId: keyword.id,
+    } as QuizAction);
+    if (state.phase.kind === "ask" && state.phase.inputIssue) {
+      expect(state.phase.inputIssueQuestionId).toBe(keyword.id);
+    }
+  });
+});
+
+/** その ID の 問題に 正しい こたえを 置く（ぜんぶ 1ページ 用）。 */
+function answerCorrectlyAt(state: QuizState, id: string): QuizState {
+  const q = state.questions.find((question) => question.id === id);
+  if (!q) return state;
+  switch (q.type) {
+    case "choose":
+      return quizReducer(state, { type: "answerChoice", index: q.answer, questionId: id });
+    case "multi":
+      return quizReducer(state, { type: "answerMulti", indexes: q.answers, questionId: id });
+    case "keyword":
+      return quizReducer(state, { type: "answerKeyword", input: q.answer, questionId: id });
+    case "wordbank":
+      return quizReducer(state, { type: "answerWordbank", filled: [...q.blanks], questionId: id });
+    case "emotion":
+      return quizReducer(
+        quizReducer(state, { type: "answerFeeling", index: q.answerFeeling, questionId: id }),
+        { type: "answerReply", index: q.answerReply, questionId: id },
+      );
+  }
+}

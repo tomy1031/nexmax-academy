@@ -29,7 +29,7 @@
     "cf:build:local": "node scripts/copy_pdf_worker.mjs && opennextjs-cloudflare build",
     "cf:branch": "npm run cf:build && OPEN_NEXT_CACHE=assets node scripts/preview_alias.mjs",
     "cf:staging": "npm run cf:build && node scripts/preview_alias.mjs staging",
-    "gen:content": "node scripts/generate_content_index.mjs && node scripts/generate_scene_index.mjs && node scripts/generate_glossary.mjs"
+    "gen:content": "node scripts/generate_content_index.mjs && node scripts/generate_scene_index.mjs && node scripts/generate_glossary.mjs && node scripts/gen_gakushu.mjs"
   },
   "dependencies": {
     "@google/genai": "^2.13.0",
