@@ -51,9 +51,12 @@ test.describe("対話ゲームの AI（鍵が あるときだけ）", () => {
       test.skip(true, "AIに 通せませんでした");
     }
 
-    // ①会社の 中身を 言えたので、規則では 立たない 観点が 立つ
-    const board = page.getByText("会社の ことが 入って いる");
-    await expect(board).toBeVisible();
+    /*
+     * ①会社の 中身を 言えたので、規則では 立たない 観点が 立つ。
+     * 字では 探さない——画面の 見出しには **ふりがなが 合成されて いる**
+     *（「会社かいしゃの ことが…」に なる）。目印の `data-kanten` で 引く。
+     */
+    await expect(page.locator('[data-kanten="concrete"]')).toHaveAttribute("data-on", "true");
     await shot(page, "24-taiwa-live-feedback");
 
     // ②見つけた「おもしろい」が 1つ 開く

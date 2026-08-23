@@ -107,7 +107,14 @@ export function TalkFeedback({
 
           <ul className="mt-2 space-y-1">
             {rows.map((row) => (
-              <li key={row.key} className="flex items-center gap-2 text-xs font-bold">
+              // `data-kanten` は 検証の 手がかり。画面の 字には ふりがなが 合成される ので、
+              // 文字で 探すと 当たらない（`tests/e2e/furigana.spec.ts` 冒頭の 覚書と 同じ 罠）。
+              <li
+                key={row.key}
+                data-kanten={row.key}
+                data-on={row.on}
+                className="flex items-center gap-2 text-xs font-bold"
+              >
                 <span
                   aria-hidden
                   className="grid h-5 w-5 shrink-0 place-items-center rounded-full text-[11px]"
