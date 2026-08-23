@@ -40,35 +40,51 @@ const DICT = [...FURIGANA]
   .filter(([surface, reading]) => surface && reading && KANJI.test(surface))
   .sort((a, b) => b[0].length - a[0].length);
 
-/** プレーンテキスト → ルビつきの断片。HTML 文字列は組み立てない（DOM で作る）。 */
-function ruby(text) {
-  const fragment = document.createDocumentFragment();
-  let plain = "";
+/**
+ * 文を **ルビの かたまり**に 分ける（左から 最長一致）。
+ *
+ * ここを 1つに して おくのは、辞典の 印（`glossRuby`）が **この 切れ目に
+ * そろえる 必要が ある**から。切れ目を 知らずに 印を 付けると、長い 読みの
+ * 途中で 切って しまい、残りが 裸の 漢字に なる
+ *（2026-08-24 実発生: 「代表」の 印が 「代表取締役社長」を 割って 「取締役」が 裸に）。
+ */
+function segmentsOf(text) {
+  const out = [];
   let i = 0;
-
-  const flush = () => {
-    if (plain) fragment.append(document.createTextNode(plain));
-    plain = "";
-  };
-
   while (i < text.length) {
     const hit = KANJI.test(text[i]) ? DICT.find(([surface]) => text.startsWith(surface, i)) : null;
-    if (!hit) {
-      plain += text[i];
+    if (hit) {
+      out.push({ text: hit[0], reading: hit[1] });
+      i += hit[0].length;
+    } else {
+      out.push({ text: text[i] });
       i += 1;
-      continue;
     }
-    flush();
-    const element = document.createElement("ruby");
-    element.append(document.createTextNode(hit[0]));
-    const rt = document.createElement("rt");
-    rt.textContent = hit[1];
-    element.append(rt);
-    fragment.append(element);
-    i += hit[0].length;
   }
-  flush();
+  return out;
+}
+
+/** かたまり 1つを DOM に する（読みが あれば ルビ、無ければ ただの 字）。 */
+function segmentNode(segment) {
+  if (!segment.reading) return document.createTextNode(segment.text);
+  const element = document.createElement("ruby");
+  element.append(document.createTextNode(segment.text));
+  const rt = document.createElement("rt");
+  rt.textContent = segment.reading;
+  element.append(rt);
+  return element;
+}
+
+/** かたまりの ならびを、1つの 断片に 積む。 */
+function segmentsFragment(segments) {
+  const fragment = document.createDocumentFragment();
+  for (const segment of segments) fragment.append(segmentNode(segment));
   return fragment;
+}
+
+/** プレーンテキスト → ルビつきの断片。HTML 文字列は組み立てない（DOM で作る）。 */
+function ruby(text) {
+  return segmentsFragment(segmentsOf(text));
 }
 
 /* ------------------------------------------------------------------ *
@@ -247,12 +263,13 @@ function showTip(anchor, item) {
 }
 
 /** 辞典に ある 語 1つぶんの 印。 */
-function glossMark(item) {
+function glossMark(item, segments) {
   const mark = document.createElement("span");
   mark.className = "gloss-mark";
   mark.tabIndex = 0;
   mark.setAttribute("role", "button");
-  mark.append(ruby(item.term));
+  // 本文の かたまりを そのまま 使う（読みを 組み直すと、そこだけ 切れかたが 変わる）
+  mark.append(segmentsFragment(segments));
 
   const open = () => showTip(mark, item);
   const shut = () => {
@@ -295,29 +312,52 @@ function glossMark(item) {
  */
 const glossShown = new Set();
 
+/** 印を さがす ときに つなぐ かたまりの 数と、字の 長さの 上限。 */
+const GLOSS_MAX_SEGMENTS = 8;
+const GLOSS_MAX_LENGTH = Math.max(...GLOSS.map((word) => word.term.length), 1);
+
 function glossRuby(text) {
+  const segments = segmentsOf(text);
   const fragment = document.createDocumentFragment();
-  let from = 0;
+  let plain = [];
   let i = 0;
 
-  const flushTo = (at) => {
-    if (at > from) fragment.append(ruby(text.slice(from, at)));
-    from = at;
+  const flush = () => {
+    if (plain.length) fragment.append(segmentsFragment(plain));
+    plain = [];
   };
 
-  while (i < text.length) {
-    const hit = GLOSS.find((item) => !glossShown.has(item.term) && text.startsWith(item.term, i));
+  while (i < segments.length) {
+    /*
+     * 印は **ルビの 切れ目に そろえる**。かたまりを 1つずつ つないで いき、
+     * つないだ 字が そのまま 辞典の 見出しに なる ときだけ 印を 付ける。
+     * 途中で 切れる 語（「代表」で 「代表取締役社長」を 割る ような もの）は
+     * ここで 落ちる——割ると 残りが 裸の 漢字に なり、読めなく なる。
+     */
+    let hit = null;
+    let span = 0;
+    let joined = "";
+    for (let n = 0; n < GLOSS_MAX_SEGMENTS && i + n < segments.length; n += 1) {
+      joined += segments[i + n].text;
+      if (joined.length > GLOSS_MAX_LENGTH) break;
+      const item = GLOSS.find((word) => !glossShown.has(word.term) && word.term === joined);
+      // 長い ほうを 採る（「会社」より 「株式会社」）ので、見つけても 打ち切らない
+      if (item) {
+        hit = item;
+        span = n + 1;
+      }
+    }
     if (!hit) {
+      plain.push(segments[i]);
       i += 1;
       continue;
     }
-    flushTo(i);
+    flush();
     glossShown.add(hit.term);
-    fragment.append(glossMark(hit));
-    i += hit.term.length;
-    from = i;
+    fragment.append(glossMark(hit, segments.slice(i, i + span)));
+    i += span;
   }
-  flushTo(text.length);
+  flush();
   return fragment;
 }
 
