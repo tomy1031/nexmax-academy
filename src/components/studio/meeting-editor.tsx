@@ -169,6 +169,12 @@ export function MeetingEditor({
         />
       </StudioSection>
 
+      {/*
+        **ためす は 見かたの すぐ 下**（2026-08-22）。下の ほうに 置いて いた ころは、
+        直す → 上へ 戻る → また 下へ、の 往復に なって 輪に ならなかった。
+      */}
+      <MeetingTryPanel value={value} onChange={onChange} />
+
       <StudioSection
         title={`しつもん（${value.questions.length}つ）`}
         hint="上から 順に 聞きます。1語で 答えられる ものから、りゆうや 気もちを 聞く ものへ 並べます。"
@@ -345,8 +351,6 @@ export function MeetingEditor({
       </StudioSection>
 
       <MeetingPromptPreview value={value} />
-
-      <MeetingTryPanel value={value} />
 
       <MeetingTalkPanel value={value} cast={cast} />
 
