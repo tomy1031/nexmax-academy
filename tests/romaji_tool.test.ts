@@ -14,6 +14,7 @@
 
 import { describe, expect, it } from "vitest";
 import { FORBIDDEN_LEARNER_WORDS } from "@/content/schema";
+import { checkCountryNamesInTexts } from "@/lib/content-checks";
 import { buildFuriganaIndex, uncoveredKanji } from "@/lib/text/furigana";
 // 静的ページの素の JS モジュール（tsconfig の allowJs で そのまま 読める）
 import {
@@ -365,9 +366,11 @@ describe("学習者に見せる文（規律1）", () => {
   });
 
   it("国名「タイ」を つかっていない（規律9）", () => {
-    // 「タイプ」「タイトル」などは まぎれるので、国名として 読める 形だけを 見る
-    const hits = learnerTexts().filter((text) => /(?:^|[^ァ-ヶー])タイ(?![ァ-ヶープ])/u.test(text));
-    expect(hits).toEqual([]);
+    /*
+     * 判定は アプリと **同じ関数** を 呼ぶ。ここで 正規表現を 書き写すと、
+     * 規律が 変わった とき 片方だけ 古いまま 残る（2026-08-23 に 実際 そうなった）。
+     */
+    expect(checkCountryNamesInTexts("public/tools/romaji", learnerTexts())).toEqual([]);
   });
 });
 

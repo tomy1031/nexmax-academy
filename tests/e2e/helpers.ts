@@ -20,7 +20,7 @@ export interface KaishaItem {
   readonly kind: string;
 }
 
-/** かいしゃステージの6教材。名前で 呼べるようにしておく（番号だけだと 読めない）。 */
+/** かいしゃステージの教材。名前で 呼べるようにしておく（番号だけだと 読めない）。 */
 export const KAISHA = {
   article1: {
     id: "kaisha_shirabekata",
@@ -36,6 +36,11 @@ export const KAISHA = {
     id: "kaisha_nextmake_shirabe",
     path: "/kaisha/article-kaisha_nextmake_shirabe",
     kind: "ページ",
+  },
+  site: {
+    id: "nextmake_gakushu_site",
+    path: "/kaisha/link-nextmake_gakushu_site",
+    kind: "リンク",
   },
   quiz2: { id: "kaisha_houkoku", path: "/kaisha/quiz-kaisha_houkoku", kind: "もんだい" },
   meetingHendy: {
@@ -55,14 +60,34 @@ export const KAISHA_ITEMS: readonly KaishaItem[] = [
   KAISHA.article1,
   KAISHA.quiz1,
   KAISHA.article2,
+  KAISHA.site,
   KAISHA.quiz2,
   KAISHA.meetingHendy,
   KAISHA.meetingMatsui,
 ];
 
-/** i 番目より前の教材のID（関門を開けるために「おわった」ことにする分）。 */
-export function itemsBefore(index: number): string[] {
-  return KAISHA_ITEMS.slice(0, index).map((item) => item.id);
+/**
+ * ステージのトップに 出る 進みぐあいの 文（「7つ の うち 2つ おわりました」）。
+ *
+ * 数を **ベタ書きしない**。前は「6つ の うち …」と 書いて いて、ステージに 教材を
+ * 1本 足した 日に 4つの spec が いっせいに 落ちた（2026-08-23）。
+ */
+export function progressText(done: number): string {
+  return `${KAISHA_ITEMS.length}つ の うち ${done}つ おわりました`;
+}
+
+/**
+ * その教材より前の教材のID（関門を開けるために「おわった」ことにする分）。
+ *
+ * **番号ではなく教材そのものを受ける。** 前は `itemsBefore(4)` のように番号で
+ * 呼んでいて、ステージに教材を1本 足しただけで **15か所が いっせいに ずれた**
+ *（2026-08-23、学習用サイトのリンクを 3番目に 入れたとき）。番号は「どの教材の
+ * 手前か」を語らないので、ずれても テストは 静かに 別の 画面を 見に行く。
+ */
+export function itemsBefore(item: KaishaItem): string[] {
+  const at = KAISHA_ITEMS.findIndex((candidate) => candidate.id === item.id);
+  if (at < 0) throw new Error(`かいしゃステージに ない 教材です: ${item.id}`);
+  return KAISHA_ITEMS.slice(0, at).map((candidate) => candidate.id);
 }
 
 /* ------------------------------------------------------------------ *

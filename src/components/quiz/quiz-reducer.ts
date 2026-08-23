@@ -7,13 +7,18 @@
  * 判定はすべて共有の normalize.ts を通す。旧実装のように「accept」に表記ゆれを
  * 人力で並べる必要はない。
  *
- * ## やりかたは 2つ（QuizMode）
+ * ## やりかたは 3つ（QuizMode）
  * - `"one"` … **1問ずつ**。答えた 瞬間に 採点し、こたえと せつめいを 読んで つぎへ。
- * - `"submit"` … **まとめて 出す**。ぜんぶ 書いてから 出す。採点は 出した あと 1回だけで、
- *   途中で 合って いるかは 見せない（テストの やりかた）。
+ * - `"submit"` … **1問ずつ 見て、まとめて 出す**。ぜんぶ 書いてから 出す。採点は 出した
+ *   あと 1回だけで、途中で 合って いるかは 見せない（テストの やりかた）。
+ * - `"all"` … **ぜんぶ 1ページに 出す**。採点は `submit` と 同じ。教材と 行き来しながら
+ *   書ける ように する ための 見せかた（2026-08-23）。
  *
- * どちらを 使うかは **学習者が 選ぶ**（設計01 P11「レベル差は 同じ教材の 別モードで 吸収する」
- * ——負荷の 調整装置を 学習者自身に 握らせる）。教材データには 持たせない。
+ * どれを 使うかは **先生が 教材に 持たせる**（`answerMode`）。
+ *
+ * `submit` と `all` は **採点の しかたが 同じ**なので、判定の 分岐では
+ * `mode !== "one"` で 見る——`=== "submit"` と 書くと、`all` の とき だけ
+ * 進めない・確認に 行けない といった 抜けが 生まれる。
  *
  * 採点は どちらの やりかたでも `@/lib/quiz/draft` の `gradeDraft` 1つを 通す
  * ——2か所に 置くと、片方だけ 直した 日に 同じ答えで 点が ちがう ことが 起きる。
@@ -25,7 +30,7 @@ import { draftAnswered, gradeDraft, type QuizDraft } from "@/lib/quiz/draft";
 import { inspectReadingInput } from "@/lib/text/normalize";
 
 /** もんだいの やりかた。 */
-export type QuizMode = "one" | "submit";
+export type QuizMode = "one" | "submit" | "all";
 
 export type QuizPhase =
   /** 出題中（emotion は1段階目の「気持ち」を聞いている）。 */
@@ -36,6 +41,11 @@ export type QuizPhase =
        * IME が英語のままなど「答えは分かっているのに打てない」ときに使う。
        */
       readonly inputIssue?: FeedbackKey;
+      /**
+       * その 注意が どの もんだいの ものか（`"all"` のとき だけ 使う）。
+       * 全問が 画面に 出て いるので、持ち主が 分からないと 直す 欄が 決まらない。
+       */
+      readonly inputIssueQuestionId?: string;
     }
   /**
    * emotion の2段階目。気持ちが分かったうえで「言い方」を聞く。
@@ -102,13 +112,26 @@ export interface QuizState {
   readonly drafts: QuizDrafts;
 }
 
+/**
+ * こたえの action に そえる「どの もんだいの ことか」。
+ *
+ * 付けなければ **いま 見て いる もんだい**（これまでどおり）。
+ * `"all"`（ぜんぶ 1ページ）では 画面に 全問が 出て いるので、番号では 決まらない
+ * ——書いた 行の ID を そのまま 渡す。
+ *
+ * `goto` を 先に 撃って から 答える 案は 採らない。自由入力は **1打鍵ごとに**
+ * 送られる ので dispatch が 倍に なり、`goto` が 相を `ask` に 戻すので
+ * IME の 注意（`inputIssue`）が 打つ たびに 消える。
+ */
+type Targeted = { readonly questionId?: string };
+
 export type QuizAction =
-  | { readonly type: "answerChoice"; readonly index: number }
-  | { readonly type: "answerMulti"; readonly indexes: readonly number[] }
-  | { readonly type: "answerKeyword"; readonly input: string }
-  | { readonly type: "answerWordbank"; readonly filled: readonly (string | null)[] }
-  | { readonly type: "answerFeeling"; readonly index: number }
-  | { readonly type: "answerReply"; readonly index: number }
+  | ({ readonly type: "answerChoice"; readonly index: number } & Targeted)
+  | ({ readonly type: "answerMulti"; readonly indexes: readonly number[] } & Targeted)
+  | ({ readonly type: "answerKeyword"; readonly input: string } & Targeted)
+  | ({ readonly type: "answerWordbank"; readonly filled: readonly (string | null)[] } & Targeted)
+  | ({ readonly type: "answerFeeling"; readonly index: number } & Targeted)
+  | ({ readonly type: "answerReply"; readonly index: number } & Targeted)
   | { readonly type: "next" }
   /**
    * 「まえの もんだい」。
@@ -176,6 +199,19 @@ export function currentQuestion(state: QuizState): QuizQuestion | null {
   return state.questions[state.index] ?? null;
 }
 
+/**
+ * この action が 向いて いる もんだい。
+ *
+ * `questionId` が 無ければ **いま 見て いる もんだい**——1問ずつ・まとめて 出す の
+ * これまでの 呼び出しは 1ミリも 変わらない。ID が 付いて いれば その もんだい
+ *（`"all"` では 全問が 画面に 出て いるので 番号では 決まらない）。
+ */
+function targetQuestion(state: QuizState, action: QuizAction): QuizQuestion | null {
+  const id = "questionId" in action ? action.questionId : undefined;
+  if (id === undefined) return currentQuestion(state);
+  return state.questions.find((question) => question.id === id) ?? null;
+}
+
 /** いま 見て いる もんだいの 下書き（まとめて 出す のみ）。 */
 export function currentDraft(state: QuizState): QuizDraft | undefined {
   const question = currentQuestion(state);
@@ -193,13 +229,13 @@ export function quizReducer(state: QuizState, action: QuizAction): QuizState {
 
   switch (action.type) {
     case "goto": {
-      if (state.mode !== "submit") return state;
+      if (state.mode === "one") return state;
       if (action.index < 0 || action.index >= state.questions.length) return state;
       return { ...state, index: action.index, phase: { kind: "ask" } };
     }
 
     case "submit": {
-      if (state.mode !== "submit") return state;
+      if (state.mode === "one") return state;
       // **出して いない ものも 1行 残す**（「書けずに 出した」ことも 先生には 記録）
       const results = state.questions.map((question) => {
         const grade = gradeDraft(question, state.drafts[question.id]);
@@ -217,7 +253,7 @@ export function quizReducer(state: QuizState, action: QuizAction): QuizState {
       break;
   }
 
-  const question = currentQuestion(state);
+  const question = targetQuestion(state, action);
   if (!question) return state;
 
   switch (action.type) {
@@ -245,15 +281,23 @@ export function quizReducer(state: QuizState, action: QuizAction): QuizState {
       );
       const latin = action.input.trim() !== "" && inspectReadingInput(action.input) === "latin";
 
-      if (state.mode === "submit") {
+      if (state.mode !== "one") {
         // まとめて 出す ときは **合って いるかを 見ずに** 注意だけ 出す
         //（判定を 混ぜると、注意の 有無で 正誤が 透けて しまう）。書いた ものは 残す。
+        const at = state.questions.indexOf(question);
         return {
           ...state,
+          index: at >= 0 ? at : state.index,
           drafts: { ...state.drafts, [question.id]: draft },
           phase:
             latin && !wantsLatin
-              ? { kind: "ask", inputIssue: INPUT_ISSUE_FEEDBACK.latin }
+              ? {
+                  kind: "ask",
+                  inputIssue: INPUT_ISSUE_FEEDBACK.latin,
+                  // どの もんだいの 話かを 持つ。ぜんぶ 1ページの ときに 上へ 1つ 出すと、
+                  // 学習者は どの 欄を 直すのか 分からない
+                  inputIssueQuestionId: question.id,
+                }
               : { kind: "ask" },
         };
       }
@@ -275,7 +319,7 @@ export function quizReducer(state: QuizState, action: QuizAction): QuizState {
 
     case "answerFeeling": {
       if (question.type !== "emotion") return state;
-      if (state.mode === "submit") {
+      if (state.mode !== "one") {
         const before = state.drafts[question.id];
         const kept =
           before?.kind === "emotion" && before.feeling === action.index ? before.reply : null;
@@ -303,7 +347,7 @@ export function quizReducer(state: QuizState, action: QuizAction): QuizState {
 
     case "answerReply": {
       if (question.type !== "emotion") return state;
-      if (state.mode === "submit") {
+      if (state.mode !== "one") {
         const before = state.drafts[question.id];
         if (before?.kind !== "emotion" || before.feeling === null) return state;
         return {
@@ -324,7 +368,7 @@ export function quizReducer(state: QuizState, action: QuizAction): QuizState {
     }
 
     case "next": {
-      if (state.mode === "submit") {
+      if (state.mode !== "one") {
         if (state.phase.kind !== "ask") return state;
         const next = state.index + 1;
         // さいごの もんだいの つぎは「出す まえの かくにん」（いきなり 採点しない）
@@ -340,7 +384,7 @@ export function quizReducer(state: QuizState, action: QuizAction): QuizState {
     }
 
     case "back": {
-      if (state.mode === "submit") {
+      if (state.mode !== "one") {
         // かくにん画面からは さいごの もんだいへ 帰る（「見なおす」）
         if (state.phase.kind === "confirm") {
           return { ...state, index: state.questions.length - 1, phase: { kind: "ask" } };
@@ -368,8 +412,19 @@ export function quizReducer(state: QuizState, action: QuizAction): QuizState {
  * 合って いるかは 何も 見せない。
  */
 function put(state: QuizState, question: QuizQuestion, draft: QuizDraft): QuizState {
-  if (state.mode === "submit") {
-    return { ...state, drafts: { ...state.drafts, [question.id]: draft }, phase: { kind: "ask" } };
+  if (state.mode !== "one") {
+    /*
+     * `index` を **さいごに さわった もんだい**に 合わせる。しおり（quiz/resume の
+     * `index`）が そこを 指すので、教材と 行き来した あとに 書きかけの 行へ 戻せる。
+     * 1問ずつ 見る やりかたでは 見て いる もんだいが 対象なので、何も 変わらない。
+     */
+    const at = state.questions.indexOf(question);
+    return {
+      ...state,
+      index: at >= 0 ? at : state.index,
+      drafts: { ...state.drafts, [question.id]: draft },
+      phase: { kind: "ask" },
+    };
   }
   if (state.phase.kind !== "ask" && state.phase.kind !== "emotionReply") return state;
   // 空の こたえは 受け取らない（1問ずつでは「こたえる」ボタンが 押せない 状態にあたる）

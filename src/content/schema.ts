@@ -343,15 +343,27 @@ export const quizSetSchema = z
     /**
      * こたえの 出しかた。**決めるのは 先生（管理画面）**で、学習者は 選べない。
      *
-     * - `"submit"`（**既定**）… ぜんぶ 書いてから まとめて 出す。途中では 正誤を 見せず、
-     *   「こたえを 見る」も 置かない。採点は 出した あとの 1回だけ。
+     * - `"submit"`（**既定**）… 1問ずつ 見て、ぜんぶ 書いてから まとめて 出す。
+     *   途中では 正誤を 見せず、「こたえを 見る」も 置かない。採点は 出した あとの 1回だけ。
      * - `"one"` … 1問 こたえるたびに こたえと せつめいを 読む。
+     * - `"all"` … **ぜんぶ 1ページに 出す**。採点は `submit` と 同じで、出した あとの 1回だけ。
      *
      * 学習者に 選ばせない のは、同じ 教材を 同じ 条件で 受けさせたい 先生の 都合が
      * 先に 立つため（2026-08-19 指定「まとめて出すかをきめるのは管理画面。
      * デフォルトは全てまとめて出す」）。
+     *
+     * ## なぜ `"all"` を 別の 軸に しないか
+     * 「見せかた」と「採点の タイミング」を 2つの 軸に 分けると、`all` × 1問ずつ採点 という
+     * **成り立たない 組み合わせ**が 型の 上に 残る（全問 見えて いるのに 1問ごとに 答えを
+     * 見せたら、下の 問題の 答えが 先に 割れる）。全問 1ページなら 出すのは 必然的に 1回
+     * なので、値を 1つ 足すのが 正しい（2026-08-23 の 指定）。
+     *
+     * ## 足すときの 注意（下書きが 消える 事故）
+     * この 列挙を 広げたら、**同じ変更の 中で `src/lib/quiz/resume.ts` の 保存スキーマも
+     * 広げる**。あちらが 知らない 値を 読むと `safeParse` が 落ち、`readQuizResume` が
+     * null を 返して、**学習者が 書いた ものが 黙って 全部 消える**。
      */
-    answerMode: z.enum(["one", "submit"]).default("submit"),
+    answerMode: z.enum(["one", "submit", "all"]).default("submit"),
     passRate: z.number().int().min(1).max(100).default(70),
     furigana: z.array(furiganaEntrySchema).optional(),
     questions: z.array(quizQuestionSchema).min(1),
@@ -763,6 +775,7 @@ export const RESERVED_STAGE_IDS = [
   "auth",
   "dictionary",
   "img",
+  "link",
   "listening",
   "login",
   "manga",

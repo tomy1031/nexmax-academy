@@ -1,5 +1,12 @@
 import { expect, test } from "@playwright/test";
-import { bareKanjiTexts, itemsBefore, KAISHA, joinCall, seedCompleted } from "./helpers";
+import {
+  bareKanjiTexts,
+  itemsBefore,
+  KAISHA,
+  joinCall,
+  seedCompleted,
+  type KaishaItem,
+} from "./helpers";
 
 /**
  * ふりがなの 覆い（規律2）を **実画面で** 見張る
@@ -22,20 +29,27 @@ const KNOWN_BARE_KANJI: readonly string[] = [
   "それでも 見る",
 ];
 
-/** 学習者が いちばん 長く 見る 画面。ここが 覆えていれば 授業は 成り立つ。 */
-const SCREENS: readonly { name: string; path: string; before: number }[] = [
-  { name: "ステージのトップ", path: "/kaisha", before: 0 },
-  { name: "ページ（しらべかた）", path: KAISHA.article1.path, before: 0 },
-  { name: "もんだい（かくにん）", path: KAISHA.quiz1.path, before: 1 },
-  { name: "ページ（ネクストメイク）", path: KAISHA.article2.path, before: 2 },
-  { name: "もんだい（ほうこく）", path: KAISHA.quiz2.path, before: 3 },
-  { name: "ミーティング（ヘンディ）", path: KAISHA.meetingHendy.path, before: 4 },
-  { name: "ミーティング（松井社長）", path: KAISHA.meetingMatsui.path, before: 5 },
+/**
+ * 学習者が いちばん 長く 見る 画面。ここが 覆えていれば 授業は 成り立つ。
+ *
+ * `open` は「その 教材を 開く」ので、関門は その 手前まで 開けて おく。
+ * 番号では なく 教材そのもので 書く——番号だと ステージに 1本 足した だけで
+ * 全部 ずれる（`itemsBefore` の 覚書）。
+ */
+const SCREENS: readonly { name: string; path: string; open: KaishaItem }[] = [
+  { name: "ステージのトップ", path: "/kaisha", open: KAISHA.article1 },
+  { name: "ページ（しらべかた）", path: KAISHA.article1.path, open: KAISHA.article1 },
+  { name: "もんだい（かくにん）", path: KAISHA.quiz1.path, open: KAISHA.quiz1 },
+  { name: "ページ（ネクストメイク）", path: KAISHA.article2.path, open: KAISHA.article2 },
+  { name: "リンク（学習用サイト）", path: KAISHA.site.path, open: KAISHA.site },
+  { name: "もんだい（ほうこく）", path: KAISHA.quiz2.path, open: KAISHA.quiz2 },
+  { name: "ミーティング（ヘンディ）", path: KAISHA.meetingHendy.path, open: KAISHA.meetingHendy },
+  { name: "ミーティング（松井社長）", path: KAISHA.meetingMatsui.path, open: KAISHA.meetingMatsui },
 ];
 
 for (const screen of SCREENS) {
   test(`ルビの 外に 裸の漢字が 無い — ${screen.name}`, async ({ page, context }) => {
-    await seedCompleted(context, itemsBefore(screen.before));
+    await seedCompleted(context, itemsBefore(screen.open));
     await page.goto(screen.path);
 
     const bare = await bareKanjiTexts(page);
@@ -56,7 +70,7 @@ test("ルビの 外に 裸の漢字が 無い — ページが 見つからな�
 });
 
 test("ミーティングの 中（入室後・答える前）にも 裸の漢字が 無い", async ({ page, context }) => {
-  await seedCompleted(context, itemsBefore(4));
+  await seedCompleted(context, itemsBefore(KAISHA.meetingHendy));
   await page.goto(KAISHA.meetingHendy.path);
   await joinCall(page);
 

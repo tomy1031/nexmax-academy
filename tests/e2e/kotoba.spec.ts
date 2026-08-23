@@ -22,7 +22,7 @@ test("ことばチップは マウスを のせるだけで いみが 出る", a
 
 test("本文の 下線の ことばも、マウスを のせるだけで いみが 出る", async ({ page, context }) => {
   // 辞書は 単語ステージを 畳んだもの。ステージの 中の ページで 引ける。
-  await seedCompleted(context, itemsBefore(0));
+  await seedCompleted(context, itemsBefore(KAISHA.article1));
   await page.goto(KAISHA.article1.path);
 
   const underlined = page.locator("button.underline").first();

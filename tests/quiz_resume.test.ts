@@ -357,3 +357,65 @@ describe("まとめて 出す の 下書き", () => {
     expect(saved?.drafts).toEqual({});
   });
 });
+
+/* ------------------------------------------------------------------ *
+ * ぜんぶ 1ページ（mode: "all"）
+ * ------------------------------------------------------------------ */
+
+describe("ぜんぶ 1ページでも 書いた ものが 消えない", () => {
+  /*
+   * ここが この 機能の 生命線。`answerMode` に 値を 足した とき、この 保存スキーマの
+   * 列挙を 広げ忘れると `safeParse` が 落ち、`readQuizResume` が null を 返して
+   * **クラス全員の 下書きが 黙って 消える**。だから 保存・復元を 名指しで 固定する。
+   */
+  function draftsSaved(mode: "submit" | "all"): QuizResume {
+    return {
+      quizSetId: "kaisha_houkoku",
+      results: [],
+      mode,
+      drafts: {
+        w1_tsukuru: { kind: "wordbank", filled: ["ホームページや アプリ"] },
+        k1_okyakusama: { kind: "keyword", input: "くるま" },
+      },
+      index: 5,
+    };
+  }
+
+  it("`all` で 保存した ものを、そのまま 読み戻せる", () => {
+    const backend = createMemoryBackend();
+    saveQuizResume(draftsSaved("all"), backend);
+    expect(readQuizResume("kaisha_houkoku", backend)).toEqual(draftsSaved("all"));
+  });
+
+  it("`submit` で 書いた 続きを `all` でも 拾う（先生が 見せかたを 変えても 消さない）", () => {
+    const start = startFrom(
+      draftsSaved("submit"),
+      undefined,
+      ["w1_tsukuru", "k1_okyakusama"],
+      "all",
+    );
+    expect(start.resumed).toBe(true);
+    expect(Object.keys(start.drafts)).toEqual(["w1_tsukuru", "k1_okyakusama"]);
+  });
+
+  it("`all` で 書いた 続きを `submit` でも 拾う（逆向きも 同じ）", () => {
+    const start = startFrom(
+      draftsSaved("all"),
+      undefined,
+      ["w1_tsukuru", "k1_okyakusama"],
+      "submit",
+    );
+    expect(start.resumed).toBe(true);
+    expect(Object.keys(start.drafts)).toEqual(["w1_tsukuru", "k1_okyakusama"]);
+  });
+
+  it("1問ずつ に 変えた ときは 拾わない（前提が ちがう）", () => {
+    const start = startFrom(draftsSaved("all"), undefined, ["w1_tsukuru", "k1_okyakusama"], "one");
+    expect(start).toEqual({ ...FRESH_QUIZ_START, mode: "one" });
+  });
+
+  it("教材から 消えた もんだいの 下書きは 落とす（並びが 変わっても IDなので ずれない）", () => {
+    const start = startFrom(draftsSaved("all"), undefined, ["k1_okyakusama"], "all");
+    expect(Object.keys(start.drafts)).toEqual(["k1_okyakusama"]);
+  });
+});

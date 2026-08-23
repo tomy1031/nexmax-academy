@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { goNext, itemsBefore, KAISHA, placeWords, seedCompleted, shot } from "./helpers";
+import { itemsBefore, KAISHA, placeWords, progressText, seedCompleted, shot } from "./helpers";
 
 /**
  * 途中で 離れても、つづきから — もんだい（quizset）の しおり
@@ -13,21 +13,20 @@ import { goNext, itemsBefore, KAISHA, placeWords, seedCompleted, shot } from "./
  */
 
 test("2問 書いて 離れ、もどると「つづきから」が 出る", async ({ page, context }) => {
-  await seedCompleted(context, itemsBefore(3));
+  await seedCompleted(context, itemsBefore(KAISHA.quiz2));
 
   await page.goto(KAISHA.quiz2.path);
   await page.getByRole("button", { name: "はじめる" }).click();
 
+  // ぜんぶ 1ページなので 進まずに 2問 書く
   await placeWords(page, ["ホームページや アプリ"]);
-  await goNext(page);
   await placeWords(page, ["大阪", "東京"]);
-  await goNext(page);
-  await expect(page.getByText("もんだい 3 / 9")).toBeVisible();
+  await expect(page.getByText("こたえた 2 / 9")).toBeVisible();
 
   // ステージへ 離脱（進み具合には「とちゅう」として 出る）
   await page.goto("/kaisha");
-  await expect(page.getByText("6つ の うち 3つ おわりました")).toBeVisible();
-  await expect(page.locator("ol > li").nth(3)).toContainText("とちゅう");
+  await expect(page.getByText(progressText(4))).toBeVisible();
+  await expect(page.locator("ol > li").nth(4)).toContainText("とちゅう");
 
   // もどると ロビーで 分かれ道を 見せる（つづきから／はじめから）
   await page.goto(KAISHA.quiz2.path);
@@ -36,21 +35,19 @@ test("2問 書いて 離れ、もどると「つづきから」が 出る", asyn
   await shot(page, "21-quiz-resume");
 
   await page.getByRole("button", { name: "つづきから" }).click();
-  await expect(page.getByText("もんだい 3 / 9")).toBeVisible();
-  // 書いた ものも 戻って いる
+  // 書いた ものが 戻って いる
   await expect(page.getByText("こたえた 2 / 9")).toBeVisible();
 });
 
 test("「はじめから やる」を えらべば 1問目に もどる", async ({ page, context }) => {
-  await seedCompleted(context, itemsBefore(3));
+  await seedCompleted(context, itemsBefore(KAISHA.quiz2));
 
   await page.goto(KAISHA.quiz2.path);
   await page.getByRole("button", { name: "はじめる" }).click();
   await placeWords(page, ["ホームページや アプリ"]);
-  await goNext(page);
 
   await page.goto(KAISHA.quiz2.path);
   await page.getByRole("button", { name: "はじめから やる" }).click();
-  await expect(page.getByText("もんだい 1 / 9")).toBeVisible();
   await expect(page.getByText("こたえた 0 / 9")).toBeVisible();
+  await expect(page.getByRole("button", { name: "こたえを 出" })).toHaveCount(0);
 });

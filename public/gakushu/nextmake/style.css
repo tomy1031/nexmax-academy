@@ -1,0 +1,1035 @@
+/*
+ * 学習用サイト（株式会社ネクストメイク） — 見た目
+ *
+ * この1枚は **会社の サイトに 見える** ことが 仕事。アプリ本体の「あおぞらパスウェイ」
+ * （まるい・やわらかい・ゲームの 手ざわり）を そのまま 持ちこむと、学習者は
+ * 「会社の サイトを 調べた」体験に ならない。だから角は 浅く、色は 紺と 白に 寄せ、
+ * ボタンの 沈みも 置かない。
+ *
+ * ただし **学習の 道具（レベル・ふりがな）だけは アプリの 色**にする。
+ * 「ここから 上は 勉強の 道具、ここから 下は 会社の サイト」を 目で 分ける ため。
+ *
+ * 外の CDN（Tailwind・アイコン・Web フォント）は読まない。教室の回線が細く、
+ * 落ちてくるまで画面が白いままになる。文字は端末のゴシックに寄せる。
+ */
+
+:root {
+  /* 会社の 色（本物の サイトの 紺に 寄せる） */
+  --navy: #0b3a67;
+  --navy-deep: #072a4c;
+  --navy-soft: #eaf1f8;
+  --accent: #0a84c8;
+  --accent-soft: #e3f1fa;
+
+  /* インク（純黒は使わない） */
+  --ink: #1c2b3a;
+  --ink-soft: #52657a;
+  --ink-faint: #93a4b4;
+
+  /* 面 */
+  --paper: #ffffff;
+  --paper-tint: #f5f8fb;
+  --hairline: #d7e2ec;
+
+  /* 学習の 道具（アプリ本体のトークンから写す。src/app/globals.css） */
+  --helper-bg: #004f8d;
+  --helper-on: #ffc93c;
+  --helper-ink: #ffffff;
+
+  --mark: #f3b21b;
+  --mark-soft: #fff6e0;
+
+  --radius: 10px;
+  --shell: 1040px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/*
+ * `hidden` を いつでも 効かせる。ブラウザの 既定は `display: none` だが、
+ * こちらで `display: flex` などを 指定すると **そちらが 勝って 隠れない**。
+ */
+[hidden] {
+  display: none !important;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--paper-tint);
+  color: var(--ink);
+  font-family:
+    "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic", Meiryo, system-ui,
+    sans-serif;
+  font-size: 16px;
+  line-height: 1.9;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* ふりがな ------------------------------------------------------- */
+
+ruby {
+  /*
+   * ルビの ぶんの 高さを あらかじめ 取る。取らないと ON/OFF の たびに 行が
+   * 伸び縮みして、読んで いた 行が 上下に 飛ぶ。
+   */
+  ruby-position: over;
+}
+
+rt {
+  font-size: 0.55em;
+  color: var(--ink-soft);
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+/* 濃い 地の 上では ふりがなも 地の 文の 色に そろえる（制約 2026-08-21） */
+.helper rt,
+.site-head rt,
+.site-foot rt,
+.b-callout rt,
+.chip rt,
+.work-tag rt,
+.card-icon rt {
+  color: currentColor;
+}
+
+.furigana-off rt {
+  display: none;
+}
+
+a {
+  color: var(--accent);
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* ================= 学習の 道具の 帯 ================= */
+
+/*
+ * 学習の 道具の 帯と 会社の あたまを **まとめて 貼りつける**。
+ * 別々に sticky に して 下に `top: 40px` と 書くと、帯が 2行に 折り返した 幅で
+ * あたまが 帯に 重なる（2026-08-23 に 実発生）。高さを 数字で 決めうちしない。
+ */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+}
+
+.helper {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  padding: 8px 16px;
+  background: var(--helper-bg);
+  color: var(--helper-ink);
+  font-size: 0.85rem;
+}
+
+.helper-label {
+  font-weight: 700;
+  margin-right: 2px;
+}
+
+.helper-levels {
+  display: inline-flex;
+  gap: 4px;
+  padding: 3px;
+  background: rgb(255 255 255 / 0.14);
+  border-radius: 999px;
+}
+
+.level-btn,
+.helper-btn {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  border: 1px solid transparent;
+  background: transparent;
+  border-radius: 999px;
+  padding: 3px 14px;
+  line-height: 2.4;
+}
+
+.level-btn.is-on {
+  background: var(--helper-on);
+  color: #3a2a00;
+  font-weight: 700;
+}
+
+.helper-btn {
+  margin-left: auto;
+  border-color: rgb(255 255 255 / 0.5);
+}
+
+.level-btn:focus-visible,
+.helper-btn:focus-visible,
+.nav-toggle:focus-visible,
+a:focus-visible,
+button:focus-visible,
+input:focus-visible {
+  outline: 3px solid var(--helper-on);
+  outline-offset: 2px;
+}
+
+/* ================= 会社の サイトの あたま ================= */
+
+.site-head {
+  /* 貼りつけは 親（.topbar）が 受け持つ。ここで top を 数字で 決めない */
+  position: relative;
+  background: var(--navy);
+  color: #fff;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.brand-mark {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  flex: none;
+  border-radius: 6px;
+  background: #fff;
+  color: var(--navy);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  font-size: 0.95rem;
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.5;
+  min-width: 0;
+}
+
+.brand-text strong {
+  font-size: 1rem;
+}
+
+.brand-text small {
+  font-size: 0.72rem;
+  color: rgb(255 255 255 / 0.75);
+}
+
+.nav-toggle {
+  position: absolute;
+  top: 14px;
+  right: 12px;
+  font: inherit;
+  font-size: 0.85rem;
+  color: #fff;
+  background: rgb(255 255 255 / 0.12);
+  border: 1px solid rgb(255 255 255 / 0.45);
+  border-radius: var(--radius);
+  padding: 5px 14px;
+  cursor: pointer;
+  line-height: 2.2;
+}
+
+.nav {
+  display: none;
+  flex-direction: column;
+  border-top: 1px solid rgb(255 255 255 / 0.18);
+}
+
+.nav-open .nav {
+  display: flex;
+}
+
+.nav-item {
+  padding: 10px 16px;
+  color: rgb(255 255 255 / 0.9);
+  text-decoration: none;
+  font-size: 0.92rem;
+  border-bottom: 1px solid rgb(255 255 255 / 0.1);
+}
+
+.nav-item.is-here {
+  background: rgb(255 255 255 / 0.14);
+  color: #fff;
+  font-weight: 700;
+}
+
+@media (min-width: 860px) {
+  .site-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding-right: 12px;
+  }
+
+  .nav-toggle {
+    display: none;
+  }
+
+  .nav {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    border-top: 0;
+    justify-content: flex-end;
+  }
+
+  .nav-item {
+    border-bottom: 3px solid transparent;
+    padding: 8px 12px;
+  }
+
+  .nav-item.is-here {
+    background: transparent;
+    border-bottom-color: var(--helper-on);
+  }
+}
+
+/* ================= 本文 ================= */
+
+main {
+  display: block;
+}
+
+main:focus {
+  outline: none;
+}
+
+.page {
+  max-width: var(--shell);
+  margin: 0 auto;
+  padding: 0 16px 56px;
+}
+
+.page-hero {
+  margin: 0 -16px 20px;
+  overflow: hidden;
+  background: var(--navy-soft);
+}
+
+.page-hero img {
+  width: 100%;
+  aspect-ratio: 16 / 7;
+  object-fit: cover;
+}
+
+.page-title {
+  font-size: 1.55rem;
+  line-height: 1.7;
+  color: var(--navy);
+  margin: 24px 0 20px;
+  padding-bottom: 12px;
+  border-bottom: 3px solid var(--navy);
+}
+
+.b-heading {
+  font-size: 1.2rem;
+  color: var(--navy);
+  margin: 36px 0 12px;
+  padding-left: 12px;
+  border-left: 5px solid var(--accent);
+}
+
+.b-paragraph {
+  margin: 0 0 16px;
+}
+
+.b-list {
+  margin: 0 0 20px;
+  padding-left: 0;
+  list-style: none;
+}
+
+.b-list li {
+  position: relative;
+  padding: 6px 0 6px 26px;
+  border-bottom: 1px dashed var(--hairline);
+}
+
+.b-list li::before {
+  content: "▪";
+  position: absolute;
+  left: 6px;
+  color: var(--accent);
+}
+
+.b-steps {
+  margin: 0 0 20px;
+  padding: 0;
+  list-style: none;
+  counter-reset: none;
+}
+
+.b-steps li {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 10px 12px;
+  background: var(--paper);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  margin-bottom: 8px;
+}
+
+.b-steps li.is-mark {
+  border-color: var(--mark);
+  background: var(--mark-soft);
+}
+
+.step-no {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  margin-top: 4px;
+  border-radius: 50%;
+  background: var(--navy);
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.b-steps li.is-mark .step-no {
+  background: var(--mark);
+  color: #3a2a00;
+}
+
+/* カード ---------------------------------------------------------- */
+
+.b-cards {
+  display: grid;
+  gap: 12px;
+  margin: 0 0 24px;
+}
+
+@media (min-width: 620px) {
+  .b-cards {
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  }
+}
+
+/*
+ * ふちを 白フチだけで 済ませない。外側に 細い 枠を 1本 置いて、
+ * どこまでが 1枚かを 見せる（制約 2026-08-18）。
+ */
+.card {
+  background: var(--paper);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: 0 2px 0 rgb(11 58 103 / 0.06);
+}
+
+.card.is-mark {
+  border-color: var(--mark);
+  background: var(--mark-soft);
+}
+
+.card-icon {
+  display: inline-grid;
+  place-items: center;
+  min-width: 34px;
+  height: 34px;
+  padding: 0 8px;
+  border-radius: 8px;
+  background: var(--accent-soft);
+  color: var(--navy);
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.card-label {
+  font-size: 1.02rem;
+  color: var(--navy);
+  margin: 10px 0 6px;
+}
+
+.card-text {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+/* チップ ---------------------------------------------------------- */
+
+.b-chips {
+  display: grid;
+  gap: 12px;
+  margin: 0 0 24px;
+}
+
+.chip-group {
+  background: var(--paper);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+}
+
+.chip-label {
+  margin: 0 0 10px;
+  font-size: 0.95rem;
+  color: var(--navy);
+}
+
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.chip {
+  padding: 3px 12px;
+  border-radius: 999px;
+  background: var(--navy);
+  color: #fff;
+  font-size: 0.82rem;
+  line-height: 2.2;
+}
+
+/* 表 -------------------------------------------------------------- */
+
+.b-table {
+  overflow-x: auto;
+  margin: 0 0 24px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  background: var(--paper);
+}
+
+.b-table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.b-table th,
+.b-table td {
+  text-align: left;
+  vertical-align: top;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.b-table tr:last-child th,
+.b-table tr:last-child td {
+  border-bottom: 0;
+}
+
+.b-table th {
+  width: 34%;
+  min-width: 130px;
+  background: var(--navy-soft);
+  color: var(--navy);
+  font-weight: 700;
+}
+
+/* 年表 ------------------------------------------------------------ */
+
+.b-timeline {
+  margin: 0 0 24px;
+  padding: 0 0 0 8px;
+  list-style: none;
+  border-left: 3px solid var(--navy-soft);
+}
+
+.b-timeline li {
+  position: relative;
+  padding: 8px 0 8px 20px;
+}
+
+.b-timeline li::before {
+  content: "";
+  position: absolute;
+  left: -8px;
+  top: 20px;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 2px solid var(--paper-tint);
+}
+
+.b-timeline li.is-mark::before {
+  background: var(--mark);
+  width: 15px;
+  height: 15px;
+  left: -10px;
+}
+
+.b-timeline .when {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--navy);
+}
+
+.b-timeline li.is-mark {
+  background: var(--mark-soft);
+  border-radius: var(--radius);
+  padding-right: 12px;
+}
+
+/* 引用 ------------------------------------------------------------ */
+
+.b-quote {
+  margin: 0 0 24px;
+  padding: 18px 20px;
+  background: var(--navy);
+  color: #fff;
+  border-radius: var(--radius);
+}
+
+.quote-source {
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  color: var(--helper-on);
+  margin-bottom: 6px;
+}
+
+.quote-text {
+  margin: 0;
+  font-size: 1.1rem;
+  line-height: 1.9;
+  font-weight: 700;
+}
+
+.quote-note {
+  margin: 12px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid rgb(255 255 255 / 0.25);
+  font-size: 0.92rem;
+  color: rgb(255 255 255 / 0.92);
+  font-weight: 400;
+}
+
+.b-quote rt {
+  color: currentColor;
+}
+
+/* ひとこと -------------------------------------------------------- */
+
+.b-callout {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  margin: 0 0 24px;
+  padding: 14px 16px;
+  border-radius: var(--radius);
+  border: 1px solid var(--mark);
+  background: var(--mark-soft);
+  color: var(--ink);
+}
+
+.b-callout.tone-care {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.callout-mark {
+  font-size: 1.15rem;
+  line-height: 1.6;
+}
+
+.callout-text {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+/* サービス／実績 --------------------------------------------------- */
+
+.b-service,
+.b-work {
+  background: var(--paper);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  padding: 18px;
+  margin: 0 0 14px;
+  box-shadow: 0 2px 0 rgb(11 58 103 / 0.06);
+}
+
+.service-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--hairline);
+  margin-bottom: 12px;
+}
+
+.service-icon {
+  font-size: 1.6rem;
+  line-height: 1;
+}
+
+.service-names {
+  min-width: 0;
+}
+
+.service-name {
+  margin: 0;
+  font-size: 1.1rem;
+  color: var(--navy);
+}
+
+.service-reading {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--ink-faint);
+}
+
+.service-image {
+  margin: 0 -18px 14px;
+  overflow: hidden;
+  background: var(--navy-soft);
+}
+
+.service-image img {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+.service-lead {
+  margin: 0 0 8px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.service-text,
+.work-what {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.service-note {
+  margin: 16px 0 0;
+  padding: 10px 12px;
+  background: var(--paper-tint);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+}
+
+/*
+ * サービスの 中の 小見出し（こまって いた こと／どう うごきますか／できる こと）。
+ * 5つの サービスで **かならず 同じ 順・同じ 見た目**にする——見比べる ための 並びなので、
+ * サービスごとに ちがう 顔に すると 比べられなく なる。
+ */
+.service-part {
+  margin: 20px 0 8px;
+  font-size: 0.86rem;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+}
+
+.service-part::before {
+  content: "";
+  display: inline-block;
+  width: 14px;
+  height: 2px;
+  margin-right: 8px;
+  vertical-align: middle;
+  background: var(--accent);
+}
+
+.service-before {
+  margin: 0;
+  padding-left: 0;
+  list-style: none;
+  font-size: 0.93rem;
+}
+
+.service-before li {
+  position: relative;
+  padding: 4px 0 4px 22px;
+  color: var(--ink-soft);
+}
+
+/* 「こまって いた こと」なので、丸ではなく 困り顔の 印にする */
+.service-before li::before {
+  content: "…";
+  position: absolute;
+  left: 4px;
+  color: var(--ink-faint);
+  font-weight: 700;
+}
+
+.service-how {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.93rem;
+}
+
+.service-how li {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 6px 0;
+  border-bottom: 1px dashed var(--hairline);
+}
+
+.service-how li:last-child {
+  border-bottom: 0;
+}
+
+.service-can {
+  display: grid;
+  gap: 8px;
+}
+
+@media (min-width: 620px) {
+  .service-can {
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  }
+}
+
+.can-card {
+  background: var(--paper-tint);
+  border: 1px solid var(--hairline);
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.can-label {
+  margin: 0 0 4px;
+  font-size: 0.92rem;
+  color: var(--navy);
+}
+
+.can-text {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+}
+
+.work-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.work-tag {
+  padding: 2px 10px;
+  border-radius: 4px;
+  background: var(--navy);
+  color: #fff;
+  font-size: 0.75rem;
+  line-height: 2.2;
+}
+
+.work-when {
+  font-size: 0.78rem;
+  color: var(--ink-faint);
+}
+
+.work-client {
+  margin: 0 0 8px;
+  font-size: 1.02rem;
+  color: var(--navy);
+}
+
+/* 図 -------------------------------------------------------------- */
+
+.b-figure {
+  margin: 0 0 24px;
+}
+
+.b-figure img {
+  width: 100%;
+  border-radius: var(--radius);
+  border: 1px solid var(--hairline);
+}
+
+.b-figure figcaption {
+  margin-top: 6px;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+}
+
+/* ページの中のリンク ------------------------------------------------ */
+
+.page-link {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 4px 14px;
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  color: var(--accent);
+  text-decoration: none;
+  font-size: 0.9rem;
+  line-height: 2.2;
+}
+
+.b-link {
+  margin: 0 0 24px;
+}
+
+/* ことばの辞典 ----------------------------------------------------- */
+
+.b-glossary {
+  margin: 0 0 24px;
+}
+
+.gloss-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 16px;
+  margin-bottom: 14px;
+}
+
+.gloss-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: var(--navy);
+  font-weight: 700;
+}
+
+.gloss-search input {
+  font: inherit;
+  font-weight: 400;
+  padding: 6px 12px;
+  min-width: 180px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.gloss-count {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--ink-faint);
+}
+
+.gloss-list {
+  margin: 0;
+  background: var(--paper);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.gloss-list dt {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+  padding: 12px 16px 0;
+  font-weight: 700;
+  color: var(--navy);
+}
+
+.gloss-en {
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: var(--ink-faint);
+}
+
+.gloss-list dd {
+  margin: 0;
+  padding: 2px 16px 12px;
+  font-size: 0.93rem;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.gloss-list dd:last-child {
+  border-bottom: 0;
+}
+
+.gloss-empty {
+  margin: 0;
+  padding: 16px;
+  color: var(--ink-soft);
+}
+
+/* まえ・つぎ ------------------------------------------------------- */
+
+.pager {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 36px;
+  padding-top: 20px;
+  border-top: 1px solid var(--hairline);
+}
+
+.pager-next {
+  margin-left: auto;
+}
+
+/* ================= フッター ================= */
+
+.site-foot {
+  background: var(--navy-deep);
+  color: rgb(255 255 255 / 0.88);
+  padding: 28px 16px 40px;
+  font-size: 0.86rem;
+}
+
+.site-foot p {
+  max-width: var(--shell);
+  margin: 0 auto 10px;
+}
+
+.foot-mission {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.foot-note {
+  color: rgb(255 255 255 / 0.7);
+}
+
+.foot-real a {
+  color: var(--helper-on);
+}
+
+/* 上に もどる ------------------------------------------------------ */
+
+.to-top {
+  position: fixed;
+  right: 14px;
+  bottom: 14px;
+  z-index: 25;
+  font: inherit;
+  font-size: 0.85rem;
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--navy);
+  background: var(--paper);
+  color: var(--navy);
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgb(11 58 103 / 0.2);
+  line-height: 2.2;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}

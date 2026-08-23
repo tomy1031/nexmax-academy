@@ -200,6 +200,7 @@ const PHASE_OPTIONS: readonly { value: QuizSet["phase"]; label: string }[] = [
  */
 const ANSWER_MODE_OPTIONS: readonly { value: QuizSet["answerMode"]; label: string }[] = [
   { value: "submit", label: "まとめて 出す（テストの やりかた）" },
+  { value: "all", label: "ぜんぶ 1ページに 出す（教材と 行き来しながら 書く）" },
   { value: "one", label: "1問ずつ こたえあわせ" },
 ];
 
