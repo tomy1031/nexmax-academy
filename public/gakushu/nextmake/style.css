@@ -115,10 +115,18 @@ img {
 
 /* ================= 学習の 道具の 帯 ================= */
 
-.helper {
+/*
+ * 学習の 道具の 帯と 会社の あたまを **まとめて 貼りつける**。
+ * 別々に sticky に して 下に `top: 40px` と 書くと、帯が 2行に 折り返した 幅で
+ * あたまが 帯に 重なる（2026-08-23 に 実発生）。高さを 数字で 決めうちしない。
+ */
+.topbar {
   position: sticky;
   top: 0;
   z-index: 30;
+}
+
+.helper {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -178,9 +186,8 @@ input:focus-visible {
 /* ================= 会社の サイトの あたま ================= */
 
 .site-head {
-  position: sticky;
-  top: 40px;
-  z-index: 20;
+  /* 貼りつけは 親（.topbar）が 受け持つ。ここで top を 数字で 決めない */
+  position: relative;
   background: var(--navy);
   color: #fff;
 }
@@ -689,6 +696,18 @@ main:focus {
   color: var(--ink-faint);
 }
 
+.service-image {
+  margin: 0 -18px 14px;
+  overflow: hidden;
+  background: var(--navy-soft);
+}
+
+.service-image img {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
 .service-lead {
   margin: 0 0 8px;
   font-weight: 700;
@@ -702,11 +721,104 @@ main:focus {
 }
 
 .service-note {
-  margin: 12px 0 0;
+  margin: 16px 0 0;
   padding: 10px 12px;
   background: var(--paper-tint);
   border-radius: 8px;
   font-size: 0.9rem;
+  color: var(--ink-soft);
+}
+
+/*
+ * サービスの 中の 小見出し（こまって いた こと／どう うごきますか／できる こと）。
+ * 5つの サービスで **かならず 同じ 順・同じ 見た目**にする——見比べる ための 並びなので、
+ * サービスごとに ちがう 顔に すると 比べられなく なる。
+ */
+.service-part {
+  margin: 20px 0 8px;
+  font-size: 0.86rem;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+}
+
+.service-part::before {
+  content: "";
+  display: inline-block;
+  width: 14px;
+  height: 2px;
+  margin-right: 8px;
+  vertical-align: middle;
+  background: var(--accent);
+}
+
+.service-before {
+  margin: 0;
+  padding-left: 0;
+  list-style: none;
+  font-size: 0.93rem;
+}
+
+.service-before li {
+  position: relative;
+  padding: 4px 0 4px 22px;
+  color: var(--ink-soft);
+}
+
+/* 「こまって いた こと」なので、丸ではなく 困り顔の 印にする */
+.service-before li::before {
+  content: "…";
+  position: absolute;
+  left: 4px;
+  color: var(--ink-faint);
+  font-weight: 700;
+}
+
+.service-how {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.93rem;
+}
+
+.service-how li {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 6px 0;
+  border-bottom: 1px dashed var(--hairline);
+}
+
+.service-how li:last-child {
+  border-bottom: 0;
+}
+
+.service-can {
+  display: grid;
+  gap: 8px;
+}
+
+@media (min-width: 620px) {
+  .service-can {
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  }
+}
+
+.can-card {
+  background: var(--paper-tint);
+  border: 1px solid var(--hairline);
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.can-label {
+  margin: 0 0 4px;
+  font-size: 0.92rem;
+  color: var(--navy);
+}
+
+.can-text {
+  margin: 0;
+  font-size: 0.88rem;
   color: var(--ink-soft);
 }
 

@@ -64,16 +64,16 @@ export const HOME = {
         {
           icon: "🌏",
           label: {
-            n4: "海外の チーム",
-            n3: "海外の開発チーム",
-            en: "Overseas team",
+            n4: "グループの 会社",
+            n3: "グループ企業",
+            en: "Group companies",
           },
           text: {
             n4: "グループの 会社が ベトナムに あります。日本と 同じ やりかたで、いっしょに 作ります。",
             n3: "グループ会社がベトナムにあります。日本と同じ品質で、一緒に開発を進めています。",
             en: "Our group company is in Vietnam. We build together, to the same standard as in Japan.",
           },
-          to: "vietnam",
+          to: "group",
         },
         {
           icon: "🎓",
@@ -91,26 +91,53 @@ export const HOME = {
         },
       ],
     },
+    /*
+     * トップに 会社概要の 表は 置かない（2026-08-23 の 指定）。
+     * かわりに **Japanese IT Pathway の 入口**を 置く——この サイトを 読む 学習者は
+     * その プログラムの 学生なので、いちばん 上で「あなたの ことが 書いて あります」と
+     * 言われる ほうが、先を 読む 理由に なる（設計01 P7: 感情が エンジン）。
+     * 会社の 数字は「会社紹介」の ページが 持つ。
+     */
     {
       kind: "heading",
-      text: { n4: "会社の こと", n3: "会社の基本情報", en: "About the company" },
-    },
-    {
-      kind: "table",
-      rows: [
-        { th: "会社の 名前", td: "株式会社 NEXT MAKE（ネクストメイク）" },
-        { th: "社長", td: "松井 亮" },
-        { th: "できた 日", td: "2018年1月5日" },
-        { th: "本社", td: "大阪市 西区" },
-        { th: "東京本店", td: "東京都 品川区" },
-      ],
+      text: {
+        n4: "Japanese IT Pathway",
+        n3: "Japanese IT Pathway",
+        en: "Japanese IT Pathway",
+      },
     },
     {
       kind: "paragraph",
       text: {
-        n4: "もっと くわしい ことは、上の メニューから 見て ください。",
-        n3: "さらに詳しい内容は、上のメニューから各ページをご覧ください。",
-        en: "For more details, please use the menu at the top of the page.",
+        n4: "カンボジアの 政府と 大学と いっしょに、ITと 日本語を 学ぶ プログラムを して います。名前は Japanese IT Pathway です。",
+        n3: "カンボジア政府と大学と連携し、ITと日本語を学ぶプログラムを運営しています。名称はJapanese IT Pathwayです。",
+        en: "With the Cambodian government and universities, we run a programme for learning IT and Japanese, called Japanese IT Pathway.",
+      },
+    },
+    {
+      kind: "paragraph",
+      text: {
+        n4: "学んだ 人は、日本の IT会社で はたらく ことが できます。まず 日本語を 勉強して、つぎに ITを 勉強して、それから 本当の 仕事を します。",
+        n3: "修了した学生は日本のIT企業で働くことができます。日本語を学び、ITを学び、そして実際のプロジェクトに参加します。",
+        en: "Graduates can work at IT companies in Japan: first Japanese, then IT, then real projects.",
+      },
+    },
+    {
+      kind: "callout",
+      tone: "point",
+      text: {
+        n4: "この プログラムの 学生の こと、修了式の こと、運動会の ことも 書いて あります。あなたの 学校の 名前も あるかも しれません。",
+        n3: "このプログラムの学生や修了式、運動会のことも載っています。あなたの学校の名前もあるかもしれません。",
+        en: "The students, the closing ceremonies and even the sports day are on that page. Your school may be there too.",
+      },
+    },
+    {
+      kind: "link",
+      to: "cambodia",
+      label: {
+        n4: "カンボジア事業の ページを 見る",
+        n3: "カンボジア事業のページを見る",
+        en: "Open the Cambodia page",
       },
     },
   ],
