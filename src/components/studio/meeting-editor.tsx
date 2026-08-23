@@ -183,7 +183,7 @@ export function MeetingEditor({
 
         <TextAreaField
           label="見かた"
-          value={value.judgePrompt}
+          value={value.judgePrompt ?? ""}
           onChange={(judgePrompt) => patch({ judgePrompt })}
           rows={7}
           placeholder="できた ところを 1つ ほめ、直す ところを 1つだけ 言い、その 言い方の れいを 見せて ください。"

@@ -91,7 +91,7 @@ export function MeetingTryPanel({
       ask: question.ask,
       hint: question.hint,
       keywords: question.keywords,
-      judgePrompt: value.judgePrompt,
+      judgePrompt: value.judgePrompt ?? "",
       hostName: value.host.name,
       learnerName: SAMPLE_LEARNER,
       utterance: utterance.trim(),
@@ -194,7 +194,7 @@ export function MeetingTryPanel({
 
           <TextAreaField
             label="日本語の 見かた（教材ぜんぶで 1つ）"
-            value={value.judgePrompt}
+            value={value.judgePrompt ?? ""}
             onChange={(judgePrompt) => onChange({ ...value, judgePrompt })}
             rows={4}
             hint="直したら すぐ 下の「AIに きく」で ためせます。上の 欄と 同じ ものなので、そのまま 保存できます。"
