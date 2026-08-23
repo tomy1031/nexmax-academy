@@ -16,7 +16,7 @@
  *  6. **画像が実在するか** — 参照だけ残って画像が無いと、枠だけの穴になる。
  */
 
-import { existsSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { FORBIDDEN_LEARNER_WORDS } from "@/content/schema";
@@ -54,6 +54,11 @@ const EXPECTED_ORDER = [
 
 /** 日本語の全文（やさしい日本語 ＋ 日本語 ＋ 画面の字）。 */
 const JA = japaneseTexts(PAGES, UI);
+
+/** サイト専用の 読み辞書の **正**（生成物では なく 教材データの ほう）。 */
+const LINK_FURIGANA: [string, string][] = JSON.parse(
+  readFileSync(join(ROOT, "content", "links", "nextmake_gakushu_site.json"), "utf8"),
+).furigana;
 
 describe("ページの 骨組み", () => {
   it("8ページが この 順で 並ぶ（ナビの 順でもある）", () => {
@@ -163,8 +168,12 @@ describe("読めない漢字が 残って いない（規律2）", () => {
    *
    * 下の 一覧は「割れる が、つないだ 読みは 合って いる」もの。**目で 1つずつ 確かめた**。
    * 新しく 増えたら ここに 足す 前に、声に 出して 読んで みる こと。
+   * ここに 入れて よいのは **読みが 合って いる** ものだけ。「たぶん 大丈夫」で 足すと
+   * 検査は 黙り、まちがった 読みが そのまま 学習者に 届く（2026-08-23 に
+   * 「強化 → つよか」が この 一覧に 紛れこんで いた）。
    */
   const VERIFIED_SPLITS = new Set([
+    "株式会社業務代行",
     "日本語授業修了式",
     "自動車株式会社様",
     "協会南大阪支部様",
@@ -221,9 +230,19 @@ describe("読めない漢字が 残って いない（規律2）", () => {
     "整備業向",
     "社以上",
     "礼儀正",
-    "強化",
     "見積",
   ]);
+
+  /**
+   * ルビの 検査に かける ひとかたまり＝**漢字が つづく ところ**。
+   *
+   * 送りがなを はさむ 語（取り組み）まで 広げる のは 試して 見送った:
+   * 分かち書きの 無い 日本語の 文では 助詞ごと つながって しまい
+   *（「人と 文化」「少し 便利」…）、本当に あぶない ものが 85件の
+   * まぎれものに 埋もれた。**まぎれものだらけの 検査は 誰も 読まない。**
+   * かなを はさむ 語は「1字の 見出し語は 名指しで 決める」（下の 検査）で 防ぐ。
+   */
+  const RUNS = /[々一-鿿]{2,}/gu;
 
   it("熟語が 1字ずつに 割れて いない（割れるなら 読みを 目で 確かめた ものだけ）", () => {
     const index = buildFuriganaIndex(FURIGANA as [string, string][]);
@@ -231,7 +250,8 @@ describe("読めない漢字が 残って いない（規律2）", () => {
     const broken = new Map<string, string>();
 
     for (const text of [...JA, ...textsOf(PAGES, "en")]) {
-      for (const run of text.match(/[々一-鿿]{2,}/gu) ?? []) {
+      for (const run of text.match(RUNS) ?? []) {
+        if (run.length < 2) continue;
         if (known.has(run) || VERIFIED_SPLITS.has(run) || broken.has(run)) continue;
         const segments = annotateRuby(run, index);
         // 覆えて いない ものは 上の 検査の 担当。ここは **全部に ルビが 付いた うえで
@@ -244,6 +264,30 @@ describe("読めない漢字が 残って いない（規律2）", () => {
       }
     }
     expect([...broken.entries()].map(([run, how]) => `${run}: ${how}`)).toEqual([]);
+  });
+
+  /*
+   * **漢字1字の 読みは、この サイトの 辞書で 名指しで 決める。**
+   *
+   * 1字の 漢字は 読みが 1つに 決まらない。ことばの正（`content/vocab`）に ある
+   * 1字の 見出し語は ほとんどが 送りがなの つく 動詞の ためで（`会 → あ`＝会う）、
+   * それを 黙って 借りると 名詞の 中で 火を 噴く:
+   *
+   *   大阪府 こども会 育成連合会  →  こども会（あ）   ← 2026-08-23 に 実際に 出た
+   *
+   * どちらが 正しいかは **この サイトの 文を 見ないと 決められない**。だから
+   * `scripts/gen_gakushu.mjs` は 1字の 見出し語を ことばの正から 取らず、
+   * リンク教材の `furigana`（人が 目で 決めた 表）だけを 使う。
+   * この 検査は その 約束が 守られて いるかを 見る——ゆるめると、ことばの正に
+   * 1字の 語が 増えた 日に、誰も 知らない うちに サイトの 読みが 変わる。
+   */
+  it("漢字1字の 読みは 教材リンクの 辞書が 名指しで 決めて いる", () => {
+    const declared = new Set(LINK_FURIGANA.map(([surface]) => surface));
+    const borrowed = (FURIGANA as [string, string][])
+      .filter(([surface]) => surface.length === 1 && /^[㐀-鿿々]$/u.test(surface))
+      .filter(([surface]) => !declared.has(surface))
+      .map(([surface, reading]) => `${surface}→${reading}`);
+    expect(borrowed).toEqual([]);
   });
 
   it("読みは ひらがなだけ", () => {

@@ -14,8 +14,9 @@ export const ABOUT = {
     n3: "会社紹介・経営理念",
     en: "About us",
   },
-  hero: "/gakushu/nextmake/img/hero_about.webp",
-  heroAlt: "",
+  // ヒーロー画像は **置かない**（2026-08-23 の 指定）。この ページの 先頭は
+  // すぐ 下の「本社の ビル」の 写真で、飾りの 絵を 上に 重ねると 同じ 種類の 絵が
+  // 2枚 続いて、どちらが 会社の 建物か 分からなく なる。
   blocks: [
     {
       kind: "figure",

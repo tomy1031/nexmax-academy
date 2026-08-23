@@ -51,8 +51,12 @@ export const GROUP = {
       rows: [
         { th: "会社の 名前", td: "CONTINUE LLC.（コンティニュー）" },
         { th: "代表", td: "川村 修和" },
-        { th: "オフィスの 場所", td: "日本（大阪） / ベトナム（ホーチミン）" },
-        { th: "始めた 年", td: "2023年" },
+        // オフィスは **ベトナムだけ**（2026-08-23 の 指定）。前は「日本（大阪）」も
+        // 並べて いたが、CONTINUE の オフィスは 日本には 無い。
+        { th: "オフィスの 場所", td: "ベトナム（ホーチミン）" },
+        // 「始めた 年」と 書かない。文の 終わりの 1字の 年は 読み辞書で
+        // 「ねん」に なる（日付が 圧倒的に 多い ため）ので、ここだけ「とし」に できない。
+        { th: "いつから", td: "2023年" },
       ],
     },
     {
@@ -98,15 +102,17 @@ export const GROUP = {
         },
         {
           icon: "📅",
+          // まとめ役は **日本人の プロジェクトマネージャ**（2026-08-23 の 指定）。
+          // 前は「現地の リーダー」と 書いて いたが、進行を 見るのは 日本側。
           label: {
-            n4: "現地の リーダー",
-            n3: "現地PMによる進行管理",
-            en: "A local project manager",
+            n4: "日本人が プロジェクトマネージャ",
+            n3: "日本人プロジェクトマネージャーによる進行管理",
+            en: "A Japanese project manager",
           },
           text: {
-            n4: "ベトナム人の リーダーが、いつ 何を するかを 決めて、チームを 進めます。",
-            n3: "ベトナム人のプロジェクトマネージャーが、スケジュールとチームの進行を管理します。",
-            en: "A Vietnamese project manager runs the schedule and keeps the team moving.",
+            n4: "日本人の プロジェクトマネージャが、いつ 何を するかを 決めて、チームを 進めます。",
+            n3: "日本人のプロジェクトマネージャーが、スケジュールとチームの進行を管理します。",
+            en: "A Japanese project manager runs the schedule and keeps the team moving.",
           },
         },
       ],
@@ -161,6 +167,12 @@ export const GROUP = {
     /*
      * ほかの 会社は **名前だけ**（2026-08-23 の 指定）。
      * くわしく 書くと、この ページの 中心（ベトナムの チーム）が ぼやける。
+     *
+     * **並びと 名前は 本家の 会社概要が 正**（<https://nextmake.site/company/> の
+     * 「協力/関連会社」「警備会社」・2026-08-23 に 取得）。前は 設計書から 写した
+     * Khmersabai・1st-step.vn・AUPP/CADT を 並べて いたが、AUPP と CADT は
+     * **会社では なく 大学**で、カンボジア教育の ページの 話。混ぜると
+     *「グループ会社」と「いっしょに 学生を そだてる 学校」の 区別が つかなく なる。
      */
     {
       kind: "heading",
@@ -173,20 +185,14 @@ export const GROUP = {
     {
       kind: "list",
       items: [
+        { n4: "CONTINUE LLC.", n3: "CONTINUE LLC.", en: "CONTINUE LLC." },
+        { n4: "株式会社業務代行", n3: "株式会社業務代行", en: "Gyomu Daiko Inc." },
+        { n4: "株式会社SUISAI", n3: "株式会社SUISAI", en: "SUISAI Inc." },
+        { n4: "株式会社L7", n3: "株式会社L7", en: "L7 Inc." },
         {
-          n4: "Khmersabai（クメールサバイ）… カンボジアに ある 会社。2026年に できました。",
-          n3: "Khmersabai（クメールサバイ）… 2026年6月に設立したカンボジア法人。",
-          en: "Khmersabai — our Cambodian company, founded in 2026.",
-        },
-        {
-          n4: "1st-step.vn … ベトナムで、新しく 仕事を 始める 人の ための オフィス。",
-          n3: "1st-step.vn … ベトナムで展開するシェアオフィス事業。",
-          en: "1st-step.vn — a shared office in Vietnam for people starting a business.",
-        },
-        {
-          n4: "AUPP・CADT … カンボジアの 大学。いっしょに 学生を そだてて います。",
-          n3: "AUPP・CADT … カンボジアの提携大学。人材育成で連携しています。",
-          en: "AUPP and CADT — partner universities in Cambodia.",
+          n4: "アルト・インターナショナル株式会社（警備の 会社）",
+          n3: "アルト・インターナショナル株式会社（警備会社）",
+          en: "ALT International Inc. (security)",
         },
       ],
     },
