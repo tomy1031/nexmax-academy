@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>株式会社ネクストメイク（学習用サイト） | Nexmax Academy</title>
+    <meta
+      name="description"
+      content="会社を しらべる ための 学習用サイト。やさしい 日本語と 日本語を 切りかえられます。"
+    />
+    <link rel="stylesheet" href="./style.css" />
+    <!--
+      この1枚は「リンク教材」として アプリの中から 全画面で 開かれる
+      （content/links/nextmake_gakushu_site.json → src/components/link/link-view.tsx）。
+
+      画面に出る 文は すべて data/ の プレーンテキストで、ふりがなは app.js が
+      読み辞書から 合成する（AGENTS.md 規律2 と同じ持ち方）。
+      **ここに 本文を 直接 書かない**——書くと 検査（tests/gakushu_site.test.ts）の
+      外に 文が こぼれる。この html に あるのは 入れ物だけ。
+
+      ページは 1枚の 中で ハッシュ（#/vietnam）で 切りかえる。8枚の html に しないのは、
+      レベルと ふりがなの 設定が **サイト全体の もの**だから——ページを 移る たびに
+      保存を 読み直すと、読んで いる 最中に 文が 入れかわる。
+    -->
+  </head>
+  <body>
+    <!-- ============ 学習の 道具（サイトの 外がわ） ============ -->
+    <div class="helper" id="helper">
+      <span class="helper-label" id="helper-label"></span>
+      <div class="helper-levels" id="helper-levels" role="group"></div>
+      <button type="button" class="helper-btn" id="furigana-toggle" aria-pressed="true"></button>
+    </div>
+
+    <!-- ============ 会社の サイト ============ -->
+    <header class="site-head">
+      <a class="brand" href="#/home">
+        <span class="brand-mark" aria-hidden="true">NM</span>
+        <span class="brand-text">
+          <strong id="brand-name"></strong>
+          <small id="brand-tagline"></small>
+        </span>
+      </a>
+      <button
+        type="button"
+        class="nav-toggle"
+        id="nav-toggle"
+        aria-expanded="false"
+        aria-controls="nav"
+      ></button>
+      <nav class="nav" id="nav" aria-label="ページの一覧"></nav>
+    </header>
+
+    <main id="main" tabindex="-1">
+      <article class="page" id="page"></article>
+    </main>
+
+    <footer class="site-foot">
+      <p class="foot-mission" id="foot-mission"></p>
+      <p class="foot-note" id="foot-note"></p>
+      <p class="foot-real"><a id="foot-real" href="https://nextmake.site/" rel="noreferrer"></a></p>
+    </footer>
+
+    <button type="button" class="to-top" id="to-top" hidden></button>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

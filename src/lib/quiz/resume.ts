@@ -55,7 +55,7 @@ const resumeSchema = z.object({
    * どちらの やりかたで 始めたか。**既定は 1問ずつ**——この鍵が 無かった 頃の
    * 保存値も そのまま 読める（`.default()` に する 理由は `answer` と 同じ）。
    */
-  mode: z.enum(["one", "submit"]).default("one"),
+  mode: z.enum(["one", "submit", "all"]).default("one"),
   /**
    * まとめて 出す ときの 採点まえの こたえ。**問題IDを 鍵に する**——並びで 持つと、
    * 教材に 1問 足した 日に ぜんぶ 1つずつ ずれる。
@@ -88,8 +88,19 @@ export interface QuizStart {
   readonly drafts: Readonly<Record<string, QuizDraft>>;
 }
 
-/** もんだいの やりかた（`@/components/quiz/quiz-reducer` の QuizMode と同じ 2つ）。 */
-export type QuizMode = "one" | "submit";
+/** もんだいの やりかた（`@/components/quiz/quiz-reducer` の QuizMode と同じ 3つ）。 */
+export type QuizMode = "one" | "submit" | "all";
+
+/**
+ * 「書きためて さいごに 1回 出す」やりかたか。
+ *
+ * `submit`（1問ずつ 見る）と `all`（ぜんぶ 1ページ）は **見せかたが ちがうだけ**で、
+ * 保存する ものは 同じ（採点まえの 下書き）。先生が この2つを 切り替えても、
+ * 学習者が 書いた ものは そのまま 使える——だから 生の `mode` では 比べない。
+ */
+export function gradesAtEnd(mode: QuizMode): boolean {
+  return mode !== "one";
+}
 
 /**
  * はじめから。`mode` は 教材の 既定（まとめて 出す）を 置くが、`startFrom` は
@@ -156,10 +167,15 @@ export function startFrom(
 ): QuizStart {
   const fresh: QuizStart = { ...FRESH_QUIZ_START, mode };
   if (questionIds.length === 0) return fresh;
-  // 先生が やりかたを 切り替えた あとの 保存は 読まない（前提が ちがう）
-  const own = saved?.mode === mode ? saved : null;
+  /*
+   * 先生が やりかたを 切り替えた あとの 保存は 読まない（前提が ちがう）。
+   * ただし `submit` と `all` は **見せかたが ちがうだけ**なので、行き来しても
+   * 書いた ものは 残す——ここで 生の `mode` を 比べると、先生が 見せかたを 変えた 日に
+   * クラス全員の 下書きが 消える。
+   */
+  const own = saved && gradesAtEnd(saved.mode) === gradesAtEnd(mode) ? saved : null;
 
-  if (mode === "submit") {
+  if (gradesAtEnd(mode)) {
     if (!own) return fresh;
     // いま 教材に 無い 問題の 下書きは 落とす（並びが 変わっても ID なので ずれない）
     const alive = Object.entries(own.drafts).filter(([id]) => questionIds.includes(id));

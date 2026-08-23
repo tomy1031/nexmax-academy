@@ -1,12 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "motion/react";
 import type { QuizQuestion, QuizSet } from "@/content/schema";
 import { FeedbackMessage } from "@/components/feedback-message";
 import { NexMax } from "@/components/nexmax";
 import { RubyText } from "@/components/ruby-text";
+import type { FeedbackKey } from "@/lib/feedback";
 import { buildFuriganaIndex } from "@/lib/text/furigana";
 import { createProgressStore, recordContentProgress } from "@/lib/progress/store";
 import { correctAnswerText, draftAnswerText, draftAnswered } from "@/lib/quiz/draft";
@@ -41,6 +42,9 @@ const UI_FURIGANA = buildFuriganaIndex([
   ["出", "だ"],
   ["見", "み"],
   ["書", "か"],
+  // ぜんぶ 1ページ（answerMode: "all"）の 案内で 使う
+  ["行き来", "いきき"],
+  ["消", "き"],
 ]);
 
 /**
@@ -101,7 +105,7 @@ export function QuizRunner({
    * 保存しない——中途半端な 内訳を 次回 誤って 読み込ませない ための 線引き。
    */
   const isFullSession = state.questions.length === set.questions.length;
-  const submitMode = state.mode === "submit";
+  const submitMode = state.mode !== "one";
   /** まとめて 出す ときに「何問 書いたか」（しおりにも 案内の 文にも 使う）。 */
   const written = useMemo(() => answeredCount(state), [state]);
 
@@ -118,7 +122,7 @@ export function QuizRunner({
    * 通り過ぎた 数では ない（下書きは 全問ぶん いつでも 書ける）。
    */
   const [skipped, setSkipped] = useState(
-    start.mode === "submit" ? 0 : start.index - start.results.length,
+    start.mode !== "one" ? 0 : start.index - start.results.length,
   );
 
   /**
@@ -381,6 +385,18 @@ export function QuizRunner({
           }
           onRetryAll={() => restart(set.questions)}
         />
+      ) : state.mode === "all" ? (
+        <AllQuestionsCard
+          questions={state.questions}
+          drafts={state.drafts}
+          furigana={furigana}
+          inputIssue={state.phase.kind === "ask" ? state.phase.inputIssue : undefined}
+          inputIssueQuestionId={
+            state.phase.kind === "ask" ? state.phase.inputIssueQuestionId : undefined
+          }
+          dispatch={dispatch}
+          onSubmit={() => dispatch({ type: "submit" })}
+        />
       ) : state.phase.kind === "confirm" ? (
         <ConfirmCard
           questions={state.questions}
@@ -560,7 +576,7 @@ function StartCard({
             <>
               🔖 まえの つづきから はじめます。（{answeredCount}もん{" "}
               <RubyText
-                text={answerMode === "submit" ? "書きました" : "こたえました"}
+                text={answerMode === "one" ? "こたえました" : "書きました"}
                 index={UI_FURIGANA}
               />
               ）
@@ -591,9 +607,11 @@ function StartCard({
           <p className="text-ink-soft mt-2 text-center text-sm font-bold">
             <RubyText
               text={
-                answerMode === "submit"
-                  ? "ぜんぶ こたえてから 出します。けっかは さいごに まとめて 見ます"
-                  : "1問 こたえるたびに、こたえと せつめいを 見ます"
+                answerMode === "one"
+                  ? "1問 こたえるたびに、こたえと せつめいを 見ます"
+                  : answerMode === "all"
+                    ? "もんだいは ぜんぶ 1ページに 出ます。行き来しても 書いた ものは 消えません"
+                    : "ぜんぶ こたえてから 出します。けっかは さいごに まとめて 見ます"
               }
               index={UI_FURIGANA}
             />
@@ -873,6 +891,198 @@ function ConfirmCard({
     </motion.div>
   );
 }
+
+/**
+ * ぜんぶ 1ページ（`answerMode: "all"`）。
+ *
+ * 骨組みは `ConfirmCard` と 同じ——番号の チップ・「まだ です」・のこりの 案内・
+ * 「こたえを 出す」。ちがうのは **行が 読むだけでは なく 書ける** ことだけ。
+ *
+ * ## なぜ この 見せかたが 要るか
+ * 学習者は 教材（学習用サイト）と もんだいを **行ったり 来たり** する。1問ずつだと
+ * 「サイトで 見つけた ことを、いま 開いて いない 3問目に 書く」が できない。
+ * 全問 見えて いれば、見つけた 順に 書ける。
+ *
+ * ## 書いた ものが 消えない しくみ
+ * 打つ たびに reducer の `drafts` に 入り、`quiz-runner` の effect が
+ * `localStorage` に 書く（`@/lib/quiz/resume`）。画面を 移っても 端末に 残る。
+ *
+ * ## いちばん こわい 壊れかた: 入力欄の 作り直し
+ * `question-types.tsx` の 入力は どれも **マウントの ときだけ** 下書きを 読む
+ *（IME の 変換中に 親から 文字を 差し戻さない ための 意図的な 作り）。だから
+ * `<li>` の `key` は **`question.id` だけ**。相や 状態を 混ぜた 瞬間、1文字 打つ たびに
+ * 全問の 入力が 作り直されて、書いた ものが 飛ぶ。
+ */
+function AllQuestionsCard({
+  questions,
+  drafts,
+  furigana,
+  inputIssue,
+  inputIssueQuestionId,
+  dispatch,
+  onSubmit,
+}: {
+  questions: readonly QuizQuestion[];
+  drafts: Readonly<Record<string, Parameters<typeof draftAnswerText>[1]>>;
+  furigana: ReturnType<typeof buildFuriganaIndex>;
+  inputIssue: FeedbackKey | undefined;
+  inputIssueQuestionId: string | undefined;
+  dispatch: (action: QuizAction) => void;
+  onSubmit: () => void;
+}) {
+  const left = questions.filter((q) => !draftAnswered(q, drafts[q.id])).length;
+  const written = questions.length - left;
+  // 1問も 書かずに 出す 道は 閉じる（理由は ConfirmCard と 同じ）
+  const nothingWritten = left === questions.length;
+
+  /*
+   * もんだいごとの dispatch を **作り置き**する。毎回 その場で 関数を 作ると
+   * `React.memo` が 効かず、1文字 打つ たびに 全問が 描き直される
+   *（制約: 全員が 通る 画面で 重い 処理を 増やさない）。
+   */
+  const dispatchers = useMemo(
+    () =>
+      new Map(
+        questions.map((q) => [
+          q.id,
+          (action: QuizAction) => dispatch({ ...action, questionId: q.id } as QuizAction),
+        ]),
+      ),
+    [questions, dispatch],
+  );
+
+  const firstLeft = questions.find((q) => !draftAnswered(q, drafts[q.id]));
+
+  return (
+    <div className="mt-4">
+      {/* のこりが いつも 見える。正誤は 出さない（出したら「まとめて 出す」で なくなる） */}
+      <div className="bg-panel/95 border-hairline sticky top-0 z-10 -mx-1 mb-4 flex flex-wrap items-center gap-3 rounded-full border-2 px-4 py-2 backdrop-blur">
+        <span className="text-navy text-sm font-extrabold">
+          <RubyText text={`こたえた ${written} / ${questions.length}`} index={UI_FURIGANA} />
+        </span>
+        {firstLeft && (
+          <a
+            href={`#q-${firstLeft.id}`}
+            className="text-ink-soft hover:text-navy ml-auto text-xs font-extrabold"
+          >
+            <RubyText text="まだの もんだいへ ⤵" index={UI_FURIGANA} />
+          </a>
+        )}
+      </div>
+
+      <ol className="grid gap-4">
+        {questions.map((q, index) => (
+          // key は question.id **だけ**。相を混ぜると 打つたびに 入力が 作り直される
+          <li key={q.id} id={`q-${q.id}`} className="card-island scroll-mt-16 p-5 sm:p-6">
+            <QuestionRow
+              question={q}
+              index={index}
+              total={questions.length}
+              answered={draftAnswered(q, drafts[q.id])}
+              draft={drafts[q.id]}
+              furigana={furigana}
+              dispatch={dispatchers.get(q.id)!}
+              inputIssue={inputIssueQuestionId === q.id ? inputIssue : undefined}
+            />
+          </li>
+        ))}
+      </ol>
+
+      <div className="card-island mt-6 p-6">
+        <p className="text-ink-soft font-bold">
+          {left === 0 ? (
+            <RubyText text="ぜんぶ 書けました。出しても だいじょうぶ" index={UI_FURIGANA} />
+          ) : nothingWritten ? (
+            <RubyText
+              text="まだ 1もんも 書いて いません。1もんでも 書いてから 出しましょう"
+              index={UI_FURIGANA}
+            />
+          ) : (
+            <RubyText
+              text={`のこり ${left}もん。おしても いいし、書いてからでも いいよ`}
+              index={UI_FURIGANA}
+            />
+          )}
+        </p>
+        {!nothingWritten && (
+          <button
+            type="button"
+            onClick={onSubmit}
+            className="btn-island btn-game mt-4 w-full px-6 py-3.5"
+            style={{ "--btn-face": "#58c273", "--btn-shadow": "#3aa458" } as React.CSSProperties}
+          >
+            <RubyText text="こたえを 出す" index={UI_FURIGANA} />
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/**
+ * ぜんぶ 1ページの ときの 1行。
+ *
+ * `React.memo` で 包む。包まないと、どこか 1問に 1文字 打つ たびに 全問が 描き直される。
+ */
+const QuestionRow = memo(function QuestionRow({
+  question,
+  index,
+  total,
+  answered,
+  draft,
+  furigana,
+  dispatch,
+  inputIssue,
+}: {
+  question: QuizQuestion;
+  index: number;
+  total: number;
+  answered: boolean;
+  draft: Parameters<typeof draftAnswerText>[1];
+  furigana: ReturnType<typeof buildFuriganaIndex>;
+  dispatch: (action: QuizAction) => void;
+  inputIssue: FeedbackKey | undefined;
+}) {
+  return (
+    <>
+      <div className="mb-3 flex items-start gap-3">
+        <span
+          className="mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-full text-xs font-extrabold"
+          /* 書いた ものは 済んだ 印（青）、まだの ものは 目を 引く 枠（ConfirmCard と 同じ） */
+          style={{
+            background: answered ? "var(--color-sky)" : "var(--color-panel)",
+            color: answered ? "#fff" : "var(--color-ink-soft)",
+            boxShadow: answered ? "none" : "inset 0 0 0 2px var(--color-ink-faint)",
+          }}
+        >
+          {index + 1}
+        </span>
+        <h2 className="text-ink min-w-0 flex-1 text-lg font-extrabold">
+          <RubyText text={question.q} index={furigana} />
+        </h2>
+        <span className="text-ink-faint mt-1 shrink-0 text-xs font-extrabold">
+          {index + 1}/{total}
+        </span>
+      </div>
+
+      <QuestionBody
+        question={question}
+        furigana={furigana}
+        dispatch={dispatch}
+        mode="all"
+        draft={draft}
+        emotionStep2={draft?.kind === "emotion" && draft.feeling !== null}
+      />
+
+      {/* 注意は **その もんだいの 下**に 出す（上に 1つだと どの 欄の 話か 分からない） */}
+      {inputIssue && (
+        <div className="mt-3">
+          <FeedbackMessage messageKey={inputIssue} />
+        </div>
+      )}
+    </>
+  );
+});
 
 function QuizResultCard({
   set,

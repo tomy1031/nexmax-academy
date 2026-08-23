@@ -57,7 +57,7 @@ export function QuestionBody({
   mode = "one",
   draft,
 }: Props) {
-  const submitMode = mode === "submit";
+  const submitMode = mode !== "one";
 
   switch (question.type) {
     case "choose":

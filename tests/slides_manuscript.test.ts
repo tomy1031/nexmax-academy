@@ -138,7 +138,7 @@ describe("原稿の 国名（規律9）", () => {
     expect(findings).toEqual([]);
   });
 
-  it("合意済みの アメリカ・中国 は 通す（ai_jidai の実データが 使っている）", () => {
+  it("アメリカ・中国 は 通す（ai_jidai の実データが 使っている）", () => {
     const findings = checkManuscript(
       "f.html",
       manuscript(
@@ -148,14 +148,17 @@ describe("原稿の 国名（規律9）", () => {
     expect(findings).toEqual([]);
   });
 
-  it("あたらしい国名（ベトナム など）は warn で 確認を うながす", () => {
+  it("タイ以外の 国名（ベトナム など）は 何も言わない", () => {
+    /*
+     * 2026-08-23 の 是正。前は「新しい 国名は 事前に 確認」で warn を 出して いたが、
+     * 規律9 が 禁じて いるのは **タイだけ**で、国名を 出さないのは まなびマップの
+     * 見せかたの 話だった（src/lib/content-checks.ts の 覚書）。
+     */
     const findings = checkManuscript(
       "f.html",
       manuscript(`<div class="slide"><p>ベトナムの 話を します</p></div>`),
     );
-    expect(findings).toHaveLength(1);
-    expect(findings[0]?.level).toBe("warn");
-    expect(findings[0]?.message).toContain("ユーザーへ確認");
+    expect(findings).toEqual([]);
   });
 });
 

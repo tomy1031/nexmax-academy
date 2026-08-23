@@ -40,7 +40,7 @@ test("5番目まで おわった 端末では、5番目が ひらき、6番目�
   page,
   context,
 }) => {
-  await seedCompleted(context, itemsBefore(4));
+  await seedCompleted(context, itemsBefore(KAISHA.meetingHendy));
 
   await page.goto(KAISHA.meetingHendy.path);
   await expect(page.getByText("はなす まえに")).toBeVisible();
