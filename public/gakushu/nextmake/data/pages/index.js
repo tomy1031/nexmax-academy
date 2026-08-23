@@ -7,11 +7,19 @@
 
 import { HOME } from "./home.js";
 import { ABOUT } from "./about.js";
-import { VIETNAM } from "./vietnam.js";
+import { CAMBODIA } from "./cambodia.js";
+import { GROUP } from "./group.js";
 import { SERVICES } from "./services.js";
 import { MAKING } from "./making.js";
-import { CAMBODIA } from "./cambodia.js";
 import { WORKS } from "./works.js";
 import { DICTIONARY } from "./dictionary.js";
 
-export const PAGES = [HOME, ABOUT, VIETNAM, SERVICES, MAKING, CAMBODIA, WORKS, DICTIONARY];
+/*
+ * 並びは 2026-08-23 の 指定:
+ *   ホーム → 会社紹介 → **カンボジア事業** → グループ会社 → 事業 → つくる仕事 → 実績 → 辞典
+ *
+ * カンボジア事業を 前に 出すのは、**学習者自身が 載って いる ページ**だから。
+ * 会社の ことを 知った すぐ あとに「自分たちが ここに いる」と 分かるほうが、
+ * その先の ページを 読む 理由に なる（設計01 P7: 感情が エンジン）。
+ */
+export const PAGES = [HOME, ABOUT, CAMBODIA, GROUP, SERVICES, MAKING, WORKS, DICTIONARY];

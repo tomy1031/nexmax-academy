@@ -21,7 +21,7 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { FORBIDDEN_LEARNER_WORDS } from "@/content/schema";
 import { checkCountryNamesInTexts } from "@/lib/content-checks";
-import { buildFuriganaIndex, uncoveredKanji } from "@/lib/text/furigana";
+import { annotateRuby, buildFuriganaIndex, uncoveredKanji } from "@/lib/text/furigana";
 // 静的ページの素の JS モジュール（tsconfig の allowJs で そのまま 読める）
 import { PAGES } from "../public/gakushu/nextmake/data/pages/index.js";
 import { UI } from "../public/gakushu/nextmake/data/ui.js";
@@ -44,10 +44,10 @@ const SITE = join(ROOT, "public", "gakushu", "nextmake");
 const EXPECTED_ORDER = [
   "home",
   "about",
-  "vietnam",
+  "cambodia",
+  "group",
   "services",
   "making",
-  "cambodia",
   "works",
   "dictionary",
 ];
@@ -149,6 +149,101 @@ describe("読めない漢字が 残って いない（規律2）", () => {
       ([surface]) => !/^[㐀-鿿々]/u.test(surface),
     );
     expect(bad).toEqual([]);
+  });
+
+  /*
+   * **覆えて いる ことと、読みが 合って いる ことは 別**（2026-08-23 にユーザーが発見）。
+   * 1字ずつの 読みで 全部 覆えて いても、つないだ 読みは たいてい まちがう:
+   *   教育 → 教（おし）＋育（そだ）＝「おしそだ」
+   *   社会 → 社（しゃ）＋会（あ）　＝「しゃあ」
+   * 学習者は その まちがった 読みを おぼえて しまう ので、覆いの 検査より 重い。
+   *
+   * `content/` 側には 同じ 検査が すでに あった（`checkSplitCompoundReadings`）が、
+   * あれは `public/` を 見ない。ここで 同じ 考えかたを 掛ける。
+   *
+   * 下の 一覧は「割れる が、つないだ 読みは 合って いる」もの。**目で 1つずつ 確かめた**。
+   * 新しく 増えたら ここに 足す 前に、声に 出して 読んで みる こと。
+   */
+  const VERIFIED_SPLITS = new Set([
+    "日本語授業修了式",
+    "自動車株式会社様",
+    "協会南大阪支部様",
+    "日本語能力試験",
+    "会育成連合会様",
+    "受託開発事業",
+    "海外人材育成",
+    "海外有力大学",
+    "日本企業文化",
+    "徳島県三好市",
+    "一部上場企業",
+    "日本語教育",
+    "日本語授業",
+    "社内設置型",
+    "多言語翻訳",
+    "補助金支援",
+    "導入補助金",
+    "自動車整備",
+    "会社紹介",
+    "大阪本社",
+    "制作事業",
+    "開発事業",
+    "海外事業",
+    "日本国内",
+    "国家発展",
+    "日本文化",
+    "学生代表",
+    "現地来訪",
+    "進行管理",
+    "毎日連絡",
+    "人材育成",
+    "先進事業",
+    "口頭報告",
+    "業務項目",
+    "地域資料",
+    "地域還元",
+    "証明情報",
+    "承認手順",
+    "限定情報",
+    "自律運用",
+    "設備異常",
+    "温度変化",
+    "災害対応",
+    "救助活動",
+    "要件整理",
+    "品質管理",
+    "日本企業",
+    "海外展開",
+    "英語対応",
+    "事業課題",
+    "動画制作",
+    "社内業務",
+    "鈑金塗装",
+    "整備業向",
+    "社以上",
+    "礼儀正",
+    "強化",
+    "見積",
+  ]);
+
+  it("熟語が 1字ずつに 割れて いない（割れるなら 読みを 目で 確かめた ものだけ）", () => {
+    const index = buildFuriganaIndex(FURIGANA as [string, string][]);
+    const known = new Set((FURIGANA as [string, string][]).map(([surface]) => surface));
+    const broken = new Map<string, string>();
+
+    for (const text of [...JA, ...textsOf(PAGES, "en")]) {
+      for (const run of text.match(/[々一-鿿]{2,}/gu) ?? []) {
+        if (known.has(run) || VERIFIED_SPLITS.has(run) || broken.has(run)) continue;
+        const segments = annotateRuby(run, index);
+        // 覆えて いない ものは 上の 検査の 担当。ここは **全部に ルビが 付いた うえで
+        // 2つ以上に 割れた** ものだけ 見る
+        if (segments.length < 2 || segments.some((s) => !s.reading)) continue;
+        broken.set(
+          run,
+          `${segments.map((s) => s.text).join("＋")} →「${segments.map((s) => s.reading).join("")}」`,
+        );
+      }
+    }
+    expect([...broken.entries()].map(([run, how]) => `${run}: ${how}`)).toEqual([]);
   });
 
   it("読みは ひらがなだけ", () => {

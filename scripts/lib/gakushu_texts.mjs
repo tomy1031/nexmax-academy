@@ -130,6 +130,7 @@ export function imagePaths(pages) {
         return;
       }
       if (typeof node.src === "string") out.push(node.src);
+      if (typeof node.image === "string") out.push(node.image);
       for (const value of Object.values(node)) collect(value);
     };
     collect(page.blocks);

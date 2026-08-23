@@ -14,6 +14,12 @@ export const GLOSSARY = [
   },
   { term: "安全", reading: "あんぜん", meaning: "safe の ことばです。", en: "safe" },
   {
+    term: "案内",
+    reading: "あんない",
+    meaning: "行き方や やり方を、その 人に 見せる ことです。",
+    en: "guiding someone",
+  },
+  {
     term: "運用",
     reading: "うんよう",
     meaning: "つくった システムを まいにち うごかしつづける しごと",
@@ -94,6 +100,18 @@ export const GLOSSARY = [
     meaning: "合格は、テストや試験に通ることです。",
     en: "Passing (an exam)",
   },
+  {
+    term: "コミュニケーション",
+    reading: "こみゅにけーしょん",
+    meaning: "はなしたり 聞いたり して、つたえ合う ことです。",
+    en: "Communication",
+  },
+  {
+    term: "採用",
+    reading: "さいよう",
+    meaning: "会社が いっしょに はたらく 人を えらぶ ことです。",
+    en: "Recruitment / Hiring",
+  },
   { term: "サポート", reading: "さぽーと", meaning: "support — たすける こと", en: "" },
   {
     term: "事業",
@@ -125,6 +143,12 @@ export const GLOSSARY = [
     reading: "じぶん",
     meaning: "わたし。あなた じしんの ことです。",
     en: "Oneself / Myself",
+  },
+  {
+    term: "社員",
+    reading: "しゃいん",
+    meaning: "その 会社で はたらいて いる 人の ことです。",
+    en: "Employee",
   },
   {
     term: "授業",
@@ -178,6 +202,12 @@ export const GLOSSARY = [
     en: "Consultation",
   },
   {
+    term: "対応",
+    reading: "たいおう",
+    meaning: "もんだいが 出た とき、それを なおす しごと",
+    en: "handling",
+  },
+  {
     term: "大切",
     reading: "たいせつ",
     meaning: "とても だいじで、なくしたく ない こと",
@@ -190,12 +220,14 @@ export const GLOSSARY = [
     en: "team",
   },
   { term: "チケット", reading: "ちけっと", meaning: "ticket", en: "" },
+  { term: "地図", reading: "ちず", meaning: "進む 道が 書いて ある 絵です。", en: "Map" },
   {
     term: "データ",
     reading: "でーた",
     meaning: "名前や 数字など、コンピューターが あつかう 中身です。",
     en: "Data",
   },
+  { term: "テスト", reading: "てすと", meaning: "test / exam", en: "" },
   { term: "道具", reading: "どうぐ", meaning: "しごとで 手に もって つかう もの", en: "a tool" },
   {
     term: "導入実績",
@@ -217,7 +249,19 @@ export const GLOSSARY = [
     en: "teammate",
   },
   { term: "名前", reading: "なまえ", meaning: "その 人を よぶ ときの 言葉です。", en: "Name" },
+  {
+    term: "入力",
+    reading: "にゅうりょく",
+    meaning: "キーボードで 字を 打って、コンピューターに 入れる ことです。",
+    en: "Input / Typing in",
+  },
   { term: "場所", reading: "ばしょ", meaning: "勉強を する ところです。", en: "Place / Location" },
+  {
+    term: "必要",
+    reading: "ひつよう",
+    meaning: "必要は、ぜったいに要る、なくてはこまるという意味です。",
+    en: "Necessary",
+  },
   {
     term: "プログラム",
     reading: "ぷろぐらむ",

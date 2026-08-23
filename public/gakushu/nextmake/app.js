@@ -233,6 +233,10 @@ const RENDER = {
     return box;
   },
 
+  /*
+   * サービス1つ。**見出しの ことばは UI が 持つ**（`UI.service`）ので、5つの サービスが
+   * かならず 同じ 順・同じ 呼び名で 並ぶ。学習者は 見比べる ことが できる。
+   */
   service: (block) => {
     const box = el("section", "b-service");
     const head = el("div", "service-head");
@@ -242,8 +246,68 @@ const RENDER = {
     if (block.reading) names.append(el("p", "service-reading", block.reading));
     head.append(names);
     box.append(head);
+
+    // 本家の サービスページの 絵（2026-08-23 の 指定）。中身の 説明の 手前に 置く
+    if (block.image) {
+      const figure = el("div", "service-image");
+      const img = document.createElement("img");
+      img.src = block.image;
+      img.alt = "";
+      img.loading = "lazy";
+      figure.append(img);
+      box.append(figure);
+    }
+
     box.append(el("p", "service-lead", block.lead));
     box.append(el("p", "service-text", block.text));
+
+    /** 小見出し ＋ 中身 を 1かたまりで 足す（無い ときは 何も 出さない）。 */
+    const part = (label, build, items) => {
+      if (!items || items.length === 0) return;
+      box.append(el("h4", "service-part", label));
+      box.append(build(items));
+    };
+
+    part(
+      UI.service.before,
+      (items) => {
+        const ul = el("ul", "service-before");
+        for (const item of items) ul.append(el("li", null, item));
+        return ul;
+      },
+      block.before,
+    );
+
+    part(
+      UI.service.how,
+      (items) => {
+        const ol = el("ol", "service-how");
+        items.forEach((item, at) => {
+          const li = el("li");
+          li.append(el("span", "step-no", String(at + 1)));
+          li.append(el("span", "step-text", item));
+          ol.append(li);
+        });
+        return ol;
+      },
+      block.how,
+    );
+
+    part(
+      UI.service.can,
+      (items) => {
+        const wrap = el("div", "service-can");
+        for (const item of items) {
+          const card = el("div", "can-card");
+          card.append(el("h5", "can-label", item.label));
+          card.append(el("p", "can-text", item.text));
+          wrap.append(card);
+        }
+        return wrap;
+      },
+      block.can,
+    );
+
     if (block.note) box.append(el("p", "service-note", block.note));
     return box;
   },

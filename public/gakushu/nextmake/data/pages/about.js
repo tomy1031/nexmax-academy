@@ -230,11 +230,11 @@ export const ABOUT = {
     },
     {
       kind: "link",
-      to: "vietnam",
+      to: "group",
       label: {
-        n4: "ベトナムの チームを 見る",
-        n3: "ベトナムの開発チームを見る",
-        en: "See the Vietnam team",
+        n4: "グループの 会社を 見る",
+        n3: "グループ企業を見る",
+        en: "See our group companies",
       },
     },
   ],

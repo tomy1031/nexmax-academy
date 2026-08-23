@@ -24,31 +24,39 @@
     -->
   </head>
   <body>
-    <!-- ============ 学習の 道具（サイトの 外がわ） ============ -->
-    <div class="helper" id="helper">
-      <span class="helper-label" id="helper-label"></span>
-      <div class="helper-levels" id="helper-levels" role="group"></div>
-      <button type="button" class="helper-btn" id="furigana-toggle" aria-pressed="true"></button>
-    </div>
+    <!--
+      学習の 道具の 帯と 会社の あたまは **1つの かたまりで 貼りつける**。
+      前は それぞれ 別に sticky に して、下の あたまに `top: 40px` と 書いて いた。
+      帯が 2行に 折り返す 幅（せまい 端末・大きい 文字）では 40px を 超えるので、
+      **あたまが 帯に 重なった**。高さを 数字で 決めうちせず、並べて 貼る。
+    -->
+    <div class="topbar">
+      <!-- ============ 学習の 道具（サイトの 外がわ） ============ -->
+      <div class="helper" id="helper">
+        <span class="helper-label" id="helper-label"></span>
+        <div class="helper-levels" id="helper-levels" role="group"></div>
+        <button type="button" class="helper-btn" id="furigana-toggle" aria-pressed="true"></button>
+      </div>
 
-    <!-- ============ 会社の サイト ============ -->
-    <header class="site-head">
-      <a class="brand" href="#/home">
-        <span class="brand-mark" aria-hidden="true">NM</span>
-        <span class="brand-text">
-          <strong id="brand-name"></strong>
-          <small id="brand-tagline"></small>
-        </span>
-      </a>
-      <button
-        type="button"
-        class="nav-toggle"
-        id="nav-toggle"
-        aria-expanded="false"
-        aria-controls="nav"
-      ></button>
-      <nav class="nav" id="nav" aria-label="ページの一覧"></nav>
-    </header>
+      <!-- ============ 会社の サイト ============ -->
+      <header class="site-head">
+        <a class="brand" href="#/home">
+          <span class="brand-mark" aria-hidden="true">NM</span>
+          <span class="brand-text">
+            <strong id="brand-name"></strong>
+            <small id="brand-tagline"></small>
+          </span>
+        </a>
+        <button
+          type="button"
+          class="nav-toggle"
+          id="nav-toggle"
+          aria-expanded="false"
+          aria-controls="nav"
+        ></button>
+        <nav class="nav" id="nav" aria-label="ページの一覧"></nav>
+      </header>
+    </div>
 
     <main id="main" tabindex="-1">
       <article class="page" id="page"></article>
