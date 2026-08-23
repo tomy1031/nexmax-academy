@@ -27,7 +27,7 @@
     "cf:typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
     "cf:checkenv": "node scripts/check_build_env.mjs",
     "cf:build:local": "node scripts/copy_pdf_worker.mjs && opennextjs-cloudflare build",
-    "cf:branch": "npm run cf:build && node scripts/preview_alias.mjs",
+    "cf:branch": "npm run cf:build && OPEN_NEXT_CACHE=assets node scripts/preview_alias.mjs",
     "cf:staging": "npm run cf:build && node scripts/preview_alias.mjs staging",
     "gen:content": "node scripts/generate_content_index.mjs && node scripts/generate_scene_index.mjs && node scripts/generate_glossary.mjs"
   },

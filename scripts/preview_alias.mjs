@@ -94,6 +94,23 @@ export function toAlias(branch, maxLength) {
   return sanitized.slice(0, maxLength).replace(/-+$/, "");
 }
 
+/**
+ * `wrangler versions upload` に渡す引数。
+ *
+ * assets モード（ブランチ確認URL）のときだけ Worker の変数 `OPEN_NEXT_CACHE=assets` を足す。
+ * これが付いた版は作りおきを **静的アセット**から読む（KV書き込み0件）。
+ * **staging・本番には絶対に付けない** —— 付くと先生の直しが60秒で出なくなる。
+ *
+ * @param {string} alias 確認URLのエイリアス
+ * @param {boolean} assetsMode 静的アセットから読む版にするか
+ * @returns {string[]}
+ */
+export function buildUploadArgs(alias, assetsMode) {
+  const args = ["versions", "upload", "--preview-alias", alias];
+  if (assetsMode) args.push("--var", "OPEN_NEXT_CACHE:assets");
+  return args;
+}
+
 /** wrangler.jsonc から Worker 名を読む（改名に追随させるため直書きしない）。 */
 function readWorkerName() {
   const source = fs.readFileSync(path.join(process.cwd(), "wrangler.jsonc"), "utf-8");
@@ -153,23 +170,67 @@ function main() {
 
   console.log(`→ ${branch} を https://${alias}-${workerName}.<subdomain>.workers.dev へ上げます`);
 
-  const result = spawnSync("wrangler", ["versions", "upload", "--preview-alias", alias], {
-    stdio: "inherit",
-  });
-  if ((result.status ?? 1) !== 0) process.exit(result.status ?? 1);
+  // 作りおきページ（プリレンダー）の置き場は2つある（open-next.config.ts 参照）。
+  //
+  //  - assets モード（`OPEN_NEXT_CACHE=assets`。ブランチ確認URL用）
+  //      Worker の静的アセットへ**ローカルでコピー**してから上げる。KV書き込みは0件。
+  //      コピーは upload より**先**でなければならない（上げるのは .open-next/assets の中身）。
+  //  - 既定（staging・本番）
+  //      upload の**あと**に KV へ投入する。1回およそ68件の書き込みになる。
+  //
+  // なぜ分けるか: KV無料枠は書き込み1000件/日。キャッシュキーに buildId が入るため
+  // 版を上げるたびに68件を丸ごと書き直しており、2026-08-22 に上限へ当たった。
+  const assetsMode = process.env.OPEN_NEXT_CACHE === "assets";
 
-  // ビルド時プリレンダーを KV の incrementalCache へ投入する（open-next.config.ts 参照）。
-  // `opennextjs-cloudflare deploy`（cf:deploy）は自動でやるが、ここは素の
-  // `wrangler versions upload` なので自前で呼ぶ。忘れても初回アクセス時に
-  // 各ページが自己修復する（＝落ちない）が、その初回だけフルSSRで重くなる。
-  const populate = spawnSync("npx", ["opennextjs-cloudflare", "populateCache", "remote"], {
+  if (assetsMode) {
+    console.log("→ 作りおきを静的アセットへ写します（KVは使いません）");
+    const copied = spawnSync("npx", ["opennextjs-cloudflare", "populateCache", "local"], {
+      stdio: "inherit",
+    });
+    if ((copied.status ?? 1) !== 0) {
+      console.error(
+        "\n✗ 作りおきを静的アセットへ写せませんでした。このまま上げると全ページが" +
+          "\n  フルSSRになり、無料プランの CPU 上限（1リクエスト10ms）で Error 1102 に" +
+          "\n  なります。中止します。\n",
+      );
+      process.exit(copied.status ?? 1);
+    }
+  }
+
+  // assets モードでは **Worker の変数として** 渡す。open-next.config.ts の分岐は
+  // ビルド時ではなく **実行時**に評価されるため（nodejs_compat + compatibility_date
+  // 2025-04-01 以降で process.env が Worker の変数から埋まる）。
+  // おかげで**束ねたものは staging 用と同一**で、「ブランチでは動いたのに STG で違う」が起きない。
+  const result = spawnSync("wrangler", buildUploadArgs(alias, assetsMode), {
     stdio: "inherit",
   });
-  if ((populate.status ?? 1) !== 0) {
-    console.warn(
-      "⚠ KVキャッシュの投入に失敗（アップロード自体は完了。初回アクセスで自己修復されます）",
+  if (result.error || result.status !== 0) {
+    // `wrangler` は node_modules/.bin にしか無い。`npm run cf:branch` 経由なら PATH に
+    // 入るが、`node scripts/preview_alias.mjs` と直叩きすると ENOENT で落ちる。
+    // 以前はここが黙って終了していて、上げたつもりで上がっていなかった。
+    console.error(
+      `\n✗ wrangler versions upload に失敗しました${result.error ? `: ${result.error.message}` : ""}` +
+        "\n  `npm run cf:branch` で実行してください（wrangler は node_modules/.bin にあります）。\n",
     );
+    process.exit(result.status ?? 1);
   }
+
+  if (!assetsMode) {
+    // ビルド時プリレンダーを KV の incrementalCache へ投入する。
+    // `opennextjs-cloudflare deploy`（cf:deploy）は自動でやるが、ここは素の
+    // `wrangler versions upload` なので自前で呼ぶ。
+    const populate = spawnSync("npx", ["opennextjs-cloudflare", "populateCache", "remote"], {
+      stdio: "inherit",
+    });
+    if ((populate.status ?? 1) !== 0) {
+      console.warn(
+        "⚠ KVキャッシュの投入に失敗（アップロード自体は完了）。" +
+          "\n  KVの無料枠（書き込み1000件/日）を使い切っている可能性があります。" +
+          "\n  そのままだと各ページの初回アクセスがフルSSRになり、Error 1102 が出ます。",
+      );
+    }
+  }
+
   process.exit(0);
 }
 
