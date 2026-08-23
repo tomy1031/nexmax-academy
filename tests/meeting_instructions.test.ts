@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import meeting from "../content/meetings/hajimari_meeting.json";
+import kiku from "../content/meetings/hajimari_kiku.json";
 import {
   askInstruction,
   commonRules,
@@ -20,7 +21,7 @@ import {
 const source: InstructionSource = {
   persona: meeting.persona,
   hostName: meeting.host.name,
-  discover: meeting.discover,
+  discover: kiku.discover,
 };
 
 describe("両方の ばんに 置く もの", () => {
@@ -53,7 +54,7 @@ describe("ラウンド1（答える ばん）", () => {
    *（2026-08-21 の 実発生）。ラウンド2の 楽しみも 先に 使って しまう。
    */
   it("話せる ことを 渡さない", () => {
-    for (const item of meeting.discover) expect(text).not.toContain(item.answer);
+    for (const item of kiku.discover) expect(text).not.toContain(item.answer);
   });
 });
 
@@ -61,7 +62,7 @@ describe("ラウンド2（聞く ばん）", () => {
   const text = listenInstruction(source, "ソク");
 
   it("話題と 話を 1行で 向かい合わせる", () => {
-    for (const item of meeting.discover) {
+    for (const item of kiku.discover) {
       expect(text).toContain(`- 「${item.label}」を 聞かれたら: ${item.answer}`);
     }
   });

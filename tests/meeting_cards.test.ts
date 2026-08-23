@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import meeting from "../content/meetings/hajimari_meeting.json";
+import meeting from "../content/meetings/hajimari_kiku.json";
 import { buildCardPrompt, parseCardHit, type CardTopic } from "../src/lib/meeting/judge";
 import { normalizeReading } from "../src/lib/text/normalize";
 

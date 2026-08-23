@@ -1,13 +1,12 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
-import { motion } from "motion/react";
 import type { Meeting, MeetingQuestion } from "@/content/schema";
 import { CallShell } from "@/components/call-shell";
 import { DictionaryText } from "@/components/dictionary-text";
 import { RubyText } from "@/components/ruby-text";
 import type { DictionaryEntry } from "@/lib/dictionary";
-import { buildFuriganaIndex, kanaOf, type FuriganaIndex } from "@/lib/text/furigana";
+import { buildFuriganaIndex, kanaOf } from "@/lib/text/furigana";
 import { HINT_BLANK, hintPatterns } from "@/lib/meeting/hint";
 import { MAX_ATTEMPTS, type JudgeResult } from "@/lib/meeting/judge";
 import {
@@ -27,8 +26,12 @@ import {
   type MeetingRecord,
 } from "@/lib/meeting/record";
 import { asksToSkip, needsJapaneseInput } from "@/lib/meeting/input";
-import { clearMeetingResume, restoreMeeting, saveMeetingResume } from "@/lib/meeting/resume";
-import { JUDGE_FURIGANA } from "@/components/meeting/ui-furigana";
+import {
+  clearMeetingResume,
+  migrateSplitRounds,
+  restoreMeeting,
+  saveMeetingResume,
+} from "@/lib/meeting/resume";
 import { fillName, shouldReplayAsk, stripDirections } from "@/lib/meeting/speech";
 import { normalizeReading } from "@/lib/text/normalize";
 import {
@@ -41,7 +44,7 @@ import {
 import { getProfile } from "@/lib/profile";
 import { recordContentProgress } from "@/lib/progress/store";
 import { AffectionMeter } from "./affection-meter";
-import { localJudge, type AdviceText } from "./japanese-check";
+import { localJudge } from "./japanese-check";
 import {
   dropJudgeSession,
   judgeFailNote,
@@ -49,7 +52,7 @@ import {
   requestJudge,
   type JudgeApiResult,
 } from "./judge-api";
-import { JudgeCard } from "./judge-card";
+import { ChatLine, type ChatBody, type ChatEntry, type Fallback } from "./chat-line";
 import { DiscoverCards, QuestionCards } from "./question-board";
 import { PreviousRecordCard, RewardCard } from "./result-card";
 import {
@@ -171,29 +174,6 @@ const CHROME_FURIGANA = buildFuriganaIndex([
  * **同じ 流れ**に 積む。話し手が 混ざらない ように、色と 名札で 分ける
  *（見かたは 相手の ことばでは ない ——`judge-card.tsx` の 決まりを 守る）。
  */
-type ChatBody =
-  /** 教材の しつもん（作り置きの こえが あれば 聞き直せる）。 */
-  | { kind: "ask"; questionId: string; text: string; audioUrl?: string }
-  /** 相手の 受け止め（文字で 返った ぶん。声の ぶんは 字幕で 届く）。 */
-  /** 相手の ことば。`audioUrl` が あれば 🔊 で 聞き返せる（作り置き・その場の こえ 両方）。 */
-  | { kind: "host"; text: string; audioUrl?: string }
-  /** 学習者が 言った こと。 */
-  | { kind: "me"; text: string }
-  /** 日本語の 見かた（相手の ことばでは ない）。 */
-  | {
-      kind: "coach";
-      judge?: JudgeResult;
-      fallback?: Fallback;
-      note?: string | null;
-      /**
-       * AIに 通せなかった **理由の 名前**（学習者には 見せない）。
-       * 画面に 出す ことばは 理由を まとめて しまうので、どこで つまずいたのかが
-       * 通し検証の 写真から 読めなかった（2026-08-20）。印だけ 残す。
-       */
-      reason?: string | null;
-    };
-
-type ChatEntry = ChatBody & { id: string };
 
 const NOTICE = {
   empty: "だいじょうぶです。ヒントの 文を そのまま 書いても いいですよ。",
@@ -215,10 +195,6 @@ function readNameOnServer(): string {
 }
 
 /** 判定が使えなかったときの、規則ベースの助言（会話は止めない）。 */
-interface Fallback {
-  advice: AdviceText;
-  note: string;
-}
 
 interface Reply {
   /** 相手の返事（画面に出す文）。Live が声で返しているときは空。 */
@@ -262,6 +238,15 @@ export function MeetingSession({
    * 会話の 途中で 位置が 飛ぶ ため。しおりは 初期値の ための もの。
    */
   const questionIds = useMemo(() => meeting.questions.map((q) => q.id), [meeting.questions]);
+  /*
+   * **ばんを 分けた ときの 引っ越し**（2026-08-23）。しおりを 読む 前に 1回だけ。
+   * これを 忘れると、聞く ばんに いた 学習者が 1問目へ 落ち、話しきった 学習者の
+   * ステージが 未クリアに 巻き戻る。
+   */
+  useState(() => {
+    migrateSplitRounds();
+    return null;
+  });
   const [resume] = useState(() => restoreMeeting(meeting.id, questionIds));
   const [index, setIndex] = useState(resume.index);
   /**
@@ -409,6 +394,15 @@ export function MeetingSession({
   const [round1Done, setRound1Done] = useState(
     () => resume.round === "listen" || resume.index >= meeting.questions.length,
   );
+  /**
+   * **この 教材が 2つの ばんを 兼ねて いるか**（2026-08-23）。
+   *
+   * `mode` を 書いて いない 教材＝前からの もの。書いて ある なら ばんは
+   * **ステージの 並び**が 持つ ので、この 部品は 答える ばんだけを 受け持つ
+   *（聞く ばんは `listen-meeting.tsx`）。帯も 出さない——役は
+   * ステージの サイドバーが 引き継いだ。
+   */
+  const twoRounds = meeting.mode === undefined;
   /** **いま 見て いる ばん**——学習者が 帯を 押して 選ぶ。 */
   const [round, setRound] = useState<"ask" | "listen">(resume.round);
   /** 聞く ばん（ラウンド2）を 見て いるか。画面の 出し分けは これで 決める。 */
@@ -966,7 +960,7 @@ export function MeetingSession({
        * ぜんぶ 答えた。**進むのと ばんの 切りかえを 1か所で やる**——
        * 別の 効果に すると、進み方に よって 切りかわったり しなかったり する。
        */
-      setRound("listen");
+      if (twoRounds) setRound("listen");
       setRound1Done(true);
       /*
        * **ばんの 変わり目の ことばを チャットに 残す**（2026-08-21 の 指定）。
@@ -1013,7 +1007,7 @@ export function MeetingSession({
       status: "started",
       position: { panel: at },
     });
-  }, [index, meeting, answers, affection, withName, pushChat, settle]);
+  }, [index, meeting, answers, affection, withName, pushChat, settle, twoRounds]);
 
   const submit = useCallback(() => {
     const text = draft.trim();
@@ -1224,11 +1218,17 @@ export function MeetingSession({
     const which = certificate;
     setCertificate(null);
     // 見返して いただけの ときは 何も 起こさない（まだ おわって いない）
-    if (which !== "round2") return;
+    if (which === "review") return;
+    /*
+     * **答える ばんだけの 教材は、ここで おわり**（2026-08-23）。
+     * 2つの ばんを 兼ねて いた ころは 聞く ばんの あとに 書いて いたが、
+     * 分けた あとは 教材の おわり＝ばんの おわり。
+     */
+    if (twoRounds && which !== "round2") return;
     recordContentProgress(meeting.id, { status: "completed" });
     // 話しきった。つぎに 開いた ときは はじめから 話せる
     clearMeetingResume(meeting.id);
-  }, [certificate, meeting.id]);
+  }, [certificate, meeting.id, twoRounds]);
 
   const closeJudge = useCallback(() => {
     const again = reply?.judge?.retry === true;
@@ -1420,7 +1420,7 @@ export function MeetingSession({
    * ぜんぶ 答えるまで **押せない**（消さずに 灰色で 残す——消えると
    * 「さっき あった ものが 無い」と 探しはじめる）。
    */
-  const roundSteps = (
+  const roundSteps = !twoRounds ? null : (
     <div className="card-island flex items-center gap-1.5 overflow-x-auto p-2">
       {(
         [
@@ -1727,10 +1727,10 @@ export function MeetingSession({
           hostName={meeting.host.name}
           furigana={furigana}
           nextLabel={
-            certificate === "round1"
-              ? `${meeting.host.name}さんに 聞いて みる →`
-              : certificate === "review"
-                ? "とじる"
+            certificate === "review"
+              ? "とじる"
+              : certificate === "round1" && twoRounds
+                ? `${meeting.host.name}さんに 聞いて みる →`
                 : "ステージに もどる →"
           }
           onNext={closeCertificate}
@@ -1769,91 +1769,3 @@ export function MeetingSession({
  *（設計01 §1.1「ゲーム・SNS の UI の 文法は 母語の ように 読める」）。
  * 日本語の 見かた（コーチ）は どちらでも ない 色に して、相手の ことばと 混ぜない。
  */
-function ChatLine({
-  entry,
-  hostName,
-  furigana,
-  dictionary,
-  onReplay,
-}: {
-  entry: ChatEntry;
-  hostName: string;
-  furigana: FuriganaIndex;
-  dictionary?: readonly DictionaryEntry[];
-  onReplay?: () => void;
-}) {
-  if (entry.kind === "coach") {
-    return (
-      <motion.div
-        data-kind="coach"
-        data-fallback={entry.reason ?? undefined}
-        initial={{ opacity: 0, y: 6 }}
-        animate={{ opacity: 1, y: 0 }}
-      >
-        {entry.judge ? <JudgeCard judge={entry.judge} hostName={hostName} /> : null}
-        {/* AIに 通せなかった 理由。あとから 読み返せる ように チャットにも 残す */}
-        {entry.note ? (
-          <p className="text-ink-faint mt-1 text-xs font-bold break-words">{entry.note}</p>
-        ) : null}
-        {entry.fallback ? (
-          <div className="bg-panel-tint space-y-1 rounded-[var(--radius-card)] p-3">
-            <p className="text-leaf text-sm font-extrabold">
-              🌸 <RubyText text={entry.fallback.advice.praise} index={JUDGE_FURIGANA} show />
-            </p>
-            {entry.fallback.advice.fix ? (
-              <p className="text-ink-soft text-sm font-bold break-words">
-                💡 {entry.fallback.advice.fix}
-              </p>
-            ) : null}
-            {entry.fallback.advice.example ? (
-              <p className="text-ink rounded-xl bg-white px-3 py-2 text-sm font-bold break-words">
-                こう 言うと もっと いいです →「{entry.fallback.advice.example}」
-              </p>
-            ) : null}
-            {entry.fallback.note ? (
-              <p className="text-ink-faint text-xs font-bold">{entry.fallback.note}</p>
-            ) : null}
-          </div>
-        ) : null}
-      </motion.div>
-    );
-  }
-
-  const mine = entry.kind === "me";
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 6 }}
-      animate={{ opacity: 1, y: 0 }}
-      data-kind={entry.kind}
-      className={mine ? "flex justify-end" : "flex justify-start"}
-    >
-      <div
-        className={`max-w-[85%] rounded-2xl px-3 py-2 ${
-          mine ? "bg-sky-soft text-ink" : "bg-panel-tint text-ink"
-        }`}
-      >
-        <p className={`text-[11px] font-extrabold ${mine ? "text-navy" : "text-sky"}`}>
-          {mine ? "あなた" : hostName}
-          {/* 作り置きの こえが ある ときだけ、その 行を 聞き直せる */}
-          {onReplay ? (
-            <button
-              type="button"
-              onClick={onReplay}
-              aria-label="もう いちど 聞く"
-              className="border-hairline text-navy ml-2 rounded-full border bg-white px-1.5 py-0.5 text-[11px] font-extrabold"
-            >
-              🔊
-            </button>
-          ) : null}
-        </p>
-        <p className="text-ink mt-0.5 leading-relaxed font-bold break-words">
-          {entry.kind === "ask" ? (
-            <DictionaryText text={entry.text} index={furigana} show dictionary={dictionary} />
-          ) : (
-            entry.text
-          )}
-        </p>
-      </div>
-    </motion.div>
-  );
-}

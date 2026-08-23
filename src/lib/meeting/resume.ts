@@ -24,7 +24,12 @@
 
 import { z } from "zod";
 import { EMPTY_AFFECTION, type AffectionState } from "@/lib/meeting/affection";
-import { defaultBackend, readContentProgress, type ProgressBackend } from "@/lib/progress/store";
+import {
+  defaultBackend,
+  readContentProgress,
+  recordContentProgress,
+  type ProgressBackend,
+} from "@/lib/progress/store";
 
 /** 進捗ストアと同じ名前空間（あちらの定数は非公開なので、鍵の形だけ合わせる）。 */
 const NAMESPACE = "nexmax:v1";
@@ -212,6 +217,61 @@ export function saveMeetingResume(
   backend: ProgressBackend = defaultBackend(),
 ): void {
   backend.set(keyOf(resume.meetingId), JSON.stringify(resume));
+}
+
+/* ------------------------------------------------------------------ *
+ * ばんを 分けた ときの 引っ越し（一度きり）
+ * ------------------------------------------------------------------ */
+
+/**
+ * **前からの 教材（1つの 中に 2つの ばん）→ 2つの 教材** の 引っ越し。
+ *
+ * ## 動かすのは 1つだけ
+ * 旧い しおりが **聞く ばんを 指して いる** ときだけ。これは 前からの データにしか
+ * 現れない 形なので、**取りちがえようが ない**——答える ばんの 教材に
+ *「聞く ばん」は もう 無い。答える ばんを おわった ことに して、聞き出せた ぶんを
+ * 新しい 教材の しおりへ 種として 移す。
+ *
+ * ## `completed` だけの 端末は さわらない（大事）
+ * 分ける 前の `completed` は「両方の ばんを おえた」印だった。分けた あとの
+ * `completed` は「答える ばんを おえた」印。**この 2つは 見分けが つかない**——
+ * どちらも 内訳を 残さずに 消えて いる。
+ *
+ * 見分けが つかない まま「聞く ばんも おわった ことに する」と、
+ * **答える ばんを おえた ばかりの 学習者に、入った 瞬間 ステージ クリアが 出る**
+ *（2026-08-23 の e2e で 実際に そうなった）。**まちがえる 向きを 選ぶ**なら、
+ * 新しい 教材を もう一度 すすめる ほうが、やって いない ものを おわった ことに
+ * するより ずっと よい。
+ *
+ * ## 一度きり
+ * 移し終えたら 旧い しおりを 消す ので、二度は 走らない。
+ * 対応は ここの 表 1つだけ——教材データに ペアの 欄を 足すと、移行が 済んだ
+ * あとも ずっと 残る。
+ */
+const SPLIT_PAIRS: Readonly<Record<string, string>> = { hajimari_meeting: "hajimari_kiku" };
+
+export function migrateSplitRounds(backend: ProgressBackend = defaultBackend()): void {
+  for (const [askId, listenId] of Object.entries(SPLIT_PAIRS)) {
+    const saved = readMeetingResume(askId, backend);
+    if (!saved || saved.round !== "listen") continue;
+    recordContentProgress(askId, { status: "completed" }, backend);
+    if (saved.found.length > 0) {
+      saveMeetingResume(
+        {
+          meetingId: listenId,
+          index: 0,
+          openIds: [],
+          answers: {},
+          affection: { perQuestion: {}, finished: false },
+          round: "listen",
+          found: saved.found,
+          missedIds: [],
+        },
+        backend,
+      );
+    }
+    clearMeetingResume(askId, backend);
+  }
 }
 
 /** 完走したとき・やり直すときに 消す。 */

@@ -35,6 +35,10 @@
     {
       "ref": "hajimari_meeting",
       "type": "meeting"
+    },
+    {
+      "ref": "hajimari_kiku",
+      "type": "meeting"
     }
   ],
   "wordStageIds": [

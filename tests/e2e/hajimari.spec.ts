@@ -1,11 +1,12 @@
 import { expect, test } from "@playwright/test";
 import meeting from "../../content/meetings/hajimari_meeting.json";
-import { joinCall, seedCompleted, shot, skipAsk, speakByText } from "./helpers";
+import kiku from "../../content/meetings/hajimari_kiku.json";
+import { joinCall, leaveCall, seedCompleted, shot, skipAsk, speakByText } from "./helpers";
 
 /** しつもんの 数（教材が 正）。 */
 const MEETING_QUESTIONS = meeting.questions.length;
 /** 見つける ことの 数（ラウンド2）。 */
-const MEETING_DISCOVER = meeting.discover.length;
+const MEETING_DISCOVER = kiku.discover.length;
 
 /**
  * はじまりステージ — ヘンディさんとの ミーティング（Zoom の 入りかた・ことばの 辞書）
@@ -20,6 +21,12 @@ const MEETING_DISCOVER = meeting.discover.length;
 
 /** はじまりの ミーティング（この 種別は 1本なので URL に ID が 付かない）。 */
 const MEETING = "/hajimari/meeting";
+/**
+ * 聞く ばんは **別の 教材**（2026-08-23 の 分割）。同じ 種別が 2本に なった ので
+ * URL に ID が 付く（`src/lib/stage-routes.ts` の 決まり）。
+ * 旧 `/hajimari/meeting` は 完全一致で 1本目（答える ばん）に 解決されつづける。
+ */
+const KIKU = "/hajimari/meeting-hajimari_kiku";
 /** 手前の まんがは 関門。ここだけを 見たいので おわった ことにする。 */
 const BEFORE = ["hajimari_manga"];
 
@@ -118,10 +125,7 @@ test("しつもんの ことばを タップすると、いみが 出る", async
   await shot(page, "31-hajimari-meeting-dictionary");
 });
 
-test("ぜんぶ おわると「聞く ばん」に なり、こえが 無くても 返事が ある", async ({
-  page,
-  context,
-}) => {
+test("しつもんを ぜんぶ 答えると、その 教材が おわる", async ({ page, context }) => {
   await seedCompleted(context, BEFORE);
   await page.goto(MEETING);
   await joinCall(page);
@@ -136,83 +140,57 @@ test("ぜんぶ おわると「聞く ばん」に なり、こえが 無くて�
   }
 
   /*
-   * ここからは 役が 入れかわる。**足場（聞き方）を 消さない**——
-   * 白い 入力欄だけ 残すのは、設計01 P6 の アンチパターン。
-   * ただし **並べて 見せない**（2026-08-20 の 指定）。上から 読んで 打つだけに
-   * なると 聞き出す 練習に ならない ので、こまった ときに 1つずつ 出す。
+   * ばんを **ステージの 並び**へ 出した（2026-08-23）。この 教材は 答える ばんだけ
+   * なので、ぜんぶ 答えたら ここで おわる——**帯（01/02）は 出ない**。
+   * 役は ステージの サイドバーが 引き継いだ。
    */
-  await expect(page.getByText("こんどは、あなたが")).toBeVisible();
-  /*
-   * ぜんぶ 終えると **しゅうりょうしょう**が 出る。
-   * この とき「ステージ クリア」は **まだ 出て いない**——順番を 重なりでは なく
-   * 「`completed` を 書く ところ」で 決めて いる ことの 見張り（2026-08-21）。
-   */
+  await expect(page.getByRole("button", { name: /さんに しつもん/ })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: /さんから しつもん/ })).toHaveCount(0);
+
   const certificate = page.getByRole("dialog", { name: "しゅうりょうしょうの ポップアップ" });
   await expect(certificate).toBeVisible();
-  await expect(page.getByRole("dialog", { name: "ステージ クリア" })).toHaveCount(0);
   await expect(certificate.getByText("こ 話せました")).toBeVisible();
   await shot(page, "34-hajimari-certificate");
   await certificate.getByRole("button").click();
   await expect(certificate).toHaveCount(0);
+});
+
+test("聞く ばんは 別の 教材。こえが 無くても 返事が ある", async ({ page, context }) => {
+  /* 答える ばんを おえた 端末（関門が 開いて いる） */
+  await seedCompleted(context, [...BEFORE, "hajimari_meeting"]);
+  await page.goto(KIKU);
+  await joinCall(page);
 
   /*
-   * ばんの 帯は **2つ**（「はじまり」は 消した）。ぜんぶ 答えた あとは
-   * どちらも 押せて、行き来できる。
+   * 聞ける ことは **はじめから 見えて いる**（伏せない）。板の ことばが そのまま
+   * 足場に なる。ルビが 合成されて 文が 割れる ので、かなだけの ところで 見る。
    */
-  const listenTab = page.getByRole("button", { name: /さんに しつもん/ });
-  await expect(listenTab).toBeEnabled();
-
-  /*
-   * **板は ばんに ついて くる**（2026-08-21 の 指定「02の 場合は 02の カードを
-   * 表示して」）。帯だけ 02 に して 板が 01 の ままだと、画面の いちばん 目立つ
-   * ところが 01 を 指しつづける。
-   */
-  await page.getByRole("button", { name: /さんから しつもん/ }).click();
-  await expect(page.getByLabel(/ひらいた カード/)).toBeVisible();
-  await expect(page.getByLabel(/きけた カード/)).toHaveCount(0);
-  await listenTab.click();
   await expect(page.getByLabel(new RegExp(`きけた カード 0 / ${MEETING_DISCOVER}`))).toBeVisible();
-  await expect(page.getByLabel(/ひらいた カード/)).toHaveCount(0);
-
-  /*
-   * 聞ける ことは **はじめから 見えて いる**（伏せない）。文の 案内は 消して
-   * 板に 一本化した ので、板の ことばが そのまま 足場に なる。
-   * ルビが 合成されて 文が 割れる ので、かなだけの ところで 見る。
-   */
   await expect(page.getByText("むずかしい ところ").first()).toBeVisible();
-  await expect(page.getByRole("button", { name: "ヒントの しつもんを 見る" })).toHaveCount(0);
-  /* 「ミーティングを おわる」は 消した（たいしつ が おわりの 道） */
+  /* 答える ばんの 道具は ここに 無い */
+  await expect(page.getByLabel(/ひらいた カード/)).toHaveCount(0);
   await expect(page.getByRole("button", { name: "ミーティングを おわる" })).toHaveCount(0);
-
-  /* 「こまったら →」の 一行は 消した（言って みても 役に 立たなかった） */
-  await expect(page.getByText("こまったら")).toHaveCount(0);
 
   /*
    * 声で つないで いない 学習者にも 返事が ある（誰も いない 部屋に しない）。
-   * 責めずに、どうすれば 答えて もらえるかと、ことばが のこる ことを 伝える。
-   */
-  /*
-   * おわりの 画面は 絵が ゆっくり 動きつづける ので、ボタンが「止まる」のを
-   * 待つ 押し方だと 待ちきれない。ここは Enter で 送る（学習者も 同じ ように 送れる）。
+   * おわりの 画面は 絵が ゆっくり 動きつづける ので、Enter で 送る。
    */
   const box = page.getByLabel("こたえを 入力する");
   await box.fill("しごとで いちばん うれしかった ことは 何ですか。");
   await box.press("Enter");
-  /*
-   * 「しごと」の ことばが 当たった ので、**聞き出せた**ことに なる——
-   * 声が つながって いなくても、教材に 書いた 答えが 返る。
-   */
   await expect(page.getByText("知らない 人が わたしの 作った")).toBeVisible();
-  /* 見出しの 漢字には ルビが 入る ので、数の ところで 見る */
   await expect(page.getByText(new RegExp(`（1 / ${MEETING_DISCOVER}）`))).toBeVisible();
 
   // 当たらない ことばの ときは、責めずに 次の 一手を 出す
   await box.fill("きょうは あついですね。");
   await box.press("Enter");
-  /*
-   * 「言えましたね」の 漢字には ルビが 入る ので、地の文だけの 一致は 当たらない
-   *（画面の 字は「しつもんが 言いえましたね。」に なる）。上の 数の ところと 同じ 逃し方。
-   */
   await expect(page.getByText(/しつもんが .*えましたね/)).toBeVisible();
   await shot(page, "33-hajimari-free-talk");
+
+  /* たいしつ が おわりの 道。しゅうりょうしょうを 閉じて はじめて ステージが おわる */
+  await expect(page.getByRole("dialog", { name: "ステージ クリア" })).toHaveCount(0);
+  await leaveCall(page);
+  const certificate = page.getByRole("dialog", { name: "しゅうりょうしょうの ポップアップ" });
+  await expect(certificate).toBeVisible();
+  await certificate.getByRole("button").click();
 });

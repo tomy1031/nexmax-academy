@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   clearMeetingResume,
   FRESH_START,
+  migrateSplitRounds,
   readMeetingResume,
   restoreMeeting,
   saveMeetingResume,
@@ -9,7 +10,11 @@ import {
   type MeetingResume,
 } from "../src/lib/meeting/resume";
 import { heartsOf } from "../src/lib/meeting/affection";
-import { createMemoryBackend, recordContentProgress } from "../src/lib/progress/store";
+import {
+  createMemoryBackend,
+  readContentProgress,
+  recordContentProgress,
+} from "../src/lib/progress/store";
 
 /**
  * つづきから はじめる。
@@ -235,5 +240,73 @@ describe("できなかった しつもん", () => {
     const old = { ...savedAt(4) } as Record<string, unknown>;
     delete old.missedIds;
     expect(readable(old).missedIds).toEqual([]);
+  });
+});
+
+/**
+ * ばんを 分けた ときの 引っ越し（2026-08-23）
+ *
+ * 何も しないと 2つ 事故が 起きる。①聞く ばんに いた 学習者が 1問目へ 落ちる
+ * ②話しきった 学習者の ステージが 未クリアに 巻き戻る。どちらも 鍵が 変わった ため。
+ */
+describe("ばんを 分けた ときの 引っ越し", () => {
+  const ASK = "hajimari_meeting";
+  const KIKU = "hajimari_kiku";
+
+  function seed(raw: Partial<MeetingResume> & { round: "ask" | "listen" }) {
+    const backend = createMemoryBackend();
+    saveMeetingResume(
+      {
+        meetingId: ASK,
+        index: 12,
+        openIds: [],
+        answers: {},
+        affection: { perQuestion: {}, finished: false },
+        found: [],
+        missedIds: [],
+        ...raw,
+      },
+      backend,
+    );
+    return backend;
+  }
+
+  it("聞く ばんに いた 人は、答える ばんを おわった ことに して 引っ越す", () => {
+    const backend = seed({ round: "listen", found: ["eki", "kuni"] });
+    migrateSplitRounds(backend);
+    expect(readContentProgress(ASK, backend)?.status).toBe("completed");
+    expect(readMeetingResume(KIKU, backend)?.found).toEqual(["eki", "kuni"]);
+    // 旧い しおりは 消す（二度は 走らない）
+    expect(readMeetingResume(ASK, backend)).toBeNull();
+  });
+
+  it("答える ばんの 途中の 人は さわらない", () => {
+    const backend = seed({ round: "ask", index: 5 });
+    migrateSplitRounds(backend);
+    expect(readMeetingResume(ASK, backend)?.index).toBe(5);
+    expect(readMeetingResume(KIKU, backend)).toBeNull();
+    expect(readContentProgress(ASK, backend)?.status).not.toBe("completed");
+  });
+
+  /*
+   * **`completed` だけの 端末は さわらない**（2026-08-23 の e2e で 実際に 事故った）。
+   *
+   * 分ける 前の `completed` は「両方の ばんを おえた」印、分けた あとは
+   * 「答える ばんを おえた」印。**見分けが つかない**ので、聞く ばんも おわった ことに
+   * すると、答える ばんを おえた ばかりの 学習者に **入った 瞬間 ステージ クリア**が 出る。
+   * まちがえる 向きを 選ぶなら、もう一度 すすめる ほうが ずっと よい。
+   */
+  it("`completed` だけの 端末には 何も しない", () => {
+    const backend = createMemoryBackend();
+    recordContentProgress(ASK, { status: "completed" }, backend);
+    migrateSplitRounds(backend);
+    expect(readContentProgress(KIKU, backend)).toBeNull();
+  });
+
+  it("何も 残って いない 端末では 何も 起きない", () => {
+    const backend = createMemoryBackend();
+    migrateSplitRounds(backend);
+    expect(readContentProgress(KIKU, backend)).toBeNull();
+    expect(readMeetingResume(KIKU, backend)).toBeNull();
   });
 });
