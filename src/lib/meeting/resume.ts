@@ -51,6 +51,13 @@ const resumeSchema = z.object({
   round: z.enum(["ask", "listen"]).default("ask"),
   /** 聞き出せた こと（ラウンド2の 札）。同じく 既定つき。 */
   found: z.array(z.string()).default([]),
+  /**
+   * **できなかった しつもん**（言い直しの 回数を つかいきっても つたわらなかった）。
+   *
+   * 開いた札（`openIds`）の 裏側。ここを 残さないと、開き直した ときに
+   * **できなかった ことが できた ことに 化ける**（2026-08-23 の 指定）。
+   */
+  missedIds: z.array(z.string()).default([]),
 });
 
 export type MeetingResume = z.infer<typeof resumeSchema>;
@@ -65,6 +72,8 @@ export interface MeetingStart {
   readonly round: "ask" | "listen";
   /** 聞き出せた こと（ラウンド2の 札）。 */
   readonly found: readonly string[];
+  /** できなかった しつもん（赤い 印を つける）。 */
+  readonly missedIds: readonly string[];
   /** 途中から 戻ったか（画面の 組み立てに 使う。**学習者には 出さない**）。 */
   readonly resumed: boolean;
 }
@@ -77,6 +86,7 @@ export const FRESH_START: MeetingStart = {
   affection: EMPTY_AFFECTION,
   round: "ask",
   found: [],
+  missedIds: [],
   resumed: false,
 };
 
@@ -158,7 +168,8 @@ export function startFrom(
   const nothingYet = candidate === 0 && savedOpen.length === 0 && Object.keys(answers).length === 0;
   if (nothingYet) return FRESH_START;
   // 通りすぎた ぶん ∪ 保存されて いた ぶん（並びは しつもんの 順に そろえる）
-  const open = new Set([...passed, ...savedOpen]);
+  const missed = new Set(saved.missedIds);
+  const open = new Set([...passed, ...savedOpen].filter((id) => !missed.has(id)));
   const openIds = questionIds.filter((id) => open.has(id));
 
   return {
@@ -168,6 +179,11 @@ export function startFrom(
     affection: { perQuestion: pick(saved.affection.perQuestion), finished: false },
     round: listening ? "listen" : "ask",
     found: saved.found,
+    /*
+     * 通りすぎた ぶんを 開いた ことに する 規則（下の `passed`）と ぶつからない ように、
+     * **できなかった ものは 開いた札から 引く**。両方に 入って いると 板が 2色に なる。
+     */
+    missedIds: saved.missedIds.filter((id) => known.has(id)),
     resumed: true,
   };
 }

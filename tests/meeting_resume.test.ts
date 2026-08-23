@@ -30,8 +30,18 @@ function savedAt(index: number, extra: Partial<MeetingResume> = {}): MeetingResu
     affection: { perQuestion: { q1: 2, q2: 1 }, finished: false },
     round: "ask",
     found: [],
+    missedIds: [],
     ...extra,
   };
+}
+
+/** 保存値を そのまま スキーマに 通す（古い 形が 読めるかの 検査に つかう）。 */
+function readable(raw: Record<string, unknown>): MeetingResume {
+  const backend = createMemoryBackend();
+  backend.set("nexmax:v1:meeting-resume:kaisha_houkoku_meeting", JSON.stringify(raw));
+  const got = readMeetingResume("kaisha_houkoku_meeting", backend);
+  if (!got) throw new Error("読めなかった");
+  return got;
 }
 
 describe("どこから 始めるか", () => {
@@ -190,5 +200,40 @@ describe("しおりと 内訳を 突き合わせる（restoreMeeting）", () => 
     expect(restoreMeeting("kaisha_houkoku_meeting", IDS, createMemoryBackend())).toEqual(
       FRESH_START,
     );
+  });
+});
+
+/**
+ * できなかった しつもん（2026-08-23 の 指定）
+ *
+ * ひとことでも 言えば 開く、では **できなかった ことが できた ことに 化ける**。
+ * 開いた札の 裏に「できなかった」を 持ち、開き直しても 化けない ことを 固定する。
+ */
+describe("できなかった しつもん", () => {
+  it("赤い 印は 開き直しても 残る", () => {
+    const start = startFrom(savedAt(4, { missedIds: ["q3"] }), 4, IDS);
+    expect(start.missedIds).toEqual(["q3"]);
+  });
+
+  /*
+   * 通りすぎた ぶんは 開いた ことに する（2026-08-21 の 規則）。その 規則と
+   * ぶつかる ので、**できなかった ものは 開いた札から 引く**——両方に 入って
+   * いると 板が 2色に なる。
+   */
+  it("通りすぎた 札の 規則より、できなかった 印が 強い", () => {
+    const start = startFrom(savedAt(4, { missedIds: ["q3"] }), 4, IDS);
+    expect(start.openIds).not.toContain("q3");
+    expect(start.openIds).toContain("q1");
+  });
+
+  it("教材から 消えた しつもんの 印は 引き継がない", () => {
+    const start = startFrom(savedAt(4, { missedIds: ["q3", "kesita"] }), 4, IDS);
+    expect(start.missedIds).toEqual(["q3"]);
+  });
+
+  it("欄が 無い 古い 保存値でも 読める", () => {
+    const old = { ...savedAt(4) } as Record<string, unknown>;
+    delete old.missedIds;
+    expect(readable(old).missedIds).toEqual([]);
   });
 });
