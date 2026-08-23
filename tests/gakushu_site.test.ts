@@ -136,13 +136,88 @@ describe("読めない漢字が 残って いない（規律2）", () => {
   it("学習者が 読む 文の 漢字は、ぜんぶ 読み辞書で 覆えて いる", () => {
     const index = buildFuriganaIndex(FURIGANA as [string, string][]);
     const missing = new Map<string, string>();
-    for (const text of JA) {
+    /*
+     * **ことばの辞典の 語釈も 数える。**
+     *
+     * ここを ページの 本文だけに して いた ため、辞典の ページに 裸の 漢字が
+     * 10字 出て いるのに 検査は 通って いた（2026-08-24 実発生）。
+     * 語釈は ことばの正から 来るので、サイトの 読み辞書が 覆って いるとは
+     * 限らない——1字の 見出し語は ことばの正から 借りない 決まりに した ぶん、
+     * なおさら ここで 見る 必要が ある。
+     */
+    const shown = [...JA, ...GLOSSARY.flatMap((word) => [word.term, word.meaning])];
+    for (const text of shown) {
       for (const char of uncoveredKanji(text, index)) {
         if (!missing.has(char)) missing.set(char, text);
       }
     }
     // 足りない字と、どの文に出たかを そのまま 直せる 形で 出す
     expect([...missing.entries()].map(([char, text]) => `${char} … ${text}`)).toEqual([]);
+  });
+
+  /*
+   * **辞典の 印は、ルビの 切れ目に そろって いなければ ならない。**
+   *
+   * `glossRuby`（app.js）は 印を 付ける ために 本文を 切る。切った ところが
+   * ルビの 切れ目と ずれると、長い 読みが 割れて 残りが 裸の 漢字に なる:
+   *
+   *   代表取締役社長 に 「代表」の 印 → 取締役 が 裸（2026-08-24 実発生）
+   *   三井住友銀行   に 「銀行」の 印 → 三井住友 が 裸
+   *
+   * app.js は かたまり単位で しか 印を 付けない ように 直した ので、画面が
+   * こわれる ことは もう 無い。かわりに その 語には **印が 付かない**——
+   * 本文からは 引けず、辞典の ページでしか 出あえない。
+   *
+   * 下の 一覧は「長い 語の 中に 埋もれて いて、印が 付かない と 分かって いる」もの。
+   * 新しく 増えたら、その 語は 本文から 引けない ままに なる。ここに 足す 前に、
+   * **その 語を 単独で 出す 言い回しに 直せないか**を 先に 考える こと。
+   */
+  const BURIED_IN_COMPOUNDS = new Set([
+    "育成", // 育成連合会
+    "解析", // 画像解析
+    "業務", // 業務代行
+    "修了", // 修了式
+    "世界", // 世界中
+    "設計", // 設計書
+    "説明", // 説明書
+    "対応", // 対応漏れ
+    "代表", // 代表取締役社長
+    "不足", // 人手不足
+    "有効", // 有効性
+    "要件", // 要件定義
+  ]);
+
+  it("辞典の 語は、本文の ルビの 切れ目に そろう", () => {
+    const index = buildFuriganaIndex(FURIGANA as [string, string][]);
+    const unreachable: string[] = [];
+    for (const word of GLOSSARY as { term: string }[]) {
+      if (BURIED_IN_COMPOUNDS.has(word.term)) continue;
+      for (const text of JA) {
+        const at = text.indexOf(word.term);
+        if (at < 0) continue;
+        /*
+         * 切って よい ところ＝**ルビの ついた かたまりの 中では ない** ところ。
+         * ルビの 無い ところは 1字ずつ 切れる（app.js の `segmentsOf` と 同じ）。
+         */
+        const edges = new Set<number>([0]);
+        let cursor = 0;
+        for (const segment of annotateRuby(text, index)) {
+          if (segment.reading) {
+            cursor += segment.text.length;
+            edges.add(cursor);
+          } else {
+            for (let n = 0; n < segment.text.length; n += 1) edges.add(++cursor);
+          }
+        }
+        if (!edges.has(at) || !edges.has(at + word.term.length)) {
+          unreachable.push(
+            `${word.term} … ${text.slice(Math.max(0, at - 6), at + word.term.length + 6)}`,
+          );
+        }
+        break;
+      }
+    }
+    expect([...new Set(unreachable)]).toEqual([]);
   });
 
   it("読み辞書の 見出し語は かならず 漢字で 始まる", () => {
