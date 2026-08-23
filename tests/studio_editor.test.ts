@@ -147,7 +147,7 @@ describe("drafts", () => {
     const meeting = emptyMeeting();
     expect(meeting.kind).toBe("meeting");
     expect(meeting.persona.length).toBeGreaterThan(0);
-    expect(meeting.judgePrompt.length).toBeGreaterThan(0);
+    expect((meeting.judgePrompt ?? "").length).toBeGreaterThan(0);
     // 人格と判定は別物。同じ文を両方に入れると、話し方を直すたびに基準が動く
     expect(meeting.persona).not.toBe(meeting.judgePrompt);
     // スキーマの下限ぶんの枠を先に出す（保存を押すまで「3つ要る」と知らせないのは遅い）

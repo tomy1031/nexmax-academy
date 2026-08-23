@@ -1383,6 +1383,19 @@ const meetingQuestionSchema = z.object({
  */
 export const meetingSchema = z.object({
   kind: z.literal("meeting"),
+  /**
+   * どちらの **ばん**か（2026-08-23 の 指定「ヘンディさんからの 質問と
+   * ヘンディさんへの 質問を 分ける」）。
+   *
+   * - `"ask"` … 相手が しつもんし、学習者が 答える
+   * - `"listen"` … 学習者が しつもんし、相手が 答える（`discover` の 札を 開く）
+   * - 欄が 無い … **前からの 教材**（1つの 中に 2つの ばんを 持って いた もの）
+   *
+   * ばんを 教材の 中の 概念から **ステージの 中の 並び**へ 出す ための 欄。
+   * 増やしたければ 教材を 足す——ステージは 並びも 関門（ロック）も もう 持って いる。
+   * 「無い＝前からの もの」に して あるのは、**移行の あいだ 両方 動かす**ため。
+   */
+  mode: z.enum(["ask", "listen"]).optional(),
   id: z.string().regex(/^[a-z0-9_-]+$/),
   title: plainText,
   description: plainText,
@@ -1399,11 +1412,16 @@ export const meetingSchema = z.object({
    * 判定を人格と分けるのは、**話し方を直しても採点の基準は動かない**ようにするため。
    * 「何を言えたら言えたことにするか」「どう助言するか」をここに書く。
    */
-  judgePrompt: plainText,
+  judgePrompt: plainText.optional(),
   /** 相手（画面のタイルに出る人）。characters の id と name を写す。 */
   host: participantSchema,
-  /** 質問。**並びが学習順**（閉じた質問 → 開いた質問）。 */
-  questions: z.array(meetingQuestionSchema).min(3),
+  /**
+   * 質問。**並びが学習順**（閉じた質問 → 開いた質問）。
+   *
+   * 空に できるのは **聞く ばんの 教材**（`mode: "listen"`）だけ。
+   * 下の `superRefine` が、それ以外では 3つ 以上と 見かたの 指示を 求める。
+   */
+  questions: z.array(meetingQuestionSchema).default([]),
   /** ぜんぶ答えたあとに出す ひとこと。 */
   closing: plainText,
   /** おわりの ひとことを読み上げた音声（作り置き。質問の audioUrl と同じ考え方）。 */
@@ -1464,6 +1482,29 @@ export const meetingSchema = z.object({
    */
   maxAttempts: z.number().int().min(1).max(10).nullable().optional(),
   furigana: z.array(furiganaEntrySchema).optional(),
+}).superRefine((meeting, ctx) => {
+  /*
+   * **答える ばんには しつもんと 見かたが 要る**。
+   *
+   * `questions` と `judgePrompt` を ゆるめたのは 聞く ばんの 教材の ため だけ。
+   * 型の 上で ゆるめた ぶんを ここで 締め直さないと、**しつもんの 無い 答える ばん**が
+   * 保存できて しまう（学習者は 何も 聞かれない 部屋に 入る）。
+   */
+  if (meeting.mode === "listen") return;
+  if (meeting.questions.length < 3) {
+    ctx.addIssue({
+      code: "custom",
+      path: ["questions"],
+      message: "しつもんは 3つ 以上（聞く ばんの 教材なら mode を listen に する）",
+    });
+  }
+  if (!meeting.judgePrompt) {
+    ctx.addIssue({
+      code: "custom",
+      path: ["judgePrompt"],
+      message: "日本語の 見かたが 空（聞く ばんの 教材なら mode を listen に する）",
+    });
+  }
 });
 
 export const contentSchema = z.discriminatedUnion("kind", [

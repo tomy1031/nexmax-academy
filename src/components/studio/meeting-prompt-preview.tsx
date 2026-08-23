@@ -100,7 +100,7 @@ export function MeetingPromptPreview({ value }: { value: Meeting }) {
                     ask: picked.ask,
                     hint: picked.hint,
                     keywords: picked.keywords,
-                    judgePrompt: value.judgePrompt,
+                    judgePrompt: value.judgePrompt ?? "",
                     hostName: value.host.name,
                     learnerName: SAMPLE_LEARNER,
                     utterance: SAMPLE_UTTERANCE,
