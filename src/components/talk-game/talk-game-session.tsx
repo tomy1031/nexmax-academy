@@ -627,7 +627,8 @@ function AnswerPanel({
         <p className="text-ink-soft text-xs font-black">
           {round === "listen" ? "あなたが きく ばんです" : "あなたの ばんです"}
         </p>
-        <p className="text-navy text-sm font-bold sm:text-base">
+        {/* `data-ask` は 検証の 手がかり（その場で 作られた しつもんかを 外から 見る）。 */}
+        <p data-ask className="text-navy text-sm font-bold sm:text-base">
           <DictionaryText text={ask} index={furigana} show dictionary={dictionary} />
         </p>
 
