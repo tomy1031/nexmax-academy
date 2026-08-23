@@ -711,7 +711,7 @@ export function MeetingSession({
         ask: withName(asked.ask),
         hint: asked.hint,
         keywords: asked.keywords,
-        judgePrompt: meeting.judgePrompt,
+        judgePrompt: meeting.judgePrompt ?? "",
         hostName: meeting.host.name,
         learnerName,
         utterance,

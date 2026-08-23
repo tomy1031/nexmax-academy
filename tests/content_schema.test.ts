@@ -103,3 +103,80 @@ describe("コンテンツスキーマ（検収の契約）", () => {
     expect(vocabSchema.safeParse(book).success).toBe(false);
   });
 });
+
+/**
+ * ミーティングの **ばん**（2026-08-23 の 指定）
+ *
+ * ばんを 教材の 中の 概念から **ステージの 中の 並び**へ 出す ための 欄。
+ * ここで 見張るのは、ゆるめた ぶんが **答える ばんまで ゆるまない** こと。
+ * しつもんの 無い「答える ばん」が 保存できると、学習者は 何も 聞かれない 部屋に 入る。
+ */
+describe("ミーティングの ばん", () => {
+  const listen = {
+    kind: "meeting",
+    id: "hajimari_kiku",
+    mode: "listen",
+    title: "ヘンディさんに しつもん",
+    description: "きいて みよう。",
+    focus: "ヘンディさんに 聞いて みましょう。",
+    persona: "あなたは ヘンディです。やさしい 日本語で 話します。",
+    host: { id: "hendy", name: "ヘンディ", role: "先輩", accent: "sky" },
+    questions: [],
+    closing: "ありがとう ございました。",
+    discover: [
+      {
+        id: "kuni",
+        label: "ヘンディさんの 国の こと",
+        keywords: ["どこから 来"],
+        answer: "インドネシアから 来ました。",
+      },
+    ],
+  };
+
+  it("聞く ばんは しつもんも 見かたも 無くて よい", () => {
+    const parsed = contentSchema.safeParse(listen);
+    expect(parsed.success).toBe(true);
+  });
+
+  it("答える ばんは しつもんが 3つ 要る", () => {
+    const parsed = contentSchema.safeParse({
+      ...listen,
+      mode: "ask",
+      judgePrompt: "見て ください。",
+    });
+    expect(parsed.success).toBe(false);
+  });
+
+  it("ばんを 書かない 教材（前からの もの）も 答える ばんと 同じ 決まり", () => {
+    const { mode: _mode, ...noMode } = listen;
+    expect(contentSchema.safeParse(noMode).success).toBe(false);
+  });
+
+  it("答える ばんは 見かたの 指示が 要る", () => {
+    const asking = {
+      ...listen,
+      mode: "ask",
+      questions: [
+        { id: "q1", ask: "お名前は。", hint: "わたしは ◯◯です。", keywords: [], echo: "◯◯さん。" },
+        {
+          id: "q2",
+          ask: "どこから。",
+          hint: "◯◯から 来ました。",
+          keywords: [],
+          echo: "◯◯ですか。",
+        },
+        {
+          id: "q3",
+          ask: "なにを。",
+          hint: "◯◯を べんきょうします。",
+          keywords: [],
+          echo: "◯◯ですね。",
+        },
+      ],
+    };
+    expect(contentSchema.safeParse(asking).success).toBe(false);
+    expect(contentSchema.safeParse({ ...asking, judgePrompt: "見て ください。" }).success).toBe(
+      true,
+    );
+  });
+});
