@@ -942,6 +942,306 @@
     [
       "礼",
       "れい"
+    ],
+    [
+      "世界中",
+      "せかいじゅう"
+    ],
+    [
+      "何人",
+      "なんにん"
+    ],
+    [
+      "出入り",
+      "でいり"
+    ],
+    [
+      "直す",
+      "なおす"
+    ],
+    [
+      "田んぼ",
+      "たんぼ"
+    ],
+    [
+      "畑",
+      "はたけ"
+    ],
+    [
+      "高校",
+      "こうこう"
+    ],
+    [
+      "土地",
+      "とち"
+    ],
+    [
+      "役所",
+      "やくしょ"
+    ],
+    [
+      "足りない",
+      "たりない"
+    ],
+    [
+      "足りなく",
+      "たりなく"
+    ],
+    [
+      "目立つ",
+      "めだつ"
+    ],
+    [
+      "目に",
+      "めに"
+    ],
+    [
+      "店",
+      "みせ"
+    ],
+    [
+      "空を",
+      "そらを"
+    ],
+    [
+      "飛ぶ",
+      "とぶ"
+    ],
+    [
+      "下に",
+      "したに"
+    ],
+    [
+      "下ざさえ",
+      "したざさえ"
+    ],
+    [
+      "順",
+      "じゅん"
+    ],
+    [
+      "世の中",
+      "よのなか"
+    ],
+    [
+      "古く",
+      "ふるく"
+    ],
+    [
+      "外へ",
+      "そとへ"
+    ],
+    [
+      "外国",
+      "がいこく"
+    ],
+    [
+      "場に",
+      "ばに"
+    ],
+    [
+      "建物",
+      "たてもの"
+    ],
+    [
+      "車が",
+      "くるまが"
+    ],
+    [
+      "車や",
+      "くるまや"
+    ],
+    [
+      "学校",
+      "がっこう"
+    ],
+    [
+      "高さ",
+      "たかさ"
+    ],
+    [
+      "見た目",
+      "みため"
+    ],
+    [
+      "その場",
+      "そのば"
+    ],
+    [
+      "出入",
+      "でい"
+    ],
+    [
+      "車",
+      "くるま"
+    ],
+    [
+      "本部",
+      "ほんぶ"
+    ],
+    [
+      "事務所",
+      "じむしょ"
+    ],
+    [
+      "形",
+      "かたち"
+    ],
+    [
+      "立場",
+      "たちば"
+    ],
+    [
+      "守る",
+      "まもる"
+    ],
+    [
+      "売る",
+      "うる"
+    ],
+    [
+      "売って",
+      "うって"
+    ],
+    [
+      "役に立つ",
+      "やくにたつ"
+    ],
+    [
+      "分野",
+      "ぶんや"
+    ],
+    [
+      "足す",
+      "たす"
+    ],
+    [
+      "直したり",
+      "なおしたり"
+    ],
+    [
+      "写真",
+      "しゃしん"
+    ],
+    [
+      "命令",
+      "めいれい"
+    ],
+    [
+      "表",
+      "ひょう"
+    ],
+    [
+      "帳面",
+      "ちょうめん"
+    ],
+    [
+      "券",
+      "けん"
+    ],
+    [
+      "にせ物",
+      "にせもの"
+    ],
+    [
+      "楽しむ",
+      "たのしむ"
+    ],
+    [
+      "有名",
+      "ゆうめい"
+    ],
+    [
+      "大雨",
+      "おおあめ"
+    ],
+    [
+      "場で",
+      "ばで"
+    ],
+    [
+      "外の",
+      "そとの"
+    ],
+    [
+      "借りたり",
+      "かりたり"
+    ],
+    [
+      "公の",
+      "おおやけの"
+    ],
+    [
+      "市場",
+      "しじょう"
+    ],
+    [
+      "売り買い",
+      "うりかい"
+    ],
+    [
+      "買う",
+      "かう"
+    ],
+    [
+      "賞",
+      "しょう"
+    ],
+    [
+      "地面",
+      "じめん"
+    ],
+    [
+      "飛びはじめる",
+      "とびはじめる"
+    ],
+    [
+      "空",
+      "そら"
+    ],
+    [
+      "高い",
+      "たかい"
+    ],
+    [
+      "太陽",
+      "たいよう"
+    ],
+    [
+      "光",
+      "ひかり"
+    ],
+    [
+      "電気",
+      "でんき"
+    ],
+    [
+      "熱",
+      "ねつ"
+    ],
+    [
+      "水",
+      "みず"
+    ],
+    [
+      "検査",
+      "けんさ"
+    ],
+    [
+      "板",
+      "いた"
+    ],
+    [
+      "心から",
+      "こころから"
+    ],
+    [
+      "顔",
+      "かお"
+    ],
+    [
+      "本",
+      "ほん"
     ]
   ],
   "words": [
@@ -2892,6 +3192,2372 @@
       "englishTerm": "calmly",
       "example": "急がないで、落ち着いて 対応 します。",
       "englishMeaning": "without hurrying or panicking"
+    },
+    {
+      "id": "kigyou",
+      "term": "企業",
+      "reading": "きぎょう",
+      "meaningJa": "会社の ことです。あらたまった 言い方です。",
+      "englishTerm": "Company"
+    },
+    {
+      "id": "gyoumu",
+      "term": "業務",
+      "reading": "ぎょうむ",
+      "meaningJa": "会社の 中で、まいにち する 仕事です。",
+      "englishTerm": "Operations"
+    },
+    {
+      "id": "gyoukai",
+      "term": "業界",
+      "reading": "ぎょうかい",
+      "meaningJa": "同じ 種類の 仕事を する 会社の あつまりです。",
+      "englishTerm": "Industry"
+    },
+    {
+      "id": "gyoushu",
+      "term": "業種",
+      "reading": "ぎょうしゅ",
+      "meaningJa": "仕事の 種類です。IT・車・りょこう などです。",
+      "englishTerm": "Type of business"
+    },
+    {
+      "id": "shanai",
+      "term": "社内",
+      "reading": "しゃない",
+      "meaningJa": "会社の 中の ことです。",
+      "englishTerm": "Inside the company"
+    },
+    {
+      "id": "jisha",
+      "term": "自社",
+      "reading": "じしゃ",
+      "meaningJa": "じぶんの 会社の ことです。",
+      "englishTerm": "Our own company"
+    },
+    {
+      "id": "houjin",
+      "term": "法人",
+      "reading": "ほうじん",
+      "meaningJa": "会社や 団体など、人の あつまりの ことです。",
+      "englishTerm": "Corporation"
+    },
+    {
+      "id": "dantai",
+      "term": "団体",
+      "reading": "だんたい",
+      "meaningJa": "同じ 目的で あつまった 人の グループです。",
+      "englishTerm": "Organisation"
+    },
+    {
+      "id": "daihyou",
+      "term": "代表",
+      "reading": "だいひょう",
+      "meaningJa": "その 会社や 団体で、いちばん 上の 人です。",
+      "englishTerm": "Representative"
+    },
+    {
+      "id": "shachou",
+      "term": "社長",
+      "reading": "しゃちょう",
+      "meaningJa": "会社で いちばん 上の 人です。",
+      "englishTerm": "President"
+    },
+    {
+      "id": "kyoten",
+      "term": "拠点",
+      "reading": "きょてん",
+      "meaningJa": "仕事を する ための 場所です。オフィスなど。",
+      "englishTerm": "Base / office"
+    },
+    {
+      "id": "shibu",
+      "term": "支部",
+      "reading": "しぶ",
+      "meaningJa": "本部から わかれた、その 土地の 事務所です。",
+      "englishTerm": "Branch"
+    },
+    {
+      "id": "sougyou",
+      "term": "創業",
+      "reading": "そうぎょう",
+      "meaningJa": "会社の 仕事を はじめる ことです。",
+      "englishTerm": "Founding a business"
+    },
+    {
+      "id": "keiei",
+      "term": "経営",
+      "reading": "けいえい",
+      "meaningJa": "会社を うまく うごかして いく 仕事です。",
+      "englishTerm": "Management"
+    },
+    {
+      "id": "soshiki",
+      "term": "組織",
+      "reading": "そしき",
+      "meaningJa": "仕事を する ための 人の あつまりと、その 形です。",
+      "englishTerm": "Organisation"
+    },
+    {
+      "id": "bumon",
+      "term": "部門",
+      "reading": "ぶもん",
+      "meaningJa": "会社の 中の、仕事で わけた まとまりです。",
+      "englishTerm": "Division"
+    },
+    {
+      "id": "tantou",
+      "term": "担当",
+      "reading": "たんとう",
+      "meaningJa": "その 仕事を うけもつ ことです。",
+      "englishTerm": "In charge of"
+    },
+    {
+      "id": "sekinin",
+      "term": "責任",
+      "reading": "せきにん",
+      "meaningJa": "じぶんが しなければ ならない こと。",
+      "englishTerm": "Responsibility"
+    },
+    {
+      "id": "douryou",
+      "term": "同僚",
+      "reading": "どうりょう",
+      "meaningJa": "同じ 会社で はたらく なかまです。",
+      "englishTerm": "Colleague"
+    },
+    {
+      "id": "joushi",
+      "term": "上司",
+      "reading": "じょうし",
+      "meaningJa": "じぶんより 上の 立場の 人です。",
+      "englishTerm": "Boss"
+    },
+    {
+      "id": "buka",
+      "term": "部下",
+      "reading": "ぶか",
+      "meaningJa": "じぶんより したの 立場の 人です。",
+      "englishTerm": "Subordinate"
+    },
+    {
+      "id": "kokyaku",
+      "term": "顧客",
+      "reading": "こきゃく",
+      "meaningJa": "お客さまの ことです。あらたまった 言い方です。",
+      "englishTerm": "Customer"
+    },
+    {
+      "id": "torihiki",
+      "term": "取引",
+      "reading": "とりひき",
+      "meaningJa": "会社と 会社で、ものや お金を やりとりする ことです。",
+      "englishTerm": "Business dealing"
+    },
+    {
+      "id": "keiyaku",
+      "term": "契約",
+      "reading": "けいやく",
+      "meaningJa": "かならず 守ると 決めた、書いた やくそくです。",
+      "englishTerm": "Contract"
+    },
+    {
+      "id": "anken",
+      "term": "案件",
+      "reading": "あんけん",
+      "meaningJa": "1つの 仕事の まとまりです。",
+      "englishTerm": "Project / case"
+    },
+    {
+      "id": "irai",
+      "term": "依頼",
+      "reading": "いらい",
+      "meaningJa": "人に「して ください」と たのむ ことです。",
+      "englishTerm": "Request"
+    },
+    {
+      "id": "youbou",
+      "term": "要望",
+      "reading": "ようぼう",
+      "meaningJa": "こう して ほしい、と いう ねがいです。",
+      "englishTerm": "Request / wish"
+    },
+    {
+      "id": "teikyou",
+      "term": "提供",
+      "reading": "ていきょう",
+      "meaningJa": "相手に、ものや サービスを 出す ことです。",
+      "englishTerm": "Providing"
+    },
+    {
+      "id": "nouhin",
+      "term": "納品",
+      "reading": "のうひん",
+      "meaningJa": "できた ものを、お客さまに わたす ことです。",
+      "englishTerm": "Delivery"
+    },
+    {
+      "id": "nouki",
+      "term": "納期",
+      "reading": "のうき",
+      "meaningJa": "できた ものを わたす、やくそくの 日です。",
+      "englishTerm": "Deadline"
+    },
+    {
+      "id": "mitsumori",
+      "term": "見積",
+      "reading": "みつもり",
+      "meaningJa": "いくら かかるかを、先に 出す ことです。",
+      "englishTerm": "Estimate"
+    },
+    {
+      "id": "juchuu",
+      "term": "受注",
+      "reading": "じゅちゅう",
+      "meaningJa": "お客さまから 仕事を うける ことです。",
+      "englishTerm": "Receiving an order"
+    },
+    {
+      "id": "hacchuu",
+      "term": "発注",
+      "reading": "はっちゅう",
+      "meaningJa": "相手に 仕事や ものを たのむ ことです。",
+      "englishTerm": "Placing an order"
+    },
+    {
+      "id": "chuumon",
+      "term": "注文",
+      "reading": "ちゅうもん",
+      "meaningJa": "ほしい ものを たのむ ことです。",
+      "englishTerm": "Order"
+    },
+    {
+      "id": "hanbai",
+      "term": "販売",
+      "reading": "はんばい",
+      "meaningJa": "ものを 売る ことです。",
+      "englishTerm": "Sales"
+    },
+    {
+      "id": "shouhin",
+      "term": "商品",
+      "reading": "しょうひん",
+      "meaningJa": "お店で 売る ものです。",
+      "englishTerm": "Product"
+    },
+    {
+      "id": "kingaku",
+      "term": "金額",
+      "reading": "きんがく",
+      "meaningJa": "お金の 数です。",
+      "englishTerm": "Amount of money"
+    },
+    {
+      "id": "uriage",
+      "term": "売上",
+      "reading": "うりあげ",
+      "meaningJa": "売って 入って きた お金です。",
+      "englishTerm": "Sales revenue"
+    },
+    {
+      "id": "kaikei",
+      "term": "会計",
+      "reading": "かいけい",
+      "meaningJa": "お金の 出入りを 数えて、記録する 仕事です。",
+      "englishTerm": "Accounting"
+    },
+    {
+      "id": "keisan",
+      "term": "計算",
+      "reading": "けいさん",
+      "meaningJa": "数を 出す ことです。",
+      "englishTerm": "Calculation"
+    },
+    {
+      "id": "shuukei",
+      "term": "集計",
+      "reading": "しゅうけい",
+      "meaningJa": "たくさんの 数を あつめて、1つに まとめる ことです。",
+      "englishTerm": "Totalling"
+    },
+    {
+      "id": "hojokin",
+      "term": "補助金",
+      "reading": "ほじょきん",
+      "meaningJa": "国や 役所から もらえる、しごとの ための お金です。",
+      "englishTerm": "Subsidy"
+    },
+    {
+      "id": "shinsei",
+      "term": "申請",
+      "reading": "しんせい",
+      "meaningJa": "役所などに「ください」と 出す 手つづきです。",
+      "englishTerm": "Application"
+    },
+    {
+      "id": "shounin",
+      "term": "承認",
+      "reading": "しょうにん",
+      "meaningJa": "上の 人が「いいです」と 決める ことです。",
+      "englishTerm": "Approval"
+    },
+    {
+      "id": "kakunin",
+      "term": "確認",
+      "reading": "かくにん",
+      "meaningJa": "本当に そうかを、見て たしかめる ことです。",
+      "englishTerm": "Confirmation"
+    },
+    {
+      "id": "nippou",
+      "term": "日報",
+      "reading": "にっぽう",
+      "meaningJa": "その 日に した ことを 書く、みじかい 報告です。",
+      "englishTerm": "Daily report"
+    },
+    {
+      "id": "uchiawase",
+      "term": "打合せ",
+      "reading": "うちあわせ",
+      "meaningJa": "仕事の やりかたを 先に 話し合う ことです。",
+      "englishTerm": "Meeting / briefing"
+    },
+    {
+      "id": "keikaku",
+      "term": "計画",
+      "reading": "けいかく",
+      "meaningJa": "先に 決めて おく、する ことの 順番です。",
+      "englishTerm": "Plan"
+    },
+    {
+      "id": "mokuteki",
+      "term": "目的",
+      "reading": "もくてき",
+      "meaningJa": "何の ために するか、と いう ことです。",
+      "englishTerm": "Purpose"
+    },
+    {
+      "id": "kadai",
+      "term": "課題",
+      "reading": "かだい",
+      "meaningJa": "これから なおさなければ ならない ことです。",
+      "englishTerm": "Issue / challenge"
+    },
+    {
+      "id": "seika",
+      "term": "成果",
+      "reading": "せいか",
+      "meaningJa": "やった 結果、出て きた よい ものです。",
+      "englishTerm": "Result / outcome"
+    },
+    {
+      "id": "hinshitsu",
+      "term": "品質",
+      "reading": "ひんしつ",
+      "meaningJa": "ものや 仕事の よさの ことです。",
+      "englishTerm": "Quality"
+    },
+    {
+      "id": "kanri",
+      "term": "管理",
+      "reading": "かんり",
+      "meaningJa": "うまく いくように 見て、ととのえる ことです。",
+      "englishTerm": "Management"
+    },
+    {
+      "id": "unei",
+      "term": "運営",
+      "reading": "うんえい",
+      "meaningJa": "会や サービスを つづけて うごかす ことです。",
+      "englishTerm": "Running / operating"
+    },
+    {
+      "id": "shien",
+      "term": "支援",
+      "reading": "しえん",
+      "meaningJa": "こまって いる 人を たすける ことです。",
+      "englishTerm": "Support"
+    },
+    {
+      "id": "shuushoku",
+      "term": "就職",
+      "reading": "しゅうしょく",
+      "meaningJa": "会社に 入って、はたらきはじめる ことです。",
+      "englishTerm": "Getting a job"
+    },
+    {
+      "id": "jinzai",
+      "term": "人材",
+      "reading": "じんざい",
+      "meaningJa": "仕事が できる 人の ことです。",
+      "englishTerm": "Human resources"
+    },
+    {
+      "id": "ikusei",
+      "term": "育成",
+      "reading": "いくせい",
+      "meaningJa": "時間を かけて、人を そだてる ことです。",
+      "englishTerm": "Training / development"
+    },
+    {
+      "id": "kenshuu",
+      "term": "研修",
+      "reading": "けんしゅう",
+      "meaningJa": "仕事の やりかたを ならう 時間です。",
+      "englishTerm": "Training"
+    },
+    {
+      "id": "nouryoku",
+      "term": "能力",
+      "reading": "のうりょく",
+      "meaningJa": "その 人が できる 力です。",
+      "englishTerm": "Ability"
+    },
+    {
+      "id": "shisei",
+      "term": "姿勢",
+      "reading": "しせい",
+      "meaningJa": "仕事に むかう ときの 気もちや やりかたです。",
+      "englishTerm": "Attitude"
+    },
+    {
+      "id": "chousen",
+      "term": "挑戦",
+      "reading": "ちょうせん",
+      "meaningJa": "むずかしい ことに、思いきって やって みる ことです。",
+      "englishTerm": "Challenge"
+    },
+    {
+      "id": "kouken",
+      "term": "貢献",
+      "reading": "こうけん",
+      "meaningJa": "人や 社会の 役に立つ ことを する ことです。",
+      "englishTerm": "Contribution"
+    },
+    {
+      "id": "hatten",
+      "term": "発展",
+      "reading": "はってん",
+      "meaningJa": "前より 大きく、よく なって いく ことです。",
+      "englishTerm": "Development"
+    },
+    {
+      "id": "tenkai",
+      "term": "展開",
+      "reading": "てんかい",
+      "meaningJa": "仕事を ほかの 場所や 分野へ ひろげる ことです。",
+      "englishTerm": "Expansion"
+    },
+    {
+      "id": "renkei",
+      "term": "連携",
+      "reading": "れんけい",
+      "meaningJa": "ほかの 人や 会社と、力を 合わせる ことです。",
+      "englishTerm": "Cooperation"
+    },
+    {
+      "id": "teikei",
+      "term": "提携",
+      "reading": "ていけい",
+      "meaningJa": "会社どうしが、いっしょに やろうと 決める ことです。",
+      "englishTerm": "Partnership"
+    },
+    {
+      "id": "kyoudou",
+      "term": "共同",
+      "reading": "きょうどう",
+      "meaningJa": "何人かで いっしょに する ことです。",
+      "englishTerm": "Joint"
+    },
+    {
+      "id": "sanka",
+      "term": "参加",
+      "reading": "さんか",
+      "meaningJa": "会や しごとに 入って、いっしょに する ことです。",
+      "englishTerm": "Participation"
+    },
+    {
+      "id": "kaisai",
+      "term": "開催",
+      "reading": "かいさい",
+      "meaningJa": "会や イベントを ひらく ことです。",
+      "englishTerm": "Holding an event"
+    },
+    {
+      "id": "houmon",
+      "term": "訪問",
+      "reading": "ほうもん",
+      "meaningJa": "相手の ところへ 行く ことです。",
+      "englishTerm": "Visit"
+    },
+    {
+      "id": "katsudou",
+      "term": "活動",
+      "reading": "かつどう",
+      "meaningJa": "目的を もって、うごく ことです。",
+      "englishTerm": "Activity"
+    },
+    {
+      "id": "kaihatsu",
+      "term": "開発",
+      "reading": "かいはつ",
+      "meaningJa": "新しい ものを 考えて 作る 仕事です。",
+      "englishTerm": "Development"
+    },
+    {
+      "id": "gijutsusha",
+      "term": "技術者",
+      "reading": "ぎじゅつしゃ",
+      "meaningJa": "技術を つかって ものを 作る 人です。",
+      "englishTerm": "Engineer"
+    },
+    {
+      "id": "seisaku",
+      "term": "制作",
+      "reading": "せいさく",
+      "meaningJa": "絵・動画・ページなどを 作る 仕事です。",
+      "englishTerm": "Production"
+    },
+    {
+      "id": "kouchiku",
+      "term": "構築",
+      "reading": "こうちく",
+      "meaningJa": "しくみを 組み立てて、うごくように する ことです。",
+      "englishTerm": "Building / setting up"
+    },
+    {
+      "id": "youken",
+      "term": "要件",
+      "reading": "ようけん",
+      "meaningJa": "作る ものに 何が 要るか、と いう 中身です。",
+      "englishTerm": "Requirements"
+    },
+    {
+      "id": "shiyou",
+      "term": "仕様",
+      "reading": "しよう",
+      "meaningJa": "その ものが どう うごくかを 決めた ことです。",
+      "englishTerm": "Specification"
+    },
+    {
+      "id": "hoshu",
+      "term": "保守",
+      "reading": "ほしゅ",
+      "meaningJa": "作った あとも、こわれないように 見る 仕事です。",
+      "englishTerm": "Maintenance"
+    },
+    {
+      "id": "secchi",
+      "term": "設置",
+      "reading": "せっち",
+      "meaningJa": "ものや しくみを、その 場所に おく ことです。",
+      "englishTerm": "Installation"
+    },
+    {
+      "id": "dounyuu",
+      "term": "導入",
+      "reading": "どうにゅう",
+      "meaningJa": "新しい しくみを、会社の 中で つかいはじめる ことです。",
+      "englishTerm": "Introduction"
+    },
+    {
+      "id": "sousa",
+      "term": "操作",
+      "reading": "そうさ",
+      "meaningJa": "きかいを 手で うごかす ことです。",
+      "englishTerm": "Operation"
+    },
+    {
+      "id": "shutsuryoku",
+      "term": "出力",
+      "reading": "しゅつりょく",
+      "meaningJa": "中の ものを、外へ 出す ことです。",
+      "englishTerm": "Output"
+    },
+    {
+      "id": "kensaku",
+      "term": "検索",
+      "reading": "けんさく",
+      "meaningJa": "たくさんの 中から、さがす ことです。",
+      "englishTerm": "Search"
+    },
+    {
+      "id": "hozon",
+      "term": "保存",
+      "reading": "ほぞん",
+      "meaningJa": "きえないように、とって おく ことです。",
+      "englishTerm": "Saving"
+    },
+    {
+      "id": "koushin",
+      "term": "更新",
+      "reading": "こうしん",
+      "meaningJa": "新しい 中身に 書きかえる ことです。",
+      "englishTerm": "Update"
+    },
+    {
+      "id": "tsuika",
+      "term": "追加",
+      "reading": "ついか",
+      "meaningJa": "あとから 足す ことです。",
+      "englishTerm": "Adding"
+    },
+    {
+      "id": "sakujo",
+      "term": "削除",
+      "reading": "さくじょ",
+      "meaningJa": "いらない ものを けす ことです。",
+      "englishTerm": "Deleting"
+    },
+    {
+      "id": "henshuu",
+      "term": "編集",
+      "reading": "へんしゅう",
+      "meaningJa": "中身を 直したり、ならべかえたり する ことです。",
+      "englishTerm": "Editing"
+    },
+    {
+      "id": "kyouyuu",
+      "term": "共有",
+      "reading": "きょうゆう",
+      "meaningJa": "同じ ものを、みんなで つかえるように する ことです。",
+      "englishTerm": "Sharing"
+    },
+    {
+      "id": "tsuuchi",
+      "term": "通知",
+      "reading": "つうち",
+      "meaningJa": "「こうです」と、あいてに 知らせる ことです。",
+      "englishTerm": "Notification"
+    },
+    {
+      "id": "hyouji",
+      "term": "表示",
+      "reading": "ひょうじ",
+      "meaningJa": "画面に 出して 見せる ことです。",
+      "englishTerm": "Display"
+    },
+    {
+      "id": "gazou",
+      "term": "画像",
+      "reading": "がぞう",
+      "meaningJa": "パソコンの 中の 絵や 写真です。",
+      "englishTerm": "Image"
+    },
+    {
+      "id": "eizou",
+      "term": "映像",
+      "reading": "えいぞう",
+      "meaningJa": "うごく 絵の ことです。",
+      "englishTerm": "Video / footage"
+    },
+    {
+      "id": "douga",
+      "term": "動画",
+      "reading": "どうが",
+      "meaningJa": "うごく 絵の ことです。",
+      "englishTerm": "Video"
+    },
+    {
+      "id": "onsei",
+      "term": "音声",
+      "reading": "おんせい",
+      "meaningJa": "人の 声や 音の ことです。",
+      "englishTerm": "Audio / voice"
+    },
+    {
+      "id": "jimaku",
+      "term": "字幕",
+      "reading": "じまく",
+      "meaningJa": "動画の 下に 出る 字です。",
+      "englishTerm": "Subtitles"
+    },
+    {
+      "id": "satsuei",
+      "term": "撮影",
+      "reading": "さつえい",
+      "meaningJa": "写真や 動画を とる ことです。",
+      "englishTerm": "Filming"
+    },
+    {
+      "id": "honyaku",
+      "term": "翻訳",
+      "reading": "ほんやく",
+      "meaningJa": "ある 国の ことばを、ほかの ことばに かえる ことです。",
+      "englishTerm": "Translation"
+    },
+    {
+      "id": "tagengo",
+      "term": "多言語",
+      "reading": "たげんご",
+      "meaningJa": "いくつもの 国の ことばで、と いう ことです。",
+      "englishTerm": "Multilingual"
+    },
+    {
+      "id": "kaiseki",
+      "term": "解析",
+      "reading": "かいせき",
+      "meaningJa": "中身を こまかく 見て、しらべる ことです。",
+      "englishTerm": "Analysis"
+    },
+    {
+      "id": "handan",
+      "term": "判断",
+      "reading": "はんだん",
+      "meaningJa": "どちらかを 見て 決める ことです。",
+      "englishTerm": "Judgement"
+    },
+    {
+      "id": "kenchi",
+      "term": "検知",
+      "reading": "けんち",
+      "meaningJa": "きかいが、それが ある ことに 気づく ことです。",
+      "englishTerm": "Detection"
+    },
+    {
+      "id": "kenshutsu",
+      "term": "検出",
+      "reading": "けんしゅつ",
+      "meaningJa": "さがして、見つけ出す ことです。",
+      "englishTerm": "Detection"
+    },
+    {
+      "id": "jidou",
+      "term": "自動",
+      "reading": "じどう",
+      "meaningJa": "人が しなくても、きかいが する ことです。",
+      "englishTerm": "Automatic"
+    },
+    {
+      "id": "jiritsu",
+      "term": "自律",
+      "reading": "じりつ",
+      "meaningJa": "人が 命令しなくても、じぶんで うごく ことです。",
+      "englishTerm": "Autonomous"
+    },
+    {
+      "id": "kouritsuka",
+      "term": "効率化",
+      "reading": "こうりつか",
+      "meaningJa": "むだを へらして、はやく できるように する ことです。",
+      "englishTerm": "Making it efficient"
+    },
+    {
+      "id": "kashika",
+      "term": "可視化",
+      "reading": "かしか",
+      "meaningJa": "目に 見えない ものを、見えるように する ことです。",
+      "englishTerm": "Visualising"
+    },
+    {
+      "id": "saiteki",
+      "term": "最適",
+      "reading": "さいてき",
+      "meaningJa": "いちばん よい 形の ことです。",
+      "englishTerm": "Optimal"
+    },
+    {
+      "id": "seiri",
+      "term": "整理",
+      "reading": "せいり",
+      "meaningJa": "ばらばらの ものを、わかるように ならべる ことです。",
+      "englishTerm": "Organising"
+    },
+    {
+      "id": "bunrui",
+      "term": "分類",
+      "reading": "ぶんるい",
+      "meaningJa": "なかまごとに わける ことです。",
+      "englishTerm": "Classification"
+    },
+    {
+      "id": "koumoku",
+      "term": "項目",
+      "reading": "こうもく",
+      "meaningJa": "書く ことを わけた、1つ1つの ことです。",
+      "englishTerm": "Item / field"
+    },
+    {
+      "id": "ichiran",
+      "term": "一覧",
+      "reading": "いちらん",
+      "meaningJa": "ぜんぶを 1つの 表に ならべた ものです。",
+      "englishTerm": "List"
+    },
+    {
+      "id": "daichou",
+      "term": "台帳",
+      "reading": "だいちょう",
+      "meaningJa": "たいせつな ことを ならべて 書いた 帳面です。",
+      "englishTerm": "Ledger / register"
+    },
+    {
+      "id": "rireki",
+      "term": "履歴",
+      "reading": "りれき",
+      "meaningJa": "今までの ことの、じゅんばんの 記録です。",
+      "englishTerm": "History"
+    },
+    {
+      "id": "fukusuu",
+      "term": "複数",
+      "reading": "ふくすう",
+      "meaningJa": "2つ 以上、と いう ことです。",
+      "englishTerm": "Multiple"
+    },
+    {
+      "id": "kison",
+      "term": "既存",
+      "reading": "きそん",
+      "meaningJa": "今 すでに ある もの、と いう ことです。",
+      "englishTerm": "Existing"
+    },
+    {
+      "id": "senyou",
+      "term": "専用",
+      "reading": "せんよう",
+      "meaningJa": "それだけの ために つかう もの、と いう ことです。",
+      "englishTerm": "Dedicated"
+    },
+    {
+      "id": "gentei",
+      "term": "限定",
+      "reading": "げんてい",
+      "meaningJa": "「ここまで」と かぎる ことです。",
+      "englishTerm": "Limited"
+    },
+    {
+      "id": "koukyou",
+      "term": "公共",
+      "reading": "こうきょう",
+      "meaningJa": "みんなの ため、と いう ことです。",
+      "englishTerm": "Public"
+    },
+    {
+      "id": "tougou",
+      "term": "統合",
+      "reading": "とうごう",
+      "meaningJa": "いくつかを 1つに まとめる ことです。",
+      "englishTerm": "Integration"
+    },
+    {
+      "id": "rendou",
+      "term": "連動",
+      "reading": "れんどう",
+      "meaningJa": "かたほうが うごくと、もう かたほうも うごく ことです。",
+      "englishTerm": "Linked movement"
+    },
+    {
+      "id": "sentan",
+      "term": "先端",
+      "reading": "せんたん",
+      "meaningJa": "いちばん 新しい ところ、と いう ことです。",
+      "englishTerm": "Cutting edge"
+    },
+    {
+      "id": "senshin",
+      "term": "先進",
+      "reading": "せんしん",
+      "meaningJa": "ほかより 先へ 進んで いる ことです。",
+      "englishTerm": "Advanced"
+    },
+    {
+      "id": "kaishi",
+      "term": "開始",
+      "reading": "かいし",
+      "meaningJa": "はじめる ことです。",
+      "englishTerm": "Start"
+    },
+    {
+      "id": "kanryou",
+      "term": "完了",
+      "reading": "かんりょう",
+      "meaningJa": "ぜんぶ おわる ことです。",
+      "englishTerm": "Completion"
+    },
+    {
+      "id": "kaizen",
+      "term": "改善",
+      "reading": "かいぜん",
+      "meaningJa": "わるい ところを、よく する ことです。",
+      "englishTerm": "Improvement"
+    },
+    {
+      "id": "kaishou",
+      "term": "解消",
+      "reading": "かいしょう",
+      "meaningJa": "こまった ことを、なくす ことです。",
+      "englishTerm": "Resolving"
+    },
+    {
+      "id": "futan",
+      "term": "負担",
+      "reading": "ふたん",
+      "meaningJa": "その 人に かかる、おもさや たいへんさです。",
+      "englishTerm": "Burden"
+    },
+    {
+      "id": "keigen",
+      "term": "軽減",
+      "reading": "けいげん",
+      "meaningJa": "おもさや たいへんさを、へらす ことです。",
+      "englishTerm": "Reduction"
+    },
+    {
+      "id": "iji",
+      "term": "維持",
+      "reading": "いじ",
+      "meaningJa": "今の ままを、つづける ことです。",
+      "englishTerm": "Maintaining"
+    },
+    {
+      "id": "tekisetsu",
+      "term": "適切",
+      "reading": "てきせつ",
+      "meaningJa": "その 場に ちょうど よい、と いう ことです。",
+      "englishTerm": "Appropriate"
+    },
+    {
+      "id": "meikaku",
+      "term": "明確",
+      "reading": "めいかく",
+      "meaningJa": "はっきりして いて、まよわない ことです。",
+      "englishTerm": "Clear"
+    },
+    {
+      "id": "kantan",
+      "term": "簡単",
+      "reading": "かんたん",
+      "meaningJa": "やさしくて、すぐ できる ことです。",
+      "englishTerm": "Simple"
+    },
+    {
+      "id": "jinsoku",
+      "term": "迅速",
+      "reading": "じんそく",
+      "meaningJa": "とても はやい ことです。",
+      "englishTerm": "Quick"
+    },
+    {
+      "id": "seiki",
+      "term": "正規",
+      "reading": "せいき",
+      "meaningJa": "正しい やりかたの もの、と いう ことです。",
+      "englishTerm": "Official / regular"
+    },
+    {
+      "id": "yuukou",
+      "term": "有効",
+      "reading": "ゆうこう",
+      "meaningJa": "つかえる、役に立つ、と いう ことです。",
+      "englishTerm": "Valid / effective"
+    },
+    {
+      "id": "mukou",
+      "term": "無効",
+      "reading": "むこう",
+      "meaningJa": "もう つかえない、と いう ことです。",
+      "englishTerm": "Invalid"
+    },
+    {
+      "id": "shoumei",
+      "term": "証明",
+      "reading": "しょうめい",
+      "meaningJa": "本当だと、はっきり 見せる ことです。",
+      "englishTerm": "Proof"
+    },
+    {
+      "id": "shoumeisho",
+      "term": "証明書",
+      "reading": "しょうめいしょ",
+      "meaningJa": "本当だと 書いて ある 紙や データです。",
+      "englishTerm": "Certificate"
+    },
+    {
+      "id": "hakkou",
+      "term": "発行",
+      "reading": "はっこう",
+      "meaningJa": "紙や 券を 作って、人に わたす ことです。",
+      "englishTerm": "Issuing"
+    },
+    {
+      "id": "shinrai",
+      "term": "信頼",
+      "reading": "しんらい",
+      "meaningJa": "この 人・この ものは 大丈夫だ、と 思う ことです。",
+      "englishTerm": "Trust"
+    },
+    {
+      "id": "honmono",
+      "term": "本物",
+      "reading": "ほんもの",
+      "meaningJa": "にせものでは ない、本当の ものです。",
+      "englishTerm": "The real thing"
+    },
+    {
+      "id": "kaihen",
+      "term": "改変",
+      "reading": "かいへん",
+      "meaningJa": "中身を、あとから かえて しまう ことです。",
+      "englishTerm": "Alteration"
+    },
+    {
+      "id": "shougou",
+      "term": "照合",
+      "reading": "しょうごう",
+      "meaningJa": "2つを ならべて、同じかを 見る ことです。",
+      "englishTerm": "Checking against"
+    },
+    {
+      "id": "kankou",
+      "term": "観光",
+      "reading": "かんこう",
+      "meaningJa": "よその 土地へ 行って、見て 楽しむ ことです。",
+      "englishTerm": "Sightseeing"
+    },
+    {
+      "id": "kankouchi",
+      "term": "観光地",
+      "reading": "かんこうち",
+      "meaningJa": "人が 見に 来る、有名な 場所です。",
+      "englishTerm": "Tourist spot"
+    },
+    {
+      "id": "meisho",
+      "term": "名所",
+      "reading": "めいしょ",
+      "meaningJa": "その 土地で 有名な、見る ところです。",
+      "englishTerm": "Famous place"
+    },
+    {
+      "id": "shisetsu",
+      "term": "施設",
+      "reading": "しせつ",
+      "meaningJa": "人が つかう ための、建物や 場所です。",
+      "englishTerm": "Facility"
+    },
+    {
+      "id": "chiiki",
+      "term": "地域",
+      "reading": "ちいき",
+      "meaningJa": "その あたりの 土地と、そこに いる 人たちです。",
+      "englishTerm": "Local area"
+    },
+    {
+      "id": "kangen",
+      "term": "還元",
+      "reading": "かんげん",
+      "meaningJa": "もらった ものを、また その 土地へ もどす ことです。",
+      "englishTerm": "Giving back"
+    },
+    {
+      "id": "taiken",
+      "term": "体験",
+      "reading": "たいけん",
+      "meaningJa": "じぶんの 体で やって みる ことです。",
+      "englishTerm": "Experience"
+    },
+    {
+      "id": "nyuujouken",
+      "term": "入場券",
+      "reading": "にゅうじょうけん",
+      "meaningJa": "中に 入る ための 券です。",
+      "englishTerm": "Entry ticket"
+    },
+    {
+      "id": "inshokuten",
+      "term": "飲食店",
+      "reading": "いんしょくてん",
+      "meaningJa": "たべものや のみものを 出す お店です。",
+      "englishTerm": "Restaurant"
+    },
+    {
+      "id": "rekishi",
+      "term": "歴史",
+      "reading": "れきし",
+      "meaningJa": "むかしから 今までに あった ことです。",
+      "englishTerm": "History"
+    },
+    {
+      "id": "bunka",
+      "term": "文化",
+      "reading": "ぶんか",
+      "meaningJa": "その 土地の 人が 作って きた、くらしの かたちです。",
+      "englishTerm": "Culture"
+    },
+    {
+      "id": "monogatari",
+      "term": "物語",
+      "reading": "ものがたり",
+      "meaningJa": "はじめから おわりまで つづく、お話です。",
+      "englishTerm": "Story"
+    },
+    {
+      "id": "haikei",
+      "term": "背景",
+      "reading": "はいけい",
+      "meaningJa": "その ことの うしろに ある、わけです。",
+      "englishTerm": "Background"
+    },
+    {
+      "id": "setsubi",
+      "term": "設備",
+      "reading": "せつび",
+      "meaningJa": "仕事の ために おいて ある、大きな きかいです。",
+      "englishTerm": "Equipment"
+    },
+    {
+      "id": "tenken",
+      "term": "点検",
+      "reading": "てんけん",
+      "meaningJa": "こわれて いないか、1つ1つ 見る ことです。",
+      "englishTerm": "Inspection"
+    },
+    {
+      "id": "ijou",
+      "term": "異常",
+      "reading": "いじょう",
+      "meaningJa": "いつもと ちがう、わるい ようすです。",
+      "englishTerm": "Abnormality"
+    },
+    {
+      "id": "choukou",
+      "term": "兆候",
+      "reading": "ちょうこう",
+      "meaningJa": "わるく なる 前に 出る、小さな しるしです。",
+      "englishTerm": "Sign / symptom"
+    },
+    {
+      "id": "kiken",
+      "term": "危険",
+      "reading": "きけん",
+      "meaningJa": "けがを するかも しれない、あぶない ことです。",
+      "englishTerm": "Danger"
+    },
+    {
+      "id": "saigai",
+      "term": "災害",
+      "reading": "さいがい",
+      "meaningJa": "じしんや 大雨で、人が こまる ことです。",
+      "englishTerm": "Disaster"
+    },
+    {
+      "id": "kyuujo",
+      "term": "救助",
+      "reading": "きゅうじょ",
+      "meaningJa": "あぶない 人を、たすける ことです。",
+      "englishTerm": "Rescue"
+    },
+    {
+      "id": "sousaku",
+      "term": "捜索",
+      "reading": "そうさく",
+      "meaningJa": "見つかるまで、ひろく さがす ことです。",
+      "englishTerm": "Search"
+    },
+    {
+      "id": "junkai",
+      "term": "巡回",
+      "reading": "じゅんかい",
+      "meaningJa": "きめた 道を まわって、見て あるく ことです。",
+      "englishTerm": "Patrol"
+    },
+    {
+      "id": "shinnyuu",
+      "term": "侵入",
+      "reading": "しんにゅう",
+      "meaningJa": "入っては いけない ところに 入る ことです。",
+      "englishTerm": "Intrusion"
+    },
+    {
+      "id": "ondo",
+      "term": "温度",
+      "reading": "おんど",
+      "meaningJa": "あつい・つめたいの 数です。",
+      "englishTerm": "Temperature"
+    },
+    {
+      "id": "henka",
+      "term": "変化",
+      "reading": "へんか",
+      "meaningJa": "前と ちがう ものに なる ことです。",
+      "englishTerm": "Change"
+    },
+    {
+      "id": "joukyou",
+      "term": "状況",
+      "reading": "じょうきょう",
+      "meaningJa": "いま どう なって いるか、と いう ことです。",
+      "englishTerm": "Situation"
+    },
+    {
+      "id": "haaku",
+      "term": "把握",
+      "reading": "はあく",
+      "meaningJa": "ぜんたいを、よく わかる ことです。",
+      "englishTerm": "Grasping"
+    },
+    {
+      "id": "shuuhen",
+      "term": "周辺",
+      "reading": "しゅうへん",
+      "meaningJa": "その まわりの ことです。",
+      "englishTerm": "Surroundings"
+    },
+    {
+      "id": "shikichi",
+      "term": "敷地",
+      "reading": "しきち",
+      "meaningJa": "その 建物が 立って いる、土地の ぜんたいです。",
+      "englishTerm": "Site / grounds"
+    },
+    {
+      "id": "koujou",
+      "term": "工場",
+      "reading": "こうじょう",
+      "meaningJa": "ものを たくさん 作る 建物です。",
+      "englishTerm": "Factory"
+    },
+    {
+      "id": "douro",
+      "term": "道路",
+      "reading": "どうろ",
+      "meaningJa": "車が 通る 道です。",
+      "englishTerm": "Road"
+    },
+    {
+      "id": "sharyou",
+      "term": "車両",
+      "reading": "しゃりょう",
+      "meaningJa": "車や トラックなど、はしる ものです。",
+      "englishTerm": "Vehicle"
+    },
+    {
+      "id": "seibi",
+      "term": "整備",
+      "reading": "せいび",
+      "meaningJa": "きかいを 見て、つかえるように 直す ことです。",
+      "englishTerm": "Maintenance"
+    },
+    {
+      "id": "shuuri",
+      "term": "修理",
+      "reading": "しゅうり",
+      "meaningJa": "こわれた ものを 直す ことです。",
+      "englishTerm": "Repair"
+    },
+    {
+      "id": "nougyou",
+      "term": "農業",
+      "reading": "のうぎょう",
+      "meaningJa": "田んぼや 畑で、たべものを 作る 仕事です。",
+      "englishTerm": "Farming"
+    },
+    {
+      "id": "sakumotsu",
+      "term": "作物",
+      "reading": "さくもつ",
+      "meaningJa": "畑で 作る、たべものの ことです。",
+      "englishTerm": "Crops"
+    },
+    {
+      "id": "kyouiku",
+      "term": "教育",
+      "reading": "きょういく",
+      "meaningJa": "人に 教えて、そだてる ことです。",
+      "englishTerm": "Education"
+    },
+    {
+      "id": "daigaku",
+      "term": "大学",
+      "reading": "だいがく",
+      "meaningJa": "高校の あとに 行く、いちばん 上の 学校です。",
+      "englishTerm": "University"
+    },
+    {
+      "id": "gakusei",
+      "term": "学生",
+      "reading": "がくせい",
+      "meaningJa": "学校で 勉強して いる 人です。",
+      "englishTerm": "Student"
+    },
+    {
+      "id": "shuuryou",
+      "term": "修了",
+      "reading": "しゅうりょう",
+      "meaningJa": "きめられた 勉強を、ぜんぶ おわる ことです。",
+      "englishTerm": "Completion of a course"
+    },
+    {
+      "id": "shiken",
+      "term": "試験",
+      "reading": "しけん",
+      "meaningJa": "どれくらい できるかを 見る、テストです。",
+      "englishTerm": "Examination"
+    },
+    {
+      "id": "shakai",
+      "term": "社会",
+      "reading": "しゃかい",
+      "meaningJa": "人が いっしょに くらして いる、ぜんたいです。",
+      "englishTerm": "Society"
+    },
+    {
+      "id": "seifu",
+      "term": "政府",
+      "reading": "せいふ",
+      "meaningJa": "国を うごかして いる ところです。",
+      "englishTerm": "Government"
+    },
+    {
+      "id": "jichitai",
+      "term": "自治体",
+      "reading": "じちたい",
+      "meaningJa": "その 土地を うごかす 役所です。",
+      "englishTerm": "Local government"
+    },
+    {
+      "id": "kokusai",
+      "term": "国際",
+      "reading": "こくさい",
+      "meaningJa": "国と 国の あいだの、と いう ことです。",
+      "englishTerm": "International"
+    },
+    {
+      "id": "kankyou",
+      "term": "環境",
+      "reading": "かんきょう",
+      "meaningJa": "その 人の まわりに ある、ぜんぶの ようすです。",
+      "englishTerm": "Environment"
+    },
+    {
+      "id": "sedai",
+      "term": "世代",
+      "reading": "せだい",
+      "meaningJa": "同じ ころに 生まれた 人たちです。",
+      "englishTerm": "Generation"
+    },
+    {
+      "id": "sainou",
+      "term": "才能",
+      "reading": "さいのう",
+      "meaningJa": "その 人が もって いる、とくべつな 力です。",
+      "englishTerm": "Talent"
+    },
+    {
+      "id": "kanousei",
+      "term": "可能性",
+      "reading": "かのうせい",
+      "meaningJa": "これから できるかも しれない、と いう ことです。",
+      "englishTerm": "Potential"
+    },
+    {
+      "id": "kachi",
+      "term": "価値",
+      "reading": "かち",
+      "meaningJa": "その ものの よさ、大切さです。",
+      "englishTerm": "Value"
+    },
+    {
+      "id": "kyoumi",
+      "term": "興味",
+      "reading": "きょうみ",
+      "meaningJa": "もっと 知りたい、と 思う 気もちです。",
+      "englishTerm": "Interest"
+    },
+    {
+      "id": "fusoku",
+      "term": "不足",
+      "reading": "ふそく",
+      "meaningJa": "足りない ことです。",
+      "englishTerm": "Shortage"
+    },
+    {
+      "id": "yosoku",
+      "term": "予測",
+      "reading": "よそく",
+      "meaningJa": "これから どう なるかを、先に 考える ことです。",
+      "englishTerm": "Forecast"
+    },
+    {
+      "id": "genjou",
+      "term": "現状",
+      "reading": "げんじょう",
+      "meaningJa": "いま どう なって いるか、と いう ことです。",
+      "englishTerm": "Current situation"
+    },
+    {
+      "id": "shudan",
+      "term": "手段",
+      "reading": "しゅだん",
+      "meaningJa": "目的に つく ための、やりかたです。",
+      "englishTerm": "Means"
+    },
+    {
+      "id": "houhou",
+      "term": "方法",
+      "reading": "ほうほう",
+      "meaningJa": "やりかたの ことです。",
+      "englishTerm": "Method"
+    },
+    {
+      "id": "rikai",
+      "term": "理解",
+      "reading": "りかい",
+      "meaningJa": "話や ことばの 意味が、わかる ことです。",
+      "englishTerm": "Understanding"
+    },
+    {
+      "id": "tokuchou",
+      "term": "特徴",
+      "reading": "とくちょう",
+      "meaningJa": "ほかと ちがう、目立つ ところです。",
+      "englishTerm": "Feature"
+    },
+    {
+      "id": "shurui",
+      "term": "種類",
+      "reading": "しゅるい",
+      "meaningJa": "なかまごとに わけた、その わけかたです。",
+      "englishTerm": "Kind / type"
+    },
+    {
+      "id": "ijou2",
+      "term": "以上",
+      "reading": "いじょう",
+      "meaningJa": "その 数を ふくめて、それより 多い ことです。",
+      "englishTerm": "Or more"
+    },
+    {
+      "id": "genzai",
+      "term": "現在",
+      "reading": "げんざい",
+      "meaningJa": "いまの ことです。",
+      "englishTerm": "Present / now"
+    },
+    {
+      "id": "fudan",
+      "term": "普段",
+      "reading": "ふだん",
+      "meaningJa": "とくべつでは ない、いつもの ときです。",
+      "englishTerm": "Usually"
+    },
+    {
+      "id": "chokusetsu",
+      "term": "直接",
+      "reading": "ちょくせつ",
+      "meaningJa": "あいだに 人を 入れず、じぶんで する ことです。",
+      "englishTerm": "Directly"
+    },
+    {
+      "id": "shisutemu",
+      "term": "システム",
+      "reading": "しすてむ",
+      "meaningJa": "仕事を するための、コンピューターの しくみです。",
+      "englishTerm": "System"
+    },
+    {
+      "id": "sabisu",
+      "term": "サービス",
+      "reading": "さーびす",
+      "meaningJa": "お客さまの ために する、しごとの 中身です。",
+      "englishTerm": "Service"
+    },
+    {
+      "id": "homupeji",
+      "term": "ホームページ",
+      "reading": "ほーむぺーじ",
+      "meaningJa": "会社や お店の ことを 見せる、ネットの ページです。",
+      "englishTerm": "Website"
+    },
+    {
+      "id": "saito",
+      "term": "サイト",
+      "reading": "さいと",
+      "meaningJa": "インターネットの 中の、ページの あつまりです。",
+      "englishTerm": "Website"
+    },
+    {
+      "id": "peji",
+      "term": "ページ",
+      "reading": "ぺーじ",
+      "meaningJa": "サイトの 中の、1まいの 画面です。",
+      "englishTerm": "Page"
+    },
+    {
+      "id": "gurupu",
+      "term": "グループ",
+      "reading": "ぐるーぷ",
+      "meaningJa": "つながりの ある、会社や 人の あつまりです。",
+      "englishTerm": "Group"
+    },
+    {
+      "id": "dejitaru",
+      "term": "デジタル",
+      "reading": "でじたる",
+      "meaningJa": "コンピューターで あつかえる かたち、と いう ことです。",
+      "englishTerm": "Digital"
+    },
+    {
+      "id": "doron",
+      "term": "ドローン",
+      "reading": "どろーん",
+      "meaningJa": "人が のらないで、空を 飛ぶ きかいです。",
+      "englishTerm": "Drone"
+    },
+    {
+      "id": "sekyurite",
+      "term": "セキュリティ",
+      "reading": "せきゅりてぃ",
+      "meaningJa": "わるい ことから、まもる ことです。",
+      "englishTerm": "Security"
+    },
+    {
+      "id": "infura",
+      "term": "インフラ",
+      "reading": "いんふら",
+      "meaningJa": "サーバーや ネットワークなど、下ざさえの しくみです。",
+      "englishTerm": "Infrastructure"
+    },
+    {
+      "id": "saba",
+      "term": "サーバー",
+      "reading": "さーばー",
+      "meaningJa": "データを おいて、みんなに わたす コンピューターです。",
+      "englishTerm": "Server"
+    },
+    {
+      "id": "nettowaku",
+      "term": "ネットワーク",
+      "reading": "ねっとわーく",
+      "meaningJa": "コンピューターを つなぐ しくみです。",
+      "englishTerm": "Network"
+    },
+    {
+      "id": "intanetto",
+      "term": "インターネット",
+      "reading": "いんたーねっと",
+      "meaningJa": "世界中の コンピューターを つなぐ しくみです。",
+      "englishTerm": "Internet"
+    },
+    {
+      "id": "tsuru",
+      "term": "ツール",
+      "reading": "つーる",
+      "meaningJa": "仕事を らくに する、道具や ソフトです。",
+      "englishTerm": "Tool"
+    },
+    {
+      "id": "kodo",
+      "term": "コード",
+      "reading": "こーど",
+      "meaningJa": "プログラムを 書いた 字の ことです。",
+      "englishTerm": "Code"
+    },
+    {
+      "id": "purojikuto",
+      "term": "プロジェクト",
+      "reading": "ぷろじぇくと",
+      "meaningJa": "おわりの ある、1つの 大きな 仕事です。",
+      "englishTerm": "Project"
+    },
+    {
+      "id": "purojikutomaneja",
+      "term": "プロジェクトマネージャー",
+      "reading": "ぷろじぇくとまねーじゃー",
+      "meaningJa": "仕事の 進みかたを 決めて、まとめる 人です。",
+      "englishTerm": "Project manager"
+    },
+    {
+      "id": "rida",
+      "term": "リーダー",
+      "reading": "りーだー",
+      "meaningJa": "チームを まとめる 人です。",
+      "englishTerm": "Leader"
+    },
+    {
+      "id": "sutaffu",
+      "term": "スタッフ",
+      "reading": "すたっふ",
+      "meaningJa": "そこで はたらいて いる 人たちです。",
+      "englishTerm": "Staff"
+    },
+    {
+      "id": "kyaria",
+      "term": "キャリア",
+      "reading": "きゃりあ",
+      "meaningJa": "その 人が して きた 仕事の、つながりです。",
+      "englishTerm": "Career"
+    },
+    {
+      "id": "sukiru",
+      "term": "スキル",
+      "reading": "すきる",
+      "meaningJa": "ならって 身に つけた、できる ことです。",
+      "englishTerm": "Skill"
+    },
+    {
+      "id": "reberu",
+      "term": "レベル",
+      "reading": "れべる",
+      "meaningJa": "どれくらい できるか、と いう 高さです。",
+      "englishTerm": "Level"
+    },
+    {
+      "id": "karikyuramu",
+      "term": "カリキュラム",
+      "reading": "かりきゅらむ",
+      "meaningJa": "何を どの 順で ならうか、と いう 予定です。",
+      "englishTerm": "Curriculum"
+    },
+    {
+      "id": "intanshippu",
+      "term": "インターンシップ",
+      "reading": "いんたーんしっぷ",
+      "meaningJa": "学生が、会社で しごとを して みる ことです。",
+      "englishTerm": "Internship"
+    },
+    {
+      "id": "sukejuru",
+      "term": "スケジュール",
+      "reading": "すけじゅーる",
+      "meaningJa": "いつ 何を するか、と いう 予定です。",
+      "englishTerm": "Schedule"
+    },
+    {
+      "id": "tasuku",
+      "term": "タスク",
+      "reading": "たすく",
+      "meaningJa": "しなければ ならない、1つ1つの ことです。",
+      "englishTerm": "Task"
+    },
+    {
+      "id": "furo",
+      "term": "フロー",
+      "reading": "ふろー",
+      "meaningJa": "仕事が 進む、じゅんばんの ことです。",
+      "englishTerm": "Flow"
+    },
+    {
+      "id": "hiaringu",
+      "term": "ヒアリング",
+      "reading": "ひありんぐ",
+      "meaningJa": "お客さまの 話を、よく 聞く ことです。",
+      "englishTerm": "Hearing / interview"
+    },
+    {
+      "id": "rebyu",
+      "term": "レビュー",
+      "reading": "れびゅー",
+      "meaningJa": "作った ものを、人に 見て もらう ことです。",
+      "englishTerm": "Review"
+    },
+    {
+      "id": "ririsu",
+      "term": "リリース",
+      "reading": "りりーす",
+      "meaningJa": "作った ものを、世の中へ 出す ことです。",
+      "englishTerm": "Release"
+    },
+    {
+      "id": "rinyuaru",
+      "term": "リニューアル",
+      "reading": "りにゅーある",
+      "meaningJa": "古く なった ものを、新しく 作りなおす ことです。",
+      "englishTerm": "Renewal"
+    },
+    {
+      "id": "soryushon",
+      "term": "ソリューション",
+      "reading": "そりゅーしょん",
+      "meaningJa": "こまって いる ことを なおす、しくみです。",
+      "englishTerm": "Solution"
+    },
+    {
+      "id": "konsarutengu",
+      "term": "コンサルティング",
+      "reading": "こんさるてぃんぐ",
+      "meaningJa": "どう すれば よいかを、考えて 教える 仕事です。",
+      "englishTerm": "Consulting"
+    },
+    {
+      "id": "araiansu",
+      "term": "アライアンス",
+      "reading": "あらいあんす",
+      "meaningJa": "会社どうしが 手を むすぶ ことです。",
+      "englishTerm": "Alliance"
+    },
+    {
+      "id": "patonashippu",
+      "term": "パートナーシップ",
+      "reading": "ぱーとなーしっぷ",
+      "meaningJa": "いっしょに やろう、と いう やくそくです。",
+      "englishTerm": "Partnership"
+    },
+    {
+      "id": "ofusu",
+      "term": "オフィス",
+      "reading": "おふぃす",
+      "meaningJa": "会社で、しごとを する 部屋です。",
+      "englishTerm": "Office"
+    },
+    {
+      "id": "ofushoa",
+      "term": "オフショア",
+      "reading": "おふしょあ",
+      "meaningJa": "外国の チームに、作る 仕事を たのむ ことです。",
+      "englishTerm": "Offshore"
+    },
+    {
+      "id": "bijinesu",
+      "term": "ビジネス",
+      "reading": "びじねす",
+      "meaningJa": "お金を もらって する、しごとの ことです。",
+      "englishTerm": "Business"
+    },
+    {
+      "id": "dezain",
+      "term": "デザイン",
+      "reading": "でざいん",
+      "meaningJa": "見た目や つかいやすさを 考えて 作る ことです。",
+      "englishTerm": "Design"
+    },
+    {
+      "id": "furontoendo",
+      "term": "フロントエンド",
+      "reading": "ふろんとえんど",
+      "meaningJa": "人が 見る、画面の ほうを 作る 仕事です。",
+      "englishTerm": "Front end"
+    },
+    {
+      "id": "bakkuendo",
+      "term": "バックエンド",
+      "reading": "ばっくえんど",
+      "meaningJa": "目に 見えない、うらがわを 作る 仕事です。",
+      "englishTerm": "Back end"
+    },
+    {
+      "id": "dasshubodo",
+      "term": "ダッシュボード",
+      "reading": "だっしゅぼーど",
+      "meaningJa": "たいせつな 数を、1つの 画面で 見る ところです。",
+      "englishTerm": "Dashboard"
+    },
+    {
+      "id": "repoto",
+      "term": "レポート",
+      "reading": "れぽーと",
+      "meaningJa": "しらべた ことを まとめた、書きものです。",
+      "englishTerm": "Report"
+    },
+    {
+      "id": "arato",
+      "term": "アラート",
+      "reading": "あらーと",
+      "meaningJa": "あぶない ことを 知らせる、しらせです。",
+      "englishTerm": "Alert"
+    },
+    {
+      "id": "riarutaimu",
+      "term": "リアルタイム",
+      "reading": "りあるたいむ",
+      "meaningJa": "おきた その ときに、すぐ、と いう ことです。",
+      "englishTerm": "Real time"
+    },
+    {
+      "id": "insutoru",
+      "term": "インストール",
+      "reading": "いんすとーる",
+      "meaningJa": "ソフトを、つかえるように 入れる ことです。",
+      "englishTerm": "Install"
+    },
+    {
+      "id": "risosu",
+      "term": "リソース",
+      "reading": "りそーす",
+      "meaningJa": "つかえる 人・お金・時間の ことです。",
+      "englishTerm": "Resources"
+    },
+    {
+      "id": "puromoshon",
+      "term": "プロモーション",
+      "reading": "ぷろもーしょん",
+      "meaningJa": "作った ものを、人に 知らせる ことです。",
+      "englishTerm": "Promotion"
+    },
+    {
+      "id": "ibento",
+      "term": "イベント",
+      "reading": "いべんと",
+      "meaningJa": "人を あつめて する、とくべつな 会です。",
+      "englishTerm": "Event"
+    },
+    {
+      "id": "gaido",
+      "term": "ガイド",
+      "reading": "がいど",
+      "meaningJa": "行きかたや 見かたを、その 人に 見せる ことです。",
+      "englishTerm": "Guide"
+    },
+    {
+      "id": "ruto",
+      "term": "ルート",
+      "reading": "るーと",
+      "meaningJa": "通る 道の ことです。",
+      "englishTerm": "Route"
+    },
+    {
+      "id": "chatto",
+      "term": "チャット",
+      "reading": "ちゃっと",
+      "meaningJa": "字を 打って、その場で 話す ことです。",
+      "englishTerm": "Chat"
+    },
+    {
+      "id": "kabushikigaisha",
+      "term": "株式会社",
+      "reading": "かぶしきがいしゃ",
+      "meaningJa": "会社の 形の 1つです。名前の 前か 後に つきます。",
+      "englishTerm": "Corporation (KK)"
+    },
+    {
+      "id": "kaigai",
+      "term": "海外",
+      "reading": "かいがい",
+      "meaningJa": "日本の 外の 国の ことです。",
+      "englishTerm": "Overseas"
+    },
+    {
+      "id": "gaikoku",
+      "term": "外国",
+      "reading": "がいこく",
+      "meaningJa": "じぶんの 国では ない 国です。",
+      "englishTerm": "Foreign country"
+    },
+    {
+      "id": "genchi",
+      "term": "現地",
+      "reading": "げんち",
+      "meaningJa": "その ことが おきて いる、その 場所です。",
+      "englishTerm": "On site / local"
+    },
+    {
+      "id": "kokunai",
+      "term": "国内",
+      "reading": "こくない",
+      "meaningJa": "その 国の 中の ことです。",
+      "englishTerm": "Domestic"
+    },
+    {
+      "id": "kokka",
+      "term": "国家",
+      "reading": "こっか",
+      "meaningJa": "国の ことです。あらたまった 言い方です。",
+      "englishTerm": "Nation"
+    },
+    {
+      "id": "kokkyou",
+      "term": "国境",
+      "reading": "こっきょう",
+      "meaningJa": "国と 国の さかいです。",
+      "englishTerm": "Border"
+    },
+    {
+      "id": "ginkou",
+      "term": "銀行",
+      "reading": "ぎんこう",
+      "meaningJa": "お金を あずけたり 借りたり する ところです。",
+      "englishTerm": "Bank"
+    },
+    {
+      "id": "houritsu",
+      "term": "法律",
+      "reading": "ほうりつ",
+      "meaningJa": "国が 決めた、みんなが 守る きまりです。",
+      "englishTerm": "Law"
+    },
+    {
+      "id": "kyoukai",
+      "term": "協会",
+      "reading": "きょうかい",
+      "meaningJa": "同じ 仕事の 人が つくる 団体です。",
+      "englishTerm": "Association"
+    },
+    {
+      "id": "kikan",
+      "term": "機関",
+      "reading": "きかん",
+      "meaningJa": "ある はたらきを もつ、公の 組織です。",
+      "englishTerm": "Institution"
+    },
+    {
+      "id": "jigyousha",
+      "term": "事業者",
+      "reading": "じぎょうしゃ",
+      "meaningJa": "その 仕事を して いる 会社や 人です。",
+      "englishTerm": "Business operator"
+    },
+    {
+      "id": "kankei",
+      "term": "関係",
+      "reading": "かんけい",
+      "meaningJa": "ものと ものの、つながりです。",
+      "englishTerm": "Relationship"
+    },
+    {
+      "id": "kankeigaisha",
+      "term": "関係会社",
+      "reading": "かんけいがいしゃ",
+      "meaningJa": "いっしょに 仕事を する、つながりの ある 会社です。",
+      "englishTerm": "Affiliated company"
+    },
+    {
+      "id": "joujoukigyou",
+      "term": "上場企業",
+      "reading": "じょうじょうきぎょう",
+      "meaningJa": "かぶを 市場で 売り買いできる 会社です。",
+      "englishTerm": "Listed company"
+    },
+    {
+      "id": "souzou",
+      "term": "創造",
+      "reading": "そうぞう",
+      "meaningJa": "今まで なかった ものを 作りだす ことです。",
+      "englishTerm": "Creation"
+    },
+    {
+      "id": "kikaku",
+      "term": "企画",
+      "reading": "きかく",
+      "meaningJa": "何を するかを 考えて、形に する ことです。",
+      "englishTerm": "Planning"
+    },
+    {
+      "id": "hensei",
+      "term": "編成",
+      "reading": "へんせい",
+      "meaningJa": "人を あつめて、チームの 形を 作る ことです。",
+      "englishTerm": "Forming a team"
+    },
+    {
+      "id": "sakusei",
+      "term": "作成",
+      "reading": "さくせい",
+      "meaningJa": "書類や データを 作る ことです。",
+      "englishTerm": "Creating"
+    },
+    {
+      "id": "shiyou2",
+      "term": "使用",
+      "reading": "しよう",
+      "meaningJa": "つかう ことです。",
+      "englishTerm": "Use"
+    },
+    {
+      "id": "youi",
+      "term": "用意",
+      "reading": "ようい",
+      "meaningJa": "先に、いるものを そろえて おく ことです。",
+      "englishTerm": "Preparation"
+    },
+    {
+      "id": "kounyuu",
+      "term": "購入",
+      "reading": "こうにゅう",
+      "meaningJa": "お金を はらって 買う ことです。",
+      "englishTerm": "Purchase"
+    },
+    {
+      "id": "shutoku",
+      "term": "取得",
+      "reading": "しゅとく",
+      "meaningJa": "じぶんの ものに する ことです。",
+      "englishTerm": "Obtaining"
+    },
+    {
+      "id": "jushou",
+      "term": "受賞",
+      "reading": "じゅしょう",
+      "meaningJa": "賞を もらう ことです。",
+      "englishTerm": "Winning an award"
+    },
+    {
+      "id": "shinkou",
+      "term": "進行",
+      "reading": "しんこう",
+      "meaningJa": "仕事が 前へ 進んで いく ことです。",
+      "englishTerm": "Progress"
+    },
+    {
+      "id": "koudou",
+      "term": "行動",
+      "reading": "こうどう",
+      "meaningJa": "じっさいに、体を うごかして する ことです。",
+      "englishTerm": "Action"
+    },
+    {
+      "id": "kijitsu",
+      "term": "期日",
+      "reading": "きじつ",
+      "meaningJa": "いつまでか、と 決めた 日です。",
+      "englishTerm": "Due date"
+    },
+    {
+      "id": "jitsumu",
+      "term": "実務",
+      "reading": "じつむ",
+      "meaningJa": "じっさいの、まいにちの 仕事です。",
+      "englishTerm": "Practical work"
+    },
+    {
+      "id": "seikabutsu",
+      "term": "成果物",
+      "reading": "せいかぶつ",
+      "meaningJa": "仕事の 結果 できあがった ものです。",
+      "englishTerm": "Deliverable"
+    },
+    {
+      "id": "setsumeisho",
+      "term": "説明書",
+      "reading": "せつめいしょ",
+      "meaningJa": "つかいかたが 書いて ある 紙です。",
+      "englishTerm": "Manual"
+    },
+    {
+      "id": "shoshiki",
+      "term": "書式",
+      "reading": "しょしき",
+      "meaningJa": "書きかたの きまった 形です。",
+      "englishTerm": "Format"
+    },
+    {
+      "id": "koutou",
+      "term": "口頭",
+      "reading": "こうとう",
+      "meaningJa": "字では なく、話して つたえる ことです。",
+      "englishTerm": "Spoken"
+    },
+    {
+      "id": "kaiwa",
+      "term": "会話",
+      "reading": "かいわ",
+      "meaningJa": "2人 以上で 話す ことです。",
+      "englishTerm": "Conversation"
+    },
+    {
+      "id": "kaijou",
+      "term": "会場",
+      "reading": "かいじょう",
+      "meaningJa": "会や イベントを する 場所です。",
+      "englishTerm": "Venue"
+    },
+    {
+      "id": "toujou",
+      "term": "登場",
+      "reading": "とうじょう",
+      "meaningJa": "話の 中に 出て くる ことです。",
+      "englishTerm": "Appearing"
+    },
+    {
+      "id": "kojin",
+      "term": "個人",
+      "reading": "こじん",
+      "meaningJa": "1人の 人の ことです。",
+      "englishTerm": "Individual"
+    },
+    {
+      "id": "kojinjouhou",
+      "term": "個人情報",
+      "reading": "こじんじょうほう",
+      "meaningJa": "その 人が だれか わかって しまう 情報です。",
+      "englishTerm": "Personal information"
+    },
+    {
+      "id": "jouhou",
+      "term": "情報",
+      "reading": "じょうほう",
+      "meaningJa": "知って おくと 役に立つ、ことがらです。",
+      "englishTerm": "Information"
+    },
+    {
+      "id": "kenshou",
+      "term": "検証",
+      "reading": "けんしょう",
+      "meaningJa": "本当に そうかを、しらべて たしかめる ことです。",
+      "englishTerm": "Verification"
+    },
+    {
+      "id": "yuukousei",
+      "term": "有効性",
+      "reading": "ゆうこうせい",
+      "meaningJa": "本当に 役に立つか、と いう ことです。",
+      "englishTerm": "Effectiveness"
+    },
+    {
+      "id": "shinseisei",
+      "term": "真正性",
+      "reading": "しんせいせい",
+      "meaningJa": "にせものでは ない、と いう ことです。",
+      "englishTerm": "Authenticity"
+    },
+    {
+      "id": "shikkou",
+      "term": "失効",
+      "reading": "しっこう",
+      "meaningJa": "つかえる 時間が おわる ことです。",
+      "englishTerm": "Expiry"
+    },
+    {
+      "id": "shougai",
+      "term": "障害",
+      "reading": "しょうがい",
+      "meaningJa": "うまく うごかなく なる、こまった ことです。",
+      "englishTerm": "Failure / fault"
+    },
+    {
+      "id": "shougaibutsu",
+      "term": "障害物",
+      "reading": "しょうがいぶつ",
+      "meaningJa": "道の じゃまに なる ものです。",
+      "englishTerm": "Obstacle"
+    },
+    {
+      "id": "hikou",
+      "term": "飛行",
+      "reading": "ひこう",
+      "meaningJa": "空を 飛ぶ ことです。",
+      "englishTerm": "Flight"
+    },
+    {
+      "id": "ririku",
+      "term": "離陸",
+      "reading": "りりく",
+      "meaningJa": "地面から はなれて、飛びはじめる ことです。",
+      "englishTerm": "Take-off"
+    },
+    {
+      "id": "kikan2",
+      "term": "帰還",
+      "reading": "きかん",
+      "meaningJa": "もとの 場所へ もどる ことです。",
+      "englishTerm": "Return"
+    },
+    {
+      "id": "joukuu",
+      "term": "上空",
+      "reading": "じょうくう",
+      "meaningJa": "その 場所の、上の 空です。",
+      "englishTerm": "The sky above"
+    },
+    {
+      "id": "kousho",
+      "term": "高所",
+      "reading": "こうしょ",
+      "meaningJa": "高い ところです。",
+      "englishTerm": "High place"
+    },
+    {
+      "id": "kouiki",
+      "term": "広域",
+      "reading": "こういき",
+      "meaningJa": "ひろい はんいの ことです。",
+      "englishTerm": "Wide area"
+    },
+    {
+      "id": "hisaichi",
+      "term": "被災地",
+      "reading": "ひさいち",
+      "meaningJa": "災害で こまって いる 土地です。",
+      "englishTerm": "Disaster area"
+    },
+    {
+      "id": "taiyoukou",
+      "term": "太陽光",
+      "reading": "たいようこう",
+      "meaningJa": "太陽の 光から 電気を 作る しくみです。",
+      "englishTerm": "Solar power"
+    },
+    {
+      "id": "sekigaisen",
+      "term": "赤外線",
+      "reading": "せきがいせん",
+      "meaningJa": "目に 見えない 光です。熱を 見る ことが できます。",
+      "englishTerm": "Infrared"
+    },
+    {
+      "id": "sanpu",
+      "term": "散布",
+      "reading": "さんぷ",
+      "meaningJa": "くすりや 水を、ひろく まく ことです。",
+      "englishTerm": "Spraying"
+    },
+    {
+      "id": "seiiku",
+      "term": "生育",
+      "reading": "せいいく",
+      "meaningJa": "作物が そだって いく ことです。",
+      "englishTerm": "Growth"
+    },
+    {
+      "id": "butsuryuu",
+      "term": "物流",
+      "reading": "ぶつりゅう",
+      "meaningJa": "ものを はこんで、とどける しくみです。",
+      "englishTerm": "Logistics"
+    },
+    {
+      "id": "jidousha",
+      "term": "自動車",
+      "reading": "じどうしゃ",
+      "meaningJa": "車の ことです。あらたまった 言い方です。",
+      "englishTerm": "Automobile"
+    },
+    {
+      "id": "shaken",
+      "term": "車検",
+      "reading": "しゃけん",
+      "meaningJa": "車が 安全かを しらべる、国の 検査です。",
+      "englishTerm": "Vehicle inspection"
+    },
+    {
+      "id": "chuukosha",
+      "term": "中古車",
+      "reading": "ちゅうこしゃ",
+      "meaningJa": "だれかが 前に つかって いた 車です。",
+      "englishTerm": "Used car"
+    },
+    {
+      "id": "tosou",
+      "term": "塗装",
+      "reading": "とそう",
+      "meaningJa": "ペンキを ぬる ことです。",
+      "englishTerm": "Painting"
+    },
+    {
+      "id": "kanban",
+      "term": "看板",
+      "reading": "かんばん",
+      "meaningJa": "お店の 名前などを 書いた、大きな 板です。",
+      "englishTerm": "Signboard"
+    },
+    {
+      "id": "muryou",
+      "term": "無料",
+      "reading": "むりょう",
+      "meaningJa": "お金が いらない ことです。",
+      "englishTerm": "Free of charge"
+    },
+    {
+      "id": "fuyou",
+      "term": "不要",
+      "reading": "ふよう",
+      "meaningJa": "いらない ことです。",
+      "englishTerm": "Unnecessary"
+    },
+    {
+      "id": "benri",
+      "term": "便利",
+      "reading": "べんり",
+      "meaningJa": "つかいやすくて、たすかる ことです。",
+      "englishTerm": "Convenient"
+    },
+    {
+      "id": "doutou",
+      "term": "同等",
+      "reading": "どうとう",
+      "meaningJa": "同じくらい、と いう ことです。",
+      "englishTerm": "Equivalent"
+    },
+    {
+      "id": "sougouteki",
+      "term": "総合的",
+      "reading": "そうごうてき",
+      "meaningJa": "ぜんぶを 合わせて 見る、と いう ことです。",
+      "englishTerm": "Comprehensive"
+    },
+    {
+      "id": "hibi",
+      "term": "日々",
+      "reading": "ひび",
+      "meaningJa": "まいにちの ことです。",
+      "englishTerm": "Day to day"
+    },
+    {
+      "id": "hitobito",
+      "term": "人々",
+      "reading": "ひとびと",
+      "meaningJa": "たくさんの 人たちの ことです。",
+      "englishTerm": "People"
+    },
+    {
+      "id": "sekaijuu",
+      "term": "世界中",
+      "reading": "せかいじゅう",
+      "meaningJa": "世の中の、ぜんぶの 国の ことです。",
+      "englishTerm": "All over the world"
+    },
+    {
+      "id": "nihongo",
+      "term": "日本語",
+      "reading": "にほんご",
+      "meaningJa": "日本で つかわれて いる ことばです。",
+      "englishTerm": "Japanese language"
+    },
+    {
+      "id": "kachikan",
+      "term": "価値観",
+      "reading": "かちかん",
+      "meaningJa": "何を 大切だと 思うか、と いう 考えかたです。",
+      "englishTerm": "Values"
+    },
+    {
+      "id": "manzoku",
+      "term": "満足",
+      "reading": "まんぞく",
+      "meaningJa": "これで いいと、心から 思う ことです。",
+      "englishTerm": "Satisfaction"
+    },
+    {
+      "id": "egao",
+      "term": "笑顔",
+      "reading": "えがお",
+      "meaningJa": "わらって いる 顔です。",
+      "englishTerm": "Smile"
+    },
+    {
+      "id": "koujoushin",
+      "term": "向上心",
+      "reading": "こうじょうしん",
+      "meaningJa": "もっと 上に なりたい、と 思う 気もちです。",
+      "englishTerm": "Ambition to improve"
+    },
+    {
+      "id": "kyouchousei",
+      "term": "協調性",
+      "reading": "きょうちょうせい",
+      "meaningJa": "人に 合わせて、いっしょに できる 力です。",
+      "englishTerm": "Cooperativeness"
+    },
+    {
+      "id": "juunansei",
+      "term": "柔軟性",
+      "reading": "じゅうなんせい",
+      "meaningJa": "やりかたを かえられる、やわらかさです。",
+      "englishTerm": "Flexibility"
+    },
+    {
+      "id": "zenrei",
+      "term": "前例",
+      "reading": "ぜんれい",
+      "meaningJa": "前に 同じ ことが あった、と いう ことです。",
+      "englishTerm": "Precedent"
+    },
+    {
+      "id": "jiten",
+      "term": "辞典",
+      "reading": "じてん",
+      "meaningJa": "ことばの 意味が ならべて 書いて ある 本です。",
+      "englishTerm": "Dictionary"
     }
   ]
 }

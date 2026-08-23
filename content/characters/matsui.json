@@ -18,5 +18,19 @@
   "references": [
     "/img/characters/matsui/reference.jpg"
   ],
-  "voice": "Orus"
+  "voice": "Orus",
+  "furigana": [
+    [
+      "世界中",
+      "せかいじゅう"
+    ],
+    [
+      "学生",
+      "がくせい"
+    ],
+    [
+      "直接",
+      "ちょくせつ"
+    ]
+  ]
 }

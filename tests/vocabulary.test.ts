@@ -105,16 +105,23 @@ describe("記事・まんがの ことばも 正から 引く", () => {
 
 describe("スタジオが 作る かたち", () => {
   it("抜き出した ことばは 正の かたちに 直せて、そのまま 遊べる", () => {
-    // vocab-extractor が 作る 語（VocabCandidate 相当）
+    /*
+     * vocab-extractor が 作る 語（VocabCandidate 相当）。
+     *
+     * 見出しは **正に 無い 語**を つかう。この 検査は 下で 正の 本に 1語 足して
+     * スキーマに 通すので、正に すでに ある 語を えらぶと「表記が 重なって いる」で
+     * 落ちる——調べて いるのは 形の 変換なのに、語彙が 増えた 日に 落ちる ことに なる
+     *（2026-08-24 に 「納期」が 正へ 入って 実発生）。
+     */
     const candidate = {
       id: "tmp",
-      term: "納期",
-      reading: "のうき",
-      romaji: "nouki",
-      meaningEn: "Deadline",
+      term: "試作品",
+      reading: "しさくひん",
+      romaji: "shisakuhin",
+      meaningEn: "Prototype",
       wrongMeanings: ["Salary", "Meeting", "Holiday"],
-      explanationJa: "いつまでに 出すか、の 日です。",
-      example: "納期を 先に 決めます。",
+      explanationJa: "ためしに 作って みた ものです。",
+      example: "試作品を 先に 見せます。",
     };
     const moved = {
       id: candidate.romaji,
@@ -130,7 +137,7 @@ describe("スタジオが 作る かたち", () => {
     expect(vocabSchema.safeParse({ ...book, words: [...book.words, moved] }).success).toBe(true);
     // そのまま ゲームに 出せる
     expect(isPlayable(moved)).toBe(true);
-    expect(toGameWord(moved)!.meaningEn).toBe("Deadline");
+    expect(toGameWord(moved)!.meaningEn).toBe("Prototype");
   });
 
   it("参照だけの 単語ステージが スキーマを 通る（スタジオの 保存形）", () => {
