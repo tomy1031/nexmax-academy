@@ -18,7 +18,6 @@
 
 import { existsSync } from "node:fs";
 import { join } from "node:path";
-import { readFile } from "node:fs/promises";
 import { describe, expect, it } from "vitest";
 import { FORBIDDEN_LEARNER_WORDS } from "@/content/schema";
 import { checkCountryNamesInTexts } from "@/lib/content-checks";
@@ -36,14 +35,7 @@ import {
   imagePaths,
   LEVELS,
 } from "../scripts/lib/gakushu_texts.mjs";
-import {
-  buildFurigana,
-  buildGlossary,
-  furiganaSource,
-  glossarySource,
-  FURIGANA_PATH,
-  GLOSSARY_PATH,
-} from "../scripts/gen_gakushu.mjs";
+import { buildFurigana, buildGlossary } from "../scripts/gen_gakushu.mjs";
 
 const ROOT = join(import.meta.dirname, "..");
 const SITE = join(ROOT, "public", "gakushu", "nextmake");
@@ -226,15 +218,17 @@ describe("生成物が 古くない（正は 教材データ）", () => {
    * 読み辞書と ことばの辞典の 正は `content/links/nextmake_gakushu_site.json` と
    * `content/vocab/vocabulary.json`。`public/` にあるのは **写し**。
    * 正を 直して 焼き忘れると、先生が 直した はずの ふりがなが 画面に 出ない。
+   *
+   * 見るのは **中身**で、ファイルの 字面では ない。字面で 比べると prettier が
+   * 整形した 瞬間に 落ちて、直しかたが「もう一度 焼く」なのか「整形を 戻す」なのか
+   * 分からない 失敗に なる（実際 そうなった）。
    */
-  it("読み辞書は `node scripts/gen_gakushu.mjs` の 出力と 同じ", async () => {
-    const onDisk = await readFile(FURIGANA_PATH, "utf8");
-    expect(onDisk).toBe(furiganaSource(buildFurigana()));
+  it("読み辞書は `node scripts/gen_gakushu.mjs` の 出力と 同じ", () => {
+    expect(FURIGANA).toEqual(buildFurigana());
   });
 
-  it("ことばの辞典は `node scripts/gen_gakushu.mjs` の 出力と 同じ", async () => {
-    const onDisk = await readFile(GLOSSARY_PATH, "utf8");
-    expect(onDisk).toBe(glossarySource(buildGlossary(PAGES, UI)));
+  it("ことばの辞典は `node scripts/gen_gakushu.mjs` の 出力と 同じ", () => {
+    expect(GLOSSARY).toEqual(buildGlossary(PAGES, UI));
   });
 });
 
