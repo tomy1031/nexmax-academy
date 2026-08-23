@@ -32,6 +32,14 @@ import {
   type TalkObservations,
 } from "@/lib/talkgame/affinity";
 import { localObservations, localTopic } from "@/lib/talkgame/local";
+import {
+  clearTalkResume,
+  parseTalkResume,
+  readTalkResumeRaw,
+  readTalkResumeRawOnServer,
+  saveTalkResume,
+  subscribeTalkResume,
+} from "@/lib/talkgame/resume";
 import { readAloud, talkInstruction } from "@/lib/talkgame/instructions";
 import { buildFuriganaIndex, mergeFuriganaEntries } from "@/lib/text/furigana";
 import { TalkFeedback, FEEDBACK_FURIGANA } from "./talk-feedback";
@@ -140,6 +148,22 @@ export function TalkGameSession({
   const [note, setNote] = useState<string | null>(null);
   /** クリアの 話を 読み終えたら クリア画面へ（`queue` を 使いきった ときに 見る）。 */
   const [ending, setEnding] = useState(false);
+  /**
+   * 端末に 残って いた ところ（無ければ null）。
+   *
+   * サーバでは 端末の 保存値が 読めない ので、**画面が 出て から** 読む。
+   * 読めるまでは「はじめる」の まま——ちらつくが、無い ものを 有る ように
+   * 見せて 消す より よい。
+   */
+  const savedRaw = useSyncExternalStore(
+    subscribeTalkResume,
+    () => readTalkResumeRaw(meeting.id),
+    readTalkResumeRawOnServer,
+  );
+  const saved = useMemo(() => {
+    const found = parseTalkResume(savedRaw);
+    return found && found.percent > 0 ? found : null;
+  }, [savedRaw]);
   const speed = useSyncExternalStore(
     subscribeSpeechSpeed,
     readSpeechSpeed,
@@ -222,13 +246,27 @@ export function TalkGameSession({
    */
   const start = useCallback(() => {
     if (!game) return;
-    setTalk(EMPTY_TALK);
+    const from = saved ?? EMPTY_TALK;
+    setTalk(from);
     setResult(null);
     setEnding(false);
     setPhase("host");
-    setQueue([withName(game.opening), withName(game.openers[0] ?? "")]);
+    /*
+     * つづきの ときは **いまの ばんの 出だし**から 話し直す。
+     * その場で AIが 作った 深掘りの しつもんは 残して いない——相手との つなぎは
+     * 切れて いる ので、同じ 会話には 戻らない（`src/lib/talkgame/resume.ts`）。
+     */
+    if (from.round === "listen") {
+      setQueue([withName(game.listenInvite)]);
+    } else if (from.turns > 0) {
+      const scripted = game.openers[from.turns] ?? "";
+      const probe = game.probes[from.turns % Math.max(1, game.probes.length)] ?? "";
+      setQueue([withName(scripted) || withName(probe)]);
+    } else {
+      setQueue([withName(game.opening), withName(game.openers[0] ?? "")]);
+    }
     recordContentProgress(meeting.id, { status: "started" });
-  }, [game, meeting.id, withName]);
+  }, [game, meeting.id, saved, withName]);
 
   /**
    * 1つの 発話を 見る。こえでも 文字でも、ここを 通る。
@@ -344,6 +382,16 @@ export function TalkGameSession({
     recordContentProgress(meeting.id, { status: "completed" });
   }, [phase, meeting.id]);
 
+  /*
+   * **しおりを 書く**（2026-08-21 の 指定「画面更新などした 場合でも 途中から」）。
+   * 満タンまで 行ったら 消す——もう一度 開いた 人は はじめから 話せる ほうが よい。
+   */
+  useEffect(() => {
+    if (phase === "lobby") return;
+    if (talk.round === "clear") clearTalkResume(meeting.id);
+    else saveTalkResume(meeting.id, talk);
+  }, [phase, talk, meeting.id]);
+
   if (!game) return null;
 
   const found = foundCount(talk, plan);
@@ -381,7 +429,11 @@ export function TalkGameSession({
           style={{ background: "var(--color-cream)", color: "var(--color-ink)" }}
         >
           <RubyText
-            text={`「おもしろい」を ${plan.findCount}つ 見つけて、こうかんど ${plan.goal}% を めざしましょう。`}
+            text={
+              saved
+                ? `いま こうかんど ${saved.percent}%。つづきから 話しましょう。`
+                : `「おもしろい」を ${plan.findCount}つ 見つけて、こうかんど ${plan.goal}% を めざしましょう。`
+            }
             index={CHROME_FURIGANA}
             show
           />
@@ -394,7 +446,7 @@ export function TalkGameSession({
             tone="light"
           />
           <button type="button" onClick={start} className="btn-game ml-auto rounded-full px-7 py-3">
-            はじめる ▶
+            {saved ? "つづきから 話す ▶" : "はじめる ▶"}
           </button>
         </div>
       </div>
