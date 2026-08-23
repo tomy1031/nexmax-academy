@@ -50,6 +50,27 @@ export const GLOSSARY_PATH = join(SITE, "data", "glossary.generated.js");
  */
 const STARTS_WITH_KANJI = /^[㐀-鿿々]/u;
 
+/**
+ * **漢字1字の 見出し語は ことばの正から 借りない**（このサイト専用の 辞書で 名指しする）。
+ *
+ * 1字の 漢字は 読みが 1つに 決まらない。ことばの正（`content/vocab`）に ある
+ * 1字の 見出し語は、ほとんどが **送りがなの つく 動詞**の ための もの
+ *（`会 → あ`＝会う、`教 → おし`＝教える）。それを この サイトの 文に そのまま
+ * かけると、名詞の 中で 火を 噴く:
+ *
+ * ```
+ * 大阪府 こども会 育成連合会   →   こども会(あ)     ← 2026-08-23 に 実際に 出た
+ * ```
+ *
+ * どちらの 読みが 正しいかは **この サイトの 文を 見ないと 決められない**ので、
+ * 判断を リンク教材の `furigana`（人が 目で 決めた 表）に 寄せる。ここで 落とすと
+ * 覆えて いない 漢字が 出るので、`tests/gakushu_site.test.ts` の 覆いの 検査が
+ * 「どれを 決め忘れたか」を そのまま 一覧に して くれる。
+ */
+function isSingleKanji(surface) {
+  return surface.length === 1 && STARTS_WITH_KANJI.test(surface);
+}
+
 function readJson(path) {
   return JSON.parse(readFileSync(path, "utf8"));
 }
@@ -73,9 +94,11 @@ export function buildFurigana() {
 
   const map = new Map();
   for (const word of vocab.words ?? []) {
-    if (word.term && word.reading) map.set(word.term, word.reading);
+    if (word.term && word.reading && !isSingleKanji(word.term)) map.set(word.term, word.reading);
   }
-  for (const [surface, reading] of vocab.furigana ?? []) map.set(surface, reading);
+  for (const [surface, reading] of vocab.furigana ?? []) {
+    if (!isSingleKanji(surface)) map.set(surface, reading);
+  }
   for (const [surface, reading] of link.furigana ?? []) map.set(surface, reading);
 
   return [...map.entries()]

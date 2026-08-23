@@ -139,6 +139,15 @@ function pageById(id) {
  * ブロックを 描く
  * ------------------------------------------------------------------ */
 
+/**
+ * 走って いる スライドの 時計を 止める 手（ページを 描き直す たびに 呼ぶ）。
+ *
+ * `setInterval` は ページを 移っても 生き続ける。止め忘れると、外れた DOM を
+ * 5秒ごとに 触りに いく 時計が ページの 数だけ たまり、古い 端末では 目に 見えて
+ * もたつく（教室の 端末は 新しく ない）。
+ */
+const SLIDE_TIMERS = [];
+
 const RENDER = {
   heading: (block) => el("h2", "b-heading", block.text),
 
@@ -261,11 +270,27 @@ const RENDER = {
     box.append(el("p", "service-lead", block.lead));
     box.append(el("p", "service-text", block.text));
 
+    /*
+     * くわしい ところは **たたんで おく**（2026-08-23 の 指定）。
+     * サービス1つに「こまって いた こと／どう うごきますか／できる こと」が
+     * 付くので、5つ 並べると 開いた ままでは 1万5千ピクセルを 超える。
+     * 学習者は 目あての サービスに たどりつく 前に 力尽きる。
+     *
+     * `<details>` を そのまま 使う（自前の 開閉を 書かない）。理由は3つ:
+     *  - キーボードと 読み上げが 最初から 効く
+     *  - 端末内の 検索（Ctrl+F）が たたんだ 中身も 見つけて 開いて くれる
+     *  - JS が 落ちても 開ける
+     */
+    const details = el("details", "service-more");
+    const summary = el("summary", "service-more-btn");
+    summary.append(el("span", "service-more-label", UI.service.more));
+    details.append(summary);
+
     /** 小見出し ＋ 中身 を 1かたまりで 足す（無い ときは 何も 出さない）。 */
     const part = (label, build, items) => {
       if (!items || items.length === 0) return;
-      box.append(el("h4", "service-part", label));
-      box.append(build(items));
+      details.append(el("h4", "service-part", label));
+      details.append(build(items));
     };
 
     part(
@@ -308,7 +333,8 @@ const RENDER = {
       block.can,
     );
 
-    if (block.note) box.append(el("p", "service-note", block.note));
+    if (block.note) details.append(el("p", "service-note", block.note));
+    box.append(details);
     return box;
   },
 
@@ -320,6 +346,80 @@ const RENDER = {
     box.append(head);
     box.append(el("h3", "work-client", block.client));
     box.append(el("p", "work-what", block.what));
+    return box;
+  },
+
+  /*
+   * トップの スライド（本家の トップと 同じ 見せかた）。
+   *
+   * **自動で 送るが、学習者が さわった 瞬間に 止める。** 読んで いる 途中で 絵が
+   * 入れかわるのが いちばん 困る ので、指・キーボード・マウスが 触れたら
+   * そこから 先は 手で 送る ものに なる。`prefers-reduced-motion` の 端末では
+   * 最初から 送らない。
+   *
+   * 送りは **横スクロール＋scroll-snap**。位置を CSS が 持つので、絵の 大きさや
+   * 画面の 幅を JS が 知らなくて よい（幅を 数字で 決めうちすると 折り返しで ずれる）。
+   */
+  slides: (block) => {
+    const box = el("section", "b-slides");
+    const strip = el("div", "slides-strip");
+    const dots = el("div", "slides-dots");
+    dots.setAttribute("role", "tablist");
+
+    block.items.forEach((item, at) => {
+      const slide = el("figure", "slide");
+      const img = document.createElement("img");
+      img.src = item.src;
+      img.alt = "";
+      // 1枚目だけ すぐ 読む。残りは 見えた ときに
+      img.loading = at === 0 ? "eager" : "lazy";
+      slide.append(img);
+      const cap = el("figcaption", "slide-cap");
+      cap.append(el("span", "slide-no", item.no));
+      cap.append(el("strong", "slide-name", item.name));
+      cap.append(el("small", "slide-phrase", item.phrase));
+      slide.append(cap);
+      strip.append(slide);
+
+      const dot = el("button", "slide-dot");
+      dot.type = "button";
+      dot.setAttribute("aria-label", `${item.no} ${item.name}`);
+      dot.addEventListener("click", () => {
+        stop();
+        strip.scrollTo({ left: slide.offsetLeft - strip.offsetLeft, behavior: "smooth" });
+      });
+      dots.append(dot);
+    });
+
+    box.append(strip);
+    box.append(dots);
+
+    const marks = [...dots.children];
+    const paint = () => {
+      const at = Math.round(strip.scrollLeft / Math.max(1, strip.clientWidth));
+      marks.forEach((dot, i) => dot.classList.toggle("is-on", i === at));
+    };
+    strip.addEventListener("scroll", paint, { passive: true });
+    paint();
+
+    let timer = 0;
+    const stop = () => {
+      if (timer) clearInterval(timer);
+      timer = 0;
+    };
+    const still = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    if (!still && block.items.length > 1) {
+      timer = setInterval(() => {
+        const at = Math.round(strip.scrollLeft / Math.max(1, strip.clientWidth));
+        const next = (at + 1) % block.items.length;
+        strip.scrollTo({ left: next * strip.clientWidth, behavior: "smooth" });
+      }, 5000);
+      for (const type of ["pointerdown", "wheel", "touchstart", "keydown", "focusin"]) {
+        box.addEventListener(type, stop, { once: true, passive: true });
+      }
+    }
+    // ページを 移る ときに 時計を 止める（残ると 別の ページで 空回りする）
+    SLIDE_TIMERS.push(stop);
     return box;
   },
 
@@ -418,6 +518,8 @@ const mainNode = document.getElementById("main");
 
 function renderPage() {
   const page = pageById(state.page);
+  // 前の ページの スライドの 時計を 止めてから 捨てる
+  while (SLIDE_TIMERS.length) SLIDE_TIMERS.pop()();
   pageNode.replaceChildren();
 
   if (page.hero) {
@@ -505,7 +607,10 @@ function renderHelper() {
 
 function renderChrome() {
   document.getElementById("helper-label").replaceChildren(ruby(UI.helper.label));
-  document.getElementById("brand-name").replaceChildren(ruby(UI.siteName));
+  // 会社の 名前は **ロゴの 読み上げ用の 字**に 移した。画面に 字でも 出すと
+  // ロゴと 同じ ことを 2回 言う ことに なり、貼りついた 帯が 1行 高く なる。
+  // 名前の 正は いつも `UI.siteName`（index.html に 書き写さない）。
+  document.querySelector(".brand-logo").alt = UI.siteName;
   document.getElementById("brand-tagline").replaceChildren(ruby(UI.tagline));
   navToggle.replaceChildren(ruby(UI.nav.open));
   document

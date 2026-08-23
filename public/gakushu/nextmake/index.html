@@ -8,6 +8,15 @@
       name="description"
       content="会社を しらべる ための 学習用サイト。やさしい 日本語と 日本語を 切りかえられます。"
     />
+    <!--
+      タブの 絵は **アプリ（Nexmax Academy）と 同じ**（2026-08-23 の 指定）。
+      この 1枚は 全画面の リンク教材として アプリの 中から 開かれるので、
+      タブの 絵だけ 別に すると「別の サイトへ 出た」ように 見える。
+      実体は `src/app/` の file-based icon（アプリが `/favicon.ico` `/icon.png` で 配る）。
+    -->
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="icon" href="/icon.png" type="image/png" sizes="192x192" />
+    <link rel="apple-touch-icon" href="/apple-icon.png" />
     <link rel="stylesheet" href="./style.css" />
     <!--
       この1枚は「リンク教材」として アプリの中から 全画面で 開かれる
@@ -40,10 +49,17 @@
 
       <!-- ============ 会社の サイト ============ -->
       <header class="site-head">
+        <!--
+          あたまは **会社の 本物の ロゴ**（2026-08-23 の 指定）。前は "NM" の
+          文字ブロックだった。ロゴは 青い 字の 透過 PNG なので、紺の 帯の 上では
+          読めない——**白い 台**（.brand-logo）に のせる。
+          会社の 日本語の 名前は ここに 二重で 出さず `alt` に 置く（中身は app.js が
+          `UI.siteName` から 入れる——名前の 正を 2か所に しない）。ロゴ・名前・
+          キャッチの 3行に すると 貼りついた 帯が 高く なり、本文が 見えなく なる。
+        -->
         <a class="brand" href="#/home">
-          <span class="brand-mark" aria-hidden="true">NM</span>
+          <img class="brand-logo" src="./img/logo.png" alt="" />
           <span class="brand-text">
-            <strong id="brand-name"></strong>
             <small id="brand-tagline"></small>
           </span>
         </a>

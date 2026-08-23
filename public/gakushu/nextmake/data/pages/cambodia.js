@@ -87,8 +87,33 @@ export const CAMBODIA = {
       ],
     },
     {
+      kind: "figure",
+      src: "/gakushu/nextmake/img/pathway_class.webp",
+      alt: "",
+      caption: {
+        n4: "AUPP の 教室です。ここで 日本語と ITを 勉強します。",
+        n3: "AUPPの教室です。ここで日本語とITを学びます。",
+        en: "A classroom at AUPP, where Japanese and IT are taught.",
+      },
+    },
+    {
       kind: "heading",
       text: { n4: "これまでの あゆみ", n3: "プログラムの歩み", en: "What has happened so far" },
+    },
+    /*
+     * ここから 下の 3枚は **本当の 写真**（作った 絵では ない。2026-08-23 に
+     * 本家サイトから 取得）。年表の 出来事に 顔と 場所が つくと、学習者は
+     * 「よその 会社の 話」では なく **自分の 学校で 起きた こと**として 読める。
+     */
+    {
+      kind: "figure",
+      src: "/gakushu/nextmake/img/pathway_signing.webp",
+      alt: "",
+      caption: {
+        n4: "2024年8月。AUPP と ネクストメイクが 約束の 紙に サインを した 日です。",
+        n3: "2024年8月、AUPPとNEXTMAKEのパートナーシップ調印式のようすです。",
+        en: "August 2024: the day AUPP and NEXT MAKE signed the partnership.",
+      },
     },
     {
       kind: "timeline",
@@ -191,12 +216,25 @@ export const CAMBODIA = {
       ],
     },
     {
+      kind: "figure",
+      src: "/gakushu/nextmake/img/pathway_students.webp",
+      alt: "",
+      caption: {
+        n4: "Japanese IT Pathway の 学生たちです。みなさんの 先輩です。",
+        n3: "Japanese IT Pathwayの学生たちです。みなさんの先輩にあたります。",
+        en: "Students on the Japanese IT Pathway programme — your seniors.",
+      },
+    },
+    {
       kind: "callout",
       tone: "point",
       text: {
-        n4: "この ページに 書いて ある 学生は、みなさんの 先輩や 同級生です。会社の サイトに、みなさんの 名前が のって います。",
-        n3: "このページに登場する学生は、みなさんの先輩や同級生です。会社のサイトに、みなさんの歩みが載っています。",
-        en: "The students on this page are your classmates and seniors. Your own programme is on the company's website.",
+        // 「会社の サイトに みなさんの 名前が のって います」は **書かない**
+        //（2026-08-23 の 指定）。本当に 名前が 出るとは 限らず、探して 見つからない
+        // 学習者が いちばん 傷つく。
+        n4: "この ページに 書いて ある 学生は、みなさんの 先輩や 同級生です。",
+        n3: "このページに登場する学生は、みなさんの先輩や同級生です。",
+        en: "The students on this page are your classmates and seniors.",
       },
     },
     {

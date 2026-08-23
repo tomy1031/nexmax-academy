@@ -14,9 +14,50 @@ export const HOME = {
     n3: "ITで新しい次を創造する",
     en: "Creating what comes next, with IT",
   },
-  hero: "/gakushu/nextmake/img/hero_home.webp",
-  heroAlt: "",
+  // ヒーロー画像1枚では なく **5つの 事業の スライド**（2026-08-23 の 指定）。
+  // 本家の トップと 同じ 見せかたに する。
   blocks: [
+    {
+      /*
+       * トップの スライド。番号・名前・会社の ことばは **会社の 字を そのまま**
+       *（素の 文字列＝どのレベルでも 同じ）。ここを やさしく 書きかえると、
+       * 学習者が 本家の サイトで 同じ ことばに 出あった とき つながらない。
+       * 意味は 事業の ページで ひらく——だから 最後に そこへの リンクを 置く。
+       */
+      kind: "slides",
+      items: [
+        {
+          src: "/gakushu/nextmake/img/svc_nmclaw.webp",
+          no: "01 / 05",
+          name: "NMClaw",
+          phrase: "情報を、価値へ。",
+        },
+        {
+          src: "/gakushu/nextmake/img/svc_tourism.webp",
+          no: "02 / 05",
+          name: "観光DX",
+          phrase: "文化を、体験へ。",
+        },
+        {
+          src: "/gakushu/nextmake/img/svc_verify.webp",
+          no: "03 / 05",
+          name: "Verify",
+          phrase: "信頼を、証明へ。",
+        },
+        {
+          src: "/gakushu/nextmake/img/svc_drone.webp",
+          no: "04 / 05",
+          name: "セキュリティドローン",
+          phrase: "異常の兆候を、安全へ。",
+        },
+        {
+          src: "/gakushu/nextmake/img/svc_lab.webp",
+          no: "05 / 05",
+          name: "NEXTMAKE Internship Lab",
+          phrase: "才能を、企業の力へ。",
+        },
+      ],
+    },
     {
       kind: "quote",
       text: "世界中の才能をつなぎ、まだ見ぬ可能性を価値へ変える",
