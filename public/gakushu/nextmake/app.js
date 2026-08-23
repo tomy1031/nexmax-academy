@@ -208,20 +208,42 @@ function showTip(anchor, item) {
 
   const rect = anchor.getBoundingClientRect();
   /*
+   * **行を またいだ 語は、1行めの 箱を 見る。**
+   *
+   * 「ホームページ」の ように 長い 語は 行の おわりで 折り返す。折り返した 語の
+   * `getBoundingClientRect()` は **2行ぶんを 囲む 箱**を 返す ので、まん中は
+   * 語の どこでも ない ところに なり、はみ出しの 計算が 合わなく なる
+   *（2026-08-24 に ホーム・実績の 2か所で 画面から はみ出した）。
+   */
+  const first = anchor.getClientRects()[0] ?? rect;
+  /*
    * 上に 出せるかは **貼りついた 帯の 下**から 測る。画面の 上端から 測ると、
    * 帯（.topbar）に 隠れる ところまで「空いて いる」と 数えて しまい、
    * 吹き出しが 会社の あたまに 重なって 出る。帯の 高さは 文字の 大きさや
    * 画面の 幅で 変わる ので、そのつど 測る（数字で 決めうちしない）。
    */
   const barBottom = document.querySelector(".topbar")?.getBoundingClientRect().bottom ?? 0;
-  if (rect.top - barBottom < TIP_HEIGHT + EDGE_MARGIN) tip.classList.add("is-below");
-  const centerX = rect.left + rect.width / 2;
-  const overLeft = Math.max(0, EDGE_MARGIN - (centerX - TIP_WIDTH / 2));
-  const overRight = Math.max(0, centerX + TIP_WIDTH / 2 - (window.innerWidth - EDGE_MARGIN));
-  tip.style.transform = `translateX(calc(-50% + ${overLeft - overRight}px))`;
-
+  if (first.top - barBottom < TIP_HEIGHT + EDGE_MARGIN) tip.classList.add("is-below");
   anchor.append(tip);
   openTip = tip;
+
+  /*
+   * ずらす 量は **置いて みてから 測って** 出す。
+   *
+   * CSS の `left: 50%` が どこを 見るかは、行を またいだ 語では 素直では ない
+   *（囲む 箱の まん中では なく、1行めの はしに なる ことが ある）。計算で
+   * 当てに いくと ブラウザごとに ずれる ので、いちど 置いて、実際の 位置と
+   * 出したい 位置の 差を そのまま ずらす。読み取りは 1回だけ。
+   */
+  const want = Math.min(
+    Math.max(first.left + first.width / 2, EDGE_MARGIN + TIP_WIDTH / 2),
+    window.innerWidth - EDGE_MARGIN - TIP_WIDTH / 2,
+  );
+  // **ずらす 前の 形（-50% だけ）で 測る。** ここを 素の まま 測ると、あとで
+  // 効く -50% の ぶんが 計算から 抜けて、こんどは ふつうの 語が はみ出す。
+  tip.style.transform = "translateX(-50%)";
+  const now = tip.getBoundingClientRect();
+  tip.style.transform = `translateX(calc(-50% + ${Math.round(want - (now.left + now.width / 2))}px))`;
 }
 
 /** 辞典に ある 語 1つぶんの 印。 */
