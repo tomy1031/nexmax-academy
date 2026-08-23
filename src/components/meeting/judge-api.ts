@@ -57,6 +57,8 @@ export interface JudgeRequest {
   learnerName: string;
   utterance: string;
   attempt: number;
+  /** 教材が 決めた 言い直しの 上限（`null` は なし・欄が 無ければ 既定）。 */
+  maxAttempts?: number | null;
 }
 
 export type JudgeApiResult =
@@ -151,10 +153,15 @@ async function askJudge(apiKey: string, request: JudgeRequest): Promise<JudgeApi
   const session = opened.session;
 
   try {
-    let judge = parseJudge(await session.ask(buildJudgePrompt(context)), context.attempt);
+    const limit = request.maxAttempts;
+    let judge = parseJudge(await session.ask(buildJudgePrompt(context)), context.attempt, limit);
     // 漢字が混ざっていたら、混ざっていたことを伝えてもう一度だけ頼む
     if (judge && !isKanaOnly(judge)) {
-      judge = parseJudge(await session.ask(buildJudgePrompt(context, true)), context.attempt);
+      judge = parseJudge(
+        await session.ask(buildJudgePrompt(context, true)),
+        context.attempt,
+        limit,
+      );
     }
     if (!judge) return { ok: false, reason: "badShape" };
     if (!isKanaOnly(judge)) {
