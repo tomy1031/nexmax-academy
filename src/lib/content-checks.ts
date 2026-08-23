@@ -116,56 +116,15 @@ export function checkSecretLeaks(file: string, scenario: Scenario): Finding[] {
  *
  * AGENTS.md 規律9 が禁じているのは**「タイ」だけ**である。国際情勢を踏まえた運用判断で、
  * 文言・画像・画像生成プロンプトのいずれでも使わない。
+ *
+ * **ほかの国名は、教材の本文に自由に書いてよい。** ここには以前
+ * 「合意ずみの国名（AGREED）」と「出したら確認する国名（CONFIRM）」の一覧が並んでいたが、
+ * あれは指示の読み違いだった（2026-08-23 に本人が是正）。もとの指示は
+ * ①タイは出さない ②**まなびマップ**では国名でなく景色の名前で呼ぶ、の2つだけで、
+ * ②は地図の見せかたの話（`src/content/areas.ts`）。それを本文の検査にまで広げたせいで、
+ * **会社の海外拠点を説明できない**ところまで来ていた。
  */
 const BANNED_PLACE_NAMES: readonly string[] = ["タイ"];
-
-/**
- * すでに使ってよいと決まっている地名。
- *
- * - 日本 … 学習の目的地そのもの（規律9 が明示している例外）
- * - カンボジア … **学習者自身の国**。「あなたはどこから来ましたか」を扱う教材で
- *   出ないほうが不自然で、すでに公開ずみの教材にも入っている
- *   （`content/wordstages/stage11_haizoku.json`）
- * - アメリカ・中国 … AI時代のスライド（`content/slides/ai_jidai.json`）を機に、
- *   **以後は教材を問わず確認なしで使ってよい**とユーザーが決めた
- *   （2026-08-17・台帳#59。「合意リストにも追加して以後の確認を不要にする」を選択）。
- *   アメリカは元々 CONFIRM の一覧に無く検査は素通りだったので、この行は記録として働く。
- * - インドネシア … **ヘンディさんの出身国**。はじまりのまんがは前から
- *   「インドネシアから 日本に 来ました」と言っているのに、ミーティングの人格だけが
- *   「出身の 国の 名前は 言いません」で伏せており、**同じステージの中で食い違って**いた。
- *   2026-08-22「ちゃんと出身地も説明してほしい」で伏せるのをやめ、まんが側にそろえた。
- */
-const AGREED_PLACE_NAMES: readonly string[] = [
-  "日本",
-  "にほん",
-  "ニホン",
-  "ニッポン",
-  "カンボジア",
-  "アメリカ",
-  "中国",
-  "インドネシア",
-];
-
-/**
- * 出てきたら**ユーザーに確認してから**にする国・地域名。
- *
- * 規律9 の「新しい国名を画面や画像に出すときは、事前にユーザーへ確認する」を
- * 機械の合図にしたもの。**error にしない**のは、禁じられてはいないから——
- * 止めてしまうと、先生が確認を取る前に検査を外す方へ動く。
- *
- * まなびマップのエリアが景色の名前で呼ばれている地域を並べてある（設計04・areas.ts）。
- */
-const CONFIRM_PLACE_NAMES: readonly string[] = [
-  "ベトナム",
-  "台湾",
-  "ミャンマー",
-  "ラオス",
-  "フィリピン",
-  "インドネシア",
-  "マレーシア",
-  "シンガポール",
-  "韓国",
-];
 
 /**
  * 「タイ」だけは、ふつうの日本語の語の一部として頻繁に現れる（タイトル・タイプ・
@@ -197,7 +156,7 @@ function indexOfPlace(text: string, name: string): number {
 }
 
 /**
- * 国名が画面に出ていないか（AGENTS.md 規律9）。
+ * 禁じた国名（タイ）が画面に出ていないか（AGENTS.md 規律9）。
  *
  * 規律9は文書にはあったが**検査コードが1行も無かった**。人が読んで気づく前提の
  * 規律は、AIに教材を作らせ始めた瞬間に破れる（生成量が人の目を超えるため）。
@@ -217,7 +176,7 @@ export function checkCountryNames(file: string, content: Content): Finding[] {
  * （scripts/slides/<教材ID>/index.html — 学習者が読む字の大半は PDF 側にある）は
  * Content ではないので、抽出済みの文をこちらへ渡す（scripts/slides/manuscript_checks.ts）。
  * 判定と文言はこの1か所に閉じる——原稿側が国名リストを別に持つと、
- * 合意リストを直したときに片方だけ古いままになる。
+ * 一覧を直したときに片方だけ古いままになる。
  */
 export function checkCountryNamesInTexts(file: string, texts: readonly string[]): Finding[] {
   const findings: Finding[] = [];
@@ -229,16 +188,6 @@ export function checkCountryNamesInTexts(file: string, texts: readonly string[])
         file,
         level: "error",
         message: `国名「${name}」が 学習者に見える文にある: 「…${near(text, at, name.length)}…」 — この名前は使わない（規律9）。まなびマップと同じく景色の名前で呼ぶ`,
-      });
-    }
-    for (const name of CONFIRM_PLACE_NAMES) {
-      if (AGREED_PLACE_NAMES.includes(name)) continue;
-      const at = indexOfPlace(text, name);
-      if (at < 0) continue;
-      findings.push({
-        file,
-        level: "warn",
-        message: `国名「${name}」が 学習者に見える文にある: 「…${near(text, at, name.length)}…」 — 新しい国名を画面に出す前に、ユーザーへ確認する（規律9）。景色の名前で呼べないか先に考える`,
       });
     }
   }

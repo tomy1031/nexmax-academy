@@ -13,7 +13,7 @@ import { goNext, itemsBefore, KAISHA, placeWords, seedCompleted, shot } from "./
  */
 
 test("2問 書いて 離れ、もどると「つづきから」が 出る", async ({ page, context }) => {
-  await seedCompleted(context, itemsBefore(3));
+  await seedCompleted(context, itemsBefore(KAISHA.quiz2));
 
   await page.goto(KAISHA.quiz2.path);
   await page.getByRole("button", { name: "はじめる" }).click();
@@ -42,7 +42,7 @@ test("2問 書いて 離れ、もどると「つづきから」が 出る", asyn
 });
 
 test("「はじめから やる」を えらべば 1問目に もどる", async ({ page, context }) => {
-  await seedCompleted(context, itemsBefore(3));
+  await seedCompleted(context, itemsBefore(KAISHA.quiz2));
 
   await page.goto(KAISHA.quiz2.path);
   await page.getByRole("button", { name: "はじめる" }).click();

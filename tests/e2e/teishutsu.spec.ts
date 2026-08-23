@@ -21,7 +21,7 @@ const START_SUBMIT = "はじめる";
 const SUBMIT_ANSWERS = /こたえを 出/;
 
 test("まとめて 出す は 途中で 採点しない（えらんだ ところは 残る）", async ({ page, context }) => {
-  await seedCompleted(context, itemsBefore(1));
+  await seedCompleted(context, itemsBefore(KAISHA.quiz1));
   await page.goto(KAISHA.quiz1.path);
   await page.getByRole("button", { name: START_SUBMIT }).click();
 
@@ -44,7 +44,7 @@ test("まとめて 出す は 途中で 採点しない（えらんだ ところ
 });
 
 test("他の ページへ 行って 戻っても、書いた ものは 残る", async ({ page, context }) => {
-  await seedCompleted(context, itemsBefore(3));
+  await seedCompleted(context, itemsBefore(KAISHA.quiz2));
   await page.goto(KAISHA.quiz2.path);
   await page.getByRole("button", { name: START_SUBMIT }).click();
 
@@ -67,7 +67,7 @@ test("他の ページへ 行って 戻っても、書いた ものは 残る", 
 });
 
 test("出す まえに かくにんして、出すと 自分の こたえと 正解が 並ぶ", async ({ page, context }) => {
-  await seedCompleted(context, itemsBefore(1));
+  await seedCompleted(context, itemsBefore(KAISHA.quiz1));
   await page.goto(KAISHA.quiz1.path);
   await page.getByRole("button", { name: START_SUBMIT }).click();
 
@@ -103,7 +103,7 @@ test("出す まえに かくにんして、出すと 自分の こたえと 正
 });
 
 test("1問も 書かずに「出す」道は ない（7回 おすだけで おわらない）", async ({ page, context }) => {
-  await seedCompleted(context, itemsBefore(1));
+  await seedCompleted(context, itemsBefore(KAISHA.quiz1));
   await page.goto(KAISHA.quiz1.path);
   await page.getByRole("button", { name: START_SUBMIT }).click();
 
@@ -121,7 +121,7 @@ test("1問も 書かずに「出す」道は ない（7回 おすだけで お�
 });
 
 test("出した あとに 開き直しても、にせの「つづき」に ならない", async ({ page, context }) => {
-  await seedCompleted(context, itemsBefore(1));
+  await seedCompleted(context, itemsBefore(KAISHA.quiz1));
   await page.goto(KAISHA.quiz1.path);
   await page.getByRole("button", { name: START_SUBMIT }).click();
 
@@ -170,7 +170,7 @@ test("きもち→言い方の 2段階も、まとめて 出す で えらび直
 });
 
 test("書いた こたえを 消したら、つぎに 開いても 生き返らない", async ({ page, context }) => {
-  await seedCompleted(context, itemsBefore(3));
+  await seedCompleted(context, itemsBefore(KAISHA.quiz2));
   await page.goto(KAISHA.quiz2.path);
   await page.getByRole("button", { name: START_SUBMIT }).click();
 
@@ -208,7 +208,7 @@ test("書いた こたえを 消したら、つぎに 開いても 生き返ら�
  * まるごと 消える**。線引きの 内側に いる ことを 機械で 押さえておく。
  */
 test("出した 回は 成績に 残り、ステージも おわりに なる", async ({ page, context }) => {
-  await seedCompleted(context, itemsBefore(1));
+  await seedCompleted(context, itemsBefore(KAISHA.quiz1));
   await page.goto(KAISHA.quiz1.path);
   await page.getByRole("button", { name: START_SUBMIT }).click();
 
