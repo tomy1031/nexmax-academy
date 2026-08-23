@@ -7,7 +7,8 @@
  *    戻す**（上から 読み直しに ならない）。
  * 3. **ふりがな ON/OFF**。CSS だけで 消す——組み直すと スクロールが 飛ぶ。
  * 4. **ルビの 合成**。文は プレーンテキストで 持ち、ここで 読み辞書から 組む（規律2）。
- * 5. **語の 意味**（辞典）。本文に 出た 語を、辞典の ページで 引ける ように する。
+ * 5. **語の 意味**（辞典）。本文の 語に 印を つけ、ホバー／タップで 意味を 出す。
+ *    出しかたは アプリ本体（`src/components/glossary-text.tsx`）と そろえる。
  *
  * ## 英語（en）は 出さない
  * 本文には 英語も 持って いるが、**切りかえの ボタンは 描かない**（2026-08-23 の 指定）。
@@ -131,8 +132,171 @@ function el(tag, className, textValue) {
   return node;
 }
 
+/**
+ * 本文用の `el`。ルビに くわえて **辞典に ある 語に 印を つける**。
+ *
+ * ボタンや リンクの 中では 使わない——印は それ自体が 押せる ものなので、
+ * 入れ子に すると 押し分けられなく なる（アプリ側の `GlossaryChip` が
+ * 選択肢の 語を 別に 出して いるのと 同じ 理由）。だから 画面の 骨組み
+ *（ナビ・帯・ボタン・ページ送り）は `el` の まま にする。
+ */
+function elg(tag, className, textValue) {
+  const node = document.createElement(tag);
+  if (className) node.className = className;
+  if (textValue != null) node.append(glossRuby(t(textValue)));
+  return node;
+}
+
 function pageById(id) {
   return PAGES.find((page) => page.id === id) ?? PAGES[0];
+}
+
+/* ------------------------------------------------------------------ *
+ * ことばの 意味の 吹き出し
+ *
+ * アプリ本体（`src/components/glossary-text.tsx`）と **同じ ふるまい**に する。
+ * 学習者は 同じ 教材の 中を 行き来する ので、ここだけ 出しかたが ちがうと
+ *「押せる ものが 変わった」と 感じて 手が 止まる。
+ * ------------------------------------------------------------------ */
+
+/** 辞典を 長い 語から 引く（「仕組み」を「組」に 取られない）。 */
+const GLOSS = [...GLOSSARY].sort((a, b) => b.term.length - a.term.length);
+
+/** 吹き出しの 実寸。画面から はみ出すかの 判定に 使う（style.css と そろえる）。 */
+const TIP_WIDTH = 240;
+const TIP_HEIGHT = 150;
+const EDGE_MARGIN = 12;
+
+/**
+ * マウスを 持つ 端末か。
+ *
+ * ホバーで 開く／離すと 閉じる、は マウスの 話。タッチ端末で 同じ ことを すると、
+ * タップで mouseenter → click の 順に 発火して **開いた 直後に 閉じる**。
+ * だから 端末を 見て、ホバーと タップの どちらか 一方だけを 使う。
+ */
+function canHover() {
+  return window.matchMedia?.("(hover: hover)").matches ?? false;
+}
+
+/** いま 開いて いる 吹き出し（同時に 2つ 開かない）。 */
+let openTip = null;
+
+function closeTip() {
+  openTip?.remove();
+  openTip = null;
+}
+
+/**
+ * 印の 上に 吹き出しを 出す。
+ *
+ * 置き場所は **開く たびに 決め直す**。ページの 上のほうの 語は 上に 出すと
+ * 画面の 外に 切れ、ふち近くの 語は 横に はみ出して 横スクロールが 出る。
+ */
+function showTip(anchor, item) {
+  closeTip();
+  const tip = document.createElement("span");
+  tip.className = "gloss-tip";
+  tip.setAttribute("role", "note");
+
+  const head = el("span", "gloss-tip-term");
+  head.append(ruby(item.term));
+  tip.append(head);
+  if (item.en) tip.append(el("span", "gloss-tip-en", item.en));
+  const body = el("span", "gloss-tip-mean");
+  body.append(ruby(item.meaning));
+  tip.append(body);
+
+  const rect = anchor.getBoundingClientRect();
+  /*
+   * 上に 出せるかは **貼りついた 帯の 下**から 測る。画面の 上端から 測ると、
+   * 帯（.topbar）に 隠れる ところまで「空いて いる」と 数えて しまい、
+   * 吹き出しが 会社の あたまに 重なって 出る。帯の 高さは 文字の 大きさや
+   * 画面の 幅で 変わる ので、そのつど 測る（数字で 決めうちしない）。
+   */
+  const barBottom = document.querySelector(".topbar")?.getBoundingClientRect().bottom ?? 0;
+  if (rect.top - barBottom < TIP_HEIGHT + EDGE_MARGIN) tip.classList.add("is-below");
+  const centerX = rect.left + rect.width / 2;
+  const overLeft = Math.max(0, EDGE_MARGIN - (centerX - TIP_WIDTH / 2));
+  const overRight = Math.max(0, centerX + TIP_WIDTH / 2 - (window.innerWidth - EDGE_MARGIN));
+  tip.style.transform = `translateX(calc(-50% + ${overLeft - overRight}px))`;
+
+  anchor.append(tip);
+  openTip = tip;
+}
+
+/** 辞典に ある 語 1つぶんの 印。 */
+function glossMark(item) {
+  const mark = document.createElement("span");
+  mark.className = "gloss-mark";
+  mark.tabIndex = 0;
+  mark.setAttribute("role", "button");
+  mark.append(ruby(item.term));
+
+  const open = () => showTip(mark, item);
+  const shut = () => {
+    if (openTip && mark.contains(openTip)) closeTip();
+  };
+  // マウスなら ホバー、タッチなら タップ、キーボードなら フォーカスで 開閉。
+  // どれか 一方しか 動かないので、開いた 直後に 閉じる 事故が 起きない。
+  mark.addEventListener("mouseenter", () => canHover() && open());
+  mark.addEventListener("mouseleave", () => canHover() && shut());
+  mark.addEventListener("click", (event) => {
+    if (canHover()) return;
+    event.stopPropagation();
+    if (openTip && mark.contains(openTip)) closeTip();
+    else open();
+  });
+  /*
+   * フォーカスで 開くのは **キーボードの ときだけ**（`:focus-visible`）。
+   *
+   * ここを ただの focus に すると、タッチ端末の **1回目の タップが 効かなく なる**。
+   * 指で さわると focus → click の 順に 起きるので、focus が 開けた ものを
+   * 直後の click が「開いて いる から 閉じる」と 判断して しまう
+   *（2026-08-23 に 実機幅の 検証で 発覚。1回目 無反応・2回目で 開く、という 出かた）。
+   */
+  mark.addEventListener("focus", () => {
+    if (mark.matches(":focus-visible")) open();
+  });
+  mark.addEventListener("blur", shut);
+  mark.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") closeTip();
+  });
+  return mark;
+}
+
+/**
+ * 本文 1つぶんの 断片を 作る。ルビを 振り、**辞典に ある 語には 印**を 付ける。
+ *
+ * 印は **同じ 語なら そのページで 1回だけ**。「会社」は 1ページに 何十回も 出るので、
+ * 全部に 点線を 引くと ページが 点線だらけに なり、どれが 助けか 分からなく なる
+ *（アプリ側の「1文につき 下線は 1語だけ」と 同じ ねらい）。
+ */
+const glossShown = new Set();
+
+function glossRuby(text) {
+  const fragment = document.createDocumentFragment();
+  let from = 0;
+  let i = 0;
+
+  const flushTo = (at) => {
+    if (at > from) fragment.append(ruby(text.slice(from, at)));
+    from = at;
+  };
+
+  while (i < text.length) {
+    const hit = GLOSS.find((item) => !glossShown.has(item.term) && text.startsWith(item.term, i));
+    if (!hit) {
+      i += 1;
+      continue;
+    }
+    flushTo(i);
+    glossShown.add(hit.term);
+    fragment.append(glossMark(hit));
+    i += hit.term.length;
+    from = i;
+  }
+  flushTo(text.length);
+  return fragment;
 }
 
 /* ------------------------------------------------------------------ *
@@ -149,13 +313,13 @@ function pageById(id) {
 const SLIDE_TIMERS = [];
 
 const RENDER = {
-  heading: (block) => el("h2", "b-heading", block.text),
+  heading: (block) => elg("h2", "b-heading", block.text),
 
-  paragraph: (block) => el("p", "b-paragraph", block.text),
+  paragraph: (block) => elg("p", "b-paragraph", block.text),
 
   list: (block) => {
     const ul = el("ul", "b-list");
-    for (const item of block.items) ul.append(el("li", null, item));
+    for (const item of block.items) ul.append(elg("li", null, item));
     return ul;
   },
 
@@ -164,7 +328,7 @@ const RENDER = {
     block.items.forEach((item, at) => {
       const li = el("li", item.mark ? "is-mark" : null);
       li.append(el("span", "step-no", String(at + 1)));
-      li.append(el("span", "step-text", item));
+      li.append(elg("span", "step-text", item));
       ol.append(li);
     });
     return ol;
@@ -175,8 +339,8 @@ const RENDER = {
     for (const item of block.items) {
       const card = el("div", item.mark ? "card is-mark" : "card");
       card.append(el("span", "card-icon", item.icon));
-      card.append(el("h3", "card-label", item.label));
-      card.append(el("p", "card-text", item.text));
+      card.append(elg("h3", "card-label", item.label));
+      card.append(elg("p", "card-text", item.text));
       if (item.to) card.append(pageLink(item.to, UI.more));
       wrap.append(card);
     }
@@ -203,7 +367,7 @@ const RENDER = {
     for (const row of block.rows) {
       const tr = document.createElement("tr");
       tr.append(el("th", null, row.th));
-      tr.append(el("td", null, row.td));
+      tr.append(elg("td", null, row.td));
       body.append(tr);
     }
     table.append(body);
@@ -216,7 +380,7 @@ const RENDER = {
     for (const item of block.items) {
       const li = el("li", item.mark ? "is-mark" : null);
       li.append(el("span", "when", item.when));
-      li.append(el("span", "what", item.what));
+      li.append(elg("span", "what", item.what));
       ol.append(li);
     }
     return ol;
@@ -230,15 +394,15 @@ const RENDER = {
   quote: (block) => {
     const box = el("figure", "b-quote");
     if (block.source) box.append(el("figcaption", "quote-source", block.source));
-    box.append(el("blockquote", "quote-text", block.text));
-    if (block.note) box.append(el("p", "quote-note", block.note));
+    box.append(elg("blockquote", "quote-text", block.text));
+    if (block.note) box.append(elg("p", "quote-note", block.note));
     return box;
   },
 
   callout: (block) => {
     const box = el("aside", `b-callout tone-${block.tone}`);
     box.append(el("span", "callout-mark", block.tone === "care" ? "🫱" : "💎"));
-    box.append(el("p", "callout-text", block.text));
+    box.append(elg("p", "callout-text", block.text));
     return box;
   },
 
@@ -267,8 +431,8 @@ const RENDER = {
       box.append(figure);
     }
 
-    box.append(el("p", "service-lead", block.lead));
-    box.append(el("p", "service-text", block.text));
+    box.append(elg("p", "service-lead", block.lead));
+    box.append(elg("p", "service-text", block.text));
 
     /*
      * くわしい ところは **たたんで おく**（2026-08-23 の 指定）。
@@ -297,7 +461,7 @@ const RENDER = {
       UI.service.before,
       (items) => {
         const ul = el("ul", "service-before");
-        for (const item of items) ul.append(el("li", null, item));
+        for (const item of items) ul.append(elg("li", null, item));
         return ul;
       },
       block.before,
@@ -310,7 +474,7 @@ const RENDER = {
         items.forEach((item, at) => {
           const li = el("li");
           li.append(el("span", "step-no", String(at + 1)));
-          li.append(el("span", "step-text", item));
+          li.append(elg("span", "step-text", item));
           ol.append(li);
         });
         return ol;
@@ -324,8 +488,8 @@ const RENDER = {
         const wrap = el("div", "service-can");
         for (const item of items) {
           const card = el("div", "can-card");
-          card.append(el("h5", "can-label", item.label));
-          card.append(el("p", "can-text", item.text));
+          card.append(elg("h5", "can-label", item.label));
+          card.append(elg("p", "can-text", item.text));
           wrap.append(card);
         }
         return wrap;
@@ -333,7 +497,7 @@ const RENDER = {
       block.can,
     );
 
-    if (block.note) details.append(el("p", "service-note", block.note));
+    if (block.note) details.append(elg("p", "service-note", block.note));
     box.append(details);
     return box;
   },
@@ -344,8 +508,8 @@ const RENDER = {
     head.append(el("span", "work-tag", block.tag));
     head.append(el("span", "work-when", block.when));
     box.append(head);
-    box.append(el("h3", "work-client", block.client));
-    box.append(el("p", "work-what", block.what));
+    box.append(elg("h3", "work-client", block.client));
+    box.append(elg("p", "work-what", block.what));
     return box;
   },
 
@@ -430,7 +594,7 @@ const RENDER = {
     img.alt = block.alt ?? "";
     img.loading = "lazy";
     box.append(img);
-    if (block.caption) box.append(el("figcaption", null, block.caption));
+    if (block.caption) box.append(elg("figcaption", null, block.caption));
     return box;
   },
 
@@ -509,6 +673,12 @@ function renderGlossary() {
   return wrap;
 }
 
+// 吹き出しの 外を さわったら 閉じる。タッチ端末では 離す 動きが 無いので、
+// これが 無いと 開いた ままの 吹き出しが 本文に かぶさり続ける。
+document.addEventListener("click", (event) => {
+  if (openTip && !openTip.parentElement?.contains(event.target)) closeTip();
+});
+
 /* ------------------------------------------------------------------ *
  * ページを 描く
  * ------------------------------------------------------------------ */
@@ -520,6 +690,9 @@ function renderPage() {
   const page = pageById(state.page);
   // 前の ページの スライドの 時計を 止めてから 捨てる
   while (SLIDE_TIMERS.length) SLIDE_TIMERS.pop()();
+  // 印は ページごとに 引き直す（前の ページで 出した ぶんは 忘れる）
+  glossShown.clear();
+  closeTip();
   pageNode.replaceChildren();
 
   if (page.hero) {

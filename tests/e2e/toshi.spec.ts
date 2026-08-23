@@ -188,6 +188,24 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
     await expect(site.getByRole("button", { name: /ふりがな/ })).toBeVisible();
     await shot(page, "04c-link-site");
 
+    /*
+     * **辞典に ある 語は、その場で 意味が 出る**（2026-08-23 の 指定）。
+     * 出しかたは アプリ本体（`src/components/glossary-text.tsx`）と そろえて あり、
+     * ここが 死ぬと 学習者は むずかしい 語の たびに 辞典の ページへ 往復させられる。
+     *
+     * 押して 確かめるのは タッチの 道（e2e は 指の 端末では ない ので、
+     * ホバーの 道は `hover()` で 見る）。1回目の タップで 開く ことが 大事——
+     * focus が 先に 開けて click が 閉じる、という 事故が 起きやすい ところ。
+     */
+    const mark = site.locator(".gloss-mark").first();
+    await expect(mark).toBeVisible();
+    await expect(site.locator(".gloss-tip")).toHaveCount(0);
+    // 貼りついた 帯の 下に 隠れた ままだと ホバーが 帯に 当たる。まん中へ 寄せてから 触る
+    await mark.evaluate((node) => node.scrollIntoView({ block: "center", behavior: "instant" }));
+    await mark.hover();
+    await expect(site.locator(".gloss-tip")).toHaveCount(1);
+    await shot(page, "04d-link-gloss");
+
     await page.getByRole("button", { name: "おわりました", exact: true }).click();
     await expect(page.getByText("✅ おわりました").first()).toBeVisible();
 

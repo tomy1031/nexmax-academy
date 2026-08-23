@@ -1034,6 +1034,80 @@ main:focus {
 
 /* ことばの辞典 ----------------------------------------------------- */
 
+/* ================= ことばの 意味の 吹き出し ================= */
+
+/*
+ * 本文の 中の「辞典に ある 語」。アプリ本体（GlossaryText）と 同じ 顔に する——
+ * 点線の 下線。実線に すると リンクと 見分けが つかず、押すと ページが 変わると 思われる。
+ */
+.gloss-mark {
+  position: relative;
+  display: inline;
+  cursor: help;
+  text-decoration: underline dotted var(--accent);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+
+.gloss-mark:focus-visible {
+  outline: 3px solid var(--helper-on);
+  outline-offset: 2px;
+}
+
+/*
+ * 吹き出し。**幅は app.js の TIP_WIDTH と そろえる**——はみ出しの 計算を
+ * JS が この 数字で して いるので、ここだけ 変えると ふち近くで 画面から 出る。
+ */
+.gloss-tip {
+  position: absolute;
+  left: 50%;
+  bottom: 100%;
+  z-index: 40;
+  width: 240px;
+  margin-bottom: 8px;
+  padding: 12px 14px;
+  border: 2px solid var(--accent);
+  border-radius: 12px;
+  background: var(--paper);
+  color: var(--ink);
+  text-align: left;
+  font-size: 0.8rem;
+  line-height: 1.8;
+  text-decoration: none;
+  box-shadow: 0 6px 18px rgb(11 58 103 / 0.22);
+  cursor: auto;
+}
+
+/* 画面の 上のほうの 語は 下に 出す（上に 出すと 切れて 何も 見えない） */
+.gloss-tip.is-below {
+  top: 100%;
+  bottom: auto;
+  margin: 8px 0 0;
+}
+
+.gloss-tip-term {
+  display: block;
+  color: var(--navy);
+  font-weight: 700;
+}
+
+/* 英語の 1語を 説明より 先に 置く。対訳で 足りる 人は そこで 本文に 戻れる */
+.gloss-tip-en {
+  display: block;
+  margin-top: 2px;
+  color: var(--accent);
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+/* 意味の 文にも ルビを 振る。逃げてきた 先が 裸の 漢字だと 行き止まりに なる */
+.gloss-tip-mean {
+  display: block;
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px solid var(--hairline);
+}
+
 .b-glossary {
   margin: 0 0 24px;
 }
