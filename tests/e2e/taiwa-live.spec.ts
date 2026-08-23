@@ -57,6 +57,7 @@ test.describe("対話ゲームの AI（鍵が あるときだけ）", () => {
      *（「会社かいしゃの ことが…」に なる）。目印の `data-kanten` で 引く。
      */
     await expect(page.locator('[data-kanten="concrete"]')).toHaveAttribute("data-on", "true");
+    await page.waitForTimeout(700);
     await shot(page, "24-taiwa-live-feedback");
 
     // ②見つけた「おもしろい」が 1つ 開く
@@ -77,6 +78,8 @@ test.describe("対話ゲームの AI（鍵が あるときだけ）", () => {
     expect(third).not.toBe(asks[0]);
     expect(third).not.toBe(asks[1]);
     expect(third.length).toBeGreaterThan(4);
+    /* 板が 出きって から 撮る（半透明の 写真では 読めるか 判断できない）。 */
+    await page.waitForTimeout(700);
     await shot(page, "24-taiwa-live-deepdive");
   });
 });
