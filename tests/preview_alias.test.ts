@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { mayPublishShared, toAlias } from "../scripts/preview_alias.mjs";
+import { buildUploadArgs, mayPublishShared, toAlias } from "../scripts/preview_alias.mjs";
 
 /** wrangler.jsonc の Worker 名が "academy"（7文字）なので 63 - 7 - 1。 */
 const MAX = 55;
@@ -70,5 +70,27 @@ describe("staging へ上げてよいかの判定", () => {
     expect(mayPublishShared("claude/feature-x", OTHER, null)).toBe(false);
     // main ブランチ自身は、ref が取れなくてもブランチ名で通す
     expect(mayPublishShared("main", OTHER, null)).toBe(true);
+  });
+});
+
+describe("上げるときの引数（作りおきをどこから読ませるか）", () => {
+  it("ブランチ確認URLには OPEN_NEXT_CACHE=assets を付ける（KV書き込み0件にするため）", () => {
+    expect(buildUploadArgs("my-branch", true)).toEqual([
+      "versions",
+      "upload",
+      "--preview-alias",
+      "my-branch",
+      "--var",
+      "OPEN_NEXT_CACHE:assets",
+    ]);
+  });
+
+  it("staging には付けない（付くと先生の直しが60秒で出なくなる）", () => {
+    expect(buildUploadArgs("staging", false)).toEqual([
+      "versions",
+      "upload",
+      "--preview-alias",
+      "staging",
+    ]);
   });
 });
