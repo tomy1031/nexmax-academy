@@ -16,6 +16,7 @@ export const SCENE_IMAGES: readonly string[] = [
   "/img/scenes/japan_goal.webp",
   "/img/scenes/map_cambodia.webp",
   "/img/scenes/map_japan.webp",
+  "/img/scenes/office_president.webp",
   "/img/scenes/title_keyart.webp",
   "/img/scenes/welcome_bg.webp",
 ];

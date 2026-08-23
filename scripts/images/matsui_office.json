@@ -1,0 +1,15 @@
+{
+  "refs": ["public/img/characters/matsui/sheet.webp"],
+  "_comment": "対話ゲームの 舞台（社長室）。人を 描かない——立ち絵は 画面の 右に 重ねる ので、右半分を 空けて おく。",
+  "style": "Style: clean modern Japanese manga / anime style, soft cel shading, bright friendly palette, rounded shapes, no harsh shadows, warm daylight, contemporary Japan, kid-safe e-learning illustration.",
+  "noText": "No text, no letters, no kanji, no kana, no numbers anywhere in the image. No watermark, no signature, no logo, no frame border.",
+  "negative": "Never: realistic photo rendering, harsh gradients, six fingers, extra limbs, readable letters, dark horror tone, angry or crying faces, costume changes. No people anywhere in the image.",
+  "scenes": [
+    {
+      "out": "office_president",
+      "title": "社長室",
+      "output": "Output: one landscape illustration, 1536x1024.",
+      "scene": "Scene: the corner office of a small IT company on a high floor, EMPTY of people. On the left, a low wooden bookshelf with books and a few green potted plants, and a clean desk with a slim monitor and a keyboard. In the middle and on the right, a wide floor-to-ceiling window with a bright modern city skyline under a blue sky with soft white clouds. A small round meeting table with two light chairs stands in the middle left. The right third of the picture is calm and uncluttered (just window and sky) so that a standing person can be placed there later. Warm morning daylight, soft shadows, welcoming and tidy."
+    }
+  ]
+}

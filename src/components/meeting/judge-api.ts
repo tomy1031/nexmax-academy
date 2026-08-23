@@ -15,6 +15,15 @@ import {
   type JudgeContext,
   type JudgeResult,
 } from "@/lib/meeting/judge";
+import {
+  TALK_SYSTEM,
+  TALK_TOOL,
+  buildTalkPrompt,
+  isKanaOnly as isTalkKanaOnly,
+  parseTalk,
+  type TalkContext,
+  type TalkJudgement,
+} from "@/lib/talkgame/judge";
 
 /**
  * 日本語の 見かた（判定）を もらう — **判定専用の Live セッション**
@@ -127,6 +136,51 @@ export async function requestCardHit(
   }
 }
 
+export type TalkApiResult =
+  { ok: true; judgement: TalkJudgement; model: string } | { ok: false; reason: string };
+
+/**
+ * 対話ゲームの ひとまわり（願い #177）。
+ *
+ * 見かたと 深掘りの しつもんを **1回の 呼び出しで** もらう。分けると、
+ * 学習者は 同じ 発話に 2回 待たされる（つなぎは 1本でも、往復は 2回に なる）。
+ *
+ * `key` に ばんを 混ぜて 渡すのは、**ばんが 変わったら 張り直す**ため
+ *（話す ばんの 履歴を 引きずると、聞く ばんでも 深掘りの しつもんを 作りつづける）。
+ */
+export async function requestTalkTurn(key: string, context: TalkContext): Promise<TalkApiResult> {
+  const apiKey = getGeminiKey();
+  if (!apiKey) return { ok: false, reason: "noKey" };
+  return await Promise.race([
+    askTalk(apiKey, key, context),
+    new Promise<TalkApiResult>((resolve) =>
+      setTimeout(() => resolve({ ok: false, reason: "timeout" }), OVERALL_TIMEOUT_MS),
+    ),
+  ]);
+}
+
+async function askTalk(apiKey: string, key: string, context: TalkContext): Promise<TalkApiResult> {
+  const opened = await openJudge(apiKey, "talk", key);
+  if (!opened.ok) return { ok: false, reason: opened.reason };
+  const session = opened.session;
+  try {
+    let judgement = parseTalk(await session.ask(buildTalkPrompt(context)));
+    // 漢字が 混ざって いたら、混ざって いた ことを 伝えて もう一度 だけ 頼む
+    if (judgement && !isTalkKanaOnly(judgement)) {
+      judgement = parseTalk(await session.ask(buildTalkPrompt(context, true)));
+    }
+    if (!judgement) return { ok: false, reason: "badShape" };
+    if (!isTalkKanaOnly(judgement)) {
+      dropSlot(SLOTS.talk);
+      return { ok: false, reason: "kanaRetryFailed" };
+    }
+    return { ok: true, judgement, model: session.model };
+  } catch (error) {
+    dropSlot(SLOTS.talk);
+    return { ok: false, reason: error instanceof JudgeError ? error.reason : "network" };
+  }
+}
+
 export async function requestJudge(request: JudgeRequest): Promise<JudgeApiResult> {
   const apiKey = getGeminiKey();
   if (!apiKey) return { ok: false, reason: "noKey" };
@@ -198,6 +252,9 @@ interface JudgeSession {
  * 毎回 つなぎ直すと **1回 数秒**を 学習者が 待つ。先に 動いて いた 実装も、
  * 問題が 変わるまでは 同じ つなぎを 使い回して いた。
  */
+/** つなぎの 役（役ごとに 別の つなぎを 張る）。 */
+type SlotKind = "judge" | "cards" | "talk";
+
 interface Slot {
   /** つなぎの 中身（相手に 渡す 決まりと 道具）。 */
   readonly system: string;
@@ -216,7 +273,7 @@ interface Slot {
  * 日本語の 見かたと 札の 当たり判定は、渡す 決まりも 道具も ちがう。
  * 1本を 使い回すと、どちらかの 道具が もう一方の ターンで 呼ばれる。
  */
-const SLOTS: Record<"judge" | "cards", Slot> = {
+const SLOTS: Record<SlotKind, Slot> = {
   judge: {
     system: JUDGE_SYSTEM,
     tool: JUDGE_TOOL,
@@ -230,6 +287,18 @@ const SLOTS: Record<"judge" | "cards", Slot> = {
     system: CARD_SYSTEM,
     tool: CARD_TOOL,
     temperature: 0,
+    session: null,
+    key: "",
+    opening: null,
+  },
+  /*
+   * 対話ゲーム（願い #177）。**深掘りの しつもんを その場で 作らせる**ので、
+   * 見かたの 係より 少しだけ 思いつきを 許す（同じ 聞き方の くり返しを 避ける ため）。
+   */
+  talk: {
+    system: TALK_SYSTEM,
+    tool: TALK_TOOL,
+    temperature: 0.6,
     session: null,
     key: "",
     opening: null,
@@ -255,11 +324,7 @@ function dropSlot(slot: Slot): void {
   slot.opening = null;
 }
 
-async function openJudge(
-  apiKey: string,
-  kind: "judge" | "cards",
-  key: string,
-): Promise<OpenResult> {
+async function openJudge(apiKey: string, kind: SlotKind, key: string): Promise<OpenResult> {
   const slot = SLOTS[kind];
   const live = slot.session;
   if (live?.alive() && slot.key === key) return { ok: true, session: live };

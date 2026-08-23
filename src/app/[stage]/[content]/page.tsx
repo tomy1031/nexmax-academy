@@ -9,6 +9,7 @@ import { ListeningPlayer } from "@/components/listening/playback-mode";
 import { MangaReader } from "@/components/manga/manga-reader";
 import { QuizRunner } from "@/components/quiz/quiz-runner";
 import { SlideDeck } from "@/components/slides/slide-deck";
+import { TalkGameSession } from "@/components/talk-game/talk-game-session";
 import { ContentFrame, type FrameItem } from "@/components/stage/content-frame";
 import {
   getArticle,
@@ -237,6 +238,22 @@ async function renderContent(ref: StageContentRef) {
        * どちらが正しいのか誰にも分からなくなる。人物カードを1つの正にする。
        */
       const host = await getCharacter(meeting.host.id);
+      /*
+       * **対話ゲームは 別の 画面**（願い #177・2026-08-23 の 指定）。
+       *
+       * 同じ `meeting` の データだが、進み方が ちがう（しつもんを その場で 作り、
+       * 好感度が 満タンに なったら 終わる）。`MeetingSession` に 分岐を 足すと、
+       * ヘンディさんの 会話を 直すたびに 松井社長が 黙って 動く ので、入口で 分ける。
+       */
+      if (meeting.talkGame) {
+        return (
+          <TalkGameSession
+            meeting={meeting}
+            hostVoice={host?.voice}
+            dictionary={buildDictionary(await listWordStages())}
+          />
+        );
+      }
       return (
         <MeetingSession
           meeting={meeting}

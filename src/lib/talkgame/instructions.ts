@@ -1,0 +1,56 @@
+/**
+ * 対話ゲームで 相手（Live）に 渡す 指示
+ *
+ * ミーティングの 指示（`src/lib/meeting/instructions.ts`）と 分ける。
+ * いちばん の ちがいは **しつもんを だれが 作るか**:
+ *
+ * - ミーティング … しつもんは 教材が 持つ（作り置きの 音声も ある）
+ * - 対話ゲーム … 深掘りの しつもんは **その場で** 見かたの 係が 作る
+ *
+ * だから 声の 相手には「読み上げて ください」と 渡す。**運転手は 1人**という
+ * 決まり（docs/constraints.md 2026-08-18）は そのまま——ただ、画面が 渡す ものが
+ * 「作り置きの 音声」から 「その場の ことば」に 変わっただけ。
+ */
+
+/** 画面から 声へ「これを 言って」と 渡す ときの 目印。 */
+export const READ_ALOUD = "よみあげて:";
+
+/** 合図の 文を 作る（`voice.control` に 渡す）。 */
+export function readAloud(text: string): string {
+  return `${READ_ALOUD} ${text}`;
+}
+
+export interface TalkInstructionSource {
+  readonly persona: string;
+  readonly hostName: string;
+}
+
+export function talkInstruction(source: TalkInstructionSource, learnerName: string): string {
+  return [
+    source.persona,
+    "",
+    `あなたは ${source.hostName}です。学生と 話します。`,
+    learnerName
+      ? `学生の 名前は ${learnerName}さんです。${learnerName}さんと 呼んで ください。`
+      : "",
+    "",
+    "## 話し方",
+    "学生に 向けて 話す ことばだけを 言って ください。せつめいや やり方は 言いません。",
+    "かっこ（）は つかわないで ください。",
+    "日本語の 直しは 言わないで ください（直しは 画面が 出します）。",
+    "みじかい 文で、ていねいな ですます形で 話します。",
+    "",
+    "## 進み方（大事）",
+    /*
+     * 相手に 自由に しつもんさせない。深掘りの しつもんは 見かたの 係が 作り、
+     * 画面が ここへ 渡す——2人が 別々に 聞くと、学生は どちらに 答えるのか
+     * 分からなく なる（2026-08-18 の 決まり）。
+     */
+    `画面から「${READ_ALOUD}」と とどいたら、そのあとの ことばを **その まま** 声で 言って ください。`,
+    "自分で しつもんを 考えて 聞いては いけません。",
+    "学生が 話しおわったら、みじかい あいづち（「はい。」「なるほど。」）だけを 言って、",
+    "つぎの 合図を 待って ください。長く 話しません。",
+  ]
+    .filter((line) => line !== "")
+    .join("\n");
+}

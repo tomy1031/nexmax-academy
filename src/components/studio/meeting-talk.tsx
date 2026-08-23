@@ -3,6 +3,7 @@
 import { useState } from "react";
 import type { Character, Meeting } from "@/content/schema";
 import { MeetingSession } from "@/components/meeting/meeting-session";
+import { TalkGameSession } from "@/components/talk-game/talk-game-session";
 import { clearMeetingResume } from "@/lib/meeting/resume";
 import { MiniButton, StudioSection } from "./studio-ui";
 
@@ -67,12 +68,17 @@ export function MeetingTalkPanel({ value, cast }: { value: Meeting; cast: readon
             どちらも 学習者と 同じ 道なので、ここで 通れば 学習者でも 通る。
           */}
           <div className="border-hairline rounded-2xl border-2 border-dashed p-2">
-            <MeetingSession
-              meeting={snapshot}
-              hostVoice={host?.voice}
-              hostMouth={host?.mouth}
-              embedded
-            />
+            {/* 対話ゲームの 教材は 別の 画面で 動く（願い #177）。 */}
+            {snapshot.talkGame ? (
+              <TalkGameSession meeting={snapshot} hostVoice={host?.voice} />
+            ) : (
+              <MeetingSession
+                meeting={snapshot}
+                hostVoice={host?.voice}
+                hostMouth={host?.mouth}
+                embedded
+              />
+            )}
           </div>
           <p className="text-ink-faint text-xs font-bold">
             ここでの 進みぐあいは 「preview-」の 名前で 別に 残る ので、先生自身の きろくは
