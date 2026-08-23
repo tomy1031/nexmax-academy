@@ -5,6 +5,7 @@ import {
   gradeOf,
   isKanaOnly,
   MAX_ATTEMPTS,
+  reachedLimit,
   parseJudge,
   type JudgeOutput,
 } from "../src/lib/meeting/judge";
@@ -170,5 +171,41 @@ describe("指示文", () => {
   it("言い直しを頼むときだけ、その理由を足す", () => {
     expect(buildJudgePrompt(context, false)).not.toContain("前の 返事は 漢字");
     expect(buildJudgePrompt(context, true)).toContain("前の 返事は 漢字");
+  });
+});
+
+/**
+ * 言い直しの 回数は 教材ごとに 決められる（2026-08-22 の 指定）
+ *
+ * 既定は これまで どおり 2回。1〜10 で 教室に 合わせられ、`null` は「なし」。
+ * **上限の 無い ことを 既定に しない**——上限が 無いと、いちばん 助けが 要る
+ * 学習者だけが 会話を 終われなく なる。
+ */
+describe("教材ごとの 言い直しの 上限", () => {
+  it("欄が 無ければ これまで どおり 2回", () => {
+    expect(reachedLimit(1, undefined)).toBe(false);
+    expect(reachedLimit(2, undefined)).toBe(true);
+    expect(clampRetry(judge({ retry: true }), "miss", 2, undefined)).toBe(false);
+  });
+
+  it("数を 決めると その 回数で 止まる", () => {
+    expect(reachedLimit(3, 4)).toBe(false);
+    expect(reachedLimit(4, 4)).toBe(true);
+    expect(clampRetry(judge({ retry: true }), "miss", 3, 4)).toBe(true);
+    expect(clampRetry(judge({ retry: true }), "miss", 4, 4)).toBe(false);
+  });
+
+  it("1回に すると、はじめの 発話で つぎへ 進む", () => {
+    expect(clampRetry(judge({ retry: true }), "miss", 1, 1)).toBe(false);
+  });
+
+  it("なし（null）なら いつまでも 言い直せる", () => {
+    expect(reachedLimit(99, null)).toBe(false);
+    expect(clampRetry(judge({ retry: true }), "miss", 99, null)).toBe(true);
+  });
+
+  it("上限に とどく 前でも、つたわって いれば AIの 判断に まかせる", () => {
+    expect(clampRetry(judge({ retry: false }), "good", 1, 10)).toBe(false);
+    expect(clampRetry(judge({ retry: true }), "good", 1, 10)).toBe(true);
   });
 });

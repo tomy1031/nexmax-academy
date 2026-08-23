@@ -27,13 +27,30 @@ import { z } from "zod";
 import { FORBIDDEN_LEARNER_WORDS } from "@/content/schema";
 
 /**
- * 何回まで言い直させるか（同じ質問への発話回数の上限）。
+ * 何回まで言い直させるか（同じ質問への発話回数の上限）の **既定**。
  *
  * **その場で 1回 練習すれば 先へ 進む**（2026-08-20 の 指定「採点が きびしすぎる。
  * その場で 一度 練習すれば OK という 形に して」）。2回目の 発話の あとは、
  * どんな 見かたでも 必ず つぎへ 進む。
+ *
+ * 教材ごとに 動かせる（`meetingSchema` の `maxAttempts`・2026-08-22 の 指定）。
+ * ここが 既定で あることは 変わらない——**上限の 無い ことを 既定に しない**。
  */
 export const MAX_ATTEMPTS = 2;
+
+/**
+ * 教材が 決めた 上限（`null` は「なし」、欄が 無ければ 既定）。
+ *
+ * 数に して しまうと「なし」が 表せず、`Infinity` を データに 書く わけにも
+ * いかない。**読む ところで 1回だけ ほどく**。
+ */
+export type RetryLimit = number | null | undefined;
+
+/** 上限に とどいたか。`null`（なし）の ときは いつまでも とどかない。 */
+export function reachedLimit(attempt: number, limit: RetryLimit): boolean {
+  if (limit === null) return false;
+  return attempt >= (limit ?? MAX_ATTEMPTS);
+}
 
 /** 学習者が読む文の上限（英語の語釈の数）。多いと語釈の壁で読む気が失せる。 */
 const MAX_GLOSSARY = 8;
@@ -177,8 +194,13 @@ export function gradeOf(judge: JudgeOutput): JudgeGrade {
  * 上限を超えても会話は必ず前へ進む——ここが崩れると、いちばん助けが要る学習者だけが
  * 会話を終われなくなる。
  */
-export function clampRetry(judge: JudgeOutput, grade: JudgeGrade, attempt: number): boolean {
-  if (attempt >= MAX_ATTEMPTS) return false;
+export function clampRetry(
+  judge: JudgeOutput,
+  grade: JudgeGrade,
+  attempt: number,
+  limit?: RetryLimit,
+): boolean {
+  if (reachedLimit(attempt, limit)) return false;
   if (grade === "miss") return true;
   return judge.retry;
 }
@@ -206,7 +228,7 @@ export function kanjiOffenders(judge: JudgeOutput): string[] {
  * 道具（function calling）の 引数は **null を 持てない**ので、直す ところが
  * 無い ときは 空文字で 返る。ここで null に そろえる——画面は「無い」で 分けて いる。
  */
-export function parseJudge(raw: unknown, attempt: number): JudgeResult | null {
+export function parseJudge(raw: unknown, attempt: number, limit?: RetryLimit): JudgeResult | null {
   const shaped =
     raw && typeof raw === "object" && (raw as { fix?: unknown }).fix === ""
       ? { ...(raw as Record<string, unknown>), fix: null }
@@ -218,7 +240,7 @@ export function parseJudge(raw: unknown, attempt: number): JudgeResult | null {
     ...parsed.data,
     v: 1,
     grade,
-    retry: clampRetry(parsed.data, grade, attempt),
+    retry: clampRetry(parsed.data, grade, attempt, limit),
   };
 }
 

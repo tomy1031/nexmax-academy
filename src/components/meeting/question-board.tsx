@@ -47,17 +47,21 @@ function BoardCard({
   at,
   label,
   open,
+  missed = false,
   now,
   pop,
   reveal,
   furigana,
   ariaLabel,
+  onPick,
 }: {
   /** 何ばんめか（0始まり）。 */
   at: number;
   label: string;
   /** ✓ が ついた か。 */
   open: boolean;
+  /** できなかった か（赤い 印）。 */
+  missed?: boolean;
   /** いま この カードの ところに いる か（枠を 出す）。 */
   now: boolean;
   /** いま 開いた ばかりか（1回だけ 光らせる）。 */
@@ -66,33 +70,85 @@ function BoardCard({
   reveal: boolean;
   furigana: FuriganaIndex;
   ariaLabel: string;
+  /** 押すと もう一度 やる（無い ときは 押せない）。 */
+  onPick?: () => void;
 }) {
-  return (
-    <motion.li
-      aria-label={ariaLabel}
-      animate={pop ? { scale: [1, 1.12, 1] } : { scale: 1 }}
-      transition={{ duration: 0.5 }}
-      className="relative min-h-[72px] rounded-xl border-2 px-1.5 py-4 text-center"
-      style={{
-        background: open || reveal ? "#fff" : "color-mix(in srgb, var(--color-sky) 22%, white)",
-        borderColor: now ? "var(--color-sky-deep)" : "transparent",
-      }}
-    >
+  const shown = open || missed || reveal;
+  const face = {
+    background: missed
+      ? "color-mix(in srgb, var(--color-coral) 16%, white)"
+      : shown
+        ? "#fff"
+        : "color-mix(in srgb, var(--color-sky) 22%, white)",
+    borderColor: missed ? "var(--color-coral-deep)" : now ? "var(--color-sky-deep)" : "transparent",
+  };
+  const body = (
+    <>
       <span
         className="absolute -top-1.5 -left-1.5 grid h-5 w-5 place-items-center rounded-full text-[10px] font-black text-white"
-        style={{ background: open ? "var(--color-leaf)" : "var(--color-sky-deep)" }}
+        style={{
+          background: missed
+            ? "var(--color-coral-deep)"
+            : open
+              ? "var(--color-leaf)"
+              : "var(--color-sky-deep)",
+        }}
       >
-        {open ? "✓" : at + 1}
+        {missed ? "！" : open ? "✓" : at + 1}
       </span>
-      {open || reveal ? (
+      {shown ? (
         <span
           className="block text-[11px] leading-snug font-black break-words"
-          style={{ color: open ? "var(--color-ink)" : "var(--color-ink-soft)" }}
+          style={{ color: open || missed ? "var(--color-ink)" : "var(--color-ink-soft)" }}
         >
           <RubyText text={label} index={furigana} show />
         </span>
       ) : (
         <span className="text-sky-deep block text-lg font-black opacity-70">？</span>
+      )}
+      {/*
+        **押せる ことを 字で 言う**。赤い 印だけ 見せて 押し方を 書かないと、
+        できなかった ことを 突きつけるだけの 板に なる（設計01 P8）。
+      */}
+      {missed && onPick ? (
+        <span
+          className="mt-1 block text-[10px] font-black"
+          style={{ color: "var(--color-coral-deep)" }}
+        >
+          <RubyText text="もう いちど" index={BOARD_FURIGANA} show />
+        </span>
+      ) : null}
+    </>
+  );
+
+  return (
+    /*
+      **名前は `li` に つける**。押せる ように した とき 名前を ボタンへ 移した ら、
+      札の 一覧を 名前で 探す 検査が 当たらなく なった（2026-08-23 の e2e）。
+      並びの 意味（何ばんめが どうなったか）は `li` が 持つ ものなので、ここに 置く。
+    */
+    <motion.li
+      aria-label={ariaLabel}
+      animate={pop ? { scale: [1, 1.12, 1] } : { scale: 1 }}
+      transition={{ duration: 0.5 }}
+      className="relative"
+    >
+      {onPick ? (
+        <button
+          type="button"
+          onClick={onPick}
+          className="relative block min-h-[72px] w-full rounded-xl border-2 px-1.5 py-4 text-center"
+          style={face}
+        >
+          {body}
+        </button>
+      ) : (
+        <div
+          className="relative min-h-[72px] rounded-xl border-2 px-1.5 py-4 text-center"
+          style={face}
+        >
+          {body}
+        </div>
       )}
     </motion.li>
   );
@@ -104,7 +160,9 @@ export function QuestionCards({
   openIds,
   currentId,
   justOpenedId,
+  missedIds,
   furigana,
+  onPick,
 }: {
   /** しつもんの 並び（id）。 */
   order: readonly string[];
@@ -116,8 +174,12 @@ export function QuestionCards({
   currentId: string | null;
   /** いま 開いた ばかりの id（1回だけ 光らせる）。 */
   justOpenedId: string | null;
+  /** できなかった しつもんの id（赤い 印を つけ、押すと やり直せる）。 */
+  missedIds: ReadonlySet<string>;
   /** 教材の 読み辞書（カードの 漢字に ふりがなを 合成する）。 */
   furigana: FuriganaIndex;
+  /** 押した ときに もう一度 やる（無い ときは 押せない）。 */
+  onPick?: (id: string) => void;
 }) {
   return (
     <div className="rounded-[var(--radius-card)] bg-[color-mix(in_srgb,var(--color-sky)_14%,white)] p-3">
@@ -132,21 +194,32 @@ export function QuestionCards({
         </span>
       </p>
       <ol className="grid grid-cols-3 gap-1.5 sm:grid-cols-6">
-        {order.map((id, at) => (
-          <BoardCard
-            key={id}
-            at={at}
-            label={labels[id] ?? ""}
-            open={openIds.has(id)}
-            now={currentId === id}
-            pop={justOpenedId === id}
-            reveal={false}
-            furigana={furigana}
-            ariaLabel={
-              openIds.has(id) ? `${at + 1}ばんめ こたえました` : `${at + 1}ばんめ まだです`
-            }
-          />
-        ))}
+        {order.map((id, at) => {
+          const missed = missedIds.has(id);
+          const done = openIds.has(id);
+          return (
+            <BoardCard
+              key={id}
+              at={at}
+              label={labels[id] ?? ""}
+              open={done}
+              missed={missed}
+              now={currentId === id}
+              pop={justOpenedId === id}
+              reveal={false}
+              furigana={furigana}
+              /* 押せるのは **一度 答えた もの**だけ（まだの しつもんへ 飛ばさない） */
+              onPick={onPick && (done || missed) ? () => onPick(id) : undefined}
+              ariaLabel={
+                missed
+                  ? `${at + 1}ばんめ もう いちど`
+                  : done
+                    ? `${at + 1}ばんめ こたえました`
+                    : `${at + 1}ばんめ まだです`
+              }
+            />
+          );
+        })}
       </ol>
     </div>
   );

@@ -296,6 +296,23 @@ export function MeetingSession({
   const [found, setFound] = useState<ReadonlySet<string>>(() => new Set(resume.found));
   /** いま 聞けた ばかりの 札（板の カードを 1回だけ 光らせる）。 */
   const [justFoundId, setJustFoundId] = useState<string | null>(null);
+  /**
+   * **言い直しの 回数を つかいきっても つたわらなかった しつもん**（2026-08-23 の 指定）。
+   *
+   * これまでは ひとことでも 言えば 札が 開いて いた。**できた ことに して しまうと、
+   * 本人も 先生も どこが 残って いるか 分からない**。開くのは できた ときだけに し、
+   * 残った ものは 赤い 印で 見せる。押せば もう一度 やり直せる（罰では なく 入口）。
+   */
+  const [missedIds, setMissedIds] = useState<ReadonlySet<string>>(() => new Set(resume.missedIds));
+  /** しつもんID → さいごの 見かた（札の 色を 決める）。 */
+  const [grades, setGrades] = useState<Record<string, JudgeResult["grade"]>>({});
+  /**
+   * ぜんぶ 答えた あとに 札から 戻って きたか。
+   *
+   * 戻って きた ときは、**その 1問だけ やり直して また おわりへ 帰す**——
+   * つぎの しつもんへ 進めると、そこから 12問を もう一度 歩く ことに なる。
+   */
+  const reviewingRef = useRef(false);
   /** 日本語の 見かたを ポップアップで 出して いるか。 */
   const [judgeOpen, setJudgeOpen] = useState(false);
   /** ポップアップに そのまま 見せる「あなたの ことば」。 */
@@ -384,7 +401,14 @@ export function MeetingSession({
    * 見て いる」が 同じ 値に なって いて、**ばんを 選べる ように できなかった**。
    * 畳み直したく なったら、この 2行を 読んでから に する。
    */
-  const round1Done = index >= meeting.questions.length;
+  /*
+   * **数から 状態へ**（2026-08-23）。しつもんの 札を 押して 前の しつもんへ
+   * 戻れる ように した ので、位置（`index`）で 進みぐあいを 決めると
+   * **戻った 瞬間に 聞く ばんが ロックし直される**。一度 通ったら 戻さない。
+   */
+  const [round1Done, setRound1Done] = useState(
+    () => resume.round === "listen" || resume.index >= meeting.questions.length,
+  );
   /** **いま 見て いる ばん**——学習者が 帯を 押して 選ぶ。 */
   const [round, setRound] = useState<"ask" | "listen">(resume.round);
   /** 聞く ばん（ラウンド2）を 見て いるか。画面の 出し分けは これで 決める。 */
@@ -546,8 +570,12 @@ export function MeetingSession({
    * ——だから 会の 途中なのに はじめの あいさつに 戻って いた。
    */
   const askInstruction = useMemo(
-    () => buildAskInstruction(source, { done: index, total: meeting.questions.length }),
-    [source, index, meeting.questions.length],
+    () =>
+      buildAskInstruction(source, {
+        done: openIds.size + missedIds.size,
+        total: meeting.questions.length,
+      }),
+    [source, openIds.size, missedIds.size, meeting.questions.length],
   );
   const listenInstruction = useMemo(
     () => buildListenInstruction(source, learnerName),
@@ -607,6 +635,7 @@ export function MeetingSession({
         setOpenIds((prev) => new Set([...prev, questionId]));
         setJustOpenedId(questionId);
       }
+      if (grade) setGrades((prev) => ({ ...prev, [questionId]: grade }));
       const next = awardAnswer(affection, questionId, grade);
       setAffection(next);
       setGained(heartsOf(next) - heartsOf(affection));
@@ -632,8 +661,9 @@ export function MeetingSession({
       affection,
       round,
       found: [...found],
+      missedIds: [...missedIds],
     });
-  }, [joined, meeting.id, index, openIds, answers, affection, round, found]);
+  }, [joined, meeting.id, index, openIds, answers, affection, round, found, missedIds]);
 
   /**
    * 1つの発話を見る。声でも文字でも、ここを通る。
@@ -686,6 +716,7 @@ export function MeetingSession({
         learnerName,
         utterance,
         attempt,
+        maxAttempts: meeting.maxAttempts,
       }).catch((): JudgeApiResult => ({ ok: false, reason: "network" }));
       setThinking(false);
 
@@ -765,7 +796,12 @@ export function MeetingSession({
    * 合わせようと すると、ターンぶん ためる ことに なり、返事までの 間が 空く。
    */
 
-  const clipUrl = round1Done ? meeting.closingAudioUrl : question?.audioUrl;
+  /*
+   * 鳴らす 音は **見て いる ばん**で 決める（`round1Done` では ない）。
+   * ぜんぶ 答えた あとでも 札から 前の しつもんへ 戻れる ので、進みぐあいで
+   * 決めると 戻った 先で おわりの ひとことが 鳴る（2026-08-23）。
+   */
+  const clipUrl = round === "listen" ? meeting.closingAudioUrl : question?.audioUrl;
   const playClip = clip.play;
   const stopClip = clip.stop;
   /*
@@ -820,6 +856,71 @@ export function MeetingSession({
     void judgeUtterance(heard.text, true, answeringRef.current ?? undefined);
   }, [voice.lastUtterance, judgeUtterance, round1Done, noteDiscovered, pushChat]);
 
+  /**
+   * その しつもんの 決着を つける（離れる とき・やり直しを おえた とき）。
+   *
+   * ひとことでも 言って いれば 札は 動く。**つたわった なら 開き、
+   * つたわらなかった なら 赤い 印**に する（2026-08-23 の 指定）。
+   * 「1回で 言えた 数」を 数えて いた ころの 罰の 板には 戻さない——
+   * 言い直して 通った ものは、ちゃんと 開く（P8）。
+   */
+  const settle = useCallback(
+    (leaving: MeetingQuestion | undefined) => {
+      if (!leaving || (answers[leaving.id] ?? "") === "") return;
+      if (grades[leaving.id] === "miss") {
+        setMissedIds((prev) => (prev.has(leaving.id) ? prev : new Set([...prev, leaving.id])));
+        return;
+      }
+      setMissedIds((prev) => {
+        if (!prev.has(leaving.id)) return prev;
+        const left = new Set(prev);
+        left.delete(leaving.id);
+        return left;
+      });
+      setOpenIds((prev) => (prev.has(leaving.id) ? prev : new Set([...prev, leaving.id])));
+    },
+    [answers, grades],
+  );
+
+  /**
+   * **札を 押して、その しつもんを もう一度 やる**（2026-08-23 の 指定）。
+   *
+   * ヘンディさんが その しつもんを もう一度 読み上げ、答えられる 状態に 戻す。
+   * 読み上げは 作り置きの 音（`clipUrl` の 効果が 拾う）——Live に 頼むと
+   * 「あなたから しつもんしては いけません」という 決まりと ぶつかる。
+   *
+   * ぜんぶ 答えた あとから 戻った ときは、**その 1問だけ 直して おわりへ 帰す**
+   *（`reviewingRef`）。つぎの しつもんへ 進めると、そこから もう一度 12問を 歩く。
+   */
+  const retryQuestion = useCallback(
+    (questionId: string) => {
+      const at = meeting.questions.findIndex((q) => q.id === questionId);
+      const ask = meeting.questions[at];
+      if (!ask) return;
+      reviewingRef.current = round1Done;
+      setRound("ask");
+      setIndex(at);
+      setAttempt(1);
+      setReply(null);
+      setJudgeOpen(false);
+      setJudgeNote(null);
+      setNotice(null);
+      setNoticedText(null);
+      setDraft("");
+      setJustOpenedId(null);
+      answeringRef.current = ask;
+      // 同じ 音を もう一度 鳴らせる ように、鳴らしたしるしを 消す
+      playedRef.current = null;
+      pushChat({
+        kind: "ask",
+        questionId: ask.id,
+        text: withName(ask.ask),
+        audioUrl: ask.audioUrl,
+      });
+    },
+    [meeting.questions, round1Done, withName, pushChat],
+  );
+
   const next = useCallback(() => {
     const at = index + 1;
     const finishing = at >= meeting.questions.length;
@@ -835,10 +936,7 @@ export function MeetingSession({
      * 直しの 最中に 開かない ことは 変えない（`rewardTurn` は そのまま）。
      * 開くのは **その しつもんを 離れる とき**で、ひとことでも 言って いれば 開く。
      */
-    const leaving = meeting.questions[index];
-    if (leaving && (answers[leaving.id] ?? "") !== "") {
-      setOpenIds((prev) => (prev.has(leaving.id) ? prev : new Set([...prev, leaving.id])));
-    }
+    settle(meeting.questions[index]);
     /*
      * 相手に つぎを 言わせる。**画面の 質問と 相手の ことばを 1つに 保つ**ため、
      * 進むのと 同じ ところで 合図を 出す（別の 効果に すると、進み方に よって
@@ -869,6 +967,7 @@ export function MeetingSession({
        * 別の 効果に すると、進み方に よって 切りかわったり しなかったり する。
        */
       setRound("listen");
+      setRound1Done(true);
       /*
        * **ばんの 変わり目の ことばを チャットに 残す**（2026-08-21 の 指定）。
        * 画面の 上には 同じ 文が 大きく 出て いるが、あれは 先へ 進むと 流れて しまう。
@@ -914,7 +1013,7 @@ export function MeetingSession({
       status: "started",
       position: { panel: at },
     });
-  }, [index, meeting, answers, affection, withName, pushChat]);
+  }, [index, meeting, answers, affection, withName, pushChat, settle]);
 
   const submit = useCallback(() => {
     const text = draft.trim();
@@ -1020,7 +1119,13 @@ export function MeetingSession({
 
   /** 同じ質問をもう一度。回数だけ増やして、質問は変えない。 */
   const retry = useCallback(() => {
-    setAttempt((n) => Math.min(n + 1, MAX_ATTEMPTS));
+    /*
+     * 回数の 上限は 教材が 決める（`maxAttempts`・2026-08-22 の 指定）。
+     * `null` は「なし」なので 頭打ちに しない——数えつづけて よい。
+     */
+    setAttempt((n) =>
+      meeting.maxAttempts === null ? n + 1 : Math.min(n + 1, meeting.maxAttempts ?? MAX_ATTEMPTS),
+    );
     setReply(null);
     setDraft("");
     setNotice(null);
@@ -1034,7 +1139,7 @@ export function MeetingSession({
     if (url && shouldReplayAsk({ hasAudio: true, hostSpeaking: voice.speaking })) {
       clip.play(url, rateOf(speed));
     }
-  }, [question, voice.speaking, clip, speed]);
+  }, [question, voice.speaking, clip, speed, meeting.maxAttempts]);
 
   /**
    * 答えられない ときの 逃げ道。**札は 開かない**まま つぎの 質問へ。
@@ -1129,14 +1234,29 @@ export function MeetingSession({
     const again = reply?.judge?.retry === true;
     setJudgeOpen(false);
     setJudgeNote(null);
+    if (again) {
+      retry();
+      return;
+    }
+    /*
+     * **やり直しから 帰る**（2026-08-23）。ぜんぶ 答えた あとに 札から 戻って
+     * きた ときは、その 1問の 決着を つけて おわりの ところへ 戻す。
+     * `next()` に すると、そこから 12問を もう一度 歩く ことに なる。
+     */
+    if (reviewingRef.current) {
+      reviewingRef.current = false;
+      settle(meeting.questions[index]);
+      setIndex(meeting.questions.length);
+      setRound("listen");
+      return;
+    }
     /*
      * おわった あとは 進めない。さいごの しつもんの あとに もう一度 進めて
      * しまい、同じ ところを ぐるぐる 回って いた（2026-08-18 の 実発生）。
      */
     if (round1Done) return;
-    if (again) retry();
-    else next();
-  }, [reply, retry, next, round1Done]);
+    next();
+  }, [reply, retry, next, round1Done, settle, meeting.questions, index]);
 
   /** いま持っているハート。教材に affection が無いときは画面のどこにも出ない。 */
   const hearts = heartsOf(affection);
@@ -1509,7 +1629,10 @@ export function MeetingSession({
               openIds={openIds}
               currentId={question?.id ?? null}
               justOpenedId={justOpenedId}
+              missedIds={missedIds}
               furigana={furigana}
+              /* 押せるのは 相手が 黙って いる ときだけ（読み上げが 重ならない） */
+              onPick={voice.speaking ? undefined : retryQuestion}
             />
           )
         }

@@ -159,6 +159,28 @@ export function MeetingEditor({
         title="日本語の 見かた（判定の 指示）"
         hint="話し方と 分けて あります。言い回しを 直しても、見る ところは 動きません。"
       >
+        {/*
+          **言い直しの 回数は 教材ごと**（2026-08-22 の 指定）。
+          既定は 2回——「その場で 1回 練習すれば OK」という 決まりの ままに する。
+          「なし」を えらべるのは 時間に ゆとりの ある 教室の ため。
+        */}
+        <SelectField
+          label="言い直しの 回数"
+          value={value.maxAttempts === null ? "none" : String(value.maxAttempts ?? "")}
+          onChange={(next) =>
+            patch({ maxAttempts: next === "none" ? null : next === "" ? undefined : Number(next) })
+          }
+          options={[
+            { value: "", label: "きほんの まま（2回）" },
+            ...Array.from({ length: 10 }, (_, index) => ({
+              value: String(index + 1),
+              label: `${index + 1}回で つぎへ`,
+            })),
+            { value: "none", label: "なし（できるまで つづける）" },
+          ]}
+          hint="この 回数を こえると、どんな 見かたでも かならず つぎの しつもんへ 進みます。「なし」は 学生が つまずいた ところで 止まる ことが あります。"
+        />
+
         <TextAreaField
           label="見かた"
           value={value.judgePrompt}
