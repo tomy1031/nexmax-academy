@@ -2,7 +2,7 @@
 
 import { motion } from "motion/react";
 import { RubyText } from "@/components/ruby-text";
-import type { JudgeResult } from "@/lib/meeting/judge";
+import { isPerfect, type JudgeResult } from "@/lib/meeting/judge";
 import { JUDGE_FURIGANA as FURIGANA } from "@/components/meeting/ui-furigana";
 import { type FuriganaIndex } from "@/lib/text/furigana";
 
@@ -247,12 +247,19 @@ export function JudgeModal({
             </div>
           </div>
 
-          <div>
-            <SectionLabel face="⭐" text="もっと よく なる 言い方" tone="var(--color-sun-deep)" />
-            <p className="bg-cream text-ink mt-1 rounded-xl px-3 py-2 font-black break-words">
-              「<RubyText text={judge.exampleAnswer} index={FURIGANA} show />」
-            </p>
-          </div>
+          {/*
+            **もう 直す ところが 無い ときは 出さない**（2026-08-23 の 指定）。
+            すでに 言えて いる 学習者に 別の 言い方を 見せると、
+            **正しく 言えたのに 直された**ように 受け取る。
+          */}
+          {isPerfect(judge) ? null : (
+            <div>
+              <SectionLabel face="⭐" text="もっと よく なる 言い方" tone="var(--color-sun-deep)" />
+              <p className="bg-cream text-ink mt-1 rounded-xl px-3 py-2 font-black break-words">
+                「<RubyText text={judge.exampleAnswer} index={FURIGANA} show />」
+              </p>
+            </div>
+          )}
         </div>
 
         {note ? <p className="text-ink-faint mt-3 text-xs font-bold break-words">{note}</p> : null}

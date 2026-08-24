@@ -4,6 +4,7 @@ import {
   clampRetry,
   gradeOf,
   isKanaOnly,
+  isPerfect,
   MAX_ATTEMPTS,
   reachedLimit,
   parseJudge,
@@ -207,5 +208,43 @@ describe("教材ごとの 言い直しの 上限", () => {
   it("上限に とどく 前でも、つたわって いれば AIの 判断に まかせる", () => {
     expect(clampRetry(judge({ retry: false }), "good", 1, 10)).toBe(false);
     expect(clampRetry(judge({ retry: true }), "good", 1, 10)).toBe(true);
+  });
+});
+
+/**
+ * **もう 直す ところが 無い ときは お手本を 出さない**（2026-08-23 の 指定）
+ *
+ * `judgePrompt` は よい 答えの ときの お手本に **学習者の 文を そのまま** 書かせる。
+ * だから 画面には 自分の ことばが「もっと よく なる 言い方」として 出て いた
+ * ——正しく 言えたのに 直された ように 見える。
+ */
+describe("完璧な ときの お手本", () => {
+  const base = {
+    v: 1 as const,
+    language: "ja" as const,
+    relevance: "onTopic" as const,
+    reply: "そうですか。",
+    praise: "いえましたね。",
+    glossary: [],
+    exampleAnswer: "わたしは ソクです。",
+    retry: false,
+  };
+
+  it("すばらしい・形も よい・直す ところも 無い なら 出さない", () => {
+    expect(isPerfect({ ...base, form: "natural", fix: null, grade: "veryGood" })).toBe(true);
+  });
+
+  it("直す ところが ある なら 出す", () => {
+    expect(
+      isPerfect({ ...base, form: "natural", fix: "「です」を つけましょう。", grade: "veryGood" }),
+    ).toBe(false);
+  });
+
+  it("形が こなれて いない なら 出す", () => {
+    expect(isPerfect({ ...base, form: "rough", fix: null, grade: "veryGood" })).toBe(false);
+  });
+
+  it("つたわった どまりなら 出す", () => {
+    expect(isPerfect({ ...base, form: "natural", fix: null, grade: "good" })).toBe(false);
   });
 });

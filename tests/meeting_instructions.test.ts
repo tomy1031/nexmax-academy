@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import meeting from "../content/meetings/hajimari_meeting.json";
+import kiku from "../content/meetings/hajimari_kiku.json";
 import {
   askInstruction,
   commonRules,
@@ -20,7 +21,7 @@ import {
 const source: InstructionSource = {
   persona: meeting.persona,
   hostName: meeting.host.name,
-  discover: meeting.discover,
+  discover: kiku.discover,
 };
 
 describe("両方の ばんに 置く もの", () => {
@@ -45,7 +46,28 @@ describe("ラウンド1（答える ばん）", () => {
 
   it("しつもんは 画面が する。相手は 受け止めるだけ", () => {
     expect(text).toContain("しつもんは 画面が します。");
-    expect(text).toContain("1回の 返事は 2文までです。");
+    expect(text).toContain("1回の 返事は 3文までです。");
+  });
+
+  /*
+   * **返事を しつもんで おわらせない**（2026-08-23 の 指定）。
+   * つぎの しつもんは 作り置きの こえが 鳴らす ので、相手が 聞き返すと
+   * しつもんが 2つ 続けて 出て、学習者は どちらに 答えるか 分からなく なる。
+   */
+  it("返事を しつもんで おわらせない", () => {
+    expect(text).toContain("返事の さいごを しつもんに しないで ください。");
+  });
+
+  /* 受け止めるだけの 同じ 形に しない——れいを 2つ 置いて 型に させない */
+  it("受け止めた あとに ひとこと 足させる", () => {
+    expect(text).toContain("つながる ひとことを 足して ください。");
+    expect(text).toContain("カンボジアは いい ところです。");
+    expect(text).toContain("はじめまして。ヘンディです。");
+  });
+
+  /* 聞く ばんの さそい文句は、答える ばんに 出ては いけない（2026-08-23 の 実発生） */
+  it("「ほかにも 聞いて ください」は 答える ばんに 出さない", () => {
+    expect(text).not.toContain("ほかにも 聞いて ください");
   });
 
   /*
@@ -53,7 +75,7 @@ describe("ラウンド1（答える ばん）", () => {
    *（2026-08-21 の 実発生）。ラウンド2の 楽しみも 先に 使って しまう。
    */
   it("話せる ことを 渡さない", () => {
-    for (const item of meeting.discover) expect(text).not.toContain(item.answer);
+    for (const item of kiku.discover) expect(text).not.toContain(item.answer);
   });
 });
 
@@ -61,7 +83,7 @@ describe("ラウンド2（聞く ばん）", () => {
   const text = listenInstruction(source, "ソク");
 
   it("話題と 話を 1行で 向かい合わせる", () => {
-    for (const item of meeting.discover) {
+    for (const item of kiku.discover) {
       expect(text).toContain(`- 「${item.label}」を 聞かれたら: ${item.answer}`);
     }
   });

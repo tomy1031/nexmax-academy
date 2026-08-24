@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { RESERVED_STAGE_IDS, type Stage, type StageContentRef } from "@/content/schema";
 import { ArticleView } from "@/components/article/article-view";
+import { ListenMeeting } from "@/components/meeting/listen-meeting";
 import { MeetingSession } from "@/components/meeting/meeting-session";
 import { TalkSession } from "@/components/listening/live-mode";
 import { LinkView } from "@/components/link/link-view";
@@ -179,12 +180,12 @@ export default async function StageContentPage({
       items={items}
       currentIndex={currentIndex >= 0 ? currentIndex : 0}
     >
-      {await renderContent(ref)}
+      {await renderContent(ref, stage.contents)}
     </ContentFrame>
   );
 }
 
-async function renderContent(ref: StageContentRef) {
+async function renderContent(ref: StageContentRef, contents: readonly StageContentRef[]) {
   switch (ref.type) {
     case "manga": {
       const manga = await getManga(ref.ref);
@@ -238,6 +239,7 @@ async function renderContent(ref: StageContentRef) {
        * どちらが正しいのか誰にも分からなくなる。人物カードを1つの正にする。
        */
       const host = await getCharacter(meeting.host.id);
+      const dictionary = buildDictionary(await listWordStages());
       /*
        * **対話ゲームは 別の 画面**（願い #177・2026-08-23 の 指定）。
        *
@@ -247,10 +249,34 @@ async function renderContent(ref: StageContentRef) {
        */
       if (meeting.talkGame) {
         return (
-          <TalkGameSession
+          <TalkGameSession meeting={meeting} hostVoice={host?.voice} dictionary={dictionary} />
+        );
+      }
+      /*
+       * **聞く ばんは 別の 部品**（2026-08-23 の 分割）。
+       *
+       * `mode` を 書いて いない 教材は **前からの もの**——1つの 中に 2つの ばんを
+       * 持つ ので、これまでの `MeetingSession` が 受け持つ。
+       */
+      if (meeting.mode === "listen") {
+        /*
+         * まえの ばんの きろくを 見せる ため、**ステージの 並びで 1つ 前の
+         * ミーティング**を 渡す。教材データに ペアを 書かせないのは、
+         * 並べ替えた ときに 2か所を 直す ことに なる ため。
+         */
+        const at = contents.findIndex((item) => item.ref === ref.ref && item.type === ref.type);
+        const prior = contents
+          .slice(0, at < 0 ? 0 : at)
+          .reverse()
+          .find((item) => item.type === "meeting");
+        return (
+          <ListenMeeting
             meeting={meeting}
             hostVoice={host?.voice}
-            dictionary={buildDictionary(await listWordStages())}
+            hostMouth={host?.mouth}
+            dictionary={dictionary}
+            priorId={prior?.ref}
+            embedded
           />
         );
       }
@@ -265,7 +291,7 @@ async function renderContent(ref: StageContentRef) {
            * 前の 課で 習った ものが 多いため——絞ると、いちばん 助けが 要る
            * 「前に 習ったが 忘れた語」に 説明が 出なくなる。
            */
-          dictionary={buildDictionary(await listWordStages())}
+          dictionary={dictionary}
           embedded
         />
       );
