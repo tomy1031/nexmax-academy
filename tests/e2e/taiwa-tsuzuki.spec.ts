@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { KAISHA, affinity, itemsBefore, readOn, seedCompleted } from "./helpers";
+import { KAISHA, affinity, foundText, itemsBefore, readOn, seedCompleted } from "./helpers";
 
 /**
  * 対話ゲームを 途中で 閉じても、好感度が 0 に 戻らない（願い #177）
@@ -7,7 +7,7 @@ import { KAISHA, affinity, itemsBefore, readOn, seedCompleted } from "./helpers"
  * 「画面更新などした 場合でも 途中から プレイできる ように して ほしい」
  *（2026-08-21 の 指定・docs/constraints.md）。教室の 回線は ゆらぐ ので、
  * **開き直しは たまに 起きる ことでは なく、よく 起きる こと**。
- * ここが 崩れると、5つ 見つけて 60% まで 来た 人が 一瞬で 0% に 戻る。
+ * ここが 崩れると、見つける ものを 見つけて 60% まで 来た 人が 一瞬で 0% に 戻る。
  */
 test("画面を 更新しても、好感度と 見つけた ものが 残る", async ({ page, context }) => {
   await seedCompleted(context, itemsBefore(KAISHA.meetingMatsui));
@@ -32,5 +32,5 @@ test("画面を 更新しても、好感度と 見つけた ものが 残る", a
   await again.click();
   await readOn(page);
   expect(await affinity(page)).toBe(before);
-  await expect(page.getByText("おもしろい 1 / 5")).toBeVisible();
+  await expect(page.getByText(foundText(1))).toBeVisible();
 });

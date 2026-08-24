@@ -4,6 +4,8 @@ import {
   KAISHA,
   choiceButtons,
   itemsBefore,
+  placeWordsIn,
+  writeIn,
   progressText,
   readTestResult,
   seedCompleted,
@@ -82,8 +84,8 @@ test("他の ページへ 行って 戻っても、書いた ものは 残る", 
    * **離れた 2問**に 書く。1ページに 全問 出て いる ことの 意味は、
    * 見つけた 順に どこへでも 書ける ことなので、上から 順ではなく 飛ばして 書く。
    */
-  await page.getByRole("button", { name: "ホームページや アプリ" }).first().click();
-  await page.getByLabel("こたえを 入力する").first().fill("くるま");
+  await writeIn(page, "a1_itsu", "2018ねん");
+  await placeWordsIn(page, "f6_lab", ["NEXTMAKE Internship Lab"]);
   await expect(page.getByText(writtenText(2))).toBeVisible();
 
   // ステージへ 離脱 → 戻る
@@ -95,7 +97,7 @@ test("他の ページへ 行って 戻っても、書いた ものは 残る", 
 
   // 2問とも 書いた ものが そのまま 残って いる
   await expect(page.getByText(writtenText(2))).toBeVisible();
-  await expect(page.getByLabel("こたえを 入力する").first()).toHaveValue("くるま");
+  await expect(page.locator("#q-a1_itsu").getByLabel("こたえを 入力する")).toHaveValue("2018ねん");
 });
 
 test("出す まえに かくにんして、出すと 自分の こたえと 正解が 並ぶ", async ({ page, context }) => {

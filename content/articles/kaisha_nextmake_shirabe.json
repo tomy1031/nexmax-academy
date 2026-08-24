@@ -2,8 +2,60 @@
   "kind": "article",
   "id": "kaisha_nextmake_shirabe",
   "title": "ネクストメイクを しらべよう",
-  "description": "会社の サイトで、宝さがしを します。💎を 1つ 見つけましょう。",
+  "description": "会社の サイトで、ちょうさシートを うめます。どの ページに 何が あるかを 先に 見て おきましょう。",
   "furigana": [
+    [
+      "何語",
+      "なにご"
+    ],
+    [
+      "報告",
+      "ほうこく"
+    ],
+    [
+      "団体",
+      "だんたい"
+    ],
+    [
+      "基本",
+      "きほん"
+    ],
+    [
+      "得意",
+      "とくい"
+    ],
+    [
+      "情報",
+      "じょうほう"
+    ],
+    [
+      "手段",
+      "しゅだん"
+    ],
+    [
+      "道具",
+      "どうぐ"
+    ],
+    [
+      "日本人",
+      "にほんじん"
+    ],
+    [
+      "日本",
+      "にほん"
+    ],
+    [
+      "学生",
+      "がくせい"
+    ],
+    [
+      "役所",
+      "やくしょ"
+    ],
+    [
+      "中心",
+      "ちゅうしん"
+    ],
     [
       "会社紹介",
       "かいしゃしょうかい"
@@ -235,6 +287,78 @@
     [
       "宝",
       "たから"
+    ],
+    [
+      "矢",
+      "や"
+    ],
+    [
+      "表",
+      "ひょう"
+    ],
+    [
+      "強",
+      "つよ"
+    ],
+    [
+      "先",
+      "さき"
+    ],
+    [
+      "何",
+      "なに"
+    ],
+    [
+      "分",
+      "わ"
+    ],
+    [
+      "向",
+      "む"
+    ],
+    [
+      "始",
+      "はじ"
+    ],
+    [
+      "少",
+      "すこ"
+    ],
+    [
+      "方",
+      "かた"
+    ],
+    [
+      "正",
+      "ただ"
+    ],
+    [
+      "生",
+      "う"
+    ],
+    [
+      "町",
+      "まち"
+    ],
+    [
+      "終",
+      "お"
+    ],
+    [
+      "良",
+      "よ"
+    ],
+    [
+      "調",
+      "しら"
+    ],
+    [
+      "体",
+      "からだ"
+    ],
+    [
+      "学",
+      "まな"
     ]
   ],
   "blocks": [
@@ -254,6 +378,39 @@
     {
       "kind": "heading",
       "level": 2,
+      "text": "きょう する こと"
+    },
+    {
+      "kind": "image",
+      "prompt": "A flat illustration of a clipboard checklist divided into six pastel rounded sections arranged in two columns of three; each section holds a simple pictogram instead of text - an office building, a wrench, a handshake, a trophy, a heart, a graduation cap; a friendly student hand holding a pencil at the edge; clean flat vector style, thick soft hand-drawn outlines, cheerful pastel palette (sky blue, navy, leaf green, coral) on a warm cream background, friendly rounded shapes, no letters, no numbers, no logos anywhere.",
+      "status": "done",
+      "caption": "ちょうさシートは、6つの ブロックに 分かれて います。",
+      "refs": [],
+      "src": "/img/articles/kaisha_nextmake_shirabe/b4.webp"
+    },
+    {
+      "kind": "paragraph",
+      "text": "Webサイトに 書いて ある 正しい 情報を 見つけます。それが きょうの ゴールです。"
+    },
+    {
+      "kind": "callout",
+      "tone": "point",
+      "text": "まだ 「自分は どう 思う？」は 考えなくて だいじょうぶです。それは あとの ばんです。"
+    },
+    {
+      "kind": "list",
+      "items": [
+        "A 会社の 基本 … いつ・だれが・どこ",
+        "B 会社の 仕事 … 何を 作って いるか",
+        "C 会社の 強み・つながり … ほかの 会社と ちがう ところ",
+        "D 実績 … だれの ために 作ったか",
+        "E 会社の 考えかた … たいせつに して いる ことば",
+        "F Japanese IT Pathway … みなさんの プログラム"
+      ]
+    },
+    {
+      "kind": "heading",
+      "level": 2,
       "text": "サイトを ひらく"
     },
     {
@@ -261,6 +418,31 @@
       "ref": "nextmake_gakushu_site",
       "type": "link",
       "label": "ネクストメイクの サイトを ひらく"
+    },
+    {
+      "kind": "image",
+      "prompt": "a simple flat illustration of a smartphone showing a generic company website homepage with a hamburger menu icon (three lines) highlighted at the top corner, and a friendly finger tapping the menu icon; clean vector style, thick soft outlines, cheerful pastel palette, no letters or numbers anywhere on the screen. clean flat vector style, thick soft hand-drawn outlines, cheerful pastel palette (sky blue, navy, leaf green, coral) on a warm cream background, friendly rounded shapes, no letters, no numbers, no logos anywhere.",
+      "status": "done",
+      "caption": "スマホでは、上の 「≡」を おすと メニューが 出ます。",
+      "refs": [],
+      "src": "/img/articles/kaisha_nextmake_shirabe/b10.webp"
+    },
+    {
+      "kind": "paragraph",
+      "text": "パソコンでは、上に ページの 名前が ならんで います。"
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "やさしい 日本語と 日本語"
+    },
+    {
+      "kind": "image",
+      "prompt": "A flat illustration of two rounded speech-bubble cards side by side, connected by a small toggle switch between them; the left bubble contains three short wavy lines with generous spacing, the right bubble contains the same three lines drawn denser and tighter; a small friendly face looks at them; abstract wavy lines only, absolutely no readable characters; clean flat vector style, thick soft hand-drawn outlines, cheerful pastel palette (sky blue, navy, leaf green, coral) on a warm cream background, friendly rounded shapes, no letters, no numbers, no logos anywhere.",
+      "status": "done",
+      "caption": "同じ ことが、2つの 言い方で 書いて あります。",
+      "refs": [],
+      "src": "/img/articles/kaisha_nextmake_shirabe/b13.webp"
     },
     {
       "kind": "paragraph",
@@ -271,69 +453,115 @@
       "text": "まず 「やさしい 日本語」で 読みます。わかったら 「日本語」に して、同じ ところを もう一度 読みます。それが N3への 道です。"
     },
     {
-      "kind": "image",
-      "prompt": "a simple flat illustration of a smartphone showing a generic company website homepage with a hamburger menu icon (three lines) highlighted at the top corner, and a friendly finger tapping the menu icon; clean vector style, thick soft outlines, cheerful pastel palette, no letters or numbers anywhere on the screen.",
-      "status": "empty",
-      "caption": "スマホでは、上の 「≡」を おすと メニューが 出ます。"
-    },
-    {
-      "kind": "heading",
-      "level": 2,
-      "text": "たからさがしの じゅんばん"
-    },
-    {
-      "kind": "steps",
-      "items": [
-        "サイトを ひらく",
-        "3つの 目で 見る（なにを 作る？ お客さまは？ どんな 人？）",
-        "💎 「おもしろい！」を 1つ 見つけて、メモする",
-        "ここに 戻って、つぎの 「ほうこくの じゅんび」に すすむ"
-      ]
-    },
-    {
-      "kind": "callout",
-      "tone": "point",
-      "text": "ぜんぶ 見なくて だいじょうぶです。💎を 1つ 見つけたら、たからさがしは せいこうです。2つ、3つ 見つけたら、もっと すごいです。"
-    },
-    {
-      "kind": "callout",
-      "tone": "point",
-      "text": "💎は、この 文で 言います。「わたしは ◯◯が おもしろいと 思いました。」——◯◯ は あなたの ことばです。見つけた ことを 入れます。"
-    },
-    {
-      "kind": "heading",
-      "level": 2,
-      "text": "どの ページを 見る？"
-    },
-    {
-      "kind": "list",
-      "items": [
-        "会社紹介 … 会社の 場所、できた 年、たいせつに して いる こと",
-        "ベトナム … 海外の チーム",
-        "事業 … 自分たちで 作って いる サービス",
-        "つくる仕事 … お客さまの ために 作る もの、はたらきかた",
-        "カンボジア教育 … あなたたちの プログラム",
-        "実績 … お客さまの 名前",
-        "ことばの辞典 … わからない ことばを さがす"
-      ]
-    },
-    {
       "kind": "callout",
       "tone": "care",
-      "text": "あなたに かんけいの ある ページも、どこかに あります。見つけたら、それは 大きな 💎ですよ。（さがす ヒント: あなたの プログラムの 名前や、あなたの 国の 名前）"
+      "text": "同じ ことでも、ことばが 少し ちがう ことが あります。たとえば 「道具」と 「手段」。どちらで 書いても 正しいです。"
     },
     {
       "kind": "heading",
       "level": 2,
-      "text": "ヒント: ページの いちばん 下"
+      "text": "A 会社の 基本"
+    },
+    {
+      "kind": "image",
+      "prompt": "A flat simplified travel-map illustration: four rounded location pins of different pastel colors placed apart on a plain cream background with soft dotted curved lines connecting them; next to each pin a tiny pictogram - a tall office tower, a small office building, a laptop, a graduation cap; no coastlines, no borders, no country shapes, no text; clean flat vector style, thick soft hand-drawn outlines, cheerful pastel palette (sky blue, navy, leaf green, coral) on a warm cream background, friendly rounded shapes, no letters, no numbers, no logos anywhere.",
+      "status": "done",
+      "caption": "オフィスは、いくつかの 町に あります。",
+      "refs": [],
+      "src": "/img/articles/kaisha_nextmake_shirabe/b18.webp"
     },
     {
       "kind": "paragraph",
-      "text": "どの ページでも、いちばん 下に、会社の たいせつな ことばが あります。"
+      "text": "できた 年、社長の 名前、オフィスの 場所は 「会社紹介」の ページの 表に あります。海外の 仕事を 始めた 年は、その 下の あゆみに あります。"
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "B 会社の 仕事"
+    },
+    {
+      "kind": "image",
+      "prompt": "A flat illustration of five rounded pastel cards in one row, each holding a simple pictogram: a speech bubble with a gear, a map pin with a film play button, a document with a check seal, a small quadcopter drone, and two students at a laptop; uniform card size, friendly and clean, no text on the cards; clean flat vector style, thick soft hand-drawn outlines, cheerful pastel palette (sky blue, navy, leaf green, coral) on a warm cream background, friendly rounded shapes, no letters, no numbers, no logos anywhere.",
+      "status": "done",
+      "caption": "自分たちで 作って いる サービスです。",
+      "refs": [],
+      "src": "/img/articles/kaisha_nextmake_shirabe/b21.webp"
     },
     {
       "kind": "paragraph",
-      "text": "むずかしい 日本語です。ぜんぶ わからなくて OK。ことばを 1つ、ひろって みましょう。"
+      "text": "お客さまの ために 作る 仕事と、自分たちで 作る サービスの 2つが あります。名前と ひとことは 「ホーム」の スライドに、くわしい 話は 「事業」の ページに あります。"
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "C 会社の 強み・つながり"
+    },
+    {
+      "kind": "paragraph",
+      "text": "会社が 得意な ことや、ほかの 会社と くらべた ときの 良い ところを 「強み」と 言います。"
+    },
+    {
+      "kind": "paragraph",
+      "text": "「ホーム」の まん中に 3つ ならんで います。グループの 会社の ことは 「グループ会社」の ページです。"
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "D 実績"
+    },
+    {
+      "kind": "image",
+      "prompt": "A flat illustration of a friendly office building in the centre with four soft curved lines reaching out to four rounded cards around it, each card holding a simple pictogram: a car, a group of small children, a delivery truck, and a town hall with a flag; warm and uncluttered, no text; clean flat vector style, thick soft hand-drawn outlines, cheerful pastel palette (sky blue, navy, leaf green, coral) on a warm cream background, friendly rounded shapes, no letters, no numbers, no logos anywhere.",
+      "status": "done",
+      "caption": "お客さまは、いろいろな ところです。",
+      "refs": [],
+      "src": "/img/articles/kaisha_nextmake_shirabe/b27.webp"
+    },
+    {
+      "kind": "paragraph",
+      "text": "会社も、役所も、団体も います。いつ・どんな 仕事を したかが、1つずつ 書いて あります。"
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "E 会社の 考えかた"
+    },
+    {
+      "kind": "paragraph",
+      "text": "MISSION・VISION・VALUES は、会社が たいせつに して いる ことばです。むずかしい 日本語ですが、書いて ある ことばを そのまま 見つければ だいじょうぶです。"
+    },
+    {
+      "kind": "paragraph",
+      "text": "MISSION は どの ページの いちばん 下にも あります。VALUES は 「会社紹介」の ページに 01から 06まで ならんで います。"
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "F Japanese IT Pathway"
+    },
+    {
+      "kind": "image",
+      "prompt": "A flat horizontal timeline on a cream strip: a soft thick line running left to right with seven round milestone dots of increasing size, the last part of the line blooming into five small rounded cards stacked close together to show a busy final year; tiny pictograms on the dots (a building, a handshake, a graduation cap); no text, no dates; clean flat vector style, thick soft hand-drawn outlines, cheerful pastel palette (sky blue, navy, leaf green, coral) on a warm cream background, friendly rounded shapes, no letters, no numbers, no logos anywhere.",
+      "status": "done",
+      "caption": "会社は、少しずつ 大きく なって きました。",
+      "refs": [],
+      "src": "/img/articles/kaisha_nextmake_shirabe/b33.webp"
+    },
+    {
+      "kind": "paragraph",
+      "text": "ここは、みなさんに とくに よく 調べて ほしい ところです。いつ 始まったか、何を 学ぶか、どんな サポートが あるかが 書いて あります。"
+    },
+    {
+      "kind": "image",
+      "prompt": "A flat organisation diagram: a rounded card with an office building at the top, an arrow down to a friendly Japanese project manager figure in the middle, an arrow down to three small student figures working at laptops at the bottom, and one curved arrow going back up from the students to the manager with a small speech bubble on it; clean and warm, no text; clean flat vector style, thick soft hand-drawn outlines, cheerful pastel palette (sky blue, navy, leaf green, coral) on a warm cream background, friendly rounded shapes, no letters, no numbers, no logos anywhere.",
+      "status": "done",
+      "caption": "学生の チームと、日本人の リーダー。上に 向かう 矢じるしが 「報告」です。",
+      "refs": [],
+      "src": "/img/articles/kaisha_nextmake_shirabe/b35.webp"
+    },
+    {
+      "kind": "paragraph",
+      "text": "プログラムを 終わった 学生が 中心に なる 仕事も、サイトに 書いて あります。そこで 何語で 報告するかも、さがして みて ください。"
     },
     {
       "kind": "heading",
@@ -351,26 +579,13 @@
     {
       "kind": "callout",
       "tone": "care",
-      "text": "本物の サイトは もっと むずかしい 日本語です。この ステージが おわってから、見て みたい 人は どうぞ。"
+      "text": "ほんものの サイトは もっと むずかしい 日本語です。この ステージが おわってから、見て みたい 人は どうぞ。"
     },
     {
       "kind": "extlink",
       "url": "https://nextmake.site/",
-      "label": "本物の サイト（上級）",
+      "label": "ほんものの サイト（上級）",
       "note": "あたらしい タブで ひらきます。いまは 見なくて だいじょうぶです。"
-    },
-    {
-      "kind": "heading",
-      "level": 2,
-      "text": "メモの しかた"
-    },
-    {
-      "kind": "paragraph",
-      "text": "💎「おもしろい！」を 1つ、メモします。かみでも、スマホの メモでも いいです。"
-    },
-    {
-      "kind": "paragraph",
-      "text": "その メモは、ヘンディさんへの ほうこくで つかいます。それから……社長にも 話すかも しれませんよ。"
     },
     {
       "kind": "vocab",
@@ -381,6 +596,11 @@
         "dounyuujitsuseki",
         "saiyo"
       ]
+    },
+    {
+      "kind": "callout",
+      "tone": "point",
+      "text": "ぜんぶ 書けなくて だいじょうぶです。書けた ところから、ヘンディさんに 報告しましょう。"
     }
   ]
 }

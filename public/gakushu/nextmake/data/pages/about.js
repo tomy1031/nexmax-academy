@@ -221,12 +221,18 @@ export const ABOUT = {
       kind: "heading",
       text: { n4: "グループの 会社", n3: "グループ企業", en: "Group company" },
     },
+    /*
+     * オフィスは **ベトナムだけ**。`group.js` の 表（「オフィスの 場所: ベトナム（ホーチミン）」）が 正で、
+     * 2026-08-23 の 是正が この ページにだけ 当たって いなかった（前は「大阪に 本社が あって」と
+     * 書いて いた）。調査シートの「その 会社は どこの国に オフィスが ありますか」が ここに 当たる ので、
+     * 2つの ページで 答えが ちがうと 採点できない。
+     */
     {
       kind: "paragraph",
       text: {
-        n4: "CONTINUE LLC.（コンティニュー）は、ネクストメイクの グループの 会社です。大阪に 本社が あって、ベトナムにも オフィスが あります。",
-        n3: "CONTINUE LLC.（コンティニュー）はネクストメイクのグループ企業です。大阪に本社を置き、ベトナムにも拠点があります。",
-        en: "CONTINUE LLC. is a NEXT MAKE group company. Its head office is in Osaka, and it also has an office in Vietnam.",
+        n4: "CONTINUE LLC.（コンティニュー）は、ネクストメイクの グループの 会社です。オフィスは ベトナムに あります。",
+        n3: "CONTINUE LLC.（コンティニュー）はネクストメイクのグループ企業です。拠点はベトナムにあります。",
+        en: "CONTINUE LLC. is a NEXT MAKE group company. Its office is in Vietnam.",
       },
     },
     {

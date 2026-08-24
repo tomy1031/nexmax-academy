@@ -1,5 +1,13 @@
 import { expect, test } from "@playwright/test";
-import { KAISHA, itemsBefore, readOn, seedCompleted, seedGeminiKey, shot } from "./helpers";
+import {
+  KAISHA,
+  foundText,
+  itemsBefore,
+  readOn,
+  seedCompleted,
+  seedGeminiKey,
+  shot,
+} from "./helpers";
 
 /**
  * 対話ゲームの **AIが 効いて いる ところ**を 1往復だけ 見る（願い #177）
@@ -67,7 +75,7 @@ test.describe("対話ゲームの AI（鍵が あるときだけ）", () => {
      */
     await expect(page.getByText(/を みつけました！/)).toBeVisible();
     await page.getByRole("button", { name: "つぎへ ▶" }).click();
-    await expect(page.getByText("おもしろい 1 / 5")).toBeVisible();
+    await expect(page.getByText(foundText(1))).toBeVisible();
     await readOn(page);
     await answer("NMClaw は、はなすだけで まとまるから すごいと 思いました。");
     await page.getByRole("button", { name: "つぎへ ▶" }).click();

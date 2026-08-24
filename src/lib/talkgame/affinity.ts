@@ -64,6 +64,20 @@ export const NO_OBSERVATIONS: TalkObservations = {
  * 企業調査の 核心が「他の 会社と ちがう、その 会社の おもしろい ところ」だから
  *（2026-08-14 の 指定・docs/constraints.md）。
  * 聞く ばんは「しつもんの 形（question）」が いちばん 重い——聞けた ことが 目あて。
+ *
+ * ## 0点に するのは「その ばんで やって いない こと」だけ
+ * その ばんで **学習者が する ことに なって いる 観点は、必ず 1点 以上**に する
+ *（2026-08-24 の 指定「ていねいに 言えたのに 好感度が 動かない」）。見て いるのに
+ * 効かない 観点が あると、学習者は 内訳を 見て「やったのに 増えない」と 受け取る。
+ *
+ * 逆に、**その ばんで やって いない ことには 点を 置かない**。答える ばんに
+ * `question` の 点を 置くと、答えた だけの ターンに「しつもんの 形に なって いない ✗」が
+ * 並ぶ——やって いない ことを 責める 形に なる（規律1・`judgedAs` の 覚書と 同じ 事故）。
+ * だから 答える ばんは `question` を、聞く ばんは `reason` と `feeling` を 0 の まま 残す。
+ *
+ * 聞く ばんの `concrete` に 点が あるのは、**調べたから こそ 出て きた しつもん**を
+ * 数える ため（サービス名・出来事・数に 触れた しつもん）。ばくぜんと した しつもんとの
+ * 差が ここに 出る。
  */
 export const TALK_POINTS: Readonly<Record<keyof TalkObservations, number>> = {
   japanese: 2,
@@ -71,14 +85,14 @@ export const TALK_POINTS: Readonly<Record<keyof TalkObservations, number>> = {
   concrete: 3,
   reason: 3,
   feeling: 2,
-  polite: 0,
+  polite: 1,
   question: 0,
 };
 
 export const LISTEN_POINTS: Readonly<Record<keyof TalkObservations, number>> = {
   japanese: 1,
   onTopic: 3,
-  concrete: 0,
+  concrete: 2,
   reason: 0,
   feeling: 0,
   polite: 2,

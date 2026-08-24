@@ -655,6 +655,15 @@ function WordBank({
             type="button"
             disabled={disabled}
             onClick={() => place(word)}
+            /*
+             * 読み上げに 渡す 名前は **ルビを 合成する 前の ことば**。
+             *
+             * 中身は `RubyText` なので、名前を そのままに すると
+             *「観光かんこうDX」「2023年ねん10月がつ」のように 読みが 割りこんだ 名前に なる。
+             * 画面で 読む ぶんには ふりがなが 要るが、**耳で 聞く 人には 邪魔**で、
+             * 名前で 引く 検証も 当たらなく なる（tests/e2e/toshi.spec.ts 冒頭の 覚書と 同じ 罠）。
+             */
+            aria-label={word}
             className="btn-island btn-game px-4 py-2 text-sm"
             style={
               {
