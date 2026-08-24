@@ -42,7 +42,7 @@ import {
  */
 
 /** もんだい1「しらべかたの かくにん」の 正しい選択肢の位置（content/quizsets/kaisha_shirabekata_check.json）。 */
-const CHECK_ANSWERS = [0, 2, 1, 0, 0];
+const CHECK_ANSWERS = [0, 1, 0, 1, 0];
 
 /**
  * 「ちょうさシート」の 語群の答え（content/quizsets/kaisha_houkoku.json）。
@@ -145,7 +145,7 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
     await list.first().click();
   });
 
-  await test.step("2. ページ「かいしゃの しらべかた」— 🔊 と ことばチップ", async () => {
+  await test.step("2. ページ「ちょうさシートを うめよう」— 🔊 と ことばチップ", async () => {
     await expect(page).toHaveURL(/article-kaisha_shirabekata$/);
 
     // 読み上げは 本文にも かじょうがきにも 付いている（音に 逃げる 道を ふさがない）
@@ -162,7 +162,7 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
     await frameNext(page).click();
   });
 
-  await test.step("3. もんだい「しらべかたの かくにん」— 6問", async () => {
+  await test.step("3. もんだい「きょう する ことの かくにん」— 6問", async () => {
     await expect(page).toHaveURL(/quiz-kaisha_shirabekata_check$/);
     await page.getByRole("button", { name: "はじめる" }).click();
 
@@ -171,8 +171,8 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
       await choiceButtons(page).nth(answer).click();
       await goNext(page);
     }
-    // さいごは 複数えらぶ（3つの目＋💎）
-    for (const index of [0, 1, 2, 3]) await multiButtons(page).nth(index).click();
+    // さいごは 複数えらぶ（サイトを 見ながら 書いて よい ことの かくにん）
+    for (const index of [0, 1, 2]) await multiButtons(page).nth(index).click();
     await goToConfirm(page);
     await submitAnswers(page);
 

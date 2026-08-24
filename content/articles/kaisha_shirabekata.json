@@ -1,96 +1,124 @@
 {
   "kind": "article",
   "id": "kaisha_shirabekata",
-  "title": "かいしゃの しらべかた",
-  "description": "ヘンディさんから ミッションが 来ました。会社の 調べかたを おぼえましょう。",
+  "title": "ちょうさシートを うめよう",
+  "description": "ヘンディさんから ミッションが 来ました。きょう する ことを 見て おきましょう。",
   "furigana": [
-    [
-      "松井社長",
-      "まついしゃちょう"
-    ],
-    [
-      "社長",
-      "しゃちょう"
-    ],
-    [
-      "紹介",
-      "しょうかい"
-    ],
-    [
-      "報告",
-      "ほうこく"
-    ],
-    [
-      "海外",
-      "かいがい"
-    ],
-    [
-      "辞典",
-      "じてん"
-    ],
-    [
-      "教育",
-      "きょういく"
-    ],
-    [
-      "会社紹介",
-      "かいしゃしょうかい"
-    ],
-    [
-      "カンボジア教育",
-      "かんぼじあきょういく"
-    ],
     [
       "会社概要",
       "かいしゃがいよう"
-    ],
-    [
-      "導入実績",
-      "どうにゅうじっせき"
-    ],
-    [
-      "受託開発",
-      "じゅたくかいはつ"
-    ],
-    [
-      "自社開発",
-      "じしゃかいはつ"
-    ],
-    [
-      "客先常駐",
-      "きゃくさきじょうちゅう"
     ],
     [
       "経営理念",
       "けいえいりねん"
     ],
     [
-      "面接",
-      "めんせつ"
+      "導入実績",
+      "どうにゅうじっせき"
     ],
     [
-      "会社",
-      "かいしゃ"
+      "沿革",
+      "えんかく"
     ],
     [
-      "日本",
-      "にほん"
-    ],
-    [
-      "事業",
-      "じぎょう"
-    ],
-    [
-      "実績",
-      "じっせき"
+      "採用",
+      "さいよう"
     ],
     [
       "理念",
       "りねん"
     ],
     [
+      "概要",
+      "がいよう"
+    ],
+    [
+      "電話",
+      "でんわ"
+    ],
+    [
+      "練習",
+      "れんしゅう"
+    ],
+    [
+      "確認",
+      "かくにん"
+    ],
+    [
+      "一度",
+      "いちど"
+    ],
+    [
+      "松井社長",
+      "まついしゃちょう"
+    ],
+    [
+      "会社紹介",
+      "かいしゃしょうかい"
+    ],
+    [
+      "会社",
+      "かいしゃ"
+    ],
+    [
+      "社長",
+      "しゃちょう"
+    ],
+    [
       "仕事",
       "しごと"
+    ],
+    [
+      "実績",
+      "じっせき"
+    ],
+    [
+      "事業",
+      "じぎょう"
+    ],
+    [
+      "報告",
+      "ほうこく"
+    ],
+    [
+      "情報",
+      "じょうほう"
+    ],
+    [
+      "意味",
+      "いみ"
+    ],
+    [
+      "基本",
+      "きほん"
+    ],
+    [
+      "来週",
+      "らいしゅう"
+    ],
+    [
+      "自分",
+      "じぶん"
+    ],
+    [
+      "日本語",
+      "にほんご"
+    ],
+    [
+      "日本人",
+      "にほんじん"
+    ],
+    [
+      "日本",
+      "にほん"
+    ],
+    [
+      "英語",
+      "えいご"
+    ],
+    [
+      "辞典",
+      "じてん"
     ],
     [
       "場所",
@@ -101,124 +129,340 @@
       "なまえ"
     ],
     [
-      "自分",
-      "じぶん"
+      "海外",
+      "かいがい"
     ],
     [
-      "違",
-      "ちが"
+      "学生",
+      "がくせい"
     ],
     [
-      "他",
-      "ほか"
+      "得意",
+      "とくい"
     ],
     [
-      "見",
-      "み"
+      "団体",
+      "だんたい"
     ],
     [
-      "知",
-      "し"
+      "役所",
+      "やくしょ"
     ],
     [
-      "客",
-      "きゃく"
+      "中心",
+      "ちゅうしん"
     ],
     [
-      "人",
-      "ひと"
+      "道具",
+      "どうぐ"
     ],
     [
-      "気",
-      "き"
+      "手段",
+      "しゅだん"
     ],
     [
-      "年",
-      "とし"
+      "上級",
+      "じょうきゅう"
     ],
     [
-      "新",
-      "あたら"
+      "一つ",
+      "ひとつ"
     ],
     [
-      "中",
-      "なか"
+      "文",
+      "ぶん"
     ],
     [
-      "話",
-      "はな"
-    ],
-    [
-      "書",
-      "か"
+      "何",
+      "なに"
     ],
     [
       "作",
       "つく"
     ],
     [
-      "前",
-      "まえ"
+      "出",
+      "だ"
     ],
     [
-      "目",
-      "め"
-    ],
-    [
-      "数",
-      "かず"
-    ],
-    [
-      "言",
-      "い"
-    ],
-    [
-      "強",
-      "つよ"
-    ],
-    [
-      "同",
-      "おな"
-    ],
-    [
-      "入",
-      "はい"
-    ],
-    [
-      "来",
-      "き"
-    ],
-    [
-      "聞",
-      "き"
-    ],
-    [
-      "思",
-      "おも"
-    ],
-    [
-      "大切",
-      "たいせつ"
-    ],
-    [
-      "調",
-      "しら"
-    ],
-    [
-      "方",
-      "かた"
-    ],
-    [
-      "覚",
-      "おぼ"
+      "分",
+      "わ"
     ],
     [
       "始",
       "はじ"
     ],
     [
+      "強",
+      "つよ"
+    ],
+    [
+      "思",
+      "おも"
+    ],
+    [
+      "書",
+      "か"
+    ],
+    [
+      "正",
+      "ただ"
+    ],
+    [
+      "考",
+      "かんが"
+    ],
+    [
+      "見",
+      "み"
+    ],
+    [
+      "話",
+      "はな"
+    ],
+    [
+      "調",
+      "しら"
+    ],
+    [
       "長",
       "なが"
+    ],
+    [
+      "中",
+      "なか"
+    ],
+    [
+      "先",
+      "さき"
+    ],
+    [
+      "前",
+      "まえ"
+    ],
+    [
+      "同",
+      "おな"
+    ],
+    [
+      "向",
+      "む"
+    ],
+    [
+      "外",
+      "がい"
+    ],
+    [
+      "大",
+      "おお"
+    ],
+    [
+      "学",
+      "まな"
+    ],
+    [
+      "客",
+      "きゃく"
+    ],
+    [
+      "少",
+      "すこ"
+    ],
+    [
+      "年",
+      "ねん"
+    ],
+    [
+      "度",
+      "ど"
+    ],
+    [
+      "心",
+      "こころ"
+    ],
+    [
+      "所",
+      "ところ"
+    ],
+    [
+      "手",
+      "て"
+    ],
+    [
+      "方",
+      "かた"
+    ],
+    [
+      "日",
+      "ひ"
+    ],
+    [
+      "早",
+      "はや"
+    ],
+    [
+      "本",
+      "ほん"
+    ],
+    [
+      "生",
+      "う"
+    ],
+    [
+      "町",
+      "まち"
+    ],
+    [
+      "矢",
+      "や"
+    ],
+    [
+      "社",
+      "しゃ"
+    ],
+    [
+      "終",
+      "お"
+    ],
+    [
+      "自",
+      "じ"
+    ],
+    [
+      "良",
+      "よ"
+    ],
+    [
+      "表",
+      "ひょう"
+    ],
+    [
+      "言",
+      "い"
+    ],
+    [
+      "語",
+      "ご"
+    ],
+    [
+      "読",
+      "よ"
+    ],
+    [
+      "人",
+      "ひと"
+    ],
+    [
+      "会",
+      "かい"
+    ],
+    [
+      "体",
+      "からだ"
+    ],
+    [
+      "具",
+      "ぐ"
+    ],
+    [
+      "典",
+      "てん"
+    ],
+    [
+      "切",
+      "き"
+    ],
+    [
+      "介",
+      "かい"
+    ],
+    [
+      "消",
+      "け"
+    ],
+    [
+      "実",
+      "じつ"
+    ],
+    [
+      "味",
+      "あじ"
+    ],
+    [
+      "意",
+      "い"
+    ],
+    [
+      "情",
+      "じょう"
+    ],
+    [
+      "告",
+      "こく"
+    ],
+    [
+      "事",
+      "こと"
+    ],
+    [
+      "仕",
+      "し"
+    ],
+    [
+      "基",
+      "き"
+    ],
+    [
+      "績",
+      "せき"
+    ],
+    [
+      "井",
+      "い"
+    ],
+    [
+      "松",
+      "まつ"
+    ],
+    [
+      "段",
+      "だん"
+    ],
+    [
+      "上",
+      "うえ"
+    ],
+    [
+      "下",
+      "した"
+    ],
+    [
+      "来",
+      "き"
+    ],
+    [
+      "道",
+      "みち"
+    ],
+    [
+      "答",
+      "こた"
+    ],
+    [
+      "覚",
+      "おぼ"
+    ],
+    [
+      "閉",
+      "と"
+    ],
+    [
+      "聞",
+      "き"
+    ],
+    [
+      "埋",
+      "う"
     ]
   ],
   "blocks": [
@@ -229,10 +473,9 @@
     },
     {
       "kind": "image",
-      "prompt": "A friendly cartoon senior engineer in a light blue button-down shirt, sleeves rolled to the elbow, smiling and holding out a blank clipboard checklist with both hands toward the viewer, as if handing it over; a small office desk with a laptop behind him; clean flat vector style, thick soft hand-drawn outlines, cheerful pastel palette (sky blue, navy, leaf green, coral) on a warm cream background, friendly rounded shapes, no letters, no numbers, no logos anywhere.",
-      "status": "done",
       "caption": "ヘンディさんが、ちょうさシートを わたして くれました。",
       "refs": [],
+      "status": "done",
       "src": "/img/articles/kaisha_shirabekata/b1.webp"
     },
     {
@@ -241,152 +484,25 @@
     },
     {
       "kind": "paragraph",
-      "text": "きょうは、会社の 調べかたを おしえます。"
+      "text": "「ネクストメイクは どんな 会社か、しらべて みて ください。」"
     },
     {
       "kind": "paragraph",
-      "text": "そのあと、ほんものの サイトで ちょうさシートを うめます。"
+      "text": "「来週の ミーティングで、わたしに おしえて くださいね。」"
     },
     {
       "kind": "heading",
       "level": 2,
-      "text": "どうして 調べますか"
-    },
-    {
-      "kind": "image",
-      "prompt": "A job interview scene seen from the side: a young student sitting on one side of a small table speaking confidently, and two interviewers on the other side nodding and smiling; a speech bubble above the student containing a simple drawing of an office building, not text; clean flat vector style, thick soft hand-drawn outlines, cheerful pastel palette (sky blue, navy, leaf green, coral) on a warm cream background, friendly rounded shapes, no letters, no numbers, no logos anywhere.",
-      "status": "done",
-      "caption": "面接でも、会社の ことを 聞かれます。",
-      "refs": [],
-      "src": "/img/articles/kaisha_shirabekata/b6.webp"
+      "text": "きょうの ゴール"
     },
     {
       "kind": "paragraph",
-      "text": "日本の 会社に 入る 前に、みんな 会社を しらべます。面接（interview）でも 聞かれます。"
+      "text": "Webサイトに 書いて ある 正しい 情報を 見つける ことが ゴールです。"
     },
     {
       "kind": "callout",
       "tone": "point",
-      "text": "「Webサイトに 書いて ありました」と 言える 人の 話は、聞く 人に とどきます。"
-    },
-    {
-      "kind": "vocab",
-      "wordIds": [
-        "kaishagaiyou",
-        "jigyo",
-        "jisseki",
-        "rinen"
-      ]
-    },
-    {
-      "kind": "heading",
-      "level": 2,
-      "text": "会社を 見る 3つの 目"
-    },
-    {
-      "kind": "paragraph",
-      "text": "3つの しつもんを もって 見ると、まよいません。"
-    },
-    {
-      "kind": "list",
-      "items": [
-        "なにを 作る 会社ですか",
-        "お客さまは だれですか",
-        "どんな 人が はたらいて いますか"
-      ]
-    },
-    {
-      "kind": "image",
-      "prompt": "a simple flat illustration of three friendly cartoon eyes in a row on a soft cream card, each eye inside a rounded pastel circle (mint, sky blue, coral); clean vector style, thick soft outlines, no letters anywhere. clean flat vector style, thick soft hand-drawn outlines, cheerful pastel palette (sky blue, navy, leaf green, coral) on a warm cream background, friendly rounded shapes, no letters, no numbers, no logos anywhere.",
-      "status": "done",
-      "caption": "3つの 目で 見ます。",
-      "refs": [],
-      "src": "/img/articles/kaisha_shirabekata/b13.webp"
-    },
-    {
-      "kind": "heading",
-      "level": 2,
-      "text": "どの ページを 見ますか"
-    },
-    {
-      "kind": "image",
-      "prompt": "A flat overhead diagram of a website map: one large rounded card at the top connected by thin curved lines to seven smaller rounded cards arranged below in two rows; each small card shows a simple pictogram instead of text - an office building, a calendar, a wrench, a lightbulb, a handshake, a globe, a graduation cap; pastel card colors; clean flat vector style, thick soft hand-drawn outlines, cheerful pastel palette (sky blue, navy, leaf green, coral) on a warm cream background, friendly rounded shapes, no letters, no numbers, no logos anywhere.",
-      "status": "done",
-      "caption": "サイトには ページが たくさん あります。",
-      "refs": [],
-      "src": "/img/articles/kaisha_shirabekata/b15.webp"
-    },
-    {
-      "kind": "list",
-      "items": [
-        "ホーム … 会社の ぜんたい",
-        "会社紹介 … できた 年・場所・たいせつな ことば",
-        "つくる仕事 … お客さまの ために 作る もの",
-        "事業 … 自分たちで 作る サービス",
-        "実績 … お客さまの 名前",
-        "グループ会社 … 海外の チーム",
-        "カンボジア教育 … みなさんの プログラム",
-        "ことばの辞典 … わからない ことばを さがす"
-      ]
-    },
-    {
-      "kind": "heading",
-      "level": 2,
-      "text": "3つの はたらきかた"
-    },
-    {
-      "kind": "paragraph",
-      "text": "はたらきかたは、だいたい 3つ あります。「だれの ために 作るか」で わかれます。"
-    },
-    {
-      "kind": "image",
-      "prompt": "a simple flat infographic-style illustration with three rounded pastel panels side by side: (1) a small friendly office building handing a gift box to a smiling customer figure with an arrow pointing to the customer, (2) a small office building holding its own gift box with a heart above it, (3) a small worker figure walking with a laptop bag from one building into a bigger different-colored building; clean vector style, thick soft outlines, cheerful pastel palette, no letters or numbers anywhere. clean flat vector style, thick soft hand-drawn outlines, cheerful pastel palette (sky blue, navy, leaf green, coral) on a warm cream background, friendly rounded shapes, no letters, no numbers, no logos anywhere.",
-      "status": "done",
-      "caption": "① お客さまの ために 作る ② 自分の 会社の ものを 作る ③ お客さまの 会社の 中で はたらく",
-      "refs": [],
-      "src": "/img/articles/kaisha_shirabekata/b19.webp"
-    },
-    {
-      "kind": "list",
-      "items": [
-        "受託開発 … お客さまの ものを 作ります",
-        "自社開発 … 自分の 会社の ものを 作ります",
-        "客先常駐 … お客さまの 会社の 中で はたらきます"
-      ]
-    },
-    {
-      "kind": "paragraph",
-      "text": "客先常駐は、SES（System Engineering Service）とも 言います。日本の ITの ことばです。"
-    },
-    {
-      "kind": "paragraph",
-      "text": "1つの 会社が、はたらきかたを 2つ もつ ことも あります。"
-    },
-    {
-      "kind": "callout",
-      "tone": "point",
-      "text": "ぜんぶ おぼえなくて だいじょうぶです。「だれの ために 作るか」だけ、おぼえて おきましょう。"
-    },
-    {
-      "kind": "heading",
-      "level": 2,
-      "text": "会社の つながり"
-    },
-    {
-      "kind": "image",
-      "prompt": "A simple flat relationship diagram: one larger rounded card in the centre with a small office building pictogram, connected by two thick soft curved lines to two smaller rounded cards on the left and right, each with its own small building pictogram and a tiny location pin above it; friendly and uncluttered, no text labels; clean flat vector style, thick soft hand-drawn outlines, cheerful pastel palette (sky blue, navy, leaf green, coral) on a warm cream background, friendly rounded shapes, no letters, no numbers, no logos anywhere.",
-      "status": "done",
-      "caption": "1つの 会社だけで 仕事を して いる わけでは ありません。",
-      "refs": [],
-      "src": "/img/articles/kaisha_shirabekata/b25.webp"
-    },
-    {
-      "kind": "paragraph",
-      "text": "グループの 会社や、いっしょに 仕事を する 会社が あります。"
-    },
-    {
-      "kind": "paragraph",
-      "text": "だから 「この 会社は、どこと つながって いますか」も、しらべる ときの 目に なります。"
+      "text": "まだ 「自分は どう 思う？」は 考えなくて だいじょうぶです。それは あとの ばんです。"
     },
     {
       "kind": "heading",
@@ -395,16 +511,15 @@
     },
     {
       "kind": "image",
-      "prompt": "A four-panel horizontal journey illustration on one cream strip, panels separated by soft rounded arrows: (1) a student looking at a laptop screen, (2) the same student writing on a clipboard, (3) the student in a video call with a smiling senior engineer, (4) the student sitting across a desk from a friendly older company president; simple, warm, no text; clean flat vector style, thick soft hand-drawn outlines, cheerful pastel palette (sky blue, navy, leaf green, coral) on a warm cream background, friendly rounded shapes, no letters, no numbers, no logos anywhere.",
-      "status": "done",
       "caption": "調べる → 書く → 報告する → 社長と 話す。",
       "refs": [],
-      "src": "/img/articles/kaisha_shirabekata/b29.webp"
+      "status": "done",
+      "src": "/img/articles/kaisha_shirabekata/b9.webp"
     },
     {
       "kind": "steps",
       "items": [
-        "会社の サイトを 見る",
+        "ネクストメイクの サイトを 見る",
         "ちょうさシートに 書く",
         "ヘンディさんに 報告する",
         "松井社長と 話す"
@@ -414,6 +529,56 @@
       "kind": "callout",
       "tone": "point",
       "text": "さいごは 社長と 話します。じゅんびは、ここから 始まって います。"
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "ちょうさシートの 中み"
+    },
+    {
+      "kind": "image",
+      "caption": "ちょうさシートは 6つの ブロックに 分かれて います。",
+      "refs": [],
+      "status": "done",
+      "src": "/img/articles/kaisha_shirabekata/b13.webp"
+    },
+    {
+      "kind": "list",
+      "items": [
+        "A 会社の 基本 … いつ・だれが・どこ",
+        "B 会社の 仕事 … 何を 作って いるか",
+        "C 会社の 強み・つながり … ほかの 会社と ちがう ところ",
+        "D 実績 … だれの ために 作ったか",
+        "E 会社の 考えかた … たいせつに して いる ことば",
+        "F Japanese IT Pathway … みなさんの プログラム"
+      ]
+    },
+    {
+      "kind": "callout",
+      "tone": "care",
+      "text": "ぜんぶ 書けなくて だいじょうぶです。書けた ところから 出しましょう。"
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "よく 出て くる ことば"
+    },
+    {
+      "kind": "paragraph",
+      "text": "サイトにも ちょうさシートにも、この ことばが 出て きます。タップすると 意味が 見られます。"
+    },
+    {
+      "kind": "paragraph",
+      "text": "たとえば 「事業」や 「実績」は、サイトの ページの 名前に なって います。"
+    },
+    {
+      "kind": "vocab",
+      "wordIds": [
+        "kaishagaiyou",
+        "jigyo",
+        "jisseki",
+        "rinen"
+      ]
     }
   ]
 }

@@ -122,8 +122,8 @@ test("出す まえに かくにんして、出すと 自分の こたえと 正
   // けっか: 自分の こたえと 正解が 並び、せつめいも 読める
   await expect(page.getByText("ぜんぶの こたえ")).toBeVisible();
   await expect(page.getByText("あなたの こたえ").first()).toBeVisible();
-  // 1文字ずつ ルビが 入る 語（客きゃく先さき…）なので、あいだを 空けて さがす
-  await expect(page.getByText(/客.*先.*常.*駐/).first()).toBeVisible();
+  // 正解が 画面に 並ぶ。ルビが 合成されるので、**ふりがなの 入らない ところ**で さがす
+  await expect(page.getByText(/そのあとの ばん/).first()).toBeVisible();
   await expect(page.getByText(/正解/).first()).toBeVisible();
   // ルビが 合成されるので「書かいて」に なる。ふりがなの 入らない ところで さがす
   await expect(page.getByText(/いて いません/).first()).toBeVisible();
