@@ -226,18 +226,6 @@ export const CAMBODIA = {
       },
     },
     {
-      kind: "callout",
-      tone: "point",
-      text: {
-        // 「会社の サイトに みなさんの 名前が のって います」は **書かない**
-        //（2026-08-23 の 指定）。本当に 名前が 出るとは 限らず、探して 見つからない
-        // 学習者が いちばん 傷つく。
-        n4: "この ページに 書いて ある 学生は、みなさんの 先輩や 同級生です。",
-        n3: "このページに登場する学生は、みなさんの先輩や同級生です。",
-        en: "The students on this page are your classmates and seniors.",
-      },
-    },
-    {
       kind: "link",
       to: "services",
       label: {

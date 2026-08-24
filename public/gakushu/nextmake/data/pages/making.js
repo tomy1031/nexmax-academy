@@ -151,14 +151,5 @@ export const MAKING = {
         { n4: "そのあとも 直す", n3: "保守・運用", en: "Maintenance" },
       ],
     },
-    {
-      kind: "callout",
-      tone: "point",
-      text: {
-        n4: "しごとの ながれの 中に「報告」が あります。作って いる とちゅうで、今 どこまで 進んだかを お客さまに 伝えます。",
-        n3: "仕事の流れの中に「報告」があります。開発の途中で、どこまで進んでいるかをお客さまに伝えます。",
-        en: '"Reporting" is one of the steps. While we build, we tell the client how far we have come.',
-      },
-    },
   ],
 };

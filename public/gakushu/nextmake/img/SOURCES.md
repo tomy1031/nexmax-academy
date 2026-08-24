@@ -4,7 +4,7 @@
 
 ## 借りて いる 根拠
 
-すべて **株式会社ネクストメイク 自身の Web サイト**（<https://nextmake.site/>）の 素材で、
+すべて **株式会社ネクストメイク と グループ会社 CONTINUE LLC. 自身の Web サイト**（<https://nextmake.site/>・<https://continue.vn/>）の 素材で、
 **同社の 学習教材として 使う** 許可を 2026-08-23 にユーザー（tomy1031）から得ている
 （「画像素材は nextmake の web サイトのものを そのまま つかって OK。同じ会社なので」
 「DL して使う」。人物が写ったものを含めてよい、も同日に確認ずみ）。
@@ -66,12 +66,13 @@ cwebp -quiet -q 78 /tmp/x.png -o public/gakushu/nextmake/img/<name>.webp
 
 ### ページの 中の 絵
 
-| ファイル                | 使う ところ              | 元の URL                                           |
-| ----------------------- | ------------------------ | -------------------------------------------------- |
-| `honmachi.webp`         | 会社紹介（本社ビル）     | `/wp-content/uploads/2025/12/honmachi2.jpg`        |
-| `pathway_signing.webp`  | カンボジア教育（調印式） | `T/future/jp_pathway_1.webp`（中身は JPEG）        |
-| `pathway_class.webp`    | カンボジア教育（教室）   | `T/cambodia/cambo-third/cambo-third_auppclass.png` |
-| `pathway_students.webp` | カンボジア教育（学生）   | `T/future/jp-pathway-2-optimized.webp`             |
+| ファイル                | 使う ところ              | 元の URL                                                             |
+| ----------------------- | ------------------------ | -------------------------------------------------------------------- |
+| `honmachi.webp`         | 会社紹介（本社ビル）     | `/wp-content/uploads/2025/12/honmachi2.jpg`                          |
+| `pathway_signing.webp`  | カンボジア教育（調印式） | `T/future/jp_pathway_1.webp`（中身は JPEG）                          |
+| `pathway_class.webp`    | カンボジア教育（教室）   | `T/cambodia/cambo-third/cambo-third_auppclass.png`                   |
+| `pathway_students.webp` | カンボジア教育（学生）   | `T/future/jp-pathway-2-optimized.webp`                               |
+| `boo.webp`              | グループ会社（Boo）      | <https://continue.vn/wp-content/uploads/2025/08/IMG_3335-scaled.jpg> |
 
 この 3枚は **作った 絵では なく 本当の 写真**。年表の 出来事に 顔と 場所が つくと、
 学習者は「よその 会社の 話」では なく 自分の 学校で 起きた こととして 読める。

@@ -198,6 +198,7 @@ function canHover() {
 let openTip = null;
 
 function closeTip() {
+  openTip?.parentElement?.setAttribute("aria-describedby", "");
   openTip?.remove();
   openTip = null;
 }
@@ -213,6 +214,8 @@ function showTip(anchor, item) {
   const tip = document.createElement("span");
   tip.className = "gloss-tip";
   tip.setAttribute("role", "note");
+  tip.id = `gloss-tip-${(showTip.seq = (showTip.seq ?? 0) + 1)}`;
+  anchor.setAttribute("aria-describedby", tip.id);
 
   const head = el("span", "gloss-tip-term");
   head.append(ruby(item.term));
@@ -267,7 +270,14 @@ function glossMark(item, segments) {
   const mark = document.createElement("span");
   mark.className = "gloss-mark";
   mark.tabIndex = 0;
-  mark.setAttribute("role", "button");
+  /*
+   * `role="button"` は 付けない。押すと 何かが 起きる ものでは なく、
+   * **意味の 説明が ついた ことば**なので、読み上げは
+   *「ボタン」では なく 説明の 中身を 読むべき。ページに 100個を 超える
+   * 印が 出る ので、全部 ボタンと 名のると ボタンの 一覧が 使い物に ならなく なる。
+   * 開いて いる 間だけ `aria-describedby` で 吹き出しに つなぐ。
+   */
+  mark.setAttribute("aria-describedby", "");
   // 本文の かたまりを そのまま 使う（読みを 組み直すと、そこだけ 切れかたが 変わる）
   mark.append(segmentsFragment(segments));
 
@@ -303,19 +313,36 @@ function glossMark(item, segments) {
   return mark;
 }
 
+/** 印を さがす ときに つなぐ かたまりの 数と、字の 長さの 上限。 */
+const GLOSS_MAX_SEGMENTS = 12;
+const GLOSS_MAX_LENGTH = Math.max(...GLOSS.map((word) => word.term.length), 1);
+
+/**
+ * 分かち書きの 空白を 落として くらべる ための 形。
+ *
+ * やさしい日本語は 読みやすさの ために 語の 間に 空白を 入れる（「今の まま」）。
+ * 辞典の 見出しは 空白を 持たない ので、そのまま くらべると
+ * **やさしい日本語の ときだけ 引けない** ことに なる——いちばん 助けが 要る
+ * 読み手が いちばん 引けない、という 逆の ことが 起きる。
+ */
+function bare(text) {
+  return text.replace(/\s+/gu, "");
+}
+
+/** 見出しを 空白ぬきの 形で 引けるように しておく。 */
+const GLOSS_BY_BARE = new Map();
+for (const word of GLOSS) {
+  const key = bare(word.term);
+  if (!GLOSS_BY_BARE.has(key)) GLOSS_BY_BARE.set(key, word);
+}
+
 /**
  * 本文 1つぶんの 断片を 作る。ルビを 振り、**辞典に ある 語には 印**を 付ける。
  *
- * 印は **同じ 語なら そのページで 1回だけ**。「会社」は 1ページに 何十回も 出るので、
- * 全部に 点線を 引くと ページが 点線だらけに なり、どれが 助けか 分からなく なる
- *（アプリ側の「1文につき 下線は 1語だけ」と 同じ ねらい）。
+ * 印は **出る たびに 付ける**（2026-08-24 の 指定）。前は 1ページに 1回だけに して
+ * いたが、学習者は ページを 上から 順に 読むとは 限らない——途中から 読み始めた 人に
+ * とっては「その 語は 前に 出た から もう 引けません」と 言われて いるのと 同じ。
  */
-const glossShown = new Set();
-
-/** 印を さがす ときに つなぐ かたまりの 数と、字の 長さの 上限。 */
-const GLOSS_MAX_SEGMENTS = 8;
-const GLOSS_MAX_LENGTH = Math.max(...GLOSS.map((word) => word.term.length), 1);
-
 function glossRuby(text) {
   const segments = segmentsOf(text);
   const fragment = document.createDocumentFragment();
@@ -337,14 +364,21 @@ function glossRuby(text) {
     let hit = null;
     let span = 0;
     let joined = "";
-    for (let n = 0; n < GLOSS_MAX_SEGMENTS && i + n < segments.length; n += 1) {
-      joined += segments[i + n].text;
-      if (joined.length > GLOSS_MAX_LENGTH) break;
-      const item = GLOSS.find((word) => !glossShown.has(word.term) && word.term === joined);
-      // 長い ほうを 採る（「会社」より 「株式会社」）ので、見つけても 打ち切らない
-      if (item) {
-        hit = item;
-        span = n + 1;
+    // 空白から 始まる 印は 作らない。点線が 語の 前の すきまから 始まって
+    // 「どこからが その 語か」が ぼやける（空白を 飛ばして くらべる ように した
+    // ときに 出た）。おわりも 同じ。
+    const isSpace = (segment) => !bare(segment.text);
+    if (!isSpace(segments[i])) {
+      for (let n = 0; n < GLOSS_MAX_SEGMENTS && i + n < segments.length; n += 1) {
+        joined += segments[i + n].text;
+        if (bare(joined).length > GLOSS_MAX_LENGTH) break;
+        if (isSpace(segments[i + n])) continue;
+        const item = GLOSS_BY_BARE.get(bare(joined));
+        // 長い ほうを 採る（「会社」より 「株式会社」）ので、見つけても 打ち切らない
+        if (item) {
+          hit = item;
+          span = n + 1;
+        }
       }
     }
     if (!hit) {
@@ -353,7 +387,6 @@ function glossRuby(text) {
       continue;
     }
     flush();
-    glossShown.add(hit.term);
     fragment.append(glossMark(hit, segments.slice(i, i + span)));
     i += span;
   }
@@ -428,7 +461,7 @@ const RENDER = {
     const body = document.createElement("tbody");
     for (const row of block.rows) {
       const tr = document.createElement("tr");
-      tr.append(el("th", null, row.th));
+      tr.append(elg("th", null, row.th));
       tr.append(elg("td", null, row.td));
       body.append(tr);
     }
@@ -455,7 +488,7 @@ const RENDER = {
    */
   quote: (block) => {
     const box = el("figure", "b-quote");
-    if (block.source) box.append(el("figcaption", "quote-source", block.source));
+    if (block.source) box.append(elg("figcaption", "quote-source", block.source));
     box.append(elg("blockquote", "quote-text", block.text));
     if (block.note) box.append(elg("p", "quote-note", block.note));
     return box;
@@ -602,8 +635,8 @@ const RENDER = {
       slide.append(img);
       const cap = el("figcaption", "slide-cap");
       cap.append(el("span", "slide-no", item.no));
-      cap.append(el("strong", "slide-name", item.name));
-      cap.append(el("small", "slide-phrase", item.phrase));
+      cap.append(elg("strong", "slide-name", item.name));
+      cap.append(elg("small", "slide-phrase", item.phrase));
       slide.append(cap);
       strip.append(slide);
 
@@ -752,8 +785,6 @@ function renderPage() {
   const page = pageById(state.page);
   // 前の ページの スライドの 時計を 止めてから 捨てる
   while (SLIDE_TIMERS.length) SLIDE_TIMERS.pop()();
-  // 印は ページごとに 引き直す（前の ページで 出した ぶんは 忘れる）
-  glossShown.clear();
   closeTip();
   pageNode.replaceChildren();
 

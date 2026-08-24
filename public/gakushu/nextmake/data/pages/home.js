@@ -164,15 +164,6 @@ export const HOME = {
       },
     },
     {
-      kind: "callout",
-      tone: "point",
-      text: {
-        n4: "この プログラムの 学生の こと、修了式の こと、運動会の ことも 書いて あります。あなたの 学校の 名前も あるかも しれません。",
-        n3: "このプログラムの学生や修了式、運動会のことも載っています。あなたの学校の名前もあるかもしれません。",
-        en: "The students, the closing ceremonies and even the sports day are on that page. Your school may be there too.",
-      },
-    },
-    {
       kind: "link",
       to: "cambodia",
       label: {

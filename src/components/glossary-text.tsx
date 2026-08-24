@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useId, useRef, useState, type ReactNode } from "react";
+import { useCallback, useId, useRef, useState, type FocusEvent, type ReactNode } from "react";
 import { findGlossaryTerm, type GlossaryEntry } from "@/content/glossary";
 import { PERSONALITY_RESULT_READINGS, type Reading } from "@/content/personality";
 
@@ -68,7 +68,18 @@ function usePopover() {
       if (open) hide();
       else show();
     },
-    onFocus: () => show(),
+    /*
+     * フォーカスで開くのは**キーボードのときだけ**（`:focus-visible`）。
+     *
+     * ただの focus にすると、**タッチ端末の1回目のタップが効かない**。
+     * 指でさわると focus → click の順に起きるので、focus が開けたものを
+     * 直後の click が「開いているから閉じる」と判断してしまう。
+     * 学習者には「1回目は無反応、2回目で出る」と見える
+     *（2026-08-23 に学習用サイトへ移植したとき実機幅の検証で再現。願い #180）。
+     */
+    onFocus: (event: FocusEvent<HTMLButtonElement>) => {
+      if (event.currentTarget.matches(":focus-visible")) show();
+    },
     onBlur: () => hide(),
   };
 

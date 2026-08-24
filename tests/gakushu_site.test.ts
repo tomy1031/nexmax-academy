@@ -173,7 +173,23 @@ describe("読めない漢字が 残って いない（規律2）", () => {
    * **その 語を 単独で 出す 言い回しに 直せないか**を 先に 考える こと。
    */
   const BURIED_IN_COMPOUNDS = new Set([
-    "育成", // 育成連合会
+    /*
+     * 下は「読み辞書が かたまりとして 持って いる ので 辞典には 載るが、
+     * 本文では もっと 長い 語の 中に しか 出ない」もの。
+     * 辞典の ページでは 引けるが、本文からは 引けない。
+     */
+    "画像", // 画像解析
+    "経営", // 経営理念
+    "公共", // 公共交通
+    "試験", // 日本語能力試験
+    "支部", // 協会南大阪支部
+    "障害", // 障害対応
+    "成果", // 成果物
+    "世代", // 新世代
+    "能力", // 日本語能力試験
+    "発注", // 受発注
+    "理念", // 経営理念
+    "履歴", // 飛行履歴
     "解析", // 画像解析
     "業務", // 業務代行
     "修了", // 修了式
@@ -189,35 +205,46 @@ describe("読めない漢字が 残って いない（規律2）", () => {
 
   it("辞典の 語は、本文の ルビの 切れ目に そろう", () => {
     const index = buildFuriganaIndex(FURIGANA as [string, string][]);
-    const unreachable: string[] = [];
-    for (const word of GLOSSARY as { term: string }[]) {
-      if (BURIED_IN_COMPOUNDS.has(word.term)) continue;
+    /** 分かち書きの 空白を 落とした 形（app.js の `bare` と そろえる）。 */
+    const bare = (text: string) => text.replace(/\s+/gu, "");
+
+    /** app.js の `segmentsOf` と 同じ 切りかた。 */
+    const cutsOf = (text: string) => {
+      const out: string[] = [];
+      for (const segment of annotateRuby(text, index)) {
+        if (segment.reading) out.push(segment.text);
+        else out.push(...segment.text);
+      }
+      return out;
+    };
+
+    /** その 語が、かたまりを つないだ 形で 出る 場所が **どこかに** あるか。 */
+    const reachable = (term: string) => {
+      const want = bare(term);
       for (const text of JA) {
-        const at = text.indexOf(word.term);
-        if (at < 0) continue;
-        /*
-         * 切って よい ところ＝**ルビの ついた かたまりの 中では ない** ところ。
-         * ルビの 無い ところは 1字ずつ 切れる（app.js の `segmentsOf` と 同じ）。
-         */
-        const edges = new Set<number>([0]);
-        let cursor = 0;
-        for (const segment of annotateRuby(text, index)) {
-          if (segment.reading) {
-            cursor += segment.text.length;
-            edges.add(cursor);
-          } else {
-            for (let n = 0; n < segment.text.length; n += 1) edges.add(++cursor);
+        if (!bare(text).includes(want)) continue;
+        const cuts = cutsOf(text);
+        for (let i = 0; i < cuts.length; i += 1) {
+          if (!bare(cuts[i] ?? "")) continue; // 空白から 始まる 印は 作らない
+          let joined = "";
+          for (let n = 0; n < 12 && i + n < cuts.length; n += 1) {
+            const cut = cuts[i + n] ?? "";
+            joined += cut;
+            if (bare(joined).length > want.length) break;
+            if (!bare(cut)) continue;
+            if (bare(joined) === want) return true;
           }
         }
-        if (!edges.has(at) || !edges.has(at + word.term.length)) {
-          unreachable.push(
-            `${word.term} … ${text.slice(Math.max(0, at - 6), at + word.term.length + 6)}`,
-          );
-        }
-        break;
       }
-    }
-    expect([...new Set(unreachable)]).toEqual([]);
+      return false;
+    };
+
+    const unreachable = (GLOSSARY as { term: string }[])
+      .filter((word) => !BURIED_IN_COMPOUNDS.has(word.term))
+      .filter((word) => JA.some((text) => bare(text).includes(bare(word.term))))
+      .filter((word) => !reachable(word.term))
+      .map((word) => word.term);
+    expect(unreachable).toEqual([]);
   });
 
   it("読み辞書の 見出し語は かならず 漢字で 始まる", () => {
@@ -248,6 +275,8 @@ describe("読めない漢字が 残って いない（規律2）", () => {
    * 「強化 → つよか」が この 一覧に 紛れこんで いた）。
    */
   const VERIFIED_SPLITS = new Set([
+    // 「育成」「連合会」を 引けるように、わざと 割った（読みは 同じ）
+    "育成連合会",
     "株式会社業務代行",
     "日本語授業修了式",
     "自動車株式会社様",
@@ -419,10 +448,18 @@ describe("ことばの辞典", () => {
   });
 
   it("本文に 出て こない 語を 載せない（探して いる 語が 埋もれる）", () => {
-    const haystack = [...JA, ...textsOf(PAGES, "en")].join("\n");
+    /*
+     * くらべる ときは **分かち書きの 空白を 落とす**。やさしい日本語は 語の 間を
+     * あける ので、「今のまま」は 本文では「今の まま」と 書かれて いる。
+     * 空白ごと くらべると、画面には 印が 出て いる 語を「本文に 無い」と
+     * 言って しまう（生成側 `appearsAsWord` と 画面側 `glossRuby` は
+     * どちらも 空白を 飛ばして 見る）。
+     */
+    const bare = (text: string) => text.replace(/\s+/gu, "");
+    const haystack = bare([...JA, ...textsOf(PAGES, "en")].join("\n"));
     const ghosts = (GLOSSARY as { term: string }[])
       .map((item) => item.term)
-      .filter((term) => !haystack.includes(term));
+      .filter((term) => !haystack.includes(bare(term)));
     expect(ghosts).toEqual([]);
   });
 });

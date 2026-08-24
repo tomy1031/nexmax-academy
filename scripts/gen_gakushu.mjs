@@ -118,23 +118,49 @@ const KANJI_CHAR = /[㐀-鿿々]/u;
  * そこで **前後が 漢字の ときは 語と みなさない**。国名の 検査（content-checks.ts の
  * `indexOfPlace`）が カタカナで やって いるのと 同じ 考えかた。
  */
-function appearsAsWord(haystack, term) {
-  if (!KANJI_CHAR.test(term)) return haystack.includes(term);
-  let from = 0;
-  for (;;) {
-    const at = haystack.indexOf(term, from);
-    if (at < 0) return false;
-    const before = haystack[at - 1] ?? "";
-    const after = haystack[at + term.length] ?? "";
+function appearsAsWord(haystack, term, readingUnits = new Set()) {
+  /*
+   * **読み辞書が 1つの かたまりとして 持って いる 語は、前後が 漢字でも 語**。
+   *
+   * 下の 境目の 判定は「外国」から「国」を 拾わない ための もの。ところが
+   * 「育成連合会」の 中の 「連合会」の ように、**読みの かたまりとして
+   * ちゃんと 切れて いる** 語まで はじいて しまう。画面では 印が 付けられるのに
+   * 辞典に 載らない、と いう ちぐはぐが 起きる（2026-08-24 実発生）。
+   *
+   * 読み辞書に その 表記が あると いう ことは、人が「ここで 切れる」と
+   * 決めた と いう こと。それを 語と みなす。
+   */
+  if (readingUnits.has(term)) return haystack.includes(term);
+  /*
+   * 語の 中に **分かち書きの 空白が 入り込む** ことが ある。
+   * やさしい日本語は 読みやすさの ために 語の 間を あける ので、
+   * 「今のまま」は 本文では「今の まま」と 書かれて いる。
+   * 空白を 飛ばして さがす（画面側の `glossRuby` も 同じ 見かたを する）。
+   *
+   * **本文の ほうから 空白を 落としては いけない。** 落とすと、もともと
+   * 空白で 分かれて いた 漢字どうしが くっついて、下の「前後が 漢字なら
+   * 語と みなさない」判定に 引っかかり、ふつうの 語まで 辞典から 消える
+   *（2026-08-24 に 8語 消えた）。
+   */
+  const pattern = [...term]
+    .map((char) => char.replace(/[.*+?^${}()|[\]\\]/gu, "\\$&"))
+    .join("\\s*");
+  const finder = new RegExp(pattern, "gu");
+  for (const found of haystack.matchAll(finder)) {
+    if (!KANJI_CHAR.test(term)) return true;
+    const before = haystack[found.index - 1] ?? "";
+    const after = haystack[found.index + found[0].length] ?? "";
     if (!KANJI_CHAR.test(before) && !KANJI_CHAR.test(after)) return true;
-    from = at + 1;
   }
+  return false;
 }
 
 /** 本文に 出て きた ことばだけを、ことばの 正から 拾う。 */
 export function buildGlossary(pages, ui) {
   const vocab = readJson(VOCAB_JSON);
   const haystack = [...japaneseTexts(pages, ui), ...textsOf(pages, "en")].join("\n");
+  /** 読み辞書が「ここで 切れる」と 決めて いる 表記。 */
+  const readingUnits = new Set(buildFurigana().map(([surface]) => surface));
 
   return (
     (vocab.words ?? [])
@@ -145,7 +171,7 @@ export function buildGlossary(pages, ui) {
        * ふりがなは 読み辞書が 別に 覆うので、載せなくても 読めなく ならない。
        */
       .filter((word) => word.term.length >= 2)
-      .filter((word) => appearsAsWord(haystack, word.term))
+      .filter((word) => appearsAsWord(haystack, word.term, readingUnits))
       .map((word) => ({
         term: word.term,
         reading: word.reading,
