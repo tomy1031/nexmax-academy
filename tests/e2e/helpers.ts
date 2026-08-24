@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { expect, type BrowserContext, type Locator, type Page } from "@playwright/test";
 
 /**
@@ -80,6 +82,24 @@ export const KAISHA_ITEMS: readonly KaishaItem[] = [
  */
 export function progressText(done: number): string {
   return `${KAISHA_ITEMS.length}つ の うち ${done}つ おわりました`;
+}
+
+/**
+ * 「ほうこくの じゅんび」の 問題数。**教材から 読む**。
+ *
+ * ここを ベタ書きして いた ため、サイトの ページが 増えて 問題を 3つ 足した 日に
+ * teishutsu / tsuzuki の 5本が いっせいに 落ちた（2026-08-24）。
+ * ステージの 数（`progressText`）で 同じ ことを 一度 やって いる——同じ 轍を 踏まない。
+ */
+export const HOUKOKU_TOTAL: number = (
+  JSON.parse(
+    readFileSync(join(__dirname, "..", "..", "content", "quizsets", "kaisha_houkoku.json"), "utf8"),
+  ) as { questions: unknown[] }
+).questions.length;
+
+/** 「こたえた n / 12」の 文（全問1ページの 進みぐあい）。 */
+export function writtenText(done: number): string {
+  return `こたえた ${done} / ${HOUKOKU_TOTAL}`;
 }
 
 /**
