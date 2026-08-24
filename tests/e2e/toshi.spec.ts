@@ -2,20 +2,17 @@ import { expect, test, type Page } from "@playwright/test";
 import {
   affinity,
   answerTalk,
-  choiceButtons,
-  goNext,
-  goToConfirm,
   placeWordsIn,
   submitAnswers,
   writeIn,
   writtenText,
   HOUKOKU_TOTAL,
+  JIBUN_TOTAL,
   JUNBI_TOTAL,
   waitForAsk,
   KAISHA_ITEMS,
   joinCall,
   leaveCall,
-  multiButtons,
   openedCards,
   progressText,
   readOn,
@@ -41,9 +38,6 @@ import {
  * 手がかりにする。
  */
 
-/** もんだい1「しらべかたの かくにん」の 正しい選択肢の位置（content/quizsets/kaisha_shirabekata_check.json）。 */
-const CHECK_ANSWERS = [0, 1, 0, 1, 0];
-
 /**
  * 「ちょうさシート」の 語群の答え（content/quizsets/kaisha_houkoku.json）。
  *
@@ -52,43 +46,40 @@ const CHECK_ANSWERS = [0, 1, 0, 1, 0];
  * 別の もんだいを 触って しまう。
  */
 const HOUKOKU_WORDS: readonly (readonly [string, readonly string[]])[] = [
-  ["a3_office", ["大阪", "東京"]],
-  ["a4_kaigai_itsu", ["2023年10月"]],
-  ["a5_kaigai_kuni", ["ベトナム"]],
-  [
-    "b1_services",
-    ["NMClaw", "観光DX", "Verify", "セキュリティドローン", "NEXTMAKE Internship Lab"],
-  ],
-  ["b3_jutaku", ["受託開発"]],
-  ["c1_tokuchou", ["新しい 技術", "グループの 会社", "世界の 人と 学ぶ"]],
-  ["d1_miyoshi", ["観光DX"]],
-  ["d2_uchida", ["WEB制作"]],
-  ["d3_kodomokai", ["システム開発"]],
-  ["f2_nani", ["日本語", "IT"]],
-  ["f4_support", ["日本語の 勉強", "ITの 勉強", "しごとの 紹介"]],
-  ["f5_aupp", ["2024年9月"]],
-  ["f6_lab", ["NEXTMAKE Internship Lab"]],
+  ["q3", ["大阪", "東京"]],
+  ["q4", ["2023年10月"]],
+  ["q5", ["ベトナム"]],
+  ["q6", ["NMClaw", "観光DX", "Verify", "セキュリティドローン", "NEXTMAKE Internship Lab"]],
+  ["q7", ["NMClaw"]],
+  ["q8", ["受託開発"]],
+  ["q9", ["新しい 技術", "グループの 会社", "世界の 人と 学ぶ"]],
+  ["q13", ["WEB制作"]],
+  ["q14", ["システム開発"]],
+  ["q15", ["技術"]],
+  ["q20", ["日本語", "IT"]],
+  ["q21", ["N3"]],
+  ["q22", ["日本語の 勉強", "ITの 勉強", "しごとの 紹介"]],
+  ["q23", ["2024年9月"]],
 ];
 
 /**
- * 自由入力の 13問。**どれも 代表解そのままではない**書き方にしてある
+ * 自由入力の 12問。**どれも 代表解そのままではない**書き方にしてある
  * ——ひらがな・カタカナ・小文字・「です」つき・文で答える が 救済されている証拠を、
  * 通しの中に そのまま 残すため（判定は src/lib/text/normalize.ts）。
  */
 const HOUKOKU_FREE_INPUT: readonly (readonly [string, string])[] = [
-  ["a1_itsu", "2018ねんです"], // ひらがな＋です（accept「2018」に 部分一致）
-  ["a2_shachou", "まついさん"], // ひらがな＋さん（accept「まつい」に 部分一致）
-  ["b2_phrase", "nmclaw"], // 小文字
-  ["c2_group", "コンティニューです"], // カタカナ＋です
-  ["c3_group_kuni", "べとなむ"], // ひらがな（代表解は「ベトナム」）
-  ["e1_mission", "ぎじゅつ"], // ひらがな（代表解は「技術」）
-  ["e2_values03", "どうぐ"], // やさしい 日本語の 言い方（「手段」でも 通る）
-  ["e3_values04", "ちょうせん"], // ひらがな
-  ["e4_values05", "ひとと ひとの しんらいです"], // 文＋です（accept「しんらい」に 部分一致）
-  ["f1_kuni", "カンボジア"], // そのまま
-  ["f3_jlpt", "n3"], // 小文字
-  ["f7_dare", "リーダーです"], // です つき
-  ["f8_nanigo", "にほんご"], // ひらがな（代表解は「日本語」）
+  ["q1", "2018ねんです"], // ひらがな＋です（accept「2018」に 部分一致）
+  ["q2", "まついさん"], // ひらがな＋さん（accept「まつい」に 部分一致）
+  ["q10", "コンティニューです"], // カタカナ＋です
+  ["q11", "べとなむ"], // ひらがな（代表解は「ベトナム」）
+  ["q12", "かんこうDX"], // ひらがな まじり
+  ["q16", "どうぐ"], // やさしい 日本語の 言い方（「手段」でも 通る）
+  ["q17", "ちょうせん"], // ひらがな
+  ["q18", "ひとと ひとの しんらいです"], // 文＋です（accept「しんらい」に 部分一致）
+  ["q19", "カンボジア"], // そのまま
+  ["q24", "internship lab"], // 小文字
+  ["q25", "リーダーです"], // です つき
+  ["q26", "にほんご"], // ひらがな（代表解は「日本語」）
 ];
 
 /** ヘンディさんに 話す こたえ（型文を なぞった、学習者が 書きそうな文）。 */
@@ -145,7 +136,7 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
     await list.first().click();
   });
 
-  await test.step("2. ページ「ちょうさシートを うめよう」— 🔊 と ことばチップ", async () => {
+  await test.step("2. STEP 1 ページ「会社の リサーチ方法を 学ぼう」— 🔊 と ことばチップ", async () => {
     await expect(page).toHaveURL(/article-kaisha_shirabekata$/);
 
     // 読み上げは 本文にも かじょうがきにも 付いている（音に 逃げる 道を ふさがない）
@@ -162,26 +153,7 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
     await frameNext(page).click();
   });
 
-  await test.step("3. もんだい「きょう する ことの かくにん」— 6問", async () => {
-    await expect(page).toHaveURL(/quiz-kaisha_shirabekata_check$/);
-    await page.getByRole("button", { name: "はじめる" }).click();
-
-    // 既定の やりかたは「まとめて 出す」——途中では 採点しない（先生が 管理画面で 決める）
-    for (const answer of CHECK_ANSWERS) {
-      await choiceButtons(page).nth(answer).click();
-      await goNext(page);
-    }
-    // さいごは 複数えらぶ（サイトを 見ながら 書いて よい ことの かくにん）
-    for (const index of [0, 1, 2]) await multiButtons(page).nth(index).click();
-    await goToConfirm(page);
-    await submitAnswers(page);
-
-    await expect(page.getByText("6 / 6 もん")).toBeVisible();
-    await shot(page, "03-quiz-check-result");
-    await frameNext(page).click();
-  });
-
-  await test.step("4. ページ「ネクストメイクを しらべよう」— 外のサイトへの カード", async () => {
+  await test.step("3. STEP 2 ページ「調査シートを うめよう」— 外のサイトへの カード", async () => {
     await expect(page).toHaveURL(/article-kaisha_nextmake_shirabe$/);
 
     /*
@@ -213,7 +185,7 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
     await expect(page).toHaveURL(/\/kaisha\/link$/);
   });
 
-  await test.step("4b. リンク「学習用サイト」— 開いて、読んで、おわる", async () => {
+  await test.step("4. リンク「学習用サイト」— 開いて、読んで、おわる", async () => {
     // 入れ物の カードに、切りかえの 案内が 出て いる（気づかないと 使われない）
     await expect(page.getByText(/やさしい 日本語/)).toBeVisible();
     await shot(page, "04b-link-card");
@@ -258,17 +230,17 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
     await frameNext(page).click();
   });
 
-  await test.step("5. もんだい「ほうこくの じゅんび」— ぜんぶ 1ページに 出る", async () => {
+  await test.step("5. STEP 2 もんだい「調査シート」— 26問が ぜんぶ 1ページに 出る", async () => {
     await expect(page).toHaveURL(/quiz-kaisha_houkoku$/);
     await page.getByRole("button", { name: "はじめる" }).click();
 
     /*
      * この 教材は `answerMode: "all"`。学習用サイトと 行き来しながら 書く ので、
-     * **進まずに** 上から 下まで 書ける。12問が 同時に 見えて いる ことを 先に 見る。
+     * **進まずに** 上から 下まで 書ける。26問が 同時に 見えて いる ことを 先に 見る。
      */
     /*
-     * **完全一致で さがす。** 「1/12」は 「11/12」の 中にも 入って いる ので、
-     * 部分一致だと 候補が 2つに なって 落ちる（12問に 増やした 日に 出た）。
+     * **完全一致で さがす。** 「1/26」は 「21/26」の 中にも 入って いる ので、
+     * 部分一致だと 候補が 2つに なって 落ちる（問数を 増やした 日に 出た）。
      */
     await expect(page.getByText(`1/${HOUKOKU_TOTAL}`, { exact: true })).toBeVisible();
     await expect(
@@ -296,7 +268,7 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
     await frameNext(page).click();
   });
 
-  await test.step("6. ミーティング「ヘンディさんに 報告する」— 型文を 見ながら 文字で 話す", async () => {
+  await test.step("6. STEP 3 ミーティング「ヘンディさんに 報告しよう」— 型文を 見ながら 文字で 話す", async () => {
     await expect(page).toHaveURL(/meeting-kaisha_houkoku_meeting$/);
 
     // 入室の前に「はなす まえに」。見出しの漢字には ふりがなが 合成されている
@@ -395,11 +367,43 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
     await frameNext(page).click();
   });
 
-  await test.step("6b. もんだい「おもしろいと 思った ところ」— 正解の 無い 問い", async () => {
+  await test.step("7. STEP 4 もんだい「会社と 自分の 関係を 考えよう」— 正解の 無い 問い", async () => {
     /*
-     * 松井社長と 話す 前に、**自分の ことばを 作って おく** 段（2026-08-24 の 指定）。
+     * ここから 先は **自分の 考え**を 作る 段（設計 md の STEP 4）。
      * 正解が 無いので、書けば 点が 入る。ここで「ちがいます」が 出たら 設計が 壊れて いる
      *（規律1: その 学習者だけの 正しい こたえを まちがいに しない）。
+     */
+    await expect(page).toHaveURL(/quiz-kaisha_jibun$/);
+    await page.getByRole("button", { name: "はじめる" }).click();
+
+    const boxes = page.getByRole("textbox", { name: "じゆうに 書く" });
+    await expect(boxes).toHaveCount(JIBUN_TOTAL);
+
+    /* 学習者が 書きそうな 文。数は 教材に そろえる（問いが 増えたら ここも 増える）。 */
+    const written = [
+      "私が 今 がんばって いる ことは 日本語です。",
+      "観光DX に 興味を もちました。",
+      "新しい 技術だから、興味を もちました。",
+      "今 Python を 勉強して います。AIの 仕事で 使えそうです。",
+      "私は AIを 使う 仕事を して みたいです。",
+      "私は 日本語で 仕事が できる エンジニアに なりたいです。",
+    ];
+    expect(written).toHaveLength(JIBUN_TOTAL);
+    for (const [at, text] of written.entries()) await boxes.nth(at).fill(text);
+
+    await expect(page.getByText(`こたえた ${JIBUN_TOTAL} / ${JIBUN_TOTAL}`)).toBeVisible();
+    await submitAnswers(page);
+
+    await expect(page.getByText(/^正解/)).toHaveCount(0);
+    await shot(page, "07-jibun-result");
+
+    await frameNext(page).click();
+  });
+
+  await test.step("8. STEP 5 もんだい「松井社長と 話す 準備を しよう」— 9つの 準備", async () => {
+    /*
+     * 松井社長と 話す 前に、**自分の ことばを 作って おく** 段（設計 md の STEP 5）。
+     * ここで 書いた ものが、そのまま 対話の 材料に なる。
      */
     await expect(page).toHaveURL(/quiz-kaisha_omoshiroi$/);
     await page.getByRole("button", { name: "はじめる" }).click();
@@ -407,19 +411,16 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
     const boxes = page.getByRole("textbox", { name: "じゆうに 書く" });
     await expect(boxes).toHaveCount(JUNBI_TOTAL);
 
-    /* 学習者が 書きそうな 文。数は 教材に そろえる（問いが 増えたら ここも 増える）。 */
     const written = [
       "ネクストメイクは、お客さまの ホームページや アプリを 作る 会社です。",
       "日本語と ITを 勉強して、日本の 会社で はたらく プログラムです。",
       "Internship Lab で、日本人の リーダーと いっしょに 仕事を します。",
-      "ドローンが 自分で 飛ぶ こと",
-      "ベトナムの チームと 毎日 話す こと",
-      "Boo が うけつけを した こと",
-      "わたしの 国には まだ ないので、見て みたいからです。",
-      "Python を 勉強して います。AIの 仕事に 使えそうです。",
+      "今 Python を 勉強して います。AIの 仕事で 使えそうです。",
+      "観光DX に 興味を もちました。まちを あるくのが すきだからです。",
+      "カンボジアの プログラムが 良いと 思いました。わたしの 国には まだ ないので、見て みたいからです。",
       "日本語で 報告できる エンジニアに なりたいです。",
-      "Boo は どんな ことが できますか。",
-      "日本語を がんばります。毎日 30分、声に 出して 読みます。",
+      "社長に 聞きたい ことは、どんな 人と はたらきたいかです。",
+      "日本語を がんばります。まいにち 30分、声に 出して 読みます。",
     ];
     expect(written).toHaveLength(JUNBI_TOTAL);
     for (const [at, text] of written.entries()) await boxes.nth(at).fill(text);
@@ -439,12 +440,12 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
      *（「通訳」→「通訳つうやく」）。中身が そのままかは 単体テストが 見て いる。
      */
     await expect(page.getByText(/ないので、/)).toBeVisible();
-    await shot(page, "06b-omoshiroi-result");
+    await shot(page, "08-junbi-result");
 
     await frameNext(page).click();
   });
 
-  await test.step("7. 対話ゲーム「松井社長と 話す」— こうかんど 100%", async () => {
+  await test.step("9. STEP 6 対話ゲーム「松井社長と LiveAIで 話そう」— こうかんど 100%", async () => {
     await expect(page).toHaveURL(/meeting-kaisha_matsui$/);
     /*
      * ここは ヘンディさんの ミーティングとは **別の 画面**（願い #177）。
@@ -512,7 +513,7 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
     await page.getByRole("button", { name: "おわる" }).click();
   });
 
-  await test.step("8. ステージを おえる", async () => {
+  await test.step("10. ステージを おえる", async () => {
     const clear = page.getByRole("dialog", { name: "ステージ クリア" });
     await expect(clear).toBeVisible();
     await shot(page, "11-stage-clear");

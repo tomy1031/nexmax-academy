@@ -21,23 +21,23 @@ import {
  */
 
 test("2問 書いて 離れ、もどると「つづきから」が 出る", async ({ page, context }) => {
-  await seedCompleted(context, itemsBefore(KAISHA.quiz2));
+  await seedCompleted(context, itemsBefore(KAISHA.sheet));
 
-  await page.goto(KAISHA.quiz2.path);
+  await page.goto(KAISHA.sheet.path);
   await page.getByRole("button", { name: "はじめる" }).click();
 
   // ぜんぶ 1ページなので 進まずに 2問 書く
-  await placeWordsIn(page, "b3_jutaku", ["受託開発"]);
-  await placeWordsIn(page, "a3_office", ["大阪", "東京"]);
+  await placeWordsIn(page, "q8", ["受託開発"]);
+  await placeWordsIn(page, "q3", ["大阪", "東京"]);
   await expect(page.getByText(writtenText(2))).toBeVisible();
 
   // ステージへ 離脱（進み具合には「とちゅう」として 出る）
   await page.goto("/kaisha");
-  await expect(page.getByText(progressText(4))).toBeVisible();
-  await expect(page.locator("ol > li").nth(4)).toContainText("とちゅう");
+  await expect(page.getByText(progressText(3))).toBeVisible();
+  await expect(page.locator("ol > li").nth(3)).toContainText("とちゅう");
 
   // もどると ロビーで 分かれ道を 見せる（つづきから／はじめから）
-  await page.goto(KAISHA.quiz2.path);
+  await page.goto(KAISHA.sheet.path);
   await expect(page.getByText("まえの つづきから はじめます")).toBeVisible();
   await expect(page.getByText(/2もん/)).toBeVisible();
   await shot(page, "21-quiz-resume");
@@ -48,13 +48,13 @@ test("2問 書いて 離れ、もどると「つづきから」が 出る", asyn
 });
 
 test("「はじめから やる」を えらべば 1問目に もどる", async ({ page, context }) => {
-  await seedCompleted(context, itemsBefore(KAISHA.quiz2));
+  await seedCompleted(context, itemsBefore(KAISHA.sheet));
 
-  await page.goto(KAISHA.quiz2.path);
+  await page.goto(KAISHA.sheet.path);
   await page.getByRole("button", { name: "はじめる" }).click();
-  await placeWordsIn(page, "b3_jutaku", ["受託開発"]);
+  await placeWordsIn(page, "q8", ["受託開発"]);
 
-  await page.goto(KAISHA.quiz2.path);
+  await page.goto(KAISHA.sheet.path);
   await page.getByRole("button", { name: "はじめから やる" }).click();
   await expect(page.getByText(writtenText(0))).toBeVisible();
   await expect(page.getByRole("button", { name: "こたえを 出" })).toHaveCount(0);
