@@ -1242,6 +1242,34 @@
     [
       "本",
       "ほん"
+    ],
+    [
+      "お祝い",
+      "いわ"
+    ],
+    [
+      "祝",
+      "いわ"
+    ],
+    [
+      "走",
+      "はし"
+    ],
+    [
+      "行事",
+      "ぎょうじ"
+    ],
+    [
+      "育つ",
+      "そだ"
+    ],
+    [
+      "郵便",
+      "ゆうびん"
+    ],
+    [
+      "通信",
+      "つうしん"
     ]
   ],
   "words": [
@@ -5558,6 +5586,167 @@
       "reading": "じてん",
       "meaningJa": "ことばの 意味が ならべて 書いて ある 本です。",
       "englishTerm": "Dictionary"
+    },
+    {
+      "id": "shuuryoushiki",
+      "term": "修了式",
+      "reading": "しゅうりょうしき",
+      "meaningJa": "勉強が おわった 日に する、お祝いの 会です。",
+      "englishTerm": "Completion ceremony"
+    },
+    {
+      "id": "undoukai",
+      "term": "運動会",
+      "reading": "うんどうかい",
+      "meaningJa": "みんなで 走ったり して、体を うごかす 日本の 学校の 行事です。",
+      "englishTerm": "Sports day"
+    },
+    {
+      "id": "daihyou_torishimariyaku_shachou",
+      "term": "代表取締役社長",
+      "reading": "だいひょうとりしまりやくしゃちょう",
+      "meaningJa": "会社の いちばん 上の 人です。会社を 代表して、決める 仕事を します。",
+      "englishTerm": "President and CEO"
+    },
+    {
+      "id": "shinjiru",
+      "term": "信じる",
+      "reading": "しんじる",
+      "meaningJa": "「きっと そうだ」「きっと できる」と 思う ことです。",
+      "englishTerm": "To believe"
+    },
+    {
+      "id": "sodatta",
+      "term": "育った",
+      "reading": "そだった",
+      "meaningJa": "「育つ」の かたちの 1つ。小さい ときから いた ところで、大きく なった と いう ことです。",
+      "englishTerm": "Grew up"
+    },
+    {
+      "id": "dx",
+      "term": "DX",
+      "reading": "でぃーえっくす",
+      "meaningJa": "紙や 手で して いた 仕事を、パソコンや スマホで できる ように する ことです。",
+      "englishTerm": "Digital transformation"
+    },
+    {
+      "id": "yuubin_denki_tsuushinshou",
+      "term": "郵便電気通信省",
+      "reading": "ゆうびんでんきつうしんしょう",
+      "meaningJa": "カンボジアの 政府の 役所の 1つです。郵便と 通信の 仕事を します。",
+      "englishTerm": "Ministry of Post and Telecommunications"
+    },
+    {
+      "id": "shoukai",
+      "term": "紹介",
+      "reading": "しょうかい",
+      "meaningJa": "まだ 知らない 人や ものを、その 人に 教える ことです。",
+      "englishTerm": "Introduction"
+    },
+    {
+      "id": "reigi",
+      "term": "礼儀",
+      "reading": "れいぎ",
+      "meaningJa": "あいさつや ことばづかいなど、人を 大切に する やりかたです。",
+      "englishTerm": "Good manners"
+    },
+    {
+      "id": "hatarakeru",
+      "term": "はたらける",
+      "reading": "はたらける",
+      "meaningJa": "「はたらく」の かたちの 1つ。仕事が できる、と いう ことです。",
+      "englishTerm": "Able to work"
+    },
+    {
+      "id": "ima_no_mama",
+      "term": "今のまま",
+      "reading": "いまのまま",
+      "meaningJa": "いま と 同じで、何も 変えない ことです。",
+      "englishTerm": "As it is now"
+    },
+    {
+      "id": "shinjiru_kana",
+      "term": "しんじる",
+      "reading": "しんじる",
+      "meaningJa": "「きっと そうだ」「きっと できる」と 思う ことです。",
+      "englishTerm": "To believe"
+    },
+    {
+      "id": "nihongo_nouryoku_shiken",
+      "term": "日本語能力試験",
+      "reading": "にほんごのうりょくしけん",
+      "meaningJa": "日本語が どれくらい できるかを 見る 試験です。N5 から N1 まで あります。",
+      "englishTerm": "JLPT"
+    },
+    {
+      "id": "jutaku_kaihatsu_jigyou",
+      "term": "受託開発事業",
+      "reading": "じゅたくかいはつじぎょう",
+      "meaningJa": "お客さまに たのまれて、その お客さまの ための ものを 作る 仕事です。",
+      "englishTerm": "Contract development business"
+    },
+    {
+      "id": "kaigai_jigyou",
+      "term": "海外事業",
+      "reading": "かいがいじぎょう",
+      "meaningJa": "外国で する 仕事です。",
+      "englishTerm": "Overseas business"
+    },
+    {
+      "id": "seisaku_jigyou",
+      "term": "制作事業",
+      "reading": "せいさくじぎょう",
+      "meaningJa": "デザインや 動画など、見る ものを 作る 仕事です。",
+      "englishTerm": "Creative production business"
+    },
+    {
+      "id": "kaihatsu_jigyou",
+      "term": "開発事業",
+      "reading": "かいはつじぎょう",
+      "meaningJa": "アプリや システムを 作る 仕事です。",
+      "englishTerm": "Development business"
+    },
+    {
+      "id": "meguru",
+      "term": "巡る",
+      "reading": "めぐる",
+      "meaningJa": "あちこちを 順番に 回る ことです。",
+      "englishTerm": "To go around"
+    },
+    {
+      "id": "meguru_kana",
+      "term": "めぐる",
+      "reading": "めぐる",
+      "meaningJa": "あちこちを 順番に 回る ことです。",
+      "englishTerm": "To go around"
+    },
+    {
+      "id": "shikumi_kana",
+      "term": "しくみ",
+      "reading": "しくみ",
+      "meaningJa": "ものごとが どう うごくか、その かたちです。",
+      "englishTerm": "How something works"
+    },
+    {
+      "id": "matomemasu",
+      "term": "まとめます",
+      "reading": "まとめます",
+      "meaningJa": "ばらばらの ものを 1つに して、見やすく する ことです。",
+      "englishTerm": "To put together"
+    },
+    {
+      "id": "sagaseru",
+      "term": "さがせる",
+      "reading": "さがせる",
+      "meaningJa": "「さがす」の かたちの 1つ。さがす ことが できる、と いう ことです。",
+      "englishTerm": "Able to search"
+    },
+    {
+      "id": "rengoukai",
+      "term": "連合会",
+      "reading": "れんごうかい",
+      "meaningJa": "いくつかの 会が いっしょに なって 作った、大きな 会です。",
+      "englishTerm": "Federation"
     }
   ]
 }

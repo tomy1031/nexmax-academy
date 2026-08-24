@@ -35,7 +35,8 @@ export type QuizDraft =
   | { readonly kind: "multi"; readonly indexes: readonly number[] }
   | { readonly kind: "keyword"; readonly input: string }
   | { readonly kind: "wordbank"; readonly filled: readonly (string | null)[] }
-  | { readonly kind: "emotion"; readonly feeling: number | null; readonly reply: number | null };
+  | { readonly kind: "emotion"; readonly feeling: number | null; readonly reply: number | null }
+  | { readonly kind: "free"; readonly input: string };
 
 /**
  * 保存された 下書きを 読み直す ための 検査（`@/lib/quiz/resume` が 使う）。
@@ -46,6 +47,7 @@ export const quizDraftSchema: z.ZodType<QuizDraft> = z.discriminatedUnion("kind"
   z.object({ kind: z.literal("multi"), indexes: z.array(z.number().int().min(0)) }),
   z.object({ kind: z.literal("keyword"), input: z.string() }),
   z.object({ kind: z.literal("wordbank"), filled: z.array(z.string().nullable()) }),
+  z.object({ kind: z.literal("free"), input: z.string() }),
   z.object({
     kind: z.literal("emotion"),
     feeling: z.number().int().min(0).nullable(),
@@ -60,6 +62,7 @@ const DRAFT_KIND: Record<QuizQuestion["type"], QuizDraft["kind"]> = {
   keyword: "keyword",
   wordbank: "wordbank",
   emotion: "emotion",
+  free: "free",
 };
 
 /**
@@ -94,6 +97,8 @@ export function draftAnswered(question: QuizQuestion, draft: QuizDraft | undefin
     case "emotion":
       // 2段階 そろって はじめて「こたえた」。気もちだけでは 採点の 形に ならない
       return draft.feeling !== null && draft.reply !== null;
+    case "free":
+      return draft.input.trim().length > 0;
   }
 }
 
@@ -165,6 +170,26 @@ export function gradeDraft(question: QuizQuestion, draft: QuizDraft | undefined)
       };
     }
 
+    /*
+     * 自由記述は **書いて あれば 点**。中身は 採点しない。
+     *
+     * 「なぜ そう 思ったか」に 正解は 無い。合っている かどうかを 機械が 決めると、
+     * その 学習者だけの 正しい こたえが「ちがいます」に なる（規律1）。
+     * 中身を 読むのは 先生の 仕事で、機械の 仕事は「書けたね」と 言う ことだけ。
+     */
+    case "free": {
+      if (draft.kind !== "free") return blank;
+      const written = draft.input.trim();
+      const enough = written.length >= question.minLength;
+      return {
+        correct: enough,
+        earned: enough ? question.points : 0,
+        answer: draft.input,
+        // もう すこし 書いて ほしい ときは「あと すこし」の 言い方に なる
+        partial: !enough && written.length > 0,
+      };
+    }
+
     case "wordbank": {
       if (draft.kind !== "wordbank") return blank;
       if (!draft.filled.some((v) => v !== null && v !== "")) return blank;
@@ -214,5 +239,11 @@ export function correctAnswerText(question: QuizQuestion): string {
       return `${question.feelings[question.answerFeeling] ?? ""} → ${
         question.replies[question.answerReply] ?? ""
       }`;
+    /*
+     * 自由記述に「正解」は 無い。かくにん画面や 見直しで ここを 呼ばれた ときに
+     * 何かを 出すと、**学習者の 書いた ものが まちがいに 見える**。空を 返す。
+     */
+    case "free":
+      return "";
   }
 }

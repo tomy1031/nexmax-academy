@@ -59,6 +59,37 @@ export const GROUP = {
         { th: "いつから", td: "2023年" },
       ],
     },
+    /*
+     * CONTINUE の キャラクター Boo（2026-08-24 の 指定）。
+     * 会社の 名前と 数字だけの ページに、**顔が 1つ** あると 覚えて もらえる。
+     * 出どころは CONTINUE 自身の サイト（img/SOURCES.md）。
+     */
+    {
+      kind: "heading",
+      text: {
+        n4: "Boo（ブー）",
+        n3: "AIパペット「Boo（ブー）」",
+        en: "Boo, the AI puppet",
+      },
+    },
+    {
+      kind: "paragraph",
+      text: {
+        n4: "Boo は CONTINUE が 作った AIの ぬいぐるみです。人と 話が できます。カンボジアビジネスフォーラムでは、うけつけの 仕事を しました。",
+        n3: "BooはCONTINUEが開発したAIパペットです。人と会話ができます。カンボジアビジネスフォーラムでは受付を担当しました。",
+        en: "Boo is an AI puppet built by CONTINUE. It can talk with people, and worked at the reception desk of the Cambodia Business Forum.",
+      },
+    },
+    {
+      kind: "figure",
+      src: "/gakushu/nextmake/img/boo.webp",
+      alt: "",
+      caption: {
+        n4: "うけつけに いる Boo です。大きい Boo と 小さい Boo が います。",
+        n3: "受付に立つBooです。大小2体のBooがいます。",
+        en: "Boo at the reception desk — there is a large one and a small one.",
+      },
+    },
     {
       kind: "heading",
       text: {

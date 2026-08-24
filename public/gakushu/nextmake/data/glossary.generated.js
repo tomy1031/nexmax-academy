@@ -51,6 +51,12 @@ export const GLOSSARY = [
     en: "Abnormality",
   },
   {
+    term: "以上",
+    reading: "いじょう",
+    meaning: "その 数を ふくめて、それより 多い ことです。",
+    en: "Or more",
+  },
+  {
     term: "一覧",
     reading: "いちらん",
     meaning: "ぜんぶを 1つの 表に ならべた ものです。",
@@ -111,6 +117,12 @@ export const GLOSSARY = [
     en: "Running / operating",
   },
   {
+    term: "運動会",
+    reading: "うんどうかい",
+    meaning: "みんなで 走ったり して、体を うごかす 日本の 学校の 行事です。",
+    en: "Sports day",
+  },
+  {
     term: "運用",
     reading: "うんよう",
     meaning: "つくった システムを まいにち うごかしつづける しごと",
@@ -155,7 +167,14 @@ export const GLOSSARY = [
     en: "Offshore",
   },
   { term: "音声", reading: "おんせい", meaning: "人の 声や 音の ことです。", en: "Audio / voice" },
+  { term: "温度", reading: "おんど", meaning: "あつい・つめたいの 数です。", en: "Temperature" },
   { term: "海外", reading: "かいがい", meaning: "日本の 外の 国の ことです。", en: "Overseas" },
+  {
+    term: "海外事業",
+    reading: "かいがいじぎょう",
+    meaning: "外国で する 仕事です。",
+    en: "Overseas business",
+  },
   {
     term: "会計",
     reading: "かいけい",
@@ -208,6 +227,12 @@ export const GLOSSARY = [
     en: "Development",
   },
   {
+    term: "開発事業",
+    reading: "かいはつじぎょう",
+    meaning: "アプリや システムを 作る 仕事です。",
+    en: "Development business",
+  },
+  {
     term: "改変",
     reading: "かいへん",
     meaning: "中身を、あとから かえて しまう ことです。",
@@ -226,6 +251,13 @@ export const GLOSSARY = [
     reading: "かしか",
     meaning: "目に 見えない ものを、見えるように する ことです。",
     en: "Visualising",
+  },
+  { term: "画像", reading: "がぞう", meaning: "パソコンの 中の 絵や 写真です。", en: "Image" },
+  {
+    term: "課題",
+    reading: "かだい",
+    meaning: "これから なおさなければ ならない ことです。",
+    en: "Issue / challenge",
   },
   { term: "価値", reading: "かち", meaning: "その ものの よさ、大切さです。", en: "Value" },
   {
@@ -371,6 +403,12 @@ export const GLOSSARY = [
     en: "Career",
   },
   {
+    term: "救助",
+    reading: "きゅうじょ",
+    meaning: "あぶない 人を、たすける ことです。",
+    en: "Rescue",
+  },
+  {
     term: "教育",
     reading: "きょういく",
     meaning: "人に 教えて、そだてる ことです。",
@@ -387,12 +425,6 @@ export const GLOSSARY = [
     reading: "ぎょうかい",
     meaning: "同じ 種類の 仕事を する 会社の あつまりです。",
     en: "Industry",
-  },
-  {
-    term: "業種",
-    reading: "ぎょうしゅ",
-    meaning: "仕事の 種類です。IT・車・りょこう などです。",
-    en: "Type of business",
   },
   {
     term: "協調性",
@@ -456,6 +488,12 @@ export const GLOSSARY = [
     en: "Group",
   },
   {
+    term: "経営",
+    reading: "けいえい",
+    meaning: "会社を うまく うごかして いく 仕事です。",
+    en: "Management",
+  },
+  {
     term: "経営理念",
     reading: "けいえいりねん",
     meaning: "会社が たいせつに して いる 考え",
@@ -512,6 +550,13 @@ export const GLOSSARY = [
     en: "Detection",
   },
   {
+    term: "現地",
+    reading: "げんち",
+    meaning: "その ことが おきて いる、その 場所です。",
+    en: "On site / local",
+  },
+  { term: "限定", reading: "げんてい", meaning: "「ここまで」と かぎる ことです。", en: "Limited" },
+  {
     term: "現場",
     reading: "げんば",
     meaning: "現場は、実際に仕事をする場所のことです。",
@@ -523,6 +568,12 @@ export const GLOSSARY = [
     reading: "ごうかく",
     meaning: "合格は、テストや試験に通ることです。",
     en: "Passing (an exam)",
+  },
+  {
+    term: "公共",
+    reading: "こうきょう",
+    meaning: "みんなの ため、と いう ことです。",
+    en: "Public",
   },
   {
     term: "貢献",
@@ -556,6 +607,12 @@ export const GLOSSARY = [
     en: "Building / setting up",
   },
   {
+    term: "口頭",
+    reading: "こうとう",
+    meaning: "字では なく、話して つたえる ことです。",
+    en: "Spoken",
+  },
+  {
     term: "行動",
     reading: "こうどう",
     meaning: "じっさいに、体を うごかして する ことです。",
@@ -566,6 +623,12 @@ export const GLOSSARY = [
     reading: "こうにゅう",
     meaning: "お金を はらって 買う ことです。",
     en: "Purchase",
+  },
+  {
+    term: "項目",
+    reading: "こうもく",
+    meaning: "書く ことを わけた、1つ1つの ことです。",
+    en: "Item / field",
   },
   {
     term: "効率化",
@@ -586,12 +649,19 @@ export const GLOSSARY = [
     meaning: "国と 国の あいだの、と いう ことです。",
     en: "International",
   },
+  { term: "国内", reading: "こくない", meaning: "その 国の 中の ことです。", en: "Domestic" },
   { term: "個人", reading: "こじん", meaning: "1人の 人の ことです。", en: "Individual" },
   {
     term: "個人情報",
     reading: "こじんじょうほう",
     meaning: "その 人が だれか わかって しまう 情報です。",
     en: "Personal information",
+  },
+  {
+    term: "国家",
+    reading: "こっか",
+    meaning: "国の ことです。あらたまった 言い方です。",
+    en: "Nation",
   },
   { term: "国境", reading: "こっきょう", meaning: "国と 国の さかいです。", en: "Border" },
   {
@@ -643,6 +713,12 @@ export const GLOSSARY = [
     meaning: "会社が いっしょに はたらく 人を えらぶ ことです。",
     en: "Recruitment / Hiring",
   },
+  {
+    term: "さがせる",
+    reading: "さがせる",
+    meaning: "「さがす」の かたちの 1つ。さがす ことが できる、と いう ことです。",
+    en: "Able to search",
+  },
   { term: "作成", reading: "さくせい", meaning: "書類や データを 作る ことです。", en: "Creating" },
   { term: "作物", reading: "さくもつ", meaning: "畑で 作る、たべものの ことです。", en: "Crops" },
   { term: "撮影", reading: "さつえい", meaning: "写真や 動画を とる ことです。", en: "Filming" },
@@ -688,6 +764,18 @@ export const GLOSSARY = [
     reading: "しくみ",
     meaning: "どう うごいて いるか。なかの つくり",
     en: "mechanism",
+  },
+  {
+    term: "しくみ",
+    reading: "しくみ",
+    meaning: "ものごとが どう うごくか、その かたちです。",
+    en: "How something works",
+  },
+  {
+    term: "試験",
+    reading: "しけん",
+    meaning: "どれくらい できるかを 見る、テストです。",
+    en: "Examination",
   },
   { term: "仕事", reading: "しごと", meaning: "work / job", en: "" },
   { term: "自社", reading: "じしゃ", meaning: "じぶんの 会社の ことです。", en: "Our own company" },
@@ -751,6 +839,12 @@ export const GLOSSARY = [
     reading: "じどうしゃ",
     meaning: "車の ことです。あらたまった 言い方です。",
     en: "Automobile",
+  },
+  {
+    term: "支部",
+    reading: "しぶ",
+    meaning: "本部から わかれた、その 土地の 事務所です。",
+    en: "Branch",
   },
   {
     term: "自分",
@@ -822,6 +916,12 @@ export const GLOSSARY = [
     en: "Completion of a course",
   },
   {
+    term: "修了式",
+    reading: "しゅうりょうしき",
+    meaning: "勉強が おわった 日に する、お祝いの 会です。",
+    en: "Completion ceremony",
+  },
+  {
     term: "授業",
     reading: "じゅぎょう",
     meaning: "class, lesson の ことばです。",
@@ -838,6 +938,12 @@ export const GLOSSARY = [
     reading: "じゅたくかいはつ",
     meaning: "お客さまの ために システムを 作る はたらきかたです。",
     en: "Contract development",
+  },
+  {
+    term: "受託開発事業",
+    reading: "じゅたくかいはつじぎょう",
+    meaning: "お客さまに たのまれて、その お客さまの ための ものを 作る 仕事です。",
+    en: "Contract development business",
   },
   { term: "手段", reading: "しゅだん", meaning: "目的に つく ための、やりかたです。", en: "Means" },
   {
@@ -859,6 +965,18 @@ export const GLOSSARY = [
     en: "Patrol",
   },
   { term: "使用", reading: "しよう", meaning: "つかう ことです。", en: "Use" },
+  {
+    term: "紹介",
+    reading: "しょうかい",
+    meaning: "まだ 知らない 人や ものを、その 人に 教える ことです。",
+    en: "Introduction",
+  },
+  {
+    term: "障害",
+    reading: "しょうがい",
+    meaning: "うまく うごかなく なる、こまった ことです。",
+    en: "Failure / fault",
+  },
   {
     term: "障害物",
     reading: "しょうがいぶつ",
@@ -882,6 +1000,12 @@ export const GLOSSARY = [
     reading: "しょうごう",
     meaning: "2つを ならべて、同じかを 見る ことです。",
     en: "Checking against",
+  },
+  {
+    term: "上場企業",
+    reading: "じょうじょうきぎょう",
+    meaning: "かぶを 市場で 売り買いできる 会社です。",
+    en: "Listed company",
   },
   { term: "上手", reading: "じょうず", meaning: "good at it", en: "" },
   {
@@ -911,6 +1035,18 @@ export const GLOSSARY = [
   },
   { term: "書式", reading: "しょしき", meaning: "書きかたの きまった 形です。", en: "Format" },
   {
+    term: "自律",
+    reading: "じりつ",
+    meaning: "人が 命令しなくても、じぶんで うごく ことです。",
+    en: "Autonomous",
+  },
+  {
+    term: "資料",
+    reading: "しりょう",
+    meaning: "読む ための 紙や ファイルです。会議の 前に くばります。",
+    en: "Materials / Handout documents",
+  },
+  {
     term: "進行",
     reading: "しんこう",
     meaning: "仕事が 前へ 進んで いく ことです。",
@@ -921,6 +1057,18 @@ export const GLOSSARY = [
     reading: "じんざい",
     meaning: "仕事が できる 人の ことです。",
     en: "Human resources",
+  },
+  {
+    term: "信じる",
+    reading: "しんじる",
+    meaning: "「きっと そうだ」「きっと できる」と 思う ことです。",
+    en: "To believe",
+  },
+  {
+    term: "しんじる",
+    reading: "しんじる",
+    meaning: "「きっと そうだ」「きっと できる」と 思う ことです。",
+    en: "To believe",
   },
   {
     term: "申請",
@@ -968,6 +1116,12 @@ export const GLOSSARY = [
   { term: "スマホ", reading: "すまほ", meaning: "スマートフォン", en: "smartphone" },
   { term: "生育", reading: "せいいく", meaning: "作物が そだって いく ことです。", en: "Growth" },
   {
+    term: "成果",
+    reading: "せいか",
+    meaning: "やった 結果、出て きた よい ものです。",
+    en: "Result / outcome",
+  },
+  {
     term: "成果物",
     reading: "せいかぶつ",
     meaning: "仕事の 結果 できあがった ものです。",
@@ -984,6 +1138,18 @@ export const GLOSSARY = [
     reading: "せいさく",
     meaning: "絵・動画・ページなどを 作る 仕事です。",
     en: "Production",
+  },
+  {
+    term: "制作事業",
+    reading: "せいさくじぎょう",
+    meaning: "デザインや 動画など、見る ものを 作る 仕事です。",
+    en: "Creative production business",
+  },
+  {
+    term: "整備",
+    reading: "せいび",
+    meaning: "きかいを 見て、つかえるように 直す ことです。",
+    en: "Maintenance",
   },
   {
     term: "政府",
@@ -1015,6 +1181,12 @@ export const GLOSSARY = [
     reading: "せきゅりてぃ",
     meaning: "わるい ことから、まもる ことです。",
     en: "Security",
+  },
+  {
+    term: "世代",
+    reading: "せだい",
+    meaning: "同じ ころに 生まれた 人たちです。",
+    en: "Generation",
   },
   {
     term: "設計",
@@ -1057,6 +1229,12 @@ export const GLOSSARY = [
     reading: "せつりつ",
     meaning: "会社が できた ことです。できた 日が 書いて あります。",
     en: "Establishment (founding)",
+  },
+  {
+    term: "先進",
+    reading: "せんしん",
+    meaning: "ほかより 先へ 進んで いる ことです。",
+    en: "Advanced",
   },
   {
     term: "先端",
@@ -1113,6 +1291,13 @@ export const GLOSSARY = [
     en: "Consultation",
   },
   {
+    term: "育った",
+    reading: "そだった",
+    meaning:
+      "「育つ」の かたちの 1つ。小さい ときから いた ところで、大きく なった と いう ことです。",
+    en: "Grew up",
+  },
+  {
     term: "ソリューション",
     reading: "そりゅーしょん",
     meaning: "こまって いる ことを なおす、しくみです。",
@@ -1153,6 +1338,12 @@ export const GLOSSARY = [
     reading: "だいひょう",
     meaning: "その 会社や 団体で、いちばん 上の 人です。",
     en: "Representative",
+  },
+  {
+    term: "代表取締役社長",
+    reading: "だいひょうとりしまりやくしゃちょう",
+    meaning: "会社の いちばん 上の 人です。会社を 代表して、決める 仕事を します。",
+    en: "President and CEO",
   },
   {
     term: "太陽光",
@@ -1243,6 +1434,12 @@ export const GLOSSARY = [
     en: "Tool",
   },
   {
+    term: "DX",
+    reading: "でぃーえっくす",
+    meaning: "紙や 手で して いた 仕事を、パソコンや スマホで できる ように する ことです。",
+    en: "Digital transformation",
+  },
+  {
     term: "提供",
     reading: "ていきょう",
     meaning: "相手に、ものや サービスを 出す ことです。",
@@ -1272,7 +1469,14 @@ export const GLOSSARY = [
     meaning: "コンピューターで あつかえる かたち、と いう ことです。",
     en: "Digital",
   },
+  { term: "手順", reading: "てじゅん", meaning: "しごとの じゅんばん", en: "steps" },
   { term: "テスト", reading: "てすと", meaning: "test / exam", en: "" },
+  {
+    term: "展開",
+    reading: "てんかい",
+    meaning: "仕事を ほかの 場所や 分野へ ひろげる ことです。",
+    en: "Expansion",
+  },
   {
     term: "点検",
     reading: "てんけん",
@@ -1318,7 +1522,7 @@ export const GLOSSARY = [
     meaning: "ほかと ちがう、目立つ ところです。",
     en: "Feature",
   },
-  { term: "途中", reading: "とちゅう", meaning: "はじめてから おわるまでの あいだ", en: "partway" },
+  { term: "塗装", reading: "とそう", meaning: "ペンキを ぬる ことです。", en: "Painting" },
   {
     term: "取引",
     reading: "とりひき",
@@ -1357,6 +1561,12 @@ export const GLOSSARY = [
     en: "Japanese language",
   },
   {
+    term: "日本語能力試験",
+    reading: "にほんごのうりょくしけん",
+    meaning: "日本語が どれくらい できるかを 見る 試験です。N5 から N1 まで あります。",
+    en: "JLPT",
+  },
+  {
     term: "入場券",
     reading: "にゅうじょうけん",
     meaning: "中に 入る ための 券です。",
@@ -1392,6 +1602,7 @@ export const GLOSSARY = [
     meaning: "できた ものを、お客さまに わたす ことです。",
     en: "Delivery",
   },
+  { term: "能力", reading: "のうりょく", meaning: "その 人が できる 力です。", en: "Ability" },
   {
     term: "把握",
     reading: "はあく",
@@ -1412,6 +1623,12 @@ export const GLOSSARY = [
   },
   { term: "場所", reading: "ばしょ", meaning: "勉強を する ところです。", en: "Place / Location" },
   {
+    term: "はたらける",
+    reading: "はたらける",
+    meaning: "「はたらく」の かたちの 1つ。仕事が できる、と いう ことです。",
+    en: "Able to work",
+  },
+  {
     term: "バックエンド",
     reading: "ばっくえんど",
     meaning: "目に 見えない、うらがわを 作る 仕事です。",
@@ -1422,6 +1639,12 @@ export const GLOSSARY = [
     reading: "はっこう",
     meaning: "紙や 券を 作って、人に わたす ことです。",
     en: "Issuing",
+  },
+  {
+    term: "発注",
+    reading: "はっちゅう",
+    meaning: "相手に 仕事や ものを たのむ ことです。",
+    en: "Placing an order",
   },
   {
     term: "発展",
@@ -1477,12 +1700,6 @@ export const GLOSSARY = [
     reading: "ふだん",
     meaning: "とくべつでは ない、いつもの ときです。",
     en: "Usually",
-  },
-  {
-    term: "物流",
-    reading: "ぶつりゅう",
-    meaning: "ものを はこんで、とどける しくみです。",
-    en: "Logistics",
   },
   { term: "不要", reading: "ふよう", meaning: "いらない ことです。", en: "Unnecessary" },
   {
@@ -1574,12 +1791,6 @@ export const GLOSSARY = [
   { term: "方法", reading: "ほうほう", meaning: "やりかたの ことです。", en: "Method" },
   { term: "訪問", reading: "ほうもん", meaning: "相手の ところへ 行く ことです。", en: "Visit" },
   {
-    term: "法律",
-    reading: "ほうりつ",
-    meaning: "国が 決めた、みんなが 守る きまりです。",
-    en: "Law",
-  },
-  {
     term: "ホームページ",
     reading: "ほーむぺーじ",
     meaning: "会社や お店の ことを 見せる、ネットの ページです。",
@@ -1590,6 +1801,12 @@ export const GLOSSARY = [
     reading: "ほしゅ",
     meaning: "作った あとも、こわれないように 見る 仕事です。",
     en: "Maintenance",
+  },
+  {
+    term: "補助金",
+    reading: "ほじょきん",
+    meaning: "国や 役所から もらえる、しごとの ための お金です。",
+    en: "Subsidy",
   },
   {
     term: "保存",
@@ -1620,6 +1837,12 @@ export const GLOSSARY = [
     reading: "ほんやく",
     meaning: "ある 国の ことばを、ほかの ことばに かえる ことです。",
     en: "Translation",
+  },
+  {
+    term: "まとめます",
+    reading: "まとめます",
+    meaning: "ばらばらの ものを 1つに して、見やすく する ことです。",
+    en: "To put together",
   },
   {
     term: "満足",
@@ -1653,6 +1876,18 @@ export const GLOSSARY = [
     en: "Famous place",
   },
   {
+    term: "巡る",
+    reading: "めぐる",
+    meaning: "あちこちを 順番に 回る ことです。",
+    en: "To go around",
+  },
+  {
+    term: "めぐる",
+    reading: "めぐる",
+    meaning: "あちこちを 順番に 回る ことです。",
+    en: "To go around",
+  },
+  {
     term: "目的",
     reading: "もくてき",
     meaning: "何の ために するか、と いう ことです。",
@@ -1681,6 +1916,12 @@ export const GLOSSARY = [
     reading: "ゆうこうせい",
     meaning: "本当に 役に立つか、と いう ことです。",
     en: "Effectiveness",
+  },
+  {
+    term: "郵便電気通信省",
+    reading: "ゆうびんでんきつうしんしょう",
+    meaning: "カンボジアの 政府の 役所の 1つです。郵便と 通信の 仕事を します。",
+    en: "Ministry of Post and Telecommunications",
   },
   {
     term: "用意",
@@ -1738,6 +1979,12 @@ export const GLOSSARY = [
     en: "Renewal",
   },
   {
+    term: "理念",
+    reading: "りねん",
+    meaning: "会社が いちばん たいせつに して いる 考えの ことです。",
+    en: "Philosophy / Mission",
+  },
+  {
     term: "リリース",
     reading: "りりーす",
     meaning: "作った ものを、世の中へ 出す ことです。",
@@ -1749,7 +1996,19 @@ export const GLOSSARY = [
     meaning: "地面から はなれて、飛びはじめる ことです。",
     en: "Take-off",
   },
+  {
+    term: "履歴",
+    reading: "りれき",
+    meaning: "今までの ことの、じゅんばんの 記録です。",
+    en: "History",
+  },
   { term: "ルート", reading: "るーと", meaning: "通る 道の ことです。", en: "Route" },
+  {
+    term: "礼儀",
+    reading: "れいぎ",
+    meaning: "あいさつや ことばづかいなど、人を 大切に する やりかたです。",
+    en: "Good manners",
+  },
   {
     term: "歴史",
     reading: "れきし",
@@ -1779,5 +2038,17 @@ export const GLOSSARY = [
     reading: "れんけい",
     meaning: "ほかの 人や 会社と、力を 合わせる ことです。",
     en: "Cooperation",
+  },
+  {
+    term: "連合会",
+    reading: "れんごうかい",
+    meaning: "いくつかの 会が いっしょに なって 作った、大きな 会です。",
+    en: "Federation",
+  },
+  {
+    term: "連絡",
+    reading: "れんらく",
+    meaning: "連絡は、予定や情報を相手に伝えることです。",
+    en: "Contact",
   },
 ];

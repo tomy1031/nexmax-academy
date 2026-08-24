@@ -47,6 +47,7 @@ const HOUKOKU_WORDS: readonly (readonly string[])[] = [
   ["2018"],
   ["受託開発"],
   ["ベトナム"],
+  ["NMClaw"],
 ];
 
 /**
@@ -58,6 +59,8 @@ const HOUKOKU_FREE_INPUT = [
   "くるまの かいしゃです", // ひらがな＋です＋部分一致（代表解は「くるま」）
   "にほんごの きょういく", // ひらがな＋部分一致（代表解は「教育」）
   "ぶんかです", // ひらがな＋です（代表解は「価値」・accept に「ぶんか」）
+  "かんこう", // ひらがな（5つの サービスの 1つ・accept に「かんこう」）
+  "aupp", // 小文字（accept に「aupp」）
   "ほうこくします", // ひらがな（代表解は「報告します」）
 ];
 
@@ -235,10 +238,14 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
 
     /*
      * この 教材は `answerMode: "all"`。学習用サイトと 行き来しながら 書く ので、
-     * **進まずに** 上から 下まで 書ける。9問が 同時に 見えて いる ことを 先に 見る。
+     * **進まずに** 上から 下まで 書ける。12問が 同時に 見えて いる ことを 先に 見る。
      */
-    await expect(page.getByText("1/9")).toBeVisible();
-    await expect(page.getByText("9/9")).toBeVisible();
+    /*
+     * **完全一致で さがす。** 「1/12」は 「11/12」の 中にも 入って いる ので、
+     * 部分一致だと 候補が 2つに なって 落ちる（12問に 増やした 日に 出た）。
+     */
+    await expect(page.getByText("1/12", { exact: true })).toBeVisible();
+    await expect(page.getByText("12/12", { exact: true })).toBeVisible();
     await expect(page.getByRole("button", { name: "つぎ →" })).toHaveCount(0);
 
     for (const words of HOUKOKU_WORDS) {
@@ -246,15 +253,15 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
     }
     await shot(page, "05-quiz-wordbank");
 
-    // 自由入力は 上から 順に 4つ 並んで いる
+    // 自由入力は 上から 順に 6つ 並んで いる
     const boxes = page.getByLabel("こたえを 入力する");
     for (const [index, written] of HOUKOKU_FREE_INPUT.entries()) {
       await boxes.nth(index).fill(written);
     }
-    await expect(page.getByText("こたえた 9 / 9")).toBeVisible();
+    await expect(page.getByText("こたえた 12 / 12")).toBeVisible();
     await submitAnswers(page);
 
-    await expect(page.getByText("9 / 9 もん")).toBeVisible();
+    await expect(page.getByText("12 / 12 もん")).toBeVisible();
     // 自分の書き方のまま通ったことを 画面が 見せる（救済が 生きている証拠）
     for (const written of HOUKOKU_FREE_INPUT) {
       await expect(page.getByText(`あなたの こたえ: ${written}`)).toBeVisible();
@@ -358,6 +365,49 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
     const cert2 = page.getByRole("dialog", { name: "しゅうりょうしょうの ポップアップ" });
     await expect(cert2).toBeVisible();
     await cert2.getByRole("button").click();
+
+    await frameNext(page).click();
+  });
+
+  await test.step("6b. もんだい「おもしろいと 思った ところ」— 正解の 無い 問い", async () => {
+    /*
+     * 松井社長と 話す 前に、**自分の ことばを 作って おく** 段（2026-08-24 の 指定）。
+     * 正解が 無いので、書けば 点が 入る。ここで「ちがいます」が 出たら 設計が 壊れて いる
+     *（規律1: その 学習者だけの 正しい こたえを まちがいに しない）。
+     */
+    await expect(page).toHaveURL(/quiz-kaisha_omoshiroi$/);
+    await page.getByRole("button", { name: "はじめる" }).click();
+
+    const boxes = page.getByRole("textbox", { name: "じゆうに 書く" });
+    await expect(boxes).toHaveCount(7);
+
+    const written = [
+      "ドローンが 自分で 飛ぶ こと",
+      "ベトナムの チームと 毎日 話す こと",
+      "Boo が うけつけを した こと",
+      "お客さまに 車の 会社が ある こと",
+      "会社が できたのが 2018年だった こと",
+      "わたしの 国には まだ ないので、見て みたいからです。",
+      "日本語と クメール語が わかるので、通訳が できると 思います。",
+    ];
+    for (const [at, text] of written.entries()) await boxes.nth(at).fill(text);
+
+    await expect(page.getByText("こたえた 7 / 7")).toBeVisible();
+    await submitAnswers(page);
+
+    /*
+     * 正解の 無い 問いなので「正解」の 見出しは 1つも 出ない。
+     * 画面の 漢字には ルビが 合成される（正解 → 正解せいかい）ので、
+     * **完全一致では 当たらない**。前方一致で 見る。
+     */
+    await expect(page.getByText(/^正解/)).toHaveCount(0);
+    /*
+     * 書いた ものは 消えずに 残る。**かなだけの ひとかたまり**で さがす——
+     * 画面の 漢字には ルビが 合成される ので、書いた 文の まま 引くと 当たらない
+     *（「通訳」→「通訳つうやく」）。中身が そのままかは 単体テストが 見て いる。
+     */
+    await expect(page.getByText(/わかるので/)).toBeVisible();
+    await shot(page, "06b-omoshiroi-result");
 
     await frameNext(page).click();
   });

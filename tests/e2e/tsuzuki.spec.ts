@@ -1,5 +1,13 @@
 import { expect, test } from "@playwright/test";
-import { itemsBefore, KAISHA, placeWords, progressText, seedCompleted, shot } from "./helpers";
+import {
+  KAISHA,
+  itemsBefore,
+  placeWords,
+  progressText,
+  seedCompleted,
+  shot,
+  writtenText,
+} from "./helpers";
 
 /**
  * 途中で 離れても、つづきから — もんだい（quizset）の しおり
@@ -21,7 +29,7 @@ test("2問 書いて 離れ、もどると「つづきから」が 出る", asyn
   // ぜんぶ 1ページなので 進まずに 2問 書く
   await placeWords(page, ["ホームページや アプリ"]);
   await placeWords(page, ["大阪", "東京"]);
-  await expect(page.getByText("こたえた 2 / 9")).toBeVisible();
+  await expect(page.getByText(writtenText(2))).toBeVisible();
 
   // ステージへ 離脱（進み具合には「とちゅう」として 出る）
   await page.goto("/kaisha");
@@ -36,7 +44,7 @@ test("2問 書いて 離れ、もどると「つづきから」が 出る", asyn
 
   await page.getByRole("button", { name: "つづきから" }).click();
   // 書いた ものが 戻って いる
-  await expect(page.getByText("こたえた 2 / 9")).toBeVisible();
+  await expect(page.getByText(writtenText(2))).toBeVisible();
 });
 
 test("「はじめから やる」を えらべば 1問目に もどる", async ({ page, context }) => {
@@ -48,6 +56,6 @@ test("「はじめから やる」を えらべば 1問目に もどる", async 
 
   await page.goto(KAISHA.quiz2.path);
   await page.getByRole("button", { name: "はじめから やる" }).click();
-  await expect(page.getByText("こたえた 0 / 9")).toBeVisible();
+  await expect(page.getByText(writtenText(0))).toBeVisible();
   await expect(page.getByRole("button", { name: "こたえを 出" })).toHaveCount(0);
 });

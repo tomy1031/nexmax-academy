@@ -107,15 +107,6 @@ export const WORKS = {
       },
     },
     {
-      kind: "callout",
-      tone: "point",
-      text: {
-        n4: "お客さまの しごとは いろいろです。車、法律、こども、トラック、観光。ITは どの しごとでも 使います。",
-        n3: "お客さまの業種はさまざまです。自動車、法律、こども、物流、観光。ITはどんな仕事でも役に立ちます。",
-        en: "Our clients do very different things: cars, law, children, trucking, tourism. IT is useful everywhere.",
-      },
-    },
-    {
       kind: "paragraph",
       text: {
         n4: "大きくて 有名な 会社の システムを 作る しごとにも、たくさん 参加して います。",

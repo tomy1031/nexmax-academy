@@ -1,12 +1,14 @@
 import { expect, test } from "@playwright/test";
 import {
+  HOUKOKU_TOTAL,
+  KAISHA,
   choiceButtons,
   itemsBefore,
-  KAISHA,
   progressText,
   readTestResult,
   seedCompleted,
   shot,
+  writtenText,
 } from "./helpers";
 
 /**
@@ -61,9 +63,9 @@ test("ぜんぶ 1ページに 出る（行き来しながら 書ける）", asyn
   await page.goto(KAISHA.quiz2.path);
   await page.getByRole("button", { name: START_SUBMIT }).click();
 
-  // 9問 ぜんぶが 同時に 見えて いる（見出しの 番号チップ 1/9 … 9/9）
-  await expect(page.getByText("1/9")).toBeVisible();
-  await expect(page.getByText("9/9")).toBeVisible();
+  // 問題が ぜんぶ 同時に 見えて いる（見出しの 番号チップ 1/n … n/n）
+  await expect(page.getByText("1/" + HOUKOKU_TOTAL, { exact: true })).toBeVisible();
+  await expect(page.getByText(`${HOUKOKU_TOTAL}/${HOUKOKU_TOTAL}`, { exact: true })).toBeVisible();
   // 1問ずつ の 道具は 出ない
   await expect(page.getByRole("button", { name: "つぎ →" })).toHaveCount(0);
   await expect(page.getByRole("button", { name: "さいごに かくにん →" })).toHaveCount(0);
@@ -82,7 +84,7 @@ test("他の ページへ 行って 戻っても、書いた ものは 残る", 
    */
   await page.getByRole("button", { name: "ホームページや アプリ" }).first().click();
   await page.getByLabel("こたえを 入力する").first().fill("くるま");
-  await expect(page.getByText("こたえた 2 / 9")).toBeVisible();
+  await expect(page.getByText(writtenText(2))).toBeVisible();
 
   // ステージへ 離脱 → 戻る
   await page.goto("/kaisha");
@@ -92,7 +94,7 @@ test("他の ページへ 行って 戻っても、書いた ものは 残る", 
   await page.getByRole("button", { name: "つづきから" }).click();
 
   // 2問とも 書いた ものが そのまま 残って いる
-  await expect(page.getByText("こたえた 2 / 9")).toBeVisible();
+  await expect(page.getByText(writtenText(2))).toBeVisible();
   await expect(page.getByLabel("こたえを 入力する").first()).toHaveValue("くるま");
 });
 
@@ -207,9 +209,9 @@ test("書いた こたえを 消したら、つぎに 開いても 生き返ら�
   // 自由入力の もんだいに 書いてから 自分で 消す（1ページなので 進む 必要が 無い）
   const box = page.getByLabel("こたえを 入力する").first();
   await box.fill("くるま");
-  await expect(page.getByText("こたえた 1 / 9")).toBeVisible();
+  await expect(page.getByText(writtenText(1))).toBeVisible();
   await box.fill("");
-  await expect(page.getByText("こたえた 0 / 9")).toBeVisible();
+  await expect(page.getByText(writtenText(0))).toBeVisible();
 
   // 離脱して 戻る。画面が 0と 言った なら、端末の 中も 0で ある
   await page.goto("/kaisha");

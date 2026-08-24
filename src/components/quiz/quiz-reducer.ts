@@ -129,6 +129,7 @@ export type QuizAction =
   | ({ readonly type: "answerChoice"; readonly index: number } & Targeted)
   | ({ readonly type: "answerMulti"; readonly indexes: readonly number[] } & Targeted)
   | ({ readonly type: "answerKeyword"; readonly input: string } & Targeted)
+  | ({ readonly type: "answerFree"; readonly input: string } & Targeted)
   | ({ readonly type: "answerWordbank"; readonly filled: readonly (string | null)[] } & Targeted)
   | ({ readonly type: "answerFeeling"; readonly index: number } & Targeted)
   | ({ readonly type: "answerReply"; readonly index: number } & Targeted)
@@ -264,6 +265,17 @@ export function quizReducer(state: QuizState, action: QuizAction): QuizState {
     case "answerMulti": {
       if (question.type !== "multi") return state;
       return put(state, question, { kind: "multi", indexes: [...action.indexes] });
+    }
+
+    /*
+     * 自由記述。**書いた ものを 置くだけ**。
+     *
+     * 正解が 無いので、`answerKeyword` の ような「ひらがなで 入力してね」の
+     * 注意も 出さない——ローマ字で 書きたい 学習者を 止める 理由が 無い。
+     */
+    case "answerFree": {
+      if (question.type !== "free") return state;
+      return put(state, question, { kind: "free", input: action.input });
     }
 
     case "answerKeyword": {

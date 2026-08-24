@@ -117,6 +117,13 @@ export function describeQuestionIssues(question: QuizQuestion): string[] {
       if (question.replies.length < 3) notices.push("言い方を 3つ以上 書いてください。");
       return notices;
     }
+
+    /*
+     * 自由記述に「足りない もの」は 無い。正解を 書く 欄が そもそも 無いので、
+     * 先生が うっかり 空の まま 公開する、と いう 事故が 起きない。
+     */
+    case "free":
+      return [];
   }
 }
 
@@ -187,6 +194,8 @@ const QUIZ_TYPE_OPTIONS: readonly { value: QuizQuestion["type"]; label: string }
   { value: "keyword", label: "じぶんで 書く" },
   { value: "wordbank", label: "語群から あなうめ" },
   { value: "emotion", label: "気もち → 言い方" },
+  // 正解が 無い 問い（「なぜ そう 思いましたか」）。書けば 点が 入る
+  { value: "free", label: "じゆうに 書く（正解なし）" },
 ];
 
 const PHASE_OPTIONS: readonly { value: QuizSet["phase"]; label: string }[] = [

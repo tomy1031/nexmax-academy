@@ -60,6 +60,8 @@ function answerCorrectly(state: QuizState): QuizState {
       return quizReducer(state, { type: "answerMulti", indexes: q.answers });
     case "keyword":
       return quizReducer(state, { type: "answerKeyword", input: q.answer });
+    case "free":
+      return quizReducer(state, { type: "answerFree", input: "じゆうに 書いた こたえ" });
     case "wordbank":
       return quizReducer(state, { type: "answerWordbank", filled: q.blanks });
     case "emotion":
@@ -707,6 +709,12 @@ function answerCorrectlyAt(state: QuizState, id: string): QuizState {
       return quizReducer(state, { type: "answerMulti", indexes: q.answers, questionId: id });
     case "keyword":
       return quizReducer(state, { type: "answerKeyword", input: q.answer, questionId: id });
+    case "free":
+      return quizReducer(state, {
+        type: "answerFree",
+        input: "じゆうに 書いた こたえ",
+        questionId: id,
+      });
     case "wordbank":
       return quizReducer(state, { type: "answerWordbank", filled: [...q.blanks], questionId: id });
     case "emotion":
@@ -716,3 +724,72 @@ function answerCorrectlyAt(state: QuizState, id: string): QuizState {
       );
   }
 }
+
+/*
+ * 自由記述（正解の 無い 問い）。
+ *
+ * ここが 壊れると、学習者が 自分の ことばで 書いた こたえに「ちがいます」が 出る。
+ * それは 規律1（不正解と 言わない）を **いちばん 大事な ところ**で 破る こと。
+ */
+describe("じゆうに 書く（正解なし）", () => {
+  const FREE_SET: QuizSet = quizSetSchema.parse({
+    kind: "quizset",
+    id: "free_sample",
+    title: "じゆうに 書く",
+    description: "正解の 無い 問いです。",
+    phase: "production",
+    answerMode: "all",
+    passRate: 50,
+    furigana: [
+      ["思", "おも"],
+      ["書", "か"],
+    ],
+    questions: [
+      {
+        id: "f1",
+        type: "free",
+        q: "どうして そう 思いましたか。",
+        minLength: 6,
+        explain: "書けましたね。",
+        points: 2,
+      },
+    ],
+  });
+
+  /** 1問 書いて 出した あとの 記録（採点の 結果は `results` に 積まれる）。 */
+  const write = (input: string) => {
+    const started = quizReducer(createQuizSession(FREE_SET), { type: "answerFree", input });
+    const done = quizReducer(started, { type: "submit" });
+    return { row: done.results[0], summary: summarizeQuiz(done) };
+  };
+
+  it("書けば 点が 入る（中身は 見ない）", () => {
+    const { row, summary } = write("わたしの 国には まだ ないからです。");
+    expect(row?.correct).toBe(true);
+    expect(summary.earned).toBe(2);
+  });
+
+  it("まったく ちがう ことを 書いても「ちがいます」に ならない", () => {
+    // 正解が 無い ので、どんな 中身でも 通る。これが この 型の 存在理由
+    expect(write("すきな 色は あおです。ぜんぜん かんけいが ありません。").row?.correct).toBe(true);
+  });
+
+  it("短かすぎる ときは 点が 入らない（もう すこし 書いて もらう）", () => {
+    const { row, summary } = write("はい");
+    expect(row?.correct).toBe(false);
+    expect(summary.earned).toBe(0);
+  });
+
+  it("1つも 書かずに 出そうと しても 先へ 進まない", () => {
+    // 「出す」は 何か 書いて から。空の まま 出して 0点の 記録を 残すと、
+    // 学習者は 何も して いないのに「できなかった」を 見る ことに なる
+    const done = quizReducer(createQuizSession(FREE_SET), { type: "submit" });
+    expect(done.results).toHaveLength(0);
+    expect(summarizeQuiz(done).earned).toBe(0);
+  });
+
+  it("学習者の 書いた ものは そのまま 残る（正規化しない）", () => {
+    const written = "ドローンが  じぶんで とぶ こと！";
+    expect(write(written).row?.answer).toBe(written);
+  });
+});
