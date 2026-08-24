@@ -170,12 +170,28 @@ export const EMPTY_TALK: TalkState = {
 /** 1回の 発話の 結果。画面は `gained` を「好感度 +n%」として 見せる。 */
 export interface TalkStep {
   readonly state: TalkState;
-  /** この ターンで 上がった ぶん（%）。 */
+  /** この ターンで 観点から 上がった ぶん（%）。内訳の 合計と 必ず 一致する。 */
   readonly gained: number;
+  /**
+   * 観点とは 別に、**話しきった ぶんの 底上げ**で 増えた ぶん（%）。
+   *
+   * 内訳と メーターの 動きが 食い違うのを 防ぐ ため に 分けて 持つ。
+   * ここを `gained` に 混ぜて いた ころ、5つめを 話した ターンだけ
+   * 「+7%」と 出て メーターは 26 動いた（2026-08-24 の 検収指摘）。
+   */
+  readonly lifted: number;
   /** 新しく 見つけた「おもしろい」（無ければ null）。 */
   readonly discovered: string | null;
   /** この ターンで ばんが 変わったか。 */
   readonly turned: TalkRound | null;
+  /**
+   * **この 発話を 見た ときの ばん**（切りかえ後の `state.round` では ない）。
+   *
+   * 画面の 内訳は この ばんの 観点表で 描く。切りかえ後の ばんで 描くと、
+   * 答えた だけの ターンに「しつもんの 形に なって いない」が 並ぶ——
+   * やって いない ことを 責める 形に なる（規律1・2026-08-24 の 検収指摘）。
+   */
+  readonly judgedAs: TalkRound;
 }
 
 /**
@@ -209,8 +225,9 @@ export function applyTurn(
   topic: string | null,
 ): TalkStep {
   if (state.round === "clear") {
-    return { state, gained: 0, discovered: null, turned: null };
+    return { state, gained: 0, lifted: 0, discovered: null, turned: null, judgedAs: "clear" };
   }
+  const judgedAs = state.round;
   const gained = gainFor(state.round, observations);
   const fresh =
     state.round === "talk" && topic && !alreadyFound(state.found, topic) ? topic.trim() : null;
@@ -221,24 +238,54 @@ export function applyTurn(
   let round: TalkRound = state.round;
   let turned: TalkRound | null = null;
 
+  let lifted = 0;
+
   if (state.round === "talk") {
-    const enough = found.length >= plan.findCount || turns >= plan.findCount * TALK_TURN_CAP_RATIO;
+    /*
+     * **聞く ばんへ 移る 3つの 入口**。
+     *
+     * - 見つける ものを 見つけた（ねらいの 本筋）
+     * - **好感度が 入口に とどいた**（2026-08-24 の 指定「一定数の 好感度を 得たら、
+     *   そこから 逆に 学生が 質問する」）。上手な 人を 深掘りに 縛りつけない
+     * - 深掘りの 上限（いちばん 助けが 要る 人だけ 会話を 終われない、を 防ぐ）
+     *
+     * 好感度の 入口を 足したのは、**満タンなのに 終われない**を 消す ためでも ある。
+     * 1ターンの 最大は 12 なので、話す ばんを 出る ときの 好感度は
+     * `openAt + 11` を 超えない。聞く ばんの 1ターンは 最大 10 なので、
+     * 少なくとも `LISTEN_MIN_ASKS` 回 聞かないと 満タンには 届かない——
+     * 「100% の まま クリアしない」ターンが 生まれない（2026-08-24 の 検収指摘）。
+     */
+    const enough =
+      found.length >= plan.findCount ||
+      percent >= plan.openAt ||
+      turns >= plan.findCount * TALK_TURN_CAP_RATIO;
     if (enough) {
       // 話しきった ぶんの 底上げ（届いた 人と 同じ 場所に 立たせる）
+      const before = percent;
       percent = Math.max(percent, Math.min(plan.openAt, plan.goal));
+      lifted = percent - before;
       round = "listen";
       turned = "listen";
     }
   } else {
     const enough = percent >= plan.goal || asked >= LISTEN_MAX_ASKS;
     if (enough && asked >= LISTEN_MIN_ASKS) {
+      const before = percent;
       percent = plan.goal;
+      lifted = percent - before;
       round = "clear";
       turned = "clear";
     }
   }
 
-  return { state: { round, percent, found, turns, asked }, gained, discovered: fresh, turned };
+  return {
+    state: { round, percent, found, turns, asked },
+    gained,
+    lifted,
+    discovered: fresh,
+    turned,
+    judgedAs,
+  };
 }
 
 /**

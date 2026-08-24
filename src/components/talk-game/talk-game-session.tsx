@@ -82,7 +82,7 @@ import { TalkScene } from "./talk-scene";
  */
 
 /** 画面の 飾りに 出る 漢字の 読み（教材の 読み辞書とは 混ぜない・規律2）。 */
-const CHROME_FURIGANA = buildFuriganaIndex([
+const CHROME_ENTRIES: readonly (readonly [string, string])[] = [
   ["社長", "しゃちょう"],
   ["会社", "かいしゃ"],
   ["話", "はな"],
@@ -98,13 +98,19 @@ const CHROME_FURIGANA = buildFuriganaIndex([
   ["書", "か"],
   ["番", "ばん"],
   ...FEEDBACK_FURIGANA,
-]);
+];
+
+const CHROME_FURIGANA = buildFuriganaIndex(CHROME_ENTRIES);
 
 type Phase = "lobby" | "host" | "me" | "thinking" | "feedback" | "clear";
 
 interface TurnResult {
   observations: TalkObservations;
   gained: number;
+  /** 話しきった ぶんの 底上げ（観点とは 別に 見せる）。 */
+  lifted: number;
+  /** この 発話を 見た ときの ばん（切りかえ後では ない）。 */
+  judgedAs: TalkState["round"];
   discovered: string | null;
   said: string;
   praise: string;
@@ -129,10 +135,19 @@ export function TalkGameSession({
   meeting,
   hostVoice,
   dictionary,
+  embedded = false,
 }: {
   meeting: Meeting;
   hostVoice?: string;
   dictionary?: readonly DictionaryEntry[];
+  /**
+   * 先生の 画面（スタジオの「話して みる」）に 埋めこむ ときは true。
+   *
+   * 学習者の 画面は 全画面（`fixed inset-0`）で よいが、先生の 画面では
+   * **枠の 中に おさめる**——全画面が かぶさると、下に ある「やめる」が
+   * 押せなく なる（2026-08-24 の 検収指摘）。
+   */
+  embedded?: boolean;
 }) {
   const game = meeting.talkGame;
   const learnerName = useSyncExternalStore(subscribeToProfile, readName, readNameOnServer);
@@ -181,6 +196,17 @@ export function TalkGameSession({
 
   const furigana = useMemo(
     () => buildFuriganaIndex(mergeFuriganaEntries(meeting.furigana ?? [], [])),
+    [meeting.furigana],
+  );
+  /**
+   * 見かたの 板で つかう 索引。
+   *
+   * 板には **画面の ことば**（観点の 見出し）と **札の ことば**（AIの ラベル、
+   * 判定に つなげない ときは 学習者が 書いた 文）が 並ぶ。片方の 索引だけでは
+   * どちらかが 裸の 漢字に なる ので、2つを 合わせる（規律2）。
+   */
+  const boardFurigana = useMemo(
+    () => buildFuriganaIndex(mergeFuriganaEntries(meeting.furigana ?? [], CHROME_ENTRIES)),
     [meeting.furigana],
   );
 
@@ -297,7 +323,7 @@ export function TalkGameSession({
       const observations = answer.ok
         ? answer.judgement.observations
         : localObservations(talk.round, said);
-      const topic = answer.ok ? answer.judgement.topic : localTopic(talk.round, said);
+      const topic = answer.ok ? answer.judgement.topic : localTopic(talk.round, said, observations);
       const step = applyTurn(talk, plan, observations, topic || null);
       setTalk(step.state);
       // 画面が 自分で 出す 文は **かなだけ**（その場の 文には ルビを 合成できない）
@@ -305,6 +331,8 @@ export function TalkGameSession({
       setResult({
         observations,
         gained: step.gained,
+        lifted: step.lifted,
+        judgedAs: step.judgedAs,
         discovered: step.discovered,
         said,
         praise: answer.ok ? answer.judgement.praise : "じぶんの ことばで いえましたね。",
@@ -336,7 +364,13 @@ export function TalkGameSession({
        * 先に 書けないので、書けるのは 入口だけ。
        */
       const scripted = game.openers[talk.turns] ?? "";
-      const probe = game.probes[talk.turns % Math.max(1, game.probes.length)] ?? "";
+      /*
+       * 予備は **出だしを 使いきった ところから** 順に 回す。`turns` で そのまま
+       * 割って いた ころは、予備の 1つめ（「どうして、それが おもしろいと…」）が
+       * 6ターン目まで 出ず、深掘りの 順が くずれて いた（2026-08-24 の 検収指摘）。
+       */
+      const at = Math.max(0, talk.turns - game.openers.length);
+      const probe = game.probes[at % Math.max(1, game.probes.length)] ?? "";
       lines.push(withName(scripted) || result.nextAsk || withName(probe));
     }
     setResult(null);
@@ -454,7 +488,14 @@ export function TalkGameSession({
   }
 
   return (
-    <div className="fixed inset-0 z-50" style={{ background: "var(--color-ink)" }}>
+    <div
+      className={
+        embedded
+          ? "relative aspect-[4/3] w-full overflow-hidden rounded-2xl sm:aspect-[16/9]"
+          : "fixed inset-0 z-50"
+      }
+      style={{ background: "var(--color-ink)" }}
+    >
       <TalkScene
         background={game.background}
         figure={figure}
@@ -462,12 +503,20 @@ export function TalkGameSession({
         hostRole={meeting.host.role}
         percent={talk.percent}
         goal={plan.goal}
-        gained={phase === "feedback" ? (result?.gained ?? 0) : 0}
+        /*
+         * リングの 脇に 出す (+n) は **メーターが 動いた ぶん**。観点の ぶんだけ に すると、
+         * 底上げが 乗る ターンで 数字と 動きが 食い違う（2026-08-24 の 検収指摘）。
+         */
+        gained={phase === "feedback" ? (result?.gained ?? 0) + (result?.lifted ?? 0) : 0}
         furigana={furigana}
         bright={phase === "feedback" || phase === "clear"}
       >
         {/* 見つけた「おもしろい」の 札 */}
-        {phase !== "clear" ? (
+        {/*
+          板が 出て いる あいだは しまう。デスクトップでは 板が 左上に 来る ので、
+          札と 重なって どちらも 読めなく なる（2026-08-24 の 検収指摘）。
+        */}
+        {phase !== "clear" && phase !== "feedback" ? (
           <div className="absolute top-24 left-3 flex flex-col gap-1">
             <span className="text-ink-soft rounded-full bg-white/85 px-2.5 py-0.5 text-[11px] font-black">
               おもしろい {found} / {plan.findCount}
@@ -480,10 +529,26 @@ export function TalkGameSession({
                 className="text-navy max-w-[9rem] truncate rounded-full bg-white/85 px-2.5 py-0.5 text-[11px] font-bold"
                 title={one}
               >
-                🔎 {one}
+                🔎 <RubyText text={one} index={boardFurigana} show />
               </motion.span>
             ))}
           </div>
+        ) : null}
+
+        {/*
+          **やめる 道を 1つ 置く**（2026-08-24 の 検収指摘）。全画面に なる ので、
+          ここが 無いと 途中で 出る 手だてが ブラウザの 戻る しか なくなる——
+          スマホの 戻るは アプリごと 出る 操作に なりやすい。
+          しおりは 残る ので、進みは 消えない（`saveTalkResume`）。
+        */}
+        {phase !== "clear" ? (
+          <button
+            type="button"
+            onClick={() => setPhase("lobby")}
+            className="text-ink-soft absolute top-3 right-28 rounded-full bg-white/90 px-3 py-1 text-xs font-black shadow"
+          >
+            やめる
+          </button>
         ) : null}
 
         {phase === "host" || phase === "thinking" ? (
@@ -516,15 +581,16 @@ export function TalkGameSession({
 
         {phase === "feedback" && result ? (
           <TalkFeedback
-            round={talk.round}
+            round={result.judgedAs}
             observations={result.observations}
             gained={result.gained}
+            lifted={result.lifted}
             said={result.said}
             praise={result.praise}
             fix={result.fix}
             example={result.example}
             discovered={result.discovered}
-            furigana={CHROME_FURIGANA}
+            furigana={boardFurigana}
             onNext={afterFeedback}
           />
         ) : null}
@@ -724,7 +790,7 @@ function ClearPanel({
                 className="text-navy rounded-full px-3 py-1 text-xs font-bold"
                 style={{ background: "var(--color-sky-soft)" }}
               >
-                🔎 {one}
+                🔎 <RubyText text={one} index={furigana} show />
               </li>
             ))}
           </ul>

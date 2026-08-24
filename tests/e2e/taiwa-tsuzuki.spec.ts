@@ -17,7 +17,7 @@ test("画面を 更新しても、好感度と 見つけた ものが 残る", a
 
   await page.getByLabel("文字で 答える").fill("カンボジアの プログラムが おもしろかったです。");
   await page.getByRole("button", { name: "おくる" }).click();
-  await expect(page.getByText(/こうかんど \+\d+%/)).toBeVisible({ timeout: 45_000 });
+  await expect(page.getByText(/^こうかんど \+\d+%$/)).toBeVisible({ timeout: 45_000 });
   await page.getByRole("button", { name: "つぎへ ▶" }).click();
   const before = await affinity(page);
   expect(before).toBeGreaterThan(0);

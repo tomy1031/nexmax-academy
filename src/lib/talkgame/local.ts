@@ -54,9 +54,20 @@ export function localObservations(round: TalkRound, utterance: string): TalkObse
  *
  * ラベルは **学習者の ことば その まま**（先頭 12字）。AIの ような 要約は できないが、
  * 札に 出る のが 自分の ことばなら、何を 見つけたのかは 学習者に 分かる。
+ *
+ * ## 日本語で 言えて いない ものは 開かない（2026-08-24 の 検収指摘）
+ * 長さだけで 見て いた ころは、英語でも でたらめな ローマ字でも 札が 開いた——
+ * 5回 でたらめを 打てば 聞く ばんへ 行けて しまい、「おもしろい ところを
+ * 5つ 見つける」という ねらいが 空に なる。できて いない ことを
+ * 「みつけました！」と 返すのは、ほめる ことばの 値打ちも 下げる（設計01 P8）。
  */
-export function localTopic(round: TalkRound, utterance: string): string {
+export function localTopic(
+  round: TalkRound,
+  utterance: string,
+  observations: TalkObservations,
+): string {
   if (round !== "talk") return "";
+  if (!observations.japanese || !observations.onTopic) return "";
   const text = utterance.trim();
   if (text.length < MIN_TOPIC) return "";
   return text.length > 12 ? `${text.slice(0, 12)}…` : text;

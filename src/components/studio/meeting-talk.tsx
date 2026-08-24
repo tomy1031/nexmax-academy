@@ -4,6 +4,7 @@ import { useState } from "react";
 import type { Character, Meeting } from "@/content/schema";
 import { MeetingSession } from "@/components/meeting/meeting-session";
 import { TalkGameSession } from "@/components/talk-game/talk-game-session";
+import { clearTalkResume } from "@/lib/talkgame/resume";
 import { clearMeetingResume } from "@/lib/meeting/resume";
 import { MiniButton, StudioSection } from "./studio-ui";
 
@@ -38,6 +39,8 @@ export function MeetingTalkPanel({ value, cast }: { value: Meeting; cast: readon
     const preview: Meeting = { ...value, id: `preview-${value.id}` };
     // 前の ためしの つづきから 始めない（毎回 1問目から 確かめたい）
     clearMeetingResume(preview.id);
+    // 対話ゲームの しおりも 消す（先生は 毎回 はじめから 確かめたい）
+    clearTalkResume(preview.id);
     setSnapshot(preview);
   }
 
@@ -70,7 +73,7 @@ export function MeetingTalkPanel({ value, cast }: { value: Meeting; cast: readon
           <div className="border-hairline rounded-2xl border-2 border-dashed p-2">
             {/* 対話ゲームの 教材は 別の 画面で 動く（願い #177）。 */}
             {snapshot.talkGame ? (
-              <TalkGameSession meeting={snapshot} hostVoice={host?.voice} />
+              <TalkGameSession meeting={snapshot} hostVoice={host?.voice} embedded />
             ) : (
               <MeetingSession
                 meeting={snapshot}

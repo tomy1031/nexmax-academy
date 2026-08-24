@@ -55,6 +55,7 @@ export function TalkFeedback({
   round,
   observations,
   gained,
+  lifted,
   said,
   praise,
   fix,
@@ -63,9 +64,13 @@ export function TalkFeedback({
   furigana,
   onNext,
 }: {
+  /** **この 発話を 見た ときの** ばん（切りかえ後では ない）。 */
   round: TalkRound;
   observations: TalkObservations;
+  /** 観点から 上がった ぶん。下の 内訳の 合計と 一致する。 */
   gained: number;
+  /** 話しきった ぶんの 底上げ（0 の ことが 多い）。 */
+  lifted: number;
   /** 学習者が 言った ことば（そのまま 引用する）。 */
   said: string;
   praise: string;
@@ -145,7 +150,8 @@ export function TalkFeedback({
             animate={{ opacity: 1, scale: 1 }}
             className="text-leaf-deep text-sm font-black"
           >
-            🔎 「{discovered}」を みつけました！
+            🔎 「<RubyText text={discovered} index={furigana} show />
+            」を みつけました！
           </motion.p>
         ) : null}
 
@@ -162,6 +168,20 @@ export function TalkFeedback({
           >
             <RubyText text={`こう 言えます: ${example}`} index={furigana} show />
           </p>
+        ) : null}
+
+        {/*
+          底上げは **観点とは 別の 行**で 見せる。合わせて 1つの 数に すると、
+          内訳の 合計と 合わなく なる（2026-08-24 の 検収指摘）。
+        */}
+        {lifted > 0 ? (
+          <motion.p
+            initial={{ opacity: 0, y: 4 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-leaf-deep text-sm font-black"
+          >
+            🎉 さいごまで 話しきりました！ こうかんど +{lifted}%
+          </motion.p>
         ) : null}
 
         <div className="flex items-center justify-between gap-3">

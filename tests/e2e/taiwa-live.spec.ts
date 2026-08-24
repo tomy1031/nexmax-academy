@@ -38,7 +38,7 @@ test.describe("対話ゲームの AI（鍵が あるときだけ）", () => {
       asks.push((await page.locator("[data-ask]").innerText()).trim());
       await page.getByLabel("文字で 答える").fill(text);
       await page.getByRole("button", { name: "おくる" }).click();
-      await expect(page.getByText(/こうかんど \+\d+%/)).toBeVisible({ timeout: 45_000 });
+      await expect(page.getByText(/^こうかんど \+\d+%$/)).toBeVisible({ timeout: 45_000 });
     };
 
     await answer("カンボジアの プログラムが おもしろかったです。");

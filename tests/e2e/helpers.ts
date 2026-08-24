@@ -380,7 +380,7 @@ export async function readOn(page: Page, limit = 6): Promise<void> {
 export async function answerTalk(page: Page, text: string): Promise<void> {
   await page.getByLabel("文字で 答える").fill(text);
   await page.getByRole("button", { name: "おくる" }).click();
-  const gain = page.getByText(/こうかんど \+\d+%/);
+  const gain = page.getByText(/^こうかんど \+\d+%$/);
   await expect(gain).toBeVisible({ timeout: 45_000 });
   await page.getByRole("button", { name: "つぎへ ▶" }).click();
 }

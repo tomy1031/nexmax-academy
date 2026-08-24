@@ -135,6 +135,52 @@ describe("満タンで おわる", () => {
   });
 });
 
+describe("内訳と メーターが 食い違わない", () => {
+  it("観点の ぶんと 底上げの ぶんを 分けて 返す", () => {
+    let state = EMPTY_TALK;
+    const weak = { ...NO_OBSERVATIONS, japanese: true };
+    for (let i = 0; i < PLAN.findCount - 1; i += 1) {
+      const step = applyTurn(state, PLAN, weak, `はっけん${i}`);
+      expect(step.lifted).toBe(0);
+      expect(step.state.percent - state.percent).toBe(step.gained);
+      state = step.state;
+    }
+    // 5つめ（ばんが 変わる ターン）だけ 底上げが 乗る
+    const last = applyTurn(state, PLAN, weak, "はっけん5");
+    expect(last.turned).toBe("listen");
+    expect(last.lifted).toBeGreaterThan(0);
+    expect(last.state.percent - state.percent).toBe(last.gained + last.lifted);
+  });
+
+  it("内訳は「見た ときの ばん」で 描く（切りかえ後では ない）", () => {
+    const state = talkFor(PLAN.findCount - 1, PERFECT);
+    const step = applyTurn(state, PLAN, PERFECT, "さいごの はっけん");
+    expect(step.turned).toBe("listen");
+    expect(step.judgedAs).toBe("talk");
+  });
+
+  it("満タンに なった ターンで かならず クリアする（100% のまま 続かない）", () => {
+    for (const shape of [PERFECT, { ...NO_OBSERVATIONS, japanese: true }]) {
+      let state = EMPTY_TALK;
+      for (let i = 0; i < 40 && state.round !== "clear"; i += 1) {
+        state = applyTurn(state, PLAN, shape, `はっけん${i}`).state;
+        if (state.percent >= PLAN.goal) expect(state.round).toBe("clear");
+      }
+      expect(state.round).toBe("clear");
+    }
+  });
+
+  it("好感度が 入口に とどいたら、見つける 数の 前でも 聞く ばんへ 移る", () => {
+    let state = EMPTY_TALK;
+    // 同じ 話題を くり返すと 札は 開かないが、好感度は たまる
+    for (let i = 0; i < 6 && state.round === "talk"; i += 1) {
+      state = applyTurn(state, PLAN, PERFECT, "おなじ はなし").state;
+    }
+    expect(state.round).toBe("listen");
+    expect(state.percent).toBeGreaterThanOrEqual(PLAN.openAt);
+  });
+});
+
 describe("話題の ならし", () => {
   it("空白と 記号を 落として 比べる", () => {
     expect(normalizeTopic("観光 DX・")).toBe(normalizeTopic("観光DX"));
@@ -152,6 +198,13 @@ describe("鍵が 無い ときの 見かた", () => {
     expect(localObservations("talk", "カンボジアの プログラムが おもしろいです。").concrete).toBe(
       false,
     );
+  });
+
+  it("日本語で 言えて いない ものは 札を 開かない", () => {
+    const english = "I think this company is interesting";
+    expect(localTopic("talk", english, localObservations("talk", english))).toBe("");
+    const nonsense = "asdfghjkl qwertyu";
+    expect(localTopic("talk", nonsense, localObservations("talk", nonsense))).toBe("");
   });
 
   it("りゆう・気もち・ていねいさは 規則で 拾える", () => {
@@ -173,8 +226,10 @@ describe("鍵が 無い ときの 見かた", () => {
   });
 
   it("短すぎる ことばは 見つけた ことに しない", () => {
-    expect(localTopic("talk", "はい")).toBe("");
-    expect(localTopic("listen", "とても おもしろいです")).toBe("");
-    expect(localTopic("talk", "とても おもしろいです")).not.toBe("");
+    const seen = (round: "talk" | "listen", text: string) =>
+      localTopic(round, text, localObservations(round, text));
+    expect(seen("talk", "はい")).toBe("");
+    expect(seen("listen", "とても おもしろいです")).toBe("");
+    expect(seen("talk", "とても おもしろいです")).not.toBe("");
   });
 });

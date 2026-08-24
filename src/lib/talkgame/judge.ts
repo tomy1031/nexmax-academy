@@ -135,7 +135,7 @@ export const TALK_SYSTEM = [
   "日本で はたらきたい 学生（日本語N5〜N4・英語は読める）の れんしゅうを 見ます。",
   "学生の ことばが とどいたら、かならず 1回だけ 道具 taiwa_no_mikata を 呼びます。",
   "声では 返事を しません（道具を 呼ぶだけ）。",
-  "学生が 読む 文（reply・praise・fix・exampleAnswer・nextAsk）は ひらがなと カタカナだけで",
+  "学生が 読む 文（reply・praise・fix・exampleAnswer・nextAsk・topic）は ひらがなと カタカナだけで",
   "書きます。漢字は 1文字も つかいません。ことばの あいだに 空白を 入れます。",
 ].join("\n");
 
@@ -247,7 +247,9 @@ export function buildTalkPrompt(context: TalkContext, kanaRetry = false): string
       ? "- topic: 空文字（この ばんでは 使いません）"
       : "- topic: 学生が 言った「おもしろい ところ」を 3〜10字の ラベルに して 書きます。" +
         "**新しい もの だけ**（上の「もう 見つかった」と 同じ 中身なら 空文字）。" +
-        "会社の 中身を 言えて いない ときも 空文字",
+        "会社の 中身を 言えて いない ときも 空文字。" +
+        "ラベルは **ひらがな・カタカナ・英字だけ**で 書きます" +
+        "（漢字は つかいません。れい: かんこうDX、NMClaw、ベトナムの かいしゃ）",
     listen
       ? "- reply: 社長の 答え。学生の しつもんを 一度 受け取って から、みじかく 答えます。2文まで"
       : "- reply: 社長の 返事。学生の ことばを 一度 受け取って から よろこびます。2文まで",
@@ -263,7 +265,7 @@ export function buildTalkPrompt(context: TalkContext, kanaRetry = false): string
     "- glossary: 上の 文に 出てくる、N5には むずかしい ことばの 英語（多くて 8つ）",
     "",
     "## ことばの 決まり",
-    "学生が 読む 文（reply・praise・fix・exampleAnswer・nextAsk）は **ひらがなと カタカナだけ**。",
+    "学生が 読む 文（reply・praise・fix・exampleAnswer・nextAsk・topic）は **ひらがなと カタカナだけ**。",
     "漢字は 1文字も つかいません。ことばの あいだに 空白を 入れます。",
     "学生を 否定する ことばは つかいません。できた ことから 先に 書きます（設計01 P8）。",
   ];

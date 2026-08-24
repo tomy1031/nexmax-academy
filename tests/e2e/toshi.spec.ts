@@ -379,9 +379,23 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
       if (at === 0) {
         await page.getByLabel("文字で 答える").fill(finding);
         await page.getByRole("button", { name: "おくる" }).click();
-        await expect(page.getByText(/こうかんど \+\d+%/)).toBeVisible({ timeout: 45_000 });
+        await expect(page.getByText(/^こうかんど \+\d+%$/)).toBeVisible({ timeout: 45_000 });
         await page.waitForTimeout(700);
         await shot(page, "10-meeting-matsui-feedback");
+        await page.getByRole("button", { name: "つぎへ ▶" }).click();
+      } else if (at === MATSUI_FINDINGS.length - 1) {
+        /*
+         * 5つめ＝**ばんが 変わる ターン**。内訳（話す ばんの 観点）と
+         * 底上げの 行が 食い違って いない ことを、写真にも 残す
+         *（2026-08-24 の 検収指摘 #1 の 再発よけ）。
+         */
+        await page.getByLabel("文字で 答える").fill(finding);
+        await page.getByRole("button", { name: "おくる" }).click();
+        await expect(page.getByText(/^こうかんど \+\d+%$/)).toBeVisible({ timeout: 45_000 });
+        await expect(page.locator('[data-kanten="concrete"]')).toBeVisible();
+        await expect(page.locator('[data-kanten="question"]')).toHaveCount(0);
+        await page.waitForTimeout(700);
+        await shot(page, "10-meeting-matsui-switch");
         await page.getByRole("button", { name: "つぎへ ▶" }).click();
       } else {
         await answerTalk(page, finding);

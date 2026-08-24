@@ -38,10 +38,13 @@ test("スマホの 幅でも、対話ゲームの 字が 枠から はみ出さ�
   await page.waitForTimeout(700);
   await shot(page, "13-taiwa-mobile-ask");
 
+  // 途中で やめる 道が ある（全画面が 出口を 塞がない）
+  await expect(page.getByRole("button", { name: "やめる" })).toBeVisible();
+
   // 見かたの 板（観点の 内訳）
   await page.getByLabel("文字で 答える").fill("カンボジアの プログラムが おもしろかったです。");
   await page.getByRole("button", { name: "おくる" }).click();
-  await expect(page.getByText(/こうかんど \+\d+%/)).toBeVisible({ timeout: 45_000 });
+  await expect(page.getByText(/^こうかんど \+\d+%$/)).toBeVisible({ timeout: 45_000 });
   await expect(page.getByRole("button", { name: "つぎへ ▶" })).toBeVisible();
   await noOverflow();
   await page.waitForTimeout(700);
