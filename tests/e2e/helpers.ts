@@ -97,9 +97,38 @@ export const HOUKOKU_TOTAL: number = (
   ) as { questions: unknown[] }
 ).questions.length;
 
-/** 「こたえた n / 12」の 文（全問1ページの 進みぐあい）。 */
+/** 「こたえた n / 26」の 文（全問1ページの 進みぐあい）。 */
 export function writtenText(done: number): string {
   return `こたえた ${done} / ${HOUKOKU_TOTAL}`;
+}
+
+/**
+ * 「たいわの じゅんび」の 問数。**教材から 読む**（`HOUKOKU_TOTAL` と 同じ 理由）。
+ */
+export const JUNBI_TOTAL: number = (
+  JSON.parse(
+    readFileSync(
+      join(__dirname, "..", "..", "content", "quizsets", "kaisha_omoshiroi.json"),
+      "utf8",
+    ),
+  ) as { questions: unknown[] }
+).questions.length;
+
+/**
+ * 松井社長との 対話ゲームで 見つける「おもしろい」の 数。**教材から 読む**。
+ *
+ * ここを ベタ書きして いた ため、5つ→3つ に した 日に taiwa-tsuzuki が 落ちた
+ *（2026-08-24）。`HOUKOKU_TOTAL` と 同じ 轍。
+ */
+export const MATSUI_FIND_COUNT: number = (
+  JSON.parse(
+    readFileSync(join(__dirname, "..", "..", "content", "meetings", "kaisha_matsui.json"), "utf8"),
+  ) as { talkGame: { findCount: number } }
+).talkGame.findCount;
+
+/** 「おもしろい n / m」の 文（対話ゲームの 進みぐあい）。 */
+export function foundText(found: number): string {
+  return `おもしろい ${found} / ${MATSUI_FIND_COUNT}`;
 }
 
 /**
@@ -244,6 +273,36 @@ export async function placeWords(page: Page, words: readonly string[]): Promise<
   for (const word of words) {
     await page.getByRole("button", { name: word }).first().click();
   }
+}
+
+/**
+ * 語群を 置く。**もんだいの id で 場所を しぼる。**
+ *
+ * ぜんぶ 1ページの 教材（`answerMode: "all"`）では 全問の 語群が 同時に 画面に ある。
+ * 同じ ことばの ふだが いくつもの もんだいに 出る ので
+ *（「システム開発」は 2問、「観光DX」は 3問に ある）、画面ぜんたいから `.first()` で
+ * 引くと **別の もんだいの ふだを 押す**——しかも 見た目は 進むので 気づかない。
+ * 板は `<li id="q-<もんだいのid>">`（`quiz-runner.tsx` の `AllQuestionsCard`）。
+ */
+export async function placeWordsIn(
+  page: Page,
+  questionId: string,
+  words: readonly string[],
+): Promise<void> {
+  const row = page.locator(`#q-${questionId}`);
+  for (const word of words) {
+    /*
+     * **ぴったり一致で 引く。** 語群の ふだは `aria-label` に ルビ前の ことばを 持つ
+     *（`question-types.tsx`）。ゆるい 一致だと 「日本語」が 「日本語の 勉強」にも
+     * 当たって、どちらが 押されたか 分からなく なる。
+     */
+    await row.getByRole("button", { name: word, exact: true }).first().click();
+  }
+}
+
+/** 自由入力の もんだいに 書く（上と 同じ 理由で もんだいの id で しぼる）。 */
+export async function writeIn(page: Page, questionId: string, text: string): Promise<void> {
+  await page.locator(`#q-${questionId}`).getByLabel("こたえを 入力する").fill(text);
 }
 
 /** 語群を 埋めて「こたえる」まで（1問ずつ の やりかたの 教材だけ）。 */

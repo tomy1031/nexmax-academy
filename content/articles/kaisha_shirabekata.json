@@ -2,8 +2,44 @@
   "kind": "article",
   "id": "kaisha_shirabekata",
   "title": "かいしゃの しらべかた",
-  "description": "ヘンディさんから ミッションが 来ました。会社の 調べ方を 覚えましょう。",
+  "description": "ヘンディさんから ミッションが 来ました。会社の 調べかたを おぼえましょう。",
   "furigana": [
+    [
+      "松井社長",
+      "まついしゃちょう"
+    ],
+    [
+      "社長",
+      "しゃちょう"
+    ],
+    [
+      "紹介",
+      "しょうかい"
+    ],
+    [
+      "報告",
+      "ほうこく"
+    ],
+    [
+      "海外",
+      "かいがい"
+    ],
+    [
+      "辞典",
+      "じてん"
+    ],
+    [
+      "教育",
+      "きょういく"
+    ],
+    [
+      "会社紹介",
+      "かいしゃしょうかい"
+    ],
+    [
+      "カンボジア教育",
+      "かんぼじあきょういく"
+    ],
     [
       "会社概要",
       "かいしゃがいよう"
@@ -175,6 +211,14 @@
     [
       "覚",
       "おぼ"
+    ],
+    [
+      "始",
+      "はじ"
+    ],
+    [
+      "長",
+      "なが"
     ]
   ],
   "blocks": [
@@ -184,34 +228,46 @@
       "text": "ヘンディさんからの ミッション"
     },
     {
+      "kind": "image",
+      "prompt": "A friendly cartoon senior engineer in a light blue button-down shirt, sleeves rolled to the elbow, smiling and holding out a blank clipboard checklist with both hands toward the viewer, as if handing it over; a small office desk with a laptop behind him; clean flat vector style, thick soft hand-drawn outlines, cheerful pastel palette (sky blue, navy, leaf green, coral) on a warm cream background, friendly rounded shapes, no letters, no numbers, no logos anywhere.",
+      "status": "done",
+      "caption": "ヘンディさんが、ちょうさシートを わたして くれました。",
+      "refs": [],
+      "src": "/img/articles/kaisha_shirabekata/b1.webp"
+    },
+    {
       "kind": "paragraph",
       "text": "ようこそ、ネクストメイクへ！ ヘンディです。"
     },
     {
       "kind": "paragraph",
-      "text": "ところで あなたは、わたしたちの 会社の こと、どのくらい 知って いますか。"
+      "text": "きょうは、会社の 調べかたを おしえます。"
     },
     {
       "kind": "paragraph",
-      "text": "まず、会社の しらべかたを おしえます。そのあと、ほんものの サイトで ためして みましょう。"
+      "text": "そのあと、ほんものの サイトで ちょうさシートを うめます。"
     },
     {
       "kind": "heading",
       "level": 2,
-      "text": "どうして しらべますか"
+      "text": "どうして 調べますか"
+    },
+    {
+      "kind": "image",
+      "prompt": "A job interview scene seen from the side: a young student sitting on one side of a small table speaking confidently, and two interviewers on the other side nodding and smiling; a speech bubble above the student containing a simple drawing of an office building, not text; clean flat vector style, thick soft hand-drawn outlines, cheerful pastel palette (sky blue, navy, leaf green, coral) on a warm cream background, friendly rounded shapes, no letters, no numbers, no logos anywhere.",
+      "status": "done",
+      "caption": "面接でも、会社の ことを 聞かれます。",
+      "refs": [],
+      "src": "/img/articles/kaisha_shirabekata/b6.webp"
     },
     {
       "kind": "paragraph",
       "text": "日本の 会社に 入る 前に、みんな 会社を しらべます。面接（interview）でも 聞かれます。"
     },
     {
-      "kind": "paragraph",
-      "text": "でも、いちばん たいせつな ことは、これです。"
-    },
-    {
       "kind": "callout",
       "tone": "point",
-      "text": "💎 その 会社だけの 「おもしろい！」を 1つ 見つけます。他の 会社には ない ことです。それが 言える 人は、面接で つよいです。"
+      "text": "「Webサイトに 書いて ありました」と 言える 人の 話は、聞く 人に とどきます。"
     },
     {
       "kind": "vocab",
@@ -225,11 +281,11 @@
     {
       "kind": "heading",
       "level": 2,
-      "text": "しらべる ときの 3つの 目"
+      "text": "会社を 見る 3つの 目"
     },
     {
       "kind": "paragraph",
-      "text": "3つの しつもん（3 questions）を もって 見ると、まよいません。"
+      "text": "3つの しつもんを もって 見ると、まよいません。"
     },
     {
       "kind": "list",
@@ -241,14 +297,11 @@
     },
     {
       "kind": "image",
-      "prompt": "a simple flat illustration of three friendly cartoon eyes in a row on a soft cream card, each eye inside a rounded pastel circle (mint, sky blue, coral); clean vector style, thick soft outlines, no letters anywhere.",
+      "prompt": "a simple flat illustration of three friendly cartoon eyes in a row on a soft cream card, each eye inside a rounded pastel circle (mint, sky blue, coral); clean vector style, thick soft outlines, no letters anywhere. clean flat vector style, thick soft hand-drawn outlines, cheerful pastel palette (sky blue, navy, leaf green, coral) on a warm cream background, friendly rounded shapes, no letters, no numbers, no logos anywhere.",
       "status": "done",
       "caption": "3つの 目で 見ます。",
-      "src": "/img/articles/kaisha_shirabekata/b3.webp"
-    },
-    {
-      "kind": "paragraph",
-      "text": "そして、「おもしろい！」と 思った ことを、1つ メモします。それが あなたの 💎に なります。"
+      "refs": [],
+      "src": "/img/articles/kaisha_shirabekata/b13.webp"
     },
     {
       "kind": "heading",
@@ -256,18 +309,30 @@
       "text": "どの ページを 見ますか"
     },
     {
+      "kind": "image",
+      "prompt": "A flat overhead diagram of a website map: one large rounded card at the top connected by thin curved lines to seven smaller rounded cards arranged below in two rows; each small card shows a simple pictogram instead of text - an office building, a calendar, a wrench, a lightbulb, a handshake, a globe, a graduation cap; pastel card colors; clean flat vector style, thick soft hand-drawn outlines, cheerful pastel palette (sky blue, navy, leaf green, coral) on a warm cream background, friendly rounded shapes, no letters, no numbers, no logos anywhere.",
+      "status": "done",
+      "caption": "サイトには ページが たくさん あります。",
+      "refs": [],
+      "src": "/img/articles/kaisha_shirabekata/b15.webp"
+    },
+    {
       "kind": "list",
       "items": [
-        "会社概要 … 会社の 場所や、できた 年",
-        "サービス … 作って いる もの",
-        "導入実績 … お客さまの 名前",
-        "ニュース … 新しい できごと"
+        "ホーム … 会社の ぜんたい",
+        "会社紹介 … できた 年・場所・たいせつな ことば",
+        "つくる仕事 … お客さまの ために 作る もの",
+        "事業 … 自分たちで 作る サービス",
+        "実績 … お客さまの 名前",
+        "グループ会社 … 海外の チーム",
+        "カンボジア教育 … みなさんの プログラム",
+        "ことばの辞典 … わからない ことばを さがす"
       ]
     },
     {
       "kind": "heading",
       "level": 2,
-      "text": "日本の IT会社の はたらきかた"
+      "text": "3つの はたらきかた"
     },
     {
       "kind": "paragraph",
@@ -275,9 +340,11 @@
     },
     {
       "kind": "image",
-      "prompt": "a simple flat infographic-style illustration with three rounded pastel panels side by side: (1) a small friendly office building handing a gift box to a smiling customer figure with an arrow pointing to the customer, (2) a small office building holding its own gift box with a heart above it, (3) a small worker figure walking with a laptop bag from one building into a bigger different-colored building; clean vector style, thick soft outlines, cheerful pastel palette, no letters or numbers anywhere.",
-      "status": "empty",
-      "caption": "① お客さまの ために 作る ② 自分の 会社の ものを 作る ③ お客さまの 会社の 中で はたらく"
+      "prompt": "a simple flat infographic-style illustration with three rounded pastel panels side by side: (1) a small friendly office building handing a gift box to a smiling customer figure with an arrow pointing to the customer, (2) a small office building holding its own gift box with a heart above it, (3) a small worker figure walking with a laptop bag from one building into a bigger different-colored building; clean vector style, thick soft outlines, cheerful pastel palette, no letters or numbers anywhere. clean flat vector style, thick soft hand-drawn outlines, cheerful pastel palette (sky blue, navy, leaf green, coral) on a warm cream background, friendly rounded shapes, no letters, no numbers, no logos anywhere.",
+      "status": "done",
+      "caption": "① お客さまの ために 作る ② 自分の 会社の ものを 作る ③ お客さまの 会社の 中で はたらく",
+      "refs": [],
+      "src": "/img/articles/kaisha_shirabekata/b19.webp"
     },
     {
       "kind": "list",
@@ -299,6 +366,54 @@
       "kind": "callout",
       "tone": "point",
       "text": "ぜんぶ おぼえなくて だいじょうぶです。「だれの ために 作るか」だけ、おぼえて おきましょう。"
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "会社の つながり"
+    },
+    {
+      "kind": "image",
+      "prompt": "A simple flat relationship diagram: one larger rounded card in the centre with a small office building pictogram, connected by two thick soft curved lines to two smaller rounded cards on the left and right, each with its own small building pictogram and a tiny location pin above it; friendly and uncluttered, no text labels; clean flat vector style, thick soft hand-drawn outlines, cheerful pastel palette (sky blue, navy, leaf green, coral) on a warm cream background, friendly rounded shapes, no letters, no numbers, no logos anywhere.",
+      "status": "done",
+      "caption": "1つの 会社だけで 仕事を して いる わけでは ありません。",
+      "refs": [],
+      "src": "/img/articles/kaisha_shirabekata/b25.webp"
+    },
+    {
+      "kind": "paragraph",
+      "text": "グループの 会社や、いっしょに 仕事を する 会社が あります。"
+    },
+    {
+      "kind": "paragraph",
+      "text": "だから 「この 会社は、どこと つながって いますか」も、しらべる ときの 目に なります。"
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "この ステージの みち"
+    },
+    {
+      "kind": "image",
+      "prompt": "A four-panel horizontal journey illustration on one cream strip, panels separated by soft rounded arrows: (1) a student looking at a laptop screen, (2) the same student writing on a clipboard, (3) the student in a video call with a smiling senior engineer, (4) the student sitting across a desk from a friendly older company president; simple, warm, no text; clean flat vector style, thick soft hand-drawn outlines, cheerful pastel palette (sky blue, navy, leaf green, coral) on a warm cream background, friendly rounded shapes, no letters, no numbers, no logos anywhere.",
+      "status": "done",
+      "caption": "調べる → 書く → 報告する → 社長と 話す。",
+      "refs": [],
+      "src": "/img/articles/kaisha_shirabekata/b29.webp"
+    },
+    {
+      "kind": "steps",
+      "items": [
+        "会社の サイトを 見る",
+        "ちょうさシートに 書く",
+        "ヘンディさんに 報告する",
+        "松井社長と 話す"
+      ]
+    },
+    {
+      "kind": "callout",
+      "tone": "point",
+      "text": "さいごは 社長と 話します。じゅんびは、ここから 始まって います。"
     }
   ]
 }

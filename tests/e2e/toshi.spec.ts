@@ -5,8 +5,12 @@ import {
   choiceButtons,
   goNext,
   goToConfirm,
-  placeWords,
+  placeWordsIn,
   submitAnswers,
+  writeIn,
+  writtenText,
+  HOUKOKU_TOTAL,
+  JUNBI_TOTAL,
   waitForAsk,
   KAISHA_ITEMS,
   joinCall,
@@ -40,58 +44,80 @@ import {
 /** もんだい1「しらべかたの かくにん」の 正しい選択肢の位置（content/quizsets/kaisha_shirabekata_check.json）。 */
 const CHECK_ANSWERS = [0, 2, 1, 0, 0];
 
-/** もんだい2「ほうこくの じゅんび」の 語群の答え（content/quizsets/kaisha_houkoku.json）。 */
-const HOUKOKU_WORDS: readonly (readonly string[])[] = [
-  ["ホームページや アプリ"],
-  ["大阪", "東京"],
-  ["2018"],
-  ["受託開発"],
-  ["ベトナム"],
-  ["NMClaw"],
+/**
+ * 「ちょうさシート」の 語群の答え（content/quizsets/kaisha_houkoku.json）。
+ *
+ * **もんだいの id を 添える。** 全問が 1ページに 出る ので、同じ ことばの ふだが
+ * いくつもの もんだいに ある（「観光DX」は 3問に ある）。id で しぼらないと
+ * 別の もんだいを 触って しまう。
+ */
+const HOUKOKU_WORDS: readonly (readonly [string, readonly string[]])[] = [
+  ["a3_office", ["大阪", "東京"]],
+  ["a4_kaigai_itsu", ["2023年10月"]],
+  ["a5_kaigai_kuni", ["ベトナム"]],
+  [
+    "b1_services",
+    ["NMClaw", "観光DX", "Verify", "セキュリティドローン", "NEXTMAKE Internship Lab"],
+  ],
+  ["b3_jutaku", ["受託開発"]],
+  ["c1_tokuchou", ["新しい 技術", "グループの 会社", "世界の 人と 学ぶ"]],
+  ["d1_miyoshi", ["観光DX"]],
+  ["d2_uchida", ["WEB制作"]],
+  ["d3_kodomokai", ["システム開発"]],
+  ["f2_nani", ["日本語", "IT"]],
+  ["f4_support", ["日本語の 勉強", "ITの 勉強", "しごとの 紹介"]],
+  ["f5_aupp", ["2024年9月"]],
+  ["f6_lab", ["NEXTMAKE Internship Lab"]],
 ];
 
 /**
- * 自由入力の 4問。**どれも 代表解そのままではない**書き方にしてある
- * ——ひらがな・「です」つき・文で答える の3つが 救済されている証拠を、
+ * 自由入力の 13問。**どれも 代表解そのままではない**書き方にしてある
+ * ——ひらがな・カタカナ・小文字・「です」つき・文で答える が 救済されている証拠を、
  * 通しの中に そのまま 残すため（判定は src/lib/text/normalize.ts）。
  */
-const HOUKOKU_FREE_INPUT = [
-  "くるまの かいしゃです", // ひらがな＋です＋部分一致（代表解は「くるま」）
-  "にほんごの きょういく", // ひらがな＋部分一致（代表解は「教育」）
-  "ぶんかです", // ひらがな＋です（代表解は「価値」・accept に「ぶんか」）
-  "かんこう", // ひらがな（5つの サービスの 1つ・accept に「かんこう」）
-  "aupp", // 小文字（accept に「aupp」）
-  "ほうこくします", // ひらがな（代表解は「報告します」）
+const HOUKOKU_FREE_INPUT: readonly (readonly [string, string])[] = [
+  ["a1_itsu", "2018ねんです"], // ひらがな＋です（accept「2018」に 部分一致）
+  ["a2_shachou", "まついさん"], // ひらがな＋さん（accept「まつい」に 部分一致）
+  ["b2_phrase", "nmclaw"], // 小文字
+  ["c2_group", "コンティニューです"], // カタカナ＋です
+  ["c3_group_kuni", "べとなむ"], // ひらがな（代表解は「ベトナム」）
+  ["e1_mission", "ぎじゅつ"], // ひらがな（代表解は「技術」）
+  ["e2_values03", "どうぐ"], // やさしい 日本語の 言い方（「手段」でも 通る）
+  ["e3_values04", "ちょうせん"], // ひらがな
+  ["e4_values05", "ひとと ひとの しんらいです"], // 文＋です（accept「しんらい」に 部分一致）
+  ["f1_kuni", "カンボジア"], // そのまま
+  ["f3_jlpt", "n3"], // 小文字
+  ["f7_dare", "リーダーです"], // です つき
+  ["f8_nanigo", "にほんご"], // ひらがな（代表解は「日本語」）
 ];
 
 /** ヘンディさんに 話す こたえ（型文を なぞった、学習者が 書きそうな文）。 */
 const HENDY_ANSWERS = [
   "はい。ほうこくします。", // 定型句
-  "はい、見ました。", // はい／いいえ
-  "本社は 大阪に あります。", // 1語（場所）
   "2018年に できました。", // 1語（数）
-  "ベトナムにも オフィスが あります。", // 1語（国）
-  "ネクストメイクは、ホームページや アプリを 作る 会社です。", // 語句
-  "お客さまは、たとえば くるまの 会社です。", // 語句
-  "お客さまの ものを 作る、受託開発です。", // 用語
-  "日本語と ITの 教育を して います。", // 文
-  "わたしは、カンボジアの ページが おもしろいと 思いました。", // 全開
-  // さいごの「どうして？」は「まだ 言えない（つぎへ）」で 通る
-  //（いちばん 開いた 問いに 答えられなくても 詰まらない 証拠）
+  "NMClaw と 観光DXです。", // 2つ
+  "新しい 技術と、グループの 会社と、世界の 人と 学ぶ ことです。", // 3つ
+  "CONTINUE LLC. です。", // 会社の 名前
+  "ベトナムに あります。", // 1語（国）
+  "日本語と ITを 学びます。", // 2つ
+  "日本語の 勉強と、ITの 勉強と、しごとの 紹介です。", // 3つ
+  "NEXTMAKE Internship Lab です。", // サービスの 名前
+  "日本人の リーダーと いっしょに します。", // 語句
+  // さいごの「技術は 何？」は「まだ 言えない（つぎへ）」で 通る
+  //（答えられなくても 詰まらない 証拠）
 ];
 
 /**
- * 松井社長に 話す「おもしろい」5つ（対話ゲーム・願い #177）。
+ * 松井社長に 話す「おもしろい」3つ（対話ゲーム・願い #177）。
+ * 数は 教材の `talkGame.findCount`（content/meetings/kaisha_matsui.json）と そろえる。
  *
  * 中身は ぜんぶ ちがう ものに する——同じ 話を くり返すと 札は 開かない
- *（`alreadyFound`）ので、5つ 見つけきれずに 深掘りが 続く。
+ *（`alreadyFound`）ので、見つけきれずに 深掘りが 続く。
  */
 const MATSUI_FINDINGS = [
   "カンボジアの プログラムが おもしろかったです。",
-  "わたしの 学校の ことが 書いて あったからです。",
   "NMClaw は、はなすだけで まとまるから すごいです。",
   "かんこうDX で、まちを あるいて みたいです。",
-  "ベトナムの かいしゃとも しごとを して いますね。",
 ];
 
 /** そのあと、こんどは 学習者が 社長に 聞く。 */
@@ -244,26 +270,26 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
      * **完全一致で さがす。** 「1/12」は 「11/12」の 中にも 入って いる ので、
      * 部分一致だと 候補が 2つに なって 落ちる（12問に 増やした 日に 出た）。
      */
-    await expect(page.getByText("1/12", { exact: true })).toBeVisible();
-    await expect(page.getByText("12/12", { exact: true })).toBeVisible();
+    await expect(page.getByText(`1/${HOUKOKU_TOTAL}`, { exact: true })).toBeVisible();
+    await expect(
+      page.getByText(`${HOUKOKU_TOTAL}/${HOUKOKU_TOTAL}`, { exact: true }),
+    ).toBeVisible();
     await expect(page.getByRole("button", { name: "つぎ →" })).toHaveCount(0);
 
-    for (const words of HOUKOKU_WORDS) {
-      await placeWords(page, words);
+    for (const [questionId, words] of HOUKOKU_WORDS) {
+      await placeWordsIn(page, questionId, words);
     }
     await shot(page, "05-quiz-wordbank");
 
-    // 自由入力は 上から 順に 6つ 並んで いる
-    const boxes = page.getByLabel("こたえを 入力する");
-    for (const [index, written] of HOUKOKU_FREE_INPUT.entries()) {
-      await boxes.nth(index).fill(written);
+    for (const [questionId, written] of HOUKOKU_FREE_INPUT) {
+      await writeIn(page, questionId, written);
     }
-    await expect(page.getByText("こたえた 12 / 12")).toBeVisible();
+    await expect(page.getByText(writtenText(HOUKOKU_TOTAL))).toBeVisible();
     await submitAnswers(page);
 
-    await expect(page.getByText("12 / 12 もん")).toBeVisible();
+    await expect(page.getByText(`${HOUKOKU_TOTAL} / ${HOUKOKU_TOTAL} もん`)).toBeVisible();
     // 自分の書き方のまま通ったことを 画面が 見せる（救済が 生きている証拠）
-    for (const written of HOUKOKU_FREE_INPUT) {
+    for (const [, written] of HOUKOKU_FREE_INPUT) {
       await expect(page.getByText(`あなたの こたえ: ${written}`)).toBeVisible();
     }
     await shot(page, "06-quiz-houkoku-result");
@@ -379,20 +405,26 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
     await page.getByRole("button", { name: "はじめる" }).click();
 
     const boxes = page.getByRole("textbox", { name: "じゆうに 書く" });
-    await expect(boxes).toHaveCount(7);
+    await expect(boxes).toHaveCount(JUNBI_TOTAL);
 
+    /* 学習者が 書きそうな 文。数は 教材に そろえる（問いが 増えたら ここも 増える）。 */
     const written = [
+      "ネクストメイクは、お客さまの ホームページや アプリを 作る 会社です。",
+      "日本語と ITを 勉強して、日本の 会社で はたらく プログラムです。",
+      "Internship Lab で、日本人の リーダーと いっしょに 仕事を します。",
       "ドローンが 自分で 飛ぶ こと",
       "ベトナムの チームと 毎日 話す こと",
       "Boo が うけつけを した こと",
-      "お客さまに 車の 会社が ある こと",
-      "会社が できたのが 2018年だった こと",
       "わたしの 国には まだ ないので、見て みたいからです。",
-      "日本語と クメール語が わかるので、通訳が できると 思います。",
+      "Python を 勉強して います。AIの 仕事に 使えそうです。",
+      "日本語で 報告できる エンジニアに なりたいです。",
+      "Boo は どんな ことが できますか。",
+      "日本語を がんばります。毎日 30分、声に 出して 読みます。",
     ];
+    expect(written).toHaveLength(JUNBI_TOTAL);
     for (const [at, text] of written.entries()) await boxes.nth(at).fill(text);
 
-    await expect(page.getByText("こたえた 7 / 7")).toBeVisible();
+    await expect(page.getByText(`こたえた ${JUNBI_TOTAL} / ${JUNBI_TOTAL}`)).toBeVisible();
     await submitAnswers(page);
 
     /*
@@ -406,7 +438,7 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
      * 画面の 漢字には ルビが 合成される ので、書いた 文の まま 引くと 当たらない
      *（「通訳」→「通訳つうやく」）。中身が そのままかは 単体テストが 見て いる。
      */
-    await expect(page.getByText(/わかるので/)).toBeVisible();
+    await expect(page.getByText(/ないので、/)).toBeVisible();
     await shot(page, "06b-omoshiroi-result");
 
     await frameNext(page).click();
@@ -422,7 +454,7 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
     await readOn(page);
     expect(await affinity(page)).toBe(0);
 
-    // ①「おもしろい」を 5つ 話す。好感度は 1回も 下がらない（P8）
+    // ①「おもしろい」を 話す。好感度は 1回も 下がらない（P8）
     let before = 0;
     for (const [at, finding] of MATSUI_FINDINGS.entries()) {
       /* 1回目だけ、観点の 内訳が 出た ところを 写真に 残す（証拠）。 */
@@ -435,7 +467,7 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
         await page.getByRole("button", { name: "つぎへ ▶" }).click();
       } else if (at === MATSUI_FINDINGS.length - 1) {
         /*
-         * 5つめ＝**ばんが 変わる ターン**。内訳（話す ばんの 観点）と
+         * さいご＝**ばんが 変わる ターン**。内訳（話す ばんの 観点）と
          * 底上げの 行が 食い違って いない ことを、写真にも 残す
          *（2026-08-24 の 検収指摘 #1 の 再発よけ）。
          */
@@ -456,7 +488,7 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
       await readOn(page);
     }
 
-    // ②5つ 見つけたら「聞く ばん」が 開く（入口は 60%）
+    // ②見つけきったら「聞く ばん」が 開く（入口は 60%）
     await expect(page.getByText("あなたが きく ばんです")).toBeVisible();
     expect(await affinity(page)).toBeGreaterThanOrEqual(60);
     /*

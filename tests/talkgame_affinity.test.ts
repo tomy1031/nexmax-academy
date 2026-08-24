@@ -11,6 +11,7 @@ import {
   breakdown,
   gainFor,
   normalizeTopic,
+  pointsTable,
   type TalkObservations,
   type TalkPlan,
   type TalkState,
@@ -68,6 +69,36 @@ describe("観点で 上がる", () => {
 
   it("点の つかない 観点は 内訳に 出さない", () => {
     expect(breakdown("talk", PERFECT).map((row) => row.key)).not.toContain("question");
+  });
+
+  /*
+   * 2026-08-24 の 指定「ていねいに 言えたのに 好感度が 動かない」。
+   * その ばんで **学習者が する ことに なって いる 観点**が 0点だと、内訳に
+   * 「できた ✓」と 出て いるのに メーターが 動かない ターンが 生まれる。
+   */
+  it("答える ばんで する ことは、ぜんぶ 点に なる", () => {
+    const table = pointsTable("talk");
+    for (const key of ["japanese", "onTopic", "concrete", "reason", "feeling", "polite"] as const) {
+      expect(table[key]).toBeGreaterThan(0);
+    }
+  });
+
+  it("聞く ばんで する ことは、ぜんぶ 点に なる", () => {
+    const table = pointsTable("listen");
+    for (const key of ["japanese", "onTopic", "concrete", "polite", "question"] as const) {
+      expect(table[key]).toBeGreaterThan(0);
+    }
+  });
+
+  /*
+   * 逆向きの 歯止め。やって いない ことに 点を 置くと、内訳に
+   * 「しつもんの 形に なって いない ✗」が 並ぶ（`judgedAs` の 覚書と 同じ 事故・規律1）。
+   */
+  it("その ばんで やって いない ことは 内訳に 出さない", () => {
+    expect(breakdown("talk", PERFECT).map((row) => row.key)).not.toContain("question");
+    const listenKeys = breakdown("listen", PERFECT).map((row) => row.key);
+    expect(listenKeys).not.toContain("reason");
+    expect(listenKeys).not.toContain("feeling");
   });
 });
 
