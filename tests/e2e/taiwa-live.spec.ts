@@ -60,10 +60,14 @@ test.describe("対話ゲームの AI（鍵が あるときだけ）", () => {
     await page.waitForTimeout(700);
     await shot(page, "24-taiwa-live-feedback");
 
-    // ②見つけた「おもしろい」が 1つ 開く
-    await expect(page.getByText("おもしろい 1 / 5")).toBeVisible();
-
+    /*
+     * ②見つけた「おもしろい」が 1つ 開く。
+     * 板が 出て いる あいだ 札は しまわれる ので、板の 中の ひとことで 見て、
+     * 数は 板を 閉じてから 見る（2026-08-24 の 検収指摘 #9 の あとの 見え方）。
+     */
+    await expect(page.getByText(/を みつけました！/)).toBeVisible();
     await page.getByRole("button", { name: "つぎへ ▶" }).click();
+    await expect(page.getByText("おもしろい 1 / 5")).toBeVisible();
     await readOn(page);
     await answer("NMClaw は、はなすだけで まとまるから すごいと 思いました。");
     await page.getByRole("button", { name: "つぎへ ▶" }).click();
