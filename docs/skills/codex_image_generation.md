@@ -121,6 +121,28 @@ codex -i public/img/characters/nexmax/reference.png \
 実績: `hendy` / `nyam` の設定画と、`m2-asakai-manga` の4コマを 2026-08-06 に生成。
 4コマとも1回ずつの生成で、服・髪・部屋がそろった（作り直しゼロ）。
 
+## 6.6 立ち絵（対話ゲームの 舞台に 立つ 人）
+
+対話ゲーム（`meeting.talkGame`・願い #177）は **背景＋立ち絵**で 場を 作る。
+コマ絵と ちがい、**背景を 抜いた 1人**が 要る。
+
+- 参照入力は **設定画（`sheet.webp`）＋本人の 参考写真**。`looks` は
+  `content/characters/<id>.json` から **逐語**で 写す（§6.5 と 同じ 正）。
+- 出力は **1024×1536 の PNG・アルファ付き**（`transparent background (alpha)` と
+  明記する）。書けて いるかは `file *.png` が `RGBA` と 言うかで 見る——
+  **`RGB` で 返って くる ことが ある**ので、その 1枚だけ 消して 撮り直す（実発生）。
+- 変換は `cwebp -q 84 -alpha_q 90`（アルファを 落とさない）。1枚 80KB 前後。
+- 台帳は `scripts/images/<id>_<用途>.json`。生成は
+  `node scripts/slides/gen_images.mjs <台帳> <出力フォルダ>`
+  （台帳の `refs` で 参照入力を、`scenes[].output` で 1枚ごとの 形を 決められる）。
+
+| 保存先 | 差分（ポーズ・表情） | 生成 |
+|---|---|---|
+| `public/img/characters/matsui/stand_neutral.webp` | 立って 正面。腕は 下ろす。おだやかに 聞いて いる | 2026-08-24 |
+| `public/img/characters/matsui/stand_smile.webp` | 少し 前へ。手のひらを 胸の 高さに 開いて、うれしそうに 笑う | 2026-08-24 |
+| `public/img/characters/matsui/stand_think.webp` | 手を あごに 当てて、少し 首を かしげて 考える | 2026-08-24 |
+| `public/img/scenes/office_president.webp` | 社長室（人を 描かない・**右3分の1を 空ける**＝立ち絵の 居場所） | 2026-08-24 |
+
 ## 7. シーン・背景イラスト（任意の強化アセット）
 
 キャラ以外の装飾（雲・太陽・紙ひこうき）は軽量なインラインSVGのままでよい。より豪華にしたい場合のみ生成する:

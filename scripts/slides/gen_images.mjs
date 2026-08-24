@@ -33,7 +33,13 @@ const TOKEN =
   fs.readFileSync(path.join(os.homedir(), ".nexmax", "codex-bridge-token"), "utf8").trim();
 const LEDGER = JSON.parse(fs.readFileSync(ledgerPath, "utf8"));
 const OUT_DIR = path.resolve(outDirArg);
-const REFERENCE = path.resolve("public/img/characters/nexmax/reference.png");
+/**
+ * 参照入力。既定は ネクマックスの 正典だが、**台帳で 差しかえられる**
+ *（人間の 登場人物は 設定画が 正典になる — 同 §6.5）。
+ */
+const REFERENCES = (LEDGER.refs ?? ["public/img/characters/nexmax/reference.png"]).map((one) =>
+  path.resolve(one),
+);
 const IMAGE_TIMEOUT_MS = 420_000;
 const REQUEST_TIMEOUT_MS = 30_000;
 
@@ -68,10 +74,15 @@ function scenePrompt(scene) {
     LEDGER.style,
     scene.nexmaxInScene ? LEDGER.nexmax : null,
     scene.scene,
-    `Output: one landscape illustration, ${LEDGER.output ?? "1536x1024"}.`.replace(
-      / PNG.*\.$/,
-      ".",
-    ),
+    /*
+     * 出す 絵の 形。**1枚ごとに 変えられる**——立ち絵は 縦長で 背景ぬき、
+     * 舞台の 絵は 横長、と 1つの 台帳に 混ざる ことが ある（対話ゲーム）。
+     */
+    scene.output ??
+      `Output: one landscape illustration, ${LEDGER.output ?? "1536x1024"}.`.replace(
+        / PNG.*\.$/,
+        ".",
+      ),
     LEDGER.noText,
     LEDGER.negative,
   ]
@@ -270,16 +281,20 @@ if (!hello.ok || !hello.portOpen) {
 const workdir = hello.workdir;
 fs.mkdirSync(OUT_DIR, { recursive: true });
 
-const putRef = await api("/api/codex/file", {
-  method: "PUT",
-  name: "ref_nexmax.png",
-  body: fs.readFileSync(REFERENCE),
-});
-if (!putRef.ok) {
-  console.error("参照画像を置けない:", await putRef.text());
-  process.exit(1);
+const refRemote = [];
+for (const [at, local] of REFERENCES.entries()) {
+  const name = `ref_${at}${path.extname(local) || ".png"}`;
+  const put = await api("/api/codex/file", {
+    method: "PUT",
+    name,
+    body: fs.readFileSync(local),
+  });
+  if (!put.ok) {
+    console.error("参照画像を置けない:", local, await put.text());
+    process.exit(1);
+  }
+  refRemote.push(path.join(workdir, name));
 }
-const refNexmax = path.join(workdir, "ref_nexmax.png");
 
 // 絵柄アンカー: 1枚目の合格画像を以後の参照に足す（既にあればそれを使う）
 let styleAnchor = null;
@@ -305,7 +320,7 @@ for (const scene of LEDGER.scenes) {
     console.log(`skip ${outName} (exists)`);
     continue;
   }
-  const refs = styleAnchor ? [refNexmax, styleAnchor] : [refNexmax];
+  const refs = styleAnchor ? [...refRemote, styleAnchor] : [...refRemote];
   console.log(`[${new Date().toISOString()}] generating ${outName} — ${scene.title}`);
   let ok = false;
   for (let attempt = 1; attempt <= 2 && !ok; attempt += 1) {

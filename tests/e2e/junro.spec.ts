@@ -16,8 +16,8 @@ test("なにも おわっていない 端末では、6番目の ミーティン�
   await page.goto(KAISHA.meetingMatsui.path);
 
   await expect(page.getByText("まだ この きょうざいの じゅんばんでは ありません")).toBeVisible();
-  // 入室のロビー（「はなす まえに」）は 出ていない
-  await expect(page.getByText("はなす まえに")).toHaveCount(0);
+  // 対話ゲームの ロビー（「はじめる」）は 出ていない
+  await expect(page.getByRole("button", { name: "はじめる ▶" })).toHaveCount(0);
   await shot(page, "20-locked-notice");
 
   // 脇の並びでは、まだ ひらけない 教材に 🔒 が ついている
@@ -32,8 +32,11 @@ test("それでも 見る を おせば、先生も 中身を たしかめられ
   await page.goto(KAISHA.meetingMatsui.path);
   await page.getByRole("button", { name: "それでも 見る" }).click();
 
-  await expect(page.getByText("はなす まえに")).toBeVisible();
-  await expect(page.getByRole("button", { name: "ミーティングに さんかする" })).toBeVisible();
+  /*
+   * 松井社長は **対話ゲーム**（願い #177）。Zoom の 入室では なく、
+   * 舞台に 入る「はじめる」から 始まる。
+   */
+  await expect(page.getByRole("button", { name: "はじめる ▶" })).toBeVisible();
 });
 
 test("5番目まで おわった 端末では、5番目が ひらき、6番目は まだ ひらかない", async ({
