@@ -79,3 +79,31 @@ test("ことばメモを 押すと、日本語の 意味が 出る", async ({ pa
   // 吹き出しの 意味の 1文にも ふりがなが 振れている（裸の漢字が 増えていない）。
   expect(await bareKanjiTexts(page)).toEqual([]);
 });
+
+/**
+ * 途中で 離れても、つづきから — 20問の 下書き（2026-08-24）
+ *
+ * 8/21 の 授業では 17人が 診断に 取り組んだのに、先生の 画面に 出たのは 13人だった。
+ * 答えは 画面の メモリにしか 無く、結果を 見て 閉じた 人の 20問は 消えていた
+ *（本番の ログでは その 時間帯の 保存は 全部 成功。失敗は 1件も 無い＝送られてすら
+ * いなかった）。**直った ことでは なく、直った ままである ことを** 機械が 見張る。
+ */
+test("5問 答えて 開き直しても、つづきから 戻れる", async ({ page }) => {
+  await startQuestions(page);
+  await page.getByRole("button", { name: /質問.*始/ }).click();
+  for (let index = 0; index < 5; index += 1) await answer(page);
+  await expect(page.getByText(/20もんの うち 6 もんめ/)).toBeVisible();
+
+  // 授業の チャイム・電池切れ・まちがえて 閉じた——どれも これと 同じ。
+  await page.reload();
+
+  // なまえの 画面まで 戻されない。6問目から そのまま 続く。
+  await expect(page.getByText(/20もんの うち 6 もんめ/)).toBeVisible();
+  // 答えた 5問の 印も 残っている（押せる ＝ 答えずみ）。
+  await expect(page.getByRole("button", { name: "3もんめへ", exact: true })).toBeEnabled();
+
+  // 残りを 答えて 結果まで たどり着ける。
+  for (let index = 0; index < 15; index += 1) await answer(page);
+  await page.getByRole("button", { name: /結果.*見/ }).click();
+  await expect(page.getByRole("heading", { name: /あなたの ネクマックス/ })).toBeVisible();
+});

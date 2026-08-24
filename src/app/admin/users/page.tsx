@@ -38,8 +38,10 @@ import { createClient } from "@/lib/supabase/client";
 interface ProfileDraft {
   names: LearnerNames;
   school: LearnerSchool;
-  gender: Gender;
-  personalityType: PersonalityTypeCode;
+  /** null は「登録しただけで、まだ診断していない人」。空の選択肢を選んだ状態。 */
+  gender: Gender | null;
+  /** null は未診断。ここが null のまま保存しても、タイプは書き換えない。 */
+  personalityType: PersonalityTypeCode | null;
   isAdmin: boolean;
 }
 
@@ -158,7 +160,15 @@ export default function AdminUsersPage() {
     if (!draft || !isChanged(profile)) return;
     setSavingId(profile.id);
     try {
-      const updated = await updateProfileAsAdmin(profile.id, draft);
+      // 空のままの欄は送らない。**未診断の行を、保存のついでに診断ずみへ変えない**ため
+      // （DB も「答えがそろった行だけ型と性別を持つ」を制約で守っている）。
+      const updated = await updateProfileAsAdmin(profile.id, {
+        names: draft.names,
+        school: draft.school,
+        ...(draft.gender ? { gender: draft.gender } : {}),
+        ...(draft.personalityType ? { personalityType: draft.personalityType } : {}),
+        isAdmin: draft.isAdmin,
+      });
       setProfiles((current) => current.map((item) => (item.id === updated.id ? updated : item)));
       setDrafts((current) => ({
         ...current,
@@ -359,14 +369,18 @@ export default function AdminUsersPage() {
                     </td>
                     <td className="px-3 py-3">
                       <select
-                        value={draft.gender}
+                        value={draft.gender ?? ""}
                         onChange={(event) =>
                           updateDraft(profile.id, {
-                            gender: event.target.value as Gender,
+                            gender:
+                              event.target.value === "" ? null : (event.target.value as Gender),
                           })
                         }
                         className="border-hairline rounded-xl border-2 px-3 py-2"
                       >
+                        {/* 未診断の人は空のまま。ここを既定で「男性」にすると、
+                            選んでいないのに選んだことになる。 */}
+                        <option value="">（みせってい）</option>
                         <option value="male">男性</option>
                         <option value="female">女性</option>
                       </select>
@@ -380,7 +394,7 @@ export default function AdminUsersPage() {
                               「この人は どちらの 絵に なるか」が 見えるようにするため。 */}
                           <NexMaxType
                             code={profile.personality_type}
-                            gender={draft.gender}
+                            gender={draft.gender ?? undefined}
                             size={52}
                             className="shrink-0"
                           />
@@ -407,14 +421,19 @@ export default function AdminUsersPage() {
                     </td>
                     <td className="px-3 py-3">
                       <select
-                        value={draft.personalityType}
+                        value={draft.personalityType ?? ""}
                         onChange={(event) =>
                           updateDraft(profile.id, {
-                            personalityType: event.target.value as PersonalityTypeCode,
+                            personalityType:
+                              event.target.value === ""
+                                ? null
+                                : (event.target.value as PersonalityTypeCode),
                           })
                         }
                         className="border-hairline rounded-xl border-2 px-3 py-2"
                       >
+                        {/* 未診断の行が先頭のタイプ（ISTJ）に見えないよう、空を持たせる。 */}
+                        <option value="">（みしんだん）</option>
                         {TYPE_OPTIONS.map((type) => (
                           <option key={type.id} value={type.id}>
                             {type.label}

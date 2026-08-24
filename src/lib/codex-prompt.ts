@@ -14,6 +14,7 @@ import {
   getPersonalityType,
   type PersonalityAnswer,
   type PersonalityScores,
+  type PersonalityTypeCode,
 } from "@/content/personality";
 import { FORBIDDEN_LEARNER_WORDS } from "@/content/schema";
 import { hasCompletedPersonality } from "@/lib/personality-stats";
@@ -29,7 +30,10 @@ export interface AnonymousStudent {
   languageSwitched: boolean;
 }
 
-export function anonymizeProfile(profile: ProfileRow): AnonymousStudent {
+/** 診断ずみの行（`hasCompletedPersonality` を通した行）。 */
+type CompletedProfileRow = ProfileRow & { personality_type: PersonalityTypeCode };
+
+export function anonymizeProfile(profile: CompletedProfileRow): AnonymousStudent {
   return {
     handle: profile.id.slice(0, 8),
     typeName: getPersonalityType(profile.personality_type).name,
@@ -42,7 +46,8 @@ export function anonymizeProfile(profile: ProfileRow): AnonymousStudent {
 
 /** 診断ずみの行だけを匿名化して返す。 */
 export function anonymizeCohort(profiles: readonly ProfileRow[]): AnonymousStudent[] {
-  return profiles.filter((profile) => hasCompletedPersonality(profile)).map(anonymizeProfile);
+  // 関数をそのまま渡す（アロー越しだと型が絞られず、null 混入を型で防げない）。
+  return profiles.filter(hasCompletedPersonality).map(anonymizeProfile);
 }
 
 /** 設問台帳のコンパクトな写し。Codex はリポジトリを読めないので、必要な文脈は全部ここで渡す。 */
