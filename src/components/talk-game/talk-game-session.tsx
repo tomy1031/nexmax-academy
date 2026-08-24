@@ -270,8 +270,18 @@ export function TalkGameSession({
    * もう一度 押した ときに 前の 好感度が 残って いると、満タンの まま 動かない
    * 部屋に 座る ことに なる。
    */
+  /** 飛んで いる 判定の 半券（`judge` の 説明を 参照）。 */
+  const turnRef = useRef(0);
+
+  /** 会話から 出る（やめる・もう一度 はじめる）。飛んで いる 判定を 無効に する。 */
+  const leave = useCallback(() => {
+    turnRef.current += 1;
+    setPhase("lobby");
+  }, []);
+
   const start = useCallback(() => {
     if (!game) return;
+    turnRef.current += 1;
     const from = saved ?? EMPTY_TALK;
     setTalk(from);
     setResult(null);
@@ -305,6 +315,16 @@ export function TalkGameSession({
       if (!game) return;
       const said = utterance.trim();
       if (!said) return;
+      /*
+       * **飛んで いる 判定の 半券を 持つ**（2026-08-24 の 再検収 N1）。
+       *
+       * 見かたは 3秒ほど かかる。その あいだに「やめる」を 押した 学習者を、
+       * 返事が 返った 瞬間に **ゲームへ 引き戻して いた**——ロビーに 出たのに
+       * 12秒後に 全画面が かぶさって 板が 出る。番号が 変わって いたら、
+       * その 判定は もう この 画面の ものでは ない ので 捨てる。
+       */
+      const ticket = turnRef.current + 1;
+      turnRef.current = ticket;
       setTyped("");
       setPhase("thinking");
       const remaining = Math.max(0, plan.findCount - talk.found.length);
@@ -320,6 +340,8 @@ export function TalkGameSession({
         remaining,
       }).catch(() => ({ ok: false as const, reason: "network" }));
 
+      // やめた／もう一度 始めた あとの 返事は 捨てる（半券が 変わって いる）
+      if (turnRef.current !== ticket) return;
       const observations = answer.ok
         ? answer.judgement.observations
         : localObservations(talk.round, said);
@@ -544,7 +566,7 @@ export function TalkGameSession({
         {phase !== "clear" ? (
           <button
             type="button"
-            onClick={() => setPhase("lobby")}
+            onClick={leave}
             className="text-ink-soft absolute top-3 right-28 rounded-full bg-white/90 px-3 py-1 text-xs font-black shadow"
           >
             やめる
@@ -603,7 +625,7 @@ export function TalkGameSession({
             closing={withName(meeting.closing)}
             furigana={furigana}
             dictionary={dictionary}
-            onLeave={() => setPhase("lobby")}
+            onLeave={leave}
           />
         ) : null}
       </TalkScene>
