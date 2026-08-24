@@ -770,6 +770,25 @@ function collectLabeledTexts(content: Content): LabeledText[] {
         push(`discover[${i}].label`, item.label);
         push(`discover[${i}].answer`, item.answer);
       });
+      /*
+       * 対話ゲームの ことば（願い #177）。**ここは ぜんぶ 学習者が 読む**——
+       * 第一声も、出だしの しつもんも、深掘りの 予備も、型文も、さそいも、
+       * とっておきの 話も、画面の セリフ枠に そのまま 出る。
+       *
+       * 漏らすと **教材の いちばん 前（第一声）だけ 裸の 漢字**に なる。
+       * 学習者が 最初に 出あう 1文なので、そこで つまずくと 先が 無い。
+       * `background` / `figures` は 絵の 置き場で、字では ない。
+       */
+      if (content.talkGame) {
+        const game = content.talkGame;
+        push("talkGame.opening", game.opening);
+        game.openers.forEach((one, i) => push(`talkGame.openers[${i}]`, one));
+        game.probes.forEach((one, i) => push(`talkGame.probes[${i}]`, one));
+        game.talkHints.forEach((one, i) => push(`talkGame.talkHints[${i}]`, one));
+        push("talkGame.listenInvite", game.listenInvite);
+        game.listenHints.forEach((one, i) => push(`talkGame.listenHints[${i}]`, one));
+        push("talkGame.reward", game.reward);
+      }
       // persona / judgePrompt は Live への指示（scenario の interview.persona と同じ扱い）
       break;
     }
