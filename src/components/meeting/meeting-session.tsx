@@ -583,7 +583,15 @@ export function MeetingSession({
    * 帯で 決めると 見るたびに 張り直しが 起きる。`round1Done` は 後戻りしないので
    * 張り直しは 一生に 1回で 済む。
    */
-  const instruction = round1Done ? listenInstruction : askInstruction;
+  /*
+   * **答える ばんだけの 教材は、ずっと 答える ばんの 指示文**（2026-08-23）。
+   *
+   * 兼ねて いた ころの なごりで `round1Done` だけを 見て いた ため、
+   * ぜんぶ 答えた あとに 聞く ばんの 文へ 張り替わり、答える ばんなのに
+   *「ほかにも 聞いて ください。」が 語尾に つくように なって いた（実発生）。
+   * 聞いて いるのは 相手の ほうで、学習者は 答える 側。
+   */
+  const instruction = twoRounds && round1Done ? listenInstruction : askInstruction;
 
   /*
    * 進みぐあいが 変わる たびに **張り直しの ための 文だけ** 差しかえる。
@@ -605,10 +613,10 @@ export function MeetingSession({
   const swapInstruction = voice.swapInstruction;
   const swappedRef = useRef(false);
   useEffect(() => {
-    if (!round1Done || swappedRef.current || voice.speaking) return;
+    if (!twoRounds || !round1Done || swappedRef.current || voice.speaking) return;
     swappedRef.current = true;
     void swapInstruction(listenInstruction, hostVoice);
-  }, [round1Done, voice.speaking, swapInstruction, listenInstruction, hostVoice]);
+  }, [twoRounds, round1Done, voice.speaking, swapInstruction, listenInstruction, hostVoice]);
 
   /**
    * 1つの発話ぶんの「ごほうび」をまとめて更新する。
