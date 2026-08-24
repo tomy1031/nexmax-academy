@@ -35,7 +35,7 @@ describe("進捗の保存層", () => {
   it("読み／意味の内わけが無い成績（もんだい）も、初回だけ残す", () => {
     const store = createProgressStore(createMemoryBackend());
     store.recordFirstTestResult({
-      stageId: "kaisha_shirabekata_check",
+      stageId: "kaisha_jibun",
       score: 6,
       maxScore: 7,
       total: 6,
@@ -43,7 +43,7 @@ describe("進捗の保存層", () => {
       at: "2026-08-15T00:00:00.000Z",
     });
     const retried = store.recordFirstTestResult({
-      stageId: "kaisha_shirabekata_check",
+      stageId: "kaisha_jibun",
       score: 7,
       maxScore: 7,
       total: 6,
@@ -51,7 +51,7 @@ describe("進捗の保存層", () => {
       at: "2026-08-15T01:00:00.000Z",
     });
     expect(retried.score).toBe(6);
-    expect(store.readTestResult("kaisha_shirabekata_check")?.readingCorrect).toBeUndefined();
+    expect(store.readTestResult("kaisha_jibun")?.readingCorrect).toBeUndefined();
   });
 
   it("ゲームスコアはテスト成績とは別に、最高記録だけ伸ばす", () => {

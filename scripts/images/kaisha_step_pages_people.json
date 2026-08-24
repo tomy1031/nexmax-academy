@@ -1,0 +1,30 @@
+{
+  "refs": ["public/img/characters/hendy/sheet.webp", "public/img/characters/matsui/sheet.webp"],
+  "_comment": "STEP 01〜06 の ページ教材の さし絵の うち **人が 出る もの**。設定画（sheet）を 参照入力に 渡し、顔・髪・服を そろえる（docs/skills/codex_image_generation.md §6.5）。図だけの 絵は kaisha_step_pages.json。生成した PNG は cwebp -q 82 で webp に して、各シーンの dest へ 置く。",
+  "style": "Style: clean flat vector illustration, thick soft hand-drawn outlines, cheerful pastel palette (sky blue, navy, leaf green, coral) on a warm cream background, friendly rounded shapes, kid-safe e-learning illustration. Keep every character's face, hair and clothing exactly as in the reference model sheets.",
+  "noText": "No text, no letters, no kanji, no kana, no numbers anywhere in the image. No watermark, no signature, no logo, no frame border.",
+  "negative": "Never: realistic photo rendering, harsh gradients, six fingers, extra limbs, readable letters, dark horror tone, angry or crying faces, costume changes from the reference sheets, national flags, country outlines. NO robots and NO mascots anywhere - every character must be a human being.",
+  "scenes": [
+    {
+      "out": "s1",
+      "dest": "public/img/articles/kaisha_shirabekata/s1.webp",
+      "title": "この ステージの みち（調べる → 書く → 報告する → 社長と 話す）",
+      "output": "Output: one landscape illustration, 1536x1024.",
+      "scene": "Scene: one long cream strip divided into four equal panels side by side, separated by soft rounded arrows pointing right. THE STUDENT is the same person in all four panels and must look CLEARLY DIFFERENT from everyone else: a young woman with shoulder-length straight dark hair and a warm coral-orange blouse. Panel 1: the student alone, looking at an open laptop screen with interest. Panel 2: the student writing on a clipboard with a pencil. Panel 3: the student seen from behind at a laptop; on the laptop screen is the senior male engineer from the FIRST reference model sheet (short black hair, light blue button-down shirt with sleeves rolled to the elbow), smiling and waving. Panel 4: the student sitting on one side of a desk facing an OLDER male company president - short greying hair, a slightly full friendly face, dark navy suit with a shirt and tie - both smiling. The president must look clearly older than the engineer in panel 3."
+    },
+    {
+      "out": "s2",
+      "dest": "public/img/articles/kaisha_shirabekata/s2.webp",
+      "title": "面接では、会社の ことを 聞かれる",
+      "output": "Output: one landscape illustration, 1536x1024.",
+      "scene": "Scene: a job interview in a bright tidy meeting room, seen from the side. ALL THREE PEOPLE ARE HUMAN - no robots, no mascots. On the left a young woman student with shoulder-length straight dark hair and a warm coral-orange blouse sits up straight at a small light table, speaking with a calm confident smile and one hand slightly raised. On the right two friendly human interviewers in dark business suits sit side by side, both nodding and smiling warmly. Above the student floats a rounded speech bubble containing a simple drawing of a small office building - a picture only, never writing. Soft daylight."
+    },
+    {
+      "out": "t1",
+      "dest": "public/img/articles/kaisha_nextmake_shirabe/t1.webp",
+      "title": "ヘンディさんが、調査シートを わたして くれる",
+      "output": "Output: one landscape illustration, 1536x1024.",
+      "scene": "Scene: the senior engineer from the FIRST reference model sheet (Hendy - keep his face, hair and light blue button-down shirt with sleeves rolled to the elbow exactly the same) stands in the centre of a bright tidy office, smiling warmly and holding out a blank clipboard checklist with both hands toward the viewer, as if handing it over. The clipboard paper is completely blank - no writing on it. Behind him a simple desk with a closed laptop and a small green plant. Only this one person in the picture."
+    }
+  ]
+}

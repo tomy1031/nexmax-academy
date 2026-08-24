@@ -22,18 +22,23 @@ export interface KaishaItem {
   readonly kind: string;
 }
 
-/** かいしゃステージの教材。名前で 呼べるようにしておく（番号だけだと 読めない）。 */
+/**
+ * かいしゃステージの教材。名前で 呼べるようにしておく（番号だけだと 読めない）。
+ *
+ * 並びは「NEXT MAKEを しろう！」の 6つの STEP そのもの
+ *（docs/teaching/nextmake_step02_設計.md — ユーザーが 書いた 授業の 設計）:
+ * STEP1 調べかたを 学ぶ → STEP2 サイトを 見て 調査シートを うめる →
+ * STEP3 ヘンディさんに 報告 → STEP4 会社と 自分の 関係 →
+ * STEP5 社長と 話す 準備 → STEP6 社長と 話す。
+ */
 export const KAISHA = {
+  /** STEP 1 会社の リサーチ方法を 学ぼう。 */
   article1: {
     id: "kaisha_shirabekata",
     path: "/kaisha/article-kaisha_shirabekata",
     kind: "ページ",
   },
-  quiz1: {
-    id: "kaisha_shirabekata_check",
-    path: "/kaisha/quiz-kaisha_shirabekata_check",
-    kind: "もんだい",
-  },
+  /** STEP 2 の まえがき（調査シートを うめよう）。 */
   article2: {
     id: "kaisha_nextmake_shirabe",
     path: "/kaisha/article-kaisha_nextmake_shirabe",
@@ -44,17 +49,27 @@ export const KAISHA = {
     path: "/kaisha/link-nextmake_gakushu_site",
     kind: "リンク",
   },
-  quiz2: { id: "kaisha_houkoku", path: "/kaisha/quiz-kaisha_houkoku", kind: "もんだい" },
+  /** STEP 2 の 調査シート（26問）。 */
+  sheet: { id: "kaisha_houkoku", path: "/kaisha/quiz-kaisha_houkoku", kind: "もんだい" },
+  /** STEP 3 ヘンディさんに 報告しよう。 */
   meetingHendy: {
     id: "kaisha_houkoku_meeting",
     path: "/kaisha/meeting-kaisha_houkoku_meeting",
     kind: "ミーティング",
   },
-  quiz3: {
+  /** STEP 4 会社と 自分の 関係を 考えよう。 */
+  jibun: {
+    id: "kaisha_jibun",
+    path: "/kaisha/quiz-kaisha_jibun",
+    kind: "もんだい",
+  },
+  /** STEP 5 松井社長と 話す 準備を しよう。 */
+  junbi: {
     id: "kaisha_omoshiroi",
     path: "/kaisha/quiz-kaisha_omoshiroi",
     kind: "もんだい",
   },
+  /** STEP 6 松井社長と LiveAIで 話そう。 */
   meetingMatsui: {
     id: "kaisha_matsui",
     path: "/kaisha/meeting-kaisha_matsui",
@@ -65,14 +80,35 @@ export const KAISHA = {
 /** 学習者が進む順（content/stages/kaisha.json の contents[] と同じ並び）。 */
 export const KAISHA_ITEMS: readonly KaishaItem[] = [
   KAISHA.article1,
-  KAISHA.quiz1,
   KAISHA.article2,
   KAISHA.site,
-  KAISHA.quiz2,
+  KAISHA.sheet,
   KAISHA.meetingHendy,
-  KAISHA.quiz3,
+  KAISHA.jibun,
+  KAISHA.junbi,
   KAISHA.meetingMatsui,
 ];
+
+/**
+ * まとめて 出す（`answerMode: "submit"`）を 見る 教材＝朝会ステージの もんだい。
+ *
+ * かいしゃステージは 6つの STEP に なり、まとめて 出す の 教材が 無くなった
+ *（2026-08-25）。「はじめに」の かくにんテストは **関門では ない**（`gates: false`）ので
+ * 開いた 瞬間に「ステージ クリア」の 板が かぶさる——押せる ものが 無くなるので 使えない。
+ */
+export const ASAKAI_QUIZ = {
+  id: "sample_horenso",
+  path: "/asakai/quiz",
+  /** 関門を あけるために 先に おわらせておく 教材（content/stages/asakai.json）。 */
+  before: ["m2-asakai-manga", "m2-asakai-article", "sample_asakai"],
+} as const;
+
+/** 朝会の もんだいの 問数。**教材から 読む**（`HOUKOKU_TOTAL` と 同じ 理由）。 */
+export const ASAKAI_QUIZ_TOTAL: number = (
+  JSON.parse(
+    readFileSync(join(__dirname, "..", "..", "content", "quizsets", "sample_horenso.json"), "utf8"),
+  ) as { questions: unknown[] }
+).questions.length;
 
 /**
  * ステージのトップに 出る 進みぐあいの 文（「7つ の うち 2つ おわりました」）。
@@ -85,7 +121,7 @@ export function progressText(done: number): string {
 }
 
 /**
- * 「ほうこくの じゅんび」の 問題数。**教材から 読む**。
+ * 「調査シート」の 問題数。**教材から 読む**。
  *
  * ここを ベタ書きして いた ため、サイトの ページが 増えて 問題を 3つ 足した 日に
  * teishutsu / tsuzuki の 5本が いっせいに 落ちた（2026-08-24）。
@@ -103,7 +139,7 @@ export function writtenText(done: number): string {
 }
 
 /**
- * 「たいわの じゅんび」の 問数。**教材から 読む**（`HOUKOKU_TOTAL` と 同じ 理由）。
+ * 「松井社長と 話す 準備」の 問数。**教材から 読む**（`HOUKOKU_TOTAL` と 同じ 理由）。
  */
 export const JUNBI_TOTAL: number = (
   JSON.parse(
@@ -111,6 +147,13 @@ export const JUNBI_TOTAL: number = (
       join(__dirname, "..", "..", "content", "quizsets", "kaisha_omoshiroi.json"),
       "utf8",
     ),
+  ) as { questions: unknown[] }
+).questions.length;
+
+/** 「会社と 自分の 関係を 考えよう」の 問数（STEP 4）。 */
+export const JIBUN_TOTAL: number = (
+  JSON.parse(
+    readFileSync(join(__dirname, "..", "..", "content", "quizsets", "kaisha_jibun.json"), "utf8"),
   ) as { questions: unknown[] }
 ).questions.length;
 

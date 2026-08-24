@@ -40,10 +40,11 @@ const KNOWN_BARE_KANJI: readonly string[] = [
 const SCREENS: readonly { name: string; path: string; open: KaishaItem }[] = [
   { name: "ステージのトップ", path: "/kaisha", open: KAISHA.article1 },
   { name: "ページ（しらべかた）", path: KAISHA.article1.path, open: KAISHA.article1 },
-  { name: "もんだい（かくにん）", path: KAISHA.quiz1.path, open: KAISHA.quiz1 },
-  { name: "ページ（ネクストメイク）", path: KAISHA.article2.path, open: KAISHA.article2 },
+  { name: "ページ（調査シートを うめよう）", path: KAISHA.article2.path, open: KAISHA.article2 },
   { name: "リンク（学習用サイト）", path: KAISHA.site.path, open: KAISHA.site },
-  { name: "もんだい（ほうこく）", path: KAISHA.quiz2.path, open: KAISHA.quiz2 },
+  { name: "もんだい（調査シート）", path: KAISHA.sheet.path, open: KAISHA.sheet },
+  { name: "もんだい（会社と 自分）", path: KAISHA.jibun.path, open: KAISHA.jibun },
+  { name: "もんだい（たいわの じゅんび）", path: KAISHA.junbi.path, open: KAISHA.junbi },
   { name: "ミーティング（ヘンディ）", path: KAISHA.meetingHendy.path, open: KAISHA.meetingHendy },
   { name: "ミーティング（松井社長）", path: KAISHA.meetingMatsui.path, open: KAISHA.meetingMatsui },
 ];
