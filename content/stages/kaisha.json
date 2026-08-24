@@ -89,6 +89,10 @@
       "type": "meeting"
     },
     {
+      "ref": "kaisha_omoshiroi",
+      "type": "quizset"
+    },
+    {
       "ref": "kaisha_matsui",
       "type": "meeting"
     }

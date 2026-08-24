@@ -347,6 +347,38 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
     await frameNext(page).click();
   });
 
+  await test.step("6b. もんだい「おもしろいと 思った ところ」— 正解の 無い 問い", async () => {
+    /*
+     * 松井社長と 話す 前に、**自分の ことばを 作って おく** 段（2026-08-24 の 指定）。
+     * 正解が 無いので、書けば 点が 入る。ここで「ちがいます」が 出たら 設計が 壊れて いる
+     *（規律1: その 学習者だけの 正しい こたえを まちがいに しない）。
+     */
+    await expect(page).toHaveURL(/quiz-kaisha_omoshiroi$/);
+    await page.getByRole("button", { name: "はじめる" }).click();
+
+    const boxes = page.getByRole("textbox", { name: "じゆうに 書く" });
+    await expect(boxes).toHaveCount(7);
+
+    const written = [
+      "ドローンが 自分で 飛ぶ こと",
+      "ベトナムの チームと 毎日 話す こと",
+      "Boo が うけつけを した こと",
+      "お客さまに 車の 会社が ある こと",
+      "会社が できたのが 2018年だった こと",
+      "わたしの 国には まだ ないので、見て みたいからです。",
+      "日本語と クメール語が わかるので、通訳が できると 思います。",
+    ];
+    for (const [at, text] of written.entries()) await boxes.nth(at).fill(text);
+
+    await page.getByRole("button", { name: "こたえを 出す" }).click();
+
+    // 正解の 無い 問いなので「正解」の 見出しは 1つも 出ない
+    await expect(page.getByText("正解", { exact: true })).toHaveCount(0);
+    await shot(page, "06b-omoshiroi-result");
+
+    await frameNext(page).click();
+  });
+
   await test.step("7. ミーティング「松井社長と 話す」— ハートと とっておきの話", async () => {
     await expect(page).toHaveURL(/meeting-kaisha_matsui$/);
     await joinCall(page);

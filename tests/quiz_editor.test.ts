@@ -151,6 +151,8 @@ describe("drafts（もんだい）", () => {
       keyword: 0,
       wordbank: 2,
       emotion: 3,
+      // 自由記述は 枠を 出さない（正解を 書く 欄が 無い）
+      free: 0,
     };
     for (const [type, least] of Object.entries(counts) as [QuizQuestion["type"], number][]) {
       const question = emptyQuizQuestion(type);

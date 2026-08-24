@@ -316,12 +316,33 @@ const emotionSchema = z.object({
   answerReply: z.number().int().min(0),
 });
 
+/**
+ * 自由記述。**正解が 無い**問い。
+ *
+ * 「なぜ おもしろいと 思いましたか」「もし ここで はたらいたら 何が できそうですか」
+ * のような、学習者の 考えを 書かせる 問い。`keyword` で 書かせると
+ * **その 学習者だけの 正しい こたえが「ちがいます」に なる**——規律1（不正解と
+ * 言わない）を、いちばん 大事な ところで 破る ことに なる。
+ *
+ * 書いて あれば 点が 入る。採点するのは 中身では なく「書いた こと」。
+ * 中身は 先生が 読む（産出は 人が 見る、が この 教材の 建てつけ）。
+ */
+const freeSchema = z.object({
+  ...quizCommon,
+  type: z.literal("free"),
+  /** 書きだしの ヒント（空でも よい）。入力欄の うすい 字に なる。 */
+  placeholder: plainText.optional(),
+  /** 点が 入る 最低の 字数。短すぎる 返事で 先へ 進むのを 防ぐ。 */
+  minLength: z.number().int().min(1).max(200).default(2),
+});
+
 export const quizQuestionSchema = z.discriminatedUnion("type", [
   chooseSchema,
   multiSchema,
   keywordSchema,
   wordbankSchema,
   emotionSchema,
+  freeSchema,
 ]);
 
 /** 選択で答える型（読解確認でだけ使ってよい）。 */

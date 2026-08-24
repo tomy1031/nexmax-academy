@@ -48,6 +48,11 @@ export const KAISHA = {
     path: "/kaisha/meeting-kaisha_houkoku_meeting",
     kind: "ミーティング",
   },
+  quiz3: {
+    id: "kaisha_omoshiroi",
+    path: "/kaisha/quiz-kaisha_omoshiroi",
+    kind: "もんだい",
+  },
   meetingMatsui: {
     id: "kaisha_matsui",
     path: "/kaisha/meeting-kaisha_matsui",
@@ -63,6 +68,7 @@ export const KAISHA_ITEMS: readonly KaishaItem[] = [
   KAISHA.site,
   KAISHA.quiz2,
   KAISHA.meetingHendy,
+  KAISHA.quiz3,
   KAISHA.meetingMatsui,
 ];
 

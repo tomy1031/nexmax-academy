@@ -228,6 +228,8 @@ export function emptyQuizQuestion(type: QuizQuestion["type"]): QuizQuestion {
         replies: ["", "", ""],
         answerReply: 0,
       };
+    case "free":
+      return { ...base, type: "free", minLength: 2 };
   }
 }
 

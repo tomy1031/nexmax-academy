@@ -749,7 +749,12 @@ function AnswerPair({
           </span>
         )}
       </p>
-      {own !== right && (
+      {/*
+        正解が 無い 問い（自由記述）では「正解」の 欄を 出さない。
+        空の 見出しだけが 出ると、学習者は **自分の こたえが まちがいで、
+        正しい ものは 空**だと 読む。
+      */}
+      {right !== "" && own !== right && (
         <>
           <p className="text-ink-soft mt-3 text-xs font-extrabold">
             <RubyText text="正解" index={UI_FURIGANA} />

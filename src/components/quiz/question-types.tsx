@@ -107,6 +107,17 @@ export function QuestionBody({
         />
       );
 
+    case "free":
+      return (
+        <FreeInput
+          placeholder={question.placeholder}
+          disabled={disabled}
+          submitMode={submitMode}
+          draft={draft?.kind === "free" ? draft : undefined}
+          onSubmit={(input) => dispatch({ type: "answerFree", input })}
+        />
+      );
+
     case "wordbank":
       return (
         <WordBank
@@ -439,6 +450,76 @@ function KeywordInput({
 
       <p className="text-ink-faint mt-2 text-xs font-bold">
         <RubyText text="ひらがなでも OK。ぜんぶの 文で なくて OK" index={UI_FURIGANA} />
+      </p>
+    </form>
+  );
+}
+
+/* ---------------- 自由記述（正解なし） ---------------- */
+
+/**
+ * 正解の 無い 問いの 入力欄。
+ *
+ * `KeywordInput` と 分けたのは 見た目の ためでは ない。**1行では 足りない**から。
+ * 「なぜ そう 思いましたか」に 1行の 欄を 出すと、学習者は 1行ぶんしか 書かない
+ *（欄の 大きさが「これくらい 書けば いい」の 合図に なる）。
+ * 「ちがいます」が 出ない 問いなので、思った ことを そのまま 書ける 広さを 出す。
+ */
+function FreeInput({
+  onSubmit,
+  disabled,
+  submitMode,
+  draft,
+  placeholder,
+}: {
+  onSubmit: (input: string) => void;
+  disabled?: boolean;
+  submitMode?: boolean;
+  draft?: Extract<QuizDraft, { kind: "free" }>;
+  placeholder?: string;
+}) {
+  // 画面の 文字は この部品が 持つ（親から 送り返すと 変換の 途中で 入れ替わる）
+  const [value, setValue] = useState(draft?.input ?? "");
+  const empty = value.trim().length === 0;
+
+  const change = (next: string) => {
+    setValue(next);
+    if (submitMode) onSubmit(next);
+  };
+
+  return (
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        if (!submitMode && !disabled && !empty) onSubmit(value);
+      }}
+    >
+      <textarea
+        value={value}
+        disabled={disabled}
+        onChange={(e) => change(e.target.value)}
+        rows={4}
+        autoComplete="off"
+        autoCorrect="off"
+        spellCheck={false}
+        placeholder={placeholder ?? "思った ことを 書いてね"}
+        aria-label="じゆうに 書く"
+        className="border-hairline bg-panel text-ink w-full rounded-[var(--radius-button)] border-2 px-4 py-3 text-base font-bold"
+      />
+      {!submitMode && (
+        <button
+          type="submit"
+          disabled={disabled || empty}
+          className="btn-island btn-game mt-3 px-8 py-3 disabled:opacity-50"
+        >
+          こたえる
+        </button>
+      )}
+      <p className="text-ink-faint mt-2 text-xs font-bold">
+        <RubyText
+          text="ただしい こたえは ありません。思った ことを 書けば OK"
+          index={UI_FURIGANA}
+        />
       </p>
     </form>
   );
