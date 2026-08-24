@@ -4,6 +4,7 @@ import {
   itemsBefore,
   KAISHA,
   joinCall,
+  readOn,
   seedCompleted,
   type KaishaItem,
 } from "./helpers";
@@ -73,6 +74,27 @@ test("ミーティングの 中（入室後・答える前）にも 裸の漢字
   await seedCompleted(context, itemsBefore(KAISHA.meetingHendy));
   await page.goto(KAISHA.meetingHendy.path);
   await joinCall(page);
+
+  const bare = await bareKanjiTexts(page);
+  expect(bare.filter((text) => !KNOWN_BARE_KANJI.includes(text))).toEqual([]);
+});
+
+/**
+ * 対話ゲーム（松井社長）の 中も 見る（願い #177）。
+ *
+ * ロビーは 上の SCREENS で 見て いるが、**舞台に 入って からが 本番**——
+ * 名前ふだ・役職・セリフ枠・自分の ばんの 見出しは、入る まで 画面に 無い。
+ * 答える 前で 止めるのは、AIの 返事を 数えない ため（この ファイル冒頭の 覚書）。
+ */
+test("対話ゲームの 中（はじめた あと・答える前）にも 裸の漢字が 無い", async ({
+  page,
+  context,
+}) => {
+  await seedCompleted(context, itemsBefore(KAISHA.meetingMatsui));
+  await page.goto(KAISHA.meetingMatsui.path);
+  await page.getByRole("button", { name: "はじめる ▶" }).click();
+  await readOn(page);
+  await expect(page.getByLabel("文字で 答える")).toBeVisible();
 
   const bare = await bareKanjiTexts(page);
   expect(bare.filter((text) => !KNOWN_BARE_KANJI.includes(text))).toEqual([]);

@@ -1,0 +1,27 @@
+{
+  "refs": ["public/img/characters/matsui/sheet.webp", "public/img/characters/matsui/reference.jpg"],
+  "_comment": "松井社長の 立ち絵（対話ゲーム・願い #177）。正典は 設定シート sheet.webp（docs/skills/codex_image_generation.md §6.5）。looks は content/characters/matsui.json から 逐語で 写す。",
+  "style": "Style: clean modern Japanese manga / anime style, soft cel shading, bright friendly palette, rounded shapes, no harsh shadows, warm daylight, contemporary Japan, kid-safe e-learning illustration.",
+  "noText": "No text, no letters, no kanji, no kana, no numbers anywhere in the image. No watermark, no signature, no logo, no frame border.",
+  "negative": "Never: realistic photo rendering, harsh gradients, six fingers, extra limbs, readable letters, dark horror tone, angry or crying faces, costume changes.",
+  "scenes": [
+    {
+      "out": "stand_neutral",
+      "title": "ふつう（聞いて いる）",
+      "output": "Output: one portrait cut-out illustration, 1024x1536, the character ALONE on a fully transparent background (alpha channel, nothing behind him: no floor, no wall, no ground shadow, no props). Centered horizontally, cropped by the bottom edge at mid-thigh, with a small margin on the left, right and top.",
+      "scene": "Character: 代表取締役社長 — Japanese-style anime character, man in his forties, ordinary build with normal shoulders and a normal waist — do NOT broaden the body, do NOT make him stout. Calm confident posture. Black hair with volume on top and a soft fringe falling across the forehead. Fair skin, oval face that is just a touch soft: gently rounded cheeks and a slightly soft jawline, only a hint fuller than slim — not chubby, no double chin. Narrow gentle eyes with single-fold lids, straight sparse eyebrows, a small rounded nose, gentle friendly closed-lip smile. Outfit: navy single-breasted blazer (#1F2A44) worn open over a plain white crew-neck T-shirt, dark navy trousers, brown leather shoes. No tie, no glasses.\nPose: standing straight, facing the viewer, both arms relaxed at his sides, calm attentive expression with a gentle closed-lip smile, listening to the person in front of him."
+    },
+    {
+      "out": "stand_smile",
+      "title": "笑顔（よろこぶ）",
+      "output": "Output: one portrait cut-out illustration, 1024x1536, the character ALONE on a fully transparent background (alpha channel, nothing behind him: no floor, no wall, no ground shadow, no props). Centered horizontally, cropped by the bottom edge at mid-thigh, with a small margin on the left, right and top.",
+      "scene": "Character: 代表取締役社長 — Japanese-style anime character, man in his forties, ordinary build with normal shoulders and a normal waist — do NOT broaden the body, do NOT make him stout. Calm confident posture. Black hair with volume on top and a soft fringe falling across the forehead. Fair skin, oval face that is just a touch soft: gently rounded cheeks and a slightly soft jawline, only a hint fuller than slim — not chubby, no double chin. Narrow gentle eyes with single-fold lids, straight sparse eyebrows, a small rounded nose, gentle friendly closed-lip smile. Outfit: navy single-breasted blazer (#1F2A44) worn open over a plain white crew-neck T-shirt, dark navy trousers, brown leather shoes. No tie, no glasses.\nPose: standing, facing the viewer, leaning very slightly forward, one open palm raised at chest height in a welcoming gesture, warm open smile with visible delight, eyes softly narrowed with joy."
+    },
+    {
+      "out": "stand_think",
+      "title": "考え中（待って いる）",
+      "output": "Output: one portrait cut-out illustration, 1024x1536, the character ALONE on a fully transparent background (alpha channel, nothing behind him: no floor, no wall, no ground shadow, no props). Centered horizontally, cropped by the bottom edge at mid-thigh, with a small margin on the left, right and top.",
+      "scene": "Character: 代表取締役社長 — Japanese-style anime character, man in his forties, ordinary build with normal shoulders and a normal waist — do NOT broaden the body, do NOT make him stout. Calm confident posture. Black hair with volume on top and a soft fringe falling across the forehead. Fair skin, oval face that is just a touch soft: gently rounded cheeks and a slightly soft jawline, only a hint fuller than slim — not chubby, no double chin. Narrow gentle eyes with single-fold lids, straight sparse eyebrows, a small rounded nose, gentle friendly closed-lip smile. Outfit: navy single-breasted blazer (#1F2A44) worn open over a plain white crew-neck T-shirt, dark navy trousers, brown leather shoes. No tie, no glasses.\nPose: standing, facing the viewer, one hand raised with fingers lightly touching his chin, head tilted a little, thoughtful closed-lip expression, eyes looking slightly upward as he considers what he just heard."
+    }
+  ]
+}

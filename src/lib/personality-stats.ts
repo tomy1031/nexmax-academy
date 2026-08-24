@@ -49,6 +49,16 @@ export type StatsProfile = Pick<
   | "personality_version"
 >;
 
+/**
+ * 診断が終わっている行。**集計と編成はこれだけを見る**（2026-08-24）。
+ *
+ * ログインした時点で profiles に行ができるようになったので、`personality_type` が
+ * null の「登録しただけ」の行が正当に存在する。集計に混ぜないことを型で強制する
+ * ため、`selectCompletedProfiles` / `hasCompletedPersonality` を通した行だけが
+ * この型になる。
+ */
+export type CompletedProfile = StatsProfile & { personality_type: PersonalityTypeCode };
+
 function roundOne(value: number): number {
   return Math.round(value * 10) / 10;
 }
@@ -69,9 +79,9 @@ function percentageOf(count: number, total: number, mode: SampleMode): number | 
  * 長さだけを見ると v2 の `["yes", ...]` 20件が「完成」として通り、設問別集計の総数が
  * 静かに0になる（人数だけ数えられて中身が数えられない）。値の中身まで検証する。
  */
-export function hasCompletedPersonality(
-  profile: Pick<StatsProfile, "answers" | "scores" | "personality_type">,
-): boolean {
+export function hasCompletedPersonality<
+  T extends Pick<StatsProfile, "answers" | "scores" | "personality_type">,
+>(profile: T): profile is T & { personality_type: PersonalityTypeCode } {
   return (
     // 型も見る。ここを通した行は下流で getPoleFromCode / getFamilyForCode に渡るので、
     // 旧4値や未知文字列を通すと誤った極に数えられるか、編成が例外で落ちる。
@@ -91,9 +101,9 @@ export function hasCompletedPersonality(
 export function selectCompletedProfiles(
   profiles: readonly StatsProfile[],
   version?: number,
-): StatsProfile[] {
+): CompletedProfile[] {
   return profiles.filter(
-    (profile) =>
+    (profile): profile is CompletedProfile =>
       hasCompletedPersonality(profile) &&
       (version === undefined || profile.personality_version === version),
   );
@@ -123,7 +133,7 @@ export interface TypeDistribution {
   families: FamilyDistributionItem[];
 }
 
-export function calculateTypeDistribution(profiles: readonly StatsProfile[]): TypeDistribution {
+export function calculateTypeDistribution(profiles: readonly CompletedProfile[]): TypeDistribution {
   const respondentCount = profiles.length;
   const sampleMode = getSampleMode(respondentCount);
 
@@ -189,7 +199,7 @@ export interface AxisAverages {
  *
  * 平均だけだと二峰性が隠れる（[5,0,5,0] と [3,2,3,2] はどちらも2.5）ので、極ごとの人数も返す。
  */
-export function calculateAxisAverages(profiles: readonly StatsProfile[]): AxisAverages {
+export function calculateAxisAverages(profiles: readonly CompletedProfile[]): AxisAverages {
   const respondentCount = profiles.length;
 
   const items = PERSONALITY_AXES.map((axis): AxisAverageItem => {
@@ -331,7 +341,7 @@ export interface TeamPenaltyBreakdown {
 export const PENALTY_SCALE = 1_000_000;
 
 export function calculateExtraversionRatio(
-  profiles: readonly Pick<StatsProfile, "personality_type">[],
+  profiles: readonly Pick<CompletedProfile, "personality_type">[],
 ): number {
   if (profiles.length === 0) return 0;
   const extraverts = profiles.filter(
@@ -348,7 +358,7 @@ export function calculateExtraversionRatio(
  * （空チームを0点にすると、既存チームに置くほうが常に得になり全員が1チームに吸い込まれる。）
  */
 export function calculateTeamPenalty(
-  members: readonly Pick<StatsProfile, "personality_type">[],
+  members: readonly Pick<CompletedProfile, "personality_type">[],
   classExtraversionRatio: number,
 ): TeamPenaltyBreakdown {
   const missingPlanner = members.some(
@@ -406,7 +416,7 @@ export interface TeamSuggestion {
   number: number;
   /** §6.1 の均等割り定員。チームごとに異なりうる（差は最大1）。 */
   capacity: number;
-  members: StatsProfile[];
+  members: CompletedProfile[];
   familyCounts: Record<PersonalityFamilyId, number>;
   /** 双極バー用（0〜5・中央2.5）。 */
   axisAverages: AxisAverageItem[];
@@ -429,8 +439,8 @@ export interface TeamSuggestion {
  * 教師が画面で2人を入れ替えたあとの再計算（07 §6.4）に使う。
  */
 export function buildTeamSuggestions(
-  groups: readonly (readonly StatsProfile[])[],
-  cohort: readonly StatsProfile[],
+  groups: readonly (readonly CompletedProfile[])[],
+  cohort: readonly CompletedProfile[],
   capacities?: readonly number[],
 ): TeamSuggestion[] {
   const classExtraversion = calculateExtraversionRatio(cohort);
@@ -496,7 +506,10 @@ const MAX_SWAPS = 200;
  *    ときは定員式どおりに1人チームが生じる（n=5 なら [2,2,1]）。2人組に奇数人は割り切れず
  *    数学的に回避できない。式が正典なので式どおりに実装し、挙動をテストで固定してある。
  */
-export function createBalancedTeams(profiles: readonly StatsProfile[], teamSize: number): TeamPlan {
+export function createBalancedTeams(
+  profiles: readonly CompletedProfile[],
+  teamSize: number,
+): TeamPlan {
   if (!Number.isInteger(teamSize) || teamSize < 2 || teamSize > 6) {
     throw new RangeError("teamSize must be an integer from 2 to 6.");
   }
@@ -537,7 +550,7 @@ export function createBalancedTeams(profiles: readonly StatsProfile[], teamSize:
   );
 
   // 3. 貪欲配置
-  const groups: StatsProfile[][] = capacities.map(() => []);
+  const groups: CompletedProfile[][] = capacities.map(() => []);
   const penalties = groups.map((members) => calculateTeamPenalty(members, classExtraversion));
 
   for (const student of ordered) {
@@ -670,7 +683,9 @@ export type GenderFamilyMatrix = Record<
   Record<Gender, number> & { total: number }
 >;
 
-export function calculateGenderFamilyMatrix(profiles: readonly StatsProfile[]): GenderFamilyMatrix {
+export function calculateGenderFamilyMatrix(
+  profiles: readonly CompletedProfile[],
+): GenderFamilyMatrix {
   const matrix: GenderFamilyMatrix = {
     leader: { male: 0, female: 0, total: 0 },
     idea: { male: 0, female: 0, total: 0 },
@@ -678,6 +693,10 @@ export function calculateGenderFamilyMatrix(profiles: readonly StatsProfile[]): 
     challenge: { male: 0, female: 0, total: 0 },
   };
   for (const profile of profiles) {
+    // せいべつが空の行は数えない。DBの profiles_answered_row_is_complete が
+    // 「答えがそろった行は必ず性別を持つ」を保証するので、ここに来るのは壊れた1行だけ。
+    // その1行で先生の画面を落とすより、数から外すほうがましだと決めた。
+    if (!profile.gender) continue;
     const family = getFamilyForCode(profile.personality_type).id;
     matrix[family][profile.gender] += 1;
     matrix[family].total += 1;

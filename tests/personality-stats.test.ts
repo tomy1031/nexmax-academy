@@ -28,6 +28,7 @@ import {
   hasCompletedPersonality,
   latestResultsByProfile,
   selectCompletedProfiles,
+  type CompletedProfile,
   type StatsProfile,
 } from "../src/lib/personality-stats";
 
@@ -54,7 +55,7 @@ function profileOfCode(
   id: string,
   code: PersonalityTypeCode,
   options: { gender?: Gender; name?: string; version?: number } = {},
-): StatsProfile {
+): CompletedProfile {
   return {
     id,
     display_name: options.name ?? id,
@@ -82,7 +83,24 @@ const CLASS_OF_12: readonly PersonalityTypeCode[] = [
   "ENFJ",
 ];
 
-function classOf12(): StatsProfile[] {
+/**
+ * ログインしただけで、まだ診断していない行（2026-08-24）。
+ * Googleログインの時点で profiles に行ができるので、型も性別も空の行が正当に存在する。
+ */
+function registeredOnly(id: string): StatsProfile {
+  return {
+    id,
+    display_name: "",
+    email: `${id}@example.com`,
+    gender: null,
+    personality_type: null,
+    answers: [],
+    scores: {} as PersonalityScores,
+    personality_version: 3,
+  };
+}
+
+function classOf12(): CompletedProfile[] {
   return CLASS_OF_12.map((code, index) =>
     profileOfCode(`s${String(index).padStart(2, "0")}`, code),
   );
@@ -160,6 +178,9 @@ describe("selectCompletedProfiles", () => {
     profileOfCode("a", "ISTJ"),
     profileOfCode("b", "INFJ", { version: 2 }),
     { ...profileOfCode("c", "ENTP"), answers: [] as PersonalityAnswer[] },
+    // ログインしただけの行。集計にも編成にも混ぜない（混ぜると型が null のまま
+    // getFamilyForCode に渡り、先生の画面が落ちる）。
+    registeredOnly("d"),
   ];
 
   it("版を指定しなければ版で絞らない", () => {
@@ -518,7 +539,7 @@ describe("calculateExtraversionRatio", () => {
 
 /* ---------------- チーム編成 ---------------- */
 
-function classOf(count: number): StatsProfile[] {
+function classOf(count: number): CompletedProfile[] {
   return Array.from({ length: count }, (_, index) =>
     profileOfCode(`s${String(index).padStart(2, "0")}`, PERSONALITY_TYPES[index % 16]!.code),
   );
@@ -763,6 +784,15 @@ describe("calculateDashboardKpis", () => {
       answered: 1,
       unanswered: 1,
       registered: 2,
+    });
+  });
+
+  it("ログインしただけの行も登録数に入り、未回答として数える（2026-08-24）", () => {
+    const profiles = [profileOfCode("a", "ISTJ"), registeredOnly("b"), registeredOnly("c")];
+    expect(calculateDashboardKpis(profiles, [], now)).toMatchObject({
+      answered: 1,
+      unanswered: 2,
+      registered: 3,
     });
   });
 

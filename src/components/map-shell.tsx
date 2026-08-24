@@ -22,6 +22,7 @@ import {
   getFamilyForCode,
   getPersonalityType,
   type PersonalityFamilyId,
+  type PersonalityTypeCode,
 } from "@/content/personality";
 import { contentKindMeta } from "@/lib/content-kinds";
 import { hasLearnerNames } from "@/lib/name";
@@ -34,7 +35,7 @@ import {
   clearProfile,
   getMapView,
   getProfile,
-  isDiagnosisComplete,
+  isDiagnosedRow,
   saveMapView,
   saveProfile,
   type Gender,
@@ -153,7 +154,16 @@ function progressSnapshot() {
   return clearedIdsSnapshot();
 }
 
-function profileFromRow(profile: ProfileRow): NexmaxProfile {
+/**
+ * 診断が終わっている profiles の行。ログインした時点で作られる「登録だけの行」は
+ * 型も性別も空なので、画面へ渡す前に `isDiagnosedRow` で落とす（2026-08-24）。
+ */
+type DiagnosedProfileRow = ProfileRow & {
+  personality_type: PersonalityTypeCode;
+  gender: Gender;
+};
+
+function profileFromRow(profile: DiagnosedProfileRow): NexmaxProfile {
   return {
     displayName: profile.display_name,
     gender: profile.gender,
@@ -399,7 +409,7 @@ function Hud({
   view,
   onViewChange,
 }: {
-  profile: ProfileRow | null;
+  profile: DiagnosedProfileRow | null;
   progress: StageProgress;
   /** 💎を数えるもと（マップに出ている全ステージの教材）。 */
   stages: readonly MapStage[];
@@ -1283,7 +1293,7 @@ export function MapShell({
     }
     return deriveProgress(Array.isArray(parsed) ? (parsed as string[]) : [], stageIds);
   }, [rawProgress, stageIds]);
-  const [databaseProfile, setDatabaseProfile] = useState<ProfileRow | null>(null);
+  const [databaseProfile, setDatabaseProfile] = useState<DiagnosedProfileRow | null>(null);
   const profile = databaseProfile ? profileFromRow(databaseProfile) : cachedProfile;
   // 地図に立たせる分身。診断が終わっていない人には出さない（絵が決まらない）
   const learnerAvatar: LearnerAvatar | null = profile
@@ -1327,9 +1337,9 @@ export function MapShell({
           router.replace("/welcome");
           return;
         }
-        // 管理者が診断をリセットすると answers/scores が空で戻る。
-        // profileFromRow が投げるのに任せず、明示的に診断へ送る。
-        if (!isDiagnosisComplete(stored.answers)) {
+        // 管理者が診断をリセットすると answers/scores が空で戻る。ログインしただけの
+        // 行（型も性別も空）もここへ来る。profileFromRow が投げるのに任せず、明示的に診断へ送る。
+        if (!isDiagnosedRow(stored)) {
           clearProfile();
           router.replace("/welcome");
           return;

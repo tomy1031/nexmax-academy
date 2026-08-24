@@ -364,11 +364,49 @@ export async function leaveCall(page: Page): Promise<void> {
   await page.getByRole("button", { name: "言いました。おわる" }).click();
 }
 
-/** いま貯まっているハート（松井社長のミーティングだけに出る）。 */
+/** いま貯まっているハート（好感度モードの ミーティングに 出る）。 */
 export async function hearts(page: Page): Promise<number> {
   const label = await page
     .locator('[aria-label="こうかんど メーター"] [role="img"]')
     .getAttribute("aria-label");
   const match = /(\d+)/.exec(label ?? "");
   return match ? Number(match[1]) : -1;
+}
+
+/* ------------------------------------------------------------------ *
+ * 対話ゲーム（松井社長・願い #177）
+ * ------------------------------------------------------------------ */
+
+/** いまの 好感度（%）。丸い リングの 読み上げから 取る。 */
+export async function affinity(page: Page): Promise<number> {
+  const label = await page
+    .locator('[role="img"][aria-label*="パーセント"]')
+    .first()
+    .getAttribute("aria-label");
+  const match = /(\d+)/.exec(label ?? "");
+  return match ? Number(match[1]) : -1;
+}
+
+/**
+ * 社長の ことばを 読み進めて、自分の ばんまで 出す。
+ *
+ * セリフは 1つずつ 出るので、「つぎへ」が 見えて いる あいだは 押し続ける。
+ * 上限を 置くのは、進まなく なった ときに **テストが 止まらず 落ちる**ため。
+ */
+export async function readOn(page: Page, limit = 6): Promise<void> {
+  const next = page.getByRole("button", { name: "つぎへ ▶" });
+  for (let i = 0; i < limit; i += 1) {
+    if (await page.getByLabel("文字で 答える").isVisible()) return;
+    if (!(await next.isVisible())) return;
+    await next.click();
+  }
+}
+
+/** 文字で 答えて、見かたの 板を 読んで 閉じる。 */
+export async function answerTalk(page: Page, text: string): Promise<void> {
+  await page.getByLabel("文字で 答える").fill(text);
+  await page.getByRole("button", { name: "おくる" }).click();
+  const gain = page.getByText(/^こうかんど \+\d+%$/);
+  await expect(gain).toBeVisible({ timeout: 45_000 });
+  await page.getByRole("button", { name: "つぎへ ▶" }).click();
 }

@@ -1,18 +1,20 @@
 import { expect, test, type Page } from "@playwright/test";
 import {
+  affinity,
+  answerTalk,
   choiceButtons,
   goNext,
   goToConfirm,
   placeWords,
   submitAnswers,
   waitForAsk,
-  hearts,
   KAISHA_ITEMS,
   joinCall,
   leaveCall,
   multiButtons,
   openedCards,
   progressText,
+  readOn,
   shot,
   skipAsk,
   speakByText,
@@ -78,13 +80,26 @@ const HENDY_ANSWERS = [
   //（いちばん 開いた 問いに 答えられなくても 詰まらない 証拠）
 ];
 
-/** 松井社長に 話す 5問ぶんの こたえ。 */
-const MATSUI_ANSWERS = [
-  "ソピアです。よろしく おねがいします。",
+/**
+ * 松井社長に 話す「おもしろい」5つ（対話ゲーム・願い #177）。
+ *
+ * 中身は ぜんぶ ちがう ものに する——同じ 話を くり返すと 札は 開かない
+ *（`alreadyFound`）ので、5つ 見つけきれずに 深掘りが 続く。
+ */
+const MATSUI_FINDINGS = [
   "カンボジアの プログラムが おもしろかったです。",
   "わたしの 学校の ことが 書いて あったからです。",
-  "わたしは アプリを 作る しごとを して みたいです。",
+  "NMClaw は、はなすだけで まとまるから すごいです。",
+  "かんこうDX で、まちを あるいて みたいです。",
+  "ベトナムの かいしゃとも しごとを して いますね。",
+];
+
+/** そのあと、こんどは 学習者が 社長に 聞く。 */
+const MATSUI_QUESTIONS = [
   "社長は、どうして この 会社を 作りましたか。",
+  "これから、どんな ことを して みたいですか。",
+  "しごとで、いちばん たのしい ことは なんですか。",
+  "わたしたちに、なにを のぞんで いますか。",
 ];
 
 test("かいしゃステージを 通しで あそべる（端末に 何も 置かずに 始める）", async ({ page }) => {
@@ -397,32 +412,72 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
     await frameNext(page).click();
   });
 
-  await test.step("7. ミーティング「松井社長と 話す」— ハートと とっておきの話", async () => {
+  await test.step("7. 対話ゲーム「松井社長と 話す」— こうかんど 100%", async () => {
     await expect(page).toHaveURL(/meeting-kaisha_matsui$/);
-    await joinCall(page);
+    /*
+     * ここは ヘンディさんの ミーティングとは **別の 画面**（願い #177）。
+     * Zoom の 入室では なく、社長室の 舞台に 入る「はじめる」から 始まる。
+     */
+    await page.getByRole("button", { name: "はじめる ▶" }).click();
+    await readOn(page);
+    expect(await affinity(page)).toBe(0);
 
-    expect(await hearts(page)).toBe(0);
+    // ①「おもしろい」を 5つ 話す。好感度は 1回も 下がらない（P8）
     let before = 0;
-    for (const [index, answer] of MATSUI_ANSWERS.entries()) {
-      await speakByText(page, answer);
-      await expect(page.getByText("🌸").first()).toBeVisible();
-      const now = await hearts(page);
-      expect(now).toBeGreaterThan(before);
+    for (const [at, finding] of MATSUI_FINDINGS.entries()) {
+      /* 1回目だけ、観点の 内訳が 出た ところを 写真に 残す（証拠）。 */
+      if (at === 0) {
+        await page.getByLabel("文字で 答える").fill(finding);
+        await page.getByRole("button", { name: "おくる" }).click();
+        await expect(page.getByText(/^こうかんど \+\d+%$/)).toBeVisible({ timeout: 45_000 });
+        await page.waitForTimeout(700);
+        await shot(page, "10-meeting-matsui-feedback");
+        await page.getByRole("button", { name: "つぎへ ▶" }).click();
+      } else if (at === MATSUI_FINDINGS.length - 1) {
+        /*
+         * 5つめ＝**ばんが 変わる ターン**。内訳（話す ばんの 観点）と
+         * 底上げの 行が 食い違って いない ことを、写真にも 残す
+         *（2026-08-24 の 検収指摘 #1 の 再発よけ）。
+         */
+        await page.getByLabel("文字で 答える").fill(finding);
+        await page.getByRole("button", { name: "おくる" }).click();
+        await expect(page.getByText(/^こうかんど \+\d+%$/)).toBeVisible({ timeout: 45_000 });
+        await expect(page.locator('[data-kanten="concrete"]')).toBeVisible();
+        await expect(page.locator('[data-kanten="question"]')).toHaveCount(0);
+        await page.waitForTimeout(700);
+        await shot(page, "10-meeting-matsui-switch");
+        await page.getByRole("button", { name: "つぎへ ▶" }).click();
+      } else {
+        await answerTalk(page, finding);
+      }
+      const now = await affinity(page);
+      expect(now).toBeGreaterThanOrEqual(before);
       before = now;
-      if (index + 2 <= MATSUI_ANSWERS.length) await waitForAsk(page, index + 2);
+      await readOn(page);
     }
 
-    // 完走で とっておきの話が 開く（教材の threshold は 4）
-    await expect(page.getByLabel("とっておきの はなし")).toBeVisible();
-    expect(await hearts(page)).toBeGreaterThanOrEqual(4);
-    await shot(page, "10-meeting-matsui-reward");
+    // ②5つ 見つけたら「聞く ばん」が 開く（入口は 60%）
+    await expect(page.getByText("あなたが きく ばんです")).toBeVisible();
+    expect(await affinity(page)).toBeGreaterThanOrEqual(60);
+    /*
+     * 板は ふわりと 出る（motion）。出きる 前に 撮ると **証拠の 写真が 半透明**に なり、
+     * 読めるか どうかの 判断が できない。動きが 落ち着くまで 待ってから 撮る。
+     */
+    await page.waitForTimeout(700);
+    await shot(page, "10-meeting-matsui-listen");
 
-    /* こちらの ミーティングも、おえるのは 学習者が 押して 決める */
-    const cert = page.getByRole("dialog", { name: "しゅうりょうしょうの ポップアップ" });
-    if (await cert.isVisible()) await cert.getByRole("button").click();
-    await leaveCall(page);
-    await expect(cert).toBeVisible();
-    await cert.getByRole("button").click();
+    // ③こんどは 学習者が 聞く。満タンに なったら クリア
+    for (const question of MATSUI_QUESTIONS) {
+      if (await page.getByText("🏆 クリア！").isVisible()) break;
+      await answerTalk(page, question);
+      await readOn(page);
+    }
+
+    await expect(page.getByText("🏆 クリア！")).toBeVisible();
+    expect(await affinity(page)).toBe(100);
+    await page.waitForTimeout(700);
+    await shot(page, "10-meeting-matsui-reward");
+    await page.getByRole("button", { name: "おわる" }).click();
   });
 
   await test.step("8. ステージを おえる", async () => {
@@ -432,7 +487,11 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
     await clear.getByRole("link", { name: "ステージに もどる" }).click();
 
     await expect(page.getByText(progressText(KAISHA_ITEMS.length))).toBeVisible();
-    await expect(page.getByText("100%")).toBeVisible();
+    /*
+     * 進みぐあいの「100%」だけを 見る。松井社長の 説明文にも「100%」が 出る ように
+     * なった（対話ゲーム）ので、部分一致だと 2つに 当たる。
+     */
+    await expect(page.getByText("100%", { exact: true })).toBeVisible();
     await shot(page, "12-stage-top-done");
   });
 });
