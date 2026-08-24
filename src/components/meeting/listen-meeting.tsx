@@ -41,6 +41,7 @@ import { VisemeFace } from "./viseme-face";
 import { useClipPlayer } from "./use-clip-player";
 import { useLiveVoice } from "./use-live-voice";
 import { CertificateModal } from "./certificate-modal";
+import { HintModal } from "./hint-modal";
 
 /**
  * **聞く ばん** — 学習者が しつもんし、相手が 答える 教材（`mode: "listen"`）
@@ -110,6 +111,8 @@ export function ListenMeeting({
   const [chat, setChat] = useState<readonly ChatEntry[]>([]);
   const [draft, setDraft] = useState("");
   const [certificate, setCertificate] = useState(false);
+  /** 聞き方の ヒントを 出して いるか。 */
+  const [hintOpen, setHintOpen] = useState(false);
   const [record, setRecord] = useState<MeetingRecord | null>(null);
   const chatRef = useRef<HTMLDivElement | null>(null);
   const spokenSeenRef = useRef(0);
@@ -229,6 +232,19 @@ export function ListenMeeting({
       missedIds: [],
     });
   }, [joined, meeting.id, found]);
+
+  /**
+   * **聞き方の ヒント**（2026-08-23 の 指定）。
+   *
+   * 板には 話題が 出て いるが、**それを どう 聞けば よいかは 別の 話**——
+   * 「日本の 冬の こと」を 見ても、口から 出す 文には ならない。
+   * まだ 開いて いない 札から 作る ので、**開いた ものは 出て こない**
+   *（済んだ ものを もう一度 すすめない）。
+   */
+  const hintLines = (meeting.discover ?? [])
+    .filter((item) => !found.has(item.id))
+    .slice(0, 4)
+    .map((item) => `${item.label}を 教えて ください。`);
 
   /** はじめの ひとこと（この 教材の 入口の ことば）。 */
   const opening = fillName(meeting.closing, learnerName);
@@ -411,19 +427,45 @@ export function ListenMeeting({
             />
           </p>
 
+          {/*
+            **速さと ヒントは 会話中にも 要る**（2026-08-23 の 指定）。
+            入る 前の 画面にしか 置いて いなかった ため、聞く ばんでは
+            話しはじめてから 速さを 変えられず、聞き方にも 迷って いた。
+            並びは 答える ばんと そろえる（速さ｜マイク｜ヒント）。
+          */}
           <div className="card-island space-y-2 p-4">
-            <SpeakButton
-              status={voice.status}
-              reason={voice.reason}
-              talking={voice.talking}
-              disabled={voice.speaking}
-              onConnect={() => void voice.start(instruction, hostVoice)}
-              onStartTalking={() => {
-                stopClip();
-                voice.startTalking();
-              }}
-              onStopTalking={voice.stopTalking}
-            />
+            <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
+              <SpeechSpeedPicker
+                value={speed}
+                onChange={saveSpeechSpeed}
+                tone="light"
+                vertical
+                disabled={voice.speaking}
+              />
+              <SpeakButton
+                status={voice.status}
+                reason={voice.reason}
+                talking={voice.talking}
+                disabled={voice.speaking}
+                onConnect={() => void voice.start(instruction, hostVoice)}
+                onStartTalking={() => {
+                  stopClip();
+                  voice.startTalking();
+                }}
+                onStopTalking={voice.stopTalking}
+              />
+              <div className="flex justify-end">
+                <button
+                  type="button"
+                  onClick={() => setHintOpen(true)}
+                  disabled={hintLines.length === 0}
+                  aria-label="ヒントを 見る"
+                  className="border-sun-deep bg-cream text-navy rounded-full border-2 px-3 py-2 text-xs font-extrabold whitespace-nowrap disabled:opacity-40"
+                >
+                  <RubyText text="💡 ヒント" index={CHROME_FURIGANA} show />
+                </button>
+              </div>
+            </div>
           </div>
 
           {/* まえの ばんで 話した こと。分けた ぶんを ここで 手わたす */}
@@ -432,6 +474,15 @@ export function ListenMeeting({
           ) : null}
         </div>
       </CallShell>
+
+      {hintOpen ? (
+        <HintModal
+          lines={hintLines}
+          hasBlank={false}
+          furigana={furigana}
+          onClose={() => setHintOpen(false)}
+        />
+      ) : null}
 
       {certificate && record ? (
         <CertificateModal

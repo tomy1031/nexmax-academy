@@ -3,7 +3,7 @@
 import { motion } from "motion/react";
 import { RubyText } from "@/components/ruby-text";
 import { JUDGE_FURIGANA } from "@/components/meeting/ui-furigana";
-import type { JudgeGrade, JudgeResult } from "@/lib/meeting/judge";
+import { isPerfect, type JudgeGrade, type JudgeResult } from "@/lib/meeting/judge";
 
 /**
  * 返事の見かた（AIの判定）を出すカード。
@@ -64,9 +64,12 @@ export function JudgeCard({ judge, hostName }: { judge: JudgeResult; hostName: s
           💡 <RubyText text={judge.fix} index={JUDGE_FURIGANA} show />
         </p>
       ) : null}
-      <p className="bg-panel-tint text-ink rounded-xl px-3 py-2 text-sm font-bold break-words">
-        こう いうと もっと いいです →「{judge.exampleAnswer}」
-      </p>
+      {/* もう 直す ところが 無い ときは 出さない（2026-08-23 の 指定） */}
+      {isPerfect(judge) ? null : (
+        <p className="bg-panel-tint text-ink rounded-xl px-3 py-2 text-sm font-bold break-words">
+          こう いうと もっと いいです →「{judge.exampleAnswer}」
+        </p>
+      )}
 
       {judge.glossary.length > 0 ? (
         <div>
