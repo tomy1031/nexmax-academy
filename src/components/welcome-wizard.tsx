@@ -1,6 +1,14 @@
 "use client";
 
-import { Fragment, useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
+import {
+  Fragment,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useSyncExternalStore,
+  type ReactNode,
+} from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
@@ -45,7 +53,18 @@ import { findAllGlossaryTerms } from "@/content/glossary";
 import { insertPersonalityResult, updateOwnDetails, upsertOwnProfile } from "@/lib/profile-db";
 import { areNamesValid, type LearnerNames } from "@/lib/name";
 import { isSchoolChosen, type LearnerSchool } from "@/lib/school";
-import { getGeminiKey, saveGeminiKey, saveProfile, type Gender } from "@/lib/profile";
+import {
+  canResumeQuestions,
+  clearDiagnosisDraft,
+  getDiagnosisDraft,
+  getGeminiKey,
+  isDiagnosedRow,
+  saveDiagnosisDraft,
+  saveGeminiKey,
+  saveProfile,
+  type DiagnosisDraft,
+  type Gender,
+} from "@/lib/profile";
 
 function subscribeToStorage(onStoreChange: () => void) {
   window.addEventListener("storage", onStoreChange);
@@ -346,8 +365,11 @@ export function WelcomeWizard({
   /** ログインずみか。ここへ来られる時点で ふつうは true（未ログインは最初の画面へ返る）。 */
   loggedIn: boolean;
   email: string | null;
-  /** 保存済みの名前と性別。やり直しのときに入れ直させないため。 */
-  saved?: { names: LearnerNames; school: LearnerSchool; gender: Gender } | null;
+  /**
+   * 保存済みの名前と性別。やり直しのときに入れ直させないため。
+   * `gender` が null なのは「ログインして行はできたが、まだ診断していない人」（2026-08-24）。
+   */
+  saved?: { names: LearnerNames; school: LearnerSchool; gender: Gender | null } | null;
   /** 診断のやり直しとして開かれたか。文言の出し分けにだけ使う。 */
   retake?: boolean;
   /**
@@ -360,38 +382,78 @@ export function WelcomeWizard({
 }) {
   const router = useRouter();
   const savedGeminiKey = useSyncExternalStore(subscribeToStorage, savedGeminiKeySnapshot, () => "");
-  const [step, setStep] = useState<1 | 2 | 3>(1);
-  const [names, setNames] = useState<LearnerNames>(() => ({
-    familyName: saved?.names.familyName || googleNames.familyName,
-    givenName: saved?.names.givenName || googleNames.givenName,
-    nickname: saved?.names.nickname ?? "",
-  }));
+  /*
+   * 端末に残っている書きかけの20問。**1度だけ読む**（`quiz-runner.tsx` と同じ
+   * useState 初期化の流儀）。なまえだけ入れ直す場面では読まない——診断はもう
+   * 終わっていて、下書きは関係ないため。
+   */
+  const [draft] = useState<DiagnosisDraft | null>(() => (namesOnly ? null : getDiagnosisDraft()));
+  // 入れてもらう欄の初期値。**DBにある値が正**で、無いときだけ下書き、
+  // それも無ければ Google の名前（カタカナのときだけ page.tsx が入れている）。
+  const initialNames: LearnerNames = {
+    familyName: saved?.names.familyName || draft?.names.familyName || googleNames.familyName,
+    givenName: saved?.names.givenName || draft?.names.givenName || googleNames.givenName,
+    nickname: saved?.names.nickname || draft?.names.nickname || "",
+  };
+  const initialSchool: LearnerSchool = {
+    university: saved?.school.university || draft?.school.university || "",
+    cohort: saved?.school.cohort || draft?.school.cohort || 0,
+  };
+  const initialGender: Gender | null = saved?.gender ?? draft?.gender ?? null;
+  // 書きかけがあれば しつもんの続きから。1問目に戻すと20問を打ち直させることになる。
+  const [step, setStep] = useState<1 | 2 | 3>(() =>
+    canResumeQuestions({ names: initialNames, school: initialSchool, gender: initialGender }, draft)
+      ? 2
+      : 1,
+  );
+  const [names, setNames] = useState<LearnerNames>(initialNames);
   const namesReady = areNamesValid(names);
   // 学校と期生。先生がクラスを見分けるために使う（願い #27）。
-  const [school, setSchool] = useState<LearnerSchool>(() => ({
-    university: saved?.school.university ?? "",
-    cohort: saved?.school.cohort ?? 0,
-  }));
+  const [school, setSchool] = useState<LearnerSchool>(initialSchool);
   const schoolReady = isSchoolChosen(school);
-  const [genderChoice, setGenderChoice] = useState<Gender | null>(saved?.gender ?? null);
+  const [genderChoice, setGenderChoice] = useState<Gender | null>(initialGender);
   const gender = genderChoice;
   const [geminiValue, setGeminiValue] = useState<string | null>(null);
   const geminiKey = geminiValue ?? savedGeminiKey;
   const [busy, setBusy] = useState(false);
-  const [language, setLanguage] = useState<PersonalityLanguage>("easy");
+  const [language, setLanguage] = useState<PersonalityLanguage>(draft?.language ?? "easy");
   // 診断の途中で言語を切り替えたか（08 §5.2）。回答言語と一緒に保存する。
-  const languageSwitchedRef = useRef(false);
-  const [answers, setAnswers] = useState<(PersonalityAnswer | null)[]>(() =>
-    Array.from({ length: PERSONALITY_QUESTIONS.length }, () => null),
+  const languageSwitchedRef = useRef(draft?.languageSwitched ?? false);
+  const [answers, setAnswers] = useState<(PersonalityAnswer | null)[]>(
+    () => draft?.answers ?? Array.from({ length: PERSONALITY_QUESTIONS.length }, () => null),
   );
-  const [questionIndex, setQuestionIndex] = useState(0);
+  const [questionIndex, setQuestionIndex] = useState(draft?.questionIndex ?? 0);
   // 20問の前に出す導入（07 §3.0）。「性格」という語自体を知らない前提なので、
   // いきなり Q1 を出さずに、何をする時間なのかを先に渡す。
-  const [introRead, setIntroRead] = useState(false);
+  const [introRead, setIntroRead] = useState(draft?.introRead ?? false);
   const [questionDirection, setQuestionDirection] = useState(1);
   const [saveError, setSaveError] = useState(false);
   const [showWelcomeBg, setShowWelcomeBg] = useState(true);
   const geminiInput = useRef<HTMLInputElement>(null);
+  /**
+   * すでに保存できた答えの印。同じ20問で二重に台帳へ積まないため
+   * （結果 → しつもんへ戻る → もう一度 結果、を往復されても記録は1本）。
+   */
+  const savedSignature = useRef<string | null>(null);
+
+  /**
+   * 答えるたびに下書きを書く。**保存が済むまでの控え**なので、保存できたら消す。
+   * 1問も答えていないうちは書かない（`saveDiagnosisDraft` 側で弾く）。
+   */
+  useEffect(() => {
+    if (namesOnly) return;
+    saveDiagnosisDraft({
+      answers,
+      questionIndex,
+      introRead,
+      language,
+      languageSwitched: languageSwitchedRef.current,
+      names,
+      school,
+      gender: genderChoice,
+      savedAt: new Date().toISOString(),
+    });
+  }, [answers, questionIndex, introRead, language, names, school, genderChoice, namesOnly]);
 
   const completedAnswers = useMemo(
     () => (answers.every((answer) => answer !== null) ? (answers as PersonalityAnswer[]) : null),
@@ -436,14 +498,17 @@ export function WelcomeWizard({
     try {
       const stored = await updateOwnDetails(names, school);
       // 表示用キャッシュも新しい呼び名にしておく。放っておくと、マップが返事を待つあいだ
-      // 古い名前が出る。診断は終わっている場面なので scores も型どおりそろっている。
-      saveProfile({
-        displayName: stored.display_name,
-        gender: stored.gender,
-        type: stored.personality_type,
-        scores: stored.scores,
-        createdAt: stored.created_at,
-      });
+      // 古い名前が出る。ここは診断が終わっている場面だが、DBの列は未診断のために
+      // null を許すようになったので、型と性別が入っていることを確かめてから書く。
+      if (isDiagnosedRow(stored)) {
+        saveProfile({
+          displayName: stored.display_name,
+          gender: stored.gender,
+          type: stored.personality_type,
+          scores: stored.scores,
+          createdAt: stored.created_at,
+        });
+      }
       router.push("/map");
     } catch {
       setSaveError(true);
@@ -481,34 +546,22 @@ export function WelcomeWizard({
     setQuestionIndex(index);
   }
 
-  function showResult() {
-    if (!completedAnswers) return;
-    setStep(3);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }
-
   /**
-   * 前の 段へ 戻る（願い #153-3）。**答えは 消さない**——state に 持ったままなので、
-   * 戻って 進み直しても 20問を 打ち直す ことには ならない。
-   * 段は 3つとも 一本道なので、戻り先も 1つに 決まる:
-   *   結果 → しつもん（最後の1問）／1問目 → 導入／導入 → なまえの 画面
+   * 20問ぶんの答えを保存する（2026-08-24 の指定）。
+   *
+   * **結果を見せる前にここを通す。** 8/21 の授業では、結果画面まで進んだのに
+   * 最後のボタンを押さずに閉じた人の20問が丸ごと消えていた（本番のログでは、
+   * その時間帯の保存リクエストは全部成功していて、失敗は1件も無かった＝
+   * 送られてすらいなかった）。答えがそろった時点で送るのが、いちばん確実な直し。
+   *
+   * @returns 保存できたか。
    */
-  function goBackAStep() {
-    if (step === 3) {
-      setStep(2);
-    } else if (!introRead) {
-      setStep(1);
-    } else if (questionIndex === 0) {
-      setIntroRead(false);
-    } else {
-      previousQuestion();
-      return;
-    }
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }
+  async function saveDiagnosis(): Promise<boolean> {
+    if (!gender || !completedAnswers) return false;
+    const signature = completedAnswers.join("");
+    // 同じ答えで二度書かない（結果 ⇄ しつもん を往復されても台帳は1本）。
+    if (savedSignature.current === signature) return true;
 
-  async function finish() {
-    if (!gender || !completedAnswers) return;
     setBusy(true);
     setSaveError(false);
     const scores = calculatePersonalityScores(completedAnswers);
@@ -534,18 +587,65 @@ export function WelcomeWizard({
       } catch {
         // 最新プロフィールが保存できていれば学習を止めず、記録台帳の失敗だけを許容する。
       }
+      savedSignature.current = signature;
+      // 保存できたので控えは要らない。残すと、次に開いたとき「続きがある」と誤解させる。
+      clearDiagnosisDraft();
+      // 表示用キャッシュは**いま送った値**で作る。DBの列は未診断のために null を
+      // 許すようになったので、返ってきた行の型に頼らない。
       saveProfile({
         displayName: stored.display_name,
-        gender: stored.gender,
-        type: stored.personality_type,
-        scores: stored.scores,
+        gender,
+        type: resultCode,
+        scores,
         createdAt: stored.created_at,
       });
-      router.push("/map");
+      setBusy(false);
+      return true;
     } catch {
       setSaveError(true);
       setBusy(false);
+      return false;
     }
+  }
+
+  /**
+   * 20問目まで答えたら、**保存してから**結果を見せる。
+   * 保存に失敗しても結果は見せる（せっかく答えたのに何も見えないほうが つらい）。
+   * 答えは端末の下書きに残っているので、あとからでも送り直せる。
+   */
+  async function saveAndShowResult() {
+    if (!completedAnswers) return;
+    await saveDiagnosis();
+    setStep(3);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  /**
+   * 前の 段へ 戻る（願い #153-3）。**答えは 消さない**——state に 持ったままなので、
+   * 戻って 進み直しても 20問を 打ち直す ことには ならない。
+   * 段は 3つとも 一本道なので、戻り先も 1つに 決まる:
+   *   結果 → しつもん（最後の1問）／1問目 → 導入／導入 → なまえの 画面
+   */
+  function goBackAStep() {
+    if (step === 3) {
+      setStep(2);
+    } else if (!introRead) {
+      setStep(1);
+    } else if (questionIndex === 0) {
+      setIntroRead(false);
+    } else {
+      previousQuestion();
+      return;
+    }
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  /** 結果画面の ⭐はじめる⭐。保存が済んでいることを確かめてからマップへ送る。 */
+  async function finish() {
+    // ふつうは結果を見せる前に保存ずみなので、ここは即座に true が返る。
+    // 保存に失敗していた場合だけ、もう一度だけ送り直す。
+    if (!(await saveDiagnosis())) return;
+    router.push("/map");
   }
 
   return (
@@ -988,17 +1088,30 @@ export function WelcomeWizard({
                       answers[questionIndex] !== null && (
                         <button
                           type="button"
-                          disabled={!completedAnswers}
-                          onClick={showResult}
+                          disabled={!completedAnswers || busy}
+                          onClick={() => void saveAndShowResult()}
                           className={`btn-game px-8 py-3 text-lg [--btn-face:#ffc93c] [--btn-shadow:#f0a819] disabled:cursor-not-allowed disabled:opacity-45 ${RUBY_ON_COLOR}`}
                         >
-                          <ruby>
-                            結果<rt>けっか</rt>
-                          </ruby>
-                          を{" "}
-                          <ruby>
-                            見る<rt>みる</rt>
-                          </ruby>
+                          {/* ここで**保存してから**結果を出す。押したあと少し待つので、
+                              待っていることを 文字でも 見せる。 */}
+                          {busy ? (
+                            <>
+                              <ruby>
+                                保存<rt>ほぞん</rt>
+                              </ruby>
+                              して います…
+                            </>
+                          ) : (
+                            <>
+                              <ruby>
+                                結果<rt>けっか</rt>
+                              </ruby>
+                              を{" "}
+                              <ruby>
+                                見る<rt>みる</rt>
+                              </ruby>
+                            </>
+                          )}
                         </button>
                       )
                     )}
@@ -1219,10 +1332,17 @@ export function WelcomeWizard({
               </button>
               {saveError && (
                 <p className="text-coral-deep mt-4 font-extrabold">
-                  ほぞんに しっぱいしました。インターネットを かくにんして、もういちど おしてね。
+                  ほぞんが まだです。インターネットを かくにんして、
+                  <br />
+                  うえの ボタンを もういちど おしてね。
+                  <br />
+                  <span className="text-ink-soft text-sm">
+                    あなたの こたえは のこして あります。
+                  </span>
                 </p>
               )}
-              {/* まだ 保存していない 段なので、しつもんへ 戻って 答え直せる（願い #153-3）。 */}
+              {/* しつもんへ 戻って 答え直せる（願い #153-3）。答えを 変えて もう一度
+                  「結果を 見る」を 押すと、その 新しい 答えで 保存し直す。 */}
               <div className="mt-4">
                 <button
                   type="button"

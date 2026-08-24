@@ -32,8 +32,18 @@ export interface ProfileRow {
   university: string;
   /** 何期生（1〜5）。0 はこの列を足す前の行。 */
   cohort: number;
-  gender: Gender;
-  personality_type: PersonalityTypeCode;
+  /**
+   * せいべつ。**null は「登録しただけで、まだ診断していない人」**（2026-08-24）。
+   * ログインした時点で行が作られるようになったため、診断前の行が正当に存在する。
+   */
+  gender: Gender | null;
+  /**
+   * ネクマックスのタイプ。**null は未診断**（上と同じ理由）。
+   * 「診断が終わったか」は行の有無でも この列でもなく `answers` で見る
+   * （`isDiagnosisComplete` / `hasCompletedPersonality`）。DBの
+   * `profiles_answered_row_is_complete` が「答えがそろった行は必ず型と性別を持つ」を保証する。
+   */
+  personality_type: PersonalityTypeCode | null;
   answers: PersonalityAnswer[];
   scores: PersonalityScores;
   personality_version: number;

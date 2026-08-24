@@ -8,7 +8,13 @@ import { NexMaxFamily } from "@/components/nexmax-types";
 import { updateOwnDetails } from "@/lib/profile-db";
 import { areNamesValid, type LearnerNames } from "@/lib/name";
 import { isSchoolChosen, type LearnerSchool } from "@/lib/school";
-import { getGeminiKey, saveGeminiKey, saveProfile, type Gender } from "@/lib/profile";
+import {
+  getGeminiKey,
+  isDiagnosedRow,
+  saveGeminiKey,
+  saveProfile,
+  type Gender,
+} from "@/lib/profile";
 
 /**
  * せっていの画面（`/map/settings`）— じぶんの じょうほうと APIキーを あとから 直す
@@ -91,7 +97,9 @@ export function LearnerSettings({
       const stored = await updateOwnDetails(names, school, gender);
       // マップの HUD と 分身が すぐ 新しい 呼び名・せいべつに なるように、
       // 表示用キャッシュも 書き直す（正データは DB。07 §8.1）。
-      if (diagnosed) {
+      // 診断ずみの行だけ書き直す。ログインしただけの行（型も性別も空）は
+      // 表示用キャッシュに置けないので触らない（2026-08-24）。
+      if (diagnosed && isDiagnosedRow(stored)) {
         saveProfile({
           displayName: stored.display_name,
           gender: stored.gender,

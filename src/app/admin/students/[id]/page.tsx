@@ -188,7 +188,11 @@ export default function StudentPersonalityReportPage() {
 
         <section className="card-pop flex flex-col items-center gap-5 p-5 sm:flex-row sm:p-7">
           <div className="relative shrink-0">
-            <NexMaxType code={profile.personality_type} gender={profile.gender} size={128} />
+            <NexMaxType
+              code={profile.personality_type}
+              gender={profile.gender ?? undefined}
+              size={128}
+            />
             <span className="absolute right-0 bottom-0">
               <TypeEmblem code={profile.personality_type} size={44} />
             </span>
@@ -218,7 +222,13 @@ export default function StudentPersonalityReportPage() {
               </div>
               <div>
                 <dt className="text-ink-soft font-bold">性別</dt>
-                <dd>{profile.gender === "male" ? "男性" : "女性"}</dd>
+                <dd>
+                  {profile.gender === "male"
+                    ? "男性"
+                    : profile.gender === "female"
+                      ? "女性"
+                      : "（未設定）"}
+                </dd>
               </div>
               <div>
                 <dt className="text-ink-soft font-bold">タイプ</dt>
