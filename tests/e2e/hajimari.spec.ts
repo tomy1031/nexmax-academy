@@ -32,7 +32,13 @@ test("入る 前の 画面が Zoom と 同じで、カメラと マイクを 先
 
   // 1. たのまれた ことが 入る 前に 書いてある
   await expect(page.getByText("はなす まえに")).toBeVisible();
-  await expect(page.getByText("これから ミーティングを")).toBeVisible();
+  /*
+   * 「ミーティング」が **ことばの 辞書に 入った**（2026-08-25。かいしゃステージの
+   * 単語テストに 足した ぶんが 辞書に 畳まれる）ので、この 文の 中では
+   * 押せる チップに なり、字面が 「ミーティング みーてぃんぐを」に なる。
+   * 上の ルビと 同じ 理由なので、同じく 正規表現で さがす。
+   */
+  await expect(page.getByText(/これから ミーティング.*を.*始.*めます/)).toBeVisible();
 
   // 2. カメラは 既定で ON。自分の うつり方を 相手に 見られる 前に 見られる
   await expect(page.getByRole("button", { name: "カメラを けす" })).toHaveAttribute(
