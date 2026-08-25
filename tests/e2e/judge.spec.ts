@@ -111,7 +111,8 @@ test.describe("AIの みかた（鍵が あるときだけ）", () => {
     ).toBeVisible();
     // ほめる ひとことと、言いかえの 見本が そろっている
     await expect(card.getByText("🌸")).toBeVisible();
-    await expect(card.getByText("こう いうと もっと いいです")).toBeVisible();
+    // 2026-08-25 に「こう 言うと」へ 直した。ルビが 入る ので 正規表現で さがす
+    await expect(card.getByText(/こう.*言.*うと もっと いいです/)).toBeVisible();
     await shot(page, "23-judge-live");
   });
 });
