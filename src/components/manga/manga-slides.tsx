@@ -275,7 +275,9 @@ export function MangaSlides({ manga, embedded }: { manga: Manga; embedded: boole
                         <rt>{item.reading}</rt>
                       </ruby>
                     </span>
-                    <span className="text-ink-soft ml-2 text-sm font-bold">{item.meaning}</span>
+                    <span className="text-ink-soft ml-2 text-sm font-bold">
+                      <VocabMeaning item={item} />
+                    </span>
                   </li>
                 ))}
               </ul>
@@ -363,6 +365,27 @@ function PanelView({
 }
 
 /**
+ * ことばの 意味。**英語を 先に 置く**。
+ *
+ * やさしい日本語に 言い換えても、その 言い換えが 読めない ことが ある
+ *（学習者は 日本語1年目）。最後の 受け皿として 英語を 残す——記事の
+ * ことばカードや スライドは そうしているのに、まんがだけ `en` を 捨てて
+ * いた（正の 語彙へ 寄せた ときの 落とし穴。`toVocabItem` は 渡している）。
+ *
+ * 英語を 説明文の 中に 書いた 語（「project manager — しごとを まとめる ひと」）と
+ * 並びを そろえたいので、英語 → 説明 の 順にする。
+ */
+function VocabMeaning({ item }: { item: VocabItem }) {
+  return (
+    <>
+      {item.en ? <span className="text-navy">{item.en}</span> : null}
+      {item.en ? " — " : ""}
+      {item.meaning}
+    </>
+  );
+}
+
+/**
  * そのコマに出てきた ことばだけを、絵の下に置く。
  *
  * まんが全体の語彙を毎コマ並べると、読むべき2〜3語が20語に埋もれる。
@@ -393,7 +416,7 @@ function PanelVocab({
             <RubyText text={item.term} index={furigana} show={furiganaOn} />
           </dt>
           <dd className="text-ink-soft min-w-0 flex-1 text-sm font-bold break-words">
-            {item.meaning}
+            <VocabMeaning item={item} />
           </dd>
         </div>
       ))}

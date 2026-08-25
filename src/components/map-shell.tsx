@@ -782,7 +782,9 @@ function StagePanel({
             <StageTitle stage={stage} />
           </span>
           <span className="text-ink-soft block text-[10px] font-bold sm:text-xs">
-            （{stage.reading}）・ <KindLabel stage={stage} />
+            {/* 漢字が 無い 名前に よみは 要らない（StageTitle と 同じ判断）。 */}
+            {HAS_KANJI.test(stage.title) ? <>（{stage.reading}）・ </> : null}
+            <KindLabel stage={stage} />
           </span>
         </span>
         <span
@@ -1208,7 +1210,9 @@ function CardsView({ stages, progress }: { stages: readonly MapStage[]; progress
                       <h2 className="text-navy mt-1 text-xl font-black">
                         <StageTitle stage={stage} />
                       </h2>
-                      <p className="text-ink-soft text-xs font-bold">（{stage.reading}）</p>
+                      {HAS_KANJI.test(stage.title) && (
+                        <p className="text-ink-soft text-xs font-bold">（{stage.reading}）</p>
+                      )}
                     </div>
                     <span
                       className="grid h-11 w-11 place-items-center rounded-full border-4 border-white text-lg shadow-md"
