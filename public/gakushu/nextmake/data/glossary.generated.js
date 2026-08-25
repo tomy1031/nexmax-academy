@@ -13,6 +13,12 @@ export const GLOSSARY = [
     en: "app",
   },
   {
+    term: "歩み",
+    reading: "あゆみ",
+    meaning: "これまで 通って きた 道です。会社が いままで して きた ことを 言います。",
+    en: "History",
+  },
+  {
     term: "アラート",
     reading: "あらーと",
     meaning: "あぶない ことを 知らせる、しらせです。",
@@ -130,6 +136,12 @@ export const GLOSSARY = [
   },
   { term: "映像", reading: "えいぞう", meaning: "うごく 絵の ことです。", en: "Video / footage" },
   {
+    term: "AR",
+    reading: "えーあーる",
+    meaning: "カメラで 見て いる ものの 上に、絵や 字を かさねて 見せる しくみです。",
+    en: "Augmented Reality",
+  },
+  {
     term: "AI",
     reading: "えーあい",
     meaning: "人の かわりに 考えたり 作ったりする コンピューターです。",
@@ -239,6 +251,12 @@ export const GLOSSARY = [
     en: "Alteration",
   },
   { term: "会話", reading: "かいわ", meaning: "2人 以上で 話す ことです。", en: "Conversation" },
+  {
+    term: "書きかえ",
+    reading: "かきかえ",
+    meaning: "いま ある 中身を、あとから ちがう 中身に 変える ことです。",
+    en: "Rewriting",
+  },
   { term: "学生", reading: "がくせい", meaning: "学校で 勉強して いる 人です。", en: "Student" },
   {
     term: "確認",
@@ -517,6 +535,12 @@ export const GLOSSARY = [
     reading: "けいやく",
     meaning: "かならず 守ると 決めた、書いた やくそくです。",
     en: "Contract",
+  },
+  {
+    term: "契約書",
+    reading: "けいやくしょ",
+    meaning: "守ると 決めた ことを 書いた 紙です。会社と 会社が サインを します。",
+    en: "Contract document",
   },
   { term: "現在", reading: "げんざい", meaning: "いまの ことです。", en: "Present / now" },
   {
@@ -1393,7 +1417,12 @@ export const GLOSSARY = [
     meaning: "おなじ しごとを いっしょに する 人たち",
     en: "team",
   },
-  { term: "チケット", reading: "ちけっと", meaning: "ticket", en: "" },
+  {
+    term: "チケット",
+    reading: "ちけっと",
+    meaning: "お金を はらった しるしです。これが あると 中に 入れます。",
+    en: "Ticket",
+  },
   { term: "地図", reading: "ちず", meaning: "進む 道が 書いて ある 絵です。", en: "Map" },
   {
     term: "チャット",
@@ -1567,12 +1596,6 @@ export const GLOSSARY = [
     en: "JLPT",
   },
   {
-    term: "入場券",
-    reading: "にゅうじょうけん",
-    meaning: "中に 入る ための 券です。",
-    en: "Entry ticket",
-  },
-  {
     term: "入力",
     reading: "にゅうりょく",
     meaning: "キーボードで 字を 打って、コンピューターに 入れる ことです。",
@@ -1687,6 +1710,12 @@ export const GLOSSARY = [
   { term: "人々", reading: "ひとびと", meaning: "たくさんの 人たちの ことです。", en: "People" },
   { term: "日々", reading: "ひび", meaning: "まいにちの ことです。", en: "Day to day" },
   { term: "品質", reading: "ひんしつ", meaning: "ものや 仕事の よさの ことです。", en: "Quality" },
+  {
+    term: "VR",
+    reading: "ぶいあーる",
+    meaning: "ゴーグルを つけると、ぜんぶが 作られた 世界に 見える しくみです。",
+    en: "Virtual Reality",
+  },
   { term: "複数", reading: "ふくすう", meaning: "2つ 以上、と いう ことです。", en: "Multiple" },
   { term: "不足", reading: "ふそく", meaning: "足りない ことです。", en: "Shortage" },
   {
@@ -1898,12 +1927,6 @@ export const GLOSSARY = [
     reading: "ものがたり",
     meaning: "はじめから おわりまで つづく、お話です。",
     en: "Story",
-  },
-  {
-    term: "約束",
-    reading: "やくそく",
-    meaning: "「いつ 会う」「いつまでに おわらせる」と 決めた ことです。",
-    en: "Promise / Appointment",
   },
   {
     term: "有効",

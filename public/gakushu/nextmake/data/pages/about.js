@@ -130,7 +130,7 @@ export const ABOUT = {
         },
       ],
     },
-    { kind: "heading", text: { n4: "会社の あゆみ", n3: "沿革", en: "History" } },
+    { kind: "heading", text: { n4: "会社の 歩み", n3: "沿革", en: "History" } },
     {
       kind: "timeline",
       items: [

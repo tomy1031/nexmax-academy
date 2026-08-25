@@ -161,7 +161,7 @@ export const SERVICES = {
           en: "Watch the start of the story free — a short video.",
         },
         {
-          n4: "つづきが 見たい 人は、スマホで 入場券を 買います。",
+          n4: "つづきが 見たい 人は、スマホで チケットを 買います。",
           n3: "続きを見たい方は、WEB上でガイドチケットを購入する。",
           en: "If you want the rest, buy a ticket on your phone.",
         },
@@ -200,7 +200,7 @@ export const SERVICES = {
         {
           label: { n4: "町に お金が もどる", n3: "地域還元", en: "Money goes back to the town" },
           text: {
-            n4: "入場券の お金の 一部が、その 町に もどります。",
+            n4: "チケットの お金の 一部が、その 町に もどります。",
             n3: "ガイド売上の一部を地域へ還元する仕組みです。",
             en: "Part of the ticket money goes back to the local area.",
           },
