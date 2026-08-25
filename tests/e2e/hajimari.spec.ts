@@ -30,9 +30,18 @@ test("入る 前の 画面が Zoom と 同じで、カメラと マイクを 先
   await seedCompleted(context, BEFORE);
   await page.goto(MEETING);
 
-  // 1. たのまれた ことが 入る 前に 書いてある
+  /*
+   * 1. たのまれた ことが 入る 前に 書いてある。
+   *
+   * 通しの 字で 見ない——本文の ことばは **ポップアップ辞書の 札**に なる ので、
+   * 「これから ミーティングを」は 途中で 別の 要素に 割れる（辞書に 載って いる
+   * ことばが 増えれば また 割れ方が 変わる）。段落 まるごとで 見る。
+   */
   await expect(page.getByText("はなす まえに")).toBeVisible();
-  await expect(page.getByText("これから ミーティングを")).toBeVisible();
+  const intro = page.locator("p", { hasText: "これから" }).first();
+  await expect(intro).toContainText("これから");
+  await expect(intro).toContainText("始");
+  await expect(intro).toContainText("ミーティング");
 
   // 2. カメラは 既定で ON。自分の うつり方を 相手に 見られる 前に 見られる
   await expect(page.getByRole("button", { name: "カメラを けす" })).toHaveAttribute(

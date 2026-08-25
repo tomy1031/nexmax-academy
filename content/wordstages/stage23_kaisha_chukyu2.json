@@ -1,0 +1,89 @@
+{
+  "kind": "wordstage",
+  "id": "stage23_kaisha_chukyu2",
+  "title": "会社しらべの ことば",
+  "description": "会社の Webサイトを 調べる ときの ことばと、質問の ひとことです。",
+  "label": "中級②",
+  "fieldSequence": [
+    "forest",
+    "sky",
+    "space"
+  ],
+  "questionCount": 10,
+  "passRate": 80,
+  "furigana": [
+    [
+      "中級",
+      "ちゅうきゅう"
+    ],
+    [
+      "会社",
+      "かいしゃ"
+    ],
+    [
+      "調",
+      "しら"
+    ],
+    [
+      "言葉",
+      "ことば"
+    ],
+    [
+      "質問",
+      "しつもん"
+    ]
+  ],
+  "wordIds": [
+    "kaishagaiyou",
+    "kabushikigaisha",
+    "daihyou",
+    "daihyou_torishimariyaku_shachou",
+    "setsuritsu",
+    "enkaku",
+    "shozaichi",
+    "rinen",
+    "keieirinen",
+    "tokuchou",
+    "jisseki",
+    "dounyuujitsuseki",
+    "saiyo",
+    "katsudou",
+    "kankei",
+    "kankeigaisha",
+    "joujoukigyou",
+    "shoukai",
+    "risa-chi",
+    "jiten",
+    "shudan",
+    "kachi",
+    "shakai",
+    "shinrai",
+    "chousen",
+    "ikusei",
+    "sentan",
+    "seisaku",
+    "seifu",
+    "intanshippu",
+    "karikyuramu",
+    "nihongo_nouryoku_shiken",
+    "kouken",
+    "hatten",
+    "tenkai",
+    "shien",
+    "kikaku",
+    "houmon",
+    "sanka",
+    "kaisai",
+    "ibento",
+    "kyoudou",
+    "araiansu",
+    "patonashippu",
+    "shitsumon_ga_arimasu",
+    "oshiete_kudasai",
+    "dou_iu_imi_desu_ka",
+    "mouichido_onegaishimasu",
+    "sukoshi_kangaeru_jikan_wo_kudasai",
+    "sumimasen_tsugi_wo_onegaishimasu",
+    "yatte_mimasu"
+  ]
+}

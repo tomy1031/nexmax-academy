@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { ArcadeGame } from "@/components/arcade/arcade-game";
 import { listStages, listWordStages } from "@/lib/content";
-import { findLearnerWordStage, learnerWordStages, wordStageOwner } from "@/lib/wordstage-merge";
+import { findLearnerWordSets, learnerWordStages, wordStageOwner } from "@/lib/wordstage-merge";
 
 /**
  * 公開分のDBコンテンツを合流させるため ISR にする（設計07 §11.1
@@ -23,12 +23,14 @@ export async function generateStaticParams() {
   const ids = new Set<string>();
   for (const stage of learnerWordStages(stages, words)) ids.add(stage.id);
   for (const stage of words) ids.add(stage.id);
+  // ステージIDでも 開ける（セットが 2つ以上 ある ステージは、ここが えらぶ 画面に なる）
+  for (const stage of stages) if (stage.wordStageIds.length > 0) ids.add(stage.id);
   return [...ids].map((id) => ({ stage: id }));
 }
 
 async function resolve(id: string) {
   const [stages, words] = await Promise.all([listStages(), listWordStages()]);
-  return findLearnerWordStage(id, stages, words);
+  return findLearnerWordSets(id, stages, words)[0] ?? null;
 }
 
 export async function generateMetadata({
@@ -44,9 +46,8 @@ export async function generateMetadata({
 export default async function ArcadeStagePage({ params }: { params: Promise<{ stage: string }> }) {
   const { stage: id } = await params;
   const [stages, words] = await Promise.all([listStages(), listWordStages()]);
-  const all = learnerWordStages(stages, words);
-  const stage = findLearnerWordStage(id, stages, words);
-  if (!stage) notFound();
+  const sets = findLearnerWordSets(id, stages, words);
+  if (sets.length === 0) notFound();
 
   /*
    * 出るときの 行き先は **その ことばを 持って いる ステージ**。
@@ -56,15 +57,24 @@ export default async function ArcadeStagePage({ params }: { params: Promise<{ st
    * 探し直させて いた。URL（`/arcade/<id>`）だけ 覚えて 開いた 人にも 同じ 道が
    * 出るよう、出どころは クエリでなく データから 引く。
    *
-   * どの ステージにも 付いて いない ことば（先生が 作りかけの もの）は null なので、
-   * これまでどおり マップへ 出る。
+   * どの ステージにも 付いて いない ことば（先生が 作りかけの もの・横断の セット）は
+   * null なので、これまでどおり マップへ 出る。
    */
-  const owner = wordStageOwner(stage.id, stages) ?? wordStageOwner(id, stages);
+  const owner = wordStageOwner(sets[0]!.id, stages) ?? wordStageOwner(id, stages);
+
+  /*
+   * 手わたすのは **その ステージの セットだけ**。ステージから 来た 人に
+   * よその 課の ことばを 並べても 選べない（ぜんぶ 見たい 人の 入口は /arcade）。
+   * どの ステージにも 付いて いない ことばの ときだけ、これまでどおり 全部を わたす。
+   *
+   * セットが 2つ以上 なら `initialStageId` を 渡さない＝**えらぶ 画面から** 始まる。
+   */
+  const all = learnerWordStages(stages, words);
 
   return (
     <ArcadeGame
-      stages={all}
-      initialStageId={stage.id}
+      stages={owner ? sets : all}
+      initialStageId={sets.length === 1 ? sets[0]!.id : undefined}
       backTo={owner ? `/${owner.id}` : undefined}
     />
   );

@@ -1,0 +1,105 @@
+{
+  "kind": "wordstage",
+  "id": "stage23_kaisha_chukyu1",
+  "title": "お客さまと 取引の ことば",
+  "description": "お客さまとの 仕事で 使う ことばと、報告の ひとことです。",
+  "label": "中級①",
+  "fieldSequence": [
+    "forest",
+    "sky",
+    "space"
+  ],
+  "questionCount": 10,
+  "passRate": 80,
+  "furigana": [
+    [
+      "中級",
+      "ちゅうきゅう"
+    ],
+    [
+      "会社",
+      "かいしゃ"
+    ],
+    [
+      "調",
+      "しら"
+    ],
+    [
+      "言葉",
+      "ことば"
+    ],
+    [
+      "使",
+      "つか"
+    ],
+    [
+      "仕事",
+      "しごと"
+    ],
+    [
+      "客",
+      "きゃく"
+    ],
+    [
+      "取引",
+      "とりひき"
+    ],
+    [
+      "報告",
+      "ほうこく"
+    ]
+  ],
+  "wordIds": [
+    "kigyou",
+    "houjin",
+    "jigyo",
+    "jigyousha",
+    "bijinesu",
+    "gyoukai",
+    "jisha",
+    "shanai",
+    "honsha",
+    "kyoten",
+    "kaigai",
+    "ofushoa",
+    "jutaku_kaihatsu",
+    "jisha_kaihatsu",
+    "kyakusaki_jochu",
+    "keiei",
+    "kokyaku",
+    "anken",
+    "youbou",
+    "teikyou",
+    "mitsumori",
+    "hacchuu",
+    "chuumon",
+    "keiyaku",
+    "keiyakusho",
+    "nouhin",
+    "nouki",
+    "kingaku",
+    "uriage",
+    "hanbai",
+    "shouhin",
+    "kounyuu",
+    "kaikei",
+    "shuukei",
+    "shinsei",
+    "shounin",
+    "hojokin",
+    "torihiki",
+    "risosu",
+    "soryushon",
+    "konsarutengu",
+    "otoiawase",
+    "koutou",
+    "nippou",
+    "shirabete_wakarimashita",
+    "websaito_de_mitsukemashita",
+    "saito_ni_kaite_arimashita",
+    "mada_shirabete_imasen",
+    "atode_shirabemasu",
+    "kekka_wo_houkoku_shimasu",
+    "ijou_desu"
+  ]
+}

@@ -40,6 +40,8 @@ const VOCAB_JSON = join(ROOT, "content", "vocab", "vocabulary.json");
 
 export const FURIGANA_PATH = join(SITE, "data", "furigana.generated.js");
 export const GLOSSARY_PATH = join(SITE, "data", "glossary.generated.js");
+/** スタジオの ことばの 候補（アプリ側から import する ので src の 下）。 */
+export const LINK_TERMS_PATH = join(ROOT, "src", "content", "gakushu-terms.generated.ts");
 
 /**
  * 見出し語は **漢字で 始まる** ものだけ 焼く。
@@ -156,8 +158,14 @@ function appearsAsWord(haystack, term, readingUnits = new Set()) {
   return false;
 }
 
-/** 本文に 出て きた ことばだけを、ことばの 正から 拾う。 */
-export function buildGlossary(pages, ui) {
+/**
+ * 本文に 出て きた ことばを、ことばの 正から 拾う（正の かたちの まま）。
+ *
+ * 辞典（学習者が サイトで 引く もの）と、**先生が 単語テストに 出す 語を えらぶ
+ * ときの 候補**（`src/content/gakushu-terms.generated.ts`）の 両方の もとに なる。
+ * 2つの 場所で 別々に 拾うと、サイトに 出て いる のに 候補に 出ない 語が できる。
+ */
+export function siteVocabWords(pages, ui) {
   const vocab = readJson(VOCAB_JSON);
   const haystack = [...japaneseTexts(pages, ui), ...textsOf(pages, "en")].join("\n");
   /** 読み辞書が「ここで 切れる」と 決めて いる 表記。 */
@@ -173,14 +181,19 @@ export function buildGlossary(pages, ui) {
        */
       .filter((word) => word.term.length >= 2)
       .filter((word) => appearsAsWord(haystack, word.term, readingUnits))
-      .map((word) => ({
-        term: word.term,
-        reading: word.reading,
-        meaning: word.meaningJa,
-        en: word.englishTerm ?? "",
-      }))
-      .sort((a, b) => a.reading.localeCompare(b.reading, "ja"))
   );
+}
+
+/** 本文に 出て きた ことばだけを、ことばの 正から 拾う。 */
+export function buildGlossary(pages, ui) {
+  return siteVocabWords(pages, ui)
+    .map((word) => ({
+      term: word.term,
+      reading: word.reading,
+      meaning: word.meaningJa,
+      en: word.englishTerm ?? "",
+    }))
+    .sort((a, b) => a.reading.localeCompare(b.reading, "ja"));
 }
 
 function header(what, from) {
@@ -202,6 +215,29 @@ export function furiganaSource(entries) {
 export const FURIGANA = [
 ${body}
 ];
+`;
+}
+
+/**
+ * リンク教材（学習用サイト）に 出て くる 語の id。
+ *
+ * スタジオの「📚 辞書から えらぶ」が、**その ステージの 本文に 出て くる 語だけ**を
+ * 出す ために 使う（願い #203）。サイトの 本文は 静的な JS に あり、
+ * アプリからは 読めない（Workers に fs が 無い）ので、ここで 焼く。
+ * ほかの 教材（記事・まんが・スライド…）は DB で 変わるので、
+ * 画面の 側で 本文と 突き合わせる（`src/lib/vocab/stage-pool.ts`）。
+ */
+export function linkTermsSource(linkId, words) {
+  const ids = words.map((word) => `    ${JSON.stringify(word.id)},`).join("\n");
+  return `${header(
+    "リンク教材（学習用サイト）の 本文に 出て くる ことばの id。",
+    "content/vocab/vocabulary.json と public/gakushu/nextmake/",
+  )}
+export const GAKUSHU_TERMS: Readonly<Record<string, readonly string[]>> = {
+  ${JSON.stringify(linkId)}: [
+${ids}
+  ],
+};
 `;
 }
 
@@ -239,11 +275,14 @@ function writeFormatted(path, source) {
 async function main() {
   const { PAGES, UI } = await loadSite();
   const furigana = buildFurigana();
+  const words = siteVocabWords(PAGES, UI);
   const glossary = buildGlossary(PAGES, UI);
   writeFormatted(FURIGANA_PATH, furiganaSource(furigana));
   writeFormatted(GLOSSARY_PATH, glossarySource(glossary));
+  writeFormatted(LINK_TERMS_PATH, linkTermsSource(readJson(LINK_JSON).id, words));
   console.log(
-    `学習用サイト: 読み辞書 ${furigana.length}語 / ことばの辞典 ${glossary.length}語 を書き出しました`,
+    `学習用サイト: 読み辞書 ${furigana.length}語 / ことばの辞典 ${glossary.length}語 / ` +
+      `単語の候補 ${words.length}語 を書き出しました`,
   );
 }
 

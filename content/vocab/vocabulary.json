@@ -2326,15 +2326,25 @@
       "reading": "てじゅん",
       "meaningJa": "しごとの じゅんばん",
       "englishTerm": "steps",
-      "englishMeaning": "the order you do a job in"
+      "englishMeaning": "the order you do a job in",
+      "wrongMeanings": [
+        "Turn to speak",
+        "Handbook",
+        "Effort and time"
+      ]
     },
     {
       "id": "unyou",
       "term": "運用",
       "reading": "うんよう",
       "meaningJa": "つくった システムを まいにち うごかしつづける しごと",
-      "englishTerm": "operations",
-      "englishMeaning": "keeping a finished system running every day"
+      "englishTerm": "Running a service",
+      "englishMeaning": "keeping a finished system running every day",
+      "wrongMeanings": [
+        "Building a service",
+        "Selling a service",
+        "Stopping a service"
+      ]
     },
     {
       "id": "taiou",
@@ -2342,7 +2352,12 @@
       "reading": "たいおう",
       "meaningJa": "もんだいが 出た とき、それを なおす しごと",
       "englishTerm": "handling",
-      "englishMeaning": "dealing with a problem when one comes up"
+      "englishMeaning": "dealing with a problem when one comes up",
+      "wrongMeanings": [
+        "Comparison",
+        "Waiting",
+        "Facing each other"
+      ]
     },
     {
       "id": "shikumi",
@@ -2350,15 +2365,25 @@
       "reading": "しくみ",
       "meaningJa": "どう うごいて いるか。なかの つくり",
       "englishTerm": "mechanism",
-      "englishMeaning": "how something works inside"
+      "englishMeaning": "how something works inside",
+      "wrongMeanings": [
+        "Machine part",
+        "Company rule",
+        "Team member"
+      ]
     },
     {
       "id": "setsukei",
       "term": "設計",
       "reading": "せっけい",
       "meaningJa": "つくる 前に、どう つくるかを きめる こと",
-      "englishTerm": "design",
-      "englishMeaning": "deciding how to build it before you build it"
+      "englishTerm": "Design plan",
+      "englishMeaning": "deciding how to build it before you build it",
+      "wrongMeanings": [
+        "Decision",
+        "Drawing lesson",
+        "Signature"
+      ]
     },
     {
       "id": "teian",
@@ -2531,7 +2556,12 @@
       "reading": "すまほ",
       "meaningJa": "スマートフォン",
       "englishTerm": "smartphone",
-      "englishMeaning": "a phone you can use like a small computer"
+      "englishMeaning": "a phone you can use like a small computer",
+      "wrongMeanings": [
+        "Smart watch",
+        "Speaker",
+        "Screen"
+      ]
     },
     {
       "id": "yosou",
@@ -2725,7 +2755,12 @@
       "reading": "あぷり",
       "meaningJa": "スマホや パソコンの 中で うごく もの。ちずや ゲームなど",
       "englishTerm": "app",
-      "englishMeaning": "a program you use on a phone or computer"
+      "englishMeaning": "a program you use on a phone or computer",
+      "wrongMeanings": [
+        "Apply form",
+        "Appointment",
+        "Approval"
+      ]
     },
     {
       "id": "kotoba4",
@@ -2740,21 +2775,36 @@
       "term": "会社概要",
       "reading": "かいしゃがいよう",
       "meaningJa": "会社の 場所や できた 年が 書いて ある ページ",
-      "englishTerm": "Company overview"
+      "englishTerm": "Company overview",
+      "wrongMeanings": [
+        "Company rules",
+        "Company outing",
+        "Company magazine"
+      ]
     },
     {
       "id": "keieirinen",
       "term": "経営理念",
       "reading": "けいえいりねん",
       "meaningJa": "会社が たいせつに して いる 考え",
-      "englishTerm": "Corporate philosophy / Mission"
+      "englishTerm": "Corporate philosophy / Mission",
+      "wrongMeanings": [
+        "Company history",
+        "Company address",
+        "Company profit"
+      ]
     },
     {
       "id": "dounyuujitsuseki",
       "term": "導入実績",
       "reading": "どうにゅうじっせき",
       "meaningJa": "この 会社が 仕事を した お客さまの 名前",
-      "englishTerm": "Client track record"
+      "englishTerm": "Client track record",
+      "wrongMeanings": [
+        "Sales target",
+        "Price list",
+        "Job openings"
+      ]
     },
     {
       "id": "ketsuron",
@@ -2796,7 +2846,13 @@
       "id": "tesuto",
       "term": "テスト",
       "reading": "てすと",
-      "meaningJa": "test / exam"
+      "meaningJa": "test / exam",
+      "englishTerm": "Testing",
+      "wrongMeanings": [
+        "Taste",
+        "Text",
+        "Contest"
+      ]
     },
     {
       "id": "kaisha",
@@ -2857,7 +2913,13 @@
       "id": "sapo-to",
       "term": "サポート",
       "reading": "さぽーと",
-      "meaningJa": "support — たすける こと"
+      "meaningJa": "support — たすける こと",
+      "englishTerm": "Support",
+      "wrongMeanings": [
+        "Sport",
+        "Passport",
+        "Airport"
+      ]
     },
     {
       "id": "zu-mu",
@@ -2869,7 +2931,13 @@
       "id": "mi-teingu",
       "term": "ミーティング",
       "reading": "みーてぃんぐ",
-      "meaningJa": "meeting — あつまって はなす こと"
+      "meaningJa": "meeting — あつまって はなす こと",
+      "englishTerm": "Meeting",
+      "wrongMeanings": [
+        "Greeting",
+        "Meaning",
+        "Machine"
+      ]
     },
     {
       "id": "asakai",
@@ -3232,21 +3300,36 @@
       "term": "企業",
       "reading": "きぎょう",
       "meaningJa": "会社の ことです。あらたまった 言い方です。",
-      "englishTerm": "Company"
+      "englishTerm": "Business company",
+      "wrongMeanings": [
+        "Factory",
+        "Government office",
+        "School"
+      ]
     },
     {
       "id": "gyoumu",
       "term": "業務",
       "reading": "ぎょうむ",
       "meaningJa": "会社の 中で、まいにち する 仕事です。",
-      "englishTerm": "Operations"
+      "englishTerm": "Operations",
+      "wrongMeanings": [
+        "Business trip",
+        "Business plan",
+        "Business card"
+      ]
     },
     {
       "id": "gyoukai",
       "term": "業界",
       "reading": "ぎょうかい",
       "meaningJa": "同じ 種類の 仕事を する 会社の あつまりです。",
-      "englishTerm": "Industry"
+      "englishTerm": "Industry",
+      "wrongMeanings": [
+        "Business trip",
+        "Business card",
+        "Working hours"
+      ]
     },
     {
       "id": "gyoushu",
@@ -3260,56 +3343,96 @@
       "term": "社内",
       "reading": "しゃない",
       "meaningJa": "会社の 中の ことです。",
-      "englishTerm": "Inside the company"
+      "englishTerm": "Inside the company",
+      "wrongMeanings": [
+        "Outside the company",
+        "Inside the train",
+        "Inside the city"
+      ]
     },
     {
       "id": "jisha",
       "term": "自社",
       "reading": "じしゃ",
       "meaningJa": "じぶんの 会社の ことです。",
-      "englishTerm": "Our own company"
+      "englishTerm": "Our own company",
+      "wrongMeanings": [
+        "The other company",
+        "A partner company",
+        "A rival company"
+      ]
     },
     {
       "id": "houjin",
       "term": "法人",
       "reading": "ほうじん",
       "meaningJa": "会社や 団体など、人の あつまりの ことです。",
-      "englishTerm": "Corporation"
+      "englishTerm": "Corporation",
+      "wrongMeanings": [
+        "Private person",
+        "Public servant",
+        "Shareholder"
+      ]
     },
     {
       "id": "dantai",
       "term": "団体",
       "reading": "だんたい",
       "meaningJa": "同じ 目的で あつまった 人の グループです。",
-      "englishTerm": "Organisation"
+      "englishTerm": "Organisation",
+      "wrongMeanings": [
+        "Individual",
+        "Building",
+        "Ceremony"
+      ]
     },
     {
       "id": "daihyou",
       "term": "代表",
       "reading": "だいひょう",
       "meaningJa": "その 会社や 団体で、いちばん 上の 人です。",
-      "englishTerm": "Representative"
+      "englishTerm": "Representative",
+      "wrongMeanings": [
+        "Announcement",
+        "Timetable",
+        "Reward"
+      ]
     },
     {
       "id": "shachou",
       "term": "社長",
       "reading": "しゃちょう",
       "meaningJa": "会社で いちばん 上の 人です。",
-      "englishTerm": "President"
+      "englishTerm": "President",
+      "wrongMeanings": [
+        "Company car",
+        "Company house",
+        "Company badge"
+      ]
     },
     {
       "id": "kyoten",
       "term": "拠点",
       "reading": "きょてん",
       "meaningJa": "仕事を する ための 場所です。オフィスなど。",
-      "englishTerm": "Base / office"
+      "englishTerm": "Base / office",
+      "wrongMeanings": [
+        "Turning point",
+        "Meeting point",
+        "Starting price"
+      ]
     },
     {
       "id": "shibu",
       "term": "支部",
       "reading": "しぶ",
       "meaningJa": "本部から わかれた、その 土地の 事務所です。",
-      "englishTerm": "Branch"
+      "englishTerm": "Branch",
+      "wrongMeanings": [
+        "Head office",
+        "Section chief",
+        "Department store"
+      ]
     },
     {
       "id": "sougyou",
@@ -3323,7 +3446,12 @@
       "term": "経営",
       "reading": "けいえい",
       "meaningJa": "会社を うまく うごかして いく 仕事です。",
-      "englishTerm": "Management"
+      "englishTerm": "Running a company",
+      "wrongMeanings": [
+        "Sightseeing",
+        "Advertising",
+        "Manufacturing"
+      ]
     },
     {
       "id": "soshiki",
@@ -3344,7 +3472,12 @@
       "term": "担当",
       "reading": "たんとう",
       "meaningJa": "その 仕事を うけもつ ことです。",
-      "englishTerm": "In charge of"
+      "englishTerm": "In charge of",
+      "wrongMeanings": [
+        "Simple",
+        "Short term",
+        "Single unit"
+      ]
     },
     {
       "id": "sekinin",
@@ -3379,70 +3512,120 @@
       "term": "顧客",
       "reading": "こきゃく",
       "meaningJa": "お客さまの ことです。あらたまった 言い方です。",
-      "englishTerm": "Customer"
+      "englishTerm": "Customer",
+      "wrongMeanings": [
+        "Passenger",
+        "Neighbour",
+        "Guest at home"
+      ]
     },
     {
       "id": "torihiki",
       "term": "取引",
       "reading": "とりひき",
       "meaningJa": "会社と 会社で、ものや お金を やりとりする ことです。",
-      "englishTerm": "Business dealing"
+      "englishTerm": "Business dealing",
+      "wrongMeanings": [
+        "Pulling out",
+        "Taking a break",
+        "Changing trains"
+      ]
     },
     {
       "id": "keiyaku",
       "term": "契約",
       "reading": "けいやく",
       "meaningJa": "かならず 守ると 決めた、書いた やくそくです。",
-      "englishTerm": "Contract"
+      "englishTerm": "Contract",
+      "wrongMeanings": [
+        "Promise between friends",
+        "Reservation",
+        "Prediction"
+      ]
     },
     {
       "id": "anken",
       "term": "案件",
       "reading": "あんけん",
       "meaningJa": "1つの 仕事の まとまりです。",
-      "englishTerm": "Project / case"
+      "englishTerm": "Project / case",
+      "wrongMeanings": [
+        "Safety",
+        "Opinion",
+        "Proposal box"
+      ]
     },
     {
       "id": "irai",
       "term": "依頼",
       "reading": "いらい",
       "meaningJa": "人に「して ください」と たのむ ことです。",
-      "englishTerm": "Request"
+      "englishTerm": "Request",
+      "wrongMeanings": [
+        "Reliance on luck",
+        "Arrival",
+        "Invitation"
+      ]
     },
     {
       "id": "youbou",
       "term": "要望",
       "reading": "ようぼう",
       "meaningJa": "こう して ほしい、と いう ねがいです。",
-      "englishTerm": "Request / wish"
+      "englishTerm": "Request / wish",
+      "wrongMeanings": [
+        "Appearance",
+        "Care",
+        "Warning"
+      ]
     },
     {
       "id": "teikyou",
       "term": "提供",
       "reading": "ていきょう",
       "meaningJa": "相手に、ものや サービスを 出す ことです。",
-      "englishTerm": "Providing"
+      "englishTerm": "Providing",
+      "wrongMeanings": [
+        "Suggestion",
+        "Cooperation",
+        "Submission"
+      ]
     },
     {
       "id": "nouhin",
       "term": "納品",
       "reading": "のうひん",
       "meaningJa": "できた ものを、お客さまに わたす ことです。",
-      "englishTerm": "Delivery"
+      "englishTerm": "Delivery",
+      "wrongMeanings": [
+        "Sample",
+        "Return of goods",
+        "Storage"
+      ]
     },
     {
       "id": "nouki",
       "term": "納期",
       "reading": "のうき",
       "meaningJa": "できた ものを わたす、やくそくの 日です。",
-      "englishTerm": "Deadline"
+      "englishTerm": "Deadline",
+      "wrongMeanings": [
+        "Storage room",
+        "Farm season",
+        "Payment"
+      ]
     },
     {
       "id": "mitsumori",
       "term": "見積",
       "reading": "みつもり",
       "meaningJa": "いくら かかるかを、先に 出す ことです。",
-      "englishTerm": "Estimate"
+      "englishTerm": "Estimate",
+      "wrongMeanings": [
+        "Discount",
+        "Receipt",
+        "Deposit"
+      ]
     },
     {
       "id": "juchuu",
@@ -3456,49 +3639,84 @@
       "term": "発注",
       "reading": "はっちゅう",
       "meaningJa": "相手に 仕事や ものを たのむ ことです。",
-      "englishTerm": "Placing an order"
+      "englishTerm": "Placing an order",
+      "wrongMeanings": [
+        "Receiving an order",
+        "Cancelling an order",
+        "Delivering an order"
+      ]
     },
     {
       "id": "chuumon",
       "term": "注文",
       "reading": "ちゅうもん",
       "meaningJa": "ほしい ものを たのむ ことです。",
-      "englishTerm": "Order"
+      "englishTerm": "Order",
+      "wrongMeanings": [
+        "Attention",
+        "Middle door",
+        "Notice board"
+      ]
     },
     {
       "id": "hanbai",
       "term": "販売",
       "reading": "はんばい",
       "meaningJa": "ものを 売る ことです。",
-      "englishTerm": "Sales"
+      "englishTerm": "Sales",
+      "wrongMeanings": [
+        "Purchase",
+        "Delivery",
+        "Advertisement"
+      ]
     },
     {
       "id": "shouhin",
       "term": "商品",
       "reading": "しょうひん",
       "meaningJa": "お店で 売る ものです。",
-      "englishTerm": "Product"
+      "englishTerm": "Product",
+      "wrongMeanings": [
+        "Prize",
+        "Receipt",
+        "Shop"
+      ]
     },
     {
       "id": "kingaku",
       "term": "金額",
       "reading": "きんがく",
       "meaningJa": "お金の 数です。",
-      "englishTerm": "Amount of money"
+      "englishTerm": "Amount of money",
+      "wrongMeanings": [
+        "Gold bar",
+        "Bank account",
+        "Price tag"
+      ]
     },
     {
       "id": "uriage",
       "term": "売上",
       "reading": "うりあげ",
       "meaningJa": "売って 入って きた お金です。",
-      "englishTerm": "Sales revenue"
+      "englishTerm": "Sales revenue",
+      "wrongMeanings": [
+        "Cost",
+        "Profit",
+        "Discount"
+      ]
     },
     {
       "id": "kaikei",
       "term": "会計",
       "reading": "かいけい",
       "meaningJa": "お金の 出入りを 数えて、記録する 仕事です。",
-      "englishTerm": "Accounting"
+      "englishTerm": "Accounting",
+      "wrongMeanings": [
+        "Meeting",
+        "Planning",
+        "Design"
+      ]
     },
     {
       "id": "keisan",
@@ -3512,42 +3730,72 @@
       "term": "集計",
       "reading": "しゅうけい",
       "meaningJa": "たくさんの 数を あつめて、1つに まとめる ことです。",
-      "englishTerm": "Totalling"
+      "englishTerm": "Totalling",
+      "wrongMeanings": [
+        "Collecting stamps",
+        "Gathering people",
+        "Ending a meeting"
+      ]
     },
     {
       "id": "hojokin",
       "term": "補助金",
       "reading": "ほじょきん",
       "meaningJa": "国や 役所から もらえる、しごとの ための お金です。",
-      "englishTerm": "Subsidy"
+      "englishTerm": "Subsidy",
+      "wrongMeanings": [
+        "Loan",
+        "Salary",
+        "Tax"
+      ]
     },
     {
       "id": "shinsei",
       "term": "申請",
       "reading": "しんせい",
       "meaningJa": "役所などに「ください」と 出す 手つづきです。",
-      "englishTerm": "Application"
+      "englishTerm": "Application",
+      "wrongMeanings": [
+        "Approval",
+        "Complaint",
+        "Report"
+      ]
     },
     {
       "id": "shounin",
       "term": "承認",
       "reading": "しょうにん",
       "meaningJa": "上の 人が「いいです」と 決める ことです。",
-      "englishTerm": "Approval"
+      "englishTerm": "Approval",
+      "wrongMeanings": [
+        "Witness",
+        "Merchant",
+        "Recognition of a fact"
+      ]
     },
     {
       "id": "kakunin",
       "term": "確認",
       "reading": "かくにん",
       "meaningJa": "本当に そうかを、見て たしかめる ことです。",
-      "englishTerm": "Confirmation"
+      "englishTerm": "Confirmation",
+      "wrongMeanings": [
+        "Determination",
+        "Reservation",
+        "Permission"
+      ]
     },
     {
       "id": "nippou",
       "term": "日報",
       "reading": "にっぽう",
       "meaningJa": "その 日に した ことを 書く、みじかい 報告です。",
-      "englishTerm": "Daily report"
+      "englishTerm": "Daily report",
+      "wrongMeanings": [
+        "Newspaper",
+        "Weekly magazine",
+        "Date and time"
+      ]
     },
     {
       "id": "uchiawase",
@@ -3561,70 +3809,120 @@
       "term": "計画",
       "reading": "けいかく",
       "meaningJa": "先に 決めて おく、する ことの 順番です。",
-      "englishTerm": "Plan"
+      "englishTerm": "Plan",
+      "wrongMeanings": [
+        "Measurement",
+        "Total amount",
+        "Agreement"
+      ]
     },
     {
       "id": "mokuteki",
       "term": "目的",
       "reading": "もくてき",
       "meaningJa": "何の ために するか、と いう ことです。",
-      "englishTerm": "Purpose"
+      "englishTerm": "Purpose",
+      "wrongMeanings": [
+        "Landmark",
+        "Eyesight",
+        "Target price"
+      ]
     },
     {
       "id": "kadai",
       "term": "課題",
       "reading": "かだい",
       "meaningJa": "これから なおさなければ ならない ことです。",
-      "englishTerm": "Issue / challenge"
+      "englishTerm": "Issue / challenge",
+      "wrongMeanings": [
+        "Homework charge",
+        "Large size",
+        "Extra fee"
+      ]
     },
     {
       "id": "seika",
       "term": "成果",
       "reading": "せいか",
       "meaningJa": "やった 結果、出て きた よい ものです。",
-      "englishTerm": "Result / outcome"
+      "englishTerm": "Result / outcome",
+      "wrongMeanings": [
+        "Sacred fire",
+        "Correct answer",
+        "Regular price"
+      ]
     },
     {
       "id": "hinshitsu",
       "term": "品質",
       "reading": "ひんしつ",
       "meaningJa": "ものや 仕事の よさの ことです。",
-      "englishTerm": "Quality"
+      "englishTerm": "Quality",
+      "wrongMeanings": [
+        "Quantity",
+        "Product name",
+        "Price"
+      ]
     },
     {
       "id": "kanri",
       "term": "管理",
       "reading": "かんり",
       "meaningJa": "うまく いくように 見て、ととのえる ことです。",
-      "englishTerm": "Management"
+      "englishTerm": "Management",
+      "wrongMeanings": [
+        "Government office",
+        "Simple repair",
+        "Public relations"
+      ]
     },
     {
       "id": "unei",
       "term": "運営",
       "reading": "うんえい",
       "meaningJa": "会や サービスを つづけて うごかす ことです。",
-      "englishTerm": "Running / operating"
+      "englishTerm": "Running / operating",
+      "wrongMeanings": [
+        "Transport",
+        "Exercise",
+        "Luck"
+      ]
     },
     {
       "id": "shien",
       "term": "支援",
       "reading": "しえん",
       "meaningJa": "こまって いる 人を たすける ことです。",
-      "englishTerm": "Support"
+      "englishTerm": "Support",
+      "wrongMeanings": [
+        "Volunteer",
+        "Sympathy",
+        "Recommendation"
+      ]
     },
     {
       "id": "shuushoku",
       "term": "就職",
       "reading": "しゅうしょく",
       "meaningJa": "会社に 入って、はたらきはじめる ことです。",
-      "englishTerm": "Getting a job"
+      "englishTerm": "Getting a job",
+      "wrongMeanings": [
+        "Changing jobs",
+        "Retiring",
+        "Studying abroad"
+      ]
     },
     {
       "id": "jinzai",
       "term": "人材",
       "reading": "じんざい",
       "meaningJa": "仕事が できる 人の ことです。",
-      "englishTerm": "Human resources"
+      "englishTerm": "Human resources",
+      "wrongMeanings": [
+        "Timber",
+        "Population",
+        "Personality"
+      ]
     },
     {
       "id": "ikusei",
@@ -3681,28 +3979,48 @@
       "term": "貢献",
       "reading": "こうけん",
       "meaningJa": "人や 社会の 役に立つ ことを する ことです。",
-      "englishTerm": "Contribution"
+      "englishTerm": "Contribution",
+      "wrongMeanings": [
+        "Opinion",
+        "Public office",
+        "Sightseeing"
+      ]
     },
     {
       "id": "hatten",
       "term": "発展",
       "reading": "はってん",
       "meaningJa": "前より 大きく、よく なって いく ことです。",
-      "englishTerm": "Development"
+      "englishTerm": "Growth",
+      "wrongMeanings": [
+        "Exhibition",
+        "Departure",
+        "Discovery"
+      ]
     },
     {
       "id": "tenkai",
       "term": "展開",
       "reading": "てんかい",
       "meaningJa": "仕事を ほかの 場所や 分野へ ひろげる ことです。",
-      "englishTerm": "Expansion"
+      "englishTerm": "Expansion",
+      "wrongMeanings": [
+        "Exhibition hall",
+        "Turning point",
+        "Opening a shop"
+      ]
     },
     {
       "id": "renkei",
       "term": "連携",
       "reading": "れんけい",
       "meaningJa": "ほかの 人や 会社と、力を 合わせる ことです。",
-      "englishTerm": "Cooperation"
+      "englishTerm": "Cooperation",
+      "wrongMeanings": [
+        "Continuation",
+        "Contact address",
+        "Practice"
+      ]
     },
     {
       "id": "teikei",
@@ -3716,28 +4034,48 @@
       "term": "共同",
       "reading": "きょうどう",
       "meaningJa": "何人かで いっしょに する ことです。",
-      "englishTerm": "Joint"
+      "englishTerm": "Joint",
+      "wrongMeanings": [
+        "Strong movement",
+        "Public road",
+        "Shared house"
+      ]
     },
     {
       "id": "sanka",
       "term": "参加",
       "reading": "さんか",
       "meaningJa": "会や しごとに 入って、いっしょに する ことです。",
-      "englishTerm": "Participation"
+      "englishTerm": "Participation",
+      "wrongMeanings": [
+        "Praise",
+        "Three items",
+        "Acid"
+      ]
     },
     {
       "id": "kaisai",
       "term": "開催",
       "reading": "かいさい",
       "meaningJa": "会や イベントを ひらく ことです。",
-      "englishTerm": "Holding an event"
+      "englishTerm": "Holding an event",
+      "wrongMeanings": [
+        "Opening a shop",
+        "Reopening",
+        "Closing an event"
+      ]
     },
     {
       "id": "houmon",
       "term": "訪問",
       "reading": "ほうもん",
       "meaningJa": "相手の ところへ 行く ことです。",
-      "englishTerm": "Visit"
+      "englishTerm": "Visit",
+      "wrongMeanings": [
+        "Gate",
+        "Direction",
+        "Method"
+      ]
     },
     {
       "id": "katsudou",
@@ -3768,7 +4106,12 @@
       "term": "技術者",
       "reading": "ぎじゅつしゃ",
       "meaningJa": "技術を つかって ものを 作る 人です。",
-      "englishTerm": "Engineer"
+      "englishTerm": "Engineer",
+      "wrongMeanings": [
+        "Researcher",
+        "Teacher",
+        "Salesperson"
+      ]
     },
     {
       "id": "seisaku",
@@ -3787,14 +4130,24 @@
       "term": "構築",
       "reading": "こうちく",
       "meaningJa": "しくみを 組み立てて、うごくように する ことです。",
-      "englishTerm": "Building / setting up"
+      "englishTerm": "Setting up",
+      "wrongMeanings": [
+        "Inspection",
+        "Removal",
+        "Rental"
+      ]
     },
     {
       "id": "youken",
       "term": "要件",
       "reading": "ようけん",
       "meaningJa": "作る ものに 何が 要るか、と いう 中身です。",
-      "englishTerm": "Requirements"
+      "englishTerm": "Requirements",
+      "wrongMeanings": [
+        "Important person",
+        "Summary",
+        "Permission"
+      ]
     },
     {
       "id": "shiyou",
@@ -3808,28 +4161,48 @@
       "term": "保守",
       "reading": "ほしゅ",
       "meaningJa": "作った あとも、こわれないように 見る 仕事です。",
-      "englishTerm": "Maintenance"
+      "englishTerm": "Maintenance",
+      "wrongMeanings": [
+        "Insurance",
+        "Guarantee",
+        "Storage"
+      ]
     },
     {
       "id": "secchi",
       "term": "設置",
       "reading": "せっち",
       "meaningJa": "ものや しくみを、その 場所に おく ことです。",
-      "englishTerm": "Installation"
+      "englishTerm": "Installation",
+      "wrongMeanings": [
+        "Design",
+        "Disposal",
+        "Delivery"
+      ]
     },
     {
       "id": "dounyuu",
       "term": "導入",
       "reading": "どうにゅう",
       "meaningJa": "新しい しくみを、会社の 中で つかいはじめる ことです。",
-      "englishTerm": "Introduction"
+      "englishTerm": "Adopting",
+      "wrongMeanings": [
+        "Conclusion",
+        "Guidance",
+        "Import tax"
+      ]
     },
     {
       "id": "sousa",
       "term": "操作",
       "reading": "そうさ",
       "meaningJa": "きかいを 手で うごかす ことです。",
-      "englishTerm": "Operation"
+      "englishTerm": "Operating a machine",
+      "wrongMeanings": [
+        "Making a machine",
+        "Selling a machine",
+        "Fixing a machine"
+      ]
     },
     {
       "id": "shutsuryoku",
@@ -3843,28 +4216,48 @@
       "term": "検索",
       "reading": "けんさく",
       "meaningJa": "たくさんの 中から、さがす ことです。",
-      "englishTerm": "Search"
+      "englishTerm": "Search",
+      "wrongMeanings": [
+        "Research study",
+        "Inspection",
+        "Reservation"
+      ]
     },
     {
       "id": "hozon",
       "term": "保存",
       "reading": "ほぞん",
       "meaningJa": "きえないように、とって おく ことです。",
-      "englishTerm": "Saving"
+      "englishTerm": "Saving",
+      "wrongMeanings": [
+        "Deleting",
+        "Printing",
+        "Sending"
+      ]
     },
     {
       "id": "koushin",
       "term": "更新",
       "reading": "こうしん",
       "meaningJa": "新しい 中身に 書きかえる ことです。",
-      "englishTerm": "Update"
+      "englishTerm": "Update",
+      "wrongMeanings": [
+        "Deleting",
+        "Copying",
+        "Locking"
+      ]
     },
     {
       "id": "tsuika",
       "term": "追加",
       "reading": "ついか",
       "meaningJa": "あとから 足す ことです。",
-      "englishTerm": "Adding"
+      "englishTerm": "Adding",
+      "wrongMeanings": [
+        "Removing",
+        "Replacing",
+        "Repeating"
+      ]
     },
     {
       "id": "sakujo",
@@ -3878,21 +4271,36 @@
       "term": "編集",
       "reading": "へんしゅう",
       "meaningJa": "中身を 直したり、ならべかえたり する ことです。",
-      "englishTerm": "Editing"
+      "englishTerm": "Editing",
+      "wrongMeanings": [
+        "Printing",
+        "Uploading",
+        "Translating"
+      ]
     },
     {
       "id": "kyouyuu",
       "term": "共有",
       "reading": "きょうゆう",
       "meaningJa": "同じ ものを、みんなで つかえるように する ことです。",
-      "englishTerm": "Sharing"
+      "englishTerm": "Sharing",
+      "wrongMeanings": [
+        "Sharing money",
+        "Sending back",
+        "Deleting"
+      ]
     },
     {
       "id": "tsuuchi",
       "term": "通知",
       "reading": "つうち",
       "meaningJa": "「こうです」と、あいてに 知らせる ことです。",
-      "englishTerm": "Notification"
+      "englishTerm": "Notification",
+      "wrongMeanings": [
+        "Password",
+        "Attachment",
+        "Setting"
+      ]
     },
     {
       "id": "hyouji",
@@ -3906,63 +4314,108 @@
       "term": "画像",
       "reading": "がぞう",
       "meaningJa": "パソコンの 中の 絵や 写真です。",
-      "englishTerm": "Image"
+      "englishTerm": "Image",
+      "wrongMeanings": [
+        "Imagination",
+        "Impression",
+        "Message"
+      ]
     },
     {
       "id": "eizou",
       "term": "映像",
       "reading": "えいぞう",
       "meaningJa": "うごく 絵の ことです。",
-      "englishTerm": "Video / footage"
+      "englishTerm": "Footage",
+      "wrongMeanings": [
+        "A painting",
+        "A poster",
+        "A stamp"
+      ]
     },
     {
       "id": "douga",
       "term": "動画",
       "reading": "どうが",
       "meaningJa": "うごく 絵の ことです。",
-      "englishTerm": "Video"
+      "englishTerm": "Video",
+      "wrongMeanings": [
+        "Drawing",
+        "Photo album",
+        "Radio"
+      ]
     },
     {
       "id": "onsei",
       "term": "音声",
       "reading": "おんせい",
       "meaningJa": "人の 声や 音の ことです。",
-      "englishTerm": "Audio / voice"
+      "englishTerm": "Audio / voice",
+      "wrongMeanings": [
+        "Silence",
+        "Noise level",
+        "Song title"
+      ]
     },
     {
       "id": "jimaku",
       "term": "字幕",
       "reading": "じまく",
       "meaningJa": "動画の 下に 出る 字です。",
-      "englishTerm": "Subtitles"
+      "englishTerm": "Subtitles",
+      "wrongMeanings": [
+        "Curtain",
+        "Headline",
+        "Cover"
+      ]
     },
     {
       "id": "satsuei",
       "term": "撮影",
       "reading": "さつえい",
       "meaningJa": "写真や 動画を とる ことです。",
-      "englishTerm": "Filming"
+      "englishTerm": "Filming",
+      "wrongMeanings": [
+        "Editing",
+        "Printing",
+        "Drawing"
+      ]
     },
     {
       "id": "honyaku",
       "term": "翻訳",
       "reading": "ほんやく",
       "meaningJa": "ある 国の ことばを、ほかの ことばに かえる ことです。",
-      "englishTerm": "Translation"
+      "englishTerm": "Translation",
+      "wrongMeanings": [
+        "Explanation",
+        "Pronunciation",
+        "Conversation"
+      ]
     },
     {
       "id": "tagengo",
       "term": "多言語",
       "reading": "たげんご",
       "meaningJa": "いくつもの 国の ことばで、と いう ことです。",
-      "englishTerm": "Multilingual"
+      "englishTerm": "Multilingual",
+      "wrongMeanings": [
+        "Long sentence",
+        "Loud voice",
+        "Old language"
+      ]
     },
     {
       "id": "kaiseki",
       "term": "解析",
       "reading": "かいせき",
       "meaningJa": "中身を こまかく 見て、しらべる ことです。",
-      "englishTerm": "Analysis"
+      "englishTerm": "Analysis",
+      "wrongMeanings": [
+        "Translation",
+        "Explanation",
+        "Introduction"
+      ]
     },
     {
       "id": "handan",
@@ -3976,7 +4429,12 @@
       "term": "検知",
       "reading": "けんち",
       "meaningJa": "きかいが、それが ある ことに 気づく ことです。",
-      "englishTerm": "Detection"
+      "englishTerm": "Detection",
+      "wrongMeanings": [
+        "Deletion",
+        "Decision",
+        "Description"
+      ]
     },
     {
       "id": "kenshutsu",
@@ -3990,28 +4448,48 @@
       "term": "自動",
       "reading": "じどう",
       "meaningJa": "人が しなくても、きかいが する ことです。",
-      "englishTerm": "Automatic"
+      "englishTerm": "Automatic",
+      "wrongMeanings": [
+        "Manual",
+        "Temporary",
+        "Optional"
+      ]
     },
     {
       "id": "jiritsu",
       "term": "自律",
       "reading": "じりつ",
       "meaningJa": "人が 命令しなくても、じぶんで うごく ことです。",
-      "englishTerm": "Autonomous"
+      "englishTerm": "Autonomous",
+      "wrongMeanings": [
+        "Remote-controlled",
+        "Hand-made",
+        "Second-hand"
+      ]
     },
     {
       "id": "kouritsuka",
       "term": "効率化",
       "reading": "こうりつか",
       "meaningJa": "むだを へらして、はやく できるように する ことです。",
-      "englishTerm": "Making it efficient"
+      "englishTerm": "Making it efficient",
+      "wrongMeanings": [
+        "Making it bigger",
+        "Making it cheaper",
+        "Making it safer"
+      ]
     },
     {
       "id": "kashika",
       "term": "可視化",
       "reading": "かしか",
       "meaningJa": "目に 見えない ものを、見えるように する ことです。",
-      "englishTerm": "Visualising"
+      "englishTerm": "Visualising",
+      "wrongMeanings": [
+        "Hiding it",
+        "Printing it",
+        "Copying it"
+      ]
     },
     {
       "id": "saiteki",
@@ -4039,28 +4517,48 @@
       "term": "項目",
       "reading": "こうもく",
       "meaningJa": "書く ことを わけた、1つ1つの ことです。",
-      "englishTerm": "Item / field"
+      "englishTerm": "Item / field",
+      "wrongMeanings": [
+        "Volume",
+        "Chapter",
+        "Title"
+      ]
     },
     {
       "id": "ichiran",
       "term": "一覧",
       "reading": "いちらん",
       "meaningJa": "ぜんぶを 1つの 表に ならべた ものです。",
-      "englishTerm": "List"
+      "englishTerm": "List",
+      "wrongMeanings": [
+        "Quick glance",
+        "Cover page",
+        "Long sentence"
+      ]
     },
     {
       "id": "daichou",
       "term": "台帳",
       "reading": "だいちょう",
       "meaningJa": "たいせつな ことを ならべて 書いた 帳面です。",
-      "englishTerm": "Ledger / register"
+      "englishTerm": "Ledger / register",
+      "wrongMeanings": [
+        "Balcony",
+        "Envelope",
+        "Stage"
+      ]
     },
     {
       "id": "rireki",
       "term": "履歴",
       "reading": "りれき",
       "meaningJa": "今までの ことの、じゅんばんの 記録です。",
-      "englishTerm": "History"
+      "englishTerm": "History",
+      "wrongMeanings": [
+        "Schedule",
+        "Story",
+        "Textbook"
+      ]
     },
     {
       "id": "fukusuu",
@@ -4074,14 +4572,24 @@
       "term": "既存",
       "reading": "きそん",
       "meaningJa": "今 すでに ある もの、と いう ことです。",
-      "englishTerm": "Existing"
+      "englishTerm": "Existing",
+      "wrongMeanings": [
+        "Brand new",
+        "Missing",
+        "Extra"
+      ]
     },
     {
       "id": "senyou",
       "term": "専用",
       "reading": "せんよう",
       "meaningJa": "それだけの ために つかう もの、と いう ことです。",
-      "englishTerm": "Dedicated"
+      "englishTerm": "Dedicated",
+      "wrongMeanings": [
+        "Shared",
+        "Temporary",
+        "Free"
+      ]
     },
     {
       "id": "gentei",
@@ -4102,7 +4610,12 @@
       "term": "統合",
       "reading": "とうごう",
       "meaningJa": "いくつかを 1つに まとめる ことです。",
-      "englishTerm": "Integration"
+      "englishTerm": "Integration",
+      "wrongMeanings": [
+        "Separation",
+        "Comparison",
+        "Selection"
+      ]
     },
     {
       "id": "rendou",
@@ -4128,14 +4641,24 @@
       "term": "先進",
       "reading": "せんしん",
       "meaningJa": "ほかより 先へ 進んで いる ことです。",
-      "englishTerm": "Advanced"
+      "englishTerm": "Advanced",
+      "wrongMeanings": [
+        "Front line",
+        "Fine needle",
+        "Old style"
+      ]
     },
     {
       "id": "kaishi",
       "term": "開始",
       "reading": "かいし",
       "meaningJa": "はじめる ことです。",
-      "englishTerm": "Start"
+      "englishTerm": "Start",
+      "wrongMeanings": [
+        "Ending",
+        "Meeting place",
+        "Opening ceremony"
+      ]
     },
     {
       "id": "kanryou",
@@ -4163,14 +4686,24 @@
       "term": "負担",
       "reading": "ふたん",
       "meaningJa": "その 人に かかる、おもさや たいへんさです。",
-      "englishTerm": "Burden"
+      "englishTerm": "Burden",
+      "wrongMeanings": [
+        "Negative number",
+        "Short break",
+        "Extra bonus"
+      ]
     },
     {
       "id": "keigen",
       "term": "軽減",
       "reading": "けいげん",
       "meaningJa": "おもさや たいへんさを、へらす ことです。",
-      "englishTerm": "Reduction"
+      "englishTerm": "Reduction",
+      "wrongMeanings": [
+        "Light meal",
+        "Slight illness",
+        "Careless words"
+      ]
     },
     {
       "id": "iji",
@@ -4212,14 +4745,24 @@
       "term": "正規",
       "reading": "せいき",
       "meaningJa": "正しい やりかたの もの、と いう ことです。",
-      "englishTerm": "Official / regular"
+      "englishTerm": "Official / regular",
+      "wrongMeanings": [
+        "Century",
+        "Correct answer",
+        "Machine"
+      ]
     },
     {
       "id": "yuukou",
       "term": "有効",
       "reading": "ゆうこう",
       "meaningJa": "つかえる、役に立つ、と いう ことです。",
-      "englishTerm": "Valid / effective"
+      "englishTerm": "Valid / effective",
+      "wrongMeanings": [
+        "Friendship",
+        "Paid",
+        "Available in shops"
+      ]
     },
     {
       "id": "mukou",
@@ -4233,21 +4776,36 @@
       "term": "証明",
       "reading": "しょうめい",
       "meaningJa": "本当だと、はっきり 見せる ことです。",
-      "englishTerm": "Proof"
+      "englishTerm": "Proof",
+      "wrongMeanings": [
+        "Lighting",
+        "Explanation",
+        "Signature"
+      ]
     },
     {
       "id": "shoumeisho",
       "term": "証明書",
       "reading": "しょうめいしょ",
       "meaningJa": "本当だと 書いて ある 紙や データです。",
-      "englishTerm": "Certificate"
+      "englishTerm": "Certificate",
+      "wrongMeanings": [
+        "Application form",
+        "Guidebook",
+        "Receipt"
+      ]
     },
     {
       "id": "hakkou",
       "term": "発行",
       "reading": "はっこう",
       "meaningJa": "紙や 券を 作って、人に わたす ことです。",
-      "englishTerm": "Issuing"
+      "englishTerm": "Issuing",
+      "wrongMeanings": [
+        "Light emission",
+        "Departure",
+        "Fermentation"
+      ]
     },
     {
       "id": "shinrai",
@@ -4273,14 +4831,24 @@
       "term": "改変",
       "reading": "かいへん",
       "meaningJa": "中身を、あとから かえて しまう ことです。",
-      "englishTerm": "Alteration"
+      "englishTerm": "Alteration",
+      "wrongMeanings": [
+        "Improvement",
+        "Reformation",
+        "Explanation"
+      ]
     },
     {
       "id": "shougou",
       "term": "照合",
       "reading": "しょうごう",
       "meaningJa": "2つを ならべて、同じかを 見る ことです。",
-      "englishTerm": "Checking against"
+      "englishTerm": "Checking against",
+      "wrongMeanings": [
+        "Shining a light",
+        "Introducing",
+        "Combining"
+      ]
     },
     {
       "id": "kankou",
@@ -4598,7 +5166,12 @@
       "term": "自治体",
       "reading": "じちたい",
       "meaningJa": "その 土地を うごかす 役所です。",
-      "englishTerm": "Local government"
+      "englishTerm": "Local government",
+      "wrongMeanings": [
+        "Self-service",
+        "Independent shop",
+        "Private club"
+      ]
     },
     {
       "id": "kokusai",
@@ -4753,147 +5326,252 @@
       "term": "システム",
       "reading": "しすてむ",
       "meaningJa": "仕事を するための、コンピューターの しくみです。",
-      "englishTerm": "System"
+      "englishTerm": "System",
+      "wrongMeanings": [
+        "Network",
+        "Device",
+        "Machine"
+      ]
     },
     {
       "id": "sabisu",
       "term": "サービス",
       "reading": "さーびす",
       "meaningJa": "お客さまの ために する、しごとの 中身です。",
-      "englishTerm": "Service"
+      "englishTerm": "Service",
+      "wrongMeanings": [
+        "Product",
+        "Delivery",
+        "Repair"
+      ]
     },
     {
       "id": "homupeji",
       "term": "ホームページ",
       "reading": "ほーむぺーじ",
       "meaningJa": "会社や お店の ことを 見せる、ネットの ページです。",
-      "englishTerm": "Website"
+      "englishTerm": "Website",
+      "wrongMeanings": [
+        "Home screen",
+        "Home address",
+        "Web browser"
+      ]
     },
     {
       "id": "saito",
       "term": "サイト",
       "reading": "さいと",
       "meaningJa": "インターネットの 中の、ページの あつまりです。",
-      "englishTerm": "Website"
+      "englishTerm": "Site",
+      "wrongMeanings": [
+        "Signal",
+        "Season",
+        "Section"
+      ]
     },
     {
       "id": "peji",
       "term": "ページ",
       "reading": "ぺーじ",
       "meaningJa": "サイトの 中の、1まいの 画面です。",
-      "englishTerm": "Page"
+      "englishTerm": "Page",
+      "wrongMeanings": [
+        "Package",
+        "Passage",
+        "Percentage"
+      ]
     },
     {
       "id": "gurupu",
       "term": "グループ",
       "reading": "ぐるーぷ",
       "meaningJa": "つながりの ある、会社や 人の あつまりです。",
-      "englishTerm": "Group"
+      "englishTerm": "Group",
+      "wrongMeanings": [
+        "Growth",
+        "Ground",
+        "Grade"
+      ]
     },
     {
       "id": "dejitaru",
       "term": "デジタル",
       "reading": "でじたる",
       "meaningJa": "コンピューターで あつかえる かたち、と いう ことです。",
-      "englishTerm": "Digital"
+      "englishTerm": "Digital",
+      "wrongMeanings": [
+        "Analog",
+        "Manual",
+        "Physical"
+      ]
     },
     {
       "id": "doron",
       "term": "ドローン",
       "reading": "どろーん",
       "meaningJa": "人が のらないで、空を 飛ぶ きかいです。",
-      "englishTerm": "Drone"
+      "englishTerm": "Drone",
+      "wrongMeanings": [
+        "Robot arm",
+        "Camera stand",
+        "Radio"
+      ]
     },
     {
       "id": "sekyurite",
       "term": "セキュリティ",
       "reading": "せきゅりてぃ",
       "meaningJa": "わるい ことから、まもる ことです。",
-      "englishTerm": "Security"
+      "englishTerm": "Security",
+      "wrongMeanings": [
+        "Reliability",
+        "Insurance",
+        "Emergency"
+      ]
     },
     {
       "id": "infura",
       "term": "インフラ",
       "reading": "いんふら",
       "meaningJa": "サーバーや ネットワークなど、下ざさえの しくみです。",
-      "englishTerm": "Infrastructure"
+      "englishTerm": "Infrastructure",
+      "wrongMeanings": [
+        "Influence",
+        "Information",
+        "Interface"
+      ]
     },
     {
       "id": "saba",
       "term": "サーバー",
       "reading": "さーばー",
       "meaningJa": "データを おいて、みんなに わたす コンピューターです。",
-      "englishTerm": "Server"
+      "englishTerm": "Server",
+      "wrongMeanings": [
+        "Browser",
+        "Folder",
+        "Monitor"
+      ]
     },
     {
       "id": "nettowaku",
       "term": "ネットワーク",
       "reading": "ねっとわーく",
       "meaningJa": "コンピューターを つなぐ しくみです。",
-      "englishTerm": "Network"
+      "englishTerm": "Network",
+      "wrongMeanings": [
+        "Notebook",
+        "Workshop",
+        "Framework"
+      ]
     },
     {
       "id": "intanetto",
       "term": "インターネット",
       "reading": "いんたーねっと",
       "meaningJa": "世界中の コンピューターを つなぐ しくみです。",
-      "englishTerm": "Internet"
+      "englishTerm": "Internet",
+      "wrongMeanings": [
+        "Intranet",
+        "Interview",
+        "Interface"
+      ]
     },
     {
       "id": "tsuru",
       "term": "ツール",
       "reading": "つーる",
       "meaningJa": "仕事を らくに する、道具や ソフトです。",
-      "englishTerm": "Tool"
+      "englishTerm": "Tool",
+      "wrongMeanings": [
+        "Rule",
+        "Trial",
+        "Term"
+      ]
     },
     {
       "id": "kodo",
       "term": "コード",
       "reading": "こーど",
       "meaningJa": "プログラムを 書いた 字の ことです。",
-      "englishTerm": "Code"
+      "englishTerm": "Code",
+      "wrongMeanings": [
+        "Chart",
+        "Label",
+        "Note"
+      ]
     },
     {
       "id": "purojikuto",
       "term": "プロジェクト",
       "reading": "ぷろじぇくと",
       "meaningJa": "おわりの ある、1つの 大きな 仕事です。",
-      "englishTerm": "Project"
+      "englishTerm": "Project",
+      "wrongMeanings": [
+        "Product",
+        "Progress",
+        "Promise"
+      ]
     },
     {
       "id": "purojikutomaneja",
       "term": "プロジェクトマネージャー",
       "reading": "ぷろじぇくとまねーじゃー",
       "meaningJa": "仕事の 進みかたを 決めて、まとめる 人です。",
-      "englishTerm": "Project manager"
+      "englishTerm": "Project manager",
+      "wrongMeanings": [
+        "Sales manager",
+        "General manager",
+        "Product designer"
+      ]
     },
     {
       "id": "rida",
       "term": "リーダー",
       "reading": "りーだー",
       "meaningJa": "チームを まとめる 人です。",
-      "englishTerm": "Leader"
+      "englishTerm": "Leader",
+      "wrongMeanings": [
+        "Reader",
+        "Learner",
+        "Ladder"
+      ]
     },
     {
       "id": "sutaffu",
       "term": "スタッフ",
       "reading": "すたっふ",
       "meaningJa": "そこで はたらいて いる 人たちです。",
-      "englishTerm": "Staff"
+      "englishTerm": "Staff",
+      "wrongMeanings": [
+        "Customers",
+        "Visitors",
+        "Students"
+      ]
     },
     {
       "id": "kyaria",
       "term": "キャリア",
       "reading": "きゃりあ",
       "meaningJa": "その 人が して きた 仕事の、つながりです。",
-      "englishTerm": "Career"
+      "englishTerm": "Career",
+      "wrongMeanings": [
+        "Carrier bag",
+        "Calendar",
+        "Category"
+      ]
     },
     {
       "id": "sukiru",
       "term": "スキル",
       "reading": "すきる",
       "meaningJa": "ならって 身に つけた、できる ことです。",
-      "englishTerm": "Skill"
+      "englishTerm": "Skill",
+      "wrongMeanings": [
+        "Scale",
+        "School",
+        "Schedule"
+      ]
     },
     {
       "id": "reberu",
@@ -4907,210 +5585,360 @@
       "term": "カリキュラム",
       "reading": "かりきゅらむ",
       "meaningJa": "何を どの 順で ならうか、と いう 予定です。",
-      "englishTerm": "Curriculum"
+      "englishTerm": "Curriculum",
+      "wrongMeanings": [
+        "Caramel",
+        "Calendar",
+        "Calculator"
+      ]
     },
     {
       "id": "intanshippu",
       "term": "インターンシップ",
       "reading": "いんたーんしっぷ",
       "meaningJa": "学生が、会社で しごとを して みる ことです。",
-      "englishTerm": "Internship"
+      "englishTerm": "Internship",
+      "wrongMeanings": [
+        "Internet shop",
+        "International trip",
+        "Interview room"
+      ]
     },
     {
       "id": "sukejuru",
       "term": "スケジュール",
       "reading": "すけじゅーる",
       "meaningJa": "いつ 何を するか、と いう 予定です。",
-      "englishTerm": "Schedule"
+      "englishTerm": "Schedule",
+      "wrongMeanings": [
+        "Budget",
+        "Manual",
+        "Rule"
+      ]
     },
     {
       "id": "tasuku",
       "term": "タスク",
       "reading": "たすく",
       "meaningJa": "しなければ ならない、1つ1つの ことです。",
-      "englishTerm": "Task"
+      "englishTerm": "Task",
+      "wrongMeanings": [
+        "Target",
+        "Result",
+        "Break time"
+      ]
     },
     {
       "id": "furo",
       "term": "フロー",
       "reading": "ふろー",
       "meaningJa": "仕事が 進む、じゅんばんの ことです。",
-      "englishTerm": "Flow"
+      "englishTerm": "Flow",
+      "wrongMeanings": [
+        "Floor plan",
+        "Volume",
+        "Balance"
+      ]
     },
     {
       "id": "hiaringu",
       "term": "ヒアリング",
       "reading": "ひありんぐ",
       "meaningJa": "お客さまの 話を、よく 聞く ことです。",
-      "englishTerm": "Hearing / interview"
+      "englishTerm": "Hearing / interview",
+      "wrongMeanings": [
+        "Reading aloud",
+        "Training",
+        "Announcement"
+      ]
     },
     {
       "id": "rebyu",
       "term": "レビュー",
       "reading": "れびゅー",
       "meaningJa": "作った ものを、人に 見て もらう ことです。",
-      "englishTerm": "Review"
+      "englishTerm": "Review",
+      "wrongMeanings": [
+        "Preview",
+        "Interview",
+        "Rehearsal"
+      ]
     },
     {
       "id": "ririsu",
       "term": "リリース",
       "reading": "りりーす",
       "meaningJa": "作った ものを、世の中へ 出す ことです。",
-      "englishTerm": "Release"
+      "englishTerm": "Release",
+      "wrongMeanings": [
+        "Reserve",
+        "Rehearsal",
+        "Repair"
+      ]
     },
     {
       "id": "rinyuaru",
       "term": "リニューアル",
       "reading": "りにゅーある",
       "meaningJa": "古く なった ものを、新しく 作りなおす ことです。",
-      "englishTerm": "Renewal"
+      "englishTerm": "Renewal",
+      "wrongMeanings": [
+        "Removal",
+        "Rental",
+        "Reversal"
+      ]
     },
     {
       "id": "soryushon",
       "term": "ソリューション",
       "reading": "そりゅーしょん",
       "meaningJa": "こまって いる ことを なおす、しくみです。",
-      "englishTerm": "Solution"
+      "englishTerm": "Solution",
+      "wrongMeanings": [
+        "Selection",
+        "Session",
+        "Situation"
+      ]
     },
     {
       "id": "konsarutengu",
       "term": "コンサルティング",
       "reading": "こんさるてぃんぐ",
       "meaningJa": "どう すれば よいかを、考えて 教える 仕事です。",
-      "englishTerm": "Consulting"
+      "englishTerm": "Consulting",
+      "wrongMeanings": [
+        "Contracting",
+        "Counting",
+        "Collecting"
+      ]
     },
     {
       "id": "araiansu",
       "term": "アライアンス",
       "reading": "あらいあんす",
       "meaningJa": "会社どうしが 手を むすぶ ことです。",
-      "englishTerm": "Alliance"
+      "englishTerm": "Alliance",
+      "wrongMeanings": [
+        "Appliance",
+        "Allowance",
+        "Ambulance"
+      ]
     },
     {
       "id": "patonashippu",
       "term": "パートナーシップ",
       "reading": "ぱーとなーしっぷ",
       "meaningJa": "いっしょに やろう、と いう やくそくです。",
-      "englishTerm": "Partnership"
+      "englishTerm": "Partnership",
+      "wrongMeanings": [
+        "Membership",
+        "Leadership",
+        "Ownership"
+      ]
     },
     {
       "id": "ofusu",
       "term": "オフィス",
       "reading": "おふぃす",
       "meaningJa": "会社で、しごとを する 部屋です。",
-      "englishTerm": "Office"
+      "englishTerm": "Office",
+      "wrongMeanings": [
+        "Off switch",
+        "Officer",
+        "Offer"
+      ]
     },
     {
       "id": "ofushoa",
       "term": "オフショア",
       "reading": "おふしょあ",
       "meaningJa": "外国の チームに、作る 仕事を たのむ ことです。",
-      "englishTerm": "Offshore"
+      "englishTerm": "Offshore",
+      "wrongMeanings": [
+        "Off day",
+        "Office work",
+        "Overtime"
+      ]
     },
     {
       "id": "bijinesu",
       "term": "ビジネス",
       "reading": "びじねす",
       "meaningJa": "お金を もらって する、しごとの ことです。",
-      "englishTerm": "Business"
+      "englishTerm": "Business",
+      "wrongMeanings": [
+        "Business card",
+        "Busy season",
+        "Beginner"
+      ]
     },
     {
       "id": "dezain",
       "term": "デザイン",
       "reading": "でざいん",
       "meaningJa": "見た目や つかいやすさを 考えて 作る ことです。",
-      "englishTerm": "Design"
+      "englishTerm": "Design",
+      "wrongMeanings": [
+        "Decision",
+        "Direction",
+        "Discussion"
+      ]
     },
     {
       "id": "furontoendo",
       "term": "フロントエンド",
       "reading": "ふろんとえんど",
       "meaningJa": "人が 見る、画面の ほうを 作る 仕事です。",
-      "englishTerm": "Front end"
+      "englishTerm": "Front end",
+      "wrongMeanings": [
+        "Front desk",
+        "Front door",
+        "First step"
+      ]
     },
     {
       "id": "bakkuendo",
       "term": "バックエンド",
       "reading": "ばっくえんど",
       "meaningJa": "目に 見えない、うらがわを 作る 仕事です。",
-      "englishTerm": "Back end"
+      "englishTerm": "Back end",
+      "wrongMeanings": [
+        "Back office",
+        "Backup",
+        "Background"
+      ]
     },
     {
       "id": "dasshubodo",
       "term": "ダッシュボード",
       "reading": "だっしゅぼーど",
       "meaningJa": "たいせつな 数を、1つの 画面で 見る ところです。",
-      "englishTerm": "Dashboard"
+      "englishTerm": "Dashboard",
+      "wrongMeanings": [
+        "Whiteboard",
+        "Keyboard",
+        "Signboard"
+      ]
     },
     {
       "id": "repoto",
       "term": "レポート",
       "reading": "れぽーと",
       "meaningJa": "しらべた ことを まとめた、書きものです。",
-      "englishTerm": "Report"
+      "englishTerm": "Report",
+      "wrongMeanings": [
+        "Receipt",
+        "Request",
+        "Recipe"
+      ]
     },
     {
       "id": "arato",
       "term": "アラート",
       "reading": "あらーと",
       "meaningJa": "あぶない ことを 知らせる、しらせです。",
-      "englishTerm": "Alert"
+      "englishTerm": "Alert",
+      "wrongMeanings": [
+        "Alarm clock",
+        "Advertisement",
+        "Award"
+      ]
     },
     {
       "id": "riarutaimu",
       "term": "リアルタイム",
       "reading": "りあるたいむ",
       "meaningJa": "おきた その ときに、すぐ、と いう ことです。",
-      "englishTerm": "Real time"
+      "englishTerm": "Real time",
+      "wrongMeanings": [
+        "Overtime",
+        "Free time",
+        "Local time"
+      ]
     },
     {
       "id": "insutoru",
       "term": "インストール",
       "reading": "いんすとーる",
       "meaningJa": "ソフトを、つかえるように 入れる ことです。",
-      "englishTerm": "Install"
+      "englishTerm": "Install",
+      "wrongMeanings": [
+        "Instead",
+        "Instant",
+        "Instruction"
+      ]
     },
     {
       "id": "risosu",
       "term": "リソース",
       "reading": "りそーす",
       "meaningJa": "つかえる 人・お金・時間の ことです。",
-      "englishTerm": "Resources"
+      "englishTerm": "Resources",
+      "wrongMeanings": [
+        "Results",
+        "Reasons",
+        "Rescues"
+      ]
     },
     {
       "id": "puromoshon",
       "term": "プロモーション",
       "reading": "ぷろもーしょん",
       "meaningJa": "作った ものを、人に 知らせる ことです。",
-      "englishTerm": "Promotion"
+      "englishTerm": "Promotion",
+      "wrongMeanings": [
+        "Production",
+        "Protection",
+        "Proportion"
+      ]
     },
     {
       "id": "ibento",
       "term": "イベント",
       "reading": "いべんと",
       "meaningJa": "人を あつめて する、とくべつな 会です。",
-      "englishTerm": "Event"
+      "englishTerm": "Event",
+      "wrongMeanings": [
+        "Invention",
+        "Elevator",
+        "Evening"
+      ]
     },
     {
       "id": "gaido",
       "term": "ガイド",
       "reading": "がいど",
       "meaningJa": "行きかたや 見かたを、その 人に 見せる ことです。",
-      "englishTerm": "Guide"
+      "englishTerm": "Guide",
+      "wrongMeanings": [
+        "Guard",
+        "Gate",
+        "Grade"
+      ]
     },
     {
       "id": "ruto",
       "term": "ルート",
       "reading": "るーと",
       "meaningJa": "通る 道の ことです。",
-      "englishTerm": "Route"
+      "englishTerm": "Route",
+      "wrongMeanings": [
+        "Rule",
+        "Roof",
+        "Room"
+      ]
     },
     {
       "id": "chatto",
       "term": "チャット",
       "reading": "ちゃっと",
       "meaningJa": "字を 打って、その場で 話す ことです。",
-      "englishTerm": "Chat"
+      "englishTerm": "Chat",
+      "wrongMeanings": [
+        "Phone call",
+        "Letter",
+        "Meeting room"
+      ]
     },
     {
       "id": "kabushikigaisha",
@@ -5176,7 +6004,12 @@
       "term": "銀行",
       "reading": "ぎんこう",
       "meaningJa": "お金を あずけたり 借りたり する ところです。",
-      "englishTerm": "Bank"
+      "englishTerm": "Bank",
+      "wrongMeanings": [
+        "Bakery",
+        "Library",
+        "Post office"
+      ]
     },
     {
       "id": "houritsu",
@@ -5190,21 +6023,36 @@
       "term": "協会",
       "reading": "きょうかい",
       "meaningJa": "同じ 仕事の 人が つくる 団体です。",
-      "englishTerm": "Association"
+      "englishTerm": "Association",
+      "wrongMeanings": [
+        "Boundary line",
+        "Church",
+        "Classroom"
+      ]
     },
     {
       "id": "kikan",
       "term": "機関",
       "reading": "きかん",
       "meaningJa": "ある はたらきを もつ、公の 組織です。",
-      "englishTerm": "Institution"
+      "englishTerm": "Institution",
+      "wrongMeanings": [
+        "Period of time",
+        "Engine",
+        "Return home"
+      ]
     },
     {
       "id": "jigyousha",
       "term": "事業者",
       "reading": "じぎょうしゃ",
       "meaningJa": "その 仕事を して いる 会社や 人です。",
-      "englishTerm": "Business operator"
+      "englishTerm": "Business operator",
+      "wrongMeanings": [
+        "Job seeker",
+        "Bank clerk",
+        "Shop visitor"
+      ]
     },
     {
       "id": "kankei",
@@ -5223,14 +6071,24 @@
       "term": "関係会社",
       "reading": "かんけいがいしゃ",
       "meaningJa": "いっしょに 仕事を する、つながりの ある 会社です。",
-      "englishTerm": "Affiliated company"
+      "englishTerm": "Affiliated company",
+      "wrongMeanings": [
+        "Rival company",
+        "Client company",
+        "Foreign company"
+      ]
     },
     {
       "id": "joujoukigyou",
       "term": "上場企業",
       "reading": "じょうじょうきぎょう",
       "meaningJa": "かぶを 市場で 売り買いできる 会社です。",
-      "englishTerm": "Listed company"
+      "englishTerm": "Listed company",
+      "wrongMeanings": [
+        "Small local shop",
+        "Family business",
+        "New start-up"
+      ]
     },
     {
       "id": "souzou",
@@ -5244,21 +6102,36 @@
       "term": "企画",
       "reading": "きかく",
       "meaningJa": "何を するかを 考えて、形に する ことです。",
-      "englishTerm": "Planning"
+      "englishTerm": "Planning",
+      "wrongMeanings": [
+        "Standard size",
+        "Period",
+        "Machine part"
+      ]
     },
     {
       "id": "hensei",
       "term": "編成",
       "reading": "へんせい",
       "meaningJa": "人を あつめて、チームの 形を 作る ことです。",
-      "englishTerm": "Forming a team"
+      "englishTerm": "Forming a team",
+      "wrongMeanings": [
+        "Editing a book",
+        "Changing a plan",
+        "Joining a club"
+      ]
     },
     {
       "id": "sakusei",
       "term": "作成",
       "reading": "さくせい",
       "meaningJa": "書類や データを 作る ことです。",
-      "englishTerm": "Creating"
+      "englishTerm": "Creating",
+      "wrongMeanings": [
+        "Harvest",
+        "Strategy",
+        "Last year"
+      ]
     },
     {
       "id": "shiyou2",
@@ -5279,7 +6152,12 @@
       "term": "購入",
       "reading": "こうにゅう",
       "meaningJa": "お金を はらって 買う ことです。",
-      "englishTerm": "Purchase"
+      "englishTerm": "Purchase",
+      "wrongMeanings": [
+        "Selling",
+        "Borrowing",
+        "Returning"
+      ]
     },
     {
       "id": "shutoku",
@@ -5293,14 +6171,24 @@
       "term": "受賞",
       "reading": "じゅしょう",
       "meaningJa": "賞を もらう ことです。",
-      "englishTerm": "Winning an award"
+      "englishTerm": "Winning an award",
+      "wrongMeanings": [
+        "Receiving a letter",
+        "Taking a class",
+        "Paying a fee"
+      ]
     },
     {
       "id": "shinkou",
       "term": "進行",
       "reading": "しんこう",
       "meaningJa": "仕事が 前へ 進んで いく ことです。",
-      "englishTerm": "Progress"
+      "englishTerm": "Progress",
+      "wrongMeanings": [
+        "Belief",
+        "New product",
+        "Deep dive"
+      ]
     },
     {
       "id": "koudou",
@@ -5314,42 +6202,72 @@
       "term": "期日",
       "reading": "きじつ",
       "meaningJa": "いつまでか、と 決めた 日です。",
-      "englishTerm": "Due date"
+      "englishTerm": "Due date",
+      "wrongMeanings": [
+        "Fixed price",
+        "Written record",
+        "Base day off"
+      ]
     },
     {
       "id": "jitsumu",
       "term": "実務",
       "reading": "じつむ",
       "meaningJa": "じっさいの、まいにちの 仕事です。",
-      "englishTerm": "Practical work"
+      "englishTerm": "Practical work",
+      "wrongMeanings": [
+        "Truth",
+        "Real estate",
+        "Duty-free"
+      ]
     },
     {
       "id": "seikabutsu",
       "term": "成果物",
       "reading": "せいかぶつ",
       "meaningJa": "仕事の 結果 できあがった ものです。",
-      "englishTerm": "Deliverable"
+      "englishTerm": "Deliverable",
+      "wrongMeanings": [
+        "Raw material",
+        "Sample product",
+        "Spare part"
+      ]
     },
     {
       "id": "setsumeisho",
       "term": "説明書",
       "reading": "せつめいしょ",
       "meaningJa": "つかいかたが 書いて ある 紙です。",
-      "englishTerm": "Manual"
+      "englishTerm": "Spec document",
+      "wrongMeanings": [
+        "Contract",
+        "Receipt",
+        "Certificate"
+      ]
     },
     {
       "id": "shoshiki",
       "term": "書式",
       "reading": "しょしき",
       "meaningJa": "書きかたの きまった 形です。",
-      "englishTerm": "Format"
+      "englishTerm": "Format",
+      "wrongMeanings": [
+        "Bookshelf",
+        "Ceremony",
+        "Signature"
+      ]
     },
     {
       "id": "koutou",
       "term": "口頭",
       "reading": "こうとう",
       "meaningJa": "字では なく、話して つたえる ことです。",
-      "englishTerm": "Spoken"
+      "englishTerm": "Spoken",
+      "wrongMeanings": [
+        "High class",
+        "Written down",
+        "Back street"
+      ]
     },
     {
       "id": "kaiwa",
@@ -5384,7 +6302,12 @@
       "term": "個人情報",
       "reading": "こじんじょうほう",
       "meaningJa": "その 人が だれか わかって しまう 情報です。",
-      "englishTerm": "Personal information"
+      "englishTerm": "Personal information",
+      "wrongMeanings": [
+        "Public notice",
+        "Company profile",
+        "Contact form"
+      ]
     },
     {
       "id": "jouhou",
@@ -5403,35 +6326,60 @@
       "term": "検証",
       "reading": "けんしょう",
       "meaningJa": "本当に そうかを、しらべて たしかめる ことです。",
-      "englishTerm": "Verification"
+      "englishTerm": "Verification",
+      "wrongMeanings": [
+        "Invention",
+        "Translation",
+        "Presentation"
+      ]
     },
     {
       "id": "yuukousei",
       "term": "有効性",
       "reading": "ゆうこうせい",
       "meaningJa": "本当に 役に立つか、と いう ことです。",
-      "englishTerm": "Effectiveness"
+      "englishTerm": "Effectiveness",
+      "wrongMeanings": [
+        "Friendliness",
+        "Politeness",
+        "Popularity"
+      ]
     },
     {
       "id": "shinseisei",
       "term": "真正性",
       "reading": "しんせいせい",
       "meaningJa": "にせものでは ない、と いう ことです。",
-      "englishTerm": "Authenticity"
+      "englishTerm": "Authenticity",
+      "wrongMeanings": [
+        "Sincerity",
+        "Accuracy",
+        "Simplicity"
+      ]
     },
     {
       "id": "shikkou",
       "term": "失効",
       "reading": "しっこう",
       "meaningJa": "つかえる 時間が おわる ことです。",
-      "englishTerm": "Expiry"
+      "englishTerm": "Expiry",
+      "wrongMeanings": [
+        "Failure",
+        "Discount",
+        "Absence"
+      ]
     },
     {
       "id": "shougai",
       "term": "障害",
       "reading": "しょうがい",
       "meaningJa": "うまく うごかなく なる、こまった ことです。",
-      "englishTerm": "Failure / fault"
+      "englishTerm": "System failure",
+      "wrongMeanings": [
+        "A tall wall",
+        "A long meeting",
+        "A busy day"
+      ]
     },
     {
       "id": "shougaibutsu",
@@ -5702,7 +6650,12 @@
       "term": "代表取締役社長",
       "reading": "だいひょうとりしまりやくしゃちょう",
       "meaningJa": "会社の いちばん 上の 人です。会社を 代表して、決める 仕事を します。",
-      "englishTerm": "President and CEO"
+      "englishTerm": "President and CEO",
+      "wrongMeanings": [
+        "Section manager",
+        "Board member",
+        "Sales director"
+      ]
     },
     {
       "id": "shinjiru",
@@ -5723,7 +6676,12 @@
       "term": "DX",
       "reading": "でぃーえっくす",
       "meaningJa": "紙や 手で して いた 仕事を、パソコンや スマホで できる ように する ことです。",
-      "englishTerm": "Digital transformation"
+      "englishTerm": "Digital transformation",
+      "wrongMeanings": [
+        "Data exchange",
+        "Direct export",
+        "Double check"
+      ]
     },
     {
       "id": "yuubin_denki_tsuushinshou",
@@ -5777,7 +6735,12 @@
       "term": "日本語能力試験",
       "reading": "にほんごのうりょくしけん",
       "meaningJa": "日本語が どれくらい できるかを 見る 試験です。N5 から N1 まで あります。",
-      "englishTerm": "JLPT"
+      "englishTerm": "JLPT",
+      "wrongMeanings": [
+        "Driving test",
+        "Entrance exam",
+        "Health check"
+      ]
     },
     {
       "id": "jutaku_kaihatsu_jigyou",
@@ -6022,7 +6985,12 @@
       "romaji": "keiyakusho",
       "meaningJa": "守ると 決めた ことを 書いた 紙です。会社と 会社が サインを します。",
       "englishTerm": "Contract document",
-      "example": "2024年8月に、AUPP と 契約書に サインを しました。"
+      "example": "2024年8月に、AUPP と 契約書に サインを しました。",
+      "wrongMeanings": [
+        "Application form",
+        "Receipt",
+        "Business card"
+      ]
     },
     {
       "id": "vr",
@@ -6037,6 +7005,11 @@
           "町",
           "まち"
         ]
+      ],
+      "wrongMeanings": [
+        "Video Recorder",
+        "Voice Reply",
+        "Very Rare"
       ]
     },
     {
@@ -6055,6 +7028,762 @@
         [
           "姿",
           "すがた"
+        ]
+      ],
+      "wrongMeanings": [
+        "Auto Reply",
+        "Audio Record",
+        "Area Report"
+      ]
+    },
+    {
+      "id": "shirabete_wakarimashita",
+      "term": "調べて わかりました",
+      "reading": "しらべて わかりました",
+      "meaningJa": "自分で 調べて、答えが 見つかった ときに 言います。",
+      "englishTerm": "I looked it up and found out",
+      "wrongMeanings": [
+        "I asked someone and found out",
+        "I knew it from the start",
+        "I could not find it"
+      ],
+      "example": "ヘンディさんに 聞かれたら、「調べて わかりました。2018年です。」と 答えます。",
+      "furigana": [
+        [
+          "調",
+          "しら"
+        ],
+        [
+          "自分",
+          "じぶん"
+        ],
+        [
+          "答",
+          "こた"
+        ],
+        [
+          "見",
+          "み"
+        ],
+        [
+          "言",
+          "い"
+        ],
+        [
+          "聞",
+          "き"
+        ],
+        [
+          "年",
+          "ねん"
+        ]
+      ]
+    },
+    {
+      "id": "websaito_de_mitsukemashita",
+      "term": "Webサイトで 見つけました",
+      "reading": "うぇぶさいとで みつけました",
+      "meaningJa": "情報の 出どころを つたえる 言い方です。",
+      "englishTerm": "I found it on the website",
+      "wrongMeanings": [
+        "I heard it from someone",
+        "I found it in a book",
+        "I wrote it on the website"
+      ],
+      "example": "「どこで 知りましたか。」「Webサイトで 見つけました。」",
+      "furigana": [
+        [
+          "見",
+          "み"
+        ],
+        [
+          "情報",
+          "じょうほう"
+        ],
+        [
+          "出",
+          "で"
+        ],
+        [
+          "言い方",
+          "いいかた"
+        ],
+        [
+          "知",
+          "し"
+        ]
+      ]
+    },
+    {
+      "id": "saito_ni_kaite_arimashita",
+      "term": "サイトに 書いて ありました",
+      "reading": "さいとに かいて ありました",
+      "meaningJa": "「その 情報が サイトに あった」と 報告する 言い方です。",
+      "englishTerm": "It was written on the site",
+      "wrongMeanings": [
+        "I wrote it on the site",
+        "It was deleted from the site",
+        "It will be written soon"
+      ],
+      "example": "「本社は 大阪だと、サイトに 書いて ありました。」と 報告します。",
+      "furigana": [
+        [
+          "書",
+          "か"
+        ],
+        [
+          "情報",
+          "じょうほう"
+        ],
+        [
+          "報告",
+          "ほうこく"
+        ],
+        [
+          "言い方",
+          "いいかた"
+        ],
+        [
+          "本社",
+          "ほんしゃ"
+        ],
+        [
+          "大阪",
+          "おおさか"
+        ]
+      ]
+    },
+    {
+      "id": "mada_shirabete_imasen",
+      "term": "まだ 調べて いません",
+      "reading": "まだ しらべて いません",
+      "meaningJa": "調べる ことが まだ できて いない ときに、正直に 言います。",
+      "englishTerm": "I have not looked it up yet",
+      "wrongMeanings": [
+        "I already looked it up",
+        "I am looking it up now",
+        "I will not look it up"
+      ],
+      "example": "「そこは まだ 調べて いません。あとで 調べます。」と 言って 大丈夫です。",
+      "furigana": [
+        [
+          "調",
+          "しら"
+        ],
+        [
+          "正直",
+          "しょうじき"
+        ],
+        [
+          "言",
+          "い"
+        ],
+        [
+          "大丈夫",
+          "だいじょうぶ"
+        ]
+      ]
+    },
+    {
+      "id": "atode_shirabemasu",
+      "term": "あとで 調べます",
+      "reading": "あとで しらべます",
+      "meaningJa": "「これから 調べます」と やくそくする 言い方です。",
+      "englishTerm": "I will look it up later",
+      "wrongMeanings": [
+        "I looked it up before",
+        "Please look it up later",
+        "I will forget about it"
+      ],
+      "example": "わからない ことばが あったら、「あとで 調べます。」と 言います。",
+      "furigana": [
+        [
+          "調",
+          "しら"
+        ],
+        [
+          "言い方",
+          "いいかた"
+        ],
+        [
+          "言",
+          "い"
+        ]
+      ]
+    },
+    {
+      "id": "kekka_wo_houkoku_shimasu",
+      "term": "けっかを 報告します",
+      "reading": "けっかを ほうこくします",
+      "meaningJa": "調べた ことを つたえる ときの、はじめの ひとことです。",
+      "englishTerm": "I will report the results",
+      "wrongMeanings": [
+        "I will ask about the results",
+        "I received a report",
+        "I will check the results"
+      ],
+      "example": "ミーティングの はじめに 「調査の けっかを 報告します。」と 言います。",
+      "furigana": [
+        [
+          "報告",
+          "ほうこく"
+        ],
+        [
+          "調査",
+          "ちょうさ"
+        ],
+        [
+          "調",
+          "しら"
+        ],
+        [
+          "言",
+          "い"
+        ]
+      ]
+    },
+    {
+      "id": "ijou_desu",
+      "term": "以上です",
+      "reading": "いじょうです",
+      "meaningJa": "報告や 話の おわりに 言う ことばです。「ここで おわりです」の 意味です。",
+      "englishTerm": "That is all",
+      "wrongMeanings": [
+        "It is above",
+        "It is more than that",
+        "It is not enough"
+      ],
+      "example": "ぜんぶ 報告したら、「以上です。」と 言って おわります。",
+      "furigana": [
+        [
+          "以上",
+          "いじょう"
+        ],
+        [
+          "報告",
+          "ほうこく"
+        ],
+        [
+          "話",
+          "はなし"
+        ],
+        [
+          "言",
+          "い"
+        ],
+        [
+          "意味",
+          "いみ"
+        ]
+      ]
+    },
+    {
+      "id": "shitsumon_ga_arimasu",
+      "term": "質問が あります",
+      "reading": "しつもんが あります",
+      "meaningJa": "聞きたい ことが ある ときに、はじめに 言う ことばです。",
+      "englishTerm": "I have a question",
+      "wrongMeanings": [
+        "I have an answer",
+        "I have a problem",
+        "There are no questions"
+      ],
+      "example": "松井社長の 話の あとで、「質問が あります。」と 言います。",
+      "furigana": [
+        [
+          "質問",
+          "しつもん"
+        ],
+        [
+          "聞",
+          "き"
+        ],
+        [
+          "言",
+          "い"
+        ],
+        [
+          "松井社長",
+          "まついしゃちょう"
+        ],
+        [
+          "話",
+          "はなし"
+        ]
+      ]
+    },
+    {
+      "id": "oshiete_kudasai",
+      "term": "教えて ください",
+      "reading": "おしえて ください",
+      "meaningJa": "知りたい ことを 相手に たのむ ことばです。",
+      "englishTerm": "Please tell me",
+      "wrongMeanings": [
+        "Please listen to me",
+        "Please help me",
+        "Please remember it"
+      ],
+      "example": "「会社の あゆみを 教えて ください。」と たのみます。",
+      "furigana": [
+        [
+          "教",
+          "おし"
+        ],
+        [
+          "知",
+          "し"
+        ],
+        [
+          "相手",
+          "あいて"
+        ],
+        [
+          "会社",
+          "かいしゃ"
+        ]
+      ]
+    },
+    {
+      "id": "dou_iu_imi_desu_ka",
+      "term": "それは どういう 意味ですか",
+      "reading": "それは どういう いみですか",
+      "meaningJa": "ことばの 意味が わからない ときに 聞く 言い方です。",
+      "englishTerm": "What does that mean?",
+      "wrongMeanings": [
+        "How do you say that?",
+        "Is that true?",
+        "What do you think?"
+      ],
+      "example": "「『沿革』は どういう 意味ですか。」と 聞いて 大丈夫です。",
+      "furigana": [
+        [
+          "意味",
+          "いみ"
+        ],
+        [
+          "聞",
+          "き"
+        ],
+        [
+          "言い方",
+          "いいかた"
+        ],
+        [
+          "沿革",
+          "えんかく"
+        ],
+        [
+          "大丈夫",
+          "だいじょうぶ"
+        ]
+      ]
+    },
+    {
+      "id": "mouichido_onegaishimasu",
+      "term": "もう一度 お願いします",
+      "reading": "もういちど おねがいします",
+      "meaningJa": "聞きとれなかった ときに、もう 1回 言って もらう ことばです。",
+      "englishTerm": "One more time, please",
+      "wrongMeanings": [
+        "Please speak louder",
+        "Please wait a moment",
+        "Please go ahead"
+      ],
+      "example": "話が はやくて わからなかったら、「すみません、もう一度 お願いします。」",
+      "furigana": [
+        [
+          "一度",
+          "いちど"
+        ],
+        [
+          "お願い",
+          "おねがい"
+        ],
+        [
+          "聞",
+          "き"
+        ],
+        [
+          "回",
+          "かい"
+        ],
+        [
+          "言",
+          "い"
+        ],
+        [
+          "話",
+          "はなし"
+        ]
+      ]
+    },
+    {
+      "id": "sukoshi_kangaeru_jikan_wo_kudasai",
+      "term": "少し 考える 時間を ください",
+      "reading": "すこし かんがえる じかんを ください",
+      "meaningJa": "すぐに 答えられない ときに、待って もらう 言い方です。",
+      "englishTerm": "Please give me time to think",
+      "wrongMeanings": [
+        "Please think about it for me",
+        "Please decide quickly",
+        "Please give me a hint"
+      ],
+      "example": "むずかしい 質問には、「少し 考える 時間を ください。」と 言えます。",
+      "furigana": [
+        [
+          "少",
+          "すこ"
+        ],
+        [
+          "考",
+          "かんが"
+        ],
+        [
+          "時間",
+          "じかん"
+        ],
+        [
+          "答",
+          "こた"
+        ],
+        [
+          "待",
+          "ま"
+        ],
+        [
+          "言い方",
+          "いいかた"
+        ],
+        [
+          "言",
+          "い"
+        ],
+        [
+          "質問",
+          "しつもん"
+        ]
+      ]
+    },
+    {
+      "id": "sumimasen_tsugi_wo_onegaishimasu",
+      "term": "すみません、つぎを お願いします",
+      "reading": "すみません つぎを おねがいします",
+      "meaningJa": "いま 答えられない ときに、つぎに すすんで もらう ことばです。",
+      "englishTerm": "Sorry, next one please",
+      "wrongMeanings": [
+        "Sorry, please go back",
+        "Sorry, one more time please",
+        "Sorry, please stop here"
+      ],
+      "example": "答えが 出て こない ときは、「すみません、つぎを お願いします。」",
+      "furigana": [
+        [
+          "お願い",
+          "おねがい"
+        ],
+        [
+          "答",
+          "こた"
+        ],
+        [
+          "出",
+          "で"
+        ]
+      ]
+    },
+    {
+      "id": "yatte_mimasu",
+      "term": "やって みます",
+      "reading": "やって みます",
+      "meaningJa": "「ためしに します」と 前向きに 答える ことばです。",
+      "englishTerm": "I will give it a try",
+      "wrongMeanings": [
+        "I have done it before",
+        "I cannot do it",
+        "Please try it"
+      ],
+      "example": "あたらしい 仕事を たのまれたら、「はい、やって みます。」",
+      "furigana": [
+        [
+          "前向",
+          "まえむ"
+        ],
+        [
+          "答",
+          "こた"
+        ],
+        [
+          "仕事",
+          "しごと"
+        ]
+      ]
+    },
+    {
+      "id": "omoshiroi_to_omoimashita",
+      "term": "おもしろいと 思いました",
+      "reading": "おもしろいと おもいました",
+      "meaningJa": "自分の 感想を つたえる 言い方です。",
+      "englishTerm": "I found it interesting",
+      "wrongMeanings": [
+        "I found it difficult",
+        "I thought it was strange",
+        "I did not understand it"
+      ],
+      "example": "「カンボジアの プログラムが おもしろいと 思いました。」",
+      "furigana": [
+        [
+          "思",
+          "おも"
+        ],
+        [
+          "自分",
+          "じぶん"
+        ],
+        [
+          "感想",
+          "かんそう"
+        ],
+        [
+          "言い方",
+          "いいかた"
+        ]
+      ]
+    },
+    {
+      "id": "benkyou_ni_narimashita",
+      "term": "勉強に なりました",
+      "reading": "べんきょうに なりました",
+      "meaningJa": "あたらしい ことを 知る ことが できた ときの、お礼の ことばです。",
+      "englishTerm": "I learned a lot",
+      "wrongMeanings": [
+        "I became a student",
+        "I studied hard",
+        "I will study more"
+      ],
+      "example": "話を 聞いた あとで、「きょうは 勉強に なりました。」と 言います。",
+      "furigana": [
+        [
+          "勉強",
+          "べんきょう"
+        ],
+        [
+          "知",
+          "し"
+        ],
+        [
+          "礼",
+          "れい"
+        ],
+        [
+          "話",
+          "はなし"
+        ],
+        [
+          "聞",
+          "き"
+        ],
+        [
+          "言",
+          "い"
+        ]
+      ]
+    },
+    {
+      "id": "kyou_wa_arigatou_gozaimashita",
+      "term": "きょうは ありがとうございました",
+      "reading": "きょうは ありがとうございました",
+      "meaningJa": "会や 話の おわりに 言う、お礼の ことばです。",
+      "englishTerm": "Thank you for today",
+      "wrongMeanings": [
+        "See you tomorrow",
+        "I am sorry about today",
+        "Good morning everyone"
+      ],
+      "example": "ミーティングの さいごに、「きょうは ありがとうございました。」",
+      "furigana": [
+        [
+          "会",
+          "かい"
+        ],
+        [
+          "話",
+          "はなし"
+        ],
+        [
+          "言",
+          "い"
+        ],
+        [
+          "礼",
+          "れい"
+        ]
+      ]
+    },
+    {
+      "id": "ojikan_arigatou_gozaimasu",
+      "term": "お時間を いただき、ありがとうございます",
+      "reading": "おじかんを いただき ありがとうございます",
+      "meaningJa": "時間を 作って くれた 人に 言う、ていねいな お礼です。",
+      "englishTerm": "Thank you for your time",
+      "wrongMeanings": [
+        "Do you have time now?",
+        "I do not have time",
+        "Please give me more time"
+      ],
+      "example": "松井社長に 会ったら、まず 「お時間を いただき、ありがとうございます。」",
+      "furigana": [
+        [
+          "お時間",
+          "おじかん"
+        ],
+        [
+          "時間",
+          "じかん"
+        ],
+        [
+          "作",
+          "つく"
+        ],
+        [
+          "人",
+          "ひと"
+        ],
+        [
+          "言",
+          "い"
+        ],
+        [
+          "礼",
+          "れい"
+        ],
+        [
+          "松井社長",
+          "まついしゃちょう"
+        ],
+        [
+          "会",
+          "あ"
+        ]
+      ]
+    },
+    {
+      "id": "korekara_mo_ganbarimasu",
+      "term": "これからも がんばります",
+      "reading": "これからも がんばります",
+      "meaningJa": "「つづけて 力を 出します」と つたえる ことばです。",
+      "englishTerm": "I will keep doing my best",
+      "wrongMeanings": [
+        "I did my best before",
+        "Please do your best",
+        "I will take a rest"
+      ],
+      "example": "話の さいごに、「日本語を これからも がんばります。」と 言います。",
+      "furigana": [
+        [
+          "力",
+          "ちから"
+        ],
+        [
+          "出",
+          "だ"
+        ],
+        [
+          "話",
+          "はなし"
+        ],
+        [
+          "日本語",
+          "にほんご"
+        ],
+        [
+          "言",
+          "い"
+        ]
+      ]
+    },
+    {
+      "id": "ichiban_taisetsu_na_chikara",
+      "term": "いちばん 大切な 力は 何ですか",
+      "reading": "いちばん たいせつな ちからは なんですか",
+      "meaningJa": "相手が いちばん 大事に する ものを 聞く 質問です。",
+      "englishTerm": "What is the most important skill?",
+      "wrongMeanings": [
+        "What is the most difficult work?",
+        "Which company is the biggest?",
+        "Why is it important?"
+      ],
+      "example": "松井社長に 「学生に いちばん 大切な 力は 何ですか。」と 聞きます。",
+      "furigana": [
+        [
+          "大切",
+          "たいせつ"
+        ],
+        [
+          "力",
+          "ちから"
+        ],
+        [
+          "何ですか",
+          "なんですか"
+        ],
+        [
+          "相手",
+          "あいて"
+        ],
+        [
+          "大事",
+          "だいじ"
+        ],
+        [
+          "聞",
+          "き"
+        ],
+        [
+          "質問",
+          "しつもん"
+        ],
+        [
+          "松井社長",
+          "まついしゃちょう"
+        ],
+        [
+          "学生",
+          "がくせい"
+        ]
+      ]
+    },
+    {
+      "id": "korekara_no_keikaku",
+      "term": "これからの 計画を 教えて ください",
+      "reading": "これからの けいかくを おしえて ください",
+      "meaningJa": "会社の これからの ことを 聞く 質問です。",
+      "englishTerm": "Please tell me your future plans",
+      "wrongMeanings": [
+        "Please tell me about the past",
+        "Please make a plan for me",
+        "Please change the plan"
+      ],
+      "example": "「NEXT MAKEの これからの 計画を 教えて ください。」と 聞きます。",
+      "furigana": [
+        [
+          "計画",
+          "けいかく"
+        ],
+        [
+          "教",
+          "おし"
+        ],
+        [
+          "会社",
+          "かいしゃ"
+        ],
+        [
+          "聞",
+          "き"
+        ],
+        [
+          "質問",
+          "しつもん"
         ]
       ]
     }

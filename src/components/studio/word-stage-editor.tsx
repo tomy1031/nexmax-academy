@@ -84,6 +84,22 @@ export function WordStageEditor({
           onChange={(description) => patch({ description })}
           placeholder="ほうこくの ときに つかう ことばを おぼえます。"
         />
+        {/*
+          セット名を 付けると、その ステージの 中で **別の セット**として 学習者に 出る
+          （初級・中級…／願い #203）。空なら これまでどおり、同じ ステージの ほかの
+          名前なしの ことばと 1つに まとまる。
+        */}
+        <TextField
+          label="セット名（からでも よい）"
+          value={value.label ?? ""}
+          onChange={(label) => patch({ label: label.length > 0 ? label : undefined })}
+          placeholder="初級"
+          hint={
+            value.label
+              ? "ステージの トップに この 名前で ならびます。漢字の よみは 下の 読み辞書に 足してください。"
+              : "からにすると、同じ ステージの ほかの ことばと 1つに まとまります。"
+          }
+        />
         <div className="grid gap-4 sm:grid-cols-3">
           <NumberField
             label={`出題数（1〜${maxQuestions}）`}
