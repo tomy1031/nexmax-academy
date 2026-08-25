@@ -879,7 +879,7 @@
     },
     {
       "kind": "paragraph",
-      "text": "つぎの ことばは、サイトにも シートにも 出て きます。"
+      "text": "つぎの ことばは、この ページと サイトに 出て きます。"
     },
     {
       "kind": "paragraph",
@@ -888,6 +888,9 @@
     {
       "kind": "vocab",
       "wordIds": [
+        "risa-chi",
+        "kihon",
+        "tsuyomi",
         "kaishagaiyou",
         "enkaku",
         "jigyo",
@@ -899,7 +902,11 @@
         "setsuritsu",
         "shain",
         "kyoten",
-        "kaigai"
+        "kaigai",
+        "jouhou",
+        "katsudou",
+        "kankei",
+        "mensetsu"
       ]
     }
   ]

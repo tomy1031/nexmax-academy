@@ -1,0 +1,28 @@
+{
+  "refs": [
+    "public/img/characters/hendy/sheet.webp",
+    "public/img/characters/matsui/sheet.webp",
+    "public/img/characters/matsui/reference.jpg",
+    "public/img/articles/kaisha_shirabekata/g1.webp"
+  ],
+  "_comment": "ヘンディ・松井社長が 出る さし絵。設定画を 参照入力に 渡して 顔・髪・服を そろえる（codex_image_generation.md §6.5）。松井社長は **本人の 参考写真も 渡す**（2026-08-25 の 指定）。学生の 見た目は kaisha_step1_scenes.json の g1 に そろえる ので、先に そちらを 生成する。",
+  "style": "Style: warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, soft cel shading with gentle light, bright natural daylight, warm cream walls with sky-blue and coral accents, tidy contemporary offices and classrooms with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions and warm friendly faces. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME.",
+  "noText": "No text, no letters, no kanji, no kana, no numbers anywhere in the image. Screens, papers, whiteboards, books and signs are blank or show only soft abstract shapes and simple pictures. No watermark, no signature, no logo, no speech balloons, no floating symbols such as question marks, exclamation marks, arrows, light bulbs, stars or hearts.",
+  "negative": "Never: flat vector icon art, pictograms, infographic diagrams, symbols floating on an empty background, wide empty margins, minimalist clip-art, 3D render, photo realism, harsh gradients, readable letters or numbers, national flags, country outlines, maps with borders, dark or scary tone, angry or crying faces, extra fingers or limbs, robots, mascots. Keep every referenced character's face, hair and clothing exactly as in their model sheet — no costume changes, no age changes.",
+  "scenes": [
+    {
+      "out": "g3",
+      "dest": "public/img/articles/kaisha_shirabekata/g3.webp",
+      "title": "STEP3 ヘンディさんに 報告する",
+      "output": "Output: one square illustration, 1024x1024. Close view — the subject fills the frame edge to edge.",
+      "scene": "Scene: THE STUDENT is a young Cambodian woman in her early twenties with shoulder-length straight dark hair and a warm coral-orange blouse; keep her face, hair and blouse exactly the same in every picture. Seen from behind her shoulder as she sits at her desk and speaks toward an open laptop. On the laptop screen is HENDY from the first reference model sheet — a Japanese man in his late twenties with short spiky black hair, a navy suit, white shirt and navy tie — smiling and listening, one hand raised in a small friendly wave. Bright tidy room, plant by the window."
+    },
+    {
+      "out": "g6",
+      "dest": "public/img/articles/kaisha_shirabekata/g6.webp",
+      "title": "STEP6 松井社長と 話す",
+      "output": "Output: one square illustration, 1024x1024. Close view — the subject fills the frame edge to edge.",
+      "scene": "Scene: THE STUDENT is a young Cambodian woman in her early twenties with shoulder-length straight dark hair and a warm coral-orange blouse; keep her face, hair and blouse exactly the same in every picture. Seen from the side at her desk, smiling and speaking toward an open laptop. On the laptop screen is MATSUI, the company president from the second reference model sheet — a Japanese man in his forties with short tousled black hair, a navy blazer over a plain white T-shirt — smiling warmly and leaning slightly forward as he listens. Bright tidy room, warm daylight."
+    }
+  ]
+}
