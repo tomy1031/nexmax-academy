@@ -98,7 +98,7 @@ export const CAMBODIA = {
     },
     {
       kind: "heading",
-      text: { n4: "これまでの あゆみ", n3: "プログラムの歩み", en: "What has happened so far" },
+      text: { n4: "これまでの 歩み", n3: "プログラムの歩み", en: "What has happened so far" },
     },
     /*
      * ここから 下の 3枚は **本当の 写真**（作った 絵では ない。2026-08-23 に
@@ -110,7 +110,7 @@ export const CAMBODIA = {
       src: "/gakushu/nextmake/img/pathway_signing.webp",
       alt: "",
       caption: {
-        n4: "2024年8月。AUPP と ネクストメイクが 約束の 紙に サインを した 日です。",
+        n4: "2024年8月。AUPP と ネクストメイクが 契約書に サインを した 日です。",
         n3: "2024年8月、AUPPとNEXTMAKEのパートナーシップ調印式のようすです。",
         en: "August 2024: the day AUPP and NEXT MAKE signed the partnership.",
       },
@@ -121,7 +121,7 @@ export const CAMBODIA = {
         {
           when: "2024年8月",
           what: {
-            n4: "AUPP と ネクストメイクが 約束を 結びました。",
+            n4: "AUPP と ネクストメイクが 契約を 結びました。",
             n3: "AUPPとNEXTMAKEのパートナーシップ調印式を行いました。",
             en: "AUPP and NEXT MAKE signed a partnership.",
           },

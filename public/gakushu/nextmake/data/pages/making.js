@@ -73,7 +73,7 @@ export const MAKING = {
           icon: "🎬",
           label: { n4: "動画", n3: "動画制作（VR・AR）", en: "Video, VR and AR" },
           text: {
-            n4: "会社を しょうかいする 動画や、ゴーグルを つけて 見る 動画を 作ります。",
+            n4: "会社を しょうかいする 動画や、VR・AR の 動画を 作ります。",
             n3: "企業のプロモーション映像や、VR・AR向けの映像を制作します。",
             en: "We make promotional videos and VR or AR content.",
           },
