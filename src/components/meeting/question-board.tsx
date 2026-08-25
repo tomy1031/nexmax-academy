@@ -208,8 +208,13 @@ export function QuestionCards({
               pop={justOpenedId === id}
               reveal={false}
               furigana={furigana}
-              /* 押せるのは **一度 答えた もの**だけ（まだの しつもんへ 飛ばさない） */
-              onPick={onPick && (done || missed) ? () => onPick(id) : undefined}
+              /*
+               * 押せるのは **答えた ものと、いま 聞かれて いる もの**まで
+               *（2026-08-25 の 指定「今までに回答した問題＋次の問題までクリックOK」）。
+               * さきの しつもんへは 飛ばさない——順に 聞かれる ことが 会話の 形なので、
+               * 先回りできると「もう 聞かれた ことに 答えた」が 崩れる。
+               */
+              onPick={onPick && (done || missed || currentId === id) ? () => onPick(id) : undefined}
               ariaLabel={
                 missed
                   ? `${at + 1}ばんめ もう いちど`

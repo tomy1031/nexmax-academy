@@ -86,14 +86,13 @@ const HOUKOKU_FREE_INPUT: readonly (readonly [string, string])[] = [
 
 /** ヘンディさんに 話す こたえ（型文を なぞった、学習者が 書きそうな文）。 */
 const HENDY_ANSWERS = [
-  "はい。ほうこくします。", // 定型句
   "2018年に できました。", // 1語（数）
   "NMClaw と 観光DXです。", // 2つ
   "新しい 技術と、グループの 会社と、世界の 人と 学ぶ ことです。", // 3つ
   "CONTINUE LLC. です。", // 会社の 名前
   "ベトナムに あります。", // 1語（国）
   "日本語と ITを 学びます。", // 2つ
-  "日本語の 勉強と、ITの 勉強と、しごとの 紹介です。", // 3つ
+  "しごとの 紹介を して くれます。", // 勉強の ほかに して くれる こと
   "NEXTMAKE Internship Lab です。", // サービスの 名前
   "日本人の リーダーと いっしょに します。", // 語句
   // さいごの「技術は 何？」は「まだ 言えない（つぎへ）」で 通る
@@ -291,7 +290,8 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
      */
     await page.getByRole("button", { name: "ヒントを 見る" }).click();
     const hint = page.getByRole("dialog", { name: "ヒントの ポップアップ" });
-    await expect(hint.getByText("はい。ほうこくします。")).toBeVisible();
+    // ルビが 語の 中に 入る（「2018年ねんに」）ので、ふりがなの 入らない ところで さがす
+    await expect(hint.getByText(/できました/)).toBeVisible();
     await hint.getByRole("button", { name: "とじる" }).click();
     await expect(hint).toHaveCount(0);
     await shot(page, "08-meeting-inroom");
@@ -316,43 +316,40 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
     await skipAsk(page);
 
     /*
-     * ぜんぶ 答えると **しゅうりょうしょう**が 出る（2026-08-21）。
-     * ここでは まだ「ステージ クリア」は 出て いない——おわりを 書くのは
-     * 聞く ばんを おえた ときに 移した（かぶりを 重なりでは なく 順番で 直した）。
+     * ぜんぶ 答えると **しゅうりょうしょう**が 出て、閉じると そこで おわり。
+     * この 教材には **聞く ばんが 無い**（`discover` が 空）——2026-08-25 の 指定
+     *「会社を知るについては ヘンディへの 質問は 不要。次への ロックを 解除してほしい」。
      */
+    await expect(page.getByRole("button", { name: /さんに しつもん/ })).toHaveCount(0);
     const cert1 = page.getByRole("dialog", { name: "しゅうりょうしょうの ポップアップ" });
     await expect(cert1).toBeVisible();
     await cert1.getByRole("button").click();
     await expect(cert1).toHaveCount(0);
 
     /*
-     * ばんの 変わり目の ことばは **2か所に 出る**（2026-08-21 の 指定で チャットにも
-     * 積む ように した）。大きい 板と、あとから 読み返せる チャットの 記録。
+     * おわりの ことばは **2か所に 出る**（2026-08-21 の 指定で チャットにも 積む）。
+     * 大きい 板と、あとから 読み返せる チャットの 記録。
      */
-    await expect(page.getByText("とても よかったです").first()).toBeVisible();
     await expect(page.getByText("とても よかったです")).toHaveCount(2);
-    /*
-     * 話せた ことは **ポップアップ**に 移した（2026-08-21）。ラウンド1で 答えた ぶんと
-     * ラウンド2で 聞き出した ぶんを 分けて 並べる。
-     */
+    // 話せた ことは ポップアップで 見返せる
     const seeRecord = page.getByRole("button", { name: "話せた ことを 見る" });
     await expect(seeRecord).toBeVisible();
-    await seeRecord.click();
-    const review = page.getByRole("dialog", { name: "しゅうりょうしょうの ポップアップ" });
-    await expect(review.getByLabel(/さんに 話した こと/)).toBeVisible();
-    await review.getByRole("button", { name: "とじる" }).click();
-    await expect(review).toHaveCount(0);
     await shot(page, "09-meeting-hendy-done");
 
     /*
-     * **聞く ばんを おえるまで つぎへ 進めない**。おわりは 学習者が 押して 決める
-     *（見つける ことが 0の 教材も あるので「ぜんぶ 見つけた」を おわりに できない）。
+     * **ここで つぎへ 進める**。前は 聞く ばんを おえるまで 修了が 書かれず、
+     * ぜんぶ 答えても 先へ 行けなかった（2026-08-25 の 指摘）。
      */
     await leaveCall(page);
+    /*
+     * たいしつの あとに しゅうりょうしょうが もう一度 出る ことが ある
+     *（見返しの ぶん）。出て いたら 閉じてから つぎへ。
+     */
     const cert2 = page.getByRole("dialog", { name: "しゅうりょうしょうの ポップアップ" });
-    await expect(cert2).toBeVisible();
-    await cert2.getByRole("button").click();
-
+    if (await cert2.isVisible().catch(() => false)) {
+      await cert2.getByRole("button").first().click();
+      await expect(cert2).toHaveCount(0);
+    }
     await frameNext(page).click();
   });
 

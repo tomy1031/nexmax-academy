@@ -37,7 +37,7 @@ test("鍵が 無くても、規則ベースの 受け止めで 会話が 止ま�
   await page.goto(KAISHA.meetingHendy.path);
   await joinCall(page);
 
-  await speakByText(page, "はい。ほうこくします。");
+  await speakByText(page, "2018年に できました。");
 
   // ほめる ひとことは 出る（責める ことばは 出さない）
   await expect(page.getByText("🌸").first()).toBeVisible();
@@ -66,7 +66,7 @@ test.describe("AIの みかた（鍵が あるときだけ）", () => {
     await page.goto(KAISHA.meetingHendy.path);
     await joinCall(page);
 
-    await speakByText(page, "はい。ほうこくします。");
+    await speakByText(page, "2018年に できました。");
 
     /*
      * AIの みかたは **best-effort**（src/components/meeting/judge-api.ts）。

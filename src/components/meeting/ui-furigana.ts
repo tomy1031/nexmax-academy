@@ -1,3 +1,4 @@
+import { AI_KANJI_FURIGANA } from "@/lib/ai-kanji";
 import { buildFuriganaIndex } from "@/lib/text/furigana";
 
 /**
@@ -12,10 +13,17 @@ import { buildFuriganaIndex } from "@/lib/text/furigana";
  *（2026-08-21 に「言い方」が 裸で 出て いた）。
  */
 export const JUDGE_FURIGANA = buildFuriganaIndex([
+  ["言い方", "いいかた"],
+  ["一回", "いっかい"],
+  ["練習", "れんしゅう"],
   ["言", "い"],
   ["方", "かた"],
   ["次", "つぎ"],
-  ["練習", "れんしゅう"],
-  ["一回", "いっかい"],
   ["少", "すこ"],
+  /*
+   * AIが 書いてよい 漢字ことばも 混ぜる（2026-08-25）。
+   * AIの 文は 教材の 読み辞書を 持てないので、**書かせる 一覧と ルビの 索引を
+   * 同じ ものに して おく**——そうすれば 出て くる 漢字には かならず 読みが 付く。
+   */
+  ...AI_KANJI_FURIGANA,
 ]);

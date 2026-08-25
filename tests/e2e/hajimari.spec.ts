@@ -202,7 +202,11 @@ test("ぜんぶ おわると「聞く ばん」に なり、こえが 無くて�
    * 「しごと」の ことばが 当たった ので、**聞き出せた**ことに なる——
    * 声が つながって いなくても、教材に 書いた 答えが 返る。
    */
-  await expect(page.getByText("知らない 人が わたしの 作った")).toBeVisible();
+  /*
+   * 相手の 吹き出しにも **ルビが 合成される**ように なった（2026-08-25）ので、
+   * 字面が 「知しらない 人ひとが…」に なる。正規表現で さがす。
+   */
+  await expect(page.getByText(/知.*らない.*人.*が わたしの.*作/)).toBeVisible();
   /* 見出しの 漢字には ルビが 入る ので、数の ところで 見る */
   await expect(page.getByText(new RegExp(`（1 / ${MEETING_DISCOVER}）`))).toBeVisible();
 
