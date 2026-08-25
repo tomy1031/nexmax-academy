@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { M_PLUS_Rounded_1c, Noto_Sans_JP } from "next/font/google";
+import { RegisterOnLogin } from "@/components/register-on-login";
 import "./globals.css";
 
 /*
@@ -41,7 +42,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja" className={`${rounded.variable} ${notoJp.variable} h-full antialiased`}>
-      <body className="flex min-h-full flex-col">{children}</body>
+      <body className="flex min-h-full flex-col">
+        {/* 画面は出さない。ログインした人を登録し、端末にある情報を送る（2026-08-25）。 */}
+        <RegisterOnLogin />
+        {children}
+      </body>
     </html>
   );
 }
