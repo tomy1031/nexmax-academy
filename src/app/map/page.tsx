@@ -11,7 +11,7 @@ import { mapListedStages, toMapAreas, toMapStages } from "@/lib/map-data";
  * スタジオで「こうかい」したステージは、再デプロイを待たずこの間隔でマップに増える
  * （設計07 §11.1「gitコンテンツは静的生成のまま。DBコンテンツはISR/短いキャッシュ」）。
  */
-export const revalidate = 60;
+export const revalidate = 300;
 
 export default async function MapPage() {
   const stages = mapListedStages(await listStages());

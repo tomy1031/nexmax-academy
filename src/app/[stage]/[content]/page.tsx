@@ -45,7 +45,7 @@ import { loadRef } from "../page";
  */
 
 /** DBで公開した教材を合流させるため ISR（設計07 §11.1）。 */
-export const revalidate = 60;
+export const revalidate = 300;
 
 export async function generateStaticParams() {
   const stages = await listStages();

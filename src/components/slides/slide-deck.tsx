@@ -282,7 +282,11 @@ export function SlideDeck({ slides, embedded }: { slides: Slides; embedded?: boo
       */}
       {embedded ? null : (
         <header className="mb-5 flex items-center justify-between gap-3">
-          <Link href="/map" className="text-ink-soft hover:text-navy text-sm font-extrabold">
+          <Link
+            prefetch={false}
+            href="/map"
+            className="text-ink-soft hover:text-navy text-sm font-extrabold"
+          >
             ← まなびマップ
           </Link>
           <span className="bg-sky-soft text-navy rounded-full px-3 py-1 text-xs font-extrabold">

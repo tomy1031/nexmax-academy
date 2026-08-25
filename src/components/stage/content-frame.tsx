@@ -188,6 +188,7 @@ export function ContentFrame({
                 className="card-island mt-6 flex flex-wrap items-center justify-between gap-3 p-4"
               >
                 <Link
+                  prefetch={false}
                   href={`/${stage.id}`}
                   className="text-ink-soft hover:text-navy text-sm font-extrabold"
                 >
@@ -196,6 +197,7 @@ export function ContentFrame({
                 {next ? (
                   currentDone ? (
                     <Link
+                      prefetch={false}
                       href={next.href}
                       className="btn-game px-5 py-2 text-sm [--btn-face:#f26fa7] [--btn-shadow:#d94d84] [&_rt]:text-white!"
                     >
@@ -214,6 +216,7 @@ export function ContentFrame({
                   )
                 ) : currentDone ? (
                   <Link
+                    prefetch={false}
                     href={`/${stage.id}`}
                     className="btn-game px-5 py-2 text-sm [--btn-face:#58c273] [--btn-shadow:#3aa458]"
                   >
@@ -262,6 +265,7 @@ function StageClearCard({ stageId, onStay }: { stageId: string; onStay: () => vo
           さいごまで やりきったね。よく がんばりました！
         </p>
         <Link
+          prefetch={false}
           href={`/${stageId}`}
           className="btn-game mt-5 inline-flex px-6 py-3 [--btn-face:#58c273] [--btn-shadow:#3aa458]"
         >
@@ -334,7 +338,7 @@ function StageRail({
         return (
           <li key={`${item.type}:${item.id}`}>
             {reachable && !here ? (
-              <Link href={item.href} className={className} onClick={onToggle}>
+              <Link prefetch={false} href={item.href} className={className} onClick={onToggle}>
                 {inner}
               </Link>
             ) : (
@@ -354,7 +358,11 @@ function StageRail({
 
   const heading = (
     <div>
-      <Link href={`/${stage.id}`} className="text-sky text-[11px] font-black tracking-widest">
+      <Link
+        prefetch={false}
+        href={`/${stage.id}`}
+        className="text-sky text-[11px] font-black tracking-widest"
+      >
         {stage.number === null ? "もくじ" : `STEP ${String(stage.number).padStart(2, "0")}`}
       </Link>
       <p className="text-navy text-sm font-black">
@@ -376,7 +384,11 @@ function StageRail({
       <aside className="card-island sticky top-4 hidden h-fit w-60 shrink-0 space-y-3 p-4 lg:block">
         {heading}
         {list}
-        <Link href="/map" className="text-ink-soft hover:text-navy block text-xs font-bold">
+        <Link
+          prefetch={false}
+          href="/map"
+          className="text-ink-soft hover:text-navy block text-xs font-bold"
+        >
           ← まなびマップ
         </Link>
       </aside>
@@ -427,6 +439,7 @@ function LockedNotice({
             」を おわらせましょう。
           </p>
           <Link
+            prefetch={false}
             href={blocker.href}
             className="btn-game mt-5 inline-flex px-6 py-3 [--btn-face:#f26fa7] [--btn-shadow:#d94d84] [&_rt]:text-white!"
           >
@@ -446,7 +459,11 @@ function LockedNotice({
         </p>
       )}
       <div className="mt-5 flex flex-wrap items-center justify-center gap-4">
-        <Link href={`/${stage.id}`} className="text-sky text-sm font-black underline">
+        <Link
+          prefetch={false}
+          href={`/${stage.id}`}
+          className="text-sky text-sm font-black underline"
+        >
           ステージに もどる
         </Link>
         {/*

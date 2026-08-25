@@ -12,7 +12,7 @@ import { canonicalContentPath } from "@/lib/stage-lookup";
  * 「gitコンテンツは静的生成のまま。DBコンテンツはリクエスト時取得（ISR/短いキャッシュ）」）。
  * スタジオで「こうかい」した教材は、再デプロイを待たずこの間隔で届く。
  */
-export const revalidate = 60;
+export const revalidate = 300;
 /**
  * git 由来の教材はビルド時に切り出す（実行時のファイル読みを起こさない）。
  * DB由来（スタジオで公開したもの）はここに現れないが、dynamicParams の既定により

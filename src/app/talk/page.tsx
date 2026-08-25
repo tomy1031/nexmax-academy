@@ -12,7 +12,7 @@ export const metadata: Metadata = {
  * 「gitコンテンツは静的生成のまま。DBコンテンツはリクエスト時取得（ISR/短いキャッシュ）」）。
  * スタジオで「こうかい」したシナリオは、再デプロイを待たずこの間隔で届く。
  */
-export const revalidate = 60;
+export const revalidate = 300;
 
 /**
  * たいわ（AIと 話す）の一覧。
@@ -35,7 +35,11 @@ export default async function TalkIndexPage() {
       <header className="mb-5">
         {/* 行き先は **まなびマップ**（札の字のとおり）。ここは `/` を指していて、
             押した学習者は ログイン直後の タイトル画面まで 放り出されていた。 */}
-        <Link href="/map" className="text-ink-soft hover:text-navy text-sm font-extrabold">
+        <Link
+          prefetch={false}
+          href="/map"
+          className="text-ink-soft hover:text-navy text-sm font-extrabold"
+        >
           ← まなびマップ
         </Link>
       </header>
@@ -59,6 +63,7 @@ export default async function TalkIndexPage() {
             {scenarios.map((scenario) => (
               <li key={scenario.id}>
                 <Link
+                  prefetch={false}
                   href={`/talk/${scenario.id}`}
                   className="card-island block p-5 transition hover:scale-[1.01]"
                 >
@@ -79,7 +84,11 @@ export default async function TalkIndexPage() {
         戻らずに 行き来できるようにする（/listening 側にも同じ形の行がある）。
       */}
       <p className="mt-6 text-sm font-bold">
-        <Link href="/listening" className="text-sky-deep hover:text-navy underline">
+        <Link
+          prefetch={false}
+          href="/listening"
+          className="text-sky-deep hover:text-navy underline"
+        >
           🎧 聞く れんしゅうは リスニング
         </Link>
       </p>

@@ -13,7 +13,7 @@ import { buildDictionary } from "@/lib/dictionary";
 export const metadata: Metadata = { title: "ことばの じしょ" };
 
 /** 公開分のDBコンテンツを合流させるため ISR（設計07 §11.1）。 */
-export const revalidate = 60;
+export const revalidate = 300;
 
 export default async function Page() {
   return <DictionaryPage entries={buildDictionary(await listWordStages())} />;

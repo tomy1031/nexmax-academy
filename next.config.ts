@@ -18,6 +18,17 @@ const nextConfig: NextConfig = {
     BUILD_TIME: new Date().toISOString(),
   },
 
+  /**
+   * 画像は `/_next/image` を通さず、静的アセットのまま配る。
+   *
+   * Cloudflare Workers では画像変換の紐づけ（IMAGES バインディング＝有料）が無いため、
+   * `/_next/image` は**縮小も圧縮もせず元ファイルを素通し**する。つまり Worker の
+   * 呼び出し1回（無料枠 10万/日にカウント）を画像1枚ごとに消費するだけで、得る物が無い。
+   * 静的アセット直配信はカウント外・無制限（2026-08-25 授業20人同時プレイでの
+   * 上限超過の対策。docs/deploy.md §0.7）。画像は作成時に WebP へ圧縮済み。
+   */
+  images: { unoptimized: true },
+
   // ホームディレクトリ側の package-lock.json をワークスペース root と誤認させない。
   // 誤認すると standalone 出力の依存トレースがずれて Workers 上で壊れる。
   turbopack: { root: import.meta.dirname },
