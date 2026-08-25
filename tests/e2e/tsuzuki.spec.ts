@@ -21,6 +21,7 @@ import {
  */
 
 test("2問 書いて 離れ、もどると「つづきから」が 出る", async ({ page, context }) => {
+  const before = itemsBefore(KAISHA.sheet).length;
   await seedCompleted(context, itemsBefore(KAISHA.sheet));
 
   await page.goto(KAISHA.sheet.path);
@@ -33,8 +34,8 @@ test("2問 書いて 離れ、もどると「つづきから」が 出る", asyn
 
   // ステージへ 離脱（進み具合には「とちゅう」として 出る）
   await page.goto("/kaisha");
-  await expect(page.getByText(progressText(3))).toBeVisible();
-  await expect(page.locator("ol > li").nth(3)).toContainText("とちゅう");
+  await expect(page.getByText(progressText(before))).toBeVisible();
+  await expect(page.locator("ol > li").nth(before)).toContainText("とちゅう");
 
   // もどると ロビーで 分かれ道を 見せる（つづきから／はじめから）
   await page.goto(KAISHA.sheet.path);

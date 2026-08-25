@@ -2438,7 +2438,12 @@
       "reading": "もくひょう",
       "meaningJa": "「ここまで やる」と きめた こと",
       "englishTerm": "goal",
-      "englishMeaning": "what you are trying to reach"
+      "englishMeaning": "what you are trying to reach",
+      "wrongMeanings": [
+        "Schedule",
+        "Result",
+        "Budget"
+      ]
     },
     {
       "id": "shimekiri",
@@ -3625,7 +3630,12 @@
       "term": "育成",
       "reading": "いくせい",
       "meaningJa": "時間を かけて、人を そだてる ことです。",
-      "englishTerm": "Training / development"
+      "englishTerm": "Training / development",
+      "wrongMeanings": [
+        "Recruiting",
+        "Planning",
+        "Hiring"
+      ]
     },
     {
       "id": "kenshuu",
@@ -3639,7 +3649,12 @@
       "term": "能力",
       "reading": "のうりょく",
       "meaningJa": "その 人が できる 力です。",
-      "englishTerm": "Ability"
+      "englishTerm": "Ability",
+      "wrongMeanings": [
+        "Personality",
+        "Position",
+        "Popularity"
+      ]
     },
     {
       "id": "shisei",
@@ -3653,7 +3668,12 @@
       "term": "挑戦",
       "reading": "ちょうせん",
       "meaningJa": "むずかしい ことに、思いきって やって みる ことです。",
-      "englishTerm": "Challenge"
+      "englishTerm": "Challenge",
+      "wrongMeanings": [
+        "Selection",
+        "Correction",
+        "Celebration"
+      ]
     },
     {
       "id": "kouken",
@@ -3723,14 +3743,24 @@
       "term": "活動",
       "reading": "かつどう",
       "meaningJa": "目的を もって、うごく ことです。",
-      "englishTerm": "Activity"
+      "englishTerm": "Activity",
+      "wrongMeanings": [
+        "Holiday",
+        "Building",
+        "Agreement"
+      ]
     },
     {
       "id": "kaihatsu",
       "term": "開発",
       "reading": "かいはつ",
       "meaningJa": "新しい ものを 考えて 作る 仕事です。",
-      "englishTerm": "Development"
+      "englishTerm": "Development",
+      "wrongMeanings": [
+        "Delivery",
+        "Discovery",
+        "Decoration"
+      ]
     },
     {
       "id": "gijutsusha",
@@ -3744,7 +3774,12 @@
       "term": "制作",
       "reading": "せいさく",
       "meaningJa": "絵・動画・ページなどを 作る 仕事です。",
-      "englishTerm": "Production"
+      "englishTerm": "Production",
+      "wrongMeanings": [
+        "Prediction",
+        "Protection",
+        "Promotion"
+      ]
     },
     {
       "id": "kouchiku",
@@ -4080,7 +4115,12 @@
       "term": "先端",
       "reading": "せんたん",
       "meaningJa": "いちばん 新しい ところ、と いう ことです。",
-      "englishTerm": "Cutting edge"
+      "englishTerm": "Cutting edge",
+      "wrongMeanings": [
+        "Front door",
+        "First step",
+        "Top floor"
+      ]
     },
     {
       "id": "senshin",
@@ -4213,7 +4253,12 @@
       "term": "信頼",
       "reading": "しんらい",
       "meaningJa": "この 人・この ものは 大丈夫だ、と 思う ことです。",
-      "englishTerm": "Trust"
+      "englishTerm": "Trust",
+      "wrongMeanings": [
+        "Request",
+        "Contract",
+        "Interest"
+      ]
     },
     {
       "id": "honmono",
@@ -4528,14 +4573,24 @@
       "term": "社会",
       "reading": "しゃかい",
       "meaningJa": "人が いっしょに くらして いる、ぜんたいです。",
-      "englishTerm": "Society"
+      "englishTerm": "Society",
+      "wrongMeanings": [
+        "Ceremony",
+        "Committee",
+        "Community centre"
+      ]
     },
     {
       "id": "seifu",
       "term": "政府",
       "reading": "せいふ",
       "meaningJa": "国を うごかして いる ところです。",
-      "englishTerm": "Government"
+      "englishTerm": "Government",
+      "wrongMeanings": [
+        "Committee",
+        "Company group",
+        "Neighbourhood"
+      ]
     },
     {
       "id": "jichitai",
@@ -4584,7 +4639,12 @@
       "term": "価値",
       "reading": "かち",
       "meaningJa": "その ものの よさ、大切さです。",
-      "englishTerm": "Value"
+      "englishTerm": "Value",
+      "wrongMeanings": [
+        "Volume",
+        "Variety",
+        "Balance"
+      ]
     },
     {
       "id": "kyoumi",
@@ -4619,7 +4679,12 @@
       "term": "手段",
       "reading": "しゅだん",
       "meaningJa": "目的に つく ための、やりかたです。",
-      "englishTerm": "Means"
+      "englishTerm": "Means",
+      "wrongMeanings": [
+        "Result",
+        "Reason",
+        "Rule"
+      ]
     },
     {
       "id": "houhou",
@@ -4640,7 +4705,12 @@
       "term": "特徴",
       "reading": "とくちょう",
       "meaningJa": "ほかと ちがう、目立つ ところです。",
-      "englishTerm": "Feature"
+      "englishTerm": "Feature",
+      "wrongMeanings": [
+        "Problem",
+        "Promise",
+        "Price"
+      ]
     },
     {
       "id": "shurui",
@@ -5046,14 +5116,24 @@
       "term": "株式会社",
       "reading": "かぶしきがいしゃ",
       "meaningJa": "会社の 形の 1つです。名前の 前か 後に つきます。",
-      "englishTerm": "Corporation (KK)"
+      "englishTerm": "Corporation (KK)",
+      "wrongMeanings": [
+        "Trading company",
+        "Family business",
+        "Public office"
+      ]
     },
     {
       "id": "kaigai",
       "term": "海外",
       "reading": "かいがい",
       "meaningJa": "日本の 外の 国の ことです。",
-      "englishTerm": "Overseas"
+      "englishTerm": "Overseas",
+      "wrongMeanings": [
+        "Downtown",
+        "Countryside",
+        "Suburb"
+      ]
     },
     {
       "id": "gaikoku",
@@ -5130,7 +5210,12 @@
       "term": "関係",
       "reading": "かんけい",
       "meaningJa": "ものと ものの、つながりです。",
-      "englishTerm": "Relationship"
+      "englishTerm": "Relationship",
+      "wrongMeanings": [
+        "Direction",
+        "Reputation",
+        "Condition"
+      ]
     },
     {
       "id": "kankeigaisha",
@@ -5305,7 +5390,12 @@
       "term": "情報",
       "reading": "じょうほう",
       "meaningJa": "知って おくと 役に立つ、ことがらです。",
-      "englishTerm": "Information"
+      "englishTerm": "Information",
+      "wrongMeanings": [
+        "Invitation",
+        "Impression",
+        "Instruction"
+      ]
     },
     {
       "id": "kenshou",
@@ -5585,7 +5675,12 @@
       "term": "辞典",
       "reading": "じてん",
       "meaningJa": "ことばの 意味が ならべて 書いて ある 本です。",
-      "englishTerm": "Dictionary"
+      "englishTerm": "Dictionary",
+      "wrongMeanings": [
+        "Diary",
+        "Textbook",
+        "Notebook"
+      ]
     },
     {
       "id": "shuuryoushiki",
@@ -5641,7 +5736,12 @@
       "term": "紹介",
       "reading": "しょうかい",
       "meaningJa": "まだ 知らない 人や ものを、その 人に 教える ことです。",
-      "englishTerm": "Introduction"
+      "englishTerm": "Introduction",
+      "wrongMeanings": [
+        "Invitation",
+        "Explanation",
+        "Reservation"
+      ]
     },
     {
       "id": "reigi",
@@ -5747,6 +5847,154 @@
       "reading": "れんごうかい",
       "meaningJa": "いくつかの 会が いっしょに なって 作った、大きな 会です。",
       "englishTerm": "Federation"
+    },
+    {
+      "id": "mensetsu",
+      "term": "面接",
+      "reading": "めんせつ",
+      "romaji": "mensetsu",
+      "meaningJa": "会社に 入る 前に、会社の 人と 会って 話す ことです。",
+      "englishTerm": "Job interview",
+      "example": "面接では、会社の ことを 聞かれます。",
+      "wrongMeanings": [
+        "Entrance exam",
+        "Business card",
+        "Welcome party"
+      ],
+      "furigana": [
+        [
+          "会社",
+          "かいしゃ"
+        ],
+        [
+          "前",
+          "まえ"
+        ],
+        [
+          "会",
+          "あ"
+        ],
+        [
+          "話",
+          "はな"
+        ],
+        [
+          "面接",
+          "めんせつ"
+        ],
+        [
+          "聞",
+          "き"
+        ]
+      ]
+    },
+    {
+      "id": "tsuyomi",
+      "term": "強み",
+      "reading": "つよみ",
+      "romaji": "tsuyomi",
+      "meaningJa": "その 会社が 得意な ことです。ほかの 会社より 良い ところです。",
+      "englishTerm": "Strength",
+      "example": "この 会社の 強みは 何ですか。",
+      "wrongMeanings": [
+        "Weakness",
+        "Strong wind",
+        "Power supply"
+      ],
+      "furigana": [
+        [
+          "会社",
+          "かいしゃ"
+        ],
+        [
+          "得意",
+          "とくい"
+        ],
+        [
+          "良",
+          "よ"
+        ],
+        [
+          "強",
+          "つよ"
+        ],
+        [
+          "何",
+          "なに"
+        ]
+      ]
+    },
+    {
+      "id": "risa-chi",
+      "term": "リサーチ",
+      "reading": "りさーち",
+      "romaji": "risa-chi",
+      "meaningJa": "知りたい ことを 自分で 調べる ことです。",
+      "englishTerm": "Research",
+      "example": "会社の リサーチを してから、面接に 行きます。",
+      "wrongMeanings": [
+        "Rehearsal",
+        "Report",
+        "Reception"
+      ],
+      "furigana": [
+        [
+          "知",
+          "し"
+        ],
+        [
+          "自分",
+          "じぶん"
+        ],
+        [
+          "調",
+          "しら"
+        ],
+        [
+          "会社",
+          "かいしゃ"
+        ],
+        [
+          "面接",
+          "めんせつ"
+        ],
+        [
+          "行",
+          "い"
+        ]
+      ]
+    },
+    {
+      "id": "kihon",
+      "term": "基本",
+      "reading": "きほん",
+      "romaji": "kihon",
+      "meaningJa": "いちばん もとに なる、大事な ところです。",
+      "englishTerm": "Basics",
+      "example": "まず 会社の 基本を 調べます。",
+      "wrongMeanings": [
+        "Bonus",
+        "Branch",
+        "Backup"
+      ],
+      "furigana": [
+        [
+          "大事",
+          "だいじ"
+        ],
+        [
+          "会社",
+          "かいしゃ"
+        ],
+        [
+          "基本",
+          "きほん"
+        ],
+        [
+          "調",
+          "しら"
+        ]
+      ]
     }
   ]
 }

@@ -1,468 +1,20 @@
 {
   "kind": "article",
   "id": "kaisha_shirabekata",
-  "title": "会社の リサーチ方法を 学ぼう",
-  "description": "NEXT MAKEの Webサイトを 見る 前に、会社の 調べかたを 学びます。7つの ポイントで 調べます。",
-  "blocks": [
-    {
-      "kind": "heading",
-      "level": 2,
-      "text": "NEXT MAKEを しろう！"
-    },
-    {
-      "kind": "paragraph",
-      "text": "これから、NEXT MAKEの Webサイトを 見ます。"
-    },
-    {
-      "kind": "paragraph",
-      "text": "でも、ただ 読むだけでは ありません。"
-    },
-    {
-      "kind": "callout",
-      "tone": "point",
-      "text": "「NEXT MAKEは どんな 会社？」を、自分で 調べます。"
-    },
-    {
-      "kind": "paragraph",
-      "text": "そして、みなさんに とても 身近な Japanese IT Pathway が、NEXT MAKEの 中で どんな 取り組みなのかも 調べます。"
-    },
-    {
-      "kind": "heading",
-      "level": 2,
-      "text": "今日の ゴール"
-    },
-    {
-      "kind": "paragraph",
-      "text": "今日は、6つの STEPに チャレンジします。"
-    },
-    {
-      "kind": "steps",
-      "items": [
-        "会社の リサーチ方法を 学ぶ",
-        "Webサイトを 見て、調査シートを うめる",
-        "ヘンディさんに 調査した ことを 報告する",
-        "会社と 自分の 関係を 考える",
-        "松井社長と 話す 準備を する",
-        "松井社長と LiveAIで 話す"
-      ]
-    },
-    {
-      "kind": "image",
-      "caption": "調べる → 書く → 報告する → 社長と 話す。",
-      "refs": [],
-      "status": "done",
-      "src": "/img/articles/kaisha_shirabekata/s1.webp"
-    },
-    {
-      "kind": "heading",
-      "level": 2,
-      "text": "なぜ 会社を リサーチするの？"
-    },
-    {
-      "kind": "heading",
-      "level": 3,
-      "text": "① NEXT MAKEを もっと 知る ため"
-    },
-    {
-      "kind": "paragraph",
-      "text": "この 教材では、みなさんは 「NEXT MAKEに 入社した 新しい メンバー」です。"
-    },
-    {
-      "kind": "paragraph",
-      "text": "これから NEXT MAKEの 人と いっしょに 勉強したり、仕事の 練習を したり します。"
-    },
-    {
-      "kind": "paragraph",
-      "text": "新しい 会社に 入ったら、つぎの ことを 知る ことが 大切です。"
-    },
-    {
-      "kind": "list",
-      "items": [
-        "どんな 会社？",
-        "どんな 仕事を して いる？",
-        "何が 強い？",
-        "だれと 仕事を して いる？",
-        "何を 大切に して いる？"
-      ]
-    },
-    {
-      "kind": "heading",
-      "level": 3,
-      "text": "② Japanese IT Pathwayに ついて もっと 知る ため"
-    },
-    {
-      "kind": "paragraph",
-      "text": "みなさんは、Japanese IT Pathwayで 日本語や ITを 勉強して います。"
-    },
-    {
-      "kind": "paragraph",
-      "text": "でも、「NEXT MAKEは、なぜ この プログラムを して いるのかな？」と 考えた ことは ありますか？"
-    },
-    {
-      "kind": "paragraph",
-      "text": "「この プログラムの あとには、何が あるのかな？」と 考えた ことは ありますか？"
-    },
-    {
-      "kind": "paragraph",
-      "text": "Webサイトを 調べながら、Japanese IT Pathwayと NEXT MAKEの 仕事の つながりも 見つけて みましょう。"
-    },
-    {
-      "kind": "heading",
-      "level": 3,
-      "text": "③ 日本の 会社を リサーチする 練習"
-    },
-    {
-      "kind": "paragraph",
-      "text": "将来、日本の 会社の 面接を 受ける ときも、その 会社に ついて 自分で 調べます。"
-    },
-    {
-      "kind": "paragraph",
-      "text": "面接では、つぎのように 聞かれる ことが あります。"
-    },
-    {
-      "kind": "list",
-      "items": [
-        "この 会社は どんな 仕事を して いますか？",
-        "なぜ この 会社で はたらきたいですか？",
-        "この 会社で 何を して みたいですか？"
-      ]
-    },
-    {
-      "kind": "image",
-      "caption": "面接では、会社の ことを 聞かれます。",
-      "refs": [],
-      "status": "empty"
-    },
-    {
-      "kind": "paragraph",
-      "text": "その ためには、「会社の 情報を 見つける 力」と 「見つけた 情報から 自分の 考えを 作る 力」の 両方が 大切です。"
-    },
-    {
-      "kind": "heading",
-      "level": 2,
-      "text": "STEP 1　会社の リサーチ方法を 学ぼう"
-    },
-    {
-      "kind": "paragraph",
-      "text": "会社の Webサイトには、たくさんの 情報が あります。"
-    },
-    {
-      "kind": "paragraph",
-      "text": "全部を 最初から 最後まで 同じように 読む 必要は ありません。"
-    },
-    {
-      "kind": "callout",
-      "tone": "point",
-      "text": "まず 「何を 調べるか」を 決めてから 見ると、大切な 情報を 見つけやすく なります。"
-    },
-    {
-      "kind": "image",
-      "caption": "見る ところを 決めてから、ページを ひらきます。",
-      "refs": [],
-      "status": "empty"
-    },
-    {
-      "kind": "paragraph",
-      "text": "今回は、7つの ポイントで 調べます。"
-    },
-    {
-      "kind": "heading",
-      "level": 2,
-      "text": "❶ 会社の 基本を 調べる"
-    },
-    {
-      "kind": "paragraph",
-      "text": "まず、「どんな 会社？」を 調べます。"
-    },
-    {
-      "kind": "paragraph",
-      "text": "見る ポイントは、つぎの ものです。"
-    },
-    {
-      "kind": "list",
-      "items": [
-        "会社の 名前",
-        "社長",
-        "会社が できた 日",
-        "オフィス",
-        "会社の あゆみ"
-      ]
-    },
-    {
-      "kind": "image",
-      "caption": "オフィスは、いくつかの 町に あります。",
-      "refs": [],
-      "status": "done",
-      "src": "/img/articles/kaisha_shirabekata/s4.webp"
-    },
-    {
-      "kind": "callout",
-      "tone": "care",
-      "text": "ヒント: Webサイトには、会社が できてから 今までの 10この 出来事が 書いて あります。どんな ことが あったのか、あとで 探して みましょう。"
-    },
-    {
-      "kind": "image",
-      "caption": "会社は、少しずつ 大きく なって きました。",
-      "refs": [],
-      "status": "done",
-      "src": "/img/articles/kaisha_shirabekata/s5.webp"
-    },
-    {
-      "kind": "heading",
-      "level": 2,
-      "text": "❷ 会社の 仕事を 調べる"
-    },
-    {
-      "kind": "paragraph",
-      "text": "つぎに、「この 会社は 何を して いる？」を 調べます。"
-    },
-    {
-      "kind": "paragraph",
-      "text": "会社には、自分たちで サービスを 作る 仕事と、お客さまから たのまれて 作る 仕事が あります。"
-    },
-    {
-      "kind": "image",
-      "caption": "自分たちで 作って いる サービスです。",
-      "refs": [],
-      "status": "done",
-      "src": "/img/articles/kaisha_shirabekata/s6.webp"
-    },
-    {
-      "kind": "callout",
-      "tone": "care",
-      "text": "ヒント: NEXT MAKEの Webサイトには、自分たちで 作って いる 5つの サービスが 出て います。5つの 名前を 見つけて ください。"
-    },
-    {
-      "kind": "heading",
-      "level": 2,
-      "text": "❸ 会社の 強みを 調べる"
-    },
-    {
-      "kind": "paragraph",
-      "text": "会社が 得意な ことや、ほかの 会社と くらべた ときの 良い ところを 「強み」と 言います。"
-    },
-    {
-      "kind": "paragraph",
-      "text": "会社を 調べる ときは、「この 会社の 強みは 何かな？」と 考える ことが 大切です。"
-    },
-    {
-      "kind": "image",
-      "caption": "ほかの 会社と ちがう ところが、その 会社の 強みです。",
-      "refs": [],
-      "status": "empty"
-    },
-    {
-      "kind": "callout",
-      "tone": "care",
-      "text": "ヒント: NEXT MAKEの ホームには、3つの 特徴が 書いて あります。この 3つは、NEXT MAKEの 強みを 考える ヒントに なります。"
-    },
-    {
-      "kind": "heading",
-      "level": 2,
-      "text": "❹ 会社の つながりを 調べる"
-    },
-    {
-      "kind": "paragraph",
-      "text": "会社は、1つの 会社だけで 仕事を して いるとは かぎりません。"
-    },
-    {
-      "kind": "list",
-      "items": [
-        "グループ会社",
-        "海外の 会社",
-        "大学",
-        "政府",
-        "お客さま",
-        "ほかの 会社"
-      ]
-    },
-    {
-      "kind": "paragraph",
-      "text": "などと いっしょに 仕事を する ことも あります。"
-    },
-    {
-      "kind": "image",
-      "caption": "1つの 会社だけで 仕事を して いる わけでは ありません。",
-      "refs": [],
-      "status": "done",
-      "src": "/img/articles/kaisha_shirabekata/s8.webp"
-    },
-    {
-      "kind": "callout",
-      "tone": "care",
-      "text": "ヒント: NEXT MAKEは、日本の 中だけで 活動して いる 会社では ありません。Webサイトから、どこの 国と つながって いるかを 探して みましょう。"
-    },
-    {
-      "kind": "heading",
-      "level": 2,
-      "text": "❺ 今までの 実績を 調べる"
-    },
-    {
-      "kind": "paragraph",
-      "text": "会社の Webサイトでは、「こんな ことが できます」だけでは なく、「本当に 今まで こんな 仕事を しました」も 見る ことが 大切です。"
-    },
-    {
-      "kind": "paragraph",
-      "text": "これを 「実績」と 言います。"
-    },
-    {
-      "kind": "image",
-      "caption": "お客さまは、いろいろな ところです。",
-      "refs": [],
-      "status": "done",
-      "src": "/img/articles/kaisha_shirabekata/s9.webp"
-    },
-    {
-      "kind": "callout",
-      "tone": "care",
-      "text": "ヒント: 実績の ページには、名前が 出て いる 具体的な 仕事が 6件 あります。"
-    },
-    {
-      "kind": "paragraph",
-      "text": "見る ときは、つぎの 順番で 見ると 分かりやすいです。"
-    },
-    {
-      "kind": "steps",
-      "items": [
-        "だれの ための 仕事？",
-        "何を した？",
-        "どんな 仕事だった？"
-      ]
-    },
-    {
-      "kind": "heading",
-      "level": 2,
-      "text": "❻ 会社の 考えかたを 調べる"
-    },
-    {
-      "kind": "paragraph",
-      "text": "会社には、「何を 大切に して 仕事を するか」という 考えが あります。"
-    },
-    {
-      "kind": "paragraph",
-      "text": "仕事の 内容だけでは なく、会社の 考えかたも 調べて みましょう。"
-    },
-    {
-      "kind": "image",
-      "caption": "会社が 大切に して いる 考えかたです。",
-      "refs": [],
-      "status": "empty"
-    },
-    {
-      "kind": "callout",
-      "tone": "care",
-      "text": "ヒント: NEXT MAKEには、6つの 大切な 考えかたが あります。Webサイトから 見つけて ください。"
-    },
-    {
-      "kind": "heading",
-      "level": 2,
-      "text": "❼ 自分たちに 近い 活動を 調べる"
-    },
-    {
-      "kind": "paragraph",
-      "text": "会社を 調べる ときは、「自分と この 会社は どこで つながって いる？」を 見る ことも 大切です。"
-    },
-    {
-      "kind": "paragraph",
-      "text": "みなさんの 場合は、Japanese IT Pathway が あります。"
-    },
-    {
-      "kind": "image",
-      "caption": "学生の チームと、日本人の リーダー。上に 向かう 矢じるしが 「報告」です。",
-      "refs": [],
-      "status": "done",
-      "src": "/img/articles/kaisha_shirabekata/s11.webp"
-    },
-    {
-      "kind": "paragraph",
-      "text": "Webサイトから、つぎの ことを 調べて みましょう。"
-    },
-    {
-      "kind": "list",
-      "items": [
-        "どこの 国で 行って いる？",
-        "何を 学ぶ？",
-        "NEXT MAKEは 何を サポートする？",
-        "プログラムの あとに 何が ある？",
-        "NEXT MAKEの 仕事と どう つながって いる？"
-      ]
-    },
-    {
-      "kind": "heading",
-      "level": 2,
-      "text": "分からない ことばが あったら？"
-    },
-    {
-      "kind": "paragraph",
-      "text": "Webサイトには、ITや 会社で 使う むずかしい 言葉も 出て きます。"
-    },
-    {
-      "kind": "paragraph",
-      "text": "そんな ときは、「ことばの 辞典」を 使って ください。"
-    },
-    {
-      "kind": "image",
-      "caption": "分からない ことばは、辞典で 調べます。",
-      "refs": [],
-      "status": "empty"
-    },
-    {
-      "kind": "paragraph",
-      "text": "大切なのは、つぎの 順番です。"
-    },
-    {
-      "kind": "steps",
-      "items": [
-        "分からない",
-        "調べる",
-        "もう一度 読む"
-      ]
-    },
-    {
-      "kind": "callout",
-      "tone": "care",
-      "text": "全部を 一度に おぼえる 必要は ありません。"
-    },
-    {
-      "kind": "paragraph",
-      "text": "サイトにも 調査シートにも、この ことばが 出て きます。タップすると 意味が 見られます。"
-    },
-    {
-      "kind": "vocab",
-      "wordIds": [
-        "kaishagaiyou",
-        "enkaku",
-        "jigyo",
-        "jisseki",
-        "rinen",
-        "tokuchou"
-      ]
-    }
-  ],
+  "title": "会社の 調べかたを 学ぼう",
+  "description": "Webサイトを 見る 前に、会社の 調べかたを 学びます。7つの ポイントで 調べます。",
   "furigana": [
     [
       "会社概要",
       "かいしゃがいよう"
     ],
     [
-      "取り組み",
-      "とりくみ"
-    ],
-    [
       "松井社長",
       "まついしゃちょう"
     ],
     [
-      "矢じるし",
-      "やじるし"
-    ],
-    [
-      "具体的",
-      "ぐたいてき"
-    ],
-    [
-      "出来事",
-      "できごと"
+      "会社概要",
+      "かいしゃがいよう"
     ],
     [
       "日本人",
@@ -473,92 +25,28 @@
       "にほんご"
     ],
     [
-      "決めて",
-      "きめて"
+      "大丈夫",
+      "だいじょうぶ"
     ],
     [
-      "行って",
-      "おこなって"
+      "所在地",
+      "しょざいち"
     ],
     [
-      "一度",
-      "いちど"
+      "所在地",
+      "しょざいち"
     ],
     [
-      "両方",
-      "りょうほう"
+      "役に立",
+      "やくにた"
     ],
     [
-      "事業",
-      "じぎょう"
+      "日本",
+      "にほん"
     ],
     [
-      "今回",
-      "こんかい"
-    ],
-    [
-      "今日",
-      "きょう"
-    ],
-    [
-      "仕事",
-      "しごと"
-    ],
-    [
-      "会社",
-      "かいしゃ"
-    ],
-    [
-      "何を",
-      "なにを"
-    ],
-    [
-      "入社",
-      "にゅうしゃ"
-    ],
-    [
-      "全部",
-      "ぜんぶ"
-    ],
-    [
-      "内容",
-      "ないよう"
-    ],
-    [
-      "最初",
-      "さいしょ"
-    ],
-    [
-      "最後",
-      "さいご"
-    ],
-    [
-      "勉強",
-      "べんきょう"
-    ],
-    [
-      "同じ",
-      "おなじ"
-    ],
-    [
-      "名前",
-      "なまえ"
-    ],
-    [
-      "基本",
-      "きほん"
-    ],
-    [
-      "報告",
-      "ほうこく"
-    ],
-    [
-      "場合",
-      "ばあい"
-    ],
-    [
-      "大切",
-      "たいせつ"
+      "海外",
+      "かいがい"
     ],
     [
       "大学",
@@ -569,128 +57,212 @@
       "がくせい"
     ],
     [
-      "実績",
-      "じっせき"
-    ],
-    [
-      "将来",
-      "しょうらい"
-    ],
-    [
-      "強い",
-      "つよい"
-    ],
-    [
-      "強み",
-      "つよみ"
-    ],
-    [
-      "得意",
-      "とくい"
-    ],
-    [
-      "必要",
-      "ひつよう"
-    ],
-    [
-      "情報",
-      "じょうほう"
-    ],
-    [
-      "意味",
-      "いみ"
-    ],
-    [
-      "政府",
-      "せいふ"
-    ],
-    [
-      "教材",
-      "きょうざい"
-    ],
-    [
-      "方法",
-      "ほうほう"
-    ],
-    [
-      "日本",
-      "にほん"
-    ],
-    [
-      "本当",
-      "ほんとう"
-    ],
-    [
-      "沿革",
-      "えんかく"
-    ],
-    [
-      "活動",
-      "かつどう"
-    ],
-    [
-      "海外",
-      "かいがい"
-    ],
-    [
-      "準備",
-      "じゅんび"
-    ],
-    [
-      "特徴",
-      "とくちょう"
-    ],
-    [
-      "理念",
-      "りねん"
+      "社員",
+      "しゃいん"
     ],
     [
       "社長",
       "しゃちょう"
     ],
     [
-      "練習",
-      "れんしゅう"
+      "政府",
+      "せいふ"
     ],
     [
-      "自分",
-      "じぶん"
-    ],
-    [
-      "言葉",
-      "ことば"
-    ],
-    [
-      "調査",
-      "ちょうさ"
-    ],
-    [
-      "身近",
-      "みぢか"
-    ],
-    [
-      "辞典",
-      "じてん"
-    ],
-    [
-      "近い",
-      "ちかい"
-    ],
-    [
-      "関係",
-      "かんけい"
+      "相手",
+      "あいて"
     ],
     [
       "面接",
       "めんせつ"
     ],
     [
+      "実績",
+      "じっせき"
+    ],
+    [
+      "特徴",
+      "とくちょう"
+    ],
+    [
+      "活動",
+      "かつどう"
+    ],
+    [
+      "関係",
+      "かんけい"
+    ],
+    [
+      "準備",
+      "じゅんび"
+    ],
+    [
+      "情報",
+      "じょうほう"
+    ],
+    [
       "順番",
       "じゅんばん"
     ],
     [
-      "上",
-      "うえ"
+      "辞典",
+      "じてん"
+    ],
+    [
+      "調査",
+      "ちょうさ"
+    ],
+    [
+      "報告",
+      "ほうこく"
+    ],
+    [
+      "練習",
+      "れんしゅう"
+    ],
+    [
+      "勉強",
+      "べんきょう"
+    ],
+    [
+      "基本",
+      "きほん"
+    ],
+    [
+      "名前",
+      "なまえ"
+    ],
+    [
+      "最初",
+      "さいしょ"
+    ],
+    [
+      "最後",
+      "さいご"
+    ],
+    [
+      "本当",
+      "ほんとう"
+    ],
+    [
+      "全部",
+      "ぜんぶ"
+    ],
+    [
+      "大切",
+      "たいせつ"
+    ],
+    [
+      "得意",
+      "とくい"
+    ],
+    [
+      "意味",
+      "いみ"
+    ],
+    [
+      "今日",
+      "きょう"
+    ],
+    [
+      "今回",
+      "こんかい"
+    ],
+    [
+      "一度",
+      "いちど"
+    ],
+    [
+      "自分",
+      "じぶん"
+    ],
+    [
+      "仕事",
+      "しごと"
+    ],
+    [
+      "会社",
+      "かいしゃ"
+    ],
+    [
+      "沿革",
+      "えんかく"
+    ],
+    [
+      "理念",
+      "りねん"
+    ],
+    [
+      "事業",
+      "じぎょう"
+    ],
+    [
+      "拠点",
+      "きょてん"
+    ],
+    [
+      "設立",
+      "せつりつ"
+    ],
+    [
+      "本社",
+      "ほんしゃ"
+    ],
+    [
+      "答え",
+      "こたえ"
+    ],
+    [
+      "場所",
+      "ばしょ"
+    ],
+    [
+      "内容",
+      "ないよう"
+    ],
+    [
+      "大事",
+      "だいじ"
+    ],
+    [
+      "目立",
+      "めだ"
+    ],
+    [
+      "場所",
+      "ばしょ"
+    ],
+    [
+      "内容",
+      "ないよう"
+    ],
+    [
+      "中心",
+      "ちゅうしん"
+    ],
+    [
+      "目的",
+      "もくてき"
+    ],
+    [
+      "設立",
+      "せつりつ"
+    ],
+    [
+      "拠点",
+      "きょてん"
+    ],
+    [
+      "社員",
+      "しゃいん"
+    ],
+    [
+      "年",
+      "とし"
+    ],
+    [
+      "外",
+      "そと"
     ],
     [
       "中",
@@ -705,10 +277,6 @@
       "いま"
     ],
     [
-      "件",
-      "けん"
-    ],
-    [
       "何",
       "なに"
     ],
@@ -721,12 +289,20 @@
       "つか"
     ],
     [
+      "働",
+      "はたら"
+    ],
+    [
+      "先",
+      "さき"
+    ],
+    [
       "入",
       "はい"
     ],
     [
       "出",
-      "だ"
+      "で"
     ],
     [
       "分",
@@ -745,8 +321,12 @@
       "う"
     ],
     [
-      "向",
-      "む"
+      "合",
+      "あ"
+    ],
+    [
+      "会",
+      "あ"
     ],
     [
       "国",
@@ -769,6 +349,10 @@
       "すこ"
     ],
     [
+      "強",
+      "つよ"
+    ],
+    [
       "探",
       "さが"
     ],
@@ -781,16 +365,24 @@
       "ひ"
     ],
     [
+      "早",
+      "はや"
+    ],
+    [
       "書",
       "か"
     ],
     [
-      "町",
-      "まち"
+      "決",
+      "き"
     ],
     [
       "知",
       "し"
+    ],
+    [
+      "答",
+      "こた"
     ],
     [
       "考",
@@ -823,6 +415,603 @@
     [
       "調",
       "しら"
+    ],
+    [
+      "近",
+      "ちか"
+    ],
+    [
+      "立",
+      "た"
     ]
+  ],
+  "blocks": [
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "NEXT MAKEを しろう！"
+    },
+    {
+      "kind": "paragraph",
+      "text": "これから、NEXT MAKEの Webサイトを 見ます。"
+    },
+    {
+      "kind": "paragraph",
+      "text": "でも、読むだけでは ありません。"
+    },
+    {
+      "kind": "callout",
+      "tone": "point",
+      "text": "「NEXT MAKEは どんな 会社？」を、自分で 調べます。"
+    },
+    {
+      "kind": "paragraph",
+      "text": "Japanese IT Pathway は、みなさんの プログラムです。"
+    },
+    {
+      "kind": "paragraph",
+      "text": "これも NEXT MAKEの 仕事の 1つです。"
+    },
+    {
+      "kind": "paragraph",
+      "text": "どんな 仕事なのかも、いっしょに 調べます。"
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "今日の ゴール"
+    },
+    {
+      "kind": "paragraph",
+      "text": "今日は、6つの STEPを します。"
+    },
+    {
+      "kind": "steps",
+      "items": [
+        "会社の 調べかたを 学ぶ",
+        "Webサイトを 見て、調査シートを 書く",
+        "ヘンディさんに 報告する",
+        "会社と 自分の 関係を 考える",
+        "松井社長と 話す 準備を する",
+        "松井社長と 話す"
+      ],
+      "images": [
+        {
+          "src": "/img/articles/kaisha_shirabekata/g1.webp",
+          "refs": [],
+          "status": "done"
+        },
+        {
+          "src": "/img/articles/kaisha_shirabekata/g2.webp",
+          "refs": [],
+          "status": "done"
+        },
+        {
+          "src": "/img/articles/kaisha_shirabekata/g3.webp",
+          "refs": [],
+          "status": "done"
+        },
+        {
+          "src": "/img/articles/kaisha_shirabekata/g4.webp",
+          "refs": [],
+          "status": "done"
+        },
+        {
+          "src": "/img/articles/kaisha_shirabekata/g5.webp",
+          "refs": [],
+          "status": "done"
+        },
+        {
+          "src": "/img/articles/kaisha_shirabekata/g6.webp",
+          "refs": [],
+          "status": "done"
+        }
+      ]
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "なぜ 会社を 調べるの？"
+    },
+    {
+      "kind": "heading",
+      "level": 3,
+      "text": "① NEXT MAKEを もっと 知る ため"
+    },
+    {
+      "kind": "paragraph",
+      "text": "この 勉強では、みなさんは 新しい 社員です。"
+    },
+    {
+      "kind": "paragraph",
+      "text": "NEXT MAKEの 人と いっしょに 勉強します。"
+    },
+    {
+      "kind": "paragraph",
+      "text": "仕事の 練習も します。"
+    },
+    {
+      "kind": "image",
+      "src": "/img/articles/kaisha_shirabekata/r1.webp",
+      "refs": [],
+      "status": "done",
+      "caption": "新しい 社員が オフィスで あいさつを して います。"
+    },
+    {
+      "kind": "paragraph",
+      "text": "新しい 会社に 入ったら、この 5つを 知りましょう。"
+    },
+    {
+      "kind": "list",
+      "items": [
+        "どんな 会社？",
+        "どんな 仕事を して いる？",
+        "何が 強い？",
+        "だれと 仕事を して いる？",
+        "何を 大切に して いる？"
+      ]
+    },
+    {
+      "kind": "heading",
+      "level": 3,
+      "text": "② Japanese IT Pathway を もっと 知る ため"
+    },
+    {
+      "kind": "paragraph",
+      "text": "みなさんは 日本語と ITを 勉強して います。"
+    },
+    {
+      "kind": "image",
+      "src": "/img/articles/kaisha_shirabekata/r2.webp",
+      "refs": [],
+      "status": "done",
+      "caption": "学生が 日本語と ITを 勉強して います。"
+    },
+    {
+      "kind": "paragraph",
+      "text": "でも、NEXT MAKEは なぜ この プログラムを して いますか。"
+    },
+    {
+      "kind": "paragraph",
+      "text": "プログラムの あとには、何が ありますか。"
+    },
+    {
+      "kind": "paragraph",
+      "text": "Webサイトを 見て、この 答えも 探しましょう。"
+    },
+    {
+      "kind": "heading",
+      "level": 3,
+      "text": "③ 日本の 会社を 調べる 練習"
+    },
+    {
+      "kind": "paragraph",
+      "text": "これから、日本の 会社の 面接を 受けます。"
+    },
+    {
+      "kind": "paragraph",
+      "text": "その ときも、会社を 自分で 調べます。"
+    },
+    {
+      "kind": "image",
+      "src": "/img/articles/kaisha_shirabekata/r3.webp",
+      "refs": [],
+      "status": "done",
+      "caption": "面接で 会社の ことを 聞かれて います。"
+    },
+    {
+      "kind": "paragraph",
+      "text": "面接では、こんな ことを 聞かれます。"
+    },
+    {
+      "kind": "list",
+      "items": [
+        "この 会社は どんな 仕事を して いますか？",
+        "なぜ この 会社で はたらきたいですか？",
+        "この 会社で 何を して みたいですか？"
+      ]
+    },
+    {
+      "kind": "paragraph",
+      "text": "だから、2つの 力が 大切です。"
+    },
+    {
+      "kind": "list",
+      "items": [
+        "会社の 情報を 見つける 力",
+        "見つけた 情報から 自分の 考えを 作る 力"
+      ]
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "STEP 1　会社の 調べかたを 学ぼう"
+    },
+    {
+      "kind": "paragraph",
+      "text": "会社を 調べる ことを 「リサーチ」と 言います。"
+    },
+    {
+      "kind": "paragraph",
+      "text": "会社の Webサイトには、情報が たくさん あります。"
+    },
+    {
+      "kind": "paragraph",
+      "text": "最初から 最後まで 読まなくても いいです。"
+    },
+    {
+      "kind": "callout",
+      "tone": "point",
+      "text": "先に 「何を 調べるか」を 決めましょう。"
+    },
+    {
+      "kind": "paragraph",
+      "text": "すると、大切な 情報が 早く 見つかります。"
+    },
+    {
+      "kind": "image",
+      "src": "/img/articles/kaisha_shirabekata/s1.webp",
+      "refs": [],
+      "status": "done",
+      "caption": "調べる ものを 決めてから、ページを ひらきます。"
+    },
+    {
+      "kind": "paragraph",
+      "text": "今回は、7つの ポイントで 調べます。"
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "❶ 会社の 基本を 調べる"
+    },
+    {
+      "kind": "paragraph",
+      "text": "まず、「どんな 会社？」を 調べます。"
+    },
+    {
+      "kind": "paragraph",
+      "text": "見る ポイントは、この 5つです。"
+    },
+    {
+      "kind": "list",
+      "items": [
+        "会社の 名前",
+        "社長",
+        "会社が できた 日",
+        "オフィス",
+        "会社の あゆみ"
+      ]
+    },
+    {
+      "kind": "image",
+      "src": "/img/articles/kaisha_shirabekata/k1.webp",
+      "refs": [],
+      "status": "done",
+      "caption": "会社の ページで、会社の 名前や 社長を 見て います。"
+    },
+    {
+      "kind": "callout",
+      "tone": "care",
+      "text": "ヒント: Webサイトに 会社の あゆみが あります。今までに あった ことが 10こ 出て います。あとで 探して みましょう。"
+    },
+    {
+      "kind": "image",
+      "src": "/img/articles/kaisha_shirabekata/k2.webp",
+      "refs": [],
+      "status": "done",
+      "caption": "会社は 少しずつ 大きく なりました。"
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "❷ 会社の 仕事を 調べる"
+    },
+    {
+      "kind": "paragraph",
+      "text": "つぎに、「この 会社は 何を して いますか」を 調べます。"
+    },
+    {
+      "kind": "paragraph",
+      "text": "会社の 仕事には、2つの かたちが あります。"
+    },
+    {
+      "kind": "list",
+      "items": [
+        "自分たちで サービスを 作る 仕事",
+        "お客さまに たのまれて 作る 仕事"
+      ]
+    },
+    {
+      "kind": "image",
+      "src": "/img/articles/kaisha_shirabekata/k3.webp",
+      "refs": [],
+      "status": "done",
+      "caption": "自分たちで 作る 仕事と、たのまれて 作る 仕事です。"
+    },
+    {
+      "kind": "callout",
+      "tone": "care",
+      "text": "ヒント: NEXT MAKEは 自分たちで 5つの サービスを 作って います。5つの 名前を 見つけて ください。"
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "❸ 会社の 強みを 調べる"
+    },
+    {
+      "kind": "paragraph",
+      "text": "会社が 得意な ことを 「強み」と 言います。"
+    },
+    {
+      "kind": "paragraph",
+      "text": "ほかの 会社より 良い ところも 「強み」です。"
+    },
+    {
+      "kind": "paragraph",
+      "text": "「この 会社の 強みは 何ですか」と 考えましょう。"
+    },
+    {
+      "kind": "image",
+      "src": "/img/articles/kaisha_shirabekata/k4.webp",
+      "refs": [],
+      "status": "done",
+      "caption": "その 会社だけが できる ことが 「強み」です。"
+    },
+    {
+      "kind": "callout",
+      "tone": "care",
+      "text": "ヒント: NEXT MAKEの ホームに 3つの 特徴が あります。この 3つが 強みの ヒントに なります。"
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "❹ 会社の つながりを 調べる"
+    },
+    {
+      "kind": "paragraph",
+      "text": "会社は、1つの 会社だけで 仕事を しません。"
+    },
+    {
+      "kind": "paragraph",
+      "text": "こんな 相手と いっしょに 働きます。"
+    },
+    {
+      "kind": "list",
+      "items": [
+        "グループ会社",
+        "海外の 会社",
+        "大学",
+        "政府",
+        "お客さま",
+        "ほかの 会社"
+      ]
+    },
+    {
+      "kind": "image",
+      "src": "/img/articles/kaisha_shirabekata/k5.webp",
+      "refs": [],
+      "status": "done",
+      "caption": "いろいろな 国の 人と いっしょに 仕事を します。"
+    },
+    {
+      "kind": "callout",
+      "tone": "care",
+      "text": "ヒント: NEXT MAKEは 日本の 中だけの 会社では ありません。どこの 国と つながって いますか。Webサイトから 探して みましょう。"
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "❺ 今までの 実績を 調べる"
+    },
+    {
+      "kind": "paragraph",
+      "text": "Webサイトには 「できます」と 書いて あります。"
+    },
+    {
+      "kind": "paragraph",
+      "text": "でも、「本当に しました」も 大切です。"
+    },
+    {
+      "kind": "paragraph",
+      "text": "これを 「実績」と 言います。"
+    },
+    {
+      "kind": "image",
+      "src": "/img/articles/kaisha_shirabekata/k6.webp",
+      "refs": [],
+      "status": "done",
+      "caption": "会社は いろいろな お客さまと 仕事を しました。"
+    },
+    {
+      "kind": "callout",
+      "tone": "care",
+      "text": "ヒント: 実績の ページに、名前が 出て いる 仕事が 6つ あります。"
+    },
+    {
+      "kind": "paragraph",
+      "text": "実績は、この 順番で 見ると 分かりやすいです。"
+    },
+    {
+      "kind": "steps",
+      "items": [
+        "だれの ための 仕事？",
+        "何を した？",
+        "どんな 仕事だった？"
+      ],
+      "images": [
+        {
+          "src": "/img/articles/kaisha_shirabekata/j1.webp",
+          "refs": [],
+          "status": "done"
+        },
+        {
+          "src": "/img/articles/kaisha_shirabekata/j2.webp",
+          "refs": [],
+          "status": "done"
+        },
+        {
+          "src": "/img/articles/kaisha_shirabekata/j3.webp",
+          "refs": [],
+          "status": "done"
+        }
+      ]
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "❻ 会社の 考えかたを 調べる"
+    },
+    {
+      "kind": "paragraph",
+      "text": "会社には、大切に して いる 考えが あります。"
+    },
+    {
+      "kind": "paragraph",
+      "text": "仕事の ことだけでは ありません。"
+    },
+    {
+      "kind": "paragraph",
+      "text": "会社の 考えかたも 調べて みましょう。"
+    },
+    {
+      "kind": "image",
+      "src": "/img/articles/kaisha_shirabekata/k7.webp",
+      "refs": [],
+      "status": "done",
+      "caption": "社員が 大切な 考えかたを 話し合って います。"
+    },
+    {
+      "kind": "callout",
+      "tone": "care",
+      "text": "ヒント: NEXT MAKEには、大切な 考えかたが 6つ あります。Webサイトから 見つけて ください。"
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "❼ 自分たちに 近い 活動を 調べる"
+    },
+    {
+      "kind": "paragraph",
+      "text": "「自分と この 会社は どこで つながって いますか」。"
+    },
+    {
+      "kind": "paragraph",
+      "text": "これを 考える ことも 大切です。"
+    },
+    {
+      "kind": "paragraph",
+      "text": "みなさんには、Japanese IT Pathway が あります。"
+    },
+    {
+      "kind": "image",
+      "src": "/img/articles/kaisha_shirabekata/k8.webp",
+      "refs": [],
+      "status": "done",
+      "caption": "学生の チームと、日本人の リーダーです。"
+    },
+    {
+      "kind": "paragraph",
+      "text": "Webサイトから、つぎの ことを 調べましょう。"
+    },
+    {
+      "kind": "list",
+      "items": [
+        "どこの 国で して いますか？",
+        "何を 学びますか？",
+        "NEXT MAKEは 何を サポートしますか？",
+        "プログラムの あとに 何が ありますか？",
+        "NEXT MAKEの 仕事と どう つながって いますか？"
+      ]
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "分からない ことばが あったら？"
+    },
+    {
+      "kind": "paragraph",
+      "text": "Webサイトには、むずかしい ことばも 出て きます。"
+    },
+    {
+      "kind": "paragraph",
+      "text": "ITや 会社の ことばです。"
+    },
+    {
+      "kind": "paragraph",
+      "text": "その ときは 「ことばの 辞典」を 使って ください。"
+    },
+    {
+      "kind": "image",
+      "src": "/img/articles/kaisha_shirabekata/k9.webp",
+      "refs": [],
+      "status": "done",
+      "caption": "分からない ことばを、辞典で 調べて います。"
+    },
+    {
+      "kind": "paragraph",
+      "text": "大切なのは、この 順番です。"
+    },
+    {
+      "kind": "steps",
+      "items": [
+        "分からない",
+        "調べる",
+        "もう一度 読む"
+      ],
+      "images": [
+        {
+          "src": "/img/articles/kaisha_shirabekata/d1.webp",
+          "refs": [],
+          "status": "done"
+        },
+        {
+          "src": "/img/articles/kaisha_shirabekata/d2.webp",
+          "refs": [],
+          "status": "done"
+        },
+        {
+          "src": "/img/articles/kaisha_shirabekata/d3.webp",
+          "refs": [],
+          "status": "done"
+        }
+      ]
+    },
+    {
+      "kind": "callout",
+      "tone": "care",
+      "text": "全部を 一度に おぼえなくても 大丈夫です。"
+    },
+    {
+      "kind": "paragraph",
+      "text": "つぎの ことばは、この ページと サイトに 出て きます。"
+    },
+    {
+      "kind": "paragraph",
+      "text": "タップすると、意味が 見られます。"
+    },
+    {
+      "kind": "vocab",
+      "wordIds": [
+        "risa-chi",
+        "kihon",
+        "tsuyomi",
+        "kaishagaiyou",
+        "enkaku",
+        "jigyo",
+        "jisseki",
+        "rinen",
+        "tokuchou",
+        "honsha",
+        "shozaichi",
+        "setsuritsu",
+        "shain",
+        "kyoten",
+        "kaigai",
+        "jouhou",
+        "katsudou",
+        "kankei",
+        "mensetsu"
+      ]
+    }
   ]
 }

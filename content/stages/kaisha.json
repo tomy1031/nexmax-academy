@@ -4,7 +4,7 @@
   "order": 2,
   "title": "会社を 知る",
   "reading": "かいしゃを しる",
-  "description": "6つの STEPで NEXT MAKEを 調べます。調べかたを 学び、Webサイトで 調査シートを うめて、ヘンディさんに 報告します。会社と 自分の 関係を 考えてから、松井社長と 話します。",
+  "description": "6つの STEPで NEXT MAKEを 調べます。まず 調べかたを 学びます。Webサイトで 調査シートを うめて、ヘンディさんに 報告します。会社と 自分の 関係を 考えて、松井社長と 話します。",
   "color": "leaf",
   "status": "published",
   "area": {
@@ -16,10 +16,6 @@
   "contents": [
     {
       "ref": "kaisha_shirabekata",
-      "type": "article"
-    },
-    {
-      "ref": "kaisha_nextmake_shirabe",
       "type": "article"
     },
     {

@@ -285,7 +285,7 @@ function BlockView({
       );
 
     case "image":
-      return <ImageBlock block={block} furigana={furigana} show={show} />;
+      return <ImageBlock block={block} />;
 
     case "callout":
       return <CalloutBlock block={block} furigana={furigana} show={show} />;
@@ -313,7 +313,7 @@ function BlockView({
         <SpeakableGroup items={block.items ?? []} label="この てじゅんを ぜんぶ よみあげる">
           <ol className="space-y-3">
             {(block.items ?? []).map((item, i) => (
-              <li key={i} className="flex items-start gap-3">
+              <li key={i} className="flex items-center gap-3">
                 <span
                   aria-hidden
                   className="grid h-8 w-8 shrink-0 place-items-center rounded-full text-sm font-extrabold text-white"
@@ -324,7 +324,8 @@ function BlockView({
                 >
                   {i + 1}
                 </span>
-                <span className="text-ink pt-1 leading-relaxed font-bold">
+                <StepThumb image={block.images?.[i]} />
+                <span className="text-ink leading-relaxed font-bold">
                   <RubyText text={item} index={furigana} show={show} />
                 </span>
               </li>
@@ -527,27 +528,22 @@ function CharactersBlock({
   );
 }
 
-/** 画像は「まだ無い」状態が普通にある（生成待ち）。空でも読み進められる形にする。 */
-function ImageBlock({
-  block,
-  furigana,
-  show,
-}: {
-  block: ImageBlockData;
-  furigana: FuriganaIndex;
-  show: boolean;
-}) {
-  const caption = block.caption ? (
-    <figcaption className="text-ink-soft mt-2 text-center text-xs font-bold">
-      <RubyText text={block.caption} index={furigana} show={show} />
-    </figcaption>
-  ) : null;
-
+/**
+ * さし絵。
+ *
+ * **絵の 下に 文字を 出さない**（2026-08-25 の 指定）。同じ ことを 本文と
+ * キャプションで 2回 読ませると、読む 量が 増えるだけで 分かりやすく ならない。
+ * `caption` は 消さずに `alt` として 残す——目で 見ない 人には ここしか 手がかりが 無い。
+ *
+ * 幅も 少し しぼる。画面いっぱいの 絵は「見出し」に 見えてしまい、
+ * すぐ 下の 説明と つながらない。
+ */
+function ImageBlock({ block }: { block: ImageBlockData }) {
   if (block.status !== "done" || !block.src) {
     return (
-      <figure>
+      <figure className="mx-auto w-full max-w-[420px]">
         <div
-          className="text-ink-faint grid h-40 place-items-center rounded-[20px] border-4 border-dashed text-sm font-extrabold"
+          className="text-ink-faint grid h-32 place-items-center rounded-[20px] border-4 border-dashed text-sm font-extrabold"
           style={{ borderColor: "var(--color-hairline)", background: "var(--color-panel-tint)" }}
         >
           <span>
@@ -557,13 +553,12 @@ function ImageBlock({
             え は じゅんびちゅう
           </span>
         </div>
-        {caption}
       </figure>
     );
   }
 
   return (
-    <figure>
+    <figure className="mx-auto w-full max-w-[420px]">
       <Image
         src={block.src}
         alt={block.caption ?? ""}
@@ -573,8 +568,28 @@ function ImageBlock({
         className="h-auto w-full rounded-[20px] border-4 border-white"
         style={{ boxShadow: "0 6px 0 #b8deed" }}
       />
-      {caption}
     </figure>
+  );
+}
+
+/**
+ * てじゅんの 1歩に そえる 小さな 絵。
+ *
+ * 番号の 丸と 文の あいだに 置く。**小さく する**のが 肝心で、大きいと
+ * 1歩ごとに 画面が 1つ 分 流れ、「順番」という 形が 目で 追えなくなる。
+ */
+function StepThumb({ image }: { image?: { src?: string; status?: string; caption?: string } }) {
+  if (!image || image.status !== "done" || !image.src) return null;
+  return (
+    <Image
+      src={image.src}
+      alt=""
+      width={480}
+      height={480}
+      unoptimized
+      className="h-20 w-20 shrink-0 rounded-[14px] border-2 border-white object-cover sm:h-24 sm:w-24"
+      style={{ boxShadow: "0 3px 0 #b8deed" }}
+    />
   );
 }
 

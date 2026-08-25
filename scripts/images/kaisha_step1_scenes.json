@@ -1,0 +1,170 @@
+{
+  "refs": ["public/img/manga/hajimari_manga/p1c2.webp"],
+  "_comment": "STEP02「会社を 知る」STEP1 の ページの さし絵。**イラストだけ**（アイコン図は 使わない・2026-08-25 の 指定）。参照は 絵柄を そろえる ためだけ の 1枚（人が 写って いない コマ）。生成 PNG は cwebp -q 84 で webp に して dest へ 置く。人物（ヘンディ・松井社長）が 出る 絵は kaisha_step1_people.json。",
+  "style": "Style: warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, soft cel shading with gentle light, bright natural daylight, warm cream walls with sky-blue and coral accents, tidy contemporary offices and classrooms with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions and warm friendly faces. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME.",
+  "noText": "No text, no letters, no kanji, no kana, no numbers anywhere in the image. Screens, papers, whiteboards, books and signs are blank or show only soft abstract shapes and simple pictures. No watermark, no signature, no logo, no speech balloons, no floating symbols such as question marks, exclamation marks, arrows, light bulbs, stars or hearts.",
+  "negative": "Never: flat vector icon art, pictograms, infographic diagrams, symbols floating on an empty background, wide empty margins, minimalist clip-art, 3D render, photo realism, harsh gradients, readable letters or numbers, national flags, country outlines, maps with borders, dark or scary tone, angry or crying faces, extra fingers or limbs, robots, mascots. The reference image is ONLY a drawing-style guide — never copy its objects or its people into the scene.",
+  "scenes": [
+    {
+      "out": "g1",
+      "dest": "public/img/articles/kaisha_shirabekata/g1.webp",
+      "title": "STEP1 会社の 調べかたを 学ぶ",
+      "output": "Output: one square illustration, 1024x1024. Close view — the subject fills the frame edge to edge.",
+      "scene": "Scene: THE STUDENT is a young Cambodian woman in her early twenties with shoulder-length straight dark hair and a warm coral-orange blouse; keep her face, hair and blouse exactly the same in every picture. She sits at a bright desk beside a window, leaning slightly forward with curious eyes, looking at an open laptop with a blank screen. One hand rests on a closed notebook. A green plant and a warm mug stand on the desk. Morning light."
+    },
+    {
+      "out": "g2",
+      "dest": "public/img/articles/kaisha_shirabekata/g2.webp",
+      "title": "STEP2 サイトを 見て 調査シートを 書く",
+      "output": "Output: one square illustration, 1024x1024. Close view — the subject fills the frame edge to edge.",
+      "scene": "Scene: THE STUDENT is a young Cambodian woman in her early twenties with shoulder-length straight dark hair and a warm coral-orange blouse; keep her face, hair and blouse exactly the same in every picture. At the same desk, she holds a pencil and writes on a blank clipboard sheet, glancing up at the laptop beside her. Concentrated, calm little smile."
+    },
+    {
+      "out": "g4",
+      "dest": "public/img/articles/kaisha_shirabekata/g4.webp",
+      "title": "STEP4 会社と 自分の 関係を 考える",
+      "output": "Output: one square illustration, 1024x1024. Close view — the subject fills the frame edge to edge.",
+      "scene": "Scene: THE STUDENT is a young Cambodian woman in her early twenties with shoulder-length straight dark hair and a warm coral-orange blouse; keep her face, hair and blouse exactly the same in every picture. At her desk she rests her chin on one hand and looks up and away with a thoughtful, hopeful expression. A blank open notebook lies in front of her. Soft daylight from the window."
+    },
+    {
+      "out": "g5",
+      "dest": "public/img/articles/kaisha_shirabekata/g5.webp",
+      "title": "STEP5 社長と 話す 準備を する",
+      "output": "Output: one square illustration, 1024x1024. Close view — the subject fills the frame edge to edge.",
+      "scene": "Scene: THE STUDENT is a young Cambodian woman in her early twenties with shoulder-length straight dark hair and a warm coral-orange blouse; keep her face, hair and blouse exactly the same in every picture. She holds up a small blank memo card in one hand and reads it back to herself, lips slightly pursed as if rehearsing, a pencil in her other hand. Desk, laptop and plant behind her."
+    },
+    {
+      "out": "j1",
+      "dest": "public/img/articles/kaisha_shirabekata/j1.webp",
+      "title": "だれの ための 仕事？",
+      "output": "Output: one square illustration, 1024x1024. Close view — the subject fills the frame edge to edge.",
+      "scene": "Scene: close view of a smiling customer — a woman in a shop apron — talking with an engineer who listens carefully and takes notes on a blank pad. They stand in a bright small shop with wooden shelves. Warm daylight."
+    },
+    {
+      "out": "j2",
+      "dest": "public/img/articles/kaisha_shirabekata/j2.webp",
+      "title": "何を した？",
+      "output": "Output: one square illustration, 1024x1024. Close view — the subject fills the frame edge to edge.",
+      "scene": "Scene: close view of two engineers side by side at one desk: one points at a blank monitor while the other types on a laptop. A small four-rotor drone and a camera sit on the desk beside them. Bright office, plant by the window."
+    },
+    {
+      "out": "j3",
+      "dest": "public/img/articles/kaisha_shirabekata/j3.webp",
+      "title": "どんな 仕事だった？",
+      "output": "Output: one square illustration, 1024x1024. Close view — the subject fills the frame edge to edge.",
+      "scene": "Scene: close view of three office colleagues standing close together, all looking down at a tablet held by one of them, nodding with satisfied warm smiles. A blank board on the wall behind them. Bright office light."
+    },
+    {
+      "out": "d1",
+      "dest": "public/img/articles/kaisha_shirabekata/d1.webp",
+      "title": "分からない",
+      "output": "Output: one square illustration, 1024x1024. Close view — the subject fills the frame edge to edge.",
+      "scene": "Scene: THE STUDENT is a young Cambodian woman in her early twenties with shoulder-length straight dark hair and a warm coral-orange blouse; keep her face, hair and blouse exactly the same in every picture. Close on her face and shoulders at her desk. She looks at her laptop and tilts her head to one side, eyes wide and curious, one finger resting on her cheek, lips slightly open as if thinking \"hmm?\". Her expression is gently puzzled and still friendly - not angry, not sad, no frown. Warm daylight, a plant behind her."
+    },
+    {
+      "out": "d2",
+      "dest": "public/img/articles/kaisha_shirabekata/d2.webp",
+      "title": "調べる",
+      "output": "Output: one square illustration, 1024x1024. Close view — the subject fills the frame edge to edge.",
+      "scene": "Scene: THE STUDENT is a young Cambodian woman in her early twenties with shoulder-length straight dark hair and a warm coral-orange blouse; keep her face, hair and blouse exactly the same in every picture. She holds her phone in both hands and taps the screen with her thumb, looking at it with lively interest. A soft rounded blank popup card is open on the phone screen. Her laptop is open beside her."
+    },
+    {
+      "out": "d3",
+      "dest": "public/img/articles/kaisha_shirabekata/d3.webp",
+      "title": "もう一度 読む",
+      "output": "Output: one square illustration, 1024x1024. Close view — the subject fills the frame edge to edge.",
+      "scene": "Scene: THE STUDENT is a young Cambodian woman in her early twenties with shoulder-length straight dark hair and a warm coral-orange blouse; keep her face, hair and blouse exactly the same in every picture. Back at her laptop, she sits up straight with a bright relieved smile and reads on, one hand resting beside the keyboard. Warm daylight."
+    },
+    {
+      "out": "r1",
+      "dest": "public/img/articles/kaisha_shirabekata/r1.webp",
+      "title": "新しい 社員が オフィスで あいさつ",
+      "output": "Output: one landscape illustration, 1536x1024. The room fills the frame edge to edge.",
+      "scene": "Scene: THE STUDENT is a young Cambodian woman in her early twenties with shoulder-length straight dark hair and a warm coral-orange blouse; keep her face, hair and blouse exactly the same in every picture. She stands in the middle of a bright tidy office, bowing slightly with a nervous happy smile. Four friendly colleagues at their desks turn toward her, smiling; one waves. Laptops on the desks, a blank whiteboard, plants by a big window."
+    },
+    {
+      "out": "r2",
+      "dest": "public/img/articles/kaisha_shirabekata/r2.webp",
+      "title": "学生が 日本語と ITを 勉強する",
+      "output": "Output: one landscape illustration, 1536x1024. The room fills the frame edge to edge.",
+      "scene": "Scene: a bright warm-country classroom with a slow ceiling fan and sunlight through wide windows. Six young students in their early twenties sit at long tables with open laptops, working together. THE STUDENT is a young Cambodian woman in her early twenties with shoulder-length straight dark hair and a warm coral-orange blouse; keep her face, hair and blouse exactly the same in every picture. She sits in the front row, smiling and looking up at a blank whiteboard while a teacher gestures beside it."
+    },
+    {
+      "out": "r3",
+      "dest": "public/img/articles/kaisha_shirabekata/r3.webp",
+      "title": "面接で 会社の ことを 聞かれる",
+      "output": "Output: one landscape illustration, 1536x1024. The room fills the frame edge to edge.",
+      "scene": "Scene: THE STUDENT is a young Cambodian woman in her early twenties with shoulder-length straight dark hair and a warm coral-orange blouse; keep her face, hair and blouse exactly the same in every picture. A job interview in a bright meeting room, seen from the side. She sits on the left, back straight, speaking with a calm confident smile and one hand slightly raised. On the right two friendly interviewers in dark business suits sit side by side, nodding warmly; one writes on a blank pad. Soft daylight, a plant in the corner."
+    },
+    {
+      "out": "s1",
+      "dest": "public/img/articles/kaisha_shirabekata/s1.webp",
+      "title": "調べる ものを 決めてから ページを ひらく",
+      "output": "Output: one landscape illustration, 1536x1024. The room fills the frame edge to edge.",
+      "scene": "Scene: THE STUDENT is a young Cambodian woman in her early twenties with shoulder-length straight dark hair and a warm coral-orange blouse; keep her face, hair and blouse exactly the same in every picture. At her desk she ticks items on a short blank checklist with a pencil in her right hand, while her left hand rests on the lid of a laptop she is about to open. A second notebook lies open beside her. Warm daylight, green view through the window."
+    },
+    {
+      "out": "k1",
+      "dest": "public/img/articles/kaisha_shirabekata/k1.webp",
+      "title": "会社の ページで 名前や 社長を 見る",
+      "output": "Output: one landscape illustration, 1536x1024. The room fills the frame edge to edge.",
+      "scene": "Scene: THE STUDENT is a young Cambodian woman in her early twenties with shoulder-length straight dark hair and a warm coral-orange blouse; keep her face, hair and blouse exactly the same in every picture. She leans close to her laptop and points at the screen with one finger, eyes bright. The screen shows a plain blank web-page layout: one empty picture frame and a few soft grey placeholder bars, no readable writing. A pen and a blank notebook lie beside the laptop."
+    },
+    {
+      "out": "k2",
+      "dest": "public/img/articles/kaisha_shirabekata/k2.webp",
+      "title": "会社は 少しずつ 大きく なった",
+      "output": "Output: one landscape illustration, 1536x1024. The room fills the frame edge to edge.",
+      "scene": "Scene: one wide picture gently divided into three equal panels by soft vertical gaps, warm daylight in all three. LEFT: a small cosy startup room where two people share one desk and one laptop. MIDDLE: a bigger tidy office with eight people at their desks and a plant in the corner. RIGHT: a wide modern office floor with many people working and a city view through tall windows."
+    },
+    {
+      "out": "k3",
+      "dest": "public/img/articles/kaisha_shirabekata/k3.webp",
+      "title": "自分たちで 作る 仕事と、たのまれて 作る 仕事",
+      "output": "Output: one landscape illustration, 1536x1024. The room fills the frame edge to edge.",
+      "scene": "Scene: one wide picture divided into two halves by a soft vertical gap, the same warm daylight in both. LEFT: three engineers in a bright office happily building their own product — one holds a small four-rotor drone, one points at a monitor, one sketches shapes on a blank whiteboard. RIGHT: an engineer sits across a small table from a customer in a work jacket; the customer gestures while explaining and the engineer takes notes on a blank pad."
+    },
+    {
+      "out": "k4",
+      "dest": "public/img/articles/kaisha_shirabekata/k4.webp",
+      "title": "その 会社だけが できる こと",
+      "output": "Output: one landscape illustration, 1536x1024. The room fills the frame edge to edge.",
+      "scene": "Scene: a bright modern office. A woman engineer stands at the centre holding a small four-rotor drone in both hands with a proud calm smile. Beside her a colleague turns a tablet with a blank screen toward two visitors, who lean in looking impressed. A camera and a laptop sit on the desk behind them."
+    },
+    {
+      "out": "k5",
+      "dest": "public/img/articles/kaisha_shirabekata/k5.webp",
+      "title": "いろいろな 国の 人と いっしょに 仕事",
+      "output": "Output: one landscape illustration, 1536x1024. The room fills the frame edge to edge.",
+      "scene": "Scene: a bright meeting room with warm cream walls, a leafy plant and daylight from a wide window. Three colleagues sit together on one side of a wooden table, looking up at a large flat wall screen. The screen shows four plain rectangles side by side; inside each rectangle is one smiling office worker seen from the chest up, and one of them raises a hand to wave. Mugs and an open laptop on the table. No writing, no flags, no maps."
+    },
+    {
+      "out": "k6",
+      "dest": "public/img/articles/kaisha_shirabekata/k6.webp",
+      "title": "いろいろな お客さまと 仕事を した",
+      "output": "Output: one landscape illustration, 1536x1024. The room fills the frame edge to edge.",
+      "scene": "Scene: a bright open office room with plants and daylight. A woman engineer stands in the middle holding a tablet and smiling. Around her stand three customers: a woman in a shop apron, a man in a work jacket, and a man in a business suit. Everyone is smiling and listening to her."
+    },
+    {
+      "out": "k7",
+      "dest": "public/img/articles/kaisha_shirabekata/k7.webp",
+      "title": "社員が 大切な 考えかたを 話し合う",
+      "output": "Output: one landscape illustration, 1536x1024. The room fills the frame edge to edge.",
+      "scene": "Scene: five colleagues sit in a circle on soft chairs in a bright corner of an office. One of them gestures with open hands while the others lean in and nod, smiling. A low table with mugs, a blank flip-chart on a stand, and a wide window with green trees outside."
+    },
+    {
+      "out": "k8",
+      "dest": "public/img/articles/kaisha_shirabekata/k8.webp",
+      "title": "学生の チームと、日本人の リーダー",
+      "output": "Output: one landscape illustration, 1536x1024. The room fills the frame edge to edge.",
+      "scene": "Scene: a bright office corner. Three young students sit side by side at one long desk with open laptops. A Japanese team leader in a light blue shirt stands beside them, leaning down and pointing gently at one screen. The nearest student looks up and speaks to him; he nods and smiles."
+    },
+    {
+      "out": "k9",
+      "dest": "public/img/articles/kaisha_shirabekata/k9.webp",
+      "title": "分からない ことばを 辞典で 調べる",
+      "output": "Output: one landscape illustration, 1536x1024. The room fills the frame edge to edge.",
+      "scene": "Scene: THE STUDENT is a young Cambodian woman in her early twenties with shoulder-length straight dark hair and a warm coral-orange blouse; keep her face, hair and blouse exactly the same in every picture. Seen over her shoulder as she holds her phone up in both hands. A soft rounded popup card floats just above the phone screen, containing one small simple drawing of an open book and a few blank grey lines instead of writing. Her open laptop sits on the desk in front of her. Warm desk-lamp light."
+    }
+  ]
+}

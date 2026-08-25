@@ -153,7 +153,7 @@ test("1問も 書かずに「出す」道は ない（7回 おすだけで お�
 
   // 出す ボタンは 出さない。もんだいへ 帰る 道だけを 出す
   await expect(page.getByRole("button", { name: SUBMIT_ANSWERS })).toHaveCount(0);
-  await expect(page.getByText(/1もんも/)).toBeVisible();
+  await expect(page.getByText(`のこり ${ASAKAI_QUIZ_TOTAL}もん`)).toBeVisible();
   await page.getByRole("button", { name: /もどって/ }).click();
   await expect(
     page.getByText(`もんだい ${ASAKAI_QUIZ_TOTAL} / ${ASAKAI_QUIZ_TOTAL}`),
