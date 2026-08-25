@@ -681,6 +681,16 @@ function HiraganaCheck({ onReady, onCancel }: { onReady: () => void; onCancel: (
           setMiss(false);
         }}
         onKeyDown={(e) => {
+          /*
+           * 日本語入力（IME）の **変換を確定する Enter** で けってい しない。
+           *
+           * 「あいうえお」を打って Enter を押した瞬間、Chrome はまだ変換の途中なので
+           * `keyCode` は 229 で `isComposing` が true（`key` は "Enter" のまま来る）。
+           * ここで進めてしまうと、次のお題に切り替えたあとで IME が確定した文字を
+           * 入力欄に入れ直すため、**打った字が消えないまま残る**（2026-08-25 実発生）。
+           * 確定の Enter は IME に渡し、学習者が次に押す Enter だけを けってい にする。
+           */
+          if (e.nativeEvent.isComposing || e.nativeEvent.keyCode === 229) return;
           if (e.key === "Enter") submit();
         }}
         autoComplete="off"
