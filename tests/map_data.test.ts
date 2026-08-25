@@ -3,10 +3,12 @@ import { contentSchema, type Stage } from "../src/content/schema";
 import {
   isOnMap,
   mapListedStages,
+  mapStageActions,
   sortStages,
   stageStepNumber,
   toMapAreas,
   toMapStages,
+  type MapStage,
 } from "../src/lib/map-data";
 
 /**
@@ -193,5 +195,74 @@ describe("toMapAreas", () => {
     toMapAreas(stages).forEach((area, index) => {
       expect(area.stageId).toBe(mapStages[index]!.id);
     });
+  });
+});
+
+/**
+ * ステージカードの札 — 出す／出さない と 行き先
+ *
+ * マップは**ログインの内側**にあり、鍵ゼロの通しの検証（Playwright）からは
+ * `/welcome` へ送り返されて中身が見えない。だから札の判断はここで見張る。
+ *
+ * 2026-08-25 に直した2つ:
+ *  - ことばを1つも持たないステージにも「単語を 勉強」の札が出て、押すと
+ *    どの課のものか分からない一覧（`/arcade`）に放り出されていた
+ *  - 「最初から」が1本目の教材へ直行し、何が何本あるのかを見せずに中へ入れていた
+ */
+describe("mapStageActions", () => {
+  function mapStage(over: Record<string, unknown> = {}): MapStage {
+    return toMapStages([
+      stage({
+        id: "hajimari",
+        contents: [
+          { ref: "m", type: "manga" },
+          { ref: "q", type: "quizset" },
+        ],
+        ...over,
+      }),
+    ])[0]!;
+  }
+
+  it("ことばが ひもづいて いなければ 単語の札を 出さない", () => {
+    expect(mapStageActions(mapStage({ wordStageIds: [] }), "00").wordsHref).toBeNull();
+  });
+
+  it("ひもづいて いれば その ステージの ことばへ 直行する", () => {
+    const actions = mapStageActions(mapStage({ wordStageIds: ["hajimari_kotoba"] }), "00");
+    expect(actions.wordsHref).toBe("/arcade/hajimari_kotoba");
+  });
+
+  it("「最初から」は ステージのトップ（1本目の教材を いきなり 開かない）", () => {
+    const target = mapStage();
+    const actions = mapStageActions(target, "20");
+    expect(actions.restartHref).toBe("/hajimari");
+    expect(actions.restartHref).not.toBe(target.contents[0]!.href);
+  });
+
+  it("まだ 1本目なら 「最初から」は 出さない（つづきからと 行き先が 重なる）", () => {
+    expect(mapStageActions(mapStage(), "00").restartHref).toBeNull();
+  });
+
+  it("つづきは 最初の おわって いない 教材", () => {
+    const actions = mapStageActions(mapStage(), "21");
+    expect(actions.resumeIndex).toBe(1);
+    expect(actions.resume?.id).toBe("q");
+    expect(actions.allDone).toBe(false);
+  });
+
+  it("ぜんぶ おわったら 1本目から「もういちど」", () => {
+    const actions = mapStageActions(mapStage(), "22");
+    expect(actions.allDone).toBe(true);
+    expect(actions.resumeIndex).toBe(0);
+    expect(actions.resume?.id).toBe("m");
+    expect(actions.restartHref).toBeNull();
+  });
+
+  it("教材が 1つも 無ければ 行き先も 無い（札は「ステージを ひらく」に 変わる）", () => {
+    const empty: MapStage = { ...mapStage(), contents: [] };
+    const actions = mapStageActions(empty, "");
+    expect(actions.resume).toBeNull();
+    expect(actions.allDone).toBe(false);
+    expect(actions.restartHref).toBeNull();
   });
 });

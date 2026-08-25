@@ -2838,7 +2838,8 @@
       "id": "chiketsuto",
       "term": "チケット",
       "reading": "ちけっと",
-      "meaningJa": "ticket"
+      "meaningJa": "お金を はらった しるしです。これが あると 中に 入れます。",
+      "englishTerm": "Ticket"
     },
     {
       "id": "kuni",
@@ -5993,6 +5994,67 @@
         [
           "調",
           "しら"
+        ]
+      ]
+    },
+    {
+      "id": "ayumi",
+      "term": "歩み",
+      "reading": "あゆみ",
+      "romaji": "ayumi",
+      "meaningJa": "これまで 通って きた 道です。会社が いままで して きた ことを 言います。",
+      "englishTerm": "History",
+      "example": "会社の 歩みを 見ると、何を 大切に して きたかが 分かります。"
+    },
+    {
+      "id": "kakikae",
+      "term": "書きかえ",
+      "reading": "かきかえ",
+      "romaji": "kakikae",
+      "meaningJa": "いま ある 中身を、あとから ちがう 中身に 変える ことです。",
+      "englishTerm": "Rewriting",
+      "example": "出した あとで 書きかえが あると、こまります。"
+    },
+    {
+      "id": "keiyakusho",
+      "term": "契約書",
+      "reading": "けいやくしょ",
+      "romaji": "keiyakusho",
+      "meaningJa": "守ると 決めた ことを 書いた 紙です。会社と 会社が サインを します。",
+      "englishTerm": "Contract document",
+      "example": "2024年8月に、AUPP と 契約書に サインを しました。"
+    },
+    {
+      "id": "vr",
+      "term": "VR",
+      "reading": "ぶいあーる",
+      "romaji": "VR",
+      "meaningJa": "ゴーグルを つけると、ぜんぶが 作られた 世界に 見える しくみです。",
+      "englishTerm": "Virtual Reality",
+      "example": "VR の 動画では、その 町の 中に 立って いるように 見えます。",
+      "furigana": [
+        [
+          "町",
+          "まち"
+        ]
+      ]
+    },
+    {
+      "id": "ar",
+      "term": "AR",
+      "reading": "えーあーる",
+      "romaji": "AR",
+      "meaningJa": "カメラで 見て いる ものの 上に、絵や 字を かさねて 見せる しくみです。",
+      "englishTerm": "Augmented Reality",
+      "example": "AR を 使うと、スマホの 画面で お寺の むかしの 姿が 見えます。",
+      "furigana": [
+        [
+          "寺",
+          "てら"
+        ],
+        [
+          "姿",
+          "すがた"
         ]
       ]
     }

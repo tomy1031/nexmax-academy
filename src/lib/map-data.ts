@@ -126,3 +126,54 @@ export function toMapAreas(stages: readonly Stage[]): MapArea[] {
     note: stage.area?.note ?? stage.description,
   }));
 }
+
+/**
+ * マップのステージカードで押せる行き先（さいしょから／つづきから／単語）。
+ *
+ * 純関数として切り出してあるのは、この判断が**ログインの内側**にあって通しの検証から
+ * 見えないからである。マップはプロフィールを引けないと `/welcome` へ送り返すので、
+ * 鍵ゼロのE2Eではここを通れない（`tests/e2e/modoru.spec.ts` の但し書き）。
+ * 見張れるのは単体テストだけなので、判断はここに置く。
+ */
+export interface MapStageActions {
+  /** ▶「つづきから」の行き先。教材が1つも無ければ null（札は「ステージを ひらく」に変わる）。 */
+  resume: MapStageContent | null;
+  /** つづきの位置（0始まり）。「3／5」の数え札に使う。 */
+  resumeIndex: number;
+  /** ぜんぶ おわっているか（札が「もういちど 見る」に変わる）。 */
+  allDone: boolean;
+  /**
+   * ↩「最初から」の行き先＝**ステージのトップ**（2026-08-25 の指定）。
+   *
+   * 以前は1本目の教材へ直行していた。やり直したい学習者は、まず**何が何本あって
+   * どこまで進んだか**を見てから選ぶので、いきなり教材の中に入れると戻る手間が増える。
+   * まだ1本目にいる学習者には出さない（「つづきから」で足りる）。
+   */
+  restartHref: string | null;
+  /**
+   * 📖「単語を 勉強」の行き先。**ひもづく単語ステージが無ければ null＝札を出さない**
+   *（2026-08-25 の指定）。
+   *
+   * 以前は無いときも `/arcade`（ことばアーケードの一覧）へ送っていた。だが札には
+   * 「この ステージの ことば」と書いてあるので、学習者はそれを探して、どの課のものか
+   * 分からない一覧の前で止まる。ことばだけ練習したい人にはサイドメニューの「単語」がある。
+   */
+  wordsHref: string | null;
+}
+
+export function mapStageActions(stage: MapStage, progressCodes: string): MapStageActions {
+  const items = stage.contents;
+  const firstUnfinished = [...progressCodes].findIndex((code) => code !== "2");
+  const resumeIndex = firstUnfinished < 0 ? 0 : firstUnfinished;
+  const resume = items[resumeIndex] ?? null;
+  const first = items[0] ?? null;
+  const wordStageId = stage.wordStageIds[0];
+
+  return {
+    resume,
+    resumeIndex,
+    allDone: firstUnfinished < 0 && items.length > 0,
+    restartHref: first && resume && first.href !== resume.href ? `/${stage.id}` : null,
+    wordsHref: wordStageId ? `/arcade/${wordStageId}` : null,
+  };
+}

@@ -29,7 +29,7 @@ import { hasLearnerNames } from "@/lib/name";
 import { isSchoolChosen } from "@/lib/school";
 import { readContentProgress, subscribeProgress } from "@/lib/progress/store";
 import { statusCode as contentStatusCode } from "@/components/stage/stage-progress";
-import type { MapStage } from "@/lib/map-data";
+import { mapStageActions, type MapStage } from "@/lib/map-data";
 import { fetchOwnProfile, type ProfileRow } from "@/lib/profile-db";
 import {
   clearProfile,
@@ -782,7 +782,9 @@ function StagePanel({
             <StageTitle stage={stage} />
           </span>
           <span className="text-ink-soft block text-[10px] font-bold sm:text-xs">
-            （{stage.reading}）・ <KindLabel stage={stage} />
+            {/* 漢字が 無い 名前に よみは 要らない（StageTitle と 同じ判断）。 */}
+            {HAS_KANJI.test(stage.title) ? <>（{stage.reading}）・ </> : null}
+            <KindLabel stage={stage} />
           </span>
         </span>
         <span
@@ -829,8 +831,8 @@ function StagePanel({
  * ステージのトップに戻すだけだと、学習者はもう一度どれを開くか選ぶことになり、
  * 「つづき」と書いてある意味がなくなる。
  *
- * 単語は**そのステージにひもづく単語ステージ**へ直行する。一覧に放り出すと、
- * どの課の単語を選べばよいかは学習者には分からない。
+ * どの札をどこへ向けるかは `mapStageActions`（純関数）が決める。マップは
+ * ログインの内側なので通しの検証から見えず、見張れるのは単体テストだけである。
  */
 function StageActions({ stage }: { stage: MapStage }) {
   const items = stage.contents;
@@ -840,12 +842,10 @@ function StageActions({ stage }: { stage: MapStage }) {
     () => items.map((item) => contentStatusCode(readContentProgress(item.id))).join(""),
     () => serverKey,
   );
-  const codes = [...progressKey];
-  const firstUnfinished = codes.findIndex((code) => code !== "2");
-  const resume = items[firstUnfinished < 0 ? 0 : firstUnfinished];
-  const first = items[0];
-  const allDone = firstUnfinished < 0 && items.length > 0;
-  const wordStageId = stage.wordStageIds[0];
+  const { resume, resumeIndex, allDone, restartHref, wordsHref } = mapStageActions(
+    stage,
+    progressKey,
+  );
 
   return (
     <div className="mt-3 grid gap-2 sm:grid-cols-2 md:grid-cols-1">
@@ -869,9 +869,7 @@ function StageActions({ stage }: { stage: MapStage }) {
           </span>
           <span className="text-[11px]">
             {contentKindMeta(resume.type).icon} {contentKindMeta(resume.type).label}
-            {items.length > 1
-              ? `（${(firstUnfinished < 0 ? 0 : firstUnfinished) + 1}／${items.length}）`
-              : ""}
+            {items.length > 1 ? `（${resumeIndex + 1}／${items.length}）` : ""}
           </span>
         </Link>
       ) : (
@@ -883,10 +881,14 @@ function StageActions({ stage }: { stage: MapStage }) {
         </Link>
       )}
 
-      {/* 1本目に戻る道。やり直したい学習者に「進捗を消す」以外の手を用意する */}
-      {first && resume && first.href !== resume.href ? (
+      {/*
+        やり直したい学習者に「進捗を消す」以外の手を用意する。行き先は**ステージのトップ**
+        （2026-08-25 の指定）。1本目をいきなり開くと、何が何本あってどこまで進んだかを
+        見ないまま教材の中に入ることになる。
+      */}
+      {restartHref ? (
         <Link
-          href={first.href}
+          href={restartHref}
           className={`btn-game flex-col px-4 py-2 leading-tight ${BUTTON_RUBY} [--btn-face:#4fa8e8] [--btn-shadow:#0272ae]`}
         >
           <span>
@@ -896,30 +898,29 @@ function StageActions({ stage }: { stage: MapStage }) {
             </ruby>
             から
           </span>
-          <span className="text-[11px]">
-            {contentKindMeta(first.type).icon} {contentKindMeta(first.type).label}
-          </span>
+          <span className="text-[11px]">ステージを ひらく</span>
         </Link>
       ) : null}
 
-      <Link
-        href={wordStageId ? `/arcade/${wordStageId}` : "/arcade"}
-        className={`btn-game flex-col px-4 py-2 leading-tight ${BUTTON_RUBY} [--btn-face:#ffc93c] [--btn-shadow:#f0a819]`}
-      >
-        <span>
-          📖{" "}
-          <ruby>
-            単語<rt>たんご</rt>
-          </ruby>
-          を
-          <ruby>
-            勉強<rt>べんきょう</rt>
-          </ruby>
-        </span>
-        <span className="text-[11px]">
-          {wordStageId ? "この ステージの ことば" : "ことばアーケードを ひらく"}
-        </span>
-      </Link>
+      {/* ことばが ひもづいて いない ステージには 出さない（2026-08-25 の指定） */}
+      {wordsHref ? (
+        <Link
+          href={wordsHref}
+          className={`btn-game flex-col px-4 py-2 leading-tight ${BUTTON_RUBY} [--btn-face:#ffc93c] [--btn-shadow:#f0a819]`}
+        >
+          <span>
+            📖{" "}
+            <ruby>
+              単語<rt>たんご</rt>
+            </ruby>
+            を
+            <ruby>
+              勉強<rt>べんきょう</rt>
+            </ruby>
+          </span>
+          <span className="text-[11px]">この ステージの ことば</span>
+        </Link>
+      ) : null}
     </div>
   );
 }
@@ -1208,7 +1209,9 @@ function CardsView({ stages, progress }: { stages: readonly MapStage[]; progress
                       <h2 className="text-navy mt-1 text-xl font-black">
                         <StageTitle stage={stage} />
                       </h2>
-                      <p className="text-ink-soft text-xs font-bold">（{stage.reading}）</p>
+                      {HAS_KANJI.test(stage.title) && (
+                        <p className="text-ink-soft text-xs font-bold">（{stage.reading}）</p>
+                      )}
                     </div>
                     <span
                       className="grid h-11 w-11 place-items-center rounded-full border-4 border-white text-lg shadow-md"

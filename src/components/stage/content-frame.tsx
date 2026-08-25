@@ -23,6 +23,9 @@ import {
   STATUS_BADGE,
 } from "./stage-progress";
 
+/** 見出しに ルビが 要るか。漢字が 無い 名前には よみを 出さない（map-shell と 同じ）。 */
+const HAS_KANJI = /[一-鿿]/;
+
 /**
  * 教材の外枠 — どのステージのどこにいるかを、教材の種類によらず同じ形で見せる
  *
@@ -355,10 +358,15 @@ function StageRail({
         {stage.number === null ? "もくじ" : `STEP ${String(stage.number).padStart(2, "0")}`}
       </Link>
       <p className="text-navy text-sm font-black">
-        <ruby>
-          {stage.title}
-          <rt className="text-ink-soft">{stage.reading}</rt>
-        </ruby>
+        {/* かなの 上に かなを 重ねても 読みやすくは ならない（StageDetail・map-shell と 同じ判断）。 */}
+        {HAS_KANJI.test(stage.title) ? (
+          <ruby>
+            {stage.title}
+            <rt className="text-ink-soft">{stage.reading}</rt>
+          </ruby>
+        ) : (
+          stage.title
+        )}
       </p>
     </div>
   );
