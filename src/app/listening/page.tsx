@@ -12,7 +12,7 @@ export const metadata: Metadata = {
  * 「gitコンテンツは静的生成のまま。DBコンテンツはリクエスト時取得（ISR/短いキャッシュ）」）。
  * スタジオで「こうかい」したリスニングは、再デプロイを待たずこの間隔で届く。
  */
-export const revalidate = 60;
+export const revalidate = 300;
 
 /**
  * リスニング一覧（聞く教材だけ）。
@@ -32,7 +32,11 @@ export default async function ListeningIndexPage() {
       <header className="mb-5">
         {/* 行き先は **まなびマップ**（札の字のとおり）。ここは `/` を指していて、
             押した学習者は ログイン直後の タイトル画面まで 放り出されていた。 */}
-        <Link href="/map" className="text-ink-soft hover:text-navy text-sm font-extrabold">
+        <Link
+          prefetch={false}
+          href="/map"
+          className="text-ink-soft hover:text-navy text-sm font-extrabold"
+        >
           ← まなびマップ
         </Link>
       </header>
@@ -55,6 +59,7 @@ export default async function ListeningIndexPage() {
             {listenings.map((listening) => (
               <li key={listening.id}>
                 <Link
+                  prefetch={false}
                   href={`/listening/${listening.id}`}
                   className="card-island block p-5 transition hover:scale-[1.01]"
                 >
@@ -76,7 +81,7 @@ export default async function ListeningIndexPage() {
         聞いたあとに話す練習へ進む道が この画面から 見えなくなる。
       */}
       <p className="mt-6 text-sm font-bold">
-        <Link href="/talk" className="text-sky-deep hover:text-navy underline">
+        <Link prefetch={false} href="/talk" className="text-sky-deep hover:text-navy underline">
           🎙️ AIと 話す れんしゅうは たいわ
         </Link>
       </p>

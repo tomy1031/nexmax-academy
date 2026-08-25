@@ -18,7 +18,7 @@ import { canonicalContentPath } from "@/lib/stage-lookup";
  * 本来のURLへ 送り返し**、どのステージにも 入って いない ものだけ ここで 出す
  *（スタジオで 作りかけの ものを 先生が 確かめられる 必要が ある）。
  */
-export const revalidate = 60;
+export const revalidate = 300;
 
 export async function generateStaticParams() {
   return (await listLinks()).map((link) => ({ id: link.id }));

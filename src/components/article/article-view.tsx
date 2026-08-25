@@ -128,7 +128,11 @@ export function ArticleView({
         <div className="mb-3 flex justify-end">{rubyToggle}</div>
       ) : (
         <header className="mb-5 flex items-center justify-between gap-3">
-          <Link href="/map" className="text-ink-soft hover:text-navy text-sm font-extrabold">
+          <Link
+            prefetch={false}
+            href="/map"
+            className="text-ink-soft hover:text-navy text-sm font-extrabold"
+          >
             ← マップに もどる
           </Link>
           {rubyToggle}
@@ -356,6 +360,7 @@ function BlockView({
       const label = contentKindLabel(block.type);
       return (
         <Link
+          prefetch={false}
           href={contentHref(block.type, block.ref)}
           className="card-island flex items-center gap-3 p-4"
         >

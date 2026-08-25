@@ -5,11 +5,13 @@
  * - nodejs_compat は OpenNext の必須要件。
  * - compatibility_date は 2025-05-05 以降が必須（FinalizationRegistry 対策・計画書 §2.4）。
  *   OpenNext は「6か月より古い日付」に警告を出すので、更新時は現在に近い日付へ寄せる。
- * - incrementalCache は KV（kv_namespaces 参照）。学習者ページは `revalidate = 60` の
+ * - incrementalCache は KV（kv_namespaces 参照）。学習者ページは `revalidate = 300` の
  *   ISR なので、キャッシュが無いと全アクセスがフルSSRになり CPU 上限を超える
  *   （2026-08-13 に Error 1102 が多発して導入。open-next.config.ts 参照）。
  *   R2 でなく KV なのはアカウントの R2 が未有効（課金設定が必要）なため。無料枠は
- *   KV 読み 10万/日・書き 1000/日。書きは再生成時のみ発生するので通常運用で収まる。
+ *   KV 読み 10万/日・書き 1000/日。書きは再生成時のみ発生する。授業（20人同時）では
+ *   見られたページ数×再生成回数で書きが積み上がるため、revalidate は 60→300 に延ばし、
+ *   読みは拠点キャッシュ（withRegionalCache）で吸収する（2026-08-25・docs/deploy.md §0.7）。
  * - WORKER_SELF_REFERENCE は ISR の裏側の再生成（memoryQueue）が自分自身へ
  *   HEAD リクエストを送るための必須バインディング。
  */

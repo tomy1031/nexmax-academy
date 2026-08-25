@@ -12,7 +12,7 @@ export const metadata: Metadata = {
  * 「gitコンテンツは静的生成のまま。DBコンテンツはリクエスト時取得（ISR/短いキャッシュ）」）。
  * スタジオで「こうかい」した単語ステージは、再デプロイを待たずこの間隔で届く。
  */
-export const revalidate = 60;
+export const revalidate = 300;
 
 /**
  * 単語だけで開いたときの入り口。ステージ選択から始まる（旧アプリと同じ流れ）。

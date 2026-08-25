@@ -1,5 +1,6 @@
 import { defineCloudflareConfig } from "@opennextjs/cloudflare";
 import kvIncrementalCache from "@opennextjs/cloudflare/overrides/incremental-cache/kv-incremental-cache";
+import { withRegionalCache } from "@opennextjs/cloudflare/overrides/incremental-cache/regional-cache";
 import staticAssetsIncrementalCache from "@opennextjs/cloudflare/overrides/incremental-cache/static-assets-incremental-cache";
 import memoryQueue from "@opennextjs/cloudflare/overrides/queue/memory-queue";
 
@@ -50,8 +51,22 @@ import memoryQueue from "@opennextjs/cloudflare/overrides/queue/memory-queue";
  */
 const useAssetsCache = process.env.OPEN_NEXT_CACHE === "assets";
 
+/**
+ * ## KV の前に「土地のキャッシュ」を重ねる理由（2026-08-25）
+ *
+ * 授業で20人が同時に遊ぶと、20人は同じ土地（同じ Cloudflare 拠点）から来る。
+ * 作りおきの読み出しを毎回 KV まで取りに行くと、KV 読みの無料枠（10万/日）を
+ * 全員分・全ページ分で消費する。withRegionalCache はその拠点の Cache API に
+ * 写しを置き、同じ拠点からの読みは KV に触れずに返す（書きはこれまでどおり KV）。
+ *
+ * - `short-lived`: 写しの使い回しは最長1分。ページ側の revalidate=300 と合わせても、
+ *   先生の直しが届く遅れは「最長 revalidate+1分」に収まる。
+ * - ブランチ確認URL（assets 側）は読み取り専用の静的アセットなので重ねない。
+ */
 export default defineCloudflareConfig({
-  incrementalCache: useAssetsCache ? staticAssetsIncrementalCache : kvIncrementalCache,
+  incrementalCache: useAssetsCache
+    ? staticAssetsIncrementalCache
+    : withRegionalCache(kvIncrementalCache, { mode: "short-lived" }),
   queue: memoryQueue,
   enableCacheInterception: true,
 });

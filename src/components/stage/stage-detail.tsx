@@ -102,7 +102,11 @@ export function StageDetail({
   return (
     <div className="mx-auto w-full max-w-3xl px-4 py-6">
       <header className="mb-5 flex items-center justify-between gap-3">
-        <Link href="/map" className="text-ink-soft hover:text-navy text-sm font-extrabold">
+        <Link
+          prefetch={false}
+          href="/map"
+          className="text-ink-soft hover:text-navy text-sm font-extrabold"
+        >
           ← マップ
         </Link>
         {stage.number !== null && (
@@ -149,6 +153,7 @@ export function StageDetail({
 
         {next && (
           <Link
+            prefetch={false}
             href={next.href}
             className="btn-game mt-4 w-full flex-col px-4 py-2 leading-tight [--btn-face:#f26fa7] [--btn-shadow:#d94d84]"
           >
@@ -172,6 +177,7 @@ export function StageDetail({
         <section key={word.id} className="mt-6">
           <h2 className="text-navy text-lg font-black">🕹️ さいしょに ことばを おぼえる</h2>
           <Link
+            prefetch={false}
             href={`/arcade/${word.id}`}
             className="card-island mt-3 flex items-center gap-3 p-4 transition hover:-translate-y-0.5"
           >
@@ -223,6 +229,7 @@ export function StageDetail({
               return (
                 <li key={`${item.type}:${item.id}`}>
                   <Link
+                    prefetch={false}
                     href={item.href}
                     className="card-island flex items-center gap-3 p-4 transition hover:-translate-y-0.5"
                   >

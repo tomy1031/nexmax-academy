@@ -357,7 +357,11 @@ export function QuizRunner({
     <div className={embedded ? "" : "mx-auto w-full max-w-3xl px-4 py-6"}>
       {embedded ? null : (
         <header className="mb-5 flex items-center justify-between gap-3">
-          <Link href="/quiz" className="text-ink-soft hover:text-navy text-sm font-extrabold">
+          <Link
+            prefetch={false}
+            href="/quiz"
+            className="text-ink-soft hover:text-navy text-sm font-extrabold"
+          >
             ← もんだい 一覧
           </Link>
           <span className="bg-sky-soft text-navy rounded-full px-3 py-1 text-xs font-extrabold">
@@ -1416,6 +1420,7 @@ function QuizResultCard({
         {/* 枠の中では戻り先は枠が持つ。ここで別の一覧へ放り出さない */}
         {!embedded && (
           <Link
+            prefetch={false}
             href="/quiz"
             className="btn-island btn-game px-6 py-3"
             style={{ "--btn-face": "#4fa8e8", "--btn-shadow": "#0272ae" } as React.CSSProperties}

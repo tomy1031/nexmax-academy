@@ -32,10 +32,15 @@ export function DictionaryPage({ entries }: { entries: readonly DictionaryEntry[
   return (
     <div className="mx-auto w-full max-w-3xl px-4 py-6">
       <header className="mb-5 flex items-center justify-between gap-3">
-        <Link href="/map" className="text-ink-soft hover:text-navy text-sm font-extrabold">
+        <Link
+          prefetch={false}
+          href="/map"
+          className="text-ink-soft hover:text-navy text-sm font-extrabold"
+        >
           ← マップに もどる
         </Link>
         <Link
+          prefetch={false}
           href="/arcade"
           className="text-sky text-sm font-extrabold underline underline-offset-4"
         >
@@ -99,6 +104,7 @@ export function DictionaryPage({ entries }: { entries: readonly DictionaryEntry[
                 {entry.meaningEn}
               </p>
               <Link
+                prefetch={false}
                 href={`/arcade/${entry.stageId}`}
                 className="text-sky mt-2 inline-block text-xs font-black underline underline-offset-4"
               >

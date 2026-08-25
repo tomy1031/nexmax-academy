@@ -195,6 +195,7 @@ function flownUntil(progress: StageProgress, routeAreas: readonly MapArea[]): nu
 function Logo() {
   return (
     <Link
+      prefetch={false}
       href="/"
       aria-label="Nexmax Academy"
       className="fixed top-[4.5rem] left-3 z-50 rounded-2xl bg-white/85 px-2 py-1.5 shadow-lg backdrop-blur-sm md:top-3"
@@ -568,9 +569,18 @@ function Navigation({
   onLogout: () => void;
 }) {
   /** メニューの1行。たたんでいるときは 絵だけ、ひらいているときは 絵と ことば。 */
+  /*
+   * 学習者画面の Link は すべて prefetch={false}（2026-08-25）。
+   *
+   * 既定の prefetch は「画面に見えた Link」を全部先読みする。まなびマップや
+   * 一覧には数十の Link が並ぶので、授業で20人が同時に開くと、それだけで
+   * Worker の無料枠（10万リクエスト/日）を数百〜数千ずつ削る雪崩になる。
+   * クリック時に1回取りに行く形なら、遅れは一呼吸（キャッシュ済みページ）で済む。
+   * 新しく Link を足すときも prefetch={false} を付ける。
+   */
   function navLink(href: string, icon: string, label: ReactNode) {
     return (
-      <Link href={href} onClick={onDrawerClose} className={NAV_CLASS}>
+      <Link prefetch={false} href={href} onClick={onDrawerClose} className={NAV_CLASS}>
         <span aria-hidden className="text-xl">
           {icon}
         </span>
@@ -812,6 +822,7 @@ function StagePanel({
              * 通せんぼではない——先に見たい学習者を止める理由がない（設計01 P4）。
              */
             <Link
+              prefetch={false}
               href={`/${stage.id}`}
               className={`btn-game mt-2 w-full px-3 py-1.5 text-sm ${BUTTON_RUBY} [--btn-face:#ffc93c] [--btn-shadow:#f0a819]`}
             >
@@ -851,6 +862,7 @@ function StageActions({ stage }: { stage: MapStage }) {
     <div className="mt-3 grid gap-2 sm:grid-cols-2 md:grid-cols-1">
       {resume ? (
         <Link
+          prefetch={false}
           href={resume.href}
           className={`btn-game flex-col px-4 py-2 leading-tight ${BUTTON_RUBY} [--btn-face:#f26fa7] [--btn-shadow:#d94d84]`}
         >
@@ -874,6 +886,7 @@ function StageActions({ stage }: { stage: MapStage }) {
         </Link>
       ) : (
         <Link
+          prefetch={false}
           href={`/${stage.id}`}
           className={`btn-game px-4 py-2 ${BUTTON_RUBY} [--btn-face:#f26fa7] [--btn-shadow:#d94d84]`}
         >
@@ -888,6 +901,7 @@ function StageActions({ stage }: { stage: MapStage }) {
       */}
       {restartHref ? (
         <Link
+          prefetch={false}
           href={restartHref}
           className={`btn-game flex-col px-4 py-2 leading-tight ${BUTTON_RUBY} [--btn-face:#4fa8e8] [--btn-shadow:#0272ae]`}
         >
@@ -905,6 +919,7 @@ function StageActions({ stage }: { stage: MapStage }) {
       {/* ことばが ひもづいて いない ステージには 出さない（2026-08-25 の指定） */}
       {wordsHref ? (
         <Link
+          prefetch={false}
           href={wordsHref}
           className={`btn-game flex-col px-4 py-2 leading-tight ${BUTTON_RUBY} [--btn-face:#ffc93c] [--btn-shadow:#f0a819]`}
         >
@@ -1242,6 +1257,7 @@ function CardsView({ stages, progress }: { stages: readonly MapStage[]; progress
                         : "じゅんびちゅう"}
                   </p>
                   <Link
+                    prefetch={false}
                     href={`/${stage.id}`}
                     className="btn-game mt-4 w-full px-4 py-2 [--btn-face:#ffc93c] [--btn-shadow:#f0a819]"
                   >
@@ -1401,6 +1417,7 @@ export function MapShell({
                   もういちど よみこむ
                 </button>
                 <Link
+                  prefetch={false}
                   href="/welcome"
                   className="text-sky text-sm font-extrabold underline underline-offset-4"
                 >

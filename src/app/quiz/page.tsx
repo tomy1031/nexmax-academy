@@ -12,7 +12,7 @@ export const metadata: Metadata = {
  * 「gitコンテンツは静的生成のまま。DBコンテンツはリクエスト時取得（ISR/短いキャッシュ）」）。
  * スタジオで「こうかい」したもんだいは、再デプロイを待たずこの間隔で届く。
  */
-export const revalidate = 60;
+export const revalidate = 300;
 
 export default async function QuizIndexPage() {
   const sets = await listQuizSets();
@@ -22,7 +22,11 @@ export default async function QuizIndexPage() {
       <header className="mb-5">
         {/* 行き先は **まなびマップ**（札の字のとおり）。ここは `/` を指していて、
             押した学習者は ログイン直後の タイトル画面まで 放り出されていた。 */}
-        <Link href="/map" className="text-ink-soft hover:text-navy text-sm font-extrabold">
+        <Link
+          prefetch={false}
+          href="/map"
+          className="text-ink-soft hover:text-navy text-sm font-extrabold"
+        >
           ← まなびマップ
         </Link>
       </header>
@@ -42,6 +46,7 @@ export default async function QuizIndexPage() {
           {sets.map((set) => (
             <li key={set.id}>
               <Link
+                prefetch={false}
                 href={`/quiz/${set.id}`}
                 className="card-island block p-5 transition hover:scale-[1.01]"
               >
