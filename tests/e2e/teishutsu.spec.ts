@@ -88,7 +88,7 @@ test("他の ページへ 行って 戻っても、書いた ものは 残る", 
    * **離れた 2問**に 書く。1ページに 全問 出て いる ことの 意味は、
    * 見つけた 順に どこへでも 書ける ことなので、上から 順ではなく 飛ばして 書く。
    */
-  await writeIn(page, "q1", "2018ねん");
+  await writeIn(page, "q2", "まついさん");
   await placeWordsIn(page, "q23", ["2024年9月"]);
   await expect(page.getByText(writtenText(2))).toBeVisible();
 
@@ -101,10 +101,13 @@ test("他の ページへ 行って 戻っても、書いた ものは 残る", 
 
   // 2問とも 書いた ものが そのまま 残って いる
   await expect(page.getByText(writtenText(2))).toBeVisible();
-  await expect(page.locator("#q-q1").getByLabel("こたえを 入力する")).toHaveValue("2018ねん");
+  await expect(page.locator("#q-q2").getByLabel("こたえを 入力する")).toHaveValue("まついさん");
 });
 
-test("出す まえに かくにんして、出すと 自分の こたえと 正解が 並ぶ", async ({ page, context }) => {
+test("出す まえに かくにんして、出すと できた／もう一度 が ひと目で 分かる", async ({
+  page,
+  context,
+}) => {
   await seedCompleted(context, ASAKAI_QUIZ.before);
   await page.goto(ASAKAI_QUIZ.path);
   await page.getByRole("button", { name: START_SUBMIT }).click();
@@ -123,21 +126,29 @@ test("出す まえに かくにんして、出すと 自分の こたえと 正
 
   await page.getByRole("button", { name: SUBMIT_ANSWERS }).click();
 
-  // けっか: 自分の こたえと 正解が 並び、せつめいも 読める
+  /*
+   * けっかは **できた／もう一度 が ひと目で 分かる 行**で 並ぶ（2026-08-25 の 作り直し）。
+   * いちばん 大きい 字は「口に 出す ことば」で、そのまま ヘンディさんへの カンペに なる。
+   */
   await expect(page.getByText("ぜんぶの こたえ")).toBeVisible();
-  await expect(page.getByText("あなたの こたえ").first()).toBeVisible();
-  // 正解が 画面に 並ぶ。ルビが 合成されるので、**ふりがなの 入らない ところ**で さがす
-  await expect(page.getByText(/どれも/).first()).toBeVisible();
-  await expect(page.getByText(/正解/).first()).toBeVisible();
-  // ルビが 合成されるので「書かいて」に なる。ふりがなの 入らない ところで さがす
-  await expect(page.getByText(/いて いません/).first()).toBeVisible();
-  await expect(page.getByRole("button", { name: "まちがえた もんだいだけ" })).toBeVisible();
+  // できた／もう一度 の しるしは 記号と ことばの 両方で 出る（色だけに たよらない）
+  await expect(page.getByText("↻ もう一度").first()).toBeVisible();
+  // 書かなかった もんだいも そう 分かる（空の ままだと「出て いない」と 読める）
+  await expect(page.getByText(/かいて いません/).first()).toBeVisible();
+  // 「まちがえた もんだいだけ」は やめた（2026-08-25 の 指定）
+  await expect(page.getByRole("button", { name: /まちがえた/ })).toHaveCount(0);
   await shot(page, "25-quiz-submit-result");
 
-  // まちがえた もんだいだけ を 押しても、やりかたは まとめて 出す のまま
-  await page.getByRole("button", { name: "まちがえた もんだいだけ" }).click();
+  /*
+   * 「もう一度」は **前の こたえを 持ったまま** 始まり、直す ところに 赤い しるしが 付く。
+   * 26問の うち 2問 だけ 直したい ときに、合って いた ぶんを 打ち直させない ため。
+   */
+  await page.getByRole("button", { name: /もう一度 やる/ }).click();
+  // ルビが 語の 中に 入る（「もう一度いちど 見み る」）ので、正規表現で さがす
+  await expect(page.getByText(/↻ もう一度.*もんだい/)).toBeVisible();
   await expect(page.getByText(`もんだい 1 / ${ASAKAI_QUIZ_TOTAL}`)).toBeVisible();
-  await expect(page.getByRole("button", { name: /つぎ →|さいごに かくにん →/ })).toBeVisible();
+  // 1問目に 前の こたえが のこって いる（えらび直さなくても 出せる）
+  await expect(choiceButtons(page).nth(0)).toHaveAttribute("aria-pressed", "true");
 });
 
 test("1問も 書かずに「出す」道は ない（7回 おすだけで おわらない）", async ({ page, context }) => {

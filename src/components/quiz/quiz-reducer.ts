@@ -151,10 +151,18 @@ export type QuizAction =
   /** ぜんぶ 出す（まとめて 出す のみ）。ここで はじめて 採点する。 */
   | { readonly type: "submit" };
 
+/**
+ * まっさらな 回を 作る。
+ *
+ * `drafts` を 渡すと **前の 回の こたえを 持ったまま** やり直す（採点は 消える）。
+ * 26問の うち 2問 だけ 直したい ときに、合って いた 24問を 打ち直させない ため
+ *（2026-08-25 の 指定「もう一度を 押した時に、前回の 回答が 記憶して 表示され」）。
+ */
 export function createQuizSession(
   set: QuizSet,
   questions = set.questions,
   mode: QuizMode = "one",
+  drafts: QuizDrafts = {},
 ): QuizState {
   return {
     setId: set.id,
@@ -164,7 +172,7 @@ export function createQuizSession(
     index: 0,
     phase: questions.length === 0 ? { kind: "finished" } : { kind: "ask" },
     results: [],
-    drafts: {},
+    drafts,
   };
 }
 

@@ -47,10 +47,12 @@ import {
  * 別の もんだいを 触って しまう。
  */
 const HOUKOKU_WORDS: readonly (readonly [string, readonly string[]])[] = [
+  ["q1", ["2018年", "1月"]],
   ["q3", ["大阪", "東京"]],
-  ["q4", ["2023年10月"]],
+  ["q4", ["2024年4月"]],
   ["q5", ["ベトナム"]],
-  ["q6", ["NMClaw", "観光DX", "Verify", "セキュリティドローン", "NEXTMAKE Internship Lab"]],
+  // 5つの サービスは **順番を 見ない**（`unordered`）。サイトの 並びと わざと ちがう 順で 入れる
+  ["q6", ["Verify", "NEXTMAKE Internship Lab", "NMClaw", "セキュリティドローン", "観光DX"]],
   ["q7", ["NMClaw"]],
   ["q8", ["受託開発"]],
   ["q9", ["新しい 技術", "グループの 会社", "世界の 人と 学ぶ"]],
@@ -69,7 +71,6 @@ const HOUKOKU_WORDS: readonly (readonly [string, readonly string[]])[] = [
  * 通しの中に そのまま 残すため（判定は src/lib/text/normalize.ts）。
  */
 const HOUKOKU_FREE_INPUT: readonly (readonly [string, string])[] = [
-  ["q1", "2018ねんです"], // ひらがな＋です（accept「2018」に 部分一致）
   ["q2", "まついさん"], // ひらがな＋さん（accept「まつい」に 部分一致）
   ["q10", "コンティニューです"], // カタカナ＋です
   ["q11", "べとなむ"], // ひらがな（代表解は「ベトナム」）
@@ -237,10 +238,21 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
     await submitAnswers(page);
 
     await expect(page.getByText(`${HOUKOKU_TOTAL} / ${HOUKOKU_TOTAL} もん`)).toBeVisible();
-    // 自分の書き方のまま通ったことを 画面が 見せる（救済が 生きている証拠）
+    /*
+     * 自分の 書き方の まま 通った ことを 画面が 見せる（救済が 生きて いる 証拠）。
+     * けっかの 行では **合って いた 問いの「口に 出す ことば」＝自分の こたえ**なので、
+     * その ことばが そのまま 出る（2026-08-25 の 作り直し）。
+     */
     for (const [, written] of HOUKOKU_FREE_INPUT) {
-      await expect(page.getByText(`あなたの こたえ: ${written}`)).toBeVisible();
+      /*
+       * 文字で さがすと **ルビの `<rt>`** に 当たる ことが ある（「にほんご」は
+       * 「日本語」の 読みでも ある）。`<rt>` は ルビを 消して いると 隠れて いる ので、
+       * 行（listitem）ごと 引く。
+       */
+      await expect(page.getByRole("listitem").filter({ hasText: written }).first()).toBeVisible();
     }
+    // できた しるしが 26行 ぜんぶに 付く
+    await expect(page.getByText("✓ できた")).toHaveCount(HOUKOKU_TOTAL);
     await shot(page, "06-quiz-houkoku-result");
     await frameNext(page).click();
   });
