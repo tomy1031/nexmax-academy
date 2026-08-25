@@ -658,6 +658,7 @@ export function StudioShell({
               library={library}
               knownIds={knownIds}
               vocabBooks={vocabBooks}
+              wordStages={merged.wordstage}
               textsByRef={textsByRef}
               onChange={(draft) => setView({ mode: "stage", draft })}
               onOpenContent={(ref, type) => openContent(ref, type, view.draft)}

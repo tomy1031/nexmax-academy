@@ -227,9 +227,18 @@ describe("mapStageActions", () => {
     expect(mapStageActions(mapStage({ wordStageIds: [] }), "00").wordsHref).toBeNull();
   });
 
+  /*
+   * 行き先は **ステージID**（ステージトップの ことばの 札と そろえる・願い #203）。
+   * セットが 1つなら そのまま 開き、2つ以上（初級・中級…）なら えらぶ 画面に なる。
+   */
   it("ひもづいて いれば その ステージの ことばへ 直行する", () => {
     const actions = mapStageActions(mapStage({ wordStageIds: ["hajimari_kotoba"] }), "00");
-    expect(actions.wordsHref).toBe("/arcade/hajimari_kotoba");
+    expect(actions.wordsHref).toBe("/arcade/hajimari");
+  });
+
+  it("セットが 2つ以上でも 札は 1枚（えらぶ 画面へ 送る）", () => {
+    const actions = mapStageActions(mapStage({ wordStageIds: ["shokyu", "chukyu"] }), "00");
+    expect(actions.wordsHref).toBe("/arcade/hajimari");
   });
 
   it("「最初から」は ステージのトップ（1本目の教材を いきなり 開かない）", () => {

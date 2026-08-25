@@ -96,6 +96,16 @@ export function ArcadeGame({
   const stage = stages.find((s) => s.id === stageId) ?? null;
   const furigana = useMemo(() => buildFuriganaIndex(stage?.furigana ?? []), [stage?.furigana]);
 
+  /*
+   * セットを えらぶ 画面から 出る ときの 行き先の 名前。
+   * ステージから 来た ときは 手わたされる セットが **その ステージの ぶんだけ**で、
+   * どれも 見出しに ステージの 名前を 持つ ので、先頭から 借りれば よい。
+   */
+  const ownerTitle = useMemo(() => {
+    const head = stages[0];
+    return head ? { title: head.title, furigana: buildFuriganaIndex(head.furigana) } : null;
+  }, [stages]);
+
   const dispatch = useCallback((action: ArcadeAction) => {
     setSession((prev) => (prev ? arcadeReducer(prev, action) : prev));
   }, []);
@@ -160,7 +170,18 @@ export function ArcadeGame({
         <div className="pointer-events-none absolute inset-0 grid place-items-center overflow-y-auto p-4">
           <div className="pointer-events-none w-full max-w-2xl">
             {screen.kind === "stageSelect" && (
-              <StageSelect stages={stages} onPick={openStage} onLeave={leave} />
+              <StageSelect
+                stages={stages}
+                onPick={openStage}
+                onLeave={leave}
+                leaveLabel={
+                  backTo && ownerTitle ? (
+                    <BackToStage title={ownerTitle.title} furigana={ownerTitle.furigana} />
+                  ) : (
+                    "マップに もどる"
+                  )
+                }
+              />
             )}
 
             {screen.kind === "mode" && stage && (
@@ -169,16 +190,17 @@ export function ArcadeGame({
                 furigana={furigana}
                 difficulty={difficulty}
                 /*
-                  ステージから 来た ときは **そのステージへ 帰す**。
-                  「グループを えらびなおす」は 出さない——ステージの ことばを
-                  やりに 来た 人に、よその 課の ことばを 選ばせる 画面では ない
+                  手わたされた セットが 2つ以上 なら、まず **えらびなおす**道を 出す。
+                  ここに 並ぶのは その ステージの セット（初級・中級…）だけなので、
+                  よその 課の ことばを 選ばせる ことには ならない
                   （ぜんぶ 見たい 人の 入口は /arcade のまま 残って いる）。
+                  1つしか 無ければ、来た ステージへ そのまま 帰す。
                 */
                 backLabel={
-                  backTo ? (
+                  stages.length > 1 ? (
+                    "ほかの セットを えらぶ"
+                  ) : backTo ? (
                     <BackToStage title={stage.title} furigana={furigana} />
-                  ) : stages.length > 1 ? (
-                    "グループを えらびなおす"
                   ) : (
                     "マップに もどる"
                   )
@@ -190,9 +212,7 @@ export function ArcadeGame({
                 }}
                 onFlashcard={() => setScreen({ kind: "flashcard", stageId: stage.id })}
                 onDictionary={() => setScreen({ kind: "dictionary", stageId: stage.id })}
-                onBack={() =>
-                  !backTo && stages.length > 1 ? setScreen({ kind: "stageSelect" }) : leave()
-                }
+                onBack={() => (stages.length > 1 ? setScreen({ kind: "stageSelect" }) : leave())}
               />
             )}
 
@@ -490,18 +510,22 @@ function StageSelect({
   stages,
   onPick,
   onLeave,
+  leaveLabel,
 }: {
   stages: readonly WordStage[];
   onPick: (stage: WordStage) => void;
   onLeave: () => void;
+  /** 出る ボタンの 字。行き先を 決める 親が 言葉も 決める。 */
+  leaveLabel: ReactNode;
 }) {
   return (
-    <ArcadePanel kicker="Select Stage" title="グループを えらぶ">
+    <ArcadePanel kicker="Select Set" title="ことばの セットを えらぶ">
       <p className="text-ink-soft mt-1 text-sm font-bold">
-        まなびたい ことばの グループを えらんでね。
+        まなびたい ことばの セットを えらんでね。
       </p>
       <ul className="mt-4 grid gap-3 sm:grid-cols-2">
         {stages.map((stage) => {
+          const index = buildFuriganaIndex(stage.furigana);
           return (
             <li key={stage.id}>
               <button
@@ -512,20 +536,46 @@ function StageSelect({
                 <p className="text-sky text-xs font-black">
                   ことば {stage.words.length}こ ／ 合格 {stage.passRate}%
                 </p>
-                <RubyText
-                  className="text-ink mt-1 block text-lg font-black"
-                  text={stage.title}
-                  index={buildFuriganaIndex(stage.furigana)}
-                />
+                <span className="mt-1 flex flex-wrap items-baseline gap-x-2 gap-y-1">
+                  <RubyText
+                    className="text-ink block text-lg font-black"
+                    text={stage.title}
+                    index={index}
+                  />
+                  {/* セット名（初級・中級…）。同じ 見出しが ならぶので、ここが 目じるし。 */}
+                  {stage.label ? <SetBadge label={stage.label} index={index} /> : null}
+                </span>
               </button>
             </li>
           );
         })}
       </ul>
       <ArcadeButton tone="quiet" className="mt-4 w-full" onClick={onLeave}>
-        マップに もどる
+        {leaveLabel}
       </ArcadeButton>
     </ArcadePanel>
+  );
+}
+
+/**
+ * セット名の 札（初級・中級…）。
+ *
+ * 濃い 地に 白文字なので、ふりがなも 白に する（`RUBY_ON_COLOR` と 同じ 向き・
+ * docs/constraints.md 2026-08-18/21）。`.text-white rt` が currentColor を 継ぐ。
+ */
+function SetBadge({
+  label,
+  index,
+}: {
+  label: string;
+  index: ReturnType<typeof buildFuriganaIndex>;
+}) {
+  return (
+    <RubyText
+      className="bg-sky rounded-full px-2 py-0.5 text-xs font-black text-white"
+      text={label}
+      index={index}
+    />
   );
 }
 
@@ -580,8 +630,17 @@ function ModeSelect({
   return (
     <ArcadePanel
       kicker="Mission Select"
-      /* 見出しは ステージの 名前。漢字が 入りうるので ルビを 合成する（規律2）。 */
-      title={<RubyText text={stage.title} index={furigana} />}
+      /*
+       * 見出しは ステージの 名前。漢字が 入りうるので ルビを 合成する（規律2）。
+       * セット名が あれば 横に 出す——同じ 見出しの セットが ならぶ ので、
+       * いま どれを 開いて いるかが 分からないと 迷う。
+       */
+      title={
+        <span className="flex flex-wrap items-baseline justify-center gap-x-2 gap-y-1">
+          <RubyText text={stage.title} index={furigana} />
+          {stage.label ? <SetBadge label={stage.label} index={furigana} /> : null}
+        </span>
+      }
       className="text-center"
     >
       <p className="text-ink-soft mt-1 text-sm font-bold">

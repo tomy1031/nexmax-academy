@@ -157,6 +157,10 @@ export interface MapStageActions {
    * 以前は無いときも `/arcade`（ことばアーケードの一覧）へ送っていた。だが札には
    * 「この ステージの ことば」と書いてあるので、学習者はそれを探して、どの課のものか
    * 分からない一覧の前で止まる。ことばだけ練習したい人にはサイドメニューの「単語」がある。
+   *
+   * 行き先は **ステージID**（`/arcade/<ステージID>`）。セットが 1つなら そのまま 開き、
+   * 2つ以上（初級・中級…）なら えらぶ 画面に なる。以前は `wordStageIds[0]` へ
+   * 直に 送って いて、**ステージトップと 行き先が ちがって いた**（願い #203 で そろえた）。
    */
   wordsHref: string | null;
 }
@@ -167,13 +171,12 @@ export function mapStageActions(stage: MapStage, progressCodes: string): MapStag
   const resumeIndex = firstUnfinished < 0 ? 0 : firstUnfinished;
   const resume = items[resumeIndex] ?? null;
   const first = items[0] ?? null;
-  const wordStageId = stage.wordStageIds[0];
 
   return {
     resume,
     resumeIndex,
     allDone: firstUnfinished < 0 && items.length > 0,
     restartHref: first && resume && first.href !== resume.href ? `/${stage.id}` : null,
-    wordsHref: wordStageId ? `/arcade/${wordStageId}` : null,
+    wordsHref: stage.wordStageIds.length > 0 ? `/arcade/${stage.id}` : null,
   };
 }
