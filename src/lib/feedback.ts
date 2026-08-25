@@ -95,7 +95,7 @@ export const FEEDBACK = {
   "quiz.keepGoing": {
     tone: "encourage",
     title: "ここまで すすんだね",
-    next: "「まちがえた もんだいだけ」で もう一度 やってみよう",
+    next: "「もう一度 やる」で 直したい ところだけ 直せます",
   },
 
   /* --- ステージ・結果 --- */
@@ -172,6 +172,7 @@ export function getFeedback(key: FeedbackKey): Feedback {
  */
 export const FEEDBACK_FURIGANA: FuriganaEntry[] = [
   ["日本語", "にほんご"],
+  ["直", "なお"],
   ["入力", "にゅうりょく"],
   ["一度", "いちど"],
   ["意味", "いみ"],
