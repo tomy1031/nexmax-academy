@@ -149,8 +149,13 @@ describe("セット名で 分ける（願い #203）", () => {
     const sets = stageWordSets(LEVELED, [shokyu, chukyu]);
     expect(sets.map((s) => s.id)).toEqual(["set_shokyu", "set_chukyu"]);
     expect(sets.map((s) => s.label)).toEqual(["初級", "中級"]);
-    // 見出しは どれも ステージの 名前（札の 字は セット名を 使う）
-    expect(sets.map((s) => s.title)).toEqual(["会社を 知る", "会社を 知る"]);
+    /*
+     * 名前の 付いた セットは **自分の 見出しを 保つ**。ステージの 名前に そろえると
+     * 同じ 名前が 何行も ならんで えらべなく なる（名前なしの 統合とは 逆）。
+     */
+    expect(sets.map((s) => s.title)).toEqual([hajimari.title, orientation.title]);
+    // ステージの 名前の よみは 読み辞書に 入る（見出しに 漢字が あっても 裸に しない）
+    expect(sets[0]!.furigana).toContainEqual(["会社を 知る", "かいしゃを しる"]);
   });
 
   it("名前の 有る 無しが まざったら、無い ものだけ 1つに まとまる", () => {

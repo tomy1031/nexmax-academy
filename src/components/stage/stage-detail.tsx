@@ -196,12 +196,18 @@ export function StageDetail({
                     🕹️
                   </span>
                   <span className="min-w-0 flex-1">
-                    <span className="text-sky block text-[10px] font-black tracking-widest">
-                      ことば {word.wordCount}こ
+                    <span className="text-sky flex flex-wrap items-baseline gap-x-1 text-[10px] font-black tracking-widest">
+                      {word.label ? (
+                        <>
+                          <RubyText text={word.label} index={wordFurigana} show={furiganaOn} />
+                          <span aria-hidden>／</span>
+                        </>
+                      ) : null}
+                      <span>ことば {word.wordCount}こ</span>
                     </span>
                     <RubyText
                       className="text-navy block text-base leading-relaxed font-black"
-                      text={word.label ?? word.title}
+                      text={word.title}
                       index={wordFurigana}
                       show={furiganaOn}
                     />

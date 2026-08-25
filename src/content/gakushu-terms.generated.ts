@@ -414,5 +414,6 @@ export const GAKUSHU_TERMS: Readonly<Record<string, readonly string[]>> = {
     "keiyakusho",
     "vr",
     "ar",
+    "yatte_mimasu",
   ],
 };

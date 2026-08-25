@@ -95,13 +95,17 @@ export function stageWordStage(stage: StageHead, parts: readonly WordStage[]): W
   };
 }
 
-/** 見出しを ステージの 名前に そろえた 1本（`label` は そのまま 運ぶ）。 */
-function withStageTitle(stage: StageHead, part: WordStage): WordStage {
+/** ステージの 読み辞書を 足した 1本（見出しは そのまま）。 */
+function withStageFurigana(stage: StageHead, part: WordStage): WordStage {
   return {
     ...part,
-    title: stage.title,
     furigana: entries(part.furigana, stage.furigana, [[stage.title, stage.reading]]),
   };
+}
+
+/** 見出しを ステージの 名前に そろえた 1本（`label` は そのまま 運ぶ）。 */
+function withStageTitle(stage: StageHead, part: WordStage): WordStage {
+  return { ...withStageFurigana(stage, part), title: stage.title };
 }
 
 /**
@@ -125,7 +129,12 @@ export function stageWordSets(stage: StageHead, parts: readonly WordStage[]): Wo
   const out: WordStage[] = [];
   for (const part of parts) {
     if (part.label) {
-      out.push(withStageTitle(stage, part));
+      /*
+       * 名前の 付いた セットは **自分の 見出しを 保つ**（「まいにち 使う ことば」）。
+       * ステージの 名前に そろえると、同じ 名前が 何行も ならんで えらべなく なる。
+       * どの ステージの ものかは、セット名の 札と 戻る 道が 言って いる。
+       */
+      out.push(withStageFurigana(stage, part));
     } else if (mergedPlain) {
       out.push(mergedPlain);
       mergedPlain = null;
