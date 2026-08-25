@@ -65,7 +65,8 @@ export function JudgeCard({ judge, hostName }: { judge: JudgeResult; hostName: s
         </p>
       ) : null}
       <p className="bg-panel-tint text-ink rounded-xl px-3 py-2 text-sm font-bold break-words">
-        こう いうと もっと いいです →「{judge.exampleAnswer}」
+        <RubyText text="こう 言うと もっと いいです" index={JUDGE_FURIGANA} show /> →「
+        <RubyText text={judge.exampleAnswer} index={JUDGE_FURIGANA} show />」
       </p>
 
       {judge.glossary.length > 0 ? (

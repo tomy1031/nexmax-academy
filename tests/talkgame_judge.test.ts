@@ -60,11 +60,21 @@ describe("受け取り", () => {
     expect(parseTalk(null)).toBeNull();
   });
 
-  it("学習者が 読む 文に 漢字が 混ざって いたら 見つける", () => {
-    const kanji = parseTalk({ ...RAW, praise: "上手に 言えました。" });
-    expect(kanji && isKanaOnly(kanji)).toBe(false);
+  /*
+   * 2026-08-25 から、`src/lib/ai-kanji.ts` の 一覧に ある ことばは 漢字で 書いてよい
+   *（同じ 一覧から ルビの 索引を 作るので ふりがなが 付く）。
+   * 一覧に 無い 漢字だけ 落とす。
+   */
+  it("一覧に 無い 漢字が 混ざって いたら 見つける", () => {
+    const unknown = parseTalk({ ...RAW, praise: "素晴らしい 発想ですね。" });
+    expect(unknown && isKanaOnly(unknown)).toBe(false);
     const kana = parseTalk(RAW);
     expect(kana && isKanaOnly(kana)).toBe(true);
+  });
+
+  it("一覧に ある ことばは 漢字の まま 通す", () => {
+    const ok = parseTalk({ ...RAW, praise: "上手に 言えました。" });
+    expect(ok && isKanaOnly(ok)).toBe(true);
   });
 });
 
