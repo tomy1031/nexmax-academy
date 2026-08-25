@@ -438,7 +438,9 @@ export function QuizRunner({
                 </button>
               )}
 
-              <p className="text-ink text-lg leading-relaxed font-extrabold">
+              {/* 設問の 「＊◯◯の ページ」は 行を 変えて 出す（2026-08-25 の 指定）。
+                  データの 改行を そのまま 出すため whitespace-pre-line。 */}
+              <p className="text-ink text-lg leading-relaxed font-extrabold whitespace-pre-line">
                 <RubyText text={question.q} index={furigana} />
               </p>
 
@@ -813,14 +815,9 @@ function ConfirmCard({
       <p className="text-ink-soft mt-2 font-bold">
         {left === 0 ? (
           <RubyText text="ぜんぶ 書けました。出しても だいじょうぶ" index={UI_FURIGANA} />
-        ) : nothingWritten ? (
-          <RubyText
-            text="まだ 1もんも 書いて いません。1もんでも 書いてから 出しましょう"
-            index={UI_FURIGANA}
-          />
         ) : (
           <RubyText
-            text={`のこり ${left}もん。おしても いいし、書いてからでも いいよ`}
+            text={`のこり ${left}もん。ぜんぶ 書いてから 出しましょう`}
             index={UI_FURIGANA}
           />
         )}
@@ -851,7 +848,7 @@ function ConfirmCard({
                   {index + 1}
                 </span>
                 <span className="min-w-0 flex-1">
-                  <span className="text-ink-soft block text-sm font-bold">
+                  <span className="text-ink-soft block text-sm font-bold whitespace-pre-line">
                     <RubyText text={q.q} index={furigana} />
                   </span>
                   <span className="mt-1 block text-sm font-extrabold">
@@ -997,14 +994,9 @@ function AllQuestionsCard({
         <p className="text-ink-soft font-bold">
           {left === 0 ? (
             <RubyText text="ぜんぶ 書けました。出しても だいじょうぶ" index={UI_FURIGANA} />
-          ) : nothingWritten ? (
-            <RubyText
-              text="まだ 1もんも 書いて いません。1もんでも 書いてから 出しましょう"
-              index={UI_FURIGANA}
-            />
           ) : (
             <RubyText
-              text={`のこり ${left}もん。おしても いいし、書いてからでも いいよ`}
+              text={`のこり ${left}もん。ぜんぶ 書いてから 出しましょう`}
               index={UI_FURIGANA}
             />
           )}
@@ -1062,7 +1054,7 @@ const QuestionRow = memo(function QuestionRow({
         >
           {index + 1}
         </span>
-        <h2 className="text-ink min-w-0 flex-1 text-lg font-extrabold">
+        <h2 className="text-ink min-w-0 flex-1 text-lg font-extrabold whitespace-pre-line">
           <RubyText text={question.q} index={furigana} />
         </h2>
         <span className="text-ink-faint mt-1 shrink-0 text-xs font-extrabold">
@@ -1191,7 +1183,7 @@ function QuizResultCard({
                   >
                     {result.correct ? "✓" : index + 1}
                   </span>
-                  <span className="text-ink text-sm font-extrabold">
+                  <span className="text-ink text-sm font-extrabold whitespace-pre-line">
                     <RubyText text={question.q} index={furigana} />
                   </span>
                 </p>
