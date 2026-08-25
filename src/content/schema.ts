@@ -236,6 +236,13 @@ const quizCommon = {
   /** 正誤に関わらず読ませる解説。実務に接続する（P8）。 */
   explain: plainText,
   points: z.number().int().positive().default(1),
+  /*
+   * この あとの ミーティングで **口に 出して 報告する** もんだい。
+   * けっかの 画面で しるしを 付け、その ぶんだけ 絞って 見られるように する
+   *（2026-08-25 の 指定「そちらのページを 見ながら ヘンディさんに 報告したい」）。
+   * 省いてよい——付けなければ しるしは 出ない。
+   */
+  report: z.boolean().optional(),
 };
 
 /** 4択（読解確認）。 */
@@ -297,6 +304,13 @@ const wordbankSchema = z.object({
   blanks: z.array(plainText).min(1),
   /** 画面に並べる語群（blanks＋まぎらわしい語）。 */
   bank: z.array(plainText).min(2),
+  /*
+   * 順番を 見ない（＝**そろって いれば 合格**）。
+   * 「5つの サービスを えらぶ」の ような、並びに 意味の 無い 問いのため
+   *（2026-08-25 の 指定「順番なしで5つ選択する問題にして」）。
+   * 省くと これまでどおり 出た 順に くらべる。
+   */
+  unordered: z.boolean().optional(),
 });
 
 /**

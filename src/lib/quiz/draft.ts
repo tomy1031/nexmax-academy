@@ -193,14 +193,23 @@ export function gradeDraft(question: QuizQuestion, draft: QuizDraft | undefined)
     case "wordbank": {
       if (draft.kind !== "wordbank") return blank;
       if (!draft.filled.some((v) => v !== null && v !== "")) return blank;
-      const correct =
-        draft.filled.length === question.blanks.length &&
-        question.blanks.every((expected, i) => draft.filled[i] === expected);
+      const sameLength = draft.filled.length === question.blanks.length;
+      /*
+       * `unordered` の 問いは **そろって いれば 合格**（並びに 意味が 無い ため）。
+       * 「5つの サービスを えらぶ」で、サイトに 出て いる 順を おぼえて いないと
+       * 落ちる のは 調べる 練習に ならない（2026-08-25 の 指定）。
+       */
+      const correct = question.unordered
+        ? sameLength && sameSet(draft.filled, question.blanks)
+        : sameLength && question.blanks.every((expected, i) => draft.filled[i] === expected);
+      const someRight = question.unordered
+        ? draft.filled.some((v) => v !== null && question.blanks.includes(v))
+        : question.blanks.some((expected, i) => draft.filled[i] === expected);
       return {
         correct,
         earned: correct ? question.points : 0,
         answer: question.blanks.map((_, i) => `（${i + 1}）${draft.filled[i] ?? ""}`).join("　"),
-        partial: !correct && question.blanks.some((expected, i) => draft.filled[i] === expected),
+        partial: !correct && someRight,
       };
     }
 
@@ -217,6 +226,13 @@ export function gradeDraft(question: QuizQuestion, draft: QuizDraft | undefined)
       };
     }
   }
+}
+
+/** 並びを 見ずに、同じ ものが そろって いるかを 見る（wordbank の `unordered`）。 */
+function sameSet(filled: readonly (string | null)[], blanks: readonly string[]): boolean {
+  const left = [...filled].filter((v): v is string => v !== null && v !== "").sort();
+  const right = [...blanks].sort();
+  return left.length === right.length && left.every((v, i) => v === right[i]);
 }
 
 /** 学習者の こたえの 文だけ 要る ところ（かくにん画面）。 */

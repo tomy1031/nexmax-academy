@@ -26,6 +26,7 @@ import {
   resumeQuizSession,
   summarizeQuiz,
   type QuizAction,
+  type QuizDrafts,
   type QuizMode,
   type QuizResult,
   type QuizState,
@@ -100,9 +101,9 @@ export function QuizRunner({
   }, []);
 
   /*
-   * 「まちがえた もんだいだけ」の 再挑戦は 問題を 絞った 別セッション（onRetryWrong）。
-   * しおりは 教材まるごとの 出題順を 前提に するので、絞った セッションの 途中経過は
-   * 保存しない——中途半端な 内訳を 次回 誤って 読み込ませない ための 線引き。
+   * しおりは 教材まるごとの 出題順を 前提に する。問題を 絞った セッションの
+   * 途中経過は 保存しない——中途半端な 内訳を 次回 誤って 読み込ませない ための 線引き
+   *（「まちがえた もんだいだけ」は 2026-08-25 に やめたので、いまは いつも 全問）。
    */
   const isFullSession = state.questions.length === set.questions.length;
   const submitMode = state.mode !== "one";
@@ -334,14 +335,23 @@ export function QuizRunner({
 
   /** やり直し（教材の やりかたの まま 作り直す）。 */
   const restart = useCallback(
-    (questions: readonly QuizQuestion[]) => {
-      setState(createQuizSession(set, [...questions], set.answerMode));
+    (questions: readonly QuizQuestion[], keepDrafts?: QuizDrafts) => {
+      setState(createQuizSession(set, [...questions], set.answerMode, keepDrafts));
       startAttempt();
       // 1問目から やり直すので「飛ばした ぶん」も 無くなる
       setSkipped(0);
     },
     [set, startAttempt],
   );
+
+  /**
+   * 前の 回で もう一度 やる ことに なった もんだい。
+   *
+   * 「もう一度」を 押した ときだけ 入る。画面では **赤い しるし**で 出して、
+   * 26問の 中から 直す ところを すぐ 見つけられるように する（2026-08-25 の 指定）。
+   * 「はじめから やる」を えらんだら 消す——まっさらから 始める 人に 前の 赤は 要らない。
+   */
+  const [retryIds, setRetryIds] = useState<readonly string[]>([]);
 
   return (
     <div className={embedded ? "" : "mx-auto w-full max-w-3xl px-4 py-6"}>
@@ -367,6 +377,7 @@ export function QuizRunner({
           onContinue={() => setStarted(true)}
           onStart={() => {
             clearQuizResume(set.id);
+            setRetryIds([]);
             restart(set.questions);
             setResumed(false);
             setStarted(true);
@@ -380,15 +391,21 @@ export function QuizRunner({
           review={review}
           skipped={skipped}
           furigana={furigana}
-          onRetryWrong={() =>
-            restart(set.questions.filter((q) => summary.missedQuestionIds.includes(q.id)))
-          }
-          onRetryAll={() => restart(set.questions)}
+          onRetryAll={() => {
+            /*
+             * **前の こたえを 持ったまま** やり直す（2026-08-25 の 指定）。
+             * ぜんぶ 消えると、合って いた 25問を もう一度 打ち直す ことに なる。
+             * 直したい ところが どこかは `retryIds`（赤い しるし）が 見せる。
+             */
+            setRetryIds(summary.missedQuestionIds);
+            restart(set.questions, state.drafts);
+          }}
         />
       ) : state.mode === "all" ? (
         <AllQuestionsCard
           questions={state.questions}
           drafts={state.drafts}
+          retryIds={retryIds}
           furigana={furigana}
           inputIssue={state.phase.kind === "ask" ? state.phase.inputIssue : undefined}
           inputIssueQuestionId={
@@ -436,6 +453,18 @@ export function QuizRunner({
                 >
                   ← まえの もんだい
                 </button>
+              )}
+
+              {/* 前の 回で もう一度に なった もんだい（2026-08-25 の 指定） */}
+              {retryIds.includes(question.id) && state.phase.kind === "ask" && (
+                <p className="mb-2">
+                  <span
+                    className="rounded-full px-2 py-0.5 text-xs font-extrabold"
+                    style={{ background: "#f26fa7", color: "#fff" }}
+                  >
+                    <RubyText text="↻ もう一度 見る もんだい" index={UI_FURIGANA} />
+                  </span>
+                </p>
               )}
 
               {/* 設問の 「＊◯◯の ページ」は 行を 変えて 出す（2026-08-25 の 指定）。
@@ -918,6 +947,7 @@ function ConfirmCard({
 function AllQuestionsCard({
   questions,
   drafts,
+  retryIds,
   furigana,
   inputIssue,
   inputIssueQuestionId,
@@ -926,6 +956,8 @@ function AllQuestionsCard({
 }: {
   questions: readonly QuizQuestion[];
   drafts: Readonly<Record<string, Parameters<typeof draftAnswerText>[1]>>;
+  /** 前の 回で もう一度に なった もんだい（赤い しるしを 出す）。 */
+  retryIds: readonly string[];
   furigana: ReturnType<typeof buildFuriganaIndex>;
   inputIssue: FeedbackKey | undefined;
   inputIssueQuestionId: string | undefined;
@@ -975,7 +1007,30 @@ function AllQuestionsCard({
       <ol className="grid gap-4">
         {questions.map((q, index) => (
           // key は question.id **だけ**。相を混ぜると 打つたびに 入力が 作り直される
-          <li key={q.id} id={`q-${q.id}`} className="card-island scroll-mt-16 p-5 sm:p-6">
+          <li
+            key={q.id}
+            id={`q-${q.id}`}
+            className="card-island scroll-mt-16 p-5 sm:p-6"
+            /*
+             * 前の 回で もう一度に なった もんだいを 赤で 囲む（2026-08-25 の 指定）。
+             * 26問の 中から 直す ところを 探させない ため。
+             */
+            style={
+              retryIds.includes(q.id)
+                ? { outline: "3px solid #f26fa7", outlineOffset: 2 }
+                : undefined
+            }
+          >
+            {retryIds.includes(q.id) && (
+              <p className="mb-2">
+                <span
+                  className="rounded-full px-2 py-0.5 text-xs font-extrabold"
+                  style={{ background: "#f26fa7", color: "#fff" }}
+                >
+                  <RubyText text="↻ もう一度 見る もんだい" index={UI_FURIGANA} />
+                </span>
+              </p>
+            )}
             <QuestionRow
               question={q}
               index={index}
@@ -1081,6 +1136,132 @@ const QuestionRow = memo(function QuestionRow({
   );
 });
 
+/** けっかの 一覧を 切りかえる ふだ（ぜんぶ／もう一度／ほうこく）。 */
+function LensChip({
+  on,
+  onClick,
+  children,
+}: {
+  on: boolean;
+  onClick: () => void;
+  children: string;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={on}
+      className="rounded-full border-2 px-3 py-1 text-xs font-extrabold"
+      style={
+        on
+          ? { background: "var(--color-sky)", borderColor: "var(--color-sky)", color: "#fff" }
+          : {
+              background: "var(--color-panel)",
+              borderColor: "var(--color-hairline)",
+              color: "var(--color-ink-soft)",
+            }
+      }
+    >
+      <RubyText text={children} index={UI_FURIGANA} />
+    </button>
+  );
+}
+
+/**
+ * けっかの 1行。**2つの 役目**を いっしょに はたす。
+ *
+ * 1. 合っていた／もう一度 が ひと目で 分かる（左の 太い 帯・記号・ことばの 3つで 示す。
+ *    色だけに たよらない）。
+ * 2. **ヘンディさんに 話す ときの カンペ**に なる（2026-08-25 の 指定）。
+ *    いちばん 大きい 字は「口に 出す ことば」——合って いた 問いは 自分の こたえ、
+ *    もう一度の 問いは 正解。読み上げれば そのまま 報告に なる。
+ *
+ * せつめいは 合って いた 行では 畳む。26問 ぜんぶを 開いたままでは カンペに ならない。
+ */
+function ReviewRow({
+  question,
+  result,
+  number,
+  furigana,
+}: {
+  question: QuizQuestion;
+  result: QuizResult;
+  number: number;
+  furigana: ReturnType<typeof buildFuriganaIndex>;
+}) {
+  const ok = result.correct;
+  const own = result.answer?.trim() ?? "";
+  /*
+   * 「言う ことば」。**（1）（2）の 番号は 付けない**——ここは 口に 出す ための 行で、
+   * 番号は 読み上げの じゃまに なる（設問文は すぐ 上に 出て いる）。
+   * 自由記述に 正解は 無いので、書いた ものが そのまま 言う ことばに なる。
+   */
+  const right =
+    question.type === "wordbank" ? question.blanks.join("　") : correctAnswerText(question);
+  const say = ok ? own : right !== "" ? right : own;
+
+  return (
+    <li
+      className="border-hairline bg-panel rounded-[var(--radius-card)] border-2 px-3 py-3"
+      style={{ borderLeftWidth: 6, borderLeftColor: ok ? "#58c273" : "#f26fa7" }}
+    >
+      <div className="flex items-center gap-2">
+        <span className="border-hairline bg-panel-tint text-ink-soft grid h-6 w-6 shrink-0 place-items-center rounded-full border-2 text-xs font-extrabold">
+          {number}
+        </span>
+        <span
+          className="rounded-full px-2 py-0.5 text-xs font-extrabold"
+          style={{ background: ok ? "#58c273" : "#f26fa7", color: "#fff" }}
+        >
+          <RubyText text={ok ? "✓ できた" : "↻ もう一度"} index={UI_FURIGANA} />
+        </span>
+        {question.report && (
+          <span className="bg-sky-soft text-navy ml-auto rounded-full px-2 py-0.5 text-xs font-extrabold">
+            <RubyText text="🎤 ほうこく" index={UI_FURIGANA} />
+          </span>
+        )}
+      </div>
+
+      <p className="text-ink-soft mt-1.5 text-xs leading-relaxed font-bold whitespace-pre-line">
+        <RubyText text={question.q} index={furigana} />
+      </p>
+
+      {say !== "" && (
+        <p className="text-ink mt-1 leading-relaxed font-extrabold">
+          <RubyText text={say} index={furigana} />
+        </p>
+      )}
+
+      {/*
+        もう一度の 行だけ、自分が 書いた ものも 小さく 残す（消すと 何を 直すか 分からない）。
+        **書かなかった ことも 出す**——空の まま だと「合って いたのに 出て いない」と 読める。
+      */}
+      {!ok &&
+        (own === "" ? (
+          <p className="text-ink-faint mt-0.5 text-xs font-bold">
+            <RubyText text="まだ かいて いません" index={UI_FURIGANA} />
+          </p>
+        ) : (
+          own !== say && (
+            <p className="text-ink-faint mt-0.5 text-xs font-bold">
+              <RubyText text="あなたの こたえ: " index={UI_FURIGANA} />
+              <RubyText text={own} index={furigana} />
+            </p>
+          )
+        ))}
+
+      <details open={!ok} className="mt-1.5">
+        <summary className="text-ink-soft cursor-pointer text-xs font-extrabold">
+          <RubyText text="せつめい" index={UI_FURIGANA} />
+        </summary>
+        <p className="text-ink-soft mt-1 text-sm leading-relaxed font-bold">
+          <RubyText text={question.explain} index={furigana} />
+        </p>
+      </details>
+    </li>
+  );
+}
+
 function QuizResultCard({
   set,
   embedded,
@@ -1088,7 +1269,6 @@ function QuizResultCard({
   review,
   skipped,
   furigana,
-  onRetryWrong,
   onRetryAll,
 }: {
   set: QuizSet;
@@ -1099,10 +1279,19 @@ function QuizResultCard({
   /** この回が 見ないまま 飛ばした 問題の 数（しおりで 途中から 始めた ときだけ 0より 大きい）。 */
   skipped: number;
   furigana: ReturnType<typeof buildFuriganaIndex>;
-  onRetryWrong: () => void;
   onRetryAll: () => void;
 }) {
   const missed = summary.missedQuestionIds.length;
+  const reportCount = review.filter(({ question }) => question.report).length;
+  /*
+   * どの ぶんを 見るか。**ほうこく**は、この あと ヘンディさんに 口で 話す もんだいだけ
+   *（2026-08-25 の 指定「そちらのページを 見ながら 報告したい」）。26問 ぜんぶを
+   * 開いたままだと カンペに ならない。
+   */
+  const [lens, setLens] = useState<"all" | "again" | "report">("all");
+  const shown = review.filter(({ result, question }) =>
+    lens === "again" ? !result.correct : lens === "report" ? question.report : true,
+  );
   /**
    * 「合格」と 言ってよい回か。**しおりで 途中から 始めた 回では 言わない**
    * ——見て いない 問題が 残って いるので 教材を 通した ことには ならず、成績にも
@@ -1164,60 +1353,65 @@ function QuizResultCard({
         <section className="mt-6">
           <h3 className="text-ink mb-2 font-extrabold">
             <RubyText text="ぜんぶの こたえ" index={UI_FURIGANA} />
-            {missed > 0 && (
-              <span className="text-ink-soft ml-2 text-sm">
-                <RubyText text={`（もう一度 見る もんだい ${missed}こ）`} index={UI_FURIGANA} />
-              </span>
-            )}
           </h3>
-          <ul className="border-hairline divide-hairline divide-y rounded-[var(--radius-card)] border-2">
-            {review.map(({ result, question }, index) => (
-              <li key={question.id} className="px-4 py-3">
-                <p className="flex items-start gap-2">
-                  <span
-                    className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full text-xs font-extrabold"
-                    style={{
-                      background: result.correct ? "#58c273" : "var(--color-panel-tint)",
-                      color: result.correct ? "#fff" : "var(--color-ink-faint)",
-                    }}
-                  >
-                    {result.correct ? "✓" : index + 1}
-                  </span>
-                  <span className="text-ink text-sm font-extrabold whitespace-pre-line">
-                    <RubyText text={question.q} index={furigana} />
-                  </span>
-                </p>
-                <div className="border-hairline bg-panel-tint mt-2 rounded-[var(--radius-card)] border-2 p-3">
-                  <AnswerPair question={question} answer={result.answer} furigana={furigana} />
-                  <p className="text-ink-soft mt-2 text-sm leading-relaxed font-bold">
-                    <RubyText text={question.explain} index={furigana} />
-                  </p>
-                </div>
-              </li>
+
+          {/*
+            見る ぶんを 切りかえる。**「ほうこく」で 絞ると カンペに なる**
+            ——26問 ぜんぶを 開いたまま 話すのは むずかしい。
+          */}
+          <div className="bg-panel/95 border-hairline sticky top-0 z-10 -mx-1 mb-3 flex flex-wrap gap-2 rounded-full border-2 px-3 py-2 backdrop-blur">
+            <LensChip on={lens === "all"} onClick={() => setLens("all")}>
+              {`ぜんぶ ${review.length}`}
+            </LensChip>
+            {missed > 0 && (
+              <LensChip on={lens === "again"} onClick={() => setLens("again")}>
+                {`もう一度 ${missed}`}
+              </LensChip>
+            )}
+            {reportCount > 0 && (
+              <LensChip on={lens === "report"} onClick={() => setLens("report")}>
+                {`🎤 ほうこく ${reportCount}`}
+              </LensChip>
+            )}
+          </div>
+
+          <ul className="grid gap-2">
+            {shown.map(({ result, question }) => (
+              <ReviewRow
+                key={question.id}
+                question={question}
+                result={result}
+                number={review.findIndex((r) => r.question.id === question.id) + 1}
+                furigana={furigana}
+              />
             ))}
           </ul>
         </section>
       )}
 
       <div className="mt-6 grid gap-3">
-        {missed > 0 && (
-          <button
-            type="button"
-            onClick={onRetryWrong}
-            className="btn-island btn-game px-6 py-3.5"
-            style={{ "--btn-face": "#f26fa7", "--btn-shadow": "#d94d84" } as React.CSSProperties}
-          >
-            まちがえた もんだいだけ
-          </button>
-        )}
+        {/*
+          「まちがえた もんだいだけ」は やめた（2026-08-25 の 指定）。もんだいを 絞ると
+          成績に 残らない 別セッションに なり、学習者には その 区別が 見えない。
+          **「もう一度」は 前の こたえを 持ったまま**、直したい ところだけ 直せる。
+        */}
         <button
           type="button"
           onClick={onRetryAll}
+          /*
+           * ルビが 語の 中に 入る ので、名前で 引くと「もう一度いちど」に なる。
+           * 読み上げにも ルビは 邪魔なので、ルビ前の ことばを aria-label で 持たせる
+           *（`ruby-breaks-playwright-name-lookup` と 同じ 手当て）。
+           */
+          aria-label="もう一度 やる"
           className="btn-island btn-game px-6 py-3.5"
           style={{ "--btn-face": "#58c273", "--btn-shadow": "#3aa458" } as React.CSSProperties}
         >
           {/* 見出しの「もう一度 見る もんだい」と 同じ 語なので、ふりがなも そろえる（規律2） */}
-          <RubyText text="もう一度" index={UI_FURIGANA} />
+          <RubyText
+            text={missed > 0 ? "もう一度 やる（こたえは のこります）" : "もう一度 やる"}
+            index={UI_FURIGANA}
+          />
         </button>
         {/* 枠の中では戻り先は枠が持つ。ここで別の一覧へ放り出さない */}
         {!embedded && (

@@ -337,12 +337,63 @@ describe("成績に 残してよい回か（isWholeSetRun）", () => {
     expect(summary.earned).toBe(summary.maxPoints); // 「8 / 7 てん」に ならない
   });
 
-  it("「まちがえた もんだいだけ」の やり直しも false", () => {
+  it("問題を 絞った やり直しも false（成績に 残さない）", () => {
     let s = createQuizSession(set, [set.questions[0]!]);
     while (s.phase.kind !== "finished") {
       s = s.phase.kind === "explain" ? quizReducer(s, { type: "next" }) : answerCorrectly(s);
     }
     expect(isWholeSetRun(s, set.questions.length)).toBe(false);
+  });
+
+  /*
+   * 順番を 見ない 語群穴埋め（`unordered`）。
+   * 「5つの サービスを えらぶ」は 並びに 意味が 無いので、そろって いれば 合格に する
+   *（2026-08-25 の 指定）。順番を おぼえて いないと 落ちるのは 調べる 練習に ならない。
+   */
+  it("unordered の 語群穴埋めは、並びが ちがっても そろって いれば 正解", () => {
+    const q = set.questions.find((x) => x.type === "wordbank")!;
+    if (q.type !== "wordbank") throw new Error("wordbank 問題が見つからない");
+    if (q.blanks.length < 2) throw new Error("空欄が 2つ 以上の wordbank が 要る");
+    const shuffled = [...q.blanks].reverse();
+
+    // 既定（順番を 見る）では 並びが ちがえば 合わない
+    const ordered = quizReducer(createQuizSession(set, [q]), {
+      type: "answerWordbank",
+      filled: shuffled,
+    });
+    expect(ordered.results[0]?.correct).toBe(false);
+
+    // unordered なら 同じ こたえで 合う
+    const loose = { ...q, unordered: true };
+    const unordered = quizReducer(createQuizSession({ ...set, questions: [loose] }, [loose]), {
+      type: "answerWordbank",
+      filled: shuffled,
+    });
+    expect(unordered.results[0]?.correct).toBe(true);
+
+    // 足りない ものが あれば、順番を 見なくても 合わない
+    const short = quizReducer(createQuizSession({ ...set, questions: [loose] }, [loose]), {
+      type: "answerWordbank",
+      filled: [q.blanks[0]!, ...q.blanks.slice(1).map(() => null)],
+    });
+    expect(short.results[0]?.correct).toBe(false);
+  });
+
+  /*
+   * 「もう一度」は **前の こたえを 持ったまま** 始める（2026-08-25 の 指定）。
+   * 26問の うち 2問 だけ 直したい ときに、合って いた 24問を 打ち直させない。
+   */
+  it("こたえを 渡して 作り直すと、下書きは のこり 採点だけ 消える", () => {
+    const q = set.questions.find((x) => x.type === "keyword")!;
+    const answered = quizReducer(createQuizSession(set, [q]), {
+      type: "answerKeyword",
+      input: "でたらめ",
+    });
+    expect(answered.results).toHaveLength(1);
+
+    const again = createQuizSession(set, set.questions, "all", answered.drafts);
+    expect(again.results).toHaveLength(0);
+    expect(again.drafts[q.id]).toEqual(answered.drafts[q.id]);
   });
 
   it("問題の 無い セットは 数えない（0問で 合格を 作らない）", () => {
