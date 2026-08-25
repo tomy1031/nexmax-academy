@@ -10,6 +10,7 @@ import {
   JIBUN_TOTAL,
   JUNBI_TOTAL,
   waitForAsk,
+  KAISHA,
   KAISHA_ITEMS,
   joinCall,
   leaveCall,
@@ -137,7 +138,7 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
   });
 
   await test.step("2. STEP 1 ページ「会社の 調べかたを 学ぼう」— 🔊 と ことばチップ", async () => {
-    await expect(page).toHaveURL(/article-kaisha_shirabekata$/);
+    await expect(page).toHaveURL(new RegExp(`${KAISHA.article1.path}$`));
 
     // 読み上げは 本文にも かじょうがきにも 付いている（音に 逃げる 道を ふさがない）
     const speakers = await page.getByRole("button", { name: "よみあげる" }).count();
@@ -146,8 +147,15 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
     // ことばチップ: タップすると 読み・英語・意味 が出る
     await page.getByRole("button", { name: "会社概要" }).first().click();
     await expect(page.getByText("かいしゃがいよう — Company overview")).toBeVisible();
+    /*
+     * 撮るのは **閉じる 前**。`shot` は fullPage なので ページが 動き、
+     * マウスが チップから 外れて 吹き出しが 自分で 閉じる（さし絵が 増えて
+     * ページが 長く なった 2026-08-25 に 出た）。だから 閉じるのは
+     * マウスに たよらない Escape で 行う。
+     */
     await shot(page, "02-article-vocab");
-    await page.getByRole("button", { name: "とじる" }).click();
+    await page.keyboard.press("Escape");
+    await expect(page.getByText("かいしゃがいよう — Company overview")).toHaveCount(0);
 
     await readToEnd(page);
     await frameNext(page).click();

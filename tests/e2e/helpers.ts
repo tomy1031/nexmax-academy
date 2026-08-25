@@ -33,9 +33,14 @@ export interface KaishaItem {
  */
 export const KAISHA = {
   /** STEP 1 会社の 調べかたを 学ぼう。 */
+  /*
+   * ページは この ステージに **1本だけ**なので、URL に ID が 付かない
+   *（`stageContentPath`: 同じ 種別が 1つなら `/<ステージ>/<種別>`）。
+   * 2本目を 足したら ここも `-kaisha_shirabekata` に 戻る。
+   */
   article1: {
     id: "kaisha_shirabekata",
-    path: "/kaisha/article-kaisha_shirabekata",
+    path: "/kaisha/article",
     kind: "ページ",
   },
   site: {

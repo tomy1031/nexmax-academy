@@ -25,7 +25,7 @@ test("なにも おわっていない 端末では、6番目の ミーティン�
 
   // 行き止まりにしない: さきに おわらせる 教材へ 行ける
   await page.getByRole("link", { name: "を ひらく" }).click();
-  await expect(page).toHaveURL(new RegExp(`${KAISHA.article1.id}$`));
+  await expect(page).toHaveURL(new RegExp(`${KAISHA.article1.path}$`));
 });
 
 test("それでも 見る を おせば、先生も 中身を たしかめられる", async ({ page }) => {

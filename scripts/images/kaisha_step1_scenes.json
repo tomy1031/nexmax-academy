@@ -59,7 +59,7 @@
       "dest": "public/img/articles/kaisha_shirabekata/d1.webp",
       "title": "分からない",
       "output": "Output: one square illustration, 1024x1024. Close view — the subject fills the frame edge to edge.",
-      "scene": "Scene: THE STUDENT is a young Cambodian woman in her early twenties with shoulder-length straight dark hair and a warm coral-orange blouse; keep her face, hair and blouse exactly the same in every picture. Close on her face and shoulders as she looks at her laptop with a puzzled expression — head tilted, one eyebrow raised, mouth a small unsure line. Nothing floats around her; only her face tells the feeling."
+      "scene": "Scene: THE STUDENT is a young Cambodian woman in her early twenties with shoulder-length straight dark hair and a warm coral-orange blouse; keep her face, hair and blouse exactly the same in every picture. Close on her face and shoulders at her desk. She looks at her laptop and tilts her head to one side, eyes wide and curious, one finger resting on her cheek, lips slightly open as if thinking \"hmm?\". Her expression is gently puzzled and still friendly - not angry, not sad, no frown. Warm daylight, a plant behind her."
     },
     {
       "out": "d2",
@@ -136,28 +136,28 @@
       "dest": "public/img/articles/kaisha_shirabekata/k5.webp",
       "title": "いろいろな 国の 人と いっしょに 仕事",
       "output": "Output: one landscape illustration, 1536x1024. The room fills the frame edge to edge.",
-      "scene": "Scene: a bright meeting room with warm cream walls, a plant and daylight. Three colleagues sit on one side of a table, looking up at a large wall screen. The screen is divided into four plain video-call tiles, each showing one smiling person of a different appearance, waving. No flags, no maps, no writing."
+      "scene": "Scene: a bright meeting room with warm cream walls, a leafy plant and daylight from a wide window. Three colleagues sit together on one side of a wooden table, looking up at a large flat wall screen. The screen shows four plain rectangles side by side; inside each rectangle is one smiling office worker seen from the chest up, and one of them raises a hand to wave. Mugs and an open laptop on the table. No writing, no flags, no maps."
     },
     {
       "out": "k6",
       "dest": "public/img/articles/kaisha_shirabekata/k6.webp",
       "title": "いろいろな お客さまと 仕事を した",
       "output": "Output: one landscape illustration, 1536x1024. The room fills the frame edge to edge.",
-      "scene": "Scene: a bright open room where a woman engineer holding a tablet talks with four different customers standing around her: a woman in a shop apron, a man in a truck-driver jacket, a man in a business suit, and a teacher with two small children beside her. Everyone is smiling. Plants and daylight."
+      "scene": "Scene: a bright open office room with plants and daylight. A woman engineer stands in the middle holding a tablet and smiling. Around her stand three customers: a woman in a shop apron, a man in a work jacket, and a man in a business suit. Everyone is smiling and listening to her."
     },
     {
       "out": "k7",
       "dest": "public/img/articles/kaisha_shirabekata/k7.webp",
       "title": "社員が 大切な 考えかたを 話し合う",
       "output": "Output: one landscape illustration, 1536x1024. The room fills the frame edge to edge.",
-      "scene": "Scene: six colleagues sitting in a loose circle on soft chairs in a bright corner of an office, leaning in and talking warmly; one gestures with open hands, another nods. Mugs on a low table, a blank flip-chart on a stand, a big window with green trees outside."
+      "scene": "Scene: five colleagues sit in a circle on soft chairs in a bright corner of an office. One of them gestures with open hands while the others lean in and nod, smiling. A low table with mugs, a blank flip-chart on a stand, and a wide window with green trees outside."
     },
     {
       "out": "k8",
       "dest": "public/img/articles/kaisha_shirabekata/k8.webp",
       "title": "学生の チームと、日本人の リーダー",
       "output": "Output: one landscape illustration, 1536x1024. The room fills the frame edge to edge.",
-      "scene": "Scene: a bright office corner. Three young students in their early twenties sit together at one long desk with open laptops. A Japanese team leader in a light blue shirt stands beside them, leaning down and pointing gently at one screen while listening. One student looks up and speaks to him; he nods warmly."
+      "scene": "Scene: a bright office corner. Three young students sit side by side at one long desk with open laptops. A Japanese team leader in a light blue shirt stands beside them, leaning down and pointing gently at one screen. The nearest student looks up and speaks to him; he nods and smiles."
     },
     {
       "out": "k9",

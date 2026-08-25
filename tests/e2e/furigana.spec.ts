@@ -39,8 +39,7 @@ const KNOWN_BARE_KANJI: readonly string[] = [
  */
 const SCREENS: readonly { name: string; path: string; open: KaishaItem }[] = [
   { name: "ステージのトップ", path: "/kaisha", open: KAISHA.article1 },
-  { name: "ページ（しらべかた）", path: KAISHA.article1.path, open: KAISHA.article1 },
-  { name: "ページ（調査シートを うめよう）", path: KAISHA.article2.path, open: KAISHA.article2 },
+  { name: "ページ（会社の 調べかた）", path: KAISHA.article1.path, open: KAISHA.article1 },
   { name: "リンク（学習用サイト）", path: KAISHA.site.path, open: KAISHA.site },
   { name: "もんだい（調査シート）", path: KAISHA.sheet.path, open: KAISHA.sheet },
   { name: "もんだい（会社と 自分）", path: KAISHA.jibun.path, open: KAISHA.jibun },
