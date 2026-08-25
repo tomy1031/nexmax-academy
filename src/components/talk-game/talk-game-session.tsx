@@ -120,6 +120,12 @@ interface TurnResult {
   nextAsk: string;
 }
 
+/** 「直す ところは 無い」を 表す 中身を 空に そろえる（画面に「null」と 出さない）。 */
+function cleanFix(value: string): string {
+  const trimmed = value.trim();
+  return ["null", "none", "なし", "無し", "-", "—"].includes(trimmed) ? "" : trimmed;
+}
+
 function subscribeToProfile(onChange: () => void) {
   window.addEventListener("storage", onChange);
   return () => window.removeEventListener("storage", onChange);
@@ -358,7 +364,8 @@ export function TalkGameSession({
         discovered: step.discovered,
         said,
         praise: answer.ok ? answer.judgement.praise : "じぶんの ことばで いえましたね。",
-        fix: answer.ok ? answer.judgement.fix : "",
+        /* AIが 「null」「なし」の 文字を 返す ことが ある。そのまま 出すと 画面に 出る */
+        fix: answer.ok ? cleanFix(answer.judgement.fix) : "",
         example: answer.ok ? answer.judgement.exampleAnswer : "",
         reply: answer.ok ? answer.judgement.reply : "",
         nextAsk: answer.ok ? answer.judgement.nextAsk : "",

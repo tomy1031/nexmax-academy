@@ -29,6 +29,7 @@ import {
 import { asksToSkip, needsJapaneseInput } from "@/lib/meeting/input";
 import { clearMeetingResume, restoreMeeting, saveMeetingResume } from "@/lib/meeting/resume";
 import { JUDGE_FURIGANA } from "@/components/meeting/ui-furigana";
+import { AI_KANJI_FURIGANA } from "@/lib/ai-kanji";
 import { fillName, shouldReplayAsk, stripDirections } from "@/lib/meeting/speech";
 import { normalizeReading } from "@/lib/text/normalize";
 import {
@@ -256,6 +257,18 @@ export function MeetingSession({
 }) {
   const furigana = useMemo(() => buildFuriganaIndex(meeting.furigana ?? []), [meeting.furigana]);
   /**
+   * 相手の 吹き出し用の 読み辞書。
+   *
+   * 吹き出しには **教材の ことば**（札の 答え・おわりの ことば）と
+   * **AIが その場で 書いた 文**が 混ざる。前者は 教材の 読み辞書、後者は
+   * AIに 許した ことばの 読み（`AI_KANJI_FURIGANA`）で 覆う——どちらか 片方だと
+   * 必ず 裸の 漢字が 残る（2026-08-25）。教材の ぶんを 先に 置いて 優先する。
+   */
+  const hostFurigana = useMemo(
+    () => buildFuriganaIndex([...(meeting.furigana ?? []), ...AI_KANJI_FURIGANA]),
+    [meeting.furigana],
+  );
+  /**
    * 端末に 残って いた ところ。**開いた ときに 1回だけ 読む**。
    *
    * 購読（`useSyncExternalStore`）に しないのは、別の タブで 保存された ときに
@@ -406,13 +419,30 @@ export function MeetingSession({
    * 戻れる ように した ので、位置（`index`）で 進みぐあいを 決めると
    * **戻った 瞬間に 聞く ばんが ロックし直される**。一度 通ったら 戻さない。
    */
+  /**
+   * **聞く ばん（学習者が 相手に しつもんする）が ある 教材か。**
+   *
+   * `discover`（開く 札）が 1つも 無い 教材は、相手の しつもんに 答えたら そこで おわり
+   *（2026-08-25 の 指定「会社を知るについては ヘンディへの 質問は 不要。次への ロックを
+   * 解除してほしい」）。札の 無い まま 聞く ばんへ 送ると、開く ものが 無いので
+   * **修了が 書かれず 先へ 進めない**——実際に そう なって いた。
+   */
+  const hasListenRound = meeting.discover.length > 0;
+
   const [round1Done, setRound1Done] = useState(
     () => resume.round === "listen" || resume.index >= meeting.questions.length,
   );
   /** **いま 見て いる ばん**——学習者が 帯を 押して 選ぶ。 */
   const [round, setRound] = useState<"ask" | "listen">(resume.round);
   /** 聞く ばん（ラウンド2）を 見て いるか。画面の 出し分けは これで 決める。 */
-  const done = round === "listen";
+  /*
+   * しつもんが おわった あとの 画面か。
+   *
+   * 聞く ばんの ある 教材では「聞く ばんに いる」こと、無い 教材では
+   * **答えきった こと**が それに あたる（2026-08-25）。ここを 分けないと、
+   * 1つの ばんの 教材で おわりの ことばも「話せた ことを 見る」も 出ない。
+   */
+  const done = hasListenRound ? round === "listen" : round1Done;
   const live = voice.status === "live";
 
   /*
@@ -966,7 +996,7 @@ export function MeetingSession({
        * ぜんぶ 答えた。**進むのと ばんの 切りかえを 1か所で やる**——
        * 別の 効果に すると、進み方に よって 切りかわったり しなかったり する。
        */
-      setRound("listen");
+      if (hasListenRound) setRound("listen");
       setRound1Done(true);
       /*
        * **ばんの 変わり目の ことばを チャットに 残す**（2026-08-21 の 指定）。
@@ -994,8 +1024,12 @@ export function MeetingSession({
       setRecord(today);
       // 保存が できない 端末（プライベートモード等）でも、画面の カードは 出る
       saveMeetingRecord(today);
-      // ぜんぶ 答えた ことを 1枚に して 見せる（つぎは 聞く ばん）
-      setCertificate("round1");
+      /*
+       * ぜんぶ 答えた ことを 1枚に して 見せる。聞く ばんの ある 教材は
+       * まだ 途中（"round1"）、無い 教材は **これで おわり**（"round2"）——
+       * 閉じた ときに 修了が 書かれる（`closeCertificate`）。
+       */
+      setCertificate(hasListenRound ? "round1" : "round2");
     } else {
       setGained(0);
     }
@@ -1290,6 +1324,7 @@ export function MeetingSession({
             entry={entry}
             hostName={meeting.host.name}
             furigana={furigana}
+            hostFurigana={hostFurigana}
             dictionary={dictionary}
             /*
              * もう いちど 聞く。**相手が 話して いる あいだは 押せない**（音が 重なる）。
@@ -1329,7 +1364,9 @@ export function MeetingSession({
         <input
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
-          placeholder={done ? "ヘンディさんに 聞いて みましょう" : "メッセージを 入力…"}
+          placeholder={
+            done && hasListenRound ? "ヘンディさんに 聞いて みましょう" : "メッセージを 入力…"
+          }
           aria-label="こたえを 入力する"
           disabled={!canType}
           className="border-hairline text-ink min-w-0 flex-1 rounded-full border-2 bg-white px-3 py-1.5 text-sm font-bold disabled:opacity-50"
@@ -1425,7 +1462,15 @@ export function MeetingSession({
       {(
         [
           { key: "ask", label: `${meeting.host.name}さんから しつもん`, locked: false },
-          { key: "listen", label: `${meeting.host.name}さんに しつもん`, locked: !round1Done },
+          ...(hasListenRound
+            ? ([
+                {
+                  key: "listen",
+                  label: `${meeting.host.name}さんに しつもん`,
+                  locked: !round1Done,
+                },
+              ] as const)
+            : []),
         ] as const
       ).map((step, at) => {
         const now = round === step.key;
@@ -1454,7 +1499,7 @@ export function MeetingSession({
           </button>
         );
       })}
-      {!round1Done ? (
+      {hasListenRound && !round1Done ? (
         <span className="text-ink-faint ml-1 shrink-0 text-[11px] font-bold">
           <RubyText text="全部 答えると 開きます" index={CHROME_FURIGANA} show />
         </span>
@@ -1662,7 +1707,12 @@ export function MeetingSession({
          */
         onLeft={() => {
           voice.stop();
-          if (round1Done) finishMeeting();
+          /*
+           * おわりの しゅうりょうしょうは **まだ 出して いない ときだけ** 出す。
+           * 1つの ばんの 教材（`discover` が 空）は 答えきった 時点で 出して いるので、
+           * たいしつで もう一度 出すと 同じ 板が 2回 かぶさる（2026-08-25）。
+           */
+          if (round1Done && hasListenRound) finishMeeting();
         }}
         participants={[meeting.host]}
         activeSpeaker={reply ? meeting.host.id : null}
@@ -1773,12 +1823,15 @@ function ChatLine({
   entry,
   hostName,
   furigana,
+  hostFurigana,
   dictionary,
   onReplay,
 }: {
   entry: ChatEntry;
   hostName: string;
   furigana: FuriganaIndex;
+  /** 相手の 吹き出し用（教材の 読み ＋ AIに 許した ことばの 読み）。 */
+  hostFurigana: FuriganaIndex;
   dictionary?: readonly DictionaryEntry[];
   onReplay?: () => void;
 }) {
@@ -1850,7 +1903,14 @@ function ChatLine({
           {entry.kind === "ask" ? (
             <DictionaryText text={entry.text} index={furigana} show dictionary={dictionary} />
           ) : (
-            entry.text
+            /*
+             * AIの 返事にも ルビを 合成する（2026-08-25）。AIには
+             * `AI_KANJI_FURIGANA` の ことばだけ 漢字で 書かせて いて、
+             * `JUDGE_FURIGANA` は その 一覧を 含む——だから 出て くる 漢字には
+             * かならず 読みが 付く。学習者じしんの 文にも 当たるが、
+             * 辞書に ある 語だけ 覆われる ので じゃまに ならない。
+             */
+            <RubyText text={entry.text} index={hostFurigana} show />
           )}
         </p>
       </div>

@@ -25,6 +25,7 @@
 
 import { z } from "zod";
 import { FORBIDDEN_LEARNER_WORDS } from "@/content/schema";
+import { AI_KANJI_WORDS, usesOnlyAllowedKanji } from "@/lib/ai-kanji";
 
 /**
  * 何回まで言い直させるか（同じ質問への発話回数の上限）の **既定**。
@@ -56,7 +57,6 @@ export function reachedLimit(attempt: number, limit: RetryLimit): boolean {
 const MAX_GLOSSARY = 8;
 
 /** 漢字（CJK統合漢字＋々）。かな強制の検査に使う。 */
-const KANJI = /[一-鿿々]/u;
 
 export type JudgeGrade = "veryGood" | "good" | "miss";
 
@@ -212,14 +212,33 @@ export function learnerFacingTexts(judge: JudgeOutput): string[] {
   );
 }
 
-/** かなだけで書けているか（漢字が1つでもあれば false）。 */
+/**
+ * 読める 形で 書けて いるか。
+ *
+ * **漢字が あっても よい**——ただし `AI_KANJI_FURIGANA` の ことばだけ
+ *（そこから ルビの 索引を 作るので、ふりがなが かならず 付く）。
+ * 一覧に 無い 漢字が 1つでも あれば false（学習者は そこで 止まる・規律2）。
+ */
 export function isKanaOnly(judge: JudgeOutput): boolean {
-  return !learnerFacingTexts(judge).some((text) => KANJI.test(text));
+  return learnerFacingTexts(judge).every((text) => usesOnlyAllowedKanji(text));
 }
 
-/** 漢字が混ざっていた文（言い直しを頼むときに、どこが駄目かを見せる）。 */
+/** つかえない 漢字が 混ざって いた 文（言い直しを 頼む ときに 見せる）。 */
 export function kanjiOffenders(judge: JudgeOutput): string[] {
-  return learnerFacingTexts(judge).filter((text) => KANJI.test(text));
+  return learnerFacingTexts(judge).filter((text) => !usesOnlyAllowedKanji(text));
+}
+
+/**
+ * 「直す ところは 無い」を 表す 中身か。
+ *
+ * 道具の 引数は null を 持てないので、AIは 空文字を 返す 決まりだが、
+ * **`"null"` や `"なし"` と いう 文字を そのまま 返す ことが ある**——
+ * それを 通すと 画面に「❗ null」と 出る（2026-08-25 実発生）。
+ */
+function isEmptyFix(value: unknown): boolean {
+  if (typeof value !== "string") return false;
+  const trimmed = value.trim();
+  return trimmed === "" || ["null", "none", "なし", "無し", "-", "—"].includes(trimmed);
 }
 
 /**
@@ -230,7 +249,7 @@ export function kanjiOffenders(judge: JudgeOutput): string[] {
  */
 export function parseJudge(raw: unknown, attempt: number, limit?: RetryLimit): JudgeResult | null {
   const shaped =
-    raw && typeof raw === "object" && (raw as { fix?: unknown }).fix === ""
+    raw && typeof raw === "object" && isEmptyFix((raw as { fix?: unknown }).fix)
       ? { ...(raw as Record<string, unknown>), fix: null }
       : raw;
   const parsed = judgeOutputSchema.safeParse(shaped);
@@ -343,11 +362,17 @@ export function buildJudgePrompt(context: JudgeContext, kanaRetry = false): stri
     "  同じ 書き方に する。学習者が じぶんで 使えた ことばは 入れない。多くて 8つ",
     "",
     "## かならず まもる こと",
-    "- reply・praise・fix・exampleAnswer は **ひらがなと カタカナだけ**で 書く。",
-    "  漢字は 1文字も つかわない（この アプリは その場で 作った 文に ふりがなを",
-    "  つけられないので、漢字が あると 学習者が そこで 止まります）",
-    "- ことばの あいだに 空白を 入れて 分かち書きに する（例:「わたしは 学生です」→",
-    "  「わたしは がくせいです」）",
+    /*
+     * 漢字は **一覧の ことばだけ**（2026-08-25 の 指定「全部ひらがなで出力されて
+     * 読みにくい。簡単な漢字はつかってほしい」）。一覧と 同じ ものから ルビの 索引を
+     * 作って いる（`src/lib/ai-kanji.ts`）ので、画面に 出る 漢字には かならず
+     * ふりがなが 付く。一覧に 無い 漢字は ふりがなが 付かず、学習者が そこで 止まる。
+     */
+    "- reply・praise・fix・exampleAnswer に つかえる 漢字は **つぎの ことばだけ**です。",
+    `  ${AI_KANJI_WORDS.join("・")}`,
+    "  この 一覧に 無い ことばは **ひらがな**で 書いて ください。",
+    "- **国の 名前・外来語は カタカナ**で 書きます（「べとなむ」では なく「ベトナム」）。",
+    "- ことばの あいだに 空白を 入れて 分かち書きに する（例:「わたしは がくせい です」）",
     /*
      * 禁止語は**正典から取ってくる**（このファイルに例として書き並べると、
      * その文字列自体が禁止語の検査に当たって、このファイルが保存できなくなる）。
@@ -362,8 +387,9 @@ export function buildJudgePrompt(context: JudgeContext, kanaRetry = false): stri
   if (kanaRetry) {
     lines.push(
       "",
-      "## 前の 返事は 漢字が 入って いました",
-      "もう一度、reply・praise・fix・exampleAnswer を **ひらがなと カタカナだけ**で 書いて ください。",
+      "## 前の 返事に、つかえない 漢字が 入って いました",
+      "もう一度、上の 一覧に ある 漢字だけを つかって 書き直して ください。",
+      "一覧に 無い ことばは ひらがなに します。",
     );
   }
   return lines.filter((line) => line !== "").join("\n");

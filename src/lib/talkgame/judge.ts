@@ -21,9 +21,8 @@
  */
 
 import { z } from "zod";
+import { AI_KANJI_WORDS, usesOnlyAllowedKanji } from "@/lib/ai-kanji";
 import type { TalkObservations, TalkRound } from "@/lib/talkgame/affinity";
-
-const KANJI = /[一-鿿]/;
 
 /** 英語の 語釈の 上限（多すぎると 画面が 埋まる）。 */
 export const MAX_GLOSSARY = 8;
@@ -147,7 +146,7 @@ export function learnerFacingTexts(output: TalkOutput): string[] {
 }
 
 export function isKanaOnly(output: TalkOutput): boolean {
-  return !learnerFacingTexts(output).some((text) => KANJI.test(text));
+  return learnerFacingTexts(output).every((text) => usesOnlyAllowedKanji(text));
 }
 
 /** 道具の 引数を 画面に 出せる 形に する。通らなければ null（呼ぶ側が 落とす）。 */
@@ -265,15 +264,24 @@ export function buildTalkPrompt(context: TalkContext, kanaRetry = false): string
     "- glossary: 上の 文に 出てくる、N5には むずかしい ことばの 英語（多くて 8つ）",
     "",
     "## ことばの 決まり",
-    "学生が 読む 文（reply・praise・fix・exampleAnswer・nextAsk・topic）は **ひらがなと カタカナだけ**。",
-    "漢字は 1文字も つかいません。ことばの あいだに 空白を 入れます。",
+    /*
+     * 漢字は **一覧の ことばだけ**（2026-08-25 の 指定）。同じ 一覧から ルビの 索引を
+     * 作るので、画面に 出る 漢字には かならず ふりがなが 付く（`src/lib/ai-kanji.ts`）。
+     * ただし `topic`（札の ラベル）は これまでどおり かなと 英字だけ——
+     * 札は 好感度の 記録に 残る 短い ことばで、ルビの 索引を 持ち歩かない。
+     */
+    "学生が 読む 文（reply・praise・fix・exampleAnswer・nextAsk）に つかえる 漢字は",
+    `**つぎの ことばだけ**です: ${AI_KANJI_WORDS.join("・")}`,
+    "この 一覧に 無い ことばは ひらがなで 書きます。",
+    "**国の 名前・外来語は カタカナ**で 書きます（「べとなむ」では なく「ベトナム」）。",
+    "ことばの あいだに 空白を 入れます。",
     "学生を 否定する ことばは つかいません。できた ことから 先に 書きます（設計01 P8）。",
   ];
   if (kanaRetry) {
     lines.push(
       "",
       "## もう一度",
-      "さっきの 返事に 漢字が 入って いました。ひらがなと カタカナだけで 書き直して ください。",
+      "さっきの 返事に、つかえない 漢字が 入って いました。上の 一覧に ある 漢字だけで 書き直して ください。",
     );
   }
   return lines.filter((line) => line !== "").join("\n");
