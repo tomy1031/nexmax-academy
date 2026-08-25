@@ -116,8 +116,9 @@ export function StageDetail({
         {/*
           見出しは **タイトル全体に よみ** をふる（2026-08-18）。ステージの 名前も
           漢字＋ふりがなで 書けるようにしたので、読みは ルビで 出す。
-          漢字が 無い ときだけ、これまでどおり「（よみ）」の行で 見せる——
-          かなの 上に かなを 重ねても 読みやすくは ならない。
+          漢字が 無い ときは **よみを 出さない**（2026-08-25 の 指定）——
+          かなの 上に かなを 重ねても、かっこで 添えても 読みやすくは ならず、
+          「チュートリアル（ちゅーとりある）」のような 読み違いの もとに なる。
         */}
         <h1 className="text-navy text-2xl font-black">
           {HAS_KANJI.test(stage.title) ? (
@@ -129,9 +130,6 @@ export function StageDetail({
             stage.title
           )}
         </h1>
-        {!HAS_KANJI.test(stage.title) && (
-          <p className="text-ink-soft text-xs font-bold">（{stage.reading}）</p>
-        )}
         <p className="text-ink mt-2 text-sm font-bold">
           <RubyText text={stage.description} furigana={stage.furigana} show={furiganaOn} />
         </p>
