@@ -27,6 +27,7 @@
  * この サイトと 関係の 無い 語が 混ざって、探して いる 語が 埋もれる
  *（制約 2026-08-18「辞書は 多いほど 良いのでは ない」）。
  */
+import { execFileSync } from "node:child_process";
 import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
@@ -216,12 +217,31 @@ ${body}
 `;
 }
 
+/*
+ * 書き出した あと **Prettier に かける**。
+ *
+ * `.js` は lint-staged の 対象に 入って いない（`*.{ts,tsx,mjs,css,md,json}`）ので、
+ * コミット時の 自動整形が 届かない。素の まま 出すと `npm run format:check` が
+ * CI で 落ち、**直しかたが 分からない 落ち方**に なる（2026-08-25 に 2回 出した）。
+ * ここで 整えて おけば、生成した ものは いつでも 整形ずみに なる。
+ */
+function writeFormatted(path, source) {
+  writeFileSync(path, source);
+  try {
+    execFileSync("npx", ["prettier", "--write", "--log-level", "silent", path], {
+      cwd: join(import.meta.dirname, ".."),
+    });
+  } catch {
+    // Prettier が 無い 環境（本番のビルドなど）では 素の ままで よい
+  }
+}
+
 async function main() {
   const { PAGES, UI } = await loadSite();
   const furigana = buildFurigana();
   const glossary = buildGlossary(PAGES, UI);
-  writeFileSync(FURIGANA_PATH, furiganaSource(furigana));
-  writeFileSync(GLOSSARY_PATH, glossarySource(glossary));
+  writeFormatted(FURIGANA_PATH, furiganaSource(furigana));
+  writeFormatted(GLOSSARY_PATH, glossarySource(glossary));
   console.log(
     `学習用サイト: 読み辞書 ${furigana.length}語 / ことばの辞典 ${glossary.length}語 を書き出しました`,
   );
