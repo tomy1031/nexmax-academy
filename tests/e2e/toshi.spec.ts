@@ -136,7 +136,7 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
     await list.first().click();
   });
 
-  await test.step("2. STEP 1 ページ「会社の リサーチ方法を 学ぼう」— 🔊 と ことばチップ", async () => {
+  await test.step("2. STEP 1 ページ「会社の 調べかたを 学ぼう」— 🔊 と ことばチップ", async () => {
     await expect(page).toHaveURL(/article-kaisha_shirabekata$/);
 
     // 読み上げは 本文にも かじょうがきにも 付いている（音に 逃げる 道を ふさがない）
@@ -153,39 +153,8 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
     await frameNext(page).click();
   });
 
-  await test.step("3. STEP 2 ページ「調査シートを うめよう」— 外のサイトへの カード", async () => {
-    await expect(page).toHaveURL(/article-kaisha_nextmake_shirabe$/);
-
-    /*
-     * 本物の サイトへの リンクは **1本だけ 残して「上級」に 降格**した
-     *（リニューアルで N4 学習者には 読みにくく なった ため。調べる 先は 学習用サイト）。
-     */
-    const external = page.locator('a[target="_blank"]');
-    await expect(external).toHaveCount(1);
-    await expect(external).toHaveAttribute("href", "https://nextmake.site/");
-    await expect(external).toHaveAttribute("rel", /noopener/);
-    await expect(external).toContainText("そとの サイト");
-
-    /*
-     * 調べる 先（学習用サイト）へは、**本文の 中の カード**から 行ける。
-     * 名前で さがすと 目次の 見出しリンクと 紛れる ので、行き先で さがす。
-     */
-    const toSite = page.locator('article a[href="/link/nextmake_gakushu_site"]');
-    await expect(toSite).toBeVisible();
-    await shot(page, "04-article-extlink");
-
-    await readToEnd(page);
-
-    /*
-     * カードを **実際に 押して** みる。ここは 2026-08-23 まで 404 だった
-     *（`/link/<id>` の ルートが 無いのに `contentHref` が それを 返していた）。
-     * 押せば ステージの 中の 本来のURLへ 送り返される。
-     */
-    await toSite.click();
+  await test.step("3. リンク「学習用サイト」— 開いて、読んで、おわる", async () => {
     await expect(page).toHaveURL(/\/kaisha\/link$/);
-  });
-
-  await test.step("4. リンク「学習用サイト」— 開いて、読んで、おわる", async () => {
     // 入れ物の カードに、切りかえの 案内が 出て いる（気づかないと 使われない）
     await expect(page.getByText(/やさしい 日本語/)).toBeVisible();
     await shot(page, "04b-link-card");
@@ -230,7 +199,7 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
     await frameNext(page).click();
   });
 
-  await test.step("5. STEP 2 もんだい「調査シート」— 26問が ぜんぶ 1ページに 出る", async () => {
+  await test.step("4. STEP 2 もんだい「調査シート」— 26問が ぜんぶ 1ページに 出る", async () => {
     await expect(page).toHaveURL(/quiz-kaisha_houkoku$/);
     await page.getByRole("button", { name: "はじめる" }).click();
 
@@ -268,7 +237,7 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
     await frameNext(page).click();
   });
 
-  await test.step("6. STEP 3 ミーティング「ヘンディさんに 報告しよう」— 型文を 見ながら 文字で 話す", async () => {
+  await test.step("5. STEP 3 ミーティング「ヘンディさんに 報告しよう」— 型文を 見ながら 文字で 話す", async () => {
     await expect(page).toHaveURL(/meeting-kaisha_houkoku_meeting$/);
 
     // 入室の前に「はなす まえに」。見出しの漢字には ふりがなが 合成されている
@@ -367,7 +336,7 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
     await frameNext(page).click();
   });
 
-  await test.step("7. STEP 4 もんだい「会社と 自分の 関係を 考えよう」— 正解の 無い 問い", async () => {
+  await test.step("6. STEP 4 もんだい「会社と 自分の 関係を 考えよう」— 正解の 無い 問い", async () => {
     /*
      * ここから 先は **自分の 考え**を 作る 段（設計 md の STEP 4）。
      * 正解が 無いので、書けば 点が 入る。ここで「ちがいます」が 出たら 設計が 壊れて いる
@@ -400,7 +369,7 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
     await frameNext(page).click();
   });
 
-  await test.step("8. STEP 5 もんだい「松井社長と 話す 準備を しよう」— 9つの 準備", async () => {
+  await test.step("7. STEP 5 もんだい「松井社長と 話す 準備を しよう」— 9つの 準備", async () => {
     /*
      * 松井社長と 話す 前に、**自分の ことばを 作って おく** 段（設計 md の STEP 5）。
      * ここで 書いた ものが、そのまま 対話の 材料に なる。
@@ -445,7 +414,7 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
     await frameNext(page).click();
   });
 
-  await test.step("9. STEP 6 対話ゲーム「松井社長と LiveAIで 話そう」— こうかんど 100%", async () => {
+  await test.step("8. STEP 6 対話ゲーム「松井社長と LiveAIで 話そう」— こうかんど 100%", async () => {
     await expect(page).toHaveURL(/meeting-kaisha_matsui$/);
     /*
      * ここは ヘンディさんの ミーティングとは **別の 画面**（願い #177）。
@@ -513,7 +482,7 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
     await page.getByRole("button", { name: "おわる" }).click();
   });
 
-  await test.step("10. ステージを おえる", async () => {
+  await test.step("9. ステージを おえる", async () => {
     const clear = page.getByRole("dialog", { name: "ステージ クリア" });
     await expect(clear).toBeVisible();
     await shot(page, "11-stage-clear");

@@ -32,16 +32,10 @@ export interface KaishaItem {
  * STEP5 社長と 話す 準備 → STEP6 社長と 話す。
  */
 export const KAISHA = {
-  /** STEP 1 会社の リサーチ方法を 学ぼう。 */
+  /** STEP 1 会社の 調べかたを 学ぼう。 */
   article1: {
     id: "kaisha_shirabekata",
     path: "/kaisha/article-kaisha_shirabekata",
-    kind: "ページ",
-  },
-  /** STEP 2 の まえがき（調査シートを うめよう）。 */
-  article2: {
-    id: "kaisha_nextmake_shirabe",
-    path: "/kaisha/article-kaisha_nextmake_shirabe",
     kind: "ページ",
   },
   site: {
@@ -80,7 +74,6 @@ export const KAISHA = {
 /** 学習者が進む順（content/stages/kaisha.json の contents[] と同じ並び）。 */
 export const KAISHA_ITEMS: readonly KaishaItem[] = [
   KAISHA.article1,
-  KAISHA.article2,
   KAISHA.site,
   KAISHA.sheet,
   KAISHA.meetingHendy,

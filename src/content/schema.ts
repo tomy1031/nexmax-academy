@@ -1148,7 +1148,16 @@ export const articleBlockSchema = z.discriminatedUnion("kind", [
   imageSlotSchema.extend({ kind: z.literal("image"), caption: plainText.optional() }),
   z.object({ kind: z.literal("callout"), tone: z.enum(["point", "care"]), text: plainText }),
   z.object({ kind: z.literal("list"), items: z.array(plainText).min(1) }),
-  z.object({ kind: z.literal("steps"), items: z.array(plainText).min(1) }),
+  /*
+   * てじゅん。**1歩ごとに 小さな 絵を 置ける**（`images[i]` が `items[i]` に 対応）。
+   * 大きな 絵を 1枚 置くと「どの 歩の 絵か」が 分からず、絵が 説明を 助けない
+   *（2026-08-25 の 指定）。省いてよい——絵の 無い てじゅんは これまで どおり 出る。
+   */
+  z.object({
+    kind: z.literal("steps"),
+    items: z.array(plainText).min(1),
+    images: z.array(imageSlotSchema).optional(),
+  }),
   /*
    * ことばの ブロック。**これからは `wordIds`（正への 参照）で 書く**。
    * `items` は 語を 直に 持って いた ころの かたちで、まだ 残って いる 記事の ため。
