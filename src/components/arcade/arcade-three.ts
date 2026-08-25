@@ -687,13 +687,32 @@ export async function createArcadeWorld(
   // 名前をキャンバスから参照できないので、端末にある丸ゴシック→ゴシックの順に頼る。
   const TERM_FONT = '"Hiragino Maru Gothic ProN", "Hiragino Sans", "Noto Sans JP", sans-serif';
 
+  /**
+   * 長い ひとことは **2行に 折る**（2026-08-25・願い #203 で センテンスが 入った）。
+   *
+   * 字の 大きさは 長さで 決まる（`820 / 長さ`）ので、1行の ままだと
+   * 「お時間を いただき、ありがとうございます」は 米粒に なる。
+   * やさしい日本語は 語の 間を あけて 書く ので、**まん中に いちばん 近い 空白**で
+   * 切れば 語の 途中で 割れない。
+   */
+  function wrapTerm(label: string): string[] {
+    if (label.length <= 12) return [label];
+    const spaces = [...label.matchAll(/\s/gu)].map((m) => m.index);
+    if (spaces.length === 0) return [label];
+    const mid = label.length / 2;
+    const at = spaces.reduce((best, i) => (Math.abs(i - mid) < Math.abs(best - mid) ? i : best));
+    return [label.slice(0, at), label.slice(at + 1)];
+  }
+
   function makeEnemyTexture(label: string, reading: string, showReading: boolean) {
     const canvas = document.createElement("canvas");
     canvas.width = 1024;
     canvas.height = 512;
     const ctx = canvas.getContext("2d")!;
     const aura = fieldPreset(field).aura;
-    const fs = Math.min(200, Math.floor(820 / label.length));
+    const lines = wrapTerm(label);
+    const longest = Math.max(...lines.map((line) => line.length));
+    const fs = Math.min(200, Math.floor(820 / longest));
     const cy = showReading && reading ? 300 : 256; // 読みを上に出すときは漢字を少し下げる
     // 明るいフィールドでも読めるように、うすい下地を敷く
     const bg = ctx.createRadialGradient(512, cy, 20, 512, cy, 430);
@@ -705,27 +724,31 @@ export async function createArcadeWorld(
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.font = "900 " + fs + "px " + TERM_FONT;
+    // 2行の ときは 上下に 振り分ける（1行なら これまでどおり まん中）
+    const step = fs * 1.15;
+    const ys = lines.map((_, i) => cy + (i - (lines.length - 1) / 2) * step);
     // ワールド色のネオングロー
     ctx.save();
     ctx.shadowColor = aura;
     ctx.shadowBlur = 46;
     ctx.lineWidth = fs * 0.1;
     ctx.strokeStyle = aura;
-    ctx.strokeText(label, 512, cy);
+    lines.forEach((line, i) => ctx.strokeText(line, 512, ys[i]!));
     ctx.restore();
     // 黒縁 → グラデーションの本体
     ctx.lineWidth = fs * 0.13;
     ctx.strokeStyle = "rgba(0,0,0,0.9)";
-    ctx.strokeText(label, 512, cy);
-    const tg = ctx.createLinearGradient(0, cy - fs / 2, 0, cy + fs / 2);
+    lines.forEach((line, i) => ctx.strokeText(line, 512, ys[i]!));
+    const top = ys[0]! - fs / 2;
+    const tg = ctx.createLinearGradient(0, top, 0, ys[lines.length - 1]! + fs / 2);
     tg.addColorStop(0, "#ffffff");
     tg.addColorStop(0.55, "#eef6ff");
     tg.addColorStop(1, "#b8d8ff");
     ctx.fillStyle = tg;
-    ctx.fillText(label, 512, cy);
+    lines.forEach((line, i) => ctx.fillText(line, 512, ys[i]!));
     if (showReading && reading) {
       const rfs = Math.min(92, Math.floor(740 / reading.length));
-      const ry = cy - fs * 0.6 - rfs * 0.5;
+      const ry = top - fs * 0.1 - rfs * 0.5;
       ctx.font = "800 " + rfs + "px " + TERM_FONT;
       ctx.save();
       ctx.shadowColor = "rgba(255,213,74,0.9)";

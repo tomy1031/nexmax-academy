@@ -94,8 +94,23 @@ export function ApproachClock({ remaining }: { remaining: number }) {
  * 学習者が言葉を見られるように、どのモードでも出す。
  */
 export function McqTerm({ term, reading }: { term: string; reading: string }) {
+  /*
+   * **長い ひとことでも 画面に 収める**（2026-08-25・願い #203 で センテンスが 入った）。
+   *
+   * 前は 1行 固定（`whitespace-nowrap`）で、「これからの 計画を 教えて ください」は
+   * 両はしが 画面の 外に 出て いた（390px の 実機で 実際に 切れた）。読めない まま
+   * 4つの こたえを 選ばせる ことに なるので、**長さで 字を 小さくし、折り返す**。
+   */
+  const size =
+    term.length <= 8
+      ? "text-[38px] sm:text-[56px]"
+      : term.length <= 14
+        ? "text-[28px] sm:text-[42px]"
+        : "text-[22px] sm:text-[34px]";
   return (
-    <span className="pointer-events-none absolute top-[40%] left-1/2 -translate-x-1/2 -translate-y-1/2 text-center text-[38px] leading-tight font-black whitespace-nowrap text-white sm:text-[56px]">
+    <span
+      className={`pointer-events-none absolute top-[40%] left-1/2 max-w-[92vw] -translate-x-1/2 -translate-y-1/2 text-center leading-tight font-black text-white ${size}`}
+    >
       <ruby>
         {term}
         <rt style={{ color: "#4ee1ff" }}>{reading}</rt>
