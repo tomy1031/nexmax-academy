@@ -50,7 +50,7 @@ import {
 } from "@/components/ruby-text";
 import { CARD_EDGE, CARD_EDGE_SM, CHIP_EDGE } from "@/components/card-edge";
 import { findAllGlossaryTerms } from "@/content/glossary";
-import { insertPersonalityResult, updateOwnDetails, upsertOwnProfile } from "@/lib/profile-db";
+import { insertPersonalityResultOnce, updateOwnDetails, upsertOwnProfile } from "@/lib/profile-db";
 import { areNamesValid, type LearnerNames } from "@/lib/name";
 import { isSchoolChosen, type LearnerSchool } from "@/lib/school";
 import {
@@ -577,7 +577,9 @@ export function WelcomeWizard({
         languageSwitched: languageSwitchedRef.current,
       });
       try {
-        await insertPersonalityResult({
+        // 「同じ20問が直前に入っていれば積まない」の関門つき。ログインした時点の登録
+        // （src/lib/register-on-login.ts）が同じ答えを先に送っていることがあるため。
+        await insertPersonalityResultOnce({
           personalityType: resultCode,
           answers: completedAnswers,
           scores,

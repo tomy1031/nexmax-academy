@@ -209,21 +209,27 @@ export async function updateOwnDetails(
   return data as ProfileRow;
 }
 
-export async function insertPersonalityResult(
-  data: PersonalityResultInput,
-): Promise<PersonalityResultRow> {
-  const supabase = requireClient();
+/** ログインしている本人。していなければ投げる。 */
+async function requireUser(supabase: ReturnType<typeof requireClient>) {
   const {
     data: { user },
-    error: userError,
+    error,
   } = await supabase.auth.getUser();
-  if (userError) throw userError;
+  if (error) throw error;
   if (!user) throw new Error("Authentication is required.");
+  return user;
+}
 
+/** 台帳へ積む本体。本人の確認は呼ぶ側で済ませておく（同じ問い合わせを二度打たないため）。 */
+async function insertResultFor(
+  supabase: ReturnType<typeof requireClient>,
+  profileId: string,
+  data: PersonalityResultInput,
+): Promise<PersonalityResultRow> {
   const { data: result, error } = await supabase
     .from("personality_results")
     .insert({
-      profile_id: user.id,
+      profile_id: profileId,
       personality_type: data.personalityType,
       answers: data.answers,
       scores: data.scores,
@@ -237,12 +243,57 @@ export async function insertPersonalityResult(
   return result as PersonalityResultRow;
 }
 
+export async function insertPersonalityResult(
+  data: PersonalityResultInput,
+): Promise<PersonalityResultRow> {
+  const supabase = requireClient();
+  const user = await requireUser(supabase);
+  return insertResultFor(supabase, user.id, data);
+}
+
 /**
  * 記録台帳テーブルが未作成（マイグレーション未適用）か。
  * 履歴は補助データなので、無いときは「空」として扱い画面を止めない。
  */
 function isMissingResultsTable(error: { code?: string } | null): boolean {
   return error?.code === "42P01";
+}
+
+/**
+ * 記録台帳へ1本だけ積む。**同じ20問が直前に入っていれば積まない**（2026-08-25）。
+ *
+ * なぜ要るか: 同じ20問を送る道が2つになった。ログインした時点の登録
+ * （`src/lib/register-on-login.ts` — 端末に残っていた答えを送る）と、`/welcome` の
+ * 保存である。ログインの直後に開いた `/welcome` は**開いた時点の下書き**を画面に
+ * 持っているので、登録が済んだあとでも同じ答えをもう一度保存しうる。台帳が二重に
+ * なると、先生の画面では「2回受けた」ように見える。
+ *
+ * 直前の1本だけを見る（全部を読み比べない）。台帳は受験の順に積むので、同じ答えが
+ * **連続している**ことだけが「二重に届いた」の印であり、間に別の回が挟まっていれば
+ * それは本当に受け直した記録である。
+ *
+ * @returns 積んだ行。積まなかったときは null。
+ */
+export async function insertPersonalityResultOnce(
+  data: PersonalityResultInput,
+): Promise<PersonalityResultRow | null> {
+  const supabase = requireClient();
+  const user = await requireUser(supabase);
+
+  const { data: latest, error } = await supabase
+    .from("personality_results")
+    .select("answers")
+    .eq("profile_id", user.id)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  // 台帳がまだ無いなら「前の記録は無い」として進む（履歴は補助データ）。
+  if (error && !isMissingResultsTable(error)) throw error;
+
+  const previous = (latest as { answers?: PersonalityAnswer[] } | null)?.answers;
+  if (Array.isArray(previous) && previous.join("") === data.answers.join("")) return null;
+
+  return insertResultFor(supabase, user.id, data);
 }
 
 export async function fetchResultsForProfile(profileId: string): Promise<PersonalityResultRow[]> {
