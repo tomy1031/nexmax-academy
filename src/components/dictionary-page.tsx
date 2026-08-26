@@ -103,13 +103,20 @@ export function DictionaryPage({ entries }: { entries: readonly DictionaryEntry[
               <p className="border-hairline text-ink-soft mt-2 border-t pt-2 text-xs font-semibold">
                 {entry.meaningEn}
               </p>
-              <Link
-                prefetch={false}
-                href={`/arcade/${entry.stageId}`}
-                className="text-sky mt-2 inline-block text-xs font-black underline underline-offset-4"
-              >
-                🕹️ {entry.stageTitle} で あそぶ
-              </Link>
+              {/*
+                リンクは **単語テストに 出て いる ことば だけ**。辞書には 出るが
+                テストには 出ない 語も ある（読む ための 助けは 多くて よく、
+                おぼえる 語は その中から えらぶ・2026-08-25 の指定）。
+              */}
+              {entry.stageId ? (
+                <Link
+                  prefetch={false}
+                  href={`/arcade/${entry.stageId}`}
+                  className="text-sky mt-2 inline-block text-xs font-black underline underline-offset-4"
+                >
+                  🕹️ {entry.stageTitle} で あそぶ
+                </Link>
+              ) : null}
             </li>
           ))}
         </ul>

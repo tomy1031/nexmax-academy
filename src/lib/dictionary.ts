@@ -1,22 +1,27 @@
 /**
- * 辞書 — 単語ステージを ことば単位で 畳んだもの
+ * 辞書 — 学習者が **読むため**の 引き先（ことばの 正を そのまま 畳んだもの）
  *
- * **新しい保存先は作らない。** 辞書は単語ステージ（`content/wordstages/*.json` と
- * スタジオで作ったもの）の集合であって、別のデータではない。
+ * **ポップアップ辞書と 単語テストは 別の もの**（2026-08-25 の指定）。
  *
- * そうする理由は重複である。同じ「報告」が3つのステージの教材に出てきたとき、
- * 辞書を別に持つと「単語ゲームの報告」と「辞書の報告」が別々に育ち、
- * 説明文がいつのまにか食い違う。畳めば、ことばは1つしか存在しえない。
+ *   ことばの 正（content/vocab/vocabulary.json）
+ *     ├─► **辞書**（この ファイル）… 本文・ミーティング・`/dictionary` の ふきだし。
+ *     │     読む ための 助けなので **多くて よい**
+ *     └─► **単語テスト**（`content/wordstages/*.json`）… その中から 先生が えらんだ 一部。
+ *           おぼえる ものなので 少なく 厳しく えらぶ
  *
- * 同じ `term` が2つ以上の単語ステージにあるときは**先に出てきたほうが勝つ**。
- * 並びは呼ぶ側が決める（ふつうは ID 順）。あとから足した課で説明を書き換えても、
- * 学習者が最初に習ったときの説明が辞書に残る——習った説明と辞書が違うほうが困る。
+ * 前は 辞書を **単語テストを 畳んで** 作って いた。すると「テストから 外す」と
+ * 「意味が 引けなく なる」が いつも 同時に 起きるので、覚えなくて よい 語まで
+ * テストに 入れる しか なかった。引き先を 正に 変えて、この 2つを 切り離す。
+ *
+ * **新しい保存先は作らない。** 語は いまも `content/vocab` の 1か所だけ。
+ * 同じ `term` が 2つ あれば **先に 出た ほうが 勝つ**（スキーマが 重複を 止めるので
+ * ふつうは 起きない）。
  *
  * 純関数だけ。node:fs も React も持たないので、ページからも scripts からも呼べる。
  */
 
-import type { FuriganaEntry } from "@/lib/text/furigana";
-import type { WordStage } from "@/content/schema";
+import { mergeFuriganaEntries, type FuriganaEntry } from "@/lib/text/furigana";
+import type { VocabBook, VocabWord, WordStage } from "@/content/schema";
 
 export interface DictionaryEntry {
   /** 見出し語（教材に出てくる表記そのまま）。 */
@@ -28,34 +33,69 @@ export interface DictionaryEntry {
   meaningEn: string;
   /** 出典教材と同じ文脈の例文。 */
   example: string;
-  /** この ことばを 最初に 出した 単語ステージ。 */
+  /**
+   * この ことばを **単語テストに 出して いる** セット。
+   * どの セットにも 入って いなければ 空——**辞書には 出るが テストには 出ない**語で、
+   * 「ことばで あそぶ」の リンクを 出さない 目じるしに なる。
+   */
   stageId: string;
   stageTitle: string;
   /**
-   * 出典の単語ステージの読み辞書。
+   * この ことばの 読み辞書。
    *
    * 説明文と例文にも漢字が入る（「配属の初日に、チームのみんなに挨拶をして回ること」）。
    * これを持ち歩かないと、辞書と吹き出しだけ**裸の漢字**になる——いちばん助けが
    * 要る場所で読めなくなるので、ここは必ず一緒に運ぶ（AGENTS.md 規律2）。
+   *
+   * **その語に 要る ぶんだけ**を 入れる。束の 読み辞書（600語超）を どの語にも
+   * 複製すると、画面に わたす 荷物が 語数ぶん ふくらむ（20人同時アクセスの 制約）。
    */
   furigana: readonly FuriganaEntry[];
 }
 
-/** 単語ステージの集まりを、ことば単位の辞書に畳む（先に出たほうが勝つ）。 */
-export function buildDictionary(stages: readonly WordStage[]): DictionaryEntry[] {
-  const byTerm = new Map<string, DictionaryEntry>();
+/** その語の 説明文・例文に 要る 読みだけを、束から 拾う。 */
+function furiganaFor(word: VocabWord, shared: readonly FuriganaEntry[]): FuriganaEntry[] {
+  const text = `${word.term}\n${word.meaningJa}\n${word.example ?? ""}`;
+  return mergeFuriganaEntries(
+    shared.filter(([surface]) => text.includes(surface)),
+    // 見出し語 そのものと、その語ごとの 足し前は **あと勝ち**（より 近い ほうが 正しい）
+    [[word.term, word.reading] as FuriganaEntry],
+    word.furigana ?? [],
+  ).map(([surface, reading]): FuriganaEntry => [surface, reading]);
+}
+
+/**
+ * ことばの 正を 辞書に する。
+ *
+ * `stages`（単語テストの セット）は **リンクを 出すため だけ**に 見る——
+ * 辞書に 載るかどうかは セットに 入って いるかと 関係ない。
+ */
+export function buildDictionary(
+  books: readonly VocabBook[],
+  stages: readonly WordStage[] = [],
+): DictionaryEntry[] {
+  const owners = new Map<string, WordStage>();
   for (const stage of stages) {
     for (const word of stage.words) {
+      if (!owners.has(word.term)) owners.set(word.term, stage);
+    }
+  }
+
+  const byTerm = new Map<string, DictionaryEntry>();
+  for (const book of books) {
+    const shared = book.furigana ?? [];
+    for (const word of book.words) {
       if (byTerm.has(word.term)) continue;
+      const owner = owners.get(word.term);
       byTerm.set(word.term, {
         term: word.term,
         reading: word.reading,
-        explanationJa: word.explanationJa,
-        meaningEn: word.meaningEn,
-        example: word.example,
-        stageId: stage.id,
-        stageTitle: stage.title,
-        furigana: stage.furigana ?? [],
+        explanationJa: word.meaningJa,
+        meaningEn: word.englishTerm ?? word.englishMeaning ?? "",
+        example: word.example ?? "",
+        stageId: owner?.id ?? "",
+        stageTitle: owner?.title ?? "",
+        furigana: furiganaFor(word, shared),
       });
     }
   }

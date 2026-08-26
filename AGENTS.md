@@ -74,7 +74,7 @@ docs/skills/      # 作業手順書（ツール共通の本体。.claude/skills/
 /houkoku/manga           その中の教材（同じ種別が1つなら ID を付けない）
 /houkoku/listening-<ID>  同じ種別が2つ以上あるときだけ ID を足す
 /arcade/<ID>             ことばアーケードは独立したアプリなので別（ステージから直行できる）
-/dictionary              辞書＝全単語ステージを term で畳んだもの（保存先は増やさない）
+/dictionary              辞書＝ことばの正（content/vocab）を term で畳んだもの（保存先は増やさない）
 ```
 
 - 組み立てと読み取りは `src/lib/stage-routes.ts` だけで行う（画面が独自に文字列を組まない）。

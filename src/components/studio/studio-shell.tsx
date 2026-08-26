@@ -584,6 +584,7 @@ export function StudioShell({
         {view.mode === "list" && section === "words" ? (
           <DictionaryView
             wordStages={merged.wordstage}
+            vocabBooks={vocabBooks}
             dbStatusOf={dbStatusOf}
             onOpen={(id) => openContent(id, "wordstage")}
             onNew={() => {

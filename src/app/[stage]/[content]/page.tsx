@@ -24,12 +24,29 @@ import {
   getSlides,
   getStage,
   listStages,
+  listVocabBooks,
   listWordStages,
 } from "@/lib/content";
 import { buildDictionary } from "@/lib/dictionary";
 import { stageStepNumber } from "@/lib/map-data";
 import { resolveStageContent, stageContentPath, stageContentSegments } from "@/lib/stage-routes";
 import { loadRef } from "../page";
+
+/**
+ * 本文の ふきだしに 出す 辞書。
+ *
+ * 引き先は **ことばの 正 ぜんぶ**（`content/vocab`）。単語テストの セットは
+ * 「○○で あそぶ」の リンクを 出すためだけに 見る——**覚える 語（テスト）と
+ * 読む ための 助け（ふきだし）は 別**（2026-08-25 の指定）。
+ *
+ * ステージの ぶんだけに 絞らないのは、本文に 出て くる ことばは 前の 課で 習った
+ * ものが 多い ため。絞ると いちばん 助けが 要る「前に 習ったが 忘れた語」に
+ * 説明が 出なくなる。
+ */
+async function learnerDictionary() {
+  const [books, stages] = await Promise.all([listVocabBooks(), listWordStages()]);
+  return buildDictionary(books, stages);
+}
 
 /**
  * ステージの中の教材（`/asakai/listening`）
@@ -194,16 +211,11 @@ async function renderContent(ref: StageContentRef) {
     case "article": {
       const article = await getArticle(ref.ref);
       if (!article) notFound();
-      /*
-       * 辞書は単語ステージを畳んだもの（src/lib/dictionary.ts）。ステージのぶんだけに
-       * 絞らないのは、本文に出てくる ことばは前の課で習ったものが多いため——
-       * このステージの単語だけに絞ると、いちばん助けが要る「前に習ったが忘れた語」に
-       * 説明が出なくなる。
-       */
+      /* ことばの意味は 正ぜんぶから 引く（`learnerDictionary`）。 */
       return (
         <ArticleView
           article={article}
-          dictionary={buildDictionary(await listWordStages())}
+          dictionary={await learnerDictionary()}
           characters={await getArticleCharacters(article)}
           embedded
         />
@@ -250,7 +262,7 @@ async function renderContent(ref: StageContentRef) {
           <TalkGameSession
             meeting={meeting}
             hostVoice={host?.voice}
-            dictionary={buildDictionary(await listWordStages())}
+            dictionary={await learnerDictionary()}
           />
         );
       }
@@ -259,13 +271,8 @@ async function renderContent(ref: StageContentRef) {
           meeting={meeting}
           hostVoice={host?.voice}
           hostMouth={host?.mouth}
-          /*
-           * ことばの 意味は 読みものと 同じ 辞書から 出す（単語ステージを 畳んだもの）。
-           * このステージの ぶんだけに 絞らないのは、しつもんに 出る ことばは
-           * 前の 課で 習った ものが 多いため——絞ると、いちばん 助けが 要る
-           * 「前に 習ったが 忘れた語」に 説明が 出なくなる。
-           */
-          dictionary={buildDictionary(await listWordStages())}
+          /* ことばの 意味は 読みものと 同じ 辞書から 出す（`learnerDictionary`）。 */
+          dictionary={await learnerDictionary()}
           embedded
         />
       );
