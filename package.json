@@ -15,6 +15,7 @@
     "format:check": "prettier --check .",
     "test": "vitest run",
     "lint:secrets": "secretlint --secretlintignore .secretlintignore '**/*'",
+    "check:migrations": "node scripts/check_migrations.mjs",
     "prepare": "husky",
     "postinstall": "node scripts/copy_pdf_worker.mjs",
     "codex:bridge": "node scripts/codex_bridge.mjs",

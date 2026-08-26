@@ -136,6 +136,31 @@ if (pendingProd.length) {
   if (pendingProd.length > 12) console.log(`  …ほか ${pendingProd.length - 12} 件`);
 }
 
+// ── DB: 移行SQLが流れているか（2026-08-26 の事故）。
+//
+// コードは本番に載ったのに DB が受け付けない、という状態が2日間 誰にも見えなかった。
+// 画面にも CI にも印が出ず、たまたま DB を覗いて気づいた（30人ログイン / 名簿23人）。
+// ここは全ツール共通の入口なので、**確かめられないなら確かめられないと言う**。
+//
+// **`sh` を使わない。** `sh` は失敗した実行の出力を捨てるので、流し忘れが
+// 見つかったとき（＝いちばん出したいとき）だけ何も出ない、という穴になる。
+// ここは終了コードに関わらず、標準出力も標準エラーもそのまま拾う。
+console.log(`\n■ DB（移行SQL）`);
+const migrations = (() => {
+  try {
+    return execSync("node scripts/check_migrations.mjs 2>&1", {
+      encoding: "utf8",
+      timeout: 60000,
+      stdio: ["ignore", "pipe", "pipe"],
+    });
+  } catch (error) {
+    return String(error.stdout ?? "") + String(error.stderr ?? "");
+  }
+})();
+for (const l of (migrations.trim() || "（見張りを実行できませんでした）").split("\n")) {
+  console.log(`  ${l}`);
+}
+
 const recent = sh("git log -3 --format='  %h %ad %s' --date=format:'%m-%d %H:%M'");
 if (recent) console.log(`\n■ 直近のコミット\n${recent}`);
 
