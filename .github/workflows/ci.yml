@@ -23,15 +23,29 @@ jobs:
       # ── 依存を まるごと 覚えておく（願い #208） ─────────────────────────
       #
       # `setup-node` の `cache: npm` が 覚えるのは **ダウンロードの キャッシュ**だけで、
-      # `npm ci` の 22秒の 大半は **node_modules へ 展開する 時間**。そこを 覚えると 約7秒に なる。
+      # `npm ci` の 24秒の 大半は **node_modules へ 展開する 時間**。そこを 覚える。
+      #
+      # 実測（2026-08-26・run 32926510455 の 1回目と 2回目）:
+      #   check 24秒 → 5秒 ／ e2e 24秒 → 9秒 ／ size 27秒 → 4秒（**1ジョブ 15〜23秒 減**）
       #
       # 鍵は package-lock.json の ハッシュ **完全一致**（前方一致で 拾わない）。
       # 古い node_modules を 拾うと、**直した はずの 依存で 緑が 出る**——
       # 2026-08-19 に `next start` の 使い回しで 同じ 事故を 起こして いる。
+      # 完全一致なので **一度 保存したら 以後は 当たり続け、保存しなおさない**
+      # （置き場も 増えない）。
       #
       # 当たった ときは `npm ci` を とばす ので、**postinstall も 走らない**。
       # `copy_pdf_worker.mjs` は pdf.js の 実体を `public/` へ 写す（スライド教材が 使う）ので、
       # ここで 名指しで 呼ぶ。忘れると スライドが 白くなる。
+      #
+      # ## 覚えるのを **やめた** もの（測って 効かなかった。願い #208 で 一度 入れて 外した）
+      #
+      # - **Playwright の ブラウザ**（`~/.cache/ms-playwright`）… 26秒 → 21秒。**5秒しか 減らない**。
+      #   ダウンロードは とぶが、`--with-deps` の OS 部品の 確認に 16秒 かかる ため。
+      #   置き場 約400MB・初回の 保存に 1分30秒 を 払って 5秒 は 割に 合わない。
+      # - **`.next/cache`** … ビルド 46〜64秒 → 45〜48秒。**同じ SHA の 完全一致でも 変わらない**。
+      #   このアプリの ビルドは **静的ページの 生成**が 主で、webpack の 再コンパイルでは ない ため。
+      #   しかも 鍵に コミットSHA が 要る ので、**1コミットにつき 3つ**の 置き場を 作り続ける。
       - uses: actions/cache@v4
         id: modules
         with:
@@ -42,20 +56,6 @@ jobs:
       - if: steps.modules.outputs.cache-hit == 'true'
         run: node scripts/copy_pdf_worker.mjs
 
-      # ── ビルドの 途中結果を 覚えておく（願い #208） ─────────────────────
-      #
-      # `.next/cache` は webpack/SWC が 中間結果を 置く ところ。**出来上がりの 置き場では ない**
-      # （`next build` は 出力を 毎回 書き直す）ので、これを 覚えても 古い 画面は 出ない。
-      #
-      # 鍵に コミットの SHA を 入れて **毎回 新しく 保存**し、`restore-keys` の 前方一致で
-      # **直前の 回の ものを 引く**。lock が 変わったら 前方一致から 外れるので、依存を
-      # 入れかえた 回は まっさらから 建て直す。
-      - uses: actions/cache@v4
-        with:
-          path: .next/cache
-          key: next-check-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ github.sha }}
-          restore-keys: |
-            next-check-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-
 
       - name: 整形チェック
         run: npm run format:check
@@ -112,29 +112,12 @@ jobs:
 
       # @playwright/test は devDependencies に 入って いる（版は ブラウザと 組で 固定）。
       # ここでは ブラウザ本体だけ 入れる。
-      #
-      # ブラウザの 実体（約130MB）を 覚えておく（願い #208）。鍵は **package-lock.json の
-      # ハッシュ**——版が 変われば 鍵も 変わるので、**組の ちがう ブラウザを 拾う ことは ない**。
-      # 当たっても `playwright install` は 走らせる: OS 側の 部品（libnss3 など）は
-      # `~/.cache/ms-playwright` に 入らない ので、そこは 毎回 確かめる 必要が ある。
-      # すでに ブラウザが あれば ダウンロードは とばされる ので、それでも 速い。
-      - uses: actions/cache@v4
-        with:
-          path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
       - name: ブラウザを 用意する
         run: npx playwright install --with-deps chromium
 
       - name: 型（通し検証のぶん）
         run: npx tsc -p tests/e2e --noEmit
 
-      # ビルドの 途中結果（check ジョブと 同じ 考えかた。別ジョブなので 鍵は 分ける）
-      - uses: actions/cache@v4
-        with:
-          path: .next/cache
-          key: next-e2e-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ github.sha }}
-          restore-keys: |
-            next-e2e-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-
 
       - name: ビルド
         run: npm run build
@@ -183,13 +166,6 @@ jobs:
       - if: steps.modules.outputs.cache-hit == 'true'
         run: node scripts/copy_pdf_worker.mjs
 
-      # `cf:build:local` は 中で `next build` を 呼ぶ ので、ここも 効く
-      - uses: actions/cache@v4
-        with:
-          path: .next/cache
-          key: next-size-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ github.sha }}
-          restore-keys: |
-            next-size-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-
 
       - name: Cloudflare 向けに 束ねる
         run: npm run cf:build:local
