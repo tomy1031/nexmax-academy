@@ -3,7 +3,7 @@
   "id": "stage23_kaisha",
   "title": "まいにち 使う ことば",
   "description": "日本の ITの 仕事で、まいにち 使う ことばです。",
-  "label": "初級①",
+  "label": "初級",
   "password": "stage23",
   "fieldSequence": [
     "forest",
@@ -13,6 +13,26 @@
   "questionCount": 10,
   "passRate": 80,
   "furigana": [
+    [
+      "初級",
+      "しょきゅう"
+    ],
+    [
+      "初級",
+      "しょきゅう"
+    ],
+    [
+      "使",
+      "つか"
+    ],
+    [
+      "日本",
+      "にほん"
+    ],
+    [
+      "仕事",
+      "しごと"
+    ],
     [
       "初級",
       "しょきゅう"
