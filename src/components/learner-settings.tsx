@@ -137,6 +137,7 @@ export function LearnerSettings({
         <header className="relative z-10 mb-4 flex items-start justify-between gap-3">
           <AcademyLogo className="h-auto w-28 drop-shadow-[0_3px_1px_rgba(0,60,107,.2)] sm:w-36" />
           <Link
+            prefetch={false}
             href="/map"
             className="border-hairline text-navy rounded-2xl border-2 bg-white px-4 py-2 text-sm font-extrabold shadow-[0_4px_0_#d7eaf5]"
           >
@@ -207,6 +208,7 @@ export function LearnerSettings({
                 💡 いま かいた ことは、さきに「ほぞんする」を おしてね。
               </p>
               <Link
+                prefetch={false}
                 href="/welcome?retake=1"
                 className="border-sky text-navy mt-4 flex min-h-12 items-center justify-center gap-2 rounded-2xl border-3 bg-white px-3 text-sm font-extrabold shadow-[0_4px_0_#9dd8f2]"
               >

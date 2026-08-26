@@ -96,6 +96,7 @@ export function LiveReason({ reason }: { reason: string | null }) {
       <p className="text-ink mt-1 text-sm font-bold">{advice.next}</p>
       {advice.toSettings ? (
         <Link
+          prefetch={false}
           href="/admin/ai"
           className="text-sky mt-2 inline-block text-xs font-black underline underline-offset-4"
         >

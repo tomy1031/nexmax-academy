@@ -31,9 +31,28 @@ export async function recordMeetingTurn(log: MeetingTurnLog): Promise<void> {
   const supabase = createClient();
   if (!supabase) return;
   try {
+    /*
+     * `getUser()` ではなく `getSession()` を使う（2026-08-26）。
+     *
+     * `getUser()` は **呼ぶたびに Supabase の 認証サーバへ 1往復する**。ここは
+     * **発話1回ごと**に呼ばれるので、20人が 同時に 話す 授業では 240〜720往復に なる
+     *（1回の ミーティングは 12問・言い直しの 上限は 無い）。`getSession()` は
+     * 端末に ある ものを 読むだけで 往復しない。
+     *
+     * **詐称は できない**。`profile_id` は そのまま 通らず、DB 側の 決まりが
+     * `auth.uid() = profile_id` を 確かめる
+     *（supabase/migrations/20260813100000_meeting_turn_logs.sql の
+     *  `meeting_turn_logs_insert_own`）。ここで 別人の id を 書いても 弾かれる。
+     * この 関数は **あとから 見る ための 記録**で、これで 画面の 何かが
+     * 開いたり 閉じたり する わけでは ない。
+     *
+     * ログインの 判定そのもの（画面を 見せるか）は middleware が
+     * `getClaims()` で 署名を 確かめて いる（src/middleware.ts）。
+     */
     const {
-      data: { user },
-    } = await supabase.auth.getUser();
+      data: { session },
+    } = await supabase.auth.getSession();
+    const user = session?.user;
     if (!user) return;
     await supabase.from("meeting_turn_logs").insert({
       profile_id: user.id,

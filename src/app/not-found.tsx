@@ -62,6 +62,7 @@ export default function NotFound() {
 
         <div className="mt-6 flex flex-col items-center gap-3">
           <Link
+            prefetch={false}
             href="/map"
             className="btn-game w-full px-6 py-3 [--btn-face:#f26fa7] [--btn-shadow:#d94d84]"
           >
@@ -71,7 +72,11 @@ export default function NotFound() {
             さいしょの 画面は **弱い 見た目**にする。ログインずみの人が ここを 押すと
             マップから 遠ざかるので、本命と 同じ 強さで 並べない。
           */}
-          <Link href="/" className="text-ink-soft hover:text-navy text-sm font-extrabold">
+          <Link
+            prefetch={false}
+            href="/"
+            className="text-ink-soft hover:text-navy text-sm font-extrabold"
+          >
             さいしょの{" "}
             <ruby>
               画面<rt>がめん</rt>

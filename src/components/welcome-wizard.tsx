@@ -902,6 +902,7 @@ export function WelcomeWizard({
               */}
               {retake && !namesOnly && (
                 <Link
+                  prefetch={false}
                   href="/map"
                   className="text-ink-soft hover:text-navy mt-5 inline-block text-sm font-extrabold underline underline-offset-4"
                 >

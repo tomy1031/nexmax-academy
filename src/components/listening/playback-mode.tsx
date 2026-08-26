@@ -163,7 +163,11 @@ export function ListeningPlayer({
     <div className={embedded ? "" : "mx-auto w-full max-w-3xl px-4 py-6"}>
       {embedded ? null : (
         <header className="mb-5 flex items-center justify-between gap-3">
-          <Link href="/listening" className="text-ink-soft hover:text-navy text-sm font-extrabold">
+          <Link
+            prefetch={false}
+            href="/listening"
+            className="text-ink-soft hover:text-navy text-sm font-extrabold"
+          >
             ← リスニング 一覧
           </Link>
           <span className="bg-sky-soft text-navy rounded-full px-3 py-1 text-xs font-extrabold">
