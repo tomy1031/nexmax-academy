@@ -132,9 +132,9 @@ export const GLOSSARY = [
     term: "運用",
     reading: "うんよう",
     meaning: "つくった システムを まいにち うごかしつづける しごと",
-    en: "operations",
+    en: "Running a service",
   },
-  { term: "映像", reading: "えいぞう", meaning: "うごく 絵の ことです。", en: "Video / footage" },
+  { term: "映像", reading: "えいぞう", meaning: "うごく 絵の ことです。", en: "Footage" },
   {
     term: "AR",
     reading: "えーあーる",
@@ -386,7 +386,7 @@ export const GLOSSARY = [
     term: "企業",
     reading: "きぎょう",
     meaning: "会社の ことです。あらたまった 言い方です。",
-    en: "Company",
+    en: "Business company",
   },
   {
     term: "危険",
@@ -509,7 +509,7 @@ export const GLOSSARY = [
     term: "経営",
     reading: "けいえい",
     meaning: "会社を うまく うごかして いく 仕事です。",
-    en: "Management",
+    en: "Running a company",
   },
   {
     term: "経営理念",
@@ -628,7 +628,7 @@ export const GLOSSARY = [
     term: "構築",
     reading: "こうちく",
     meaning: "しくみを 組み立てて、うごくように する ことです。",
-    en: "Building / setting up",
+    en: "Setting up",
   },
   {
     term: "口頭",
@@ -723,7 +723,7 @@ export const GLOSSARY = [
     term: "サイト",
     reading: "さいと",
     meaning: "インターネットの 中の、ページの あつまりです。",
-    en: "Website",
+    en: "Site",
   },
   {
     term: "才能",
@@ -746,7 +746,7 @@ export const GLOSSARY = [
   { term: "作成", reading: "さくせい", meaning: "書類や データを 作る ことです。", en: "Creating" },
   { term: "作物", reading: "さくもつ", meaning: "畑で 作る、たべものの ことです。", en: "Crops" },
   { term: "撮影", reading: "さつえい", meaning: "写真や 動画を とる ことです。", en: "Filming" },
-  { term: "サポート", reading: "さぽーと", meaning: "support — たすける こと", en: "" },
+  { term: "サポート", reading: "さぽーと", meaning: "support — たすける こと", en: "Support" },
   {
     term: "参加",
     reading: "さんか",
@@ -999,7 +999,7 @@ export const GLOSSARY = [
     term: "障害",
     reading: "しょうがい",
     meaning: "うまく うごかなく なる、こまった ことです。",
-    en: "Failure / fault",
+    en: "System failure",
   },
   {
     term: "障害物",
@@ -1216,7 +1216,7 @@ export const GLOSSARY = [
     term: "設計",
     reading: "せっけい",
     meaning: "つくる 前に、どう つくるかを きめる こと",
-    en: "design",
+    en: "Design plan",
   },
   {
     term: "設計書",
@@ -1246,7 +1246,7 @@ export const GLOSSARY = [
     term: "説明書",
     reading: "せつめいしょ",
     meaning: "つかいかたが 書いて ある 紙です。",
-    en: "Manual",
+    en: "Spec document",
   },
   {
     term: "設立",
@@ -1294,7 +1294,7 @@ export const GLOSSARY = [
     term: "操作",
     reading: "そうさ",
     meaning: "きかいを 手で うごかす ことです。",
-    en: "Operation",
+    en: "Operating a machine",
   },
   {
     term: "捜索",
@@ -1499,7 +1499,7 @@ export const GLOSSARY = [
     en: "Digital",
   },
   { term: "手順", reading: "てじゅん", meaning: "しごとの じゅんばん", en: "steps" },
-  { term: "テスト", reading: "てすと", meaning: "test / exam", en: "" },
+  { term: "テスト", reading: "てすと", meaning: "test / exam", en: "Testing" },
   {
     term: "展開",
     reading: "てんかい",
@@ -1536,7 +1536,7 @@ export const GLOSSARY = [
     term: "導入",
     reading: "どうにゅう",
     meaning: "新しい しくみを、会社の 中で つかいはじめる ことです。",
-    en: "Introduction",
+    en: "Adopting",
   },
   {
     term: "導入実績",
@@ -1673,7 +1673,7 @@ export const GLOSSARY = [
     term: "発展",
     reading: "はってん",
     meaning: "前より 大きく、よく なって いく ことです。",
-    en: "Development",
+    en: "Growth",
   },
   {
     term: "判断",
@@ -1927,6 +1927,12 @@ export const GLOSSARY = [
     reading: "ものがたり",
     meaning: "はじめから おわりまで つづく、お話です。",
     en: "Story",
+  },
+  {
+    term: "やって みます",
+    reading: "やって みます",
+    meaning: "「ためしに します」と 前向きに 答える ことばです。",
+    en: "I will give it a try",
   },
   {
     term: "有効",

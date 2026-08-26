@@ -189,6 +189,26 @@ const issues = sh(
 console.log(`\n■ 願いの台帳（未完了）`);
 console.log(issues || `  （取得できず。${originUrl}/issues を直接見る）`);
 
+/*
+ * 検証の 道順を 毎回 出す。
+ *
+ * なぜ ここに 書くか: 手もとで build・e2e全件・cf:build を ぜんぶ 回すと **約9分**
+ * かかり、そのあと CI が **同じ ことを もう一度** 5分かけて やる。2026-08-25 の
+ * 実測では、この 二重ばらいが 1回の 修正の 待ち時間の いちばん 大きい 塊だった。
+ * ドキュメントに 書いても セッションが 変わると 読まれないので、毎回 目に 入る
+ * ここに 出す。
+ */
+console.log(`\n■ 検証の はやい道（手もとで 全部 回さない — CI が 同じ ことを やる）`);
+console.log(
+  "  押す前   : node scripts/check_fast.mjs   … 整形・型・コンテンツ・単体を 並列で 約25秒",
+);
+console.log("             （git push の pre-push が 自動で 回す。CI の 赤の 大半は ここで 出る）");
+console.log(
+  "  e2e      : npx playwright test tests/e2e/<直したところ>.spec.ts … 全件は CI に任せる",
+);
+console.log("  大きさ   : CI の size ジョブに任せる（手もとの cf:build は 81秒）");
+console.log("  くわしくは docs/自動でたしかめる1枚.md §7");
+
 console.log(`\n■ 作業前に読むもの`);
 console.log("  AGENTS.md（規律・ツール共通） / docs/constraints.md（言われた制約の台帳）");
 console.log(`${line}\n`);

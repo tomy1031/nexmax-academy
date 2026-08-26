@@ -44,7 +44,12 @@
     }
   ],
   "wordStageIds": [
-    "stage23_kaisha"
+    "stage23_kaisha",
+    "stage23_kaisha_shokyu2",
+    "stage23_kaisha_chukyu1",
+    "stage23_kaisha_chukyu2",
+    "stage23_kaisha_chukyu3",
+    "stage23_kaisha_jokyu"
   ],
   "furigana": [
     [

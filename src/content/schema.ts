@@ -163,6 +163,15 @@ export const wordStageSchema = z
     id: z.string().regex(/^[a-z0-9_-]+$/),
     title: plainText,
     description: plainText,
+    /**
+     * セット名（「初級」「中級」など。数も 名前も 自由）。**学習者に 見える**。
+     *
+     * label の ある 単語ステージは、ステージの 中で **別々の セット**として 出す。
+     * label の 無い ものは これまでどおり **1つに 統合**する（2026-08-19 の
+     * 「ITとビジネスを 分けなくてよい」は 名前の 無い ものに 生きつづける）。
+     * 統合と 分割の 実装は `src/lib/wordstage-merge.ts`。
+     */
+    label: plainText.optional(),
     /** 教師が授業で伝える開放パスワード。省略時は最初から開放。 */
     password: z.string().optional(),
     fieldSequence: z.array(z.string()).min(1),

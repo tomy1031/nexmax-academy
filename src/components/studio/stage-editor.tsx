@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import type { ContentRefType, Stage, VocabBook } from "@/content/schema";
+import type { ContentRefType, Stage, VocabBook, WordStage } from "@/content/schema";
 import { contentKindMeta } from "@/lib/content-kinds";
 import { stageContentPath } from "@/lib/stage-routes";
 import { AreaPicker } from "./area-picker";
@@ -42,6 +42,7 @@ export function StageEditor({
   knownIds,
   textsByRef,
   vocabBooks,
+  wordStages,
   onOpenContent,
   onCreateContent,
 }: {
@@ -54,6 +55,12 @@ export function StageEditor({
   /** すでに どこかの 単語ステージに ある ことば → その ステージの 見出し。 */
   /** ことばの 正。辞書ぜんたいから 選べるように するため 渡す。 */
   vocabBooks: readonly VocabBook[];
+  /**
+   * いまある 単語ステージ（git ∪ DB）。
+   * この ステージの セットが **いま どの 語を 出して いるか**を 見るのと、
+   * 辞書ぜんたいを 見る ときに **どの 課の ことばか**を 出すのに 使う。
+   */
+  wordStages: readonly WordStage[];
   /**
    * 教材ID → 学習者が読む文。「ことばを ぬき出す」に渡す。
    * ステージが持っているのは参照先のIDだけなので、本文は studio-shell から届く
@@ -170,6 +177,7 @@ export function StageEditor({
         stage={value}
         textsByRef={textsByRef}
         vocabBooks={vocabBooks}
+        wordStages={wordStages}
         onCreated={(id) => patch({ wordStageIds: [...value.wordStageIds, id] })}
       />
     </div>

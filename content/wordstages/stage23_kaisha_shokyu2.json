@@ -1,0 +1,100 @@
+{
+  "kind": "wordstage",
+  "id": "stage23_kaisha_shokyu2",
+  "title": "開発の 仕事の ことば",
+  "description": "システムを 作る 仕事の ながれで 使う ことばです。",
+  "label": "初級②",
+  "fieldSequence": [
+    "forest",
+    "sky",
+    "space"
+  ],
+  "questionCount": 10,
+  "passRate": 80,
+  "furigana": [
+    [
+      "初級",
+      "しょきゅう"
+    ],
+    [
+      "会社",
+      "かいしゃ"
+    ],
+    [
+      "調",
+      "しら"
+    ],
+    [
+      "言葉",
+      "ことば"
+    ],
+    [
+      "使",
+      "つか"
+    ],
+    [
+      "仕事",
+      "しごと"
+    ],
+    [
+      "開発",
+      "かいはつ"
+    ],
+    [
+      "作",
+      "つく"
+    ]
+  ],
+  "wordIds": [
+    "youken",
+    "setsukei",
+    "kouchiku",
+    "secchi",
+    "dounyuu",
+    "unyou",
+    "hoshu",
+    "kenshou",
+    "shougai",
+    "rireki",
+    "hinshitsu",
+    "kadai",
+    "keikaku",
+    "mokuteki",
+    "shinkou",
+    "kaishi",
+    "kijitsu",
+    "seika",
+    "seikabutsu",
+    "gyoumu",
+    "jidou",
+    "kouritsuka",
+    "renkei",
+    "infura",
+    "sekyurite",
+    "furontoendo",
+    "bakkuendo",
+    "dejitaru",
+    "riarutaimu",
+    "furo",
+    "gijutsusha",
+    "purojikutomaneja",
+    "hiaringu",
+    "gaido",
+    "repoto",
+    "dasshubodo",
+    "arato",
+    "setsumeisho",
+    "kojinjouhou",
+    "senyou",
+    "kison",
+    "rinyuaru",
+    "jitsumu",
+    "kyaria",
+    "shuushoku",
+    "mensetsu",
+    "jinzai",
+    "nouryoku",
+    "mokuhyou",
+    "tsuyomi"
+  ]
+}

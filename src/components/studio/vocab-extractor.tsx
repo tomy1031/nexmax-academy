@@ -1,8 +1,9 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import type { StoredWordStage, VocabBook, VocabWord } from "@/content/schema";
+import type { StoredWordStage, VocabBook, VocabWord, WordStage } from "@/content/schema";
 import { wordSchema, type Stage } from "@/content/schema";
+import { stageVocabPool } from "@/lib/vocab/stage-pool";
 import { hasCodex } from "@/lib/codex-settings";
 import { getGeminiKey } from "@/lib/profile";
 import { generateFromBrowser } from "@/lib/ai/generate-browser";
@@ -53,6 +54,7 @@ export function VocabExtractor({
   stage,
   textsByRef,
   vocabBooks,
+  wordStages,
   onCreated,
 }: {
   stage: Stage;
@@ -69,6 +71,8 @@ export function VocabExtractor({
    * 同じ ことばを もう一度 作らせない ための 形である。
    */
   vocabBooks: readonly VocabBook[];
+  /** いまある 単語ステージ（git ∪ DB）。この ステージの セットと 出題中の 語を 引く。 */
+  wordStages: readonly WordStage[];
   /** 作った単語ステージのIDを、編集中のステージの wordStageIds に足してもらう。 */
   onCreated: (wordStageId: string) => void;
 }) {
@@ -76,10 +80,58 @@ export function VocabExtractor({
   const [query, setQuery] = useState("");
   /** 辞書から えらんだ ことばの id。抜き出した ぶんとは 別に 持つ。 */
   const [fromVocab, setFromVocab] = useState<ReadonlySet<string>>(new Set());
+  /**
+   * 候補の 出しかた。**既定は この ステージの ことば**（2026-08-25・願い #203）。
+   * 559語 ぜんぶを 並べると、この 課の 語を 思い出して 探す ことに なる。
+   */
+  const [scope, setScope] = useState<"stage" | "all">("stage");
+  /** 入れ先の セット（`new` なら 新しく つくる）。 */
+  const [target, setTarget] = useState<string>("new");
+  /** 新しい セットの 名前（初級・中級…）。空なら 名前なし＝1つに まとまる。 */
+  const [newLabel, setNewLabel] = useState("");
 
   /** ことばの 正（束を ならべた もの）と、表記からの 引き当て。 */
   const vocabWords = useMemo(() => vocabBooks.flatMap((book) => book.words), [vocabBooks]);
   const vocabTerms = useMemo(() => new Map(vocabWords.map((w) => [w.term, w])), [vocabWords]);
+  const vocabIds = useMemo(() => new Set(vocabWords.map((w) => w.id)), [vocabWords]);
+  /** 読み辞書が「ここで 切れる」と 決めて いる 表記（語の 見つけ方に 効く）。 */
+  const readingUnits = useMemo(
+    () => new Set(vocabBooks.flatMap((book) => book.furigana ?? []).map(([surface]) => surface)),
+    [vocabBooks],
+  );
+
+  /** この ステージに ぶら下がって いる セット。 */
+  const sets = useMemo(
+    () =>
+      stage.wordStageIds
+        .map((id) => wordStages.find((item) => item.id === id))
+        .filter((item): item is WordStage => item !== undefined),
+    [stage.wordStageIds, wordStages],
+  );
+
+  /** セット → いま 出して いる 語の id（辞書に ある ものだけ）。 */
+  const idsBySet = useMemo(() => {
+    const map = new Map<string, string[]>();
+    for (const set of sets) {
+      map.set(
+        set.id,
+        set.words.map((word) => word.id).filter((id) => vocabIds.has(id)),
+      );
+    }
+    return map;
+  }, [sets, vocabIds]);
+
+  /** この ステージが いま 出題して いる 語 ぜんぶ。 */
+  const playingIds = useMemo(() => new Set([...idsBySet.values()].flat()), [idsBySet]);
+
+  /** 語 → その語を 出して いる ステージの 見出し（辞書ぜんたいを 見る ときの めじるし）。 */
+  const ownerTitles = useMemo(() => {
+    const map = new Map<string, string>();
+    for (const set of wordStages) {
+      for (const word of set.words) if (!map.has(word.id)) map.set(word.id, set.title);
+    }
+    return map;
+  }, [wordStages]);
   const [error, setError] = useState<string | null>(null);
   const [note, setNote] = useState<string | null>(null);
   const [candidates, setCandidates] = useState<VocabCandidate[]>([]);
@@ -141,6 +193,17 @@ export function VocabExtractor({
     }
   };
 
+  /** 入れ先の セット（`new` なら null＝新しく つくる）。 */
+  const targetSet = sets.find((set) => set.id === target) ?? null;
+  /**
+   * 入れ先の セットが 持って いる、**辞書に 無い** ことばの 数。
+   * 足すと 参照（`wordIds`）の 形に なるので、辞書に 無い 語は 消える。
+   * 消える なら 足させない——先に ことばの 正を 直して もらう。
+   */
+  const missingInTarget = targetSet
+    ? targetSet.words.filter((word) => !vocabIds.has(word.id)).length
+    : 0;
+
   /** 抜き出した ぶんで、まだ 正に 無い ことば。 */
   const freshWords = chosen.filter((word) => !vocabTerms.has(word.term));
   /** 保存に 使う 語ID（辞書から えらんだ ぶん ＋ 抜き出した ぶん）。 */
@@ -189,7 +252,9 @@ export function VocabExtractor({
      * 参照切れのまま残る（学習者の画面では「ことばで あそぶ」が出てこない）。
      * 語は先生が1つずつ見てチェックしたものなので、ここで公開してよい。
      */
-    const draft = buildWordStage(stage, [...new Set(chosenIds)]);
+    const draft = targetSet
+      ? appendToSet(targetSet, [...(idsBySet.get(targetSet.id) ?? []), ...chosenIds])
+      : buildWordStage(stage, [...new Set(chosenIds)], newLabel.trim());
     const result = await saveContent(draft, true);
     setBusy(null);
     if (!result.ok) {
@@ -198,25 +263,63 @@ export function VocabExtractor({
       );
       return;
     }
-    onCreated(draft.id);
-    setNote(
-      `単語ステージ「${draft.title}」を つくりました（${draft.wordIds?.length ?? 0}語` +
-        `${freshWords.length > 0 ? `・うち ${freshWords.length}語を 辞書に 足しました` : ""}）。` +
-        "上の「したがきを ほぞん」か「こうかい」を おすと、この ステージから 開けるように なります。",
-    );
+
+    const count = draft.wordIds?.length ?? 0;
+    const added = freshWords.length > 0 ? `・うち ${freshWords.length}語を 辞書に 足しました` : "";
+    if (targetSet) {
+      setNote(`「${targetSet.label ?? targetSet.title}」を ${count}語に しました${added}。`);
+    } else {
+      onCreated(draft.id);
+      setNote(
+        `ことばの セット「${draft.label ?? draft.title}」を つくりました（${count}語${added}）。` +
+          "上の「したがきを ほぞん」か「こうかい」を おすと、この ステージから 開けるように なります。",
+      );
+    }
+    /*
+     * えらんだ ものは 流す。3つの セットを 続けて 作る ときに、
+     * 50個の チェックを 手で 外させない ためである。
+     */
+    setFromVocab(new Set());
+    setSelected(new Set());
+    setNewLabel("");
+    setTarget("new");
   };
 
-  /** 辞書の 一覧（さがす 欄で しぼる）。 */
-  const vocabList = useMemo(() => {
+  /**
+   * この ステージの ことば（いま 出題中／本文に 出て くる）。
+   * 置き場は 増やさず、そのつど 本文と 突き合わせて 出す（`stageVocabPool`）。
+   */
+  const pool = useMemo(
+    () =>
+      stageVocabPool({
+        vocab: vocabWords,
+        texts,
+        playingIds,
+        refs: stage.contents.map((item) => item.ref),
+        readingUnits,
+      }),
+    [vocabWords, texts, playingIds, stage.contents, readingUnits],
+  );
+
+  const match = (word: VocabWord, q: string) =>
+    word.term.includes(q) ||
+    word.reading.includes(q) ||
+    (word.englishTerm ?? "").toLowerCase().includes(q.toLowerCase());
+
+  /** 画面に 出す かたまり（さがす 欄で しぼる）。 */
+  const groups = useMemo(() => {
     const q = query.trim();
-    if (!q) return vocabWords;
-    return vocabWords.filter(
-      (word) =>
-        word.term.includes(q) ||
-        word.reading.includes(q) ||
-        (word.englishTerm ?? "").toLowerCase().includes(q.toLowerCase()),
-    );
-  }, [query, vocabWords]);
+    const sift = (words: readonly VocabWord[]) => (q ? words.filter((w) => match(w, q)) : words);
+    if (scope === "all") {
+      return [{ key: "all", title: "辞書ぜんたい", words: sift(vocabWords) }];
+    }
+    return [
+      { key: "playing", title: "いま 出題中", words: sift(pool.playing) },
+      { key: "appears", title: "本文に 出て くる", words: sift(pool.appears) },
+    ];
+  }, [query, scope, vocabWords, pool]);
+
+  const shown = groups.reduce((n, group) => n + group.words.length, 0);
 
   return (
     <StudioSection
@@ -307,13 +410,23 @@ export function VocabExtractor({
       {/*
         **辞書に ある ことばからも 選べる**（2026-08-20 の指定）。
         語の 置き場は 1つ しか 無いので、同じ ことばを もう一度 作らせない。
+
+        既定で 出すのは **この ステージの 本文に 出て くる 語だけ**（2026-08-25・願い #203）。
+        辞書ぜんたい（559語）を 並べると、先生は この 課の 語を 思い出して 探す ことに なり、
+        抜き出した 語を 使う 手順が 事実上 使えなかった。
       */}
       <div className="border-hairline space-y-2 rounded-2xl border-2 p-3">
         <div className="flex flex-wrap items-center gap-2">
           <span className="text-navy text-sm font-black">📚 辞書から えらぶ</span>
           <span className="text-ink-soft text-xs font-black">
-            {fromVocab.size} / {vocabWords.length}語
+            {fromVocab.size}語 えらんでいます（この ステージの ことば{" "}
+            {pool.playing.length + pool.appears.length}語）
           </span>
+          <MiniButton onClick={() => setScope(scope === "stage" ? "all" : "stage")}>
+            {scope === "stage"
+              ? `ぜんぶの 辞書から さがす（${vocabWords.length}語）`
+              : "この ステージの ことばに もどす"}
+          </MiniButton>
           <input
             value={query}
             onChange={(event) => setQuery(event.target.value)}
@@ -321,55 +434,132 @@ export function VocabExtractor({
             className="border-hairline min-w-40 flex-1 rounded-full border-2 px-3 py-1 text-xs font-bold"
           />
         </div>
-        <ul className="max-h-64 space-y-1 overflow-y-auto">
-          {vocabList.map((word) => (
-            <li key={word.id}>
-              <label className="hover:bg-panel-tint flex items-start gap-2 rounded-lg p-1">
-                <input
-                  type="checkbox"
-                  checked={fromVocab.has(word.id)}
-                  onChange={(event) =>
-                    setFromVocab((prev) => {
-                      const next = new Set(prev);
-                      if (event.target.checked) next.add(word.id);
-                      else next.delete(word.id);
-                      return next;
-                    })
-                  }
-                  className="accent-sky mt-1 h-4 w-4"
-                />
-                <span className="flex-1">
-                  <span className="text-navy block text-xs font-black">
-                    {word.term}（{word.reading}）
-                    {word.englishTerm ? (
-                      <span className="text-ink-soft ml-2 font-bold">{word.englishTerm}</span>
-                    ) : null}
-                    {!word.wrongMeanings ? (
-                      <span className="text-coral-deep ml-2 font-bold">
-                        ゲームには 出せません（まよう こたえが ありません）
-                      </span>
-                    ) : null}
-                  </span>
-                  <span className="text-ink-soft block text-xs font-bold">{word.meaningJa}</span>
-                </span>
-              </label>
-            </li>
-          ))}
-        </ul>
-        {vocabList.length === 0 ? (
-          <p className="text-ink-faint text-xs font-bold">見つかりませんでした。</p>
+
+        <div className="max-h-72 space-y-2 overflow-y-auto">
+          {groups.map((group) =>
+            group.words.length === 0 ? null : (
+              <div key={group.key}>
+                {scope === "stage" ? (
+                  <p className="text-ink-faint text-[11px] font-black">
+                    {group.title}（{group.words.length}語）
+                  </p>
+                ) : null}
+                <ul className="space-y-1">
+                  {group.words.map((word) => (
+                    <li key={word.id}>
+                      <label className="hover:bg-panel-tint flex items-start gap-2 rounded-lg p-1">
+                        <input
+                          type="checkbox"
+                          checked={fromVocab.has(word.id)}
+                          onChange={(event) =>
+                            setFromVocab((prev) => {
+                              const next = new Set(prev);
+                              if (event.target.checked) next.add(word.id);
+                              else next.delete(word.id);
+                              return next;
+                            })
+                          }
+                          className="accent-sky mt-1 h-4 w-4"
+                        />
+                        <span className="flex-1">
+                          <span className="text-navy block text-xs font-black">
+                            {word.term}（{word.reading}）
+                            {word.englishTerm ? (
+                              <span className="text-ink-soft ml-2 font-bold">
+                                {word.englishTerm}
+                              </span>
+                            ) : null}
+                            {/*
+                              どの 課の ことばかを 出す（辞書ぜんたいを 見て いる ときだけ）。
+                              中間テストの ような **課を またぐ セット**を 組む ときの めじるし。
+                            */}
+                            {scope === "all" && ownerTitles.has(word.id) ? (
+                              <span className="text-ink-faint ml-2 font-bold">
+                                {ownerTitles.get(word.id)}
+                              </span>
+                            ) : null}
+                            {!word.wrongMeanings ? (
+                              <span className="text-coral-deep ml-2 font-bold">
+                                ゲームには 出せません（まよう こたえが ありません）
+                              </span>
+                            ) : null}
+                          </span>
+                          <span className="text-ink-soft block text-xs font-bold">
+                            {word.meaningJa}
+                          </span>
+                        </span>
+                      </label>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ),
+          )}
+        </div>
+        {shown === 0 ? (
+          <p className="text-ink-faint text-xs font-bold">
+            {scope === "stage"
+              ? "この ステージの 本文からは 見つかりませんでした。「ぜんぶの 辞書から さがす」で 足せます。"
+              : "見つかりませんでした。"}
+          </p>
         ) : null}
       </div>
 
+      {/*
+        入れ先を えらぶ（願い #203）。セットは **いくつ 作っても よい**——
+        初級・中級 の ように 名前を 付けた ものは、学習者の 画面でも 分かれて 出る。
+        名前を 付けなければ これまでどおり 1つに まとまる。
+      */}
       <div className="bg-panel-tint space-y-2 rounded-2xl p-3">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-navy text-xs font-black">どこに 入れる？</span>
+          <select
+            value={target}
+            onChange={(event) => setTarget(event.target.value)}
+            className="border-hairline rounded-full border-2 bg-white px-3 py-1 text-xs font-bold"
+          >
+            <option value="new">あたらしい セットを つくる</option>
+            {sets.map((set) => (
+              <option key={set.id} value={set.id}>
+                {set.label ? `${set.label}（${set.id}）` : set.title}に 足す（
+                {idsBySet.get(set.id)?.length ?? 0}語）
+              </option>
+            ))}
+          </select>
+          {target === "new" ? (
+            <input
+              value={newLabel}
+              onChange={(event) => setNewLabel(event.target.value)}
+              placeholder="セット名（初級・中級 など／からでも よい）"
+              className="border-hairline min-w-40 flex-1 rounded-full border-2 px-3 py-1 text-xs font-bold"
+            />
+          ) : null}
+        </div>
+        {target === "new" && sets.length > 0 && newLabel.trim().length === 0 ? (
+          <p className="text-ink-soft text-xs font-bold">
+            名前が ないと、いまの セットと **1つに まとまって** 出ます。分けたい ときは 名前を
+            書いてください。
+          </p>
+        ) : null}
+        {targetSet && missingInTarget > 0 ? (
+          <p className="text-coral-deep text-xs font-black">
+            この セットには 辞書に 無い ことばが {missingInTarget}語 あります。足すと 消えるので、
+            さきに /admin の ことばで 直してください。
+          </p>
+        ) : null}
+
         <MiniButton
           tone="accent"
           onClick={() => void create()}
-          disabled={busy !== null || totalChosen < MIN_WORDS}
+          disabled={busy !== null || totalChosen < MIN_WORDS || missingInTarget > 0}
         >
           {busy === "create"
-            ? "つくっています…"
-            : `🕹️ えらんだ ことばで 単語ステージを つくる（${totalChosen}語）`}
+            ? targetSet
+              ? "足しています…"
+              : "つくっています…"
+            : targetSet
+              ? `🕹️ えらんだ ことばを この セットに 足す（${totalChosen}語）`
+              : `🕹️ えらんだ ことばで セットを つくる（${totalChosen}語）`}
         </MiniButton>
         {/*
           6語に届かないと wordStageSchema で止まる。押せるボタンのまま出すと、
@@ -499,21 +689,39 @@ function messageForVocabReason(reason: string): string {
  * 語そのものは読める。解説と例文の読みは機械で決められないので、
  * ここで思いつきの読みを入れない（AGENTS.md 規律2）。
  */
-function buildWordStage(stage: Stage, wordIds: readonly string[]): StoredWordStage {
+function buildWordStage(stage: Stage, wordIds: readonly string[], label: string): StoredWordStage {
   const title = stage.title.trim();
   /*
    * 見出しは **ステージの 名前 そのもの**（2026-08-20 の指定「のことばは 冗長」）。
    * 語は **持たずに 指す**（`wordIds`）。語の 正は content/vocab の 1つだけ。
+   * セット名（`label`）を 付けると、学習者の 画面でも 分かれて 出る（願い #203）。
    */
   return {
     kind: "wordstage",
     id: nextWordStageId(stage),
     title: title.length > 0 ? title : "この ステージの ことば",
     description: "この ステージに 出てくる しごとの ことばと ITの ことばです。",
+    ...(label.length > 0 ? { label } : {}),
     fieldSequence: [...FIELD_SEQUENCE],
     questionCount: Math.min(wordIds.length, 10),
     passRate: PASS_RATE,
     wordIds: [...wordIds],
+  };
+}
+
+/**
+ * いまある セットに 足す。**語は 参照で 持つ**（`wordIds`）ので、
+ * 読み出しの かたち（`words`）は 落として 保存の かたちに 戻す。
+ * 出題数は 語数を 超えられない（スキーマの superRefine）。
+ */
+function appendToSet(set: WordStage, wordIds: readonly string[]): StoredWordStage {
+  const { words: _words, ...rest } = set;
+  const ids = [...new Set(wordIds)];
+  return {
+    ...rest,
+    kind: "wordstage",
+    questionCount: Math.min(set.questionCount, ids.length),
+    wordIds: ids,
   };
 }
 

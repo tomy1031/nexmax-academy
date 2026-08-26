@@ -35,11 +35,29 @@ export default defineConfig({
   /* 1度だけ やり直す。落ち続けるものだけを 落とす（CIの ゆらぎで PR を止めない）。 */
   retries: process.env.CI ? 1 : 0,
   /*
-   * **2本まで**。既定（CPUの半分）だと 手もとの Mac では `next start` が
+   * 手もとは **2本まで**。既定（CPUの半分）だと 手もとの Mac では `next start` が
    * 落ちる ことが あり（2026-08-19 に 実発生。ERR_CONNECTION_REFUSED が 数本）、
-   * PC も 重くなる。CI と 同じ 数に そろえて、どこで 走らせても 同じ 結果に する。
+   * PC も 重くなる。
+   *
+   * CI（専有の 4コア）だけは 4本に する（2026-08-25）。`e2e` は CI で いちばん
+   * 長い ジョブ（4分48秒）で、その 大半が この ステップ だから。
+   *
+   * **効きめは おおよそ 15%。1回の 測定を 信じない こと。**
+   * 通し検証の 実測（2026-08-26）:
+   *
+   *   2本 … CI 160秒 ／ 開発コンテナ 164秒
+   *   4本 … CI 121秒・153秒（**32秒も ぶれた**）／ 開発コンテナ 137秒
+   *
+   * GitHub の ランナーは 設備を 他の 利用者と 分け合うので、この 幅は 避けられない。
+   * 平均で 160秒 → 約137秒 と 見る。
+   *
+   * **倍には ならない**——`toshi.spec.ts` の 通しプレイ 1本だけで 52秒 あり、
+   * **1本の テストは 分けて 走らせられない** ので、そこが 床に なる。
+   *
+   * テストどうしは 独立（fullyParallel）なので 本数で 合否は 変わらない。
+   * ゆらぎが 出たら CI に `E2E_WORKERS=2` を 渡せば この 行を さわらずに 戻せる。
    */
-  workers: 2,
+  workers: process.env.E2E_WORKERS ? Number(process.env.E2E_WORKERS) : process.env.CI ? 4 : 2,
   reporter: process.env.CI
     ? [["list"], ["html", { open: "never" }], ["github"]]
     : [["list"], ["html", { open: "never" }]],

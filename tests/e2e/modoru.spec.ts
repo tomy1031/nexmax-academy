@@ -87,7 +87,8 @@ test("ことばだけで 開いた ときは、これまでどおり グルー�
     .first()
     .click();
 
-  const back = page.getByRole("button", { name: /グループを えらびなおす/ });
+  // 札の 字は 願い #203 で「ほかの セットを えらぶ」に なった（行き先は 同じ）
+  const back = page.getByRole("button", { name: /ほかの セットを えらぶ/ });
   await back.scrollIntoViewIfNeeded();
   await back.click();
 
