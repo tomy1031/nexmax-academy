@@ -36,7 +36,7 @@ test("単語ゲームの 見出しは「はじめに」", async ({ page }) => {
    * 見るのは 見出しだけ——説明文の「IT の ことばです」は 正しい 文なので 巻きこまない。
    */
   await expect(page.getByRole("heading", { name: "はじめに", exact: true })).toBeVisible();
-  await expect(page.getByText("ことば 44こ ／ 1回の もんだい 10こ ／ 合格 80%")).toBeVisible();
+  await expect(page.getByText("ことば 44こ ／ 1回の もんだい 44こ ／ 合格 80%")).toBeVisible();
 
   // 「もんだいだけ」＝ 入力なしの 意味クイズ（ひらがな入力チェックを はさまない）
   await page.getByRole("button", { name: /もんだいだけ/ }).click();
@@ -45,5 +45,5 @@ test("単語ゲームの 見出しは「はじめに」", async ({ page }) => {
 
 test("単語ステージの 古い URL も 同じ まとまりに つながる", async ({ page }) => {
   await page.goto("/arcade/intro_kotoba");
-  await expect(page.getByText("ことば 44こ ／ 1回の もんだい 10こ ／ 合格 80%")).toBeVisible();
+  await expect(page.getByText("ことば 44こ ／ 1回の もんだい 44こ ／ 合格 80%")).toBeVisible();
 });

@@ -54,8 +54,30 @@ export type ArcadePhase =
   | { readonly kind: "reading" }
   /** readingOk が null のときは読みを聞いていない（問題だけモード）。 */
   | { readonly kind: "meaning"; readonly readingOk: boolean | null }
-  | { readonly kind: "explain"; readonly feedback: FeedbackKey }
+  /**
+   * 解説。**当たったか**と **何を えらんだか**を 持つ。
+   *
+   * 前は `feedback` だけを 持って いたので、画面は「⭕か ✕か」を
+   * 文言の ちがい（🎉 / 💪）でしか 出せず、外しても 当たっても 同じ 形の
+   * カードが 出て いた。学習者から「誤った語を 入れても 正解に なる」と
+   * 見えたのは これ（点の 数え方は 前から 正しい）。2026-08-26。
+   */
+  | {
+      readonly kind: "explain";
+      readonly feedback: FeedbackKey;
+      readonly ok: boolean;
+      /** 4択で 押した 札。時間切れ・読みだけの ときは null。 */
+      readonly chosen: string | null;
+    }
   | { readonly kind: "finished"; readonly reason: "cleared" | "lifeOut" | "quit" };
+
+/**
+ * 直前に 起きた ことの しるし（画面の 手ごたえ専用。点には 関わらない）。
+ *
+ * `seq` は **同じ ことが つづいても 演出を 出し直す**ための 番号。
+ * これが 無いと 2回 つづけて 外したとき、2回目の 揺れが 出ない。
+ */
+export type FlashKind = "hit" | "miss" | "timeup";
 
 export interface WordOutcome {
   readonly wordId: string;
@@ -83,6 +105,10 @@ export interface ArcadeState {
   readonly furiganaOn: boolean;
   /** 入力の見守り（答えを消費しない注意）。 */
   readonly hint: FeedbackKey | null;
+  /** 直前の 手ごたえ（⭕／✕／時間切れ）。次の 問題に 進むと 消える。 */
+  readonly flash: FlashKind | null;
+  /** 手ごたえの 通し番号（同じ しるしが つづいても 演出を 出し直す）。 */
+  readonly flashSeq: number;
 }
 
 export type ArcadeAction =
@@ -140,6 +166,8 @@ export function createSession({
     bestCombo: 0,
     furiganaOn: mode !== "test",
     hint: null,
+    flash: null,
+    flashSeq: 0,
   };
 }
 
@@ -187,24 +215,24 @@ export function arcadeReducer(state: ArcadeState, action: ArcadeAction): ArcadeS
 
       return readingMatches(action.input, word.reading)
         ? onReadingCorrect(state)
-        : onReadingMissed(state, "reading.retry");
+        : onReadingMissed(state, "reading.retry", "miss");
     }
 
     case "readingTimeout":
       if (state.phase.kind !== "reading") return state;
-      return onReadingMissed(state, "reading.timeup");
+      return onReadingMissed(state, "reading.timeup", "timeup");
 
     case "chooseMeaning": {
       if (state.phase.kind !== "meaning") return state;
       const word = currentWord(state);
       if (!word) return state;
       const correct = action.choice === word.meaningEn;
-      return closeQuestion(state, state.phase.readingOk, correct);
+      return closeQuestion(state, state.phase.readingOk, correct, action.choice);
     }
 
     case "meaningTimeout":
       if (state.phase.kind !== "meaning") return state;
-      return closeQuestion(state, state.phase.readingOk, false);
+      return closeQuestion(state, state.phase.readingOk, false, null, true);
 
     case "advance": {
       if (state.phase.kind !== "explain") return state;
@@ -215,7 +243,7 @@ export function arcadeReducer(state: ArcadeState, action: ArcadeAction): ArcadeS
       if (next >= state.questions.length) {
         return { ...state, phase: { kind: "finished", reason: "cleared" } };
       }
-      return { ...state, index: next, phase: startPhase(state.mode), hint: null };
+      return { ...state, index: next, phase: startPhase(state.mode), hint: null, flash: null };
     }
 
     default:
@@ -230,6 +258,7 @@ function onReadingCorrect(state: ArcadeState): ArcadeState {
   return {
     ...state,
     hint: null,
+    ...flashOf(state, "hit"),
     combo,
     bestCombo: Math.max(state.bestCombo, combo),
     score: state.score + gain,
@@ -238,11 +267,12 @@ function onReadingCorrect(state: ArcadeState): ArcadeState {
   };
 }
 
-function onReadingMissed(state: ArcadeState, feedback: FeedbackKey): ArcadeState {
+function onReadingMissed(state: ArcadeState, feedback: FeedbackKey, flash: FlashKind): ArcadeState {
   return {
     ...state,
     // 意味フェーズの間、正しい読みと一緒に励ましを出しておく。
     hint: feedback,
+    ...flashOf(state, flash),
     combo: 0,
     lastGain: 0,
     life: state.mode === "practice" ? state.life - 1 : state.life,
@@ -255,6 +285,8 @@ function closeQuestion(
   state: ArcadeState,
   readingOk: boolean | null,
   meaningOk: boolean,
+  chosen: string | null = null,
+  timeup = false,
 ): ArcadeState {
   const word = currentWord(state);
   if (!word) return state;
@@ -264,14 +296,25 @@ function closeQuestion(
   return {
     ...state,
     hint: null,
+    ...flashOf(state, meaningOk ? "hit" : timeup ? "timeup" : "miss"),
     combo,
     bestCombo: Math.max(state.bestCombo, combo),
     score: state.score + gain,
     lastGain: gain,
     life: !meaningOk && state.mode === "practice" ? state.life - 1 : state.life,
     outcomes: [...state.outcomes, { wordId: word.id, readingOk, meaningOk }],
-    phase: { kind: "explain", feedback: meaningOk ? "meaning.correct" : "meaning.retry" },
+    phase: {
+      kind: "explain",
+      feedback: meaningOk ? "meaning.correct" : timeup ? "meaning.timeup" : "meaning.retry",
+      ok: meaningOk,
+      chosen,
+    },
   };
+}
+
+/** 手ごたえの しるしを 1つ 進める（番号を 足すので 同じ しるしでも 出し直せる）。 */
+function flashOf(state: ArcadeState, flash: FlashKind): { flash: FlashKind; flashSeq: number } {
+  return { flash, flashSeq: state.flashSeq + 1 };
 }
 
 /* ------------------------------------------------------------------ *
@@ -307,6 +350,17 @@ export interface ArcadeSummary {
   /** 読み1点＋意味1点。 */
   readonly score: number;
   readonly maxScore: number;
+  /** 合格に 要る 点（切り上げ）。**画面に そのまま 出す**ので ここで 決める。 */
+  readonly needed: number;
+  /** 合格ライン（％）。ステージの 設定を そのまま 持ち歩く。 */
+  readonly passRate: number;
+  /**
+   * さいごまで やったか。**合否を 出して よいのは これが true の ときだけ**。
+   *
+   * 途中で「やめる」を 押しても、答えた ぶんだけで 割合を 出すと
+   * 「3問 やって ぜんぶ 当たった＝合格」に なって しまう。それは 合格では ない。
+   */
+  readonly completed: boolean;
   readonly passed: boolean;
   readonly missedWordIds: readonly string[];
 }
@@ -322,10 +376,28 @@ export function summarize(state: ArcadeState): ArcadeSummary {
   const meaningCorrect = state.outcomes.filter((o) => o.meaningOk).length;
   const score = readingCorrect + meaningCorrect;
   const maxScore = readingAsked + total;
-  const passed = maxScore > 0 && (score / maxScore) * 100 >= state.passRate;
+  /*
+   * 合格ラインを **点で** 出す。前は 割合だけを 持って いたので、画面には
+   * 「80%」としか 出せず、あと 何問 当てれば よいのかが 分からなかった
+   *（2026-08-26 の 指摘「OKかNGが わからないのは ストレス」）。
+   */
+  const needed = Math.ceil((maxScore * state.passRate) / 100);
+  const completed = total > 0 && total === state.questions.length;
+  const passed = completed && score >= needed;
   const missedWordIds = state.outcomes
     .filter((o) => o.readingOk === false || !o.meaningOk)
     .map((o) => o.wordId);
 
-  return { total, readingCorrect, meaningCorrect, score, maxScore, passed, missedWordIds };
+  return {
+    total,
+    readingCorrect,
+    meaningCorrect,
+    score,
+    maxScore,
+    needed,
+    passRate: state.passRate,
+    completed,
+    passed,
+    missedWordIds,
+  };
 }

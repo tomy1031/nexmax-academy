@@ -64,6 +64,16 @@ export const FEEDBACK = {
     title: "いっしょに かくにんしよう",
     next: "下の せつめいを 読んで、つぎに いこう",
   },
+  /**
+   * 4択の 時間切れ。**外したのと 同じ 文言に しない**——
+   * 「えらべなかった」と「えらんだ ものが ちがった」は 学習者に とって 別の 出来事で、
+   * 同じ ことばを 出されると 何が 起きたのか 分からない（2026-08-26 の 指摘）。
+   */
+  "meaning.timeup": {
+    tone: "encourage",
+    title: "時間切れ！",
+    next: "つぎは はやく えらべるよ。下の せつめいを 読もう",
+  },
 
   /* --- 問題エンジン --- */
   "quiz.correct": { tone: "praise", title: "よく できました！" },
@@ -171,6 +181,7 @@ export function getFeedback(key: FeedbackKey): Feedback {
  *（「出てくる」＝で ／「聞き出せた」＝だせ）。最長一致なので長い表記が先に当たる。
  */
 export const FEEDBACK_FURIGANA: FuriganaEntry[] = [
+  ["時間切れ", "じかんぎれ"],
   ["日本語", "にほんご"],
   ["直", "なお"],
   ["入力", "にゅうりょく"],

@@ -23,7 +23,6 @@ export function ArcadeResult({
   missedWords,
   furigana,
   onRetryWrong,
-  onRetryAll,
   onBack,
   onLeave,
   leaveLabel,
@@ -35,7 +34,6 @@ export function ArcadeResult({
   missedWords: readonly Word[];
   furigana: FuriganaIndex;
   onRetryWrong: () => void;
-  onRetryAll: () => void;
   onBack: () => void;
   /**
    * ことばアーケードから 出る 道。ステージから 来た ときだけ 渡る
@@ -54,42 +52,72 @@ export function ArcadeResult({
       animate={{ opacity: 1, y: 0 }}
       className="card-island mx-auto w-full max-w-2xl p-6 sm:p-8"
     >
+      {/*
+        **合格か 不合格かを 先に、はっきり 出す**（2026-08-26 の 指摘5）。
+        前は テストのときだけ「合格！」で、外れたときは「ここまで すすんだね」——
+        OKなのか NGなのかが 分からず、それが いちばんの ストレスだった。
+        いまは **どの あそびかたでも 同じ 出しかた**（⭕/❌ の 記号＋ことば）。
+      */}
       <div className="flex items-center gap-4">
         <NexMax variant={summary.passed ? "cheer" : "guide"} size={84} bob />
         <div className="flex-1">
           <p className="text-ink-soft text-sm font-extrabold">けっか</p>
-          <h2 className="text-ink text-3xl font-extrabold">
-            {isTest ? (summary.passed ? "合格！" : "ここまで すすんだね") : "おつかれさま！"}
+          <h2
+            className="flex items-center gap-2 text-3xl font-extrabold"
+            style={{
+              color: !summary.completed ? "#1f3a56" : summary.passed ? "#1c7f3e" : "#a3182f",
+            }}
+          >
+            <span aria-hidden>{!summary.completed ? "⏸" : summary.passed ? "⭕" : "❌"}</span>
+            {!summary.completed ? "とちゅうまで" : summary.passed ? "合格" : "不合格"}
           </h2>
         </div>
       </div>
 
-      <div className="mt-5">
+      {/* 点・満点・合格ライン を **同じ 行**に 並べる。何点で 合格かを 隠さない。 */}
+      <p className="border-hairline mt-4 rounded-[var(--radius-card)] border-2 px-4 py-3 text-center text-lg font-extrabold">
+        <span className="text-ink">
+          {summary.score} / {summary.maxScore} 点
+        </span>
+        <span className="text-ink-soft ml-3 text-sm">
+          合格ライン {summary.needed} 点（{summary.passRate}%）
+        </span>
+      </p>
+      {!summary.completed && (
+        /*
+         * 途中で やめた ぶんで 合否を 出さない。3問 やって ぜんぶ 当たったのを
+         * 「合格」と 言って しまうと、合格の 意味が 無くなる。
+         */
+        <p className="text-ink-soft mt-2 text-center font-extrabold">
+          さいごまで やると 合格か どうかが 出ます。
+        </p>
+      )}
+      {summary.completed && !summary.passed && (
+        <p className="mt-2 text-center font-extrabold text-[#a3182f]">
+          あと {summary.needed - summary.score} 点で 合格！
+        </p>
+      )}
+
+      <div className="mt-4">
         <FeedbackMessage messageKey={summary.passed ? "stage.passed" : "stage.keepGoing"} />
       </div>
 
-      {isTest && (
-        <dl className="mt-5 grid grid-cols-3 gap-3 text-center">
-          <Stat label="合計" value={`${summary.score} / ${summary.maxScore}`} accent="#004f8d" />
+      <dl className="mt-5 grid grid-cols-2 gap-3 text-center">
+        {summary.maxScore > summary.total && (
           <Stat
             label="よみ"
             value={`${summary.readingCorrect} / ${summary.total}`}
             accent="#0288d1"
           />
-          <Stat
-            label="いみ"
-            value={`${summary.meaningCorrect} / ${summary.total}`}
-            accent="#3aa458"
-          />
-        </dl>
-      )}
-
-      {!isTest && (
-        <dl className="mt-5 grid grid-cols-2 gap-3 text-center">
-          <Stat label="スコア" value={String(gameScore)} accent="#f0a819" />
-          <Stat label="さいこう れんぞく" value={`${bestCombo}`} accent="#f2654a" />
-        </dl>
-      )}
+        )}
+        <Stat
+          label="いみ"
+          value={`${summary.meaningCorrect} / ${summary.total}`}
+          accent="#3aa458"
+        />
+        {!isTest && <Stat label="スコア" value={String(gameScore)} accent="#f0a819" />}
+        {!isTest && <Stat label="さいこう れんぞく" value={`${bestCombo}`} accent="#f2654a" />}
+      </dl>
 
       {missedWords.length > 0 && (
         <section className="mt-6">
@@ -126,14 +154,11 @@ export function ArcadeResult({
             まちがえた ことばだけ
           </button>
         )}
-        <button
-          type="button"
-          onClick={onRetryAll}
-          className="btn-island btn-game px-6 py-3.5 text-lg"
-          style={{ "--btn-face": "#58c273", "--btn-shadow": "#3aa458" } as React.CSSProperties}
-        >
-          もう一度
-        </button>
+        {/*
+          **ゼロから やり直す ボタンは 置かない**（2026-08-26 の 指定）。
+          50語 ぜんぶを もう一度 やるのは、いちばん 押されにくい 道なのに
+          いちばん 大きく 出て いた。次の 一手は「まちがえた ことばだけ」。
+        */}
         {/*
           行き先は **この ことばの あそびかた選び**（れんしゅう／テスト／
           フラッシュカード…）で、ステージ選びでは ない。札が「ステージを えらぶ」
