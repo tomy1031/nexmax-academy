@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
 import { DictionaryPage } from "@/components/dictionary-page";
-import { listWordStages } from "@/lib/content";
+import { listVocabBooks, listWordStages } from "@/lib/content";
 import { buildDictionary } from "@/lib/dictionary";
 
 /**
  * ことばの辞書（学習者向け）
  *
- * 中身は単語ステージを ことば ごとに畳んだもの。**別の保存先は無い**
- *（src/lib/dictionary.ts）。だから「単語ゲームに出てくる ことば」と
- * 「辞書に載っている ことば」が食い違うことがない。
+ * 中身は **ことばの正**（`content/vocab`）を そのまま 畳んだもの。**別の保存先は無い**
+ *（src/lib/dictionary.ts）。**単語テストに 出る 語は この 中の 一部**で、
+ * テストに 出す セットは リンク（「○○で あそぶ」）を 出すためだけに 見る
+ *（2026-08-25 の指定「ポップアップ＝単語テストではない」）。
  */
 export const metadata: Metadata = { title: "ことばの じしょ" };
 
@@ -16,5 +17,6 @@ export const metadata: Metadata = { title: "ことばの じしょ" };
 export const revalidate = 300;
 
 export default async function Page() {
-  return <DictionaryPage entries={buildDictionary(await listWordStages())} />;
+  const [books, stages] = await Promise.all([listVocabBooks(), listWordStages()]);
+  return <DictionaryPage entries={buildDictionary(books, stages)} />;
 }

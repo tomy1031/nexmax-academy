@@ -1,8 +1,31 @@
 import { describe, expect, it } from "vitest";
-import type { WordStage } from "../src/content/schema";
+import type { VocabBook, VocabWord, WordStage } from "../src/content/schema";
 import { buildDictionary, findDictionaryTerm, termOwners } from "../src/lib/dictionary";
 
-function word(term: string, reading: string, extra: Partial<WordStage["words"][number]> = {}) {
+/**
+ * 辞書は **ことばの 正**から 引く。単語テストの セットは
+ * 「○○で あそぶ」の リンクを 出すためだけに 見る（2026-08-25 の指定
+ * 「ポップアップ＝単語テストではない。ポップアップの中から単語テストに出る問題がある」）。
+ */
+
+function vocab(term: string, reading: string, extra: Partial<VocabWord> = {}): VocabWord {
+  return {
+    id: term,
+    term,
+    reading,
+    meaningJa: `${term} の せつめい`,
+    englishTerm: `meaning of ${term}`,
+    example: `${term} を つかう 文`,
+    wrongMeanings: ["a", "b", "c"],
+    ...extra,
+  };
+}
+
+function book(words: VocabWord[], furigana?: VocabBook["furigana"]): VocabBook {
+  return { kind: "vocab", id: "v", title: "ことば", words, furigana };
+}
+
+function word(term: string, reading: string) {
   return {
     id: term,
     term,
@@ -11,7 +34,6 @@ function word(term: string, reading: string, extra: Partial<WordStage["words"][n
     wrongMeanings: ["a", "b", "c"],
     explanationJa: `${term} の せつめい`,
     example: `${term} を つかう 文`,
-    ...extra,
   };
 }
 
@@ -28,54 +50,64 @@ function stage(id: string, title: string, words: WordStage["words"]): WordStage 
   };
 }
 
-const FIRST = stage("s1", "1課の ことば", [word("報告", "ほうこく"), word("会議", "かいぎ")]);
-const SECOND = stage("s2", "2課の ことば", [
-  // 同じことばが2課にも出てくる。説明はわざと変えてある
-  word("報告", "ほうこく", { explanationJa: "あとから 書きかえた せつめい" }),
-  word("納期", "のうき"),
-]);
+const BOOK = book([vocab("報告", "ほうこく"), vocab("会議", "かいぎ"), vocab("納期", "のうき")]);
+const FIRST = stage("s1", "1課の ことば", [word("報告", "ほうこく")]);
+const SECOND = stage("s2", "2課の ことば", [word("報告", "ほうこく"), word("納期", "のうき")]);
 
 describe("buildDictionary", () => {
-  it("同じことばは1つに畳む", () => {
-    const dictionary = buildDictionary([FIRST, SECOND]);
-    expect(dictionary.filter((entry) => entry.term === "報告")).toHaveLength(1);
+  it("見出しは ことばの 正 ぜんぶ（テストに 出て いなくても 引ける）", () => {
+    const dictionary = buildDictionary([BOOK], [FIRST]);
     expect(dictionary.map((entry) => entry.term).sort()).toEqual(["会議", "報告", "納期"].sort());
+    // 「会議」は どの セットにも 入って いないが、意味は 引ける
+    const kaigi = dictionary.find((entry) => entry.term === "会議")!;
+    expect(kaigi.explanationJa).toBe("会議 の せつめい");
+    expect(kaigi.stageId).toBe("");
   });
 
-  it("先に出てきた単語ステージの説明が残る（習ったときの説明が正）", () => {
-    const dictionary = buildDictionary([FIRST, SECOND]);
-    const entry = dictionary.find((item) => item.term === "報告")!;
-    expect(entry.explanationJa).toBe("報告 の せつめい");
+  it("セットは リンクの ためだけ（先に 出た セットが 勝つ）", () => {
+    const entry = buildDictionary([BOOK], [FIRST, SECOND]).find((item) => item.term === "報告")!;
     expect(entry.stageId).toBe("s1");
     expect(entry.stageTitle).toBe("1課の ことば");
+    expect(buildDictionary([BOOK], [SECOND, FIRST]).find((i) => i.term === "報告")!.stageId).toBe(
+      "s2",
+    );
   });
 
-  it("並びを入れ替えると勝つほうも入れ替わる", () => {
-    const entry = buildDictionary([SECOND, FIRST]).find((item) => item.term === "報告")!;
-    expect(entry.stageId).toBe("s2");
+  it("セットが 1つも 無くても 辞書は できる", () => {
+    expect(buildDictionary([BOOK]).map((entry) => entry.term)).toHaveLength(3);
   });
 
   it("よみの五十音順に並ぶ", () => {
-    expect(buildDictionary([FIRST, SECOND]).map((entry) => entry.reading)).toEqual([
+    expect(buildDictionary([BOOK], [FIRST]).map((entry) => entry.reading)).toEqual([
       "かいぎ",
       "のうき",
       "ほうこく",
     ]);
   });
+
+  it("読み辞書は **その語に 要る ぶんだけ** 運ぶ（束を まるごと 複製しない）", () => {
+    const withFurigana = book(
+      [vocab("納期", "のうき", { meaningJa: "できた ものを わたす 日です。" })],
+      [
+        ["日", "ひ"],
+        ["会社", "かいしゃ"],
+      ],
+    );
+    const entry = buildDictionary([withFurigana])[0]!;
+    const surfaces = entry.furigana.map(([surface]) => surface);
+    expect(surfaces).toContain("日"); // 説明文に 出る
+    expect(surfaces).toContain("納期"); // 見出し語 そのもの
+    expect(surfaces).not.toContain("会社"); // どこにも 出ない ので 運ばない
+  });
 });
 
 describe("findDictionaryTerm", () => {
   const dictionary = buildDictionary([
-    stage("s", "t", [
-      word("報告", "ほうこく"),
-      word("報告書", "ほうこくしょ"),
-      word("会議", "かいぎ"),
-    ]),
+    book([vocab("報告", "ほうこく"), vocab("報告書", "ほうこくしょ"), vocab("会議", "かいぎ")]),
   ]);
 
   it("1文につき1語だけ返す", () => {
-    const found = findDictionaryTerm("会議で 報告を します。", dictionary);
-    expect(found).not.toBeNull();
+    expect(findDictionaryTerm("会議で 報告を します。", dictionary)).not.toBeNull();
   });
 
   it("長い語を優先する（「報告書」があるのに「報告」を取らない）", () => {
@@ -83,8 +115,9 @@ describe("findDictionaryTerm", () => {
   });
 
   it("同じ長さなら 文の先頭に近いほう", () => {
-    const found = findDictionaryTerm("会議の あとで 報告を します。", dictionary);
-    expect(found?.entry.term).toBe("会議");
+    expect(findDictionaryTerm("会議の あとで 報告を します。", dictionary)?.entry.term).toBe(
+      "会議",
+    );
   });
 
   it("載っていない文は null", () => {

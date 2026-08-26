@@ -2,23 +2,24 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import type { WordStage } from "@/content/schema";
+import type { VocabBook, WordStage } from "@/content/schema";
 import { buildDictionary } from "@/lib/dictionary";
 import { MiniButton, SourceBadge } from "./studio-ui";
 
 /**
  * ことば・辞書（管理画面）
  *
- * 上が単語ステージの一覧（＝保存先）、下が辞書。
- * **辞書に保存先は無い**。全単語ステージを ことば単位で畳んだ見え方でしかない
- *（src/lib/dictionary.ts）。だからここで直せるものは無く、直すときは
- * その ことばを持っている単語ステージを開く。
+ * 上が単語テストの セットの一覧、下が辞書。
+ * **辞書に保存先は無い**。**ことばの正**（`content/vocab`）を ことば単位で畳んだ
+ * 見え方でしかない（src/lib/dictionary.ts）。直すときは 正を ひらく。
  *
- * この作りにしている理由は重複である。同じ「報告」が3つの課に出てきたとき、
- * 辞書を別に持つと説明文が2つ育ち、いつのまにか食い違う。畳めば1つしか存在しえない。
+ * **辞書に 出る ことと、単語テストに 出る ことは 別**（2026-08-25 の指定）。
+ * セットに 入って いない 語も 辞書には 出る——読む ための 助けは 多くて よく、
+ * 覚える 語は その中から えらぶ。
  */
 export function DictionaryView({
   wordStages,
+  vocabBooks,
   dbStatusOf,
   onOpen,
   onNew,
@@ -26,6 +27,8 @@ export function DictionaryView({
   onOpenVocab,
 }: {
   wordStages: readonly WordStage[];
+  /** ことばの 正。辞書の 見出しは ここから 出す（テストの セットではない）。 */
+  vocabBooks: readonly VocabBook[];
   dbStatusOf: (kind: string, id: string) => "draft" | "published" | null;
   onOpen: (id: string) => void;
   onNew: () => void;
@@ -37,7 +40,10 @@ export function DictionaryView({
   onOpenVocab?: () => void;
 }) {
   const [query, setQuery] = useState("");
-  const dictionary = useMemo(() => buildDictionary(wordStages), [wordStages]);
+  const dictionary = useMemo(
+    () => buildDictionary(vocabBooks, wordStages),
+    [vocabBooks, wordStages],
+  );
   const filtered = useMemo(() => {
     const needle = query.trim();
     if (needle.length === 0) return dictionary;
