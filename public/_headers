@@ -14,3 +14,30 @@
 # HTML と RSC は ここに 入れない（Worker 側が 出す ヘッダに まかせる）。
 /_next/static/*
   Cache-Control: public,max-age=31536000,immutable
+
+# ── 教材の メディア（2026-08-26 に 追加）──
+#
+# 既定のままだと、音声も PDF も **開くたび サーバに 問い合わせる**（実測で
+# `max-age=0, must-revalidate` が 付いていた）。Cloudflare の 無料枠は 食わない
+#（静的アセットは カウント外）が、カンボジアの 学校の 回線で 20〜30人が 同時に
+# 開くと 体感に 直撃する。スライド1回で PDF 4.9MB ＋ 表示ライブラリ 1.75MB を
+# 取り直していた。
+#
+# **`immutable` に しない**。これらは 先生が スタジオで 差し替える もので、
+# 名前に ハッシュが 入って いない（`/audio/…/q1_name.wav` のまま 中身が 変わる）。
+# 1年 使い回すと「直したのに 変わらない」が 起きる。
+#
+# そこで **教材の 直しが 届く 間隔（ページの `revalidate = 300`）に そろえる**。
+# 5分 以内の 開き直しは 手元の ものを 使い、5分 過ぎたら 裏で 取り直す
+#（`stale-while-revalidate` なので 待たされない）。授業中の 取り直しは これで 消える。
+/audio/*
+  Cache-Control: public,max-age=300,stale-while-revalidate=86400
+/img/*
+  Cache-Control: public,max-age=300,stale-while-revalidate=86400
+/slides/*
+  Cache-Control: public,max-age=300,stale-while-revalidate=86400
+
+# PDF の 表示ライブラリは **先生が 触らない**（版を 上げるのは こちらの 作業）。
+# 1.75MB と 大きいので 長めに 持たせる。上げ直した ときは 1日で 入れ替わる。
+/pdfjs/*
+  Cache-Control: public,max-age=86400,stale-while-revalidate=604800

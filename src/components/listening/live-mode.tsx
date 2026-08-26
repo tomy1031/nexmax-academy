@@ -172,7 +172,11 @@ export function TalkSession({
             ものが どこにも 無い 画面に 立たされる（一覧どうしの 行き来は
             それぞれの 一覧の 下に ある）。
           */}
-          <Link href="/talk" className="text-ink-soft hover:text-navy text-sm font-extrabold">
+          <Link
+            prefetch={false}
+            href="/talk"
+            className="text-ink-soft hover:text-navy text-sm font-extrabold"
+          >
             ← たいわ{" "}
             <ruby>
               一覧<rt>いちらん</rt>

@@ -110,6 +110,7 @@ export function TitleScreen({
             {loggedIn ? (
               <>
                 <Link
+                  prefetch={false}
                   href={canContinue ? "/map" : "/welcome"}
                   className="btn-game w-full border-4 border-white px-6 py-5 text-xl font-black sm:text-2xl"
                   style={
@@ -143,6 +144,7 @@ export function TitleScreen({
                     ①白い ふち ②下の 影 ③2段の 文字 で 見つけやすくする。
                     面の 色は 上の CTA（黄色）と 変えて、どちらが 先かを 保つ。 */}
                 <Link
+                  prefetch={false}
                   href={`/${INTRO_STAGE_ID}`}
                   className="btn-game mt-4 w-full flex-col gap-0.5 border-4 border-white px-5 py-3 text-base font-black sm:text-lg"
                   style={
@@ -161,6 +163,7 @@ export function TitleScreen({
                 {canContinue && (
                   // `retake=1` が要る。付けないと /welcome が診断済みの人をマップへ送り返す。
                   <Link
+                    prefetch={false}
                     href="/welcome?retake=1"
                     className="text-navy mt-3 rounded-full bg-white/90 px-5 py-1.5 text-sm font-extrabold underline underline-offset-4 shadow-sm"
                   >
