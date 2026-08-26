@@ -1,8 +1,8 @@
 import { defineCloudflareConfig } from "@opennextjs/cloudflare";
-import kvIncrementalCache from "@opennextjs/cloudflare/overrides/incremental-cache/kv-incremental-cache";
 import { withRegionalCache } from "@opennextjs/cloudflare/overrides/incremental-cache/regional-cache";
 import staticAssetsIncrementalCache from "@opennextjs/cloudflare/overrides/incremental-cache/static-assets-incremental-cache";
 import memoryQueue from "@opennextjs/cloudflare/overrides/queue/memory-queue";
+import expiringKvIncrementalCache from "./src/lib/cache/kv-expiring-cache";
 
 /**
  * ISR（学習者ページ14ルートの `revalidate = 60`）を実際に効かせるための設定。
@@ -62,11 +62,19 @@ const useAssetsCache = process.env.OPEN_NEXT_CACHE === "assets";
  * - `short-lived`: 写しの使い回しは最長1分。ページ側の revalidate=300 と合わせても、
  *   先生の直しが届く遅れは「最長 revalidate+1分」に収まる。
  * - ブランチ確認URL（assets 側）は読み取り専用の静的アセットなので重ねない。
+ *
+ * ## KV に置くものには 期限を付ける（2026-08-26）
+ *
+ * OpenNext の 素の KV キャッシュは 期限なしで 置くため、前の版の 作りおきが
+ * **読まれないまま 永久に 残る**。実測で 14,334件・222ビルドぶん・1 GB 前後
+ *（無料枠ちょうど）まで 溜まっていた。枠を 超えると 書き込みが 失敗し、
+ * 作りおきが 置けなくなって Error 1102 が 再発する。
+ * 期限付きの 置き場は `src/lib/cache/kv-expiring-cache.ts`（理由と 日数の 根拠も そこ）。
  */
 export default defineCloudflareConfig({
   incrementalCache: useAssetsCache
     ? staticAssetsIncrementalCache
-    : withRegionalCache(kvIncrementalCache, { mode: "short-lived" }),
+    : withRegionalCache(expiringKvIncrementalCache, { mode: "short-lived" }),
   queue: memoryQueue,
   enableCacheInterception: true,
 });

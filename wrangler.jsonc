@@ -36,7 +36,12 @@
     {
       // 名前は OpenNext の KV incrementalCache が探す固定名。変えると効かなくなる。
       "binding": "NEXT_INC_CACHE_KV",
-      "id": "7eb0900e5b8f4525820df5d2c5ecae23",
+      // 2026-08-26 に `academy-next-inc-cache` から `-v2` へ引っ越した。
+      // 前の置き場に **期限なしの作りおきが 14,334件・1 GB 前後**（無料枠ちょうど）
+      // 溜まっていたため。中身は作り直せるキャッシュなので、空から始めてよい。
+      // 消す手段が「1日1000件まで」しかなく、14日かかる代わりに置き場ごと入れ替えた。
+      // 以後は期限つきで置くので溜まらない（src/lib/cache/kv-expiring-cache.ts）。
+      "id": "1ce53d77032747e0b8e52a0a44e1ebd6",
     },
   ],
   "services": [
