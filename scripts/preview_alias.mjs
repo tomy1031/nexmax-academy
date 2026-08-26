@@ -111,6 +111,31 @@ export function buildUploadArgs(alias, assetsMode) {
   return args;
 }
 
+/**
+ * 作りおき（KVキャッシュ）が本当に入ったか（2026-08-26）。
+ *
+ * **「デプロイ成功」は「作りおきが入った」ではない。** KV の書き込み枠
+ * （1000件/日）を使い切ると `populateCache` は中で落ちるのに、外へは
+ * 成功として返ることがある——2026-08-26 の STG デプロイは 0件のまま
+ * 「成功」で終わっていた（docs/deploy.md §0.9）。
+ *
+ * 作りおきが1件も無い版は、全アクセスがフルSSRになる。無料プランでは
+ * それだけで CPU 上限（1リクエスト10ms）を超え、授業の人数が来れば
+ * Error 1102 で入れなくなる。だから **終了コードだけを信じない**で、
+ * 「何件入れたか」の一行が出ているところまで確かめる。
+ *
+ * @param {number | null} status populateCache の終了コード
+ * @param {string} output その標準出力・標準エラー
+ * @returns {boolean} 上げてよいか
+ */
+export function cachePopulated(status, output) {
+  if ((status ?? 1) !== 0) return false;
+  // opennextjs-cloudflare が最後に出す一行。件数が 0 のときは入っていない。
+  const matched = /Successfully populated cache with (\d+) entries/i.exec(output);
+  if (!matched) return false;
+  return Number(matched[1]) > 0;
+}
+
 /** wrangler.jsonc から Worker 名を読む（改名に追随させるため直書きしない）。 */
 function readWorkerName() {
   const source = fs.readFileSync(path.join(process.cwd(), "wrangler.jsonc"), "utf-8");
@@ -220,14 +245,28 @@ function main() {
     // `opennextjs-cloudflare deploy`（cf:deploy）は自動でやるが、ここは素の
     // `wrangler versions upload` なので自前で呼ぶ。
     const populate = spawnSync("npx", ["opennextjs-cloudflare", "populateCache", "remote"], {
-      stdio: "inherit",
+      encoding: "utf-8",
     });
-    if ((populate.status ?? 1) !== 0) {
-      console.warn(
-        "⚠ KVキャッシュの投入に失敗（アップロード自体は完了）。" +
-          "\n  KVの無料枠（書き込み1000件/日）を使い切っている可能性があります。" +
-          "\n  そのままだと各ページの初回アクセスがフルSSRになり、Error 1102 が出ます。",
+    // 拾ってから流す（判定に使うため `inherit` にできない）。
+    if (populate.stdout) process.stdout.write(populate.stdout);
+    if (populate.stderr) process.stderr.write(populate.stderr);
+    if (!cachePopulated(populate.status, `${populate.stdout ?? ""}${populate.stderr ?? ""}`)) {
+      console.error(
+        [
+          "",
+          "✗ 作りおき（KVキャッシュ）が入りませんでした。**この版を使ってはいけません。**",
+          "",
+          "  作りおきが1件も無い版は、全アクセスがフルSSRになります。無料プランの",
+          "  CPU 上限（1リクエスト10ms）を超えて Error 1102 が出て、授業で人が入れません",
+          "  （docs/deploy.md §0.9・§0.10）。",
+          "",
+          "  いちばん多い原因は KV の書き込み枠（1000件/日）切れです。枠が戻るのは",
+          "  UTC 0時＝日本の朝9時。それまでは上げ直さず、**前の版のまま置いておく**",
+          "  ほうが安全です（前の版の作りおきは生きています）。",
+          "",
+        ].join("\n"),
       );
+      process.exit(populate.status || 1);
     }
   }
 

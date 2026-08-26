@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { buildUploadArgs, mayPublishShared, toAlias } from "../scripts/preview_alias.mjs";
+import {
+  buildUploadArgs,
+  cachePopulated,
+  mayPublishShared,
+  toAlias,
+} from "../scripts/preview_alias.mjs";
 
 /** wrangler.jsonc の Worker 名が "academy"（7文字）なので 63 - 7 - 1。 */
 const MAX = 55;
@@ -92,5 +97,34 @@ describe("上げるときの引数（作りおきをどこから読ませるか�
       "--preview-alias",
       "staging",
     ]);
+  });
+});
+
+/**
+ * 作りおき（KVキャッシュ）が入ったかの 見分け（2026-08-26）。
+ *
+ * **「デプロイ成功」は「作りおきが入った」ではない。** 0件のまま成功で
+ * 終わった版を上げると、全アクセスがフルSSRになって Error 1102 が出る
+ * （docs/deploy.md §0.9）。終了コードだけを信じない、が この検査の 中身。
+ */
+describe("作りおきが入ったか", () => {
+  it("件数つきで成功していれば上げてよい", () => {
+    expect(cachePopulated(0, "Successfully populated cache with 73 entries")).toBe(true);
+  });
+
+  it("0件なら上げない（成功と出ていても中身が無い）", () => {
+    expect(cachePopulated(0, "Successfully populated cache with 0 entries")).toBe(false);
+  });
+
+  it("件数の一行が出ていなければ上げない", () => {
+    // 2026-08-26 に実際に出た形。枠切れでスタックトレースだけが残る。
+    expect(cachePopulated(0, "Inserting 73 assets to remote KV in chunks of 25\nError: ...")).toBe(
+      false,
+    );
+  });
+
+  it("終了コードが 0 でなければ上げない", () => {
+    expect(cachePopulated(1, "Successfully populated cache with 73 entries")).toBe(false);
+    expect(cachePopulated(null, "")).toBe(false);
   });
 });

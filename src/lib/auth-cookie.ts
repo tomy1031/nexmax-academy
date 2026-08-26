@@ -81,3 +81,17 @@ export function takeRegisterFlag(): boolean {
   if (found) document.cookie = `${REGISTER_COOKIE}=; path=/; max-age=0; samesite=lax`;
   return found;
 }
+
+/**
+ * 「つづきから」の印が付いているか（ブラウザ側）。
+ *
+ * タイトル画面を **作りおきで 返せる 静的ページ**に した ぶん
+ *（2026-08-26・docs/deploy.md §0.10）、この 判定は ブラウザの 仕事に なった。
+ * 見る クッキーは サーバで 読んで いた ころと 同じ なので、
+ * 別の 端末で 開いた ときの ふるまいも 変わらない
+ *（印が 無ければ 1回だけ DB を 見る。ただし 見に行くのは **ブラウザから**）。
+ */
+export function isReadyMarked(): boolean {
+  if (typeof document === "undefined") return false;
+  return document.cookie.split(";").some((entry) => entry.trim().startsWith(`${READY_COOKIE}=1`));
+}
