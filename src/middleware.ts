@@ -25,6 +25,10 @@ function isOpenToVisitors(pathname: string): boolean {
  * **外部への往復は最小にする**（願い #17）。ログイン必須にした直後、1画面につき
  * Supabase へ3往復していて、30人が同時に開くと Worker が資源上限に達した
  * （実測: 60並列で全件 503 / Cloudflare Error 1102）。
+ *
+ * 2026-08-26 に **残り1往復も 無くした**。クッキーが あるときの 確認を
+ * `getUser()`（毎回 認証サーバへ 送る）から `getClaims()`（公開鍵で その場で
+ * 署名検証）へ 変えた。定常状態では 外へ 出ない。下の 呼び出し箇所を 参照。
  */
 export async function middleware(request: NextRequest) {
   const cfg = getSupabasePublicConfig();
@@ -86,12 +90,33 @@ export async function middleware(request: NextRequest) {
     },
   });
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  /*
+   * 署名を **その場で** 確かめる（外への往復を起こさない）。
+   *
+   * `getUser()` は トークンを Supabase の 認証サーバへ 送って 確かめるので、
+   * ログイン済みの人が ページを 開くたびに 1往復 していた。授業で 20人が 一斉に
+   * 使うと、この 往復が Worker の CPU 上限（無料枠 10ms）を 押し上げる
+   *（2026-08-25 の 上限超過。docs/deploy.md §0.7）。
+   *
+   * `getClaims()` は プロジェクトが **非対称鍵（ES256）** で 署名して いるとき、
+   * 公開鍵（JWKS）で WebCrypto 検証を その場で 行う。公開鍵は auth-js の
+   * `GLOBAL_JWKS` に **クライアントを またいで** 10分 ためられるので、
+   * 外へ 出るのは 10分に 1回 だけに なる。
+   *
+   * **安全さは 落ちない**——署名を 確かめて いるので、クッキーを 作り替えた
+   * 偽の セッションは 通らない（`getSession()` を そのまま 信じるのとは 違う）。
+   * ただし 署名が 生きて いる 間（アクセストークンの 期限・既定1時間）は、
+   * 別の 端末で ログアウトしても この 判定は 通る。学習用の 画面なので
+   * その 猶予は 受け入れる。**データそのものは RLS が 守る**。
+   *
+   * 期限が 近い ときは 中で 更新が 走り、新しい クッキーは これまでどおり
+   * `setAll` に 届く（下で 応答に 載せ直す）。
+   */
+  const { data: verified } = await supabase.auth.getClaims();
+  const loggedIn = Boolean(verified?.claims.sub);
 
   const response =
-    user || isOpenToVisitors(pathname) ? passThrough(Boolean(user)) : redirectToTitle();
+    loggedIn || isOpenToVisitors(pathname) ? passThrough(loggedIn) : redirectToTitle();
   for (const { name, value, options } of refreshed) {
     response.cookies.set(name, value, options);
   }
