@@ -19,7 +19,43 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: npm
-      - run: npm ci
+
+      # ── 依存を まるごと 覚えておく（願い #208） ─────────────────────────
+      #
+      # `setup-node` の `cache: npm` が 覚えるのは **ダウンロードの キャッシュ**だけで、
+      # `npm ci` の 24秒の 大半は **node_modules へ 展開する 時間**。そこを 覚える。
+      #
+      # 実測（2026-08-26・run 32926510455 の 1回目と 2回目）:
+      #   check 24秒 → 5秒 ／ e2e 24秒 → 9秒 ／ size 27秒 → 4秒（**1ジョブ 15〜23秒 減**）
+      #
+      # 鍵は package-lock.json の ハッシュ **完全一致**（前方一致で 拾わない）。
+      # 古い node_modules を 拾うと、**直した はずの 依存で 緑が 出る**——
+      # 2026-08-19 に `next start` の 使い回しで 同じ 事故を 起こして いる。
+      # 完全一致なので **一度 保存したら 以後は 当たり続け、保存しなおさない**
+      # （置き場も 増えない）。
+      #
+      # 当たった ときは `npm ci` を とばす ので、**postinstall も 走らない**。
+      # `copy_pdf_worker.mjs` は pdf.js の 実体を `public/` へ 写す（スライド教材が 使う）ので、
+      # ここで 名指しで 呼ぶ。忘れると スライドが 白くなる。
+      #
+      # ## 覚えるのを **やめた** もの（測って 効かなかった。願い #208 で 一度 入れて 外した）
+      #
+      # - **Playwright の ブラウザ**（`~/.cache/ms-playwright`）… 26秒 → 21秒。**5秒しか 減らない**。
+      #   ダウンロードは とぶが、`--with-deps` の OS 部品の 確認に 16秒 かかる ため。
+      #   置き場 約400MB・初回の 保存に 1分30秒 を 払って 5秒 は 割に 合わない。
+      # - **`.next/cache`** … ビルド 46〜64秒 → 45〜48秒。**同じ SHA の 完全一致でも 変わらない**。
+      #   このアプリの ビルドは **静的ページの 生成**が 主で、webpack の 再コンパイルでは ない ため。
+      #   しかも 鍵に コミットSHA が 要る ので、**1コミットにつき 3つ**の 置き場を 作り続ける。
+      - uses: actions/cache@v4
+        id: modules
+        with:
+          path: node_modules
+          key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+      - if: steps.modules.outputs.cache-hit != 'true'
+        run: npm ci
+      - if: steps.modules.outputs.cache-hit == 'true'
+        run: node scripts/copy_pdf_worker.mjs
+
       - name: 整形チェック
         run: npm run format:check
       - name: ESLint
@@ -47,6 +83,10 @@ jobs:
   #   これは **Playwright の ステップにだけ** 渡す（ビルドに 渡すと OpenNext が
   #   バンドルへ 焼き込む — docs/deploy.md §0.2）。鍵が 無ければ AIの 1往復だけ
   #   とばして、ほかは そのまま 走る（フォークからの PR でも 通る）。
+  #
+  # ここが CI で **いちばん 長い ジョブ**（＝PR 1回の 待ちを 決める）。
+  # 通し検証そのものの 短縮は playwright.config.ts の 並列数（CI だけ 4本）で、
+  # 前後の 支度の 短縮は 下の 3つの キャッシュで やっている（願い #208）。
   e2e:
     runs-on: ubuntu-latest
     timeout-minutes: 25
@@ -57,7 +97,17 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: npm
-      - run: npm ci
+
+      # 依存（check ジョブと 同じ 考えかた。鍵も 同じなので 先に 通った ほうを 共用する）
+      - uses: actions/cache@v4
+        id: modules
+        with:
+          path: node_modules
+          key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+      - if: steps.modules.outputs.cache-hit != 'true'
+        run: npm ci
+      - if: steps.modules.outputs.cache-hit == 'true'
+        run: node scripts/copy_pdf_worker.mjs
 
       # @playwright/test は devDependencies に 入って いる（版は ブラウザと 組で 固定）。
       # ここでは ブラウザ本体だけ 入れる。
@@ -102,7 +152,18 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: npm
-      - run: npm ci
+
+      # 依存（check ジョブと 同じ 考えかた）
+      - uses: actions/cache@v4
+        id: modules
+        with:
+          path: node_modules
+          key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+      - if: steps.modules.outputs.cache-hit != 'true'
+        run: npm ci
+      - if: steps.modules.outputs.cache-hit == 'true'
+        run: node scripts/copy_pdf_worker.mjs
+
       - name: Cloudflare 向けに 束ねる
         run: npm run cf:build:local
       - name: 上げる 大きさ（2.8MiB で 警告・3.0MiB で 落とす）
