@@ -56,7 +56,6 @@ jobs:
       - if: steps.modules.outputs.cache-hit == 'true'
         run: node scripts/copy_pdf_worker.mjs
 
-
       - name: 整形チェック
         run: npm run format:check
       - name: ESLint
@@ -118,7 +117,6 @@ jobs:
       - name: 型（通し検証のぶん）
         run: npx tsc -p tests/e2e --noEmit
 
-
       - name: ビルド
         run: npm run build
 
@@ -165,7 +163,6 @@ jobs:
         run: npm ci
       - if: steps.modules.outputs.cache-hit == 'true'
         run: node scripts/copy_pdf_worker.mjs
-
 
       - name: Cloudflare 向けに 束ねる
         run: npm run cf:build:local
