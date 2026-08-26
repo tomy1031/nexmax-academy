@@ -26,7 +26,7 @@ import {
 import { ArcadeScene, HudChip } from "./arcade-scene";
 import type { TermOutcome } from "./arcade-three";
 import { ArcadeButton, ArcadePanel } from "./arcade-panel";
-import { ApproachClock, DamageFlash, McqTerm, ScorePop } from "./arcade-fx";
+import { ApproachClock, DamageFlash, McqTerm, ScorePop, Verdict } from "./arcade-fx";
 import { ArcadeResult } from "./arcade-result";
 import { FlashcardDeck } from "./flashcard-deck";
 import { MeaningChoice } from "./meaning-choice";
@@ -115,6 +115,7 @@ export function ArcadeGame({
       const mastery = store.readMastery(target.id);
       setSession(createSession({ stage: target, mode, difficulty, mastery, onlyWordIds }));
       savedRef.current = null;
+      savedCountRef.current = 0;
       setScreen({ kind: "play", stageId: target.id });
     },
     [difficulty, store],
@@ -127,6 +128,16 @@ export function ArcadeGame({
   }, []);
 
   const leave = useCallback(() => router.push(backTo ?? "/map"), [router, backTo]);
+
+  /*
+   * **1問 ごとに 進み具合を 書く**（2026-08-26）。
+   *
+   * 前は けっか画面に たどり着いた ときに まとめて 書いて いた。
+   * セットの ことばを **全問 出す**ように した ので、1回が 長く なる——
+   * 途中で 閉じた 学習者の 30問ぶんが まるごと 消えるのは 割に 合わない。
+   * 書くのは 端末の 中（localStorage）なので、書く 回数が 増えても 通信は しない。
+   */
+  const savedCountRef = useRef(0);
 
   // ステージの進み具合に反映する（設計07 §3）。けっか画面まで来たら「おわった」。
   const finished = screen.kind === "result";
@@ -157,13 +168,20 @@ export function ArcadeGame({
         outcome: session ? termOutcomeOf(session) : null,
         onCollide: () => dispatch({ type: "readingTimeout" }),
       }}
-      impact={session ? tookDamage(session) : false}
+      /*
+       * 揺れは **どの モードでも**。前は `tookDamage`（れんしゅうで ライフが 減った とき）
+       * だけに 付いて いたので、テストでは 外しても 時間切れでも 画面が 静かなままで、
+       * 「合って いた」ように 見えて いた（2026-08-26 の 指摘4）。
+       */
+      impactSeq={session && session.flash !== "hit" ? session.flashSeq : 0}
     >
       {screen.kind === "play" && session && stage ? (
         <PlayLayer
           state={session}
           furigana={furigana}
           dispatch={dispatch}
+          store={store}
+          savedCountRef={savedCountRef}
           onFinished={() => setScreen({ kind: "result", stageId: stage.id })}
         />
       ) : (
@@ -231,7 +249,6 @@ export function ArcadeGame({
                 store={store}
                 savedRef={savedRef}
                 onRetryWrong={(ids) => start(stage, session.mode, ids)}
-                onRetryAll={() => start(stage, session.mode)}
                 onBack={() => setScreen({ kind: "mode", stageId: stage.id })}
                 /* おわった 直後が いちばん 出たい 瞬間。ステージから 来た ときだけ 出す */
                 onLeave={backTo ? leave : undefined}
@@ -277,15 +294,6 @@ function termOutcomeOf(state: ArcadeState): TermOutcome | null {
   return phase.readingOk ? "hit" : "missed";
 }
 
-/** ライフが減った瞬間か（旧 takeDamage）。れんしゅうのときだけ痛い。 */
-function tookDamage(state: ArcadeState): boolean {
-  if (state.mode !== "practice") return false;
-  const phase = state.phase;
-  if (phase.kind === "meaning") return phase.readingOk === false;
-  if (phase.kind === "explain") return phase.feedback === "meaning.retry";
-  return false;
-}
-
 /* ------------------------------------------------------------------ *
  * プレイ中 — 四隅HUD・中央の用語・下端の入力
  * ------------------------------------------------------------------ */
@@ -294,11 +302,16 @@ function PlayLayer({
   state,
   furigana,
   dispatch,
+  store,
+  savedCountRef,
   onFinished,
 }: {
   state: ArcadeState;
   furigana: ReturnType<typeof buildFuriganaIndex>;
   dispatch: (action: ArcadeAction) => void;
+  store: ReturnType<typeof createProgressStore>;
+  /** どこまで 書いたか。**1問ごとに 書く**ので、途中で 閉じても 消えない。 */
+  savedCountRef: React.RefObject<number>;
   onFinished: () => void;
 }) {
   const question = currentQuestion(state);
@@ -315,6 +328,26 @@ function PlayLayer({
     onExpire: onMeaningExpire,
     resetKey,
   });
+
+  /*
+   * **1問 片づくたびに 進み具合を 書く**（2026-08-26）。
+   *
+   * 前は けっか画面に たどり着いた ときに まとめて 書いて いた。
+   * セットの ことばを 全問 出す ように した ので 1回が 長い——
+   * 途中で 閉じた 学習者の 30問ぶんが まるごと 消えるのは 割に 合わない。
+   * 書き先は 端末の 中（localStorage）なので、回数が 増えても 通信は しない。
+   */
+  useEffect(() => {
+    if (phase.kind !== "explain") return;
+    const done = state.outcomes.length;
+    if (done <= savedCountRef.current) return;
+    const fresh = state.outcomes.slice(savedCountRef.current);
+    savedCountRef.current = done;
+    store.recordAttempts(
+      state.stageId,
+      fresh.map((o) => ({ wordId: o.wordId, correct: o.meaningOk && o.readingOk !== false })),
+    );
+  }, [phase.kind, state.outcomes, state.stageId, store, savedCountRef]);
 
   useEffect(() => {
     if (phase.kind !== "explain") return;
@@ -333,9 +366,6 @@ function PlayLayer({
   useEffect(() => {
     if (phase.kind === "finished") onFinished();
   }, [phase.kind, onFinished]);
-
-  // 読みを聞いた結果。null は「聞いていない」（問題だけモード）。
-  const verdict = phase.kind === "meaning" ? phase.readingOk : null;
 
   if (!question) return null;
   const { word, choices } = question;
@@ -359,10 +389,18 @@ function PlayLayer({
       {/* 迫ってくる用語・出現の輪・撃破の粒は three.js の中（arcade-three.ts）。 */}
 
       {/* 加点ポップ（旧 scorePop） */}
-      {state.lastGain > 0 && <ScorePop id={resetKey} label={`+${state.lastGain}`} />}
-      {/* テストは点が入らないので、旧アプリと同じく「OK!」だけ出す。 */}
-      {verdict === true && state.lastGain === 0 && <ScorePop id={resetKey} label="OK!" quiet />}
-      {isPractice && readingMissed && <DamageFlash id={resetKey} />}
+      {state.lastGain > 0 && (
+        <ScorePop id={`${resetKey}:${state.flashSeq}`} label={`+${state.lastGain}`} />
+      )}
+
+      {/*
+        ⭕／❌ の しるし。**当たっても 外しても 必ず 出す**（2026-08-26 の 指摘2・3）。
+        読みの あとにも、意味の あとにも 出る ので、学習者は 1問に 2回 手ごたえを 受け取る。
+      */}
+      {state.flash && <Verdict id={state.flashSeq} kind={state.flash} />}
+      {state.flash && state.flash !== "hit" && (
+        <DamageFlash id={state.flashSeq} tone={state.flash === "timeup" ? "timeup" : "miss"} />
+      )}
 
       {/* 四隅のHUD（旧アプリと同じ配置。中央は用語のために空ける） */}
       <div className="pointer-events-none absolute inset-x-0 top-12 flex items-start justify-between px-4 sm:px-8">
@@ -422,15 +460,12 @@ function PlayLayer({
         {phase.kind === "meaning" && (
           <>
             {readingMissed && (
-              <p
-                className="text-lg font-black"
-                style={{
-                  color: "#1f3a56",
-                  WebkitTextStroke: "3px #fff",
-                  paintOrder: "stroke fill",
-                }}
-              >
-                よみ: {word.reading}
+              /*
+               * 外した ときは **❌ と 正しい よみ**を 並べる。
+               * 前は「よみ: かいしゃ」だけで、当たった ときと 見た目が ほとんど 同じだった。
+               */
+              <p className="rounded-full border-4 border-white bg-[#fffaf0]/96 px-4 py-1 text-lg font-black text-[#a3182f]">
+                ❌ ただしい よみ: {word.reading}
               </p>
             )}
             <p
@@ -453,15 +488,30 @@ function PlayLayer({
           <button
             type="button"
             onClick={() => dispatch({ type: "advance" })}
-            className="pointer-events-auto w-full max-w-2xl rounded-[24px] border-4 border-white bg-[#fffaf0]/97 p-4 text-left shadow-[0_7px_0_#b8deed,0_18px_32px_rgba(0,79,141,.25)]"
+            className="pointer-events-auto w-full max-w-2xl rounded-[24px] border-4 bg-[#fffaf0]/97 p-4 text-left shadow-[0_7px_0_#b8deed,0_18px_32px_rgba(0,79,141,.25)]"
+            style={{ borderColor: phase.ok ? "#3aa458" : "#f2654a" }}
           >
+            {/* ⭕／❌ を 見出しに 置く。**記号と ことばの 両方**で 出す（色だけに たよらない）。 */}
+            <p
+              className="mb-2 flex items-center gap-2 text-xl font-black"
+              style={{ color: phase.ok ? "#1c7f3e" : "#a3182f" }}
+            >
+              <span aria-hidden>{phase.ok ? "⭕" : "❌"}</span>
+              {phase.ok ? "せいかい" : "ちがう こたえ"}
+            </p>
             <FeedbackMessage messageKey={phase.feedback} />
+            {/* 外した ときは、**えらんだ もの**と **正解**の 両方を 並べる。 */}
+            {!phase.ok && phase.chosen && (
+              <p className="mt-2 text-sm font-black text-[#a3182f]">
+                ❌ えらんだ こたえ: {phase.chosen}
+              </p>
+            )}
             <p className="text-ink mt-3 text-lg font-black">
               <ruby>
                 {word.term}
                 <rt>{word.reading}</rt>
               </ruby>
-              <span className="text-sky ml-3 text-base">{word.meaningEn}</span>
+              <span className="ml-3 text-base font-black text-[#1c7f3e]">⭕ {word.meaningEn}</span>
             </p>
             <p className="text-ink-soft mt-1 font-bold">
               <RubyText text={word.explanationJa} index={furigana} />
@@ -650,6 +700,16 @@ function ModeSelect({
         ことば {stage.words.length}こ ／ 1回の もんだい {stage.questionCount}こ ／ 合格{" "}
         {stage.passRate}%
       </p>
+      {/*
+        **ルールを 先に 見せる**（2026-08-26 の 指摘5「ルールに 何が 書いて あるか わからない」）。
+        テストと れんしゅうは「よみ」と「いみ」の 2つを 数える ので、満点は もんだいの 2倍に なる。
+        ここを 出して おかないと、けっか画面の 点が どこから 来たのか 分からない。
+      */}
+      <p className="text-ink-soft border-hairline mt-2 rounded-[var(--radius-card)] border-2 px-3 py-2 text-xs font-bold">
+        ⭕ よみ（ひらがな）と いみ（英語）を 1つずつ 数えます。
+        {stage.questionCount * 2}点 中 {Math.ceil((stage.questionCount * 2 * stage.passRate) / 100)}
+        点で 合格です。「もんだいだけ」は いみだけを 数えます。
+      </p>
 
       <p className="text-ink-soft mt-5 text-sm font-black">
         むずかしさ（スピードと 時間だけが かわるよ）
@@ -785,7 +845,6 @@ function ResultLayer({
   store,
   savedRef,
   onRetryWrong,
-  onRetryAll,
   onBack,
   onLeave,
   leaveLabel,
@@ -796,7 +855,6 @@ function ResultLayer({
   store: ReturnType<typeof createProgressStore>;
   savedRef: React.RefObject<string | null>;
   onRetryWrong: (ids: readonly string[]) => void;
-  onRetryAll: () => void;
   onBack: () => void;
   onLeave?: () => void;
   leaveLabel?: ReactNode;
@@ -812,13 +870,8 @@ function ResultLayer({
     if (savedRef.current === token) return;
     savedRef.current = token;
 
-    store.recordAttempts(
-      stage.id,
-      state.outcomes.map((o) => ({
-        wordId: o.wordId,
-        correct: o.meaningOk && o.readingOk !== false,
-      })),
-    );
+    // ことばの 出来ぐあいは **1問ごとに** 書いてある（ArcadeGame の savedCountRef）。
+    // ここで もう一度 書くと 同じ 問題を 2回 数えて しまう。
     store.recordGameScore(stage.id, state.score, state.bestCombo);
     if (state.mode === "test") {
       store.recordFirstTestResult({
@@ -844,7 +897,6 @@ function ResultLayer({
         missedWords={missedWords}
         furigana={furigana}
         onRetryWrong={() => onRetryWrong(summary.missedWordIds)}
-        onRetryAll={onRetryAll}
         onBack={onBack}
         onLeave={onLeave}
         leaveLabel={leaveLabel}

@@ -208,3 +208,25 @@ describe("学習者に 見せる ことばの 一覧", () => {
     expect(findLearnerWordStage("nai", stages, words)).toBeNull();
   });
 });
+
+/**
+ * まとめた セットも **ぜんぶ 出す**（2026-08-26 の 指定6）
+ *
+ * 前は「いちばん 多い セットの 数」だったので、24語＋20語を まとめても
+ * 出るのは 24問 まで。あとの セットの ことばは ほとんど 出番が なかった。
+ */
+describe("まとめた セットの 出題数", () => {
+  it("それぞれが 全問なら、まとめた ものも 全問 出す", () => {
+    const merged = stageWordStage(INTRO, [intro, orientation])!;
+    expect(merged.questionCount).toBe(merged.words.length);
+    expect(merged.questionCount).toBeGreaterThan(intro.questionCount);
+  });
+
+  it("先生が 減らして いれば、その ぶんだけ 減る", () => {
+    const merged = stageWordStage(INTRO, [
+      { ...intro, questionCount: 2 },
+      { ...orientation, questionCount: 1 },
+    ])!;
+    expect(merged.questionCount).toBe(3);
+  });
+});

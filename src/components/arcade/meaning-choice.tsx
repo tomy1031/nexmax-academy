@@ -34,7 +34,12 @@ export function MeaningChoice({
           }}
         />
       </div>
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+      {/* 4つの 札を ひとまとまりに する（読み上げにも、通しの 検証にも 効く）。 */}
+      <div
+        role="group"
+        aria-label="いみの こたえ"
+        className="grid grid-cols-1 gap-3 sm:grid-cols-2"
+      >
         {choices.map((choice) => (
           <button
             key={choice}

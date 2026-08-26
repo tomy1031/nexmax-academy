@@ -79,7 +79,18 @@ export function stageWordStage(stage: StageHead, parts: readonly WordStage[]): W
     title: stage.title,
     description: parts[0]!.description,
     fieldSequence: parts[0]!.fieldSequence,
-    questionCount: Math.min(Math.max(...parts.map((p) => p.questionCount)), words.length),
+    /*
+     * 出題数は **足し算**（2026-08-26）。
+     *
+     * 前は いちばん 多い セットの 数（max）だった ので、2つを まとめても
+     * 出る 数は 増えず、あとの セットの ことばは ほとんど 出番が なかった。
+     * それぞれが「ぜんぶ 出す」設定なら、まとめた ものも ぜんぶ 出る。
+     * 先生が どれかを 減らして いれば、その ぶんだけ 減る。
+     */
+    questionCount: Math.min(
+      parts.reduce((n, p) => n + p.questionCount, 0),
+      words.length,
+    ),
     passRate: Math.max(...parts.map((p) => p.passRate)),
     /*
      * 語ごとの (表記, よみ) を 先に、読み辞書を あとに 置く（あと勝ち）。

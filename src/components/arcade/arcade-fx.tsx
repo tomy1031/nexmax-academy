@@ -46,8 +46,21 @@ export function ScorePop({
   );
 }
 
-/** ライフが減った瞬間の全画面フラッシュ（旧 #damage-flash / 340ms）。 */
-export function DamageFlash({ id }: { id: string | number }) {
+/**
+ * 外した／時間切れの 瞬間の 全画面フラッシュ（旧 #damage-flash / 340ms）。
+ *
+ * 前は **れんしゅうモードだけ**に 出して いた（ライフが 減る ときだけ）。
+ * テストと もんだいだけでは 外しても 画面が まったく 変わらず、
+ * 学習者には「合って いた」ように 見えて いた（2026-08-26 の 指摘）。
+ * いまは どの モードでも 出す。
+ */
+export function DamageFlash({
+  id,
+  tone = "miss",
+}: {
+  id: string | number;
+  tone?: "miss" | "timeup";
+}) {
   return (
     <motion.div
       key={id}
@@ -55,12 +68,57 @@ export function DamageFlash({ id }: { id: string | number }) {
       className="pointer-events-none absolute inset-0"
       style={{
         background:
-          "radial-gradient(90% 90% at 50% 50%, rgba(255, 40, 70, 0.55), rgba(160, 0, 30, 0.9))",
+          tone === "timeup"
+            ? "radial-gradient(90% 90% at 50% 50%, rgba(255, 168, 0, 0.5), rgba(180, 90, 0, 0.85))"
+            : "radial-gradient(90% 90% at 50% 50%, rgba(255, 40, 70, 0.55), rgba(160, 0, 30, 0.9))",
       }}
       initial={{ opacity: 0.8 }}
       animate={{ opacity: 0 }}
       transition={{ duration: 0.34, ease: "easeOut" }}
     />
+  );
+}
+
+/**
+ * ⭕／❌ の 大きな しるし（2026-08-26 追加）。
+ *
+ * 「正解と 間違いの 表示の ちがいが わかりにくい」への 答え。
+ * **記号と ことばの 両方**で 出す——色だけに たよらない
+ *（提出の 画面で 先に 決めた 作法。`tests/e2e/teishutsu.spec.ts`）。
+ * 文言は 規律1（責めない）を 守り、しるしだけで 合否を はっきりさせる。
+ */
+export function Verdict({ id, kind }: { id: string | number; kind: "hit" | "miss" | "timeup" }) {
+  const face =
+    kind === "hit"
+      ? { mark: "⭕", label: "せいかい！", color: "#1c7f3e", glow: "rgba(58,164,88,.95)" }
+      : kind === "timeup"
+        ? { mark: "⏰", label: "じかんぎれ！", color: "#8a5200", glow: "rgba(240,168,25,.95)" }
+        : { mark: "❌", label: "おしい！", color: "#a3182f", glow: "rgba(242,101,74,.95)" };
+
+  return (
+    <motion.div
+      key={id}
+      role="status"
+      aria-live="polite"
+      className="pointer-events-none absolute top-[30%] left-1/2 flex -translate-x-1/2 flex-col items-center gap-1"
+      initial={{ opacity: 0, scale: 0.5 }}
+      animate={{ opacity: [0, 1, 1, 0], scale: [0.5, 1.15, 1.05, 1.05] }}
+      transition={{ duration: 1.1, times: [0, 0.14, 0.7, 1], ease: "easeOut" }}
+    >
+      <span aria-hidden className="text-[86px] leading-none sm:text-[110px]">
+        {face.mark}
+      </span>
+      <span
+        className="rounded-full border-4 border-white px-4 py-1 text-xl font-black sm:text-2xl"
+        style={{
+          background: "rgba(255,250,240,.96)",
+          color: face.color,
+          boxShadow: `0 0 26px ${face.glow}`,
+        }}
+      >
+        {face.label}
+      </span>
+    </motion.div>
   );
 }
 

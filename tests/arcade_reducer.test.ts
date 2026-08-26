@@ -233,3 +233,97 @@ describe("ことばアーケードの状態機械", () => {
     }
   });
 });
+
+/**
+ * ⭕／❌ と 時間切れの しるし（2026-08-26 の 指摘2・3・4）
+ *
+ * 学習者から「誤った語を 入れても 正解に なる」と 見えて いた。
+ * **点の 数え方は 前から 正しい**（ここで 固定する）。見え方の ほうが 同じだった——
+ * だから 状態に「いま 何が 起きたか」を 持たせ、画面が ⭕／❌／時間切れを 出し分ける。
+ */
+describe("手ごたえの しるし（flash）", () => {
+  it("読みを 外しても『正解』には ならない（点は 入らない）", () => {
+    let s = createSession({ stage, mode: "test", rng: seededRng(31) });
+    const word = currentWord(s)!;
+    s = arcadeReducer(s, { type: "submitReading", input: "ぜんぜんちがうよみ" });
+    expect(s.flash).toBe("miss");
+    s = arcadeReducer(s, { type: "chooseMeaning", choice: word.meaningEn });
+    expect(summarize(s).readingCorrect).toBe(0);
+    expect(summarize(s).score).toBe(1); // 意味の 1点だけ
+  });
+
+  it("当たると hit、外すと miss、時間切れは timeup と 区別が つく", () => {
+    let s = createSession({ stage, mode: "test", rng: seededRng(32) });
+    const word = currentWord(s)!;
+    s = arcadeReducer(s, { type: "submitReading", input: word.reading });
+    expect(s.flash).toBe("hit");
+    s = arcadeReducer(s, { type: "meaningTimeout" });
+    expect(s.flash).toBe("timeup");
+    expect(s.phase).toMatchObject({ kind: "explain", ok: false, feedback: "meaning.timeup" });
+  });
+
+  it("読みの 時間切れは timeup（4択の 外しと 同じ 顔に しない）", () => {
+    let s = createSession({ stage, mode: "test", rng: seededRng(33) });
+    s = arcadeReducer(s, { type: "readingTimeout" });
+    expect(s.flash).toBe("timeup");
+  });
+
+  it("同じ しるしが つづいても 番号が 増える（演出を 出し直せる）", () => {
+    let s = createSession({ stage, mode: "test", rng: seededRng(34) });
+    s = arcadeReducer(s, { type: "submitReading", input: "ちがうよみ" });
+    const first = s.flashSeq;
+    s = arcadeReducer(s, { type: "chooseMeaning", choice: "___ありえない選択肢___" });
+    expect(s.flash).toBe("miss");
+    expect(s.flashSeq).toBeGreaterThan(first);
+  });
+
+  it("解説は『何を えらんだか』を 持つ（外したとき 画面に 出す）", () => {
+    let s = createSession({ stage, mode: "quiz", rng: seededRng(35) });
+    s = arcadeReducer(s, { type: "chooseMeaning", choice: "___ありえない選択肢___" });
+    expect(s.phase).toMatchObject({ kind: "explain", ok: false, chosen: "___ありえない選択肢___" });
+  });
+
+  it("つぎの 問題に 進むと しるしは 消える", () => {
+    let s = createSession({ stage, mode: "quiz", rng: seededRng(36) });
+    const word = currentWord(s)!;
+    s = arcadeReducer(s, { type: "chooseMeaning", choice: word.meaningEn });
+    s = arcadeReducer(s, { type: "advance" });
+    expect(s.flash).toBeNull();
+  });
+});
+
+/**
+ * 合格ラインを **点で** 出す（2026-08-26 の 指摘5）
+ *
+ * 「OKか NGか わからないのは ストレス」への 答え。割合だけでは
+ * あと 何問 当てれば よいかが 分からない。
+ */
+describe("合否の 出しかた", () => {
+  it("合格に 要る 点を 切り上げで 持つ", () => {
+    let s = createSession({ stage, mode: "test", rng: seededRng(41) });
+    const sum = summarize({ ...s, outcomes: [] });
+    expect(sum.passRate).toBe(stage.passRate);
+    // まだ 1問も 答えて いないので 満点も 0
+    expect(sum.needed).toBe(0);
+    expect(sum.passed).toBe(false);
+
+    s = answerAllCorrect(s);
+    const done = summarize(s);
+    expect(done.maxScore).toBe(stage.questionCount * 2);
+    expect(done.needed).toBe(Math.ceil((done.maxScore * stage.passRate) / 100));
+    expect(done.passed).toBe(true);
+  });
+});
+
+/**
+ * セットの ことばは **全問 出す**（2026-08-26 の 指定6）
+ * 「50個 あるはずなのに 20問しか 出なかった」——1問は よみ＋いみの 2つなので、
+ * 10語＝20回に 見えて いた。語の 数と 出題数を そろえる。
+ */
+describe("全問 出題", () => {
+  it("questionCount は セットの 語数と 同じ", () => {
+    expect(stage.questionCount).toBe(stage.words.length);
+    const s = createSession({ stage, mode: "test", rng: seededRng(51) });
+    expect(s.questions).toHaveLength(stage.words.length);
+  });
+});

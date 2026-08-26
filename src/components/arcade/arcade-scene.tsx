@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { ARCADE_INK } from "./fields";
 import type { ArcadeWorldProps } from "./arcade-canvas";
 
@@ -30,28 +30,56 @@ const ArcadeCanvas = dynamic(() => import("./arcade-canvas").then((m) => m.Arcad
  */
 export function ArcadeScene({
   world,
-  /** 被弾したら舞台をひと揺らしする（旧 .damage-shake）。 */
-  impact = false,
+  /**
+   * 揺らす 合図の 通し番号。**番号が 変わるたびに ひと揺らし**する。
+   *
+   * 前は boolean だったので、2回 つづけて 外すと 2回目の 揺れが 出なかった
+   *（class が 付いた ままで、CSSアニメーションが 再生されない）。
+   * 0 は「まだ 何も 起きて いない」。
+   */
+  impactSeq = 0,
+  /** 揺れの 色あい（時間切れは オレンジ）。 */
   children,
 }: {
   world: Omit<ArcadeWorldProps, "onNear">;
-  impact?: boolean;
+  impactSeq?: number;
   children: ReactNode;
 }) {
   // 用語が目の前に来ている間（旧 .shake-screen）。世界の側だけが知っている。
   const [near, setNear] = useState(false);
+  const impactRef = useRef<HTMLDivElement>(null);
 
-  // 旧アプリは body ごと揺らしていた。ここでは3Dの層だけを揺らす。
-  // 舞台は画面いっぱいの重ね物なので、外枠ごと動かすと縁に下のページが覗く。
-  // 揺れて見えるものは同じ（画面いっぱいの世界）なので見え方は変わらない。
-  const shake = impact ? "arc-damage" : near ? "arc-quake" : "";
+  /*
+   * 番号が 変わったら **DOM に 直に** class を 付け直して ひと揺らしする。
+   *
+   * React の state に しないのは、同じ しるしが つづいた ときに
+   * アニメーションを 再生し直せない（class が 付いた ままだと 動かない）ため。
+   * ここは「外の 仕組み（DOM）を 今の 状態に そろえる」という、effect 本来の 仕事。
+   */
+  useEffect(() => {
+    const el = impactRef.current;
+    if (!el || !impactSeq) return;
+    el.classList.remove("arc-damage");
+    void el.offsetWidth; // 再生の やり直し（reflow を 1回 はさむ）
+    el.classList.add("arc-damage");
+    const timer = setTimeout(() => el.classList.remove("arc-damage"), 480);
+    return () => clearTimeout(timer);
+  }, [impactSeq]);
 
   return (
     <div className="fixed inset-0 z-40 overflow-hidden" style={{ background: ARCADE_INK }}>
       <style>{STAGE_CSS}</style>
 
-      <div className={`absolute inset-0 ${shake}`}>
-        <ArcadeCanvas {...world} onNear={setNear} />
+      {/*
+        旧アプリは body ごと揺らしていた。ここでは3Dの層だけを揺らす。
+        舞台は画面いっぱいの重ね物なので、外枠ごと動かすと縁に下のページが覗く。
+        外側＝外した ときの ひと揺らし、内側＝用語が 迫って いる 間の 小刻み。
+        重ねる（入れ子に する）ことで、2つの 揺れが 打ち消し合わない。
+      */}
+      <div ref={impactRef} className="absolute inset-0">
+        <div className={`absolute inset-0 ${near ? "arc-quake" : ""}`}>
+          <ArcadeCanvas {...world} onNear={setNear} />
+        </div>
       </div>
 
       {/* 画面周辺を締めるビネット＋上下のシネマグラデーション（旧 #fx-vignette） */}
