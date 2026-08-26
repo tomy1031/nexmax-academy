@@ -409,10 +409,16 @@ Inserting 73 assets to remote KV in chunks of 25
 `cachePopulated`・検査は `tests/preview_alias.test.ts`）。終了コードだけを
 信じないのは、0件のまま「成功」で 終わった 実例が あるため。
 
-**本番（`npm run cf:deploy`）は まだ 手で 見る**。こちらは
-`opennextjs-cloudflare deploy` が 中で 投入するので、同じ 見張りを 入れるには
-`package.json` と `.github/` を 触る 必要が あり、多スレッド運用ルールの
-横断変更に あたる（願い として 別に 立てる）。それまでは:
+**本番（`npm run cf:deploy`）も 同じ 見張りで 止まる**（2026-08-26 夜に 追加）。
+こちらは `opennextjs-cloudflare deploy` が **中で** 投入するので 戻り値を 掴めない。
+そこで デプロイの ステップで 出力を `tee` して `scripts/check_cache_populated.mjs`
+に 読ませる（`.github/workflows/deploy.yml`）。**見分ける 規則は STG と 同じ もの**
+（`scripts/lib/cache_populated.mjs`）——2か所に 別々の 判定を 置くと、
+片方だけ 素通りする。
+
+止めても **本番は 戻らない**（アップロードは もう 済んでいる）。これは
+「気づかないまま 授業を 迎える」ことを 防ぐ ための 赤である。赤が 出たら
+枠が 戻ってから 出し直す。手で 見たい ときは:
 
 ```bash
 gh run view <run-id> --log | grep -E "Successfully populated|投入に失敗"
@@ -493,10 +499,24 @@ Cloudflare 自身が こう 書いている——「**サーバside描画や 認
 
 | ルート | 誰が 通るか | どうするか |
 | --- | --- | --- |
-| `/welcome` | **新しい 学習者だけ**（診断が 済むと マップへ 直行） | 認証サーバへの 往復は 消した（`getClaims()`）。静的化は 次の 一手 |
+| ~~`/welcome`~~ | — | **2026-08-26 に 静的化ずみ**（`src/components/welcome-entry.tsx`） |
 | `/map/settings` | ときどき | 急がない |
 | `/admin/*` | 先生だけ（数人） | そのままでよい |
 | `/auth/callback` | ログインの 戻り（1人1回） | 仕組み上 必要 |
+
+**学習者の 道からは `ƒ` が 無くなった。** タイトル画面（`/`）・はじめの案内
+（`/welcome`）・マップ・教材の どれも、Next の サーバを 起こさずに 返る。
+残る `ƒ` は 先生の 画面と ログインの 戻り道 だけである。
+
+#### あわせて 減らした もの: ブラウザからの 認証の 往復
+
+`auth.getUser()` は **呼ぶたびに Supabase の 認証サーバへ 1往復する**。
+マップを 開くだけで 2回 飛んで いた（`map-shell` 自身と、その 中の
+`fetchOwnProfile`）。20人なら 40往復が 教室の **1つの IP** から 出る。
+
+学習者の 道の `getUser()` を すべて `getClaims()`（その場の 署名検証・往復ゼロ）
+に 替えた（`src/lib/supabase/claims.ts`）。`tests/own_claims.test.ts` が
+**`getUser()` に 戻したら 赤く なる**ように 見張って いる。
 
 #### 実地で 分かった こと: **デプロイ回数も 原因だった**（2026-08-26 夜）
 

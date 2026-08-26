@@ -1337,20 +1337,23 @@ export function MapShell({
     void (async () => {
       // 例外は必ずここで拾う。取りこぼすと `void` に握りつぶされ、リダイレクトも
       // setState も走らないまま「マップを じゅんびしています」から抜けられなくなる。
-      // getUser() は通信断・セッション切れ・トークン不正のいずれでも throw しうる。
+      // 本人確認は通信断・セッション切れ・トークン不正のいずれでも throw しうる。
       try {
         const supabase = createClient();
         if (!supabase) {
           router.replace("/welcome");
           return;
         }
-        const {
-          data: { user },
-        } = await supabase.auth.getUser();
-        if (!user) {
-          router.replace("/welcome");
-          return;
-        }
+        /*
+         * ここは 以前 `getUser()` を 呼び、その 直後の `fetchOwnProfile()` が
+         * **もう一度** `getUser()` を 呼んで いた。マップを 開くだけで 認証サーバへ
+         * 2往復——20人の 授業なら 40往復が 教室の **1つの IP** から 飛ぶ
+         *（Supabase の 上限は IP ごと。docs/deploy.md §0.10）。
+         *
+         * いまは `fetchOwnProfile()` が その場の 署名検証で 本人を 決めるので、
+         * ここで 先に 聞く 必要が ない。**ログインして いなければ null が 返る**ので、
+         * 下の `!stored` が そのまま 未ログインの 受け皿に なる。
+         */
         const stored = await fetchOwnProfile();
         if (!stored) {
           router.replace("/welcome");

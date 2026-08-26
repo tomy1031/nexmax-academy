@@ -8,6 +8,7 @@ import { buildDisplayName, normalizeNames, type LearnerNames } from "@/lib/name"
 import type { LearnerSchool } from "@/lib/school";
 import type { Gender } from "@/lib/profile";
 import { createClient } from "@/lib/supabase/client";
+import { readOwnId, requireOwnId } from "@/lib/supabase/claims";
 
 /**
  * 診断方式の版。MBTI 4軸 / 16タイプ が v3（07 §8.1）。
@@ -121,36 +122,23 @@ function requireClient() {
 
 export async function fetchOwnProfile(): Promise<ProfileRow | null> {
   const supabase = requireClient();
-  const {
-    data: { user },
-    error: userError,
-  } = await supabase.auth.getUser();
-  if (userError) throw userError;
-  if (!user) return null;
+  const id = await readOwnId(supabase);
+  if (!id) return null;
 
-  const { data, error } = await supabase
-    .from("profiles")
-    .select("*")
-    .eq("id", user.id)
-    .maybeSingle();
+  const { data, error } = await supabase.from("profiles").select("*").eq("id", id).maybeSingle();
   if (error) throw error;
   return data as ProfileRow | null;
 }
 
 export async function upsertOwnProfile(data: OwnProfileInput): Promise<ProfileRow> {
   const supabase = requireClient();
-  const {
-    data: { user },
-    error: userError,
-  } = await supabase.auth.getUser();
-  if (userError) throw userError;
-  if (!user) throw new Error("Authentication is required.");
+  const id = await requireOwnId(supabase);
 
   const { data: profile, error } = await supabase
     .from("profiles")
     .upsert(
       {
-        id: user.id,
+        id,
         ...nameColumns(data.names),
         university: data.school.university,
         cohort: data.school.cohort,
@@ -187,12 +175,7 @@ export async function updateOwnDetails(
   gender?: Gender,
 ): Promise<ProfileRow> {
   const supabase = requireClient();
-  const {
-    data: { user },
-    error: userError,
-  } = await supabase.auth.getUser();
-  if (userError) throw userError;
-  if (!user) throw new Error("Authentication is required.");
+  const id = await requireOwnId(supabase);
 
   const { data, error } = await supabase
     .from("profiles")
@@ -202,22 +185,11 @@ export async function updateOwnDetails(
       cohort: school.cohort,
       ...(gender ? { gender } : {}),
     })
-    .eq("id", user.id)
+    .eq("id", id)
     .select("*")
     .single();
   if (error) throw error;
   return data as ProfileRow;
-}
-
-/** ログインしている本人。していなければ投げる。 */
-async function requireUser(supabase: ReturnType<typeof requireClient>) {
-  const {
-    data: { user },
-    error,
-  } = await supabase.auth.getUser();
-  if (error) throw error;
-  if (!user) throw new Error("Authentication is required.");
-  return user;
 }
 
 /** 台帳へ積む本体。本人の確認は呼ぶ側で済ませておく（同じ問い合わせを二度打たないため）。 */
@@ -247,8 +219,8 @@ export async function insertPersonalityResult(
   data: PersonalityResultInput,
 ): Promise<PersonalityResultRow> {
   const supabase = requireClient();
-  const user = await requireUser(supabase);
-  return insertResultFor(supabase, user.id, data);
+  const id = await requireOwnId(supabase);
+  return insertResultFor(supabase, id, data);
 }
 
 /**
@@ -278,12 +250,12 @@ export async function insertPersonalityResultOnce(
   data: PersonalityResultInput,
 ): Promise<PersonalityResultRow | null> {
   const supabase = requireClient();
-  const user = await requireUser(supabase);
+  const id = await requireOwnId(supabase);
 
   const { data: latest, error } = await supabase
     .from("personality_results")
     .select("answers")
-    .eq("profile_id", user.id)
+    .eq("profile_id", id)
     .order("created_at", { ascending: false })
     .limit(1)
     .maybeSingle();
@@ -293,7 +265,7 @@ export async function insertPersonalityResultOnce(
   const previous = (latest as { answers?: PersonalityAnswer[] } | null)?.answers;
   if (Array.isArray(previous) && previous.join("") === data.answers.join("")) return null;
 
-  return insertResultFor(supabase, user.id, data);
+  return insertResultFor(supabase, id, data);
 }
 
 export async function fetchResultsForProfile(profileId: string): Promise<PersonalityResultRow[]> {

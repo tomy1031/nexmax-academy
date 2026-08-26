@@ -127,9 +127,22 @@ jobs:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
 
+      # 「デプロイ成功」は「作りおきが入った」ではない。KV の書き込み枠（1000件/日）を
+      # 使い切ると populateCache は中で落ちるのに、外へは成功として返ることがある
+      # （2026-08-26 に実発生。docs/deploy.md §0.9）。その版は作りおきゼロで公開され、
+      # 全アクセスがフルSSR → 授業の人数で Error 1102 になる。
+      #
+      # 本番は `opennextjs-cloudflare deploy` が **中で** populateCache を呼ぶので
+      # 戻り値を掴めない。掴めるのは標準出力だけなので、tee して読む。
+      # 見分ける規則は STG と同じもの（scripts/lib/cache_populated.mjs）を使う。
       - name: 本番へ反映
         if: github.event_name == 'workflow_dispatch' && github.event.inputs.target == 'production'
-        run: npm run cf:deploy
+        run: |
+          set -o pipefail
+          # `|| code=$?` で受けるのは、cf:deploy が落ちた時も **見張りを必ず通す**ため
+          # （既定の `bash -e` だと、ここで止まって説明が出ないまま赤くなる）。
+          npm run cf:deploy 2>&1 | tee /tmp/cf-deploy.log && code=0 || code=$?
+          node scripts/check_cache_populated.mjs /tmp/cf-deploy.log "$code"
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

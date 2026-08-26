@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
 
 /**
  * ことばアーケード — **⭕と ❌ が ひと目で 分かる**（2026-08-26 の 指摘2・3・5・6）
@@ -16,6 +16,26 @@ import { expect, test } from "@playwright/test";
 
 /** 8語の 小さな セット。1回の 通しが 短い。 */
 const SET = "/arcade/hajimari_kotoba";
+
+/**
+ * 解説カードを 押して つぎの 問題へ。**押せなくても 進む**。
+ *
+ * この 画面には **自動送り**が あり、押すのと 競走して いる。自動送りが
+ * 先に 動くと、押そうと して いた カードが その場で DOM から 消える
+ *（Playwright の ログでは `element was detached from the DOM` と 出る。
+ * その 前後には 覆いの `absolute inset-0` が クリックを 遮る 瞬間も ある）。
+ *
+ * 3回に 1回ほど ここで 落ちて いた——**画面の 不具合では なく、押し方の 問題**。
+ * どちらの 道でも 次の 問題へ 進むので、押せなかった ときは 自動送りに まかせる。
+ * 進んだ ことは、呼ぶ 側が「つぎの 問題が 出たか」で 確かめる。
+ */
+async function advance(page: Page): Promise<void> {
+  await page
+    .getByText(/せいかい|ちがう こたえ/)
+    .first()
+    .click({ timeout: 3_000 })
+    .catch(() => {});
+}
 
 test("よみを 外すと ❌ と ただしい よみが 出る", async ({ page }) => {
   await page.goto(SET);
@@ -55,11 +75,8 @@ test("いみを 外すと『ちがう こたえ』と えらんだ ものが 出
       await expect(page.getByText(/^⭕ /).first()).toBeVisible();
       return;
     }
-    // 当たった／時間切れの ときは つぎの 問題へ
-    await page
-      .getByText(/せいかい|ちがう こたえ/)
-      .first()
-      .click();
+    // 当たった／時間切れの ときは つぎの 問題へ（押せなくても 自動送りに まかせる。下の 但し書き）
+    await advance(page);
     await expect(page.getByText("英語の 意味を えらぼう！")).toBeVisible({ timeout: 20_000 });
   }
   throw new Error("6問 つづけて 正解を 引いた — 乱数を 見直す");
@@ -84,11 +101,7 @@ test("さいごまで やると 合格か 不合格が はっきり 出て、ゼ
         .catch(() => false)
     ) {
       await choices.first().click();
-      // 解説カードを 押して つぎへ（自動送りも あるが、押した ほうが 速い）
-      await page
-        .getByText(/せいかい|ちがう こたえ/)
-        .first()
-        .click();
+      await advance(page);
     }
   }
 

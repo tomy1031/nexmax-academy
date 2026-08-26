@@ -1,10 +1,6 @@
 import { describe, expect, it } from "vitest";
-import {
-  buildUploadArgs,
-  cachePopulated,
-  mayPublishShared,
-  toAlias,
-} from "../scripts/preview_alias.mjs";
+import { buildUploadArgs, mayPublishShared, toAlias } from "../scripts/preview_alias.mjs";
+import { cachePopulated } from "../scripts/lib/cache_populated.mjs";
 
 /** wrangler.jsonc の Worker 名が "academy"（7文字）なので 63 - 7 - 1。 */
 const MAX = 55;

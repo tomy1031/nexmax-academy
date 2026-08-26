@@ -33,6 +33,7 @@
 import { execFileSync, spawnSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
+import { cachePopulated, CACHE_EMPTY_MESSAGE } from "./lib/cache_populated.mjs";
 
 /** エイリアス名 + "-" + Worker名 が DNS ラベル上限の63文字を超えられない。 */
 const DNS_LABEL_LIMIT = 63;
@@ -109,31 +110,6 @@ export function buildUploadArgs(alias, assetsMode) {
   const args = ["versions", "upload", "--preview-alias", alias];
   if (assetsMode) args.push("--var", "OPEN_NEXT_CACHE:assets");
   return args;
-}
-
-/**
- * 作りおき（KVキャッシュ）が本当に入ったか（2026-08-26）。
- *
- * **「デプロイ成功」は「作りおきが入った」ではない。** KV の書き込み枠
- * （1000件/日）を使い切ると `populateCache` は中で落ちるのに、外へは
- * 成功として返ることがある——2026-08-26 の STG デプロイは 0件のまま
- * 「成功」で終わっていた（docs/deploy.md §0.9）。
- *
- * 作りおきが1件も無い版は、全アクセスがフルSSRになる。無料プランでは
- * それだけで CPU 上限（1リクエスト10ms）を超え、授業の人数が来れば
- * Error 1102 で入れなくなる。だから **終了コードだけを信じない**で、
- * 「何件入れたか」の一行が出ているところまで確かめる。
- *
- * @param {number | null} status populateCache の終了コード
- * @param {string} output その標準出力・標準エラー
- * @returns {boolean} 上げてよいか
- */
-export function cachePopulated(status, output) {
-  if ((status ?? 1) !== 0) return false;
-  // opennextjs-cloudflare が最後に出す一行。件数が 0 のときは入っていない。
-  const matched = /Successfully populated cache with (\d+) entries/i.exec(output);
-  if (!matched) return false;
-  return Number(matched[1]) > 0;
 }
 
 /** wrangler.jsonc から Worker 名を読む（改名に追随させるため直書きしない）。 */
@@ -251,21 +227,7 @@ function main() {
     if (populate.stdout) process.stdout.write(populate.stdout);
     if (populate.stderr) process.stderr.write(populate.stderr);
     if (!cachePopulated(populate.status, `${populate.stdout ?? ""}${populate.stderr ?? ""}`)) {
-      console.error(
-        [
-          "",
-          "✗ 作りおき（KVキャッシュ）が入りませんでした。**この版を使ってはいけません。**",
-          "",
-          "  作りおきが1件も無い版は、全アクセスがフルSSRになります。無料プランの",
-          "  CPU 上限（1リクエスト10ms）を超えて Error 1102 が出て、授業で人が入れません",
-          "  （docs/deploy.md §0.9・§0.10）。",
-          "",
-          "  いちばん多い原因は KV の書き込み枠（1000件/日）切れです。枠が戻るのは",
-          "  UTC 0時＝日本の朝9時。それまでは上げ直さず、**前の版のまま置いておく**",
-          "  ほうが安全です（前の版の作りおきは生きています）。",
-          "",
-        ].join("\n"),
-      );
+      console.error(CACHE_EMPTY_MESSAGE);
       process.exit(populate.status || 1);
     }
   }
