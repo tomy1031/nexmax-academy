@@ -22,12 +22,22 @@
  *
  * どう確かめるか:
  *   `SUPABASE_DB_URL`（接続文字列）があれば Supabase CLI に聞く。
- *   無ければ**確かめられないと正直に言って終わる**（`--strict` を付けると失敗にする）。
- *   黙って「問題なし」と言わないのが、この見張りのいちばん大事な性質である。
+ *   無ければ**確かめられないと正直に言う**。黙って「問題なし」と言わないのが、
+ *   この見張りのいちばん大事な性質である。
+ *
+ * 終わりかたを2つに分けてある。**「流し忘れがある」と「確かめられない」は別物**だから:
+ *   - 流し忘れがある      → いつでも失敗（1）。これは分かっている事実で、握りつぶさない
+ *   - 確かめられない      → 既定は成功（0）＋警告。`--strict` のときだけ失敗（1）
+ *
+ *   鍵が無いだけで本番デプロイを止めないのは、**この見張りを足したせいで
+ *   デプロイが止まる**のが本末転倒だからである（鍵が無い間は、この見張りを
+ *   足す前と同じ状態でしかない）。鍵を入れた瞬間に、自動で本当の関所になる。
+ *   一方 `migrate.yml`（流す側）は鍵が無ければ仕事そのものができないので、
+ *   あちらは `--strict` で止める。
  *
  * 使いかた:
  *   node scripts/check_migrations.mjs           … 見て、報告する（既定）
- *   node scripts/check_migrations.mjs --strict  … 流し忘れ／確かめられないを失敗にする（CI）
+ *   node scripts/check_migrations.mjs --strict  … 「確かめられない」も失敗にする
  */
 
 import { execFileSync } from "node:child_process";
@@ -107,6 +117,13 @@ function main() {
   if (!dbUrl) {
     // **ここで「問題なし」と言わない。** 言った瞬間に、この見張りは
     // 2026-08-26 の事故をもう一度そのまま通す。
+    // GitHub Actions では、実行の要約に残る形（警告注釈）でも出す。
+    if (process.env.GITHUB_ACTIONS) {
+      console.log(
+        "::warning::DBの適用状況を確かめていません（SUPABASE_DB_URL 未設定）。" +
+          "Settings → Environments → Preview に登録すると、ここが本当の関所になります。",
+      );
+    }
     console.log(`移行SQL ${repo.length}本（リポジトリ）`);
     console.log("⚠ DBの適用状況は **確かめていません**（SUPABASE_DB_URL がありません）。");
     console.log("  AIのセッションなら Supabase コネクタで直接 確かめられます:");
