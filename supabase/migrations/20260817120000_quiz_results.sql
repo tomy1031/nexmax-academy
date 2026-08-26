@@ -1,5 +1,5 @@
 -- quiz_results: もんだい（quizset）の1問ぶんのこたえ
--- 適用方法: Supabase ダッシュボード → SQL Editor に全文を貼り付けて Run
+-- 適用: main へ入れば「デプロイ（DB）」ワークフローが自動で流す（docs/deploy.md §0.8）。手で貼らない
 -- 設計: docs/design/03_リニューアル設計方針.md §3.2 の test_results を、合計点ではなく
 --       1問ごとに開いたもの（P8「失敗を罰しない」— 全試行を残し、学生UIには出さない）
 --

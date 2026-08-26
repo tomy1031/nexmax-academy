@@ -96,6 +96,22 @@ jobs:
       - name: 単体テスト
         run: npm test
 
+      # DBが遅れたまま本番へ出さない（2026-08-26 の事故）。
+      #
+      # 移行SQLは main への push で「デプロイ（DB）」が自動で流す。ここで見るのは
+      # **それが落ちていた場合**である。コードだけ先に載ると、DBが受け付けない機能が
+      # 黙って何もしない状態になり、画面にも CI にも何の印も出ない。
+      # 実際にそれで7人が先生の名簿から消えていた。
+      #
+      # 本番のときだけ止める。STG（push）で止めないのは、同じ push で走っている
+      # 「デプロイ（DB）」とどちらが先に終わるか決まらないため——ここで落とすと、
+      # 正しく流れている途中でも赤くなる。本番は手で出すので、その頃には済んでいる。
+      - name: DBが追いついているか（本番のみ）
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.target == 'production'
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: node scripts/check_migrations.mjs --strict
+
       - name: STG へ反映
         if: github.event_name == 'push' || github.event.inputs.target == 'staging'
         run: npm run cf:staging

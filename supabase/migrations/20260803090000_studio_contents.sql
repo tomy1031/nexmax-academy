@@ -1,5 +1,5 @@
 -- studio_contents: コンテンツスタジオの教材（下書き・公開）と生成アセットの置き場
--- 適用方法: Supabase ダッシュボード → SQL Editor にこのファイル全文を貼り付けて Run
+-- 適用: main へ入れば「デプロイ（DB）」ワークフローが自動で流す（docs/deploy.md §0.8）。手で貼らない
 --
 -- 表名が studio_contents なのは、フェーズ1の設計にすでに public.contents
 -- （units に紐づく uuid 主キーの版管理テーブル）があるため。同じ名前にすると

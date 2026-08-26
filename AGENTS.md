@@ -195,6 +195,14 @@ git と台帳から現在地（ブランチ・origin/main との差・やりか�
 
 - **staging・本番の更新は main からのみ**。作業中の確認は `npm run cf:branch`（自分専用URL）。
 - **作業開始時と PR 作成前に `origin/main` を取り込む。** ブランチは48時間以内に PR にして閉じる。
+- **DBの移行SQLをダッシュボードに手で貼らない**（2026-08-26 の事故）。`supabase/migrations/` へ
+  置いて main へ入れれば「デプロイ（DB）」ワークフローが自動で流す（docs/deploy.md §0.8）。
+  移行SQLは **いま本番で動いているコードを壊さない変更だけ**にする（列を足す・not null を外す）。
+  **DBに依存する直しを「これで直った」と報告する前に、DBに実際に入っているか確かめる。**
+  `npm run handoff` の「■ DB（移行SQL）」を見る。鍵の無い環境ではそこが
+  「確かめていない」と出るので、その場合は Supabase コネクタで直に照会する
+  （`select version from supabase_migrations.schema_migrations order by version;`）。
+  テストもCIも緑のまま**DBだけが遅れる**——2日間 誰も気づかず、7人が名簿から消えていた。
 - 横断変更（リネーム・docs/design・スキーマ・共有コンポーネント・テーマ・package.json）は
   自スレッドで行わず、専用タスクとして提案する。検問は2重（Claude の PreToolUse フックと
   pre-commit の `scripts/check_protected_paths.mjs` — Codex でも手作業でも止まる）。

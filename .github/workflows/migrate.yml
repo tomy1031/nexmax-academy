@@ -1,0 +1,83 @@
+name: デプロイ（DB）
+
+# 移行SQL（supabase/migrations/*.sql）を Supabase へ流す。
+#
+# なぜ必要か（2026-08-26 の事故）:
+#   移行SQLは各ファイルの冒頭にあったとおり「ダッシュボードの SQL Editor に貼って Run」
+#   だった。つまり**ユーザーの手作業**が要り、AI は流せなかった。その結果
+#   `20260824090000_register_profile_on_login.sql` が2日間 流されないまま
+#   「ログインした人を登録する」直しを2本 本番へ出し、**DB側で黙って弾かれ続けた**。
+#   30人がログインしていたのに、先生の名簿には23人しか出ていなかった。
+#
+#   これは「デプロイ作業をユーザーにやらせない。鍵が無くて実行できないなら、
+#   鍵の要らない道（GitHub Actions）を先に作る」（docs/constraints.md 2026-08-14）が
+#   **DB にだけ適用されていなかった**という穴である。ここで塞ぐ。
+#
+# 使い方:
+#   - main に移行SQLが入ったら **自動で流れる**（STG が main で自動更新されるのと同じ考え）
+#   - 手で流し直したいときは Actions → このワークフロー → Run workflow
+#
+# 必要な Secret（Environment「Preview」に置く。デプロイと同じ場所）:
+#   - SUPABASE_DB_URL … Supabase の接続文字列
+#     （ダッシュボード上部 Connect → Connection string → URI。パスワード入り）
+#
+# **この鍵はビルドのステップに渡さない。** 渡すと OpenNext がバンドルへ焼き込む
+# （docs/deploy.md §0 罠1）。このワークフローはビルドをしないので、そもそも混ざらない。
+#
+# 移行SQLの決まり（これを守れば、コードとDBのどちらが先に載っても壊れない）:
+#   **いま本番で動いているコードを壊さない変更だけを書く**（列を足す・not null を外す・
+#   制約をゆるめる）。列を消す・型を変えるといった後戻りできない変更は、
+#   コードから使われなくなったことを確かめた次の回に分けて出す。
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "supabase/migrations/**"
+  workflow_dispatch:
+
+# 同じDBへ同時に流さない（2つ走ると片方が中途半端に失敗する）
+concurrency:
+  group: migrate
+  cancel-in-progress: false
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    # 鍵は Environment「Preview」にある。ここで名指ししないと見えない
+    # （デプロイ側で 2026-08-14 に実際にハマった。docs/deploy.md §0 罠6）。
+    environment: Preview
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      - name: 鍵がそろっているか
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          if [ -z "$SUPABASE_DB_URL" ]; then
+            echo "::error::SUPABASE_DB_URL がありません。Settings → Environments → Preview に登録してください。"
+            exit 1
+          fi
+          echo "→ 鍵あり"
+
+      # 流す前に「何が未適用か」を出す。落ちたときログの先頭を見れば分かるように。
+      - name: 流す前の状態
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: npx --yes supabase@latest migration list --db-url "$SUPABASE_DB_URL"
+
+      - name: 移行SQLを流す
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: npx --yes supabase@latest db push --db-url "$SUPABASE_DB_URL" --include-all
+
+      # 流しっぱなしにしない。**本当に記録されたか**を、そのDBに聞いて確かめる。
+      - name: 流れたことを たしかめる
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: node scripts/check_migrations.mjs --strict
