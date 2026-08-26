@@ -1,0 +1,94 @@
+{
+  "refs": [
+    "public/img/manga/hajimari_manga/p1c3.webp",
+    "public/img/characters/hendy/sheet.webp",
+    "public/img/articles/kaisha_shirabekata/g1.webp",
+    "public/img/characters/nexmax/reference.png"
+  ],
+  "_comment": "はじまりの ものがたり（ビデオメッセージ版）の コマ絵。参照は 絵柄アンカー(p1c3)・ヘンディ設定画・学習者の 見た目(kaisha g1)・ネクマックス正典。セリフは 絵に 焼かない（speechInImage:false）ので 吹き出しを 描かせない。",
+  "style": "One single manga panel (not a page, not a grid) for a Japanese language-learning lesson. Style: clean modern Japanese manga / anime style, soft cel shading, bright friendly palette, rounded shapes, no harsh shadows, office and school settings, contemporary Japan. Match the drawing style of the reference panel exactly (line weight, colouring, faces). The scene fills the whole frame, seen from a natural camera angle.",
+  "nexmax": "NexMax robots in this picture must match the NexMax reference image exactly: rounded helmet-like head, wider than tall, light sky-blue (#A9D6F5) with soft shading (#7FB8E8); two small rounded ear pods on the sides of the head; a large white rounded face-screen covering most of the face, with a soft notch dipping at the top center; two black oval eyes, thin curved eyebrow marks on the helmet above the screen, small gentle smile; a small trapezoid torso in the same sky-blue bearing a navy (#004F8D) double-peak M mark; segmented ball-joint arms with round elbows and mitten hands; short segmented legs with rounded boots; cute chibi proportion, big head, about 2 heads tall. No antennae, no cat ears, no five-fingered hands. The chest mark is printed directly on the sky-blue torso: no badge, no square plate and no frame behind it.",
+  "noText": "No text, no letters, no kanji, no kana, no numbers anywhere in the image. Screens, papers, notebooks, whiteboards and signs are blank or show only soft abstract shapes. No speech balloon and no empty white bubble of any kind. No watermark, no signature, no logo, no frame border.",
+  "negative": "Never: no six fingers, no extra limbs, no costume changes between panels, no duplicate faces of the same character in one panel, no photo realism, no 3D render, no flat vector icon art, no pictograms, no national flags, no country outlines, no maps with borders, no dark or scary tone, no angry or crying faces. Keep every referenced character's face, hair and clothing exactly as in their model sheet.",
+  "scenes": [
+    {
+      "out": "v2c01",
+      "dest": "public/img/manga/hajimari_manga/v2c01.webp",
+      "title": "ビデオメッセージが 届いた 机",
+      "scene": "Scene: a bright wooden desk in a student's room in the morning: an open laptop stands on the desk, its screen showing a paused video message — a plain dark-blue video player rectangle with one large white play triangle in the middle and nothing else; beside the laptop a closed notebook, a pencil and a smartphone; through the open window behind the desk, palm trees and the far stone towers of Angkor Wat under a clear morning sky; warm sunlight; no people. This panel has NO speech balloon and NO empty white bubble of any kind — the words are placed by the app underneath the picture.",
+      "output": "Output: one landscape illustration, 1536x1024."
+    },
+    {
+      "out": "v2c02",
+      "dest": "public/img/manga/hajimari_manga/v2c02.webp",
+      "title": "ヘンディ あいさつ",
+      "scene": "Scene: Hendy faces the viewer in a bright modern IT office and greets them with a big friendly smile, one hand raised high in a warm greeting wave, the other hand relaxed at his side; desks, computers and green plants softly blurred behind him; warm daylight. This panel has NO speech balloon and NO empty white bubble of any kind — the words are placed by the app underneath the picture.",
+      "output": "Output: one landscape illustration, 1536x1024."
+    },
+    {
+      "out": "v2c03",
+      "dest": "public/img/manga/hajimari_manga/v2c03.webp",
+      "title": "ヘンディ 自己しょうかい",
+      "scene": "Scene: Hendy stands in the same bright modern IT office, turned slightly toward the viewer, one open hand resting on his own chest as he introduces himself with a calm friendly smile; on the desk beside him a small framed photo of a tropical island with palm trees and a blue sea; colleagues working softly blurred behind him; warm daylight. This panel has NO speech balloon and NO empty white bubble of any kind — the words are placed by the app underneath the picture.",
+      "output": "Output: one landscape illustration, 1536x1024."
+    },
+    {
+      "out": "v2c04",
+      "dest": "public/img/manga/hajimari_manga/v2c04.webp",
+      "title": "ようこそ（ネクマックスと）",
+      "scene": "Scene: Hendy stands facing the viewer with both arms opened wide in a big welcoming gesture and a bright encouraging smile; beside him two small NexMax robots wave cheerfully with their mitten hands; behind them a bright sky-blue background with soft white clouds and small floating sparkles; festive, welcoming mood. This panel has NO speech balloon and NO empty white bubble of any kind — the words are placed by the app underneath the picture.",
+      "output": "Output: one landscape illustration, 1536x1024.",
+      "nexmaxInScene": true
+    },
+    {
+      "out": "v2c05",
+      "dest": "public/img/manga/hajimari_manga/v2c05.webp",
+      "title": "社員を 体験できる アプリ",
+      "scene": "Scene: a bright split illustration with a soft diagonal divide, showing the same young woman on both sides. On the left: THE STUDENT is a young Cambodian woman in her early twenties with shoulder-length straight black hair and a warm coral-orange blouse; keep her face, hair and blouse exactly the same in every picture. She sits at her desk at home holding a tablet with both hands, smiling. On the right: the same young woman, now wearing a neat navy blazer over the same coral-orange blouse, stands in a bright modern Japanese IT office beside a desk and greets a colleague with a small polite bow, as if she were already working there; warm daylight. This panel has NO speech balloon and NO empty white bubble of any kind — the words are placed by the app underneath the picture.",
+      "output": "Output: one landscape illustration, 1536x1024."
+    },
+    {
+      "out": "v2c06",
+      "dest": "public/img/manga/hajimari_manga/v2c06.webp",
+      "title": "1年間の 日本語の 勉強",
+      "scene": "Scene: a bright university classroom in Cambodia in daylight: four Cambodian students sit at desks studying Japanese together with open notebooks and textbooks. In the front seat is THE STUDENT is a young Cambodian woman in her early twenties with shoulder-length straight black hair and a warm coral-orange blouse; keep her face, hair and blouse exactly the same in every picture. She writes in her notebook with a happy, concentrated face; the notebook pages carry only soft illegible scribbles; sunlight through the tall windows; lively and hopeful. This panel has NO speech balloon and NO empty white bubble of any kind — the words are placed by the app underneath the picture.",
+      "output": "Output: one landscape illustration, 1536x1024."
+    },
+    {
+      "out": "v2c07",
+      "dest": "public/img/manga/hajimari_manga/v2c07.webp",
+      "title": "日本で 働く 準備",
+      "scene": "Scene: in her bright room, THE STUDENT is a young Cambodian woman in her early twenties with shoulder-length straight black hair and a warm coral-orange blouse; keep her face, hair and blouse exactly the same in every picture. She stands beside her desk, putting a notebook into her backpack and looking ahead with a determined, hopeful smile; on the desk a laptop, a mug and a small potted plant; through the window a bright morning sky and a road running toward the horizon. This panel has NO speech balloon and NO empty white bubble of any kind — the words are placed by the app underneath the picture.",
+      "output": "Output: one landscape illustration, 1536x1024."
+    },
+    {
+      "out": "v2c08",
+      "dest": "public/img/manga/hajimari_manga/v2c08.webp",
+      "title": "日本への 道を 進む",
+      "scene": "Scene: a wide sunny landscape: a winding white road runs from the front of the picture across green hills toward a distant Japanese city skyline with Mount Fuji far behind it. On the road, seen from behind, walks a young Cambodian woman with shoulder-length black hair, a coral-orange blouse and a backpack; a small NexMax robot walks cheerfully beside her; blue sky with soft clouds; no signposts. This panel has NO speech balloon and NO empty white bubble of any kind — the words are placed by the app underneath the picture.",
+      "output": "Output: one landscape illustration, 1536x1024.",
+      "nexmaxInScene": true
+    },
+    {
+      "out": "v2c09",
+      "dest": "public/img/manga/hajimari_manga/v2c09.webp",
+      "title": "マップ画面（アンコールワット→日本）",
+      "scene": "Scene: close-up of two hands holding a smartphone in a bright room. On the smartphone screen is a tall vertical illustrated map made only of scenery: at the bottom the five stone towers of Angkor Wat among palm trees, above them a river town with a golden spire, then green limestone islands in a blue sea, then a misty stepped hill town, and at the very top a Japanese city with Mount Fuji; a dotted white route line links them from bottom to top with small round stops; bright colours; no flags, no borders, no letters and no numbers anywhere; the desk behind the hands is softly blurred. This panel has NO speech balloon and NO empty white bubble of any kind — the words are placed by the app underneath the picture.",
+      "output": "Output: one landscape illustration, 1536x1024."
+    },
+    {
+      "out": "v2c10",
+      "dest": "public/img/manga/hajimari_manga/v2c10.webp",
+      "title": "途中の 国で ビジネスを 学ぶ",
+      "scene": "Scene: a bright meeting room in a sunny town: THE STUDENT is a young Cambodian woman in her early twenties with shoulder-length straight black hair and a warm coral-orange blouse; keep her face, hair and blouse exactly the same in every picture. She sits at a meeting table with three friendly colleagues, all leaning in and listening to each other; notebooks, mugs and a laptop on the table, all pages blank; through the big window behind them, pale houses on a green hillside and palm trees (scenery only, no signs, no flags); warm daylight. This panel has NO speech balloon and NO empty white bubble of any kind — the words are placed by the app underneath the picture.",
+      "output": "Output: one landscape illustration, 1536x1024."
+    },
+    {
+      "out": "v2c11",
+      "dest": "public/img/manga/hajimari_manga/v2c11.webp",
+      "title": "本当の ITワーカーに なった",
+      "scene": "Scene: the same young Cambodian woman, now wearing a neat navy blazer over her coral-orange blouse, stands at her own desk in a bright modern Japanese IT office, one hand resting on an open laptop, smiling proudly and confidently at the viewer; colleagues working softly blurred behind her; through the big window a Japanese city skyline in the morning light with Mount Fuji far away. This panel has NO speech balloon and NO empty white bubble of any kind — the words are placed by the app underneath the picture.",
+      "output": "Output: one landscape illustration, 1536x1024."
+    }
+  ]
+}

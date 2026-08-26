@@ -1,0 +1,23 @@
+{
+  "refs": [
+    "public/img/manga/hajimari_manga/p4c4.webp",
+    "public/img/characters/matsui/sheet.webp",
+    "public/img/characters/hendy/sheet.webp",
+    "public/img/characters/nexmax/reference.png"
+  ],
+  "_comment": "集合コマ。1枚目の 参照（今の 集合コマ）の 構図を そのまま 写し、松井社長の 顔だけ 設定画（2枚目）に そろえる。ネクマックスを 前列に 足す。",
+  "style": "One single manga panel (not a page, not a grid) for a Japanese language-learning lesson. Style: clean modern Japanese manga / anime style, soft cel shading, bright friendly palette, rounded shapes, no harsh shadows, office and school settings, contemporary Japan. Match the drawing style of the reference panel exactly (line weight, colouring, faces). The scene fills the whole frame, seen from a natural camera angle.",
+  "nexmax": "NexMax robots in this picture must match the NexMax reference image exactly: rounded helmet-like head, wider than tall, light sky-blue (#A9D6F5) with soft shading (#7FB8E8); two small rounded ear pods on the sides of the head; a large white rounded face-screen covering most of the face, with a soft notch dipping at the top center; two black oval eyes, thin curved eyebrow marks on the helmet above the screen, small gentle smile; a small trapezoid torso in the same sky-blue bearing a navy (#004F8D) double-peak M mark; segmented ball-joint arms with round elbows and mitten hands; short segmented legs with rounded boots; cute chibi proportion, big head, about 2 heads tall. No antennae, no cat ears, no five-fingered hands.",
+  "noText": "No text, no letters, no kanji, no kana, no numbers anywhere in the image. Screens, papers, notebooks, whiteboards and signs are blank or show only soft abstract shapes. No speech balloon and no empty white bubble of any kind. No watermark, no signature, no logo, no frame border.",
+  "negative": "Never: no six fingers, no extra limbs, no costume changes between panels, no duplicate faces of the same character in one panel, no photo realism, no 3D render, no flat vector icon art, no pictograms, no national flags, no country outlines, no maps with borders, no dark or scary tone, no angry or crying faces. Keep every referenced character's face, hair and clothing exactly as in their model sheet.",
+  "scenes": [
+    {
+      "out": "v2c12",
+      "dest": "public/img/manga/hajimari_manga/v2c12.webp",
+      "title": "みんなで サポート（集合＋ネクマックス）",
+      "scene": "Scene: Recreate the group photo in the FIRST reference image: the same bright modern IT office, the same seven colleagues standing in the same positions, in the same poses and the same clothes, smiling and waving at the viewer. Use that first reference for the composition, poses, clothes and background only — NOT for face (2). From the left: (1) a man in his late twenties, lean athletic build, very short cropped black hair, smooth youthful face, wide cheerful open-mouth smile, navy blazer (#1F2A44) worn open over a plain white crew-neck T-shirt; (2) MATSUI, the company president, a man in his forties and visibly the oldest person in the picture — copy his face from the SECOND reference image (his character model sheet), not from the group photo: fair skin, an oval face that is a touch soft with gently rounded cheeks and a slightly soft jawline, narrow gentle eyes with single-fold lids, straight sparse eyebrows, a small rounded nose, a calm friendly closed-lip smile, and black hair with volume on top and a soft fringe falling across the forehead; he wears a navy blazer (#1F2A44) open over a plain white crew-neck T-shirt; (3) in the middle, Hendy, a slim man in his late twenties with short tousled black hair, navy single-breasted suit, white dress shirt and navy necktie; (4) a woman in her mid twenties, long light-brown hair with a soft straight fringe, cream-white chunky-knit turtleneck sweater and beige wide trousers; (5) a woman in her early twenties, long straight black hair in a low ponytail, navy short-sleeve polo shirt and a long black pleated skirt; (6) a woman in her mid twenties, long brown hair with lighter ombre ends, light grey knit cardigan with round pearl buttons and a cream-white long skirt; (7) seated at a desk in front of the group, a man in his mid twenties with wavy messy black hair and black rectangular thick-rimmed glasses, dark green pullover hoodie. In the front row, two small NexMax robots stand and wave with their mitten hands. Desks, computers and green plants behind them; warm daylight. This panel has NO speech balloon and NO empty white bubble of any kind — the words are placed by the app underneath the picture.",
+      "output": "Output: one landscape illustration, 1536x1024.",
+      "nexmaxInScene": true
+    }
+  ]
+}

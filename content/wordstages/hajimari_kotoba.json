@@ -2,7 +2,7 @@
   "kind": "wordstage",
   "id": "hajimari_kotoba",
   "title": "はじまり",
-  "description": "ヘンディさんの 手紙と、地図の 歩き方の 言葉です。",
+  "description": "ヘンディさんの メッセージと、地図の 歩き方の 言葉です。",
   "fieldSequence": [
     "forest",
     "sky",
@@ -16,12 +16,12 @@
       "てがみ"
     ],
     [
-      "地図",
-      "ちず"
-    ],
-    [
       "紙",
       "かみ"
+    ],
+    [
+      "地図",
+      "ちず"
     ],
     [
       "言葉",
