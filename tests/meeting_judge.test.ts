@@ -114,13 +114,19 @@ describe("読める 形で 返す 約束", () => {
     expect(isKanaOnly(judge())).toBe(true);
     expect(isKanaOnly(judge({ reply: "出身は どこですか。" }))).toBe(false);
     expect(isKanaOnly(judge({ fix: "文の 終わりに つけます。" }))).toBe(false);
-    expect(isKanaOnly(judge({ exampleAnswer: "私は がくせいです。" }))).toBe(false);
+    expect(isKanaOnly(judge({ exampleAnswer: "彼は 弁護士です。" }))).toBe(false);
   });
 
   it("一覧に ある ことばは 漢字で 書いてよい", () => {
     expect(isKanaOnly(judge({ praise: "上手です。" }))).toBe(true);
     expect(isKanaOnly(judge({ reply: "会社の 仕事を 調べましたね。" }))).toBe(true);
     expect(isKanaOnly(judge({ exampleAnswer: "日本語で 報告します。" }))).toBe(true);
+    /*
+     * 2026-08-27 に 足した ぶん。**教材が 書かせる ことば**なので、書けないと
+     * AIの 見かたが まるごと 落ちる（`tests/ai_kanji.test.ts` に 経緯）。
+     * ここは その 対応を、判定の 側からも 留めて おく。
+     */
+    expect(isKanaOnly(judge({ exampleAnswer: "私は 話す ことが 得意です。" }))).toBe(true);
   });
 
   it("英語の 語釈に 漢字が あっても 落とさない（読むのは 英語の側）", () => {

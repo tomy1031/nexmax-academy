@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { motion } from "motion/react";
 import { DictionaryText } from "@/components/dictionary-text";
+import { AnswerNotebook } from "@/components/answers/answer-notebook";
 import { RubyText } from "@/components/ruby-text";
 import { HintModal } from "@/components/meeting/hint-modal";
 import { SpeakButton } from "@/components/meeting/speak-button";
@@ -578,6 +579,16 @@ export function TalkGameSession({
           >
             やめる
           </button>
+        ) : null}
+
+        {/*
+          **調べた ことを 見ながら 話す**（2026-08-27 の 指定）。
+          対話ゲームでも 引き先は ミーティングと 同じ（`meeting.notes`）——
+          「メモを 見ながら 話す」は 画面ごとに 別の しくみを 持たない。
+          板が 出て いる あいだは しまう（札と 同じ 理由で 重なって 読めなくなる）。
+        */}
+        {phase !== "clear" && phase !== "feedback" ? (
+          <AnswerNotebook sources={meeting.notes} className="absolute top-12 right-3" />
         ) : null}
 
         {phase === "host" || phase === "thinking" ? (

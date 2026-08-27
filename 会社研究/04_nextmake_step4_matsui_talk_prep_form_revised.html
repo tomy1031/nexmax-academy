@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>STEP 4｜松井社長と話す準備フォーム</title>
+<style>
+:root{
+  --bg:#f5f9fd;--card:#fff;--text:#17324d;--muted:#667b8d;--line:#dce8f2;
+  --blue:#2f80ed;--blue2:#eaf4ff;--green:#219653;--green2:#eaf8f0;
+  --orange:#f2994a;--orange2:#fff4e8;--purple:#7b61ff;--purple2:#f2efff;
+  --pink:#e56b88;--pink2:#fff0f4;--yellow:#f2c94c;--yellow2:#fff9df;
+  --shadow:0 10px 28px rgba(25,64,105,.08);--r:20px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:linear-gradient(180deg,#f7fbff,#f5f9fd);
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+  line-height:1.8;
+}
+button,input,textarea{font:inherit}
+ruby{ruby-position:over}rt{font-size:.55em;color:#58748d;font-weight:600}
+.wrap{width:min(1120px,94vw);margin:auto;padding:26px 0 70px}
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
+
+.hero{
+  display:block;
+  padding:28px;background:linear-gradient(135deg,#fff,#eef7ff 58%,#fff8e3);
+}
+.step{display:inline-flex;padding:6px 13px;border-radius:999px;background:var(--purple2);color:#604bc4;font-weight:900;font-size:.88rem}
+h1{font-size:clamp(1.9rem,4vw,3rem);line-height:1.3;margin:.35em 0 .25em}
+.hero p{margin:.4em 0;color:var(--muted)}
+.hero img{width:100%;height:270px;object-fit:cover;border-radius:18px;background:#eef4f8}
+
+.advice{
+  margin:18px 0;padding:18px 20px;background:var(--yellow2);border:1px solid #f2df91;border-left:6px solid var(--yellow);
+}
+.advice h2{font-size:1.18rem;margin:.05em 0 .4em}
+.advice p{margin:.35em 0}
+.advice strong{color:#8a6510}
+
+.topbar{position:sticky;top:0;z-index:10;padding:10px 0;background:rgba(245,249,253,.92);backdrop-filter:blur(9px)}
+.tabs{display:flex;gap:8px;padding:7px;background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}
+.tab{flex:1;border:0;background:transparent;color:var(--muted);border-radius:11px;padding:10px;font-weight:900;cursor:pointer}
+.tab.active{background:var(--blue);color:#fff}
+.panel{display:none}.panel.active{display:block}
+
+.label{display:block;font-weight:900;margin-bottom:6px}
+.input,.textarea{
+  width:100%;border:1.5px solid #cfddea;border-radius:13px;padding:11px 13px;outline:none;background:#fff;color:var(--text)
+}
+.input:focus,.textarea:focus{border-color:#6ba9e7;box-shadow:0 0 0 4px rgba(47,128,237,.08)}
+.textarea{min-height:115px;resize:vertical}
+.help{font-size:.86rem;color:var(--muted);margin-top:6px}
+
+.topic{margin:16px 0;overflow:hidden}
+.topic-head{display:flex;gap:12px;align-items:center;padding:16px 18px;background:#f8fbfe;border-bottom:1px solid var(--line)}
+.num{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;color:#fff;font-weight:900;background:var(--blue);flex:0 0 auto}
+.topic:nth-of-type(2) .num{background:var(--orange)}
+.topic:nth-of-type(3) .num{background:var(--purple)}
+.topic:nth-of-type(4) .num{background:var(--green)}
+.topic:nth-of-type(5) .num{background:var(--pink)}
+.topic-head h2{font-size:1.12rem;margin:0}
+.topic-body{padding:18px}
+.question{font-weight:900;font-size:1.04rem;margin-bottom:8px}
+.small{font-size:.88rem;color:var(--muted)}
+.guide{
+  display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0
+}
+.idea{
+  border:1px solid var(--line);border-radius:14px;padding:13px;background:#fbfdff;
+}
+.idea strong{display:block;margin-bottom:4px}
+.idea p{margin:0;color:var(--muted);font-size:.88rem}
+.langbox{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+.lang{
+  border:1px solid var(--line);border-radius:15px;padding:14px;background:#fff
+}
+.lang.en{background:#faf9ff;border-color:#ddd5ff}
+.lang.jp{background:#f8fcff;border-color:#d3e8f8}
+.lang-title{display:flex;justify-content:space-between;gap:8px;align-items:center;font-weight:900;margin-bottom:7px}
+.badge{font-size:.75rem;padding:2px 8px;border-radius:999px;background:#eee}
+.en .badge{background:var(--purple2);color:#604bc4}
+.jp .badge{background:var(--blue2);color:#2168b4}
+.starter{margin-top:7px;font-size:.84rem;color:var(--muted);padding:8px 10px;border-radius:10px;background:rgba(255,255,255,.7)}
+
+.tip{
+  margin-top:12px;padding:10px 12px;border-radius:12px;background:var(--green2);color:#186c3e;font-size:.88rem;font-weight:700
+}
+.actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:24px 0}
+.btn{border:0;border-radius:14px;padding:12px 19px;font-weight:900;cursor:pointer}
+.btn.primary{background:var(--blue);color:#fff}
+.btn.sub{background:#fff;border:1px solid var(--line);color:var(--text)}
+.btn.danger{background:#fff;border:1px solid #efcccc;color:#c44}
+
+.summary{padding:22px;margin-bottom:16px}
+.summary h2{margin:.1em 0 .4em}
+.summary p{margin:.3em 0;color:var(--muted)}
+.ready{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.ready span{border-radius:999px;padding:5px 10px;background:var(--green2);color:var(--green);font-size:.82rem;font-weight:900}
+
+.result-topic{margin:14px 0;overflow:hidden}
+.result-head{padding:13px 15px;background:#f8fbfe;border-bottom:1px solid var(--line);font-weight:900}
+.result-body{padding:14px}
+.result-label{font-size:.76rem;font-weight:900;color:var(--muted);margin-bottom:4px}
+.result-answer{white-space:pre-wrap;word-break:break-word;font-weight:800}
+.empty{color:#9aacbb;font-weight:600}
+.en-preview{margin-top:12px;padding-top:12px;border-top:1px dashed var(--line)}
+.en-preview .result-answer{font-weight:600;color:#6a6288}
+.talk-note{
+  margin-top:18px;padding:18px;border-radius:16px;background:linear-gradient(135deg,#eef8ff,#f5f1ff);border:1px solid #cbdcf1
+}
+.talk-note strong{color:#205f9f}
+.result-tools{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+
+@media(max-width:800px){
+  .hero{grid-template-columns:1fr}
+  .langbox,.guide{grid-template-columns:1fr}
+}
+@media print{
+  body{background:#fff}
+  .hero,.advice,.topbar,#formPanel,.result-tools,.actions{display:none!important}
+  #resultPanel{display:block!important}
+  .wrap{width:100%;padding:0}
+  .card{box-shadow:none}
+}
+</style>
+</head>
+<body>
+<main class="wrap">
+
+<section class="hero card">
+  <div>
+    <span class="step">STEP 4　<ruby>話<rt>はな</rt></ruby>す <ruby>準備<rt>じゅんび</rt></ruby></span>
+    <h1><ruby>松井社長<rt>まついしゃちょう</rt></ruby>に<br>何を <ruby>話<rt>はな</rt></ruby>す？</h1>
+    <p>Webサイトで <ruby>調<rt>しら</rt></ruby>べたことを <ruby>使<rt>つか</rt></ruby>って、こんどは <strong>あなたの <ruby>考<rt>かんが</rt></ruby>え</strong>を <ruby>作<rt>つく</rt></ruby>ります。</p>
+  </div>
+</section>
+
+<section class="advice card">
+  <h2>🌏 <ruby>考<rt>かんが</rt></ruby>える <ruby>言葉<rt>ことば</rt></ruby>は どちらでも OK</h2>
+  <p><strong><ruby>日本語<rt>にほんご</rt></ruby>で <ruby>考<rt>かんが</rt></ruby>えられる <ruby>人<rt>ひと</rt></ruby>は、さいしょから <ruby>日本語<rt>にほんご</rt></ruby>で <ruby>書<rt>か</rt></ruby>いて OKです。</strong></p>
+  <p><ruby>日本語<rt>にほんご</rt></ruby>で <ruby>考<rt>かんが</rt></ruby>えるのが むずかしい <ruby>人<rt>ひと</rt></ruby>は、さいしょに <ruby>英語<rt>えいご</rt></ruby>で <ruby>考<rt>かんが</rt></ruby>えてから、<ruby>松井社長<rt>まついしゃちょう</rt></ruby>に <ruby>話<rt>はな</rt></ruby>す <ruby>日本語<rt>にほんご</rt></ruby>に なおしましょう。</p>
+  <p><strong><ruby>大切<rt>たいせつ</rt></ruby>なのは、あなたの <ruby>考<rt>かんが</rt></ruby>えや <ruby>理由<rt>りゆう</rt></ruby>が <ruby>相手<rt>あいて</rt></ruby>に よく <ruby>伝<rt>つた</rt></ruby>わることです。</strong></p>
+</section>
+
+<div class="topbar">
+  <div class="tabs">
+    <button class="tab active" id="formTab" onclick="showTab('form')">✏️ <ruby>考<rt>かんが</rt></ruby>える</button>
+    <button class="tab" id="resultTab" onclick="showTab('result')">🗣️ <ruby>話<rt>はな</rt></ruby>す メモ</button>
+  </div>
+</div>
+
+<section id="formPanel" class="panel active">
+
+  <section class="topic card">
+    <div class="topic-head">
+      <div class="num">1</div>
+      <div>
+        <h2>NEXT MAKEの どこが <ruby>好<rt>す</rt></ruby>き？</h2>
+        <div class="small"><ruby>調査<rt>ちょうさ</rt></ruby>したこと ＋ あなたの <ruby>気持<rt>きも</rt></ruby>ち</div>
+      </div>
+    </div>
+    <div class="topic-body">
+      <div class="question"><ruby>調<rt>しら</rt></ruby>べた <ruby>中<rt>なか</rt></ruby>で、「いいな」「おもしろいな」と <ruby>思<rt>おも</rt></ruby>ったことは 何ですか？ なぜですか？</div>
+      <div class="guide">
+        <div class="idea"><strong>💡 <ruby>考<rt>かんが</rt></ruby>える ヒント</strong><p>サービス、Japanese IT Pathway、カンボジアとの <ruby>仕事<rt>しごと</rt></ruby>、MISSION・VISIONなど。</p></div>
+        <div class="idea"><strong>🎯 <ruby>大切<rt>たいせつ</rt></ruby></strong><p>Webサイトの <ruby>文<rt>ぶん</rt></ruby>を そのまま <ruby>言<rt>い</rt></ruby>うだけではなく、「私は こう <ruby>思<rt>おも</rt></ruby>う」を <ruby>入<rt>い</rt></ruby>れます。</p></div>
+      </div>
+      <div class="langbox">
+        <div class="lang en">
+          <div class="lang-title">① English <span class="badge">使いたい人だけ</span></div>
+          <textarea class="textarea save" id="q1en" placeholder="Write your idea in English first."></textarea>
+          <div class="starter">Starter: I like ... because ... / I think ... is interesting because ...</div>
+        </div>
+        <div class="lang jp">
+          <div class="lang-title">② <ruby>日本語<rt>にほんご</rt></ruby> <span class="badge">松井社長に話す</span></div>
+          <textarea class="textarea save" id="q1jp" placeholder="私は＿＿が いいと 思いました。なぜなら＿＿からです。"></textarea>
+          <div class="starter">かんたんな <ruby>文<rt>ぶん</rt></ruby>で OK：「私は〜が いいと 思いました。」「〜だからです。」</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="topic card">
+    <div class="topic-head">
+      <div class="num">2</div>
+      <div>
+        <h2><ruby>自分<rt>じぶん</rt></ruby>の いいところを NEXT MAKEで どう <ruby>使<rt>つか</rt></ruby>う？</h2>
+        <div class="small"><ruby>自分<rt>じぶん</rt></ruby>の <ruby>強<rt>つよ</rt></ruby>み ＋ <ruby>会社<rt>かいしゃ</rt></ruby>で できること</div>
+      </div>
+    </div>
+    <div class="topic-body">
+      <div class="question">あなたの いいところ・<ruby>得意<rt>とくい</rt></ruby>なことは 何ですか？ NEXT MAKEで どう <ruby>使<rt>つか</rt></ruby>えそうですか？</div>
+      <div class="guide">
+        <div class="idea"><strong>💡 <ruby>例<rt>れい</rt></ruby>にできるもの</strong><p>IT、日本語、人と <ruby>話<rt>はな</rt></ruby>す、チームで <ruby>働<rt>はたら</rt></ruby>く、まじめ、よく <ruby>調<rt>しら</rt></ruby>べる、すぐ <ruby>行動<rt>こうどう</rt></ruby>する。</p></div>
+        <div class="idea"><strong>🎯 <ruby>大切<rt>たいせつ</rt></ruby></strong><p>「私は○○ができます」で <ruby>終<rt>お</rt></ruby>わらず、「だから NEXT MAKEで○○したい」まで <ruby>考<rt>かんが</rt></ruby>えます。</p></div>
+      </div>
+      <div class="langbox">
+        <div class="lang en">
+          <div class="lang-title">① English <span class="badge">使いたい人だけ</span></div>
+          <textarea class="textarea save" id="q2en" placeholder="Write your strength and how you can use it at NEXT MAKE."></textarea>
+          <div class="starter">Starter: My strength is ... I think I can use it to ...</div>
+        </div>
+        <div class="lang jp">
+          <div class="lang-title">② <ruby>日本語<rt>にほんご</rt></ruby> <span class="badge">松井社長に話す</span></div>
+          <textarea class="textarea save" id="q2jp" placeholder="私は＿＿が 得意です。NEXT MAKEで＿＿に 使いたいです。"></textarea>
+          <div class="starter">「私は〜が <ruby>得意<rt>とくい</rt></ruby>です。」「〜に <ruby>使<rt>つか</rt></ruby>いたいです。」</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="topic card">
+    <div class="topic-head">
+      <div class="num">3</div>
+      <div>
+        <h2>NEXT MAKEで 何を やってみたい？</h2>
+        <div class="small"><ruby>仕事<rt>しごと</rt></ruby>・サービス・これからの <ruby>勉強<rt>べんきょう</rt></ruby></div>
+      </div>
+    </div>
+    <div class="topic-body">
+      <div class="question">NEXT MAKEで、どんな <ruby>仕事<rt>しごと</rt></ruby>を やってみたいですか？ 何を もっと <ruby>勉強<rt>べんきょう</rt></ruby>したいですか？</div>
+      <div class="guide">
+        <div class="idea"><strong>💡 <ruby>考<rt>かんが</rt></ruby>える ヒント</strong><p>Web・アプリ<ruby>開発<rt>かいはつ</rt></ruby>、AI、PM、お<ruby>客<rt>きゃく</rt></ruby>さまと <ruby>話<rt>はな</rt></ruby>す、カンボジアと <ruby>日本<rt>にほん</rt></ruby>を つなぐ <ruby>仕事<rt>しごと</rt></ruby>。</p></div>
+        <div class="idea"><strong>🌱 まだ できなくても OK</strong><p>「まだ できません。でも、これから <ruby>勉強<rt>べんきょう</rt></ruby>したいです。」も よい <ruby>答<rt>こた</rt></ruby>えです。</p></div>
+      </div>
+      <div class="langbox">
+        <div class="lang en">
+          <div class="lang-title">① English <span class="badge">使いたい人だけ</span></div>
+          <textarea class="textarea save" id="q3en" placeholder="What would you like to do or learn at NEXT MAKE?"></textarea>
+          <div class="starter">Starter: I would like to work on ... / I want to learn more about ...</div>
+        </div>
+        <div class="lang jp">
+          <div class="lang-title">② <ruby>日本語<rt>にほんご</rt></ruby> <span class="badge">松井社長に話す</span></div>
+          <textarea class="textarea save" id="q3jp" placeholder="私は NEXT MAKEで＿＿を やってみたいです。＿＿も 勉強したいです。"></textarea>
+          <div class="starter">「〜を やってみたいです。」「〜を もっと <ruby>勉強<rt>べんきょう</rt></ruby>したいです。」</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="topic card">
+    <div class="topic-head">
+      <div class="num">4</div>
+      <div>
+        <h2>カンボジアの いいところは？</h2>
+        <div class="small">カンボジアの <ruby>人<rt>ひと</rt></ruby>・IT<ruby>学生<rt>がくせい</rt></ruby>の <ruby>強<rt>つよ</rt></ruby>み</div>
+      </div>
+    </div>
+    <div class="topic-body">
+      <div class="question">カンボジアの <ruby>人<rt>ひと</rt></ruby>や IT<ruby>学生<rt>がくせい</rt></ruby>の いいところは 何だと <ruby>思<rt>おも</rt></ruby>いますか？ <ruby>日本<rt>にほん</rt></ruby>の <ruby>会社<rt>かいしゃ</rt></ruby>で どう <ruby>活<rt>い</rt></ruby>かせると <ruby>思<rt>おも</rt></ruby>いますか？</div>
+      <div class="guide">
+        <div class="idea"><strong>💡 <ruby>考<rt>かんが</rt></ruby>える ヒント</strong><p>若い IT<ruby>人材<rt>じんざい</rt></ruby>、新しいことを <ruby>学<rt>まな</rt></ruby>ぶ、外国語、チーム、日本とカンボジアの <ruby>文化<rt>ぶんか</rt></ruby>を <ruby>知<rt>し</rt></ruby>る。</p></div>
+        <div class="idea"><strong>🎯 あなたも カンボジアの <ruby>学生<rt>がくせい</rt></ruby></strong><p>「カンボジアのいいところ」は、あなたの いいところを <ruby>松井社長<rt>まついしゃちょう</rt></ruby>に <ruby>伝<rt>つた</rt></ruby>えることにも つながります。</p></div>
+      </div>
+      <div class="langbox">
+        <div class="lang en">
+          <div class="lang-title">① English <span class="badge">使いたい人だけ</span></div>
+          <textarea class="textarea save" id="q4en" placeholder="What are the strengths of Cambodian people or IT students?"></textarea>
+          <div class="starter">Starter: I think Cambodian IT students are ... We can ...</div>
+        </div>
+        <div class="lang jp">
+          <div class="lang-title">② <ruby>日本語<rt>にほんご</rt></ruby> <span class="badge">松井社長に話す</span></div>
+          <textarea class="textarea save" id="q4jp" placeholder="カンボジアの IT学生は＿＿と思います。日本の会社で＿＿できると思います。"></textarea>
+          <div class="starter">「カンボジアの〜は、〜と <ruby>思<rt>おも</rt></ruby>います。」「〜できると <ruby>思<rt>おも</rt></ruby>います。」</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="topic card">
+    <div class="topic-head">
+      <div class="num">5</div>
+      <div>
+        <h2><ruby>松井社長<rt>まついしゃちょう</rt></ruby>に 何を <ruby>聞<rt>き</rt></ruby>きたい？</h2>
+        <div class="small">Webサイトだけでは <ruby>分<rt>わ</rt></ruby>からないこと</div>
+      </div>
+    </div>
+    <div class="topic-body">
+      <div class="question"><ruby>松井社長<rt>まついしゃちょう</rt></ruby>だから <ruby>聞<rt>き</rt></ruby>ける <ruby>質問<rt>しつもん</rt></ruby>を 1つ <ruby>考<rt>かんが</rt></ruby>えましょう。</div>
+      <div class="guide">
+        <div class="idea"><strong>💡 よい <ruby>質問<rt>しつもん</rt></ruby></strong><p>「なぜ NEXT MAKEを <ruby>作<rt>つく</rt></ruby>りましたか？」「これから どんな <ruby>会社<rt>かいしゃ</rt></ruby>に したいですか？」など。</p></div>
+        <div class="idea"><strong>⚠️ Webサイトで <ruby>分<rt>わ</rt></ruby>かることは <ruby>聞<rt>き</rt></ruby>かない</strong><p>「NEXT MAKEは 何年に できましたか？」のような <ruby>質問<rt>しつもん</rt></ruby>は、もう <ruby>調査<rt>ちょうさ</rt></ruby>しました。</p></div>
+      </div>
+      <div class="langbox">
+        <div class="lang en">
+          <div class="lang-title">① English <span class="badge">使いたい人だけ</span></div>
+          <textarea class="textarea save" id="q5en" placeholder="Write the question you want to ask Mr. Matsui."></textarea>
+          <div class="starter">Starter: I would like to ask ... / Why did you ...?</div>
+        </div>
+        <div class="lang jp">
+          <div class="lang-title">② <ruby>日本語<rt>にほんご</rt></ruby> <span class="badge">松井社長に質問する</span></div>
+          <textarea class="textarea save" id="q5jp" placeholder="松井社長に 質問したいことを 日本語で 書いてください。"></textarea>
+          <div class="starter">「どうして〜ですか？」「これから〜したいですか？」「〜について どう <ruby>思<rt>おも</rt></ruby>いますか？」</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="actions">
+    <button class="btn primary" onclick="makeMemo()">🗣️ <ruby>話<rt>はな</rt></ruby>す メモを <ruby>見<rt>み</rt></ruby>る</button>
+    <button class="btn sub" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑ <ruby>上<rt>うえ</rt></ruby>へ</button>
+    <button class="btn danger" onclick="resetAll()">↺ <ruby>全部<rt>ぜんぶ</rt></ruby> <ruby>消<rt>け</rt></ruby>す</button>
+  </div>
+</section>
+
+<section id="resultPanel" class="panel">
+  <div class="summary card">
+    <h2><ruby>松井社長<rt>まついしゃちょう</rt></ruby>に <ruby>話<rt>はな</rt></ruby>す メモ</h2>
+    <p>この <ruby>画面<rt>がめん</rt></ruby>を <ruby>見<rt>み</rt></ruby>ながら <ruby>話<rt>はな</rt></ruby>しても OKです。<ruby>全部<rt>ぜんぶ</rt></ruby>を <ruby>覚<rt>おぼ</rt></ruby>えなくても だいじょうぶです。</p>
+    <div class="ready">
+      <span>① NEXT MAKEの 好きなところ</span>
+      <span>② 自分の いいところ</span>
+      <span>③ やってみたいこと</span>
+      <span>④ カンボジアの いいところ</span>
+      <span>⑤ 松井社長への 質問</span>
+    </div>
+    <div class="result-tools">
+      <button class="btn sub" onclick="showTab('form')">✏️ <ruby>直<rt>なお</rt></ruby>す</button>
+      <button class="btn sub" onclick="copyMemo()">📋 コピー</button>
+      <button class="btn sub" onclick="window.print()">🖨️ <ruby>印刷<rt>いんさつ</rt></ruby></button>
+    </div>
+  </div>
+
+  <div id="memoResults"></div>
+
+  <div class="talk-note">
+    💡 <strong><ruby>自分<rt>じぶん</rt></ruby>の <ruby>考<rt>かんが</rt></ruby>えと <ruby>理由<rt>りゆう</rt></ruby>を、できるだけ <ruby>具体的<rt>ぐたいてき</rt></ruby>に <ruby>話<rt>はな</rt></ruby>しましょう。</strong><br>
+    <ruby>松井社長<rt>まついしゃちょう</rt></ruby>の <ruby>話<rt>はなし</rt></ruby>も よく <ruby>聞<rt>き</rt></ruby>いて、<ruby>会話<rt>かいわ</rt></ruby>を しましょう。
+  </div>
+</section>
+
+</main>
+
+<script>
+const STORE='nextmake_step4_matsui_prep_v1';
+const topics=[
+  {n:'1',title:'NEXT MAKEの どこが 好き？',en:'q1en',jp:'q1jp'},
+  {n:'2',title:'自分の いいところを NEXT MAKEで どう 使う？',en:'q2en',jp:'q2jp'},
+  {n:'3',title:'NEXT MAKEで 何を やってみたい？',en:'q3en',jp:'q3jp'},
+  {n:'4',title:'カンボジアの いいところは？',en:'q4en',jp:'q4jp'},
+  {n:'5',title:'松井社長に 何を 聞きたい？',en:'q5en',jp:'q5jp'}
+];
+
+function esc(s){return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+
+function state(){
+  const o={};
+  document.querySelectorAll('.save').forEach(el=>{if(el.id)o[el.id]=el.value});
+  return o;
+}
+function save(){localStorage.setItem(STORE,JSON.stringify(state()))}
+function load(){
+  let s={};try{s=JSON.parse(localStorage.getItem(STORE)||'{}')}catch(e){}
+  Object.entries(s).forEach(([k,v])=>{const el=document.getElementById(k);if(el)el.value=v})
+}
+function showTab(which){
+  const form=which==='form';
+  document.getElementById('formPanel').classList.toggle('active',form);
+  document.getElementById('resultPanel').classList.toggle('active',!form);
+  document.getElementById('formTab').classList.toggle('active',form);
+  document.getElementById('resultTab').classList.toggle('active',!form);
+  if(!form)renderMemo();
+}
+function makeMemo(){
+  save();renderMemo();showTab('result');window.scrollTo({top:0,behavior:'smooth'});
+}
+function renderMemo(){
+  const root=document.getElementById('memoResults');root.innerHTML='';
+  topics.forEach(t=>{
+    const jp=document.getElementById(t.jp).value.trim();
+    const en=document.getElementById(t.en).value.trim();
+    const card=document.createElement('section');
+    card.className='result-topic card';
+    card.innerHTML=`
+      <div class="result-head">${t.n}. ${esc(t.title)}</div>
+      <div class="result-body">
+        <div class="result-label">松井社長に 話す 日本語</div>
+        <div class="result-answer ${jp?'':'empty'}">${jp?esc(jp):'まだ 日本語を 書いていません'}</div>
+        <div class="en-preview">
+          <div class="result-label">さいしょに 考えた English</div>
+          <div class="result-answer ${en?'':'empty'}">${en?esc(en):'Englishは 書いていません'}</div>
+        </div>
+      </div>`;
+    root.appendChild(card);
+  });
+}
+function copyMemo(){
+  let text=`STEP 4 松井社長に話すメモ\n\n`;
+  topics.forEach(t=>{
+    const jp=document.getElementById(t.jp).value.trim()||'（未入力）';
+    text+=`${t.n}. ${t.title}\n${jp}\n\n`;
+  });
+  navigator.clipboard.writeText(text).then(()=>alert('コピーしました。')).catch(()=>alert('コピーできませんでした。'));
+}
+function resetAll(){
+  if(!confirm('書いたものを 全部 消しますか？'))return;
+  localStorage.removeItem(STORE);
+  document.querySelectorAll('input,textarea').forEach(el=>el.value='');
+  showTab('form');
+}
+document.addEventListener('input',e=>{if(e.target.matches('.save'))save()});
+load();
+</script>
+</body>
+</html>

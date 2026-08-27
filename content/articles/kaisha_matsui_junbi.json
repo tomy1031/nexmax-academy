@@ -1,13 +1,8 @@
 {
-  "kind": "quizset",
-  "id": "kaisha_omoshiroi",
-  "title": "松井社長に 何を 話す？",
-  "description": "調べた ことを 使って、あなたの 考えを 作ります。日本語で 書ける 人は、日本語だけで 大丈夫です。むずかしい 人は、先に 英語で 考えます。",
-  "nekumax": "hello",
-  "phase": "production",
-  "answerMode": "all",
-  "passRate": 60,
-  "requireAll": true,
+  "kind": "article",
+  "id": "kaisha_matsui_junbi",
+  "title": "松井社長と 話す 準備を しよう",
+  "description": "調べた ことに、あなたの 考えを 足します。松井社長に 話す 5つの ことを 考えます。",
   "furigana": [
     [
       "代表取締役社長",
@@ -1302,141 +1297,149 @@
       "ねん"
     ]
   ],
-  "questions": [
+  "blocks": [
     {
-      "id": "t1",
-      "type": "free",
-      "section": "1｜NEXT MAKEの どこが 好き？",
-      "sectionNote": "調べた こと ＋ あなたの 気持ち",
-      "q": "調べた 中で「いいな」「おもしろいな」と 思った ことは 何ですか？ なぜですか？",
-      "hints": [
-        {
-          "title": "💡 考える ヒント",
-          "text": "サービス、Japanese IT Pathway、カンボジアとの 仕事、MISSION・VISIONなど。"
-        },
-        {
-          "title": "🎯 大切な こと",
-          "text": "サイトの 文を そのまま 言いません。「私は こう 思う」を 入れます。"
-        }
-      ],
-      "placeholder": "私は ◯◯が いいと 思いました。なぜなら ◯◯からです。",
-      "starter": "「私は ◯◯が いいと 思いました。」「◯◯だからです。」",
-      "english": {
-        "placeholder": "Write your idea in English first.",
-        "starter": "I like ... because ... / I think ... is interesting because ..."
-      },
-      "minLength": 8,
-      "report": true,
-      "explain": "「何が」と「なぜ」を いっしょに 話すと、社長に よく 伝わります。",
-      "points": 1
+      "kind": "hero",
+      "eyebrow": "STEP 4　話す 準備",
+      "title": "松井社長と 話す 準備を しよう",
+      "lead": "これから、松井社長と 話します。",
+      "note": "調べた ことを 見て、「あなたは どう 思った？」を 考えます。",
+      "image": {
+        "src": "/img/articles/kaisha_shirabekata/g5.webp",
+        "refs": [],
+        "status": "done"
+      }
     },
     {
-      "id": "t2",
-      "type": "free",
-      "section": "2｜自分の いい ところを どう 使う？",
-      "sectionNote": "自分の 強み ＋ 会社で できる こと",
-      "q": "あなたの いい ところ・得意な ことは 何ですか？ NEXT MAKEで どう 使えそうですか？",
-      "hints": [
-        {
-          "title": "💡 れいに できる もの",
-          "text": "IT、日本語、人と 話す、チームで 働く、まじめ、よく 調べる、すぐ 行動する。"
-        },
-        {
-          "title": "🎯 大切な こと",
-          "text": "「◯◯が できます」で 終わりません。「だから ◯◯したい」まで 考えます。"
-        }
-      ],
-      "placeholder": "私は ◯◯が 得意です。NEXT MAKEで ◯◯に 使いたいです。",
-      "starter": "「私は ◯◯が 得意です。」「◯◯に 使いたいです。」",
-      "english": {
-        "placeholder": "Write your strength and how you can use it at NEXT MAKE.",
-        "starter": "My strength is ... I think I can use it to ..."
-      },
-      "minLength": 8,
-      "report": true,
-      "explain": "強みと、それを 使う 場所。2つ つなげると、社長は あなたが 働く すがたを 見られます。",
-      "points": 1
+      "kind": "banner",
+      "tone": "goal",
+      "icon": "🎯",
+      "title": "この STEPの ゴール",
+      "text": "「この 学生と もっと 話したい」。松井社長に そう 思って もらう ことです。",
+      "badges": [
+        "😊 あなたの ことを 知って もらう",
+        "💙 NEXT MAKEへの 興味を 伝える",
+        "🌱 これからの 成長を 伝える"
+      ]
     },
     {
-      "id": "t3",
-      "type": "free",
-      "section": "3｜NEXT MAKEで 何を やって みたい？",
-      "sectionNote": "仕事・サービス・これからの 勉強",
-      "q": "NEXT MAKEで、どんな 仕事を やって みたいですか？ 何を もっと 勉強したいですか？",
-      "hints": [
-        {
-          "title": "💡 考える ヒント",
-          "text": "Web・アプリの 開発、AI、PM、お客さまと 話す、カンボジアと 日本を つなぐ 仕事。"
-        },
-        {
-          "title": "🌱 まだ できなくても OK",
-          "text": "「まだ できません。でも、これから 勉強したいです。」も よい 答えです。"
-        }
-      ],
-      "placeholder": "私は NEXT MAKEで ◯◯を やって みたいです。",
-      "starter": "「◯◯を やって みたいです。」「◯◯を もっと 勉強したいです。」",
-      "english": {
-        "placeholder": "What would you like to do or learn at NEXT MAKE?",
-        "starter": "I would like to work on ... / I want to learn more about ..."
-      },
-      "minLength": 8,
-      "report": true,
-      "explain": "できる ことより、やりたい ことを 話します。これからの 話が いちばん 伝わります。",
-      "points": 1
+      "kind": "heading",
+      "level": 2,
+      "text": "ヘンディさんへの 報告と 何が ちがう？"
     },
     {
-      "id": "t4",
-      "type": "free",
-      "section": "4｜カンボジアの いい ところは？",
-      "sectionNote": "カンボジアの 人・IT学生の 強み",
-      "q": "カンボジアの 人や IT学生の いい ところは 何だと 思いますか？ 日本の 会社で どう 使えると 思いますか？",
-      "hints": [
-        {
-          "title": "💡 考える ヒント",
-          "text": "若い ITの 人、新しい ことを 学ぶ 力、外国語、チーム、2つの 国の 文化を 知る こと。"
-        },
-        {
-          "title": "🎯 あなたも カンボジアの 学生",
-          "text": "カンボジアの いい ところは、あなたの いい ところを 伝える ことにも つながります。"
-        }
-      ],
-      "placeholder": "カンボジアの IT学生は ◯◯だと 思います。",
-      "starter": "「カンボジアの ◯◯は、◯◯だと 思います。」「◯◯できると 思います。」",
-      "english": {
-        "placeholder": "What are the strengths of Cambodian people or IT students?",
-        "starter": "I think Cambodian IT students are ... We can ..."
+      "kind": "compare",
+      "before": {
+        "title": "ヘンディさんに 話した こと",
+        "lines": [
+          "Webサイトで 調べた ことを 報告しました。",
+          "「NEXT MAKEは こんな 会社です。」",
+          "「こんな 仕事を して います。」"
+        ]
       },
-      "minLength": 8,
-      "report": true,
-      "explain": "調査シートの 最後の 問いが ヒントに なります。自分の ことばで 言いなおしましょう。",
-      "points": 1
+      "after": {
+        "title": "松井社長に 話す こと",
+        "lines": [
+          "調べた こと ＋ あなたの 考えを 話します。",
+          "「私は ここが いいと 思いました。」",
+          "「私は これを やって みたいです。」"
+        ]
+      }
     },
     {
-      "id": "t5",
-      "type": "free",
-      "section": "5｜松井社長に 何を 聞きたい？",
-      "sectionNote": "Webサイトだけでは 分からない こと",
-      "q": "松井社長だから 聞ける 質問を 1つ 考えましょう。",
-      "hints": [
+      "kind": "banner",
+      "tone": "quote",
+      "icon": "👔",
+      "title": "松井社長に なったつもりで 考えよう",
+      "text": "あなたが 社長だったら、どんな 学生と 仕事を したいですか。"
+    },
+    {
+      "kind": "image",
+      "prompt": "Matsui, the company president, talking with a Cambodian student. His eyes turn into hearts, showing he thinks 'I want to work with this student!'. Warm, friendly picture-book style.",
+      "refs": [],
+      "status": "empty",
+      "caption": "松井社長が 学生と 話して います。「いっしょに 仕事を したい」と 思って いる 絵です。"
+    },
+    {
+      "kind": "banner",
+      "tone": "message",
+      "icon": "💡",
+      "text": "「会社を よく 知って いる」だけでは ありません。この 会社で 何を したいかを、自分の ことばで 話します。"
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "これから 考える 5つの こと"
+    },
+    {
+      "kind": "cards",
+      "tone": "step",
+      "columns": 5,
+      "items": [
         {
-          "title": "💡 よい 質問",
-          "text": "「なぜ NEXT MAKEを 作りましたか？」「これから どんな 会社に したいですか？」など。"
+          "label": "1",
+          "title": "NEXT MAKEの どこが 好き？",
+          "text": "調べた 中で「いいな」と 思った ことを 考えます。",
+          "image": {
+            "prompt": "A Cambodian student looking at the NEXT MAKE website on a laptop, smiling and pointing at the screen, thinking 'This part is great!'. Warm picture-book style.",
+            "refs": [],
+            "status": "empty"
+          }
         },
         {
-          "title": "🎯 サイトで 分かる ことは 聞かない",
-          "text": "「何年に できましたか？」は、もう 調査シートで 調べました。"
+          "label": "2",
+          "title": "自分の いい ところは？",
+          "text": "得意な ことを、どう 使えるか 考えます。",
+          "image": {
+            "prompt": "A Cambodian student standing with small floating labels around them: IT, Japanese, teamwork, talking. Confident and warm picture-book style.",
+            "refs": [],
+            "status": "empty"
+          }
+        },
+        {
+          "label": "3",
+          "title": "NEXT MAKEで 何を やって みたい？",
+          "text": "どんな 仕事や サービスに 関わりたいか 考えます。",
+          "image": {
+            "prompt": "A Cambodian student imagining their future working at NEXT MAKE: coding on a laptop and talking with a team, shown as a thought cloud. Warm picture-book style.",
+            "refs": [],
+            "status": "empty"
+          }
+        },
+        {
+          "label": "4",
+          "title": "カンボジアの いい ところは？",
+          "text": "カンボジアの 人や IT学生の いい ところを 考えます。",
+          "image": {
+            "prompt": "Cambodian IT students and Japanese company staff working together at one desk, smiling. Warm picture-book style.",
+            "refs": [],
+            "status": "empty"
+          }
+        },
+        {
+          "label": "5",
+          "title": "松井社長に 何を 聞きたい？",
+          "text": "Webサイトだけでは 分からない ことを 質問します。",
+          "image": {
+            "prompt": "A Cambodian student asking a question to the company president. Speech bubbles show '?' marks. Warm picture-book style.",
+            "refs": [],
+            "status": "empty"
+          }
         }
-      ],
-      "placeholder": "社長に 聞きたい ことは ◯◯です。",
-      "starter": "「どうして ◯◯ですか？」「これから ◯◯したいですか？」",
-      "english": {
-        "placeholder": "Write the question you want to ask Mr. Matsui.",
-        "starter": "I would like to ask ... / Why did you ...?"
-      },
-      "minLength": 6,
-      "report": true,
-      "explain": "調べたから 出て きた 質問ほど、社長は うれしく なります。",
-      "points": 1
+      ]
+    },
+    {
+      "kind": "banner",
+      "tone": "message",
+      "icon": "💡",
+      "title": "大切な こと",
+      "text": "「いい 答え」を 作る ことが 目的では ありません。あなたが 本当に どう 思ったかを 話しましょう。"
+    },
+    {
+      "kind": "link",
+      "ref": "kaisha_omoshiroi",
+      "type": "quizset",
+      "label": "松井社長に 何を 話す？を 書く"
     }
   ]
 }

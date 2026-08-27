@@ -17,6 +17,7 @@ import {
   type FuriganaEntry,
   type FuriganaIndex,
 } from "@/lib/text/furigana";
+import { BannerBlock, CardsBlock, CompareBlock, HeroBlock, MissionsBlock } from "./rich-blocks";
 import {
   collectHeadings,
   contentHref,
@@ -74,16 +75,29 @@ export function ArticleView({
    * 人物の名前の よみも 索引に混ぜる（「藤木」に ふりがなを 出すため）。記事の
    * 読み辞書のほうを あとに置いて 勝たせる——記事が「藤木さん」の読みを 上書きしたい
    * ときに 書けるようにする（単語ステージのカードと同じ組み立て — StageDetail）。
+   *
+   * **ことばチップの 語も 混ぜる。** チップは 記事が 書いた 文では なく
+   * `wordIds` で 借りて きた 語なので、記事の 読み辞書に 無くて 当たり前で ある。
+   * 混ぜないと、記事に「会社」だけ あって「会社概要」が 無い とき、チップが
+   * 「会社かいしゃ概要」と 割れて **概要が 裸の 漢字で 残る**（2026-08-27 実発生）。
+   * ふりがなの 機械検査は「借りた ぶんは 持ち主の 側で 見る」ので、ここは
+   * すり抜ける——**画面でしか 出ない 抜け**だった。語の 読みは 語が 持って いる
+   * のだから、引くのが 正しい。
    */
   const furigana = useMemo(
     () =>
       buildFuriganaIndex(
         mergeFuriganaEntries(
           (characters ?? []).map((person): FuriganaEntry => [person.name, person.reading]),
+          article.blocks.flatMap((block): FuriganaEntry[] =>
+            block.kind === "vocab"
+              ? (block.items ?? []).map((item): FuriganaEntry => [item.term, item.reading])
+              : [],
+          ),
           article.furigana ?? [],
         ),
       ),
-    [article.furigana, characters],
+    [article.blocks, article.furigana, characters],
   );
   const [rubyOn, setRubyOn] = useState(true);
   const headings = useMemo(() => collectHeadings(article.blocks), [article.blocks]);
@@ -289,7 +303,7 @@ function BlockView({
       );
 
     case "image":
-      return <ImageBlock block={block} />;
+      return <ImageBlock block={block} furigana={furigana} show={show} />;
 
     case "callout":
       return <CalloutBlock block={block} furigana={furigana} show={show} />;
@@ -419,6 +433,28 @@ function BlockView({
 
     case "characters":
       return <CharactersBlock block={block} furigana={furigana} show={show} people={characters} />;
+
+    /*
+     * 配布資料（会社研究の HTML 4枚）から 移した 大きな 見た目部品。
+     * 中身は `./rich-blocks` にある——ここに 置くと この switch が
+     * 1画面に 収まらなく なり、目次や 進捗の コードを またいで 直す ことになる。
+     */
+    case "hero":
+      return <HeroBlock block={block} furigana={furigana} show={show} />;
+
+    case "cards":
+      return <CardsBlock block={block} furigana={furigana} show={show} dictionary={dictionary} />;
+
+    case "missions":
+      return (
+        <MissionsBlock block={block} furigana={furigana} show={show} dictionary={dictionary} />
+      );
+
+    case "compare":
+      return <CompareBlock block={block} furigana={furigana} show={show} dictionary={dictionary} />;
+
+    case "banner":
+      return <BannerBlock block={block} furigana={furigana} show={show} dictionary={dictionary} />;
   }
 }
 
@@ -454,6 +490,12 @@ function SpeakableGroup({
     </div>
   );
 }
+
+/** 絵が まだ 無い わくの ことばの 読み（画面の 読みは 画面が 持つ）。 */
+const PLACEHOLDER_FURIGANA = buildFuriganaIndex([
+  ["絵", "え"],
+  ["入", "はい"],
+]);
 
 type ImageBlockData = Extract<ArticleBlock, { kind: "image" }>;
 type CalloutBlockData = Extract<ArticleBlock, { kind: "callout" }>;
@@ -543,19 +585,45 @@ function CharactersBlock({
  * 幅も 少し しぼる。画面いっぱいの 絵は「見出し」に 見えてしまい、
  * すぐ 下の 説明と つながらない。
  */
-function ImageBlock({ block }: { block: ImageBlockData }) {
+function ImageBlock({
+  block,
+  furigana,
+  show,
+}: {
+  block: ImageBlockData;
+  furigana: FuriganaIndex;
+  show: boolean;
+}) {
   if (block.status !== "done" || !block.src) {
+    /*
+     * **何の 絵が 入る ところかを わくの 中に 書く**（2026-08-27 の 指定
+     * 「画像が必要な領域を明確に示してください」）。
+     *
+     * 前は「え は じゅんびちゅう」だけで、**どんな 絵を 作れば よいかが
+     * 画面から 読めなかった**。`caption` は もともと「絵の 中身を ことばで
+     * 言った もの」なので、そのまま 出せば 作る 人の 指示書に なる。
+     */
     return (
       <figure className="mx-auto w-full max-w-[420px]">
         <div
-          className="text-ink-faint grid h-32 place-items-center rounded-[20px] border-4 border-dashed text-sm font-extrabold"
+          /* 数えられる しるし（`rich-blocks.tsx` の わくと そろえる）。 */
+          data-slot="empty"
+          className="text-ink-faint grid h-32 place-items-center rounded-[20px] border-4 border-dashed p-3 text-center text-sm font-extrabold"
           style={{ borderColor: "var(--color-hairline)", background: "var(--color-panel-tint)" }}
         >
           <span>
             <span aria-hidden className="mr-1.5">
               🖼️
             </span>
-            え は じゅんびちゅう
+            {/* ことばは カードの わく（`ImageSlotFrame`）と そろえる。
+                同じ「まだ 無い」を 2つの 言い方で 出すと、学習者には
+                ちがう ことが 起きて いるように 見える。 */}
+            <RubyText text="ここに 絵が 入ります" index={PLACEHOLDER_FURIGANA} />
+            {block.caption && (
+              <span className="text-ink-soft mt-1 block text-xs leading-snug">
+                <RubyText text={block.caption} index={furigana} show={show} />
+              </span>
+            )}
           </span>
         </div>
       </figure>

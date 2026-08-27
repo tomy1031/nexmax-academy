@@ -252,6 +252,39 @@ const quizCommon = {
    * 省いてよい——付けなければ しるしは 出ない。
    */
   report: z.boolean().optional(),
+  /*
+   * ------------------------------------------------------------------
+   * ここから下の 4つは **配布資料（会社研究の 調査シート）の 見やすさを
+   * 教材の 画面でも 出す ため**に 足した（2026-08-27 の 指定）。
+   * どれも 省ける——書かなければ これまでと 同じ 見た目で 出る。
+   * ------------------------------------------------------------------
+   */
+  /**
+   * 章（MISSION）の 名前。
+   *
+   * 同じ 文字が つづく あいだを 1つの まとまりと して、全問1ページの ときに
+   * **章の 見出しを 1回だけ** 出す。25問が 見出しなしで 並ぶと、
+   * いま どの 話を 調べて いるのかが 画面から 消える。
+   *
+   * 「章」を 別の 配列に しないのは、問いを 1つ 足した 日に **章と 問いの
+   * 対応が 1つずつ ずれる**のを 防ぐため（`optionImages` を 並びの 配列に した
+   * のと 同じ 判断）。問いが 自分の 章を 持って いれば ずれようが ない。
+   */
+  section: plainText.optional(),
+  /** 章の 下の ひとこと（「『会社の しょうかい』を 見る」）。 */
+  sectionNote: plainText.optional(),
+  /**
+   * どこを 見れば 分かるか（🔎 の 札）。
+   *
+   * これまでは 設問文の 中に 改行で「＊会社の しょうかいの ページ」と 書いて いた。
+   * 文の 一部なので **読み上げにも 混ざり**、どこからが 問いなのかが 分かりにくい。
+   */
+  source: plainText.optional(),
+  /**
+   * 押すと 開く ヒント。**答えそのものは 書かない**（調べる 練習が 消える）。
+   * 産出（`free`）の 問いでは「考える ヒント」として 使う。
+   */
+  hints: z.array(z.object({ title: plainText, text: plainText })).min(1).optional(),
 };
 
 /** 4択（読解確認）。 */
@@ -357,6 +390,28 @@ const freeSchema = z.object({
   placeholder: plainText.optional(),
   /** 点が 入る 最低の 字数。短すぎる 返事で 先へ 進むのを 防ぐ。 */
   minLength: z.number().int().min(1).max(200).default(2),
+  /**
+   * 日本語の 型文（入力欄の 下に 出す 足場）。`placeholder` は 打ち始めると
+   * 消えるので、**打ちながら 見られる 型文**を 別に 置く。
+   */
+  starter: plainText.optional(),
+  /**
+   * 先に 英語で 下書きする 欄（要る 教材だけ）。
+   *
+   * 「日本語で 考えられる 人は さいしょから 日本語で 書いて OK」という
+   * 配布資料の 建てつけを そのまま 持ち込む もの。**採点は 日本語の 欄だけ**で、
+   * 英語は 書いても 書かなくても 点に 関わらない——英語で 考える 段を
+   * 点に すると、日本語で 直に 書ける 人が 損を する。
+   *
+   * 中の 文が 英語なので `plainText`（日本語の 検査）には かけない。
+   */
+  english: z
+    .object({
+      placeholder: z.string().min(1).optional(),
+      /** 書き出しの 型（「I like ... because ...」）。 */
+      starter: z.string().min(1).optional(),
+    })
+    .optional(),
 });
 
 export const quizQuestionSchema = z.discriminatedUnion("type", [
@@ -409,6 +464,23 @@ export const quizSetSchema = z
      */
     answerMode: z.enum(["one", "submit", "all"]).default("submit"),
     passRate: z.number().int().min(1).max(100).default(70),
+    /**
+     * **ぜんぶ うめるまで こたえを 出せなく する**（2026-08-27 の 指定
+     * 「ちゃんと全ての項目を埋めない限り見られないようにしてください」）。
+     *
+     * 既定は `false`——これまでの 教材は「分からない もんだいで 足止めしない」
+     * ほうの 決めごとで 作って あり、いっせいに 変えると **書けない 1問で
+     * 教材が 終われなく なる**（関門が 開かない）。だから 教材ごとに 先生が 決める。
+     *
+     * `true` に してよい 教材は 2つ。
+     *  - **調べれば 必ず 答えが 見つかる** もの（調査シートは 学習用サイトに 全部 ある）
+     *  - **書けば 通る** もの（自由記述だけの 教材。中身は 採点しない）
+     *
+     * 危ないのは その 中間——正解の ある 選択式・キーワードで、サイトのどこにも
+     * 書いて いない ことを 聞いて いる 教材。そこで これを 立てると、
+     * 見つけようの 無い 1問が 出口を ふさぐ。
+     */
+    requireAll: z.boolean().default(false),
     furigana: z.array(furiganaEntrySchema).optional(),
     questions: z.array(quizQuestionSchema).min(1),
   })
@@ -1240,6 +1312,136 @@ export const articleBlockSchema = z.discriminatedUnion("kind", [
       )
       .min(1),
   }),
+  /*
+   * ------------------------------------------------------------------
+   * ここから下は **配布資料（会社研究の HTML 4枚）を 教材に 移すために 足した 5つ**
+   *（2026-08-27 の 指定「今後コンポーネントとして使えるように」）。
+   *
+   * どれも **1つの 教材のための 部品では ない**。HTML の 見た目を そのまま
+   * 持ち込むと `hero-kaisha` のような 使い回せない ブロックに なるので、
+   * 「表紙」「カードの 並び」「調べる ことの 一覧」「前と 後」「帯」という
+   * **見た目の 役目**で 切って ある。会社研究に しか 出て こない 語は
+   * どれの 名前にも 入れて いない。
+   * ------------------------------------------------------------------
+   */
+  /**
+   * 表紙（hero）。ページの いちばん 上に 1つ 置く。
+   *
+   * これまでは `heading` ＋ `paragraph` ＋ `image` の 3つで 代用して いたが、
+   * **開いた 瞬間に「何の ページか」が 分からない**（見出しと 絵が 別々の 段に
+   * 並ぶだけ）。配布資料が どれも 表紙から 始まって いたのは そのためで、
+   * ここだけは 専用の 形を 持たせる。
+   */
+  z.object({
+    kind: z.literal("hero"),
+    /** 上の 小さな 札（「🔎 STEP 1」など）。省ける。 */
+    eyebrow: plainText.optional(),
+    title: plainText,
+    /** 太い リード文。 */
+    lead: plainText.optional(),
+    /** その下の ひとこと。 */
+    note: plainText.optional(),
+    /** 右に 置く 絵。**まだ 無くてよい**——`status: "empty"` なら 画面に
+     *  「絵が 入ります」の わくが 出る（作る 場所が 見えるように する）。 */
+    image: imageSlotSchema.optional(),
+  }),
+  /**
+   * カードの 並び（cards）。
+   *
+   * `list`（かじょうがき）との ちがいは **1項目に 見出し・絵・小さな 一覧を
+   * 持てる** こと。「なぜ 調べるの？」の 3枚、「今日 すること」の STEPカード、
+   * 「これから 考える 5つのこと」——配布資料の 大半が この 形だった。
+   */
+  z.object({
+    kind: z.literal("cards"),
+    /**
+     * 見た目。
+     * - `plain` … 白い カード（既定）
+     * - `dark`  … 紺の 帯の 中に 並べる（手順の 3つ など、流れを 見せたい とき）
+     * - `step`  … 番号の 札つき（1歩ずつ 進む もの）
+     */
+    tone: z.enum(["plain", "dark", "step"]).default("plain"),
+    /** 1行に 何枚 並べるか（画面が せまい ときは 自動で 減る）。 */
+    columns: z.union([z.literal(2), z.literal(3), z.literal(4), z.literal(5)]).optional(),
+    items: z
+      .array(
+        z.object({
+          /** 絵文字（🏢 など）。 */
+          icon: plainText.optional(),
+          /** 札（「STEP 1」など）。`tone: "step"` では 番号が 自動で 入る。 */
+          label: plainText.optional(),
+          title: plainText,
+          text: plainText.optional(),
+          /** カードの 中の 小さな かじょうがき。 */
+          items: z.array(plainText).optional(),
+          image: imageSlotSchema.optional(),
+        }),
+      )
+      .min(1),
+  }),
+  /**
+   * 調べる ことの 一覧（missions）。
+   *
+   * 1件が「番号・題・どこを 見るか・見つける ことの 一覧・ヒント」を 持つ。
+   * `cards` と 分けて あるのは **ヒントが 押すと 開く** ためで、
+   * 答えに 近い 文を いつも 見せると 調べる 練習に ならない。
+   */
+  z.object({
+    kind: z.literal("missions"),
+    items: z
+      .array(
+        z.object({
+          /** 番号（「1」）。省くと 並び順の 番号が 入る。 */
+          badge: plainText.optional(),
+          title: plainText,
+          /** どこを 見るか（「『会社の しょうかい』を 見る」）。 */
+          where: plainText.optional(),
+          /** 見つける ことの 一覧。 */
+          points: z.array(plainText).min(1),
+          /** 押すと 開く ヒント。**答えそのものは 書かない**。 */
+          hint: plainText.optional(),
+          /** 下に 出す ひとこと（ことばの 説明など）。 */
+          note: plainText.optional(),
+          /** 目立たせる（学習者に いちばん 近い もの）。 */
+          focus: z.boolean().optional(),
+          /**
+           * 小さな 絵（省ける）。**カードの 中に 置く**ので、無くても 形は くずれない。
+           * 「どこを 見るか」を 字だけで 7枚 並べると 目が すべる——1枚ごとに
+           * 絵が あると、どの 話だったかを 絵で 思い出せる。
+           */
+          image: imageSlotSchema.optional(),
+        }),
+      )
+      .min(1),
+  }),
+  /**
+   * 前と 後の 対比（compare）。
+   *
+   * 「ヘンディさんに 話した こと」→「松井社長に 話す こと」のように、
+   * **何が 変わるのか**を 2枚 並べて 見せる。文だけで「ちがいます」と 言うより、
+   * 並べた ほうが 早い。
+   */
+  z.object({
+    kind: z.literal("compare"),
+    before: z.object({ title: plainText, lines: z.array(plainText).min(1) }),
+    after: z.object({ title: plainText, lines: z.array(plainText).min(1) }),
+  }),
+  /**
+   * 帯（banner）。ゴール・大切な こと・引用。
+   *
+   * `callout`（ポイント枠）は **1文の ための 枠**で、題も 札も 持てない。
+   * 「この STEPの ゴール」のように **題＋文＋いくつかの 札**が 要る ところで使う。
+   */
+  z.object({
+    kind: z.literal("banner"),
+    /** `goal` … 目あて / `message` … 大切な こと / `quote` … 引用のように 見せる */
+    tone: z.enum(["goal", "message", "quote"]).default("message"),
+    icon: plainText.optional(),
+    title: plainText.optional(),
+    text: plainText,
+    /** 下に 並べる 小さな 札。 */
+    badges: z.array(plainText).optional(),
+  }),
 ]);
 
 /** 説明ページ（article / WYSIWYG — 設計07 §5）。保存形式はブロックJSON。 */
@@ -1609,6 +1811,34 @@ export const meetingSchema = z.object({
    * 会話を 終われなく なる（`clampRetry` の 説明）。
    */
   maxAttempts: z.number().int().min(1).max(10).nullable().optional(),
+  /**
+   * 会話の 最中に 開ける「じぶんの メモ」（2026-08-27 の 指定
+   * 「回答した内容をミーティングで表示させる方法はないか」）。
+   *
+   * 中身は **その もんだいで 自分が 書いた こたえ**で、教材には 持たない
+   *（学習者ごとに ちがう ものを 教材が 持てる はずが ない）。ここに 書くのは
+   * **どの もんだいの こたえを 出すか**だけ。実体は 端末の「こたえノート」
+   *（`src/lib/answers/notebook.ts`）から 引く。
+   *
+   * ミーティング専用に しないのは、同じ「メモを 見ながら 話す」形を
+   * これから 別の 対話にも 置くため——部品（`AnswerNotebook`）も 引き先も
+   * 教材の 種類を 知らない 作りに して ある。
+   */
+  notes: z
+    .array(
+      z.object({
+        /** もんだい（quizset）の id。 */
+        ref: z.string().min(1),
+        /** メモの 見出し（「調査シートの こたえ」）。 */
+        label: plainText,
+        /**
+         * ほうこくの しるし（`report`）が ついた 問だけ 出す。
+         * 25問 ぜんぶを 開いたままだと カンペに ならない（けっかの 画面と 同じ理由）。
+         */
+        reportOnly: z.boolean().optional(),
+      }),
+    )
+    .default([]),
   furigana: z.array(furiganaEntrySchema).optional(),
 }).superRefine((meeting, ctx) => {
   /*

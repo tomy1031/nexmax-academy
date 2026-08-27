@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  connectorHandbook,
   parseMigrationList,
   pendingMigrations,
   readRepoMigrations,
@@ -84,5 +85,39 @@ describe("流し忘れを数え上げる", () => {
   it("DBにだけある版は流し忘れではない（ダッシュボードで直に入れたものなど）", () => {
     const applied = new Set(["20260725090000", "20260824090000", "20260727013141"]);
     expect(pendingMigrations(repo, applied)).toHaveLength(0);
+  });
+});
+
+/*
+ * 鍵が 無い ときに **どこへ 送るか**。
+ *
+ * 前は「『デプロイ（DB）』ワークフローで流す」とだけ 言って いた。ところが
+ * その ワークフローは **まさに 鍵が 無くて 動かない**ので、読んだ 側は
+ * 行き止まりに 送られる（2026-08-26・2026-08-27 と 2回、14秒で 落ちた）。
+ * 2026-08-27 の 決定「両方」に 合わせ、鍵が 入るまでの 手＝コネクタの 手順を 出す。
+ */
+describe("鍵が 無い ときの 手順書", () => {
+  const repo = [
+    { version: "20260824090000", name: "register_profile_on_login", file: "a.sql" },
+    { version: "20260827120000", name: "release_kaisha_stage_to_git", file: "b.sql" },
+  ];
+
+  it("コネクタで 流す 手を 出す", () => {
+    expect(connectorHandbook(repo)).toContain("コネクタ");
+  });
+
+  /*
+   * ここを 抜かすと、鍵が 入った 日に ワークフローが **もう 手で 流した ぶんを
+   * もう一度 流そうとする**。記録の SQL まで 出すのは そのため。
+   */
+  it("版を 記録する SQL を、いちばん 新しい 版で 出す", () => {
+    const text = connectorHandbook(repo);
+    expect(text).toContain("supabase_migrations.schema_migrations");
+    expect(text).toContain("20260827120000");
+    expect(text).toContain("release_kaisha_stage_to_git");
+  });
+
+  it("1本も 無くても 落ちない", () => {
+    expect(connectorHandbook([])).toContain("<版>");
   });
 });

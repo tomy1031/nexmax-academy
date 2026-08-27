@@ -38,11 +38,17 @@ export function ArcadeScene({
    * 0 は「まだ 何も 起きて いない」。
    */
   impactSeq = 0,
-  /** 揺れの 色あい（時間切れは オレンジ）。 */
+  /**
+   * 揺れの 種類。
+   * - `damage` … 落とした とき（縦横に 大きく 揺れる）
+   * - `nudge`  … 読みの 打ち直し（**横に 小さく 揺れる**だけ。2026-08-27）
+   */
+  impactKind = "damage",
   children,
 }: {
   world: Omit<ArcadeWorldProps, "onNear">;
   impactSeq?: number;
+  impactKind?: "damage" | "nudge";
   children: ReactNode;
 }) {
   // 用語が目の前に来ている間（旧 .shake-screen）。世界の側だけが知っている。
@@ -59,11 +65,14 @@ export function ArcadeScene({
   useEffect(() => {
     const el = impactRef.current;
     if (!el || !impactSeq) return;
-    el.classList.remove("arc-damage");
+    const cls = impactKind === "nudge" ? "arc-nudge" : "arc-damage";
+    el.classList.remove("arc-damage", "arc-nudge");
     void el.offsetWidth; // 再生の やり直し（reflow を 1回 はさむ）
-    el.classList.add("arc-damage");
-    const timer = setTimeout(() => el.classList.remove("arc-damage"), 480);
+    el.classList.add(cls);
+    const timer = setTimeout(() => el.classList.remove(cls), 480);
     return () => clearTimeout(timer);
+    // impactKind は 番号と 一緒に 変わる ので、見張るのは 番号だけで よい
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [impactSeq]);
 
   return (
@@ -151,6 +160,17 @@ const STAGE_CSS = `
   75%{translate:-6px 3px;rotate:0deg}
   100%{translate:0 0;rotate:0deg}}
 .arc-damage{animation:arc-damage .48s ease-out}
+/* 読みの 打ち直し（2026-08-27）。**横だけ**に 小さく 揺れる——
+   落とした ときの 揺れと 見分けが つくように、回転も 縦の 動きも 入れない。 */
+@keyframes arc-nudge{
+  0%{translate:0 0}
+  15%{translate:-16px 0}
+  30%{translate:14px 0}
+  45%{translate:-10px 0}
+  60%{translate:8px 0}
+  75%{translate:-4px 0}
+  100%{translate:0 0}}
+.arc-nudge{animation:arc-nudge .36s ease-out}
 .arc-outline{text-shadow:-2px -2px 0 #000,2px -2px 0 #000,-2px 2px 0 #000,2px 2px 0 #000,0 0 10px rgba(0,0,0,.8)}
-@media (prefers-reduced-motion:reduce){.arc-quake,.arc-damage{animation:none}}
+@media (prefers-reduced-motion:reduce){.arc-quake,.arc-damage,.arc-nudge{animation:none}}
 `;
