@@ -30,6 +30,13 @@
 -- そのときに git の 更新が 届かなく なる のは 同じ なので、
 -- **`/api/health/content` の `warnings` を 見る**（教材の 並びも 見るように した）。
 
+-- ## 2026-08-27: この SQL は **手で 流した**
+-- 「デプロイ（DB）」ワークフローは `SUPABASE_DB_URL` が Environment「Preview」に
+-- 無く、14秒で「鍵がそろっているか」に 落ちた（1回目・2回目 とも）。マージしただけでは
+-- 学習者の 画面が 直らない ので、Supabase コネクタで この 1文を 流し、
+-- `supabase_migrations.schema_migrations` に 版 20260827120000 を 記録した。
+-- **鍵が 入れば、以後は ワークフローが この 記録を 見て 二重に 流さない。**
+
 delete from public.studio_contents
 where kind = 'stage'
   and id = 'kaisha';
