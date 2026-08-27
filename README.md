@@ -69,5 +69,6 @@ npm run measure:readability  # 文長・漢字密度レポート
 | `docs/design/09_Cloudflare移行実行計画.md` | Vercel → Cloudflare Workers 移行の計画と制約                               |
 | `docs/design/review_rubric.md`             | 検収ルーブリック（証拠必須）                                               |
 | `docs/deploy.md`                           | デプロイ／環境構成（Cloudflare Workers・Supabase 共有の運用）              |
+| `docs/システム構成とレート制限.html`       | 天井マップ（構成図と、無料枠がどの作業にどう効くか。ブラウザで開く）       |
 | `docs/constraints.md`                      | ユーザーが伝えた制約・好みの永続台帳（作業前に必読）                       |
 | `docs/codex-backend.md`                    | 生成バックエンド（Codex／Gemini）の構成                                    |
