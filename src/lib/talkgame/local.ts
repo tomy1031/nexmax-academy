@@ -33,6 +33,9 @@ const MIN_ON_TOPIC = 4;
 /** 新しい「おもしろい」と 数える ための 長さ。 */
 const MIN_TOPIC = 6;
 
+/** 札に 入る 長さ（これを 越えたら ことばの 切れめで 切る）。 */
+const MAX_TOPIC = 12;
+
 export function localObservations(round: TalkRound, utterance: string): TalkObservations {
   const text = utterance.trim();
   if (!text) return NO_OBSERVATIONS;
@@ -52,8 +55,9 @@ export function localObservations(round: TalkRound, utterance: string): TalkObse
 /**
  * 見かたが 無い ときの「おもしろい」の 拾い方。
  *
- * ラベルは **学習者の ことば その まま**（先頭 12字）。AIの ような 要約は できないが、
- * 札に 出る のが 自分の ことばなら、何を 見つけたのかは 学習者に 分かる。
+ * ラベルは **学習者の ことば その まま**（長ければ ことばの 切れめで 切る）。
+ * AIの ような 要約は できないが、札に 出る のが 自分の ことばなら、
+ * 何を 見つけたのかは 学習者に 分かる。
  *
  * ## 日本語で 言えて いない ものは 開かない（2026-08-24 の 検収指摘）
  * 長さだけで 見て いた ころは、英語でも でたらめな ローマ字でも 札が 開いた——
@@ -70,5 +74,24 @@ export function localTopic(
   if (!observations.japanese || !observations.onTopic) return "";
   const text = utterance.trim();
   if (text.length < MIN_TOPIC) return "";
-  return text.length > 12 ? `${text.slice(0, 12)}…` : text;
+  return clip(text);
+}
+
+/**
+ * 長い ことばを 札に 入る 形へ 切る。**ことばの 切れめで 切る**。
+ *
+ * 前は 12字めで そのまま 切って いた ので、実機の 札に
+ *「Japanese IT …」「私は チームで 話す こ…」が 出た（2026-08-27 の 通し検証）。
+ * この 札は 好感度の 記録に 残り、あとから 一覧にも 出る——**語の 途中で 切れた
+ * ものは、あとで 見ても 何を 見つけたのか 分からない**。
+ *
+ * 教材の 文は 分かち書き（設計01）なので、空白まで 戻せば 語の 切れめに なる。
+ * 戻り先が 無い ほど 長い 1語（URL など）の ときだけ、これまでどおり その まま 切る。
+ */
+function clip(text: string): string {
+  if (text.length <= MAX_TOPIC) return text;
+  const head = text.slice(0, MAX_TOPIC);
+  const at = head.lastIndexOf(" ");
+  const cut = at >= MIN_TOPIC ? head.slice(0, at) : head;
+  return `${cut.trimEnd()}…`;
 }
