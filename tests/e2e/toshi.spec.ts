@@ -474,6 +474,17 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
      */
     await expect(page.getByText(/^正解/)).toHaveCount(0);
     /*
+     * **点も ％も 出さない**（2026-08-27 の 指定「答えが ないので 答え合わせと いう
+     * 形では ない」）。free だけの セットは `minLength` を 越えれば 必ず 満点に なる ので、
+     * 前は ここに「5 / 5 もん せいかい 100%」と 出て いた——学習者の 考えに
+     * 点が ついたように 見える。数えて よいのは「いくつ 書けたか」だけ。
+     */
+    await expect(page.getByText(/もん せいかい/)).toHaveCount(0);
+    await expect(page.getByText("100%")).toHaveCount(0);
+    // ルビが 合成される ので かなの 続きでは 引けない（「書かけました」に なる）
+    await expect(page.getByText(`${JUNBI_TOTAL} / ${JUNBI_TOTAL} つ 書`)).toBeVisible();
+    await expect(page.getByRole("button", { name: "書き直す" })).toBeVisible();
+    /*
      * 書いた ものは 消えずに 残る。**かなだけの ひとかたまり**で さがす——
      * 画面の 漢字には ルビが 合成される ので、書いた 文の まま 引くと 当たらない。
      */
