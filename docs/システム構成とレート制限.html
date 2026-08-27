@@ -383,7 +383,8 @@ flowchart LR
       <td>Gemini <code>generateContent</code>（文字）</td>
       <td class="n">キーごと・<b>Live とは別勘定</b></td>
       <td>すぐ上限に当たる（実測: 学習者1人の1回のミーティングで尽きた）</td>
-      <td><b>先生の教材づくりだけ</b>。学習者の画面では使わない（§5）</td>
+      <td><b>学習者の道でも検証でも叩かない</b>（2026-08-27「許可するのは Gemini Live のみ」）。
+          先生の教材づくりの控えとしてはコードに残っている（§5）</td>
     </tr>
     <tr>
       <td>Codex（ChatGPT の枠）</td>
@@ -613,7 +614,7 @@ flowchart TD
   end
   P1 -->|"短命トークン 1回きり・30分"| LIVE["Gemini Live の 枠<br/>音声の つなぎ"]
   P2 -->|"判定専用の つなぎを 1本 張りっぱなし"| LIVE
-  P2 -. "使わない（2026-08-20・絶対）" .-> GEN["generateContent の 枠<br/>Live とは 別勘定"]
+  P2 -. "叩かない（Live だけ・絶対）" .-> GEN["generateContent の 枠<br/>Live とは 別勘定"]
   T3 -->|"行ごとに 1接続"| LIVE
   T2 --> GEN
   T1 --> BR{"Codex の 合言葉が<br/>入っているか"}
@@ -623,15 +624,25 @@ flowchart TD
 </pre>
     </div>
     <figcaption>
-      点線は<b>意図的に切ってある道</b>。学習者の画面から <code>generateContent</code> を呼ばないのが絶対ルール。
+      赤い点線は<b>意図的に切ってある道</b>。学習者の道でも、AI がする検証でも <code>generateContent</code> を叩かない。
     </figcaption>
   </figure>
 
   <div class="callout stop">
-    <p><b>学習者の画面で <code>gemini-2.5-flash</code> の <code>generateContent</code> を使わない（絶対）。</b>
-    Live の枠と <code>generateContent</code> の枠は<b>別勘定</b>で、後者は
-    <b>学習者1人の1回のミーティングで使い切る</b>（2026-08-20 の実測と指定）。
+    <p><b>Gemini に許すのは Live だけ</b>（短命トークンの発行と Live の WebSocket のみ）。
+    <code>generateContent</code> と <code>ListModels</code> は
+    <b>学習者の道でも、AI がする検証でも叩かない</b>（2026-08-27 の指定）。
+    もとの理由は枠で、Live の枠と <code>generateContent</code> の枠は<b>別勘定</b>——後者は
+    <b>学習者1人の1回のミーティングで使い切る</b>（2026-08-20 の実測）。
     文字だけの判断が要るときは、<b>Live のつなぎの中で JSON をもらう</b>か、端末の規則ベースで済ませる。</p>
+  </div>
+
+  <div class="callout warn">
+    <p><b>先生の画面には <code>generateContent</code> の経路がまだ残っている。</b>
+    まんがの台本（<code>manga-maker.tsx</code>）とことばの抜き出し（<code>vocab-extractor.tsx</code>）は、
+    Codex に届かないとき Gemini の <code>generateContent</code> に落ちる。
+    2026-08-27 の指定が名指ししたのは<b>学習者の道と検証</b>なので、この控えは今も動く。
+    先生の画面もふさぐかどうかは<b>判断が要る</b>（ふさぐと Codex ブリッジが止まっている間は台本が作れなくなる）。</p>
   </div>
 
   <div class="callout">
@@ -724,8 +735,8 @@ flowchart TD
     <tr>
       <td>台本・ことばの抜き出し</td>
       <td><span class="badge b-teacher">先生</span></td>
-      <td>Codex または Gemini <code>generateContent</code></td>
-      <td>ChatGPT の枠／<b>Gemini の文字枠（先生の画面でだけ許される）</b></td>
+      <td>Codex（第一）／届かなければ Gemini <code>generateContent</code></td>
+      <td>ChatGPT の枠／<b>Gemini の文字枠</b>（この控えだけが残っている経路・§5）</td>
     </tr>
 
     <tr>
@@ -791,7 +802,8 @@ flowchart TD
         <td>1日13回のデプロイで枠が尽き、その日の本番デプロイが <code>code: 10048</code> で落ちる</td></tr>
     <tr><td>本番デプロイは週3回・授業の前に自動</td><td>KV 書き 1,000/日</td>
         <td>同上。人が「いま出していいか」を毎回考えることになる</td></tr>
-    <tr><td>学習者の画面で <code>generateContent</code> を使わない</td><td>Gemini の文字枠</td>
+    <tr><td>Gemini は Live だけ（学習者の道・検証とも <code>generateContent</code> / <code>ListModels</code> を叩かない）</td>
+        <td>Gemini の文字枠</td>
         <td>学習者1人が1回ミーティングをしただけで、その日そのキーは使えなくなる</td></tr>
     <tr><td>まとめて作るは1件ずつ直列</td><td>Codex の1接続1操作</td>
         <td>2件目以降が「前の生成が終わるまで待って」で落ちる</td></tr>
