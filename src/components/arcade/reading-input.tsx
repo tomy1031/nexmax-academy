@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 /**
  * 読みのひらがな入力。舞台の下端に置く主役の入力欄。
@@ -15,14 +15,34 @@ export function ReadingInput({
   disabled,
   /** 直前の入力に注意が出ているとき、旧アプリと同じくふるえる。 */
   shake = false,
+  /**
+   * ふるえの 通し番号。**番号が 変わるたびに もう一度 ふるえる**（2026-08-27）。
+   *
+   * 打ち直しは 何度でも できる ように なった ので、2回目・3回目の
+   * 打ちまちがいにも 合図が 要る。class を 付けた ままでは
+   * CSSアニメーションが 再生されないので、いったん 外して 付け直す。
+   */
+  shakeKey = 0,
 }: {
   onSubmit: (value: string) => void;
   disabled?: boolean;
   shake?: boolean;
+  shakeKey?: number;
 }) {
   // 問題が変わったら親が key を変えて作り直す（入力欄は自然に空になり、
   // autoFocus が効く）。effect で初期化しないための作り。
   const [value, setValue] = useState("");
+  const boxRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const el = boxRef.current;
+    if (!el || !shakeKey) return;
+    el.classList.remove("shake-input");
+    void el.offsetWidth; // 再生の やり直し
+    el.classList.add("shake-input");
+    const timer = setTimeout(() => el.classList.remove("shake-input"), 320);
+    return () => clearTimeout(timer);
+  }, [shakeKey]);
 
   return (
     <form
@@ -35,6 +55,7 @@ export function ReadingInput({
       }}
     >
       <input
+        ref={boxRef}
         // 入力欄が主役の画面。毎問フォーカスを戻すのが操作上の要件。
         autoFocus
         type="text"
@@ -51,9 +72,7 @@ export function ReadingInput({
         inputMode="text"
         placeholder="よみかた"
         aria-label="よみを ひらがなで 入力する"
-        className={`text-ink w-full rounded-[18px] border-4 bg-white/95 px-4 py-3 text-center text-3xl font-black shadow-[0_5px_0_rgba(0,79,141,.18)] outline-none sm:text-4xl ${
-          shake ? "shake-input" : ""
-        }`}
+        className="text-ink w-full rounded-[18px] border-4 bg-white/95 px-4 py-3 text-center text-3xl font-black shadow-[0_5px_0_rgba(0,79,141,.18)] outline-none sm:text-4xl"
         style={{ borderColor: shake ? "var(--color-coral)" : "var(--color-sun)" }}
       />
       <button

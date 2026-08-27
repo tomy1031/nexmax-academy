@@ -174,6 +174,7 @@ export function ArcadeGame({
        * 「合って いた」ように 見えて いた（2026-08-26 の 指摘4）。
        */
       impactSeq={session && session.flash !== "hit" ? session.flashSeq : 0}
+      impactKind={session?.flash === "retry" ? "nudge" : "damage"}
     >
       {screen.kind === "play" && session && stage ? (
         <PlayLayer
@@ -397,8 +398,12 @@ function PlayLayer({
         ⭕／❌ の しるし。**当たっても 外しても 必ず 出す**（2026-08-26 の 指摘2・3）。
         読みの あとにも、意味の あとにも 出る ので、学習者は 1問に 2回 手ごたえを 受け取る。
       */}
-      {state.flash && <Verdict id={state.flashSeq} kind={state.flash} />}
-      {state.flash && state.flash !== "hit" && (
+      {/*
+        打ち直し（`retry`）では **大きな しるしを 出さない**。まだ 番が つづいて いる ので、
+        毎回 画面いっぱいの ❌ を 出すと 手が 止まる。合図は 横揺れと 入力欄の 赤だけ。
+      */}
+      {state.flash && state.flash !== "retry" && <Verdict id={state.flashSeq} kind={state.flash} />}
+      {state.flash && state.flash !== "hit" && state.flash !== "retry" && (
         <DamageFlash id={state.flashSeq} tone={state.flash === "timeup" ? "timeup" : "miss"} />
       )}
 
@@ -451,6 +456,7 @@ function PlayLayer({
               <ReadingInput
                 key={resetKey}
                 shake={Boolean(state.hint)}
+                shakeKey={state.flash === "retry" ? state.flashSeq : 0}
                 onSubmit={(input) => dispatch({ type: "submitReading", input })}
               />
             </div>
