@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>STEP 4｜松井社長と話す準備</title>
+<style>
+:root{
+  --bg:#f5f9fd;
+  --card:#ffffff;
+  --text:#17324d;
+  --muted:#667b8d;
+  --line:#dce8f2;
+  --blue:#2f80ed;
+  --blue-soft:#eaf4ff;
+  --green:#219653;
+  --green-soft:#eaf8f0;
+  --orange:#f2994a;
+  --orange-soft:#fff4e8;
+  --purple:#7b61ff;
+  --purple-soft:#f2efff;
+  --yellow:#f2c94c;
+  --yellow-soft:#fff9df;
+  --pink:#e56b88;
+  --pink-soft:#fff0f4;
+  --shadow:0 12px 30px rgba(31,73,112,.08);
+  --radius:24px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  background:
+    radial-gradient(circle at 8% 0%, #e9f5ff 0 10%, transparent 11%),
+    radial-gradient(circle at 94% 4%, #fff5db 0 8%, transparent 9%),
+    var(--bg);
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+  line-height:1.85;
+}
+ruby{ruby-position:over}
+rt{font-size:.56em;color:#58748d;font-weight:600}
+.wrap{width:min(1120px,94vw);margin:auto;padding:28px 0 72px}
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+}
+.hero{
+  display:grid;
+  grid-template-columns:1.2fr .8fr;
+  gap:28px;
+  align-items:center;
+  padding:32px;
+  background:linear-gradient(135deg,#fff,#edf7ff 58%,#fff8e3);
+}
+.step-label{
+  display:inline-flex;
+  gap:8px;
+  align-items:center;
+  padding:7px 14px;
+  border-radius:999px;
+  background:var(--purple-soft);
+  color:#6147c8;
+  font-size:.9rem;
+  font-weight:900;
+  letter-spacing:.04em;
+}
+h1{
+  font-size:clamp(2rem,4.4vw,3.5rem);
+  line-height:1.25;
+  margin:.35em 0 .3em;
+}
+.hero-lead{
+  font-size:clamp(1.05rem,1.8vw,1.24rem);
+  font-weight:800;
+  margin:0 0 10px;
+}
+.hero-sub{margin:0;color:var(--muted)}
+.hero img{
+  width:100%;
+  min-height:280px;
+  max-height:330px;
+  object-fit:cover;
+  border-radius:20px;
+  background:#eef5fb;
+}
+.section{margin-top:28px}
+.title{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin:0 0 14px;
+  font-size:clamp(1.35rem,2.5vw,1.9rem);
+}
+.title .icon{
+  width:42px;height:42px;
+  display:grid;place-items:center;
+  border-radius:14px;
+  background:var(--blue);
+  color:#fff;
+  font-size:1.2rem;
+}
+.goal{
+  padding:24px;
+  background:linear-gradient(135deg,#eef8ff,#f3f1ff);
+  border:2px solid #b7d5f6;
+}
+.goal-main{
+  display:flex;
+  align-items:flex-start;
+  gap:18px;
+}
+.goal-icon{
+  width:64px;height:64px;
+  flex:0 0 auto;
+  border-radius:20px;
+  display:grid;place-items:center;
+  background:#fff;
+  font-size:2rem;
+  box-shadow:0 7px 18px rgba(34,75,113,.08);
+}
+.goal h2{margin:.05em 0 .45em;font-size:1.55rem}
+.goal strong{color:#185fa8}
+.goal-badges{
+  display:flex;gap:9px;flex-wrap:wrap;margin-top:14px;
+}
+.goal-badges span{
+  background:#fff;
+  border:1px solid var(--line);
+  padding:7px 11px;
+  border-radius:999px;
+  font-size:.88rem;
+  font-weight:800;
+}
+.compare{
+  display:grid;
+  grid-template-columns:1fr 70px 1fr;
+  gap:14px;
+  align-items:stretch;
+}
+.compare-card{
+  padding:22px;
+}
+.compare-card h3{margin:.1em 0 .5em}
+.compare-card p{margin:.35em 0;color:var(--muted)}
+.compare-card.before{border-top:6px solid var(--green)}
+.compare-card.now{border-top:6px solid var(--purple)}
+.arrow{
+  display:grid;place-items:center;
+  font-size:2.2rem;
+  color:#7590a7;
+  font-weight:900;
+}
+.think{
+  padding:26px;
+  background:#17324d;
+  color:#fff;
+}
+.think h2{margin:.1em 0 .5em}
+.think p{color:#dfebf5;margin:.4em 0}
+.quote{
+  margin-top:16px;
+  background:rgba(255,255,255,.09);
+  border:1px solid rgba(255,255,255,.16);
+  padding:18px;
+  border-radius:18px;
+  font-size:1.08rem;
+  font-weight:800;
+}
+.quote strong{color:#ffe38a}
+.done{
+  margin-top:16px;
+  padding:16px 18px;
+  border-radius:16px;
+  background:var(--green-soft);
+  border:1px solid #bfe8cf;
+  color:#166f3d;
+  font-weight:900;
+}
+.five-grid{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:12px;
+}
+.point{
+  padding:18px 15px;
+  min-height:210px;
+}
+.point .num{
+  width:40px;height:40px;
+  border-radius:13px;
+  display:grid;place-items:center;
+  color:#fff;font-weight:900;margin-bottom:10px;
+}
+.point:nth-child(1) .num{background:var(--blue)}
+.point:nth-child(2) .num{background:var(--orange)}
+.point:nth-child(3) .num{background:var(--purple)}
+.point:nth-child(4) .num{background:var(--green)}
+.point:nth-child(5) .num{background:var(--pink)}
+.point h3{font-size:1.02rem;line-height:1.55;margin:.2em 0 .5em}
+.point p{font-size:.9rem;color:var(--muted);margin:0}
+.message{
+  padding:24px;
+  background:linear-gradient(135deg,#fff9df,#fff);
+  border-left:6px solid var(--yellow);
+}
+.message h2{margin:.05em 0 .5em}
+.message p{margin:.45em 0}
+.image-guide{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+}
+.image-box{
+  overflow:hidden;
+}
+.image-box img{
+  width:100%;
+  height:300px;
+  display:block;
+  object-fit:cover;
+  background:#eef4f8;
+}
+.image-copy{padding:16px 18px 18px}
+.image-copy h3{margin:.1em 0 .35em}
+.image-copy p{margin:0;color:var(--muted);font-size:.92rem}
+.placeholder{
+  min-height:300px;
+  display:grid;
+  place-items:center;
+  padding:26px;
+  text-align:center;
+  background:
+    linear-gradient(135deg,#f5f8fb,#eef3f8);
+  border-bottom:1px dashed #cddbe7;
+}
+.placeholder-inner{
+  max-width:440px;
+}
+.placeholder .big{font-size:2.4rem;margin-bottom:8px}
+.placeholder strong{display:block;margin-bottom:8px}
+.placeholder p{margin:0;color:var(--muted);font-size:.92rem}
+.next{
+  text-align:center;
+  padding:28px 20px;
+}
+.next h2{margin:.1em 0 .4em}
+.next p{color:var(--muted);margin:.3em 0 1em}
+.next a{
+  display:inline-block;
+  padding:14px 24px;
+  border-radius:15px;
+  background:var(--blue);
+  color:#fff;
+  text-decoration:none;
+  font-weight:900;
+  box-shadow:0 8px 18px rgba(47,128,237,.2);
+}
+.small-note{
+  margin-top:10px;
+  text-align:center;
+  color:#7b8e9f;
+  font-size:.82rem;
+}
+
+.image-text-note{
+  margin-top:16px;
+  background:#f5f8ff;
+  border:1px dashed #9db8d2;
+  border-radius:16px;
+  padding:14px 16px;
+  color:#dfeaf5;
+}
+.image-text-note strong{color:#fff}
+.mini-image-note{
+  margin-top:12px;
+  padding:10px 11px;
+  border-radius:12px;
+  background:#f7fafc;
+  border:1px dashed #c6d5e1;
+  color:#667b8d;
+  font-size:.82rem;
+  line-height:1.65;
+}
+
+@media(max-width:900px){
+  .hero{grid-template-columns:1fr}
+  .compare{grid-template-columns:1fr}
+  .arrow{transform:rotate(90deg);height:45px}
+  .five-grid{grid-template-columns:repeat(2,1fr)}
+  .image-guide{grid-template-columns:1fr}
+}
+@media(max-width:560px){
+  .wrap{width:min(95vw,1120px);padding-top:14px}
+  .hero{padding:22px}
+  .five-grid{grid-template-columns:1fr}
+  .goal-main{display:block}
+  .goal-icon{margin-bottom:12px}
+}
+</style>
+</head>
+<body>
+<main class="wrap">
+
+  <section class="hero card">
+    <div>
+      <span class="step-label">STEP 4　<ruby>準備<rt>じゅんび</rt></ruby></span>
+      <h1><ruby>松井社長<rt>まついしゃちょう</rt></ruby>と<br><ruby>話<rt>はな</rt></ruby>す <ruby>準備<rt>じゅんび</rt></ruby>を しよう！</h1>
+      <p class="hero-lead">これから、<ruby>松井社長<rt>まついしゃちょう</rt></ruby>と <ruby>話<rt>はな</rt></ruby>します。</p>
+      <p class="hero-sub">ここでは、Webサイトで <ruby>調<rt>しら</rt></ruby>べたことを <ruby>見<rt>み</rt></ruby>て、<strong>「あなたは どう <ruby>思<rt>おも</rt></ruby>った？」</strong>を <ruby>考<rt>かんが</rt></ruby>えます。</p>
+    </div>
+    <img src="https://academy.nexmax.workers.dev/img/articles/kaisha_shirabekata/g5.webp"
+         alt="松井社長と話す準備をする">
+  </section>
+
+  <section class="section">
+    <div class="goal card">
+      <div class="goal-main">
+        <div class="goal-icon">🎯</div>
+        <div>
+          <h2>この STEPの ゴール</h2>
+          <p>
+            <ruby>松井社長<rt>まついしゃちょう</rt></ruby>に、
+            <strong>「この <ruby>学生<rt>がくせい</rt></ruby>と もっと <ruby>話<rt>はな</rt></ruby>したい」</strong><br>
+            <strong>「この <ruby>学生<rt>がくせい</rt></ruby>と いっしょに <ruby>仕事<rt>しごと</rt></ruby>を したい」</strong><br>
+            と <ruby>思<rt>おも</rt></ruby>って もらうことです。
+          </p>
+          <div class="goal-badges">
+            <span>😊 あなたの ことを <ruby>知<rt>し</rt></ruby>ってもらう</span>
+            <span>💙 NEXT MAKEへの <ruby>興味<rt>きょうみ</rt></ruby>を <ruby>伝<rt>つた</rt></ruby>える</span>
+            <span>🌱 これからの <ruby>成長<rt>せいちょう</rt></ruby>を <ruby>伝<rt>つた</rt></ruby>える</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2 class="title"><span class="icon">↔</span>ヘンディさんへの <ruby>報告<rt>ほうこく</rt></ruby>と 何が ちがう？</h2>
+    <div class="compare">
+      <article class="compare-card before card">
+        <h3>✅ ヘンディさんに <ruby>話<rt>はな</rt></ruby>したこと</h3>
+        <p><strong>Webサイトで <ruby>調<rt>しら</rt></ruby>べたこと</strong>を <ruby>報告<rt>ほうこく</rt></ruby>しました。</p>
+        <p>「NEXT MAKEは こんな <ruby>会社<rt>かいしゃ</rt></ruby>です。」<br>
+        「こんな <ruby>仕事<rt>しごと</rt></ruby>を しています。」</p>
+      </article>
+
+      <div class="arrow">→</div>
+
+      <article class="compare-card now card">
+        <h3>➡️ これから：<ruby>松井社長<rt>まついしゃちょう</rt></ruby>に <ruby>話<rt>はな</rt></ruby>すこと</h3>
+        <p><strong><ruby>調<rt>しら</rt></ruby>べたこと ＋ あなたの <ruby>考<rt>かんが</rt></ruby>え</strong>を <ruby>話<rt>はな</rt></ruby>します。</p>
+        <p>「私は ここが いいと <ruby>思<rt>おも</rt></ruby>いました。」<br>
+        「私は NEXT MAKEで これを やってみたいです。」</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="think card">
+      <h2>👔 <ruby>松井社長<rt>まついしゃちょう</rt></ruby>に なったつもりで <ruby>考<rt>かんが</rt></ruby>えよう</h2>
+      <p>
+        あなたが <ruby>会社<rt>かいしゃ</rt></ruby>の <ruby>社長<rt>しゃちょう</rt></ruby>だったら、
+        どんな <ruby>学生<rt>がくせい</rt></ruby>と いっしょに <ruby>仕事<rt>しごと</rt></ruby>を したいですか？
+      </p>
+      <div class="image-text-note">
+        🖼️ <strong>ここに あると よい <ruby>画像<rt>がぞう</rt></ruby></strong><br>
+        <ruby>松井社長<rt>まついしゃちょう</rt></ruby>が カンボジアの <ruby>学生<rt>がくせい</rt></ruby>と <ruby>話<rt>はな</rt></ruby>していて、<ruby>目<rt>め</rt></ruby>が ハートに なっている <ruby>絵<rt>え</rt></ruby>。<br>
+        「この <ruby>学生<rt>がくせい</rt></ruby>と いっしょに <ruby>仕事<rt>しごと</rt></ruby>を したい！」と <ruby>思<rt>おも</rt></ruby>っている ことが <ruby>分<rt>わ</rt></ruby>かる <ruby>画像<rt>がぞう</rt></ruby>。
+      </div>
+
+      <div class="quote">
+        「<ruby>会社<rt>かいしゃ</rt></ruby>の ことを よく <ruby>知<rt>し</rt></ruby>っている」だけでは ありません。<br>
+        <strong>「この <ruby>会社<rt>かいしゃ</rt></ruby>で 何を したいか」</strong>を、
+        <ruby>自分<rt>じぶん</rt></ruby>の <ruby>言葉<rt>ことば</rt></ruby>で <ruby>話<rt>はな</rt></ruby>すことが <ruby>大切<rt>たいせつ</rt></ruby>です。
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2 class="title"><span class="icon">5</span>これから <ruby>考<rt>かんが</rt></ruby>える 5つのこと</h2>
+    <div class="five-grid">
+      <article class="point card">
+        <div class="num">1</div>
+        <h3>NEXT MAKEの どこが <ruby>好<rt>す</rt></ruby>き？</h3>
+        <p><ruby>調<rt>しら</rt></ruby>べた <ruby>中<rt>なか</rt></ruby>で、「いいな」「おもしろいな」と <ruby>思<rt>おも</rt></ruby>ったことを <ruby>考<rt>かんが</rt></ruby>えます。</p>
+        <div class="mini-image-note">
+          🖼️ <strong>ここに あると よい <ruby>画像<rt>がぞう</rt></ruby></strong><br>
+          NEXT MAKEの Webサイトを <ruby>見<rt>み</rt></ruby>ながら、「ここが いい！」と <ruby>思<rt>おも</rt></ruby>っている <ruby>学生<rt>がくせい</rt></ruby>の <ruby>画像<rt>がぞう</rt></ruby>。
+        </div>
+      </article>
+
+      <article class="point card">
+        <div class="num">2</div>
+        <h3><ruby>自分<rt>じぶん</rt></ruby>の いいところは？</h3>
+        <p><ruby>自分<rt>じぶん</rt></ruby>の <ruby>得意<rt>とくい</rt></ruby>なことを、NEXT MAKEで どう <ruby>使<rt>つか</rt></ruby>えるか <ruby>考<rt>かんが</rt></ruby>えます。</p>
+        <div class="mini-image-note">
+          🖼️ <strong>ここに あると よい <ruby>画像<rt>がぞう</rt></ruby></strong><br>
+          <ruby>学生<rt>がくせい</rt></ruby>の まわりに「IT」「日本語」「チームワーク」「話す」などの <ruby>得意<rt>とくい</rt></ruby>なことが <ruby>出<rt>で</rt></ruby>ている <ruby>画像<rt>がぞう</rt></ruby>。
+        </div>
+      </article>
+
+      <article class="point card">
+        <div class="num">3</div>
+        <h3>NEXT MAKEで 何を やってみたい？</h3>
+        <p>どんな <ruby>仕事<rt>しごと</rt></ruby>や サービスに <ruby>関<rt>かか</rt></ruby>わりたいかを <ruby>考<rt>かんが</rt></ruby>えます。</p>
+        <div class="mini-image-note">
+          🖼️ <strong>ここに あると よい <ruby>画像<rt>がぞう</rt></ruby></strong><br>
+          <ruby>学生<rt>がくせい</rt></ruby>が NEXT MAKEで <ruby>働<rt>はたら</rt></ruby>いている <ruby>未来<rt>みらい</rt></ruby>を <ruby>想像<rt>そうぞう</rt></ruby>している <ruby>画像<rt>がぞう</rt></ruby>。パソコンで <ruby>開発<rt>かいはつ</rt></ruby>したり、チームで <ruby>話<rt>はな</rt></ruby>したりしている <ruby>場面<rt>ばめん</rt></ruby>。
+        </div>
+      </article>
+
+      <article class="point card">
+        <div class="num">4</div>
+        <h3>カンボジアの いいところは？</h3>
+        <p>カンボジアの <ruby>人<rt>ひと</rt></ruby>や IT<ruby>学生<rt>がくせい</rt></ruby>の いいところを <ruby>考<rt>かんが</rt></ruby>えます。</p>
+        <div class="mini-image-note">
+          🖼️ <strong>ここに あると よい <ruby>画像<rt>がぞう</rt></ruby></strong><br>
+          カンボジアの IT<ruby>学生<rt>がくせい</rt></ruby>と <ruby>日本<rt>にほん</rt></ruby>の <ruby>会社<rt>かいしゃ</rt></ruby>の <ruby>人<rt>ひと</rt></ruby>が、いっしょに <ruby>仕事<rt>しごと</rt></ruby>をしている <ruby>画像<rt>がぞう</rt></ruby>。
+        </div>
+      </article>
+
+      <article class="point card">
+        <div class="num">5</div>
+        <h3><ruby>松井社長<rt>まついしゃちょう</rt></ruby>に 何を <ruby>聞<rt>き</rt></ruby>きたい？</h3>
+        <p>Webサイトを <ruby>見<rt>み</rt></ruby>るだけでは <ruby>分<rt>わ</rt></ruby>からないことを <ruby>質問<rt>しつもん</rt></ruby>します。</p>
+        <div class="mini-image-note">
+          🖼️ <strong>ここに あると よい <ruby>画像<rt>がぞう</rt></ruby></strong><br>
+          <ruby>学生<rt>がくせい</rt></ruby>が <ruby>松井社長<rt>まついしゃちょう</rt></ruby>に <ruby>質問<rt>しつもん</rt></ruby>している <ruby>画像<rt>がぞう</rt></ruby>。<ruby>学生<rt>がくせい</rt></ruby>の <ruby>吹<rt>ふ</rt></ruby>き<ruby>出<rt>だ</rt></ruby>しに「なぜ？」「これから？」などが あると <ruby>分<rt>わ</rt></ruby>かりやすいです。
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="message card">
+      <h2>💡 <ruby>大切<rt>たいせつ</rt></ruby>なこと</h2>
+      <p>
+        「いい <ruby>答<rt>こた</rt></ruby>え」を <ruby>作<rt>つく</rt></ruby>ることが <ruby>目的<rt>もくてき</rt></ruby>では ありません。
+      </p>
+      <p>
+        <strong>あなたが <ruby>本当<rt>ほんとう</rt></ruby>に どう <ruby>思<rt>おも</rt></ruby>ったか</strong>、
+        <strong>これから 何を したいか</strong>を、
+        <ruby>自分<rt>じぶん</rt></ruby>の <ruby>言葉<rt>ことば</rt></ruby>で <ruby>話<rt>はな</rt></ruby>すことが <ruby>大切<rt>たいせつ</rt></ruby>です。
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2 class="title"><span class="icon">🖼</span><ruby>画像<rt>がぞう</rt></ruby></h2>
+    <div class="image-guide">
+      <article class="image-box card">
+        <img src="https://academy.nexmax.workers.dev/img/articles/kaisha_shirabekata/g5.webp"
+             alt="松井社長と話す準備をする">
+        <div class="image-copy">
+          <h3>STEP 4で <ruby>使<rt>つか</rt></ruby>う <ruby>画像<rt>がぞう</rt></ruby></h3>
+          <p>この <ruby>画像<rt>がぞう</rt></ruby>は、「<ruby>松井社長<rt>まついしゃちょう</rt></ruby>と <ruby>話<rt>はな</rt></ruby>す <ruby>準備<rt>じゅんび</rt></ruby>を する」の <ruby>場面<rt>ばめん</rt></ruby>で <ruby>使<rt>つか</rt></ruby>います。</p>
+        </div>
+      </article>
+
+      <article class="image-box card">
+        <img src="https://academy.nexmax.workers.dev/img/articles/kaisha_shirabekata/g6.webp"
+             alt="松井社長と話す">
+        <div class="image-copy">
+          <h3><ruby>次<rt>つぎ</rt></ruby>の STEPで <ruby>使<rt>つか</rt></ruby>う <ruby>画像<rt>がぞう</rt></ruby></h3>
+          <p>この <ruby>画像<rt>がぞう</rt></ruby>は、<strong>STEP 5「<ruby>松井社長<rt>まついしゃちょう</rt></ruby>と <ruby>話<rt>はな</rt></ruby>す」</strong>で <ruby>使<rt>つか</rt></ruby>います。</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+<section class="section next card">
+    <h2><ruby>次<rt>つぎ</rt></ruby>は、5つのことを 1つずつ <ruby>考<rt>かんが</rt></ruby>えます</h2>
+    <p>まずは「NEXT MAKEの どこが <ruby>好<rt>す</rt></ruby>き？」から <ruby>始<rt>はじ</rt></ruby>めます。</p>
+    <a href="#top" onclick="return false;">STEP 4を <ruby>始<rt>はじ</rt></ruby>める</a>
+  </section>
+
+</main>
+</body>
+</html>
