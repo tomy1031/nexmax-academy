@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NEXT MAKEを調べよう！｜会社の調べかた</title>
+  <style>
+    :root{
+      --bg:#f6fbff;
+      --card:#ffffff;
+      --text:#17324d;
+      --muted:#5f7488;
+      --line:#d9e7f2;
+      --blue:#2f80ed;
+      --blue-soft:#eaf4ff;
+      --green:#27ae60;
+      --green-soft:#eaf8f0;
+      --yellow:#f2c94c;
+      --yellow-soft:#fff8dc;
+      --pink:#eb5757;
+      --pink-soft:#fff0f0;
+      --purple:#7b61ff;
+      --purple-soft:#f1edff;
+      --orange:#f2994a;
+      --orange-soft:#fff3e8;
+      --shadow:0 10px 30px rgba(31,74,125,.08);
+      --radius:22px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 8% 8%, #eaf7ff 0 8%, transparent 9%),
+        radial-gradient(circle at 92% 4%, #fff4df 0 7%, transparent 8%),
+        var(--bg);
+      line-height:1.9;
+    }
+    a{color:inherit}
+    ruby{ruby-position:over}
+    rt{font-size:.55em;font-weight:600;color:#527089}
+    .page{
+      width:min(1160px,92vw);
+      margin:auto;
+      padding:28px 0 80px;
+    }
+    .hero{
+      background:linear-gradient(135deg,#ffffff 0%,#eef8ff 56%,#fff8e8 100%);
+      border:1px solid var(--line);
+      border-radius:30px;
+      padding:34px;
+      box-shadow:var(--shadow);
+      display:grid;
+      grid-template-columns:1.35fr .85fr;
+      gap:28px;
+      align-items:center;
+    }
+    .eyebrow{
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      background:var(--blue-soft);
+      color:#1f5ea8;
+      border-radius:999px;
+      padding:6px 14px;
+      font-weight:800;
+      font-size:.92rem;
+      margin-bottom:12px;
+    }
+    h1{
+      font-size:clamp(2rem,4.5vw,3.6rem);
+      line-height:1.25;
+      margin:.2em 0 .3em;
+      letter-spacing:.02em;
+    }
+    .lead{
+      font-size:clamp(1.04rem,1.8vw,1.25rem);
+      font-weight:700;
+      margin:0 0 14px;
+    }
+    .hero-note{
+      color:var(--muted);
+      margin:0;
+    }
+    .hero img{
+      width:100%;
+      max-height:280px;
+      object-fit:contain;
+      display:block;
+      border-radius:20px;
+    }
+    .section{margin-top:36px}
+    .section-title{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      margin:0 0 15px;
+      font-size:clamp(1.45rem,2.6vw,2rem);
+    }
+    .section-title .num{
+      width:42px;height:42px;
+      display:grid;place-items:center;
+      border-radius:14px;
+      background:var(--blue);
+      color:white;
+      font-weight:900;
+      flex:0 0 auto;
+    }
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+    }
+
+    /* STEPS */
+    .steps-grid{
+      display:grid;
+      grid-template-columns:repeat(5,1fr);
+      gap:14px;
+    }
+    .step-card{
+      overflow:hidden;
+      min-height:260px;
+      display:flex;
+      flex-direction:column;
+      background:#fff;
+    }
+    .step-card img{
+      width:100%;
+      height:145px;
+      object-fit:cover;
+      display:block;
+      background:#eef6fc;
+    }
+    .step-body{
+      padding:16px 16px 18px;
+      display:flex;
+      flex-direction:column;
+      gap:7px;
+      height:100%;
+    }
+    .step-label{
+      display:inline-flex;
+      width:max-content;
+      padding:4px 10px;
+      border-radius:999px;
+      color:#fff;
+      background:var(--blue);
+      font-size:.82rem;
+      font-weight:900;
+      letter-spacing:.06em;
+    }
+    .step-card:nth-child(2) .step-label{background:var(--green)}
+    .step-card:nth-child(3) .step-label{background:var(--orange)}
+    .step-card:nth-child(4) .step-label{background:var(--purple)}
+    .step-card:nth-child(5) .step-label{background:#1976d2}
+    .step-title{
+      font-weight:900;
+      font-size:1.03rem;
+      line-height:1.65;
+    }
+
+    /* WHY */
+    .why-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:16px;
+    }
+    .why-card{
+      padding:20px;
+      min-height:185px;
+    }
+    .why-card .big{font-size:2rem;margin-bottom:4px}
+    .why-card h3{margin:.1em 0 .45em}
+    .why-card p{margin:0;color:var(--muted)}
+
+    /* METHOD */
+    .method{
+      background:#17324d;
+      color:white;
+      border-radius:26px;
+      padding:26px;
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:14px;
+      box-shadow:var(--shadow);
+    }
+    .method-step{
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.14);
+      border-radius:18px;
+      padding:18px;
+      text-align:center;
+    }
+    .method-step .icon{font-size:2rem}
+    .method-step b{display:block;margin-top:6px}
+    .method-step span{font-size:.94rem;color:#dfeaf4}
+    .note{
+      margin-top:14px;
+      background:var(--yellow-soft);
+      border-left:5px solid var(--yellow);
+      border-radius:14px;
+      padding:14px 16px;
+      font-weight:700;
+    }
+
+    /* MISSIONS */
+    .mission-grid{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:16px;
+    }
+    .mission{overflow:hidden}
+    .mission-head{
+      padding:18px 20px;
+      display:flex;
+      align-items:center;
+      gap:12px;
+      border-bottom:1px solid var(--line);
+    }
+    .mission-badge{
+      width:46px;height:46px;
+      border-radius:15px;
+      display:grid;place-items:center;
+      background:var(--blue);
+      color:white;
+      font-weight:900;
+      flex:0 0 auto;
+    }
+    .mission-head h3{
+      margin:0;
+      line-height:1.5;
+      font-size:1.13rem;
+    }
+    .mission-body{padding:18px 20px 20px}
+    .label{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:5px 10px;
+      border-radius:999px;
+      font-size:.86rem;
+      font-weight:900;
+      margin-bottom:8px;
+      background:var(--blue-soft);
+      color:#1d63ad;
+    }
+    ul.clean{
+      margin:6px 0 0;
+      padding:0;
+      list-style:none;
+    }
+    ul.clean li{
+      position:relative;
+      padding:8px 0 8px 30px;
+      border-bottom:1px dashed #e5edf4;
+    }
+    ul.clean li:last-child{border-bottom:0}
+    ul.clean li:before{
+      content:"✓";
+      position:absolute;
+      left:0;top:9px;
+      width:21px;height:21px;
+      display:grid;place-items:center;
+      border-radius:7px;
+      background:var(--green-soft);
+      color:var(--green);
+      font-weight:900;
+    }
+    details{
+      margin-top:14px;
+      background:#f8fbfd;
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:10px 12px;
+    }
+    summary{cursor:pointer;font-weight:900}
+    details p{color:var(--muted);margin:.6em 0 0}
+    .focus{
+      grid-column:1/-1;
+      border:2px solid #8fc5ff;
+      box-shadow:0 14px 36px rgba(47,128,237,.13);
+    }
+    .focus .mission-head{
+      background:linear-gradient(90deg,#edf7ff,#f8f4ff);
+    }
+    .mini{font-size:.92rem;color:var(--muted)}
+
+    /* DICTIONARY */
+    .dictionary{
+      background:linear-gradient(135deg,#fff,#f2f9ff);
+      border:1px solid var(--line);
+      border-radius:24px;
+      padding:24px;
+      box-shadow:var(--shadow);
+    }
+    .dictionary-intro{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:20px;
+      align-items:stretch;
+    }
+    .rule-list{
+      margin:0;
+      padding:0;
+      list-style:none;
+      display:grid;
+      gap:12px;
+    }
+    .rule-list li{
+      border-radius:16px;
+      padding:14px 16px;
+      background:#fff;
+      border:1px solid var(--line);
+      font-weight:800;
+    }
+    .rule-list li.no{
+      background:var(--pink-soft);
+      border-color:#ffd0d0;
+      color:#a43d3d;
+    }
+    .rule-list .icon{font-size:1.35rem;margin-right:8px}
+    .popup-demo{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:20px;
+      padding:18px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+    }
+    .popup-demo h3{margin:0 0 12px}
+    .demo-line{
+      margin:0 0 12px;
+      color:var(--muted);
+    }
+    .word-trigger{
+      display:inline-flex;
+      align-items:center;
+      gap:7px;
+      border:2px solid #78b7f5;
+      background:#f2f8ff;
+      color:#145b9f;
+      border-radius:12px;
+      padding:7px 12px;
+      font-size:1.05rem;
+      font-weight:900;
+      cursor:pointer;
+    }
+    .word-trigger:hover{background:#e8f3ff}
+    .popup{
+      margin-top:12px;
+      border-radius:16px;
+      border:1px solid #efc1ca;
+      background:#fff7f9;
+      overflow:hidden;
+      box-shadow:0 10px 22px rgba(78,52,65,.10);
+    }
+    .popup-row{
+      display:grid;
+      grid-template-columns:92px 1fr;
+      border-bottom:1px solid #f3dce1;
+    }
+    .popup-row:last-child{border-bottom:0}
+    .popup-label{
+      padding:10px 12px;
+      background:#ffe8ed;
+      font-weight:900;
+    }
+    .popup-value{
+      padding:10px 13px;
+      font-weight:700;
+    }
+    .popup-help{
+      margin:10px 0 0;
+      font-size:.88rem;
+      color:var(--muted);
+    }
+
+    /* START */
+    .start{
+      margin-top:36px;
+      text-align:center;
+      background:linear-gradient(135deg,#eaf4ff,#eefbf3);
+      border:1px solid var(--line);
+      border-radius:28px;
+      padding:30px 22px;
+      box-shadow:var(--shadow);
+    }
+    .start h2{margin:.1em 0 .4em}
+    .start p{margin:.3em 0 1.1em;color:var(--muted)}
+    .button{
+      display:inline-block;
+      border:0;
+      text-decoration:none;
+      background:var(--blue);
+      color:white;
+      font-weight:900;
+      font-size:1.05rem;
+      padding:14px 28px;
+      border-radius:16px;
+      box-shadow:0 8px 18px rgba(47,128,237,.22);
+    }
+
+    @media (max-width:980px){
+      .hero{grid-template-columns:1fr}
+      .hero img{max-height:240px}
+      .steps-grid{grid-template-columns:repeat(2,1fr)}
+      .why-grid{grid-template-columns:1fr}
+      .mission-grid{grid-template-columns:1fr}
+      .method{grid-template-columns:1fr}
+      .dictionary-intro{grid-template-columns:1fr}
+      .focus{grid-column:auto}
+    }
+    @media (max-width:560px){
+      .page{width:min(94vw,1160px);padding-top:14px}
+      .hero{padding:22px;border-radius:22px}
+      .steps-grid{grid-template-columns:1fr}
+      .section{margin-top:28px}
+      .dictionary{padding:18px}
+      .popup-row{grid-template-columns:78px 1fr}
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+
+    <section class="hero">
+      <div>
+        <span class="eyebrow">🔎 NEXT MAKE COMPANY RESEARCH</span>
+        <h1>NEXT MAKEを<br><ruby>調<rt>しら</rt></ruby>べよう！</h1>
+        <p class="lead">Webサイトを <ruby>見<rt>み</rt></ruby>て、「NEXT MAKEは どんな <ruby>会社<rt>かいしゃ</rt></ruby>？」の <ruby>答<rt>こた</rt></ruby>えを <ruby>見<rt>み</rt></ruby>つけます。</p>
+        <p class="hero-note">Webサイトを <ruby>見<rt>み</rt></ruby>て、<ruby>調査<rt>ちょうさ</rt></ruby>シートに <ruby>書<rt>か</rt></ruby>きます。そのあと、ヘンディさんや <ruby>松井社長<rt>まついしゃちょう</rt></ruby>に <ruby>話<rt>はな</rt></ruby>します。</p>
+      </div>
+      <img src="https://academy.nexmax.workers.dev/img/articles/kaisha_shirabekata/g2.webp" alt="Webサイトを見て調査シートを書く">
+    </section>
+
+    <section class="section">
+      <h2 class="section-title"><span class="num">1</span><ruby>今日<rt>きょう</rt></ruby>すること</h2>
+      <div class="steps-grid">
+        <article class="card step-card">
+          <img src="https://academy.nexmax.workers.dev/img/articles/kaisha_shirabekata/g1.webp" alt="会社の調べかたを学ぶ">
+          <div class="step-body">
+            <span class="step-label">STEP 1</span>
+            <div class="step-title"><ruby>会社<rt>かいしゃ</rt></ruby>の <ruby>調<rt>しら</rt></ruby>べかたを <ruby>学<rt>まな</rt></ruby>ぶ</div>
+          </div>
+        </article>
+
+        <article class="card step-card">
+          <img src="https://academy.nexmax.workers.dev/img/articles/kaisha_shirabekata/g2.webp" alt="Webサイトを見て調査シートを書く">
+          <div class="step-body">
+            <span class="step-label">STEP 2</span>
+            <div class="step-title">Webサイトを <ruby>見<rt>み</rt></ruby>て、<ruby>調査<rt>ちょうさ</rt></ruby>シートを <ruby>書<rt>か</rt></ruby>く</div>
+          </div>
+        </article>
+
+        <article class="card step-card">
+          <img src="https://academy.nexmax.workers.dev/img/articles/kaisha_shirabekata/g3.webp" alt="ヘンディさんに報告する">
+          <div class="step-body">
+            <span class="step-label">STEP 3</span>
+            <div class="step-title">ヘンディさんに <ruby>報告<rt>ほうこく</rt></ruby>する</div>
+          </div>
+        </article>
+
+        <article class="card step-card">
+          <img src="https://academy.nexmax.workers.dev/img/articles/kaisha_shirabekata/g5.webp" alt="松井社長と話す準備をする">
+          <div class="step-body">
+            <span class="step-label">STEP 5</span>
+            <div class="step-title"><ruby>松井社長<rt>まついしゃちょう</rt></ruby>と <ruby>話<rt>はな</rt></ruby>す <ruby>準備<rt>じゅんび</rt></ruby>を する</div>
+          </div>
+        </article>
+
+        <article class="card step-card">
+          <img src="https://academy.nexmax.workers.dev/img/articles/kaisha_shirabekata/g6.webp" alt="松井社長と話す">
+          <div class="step-body">
+            <span class="step-label">STEP 6</span>
+            <div class="step-title"><ruby>松井社長<rt>まついしゃちょう</rt></ruby>と <ruby>話<rt>はな</rt></ruby>す</div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title"><span class="num">2</span>なぜ <ruby>会社<rt>かいしゃ</rt></ruby>を <ruby>調<rt>しら</rt></ruby>べるの？</h2>
+      <div class="why-grid">
+        <div class="card why-card">
+          <div class="big">🏢</div>
+          <h3>① NEXT MAKEを <ruby>知<rt>し</rt></ruby>るため</h3>
+          <p>NEXT MAKEは、みなさんと いっしょに <ruby>勉強<rt>べんきょう</rt></ruby>や <ruby>仕事<rt>しごと</rt></ruby>を する <ruby>会社<rt>かいしゃ</rt></ruby>です。まず、どんな <ruby>会社<rt>かいしゃ</rt></ruby>か <ruby>知<rt>し</rt></ruby>りましょう。</p>
+        </div>
+        <div class="card why-card">
+          <div class="big">🎓</div>
+          <h3>② Japanese IT Pathwayを <ruby>知<rt>し</rt></ruby>るため</h3>
+          <p>カンボジアで、だれと いっしょに <ruby>進<rt>すす</rt></ruby>めて いるのか、<ruby>何<rt>なに</rt></ruby>を <ruby>勉強<rt>べんきょう</rt></ruby>するのかを <ruby>見<rt>み</rt></ruby>ます。</p>
+        </div>
+        <div class="card why-card">
+          <div class="big">💼</div>
+          <h3>③ <ruby>日本<rt>にほん</rt></ruby>の <ruby>会社<rt>かいしゃ</rt></ruby>を <ruby>調<rt>しら</rt></ruby>べる <ruby>練習<rt>れんしゅう</rt></ruby></h3>
+          <p><ruby>面接<rt>めんせつ</rt></ruby>の <ruby>前<rt>まえ</rt></ruby>には、<ruby>会社<rt>かいしゃ</rt></ruby>の ことを <ruby>調<rt>しら</rt></ruby>べます。<ruby>必要<rt>ひつよう</rt></ruby>な <ruby>情報<rt>じょうほう</rt></ruby>を <ruby>見<rt>み</rt></ruby>つける <ruby>練習<rt>れんしゅう</rt></ruby>を します。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title"><span class="num">3</span><ruby>会社<rt>かいしゃ</rt></ruby>の <ruby>調<rt>しら</rt></ruby>べかた</h2>
+      <div class="method">
+        <div class="method-step">
+          <div class="icon">❓</div>
+          <b>① まず <ruby>質問<rt>しつもん</rt></ruby>を <ruby>見<rt>み</rt></ruby>る</b>
+          <span>「<ruby>何<rt>なに</rt></ruby>を <ruby>見<rt>み</rt></ruby>つけるか」を <ruby>確認<rt>かくにん</rt></ruby>します。</span>
+        </div>
+        <div class="method-step">
+          <div class="icon">🔎</div>
+          <b>② Webサイトの ページを <ruby>見<rt>み</rt></ruby>る</b>
+          <span>ぜんぶを <ruby>読<rt>よ</rt></ruby>まなくても だいじょうぶです。</span>
+        </div>
+        <div class="method-step">
+          <div class="icon">✏️</div>
+          <b>③ <ruby>答<rt>こた</rt></ruby>えを <ruby>書<rt>か</rt></ruby>く</b>
+          <span><ruby>見<rt>み</rt></ruby>つけた <ruby>情報<rt>じょうほう</rt></ruby>を <ruby>調査<rt>ちょうさ</rt></ruby>シートに <ruby>書<rt>か</rt></ruby>きます。</span>
+        </div>
+      </div>
+      <div class="note">💡 <ruby>大切<rt>たいせつ</rt></ruby>：<ruby>先<rt>さき</rt></ruby>に <ruby>質問<rt>しつもん</rt></ruby>を <ruby>見<rt>み</rt></ruby>ると、どの ページを <ruby>見<rt>み</rt></ruby>れば いいか <ruby>分<rt>わ</rt></ruby>かりやすく なります。</div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title"><span class="num">4</span>7つの MISSION</h2>
+      <div class="mission-grid">
+
+        <article class="card mission">
+          <div class="mission-head">
+            <div class="mission-badge">1</div>
+            <h3>NEXT MAKEは どんな <ruby>会社<rt>かいしゃ</rt></ruby>？</h3>
+          </div>
+          <div class="mission-body">
+            <span class="label">🔎 「<ruby>会社<rt>かいしゃ</rt></ruby>の しょうかい」を <ruby>見<rt>み</rt></ruby>る</span>
+            <ul class="clean">
+              <li><ruby>会社<rt>かいしゃ</rt></ruby>の <ruby>名前<rt>なまえ</rt></ruby></li>
+              <li><ruby>社長<rt>しゃちょう</rt></ruby>の <ruby>名前<rt>なまえ</rt></ruby></li>
+              <li><ruby>会社<rt>かいしゃ</rt></ruby>が できた <ruby>日<rt>ひ</rt></ruby></li>
+              <li><ruby>本社<rt>ほんしゃ</rt></ruby>と <ruby>東京本店<rt>とうきょうほんてん</rt></ruby>の <ruby>場所<rt>ばしょ</rt></ruby></li>
+              <li>「<ruby>会社<rt>かいしゃ</rt></ruby>の あゆみ」に <ruby>何<rt>なに</rt></ruby>が <ruby>書<rt>か</rt></ruby>いて あるか</li>
+            </ul>
+            <details>
+              <summary>💡 ヒントを <ruby>見<rt>み</rt></ruby>る</summary>
+              <p>「<ruby>会社<rt>かいしゃ</rt></ruby>の しょうかい」ページの「<ruby>会社<rt>かいしゃ</rt></ruby>の <ruby>情報<rt>じょうほう</rt></ruby>」と「<ruby>会社<rt>かいしゃ</rt></ruby>の あゆみ」を <ruby>見<rt>み</rt></ruby>ましょう。</p>
+            </details>
+          </div>
+        </article>
+
+        <article class="card mission">
+          <div class="mission-head">
+            <div class="mission-badge">2</div>
+            <h3>どんな <ruby>仕事<rt>しごと</rt></ruby>を して いる？</h3>
+          </div>
+          <div class="mission-body">
+            <span class="label">🔎 「<ruby>事業<rt>じぎょう</rt></ruby>」と「つくる <ruby>仕事<rt>しごと</rt></ruby>」を <ruby>見<rt>み</rt></ruby>る</span>
+            <ul class="clean">
+              <li>「<ruby>自分<rt>じぶん</rt></ruby>たちで <ruby>作<rt>つく</rt></ruby>る サービス」は <ruby>何<rt>なに</rt></ruby>か</li>
+              <li>「お<ruby>客<rt>きゃく</rt></ruby>さまの ために <ruby>作<rt>つく</rt></ruby>る <ruby>仕事<rt>しごと</rt></ruby>」は <ruby>何<rt>なに</rt></ruby>か</li>
+              <li>2026<ruby>年<rt>ねん</rt></ruby>7<ruby>月<rt>がつ</rt></ruby>に <ruby>出<rt>だ</rt></ruby>した 5つの サービスの <ruby>名前<rt>なまえ</rt></ruby></li>
+            </ul>
+            <p class="mini">「<ruby>自分<rt>じぶん</rt></ruby>たちで <ruby>作<rt>つく</rt></ruby>る サービス」は、<ruby>会社<rt>かいしゃ</rt></ruby>が <ruby>自分<rt>じぶん</rt></ruby>たちで <ruby>考<rt>かんが</rt></ruby>えて <ruby>作<rt>つく</rt></ruby>る サービスです。</p>
+          </div>
+        </article>
+
+        <article class="card mission">
+          <div class="mission-head">
+            <div class="mission-badge">3</div>
+            <h3>NEXT MAKEの 3つの とくちょうは？</h3>
+          </div>
+          <div class="mission-body">
+            <span class="label">🔎 ホームを <ruby>見<rt>み</rt></ruby>る</span>
+            <ul class="clean">
+              <li>1つ<ruby>目<rt>め</rt></ruby>の とくちょう</li>
+              <li>2つ<ruby>目<rt>め</rt></ruby>の とくちょう</li>
+              <li>3つ<ruby>目<rt>め</rt></ruby>の とくちょう</li>
+              <li>それぞれ、どんな ことを して いるか</li>
+            </ul>
+            <details>
+              <summary>💡 ヒントを <ruby>見<rt>み</rt></ruby>る</summary>
+              <p>ホームの「3つの とくちょう」を <ruby>見<rt>み</rt></ruby>てください。</p>
+            </details>
+          </div>
+        </article>
+
+        <article class="card mission">
+          <div class="mission-head">
+            <div class="mission-badge">4</div>
+            <h3>グループの <ruby>会社<rt>かいしゃ</rt></ruby>は？</h3>
+          </div>
+          <div class="mission-body">
+            <span class="label">🔎 「グループの <ruby>会社<rt>かいしゃ</rt></ruby>」を <ruby>見<rt>み</rt></ruby>る</span>
+            <ul class="clean">
+              <li>グループの <ruby>会社<rt>かいしゃ</rt></ruby>の <ruby>名前<rt>なまえ</rt></ruby></li>
+              <li><ruby>代表<rt>だいひょう</rt></ruby>の <ruby>名前<rt>なまえ</rt></ruby></li>
+              <li>オフィスが ある <ruby>国<rt>くに</rt></ruby>と <ruby>町<rt>まち</rt></ruby></li>
+              <li>いつから ベトナムで <ruby>開発<rt>かいはつ</rt></ruby>を <ruby>始<rt>はじ</rt></ruby>めたか</li>
+            </ul>
+            <details>
+              <summary>💡 ヒントを <ruby>見<rt>み</rt></ruby>る</summary>
+              <p>「CONTINUE LLC.（コンティニュー）」の ところを <ruby>見<rt>み</rt></ruby>ましょう。</p>
+            </details>
+          </div>
+        </article>
+
+        <article class="card mission">
+          <div class="mission-head">
+            <div class="mission-badge">5</div>
+            <h3><ruby>今<rt>いま</rt></ruby>までに どんな <ruby>仕事<rt>しごと</rt></ruby>を した？</h3>
+          </div>
+          <div class="mission-body">
+            <span class="label">🔎 「<ruby>実績<rt>じっせき</rt></ruby>」を <ruby>見<rt>み</rt></ruby>る</span>
+            <ul class="clean">
+              <li>だれの ための <ruby>仕事<rt>しごと</rt></ruby>か</li>
+              <li><ruby>何<rt>なに</rt></ruby>を <ruby>作<rt>つく</rt></ruby>ったか</li>
+              <li>どんな <ruby>仕事<rt>しごと</rt></ruby>だったか</li>
+            </ul>
+            <p class="mini"><ruby>会社<rt>かいしゃ</rt></ruby>が <ruby>今<rt>いま</rt></ruby>までに した <ruby>仕事<rt>しごと</rt></ruby>を「<ruby>実績<rt>じっせき</rt></ruby>」と <ruby>言<rt>い</rt></ruby>います。</p>
+          </div>
+        </article>
+
+        <article class="card mission">
+          <div class="mission-head">
+            <div class="mission-badge">6</div>
+            <h3><ruby>大切<rt>たいせつ</rt></ruby>に する <ruby>考<rt>かんが</rt></ruby>えかたは？</h3>
+          </div>
+          <div class="mission-body">
+            <span class="label">🔎 「<ruby>会社<rt>かいしゃ</rt></ruby>の しょうかい」を <ruby>見<rt>み</rt></ruby>る</span>
+            <ul class="clean">
+              <li>MISSIONは <ruby>何<rt>なに</rt></ruby>か</li>
+              <li>VISIONは <ruby>何<rt>なに</rt></ruby>か</li>
+              <li>「<ruby>大切<rt>たいせつ</rt></ruby>に する <ruby>考<rt>かんが</rt></ruby>えかた」6つの <ruby>名前<rt>なまえ</rt></ruby></li>
+            </ul>
+            <details>
+              <summary>💡 ヒントを <ruby>見<rt>み</rt></ruby>る</summary>
+              <p>「たいせつに して いる こと」と「<ruby>大切<rt>たいせつ</rt></ruby>に する <ruby>考<rt>かんが</rt></ruby>えかた」を <ruby>見<rt>み</rt></ruby>ましょう。</p>
+            </details>
+          </div>
+        </article>
+
+        <article class="card mission focus">
+          <div class="mission-head">
+            <div class="mission-badge">7</div>
+            <h3>Japanese IT Pathwayは どんな プログラム？</h3>
+          </div>
+          <div class="mission-body">
+            <p><strong>これは、みなさんに いちばん <ruby>近<rt>ちか</rt></ruby>い MISSIONです。</strong></p>
+            <span class="label">🔎 「カンボジアと いっしょに」を <ruby>見<rt>み</rt></ruby>る</span>
+            <ul class="clean">
+              <li>だれと いっしょに <ruby>進<rt>すす</rt></ruby>めて いる プログラムか</li>
+              <li>2つの <ruby>目的<rt>もくてき</rt></ruby>は <ruby>何<rt>なに</rt></ruby>か</li>
+              <li><ruby>学生<rt>がくせい</rt></ruby>は <ruby>何<rt>なに</rt></ruby>を <ruby>勉強<rt>べんきょう</rt></ruby>するか</li>
+              <li>NEXT MAKEは <ruby>何<rt>なに</rt></ruby>を サポートするか</li>
+              <li>プログラムを <ruby>終<rt>お</rt></ruby>わった あと、どんな <ruby>道<rt>みち</rt></ruby>が あるか</li>
+            </ul>
+            <details>
+              <summary>💡 ヒントを <ruby>見<rt>み</rt></ruby>る</summary>
+              <p>「2つの <ruby>目的<rt>もくてき</rt></ruby>」と「<ruby>会社<rt>かいしゃ</rt></ruby>が する こと」を <ruby>見<rt>み</rt></ruby>ましょう。</p>
+            </details>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="dictionary">
+      <h2 class="section-title"><span class="num">5</span><ruby>分<rt>わ</rt></ruby>からない <ruby>言葉<rt>ことば</rt></ruby>が あったら？</h2>
+
+      <div class="dictionary">
+        <div class="dictionary-intro">
+          <ul class="rule-list">
+            <li class="no"><span class="icon">🙅</span>AIや ページ<ruby>翻訳<rt>ほんやく</rt></ruby>ツールは <ruby>使<rt>つか</rt></ruby>いません。</li>
+            <li><span class="icon">📖</span>むずかしい <ruby>単語<rt>たんご</rt></ruby>には、ポップアップ<ruby>辞書<rt>じしょ</rt></ruby>が あります。</li>
+            <li><span class="icon">🔎</span><ruby>辞書<rt>じしょ</rt></ruby>に ない <ruby>言葉<rt>ことば</rt></ruby>は、<ruby>自分<rt>じぶん</rt></ruby>で <ruby>調<rt>しら</rt></ruby>べてください。</li>
+          </ul>
+
+          <div class="popup-demo">
+            <h3>ポップアップ<ruby>辞書<rt>じしょ</rt></ruby>の <ruby>例<rt>れい</rt></ruby></h3>
+            <p class="demo-line">Webサイトでは、むずかしい <ruby>単語<rt>たんご</rt></ruby>を <ruby>押<rt>お</rt></ruby>すと、<ruby>読<rt>よ</rt></ruby>みかたと <ruby>意味<rt>いみ</rt></ruby>が <ruby>出<rt>で</rt></ruby>ます。</p>
+
+            <div>
+              <button class="word-trigger" type="button" onclick="toggleDictionary()" aria-controls="popupDictionary" aria-expanded="true">
+                📘 <ruby>受託開発<rt>じゅたくかいはつ</rt></ruby>
+              </button>
+            </div>
+
+            <div class="popup" id="popupDictionary">
+              <div class="popup-row">
+                <div class="popup-label"><ruby>単語<rt>たんご</rt></ruby></div>
+                <div class="popup-value">受託開発</div>
+              </div>
+              <div class="popup-row">
+                <div class="popup-label">よみ</div>
+                <div class="popup-value">じゅたくかいはつ</div>
+              </div>
+              <div class="popup-row">
+                <div class="popup-label"><ruby>意味<rt>いみ</rt></ruby></div>
+                <div class="popup-value">お<ruby>客<rt>きゃく</rt></ruby>さまに たのまれて、ホームページや アプリや システムを <ruby>作<rt>つく</rt></ruby>る <ruby>仕事<rt>しごと</rt></ruby>。</div>
+              </div>
+            </div>
+
+            <p class="popup-help">※ この ボタンは ポップアップ<ruby>辞書<rt>じしょ</rt></ruby>の <ruby>見本<rt>みほん</rt></ruby>です。<ruby>押<rt>お</rt></ruby>すと <ruby>開<rt>ひら</rt></ruby>く・<ruby>閉<rt>と</rt></ruby>じる ことが できます。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="start">
+      <h2><ruby>準備<rt>じゅんび</rt></ruby>は できましたか？</h2>
+      <p>まず <ruby>質問<rt>しつもん</rt></ruby>を <ruby>見<rt>み</rt></ruby>てから、NEXT MAKEの Webサイトを <ruby>見<rt>み</rt></ruby>ましょう。</p>
+      <a class="button" href="https://academy.nexmax.workers.dev/gakushu/nextmake/" target="_blank" rel="noopener noreferrer">🔎 NEXT MAKEの Webサイトを <ruby>開<rt>ひら</rt></ruby>く</a>
+    </section>
+  </main>
+
+  <script>
+    function toggleDictionary(){
+      const popup = document.getElementById('popupDictionary');
+      const button = document.querySelector('.word-trigger');
+      const isHidden = popup.style.display === 'none';
+      popup.style.display = isHidden ? 'block' : 'none';
+      button.setAttribute('aria-expanded', isHidden ? 'true' : 'false');
+    }
+  </script>
+</body>
+</html>
