@@ -37,19 +37,28 @@ async function advance(page: Page): Promise<void> {
     .catch(() => {});
 }
 
-test("よみを 外すと ❌ と ただしい よみが 出る", async ({ page }) => {
+test("よみを 外すと 入力欄が 空に なり、正しく 打てるまで 何度でも やり直せる", async ({
+  page,
+}) => {
   await page.goto(SET);
   await page.getByRole("button", { name: /れんしゅう/ }).click();
 
   const input = page.getByRole("textbox", { name: "よみを ひらがなで 入力する" });
   await expect(input).toBeVisible({ timeout: 20_000 });
+
+  // 1回目の 打ちまちがい
   await input.fill("ぜんぜんちがうよみ");
   await input.press("Enter");
+  await expect(page.getByText("おしい！ もう一度")).toBeVisible();
+  await expect(input).toHaveValue(""); // 入力した 字は 消える
+  await expect(input).toBeVisible(); // **まだ 読みの 番**（4択に 進んで いない）
+  await expect(page.getByText("英語の 意味を えらぼう！")).toHaveCount(0);
 
-  // 大きな しるし（記号＋ことば）
-  await expect(page.getByText("おしい！")).toBeVisible();
-  // 4択の あいだ、ただしい よみを ❌ と いっしょに 出しておく
-  await expect(page.getByText(/❌ ただしい よみ:/)).toBeVisible();
+  // 2回目の 打ちまちがいでも 同じ。番は 終わらない
+  await input.fill("これもちがう");
+  await input.press("Enter");
+  await expect(input).toHaveValue("");
+  await expect(page.getByText("英語の 意味を えらぼう！")).toHaveCount(0);
 });
 
 test("いみを 外すと『ちがう こたえ』と えらんだ ものが 出る", async ({ page }) => {
