@@ -105,7 +105,7 @@ npm run handoff              # 現在地レポート（セッション開始時�
 npm run cf:preview           # ローカルの workerd で本番相当の確認
 npm run cf:deploy            # 本番へデプロイ（秘密ガード＋ビルド＋deploy）
 npm run cf:branch            # 今のブランチ専用の確認URLを更新（作業中はこれ）
-npm run cf:staging           # staging を更新。main の中身でのみ実行できる
+npm run cf:staging           # STG を更新。integration の中身でのみ実行できる（ふだんは自動）
 ```
 
 コミット時は husky + lint-staged が整形・eslint --fix・secretlint・lint:content を自動実行する。
@@ -113,11 +113,16 @@ npm run cf:staging           # staging を更新。main の中身でのみ実行
 
 ## デプロイ先は Cloudflare Workers（Vercel から移行済み・2026-08-03）
 
-|            | URL                                               | 更新コマンド                      |
-| ---------- | ------------------------------------------------- | --------------------------------- |
-| 本番       | `https://academy.nexmax.workers.dev`              | `npm run cf:deploy`               |
-| staging    | `https://staging-academy.nexmax.workers.dev`      | `npm run cf:staging`（main のみ） |
-| ブランチ用 | `https://<ブランチ名>-academy.nexmax.workers.dev` | `npm run cf:branch`               |
+|            | URL                                               | 載るもの      | いつ更新されるか                                            |
+| ---------- | ------------------------------------------------- | ------------- | ----------------------------------------------------------- |
+| 本番       | `https://academy.nexmax.workers.dev`              | `main`        | **火・水・金 17:05 ICT に自動**（授業は 17:30）。緊急は手動 |
+| STG        | `https://staging-academy.nexmax.workers.dev`      | `integration` | `integration` へマージするたび**自動**                      |
+| ブランチ用 | `https://<ブランチ名>-academy.nexmax.workers.dev` | 作業ブランチ  | `npm run cf:branch`                                         |
+
+**STG は門番、本番は届け先**（2026-08-27 から）。作業ブランチは `integration` へ PR し、
+STG で確かめてから `main` へ昇格する。それまでは STG に載るのが main だけで、
+「STG で確かめてから」が成り立っていなかった（もう戻せないものを あとから 見る場所だった）。
+昇格と本番デプロイは「デプロイ」ワークフローが授業の前に自動でやる（`.github/workflows/deploy.yml`）。
 
 OpenNext（`@opennextjs/cloudflare`）経由。手順の詳細は `docs/deploy.md` §0。**罠は6つ**:
 
@@ -126,8 +131,13 @@ OpenNext（`@opennextjs/cloudflare`）経由。手順の詳細は `docs/deploy.m
 2. **`NEXT_PUBLIC_*` は逆にビルド時必須**（バンドルへ literal で埋まる。`wrangler secret` では手遅れ）。
 3. **Supabase の Redirect URLs は `https://<host>/**` 形式で登録**（完全一致では動かない。
    機械検査なし — `docs/deploy.md` §0.3 必読。検証は `?code=` を付けて行う）。
-4. **staging へ上げてよいのは main の中身だけ**（ブランチの中身を上げると他の作業が消える。
+4. **STG へ上げてよいのは `integration` の中身だけ**（ブランチの中身を上げると他の作業が消える。
    `scripts/preview_alias.mjs` が止める — **ガードを外さない**。作業中は `npm run cf:branch`）。
+   2026-08-27 に基準を main → `integration` へ **移した**（**外したのではない**）。
+   ガードの仕組み（ブランチ名ではなく**中身**で判定する）はそのまま、比べる相手だけを
+   差し替えてある。**これは「正当な緩和の前例」ではない。** 他のガード
+   （`check_build_env.mjs`・`preview_alias.mjs`・`check_protected_paths.mjs`）を
+   外してよい理由には**まったくならない**。
 5. **Worker の大きさは無料枠 gzip 3MiB が上限**（超えると `code:10027` で deploy が止まる）。
    これは**コードの大きさ**の上限で、通信量・保存量・アクセス数とは別。D1/KV/R2 に
    データを逃がしても効かない。効くのは**重複をなくす・圧縮する・サーバで動かないコードを載せない**。
@@ -165,8 +175,8 @@ Gemini は `.gemini/rules.md` 冒頭の指示で）。ツールを乗り換え�
 npm run handoff
 ```
 
-git と台帳から現在地（ブランチ・origin/main との差・やりかけの変更・並行スレッド・未完了の台帳）を
-復元して表示する。前のツールの記憶がなくても再開できる。
+git と台帳から現在地（ブランチ・origin/integration との差・本番と main の差・やりかけの変更・
+並行スレッド・未完了の台帳）を復元して表示する。前のツールの記憶がなくても再開できる。
 
 ### 現在地の罠（必ず知っておく）
 
@@ -174,7 +184,8 @@ git と台帳から現在地（ブランチ・origin/main との差・やりか�
   現在地とスレッド全体像は `npm run handoff` で確認する。
 - **リポジトリ本体のチェックアウトは作業ブランチに置かれていることがある**。本体で新しい
   セッションを開かない。作業は必ず worktree で。
-- **ローカル main は古いことがある**。比較・統合の基準は必ず `origin/main`。
+- **ローカルの `integration` / `main` は古いことがある**。比較・統合の基準は必ず
+  `origin/integration`（作業ブランチのベース・STG の配信元）と `origin/main`（本番の配信元）。
 
 ### クライアント・モデル
 
@@ -183,20 +194,28 @@ git と台帳から現在地（ブランチ・origin/main との差・やりか�
 - ユーザーが口にした制約・好みは、その場で `docs/constraints.md` に追記する（同ファイルは作業前に必読）。
 - スコープは**ファイルパスでなく画面の言葉でAIが宣言**し、OKを得てから着手する。
   ファイルパスの指定をユーザーに求めない。
-- **ユーザーは PR・マージをしない（クライアント方式）**。AI が検証 → PR → main統合 → STG更新まで進め、
-  ユーザーは STG のURLで確認するだけ。OKが出たら AI が本番へ上げる。
+- **ユーザーは PR・マージをしない（クライアント方式）**。AI が検証 → PR → `integration` 統合 →
+  STG更新まで進める。ユーザーは STG のURLで**中身**（教材の良し悪し）を見るだけでよい。
+  本番へは**授業の前に自動で出る**ので、「本番OK」を求めない（2026-08-21 の決定）。
 - ユーザー確認を求める前に、**ユーザーが見られる形（ブランチURL/STG）まで進め、AI同士の
   チェック（fable/Codex）を先に通す**。ユーザーが確認できない中間物で承認待ちしない。
-- **「閉じて」**と言われたら: 検証 → PR → main統合 → STG更新 → 未完了項目を台帳へ戻す →
+- **「閉じて」**と言われたら: 検証 → PR → `integration` 統合 → STG更新 → 未完了項目を台帳へ戻す →
   残項目を3行で報告して終了。進捗を消さずに畳む。
 - 毎ターン冒頭に現在地を1行示す（例: 台帳#12・5歩中3歩目）。長時間処理は途中経過を届ける。
 
 ### 統合とデプロイ
 
-- **staging・本番の更新は main からのみ**。作業中の確認は `npm run cf:branch`（自分専用URL）。
-- **作業開始時と PR 作成前に `origin/main` を取り込む。** ブランチは48時間以内に PR にして閉じる。
+- **STG の更新は `integration` から、本番の更新は `main` から**（どちらも自動。手で叩かない）。
+  作業中の確認は `npm run cf:branch`（自分専用URL）。
+- **作業開始時と PR 作成前に `origin/integration` を取り込む。** PR の宛先も `integration`。
+  ブランチは48時間以内に PR にして閉じる。
+- **緊急の直しだけ `main` へ直接**（バグ・授業当日の事故）。`main` から切って `main` へ PR し、
+  CI green でマージ → Actions「デプロイ」→ Run workflow → production で即時に出す →
+  **`main` を `integration` へ戻しマージする**。戻し忘れると、次の昇格が
+  「早送りできません」で止まる（ワークフローがそう作ってある。取り残しを作らないため）。
 - **DBの移行SQLをダッシュボードに手で貼らない**（2026-08-26 の事故）。`supabase/migrations/` へ
-  置いて main へ入れれば「デプロイ（DB）」ワークフローが自動で流す（docs/deploy.md §0.8）。
+  置いて **`integration`** へ入れれば「デプロイ（DB）」ワークフローが自動で流す（docs/deploy.md §0.8）。
+  DBは全環境で1つを共有するので、統合の時点で流せば**DBが常にコードより先**になる（安全な向き）。
   移行SQLは **いま本番で動いているコードを壊さない変更だけ**にする（列を足す・not null を外す）。
   **DBに依存する直しを「これで直った」と報告する前に、DBに実際に入っているか確かめる。**
   `npm run handoff` の「■ DB（移行SQL）」を見る。鍵の無い環境ではそこが

@@ -1,8 +1,11 @@
 name: CI
 
 on:
+  # マージ後の 検査は **統合ブランチでも** 続ける（2026-08-27）。
+  # 作業ブランチの マージ先が `integration` へ 移ったので、ここを main だけに
+  # しておくと「マージした あとの 1回」が どこにも 走らなくなる。
   push:
-    branches: [main]
+    branches: [integration, main]
   pull_request:
 
 # 同一ブランチへの連続プッシュ時は古い実行をキャンセルする

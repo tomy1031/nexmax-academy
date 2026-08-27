@@ -38,7 +38,11 @@ import expiringKvIncrementalCache from "./src/lib/cache/kv-expiring-cache";
  *   画面には正しい内容が出る）。ビルド時に DB（studio_contents）も読んでいるので、
  *   **ビルドした時点の先生の直しは入っている**。以後の直しは映らないので、
  *   DBの直しが絡む確認は staging で行う。
- * - 未指定（既定） … KV。staging・本番はこちら。従来どおり60秒で先生の直しが出る。
+ * - 未指定（既定） … KV。**STG・本番はこちら**。従来どおり60秒で先生の直しが出る。
+ *   STG を assets にしない理由がこれで、**先生の直し（DB）が STG に出なくなる**と
+ *   管理画面での確認が壊れる。STG のデプロイでは KV を**温めない**だけにしてある
+ *   （2026-08-27。`scripts/preview_alias.mjs` の `shouldPopulateRemoteCache`）——
+ *   置き場は KV のまま、開いたページから後追いで温まる。
  *
  * **この分岐は実行時に評価される**（ビルド時ではない）。Worker では nodejs_compat と
  * compatibility_date 2025-04-01 以降により `process.env` が Worker の変数から埋まるので、

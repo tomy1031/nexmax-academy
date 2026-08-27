@@ -21,15 +21,18 @@ OpenNext（`@opennextjs/cloudflare`）で Workers 上に載せる。旧 `@cloudf
 npm run cf:preview   # ローカルの workerd で確認（ビルド＋プレビュー）
 npm run cf:deploy    # 本番へデプロイ（秘密ガード＋ビルド＋deploy）
 npm run cf:branch    # 今のブランチ専用の確認URLを更新（作業中はこれを使う）
-npm run cf:staging   # staging を更新。**main でのみ実行できる**
+npm run cf:staging   # STG を更新。**`integration` の中身のときだけ実行できる**（ふだんは自動）
 npm run cf:upload    # バージョンだけ上げる（エイリアスは付けない）
 ```
 
-| | URL | 更新コマンド |
-|---|---|---|
-| 本番 | `https://academy.nexmax.workers.dev` | `npm run cf:deploy` |
-| staging（統合版） | `https://staging-academy.nexmax.workers.dev` | `npm run cf:staging`（main のみ） |
-| ブランチ確認用 | `https://<ブランチ名>-academy.nexmax.workers.dev` | `npm run cf:branch` |
+| | URL | 載るもの | いつ更新されるか |
+|---|---|---|---|
+| 本番 | `https://academy.nexmax.workers.dev` | `main` | **火・水・金 17:05 ICT に自動**（授業は 17:30）。緊急は手動 dispatch |
+| STG（統合版） | `https://staging-academy.nexmax.workers.dev` | `integration` | `integration` へマージするたび**自動** |
+| ブランチ確認用 | `https://<ブランチ名>-academy.nexmax.workers.dev` | 作業ブランチ | `npm run cf:branch` |
+
+**STG は門番、本番は届け先**（2026-08-27 から。§0.6）。作業ブランチは `integration` へ
+PR し、STG で確かめてから `main` へ昇格する。
 
 **`cf:upload` では staging は更新されない。** `--preview-alias` を渡していないため、
 新しいバージョンが上がるだけで `staging-` のURLは古い版を指したまま。
@@ -47,7 +50,13 @@ npm run cf:upload    # バージョンだけ上げる（エイリアスは付け
 
 そこで `scripts/preview_alias.mjs` が次を強制する。
 
-- `staging` は main からしか上げられない（作業ブランチからは exit 1 で止まる）
+- ~~`staging` は main からしか上げられない~~
+  → **2026-08-27: `staging` は `integration` からしか上げられない**（作業ブランチからは
+  exit 1 で止まる）。**ガードを外したのではなく、比べる相手を移した。**
+  判定の仕組み（ブランチ名ではなく**中身**が `origin/integration` と同一か）は
+  そのままで、`MAIN_BRANCHES` に名前を足すだけの方式は**採っていない**——
+  それだと名前さえ合えば中身が何でも通り、上の巻き戻し事故が再び開く
+  （`tests/preview_alias.test.ts`「中身が違う作業ブランチからは上げられない」が守っている）
 - 作業ブランチは `npm run cf:branch` で自分専用のURLへ上げる
 - ブランチ名は Cloudflare の制約（英小文字・数字・ダッシュ、先頭は英小文字、
   Worker名込みで63文字）に合わせて自動変換される
@@ -246,31 +255,64 @@ Vercel の2本（`nexmax-academy.vercel.app` / `*.vercel.app`）は移行完了�
   フルSSRになって CPU 上限超過（Error 1102）が多発したため。KV は無料枠内
   （読み 10万/日・書き 1000/日。書きは60秒経過後の再生成時のみ）。R2 は
   アカウント未有効（有効化に課金設定が必要）なので使わない。
-  ネームスペース: `academy-next-inc-cache`（wrangler.jsonc に ID 直書き）。
+  ネームスペース: `academy-next-inc-cache-v2`（wrangler.jsonc に ID 直書き）。
+  旧 `academy-next-inc-cache` は 2026-08-27 に**中身ごと**片づけた（14,334件・約1.24GB が
+  残っており、無料枠 1GB を超えていた。鍵ごとの削除は1日1000件で14日かかるので
+  **namespace ごと消す**——管理操作なので鍵単位の枠とは別枠）。
   裏側の再生成は `WORKER_SELF_REFERENCE`（自分自身へのサービスバインディング）
   経由。**ブランチ確認URLでは再生成が本番 Worker に飛ぶため、ブランチURLの
   ISR ページは古いままになることがある**（本番・STG は正常）。設定本体は
   `open-next.config.ts`
 
-### 0.6 リリースの輪 — main へ入れたら、確認を待たずに本番まで
+### 0.6 リリースの輪 — `integration` で門番、`main` で届ける
 
-ユーザーはクライアント。**AI が PR → マージ → STG（自動）→ 本番 まで進める。**
-ユーザーは PR もマージもデプロイもしない。
+ユーザーはクライアント。**AI が PR → `integration` へマージ → STG（自動）まで進める。**
+ユーザーは PR もマージもデプロイもしない。**本番へは授業の前に時刻で自動で出る。**
 
-> **2026-08-21 に「本番OK 待ち」をやめた。**
+> **2026-08-27 に STG の配信元を `integration` へ移した。**
+> それまで STG は **main の中身しか載せられなかった**ので、「STG で確認する」には
+> 先に main へ統合するしかなく、**STG が門番になっていなかった**
+> （もう戻せないものを、あとから見る場所になっていた）。ユーザーの言葉:
+> 「mainと同じブランチで動くSTGには価値がないと思います。各ブランチの変更が全て
+> mainに統合しないとSTG確認できない状態のため、STG環境は別な統合ブランチにして、
+> OKならmainに統合したい」。
+>
+> **これは「本番OK 待ち」の復活ではない。** 待つ相手は人ではなく**時刻**である
+> （下の 2026-08-21 の決定と矛盾しない）。
+
+> **2026-08-21 に「本番OK 待ち」をやめた。**（この決定は今も生きている）
 > それまでは「STG で確認 →『本番OK』が出たものだけ本番へ」だったが、
 > 「これチェックする時間がないため、対応終わったら速攻でデプロイしてください」の指定で
 > 反転した。**待っているあいだ本番が古いままになるほうの害が大きい**——2026-08-18 の実測で
 > STG は1日14回更新されたのに本番リリースは2回、3件が本番待ちのまま忘れられていた。
+> **ユーザーに「本番OK と返してください」と求めてはならない。**
 > 台帳の正は `docs/constraints.md`（打ち消し線つきで経緯も残してある）。
 
-手順:
+#### ふだんの道
 
-1. **機械の検査を通す** — `npm test` / `npm run e2e` / `typecheck` / `lint` /
+1. **`origin/integration` を取り込む** — 作業開始時と PR 作成前に。
+2. **機械の検査を通す** — `npm test` / `npm run e2e` / `typecheck` / `lint` /
    `lint:content` / `check:size`。PR の CI（`check` / `e2e` / `size`）が緑になること。
    **人の確認はリリースの条件にしない。**
-2. **マージ** — AI がマージする。**STG は main への push で自動更新**（deploy.yml）。
-3. **続けて本番へ** — 同じセッションが、そのまま出す。
+3. **`integration` へマージ** — AI がマージする。PR の宛先も `integration`。
+   **STG は `integration` への push で自動更新**（deploy.yml）。
+   STG の `/api/version` が `origin/integration` の SHA になったことを確認する。
+4. **本番は待つ（何もしない）** — 授業のある **火・水・金 17:05 ICT（10:05 UTC）**に
+   ワークフローが `integration` → `main` を早送りして本番へ出す。
+   ビルドから検証まで6〜10分なので、**授業（17:30 ICT）の前に完了する**。
+5. **報告** — 「URL＋操作＋見るポイント」は添えるが、**OKを求めない**。
+   見るのはユーザーの都合のよいときでよい。
+
+`npm run handoff` の「■ 本番待ち」は、**出し忘れの見張り**として残っている
+（本番 `/api/version` と `origin/integration` の差分）。ここに出ているのは
+「次の授業前に届くもの」である。何日も居座るなら自動デプロイが落ちているので、
+Actions を見る。
+
+#### 緊急の道（バグ・授業当日の事故）
+
+1. `main` から切って `main` へ PR する（`integration` を経由しない）。
+2. CI green でマージ。
+3. **すぐ本番へ出す**:
 
    ```bash
    gh workflow run deploy.yml -f target=production
@@ -280,27 +322,39 @@ Vercel の2本（`nexmax-academy.vercel.app` / `*.vercel.app`）は移行完了�
    `actions_run_trigger` を使う（`run_workflow` / `deploy.yml` / ref=main /
    inputs `{target: production}`）。**ユーザーにコマンドを叩かせない**
    （「デプロイ作業をユーザーにやらせない」— constraints.md 2026-08-14）。
-4. **載ったことを確かめる** — ワークフロー自身が `/api/version` を突き合わせて、
+4. **`main` を `integration` へ戻しマージする。** 忘れると次の昇格が
+   「早送りできません」で止まる（ワークフローがそう作ってある。取り残しを作らないため）。
+5. **載ったことを確かめる** — ワークフロー自身が `/api/version` を突き合わせて、
    一致しなければ落ちる。完走を見届け、
    `https://academy.nexmax.workers.dev/api/version` の `sha` が origin/main と
    同じであることを自分でも確かめてから報告する。
-5. **報告** — 「URL＋操作＋見るポイント」は添えるが、**OKを求めない**。
-   見るのはユーザーの都合のよいときでよい。
-
-`npm run handoff` の「■ 本番待ち」は、**出し忘れの見張り**として残っている
-（本番 `/api/version` と origin/main の差分）。ここに何か出ていたら、
-それは確認待ちではなく**まだ出していないもの**なので、その場で出す。
 
 #### 「変わってない」と言われたら、まずURLを確かめる
 
 2026-08-22 に実際に起きた: STG だけ更新し、本番を「本番OK 待ち」で止めていたため、
 ユーザーがふだん開く本番URLでは何も変わっていなかった。
 
-|            | URL                                          | 更新のされかた                 |
-| ---------- | -------------------------------------------- | ------------------------------ |
-| 本番       | `academy.nexmax.workers.dev`                 | **手動**（上の手順3）          |
-| STG        | `staging-academy.nexmax.workers.dev`         | main への push で自動          |
-| ブランチ用 | `<ブランチ名>-academy.nexmax.workers.dev`    | `npm run cf:branch`            |
+|            | URL                                          | 載るもの      | 更新のされかた                                    |
+| ---------- | -------------------------------------------- | ------------- | ------------------------------------------------- |
+| 本番       | `academy.nexmax.workers.dev`                 | `main`        | **火・水・金 17:05 ICT に自動**。緊急は手動 dispatch |
+| STG        | `staging-academy.nexmax.workers.dev`         | `integration` | `integration` への push で自動                    |
+| ブランチ用 | `<ブランチ名>-academy.nexmax.workers.dev`    | 作業ブランチ  | `npm run cf:branch`                               |
+
+#### STG は「作りおきゼロ」で出る — 遅くても仕様（2026-08-27）
+
+STG のデプロイは **KV へ1件も書かない**（`scripts/preview_alias.mjs` の
+`shouldPopulateRemoteCache`）。統合ブランチ運用で STG の更新が頻繁になるため、
+1回 約70件 × 1日十数回で無料枠（書き込み 1000件/日）を食い潰し、
+**その日の本番が作りおきゼロで出る**——という 2026-08-26 の事故を構造から断つ。
+
+- 代償は**各ページ初回の 1〜2秒のフルSSR**。開いたページから後追いで温まる。
+  STG を見るのは基本ひとりなので許容する（Error 1102 は30人同時の話）。
+- **`scripts/loadcheck.mjs` を STG に向けると悪い数字が出るが、仕様どおり。**
+  負荷の確認は**本番に向けて**行うこと。
+- 置き場は **KV のまま**にしてある。assets モードにすると先生の直し（DB）が
+  STG に出なくなり、管理画面での確認が壊れるため（open-next.config.ts）。
+- **本番は従来どおり全ページ温める**（`cf:deploy` が中で `populateCache` を呼ぶ）。
+  `scripts/lib/cache_populated.mjs` の見張りは本番側で使い続ける（§0.9）。
 
 どこが何を載せているかは `/api/version` の `sha`（ビルド時のコミット）で分かる。
 **ログインなしで中身まで見たいときは `/api/<でたらめな名前>` を開く**——
@@ -544,14 +598,18 @@ Error: Wrangler kv bulk put command failed:
 「デプロイは ただ」だと 思って 1日に 何度も 出すと、その日の 夕方には
 **出せば 出すほど 壊れる**状態に なる。
 
-**授業の ある日の 決まり**:
+**授業の ある日の 決まり**（2026-08-27 に 大半が 自動化された）:
 
-1. **朝いちばんに 1回だけ 出す。** 枠が 戻るのは **UTC 0時 ＝ カンボジア 朝7時・
-   日本 朝9時**。授業が 8時からなら、その 1時間の あいだに 出す。
-2. 出したら **ログの `Successfully populated cache with N entries` を 見る**
-   （§0.9）。STG は `npm run cf:staging` が 自動で 止めるが、本番は まだ 手で 見る。
-3. 出せなかった 日は **前の版の まま 置いておく**。前の版の 作りおきは 生きている。
-4. 作業中の 確認は `npm run cf:branch`（静的アセットに 写すので **KV 書き込み 0件**）。
+1. ~~朝いちばんに 1回だけ 出す~~ → **授業の 前（火・水・金 17:05 ICT）に 自動で 1回 出る。**
+   人が 時刻を 気に する 必要は もう ない。枠が 戻るのは UTC 0時 ＝ カンボジア 朝7時。
+2. **STG の デプロイは KV を 1件も 使わない**（§0.6 末尾）。何回 出しても 枠は 減らない。
+   ——これが 「1日13回で 使い切る」問題の 本体だった。
+3. 出したら **ログの `Successfully populated cache with N entries` を 見る**（§0.9）。
+   本番は `scripts/check_cache_populated.mjs` が deploy.yml の 中で 自動で 見る
+   （schedule で 出す ときも 同じ）。
+4. 出せなかった 日は **前の版の まま 置いておく**。前の版の 作りおきは 生きている。
+   自動デプロイが 黙って 落ちても、本番は 前の版の まま（安全側）。
+5. 作業中の 確認は `npm run cf:branch`（静的アセットに 写すので **KV 書き込み 0件**）。
 
 #### 罠: **ワークフローを 直した 直後の デプロイは「承認待ち」で 止まる**（2026-08-26）
 
@@ -593,6 +651,12 @@ conclusion: action_required   （jobs: 0件）
 **必ず デプロイを 1回 通して**（人が 承認を 済ませて）から 終わること。
 承認を 残したまま 帰ると、翌朝 誰も 本番を 出せない。
 
+> **2026-08-27 の 統合ブランチ切替も これに 掛かる。** `.github/workflows/` を 3本
+> （deploy.yml・migrate.yml・ci.yml）触ったので、切替の あと **人が 画面で 1回
+> Approve and run を 押すまで、STG も 本番も 出ない**。押されるまで 本番は
+> 前の版の まま（作りおきも 生きている）なので、授業は それで 動く。
+> **押されて いない ことを 最優先で 報告する**のが 切替した セッションの 責任である。
+
 #### もう ひとつの 天井: Supabase の **IP ごと**の 上限
 
 教室は ふつう **1本の 回線（1つの IP）**から 出る。Supabase の 認証は
@@ -626,11 +690,18 @@ Cloudflare を いくら 直しても 効かない、別の 天井である。
 無料枠で 続けるなら「学習者の 道に `dynamic` を 置かない」を **規律として 守り続ける**
 必要が ある——ページを 1枚 足すたびに 気を つける、という 意味である。
 
-### 0.8 DBの移行SQL — main へ入れば自動で流れる（2026-08-26 に自動化）
+### 0.8 DBの移行SQL — `integration` へ入れば自動で流れる（2026-08-26 に自動化・2026-08-27 に配信元を移動）
 
-**移行SQLをダッシュボードに貼らない。** `supabase/migrations/*.sql` を main へ入れれば
-「デプロイ（DB）」ワークフロー（`.github/workflows/migrate.yml`）が自動で流す。
-手で流し直したいときは Actions → デプロイ（DB） → Run workflow。
+**移行SQLをダッシュボードに貼らない。** `supabase/migrations/*.sql` を
+**`integration`** へ入れれば「デプロイ（DB）」ワークフロー（`.github/workflows/migrate.yml`）が
+自動で流す。手で流し直したいときは Actions → デプロイ（DB） → Run workflow。
+
+> **なぜ main ではなく `integration` か**（2026-08-27）。DB は ローカル・STG・本番で
+> **1つを共有する**（§4）。トリガーが main のままだと、STG には新しいコードが載っているのに
+> DB が古い、という時間が生まれる——**2026-08-26 の事故と同じ型**（テストも CI も緑のまま
+> DB だけが遅れ、先生の名簿から7人が消えた）。`integration` で流せば
+> **DB が常にコードより先**になる。移行SQLは「いま動いているコードを壊さない変更だけ」なので、
+> 先に流れて困るものが無い。
 
 必要な Secret は1つだけ。**Environment「Preview」**（デプロイと同じ場所）に置く:
 
@@ -656,8 +727,8 @@ DBを見る道（Supabase コネクタ）は**前から繋がっていた**。�
 | どこ | いつ | 何をする |
 | --- | --- | --- |
 | `npm run handoff` | 作業を始めるたび | 流し忘れを出す。鍵が無い環境では**「確かめていない」と正直に言う**（黙って「問題なし」と言わない） |
-| デプロイ（DB） | main に移行SQLが入ったとき | 自動で流し、流れたことをDBに聞いて確かめる |
-| デプロイ | **本番へ出す直前** | DBが遅れていたら本番を**止める**（STG では止めない。同じ push で走る DB 側とどちらが先に終わるか決まらないため） |
+| デプロイ（DB） | **`integration`** に移行SQLが入ったとき | 自動で流し、流れたことをDBに聞いて確かめる |
+| デプロイ | **本番へ出す直前**（授業前の自動デプロイでも同じ） | DBが遅れていたら本番を**止める**（STG では止めない。同じ push で走る DB 側とどちらが先に終わるか決まらないため） |
 
 判定は `scripts/check_migrations.mjs`（`npm run check:migrations`）。
 リポジトリのファイル名の版と、DBの `supabase_migrations.schema_migrations` を突き合わせる。
@@ -682,11 +753,11 @@ DBを見る道（Supabase コネクタ）は**前から繋がっていた**。�
 
 現行（Cloudflare 移行後）:
 
-| 環境 | ホスト | 目的 | Supabase |
-|---|---|---|---|
-| ローカル | `npm run dev` | 開発 | 同一プロジェクト |
-| staging | `staging-academy.nexmax.workers.dev` | 本番前の確認（`npm run cf:staging`） | 同一プロジェクト |
-| 本番 | `academy.nexmax.workers.dev` | エンドユーザー提供 | 同一プロジェクト |
+| 環境 | ホスト | 載るもの | 目的 | Supabase |
+|---|---|---|---|---|
+| ローカル | `npm run dev` | 手もと | 開発 | 同一プロジェクト |
+| STG | `staging-academy.nexmax.workers.dev` | `integration` | 本番前の確認（マージのたび自動） | 同一プロジェクト |
+| 本番 | `academy.nexmax.workers.dev` | `main` | エンドユーザー提供（授業前に自動） | 同一プロジェクト |
 
 DB・認証は3環境とも**同じ Supabase プロジェクト**を使う（ユーザー方針）。データと認証ユーザーが環境をまたいで共有される点に注意（§4）。
 **保存を伴う実機検証は検証専用アカウントで**行うこと（`docs/skills/browser_e2e_verification.md`）。
