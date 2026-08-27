@@ -24,29 +24,11 @@ import {
   getSlides,
   getStage,
   listStages,
-  listVocabBooks,
-  listWordStages,
 } from "@/lib/content";
-import { buildDictionary } from "@/lib/dictionary";
+import { learnerDictionary } from "@/lib/dictionary-server";
 import { stageStepNumber } from "@/lib/map-data";
 import { resolveStageContent, stageContentPath, stageContentSegments } from "@/lib/stage-routes";
 import { loadRef } from "../page";
-
-/**
- * 本文の ふきだしに 出す 辞書。
- *
- * 引き先は **ことばの 正 ぜんぶ**（`content/vocab`）。単語テストの セットは
- * 「○○で あそぶ」の リンクを 出すためだけに 見る——**覚える 語（テスト）と
- * 読む ための 助け（ふきだし）は 別**（2026-08-25 の指定）。
- *
- * ステージの ぶんだけに 絞らないのは、本文に 出て くる ことばは 前の 課で 習った
- * ものが 多い ため。絞ると いちばん 助けが 要る「前に 習ったが 忘れた語」に
- * 説明が 出なくなる。
- */
-async function learnerDictionary() {
-  const [books, stages] = await Promise.all([listVocabBooks(), listWordStages()]);
-  return buildDictionary(books, stages);
-}
 
 /**
  * ステージの中の教材（`/asakai/listening`）
@@ -234,7 +216,8 @@ async function renderContent(ref: StageContentRef) {
     case "quizset": {
       const set = await getQuizSet(ref.ref);
       if (!set) notFound();
-      return <QuizRunner set={set} embedded />;
+      /* もんだいの 設問文・ヒントにも 辞書を 出す（読みものと 同じ 引き先）。 */
+      return <QuizRunner set={set} dictionary={await learnerDictionary()} embedded />;
     }
     case "scenario": {
       const scenario = await getScenario(ref.ref);

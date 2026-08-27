@@ -7,8 +7,8 @@ import {
   writeIn,
   writtenText,
   HOUKOKU_TOTAL,
-  JIBUN_TOTAL,
   JUNBI_TOTAL,
+  pickChoiceIn,
   waitForAsk,
   KAISHA,
   KAISHA_ITEMS,
@@ -47,41 +47,54 @@ import {
  * 別の もんだいを 触って しまう。
  */
 const HOUKOKU_WORDS: readonly (readonly [string, readonly string[]])[] = [
-  ["q1", ["2018年", "1月"]],
-  ["q3", ["大阪", "東京"]],
-  ["q4", ["2024年4月"]],
-  ["q5", ["ベトナム"]],
   // 5つの サービスは **順番を 見ない**（`unordered`）。サイトの 並びと わざと ちがう 順で 入れる
-  ["q6", ["Verify", "NEXTMAKE Internship Lab", "NMClaw", "セキュリティドローン", "観光DX"]],
-  ["q7", ["NMClaw"]],
-  ["q8", ["受託開発"]],
-  ["q9", ["新しい 技術", "グループの 会社", "世界の 人と 学ぶ"]],
-  ["q13", ["WEB制作"]],
-  ["q14", ["システム開発"]],
-  ["q15", ["技術"]],
-  ["q20", ["日本語", "IT"]],
-  ["q21", ["N3"]],
-  ["q22", ["日本語の 勉強", "ITの 勉強", "しごとの 紹介"]],
-  ["q23", ["2024年9月"]],
+  ["q5", ["Verify", "NEXTMAKE Internship Lab", "NMClaw", "セキュリティドローン", "観光DX"]],
+  ["q8", ["新しい 技術", "グループの 会社", "世界の 人と 学ぶ"]],
+  ["q25", ["日本語の 勉強", "ITの 勉強", "しごとの 紹介"]],
 ];
 
 /**
- * 自由入力の 12問。**どれも 代表解そのままではない**書き方にしてある
+ * 自由入力の 6問。**どれも 代表解そのままではない**書き方にしてある
  * ——ひらがな・カタカナ・小文字・「です」つき・文で答える が 救済されている証拠を、
  * 通しの中に そのまま 残すため（判定は src/lib/text/normalize.ts）。
  */
 const HOUKOKU_FREE_INPUT: readonly (readonly [string, string])[] = [
+  ["q1", "ネクストメイク"], // カタカナ（代表解は「株式会社 NEXT MAKE」）
   ["q2", "まついさん"], // ひらがな＋さん（accept「まつい」に 部分一致）
-  ["q10", "コンティニューです"], // カタカナ＋です
-  ["q11", "べとなむ"], // ひらがな（代表解は「ベトナム」）
-  ["q12", "かんこうDX"], // ひらがな まじり
-  ["q16", "どうぐ"], // やさしい 日本語の 言い方（「手段」でも 通る）
-  ["q17", "ちょうせん"], // ひらがな
-  ["q18", "ひとと ひとの しんらいです"], // 文＋です（accept「しんらい」に 部分一致）
-  ["q19", "カンボジア"], // そのまま
-  ["q24", "internship lab"], // 小文字
-  ["q25", "リーダーです"], // です つき
-  ["q26", "にほんご"], // ひらがな（代表解は「日本語」）
+  ["q6", "エヌエムクロー"], // カタカナ（代表解は「NMClaw」）
+  ["q7", "じゅたくかいはつ"], // ひらがな
+  ["q9", "コンティニューです"], // カタカナ＋です
+  ["q10", "かわむら"], // ひらがな（名字だけ）
+  ["q20", "ひとと ひとの しんらいです"], // 文＋です（accept「しんらい」に 部分一致）
+  ["q21", "どうぐ"], // やさしい 日本語の 言い方（「手段」でも 通る）
+  ["q26", "internship lab"], // 小文字
+];
+
+/**
+ * 4択の 16問。**もんだいの id と 正解の 番号**の 組で 持つ。
+ *
+ * 文字で えらばないのは、ルビが 合成される ので 掴めない ため（`choiceButtons` の 覚書）。
+ * 番号を ここに 書き写して いるのは、**教材の 並びが 変わったら テストも 落ちる**
+ * ように する ため——落ちれば 人が 見に 行ける。正解の 番号は わざと ばらして ある
+ *（ぜんぶ 先頭だと、読まずに 上を 押すだけで 満点に なる）。
+ */
+const HOUKOKU_CHOICES: readonly (readonly [string, number])[] = [
+  ["q3", 0],
+  ["q4", 3],
+  ["q11", 2],
+  ["q12", 3],
+  ["q13", 0],
+  ["q14", 3],
+  ["q15", 2],
+  ["q16", 1],
+  ["q17", 0],
+  ["q18", 3],
+  ["q19", 2],
+  ["q22", 1],
+  ["q23", 0],
+  ["q24", 3],
+  ["q27", 2],
+  ["q28", 1],
 ];
 
 /** ヘンディさんに 話す こたえ（型文を なぞった、学習者が 書きそうな文）。 */
@@ -207,7 +220,7 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
     await frameNext(page).click();
   });
 
-  await test.step("4. STEP 2 もんだい「調査シート」— 26問が ぜんぶ 1ページに 出る", async () => {
+  await test.step("4. STEP 2 もんだい「調査シート」— 全問が 1ページに 出る", async () => {
     await expect(page).toHaveURL(/quiz-kaisha_houkoku$/);
     await page.getByRole("button", { name: "はじめる" }).click();
 
@@ -225,6 +238,21 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
     ).toBeVisible();
     await expect(page.getByRole("button", { name: "つぎ →" })).toHaveCount(0);
 
+    /*
+     * **MISSIONの 見出しが 章ごとに 1回 出る**（2026-08-27 の 作り直し）。
+     * 28問が 見出しなしで 並ぶと、いま どの 話を 調べて いるのかが 画面から 消える。
+     */
+    await expect(page.getByRole("heading", { name: /MISSION 1/ })).toBeVisible();
+    await expect(page.getByRole("heading", { name: /MISSION 7/ })).toBeVisible();
+
+    /*
+     * **ぜんぶ うめるまで「こたえを 出す」は 出ない**（`requireAll`）。
+     * のこりが ある あいだは 理由と 次の 一手だけが 出る。
+     */
+    await expect(page.getByRole("button", { name: /こたえを 出/ })).toHaveCount(0);
+    // ルビが 語の 中に 入る（「書かくと」）ので、ふりがなの 入らない ところで さがす
+    await expect(page.getByText(/もん です/)).toBeVisible();
+
     for (const [questionId, words] of HOUKOKU_WORDS) {
       await placeWordsIn(page, questionId, words);
     }
@@ -233,7 +261,12 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
     for (const [questionId, written] of HOUKOKU_FREE_INPUT) {
       await writeIn(page, questionId, written);
     }
+    for (const [questionId, at] of HOUKOKU_CHOICES) {
+      await pickChoiceIn(page, questionId, at);
+    }
     await expect(page.getByText(writtenText(HOUKOKU_TOTAL))).toBeVisible();
+    // ぜんぶ うまったので、ここで はじめて 出す ボタンが 出る
+    await expect(page.getByRole("button", { name: /こたえを 出/ })).toBeVisible();
     await submitAnswers(page);
 
     await expect(page.getByText(`${HOUKOKU_TOTAL} / ${HOUKOKU_TOTAL} もん`)).toBeVisible();
@@ -250,7 +283,7 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
        */
       await expect(page.getByRole("listitem").filter({ hasText: written }).first()).toBeVisible();
     }
-    // できた しるしが 26行 ぜんぶに 付く
+    // できた しるしが 全行に 付く
     await expect(page.getByText("✓ できた")).toHaveCount(HOUKOKU_TOTAL);
     await shot(page, "06-quiz-houkoku-result");
     await frameNext(page).click();
@@ -283,6 +316,25 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
       "aria-pressed",
       "true",
     );
+
+    /*
+     * **さっき 調べた ことを 見ながら 話す**（2026-08-27 の 指定）。
+     * 調査シートの こたえが、会話の 最中に ひきだしで 開く——25問を 覚えて
+     * 会話に 入るか、別の タブを 行ったり 来たり する しか なかった ところ。
+     * 絞りは「ほうこくの しるし」だけ（`notes[].reportOnly`）。
+     */
+    await page.getByRole("button", { name: /こたえを/ }).click();
+    const notebook = page.getByRole("dialog", { name: "自分の こたえ" });
+    await expect(notebook).toBeVisible();
+    /*
+     * 出るのは **自分が 書いた こたえ**（かなだけの ひとかたまりで さがす）。
+     * 「コンティニューです」は q9（ほうこくの しるしが ある 問い）に 書いた もの。
+     * しるしの 無い 問いは 絞りで 落ちる ので、ここに 出て こない。
+     */
+    await expect(notebook.getByText("コンティニューです")).toBeVisible();
+    await shot(page, "08b-meeting-notebook");
+    await notebook.getByRole("button", { name: /閉/ }).click();
+    await expect(notebook).toHaveCount(0);
 
     /*
      * 型文は **ポップアップ**（2026-08-20 の 指定）。出しっぱなしを やめた ので、
@@ -353,63 +405,56 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
     await frameNext(page).click();
   });
 
-  await test.step("6. STEP 4 もんだい「会社と 自分の 関係を 考えよう」— 正解の 無い 問い", async () => {
+  await test.step("6. STEP 4 ページ「松井社長と 話す 準備を しよう」— 前と 後を くらべる", async () => {
     /*
-     * ここから 先は **自分の 考え**を 作る 段（設計 md の STEP 4）。
-     * 正解が 無いので、書けば 点が 入る。ここで「ちがいます」が 出たら 設計が 壊れて いる
-     *（規律1: その 学習者だけの 正しい こたえを まちがいに しない）。
+     * ここから 先は **自分の 考え**を 作る 段（配布資料 03）。
+     * 読みものは「ヘンディさんへの 報告と 何が ちがう？」を 2枚 並べて 見せる。
      */
-    await expect(page).toHaveURL(/quiz-kaisha_jibun$/);
-    await page.getByRole("button", { name: "はじめる" }).click();
+    await expect(page).toHaveURL(/article-kaisha_matsui_junbi$/);
+    await expect(page.getByRole("heading", { name: /報告.*ちがう/ })).toBeVisible();
+    /*
+     * **まだ 無い 絵の ところは 空けずに わくを 出す**（2026-08-27 の 指定）。
+     * 空だと 作り忘れが 画面から 見えない。6枚 ぜんぶが この ページに ある。
+     */
+    await expect(page.locator('[data-slot="empty"]')).toHaveCount(6);
+    await shot(page, "07-junbi-article");
 
-    const boxes = page.getByRole("textbox", { name: "じゆうに 書く" });
-    await expect(boxes).toHaveCount(JIBUN_TOTAL);
-
-    /* 学習者が 書きそうな 文。数は 教材に そろえる（問いが 増えたら ここも 増える）。 */
-    const written = [
-      "私が 今 がんばって いる ことは 日本語です。",
-      "観光DX に 興味を もちました。",
-      "新しい 技術だから、興味を もちました。",
-      "今 Python を 勉強して います。AIの 仕事で 使えそうです。",
-      "私は AIを 使う 仕事を して みたいです。",
-      "私は 日本語で 仕事が できる エンジニアに なりたいです。",
-    ];
-    expect(written).toHaveLength(JIBUN_TOTAL);
-    for (const [at, text] of written.entries()) await boxes.nth(at).fill(text);
-
-    await expect(page.getByText(`こたえた ${JIBUN_TOTAL} / ${JIBUN_TOTAL}`)).toBeVisible();
-    await submitAnswers(page);
-
-    await expect(page.getByText(/^正解/)).toHaveCount(0);
-    await shot(page, "07-jibun-result");
-
+    await readToEnd(page);
     await frameNext(page).click();
   });
 
-  await test.step("7. STEP 5 もんだい「松井社長と 話す 準備を しよう」— 9つの 準備", async () => {
+  await test.step("7. STEP 4 もんだい「松井社長に 何を 話す？」— 英語→日本語の 2欄", async () => {
     /*
-     * 松井社長と 話す 前に、**自分の ことばを 作って おく** 段（設計 md の STEP 5）。
+     * 松井社長と 話す 前に、**自分の ことばを 作って おく**（配布資料 04）。
      * ここで 書いた ものが、そのまま 対話の 材料に なる。
      */
     await expect(page).toHaveURL(/quiz-kaisha_omoshiroi$/);
     await page.getByRole("button", { name: "はじめる" }).click();
 
-    const boxes = page.getByRole("textbox", { name: "じゆうに 書く" });
-    await expect(boxes).toHaveCount(JUNBI_TOTAL);
+    /*
+     * 英語の 欄は **使いたい 人だけ**（採点は 日本語の 欄だけ）。
+     * 両方 出て いる ことを 見る——片方 しか 出ないと、日本語で 直に 書ける 人に
+     * 余計な 段を 踏ませるか、英語で 考えたい 人の 逃げ道が 消える。
+     */
+    const jp = page.getByRole("textbox", { name: "じゆうに 書く" });
+    const en = page.getByRole("textbox", { name: "えいごで 下書きする" });
+    await expect(jp).toHaveCount(JUNBI_TOTAL);
+    await expect(en).toHaveCount(JUNBI_TOTAL);
+
+    // ぜんぶ うめるまで 出せない（`requireAll`）
+    await expect(page.getByRole("button", { name: /こたえを 出/ })).toHaveCount(0);
 
     const written = [
-      "ネクストメイクは、お客さまの ホームページや アプリを 作る 会社です。",
-      "日本語と ITを 勉強して、日本の 会社で はたらく プログラムです。",
-      "Internship Lab で、日本人の リーダーと いっしょに 仕事を します。",
-      "今 Python を 勉強して います。AIの 仕事で 使えそうです。",
-      "観光DX に 興味を もちました。まちを あるくのが すきだからです。",
-      "カンボジアの プログラムが 良いと 思いました。わたしの 国には まだ ないので、見て みたいからです。",
-      "日本語で 報告できる エンジニアに なりたいです。",
-      "社長に 聞きたい ことは、どんな 人と はたらきたいかです。",
-      "日本語を がんばります。まいにち 30分、声に 出して 読みます。",
+      "観光DX が いいと 思いました。まちを あるきたいからです。",
+      "私は 日本語が 得意です。報告に 使いたいです。",
+      "私は AIを 使う 仕事を やって みたいです。",
+      "カンボジアの 学生は 新しい ことを 早く おぼえると 思います。",
+      "社長に 聞きたい ことは、どうして この 会社を 作りましたかです。",
     ];
     expect(written).toHaveLength(JUNBI_TOTAL);
-    for (const [at, text] of written.entries()) await boxes.nth(at).fill(text);
+    for (const [at, text] of written.entries()) await jp.nth(at).fill(text);
+    // 英語は 1つだけ 書く（書かなくても 点に 関わらない ことの 証拠）
+    await en.nth(0).fill("I like Tourism DX because I want to walk around the town.");
 
     await expect(page.getByText(`こたえた ${JUNBI_TOTAL} / ${JUNBI_TOTAL}`)).toBeVisible();
     await submitAnswers(page);
@@ -422,10 +467,9 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
     await expect(page.getByText(/^正解/)).toHaveCount(0);
     /*
      * 書いた ものは 消えずに 残る。**かなだけの ひとかたまり**で さがす——
-     * 画面の 漢字には ルビが 合成される ので、書いた 文の まま 引くと 当たらない
-     *（「通訳」→「通訳つうやく」）。中身が そのままかは 単体テストが 見て いる。
+     * 画面の 漢字には ルビが 合成される ので、書いた 文の まま 引くと 当たらない。
      */
-    await expect(page.getByText(/ないので、/)).toBeVisible();
+    await expect(page.getByText(/あるきたいからです/)).toBeVisible();
     await shot(page, "08-junbi-result");
 
     await frameNext(page).click();

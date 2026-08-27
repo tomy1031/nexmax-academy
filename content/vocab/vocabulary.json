@@ -4,6 +4,42 @@
   "title": "ことば",
   "furigana": [
     [
+      "東京",
+      "とうきょう"
+    ],
+    [
+      "大阪",
+      "おおさか"
+    ],
+    [
+      "東京本店",
+      "とうきょうほんてん"
+    ],
+    [
+      "人手不足",
+      "ひとでぶそく"
+    ],
+    [
+      "松井社長",
+      "まついしゃちょう"
+    ],
+    [
+      "調査",
+      "ちょうさ"
+    ],
+    [
+      "成長",
+      "せいちょう"
+    ],
+    [
+      "目的",
+      "もくてき"
+    ],
+    [
+      "足",
+      "た"
+    ],
+    [
       "急がないで",
       "いそがないで"
     ],
@@ -7786,6 +7822,69 @@
           "しつもん"
         ]
       ]
+    },
+    {
+      "id": "chousa",
+      "term": "調査",
+      "reading": "ちょうさ",
+      "romaji": "chousa",
+      "meaningJa": "知りたい ことを、自分で しらべる ことです。",
+      "englishTerm": "Research / Survey",
+      "example": "Webサイトを 見て、調査シートを 書きます。"
+    },
+    {
+      "id": "bunya",
+      "term": "分野",
+      "reading": "ぶんや",
+      "romaji": "bunya",
+      "meaningJa": "仕事や 勉強の しゅるいです。車、学校、役所などです。",
+      "englishTerm": "Field / Sector",
+      "example": "お客さまは いろいろな 分野の 会社です。"
+    },
+    {
+      "id": "seichou",
+      "term": "成長",
+      "reading": "せいちょう",
+      "romaji": "seichou",
+      "meaningJa": "前より できる ことが ふえる ことです。",
+      "englishTerm": "Growth",
+      "example": "これからの 成長を、松井社長に 伝えます。"
+    },
+    {
+      "id": "toukyouhonten",
+      "term": "東京本店",
+      "reading": "とうきょうほんてん",
+      "romaji": "toukyouhonten",
+      "meaningJa": "東京に ある、2つめの 大きな オフィスです。",
+      "englishTerm": "Tokyo main branch",
+      "example": "本社は 大阪、東京本店は 東京に あります。"
+    },
+    {
+      "id": "hitodebusoku",
+      "term": "人手不足",
+      "reading": "ひとでぶそく",
+      "romaji": "hitodebusoku",
+      "meaningJa": "はたらく 人が 足りない ことです。",
+      "englishTerm": "Labour shortage",
+      "example": "日本の 人手不足を なおす ことが 目的の 1つです。"
+    },
+    {
+      "id": "offshore-kaihatsu",
+      "term": "オフショア開発",
+      "reading": "おふしょあかいはつ",
+      "romaji": "offshore kaihatsu",
+      "meaningJa": "日本の 仕事を、外国の エンジニアが 作る やりかたです。",
+      "englishTerm": "Offshore development",
+      "example": "ベトナムの チームが オフショア開発を して います。"
+    },
+    {
+      "id": "group-gaisha",
+      "term": "グループ会社",
+      "reading": "ぐるーぷがいしゃ",
+      "romaji": "group gaisha",
+      "meaningJa": "おなじ なかまの 会社です。いっしょに 仕事を します。",
+      "englishTerm": "Group company",
+      "example": "グループ会社の CONTINUE LLC. は ベトナムに あります。"
     }
   ]
 }

@@ -566,5 +566,12 @@
       "道",
       "みち"
     ]
+  ],
+  "notes": [
+    {
+      "ref": "kaisha_houkoku",
+      "label": "調査シートの こたえ",
+      "reportOnly": true
+    }
   ]
 }

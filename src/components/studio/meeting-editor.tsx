@@ -372,6 +372,74 @@ export function MeetingEditor({
         </MiniButton>
       </StudioSection>
 
+      {/*
+        会話の 最中に 開ける「自分の こたえ」（`meeting.notes`）。
+        **中身は 教材が 持たない**——学習者ごとに ちがう ものを 教材が 持てる はずが
+        ない。ここで 決めるのは「どの もんだいの こたえを 出すか」だけ。
+      */}
+      <StudioSection
+        title={`自分の こたえを 見せる（${value.notes.length}つ）`}
+        hint="話しながら「📋 自分の こたえを 見る」で 開けます。もんだいの ID を 書きます。"
+      >
+        <ol className="space-y-2">
+          {value.notes.map((note, index) => (
+            <li
+              key={index}
+              className="border-hairline flex flex-wrap items-end gap-2 rounded-xl border-2 bg-white p-2"
+            >
+              <div className="w-48">
+                <TextField
+                  label="もんだいの ID"
+                  value={note.ref}
+                  onChange={(ref) =>
+                    patch({ notes: replaceAt(value.notes, index, { ...note, ref }) })
+                  }
+                  placeholder="kaisha_houkoku"
+                />
+              </div>
+              <div className="min-w-[10rem] flex-1">
+                <TextField
+                  label="見出し"
+                  value={note.label}
+                  onChange={(label) =>
+                    patch({ notes: replaceAt(value.notes, index, { ...note, label }) })
+                  }
+                  placeholder="調査シートの こたえ"
+                />
+              </div>
+              <label className="text-ink flex items-center gap-2 pb-2 text-xs font-black">
+                <input
+                  type="checkbox"
+                  checked={note.reportOnly ?? false}
+                  onChange={(event) =>
+                    patch({
+                      notes: replaceAt(value.notes, index, {
+                        ...note,
+                        reportOnly: event.target.checked ? true : undefined,
+                      }),
+                    })
+                  }
+                />
+                ほうこくの しるしが ある 問だけ
+              </label>
+              <RowTools
+                index={index}
+                count={value.notes.length}
+                label="メモ"
+                onMove={(delta) => patch({ notes: moveItem(value.notes, index, delta) })}
+                onRemove={() => patch({ notes: removeAt(value.notes, index) })}
+              />
+            </li>
+          ))}
+        </ol>
+        <MiniButton
+          tone="accent"
+          onClick={() => patch({ notes: [...value.notes, { ref: "", label: "" }] })}
+        >
+          ＋ メモを 追加
+        </MiniButton>
+      </StudioSection>
+
       <MeetingPromptPreview value={value} />
 
       <MeetingTalkPanel value={value} cast={cast} />

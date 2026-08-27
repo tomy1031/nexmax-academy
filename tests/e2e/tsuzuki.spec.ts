@@ -28,8 +28,8 @@ test("2問 書いて 離れ、もどると「つづきから」が 出る", asyn
   await page.getByRole("button", { name: "はじめる" }).click();
 
   // ぜんぶ 1ページなので 進まずに 2問 書く
-  await placeWordsIn(page, "q8", ["受託開発"]);
-  await placeWordsIn(page, "q3", ["大阪", "東京"]);
+  await placeWordsIn(page, "q8", ["新しい 技術"]);
+  await placeWordsIn(page, "q25", ["日本語の 勉強"]);
   await expect(page.getByText(writtenText(2))).toBeVisible();
 
   // ステージへ 離脱（進み具合には「とちゅう」として 出る）
@@ -53,7 +53,7 @@ test("「はじめから やる」を えらべば 1問目に もどる", async 
 
   await page.goto(KAISHA.sheet.path);
   await page.getByRole("button", { name: "はじめる" }).click();
-  await placeWordsIn(page, "q8", ["受託開発"]);
+  await placeWordsIn(page, "q8", ["新しい 技術"]);
 
   await page.goto(KAISHA.sheet.path);
   await page.getByRole("button", { name: "はじめから やる" }).click();

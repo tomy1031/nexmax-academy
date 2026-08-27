@@ -258,5 +258,16 @@
       "大",
       "おお"
     ]
+  ],
+  "notes": [
+    {
+      "ref": "kaisha_omoshiroi",
+      "label": "松井社長に 話す こと"
+    },
+    {
+      "ref": "kaisha_houkoku",
+      "label": "調査シートの こたえ",
+      "reportOnly": true
+    }
   ]
 }

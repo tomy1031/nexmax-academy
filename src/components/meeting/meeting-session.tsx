@@ -57,6 +57,7 @@ import {
   askInstruction as buildAskInstruction,
   listenInstruction as buildListenInstruction,
 } from "@/lib/meeting/instructions";
+import { AnswerNotebook } from "@/components/answers/answer-notebook";
 import { HintModal } from "./hint-modal";
 import { CertificateModal } from "./certificate-modal";
 import { JudgeModal } from "./judge-modal";
@@ -1504,6 +1505,13 @@ export function MeetingSession({
           <RubyText text="全部 答えると 開きます" index={CHROME_FURIGANA} show />
         </span>
       ) : null}
+      {/*
+        **さっき 調べた ことを 見ながら 話す**（2026-08-27 の 指定）。
+        帯の 右はしに 置くのは、話す ボタンと 会話の 記録を 押し出さない ため
+        ——ヒントを ポップアップに したのと 同じ 決めごと。
+        `meeting.notes` が 空の 教材では 部品が 何も 描かない。
+      */}
+      <AnswerNotebook sources={meeting.notes} className="ml-auto shrink-0" />
     </div>
   );
 
