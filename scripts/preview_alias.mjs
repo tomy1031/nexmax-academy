@@ -16,13 +16,20 @@
  * 使い方:
  *   npm run cf:branch            # 今のブランチ名から確認URLを決めて上げる
  *   npm run cf:branch -- shindan # 名前を明示する
- *   npm run cf:staging           # `staging` へ上げる。**main の中身のときだけ許可**
+ *   npm run cf:staging           # `staging` へ上げる。**integration の中身のときだけ許可**
  *
- * `staging` を main 専用にしてあるのは、
+ * `staging` を統合ブランチ専用にしてあるのは、
  * 「staging を見れば統合された最新が分かる」を成り立たせるため。
  * 作業ブランチの確認は各自のエイリアスで行う。
- * 判定はブランチ名ではなく**中身**（HEAD が origin/main と同一か）で行う。
+ * 判定はブランチ名ではなく**中身**（HEAD が origin/integration と同一か）で行う。
  * 理由は `mayPublishShared` を参照。
+ *
+ * **2026-08-27: 基準を main から integration へ「移した」（外したのではない）。**
+ * それまで staging は main の中身しか載せられず、「STG で確かめてから main へ」が
+ * 成り立たなかった（もう戻せないものを あとから 見る場所になっていた）。
+ * 配信元を統合ブランチへ移し、**ガードは同じ強さのまま基準だけを差し替えた**。
+ * ブランチ名を許可リストに足す方式は採っていない——それだと名前さえ合えば
+ * 中身が何でも通り、2026-08-04 の巻き戻し事故が再び開くため。
  *
  * ログインについて:
  *   確認URLはホスト名が変わるので、Supabase の Redirect URLs に
@@ -38,32 +45,70 @@ import { cachePopulated, CACHE_EMPTY_MESSAGE } from "./lib/cache_populated.mjs";
 /** エイリアス名 + "-" + Worker名 が DNS ラベル上限の63文字を超えられない。 */
 const DNS_LABEL_LIMIT = 63;
 
-/** main の内容を上げるときだけ使える、統合版の確認URL。 */
+/** 統合ブランチの内容を上げるときだけ使える、統合版の確認URL（＝STG）。 */
 const SHARED_ALIAS = "staging";
 
-const MAIN_BRANCHES = new Set(["main", "master"]);
+/** STG の配信元。作業ブランチはここへ PR し、ここから main へ昇格する。 */
+const BASE_BRANCH = "integration";
+
+/**
+ * 名前だけで `staging` を許すブランチ。
+ *
+ * **統合ブランチ 1つだけ**にしてある。main を足さないのは、統合ブランチ運用では
+ * main が「本番の配信元」であって STG の配信元ではないため——main の中身を
+ * staging に載せると、integration に溜まっている確認前の作業が STG から消える
+ * （2026-08-04 の巻き戻し事故と同じ形）。昇格直後は main と integration の中身が
+ * 同じなので、そのときは下の**中身の判定**が通す。
+ */
+const BASE_BRANCHES = new Set([BASE_BRANCH]);
 
 /**
  * `staging` へ上げてよいか。
  *
- * 守りたいのは「staging に載っているのは main だ」という性質であって、
- * ブランチ名そのものではない。**worktree を使っていると main は1か所でしか
+ * 守りたいのは「staging に載っているのは統合ブランチだ」という性質であって、
+ * ブランチ名そのものではない。**worktree を使っていると同じブランチは1か所でしか
  * checkout できない**ので、ブランチ名だけで判定すると、
- * main へ早送り済みの作業ブランチからも上げられなくなる
- * （そのとき唯一の逃げ道が「main の worktree から上げる」になるが、
+ * integration へ早送り済みの作業ブランチからも上げられなくなる
+ * （そのとき唯一の逃げ道が「integration の worktree から上げる」になるが、
  * そこに他セッションの未コミット変更があると、それごと staging に載ってしまう）。
  *
- * そこで**内容で判定する**。HEAD が origin/main と同一なら、
- * ブランチ名が何であれ staging に載るのは main の中身そのもの。
+ * そこで**内容で判定する**。HEAD が origin/integration と同一なら、
+ * ブランチ名が何であれ staging に載るのは統合ブランチの中身そのもの。
+ * CI（Actions「デプロイ」）は detached HEAD で走ってブランチ名が `HEAD` になるので、
+ * この経路でしか通らない——つまり中身の判定は飾りではなく実運用の本道である。
  *
  * @param {string} branch 現在のブランチ名
  * @param {string} headSha HEAD のコミット
- * @param {string | null} mainSha origin/main のコミット（取得できなければ null）
+ * @param {string | null} baseSha origin/integration のコミット（取得できなければ null）
  * @returns {boolean}
  */
-export function mayPublishShared(branch, headSha, mainSha) {
-  if (MAIN_BRANCHES.has(branch)) return true;
-  return mainSha !== null && headSha === mainSha;
+export function mayPublishShared(branch, headSha, baseSha) {
+  if (BASE_BRANCHES.has(branch)) return true;
+  return baseSha !== null && headSha === baseSha;
+}
+
+/**
+ * 上げたあとに KV の作りおき（incrementalCache）を温めるか。
+ *
+ * **STG では温めない（2026-08-27）。** KV の書き込みは無料枠 1000件/日で、
+ * 1回のデプロイが約70件を書く。統合ブランチ運用で STG の更新が頻繁になると、
+ * ここだけで枠を食い潰し、**その日の本番が作りおきゼロで出る**
+ * （2026-08-26 に実発生。populateCache が枠切れで落ちたのに「デプロイ成功」で終わった）。
+ * STG は開いたページから後追いで温まる（各ページ初回だけフルSSRで1〜2秒。
+ * 見る人が基本ひとりなので許容できる。Error 1102 は30人同時の話）。
+ *
+ * **KVモードは維持する。** assets モードにすると先生の直し（DB）が STG に出なくなり、
+ * 管理画面での確認が壊れるため（open-next.config.ts）。
+ * **本番は従来どおり全ページ温める**——経路が別（`cf:deploy` →
+ * `opennextjs-cloudflare deploy` が中で呼ぶ）なので、ここは通らない。
+ *
+ * @param {string} alias 確認URLのエイリアス
+ * @param {boolean} assetsMode 静的アセットから読む版か（すでにローカルで写してある）
+ * @returns {boolean}
+ */
+export function shouldPopulateRemoteCache(alias, assetsMode) {
+  if (assetsMode) return false;
+  return alias !== SHARED_ALIAS;
 }
 
 /**
@@ -124,12 +169,17 @@ function git(...args) {
   return execFileSync("git", args, { encoding: "utf-8" }).trim();
 }
 
-/** origin/main のコミット。取れなければ null（ネットワーク不通など）。 */
-function originMainSha() {
+/**
+ * origin/integration のコミット。取れなければ null（ネットワーク不通など）。
+ *
+ * **fetch する ref と rev-parse する ref は必ずそろえる。** 片方だけ変えると
+ * 「古い ref のまま判定を通す」——ガードが有るのに効かない状態になる。
+ */
+function originBaseSha() {
   try {
     // 判定を古い ref で通してしまわないよう、比較の直前に取り直す。
-    execFileSync("git", ["fetch", "origin", "main", "--quiet"], { stdio: "ignore" });
-    return git("rev-parse", "origin/main");
+    execFileSync("git", ["fetch", "origin", BASE_BRANCH, "--quiet"], { stdio: "ignore" });
+    return git("rev-parse", `origin/${BASE_BRANCH}`);
   } catch {
     return null;
   }
@@ -144,29 +194,32 @@ function main() {
 
   if (
     alias === SHARED_ALIAS &&
-    !mayPublishShared(branch, git("rev-parse", "HEAD"), originMainSha())
+    !mayPublishShared(branch, git("rev-parse", "HEAD"), originBaseSha())
   ) {
     console.error(
       [
         "",
-        `✗ \`${SHARED_ALIAS}\` に上げられるのは main の中身だけです（いまは ${branch}）。`,
+        `✗ \`${SHARED_ALIAS}\`（STG）に上げられるのは ${BASE_BRANCH} の中身だけです（いまは ${branch}）。`,
         "",
         "  確認URLは共有なので、ここへ上げると他のセッションの作業が消えます。",
         "  作業ブランチの確認には自分のエイリアスを使ってください:",
         "",
         "      npm run cf:branch",
         "",
-        "  main を上げたいときは、main に切り替えるか、",
-        "  このブランチを main へ早送りしてから実行してください",
-        "  （HEAD が origin/main と同一なら、ブランチ名が何でも通ります）。",
+        `  STG に出したいときは、このブランチを ${BASE_BRANCH} へ PR してマージしてください`,
+        "  （マージすれば Actions「デプロイ」が自動で STG を更新します）。",
+        `  手で上げるなら ${BASE_BRANCH} に切り替えるか、このブランチを origin/${BASE_BRANCH} へ`,
+        "  早送りしてから実行します（中身が同一なら、ブランチ名が何でも通ります）。",
         "",
       ].join("\n"),
     );
     process.exit(1);
   }
 
-  if (MAIN_BRANCHES.has(branch) && alias !== SHARED_ALIAS) {
-    console.log(`ℹ main から \`${alias}\` へ上げます（\`${SHARED_ALIAS}\` ではありません）。`);
+  if (BASE_BRANCHES.has(branch) && alias !== SHARED_ALIAS) {
+    console.log(
+      `ℹ ${BASE_BRANCH} から \`${alias}\` へ上げます（\`${SHARED_ALIAS}\` ではありません）。`,
+    );
   }
 
   console.log(`→ ${branch} を https://${alias}-${workerName}.<subdomain>.workers.dev へ上げます`);
@@ -176,11 +229,12 @@ function main() {
   //  - assets モード（`OPEN_NEXT_CACHE=assets`。ブランチ確認URL用）
   //      Worker の静的アセットへ**ローカルでコピー**してから上げる。KV書き込みは0件。
   //      コピーは upload より**先**でなければならない（上げるのは .open-next/assets の中身）。
-  //  - 既定（staging・本番）
-  //      upload の**あと**に KV へ投入する。1回およそ68件の書き込みになる。
+  //  - 既定（KV）
+  //      upload の**あと**に KV へ投入する。1回およそ70件の書き込みになる。
+  //      **ただし STG（`staging`）では投入しない**（2026-08-27。`shouldPopulateRemoteCache`）。
   //
   // なぜ分けるか: KV無料枠は書き込み1000件/日。キャッシュキーに buildId が入るため
-  // 版を上げるたびに68件を丸ごと書き直しており、2026-08-22 に上限へ当たった。
+  // 版を上げるたびに70件を丸ごと書き直しており、2026-08-22 に上限へ当たった。
   const assetsMode = process.env.OPEN_NEXT_CACHE === "assets";
 
   if (assetsMode) {
@@ -216,7 +270,14 @@ function main() {
     process.exit(result.status ?? 1);
   }
 
-  if (!assetsMode) {
+  if (alias === SHARED_ALIAS) {
+    console.log(
+      "→ KV の作りおきは温めません（STG はデプロイ時 KV書き込み0件。" +
+        "各ページ初回だけフルSSRで、そのあと自然に温まります）",
+    );
+  }
+
+  if (shouldPopulateRemoteCache(alias, assetsMode)) {
     // ビルド時プリレンダーを KV の incrementalCache へ投入する。
     // `opennextjs-cloudflare deploy`（cf:deploy）は自動でやるが、ここは素の
     // `wrangler versions upload` なので自前で呼ぶ。

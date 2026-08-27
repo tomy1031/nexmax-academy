@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { buildUploadArgs, mayPublishShared, toAlias } from "../scripts/preview_alias.mjs";
+import {
+  buildUploadArgs,
+  mayPublishShared,
+  shouldPopulateRemoteCache,
+  toAlias,
+} from "../scripts/preview_alias.mjs";
 import { cachePopulated } from "../scripts/lib/cache_populated.mjs";
 
 /** wrangler.jsonc の Worker 名が "academy"（7文字）なので 63 - 7 - 1。 */
@@ -35,10 +40,11 @@ describe("ブランチ名 → Cloudflare のエイリアス", () => {
     expect(toAlias(`${"a".repeat(MAX - 1)}-tail`, MAX)).toBe("a".repeat(MAX - 1));
   });
 
-  it("main はそのまま staging にはならない（呼び出し側で staging を渡す）", () => {
-    // main-only ガードは alias === "staging" で判定するので、
-    // ブランチ名 main が勝手に staging に化けると素通りしてしまう。
+  it("main / integration はそのまま staging にはならない（呼び出し側で staging を渡す）", () => {
+    // 共有エイリアスのガードは alias === "staging" で判定するので、
+    // 何かのブランチ名が勝手に staging に化けると **ガードの入口ごと素通り**する。
     expect(toAlias("main", MAX)).toBe("main");
+    expect(toAlias("integration", MAX)).toBe("integration");
   });
 
   it("英小文字が残らない名前は、黙って変な名前にせずエラーにする", () => {
@@ -47,30 +53,73 @@ describe("ブランチ名 → Cloudflare のエイリアス", () => {
   });
 });
 
+/**
+ * STG（共有エイリアス `staging`）へ上げてよいかの判定。
+ *
+ * **2026-08-27 に基準を main から integration へ「移した」**（外したのではない）。
+ * STG の配信元が統合ブランチになったので、比べる相手が origin/integration になる。
+ * ガードの仕組み——**ブランチ名ではなく中身で判定する**——はそのまま。
+ */
 describe("staging へ上げてよいかの判定", () => {
-  const MAIN = "aaaaaaa";
+  const INTEGRATION = "aaaaaaa";
   const OTHER = "bbbbbbb";
 
-  it("main / master からは上げられる", () => {
-    expect(mayPublishShared("main", OTHER, MAIN)).toBe(true);
-    expect(mayPublishShared("master", OTHER, MAIN)).toBe(true);
+  it("integration からは上げられる", () => {
+    expect(mayPublishShared("integration", OTHER, INTEGRATION)).toBe(true);
   });
 
-  it("main へ早送り済みの作業ブランチからも上げられる（内容が main と同一なので）", () => {
-    // worktree を使っていると main は1か所でしか checkout できない。
-    // ブランチ名だけで判定すると、唯一の逃げ道が「main の worktree から上げる」になり、
-    // そこに他セッションの未コミット変更があるとそれごと staging に載ってしまう。
-    expect(mayPublishShared("claude/feature-x", MAIN, MAIN)).toBe(true);
+  it("integration へ早送り済みの作業ブランチからも上げられる（内容が同一なので）", () => {
+    // worktree を使っていると同じブランチは1か所でしか checkout できない。
+    // ブランチ名だけで判定すると、唯一の逃げ道が「integration の worktree から上げる」に
+    // なり、そこに他セッションの未コミット変更があるとそれごと staging に載ってしまう。
+    // CI（Actions「デプロイ」）は detached HEAD なので、実運用でもこの経路を通る。
+    expect(mayPublishShared("claude/feature-x", INTEGRATION, INTEGRATION)).toBe(true);
+    expect(mayPublishShared("HEAD", INTEGRATION, INTEGRATION)).toBe(true);
   });
 
-  it("main と中身が違う作業ブランチからは上げられない", () => {
-    expect(mayPublishShared("claude/feature-x", OTHER, MAIN)).toBe(false);
+  it("中身が違う作業ブランチからは上げられない（許可を広げすぎていないこと）", () => {
+    // **この1本が 2026-08-04 の巻き戻し事故を直接守っている。**
+    // 「MAIN_BRANCHES に integration を足すだけ」の実装にすると、
+    // ブランチ名さえ合えば中身が何でも通るようになり、ここが赤くなる。
+    expect(mayPublishShared("claude/feature-x", OTHER, INTEGRATION)).toBe(false);
   });
 
-  it("origin/main が取れないときは通さない（古い ref で誤って通さないため）", () => {
+  it("main からは上げられない（main は本番の配信元であって STG のものではない）", () => {
+    // 統合ブランチ運用では、main の中身を staging に載せると
+    // integration に溜まっている確認前の作業が STG から消える。
+    // 昇格直後（main === integration）だけは、下の中身の判定が通す。
+    expect(mayPublishShared("main", OTHER, INTEGRATION)).toBe(false);
+    expect(mayPublishShared("master", OTHER, INTEGRATION)).toBe(false);
+    expect(mayPublishShared("main", INTEGRATION, INTEGRATION)).toBe(true);
+  });
+
+  it("origin/integration が取れないときは通さない（古い ref で誤って通さないため）", () => {
     expect(mayPublishShared("claude/feature-x", OTHER, null)).toBe(false);
-    // main ブランチ自身は、ref が取れなくてもブランチ名で通す
-    expect(mayPublishShared("main", OTHER, null)).toBe(true);
+    expect(mayPublishShared("main", OTHER, null)).toBe(false);
+    // integration ブランチ自身は、ref が取れなくてもブランチ名で通す
+    expect(mayPublishShared("integration", OTHER, null)).toBe(true);
+  });
+});
+
+/**
+ * STG のデプロイで KV を温めない（2026-08-27）。
+ *
+ * 統合ブランチ運用で STG の更新が頻繁になるため、1回 約70件 × 1日十数回で
+ * 無料枠（書き込み 1000件/日）を食い潰し、**その日の本番が作りおきゼロで出る**
+ * ——2026-08-26 に実発生した事故を構造から断つ。
+ */
+describe("上げたあとに KV の作りおきを温めるか", () => {
+  it("STG（staging）では温めない — デプロイ時の KV 書き込みを 0件にする", () => {
+    expect(shouldPopulateRemoteCache("staging", false)).toBe(false);
+  });
+
+  it("ブランチ確認URL（assets モード）でも温めない — すでにローカルで写してある", () => {
+    expect(shouldPopulateRemoteCache("my-branch", true)).toBe(false);
+    expect(shouldPopulateRemoteCache("staging", true)).toBe(false);
+  });
+
+  it("それ以外の KV モードでは温める（本番の見張りと同じ規則を通す）", () => {
+    expect(shouldPopulateRemoteCache("my-branch", false)).toBe(true);
   });
 });
 

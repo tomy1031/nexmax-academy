@@ -9,10 +9,14 @@ name: デプロイ
 #   進める」という運用（AGENTS.md・docs/constraints.md）と食い違う。
 #   鍵を GitHub の Secrets に1度だけ預ければ、以後の反映はここが受け持つ。
 #
-# 使い方:
-#   - main へ入った時点で **STG は自動**で更新される（staging に載るのは main だけ、を守る）
-#   - **本番は手動**（Actions タブ → このワークフロー → Run workflow → production）。
-#     STG で確認してから出す、という順番を機械の側でも崩さないため。
+# 使い方（2026-08-27 に 統合ブランチ運用へ 変更）:
+#   - **STG は `integration` の中身**。作業ブランチを `integration` へ マージした
+#     時点で 自動更新される。STG で 確かめてから main へ 昇格する、という 順番を
+#     作るため（それまでは main しか 載せられず、STG が 門番に なって いなかった）。
+#   - **本番は `main` の中身**。授業のある **火・水・金 17:05 ICT** に、
+#     `integration` を main へ 早送りしてから 自動で 出る（授業は 17:30 ICT）。
+#     cron は UTC なので `5 10 * * 2,3,5`。
+#   - 緊急の 直しは 手動（Actions タブ → このワークフロー → Run workflow → production）。
 #
 # 必要な Secrets（Settings → Secrets and variables → Actions）:
 #   - CLOUDFLARE_API_TOKEN         … Workers のデプロイ権限を持つトークン
@@ -26,20 +30,37 @@ name: デプロイ
 
 on:
   push:
-    branches: [main]
+    branches: [integration]
+  # 授業のある日（火・水・金）の 17:05 ICT ＝ 10:05 UTC。
+  # ビルドから 検証まで 6〜10分 かかるので、授業（17:30 ICT）の 25分前に 始める。
+  # **main を push のトリガーに 足さない。** 下の「本番へ 昇格」が main を 進めるので、
+  # 足すと 昇格のたびに STG 用の ランが もう1本 立ち上がる（GITHUB_TOKEN の push は
+  # ワークフローを 起こさない ので 実際には 起きないが、その 挙動に 頼らない）。
+  schedule:
+    - cron: "5 10 * * 2,3,5"
+  # 手動で 回すときは **ref に 気を つける**。
+  #   production … ref=main（本番の 配信元）
+  #   staging    … ref=integration（STG の 配信元）。main の ref で staging を 選ぶと
+  #                `preview_alias.mjs` が 止める——STG に main を 載せると、
+  #                integration に 溜まって いる 確認前の 作業が 消える ため。
   workflow_dispatch:
     inputs:
       target:
-        description: どこへ出すか
+        description: どこへ出すか（production は ref=main / staging は ref=integration）
         type: choice
         options:
           - staging
           - production
         default: staging
 
-# 同じ行き先へ同時に上げない（あとから上げたほうが前のを消す事故を防ぐ）
+# 同じ行き先へ同時に上げない（あとから上げたほうが前のを消す事故を防ぐ）。
+#
+# **`github.event.inputs.target || 'staging'` では schedule が 壊れる。**
+# schedule には inputs が 無いので null → 'staging' に 落ちるが、実体は 本番である。
+# 本番の ランが 2本 走っても 互いを 待たない、という 一番 まずい 形になる。
+# そこで **どの イベントで 起きたか**から 行き先を 決める。
 concurrency:
-  group: deploy-${{ github.event.inputs.target || 'staging' }}
+  group: deploy-${{ (github.event_name == 'schedule' || github.event.inputs.target == 'production') && 'production' || 'staging' }}
   cancel-in-progress: false
 
 jobs:
@@ -51,10 +72,14 @@ jobs:
     #
     # 承認は増えない: この Environment には Required reviewers も Wait timer も
     # 付いていない（Deployment branches and tags も No restriction）。
+    # 統合ブランチからも そのまま 見える（2026-08-27 に API で 実物を 確認）。
     environment: Preview
+    # schedule のときだけ `integration` → `main` を 早送りするので、書き込みが要る。
+    permissions:
+      contents: write
     timeout-minutes: 30
     steps:
-      # preview_alias.mjs は HEAD と origin/main を**中身で**比べるので、
+      # preview_alias.mjs は HEAD と origin/integration を**中身で**比べるので、
       # 浅いクローンだと判定できない（fetch-depth: 0 が要る）。
       - uses: actions/checkout@v4
         with:
@@ -64,6 +89,47 @@ jobs:
         with:
           node-version: 22
           cache: npm
+
+      # ── 出すものを integration に そろえる（schedule のときだけ）
+      #
+      # schedule の ランは 既定ブランチ（main）の HEAD で 始まるので、そのままでは
+      # **integration に 溜めた 変更が 1つも 載らない**。ここで integration の
+      # コミットへ 移ってから ビルドする。
+      #
+      # main の 早送り（push）は **ここでは しない**。検査（単体テスト・DB）を
+      # 通してから、本番へ 出す 直前に 行う（下の「main を 早送りする」）。
+      # 赤い ものを main に 進めてしまわない ため。
+      #
+      # 早送りに ならない とき（main にだけ ある コミットが 残っている ＝ 緊急修正の
+      # 戻しマージ 忘れ）は、ここで 止めて 人に 知らせる。黙って 進めると その 直しが
+      # 消える。止まっても 本番は 前の版の まま（安全側）。
+      - name: integration を 取り込む（schedule のみ）
+        if: github.event_name == 'schedule'
+        run: |
+          set -euo pipefail
+          git fetch origin integration main --quiet
+          integration=$(git rev-parse origin/integration)
+          main=$(git rev-parse origin/main)
+          echo "integration = $integration"
+          echo "main        = $main"
+
+          if [ "$integration" != "$main" ] && ! git merge-base --is-ancestor "$main" "$integration"; then
+            echo "::error::main に integration へ 入って いない コミットが あります。早送りできません。"
+            echo "::error::緊急修正を main へ 入れた あとの **main → integration 戻しマージ**が 済んで いない はずです。"
+            echo "::error::integration で \`git merge origin/main\` を してから、もう一度 出してください。"
+            exit 1
+          fi
+
+          git checkout --quiet --detach "$integration"
+
+      # どの コミットを 出すのかを 1か所で 決める。
+      #
+      # **`github.sha` を 使わない。** schedule では `github.sha` が 昇格前の main を
+      # 指したままで、ビルドが 焼き込む SHA（`git rev-parse HEAD` — next.config.ts）と
+      # 食い違う。最後の 突き合わせが 永久に 一致しなくなるので、**実際の HEAD**を 使う。
+      - name: 出すコミットを 決める
+        id: rev
+        run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
       # 足りないときは「いま登録されている名前」も出す。
       # 名前の打ちまちがい（CLOUDFLARE_TOKEN / SUPABASE_URL など）や、Variables 側・
@@ -92,20 +158,22 @@ jobs:
       # postinstall で pdf.js の実体を public/ へ写す（スライド教材が使う）
       - run: npm ci
 
-      # 赤い main をそのまま出さないための最後の関所（数秒で終わる）
+      # 赤いものをそのまま出さないための最後の関所（数秒で終わる）
       - name: 単体テスト
         run: npm test
 
       # DBが遅れたまま本番へ出さない（2026-08-26 の事故）。
       #
-      # 移行SQLは main への push で「デプロイ（DB）」が自動で流す。ここで見るのは
+      # 移行SQLは integration への push で「デプロイ（DB）」が自動で流す。ここで見るのは
       # **それが落ちていた場合**である。コードだけ先に載ると、DBが受け付けない機能が
       # 黙って何もしない状態になり、画面にも CI にも何の印も出ない。
       # 実際にそれで7人が先生の名簿から消えていた。
       #
       # 本番のときだけ見る。STG（push）で見ないのは、同じ push で走っている
       # 「デプロイ（DB）」とどちらが先に終わるか決まらないため——ここで落とすと、
-      # 正しく流れている途中でも赤くなる。本番は手で出すので、その頃には済んでいる。
+      # 正しく流れている途中でも赤くなる。**本番は STG より あとに 出る**ので、
+      # その頃には 済んでいる（統合ブランチ運用では ここが さらに 確実になった。
+      # DB は integration の 時点で 流れる ＝ 常に コードより 先）。
       #
       # `--strict` を **付けない**。付けると、鍵（SUPABASE_DB_URL）を登録するまで
       # 本番デプロイが止まる——**見張りを足したせいでデプロイが止まる**のは本末転倒で、
@@ -113,11 +181,19 @@ jobs:
       # ときは `--strict` の有無に関わらず落ちる（それは分かっている事実だから）。
       # 鍵を入れた瞬間に、ここは自動で本当の関所になる。
       - name: DBが追いついているか（本番のみ）
-        if: github.event_name == 'workflow_dispatch' && github.event.inputs.target == 'production'
+        if: github.event_name == 'schedule' || github.event.inputs.target == 'production'
         env:
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
         run: node scripts/check_migrations.mjs
 
+      # STG は `integration` への push で 自動更新される。
+      # `if:` は **ブランチ名を 見ていない**ので、配信元を 移しても そのまま 追随する。
+      #
+      # **STG の デプロイは KV へ 1件も 書かない**（2026-08-27 から）。
+      # 統合ブランチ運用で 更新が 頻繁になるため、1回 約70件 × 1日十数回で
+      # 無料枠（書き込み 1000件/日）を 食い潰し、その日の 本番が
+      # 作りおきゼロで 出る——という 事故（2026-08-26）を 構造から 断つ。
+      # 代わりに STG は 開いたページから 後追いで 温まる（初回だけ 1〜2秒 遅い）。
       - name: STG へ反映
         if: github.event_name == 'push' || github.event.inputs.target == 'staging'
         run: npm run cf:staging
@@ -127,6 +203,27 @@ jobs:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
 
+      # ── main を 早送りする（schedule のときだけ・検査を 通した あと）
+      #
+      # 本番の 配信元は main。ここで main を「いま 出す コミット」に 進めておくと、
+      # 本番URL・main・`/api/version` の 3つが 常に そろう（handoff の 見張りが
+      # 効くのは この 性質の おかげ）。
+      #
+      # `git push origin <sha>:refs/heads/main` に **force を 付けない**。
+      # 早送りに ならない ときは サーバが 拒否する ＝ 取りこぼしを 作らない。
+      - name: main を 早送りする（schedule のみ）
+        if: github.event_name == 'schedule'
+        env:
+          DEPLOY_SHA: ${{ steps.rev.outputs.sha }}
+        run: |
+          set -euo pipefail
+          if [ "$DEPLOY_SHA" = "$(git rev-parse origin/main)" ]; then
+            echo "→ main は すでに この コミットです（早送りは 何も しません）"
+          else
+            echo "→ main を $DEPLOY_SHA へ 早送りします"
+            git push origin "$DEPLOY_SHA:refs/heads/main"
+          fi
+
       # 「デプロイ成功」は「作りおきが入った」ではない。KV の書き込み枠（1000件/日）を
       # 使い切ると populateCache は中で落ちるのに、外へは成功として返ることがある
       # （2026-08-26 に実発生。docs/deploy.md §0.9）。その版は作りおきゼロで公開され、
@@ -134,9 +231,10 @@ jobs:
       #
       # 本番は `opennextjs-cloudflare deploy` が **中で** populateCache を呼ぶので
       # 戻り値を掴めない。掴めるのは標準出力だけなので、tee して読む。
-      # 見分ける規則は STG と同じもの（scripts/lib/cache_populated.mjs）を使う。
+      # 見分ける規則は `scripts/lib/cache_populated.mjs`（STG から KV を 外した あとも、
+      # **本番側の 見張りとして 使い続ける**）。schedule で 出すときも 同じように 効く。
       - name: 本番へ反映
-        if: github.event_name == 'workflow_dispatch' && github.event.inputs.target == 'production'
+        if: github.event_name == 'schedule' || github.event.inputs.target == 'production'
         run: |
           set -o pipefail
           # `|| code=$?` で受けるのは、cf:deploy が落ちた時も **見張りを必ず通す**ため
@@ -152,21 +250,23 @@ jobs:
       # 上げっぱなしにしない。出した中身が本当に載ったかを、そのURLで確かめる
       #（/api/version はビルド時のコミットSHAを返す — next.config.ts）。
       - name: 生きているか・中身が載ったか
+        env:
+          DEPLOY_SHA: ${{ steps.rev.outputs.sha }}
         run: |
-          if [ "${{ github.event.inputs.target }}" = "production" ]; then
+          if [ "${{ github.event_name }}" = "schedule" ] || [ "${{ github.event.inputs.target }}" = "production" ]; then
             url="https://academy.nexmax.workers.dev"
           else
             url="https://staging-academy.nexmax.workers.dev"
           fi
-          echo "→ $url を たしかめます"
+          echo "→ $url を たしかめます（期待する SHA: $DEPLOY_SHA）"
           for i in 1 2 3 4 5 6; do
             sha=$(curl -sf --max-time 20 "$url/api/version" | sed -n 's/.*"sha":"\([^"]*\)".*/\1/p' || true)
-            [ "$sha" = "${{ github.sha }}" ] && break
+            [ "$sha" = "$DEPLOY_SHA" ] && break
             echo "  まだ 反映されていません（いま: ${sha:-取得できず}）。20秒 待ちます"
             sleep 20
           done
-          if [ "$sha" != "${{ github.sha }}" ]; then
-            echo "::error::$url の中身が ${{ github.sha }} になりません（いま: ${sha:-取得できず}）"
+          if [ "$sha" != "$DEPLOY_SHA" ]; then
+            echo "::error::$url の中身が $DEPLOY_SHA になりません（いま: ${sha:-取得できず}）"
             exit 1
           fi
-          echo "✓ $url は ${{ github.sha }} で 生きています"
+          echo "✓ $url は $DEPLOY_SHA で 生きています"

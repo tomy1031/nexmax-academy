@@ -42,12 +42,13 @@ npm run measure:readability  # 文長・漢字密度レポート
 
 ## デプロイ（Cloudflare Workers）
 
-| 環境       | URL                                               | 更新コマンド                      |
-| ---------- | ------------------------------------------------- | --------------------------------- |
-| 本番       | `https://academy.nexmax.workers.dev`              | `npm run cf:deploy`               |
-| staging    | `https://staging-academy.nexmax.workers.dev`      | `npm run cf:staging`（main のみ） |
-| ブランチ用 | `https://<ブランチ名>-academy.nexmax.workers.dev` | `npm run cf:branch`               |
+| 環境       | URL                                               | 載るもの      | いつ更新されるか                                            |
+| ---------- | ------------------------------------------------- | ------------- | ----------------------------------------------------------- |
+| 本番       | `https://academy.nexmax.workers.dev`              | `main`        | **火・水・金 17:05 ICT に自動**（授業は 17:30）。緊急は手動 |
+| STG        | `https://staging-academy.nexmax.workers.dev`      | `integration` | `integration` へマージするたび**自動**                      |
+| ブランチ用 | `https://<ブランチ名>-academy.nexmax.workers.dev` | 作業ブランチ  | `npm run cf:branch`                                         |
 
+作業ブランチは `integration` へ PR する。STG で確かめたものが、授業の前に本番へ昇格する。
 手順・環境変数・踏みやすい罠は `docs/deploy.md` §0 を参照。
 
 ## キャラクター画像（ネクマックス）

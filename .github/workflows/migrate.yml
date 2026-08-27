@@ -13,9 +13,18 @@ name: デプロイ（DB）
 #   鍵の要らない道（GitHub Actions）を先に作る」（docs/constraints.md 2026-08-14）が
 #   **DB にだけ適用されていなかった**という穴である。ここで塞ぐ。
 #
-# 使い方:
-#   - main に移行SQLが入ったら **自動で流れる**（STG が main で自動更新されるのと同じ考え）
+# 使い方（2026-08-27 に 統合ブランチ運用へ 変更）:
+#   - **`integration` に移行SQLが入ったら 自動で流れる**（STG が integration で
+#     自動更新されるのと同じ考え）
 #   - 手で流し直したいときは Actions → このワークフロー → Run workflow
+#
+# **なぜ main ではなく integration か。** DB は ローカル・STG・本番で **1つを共有する**
+# （docs/deploy.md §4）。トリガーを main のままにすると、STG には 新しい コードが
+# 載っているのに DB が 古い、という 時間が 生まれる——2026-08-26 の 事故と 同じ型で、
+# **テストも CI も 緑のまま DB だけが 遅れる**（先生の 名簿から 7人が 消えた）。
+# integration で 流せば **DB が 常に コードより 先**になる。これは 安全な 向きである:
+# 移行SQLは「いま動いているコードを壊さない変更だけ」（下の決まり）なので、
+# 先に流れて困るものが 無い。
 #
 # 必要な Secret（Environment「Preview」に置く。デプロイと同じ場所）:
 #   - SUPABASE_DB_URL … Supabase の接続文字列
@@ -31,7 +40,7 @@ name: デプロイ（DB）
 
 on:
   push:
-    branches: [main]
+    branches: [integration]
     paths:
       - "supabase/migrations/**"
   workflow_dispatch:
