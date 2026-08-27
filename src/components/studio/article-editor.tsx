@@ -448,5 +448,387 @@ function BlockEditor({
           </MiniButton>
         </div>
       );
+
+    /* ---------------------------------------------------------------- *
+     * 配布資料から 移した 5つ（表紙・カード・調べる ことの 一覧・くらべ・帯）
+     *
+     * **先生が 直せない 教材を 作らない**（docs/constraints.md「教材は 全部 DBで
+     * 管理する」）。ブロックを 足して エディタを 足さないと、その ブロックは
+     * スタジオで 開いても 何も 出ず、先生は 中身を 1文字も 直せない。
+     * ---------------------------------------------------------------- */
+    case "hero":
+      return (
+        <div className="space-y-3">
+          <TextField
+            label="上の 小さな 札（なくてもよい）"
+            value={block.eyebrow ?? ""}
+            onChange={(eyebrow) =>
+              onChange({ ...block, eyebrow: eyebrow.length > 0 ? eyebrow : undefined })
+            }
+            placeholder="🔎 STEP 1"
+          />
+          <TextField
+            label="大きな 見出し"
+            value={block.title}
+            onChange={(title) => onChange({ ...block, title })}
+          />
+          <TextAreaField
+            label="リード文（なくてもよい）"
+            rows={2}
+            value={block.lead ?? ""}
+            onChange={(lead) => onChange({ ...block, lead: lead.length > 0 ? lead : undefined })}
+          />
+          <TextAreaField
+            label="ひとこと（なくてもよい）"
+            rows={2}
+            value={block.note ?? ""}
+            onChange={(note) => onChange({ ...block, note: note.length > 0 ? note : undefined })}
+          />
+          <ImageSlotEditor
+            slot={block.image ?? { refs: [], status: "empty" }}
+            prefix={`article/${articleId.length > 0 ? articleId : "draft"}`}
+            onChange={(image) => onChange({ ...block, image })}
+          />
+        </div>
+      );
+
+    case "cards":
+      return (
+        <div className="space-y-3">
+          <div className="grid gap-3 sm:grid-cols-2">
+            <SelectField
+              label="見た目"
+              value={block.tone}
+              options={[
+                { value: "plain", label: "白い カード" },
+                { value: "dark", label: "紺の 帯（流れを 見せる）" },
+                { value: "step", label: "番号つき（1歩ずつ）" },
+              ]}
+              onChange={(tone) => onChange({ ...block, tone })}
+            />
+            <SelectField
+              label="1行に 何枚"
+              value={String(block.columns ?? "")}
+              options={[
+                { value: "", label: "おまかせ" },
+                { value: "2", label: "2枚" },
+                { value: "3", label: "3枚" },
+                { value: "4", label: "4枚" },
+                { value: "5", label: "5枚" },
+              ]}
+              onChange={(columns) =>
+                onChange({
+                  ...block,
+                  columns: columns === "" ? undefined : (Number(columns) as 2 | 3 | 4 | 5),
+                })
+              }
+            />
+          </div>
+          {block.items.map((item, index) => (
+            <div key={index} className="border-hairline space-y-2 rounded-xl border-2 bg-white p-2">
+              <div className="flex flex-wrap items-end gap-2">
+                <div className="w-20">
+                  <TextField
+                    label="絵文字"
+                    value={item.icon ?? ""}
+                    onChange={(icon) =>
+                      onChange({
+                        ...block,
+                        items: replaceAt(block.items, index, {
+                          ...item,
+                          icon: icon.length > 0 ? icon : undefined,
+                        }),
+                      })
+                    }
+                  />
+                </div>
+                <div className="w-28">
+                  <TextField
+                    label="札"
+                    value={item.label ?? ""}
+                    onChange={(label) =>
+                      onChange({
+                        ...block,
+                        items: replaceAt(block.items, index, {
+                          ...item,
+                          label: label.length > 0 ? label : undefined,
+                        }),
+                      })
+                    }
+                  />
+                </div>
+                <div className="min-w-[10rem] flex-1">
+                  <TextField
+                    label="題"
+                    value={item.title}
+                    onChange={(title) =>
+                      onChange({
+                        ...block,
+                        items: replaceAt(block.items, index, { ...item, title }),
+                      })
+                    }
+                  />
+                </div>
+                <RowTools
+                  index={index}
+                  count={block.items.length}
+                  label="カード"
+                  onMove={(delta) =>
+                    onChange({ ...block, items: moveItem(block.items, index, delta) })
+                  }
+                  onRemove={() => onChange({ ...block, items: removeAt(block.items, index) })}
+                />
+              </div>
+              <TextAreaField
+                label="せつめい（なくてもよい）"
+                rows={2}
+                value={item.text ?? ""}
+                onChange={(text) =>
+                  onChange({
+                    ...block,
+                    items: replaceAt(block.items, index, {
+                      ...item,
+                      text: text.length > 0 ? text : undefined,
+                    }),
+                  })
+                }
+              />
+              <StringListEditor
+                label="カードの 中の かじょうがき"
+                items={item.items ?? []}
+                itemLabel="行"
+                onChange={(items) =>
+                  onChange({
+                    ...block,
+                    items: replaceAt(block.items, index, {
+                      ...item,
+                      items: items.length > 0 ? items : undefined,
+                    }),
+                  })
+                }
+              />
+              <ImageSlotEditor
+                slot={item.image ?? { refs: [], status: "empty" }}
+                prefix={`article/${articleId.length > 0 ? articleId : "draft"}`}
+                onChange={(image) =>
+                  onChange({
+                    ...block,
+                    items: replaceAt(block.items, index, { ...item, image }),
+                  })
+                }
+              />
+            </div>
+          ))}
+          <MiniButton
+            tone="accent"
+            onClick={() =>
+              onChange({ ...block, items: [...block.items, { title: "カードの 題" }] })
+            }
+          >
+            ＋ カードを 追加
+          </MiniButton>
+        </div>
+      );
+
+    case "missions":
+      return (
+        <div className="space-y-3">
+          {block.items.map((item, index) => (
+            <div key={index} className="border-hairline space-y-2 rounded-xl border-2 bg-white p-2">
+              <div className="flex flex-wrap items-end gap-2">
+                <div className="w-20">
+                  <TextField
+                    label="番号"
+                    value={item.badge ?? ""}
+                    onChange={(badge) =>
+                      onChange({
+                        ...block,
+                        items: replaceAt(block.items, index, {
+                          ...item,
+                          badge: badge.length > 0 ? badge : undefined,
+                        }),
+                      })
+                    }
+                  />
+                </div>
+                <div className="min-w-[10rem] flex-1">
+                  <TextField
+                    label="題"
+                    value={item.title}
+                    onChange={(title) =>
+                      onChange({
+                        ...block,
+                        items: replaceAt(block.items, index, { ...item, title }),
+                      })
+                    }
+                  />
+                </div>
+                <RowTools
+                  index={index}
+                  count={block.items.length}
+                  label="こうもく"
+                  onMove={(delta) =>
+                    onChange({ ...block, items: moveItem(block.items, index, delta) })
+                  }
+                  onRemove={() => onChange({ ...block, items: removeAt(block.items, index) })}
+                />
+              </div>
+              <TextField
+                label="どこを 見るか"
+                value={item.where ?? ""}
+                onChange={(where) =>
+                  onChange({
+                    ...block,
+                    items: replaceAt(block.items, index, {
+                      ...item,
+                      where: where.length > 0 ? where : undefined,
+                    }),
+                  })
+                }
+                placeholder="「会社の しょうかい」を 見る"
+              />
+              <StringListEditor
+                label="見つける こと"
+                items={item.points}
+                itemLabel="こうもく"
+                onChange={(points) =>
+                  onChange({
+                    ...block,
+                    items: replaceAt(block.items, index, {
+                      ...item,
+                      points: points.length > 0 ? points : ["見つける こと"],
+                    }),
+                  })
+                }
+              />
+              <TextAreaField
+                label="ヒント（押すと 開く。答えそのものは 書かない）"
+                rows={2}
+                value={item.hint ?? ""}
+                onChange={(hint) =>
+                  onChange({
+                    ...block,
+                    items: replaceAt(block.items, index, {
+                      ...item,
+                      hint: hint.length > 0 ? hint : undefined,
+                    }),
+                  })
+                }
+              />
+              <TextAreaField
+                label="ひとこと（なくてもよい）"
+                rows={2}
+                value={item.note ?? ""}
+                onChange={(note) =>
+                  onChange({
+                    ...block,
+                    items: replaceAt(block.items, index, {
+                      ...item,
+                      note: note.length > 0 ? note : undefined,
+                    }),
+                  })
+                }
+              />
+              <label className="text-ink flex items-center gap-2 text-xs font-black">
+                <input
+                  type="checkbox"
+                  checked={item.focus ?? false}
+                  onChange={(event) =>
+                    onChange({
+                      ...block,
+                      items: replaceAt(block.items, index, {
+                        ...item,
+                        focus: event.target.checked ? true : undefined,
+                      }),
+                    })
+                  }
+                />
+                目立たせる（学習者に いちばん 近い もの）
+              </label>
+            </div>
+          ))}
+          <MiniButton
+            tone="accent"
+            onClick={() =>
+              onChange({
+                ...block,
+                items: [...block.items, { title: "調べる こと", points: ["見つける こと"] }],
+              })
+            }
+          >
+            ＋ こうもくを 追加
+          </MiniButton>
+        </div>
+      );
+
+    case "compare":
+      return (
+        <div className="grid gap-3 sm:grid-cols-2">
+          {(["before", "after"] as const).map((side) => (
+            <div key={side} className="border-hairline space-y-2 rounded-xl border-2 bg-white p-2">
+              <TextField
+                label={side === "before" ? "まえの 題" : "これからの 題"}
+                value={block[side].title}
+                onChange={(title) => onChange({ ...block, [side]: { ...block[side], title } })}
+              />
+              <StringListEditor
+                label="文"
+                items={block[side].lines}
+                itemLabel="行"
+                onChange={(lines) =>
+                  onChange({
+                    ...block,
+                    [side]: { ...block[side], lines: lines.length > 0 ? lines : ["ここに 文。"] },
+                  })
+                }
+              />
+            </div>
+          ))}
+        </div>
+      );
+
+    case "banner":
+      return (
+        <div className="space-y-3">
+          <div className="grid gap-3 sm:grid-cols-2">
+            <SelectField
+              label="帯の 種類"
+              value={block.tone}
+              options={[
+                { value: "goal", label: "ゴール（目あて）" },
+                { value: "message", label: "大切な こと" },
+                { value: "quote", label: "引用（だれかの ことば）" },
+              ]}
+              onChange={(tone) => onChange({ ...block, tone })}
+            />
+            <TextField
+              label="絵文字（なくてもよい）"
+              value={block.icon ?? ""}
+              onChange={(icon) => onChange({ ...block, icon: icon.length > 0 ? icon : undefined })}
+            />
+          </div>
+          <TextField
+            label="題（なくてもよい）"
+            value={block.title ?? ""}
+            onChange={(title) =>
+              onChange({ ...block, title: title.length > 0 ? title : undefined })
+            }
+          />
+          <TextAreaField
+            label="文"
+            rows={3}
+            value={block.text}
+            onChange={(text) => onChange({ ...block, text })}
+          />
+          <StringListEditor
+            label="下に 並べる 小さな 札"
+            items={block.badges ?? []}
+            itemLabel="札"
+            onChange={(badges) =>
+              onChange({ ...block, badges: badges.length > 0 ? badges : undefined })
+            }
+          />
+        </div>
+      );
   }
 }

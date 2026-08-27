@@ -11,6 +11,7 @@ import {
   readTestResult,
   seedCompleted,
   shot,
+  submitAnswers,
   writtenText,
 } from "./helpers";
 
@@ -89,7 +90,7 @@ test("他の ページへ 行って 戻っても、書いた ものは 残る", 
    * 見つけた 順に どこへでも 書ける ことなので、上から 順ではなく 飛ばして 書く。
    */
   await writeIn(page, "q2", "まついさん");
-  await placeWordsIn(page, "q23", ["2024年9月"]);
+  await placeWordsIn(page, "q25", ["日本語の 勉強"]);
   await expect(page.getByText(writtenText(2))).toBeVisible();
 
   // ステージへ 離脱 → 戻る
@@ -124,7 +125,7 @@ test("出す まえに かくにんして、出すと できた／もう一度 �
   await expect(page.getByText(`のこり ${ASAKAI_QUIZ_TOTAL - 1}もん`)).toBeVisible();
   await shot(page, "24-quiz-submit-confirm");
 
-  await page.getByRole("button", { name: SUBMIT_ANSWERS }).click();
+  await submitAnswers(page);
 
   /*
    * けっかは **できた／もう一度 が ひと目で 分かる 行**で 並ぶ（2026-08-25 の 作り直し）。
@@ -182,7 +183,7 @@ test("出した あとに 開き直しても、にせの「つづき」に な�
     await page.getByRole("button", { name: "つぎ →" }).click();
   }
   await page.getByRole("button", { name: "さいごに かくにん →" }).click();
-  await page.getByRole("button", { name: SUBMIT_ANSWERS }).click();
+  await submitAnswers(page);
   await expect(page.getByText("ぜんぶの こたえ")).toBeVisible();
 
   // 開き直したら「はじめから」。2問目から 始まって 1問目に 戻れない、が 起きない
@@ -266,7 +267,7 @@ test("出した 回は 成績に 残り、ステージも おわりに なる", 
     await page.getByRole("button", { name: "つぎ →" }).click();
   }
   await page.getByRole("button", { name: "さいごに かくにん →" }).click();
-  await page.getByRole("button", { name: SUBMIT_ANSWERS }).click();
+  await submitAnswers(page);
   await expect(page.getByText("ぜんぶの こたえ")).toBeVisible();
 
   expect(await readTestResult(page, ASAKAI_QUIZ.id)).toMatchObject({

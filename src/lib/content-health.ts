@@ -26,6 +26,14 @@
 export interface HealthStage {
   readonly id: string;
   readonly wordStageIds?: readonly string[];
+  /**
+   * ステージの 中の 教材の 並び。**ことばセットと 同じ 事故が ここでも 起きる**
+   *（2026-08-27）。DBに 保存ずみの ステージに git で 教材を 1本 足しても、
+   * DBの 版が 勝つので **学習者の 画面には 永久に 出ない**。逆に git から 教材を
+   * 消すと、DBの 版だけが それを 指したまま 残り、**ステージの 途中で 404**に なる。
+   * どちらも 検査は ぜんぶ 緑——だから ここで 数えて 名指しする。
+   */
+  readonly contents?: readonly { readonly ref: string; readonly type: string }[];
 }
 
 export interface HealthWordStage {
@@ -43,6 +51,10 @@ export interface StageHealth {
   readonly hiddenByDb: readonly string[];
   /** 並びには ある のに、単語ステージ そのものが 見つからない id。 */
   readonly missing: readonly string[];
+  /** git の 並びには ある のに、いま 出て いない 教材（＝DBの 版に 隠されて いる）。 */
+  readonly hiddenContents: readonly string[];
+  /** 並びには ある のに、教材 そのものが 見つからない id（＝開くと 404）。 */
+  readonly missingContents: readonly string[];
 }
 
 export interface WordStageHealth {
@@ -64,6 +76,7 @@ export function buildContentHealth({
   liveStages,
   liveWordStages,
   dbPublishedIds,
+  liveContentIds,
 }: {
   /** git（焼き込み）の ステージ。 */
   gitStages: readonly HealthStage[];
@@ -73,6 +86,11 @@ export function buildContentHealth({
   liveWordStages: readonly HealthWordStage[];
   /** DBに 公開で 入って いる `kind:id`。 */
   dbPublishedIds: ReadonlySet<string>;
+  /**
+   * 学習者に 出て いる 教材ぜんぶの `kind:id`（git ∪ DB）。
+   * 渡さない ときは 教材の 参照切れを 数えない（呼ぶ側が まだ 集めて いない ため）。
+   */
+  liveContentIds?: ReadonlySet<string>;
 }): ContentHealth {
   const gitById = new Map(gitStages.map((s) => [s.id, s]));
   const liveWordStageIds = new Set(liveWordStages.map((s) => s.id));
@@ -95,7 +113,39 @@ export function buildContentHealth({
         `stage:${stage.id} — ことばセットが 見つからない（${missing.join(" / ")}）。参照が 切れているか、語が 引けずに 落ちている`,
       );
     }
-    return { id: stage.id, source, wordStageIds: live, hiddenByDb, missing };
+
+    /*
+     * 教材の 並びも 同じ 見かたで 数える。**キーは `種別:id`**——同じ id の
+     * ページと もんだいが 別物として 並ぶ ことが ある（`stageContentRefSchema`）。
+     */
+    const liveContents = (stage.contents ?? []).map((c) => `${c.type}:${c.ref}`);
+    const gitContents = (gitById.get(stage.id)?.contents ?? []).map((c) => `${c.type}:${c.ref}`);
+    const hiddenContents =
+      source === "db" ? gitContents.filter((key) => !liveContents.includes(key)) : [];
+    const missingContents = liveContentIds
+      ? liveContents.filter((key) => !liveContentIds.has(key))
+      : [];
+
+    if (hiddenContents.length > 0) {
+      warnings.push(
+        `stage:${stage.id} — DBの 版が gitの 教材を ${hiddenContents.length}本 隠している（${hiddenContents.join(" / ")}）。スタジオで ステージを 保存し直すか、DBの 行を 消す`,
+      );
+    }
+    if (missingContents.length > 0) {
+      warnings.push(
+        `stage:${stage.id} — 教材が 見つからない（${missingContents.join(" / ")}）。学習者は ステージの 途中で 404に なる`,
+      );
+    }
+
+    return {
+      id: stage.id,
+      source,
+      wordStageIds: live,
+      hiddenByDb,
+      missing,
+      hiddenContents,
+      missingContents,
+    };
   });
 
   const wordStages = liveWordStages.map((stage): WordStageHealth => {

@@ -405,6 +405,26 @@ export function checkReferenceIntegrity(entries: readonly ContentEntry[]): Findi
       }
     });
   }
+
+  /*
+   * ミーティングの「じぶんの メモ」も 参照。
+   *
+   * 切れても 画面は 壊れない（メモが 空で 出るだけ）。だからこそ 機械で 止める——
+   * **学習者は「出るはずの メモが 出ない」と 言えない**。ID を 1文字 打ち間違えた
+   * だけで、会話の 最中に 見る はずの 自分の こたえが 永久に 出て こない。
+   */
+  for (const { file, content } of entries) {
+    if (content.kind !== "meeting") continue;
+    content.notes.forEach((note, i) => {
+      if (!idsByKind.get("quizset")?.has(note.ref)) {
+        findings.push({
+          file,
+          level: "error",
+          message: `notes[${i}] の メモ元「${note.ref}」が quizset として存在しない — 会話の 最中に 自分の こたえが 出ない`,
+        });
+      }
+    });
+  }
   return findings;
 }
 
@@ -561,6 +581,19 @@ function collectLabeledTexts(content: Content): LabeledText[] {
         const at = (field: string) => `questions[${i}].${field}`;
         push(at("q"), q.q);
         push(at("explain"), q.explain);
+        /*
+         * 章の 見出し・出どころの 札・ヒントは **どれも 画面に そのまま 出る**
+         *（`quiz-runner.tsx` が RubyText で 描く）。設問文の 中に 埋めて いた
+         * ころは `q` の 検査で 一緒に 覆えて いたので、外に 出した ぶん
+         * ここで 数え直さないと 覆いに 穴が あく。
+         */
+        push(at("section"), q.section);
+        push(at("sectionNote"), q.sectionNote);
+        push(at("source"), q.source);
+        (q.hints ?? []).forEach((hint, j) => {
+          push(at(`hints[${j}].title`), hint.title);
+          push(at(`hints[${j}].text`), hint.text);
+        });
         switch (q.type) {
           case "choose":
           case "multi":
@@ -580,6 +613,13 @@ function collectLabeledTexts(content: Content): LabeledText[] {
             q.feelings.forEach((feeling, j) => push(at(`feelings[${j}]`), feeling));
             push(at("replyQ"), q.replyQ);
             q.replies.forEach((reply, j) => push(at(`replies[${j}]`), reply));
+            break;
+          case "free":
+            // 型文は 入力欄の 下に 出しっぱなし＝いちばん よく 読まれる 行。
+            // placeholder は 打つと 消えるが、打つ 前には 読むので 同じく 数える。
+            push(at("starter"), q.starter);
+            push(at("placeholder"), q.placeholder);
+            // english.* は 英語の 欄（漢字を 持たない）。ふりがなの 対象外
             break;
         }
       });
@@ -661,6 +701,53 @@ function collectLabeledTexts(content: Content): LabeledText[] {
               push(at(`items[${j}].role`), item.role);
               push(at(`items[${j}].note`), item.note);
             });
+            break;
+          /*
+           * 配布資料から 移した 5つ。**どれも 学習者が 読む 文しか 持たない**
+           *（絵の スロットだけが 例外で、あれは 生成の 材料）。ここに 足し忘れると、
+           * 表紙の 大見出しだけ 裸の 漢字に なる——ページを 開いた 最初の 1行なので、
+           * 抜けが いちばん 高く つく。
+           */
+          case "hero":
+            push(at("eyebrow"), block.eyebrow);
+            push(at("title"), block.title);
+            push(at("lead"), block.lead);
+            push(at("note"), block.note);
+            break;
+          case "cards":
+            block.items.forEach((item, j) => {
+              const card = (field: string) => at(`items[${j}].${field}`);
+              // icon は 絵文字だけ（漢字を 入れない 決まりでは ないので 一応 数える）
+              push(card("icon"), item.icon);
+              push(card("label"), item.label);
+              push(card("title"), item.title);
+              push(card("text"), item.text);
+              (item.items ?? []).forEach((line, k) => push(card(`items[${k}]`), line));
+            });
+            break;
+          case "missions":
+            block.items.forEach((item, j) => {
+              const mission = (field: string) => at(`items[${j}].${field}`);
+              push(mission("badge"), item.badge);
+              push(mission("title"), item.title);
+              push(mission("where"), item.where);
+              item.points.forEach((point, k) => push(mission(`points[${k}]`), point));
+              // ヒントは 押すと 開く＝読まれる。閉じて いても 検査は 外さない
+              push(mission("hint"), item.hint);
+              push(mission("note"), item.note);
+            });
+            break;
+          case "compare":
+            push(at("before.title"), block.before.title);
+            block.before.lines.forEach((line, j) => push(at(`before.lines[${j}]`), line));
+            push(at("after.title"), block.after.title);
+            block.after.lines.forEach((line, j) => push(at(`after.lines[${j}]`), line));
+            break;
+          case "banner":
+            push(at("icon"), block.icon);
+            push(at("title"), block.title);
+            push(at("text"), block.text);
+            (block.badges ?? []).forEach((badge, j) => push(at(`badges[${j}]`), badge));
             break;
         }
       });
@@ -754,6 +841,8 @@ function collectLabeledTexts(content: Content): LabeledText[] {
         // keywords は当たり判定の材料で、画面には出ない
       });
       push("closing", content.closing);
+      /* メモの 見出し（「調査シートの こたえ」）。会話の 最中に 画面へ 出る。 */
+      content.notes.forEach((note, i) => push(`notes[${i}].label`, note.label));
       /*
        * 好感度が満タンになったときに相手が話す「とっておきの話」。
        * ここが対象から漏れていると、**いちばん嬉しい場面だけ 規律2 の外**になる。
