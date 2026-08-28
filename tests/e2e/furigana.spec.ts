@@ -42,8 +42,8 @@ const SCREENS: readonly { name: string; path: string; open: KaishaItem }[] = [
   { name: "ページ（会社の 調べかた）", path: KAISHA.article1.path, open: KAISHA.article1 },
   { name: "リンク（学習用サイト）", path: KAISHA.site.path, open: KAISHA.site },
   { name: "もんだい（調査シート）", path: KAISHA.sheet.path, open: KAISHA.sheet },
-  { name: "もんだい（会社と 自分）", path: KAISHA.jibun.path, open: KAISHA.jibun },
-  { name: "もんだい（たいわの じゅんび）", path: KAISHA.junbi.path, open: KAISHA.junbi },
+  { name: "ページ（社長と 話す 準備）", path: KAISHA.article2.path, open: KAISHA.article2 },
+  { name: "もんだい（社長に 何を 話す）", path: KAISHA.junbi.path, open: KAISHA.junbi },
   { name: "ミーティング（ヘンディ）", path: KAISHA.meetingHendy.path, open: KAISHA.meetingHendy },
   { name: "ミーティング（松井社長）", path: KAISHA.meetingMatsui.path, open: KAISHA.meetingMatsui },
 ];

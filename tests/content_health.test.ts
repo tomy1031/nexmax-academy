@@ -73,3 +73,72 @@ describe("教材の 健康しらべ", () => {
     expect(health.warnings.join("\n")).toContain("出題数");
   });
 });
+
+/*
+ * 教材の 並びにも 同じ 事故が 起きる（2026-08-27）。
+ *
+ * 「会社を知る」の ステージは DBに 保存ずみ だった。git に ページを 1本 足しても
+ * **学習者の 画面には 出ない**し、git から 教材を 消すと DBの 版だけが それを
+ * 指したまま 残って **ステージの 途中で 404**に なる。ことばセットの ときと 同じで、
+ * git も DBも 壊れて おらず、検査は ぜんぶ 緑——印を ここで 出す。
+ */
+describe("教材の 並びの 健康しらべ", () => {
+  it("DBの 版が gitの 教材を 隠して いたら 名指しする", () => {
+    const health = buildContentHealth({
+      gitStages: [
+        {
+          id: "kaisha",
+          contents: [
+            { ref: "kaisha_shirabekata", type: "article" },
+            { ref: "kaisha_matsui_junbi", type: "article" },
+          ],
+        },
+      ],
+      liveStages: [{ id: "kaisha", contents: [{ ref: "kaisha_shirabekata", type: "article" }] }],
+      liveWordStages: [],
+      dbPublishedIds: new Set(["stage:kaisha"]),
+      liveContentIds: new Set(["article:kaisha_shirabekata"]),
+    });
+
+    expect(health.stages[0]?.hiddenContents).toEqual(["article:kaisha_matsui_junbi"]);
+    expect(health.warnings.join(" ")).toContain("kaisha_matsui_junbi");
+  });
+
+  it("指した 先が 無い 教材も 名指しする（開くと 404）", () => {
+    const health = buildContentHealth({
+      gitStages: [{ id: "kaisha", contents: [] }],
+      liveStages: [{ id: "kaisha", contents: [{ ref: "kaisha_jibun", type: "quizset" }] }],
+      liveWordStages: [],
+      dbPublishedIds: new Set(["stage:kaisha"]),
+      liveContentIds: new Set(),
+    });
+
+    expect(health.stages[0]?.missingContents).toEqual(["quizset:kaisha_jibun"]);
+    expect(health.warnings.join(" ")).toContain("404");
+  });
+
+  it("gitが 出て いる ステージでは 隠しの しるしを 出さない", () => {
+    const health = buildContentHealth({
+      gitStages: [{ id: "intro", contents: [{ ref: "a", type: "article" }] }],
+      liveStages: [{ id: "intro", contents: [{ ref: "a", type: "article" }] }],
+      liveWordStages: [],
+      dbPublishedIds: new Set(),
+      liveContentIds: new Set(["article:a"]),
+    });
+
+    expect(health.stages[0]?.hiddenContents).toEqual([]);
+    expect(health.warnings).toEqual([]);
+  });
+
+  it("種別が ちがえば 別の 教材（同じ id でも 混ぜない）", () => {
+    const health = buildContentHealth({
+      gitStages: [{ id: "s", contents: [] }],
+      liveStages: [{ id: "s", contents: [{ ref: "same", type: "quizset" }] }],
+      liveWordStages: [],
+      dbPublishedIds: new Set(["stage:s"]),
+      liveContentIds: new Set(["article:same"]),
+    });
+
+    expect(health.stages[0]?.missingContents).toEqual(["quizset:same"]);
+  });
+});

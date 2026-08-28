@@ -36,7 +36,18 @@ export type QuizDraft =
   | { readonly kind: "keyword"; readonly input: string }
   | { readonly kind: "wordbank"; readonly filled: readonly (string | null)[] }
   | { readonly kind: "emotion"; readonly feeling: number | null; readonly reply: number | null }
-  | { readonly kind: "free"; readonly input: string };
+  | {
+      readonly kind: "free";
+      readonly input: string;
+      /**
+       * 日本語の 前に 英語で 書いた 下書き（`free.english` の ある 問いだけ）。
+       *
+       * **採点にも 記録にも 使わない。**「英語で 考えてから 日本語に する」という
+       * 進み方を 端末が おぼえて おく ためだけの もの——次に 開いた ときに
+       * 英語の 欄だけ 空に なって いたら、日本語に する 作業が やり直しに なる。
+       */
+      readonly en?: string;
+    };
 
 /**
  * 保存された 下書きを 読み直す ための 検査（`@/lib/quiz/resume` が 使う）。
@@ -47,7 +58,7 @@ export const quizDraftSchema: z.ZodType<QuizDraft> = z.discriminatedUnion("kind"
   z.object({ kind: z.literal("multi"), indexes: z.array(z.number().int().min(0)) }),
   z.object({ kind: z.literal("keyword"), input: z.string() }),
   z.object({ kind: z.literal("wordbank"), filled: z.array(z.string().nullable()) }),
-  z.object({ kind: z.literal("free"), input: z.string() }),
+  z.object({ kind: z.literal("free"), input: z.string(), en: z.string().optional() }),
   z.object({
     kind: z.literal("emotion"),
     feeling: z.number().int().min(0).nullable(),

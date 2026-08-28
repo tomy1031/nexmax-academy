@@ -315,6 +315,28 @@ export function QuizEditor({
           onChange={(answerMode) => patch({ answerMode })}
           hint="「まとめて 出す」は ぜんぶ 書いてから 1回で 採点します（途中で 正解は 見せず、「こたえを 見る」も 出ません）。「1問ずつ」は こたえるたびに せつめいを 読みます。"
         />
+        {/*
+          **ぜんぶ うめるまで 出せなく する**（schema.ts の `requireAll`）。
+          立ててよいのは 調べれば 必ず 答えが 見つかる 教材だけ——考えを 書く 教材で
+          立てると、書けない 1問が 出口を ふさぐ。だから 既定は オフの ままに する。
+        */}
+        <label className="text-ink flex items-start gap-2 text-xs font-black">
+          <input
+            type="checkbox"
+            className="mt-0.5"
+            checked={value.requireAll}
+            disabled={value.answerMode === "one"}
+            onChange={(event) => patch({ requireAll: event.target.checked })}
+          />
+          <span>
+            ぜんぶ うめるまで「こたえを 出す」を 出さない
+            <span className="text-ink-faint block font-bold">
+              {value.answerMode === "one"
+                ? "「1問ずつ」では 使えません（1問 ごとに 採点するため）。"
+                : "調べれば 必ず 見つかる 教材だけに します。考えを 書く 教材では 外して ください。"}
+            </span>
+          </span>
+        </label>
         <NoticeList notices={phaseNotices} />
       </StudioSection>
 

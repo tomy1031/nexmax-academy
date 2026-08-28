@@ -10,6 +10,7 @@ import type { QuizAction, QuizMode } from "./quiz-reducer";
 
 /** 部品じたいの文言の読み辞書（教材データの辞書はUIの文言まで覆わない・規律2）。 */
 const UI_FURIGANA = buildFuriganaIndex([
+  ["日本語", "にほんご"],
   ["文", "ぶん"],
   ["入", "はい"],
   ["直", "なお"],
@@ -111,10 +112,12 @@ export function QuestionBody({
       return (
         <FreeInput
           placeholder={question.placeholder}
+          starter={question.starter}
+          english={question.english}
           disabled={disabled}
           submitMode={submitMode}
           draft={draft?.kind === "free" ? draft : undefined}
-          onSubmit={(input) => dispatch({ type: "answerFree", input })}
+          onSubmit={(input, en) => dispatch({ type: "answerFree", input, en })}
         />
       );
 
@@ -471,29 +474,93 @@ function FreeInput({
   submitMode,
   draft,
   placeholder,
+  starter,
+  english,
 }: {
-  onSubmit: (input: string) => void;
+  onSubmit: (input: string, en?: string) => void;
   disabled?: boolean;
   submitMode?: boolean;
   draft?: Extract<QuizDraft, { kind: "free" }>;
   placeholder?: string;
+  /** 日本語の 型文（打ちながら 見られる 足場）。 */
+  starter?: string;
+  /** 英語で 先に 下書きする 欄（要る 教材だけ）。 */
+  english?: { placeholder?: string; starter?: string };
 }) {
   // 画面の 文字は この部品が 持つ（親から 送り返すと 変換の 途中で 入れ替わる）
   const [value, setValue] = useState(draft?.input ?? "");
+  const [en, setEn] = useState(draft?.en ?? "");
   const empty = value.trim().length === 0;
 
   const change = (next: string) => {
     setValue(next);
-    if (submitMode) onSubmit(next);
+    if (submitMode) onSubmit(next, en);
   };
+  /*
+   * 英語の 欄も 打つ たびに 下書きへ 送る。**採点には 使わない**が、送らないと
+   * 他の ページへ 行って 戻った ときに 英語だけ 消える——日本語に 直す 作業が
+   * まるごと やり直しに なる。
+   */
+  const changeEn = (next: string) => {
+    setEn(next);
+    if (submitMode) onSubmit(value, next);
+  };
+
+  const boxClass =
+    "border-hairline bg-panel text-ink w-full rounded-[var(--radius-button)] border-2 px-4 py-3 text-base font-bold";
 
   return (
     <form
       onSubmit={(e) => {
         e.preventDefault();
-        if (!submitMode && !disabled && !empty) onSubmit(value);
+        if (!submitMode && !disabled && !empty) onSubmit(value, en);
       }}
     >
+      {/*
+        英語 → 日本語の 2段。**英語は 使いたい 人だけ**（日本語で 直に 書ける 人に
+        余計な 段を 踏ませない）ので、札で そう 書いて 上に 置く。
+        点が つくのは 日本語の 欄だけ——英語の 段を 点に すると、
+        日本語で 直に 書ける 人が 損を する。
+      */}
+      {english && (
+        <div className="mb-3">
+          <p className="text-ink-soft mb-1 flex flex-wrap items-center gap-2 text-xs font-extrabold">
+            <span>① English</span>
+            <span className="border-hairline text-ink-faint rounded-full border-2 px-2 py-0.5">
+              つかいたい 人だけ
+            </span>
+          </p>
+          <textarea
+            value={en}
+            disabled={disabled}
+            onChange={(e) => changeEn(e.target.value)}
+            rows={3}
+            autoComplete="off"
+            autoCorrect="off"
+            spellCheck={false}
+            placeholder={english.placeholder ?? "Write your idea in English first."}
+            aria-label="えいごで 下書きする"
+            className={boxClass}
+          />
+          {english.starter && (
+            <p className="text-ink-faint mt-1 text-xs font-bold">Starter: {english.starter}</p>
+          )}
+        </div>
+      )}
+
+      {english && (
+        <p className="text-ink-soft mb-1 flex flex-wrap items-center gap-2 text-xs font-extrabold">
+          <span>
+            <RubyText text="② 日本語" index={UI_FURIGANA} />
+          </span>
+          <span
+            className="rounded-full px-2 py-0.5 text-white"
+            style={{ background: "var(--color-sky)" }}
+          >
+            <RubyText text="ここが こたえに なります" index={UI_FURIGANA} />
+          </span>
+        </p>
+      )}
       <textarea
         value={value}
         disabled={disabled}
@@ -504,8 +571,17 @@ function FreeInput({
         spellCheck={false}
         placeholder={placeholder ?? "思った ことを 書いてね"}
         aria-label="じゆうに 書く"
-        className="border-hairline bg-panel text-ink w-full rounded-[var(--radius-button)] border-2 px-4 py-3 text-base font-bold"
+        className={boxClass}
       />
+      {/*
+        型文は **打ちながら 見られる**ところに 置く。`placeholder` は 1文字 打つと
+        消えるので、いちばん 助けが 要る「書き始めた あと」に 手がかりが 無くなる。
+      */}
+      {starter && (
+        <p className="text-ink-soft mt-1 text-xs leading-relaxed font-bold">
+          <RubyText text={starter} index={UI_FURIGANA} />
+        </p>
+      )}
       {!submitMode && (
         <button
           type="submit"
