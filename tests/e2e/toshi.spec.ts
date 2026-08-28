@@ -2,7 +2,7 @@ import { expect, test, type Page } from "@playwright/test";
 import {
   affinity,
   answerTalk,
-  placeWordsIn,
+  writeListIn,
   submitAnswers,
   writeIn,
   writtenText,
@@ -47,8 +47,11 @@ import {
  * いくつもの もんだいに ある（「観光DX」は 3問に ある）。id で しぼらないと
  * 別の もんだいを 触って しまう。
  */
-const HOUKOKU_WORDS: readonly (readonly [string, readonly string[]])[] = [
-  // 5つの サービスは **順番を 見ない**（`unordered`）。サイトの 並びと わざと ちがう 順で 入れる
+/**
+ * 5つの サービスは **入力**（語群では ない・2026-08-27 の 指定）。
+ * サイトの 並びと わざと ちがう 順で 打つ——採点が 順を 見ない ことの 証拠に する。
+ */
+const HOUKOKU_LIST: readonly (readonly [string, readonly string[]])[] = [
   ["q5", ["Verify", "NEXTMAKE Internship Lab", "NMClaw", "セキュリティドローン", "観光DX"]],
 ];
 
@@ -74,51 +77,50 @@ const HOUKOKU_FREE_INPUT: readonly (readonly [string, string])[] = [
  * 番号を ここに 書き写して いるのは、**教材の 並びが 変わったら テストも 落ちる**
  * ように する ため——落ちれば 人が 見に 行ける。
  *
- * **いま 16問中 15問が 番号 0（＝いちばん 上）である。** 配布資料の HTML が
- * そう 並べて いる ため（2026-08-27「問題は そのまま。改変禁止」）。
- * 読まずに 上を 押すだけで 15/16 に なるので、並びを 変えてよいかは ユーザーに 上げてある。
+ * 並びは **`id` を たねに した 決まった 順**に 入れかえて ある（2026-08-28 の 許可）。
+ * 配布資料の HTML は 16問中 15問で 正解が いちばん 上に あり、読まずに 上を 押すだけで
+ * 15/16 に なって いた。教材を 直せば ここも 落ちる——落ちれば 人が 見に 行ける。
  */
 const HOUKOKU_CHOICES: readonly (readonly [string, number])[] = [
   ["q3", 0],
-  ["q4", 0],
-  ["q9", 0],
+  ["q4", 3],
+  ["q9", 2],
   ["q10", 2],
-  ["q11", 0],
-  ["q12", 0],
-  ["q13", 0],
-  ["q14", 0],
+  ["q11", 3],
+  ["q12", 3],
+  ["q13", 3],
+  ["q14", 2],
   ["q15", 0],
-  ["q16", 0],
+  ["q16", 3],
   ["q17", 0],
-  ["q20", 0],
+  ["q20", 1],
   ["q21", 0],
-  ["q22", 0],
-  ["q23", 0],
-  ["q24", 0],
+  ["q22", 1],
+  ["q23", 3],
+  ["q24", 3],
 ];
 
 /** 複数選択の 1問（カンボジアの 人の いい ところ）。正解は 4つ ぜんぶ。 */
-const HOUKOKU_MULTI: readonly (readonly [string, readonly number[]])[] = [["q25", [0, 1, 2, 3]]];
+const HOUKOKU_MULTI: readonly (readonly [string, readonly number[]])[] = [["q25", [0, 1, 2, 4]]];
 
 /**
  * ヘンディさんに 話す こたえ（型文を なぞった、学習者が 書きそうな文）。
  *
- * **並びは 調査シートの MISSION と 同じ**（2026-08-27）。学習者は
+ * **並びは 調査シートの POINT と 同じ**（2026-08-28）。学習者は
  * 「📋 自分の こたえ」を 上から なぞって 報告できる。
  * さいごの1問（日本人の だれと）は わざと 残す——「まだ 言えない」で 通れる ことを 見る。
  */
 const HENDY_ANSWERS = [
-  "2018年に できました。", // MISSION 1 いつ できた（数だけ）
-  "まついさんです。", // MISSION 1 社長の 名前（ひらがな＋さんでも 通る）
-  "NMClaw と 観光DXです。", // MISSION 2 サービスを 2つ
-  "新しい 技術と、グループの 会社と、世界の 人と 学ぶ ことです。", // MISSION 3 とくちょう 3つ
-  "CONTINUE LLC. です。", // MISSION 4 グループの 会社の 名前
-  "ベトナムに あります。", // MISSION 4 オフィスの 国
-  "三好市の ために、まちを めぐる しくみを 作りました。", // MISSION 5 実績を 1つ
-  "技術は 道具です。", // MISSION 6 大切に する 考えかた
-  "日本語と ITを 学びます。", // MISSION 7 何と 何を 学ぶ
-  "しごとの 紹介を して くれます。", // MISSION 7 サポート
-  "NEXTMAKE Internship Lab です。", // MISSION 7 そのあとの サービス
+  "2018年に できました。", // POINT 1 いつ できた（数だけ）
+  "まついさんです。", // POINT 1 社長の 名前（ひらがな＋さんでも 通る）
+  "NMClaw と 観光DXです。", // POINT 2 サービスを 2つ
+  "CONTINUE LLC. です。", // POINT 3 グループの 会社の 名前
+  "ベトナムに あります。", // POINT 3 オフィスの 国
+  "三好市の ために、まちを めぐる しくみを 作りました。", // POINT 4 実績を 1つ
+  "技術は 道具です。", // POINT 5 大切に する 考えかた
+  "日本語と ITを 学びます。", // POINT 6 何と 何を 学ぶ
+  "しごとの 紹介を して くれます。", // POINT 6 サポート
+  "NEXTMAKE Internship Lab です。", // POINT 6 そのあとの サービス
   // さいごの「日本人の だれと？」は「まだ 言えない（つぎへ）」で 通る
   //（答えられなくても 詰まらない 証拠）
 ];
@@ -250,11 +252,12 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
     await expect(page.getByRole("button", { name: "つぎ →" })).toHaveCount(0);
 
     /*
-     * **MISSIONの 見出しが 章ごとに 1回 出る**（2026-08-27 の 作り直し）。
-     * 28問が 見出しなしで 並ぶと、いま どの 話を 調べて いるのかが 画面から 消える。
+     * **POINT の 見出しが 章ごとに 1回 出る**（2026-08-28 に MISSION から 改名。
+     * 会社の MISSION と ことばが かぶって いた）。25問が 見出しなしで 並ぶと、
+     * いま どの 話を 調べて いるのかが 画面から 消える。
      */
-    await expect(page.getByRole("heading", { name: /MISSION 1/ })).toBeVisible();
-    await expect(page.getByRole("heading", { name: /MISSION 7/ })).toBeVisible();
+    await expect(page.getByRole("heading", { name: /POINT 1/ })).toBeVisible();
+    await expect(page.getByRole("heading", { name: /POINT 6/ })).toBeVisible();
 
     /*
      * **ぜんぶ うめるまで「こたえを 出す」は 出ない**（`requireAll`）。
@@ -264,10 +267,10 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
     // ルビが 語の 中に 入る（「書かくと」）ので、ふりがなの 入らない ところで さがす
     await expect(page.getByText(/もん です/)).toBeVisible();
 
-    for (const [questionId, words] of HOUKOKU_WORDS) {
-      await placeWordsIn(page, questionId, words);
+    for (const [questionId, values] of HOUKOKU_LIST) {
+      await writeListIn(page, questionId, values);
     }
-    await shot(page, "05-quiz-wordbank");
+    await shot(page, "05-quiz-list");
 
     for (const [questionId, written] of HOUKOKU_FREE_INPUT) {
       await writeIn(page, questionId, written);

@@ -3,7 +3,7 @@ import {
   writeIn,
   KAISHA,
   itemsBefore,
-  placeWordsIn,
+  writeListIn,
   progressText,
   seedCompleted,
   shot,
@@ -29,7 +29,7 @@ test("2問 書いて 離れ、もどると「つづきから」が 出る", asyn
   await page.getByRole("button", { name: "はじめる" }).click();
 
   // ぜんぶ 1ページなので 進まずに 2問 書く（語群と 入力の 両方を またぐ）
-  await placeWordsIn(page, "q5", ["観光DX"]);
+  await writeListIn(page, "q5", ["観光DX"]);
   await writeIn(page, "q2", "まついさん");
   await expect(page.getByText(writtenText(2))).toBeVisible();
 
@@ -54,7 +54,7 @@ test("「はじめから やる」を えらべば 1問目に もどる", async 
 
   await page.goto(KAISHA.sheet.path);
   await page.getByRole("button", { name: "はじめる" }).click();
-  await placeWordsIn(page, "q5", ["観光DX"]);
+  await writeListIn(page, "q5", ["観光DX"]);
 
   await page.goto(KAISHA.sheet.path);
   await page.getByRole("button", { name: "はじめから やる" }).click();

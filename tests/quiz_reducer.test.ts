@@ -60,6 +60,11 @@ function answerCorrectly(state: QuizState): QuizState {
       return quizReducer(state, { type: "answerMulti", indexes: q.answers });
     case "keyword":
       return quizReducer(state, { type: "answerKeyword", input: q.answer });
+    case "list":
+      return quizReducer(state, {
+        type: "answerList",
+        inputs: q.groups.map((group) => group.label),
+      });
     case "free":
       return quizReducer(state, { type: "answerFree", input: "じゆうに 書いた こたえ" });
     case "wordbank":
@@ -760,6 +765,12 @@ function answerCorrectlyAt(state: QuizState, id: string): QuizState {
       return quizReducer(state, { type: "answerMulti", indexes: q.answers, questionId: id });
     case "keyword":
       return quizReducer(state, { type: "answerKeyword", input: q.answer, questionId: id });
+    case "list":
+      return quizReducer(state, {
+        type: "answerList",
+        inputs: q.groups.map((group) => group.label),
+        questionId: id,
+      });
     case "free":
       return quizReducer(state, {
         type: "answerFree",

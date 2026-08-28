@@ -135,6 +135,7 @@ export type QuizAction =
       /** 英語の 下書き（`free.english` の ある 問いだけ）。採点には 使わない。 */
       readonly en?: string;
     } & Targeted)
+  | ({ readonly type: "answerList"; readonly inputs: readonly string[] } & Targeted)
   | ({ readonly type: "answerWordbank"; readonly filled: readonly (string | null)[] } & Targeted)
   | ({ readonly type: "answerFeeling"; readonly index: number } & Targeted)
   | ({ readonly type: "answerReply"; readonly index: number } & Targeted)
@@ -342,6 +343,16 @@ export function quizReducer(state: QuizState, action: QuizAction): QuizState {
         return { ...state, phase: { kind: "ask", inputIssue: INPUT_ISSUE_FEEDBACK.latin } };
       }
       return put(state, question, draft);
+    }
+
+    /*
+     * 順不同の 入力（`list`）。**IME の 注意は 出さない**——
+     * 答えが「NMClaw」「Verify」の ように ラテン文字の 問いなので、
+     * `answerKeyword` と 同じ 案内を すると 設問と 正反対に なる。
+     */
+    case "answerList": {
+      if (question.type !== "list") return state;
+      return put(state, question, { kind: "list", inputs: [...action.inputs] });
     }
 
     case "answerWordbank": {

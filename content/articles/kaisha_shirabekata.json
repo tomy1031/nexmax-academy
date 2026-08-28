@@ -2,7 +2,7 @@
   "kind": "article",
   "id": "kaisha_shirabekata",
   "title": "NEXT MAKEを 調べよう！",
-  "description": "Webサイトを 見て、「NEXT MAKEは どんな 会社？」の 答えを 見つけます。調べかたと、7つの MISSIONを 学びます。",
+  "description": "Webサイトを 見て、「NEXT MAKEは どんな 会社？」の 答えを 見つけます。調べかたと、6つの POINTを 学びます。",
   "furigana": [
     [
       "代表取締役社長",
@@ -1299,18 +1299,6 @@
   ],
   "blocks": [
     {
-      "kind": "hero",
-      "eyebrow": "🔎 STEP 1　会社の 調べかた",
-      "title": "NEXT MAKEを 調べよう！",
-      "lead": "Webサイトを 見て、クイズに 答えます。",
-      "note": "調査シートに 書きます。そのあと、ヘンディさんと 松井社長に 話します。",
-      "image": {
-        "src": "/img/articles/kaisha_shirabekata/g2.webp",
-        "refs": [],
-        "status": "done"
-      }
-    },
-    {
       "kind": "heading",
       "level": 2,
       "text": "今日 する こと"
@@ -1349,7 +1337,7 @@
         },
         {
           "label": "STEP 4",
-          "title": "松井社長と 話す 準備を する",
+          "title": "AI松井社長と 話す 準備を する",
           "image": {
             "src": "/img/articles/kaisha_shirabekata/g5.webp",
             "refs": [],
@@ -1358,7 +1346,7 @@
         },
         {
           "label": "STEP 5",
-          "title": "松井社長と 話す",
+          "title": "AI松井社長と 話す",
           "image": {
             "src": "/img/articles/kaisha_shirabekata/g6.webp",
             "refs": [],
@@ -1366,6 +1354,18 @@
           }
         }
       ]
+    },
+    {
+      "kind": "hero",
+      "eyebrow": "🔎 STEP 1　会社の 調べかた",
+      "title": "NEXT MAKEを 調べよう！",
+      "lead": "Webサイトを 見て、クイズに 答えます。",
+      "note": "調査シートに 書きます。そのあと、ヘンディさんと 松井社長に 話します。",
+      "image": {
+        "src": "/img/articles/kaisha_shirabekata/g2.webp",
+        "refs": [],
+        "status": "done"
+      }
     },
     {
       "kind": "heading",
@@ -1453,7 +1453,7 @@
     {
       "kind": "heading",
       "level": 2,
-      "text": "7つの MISSION"
+      "text": "6つの POINT"
     },
     {
       "kind": "missions",
@@ -1494,30 +1494,13 @@
         },
         {
           "badge": "3",
-          "title": "NEXT MAKEの 3つの とくちょうは？",
-          "where": "ホームを 見る",
-          "points": [
-            "1つ目の とくちょう",
-            "2つ目の とくちょう",
-            "3つ目の とくちょう",
-            "それぞれ どんな ことを して いるか"
-          ],
-          "hint": "ホームの「3つの とくちょう」を 見て ください。",
-          "image": {
-            "src": "/img/articles/kaisha_shirabekata/k4.webp",
-            "refs": [],
-            "status": "done"
-          }
-        },
-        {
-          "badge": "4",
           "title": "グループの 会社は？",
           "where": "「グループ会社」を 見る",
           "points": [
             "グループの 会社の 名前",
             "代表の 名前",
             "オフィスが ある 国と 町",
-            "いつから ベトナムで 開発を 始めたか"
+            "いつから 海外で 開発を 始めたか"
           ],
           "hint": "「CONTINUE LLC.」の ところを 見ましょう。",
           "image": {
@@ -1527,7 +1510,7 @@
           }
         },
         {
-          "badge": "5",
+          "badge": "4",
           "title": "今までに どんな 仕事を した？",
           "where": "「実績」を 見る",
           "points": [
@@ -1543,7 +1526,7 @@
           }
         },
         {
-          "badge": "6",
+          "badge": "5",
           "title": "大切に する 考えかたは？",
           "where": "「会社の しょうかい」を 見る",
           "points": [
@@ -1559,7 +1542,7 @@
           }
         },
         {
-          "badge": "7",
+          "badge": "6",
           "title": "Japanese IT Pathwayは どんな プログラム？",
           "where": "「カンボジア教育」を 見る",
           "points": [
@@ -1569,7 +1552,7 @@
             "NEXT MAKEは 何を サポートするか",
             "終わった あと、どんな 道が あるか"
           ],
-          "note": "これは、みなさんに いちばん 近い MISSIONです。",
+          "note": "これは、みなさんに いちばん 近い POINTです。",
           "focus": true,
           "image": {
             "src": "/img/articles/kaisha_shirabekata/k8.webp",
