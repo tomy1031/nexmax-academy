@@ -111,28 +111,53 @@ export function dictionaryIndex(
 }
 
 /**
- * 文の中から、辞書に載っている ことばを **1つだけ** 見つける。
+ * 送りがなの ついた 形も 当てる ための **動詞の 語幹**。
  *
- * 1文につき下線は1語だけにする（設計07 §2.5）。同じ文で2回タップさせない、
- * という決まりを守るため、ここは意図的に「最初の1つ」しか返さない。
- * どれを選ぶかは **いちばん長い語**を優先し、同じ長さなら文の先頭に近いほう。
- * 短い語を先に取ると「報告」があるのに「報」だけが下線になる。
+ * 辞書は 言い切りの 形（「見つける」）で 持つが、本文には 活用した 形
+ *（「見つけた」「考えて」「終わった」「さがして」）で 出る。
+ * 言い切りの 形しか 見て いなかった ころは、そこだけ 下線が 付かなかった
+ *（2026-08-28 の 指摘「見つける（た）・さがして・考えて・終わった」）。
+ *
+ * 語幹が **1文字に なる ものは 当てない**（「知る」→「知」は
+ * 「知識」「知らせ」まで 拾って しまう）。
+ */
+function stemOf(term: string): string | null {
+  if (!/[うくすつぬぶむぐる]$/.test(term)) return null;
+  const stem = term.slice(0, -1);
+  return stem.length >= 2 ? stem : null;
+}
+
+/**
+ * わたした 文字列の 中から、辞書に 載って いる ことばを **1つだけ** 見つける。
+ *
+ * 1文につき 下線は 1語だけ（設計07 §2.5）。同じ 文で 2回 タップさせない ため、
+ * ここは 意図して「1つ」しか 返さない——**文に 分けるのは 呼ぶ 側**（`DictionaryText`）で、
+ * ここには 1文ずつ 渡って くる。
+ * どれを 選ぶかは **いちばん長い ところ**を 先に し、同じ 長さなら 文の 先頭に 近い ほう。
+ * 短い 語を 先に 取ると「報告」が あるのに「報」だけが 下線に なる。
+ *
+ * 返す `length` は **本文で 当たった ところの 長さ**（語幹で 当たった ときは 語幹の 長さ）。
+ * 見出し語の 長さでは ない——ここを 取りちがえると、下線が 本文の 字と ずれる。
  */
 export function findDictionaryTerm(
   text: string,
   entries: readonly DictionaryEntry[],
-): { entry: DictionaryEntry; at: number } | null {
-  let best: { entry: DictionaryEntry; at: number } | null = null;
+): { entry: DictionaryEntry; at: number; length: number } | null {
+  let best: { entry: DictionaryEntry; at: number; length: number } | null = null;
+  const consider = (entry: DictionaryEntry, at: number, length: number) => {
+    if (at < 0) return;
+    if (!best || length > best.length || (length === best.length && at < best.at)) {
+      best = { entry, at, length };
+    }
+  };
   for (const entry of entries) {
     const at = text.indexOf(entry.term);
-    if (at < 0) continue;
-    if (
-      !best ||
-      entry.term.length > best.entry.term.length ||
-      (entry.term.length === best.entry.term.length && at < best.at)
-    ) {
-      best = { entry, at };
+    if (at >= 0) {
+      consider(entry, at, entry.term.length);
+      continue;
     }
+    const stem = stemOf(entry.term);
+    if (stem) consider(entry, text.indexOf(stem), stem.length);
   }
   return best;
 }

@@ -15,8 +15,8 @@ export const GROUP = {
   id: "group",
   nav: "グループ会社",
   title: {
-    n4: "グループの 会社",
-    n3: "グループ企業とアライアンス",
+    n4: "グループ会社",
+    n3: "グループ会社",
     en: "Our group companies",
   },
   hero: "/gakushu/nextmake/img/hero_vietnam.webp",

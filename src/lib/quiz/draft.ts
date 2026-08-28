@@ -34,9 +34,22 @@ export type QuizDraft =
   | { readonly kind: "choice"; readonly index: number }
   | { readonly kind: "multi"; readonly indexes: readonly number[] }
   | { readonly kind: "keyword"; readonly input: string }
+  /** 順不同の 入力（`list`）。**欄の 数だけ** 持つ（空の 欄も 残す）。 */
+  | { readonly kind: "list"; readonly inputs: readonly string[] }
   | { readonly kind: "wordbank"; readonly filled: readonly (string | null)[] }
   | { readonly kind: "emotion"; readonly feeling: number | null; readonly reply: number | null }
-  | { readonly kind: "free"; readonly input: string };
+  | {
+      readonly kind: "free";
+      readonly input: string;
+      /**
+       * 日本語の 前に 英語で 書いた 下書き（`free.english` の ある 問いだけ）。
+       *
+       * **採点にも 記録にも 使わない。**「英語で 考えてから 日本語に する」という
+       * 進み方を 端末が おぼえて おく ためだけの もの——次に 開いた ときに
+       * 英語の 欄だけ 空に なって いたら、日本語に する 作業が やり直しに なる。
+       */
+      readonly en?: string;
+    };
 
 /**
  * 保存された 下書きを 読み直す ための 検査（`@/lib/quiz/resume` が 使う）。
@@ -46,8 +59,9 @@ export const quizDraftSchema: z.ZodType<QuizDraft> = z.discriminatedUnion("kind"
   z.object({ kind: z.literal("choice"), index: z.number().int().min(0) }),
   z.object({ kind: z.literal("multi"), indexes: z.array(z.number().int().min(0)) }),
   z.object({ kind: z.literal("keyword"), input: z.string() }),
+  z.object({ kind: z.literal("list"), inputs: z.array(z.string()) }),
   z.object({ kind: z.literal("wordbank"), filled: z.array(z.string().nullable()) }),
-  z.object({ kind: z.literal("free"), input: z.string() }),
+  z.object({ kind: z.literal("free"), input: z.string(), en: z.string().optional() }),
   z.object({
     kind: z.literal("emotion"),
     feeling: z.number().int().min(0).nullable(),
@@ -60,6 +74,7 @@ const DRAFT_KIND: Record<QuizQuestion["type"], QuizDraft["kind"]> = {
   choose: "choice",
   multi: "multi",
   keyword: "keyword",
+  list: "list",
   wordbank: "wordbank",
   emotion: "emotion",
   free: "free",
@@ -92,6 +107,8 @@ export function draftAnswered(question: QuizQuestion, draft: QuizDraft | undefin
       return draft.indexes.length > 0;
     case "keyword":
       return draft.input.trim().length > 0;
+    case "list":
+      return draft.inputs.some((v) => v.trim().length > 0);
     case "wordbank":
       return draft.filled.some((v) => v !== null && v !== "");
     case "emotion":
@@ -190,6 +207,27 @@ export function gradeDraft(question: QuizQuestion, draft: QuizDraft | undefined)
       };
     }
 
+    case "list": {
+      if (draft.kind !== "list") return blank;
+      const written = draft.inputs.map((v) => v.trim()).filter((v) => v !== "");
+      if (written.length === 0) return blank;
+      /*
+       * **欄と 答えを 1対1で 見ない**（順不同）。まとまりごとに
+       * 「書かれた どれかが 当たって いるか」を 見る。同じ ことばを 2つの 欄に
+       * 書いても 1つ ぶんに しか ならない——`hit` を まとまり単位で 数えるため。
+       */
+      const hits = question.groups.filter((group) =>
+        written.some((value) => answerMatches(value, [group.label, ...group.accept])),
+      ).length;
+      const correct = hits === question.groups.length;
+      return {
+        correct,
+        earned: correct ? question.points : 0,
+        answer: draft.inputs.map((v, i) => `（${i + 1}）${v.trim()}`).join("　"),
+        partial: !correct && hits > 0,
+      };
+    }
+
     case "wordbank": {
       if (draft.kind !== "wordbank") return blank;
       if (!draft.filled.some((v) => v !== null && v !== "")) return blank;
@@ -249,6 +287,8 @@ export function correctAnswerText(question: QuizQuestion): string {
       return question.answers.map((i) => question.options[i] ?? "").join(" ／ ");
     case "keyword":
       return question.answer;
+    case "list":
+      return question.groups.map((g) => g.label).join(" ／ ");
     case "wordbank":
       return question.blanks.map((b, i) => `（${i + 1}）${b}`).join("　");
     case "emotion":

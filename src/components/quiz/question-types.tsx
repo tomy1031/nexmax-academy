@@ -10,6 +10,7 @@ import type { QuizAction, QuizMode } from "./quiz-reducer";
 
 /** 部品じたいの文言の読み辞書（教材データの辞書はUIの文言まで覆わない・規律2）。 */
 const UI_FURIGANA = buildFuriganaIndex([
+  ["日本語", "にほんご"],
   ["文", "ぶん"],
   ["入", "はい"],
   ["直", "なお"],
@@ -100,6 +101,7 @@ export function QuestionBody({
     case "keyword":
       return (
         <KeywordInput
+          placeholder={question.placeholder}
           disabled={disabled}
           submitMode={submitMode}
           draft={draft?.kind === "keyword" ? draft : undefined}
@@ -111,10 +113,23 @@ export function QuestionBody({
       return (
         <FreeInput
           placeholder={question.placeholder}
+          starter={question.starter}
           disabled={disabled}
           submitMode={submitMode}
           draft={draft?.kind === "free" ? draft : undefined}
           onSubmit={(input) => dispatch({ type: "answerFree", input })}
+        />
+      );
+
+    case "list":
+      return (
+        <ListInput
+          groups={question.groups.length}
+          placeholders={question.placeholders}
+          disabled={disabled}
+          submitMode={submitMode}
+          draft={draft?.kind === "list" ? draft : undefined}
+          onSubmit={(inputs) => dispatch({ type: "answerList", inputs })}
         />
       );
 
@@ -386,23 +401,112 @@ function MultiPicker({
   );
 }
 
+/* ---------------- 順不同の 入力（list） ---------------- */
+
+/**
+ * いくつかを **順不同で** 打つ（「5つの サービスを 書いて ください」）。
+ *
+ * 語群（`wordbank`）と ちがい **ふだを 出さない**。並んだ ふだから えらべると、
+ * サイトを 見なくても 消去法で 当たって しまう——配布資料の 調査シートが
+ * 5つの 空欄に 自分で 打たせて いたのは、名前を 思い出す ところまでが
+ * ねらいだから（2026-08-27 の 指定）。
+ *
+ * **どの 欄に 書いても よい**（採点は `gradeDraft` が 順を 見ない）ので、
+ * 欄の 番号は ただの 目印に する。
+ */
+function ListInput({
+  groups,
+  placeholders,
+  onSubmit,
+  disabled,
+  submitMode,
+  draft,
+}: {
+  /** 欄の 数。 */
+  groups: number;
+  placeholders?: readonly string[];
+  onSubmit: (inputs: readonly string[]) => void;
+  disabled?: boolean;
+  submitMode?: boolean;
+  draft?: Extract<QuizDraft, { kind: "list" }>;
+}) {
+  const [values, setValues] = useState<string[]>(() =>
+    Array.from({ length: groups }, (_, i) => draft?.inputs[i] ?? ""),
+  );
+  const empty = values.every((v) => v.trim() === "");
+
+  const change = (at: number, next: string) => {
+    const after = values.map((v, i) => (i === at ? next : v));
+    setValues(after);
+    if (submitMode) onSubmit(after);
+  };
+
+  return (
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        if (!submitMode && !disabled && !empty) onSubmit(values);
+      }}
+    >
+      <ul className="grid gap-2">
+        {values.map((value, index) => (
+          <li key={index} className="flex items-center gap-2">
+            <span className="border-hairline bg-panel-tint text-ink-soft grid h-8 w-8 shrink-0 place-items-center rounded-full border-2 text-sm font-extrabold">
+              {index + 1}
+            </span>
+            <input
+              type="text"
+              value={value}
+              disabled={disabled}
+              onChange={(e) => change(index, e.target.value)}
+              autoComplete="off"
+              autoCorrect="off"
+              spellCheck={false}
+              placeholder={placeholders?.[index] ?? String(index + 1)}
+              aria-label={`${index + 1}つめを 入力する`}
+              className="border-hairline bg-panel text-ink w-full rounded-[var(--radius-button)] border-2 px-4 py-2.5 text-base font-extrabold"
+            />
+          </li>
+        ))}
+      </ul>
+      {!submitMode && (
+        <button
+          type="submit"
+          disabled={disabled || empty}
+          className="btn-island btn-game mt-3 px-8 py-3 disabled:opacity-50"
+        >
+          こたえる
+        </button>
+      )}
+    </form>
+  );
+}
+
 /* ---------------- 自由入力 ---------------- */
 
 /**
- * 自由入力。「間違えたら恥ずかしい」を軽くするため、書き始める前に
- * **どこまで書けばいいか**（ひらがなでも・全文でなくても）を常に見せておく。
- * 判定側（normalize.ts の answerMatches）もそのとおりに緩めてある。
+ * 自由入力。
+ *
+ * ## 「〜でなくても OK」と 書かない（2026-08-27 の 指定）
+ * 前は 入力欄の 下に「ひらがなでも OK。ぜんぶの 文で なくて OK」と 出して いた。
+ * **学習者に「やらなくてよい」と 先に 言う 文言は 一切 出さない**——
+ * できない ことを 先に 数えあげる 言い方に なる。
+ * 判定側（`normalize.ts` の `answerMatches`）は これまでどおり ゆるいので、
+ * ひらがなで 書いても 一部だけ 書いても 通る。**ゆるさは 動きで 示す**。
  */
 function KeywordInput({
   onSubmit,
   disabled,
   submitMode,
   draft,
+  placeholder,
 }: {
   onSubmit: (input: string) => void;
   disabled?: boolean;
   submitMode?: boolean;
   draft?: Extract<QuizDraft, { kind: "keyword" }>;
+  /** 教材が 決めた うすい 字（「例：株式会社○○」）。先生が 管理画面で 直せる。 */
+  placeholder?: string;
 }) {
   const [value, setValue] = useState(draft?.input ?? "");
   const empty = value.trim().length === 0;
@@ -433,7 +537,7 @@ function KeywordInput({
           autoComplete="off"
           autoCorrect="off"
           spellCheck={false}
-          placeholder="こたえを 書いてね"
+          placeholder={placeholder ?? "こたえを 書いてね"}
           aria-label="こたえを 入力する"
           className="border-hairline bg-panel text-ink w-full rounded-[var(--radius-button)] border-2 px-4 py-3 text-center text-xl font-extrabold"
         />
@@ -447,10 +551,6 @@ function KeywordInput({
           </button>
         )}
       </div>
-
-      <p className="text-ink-faint mt-2 text-xs font-bold">
-        <RubyText text="ひらがなでも OK。ぜんぶの 文で なくて OK" index={UI_FURIGANA} />
-      </p>
     </form>
   );
 }
@@ -471,12 +571,15 @@ function FreeInput({
   submitMode,
   draft,
   placeholder,
+  starter,
 }: {
-  onSubmit: (input: string) => void;
+  onSubmit: (input: string, en?: string) => void;
   disabled?: boolean;
   submitMode?: boolean;
   draft?: Extract<QuizDraft, { kind: "free" }>;
   placeholder?: string;
+  /** 日本語の 型文（打ちながら 見られる 足場）。 */
+  starter?: string;
 }) {
   // 画面の 文字は この部品が 持つ（親から 送り返すと 変換の 途中で 入れ替わる）
   const [value, setValue] = useState(draft?.input ?? "");
@@ -486,6 +589,8 @@ function FreeInput({
     setValue(next);
     if (submitMode) onSubmit(next);
   };
+  const boxClass =
+    "border-hairline bg-panel text-ink w-full rounded-[var(--radius-button)] border-2 px-4 py-3 text-base font-bold";
 
   return (
     <form
@@ -504,8 +609,17 @@ function FreeInput({
         spellCheck={false}
         placeholder={placeholder ?? "思った ことを 書いてね"}
         aria-label="じゆうに 書く"
-        className="border-hairline bg-panel text-ink w-full rounded-[var(--radius-button)] border-2 px-4 py-3 text-base font-bold"
+        className={boxClass}
       />
+      {/*
+        型文は **打ちながら 見られる**ところに 置く。`placeholder` は 1文字 打つと
+        消えるので、いちばん 助けが 要る「書き始めた あと」に 手がかりが 無くなる。
+      */}
+      {starter && (
+        <p className="text-ink-soft mt-1 text-xs leading-relaxed font-bold">
+          <RubyText text={starter} index={UI_FURIGANA} />
+        </p>
+      )}
       {!submitMode && (
         <button
           type="submit"

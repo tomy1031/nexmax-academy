@@ -98,7 +98,16 @@ export function describeQuestionIssues(question: QuizQuestion): string[] {
       const notices: string[] = [];
       if (question.options.length < 3) notices.push("えらぶものを 3つ以上 書いてください。");
       if (question.answers.length < 2) notices.push("こたえを 2つ以上 えらんでください。");
-      if (question.options.length > 0 && question.answers.length >= question.options.length) {
+      /*
+       * ぜんぶが こたえの ときは ふつう 作りかけ——読まずに ぜんぶ 押せば 満点に なる。
+       * ただし **そう 作りたい と 書いて ある もの**（`allCorrect`）は 通す
+       *（2026-08-28 の 指定。配布資料が 4つ 並べて いる 問いが ある）。
+       */
+      if (
+        question.allCorrect !== true &&
+        question.options.length > 0 &&
+        question.answers.length >= question.options.length
+      ) {
         notices.push("ぜんぶが こたえです。こたえでない ものを 1つ のこしてください。");
       }
       return notices;
@@ -106,6 +115,18 @@ export function describeQuestionIssues(question: QuizQuestion): string[] {
 
     case "keyword":
       return question.answer.trim().length === 0 ? ["こたえの ことばを 書いてください。"] : [];
+
+    case "list": {
+      const notices: string[] = [];
+      if (question.groups.length < 2) notices.push("こたえを 2つ以上 書いてください。");
+      if (question.groups.some((g) => g.label.trim().length === 0)) {
+        notices.push("こたえの ことばが 空の ものが あります。");
+      }
+      if (question.placeholders && question.placeholders.length !== question.groups.length) {
+        notices.push("うすい字の 数が こたえの 数と ちがいます。");
+      }
+      return notices;
+    }
 
     case "wordbank":
       return describeWordbankIssues(question);
@@ -192,6 +213,8 @@ const QUIZ_TYPE_OPTIONS: readonly { value: QuizQuestion["type"]; label: string }
   { value: "choose", label: "4たく（1つ えらぶ）" },
   { value: "multi", label: "ぜんぶ えらぶ（2つ以上）" },
   { value: "keyword", label: "じぶんで 書く" },
+  // 順不同で いくつか 打つ（「5つの サービスを 書く」）。語群と ちがい ふだを 出さない
+  { value: "list", label: "いくつか 書く（順番なし）" },
   { value: "wordbank", label: "語群から あなうめ" },
   { value: "emotion", label: "気もち → 言い方" },
   // 正解が 無い 問い（「なぜ そう 思いましたか」）。書けば 点が 入る
@@ -315,6 +338,28 @@ export function QuizEditor({
           onChange={(answerMode) => patch({ answerMode })}
           hint="「まとめて 出す」は ぜんぶ 書いてから 1回で 採点します（途中で 正解は 見せず、「こたえを 見る」も 出ません）。「1問ずつ」は こたえるたびに せつめいを 読みます。"
         />
+        {/*
+          **ぜんぶ うめるまで 出せなく する**（schema.ts の `requireAll`）。
+          立ててよいのは 調べれば 必ず 答えが 見つかる 教材だけ——考えを 書く 教材で
+          立てると、書けない 1問が 出口を ふさぐ。だから 既定は オフの ままに する。
+        */}
+        <label className="text-ink flex items-start gap-2 text-xs font-black">
+          <input
+            type="checkbox"
+            className="mt-0.5"
+            checked={value.requireAll}
+            disabled={value.answerMode === "one"}
+            onChange={(event) => patch({ requireAll: event.target.checked })}
+          />
+          <span>
+            ぜんぶ うめるまで「こたえを 出す」を 出さない
+            <span className="text-ink-faint block font-bold">
+              {value.answerMode === "one"
+                ? "「1問ずつ」では 使えません（1問 ごとに 採点するため）。"
+                : "調べれば 必ず 見つかる 教材だけに します。考えを 書く 教材では 外して ください。"}
+            </span>
+          </span>
+        </label>
         <NoticeList notices={phaseNotices} />
       </StudioSection>
 
@@ -538,6 +583,56 @@ function QuestionBody({
             itemLabel="言い方"
             addLabel="＋ べつの 言い方を 追加"
             onChange={(accept) => onChange({ ...question, accept })}
+          />
+          {/*
+            うすい字（placeholder）。**答えを 書かない**——ここに 答えを 置くと
+            読まずに 写すだけの 問いに なる（2026-08-27 の 指定で 足した）。
+          */}
+          <TextField
+            label="うすい字（書く 形の 見本）"
+            value={question.placeholder ?? ""}
+            onChange={(placeholder) =>
+              onChange({
+                ...question,
+                placeholder: placeholder.trim() === "" ? undefined : placeholder,
+              })
+            }
+            placeholder="例：株式会社○○"
+            hint="入力欄に うすく 出ます。こたえその ものは 書かないでください。"
+          />
+        </div>
+      );
+
+    /* 順不同の 入力（5つの サービスなど）。どの 欄に 書いても よい。 */
+    case "list":
+      return (
+        <div className="space-y-3">
+          <StringListEditor
+            label="こたえ（順番は 見ません）"
+            items={question.groups.map((g) => g.label)}
+            itemLabel="こたえ"
+            addLabel="＋ こたえを 追加"
+            onChange={(labels) =>
+              onChange({
+                ...question,
+                groups: labels.map((label, i) => ({
+                  label,
+                  accept: question.groups[i]?.accept ?? [],
+                })),
+              })
+            }
+          />
+          <StringListEditor
+            label="うすい字（欄の 数だけ・なくても よい）"
+            items={question.placeholders ?? []}
+            itemLabel="うすい字"
+            addLabel="＋ うすい字を 追加"
+            onChange={(placeholders) =>
+              onChange({
+                ...question,
+                placeholders: placeholders.length > 0 ? placeholders : undefined,
+              })
+            }
           />
         </div>
       );

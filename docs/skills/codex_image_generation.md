@@ -131,6 +131,18 @@ codex -i public/img/characters/nexmax/reference.png \
 - 出力は **1024×1536 の PNG・アルファ付き**（`transparent background (alpha)` と
   明記する）。書けて いるかは `file *.png` が `RGBA` と 言うかで 見る——
   **`RGB` で 返って くる ことが ある**ので、その 1枚だけ 消して 撮り直す（実発生）。
+- **撮り直しても RGB の ままの ことが ある**（2026-08-28・ヘンディの 立ち絵で 3回 連続）。
+  1回目は 透明の つもりで **市松模様を 絵として 描いて きた**——プロンプトを どれだけ
+  強めても 抜けられなかった。そのときは 白い 背景で 撮って、機械で 切りぬく:
+
+  ```bash
+  node scripts/images/cutout_white.mjs <入力.png> <出力.png>   # 既定の しきい値 236
+  cwebp -q 84 -alpha_q 90 <出力.png> -o public/img/characters/<id>/stand_*.webp
+  ```
+
+  **色で 抜くのでは なく へりから 塗りつぶす**ので、白い ワイシャツは 残る（人物の 中の
+  白は 濃い 線で 囲まれて いて、画像の へりから つながって いない）。仕上がりは
+  マゼンタの 板に 重ねて 目で 見る。
 - 変換は `cwebp -q 84 -alpha_q 90`（アルファを 落とさない）。1枚 80KB 前後。
 - 台帳は `scripts/images/<id>_<用途>.json`。生成は
   `node scripts/slides/gen_images.mjs <台帳> <出力フォルダ>`
@@ -142,6 +154,13 @@ codex -i public/img/characters/nexmax/reference.png \
 | `public/img/characters/matsui/stand_smile.webp` | 少し 前へ。手のひらを 胸の 高さに 開いて、うれしそうに 笑う | 2026-08-24 |
 | `public/img/characters/matsui/stand_think.webp` | 手を あごに 当てて、少し 首を かしげて 考える | 2026-08-24 |
 | `public/img/scenes/office_president.webp` | 社長室（人を 描かない・**右3分の1を 空ける**＝立ち絵の 居場所） | 2026-08-24 |
+| `public/img/characters/hendy/stand_neutral.webp` | 立って 正面。腕は 下ろす。おだやかに 聞いて いる | 2026-08-28 |
+| `public/img/characters/hendy/stand_smile.webp` | 少し 前へ。胸の 高さで 小さく サムズアップし、うれしそうに 笑う | 2026-08-28 |
+| `public/img/characters/hendy/stand_think.webp` | 手を あごに 当てて、少し 首を かしげて 考える | 2026-08-28 |
+
+ヘンディの 3枚は 台帳 `scripts/images/hendy_talkgame.json`。**絵は あるが、画面に 出す
+配線は まだ 無い**——ふつうの ミーティング（`talkGame` の 無い 教材）は 背景と 立ち絵を
+スキーマで 持って いないので、`schema.ts` を 触る 横断変更に なる（別タスク）。
 
 ## 6.7 ページ教材（article）の さし絵
 
@@ -163,6 +182,34 @@ codex -i public/img/characters/nexmax/reference.png \
 |---|---|---|
 | `scripts/images/kaisha_step1_scenes.json` | 会社を知る STEP1 の ページ 23枚（学生・オフィス） | 2026-08-25 |
 | `scripts/images/kaisha_step1_people.json` | 同 2枚（ヘンディ・松井社長が 画面に 出る） | 2026-08-25 |
+| `scripts/images/kaisha_step1_opening.json` | 同 1枚（ページの 表紙 `hero` の 絵） | 2026-08-28 |
+| `scripts/images/kaisha_junbi_scenes.json` | 準備ページの カード 3枚（学生だけ） | 2026-08-28 |
+| `scripts/images/kaisha_junbi_nexmax.json` | 同 1枚（ネクマックスが 出る） | 2026-08-28 |
+| `scripts/images/kaisha_junbi_people.json` | 同 2枚（A/B の 分かれ道。松井社長＋吹き出しの ネクマックス） | 2026-08-28 |
+| `scripts/images/kaisha_junbi_matsui.json` | 同 1枚（松井社長に 質問する） | 2026-08-28 |
+| `scripts/images/kaisha_junbi_hendy.json` | 同 1枚（ヘンディさんが 出る） | 2026-08-28 |
+
+**学習者役を 毎回 同じ 顔に しない**（2026-08-28 の 指摘「同じ女性を使いすぎ」「背景にもバリエーションが
+欲しい」）。§6.7 は「学習者役の 学生は 1枚目を 絵柄アンカーに して 顔と 服を そろえる」と 書いて いるが、
+それは **1つづきの 場面**（同じ 人が 順に 進む ページ）の 話。**別々の 例を 並べる カード**では、
+1枚ごとに 別の 学生・別の 部屋に する —— そこで `g1` を 参照に 渡すと 顔が そろって しまうので、
+**渡さない**。そろえるのは 絵柄だけ（人が 写って いない コマ 1枚）。
+
+**手は 崩れる。** 両手を 開いて 話す 姿勢は 指が からまりやすい（j1 で 実発生）。
+「片手は 開き、もう 片手は 机や ものの 上に 置く」と 書き、`exactly five fingers each,
+no tangled or merged fingers` を 足すと 直った。
+
+**「つないで いる」絵は 差し口まで 書く。** 「a cable runs between them」だけだと
+**ケーブルが 宙で 終わる**（j3 で 実発生）。`BOTH ENDS ARE CLEARLY PLUGGED IN` と、
+差した ところの 見え方（コネクタが 奥まで 入り、すきまが 無い）まで 書く。
+
+**人物ごとに 台帳を 分ける**（2026-08-28）。1つの 台帳に 松井社長と ヘンディさんの 設定画を
+両方 渡すと 顔が 混ざる。ネクマックスも 別に する——ほかの 台帳は negative で
+`robots, mascots` を 禁じて いるので、同じ 台帳に 入れると 出したい 絵にも 出ない。
+
+**ネクマックスを 場面の 中に 描く ときは `reference.png` だけでは 足りない**（同日 実発生）。
+原画だけを 渡すと 頭が 卵形に なり、白い 顔面が 小さく なった。**合格ずみの バリアント
+（`build.webp` など）も 参照に 足す**と、横長ヘルメットと 大きな 顔面が 戻る。
 
 ## 7. シーン・背景イラスト（任意の強化アセット）
 
@@ -235,6 +282,11 @@ codex -i public/img/characters/nexmax/reference.png \
 困っている お客さまなど**感情が 教材の 中身そのもの**の 1枚だけは、その節を 外した
 台帳で 撮る（`t25_trouble`）。外すのは 人間の 登場人物だけで、**ネクマックスは
 いつも 友好的**（§6 の 受入チェック）。
+
+同じ 手を 2026-08-28 に ページ教材でも 使った（`kaisha_junbi_people.json`）。
+「どちらの 学生と もっと 話したいですか」と **選ばせる 2枚**では、社長の 気もちが
+問いの 中身その ものに なる——両方 おだやかに 描くと 選ぶ 意味が 消える。
+外したのは **悲しさ まで**で、怒り・こわい 顔・涙は 禁じた ままに して ある。
 
 ## 8. 権利と運用
 

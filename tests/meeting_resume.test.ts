@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   clearMeetingResume,
   FRESH_START,
+  frontierFrom,
   readMeetingResume,
   restoreMeeting,
   saveMeetingResume,
@@ -235,5 +236,50 @@ describe("できなかった しつもん", () => {
     const old = { ...savedAt(4) } as Record<string, unknown>;
     delete old.missedIds;
     expect(readable(old).missedIds).toEqual([]);
+  });
+});
+
+/**
+ * **どこまで 札を 押せるか**（2026-08-28 の 指摘
+ *「7まで終わったのに一度他の問題をクリックしたら8がクリックできなくなっている」）
+ *
+ * 押せる 範囲を「いま いる ところ」で 決めて いた。ところが 札を 押して 前へ 戻ると
+ * いま いる ところは **下がる**——7問 終えた 人が 2問目を 押した 瞬間に、
+ * 8問目の 札が 押せなく なって いた。戻る ことが、進んだ ぶんを 取り上げる 罰に なる。
+ *
+ * 進んだ ところは 下がらない。しおりに 欄を 足さず、**答えた いちばん うしろ**から 起こす。
+ */
+describe("いちばん 先まで 聞かれた ところ", () => {
+  const start = (index: number, openIds: string[], missedIds: string[] = []) => ({
+    ...FRESH_START,
+    index,
+    openIds,
+    missedIds,
+  });
+
+  it("ふつうは いま いる ところ", () => {
+    expect(frontierFrom(start(3, ["q1", "q2", "q3"]), IDS)).toBe(3);
+  });
+
+  it("前の しつもんへ 戻った あとでも、進んだ ところは 下がらない", () => {
+    // 7問 答えて 8問目に いた 人が、2問目を 押し直して 閉じた
+    const saved = start(1, ["q1", "q2", "q3", "q4", "q5", "q6", "q7"]);
+    expect(frontierFrom(saved, IDS)).toBe(7);
+  });
+
+  it("できなかった 印も「聞かれた」に 数える", () => {
+    expect(frontierFrom(start(0, ["q1"], ["q5"]), IDS)).toBe(5);
+  });
+
+  it("はじめての 人は 0（1問目だけ 押せる）", () => {
+    expect(frontierFrom(FRESH_START, IDS)).toBe(0);
+  });
+
+  it("しつもんの 数を こえない", () => {
+    expect(frontierFrom(start(IDS.length, IDS, []), IDS)).toBe(IDS.length);
+  });
+
+  it("教材から 消えた しつもんの 印には 引っぱられない", () => {
+    expect(frontierFrom(start(2, ["q1", "q2"], ["kesita"]), IDS)).toBe(2);
   });
 });

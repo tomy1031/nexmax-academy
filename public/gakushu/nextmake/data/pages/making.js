@@ -10,8 +10,8 @@ export const MAKING = {
   id: "making",
   nav: "つくる仕事",
   title: {
-    n4: "お客さまの ために 作る",
-    n3: "受託開発・ソリューション",
+    n4: "つくる仕事",
+    n3: "つくる仕事",
     en: "Building for our clients",
   },
   hero: "/gakushu/nextmake/img/hero_making.webp",
@@ -126,7 +126,7 @@ export const MAKING = {
         },
         {
           icon: "🚉",
-          label: { n4: "常駐", n3: "常駐（SES）", en: "On-site engineering (SES)" },
+          label: { n4: "SES(常駐)", n3: "SES(常駐)", en: "On-site engineering (SES)" },
           text: {
             n4: "お客さまの 会社に 行って、その 会社の 中で はたらきます。",
             n3: "お客さまの会社に技術者が常駐し、その現場で開発や運用を担当します。",

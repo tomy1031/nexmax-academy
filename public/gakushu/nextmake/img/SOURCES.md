@@ -64,6 +64,29 @@ cwebp -quiet -q 78 /tmp/x.png -o public/gakushu/nextmake/img/<name>.webp
 `internship-lab-card.webp` を あたまに 置くと、同じ ページの 5つめの カード
 （Internship Lab）と **同じ 絵が 2回 出る**。
 
+### 実績の 6件（1件ずつ ちがう 絵）
+
+本家の 実績ページは **仕事ごとに 絵が ある**。調査シートは「実績の ページに、名前が 出て いる
+仕事が 6つ あります」と さがさせる ので、6件が **見分けられる**ことが 中身に 効く
+（字だけの カードが 6枚 並ぶと、どれを 読んだか 分からなく なる）。取得日: 2026-08-28。
+
+カードの 中の 小さな 絵なので、長辺 640px・q74 で 置く（5枚で 67KB）。
+
+| ファイル              | 使う ところ                    | 元の URL                                             |
+| --------------------- | ------------------------------ | ---------------------------------------------------- |
+| `work_miyoshi.webp`   | 徳島県 三好市（観光DX）        | `T/future/tourism-miyoshi.webp`                      |
+| `work_uchida.webp`    | ウチダコーポレーション（WEB）  | `/wp-content/uploads/2026/04/uchida-corporation.png` |
+| `work_kodomokai.webp` | 大阪府 こども会 育成連合会     | `/wp-content/uploads/2025/07/hukoren.png`            |
+| `work_nakatani.webp`  | ナカタニ自動車                 | `/wp-content/uploads/2025/07/natakani.png`           |
+| `work_truck.webp`     | 大阪府 トラック協会 南大阪支部 | `/wp-content/uploads/2025/04/track2.png`             |
+
+NMClaw の 1件だけは **`svc_nmclaw.webp` を 使いまわす**（本家も 同じ 絵。同じ 絵を
+2つの 名前で 持たない — 事業の 5枚と 同じ 考え方）。
+
+これで 画像の 合計は **約 1.08MB** で、下の「上限 合計 1MB」を 少し 超える。
+超えたのは 6件を 見分けさせる ためで、1枚あたりは 上限（120KB）の 中に ある。
+つぎに 足す ときは、**先に どれかを 小さく する**こと。
+
 ### ページの 中の 絵
 
 | ファイル                | 使う ところ              | 元の URL                                                             |

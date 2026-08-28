@@ -149,6 +149,8 @@ describe("drafts（もんだい）", () => {
       choose: 2,
       multi: 3,
       keyword: 0,
+      // 順不同の 入力は こたえを 2つ から（スキーマの 下限）
+      list: 2,
       wordbank: 2,
       emotion: 3,
       // 自由記述は 枠を 出さない（正解を 書く 欄が 無い）
@@ -258,5 +260,50 @@ describe("こたえの 指し先の 追いかけ", () => {
     expect(answersAfterRemove([0, 2], 1)).toEqual([0, 1]);
     // 消した選択肢が こたえだったときは こたえから 落ちる
     expect(answersAfterRemove([0, 2], 2)).toEqual([0]);
+  });
+});
+
+/**
+ * **ぜんぶが 正解の 複数選択**（2026-08-28 の 指定
+ *「選択肢は4つでいいです。5つもいらない」）
+ *
+ * ふだんは 弾く。えらぶ ものが 無い 問いは、読まずに ぜんぶ 押せば 満点に なる ので、
+ * ほとんどの ばあい 作りかけの まちがいで ある。
+ * けれど 配布資料が「この 4つが いい ところです」と 並べて いる 問いは ある——
+ * まぎらわしい 5つ目を こちらで 足すのは 配布資料の 改変に なる。
+ * だから **書いた ときだけ** 通す。書き忘れでは 通らない。
+ */
+describe("ぜんぶが 正解の 複数選択", () => {
+  const setWith = (extra: Record<string, unknown>) => ({
+    ...emptyQuizSet(),
+    id: "kaisha-quiz",
+    title: "調査シート",
+    description: "Webサイトを 見て、こたえを 見つけます。",
+    questions: [
+      {
+        ...emptyQuizQuestion("multi"),
+        id: "q25",
+        q: "カンボジアの 人の いい ところは どこですか？",
+        explain: "4つ ぜんぶが「いい ところ」です。",
+        options: ["ア", "イ", "ウ", "エ"],
+        answers: [0, 1, 2, 3],
+        ...extra,
+      },
+    ],
+  });
+
+  it("書き忘れは これまでどおり 弾く", () => {
+    expect(contentSchema.safeParse(setWith({})).success).toBe(false);
+  });
+
+  it("allCorrect: true と 書いた ときだけ 通る", () => {
+    const parsed = contentSchema.safeParse(setWith({ allCorrect: true }));
+    expect(parsed.success, JSON.stringify(parsed.error?.issues)).toBe(true);
+  });
+
+  it("こたえが 選択肢より 多いのは 通らない（数の まちがいは 見のがさない）", () => {
+    expect(
+      contentSchema.safeParse(setWith({ allCorrect: true, answers: [0, 1, 2, 3, 4] })).success,
+    ).toBe(false);
   });
 });

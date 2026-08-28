@@ -175,6 +175,27 @@ export function emptyArticleBlock(kind: ArticleBlock["kind"]): ArticleBlock {
         kind: "characters",
         items: [{ ref: "", role: "せんぱい", note: "ここに しょうかいを 書きます。" }],
       };
+    case "hero":
+      return { kind: "hero", title: "ここに 大きな 見出し", lead: "ここに ひとこと。" };
+    case "cards":
+      return {
+        kind: "cards",
+        tone: "plain",
+        items: [{ icon: "🏢", title: "カードの 題", text: "ここに せつめいを 書きます。" }],
+      };
+    case "missions":
+      return {
+        kind: "missions",
+        items: [{ title: "調べる こと", where: "どこを 見るか", points: ["見つける こと"] }],
+      };
+    case "compare":
+      return {
+        kind: "compare",
+        before: { title: "まえは", lines: ["ここに 前の こと。"] },
+        after: { title: "これからは", lines: ["ここに これからの こと。"] },
+      };
+    case "banner":
+      return { kind: "banner", tone: "message", icon: "💡", text: "ここが 大切です。" };
   }
 }
 
@@ -196,6 +217,8 @@ export function emptyQuizSet(): QuizSet {
     // 既定は まとめて 出す（schema.ts の answerMode と そろえる）
     answerMode: "submit",
     passRate: 70,
+    // 既定は false（書けない 1問で 教材が 終われなく なるのを 防ぐ — schema.ts）
+    requireAll: false,
     questions: [{ ...emptyQuizQuestion("choose"), id: "q1" }],
   };
 }
@@ -216,6 +239,16 @@ export function emptyQuizQuestion(type: QuizQuestion["type"]): QuizQuestion {
       return { ...base, type: "multi", options: ["", "", ""], answers: [0, 1] };
     case "keyword":
       return { ...base, type: "keyword", answer: "", accept: [] };
+    /* 順不同の 入力。スキーマの 下限（2つ）だけ 枠を 出す。 */
+    case "list":
+      return {
+        ...base,
+        type: "list",
+        groups: [
+          { label: "", accept: [] },
+          { label: "", accept: [] },
+        ],
+      };
     case "wordbank":
       return { ...base, type: "wordbank", lines: [""], blanks: [""], bank: ["", ""] };
     case "emotion":
@@ -312,6 +345,7 @@ export function emptyMeeting(): Meeting {
     questions: [emptyMeetingQuestion(), emptyMeetingQuestion(), emptyMeetingQuestion()],
     closing: "",
     discover: [],
+    notes: [],
   };
 }
 
@@ -327,6 +361,11 @@ export const ARTICLE_BLOCK_OPTIONS: readonly { value: ArticleBlock["kind"]; labe
   { value: "link", label: "つぎへのリンク" },
   { value: "extlink", label: "外部リンク" },
   { value: "characters", label: "とうじょう人物カード" },
+  { value: "hero", label: "表紙（大きな 見出し＋絵）" },
+  { value: "cards", label: "カードの ならび" },
+  { value: "missions", label: "調べる ことの 一覧" },
+  { value: "compare", label: "まえと あとの くらべ" },
+  { value: "banner", label: "帯（ゴール・大切なこと）" },
 ];
 
 export const CONTENT_TYPE_OPTIONS: readonly { value: ContentRefType; label: string }[] = [

@@ -178,6 +178,12 @@ export const GLOSSARY = [
     meaning: "外国の チームに、作る 仕事を たのむ ことです。",
     en: "Offshore",
   },
+  {
+    term: "オフショア開発",
+    reading: "おふしょあかいはつ",
+    meaning: "日本の 仕事を、外国の エンジニアが 作る やりかたです。",
+    en: "Offshore development",
+  },
   { term: "音声", reading: "おんせい", meaning: "人の 声や 音の ことです。", en: "Audio / voice" },
   { term: "温度", reading: "おんど", meaning: "あつい・つめたいの 数です。", en: "Temperature" },
   { term: "海外", reading: "かいがい", meaning: "日本の 外の 国の ことです。", en: "Overseas" },
@@ -506,6 +512,12 @@ export const GLOSSARY = [
     en: "Group",
   },
   {
+    term: "グループ会社",
+    reading: "ぐるーぷがいしゃ",
+    meaning: "おなじ なかまの 会社です。いっしょに 仕事を します。",
+    en: "Group company",
+  },
+  {
     term: "経営",
     reading: "けいえい",
     meaning: "会社を うまく うごかして いく 仕事です。",
@@ -736,6 +748,12 @@ export const GLOSSARY = [
     reading: "さいよう",
     meaning: "会社が いっしょに はたらく 人を えらぶ ことです。",
     en: "Recruitment / Hiring",
+  },
+  {
+    term: "さがす",
+    reading: "さがす",
+    meaning: "どこに あるかを 見に 行く ことです。",
+    en: "To search / To look for",
   },
   {
     term: "さがせる",
@@ -1059,6 +1077,12 @@ export const GLOSSARY = [
   },
   { term: "書式", reading: "しょしき", meaning: "書きかたの きまった 形です。", en: "Format" },
   {
+    term: "調べる",
+    reading: "しらべる",
+    meaning: "分からない ことを、本や Webサイトで さがして たしかめる ことです。",
+    en: "To research / To look up",
+  },
+  {
     term: "自律",
     reading: "じりつ",
     meaning: "人が 命令しなくても、じぶんで うごく ことです。",
@@ -1069,6 +1093,12 @@ export const GLOSSARY = [
     reading: "しりょう",
     meaning: "読む ための 紙や ファイルです。会議の 前に くばります。",
     en: "Materials / Handout documents",
+  },
+  {
+    term: "知る",
+    reading: "しる",
+    meaning: "そのことが 分かる ように なる ことです。",
+    en: "To know / To learn",
   },
   {
     term: "進行",
@@ -1253,12 +1283,6 @@ export const GLOSSARY = [
     reading: "せつりつ",
     meaning: "会社が できた ことです。できた 日が 書いて あります。",
     en: "Establishment (founding)",
-  },
-  {
-    term: "先進",
-    reading: "せんしん",
-    meaning: "ほかより 先へ 進んで いる ことです。",
-    en: "Advanced",
   },
   {
     term: "先端",
@@ -1513,6 +1537,12 @@ export const GLOSSARY = [
     en: "Inspection",
   },
   { term: "動画", reading: "どうが", meaning: "うごく 絵の ことです。", en: "Video" },
+  {
+    term: "東京本店",
+    reading: "とうきょうほんてん",
+    meaning: "東京に ある、2つめの 大きな オフィスです。",
+    en: "Tokyo main branch",
+  },
   { term: "道具", reading: "どうぐ", meaning: "しごとで 手に もって つかう もの", en: "a tool" },
   {
     term: "統合",
@@ -1537,12 +1567,6 @@ export const GLOSSARY = [
     reading: "どうにゅう",
     meaning: "新しい しくみを、会社の 中で つかいはじめる ことです。",
     en: "Adopting",
-  },
-  {
-    term: "導入実績",
-    reading: "どうにゅうじっせき",
-    meaning: "この 会社が 仕事を した お客さまの 名前",
-    en: "Client track record",
   },
   { term: "道路", reading: "どうろ", meaning: "車が 通る 道です。", en: "Road" },
   {
@@ -1706,6 +1730,12 @@ export const GLOSSARY = [
     reading: "ひつよう",
     meaning: "必要は、ぜったいに要る、なくてはこまるという意味です。",
     en: "Necessary",
+  },
+  {
+    term: "人手不足",
+    reading: "ひとでぶそく",
+    meaning: "はたらく 人が 足りない ことです。",
+    en: "Labour shortage",
   },
   { term: "人々", reading: "ひとびと", meaning: "たくさんの 人たちの ことです。", en: "People" },
   { term: "日々", reading: "ひび", meaning: "まいにちの ことです。", en: "Day to day" },
@@ -1878,6 +1908,12 @@ export const GLOSSARY = [
     reading: "まんぞく",
     meaning: "これで いいと、心から 思う ことです。",
     en: "Satisfaction",
+  },
+  {
+    term: "見つける",
+    reading: "みつける",
+    meaning: "さがして いた ものが 分かる ことです。",
+    en: "To find",
   },
   {
     term: "見積",

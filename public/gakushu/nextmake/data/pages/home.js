@@ -10,8 +10,8 @@ export const HOME = {
   id: "home",
   nav: "ホーム",
   title: {
-    n4: "ITで 新しい 次を 作る",
-    n3: "ITで新しい次を創造する",
+    n4: "ホーム",
+    n3: "ホーム",
     en: "Creating what comes next, with IT",
   },
   // ヒーロー画像1枚では なく **5つの 事業の スライド**（2026-08-23 の 指定）。

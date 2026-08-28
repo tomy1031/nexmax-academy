@@ -129,7 +129,13 @@ export type QuizAction =
   | ({ readonly type: "answerChoice"; readonly index: number } & Targeted)
   | ({ readonly type: "answerMulti"; readonly indexes: readonly number[] } & Targeted)
   | ({ readonly type: "answerKeyword"; readonly input: string } & Targeted)
-  | ({ readonly type: "answerFree"; readonly input: string } & Targeted)
+  | ({
+      readonly type: "answerFree";
+      readonly input: string;
+      /** 英語の 下書き（`free.english` の ある 問いだけ）。採点には 使わない。 */
+      readonly en?: string;
+    } & Targeted)
+  | ({ readonly type: "answerList"; readonly inputs: readonly string[] } & Targeted)
   | ({ readonly type: "answerWordbank"; readonly filled: readonly (string | null)[] } & Targeted)
   | ({ readonly type: "answerFeeling"; readonly index: number } & Targeted)
   | ({ readonly type: "answerReply"; readonly index: number } & Targeted)
@@ -283,7 +289,14 @@ export function quizReducer(state: QuizState, action: QuizAction): QuizState {
      */
     case "answerFree": {
       if (question.type !== "free") return state;
-      return put(state, question, { kind: "free", input: action.input });
+      /*
+       * 英語の 下書きは **入って きた ぶんだけ 置きかえ、来なければ 前を 残す**。
+       * 2つの 欄が 別々に 打たれる ので、片方を 打つ たびに もう片方を
+       * `undefined` で 塗ると、日本語を 打った 瞬間に 英語が 消える。
+       */
+      const before = state.drafts[question.id];
+      const en = action.en ?? (before?.kind === "free" ? before.en : undefined);
+      return put(state, question, { kind: "free", input: action.input, en });
     }
 
     case "answerKeyword": {
@@ -330,6 +343,16 @@ export function quizReducer(state: QuizState, action: QuizAction): QuizState {
         return { ...state, phase: { kind: "ask", inputIssue: INPUT_ISSUE_FEEDBACK.latin } };
       }
       return put(state, question, draft);
+    }
+
+    /*
+     * 順不同の 入力（`list`）。**IME の 注意は 出さない**——
+     * 答えが「NMClaw」「Verify」の ように ラテン文字の 問いなので、
+     * `answerKeyword` と 同じ 案内を すると 設問と 正反対に なる。
+     */
+    case "answerList": {
+      if (question.type !== "list") return state;
+      return put(state, question, { kind: "list", inputs: [...action.inputs] });
     }
 
     case "answerWordbank": {

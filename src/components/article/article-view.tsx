@@ -17,6 +17,7 @@ import {
   type FuriganaEntry,
   type FuriganaIndex,
 } from "@/lib/text/furigana";
+import { BannerBlock, CardsBlock, CompareBlock, HeroBlock, MissionsBlock } from "./rich-blocks";
 import {
   collectHeadings,
   contentHref,
@@ -74,19 +75,46 @@ export function ArticleView({
    * 人物の名前の よみも 索引に混ぜる（「藤木」に ふりがなを 出すため）。記事の
    * 読み辞書のほうを あとに置いて 勝たせる——記事が「藤木さん」の読みを 上書きしたい
    * ときに 書けるようにする（単語ステージのカードと同じ組み立て — StageDetail）。
+   *
+   * **ことばチップの 語も 混ぜる。** チップは 記事が 書いた 文では なく
+   * `wordIds` で 借りて きた 語なので、記事の 読み辞書に 無くて 当たり前で ある。
+   * 混ぜないと、記事に「会社」だけ あって「会社概要」が 無い とき、チップが
+   * 「会社かいしゃ概要」と 割れて **概要が 裸の 漢字で 残る**（2026-08-27 実発生）。
+   * ふりがなの 機械検査は「借りた ぶんは 持ち主の 側で 見る」ので、ここは
+   * すり抜ける——**画面でしか 出ない 抜け**だった。語の 読みは 語が 持って いる
+   * のだから、引くのが 正しい。
    */
   const furigana = useMemo(
     () =>
       buildFuriganaIndex(
         mergeFuriganaEntries(
           (characters ?? []).map((person): FuriganaEntry => [person.name, person.reading]),
+          article.blocks.flatMap((block): FuriganaEntry[] =>
+            block.kind === "vocab"
+              ? (block.items ?? []).map((item): FuriganaEntry => [item.term, item.reading])
+              : [],
+          ),
           article.furigana ?? [],
         ),
       ),
-    [article.furigana, characters],
+    [article.blocks, article.furigana, characters],
   );
   const [rubyOn, setRubyOn] = useState(true);
   const headings = useMemo(() => collectHeadings(article.blocks), [article.blocks]);
+  /**
+   * **表紙（`hero`）が ページの タイトル**（2026-08-28 の 指定
+   *「これを目次の前に持ってきて。タイトルにします。その後に目次を入れて」）。
+   *
+   * ページの `title` と `description` は 表紙に 同じ ことばで 入って いる。
+   * 両方 出すと、**同じ タイトルが 続けて 2回**、説明も 2行 出る——
+   * 学習者は 1画面 ぶんを 読み直してから 本文に 入る ことに なる。
+   * 表紙が ある ページでは、**表紙だけを タイトルに して h1/説明は 出さない**
+   *（`title`・`description` は 一覧の 札や 検索の ために データには 残す）。
+   */
+  const cover = article.blocks[0]?.kind === "hero" ? article.blocks[0] : null;
+  /** 本文（表紙は 上に 出したので 除く）。見出しの id を ずらさない ため 位置は 数える。 */
+  const bodyBlocks = cover ? article.blocks.slice(1) : article.blocks;
+  const bodyOffset = cover ? 1 : 0;
   const endRef = useRef<HTMLDivElement>(null);
 
   // 開いた時点で「よみかけ」。completed は上書きされない（store 側の規則）。
@@ -141,12 +169,23 @@ export function ArticleView({
 
       <article className="card-island p-5 sm:p-7">
         <p className="text-ink-faint text-xs font-extrabold">📄 ページ</p>
-        <h1 className="text-ink mt-1 text-2xl font-extrabold sm:text-3xl">
-          <RubyText text={article.title} index={furigana} show={rubyOn} />
-        </h1>
-        <p className="text-ink-soft mt-2 leading-relaxed font-bold">
-          <RubyText text={article.description} index={furigana} show={rubyOn} />
-        </p>
+
+        {/*
+          **タイトル（表紙）→ 目次 → 本文**（2026-08-28 の 指定）。
+          表紙の 無い ページは これまでどおり **目次が 先、h1 が あと**
+          （2026-08-27 の 指定「タイトルと目次の順番を 逆にして」）。
+        */}
+        {cover && (
+          <div className="mt-4">
+            <HeroBlock
+              block={cover}
+              furigana={furigana}
+              show={rubyOn}
+              dictionary={dictionary}
+              asTitle
+            />
+          </div>
+        )}
 
         {shouldShowToc(headings) && (
           <TableOfContents
@@ -157,12 +196,23 @@ export function ArticleView({
           />
         )}
 
+        {!cover && (
+          <>
+            <h1 className="text-ink mt-4 text-2xl font-extrabold sm:text-3xl">
+              <RubyText text={article.title} index={furigana} show={rubyOn} />
+            </h1>
+            <p className="text-ink-soft mt-2 leading-relaxed font-bold">
+              <RubyText text={article.description} index={furigana} show={rubyOn} />
+            </p>
+          </>
+        )}
+
         <div className="mt-6 space-y-5">
-          {article.blocks.map((block, blockIndex) => (
+          {bodyBlocks.map((block, at) => (
             <BlockView
-              key={blockIndex}
+              key={at + bodyOffset}
               block={block}
-              blockIndex={blockIndex}
+              blockIndex={at + bodyOffset}
               articleId={article.id}
               furigana={furigana}
               show={rubyOn}
@@ -185,6 +235,12 @@ export function ArticleView({
  * 目次
  * ------------------------------------------------------------------ */
 
+/**
+ * 見出しの ことば。**「もくじ」と ひらがなに 開かない**（2026-08-27 の 指定）。
+ * 漢字＋ふりがなの ままに して、N5を こえる 語は 読みで 支える（規律2）。
+ */
+const TOC_FURIGANA = buildFuriganaIndex([["目次", "もくじ"]]);
+
 function TableOfContents({
   articleId,
   headings,
@@ -198,10 +254,12 @@ function TableOfContents({
 }) {
   return (
     <nav
-      aria-label="もくじ"
+      aria-label="目次"
       className="border-hairline bg-panel-tint mt-5 rounded-[var(--radius-card)] border-2 p-4"
     >
-      <p className="text-ink-soft text-xs font-extrabold">もくじ</p>
+      <p className="text-ink-soft text-xs font-extrabold">
+        <RubyText text="目次" index={TOC_FURIGANA} />
+      </p>
       <ol className="mt-2 space-y-1">
         {headings.map((heading) => (
           <li key={heading.index} className={heading.level === 3 ? "pl-5" : ""}>
@@ -253,7 +311,7 @@ function BlockView({
             className="inline-block h-6 w-2.5 shrink-0 rounded-full"
             style={{ background: "var(--color-sky)" }}
           />
-          <RubyText text={block.text} index={furigana} show={show} />
+          <DictionaryText text={block.text} index={furigana} show={show} dictionary={dictionary} />
         </h2>
       ) : (
         <h3
@@ -263,7 +321,7 @@ function BlockView({
           <span aria-hidden className="text-sky mr-1.5">
             ◆
           </span>
-          <RubyText text={block.text} index={furigana} show={show} />
+          <DictionaryText text={block.text} index={furigana} show={show} dictionary={dictionary} />
         </h3>
       );
 
@@ -289,10 +347,10 @@ function BlockView({
       );
 
     case "image":
-      return <ImageBlock block={block} />;
+      return <ImageBlock block={block} furigana={furigana} show={show} />;
 
     case "callout":
-      return <CalloutBlock block={block} furigana={furigana} show={show} />;
+      return <CalloutBlock block={block} furigana={furigana} show={show} dictionary={dictionary} />;
 
     case "list":
       return (
@@ -304,7 +362,12 @@ function BlockView({
                   ●
                 </span>
                 <span>
-                  <RubyText text={item} index={furigana} show={show} />
+                  <DictionaryText
+                    text={item}
+                    index={furigana}
+                    show={show}
+                    dictionary={dictionary}
+                  />
                 </span>
               </li>
             ))}
@@ -330,7 +393,12 @@ function BlockView({
                 </span>
                 <StepThumb image={block.images?.[i]} />
                 <span className="text-ink leading-relaxed font-bold">
-                  <RubyText text={item} index={furigana} show={show} />
+                  <DictionaryText
+                    text={item}
+                    index={furigana}
+                    show={show}
+                    dictionary={dictionary}
+                  />
                 </span>
               </li>
             ))}
@@ -338,17 +406,15 @@ function BlockView({
         </SpeakableGroup>
       );
 
+    /*
+     * **使い方の 説明は 置かない**（2026-08-28 の 指定で「ことば — マウスを のせる…」を 削除）。
+     * 押せば 分かる ことを 先に 字で 言う ぶん、読む ものが 増えて いた。
+     * ふちどりの ある ふだが すでに「押せる」と 見せて いる。
+     */
     case "vocab":
       return (
         <section className="border-hairline bg-panel-tint rounded-[var(--radius-card)] border-2 p-4">
-          <p className="text-ink-soft text-xs font-extrabold">
-            ことば — マウスを のせる（スマホは タップ）と いみが{" "}
-            <ruby>
-              出<rt>で</rt>
-            </ruby>
-            るよ
-          </p>
-          <div className="mt-2 flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2">
             {(block.items ?? []).map((item, i) => (
               <VocabChip key={i} item={item} furigana={furigana} show={show} />
             ))}
@@ -419,6 +485,28 @@ function BlockView({
 
     case "characters":
       return <CharactersBlock block={block} furigana={furigana} show={show} people={characters} />;
+
+    /*
+     * 配布資料（会社研究の HTML 4枚）から 移した 大きな 見た目部品。
+     * 中身は `./rich-blocks` にある——ここに 置くと この switch が
+     * 1画面に 収まらなく なり、目次や 進捗の コードを またいで 直す ことになる。
+     */
+    case "hero":
+      return <HeroBlock block={block} furigana={furigana} show={show} dictionary={dictionary} />;
+
+    case "cards":
+      return <CardsBlock block={block} furigana={furigana} show={show} dictionary={dictionary} />;
+
+    case "missions":
+      return (
+        <MissionsBlock block={block} furigana={furigana} show={show} dictionary={dictionary} />
+      );
+
+    case "compare":
+      return <CompareBlock block={block} furigana={furigana} show={show} dictionary={dictionary} />;
+
+    case "banner":
+      return <BannerBlock block={block} furigana={furigana} show={show} dictionary={dictionary} />;
   }
 }
 
@@ -454,6 +542,12 @@ function SpeakableGroup({
     </div>
   );
 }
+
+/** 絵が まだ 無い わくの ことばの 読み（画面の 読みは 画面が 持つ）。 */
+const PLACEHOLDER_FURIGANA = buildFuriganaIndex([
+  ["絵", "え"],
+  ["入", "はい"],
+]);
 
 type ImageBlockData = Extract<ArticleBlock, { kind: "image" }>;
 type CalloutBlockData = Extract<ArticleBlock, { kind: "callout" }>;
@@ -543,19 +637,45 @@ function CharactersBlock({
  * 幅も 少し しぼる。画面いっぱいの 絵は「見出し」に 見えてしまい、
  * すぐ 下の 説明と つながらない。
  */
-function ImageBlock({ block }: { block: ImageBlockData }) {
+function ImageBlock({
+  block,
+  furigana,
+  show,
+}: {
+  block: ImageBlockData;
+  furigana: FuriganaIndex;
+  show: boolean;
+}) {
   if (block.status !== "done" || !block.src) {
+    /*
+     * **何の 絵が 入る ところかを わくの 中に 書く**（2026-08-27 の 指定
+     * 「画像が必要な領域を明確に示してください」）。
+     *
+     * 前は「え は じゅんびちゅう」だけで、**どんな 絵を 作れば よいかが
+     * 画面から 読めなかった**。`caption` は もともと「絵の 中身を ことばで
+     * 言った もの」なので、そのまま 出せば 作る 人の 指示書に なる。
+     */
     return (
       <figure className="mx-auto w-full max-w-[420px]">
         <div
-          className="text-ink-faint grid h-32 place-items-center rounded-[20px] border-4 border-dashed text-sm font-extrabold"
+          /* 数えられる しるし（`rich-blocks.tsx` の わくと そろえる）。 */
+          data-slot="empty"
+          className="text-ink-faint grid h-32 place-items-center rounded-[20px] border-4 border-dashed p-3 text-center text-sm font-extrabold"
           style={{ borderColor: "var(--color-hairline)", background: "var(--color-panel-tint)" }}
         >
           <span>
             <span aria-hidden className="mr-1.5">
               🖼️
             </span>
-            え は じゅんびちゅう
+            {/* ことばは カードの わく（`ImageSlotFrame`）と そろえる。
+                同じ「まだ 無い」を 2つの 言い方で 出すと、学習者には
+                ちがう ことが 起きて いるように 見える。 */}
+            <RubyText text="ここに 絵が 入ります" index={PLACEHOLDER_FURIGANA} />
+            {block.caption && (
+              <span className="text-ink-soft mt-1 block text-xs leading-snug">
+                <RubyText text={block.caption} index={furigana} show={show} />
+              </span>
+            )}
           </span>
         </div>
       </figure>
@@ -600,20 +720,26 @@ function StepThumb({ image }: { image?: { src?: string; status?: string; caption
 
 const CALLOUT_STYLE: Record<
   CalloutBlockData["tone"],
-  { variant: NexMaxVariant; accent: string; label: string }
+  { variant: NexMaxVariant; accent: string; label?: string }
 > = {
   point: { variant: "book", accent: "#8d6ae8", label: "ここが ポイント" },
-  care: { variant: "cheer", accent: "#f2654a", label: "ここに きを つけて" },
+  /*
+   * `care` は **見出しを 出さない**（2026-08-28 の 指定で「ここに きを つけて」を 削除）。
+   * 色と ネクマックスの 顔で もう 伝わって いる ところに ことばを 重ねて いた。
+   */
+  care: { variant: "cheer", accent: "#f2654a" },
 };
 
 function CalloutBlock({
   block,
   furigana,
   show,
+  dictionary,
 }: {
   block: CalloutBlockData;
   furigana: FuriganaIndex;
   show: boolean;
+  dictionary?: readonly DictionaryEntry[];
 }) {
   const tone = CALLOUT_STYLE[block.tone];
   return (
@@ -623,11 +749,13 @@ function CalloutBlock({
     >
       <NexMax variant={tone.variant} size={56} />
       <div className="min-w-0 flex-1">
-        <p className="text-xs font-extrabold" style={{ color: tone.accent }}>
-          {tone.label}
-        </p>
-        <p className="text-ink mt-1 leading-relaxed font-bold">
-          <RubyText text={block.text} index={furigana} show={show} />
+        {tone.label && (
+          <p className="text-xs font-extrabold" style={{ color: tone.accent }}>
+            {tone.label}
+          </p>
+        )}
+        <p className="text-ink leading-relaxed font-bold">
+          <DictionaryText text={block.text} index={furigana} show={show} dictionary={dictionary} />
         </p>
       </div>
       {/*

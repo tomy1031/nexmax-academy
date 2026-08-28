@@ -1,0 +1,20 @@
+{
+  "refs": [
+    "public/img/characters/matsui/sheet.webp",
+    "public/img/characters/matsui/reference.jpg",
+    "public/img/articles/kaisha_matsui_junbi/j1.webp"
+  ],
+  "_comment": "カード5（松井社長に 質問する）。A/B の 台帳（kaisha_junbi_people.json）と 分けて あるのは、あちらが 吹き出しの ために **ロボットを 1体 許して いる**から —— 同じ 台帳に すると ここにも ネクマックスが 出かねない。ここは robots / mascots を 禁じた まま。\n\n学生は **1枚ごとに 別人・別の 部屋**（2026-08-28 の 指定）。ノートには **聞きたい ことが たくさん 書いて ある**ように 見せる —— ただし 読める 文字は 描かせず、手書きの 波線と 小さな「?」で 表す。",
+  "style": "Style: warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, soft cel shading with gentle light, bright natural daylight. People are drawn as real human beings with natural proportions and warm friendly faces. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME.",
+  "noText": "No readable text anywhere: no letters, no kanji, no kana, no words, no numbers. Handwriting on paper is drawn as wavy scribble lines only. The single exception is the small question mark shapes described in the scene.",
+  "negative": "Never: flat vector icon art, pictograms, infographic diagrams, wide empty margins, minimalist clip-art, 3D render, photo realism, harsh gradients, readable letters or numbers or words, national flags, country outlines, maps with borders, dark or scary tone, angry or crying faces, extra fingers or limbs, robots, mascots. Keep the president's face, hair and clothing exactly as in his model sheet — no costume changes, no age changes.",
+  "scenes": [
+    {
+      "out": "j5",
+      "dest": "public/img/articles/kaisha_matsui_junbi/j5.webp",
+      "title": "5 松井社長に 何を 聞きたい？（聞きたい ことで うまった ノート）",
+      "output": "Output: one square illustration, 1024x1024. Close view — the subject fills the frame edge to edge.",
+      "scene": "Scene: the president's office on a high floor — a low wooden bookshelf along the wall, a green plant, and a wide window with a bright city skyline behind. THE STUDENT is a Cambodian woman in her early twenties with her black hair gathered in a high bun and a soft lilac blouse. She sits at the meeting table and RAISES ONE HAND STRAIGHT UP beside her head, fingers together, with a bright eager expression, asking her question. Open flat on the table in front of her is a notebook whose two pages are COMPLETELY FILLED with her prepared questions: many rows of wavy handwritten scribble lines, several of them ticked off with small checkmarks, a few underlined twice, and about six small hand-drawn question marks scattered among the lines. The scribbles must stay wavy lines, never real letters or words. Across the table sits MATSUI, the company president from the first two reference images — a Japanese man in his forties, ordinary build with normal shoulders and a normal waist, black hair with volume on top and a soft fringe, fair skin, gently rounded cheeks, narrow gentle eyes, navy blazer worn open over a plain white crew-neck T-shirt, no tie, no glasses. He turns toward her with a warm, interested smile and an open hand, ready to answer. Warm afternoon light."
+    }
+  ]
+}

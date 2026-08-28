@@ -25,22 +25,23 @@ export interface KaishaItem {
 /**
  * かいしゃステージの教材。名前で 呼べるようにしておく（番号だけだと 読めない）。
  *
- * 並びは「NEXT MAKEを しろう！」の 6つの STEP そのもの
- *（docs/teaching/nextmake_step02_設計.md — ユーザーが 書いた 授業の 設計）:
+ * 並びは 配布資料（`会社研究/` の HTML 4枚）の 5つの STEP そのもの
+ *（2026-08-27 に 6つ→5つへ まとめた。「会社と 自分の 関係」は
+ * 「松井社長と 話す 準備」に 吸収された）:
  * STEP1 調べかたを 学ぶ → STEP2 サイトを 見て 調査シートを うめる →
- * STEP3 ヘンディさんに 報告 → STEP4 会社と 自分の 関係 →
- * STEP5 社長と 話す 準備 → STEP6 社長と 話す。
+ * STEP3 ヘンディさんに 報告 → STEP4 社長と 話す 準備（ページ＋フォーム）→
+ * STEP5 社長と 話す。
  */
 export const KAISHA = {
-  /** STEP 1 会社の 調べかたを 学ぼう。 */
+  /** STEP 1 NEXT MAKEを 調べよう！ */
   /*
-   * ページは この ステージに **1本だけ**なので、URL に ID が 付かない
-   *（`stageContentPath`: 同じ 種別が 1つなら `/<ステージ>/<種別>`）。
-   * 2本目を 足したら ここも `-kaisha_shirabekata` に 戻る。
+   * ページが **2本に なった**ので、URL に ID が 付く
+   *（`stageContentPath`: 同じ 種別が 2つ以上 なら `-ID` を 足す）。
+   * 短い `/kaisha/article` は いまも 1本目を 指す（`resolveStageContent`）。
    */
   article1: {
     id: "kaisha_shirabekata",
-    path: "/kaisha/article",
+    path: "/kaisha/article-kaisha_shirabekata",
     kind: "ページ",
   },
   site: {
@@ -48,7 +49,7 @@ export const KAISHA = {
     path: "/kaisha/link-nextmake_gakushu_site",
     kind: "リンク",
   },
-  /** STEP 2 の 調査シート（26問）。 */
+  /** STEP 2 の 調査シート。 */
   sheet: { id: "kaisha_houkoku", path: "/kaisha/quiz-kaisha_houkoku", kind: "もんだい" },
   /** STEP 3 ヘンディさんに 報告しよう。 */
   meetingHendy: {
@@ -56,19 +57,19 @@ export const KAISHA = {
     path: "/kaisha/meeting-kaisha_houkoku_meeting",
     kind: "ミーティング",
   },
-  /** STEP 4 会社と 自分の 関係を 考えよう。 */
-  jibun: {
-    id: "kaisha_jibun",
-    path: "/kaisha/quiz-kaisha_jibun",
-    kind: "もんだい",
+  /** STEP 4 の ページ「松井社長と 話す 準備を しよう」。 */
+  article2: {
+    id: "kaisha_matsui_junbi",
+    path: "/kaisha/article-kaisha_matsui_junbi",
+    kind: "ページ",
   },
-  /** STEP 5 松井社長と 話す 準備を しよう。 */
+  /** STEP 4 の フォーム「松井社長に 何を 話す？」。 */
   junbi: {
     id: "kaisha_omoshiroi",
     path: "/kaisha/quiz-kaisha_omoshiroi",
     kind: "もんだい",
   },
-  /** STEP 6 松井社長と LiveAIで 話そう。 */
+  /** STEP 5 松井社長と LiveAIで 話そう。 */
   meetingMatsui: {
     id: "kaisha_matsui",
     path: "/kaisha/meeting-kaisha_matsui",
@@ -82,7 +83,7 @@ export const KAISHA_ITEMS: readonly KaishaItem[] = [
   KAISHA.site,
   KAISHA.sheet,
   KAISHA.meetingHendy,
-  KAISHA.jibun,
+  KAISHA.article2,
   KAISHA.junbi,
   KAISHA.meetingMatsui,
 ];
@@ -137,7 +138,7 @@ export function writtenText(done: number): string {
 }
 
 /**
- * 「松井社長と 話す 準備」の 問数。**教材から 読む**（`HOUKOKU_TOTAL` と 同じ 理由）。
+ * 「松井社長に 何を 話す？」の 問数。**教材から 読む**（`HOUKOKU_TOTAL` と 同じ 理由）。
  */
 export const JUNBI_TOTAL: number = (
   JSON.parse(
@@ -145,13 +146,6 @@ export const JUNBI_TOTAL: number = (
       join(__dirname, "..", "..", "content", "quizsets", "kaisha_omoshiroi.json"),
       "utf8",
     ),
-  ) as { questions: unknown[] }
-).questions.length;
-
-/** 「会社と 自分の 関係を 考えよう」の 問数（STEP 4）。 */
-export const JIBUN_TOTAL: number = (
-  JSON.parse(
-    readFileSync(join(__dirname, "..", "..", "content", "quizsets", "kaisha_jibun.json"), "utf8"),
   ) as { questions: unknown[] }
 ).questions.length;
 
@@ -346,6 +340,48 @@ export async function writeIn(page: Page, questionId: string, text: string): Pro
   await page.locator(`#q-${questionId}`).getByLabel("こたえを 入力する").fill(text);
 }
 
+/**
+ * 順不同の 入力（`list`）の 欄を 上から 埋める。
+ *
+ * 語群と ちがい ふだが 無い ので、**打つ**。どの 欄に 書いても よいのは
+ * 採点の 側が 順を 見ない ため（`gradeDraft`）。
+ */
+export async function writeListIn(
+  page: Page,
+  questionId: string,
+  values: readonly string[],
+): Promise<void> {
+  const row = page.locator(`#q-${questionId}`);
+  for (const [at, value] of values.entries()) {
+    await row.getByLabel(`${at + 1}つめを 入力する`).fill(value);
+  }
+}
+
+/**
+ * 4択の もんだいで **番号で** えらぶ（全問1ページの 教材）。
+ *
+ * 文字で えらばないのは、ルビが 合成されて 選択肢の 文が
+ * 「新あたらしい」の ように 変わる ため（`choiceButtons` の 覚書と 同じ 理由）。
+ */
+export async function pickChoiceIn(page: Page, questionId: string, at: number): Promise<void> {
+  await page.locator(`#q-${questionId}`).locator("ul li button").nth(at).click();
+}
+
+/**
+ * 複数選択の もんだいで、いくつかを えらぶ（全問1ページの やりかた）。
+ *
+ * `aria-pressed` を 持つのは この 型だけ（`multiButtons` の 覚書）。
+ * 押した ものは 押しっぱなしに なるので、**えらぶ ものだけ**を 順に 押す。
+ */
+export async function pickMultiIn(
+  page: Page,
+  questionId: string,
+  indexes: readonly number[],
+): Promise<void> {
+  const buttons = page.locator(`#q-${questionId}`).locator("li > button[aria-pressed]");
+  for (const at of indexes) await buttons.nth(at).click();
+}
+
 /** 語群を 埋めて「こたえる」まで（1問ずつ の やりかたの 教材だけ）。 */
 export async function fillWordBank(page: Page, words: readonly string[]): Promise<void> {
   await placeWords(page, words);
@@ -372,9 +408,17 @@ export async function goToConfirm(page: Page): Promise<void> {
 /**
  * ぜんぶ 出して 採点させる。
  * ルビが 合成されて「こたえを 出だす」に なるので 部分一致で さがす。
+ *
+ * **出す まえに 確認の 板が 出る**（2026-08-27 の 指定）。押した 瞬間に 採点が
+ * 確定する ので、1枚 はさんで から 採点に 進む。板は どの やりかたでも 同じ。
  */
 export async function submitAnswers(page: Page): Promise<void> {
   await page.getByRole("button", { name: /こたえを 出/ }).click();
+  const confirm = page.getByRole("dialog", { name: "こたえを 出す かくにん" });
+  await expect(confirm).toBeVisible();
+  // ルビが 語の 中に 入る（「出だします」）ので、ふりがなの 入らない ところで さがす
+  await confirm.getByRole("button", { name: /はい/ }).click();
+  await expect(confirm).toHaveCount(0);
 }
 
 /** 正解したことを 画面の言葉で 確かめる（禁止語は使わない・規律1）。 */
