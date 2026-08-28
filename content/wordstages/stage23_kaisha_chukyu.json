@@ -17,10 +17,6 @@
       "ちゅうきゅう"
     ],
     [
-      "中級",
-      "ちゅうきゅう"
-    ],
-    [
       "会社",
       "かいしゃ"
     ],
@@ -43,34 +39,6 @@
     [
       "少",
       "すこ"
-    ],
-    [
-      "初級",
-      "しょきゅう"
-    ],
-    [
-      "会社",
-      "かいしゃ"
-    ],
-    [
-      "調",
-      "しら"
-    ],
-    [
-      "言葉",
-      "ことば"
-    ],
-    [
-      "使",
-      "つか"
-    ],
-    [
-      "日本",
-      "にほん"
-    ],
-    [
-      "仕事",
-      "しごと"
     ]
   ],
   "wordIds": [
@@ -124,15 +92,15 @@
     "shuushoku",
     "mensetsu",
     "tsuyomi",
+    "kyoten",
+    "torihiki",
+    "teikyou",
+    "jinzai",
+    "shien",
+    "katsudou",
     "yoroshiku",
-    "shitsumon_ga_arimasu",
-    "oshiete_kudasai",
-    "shirabete_wakarimashita",
     "kekka_wo_houkoku_shimasu",
-    "mada_shirabete_imasen",
-    "atode_shirabemasu",
     "ijou_desu",
-    "shoutiitasimasita",
-    "yatte_mimasu"
+    "shoutiitasimasita"
   ]
 }
