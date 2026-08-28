@@ -13,6 +13,7 @@
 
 import { createLiveToken } from "@/lib/ai/live-token";
 import { LIVE_TTS_MODELS } from "@/lib/ai/models";
+import { NARRATOR_INSTRUCTION } from "./narrator";
 import { base64ToBytes, joinPcm, pcmToWav, type JoinedPcm } from "./wav";
 
 /**
@@ -20,15 +21,6 @@ import { base64ToBytes, joinPcm, pcmToWav, type JoinedPcm } from "./wav";
  * ここに名前を直書きしていたころ、モデルが差し替わって消えたことに誰も気づけなかった。
  */
 const MODELS = LIVE_TTS_MODELS;
-
-/**
- * 「書いてあるとおりに読む」ための指示。
- * これが無いとモデルが相づちや言い換えを足して、台本と音がずれる
- *（学習者は台本を見ながら聞くので、ずれると聞き取りの練習にならない）。
- */
-const NARRATOR_INSTRUCTION =
-  "あなたはナレーターです。渡された文を、書いてあるとおりに、自然な速さで読み上げてください。" +
-  "あいづち・言い換え・説明・感想を足さないでください。読み上げ以外は何もしないでください。";
 
 /** 1行ぶんの読み上げ指示。 */
 export interface TtsLine {

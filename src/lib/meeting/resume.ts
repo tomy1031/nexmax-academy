@@ -78,6 +78,28 @@ export interface MeetingStart {
   readonly resumed: boolean;
 }
 
+/**
+ * **いちばん 先まで 聞かれた しつもん**（0始まり。ぜんぶ 終わって いれば しつもんの 数）。
+ *
+ * ## なぜ 位置だけでは 足りないか（2026-08-28 の 指摘
+ *「7まで終わったのに一度他の問題をクリックしたら8がクリックできなくなっている」）
+ * 札を 押して 前の しつもんへ 戻ると、位置（`index`）は そこまで **下がる**。
+ * その まま しおりに 書かれる ので、開き直すと 進んだ ぶんが 消えて 見える。
+ * けれど 開いた 札（`openIds`）と 赤い 印（`missedIds`）は 残って いる——
+ * **答えた いちばん うしろの つぎ**が、聞かれた ところの 下限に なる。
+ *
+ * しおりの 形は 増やさない。増やすと 書き忘れの ずれが 1つ 増える
+ *（しおりは 1か所で 書く、を 崩さない）。
+ */
+export function frontierFrom(start: MeetingStart, questionIds: readonly string[]): number {
+  const answered = questionIds.reduce(
+    (far, id, at) =>
+      start.openIds.includes(id) || start.missedIds.includes(id) ? Math.max(far, at) : far,
+    -1,
+  );
+  return Math.min(Math.max(start.index, answered + 1), questionIds.length);
+}
+
 /** はじめから。 */
 export const FRESH_START: MeetingStart = {
   index: 0,
