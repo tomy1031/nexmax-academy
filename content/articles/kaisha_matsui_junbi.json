@@ -1354,11 +1354,35 @@
       "text": "あなたが 社長だったら、どんな 学生と 仕事を したいですか。"
     },
     {
-      "kind": "image",
-      "prompt": "Matsui, the company president, talking with a Cambodian student. His eyes turn into hearts, showing he thinks 'I want to work with this student!'. Warm, friendly picture-book style.",
-      "refs": [],
-      "status": "empty",
-      "caption": "松井社長が 学生と 話して います。「いっしょに 仕事を したい」と 思って いる 絵です。"
+      "kind": "cards",
+      "tone": "plain",
+      "columns": 2,
+      "items": [
+        {
+          "icon": "😍",
+          "label": "A",
+          "title": "「NEXT MAKEの ここが 好きです！」",
+          "text": "調べた ことに、自分の 考えを 足して 話して います。",
+          "image": {
+            "refs": [],
+            "status": "done",
+            "src": "/img/articles/kaisha_matsui_junbi/ab_a.webp",
+            "prompt": "AB-pair A: a Cambodian woman leans forward and talks with delight; her speech bubble shows NexMax, a security drone and a Verify shield; the president is charmed, his eyes turned into hearts. → scripts/images/kaisha_junbi_people.json"
+          }
+        },
+        {
+          "icon": "😢",
+          "label": "B",
+          "title": "「とくに ありません。」",
+          "text": "調べた ことだけを 話して います。",
+          "image": {
+            "refs": [],
+            "status": "done",
+            "src": "/img/articles/kaisha_matsui_junbi/ab_b.webp",
+            "prompt": "AB-pair B: a different student, a Cambodian man, sits back with little interest; three small bubbles show NexMax, the drone and the shield each crossed out with a red X; the president looks quietly sad. → scripts/images/kaisha_junbi_people.json"
+          }
+        }
+      ]
     },
     {
       "kind": "banner",
@@ -1381,9 +1405,10 @@
           "title": "NEXT MAKEの どこが 好き？",
           "text": "調べた 中で「いいな」と 思った ことを 考えます。",
           "image": {
-            "prompt": "A Cambodian student looking at the NEXT MAKE website on a laptop, smiling and pointing at the screen, thinking 'This part is great!'. Warm picture-book style.",
             "refs": [],
-            "status": "empty"
+            "status": "done",
+            "src": "/img/articles/kaisha_matsui_junbi/j1.webp",
+            "prompt": "card1: a Cambodian man talks passionately in a campus lounge; his bubble shows a security drone over a fenced site, a Verify shield and engineers at monitors. → scripts/images/kaisha_junbi_scenes.json"
           }
         },
         {
@@ -1391,9 +1416,10 @@
           "title": "自分の いい ところは？",
           "text": "得意な ことを、どう 使えるか 考えます。",
           "image": {
-            "prompt": "A Cambodian student standing with small floating labels around them: IT, Japanese, teamwork, talking. Confident and warm picture-book style.",
             "refs": [],
-            "status": "empty"
+            "status": "done",
+            "src": "/img/articles/kaisha_matsui_junbi/j2.webp",
+            "prompt": "card2: three different students in a computer lab — security (padlock screen), network (server rack), AI (code and a node diagram). → scripts/images/kaisha_junbi_scenes.json"
           }
         },
         {
@@ -1401,9 +1427,10 @@
           "title": "NEXT MAKEで 何を やって みたい？",
           "text": "どんな 仕事や サービスに 関わりたいか 考えます。",
           "image": {
-            "prompt": "A Cambodian student imagining their future working at NEXT MAKE: coding on a laptop and talking with a team, shown as a thought cloud. Warm picture-book style.",
             "refs": [],
-            "status": "empty"
+            "status": "done",
+            "src": "/img/articles/kaisha_matsui_junbi/j3.webp",
+            "prompt": "card3: a Cambodian man at a makerspace bench plugs a cable into NexMax and into his laptop, and programs him. → scripts/images/kaisha_junbi_nexmax.json"
           }
         },
         {
@@ -1411,9 +1438,10 @@
           "title": "カンボジアの いい ところは？",
           "text": "カンボジアの 人や IT学生の いい ところを 考えます。",
           "image": {
-            "prompt": "Cambodian IT students and Japanese company staff working together at one desk, smiling. Warm picture-book style.",
             "refs": [],
-            "status": "empty"
+            "status": "done",
+            "src": "/img/articles/kaisha_matsui_junbi/j4.webp",
+            "prompt": "card4: a Cambodian woman presents the good sides of Cambodia on a screen full of drawings, with picture-rich handouts. → scripts/images/kaisha_junbi_scenes.json"
           }
         },
         {
@@ -1421,9 +1449,10 @@
           "title": "松井社長に 何を 聞きたい？",
           "text": "Webサイトだけでは 分からない ことを 質問します。",
           "image": {
-            "prompt": "A Cambodian student asking a question to the company president. Speech bubbles show '?' marks. Warm picture-book style.",
             "refs": [],
-            "status": "empty"
+            "status": "done",
+            "src": "/img/articles/kaisha_matsui_junbi/j5.webp",
+            "prompt": "card5: a Cambodian woman raises her hand to the president, her notebook filled with prepared questions. → scripts/images/kaisha_junbi_matsui.json"
           }
         }
       ]

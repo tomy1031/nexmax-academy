@@ -1,0 +1,28 @@
+{
+  "refs": [
+    "public/img/characters/matsui/sheet.webp",
+    "public/img/characters/matsui/reference.jpg",
+    "public/img/characters/nexmax/build.webp",
+    "public/img/articles/kaisha_matsui_junbi/j1.webp"
+  ],
+  "_comment": "A/B の 分かれ道 2枚。松井社長の looks は content/characters/matsui.json から 逐語で 写し、**本人の 参考写真も 参照に 渡す**（2026-08-25 の 指定）。吹き出しの 中に ネクマックスが 出る ので build.webp も 渡す。\n\n**A と B は 同じ 部屋・同じ 家具に する。** ここだけは 背景を 変えない —— 変えて よいのは 人と 気もちだけで、部屋まで 変えると「どちらの 学生と 話したいか」の くらべに ならない。学生は **A と B で 別人**（2026-08-28 の 指定）。\n\n**negative から 3つ 外して ある**: ①悲しい 顔（B の 社長。skill §7.2 の t25_trouble と 同じ 扱い。外したのは 悲しさ までで、怒り・涙は 禁じた まま）②目の ハート（A の 社長）③赤い ❌（B の 吹き出し。2026-08-28 の 指定）。ロボットは **ネクマックス 1体だけ** 許す。",
+  "style": "Style: warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, soft cel shading with gentle light, bright natural daylight. People are drawn as real human beings with natural proportions and warm friendly faces. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME.",
+  "noText": "No text, no letters, no kanji, no kana, no numbers anywhere in the image. Screens, papers and books carry only drawings and soft abstract shapes — never readable characters. No watermark, no signature, no logo.",
+  "negative": "Never: flat vector icon art, pictograms, infographic diagrams, wide empty margins, minimalist clip-art, 3D render, photo realism, harsh gradients, readable letters or numbers, national flags, country outlines, maps with borders, angry or frightening faces, tears, shouting, extra fingers or limbs, mascots other than the one described robot, more than one robot. Keep every referenced character's face, hair and clothing exactly as in their model sheet — no costume changes, no age changes.",
+  "scenes": [
+    {
+      "out": "ab_a",
+      "dest": "public/img/articles/kaisha_matsui_junbi/ab_a.webp",
+      "title": "A 前のめりで 語る 学生（吹き出しに 会社の 魅力・社長の 目が ハート）",
+      "output": "Output: one landscape illustration, 1536x1024. Close view — the two people fill the frame edge to edge.",
+      "scene": "Scene: a bright office corner with a low pale-wood table, two soft grey armchairs, a tall window with a leafy street outside and a bookshelf on the back wall. On the LEFT sits THE STUDENT — a Cambodian woman in her early twenties with shoulder-length straight dark hair and a warm coral-orange blouse. She leans far forward over the table, one hand open and lifted, eyes shining, in the middle of saying something she loves. Above her head is ONE large rounded speech bubble filled with small simple DRAWINGS ONLY, showing what she likes about the company: a small cheerful sky-blue robot with a wide rounded helmet, a big white face-screen, two round black eyes and a navy double-peak M on its chest, standing beside a sleek four-rotor security drone that beams a cone of light down onto a fenced site, and a glowing shield with a tick inside it. Pictures only — never letters or numbers. On the RIGHT sits MATSUI, the company president from the first two reference images — a Japanese man in his forties, ordinary build with normal shoulders and a normal waist, black hair with volume on top and a soft fringe, fair skin, gently rounded cheeks, narrow gentle eyes, navy blazer worn open over a plain white crew-neck T-shirt, no tie, no glasses. He is delighted: he leans in toward her, hands clasped, mouth open in a warm happy smile, and BOTH OF HIS EYES ARE DRAWN AS PINK CARTOON HEARTS in place of his pupils — the classic manga way of showing he is charmed. The hearts are only inside his eyes; nothing floats in the air."
+    },
+    {
+      "out": "ab_b",
+      "dest": "public/img/articles/kaisha_matsui_junbi/ab_b.webp",
+      "title": "B 関心の 薄い 学生（吹き出しの 3つに ❌・社長は 静かに 悲しい）",
+      "output": "Output: one landscape illustration, 1536x1024. Close view — the two people fill the frame edge to edge.",
+      "scene": "Scene: THE SAME bright office corner as the previous picture — the same low pale-wood table, the same two soft grey armchairs, the same tall window and the same bookshelf. On the LEFT sits A DIFFERENT STUDENT: a Cambodian man in his early twenties with short black hair and a plain grey t-shirt. He sits back in the armchair with his shoulders low and both hands resting flat on his knees, looking away past the president with a flat, uninterested expression — polite, but with nothing to say. Above his head are THREE small rounded speech bubbles in a row, each holding ONE simple drawing with a THICK RED CROSS (a bold X of two red strokes) drawn right across it: the first bubble holds the small sky-blue robot with the wide rounded helmet, big white face-screen, round black eyes and navy double-peak M on its chest; the second holds a four-rotor security drone; the third holds a shield with a tick inside. Each red cross sits on top of its own drawing inside its own bubble, and nothing else floats in the air. Pictures only — never letters or numbers. On the RIGHT sits MATSUI, the company president from the first two reference images — a Japanese man in his forties, ordinary build, black hair with volume on top and a soft fringe, fair skin, gently rounded cheeks, narrow gentle eyes, navy blazer worn open over a plain white crew-neck T-shirt, no tie, no glasses. He is quietly disappointed: his eyebrows tilt up in the middle, his mouth is a small downward curve, one hand rests on the table and his shoulders have dropped a little. He is gently sad, never angry and never crying."
+    }
+  ]
+}
