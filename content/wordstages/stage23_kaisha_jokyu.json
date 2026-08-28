@@ -1,15 +1,15 @@
 {
   "kind": "wordstage",
   "id": "stage23_kaisha_jokyu",
-  "title": "そのまま 使える ひとこと",
-  "description": "報告や ミーティングで そのまま 使える 文です。ぜんぶ 言えたら 上級です。",
+  "title": "会社の サイトの ことば",
+  "description": "会社の ホームページに 出て くる、むずかしい ことばです。ミーティングで そのまま 使える ひとことも あります。",
   "label": "上級",
   "fieldSequence": [
     "forest",
     "sky",
     "space"
   ],
-  "questionCount": 24,
+  "questionCount": 42,
   "passRate": 80,
   "furigana": [
     [
@@ -17,90 +17,60 @@
       "じょうきゅう"
     ],
     [
-      "上級",
-      "じょうきゅう"
-    ],
-    [
       "会社",
       "かいしゃ"
     ],
     [
-      "調",
-      "しら"
-    ],
-    [
-      "言葉",
-      "ことば"
+      "出",
+      "で"
     ],
     [
       "使",
       "つか"
-    ],
-    [
-      "報告",
-      "ほうこく"
-    ],
-    [
-      "文",
-      "ぶん"
-    ],
-    [
-      "言",
-      "い"
-    ],
-    [
-      "初級",
-      "しょきゅう"
-    ],
-    [
-      "会社",
-      "かいしゃ"
-    ],
-    [
-      "調",
-      "しら"
-    ],
-    [
-      "言葉",
-      "ことば"
-    ],
-    [
-      "使",
-      "つか"
-    ],
-    [
-      "日本",
-      "にほん"
-    ],
-    [
-      "仕事",
-      "しごと"
     ]
   ],
   "wordIds": [
-    "yoroshiku",
+    "houjin",
+    "jichitai",
+    "kankeigaisha",
+    "jigyousha",
+    "renkei",
+    "kikaku",
+    "shinkou",
+    "kijitsu",
+    "jitsumu",
+    "koutou",
+    "shoshiki",
+    "daichou",
+    "shuukei",
+    "kaikei",
+    "kingaku",
+    "uriage",
+    "hacchuu",
+    "hojokin",
+    "futan",
+    "keigen",
+    "kouritsuka",
+    "kashika",
+    "kison",
+    "shikumi",
+    "sentan",
+    "gijutsusha",
+    "kaiseki",
+    "kenchi",
+    "rireki",
+    "tagengo",
+    "kojinjouhou",
+    "shoumeisho",
+    "hakkou",
+    "shinseisei",
+    "ikusei",
+    "kouken",
     "ojikan_arigatou_gozaimasu",
-    "kekka_wo_houkoku_shimasu",
-    "shirabete_wakarimashita",
-    "websaito_de_mitsukemashita",
-    "saito_ni_kaite_arimashita",
-    "mada_shirabete_imasen",
-    "atode_shirabemasu",
-    "ijou_desu",
-    "shoutiitasimasita",
-    "yatte_mimasu",
     "mousiwakegozaimasen",
-    "shitsumon_ga_arimasu",
-    "oshiete_kudasai",
     "dou_iu_imi_desu_ka",
     "mouichido_onegaishimasu",
     "sukoshi_kangaeru_jikan_wo_kudasai",
-    "sumimasen_tsugi_wo_onegaishimasu",
-    "ichiban_taisetsu_na_chikara",
-    "korekara_no_keikaku",
-    "omoshiroi_to_omoimashita",
-    "benkyou_ni_narimashita",
-    "korekara_mo_ganbarimasu",
-    "kyou_wa_arigatou_gozaimashita"
+    "benkyou_ni_narimashita"
   ]
 }
