@@ -155,13 +155,13 @@ export function ArticleView({
 
       <article className="card-island p-5 sm:p-7">
         <p className="text-ink-faint text-xs font-extrabold">📄 ページ</p>
-        <h1 className="text-ink mt-1 text-2xl font-extrabold sm:text-3xl">
-          <RubyText text={article.title} index={furigana} show={rubyOn} />
-        </h1>
-        <p className="text-ink-soft mt-2 leading-relaxed font-bold">
-          <RubyText text={article.description} index={furigana} show={rubyOn} />
-        </p>
 
+        {/*
+          **目次が 先、タイトルが あと**（2026-08-27 の 指定「タイトルと目次の順番を
+          逆にして」）。ページの 本文は かならず `hero` ブロックで 始まり、そこに
+          同じ タイトルが もう一度 大きく 出る——だから ここの h1 は 2つめの タイトルで
+          あって、先に 置くと 同じ ことばが 続けて 2回 出る。
+        */}
         {shouldShowToc(headings) && (
           <TableOfContents
             articleId={article.id}
@@ -170,6 +170,13 @@ export function ArticleView({
             show={rubyOn}
           />
         )}
+
+        <h1 className="text-ink mt-4 text-2xl font-extrabold sm:text-3xl">
+          <RubyText text={article.title} index={furigana} show={rubyOn} />
+        </h1>
+        <p className="text-ink-soft mt-2 leading-relaxed font-bold">
+          <RubyText text={article.description} index={furigana} show={rubyOn} />
+        </p>
 
         <div className="mt-6 space-y-5">
           {article.blocks.map((block, blockIndex) => (
@@ -199,6 +206,12 @@ export function ArticleView({
  * 目次
  * ------------------------------------------------------------------ */
 
+/**
+ * 見出しの ことば。**「もくじ」と ひらがなに 開かない**（2026-08-27 の 指定）。
+ * 漢字＋ふりがなの ままに して、N5を こえる 語は 読みで 支える（規律2）。
+ */
+const TOC_FURIGANA = buildFuriganaIndex([["目次", "もくじ"]]);
+
 function TableOfContents({
   articleId,
   headings,
@@ -212,10 +225,12 @@ function TableOfContents({
 }) {
   return (
     <nav
-      aria-label="もくじ"
+      aria-label="目次"
       className="border-hairline bg-panel-tint mt-5 rounded-[var(--radius-card)] border-2 p-4"
     >
-      <p className="text-ink-soft text-xs font-extrabold">もくじ</p>
+      <p className="text-ink-soft text-xs font-extrabold">
+        <RubyText text="目次" index={TOC_FURIGANA} />
+      </p>
       <ol className="mt-2 space-y-1">
         {headings.map((heading) => (
           <li key={heading.index} className={heading.level === 3 ? "pl-5" : ""}>

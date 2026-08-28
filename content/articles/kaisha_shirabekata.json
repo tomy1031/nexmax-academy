@@ -1302,7 +1302,7 @@
       "kind": "hero",
       "eyebrow": "🔎 STEP 1　会社の 調べかた",
       "title": "NEXT MAKEを 調べよう！",
-      "lead": "Webサイトを 見て、答えを 見つけます。",
+      "lead": "Webサイトを 見て、クイズに 答えます。",
       "note": "調査シートに 書きます。そのあと、ヘンディさんと 松井社長に 話します。",
       "image": {
         "src": "/img/articles/kaisha_shirabekata/g2.webp",
@@ -1436,7 +1436,7 @@
         {
           "icon": "🔎",
           "title": "② Webサイトの ページを 見る",
-          "text": "ぜんぶを 読まなくても 大丈夫です。"
+          "text": "答えの ある ところを さがして 読みます。"
         },
         {
           "icon": "✏️",
@@ -1664,7 +1664,7 @@
     {
       "kind": "callout",
       "tone": "care",
-      "text": "全部を 一度に おぼえなくても 大丈夫です。"
+      "text": "分からない ことばは、その場で 調べて つぎへ 進みます。"
     },
     {
       "kind": "paragraph",

@@ -2,7 +2,7 @@
   "kind": "meeting",
   "id": "kaisha_houkoku_meeting",
   "title": "ヘンディさんに 報告しよう",
-  "description": "ヘンディさんが 1問ずつ 質問します。しつもんの 並びは 調査シートと 同じです。「📋 自分の こたえ」を 押すと、書いた こたえが 出ます。見ながら 報告しましょう。",
+  "description": "ヘンディさんが 1問ずつ 質問します。調査シートで 調べた ことを 聞きます。「📋 自分の こたえ」を 押すと、書いた こたえが 出ます。見ながら 報告しましょう。",
   "focus": "ヘンディさんの しつもんに、1つずつ 答えます。上の「📋 自分の こたえ」を 押すと、調査シートの こたえが 出ます。見ながらで 大丈夫です。",
   "host": {
     "id": "hendy",
@@ -22,7 +22,8 @@
         "にせんじゅうはち",
         "２０１８"
       ],
-      "echo": "2018年ですね。あゆみの いちばん 上に 書いて ありましたね。"
+      "echo": "2018年ですね。あゆみの いちばん 上に 書いて ありましたね。",
+      "audioUrl": "/audio/meetings/kaisha_houkoku_meeting/q1_itsu.wav"
     },
     {
       "id": "q11_shachou",
@@ -35,11 +36,12 @@
         "あきら",
         "まついあきら"
       ],
-      "echo": "松井 亮さんですね。この あと あなたが 話す 社長です。"
+      "echo": "松井 亮さんですね。この あと あなたが 話す 社長です。",
+      "audioUrl": "/audio/meetings/kaisha_houkoku_meeting/q11_shachou.wav"
     },
     {
       "id": "q2_service",
-      "ask": "つぎです。NEXT MAKEは 自分たちで サービスを 作って います。名前を 2つ 教えて ください。",
+      "ask": "つぎです。NEXT MAKEの 5つの サービスの うち、2つの サービスを 教えて ください。どの サービスでも OKです。",
       "hint": "「◯◯と ◯◯です。」",
       "keywords": [
         "NMClaw",
@@ -64,7 +66,8 @@
         "Lab",
         "ラボ"
       ],
-      "echo": "◯◯ですね。どれも 2026年に 出した 新しい サービスです。"
+      "echo": "◯◯ですね。どれも 2026年に 出した 新しい サービスです。",
+      "audioUrl": "/audio/meetings/kaisha_houkoku_meeting/q2_service.wav"
     },
     {
       "id": "q3_tokuchou",
@@ -85,7 +88,8 @@
         "まな",
         "人と"
       ],
-      "echo": "そうです。会社が 得意な ことを 「強み」と 言います。おぼえて おいて ください。"
+      "echo": "そうです。会社が 得意な ことを 「強み」と 言います。おぼえて おいて ください。",
+      "audioUrl": "/audio/meetings/kaisha_houkoku_meeting/q3_tokuchou.wav"
     },
     {
       "id": "q4_group_name",
@@ -99,7 +103,8 @@
         "Khmersabai",
         "くめーるさばい"
       ],
-      "echo": "CONTINUE ですね。コンティニューと 読みます。"
+      "echo": "CONTINUE ですね。コンティニューと 読みます。",
+      "audioUrl": "/audio/meetings/kaisha_houkoku_meeting/q4_group_name.wav"
     },
     {
       "id": "q5_group_kuni",
@@ -111,7 +116,8 @@
         "ホーチミン",
         "ほーちみん"
       ],
-      "echo": "ベトナムですね。ホーチミンと いう 町に オフィスが あります。"
+      "echo": "ベトナムですね。ホーチミンと いう 町に オフィスが あります。",
+      "audioUrl": "/audio/meetings/kaisha_houkoku_meeting/q5_group_kuni.wav"
     },
     {
       "id": "q12_jisseki",
@@ -146,7 +152,8 @@
         "システム",
         "しすてむ"
       ],
-      "echo": "そうですね。会社が 今までに した 仕事を「実績」と 言います。"
+      "echo": "そうですね。会社が 今までに した 仕事を「実績」と 言います。",
+      "audioUrl": "/audio/meetings/kaisha_houkoku_meeting/q12_jisseki.wav"
     },
     {
       "id": "q10_values",
@@ -160,7 +167,8 @@
         "ツール",
         "つーる"
       ],
-      "echo": "そうです。やさしい 日本語では 「道具」です。ふつうの 日本語では 「手段」です。どちらも 正しいです。"
+      "echo": "そうです。やさしい 日本語では 「道具」です。ふつうの 日本語では 「手段」です。どちらも 正しいです。",
+      "audioUrl": "/audio/meetings/kaisha_houkoku_meeting/q10_values.wav"
     },
     {
       "id": "q6_pathway_nani",
@@ -174,7 +182,8 @@
         "あいてぃー",
         "アイティ"
       ],
-      "echo": "日本語と IT。みなさんが いま して いる ことですね。"
+      "echo": "日本語と IT。みなさんが いま して いる ことですね。",
+      "audioUrl": "/audio/meetings/kaisha_houkoku_meeting/q6_pathway_nani.wav"
     },
     {
       "id": "q7_support",
@@ -192,7 +201,8 @@
         "手伝",
         "てつだ"
       ],
-      "echo": "そうです。日本の IT会社への 就職を 手伝います。勉強の あとの 道まで いっしょです。"
+      "echo": "そうです。日本の IT会社への 就職を 手伝います。勉強の あとの 道まで いっしょです。",
+      "audioUrl": "/audio/meetings/kaisha_houkoku_meeting/q7_support.wav"
     },
     {
       "id": "q8_lab",
@@ -207,7 +217,8 @@
         "ラボ",
         "らぼ"
       ],
-      "echo": "Internship Lab ですね。みなさんの つぎの 場所です。"
+      "echo": "Internship Lab ですね。みなさんの つぎの 場所です。",
+      "audioUrl": "/audio/meetings/kaisha_houkoku_meeting/q8_lab.wav"
     },
     {
       "id": "q9_dare",
@@ -224,7 +235,8 @@
         "日本人",
         "にほんじん"
       ],
-      "echo": "日本人の リーダーですね。PMとも 言います。日本語で 報告する 相手ですよ。"
+      "echo": "日本人の リーダーですね。PMとも 言います。日本語で 報告する 相手ですよ。",
+      "audioUrl": "/audio/meetings/kaisha_houkoku_meeting/q9_dare.wav"
     }
   ],
   "discover": [],
@@ -689,5 +701,6 @@
       "label": "調査シートの こたえ",
       "reportOnly": true
     }
-  ]
+  ],
+  "closingAudioUrl": "/audio/meetings/kaisha_houkoku_meeting/closing.wav"
 }

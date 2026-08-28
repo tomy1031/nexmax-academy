@@ -350,6 +350,21 @@ export async function pickChoiceIn(page: Page, questionId: string, at: number): 
   await page.locator(`#q-${questionId}`).locator("ul li button").nth(at).click();
 }
 
+/**
+ * 複数選択の もんだいで、いくつかを えらぶ（全問1ページの やりかた）。
+ *
+ * `aria-pressed` を 持つのは この 型だけ（`multiButtons` の 覚書）。
+ * 押した ものは 押しっぱなしに なるので、**えらぶ ものだけ**を 順に 押す。
+ */
+export async function pickMultiIn(
+  page: Page,
+  questionId: string,
+  indexes: readonly number[],
+): Promise<void> {
+  const buttons = page.locator(`#q-${questionId}`).locator("li > button[aria-pressed]");
+  for (const at of indexes) await buttons.nth(at).click();
+}
+
 /** 語群を 埋めて「こたえる」まで（1問ずつ の やりかたの 教材だけ）。 */
 export async function fillWordBank(page: Page, words: readonly string[]): Promise<void> {
   await placeWords(page, words);

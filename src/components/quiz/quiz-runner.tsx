@@ -705,11 +705,7 @@ function StartCard({
             </>
           )}
         </p>
-      ) : (
-        <p className="border-hairline bg-panel-tint text-ink mt-5 rounded-[var(--radius-card)] border-2 px-4 py-3 font-extrabold">
-          ぜんぶ できなくても だいじょうぶ
-        </p>
-      )}
+      ) : null}
 
       {!resumed ? (
         <div className="mt-5">

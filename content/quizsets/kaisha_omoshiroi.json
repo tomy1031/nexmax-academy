@@ -2,13 +2,17 @@
   "kind": "quizset",
   "id": "kaisha_omoshiroi",
   "title": "松井社長に 何を 話す？",
-  "description": "調べた ことを 使って、あなたの 考えを 作ります。日本語で 書ける 人は、日本語だけで 大丈夫です。むずかしい 人は、先に 英語で 考えます。",
+  "description": "調べた ことを 使って、あなたの 考えを 作ります。ここで 書いた ことばを、つぎの 会話で そのまま 話します。",
   "nekumax": "hello",
   "phase": "production",
   "answerMode": "all",
   "passRate": 60,
   "requireAll": true,
   "furigana": [
+    [
+      "会話",
+      "かいわ"
+    ],
     [
       "代表取締役社長",
       "だいひょうとりしまりやくしゃちょう"
@@ -1321,10 +1325,6 @@
       ],
       "placeholder": "私は ◯◯が いいと 思いました。なぜなら ◯◯からです。",
       "starter": "「私は ◯◯が いいと 思いました。」「◯◯だからです。」",
-      "english": {
-        "placeholder": "Write your idea in English first.",
-        "starter": "I like ... because ... / I think ... is interesting because ..."
-      },
       "minLength": 8,
       "report": true,
       "explain": "「何が」と「なぜ」を いっしょに 話すと、社長に よく 伝わります。",
@@ -1348,10 +1348,6 @@
       ],
       "placeholder": "私は ◯◯が 得意です。NEXT MAKEで ◯◯に 使いたいです。",
       "starter": "「私は ◯◯が 得意です。」「◯◯に 使いたいです。」",
-      "english": {
-        "placeholder": "Write your strength and how you can use it at NEXT MAKE.",
-        "starter": "My strength is ... I think I can use it to ..."
-      },
       "minLength": 8,
       "report": true,
       "explain": "強みと、それを 使う 場所。2つ つなげると、社長は あなたが 働く すがたを 見られます。",
@@ -1369,16 +1365,12 @@
           "text": "Web・アプリの 開発、AI、PM、お客さまと 話す、カンボジアと 日本を つなぐ 仕事。"
         },
         {
-          "title": "🌱 まだ できなくても OK",
-          "text": "「まだ できません。でも、これから 勉強したいです。」も よい 答えです。"
+          "title": "🌱 これから やりたい ことでも いい",
+          "text": "「これから ◯◯を 勉強したいです。」も よい 答えです。"
         }
       ],
       "placeholder": "私は NEXT MAKEで ◯◯を やって みたいです。",
       "starter": "「◯◯を やって みたいです。」「◯◯を もっと 勉強したいです。」",
-      "english": {
-        "placeholder": "What would you like to do or learn at NEXT MAKE?",
-        "starter": "I would like to work on ... / I want to learn more about ..."
-      },
       "minLength": 8,
       "report": true,
       "explain": "できる ことより、やりたい ことを 話します。これからの 話が いちばん 伝わります。",
@@ -1402,10 +1394,6 @@
       ],
       "placeholder": "カンボジアの IT学生は ◯◯だと 思います。",
       "starter": "「カンボジアの ◯◯は、◯◯だと 思います。」「◯◯できると 思います。」",
-      "english": {
-        "placeholder": "What are the strengths of Cambodian people or IT students?",
-        "starter": "I think Cambodian IT students are ... We can ..."
-      },
       "minLength": 8,
       "report": true,
       "explain": "調査シートの 最後の 問いが ヒントに なります。自分の ことばで 言いなおしましょう。",
@@ -1429,10 +1417,6 @@
       ],
       "placeholder": "社長に 聞きたい ことは ◯◯です。",
       "starter": "「どうして ◯◯ですか？」「これから ◯◯したいですか？」",
-      "english": {
-        "placeholder": "Write the question you want to ask Mr. Matsui.",
-        "starter": "I would like to ask ... / Why did you ...?"
-      },
       "minLength": 6,
       "report": true,
       "explain": "調べたから 出て きた 質問ほど、社長は うれしく なります。",

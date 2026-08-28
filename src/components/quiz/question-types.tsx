@@ -113,11 +113,10 @@ export function QuestionBody({
         <FreeInput
           placeholder={question.placeholder}
           starter={question.starter}
-          english={question.english}
           disabled={disabled}
           submitMode={submitMode}
           draft={draft?.kind === "free" ? draft : undefined}
-          onSubmit={(input, en) => dispatch({ type: "answerFree", input, en })}
+          onSubmit={(input) => dispatch({ type: "answerFree", input })}
         />
       );
 
@@ -392,9 +391,14 @@ function MultiPicker({
 /* ---------------- 自由入力 ---------------- */
 
 /**
- * 自由入力。「間違えたら恥ずかしい」を軽くするため、書き始める前に
- * **どこまで書けばいいか**（ひらがなでも・全文でなくても）を常に見せておく。
- * 判定側（normalize.ts の answerMatches）もそのとおりに緩めてある。
+ * 自由入力。
+ *
+ * ## 「〜でなくても OK」と 書かない（2026-08-27 の 指定）
+ * 前は 入力欄の 下に「ひらがなでも OK。ぜんぶの 文で なくて OK」と 出して いた。
+ * **学習者に「やらなくてよい」と 先に 言う 文言は 一切 出さない**——
+ * できない ことを 先に 数えあげる 言い方に なる。
+ * 判定側（`normalize.ts` の `answerMatches`）は これまでどおり ゆるいので、
+ * ひらがなで 書いても 一部だけ 書いても 通る。**ゆるさは 動きで 示す**。
  */
 function KeywordInput({
   onSubmit,
@@ -450,10 +454,6 @@ function KeywordInput({
           </button>
         )}
       </div>
-
-      <p className="text-ink-faint mt-2 text-xs font-bold">
-        <RubyText text="ひらがなでも OK。ぜんぶの 文で なくて OK" index={UI_FURIGANA} />
-      </p>
     </form>
   );
 }
@@ -475,7 +475,6 @@ function FreeInput({
   draft,
   placeholder,
   starter,
-  english,
 }: {
   onSubmit: (input: string, en?: string) => void;
   disabled?: boolean;
@@ -484,28 +483,15 @@ function FreeInput({
   placeholder?: string;
   /** 日本語の 型文（打ちながら 見られる 足場）。 */
   starter?: string;
-  /** 英語で 先に 下書きする 欄（要る 教材だけ）。 */
-  english?: { placeholder?: string; starter?: string };
 }) {
   // 画面の 文字は この部品が 持つ（親から 送り返すと 変換の 途中で 入れ替わる）
   const [value, setValue] = useState(draft?.input ?? "");
-  const [en, setEn] = useState(draft?.en ?? "");
   const empty = value.trim().length === 0;
 
   const change = (next: string) => {
     setValue(next);
-    if (submitMode) onSubmit(next, en);
+    if (submitMode) onSubmit(next);
   };
-  /*
-   * 英語の 欄も 打つ たびに 下書きへ 送る。**採点には 使わない**が、送らないと
-   * 他の ページへ 行って 戻った ときに 英語だけ 消える——日本語に 直す 作業が
-   * まるごと やり直しに なる。
-   */
-  const changeEn = (next: string) => {
-    setEn(next);
-    if (submitMode) onSubmit(value, next);
-  };
-
   const boxClass =
     "border-hairline bg-panel text-ink w-full rounded-[var(--radius-button)] border-2 px-4 py-3 text-base font-bold";
 
@@ -513,54 +499,9 @@ function FreeInput({
     <form
       onSubmit={(e) => {
         e.preventDefault();
-        if (!submitMode && !disabled && !empty) onSubmit(value, en);
+        if (!submitMode && !disabled && !empty) onSubmit(value);
       }}
     >
-      {/*
-        英語 → 日本語の 2段。**英語は 使いたい 人だけ**（日本語で 直に 書ける 人に
-        余計な 段を 踏ませない）ので、札で そう 書いて 上に 置く。
-        点が つくのは 日本語の 欄だけ——英語の 段を 点に すると、
-        日本語で 直に 書ける 人が 損を する。
-      */}
-      {english && (
-        <div className="mb-3">
-          <p className="text-ink-soft mb-1 flex flex-wrap items-center gap-2 text-xs font-extrabold">
-            <span>① English</span>
-            <span className="border-hairline text-ink-faint rounded-full border-2 px-2 py-0.5">
-              つかいたい 人だけ
-            </span>
-          </p>
-          <textarea
-            value={en}
-            disabled={disabled}
-            onChange={(e) => changeEn(e.target.value)}
-            rows={3}
-            autoComplete="off"
-            autoCorrect="off"
-            spellCheck={false}
-            placeholder={english.placeholder ?? "Write your idea in English first."}
-            aria-label="えいごで 下書きする"
-            className={boxClass}
-          />
-          {english.starter && (
-            <p className="text-ink-faint mt-1 text-xs font-bold">Starter: {english.starter}</p>
-          )}
-        </div>
-      )}
-
-      {english && (
-        <p className="text-ink-soft mb-1 flex flex-wrap items-center gap-2 text-xs font-extrabold">
-          <span>
-            <RubyText text="② 日本語" index={UI_FURIGANA} />
-          </span>
-          <span
-            className="rounded-full px-2 py-0.5 text-white"
-            style={{ background: "var(--color-sky)" }}
-          >
-            <RubyText text="ここが こたえに なります" index={UI_FURIGANA} />
-          </span>
-        </p>
-      )}
       <textarea
         value={value}
         disabled={disabled}
