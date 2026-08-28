@@ -441,6 +441,17 @@ function PlayLayer({
       <div className="pointer-events-none absolute inset-x-0 bottom-0 flex flex-col items-center gap-3 px-4 pb-5 sm:pb-8">
         {phase.kind === "reading" && (
           <>
+            {/*
+              打ち直しの 合図は **❌ の しるしだけ**（2026-08-27）。
+              文を 出すと 読む ぶん 手が 止まり、その間も ことばは 近づいて くる。
+              `hint` が 出るのは 漢字・英字が 混ざった ときだけ——これは
+              「答え」では なく **操作の 案内**なので、文で 出す 値打ちが ある。
+            */}
+            {state.flash === "retry" && (
+              <p key={state.flashSeq} className="text-4xl leading-none" aria-label="ちがう">
+                ❌
+              </p>
+            )}
             {state.hint && (
               <div className="pointer-events-auto w-full max-w-2xl">
                 <FeedbackMessage messageKey={state.hint} />
@@ -497,27 +508,33 @@ function PlayLayer({
             className="pointer-events-auto w-full max-w-2xl rounded-[24px] border-4 bg-[#fffaf0]/97 p-4 text-left shadow-[0_7px_0_#b8deed,0_18px_32px_rgba(0,79,141,.25)]"
             style={{ borderColor: phase.ok ? "#3aa458" : "#f2654a" }}
           >
-            {/* ⭕／❌ を 見出しに 置く。**記号と ことばの 両方**で 出す（色だけに たよらない）。 */}
+            {/*
+              **正解だけに 焦点を あてる**（2026-08-27 の 指定
+              「正解が何かをわかるようにそこだけフォーカス」）。
+              励ましの 2行（「いっしょに かくにんしよう／下の せつめいを 読んで…」）は 出さない——
+              遊んで いる 最中に 読ませる 文では なかった。出すのは
+              **⭕か ❌か**と、**正しい こたえ**だけ。
+            */}
             <p
-              className="mb-2 flex items-center gap-2 text-xl font-black"
+              className="flex items-center gap-2 text-lg font-black"
               style={{ color: phase.ok ? "#1c7f3e" : "#a3182f" }}
             >
               <span aria-hidden>{phase.ok ? "⭕" : "❌"}</span>
-              {phase.ok ? "せいかい" : "ちがう こたえ"}
+              {phase.ok ? "せいかい" : phase.feedback === "meaning.timeup" ? "時間切れ" : "ちがう"}
+              {!phase.ok && phase.chosen && (
+                <span className="text-ink-faint text-sm font-bold">（{phase.chosen}）</span>
+              )}
             </p>
-            <FeedbackMessage messageKey={phase.feedback} />
-            {/* 外した ときは、**えらんだ もの**と **正解**の 両方を 並べる。 */}
-            {!phase.ok && phase.chosen && (
-              <p className="mt-2 text-sm font-black text-[#a3182f]">
-                ❌ えらんだ こたえ: {phase.chosen}
-              </p>
-            )}
-            <p className="text-ink mt-3 text-lg font-black">
+            {/* 正しい こたえ。この カードで いちばん 大きい 字に する。 */}
+            <p className="mt-2 flex items-baseline gap-2 text-2xl font-black text-[#1c7f3e]">
+              <span aria-hidden>⭕</span>
+              {word.meaningEn}
+            </p>
+            <p className="text-ink mt-1 text-lg font-black">
               <ruby>
                 {word.term}
                 <rt>{word.reading}</rt>
               </ruby>
-              <span className="ml-3 text-base font-black text-[#1c7f3e]">⭕ {word.meaningEn}</span>
             </p>
             <p className="text-ink-soft mt-1 font-bold">
               <RubyText text={word.explanationJa} index={furigana} />

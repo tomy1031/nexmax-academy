@@ -31,16 +31,6 @@ export const FEEDBACK = {
     title: "おしい！",
     next: "正しい よみを 見てから、意味を えらぼう",
   },
-  /**
-   * 読みの 打ち直し（2026-08-27）。**まだ 番は 終わって いない**ので、
-   * 「つぎに いこう」では なく「もう一度 うとう」と 言う。
-   * 用語は そのあいだも 近づいて くる ことも 伝える（急ぐ 理由が 分かる）。
-   */
-  "reading.again": {
-    tone: "encourage",
-    title: "おしい！ もう一度",
-    next: "ことばが 来る まえに、よみを うとう",
-  },
   "reading.timeup": {
     tone: "encourage",
     title: "つぎに いこう",
@@ -192,7 +182,6 @@ export function getFeedback(key: FeedbackKey): Feedback {
  */
 export const FEEDBACK_FURIGANA: FuriganaEntry[] = [
   ["時間切れ", "じかんぎれ"],
-  ["来る", "くる"],
   ["日本語", "にほんご"],
   ["直", "なお"],
   ["入力", "にゅうりょく"],

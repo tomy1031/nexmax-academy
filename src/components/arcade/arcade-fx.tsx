@@ -88,12 +88,17 @@ export function DamageFlash({
  * 文言は 規律1（責めない）を 守り、しるしだけで 合否を はっきりさせる。
  */
 export function Verdict({ id, kind }: { id: string | number; kind: "hit" | "miss" | "timeup" }) {
+  /*
+   * 字は **最短**（2026-08-27 の 指定「シンプルに正解不正解わかればいい。
+   * 変にポジティブにするルール…ここに適用しても無意味」）。
+   * 遊んで いる 最中に 2行の 励ましを 読ませない。分かれば よいのは ⭕か ❌か だけ。
+   */
   const face =
     kind === "hit"
-      ? { mark: "⭕", label: "せいかい！", color: "#1c7f3e", glow: "rgba(58,164,88,.95)" }
+      ? { mark: "⭕", label: "せいかい", color: "#1c7f3e", glow: "rgba(58,164,88,.95)" }
       : kind === "timeup"
-        ? { mark: "⏰", label: "じかんぎれ！", color: "#8a5200", glow: "rgba(240,168,25,.95)" }
-        : { mark: "❌", label: "おしい！", color: "#a3182f", glow: "rgba(242,101,74,.95)" };
+        ? { mark: "⏰", label: "時間切れ", color: "#8a5200", glow: "rgba(240,168,25,.95)" }
+        : { mark: "❌", label: "ちがう", color: "#a3182f", glow: "rgba(242,101,74,.95)" };
 
   return (
     <motion.div
@@ -132,10 +137,16 @@ export function ApproachClock({ remaining }: { remaining: number }) {
   return (
     <span
       aria-hidden
-      className="pointer-events-none absolute top-[40%] left-1/2 text-[96px] leading-none"
+      /*
+       * **字の 後ろから どかす**（2026-08-27 の 指定）。
+       * 前は 用語と 同じ 位置（top 40%）で、3.2倍まで ふくらむ 時計が
+       * ちょうど 字の 裏に 来て いた。ふりがなの ような 細い 字は それだけで 読めなく なる。
+       * 時計は 上に 置いて、近づく 手ごたえだけ 残す。
+       */
+      className="pointer-events-none absolute top-[16%] left-1/2 text-[76px] leading-none"
       style={{
-        transform: `translate(-50%, -50%) scale(${(1 + ratio * 2.2).toFixed(2)})`,
-        opacity: (0.25 + ratio * 0.5).toFixed(2),
+        transform: `translate(-50%, -50%) scale(${(1 + ratio * 1.6).toFixed(2)})`,
+        opacity: (0.2 + ratio * 0.45).toFixed(2),
         filter:
           ratio > 0.65 ? "drop-shadow(0 0 22px #ff2200)" : "drop-shadow(0 0 12px rgba(0,0,0,0.6))",
         transition: "opacity .1s linear",
@@ -153,11 +164,17 @@ export function ApproachClock({ remaining }: { remaining: number }) {
  */
 export function McqTerm({ term, reading }: { term: string; reading: string }) {
   /*
-   * **長い ひとことでも 画面に 収める**（2026-08-25・願い #203 で センテンスが 入った）。
+   * **読みの ときと 同じ 顔に する**（2026-08-27 の 指定
+   * 「4択問題の迫り来る文字がよみにくい。読みの時と同じで良い」
+   * 「4択は特にふりがなが読みにくい」）。
    *
+   * 迫って くる 用語（3Dの スプライト）は 白い 字に **黒い 太い ふち**、
+   * ふりがなは **黄色**。こちらは 水色の 細い 字を そのまま 置いて いたので、
+   * 明るい 空の 前では 輪郭が 消えて いた。同じ 作りに そろえる。
+   *
+   * **長い ひとことでも 画面に 収める**（2026-08-25・願い #203 で センテンスが 入った）。
    * 前は 1行 固定（`whitespace-nowrap`）で、「これからの 計画を 教えて ください」は
-   * 両はしが 画面の 外に 出て いた（390px の 実機で 実際に 切れた）。読めない まま
-   * 4つの こたえを 選ばせる ことに なるので、**長さで 字を 小さくし、折り返す**。
+   * 両はしが 画面の 外に 出て いた（390px の 実機で 実際に 切れた）。
    */
   const size =
     term.length <= 8
@@ -167,11 +184,24 @@ export function McqTerm({ term, reading }: { term: string; reading: string }) {
         : "text-[22px] sm:text-[34px]";
   return (
     <span
-      className={`pointer-events-none absolute top-[40%] left-1/2 max-w-[92vw] -translate-x-1/2 -translate-y-1/2 text-center leading-tight font-black text-white ${size}`}
+      className={`pointer-events-none absolute top-[42%] left-1/2 max-w-[92vw] -translate-x-1/2 -translate-y-1/2 text-center leading-tight font-black text-white ${size}`}
+      style={{
+        WebkitTextStroke: "7px rgba(0,0,0,.92)",
+        paintOrder: "stroke fill",
+        textShadow: "0 0 22px rgba(0,0,0,.75)",
+      }}
     >
-      <ruby>
+      {/* ふりがなは 太く・黒ふち つきの 黄色（迫る 用語と 同じ 色） */}
+      <style>{`
+        .mcq-term rt{
+          font-size:.5em;font-weight:900;color:#ffd54a;
+          -webkit-text-stroke:4px rgba(0,0,0,.92);paint-order:stroke fill;
+          text-shadow:0 0 14px rgba(0,0,0,.8);
+        }
+      `}</style>
+      <ruby className="mcq-term">
         {term}
-        <rt style={{ color: "#4ee1ff" }}>{reading}</rt>
+        <rt>{reading}</rt>
       </ruby>
     </span>
   );

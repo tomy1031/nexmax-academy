@@ -105,7 +105,7 @@ describe("ことばアーケードの状態機械", () => {
     const s0 = createSession({ stage, mode: "test", rng: seededRng(5) });
     const s1 = arcadeReducer(s0, { type: "submitReading", input: "ぜんぜんちがうよみ" });
     expect(s1.phase).toEqual({ kind: "reading" });
-    expect(s1.hint).toBe("reading.again");
+    expect(s1.hint).toBeNull(); // 打ち直しに 文は 出さない（しるしだけ）
     expect(s1.flash).toBe("retry");
     // 打ち直しに 代償は 無い（ライフも コンボも 減らない）
     expect(s1.life).toBe(s0.life);

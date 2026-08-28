@@ -226,7 +226,9 @@ export function arcadeReducer(state: ArcadeState, action: ArcadeAction): ArcadeS
        */
       return readingMatches(action.input, word.reading)
         ? onReadingCorrect(state)
-        : { ...state, hint: "reading.again", ...flashOf(state, "retry") };
+        : // 打ち直しに 文は 出さない（2026-08-27「変にポジティブにするルール…ここに適用しても無意味」）。
+          // 合図は 横揺れ・入力欄が 空に なる こと・小さな ❌ の 3つだけ。
+          { ...state, hint: null, ...flashOf(state, "retry") };
     }
 
     case "readingTimeout":
