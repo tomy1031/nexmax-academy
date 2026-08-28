@@ -101,7 +101,7 @@ const HOUKOKU_CHOICES: readonly (readonly [string, number])[] = [
 ];
 
 /** 複数選択の 1問（カンボジアの 人の いい ところ）。正解は 4つ ぜんぶ。 */
-const HOUKOKU_MULTI: readonly (readonly [string, readonly number[]])[] = [["q25", [0, 1, 2, 4]]];
+const HOUKOKU_MULTI: readonly (readonly [string, readonly number[]])[] = [["q25", [0, 1, 2, 3]]];
 
 /**
  * ヘンディさんに 話す こたえ（型文を なぞった、学習者が 書きそうな文）。
