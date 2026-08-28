@@ -1,7 +1,8 @@
 "use client";
 
 import { createClient } from "@/lib/supabase/client";
-import type { JudgeGrade, JudgeResult } from "@/lib/meeting/judge";
+import type { JudgeGrade } from "@/lib/meeting/judge";
+import type { MeetingTurnJudge } from "@/lib/meeting/log";
 
 /**
  * ミーティングの記録を読む（先生の画面）
@@ -23,7 +24,8 @@ export interface MeetingLogRow {
   attempt: number;
   mode: "text" | "voice";
   utterance: string;
-  judge: JudgeResult | null;
+  /** 見かたは **持って いる ぶんだけ**（社長との 会話には 軸が 無い）。 */
+  judge: MeetingTurnJudge | null;
   grade: JudgeGrade | null;
   fallback: string;
   model: string;

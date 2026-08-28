@@ -17,7 +17,7 @@ import {
   rewardOpen,
   type AffectionState,
 } from "@/lib/meeting/affection";
-import { recordMeetingTurn } from "@/lib/meeting/log";
+import { bufferMeetingTurn, flushMeetingTurns } from "@/lib/meeting/log";
 import {
   readMeetingRecord,
   readMeetingRecordOnServer,
@@ -764,7 +764,12 @@ export function MeetingSession({
       pushChat({ kind: "coach", judge, note, reason: result.ok ? null : result.reason });
       setJudgeOpen(true);
       rewardTurn(asked.id, utterance, result.ok ? judge.grade : null, !judge.retry);
-      void recordMeetingTurn({
+      /*
+       * **ためるだけ**（2026-08-28 の 指定「終了後1度でまとめてデータを送る」）。
+       * 通信は おわりに 1回（`flushMeetingTurns`）。ここで 送って いた ころは
+       * 20人の 授業で 300〜600回の 書き込みが 45分に 集中して いた。
+       */
+      bufferMeetingTurn({
         meetingId: meeting.id,
         questionId: asked.id,
         attempt,
@@ -1260,9 +1265,33 @@ export function MeetingSession({
     // 見返して いただけの ときは 何も 起こさない（まだ おわって いない）
     if (which !== "round2") return;
     recordContentProgress(meeting.id, { status: "completed" });
+    // 話しきった。会話の 記録は ここで **1回だけ** 送る（2026-08-28 の 指定）
+    void flushMeetingTurns(meeting.id);
     // 話しきった。つぎに 開いた ときは はじめから 話せる
     clearMeetingResume(meeting.id);
   }, [certificate, meeting.id]);
+
+  /*
+   * **聞く ばんの 無い 教材の 取りこぼしを 拾う**（2026-08-28）。
+   *
+   * `completed` を 書く 道は しゅうりょうしょうを 閉じた とき（上）だけ だった。
+   * 札の 無い 教材（`discover` が 空）は 答えきった その場で しゅうりょうしょうを
+   * 出すが、**それを 閉じずに 画面を 出た 人**——授業の チャイム・回線の ゆらぎ・
+   * 更新ボタン——には もう 二度と 出す 道が 無い。`round1Done` は 保存から 戻るので
+   * 次に 開くと「おわった 顔」に なり、けれど 進捗は とちゅうの まま。
+   * 枠（ContentFrame）は 前の 教材が おわるまで つぎを 開けないので、
+   * **ヘンディさんに ぜんぶ 答えたのに 松井社長へ 進めない**——実際に そう なって いた。
+   *
+   * しゅうりょうしょうを 見て いる 間は 書かない（クリアの しらせが かぶさる）。
+   * 閉じた あと・次に 開いた ときに ここが 拾う。`recordContentProgress` は
+   * `completed` を `started` で 上書きしないので、何度 通っても 害は 無い。
+   */
+  useEffect(() => {
+    if (hasListenRound || !round1Done || certificate !== null) return;
+    recordContentProgress(meeting.id, { status: "completed" });
+    // ためた 会話も ここで 流す（閉じずに 出た 回の ぶんを 取りこぼさない）
+    void flushMeetingTurns(meeting.id);
+  }, [hasListenRound, round1Done, certificate, meeting.id]);
 
   const closeJudge = useCallback(() => {
     const again = reply?.judge?.retry === true;
@@ -1430,15 +1459,24 @@ export function MeetingSession({
       {/*
         ここからは **役が 入れかわる**。「じゆうに どうぞ」だけでは 白紙の 前で
         止まるので、何を する 時間なのかを 先に 言う（設計01 P1: 役割の 付与）。
+
+        **聞く ばんの ある 教材だけ**に 出す（2026-08-28）。札の 無い 教材
+        （`discover` が 空・会社を知るの ヘンディさん）では、答えきった 学習者に
+        「今度は、あなたが 聞く 番です」とだけ 出て、聞く ところも 進む ところも
+        画面に 無かった——**やる ことを 言われて、やる 場所が 無い**画面に なる。
       */}
-      <p className="text-sky text-xs font-extrabold">ラウンド 2</p>
-      <p className="text-navy text-base font-black">
-        <RubyText
-          text={`今度は、あなたが 聞く 番です。${meeting.host.name}さんに 質問して みましょう。`}
-          index={CHROME_FURIGANA}
-          show
-        />
-      </p>
+      {hasListenRound ? (
+        <>
+          <p className="text-sky text-xs font-extrabold">ラウンド 2</p>
+          <p className="text-navy text-base font-black">
+            <RubyText
+              text={`今度は、あなたが 聞く 番です。${meeting.host.name}さんに 質問して みましょう。`}
+              index={CHROME_FURIGANA}
+              show
+            />
+          </p>
+        </>
+      ) : null}
       {/*
         見つける ことの 一覧は **相手の 顔の すぐ下の 板**（`DiscoverCards`）へ 移した
         （2026-08-21 の 指定「02の 場合は 02の カードを 表示して」）。

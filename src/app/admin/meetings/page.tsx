@@ -190,16 +190,26 @@ export default function AdminMeetingsPage() {
                     {row.judge.fix ? (
                       <p className="text-ink-soft font-bold break-words">💡 {row.judge.fix}</p>
                     ) : null}
-                    <p className="text-ink-soft font-bold break-words">
-                      れい: {row.judge.exampleAnswer}
-                    </p>
-                    <p className="text-ink-faint text-xs font-bold">
-                      ことば: {row.judge.language} / かみ合い: {row.judge.relevance} / かたち:{" "}
-                      {row.judge.form}
-                      {row.judge.glossary.length > 0
-                        ? ` / 語釈: ${row.judge.glossary.map((g) => g.term).join("、")}`
-                        : ""}
-                    </p>
+                    {row.judge.exampleAnswer ? (
+                      <p className="text-ink-soft font-bold break-words">
+                        れい: {row.judge.exampleAnswer}
+                      </p>
+                    ) : null}
+                    {/*
+                      軸（ことば・かみ合い・かたち・語釈）は **持って いる 行にだけ** 出す。
+                      松井社長との 会話は 三段の 評価では なく「気づき」で 進むので、
+                      この 4つを 持たない（`MeetingTurnJudge`）。前は 無条件に 読んで いて、
+                      `glossary.length` で 先生の 画面が 落ちる 形に なって いた。
+                    */}
+                    {row.judge.language ? (
+                      <p className="text-ink-faint text-xs font-bold">
+                        ことば: {row.judge.language} / かみ合い: {row.judge.relevance} / かたち:{" "}
+                        {row.judge.form}
+                        {(row.judge.glossary?.length ?? 0) > 0
+                          ? ` / 語釈: ${(row.judge.glossary ?? []).map((g) => g.term).join("、")}`
+                          : ""}
+                      </p>
+                    ) : null}
                   </div>
                 ) : null}
               </li>
