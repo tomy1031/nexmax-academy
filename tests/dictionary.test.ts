@@ -123,6 +123,55 @@ describe("findDictionaryTerm", () => {
   it("載っていない文は null", () => {
     expect(findDictionaryTerm("きょうは いい てんきです。", dictionary)).toBeNull();
   });
+
+  /*
+   * **送りがなの ついた 形でも 当てる**（2026-08-28 の 指摘
+   *「見つける（た）・さがして・考えて・終わった」）。
+   * 辞書は 言い切りの 形で 持つが、本文には 活用した 形で 出る。
+   * 返す `length` は **本文で 当たった ところの 長さ**——見出し語の 長さでは ない。
+   */
+  it("活用した 形でも 当たる（語幹で 引く）", () => {
+    const verbs = buildDictionary([
+      {
+        kind: "vocab" as const,
+        id: "v",
+        title: "ことば",
+        words: [
+          {
+            id: "mitsukeru",
+            term: "見つける",
+            reading: "みつける",
+            meaningJa: "さがして いた ものが 分かる ことです。",
+            englishTerm: "To find",
+          },
+        ],
+      },
+    ]);
+    const hit = findDictionaryTerm("答えを 見つけた ときは、手を あげて ください。", verbs);
+    expect(hit?.entry.term).toBe("見つける");
+    expect(hit?.length).toBe("見つけ".length);
+  });
+
+  it("語幹が 1文字に なる 語は 活用形を 拾わない（「知」で 知識まで 取らない）", () => {
+    const verbs = buildDictionary([
+      {
+        kind: "vocab" as const,
+        id: "v",
+        title: "ことば",
+        words: [
+          {
+            id: "shiru",
+            term: "知る",
+            reading: "しる",
+            meaningJa: "そのことが 分かる ように なる ことです。",
+            englishTerm: "To know",
+          },
+        ],
+      },
+    ]);
+    expect(findDictionaryTerm("知識が ふえました。", verbs)).toBeNull();
+    expect(findDictionaryTerm("会社を 知る ことが 大切です。", verbs)?.entry.term).toBe("知る");
+  });
 });
 
 describe("termOwners", () => {

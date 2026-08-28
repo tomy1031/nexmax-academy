@@ -8020,6 +8020,87 @@
       "meaningJa": "何かを しらべる ときの、じゅんばんや やりかたです。",
       "englishTerm": "How to research",
       "example": "会社の 調べかたを 学びます。"
+    },
+    {
+      "id": "shiru",
+      "term": "知る",
+      "reading": "しる",
+      "romaji": "shiru",
+      "meaningJa": "そのことが 分かる ように なる ことです。",
+      "englishTerm": "To know / To learn",
+      "example": "まず どんな 会社か 知りましょう。"
+    },
+    {
+      "id": "shiraberu",
+      "term": "調べる",
+      "reading": "しらべる",
+      "romaji": "shiraberu",
+      "meaningJa": "分からない ことを、本や Webサイトで さがして たしかめる ことです。",
+      "englishTerm": "To research / To look up",
+      "example": "Webサイトを 見て 会社を 調べます。"
+    },
+    {
+      "id": "renshuu",
+      "term": "練習",
+      "reading": "れんしゅう",
+      "romaji": "renshuu",
+      "meaningJa": "じょうずに なる ために、なんかいも やって みる ことです。",
+      "englishTerm": "Practice",
+      "example": "日本の 会社を 調べる 練習を します。"
+    },
+    {
+      "id": "mitsukeru",
+      "term": "見つける",
+      "reading": "みつける",
+      "romaji": "mitsukeru",
+      "meaningJa": "さがして いた ものが 分かる ことです。",
+      "englishTerm": "To find",
+      "example": "答えを 見つけます。"
+    },
+    {
+      "id": "sagasu",
+      "term": "さがす",
+      "reading": "さがす",
+      "romaji": "sagasu",
+      "meaningJa": "どこに あるかを 見に 行く ことです。",
+      "englishTerm": "To search / To look for",
+      "example": "答えを さがして ください。"
+    },
+    {
+      "id": "kangaeru",
+      "term": "考える",
+      "reading": "かんがえる",
+      "romaji": "kangaeru",
+      "meaningJa": "頭の 中で、どうするかを 思う ことです。",
+      "englishTerm": "To think",
+      "example": "自分の いい ところを 考えて ください。"
+    },
+    {
+      "id": "owaru",
+      "term": "終わる",
+      "reading": "おわる",
+      "romaji": "owaru",
+      "meaningJa": "そこで しまいに なる ことです。",
+      "englishTerm": "To finish / To end",
+      "example": "プログラムが 終わった あとの ことも 書いて あります。"
+    },
+    {
+      "id": "michi",
+      "term": "道",
+      "reading": "みち",
+      "romaji": "michi",
+      "meaningJa": "つぎに 進む 先の ことです。しごとの 先の ことも 言います。",
+      "englishTerm": "Path / Road",
+      "example": "終わった あと、どんな 道が ありますか。"
+    },
+    {
+      "id": "ayumi_kana",
+      "term": "あゆみ",
+      "reading": "あゆみ",
+      "romaji": "ayumi",
+      "meaningJa": "会社が 今までに して きた ことの ならびです。",
+      "englishTerm": "History / Timeline",
+      "example": "「会社の あゆみ」を 見ましょう。"
     }
   ]
 }

@@ -417,5 +417,9 @@ export const GAKUSHU_TERMS: Readonly<Record<string, readonly string[]>> = {
     "hitodebusoku",
     "offshore-kaihatsu",
     "group-gaisha",
+    "shiru",
+    "shiraberu",
+    "mitsukeru",
+    "sagasu",
   ],
 };
