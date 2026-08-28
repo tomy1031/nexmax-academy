@@ -159,6 +159,7 @@ export function QuestionCards({
   labels,
   openIds,
   currentId,
+  reachedAt,
   justOpenedId,
   missedIds,
   furigana,
@@ -170,8 +171,15 @@ export function QuestionCards({
   labels: Readonly<Record<string, string>>;
   /** 話せた しつもんの id。 */
   openIds: ReadonlySet<string>;
-  /** いま 聞かれて いる しつもんの id。 */
+  /** いま 聞かれて いる しつもんの id（枠を 出す ところ）。 */
   currentId: string | null;
+  /**
+   * **いちばん 先まで 聞かれた しつもん**（0始まり）。ここまでの 札を 押せる。
+   *
+   * 「いま いる ところ」では ない のが 肝心（2026-08-28 の 指摘
+   *「7まで終わったのに一度他の問題をクリックしたら8がクリックできなくなっている」）。
+   */
+  reachedAt: number;
   /** いま 開いた ばかりの id（1回だけ 光らせる）。 */
   justOpenedId: string | null;
   /** できなかった しつもんの id（赤い 印を つけ、押すと やり直せる）。 */
@@ -209,12 +217,17 @@ export function QuestionCards({
               reveal={false}
               furigana={furigana}
               /*
-               * 押せるのは **答えた ものと、いま 聞かれて いる もの**まで
+               * 押せるのは **これまでに 聞かれた ところまで**
                *（2026-08-25 の 指定「今までに回答した問題＋次の問題までクリックOK」）。
                * さきの しつもんへは 飛ばさない——順に 聞かれる ことが 会話の 形なので、
                * 先回りできると「もう 聞かれた ことに 答えた」が 崩れる。
+               *
+               * **`currentId` で 決めない**（2026-08-28）。いま いる ところは
+               * 札を 押すと 前へ 下がる ので、7問 終えた 人が 2問目を 押した 瞬間に
+               * 8問目が 押せなく なって いた。戻る ことが 進んだ ぶんを 取り上げる
+               * 罰に なって いた（設計01 P8）。進んだ ところ（`reachedAt`）で 決める。
                */
-              onPick={onPick && (done || missed || currentId === id) ? () => onPick(id) : undefined}
+              onPick={onPick && at <= reachedAt ? () => onPick(id) : undefined}
               ariaLabel={
                 missed
                   ? `${at + 1}ばんめ もう いちど`

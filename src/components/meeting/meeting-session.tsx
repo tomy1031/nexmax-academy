@@ -27,7 +27,12 @@ import {
   type MeetingRecord,
 } from "@/lib/meeting/record";
 import { asksToSkip, needsJapaneseInput } from "@/lib/meeting/input";
-import { clearMeetingResume, restoreMeeting, saveMeetingResume } from "@/lib/meeting/resume";
+import {
+  clearMeetingResume,
+  frontierFrom,
+  restoreMeeting,
+  saveMeetingResume,
+} from "@/lib/meeting/resume";
 import { JUDGE_FURIGANA } from "@/components/meeting/ui-furigana";
 import { AI_KANJI_FURIGANA } from "@/lib/ai-kanji";
 import { fillName, shouldReplayAsk, stripDirections } from "@/lib/meeting/speech";
@@ -279,6 +284,26 @@ export function MeetingSession({
   const [resume] = useState(() => restoreMeeting(meeting.id, questionIds));
   const [index, setIndex] = useState(resume.index);
   /**
+   * **いちばん 先まで 聞かれた しつもん**（0始まり。ぜんぶ 終われば しつもんの 数）。
+   *
+   * ## なぜ「いま いる ところ」では 足りないのか（2026-08-28 の 指摘
+   *「7まで終わったのに一度他の問題をクリックしたら8がクリックできなくなっている」）
+   * 札を 押せる 範囲を `index`（いま いる ところ）で 決めて いた。7問 終えて
+   * 8問目に いる 人が、2問目の 札を 押して 言い直すと、`index` が 2に 下がる——
+   * その 瞬間に **8問目の 札が 押せなく なる**。戻る ことが、進んだ ぶんを
+   * 取り上げる 罰に なって いた（設計01 P8）。
+   *
+   * 進んだ ところは 下がらない ものとして 別に 持ち、札は これで 決める。
+   * しおりには 足さない——`index` と 開いた 札から 復元できる ので、
+   * 保存の 形を 増やすと 書き忘れの ずれが 1つ 増える（しおりは 1か所で 書く）。
+   */
+  const [frontier, setFrontier] = useState(() => frontierFrom(resume, questionIds));
+  /**
+   * **帰り道**。前の しつもんへ 戻った ときに、直したら どこへ 帰すか。
+   * `null` は「戻って きた のでは ない」（そのまま つぎへ 進む）。
+   */
+  const returnToRef = useRef<number | null>(null);
+  /**
    * 部屋に 入ったか。**音は 入ってから 鳴らす**。
    *
    * ロビーに いる あいだも この 部品は 動いて いるので、入る 前に 1問目の 声を
@@ -320,13 +345,6 @@ export function MeetingSession({
   const [missedIds, setMissedIds] = useState<ReadonlySet<string>>(() => new Set(resume.missedIds));
   /** しつもんID → さいごの 見かた（札の 色を 決める）。 */
   const [grades, setGrades] = useState<Record<string, JudgeResult["grade"]>>({});
-  /**
-   * ぜんぶ 答えた あとに 札から 戻って きたか。
-   *
-   * 戻って きた ときは、**その 1問だけ やり直して また おわりへ 帰す**——
-   * つぎの しつもんへ 進めると、そこから 12問を もう一度 歩く ことに なる。
-   */
-  const reviewingRef = useRef(false);
   /** 日本語の 見かたを ポップアップで 出して いるか。 */
   const [judgeOpen, setJudgeOpen] = useState(false);
   /** ポップアップに そのまま 見せる「あなたの ことば」。 */
@@ -914,21 +932,19 @@ export function MeetingSession({
   );
 
   /**
-   * **札を 押して、その しつもんを もう一度 やる**（2026-08-23 の 指定）。
+   * **その しつもんの ところへ 座り直して、相手に もう一度 読んで もらう**。
    *
-   * ヘンディさんが その しつもんを もう一度 読み上げ、答えられる 状態に 戻す。
    * 読み上げは 作り置きの 音（`clipUrl` の 効果が 拾う）——Live に 頼むと
    * 「あなたから しつもんしては いけません」という 決まりと ぶつかる。
    *
-   * ぜんぶ 答えた あとから 戻った ときは、**その 1問だけ 直して おわりへ 帰す**
-   *（`reviewingRef`）。つぎの しつもんへ 進めると、そこから もう一度 12問を 歩く。
+   * 札を 押した とき（`retryQuestion`）と、直し終えて 帰る とき（`closeJudge`）の
+   * 両方が ここを 通る。**座り直しかたを 1つに して おく**——2か所に 書くと、
+   * 片方だけに 消し忘れが 残って「前の 答えが 出た まま 次の しつもん」に なる。
    */
-  const retryQuestion = useCallback(
-    (questionId: string) => {
-      const at = meeting.questions.findIndex((q) => q.id === questionId);
+  const askAgainAt = useCallback(
+    (at: number) => {
       const ask = meeting.questions[at];
       if (!ask) return;
-      reviewingRef.current = round1Done;
       setRound("ask");
       setIndex(at);
       setAttempt(1);
@@ -949,7 +965,21 @@ export function MeetingSession({
         audioUrl: ask.audioUrl,
       });
     },
-    [meeting.questions, round1Done, withName, pushChat],
+    [meeting.questions, withName, pushChat],
+  );
+
+  const retryQuestion = useCallback(
+    (questionId: string) => {
+      const at = meeting.questions.findIndex((q) => q.id === questionId);
+      if (at < 0) return;
+      /*
+       * **進んだ ところより 前へ 戻る ときだけ 帰り道を おぼえる**。
+       * いま いる しつもんを もう一度 押した ときは ふつうに つぎへ 進む。
+       */
+      returnToRef.current = at < frontier ? frontier : null;
+      askAgainAt(at);
+    },
+    [meeting.questions, frontier, askAgainAt],
   );
 
   const next = useCallback(() => {
@@ -984,6 +1014,8 @@ export function MeetingSession({
       });
     }
     setIndex(at);
+    // 進んだ ところは 下がらない（札を どこまで 押せるかは これで 決まる）
+    setFrontier((far) => Math.max(far, at));
     setDraft("");
     // 型文は ここで 隠さない。学習者が 決めた 見せ方は 質問を またいで 続く
     setReply(null);
@@ -1274,15 +1306,23 @@ export function MeetingSession({
       return;
     }
     /*
-     * **やり直しから 帰る**（2026-08-23）。ぜんぶ 答えた あとに 札から 戻って
-     * きた ときは、その 1問の 決着を つけて おわりの ところへ 戻す。
-     * `next()` に すると、そこから 12問を もう一度 歩く ことに なる。
+     * **やり直しから 帰る**（2026-08-23／2026-08-28）。札から 前の しつもんへ
+     * 戻って きた ときは、その 1問の 決着を つけて **いた ところへ 帰す**。
+     * `next()` に すると、戻った ところから もう一度 ぜんぶを 歩く ことに なる
+     *（7問 終えて 2問目を 直した 人が、3問目から やり直しに なって いた）。
      */
-    if (reviewingRef.current) {
-      reviewingRef.current = false;
+    const back = returnToRef.current;
+    if (back !== null) {
+      returnToRef.current = null;
       settle(meeting.questions[index]);
-      setIndex(meeting.questions.length);
-      setRound("listen");
+      if (back >= meeting.questions.length) {
+        // ぜんぶ 答えた あとから 戻って きた 人は、おわりの ところへ
+        setIndex(meeting.questions.length);
+        setRound("listen");
+        return;
+      }
+      // まだ 途中の 人は、聞かれて いた しつもんを もう一度 読んで もらう
+      askAgainAt(back);
       return;
     }
     /*
@@ -1291,7 +1331,7 @@ export function MeetingSession({
      */
     if (round1Done) return;
     next();
-  }, [reply, retry, next, round1Done, settle, meeting.questions, index]);
+  }, [reply, retry, next, round1Done, settle, meeting.questions, index, askAgainAt]);
 
   /** いま持っているハート。教材に affection が無いときは画面のどこにも出ない。 */
   const hearts = heartsOf(affection);
@@ -1681,6 +1721,7 @@ export function MeetingSession({
               labels={cardLabels}
               openIds={openIds}
               currentId={question?.id ?? null}
+              reachedAt={frontier}
               justOpenedId={justOpenedId}
               missedIds={missedIds}
               furigana={furigana}
