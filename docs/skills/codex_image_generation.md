@@ -185,8 +185,23 @@ codex -i public/img/characters/nexmax/reference.png \
 | `scripts/images/kaisha_step1_opening.json` | 同 1枚（ページの 表紙 `hero` の 絵） | 2026-08-28 |
 | `scripts/images/kaisha_junbi_scenes.json` | 準備ページの カード 3枚（学生だけ） | 2026-08-28 |
 | `scripts/images/kaisha_junbi_nexmax.json` | 同 1枚（ネクマックスが 出る） | 2026-08-28 |
-| `scripts/images/kaisha_junbi_people.json` | 同 4枚（松井社長が 出る。A/B の 分かれ道を 含む） | 2026-08-28 |
+| `scripts/images/kaisha_junbi_people.json` | 同 2枚（A/B の 分かれ道。松井社長＋吹き出しの ネクマックス） | 2026-08-28 |
+| `scripts/images/kaisha_junbi_matsui.json` | 同 1枚（松井社長に 質問する） | 2026-08-28 |
 | `scripts/images/kaisha_junbi_hendy.json` | 同 1枚（ヘンディさんが 出る） | 2026-08-28 |
+
+**学習者役を 毎回 同じ 顔に しない**（2026-08-28 の 指摘「同じ女性を使いすぎ」「背景にもバリエーションが
+欲しい」）。§6.7 は「学習者役の 学生は 1枚目を 絵柄アンカーに して 顔と 服を そろえる」と 書いて いるが、
+それは **1つづきの 場面**（同じ 人が 順に 進む ページ）の 話。**別々の 例を 並べる カード**では、
+1枚ごとに 別の 学生・別の 部屋に する —— そこで `g1` を 参照に 渡すと 顔が そろって しまうので、
+**渡さない**。そろえるのは 絵柄だけ（人が 写って いない コマ 1枚）。
+
+**手は 崩れる。** 両手を 開いて 話す 姿勢は 指が からまりやすい（j1 で 実発生）。
+「片手は 開き、もう 片手は 机や ものの 上に 置く」と 書き、`exactly five fingers each,
+no tangled or merged fingers` を 足すと 直った。
+
+**「つないで いる」絵は 差し口まで 書く。** 「a cable runs between them」だけだと
+**ケーブルが 宙で 終わる**（j3 で 実発生）。`BOTH ENDS ARE CLEARLY PLUGGED IN` と、
+差した ところの 見え方（コネクタが 奥まで 入り、すきまが 無い）まで 書く。
 
 **人物ごとに 台帳を 分ける**（2026-08-28）。1つの 台帳に 松井社長と ヘンディさんの 設定画を
 両方 渡すと 顔が 混ざる。ネクマックスも 別に する——ほかの 台帳は negative で

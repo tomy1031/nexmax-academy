@@ -1367,7 +1367,7 @@
             "refs": [],
             "status": "done",
             "src": "/img/articles/kaisha_matsui_junbi/ab_a.webp",
-            "prompt": "AB-pair A: the student leans forward and talks with delight; the president is charmed, his eyes turned into hearts."
+            "prompt": "AB-pair A: a Cambodian woman leans forward and talks with delight; her speech bubble shows NexMax, a security drone and a Verify shield; the president is charmed, his eyes turned into hearts. → scripts/images/kaisha_junbi_people.json"
           }
         },
         {
@@ -1379,7 +1379,7 @@
             "refs": [],
             "status": "done",
             "src": "/img/articles/kaisha_matsui_junbi/ab_b.webp",
-            "prompt": "AB-pair B: the student sits back with little interest; the president looks quietly sad."
+            "prompt": "AB-pair B: a different student, a Cambodian man, sits back with little interest; three small bubbles show NexMax, the drone and the shield each crossed out with a red X; the president looks quietly sad. → scripts/images/kaisha_junbi_people.json"
           }
         }
       ]
@@ -1408,7 +1408,7 @@
             "refs": [],
             "status": "done",
             "src": "/img/articles/kaisha_matsui_junbi/j1.webp",
-            "prompt": "card1: the student talks passionately about the company's Cambodia work and its security drone, a speech bubble full of small pictures."
+            "prompt": "card1: a Cambodian man talks passionately in a campus lounge; his bubble shows a security drone over a fenced site, a Verify shield and engineers at monitors. → scripts/images/kaisha_junbi_scenes.json"
           }
         },
         {
@@ -1419,7 +1419,7 @@
             "refs": [],
             "status": "done",
             "src": "/img/articles/kaisha_matsui_junbi/j2.webp",
-            "prompt": "card2: the student's strong points — cyber security, networks, AI programming — shown as a confident scene."
+            "prompt": "card2: three different students in a computer lab — security (padlock screen), network (server rack), AI (code and a node diagram). → scripts/images/kaisha_junbi_scenes.json"
           }
         },
         {
@@ -1430,7 +1430,7 @@
             "refs": [],
             "status": "done",
             "src": "/img/articles/kaisha_matsui_junbi/j3.webp",
-            "prompt": "card3: the student connects a laptop to the NexMax robot and programs it together."
+            "prompt": "card3: a Cambodian man at a makerspace bench plugs a cable into NexMax and into his laptop, and programs him. → scripts/images/kaisha_junbi_nexmax.json"
           }
         },
         {
@@ -1441,7 +1441,7 @@
             "refs": [],
             "status": "done",
             "src": "/img/articles/kaisha_matsui_junbi/j4.webp",
-            "prompt": "card4: the student teaches Japanese colleagues about the good sides of Cambodia and its people."
+            "prompt": "card4: a Cambodian woman presents the good sides of Cambodia on a screen full of drawings, with picture-rich handouts. → scripts/images/kaisha_junbi_scenes.json"
           }
         },
         {
@@ -1452,7 +1452,7 @@
             "refs": [],
             "status": "done",
             "src": "/img/articles/kaisha_matsui_junbi/j5.webp",
-            "prompt": "card5: the student raises a hand and asks the president a question."
+            "prompt": "card5: a Cambodian woman raises her hand to the president, her notebook filled with prepared questions. → scripts/images/kaisha_junbi_matsui.json"
           }
         }
       ]
