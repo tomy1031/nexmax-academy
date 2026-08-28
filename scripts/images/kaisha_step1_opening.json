@@ -1,0 +1,19 @@
+{
+  "refs": [
+    "public/img/manga/hajimari_manga/p1c2.webp",
+    "public/img/articles/kaisha_shirabekata/g1.webp"
+  ],
+  "_comment": "STEP02「会社を 知る」STEP1 の ページの **いちばん 上**の さし絵（見出し「NEXT MAKEを しろう！」）。ほかの 見出しには 全部 絵が あるのに ここだけ 空いて いた。1枚目の 参照は 絵柄を そろえる ため（人が 写って いない コマ）、2枚目は **学生の 顔と 服**を g1 に そろえる ため。生成 PNG は cwebp -q 84 で webp に して dest へ 置く。",
+  "style": "Style: warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, soft cel shading with gentle light, bright natural daylight, warm cream walls with sky-blue and coral accents, tidy contemporary offices and classrooms with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions and warm friendly faces. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME.",
+  "noText": "No text, no letters, no kanji, no kana, no numbers anywhere in the image. Screens, papers, whiteboards, books and signs are blank or show only soft abstract shapes and simple pictures. No watermark, no signature, no logo, no speech balloons, no floating symbols such as question marks, exclamation marks, arrows, light bulbs, stars or hearts.",
+  "negative": "Never: flat vector icon art, pictograms, infographic diagrams, symbols floating on an empty background, wide empty margins, minimalist clip-art, 3D render, photo realism, harsh gradients, readable letters or numbers, national flags, country outlines, maps with borders, dark or scary tone, angry or crying faces, extra fingers or limbs, robots, mascots. The first reference image is ONLY a drawing-style guide — never copy its objects or its people into the scene.",
+  "scenes": [
+    {
+      "out": "top1",
+      "dest": "public/img/articles/kaisha_shirabekata/top1.webp",
+      "title": "見出し NEXT MAKEを しろう！（きょう、調べはじめる）",
+      "output": "Output: one landscape illustration, 1536x1024. Wide view of the whole room — the room fills the frame edge to edge.",
+      "scene": "Scene: a bright modern study room in the morning, seen wide from the doorway side so the whole room is in view. THE STUDENT is a young Cambodian woman in her early twenties with shoulder-length straight dark hair and a warm coral-orange blouse; keep her face, hair and blouse exactly the same as in the second reference image. She has just sat down at a light wooden desk by a tall window, one hand still on the back of her chair, the other opening the lid of a laptop with a blank screen. A closed notebook and a pencil lie ready beside it, with a warm mug and a small green plant. More desks with chairs stand behind her, a low shelf with books and two more plants along the wall, and soft morning sunlight comes through the window across the floor. Her expression is bright and curious, as if a good day is about to start."
+    }
+  ]
+}

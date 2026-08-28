@@ -1,0 +1,30 @@
+{
+  "refs": ["public/img/characters/hendy/sheet.webp", "public/img/characters/hendy/reference.png"],
+  "_comment": "ヘンディさんの 立ち絵（STEP02「ヘンディさんに 報告しよう」を 松井社長と 同じ 舞台の 見た目に する ため）。正典は 設定シート sheet.webp（docs/skills/codex_image_generation.md §6.5・§6.6）。looks は content/characters/hendy.json から 逐語で 写す。**絵は 先に 用意するが、画面に 出す 配線（meeting の 背景＋立ち絵）は schema.ts を 触る 横断変更なので 別タスク。**",
+  "style": "Style: clean modern Japanese manga / anime style, soft cel shading, bright friendly palette, rounded shapes, no harsh shadows, warm daylight, contemporary Japan, kid-safe e-learning illustration.",
+  "noText": "No text, no letters, no kanji, no kana, no numbers anywhere in the image. No watermark, no signature, no logo, no frame border.",
+  "negative": "Never: realistic photo rendering, harsh gradients, six fingers, extra limbs, readable letters, dark horror tone, angry or crying faces, costume changes, a drawn checkerboard or any painted stand-in for transparency, an opaque background of any colour.",
+  "scenes": [
+    {
+      "out": "stand_neutral",
+      "dest": "public/img/characters/hendy/stand_neutral.webp",
+      "title": "ふつう（聞いて いる）",
+      "output": "Output: one portrait cut-out illustration, 1024x1536, saved as a PNG WITH AN ALPHA CHANNEL (RGBA). The character stands ALONE and every pixel around him must be GENUINELY EMPTY (alpha = 0): no floor, no wall, no ground shadow, no props, no gradient, no white fill. Do NOT paint a grey-and-white checkerboard pattern and do NOT paint any other placeholder texture to suggest transparency — the transparency must live in the alpha channel, not in the drawn pixels. Centered horizontally, cropped by the bottom edge at mid-thigh, with a small margin on the left, right and top.",
+      "scene": "Character: 先輩エンジニア — Japanese-style anime character, man in his late twenties, slim build, about 175cm, relaxed upright posture. Short black hair, slightly tousled with soft spiky tips and a loose fringe. Dark brown eyes, straight thick eyebrows, clean-shaven, gentle smile. Business suit: navy single-breasted two-button jacket (#2A3550) worn open or buttoned, crisp white dress shirt, solid navy necktie (#233A63), matching navy slacks (#2E3A57), black leather belt, black leather lace-up oxford shoes. No lanyard, no bag, no glasses.\nPose: standing straight, facing the viewer, both arms relaxed at his sides, calm attentive expression with a gentle closed-lip smile, listening carefully to the person in front of him."
+    },
+    {
+      "out": "stand_smile",
+      "dest": "public/img/characters/hendy/stand_smile.webp",
+      "title": "笑顔（よろこぶ）",
+      "output": "Output: one portrait cut-out illustration, 1024x1536, saved as a PNG WITH AN ALPHA CHANNEL (RGBA). The character stands ALONE and every pixel around him must be GENUINELY EMPTY (alpha = 0): no floor, no wall, no ground shadow, no props, no gradient, no white fill. Do NOT paint a grey-and-white checkerboard pattern and do NOT paint any other placeholder texture to suggest transparency — the transparency must live in the alpha channel, not in the drawn pixels. Centered horizontally, cropped by the bottom edge at mid-thigh, with a small margin on the left, right and top.",
+      "scene": "Character: 先輩エンジニア — Japanese-style anime character, man in his late twenties, slim build, about 175cm, relaxed upright posture. Short black hair, slightly tousled with soft spiky tips and a loose fringe. Dark brown eyes, straight thick eyebrows, clean-shaven, gentle smile. Business suit: navy single-breasted two-button jacket (#2A3550) worn open or buttoned, crisp white dress shirt, solid navy necktie (#233A63), matching navy slacks (#2E3A57), black leather belt, black leather lace-up oxford shoes. No lanyard, no bag, no glasses.\nPose: standing, facing the viewer, leaning very slightly forward, one hand raised in a small friendly thumbs-up at chest height, warm open smile with visible delight, eyes softly narrowed with joy."
+    },
+    {
+      "out": "stand_think",
+      "dest": "public/img/characters/hendy/stand_think.webp",
+      "title": "考え中（待って いる）",
+      "output": "Output: one portrait cut-out illustration, 1024x1536, saved as a PNG WITH AN ALPHA CHANNEL (RGBA). The character stands ALONE and every pixel around him must be GENUINELY EMPTY (alpha = 0): no floor, no wall, no ground shadow, no props, no gradient, no white fill. Do NOT paint a grey-and-white checkerboard pattern and do NOT paint any other placeholder texture to suggest transparency — the transparency must live in the alpha channel, not in the drawn pixels. Centered horizontally, cropped by the bottom edge at mid-thigh, with a small margin on the left, right and top.",
+      "scene": "Character: 先輩エンジニア — Japanese-style anime character, man in his late twenties, slim build, about 175cm, relaxed upright posture. Short black hair, slightly tousled with soft spiky tips and a loose fringe. Dark brown eyes, straight thick eyebrows, clean-shaven, gentle smile. Business suit: navy single-breasted two-button jacket (#2A3550) worn open or buttoned, crisp white dress shirt, solid navy necktie (#233A63), matching navy slacks (#2E3A57), black leather belt, black leather lace-up oxford shoes. No lanyard, no bag, no glasses.\nPose: standing, facing the viewer, one hand raised with fingers lightly touching his chin, head tilted a little, thoughtful closed-lip expression, eyes looking slightly upward as he considers what he just heard."
+    }
+  ]
+}

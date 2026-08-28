@@ -798,13 +798,15 @@ main:focus {
   color: var(--ink-faint);
 }
 
-.service-image {
+.service-image,
+.work-image {
   margin: 0 -18px 14px;
   overflow: hidden;
   background: var(--navy-soft);
 }
 
-.service-image img {
+.service-image img,
+.work-image img {
   width: 100%;
   aspect-ratio: 16 / 9;
   object-fit: cover;
