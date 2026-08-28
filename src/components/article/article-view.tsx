@@ -101,6 +101,20 @@ export function ArticleView({
   );
   const [rubyOn, setRubyOn] = useState(true);
   const headings = useMemo(() => collectHeadings(article.blocks), [article.blocks]);
+  /**
+   * **表紙（`hero`）が ページの タイトル**（2026-08-28 の 指定
+   *「これを目次の前に持ってきて。タイトルにします。その後に目次を入れて」）。
+   *
+   * ページの `title` と `description` は 表紙に 同じ ことばで 入って いる。
+   * 両方 出すと、**同じ タイトルが 続けて 2回**、説明も 2行 出る——
+   * 学習者は 1画面 ぶんを 読み直してから 本文に 入る ことに なる。
+   * 表紙が ある ページでは、**表紙だけを タイトルに して h1/説明は 出さない**
+   *（`title`・`description` は 一覧の 札や 検索の ために データには 残す）。
+   */
+  const cover = article.blocks[0]?.kind === "hero" ? article.blocks[0] : null;
+  /** 本文（表紙は 上に 出したので 除く）。見出しの id を ずらさない ため 位置は 数える。 */
+  const bodyBlocks = cover ? article.blocks.slice(1) : article.blocks;
+  const bodyOffset = cover ? 1 : 0;
   const endRef = useRef<HTMLDivElement>(null);
 
   // 開いた時点で「よみかけ」。completed は上書きされない（store 側の規則）。
@@ -157,11 +171,22 @@ export function ArticleView({
         <p className="text-ink-faint text-xs font-extrabold">📄 ページ</p>
 
         {/*
-          **目次が 先、タイトルが あと**（2026-08-27 の 指定「タイトルと目次の順番を
-          逆にして」）。ページの 本文は かならず `hero` ブロックで 始まり、そこに
-          同じ タイトルが もう一度 大きく 出る——だから ここの h1 は 2つめの タイトルで
-          あって、先に 置くと 同じ ことばが 続けて 2回 出る。
+          **タイトル（表紙）→ 目次 → 本文**（2026-08-28 の 指定）。
+          表紙の 無い ページは これまでどおり **目次が 先、h1 が あと**
+          （2026-08-27 の 指定「タイトルと目次の順番を 逆にして」）。
         */}
+        {cover && (
+          <div className="mt-4">
+            <HeroBlock
+              block={cover}
+              furigana={furigana}
+              show={rubyOn}
+              dictionary={dictionary}
+              asTitle
+            />
+          </div>
+        )}
+
         {shouldShowToc(headings) && (
           <TableOfContents
             articleId={article.id}
@@ -171,19 +196,23 @@ export function ArticleView({
           />
         )}
 
-        <h1 className="text-ink mt-4 text-2xl font-extrabold sm:text-3xl">
-          <RubyText text={article.title} index={furigana} show={rubyOn} />
-        </h1>
-        <p className="text-ink-soft mt-2 leading-relaxed font-bold">
-          <RubyText text={article.description} index={furigana} show={rubyOn} />
-        </p>
+        {!cover && (
+          <>
+            <h1 className="text-ink mt-4 text-2xl font-extrabold sm:text-3xl">
+              <RubyText text={article.title} index={furigana} show={rubyOn} />
+            </h1>
+            <p className="text-ink-soft mt-2 leading-relaxed font-bold">
+              <RubyText text={article.description} index={furigana} show={rubyOn} />
+            </p>
+          </>
+        )}
 
         <div className="mt-6 space-y-5">
-          {article.blocks.map((block, blockIndex) => (
+          {bodyBlocks.map((block, at) => (
             <BlockView
-              key={blockIndex}
+              key={at + bodyOffset}
               block={block}
-              blockIndex={blockIndex}
+              blockIndex={at + bodyOffset}
               articleId={article.id}
               furigana={furigana}
               show={rubyOn}

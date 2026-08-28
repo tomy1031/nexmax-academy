@@ -1299,6 +1299,18 @@
   ],
   "blocks": [
     {
+      "kind": "hero",
+      "eyebrow": "🔎 STEP 1　会社の 調べかた",
+      "title": "NEXT MAKEを 調べよう！",
+      "lead": "Webサイトを 見て、クイズに 答えます。",
+      "note": "調査シートに 書きます。そのあと、ヘンディさんと 松井社長に 話します。",
+      "image": {
+        "src": "/img/articles/kaisha_shirabekata/top1.webp",
+        "refs": [],
+        "status": "done"
+      }
+    },
+    {
       "kind": "heading",
       "level": 2,
       "text": "今日 する こと"
@@ -1354,18 +1366,6 @@
           }
         }
       ]
-    },
-    {
-      "kind": "hero",
-      "eyebrow": "🔎 STEP 1　会社の 調べかた",
-      "title": "NEXT MAKEを 調べよう！",
-      "lead": "Webサイトを 見て、クイズに 答えます。",
-      "note": "調査シートに 書きます。そのあと、ヘンディさんと 松井社長に 話します。",
-      "image": {
-        "src": "/img/articles/kaisha_shirabekata/top1.webp",
-        "refs": [],
-        "status": "done"
-      }
     },
     {
       "kind": "heading",

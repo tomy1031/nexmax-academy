@@ -1,6 +1,15 @@
 "use client";
 
-import { useCallback, useId, useRef, useState, type FocusEvent, type ReactNode } from "react";
+import {
+  useCallback,
+  useId,
+  useRef,
+  useState,
+  type FocusEvent,
+  type ReactNode,
+  type RefObject,
+} from "react";
+import { WordPopover } from "@/components/word-popover";
 import { findGlossaryTerm, type GlossaryEntry } from "@/content/glossary";
 import { PERSONALITY_RESULT_READINGS, type Reading } from "@/content/personality";
 
@@ -12,12 +21,8 @@ function headwordReadings(entry: GlossaryEntry): readonly Reading[] {
   return HAS_KANJI.test(entry.term) ? [{ text: entry.term, reading: entry.reading }] : [];
 }
 
-/** 吹き出しの実寸。はみ出し判定に使う（Tailwind の w-60 と合わせる）。 */
-const POPOVER_WIDTH = 240;
 /** 4段（日本語・英語・日本語の意味・英語の意味）ぶんの高さ。上に出せるかの判定に使う。 */
 const POPOVER_HEIGHT = 170;
-/** 画面のふちに触れさせない余白。 */
-const EDGE_MARGIN = 12;
 
 /**
  * マウスを持つ端末か。
@@ -34,25 +39,12 @@ function canHover() {
 function usePopover() {
   const anchorRef = useRef<HTMLButtonElement>(null);
   const [open, setOpen] = useState(false);
-  // 画面の上のほう（質問の柱書きなど）では、上に出すと吹き出しが画面外に切れて何も見えない。
-  // 左右も、ふち近くの語だと はみ出して横スクロールが出る。開くたびに置き場所を決め直す。
-  const [placeBelow, setPlaceBelow] = useState(false);
-  const [shiftX, setShiftX] = useState(0);
-
-  const show = useCallback(() => {
-    const rect = anchorRef.current?.getBoundingClientRect();
-    if (rect) {
-      setPlaceBelow(rect.top < POPOVER_HEIGHT + EDGE_MARGIN);
-      const centerX = rect.left + rect.width / 2;
-      const overflowLeft = Math.max(0, EDGE_MARGIN - (centerX - POPOVER_WIDTH / 2));
-      const overflowRight = Math.max(
-        0,
-        centerX + POPOVER_WIDTH / 2 - (window.innerWidth - EDGE_MARGIN),
-      );
-      setShiftX(overflowLeft - overflowRight);
-    }
-    setOpen(true);
-  }, []);
+  /*
+   * 置き場所は `WordPopover` が 決める（ページの いちばん外に 出して 置く）。
+   * ここで 親の 中に 置いて いた ころは、親の `overflow: hidden` に 切られて
+   * 字が 読めない ことが あった（2026-08-28 の 指摘）。
+   */
+  const show = useCallback(() => setOpen(true), []);
 
   const hide = useCallback(() => setOpen(false), []);
 
@@ -83,7 +75,7 @@ function usePopover() {
     onBlur: () => hide(),
   };
 
-  return { anchorRef, open, placeBelow, shiftX, handlers };
+  return { anchorRef, open, handlers };
 }
 
 /**
@@ -124,31 +116,24 @@ function PopoverBody({
   );
 }
 
-/** 吹き出しの枠。位置決めの結果を受け取って置くだけ。 */
+/** 吹き出しの枠。置き場所は `WordPopover`（ページの いちばん外）が 決める。 */
 function Popover({
   id,
-  placeBelow,
-  shiftX,
+  anchorRef,
+  open,
   entry,
   renderText,
 }: {
   id: string;
-  placeBelow: boolean;
-  shiftX: number;
+  anchorRef: RefObject<HTMLButtonElement | null>;
+  open: boolean;
   entry: GlossaryEntry;
   renderText: (text: string, readings: readonly Reading[]) => ReactNode;
 }) {
   return (
-    <span
-      id={id}
-      role="note"
-      style={{ transform: `translateX(calc(-50% + ${shiftX}px))` }}
-      className={`border-sky text-ink absolute left-1/2 z-30 w-60 rounded-2xl border-2 bg-white px-4 py-3 text-left text-xs leading-relaxed font-bold shadow-[0_6px_18px_rgba(0,79,141,.22)] ${
-        placeBelow ? "top-full mt-2" : "bottom-full mb-2"
-      }`}
-    >
+    <WordPopover id={id} anchorRef={anchorRef} open={open} height={POPOVER_HEIGHT}>
       <PopoverBody entry={entry} renderText={renderText} />
-    </span>
+    </WordPopover>
   );
 }
 
@@ -176,7 +161,7 @@ export function GlossaryText({
 }) {
   const entry = findGlossaryTerm(text);
   const popoverId = useId();
-  const { anchorRef, open, placeBelow, shiftX, handlers } = usePopover();
+  const { anchorRef, open, handlers } = usePopover();
 
   if (!entry) return <>{renderText(text, readings)}</>;
 
@@ -204,15 +189,13 @@ export function GlossaryText({
         >
           {renderText(entry.term, termReadings)}
         </button>
-        {open && (
-          <Popover
-            id={popoverId}
-            placeBelow={placeBelow}
-            shiftX={shiftX}
-            entry={entry}
-            renderText={renderText}
-          />
-        )}
+        <Popover
+          id={popoverId}
+          anchorRef={anchorRef}
+          open={open}
+          entry={entry}
+          renderText={renderText}
+        />
       </span>
       {after && renderText(after, readings)}
     </>
@@ -238,7 +221,7 @@ export function GlossaryChip({
   renderText: (text: string, readings: readonly Reading[]) => ReactNode;
 }) {
   const popoverId = useId();
-  const { anchorRef, open, placeBelow, shiftX, handlers } = usePopover();
+  const { anchorRef, open, handlers } = usePopover();
 
   return (
     <span className="relative inline-block">
@@ -253,15 +236,13 @@ export function GlossaryChip({
         {renderText(entry.term, headwordReadings(entry))}
         <span className="text-ink-soft ml-1.5 font-semibold">/ {entry.englishTerm}</span>
       </button>
-      {open && (
-        <Popover
-          id={popoverId}
-          placeBelow={placeBelow}
-          shiftX={shiftX}
-          entry={entry}
-          renderText={renderText}
-        />
-      )}
+      <Popover
+        id={popoverId}
+        anchorRef={anchorRef}
+        open={open}
+        entry={entry}
+        renderText={renderText}
+      />
     </span>
   );
 }

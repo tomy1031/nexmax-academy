@@ -140,7 +140,19 @@ export function HeroBlock({
   furigana,
   show,
   dictionary,
-}: { block: HeroBlockData; dictionary?: readonly DictionaryEntry[] } & Common) {
+  asTitle = false,
+}: {
+  block: HeroBlockData;
+  dictionary?: readonly DictionaryEntry[];
+  /**
+   * この 表紙が **ページの タイトル**か（2026-08-28）。
+   * ページの いちばん上に 出す ときだけ true——見出しの 段は 1ページに 1つの h1 から
+   * 始まる 決まりで、ここを h2 の ままに すると **h1 の 無い ページ**に なる
+   *（読み上げソフトは 見出しの 段を たどって 目次を 作る）。
+   */
+  asTitle?: boolean;
+} & Common) {
+  const Title = asTitle ? "h1" : "h2";
   return (
     <section
       className="border-hairline overflow-hidden rounded-[26px] border-2 p-5 sm:p-7"
@@ -157,9 +169,9 @@ export function HeroBlock({
               <RubyText text={block.eyebrow} index={furigana} show={show} />
             </span>
           )}
-          <h2 className="text-navy mt-2 text-2xl leading-tight font-black sm:text-4xl">
+          <Title className="text-navy mt-2 text-2xl leading-tight font-black sm:text-4xl">
             <RubyText text={block.title} index={furigana} show={show} />
-          </h2>
+          </Title>
           {block.lead && (
             <p className="text-ink mt-3 leading-relaxed font-extrabold sm:text-lg">
               <DictionaryText
