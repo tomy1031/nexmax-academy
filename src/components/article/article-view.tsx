@@ -311,7 +311,7 @@ function BlockView({
             className="inline-block h-6 w-2.5 shrink-0 rounded-full"
             style={{ background: "var(--color-sky)" }}
           />
-          <RubyText text={block.text} index={furigana} show={show} />
+          <DictionaryText text={block.text} index={furigana} show={show} dictionary={dictionary} />
         </h2>
       ) : (
         <h3
@@ -321,7 +321,7 @@ function BlockView({
           <span aria-hidden className="text-sky mr-1.5">
             ◆
           </span>
-          <RubyText text={block.text} index={furigana} show={show} />
+          <DictionaryText text={block.text} index={furigana} show={show} dictionary={dictionary} />
         </h3>
       );
 

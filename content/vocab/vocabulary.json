@@ -8011,6 +8011,15 @@
       "meaningJa": "おなじ なかまの 会社です。いっしょに 仕事を します。",
       "englishTerm": "Group company",
       "example": "グループ会社の CONTINUE LLC. は ベトナムに あります。"
+    },
+    {
+      "id": "shirabekata",
+      "term": "調べかた",
+      "reading": "しらべかた",
+      "romaji": "shirabekata",
+      "meaningJa": "何かを しらべる ときの、じゅんばんや やりかたです。",
+      "englishTerm": "How to research",
+      "example": "会社の 調べかたを 学びます。"
     }
   ]
 }

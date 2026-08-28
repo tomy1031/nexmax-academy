@@ -170,7 +170,12 @@ export function HeroBlock({
             </span>
           )}
           <Title className="text-navy mt-2 text-2xl leading-tight font-black sm:text-4xl">
-            <RubyText text={block.title} index={furigana} show={show} />
+            <DictionaryText
+              text={block.title}
+              index={furigana}
+              show={show}
+              dictionary={dictionary}
+            />
           </Title>
           {block.lead && (
             <p className="text-ink mt-3 leading-relaxed font-extrabold sm:text-lg">
@@ -297,7 +302,12 @@ export function CardsBlock({
                 dark ? "mt-1 font-extrabold text-white" : "text-navy leading-snug font-extrabold"
               }
             >
-              <RubyText text={item.title} index={furigana} show={show} />
+              <DictionaryText
+                text={item.title}
+                index={furigana}
+                show={show}
+                dictionary={dictionary}
+              />
             </h3>
             {item.text && (
               <p
@@ -407,7 +417,12 @@ export function MissionsBlock({
               {item.badge ?? i + 1}
             </span>
             <h3 className="text-navy leading-snug font-extrabold">
-              <RubyText text={item.title} index={furigana} show={show} />
+              <DictionaryText
+                text={item.title}
+                index={furigana}
+                show={show}
+                dictionary={dictionary}
+              />
             </h3>
             {/* 絵は 右上に 小さく。大きいと 1枚ごとに 画面が 1つ 分 流れ、
                 「7つ ある」という 形が 目で 追えなくなる（StepThumb と同じ判断）。 */}
@@ -428,7 +443,12 @@ export function MissionsBlock({
               <span aria-hidden className="mr-1">
                 🔎
               </span>
-              <RubyText text={item.where} index={furigana} show={show} />
+              <DictionaryText
+                text={item.where}
+                index={furigana}
+                show={show}
+                dictionary={dictionary}
+              />
             </p>
           )}
 
@@ -442,7 +462,12 @@ export function MissionsBlock({
                   ✓
                 </span>
                 <span>
-                  <RubyText text={point} index={furigana} show={show} />
+                  <DictionaryText
+                    text={point}
+                    index={furigana}
+                    show={show}
+                    dictionary={dictionary}
+                  />
                 </span>
               </li>
             ))}
@@ -515,7 +540,7 @@ export function CompareBlock({
         <span aria-hidden className="mr-1">
           {tone.mark}
         </span>
-        <RubyText text={data.title} index={furigana} show={show} />
+        <DictionaryText text={data.title} index={furigana} show={show} dictionary={dictionary} />
       </p>
       <div className="mt-2 space-y-1.5">
         {data.lines.map((line, i) => (
@@ -621,7 +646,12 @@ export function BannerBlock({
         <div className="min-w-0 flex-1">
           {block.title && (
             <h3 className="text-lg font-black" style={{ color: tone.title }}>
-              <RubyText text={block.title} index={furigana} show={show} />
+              <DictionaryText
+                text={block.title}
+                index={furigana}
+                show={show}
+                dictionary={dictionary}
+              />
             </h3>
           )}
           <p className="mt-1 leading-relaxed font-bold" style={{ color: tone.body }}>
