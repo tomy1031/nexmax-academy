@@ -135,7 +135,12 @@ export function ImageSlotFrame({
  * 左に ことば・右に 絵。せまい 画面では 縦に 積む——横に 並べたままだと
  * 390px で 題が 2文字ずつ 折り返す（実機幅で 撮って 見つかった 崩れ）。
  */
-export function HeroBlock({ block, furigana, show }: { block: HeroBlockData } & Common) {
+export function HeroBlock({
+  block,
+  furigana,
+  show,
+  dictionary,
+}: { block: HeroBlockData; dictionary?: readonly DictionaryEntry[] } & Common) {
   return (
     <section
       className="border-hairline overflow-hidden rounded-[26px] border-2 p-5 sm:p-7"
@@ -157,12 +162,22 @@ export function HeroBlock({ block, furigana, show }: { block: HeroBlockData } & 
           </h2>
           {block.lead && (
             <p className="text-ink mt-3 leading-relaxed font-extrabold sm:text-lg">
-              <RubyText text={block.lead} index={furigana} show={show} />
+              <DictionaryText
+                text={block.lead}
+                index={furigana}
+                show={show}
+                dictionary={dictionary}
+              />
             </p>
           )}
           {block.note && (
             <p className="text-ink-soft mt-2 text-sm leading-relaxed font-bold">
-              <RubyText text={block.note} index={furigana} show={show} />
+              <DictionaryText
+                text={block.note}
+                index={furigana}
+                show={show}
+                dictionary={dictionary}
+              />
             </p>
           )}
           <div className="mt-3 flex">
@@ -239,8 +254,14 @@ export function CardsBlock({
             <ImageSlotFrame
               slot={item.image}
               alt={item.title}
-              ratio="h-28"
-              className="h-28 w-full object-cover"
+              /*
+                絵の 高さ。h-28（112px）では **人の 顔が 切れて** 何の 場面かが
+                分からなかった（2026-08-28 の 指定「イラストの縦幅が短すぎる」）。
+                横は カードの はば いっぱいなので、`object-cover` で 上下が 削られる——
+                その 削れる ぶんを 減らす。
+              */
+              ratio="h-44 sm:h-48"
+              className="h-44 w-full object-cover sm:h-48"
               furigana={furigana}
               show={show}
             />

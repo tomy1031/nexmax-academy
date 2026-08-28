@@ -321,7 +321,7 @@ function BlockView({
       return <ImageBlock block={block} furigana={furigana} show={show} />;
 
     case "callout":
-      return <CalloutBlock block={block} furigana={furigana} show={show} />;
+      return <CalloutBlock block={block} furigana={furigana} show={show} dictionary={dictionary} />;
 
     case "list":
       return (
@@ -333,7 +333,12 @@ function BlockView({
                   ●
                 </span>
                 <span>
-                  <RubyText text={item} index={furigana} show={show} />
+                  <DictionaryText
+                    text={item}
+                    index={furigana}
+                    show={show}
+                    dictionary={dictionary}
+                  />
                 </span>
               </li>
             ))}
@@ -359,7 +364,12 @@ function BlockView({
                 </span>
                 <StepThumb image={block.images?.[i]} />
                 <span className="text-ink leading-relaxed font-bold">
-                  <RubyText text={item} index={furigana} show={show} />
+                  <DictionaryText
+                    text={item}
+                    index={furigana}
+                    show={show}
+                    dictionary={dictionary}
+                  />
                 </span>
               </li>
             ))}
@@ -455,7 +465,7 @@ function BlockView({
      * 1画面に 収まらなく なり、目次や 進捗の コードを またいで 直す ことになる。
      */
     case "hero":
-      return <HeroBlock block={block} furigana={furigana} show={show} />;
+      return <HeroBlock block={block} furigana={furigana} show={show} dictionary={dictionary} />;
 
     case "cards":
       return <CardsBlock block={block} furigana={furigana} show={show} dictionary={dictionary} />;
@@ -693,10 +703,12 @@ function CalloutBlock({
   block,
   furigana,
   show,
+  dictionary,
 }: {
   block: CalloutBlockData;
   furigana: FuriganaIndex;
   show: boolean;
+  dictionary?: readonly DictionaryEntry[];
 }) {
   const tone = CALLOUT_STYLE[block.tone];
   return (
@@ -710,7 +722,7 @@ function CalloutBlock({
           {tone.label}
         </p>
         <p className="text-ink mt-1 leading-relaxed font-bold">
-          <RubyText text={block.text} index={furigana} show={show} />
+          <DictionaryText text={block.text} index={furigana} show={show} dictionary={dictionary} />
         </p>
       </div>
       {/*

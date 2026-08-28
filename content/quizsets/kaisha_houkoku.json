@@ -1354,7 +1354,7 @@
     {
       "id": "q1",
       "type": "keyword",
-      "section": "MISSION 1｜会社の 基本",
+      "section": "POINT 1｜会社の 基本",
       "source": "会社紹介 ／ 会社の 情報",
       "q": "会社の 名前は？",
       "answer": "株式会社 NEXT MAKE",
@@ -1373,7 +1373,7 @@
     {
       "id": "q2",
       "type": "keyword",
-      "section": "MISSION 1｜会社の 基本",
+      "section": "POINT 1｜会社の 基本",
       "source": "会社紹介 ／ 会社の 情報",
       "q": "社長の 名前は？",
       "answer": "松井 亮",
@@ -1392,14 +1392,14 @@
     {
       "id": "q3",
       "type": "choose",
-      "section": "MISSION 1｜会社の 基本",
+      "section": "POINT 1｜会社の 基本",
       "source": "会社紹介 ／ 会社の 情報",
       "q": "会社が できた日は？",
       "options": [
         "2018年1月5日",
-        "2019年12月1日",
+        "2024年9月1日",
         "2023年10月1日",
-        "2024年9月1日"
+        "2019年12月1日"
       ],
       "answer": 0,
       "explain": "2018年です。「会社の 歩み」の いちばん 上に あります。月や 日は おぼえなくて 大丈夫です。",
@@ -1409,50 +1409,26 @@
     {
       "id": "q4",
       "type": "choose",
-      "section": "MISSION 1｜会社の 基本",
+      "section": "POINT 1｜会社の 基本",
       "source": "会社紹介 ／ 会社の あゆみ",
       "q": "「会社の あゆみ」で 正しいものは？",
       "options": [
-        "2019年 受託開発／2024年 Japanese IT Pathway／2025年 東京本店／2026年 新サービス",
+        "2021年 ベトナム／2022年 受託開発／2023年 東京本店／2024年 新サービス",
         "2019年 東京本店／2024年 受託開発／2025年 Japanese IT Pathway／2026年 ベトナム開始",
         "2020年 設立／2022年 Japanese IT Pathway／2024年 東京本店／2025年 新サービス",
-        "2021年 ベトナム／2022年 受託開発／2023年 東京本店／2024年 新サービス"
+        "2019年 受託開発／2024年 Japanese IT Pathway／2025年 東京本店／2026年 新サービス"
       ],
-      "answer": 0,
+      "answer": 3,
       "explain": "受託開発は 2019年です。Japanese IT Pathwayは 2024年。東京本店は 2025年。新しい サービスは 2026年です。",
       "points": 1
     },
     {
       "id": "q5",
-      "type": "wordbank",
-      "section": "MISSION 2｜仕事と サービス",
+      "type": "list",
+      "section": "POINT 2｜仕事と サービス",
       "sectionNote": "「事業」と「つくる仕事」を 見る",
       "source": "事業",
       "q": "2026年7月に 出した 5つの サービス",
-      "lines": [
-        "___",
-        "___",
-        "___",
-        "___",
-        "___"
-      ],
-      "blanks": [
-        "NMClaw",
-        "観光DX",
-        "Verify",
-        "セキュリティドローン",
-        "NEXTMAKE Internship Lab"
-      ],
-      "bank": [
-        "NMClaw",
-        "観光DX",
-        "Verify",
-        "セキュリティドローン",
-        "NEXTMAKE Internship Lab",
-        "CONTINUE LLC.",
-        "Khmersabai"
-      ],
-      "unordered": true,
       "report": true,
       "explain": "5つです。CONTINUE LLC.と Khmersabai は 会社の 名前です。サービスでは ありません。",
       "hints": [
@@ -1461,12 +1437,53 @@
           "text": "ホームの 上の スライドにも、5つの 名前が 出て います。"
         }
       ],
-      "points": 1
+      "points": 1,
+      "groups": [
+        {
+          "label": "NMClaw",
+          "accept": [
+            "エヌエムクロー"
+          ]
+        },
+        {
+          "label": "観光DX",
+          "accept": [
+            "かんこうDX",
+            "Tourism DX"
+          ]
+        },
+        {
+          "label": "Verify",
+          "accept": [
+            "ベリファイ"
+          ]
+        },
+        {
+          "label": "セキュリティドローン",
+          "accept": [
+            "ドローン"
+          ]
+        },
+        {
+          "label": "NEXTMAKE Internship Lab",
+          "accept": [
+            "Internship Lab",
+            "インターンシップラボ"
+          ]
+        }
+      ],
+      "placeholders": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ]
     },
     {
       "id": "q6",
       "type": "keyword",
-      "section": "MISSION 2｜仕事と サービス",
+      "section": "POINT 2｜仕事と サービス",
       "source": "事業",
       "q": "話すだけで 会社の情報を 整理するサービスは？",
       "answer": "NMClaw",
@@ -1482,7 +1499,7 @@
     {
       "id": "q7",
       "type": "keyword",
-      "section": "MISSION 4｜グループの 会社",
+      "section": "POINT 3｜グループの 会社",
       "source": "グループ会社",
       "q": "グループの 会社の 名前は？",
       "answer": "CONTINUE LLC.",
@@ -1502,7 +1519,7 @@
     {
       "id": "q8",
       "type": "keyword",
-      "section": "MISSION 4｜グループの 会社",
+      "section": "POINT 3｜グループの 会社",
       "source": "グループ会社 ／ 表",
       "q": "CONTINUE LLC.の 代表の 名前は？",
       "answer": "川村 修和",
@@ -1519,16 +1536,16 @@
     {
       "id": "q9",
       "type": "choose",
-      "section": "MISSION 4｜グループの 会社",
+      "section": "POINT 3｜グループの 会社",
       "source": "グループ会社 ／ 表",
       "q": "CONTINUE LLC.の オフィスは どこ？",
       "options": [
-        "ベトナム（ホーチミン）",
-        "日本（東京）と ベトナム（ホーチミン）",
+        "日本（大阪）だけ",
         "カンボジア（プノンペン）",
-        "日本（大阪）だけ"
+        "ベトナム（ホーチミン）",
+        "日本（東京）と ベトナム（ホーチミン）"
       ],
-      "answer": 0,
+      "answer": 2,
       "explain": "ベトナムの ホーチミンです。日本には オフィスが ありません。",
       "points": 1,
       "report": true
@@ -1536,14 +1553,14 @@
     {
       "id": "q10",
       "type": "choose",
-      "section": "MISSION 4｜グループの 会社",
+      "section": "POINT 3｜グループの 会社",
       "source": "グループ会社 ／ 表",
-      "q": "ベトナムで 開発を 始めたのは？",
+      "q": "海外で 開発を 始めたのは？",
       "options": [
-        "2018年",
+        "2026年",
         "2021年",
         "2023年",
-        "2026年"
+        "2018年"
       ],
       "answer": 2,
       "explain": "2023年です。「会社の 歩み」にも「2023年10月 海外の 仕事を 始めました」と あります。",
@@ -1552,32 +1569,32 @@
     {
       "id": "q11",
       "type": "choose",
-      "section": "MISSION 4｜グループの 会社",
+      "section": "POINT 3｜グループの 会社",
       "source": "グループ会社 ／ 海外で 作る やりかた",
       "q": "オフショア開発とは？",
       "options": [
-        "日本の しごとを 外国の エンジニアが 作る",
-        "日本で 外国語だけを 勉強する",
         "会社を 外国に 売る",
-        "外国の 商品を 日本で 買う"
+        "日本で 外国語だけを 勉強する",
+        "外国の 商品を 日本で 買う",
+        "日本の しごとを 外国の エンジニアが 作る"
       ],
-      "answer": 0,
+      "answer": 3,
       "explain": "日本の 仕事を、外国の エンジニアが 作る やりかたです。みなさんの 先輩も この やりかたで 働きます。",
       "points": 1
     },
     {
       "id": "q12",
       "type": "choose",
-      "section": "MISSION 5｜作った もの・実績",
+      "section": "POINT 4｜作った もの・実績",
       "source": "実績 ／ 徳島県 三好市",
       "q": "徳島県 三好市の ために、どんな 仕事を しましたか？",
       "options": [
-        "動画ストーリーや 音声ガイドで まちを 巡る システム",
         "紙の 会計や 承認を パソコンで できる システム",
         "車の 整備の 仕事を 管理する システム",
-        "トラック会社の ホームページと システム"
+        "トラック会社の ホームページと システム",
+        "動画ストーリーや 音声ガイドで まちを 巡る システム"
       ],
-      "answer": 0,
+      "answer": 3,
       "explain": "観光DXの 仕事です。町の 歴史を 動画と 音声で 案内します。",
       "points": 1,
       "report": true,
@@ -1586,46 +1603,46 @@
     {
       "id": "q13",
       "type": "choose",
-      "section": "MISSION 5｜作った もの・実績",
+      "section": "POINT 4｜作った もの・実績",
       "source": "実績 ／ 大阪府 こども会 育成連合会",
       "q": "大阪府こども会 育成連合会の ために、どんな 仕事を しましたか？",
       "options": [
-        "紙の 会計や 承認を パソコンで できる システム",
-        "動画ストーリーや 音声ガイドで まちを 巡る システム",
+        "車を さがしやすい ホームページ",
         "車の 整備の 仕事を 管理する システム",
-        "車を さがしやすい ホームページ"
+        "動画ストーリーや 音声ガイドで まちを 巡る システム",
+        "紙の 会計や 承認を パソコンで できる システム"
       ],
-      "answer": 0,
+      "answer": 3,
       "explain": "システム開発の 仕事です。紙の 仕事を パソコンに 変えました。",
       "points": 1
     },
     {
       "id": "q14",
       "type": "choose",
-      "section": "MISSION 5｜作った もの・実績",
+      "section": "POINT 4｜作った もの・実績",
       "source": "実績 ／ ナカタニ自動車",
       "q": "ナカタニ自動車の ために、どんな 仕事を しましたか？",
       "options": [
-        "車の 整備の 仕事を 管理する システム",
         "紙の 会計や 承認を パソコンで できる システム",
         "動画ストーリーや 音声ガイドで まちを 巡る システム",
+        "車の 整備の 仕事を 管理する システム",
         "トラック会社の ホームページと システム"
       ],
-      "answer": 0,
+      "answer": 2,
       "explain": "車の 整備の 仕事を 管理する システムです。お客さまは いろいろな 分野の 会社です。",
       "points": 1
     },
     {
       "id": "q15",
       "type": "choose",
-      "section": "MISSION 6｜大切に して いる こと",
+      "section": "POINT 5｜大切に して いる こと",
       "source": "会社紹介 ／ MISSION",
       "q": "NEXT MAKEの MISSIONは？",
       "options": [
         "人、文化、技術をつなぎ、まだ見ぬ価値を社会へ届ける",
+        "安い サービスだけを 作る",
         "日本だけで 一番 大きい 会社に なる",
-        "すべての 仕事を AIに する",
-        "安い サービスだけを 作る"
+        "すべての 仕事を AIに する"
       ],
       "answer": 0,
       "explain": "この 文は、どの ページの いちばん 下にも 書いて あります。会社の 原文の ままです。",
@@ -1635,30 +1652,30 @@
     {
       "id": "q16",
       "type": "choose",
-      "section": "MISSION 6｜大切に して いる こと",
+      "section": "POINT 5｜大切に して いる こと",
       "source": "会社紹介 ／ VISION",
       "q": "NEXT MAKEの VISIONは？",
       "options": [
-        "世界中の才能が国境や環境を越えてつながり、誰もが新しい価値を生み出せる社会を創る",
         "日本だけで 仕事を する 社会を 創る",
         "AIが 人の 仕事を 全部 する 社会を 創る",
-        "会社を 一つに する"
+        "会社を 一つに する",
+        "世界中の才能が国境や環境を越えてつながり、誰もが新しい価値を生み出せる社会を創る"
       ],
-      "answer": 0,
+      "answer": 3,
       "explain": "生まれた 場所は 関係 ありません。世界の 人が つながる 社会を めざします。",
       "points": 1
     },
     {
       "id": "q17",
       "type": "choose",
-      "section": "MISSION 6｜大切に して いる こと",
+      "section": "POINT 5｜大切に して いる こと",
       "source": "会社紹介 ／ 大切に する 考えかた 01",
       "q": "「才能」について 大切にする 考えは？",
       "options": [
         "才能を 信じる",
-        "才能を 比べる",
         "才能を かくす",
-        "才能は 大切では ない"
+        "才能は 大切では ない",
+        "才能を 比べる"
       ],
       "answer": 0,
       "explain": "01は「才能を しんじる」です。人の 力は、育った 場所で 決まりません。",
@@ -1667,7 +1684,7 @@
     {
       "id": "q18",
       "type": "keyword",
-      "section": "MISSION 6｜大切に して いる こと",
+      "section": "POINT 5｜大切に して いる こと",
       "source": "会社紹介 ／ 大切に する 考えかた 05",
       "q": "「ひととの つながり」の 文の 穴うめ\n価値は 技術だけでは 生まれません。人と 人の ◯◯から 生まれます。",
       "answer": "信頼",
@@ -1681,7 +1698,7 @@
     {
       "id": "q19",
       "type": "keyword",
-      "section": "MISSION 6｜大切に して いる こと",
+      "section": "POINT 5｜大切に して いる こと",
       "source": "会社紹介 ／ 大切に する 考えかた 03",
       "q": "NEXT MAKEでは「技術」は なんですか？",
       "answer": "道具",
@@ -1700,16 +1717,16 @@
     {
       "id": "q20",
       "type": "choose",
-      "section": "MISSION 7｜Japanese IT Pathway",
+      "section": "POINT 6｜Japanese IT Pathway",
       "source": "カンボジア教育 ／ いちばん 上",
       "q": "だれが いっしょに 進めていますか？",
       "options": [
-        "カンボジアの 政府・大学・NEXT MAKE",
         "日本の 銀行・ホテル・NEXT MAKE",
-        "学生だけ",
-        "NEXT MAKEだけ"
+        "カンボジアの 政府・大学・NEXT MAKE",
+        "NEXT MAKEだけ",
+        "学生だけ"
       ],
-      "answer": 0,
+      "answer": 1,
       "explain": "カンボジアの 政府と 大学（AUPP）と NEXT MAKEの 3つです。",
       "points": 1,
       "sectionNote": "「カンボジア教育」を 見る"
@@ -1717,13 +1734,13 @@
     {
       "id": "q21",
       "type": "choose",
-      "section": "MISSION 7｜Japanese IT Pathway",
+      "section": "POINT 6｜Japanese IT Pathway",
       "source": "カンボジア教育 ／ 2つの 目的",
       "q": "2つの 目的は？",
       "options": [
         "日本の 人手不足を なおす／カンボジアの 力を 上げる",
-        "旅行を ふやす／ホテルを 作る",
         "ゲームを 作る／日本語を なくす",
+        "旅行を ふやす／ホテルを 作る",
         "大学を 作る／銀行を 作る"
       ],
       "answer": 0,
@@ -1733,16 +1750,16 @@
     {
       "id": "q22",
       "type": "choose",
-      "section": "MISSION 7｜Japanese IT Pathway",
+      "section": "POINT 6｜Japanese IT Pathway",
       "source": "カンボジア教育 ／ 会社が する こと",
       "q": "学生は 何を 勉強しますか？",
       "options": [
+        "日本語と ビジネスだけ",
         "日本語と IT",
         "日本語と 英語",
-        "英語と IT",
-        "日本語と ビジネスだけ"
+        "英語と IT"
       ],
-      "answer": 0,
+      "answer": 1,
       "explain": "日本語と ITです。日本語は N3の 合格を めざします。",
       "points": 1,
       "report": true
@@ -1750,16 +1767,16 @@
     {
       "id": "q23",
       "type": "choose",
-      "section": "MISSION 7｜Japanese IT Pathway",
+      "section": "POINT 6｜Japanese IT Pathway",
       "source": "カンボジア教育 ／ 会社が する こと",
       "q": "NEXT MAKEが する サポートは？",
       "options": [
-        "日本語・IT・しごとの 紹介",
-        "英語だけ",
+        "パソコン販売だけ",
         "旅行だけ",
-        "パソコン販売だけ"
+        "英語だけ",
+        "日本語・IT・しごとの 紹介"
       ],
-      "answer": 0,
+      "answer": 3,
       "explain": "勉強だけでは ありません。終わった あとの しごとの 紹介まで します。",
       "points": 1,
       "report": true
@@ -1767,16 +1784,16 @@
     {
       "id": "q24",
       "type": "choose",
-      "section": "MISSION 7｜Japanese IT Pathway",
+      "section": "POINT 6｜Japanese IT Pathway",
       "source": "カンボジア教育 ／ 会社が する こと",
       "q": "プログラムを 終わった あと、どんな 道が ありますか？",
       "options": [
-        "日本の IT会社で はたらく",
-        "カンボジアの 会社で 日本語だけを 教える",
         "もう一度 大学に 入り直す",
-        "日本の 会社で ITでは ない 仕事を する"
+        "カンボジアの 会社で 日本語だけを 教える",
+        "日本の 会社で ITでは ない 仕事を する",
+        "日本の IT会社で はたらく"
       ],
-      "answer": 0,
+      "answer": 3,
       "explain": "しごとの 紹介まで します。行き先は **日本の IT会社**です。日本語も ITも 両方 使います。",
       "points": 1,
       "report": true
@@ -1784,21 +1801,21 @@
     {
       "id": "q25",
       "type": "multi",
-      "section": "MISSION 7｜Japanese IT Pathway",
+      "section": "POINT 6｜Japanese IT Pathway",
       "source": "カンボジア教育 ／ カンボジアの 人の いい ところ",
       "q": "カンボジアの 人の いい ところは どこですか？（あてはまる ものを ぜんぶ えらんで ください）",
       "options": [
-        "日本が 好きな 人が 多い",
+        "人に 合わせる 力、やわらかい 考えかた、礼儀を 大切に する",
         "日本の 文化や 技術に 興味が ある",
         "知りたい 気持ちが 強く、上を めざす",
-        "人に 合わせる 力、やわらかい 考えかた、礼儀を 大切に する",
-        "若い ITエンジニアを 育てて、国の 発展に 役立てる"
+        "若い ITエンジニアを 育てて、国の 発展に 役立てる",
+        "日本が 好きな 人が 多い"
       ],
       "answers": [
         0,
         1,
         2,
-        3
+        4
       ],
       "explain": "4つ ぜんぶが「いい ところ」です。いちばん 下の「若い ITエンジニアを 育てて…」は この プログラムの **目的**で、カンボジアの 人の いい ところでは ありません。",
       "points": 2
