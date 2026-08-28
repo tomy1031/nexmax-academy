@@ -431,9 +431,15 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
     await expect(page.getByRole("heading", { name: /報告.*ちがう/ })).toBeVisible();
     /*
      * **まだ 無い 絵の ところは 空けずに わくを 出す**（2026-08-27 の 指定）。
-     * 空だと 作り忘れが 画面から 見えない。6枚 ぜんぶが この ページに ある。
+     * 空だと 作り忘れが 画面から 見えない。ここには 空わくが 6か所 あった。
+     *
+     * 2026-08-28 に **ぜんぶ 絵に した**ので 0 に する。0 で 固定して おくと、
+     * 絵を 消した ときや 差しかえに 失敗した ときに ここが 落ちる——
+     * 「空わくを 出す」決まりは 生きた まま、**作り忘れの 見張り**として 効き つづける。
      */
-    await expect(page.locator('[data-slot="empty"]')).toHaveCount(6);
+    await expect(page.locator('[data-slot="empty"]')).toHaveCount(0);
+    /* 「これから 考える 5つの こと」の 5枚 ＋ A/B の 分かれ道 2枚。 */
+    await expect(page.locator('img[src*="/img/articles/kaisha_matsui_junbi/"]')).toHaveCount(7);
     await shot(page, "07-junbi-article");
 
     await readToEnd(page);
