@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { expect, test } from "@playwright/test";
-import { KAISHA, itemsBefore, seedCompleted, shot } from "./helpers";
+import { KAISHA, KAISHA_ITEMS, itemsBefore, seedCompleted, shot } from "./helpers";
 
 /**
  * ヘンディさんに ぜんぶ 答えた 人は、**必ず** つぎへ 進める
@@ -19,6 +19,13 @@ import { KAISHA, itemsBefore, seedCompleted, shot } from "./helpers";
  * 通しの 道（しゅうりょうしょうを 閉じて 進む）は `toshi.spec.ts` が 別に 通す——
  * こちらが 見るのは **閉じ忘れという 落とし穴**の ほうである。
  */
+
+/**
+ * ヘンディさんの **つぎ**の 教材。**並びから 引く**（`itemsBefore` と 同じ 理由）。
+ * ここを 名前で 決め打ちすると、STEP 4 の 中身が 入れ替わった 日に 静かに ずれる
+ *（2026-08-28 に 実際に ずれた: `kaisha_jibun` → `kaisha_matsui_junbi`）。
+ */
+const NEXT_ITEM = KAISHA_ITEMS[KAISHA_ITEMS.indexOf(KAISHA.meetingHendy) + 1];
 
 /** ヘンディさんの しつもんの 数。**教材から 読む**（`HOUKOKU_TOTAL` と 同じ 理由）。 */
 const HENDY_QUESTIONS: number = (
@@ -62,5 +69,5 @@ test("しゅうりょうしょうを 閉じずに 出ても、もどれば つ�
   await shot(page, "31-hendy-owari-tsugi");
 
   await next.click();
-  await expect(page).toHaveURL(new RegExp(`${KAISHA.jibun.path}$`));
+  await expect(page).toHaveURL(new RegExp(`${NEXT_ITEM.path}$`));
 });

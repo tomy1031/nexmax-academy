@@ -100,8 +100,14 @@ const HOUKOKU_CHOICES: readonly (readonly [string, number])[] = [
   ["q24", 3],
 ];
 
-/** 複数選択の 1問（カンボジアの 人の いい ところ）。正解は 4つ ぜんぶ。 */
-const HOUKOKU_MULTI: readonly (readonly [string, readonly number[]])[] = [["q25", [0, 1, 2, 4]]];
+/**
+ * 複数選択の 1問（カンボジアの 人の いい ところ）。正解は **4つ ぜんぶ**。
+ *
+ * 選択肢が 5つ（うち 4つが 正解）から **4つ ぜんぶ 正解**に なった（#244）ので、
+ * 押す 番号も 詰める。ここが `[0, 1, 2, 4]` の まま だった ため、5つ目を 待ち続けて
+ * 通し検証が 90秒で 落ちて いた。
+ */
+const HOUKOKU_MULTI: readonly (readonly [string, readonly number[]])[] = [["q25", [0, 1, 2, 3]]];
 
 /**
  * ヘンディさんに 話す こたえ（型文を なぞった、学習者が 書きそうな文）。
