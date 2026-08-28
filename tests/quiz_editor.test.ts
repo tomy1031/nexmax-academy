@@ -149,6 +149,8 @@ describe("drafts（もんだい）", () => {
       choose: 2,
       multi: 3,
       keyword: 0,
+      // 順不同の 入力は こたえを 2つ から（スキーマの 下限）
+      list: 2,
       wordbank: 2,
       emotion: 3,
       // 自由記述は 枠を 出さない（正解を 書く 欄が 無い）

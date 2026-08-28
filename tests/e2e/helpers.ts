@@ -341,6 +341,23 @@ export async function writeIn(page: Page, questionId: string, text: string): Pro
 }
 
 /**
+ * 順不同の 入力（`list`）の 欄を 上から 埋める。
+ *
+ * 語群と ちがい ふだが 無い ので、**打つ**。どの 欄に 書いても よいのは
+ * 採点の 側が 順を 見ない ため（`gradeDraft`）。
+ */
+export async function writeListIn(
+  page: Page,
+  questionId: string,
+  values: readonly string[],
+): Promise<void> {
+  const row = page.locator(`#q-${questionId}`);
+  for (const [at, value] of values.entries()) {
+    await row.getByLabel(`${at + 1}つめを 入力する`).fill(value);
+  }
+}
+
+/**
  * 4択の もんだいで **番号で** えらぶ（全問1ページの 教材）。
  *
  * 文字で えらばないのは、ルビが 合成されて 選択肢の 文が

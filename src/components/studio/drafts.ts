@@ -239,6 +239,16 @@ export function emptyQuizQuestion(type: QuizQuestion["type"]): QuizQuestion {
       return { ...base, type: "multi", options: ["", "", ""], answers: [0, 1] };
     case "keyword":
       return { ...base, type: "keyword", answer: "", accept: [] };
+    /* 順不同の 入力。スキーマの 下限（2つ）だけ 枠を 出す。 */
+    case "list":
+      return {
+        ...base,
+        type: "list",
+        groups: [
+          { label: "", accept: [] },
+          { label: "", accept: [] },
+        ],
+      };
     case "wordbank":
       return { ...base, type: "wordbank", lines: [""], blanks: [""], bank: ["", ""] };
     case "emotion":

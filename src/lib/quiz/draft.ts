@@ -34,6 +34,8 @@ export type QuizDraft =
   | { readonly kind: "choice"; readonly index: number }
   | { readonly kind: "multi"; readonly indexes: readonly number[] }
   | { readonly kind: "keyword"; readonly input: string }
+  /** 順不同の 入力（`list`）。**欄の 数だけ** 持つ（空の 欄も 残す）。 */
+  | { readonly kind: "list"; readonly inputs: readonly string[] }
   | { readonly kind: "wordbank"; readonly filled: readonly (string | null)[] }
   | { readonly kind: "emotion"; readonly feeling: number | null; readonly reply: number | null }
   | {
@@ -57,6 +59,7 @@ export const quizDraftSchema: z.ZodType<QuizDraft> = z.discriminatedUnion("kind"
   z.object({ kind: z.literal("choice"), index: z.number().int().min(0) }),
   z.object({ kind: z.literal("multi"), indexes: z.array(z.number().int().min(0)) }),
   z.object({ kind: z.literal("keyword"), input: z.string() }),
+  z.object({ kind: z.literal("list"), inputs: z.array(z.string()) }),
   z.object({ kind: z.literal("wordbank"), filled: z.array(z.string().nullable()) }),
   z.object({ kind: z.literal("free"), input: z.string(), en: z.string().optional() }),
   z.object({
@@ -71,6 +74,7 @@ const DRAFT_KIND: Record<QuizQuestion["type"], QuizDraft["kind"]> = {
   choose: "choice",
   multi: "multi",
   keyword: "keyword",
+  list: "list",
   wordbank: "wordbank",
   emotion: "emotion",
   free: "free",
@@ -103,6 +107,8 @@ export function draftAnswered(question: QuizQuestion, draft: QuizDraft | undefin
       return draft.indexes.length > 0;
     case "keyword":
       return draft.input.trim().length > 0;
+    case "list":
+      return draft.inputs.some((v) => v.trim().length > 0);
     case "wordbank":
       return draft.filled.some((v) => v !== null && v !== "");
     case "emotion":
@@ -201,6 +207,27 @@ export function gradeDraft(question: QuizQuestion, draft: QuizDraft | undefined)
       };
     }
 
+    case "list": {
+      if (draft.kind !== "list") return blank;
+      const written = draft.inputs.map((v) => v.trim()).filter((v) => v !== "");
+      if (written.length === 0) return blank;
+      /*
+       * **欄と 答えを 1対1で 見ない**（順不同）。まとまりごとに
+       * 「書かれた どれかが 当たって いるか」を 見る。同じ ことばを 2つの 欄に
+       * 書いても 1つ ぶんに しか ならない——`hit` を まとまり単位で 数えるため。
+       */
+      const hits = question.groups.filter((group) =>
+        written.some((value) => answerMatches(value, [group.label, ...group.accept])),
+      ).length;
+      const correct = hits === question.groups.length;
+      return {
+        correct,
+        earned: correct ? question.points : 0,
+        answer: draft.inputs.map((v, i) => `（${i + 1}）${v.trim()}`).join("　"),
+        partial: !correct && hits > 0,
+      };
+    }
+
     case "wordbank": {
       if (draft.kind !== "wordbank") return blank;
       if (!draft.filled.some((v) => v !== null && v !== "")) return blank;
@@ -260,6 +287,8 @@ export function correctAnswerText(question: QuizQuestion): string {
       return question.answers.map((i) => question.options[i] ?? "").join(" ／ ");
     case "keyword":
       return question.answer;
+    case "list":
+      return question.groups.map((g) => g.label).join(" ／ ");
     case "wordbank":
       return question.blanks.map((b, i) => `（${i + 1}）${b}`).join("　");
     case "emotion":
