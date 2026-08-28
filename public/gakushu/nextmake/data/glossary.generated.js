@@ -1267,12 +1267,6 @@ export const GLOSSARY = [
     en: "Establishment (founding)",
   },
   {
-    term: "先進",
-    reading: "せんしん",
-    meaning: "ほかより 先へ 進んで いる ことです。",
-    en: "Advanced",
-  },
-  {
     term: "先端",
     reading: "せんたん",
     meaning: "いちばん 新しい ところ、と いう ことです。",
@@ -1555,12 +1549,6 @@ export const GLOSSARY = [
     reading: "どうにゅう",
     meaning: "新しい しくみを、会社の 中で つかいはじめる ことです。",
     en: "Adopting",
-  },
-  {
-    term: "導入実績",
-    reading: "どうにゅうじっせき",
-    meaning: "この 会社が 仕事を した お客さまの 名前",
-    en: "Client track record",
   },
   { term: "道路", reading: "どうろ", meaning: "車が 通る 道です。", en: "Road" },
   {

@@ -90,7 +90,7 @@ test("他の ページへ 行って 戻っても、書いた ものは 残る", 
    * 見つけた 順に どこへでも 書ける ことなので、上から 順ではなく 飛ばして 書く。
    */
   await writeIn(page, "q2", "まついさん");
-  await placeWordsIn(page, "q25", ["日本語の 勉強"]);
+  await placeWordsIn(page, "q5", ["NMClaw"]);
   await expect(page.getByText(writtenText(2))).toBeVisible();
 
   // ステージへ 離脱 → 戻る

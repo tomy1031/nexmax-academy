@@ -164,7 +164,7 @@ export function NameCard({
               に よんで ほしい なまえ
             </>
           }
-          hint="かかなくても だいじょうぶ。そのときは じぶんの なまえで よぶよ。"
+          hint="よんで ほしい なまえが あれば かこう。あいて いれば じぶんの なまえで よぶよ。"
           placeholder="れい：ピア"
           value={names.nickname}
           onChange={(value) => onChange({ ...names, nickname: value })}

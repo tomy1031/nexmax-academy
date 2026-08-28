@@ -18,8 +18,8 @@ export const SERVICES = {
   id: "services",
   nav: "事業",
   title: {
-    n4: "自分たちで 作る サービス",
-    n3: "先進事業（自社サービス）",
+    n4: "事業",
+    n3: "事業",
     en: "Our own services",
   },
   hero: "/gakushu/nextmake/img/hero_services.webp",

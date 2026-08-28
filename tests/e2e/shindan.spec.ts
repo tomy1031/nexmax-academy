@@ -26,9 +26,25 @@ async function startQuestions(page: Page) {
   await expect(page.getByRole("button", { name: /質問.*始/ })).toBeVisible();
 }
 
-/** Ⓐ を 選び続けて 次の 設問へ。選ぶと 自動で 進む。 */
+/**
+ * Ⓐ を 選び続けて 次の 設問へ。選ぶと 自動で 進む。
+ *
+ * **押したら「1つ 進んだ」ことを 見るまで 待つ。** 押しっぱなしで 20回 回すと、
+ * 設問が 入れ替わる 途中の 一瞬に クリックが 落ちて、**1問ぶん 進まないまま
+ * 20回 使い切る**ことが ある（そのあと「結果を 見る」が いつまでも 出ない）。
+ * 手もとで `--repeat-each=3` を 回すと 3回に 1回 再現した（2026-08-28）。
+ * 押した 回数では なく **進んだ 番号**で 数える。
+ */
 async function answer(page: Page) {
+  const counter = page.getByText(/20もんの うち \d+ もんめ/);
+  const where = async () => {
+    // さいごの 1問を 押すと 帯が 消えて 結果の ボタンが 出る。それも「進んだ」
+    if ((await page.getByRole("button", { name: /結果.*見/ }).count()) > 0) return "けっか";
+    return (await counter.count()) > 0 ? (await counter.innerText()).trim() : "";
+  };
+  const before = await where();
   await page.locator("fieldset button[aria-pressed]").first().click();
+  await expect.poll(where, { timeout: 15_000 }).not.toBe(before);
 }
 
 test("診断のどの画面にも 裸の漢字が 無い（やさしい日本語）", async ({ page }) => {

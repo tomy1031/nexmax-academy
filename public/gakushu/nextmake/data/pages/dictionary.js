@@ -11,8 +11,8 @@ export const DICTIONARY = {
   id: "dictionary",
   nav: "ことばの辞典",
   title: {
-    n4: "ことばの 辞典",
-    n3: "IT・ビジネス日本語 辞典",
+    n4: "ことばの辞典",
+    n3: "ことばの辞典",
     en: "Word list",
   },
   blocks: [

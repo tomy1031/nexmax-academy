@@ -9,6 +9,7 @@ import {
   HOUKOKU_TOTAL,
   JUNBI_TOTAL,
   pickChoiceIn,
+  pickMultiIn,
   waitForAsk,
   KAISHA,
   KAISHA_ITEMS,
@@ -49,8 +50,6 @@ import {
 const HOUKOKU_WORDS: readonly (readonly [string, readonly string[]])[] = [
   // 5つの サービスは **順番を 見ない**（`unordered`）。サイトの 並びと わざと ちがう 順で 入れる
   ["q5", ["Verify", "NEXTMAKE Internship Lab", "NMClaw", "セキュリティドローン", "観光DX"]],
-  ["q8", ["新しい 技術", "グループの 会社", "世界の 人と 学ぶ"]],
-  ["q25", ["日本語の 勉強", "ITの 勉強", "しごとの 紹介"]],
 ];
 
 /**
@@ -62,12 +61,10 @@ const HOUKOKU_FREE_INPUT: readonly (readonly [string, string])[] = [
   ["q1", "ネクストメイク"], // カタカナ（代表解は「株式会社 NEXT MAKE」）
   ["q2", "まついさん"], // ひらがな＋さん（accept「まつい」に 部分一致）
   ["q6", "エヌエムクロー"], // カタカナ（代表解は「NMClaw」）
-  ["q7", "じゅたくかいはつ"], // ひらがな
-  ["q9", "コンティニューです"], // カタカナ＋です
-  ["q10", "かわむら"], // ひらがな（名字だけ）
-  ["q20", "ひとと ひとの しんらいです"], // 文＋です（accept「しんらい」に 部分一致）
-  ["q21", "どうぐ"], // やさしい 日本語の 言い方（「手段」でも 通る）
-  ["q26", "internship lab"], // 小文字
+  ["q7", "コンティニューです"], // カタカナ＋です
+  ["q8", "かわむら"], // ひらがな（名字だけ）
+  ["q18", "ひとと ひとの しんらいです"], // 文＋です（accept「しんらい」に 部分一致）
+  ["q19", "どうぐ"], // やさしい 日本語の 言い方（「手段」でも 通る）
 ];
 
 /**
@@ -75,27 +72,33 @@ const HOUKOKU_FREE_INPUT: readonly (readonly [string, string])[] = [
  *
  * 文字で えらばないのは、ルビが 合成される ので 掴めない ため（`choiceButtons` の 覚書）。
  * 番号を ここに 書き写して いるのは、**教材の 並びが 変わったら テストも 落ちる**
- * ように する ため——落ちれば 人が 見に 行ける。正解の 番号は わざと ばらして ある
- *（ぜんぶ 先頭だと、読まずに 上を 押すだけで 満点に なる）。
+ * ように する ため——落ちれば 人が 見に 行ける。
+ *
+ * **いま 16問中 15問が 番号 0（＝いちばん 上）である。** 配布資料の HTML が
+ * そう 並べて いる ため（2026-08-27「問題は そのまま。改変禁止」）。
+ * 読まずに 上を 押すだけで 15/16 に なるので、並びを 変えてよいかは ユーザーに 上げてある。
  */
 const HOUKOKU_CHOICES: readonly (readonly [string, number])[] = [
   ["q3", 0],
-  ["q4", 3],
-  ["q11", 2],
-  ["q12", 3],
+  ["q4", 0],
+  ["q9", 0],
+  ["q10", 2],
+  ["q11", 0],
+  ["q12", 0],
   ["q13", 0],
-  ["q14", 3],
-  ["q15", 2],
-  ["q16", 1],
+  ["q14", 0],
+  ["q15", 0],
+  ["q16", 0],
   ["q17", 0],
-  ["q18", 3],
-  ["q19", 2],
-  ["q22", 1],
+  ["q20", 0],
+  ["q21", 0],
+  ["q22", 0],
   ["q23", 0],
-  ["q24", 3],
-  ["q27", 2],
-  ["q28", 1],
+  ["q24", 0],
 ];
+
+/** 複数選択の 1問（カンボジアの 人の いい ところ）。正解は 4つ ぜんぶ。 */
+const HOUKOKU_MULTI: readonly (readonly [string, readonly number[]])[] = [["q25", [0, 1, 2, 3]]];
 
 /**
  * ヘンディさんに 話す こたえ（型文を なぞった、学習者が 書きそうな文）。
@@ -272,6 +275,9 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
     for (const [questionId, at] of HOUKOKU_CHOICES) {
       await pickChoiceIn(page, questionId, at);
     }
+    for (const [questionId, indexes] of HOUKOKU_MULTI) {
+      await pickMultiIn(page, questionId, indexes);
+    }
     await expect(page.getByText(writtenText(HOUKOKU_TOTAL))).toBeVisible();
     // ぜんぶ うまったので、ここで はじめて 出す ボタンが 出る
     await expect(page.getByRole("button", { name: /こたえを 出/ })).toBeVisible();
@@ -440,14 +446,12 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
     await page.getByRole("button", { name: "はじめる" }).click();
 
     /*
-     * 英語の 欄は **使いたい 人だけ**（採点は 日本語の 欄だけ）。
-     * 両方 出て いる ことを 見る——片方 しか 出ないと、日本語で 直に 書ける 人に
-     * 余計な 段を 踏ませるか、英語で 考えたい 人の 逃げ道が 消える。
+     * 欄は **日本語の 1つだけ**（2026-08-27 の 指定で 英語の 下書き欄を 外した。
+     * 英語で 考えて よい ことは 先生が 口で 言う）。
      */
     const jp = page.getByRole("textbox", { name: "じゆうに 書く" });
-    const en = page.getByRole("textbox", { name: "えいごで 下書きする" });
     await expect(jp).toHaveCount(JUNBI_TOTAL);
-    await expect(en).toHaveCount(JUNBI_TOTAL);
+    await expect(page.getByRole("textbox", { name: "えいごで 下書きする" })).toHaveCount(0);
 
     // ぜんぶ うめるまで 出せない（`requireAll`）
     await expect(page.getByRole("button", { name: /こたえを 出/ })).toHaveCount(0);
@@ -461,9 +465,6 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
     ];
     expect(written).toHaveLength(JUNBI_TOTAL);
     for (const [at, text] of written.entries()) await jp.nth(at).fill(text);
-    // 英語は 1つだけ 書く（書かなくても 点に 関わらない ことの 証拠）
-    await en.nth(0).fill("I like Tourism DX because I want to walk around the town.");
-
     await expect(page.getByText(`こたえた ${JUNBI_TOTAL} / ${JUNBI_TOTAL}`)).toBeVisible();
     await submitAnswers(page);
 
