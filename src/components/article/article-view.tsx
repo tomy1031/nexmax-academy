@@ -101,6 +101,20 @@ export function ArticleView({
   );
   const [rubyOn, setRubyOn] = useState(true);
   const headings = useMemo(() => collectHeadings(article.blocks), [article.blocks]);
+  /**
+   * **表紙（`hero`）が ページの タイトル**（2026-08-28 の 指定
+   *「これを目次の前に持ってきて。タイトルにします。その後に目次を入れて」）。
+   *
+   * ページの `title` と `description` は 表紙に 同じ ことばで 入って いる。
+   * 両方 出すと、**同じ タイトルが 続けて 2回**、説明も 2行 出る——
+   * 学習者は 1画面 ぶんを 読み直してから 本文に 入る ことに なる。
+   * 表紙が ある ページでは、**表紙だけを タイトルに して h1/説明は 出さない**
+   *（`title`・`description` は 一覧の 札や 検索の ために データには 残す）。
+   */
+  const cover = article.blocks[0]?.kind === "hero" ? article.blocks[0] : null;
+  /** 本文（表紙は 上に 出したので 除く）。見出しの id を ずらさない ため 位置は 数える。 */
+  const bodyBlocks = cover ? article.blocks.slice(1) : article.blocks;
+  const bodyOffset = cover ? 1 : 0;
   const endRef = useRef<HTMLDivElement>(null);
 
   // 開いた時点で「よみかけ」。completed は上書きされない（store 側の規則）。
@@ -157,11 +171,22 @@ export function ArticleView({
         <p className="text-ink-faint text-xs font-extrabold">📄 ページ</p>
 
         {/*
-          **目次が 先、タイトルが あと**（2026-08-27 の 指定「タイトルと目次の順番を
-          逆にして」）。ページの 本文は かならず `hero` ブロックで 始まり、そこに
-          同じ タイトルが もう一度 大きく 出る——だから ここの h1 は 2つめの タイトルで
-          あって、先に 置くと 同じ ことばが 続けて 2回 出る。
+          **タイトル（表紙）→ 目次 → 本文**（2026-08-28 の 指定）。
+          表紙の 無い ページは これまでどおり **目次が 先、h1 が あと**
+          （2026-08-27 の 指定「タイトルと目次の順番を 逆にして」）。
         */}
+        {cover && (
+          <div className="mt-4">
+            <HeroBlock
+              block={cover}
+              furigana={furigana}
+              show={rubyOn}
+              dictionary={dictionary}
+              asTitle
+            />
+          </div>
+        )}
+
         {shouldShowToc(headings) && (
           <TableOfContents
             articleId={article.id}
@@ -171,19 +196,23 @@ export function ArticleView({
           />
         )}
 
-        <h1 className="text-ink mt-4 text-2xl font-extrabold sm:text-3xl">
-          <RubyText text={article.title} index={furigana} show={rubyOn} />
-        </h1>
-        <p className="text-ink-soft mt-2 leading-relaxed font-bold">
-          <RubyText text={article.description} index={furigana} show={rubyOn} />
-        </p>
+        {!cover && (
+          <>
+            <h1 className="text-ink mt-4 text-2xl font-extrabold sm:text-3xl">
+              <RubyText text={article.title} index={furigana} show={rubyOn} />
+            </h1>
+            <p className="text-ink-soft mt-2 leading-relaxed font-bold">
+              <RubyText text={article.description} index={furigana} show={rubyOn} />
+            </p>
+          </>
+        )}
 
         <div className="mt-6 space-y-5">
-          {article.blocks.map((block, blockIndex) => (
+          {bodyBlocks.map((block, at) => (
             <BlockView
-              key={blockIndex}
+              key={at + bodyOffset}
               block={block}
-              blockIndex={blockIndex}
+              blockIndex={at + bodyOffset}
               articleId={article.id}
               furigana={furigana}
               show={rubyOn}
@@ -282,7 +311,7 @@ function BlockView({
             className="inline-block h-6 w-2.5 shrink-0 rounded-full"
             style={{ background: "var(--color-sky)" }}
           />
-          <RubyText text={block.text} index={furigana} show={show} />
+          <DictionaryText text={block.text} index={furigana} show={show} dictionary={dictionary} />
         </h2>
       ) : (
         <h3
@@ -292,7 +321,7 @@ function BlockView({
           <span aria-hidden className="text-sky mr-1.5">
             ◆
           </span>
-          <RubyText text={block.text} index={furigana} show={show} />
+          <DictionaryText text={block.text} index={furigana} show={show} dictionary={dictionary} />
         </h3>
       );
 
@@ -377,17 +406,15 @@ function BlockView({
         </SpeakableGroup>
       );
 
+    /*
+     * **使い方の 説明は 置かない**（2026-08-28 の 指定で「ことば — マウスを のせる…」を 削除）。
+     * 押せば 分かる ことを 先に 字で 言う ぶん、読む ものが 増えて いた。
+     * ふちどりの ある ふだが すでに「押せる」と 見せて いる。
+     */
     case "vocab":
       return (
         <section className="border-hairline bg-panel-tint rounded-[var(--radius-card)] border-2 p-4">
-          <p className="text-ink-soft text-xs font-extrabold">
-            ことば — マウスを のせる（スマホは タップ）と いみが{" "}
-            <ruby>
-              出<rt>で</rt>
-            </ruby>
-            るよ
-          </p>
-          <div className="mt-2 flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2">
             {(block.items ?? []).map((item, i) => (
               <VocabChip key={i} item={item} furigana={furigana} show={show} />
             ))}
@@ -693,10 +720,14 @@ function StepThumb({ image }: { image?: { src?: string; status?: string; caption
 
 const CALLOUT_STYLE: Record<
   CalloutBlockData["tone"],
-  { variant: NexMaxVariant; accent: string; label: string }
+  { variant: NexMaxVariant; accent: string; label?: string }
 > = {
   point: { variant: "book", accent: "#8d6ae8", label: "ここが ポイント" },
-  care: { variant: "cheer", accent: "#f2654a", label: "ここに きを つけて" },
+  /*
+   * `care` は **見出しを 出さない**（2026-08-28 の 指定で「ここに きを つけて」を 削除）。
+   * 色と ネクマックスの 顔で もう 伝わって いる ところに ことばを 重ねて いた。
+   */
+  care: { variant: "cheer", accent: "#f2654a" },
 };
 
 function CalloutBlock({
@@ -718,10 +749,12 @@ function CalloutBlock({
     >
       <NexMax variant={tone.variant} size={56} />
       <div className="min-w-0 flex-1">
-        <p className="text-xs font-extrabold" style={{ color: tone.accent }}>
-          {tone.label}
-        </p>
-        <p className="text-ink mt-1 leading-relaxed font-bold">
+        {tone.label && (
+          <p className="text-xs font-extrabold" style={{ color: tone.accent }}>
+            {tone.label}
+          </p>
+        )}
+        <p className="text-ink leading-relaxed font-bold">
           <DictionaryText text={block.text} index={furigana} show={show} dictionary={dictionary} />
         </p>
       </div>

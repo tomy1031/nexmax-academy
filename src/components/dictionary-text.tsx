@@ -2,6 +2,7 @@
 
 import { useId, useRef, useState } from "react";
 import { RubyText } from "@/components/ruby-text";
+import { WordPopover } from "@/components/word-popover";
 import { findDictionaryTerm, type DictionaryEntry } from "@/lib/dictionary";
 import { canHover } from "@/lib/pointer";
 import type { FuriganaIndex } from "@/lib/text/furigana";
@@ -24,12 +25,6 @@ import type { FuriganaIndex } from "@/lib/text/furigana";
  * 「配列順に先勝ち」と「最長一致」で違うので、まとめると片方の当たり方が変わる。
  */
 
-/** 吹き出しの実寸。はみ出し判定に使う（Tailwind の w-60 と合わせる）。 */
-const POPOVER_WIDTH = 240;
-const POPOVER_HEIGHT = 120;
-/** 画面のふちに触れさせない余白。 */
-const EDGE_MARGIN = 12;
-
 export function DictionaryText({
   text,
   index,
@@ -47,33 +42,16 @@ export function DictionaryText({
   const popoverId = useId();
   const buttonRef = useRef<HTMLButtonElement>(null);
   const [open, setOpen] = useState(false);
-  // 画面の上のほうでは、上に出すと吹き出しが画面外に切れて何も見えない。
-  // 左右も、ふち近くの語だと はみ出して横スクロールが出る。開くたびに置き場所を決め直す。
-  const [placeBelow, setPlaceBelow] = useState(false);
-  const [shiftX, setShiftX] = useState(0);
 
   if (!found) {
     return <RubyText text={text} index={index} show={show} className={className} />;
   }
 
-  /** ひらく前に 置き場所を 決める（画面の ふちで 切れないように）。 */
-  const placePopover = () => {
-    const rect = buttonRef.current?.getBoundingClientRect();
-    if (!rect) return;
-    setPlaceBelow(rect.top < POPOVER_HEIGHT + EDGE_MARGIN);
-    const centerX = rect.left + rect.width / 2;
-    const overflowLeft = Math.max(0, EDGE_MARGIN - (centerX - POPOVER_WIDTH / 2));
-    const overflowRight = Math.max(
-      0,
-      centerX + POPOVER_WIDTH / 2 - (window.innerWidth - EDGE_MARGIN),
-    );
-    setShiftX(overflowLeft - overflowRight);
-  };
-
-  const openPopover = () => {
-    placePopover();
-    setOpen(true);
-  };
+  /*
+   * 置き場所は `WordPopover` が 決める（画面の いちばん外に 出して 置く）。
+   * ここで 決めて いた ころは、親の `overflow: hidden` に 切られて 字が 読めなかった。
+   */
+  const openPopover = () => setOpen(true);
 
   /**
    * 押したとき。
@@ -87,7 +65,6 @@ export function DictionaryText({
       openPopover();
       return;
     }
-    if (!open) placePopover();
     setOpen((current) => !current);
   };
 
@@ -132,27 +109,18 @@ export function DictionaryText({
             entry.term
           )}
         </button>
-        {open && (
-          <span
-            id={popoverId}
-            role="note"
-            style={{ transform: `translateX(calc(-50% + ${shiftX}px))` }}
-            className={`border-sky text-ink absolute left-1/2 z-30 w-60 rounded-2xl border-2 bg-white px-4 py-3 text-left text-xs leading-relaxed font-bold shadow-[0_6px_18px_rgba(0,79,141,.22)] ${
-              placeBelow ? "top-full mt-2" : "bottom-full mb-2"
-            }`}
-          >
-            <span className="text-navy block">
-              {entry.term}
-              <span className="text-ink-soft ml-1 font-bold">{entry.reading}</span>
-            </span>
-            {/* 説明文にも漢字が入る。出典の単語ステージの読み辞書でルビを合成する。 */}
-            <RubyText className="mt-1 block" text={entry.explanationJa} furigana={entry.furigana} />
-            {/* 英語は最後の受け皿。日本語の意味より下に、控えめに置く（設計07 §2.5）。 */}
-            <span className="border-hairline text-ink-soft mt-1.5 block border-t pt-1.5 text-[11px] font-semibold">
-              {entry.meaningEn}
-            </span>
+        <WordPopover id={popoverId} anchorRef={buttonRef} open={open}>
+          <span className="text-navy block">
+            {entry.term}
+            <span className="text-ink-soft ml-1 font-bold">{entry.reading}</span>
           </span>
-        )}
+          {/* 説明文にも漢字が入る。出典の単語ステージの読み辞書でルビを合成する。 */}
+          <RubyText className="mt-1 block" text={entry.explanationJa} furigana={entry.furigana} />
+          {/* 英語は最後の受け皿。日本語の意味より下に、控えめに置く（設計07 §2.5）。 */}
+          <span className="border-hairline text-ink-soft mt-1.5 block border-t pt-1.5 text-[11px] font-semibold">
+            {entry.meaningEn}
+          </span>
+        </WordPopover>
       </span>
       {after ? <RubyText text={after} index={index} show={show} /> : null}
     </span>
