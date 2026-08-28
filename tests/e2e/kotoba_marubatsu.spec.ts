@@ -31,51 +31,64 @@ const SET = "/arcade/hajimari_kotoba";
  */
 async function advance(page: Page): Promise<void> {
   await page
-    .getByText(/せいかい|ちがう こたえ/)
+    .getByText(/せいかい|ちがう/)
     .first()
     .click({ timeout: 3_000 })
     .catch(() => {});
 }
 
-test("よみを 外すと ❌ と ただしい よみが 出る", async ({ page }) => {
+test("よみを 外すと 入力欄が 空に なり、正しく 打てるまで 何度でも やり直せる", async ({
+  page,
+}) => {
   await page.goto(SET);
   await page.getByRole("button", { name: /れんしゅう/ }).click();
 
   const input = page.getByRole("textbox", { name: "よみを ひらがなで 入力する" });
   await expect(input).toBeVisible({ timeout: 20_000 });
+
+  // 1回目の 打ちまちがい。合図は **❌ の しるしだけ**（文は 出さない）
   await input.fill("ぜんぜんちがうよみ");
   await input.press("Enter");
+  await expect(page.getByLabel("ちがう")).toBeVisible();
+  await expect(input).toHaveValue(""); // 入力した 字は 消える
+  await expect(input).toBeVisible(); // **まだ 読みの 番**（4択に 進んで いない）
+  await expect(page.getByText("英語の 意味を えらぼう！")).toHaveCount(0);
 
-  // 大きな しるし（記号＋ことば）
-  await expect(page.getByText("おしい！")).toBeVisible();
-  // 4択の あいだ、ただしい よみを ❌ と いっしょに 出しておく
-  await expect(page.getByText(/❌ ただしい よみ:/)).toBeVisible();
+  // 2回目の 打ちまちがいでも 同じ。番は 終わらない
+  await input.fill("これもちがう");
+  await input.press("Enter");
+  await expect(input).toHaveValue("");
+  await expect(page.getByText("英語の 意味を えらぼう！")).toHaveCount(0);
 });
 
-test("いみを 外すと『ちがう こたえ』と えらんだ ものが 出る", async ({ page }) => {
+test("こたえた あと、**正しい こたえ**が ⭕ つきで 出る", async ({ page }) => {
   await page.goto(SET);
   await page.getByRole("button", { name: /もんだいだけ/ }).click();
   await expect(page.getByText("英語の 意味を えらぼう！")).toBeVisible({ timeout: 20_000 });
 
+  const choices = page.getByRole("group", { name: "いみの こたえ" }).getByRole("button");
+
   /*
-   * どれが 正解かは 乱数で 決まる ので、**外れるまで 何問か 進める**。
-   * 当たった ときは「せいかい」の カードが 出る ので、押して つぎへ。
+   * 解説カードには **自動送り**（2.8秒）が ある ので、押した 直後に 見る。
+   * どれが 正解かは 乱数で 決まる ので、**外れるまで 何問か 進める**——
+   * ただし 見たい ことは 両方に 共通で、「正しい こたえが ⭕ つきで 出る」こと。
    */
   for (let i = 0; i < 6; i += 1) {
-    await page.getByRole("group", { name: "いみの こたえ" }).getByRole("button").first().click();
+    await choices.first().click();
+    await expect(page.getByText(/^⭕/).first()).toBeVisible({ timeout: 3_000 });
 
-    /*
-     * 4択には 持ち時間が ある。走らせ方に よっては 押す 前に 時間切れに なる ことも あるので、
-     * **「えらんだ こたえ」が 出て いる ときだけ** 見る（時間切れは 別の テストの 受け持ち）。
-     */
-    const chosen = page.getByText(/❌ えらんだ こたえ:/);
-    if (await chosen.isVisible({ timeout: 5_000 }).catch(() => false)) {
-      await expect(page.getByText("ちがう こたえ")).toBeVisible();
-      // 正しい こたえには ⭕ が 付く（どれが 正解だったかが その場で 分かる）
-      await expect(page.getByText(/^⭕ /).first()).toBeVisible();
+    // 外した ときだけ、えらんだ こたえが 小さく 添う（（Sport）の ような 形）
+    if (
+      await page
+        .getByText(/^（.+）$/)
+        .isVisible()
+        .catch(() => false)
+    ) {
+      // ここまで 来れば 見たい ことは 出て いる（⭕ の 正解＋えらんだ こたえ）。
+      // 見出しの ❌ を さらに 待たない——カードは 2.8秒で 自動送りされる ので、
+      // 待つ ほど 落ちやすく なるだけで、確かめる 中身は 増えない。
       return;
     }
-    // 当たった／時間切れの ときは つぎの 問題へ（押せなくても 自動送りに まかせる。下の 但し書き）
     await advance(page);
     await expect(page.getByText("英語の 意味を えらぼう！")).toBeVisible({ timeout: 20_000 });
   }

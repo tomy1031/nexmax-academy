@@ -9,8 +9,8 @@ export const WORKS = {
   id: "works",
   nav: "実績",
   title: {
-    n4: "作った もの",
-    n3: "導入実績",
+    n4: "実績",
+    n3: "実績",
     en: "Our work",
   },
   hero: "/gakushu/nextmake/img/hero_works.webp",

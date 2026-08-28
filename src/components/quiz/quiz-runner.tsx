@@ -1,16 +1,19 @@
 "use client";
 
 import Link from "next/link";
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Fragment, memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "motion/react";
 import type { QuizQuestion, QuizSet } from "@/content/schema";
 import { FeedbackMessage } from "@/components/feedback-message";
 import { NexMax } from "@/components/nexmax";
+import { DictionaryText } from "@/components/dictionary-text";
 import { RubyText } from "@/components/ruby-text";
+import type { DictionaryEntry } from "@/lib/dictionary";
 import type { FeedbackKey } from "@/lib/feedback";
 import { buildFuriganaIndex } from "@/lib/text/furigana";
 import { createProgressStore, recordContentProgress } from "@/lib/progress/store";
 import { correctAnswerText, draftAnswerText, draftAnswered } from "@/lib/quiz/draft";
+import { saveNotebook } from "@/lib/answers/notebook";
 import { clearQuizResume, restoreQuiz, saveQuizResume, type QuizStart } from "@/lib/quiz/resume";
 import { newAttemptId, saveQuizResults } from "@/lib/quiz/results-db";
 import { fetchOwnProfile } from "@/lib/profile-db";
@@ -43,6 +46,8 @@ const UI_FURIGANA = buildFuriganaIndex([
   ["出", "だ"],
   ["見", "み"],
   ["書", "か"],
+  ["直", "なお"],
+  ["話", "はな"],
   // ぜんぶ 1ページ（answerMode: "all"）の 案内で 使う
   ["行き来", "いきき"],
   ["消", "き"],
@@ -70,9 +75,20 @@ export function QuizRunner({
    * 別の一覧へ放り出される）。
    */
   embedded = false,
+  /**
+   * ことばの ポップアップ辞書（読みものと 同じ 引き先 — `@/lib/dictionary`）。
+   *
+   * **もんだいにも 辞書を 出す**（2026-08-27 の 指定「全ての コンテンツに ついて、
+   * 辞書を 細かく つける」）。調査シートには「実績」「受託開発」「オフショア開発」
+   * のような 語が 設問文に 直に 出て くるのに、**そこだけ 意味を 引けなかった**
+   *——読みものと ミーティングでは 引けるので、学習者から 見ると 画面ごとに
+   * 助けが 消える。渡さなければ 下線は 1本も 出ない（これまでどおり）。
+   */
+  dictionary,
 }: {
   set: QuizSet;
   embedded?: boolean;
+  dictionary?: readonly DictionaryEntry[];
 }) {
   const furigana = useMemo(() => buildFuriganaIndex(set.furigana ?? []), [set.furigana]);
   /*
@@ -240,6 +256,25 @@ export function QuizRunner({
 
   const summary = summarizeQuiz(state);
 
+  /**
+   * **正解の 無い 教材か**（自由記述だけで できて いる もんだい）。
+   *
+   * `free` の 採点は「minLength より 長く 書けたか」しか 見て いない
+   *（`src/lib/quiz/draft.ts`）。つまり 出せば かならず 満点で、けっかの 画面は
+   * いつも「5 / 5 もん せいかい 100%」と 言う。**言っている ことが 無い**うえ、
+   * 学習者には「自分の 考えが 正解だった」と 読めて しまう
+   *（2026-08-27 の 指定「松井社長に 何を 話す？は 答えが ないので
+   * 答え合わせと いう 形では ない」）。
+   *
+   * だから **種別から 自動で 見分ける**——`phase: "production"` では 見分けない。
+   * 産出フェーズでも 正解の ある 問い（keyword）は 置けるので、
+   * その ときは 答え合わせの ほうが 正しい。
+   */
+  const freeOnly = useMemo(
+    () => set.questions.length > 0 && set.questions.every((q) => q.type === "free"),
+    [set.questions],
+  );
+
   /*
    * 点数を **先生が見る成績**（TestResult）にも残す。
    *
@@ -323,6 +358,39 @@ export function QuizRunner({
   const question = currentQuestion(state);
   const byId = useMemo(() => new Map(set.questions.map((q) => [q.id, q])), [set.questions]);
 
+  /*
+   * 出した こたえを **端末の こたえノート**にも 残す（`@/lib/answers/notebook`）。
+   *
+   * このあと ヘンディさんや 松井社長と 話す ときに、**会話の 画面から 自分の
+   * こたえを 開く**ため。下書き（`quiz-resume`）は 完走で 消えるので、
+   * ちょうど 要る ときには もう 無い——だから 別の 鍵で 写しを 取る。
+   *
+   * 教材まるごとを 通した 回だけ 残す（`wholeRun`）。途中から 始めた 回の
+   * 内訳を メモに すると、**見て いない 問題が 空の まま カンペに 並ぶ**。
+   */
+  useEffect(() => {
+    if (!done || !wholeRun) return;
+    saveNotebook({
+      quizSetId: set.id,
+      at: new Date().toISOString(),
+      lines: state.results.flatMap((result) => {
+        const q = byId.get(result.questionId);
+        if (!q) return [];
+        return [
+          {
+            questionId: q.id,
+            q: q.q,
+            answer: result.answer ?? "",
+            correctAnswer: correctAnswerText(q),
+            correct: result.correct,
+            report: q.report ?? false,
+            section: q.section ?? "",
+          },
+        ];
+      }),
+    });
+  }, [done, wholeRun, set.id, state.results, byId]);
+
   /** 出したあとに 見せる 一覧（こたえた 順）。設問が 見つからない 行は 落とす。 */
   const review = useMemo(
     () =>
@@ -395,6 +463,7 @@ export function QuizRunner({
           review={review}
           skipped={skipped}
           furigana={furigana}
+          freeOnly={freeOnly}
           onRetryAll={() => {
             /*
              * **前の こたえを 持ったまま** やり直す（2026-08-25 の 指定）。
@@ -411,6 +480,8 @@ export function QuizRunner({
           drafts={state.drafts}
           retryIds={retryIds}
           furigana={furigana}
+          dictionary={dictionary}
+          requireAll={set.requireAll}
           inputIssue={state.phase.kind === "ask" ? state.phase.inputIssue : undefined}
           inputIssueQuestionId={
             state.phase.kind === "ask" ? state.phase.inputIssueQuestionId : undefined
@@ -423,6 +494,7 @@ export function QuizRunner({
           questions={state.questions}
           drafts={state.drafts}
           furigana={furigana}
+          requireAll={set.requireAll}
           onGoto={(index) => dispatch({ type: "goto", index })}
           onBack={() => dispatch({ type: "back" })}
           onSubmit={() => dispatch({ type: "submit" })}
@@ -471,11 +543,26 @@ export function QuizRunner({
                 </p>
               )}
 
+              {/*
+                章（MISSION）は 1問ずつの ときも 出す。**いま どの まとまりを
+                やって いるのか**が 分からないのは、全問1ページでも 1問ずつでも 同じ。
+              */}
+              {question.section && (
+                <p className="text-navy mb-1 text-sm font-black">
+                  <RubyText text={question.section} index={furigana} />
+                </p>
+              )}
               {/* 設問の 「＊◯◯の ページ」は 行を 変えて 出す（2026-08-25 の 指定）。
                   データの 改行を そのまま 出すため whitespace-pre-line。 */}
               <p className="text-ink text-lg leading-relaxed font-extrabold whitespace-pre-line">
-                <RubyText text={question.q} index={furigana} />
+                <DictionaryText text={question.q} index={furigana} dictionary={dictionary} />
               </p>
+              <QuestionSource question={question} furigana={furigana} />
+              {state.phase.kind !== "explain" && (
+                <div className="mt-3">
+                  <QuestionHints question={question} furigana={furigana} dictionary={dictionary} />
+                </div>
+              )}
 
               <div className="mt-5">
                 {state.phase.kind === "explain" ? (
@@ -618,11 +705,7 @@ function StartCard({
             </>
           )}
         </p>
-      ) : (
-        <p className="border-hairline bg-panel-tint text-ink mt-5 rounded-[var(--radius-card)] border-2 px-4 py-3 font-extrabold">
-          ぜんぶ できなくても だいじょうぶ
-        </p>
-      )}
+      ) : null}
 
       {!resumed ? (
         <div className="mt-5">
@@ -814,6 +897,7 @@ function ConfirmCard({
   questions,
   drafts,
   furigana,
+  requireAll,
   onGoto,
   onBack,
   onSubmit,
@@ -821,10 +905,13 @@ function ConfirmCard({
   questions: readonly QuizQuestion[];
   drafts: Readonly<Record<string, Parameters<typeof draftAnswerText>[1]>>;
   furigana: ReturnType<typeof buildFuriganaIndex>;
+  /** ぜんぶ うめるまで 出せなく するか（教材ごと・`quizSet.requireAll`）。 */
+  requireAll: boolean;
   onGoto: (index: number) => void;
   onBack: () => void;
   onSubmit: () => void;
 }) {
+  const [confirming, setConfirming] = useState(false);
   const left = questions.filter((q) => !draftAnswered(q, drafts[q.id])).length;
   /*
    * 1問も 書かずに 出す 道を 閉じる。
@@ -833,8 +920,10 @@ function ConfirmCard({
    * 触らずに 7回 押すだけで 教材が「おわった」に なり、関門が 開き、0点が 初回の
    * 成績として 固定される**（初回だけが 正式なので あとから 直せない）。
    * それは 学びでは ないので、ここだけは 出すのを 待つ。1問でも 書けば 出せる。
+   *
+   * `requireAll` の 教材では **のこり 0 まで** 出せない（2026-08-27 の 指定）。
    */
-  const nothingWritten = left === questions.length;
+  const nothingWritten = requireAll ? left > 0 : left === questions.length;
 
   return (
     <motion.div
@@ -904,7 +993,7 @@ function ConfirmCard({
         {!nothingWritten && (
           <button
             type="button"
-            onClick={onSubmit}
+            onClick={() => setConfirming(true)}
             className="btn-island btn-game px-6 py-3.5"
             style={{ "--btn-face": "#58c273", "--btn-shadow": "#3aa458" } as React.CSSProperties}
           >
@@ -923,7 +1012,103 @@ function ConfirmCard({
           <RubyText text="もんだいに もどって 見なおす" index={UI_FURIGANA} />
         </button>
       </div>
+
+      {confirming && (
+        <SubmitConfirmDialog
+          left={left}
+          onCancel={() => setConfirming(false)}
+          onConfirm={() => {
+            setConfirming(false);
+            onSubmit();
+          }}
+        />
+      )}
     </motion.div>
+  );
+}
+
+/**
+ * 出す まえの 確認（2026-08-27 の 指定「提出する時に確認のメッセージを出してください」）。
+ *
+ * ## なぜ「かくにん画面」だけでは 足りないか
+ * まとめて 出す には かくにんの ページが あるが、**全問1ページ（`all`）には 無い**
+ * ——書き終わった 手で そのまま 押せる 位置に「こたえを 出す」が あり、
+ * 押した 瞬間に 採点が 確定する（初回の 点は あとから 直せない）。
+ * どちらの やりかたでも 同じ 1枚を はさむ。
+ *
+ * ## こわがらせない
+ * 「出すと もう 直せません」とは 書かない。**直せる**（「もう一度 やる」は
+ * 前の こたえを 持ったまま 始まる）ので、そう 書く。出すのを こわがって
+ * 手が 止まる ほうが、この 画面の 害に なる。
+ */
+function SubmitConfirmDialog({
+  left,
+  onConfirm,
+  onCancel,
+}: {
+  /** まだ 書いて いない 数（0なら ふれない）。 */
+  left: number;
+  onConfirm: () => void;
+  onCancel: () => void;
+}) {
+  return (
+    <div
+      className="fixed inset-0 z-50 grid place-items-center p-4"
+      style={{ background: "rgba(31,58,86,.45)" }}
+      role="dialog"
+      aria-modal="true"
+      aria-label="こたえを 出す かくにん"
+    >
+      <motion.div
+        initial={{ opacity: 0, scale: 0.94 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="card-island w-full max-w-md p-6"
+      >
+        <div className="flex items-center gap-3">
+          <NexMax variant="guide" size={64} bob />
+          <div>
+            <h2 className="text-ink text-xl font-extrabold">
+              <RubyText text="こたえを 出しますか？" index={UI_FURIGANA} />
+            </h2>
+            <p className="text-ink-soft mt-1 text-sm font-bold">
+              <RubyText
+                text={
+                  left > 0
+                    ? `まだ ${left}もん 書いて いません。出すと 採点します。`
+                    : "出すと 採点します。けっかが 見られます。"
+                }
+                index={UI_FURIGANA}
+              />
+            </p>
+          </div>
+        </div>
+
+        <p className="bg-panel-tint border-hairline text-ink mt-4 rounded-[var(--radius-card)] border-2 px-4 py-3 text-sm font-bold">
+          <RubyText
+            text="出した あとも「もう一度 やる」で 直せます。書いた ことは のこります。"
+            index={UI_FURIGANA}
+          />
+        </p>
+
+        <div className="mt-5 grid gap-2">
+          <button
+            type="button"
+            onClick={onConfirm}
+            className="btn-island btn-game px-6 py-3.5"
+            style={{ "--btn-face": "#58c273", "--btn-shadow": "#3aa458" } as React.CSSProperties}
+          >
+            <RubyText text="はい、出します" index={UI_FURIGANA} />
+          </button>
+          <button
+            type="button"
+            onClick={onCancel}
+            className="border-hairline text-ink-soft bg-panel rounded-full border-2 px-6 py-2.5 text-sm font-extrabold"
+          >
+            <RubyText text="まだ 出さない（見なおす）" index={UI_FURIGANA} />
+          </button>
+        </div>
+      </motion.div>
+    </div>
   );
 }
 
@@ -953,6 +1138,8 @@ function AllQuestionsCard({
   drafts,
   retryIds,
   furigana,
+  dictionary,
+  requireAll,
   inputIssue,
   inputIssueQuestionId,
   dispatch,
@@ -963,15 +1150,20 @@ function AllQuestionsCard({
   /** 前の 回で もう一度に なった もんだい（赤い しるしを 出す）。 */
   retryIds: readonly string[];
   furigana: ReturnType<typeof buildFuriganaIndex>;
+  dictionary: readonly DictionaryEntry[] | undefined;
+  /** ぜんぶ うめるまで 出せなく するか（教材ごと・`quizSet.requireAll`）。 */
+  requireAll: boolean;
   inputIssue: FeedbackKey | undefined;
   inputIssueQuestionId: string | undefined;
   dispatch: (action: QuizAction) => void;
   onSubmit: () => void;
 }) {
+  const [confirming, setConfirming] = useState(false);
   const left = questions.filter((q) => !draftAnswered(q, drafts[q.id])).length;
   const written = questions.length - left;
-  // 1問も 書かずに 出す 道は 閉じる（理由は ConfirmCard と 同じ）
-  const nothingWritten = left === questions.length;
+  // 1問も 書かずに 出す 道は 閉じる（理由は ConfirmCard と 同じ）。
+  // `requireAll` の 教材では **のこり 0 まで** 出せない（2026-08-27 の 指定）。
+  const nothingWritten = requireAll ? left > 0 : left === questions.length;
 
   /*
    * もんだいごとの dispatch を **作り置き**する。毎回 その場で 関数を 作ると
@@ -1011,41 +1203,51 @@ function AllQuestionsCard({
       <ol className="grid gap-4">
         {questions.map((q, index) => (
           // key は question.id **だけ**。相を混ぜると 打つたびに 入力が 作り直される
-          <li
-            key={q.id}
-            id={`q-${q.id}`}
-            className="card-island scroll-mt-16 p-5 sm:p-6"
-            /*
-             * 前の 回で もう一度に なった もんだいを 赤で 囲む（2026-08-25 の 指定）。
-             * 26問の 中から 直す ところを 探させない ため。
-             */
-            style={
-              retryIds.includes(q.id)
-                ? { outline: "3px solid #f26fa7", outlineOffset: 2 }
-                : undefined
-            }
-          >
-            {retryIds.includes(q.id) && (
-              <p className="mb-2">
-                <span
-                  className="rounded-full px-2 py-0.5 text-xs font-extrabold"
-                  style={{ background: "#f26fa7", color: "#fff" }}
-                >
-                  <RubyText text="↻ もう一度 見る もんだい" index={UI_FURIGANA} />
-                </span>
-              </p>
+          <Fragment key={q.id}>
+            {/*
+              章が 変わる ところで 見出しを 1回だけ。**前の 問いと 見くらべて 決める**
+              ので、問いを 1つ 足しても 章と 問いの 対応は ずれない
+              （章を 別の 配列で 持つと、そこが ずれる — schema.ts の `section`）。
+            */}
+            {q.section && q.section !== questions[index - 1]?.section && (
+              <SectionHead title={q.section} note={q.sectionNote} furigana={furigana} />
             )}
-            <QuestionRow
-              question={q}
-              index={index}
-              total={questions.length}
-              answered={draftAnswered(q, drafts[q.id])}
-              draft={drafts[q.id]}
-              furigana={furigana}
-              dispatch={dispatchers.get(q.id)!}
-              inputIssue={inputIssueQuestionId === q.id ? inputIssue : undefined}
-            />
-          </li>
+            <li
+              id={`q-${q.id}`}
+              className="card-island scroll-mt-16 p-5 sm:p-6"
+              /*
+               * 前の 回で もう一度に なった もんだいを 赤で 囲む（2026-08-25 の 指定）。
+               * 26問の 中から 直す ところを 探させない ため。
+               */
+              style={
+                retryIds.includes(q.id)
+                  ? { outline: "3px solid #f26fa7", outlineOffset: 2 }
+                  : undefined
+              }
+            >
+              {retryIds.includes(q.id) && (
+                <p className="mb-2">
+                  <span
+                    className="rounded-full px-2 py-0.5 text-xs font-extrabold"
+                    style={{ background: "#f26fa7", color: "#fff" }}
+                  >
+                    <RubyText text="↻ もう一度 見る もんだい" index={UI_FURIGANA} />
+                  </span>
+                </p>
+              )}
+              <QuestionRow
+                question={q}
+                index={index}
+                total={questions.length}
+                answered={draftAnswered(q, drafts[q.id])}
+                draft={drafts[q.id]}
+                furigana={furigana}
+                dictionary={dictionary}
+                dispatch={dispatchers.get(q.id)!}
+                inputIssue={inputIssueQuestionId === q.id ? inputIssue : undefined}
+              />
+            </li>
+          </Fragment>
         ))}
       </ol>
 
@@ -1060,10 +1262,33 @@ function AllQuestionsCard({
             />
           )}
         </p>
+        {/*
+          **のこりが ある あいだ「こたえを 出す」を 出さない** 教材では、
+          ボタンが 消えた 理由と 次の 一手を 必ず 置く。ボタンだけ 消すと、
+          学習者には「出す 道が どこにも 無い」画面に なる（設計01 P8）。
+        */}
+        {requireAll && left > 0 && (
+          <div className="mt-4">
+            <p className="bg-cream border-hairline text-ink rounded-[var(--radius-card)] border-2 px-4 py-3 font-extrabold">
+              <RubyText
+                text={`ぜんぶ 書くと「こたえを 出す」が 出ます。のこり ${left}もん です。`}
+                index={UI_FURIGANA}
+              />
+            </p>
+            {firstLeft && (
+              <a
+                href={`#q-${firstLeft.id}`}
+                className="btn-island btn-game mt-3 block w-full px-6 py-3 text-center"
+              >
+                <RubyText text="まだの もんだいへ ⤵" index={UI_FURIGANA} />
+              </a>
+            )}
+          </div>
+        )}
         {!nothingWritten && (
           <button
             type="button"
-            onClick={onSubmit}
+            onClick={() => setConfirming(true)}
             className="btn-island btn-game mt-4 w-full px-6 py-3.5"
             style={{ "--btn-face": "#58c273", "--btn-shadow": "#3aa458" } as React.CSSProperties}
           >
@@ -1071,6 +1296,17 @@ function AllQuestionsCard({
           </button>
         )}
       </div>
+
+      {confirming && (
+        <SubmitConfirmDialog
+          left={left}
+          onCancel={() => setConfirming(false)}
+          onConfirm={() => {
+            setConfirming(false);
+            onSubmit();
+          }}
+        />
+      )}
     </div>
   );
 }
@@ -1087,6 +1323,7 @@ const QuestionRow = memo(function QuestionRow({
   answered,
   draft,
   furigana,
+  dictionary,
   dispatch,
   inputIssue,
 }: {
@@ -1096,6 +1333,7 @@ const QuestionRow = memo(function QuestionRow({
   answered: boolean;
   draft: Parameters<typeof draftAnswerText>[1];
   furigana: ReturnType<typeof buildFuriganaIndex>;
+  dictionary: readonly DictionaryEntry[] | undefined;
   dispatch: (action: QuizAction) => void;
   inputIssue: FeedbackKey | undefined;
 }) {
@@ -1113,13 +1351,18 @@ const QuestionRow = memo(function QuestionRow({
         >
           {index + 1}
         </span>
-        <h2 className="text-ink min-w-0 flex-1 text-lg font-extrabold whitespace-pre-line">
-          <RubyText text={question.q} index={furigana} />
-        </h2>
+        <div className="min-w-0 flex-1">
+          <h2 className="text-ink text-lg font-extrabold whitespace-pre-line">
+            <DictionaryText text={question.q} index={furigana} dictionary={dictionary} />
+          </h2>
+          <QuestionSource question={question} furigana={furigana} />
+        </div>
         <span className="text-ink-faint mt-1 shrink-0 text-xs font-extrabold">
           {index + 1}/{total}
         </span>
       </div>
+
+      <QuestionHints question={question} furigana={furigana} dictionary={dictionary} />
 
       <QuestionBody
         question={question}
@@ -1139,6 +1382,106 @@ const QuestionRow = memo(function QuestionRow({
     </>
   );
 });
+
+/**
+ * どこを 見れば 分かるか（🔎 の 札）。
+ *
+ * 前は 設問文の 中に 改行で「＊会社の しょうかいの ページ」と 書いて いた。
+ * 文の 一部なので **読み上げにも 混ざり**、どこからが 問いなのかが 読めなかった。
+ * 札に すると 目で 拾えて、読み上げの 対象からも 外れる。
+ */
+function QuestionSource({
+  question,
+  furigana,
+}: {
+  question: QuizQuestion;
+  furigana: ReturnType<typeof buildFuriganaIndex>;
+}) {
+  if (!question.source) return null;
+  return (
+    <p className="bg-sky-soft text-navy mt-2 inline-flex w-max rounded-full px-2.5 py-1 text-xs font-extrabold">
+      <span aria-hidden className="mr-1">
+        🔎
+      </span>
+      <RubyText text={question.source} index={furigana} />
+    </p>
+  );
+}
+
+/**
+ * 考える ヒント。**押すと 開く**。
+ *
+ * 開きっぱなしに しないのは、答えに 近い 文を いつも 見せると 調べる／考える 練習が
+ * 消える ため。けれど **閉じて いる ことが 分かる 見た目**に する——詰まった 学習者が
+ * 助けの ありかを 見つけられない ほうが、ずっと まずい（設計01 P8）。
+ */
+function QuestionHints({
+  question,
+  furigana,
+  dictionary,
+}: {
+  question: QuizQuestion;
+  furigana: ReturnType<typeof buildFuriganaIndex>;
+  dictionary?: readonly DictionaryEntry[];
+}) {
+  const hints = question.hints ?? [];
+  if (hints.length === 0) return null;
+  return (
+    <div className="mb-3 grid gap-2 sm:grid-cols-2">
+      {hints.map((hint, i) => (
+        <details
+          key={i}
+          className="border-hairline bg-panel-tint rounded-[14px] border-2 px-3 py-2"
+        >
+          <summary className="text-navy cursor-pointer text-xs font-extrabold">
+            <RubyText text={hint.title} index={furigana} />
+          </summary>
+          <p className="text-ink mt-1.5 text-sm leading-relaxed font-bold">
+            <DictionaryText text={hint.text} index={furigana} dictionary={dictionary} />
+          </p>
+        </details>
+      ))}
+    </div>
+  );
+}
+
+/**
+ * 章（MISSION）の 見出し。全問1ページの ときに、章が 変わる ところで 1回だけ 出す。
+ *
+ * 25問が 見出しなしで 並ぶと、**いま どの 話を 調べて いるのかが 画面から 消える**。
+ * 配布資料が MISSION ごとに 区切って いたのは そのためで、同じ 区切りを 画面にも 出す。
+ */
+function SectionHead({
+  title,
+  note,
+  furigana,
+}: {
+  title: string;
+  note?: string;
+  furigana: ReturnType<typeof buildFuriganaIndex>;
+}) {
+  return (
+    <li className="mt-3 first:mt-0">
+      <div className="flex items-center gap-2.5">
+        <span
+          aria-hidden
+          className="h-7 w-2.5 shrink-0 rounded-full"
+          style={{ background: "var(--color-sky)" }}
+        />
+        <div className="min-w-0">
+          <h2 className="text-navy text-lg font-black">
+            <RubyText text={title} index={furigana} />
+          </h2>
+          {note && (
+            <p className="text-ink-soft text-xs font-extrabold">
+              <RubyText text={note} index={furigana} />
+            </p>
+          )}
+        </div>
+      </div>
+    </li>
+  );
+}
 
 /** けっかの 一覧を 切りかえる ふだ（ぜんぶ／もう一度／ほうこく）。 */
 function LensChip({
@@ -1187,11 +1530,22 @@ function ReviewRow({
   result,
   number,
   furigana,
+  freeOnly = false,
 }: {
   question: QuizQuestion;
   result: QuizResult;
   number: number;
   furigana: ReturnType<typeof buildFuriganaIndex>;
+  /**
+   * 正解の 無い 教材（自由記述だけ）か。
+   *
+   * ○×の 帯・「✓ できた」の 札・「せつめい」を 出さない——**どれも
+   * 「合って いた／いない」を 前提に した 見せ方**で、正解が 無い 問いに 付けると
+   * 学習者の 考えに 点が ついたように 見える（2026-08-27 の 指定）。
+   * 書けなかった 行だけは 帯を 変えて「まだ」と 言う——責める ためでは なく、
+   * 会話に 持って 行けない 行が どれかを 見せる ため。
+   */
+  freeOnly?: boolean;
 }) {
   const ok = result.correct;
   const own = result.answer?.trim() ?? "";
@@ -1207,18 +1561,29 @@ function ReviewRow({
   return (
     <li
       className="border-hairline bg-panel rounded-[var(--radius-card)] border-2 px-3 py-3"
-      style={{ borderLeftWidth: 6, borderLeftColor: ok ? "#58c273" : "#f26fa7" }}
+      style={{
+        borderLeftWidth: 6,
+        borderLeftColor: freeOnly ? (ok ? "#4fa8e8" : "#c9d4de") : ok ? "#58c273" : "#f26fa7",
+      }}
     >
       <div className="flex items-center gap-2">
         <span className="border-hairline bg-panel-tint text-ink-soft grid h-6 w-6 shrink-0 place-items-center rounded-full border-2 text-xs font-extrabold">
           {number}
         </span>
-        <span
-          className="rounded-full px-2 py-0.5 text-xs font-extrabold"
-          style={{ background: ok ? "#58c273" : "#f26fa7", color: "#fff" }}
-        >
-          <RubyText text={ok ? "✓ できた" : "↻ もう一度"} index={UI_FURIGANA} />
-        </span>
+        {freeOnly ? (
+          !ok && (
+            <span className="border-hairline text-ink-soft bg-panel-tint rounded-full border-2 px-2 py-0.5 text-xs font-extrabold">
+              <RubyText text="まだ 書いて いません" index={UI_FURIGANA} />
+            </span>
+          )
+        ) : (
+          <span
+            className="rounded-full px-2 py-0.5 text-xs font-extrabold"
+            style={{ background: ok ? "#58c273" : "#f26fa7", color: "#fff" }}
+          >
+            <RubyText text={ok ? "✓ できた" : "↻ もう一度"} index={UI_FURIGANA} />
+          </span>
+        )}
         {question.report && (
           <span className="bg-sky-soft text-navy ml-auto rounded-full px-2 py-0.5 text-xs font-extrabold">
             <RubyText text="🎤 ほうこく" index={UI_FURIGANA} />
@@ -1240,7 +1605,8 @@ function ReviewRow({
         もう一度の 行だけ、自分が 書いた ものも 小さく 残す（消すと 何を 直すか 分からない）。
         **書かなかった ことも 出す**——空の まま だと「合って いたのに 出て いない」と 読める。
       */}
-      {!ok &&
+      {!freeOnly &&
+        !ok &&
         (own === "" ? (
           <p className="text-ink-faint mt-0.5 text-xs font-bold">
             <RubyText text="まだ かいて いません" index={UI_FURIGANA} />
@@ -1254,9 +1620,13 @@ function ReviewRow({
           )
         ))}
 
-      <details open={!ok} className="mt-1.5">
+      {/*
+        正解の 無い 教材では「せつめい」を **たたまずに 出す**。ここに 入って いるのは
+        正解の 解説では なく **話す ときの コツ**（`explain`）で、たたむと 誰も 読まない。
+      */}
+      <details open={freeOnly || !ok} className="mt-1.5">
         <summary className="text-ink-soft cursor-pointer text-xs font-extrabold">
-          <RubyText text="せつめい" index={UI_FURIGANA} />
+          <RubyText text={freeOnly ? "話す ときの コツ" : "せつめい"} index={UI_FURIGANA} />
         </summary>
         <p className="text-ink-soft mt-1 text-sm leading-relaxed font-bold">
           <RubyText text={question.explain} index={furigana} />
@@ -1273,6 +1643,7 @@ function QuizResultCard({
   review,
   skipped,
   furigana,
+  freeOnly,
   onRetryAll,
 }: {
   set: QuizSet;
@@ -1283,6 +1654,8 @@ function QuizResultCard({
   /** この回が 見ないまま 飛ばした 問題の 数（しおりで 途中から 始めた ときだけ 0より 大きい）。 */
   skipped: number;
   furigana: ReturnType<typeof buildFuriganaIndex>;
+  /** 正解の 無い 教材（自由記述だけ）か。点・○×・「せいかい」を 出さない。 */
+  freeOnly: boolean;
   onRetryAll: () => void;
 }) {
   const missed = summary.missedQuestionIds.length;
@@ -1303,6 +1676,14 @@ function QuizResultCard({
    * スタンプは そのまま 出す。取り上げは しない。
    */
   const praised = summary.passed && skipped === 0;
+  /**
+   * 正解の 無い 教材で「できた」と 言える 数＝**書けた 数**。
+   *
+   * `summary.correct` と 数は 同じに なるが、**呼び名を 変える**のが この 直しの 主眼で
+   * ある。「4 / 5 もん せいかい」は、書かなかった 1問を「まちがい」に 見せる。
+   * ここでは「4つ 書けました。あと 1つ です」と 言う。
+   */
+  const written = review.filter(({ result }) => (result.answer ?? "").trim() !== "").length;
 
   return (
     <motion.div
@@ -1314,9 +1695,17 @@ function QuizResultCard({
       <div className="flex items-center gap-4">
         <NexMax variant={praised ? "cheer" : set.nekumax} size={84} bob />
         <div>
-          <p className="text-ink-soft text-sm font-extrabold">けっか</p>
+          <p className="text-ink-soft text-sm font-extrabold">
+            {freeOnly ? "はなす じゅんび" : "けっか"}
+          </p>
           <h2 className="text-ink text-3xl font-extrabold">
-            {praised ? "よく できました！" : "ここまで すすんだね"}
+            {freeOnly
+              ? written === review.length
+                ? "ぜんぶ 書けました！"
+                : "ここまで 書けました"
+              : praised
+                ? "よく できました！"
+                : "ここまで すすんだね"}
           </h2>
         </div>
       </div>
@@ -1336,16 +1725,31 @@ function QuizResultCard({
             />
           </p>
         ) : (
-          <FeedbackMessage messageKey={summary.passed ? "stage.passed" : "quiz.keepGoing"} />
+          <FeedbackMessage
+            messageKey={
+              freeOnly ? "quiz.prepared" : summary.passed ? "stage.passed" : "quiz.keepGoing"
+            }
+          />
         )}
       </div>
 
+      {/*
+        正解の 無い 教材では **点も ％も 出さない**。数えられるのは「いくつ 書けたか」だけ
+        （2026-08-27 の 指定）。スタンプは 残す——書いた ことを 数える しるしで、
+        「合って いた 数」の しるしでは ないから。
+      */}
       <p className="text-ink mt-5 text-center text-2xl font-extrabold">
-        {summary.correct} / {summary.total} もん せいかい
-        <span className="text-sky ml-3 text-lg">{summary.percent}%</span>
+        {freeOnly ? (
+          <RubyText text={`${written} / ${review.length} つ 書けました`} index={UI_FURIGANA} />
+        ) : (
+          <>
+            {summary.correct} / {summary.total} もん せいかい
+            <span className="text-sky ml-3 text-lg">{summary.percent}%</span>
+          </>
+        )}
       </p>
       <div className="mt-3 flex justify-center">
-        <StampRow count={summary.correct} />
+        <StampRow count={freeOnly ? written : summary.correct} />
       </div>
 
       {/*
@@ -1356,14 +1760,24 @@ function QuizResultCard({
       {review.length > 0 && (
         <section className="mt-6">
           <h3 className="text-ink mb-2 font-extrabold">
-            <RubyText text="ぜんぶの こたえ" index={UI_FURIGANA} />
+            <RubyText
+              text={freeOnly ? "あなたが 書いた こと" : "ぜんぶの こたえ"}
+              index={UI_FURIGANA}
+            />
           </h3>
 
           {/*
             見る ぶんを 切りかえる。**「ほうこく」で 絞ると カンペに なる**
             ——26問 ぜんぶを 開いたまま 話すのは むずかしい。
+
+            正解の 無い 教材では 出さない。「もう一度」は 存在せず、「ほうこく」は
+            ぜんぶの 行に 付く（＝絞る 意味が 無い）ので、押しても 何も 変わらない
+            ボタンが 3つ 並ぶだけに なる。
           */}
-          <div className="bg-panel/95 border-hairline sticky top-0 z-10 -mx-1 mb-3 flex flex-wrap gap-2 rounded-full border-2 px-3 py-2 backdrop-blur">
+          <div
+            hidden={freeOnly}
+            className="bg-panel/95 border-hairline sticky top-0 z-10 -mx-1 mb-3 flex flex-wrap gap-2 rounded-full border-2 px-3 py-2 backdrop-blur"
+          >
             <LensChip on={lens === "all"} onClick={() => setLens("all")}>
               {`ぜんぶ ${review.length}`}
             </LensChip>
@@ -1387,6 +1801,7 @@ function QuizResultCard({
                 result={result}
                 number={review.findIndex((r) => r.question.id === question.id) + 1}
                 furigana={furigana}
+                freeOnly={freeOnly}
               />
             ))}
           </ul>
@@ -1407,13 +1822,19 @@ function QuizResultCard({
            * 読み上げにも ルビは 邪魔なので、ルビ前の ことばを aria-label で 持たせる
            *（`ruby-breaks-playwright-name-lookup` と 同じ 手当て）。
            */
-          aria-label="もう一度 やる"
+          aria-label={freeOnly ? "書き直す" : "もう一度 やる"}
           className="btn-island btn-game px-6 py-3.5"
           style={{ "--btn-face": "#58c273", "--btn-shadow": "#3aa458" } as React.CSSProperties}
         >
           {/* 見出しの「もう一度 見る もんだい」と 同じ 語なので、ふりがなも そろえる（規律2） */}
           <RubyText
-            text={missed > 0 ? "もう一度 やる（こたえは のこります）" : "もう一度 やる"}
+            text={
+              freeOnly
+                ? "書き直す（書いた ものは のこります）"
+                : missed > 0
+                  ? "もう一度 やる（こたえは のこります）"
+                  : "もう一度 やる"
+            }
             index={UI_FURIGANA}
           />
         </button>

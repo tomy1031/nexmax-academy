@@ -77,7 +77,7 @@ export type ArcadePhase =
  * `seq` は **同じ ことが つづいても 演出を 出し直す**ための 番号。
  * これが 無いと 2回 つづけて 外したとき、2回目の 揺れが 出ない。
  */
-export type FlashKind = "hit" | "miss" | "timeup";
+export type FlashKind = "hit" | "miss" | "timeup" | "retry";
 
 export interface WordOutcome {
   readonly wordId: string;
@@ -213,9 +213,22 @@ export function arcadeReducer(state: ArcadeState, action: ArcadeAction): ArcadeS
       }
       if (!action.input.trim()) return state;
 
+      /*
+       * **外しても 読みの 番は 終わらない**（2026-08-27 の 指定）。
+       *
+       * 画面が 横に 揺れて 入力欄が 空に なるだけで、**正しく 打てるまで 何度でも**
+       * やり直せる。打ち直しに 代償は 無い（ライフも コンボも 減らない）——
+       * 減るのは 時間だけで、用語は そのあいだも 近づいて くる。
+       * 不正解に なるのは **目の前まで 迫られた とき**（`readingTimeout`）だけ。
+       *
+       * 前は 1回 外した 時点で 読みを 打ち切って いた。1文字の 打ちまちがいでも
+       * そこで 終わって しまい、「打てた はずなのに」が 残って いた。
+       */
       return readingMatches(action.input, word.reading)
         ? onReadingCorrect(state)
-        : onReadingMissed(state, "reading.retry", "miss");
+        : // 打ち直しに 文は 出さない（2026-08-27「変にポジティブにするルール…ここに適用しても無意味」）。
+          // 合図は 横揺れ・入力欄が 空に なる こと・小さな ❌ の 3つだけ。
+          { ...state, hint: null, ...flashOf(state, "retry") };
     }
 
     case "readingTimeout":
@@ -267,6 +280,12 @@ function onReadingCorrect(state: ArcadeState): ArcadeState {
   };
 }
 
+/**
+ * 読みを 落とす（**用語が 目の前まで 迫った ときだけ**）。
+ *
+ * 打ちまちがいでは ここへ 来ない。来るのは 時間切れ——
+ * つまり「読めなかった」ことが 確かな ときだけ。
+ */
 function onReadingMissed(state: ArcadeState, feedback: FeedbackKey, flash: FlashKind): ArcadeState {
   return {
     ...state,

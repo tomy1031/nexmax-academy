@@ -94,18 +94,42 @@ describe("ことばアーケードの状態機械", () => {
     expect(latin.hint).toBe("reading.hasLatin");
   });
 
-  it("読みを外しても意味フェーズには必ず進む（学びを打ち切らない）", () => {
+  /**
+   * 読みは **正しく 打てるまで 何度でも**（2026-08-27 の 指定）
+   *
+   * 打ちまちがいでは 番が 終わらない。終わるのは 用語が 目の前に 来た とき
+   *（`readingTimeout`）だけ。1文字の 打ちまちがいで 打ち切られると、
+   * 「打てた はずなのに」が 残る。
+   */
+  it("読みを外しても 読みの 番は つづく（打ち直せる）", () => {
     const s0 = createSession({ stage, mode: "test", rng: seededRng(5) });
     const s1 = arcadeReducer(s0, { type: "submitReading", input: "ぜんぜんちがうよみ" });
+    expect(s1.phase).toEqual({ kind: "reading" });
+    expect(s1.hint).toBeNull(); // 打ち直しに 文は 出さない（しるしだけ）
+    expect(s1.flash).toBe("retry");
+    // 打ち直しに 代償は 無い（ライフも コンボも 減らない）
+    expect(s1.life).toBe(s0.life);
+    expect(s1.combo).toBe(s0.combo);
+
+    // 正しく 打てば そのまま 意味へ 進む
+    const word = currentWord(s1)!;
+    const s2 = arcadeReducer(s1, { type: "submitReading", input: word.reading });
+    expect(s2.phase).toEqual({ kind: "meaning", readingOk: true });
+  });
+
+  it("時間切れ（用語が 目の前に 来た）で はじめて 読みを 落とす", () => {
+    const s0 = createSession({ stage, mode: "practice", rng: seededRng(5) });
+    const s1 = arcadeReducer(s0, { type: "readingTimeout" });
     expect(s1.phase).toEqual({ kind: "meaning", readingOk: false });
-    expect(s1.hint).toBe("reading.retry");
+    expect(s1.hint).toBe("reading.timeup");
+    expect(s1.life).toBe(s0.life - 1);
   });
 
   it("テストは途中でゲームオーバーにならない（ライフを減らさない）", () => {
     let s = createSession({ stage, mode: "test", rng: seededRng(2) });
     const initialLife = s.life;
     s = run(s, [
-      { type: "submitReading", input: "ちがう" },
+      { type: "readingTimeout" },
       { type: "chooseMeaning", choice: "___ありえない選択肢___" },
       { type: "advance" },
     ]);
@@ -152,7 +176,7 @@ describe("ことばアーケードの状態機械", () => {
     let s = createSession({ stage, mode: "test", rng: seededRng(6) });
     const firstWord = currentWord(s)!;
     s = run(s, [
-      { type: "submitReading", input: "ちがうよみ" },
+      { type: "readingTimeout" },
       { type: "chooseMeaning", choice: firstWord.meaningEn },
       { type: "advance" },
     ]);
@@ -242,11 +266,13 @@ describe("ことばアーケードの状態機械", () => {
  * だから 状態に「いま 何が 起きたか」を 持たせ、画面が ⭕／❌／時間切れを 出し分ける。
  */
 describe("手ごたえの しるし（flash）", () => {
-  it("読みを 外しても『正解』には ならない（点は 入らない）", () => {
+  it("読みを 落とすと『正解』には ならない（点は 入らない）", () => {
     let s = createSession({ stage, mode: "test", rng: seededRng(31) });
     const word = currentWord(s)!;
     s = arcadeReducer(s, { type: "submitReading", input: "ぜんぜんちがうよみ" });
-    expect(s.flash).toBe("miss");
+    expect(s.flash).toBe("retry"); // 打ち直しの 合図。まだ 落として いない
+    s = arcadeReducer(s, { type: "readingTimeout" }); // 目の前まで 来た ＝ ここで 落ちる
+    expect(s.flash).toBe("timeup");
     s = arcadeReducer(s, { type: "chooseMeaning", choice: word.meaningEn });
     expect(summarize(s).readingCorrect).toBe(0);
     expect(summarize(s).score).toBe(1); // 意味の 1点だけ
@@ -272,8 +298,9 @@ describe("手ごたえの しるし（flash）", () => {
     let s = createSession({ stage, mode: "test", rng: seededRng(34) });
     s = arcadeReducer(s, { type: "submitReading", input: "ちがうよみ" });
     const first = s.flashSeq;
-    s = arcadeReducer(s, { type: "chooseMeaning", choice: "___ありえない選択肢___" });
-    expect(s.flash).toBe("miss");
+    // 2回目の 打ちまちがいでも 合図が 出る（番号が 増える＝もう一度 揺れる）
+    s = arcadeReducer(s, { type: "submitReading", input: "またちがうよみ" });
+    expect(s.flash).toBe("retry");
     expect(s.flashSeq).toBeGreaterThan(first);
   });
 

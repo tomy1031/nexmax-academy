@@ -1,0 +1,897 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>NexmaxAcademy 天井マップ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" />
+<style>
+  /* ── 色は トークンで 1か所に。暗い表示（OS設定）でも 読めるようにする ────────── */
+  :root {
+    --bg:#f7f2e6; --surface:#ffffff; --surface-2:#faf6ec; --plate:#ffffff;
+    --ink:#243049; --ink-soft:#5a6785; --ink-faint:#8d97ad;
+    --navy:#1b2545; --navy-deep:#121a35; --navy-mid:#2a3a6e; --on-navy:#f4ecd8;
+    --gold:#c9a45c; --gold-light:#e7cf95;
+    --line:#e0d5ba; --line-soft:#ece3cc;
+    --blue:#3a5ba0; --green:#3f7d52; --amber:#a8762b; --purple:#6b4f9e;
+    --limit:#b3453a;              /* 天井そのもの。ここ以外には 使わない */
+    --track:#e8dec5;
+    --code-bg:#ece3cc; --code-ink:#6b4f22;
+    --shadow:0 1px 2px rgba(27,37,69,.06), 0 8px 24px rgba(27,37,69,.05);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg:#12172a; --surface:#1a2039; --surface-2:#1f2745; --plate:#f3f0e6;
+      --ink:#e7ebf5; --ink-soft:#a9b3cc; --ink-faint:#7d879f;
+      --navy:#0e1428; --navy-deep:#0a0f1f; --navy-mid:#1e2a4d; --on-navy:#eadfc4;
+      --gold:#d5b171; --gold-light:#eeda9f;
+      --line:#2e3859; --line-soft:#273052;
+      --blue:#88a4e6; --green:#6fbf8b; --amber:#dfb264; --purple:#b09ae0;
+      --limit:#e0705f;
+      --track:#2b3557;
+      --code-bg:#232b49; --code-ink:#eeda9f;
+      --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg:#12172a; --surface:#1a2039; --surface-2:#1f2745; --plate:#f3f0e6;
+    --ink:#e7ebf5; --ink-soft:#a9b3cc; --ink-faint:#7d879f;
+    --navy:#0e1428; --navy-deep:#0a0f1f; --navy-mid:#1e2a4d; --on-navy:#eadfc4;
+    --gold:#d5b171; --gold-light:#eeda9f;
+    --line:#2e3859; --line-soft:#273052;
+    --blue:#88a4e6; --green:#6fbf8b; --amber:#dfb264; --purple:#b09ae0;
+    --limit:#e0705f;
+    --track:#2b3557;
+    --code-bg:#232b49; --code-ink:#eeda9f;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px rgba(0,0,0,.35);
+  }
+
+  * { box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body {
+    margin:0; background:var(--bg); color:var(--ink); line-height:1.8;
+    font-family:"Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .mono, code, .num, th .u, .meter-val {
+    font-family:"JetBrains Mono","SF Mono",Menlo,Consolas,monospace;
+    font-variant-numeric:tabular-nums;
+  }
+
+  /* ── 枠組み ─────────────────────────────────────────────── */
+  .layout { display:flex; align-items:flex-start; }
+  nav.toc {
+    position:sticky; top:0; width:272px; min-width:272px; height:100vh; overflow-y:auto;
+    background:linear-gradient(180deg,var(--navy),var(--navy-deep));
+    color:var(--on-navy); padding:26px 16px; border-right:3px solid var(--gold);
+  }
+  nav.toc h2 { font-size:14px; color:var(--gold-light); margin:0 0 2px; letter-spacing:.1em; }
+  nav.toc .sub { font-size:11px; color:#98a6c8; margin:0 0 20px; line-height:1.6; }
+  nav.toc ol { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:2px; }
+  nav.toc a {
+    display:flex; gap:9px; color:#cdd6ec; text-decoration:none; font-size:13px;
+    padding:6px 10px; border-radius:7px; border-left:2px solid transparent;
+  }
+  nav.toc a .n { color:var(--gold); font-size:11px; padding-top:3px; }
+  nav.toc a:hover, nav.toc a:focus-visible {
+    background:rgba(201,164,92,.18); color:#fff; border-left-color:var(--gold); outline:none;
+  }
+  nav.toc .legend { margin-top:22px; padding-top:16px; border-top:1px solid rgba(201,164,92,.3);
+    font-size:11px; color:#9fadd0; line-height:1.9; }
+  nav.toc .legend b { color:var(--gold-light); display:block; margin-bottom:4px; letter-spacing:.06em; }
+  main { flex:1; min-width:0; padding:0 0 70px; }
+
+  .hero {
+    background:linear-gradient(135deg,var(--navy),var(--navy-deep) 72%);
+    color:var(--on-navy); padding:46px 56px 40px; border-bottom:4px solid var(--gold);
+  }
+  .hero .eyebrow { color:var(--gold-light); letter-spacing:.26em; font-size:11px; margin:0 0 10px; }
+  .hero h1 { font-size:36px; margin:0 0 10px; letter-spacing:.03em; text-wrap:balance; line-height:1.35; }
+  .hero .lede { color:#c8d2ee; font-size:15px; margin:0; max-width:60ch; }
+  .hero .meta { font-size:12px; color:#9fadd0; margin-top:18px; display:flex; flex-wrap:wrap; gap:6px 20px; }
+
+  .wrap { padding:0 56px; max-width:1080px; }
+  section.chapter { padding-top:46px; scroll-margin-top:12px; }
+  h2.sec {
+    font-size:24px; color:var(--ink); margin:0 0 4px; padding-bottom:9px;
+    border-bottom:2px solid var(--gold); display:flex; align-items:baseline; gap:12px;
+    text-wrap:balance;
+  }
+  h2.sec .num { background:var(--gold); color:#1b2545; font-size:14px; border-radius:6px;
+    padding:2px 10px; flex:0 0 auto; font-weight:700; }
+  .sec-lede { color:var(--ink-soft); font-size:14px; margin:10px 0 0; max-width:66ch; }
+  h3 { font-size:18px; color:var(--blue); margin:30px 0 6px; text-wrap:balance; }
+  h4 { font-size:15px; margin:22px 0 4px; }
+  p { margin:8px 0; max-width:68ch; }
+  ul, ol.body { margin:8px 0 8px 2px; padding-left:22px; max-width:66ch; }
+  li { margin:5px 0; }
+  code { background:var(--code-bg); color:var(--code-ink); padding:1px 6px; border-radius:4px; font-size:12.5px; }
+  a { color:var(--blue); }
+
+  /* ── 図の台 ─────────────────────────────────────────────── */
+  figure.plate { margin:20px 0 8px; }
+  figure.plate .board {
+    background:var(--plate); border:1px solid var(--line); border-radius:12px;
+    padding:20px 16px; overflow-x:auto; box-shadow:var(--shadow);
+  }
+  figure.plate pre.mermaid { background:transparent; margin:0; text-align:center; min-width:min-content; }
+  /* 図は 縮めずに 台の 中で 横へ ずらす。狭い画面で 縮むと 文字が 読めなくなるため。 */
+  figure.plate .board svg { min-width:680px; max-width:none; height:auto; }
+  figure.plate figcaption { color:var(--ink-soft); font-size:12.5px; margin-top:9px; max-width:70ch; }
+
+  /* ── 表 ─────────────────────────────────────────────────── */
+  .tablewrap { overflow-x:auto; margin:16px 0; border-radius:10px; box-shadow:var(--shadow); }
+  table { width:100%; border-collapse:collapse; font-size:13.5px; background:var(--surface); min-width:640px; }
+  th, td { text-align:left; padding:9px 12px; border-bottom:1px solid var(--line-soft); vertical-align:top; }
+  th { background:var(--navy); color:var(--on-navy); font-weight:600; font-size:12.5px; white-space:nowrap; }
+  tr:nth-child(even) td { background:var(--surface-2); }
+  td.n { white-space:nowrap; }
+
+  /* ── しるし ─────────────────────────────────────────────── */
+  .badge { display:inline-block; font-size:11px; padding:1px 9px; border-radius:999px;
+    color:#fff; margin-right:4px; font-weight:600; white-space:nowrap; }
+  .b-learner { background:#3a5ba0; } .b-teacher { background:#6b4f9e; }
+  .b-auto    { background:#3f7d52; } .b-ai      { background:#a8762b; }
+  .who { font-size:11px; color:var(--ink-faint); }
+
+  .callout { border-left:4px solid var(--blue); background:var(--surface); padding:12px 18px;
+    border-radius:0 9px 9px 0; margin:16px 0; box-shadow:var(--shadow); max-width:72ch; }
+  .callout.warn  { border-color:var(--amber); }
+  .callout.stop  { border-color:var(--limit); }
+  .callout.good  { border-color:var(--green); }
+  .callout p:first-child { margin-top:0; }
+  .callout p:last-child  { margin-bottom:0; }
+
+  /* ── 天井メーター ────────────────────────────────────────── */
+  .meters { display:grid; gap:14px; margin:18px 0; }
+  @media (min-width:920px) { .meters.two { grid-template-columns:1fr 1fr; } }
+  .meter { background:var(--surface); border:1px solid var(--line); border-radius:11px;
+    padding:14px 16px 12px; box-shadow:var(--shadow); }
+  .meter-head { display:flex; align-items:baseline; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+  .meter-name { font-size:13.5px; font-weight:700; }
+  .meter-val { font-size:13px; color:var(--ink-soft); }
+  .meter-val b { color:var(--ink); font-size:15px; }
+  /* 目盛りは 天井の 1.3倍まで 描く。天井を 越えた ぶんが 目に 見えるようにするため。 */
+  .meter-track { position:relative; height:14px; background:var(--track); border-radius:3px; overflow:visible; }
+  .meter-track::after {                      /* 天井の 右＝越えては いけない 帯 */
+    content:""; position:absolute; left:76.9%; right:0; top:0; bottom:0; border-radius:0 3px 3px 0;
+    background:repeating-linear-gradient(135deg,var(--limit) 0 1px,transparent 1px 6px); opacity:.45;
+  }
+  .meter-fill { position:absolute; left:0; top:0; bottom:0; min-width:3px; border-radius:3px;
+    background:var(--green); z-index:1; }
+  .meter-fill.mid  { background:var(--amber); }
+  .meter-fill.at   { background:var(--limit); }
+  .meter-fill.past { background:var(--limit); z-index:1;
+    box-shadow:inset 0 0 0 100px rgba(255,255,255,.16); }
+  .meter-ceiling { position:absolute; left:76.9%; top:-4px; bottom:-4px; width:2px;
+    background:var(--limit); z-index:2; }
+  .meter-row { display:flex; align-items:center; gap:10px; margin-top:11px; }
+  .meter-row .tag { font-size:11px; color:var(--ink-faint); width:66px; flex:0 0 auto; text-align:right; }
+  .meter-row .meter-track { flex:1; }
+  .meter-row .mark { width:32px; flex:0 0 auto; font-size:11px; font-weight:700; color:var(--limit); }
+  .meter-note { font-size:12px; color:var(--ink-soft); margin:12px 0 0; max-width:none; }
+  .scale-note { display:flex; align-items:center; gap:10px; font-size:12.5px; color:var(--ink-soft);
+    margin:14px 0 0; max-width:none; }
+  .scale-note .key { flex:0 0 auto; width:66px; height:14px; position:relative; border-radius:3px;
+    background:var(--track); }
+  .scale-note .key i { position:absolute; left:76.9%; top:-3px; bottom:-3px; width:2px; background:var(--limit); }
+  .scale-note .key b { position:absolute; left:76.9%; right:0; top:0; bottom:0; border-radius:0 3px 3px 0;
+    background:repeating-linear-gradient(135deg,var(--limit) 0 1px,transparent 1px 6px); opacity:.45; }
+
+  .keyline { display:flex; gap:10px; align-items:flex-start; margin:14px 0; padding:12px 16px;
+    background:var(--surface-2); border:1px dashed var(--line); border-radius:10px; font-size:13.5px; }
+  .keyline .k { color:var(--limit); font-weight:700; white-space:nowrap; }
+
+  footer { padding:28px 56px; color:var(--ink-faint); font-size:12px;
+    border-top:1px solid var(--line); margin-top:44px; max-width:1080px; }
+  footer code { font-size:11.5px; }
+
+  @media (max-width:900px) {
+    /* 縦積みでは cross 軸が 幅になる。align-items:flex-start のままだと
+       main が 中身の 最大幅まで ふくらみ、ページ全体が 横に すべる。 */
+    .layout { flex-direction:column; align-items:stretch; }
+    main { width:100%; }
+    nav.toc { position:static; width:100%; min-width:0; height:auto; border-right:none;
+      border-bottom:3px solid var(--gold); }
+    nav.toc ol { flex-direction:row; flex-wrap:wrap; }
+    .hero { padding:34px 22px 30px; }
+    .hero h1 { font-size:27px; }
+    .wrap, footer { padding-left:22px; padding-right:22px; }
+  }
+  @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } }
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+<nav class="toc">
+  <h2>天井マップ</h2>
+  <p class="sub">システム構成と、無料枠の天井が<br />どの作業にどう効くか</p>
+  <ol>
+    <li><a href="#s1"><span class="n">1</span><span>全体像 — 4人の大家</span></a></li>
+    <li><a href="#s2"><span class="n">2</span><span>天井の一覧</span></a></li>
+    <li><a href="#s3"><span class="n">3</span><span>1回のアクセスが通る道</span></a></li>
+    <li><a href="#s4"><span class="n">4</span><span>授業の始まりに起きること</span></a></li>
+    <li><a href="#s5"><span class="n">5</span><span>AIは誰の枠で動くか</span></a></li>
+    <li><a href="#s6"><span class="n">6</span><span>作業別・どの枠を使うか</span></a></li>
+    <li><a href="#s7"><span class="n">7</span><span>効かせている対策</span></a></li>
+    <li><a href="#s8"><span class="n">8</span><span>次に折れるのはどこか</span></a></li>
+    <li><a href="#s9"><span class="n">9</span><span>見張り（気づく仕組み）</span></a></li>
+  </ol>
+  <div class="legend">
+    <b>だれの作業か</b>
+    <span class="badge b-learner">学習者</span>授業で使う<br />
+    <span class="badge b-teacher">先生</span>教材をつくる<br />
+    <span class="badge b-auto">自動</span>CI・デプロイ<br />
+    <span class="badge b-ai">AI</span>開発中の確認
+  </div>
+</nav>
+
+<main>
+
+<header class="hero">
+  <p class="eyebrow">NEXMAX ACADEMY / INFRASTRUCTURE</p>
+  <h1>天井マップ — 構成と、無料枠のどこに当たるか</h1>
+  <p class="lede">
+    このアプリは Cloudflare・Supabase・Google の無料枠だけで動いている。
+    無料枠は「速度が落ちる」のではなく <b>ある数を超えた瞬間に止まる</b>。
+    どこに天井があり、どの作業がそれを削るのかを1枚にまとめる。
+  </p>
+  <p class="meta">
+    <span>2026-08-27 現在</span>
+    <span>出典: リポジトリ実コード ・ <code>docs/deploy.md</code> §0.4〜§0.10 の実測</span>
+  </p>
+</header>
+
+<div class="wrap">
+
+<!-- ═══ 1 ═══════════════════════════════════════════════════ -->
+<section class="chapter" id="s1">
+  <h2 class="sec"><span class="num">1</span>全体像 — 天井を持っている大家は4人</h2>
+  <p class="sec-lede">
+    サーバは1つではない。学習者のブラウザは <b>3つの相手と別々に話す</b>——
+    うちの Worker、Supabase、そして Google（学習者自身のキーで）。
+    天井もその相手ごとに別々に立っている。
+  </p>
+
+  <figure class="plate">
+    <div class="board">
+<pre class="mermaid">
+flowchart LR
+  subgraph CLASS["教室 — 回線は1本 = IPは1つ"]
+    L["学習者の ブラウザ<br/>20〜30台"]
+  end
+  subgraph TEACH["先生の PC"]
+    A["先生の ブラウザ<br/>/admin"]
+    X["codex_bridge<br/>127.0.0.1:8790"]
+  end
+  subgraph CFW["Cloudflare Workers — academy"]
+    ST["静的アセット<br/>画像・JS・音・フォント"]
+    MW["middleware<br/>ログイン判定"]
+    IC["作りおきの 横取り"]
+    NX["Next の サーバ本体<br/>dynamic の ときだけ 起きる"]
+  end
+  KV[("KV<br/>作りおき")]
+  SB[("Supabase<br/>Auth / REST / Storage")]
+  GG["Google Gemini"]
+  OA["Codex / ChatGPT"]
+
+  L --> MW
+  A --> MW
+  MW --> IC
+  IC -->|"あれば そのまま 返す"| KV
+  IC -. "無ければ 起こす" .-> NX
+  NX -->|"作り直しを 書く"| KV
+  L -->|"枠を 使わない"| ST
+  L -->|"進捗・名簿 RLS"| SB
+  A -->|"教材の 保存"| SB
+  L -->|"BYOK キーは 端末の 中"| GG
+  A -->|"BYOK"| GG
+  A --> X --> OA
+</pre>
+    </div>
+    <figcaption>
+      実線は毎回通る道、点線は「作りおきに無いときだけ」通る道。
+      <b>Gemini へは Worker を通らない</b>——学習者のキーは端末から Google へ直接向かう（BYOK）。
+    </figcaption>
+  </figure>
+
+  <div class="callout">
+    <p><b>この形になっている理由は2つ。</b></p>
+    <ul>
+      <li><b>Worker に仕事をさせない。</b> 無料枠の CPU は1リクエスト <span class="mono">10ms</span>。
+        Cloudflare 自身が「サーバ側描画や認証は 10〜20ms 使う」と書いている——
+        <b>構造的にはみ出す</b>ので、描画も認証も外に出した。</li>
+      <li><b>キーを預からない。</b> Gemini のキーは学習者・先生が自分で発行し、その端末にだけ置く（BYOK）。
+        アプリは共有キーを持たないので、<b>Google の枠は使う人ごとに別勘定</b>になる。</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══ 2 ═══════════════════════════════════════════════════ -->
+<section class="chapter" id="s2">
+  <h2 class="sec"><span class="num">2</span>天井の一覧 — どこに、いくつ、超えると何が起きるか</h2>
+  <p class="sec-lede">
+    「レート制限」と呼んでいるものは、実際には性質の違う3種類が混ざっている。
+    <b>1日で戻るもの</b>・<b>一度に何回かで決まるもの</b>・<b>戻らない容量</b>。
+    混ぜて考えると対策を間違える。
+  </p>
+
+  <h3>A. 1日で戻る枠（日付が変わるとリセット）</h3>
+  <div class="tablewrap">
+  <table>
+    <tr><th>天井</th><th>数</th><th>超えると</th><th>削るのは</th></tr>
+    <tr>
+      <td>Worker リクエスト</td>
+      <td class="n mono">100,000 / 日</td>
+      <td><b>Error 1027</b>。UTC 0時（カンボジア朝7時）まで全員止まる</td>
+      <td>HTML・API・RSC のアクセス全部（静的アセットは<b>数えない</b>）</td>
+    </tr>
+    <tr>
+      <td>KV 読み（作りおきを読む）</td>
+      <td class="n mono">100,000 / 日</td>
+      <td>作りおきが読めずフルSSRへ落ちる</td>
+      <td>作りおきページの表示。拠点キャッシュが大半を吸う</td>
+    </tr>
+    <tr>
+      <td>KV 書き（作りおきを置く）</td>
+      <td class="n mono">1,000 / 日</td>
+      <td><b>code: 10048</b>。デプロイの作りおき投入が途中で落ち、<b>その版は全アクセスがフルSSR</b>になる</td>
+      <td>本番デプロイ（1回 約75件）＋ ISR の作り直し</td>
+    </tr>
+  </table>
+  </div>
+
+  <h3>B. 一度に何回かで決まる枠（時間で戻る・IPごと）</h3>
+  <div class="tablewrap">
+  <table>
+    <tr><th>天井</th><th>数</th><th>超えると</th><th>削るのは</th></tr>
+    <tr>
+      <td>Worker CPU</td>
+      <td class="n mono">10ms / 1リクエスト</td>
+      <td><b>Error 1102</b>。その人だけ画面が出ない（全員ではない）</td>
+      <td>冷えた Worker での <code>dynamic</code> ページ描画</td>
+    </tr>
+    <tr>
+      <td>Supabase 認証 <code>/auth/v1/token</code></td>
+      <td class="n mono">1時間 1,800回<br />ただし<b>一度に 30回</b></td>
+      <td>ログインが弾かれる。<b>Cloudflare をいくら直しても効かない</b></td>
+      <td>授業開始時の一斉ログイン。教室は<b>IPが1つ</b>なので人数がそのまま乗る</td>
+    </tr>
+    <tr>
+      <td>Supabase 認証 <code>/auth/v1/verify</code></td>
+      <td class="n mono">1時間 360回<br />一度に 30回</td>
+      <td>同上</td>
+      <td>メール確認などの経路</td>
+    </tr>
+    <tr>
+      <td>Supabase データ <code>/rest/v1/*</code></td>
+      <td class="n mono">上限なし</td>
+      <td>—</td>
+      <td>だから<b>進捗も名簿もブラウザから直に読み書きしてよい</b>（RLS が守る）</td>
+    </tr>
+    <tr>
+      <td>Gemini Live（音声）</td>
+      <td class="n">キーごと（Google 側・こちらからは見えない）</td>
+      <td>接続が張れない → 画面は理由を出して止まる</td>
+      <td>たいわ・ミーティングの判定・リスニングの音声づくり</td>
+    </tr>
+    <tr>
+      <td>Gemini <code>generateContent</code>（文字）</td>
+      <td class="n">キーごと・<b>Live とは別勘定</b></td>
+      <td>すぐ上限に当たる（実測: 学習者1人の1回のミーティングで尽きた）</td>
+      <td><b>学習者の道でも検証でも叩かない</b>（2026-08-27「許可するのは Gemini Live のみ」）。
+          先生の教材づくりの控えとしてはコードに残っている（§5）</td>
+    </tr>
+    <tr>
+      <td>Codex（ChatGPT の枠）</td>
+      <td class="n">サブスクの枠 ＋ <b>1接続1操作</b></td>
+      <td>2件目以降が「前の生成が終わるまで待って」で落ちる</td>
+      <td>絵・台本の生成。だから<b>まとめて作るは1件ずつ直列</b></td>
+    </tr>
+  </table>
+  </div>
+
+  <h3>C. 戻らない天井（容量・大きさ）</h3>
+  <div class="tablewrap">
+  <table>
+    <tr><th>天井</th><th>数</th><th>いまの実測</th><th>備考</th></tr>
+    <tr><td>KV の保存量</td><td class="n mono">1 GB</td><td class="n">7日で期限切れ → 約 530 MB で頭打ち</td>
+        <td>2026-08-26 に <b>1.24 GB で超過寸前</b>だった。期限なしで置いていたため</td></tr>
+    <tr><td>Worker のコードの大きさ</td><td class="n mono">gzip 3 MiB</td><td class="n">1,822 KiB（2026-08-16）</td>
+        <td>超えると <b>code: 10027</b> でデプロイが止まる。2.8 MiB で警告する見張りが CI にいる</td></tr>
+    <tr><td>静的アセットの数</td><td class="n mono">20,000 ファイル / 版</td><td class="n">余裕</td>
+        <td>配信回数は<b>無制限・カウント外</b></td></tr>
+    <tr><td>Supabase DB</td><td class="n mono">500 MB</td><td class="n">12 MB</td><td>教材を全部DBに置いても問題にならない</td></tr>
+    <tr><td>Supabase ファイル</td><td class="n mono">1 GB</td><td class="n">11 MB</td><td>画像・音声の置き場</td></tr>
+  </table>
+  </div>
+
+  <div class="keyline">
+    <span class="k">要点</span>
+    <span>無料枠での基本方針は <b>「Worker を通る回数を減らして、静的アセットに逃がす」</b>。
+    静的アセットはどれだけ配っても枠を使わない。</span>
+  </div>
+</section>
+
+<!-- ═══ 3 ═══════════════════════════════════════════════════ -->
+<section class="chapter" id="s3">
+  <h2 class="sec"><span class="num">3</span>1回のアクセスが通る道と、そこで減るもの</h2>
+  <p class="sec-lede">
+    画面を1つ開いたとき、どの枠がいくつ減るか。<b>分かれ道は3つ</b>——
+    静的アセットか／作りおきがあるか／300秒を過ぎたか。
+  </p>
+
+  <figure class="plate">
+    <div class="board">
+<pre class="mermaid">
+flowchart TD
+  R["ブラウザが 1つ 開く"] --> Q{"静的アセットか<br/>画像・JS・音・フォント"}
+  Q -->|"はい"| S["そのまま 配る<br/>枠を 使わない・無制限"]
+  Q -->|"いいえ"| W["Worker が 1回 起きる<br/>リクエスト 100,000/日 を 1つ"]
+  W --> M["middleware<br/>署名を その場で 確かめる<br/>外への 往復 ゼロ"]
+  M --> C{"作りおきに あるか"}
+  C -->|"ある"| H["横取りして 返す<br/>Next は 起きない<br/>CPU ほぼ ゼロ<br/>KV 読み 1回（拠点が 吸う）"]
+  C -->|"無い<br/>dynamic の ページ"| F["Next の サーバ本体を 起こす<br/>冷えて いると 1.2〜2.1秒<br/>CPU 10ms を 超える"]
+  F --> E["Error 1102<br/>その人だけ 開けない"]
+  H --> V{"置いてから<br/>300秒 過ぎたか"}
+  V -->|"はい"| G["裏で 作り直して KV へ 書く<br/>書き 1,000/日 を 使う"]
+  V -->|"いいえ"| D["おわり"]
+</pre>
+    </div>
+    <figcaption>
+      左下へ落ちる道（<b>フルSSR</b>）だけが CPU を使い、右下の道（<b>作り直し</b>）だけが KV の書き込みを使う。
+      学習者が通る画面からは、2026-08-26 に <code>dynamic</code> を全部なくした。
+    </figcaption>
+  </figure>
+
+  <div class="callout stop">
+    <p><b>いちばん見えにくい連鎖がここ。</b>
+    KV の書き込み枠が尽きる → デプロイが作りおきを置けない →
+    <b>その版は全アクセスがフルSSR</b> → 授業の人数で必ず Error 1102。
+    つまり <b>デプロイ回数が、巡り巡って同時アクセス障害の原因になる</b>。
+    「デプロイはタダ」と思って1日に何度も出すと、その日の夕方には<b>出せば出すほど壊れる</b>状態になる。</p>
+  </div>
+</section>
+
+<!-- ═══ 4 ═══════════════════════════════════════════════════ -->
+<section class="chapter" id="s4">
+  <h2 class="sec"><span class="num">4</span>授業の始まりに何が起きるか</h2>
+  <p class="sec-lede">
+    授業（火・水・金）の <b>入室の瞬間</b>が、このアプリでいちばん負荷の高い数十秒。
+    2026-08-25 に単語ゲームを20人で開いて上限超過が実発生した場所でもある。
+  </p>
+
+  <figure class="plate">
+    <div class="board">
+<pre class="mermaid">
+sequenceDiagram
+  autonumber
+  participant B as 学習者 20人の ブラウザ
+  participant S as Supabase 認証
+  participant W as Worker academy
+  participant K as KV 作りおき
+  B->>S: ログインの 引きかえ ×20（同じ IP から 一斉に）
+  Note over S: 一度に 30回まで。<br/>30人クラスは ここで 弾かれる
+  B->>W: タイトル画面 ×20
+  Note over W: force-static。ログイン済みかは<br/>ブラウザで 判定するので Next は 起きない
+  B->>W: まなびマップ ×20
+  W->>K: 作りおきを 読む（同じ 拠点なので まとめて 1回）
+  Note over B,W: Link は prefetch=false。<br/>見えた だけでは 先読みしない
+  B->>B: 教材・ゲームは 端末の 中で 動く<br/>進捗も 端末に 持つ
+  B->>S: 区切りで 進捗を 保存（/rest/v1・IP上限なし）
+</pre>
+    </div>
+    <figcaption>
+      矢印が Worker に向かっているのは最初の2本だけ。ゲーム中はサーバに何も送らない。
+      いま危ないのは①の <b>Supabase 側</b>で、Cloudflare 側ではない。
+    </figcaption>
+  </figure>
+
+  <h3>授業のある日、それぞれの天井はどれだけ埋まるか</h3>
+
+  <p class="scale-note">
+    <span class="key"><b></b><i></i></span>
+    <span>縦の赤い線が<b>天井</b>。右の斜線は越えてはいけない帯で、そこまで届いた棒は<b>超過</b>している。</span>
+  </p>
+
+  <div class="meters two">
+
+    <div class="meter">
+      <div class="meter-head">
+        <span class="meter-name">KV 書き込み（1日）</span>
+        <span class="meter-val"><b>315〜555</b> / 1,000 件</span>
+      </div>
+      <div class="meter-row">
+        <span class="tag">いま</span>
+        <span class="meter-track"><span class="meter-fill mid" style="width:42.7%"></span><span class="meter-ceiling"></span></span>
+        <span class="mark"></span>
+      </div>
+      <div class="meter-row">
+        <span class="tag">〜8/26</span>
+        <span class="meter-track"><span class="meter-fill past" style="width:100%"></span><span class="meter-ceiling"></span></span>
+        <span class="mark">超過</span>
+      </div>
+      <p class="meter-note">
+        本番デプロイ <span class="mono">約75件</span>（週3回・自動）＋ 授業中の作り直し <span class="mono">240〜480件</span>。
+        以前は<b>デプロイだけで1日877件</b>（1日13回）あり、2026-08-22 に本番デプロイが <code>code: 10048</code> で落ちた。
+        効いた対策は「STG のデプロイは KV を1件も使わない」「本番は週3回にまとめる」。
+      </p>
+    </div>
+
+    <div class="meter">
+      <div class="meter-head">
+        <span class="meter-name">一斉ログインのバースト</span>
+        <span class="meter-val"><b>20〜30</b> / 30 回</span>
+      </div>
+      <div class="meter-row">
+        <span class="tag">20人</span>
+        <span class="meter-track"><span class="meter-fill mid" style="width:51.5%"></span><span class="meter-ceiling"></span></span>
+        <span class="mark"></span>
+      </div>
+      <div class="meter-row">
+        <span class="tag">30人</span>
+        <span class="meter-track"><span class="meter-fill at" style="width:76.9%"></span><span class="meter-ceiling"></span></span>
+        <span class="mark">満杯</span>
+      </div>
+      <p class="meter-note">
+        教室は回線が1本＝<b>IPが1つ</b>。Supabase の認証は IP ごとに数えるので、人数がそのまま乗る。
+        <b>30人を超えるクラスはここで弾かれる</b>——Cloudflare をどれだけ直しても効かない、別の天井。
+      </p>
+    </div>
+
+    <div class="meter">
+      <div class="meter-head">
+        <span class="meter-name">Worker CPU（1リクエスト）</span>
+        <span class="meter-val">天井は <b>10ms</b></span>
+      </div>
+      <div class="meter-row">
+        <span class="tag">作りおき</span>
+        <span class="meter-track"><span class="meter-fill" style="width:6%"></span><span class="meter-ceiling"></span></span>
+        <span class="mark"></span>
+      </div>
+      <div class="meter-row">
+        <span class="tag">フルSSR</span>
+        <span class="meter-track"><span class="meter-fill past" style="width:100%"></span><span class="meter-ceiling"></span></span>
+        <span class="mark">超過</span>
+      </div>
+      <p class="meter-note">
+        Cloudflare 自身の目安が「サーバ側描画や認証は <b>10〜20ms</b>」。天井は 10ms なので<b>構造的にはみ出す</b>。
+        冷えた Worker での実測は応答 <span class="mono">1.16〜2.09秒</span>（温まっていれば 0.20〜0.35秒）。
+        20人が一斉に入ると拠点は新しい Worker を何本も起こすので、<b>何人かが必ず「1回目」を引く</b>——
+        「全員落ちる」ではなく「何人かだけ入れない」に見えるのはこれが理由。
+      </p>
+    </div>
+
+    <div class="meter">
+      <div class="meter-head">
+        <span class="meter-name">Worker リクエスト（1日）</span>
+        <span class="meter-val"><b>約1%</b> / 100,000</span>
+      </div>
+      <div class="meter-row">
+        <span class="tag">授業1コマ</span>
+        <span class="meter-track"><span class="meter-fill" style="width:0.8%"></span><span class="meter-ceiling"></span></span>
+        <span class="mark"></span>
+      </div>
+      <div class="meter-row">
+        <span class="tag">先読みあり</span>
+        <span class="meter-track"><span class="meter-fill mid" style="width:25%"></span><span class="meter-ceiling"></span></span>
+        <span class="mark"></span>
+      </div>
+      <p class="meter-note">
+        20人の入室ぶんは数百リクエスト（見積り）。<b>この天井はいま遠い</b>。
+        近づくのは先読みが戻ったとき——<code>prefetch</code> が有効だと、マップを開いただけで
+        1人あたり数十リクエストが飛び、<b>数十倍</b>になる（下の棒は「数十倍になったら」の目安）。
+      </p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══ 5 ═══════════════════════════════════════════════════ -->
+<section class="chapter" id="s5">
+  <h2 class="sec"><span class="num">5</span>AI は誰の枠で動くか</h2>
+  <p class="sec-lede">
+    アプリは共有の AI キーを持たない。<b>使う人のキー・使う人の枠</b>で動く（BYOK）。
+    だから Cloudflare の天井とは完全に別勘定で、<b>Worker も通らない</b>。
+  </p>
+
+  <figure class="plate">
+    <div class="board">
+<pre class="mermaid">
+flowchart TD
+  subgraph LRN["学習者の 画面 — 学習者じしんの キー"]
+    P1["たいわ（音声で 話す）"]
+    P2["ミーティングの 判定"]
+  end
+  subgraph TCH["先生の 画面 — 先生の キー"]
+    T1["絵を つくる"]
+    T2["台本・ことばの 抜き出し"]
+    T3["リスニングの 音声"]
+  end
+  P1 -->|"短命トークン 1回きり・30分"| LIVE["Gemini Live の 枠<br/>音声の つなぎ"]
+  P2 -->|"判定専用の つなぎを 1本 張りっぱなし"| LIVE
+  P2 -. "叩かない（Live だけ・絶対）" .-> GEN["generateContent の 枠<br/>Live とは 別勘定"]
+  T3 -->|"行ごとに 1接続"| LIVE
+  T2 --> GEN
+  T1 --> BR{"Codex の 合言葉が<br/>入っているか"}
+  BR -->|"ある"| CDX["ChatGPT の 枠<br/>1接続 1操作・1件ずつ 直列"]
+  BR -->|"無い"| GIMG["Gemini 画像の 枠"]
+  linkStyle 2 stroke:#b3453a,stroke-width:2px
+</pre>
+    </div>
+    <figcaption>
+      赤い点線は<b>意図的に切ってある道</b>。学習者の道でも、AI がする検証でも <code>generateContent</code> を叩かない。
+    </figcaption>
+  </figure>
+
+  <div class="callout stop">
+    <p><b>Gemini に許すのは Live だけ</b>（短命トークンの発行と Live の WebSocket のみ）。
+    <code>generateContent</code> と <code>ListModels</code> は
+    <b>学習者の道でも、AI がする検証でも叩かない</b>（2026-08-27 の指定）。
+    もとの理由は枠で、Live の枠と <code>generateContent</code> の枠は<b>別勘定</b>——後者は
+    <b>学習者1人の1回のミーティングで使い切る</b>（2026-08-20 の実測）。
+    文字だけの判断が要るときは、<b>Live のつなぎの中で JSON をもらう</b>か、端末の規則ベースで済ませる。</p>
+  </div>
+
+  <div class="callout warn">
+    <p><b>先生の画面には <code>generateContent</code> の経路がまだ残っている。</b>
+    まんがの台本（<code>manga-maker.tsx</code>）とことばの抜き出し（<code>vocab-extractor.tsx</code>）は、
+    Codex に届かないとき Gemini の <code>generateContent</code> に落ちる。
+    2026-08-27 の指定が名指ししたのは<b>学習者の道と検証</b>なので、この控えは今も動く。
+    先生の画面もふさぐかどうかは<b>判断が要る</b>（ふさぐと Codex ブリッジが止まっている間は台本が作れなくなる）。</p>
+  </div>
+
+  <div class="callout">
+    <p><b>Codex を第一にしている理由も枠の話。</b>
+    絵の水準が高いことに加えて、<b>Gemini の無料枠が少ない</b>。教材1本の制作は十数回の生成になるので、
+    そこを ChatGPT のサブスク枠（先生のPCで動くブリッジ）に逃がしている。
+    ブリッジが止まっていれば黙って Gemini に回る。</p>
+  </div>
+</section>
+
+<!-- ═══ 6 ═══════════════════════════════════════════════════ -->
+<section class="chapter" id="s6">
+  <h2 class="sec"><span class="num">6</span>作業別 — どの作業が、どの枠を使うか</h2>
+  <p class="sec-lede">
+    アプリで起きる作業を全部並べて、それぞれが削る枠を書いた。
+    <b>学習者の作業のほとんどは Worker を1回しか使わない</b>のが今の形。
+  </p>
+
+  <div class="tablewrap">
+  <table>
+    <tr><th>作業</th><th>だれ</th><th>通る道</th><th>削る枠</th></tr>
+
+    <tr>
+      <td>ログインする</td>
+      <td><span class="badge b-learner">学習者</span><span class="badge b-teacher">先生</span></td>
+      <td>ブラウザ → Supabase 認証 → <code>/auth/callback</code></td>
+      <td><b>Supabase 認証（一度に30回）</b>／Worker 1回＋CPU（戻り道は <code>dynamic</code>・1人1回）</td>
+    </tr>
+    <tr>
+      <td>タイトル画面を開く</td>
+      <td><span class="badge b-learner">学習者</span></td>
+      <td>作りおき（<code>force-static</code>）＋ ブラウザで判定</td>
+      <td>Worker 1回。<b>CPU はほぼゼロ</b>（Next を起こさない）</td>
+    </tr>
+    <tr>
+      <td>まなびマップ・教材ページ・じしょ</td>
+      <td><span class="badge b-learner">学習者</span></td>
+      <td>作りおき（ISR 300秒・16ルート）</td>
+      <td>Worker 1回／KV 読み 1回（拠点キャッシュが吸う）／<b>300秒に1度だけ KV 書き</b></td>
+    </tr>
+    <tr>
+      <td>ことばアーケードで遊ぶ</td>
+      <td><span class="badge b-learner">学習者</span></td>
+      <td>入室の1回だけ。プレイ中は端末の中</td>
+      <td>入室の Worker 1回のみ。<b>遊んでいる間はゼロ</b></td>
+    </tr>
+    <tr>
+      <td>もんだいを解く・進捗を保存する</td>
+      <td><span class="badge b-learner">学習者</span></td>
+      <td>ブラウザ → Supabase <code>/rest/v1</code>（RLS）</td>
+      <td><b>上限なし</b>／DB 容量（500 MB のうち 12 MB）</td>
+    </tr>
+    <tr>
+      <td>たいわ（音声で話す）</td>
+      <td><span class="badge b-learner">学習者</span></td>
+      <td>ブラウザ → Gemini Live（短命トークン・1回きり・30分）</td>
+      <td><b>学習者のキーの Live 枠</b>。Worker も Supabase も通らない</td>
+    </tr>
+    <tr>
+      <td>ミーティングの判定・助言</td>
+      <td><span class="badge b-learner">学習者</span></td>
+      <td>判定専用の Live 接続（音声で答えさせ、文字起こしから JSON を読む）</td>
+      <td>同上。<b><code>generateContent</code> は使わない</b>（すぐ上限に当たるため）</td>
+    </tr>
+
+    <tr>
+      <td>教材を書く・直す（<code>/admin</code>）</td>
+      <td><span class="badge b-teacher">先生</span></td>
+      <td><code>dynamic</code> なページ（Next 本体が起きる）</td>
+      <td>Worker CPU。<b>先生は数人なので許容している</b>唯一の場所</td>
+    </tr>
+    <tr>
+      <td>教材を保存する</td>
+      <td><span class="badge b-teacher">先生</span></td>
+      <td><code>/api/studio/content</code> → Supabase</td>
+      <td>Worker 1回／DB 容量</td>
+    </tr>
+    <tr>
+      <td>絵をつくる（エリア・キャラ・まんが）</td>
+      <td><span class="badge b-teacher">先生</span></td>
+      <td>Codex ブリッジ（第一）→ 届かなければ Gemini 画像</td>
+      <td><b>ChatGPT の枠</b>／Gemini 画像の枠。<b>1件ずつ直列</b>（ブリッジは1接続1操作）</td>
+    </tr>
+    <tr>
+      <td>リスニングの音声をつくる</td>
+      <td><span class="badge b-teacher">先生</span></td>
+      <td>ブラウザ → Gemini Live TTS（<b>行ごとに1接続</b>・声を切り替えられないため）</td>
+      <td>先生のキーの Live 枠。行数ぶん積み上がる</td>
+    </tr>
+    <tr>
+      <td>台本・ことばの抜き出し</td>
+      <td><span class="badge b-teacher">先生</span></td>
+      <td>Codex（第一）／届かなければ Gemini <code>generateContent</code></td>
+      <td>ChatGPT の枠／<b>Gemini の文字枠</b>（この控えだけが残っている経路・§5）</td>
+    </tr>
+
+    <tr>
+      <td>STG を更新する（<code>integration</code> へマージ）</td>
+      <td><span class="badge b-auto">自動</span></td>
+      <td>GitHub Actions → wrangler</td>
+      <td><b>KV 書き 0件</b>（作りおきを温めない設計）。何回出してもよい</td>
+    </tr>
+    <tr>
+      <td>本番を更新する（火・水・金 17:05 ICT）</td>
+      <td><span class="badge b-auto">自動</span></td>
+      <td>GitHub Actions → wrangler ＋ 作りおき投入</td>
+      <td><b>KV 書き 約75件</b>。ここが1日枠のいちばん大きな固定費</td>
+    </tr>
+    <tr>
+      <td>ブランチ確認URLを更新する</td>
+      <td><span class="badge b-ai">AI</span></td>
+      <td><code>npm run cf:branch</code>（作りおきを静的アセットに写す）</td>
+      <td><b>KV 書き 0件</b>。開発中に何度出しても授業に響かない</td>
+    </tr>
+    <tr>
+      <td>通しの自動検証（e2e）</td>
+      <td><span class="badge b-auto">自動</span><span class="badge b-ai">AI</span></td>
+      <td>鍵ゼロのデモモードで<b>自分の中に立てたアプリ</b>を操作</td>
+      <td><b>本番の枠を使わない</b></td>
+    </tr>
+    <tr>
+      <td>同時アクセスの確認（<code>loadcheck</code>）</td>
+      <td><span class="badge b-ai">AI</span></td>
+      <td>本番へ 20並列 × 5ページ</td>
+      <td>Worker リクエスト 100回。<b>回数を増やして連打しない</b></td>
+    </tr>
+  </table>
+  </div>
+</section>
+
+<!-- ═══ 7 ═══════════════════════════════════════════════════ -->
+<section class="chapter" id="s7">
+  <h2 class="sec"><span class="num">7</span>効かせている対策 — どの決まりが、どの天井に効くか</h2>
+  <p class="sec-lede">
+    いまアプリに入っている「一見わけの分からない決まりごと」は、ほぼ全部この表のどれかである。
+    <b>外すと、対になっている天井が戻ってくる</b>。
+  </p>
+
+  <div class="tablewrap">
+  <table>
+    <tr><th>決まり／仕掛け</th><th>効く天井</th><th>外すと起きること</th></tr>
+    <tr><td>学習者画面の Link は <code>prefetch={false}</code>（53か所）</td><td>Worker リクエスト</td>
+        <td>マップを開くだけで1人数十リクエスト。20人で数十倍に膨らむ</td></tr>
+    <tr><td><code>images.unoptimized: true</code></td><td>Worker リクエスト</td>
+        <td><code>/_next/image</code> が素通しなのに Worker を1回消費する（変換は有料機能のため何もしない）</td></tr>
+    <tr><td>学習者が通る画面を <code>dynamic</code> にしない</td><td><b>Worker CPU 10ms</b></td>
+        <td>リクエストのたび Next 本体を読み込み、冷えた Worker で Error 1102</td></tr>
+    <tr><td><code>getUser()</code> ではなく <code>getClaims()</code>（署名をその場で検証）</td><td>Supabase 認証・Worker CPU</td>
+        <td>1画面あたり2往復 × 20人 = 40往復が同じ IP から飛ぶ</td></tr>
+    <tr><td>ISR の <code>revalidate</code> は 300秒より短くしない</td><td>KV 書き 1,000/日</td>
+        <td>作り直しが5倍に増え、デプロイと枠を取り合う</td></tr>
+    <tr><td>拠点キャッシュ（<code>withRegionalCache</code>）</td><td>KV 読み 100,000/日</td>
+        <td>同じ教室の20人ぶんの読みが全部 KV まで届く</td></tr>
+    <tr><td>作りおきに<b>7日の期限</b>をつける</td><td>KV 保存 1 GB</td>
+        <td>前の版の置き土産が消えず、1日76 MB ずつ増えて枠を超える</td></tr>
+    <tr><td>STG のデプロイは作りおきを温めない／ブランチURLは静的アセット</td><td>KV 書き 1,000/日</td>
+        <td>1日13回のデプロイで枠が尽き、その日の本番デプロイが <code>code: 10048</code> で落ちる</td></tr>
+    <tr><td>本番デプロイは週3回・授業の前に自動</td><td>KV 書き 1,000/日</td>
+        <td>同上。人が「いま出していいか」を毎回考えることになる</td></tr>
+    <tr><td>Gemini は Live だけ（学習者の道・検証とも <code>generateContent</code> / <code>ListModels</code> を叩かない）</td>
+        <td>Gemini の文字枠</td>
+        <td>学習者1人が1回ミーティングをしただけで、その日そのキーは使えなくなる</td></tr>
+    <tr><td>まとめて作るは1件ずつ直列</td><td>Codex の1接続1操作</td>
+        <td>2件目以降が「前の生成が終わるまで待って」で落ちる</td></tr>
+    <tr><td><code>public/_headers</code> の <code>immutable</code> を消さない</td><td>Worker リクエスト</td>
+        <td>画面を開くたび全部品をサーバに問い合わせる（回線の細い学習者に効く）</td></tr>
+    <tr><td>Worker の大きさの見張り（2.8 MiB 警告・3.0 MiB 失敗）</td><td>コード gzip 3 MiB</td>
+        <td>気づかないうちに天井まで残り 5 KiB まで来る（2026-08-16 に実発生）</td></tr>
+  </table>
+  </div>
+</section>
+
+<!-- ═══ 8 ═══════════════════════════════════════════════════ -->
+<section class="chapter" id="s8">
+  <h2 class="sec"><span class="num">8</span>次に折れるのはどこか</h2>
+  <p class="sec-lede">直近の危険を、近い順に3つ。</p>
+
+  <ol class="body">
+    <li><b>Supabase の一斉ログイン（一度に30回）。</b>
+      いちばん近い。20人ならまだ余裕があるが、<b>30人クラスで確実に当たる</b>。
+      Cloudflare 側をどう直しても効かず、対策は「認証の往復そのものを減らす」しかない
+      （<code>getClaims()</code> はすでに入れた）。</li>
+    <li><b>逃がしきれない <code>dynamic</code> の CPU。</b>
+      学習者の道からは消したが、<b>ログインの戻り道</b>（1人1回・必ず通る）と
+      <code>/map/settings</code>・<code>/admin/*</code> は仕組み上 <code>dynamic</code> のまま残る。</li>
+    <li><b>授業のある日の KV 書き込み。</b>
+      いまは半分ほどで収まっているが、<b>ページ数が増えると作り直しの件数もそのまま増える</b>。
+      教材が倍になれば、この枠が先に見えてくる。</li>
+  </ol>
+
+  <div class="callout good">
+    <p><b>まとめて外れる道がひとつだけある。</b>
+    Workers 有料プラン（<b>$5/月</b>）に上げると CPU が <span class="mono">10ms → 30秒</span>になり、
+    リクエストの1日上限も無くなる。§7 の Cloudflare 側の決まりは<b>ほぼ全部が不要になる</b>。
+    Supabase の認証だけは別の天井なので残る。
+    無料枠を守る前提はユーザーの指定なので、<b>有料化は判断待ちとして置いてある</b>。</p>
+  </div>
+</section>
+
+<!-- ═══ 9 ═══════════════════════════════════════════════════ -->
+<section class="chapter" id="s9">
+  <h2 class="sec"><span class="num">9</span>見張り — どこで気づくか</h2>
+  <p class="sec-lede">天井は「超えてから」では遅い。いま自動で見ている場所。</p>
+
+  <div class="tablewrap">
+  <table>
+    <tr><th>見張り</th><th>いつ動くか</th><th>何を見ているか</th></tr>
+    <tr><td><code>npm run check:size</code></td><td>PR ごと（CI）</td><td>Worker の gzip サイズ（2.8 MiB で警告・3.0 MiB で失敗）</td></tr>
+    <tr><td><code>npm run e2e</code></td><td>PR ごと（CI）</td><td>6教材の通しプレイ。画面の写真が成果物として残る</td></tr>
+    <tr><td><code>scripts/check_cache_populated.mjs</code></td><td>本番デプロイの中</td><td>作りおきが実際に入ったか。<b>入らなければ「この版を使ってはいけない」と止める</b></td></tr>
+    <tr><td><code>node scripts/loadcheck.mjs &lt;URL&gt;</code></td><td>授業の前（手動）</td><td>主要5ページ × 20並列。全部返るか・エラー番号 1027/1102 が出ないか</td></tr>
+    <tr><td><code>npm run handoff</code></td><td>作業を始めるとき</td><td>本番と main の差・DB の移行が追いついているか</td></tr>
+    <tr><td>Cloudflare ダッシュボード</td><td>当日（人が見る）</td><td>リクエスト数とエラー 1027／1102。ログは7日残る</td></tr>
+  </table>
+  </div>
+
+  <div class="keyline">
+    <span class="k">まだ人に残る</span>
+    <span>Supabase 認証のバーストは<b>機械の見張りが無い</b>。人数が30人に近づいたら、
+    ここは実際に試すしかない（§8-1）。</span>
+  </div>
+</section>
+
+</div>
+
+<footer>
+  天井マップ v1.0 ・ 2026-08-27 作成 ・
+  出典: リポジトリ実コード（<code>wrangler.jsonc</code> ・ <code>open-next.config.ts</code> ・
+  <code>src/lib/cache/kv-expiring-cache.ts</code> ・ <code>src/lib/ai/</code> ・
+  <code>scripts/loadcheck.mjs</code>）と <code>docs/deploy.md</code> §0.4〜§0.10 の実測（2026-08-13〜08-27）。
+  数字を直すときは、<b>出典の実測日も一緒に</b>更新すること。
+</footer>
+
+</main>
+</div>
+
+<script type="module">
+  import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+  // 図の台は明暗どちらの表示でもクリーム色に固定しているので、mermaid は明るい配色で固定する。
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: "base",
+    themeVariables: {
+      primaryColor: "#eef3fb", primaryTextColor: "#243049", primaryBorderColor: "#3a5ba0",
+      lineColor: "#a8762b", secondaryColor: "#f6efdd", tertiaryColor: "#ffffff",
+      fontFamily: '"Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,system-ui,sans-serif',
+      fontSize: "14px",
+    },
+  });
+</script>
+</body>
+</html>

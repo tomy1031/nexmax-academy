@@ -714,13 +714,17 @@ export async function createArcadeWorld(
     const longest = Math.max(...lines.map((line) => line.length));
     const fs = Math.min(200, Math.floor(820 / longest));
     const cy = showReading && reading ? 300 : 256; // 読みを上に出すときは漢字を少し下げる
-    // 明るいフィールドでも読めるように、うすい下地を敷く
-    const bg = ctx.createRadialGradient(512, cy, 20, 512, cy, 430);
-    bg.addColorStop(0, "rgba(6,10,24,0.5)");
-    bg.addColorStop(0.7, "rgba(6,10,24,0.2)");
-    bg.addColorStop(1, "rgba(6,10,24,0)");
-    ctx.fillStyle = bg;
-    ctx.fillRect(0, 0, 1024, 512);
+    /*
+     * **下地は 敷かない**（2026-08-27 の 指定「四角い膜が カッコ悪い」）。
+     *
+     * 前は 明るい 景色でも 読める ように、円い グラデーションを 敷いて いた。
+     * ところが 塗る 先は 1024×512 の **四角い** キャンバスで、円の 半径(430)が
+     * 縦の 半分(256)より 大きい。つまり 上下の 端では まだ 濃い ところで
+     * 切られる ので、**字の まわりに 四角い 膜**が 見えて いた。
+     *
+     * 読みやすさは 下地の 代わりに **字そのもの**で 作る——黒い ふちを 厚くして
+     * 影を 足す。膜は 消えて、字は かえって くっきり する。
+     */
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.font = "900 " + fs + "px " + TERM_FONT;
@@ -735,10 +739,15 @@ export async function createArcadeWorld(
     ctx.strokeStyle = aura;
     lines.forEach((line, i) => ctx.strokeText(line, 512, ys[i]!));
     ctx.restore();
-    // 黒縁 → グラデーションの本体
-    ctx.lineWidth = fs * 0.13;
-    ctx.strokeStyle = "rgba(0,0,0,0.9)";
+    // 黒縁 → グラデーションの本体。下地を やめた ぶん、ふちを 厚く して 影を 足す
+    ctx.save();
+    ctx.shadowColor = "rgba(0,0,0,0.85)";
+    ctx.shadowBlur = 26;
+    ctx.lineWidth = fs * 0.2;
+    ctx.strokeStyle = "rgba(0,0,0,0.95)";
     lines.forEach((line, i) => ctx.strokeText(line, 512, ys[i]!));
+    lines.forEach((line, i) => ctx.strokeText(line, 512, ys[i]!)); // 2度がけ で 濃くする
+    ctx.restore();
     const top = ys[0]! - fs / 2;
     const tg = ctx.createLinearGradient(0, top, 0, ys[lines.length - 1]! + fs / 2);
     tg.addColorStop(0, "#ffffff");
@@ -751,10 +760,11 @@ export async function createArcadeWorld(
       const ry = top - fs * 0.1 - rfs * 0.5;
       ctx.font = "800 " + rfs + "px " + TERM_FONT;
       ctx.save();
-      ctx.shadowColor = "rgba(255,213,74,0.9)";
-      ctx.shadowBlur = 18;
-      ctx.lineWidth = rfs * 0.22;
-      ctx.strokeStyle = "rgba(0,0,0,0.9)";
+      ctx.shadowColor = "rgba(0,0,0,0.85)";
+      ctx.shadowBlur = 16;
+      ctx.lineWidth = rfs * 0.3;
+      ctx.strokeStyle = "rgba(0,0,0,0.95)";
+      ctx.strokeText(reading, 512, ry);
       ctx.strokeText(reading, 512, ry);
       ctx.restore();
       ctx.fillStyle = "#ffd54a";

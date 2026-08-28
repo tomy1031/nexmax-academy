@@ -10,6 +10,7 @@ import type { QuizAction, QuizMode } from "./quiz-reducer";
 
 /** 部品じたいの文言の読み辞書（教材データの辞書はUIの文言まで覆わない・規律2）。 */
 const UI_FURIGANA = buildFuriganaIndex([
+  ["日本語", "にほんご"],
   ["文", "ぶん"],
   ["入", "はい"],
   ["直", "なお"],
@@ -111,6 +112,7 @@ export function QuestionBody({
       return (
         <FreeInput
           placeholder={question.placeholder}
+          starter={question.starter}
           disabled={disabled}
           submitMode={submitMode}
           draft={draft?.kind === "free" ? draft : undefined}
@@ -389,9 +391,14 @@ function MultiPicker({
 /* ---------------- 自由入力 ---------------- */
 
 /**
- * 自由入力。「間違えたら恥ずかしい」を軽くするため、書き始める前に
- * **どこまで書けばいいか**（ひらがなでも・全文でなくても）を常に見せておく。
- * 判定側（normalize.ts の answerMatches）もそのとおりに緩めてある。
+ * 自由入力。
+ *
+ * ## 「〜でなくても OK」と 書かない（2026-08-27 の 指定）
+ * 前は 入力欄の 下に「ひらがなでも OK。ぜんぶの 文で なくて OK」と 出して いた。
+ * **学習者に「やらなくてよい」と 先に 言う 文言は 一切 出さない**——
+ * できない ことを 先に 数えあげる 言い方に なる。
+ * 判定側（`normalize.ts` の `answerMatches`）は これまでどおり ゆるいので、
+ * ひらがなで 書いても 一部だけ 書いても 通る。**ゆるさは 動きで 示す**。
  */
 function KeywordInput({
   onSubmit,
@@ -447,10 +454,6 @@ function KeywordInput({
           </button>
         )}
       </div>
-
-      <p className="text-ink-faint mt-2 text-xs font-bold">
-        <RubyText text="ひらがなでも OK。ぜんぶの 文で なくて OK" index={UI_FURIGANA} />
-      </p>
     </form>
   );
 }
@@ -471,12 +474,15 @@ function FreeInput({
   submitMode,
   draft,
   placeholder,
+  starter,
 }: {
-  onSubmit: (input: string) => void;
+  onSubmit: (input: string, en?: string) => void;
   disabled?: boolean;
   submitMode?: boolean;
   draft?: Extract<QuizDraft, { kind: "free" }>;
   placeholder?: string;
+  /** 日本語の 型文（打ちながら 見られる 足場）。 */
+  starter?: string;
 }) {
   // 画面の 文字は この部品が 持つ（親から 送り返すと 変換の 途中で 入れ替わる）
   const [value, setValue] = useState(draft?.input ?? "");
@@ -486,6 +492,8 @@ function FreeInput({
     setValue(next);
     if (submitMode) onSubmit(next);
   };
+  const boxClass =
+    "border-hairline bg-panel text-ink w-full rounded-[var(--radius-button)] border-2 px-4 py-3 text-base font-bold";
 
   return (
     <form
@@ -504,8 +512,17 @@ function FreeInput({
         spellCheck={false}
         placeholder={placeholder ?? "思った ことを 書いてね"}
         aria-label="じゆうに 書く"
-        className="border-hairline bg-panel text-ink w-full rounded-[var(--radius-button)] border-2 px-4 py-3 text-base font-bold"
+        className={boxClass}
       />
+      {/*
+        型文は **打ちながら 見られる**ところに 置く。`placeholder` は 1文字 打つと
+        消えるので、いちばん 助けが 要る「書き始めた あと」に 手がかりが 無くなる。
+      */}
+      {starter && (
+        <p className="text-ink-soft mt-1 text-xs leading-relaxed font-bold">
+          <RubyText text={starter} index={UI_FURIGANA} />
+        </p>
+      )}
       {!submitMode && (
         <button
           type="submit"

@@ -99,4 +99,63 @@ describe("指示文", () => {
   it("かなで 書き直しを 頼める", () => {
     expect(buildTalkPrompt(CONTEXT, true)).toContain("書き直して");
   });
+
+  /*
+   * **プログラム・サービスの 名前も「会社の 中身」**（2026-08-27）。
+   *
+   * 一覧に 入って いなかった ころ、「カンボジアの プログラムが おもしろかったです」は
+   * サイトに ある ものを 名指して いるのに concrete が 回ごとに ひっくり返って いた
+   *（教材側の 見かたは「サイトに 書いて ある ことなら 何でも true」と 広く、
+   * engine 側の 一覧だけが 狭かった＝**2つの ものさしが 食いちがって いた**）。
+   * この ステージの 山場は 学習者が 自分たちの プログラムを 見つける ところなので、
+   * そこを 数えられない ものさしの ほうが まちがって いる。
+   */
+  it("プログラムや サービスの 名前も「会社の 中身」に 数える", () => {
+    const prompt = buildTalkPrompt(CONTEXT);
+    expect(prompt).toContain("プログラムの 名前");
+    expect(prompt).toContain("名指して いれば true");
+  });
+
+  /*
+   * **その 人にしか 聞けない しつもんも「会社の 中身」**（2026-08-27 の 実機検証）。
+   *
+   * 「どうして カンボジアに 来ましたか。」を 実機で 通したら concrete が false に なった。
+   * 学習者は その 直前の 教材で まさに この しつもんを 作って くる ので、
+   * **教材が 練習させた ものが そのまま 減点される**向きだった。
+   * 上の「プログラムの 名前」と 同じ 型の 食いちがいで、直す 場所も 同じ 2か所。
+   */
+  it("聞く ばんでは、本人に しか 聞けない しつもんも 数える", () => {
+    const listen = buildTalkPrompt({ ...CONTEXT, round: "listen" });
+    expect(listen).toContain("本人に しか 聞けない しつもんも true");
+    // 話す ばんには 出さない（そこは しつもんを する ばんでは ない）
+    expect(buildTalkPrompt(CONTEXT)).not.toContain("本人に しか 聞けない");
+  });
+});
+
+/*
+ * 札の ラベル（`topic`）は **好感度の 記録に 残り、画面に そのまま 出る**。
+ * 動的な 文なので ふりがなを 合成できず、漢字が 1文字 入ると そこで 読めなく なる。
+ * 指示には 書いて あるのに、実機では 発話が まるごと 入って きた（2026-08-27）ので、
+ * ここで 落とす。
+ */
+describe("札の ラベル", () => {
+  it("かな・カタカナ・英字の 短い ラベルは そのまま 通す", () => {
+    expect(parseTalk({ ...RAW, topic: "かんこうDX" })?.topic).toBe("かんこうDX");
+    expect(parseTalk({ ...RAW, topic: "NMClaw" })?.topic).toBe("NMClaw");
+  });
+
+  it("漢字が 入って いたら 落とす（読めない 札を 記録に 残さない）", () => {
+    expect(parseTalk({ ...RAW, topic: "私は チームで 話す こと" })?.topic).toBe("");
+    expect(parseTalk({ ...RAW, topic: "観光DX" })?.topic).toBe("");
+  });
+
+  it("長すぎる ラベルは 落とす（画面で 切られて 意味を なさない）", () => {
+    expect(parseTalk({ ...RAW, topic: "ベトナムの かいしゃと ホーチミン" })?.topic).toBe("");
+  });
+
+  it("落としても 見かたは 残る（好感度は そのまま 付く）", () => {
+    const judged = parseTalk({ ...RAW, topic: "私は チームで 話す こと" });
+    expect(judged?.observations.concrete).toBe(true);
+    expect(judged?.reply).toBe(RAW.reply);
+  });
 });

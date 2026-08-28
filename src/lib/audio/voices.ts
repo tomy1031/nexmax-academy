@@ -41,6 +41,17 @@ export const LIVE_VOICES: readonly VoiceMeta[] = [
     gender: "male",
   },
   { name: "Orus", label: "低い 男の人", hint: "低く 安定した 声。社長・ベテラン", gender: "male" },
+  /*
+   * 2026-08-27 の 指定で 足した（松井社長の 声）。Google の 一覧に ある 声だが
+   * うちの 8つには 入って いなかった ので、**Live に つないで 音が 返る ことを
+   * 確かめて から** 足して いる（111KB の PCM が 返った）。
+   */
+  {
+    name: "Sadaltager",
+    label: "おちついた 男の人（社長）",
+    hint: "ゆっくり 説明する 声。社長・経営者",
+    gender: "male",
+  },
   {
     name: "Puck",
     label: "元気な 男の人",

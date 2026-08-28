@@ -178,6 +178,12 @@ export const GLOSSARY = [
     meaning: "外国の チームに、作る 仕事を たのむ ことです。",
     en: "Offshore",
   },
+  {
+    term: "オフショア開発",
+    reading: "おふしょあかいはつ",
+    meaning: "日本の 仕事を、外国の エンジニアが 作る やりかたです。",
+    en: "Offshore development",
+  },
   { term: "音声", reading: "おんせい", meaning: "人の 声や 音の ことです。", en: "Audio / voice" },
   { term: "温度", reading: "おんど", meaning: "あつい・つめたいの 数です。", en: "Temperature" },
   { term: "海外", reading: "かいがい", meaning: "日本の 外の 国の ことです。", en: "Overseas" },
@@ -504,6 +510,12 @@ export const GLOSSARY = [
     reading: "ぐるーぷ",
     meaning: "つながりの ある、会社や 人の あつまりです。",
     en: "Group",
+  },
+  {
+    term: "グループ会社",
+    reading: "ぐるーぷがいしゃ",
+    meaning: "おなじ なかまの 会社です。いっしょに 仕事を します。",
+    en: "Group company",
   },
   {
     term: "経営",
@@ -1255,12 +1267,6 @@ export const GLOSSARY = [
     en: "Establishment (founding)",
   },
   {
-    term: "先進",
-    reading: "せんしん",
-    meaning: "ほかより 先へ 進んで いる ことです。",
-    en: "Advanced",
-  },
-  {
     term: "先端",
     reading: "せんたん",
     meaning: "いちばん 新しい ところ、と いう ことです。",
@@ -1513,6 +1519,12 @@ export const GLOSSARY = [
     en: "Inspection",
   },
   { term: "動画", reading: "どうが", meaning: "うごく 絵の ことです。", en: "Video" },
+  {
+    term: "東京本店",
+    reading: "とうきょうほんてん",
+    meaning: "東京に ある、2つめの 大きな オフィスです。",
+    en: "Tokyo main branch",
+  },
   { term: "道具", reading: "どうぐ", meaning: "しごとで 手に もって つかう もの", en: "a tool" },
   {
     term: "統合",
@@ -1537,12 +1549,6 @@ export const GLOSSARY = [
     reading: "どうにゅう",
     meaning: "新しい しくみを、会社の 中で つかいはじめる ことです。",
     en: "Adopting",
-  },
-  {
-    term: "導入実績",
-    reading: "どうにゅうじっせき",
-    meaning: "この 会社が 仕事を した お客さまの 名前",
-    en: "Client track record",
   },
   { term: "道路", reading: "どうろ", meaning: "車が 通る 道です。", en: "Road" },
   {
@@ -1706,6 +1712,12 @@ export const GLOSSARY = [
     reading: "ひつよう",
     meaning: "必要は、ぜったいに要る、なくてはこまるという意味です。",
     en: "Necessary",
+  },
+  {
+    term: "人手不足",
+    reading: "ひとでぶそく",
+    meaning: "はたらく 人が 足りない ことです。",
+    en: "Labour shortage",
   },
   { term: "人々", reading: "ひとびと", meaning: "たくさんの 人たちの ことです。", en: "People" },
   { term: "日々", reading: "ひび", meaning: "まいにちの ことです。", en: "Day to day" },

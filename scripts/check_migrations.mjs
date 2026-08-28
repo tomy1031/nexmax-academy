@@ -100,6 +100,34 @@ export function pendingMigrations(repo, applied) {
   return repo.filter((migration) => !applied.has(migration.version));
 }
 
+/**
+ * 鍵が 無い ときの 手順書。**コネクタで 流す 手**をここに 書く。
+ *
+ * 2026-08-27 の 決定「両方」に 合わせた。ワークフロー（自動）は そのまま 置いて おき、
+ * 鍵が 入るまでの あいだは AI が Supabase コネクタで 流す。前は ここが
+ * 「『デプロイ（DB）』ワークフローで流す」だけ だったが、**その ワークフローは
+ * まさに 鍵が 無くて 動かない**——読んだ 側は 行き止まりに 送られていた。
+ *
+ * 版の 記録まで 書くのは、**そこを 抜かすと ワークフローが あとで 二重に 流す**から。
+ * 鍵が 入った 日に、もう 手で 流した ぶんを もう一度 流そうとする。
+ *
+ * @param {readonly Migration[]} repo リポジトリにある移行SQL（版の順）
+ * @returns {string}
+ */
+export function connectorHandbook(repo) {
+  const latest = repo.at(-1);
+  return [
+    "  鍵が 入るまでは **コネクタが 流す 手**です（2026-08-27 の 決定「両方」）:",
+    "    1. 上の select で、DBに 無い 版を 見つける",
+    "    2. その `supabase/migrations/<版>_*.sql` の 中身を コネクタで 流す",
+    "    3. **版を 記録する**（抜かすと 鍵が 入った 日に 二重に 流れる）:",
+    "       insert into supabase_migrations.schema_migrations (version, name)",
+    `       values ('${latest?.version ?? "<版>"}', '${latest?.name ?? "<名前>"}');`,
+    "  鍵（SUPABASE_DB_URL）が Environment「Preview」に 入れば、以後は",
+    "  「デプロイ（DB）」ワークフローが この 記録を 見て 自動で 流します（docs/deploy.md §0.8）。",
+  ].join("\n");
+}
+
 function fetchAppliedVersions(dbUrl) {
   const stdout = execFileSync(
     "npx",
@@ -128,7 +156,7 @@ function main() {
     console.log("⚠ DBの適用状況は **確かめていません**（SUPABASE_DB_URL がありません）。");
     console.log("  AIのセッションなら Supabase コネクタで直接 確かめられます:");
     console.log("    select version from supabase_migrations.schema_migrations order by version;");
-    console.log("  流し忘れがあれば「デプロイ（DB）」ワークフローで流す（docs/deploy.md §0.8）。");
+    console.log(connectorHandbook(repo));
     process.exit(strict ? 1 : 0);
     return;
   }
@@ -152,7 +180,9 @@ function main() {
   for (const migration of pending) console.error(`   - ${migration.file}`);
   console.error("\nこれを放っておくと、**コードだけ先に本番へ載って黙って効かない**");
   console.error("（2026-08-26 に実発生。7人が先生の名簿から消えていた）。");
-  console.error("流しかた: Actions → 「デプロイ（DB）」→ Run workflow（docs/deploy.md §0.8）\n");
+  console.error("流しかた: Actions → 「デプロイ（DB）」→ Run workflow（docs/deploy.md §0.8）");
+  console.error("鍵の 無い セッションなら Supabase コネクタで:");
+  console.error(`${connectorHandbook(pending)}\n`);
   process.exit(1);
 }
 

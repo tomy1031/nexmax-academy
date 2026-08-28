@@ -1,7 +1,18 @@
 import { NextResponse } from "next/server";
 import { contentSchema, type Stage } from "@/content/schema";
 import { GIT_CONTENTS } from "@/content/git-contents.generated";
-import { listStages, listWordStages } from "@/lib/content";
+import {
+  listArticles,
+  listLinks,
+  listListenings,
+  listMangas,
+  listMeetings,
+  listQuizSets,
+  listScenarios,
+  listSlides,
+  listStages,
+  listWordStages,
+} from "@/lib/content";
 import { fetchDbContents } from "@/lib/content-db";
 import { buildContentHealth } from "@/lib/content-health";
 import { buildInfo } from "@/lib/env";
@@ -21,11 +32,38 @@ import { buildInfo } from "@/lib/env";
 export const dynamic = "force-dynamic";
 
 export async function GET() {
-  const [liveStages, liveWordStages, db] = await Promise.all([
+  const [liveStages, liveWordStages, db, ...lists] = await Promise.all([
     listStages(),
     listWordStages(),
     fetchDbContents(),
+    /*
+     * ステージが 指して いる 教材が いま 出て いるか を 見る ため、種別ごとに 集める
+     *（`contents[].type` と 同じ 名前で 鍵に する）。**種別を 混ぜない**——
+     * 同じ id の ページと もんだいが 別物として 並ぶ ことが ある。
+     */
+    listArticles(),
+    listMangas(),
+    listSlides(),
+    listListenings(),
+    listQuizSets(),
+    listScenarios(),
+    listMeetings(),
+    listLinks(),
   ]);
+
+  const KINDS = [
+    "article",
+    "manga",
+    "slides",
+    "listening",
+    "quizset",
+    "scenario",
+    "meeting",
+    "link",
+  ] as const;
+  const liveContentIds = new Set(
+    lists.flatMap((items, at) => items.map((item) => `${KINDS[at]}:${item.id}`)),
+  );
 
   const gitStages = GIT_CONTENTS.flatMap((raw) => {
     const parsed = contentSchema.safeParse(raw);
@@ -41,6 +79,7 @@ export async function GET() {
     liveStages,
     liveWordStages,
     dbPublishedIds,
+    liveContentIds,
   });
 
   return NextResponse.json(

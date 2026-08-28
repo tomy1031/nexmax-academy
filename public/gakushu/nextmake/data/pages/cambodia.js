@@ -10,8 +10,8 @@ export const CAMBODIA = {
   id: "cambodia",
   nav: "カンボジア教育",
   title: {
-    n4: "カンボジアと いっしょに",
-    n3: "海外人材育成プログラム",
+    n4: "カンボジア教育",
+    n3: "カンボジア教育",
     en: "Japanese IT Pathway",
   },
   hero: "/gakushu/nextmake/img/hero_cambodia.webp",

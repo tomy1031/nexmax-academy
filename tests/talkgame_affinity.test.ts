@@ -263,4 +263,22 @@ describe("鍵が 無い ときの 見かた", () => {
     expect(seen("listen", "とても おもしろいです")).toBe("");
     expect(seen("talk", "とても おもしろいです")).not.toBe("");
   });
+
+  /*
+   * 札は **好感度の 記録に 残り、あとから 一覧にも 出る**。実機の 通し検証で
+   *「Japanese IT …」「私は チームで 話す こ…」が 出た（2026-08-27）——
+   * 語の 途中で 切れた ものは、あとで 見ても 何を 見つけたのか 分からない。
+   * 教材の 文は 分かち書きなので、空白まで 戻せば 語の 切れめに なる。
+   */
+  it("長い ことばは ことばの 切れめで 切る", () => {
+    const seen = (text: string) => localTopic("talk", text, localObservations("talk", text));
+    expect(seen("私は チームで 話す ことが 得意です。")).toBe("私は チームで 話す…");
+    expect(seen("Japanese IT Pathway は おもしろいです。")).toBe("Japanese IT…");
+  });
+
+  it("短い ものは 切らない（…を むだに 付けない）", () => {
+    expect(
+      localTopic("talk", "かんこうDX が すき", localObservations("talk", "かんこうDX が すき")),
+    ).toBe("かんこうDX が すき");
+  });
 });
