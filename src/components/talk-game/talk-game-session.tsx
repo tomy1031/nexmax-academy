@@ -15,6 +15,7 @@ import type { Meeting } from "@/content/schema";
 import type { DictionaryEntry } from "@/lib/dictionary";
 import { getProfile } from "@/lib/profile";
 import { recordContentProgress } from "@/lib/progress/store";
+import { bufferMeetingTurn, flushMeetingTurns } from "@/lib/meeting/log";
 import { fillName } from "@/lib/meeting/speech";
 import {
   DEFAULT_SPEED,
@@ -318,7 +319,7 @@ export function TalkGameSession({
    * 見かたが 出ない ことより、止まる ことの ほうが 重い。
    */
   const judge = useCallback(
-    async (utterance: string) => {
+    async (utterance: string, mode: "text" | "voice" = "text") => {
       if (!game) return;
       const said = utterance.trim();
       if (!said) return;
@@ -335,6 +336,7 @@ export function TalkGameSession({
       setTyped("");
       setPhase("thinking");
       const remaining = Math.max(0, plan.findCount - talk.found.length);
+      const at = Date.now();
       const answer = await requestTalkTurn(`${meeting.id}:${talk.round}`, {
         round: talk.round,
         ask: askText,
@@ -349,6 +351,37 @@ export function TalkGameSession({
 
       // やめた／もう一度 始めた あとの 返事は 捨てる（半券が 変わって いる）
       if (turnRef.current !== ticket) return;
+      /*
+       * **社長との 会話も 台帳に 残す**（2026-08-28 の 指定「各シートの回答についてと
+       * ヘンディさん、松井社長との対話については、終了後1度でまとめてデータを送る」）。
+       *
+       * これまで この 教材は **端末の しおりしか 持って いなかった**ので、先生には
+       * 何を 話したかが 一度も 見えなかった。置き場は ヘンディさんと 同じ 台帳
+       *（`meeting_turn_logs`）。ここでは **ためるだけ**で、送るのは 話しきった とき 1回。
+       *
+       * 見かたは **持って いる ぶんだけ**残す。この 教材の 見かたには 三段の 評価
+       *（`grade`）も 軸（ことば・かみ合い・かたち）も 無い——無い ものを それらしい
+       * 既定で 埋めると、先生の 画面が 数えられない ものを 数えて しまう。
+       */
+      bufferMeetingTurn({
+        meetingId: meeting.id,
+        // 「何問目」の 無い 自由な 会話なので、**ばん**を 鍵に する（話す／聞く）
+        questionId: `talk:${talk.round}`,
+        attempt: talk.turns + 1,
+        mode,
+        utterance: said,
+        judge: answer.ok
+          ? {
+              reply: answer.judgement.reply,
+              praise: answer.judgement.praise,
+              fix: answer.judgement.fix,
+              exampleAnswer: answer.judgement.exampleAnswer,
+            }
+          : null,
+        fallback: answer.ok ? "none" : answer.reason,
+        model: answer.ok ? answer.model : "",
+        latencyMs: Date.now() - at,
+      });
       const observations = answer.ok
         ? answer.judgement.observations
         : localObservations(talk.round, said);
@@ -435,7 +468,7 @@ export function TalkGameSession({
     /*
      * 効果の 中で そのまま 状態を 変えない（描き直しが 連なる）。1つ 後ろへ ずらす。
      */
-    void Promise.resolve().then(() => judge(heard.text));
+    void Promise.resolve().then(() => judge(heard.text, "voice"));
   }, [voice.lastUtterance, judge, phase]);
 
   /* 見かたの つなぎは 画面を 離れる ときに 閉じる（置き去りに しない）。 */
@@ -444,6 +477,8 @@ export function TalkGameSession({
   useEffect(() => {
     if (phase !== "clear") return;
     recordContentProgress(meeting.id, { status: "completed" });
+    // 話しきった。ためた 会話は ここで **1回だけ** 送る（2026-08-28 の 指定）
+    void flushMeetingTurns(meeting.id);
   }, [phase, meeting.id]);
 
   /*
