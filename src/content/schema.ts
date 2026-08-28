@@ -350,6 +350,20 @@ const multiSchema = z.object({
   type: z.literal("multi"),
   options: z.array(plainText).min(3).max(8),
   answers: z.array(z.number().int().min(0)).min(2),
+  /**
+   * **並んで いる もの ぜんぶが 正解**だと 分かって いて、そう したい とき。
+   *
+   * ふだんは 弾く（下の 検査）。えらぶ ものが 無い 問いは、読まずに ぜんぶ 押せば
+   * 満点に なる ので、ほとんどの ばあい 作りかけの まちがいで ある。
+   *
+   * ただし **配布資料が「この 4つが いい ところです」と 並べて いる**ような、
+   * 読んで たしかめる ための 問いは ある（2026-08-27・28 の 指定
+   *「正解は以下全てを選択するように（複数選択と明示）」「選択肢は4つでいいです。5つもいらない」）。
+   * まぎらわしい 5つ目を こちらで 足すのは **配布資料の 改変**に なるので、
+   * 足すのでは なく、ここに **書いた ときだけ** 通す。
+   * 書き忘れでは 通らない ので、うっかり 全部正解に なる ことは 防げる。
+   */
+  allCorrect: z.literal(true).optional(),
 });
 
 /** 自由入力。表記ゆれは normalize.ts が吸収するので accept は別解だけを書く。 */
@@ -585,11 +599,12 @@ export const quizSetSchema = z
         if (new Set(q.answers).size !== q.answers.length) {
           ctx.addIssue({ code: "custom", path: at("answers"), message: "answers が重複している" });
         }
-        if (q.answers.length >= q.options.length) {
+        if (q.answers.length >= q.options.length && q.allCorrect !== true) {
           ctx.addIssue({
             code: "custom",
             path: at("answers"),
-            message: "すべてが正解の複数選択は問題にならない",
+            message:
+              "すべてが正解の複数選択は問題にならない（そう作りたいときだけ allCorrect: true と書く）",
           });
         }
       }

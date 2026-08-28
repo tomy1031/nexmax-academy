@@ -98,7 +98,16 @@ export function describeQuestionIssues(question: QuizQuestion): string[] {
       const notices: string[] = [];
       if (question.options.length < 3) notices.push("えらぶものを 3つ以上 書いてください。");
       if (question.answers.length < 2) notices.push("こたえを 2つ以上 えらんでください。");
-      if (question.options.length > 0 && question.answers.length >= question.options.length) {
+      /*
+       * ぜんぶが こたえの ときは ふつう 作りかけ——読まずに ぜんぶ 押せば 満点に なる。
+       * ただし **そう 作りたい と 書いて ある もの**（`allCorrect`）は 通す
+       *（2026-08-28 の 指定。配布資料が 4つ 並べて いる 問いが ある）。
+       */
+      if (
+        question.allCorrect !== true &&
+        question.options.length > 0 &&
+        question.answers.length >= question.options.length
+      ) {
         notices.push("ぜんぶが こたえです。こたえでない ものを 1つ のこしてください。");
       }
       return notices;
