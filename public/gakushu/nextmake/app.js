@@ -604,6 +604,19 @@ const RENDER = {
     head.append(el("span", "work-when", block.when));
     box.append(head);
     box.append(elg("h3", "work-client", block.client));
+
+    // 本家の 実績ページの 絵。6つの 仕事を **見分ける** ための もので、飾りでは ない
+    // （調査シートは「名前が 出て いる 仕事が 6つ」を さがさせる）。
+    if (block.image) {
+      const figure = el("div", "work-image");
+      const img = document.createElement("img");
+      img.src = block.image;
+      img.alt = "";
+      img.loading = "lazy";
+      figure.append(img);
+      box.append(figure);
+    }
+
     box.append(elg("p", "work-what", block.what));
     return box;
   },

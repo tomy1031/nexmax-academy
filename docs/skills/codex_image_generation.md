@@ -131,6 +131,18 @@ codex -i public/img/characters/nexmax/reference.png \
 - 出力は **1024×1536 の PNG・アルファ付き**（`transparent background (alpha)` と
   明記する）。書けて いるかは `file *.png` が `RGBA` と 言うかで 見る——
   **`RGB` で 返って くる ことが ある**ので、その 1枚だけ 消して 撮り直す（実発生）。
+- **撮り直しても RGB の ままの ことが ある**（2026-08-28・ヘンディの 立ち絵で 3回 連続）。
+  1回目は 透明の つもりで **市松模様を 絵として 描いて きた**——プロンプトを どれだけ
+  強めても 抜けられなかった。そのときは 白い 背景で 撮って、機械で 切りぬく:
+
+  ```bash
+  node scripts/images/cutout_white.mjs <入力.png> <出力.png>   # 既定の しきい値 236
+  cwebp -q 84 -alpha_q 90 <出力.png> -o public/img/characters/<id>/stand_*.webp
+  ```
+
+  **色で 抜くのでは なく へりから 塗りつぶす**ので、白い ワイシャツは 残る（人物の 中の
+  白は 濃い 線で 囲まれて いて、画像の へりから つながって いない）。仕上がりは
+  マゼンタの 板に 重ねて 目で 見る。
 - 変換は `cwebp -q 84 -alpha_q 90`（アルファを 落とさない）。1枚 80KB 前後。
 - 台帳は `scripts/images/<id>_<用途>.json`。生成は
   `node scripts/slides/gen_images.mjs <台帳> <出力フォルダ>`
@@ -142,6 +154,13 @@ codex -i public/img/characters/nexmax/reference.png \
 | `public/img/characters/matsui/stand_smile.webp` | 少し 前へ。手のひらを 胸の 高さに 開いて、うれしそうに 笑う | 2026-08-24 |
 | `public/img/characters/matsui/stand_think.webp` | 手を あごに 当てて、少し 首を かしげて 考える | 2026-08-24 |
 | `public/img/scenes/office_president.webp` | 社長室（人を 描かない・**右3分の1を 空ける**＝立ち絵の 居場所） | 2026-08-24 |
+| `public/img/characters/hendy/stand_neutral.webp` | 立って 正面。腕は 下ろす。おだやかに 聞いて いる | 2026-08-28 |
+| `public/img/characters/hendy/stand_smile.webp` | 少し 前へ。胸の 高さで 小さく サムズアップし、うれしそうに 笑う | 2026-08-28 |
+| `public/img/characters/hendy/stand_think.webp` | 手を あごに 当てて、少し 首を かしげて 考える | 2026-08-28 |
+
+ヘンディの 3枚は 台帳 `scripts/images/hendy_talkgame.json`。**絵は あるが、画面に 出す
+配線は まだ 無い**——ふつうの ミーティング（`talkGame` の 無い 教材）は 背景と 立ち絵を
+スキーマで 持って いないので、`schema.ts` を 触る 横断変更に なる（別タスク）。
 
 ## 6.7 ページ教材（article）の さし絵
 
@@ -163,6 +182,7 @@ codex -i public/img/characters/nexmax/reference.png \
 |---|---|---|
 | `scripts/images/kaisha_step1_scenes.json` | 会社を知る STEP1 の ページ 23枚（学生・オフィス） | 2026-08-25 |
 | `scripts/images/kaisha_step1_people.json` | 同 2枚（ヘンディ・松井社長が 画面に 出る） | 2026-08-25 |
+| `scripts/images/kaisha_step1_opening.json` | 同 1枚（ページの いちばん 上の 見出しの 絵） | 2026-08-28 |
 
 ## 7. シーン・背景イラスト（任意の強化アセット）
 

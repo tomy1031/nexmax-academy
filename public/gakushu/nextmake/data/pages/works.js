@@ -28,6 +28,7 @@ export const WORKS = {
       kind: "work",
       when: "2026年7月",
       tag: "観光DX",
+      image: "/gakushu/nextmake/img/work_miyoshi.webp",
       client: { n4: "徳島県 三好市", n3: "徳島県三好市", en: "Miyoshi City, Tokushima" },
       what: {
         n4: "町に 残る 歴史や 文化を、スマホの 動画と 音声で めぐる しくみを 作りました。歩きながら、町の ことを 知る ことが できます。",
@@ -39,6 +40,7 @@ export const WORKS = {
       kind: "work",
       when: "2026年7月",
       tag: "NMClaw",
+      image: "/gakushu/nextmake/img/svc_nmclaw.webp",
       client: { n4: "会社の 中の しごと", n3: "社内業務の可視化", en: "Internal operations" },
       what: {
         n4: "会社の チャットや 声の 記録を AIが 自動で まとめます。毎日の 報告を 作る 時間が 短く なりました。",
@@ -50,6 +52,7 @@ export const WORKS = {
       kind: "work",
       when: "2026年3月",
       tag: "WEB制作",
+      image: "/gakushu/nextmake/img/work_uchida.webp",
       client: {
         n4: "株式会社 ウチダコーポレーション",
         n3: "株式会社ウチダコーポレーション様",
@@ -65,6 +68,7 @@ export const WORKS = {
       kind: "work",
       when: "2025年7月",
       tag: "システム開発",
+      image: "/gakushu/nextmake/img/work_kodomokai.webp",
       client: {
         n4: "大阪府 こども会 育成連合会",
         n3: "大阪府こども会育成連合会様",
@@ -80,6 +84,7 @@ export const WORKS = {
       kind: "work",
       when: "2025年6月",
       tag: "システム開発",
+      image: "/gakushu/nextmake/img/work_nakatani.webp",
       client: {
         n4: "ナカタニ自動車 株式会社",
         n3: "ナカタニ自動車株式会社様",
@@ -95,6 +100,7 @@ export const WORKS = {
       kind: "work",
       when: "2025年4月",
       tag: "WEB制作",
+      image: "/gakushu/nextmake/img/work_truck.webp",
       client: {
         n4: "大阪府 トラック協会 南大阪支部",
         n3: "大阪府トラック協会南大阪支部様",
