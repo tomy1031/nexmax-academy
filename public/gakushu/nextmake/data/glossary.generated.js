@@ -750,6 +750,12 @@ export const GLOSSARY = [
     en: "Recruitment / Hiring",
   },
   {
+    term: "さがす",
+    reading: "さがす",
+    meaning: "どこに あるかを 見に 行く ことです。",
+    en: "To search / To look for",
+  },
+  {
     term: "さがせる",
     reading: "さがせる",
     meaning: "「さがす」の かたちの 1つ。さがす ことが できる、と いう ことです。",
@@ -1071,6 +1077,12 @@ export const GLOSSARY = [
   },
   { term: "書式", reading: "しょしき", meaning: "書きかたの きまった 形です。", en: "Format" },
   {
+    term: "調べる",
+    reading: "しらべる",
+    meaning: "分からない ことを、本や Webサイトで さがして たしかめる ことです。",
+    en: "To research / To look up",
+  },
+  {
     term: "自律",
     reading: "じりつ",
     meaning: "人が 命令しなくても、じぶんで うごく ことです。",
@@ -1081,6 +1093,12 @@ export const GLOSSARY = [
     reading: "しりょう",
     meaning: "読む ための 紙や ファイルです。会議の 前に くばります。",
     en: "Materials / Handout documents",
+  },
+  {
+    term: "知る",
+    reading: "しる",
+    meaning: "そのことが 分かる ように なる ことです。",
+    en: "To know / To learn",
   },
   {
     term: "進行",
@@ -1890,6 +1908,12 @@ export const GLOSSARY = [
     reading: "まんぞく",
     meaning: "これで いいと、心から 思う ことです。",
     en: "Satisfaction",
+  },
+  {
+    term: "見つける",
+    reading: "みつける",
+    meaning: "さがして いた ものが 分かる ことです。",
+    en: "To find",
   },
   {
     term: "見積",

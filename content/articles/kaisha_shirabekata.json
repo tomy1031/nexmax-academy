@@ -1552,38 +1552,12 @@
             "NEXT MAKEは 何を サポートするか",
             "終わった あと、どんな 道が あるか"
           ],
-          "note": "これは、みなさんに いちばん 近い POINTです。",
           "focus": true,
           "image": {
             "src": "/img/articles/kaisha_shirabekata/k8.webp",
             "refs": [],
             "status": "done"
           }
-        }
-      ]
-    },
-    {
-      "kind": "steps",
-      "items": [
-        "だれの ための 仕事？",
-        "何を した？",
-        "どんな 仕事だった？"
-      ],
-      "images": [
-        {
-          "src": "/img/articles/kaisha_shirabekata/j1.webp",
-          "refs": [],
-          "status": "done"
-        },
-        {
-          "src": "/img/articles/kaisha_shirabekata/j2.webp",
-          "refs": [],
-          "status": "done"
-        },
-        {
-          "src": "/img/articles/kaisha_shirabekata/j3.webp",
-          "refs": [],
-          "status": "done"
         }
       ]
     },
