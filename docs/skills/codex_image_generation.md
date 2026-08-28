@@ -182,7 +182,19 @@ codex -i public/img/characters/nexmax/reference.png \
 |---|---|---|
 | `scripts/images/kaisha_step1_scenes.json` | 会社を知る STEP1 の ページ 23枚（学生・オフィス） | 2026-08-25 |
 | `scripts/images/kaisha_step1_people.json` | 同 2枚（ヘンディ・松井社長が 画面に 出る） | 2026-08-25 |
-| `scripts/images/kaisha_step1_opening.json` | 同 1枚（ページの いちばん 上の 見出しの 絵） | 2026-08-28 |
+| `scripts/images/kaisha_step1_opening.json` | 同 1枚（ページの 表紙 `hero` の 絵） | 2026-08-28 |
+| `scripts/images/kaisha_junbi_scenes.json` | 準備ページの カード 3枚（学生だけ） | 2026-08-28 |
+| `scripts/images/kaisha_junbi_nexmax.json` | 同 1枚（ネクマックスが 出る） | 2026-08-28 |
+| `scripts/images/kaisha_junbi_people.json` | 同 4枚（松井社長が 出る。A/B の 分かれ道を 含む） | 2026-08-28 |
+| `scripts/images/kaisha_junbi_hendy.json` | 同 1枚（ヘンディさんが 出る） | 2026-08-28 |
+
+**人物ごとに 台帳を 分ける**（2026-08-28）。1つの 台帳に 松井社長と ヘンディさんの 設定画を
+両方 渡すと 顔が 混ざる。ネクマックスも 別に する——ほかの 台帳は negative で
+`robots, mascots` を 禁じて いるので、同じ 台帳に 入れると 出したい 絵にも 出ない。
+
+**ネクマックスを 場面の 中に 描く ときは `reference.png` だけでは 足りない**（同日 実発生）。
+原画だけを 渡すと 頭が 卵形に なり、白い 顔面が 小さく なった。**合格ずみの バリアント
+（`build.webp` など）も 参照に 足す**と、横長ヘルメットと 大きな 顔面が 戻る。
 
 ## 7. シーン・背景イラスト（任意の強化アセット）
 
@@ -255,6 +267,11 @@ codex -i public/img/characters/nexmax/reference.png \
 困っている お客さまなど**感情が 教材の 中身そのもの**の 1枚だけは、その節を 外した
 台帳で 撮る（`t25_trouble`）。外すのは 人間の 登場人物だけで、**ネクマックスは
 いつも 友好的**（§6 の 受入チェック）。
+
+同じ 手を 2026-08-28 に ページ教材でも 使った（`kaisha_junbi_people.json`）。
+「どちらの 学生と もっと 話したいですか」と **選ばせる 2枚**では、社長の 気もちが
+問いの 中身その ものに なる——両方 おだやかに 描くと 選ぶ 意味が 消える。
+外したのは **悲しさ まで**で、怒り・こわい 顔・涙は 禁じた ままに して ある。
 
 ## 8. 権利と運用
 

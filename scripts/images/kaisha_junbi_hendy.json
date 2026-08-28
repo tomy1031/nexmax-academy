@@ -1,0 +1,20 @@
+{
+  "refs": [
+    "public/img/characters/hendy/sheet.webp",
+    "public/img/articles/kaisha_shirabekata/g1.webp",
+    "public/img/articles/kaisha_matsui_junbi/cmp_matsui.webp"
+  ],
+  "_comment": "くらべ（compare）の 前の 側「ヘンディさんに 話した こと」。**ヘンディさんが 出る 唯一の 1枚**なので 松井社長の 台帳と 分けた（同じ 台帳に 2人ぶんの 設定画を 渡すと 顔が 混ざる）。3枚目は 対に なる cmp_matsui —— 同じ 部屋・同じ 光・同じ 学生に そろえる ため。",
+  "style": "Style: warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, soft cel shading with gentle light, bright natural daylight, warm cream walls with sky-blue and coral accents, tidy contemporary offices with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions and warm friendly faces. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME.",
+  "noText": "No text, no letters, no kanji, no kana, no numbers anywhere in the image. Screens, papers, whiteboards, books and signs are blank or show only soft abstract shapes and simple pictures. No watermark, no signature, no logo, no speech balloons.",
+  "negative": "Never: flat vector icon art, pictograms, infographic diagrams, symbols floating on an empty background, wide empty margins, minimalist clip-art, 3D render, photo realism, harsh gradients, readable letters or numbers, national flags, country outlines, maps with borders, dark or scary tone, angry or crying faces, extra fingers or limbs, robots, mascots. Keep every referenced character's face, hair and clothing exactly as in their model sheet — no costume changes, no age changes.",
+  "scenes": [
+    {
+      "out": "cmp_hendy",
+      "dest": "public/img/articles/kaisha_matsui_junbi/cmp_hendy.webp",
+      "title": "くらべ・前 ヘンディさんに 話した こと（調べた ことを 読んで 報告）",
+      "output": "Output: one square illustration, 1024x1024. Close view — the subject fills the frame edge to edge.",
+      "scene": "Scene: the same bright office meeting corner as in the third reference image, same table, same plant and same two mugs. THE STUDENT — a young Cambodian woman in her early twenties with shoulder-length straight dark hair and a warm coral-orange blouse; keep her face, hair and blouse exactly the same as in the second reference image — sits at the table with an OPEN notebook in front of her, one finger resting on the page, glancing down at her notes as she reports what she found. Her expression is careful and a little formal. Across the table sits HENDY from the first reference model sheet — a Japanese man in his late twenties, slim, with short slightly tousled black hair and soft spiky tips, dark brown eyes, straight thick eyebrows, clean-shaven, wearing a navy single-breasted suit jacket, a crisp white dress shirt and a solid navy necktie. He listens with a gentle encouraging smile and nods, one hand resting on the table. Warm daylight from the window."
+    }
+  ]
+}

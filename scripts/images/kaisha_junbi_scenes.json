@@ -1,0 +1,33 @@
+{
+  "refs": [
+    "public/img/manga/hajimari_manga/p1c2.webp",
+    "public/img/articles/kaisha_shirabekata/g1.webp"
+  ],
+  "_comment": "ページ「AI松井社長と 話す 準備を しよう」の カードの 絵。学生だけが 出る 3枚（1・2・4）。1枚目の 参照は 絵柄を そろえる ため（人が 写って いない コマ）、2枚目は **学生の 顔と 服**を STEP1 の g1 に そろえる ため。カードの わくは 短い 帯（h-44）で 5列に 並ぶ ので、**正方形**で 撮る。生成 PNG は cwebp -q 84 で webp に して dest へ 置く。",
+  "style": "Style: warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, soft cel shading with gentle light, bright natural daylight, warm cream walls with sky-blue and coral accents, tidy contemporary offices and classrooms with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions and warm friendly faces. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME.",
+  "noText": "No text, no letters, no kanji, no kana, no numbers anywhere in the image. Screens, papers, whiteboards, books and signs are blank or show only soft abstract shapes and simple pictures. No watermark, no signature, no logo.",
+  "negative": "Never: flat vector icon art, pictograms, infographic diagrams, symbols floating on an empty background, wide empty margins, minimalist clip-art, 3D render, photo realism, harsh gradients, readable letters or numbers, national flags, country outlines, maps with borders, dark or scary tone, angry or crying faces, extra fingers or limbs, robots, mascots. The first reference image is ONLY a drawing-style guide — never copy its objects or its people into the scene.",
+  "scenes": [
+    {
+      "out": "j1",
+      "dest": "public/img/articles/kaisha_matsui_junbi/j1.webp",
+      "title": "1 NEXT MAKEの どこが 好き？（熱く 語る）",
+      "output": "Output: one square illustration, 1024x1024. Close view — the subject fills the frame edge to edge.",
+      "scene": "Scene: THE STUDENT is a young Cambodian woman in her early twenties with shoulder-length straight dark hair and a warm coral-orange blouse; keep her face, hair and blouse exactly the same as in the second reference image. She sits at her bright desk, turned toward the viewer, both hands open in front of her, eyes shining, talking with real excitement about the work she has found. Above her shoulder is ONE large rounded speech bubble filled with small simple DRAWINGS ONLY — a little four-rotor camera drone flying over a fence, and a row of small palm trees beside a low school building with children walking to it. The drawings inside the bubble are pictures, never letters or numbers. Her open laptop and notebook lie on the desk. Warm morning light."
+    },
+    {
+      "out": "j2",
+      "dest": "public/img/articles/kaisha_matsui_junbi/j2.webp",
+      "title": "2 自分の いい ところは？（得意が 3つ）",
+      "output": "Output: one square illustration, 1024x1024. Close view — the subject fills the frame edge to edge.",
+      "scene": "Scene: THE STUDENT is a young Cambodian woman in her early twenties with shoulder-length straight dark hair and a warm coral-orange blouse; keep her face, hair and blouse exactly the same as in the second reference image. She stands confidently in the middle of a bright work room, arms folded, chin slightly up, a calm proud smile — a person who knows what she is good at. Behind her, three real things in the room show her strengths: on the left a monitor showing a closed padlock drawn as a simple shape on a dark screen, in the middle a rack of network equipment with neat coloured cables, on the right a second monitor showing soft abstract blocks of coloured code with no readable characters. Cool blue screen light mixes with warm daylight from the window."
+    },
+    {
+      "out": "j4",
+      "dest": "public/img/articles/kaisha_matsui_junbi/j4.webp",
+      "title": "4 カンボジアの いい ところは？（学生が 教える）",
+      "output": "Output: one square illustration, 1024x1024. Close view — the subject fills the frame edge to edge.",
+      "scene": "Scene: THE STUDENT is a young Cambodian woman in her early twenties with shoulder-length straight dark hair and a warm coral-orange blouse; keep her face, hair and blouse exactly the same as in the second reference image. She stands beside a large blank whiteboard in a bright meeting room, one hand open toward the board, warmly explaining something she is proud of. Three Japanese office workers in shirts and blouses sit at the table listening with interested, smiling faces, one leaning forward, one taking notes in an open notebook. The whiteboard carries only a few soft hand-drawn shapes — a smiling face, a rising line and a small palm tree — never letters or numbers. Bright daylight, plants by the window."
+    }
+  ]
+}
