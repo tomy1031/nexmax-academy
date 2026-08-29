@@ -8,6 +8,7 @@ import { buildFuriganaIndex, type FuriganaIndex } from "@/lib/text/furigana";
 import { getProfile } from "@/lib/profile";
 import { recordContentProgress } from "@/lib/progress/store";
 import { CallShell } from "@/components/call-shell";
+import { VideoPlayer } from "@/components/media/video-player";
 import { ListeningPanel } from "./listening-panel";
 import { mediaKind, revealRate, type ListeningState } from "./listening-checks";
 
@@ -257,20 +258,13 @@ function Player({
 
   return (
     <section className="card-island space-y-3 p-4">
-      {mediaKind(listening) === "video" ? (
-        /*
-          **先に 落とさない**（`preload="none"`）。1本 5〜7MB あるので、開いた だけで
-          30人ぶんが 流れると 教室の 回線が 埋まる。押した ときに 落ち始める。
-        */
-        <video
-          ref={mediaRef as React.RefObject<HTMLVideoElement | null>}
+      {mediaKind(listening) === "video" || mediaKind(listening) === "youtube" ? (
+        <VideoPlayer
           src={listening.videoUrl}
+          youtube={listening.youtube}
           poster={listening.posterUrl}
-          controls
-          preload="none"
-          playsInline
-          /* たての 動画でも 画面を 埋めない（`article-view.tsx` の 動画と 同じ 抑え方）。 */
-          className="mx-auto max-h-[70vh] max-w-full rounded-2xl bg-black"
+          label={listening.title}
+          mediaRef={mediaRef}
         />
       ) : mediaKind(listening) === "audio" ? (
         <audio
@@ -286,22 +280,37 @@ function Player({
       )}
 
       <div className="flex flex-wrap items-center gap-2">
-        <span className="text-ink-soft text-xs font-extrabold">はやさ</span>
-        {[0.7, 0.85, 1].map((value) => (
-          <button
-            key={value}
-            type="button"
-            onClick={() => setSpeed(value)}
-            aria-pressed={speed === value}
-            className={`rounded-full border-2 px-3 py-1 text-xs font-extrabold ${
-              speed === value
-                ? "bg-sky border-sky text-white"
-                : "border-hairline text-ink-soft bg-panel"
-            }`}
-          >
-            {value === 1 ? "ふつう" : value === 0.85 ? "すこし ゆっくり" : "ゆっくり"}
-          </button>
-        ))}
+        {/*
+          **YouTube のときは 速さの ボタンを 出さない。** 別の 会社の 枠の 中の
+          プレイヤーなので `playbackRate` を こちらから 触れない——押しても 何も
+          起きない ボタンを 置くと「効かない 画面」に なる（docs/constraints.md
+          「いま 触っても 意味の 無い ものは 押せない形に する」）。
+          速さは 動画の 中の ⚙ で 変えて もらう。
+        */}
+        {mediaKind(listening) === "youtube" ? (
+          <span className="text-ink-soft text-xs font-bold">
+            はやさは 動画の 中の ⚙ で 変えられます
+          </span>
+        ) : (
+          <>
+            <span className="text-ink-soft text-xs font-extrabold">はやさ</span>
+            {[0.7, 0.85, 1].map((value) => (
+              <button
+                key={value}
+                type="button"
+                onClick={() => setSpeed(value)}
+                aria-pressed={speed === value}
+                className={`rounded-full border-2 px-3 py-1 text-xs font-extrabold ${
+                  speed === value
+                    ? "bg-sky border-sky text-white"
+                    : "border-hairline text-ink-soft bg-panel"
+                }`}
+              >
+                {value === 1 ? "ふつう" : value === 0.85 ? "すこし ゆっくり" : "ゆっくり"}
+              </button>
+            ))}
+          </>
+        )}
 
         <span className="ml-auto flex flex-wrap gap-2">
           <Toggle on={captionsOn} onClick={onCaptions} label="げんこう" />

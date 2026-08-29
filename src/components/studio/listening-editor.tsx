@@ -150,6 +150,13 @@ export function ListeningEditor({
           hint="動画で 聞かせる ときは こちら。音声の ばしょは 空に してください（両方は 置けません）。"
         />
         <TextField
+          label="YouTube の ばしょ（なくてもよい）"
+          value={value.youtube ?? ""}
+          onChange={(youtube) => patch({ youtube: youtube.length > 0 ? youtube : undefined })}
+          placeholder="https://www.youtube.com/watch?v=..."
+          hint="動画の ページの URL を そのまま 貼って ください。音・動画・YouTube は どれか 1つです。速さの ボタンは 出ません（動画の 中の ⚙ で 変えます）。"
+        />
+        <TextField
           label="動画を 読みこむ 前に 出す 絵（なくてもよい）"
           value={value.posterUrl ?? ""}
           onChange={(posterUrl) =>

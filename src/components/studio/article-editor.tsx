@@ -211,11 +211,26 @@ function BlockEditor({
       return (
         <div className="space-y-3">
           <TextField
-            label="動画の 場所"
-            value={block.src}
-            onChange={(src) => onChange({ ...block, src })}
+            label="動画の 場所（ファイルの とき）"
+            value={block.src ?? ""}
+            onChange={(src) =>
+              onChange({ ...block, src: src.length > 0 ? src : undefined, youtube: undefined })
+            }
             placeholder="/video/hourensou/xxx.mp4"
             hint="ファイルは こちらで 置きます。置いた 場所を ここに 書いてください。"
+          />
+          <TextField
+            label="YouTube（YouTube の とき）"
+            value={block.youtube ?? ""}
+            onChange={(youtube) =>
+              onChange({
+                ...block,
+                youtube: youtube.length > 0 ? youtube : undefined,
+                src: undefined,
+              })
+            }
+            placeholder="https://www.youtube.com/watch?v=..."
+            hint="動画の ページの URL を そのまま 貼って ください。ファイルの 場所とは どちらか 1つです。"
           />
           <TextField
             label="この 動画で 見るところ（なくてもよい）"

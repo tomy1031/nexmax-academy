@@ -7,6 +7,7 @@ import type { Article, ArticleBlock } from "@/content/schema";
 import { NexMax, type NexMaxVariant } from "@/components/nexmax";
 import { DictionaryText } from "@/components/dictionary-text";
 import { RubyText } from "@/components/ruby-text";
+import { VideoPlayer } from "@/components/media/video-player";
 import { SpeakButton } from "@/components/speak-button";
 import { recordContentProgress } from "@/lib/progress/store";
 import type { DictionaryEntry } from "@/lib/dictionary";
@@ -666,20 +667,11 @@ function VideoBlock({
 }) {
   return (
     <figure className="mx-auto w-full max-w-[720px]">
-      <video
+      <VideoPlayer
         src={block.src}
+        youtube={block.youtube}
         poster={block.poster}
-        controls
-        preload="none"
-        playsInline
-        aria-label={block.caption}
-        /*
-          **高さを 先に 抑える**。旧アプリの 動画は たての 9:16 が 混ざって いて、
-          幅いっぱいに 出すと 1本で 画面 2つぶんの 高さに なる（実測 704x1280）。
-          `max-h` と `max-w` だけを 決めて 幅は 決めない ので、たてでも よこでも
-          もとの 形の まま おさまる。
-        */
-        className="mx-auto max-h-[70vh] max-w-full rounded-[20px] bg-black"
+        label={block.caption}
       />
       {block.note ? (
         <figcaption className="text-ink-soft mt-2 text-sm leading-relaxed font-bold">
