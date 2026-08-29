@@ -1,0 +1,93 @@
+{
+  "kind": "stage",
+  "id": "houkoku",
+  "order": 4,
+  "title": "報連相：報告",
+  "reading": "ほうれんそう ほうこく",
+  "description": "日本の 会社の「報連相」を 学びます。上司への 報告の しかたを 読んで、スキットで まねして、リスニングで 聞きます。",
+  "color": "sky",
+  "status": "published",
+  "area": {
+    "name": "きりの みね",
+    "reading": "きりの みね",
+    "image": "/img/scenes/area_misty_peaks.webp",
+    "note": "たかい いわやまと たきの あいだに、まちが あります。"
+  },
+  "contents": [
+    {
+      "ref": "houkoku_lecture",
+      "type": "article"
+    },
+    {
+      "ref": "houkoku_skit",
+      "type": "skit"
+    },
+    {
+      "ref": "houkoku_listening",
+      "type": "listening"
+    },
+    {
+      "ref": "houkoku_quiz",
+      "type": "quizset"
+    },
+    {
+      "ref": "houkoku_search",
+      "type": "link"
+    }
+  ],
+  "wordStageIds": [],
+  "furigana": [
+    [
+      "報連相",
+      "ほうれんそう"
+    ],
+    [
+      "報告",
+      "ほうこく"
+    ],
+    [
+      "会社",
+      "かいしゃ"
+    ],
+    [
+      "上司",
+      "じょうし"
+    ],
+    [
+      "日本",
+      "にほん"
+    ],
+    [
+      "日",
+      "にち"
+    ],
+    [
+      "聞",
+      "き"
+    ],
+    [
+      "読",
+      "よ"
+    ],
+    [
+      "報",
+      "ほう"
+    ],
+    [
+      "連",
+      "れん"
+    ],
+    [
+      "相",
+      "そう"
+    ],
+    [
+      "学",
+      "まな"
+    ],
+    [
+      "上",
+      "うえ"
+    ]
+  ]
+}

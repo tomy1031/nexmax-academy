@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Renraku Master</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Base Settings */
+        body {
+            font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(5px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Highlight Animation for Sidebar Update */
+        .highlight-update {
+            animation: highlight 1s ease-out;
+        }
+
+        @keyframes highlight {
+            0% {
+                background-color: #fef08a;
+            }
+
+            /* Yellow-200 */
+            100% {
+                background-color: white;
+            }
+        }
+
+        /* Ruby Adjustment */
+        ruby {
+            font-family: inherit;
+            ruby-align: center;
+        }
+
+        rt {
+            font-size: 0.6em;
+            user-select: none;
+            color: #64748b;
+        }
+
+        /* Vocabulary Tooltip */
+        .vocab-term {
+            border-bottom: 2px dotted #818cf8;
+            cursor: help;
+            position: relative;
+            transition: background 0.2s;
+        }
+
+        .vocab-term:hover {
+            background-color: #e0e7ff;
+        }
+
+        .vocab-term::after {
+            content: attr(data-meaning);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1e293b;
+            color: #fff;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+            margin-bottom: 8px;
+            z-index: 50;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .vocab-term::before {
+            content: '';
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 5px solid transparent;
+            border-top-color: #1e293b;
+            opacity: 0;
+            margin-bottom: -2px;
+            z-index: 50;
+            transition: opacity 0.2s;
+        }
+
+        .vocab-term:hover::after,
+        .vocab-term:hover::before {
+            opacity: 1;
+        }
+
+        /* Typing Cursor */
+        .typing-cursor::after {
+            content: '|';
+            animation: blink 1s step-end infinite;
+        }
+
+        @keyframes blink {
+            50% {
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-slate-100 text-slate-800 h-screen flex flex-col overflow-hidden">
+
+    <div
+        class="flex flex-1 overflow-hidden max-w-[1600px] mx-auto w-full shadow-2xl bg-white my-4 md:rounded-xl md:border border-slate-200">
+
+        <div class="w-60 bg-slate-900 text-slate-400 flex flex-col flex-shrink-0 z-20">
+            <div class="h-14 flex items-center px-4 font-bold text-white border-b border-slate-700 gap-2">
+                <div
+                    class="w-6 h-6 bg-indigo-500 rounded flex items-center justify-center text-[10px] shadow-lg shadow-indigo-500/50">
+                    IT</div>
+                <span>Renraku Corp</span>
+            </div>
+
+            <div class="flex-1 overflow-y-auto py-4 space-y-6">
+                <div>
+                    <div
+                        class="px-4 mb-2 text-xs font-bold uppercase tracking-wider text-slate-500 flex justify-between group">
+                        Channels
+                    </div>
+                    <div id="channel-list" class="space-y-[2px]">
+                    </div>
+                </div>
+
+                <div>
+                    <div
+                        class="px-4 mb-2 text-xs font-bold uppercase tracking-wider text-slate-500 flex justify-between group">
+                        Direct Messages
+                    </div>
+                    <div id="dm-list" class="space-y-[2px]">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex-1 flex flex-col min-w-0 bg-white relative border-r border-slate-200">
+
+            <header class="h-14 border-b flex items-center justify-between px-6 bg-white flex-shrink-0">
+                <div class="font-bold text-slate-800 flex items-center gap-2 text-lg">
+                    <span id="header-icon" class="text-slate-400"></span>
+                    <span id="header-title">Loading...</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div
+                        class="bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full text-xs font-bold border border-indigo-100 flex items-center gap-1">
+                        <i data-lucide="trophy" class="w-3 h-3"></i>
+                        Score: <span id="score-display">0</span>
+                    </div>
+                </div>
+            </header>
+
+            <div id="messages-container" class="flex-1 overflow-y-auto p-6 space-y-6 bg-slate-50 scroll-smooth">
+            </div>
+
+            <div id="draft-area" class="hidden border-t border-indigo-100 bg-indigo-50/60 p-4 fade-in backdrop-blur-sm">
+                <div class="max-w-3xl mx-auto flex gap-4">
+                    <div class="pt-1">
+                        <div
+                            class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600">
+                            <i data-lucide="pen-line" class="w-4 h-4"></i>
+                        </div>
+                    </div>
+                    <div class="flex-1">
+                        <div class="text-xs font-bold text-indigo-500 uppercase mb-1 tracking-wide">Drafting Message...
+                        </div>
+                        <div id="draft-text"
+                            class="text-sm text-slate-700 font-medium whitespace-pre-wrap typing-cursor bg-white p-3 rounded border border-indigo-100 shadow-sm">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="action-area"
+                class="p-6 bg-white border-t min-h-[180px] flex-shrink-0 z-10 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+            </div>
+        </div>
+
+        <div class="w-80 bg-white flex-col hidden lg:flex flex-shrink-0 border-l border-slate-200">
+            <div
+                class="h-14 flex items-center px-4 font-bold text-slate-700 border-b border-slate-200 gap-2 bg-slate-50">
+                <i data-lucide="clipboard-list" class="w-5 h-5 text-indigo-500"></i>
+                <span>Current Task (Tanaka's Order)</span>
+            </div>
+            <div class="p-5 flex-1 overflow-y-auto bg-slate-50/50">
+                <div id="task-sidebar-content" class="space-y-4 transition-colors duration-500 rounded-lg">
+                    <div class="text-sm text-slate-400 text-center mt-10">
+                        Loading...
+                    </div>
+                </div>
+            </div>
+            <div class="p-4 border-t border-slate-200 bg-white">
+                <div class="text-xs font-bold text-indigo-800 uppercase mb-2 flex items-center gap-1">
+                    <i data-lucide="book-open" class="w-3 h-3"></i> Vocab Hint
+                </div>
+                <div class="text-xs text-slate-600 space-y-2" id="vocab-list">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="completion-screen"
+        class="hidden absolute inset-0 z-50 bg-slate-900/90 flex items-center justify-center backdrop-blur-sm">
+        <div
+            class="bg-white rounded-2xl p-10 max-w-md w-full text-center shadow-2xl transform transition-all scale-100 border-4 border-indigo-500">
+            <div class="w-24 h-24 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <i data-lucide="award" class="w-12 h-12 text-indigo-600"></i>
+            </div>
+            <h2 class="text-3xl font-bold text-slate-800 mb-2">Training Complete!</h2>
+            <p class="text-slate-500 mb-8">お疲れ様でした！<br>「連絡」のプロフェッショナルです。</p>
+            <div class="bg-slate-100 rounded-xl p-4 mb-8">
+                <div class="text-xs text-slate-500 uppercase tracking-widest font-bold">Total Score</div>
+                <div class="text-5xl font-black text-indigo-600" id="final-score">0</div>
+            </div>
+            <button onclick="location.reload()"
+                class="w-full py-4 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition shadow-lg hover:shadow-indigo-500/30 flex items-center justify-center gap-2">
+                <i data-lucide="refresh-cw" class="w-5 h-5"></i> Restart Training
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // --- Utils: Ruby & Vocab ---
+        function r(text, reading) {
+            return `<ruby>${text}<rt>${reading}</rt></ruby>`;
+        }
+        function v(text, meaning) {
+            return `<span class="vocab-term" data-meaning="${meaning}">${text}</span>`;
+        }
+
+        function stripTags(html) {
+            const div = document.createElement("div");
+            div.innerHTML = html;
+
+            // <rt>タグ（ふりがな部分）をすべて取得して削除する
+            const rts = div.querySelectorAll('rt');
+            rts.forEach(rt => rt.remove());
+
+            // 残ったテキスト（漢字のみ）を返す
+            return div.innerText;
+        }
+
+        // --- Data Definitions ---
+        const MY_ID = 'me';
+        const TANAKA_ID = 'tanaka';
+
+        const CHANNELS = [
+            { id: 'general', name: 'general' },
+            { id: 'project-a', name: 'project-a' },
+            { id: 'dev-team', name: 'dev-team' },
+            { id: 'random', name: 'random' }
+        ];
+
+        const SCENARIOS = [
+            {
+                id: 1,
+                title: "Doc Update",
+                targetChannel: 'project-a',
+                vocab: [
+                    { w: r("仕様書", "しようしょ"), m: "Spec Document" },
+                    { w: r("更新", "こうしん"), m: "Update" },
+                    { w: r("共有", "きょうゆう"), m: "Share" },
+                    { w: r("登録", "とうろく"), m: "Registration" },
+                    { w: r("件名", "けんめい"), m: "Subject line" },
+                    { w: r("具体的", "ぐたいてき"), m: "Concrete / Specific" },
+                    { w: r("関係者", "かんけいしゃ"), m: "Stakeholders / People involved" },
+                    { w: r("全員", "ぜんいん"), m: "Everyone" },
+                    { w: r("必須", "ひっす"), m: "Required / Mandatory" },
+                    { w: r("貼る", "はる"), m: "Paste" }
+                ],
+                instruction: {
+                    text: `お${r("疲", "つか")}れ${r("様", "さま")}です。\n${v(r("仕様書", "しようしょ"), "Spec Doc")}を${v(r("更新", "こうしん"), "Update")}したので、チームに${v(r("共有", "きょうゆう"), "Share")}してください。\n\n【${r("更新", "こうしん")}した${r("場所", "ばしょ")}】\n・ユーザー${v(r("登録", "とうろく"), "Registration")}の${r("画面", "がめん")}\n\nファイルのURLも${r("貼", "は")}ってください。\nチャンネルは <b>#project-a</b> でお${r("願", "ねが")}いします。`
+                },
+                steps: [
+                    {
+                        question: `1. ${r("誰", "だれ")}にメンションしますか？`,
+                        options: [
+                            {
+                                text: `@Tanaka Senpai (${r("田中", "たなか")}${r("先輩", "せんぱい")})`,
+                                isCorrect: false,
+                                feedback: `${r("不正解", "ふせいかい")}。 「${r("連絡", "れんらく")}」は${r("関係者", "かんけいしゃ")}${r("全員", "ぜんいん")}にシェアします。${r("上司", "じょうし")}だけじゃありません。`
+                            },
+                            {
+                                text: `@here (オンラインのメンバー)`,
+                                isCorrect: true,
+                                feedback: `${r("正解", "せいかい")}！ チーム${r("全体", "ぜんたい")}への${r("連絡", "れんらく")}は @here か @channel です。`
+                            },
+                            {
+                                text: `(メンションなし)`,
+                                isCorrect: false,
+                                feedback: `${r("不正解", "ふせいかい")}。 「${r("誰", "だれ")}に${r("話", "はな")}しているか」${r("分", "わ")}かるようにするため、メンションは${r("必須", "ひっす")}です。`
+                            }
+                        ]
+                    },
+                    {
+                        question: `2. ${r("何", "なに")}をしたか${r("伝", "つた")}えます (${r("件名", "けんめい")}と${r("事実", "じじつ")})`,
+                        options: [
+                            {
+                                text: `${r("設計書", "せっけいしょ")}(design docs)の「ユーザー${r("登録", "とうろく")}${r("画面", "がめん")}」を${r("更新", "こうしん")}しました。`,
+                                isCorrect: false,
+                                feedback: `${r("不正解", "ふせいかい")}。${r("設計書", "せっけいしょ")}ではなく${r("仕様書", "しようしょ")}です。`
+                            },
+                            {
+                                text: `${r("仕様書", "しようしょ")}の${r("更新", "こうしん")}、${r("頑張", "がんば")}りました！`,
+                                isCorrect: false,
+                                feedback: `${r("不正解", "ふせいかい")}。 ${r("連絡", "れんらく")}に「${r("自分", "じぶん")}の${r("気持", "きも")}ち」はいりません。`
+                            },
+                            {
+                                text: `${r("仕様書", "しようしょ")}の「ユーザー${r("登録", "とうろく")}${r("画面", "がめん")}」を${r("更新", "こうしん")}しました。`,
+                                isCorrect: true,
+                                feedback: `${r("正解", "せいかい")}！ ${r("件名", "けんめい")}があり、「どこを」${r("直", "なお")}したか${r("具体的", "ぐたいてき")}です。`
+                            }
+                        ]
+                    },
+                    {
+                        question: `3. ファイルの${r("場所", "ばしょ")}を${r("共有", "きょうゆう")}します`,
+                        options: [
+                            {
+                                text: `ファイルサーバーのWikiを${r("見", "み")}ておいてください。`,
+                                isCorrect: false,
+                                feedback: `${r("不正解", "ふせいかい")}。 ${r("広", "ひろ")}いサーバーの${r("中", "なか")}から${r("探", "さが")}すのは、${r("大変", "たいへん")}です。`
+                            },
+                            {
+                                text: `ファイルのURLはこちらです。\nhttps://file-server/docs/user-reg-spec`,
+                                isCorrect: true,
+                                feedback: `${r("正解", "せいかい")}！ URLがあれば、すぐに${r("探", "さが")}せます。`
+                            },
+                            {
+                                text: `パスは \\\\192.168.1.10\\docs です。`,
+                                isCorrect: false,
+                                feedback: `${r("不正解", "ふせいかい")}。 リンクになっていないパスは、クリックできないので${r("不便", "ふべん")}です。`
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 2,
+                title: "Client MTG Change",
+                targetChannel: 'project-a',
+                vocab: [
+                    { w: r("変更", "へんこう"), m: "Change" },
+                    { w: r("予定", "よてい"), m: "Schedule / Plan" },
+                    { w: r("場所", "ばしょ"), m: "Place / Location" },
+                    { w: r("会議室", "かいぎしつ"), m: "Meeting Room" },
+                    { w: r("点", "てん"), m: "Point / Aspect" },
+                    { w: r("各自", "かくじ"), m: "Each person / Individually" },
+                    { w: r("以下", "いか"), m: "Below / The following" }
+                ],
+                instruction: {
+                    text: `A${r("社", "しゃ")}(Company A)とのミーティングの${r("時間", "じかん")}と${r("場所", "ばしょ")}が${r("変", "か")}わりました。\n\n【${r("変更", "へんこう")}の内容】\n・${r("時間", "じかん")}: 14:00 → 15:00\n・${r("場所", "ばしょ")}: ${r("会議室", "かいぎしつ")}A → ${r("会議室", "かいぎしつ")}B\n\n<b>#project-a</b> で、チームのみんなに${r("連絡", "れんらく")}してください。\n「【${r("変更点", "へんこうてん")}】」としてリストにまとめ、カレンダーの${r("更新", "こうしん")}もお${r("願", "ねが")}いしましょう。`
+                },
+                steps: [
+                    {
+                        question: `1. メンションをして、${r("何", "なに")}がどうなったか${r("伝", "つた")}えます`,
+                        options: [
+                            {
+                                text: `@channel \nミーティングの${r("時間", "じかん")}が${r("変", "か")}わりました。`,
+                                isCorrect: false,
+                                feedback: `${r("不正解", "ふせいかい")}。 「どのミーティング（A${r("社", "しゃ")}？）」なのか${r("書", "か")}かないと、みんなが${r("混乱", "こんらん")}します。`
+                            },
+                            {
+                                text: `A${r("社", "しゃ")}とのミーティングが${r("延期", "えんき")}になりました。`,
+                                isCorrect: false,
+                                feedback: `${r("惜", "お")}しい！ メンション(@channel)がないと${r("気", "き")}づかれません。`
+                            },
+                            {
+                                text: `@channel \n${r("本日", "ほんじつ")}14${r("時", "じ")}${r("予定", "よてい")}のA${r("社", "しゃ")}とのミーティングですが、\n${r("以下", "いか")}のとおり${r("変更", "へんこう")}になりました。`,
+                                isCorrect: true,
+                                feedback: `${r("正解", "せいかい")}！ 「どのMTGか」「どうなったか」が${r("明確", "めいかく")}で、${r("次", "つぎ")}に${r("詳細", "しょうさい")}が${r("続", "つづ")}くことがわかります。`
+                            }
+                        ]
+                    },
+                    {
+                        question: `2. 【${r("変更点", "へんこうてん")}】と、お${r("願", "ねが")}いを${r("伝", "つた")}えます`,
+                        options: [
+                            {
+                                text: `14:00から15:00になって、${r("場所", "ばしょ")}も${r("会議室", "かいぎしつ")}Bになりました。\nよろしくお${r("願", "ねが")}いします。`,
+                                isCorrect: false,
+                                feedback: `${r("惜", "お")}しい！ ${r("文章", "ぶんしょう")}で${r("書", "か")}くよりも、箇条書き（リスト）にしたほうがパッと${r("見", "み")}て${r("分", "わ")}かります。`
+                            },
+                            {
+                                text: `【${r("変更点", "へんこうてん")}】\n・${r("時間", "じかん")}：14:00 → 15:00\n・${r("場所", "ばしょ")}：${r("会議室", "かいぎしつ")}A → ${r("会議室", "かいぎしつ")}B\n\n${r("各自", "かくじ")}、カレンダーの${r("更新", "こうしん")}をお${r("願", "ねが")}いします。`,
+                                isCorrect: true,
+                                feedback: `${r("正解", "せいかい")}！ 矢印(→)を${r("使", "つか")}ったリストが${r("見", "み")}やすく、カレンダー${r("更新", "こうしん")}の${r("依頼", "いらい")}も完璧です。`
+                            },
+                            {
+                                text: `【${r("変更点", "へんこうてん")}】\n・${r("時間", "じかん")}：14:00 → 15:00\n\n${r("場所", "ばしょ")}は${r("変", "か")}わっていません。`,
+                                isCorrect: false,
+                                feedback: `${r("不正解", "ふせいかい")}。 ${r("場所", "ばしょ")}も${r("変", "か")}わっているので、${r("正", "ただ")}しい${r("情報", "じょうほう")}を${r("伝", "つた")}えてください。`
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 3,
+                title: "Common Logic Update",
+                targetChannel: 'dev-team',
+                vocab: [
+                    { w: r("元号", "げんごう"), m: "Japanese Era Name" },
+                    { w: r("共通", "きょうつう"), m: "Common / Shared" },
+                    { w: r("機能", "きのう"), m: "Function / Feature" },
+                    { w: r("計算", "けいさん"), m: "Calculation" },
+                    { w: r("最新", "さいしん"), m: "Latest" },
+                    { w: r("依頼", "いらい"), m: "Request" },
+                    { w: r("各自", "かくじ"), m: "Each" },
+                    { w: r("反映", "はんえい"), m: "Reflect / Apply" }
+                ],
+                instruction: {
+                    text: `「${v(r("元号", "げんごう"), "Japanese Era Name")}(Gengō)」を${v(r("計算", "けいさん"), "Calculation")}する${v(r("共通", "きょうつう"), "Common")}${v(r("機能", "きのう"), "Function")}を${v(r("作", "つく"), "Create")}りました。\n#dev-teamに、GitHubから${v(r("最新", "さいしん"), "Latest")}のコードを \`pull\` して、${r("自分", "じぶん")}のPCに${v(r("反映", "はんえい"), "Reflect")}するように${v(r("依頼", "いらい"), "Request")}してください。\n\n------------ <b>📝 メモ (Note)</b>-----------\n「${v(r("元号", "げんごう"), "Japanese Era Name")}」は、${r("日本", "にほん")}の${r("特別", "とくべつ")}な${r("年", "とし")}の${r("数", "かぞ")}え${r("方", "かた")}です。\n${r("天皇", "てんのう")}(Emperor)が${r("変", "か")}わると、${r("名前", "なまえ")}が${r("変", "か")}わります。\n（${v(r("例", "れい"), "Example")}：1989-2019=${r("平成", "へいせい")}, 2019-=${r("令和", "れいわ")}）\n---------------------------------------`
+                },
+                steps: [
+                    {
+                        question: `1. メンションと、${r("分", "わ")}かりやすい${r("件名", "けんめい")}（タイトル）を${r("選", "えら")}びます`,
+                        options: [
+                            {
+                                text: `【${r("報告", "ほうこく")}】${r("元号", "げんごう")}の${r("機能", "きのう")}ができました。`,
+                                isCorrect: false,
+                                feedback: `${r("惜", "お")}しい。 「${r("報告", "ほうこく")}」だと、「ふーん、そうなんだ（${r("読", "よ")}むだけ）」と${r("思", "おも")}われて、作業してもらえません。`
+                            },
+                            {
+                                text: `@here ${r("日本", "にほん")}の${r("年", "とし")}について`,
+                                isCorrect: false,
+                                feedback: `${r("不正解", "ふせいかい")}。 タイトルが${r("広", "ひろ")}すぎて、${r("仕事", "しごと")}の${r("話", "はなし")}かどうかも${r("分", "わ")}かりにくいです。`
+                            },
+                            {
+                                text: `@here 【${r("依頼", "いらい")}】${r("元号", "げんごう")}${r("計算", "けいさん")}ロジックの${r("追加", "ついか")}について`,
+                                isCorrect: true,
+                                feedback: `${r("正解", "せいかい")}！ 「${r("依頼", "いらい")}」と${r("書", "か")}くことで、メンバーは「${r("何", "なに")}か作業が${r("必要", "ひつよう")}だ」と${r("分", "わ")}かります。`
+                            }
+                        ]
+                    },
+                    {
+                        question: `2. メンバーにやってほしいアクションを${r("伝", "つた")}えます`,
+                        options: [
+                            {
+                                text: `${r("元号", "げんごう")}の${r("計算", "けいさん")}は${r("難", "むずか")}しいので、${r("気", "き")}をつけてください。`,
+                                isCorrect: false,
+                                feedback: `${r("不正解", "ふせいかい")}。 ${r("注意", "ちゅうい")}するだけではコードは${r("新", "あたら")}しくなりません。「pullして」と${r("言", "い")}いましょう。`
+                            },
+                            {
+                                text: `${r("共通", "きょうつう")}${r("機能", "きのう")}を${r("作成", "さくせい")}したので、${r("各自", "かくじ")} \`git pull\` をお${r("願", "ねが")}いします。\n※${r("反映", "はんえい")}しないと${r("計算", "けいさん")}がズレますのでご${r("注意", "ちゅうい")}ください。`,
+                                isCorrect: true,
+                                feedback: `${r("正解", "せいかい")}！ 「pullしてください（アクション）」と「しないとどうなるか（${r("理由", "りゆう")}）」がセットになっています。`
+                            },
+                            {
+                                text: `${r("便利", "べんり")}な${r("機能", "きのう")}なので、もしよかったら${r("使", "つか")}ってみてください。`,
+                                isCorrect: false,
+                                feedback: `${r("不正解", "ふせいかい")}。 「もしよかったら」では${r("遅", "おそ")}いです。全員が${r("必", "かなら")}ず${r("使", "つか")}う${r("機能", "きのう")}です。`
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 4,
+                title: "DB Reset Notice",
+                targetChannel: 'project-a',
+                vocab: [
+                    { w: r("環境", "かんきょう"), m: "Environment" },
+                    { w: r("初期化", "しょきか"), m: "Reset / Initialize" },
+                    { w: r("影響", "えいきょう"), m: "Impact / Effect" },
+                    { w: r("利用", "りよう"), m: "Use / Usage" },
+                    { w: r("再開", "さいかい"), m: "Resume / Restart" },
+                    { w: r("優先", "ゆうせん"), m: "Priority" },
+                    { w: r("接続", "せつぞく"), m: "Connection" }
+                ],
+                instruction: {
+                    text: `【${v(r("状況", "じょうきょう"), "Situation")}】\n${v(r("開発用", "かいはつよう"), "For Dev")}データベース(Dev DB)のデータが${r("増", "ふ")}えて、テストがしにくいので、リセット（${v(r("全削除", "ぜんさくじょ"), "Delete all")}＆${v(r("再投入", "さいとうにゅう"), "Re-insert")}）をします。\n${v(r("作業", "さぎょう"), "Work")}${v(r("時間", "じかん"), "Time")}は ${v(r("本日", "ほんじつ"), "Today")} 13:00〜14:00 です。\n\n<b>#project-a</b> で、${v(r("作業", "さぎょう"), "Work")}${v(r("予定", "よてい"), "Schedule")}と${v(r("影響", "えいきょう"), "Impact / Effect")}を${v(r("連絡", "れんらく"), "Contact")}してください。`
+                },
+                steps: [
+                    {
+                        question: `1. ${r("作業", "さぎょう")}${r("内容", "ないよう")}と${r("時間", "じかん")}を${r("伝", "つた")}えます`,
+                        options: [
+                            {
+                                text: `【${r("連絡", "れんらく")}】これからメンテナンスを${r("始", "はじ")}めます。`,
+                                isCorrect: false,
+                                feedback: `${r("不正解", "ふせいかい")}。 「これから（いつまで？）」や「メンテナンス（${r("何", "なに")}をする？）」が、はっきりしません。`
+                            },
+                            {
+                                text: `【${r("連絡", "れんらく")}】${r("本日", "ほんじつ")} 13:00〜14:00、${r("開発", "かいはつ")}DBのデータ${r("初期化", "しょきか")}を${r("行", "おこな")}います。`,
+                                isCorrect: true,
+                                feedback: `${r("正解", "せいかい")}！ 「いつ（${r("数字", "すうじ")}）」「${r("何", "なに")}をするか」が${r("具体的", "ぐたいてき")}でわかりやすいです。`
+                            },
+                            {
+                                text: `${r("開発", "かいはつ")}DBが${r("汚", "きたな")}いので、きれいにします。`,
+                                isCorrect: false,
+                                feedback: `${r("不正解", "ふせいかい")}。 「${r("汚", "きたな")}い」はあなたの${r("感想", "かんそう")}です。また、${r("時間", "じかん")}が${r("書", "か")}いていません。`
+                            }
+                        ]
+                    },
+                    {
+                        question: `2. チームへの${r("影響", "えいきょう")}を${r("伝", "つた")}えます`,
+                        options: [
+                            {
+                                text: `${r("作業", "さぎょう")}${r("中", "ちゅう")}は${r("使", "つか")}わないでください。`,
+                                isCorrect: false,
+                                feedback: `${r("惜", "お")}しい。 「いつから${r("使", "つか")}えるようになるか」も${r("伝", "つた")}えたほうが${r("親切", "しんせつ")}です。`
+                            },
+                            {
+                                text: `ご${r("迷惑", "めいわく")}をおかけして${r("申", "もう")}し${r("訳", "わけ")}ありません。`,
+                                isCorrect: false,
+                                feedback: `${r("不正解", "ふせいかい")}。 ${r("謝", "あやま")}るよりも「${r("使", "つか")}えない${r("時間", "じかん")}（${r("事実", "じじつ")}）」を${r("伝", "つた")}えるほうが${r("優先", "ゆうせん")}です。`
+                            },
+                            {
+                                text: `${r("作業", "さぎょう")}${r("中", "ちゅう")}はDBに${r("接続", "せつぞく")}できません。14:00${r("以降", "いこう")}に${r("利用", "りよう")}${r("再開", "さいかい")}してください。`,
+                                isCorrect: true,
+                                feedback: `${r("正解", "せいかい")}！ 「${r("何", "なに")}ができなくなるか（${r("影響", "えいきょう")}）」を${r("伝", "つた")}えています。`
+                            }
+                        ]
+                    }
+                ]
+            }
+        ];
+
+
+        // --- State Management ---
+        let state = {
+            scenarioIndex: 0,
+            phase: 'dm_briefing', // 'dm_briefing' | 'channel_nav' | 'drafting'
+            currentViewId: 'dm-tanaka',
+            draftLines: [],
+            score: 0,
+            dmHistory: []
+        };
+
+        // --- DOM Elements ---
+        const els = {
+            channelList: document.getElementById('channel-list'),
+            dmList: document.getElementById('dm-list'),
+            headerTitle: document.getElementById('header-title'),
+            headerIcon: document.getElementById('header-icon'),
+            messages: document.getElementById('messages-container'),
+            actionArea: document.getElementById('action-area'),
+            draftArea: document.getElementById('draft-area'),
+            draftText: document.getElementById('draft-text'),
+            score: document.getElementById('score-display'),
+            completion: document.getElementById('completion-screen'),
+            finalScore: document.getElementById('final-score'),
+            taskSidebar: document.getElementById('task-sidebar-content'),
+            vocabList: document.getElementById('vocab-list')
+        };
+
+        // --- Init ---
+        function init() {
+            renderNav();
+            loadScenario();
+        }
+
+        function renderNav() {
+            els.channelList.innerHTML = CHANNELS.map(ch => `
+                <button onclick="handleChannelClick('${ch.id}')" 
+                    class="w-full text-left px-4 py-2 flex items-center gap-3 hover:bg-slate-800/50 transition border-l-4 ${state.currentViewId === ch.id ? 'bg-slate-800 border-indigo-500 text-white' : 'border-transparent text-slate-400'}">
+                    <i data-lucide="hash" class="w-4 h-4 opacity-70"></i>
+                    <span class="truncate text-sm font-medium">${ch.name}</span>
+                </button>
+            `).join('');
+
+            // mission_complete の時も赤丸（通知）を表示するように条件を追加
+            const showNotification = (state.phase === 'dm_briefing' || state.phase === 'mission_complete') && state.currentViewId !== 'dm-tanaka';
+
+            els.dmList.innerHTML = `
+                <button onclick="handleDMClick()" 
+                    class="w-full text-left px-4 py-2 flex items-center gap-3 hover:bg-slate-800/50 transition border-l-4 ${state.currentViewId === 'dm-tanaka' ? 'bg-slate-800 border-indigo-500 text-white' : 'border-transparent text-slate-400'}">
+                    <div class="relative">
+                        <div class="w-2.5 h-2.5 rounded-full bg-green-500 absolute -right-0.5 -bottom-0.5 ring-2 ring-slate-900"></div>
+                        <div class="w-6 h-6 rounded bg-indigo-600 flex items-center justify-center text-[10px] text-white font-bold shadow-sm">T</div>
+                    </div>
+                    <span class="truncate text-sm font-medium">Tanaka Senpai</span>
+                    ${showNotification ? '<span class="w-2.5 h-2.5 rounded-full bg-red-500 ml-auto animate-pulse shadow-sm shadow-red-500/50"></span>' : ''}
+                </button>
+                <div class="w-full text-left px-4 py-2 flex items-center gap-3 opacity-40 cursor-not-allowed">
+                    <div class="w-6 h-6 rounded bg-slate-600 flex items-center justify-center text-[10px] text-white font-bold">Y</div>
+                    <span class="truncate text-sm font-medium">You</span>
+                </div>
+            `;
+            lucide.createIcons();
+        }
+        function loadScenario() {
+            const sc = SCENARIOS[state.scenarioIndex];
+            state.phase = 'dm_briefing';
+            state.currentViewId = 'dm-tanaka';
+            state.draftLines = [];
+
+            // Add new instruction to history
+            state.dmHistory.push({ sender: 'Tanaka Senpai', text: sc.instruction.text, type: 'tanaka' });
+
+            updateHeader();
+            renderNav();
+            renderMessagesForView();
+            renderActionArea();
+            renderRightSidebar(); // Ensure sidebar updates immediately
+        }
+
+        function renderRightSidebar() {
+            const sc = SCENARIOS[state.scenarioIndex];
+
+            // 1. Trigger Animation
+            const contentDiv = els.taskSidebar;
+            contentDiv.classList.remove('highlight-update');
+            void contentDiv.offsetWidth; // Trigger reflow
+            contentDiv.classList.add('highlight-update');
+
+            // 2. Update Content
+            contentDiv.innerHTML = `
+                <div class="bg-white rounded-lg border border-slate-200 shadow-sm p-4">
+                    <div class="flex justify-between items-center mb-2">
+                        <div class="text-xs font-bold text-slate-400 uppercase">Mission ${state.scenarioIndex + 1}/${SCENARIOS.length}</div>
+                        <span class="bg-indigo-100 text-indigo-700 text-[10px] px-2 py-0.5 rounded-full font-bold">Active</span>
+                    </div>
+                    <div class="font-bold text-slate-800 mb-3 text-lg leading-tight">${sc.title}</div>
+                    <div class="bg-slate-50 text-slate-700 text-sm p-3 rounded leading-relaxed border border-slate-200">
+                        ${sc.instruction.text}
+                    </div>
+                    <div class="mt-4 flex items-center gap-2 text-xs font-bold text-slate-500 bg-slate-100 p-2 rounded">
+                        <i data-lucide="map-pin" class="w-3 h-3 text-red-500"></i>
+                        Post in: <span class="text-slate-800">#${sc.targetChannel}</span>
+                    </div>
+                </div>
+            `;
+
+            // 3. Update Vocab List
+            if (sc.vocab) {
+                els.vocabList.innerHTML = sc.vocab.map(v => `
+                    <div class="flex justify-between border-b border-slate-100 pb-1 last:border-0">
+                        <span class="font-medium text-slate-700">${v.w}</span>
+                        <span class="text-slate-400">${v.m}</span>
+                    </div>
+                `).join('');
+            } else {
+                els.vocabList.innerHTML = '<span class="text-slate-400">- No new vocab -</span>';
+            }
+
+            lucide.createIcons();
+        }
+
+        // --- View Logic ---
+        function updateHeader() {
+            if (state.currentViewId === 'dm-tanaka') {
+                els.headerIcon.innerHTML = '<i data-lucide="message-square" class="w-5 h-5 text-indigo-500"></i>';
+                els.headerTitle.innerText = "Tanaka Senpai";
+            } else {
+                els.headerIcon.innerHTML = '<i data-lucide="hash" class="w-5 h-5 text-slate-400"></i>';
+                els.headerTitle.innerText = state.currentViewId;
+            }
+            lucide.createIcons();
+        }
+
+        function handleDMClick() {
+            state.currentViewId = 'dm-tanaka';
+            updateHeader();
+            renderNav();
+            renderMessagesForView();
+            renderActionArea();
+        }
+
+        function handleChannelClick(channelId) {
+            // Check if user is allowed to move
+            if (state.phase === 'dm_briefing') {
+                alert("まずはTanaka Senpaiの指示を確認し、「了解」ボタンを押してタスクを開始してください。");
+                return;
+            }
+
+            state.currentViewId = channelId;
+            updateHeader();
+            renderNav();
+            renderMessagesForView();
+
+            // Check if correct channel
+            const sc = SCENARIOS[state.scenarioIndex];
+            if (state.phase === 'channel_nav') {
+                if (channelId === sc.targetChannel) {
+                    state.phase = 'drafting';
+                    renderMessagesForView(); // Show "Drafting started" system msg
+                    renderActionArea();
+                } else {
+                    addSystemMessage(`⚠️ ここは #${channelId} です。指示されたチャンネルは #${sc.targetChannel} です。`);
+                }
+            } else if (state.phase === 'drafting') {
+                if (channelId !== sc.targetChannel) {
+                    els.actionArea.innerHTML = `<div class="text-slate-500 text-sm text-center flex items-center justify-center gap-2 py-4"><i data-lucide="alert-circle" class="w-4 h-4"></i> #${sc.targetChannel} に戻って入力を続けてください。</div>`;
+                    lucide.createIcons();
+                } else {
+                    renderActionArea();
+                }
+            }
+        }
+
+        // --- Message Rendering ---
+        function renderMessagesForView() {
+            els.messages.innerHTML = '';
+
+            if (state.currentViewId === 'dm-tanaka') {
+                // Render full history
+                state.dmHistory.forEach(msg => {
+                    addMessageUI(msg.sender, msg.text, msg.type);
+                });
+            } else {
+                // Channel View
+                addSystemMessage(`Welcome to #${state.currentViewId}`);
+
+                if (state.phase === 'drafting' && state.currentViewId === SCENARIOS[state.scenarioIndex].targetChannel) {
+                    addSystemMessage(`<span class="text-indigo-500 font-bold">Drafting Mode Active</span>: 選択肢を選んでメッセージを作成してください。`);
+                }
+            }
+        }
+
+        function addMessageUI(sender, html, type) {
+            const div = document.createElement('div');
+            div.className = "flex gap-4 fade-in group";
+
+            let avatarHtml = '';
+            let bgClass = "bg-white";
+
+            if (type === 'tanaka') {
+                avatarHtml = `<div class="w-10 h-10 rounded bg-indigo-600 flex items-center justify-center text-white font-bold flex-shrink-0 shadow-md">T</div>`;
+                bgClass = "bg-white border-slate-100 shadow-sm";
+            } else if (type === 'me') {
+                avatarHtml = `<div class="w-10 h-10 rounded bg-slate-700 flex items-center justify-center text-white font-bold flex-shrink-0 shadow-md">Y</div>`;
+                bgClass = "bg-indigo-50/50 border-indigo-100 shadow-sm";
+            }
+
+            div.innerHTML = `
+                ${avatarHtml}
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-baseline gap-2 mb-1">
+                        <span class="font-bold text-slate-900">${sender}</span>
+                        <span class="text-xs text-slate-400 opacity-0 group-hover:opacity-100 transition">${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                    </div>
+                    <div class="text-sm text-slate-800 leading-relaxed whitespace-pre-wrap break-words p-3 rounded-r-lg rounded-bl-lg border ${bgClass}">${html}</div>
+                </div>
+            `;
+            els.messages.appendChild(div);
+            scrollToBottom();
+        }
+
+        function addSystemMessage(html) {
+            const div = document.createElement('div');
+            div.className = "flex items-center gap-4 py-4 opacity-70 px-4";
+            div.innerHTML = `
+                <div class="h-px bg-slate-300 flex-1"></div>
+                <div class="text-xs font-bold text-slate-400 uppercase">${html}</div>
+                <div class="h-px bg-slate-300 flex-1"></div>
+            `;
+            els.messages.appendChild(div);
+            scrollToBottom();
+        }
+
+        // --- Action Area Logic ---
+        function renderActionArea() {
+            els.actionArea.innerHTML = '';
+            const sc = SCENARIOS[state.scenarioIndex];
+
+            // 1. DM Phase
+            if (state.phase === 'dm_briefing') {
+                if (state.currentViewId !== 'dm-tanaka') {
+                    els.actionArea.innerHTML = `<div class="text-center text-sm text-slate-500">Check Direct Messages for instructions.</div>`;
+                    return;
+                }
+
+                const lastMsg = state.dmHistory[state.dmHistory.length - 1];
+                if (lastMsg.type === 'tanaka') {
+                    els.actionArea.innerHTML = `
+                        <div class="max-w-xl mx-auto text-center fade-in">
+                            <button onclick="acknowledgeTask()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3 rounded-xl font-bold shadow-lg shadow-indigo-200 transition flex items-center justify-center mx-auto gap-2 w-full md:w-auto">
+                                <i data-lucide="check" class="w-5 h-5"></i>
+                                了解です。対応します。
+                            </button>
+                        </div>
+                    `;
+                } else {
+                    els.actionArea.innerHTML = `
+                        <div class="text-center text-sm text-slate-500 flex flex-col items-center gap-2">
+                            <span class="bg-slate-100 px-3 py-1 rounded text-slate-600">Next Step</span>
+                            <span>左のメニューから <b>#${sc.targetChannel}</b> に移動してください。</span>
+                        </div>
+                    `;
+                }
+            }
+
+            // 2. Drafting Phase
+            else if (state.phase === 'drafting') {
+                if (state.currentViewId !== sc.targetChannel) return;
+
+                els.draftArea.classList.remove('hidden');
+
+                const currentStepIdx = state.draftLines.length;
+                if (currentStepIdx >= sc.steps.length) {
+                    els.actionArea.innerHTML = `
+                        <div class="max-w-xl mx-auto text-center fade-in">
+                            <p class="text-sm text-slate-500 mb-3">メッセージが完成しました。</p>
+                            <button onclick="sendMessage()" class="bg-green-600 hover:bg-green-700 text-white px-10 py-3 rounded-xl font-bold shadow-lg shadow-green-200 transition flex items-center justify-center mx-auto gap-2 w-full md:w-auto">
+                                <i data-lucide="send" class="w-5 h-5"></i>
+                                送信する (Send)
+                            </button>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const step = sc.steps[currentStepIdx];
+                els.actionArea.innerHTML = `
+                    <div class="max-w-4xl mx-auto fade-in">
+                        <div class="flex items-center gap-2 mb-4">
+                            <span class="bg-indigo-100 text-indigo-700 text-xs font-bold px-2 py-1 rounded">Step ${currentStepIdx + 1}/${sc.steps.length}</span>
+                            <span class="text-sm font-bold text-slate-700">${step.question}</span>
+                        </div>
+                        <div class="grid md:grid-cols-3 gap-3">
+                            ${step.options.map((opt, i) => `
+                                <button onclick="handleOptionSelect(${i})" class="text-left p-4 rounded-xl border border-slate-200 bg-white hover:border-indigo-400 hover:shadow-md transition flex flex-col gap-2 group h-full relative overflow-hidden">
+                                    <div class="absolute top-0 left-0 w-1 h-full bg-slate-200 group-hover:bg-indigo-500 transition-colors"></div>
+                                    <div class="pl-2">
+                                        <span class="text-sm text-slate-700 font-medium leading-relaxed">${opt.text}</span>
+                                    </div>
+                                </button>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            // --- 追加: 3. Mission Complete (Notification) Phase ---
+            else if (state.phase === 'mission_complete') {
+                els.actionArea.innerHTML = `
+                    <div class="max-w-xl mx-auto fade-in">
+                        <div onclick="nextScenario()" class="cursor-pointer bg-white border-l-4 border-indigo-500 shadow-md rounded-r p-4 flex items-center justify-between hover:bg-indigo-50 transition group">
+                            <div class="flex items-center gap-4">
+                                <div class="relative">
+                                    <div class="w-12 h-12 rounded bg-indigo-600 flex items-center justify-center text-white font-bold text-lg">T</div>
+                                    <span class="absolute -top-1 -right-1 flex h-4 w-4">
+                                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                      <span class="relative inline-flex rounded-full h-4 w-4 bg-red-500 border-2 border-white"></span>
+                                    </span>
+                                </div>
+                                <div>
+                                    <div class="text-xs font-bold text-slate-500 uppercase mb-0.5">New Notification</div>
+                                    <div class="font-bold text-slate-800 text-lg group-hover:text-indigo-700 transition">田中先輩から新しいメッセージ</div>
+                                    <div class="text-sm text-slate-500">「お疲れ様。次のタスクがありますよ」</div>
+                                </div>
+                            </div>
+                            <div class="bg-indigo-100 text-indigo-600 p-2 rounded-full group-hover:bg-indigo-600 group-hover:text-white transition">
+                                <i data-lucide="chevron-right" class="w-6 h-6"></i>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            lucide.createIcons();
+        }
+        // --- Logic Handlers ---
+
+        function acknowledgeTask() {
+            const reply = "了解です。対応します。";
+            state.dmHistory.push({ sender: 'You', text: reply, type: 'me' });
+            state.phase = 'channel_nav';
+            renderMessagesForView();
+            renderActionArea();
+            renderNav();
+        }
+
+        function handleOptionSelect(optIdx) {
+            const sc = SCENARIOS[state.scenarioIndex];
+            const step = sc.steps[state.draftLines.length];
+            const option = step.options[optIdx];
+
+            if (option.isCorrect) {
+                // 正解の選択肢（HTMLタグ付き）を保存
+                state.draftLines.push(option.text);
+                updateDraftPreview();
+                renderActionArea();
+                state.score += 10;
+                els.score.innerText = state.score;
+            } else {
+                const btn = document.querySelectorAll('#action-area button')[optIdx];
+                btn.classList.add('bg-red-50', 'border-red-300');
+
+                const existingFeedback = btn.querySelector('.feedback-msg');
+                if (!existingFeedback) {
+                    const feedback = document.createElement('div');
+                    feedback.className = "feedback-msg text-xs text-red-600 mt-2 font-bold pl-2 animate-pulse";
+
+                    // 【重要】フィードバックはタグありで表示したいので innerHTML を使い、stripTags は使わない
+                    feedback.innerHTML = `💡 ${option.feedback}`;
+
+                    btn.appendChild(feedback);
+                }
+            }
+        }
+
+        function updateDraftPreview() {
+            const rawHtml = state.draftLines.join('\n\n');
+            els.draftText.innerText = stripTags(rawHtml);
+        }
+
+        function sendMessage() {
+            const fullText = state.draftLines.join('\n\n');
+            els.draftArea.classList.add('hidden');
+            els.draftText.innerText = "";
+            els.actionArea.innerHTML = "";
+
+            // 自分のメッセージを表示
+            addMessageUI('You', fullText, 'me');
+
+            setTimeout(() => {
+                // ミッション完了のシステムメッセージ
+                addSystemMessage(`<span class="text-green-600 font-bold flex items-center gap-1 justify-center"><i data-lucide="check-circle" class="w-4 h-4"></i> Mission Accomplished</span>`);
+
+                // 田中先輩からの通知演出へ
+                setTimeout(() => {
+                    triggerTanakaNotification();
+                }, 1000);
+            }, 600);
+        }
+
+        function triggerTanakaNotification() {
+            state.phase = 'mission_complete';
+
+            // アクションエリアに通知バナーを表示
+            renderActionArea();
+
+            // サイドバーの田中先輩に赤丸（通知バッジ）をつけるために再描画
+            renderNav();
+        }
+
+        function nextScenario() {
+            state.scenarioIndex++;
+            if (state.scenarioIndex >= SCENARIOS.length) {
+                showCompletion();
+            } else {
+                loadScenario();
+            }
+        }
+
+        function showCompletion() {
+            els.finalScore.innerText = state.score;
+            els.completion.classList.remove('hidden');
+        }
+
+        function scrollToBottom() {
+            setTimeout(() => {
+                els.messages.scrollTop = els.messages.scrollHeight;
+            }, 50);
+        }
+
+        // Start
+        init();
+
+    </script>
+</body>
+
+</html>

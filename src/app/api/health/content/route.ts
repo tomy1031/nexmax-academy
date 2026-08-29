@@ -4,6 +4,7 @@ import { GIT_CONTENTS } from "@/content/git-contents.generated";
 import {
   listArticles,
   listLinks,
+  listSkits,
   listListenings,
   listMangas,
   listMeetings,
@@ -49,6 +50,7 @@ export async function GET() {
     listScenarios(),
     listMeetings(),
     listLinks(),
+    listSkits(),
   ]);
 
   const KINDS = [
@@ -60,6 +62,7 @@ export async function GET() {
     "scenario",
     "meeting",
     "link",
+    "skit",
   ] as const;
   const liveContentIds = new Set(
     lists.flatMap((items, at) => items.map((item) => `${KINDS[at]}:${item.id}`)),

@@ -891,6 +891,29 @@ function collectLabeledTexts(content: Content): LabeledText[] {
       // url は 行き先。学習者は読まない
       break;
     }
+
+    case "skit": {
+      /*
+       * スキットは **画面に 出る 字が ほぼ すべて 学習者の 読む 文**である。
+       * セリフはもちろん、役の 名前と 立場（ふきだしの 上に 出る）も、
+       * 言い方の ひとことも 読む。ここに 足し忘れると、**まねる 対象の セリフ
+       * そのものが 裸の 漢字**に なる——教材の 中身が まるごと 検査の外に落ちる。
+       *
+       * `audioUrl` と `image` は 置き場で、字では ない。
+       */
+      push("title", content.title);
+      push("description", content.description);
+      push("focus", content.focus);
+      content.roles.forEach((role, i) => {
+        push(`roles[${i}].name`, role.name);
+        push(`roles[${i}].role`, role.role);
+      });
+      content.lines.forEach((line, i) => {
+        push(`lines[${i}].text`, line.text);
+        push(`lines[${i}].note`, line.note);
+      });
+      break;
+    }
   }
 
   return out;
@@ -978,6 +1001,8 @@ const VERIFIED_SPLIT_COMPOUNDS: ReadonlySet<string> = new Set([
   "礼儀正",
   "挨拶回",
   "配属初日",
+  // 「18時以降」— 時（じ）＋以降（いこう）で じいこう。数の あとの 単位なので 正しい
+  "時以降",
 ]);
 
 const KANJI_RUN = /[々一-鿿]{2,}/g;

@@ -27,6 +27,7 @@ import {
   type Meeting,
   type QuizSet,
   type Scenario,
+  type Skit,
   type Slides,
   type Stage,
   type WordStage,
@@ -279,4 +280,15 @@ export const listLinks = cache(async (): Promise<LinkContent[]> => {
 
 export async function getLink(id: string): Promise<LinkContent | null> {
   return (await listLinks()).find((link) => link.id === id) ?? null;
+}
+
+export const listSkits = cache(async (): Promise<Skit[]> => {
+  const git = parseAll().filter((c): c is Skit => c.kind === "skit");
+  return mergeContentsById(git, await listPublishedFromDb("skit")).sort((a, b) =>
+    a.id.localeCompare(b.id),
+  );
+});
+
+export async function getSkit(id: string): Promise<Skit | null> {
+  return (await listSkits()).find((skit) => skit.id === id) ?? null;
 }

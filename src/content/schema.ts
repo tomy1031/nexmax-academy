@@ -904,6 +904,7 @@ export const CONTENT_REF_TYPES = [
   "meeting",
   "wordstage",
   "link",
+  "skit",
 ] as const;
 
 const contentRefTypeSchema = z.enum(CONTENT_REF_TYPES);
@@ -983,6 +984,7 @@ export const RESERVED_STAGE_IDS = [
   "map",
   "nexmax",
   "quiz",
+  "skit",
   "slides",
   "studio",
   "talk",
@@ -1693,6 +1695,103 @@ export const linkSchema = z.object({
   furigana: z.array(furiganaEntrySchema).optional(),
 });
 
+/* ------------------------------------------------------------------ *
+ * スキット（お手本の 会話を 1行ずつ 聞いて、口に 出して まねる）
+ * ------------------------------------------------------------------ */
+
+/** スキットの 登場人物。**声**を 持つのは 人物カード側なので id で つなぐ。 */
+const skitRoleSchema = z.object({
+  /** `content/characters/<id>.json` の id か、その スキットだけの 名前。 */
+  id: z.string().regex(/^[a-z0-9_-]+$/),
+  name: plainText,
+  /** 立場（「PM」「先輩」）。**敬語の 宛先**が 読めないと まねる 意味が 半分 消える。 */
+  role: plainText,
+  /** ふきだしの 色（リスニングの 参加者と 同じ 名前を 使う）。 */
+  accent: z.enum(["sky", "leaf", "sun", "coral", "grape"]).default("sky"),
+  /**
+   * ふきだしを 左右 どちらに 寄せるか。
+   *
+   * 学習者が **自分で 言う ほうの 役**を `right` に する。旧アプリの スキットも
+   * 左右で 分けて いて、色だけで 分けるより「どっちが 自分の セリフか」が 速く 分かる。
+   */
+  side: z.enum(["left", "right"]).default("left"),
+});
+
+/**
+ * スキットの 1行。
+ *
+ * ## なぜ 行ごとに 音を 持つのか
+ * まるごと 1本の 音声（リスニング教材）とは **ねらいが ちがう**。あちらは
+ * 通して 聞いて 中身を つかむ 練習で、こちらは **1行を 何度も 聞いて まねる**
+ * 練習である。通しの音では「その1行だけ」に 戻れないので、行ごとに 分けて 持つ。
+ */
+const skitLineSchema = z.object({
+  /** `roles` の id、または "narration"（ト書き）。 */
+  speaker: z.string().min(1),
+  text: plainText,
+  /**
+   * その行の 音（`/audio/...`）。**空でも よい**——画面は そのとき
+   * ブラウザの 読み上げで 鳴らす（旧アプリの スキットと 同じ 動き）ので、
+   * 音を 作る 前でも スピーカーの ボタンは 使える。
+   */
+  audioUrl: z.string().optional(),
+  /**
+   * その行に 添える 絵（省ける）。**行の となり**に 置くので、
+   * 「どの セリフの 場面か」が 迷わない。
+   */
+  image: imageSlotSchema.optional(),
+  /** 言い方の ひとこと（「ここで 一度 止まる」）。学習者が 読む 文。 */
+  note: plainText.optional(),
+});
+
+/**
+ * スキット教材 — お手本の 会話を 1行ずつ 聞いて、口に 出して まねる
+ *
+ * ## なぜ リスニングと 別の 種別に するか
+ * リスニング（`listeningSchema`）は **聞き取れたかを 測る** 教材で、台本は
+ * 既定で 伏せて ある（`check.showScript` の 既定が false）。スキットは 逆で、
+ * **台本を 見ながら 声に 出す**のが 目的だから、伏せる 仕組みが まるごと 邪魔に なる。
+ * 同じ型に 押し込むと「台本を 見せる リスニング」という、名前と 中身の 食い違った
+ * 教材が できる——先生は 一覧の どちらを 開けば 直せるのか 分からなくなる
+ *（たいわ と ミーティングを 分けたのと 同じ 判断）。
+ *
+ * ## 絵は 行に つく
+ * 場面の 絵を 1枚 上に 置く 持ち方も あるが、それだと 会話が 進んでも 絵は
+ * そのままで、**どの セリフの 場面か**が 見えない。てじゅん（`steps`）に
+ * 1歩ずつ 絵を 置いた のと 同じ 理由で、絵は 行に 持たせる。
+ * 表紙の 1枚だけは 別に `cover` で 置ける。
+ */
+export const skitSchema = z
+  .object({
+    kind: z.literal("skit"),
+    id: z.string().regex(/^[a-z0-9_-]+$/),
+    title: plainText,
+    description: plainText,
+    /** 何に 気をつけて まねるか。読む 前に 渡す 視点（設計01 P6）。 */
+    focus: plainText,
+    /** 表紙の 絵（省ける）。 */
+    cover: imageSlotSchema.optional(),
+    roles: z.array(skitRoleSchema).min(1),
+    lines: z.array(skitLineSchema).min(2),
+    furigana: z.array(furiganaEntrySchema).optional(),
+  })
+  .superRefine((skit, ctx) => {
+    const ids = skit.roles.map((r) => r.id);
+    if (new Set(ids).size !== ids.length) {
+      ctx.addIssue({ code: "custom", path: ["roles"], message: "roles の id が重複している" });
+    }
+    const known = new Set([...ids, "narration"]);
+    skit.lines.forEach((line, i) => {
+      if (!known.has(line.speaker)) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["lines", i, "speaker"],
+          message: `話者「${line.speaker}」が roles にない（narration は使える）`,
+        });
+      }
+    });
+  });
+
 /**
  * ミーティングの質問1つ。
  *
@@ -1971,6 +2070,7 @@ export const contentSchema = z.discriminatedUnion("kind", [
   articleSchema,
   slidesSchema,
   linkSchema,
+  skitSchema,
 ]);
 
 export type VocabWord = z.infer<typeof vocabWordSchema>;
@@ -2012,4 +2112,7 @@ export type ArticleBlock = z.infer<typeof articleBlockSchema>;
 export type Slides = z.infer<typeof slidesSchema>;
 export type SlideNote = z.infer<typeof slideNoteSchema>;
 export type LinkContent = z.infer<typeof linkSchema>;
+export type Skit = z.infer<typeof skitSchema>;
+export type SkitRole = z.infer<typeof skitRoleSchema>;
+export type SkitLine = z.infer<typeof skitLineSchema>;
 export type Content = z.infer<typeof contentSchema>;
