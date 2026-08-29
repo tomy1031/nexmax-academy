@@ -1,7 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { AUTH_STATE_HEADER, hasAuthCookie } from "@/lib/auth-cookie";
-import { getSupabasePublicConfig } from "@/lib/env";
+import { getIsrRevalidateToken, getSupabasePublicConfig } from "@/lib/env";
 
 /**
  * ログインしていない人を、最初の画面（タイトル＝ログイン）へ返す。
@@ -12,6 +12,30 @@ import { getSupabasePublicConfig } from "@/lib/env";
  */
 function isOpenToVisitors(pathname: string): boolean {
   return pathname === "/" || pathname.startsWith("/auth/") || pathname.startsWith("/api/");
+}
+
+/**
+ * ISR の 作りおきを 作り直す ための 内部リクエストか。
+ *
+ * **ここを 通さないと、ログインの 内側の ページは 二度と 作り直されない。**
+ * OpenNext の memoryQueue は 期限切れの ページを 直すとき、Worker 自身へ
+ * `HEAD` を 送る（`x-prerender-revalidate` ＋ `x-isr: 1`。クッキーは 付かない）。
+ * この 門番は クッキーの 無い リクエストを ログイン画面へ 返すので、
+ * まなびマップも ステージも、**作り直しが 毎回 307 で 失敗して 配布した ときの まま 凍る**。
+ * 先生が スタジオで 直しても 学習者に 届かない——2026-08-29 に
+ *「非表示に したのに マップから 消えない」として 表に 出た（さいだい6分の
+ * 待ち時間だと 見立てたのは 誤りで、待っても 永久に 変わらなかった）。
+ *
+ * 中身は 漏れない。**HEAD しか 通さない**ので 本文は 返らず、できるのは
+ * 作りおきの 作り直しだけ である。合言葉（`NEXT_PREVIEW_MODE_ID`）が
+ * 読める 環境では それも 突き合わせる。
+ */
+function isIsrRevalidation(request: NextRequest): boolean {
+  if (request.method !== "HEAD") return false;
+  const token = request.headers.get("x-prerender-revalidate");
+  if (!token) return false;
+  const expected = getIsrRevalidateToken();
+  return expected ? token === expected : request.headers.get("x-isr") === "1";
 }
 
 /**
@@ -33,6 +57,9 @@ function isOpenToVisitors(pathname: string): boolean {
 export async function middleware(request: NextRequest) {
   const cfg = getSupabasePublicConfig();
   if (!cfg) return NextResponse.next({ request });
+
+  // 作りおきの 作り直しは 門番より 先に 通す（弾くと ページが 永久に 古いまま）。
+  if (isIsrRevalidation(request)) return NextResponse.next({ request });
 
   const { pathname, searchParams } = request.nextUrl;
   const code = searchParams.get("code");
