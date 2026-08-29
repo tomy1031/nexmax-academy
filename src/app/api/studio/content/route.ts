@@ -9,6 +9,7 @@ import {
   type Finding,
 } from "@/lib/content-checks";
 import {
+  gitContentIds,
   listArticles,
   listListenings,
   listMangas,
@@ -194,6 +195,12 @@ export async function POST(request: Request): Promise<NextResponse> {
  * リポジトリのファイルなので、ここで消しても次の読み込みでまた出てくる。
  * 消えたように見せると、先生は一覧から消えない行を何度も消そうとするので、
  * 「消せなかった理由」を分けて返す（文言は studio-api.ts 側で組み立てる）。
+ *
+ * **git にも DBにも ある ものが 抜けていた**（2026-08-29 に発覚）。DB版が 無い
+ * ときだけ `gitContent` を 返していたので、先生が 一度でも 直した git 由来の
+ * 教材は「けしました」と 出たまま 一覧に 居すわる——消えたのは 先生の 直しだけで、
+ * 実体は リポジトリに 残っているからである。消した あとに **git版が 出てくるか**を
+ * `revertedToGit` で 返し、画面が そのとおりに 言えるようにする。
  */
 export async function DELETE(request: Request): Promise<NextResponse> {
   const gate = await requireAdmin();
@@ -208,11 +215,17 @@ export async function DELETE(request: Request): Promise<NextResponse> {
     .from("studio_contents")
     .delete()
     .eq("id", id)
-    .select("id");
+    .select("id, kind");
   if (error) return fail("deleteFailed", 500);
   if (!data || data.length === 0) return fail("gitContent", 404);
 
-  return NextResponse.json({ ready: true, id });
+  // 同じ id が git にも あるなら、消えたのは 先生の 直しだけ。一覧には git版が 残る。
+  const gitIds = gitContentIds();
+  const revertedToGit = (data as { id: string; kind: string }[]).some((row) =>
+    gitIds.has(`${row.kind}:${row.id}`),
+  );
+
+  return NextResponse.json({ ready: true, id, revertedToGit });
 }
 
 /** 消すIDの取り出し。DELETE に body を載せない書き方もあるので、クエリも body も受ける。 */

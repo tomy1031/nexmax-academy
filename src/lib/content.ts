@@ -68,6 +68,25 @@ function parseAll(): Content[] {
   return parsedCache;
 }
 
+/**
+ * git（リポジトリの content/*.json）に 実体が ある `種別:id` の 一覧。
+ *
+ * DB版を けしても、ここに ある id は **次の 読み込みで また 出てくる**——実体が
+ * リポジトリに あるからで、スタジオからは 消せない。「けしました」と 言えるのは
+ * ここに 無い ものだけである（2026-08-29。git にも ある ステージ `asakai` を
+ * スタジオで けして「消えない」と 報告が あった。DB版が 消えた ぶん、git版が
+ * そのまま 表に 出ていた）。
+ *
+ * 種別も 鍵に 入れる。同じ id の ページと もんだいが 別物として 並ぶ ことが ある
+ *（`/api/health/content` と 同じ 数えかた）。
+ */
+let gitIdCache: Set<string> | null = null;
+
+export function gitContentIds(): Set<string> {
+  if (!gitIdCache) gitIdCache = new Set(parseAll().map((c) => `${c.kind}:${c.id}`));
+  return gitIdCache;
+}
+
 /* ------------------------------------------------------------------ *
  * git と DB の合流（設計07 §11.1）
  *
