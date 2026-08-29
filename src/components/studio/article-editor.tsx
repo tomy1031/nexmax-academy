@@ -201,6 +201,48 @@ function BlockEditor({
         </div>
       );
 
+    /*
+     * 動画。**上げる 口は 置かない**（絵の `ImageSlotEditor` と ちがう）。
+     * 動画は こちらが `public/video/` へ 置く もので、先生は 場所を 書くだけ——
+     * 5〜7MB の ファイルを スタジオから 上げられるように すると、
+     * 置き場（Supabase）の 無料枠を 数本で 使い切る。
+     */
+    case "video":
+      return (
+        <div className="space-y-3">
+          <TextField
+            label="動画の 場所"
+            value={block.src}
+            onChange={(src) => onChange({ ...block, src })}
+            placeholder="/video/hourensou/xxx.mp4"
+            hint="ファイルは こちらで 置きます。置いた 場所を ここに 書いてください。"
+          />
+          <TextField
+            label="この 動画で 見るところ（なくてもよい）"
+            value={block.note ?? ""}
+            onChange={(note) => onChange({ ...block, note: note.length > 0 ? note : undefined })}
+            hint="動画の 中の ことばには ふりがなを 振れません。ここに 書いた 文が 動画の 下に 出ます。"
+          />
+          <TextField
+            label="読み上げ用の せつめい（なくてもよい）"
+            value={block.caption ?? ""}
+            onChange={(caption) =>
+              onChange({ ...block, caption: caption.length > 0 ? caption : undefined })
+            }
+            hint="画面には 出ません。目の 見えない 人の 読み上げに 使います。"
+          />
+          <TextField
+            label="読みこむ 前に 出す 絵（なくてもよい）"
+            value={block.poster ?? ""}
+            onChange={(poster) =>
+              onChange({ ...block, poster: poster.length > 0 ? poster : undefined })
+            }
+            placeholder="/img/hourensou/xxx.webp"
+            hint="空なら 黒い 面に 再生ボタンが 出ます。回線の 細い 教室では 空の ほうが 軽いです。"
+          />
+        </div>
+      );
+
     case "callout":
       return (
         <div className="space-y-3">

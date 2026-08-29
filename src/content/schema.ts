@@ -692,6 +692,24 @@ export const listeningSchema = z
      * 本番は R2 等の配信先URLを入れる。
      */
     audioUrl: z.string().optional(),
+    /**
+     * 動画ファイル（2026-08-29 の指定「リスニングも動画の場合も対応できるように」）。
+     *
+     * ## 音と 同じ 道に 載せる
+     * 聞き取りチェックも 原稿の ひらきも 速さの ボタンも **そのまま 効く**。
+     * `<audio>` と `<video>` は どちらも `HTMLMediaElement` なので、
+     * 画面が 出す 札を 変えるだけで よい（`playbackRate` も `preservesPitch` も 同じ）。
+     *
+     * ## 音と 両方は 置けない（下の 検査）
+     * どちらを 鳴らすかが データから 読めなく なる。片方が 黙って 無視される のは
+     * 先生から いちばん 見えない 壊れ方なので、保存の 時点で 止める。
+     */
+    videoUrl: z.string().optional(),
+    /**
+     * 動画を 読みこむ 前に 出す 絵（`videoUrl` の ときだけ 効く）。
+     * 省くと 黒い 面に 再生ボタンが 出る。回線の 細い 教室では 無い ほうが 軽い。
+     */
+    posterUrl: z.string().optional(),
     /** 聞き取りチェック: 聞こえた言葉を入れて見つける。 */
     keywords: z.array(plainText).default([]),
     /** 隠し原稿リベールのクリア条件（原稿の表示率%）。ここを超えると答え合わせへ進める。 */
@@ -723,6 +741,14 @@ export const listeningSchema = z
     furigana: z.array(furiganaEntrySchema).optional(),
   })
   .superRefine((listening, ctx) => {
+    if (listening.audioUrl && listening.videoUrl) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["videoUrl"],
+        message: "音と 動画の 両方は 置けない — どちらを 鳴らすかが 決まらない（片方を 消す）",
+      });
+    }
+
     const known = new Set([...listening.participants.map((p) => p.id), "me", "narration"]);
     listening.script.forEach((line, i) => {
       if (!known.has(line.speaker)) {
@@ -1328,6 +1354,35 @@ export const articleBlockSchema = z.discriminatedUnion("kind", [
   }),
   z.object({ kind: z.literal("paragraph"), text: plainText }),
   imageSlotSchema.extend({ kind: z.literal("image"), caption: plainText.optional() }),
+  /**
+   * 動画（2026-08-29 の指定「動画ブロック追加お願いします」）。
+   *
+   * ## なぜ 絵の スロットに 相乗りさせないか
+   * `imageSlotSchema` は **生成のための 型**で、`prompt` と `refs`（参照画像）と
+   * `status: "generating"` を 持つ。動画は こちらが 差し替える もので、
+   * AIに 作らせる 道が 無い——空の 欄を 3つ 抱えた 型に なる。
+   *
+   * ## 中の ことばは 覆えない
+   * 動画の 中の 音と 字には ふりがなを 振れない（PDFの スライドと 同じ立場）。
+   * だから `note` を 持つ。**その 動画で 何を 見るか**を 先生の ことばで 添えると、
+   * 聞き取れなかった 学習者にも つかむ ものが 1つ 残る（`slidesSchema.notes` と 同じ 受け皿）。
+   */
+  z.object({
+    kind: z.literal("video"),
+    /** 動画の 場所（`/video/...`）。 */
+    src: z.string().min(1),
+    /**
+     * 読みこむ 前に 出す 絵。**省ける**——無ければ 黒い 面に 再生ボタンが 出る。
+     *
+     * 置くと 1枚ぶん 先に 落ちる ので、**回線の 細い 教室では 無い ほうが 軽い**。
+     * 「何の 動画か」は 下の `note` が ことばで 言う。
+     */
+    poster: z.string().min(1).optional(),
+    /** 読み上げ用（画面には 出さない — 絵の `caption` と 同じ 扱い）。 */
+    caption: plainText.optional(),
+    /** その 動画で 見るところ。学習者が 読む 文。 */
+    note: plainText.optional(),
+  }),
   z.object({ kind: z.literal("callout"), tone: z.enum(["point", "care"]), text: plainText }),
   z.object({ kind: z.literal("list"), items: z.array(plainText).min(1) }),
   /*
