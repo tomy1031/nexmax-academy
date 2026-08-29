@@ -332,16 +332,18 @@ export function remainingKeywords(state: ListeningState): number {
  * 単体テストは DOM を 持たない（`vitest.config.ts` の environment は node）ので、
  * JSX の 中に 埋めると **この 分岐だけ 誰も 確かめられなく なる**。
  *
- * ## 動画が 勝つ
- * 両方 置くのは スキーマが 止める（`listeningSchema` の検査）。それでも
- * 両方 来たら 動画を 出す——DBの 古い 行が 混ざった ときに **画面が 落ちない**
- * ほうへ 倒す（合流は git ∪ DB で、DB側は 古いスキーマの ままでも 読める）。
+ * ## 2つ 以上 来たら 動画 → YouTube → 音 の 順
+ * 2つ 置くのは スキーマが 止める（`listeningSchema` の検査）。それでも 来たら
+ * どれかを 出す——**画面が 落ちない** ほうへ 倒す（合流は git ∪ DB で、
+ * DB側は 古いスキーマの ままでも 読める）。
  */
 export function mediaKind(listening: {
   audioUrl?: string;
   videoUrl?: string;
-}): "video" | "audio" | "none" {
+  youtube?: string;
+}): "video" | "youtube" | "audio" | "none" {
   if (listening.videoUrl) return "video";
+  if (listening.youtube) return "youtube";
   if (listening.audioUrl) return "audio";
   return "none";
 }

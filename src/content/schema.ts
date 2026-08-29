@@ -706,7 +706,17 @@ export const listeningSchema = z
      */
     videoUrl: z.string().optional(),
     /**
-     * 動画を 読みこむ 前に 出す 絵（`videoUrl` の ときだけ 効く）。
+     * YouTube で 聞かせる ばあい（2026-08-29 の 指定）。ID でも URL でも よい。
+     *
+     * **速さの ボタンは 出ない。** YouTube の プレイヤーは 別の 会社の 枠の 中に
+     * あって、こちらから `playbackRate` を 触れない。押しても 何も 起きない ボタンを
+     * 置くと「効かない 画面」に なる（docs/constraints.md「いま 触っても 意味の 無い
+     * ものは 押せない形に する」）ので、**YouTube の ときは 出さず**、
+     * 速さは 動画の 中の ⚙ で 変えて もらう。
+     */
+    youtube: z.string().optional(),
+    /**
+     * 動画を 読みこむ 前に 出す 絵（`videoUrl` / `youtube` の ときだけ 効く）。
      * 省くと 黒い 面に 再生ボタンが 出る。回線の 細い 教室では 無い ほうが 軽い。
      */
     posterUrl: z.string().optional(),
@@ -741,11 +751,19 @@ export const listeningSchema = z
     furigana: z.array(furiganaEntrySchema).optional(),
   })
   .superRefine((listening, ctx) => {
-    if (listening.audioUrl && listening.videoUrl) {
+    /*
+     * 鳴らす ものは **1つだけ**。2つ 置くと どちらが 鳴るかが データから 読めず、
+     * 片方が 黙って 無視される——先生から いちばん 見えない 壊れ方なので ここで 止める。
+     */
+    const sources = [listening.audioUrl, listening.videoUrl, listening.youtube].filter(
+      Boolean,
+    ).length;
+    if (sources > 1) {
       ctx.addIssue({
         code: "custom",
         path: ["videoUrl"],
-        message: "音と 動画の 両方は 置けない — どちらを 鳴らすかが 決まらない（片方を 消す）",
+        message:
+          "音・動画・YouTube は どれか 1つだけ — どれを 鳴らすかが 決まらない（ほかを 消す）",
       });
     }
 
@@ -1367,10 +1385,21 @@ export const articleBlockSchema = z.discriminatedUnion("kind", [
    * だから `note` を 持つ。**その 動画で 何を 見るか**を 先生の ことばで 添えると、
    * 聞き取れなかった 学習者にも つかむ ものが 1つ 残る（`slidesSchema.notes` と 同じ 受け皿）。
    */
-  z.object({
+  z
+    .object({
     kind: z.literal("video"),
-    /** 動画の 場所（`/video/...`）。 */
-    src: z.string().min(1),
+    /** 動画の 場所（`/video/...`）。YouTube の ときは 空に する。 */
+    src: z.string().min(1).optional(),
+    /**
+     * YouTube（2026-08-29 の 指定「ファイルの場合と youtube の場合と」）。
+     *
+     * 先生が **見て いる ページの URL を そのまま 貼れる**ように、ID でも
+     * `watch?v=` でも `youtu.be` でも 受ける（読み取りは `src/lib/video.ts`）。
+     * 保存されるのは 貼った ものそのままで、ID への 直しは 出す ときに 1回 する
+     *——直して 保存すると、先生が あとで 見た ときに **自分が 貼った ものと
+     * ちがう 字**が 入って いて、直して よいのか 分からなく なる。
+     */
+    youtube: z.string().min(1).optional(),
     /**
      * 読みこむ 前に 出す 絵。**省ける**——無ければ 黒い 面に 再生ボタンが 出る。
      *
@@ -1382,7 +1411,24 @@ export const articleBlockSchema = z.discriminatedUnion("kind", [
     caption: plainText.optional(),
     /** その 動画で 見るところ。学習者が 読む 文。 */
     note: plainText.optional(),
-  }),
+    })
+    .superRefine((block, ctx) => {
+      /*
+       * **どちらか 1つ**。両方 空だと 黒い 枠だけが 出て、両方 あると どちらを
+       * 出すかが データから 読めない——どちらも 先生の 画面からは 見えない 壊れ方。
+       */
+      const sources = [block.src, block.youtube].filter(Boolean).length;
+      if (sources !== 1) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["src"],
+          message:
+            sources === 0
+              ? "動画の 場所が 空です — ファイルの ばしょ か YouTube の どちらかを 書く"
+              : "ファイルと YouTube の 両方は 置けない — どちらか 1つに する",
+        });
+      }
+    }),
   z.object({ kind: z.literal("callout"), tone: z.enum(["point", "care"]), text: plainText }),
   z.object({ kind: z.literal("list"), items: z.array(plainText).min(1) }),
   /*

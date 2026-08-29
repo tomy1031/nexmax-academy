@@ -135,8 +135,8 @@ export function collectMissingAssets(contents: readonly Content[]): MissingAsset
         break;
       }
       case "listening": {
-        // 動画で 聞かせる 教材は 音を 作らない（`videoUrl` が 鳴る もの）
-        if (content.audioUrl || content.videoUrl) break;
+        // 動画・YouTube で 聞かせる 教材は 音を 作らない（そちらが 鳴る）
+        if (content.audioUrl || content.videoUrl || content.youtube) break;
         found.push({
           id: `listening:${content.id}`,
           kind: "listeningAudio",
