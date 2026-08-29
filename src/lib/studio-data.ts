@@ -9,6 +9,7 @@
  */
 
 import {
+  gitContentIds,
   listArticles,
   listCharacters,
   listListenings,
@@ -64,5 +65,11 @@ export async function loadStudioData() {
      *（2026-08-20 の指定）。語の 置き場は ここ 1つ しか 無い。
      */
     vocabBooks,
+    /**
+     * git に 実体が ある `種別:id`。**「けす」を 押す 前に** 本当に 消えるのかを
+     * 画面が 言えるように するため（2026-08-29）。一覧に 来る のは git ∪ DB を
+     * 合流した あとの すがた なので、どちらから 来たかは ここでしか 分からない。
+     */
+    gitIds: [...gitContentIds()],
   };
 }
