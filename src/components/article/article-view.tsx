@@ -349,6 +349,9 @@ function BlockView({
     case "image":
       return <ImageBlock block={block} furigana={furigana} show={show} />;
 
+    case "video":
+      return <VideoBlock block={block} furigana={furigana} show={show} dictionary={dictionary} />;
+
     case "callout":
       return <CalloutBlock block={block} furigana={furigana} show={show} dictionary={dictionary} />;
 
@@ -637,6 +640,56 @@ function CharactersBlock({
  * 幅も 少し しぼる。画面いっぱいの 絵は「見出し」に 見えてしまい、
  * すぐ 下の 説明と つながらない。
  */
+/**
+ * 動画（2026-08-29 の 指定）。
+ *
+ * ## 先に 落とさない
+ * `preload="none"`。1本 5〜7MB あるので、ページを 開いた だけで 流れると
+ * カンボジアの 教室で 30人ぶんが そのまま 回線に 効く（docs/constraints.md
+ *「30人同時アクセスに耐える」）。押した ときに 初めて 落ち始める。
+ *
+ * ## ことばは 動画の 外に 置く
+ * 中の 音と 字には ふりがなを 振れない。だから `note` を **動画の 下に 出す**
+ *（絵の `caption` は 出さない 決まりだが、あれは 絵を 見れば 分かる から。
+ * 動画は 押すまで 中身が 見えないので、何の 動画かは 字で 言う 必要が ある）。
+ */
+function VideoBlock({
+  block,
+  furigana,
+  show,
+  dictionary,
+}: {
+  block: Extract<ArticleBlock, { kind: "video" }>;
+  furigana: FuriganaIndex;
+  show: boolean;
+  dictionary?: readonly DictionaryEntry[];
+}) {
+  return (
+    <figure className="mx-auto w-full max-w-[720px]">
+      <video
+        src={block.src}
+        poster={block.poster}
+        controls
+        preload="none"
+        playsInline
+        aria-label={block.caption}
+        /*
+          **高さを 先に 抑える**。旧アプリの 動画は たての 9:16 が 混ざって いて、
+          幅いっぱいに 出すと 1本で 画面 2つぶんの 高さに なる（実測 704x1280）。
+          `max-h` と `max-w` だけを 決めて 幅は 決めない ので、たてでも よこでも
+          もとの 形の まま おさまる。
+        */
+        className="mx-auto max-h-[70vh] max-w-full rounded-[20px] bg-black"
+      />
+      {block.note ? (
+        <figcaption className="text-ink-soft mt-2 text-sm leading-relaxed font-bold">
+          <DictionaryText text={block.note} index={furigana} show={show} dictionary={dictionary} />
+        </figcaption>
+      ) : null}
+    </figure>
+  );
+}
+
 function ImageBlock({
   block,
   furigana,

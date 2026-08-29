@@ -673,6 +673,15 @@ function collectLabeledTexts(content: Content): LabeledText[] {
           case "image":
             push(at("caption"), block.caption);
             break;
+          /*
+           * 動画は **`note` が 学習者の 読む 文**（動画の 下に 出る）。
+           * 中の 音と 字には ふりがなを 振れない ので、ここが 唯一の 受け皿に なる。
+           * `caption` は 読み上げ用（絵と 同じ）、`src`・`poster` は 置き場。
+           */
+          case "video":
+            push(at("caption"), block.caption);
+            push(at("note"), block.note);
+            break;
           case "list":
           case "steps":
             block.items.forEach((item, j) => push(at(`items[${j}]`), item));

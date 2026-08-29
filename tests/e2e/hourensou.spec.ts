@@ -117,6 +117,38 @@ for (const { id, title, skitId } of STAGES) {
     await shot(page, `hourensou-${id}-skit`);
   });
 
+  test(`報連相：${title} — 動画が 置いて ある`, async ({ page }) => {
+    const article = pathsOf(id).find((item) => item.type === "article");
+    if (!article) return;
+    const data = JSON.parse(
+      readFileSync(join("content", "articles", `${article.ref}.json`), "utf8"),
+    ) as { blocks: { kind: string; src?: string; poster?: string }[] };
+    const videos = data.blocks.filter((block) => block.kind === "video");
+    if (videos.length === 0) return;
+
+    await open(page, article.path);
+    // データの 本数だけ 画面に 出て いる
+    await expect(page.locator("video")).toHaveCount(videos.length);
+    /*
+     * **押すまで 落とさない**（`preload="none"`）。1本 5〜7MB あるので、
+     * ここが ゆるむと 開いた だけで 教室の 回線が 埋まる。
+     */
+    for (const el of await page.locator("video").all()) {
+      expect(await el.getAttribute("preload")).toBe("none");
+    }
+    // ファイルが 本当に 置いて あるか（データだけが 指して いる 状態を 弾く）
+    for (const video of videos) {
+      for (const url of [video.src, video.poster]) {
+        if (!url) continue;
+        const res = await page.request.get(url);
+        expect(res.status(), `${url} が 無い`).toBe(200);
+      }
+    }
+
+    await page.locator("video").first().scrollIntoViewIfNeeded();
+    await shot(page, `hourensou-${id}-video`);
+  });
+
   test(`報連相：${title} — 裸の 漢字が 出て いない`, async ({ page, context }) => {
     /*
      * **順に 進んだ 学習者**として 見る。関門（🔒）が 閉じたままだと、教材の 代わりに

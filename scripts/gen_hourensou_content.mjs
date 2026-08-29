@@ -326,6 +326,9 @@ const FURIGANA = {
   通知: "つうち",
   順番: "じゅんばん",
   連絡文: "れんらくぶん",
+  動画: "どうが",
+  手本: "てほん",
+  組: "くみ",
   金: "かね",
   数: "かず",
   切: "き",
@@ -1221,6 +1224,7 @@ write("stages", "renraku", {
  * ================================================================== */
 
 const SOUDAN_IMG = "/img/hourensou/soudan";
+const SOUDAN_VIDEO = "/video/hourensou";
 
 write(
   "articles",
@@ -1339,6 +1343,31 @@ write(
           },
         ],
       },
+      /*
+       * 3つの えらび方を **動画で 見せる**（旧アプリの a/b/c.mp4）。
+       * カードの 字は 要点で、動画は その 場面そのもの。1本 10〜15秒。
+       */
+      {
+        kind: "video",
+        src: `${SOUDAN_VIDEO}/soudan_30min_a.mp4`,
+        poster: `${SOUDAN_IMG}/poster_30min_a.webp`,
+        caption: "一人で ずっと 悩んで、3日 あとに 相談する 場面",
+        note: "A：一人で ずっと 悩んで、3日 あとに 相談する。仕事が 予定より 遅れて しまいます。",
+      },
+      {
+        kind: "video",
+        src: `${SOUDAN_VIDEO}/soudan_30min_b.mp4`,
+        poster: `${SOUDAN_IMG}/poster_30min_b.webp`,
+        caption: "30分 考えてから 相談する 場面",
+        note: "B：30分（または 15分）考えて、それでも わからなければ 相談する。一番 いい タイミングです。",
+      },
+      {
+        kind: "video",
+        src: `${SOUDAN_VIDEO}/soudan_30min_c.mp4`,
+        poster: `${SOUDAN_IMG}/poster_30min_c.webp`,
+        caption: "何も 考えないで すぐに 相談する 場面",
+        note: "C：何も 考えないで、すぐに 相談する。先輩の 時間も 少なく なって しまいます。",
+      },
       {
         kind: "banner",
         tone: "message",
@@ -1373,6 +1402,18 @@ write(
         ],
       },
       { kind: "image", ...img(`${SOUDAN_IMG}/slide9.webp`) },
+      { kind: "heading", level: 2, text: "やって みよう（ロールプレイ）" },
+      {
+        kind: "paragraph",
+        text: "学んだ ことばを 使って、2人1組で 相談の 練習を しましょう。まず お手本の 動画を 見ます。",
+      },
+      {
+        kind: "video",
+        src: `${SOUDAN_VIDEO}/soudan_skit.mp4`,
+        poster: `${SOUDAN_IMG}/slide10.webp`,
+        caption: "ソクさんが 鈴木先輩に 相談する お手本",
+        note: "この あとの スキットで、同じ 会話を 1行ずつ 聞いて まねします。",
+      },
     ],
   }),
 );

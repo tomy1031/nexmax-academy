@@ -9,7 +9,7 @@ import { getProfile } from "@/lib/profile";
 import { recordContentProgress } from "@/lib/progress/store";
 import { CallShell } from "@/components/call-shell";
 import { ListeningPanel } from "./listening-panel";
-import { revealRate, type ListeningState } from "./listening-checks";
+import { mediaKind, revealRate, type ListeningState } from "./listening-checks";
 
 /**
  * リスニング — 「聞く」教材
@@ -63,7 +63,11 @@ export function ListeningPlayer({
   const [rate, setRate] = useState(0);
   const [touched, setTouched] = useState(false);
   const [rescued, setRescued] = useState(false);
-  const audioRef = useRef<HTMLAudioElement>(null);
+  /**
+   * 鳴らす もの。**`HTMLMediaElement`** で 受ける——音（`<audio>`）でも
+   * 動画（`<video>`）でも 同じ 札で 速さを 変えられる（どちらも この 型を 継ぐ）。
+   */
+  const mediaRef = useRef<HTMLMediaElement>(null);
 
   const goal = listening.revealGoal;
 
@@ -76,7 +80,7 @@ export function ListeningPlayer({
     setPhase("listen");
     recordContentProgress(listening.id, { status: "started" });
     // 押してから鳴らす。開いた瞬間に鳴ると、身構える前に聞き逃す
-    void audioRef.current?.play().catch(() => {
+    void mediaRef.current?.play().catch(() => {
       /* 自動再生を止めるブラウザもある。学習者は再生ボタンを押せる */
     });
   };
@@ -94,7 +98,7 @@ export function ListeningPlayer({
         <>
           <Player
             listening={listening}
-            audioRef={audioRef}
+            mediaRef={mediaRef}
             captionsOn={captionsOn}
             onCaptions={() => setCaptionsOn((on) => !on)}
             typingOn={typingOn}
@@ -224,17 +228,17 @@ function Intro({
   );
 }
 
-/** 音のプレイヤーと、表示の切り替え。 */
+/** 音（または 動画）の プレイヤーと、表示の 切り替え。 */
 function Player({
   listening,
-  audioRef,
+  mediaRef,
   captionsOn,
   onCaptions,
   typingOn,
   onTyping,
 }: {
   listening: Listening;
-  audioRef: React.RefObject<HTMLAudioElement | null>;
+  mediaRef: React.RefObject<HTMLMediaElement | null>;
   captionsOn: boolean;
   onCaptions: () => void;
   typingOn: boolean;
@@ -245,16 +249,36 @@ function Player({
   const setSpeed = (value: number) => {
     setSpeedValue(value);
     // 速度を変えてもピッチは保つ（低い声にしない — 設計01 P10）
-    if (audioRef.current) {
-      audioRef.current.playbackRate = value;
-      audioRef.current.preservesPitch = true;
+    if (mediaRef.current) {
+      mediaRef.current.playbackRate = value;
+      mediaRef.current.preservesPitch = true;
     }
   };
 
   return (
     <section className="card-island space-y-3 p-4">
-      {listening.audioUrl ? (
-        <audio ref={audioRef} src={listening.audioUrl} controls className="w-full" />
+      {mediaKind(listening) === "video" ? (
+        /*
+          **先に 落とさない**（`preload="none"`）。1本 5〜7MB あるので、開いた だけで
+          30人ぶんが 流れると 教室の 回線が 埋まる。押した ときに 落ち始める。
+        */
+        <video
+          ref={mediaRef as React.RefObject<HTMLVideoElement | null>}
+          src={listening.videoUrl}
+          poster={listening.posterUrl}
+          controls
+          preload="none"
+          playsInline
+          /* たての 動画でも 画面を 埋めない（`article-view.tsx` の 動画と 同じ 抑え方）。 */
+          className="mx-auto max-h-[70vh] max-w-full rounded-2xl bg-black"
+        />
+      ) : mediaKind(listening) === "audio" ? (
+        <audio
+          ref={mediaRef as React.RefObject<HTMLAudioElement | null>}
+          src={listening.audioUrl}
+          controls
+          className="w-full"
+        />
       ) : (
         <p className="text-ink-soft text-sm font-bold">
           この きょうざいには まだ 音が ありません。げんこうを 見ながら すすめてください。
