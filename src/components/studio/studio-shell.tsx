@@ -94,6 +94,11 @@ export interface StudioShellProps {
   characters: Character[];
   /** ことばの 正（語の 置き場は これ 1つ）。 */
   vocabBooks: VocabBook[];
+  /**
+   * git に 実体が ある `種別:id`。一覧は git ∪ DB を 合流した あとの すがた なので、
+   * これが 無いと「けしたら 本当に 消えるのか」を 押す 前に 言えない。
+   */
+  gitIds: string[];
 }
 
 /** きょうざい一覧のタブ。 */
@@ -158,6 +163,7 @@ export function StudioShell({
   wordStages,
   characters,
   vocabBooks,
+  gitIds,
 }: StudioShellProps) {
   const router = useRouter();
   const [gate, setGate] = useState<Gate>("checking");
@@ -321,6 +327,16 @@ export function StudioShell({
     [dbEntries],
   );
 
+  /**
+   * git（リポジトリ）にも 実体が あるか。**「けす」の 言い方が これで 変わる**——
+   * git にも ある ものは、DB版を 消しても git版が 出てくるので 一覧から 消えない。
+   */
+  const gitIdSet = useMemo(() => new Set(gitIds), [gitIds]);
+  const isGitBacked = useCallback(
+    (kind: string, id: string) => gitIdSet.has(`${kind}:${id}`),
+    [gitIdSet],
+  );
+
   const clearNotes = useCallback(() => {
     setIssues([]);
     setWarnings([]);
@@ -432,30 +448,37 @@ export function StudioShell({
    *
    * 公開中のものを消すと、その場で学習者の画面から消える（ステージが指していれば
    * リンク先が無くなる）。取り消せないので、押した先で必ず1段はさんで確かめる。
+   *
+   * **git にも 実体が ある ものは、消えるのは 先生の 直しだけ**（git版が 出てくるので
+   * 一覧からは 消えない）。ここで 言い分けないと、先生は「けしました」と 出たまま
+   * 残る 行を 何度も 押すことになる——2026-08-29 に STEP03（`asakai`）で 実際に 起きた。
    */
   const removeFromDb = useCallback(
-    async (id: string, title: string) => {
+    async (kind: string, id: string, title: string) => {
       const name = title.length > 0 ? title : id;
-      if (
-        !window.confirm(
-          `「${name}」を けしますか。こうかい中の ものは 学習者の 画面から すぐ 消えます。`,
-        )
-      ) {
-        return;
-      }
+      const fromGit = isGitBacked(kind, id);
+      const question = fromGit
+        ? `「${name}」を スタジオで 直す 前に もどしますか。この 教材は アプリに 元から 入って いるので、一覧からは 消えません。`
+        : `「${name}」を けしますか。こうかい中の ものは 学習者の 画面から すぐ 消えます。`;
+      if (!window.confirm(question)) return;
       const result = await deleteContent(id);
       if (!result.ok) {
         setToast({ message: result.message, tone: "ng" });
         return;
       }
-      setToast({ message: "けしました。", tone: "ok" });
+      setToast({
+        message: result.revertedToGit
+          ? "スタジオの 直しを もどしました。この 教材は アプリに 元から 入って いるので 一覧に のこります。マップから 外すなら、ひらいて「まなびマップ」を「地図に 出さない」に します。"
+          : "けしました。",
+        tone: "ok",
+      });
       await refreshDb();
       // 一覧の元になる git ∪ DB（公開分）はサーバで組んで props で来る。
       // DB側だけ読み直しても、いま消した教材は props に残ったままなので、行が消えず
       // 「DB版（こうかい）」から「git版」に化ける。サーバも読み直して幽霊の行を消す。
       router.refresh();
     },
-    [refreshDb, router],
+    [isGitBacked, refreshDb, router],
   );
 
   const handleSave = useCallback(
@@ -475,8 +498,19 @@ export function StudioShell({
       // 参照切れなどは保存を止めない。ここで受け取って画面に出さないと、
       // 先生は「まだ無いIDを指しています」に一度も気づけない（設計07 §3）。
       setWarnings(result.warnings);
+      /*
+       * ステージだけ「いつ 学習者に とどくか」を 足す。
+       *
+       * まなびマップは 作りおき（ISR・5分）＋拠点の 写し（1分）で 配るので、
+       * 押した すぐ あとに 見ても **前の ままが 出る**。それを 言わないと、
+       * 先生は 設定が 効いていないと 思って 何度も やり直す——2026-08-29 に
+       * 「非表示に したのに マップから 消えない」と 報告が あった（設定は
+       * 効いていて、配られるのを 待つ 時間だった）。
+       */
       setToast({
-        message: publish ? "こうかいしました。" : "したがきを ほぞんしました。",
+        message: `${publish ? "こうかいしました。" : "したがきを ほぞんしました。"}${
+          draft.kind === "stage" ? "学習者の マップに とどくまで さいだい 6分 かかります。" : ""
+        }`,
         tone: "ok",
       });
       await refreshDb();
@@ -553,6 +587,7 @@ export function StudioShell({
           <StageList
             stages={sortStages(merged.stage)}
             dbStatusOf={dbStatusOf}
+            gitBacked={(id) => isGitBacked("stage", id)}
             busy={saving}
             onOpen={(stage) => {
               clearNotes();
@@ -566,7 +601,7 @@ export function StudioShell({
               });
             }}
             onMove={(index, delta) => void reorderStages(index, delta)}
-            onRemove={(stage) => void removeFromDb(stage.id, stage.title)}
+            onRemove={(stage) => void removeFromDb("stage", stage.id, stage.title)}
           />
         ) : null}
 
@@ -577,7 +612,8 @@ export function StudioShell({
             items={merged[tab]}
             dbStatusOf={dbStatusOf}
             onOpen={(id) => openContent(id, tab)}
-            onRemove={(id, title) => void removeFromDb(id, title)}
+            gitBacked={(id) => isGitBacked(tab, id)}
+            onRemove={(id, title) => void removeFromDb(tab, id, title)}
           />
         ) : null}
 
@@ -586,12 +622,13 @@ export function StudioShell({
             wordStages={merged.wordstage}
             vocabBooks={vocabBooks}
             dbStatusOf={dbStatusOf}
+            gitBacked={(id) => isGitBacked("wordstage", id)}
             onOpen={(id) => openContent(id, "wordstage")}
             onNew={() => {
               clearNotes();
               setView({ mode: "wordstage", draft: emptyWordStage() });
             }}
-            onRemove={(id, title) => void removeFromDb(id, title)}
+            onRemove={(id, title) => void removeFromDb("wordstage", id, title)}
             /*
              * ことばの 正を ひらく 道。ここが 無いと、読めない 漢字に 気づいても
              * 先生は 直せない（語は もう 教材の 中に 無い）。
@@ -611,6 +648,7 @@ export function StudioShell({
           <CharacterList
             characters={merged.character}
             dbStatusOf={dbStatusOf}
+            gitBacked={(id) => isGitBacked("character", id)}
             onOpen={(id) => {
               const draft = merged.character.find((item) => item.id === id);
               if (!draft) return;
@@ -621,7 +659,7 @@ export function StudioShell({
               clearNotes();
               setView({ mode: "character", draft: emptyCharacter() });
             }}
-            onRemove={(id, name) => void removeFromDb(id, name)}
+            onRemove={(id, name) => void removeFromDb("character", id, name)}
           />
         ) : null}
 
@@ -932,6 +970,7 @@ function ContentList({
   onTab,
   items,
   dbStatusOf,
+  gitBacked,
   onOpen,
   onRemove,
 }: {
@@ -939,6 +978,8 @@ function ContentList({
   onTab: (tab: ContentTab) => void;
   items: readonly { id: string; title: string; description?: string }[];
   dbStatusOf: (kind: string, id: string) => "draft" | "published" | null;
+  /** git にも 実体が あるか（ある ものは DB版を 消しても 一覧から 消えない）。 */
+  gitBacked: (id: string) => boolean;
   onOpen: (id: string) => void;
   onRemove: (id: string, title: string) => void;
 }) {
@@ -991,7 +1032,7 @@ function ContentList({
                 </MiniButton>
                 {dbStatusOf(tab, item.id) ? (
                   <MiniButton tone="danger" onClick={() => onRemove(item.id, item.title)}>
-                    けす
+                    {gitBacked(item.id) ? "直しを もどす" : "けす"}
                   </MiniButton>
                 ) : null}
               </li>
@@ -1007,12 +1048,15 @@ function ContentList({
 function CharacterList({
   characters,
   dbStatusOf,
+  gitBacked,
   onOpen,
   onNew,
   onRemove,
 }: {
   characters: readonly Character[];
   dbStatusOf: (kind: string, id: string) => "draft" | "published" | null;
+  /** git にも 実体が あるか（ある ものは DB版を 消しても 一覧から 消えない）。 */
+  gitBacked: (id: string) => boolean;
   onOpen: (id: string) => void;
   onNew: () => void;
   onRemove: (id: string, name: string) => void;
@@ -1078,7 +1122,7 @@ function CharacterList({
                       tone="danger"
                       onClick={() => onRemove(character.id, character.name)}
                     >
-                      けす
+                      {gitBacked(character.id) ? "直しを もどす" : "けす"}
                     </MiniButton>
                   ) : null}
                 </div>

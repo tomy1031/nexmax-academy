@@ -165,7 +165,12 @@ export async function saveContent(content: Content, publish: boolean): Promise<S
   return { ok: true, status: publish ? "published" : "draft", warnings };
 }
 
-export type DeleteResult = { ok: true } | { ok: false; message: string };
+export type DeleteResult =
+  /**
+   * revertedToGit = 消えたのは **先生の 直しだけ**（同じ id の 実体が git にも あり、
+   * 一覧には git版が 残る）。true のまま「けしました」と 言わない。
+   */
+  { ok: true; revertedToGit: boolean } | { ok: false; message: string };
 
 /**
  * 1件けす。消せるのはスタジオが作ったDB版だけ。
@@ -173,6 +178,9 @@ export type DeleteResult = { ok: true } | { ok: false; message: string };
  * git の content/*.json で作った教材はリポジトリのファイルなので、
  * サーバが「消せなかった」と返す。ここで理由を言い分けないと、
  * 先生は一覧から消えない行を何度も押すことになる。
+ *
+ * git にも DBにも ある ものは **消せるが 消えない**（DB版だけ 消えて git版が 出る）。
+ * サーバの `revertedToGit` を そのまま 渡す——画面で 推し量ると、いつか ずれる。
  */
 export async function deleteContent(id: string): Promise<DeleteResult> {
   let response: Response;
@@ -202,7 +210,14 @@ export async function deleteContent(id: string): Promise<DeleteResult> {
     return { ok: false, message: messageForReason(reason) };
   }
 
-  return { ok: true };
+  let revertedToGit = false;
+  try {
+    const body = (await response.json()) as { revertedToGit?: unknown };
+    revertedToGit = body?.revertedToGit === true;
+  } catch {
+    // 本文が読めなくても消したこと自体は成功。言い方だけ控えめにする。
+  }
+  return { ok: true, revertedToGit };
 }
 
 export type UploadResult = { ok: true; url: string } | { ok: false; message: string };
