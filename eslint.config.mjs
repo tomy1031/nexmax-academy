@@ -103,6 +103,16 @@ const eslintConfig = defineConfig([
     // pdf.js の worker（scripts/copy_pdf_worker.mjs が写す他人のコード）。
     // 1行1.3MBの圧縮ずみファイルなので、検査しても直す先が無い。
     "public/pdfjs/**",
+    /*
+     * 旧アプリから **そのまま 写した** 練習ページの 共有部品
+     *（`scripts/migrate_hourensou_tools.mjs` が 写す。リンク教材の 行き先）。
+     *
+     * 直す先は 旧アプリ側で、ここで 直すと 写し直した 瞬間に 消える。
+     * 中身も この アプリの コードでは なく **教材の 一部**——`.prettierignore` で
+     * 整形から 外して あるのと 同じ 立場に そろえる。
+     */
+    "public/tools/hourensou/app.js",
+    "public/tools/hourensou/styles.css",
   ]),
 ]);
 

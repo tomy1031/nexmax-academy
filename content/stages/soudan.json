@@ -1,0 +1,101 @@
+{
+  "kind": "stage",
+  "id": "soudan",
+  "order": 6,
+  "title": "報連相：相談",
+  "reading": "ほうれんそう そうだん",
+  "description": "一人で 悩まないで 相談する しかたを 学びます。30分ルールと、自分の 意見を 持ってから 聞く 練習を します。",
+  "color": "coral",
+  "status": "published",
+  "area": {
+    "name": "さかみちの まち",
+    "reading": "さかみちの まち",
+    "image": "/img/scenes/area5_taiwan.webp",
+    "note": "さかの うえまで いえが つづく まちです。"
+  },
+  "contents": [
+    {
+      "ref": "soudan_lecture",
+      "type": "article"
+    },
+    {
+      "ref": "soudan_skit",
+      "type": "skit"
+    },
+    {
+      "ref": "soudan_listening",
+      "type": "listening"
+    },
+    {
+      "ref": "soudan_quiz",
+      "type": "quizset"
+    }
+  ],
+  "wordStageIds": [],
+  "furigana": [
+    [
+      "報連相",
+      "ほうれんそう"
+    ],
+    [
+      "相談",
+      "そうだん"
+    ],
+    [
+      "自分",
+      "じぶん"
+    ],
+    [
+      "一人",
+      "ひとり"
+    ],
+    [
+      "意見",
+      "いけん"
+    ],
+    [
+      "練習",
+      "れんしゅう"
+    ],
+    [
+      "人",
+      "ひと"
+    ],
+    [
+      "分",
+      "ふん"
+    ],
+    [
+      "聞",
+      "き"
+    ],
+    [
+      "見",
+      "み"
+    ],
+    [
+      "持",
+      "も"
+    ],
+    [
+      "悩",
+      "なや"
+    ],
+    [
+      "報",
+      "ほう"
+    ],
+    [
+      "連",
+      "れん"
+    ],
+    [
+      "相",
+      "そう"
+    ],
+    [
+      "学",
+      "まな"
+    ]
+  ]
+}
