@@ -53,6 +53,22 @@ export const isSupabaseConfigured = Boolean(
   publicEnv.NEXT_PUBLIC_SUPABASE_URL && publicEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY,
 );
 
+/**
+ * ISR の 作りおきを 作り直す ときの 合言葉（Next の previewModeId）。
+ *
+ * OpenNext が 実行時に `NEXT_PREVIEW_MODE_ID` へ 入れる（アダプタの config が
+ * prerender-manifest から 読む）。**秘密鍵では なく、内部リクエストの 見分け**に
+ * 使う。門番（`src/middleware.ts`）が 作り直しの HEAD を ログイン画面へ
+ * 返さない ように するため——弾くと ページが 永久に 古いまま になる。
+ *
+ * 読めない 環境も ある（束ね方に よっては 中まで 届かない）ので、
+ * **null を 返せる**ようにして ある。呼ぶ側は 無い ときの 道を 用意する。
+ */
+export function getIsrRevalidateToken(): string | null {
+  const value = process.env.NEXT_PREVIEW_MODE_ID;
+  return typeof value === "string" && value.length > 0 ? value : null;
+}
+
 /** Supabase クライアント生成に使う公開設定（未設定なら null）。 */
 export function getSupabasePublicConfig(): { url: string; anonKey: string } | null {
   if (!publicEnv.NEXT_PUBLIC_SUPABASE_URL || !publicEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
