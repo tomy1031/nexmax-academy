@@ -39,7 +39,7 @@ const line = "─".repeat(64);
  * 比べる相手は **2つある**（2026-08-27 の統合ブランチ運用から）。
  *
  *   STG  … `integration`（作業ブランチのマージ先。マージのたび自動更新）
- *   本番 … `main`（`integration` からの昇格先。授業のある火・水・金 17:05 ICT に自動）
+ *   本番 … `main`（`integration` からの昇格先。授業のある火・水・金の夕方 16:12〜17:12 ICT に自動）
  *
  * ここを1本（origin/main）にしていたころは、**正常なのに STG が恒久的に ⚠** になった
  * ——STG に載っているのは main ではないのだから、当たり前に食い違う。
@@ -138,7 +138,7 @@ const [prod, stg] = await Promise.all([
 
 // ── 本番待ち: 統合ブランチに入っているのに、まだ本番へ出ていない変更。
 //
-// **「本番OK」を待っているのではない。** 授業のある火・水・金 17:05 ICT に
+// **「本番OK」を待っているのではない。** 授業のある火・水・金の夕方（16:12〜17:12 ICT）に
 // ワークフローが自動で `integration` → `main` を昇格して本番へ出す（docs/deploy.md §0.6）。
 // ここに出るのは「次の授業前に届くもの」の一覧である。
 // 何日も居座るようなら、自動デプロイが落ちている（Actions を見る）。
@@ -160,7 +160,7 @@ if (Number(behind) > 0) next = `origin/${STG_BRANCH} を取り込む（${behind}
 else if (dirtyCount > 0) next = "未コミットの変更を確認してから続きを判断する";
 else if (pendingProd.length)
   next =
-    `本番待ち ${pendingProd.length} 件 — 次の授業前（火・水・金 17:05 ICT）に自動で出ます。` +
+    `本番待ち ${pendingProd.length} 件 — 次の授業前（火・水・金 16:12〜17:12 ICT）に自動で出ます。` +
     "先に出すなら Actions「デプロイ」→ Run workflow → production";
 else if (prod.sha && prod.sha !== prodBaseSha)
   next = `本番と ${PROD_BRANCH} の差を確認する（docs/deploy.md §0.6）`;
@@ -177,7 +177,7 @@ console.log(`  次の一手: ${next}`);
 
 if (pendingProd.length) {
   console.log(
-    `\n■ 本番待ち（${STG_BRANCH} にあり本番に無い。火・水・金 17:05 ICT に自動で出ます。docs/deploy.md §0.6）`,
+    `\n■ 本番待ち（${STG_BRANCH} にあり本番に無い。火・水・金 16:12〜17:12 ICT に自動で出ます。docs/deploy.md §0.6・§0.11）`,
   );
   for (const l of pendingProd.slice(0, 12)) console.log(l);
   if (pendingProd.length > 12) console.log(`  …ほか ${pendingProd.length - 12} 件`);

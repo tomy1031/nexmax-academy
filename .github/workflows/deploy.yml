@@ -31,13 +31,36 @@ name: デプロイ
 on:
   push:
     branches: [integration]
-  # 授業のある日（火・水・金）の 17:05 ICT ＝ 10:05 UTC。
-  # ビルドから 検証まで 6〜10分 かかるので、授業（17:30 ICT）の 25分前に 始める。
+  # 授業のある日（火・水・金）の 授業前に **何回か 起きる**。
+  #
+  # **1本に しない**（2026-08-29 に 5本へ 増やした）。2026-08-28（金）に 唯一の cron
+  # `5 10 * * 2,3,5`（＝17:05 ICT）が **11時間5分 遅れて** 21:10 UTC に 届き、
+  # 授業に 間に合わなかった。届いた あとの ラン（33211372267）は 成功して いるので
+  # 設定ミスでは なく、**GitHub が 時刻に 配らなかった**。GitHub 自身が こう 書いている:
+  #
+  #   "The schedule event can be delayed during periods of high loads of GitHub Actions
+  #    workflow runs. ... If the load is sufficiently high enough, some queued jobs may
+  #    be dropped. High load times include the start of every hour."
+  #
+  # つまり **cron 1本は 起動役として 信用できない**。混む「毎時の頭」も 避けて、
+  # どの 分も :12 以降に 置いてある。
+  #
+  # **5本 起きても、出るのは 必要な ときだけ 1回。** 下の「出す必要が あるか 決める」が
+  # 本番の `/api/version` を 見て 判断し、空振りの ランは 1分ほどで 終わって
+  # **KV を 1件も 使わない**（1回の 本番デプロイ ＝ 約75件 / 枠 1000件/日。§0.6）。
+  # 5本 ぜんぶが 落ちない かぎり、授業には 間に合う。
+  #
+  # ビルドから 検証まで 6〜10分 なので、最後の 17:12 ICT でも 授業（17:30）に 入る。
+  #
   # **main を push のトリガーに 足さない。** 下の「本番へ 昇格」が main を 進めるので、
   # 足すと 昇格のたびに STG 用の ランが もう1本 立ち上がる（GITHUB_TOKEN の push は
   # ワークフローを 起こさない ので 実際には 起きないが、その 挙動に 頼らない）。
   schedule:
-    - cron: "5 10 * * 2,3,5"
+    - cron: "12 9 * * 2,3,5" # 16:12 ICT
+    - cron: "26 9 * * 2,3,5" # 16:26 ICT
+    - cron: "38 9 * * 2,3,5" # 16:38 ICT
+    - cron: "51 9 * * 2,3,5" # 16:51 ICT
+    - cron: "12 10 * * 2,3,5" # 17:12 ICT（最後の 1本）
   # 手動で 回すときは **ref に 気を つける**。
   #   production … ref=main（本番の 配信元）
   #   staging    … ref=integration（STG の 配信元）。main の ref で staging を 選ぶと
@@ -131,11 +154,58 @@ jobs:
         id: rev
         run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
+      # ── 出す必要が あるか 決める（schedule のみ）
+      #
+      # cron を 5本に した ので、**そのまま だと 1日 5回 本番へ 出て しまう**。
+      # 1回の 本番デプロイは KV へ 約75件 書き、枠は 1000件/日。授業中の ISR で
+      # 240〜480件 使う ことも あるので、5回 出すと その日の 夕方に 枠が 尽きて
+      # 「出せば 出すほど 壊れる」状態に なる（docs/deploy.md §0.6・§0.9）。
+      #
+      # そこで **本番自身に 聞く**。`/api/version` は ビルド時の コミットSHA と 時刻を
+      # 返す（next.config.ts）ので、状態を どこにも 保存せずに 判断できる。
+      #
+      #   出す  … 中身が 違う（本番の sha ≠ これから 出す sha）
+      #           かつ 前の ビルドから 30分 以上 たって いる
+      #   出さない … それ以外（1分ほどで ランが 終わる。KV は 0件）
+      #
+      # 「30分」は **授業前に 2回まで**に 抑える ための 間隔。5本の cron は
+      # 16:12〜17:12 の 60分間に 並べて あるので、最初の 1本で 出て、その後に
+      # 教材が 入れば もう 1回だけ 追いつく（最大 2回 ＝ 約150件）。
+      #
+      # **取れない ときは 出す**（fail-open）。本番が 落ちて いる・URL が 変わったと
+      # いった 場合に 黙って 出さなく なる ほうが 害が 大きい。
+      #
+      # 手動の dispatch には この 判定を **かけない**。緊急の 道（授業当日の 事故）で
+      # 「30分 たって いないので 出しません」と 言われては 困る。
+      #
+      # 規則の 本体は `scripts/lib/should_deploy.mjs`（単体テストあり）。
+      # **シェルで 書かない。** 最初 `date -u -d "$built_at"` で 書いたが、
+      # これは GNU date でしか 動かず、手もと（macOS）では 黙って 0 に なっていた。
+      # 「時刻を 読みちがえても それらしく 動いて しまう」たぐいの 穴なので、
+      # 読めない ことを はっきり 扱える ところへ 出して、テストで 固める。
+      #
+      # ここは `npm ci` の **前**に 置く（空振りの ランを 1分で 終わらせる ため）。
+      # 依存を 使わない 素の Node だけで 動くように 書いてある。
+      - name: 出す必要が あるか 決める（schedule のみ）
+        id: need
+        if: github.event_name == 'schedule'
+        env:
+          DEPLOY_SHA: ${{ steps.rev.outputs.sha }}
+          QUIET_MINUTES: "30"
+        run: node scripts/check_should_deploy.mjs
+
+      # 以降の 重い 工程は、schedule の 空振りでは 全部 とばす。
+      # `needed` は schedule のとき だけ 入る ので、push と dispatch は これまで どおり。
+      - name: 出さないので ここで 終わり
+        if: github.event_name == 'schedule' && steps.need.outputs.needed != 'true'
+        run: echo "::notice::本番は 最新です。何も せずに 終わります（KV 0件）。"
+
       # 足りないときは「いま登録されている名前」も出す。
       # 名前の打ちまちがい（CLOUDFLARE_TOKEN / SUPABASE_URL など）や、Variables 側・
       # Environment 側へ入れてしまった場合、「足りません」だけでは原因が見えないため。
       # **出すのは名前だけ**（`keys[]`）。値は1文字も出さない。
       - name: 鍵と公開値がそろっているか
+        if: github.event_name != 'schedule' || steps.need.outputs.needed == 'true'
         env:
           CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
@@ -156,10 +226,13 @@ jobs:
           echo "✓ 鍵と公開値はそろっています"
 
       # postinstall で pdf.js の実体を public/ へ写す（スライド教材が使う）
-      - run: npm ci
+      - name: npm ci
+        if: github.event_name != 'schedule' || steps.need.outputs.needed == 'true'
+        run: npm ci
 
       # 赤いものをそのまま出さないための最後の関所（数秒で終わる）
       - name: 単体テスト
+        if: github.event_name != 'schedule' || steps.need.outputs.needed == 'true'
         run: npm test
 
       # DBが遅れたまま本番へ出さない（2026-08-26 の事故）。
@@ -181,7 +254,7 @@ jobs:
       # ときは `--strict` の有無に関わらず落ちる（それは分かっている事実だから）。
       # 鍵を入れた瞬間に、ここは自動で本当の関所になる。
       - name: DBが追いついているか（本番のみ）
-        if: github.event_name == 'schedule' || github.event.inputs.target == 'production'
+        if: (github.event_name == 'schedule' || github.event.inputs.target == 'production') && (github.event_name != 'schedule' || steps.need.outputs.needed == 'true')
         env:
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
         run: node scripts/check_migrations.mjs
@@ -212,7 +285,7 @@ jobs:
       # `git push origin <sha>:refs/heads/main` に **force を 付けない**。
       # 早送りに ならない ときは サーバが 拒否する ＝ 取りこぼしを 作らない。
       - name: main を 早送りする（schedule のみ）
-        if: github.event_name == 'schedule'
+        if: github.event_name == 'schedule' && steps.need.outputs.needed == 'true'
         env:
           DEPLOY_SHA: ${{ steps.rev.outputs.sha }}
         run: |
@@ -234,7 +307,7 @@ jobs:
       # 見分ける規則は `scripts/lib/cache_populated.mjs`（STG から KV を 外した あとも、
       # **本番側の 見張りとして 使い続ける**）。schedule で 出すときも 同じように 効く。
       - name: 本番へ反映
-        if: github.event_name == 'schedule' || github.event.inputs.target == 'production'
+        if: (github.event_name == 'schedule' || github.event.inputs.target == 'production') && (github.event_name != 'schedule' || steps.need.outputs.needed == 'true')
         run: |
           set -o pipefail
           # `|| code=$?` で受けるのは、cf:deploy が落ちた時も **見張りを必ず通す**ため
@@ -250,6 +323,7 @@ jobs:
       # 上げっぱなしにしない。出した中身が本当に載ったかを、そのURLで確かめる
       #（/api/version はビルド時のコミットSHAを返す — next.config.ts）。
       - name: 生きているか・中身が載ったか
+        if: github.event_name != 'schedule' || steps.need.outputs.needed == 'true'
         env:
           DEPLOY_SHA: ${{ steps.rev.outputs.sha }}
         run: |
