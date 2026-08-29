@@ -119,11 +119,11 @@ npm run cf:staging           # STG を更新。integration の中身でのみ実
 
 ## デプロイ先は Cloudflare Workers（Vercel から移行済み・2026-08-03）
 
-|            | URL                                               | 載るもの      | いつ更新されるか                                            |
-| ---------- | ------------------------------------------------- | ------------- | ----------------------------------------------------------- |
-| 本番       | `https://academy.nexmax.workers.dev`              | `main`        | **火・水・金 17:05 ICT に自動**（授業は 17:30）。緊急は手動 |
-| STG        | `https://staging-academy.nexmax.workers.dev`      | `integration` | `integration` へマージするたび**自動**                      |
-| ブランチ用 | `https://<ブランチ名>-academy.nexmax.workers.dev` | 作業ブランチ  | `npm run cf:branch`                                         |
+|            | URL                                               | 載るもの      | いつ更新されるか                                                                                       |
+| ---------- | ------------------------------------------------- | ------------- | ------------------------------------------------------------------------------------------------------ |
+| 本番       | `https://academy.nexmax.workers.dev`              | `main`        | **火・水・金 16:12〜17:12 ICT に自動**（授業は 17:30。5回 起きて 必要なときだけ 1回 出る）。緊急は手動 |
+| STG        | `https://staging-academy.nexmax.workers.dev`      | `integration` | `integration` へマージするたび**自動**                                                                 |
+| ブランチ用 | `https://<ブランチ名>-academy.nexmax.workers.dev` | 作業ブランチ  | `npm run cf:branch`                                                                                    |
 
 **STG は門番、本番は届け先**（2026-08-27 から）。作業ブランチは `integration` へ PR し、
 STG で確かめてから `main` へ昇格する。それまでは STG に載るのが main だけで、
