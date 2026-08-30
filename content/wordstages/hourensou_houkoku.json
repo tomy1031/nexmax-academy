@@ -1,0 +1,94 @@
+{
+  "kind": "wordstage",
+  "id": "hourensou_houkoku",
+  "title": "報連相：報告の ことば",
+  "description": "報告で 使う ことばです。上司に つたえる ときの 言い方が 入って います。",
+  "fieldSequence": [
+    "forest",
+    "sky",
+    "space"
+  ],
+  "questionCount": 29,
+  "passRate": 80,
+  "furigana": [
+    [
+      "言い方",
+      "いいかた"
+    ],
+    [
+      "報連相",
+      "ほうれんそう"
+    ],
+    [
+      "報告",
+      "ほうこく"
+    ],
+    [
+      "上司",
+      "じょうし"
+    ],
+    [
+      "言",
+      "い"
+    ],
+    [
+      "使",
+      "つか"
+    ],
+    [
+      "上",
+      "うえ"
+    ],
+    [
+      "方",
+      "かた"
+    ],
+    [
+      "入",
+      "はい"
+    ],
+    [
+      "報",
+      "ほう"
+    ],
+    [
+      "連",
+      "れん"
+    ],
+    [
+      "相",
+      "そう"
+    ]
+  ],
+  "wordIds": [
+    "hourensou",
+    "chi-muwa-ku",
+    "mondai",
+    "pi-emu",
+    "pi-ji-",
+    "joukyou",
+    "kaisetu",
+    "kyoka",
+    "jijitu",
+    "ketsuron",
+    "joushi",
+    "bagu",
+    "kanryou",
+    "okureru",
+    "genin",
+    "topikku",
+    "onegai",
+    "kotoba",
+    "torisimariyaku",
+    "keiei",
+    "asain",
+    "kakusu",
+    "shoujikini",
+    "kyouryoku",
+    "seikou",
+    "kagi",
+    "yasai",
+    "misu",
+    "kioku"
+  ]
+}

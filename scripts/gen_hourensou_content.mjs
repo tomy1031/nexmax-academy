@@ -339,6 +339,68 @@ const FURIGANA = {
   覚: "おぼ",
   勝: "か",
   鈴木先輩: "すずきせんぱい",
+  // 追加分（「もっと 楽しく」企画・2026-08-29）
+  役: "やく",
+  質問: "しつもん",
+  学生: "がくせい",
+  否定: "ひてい",
+  一度: "いちど",
+  疑問形: "ぎもんけい",
+  出身: "しゅっしん",
+  毎日: "まいにち",
+  文法: "ぶんぽう",
+  専攻: "せんこう",
+  新人: "しんじん",
+  目: "め",
+  礼: "れい",
+  会議室: "かいぎしつ",
+  手伝: "てつだ",
+  笑: "わら",
+  来: "き",
+  電話: "でんわ",
+  気配: "けはい",
+  集中: "しゅうちゅう",
+  順調: "じゅんちょう",
+  楽: "たの",
+  机: "つくえ",
+  肩: "かた",
+  茶: "ちゃ",
+  待: "ま",
+  立: "た",
+  飲: "の",
+  置: "お",
+  予約: "よやく",
+  時計: "とけい",
+  歩: "ある",
+  夜: "よる",
+  瞬間: "しゅんかん",
+  近: "ちか",
+  打: "う",
+  渡: "わた",
+  夕方: "ゆうがた",
+  金曜日: "きんようび",
+  金曜: "きんよう",
+  月曜日: "げつようび",
+  家: "いえ",
+  消: "き",
+  昼: "ひる",
+  二人: "ふたり",
+  一手: "いって",
+  済: "すみ",
+  要素: "ようそ",
+  音声: "おんせい",
+  押: "お",
+  投稿: "とうこう",
+  育: "そだ",
+  流: "なが",
+  一日: "いちにち",
+  遊: "あそ",
+  完成: "かんせい",
+  同期: "どうき",
+  絵: "え",
+  方: "かた",
+  月目: "げつめ",
+  検索機能: "けんさくきのう",
 };
 
 /** その文字列に 出てくる 語だけの 読み辞書（長い語を 先に）。 */
@@ -771,7 +833,7 @@ write("stages", "houkoku", {
   title: "報連相：報告",
   reading: "ほうれんそう ほうこく",
   description:
-    "日本の 会社の「報連相」を 学びます。上司への 報告の しかたを 読んで、スキットで まねして、リスニングで 聞きます。",
+    "日本の 会社の「報連相」を 学びます。報告の しかたを 読んで、聞いて、声に 出して 練習して、最後は 報告クエストで 一日を 遊びます。",
   color: "sky",
   status: "published",
   area: {
@@ -784,13 +846,16 @@ write("stages", "houkoku", {
     { ref: "houkoku_lecture", type: "article" },
     { ref: "houkoku_skit", type: "skit" },
     { ref: "houkoku_listening", type: "listening" },
+    { ref: "houkoku_stamp", type: "link" },
     { ref: "houkoku_quiz", type: "quizset" },
+    { ref: "houkoku_meeting", type: "meeting" },
+    { ref: "houkoku_quest", type: "link" },
     { ref: "houkoku_search", type: "link" },
   ],
-  wordStageIds: [],
+  wordStageIds: ["hourensou_houkoku"],
   furigana: furiganaFor([
     "報連相：報告",
-    "日本の 会社の「報連相」を 学びます。上司への 報告の しかたを 読んで、スキットで まねして、リスニングで 聞きます。",
+    "日本の 会社の「報連相」を 学びます。報告の しかたを 読んで、聞いて、声に 出して 練習して、最後は 報告クエストで 一日を 遊びます。",
   ]),
 });
 
@@ -1195,7 +1260,7 @@ write("stages", "renraku", {
   title: "報連相：連絡",
   reading: "ほうれんそう れんらく",
   description:
-    "チーム全体に 情報を 伝える「連絡」を 学びます。事実だけを 短く 伝える 練習を、スキットと Slack風の 画面で します。",
+    "チーム全体に 情報を 伝える「連絡」を 学びます。まんがで 始めて、事実だけを 短く 伝える 練習を、スキットと Slack風の 画面で します。",
   color: "leaf",
   status: "published",
   area: {
@@ -1205,17 +1270,19 @@ write("stages", "renraku", {
     note: "ちいさな しまが たくさん。ふねが しらせを はこびます。",
   },
   contents: [
+    { ref: "renraku_manga", type: "manga" },
     { ref: "renraku_lecture", type: "article" },
     { ref: "renraku_skit", type: "skit" },
     { ref: "renraku_listening", type: "listening" },
     { ref: "renraku_quiz", type: "quizset" },
+    { ref: "renraku_builder", type: "link" },
     { ref: "renraku_slack", type: "link" },
     { ref: "renraku_contact", type: "link" },
   ],
-  wordStageIds: [],
+  wordStageIds: ["hourensou_renraku_kihon", "hourensou_renraku_ouyou"],
   furigana: furiganaFor([
     "報連相：連絡",
-    "チーム全体に 情報を 伝える「連絡」を 学びます。事実だけを 短く 伝える 練習を、スキットと Slack風の 画面で します。",
+    "チーム全体に 情報を 伝える「連絡」を 学びます。まんがで 始めて、事実だけを 短く 伝える 練習を、スキットと Slack風の 画面で します。",
   ]),
 });
 
@@ -1662,7 +1729,7 @@ write("stages", "soudan", {
   title: "報連相：相談",
   reading: "ほうれんそう そうだん",
   description:
-    "一人で 悩まないで 相談する しかたを 学びます。30分ルールと、自分の 意見を 持ってから 聞く 練習を します。",
+    "一人で 悩まないで 相談する しかたを 学びます。30分ルールと、自分の 意見を 持ってから 聞く 練習を、クイズと ミーティングで します。",
   color: "coral",
   status: "published",
   area: {
@@ -1676,10 +1743,577 @@ write("stages", "soudan", {
     { ref: "soudan_skit", type: "skit" },
     { ref: "soudan_listening", type: "listening" },
     { ref: "soudan_quiz", type: "quizset" },
+    { ref: "soudan_kehai", type: "quizset" },
+    { ref: "soudan_meeting", type: "meeting" },
   ],
-  wordStageIds: [],
+  wordStageIds: ["hourensou_soudan"],
   furigana: furiganaFor([
     "報連相：相談",
-    "一人で 悩まないで 相談する しかたを 学びます。30分ルールと、自分の 意見を 持ってから 聞く 練習を します。",
+    "一人で 悩まないで 相談する しかたを 学びます。30分ルールと、自分の 意見を 持ってから 聞く 練習を、クイズと ミーティングで します。",
   ]),
 });
+
+/* ================================================================== *
+ * 4. 追加教材 —「もっと 楽しく」企画（2026-08-29）
+ *
+ * 選定は ユーザー確認済み: A1 報告クエスト・A2 報告ミーティング・
+ * A3 済スタンプ・B1 まんが・B2 れんらくビルダー・C1 相談ミーティング・
+ * C2 場面クイズ・D1 ことば移植（B3 スタンプクイズは 見送り）。
+ *
+ * 絵（まんがの コマ・場面クイズの 絵）は この コンテナでは 生成できない。
+ * **プロンプトを スロットに 保存して 空のまま 置き**（画面は 点線わくで 成立する）、
+ * ローカルの 生成セッションへ 引き継ぐ（docs/teaching/hourensou_要る絵の一覧.md）。
+ * ミーティングの 作り置き音声も 同じく 後追い（質問の audioUrl は 空に して おく）。
+ * ================================================================== */
+
+/* ------------------------------------------------------------------ *
+ * A2. 報告ミーティング — スキットの 会話を 自分の 声で
+ * ------------------------------------------------------------------ */
+
+write(
+  "meetings",
+  "houkoku_meeting",
+  withFurigana({
+    kind: "meeting",
+    mode: "ask",
+    id: "houkoku_meeting",
+    title: "ミーティング：報告の 練習",
+    description:
+      "ヘンディさんが 上司の 役に なります。完了の 報告と、悪い ニュースの 報告を、自分の ことばで 言って みます。",
+    focus:
+      "スキットと リスニングで 見た 報告を、こんどは 自分の 声で 出します。ヘンディさんが 上司の 役です。結論から 言えたら、きょうの ゴールです。",
+    host: { id: "hendy", name: "ヘンディ", role: "先輩", accent: "sky" },
+    persona: [
+      "あなたは ネクストメイクの ヘンディです。カンボジアの 学生と、報告の 練習を します。",
+      "きょうは あなたが 上司の 役です。学生は、テストが 終わった 報告と、バグが 見つかった 報告を、声に 出して 練習します。",
+      "やさしい 日本語で、みじかい 文で、ですます形で 話します。",
+      "学生を 否定する 言い方は しません。できた ことを 先に 言います。",
+      "学生の 日本語は 直しません。わからなかったら「もう一度 お願いします」と 聞き返します。",
+      "結論から 言えたら、そこを 具体的に ほめます。れい:「先に 結論が 聞けたので、すぐ 分かりました。」",
+      "数字（30分・1日 など）が 言えたら、そこも ほめます。",
+      "あなたから 学生に 新しい 質問を しては いけません。つぎに 何を 聞くかは アプリが 決めます。",
+      "",
+      "【あなた自身の こと（聞かれたら 答える）】",
+      "出身は インドネシアの メダンです。2018年に 日本へ 来ました。",
+      "いまは エンジニアとして、お客様の システムを 作って います。",
+    ].join("\n"),
+    judgePrompt: [
+      "学生は カンボジアの IT専攻の 学生（日本語 N5〜N4）です。スキットと リスニングで 報告の 形を 見てから 来ました。",
+      "学生の 日本語を 見て、つぎの 3つを 短く 返して ください。",
+      "1) できた ところを 1つ ほめる。2) 直すと もっと よく なる ところを 1つだけ 言う。3) その 言い方の れいを 1つ 見せる。",
+      "文法の 名前は 使わないで、言い方の れいで 見せて ください。",
+      "",
+      "## かみ合って いるか の 見かた（onTopic）",
+      "聞かれた ことの 中身が 1つでも 入って いれば onTopic に します。ぜんぶ 言えて いなくても かまいません。",
+      "- 声かけ … 「お時間」「よろしいですか」の ように、相手の 時間を 聞く ことばが あれば onTopic。",
+      "- 完了の 報告 … 何の 件かと、終わった こと。どちらかが 言えたら onTopic。",
+      "- お願い … 「確認」「お願いします」の どちらかが あれば onTopic。",
+      "- 悪い ニュースの 切り出し … 「お伝えしたい ことが あります」の ような ことばが あれば onTopic。",
+      "- 事実 … バグ・エラー・止まる の どれかが 入って いれば onTopic。",
+      "- 見込みと お願い … 数字か、「遅らせて ください」の ような お願い。どちらかが あれば onTopic。",
+    ].join("\n"),
+    questions: [
+      {
+        id: "q1_koe",
+        ask: "きょうは 報告の 練習です。わたしが 上司の 役を します。あなたの「ログイン機能の テスト」が 終わりました。まず、わたしに 声を かけて ください。",
+        hint: "「お疲れさまです。今、お時間 よろしいですか。」",
+        keywords: ["お時間", "時間", "よろしい", "お疲れ", "おつかれ"],
+        echo: "はい、いいですよ。どう しましたか。",
+      },
+      {
+        id: "q2_ken",
+        ask: "何の 件か、どう なったか。結論から 教えて ください。",
+        hint: "「ログイン機能の 件ですが、無事 テストが 終わりました。」",
+        keywords: ["件", "終わり", "おわり", "完了"],
+        echo: "◯◯ですね。先に 結論が 聞けたので、すぐ 分かりました。",
+      },
+      {
+        id: "q3_onegai",
+        ask: "報告の あと、わたしに して ほしい ことは ありますか。",
+        hint: "「確認を お願いします。」",
+        keywords: ["確認", "お願い", "おねがい"],
+        echo: "わかりました。あとで 見て おきますね。",
+      },
+      {
+        id: "q4_kiridashi",
+        ask: "つぎは むずかしい ほうです。こんどは、あなたの システムに バグが 見つかりました。悪い ニュースを、わたしに 切り出して ください。",
+        hint: "「お伝えしたい ことが あります。今 少し お時間 よろしいでしょうか。」",
+        keywords: ["お伝え", "おつたえ", "お時間", "あります"],
+        echo: "はい、何ですか。",
+      },
+      {
+        id: "q5_jijitsu",
+        ask: "何が 起きて いますか。事実を 教えて ください。",
+        hint: "「文字を 入力すると、システムが 止まって しまう バグが 見つかりました。」",
+        keywords: ["バグ", "エラー", "止ま", "とま", "見つかり"],
+        echo: "◯◯、ですね。事実が 先に 分かると、こちらも すぐ 動けます。",
+      },
+      {
+        id: "q6_mikomi",
+        ask: "直すのに どのくらい かかりそうですか。見込みと、お願いを どうぞ。",
+        hint: "「1日くらい かかりそうです。テストを 1日 遅らせて いただけませんか。」",
+        keywords: ["日", "時間", "かかり", "遅らせ", "おくらせ"],
+        echo: "わかりました。早く 言って くれたので、予定を 変えられます。ありがとう ございます。",
+      },
+    ],
+    closing:
+      "きょうの 報告、どちらも とどきました。良い ニュースは 結論から。悪い ニュースは 早く。この 2つが できれば、現場で もう 使えます。",
+    affection: {
+      maxHearts: 6,
+      threshold: 5,
+      reward:
+        "わたしの はじめての 報告の 話です。日本へ 来て 1か月目、わたしは バグを 3日 隠しました。自分で 直せると 思って いたからです。でも 直せなくて、テストの 日に システムが 止まりました。あの 日から、わたしは 悪い ニュースを いちばん 先に 言う ことに しました。すると、みんなが わたしを 手伝って くれるように なりました。悪い ニュースを 早く 言う 人は、しんらいされる 人に なりますよ。",
+    },
+  }),
+);
+
+/* ------------------------------------------------------------------ *
+ * C1. 相談ミーティング — 相談の 型を 自分の 声で 通す
+ * ------------------------------------------------------------------ */
+
+write(
+  "meetings",
+  "soudan_meeting",
+  withFurigana({
+    kind: "meeting",
+    mode: "ask",
+    id: "soudan_meeting",
+    title: "ミーティング：相談の 練習",
+    description:
+      "ヘンディさんが 先輩の 役に なります。困って いる ことを、相談の 型で 話す 練習です。",
+    focus:
+      "相談の 型（お時間 → 事実 → 調べた こと → 自分の 意見 → お礼）を、自分の 声で 通します。自分の 意見が 言えたら、きょうの ゴールです。",
+    host: { id: "hendy", name: "ヘンディ", role: "先輩", accent: "sky" },
+    persona: [
+      "あなたは ネクストメイクの ヘンディです。カンボジアの 学生と、相談の 練習を します。",
+      "きょうは あなたが 先輩の 役です。学生は「検索機能の バグで 30分 悩んで いる」役で、あなたに 相談します。",
+      "やさしい 日本語で、みじかい 文で、ですます形で 話します。",
+      "学生を 否定する 言い方は しません。できた ことを 先に 言います。",
+      "学生の 日本語は 直しません。わからなかったら「もう一度 お願いします」と 聞き返します。",
+      "学生が 自分の 意見（「◯◯だと 思います」）を 言えたら、そこを 特に ほめます。",
+      "学生が 調べた ことを 言えたら、「先に 調べて くれて 助かります」と 伝えます。",
+      "あなたから 学生に 新しい 質問を しては いけません。つぎに 何を 聞くかは アプリが 決めます。",
+      "",
+      "【あなた自身の こと（聞かれたら 答える）】",
+      "出身は インドネシアの メダンです。2018年に 日本へ 来ました。",
+      "いまは エンジニアとして、お客様の システムを 作って います。",
+    ].join("\n"),
+    judgePrompt: [
+      "学生は カンボジアの IT専攻の 学生（日本語 N5〜N4）です。相談の 型（お時間 → 事実 → 調べた こと → 意見 → お礼）を 学んでから 来ました。",
+      "学生の 日本語を 見て、つぎの 3つを 短く 返して ください。",
+      "1) できた ところを 1つ ほめる。2) 直すと もっと よく なる ところを 1つだけ 言う。3) その 言い方の れいを 1つ 見せる。",
+      "文法の 名前は 使わないで、言い方の れいで 見せて ください。",
+      "",
+      "## かみ合って いるか の 見かた（onTopic）",
+      "聞かれた ことの 中身が 1つでも 入って いれば onTopic に します。ぜんぶ 言えて いなくても かまいません。",
+      "- 声かけ … 「お時間」「相談が あります」の どちらかが あれば onTopic。",
+      "- 事実 … 検索・0件・結果 の どれかが 入って いれば onTopic。",
+      "- 調べた こと … SQL・確認した・調べた の どれかが あれば onTopic。",
+      "- 意見 … 「思います」「思うのですが」の 形が あれば onTopic。この 形が 出たら 特に ほめて ください。",
+      "- お礼 … 「ありがとう」「助かりました」の どちらかが あれば onTopic。",
+    ].join("\n"),
+    questions: [
+      {
+        id: "q1_koe",
+        ask: "きょうは 相談の 練習です。わたしが 先輩の 役を します。あなたは 検索機能の バグで、もう 30分 悩んで います。まず、わたしに 声を かけて ください。",
+        hint: "「今、お時間 よろしいですか。検索の 処理で 相談が あります。」",
+        keywords: ["お時間", "相談", "よろしい"],
+        echo: "はい、どう しました。",
+      },
+      {
+        id: "q2_jijitsu",
+        ask: "何が 起きて いますか。",
+        hint: "「検索すると、結果が 0件に なります。」",
+        keywords: ["検索", "0件", "0", "ゼロ", "結果"],
+        echo: "◯◯、ですね。事実から 話せて いますよ。",
+      },
+      {
+        id: "q3_shirabeta",
+        ask: "自分で 調べた ことは ありますか。",
+        hint: "「SQLが 正しい ことは 確認しました。」",
+        keywords: ["SQL", "確認", "調べ", "しらべ"],
+        echo: "先に 調べてから 来て くれたんですね。それが いちばん 助かります。",
+      },
+      {
+        id: "q4_iken",
+        ask: "あなたは、原因は 何だと 思いますか。自分の 意見を 聞かせて ください。",
+        hint: "「私は、データの 型が 原因だと 思うのですが、いかがでしょうか。」",
+        keywords: ["思います", "思うのですが", "型", "データ", "原因"],
+        echo: "なるほど、◯◯。意見が あると、話が 前に 進みます。では、いっしょに 変数を 見て みましょう。",
+      },
+      {
+        id: "q5_orei",
+        ask: "見て みると、データの 型が 原因でした。もう 直せそうです。最後の あいさつを どうぞ。",
+        hint: "「ありがとう ございます。助かりました。」",
+        keywords: ["ありがとう", "助かり", "たすかり"],
+        echo: "どういたしまして。30分 悩んだら、いつでも 来て ください。",
+      },
+    ],
+    closing:
+      "相談の 型、ぜんぶ 通せましたね。お時間 → 事実 → 調べた こと → 自分の 意見 → お礼。この 順番は、どの 現場でも 使えます。一人で 悩むのは 30分まで。あとは チームの 時間です。",
+    affection: {
+      maxHearts: 5,
+      threshold: 4,
+      reward:
+        "わたしの 新人の ころの 話です。Gitで コードを こわして しまった とき、日本語が はずかしくて、3時間 一人で 悩みました。やっと 先輩に 相談したら、直すのに 5分でした。先輩は 笑って、「もっと 早く 来て いいのに」と 言いました。あの 3時間で 覚えた ことです。相談は、よわい 人が する ことでは ありません。チームで はたらく 人が する ことです。だから あなたも、30分 悩んだら、わたしの ところへ 来て ください。",
+    },
+  }),
+);
+
+/* ------------------------------------------------------------------ *
+ * C2. 場面クイズ「いま 話しかけて いい？」
+ *
+ * 顔だけで なく **机の まわりの 様子ごと** 読む（2026-08-29 の 指定
+ * 「顔を見るだけじゃなくて、デスクの周囲の状況＋顔だといいですね」）。
+ * 「少し 待つ」「チャットで 先に 送る」が 正解に なる 場面も 作り、
+ * **答えが 状況で 変わる**のが ゲーム性（露骨な 正解肢を 消す）。
+ *
+ * 絵は 6枚とも 同じ 人物（鈴木先輩）・同じ 机。プロンプトの 人物描写を
+ * 逐語で そろえて あるのは、コマ間の 見た目ドリフトを 防ぐ 定石
+ *（docs/skills/codex_image_generation.md）。ローカル生成まで 空スロット。
+ * ------------------------------------------------------------------ */
+
+const KEHAI_STYLE =
+  "Anime illustration, no readable text. A bright modern software office, clean line art, flat cel shading, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. Same character in every image: a Japanese senior engineer man (Suzuki, mid-30s, short black hair, thin silver glasses, navy blue cardigan over a white shirt) at his desk with a laptop and a small potted plant. Viewed from a coworker's standing viewpoint a few steps away. No text, no letters, no numbers, no speech bubbles.";
+
+const kehaiImg = (scene) => ({ prompt: `${scene} ${KEHAI_STYLE}`, refs: [], status: "empty" });
+
+write(
+  "quizsets",
+  "soudan_kehai",
+  withFurigana({
+    kind: "quizset",
+    id: "soudan_kehai",
+    title: "👀 いま 話しかけて いい？",
+    description: "机の まわりの 様子と 顔を 見て、いつ・どう 話しかけるかを えらびます。",
+    phase: "research",
+    answerMode: "submit",
+    passRate: 60,
+    questions: [
+      {
+        id: "k1_denwa",
+        type: "choose",
+        q: "鈴木先輩に 相談したい ことが あります。先輩は いま、電話で 話して います。どう しますか。",
+        image: kehaiImg(
+          "Suzuki holds a phone to his ear, taking notes on a notepad, eyes down, mid-conversation.",
+        ),
+        options: [
+          "🧍 机の 前に 立って、終わるまで じっと 待つ",
+          "💬 あとで また 来る。急ぐ ときは チャットで 先に 送って おく",
+          "🖐 肩を たたいて、すぐに 話しかける",
+        ],
+        answer: 1,
+        explain:
+          "電話の 相手にも、あなたの 声や 気配が とどきます。目の 前で 待たれると、先輩は 電話に 集中できません。チャットなら、電話の あとに 読んで もらえます。",
+      },
+      {
+        id: "k2_shuuchuu",
+        type: "emotion",
+        q: "鈴木先輩は ヘッドホンを して、画面に 顔を 近づけて、キーボードを 打ちつづけて います。いま、先輩は どんな 様子ですか。",
+        image: kehaiImg(
+          "Suzuki wears big headphones, leaning close to the screen, both hands typing fast, several code windows open, an energy drink beside the keyboard.",
+        ),
+        feelings: [
+          "🙂 ひまで、だれかと 話したい",
+          "🎧 集中して いて、切られたくない",
+          "😣 困って いて、助けて ほしい",
+        ],
+        answerFeeling: 1,
+        replyQ: "では、急がない 相談は どう しますか。",
+        replies: [
+          "🗣 いま すぐ 声を かける",
+          "💬 チャットで「あとで 5分 ください」と 送って おく",
+          "😶 相談を やめて、一人で 悩む",
+        ],
+        answerReply: 1,
+        explain:
+          "集中の 時間は、チームの 大切な ざいさんです。チャットなら、先輩は きりの いい ところで 読めます。一人で 悩みつづけない ところも ポイントです。",
+      },
+      {
+        id: "k3_hitoiki",
+        type: "choose",
+        q: "鈴木先輩は お茶を 飲んで、のびを して います。いま、どう しますか。",
+        image: kehaiImg(
+          "Suzuki leans back in his chair, stretching, holding a warm cup of tea, relaxed small smile, screen dimmed.",
+        ),
+        options: [
+          "🗣 「今、お時間 よろしいですか」と 声を かける",
+          "🌙 休みが 終わるまで、夜まで 待つ",
+          "😶 きょうは 相談しないで、一人で 悩む",
+        ],
+        answer: 0,
+        explain:
+          "きりの いい ところが、話しかける チャンスです。さいしょに「お時間 よろしいですか」と 聞けば、休みを こわす ことも ありません。",
+      },
+      {
+        id: "k4_komarigao",
+        type: "emotion",
+        q: "鈴木先輩は 画面を 見ながら、困った 顔で うなって います。いま、先輩は どんな 気持ちだと 思いますか。",
+        image: kehaiImg(
+          "Suzuki frowns at the screen with one hand in his hair, shoulders slumped, clearly stuck and troubled.",
+        ),
+        feelings: ["😄 仕事が 順調で、楽しい", "😖 何かに 困って いる", "😠 あなたに 怒って いる"],
+        answerFeeling: 1,
+        replyQ: "こんな とき、いちばん いい 声の かけ方は どれですか。",
+        replies: [
+          "🙋 「わたしの 相談を 聞いて ください」と 話しかける",
+          "🤝 「何か 手伝える ことは ありますか」と 声を かける",
+          "🚶 見なかった ことに して、はなれる",
+        ],
+        answerReply: 1,
+        explain:
+          "相談は、自分からだけの ものでは ありません。困って いる 人に 気づいて 声を かけるのも、チームの 相談です。あなたの 相談は、その あとで できます。",
+      },
+      {
+        id: "k5_isogu",
+        type: "choose",
+        q: "鈴木先輩は ノートパソコンを かかえて、時計を 見ながら 急いで います。相談は 急ぎません。どう しますか。",
+        image: kehaiImg(
+          "Suzuki stands, laptop under one arm, glancing at his wristwatch, walking quickly away from the desk.",
+        ),
+        options: [
+          "🏃 歩きながら 相談を 始める",
+          "🕒 「会議の あとに 5分 いただけますか」と 短く 伝える",
+          "🚪 会議室の 前で ずっと 待つ",
+        ],
+        answer: 1,
+        explain:
+          "急いで いる 人には、「いつなら いいか」だけを 短く 渡します。あとの 時間を 予約するのも、上手な 相談です。",
+      },
+      {
+        id: "k6_asa",
+        type: "choose",
+        q: "朝です。鈴木先輩は 出社した ばかりで、かばんを 置いて、パソコンを つけて います。急がない 相談は、いつ 話しかけますか。",
+        image: kehaiImg(
+          "Morning light through the window. Suzuki has just arrived, putting his bag down beside the desk, computer still starting up, jacket half off.",
+        ),
+        options: [
+          "🎒 かばんを 置いた 瞬間に 話しかける",
+          "☕ 先輩が メールと 予定を 見おわった ころに 声を かける",
+          "📅 あしたまで 待つ",
+        ],
+        answer: 1,
+        explain:
+          "朝の さいしょは、きょうの 予定を 整える 時間です。少し 待つと、先輩は ゆっくり 聞けます。急ぎの トラブルだけは、朝でも すぐに 言います。",
+      },
+    ],
+  }),
+);
+
+/* ------------------------------------------------------------------ *
+ * B1. まんが「連絡が なかった 日」— リスニング（メンテナンス連絡）の 前日譚
+ *
+ * 連絡を あとまわしに すると 何が 起きるかを、**さきに 物語で** 見せる。
+ * 正しい 連絡文（いつ・何が・どう なるか・何を して ほしいか）へ 二人で
+ * たどり着く ところまでを 描き、つぎの リスニングへ つなぐ。
+ * 人物の 見た目の 記述は m2_asakai_manga と 逐語で そろえて ある。
+ * ------------------------------------------------------------------ */
+
+const MANGA_STYLE =
+  "Medium shot, clean line art, flat cel shading, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. Keep empty space at the top of the frame. No text, no letters, no numbers, no signage, no speech bubbles, no readable text.";
+const NYAM_LOOK =
+  "a young Southeast Asian junior engineer man (Nyam, short black hair swept up off the forehead, coral cardigan over a cream button-down shirt)";
+const HENDY_LOOK =
+  "a friendly Southeast Asian senior engineer man (Hendy, short black hair, light blue shirt, ID lanyard)";
+const CHAR_SHEETS = ["/img/characters/nyam/sheet.webp", "/img/characters/hendy/sheet.webp"];
+
+const mangaSlot = (scene) => ({
+  prompt: `Anime manga panel, no readable text. ${scene} ${MANGA_STYLE}`,
+  refs: CHAR_SHEETS,
+  status: "empty",
+});
+
+write(
+  "manga",
+  "renraku_manga",
+  withFurigana({
+    kind: "manga",
+    id: "renraku_manga",
+    format: "story",
+    title: "まんが：連絡が なかった 日",
+    description:
+      "連絡を あとまわしに した 日、チームに 何が 起きたでしょうか。リスニングの 前に 読む ものがたりです。",
+    characters: [
+      { id: "nyam", name: "ニャム", role: "同期" },
+      { id: "hendy", name: "ヘンディ", role: "先輩" },
+    ],
+    pages: [
+      {
+        title: "金曜日の 夕方 — オフィス",
+        panels: [
+          {
+            size: "normal",
+            image: mangaSlot(
+              `A bright modern software office in the late afternoon, warm orange light through the window. ${NYAM_LOOK} sits at his desk looking at a sticky note on his monitor, thinking, one hand on his chin.`,
+            ),
+            lines: [
+              {
+                speaker: "narration",
+                text: "金曜日の 夕方です。ニャムさんは 検証サーバーの アップデートを たのまれました。",
+              },
+              { speaker: "nyam", text: "きょうの 20時に やろう。すぐ 終わる 仕事だ。" },
+            ],
+          },
+          {
+            size: "normal",
+            image: mangaSlot(
+              `Close shot on ${NYAM_LOOK} at the same desk, one hand hovering over the keyboard, a chat app open as abstract blurred bubbles on the screen, his eyes glancing away with a slightly guilty look.`,
+            ),
+            lines: [
+              { speaker: "nyam", text: "連絡は…… あとで いいか。" },
+              { speaker: "narration", text: "ニャムさんは 連絡を あとまわしに しました。" },
+            ],
+          },
+          {
+            size: "wide",
+            image: mangaSlot(
+              `Wide shot of the office at night, dark blue palette, only one desk lamp on where ${NYAM_LOOK} works alone. By the wall, a small server rack with one status light glowing red instead of green.`,
+            ),
+            lines: [
+              {
+                speaker: "narration",
+                text: "20時。検証サーバーが 止まりました。だれも 知りません。",
+              },
+            ],
+          },
+        ],
+      },
+      {
+        title: "その 夜 と 月曜日の 朝",
+        panels: [
+          {
+            size: "normal",
+            image: mangaSlot(
+              `Night at a home desk with a warm lamp. ${HENDY_LOOK} wearing a casual gray hoodie instead of his shirt, looking at a laptop that shows an abstract empty error dialog, confused expression, tilting his head.`,
+            ),
+            lines: [
+              {
+                speaker: "narration",
+                text: "同じ ころ。ヘンディさんは 家で 確認作業を して いました。",
+              },
+              { speaker: "hendy", text: "あれ？ 検証環境に つながらない……。" },
+            ],
+          },
+          {
+            size: "normal",
+            image: mangaSlot(
+              `Same home desk at night. ${HENDY_LOOK} in the casual gray hoodie leans back with both hands on his head, looking at the ceiling, tired, the laptop screen dim.`,
+            ),
+            lines: [
+              {
+                speaker: "hendy",
+                text: "保存する 前に 止まった……。きょうの 作業が 消えて しまった。",
+              },
+            ],
+          },
+          {
+            size: "wide",
+            image: mangaSlot(
+              `Monday morning in the bright office. ${NYAM_LOOK} bows apologetically beside a desk. ${HENDY_LOOK} turns from his chair with a calm, kind expression, soft morning light through the window.`,
+            ),
+            lines: [
+              {
+                speaker: "nyam",
+                text: "すみません。金曜の 夜、わたしが サーバーを 止めました。連絡を して いませんでした。",
+              },
+              { speaker: "hendy", text: "そうだったんですね。では、つぎの 一手を 考えましょう。" },
+            ],
+          },
+        ],
+      },
+      {
+        title: "月曜日の 昼 — 二人で 連絡",
+        note: "この 連絡は、つぎの リスニングで ヘンディさんが 読み上げる 連絡に つながります。",
+        panels: [
+          {
+            size: "normal",
+            image: mangaSlot(
+              `${HENDY_LOOK} and ${NYAM_LOOK} sit side by side at one laptop. Hendy points at the screen with a pen, Nyam nods holding a small notebook.`,
+            ),
+            lines: [
+              {
+                speaker: "hendy",
+                text: "いっしょに 連絡の 文を 作りましょう。いつ・何が・どう なるか・何を して ほしいか、です。",
+              },
+            ],
+          },
+          {
+            size: "normal",
+            image: mangaSlot(
+              `Close-up of the laptop screen showing a chat compose box as abstract blurred lines, ${NYAM_LOOK} pressing the enter key with one finger, focused hopeful face.`,
+            ),
+            lines: [
+              {
+                speaker: "nyam",
+                text: "あしたの 18時から 19時まで、検証サーバーを 止めます。",
+              },
+              { speaker: "nyam", text: "その 前に、データを 保存して ください。" },
+            ],
+          },
+          {
+            size: "wide",
+            image: mangaSlot(
+              `The chat window on a laptop screen with one abstract message bubble and three colorful round reaction icons floating beside it: an eye icon, a thumbs-up icon, and folded hands icon. Behind the laptop, ${NYAM_LOOK} and ${HENDY_LOOK} smile at each other, bright cheerful light.`,
+            ),
+            lines: [
+              {
+                speaker: "narration",
+                text: "スタンプが ならびました。「読みました」の 合図です。",
+              },
+              { speaker: "nyam", text: "連絡は、みんなの 時間を まもるんですね。" },
+            ],
+          },
+        ],
+      },
+    ],
+  }),
+);
+
+/* ------------------------------------------------------------------ *
+ * A1・A3・B2. ツールページへの リンク教材
+ * 中身（データと エンジン）は public/tools/hourensou/ 側に ある。
+ * ------------------------------------------------------------------ */
+
+write(
+  "links",
+  "houkoku_quest",
+  withFurigana({
+    kind: "link",
+    id: "houkoku_quest",
+    title: "🎮 報告クエスト：バグの 一日",
+    description:
+      "あなたは 朝、バグを 見つけました。調べて、報告して、チームの 一日を まもる ゲームです。",
+    url: "/tools/hourensou/houkoku_quest.html",
+    view: "fullscreen",
+    note: "⏰と 🤝の メーターを 見ながら、9時から 17時までの 一日を 進めます。くり返し 遊べます。",
+  }),
+);
+
+write(
+  "links",
+  "houkoku_stamp",
+  withFurigana({
+    kind: "link",
+    id: "houkoku_stamp",
+    title: "✅ 済スタンプで 聞く：報告の 4つの パーツ",
+    description: "報告の 音声を 聞きながら、聞こえた パーツに 済スタンプを 押します。",
+    url: "/tools/hourensou/houkoku_stamp.html",
+    view: "fullscreen",
+    note: "こえかけ・じじつ・みこみ・おねがい。聞こえた 瞬間に 押しましょう。",
+  }),
+);
+
+write(
+  "links",
+  "renraku_builder",
+  withFurigana({
+    kind: "link",
+    id: "renraku_builder",
+    title: "🧱 れんらくビルダー",
+    description:
+      "Slack風の 画面で、連絡の 文を 4つずつ えらんで 作ります。えらぶたびに、投稿が 1行ずつ 育ちます。",
+    url: "/tools/hourensou/renraku_builder.html",
+    view: "fullscreen",
+    note: "最後は、自分の 名前で 完成した 連絡が チャンネルに 流れます。",
+  }),
+);

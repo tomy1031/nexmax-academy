@@ -4,7 +4,7 @@
   "order": 4,
   "title": "報連相：報告",
   "reading": "ほうれんそう ほうこく",
-  "description": "日本の 会社の「報連相」を 学びます。上司への 報告の しかたを 読んで、スキットで まねして、リスニングで 聞きます。",
+  "description": "日本の 会社の「報連相」を 学びます。報告の しかたを 読んで、聞いて、声に 出して 練習して、最後は 報告クエストで 一日を 遊びます。",
   "color": "sky",
   "status": "published",
   "area": {
@@ -27,15 +27,29 @@
       "type": "listening"
     },
     {
+      "ref": "houkoku_stamp",
+      "type": "link"
+    },
+    {
       "ref": "houkoku_quiz",
       "type": "quizset"
+    },
+    {
+      "ref": "houkoku_meeting",
+      "type": "meeting"
+    },
+    {
+      "ref": "houkoku_quest",
+      "type": "link"
     },
     {
       "ref": "houkoku_search",
       "type": "link"
     }
   ],
-  "wordStageIds": [],
+  "wordStageIds": [
+    "hourensou_houkoku"
+  ],
   "furigana": [
     [
       "報連相",
@@ -50,12 +64,24 @@
       "かいしゃ"
     ],
     [
-      "上司",
-      "じょうし"
-    ],
-    [
       "日本",
       "にほん"
+    ],
+    [
+      "練習",
+      "れんしゅう"
+    ],
+    [
+      "最後",
+      "さいご"
+    ],
+    [
+      "一日",
+      "いちにち"
+    ],
+    [
+      "後",
+      "あと"
     ],
     [
       "日",
@@ -68,6 +94,10 @@
     [
       "読",
       "よ"
+    ],
+    [
+      "出",
+      "で"
     ],
     [
       "報",
@@ -86,8 +116,12 @@
       "まな"
     ],
     [
-      "上",
-      "うえ"
+      "声",
+      "こえ"
+    ],
+    [
+      "遊",
+      "あそ"
     ]
   ]
 }

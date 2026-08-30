@@ -104,6 +104,16 @@ const eslintConfig = defineConfig([
     // 1行1.3MBの圧縮ずみファイルなので、検査しても直す先が無い。
     "public/pdfjs/**",
     /*
+     * Playwright が 手もとで 出す 置きみやげ（どちらも .gitignore ずみ）。
+     *
+     * CI は まっさらな 場所で 検査するので 見えないが、**手もとで e2e を 回した あと
+     * `npm run lint` を 打つと 87件の エラーが 出る**——中身は Playwright の
+     * 見せる 画面の バンドル（他人の コード）で、直す先が 無い。
+     * 自分の 直しの せいだと 読み まちがえる ところ だったので、外して おく。
+     */
+    "playwright-report/**",
+    "test-results/**",
+    /*
      * 旧アプリから **そのまま 写した** 練習ページの 共有部品
      *（`scripts/migrate_hourensou_tools.mjs` が 写す。リンク教材の 行き先）。
      *
