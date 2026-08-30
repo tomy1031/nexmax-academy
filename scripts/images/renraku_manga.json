@@ -1,6 +1,6 @@
 {
   "refs": ["public/img/characters/nyam/sheet.webp", "public/img/characters/hendy/sheet.webp"],
-  "_comment": "まんが「連絡が なかった 日」の 9コマ（content/manga/renraku_manga.json）。セリフは 絵に 焼かない（speechInImage:false）ので **吹き出しを 描かせない**——アプリが 絵の 下に 出す。コマの 上に セリフが 重なる ので、style の「上を 空ける」は 外さない。参照は ニャム・ヘンディの 設定画。1コマ 撮るたびに 直前の コマも 参照に 足すと 部屋と 光が そろう。",
+  "_comment": "まんが「連絡が なかった 日」の 9コマ（content/manga/renraku_manga.json）。セリフは 絵に 焼かない（speechInImage:false）ので **吹き出しを 描かせない**——アプリが 絵の 下に 出す。コマの 上に セリフが 重なる ので、style の「上を 空ける」は 外さない。参照は ニャム・ヘンディの 設定画。1コマ 撮るたびに 直前の コマも 参照に 足すと 部屋と 光が そろう。 2026-08-30: ヘンディの 見た目を 人物カード（content/characters/hendy.json）の looks に そろえた——以前は「light blue shirt, ID lanyard, Southeast Asian」と 書いて あり、カードの「紺の スーツ・紺の ネクタイ・ストラップ無し・日本人」と 食い違って いた。",
   "style": "Medium shot, clean line art, flat cel shading, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. Keep empty space at the top of the frame. No text, no letters, no numbers, no signage, no speech bubbles, no readable text.",
   "noText": "Absolutely no readable text, letters, numbers, logos or speech bubbles anywhere in the picture.",
   "negative": "Never: photo-realistic rendering, harsh shadows, extra fingers, distorted hands, dark or scary mood, angry faces, watermarks.",
@@ -11,63 +11,81 @@
       "dest": "public/img/manga/renraku_manga/panel1.webp",
       "title": "金曜日の 夕方 — オフィス / 金曜日の 夕方です。ニャムさんは 検証サーバーの",
       "scene": "Anime manga panel, no readable text. A bright modern software office in the late afternoon, warm orange light through the window. a young Southeast Asian junior engineer man (Nyam, short black hair swept up off the forehead, coral cardigan over a cream button-down shirt) sits at his desk looking at a sticky note on his monitor, thinking, one hand on his chin.",
-      "output": "Output: one manga panel, 1024x1024."
+      "output": "Output: one manga panel, 1024x1024.",
+      "where": "scripts/gen_hourensou_content.mjs renraku_manga の pages[0].panels[0].image",
+      "priority": "A"
     },
     {
       "out": "panel2",
       "dest": "public/img/manga/renraku_manga/panel2.webp",
       "title": "金曜日の 夕方 — オフィス / 連絡は…… あとで いいか。",
       "scene": "Anime manga panel, no readable text. Close shot on a young Southeast Asian junior engineer man (Nyam, short black hair swept up off the forehead, coral cardigan over a cream button-down shirt) at the same desk, one hand hovering over the keyboard, a chat app open as abstract blurred bubbles on the screen, his eyes glancing away with a slightly guilty look.",
-      "output": "Output: one manga panel, 1024x1024."
+      "output": "Output: one manga panel, 1024x1024.",
+      "where": "scripts/gen_hourensou_content.mjs renraku_manga の pages[0].panels[1].image",
+      "priority": "A"
     },
     {
       "out": "panel3",
       "dest": "public/img/manga/renraku_manga/panel3.webp",
       "title": "金曜日の 夕方 — オフィス / 20時。検証サーバーが 止まりました。だれも 知",
       "scene": "Anime manga panel, no readable text. Wide shot of the office at night, dark blue palette, only one desk lamp on where a young Southeast Asian junior engineer man (Nyam, short black hair swept up off the forehead, coral cardigan over a cream button-down shirt) works alone. By the wall, a small server rack with one status light glowing red instead of green.",
-      "output": "Output: one landscape manga panel, 1536x1024."
+      "output": "Output: one landscape manga panel, 1536x1024.",
+      "where": "scripts/gen_hourensou_content.mjs renraku_manga の pages[0].panels[2].image",
+      "priority": "A"
     },
     {
       "out": "panel4",
       "dest": "public/img/manga/renraku_manga/panel4.webp",
       "title": "その 夜 と 月曜日の 朝 / 同じ ころ。ヘンディさんは 家で 確認作業を し",
-      "scene": "Anime manga panel, no readable text. Night at a home desk with a warm lamp. a friendly Southeast Asian senior engineer man (Hendy, short black hair, light blue shirt, ID lanyard) wearing a casual gray hoodie instead of his shirt, looking at a laptop that shows an abstract empty error dialog, confused expression, tilting his head.",
-      "output": "Output: one manga panel, 1024x1024."
+      "scene": "Anime manga panel, no readable text. Night at a home desk with a warm lamp. Hendy the senior engineer, drawn from the attached character sheet: a Japanese man in his late twenties, slim, short slightly tousled black hair, gentle smile, at home in a casual grey hoodie instead of his suit, no lanyard and no glasses, looking at a laptop that shows an abstract empty error dialog, confused expression, tilting his head.",
+      "output": "Output: one manga panel, 1024x1024.",
+      "where": "scripts/gen_hourensou_content.mjs renraku_manga の pages[1].panels[0].image",
+      "priority": "A"
     },
     {
       "out": "panel5",
       "dest": "public/img/manga/renraku_manga/panel5.webp",
       "title": "その 夜 と 月曜日の 朝 / 保存する 前に 止まった……。きょうの 作業が ",
-      "scene": "Anime manga panel, no readable text. Same home desk at night. a friendly Southeast Asian senior engineer man (Hendy, short black hair, light blue shirt, ID lanyard) in the casual gray hoodie leans back with both hands on his head, looking at the ceiling, tired, the laptop screen dim.",
-      "output": "Output: one manga panel, 1024x1024."
+      "scene": "Anime manga panel, no readable text. Same home desk at night. Hendy the senior engineer, drawn from the attached character sheet: a Japanese man in his late twenties, slim, short slightly tousled black hair, gentle smile, at home in a casual grey hoodie instead of his suit, no lanyard and no glasses, leans back with both hands on his head, looking at the ceiling, tired, the laptop screen dim.",
+      "output": "Output: one manga panel, 1024x1024.",
+      "where": "scripts/gen_hourensou_content.mjs renraku_manga の pages[1].panels[1].image",
+      "priority": "A"
     },
     {
       "out": "panel6",
       "dest": "public/img/manga/renraku_manga/panel6.webp",
       "title": "その 夜 と 月曜日の 朝 / すみません。金曜の 夜、わたしが サーバーを 止",
-      "scene": "Anime manga panel, no readable text. Monday morning in the bright office. a young Southeast Asian junior engineer man (Nyam, short black hair swept up off the forehead, coral cardigan over a cream button-down shirt) bows apologetically beside a desk. a friendly Southeast Asian senior engineer man (Hendy, short black hair, light blue shirt, ID lanyard) turns from his chair with a calm, kind expression, soft morning light through the window.",
-      "output": "Output: one landscape manga panel, 1536x1024."
+      "scene": "Anime manga panel, no readable text. Monday morning in the bright office. a young Southeast Asian junior engineer man (Nyam, short black hair swept up off the forehead, coral cardigan over a cream button-down shirt) bows apologetically beside a desk. Hendy the senior engineer, drawn from the attached character sheet: a Japanese man in his late twenties, slim, short slightly tousled black hair, gentle smile, navy single-breasted suit jacket over a crisp white dress shirt with a navy necktie, no lanyard and no glasses turns from his chair with a calm, kind expression, soft morning light through the window.",
+      "output": "Output: one landscape manga panel, 1536x1024.",
+      "where": "scripts/gen_hourensou_content.mjs renraku_manga の pages[1].panels[2].image",
+      "priority": "A"
     },
     {
       "out": "panel7",
       "dest": "public/img/manga/renraku_manga/panel7.webp",
       "title": "月曜日の 昼 — 二人で 連絡 / いっしょに 連絡の 文を 作りましょう。いつ・何",
-      "scene": "Anime manga panel, no readable text. a friendly Southeast Asian senior engineer man (Hendy, short black hair, light blue shirt, ID lanyard) and a young Southeast Asian junior engineer man (Nyam, short black hair swept up off the forehead, coral cardigan over a cream button-down shirt) sit side by side at one laptop. Hendy points at the screen with a pen, Nyam nods holding a small notebook.",
-      "output": "Output: one manga panel, 1024x1024."
+      "scene": "Anime manga panel, no readable text. Hendy the senior engineer, drawn from the attached character sheet: a Japanese man in his late twenties, slim, short slightly tousled black hair, gentle smile, navy single-breasted suit jacket over a crisp white dress shirt with a navy necktie, no lanyard and no glasses and a young Southeast Asian junior engineer man (Nyam, short black hair swept up off the forehead, coral cardigan over a cream button-down shirt) sit side by side at one laptop. Hendy points at the screen with a pen, Nyam nods holding a small notebook.",
+      "output": "Output: one manga panel, 1024x1024.",
+      "where": "scripts/gen_hourensou_content.mjs renraku_manga の pages[2].panels[0].image",
+      "priority": "A"
     },
     {
       "out": "panel8",
       "dest": "public/img/manga/renraku_manga/panel8.webp",
       "title": "月曜日の 昼 — 二人で 連絡 / あしたの 18時から 19時まで、検証サーバーを",
       "scene": "Anime manga panel, no readable text. Close-up of the laptop screen showing a chat compose box as abstract blurred lines, a young Southeast Asian junior engineer man (Nyam, short black hair swept up off the forehead, coral cardigan over a cream button-down shirt) pressing the enter key with one finger, focused hopeful face.",
-      "output": "Output: one manga panel, 1024x1024."
+      "output": "Output: one manga panel, 1024x1024.",
+      "where": "scripts/gen_hourensou_content.mjs renraku_manga の pages[2].panels[1].image",
+      "priority": "A"
     },
     {
       "out": "panel9",
       "dest": "public/img/manga/renraku_manga/panel9.webp",
       "title": "月曜日の 昼 — 二人で 連絡 / スタンプが ならびました。「読みました」の 合図",
-      "scene": "Anime manga panel, no readable text. The chat window on a laptop screen with one abstract message bubble and three colorful round reaction icons floating beside it: an eye icon, a thumbs-up icon, and folded hands icon. Behind the laptop, a young Southeast Asian junior engineer man (Nyam, short black hair swept up off the forehead, coral cardigan over a cream button-down shirt) and a friendly Southeast Asian senior engineer man (Hendy, short black hair, light blue shirt, ID lanyard) smile at each other, bright cheerful light.",
-      "output": "Output: one landscape manga panel, 1536x1024."
+      "scene": "Anime manga panel, no readable text. The chat window on a laptop screen with one abstract message bubble and three colorful round reaction icons floating beside it: an eye icon, a thumbs-up icon, and folded hands icon. Behind the laptop, a young Southeast Asian junior engineer man (Nyam, short black hair swept up off the forehead, coral cardigan over a cream button-down shirt) and Hendy the senior engineer, drawn from the attached character sheet: a Japanese man in his late twenties, slim, short slightly tousled black hair, gentle smile, navy single-breasted suit jacket over a crisp white dress shirt with a navy necktie, no lanyard and no glasses smile at each other, bright cheerful light.",
+      "output": "Output: one landscape manga panel, 1536x1024.",
+      "where": "scripts/gen_hourensou_content.mjs renraku_manga の pages[2].panels[2].image",
+      "priority": "A"
     }
   ]
 }
