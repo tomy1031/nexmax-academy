@@ -16,6 +16,7 @@ import { MiniButton, SourceBadge } from "./studio-ui";
 export function StageList({
   stages,
   dbStatusOf,
+  gitBacked,
   busy,
   onOpen,
   onNew,
@@ -25,6 +26,11 @@ export function StageList({
   /** ならび順（order 昇順）に並べたもの。 */
   stages: readonly Stage[];
   dbStatusOf: (kind: string, id: string) => "draft" | "published" | null;
+  /**
+   * git（リポジトリ）にも 実体が あるか。ある ものは DB版を 消しても git版が 出るので、
+   * 一覧から 消えない——だから 札を「けす」と 書かない（2026-08-29）。
+   */
+  gitBacked: (id: string) => boolean;
   busy: boolean;
   onOpen: (stage: Stage) => void;
   onNew: () => void;
@@ -138,8 +144,16 @@ export function StageList({
                     ✎ ひらく
                   </MiniButton>
                   {status ? (
-                    <MiniButton tone="danger" onClick={() => onRemove(stage)}>
-                      けす
+                    <MiniButton
+                      tone="danger"
+                      onClick={() => onRemove(stage)}
+                      title={
+                        gitBacked(stage.id)
+                          ? "スタジオで 直す 前の 中身に もどします（一覧からは 消えません）。"
+                          : "この ステージを けします。"
+                      }
+                    >
+                      {gitBacked(stage.id) ? "直しを もどす" : "けす"}
                     </MiniButton>
                   ) : null}
                 </div>

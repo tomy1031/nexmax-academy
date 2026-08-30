@@ -157,6 +157,20 @@ export function emptyArticleBlock(kind: ArticleBlock["kind"]): ArticleBlock {
       return { kind: "paragraph", text: "ここに 本文を 書きます。" };
     case "image":
       return { kind: "image", ...emptyImageSlot() };
+    /*
+     * 動画は **先生が スタジオから 上げられない**（上げる 口が 無い）。
+     * 置き場を こちらで 用意して パスを 書いてもらう ので、`src` は 空で 始める
+     *（人物カードの `ref` と 同じで、空の うちは 参照切れとして 目に 見える）。
+     */
+    /*
+     * 動画は **先生が スタジオから 上げられない**（上げる 口が 無い）。
+     * ファイルは こちらが 置き場を 用意して パスを 書いてもらい、YouTube は
+     * ページの URL を そのまま 貼って もらう。どちらか 1つで、**空では 保存できない**
+     *（スキーマが 止める）ので、作った 直後は 検査に 引っかかる 形で 始める——
+     * 書き忘れが そのまま 学習者の 画面に 出る より よい。
+     */
+    case "video":
+      return { kind: "video", src: "", note: "この 動画で 見るところ を 書きます。" };
     case "callout":
       return { kind: "callout", tone: "point", text: "ここが たいせつです。" };
     case "list":
@@ -354,6 +368,7 @@ export const ARTICLE_BLOCK_OPTIONS: readonly { value: ArticleBlock["kind"]; labe
   { value: "heading", label: "見出し" },
   { value: "paragraph", label: "本文" },
   { value: "image", label: "画像" },
+  { value: "video", label: "動画" },
   { value: "callout", label: "ポイント枠" },
   { value: "list", label: "かじょうがき" },
   { value: "steps", label: "てじゅん" },

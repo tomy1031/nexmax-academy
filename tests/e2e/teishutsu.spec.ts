@@ -37,6 +37,21 @@ import {
 const START_SUBMIT = "はじめる";
 const SUBMIT_ANSWERS = /こたえを 出/;
 
+/*
+ * 2026-08-29、先生の 指示で **朝会ステージ（`asakai`）を 消した**。この 9本が 見て
+ * いた `/asakai/quiz` は もう 開かない。
+ *
+ * 消さずに 止めて あるのは、見張って いた ものが 無くなった わけでは ないから
+ *（まとめて 出す は 生きて いる。見る 場所だけが 無い）。いま 残って いる 教材で
+ * 代わりに なる ものは 1つも 無い——かいしゃの もんだいは 2本とも「ぜんぶ 1ページ」
+ *（`answerMode: "all"`）、「はじめに」の かくにんテストは 関門では ない（`gates: false`）
+ * ので 開いた 瞬間に「ステージ クリア」の 板が かぶさる。
+ *
+ * もどしかた: まとめて 出す（既定の `answerMode`）で 関門に なる もんだいを 持つ
+ * ステージを 1つ 用意し、`helpers.ts` の `ASAKAI_QUIZ` を そちらへ 向ける。
+ */
+test.skip(true, "朝会ステージを 消したため（2026-08-29）。行き先の もんだいが 無い。");
+
 test("まとめて 出す は 途中で 採点しない（えらんだ ところは 残る）", async ({ page, context }) => {
   await seedCompleted(context, ASAKAI_QUIZ.before);
   await page.goto(ASAKAI_QUIZ.path);

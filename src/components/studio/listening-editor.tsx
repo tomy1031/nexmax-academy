@@ -137,6 +137,34 @@ export function ListeningEditor({
           placeholder="https://…/asakai.mp3"
           hint="入れなければ 台本を 読む 画面に なります。"
         />
+        {/*
+          動画の リスニング（2026-08-29 の 指定）。**音と 両方は 置けない**
+          （どちらを 鳴らすか 決まらなく なる ので スキーマが 止める）。
+          聞き取りチェックも 速さの ボタンも 音の ときと 同じに 効く。
+        */}
+        <TextField
+          label="動画の ばしょ（なくてもよい）"
+          value={value.videoUrl ?? ""}
+          onChange={(videoUrl) => patch({ videoUrl: videoUrl.length > 0 ? videoUrl : undefined })}
+          placeholder="/video/hourensou/xxx.mp4"
+          hint="動画で 聞かせる ときは こちら。音声の ばしょは 空に してください（両方は 置けません）。"
+        />
+        <TextField
+          label="YouTube の ばしょ（なくてもよい）"
+          value={value.youtube ?? ""}
+          onChange={(youtube) => patch({ youtube: youtube.length > 0 ? youtube : undefined })}
+          placeholder="https://www.youtube.com/watch?v=..."
+          hint="動画の ページの URL を そのまま 貼って ください。音・動画・YouTube は どれか 1つです。速さの ボタンは 出ません（動画の 中の ⚙ で 変えます）。"
+        />
+        <TextField
+          label="動画を 読みこむ 前に 出す 絵（なくてもよい）"
+          value={value.posterUrl ?? ""}
+          onChange={(posterUrl) =>
+            patch({ posterUrl: posterUrl.length > 0 ? posterUrl : undefined })
+          }
+          placeholder="/img/hourensou/xxx.webp"
+          hint="空なら 黒い 面に 再生ボタンが 出ます。"
+        />
       </StudioSection>
 
       <StudioSection
