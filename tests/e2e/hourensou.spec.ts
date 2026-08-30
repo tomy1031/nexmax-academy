@@ -43,7 +43,61 @@ const SEGMENT: Record<string, string> = {
   listening: "listening",
   quizset: "quiz",
   link: "link",
+  meeting: "meeting",
+  manga: "manga",
 };
+
+/** 教材データの 置き場（種別 → フォルダ）。 */
+const DIR: Record<string, string> = {
+  article: "articles",
+  skit: "skits",
+  listening: "listening",
+  quizset: "quizsets",
+  link: "links",
+  meeting: "meetings",
+  manga: "manga",
+};
+
+function contentOf(type: string, ref: string): unknown {
+  return JSON.parse(readFileSync(join("content", DIR[type], `${ref}.json`), "utf8"));
+}
+
+/** 画像スロットの 形（`imageSlotSchema`）。`src` が 無ければ 画面は 点線わくを 出す。 */
+function isEmptySlot(value: unknown): boolean {
+  if (typeof value !== "object" || value === null) return false;
+  const slot = value as { src?: unknown; status?: unknown; refs?: unknown };
+  return !slot.src && (typeof slot.status === "string" || Array.isArray(slot.refs));
+}
+
+/**
+ * その 教材が 画面に 出す「空の 絵の 枠」の 数。
+ *
+ * もんだいは **1問ずつ** 出す 作り（`answerMode` が `all` の ときだけ 全問1ページ）
+ * なので、そこだけ 最初の 1問ぶんに 絞る。
+ */
+function emptySlots(item: { ref: string; type: string }): number {
+  const data = contentOf(item.type, item.ref) as Record<string, unknown>;
+  if (item.type === "quizset") {
+    const questions = (data.questions ?? []) as { image?: unknown }[];
+    const empties = questions.filter((q) => isEmptySlot(q.image));
+    return data.answerMode === "all" ? empties.length : Math.min(empties.length, 1);
+  }
+  let count = 0;
+  const walk = (value: unknown): void => {
+    if (Array.isArray(value)) {
+      value.forEach(walk);
+      return;
+    }
+    if (typeof value !== "object" || value === null) return;
+    if (isEmptySlot(value)) {
+      count += 1;
+      return;
+    }
+    Object.values(value).forEach(walk);
+  };
+  walk(data);
+  return count;
+}
 
 function pathsOf(stageId: string): { ref: string; type: string; path: string }[] {
   const contents = stage(stageId).contents;
@@ -87,8 +141,16 @@ for (const { id, title, skitId } of STAGES) {
       await open(page, item.path);
       // 中身が 出て いるか（空の 枠だけが 出る 壊れ方を 弾く）
       await expect(page.getByRole("heading").first()).toBeVisible();
-      // 絵の 置き場が 空の ままに なって いない（旧アプリの 当て絵が ぜんぶ 入って いる）
-      await expect(page.locator('[data-slot="empty"]')).toHaveCount(0);
+      /*
+       * 絵の 置き場の 空きは **データと 数が 合って いる**こと。
+       *
+       * 0件では 見張れなく なった——まんが（連絡）と 場面クイズ（相談）は、
+       * Cloudでは 絵を 作れない ので **プロンプトだけ 保存して 空で 出す**
+       *（`docs/teaching/hourensou_要る絵の一覧.md` の 引き継ぎ）。
+       * 数で 見れば、絵が 入った 日に この 検査が **自動で ついてくる**——
+       * 空きが 減れば 期待値も 減る。逆に 手ちがいで 絵が 消えた ときは 落ちる。
+       */
+      await expect(page.locator('[data-slot="empty"]')).toHaveCount(emptySlots(item));
     }
   });
 
@@ -147,6 +209,44 @@ for (const { id, title, skitId } of STAGES) {
 
     await page.locator("video").first().scrollIntoViewIfNeeded();
     await shot(page, `hourensou-${id}-video`);
+  });
+
+  test(`報連相：${title} — ミーティングが 鍵ゼロで ひらく`, async ({ page }) => {
+    const meeting = pathsOf(id).find((item) => item.type === "meeting");
+    if (!meeting) return;
+    const data = contentOf("meeting", meeting.ref) as {
+      questions: { ask: string }[];
+      host: { name: string };
+    };
+
+    await open(page, meeting.path);
+    /*
+     * **鍵（GEMINI_API_KEY）を 持たない 学習者**の 画面。ここが 鍵を 要求すると、
+     * 教室の ほとんどの 子が 入口で 止まる——ミーティングは 鍵が 無くても
+     * 規則ベースの 見かたで 最後まで 通る 作りに して ある。
+     */
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+    expect(data.questions.length).toBeGreaterThan(0);
+    await expect(page.getByText(data.host.name).first()).toBeVisible();
+    await shot(page, `hourensou-${id}-meeting`);
+  });
+
+  test(`報連相：${title} — ツールページが 中で ひらく`, async ({ page }) => {
+    for (const item of pathsOf(id).filter((c) => c.type === "link")) {
+      const data = contentOf("link", item.ref) as { url: string; newTab?: boolean };
+      // 旧アプリからの 写しでは ない、こんど 作った ページだけを 見る
+      if (!data.url.startsWith("/tools/hourensou/")) continue;
+
+      /*
+       * **ファイルが 本当に 置いて あるか**。リンク教材は 行き先が 404 でも
+       * 画面は 枠を 出して しまう（中は iframe なので 親からは 空に 見えるだけ）。
+       */
+      const res = await page.request.get(data.url);
+      expect(res.status(), `${data.url} が 無い`).toBe(200);
+
+      await open(page, item.path);
+      await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+    }
   });
 
   test(`報連相：${title} — 裸の 漢字が 出て いない`, async ({ page, context }) => {

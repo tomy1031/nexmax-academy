@@ -1422,6 +1422,246 @@
     [
       "本日",
       "ほんじつ"
+    ],
+    [
+      "検索機能",
+      "けんさくきのう"
+    ],
+    [
+      "商品検索",
+      "しょうひんけんさく"
+    ],
+    [
+      "更新作業",
+      "こうしんさぎょう"
+    ],
+    [
+      "管理画面",
+      "かんりがめん"
+    ],
+    [
+      "決済画面",
+      "けっさいがめん"
+    ],
+    [
+      "報連相",
+      "ほうれんそう"
+    ],
+    [
+      "開発部",
+      "かいはつぶ"
+    ],
+    [
+      "月曜日",
+      "げつようび"
+    ],
+    [
+      "何時間",
+      "なんじかん"
+    ],
+    [
+      "来週",
+      "らいしゅう"
+    ],
+    [
+      "上司",
+      "じょうし"
+    ],
+    [
+      "障害",
+      "しょうがい"
+    ],
+    [
+      "文字",
+      "もじ"
+    ],
+    [
+      "毎朝",
+      "まいあさ"
+    ],
+    [
+      "明日",
+      "あした"
+    ],
+    [
+      "今日",
+      "きょう"
+    ],
+    [
+      "今回",
+      "こんかい"
+    ],
+    [
+      "来月",
+      "らいげつ"
+    ],
+    [
+      "夕方",
+      "ゆうがた"
+    ],
+    [
+      "海外",
+      "かいがい"
+    ],
+    [
+      "社内",
+      "しゃない"
+    ],
+    [
+      "両方",
+      "りょうほう"
+    ],
+    [
+      "用意",
+      "ようい"
+    ],
+    [
+      "確認",
+      "かくにん"
+    ],
+    [
+      "設定",
+      "せってい"
+    ],
+    [
+      "本番",
+      "ほんばん"
+    ],
+    [
+      "機能",
+      "きのう"
+    ],
+    [
+      "仕様",
+      "しよう"
+    ],
+    [
+      "世話",
+      "せわ"
+    ],
+    [
+      "予想",
+      "よそう"
+    ],
+    [
+      "心配",
+      "しんぱい"
+    ],
+    [
+      "場面",
+      "ばめん"
+    ],
+    [
+      "商品",
+      "しょうひん"
+    ],
+    [
+      "進捗",
+      "しんちょく"
+    ],
+    [
+      "藤木",
+      "ふじき"
+    ],
+    [
+      "他",
+      "ほか"
+    ],
+    [
+      "外",
+      "そと"
+    ],
+    [
+      "部",
+      "ぶ"
+    ],
+    [
+      "箱",
+      "はこ"
+    ],
+    [
+      "家",
+      "いえ"
+    ],
+    [
+      "次",
+      "つぎ"
+    ],
+    [
+      "送",
+      "おく"
+    ],
+    [
+      "届",
+      "とど"
+    ],
+    [
+      "遅",
+      "おく"
+    ],
+    [
+      "近",
+      "ちか"
+    ],
+    [
+      "急",
+      "いそ"
+    ],
+    [
+      "重",
+      "おも"
+    ],
+    [
+      "長",
+      "なが"
+    ],
+    [
+      "広",
+      "ひろ"
+    ],
+    [
+      "閉",
+      "と"
+    ],
+    [
+      "守",
+      "まも"
+    ],
+    [
+      "始",
+      "はじ"
+    ],
+    [
+      "型",
+      "かた"
+    ],
+    [
+      "試",
+      "ため"
+    ],
+    [
+      "隠",
+      "かく"
+    ],
+    [
+      "食",
+      "た"
+    ],
+    [
+      "直",
+      "なお"
+    ],
+    [
+      "奪",
+      "うば"
+    ],
+    [
+      "焦",
+      "あせ"
+    ],
+    [
+      "壊",
+      "こわ"
     ]
   ],
   "words": [
@@ -2509,7 +2749,8 @@
         "Comparison",
         "Waiting",
         "Facing each other"
-      ]
+      ],
+      "example": "エラーに ついて、今 いそいで 対応して います。"
     },
     {
       "id": "shikumi",
@@ -2567,7 +2808,13 @@
       "reading": "りゆう",
       "meaningJa": "「どうして そう するのか」の こたえ",
       "englishTerm": "the reason",
-      "englishMeaning": "why you do it that way"
+      "englishMeaning": "why you do it that way",
+      "wrongMeanings": [
+        "Result",
+        "Method",
+        "Condition"
+      ],
+      "example": "スケジュールを 変える 理由を 教えて ください。"
     },
     {
       "id": "setsumei",
@@ -2652,7 +2899,13 @@
       "reading": "けっか",
       "meaningJa": "やった あとに、どう なるか",
       "englishTerm": "outcome",
-      "englishMeaning": "how it turns out in the end"
+      "englishMeaning": "how it turns out in the end",
+      "wrongMeanings": [
+        "Cause",
+        "Plan",
+        "Question"
+      ],
+      "example": "テストの 結果を チームに 連絡します。"
     },
     {
       "id": "monozukuri",
@@ -2700,7 +2953,13 @@
       "reading": "とらぶる",
       "meaningJa": "システムが うまく うごかない こと",
       "englishTerm": "trouble",
-      "englishMeaning": "when a system stops working properly"
+      "englishMeaning": "when a system stops working properly",
+      "wrongMeanings": [
+        "Success",
+        "Chance",
+        "Event"
+      ],
+      "example": "サーバーエラーが 出た ときは、トラブルとして 報告します。"
     },
     {
       "id": "kotoba2",
@@ -2771,7 +3030,13 @@
       "reading": "いけん",
       "meaningJa": "「そう 思う」と じぶんが かんがえた こと",
       "englishTerm": "opinion",
-      "englishMeaning": "what you think about something"
+      "englishMeaning": "what you think about something",
+      "wrongMeanings": [
+        "Fact",
+        "Rule",
+        "Law"
+      ],
+      "example": "こまった ときは、自分の 意見を つたえて 上司に 聞きます。"
     },
     {
       "id": "itsushoukenmei",
@@ -2803,7 +3068,13 @@
       "reading": "ためす",
       "meaningJa": "できるか どうか、いちど やって みる こと",
       "englishTerm": "to try",
-      "englishMeaning": "doing it once to see what happens"
+      "englishMeaning": "doing it once to see what happens",
+      "wrongMeanings": [
+        "Forgot",
+        "Ignored",
+        "Dreamt"
+      ],
+      "example": "自分が 試した ことを 具体的に 説明します。"
     },
     {
       "id": "rei",
@@ -2883,7 +3154,13 @@
       "reading": "しつもん",
       "meaningJa": "わからない ことを、人に たずねる こと",
       "englishTerm": "question",
-      "englishMeaning": "asking someone about something you do not know"
+      "englishMeaning": "asking someone about something you do not know",
+      "wrongMeanings": [
+        "Ignore",
+        "Guess",
+        "Forget"
+      ],
+      "example": "わからない 言葉は、必ず 質問します。"
     },
     {
       "id": "genki",
@@ -2920,7 +3197,13 @@
       "reading": "あいであ",
       "meaningJa": "「こう したら いいかも」と 思いついた 考え",
       "englishTerm": "idea",
-      "englishMeaning": "a new thought about what you could do"
+      "englishMeaning": "a new thought about what you could do",
+      "wrongMeanings": [
+        "Money",
+        "Time",
+        "Lunch"
+      ],
+      "example": "テストの やり方に ついて、アイデアが ほしいです。"
     },
     {
       "id": "kaishagaiyou",
@@ -2962,7 +3245,14 @@
       "id": "ketsuron",
       "term": "結論",
       "reading": "けつろん",
-      "meaningJa": "いちばん 言いたい こと"
+      "meaningJa": "いちばん 言いたい こと",
+      "englishTerm": "Conclusion",
+      "wrongMeanings": [
+        "Excuse",
+        "Chat",
+        "Detail"
+      ],
+      "example": "話が 長く ならないように、まず 結論から 話します。"
     },
     {
       "id": "junchou",
@@ -3208,7 +3498,13 @@
       "term": "安全",
       "reading": "あんぜん",
       "meaningJa": "safe の ことばです。",
-      "englishTerm": "safe"
+      "englishTerm": "safe",
+      "wrongMeanings": [
+        "Danger",
+        "Risk",
+        "Fear"
+      ],
+      "example": "データが 安全に 保存されたか たしかめます。"
     },
     {
       "id": "ouen2",
@@ -3225,7 +3521,12 @@
       "meaningJa": "どれを 先に、どれを 後に するかの ならび方です。",
       "englishTerm": "order / sequence",
       "example": "会議で 話す 順番を 決めます。",
-      "englishMeaning": "which one comes first and which comes next"
+      "englishMeaning": "which one comes first and which comes next",
+      "wrongMeanings": [
+        "Color",
+        "Size",
+        "Price"
+      ]
     },
     {
       "id": "kiroku",
@@ -3603,7 +3904,8 @@
         "Sightseeing",
         "Advertising",
         "Manufacturing"
-      ]
+      ],
+      "example": "ネクストメイクでは、経営と 営業の 両方を して います。"
     },
     {
       "id": "soshiki",
@@ -3643,14 +3945,26 @@
       "term": "同僚",
       "reading": "どうりょう",
       "meaningJa": "同じ 会社で はたらく なかまです。",
-      "englishTerm": "Colleague"
+      "englishTerm": "Colleague",
+      "wrongMeanings": [
+        "Family",
+        "Customer",
+        "Pet"
+      ],
+      "example": "会社の 同僚の チャットを 読みます。"
     },
     {
       "id": "joushi",
       "term": "上司",
       "reading": "じょうし",
       "meaningJa": "じぶんより 上の 立場の 人です。",
-      "englishTerm": "Boss"
+      "englishTerm": "Boss",
+      "wrongMeanings": [
+        "Subordinate",
+        "Pet",
+        "Enemy"
+      ],
+      "example": "仕事が 終わった ときは、必ず 上司に 報告します。"
     },
     {
       "id": "buka",
@@ -3717,7 +4031,8 @@
         "Reliance on luck",
         "Arrival",
         "Invitation"
-      ]
+      ],
+      "example": "他部署から 調査の 依頼が 来て います。"
     },
     {
       "id": "youbou",
@@ -3875,7 +4190,13 @@
       "term": "計算",
       "reading": "けいさん",
       "meaningJa": "数を 出す ことです。",
-      "englishTerm": "Calculation"
+      "englishTerm": "Calculation",
+      "wrongMeanings": [
+        "Writing",
+        "Speaking",
+        "Reading"
+      ],
+      "example": "お金の 計算の ルールが 書かれて いません。"
     },
     {
       "id": "shuukei",
@@ -3978,7 +4299,8 @@
         "Landmark",
         "Eyesight",
         "Target price"
-      ]
+      ],
+      "example": "はじめに、この 会議の 目的を はっきり させます。"
     },
     {
       "id": "kadai",
@@ -4026,7 +4348,8 @@
         "Government office",
         "Simple repair",
         "Public relations"
-      ]
+      ],
+      "example": "ユーザーの データは 一緒に 管理する ほうが いいです。"
     },
     {
       "id": "unei",
@@ -4373,7 +4696,8 @@
         "Research study",
         "Inspection",
         "Reservation"
-      ]
+      ],
+      "example": "新しい 検索機能の テストを 急いで お願いします。"
     },
     {
       "id": "hozon",
@@ -4385,7 +4709,8 @@
         "Deleting",
         "Printing",
         "Sending"
-      ]
+      ],
+      "example": "大事な ファイルは、必ず 保存して ください。"
     },
     {
       "id": "koushin",
@@ -4397,7 +4722,8 @@
         "Deleting",
         "Copying",
         "Locking"
-      ]
+      ],
+      "example": "毎朝、ウイルスの ファイルを 更新して ください。"
     },
     {
       "id": "tsuika",
@@ -4440,7 +4766,8 @@
         "Sharing money",
         "Sending back",
         "Deleting"
-      ]
+      ],
+      "example": "会議の 記録を チームに 共有します。"
     },
     {
       "id": "tsuuchi",
@@ -4452,14 +4779,21 @@
         "Password",
         "Attachment",
         "Setting"
-      ]
+      ],
+      "example": "メッセージが 届くと、スマホに 通知が 来ます。"
     },
     {
       "id": "hyouji",
       "term": "表示",
       "reading": "ひょうじ",
       "meaningJa": "画面に 出して 見せる ことです。",
-      "englishTerm": "Display"
+      "englishTerm": "Display",
+      "wrongMeanings": [
+        "Hide",
+        "Input",
+        "Process"
+      ],
+      "example": "エラーメッセージが 表示されて います。"
     },
     {
       "id": "gazou",
@@ -4471,7 +4805,8 @@
         "Imagination",
         "Impression",
         "Message"
-      ]
+      ],
+      "example": "こちらの ミスで、画像ファイルが こわれて います。"
     },
     {
       "id": "eizou",
@@ -4543,7 +4878,8 @@
         "Explanation",
         "Pronunciation",
         "Conversation"
-      ]
+      ],
+      "example": "海外へ 送る ため、英語に 翻訳を お願いします。"
     },
     {
       "id": "tagengo",
@@ -4655,7 +4991,13 @@
       "term": "整理",
       "reading": "せいり",
       "meaningJa": "ばらばらの ものを、わかるように ならべる ことです。",
-      "englishTerm": "Organising"
+      "englishTerm": "Organising",
+      "wrongMeanings": [
+        "Break",
+        "Hide",
+        "Forget"
+      ],
+      "example": "必要な 情報だけを えらんで、整理します。"
     },
     {
       "id": "bunrui",
@@ -4817,7 +5159,13 @@
       "term": "完了",
       "reading": "かんりょう",
       "meaningJa": "ぜんぶ おわる ことです。",
-      "englishTerm": "Completion"
+      "englishTerm": "Completion",
+      "wrongMeanings": [
+        "Started",
+        "Failed",
+        "Continued"
+      ],
+      "example": "テストが 完了しましたと 報告します。"
     },
     {
       "id": "kaizen",
@@ -4876,7 +5224,13 @@
       "term": "明確",
       "reading": "めいかく",
       "meaningJa": "はっきりして いて、まよわない ことです。",
-      "englishTerm": "Clear"
+      "englishTerm": "Clear",
+      "wrongMeanings": [
+        "Vaguely",
+        "Quietly",
+        "Slowly"
+      ],
+      "example": "いつ 終わるかを 明確に つたえます。"
     },
     {
       "id": "kantan",
@@ -5182,7 +5536,13 @@
       "term": "状況",
       "reading": "じょうきょう",
       "meaningJa": "いま どう なって いるか、と いう ことです。",
-      "englishTerm": "Situation"
+      "englishTerm": "Situation",
+      "wrongMeanings": [
+        "Name",
+        "Address",
+        "Phone number"
+      ],
+      "example": "上司に 今の 状況を つたえます。"
     },
     {
       "id": "haaku",
@@ -5591,7 +5951,8 @@
         "Influence",
         "Information",
         "Interface"
-      ]
+      ],
+      "example": "サーバーを 見て いる インフラ開発部に 連絡します。"
     },
     {
       "id": "saba",
@@ -5603,7 +5964,8 @@
         "Browser",
         "Folder",
         "Monitor"
-      ]
+      ],
+      "example": "アクセスが 多く なって、サーバーが うごかなく なりました。"
     },
     {
       "id": "nettowaku",
@@ -5639,7 +6001,8 @@
         "Rule",
         "Trial",
         "Term"
-      ]
+      ],
+      "example": "開発ツールの 設定で エラーが 出ました。"
     },
     {
       "id": "kodo",
@@ -5766,7 +6129,8 @@
         "Budget",
         "Manual",
         "Rule"
-      ]
+      ],
+      "example": "提出の スケジュールを 変えたいです。"
     },
     {
       "id": "tasuku",
@@ -5826,7 +6190,8 @@
         "Reserve",
         "Rehearsal",
         "Repair"
-      ]
+      ],
+      "example": "来週の 月曜日に 新しい アプリを リリースします。"
     },
     {
       "id": "rinyuaru",
@@ -5946,7 +6311,8 @@
         "Front desk",
         "Front door",
         "First step"
-      ]
+      ],
+      "example": "今回は フロントエンドに Reactを 使います。"
     },
     {
       "id": "bakkuendo",
@@ -5958,7 +6324,8 @@
         "Back office",
         "Backup",
         "Background"
-      ]
+      ],
+      "example": "今回は バックエンドに Laravelを 使います。"
     },
     {
       "id": "dasshubodo",
@@ -6102,7 +6469,8 @@
         "Trading company",
         "Family business",
         "Public office"
-      ]
+      ],
+      "example": "お客さまの 株式会社さくらデザインへ 連絡します。"
     },
     {
       "id": "kaigai",
@@ -6283,7 +6651,8 @@
         "Harvest",
         "Strategy",
         "Last year"
-      ]
+      ],
+      "example": "正しい ビジネスメールを 作成しましょう。"
     },
     {
       "id": "shiyou2",
@@ -6471,7 +6840,8 @@
         "Invitation",
         "Impression",
         "Instruction"
-      ]
+      ],
+      "example": "連絡では、予定や 必要な 情報を つたえます。"
     },
     {
       "id": "kenshou",
@@ -6531,7 +6901,8 @@
         "A tall wall",
         "A long meeting",
         "A busy day"
-      ]
+      ],
+      "example": "ネットワークの 障害で メールが 送れません。"
     },
     {
       "id": "shougaibutsu",
@@ -7956,7 +8327,12 @@
       "romaji": "chousa",
       "meaningJa": "知りたい ことを、自分で しらべる ことです。",
       "englishTerm": "Research / Survey",
-      "example": "Webサイトを 見て、調査シートを 書きます。"
+      "example": "Webサイトを 見て、調査シートを 書きます。",
+      "wrongMeanings": [
+        "Shopping",
+        "Cooking",
+        "Sleeping"
+      ]
     },
     {
       "id": "bunya",
@@ -8101,6 +8477,1434 @@
       "meaningJa": "会社が 今までに して きた ことの ならびです。",
       "englishTerm": "History / Timeline",
       "example": "「会社の あゆみ」を 見ましょう。"
+    },
+    {
+      "id": "chi-muwa-ku",
+      "term": "チームワーク",
+      "reading": "ちーむわーく",
+      "romaji": "chi-muwa-ku",
+      "meaningJa": "みんなで 力を 合わせて はたらく ことです。",
+      "englishTerm": "Teamwork",
+      "example": "日本の 会社で 一番 大切な ことは、チームワークです。",
+      "wrongMeanings": [
+        "Solo work",
+        "Competition",
+        "Fighting"
+      ]
+    },
+    {
+      "id": "mondai",
+      "term": "問題",
+      "reading": "もんだい",
+      "romaji": "mondai",
+      "meaningJa": "なおさないと いけない、こまった ことです。",
+      "englishTerm": "Problem / Issue",
+      "example": "仕事が 終わった ときや、問題が ある ときは 必ず 報告します。",
+      "wrongMeanings": [
+        "Solution",
+        "Success",
+        "Prize"
+      ]
+    },
+    {
+      "id": "pi-emu",
+      "term": "PM",
+      "reading": "ぴーえむ",
+      "romaji": "pi-emu",
+      "meaningJa": "プロジェクトを まとめて 進める 人です。",
+      "englishTerm": "Project Manager",
+      "example": "上司の ヘンディさんは PM（プロジェクトマネージャー）です。",
+      "wrongMeanings": [
+        "Prime Minister",
+        "Past Midnight",
+        "Post Master"
+      ]
+    },
+    {
+      "id": "pi-ji-",
+      "term": "PG",
+      "reading": "ぴーじー",
+      "romaji": "pi-ji-",
+      "meaningJa": "プログラムを 書く 人です。",
+      "englishTerm": "Programmer",
+      "example": "あなたは PG（プログラマー）として プロジェクトに 入ります。",
+      "wrongMeanings": [
+        "Parental Guidance",
+        "Play Ground",
+        "Party Game"
+      ]
+    },
+    {
+      "id": "kaisetu",
+      "term": "解説",
+      "reading": "かいせつ",
+      "romaji": "kaisetu",
+      "meaningJa": "どうして そう なるかを、くわしく 話す ことです。",
+      "englishTerm": "Explanation / Commentary",
+      "example": "答え合わせと 解説へ 進みます。",
+      "wrongMeanings": [
+        "Question",
+        "Silence",
+        "Confusion"
+      ]
+    },
+    {
+      "id": "kyoka",
+      "term": "許可",
+      "reading": "きょか",
+      "romaji": "kyoka",
+      "meaningJa": "して いいですと、あいてに 言って もらう ことです。",
+      "englishTerm": "Permission",
+      "example": "いそがしい 人に 話しかける ときは、はじめに 許可を もらいます。",
+      "wrongMeanings": [
+        "Refusal",
+        "Ban",
+        "Stop"
+      ]
+    },
+    {
+      "id": "jijitu",
+      "term": "事実",
+      "reading": "じじつ",
+      "romaji": "jijitu",
+      "meaningJa": "本当に あった ことです。考えや 予想では ありません。",
+      "englishTerm": "Fact",
+      "example": "報告では、予想では なく 事実を つたえます。",
+      "wrongMeanings": [
+        "Opinion",
+        "Ideal",
+        "Rumor"
+      ]
+    },
+    {
+      "id": "bagu",
+      "term": "バグ",
+      "reading": "ばぐ",
+      "romaji": "bagu",
+      "meaningJa": "プログラムの まちがいで、うまく うごかない ところです。",
+      "englishTerm": "Bug",
+      "example": "文字を 書くと システムが うごかなく なる バグが 見つかりました。",
+      "wrongMeanings": [
+        "Virus",
+        "Mouse",
+        "Outlet"
+      ]
+    },
+    {
+      "id": "okureru",
+      "term": "遅れる",
+      "reading": "おくれる",
+      "romaji": "okureru",
+      "meaningJa": "予定の 時間より、あとに なる ことです。",
+      "englishTerm": "To be delayed",
+      "example": "なおすのに 時間が かかるため、来週の テストが 遅れます。",
+      "wrongMeanings": [
+        "Early",
+        "On time",
+        "Fly"
+      ]
+    },
+    {
+      "id": "genin",
+      "term": "原因",
+      "reading": "げんいん",
+      "romaji": "genin",
+      "meaningJa": "どうして そう なったか、と いう もとです。",
+      "englishTerm": "Cause",
+      "example": "サーバーエラーが 出ました。今、原因を 調べて います。",
+      "wrongMeanings": [
+        "Result",
+        "Future",
+        "Dream"
+      ]
+    },
+    {
+      "id": "topikku",
+      "term": "トピック",
+      "reading": "とぴっく",
+      "romaji": "topikku",
+      "meaningJa": "何の 話かを、はじめに 言う ことばです。",
+      "englishTerm": "Topic",
+      "example": "わかりやすい 報告は、はじめに トピックを 言います。",
+      "wrongMeanings": [
+        "Conclusion",
+        "Fact",
+        "Reason"
+      ]
+    },
+    {
+      "id": "onegai",
+      "term": "お願い",
+      "reading": "おねがい",
+      "romaji": "onegai",
+      "meaningJa": "あいてに して ほしい ことを たのむ ことです。",
+      "englishTerm": "Request",
+      "example": "報告の 最後に、上司への お願いを つたえます。",
+      "wrongMeanings": [
+        "Order",
+        "Command",
+        "Refusal"
+      ]
+    },
+    {
+      "id": "torisimariyaku",
+      "term": "取締役",
+      "reading": "とりしまりやく",
+      "romaji": "torisimariyaku",
+      "meaningJa": "会社の 大切な ことを 決める 立場の 人です。",
+      "englishTerm": "Board Director",
+      "example": "藤木さんは、ネクストメイクの 取締役です。",
+      "wrongMeanings": [
+        "New Employee",
+        "Intern",
+        "Part-timer"
+      ]
+    },
+    {
+      "id": "asain",
+      "term": "アサイン",
+      "reading": "あさいん",
+      "romaji": "asain",
+      "meaningJa": "その 仕事を する 人に 決める ことです。",
+      "englishTerm": "Assign",
+      "example": "ヘンディさんが プログラマーとして アサインされて います。",
+      "wrongMeanings": [
+        "Resigned",
+        "Fired",
+        "Ignored"
+      ]
+    },
+    {
+      "id": "kakusu",
+      "term": "隠す",
+      "reading": "かくす",
+      "romaji": "kakusu",
+      "meaningJa": "人に 見えないように、しまって おく ことです。",
+      "englishTerm": "To hide",
+      "example": "わるい ニュースは 隠さないで、早く つたえます。",
+      "wrongMeanings": [
+        "Report",
+        "Share",
+        "Speak"
+      ]
+    },
+    {
+      "id": "shoujikini",
+      "term": "正直に",
+      "reading": "しょうじきに",
+      "romaji": "shoujikini",
+      "meaningJa": "本当の ことを、そのまま 言う 様子です。",
+      "englishTerm": "Honestly",
+      "example": "遅れる ときは、正直に、早く 教えて ください。",
+      "wrongMeanings": [
+        "Secretly",
+        "Slowly",
+        "Quietly"
+      ]
+    },
+    {
+      "id": "kyouryoku",
+      "term": "協力",
+      "reading": "きょうりょく",
+      "romaji": "kyouryoku",
+      "meaningJa": "みんなで 力を 合わせて する ことです。",
+      "englishTerm": "Cooperation",
+      "example": "みんなで 協力して 仕事を します。",
+      "wrongMeanings": [
+        "Fight",
+        "Ignore",
+        "Disturb"
+      ]
+    },
+    {
+      "id": "seikou",
+      "term": "成功",
+      "reading": "せいこう",
+      "romaji": "seikou",
+      "meaningJa": "思った とおりに うまく いく ことです。",
+      "englishTerm": "Success",
+      "example": "チームワークは、仕事を 成功させる ための 鍵です。",
+      "wrongMeanings": [
+        "Failure",
+        "Mistake",
+        "Delay"
+      ]
+    },
+    {
+      "id": "kagi",
+      "term": "鍵",
+      "reading": "かぎ",
+      "romaji": "kagi",
+      "meaningJa": "うまく いく ための、一番 大切な ものです。",
+      "englishTerm": "Key",
+      "example": "この 仕事の 鍵は、早い 報告です。",
+      "wrongMeanings": [
+        "Door",
+        "Window",
+        "Wall"
+      ]
+    },
+    {
+      "id": "yasai",
+      "term": "野菜",
+      "reading": "やさい",
+      "romaji": "yasai",
+      "meaningJa": "はたけで そだつ、食べる ための ものです。",
+      "englishTerm": "Vegetable",
+      "example": "ほうれんそうは 野菜の 名前ですが、ここでは 報告・連絡・相談の ことです。",
+      "wrongMeanings": [
+        "Meat",
+        "Fish",
+        "Fruit"
+      ]
+    },
+    {
+      "id": "misu",
+      "term": "ミス",
+      "reading": "みす",
+      "romaji": "misu",
+      "meaningJa": "うっかり して しまう ことです。",
+      "englishTerm": "Mistake",
+      "example": "ミスを した ときは、すぐに 報告します。",
+      "wrongMeanings": [
+        "Success",
+        "Perfect",
+        "Good job"
+      ]
+    },
+    {
+      "id": "kioku",
+      "term": "記憶",
+      "reading": "きおく",
+      "romaji": "kioku",
+      "meaningJa": "覚えて、わすれないで おく ことです。",
+      "englishTerm": "Memory / Memorization",
+      "example": "見ないで 言えるように、記憶します。",
+      "wrongMeanings": [
+        "Forget",
+        "Delete",
+        "Ignore"
+      ]
+    },
+    {
+      "id": "kankeisha",
+      "term": "関係者",
+      "reading": "かんけいしゃ",
+      "romaji": "kankeisha",
+      "meaningJa": "その 仕事に かかわって いる 人たちです。",
+      "englishTerm": "Stakeholders",
+      "example": "プロジェクトの 関係者を 集めて 会議を します。",
+      "wrongMeanings": [
+        "Family",
+        "Strangers",
+        "Criminals"
+      ]
+    },
+    {
+      "id": "tabusho",
+      "term": "他部署",
+      "reading": "たぶしょ",
+      "romaji": "tabusho",
+      "meaningJa": "自分の 部署では ない、べつの 部署です。",
+      "englishTerm": "Other departments",
+      "example": "開発部だけで なく、他部署とも 話を します。",
+      "wrongMeanings": [
+        "Other countries",
+        "My home",
+        "Convenience store"
+      ]
+    },
+    {
+      "id": "gutaiteki",
+      "term": "具体的",
+      "reading": "ぐたいてき",
+      "romaji": "gutaiteki",
+      "meaningJa": "数や 名前を 出して、はっきり 言う 様子です。",
+      "englishTerm": "Specific / Concrete",
+      "example": "その 直し方を、もっと 具体的に 説明して ください。",
+      "wrongMeanings": [
+        "Abstract",
+        "Random",
+        "Emotional"
+      ]
+    },
+    {
+      "id": "yuusenjunni",
+      "term": "優先順位",
+      "reading": "ゆうせんじゅんい",
+      "romaji": "yuusenjunni",
+      "meaningJa": "どれを 先に するかの、じゅんばんです。",
+      "englishTerm": "Priority order / Priority items",
+      "example": "仕事が 多い ときは、優先順位を 決めて から 始めます。",
+      "wrongMeanings": [
+        "Personal Info",
+        "Seating",
+        "Height"
+      ]
+    },
+    {
+      "id": "shagai",
+      "term": "社外",
+      "reading": "しゃがい",
+      "romaji": "shagai",
+      "meaningJa": "自分の 会社の 外に いる 人や ところです。",
+      "englishTerm": "Outside the company",
+      "example": "この 資料は 社外の 人に 見せないで ください。",
+      "wrongMeanings": [
+        "Inside",
+        "Myself",
+        "Family"
+      ]
+    },
+    {
+      "id": "meue",
+      "term": "目上",
+      "reading": "めうえ",
+      "romaji": "meue",
+      "meaningJa": "自分より 上の 立場の 人です。",
+      "englishTerm": "Superior",
+      "example": "目上の 人には、丁寧な 言葉を 使います。",
+      "wrongMeanings": [
+        "Junior",
+        "Younger",
+        "Friend"
+      ]
+    },
+    {
+      "id": "kaihatukankyou",
+      "term": "開発環境",
+      "reading": "かいはつかんきょう",
+      "romaji": "kaihatukankyou",
+      "meaningJa": "プログラムを 作る ための、道具と 設定です。",
+      "englishTerm": "Development environment",
+      "example": "新しい パソコンに 開発環境を 作ります。",
+      "wrongMeanings": [
+        "Natural environment",
+        "Living room",
+        "Game center"
+      ]
+    },
+    {
+      "id": "depuroi",
+      "term": "デプロイ",
+      "reading": "でぷろい",
+      "romaji": "depuroi",
+      "meaningJa": "作った プログラムを、本当に 使う 場所へ うつす ことです。",
+      "englishTerm": "Deploy",
+      "example": "できた システムを 本番の サーバーへ デプロイします。",
+      "wrongMeanings": [
+        "Download",
+        "Shutdown",
+        "Login"
+      ]
+    },
+    {
+      "id": "fuguai",
+      "term": "不具合",
+      "reading": "ふぐあい",
+      "romaji": "fuguai",
+      "meaningJa": "思った とおりに うごかない ところです。",
+      "englishTerm": "Defect / Malfunction",
+      "example": "画面が 出ないと いう 不具合の 連絡が ありました。",
+      "wrongMeanings": [
+        "Success",
+        "Benefit",
+        "Discount"
+      ]
+    },
+    {
+      "id": "shuusei",
+      "term": "修正",
+      "reading": "しゅうせい",
+      "romaji": "shuusei",
+      "meaningJa": "まちがって いる ところを なおす ことです。",
+      "englishTerm": "Fix / Correction",
+      "example": "原因が わかったので、コードを 修正します。",
+      "wrongMeanings": [
+        "Break",
+        "Delete",
+        "Ignore"
+      ]
+    },
+    {
+      "id": "sinkinou",
+      "term": "新機能",
+      "reading": "しんきのう",
+      "romaji": "sinkinou",
+      "meaningJa": "あとから 足した、新しい はたらきです。",
+      "englishTerm": "New feature / Function",
+      "example": "次の 更新で、チャットの 新機能を 足します。",
+      "wrongMeanings": [
+        "Old PC",
+        "Furniture",
+        "Employee"
+      ]
+    },
+    {
+      "id": "saisinko-do",
+      "term": "最新コード",
+      "reading": "さいしんこーど",
+      "romaji": "saisinko-do",
+      "meaningJa": "いま 一番 新しい、みんなの プログラムです。",
+      "englishTerm": "Latest code",
+      "example": "作業を 始める 前に、Gitから 最新コードを もらいます。",
+      "wrongMeanings": [
+        "Old newspaper",
+        "Secret code",
+        "QR code"
+      ]
+    },
+    {
+      "id": "shiyouritsu",
+      "term": "使用率",
+      "reading": "しようりつ",
+      "romaji": "shiyouritsu",
+      "meaningJa": "ぜんぶの うち、どれくらい 使って いるかの 数です。",
+      "englishTerm": "usage rate",
+      "example": "パソコンが 重い ときは、CPU使用率を 見ます。",
+      "wrongMeanings": [
+        "Tax rate",
+        "Success rate",
+        "Growth rate"
+      ]
+    },
+    {
+      "id": "roguingamen",
+      "term": "ログイン画面",
+      "reading": "ろぐいんがめん",
+      "romaji": "roguingamen",
+      "meaningJa": "名前と パスワードを 書く 画面です。",
+      "englishTerm": "Login screen",
+      "example": "ログイン画面で 名前と パスワードを たしかめます。",
+      "wrongMeanings": [
+        "Exit",
+        "Loading",
+        "Black screen"
+      ]
+    },
+    {
+      "id": "era-ko-do",
+      "term": "エラーコード",
+      "reading": "えらーこーど",
+      "romaji": "era-ko-do",
+      "meaningJa": "エラーの しゅるいを あらわす 数字や 文字です。",
+      "englishTerm": "Error code",
+      "example": "画面に 404と いう エラーコードが 出て います。",
+      "wrongMeanings": [
+        "Barcode",
+        "Dress code",
+        "Zip code"
+      ]
+    },
+    {
+      "id": "rimo-towa-ku",
+      "term": "リモートワーク",
+      "reading": "りもーとわーく",
+      "romaji": "rimo-towa-ku",
+      "meaningJa": "会社へ 行かないで、家などで はたらく ことです。",
+      "englishTerm": "Remote work",
+      "example": "今日は 会社に 行かないで、家で リモートワークを します。",
+      "wrongMeanings": [
+        "Hard work",
+        "Network",
+        "Teamwork"
+      ]
+    },
+    {
+      "id": "henkou",
+      "term": "変更",
+      "reading": "へんこう",
+      "romaji": "henkou",
+      "meaningJa": "決まって いた ことを、べつの ものに かえる ことです。",
+      "englishTerm": "Change / Modification",
+      "example": "仕様が 変更に なったので、設計書を 書きなおします。",
+      "wrongMeanings": [
+        "Fixed",
+        "Perfect",
+        "Same"
+      ]
+    },
+    {
+      "id": "hassei",
+      "term": "発生",
+      "reading": "はっせい",
+      "romaji": "hassei",
+      "meaningJa": "あたらしく 出て くる ことです。",
+      "englishTerm": "Occurrence",
+      "example": "システムに 大きな エラーが 発生しました。",
+      "wrongMeanings": [
+        "Success",
+        "Departure",
+        "Invention"
+      ]
+    },
+    {
+      "id": "kaiketu",
+      "term": "解決",
+      "reading": "かいけつ",
+      "romaji": "kaiketu",
+      "meaningJa": "こまった ことが なくなる ことです。",
+      "englishTerm": "Solution / Resolution",
+      "example": "長い 時間が かかりましたが、やっと 問題が 解決しました。",
+      "wrongMeanings": [
+        "Occurred",
+        "Failed",
+        "Increased"
+      ]
+    },
+    {
+      "id": "fukkyuu",
+      "term": "復旧",
+      "reading": "ふっきゅう",
+      "romaji": "fukkyuu",
+      "meaningJa": "うごかなく なった ものが、また うごくように なる ことです。",
+      "englishTerm": "Restoration",
+      "example": "サーバーは すぐに 復旧しました。",
+      "wrongMeanings": [
+        "Breakdown",
+        "Worse",
+        "Flaming"
+      ]
+    },
+    {
+      "id": "ubau",
+      "term": "奪う",
+      "reading": "うばう",
+      "romaji": "ubau",
+      "meaningJa": "あいての ものや 時間を、とって しまう ことです。",
+      "englishTerm": "To take away (time)",
+      "example": "いみの ない 会議は、みんなの 時間を 奪います。",
+      "wrongMeanings": [
+        "Give",
+        "Save",
+        "Buy"
+      ]
+    },
+    {
+      "id": "aseru",
+      "term": "焦る",
+      "reading": "あせる",
+      "romaji": "aseru",
+      "meaningJa": "早く しないとと 思って、気持ちが あわてる ことです。",
+      "englishTerm": "To panic",
+      "example": "しめきりが 近くても、焦らないで 進めましょう。",
+      "wrongMeanings": [
+        "Relax",
+        "Sleep",
+        "Laugh"
+      ]
+    },
+    {
+      "id": "komaru",
+      "term": "困る",
+      "reading": "こまる",
+      "romaji": "komaru",
+      "meaningJa": "どう すれば いいか わからなく なる ことです。",
+      "englishTerm": "To be troubled",
+      "example": "パソコンが うごかなく なって 困って います。",
+      "wrongMeanings": [
+        "Happy",
+        "Excited",
+        "Proud"
+      ]
+    },
+    {
+      "id": "musi",
+      "term": "無視",
+      "reading": "むし",
+      "romaji": "musi",
+      "meaningJa": "気づいて いても、何も しない ことです。",
+      "englishTerm": "Ignoring",
+      "example": "大事な メールを 無視しないで、返事を します。",
+      "wrongMeanings": [
+        "Read",
+        "Reply",
+        "Forward"
+      ]
+    },
+    {
+      "id": "kenmei",
+      "term": "件名",
+      "reading": "けんめい",
+      "romaji": "kenmei",
+      "meaningJa": "メールの 中身が すぐ わかる、みじかい ことばです。",
+      "englishTerm": "Subject line",
+      "example": "件名は、読む 人が すぐ わかるように 書きます。",
+      "wrongMeanings": [
+        "Name",
+        "Place name",
+        "Signature"
+      ]
+    },
+    {
+      "id": "honbun",
+      "term": "本文",
+      "reading": "ほんぶん",
+      "romaji": "honbun",
+      "meaningJa": "メールの、あいさつの あとに 書く 中身です。",
+      "englishTerm": "Body (of message)",
+      "example": "本文に、つたえたい ことを くわしく 書きます。",
+      "wrongMeanings": [
+        "Footer",
+        "Header",
+        "Attachment"
+      ]
+    },
+    {
+      "id": "osewaninatteorimasu",
+      "term": "お世話になっております",
+      "reading": "おせわになっております",
+      "romaji": "osewaninatteorimasu",
+      "meaningJa": "メールの はじめに 書く、きまった あいさつです。",
+      "englishTerm": "Standard greeting",
+      "example": "メールの はじめに お世話になっておりますと 書きます。",
+      "wrongMeanings": [
+        "Good job",
+        "Good work",
+        "How are you"
+      ]
+    },
+    {
+      "id": "mikomi",
+      "term": "見込み",
+      "reading": "みこみ",
+      "romaji": "mikomi",
+      "meaningJa": "たぶん こう なるだろうと いう 予想です。",
+      "englishTerm": "Prospect / Estimate",
+      "example": "作業が 終わる 見込みを つたえます。",
+      "wrongMeanings": [
+        "Result",
+        "Past",
+        "Decision"
+      ]
+    },
+    {
+      "id": "sidai",
+      "term": "次第",
+      "reading": "しだい",
+      "romaji": "sidai",
+      "meaningJa": "〜が 終わったら すぐ、と いう つなぎの 言い方です。",
+      "englishTerm": "As soon as 〜",
+      "example": "資料が でき次第、メールで 送ります。",
+      "wrongMeanings": [
+        "Never",
+        "Later",
+        "Maybe"
+      ]
+    },
+    {
+      "id": "aratamete",
+      "term": "改めて",
+      "reading": "あらためて",
+      "romaji": "aratamete",
+      "meaningJa": "あとで もう 一度、と いう 言い方です。",
+      "englishTerm": "Once again",
+      "example": "くわしい ことは、改めて 連絡します。",
+      "wrongMeanings": [
+        "First time",
+        "Never",
+        "Quickly"
+      ]
+    },
+    {
+      "id": "eikyouhanni",
+      "term": "影響範囲",
+      "reading": "えいきょうはんい",
+      "romaji": "eikyouhanni",
+      "meaningJa": "その 直しが どこまで とどくかと いう、広さです。",
+      "englishTerm": "Scope of impact",
+      "example": "この 修正の 影響範囲を 調べます。",
+      "wrongMeanings": [
+        "Distance",
+        "Expiration",
+        "Eye test"
+      ]
+    },
+    {
+      "id": "riyoukaisi",
+      "term": "利用開始",
+      "reading": "りようかいし",
+      "romaji": "riyoukaisi",
+      "meaningJa": "その ものを 使いはじめる ことです。",
+      "englishTerm": "Start of use",
+      "example": "新しい システムは 来月から 利用開始です。",
+      "wrongMeanings": [
+        "End of use",
+        "Sold out",
+        "Closed"
+      ]
+    },
+    {
+      "id": "kakuninnonegaisimasu",
+      "term": "確認お願いします",
+      "reading": "かくにんおねがいします",
+      "romaji": "kakuninnonegaisimasu",
+      "meaningJa": "見て たしかめて くださいと たのむ、言い方です。",
+      "englishTerm": "Please check",
+      "example": "書類を 作りましたので、確認お願いします。",
+      "wrongMeanings": [
+        "Please discard",
+        "Please ignore",
+        "Please hide"
+      ]
+    },
+    {
+      "id": "mousiwakearimasen",
+      "term": "申し訳ありません",
+      "reading": "もうしわけありません",
+      "romaji": "mousiwakearimasen",
+      "meaningJa": "仕事の 場で 使う、丁寧な あやまり方です。",
+      "englishTerm": "I am terribly sorry",
+      "example": "遅れて しまい、申し訳ありません。",
+      "wrongMeanings": [
+        "Understood",
+        "No problem",
+        "Too bad"
+      ]
+    },
+    {
+      "id": "kenshoukankyou",
+      "term": "検証環境",
+      "reading": "けんしょうかんきょう",
+      "romaji": "kenshoukankyou",
+      "meaningJa": "本番の 前に、うごきを ためす 場所です。",
+      "englishTerm": "Staging Environment",
+      "example": "明日から 検証環境が 使えなく なります。",
+      "wrongMeanings": [
+        "Production Environment",
+        "Development Environment",
+        "Local Environment"
+      ]
+    },
+    {
+      "id": "mentenansu",
+      "term": "メンテナンス",
+      "reading": "めんてなんす",
+      "romaji": "mentenansu",
+      "meaningJa": "システムを ととのえる ための 作業です。",
+      "englishTerm": "Maintenance",
+      "example": "サーバーの メンテナンスの ため、システムを しばらく 使えなく します。",
+      "wrongMeanings": [
+        "Troubleshooting",
+        "Conference",
+        "Operation"
+      ]
+    },
+    {
+      "id": "sagyou",
+      "term": "作業",
+      "reading": "さぎょう",
+      "romaji": "sagyou",
+      "meaningJa": "じっさいに 手を うごかして する 仕事です。",
+      "englishTerm": "Task / Operation",
+      "example": "これから サーバーの 更新作業を します。",
+      "wrongMeanings": [
+        "Discussion",
+        "Review",
+        "Meeting"
+      ]
+    },
+    {
+      "id": "roguin",
+      "term": "ログイン",
+      "reading": "ろぐいん",
+      "romaji": "roguin",
+      "meaningJa": "名前と パスワードを 書いて、中に 入る ことです。",
+      "englishTerm": "Login",
+      "example": "管理画面に ログインできないと 連絡が ありました。",
+      "wrongMeanings": [
+        "Logout",
+        "Sign up",
+        "Reboot"
+      ]
+    },
+    {
+      "id": "atesaki",
+      "term": "宛先",
+      "reading": "あてさき",
+      "romaji": "atesaki",
+      "meaningJa": "メールを 送る、あいての ところです。",
+      "englishTerm": "Addressee / To",
+      "example": "メールの 宛先が 正しいか たしかめます。",
+      "wrongMeanings": [
+        "Sender",
+        "Subject",
+        "Attachment"
+      ]
+    },
+    {
+      "id": "juuyou",
+      "term": "重要",
+      "reading": "じゅうよう",
+      "romaji": "juuyou",
+      "meaningJa": "とても 大切で、先に する ものです。",
+      "englishTerm": "Important",
+      "example": "件名に 重要と 書いて 送ります。",
+      "wrongMeanings": [
+        "Minor",
+        "Optional",
+        "Normal"
+      ]
+    },
+    {
+      "id": "enki",
+      "term": "延期",
+      "reading": "えんき",
+      "romaji": "enki",
+      "meaningJa": "する 日を、あとに ずらす ことです。",
+      "englishTerm": "Postponement",
+      "example": "テストに 時間が いるので、リリースを 延期します。",
+      "wrongMeanings": [
+        "Cancellation",
+        "Advance",
+        "Continuation"
+      ]
+    },
+    {
+      "id": "teishutu",
+      "term": "提出",
+      "reading": "ていしゅつ",
+      "romaji": "teishutu",
+      "meaningJa": "作った ものを、あいてに わたす ことです。",
+      "englishTerm": "Submission",
+      "example": "デザインの 提出の 期限を 守ります。",
+      "wrongMeanings": [
+        "Drafting",
+        "Review",
+        "Storage"
+      ]
+    },
+    {
+      "id": "kigen",
+      "term": "期限",
+      "reading": "きげん",
+      "romaji": "kigen",
+      "meaningJa": "いつまでに 終わらせるかと いう、さいごの 時です。",
+      "englishTerm": "Deadline",
+      "example": "この 仕事の 期限は 今日の 夕方です。",
+      "wrongMeanings": [
+        "Start date",
+        "Duration",
+        "Capacity"
+      ]
+    },
+    {
+      "id": "chuuiten",
+      "term": "注意点",
+      "reading": "ちゅういてん",
+      "romaji": "chuuiten",
+      "meaningJa": "気を つける ところです。",
+      "englishTerm": "Caution / Point",
+      "example": "作業の 前に 注意点を たしかめます。",
+      "wrongMeanings": [
+        "Advantage",
+        "Summary",
+        "Conclusion"
+      ]
+    },
+    {
+      "id": "bunshou",
+      "term": "文章",
+      "reading": "ぶんしょう",
+      "romaji": "bunshou",
+      "meaningJa": "いくつかの 文を つなげた、まとまりです。",
+      "englishTerm": "Sentence / Text",
+      "example": "メモの 文章を 読んで、順番を 整理します。",
+      "wrongMeanings": [
+        "Picture",
+        "Music",
+        "Food"
+      ]
+    },
+    {
+      "id": "kanribu",
+      "term": "管理部",
+      "reading": "かんりぶ",
+      "romaji": "kanribu",
+      "meaningJa": "会社の しくみや ものを 見る 部署です。",
+      "englishTerm": "Management department",
+      "example": "システム管理部の 人に メールを 送ります。",
+      "wrongMeanings": [
+        "Cooking club",
+        "Sports team",
+        "Hospital"
+      ]
+    },
+    {
+      "id": "yu-za-",
+      "term": "ユーザー",
+      "reading": "ゆーざー",
+      "romaji": "yu-za-",
+      "meaningJa": "その システムを 使う 人です。",
+      "englishTerm": "User",
+      "example": "ログインできないと ユーザーから 連絡が 来ました。",
+      "wrongMeanings": [
+        "Robot",
+        "Animal",
+        "Alien"
+      ]
+    },
+    {
+      "id": "kowareru",
+      "term": "壊れる",
+      "reading": "こわれる",
+      "romaji": "kowareru",
+      "meaningJa": "ものが うまく 使えなく なる ことです。",
+      "englishTerm": "To break / To be corrupted",
+      "example": "画像ファイルが 壊れて いて、画面に 出ません。",
+      "wrongMeanings": [
+        "Fixed",
+        "Beautiful",
+        "Shining"
+      ]
+    },
+    {
+      "id": "daisikyuu",
+      "term": "大至急",
+      "reading": "だいしきゅう",
+      "romaji": "daisikyuu",
+      "meaningJa": "今すぐ、と いう いちばん 急ぐ 言い方です。",
+      "englishTerm": "ASAP / Very urgent",
+      "example": "大至急、対応を お願いします。",
+      "wrongMeanings": [
+        "Take your time",
+        "Next month",
+        "Slowly"
+      ]
+    },
+    {
+      "id": "zenshain",
+      "term": "全社員",
+      "reading": "ぜんしゃいん",
+      "romaji": "zenshain",
+      "meaningJa": "その 会社で はたらく 人 ぜんぶです。",
+      "englishTerm": "All employees / Everyone",
+      "example": "大きな 障害は 全社員に 共有します。",
+      "wrongMeanings": [
+        "One person",
+        "Family",
+        "President only"
+      ]
+    },
+    {
+      "id": "joutai",
+      "term": "状態",
+      "reading": "じょうたい",
+      "romaji": "joutai",
+      "meaningJa": "いま どう なって いるかと いう、ようすです。",
+      "englishTerm": "Condition / State",
+      "example": "今、社内の メールが 送れない 状態です。",
+      "wrongMeanings": [
+        "Feeling",
+        "Opinion",
+        "Hobby"
+      ]
+    },
+    {
+      "id": "nagabiku",
+      "term": "長引く",
+      "reading": "ながびく",
+      "romaji": "nagabiku",
+      "meaningJa": "思ったより 時間が かかって しまう ことです。",
+      "englishTerm": "To be prolonged",
+      "example": "前の 会議が 長引くので、時間を 変えたいです。",
+      "wrongMeanings": [
+        "Finish early",
+        "Cancel",
+        "Start late"
+      ]
+    },
+    {
+      "id": "taishou",
+      "term": "対象",
+      "reading": "たいしょう",
+      "romaji": "taishou",
+      "meaningJa": "その 話が あてはまる もの、と いう ことです。",
+      "englishTerm": "Target / Subject",
+      "example": "変更の 対象は、来週の 会議です。",
+      "wrongMeanings": [
+        "Result",
+        "Exception",
+        "Excuse"
+      ]
+    },
+    {
+      "id": "appude-to",
+      "term": "アップデート",
+      "reading": "あっぷでーと",
+      "romaji": "appude-to",
+      "meaningJa": "新しく する ことです。",
+      "englishTerm": "Update",
+      "example": "データベースの アップデートを 延期します。",
+      "wrongMeanings": [
+        "Downgrade",
+        "Delete",
+        "Uninstall"
+      ]
+    },
+    {
+      "id": "hinsitukanri",
+      "term": "品質管理",
+      "reading": "ひんしつかんり",
+      "romaji": "hinsitukanri",
+      "meaningJa": "できた ものが 良いか どうかを 見る 仕事です。",
+      "englishTerm": "Quality control",
+      "example": "テストは 品質管理チームに お願いします。",
+      "wrongMeanings": [
+        "Sales",
+        "Cooking",
+        "Driving"
+      ]
+    },
+    {
+      "id": "eigyoubu",
+      "term": "営業部",
+      "reading": "えいぎょうぶ",
+      "romaji": "eigyoubu",
+      "meaningJa": "ものや サービスを 売る 部署です。",
+      "englishTerm": "Sales department",
+      "example": "営業部の 人に 連絡します。",
+      "wrongMeanings": [
+        "Development",
+        "Design",
+        "QA"
+      ]
+    },
+    {
+      "id": "manyuaru",
+      "term": "マニュアル",
+      "reading": "まにゅある",
+      "romaji": "manyuaru",
+      "meaningJa": "使い方が 書いて ある 本です。",
+      "englishTerm": "Manual / Instructions",
+      "example": "マニュアルを 英語に 翻訳します。",
+      "wrongMeanings": [
+        "Novel",
+        "Comic",
+        "Poem"
+      ]
+    },
+    {
+      "id": "tesutokankyou",
+      "term": "テスト環境",
+      "reading": "てすとかんきょう",
+      "romaji": "tesutokankyou",
+      "meaningJa": "テストの ために 用意した 場所です。",
+      "englishTerm": "Test environment",
+      "example": "今日の 夕方に テスト環境を 閉じます。",
+      "wrongMeanings": [
+        "Production",
+        "Office",
+        "Cafeteria"
+      ]
+    },
+    {
+      "id": "saishuu",
+      "term": "最終",
+      "reading": "さいしゅう",
+      "romaji": "saishuu",
+      "meaningJa": "いちばん さいごの、と いう ことです。",
+      "englishTerm": "Final",
+      "example": "バグが なおったか、最終チェックを お願いします。",
+      "wrongMeanings": [
+        "First",
+        "Middle",
+        "Never"
+      ]
+    },
+    {
+      "id": "kessai",
+      "term": "決済",
+      "reading": "けっさい",
+      "romaji": "kessai",
+      "meaningJa": "お金を はらって、売り買いを 終わらせる ことです。",
+      "englishTerm": "Payment / Settlement",
+      "example": "決済画面の チェックを お願いします。",
+      "wrongMeanings": [
+        "Login",
+        "Logout",
+        "Profile"
+      ]
+    },
+    {
+      "id": "nennosi",
+      "term": "念押し",
+      "reading": "ねんおし",
+      "romaji": "nennosi",
+      "meaningJa": "わすれないように、もう 一度 たしかめる ことです。",
+      "englishTerm": "Reminder / Emphasize",
+      "example": "エラーが 出たら すぐ 教えて くださいと 念押しします。",
+      "wrongMeanings": [
+        "Forget",
+        "Ignore",
+        "Forgive"
+      ]
+    },
+    {
+      "id": "sirasemasu",
+      "term": "知らせます",
+      "reading": "しらせます",
+      "romaji": "sirasemasu",
+      "meaningJa": "あいてに つたえて、わかるように する ことです。",
+      "englishTerm": "To inform",
+      "example": "会議の 時間が 変わったら、すぐに 知らせます。",
+      "wrongMeanings": [
+        "To hide",
+        "To delete",
+        "To ignore"
+      ]
+    },
+    {
+      "id": "sinchoku",
+      "term": "進捗",
+      "reading": "しんちょく",
+      "romaji": "sinchoku",
+      "meaningJa": "仕事が どこまで 進んだか、と いう ぐあいです。",
+      "englishTerm": "Progress",
+      "example": "毎朝、作業の 進捗を 連絡します。",
+      "wrongMeanings": [
+        "Delay",
+        "Budget",
+        "Problem"
+      ]
+    },
+    {
+      "id": "kanjou",
+      "term": "感情",
+      "reading": "かんじょう",
+      "romaji": "kanjou",
+      "meaningJa": "うれしい、かなしいと いう 気持ちです。",
+      "englishTerm": "Emotion",
+      "example": "ビジネスメールには 感情を 書かないように します。",
+      "wrongMeanings": [
+        "Logic",
+        "Data",
+        "System"
+      ]
+    },
+    {
+      "id": "kaihatuchi-mu",
+      "term": "開発チーム",
+      "reading": "かいはつちーむ",
+      "romaji": "kaihatuchi-mu",
+      "meaningJa": "プログラムを 作る 人たちの あつまりです。",
+      "englishTerm": "Dev Team",
+      "example": "仕様の 変更を 開発チームに 共有します。",
+      "wrongMeanings": [
+        "Sales Team",
+        "HR Team",
+        "Legal Team"
+      ]
+    },
+    {
+      "id": "sinki",
+      "term": "新規",
+      "reading": "しんき",
+      "romaji": "sinki",
+      "meaningJa": "いままでに なかった、あたらしい ものです。",
+      "englishTerm": "New",
+      "example": "新規プロジェクトの 会議を します。",
+      "wrongMeanings": [
+        "Old",
+        "Used",
+        "Broken"
+      ]
+    },
+    {
+      "id": "sama",
+      "term": "様",
+      "reading": "さま",
+      "romaji": "sama",
+      "meaningJa": "お客さまの 名前の あとに つける、丁寧な 言い方です。",
+      "englishTerm": "Mr. / Ms.",
+      "example": "メールでは 名前の あとに 様を つけます。",
+      "wrongMeanings": [
+        "Hey",
+        "Baby",
+        "Dude"
+      ]
+    },
+    {
+      "id": "zentai",
+      "term": "全体",
+      "reading": "ぜんたい",
+      "romaji": "zentai",
+      "meaningJa": "ばらばらの ぶぶんでは なく、まとまり ぜんぶの ことです。",
+      "englishTerm": "Whole / Entire",
+      "example": "一人で なやむと、チーム全体の 仕事が 遅れます。",
+      "wrongMeanings": [
+        "Part",
+        "Half",
+        "One person"
+      ]
+    },
+    {
+      "id": "nayamu",
+      "term": "悩む",
+      "reading": "なやむ",
+      "romaji": "nayamu",
+      "meaningJa": "答えが 出なくて、ずっと 考えて しまう ことです。",
+      "englishTerm": "To worry / To be troubled",
+      "example": "エラーで 何時間も 一人で 悩むのは よく ありません。",
+      "wrongMeanings": [
+        "Laugh",
+        "Sleep",
+        "Dance"
+      ]
+    },
+    {
+      "id": "shichue-shon",
+      "term": "シチュエーション",
+      "reading": "しちゅえーしょん",
+      "romaji": "shichue-shon",
+      "meaningJa": "そのときの ようすや、場面です。",
+      "englishTerm": "Situation",
+      "example": "仕事の シチュエーションを 考えて みましょう。",
+      "wrongMeanings": [
+        "Weather",
+        "Food",
+        "Animal"
+      ]
+    },
+    {
+      "id": "shori",
+      "term": "処理",
+      "reading": "しょり",
+      "romaji": "shori",
+      "meaningJa": "コンピューターが 仕事を する、その 中身です。",
+      "englishTerm": "Processing",
+      "example": "商品検索の 処理で 先輩に 相談します。",
+      "wrongMeanings": [
+        "Appearance",
+        "Price",
+        "Box"
+      ]
+    },
+    {
+      "id": "de-tagata",
+      "term": "データ型",
+      "reading": "でーたがた",
+      "romaji": "de-tagata",
+      "meaningJa": "数字か 文字かと いう、データの しゅるいです。",
+      "englishTerm": "Data type",
+      "example": "検索する 言葉の データ型を たしかめます。",
+      "wrongMeanings": [
+        "Blood type",
+        "Hair type",
+        "Body type"
+      ]
+    },
+    {
+      "id": "hensuu",
+      "term": "変数",
+      "reading": "へんすう",
+      "romaji": "hensuu",
+      "meaningJa": "数や 文字を しまって おく、名前の ついた 箱です。",
+      "englishTerm": "Variable (IT)",
+      "example": "プログラムの 変数の 中身を 見ます。",
+      "wrongMeanings": [
+        "Constant",
+        "Function",
+        "Comment"
+      ]
+    },
+    {
+      "id": "mayou",
+      "term": "迷う",
+      "reading": "まよう",
+      "romaji": "mayou",
+      "meaningJa": "どちらに するか 決められない ことです。",
+      "englishTerm": "To hesitate / To be lost",
+      "example": "使う 技術に 迷う ときは 相談します。",
+      "wrongMeanings": [
+        "Decide",
+        "Understand",
+        "Forget"
+      ]
+    },
+    {
+      "id": "raiburari",
+      "term": "ライブラリ",
+      "reading": "らいぶらり",
+      "romaji": "raiburari",
+      "meaningJa": "よく 使う プログラムを まとめた、道具の 箱です。",
+      "englishTerm": "Library",
+      "example": "どちらの ライブラリを 使うか 決められません。",
+      "wrongMeanings": [
+        "Bookstore",
+        "Dictionary",
+        "Notebook"
+      ]
+    },
+    {
+      "id": "konfurikuto",
+      "term": "コンフリクト",
+      "reading": "こんふりくと",
+      "romaji": "konfurikuto",
+      "meaningJa": "ふたりの 直しが ぶつかって、うまく 合わない ことです。",
+      "englishTerm": "Conflict",
+      "example": "Gitで 他の 人の コードと コンフリクトしました。",
+      "wrongMeanings": [
+        "Connect",
+        "Commit",
+        "Download"
+      ]
+    },
+    {
+      "id": "fuan",
+      "term": "不安",
+      "reading": "ふあん",
+      "romaji": "fuan",
+      "meaningJa": "うまく いくか わからなくて、心配な 気持ちです。",
+      "englishTerm": "Anxiety / Uneasy",
+      "example": "自分で なおせるか 不安な ときは 相談します。",
+      "wrongMeanings": [
+        "Confident",
+        "Happy",
+        "Angry"
+      ]
+    },
+    {
+      "id": "kankyoukouchiku",
+      "term": "環境構築",
+      "reading": "かんきょうこうちく",
+      "romaji": "kankyoukouchiku",
+      "meaningJa": "仕事が できるように、道具と 設定を そろえる ことです。",
+      "englishTerm": "Environment setup",
+      "example": "Dockerの 環境構築が うまく いきません。",
+      "wrongMeanings": [
+        "Building design",
+        "Cooking setup",
+        "Machine break"
+      ]
+    },
+    {
+      "id": "taimingu",
+      "term": "タイミング",
+      "reading": "たいみんぐ",
+      "romaji": "taimingu",
+      "meaningJa": "ちょうど よい 時を えらぶ ことです。",
+      "englishTerm": "Timing",
+      "example": "よい 相談の タイミングを 覚えましょう。",
+      "wrongMeanings": [
+        "Reason",
+        "Place",
+        "Weather"
+      ]
+    },
+    {
+      "id": "tooru",
+      "term": "通る",
+      "reading": "とおる",
+      "romaji": "tooru",
+      "meaningJa": "考えが みとめられて、そのとおりに 進む ことです。",
+      "englishTerm": "To pass / Be accepted",
+      "example": "相談しても、自分の 意見が 通らない ことも あります。",
+      "wrongMeanings": [
+        "Stop",
+        "Fail",
+        "Forget"
+      ]
     }
   ]
 }

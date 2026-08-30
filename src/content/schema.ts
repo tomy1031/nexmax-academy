@@ -61,6 +61,24 @@ const hiragana = z
 /** 読み辞書エントリ: [表記, よみ]。複合語を先に置く（最長一致）。 */
 export const furiganaEntrySchema = z.tuple([plainText, hiragana]);
 
+/**
+ * 画像スロット（設計07 §4・§5 共通）。
+ * 「生成する／アップロードする／あとで」を status で表し、prompt / refs は再生成用に保存する。
+ *
+ * **ここに 置いて ある**のは、問題（`quizCommon`）・記事・まんが・人物の どれもが
+ * これを 使うため。const は 巻き上がらないので、いちばん 早く 使う ところ
+ *（この 下の 問題セット）より 前に 無いと、読みこんだ 瞬間に 落ちる。
+ */
+export const imageSlotSchema = z.object({
+  /** 表示する画像。未生成なら省略。 */
+  src: z.string().min(1).optional(),
+  /** 生成に渡したプロンプト全文（再現・「少し直して再生成」用）。 */
+  prompt: z.string().min(1).optional(),
+  /** 参照画像（キャラ正典・同一場面の直前パネルなど）。 */
+  refs: z.array(z.string().min(1)).default([]),
+  status: z.enum(["empty", "generating", "done"]).default("empty"),
+});
+
 const noJapanese = z
   .string()
   .min(1)
@@ -310,6 +328,22 @@ const quizCommon = {
    * 産出（`free`）の 問いでは「考える ヒント」として 使う。
    */
   hints: z.array(z.object({ title: plainText, text: plainText })).min(1).optional(),
+  /**
+   * 設問の **場面の 絵**（省略できる）。設問文の 上に 出る。
+   *
+   * 字だけの 設問は、N4の 学習者には **読むだけで 力を 使い切る**。
+   * とくに「いま 話しかけて よいか」を 聞く 問いは、**先輩の 机の まわりが
+   * どう なって いるか**が 答えの もと なので、それを 字で 書き並べると
+   * 測って いるのが 場面の 読みでは なく **長い 日本語を 読む 速さ**に なる。
+   * 絵に すれば 見た 瞬間に 場面が 入り、考える ところに 力が 残る。
+   *
+   * `optionImages`（選択肢ごとの 絵）とは 別もの。あちらは **えらぶ もの**の 絵で、
+   * こちらは **問いが 起きて いる 場面**の 絵——1問に 1枚 しか 無い。
+   *
+   * 絵が まだ 無い あいだ（`status: "empty"`）は 画面に 点線の わくが 出る。
+   * 空けて おくと **作り忘れが 画面から 見えなく なる**（記事の 絵と 同じ 決めごと）。
+   */
+  image: imageSlotSchema.optional(),
 };
 
 /** 4択（読解確認）。 */
@@ -1085,20 +1119,6 @@ export const stageSchema = z.object({
   wordStageIds: z.array(z.string().min(1)).default([]),
   /** マップでこのステージが立つ土地。 */
   area: mapAreaSchema.optional(),
-});
-
-/**
- * 画像スロット（設計07 §4・§5 共通）。
- * 「生成する／アップロードする／あとで」を status で表し、prompt / refs は再生成用に保存する。
- */
-export const imageSlotSchema = z.object({
-  /** 表示する画像。未生成なら省略。 */
-  src: z.string().min(1).optional(),
-  /** 生成に渡したプロンプト全文（再現・「少し直して再生成」用）。 */
-  prompt: z.string().min(1).optional(),
-  /** 参照画像（キャラ正典・同一場面の直前パネルなど）。 */
-  refs: z.array(z.string().min(1)).default([]),
-  status: z.enum(["empty", "generating", "done"]).default("empty"),
 });
 
 /** ことばチップ（語・読み・意味）。タップで辞書ポップアップ。 */

@@ -4,7 +4,7 @@
   "order": 5,
   "title": "報連相：連絡",
   "reading": "ほうれんそう れんらく",
-  "description": "チーム全体に 情報を 伝える「連絡」を 学びます。事実だけを 短く 伝える 練習を、スキットと Slack風の 画面で します。",
+  "description": "チーム全体に 情報を 伝える「連絡」を 学びます。まんがで 始めて、事実だけを 短く 伝える 練習を、スキットと Slack風の 画面で します。",
   "color": "leaf",
   "status": "published",
   "area": {
@@ -14,6 +14,10 @@
     "note": "ちいさな しまが たくさん。ふねが しらせを はこびます。"
   },
   "contents": [
+    {
+      "ref": "renraku_manga",
+      "type": "manga"
+    },
     {
       "ref": "renraku_lecture",
       "type": "article"
@@ -31,6 +35,10 @@
       "type": "quizset"
     },
     {
+      "ref": "renraku_builder",
+      "type": "link"
+    },
+    {
       "ref": "renraku_slack",
       "type": "link"
     },
@@ -39,7 +47,10 @@
       "type": "link"
     }
   ],
-  "wordStageIds": [],
+  "wordStageIds": [
+    "hourensou_renraku_kihon",
+    "hourensou_renraku_ouyou"
+  ],
   "furigana": [
     [
       "報連相",
@@ -68,6 +79,10 @@
     [
       "練習",
       "れんしゅう"
+    ],
+    [
+      "始",
+      "はじ"
     ],
     [
       "伝",

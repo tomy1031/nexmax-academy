@@ -4,7 +4,7 @@
   "order": 6,
   "title": "報連相：相談",
   "reading": "ほうれんそう そうだん",
-  "description": "一人で 悩まないで 相談する しかたを 学びます。30分ルールと、自分の 意見を 持ってから 聞く 練習を します。",
+  "description": "一人で 悩まないで 相談する しかたを 学びます。30分ルールと、自分の 意見を 持ってから 聞く 練習を、クイズと ミーティングで します。",
   "color": "coral",
   "status": "published",
   "area": {
@@ -29,9 +29,19 @@
     {
       "ref": "soudan_quiz",
       "type": "quizset"
+    },
+    {
+      "ref": "soudan_kehai",
+      "type": "quizset"
+    },
+    {
+      "ref": "soudan_meeting",
+      "type": "meeting"
     }
   ],
-  "wordStageIds": [],
+  "wordStageIds": [
+    "hourensou_soudan"
+  ],
   "furigana": [
     [
       "報連相",
