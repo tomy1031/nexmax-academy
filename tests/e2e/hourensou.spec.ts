@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { expect, test, type Page } from "@playwright/test";
-import { bareKanjiTexts, seedCompleted, shot } from "./helpers";
+import { expect, test, type BrowserContext, type Page } from "@playwright/test";
+import { bareKanjiTexts, joinCall, seedCompleted, shot } from "./helpers";
 
 /**
  * 報連相の3ステージ（報告・連絡・相談）を 学習者と 同じ 道で 通す
@@ -59,7 +59,9 @@ const DIR: Record<string, string> = {
 };
 
 function contentOf(type: string, ref: string): unknown {
-  return JSON.parse(readFileSync(join("content", DIR[type], `${ref}.json`), "utf8"));
+  const dir = DIR[type];
+  if (!dir) throw new Error(`種別「${type}」の 置き場を 知らない（DIR に 足す）`);
+  return JSON.parse(readFileSync(join("content", dir, `${ref}.json`), "utf8"));
 }
 
 /** 画像スロットの 形（`imageSlotSchema`）。`src` が 無ければ 画面は 点線わくを 出す。 */
@@ -70,10 +72,12 @@ function isEmptySlot(value: unknown): boolean {
 }
 
 /**
- * その 教材が 画面に 出す「空の 絵の 枠」の 数。
+ * その 教材が **1画面に** 出す「空の 絵の 枠」の 数。
  *
- * もんだいは **1問ずつ** 出す 作り（`answerMode` が `all` の ときだけ 全問1ページ）
- * なので、そこだけ 最初の 1問ぶんに 絞る。
+ * データの 数と 画面の 数は 同じに ならない——**1つずつ 送る** 作りの 教材が ある:
+ *  - もんだいは 1問ずつ（`answerMode` が `all` の ときだけ 全問1ページ）
+ *  - まんがは 1コマずつ（`manga-slides.tsx`）
+ * そこは 最初の 1つぶんに 絞る。
  */
 function emptySlots(item: { ref: string; type: string }): number {
   const data = contentOf(item.type, item.ref) as Record<string, unknown>;
@@ -81,6 +85,11 @@ function emptySlots(item: { ref: string; type: string }): number {
     const questions = (data.questions ?? []) as { image?: unknown }[];
     const empties = questions.filter((q) => isEmptySlot(q.image));
     return data.answerMode === "all" ? empties.length : Math.min(empties.length, 1);
+  }
+  if (item.type === "manga") {
+    const pages = (data.pages ?? []) as { panels: { image?: unknown }[] }[];
+    const first = pages[0]?.panels[0];
+    return first && isEmptySlot(first.image) ? 1 : 0;
   }
   let count = 0;
   const walk = (value: unknown): void => {
@@ -125,6 +134,29 @@ const KNOWN_BARE_UI: readonly string[] = [
   "ぜんぶ 分からなくて だいじょうぶです。分かった ところから 入れてください。",
 ];
 
+/**
+ * **最後の 1つの 手前まで 進んだ 学習者**に する。
+ *
+ * 関門（🔒）を ぜんぶ 開けたいが、**ぜんぶ 済みに しては いけない**——
+ * 済ませた 瞬間に「ステージ クリア！🎉」の おいわいが 画面の 上に かぶさり、
+ * その 下の ボタンが 押せなく なる（実際に ミーティングの 入室が 押せず 止まった）。
+ * 最後の 1つを 残せば、関門は ぜんぶ 開いて いて おいわいは 出ない。
+ */
+async function seedAlmostDone(
+  context: BrowserContext,
+  stageId: string,
+  /**
+   * ここまでの 手前で 止める（その 教材 自身は **まだ 済ませない**）。
+   * 済ませて しまうと、ミーティングは「もう 終わった 回」の 画面で 開く。
+   * 省くと 最後の 1つだけを 残す。
+   */
+  stopAt?: string,
+): Promise<void> {
+  const refs = pathsOf(stageId).map((item) => item.ref);
+  const end = stopAt ? refs.indexOf(stopAt) : refs.length - 1;
+  await seedCompleted(context, refs.slice(0, Math.max(end, 0)));
+}
+
 /** 404 を 静かに 見のがさない（ISR の 404 も 200 では 返らない）。 */
 async function open(page: Page, path: string) {
   const res = await page.goto(path);
@@ -132,7 +164,8 @@ async function open(page: Page, path: string) {
 }
 
 for (const { id, title, skitId } of STAGES) {
-  test(`報連相：${title} — ステージの 教材が ぜんぶ ひらく`, async ({ page }) => {
+  test(`報連相：${title} — ステージの 教材が ぜんぶ ひらく`, async ({ page, context }) => {
+    await seedAlmostDone(context, id);
     await open(page, `/${id}`);
     await expect(page.getByRole("heading", { level: 1 })).toContainText("報連相");
     await shot(page, `hourensou-${id}-stage`);
@@ -141,6 +174,9 @@ for (const { id, title, skitId } of STAGES) {
       await open(page, item.path);
       // 中身が 出て いるか（空の 枠だけが 出る 壊れ方を 弾く）
       await expect(page.getByRole("heading").first()).toBeVisible();
+      // もんだいは 表紙から 始まる ので、1問目まで 進めてから 見る
+      const start = page.getByRole("button", { name: "はじめる" });
+      if (await start.isVisible().catch(() => false)) await start.click();
       /*
        * 絵の 置き場の 空きは **データと 数が 合って いる**こと。
        *
@@ -211,7 +247,7 @@ for (const { id, title, skitId } of STAGES) {
     await shot(page, `hourensou-${id}-video`);
   });
 
-  test(`報連相：${title} — ミーティングが 鍵ゼロで ひらく`, async ({ page }) => {
+  test(`報連相：${title} — ミーティングが 鍵ゼロで ひらく`, async ({ page, context }) => {
     const meeting = pathsOf(id).find((item) => item.type === "meeting");
     if (!meeting) return;
     const data = contentOf("meeting", meeting.ref) as {
@@ -219,15 +255,21 @@ for (const { id, title, skitId } of STAGES) {
       host: { name: string };
     };
 
+    await seedAlmostDone(context, id, meeting.ref);
     await open(page, meeting.path);
-    /*
-     * **鍵（GEMINI_API_KEY）を 持たない 学習者**の 画面。ここが 鍵を 要求すると、
-     * 教室の ほとんどの 子が 入口で 止まる——ミーティングは 鍵が 無くても
-     * 規則ベースの 見かたで 最後まで 通る 作りに して ある。
-     */
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+
+    /*
+     * **鍵（GEMINI_API_KEY）を 持たない 学習者**として 中まで 入る。ここが 鍵を
+     * 要求すると 教室の ほとんどの 子が 入口で 止まる——ミーティングは 鍵が 無くても
+     * 書く 道で 最後まで 通る 作りに して ある（`judge-api.ts` の 縮退）。
+     * 入口の 見た目だけを 見て いると、この 落とし穴を またいで しまう。
+     */
+    await joinCall(page);
     expect(data.questions.length).toBeGreaterThan(0);
+    // 1問目が 出て いる（相手の 名前も ここで 画面に 出る）
     await expect(page.getByText(data.host.name).first()).toBeVisible();
+    await expect(page.getByLabel("こたえを 入力する")).toBeEnabled();
     await shot(page, `hourensou-${id}-meeting`);
   });
 
@@ -254,10 +296,7 @@ for (const { id, title, skitId } of STAGES) {
      * **順に 進んだ 学習者**として 見る。関門（🔒）が 閉じたままだと、教材の 代わりに
      * 枠の「まだ ひらけません」の 板が 出て、見たい ものが 1文字も 画面に 無い。
      */
-    await seedCompleted(
-      context,
-      pathsOf(id).map((item) => item.ref),
-    );
+    await seedAlmostDone(context, id);
     for (const item of pathsOf(id)) {
       // リンク教材の 中身（iframe）は 旧アプリの ページなので この 検査の 外
       if (item.type === "link") continue;

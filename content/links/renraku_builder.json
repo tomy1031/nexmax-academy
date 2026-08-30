@@ -1,7 +1,7 @@
 {
   "kind": "link",
   "id": "renraku_builder",
-  "title": "れんらくビルダー",
+  "title": "🧱 れんらくビルダー",
   "description": "Slack風の 画面で、連絡の 文を 4つずつ えらんで 作ります。えらぶたびに、投稿が 1行ずつ 育ちます。",
   "url": "/tools/hourensou/renraku_builder.html",
   "view": "fullscreen",

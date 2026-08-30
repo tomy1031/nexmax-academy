@@ -1,7 +1,7 @@
 {
   "kind": "link",
   "id": "houkoku_quest",
-  "title": "報告クエスト：バグの 一日",
+  "title": "🎮 報告クエスト：バグの 一日",
   "description": "あなたは 朝、バグを 見つけました。調べて、報告して、チームの 一日を まもる ゲームです。",
   "url": "/tools/hourensou/houkoku_quest.html",
   "view": "fullscreen",

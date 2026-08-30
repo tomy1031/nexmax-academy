@@ -284,6 +284,11 @@
           box-shadow 0.12s;
       }
 
+      /* 色の ついた ボタンの 上では、ふりがなも 白で 読ませる */
+      .btn rt {
+        color: rgba(255, 255, 255, 0.85);
+      }
+
       .btn:hover {
         transform: translateY(-1px);
       }
@@ -448,6 +453,7 @@
       }
 
       .skeleton {
+        width: 100%;
         display: flex;
         flex-direction: column;
         gap: 8px;

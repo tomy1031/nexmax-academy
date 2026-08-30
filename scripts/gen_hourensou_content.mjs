@@ -1984,7 +1984,7 @@ write(
   withFurigana({
     kind: "quizset",
     id: "soudan_kehai",
-    title: "いま 話しかけて いい？",
+    title: "👀 いま 話しかけて いい？",
     description: "机の まわりの 様子と 顔を 見て、いつ・どう 話しかけるかを えらびます。",
     phase: "research",
     answerMode: "submit",
@@ -1993,7 +1993,7 @@ write(
       {
         id: "k1_denwa",
         type: "choose",
-        q: "絵を 見て ください。鈴木先輩に 相談したい ことが あります。先輩は いま、電話で 話して います。どう しますか。",
+        q: "鈴木先輩に 相談したい ことが あります。先輩は いま、電話で 話して います。どう しますか。",
         image: kehaiImg(
           "Suzuki holds a phone to his ear, taking notes on a notepad, eyes down, mid-conversation.",
         ),
@@ -2280,7 +2280,7 @@ write(
   withFurigana({
     kind: "link",
     id: "houkoku_quest",
-    title: "報告クエスト：バグの 一日",
+    title: "🎮 報告クエスト：バグの 一日",
     description:
       "あなたは 朝、バグを 見つけました。調べて、報告して、チームの 一日を まもる ゲームです。",
     url: "/tools/hourensou/houkoku_quest.html",
@@ -2295,7 +2295,7 @@ write(
   withFurigana({
     kind: "link",
     id: "houkoku_stamp",
-    title: "済スタンプで 聞く：報告の 4つの パーツ",
+    title: "✅ 済スタンプで 聞く：報告の 4つの パーツ",
     description: "報告の 音声を 聞きながら、聞こえた パーツに 済スタンプを 押します。",
     url: "/tools/hourensou/houkoku_stamp.html",
     view: "fullscreen",
@@ -2309,7 +2309,7 @@ write(
   withFurigana({
     kind: "link",
     id: "renraku_builder",
-    title: "れんらくビルダー",
+    title: "🧱 れんらくビルダー",
     description:
       "Slack風の 画面で、連絡の 文を 4つずつ えらんで 作ります。えらぶたびに、投稿が 1行ずつ 育ちます。",
     url: "/tools/hourensou/renraku_builder.html",

@@ -1,7 +1,7 @@
 {
   "kind": "quizset",
   "id": "soudan_kehai",
-  "title": "いま 話しかけて いい？",
+  "title": "👀 いま 話しかけて いい？",
   "description": "机の まわりの 様子と 顔を 見て、いつ・どう 話しかけるかを えらびます。",
   "phase": "research",
   "answerMode": "submit",
@@ -10,7 +10,7 @@
     {
       "id": "k1_denwa",
       "type": "choose",
-      "q": "絵を 見て ください。鈴木先輩に 相談したい ことが あります。先輩は いま、電話で 話して います。どう しますか。",
+      "q": "鈴木先輩に 相談したい ことが あります。先輩は いま、電話で 話して います。どう しますか。",
       "image": {
         "prompt": "Suzuki holds a phone to his ear, taking notes on a notepad, eyes down, mid-conversation. Anime illustration, no readable text. A bright modern software office, clean line art, flat cel shading, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. Same character in every image: a Japanese senior engineer man (Suzuki, mid-30s, short black hair, thin silver glasses, navy blue cardigan over a white shirt) at his desk with a laptop and a small potted plant. Viewed from a coworker's standing viewpoint a few steps away. No text, no letters, no numbers, no speech bubbles.",
         "refs": [],
@@ -452,10 +452,6 @@
     [
       "渡",
       "わた"
-    ],
-    [
-      "絵",
-      "え"
     ],
     [
       "方",
