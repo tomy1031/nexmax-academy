@@ -1,0 +1,23 @@
+{
+  "refs": ["富田.jpg", "public/img/characters/tomita/sheet.webp"],
+  "_comment": "富田さんが 出る **文字入りの 図**。文字なしの 絵は hourensou_tomita.json に ある——生成ドライバは 台帳ごとに「文字あり／なし」を 切りかえるので、混ぜられない。**髭は 描かない**。",
+  "style": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This one is a teaching diagram: few large elements, generous spacing, each label sitting on a soft cream panel with a rounded border, arranged so the eye reads it in one pass.",
+  "noText": "Japanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana. Spell every character exactly as given. No other letters, numbers, logos or watermarks anywhere in the picture.",
+  "negative": "Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+  "output": "1536x1024",
+  "scenes": [
+    {
+      "out": "petterns",
+      "dest": "public/img/hourensou/houkoku/petterns.webp",
+      "title": "報告の 3つの パターン",
+      "where": "scripts/gen_hourensou_content.mjs houkoku_lecture blocks[13]（steps）の images[2]",
+      "priority": "A",
+      "scene": "One wide picture divided into three equal panels by thin cream gutters. In every panel the same two people appear: the young Southeast Asian junior engineer on the left and Tomita the project manager on the right at his desk. LEFT PANEL: the junior engineer smiles and holds up a finished document. MIDDLE PANEL: he points at his laptop with a troubled, honest face. RIGHT PANEL: he holds a sticky note and points at it thoughtfully. Tomita listens warmly in all three. Above each panel sits a rounded cream label panel carrying the Japanese words given here.",
+      "text": [
+        "終わった 報告（おわった ほうこく）",
+        "困って いる 報告（こまって いる ほうこく）",
+        "気づいた ことの 報告（きづいた ことの ほうこく）"
+      ]
+    }
+  ]
+}

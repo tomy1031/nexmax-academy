@@ -12,7 +12,11 @@
       "note": "仕事が 終わった とき、問題が あった とき、必ず 上司に 言います。",
       "image": {
         "src": "/img/hourensou/houkoku/top.webp",
-        "refs": [],
+        "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. A young Southeast Asian junior engineer stands beside the desk of Tomita, the project manager, and reports to him while holding a small notebook. Tomita looks up from his laptop with a calm welcoming expression and gives a small nod. Bright morning light from a large window, a small potted plant on the desk. Waist-up two-shot from a natural standing angle, the two of them filling the frame. No text, no letters, no kanji, no kana, no numbers anywhere in the image. Screens, papers, whiteboards, books and signs are blank or show only soft abstract shapes and simple pictures. No watermark, no signature, no logo, no speech balloons, no floating symbols such as question marks, exclamation marks, arrows, light bulbs, stars or hearts. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+        "refs": [
+          "富田.jpg",
+          "/img/characters/tomita/sheet.webp"
+        ],
         "status": "done"
       }
     },
@@ -47,6 +51,7 @@
     {
       "kind": "image",
       "src": "/img/hourensou/houkoku/hourenso.webp",
+      "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This one is a teaching diagram: few large elements, generous spacing, each label sitting on a soft cream panel with a rounded border, arranged so the eye reads it in one pass. A teaching diagram of three large rounded cream cards side by side on a soft sky-blue background. In the first card a junior engineer hands a finished document to a senior colleague. In the second, a colleague types a short message while two others look up from their desks. In the third, a junior engineer and a senior sit side by side looking at one laptop together, thinking. Each card carries its Japanese label printed across the top of the card. The Japanese words in this picture are exactly: 報告（ほうこく） / 連絡（れんらく） / 相談（そうだん）. Japanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana. Spell every character exactly as given. No other letters, numbers, logos or watermarks anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
       "refs": [],
       "status": "done",
       "caption": "報連相の 3つ"
@@ -59,7 +64,10 @@
     {
       "kind": "image",
       "src": "/img/hourensou/houkoku/teamwork.webp",
-      "refs": [],
+      "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. Four colleagues stand together around a low table in a bright open office, working as one team: Hendy on the left points at a large blank whiteboard, a young woman colleague holds a laptop, a young man places a blank sticky note on the board, and a fourth colleague hands over a mug. Everyone looks relaxed and involved. Warm daylight from a big window, plants nearby. Wide shot filling the frame. No text, no letters, no kanji, no kana, no numbers anywhere in the image. Screens, papers, whiteboards, books and signs are blank or show only soft abstract shapes and simple pictures. No watermark, no signature, no logo, no speech balloons, no floating symbols such as question marks, exclamation marks, arrows, light bulbs, stars or hearts. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+      "refs": [
+        "/img/characters/hendy/sheet.webp"
+      ],
       "status": "done",
       "caption": "チームワーク"
     },
@@ -75,21 +83,25 @@
     {
       "kind": "image",
       "src": "/img/hourensou/houkoku/houkoku.webp",
-      "refs": [],
+      "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. Tomita is working at his laptop, focused. The young junior engineer has stopped a step away from the desk, standing straight with both hands at his sides, waiting politely for Tomita to look up. Tomita is just turning his head towards him with a friendly, unhurried expression. Medium shot from the side, both of them filling the frame. No text, no letters, no kanji, no kana, no numbers anywhere in the image. Screens, papers, whiteboards, books and signs are blank or show only soft abstract shapes and simple pictures. No watermark, no signature, no logo, no speech balloons, no floating symbols such as question marks, exclamation marks, arrows, light bulbs, stars or hearts. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+      "refs": [
+        "富田.jpg",
+        "/img/characters/tomita/sheet.webp"
+      ],
       "status": "done",
       "caption": "報告する 場面"
     },
     {
       "kind": "heading",
       "level": 2,
-      "text": "やって みよう：冨永さんに 報告する"
+      "text": "やって みよう：富田さんに 報告する"
     },
     {
       "kind": "banner",
       "tone": "goal",
       "icon": "🎯",
       "title": "場面",
-      "text": "上司（PM）の 冨永さんは パソコンを 見て、忙しそうに 仕事を して います。あなたは PGで、「ログイン機能の テスト」が 終わりました。",
+      "text": "上司（PM）の 富田さんは パソコンを 見て、忙しそうに 仕事を して います。あなたは PGで、「ログイン機能の テスト」が 終わりました。",
       "badges": [
         "PM＝プロジェクトマネージャー",
         "PG＝プログラマー"
@@ -105,7 +117,11 @@
           "text": "あなたは 最初に どんな ことばを かけますか。",
           "image": {
             "src": "/img/hourensou/houkoku/q1.webp",
-            "refs": [],
+            "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. The junior engineer stands beside Tomita's desk with his mouth just opening to speak, one hand raised in a small polite gesture. Tomita is still looking at his laptop, busy. The moment before the first word. Medium shot, warm office light. No text, no letters, no kanji, no kana, no numbers anywhere in the image. Screens, papers, whiteboards, books and signs are blank or show only soft abstract shapes and simple pictures. No watermark, no signature, no logo, no speech balloons, no floating symbols such as question marks, exclamation marks, arrows, light bulbs, stars or hearts. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+            "refs": [
+              "富田.jpg",
+              "/img/characters/tomita/sheet.webp"
+            ],
             "status": "done"
           }
         },
@@ -115,7 +131,11 @@
           "text": "どんな ふうに 報告しますか。ことばを 考えて ください。",
           "image": {
             "src": "/img/hourensou/houkoku/q2.webp",
-            "refs": [],
+            "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. The junior engineer is speaking clearly, counting points off on the fingers of one hand. Tomita nods along and writes a short note. Both are relaxed and engaged. Medium shot across the corner of the desk. No text, no letters, no kanji, no kana, no numbers anywhere in the image. Screens, papers, whiteboards, books and signs are blank or show only soft abstract shapes and simple pictures. No watermark, no signature, no logo, no speech balloons, no floating symbols such as question marks, exclamation marks, arrows, light bulbs, stars or hearts. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+            "refs": [
+              "富田.jpg",
+              "/img/characters/tomita/sheet.webp"
+            ],
             "status": "done"
           }
         },
@@ -125,7 +145,11 @@
           "text": "ITの 仕事では ほかに どんな 報告が 必要だと 思いますか。",
           "image": {
             "src": "/img/hourensou/houkoku/q3.webp",
-            "refs": [],
+            "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. The junior engineer sits at his own desk, resting his chin on one hand, thinking, with a calm curious expression. Around him the office continues: a blank whiteboard, a colleague walking past in the background, a mug of tea. Medium shot. No text, no letters, no kanji, no kana, no numbers anywhere in the image. Screens, papers, whiteboards, books and signs are blank or show only soft abstract shapes and simple pictures. No watermark, no signature, no logo, no speech balloons, no floating symbols such as question marks, exclamation marks, arrows, light bulbs, stars or hearts. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+            "refs": [
+              "富田.jpg",
+              "/img/characters/tomita/sheet.webp"
+            ],
             "status": "done"
           }
         }
@@ -146,17 +170,26 @@
       "images": [
         {
           "src": "/img/hourensou/houkoku/ask_time.webp",
-          "refs": [],
+          "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. Close two-shot. The junior engineer leans very slightly forward with an open, polite gesture of one hand, asking for a moment of time. Tomita has taken his hands off the keyboard and turned fully towards him, smiling, giving his full attention. Warm daylight, the laptop screen blank. No text, no letters, no kanji, no kana, no numbers anywhere in the image. Screens, papers, whiteboards, books and signs are blank or show only soft abstract shapes and simple pictures. No watermark, no signature, no logo, no speech balloons, no floating symbols such as question marks, exclamation marks, arrows, light bulbs, stars or hearts. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+          "refs": [
+            "富田.jpg",
+            "/img/characters/tomita/sheet.webp"
+          ],
           "status": "done"
         },
         {
           "src": "/img/hourensou/houkoku/keypoint.webp",
+          "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This one is a teaching diagram: few large elements, generous spacing, each label sitting on a soft cream panel with a rounded border, arranged so the eye reads it in one pass. A teaching diagram showing an order of four steps, drawn as four rounded cream panels in a row connected by soft coral arrows. In each panel a small simple drawing of the same junior engineer speaking to a senior shows that step: raising a hand for attention; saying the topic; showing a document of facts; bowing slightly to make a request. Each panel carries its Japanese label under the drawing. The Japanese words in this picture are exactly: 件（けん） / 結論（けつろん） / 事実（じじつ） / お願い（おねがい）. Japanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana. Spell every character exactly as given. No other letters, numbers, logos or watermarks anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
           "refs": [],
           "status": "done"
         },
         {
           "src": "/img/hourensou/houkoku/petterns.webp",
-          "refs": [],
+          "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This one is a teaching diagram: few large elements, generous spacing, each label sitting on a soft cream panel with a rounded border, arranged so the eye reads it in one pass. One wide picture divided into three equal panels by thin cream gutters. In every panel the same two people appear: the young Southeast Asian junior engineer on the left and Tomita the project manager on the right at his desk. LEFT PANEL: the junior engineer smiles and holds up a finished document. MIDDLE PANEL: he points at his laptop with a troubled, honest face. RIGHT PANEL: he holds a sticky note and points at it thoughtfully. Tomita listens warmly in all three. Above each panel sits a rounded cream label panel carrying the Japanese words given here. The Japanese words in this picture are exactly: 終わった 報告（おわった ほうこく） / 困って いる 報告（こまって いる ほうこく） / 気づいた ことの 報告（きづいた ことの ほうこく）. Japanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana. Spell every character exactly as given. No other letters, numbers, logos or watermarks anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+          "refs": [
+            "富田.jpg",
+            "/img/characters/tomita/sheet.webp"
+          ],
           "status": "done"
         }
       ]
@@ -169,7 +202,11 @@
     {
       "kind": "image",
       "src": "/img/hourensou/listening/houkoku_hierarchy.webp",
-      "refs": [],
+      "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This one is a teaching diagram: few large elements, generous spacing, each label sitting on a soft cream panel with a rounded border, arranged so the eye reads it in one pass. A clear teaching diagram of the levels of a Japanese company, drawn as five rounded cream panels stacked as a gentle pyramid on a soft sky-blue background, each panel holding one waist-up character and one label. From the top: a friendly company president in a dark suit; then Fujiki the director, taken from the attached character sheet, in his navy blazer over a white T-shirt, smiling brightly; then a department manager; then a section manager; then two ordinary staff members side by side at the bottom, one of them the young junior engineer. Thin soft arrows run down the left side. Each panel carries the Japanese label given below, printed on the cream panel beside the person. The Japanese words in this picture are exactly: 社長（しゃちょう） / 取締役（とりしまりやく） / 部長（ぶちょう） / 課長（かちょう） / 社員（しゃいん）. Japanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana. Spell every character exactly as given. No other letters, numbers, logos or watermarks anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+      "refs": [
+        "/img/characters/fujiki/sheet.webp",
+        "/img/characters/fujiki/reference.jpg"
+      ],
       "status": "done",
       "caption": "会社の 階級"
     },
@@ -213,6 +250,10 @@
       "じょうし"
     ],
     [
+      "社員",
+      "しゃいん"
+    ],
+    [
       "階級",
       "かいきゅう"
     ],
@@ -225,8 +266,8 @@
       "ふじき"
     ],
     [
-      "冨永",
-      "とみなが"
+      "富田",
+      "とみた"
     ],
     [
       "日本",
@@ -391,6 +432,14 @@
     [
       "答",
       "こた"
+    ],
+    [
+      "長",
+      "なが"
+    ],
+    [
+      "願",
+      "ねが"
     ],
     [
       "動",

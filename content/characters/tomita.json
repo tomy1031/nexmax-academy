@@ -1,0 +1,15 @@
+{
+  "kind": "character",
+  "id": "tomita",
+  "name": "富田",
+  "reading": "とみた",
+  "role": "PM（プロジェクトマネージャー）",
+  "looks": "Japanese-style anime character, man in his thirties, average build, calm upright posture. His face, hairline and hair are taken from the reference photograph 富田.jpg — keep the same face shape, eyes and hair, drawn in anime style. HE IS CLEAN-SHAVEN: absolutely no moustache, no beard, no stubble. Warm attentive expression with a small friendly smile. Outfit: soft grey-blue button-down shirt with the sleeves rolled to the elbow, dark navy chinos, brown leather belt, plain dark shoes. No tie, no glasses, no lanyard.",
+  "personality": "報告を 受ける 上司です。いそがしく 仕事を して いますが、話しかけられたら 手を 止めて 顔を 上げます。よくない 知らせでも 責めないで、まず「教えて くれて ありがとう」と 言います。",
+  "sheet": {
+    "prompt": "Character model sheet, clean modern Japanese manga / anime style, soft cel shading, bright friendly palette, rounded shapes, no harsh shadows, office and school settings, contemporary Japan. Tomita, a Japanese man in his thirties who works as a project manager. Build his face, hairline and hair from the attached reference photograph 富田.jpg, keeping the same face shape and eyes, drawn in this anime style. HE IS CLEAN-SHAVEN — absolutely no moustache, no beard and no stubble anywhere on his face. Outfit: soft grey-blue button-down shirt with the sleeves rolled to the elbow, dark navy chinos, brown leather belt, plain dark shoes. No tie, no glasses, no lanyard. Calm attentive expression with a small friendly smile. The sheet shows the same man three times on a plain white background — front view, side view and three-quarter view, full body, standing, with generous margins — and underneath a row of four head-only expressions: neutral, smiling, listening carefully, and slightly concerned. No text, no letters, no numbers, no watermark, no logo.",
+    "refs": [],
+    "status": "empty"
+  },
+  "references": []
+}

@@ -12,7 +12,10 @@
       "note": "相談は 報連相の 中で 一番 難しいところです。",
       "image": {
         "src": "/img/hourensou/soudan/slide1.webp",
-        "refs": [],
+        "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. The young junior engineer has rolled his chair over to Okuda's desk and points at his own laptop screen with a slightly troubled but hopeful face. Okuda turns towards him, one hand on the back of his chair, listening carefully with a calm kind smile. The screen shows only soft abstract grey shapes. Warm afternoon light, a plant between the desks. Wide medium two-shot. No text, no letters, no kanji, no kana, no numbers anywhere in the image. Screens, papers, whiteboards, books and signs are blank or show only soft abstract shapes and simple pictures. No watermark, no signature, no logo, no speech balloons, no floating symbols such as question marks, exclamation marks, arrows, light bulbs, stars or hearts. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+        "refs": [
+          "/img/characters/okuda/sheet.webp"
+        ],
         "status": "done"
       }
     },
@@ -31,6 +34,7 @@
     {
       "kind": "image",
       "src": "/img/hourensou/soudan/slide2.webp",
+      "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. One wide picture divided into three equal vertical panels by thin cream gutters. LEFT: a young engineer sits alone at his desk with his chin on his fist, thinking hard at a blank screen. MIDDLE: the same engineer leans over to a friend at the next desk and they look at one laptop together. RIGHT: the engineer types a search into a blank browser window, one hand on the mouse, curious. Same office, same warm light in all three. No text, no letters, no kanji, no kana, no numbers anywhere in the image. Screens, papers, whiteboards, books and signs are blank or show only soft abstract shapes and simple pictures. No watermark, no signature, no logo, no speech balloons, no floating symbols such as question marks, exclamation marks, arrows, light bulbs, stars or hearts. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
       "refs": [],
       "status": "done"
     },
@@ -41,6 +45,7 @@
     {
       "kind": "image",
       "src": "/img/hourensou/soudan/slide3.webp",
+      "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. A junior engineer and a senior colleague sit side by side at one desk, both looking at the same laptop. The senior points at the screen and the junior's face lights up with understanding — the moment the answer appears. Warm daylight, a plant behind them, two mugs on the desk. Medium two-shot filling the frame. No text, no letters, no kanji, no kana, no numbers anywhere in the image. Screens, papers, whiteboards, books and signs are blank or show only soft abstract shapes and simple pictures. No watermark, no signature, no logo, no speech balloons, no floating symbols such as question marks, exclamation marks, arrows, light bulbs, stars or hearts. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
       "refs": [],
       "status": "done"
     },
@@ -52,6 +57,7 @@
     {
       "kind": "image",
       "src": "/img/hourensou/soudan/slide4.webp",
+      "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. One wide picture split into two equal halves by a soft vertical cream gutter. LEFT HALF, cool and dim: one engineer sits very small and alone in a large empty office, surrounded by too much space, head down. RIGHT HALF, warm and bright: four colleagues stand close together around one desk, all leaning in towards the same laptop, relaxed and involved. The contrast is made with light and spacing only. No text, no letters, no kanji, no kana, no numbers anywhere in the image. Screens, papers, whiteboards, books and signs are blank or show only soft abstract shapes and simple pictures. No watermark, no signature, no logo, no speech balloons, no floating symbols such as question marks, exclamation marks, arrows, light bulbs, stars or hearts. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
       "refs": [],
       "status": "done"
     },
@@ -109,12 +115,14 @@
     {
       "kind": "image",
       "src": "/img/hourensou/soudan/slide5-1.webp",
+      "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. One wide picture divided into four equal panels in a single row by thin cream gutters, each a small workplace vignette of the same young engineer. 1: he looks between two laptops, one showing a calm blank screen and the other a screen with a soft red glow — it works on one machine but not the other. 2: he holds up two blank rounded cards and looks from one to the other, choosing. 3: he points at a blank page in a thick document and looks up, having found something missing. 4: he watches a slow spinning circle on his screen, chin on hand, wanting a better way. No text, no letters, no kanji, no kana, no numbers anywhere in the image. Screens, papers, whiteboards, books and signs are blank or show only soft abstract shapes and simple pictures. No watermark, no signature, no logo, no speech balloons, no floating symbols such as question marks, exclamation marks, arrows, light bulbs, stars or hearts. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
       "refs": [],
       "status": "done"
     },
     {
       "kind": "image",
       "src": "/img/hourensou/soudan/slide5-2.webp",
+      "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. One wide picture divided into four equal panels in a single row by thin cream gutters, each a small workplace vignette of the same young engineer. 5: two soft abstract branching lines on his screen have crossed and tangled, and he looks at them carefully. 6: he sits in front of a laptop with a soft red glow while an open manual lies beside it, comparing the two. 7: he holds a large tablet in landscape and a small phone side by side, and the layout that fits the tablet clearly does not fit the phone. 8: he looks at an empty checklist on his screen with a pen in hand, not yet knowing what to write. No text, no letters, no kanji, no kana, no numbers anywhere in the image. Screens, papers, whiteboards, books and signs are blank or show only soft abstract shapes and simple pictures. No watermark, no signature, no logo, no speech balloons, no floating symbols such as question marks, exclamation marks, arrows, light bulbs, stars or hearts. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
       "refs": [],
       "status": "done"
     },
@@ -131,6 +139,7 @@
     {
       "kind": "image",
       "src": "/img/hourensou/soudan/slide6.webp",
+      "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This one is a teaching diagram: few large elements, generous spacing, each label sitting on a soft cream panel with a rounded border, arranged so the eye reads it in one pass. One wide picture divided into three equal vertical panels by thin cream gutters. LEFT PANEL: a young engineer sits alone at his desk, shoulders low, staring at his screen for a very long time, the office around him dim. MIDDLE PANEL: the same engineer thinks for a short while with a small clock on the desk, then turns and raises a hand towards a senior colleague, who turns to him — bright and balanced. RIGHT PANEL: the engineer immediately spins his chair to the senior without looking at his own screen at all, and the senior looks a little surprised. A large rounded cream label panel sits at the top of each panel carrying only the single letter given here. The Japanese words in this picture are exactly: A / B / C. Japanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana. Spell every character exactly as given. No other letters, numbers, logos or watermarks anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
       "refs": [],
       "status": "done"
     },
@@ -203,7 +212,10 @@
     {
       "kind": "image",
       "src": "/img/hourensou/soudan/slide7.webp",
-      "refs": [],
+      "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. One wide picture split into two equal panels by a thin cream gutter. LEFT: the junior engineer stands at Okuda's desk with empty open hands and a lost expression; Okuda tilts his head, wanting to help but with nothing to work from. RIGHT: the same two people, but now the junior engineer holds out an open notebook and points at his own notes while speaking; Okuda leans in with a bright understanding smile and reaches towards the notebook. The notebook pages show only soft abstract handwriting lines. No text, no letters, no kanji, no kana, no numbers anywhere in the image. Screens, papers, whiteboards, books and signs are blank or show only soft abstract shapes and simple pictures. No watermark, no signature, no logo, no speech balloons, no floating symbols such as question marks, exclamation marks, arrows, light bulbs, stars or hearts. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+      "refs": [
+        "/img/characters/okuda/sheet.webp"
+      ],
       "status": "done"
     },
     {
@@ -218,7 +230,10 @@
     {
       "kind": "image",
       "src": "/img/hourensou/soudan/slide8.webp",
-      "refs": [],
+      "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. The junior engineer holds up a tablet towards Okuda. On the tablet, two large rounded blank cards sit side by side, one glowing slightly brighter than the other — he has already made a choice and is explaining why. He gestures at the brighter card with his free hand and looks straight at Okuda with a confident face. Okuda strokes his chin, impressed, nodding. Medium two-shot. No text, no letters, no kanji, no kana, no numbers anywhere in the image. Screens, papers, whiteboards, books and signs are blank or show only soft abstract shapes and simple pictures. No watermark, no signature, no logo, no speech balloons, no floating symbols such as question marks, exclamation marks, arrows, light bulbs, stars or hearts. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+      "refs": [
+        "/img/characters/okuda/sheet.webp"
+      ],
       "status": "done"
     },
     {
@@ -237,7 +252,10 @@
     {
       "kind": "image",
       "src": "/img/hourensou/soudan/slide9.webp",
-      "refs": [],
+      "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This one is a teaching diagram: few large elements, generous spacing, each label sitting on a soft cream panel with a rounded border, arranged so the eye reads it in one pass. A teaching diagram of four rounded cream cards in a two by two grid on a soft sky-blue background. In each card a small waist-up drawing shows the junior engineer speaking to Okuda at the moment that phrase is used: first he raises a hand to ask for a moment of time; second he points at his laptop to state the fact; third he holds up his notebook to say what he already checked; fourth he presses his palms together in thanks. Under each little drawing the card carries the Japanese phrase given here. The Japanese words in this picture are exactly: 今、お時間 よろしいですか（いま、おじかん よろしいですか） / ◯◯で 困って います（◯◯で こまって います） / ◯◯を 調べました（◯◯を しらべました） / ありがとう ございます. Japanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana. Spell every character exactly as given. No other letters, numbers, logos or watermarks anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+      "refs": [
+        "/img/characters/okuda/sheet.webp"
+      ],
       "status": "done"
     },
     {
@@ -253,7 +271,7 @@
       "kind": "video",
       "src": "/video/hourensou/soudan_skit.mp4",
       "poster": "/img/hourensou/soudan/slide10.webp",
-      "caption": "ソクさんが 鈴木先輩に 相談する お手本",
+      "caption": "ソクさんが 奥田先輩に 相談する お手本",
       "note": "この あとの スキットで、同じ 会話を 1行ずつ 聞いて まねします。"
     }
   ],
@@ -263,8 +281,8 @@
       "かんきょうこうちく"
     ],
     [
-      "鈴木先輩",
-      "すずきせんぱい"
+      "奥田先輩",
+      "おくだせんぱい"
     ],
     [
       "報連相",
@@ -319,8 +337,8 @@
       "ぜんたい"
     ],
     [
-      "鈴木",
-      "すずき"
+      "奥田",
+      "おくだ"
     ],
     [
       "日本",
@@ -501,6 +519,10 @@
     [
       "伝",
       "つた"
+    ],
+    [
+      "困",
+      "こま"
     ],
     [
       "調",

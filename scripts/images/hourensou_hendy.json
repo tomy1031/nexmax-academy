@@ -1,0 +1,34 @@
+{
+  "refs": ["public/img/characters/hendy/sheet.webp"],
+  "_comment": "連絡ステージと チームの 絵に 出る ヘンディ先輩。**設定画（sheet.webp）を 毎回 参照入力に 渡す**。服装は 人物カード content/characters/hendy.json の looks が 正——紺の スーツ・紺の ネクタイ・白い ワイシャツ。**社員証の ストラップは 描かない**（古い プロンプトに 混ざって いた 誤り）。",
+  "style": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME.",
+  "noText": "No text, no letters, no kanji, no kana, no numbers anywhere in the image. Screens, papers, whiteboards, books and signs are blank or show only soft abstract shapes and simple pictures. No watermark, no signature, no logo, no speech balloons, no floating symbols such as question marks, exclamation marks, arrows, light bulbs, stars or hearts.",
+  "negative": "Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+  "output": "1536x1024",
+  "scenes": [
+    {
+      "out": "renraku_hero",
+      "dest": "public/img/hourensou/renraku/renraku.webp",
+      "title": "連絡ステージの 表紙",
+      "where": "scripts/gen_hourensou_content.mjs renraku_lecture blocks[0].image（hero）",
+      "priority": "B",
+      "scene": "Hendy sits at his desk and types a short message on his laptop, calm and focused, a small confident smile. Beside the laptop a mug and a notebook. Behind him two colleagues at their own desks look up at their screens at the same moment — the message has reached them. The chat window on every screen is blank with soft abstract grey bars only, and carries no logo. Wide medium shot."
+    },
+    {
+      "out": "teamwork",
+      "dest": "public/img/hourensou/houkoku/teamwork.webp",
+      "title": "チームワーク（なぜ 報告を するの？）",
+      "where": "scripts/gen_hourensou_content.mjs houkoku_lecture blocks[5]（image）",
+      "priority": "B",
+      "scene": "Four colleagues stand together around a low table in a bright open office, working as one team: Hendy on the left points at a large blank whiteboard, a young woman colleague holds a laptop, a young man places a blank sticky note on the board, and a fourth colleague hands over a mug. Everyone looks relaxed and involved. Warm daylight from a big window, plants nearby. Wide shot filling the frame."
+    },
+    {
+      "out": "reaction",
+      "dest": "public/img/hourensou/renraku/reaction.webp",
+      "title": "スタンプは「読みました」の 合図",
+      "where": "scripts/gen_hourensou_content.mjs renraku_lecture blocks[16]（image）",
+      "priority": "B",
+      "scene": "Split scene in one frame, no divider line. On the left Hendy leans back in his chair looking at his laptop with a relieved, pleased smile. On the right, three colleagues at their own desks each tap once on their screen with one finger. Floating between them, three large soft rounded reaction bubbles drawn as simple friendly pictures only — a pair of eyes, a raised thumb, two hands pressed together. The bubbles carry no letters. Wide shot."
+    }
+  ]
+}
