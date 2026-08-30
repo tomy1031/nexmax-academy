@@ -1,0 +1,97 @@
+{
+  "kind": "wordstage",
+  "id": "hourensou_renraku_ouyou",
+  "title": "報連相：連絡の ことば",
+  "description": "メールの 型と、障害の ときに 使う ことばです。",
+  "label": "おうよう",
+  "fieldSequence": [
+    "forest",
+    "sky",
+    "space"
+  ],
+  "questionCount": 47,
+  "passRate": 80,
+  "furigana": [
+    [
+      "報連相",
+      "ほうれんそう"
+    ],
+    [
+      "連絡",
+      "れんらく"
+    ],
+    [
+      "障害",
+      "しょうがい"
+    ],
+    [
+      "使",
+      "つか"
+    ],
+    [
+      "報",
+      "ほう"
+    ],
+    [
+      "連",
+      "れん"
+    ],
+    [
+      "相",
+      "そう"
+    ],
+    [
+      "型",
+      "かた"
+    ]
+  ],
+  "wordIds": [
+    "shagai",
+    "meue",
+    "fuguai",
+    "hassei",
+    "chousa",
+    "fukkyuu",
+    "ubau",
+    "aseru",
+    "musi",
+    "kenmei",
+    "honbun",
+    "osewaninatteorimasu",
+    "mikomi",
+    "sidai",
+    "aratamete",
+    "eikyouhanni",
+    "riyoukaisi",
+    "kakuninnonegaisimasu",
+    "mousiwakearimasen",
+    "kenshoukankyou",
+    "mentenansu",
+    "shougai",
+    "taiou",
+    "atesaki",
+    "juuyou",
+    "enki",
+    "chuuiten",
+    "kanribu",
+    "kabushikigaisha",
+    "gazou",
+    "kowareru",
+    "daisikyuu",
+    "zenshain",
+    "joutai",
+    "nagabiku",
+    "taishou",
+    "infura",
+    "hinsitukanri",
+    "eigyoubu",
+    "honyaku",
+    "manyuaru",
+    "tesutokankyou",
+    "saishuu",
+    "kessai",
+    "nennosi",
+    "kanjou",
+    "sama"
+  ]
+}

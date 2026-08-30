@@ -328,7 +328,16 @@ function PanelView({
             unoptimized
           />
         ) : (
-          <span className="text-ink-faint absolute inset-0 grid place-items-center text-sm font-bold">
+          /*
+            しるし（`data-slot="empty"`）は 記事の 絵わく（`ImageSlotFrame`）と そろえて ある。
+            「まだ 絵が 無い」を **アプリ全体で 1つの しるし**に して おくと、
+            通しの 検証が「絵の 抜け」を 種別を またいで 数えられる。
+            見た目は ここだけ ちがう——まんがは コマの 中いっぱいに 出す ため。
+          */
+          <span
+            data-slot="empty"
+            className="text-ink-faint absolute inset-0 grid place-items-center text-sm font-bold"
+          >
             🖼️ え は じゅんびちゅう
           </span>
         )}
@@ -442,8 +451,17 @@ function LineBubble({
         className="shrink-0 rounded-full px-2.5 py-0.5 text-[11px] font-black text-white"
         style={{ background: accent }}
       >
-        {speaker?.name ?? line.speaker}
-        {speaker?.role ? <span className="ml-1 font-bold opacity-80">{speaker.role}</span> : null}
+        {/*
+          名前と 立場にも ふりがなを 付ける（規律2）。ここは **だれの セリフか**を
+          読む ところ なので、「同期」が 読めないと、その 行が だれの ことばか
+          分からないまま 進む ことに なる。セリフ本体だけ ルビが 付いて いた。
+        */}
+        <RubyText text={speaker?.name ?? line.speaker} index={furigana} show={furiganaOn} />
+        {speaker?.role ? (
+          <span className="ml-1 font-bold opacity-80">
+            <RubyText text={speaker.role} index={furigana} show={furiganaOn} />
+          </span>
+        ) : null}
       </span>
       {/* 絵の下の文は、絵に焼いた字と同じくらい大きく読める必要がある（学習者はここでルビを読む） */}
       <span className="text-ink min-w-0 flex-1 text-lg leading-loose font-bold break-words sm:text-xl">

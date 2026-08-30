@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>調べ学習 - 報連相 - ネクストメイク入社研修</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Password Section Styles (Standardized) */
+        .interactive-section {
+            background: #fff;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 24px;
+            margin-top: 24px;
+        }
+
+        .password-form {
+            text-align: center;
+        }
+
+        .password-input {
+            padding: 8px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 16px;
+            margin-right: 8px;
+            width: 200px;
+        }
+
+        .password-input.error {
+            border-color: #e74c3c;
+            animation: shake 0.5s;
+        }
+
+        .unlock-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .unlock-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        @keyframes shake {
+            0% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-5px);
+            }
+
+            50% {
+                transform: translateX(5px);
+            }
+
+            75% {
+                transform: translateX(-5px);
+            }
+
+            100% {
+                transform: translateX(0);
+            }
+        }
+
+        .error-msg {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 8px;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1><ruby>調<rt>しら</rt></ruby>べ<ruby>学習<rt>がくしゅう</rt></ruby></h1>
+            <p>
+                <span class="n4-word" data-word="報告">
+                    <ruby>報告<rt>ほうこく</rt></ruby>
+                </span>
+            </p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="main-container">
+
+        <!-- Research Section -->
+        <section class="research-section animate-fade-in">
+            <h2 class="research-title">🔍 もっと<ruby>調<rt>しら</rt></ruby>べてみよう！</h2>
+            <div class="section-text">
+                <p style="margin-bottom: 24px; text-align: center;">
+                    <ruby>次<rt>つぎ</rt></ruby>のことをインターネットで<ruby>調<rt>しら</rt></ruby>べてみましょう。
+                </p>
+
+                <div style="margin-bottom: 24px;">
+                    <h3 style="font-size: 18px; margin-bottom: 8px; color: var(--primary-dark);">Q1. <ruby>日本<rt>にほん
+                            </rt></ruby>の<ruby>階級<rt>かいきゅう</rt></ruby> (Hierarchy)</h3>
+                    <p style="font-size: 16px;">
+                        <ruby>日本<rt>にほん</rt></ruby>の<ruby>階級<rt>かいきゅう</rt></ruby>をたくさん<ruby>調<rt>しら</rt>
+                        </ruby>べてみましょう。<br>
+                        えらい<ruby>順<rt>じゅん</rt></ruby>に<ruby>並<rt>なら</rt></ruby>べてください。<br>
+                        <span class="n4-word" data-word="取締役"><ruby>取締役<rt>とりしまりやく</rt></ruby></span>の<ruby>藤木<rt>ふじき
+                            </rt></ruby>さんはどのくらいえらいかな？
+                    </p>
+                </div>
+
+                <div style="margin-bottom: 24px;">
+                    <h3 style="font-size: 18px; margin-bottom: 8px; color: var(--primary-dark);">Q2. 【<ruby>応用問題<rt>
+                                おうようもんだい</rt></ruby>】カンボジアと<ruby>日本<rt>
+                                にほん</rt></ruby>の<ruby>違<rt>ちが</rt></ruby>い</h3>
+                    <p style="font-size: 16px;">
+                        ・カンボジアの<ruby>階級<rt>かいきゅう</rt></ruby>を<ruby>教<rt>おし</rt></ruby>えてください。<br>
+                        ・カンボジアと<ruby>日本<rt>にほん</rt></ruby>の「<ruby>報告<rt>ほうこく</rt></ruby>」への<ruby>考<rt>かんが</rt>
+                        </ruby>え<ruby>方<rt>かた</rt></ruby>の<ruby>違<rt>ちが</rt></ruby>いを<ruby>教<rt>おし</rt>
+                        </ruby>えてください。<br>
+                        ・カンボジアと<ruby>日本<rt>にほん</rt></ruby>の「<ruby>上司<rt>じょうし</rt></ruby>」との<ruby>関係<rt>かんけい</rt>
+                        </ruby>の<ruby>違<rt>ちが</rt></ruby>いについて<ruby>調<rt>しら</rt></ruby>べてください。
+                    </p>
+                </div>
+
+                <div style="text-align: center;">
+                    <a href="https://docs.google.com/spreadsheets/d/1lcyFFoWd-oGgMqgie3MJvW0jaFadurD9PnmKp902_wU/edit?usp=sharing"
+                        target="_blank" class="research-link-btn">
+                        ✍️ <ruby>回答<rt>かいとう</rt></ruby>をここに<ruby>書<rt>か</rt></ruby>く
+                    </a>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
