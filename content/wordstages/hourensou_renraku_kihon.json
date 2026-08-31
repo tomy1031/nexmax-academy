@@ -1,0 +1,108 @@
+{
+  "kind": "wordstage",
+  "id": "hourensou_renraku_kihon",
+  "title": "報連相：連絡の ことば",
+  "description": "連絡で まいにち 使う ことばです。チャットや 会話で よく 出ます。",
+  "label": "きほん",
+  "fieldSequence": [
+    "forest",
+    "sky",
+    "space"
+  ],
+  "questionCount": 50,
+  "passRate": 80,
+  "furigana": [
+    [
+      "報連相",
+      "ほうれんそう"
+    ],
+    [
+      "連絡",
+      "れんらく"
+    ],
+    [
+      "会話",
+      "かいわ"
+    ],
+    [
+      "会",
+      "かい"
+    ],
+    [
+      "使",
+      "つか"
+    ],
+    [
+      "話",
+      "はなし"
+    ],
+    [
+      "出",
+      "で"
+    ],
+    [
+      "報",
+      "ほう"
+    ],
+    [
+      "連",
+      "れん"
+    ],
+    [
+      "相",
+      "そう"
+    ]
+  ],
+  "wordIds": [
+    "kankeisha",
+    "kyouyuu",
+    "mokuteki",
+    "tabusho",
+    "gutaiteki",
+    "meikaku",
+    "yuusenjunni",
+    "kaihatukankyou",
+    "depuroi",
+    "shuusei",
+    "sinkinou",
+    "saisinko-do",
+    "saba",
+    "shiyouritsu",
+    "roguingamen",
+    "era-ko-do",
+    "ririsu",
+    "tsuuchi",
+    "rimo-towa-ku",
+    "henkou",
+    "koushin",
+    "kaiketu",
+    "komaru",
+    "sagyou",
+    "roguin",
+    "sukejuru",
+    "riyuu",
+    "teishutu",
+    "irai",
+    "kigen",
+    "sakusei",
+    "douryou",
+    "junban",
+    "bunshou",
+    "seiri",
+    "yu-za-",
+    "appude-to",
+    "okyakusama",
+    "kensaku",
+    "shitsumon",
+    "jouhou",
+    "sirasemasu",
+    "ketsuka",
+    "sinchoku",
+    "kaihatuchi-mu",
+    "sinki",
+    "hyouji",
+    "anzen",
+    "hozon",
+    "de-ta"
+  ]
+}

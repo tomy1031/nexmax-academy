@@ -202,3 +202,50 @@ describe("ログイン判定（その場での署名検証）", () => {
     expect(calls).toEqual([]);
   });
 });
+
+/**
+ * 作りおき（ISR）の 作り直しが 門番を 通ること（2026-08-29）。
+ *
+ * OpenNext の memoryQueue は 期限切れの ページを 直すとき、Worker 自身へ
+ * クッキー無しの `HEAD` を 送る。ここを ログイン画面へ 返して いたので、
+ * まなびマップと ステージは、**配布した ときの まま 凍って いた**——先生が スタジオで
+ * 「地図に 出さない」に しても、学習者の マップから 永久に 消えなかった。
+ */
+describe("ISR の 作り直しは 門番を 通す", () => {
+  /** memoryQueue が 送るのと 同じ かたちの リクエスト。 */
+  function isrRequest(over: { method?: string; token?: string | null; isr?: string | null } = {}) {
+    const request = new NextRequest("https://academy.example.dev/map", {
+      method: over.method ?? "HEAD",
+    });
+    const token = over.token === undefined ? "preview-mode-id" : over.token;
+    if (token !== null) request.headers.set("x-prerender-revalidate", token);
+    const isr = over.isr === undefined ? "1" : over.isr;
+    if (isr !== null) request.headers.set("x-isr", isr);
+    return request;
+  }
+
+  it("クッキーが 無くても 転送されない（＝作り直しが 通る）", async () => {
+    const response = await middleware(isrRequest());
+    expect(response.headers.get("location")).toBeNull();
+  });
+
+  it("合言葉が ちがえば 通さない", async () => {
+    process.env.NEXT_PREVIEW_MODE_ID = "the-real-one";
+    try {
+      const response = await middleware(isrRequest({ token: "guessed" }));
+      expect(response.headers.get("location")).toContain("/?next=%2Fmap");
+    } finally {
+      delete process.env.NEXT_PREVIEW_MODE_ID;
+    }
+  });
+
+  it("GET には この 通り道を 開けない（本文を 取られない）", async () => {
+    const response = await middleware(isrRequest({ method: "GET" }));
+    expect(response.headers.get("location")).toContain("/?next=%2Fmap");
+  });
+
+  it("しるしの 無い HEAD は これまでどおり 転送する", async () => {
+    const response = await middleware(isrRequest({ token: null, isr: null }));
+    expect(response.headers.get("location")).toContain("/?next=%2Fmap");
+  });
+});

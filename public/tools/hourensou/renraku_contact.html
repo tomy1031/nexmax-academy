@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>連絡文問題 - ネクストメイク入社研修</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .tab-bar {
+            display: flex;
+            gap: 0;
+            margin-bottom: 0;
+            border-bottom: 3px solid var(--primary-color)
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 14px 20px;
+            border: none;
+            background: #f1f5f9;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 700;
+            font-family: 'Noto Sans JP', sans-serif;
+            transition: all .2s;
+            border-radius: 8px 8px 0 0;
+            color: #64748b
+        }
+
+        .tab-btn.active {
+            background: var(--primary-color);
+            color: #fff
+        }
+
+        .tab-content {
+            display: none;
+            padding: 24px 0
+        }
+
+        .tab-content.active {
+            display: block
+        }
+
+        .name-pdf-bar {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            background: #f8fafc;
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color)
+        }
+
+        .name-input {
+            padding: 10px 14px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 15px;
+            font-family: 'Noto Sans JP', sans-serif;
+            width: 200px
+        }
+
+        .name-input:focus {
+            outline: none;
+            border-color: var(--primary-color)
+        }
+
+        .pdf-btn {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 14px;
+            transition: opacity .2s
+        }
+
+        .pdf-btn:hover {
+            opacity: .85
+        }
+
+        .q-card {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-sm)
+        }
+
+        .q-number {
+            display: inline-block;
+            background: var(--primary-color);
+            color: #fff;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 12px
+        }
+
+        .q-pattern {
+            display: inline-block;
+            background: #e0f2fe;
+            color: #0369a1;
+            padding: 2px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 8px
+        }
+
+        .chat-bubble {
+            background: #e8f5e9;
+            border-radius: 0 16px 16px 16px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            position: relative;
+            font-size: 15px;
+            line-height: 1.8;
+            max-width: 90%;
+            border: 1px solid #c8e6c9
+        }
+
+        .chat-bubble::before {
+            content: "💬 同僚：";
+            font-weight: 700;
+            color: #2e7d32;
+            display: block;
+            margin-bottom: 6px;
+            font-size: 13px
+        }
+
+        .chat-bubble .answer-hint {
+            background: #fff3cd;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 700;
+            border: 1px solid #ffc107
+        }
+
+        .email-form {
+            background: #fafbfc;
+            border: 2px solid #d0d7de;
+            border-radius: 8px;
+            margin-top: 16px
+        }
+
+        .email-header {
+            background: #f6f8fa;
+            padding: 12px 16px;
+            border-bottom: 2px solid #d0d7de
+        }
+
+        .email-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-bottom: 1px solid #eaecef;
+            font-size: 14px
+        }
+
+        .email-row label {
+            font-weight: 700;
+            min-width: 50px;
+            color: #57606a
+        }
+
+        .email-row input {
+            flex: 1;
+            border: 1px solid #d0d7de;
+            border-radius: 4px;
+            padding: 6px 10px;
+            font-size: 14px;
+            font-family: 'Noto Sans JP', sans-serif
+        }
+
+        .email-row input:focus {
+            outline: none;
+            border-color: var(--primary-color)
+        }
+
+        .email-body {
+            padding: 16px;
+            font-size: 15px;
+            line-height: 2
+        }
+
+        .email-body .blank {
+            display: inline-block;
+            min-width: 200px;
+            border-bottom: 2px solid #333;
+            margin: 0 4px;
+            vertical-align: bottom
+        }
+
+        .email-body .blank-input {
+            display: inline-block;
+            min-width: 200px;
+            border: none;
+            border-bottom: 2px solid var(--primary-color);
+            background: transparent;
+            font-size: 15px;
+            font-family: 'Noto Sans JP', sans-serif;
+            padding: 2px 4px
+        }
+
+        .email-body .blank-input:focus {
+            outline: none;
+            border-bottom-color: #e74c3c
+        }
+
+        .email-body .blank-wide {
+            min-width: 300px
+        }
+
+        /* Slack UI */
+        .slack-msg {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 16px 0
+        }
+
+        .slack-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px
+        }
+
+        .slack-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 6px;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 700;
+            font-size: 14px
+        }
+
+        .slack-name {
+            font-weight: 700;
+            font-size: 15px
+        }
+
+        .slack-channel {
+            color: #64748b;
+            font-size: 13px
+        }
+
+        .slack-input {
+            width: 100%;
+            min-height: 240px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 14px;
+            font-size: 15px;
+            font-family: 'Noto Sans JP', sans-serif;
+            line-height: 1.8;
+            resize: vertical
+        }
+
+        .slack-input:focus {
+            outline: none;
+            border-color: var(--primary-color)
+        }
+
+        .slack-send-bar {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 8px
+        }
+
+        .level-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 700;
+            margin-left: 8px
+        }
+
+        .level-1 {
+            background: #dcfce7;
+            color: #166534
+        }
+
+        .level-2 {
+            background: #e0f2fe;
+            color: #0369a1
+        }
+
+        .level-3 {
+            background: #fef9c3;
+            color: #854d0e
+        }
+
+        .level-4 {
+            background: #fee2e2;
+            color: #991b1b
+        }
+
+        @media print {
+
+            .tab-bar,
+            .pdf-btn,
+            header,
+            footer,
+            .nav-cards,
+            .hero {
+                display: none !important
+            }
+
+            .tab-content {
+                display: block !important
+            }
+
+            .q-card {
+                break-inside: avoid;
+                page-break-inside: avoid
+            }
+
+            .name-pdf-bar {
+                border: none;
+                background: none
+            }
+
+            .slack-input,
+            .blank-input,
+            .email-row input {
+                border: 1px solid #ccc !important
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="main-container">
+        <section class="section animate-fade-in">
+            <h2 class="section-title"><span class="n4-word" data-word="連絡"><ruby>連絡<rt>れんらく</rt></ruby></span><ruby>文
+                    <rt>ぶん</rt>
+                </ruby><span class="n4-word" data-word="問題"><ruby>問題<rt>もんだい</rt></ruby></span></h2>
+
+            <div class="tab-bar">
+                <button class="tab-btn active" onclick="switchTab('beginner')"><span class="n4-word"
+                        data-word="初級"><ruby>初級<rt>しょきゅう</rt></ruby></span>：メール<ruby>作成<rt>さくせい</rt></ruby></button>
+                <button class="tab-btn" onclick="switchTab('advanced')"><span class="n4-word" data-word="上級"><ruby>上級
+                            <rt>じょうきゅう</rt>
+                        </ruby></span>：Slack<ruby>連絡<rt>れんらく</rt></ruby></button>
+            </div>
+
+            <!-- ===== 初級タブ ===== -->
+            <div class="tab-content active" id="tab-beginner">
+                <div class="name-pdf-bar">
+                    <label><ruby>名前<rt>なまえ</rt></ruby>：</label>
+                    <input type="text" class="name-input" id="name-beginner" placeholder="あなたの名前">
+                    <button class="pdf-btn" onclick="printTab('beginner')">📄 PDF<ruby>出力<rt>しゅつりょく</rt></ruby></button>
+                </div>
+
+                <p style="margin-bottom:20px;color:#64748b"><span class="n4-word" data-word="同僚"><ruby>同僚<rt>どうりょう</rt>
+                        </ruby></span>のチャットを<ruby>読<rt>よ</rt></ruby>んで、メールを<ruby>完成<rt>かんせい</rt>
+                    </ruby>させてください。<br>メモの<ruby>文章<rt>ぶんしょう</rt></ruby>は<ruby>順番<rt>じゅんばん</rt></ruby>がバラバラで、<ruby>話
+                        <rt>はな</rt>
+                    </ruby>し<ruby>言葉<rt>ことば</rt></ruby>も<ruby>混<rt>ま</rt></ruby>ざっています。<ruby>必要<rt>ひつよう
+                        </rt></ruby>な<span class="n4-word" data-word="情報"><ruby>情報<rt>じょうほう</rt></ruby></span>だけを<ruby>探
+                        <rt>さが</rt>
+                    </ruby>して、<ruby>正<rt>ただ</rt></ruby>しいビジネスメールに<ruby>整理<rt>せいり</rt></ruby>しましょう。</p>
+
+                <!-- Q1 パターンA -->
+                <div class="q-card">
+                    <span class="q-number"><ruby>第<rt>だい</rt></ruby>1<ruby>問<rt>もん</rt></ruby></span><span
+                        class="q-pattern">パターンA：システムエラー</span>
+                    <div class="chat-bubble">
+                        <span class="answer-hint">システム<ruby>管理<rt>かんり</rt></ruby><ruby>部<rt>ぶ</rt></ruby>の<ruby>佐藤<rt>
+                                    さとう</rt></ruby>さん</span>にメールをお<ruby>願<rt>ねが</rt></ruby>い！さっきから<span
+                            class="answer-hint">ログインできない</span>ってユーザーから<span class="n4-word" data-word="連絡"><ruby>連絡<rt>
+                                    れんらく</rt></ruby></span>が<ruby>来<rt>き</rt></ruby>てるんだ。<ruby>調<rt>しら</rt>
+                        </ruby>べたら<span class="answer-hint">サーバーの<span class="n4-word"
+                                data-word="エラー">エラー</span></span>が<span class="n4-word" data-word="原因"><ruby>原因<rt>げんいん
+                                </rt></ruby></span>みたい。<ruby>急<rt>いそ</rt></ruby>いで<ruby>対応<rt>たいおう</rt></ruby><ruby>中
+                            <rt>ちゅう</rt>
+                        </ruby>で、<span class="answer-hint"><ruby>今日<rt>きょう</rt>
+                            </ruby>の15:00</span>には<ruby>直<rt>なお</rt></ruby>る<span class="n4-word"
+                            data-word="予定"><ruby>予定<rt>よてい</rt></ruby></span>です。
+                    </div>
+                    <div class="email-form">
+                        <div class="email-header"><strong>📧 メール<ruby>作成<rt>さくせい</rt></ruby></strong></div>
+                        <div class="email-row"><label><span class="n4-word" data-word="宛先"><ruby>宛先<rt>あてさき</rt>
+                                    </ruby></span></label><input type="text" data-answer="システム管理部の佐藤さん"
+                                placeholder="だれに送る？"></div>
+                        <div class="email-row"><label><span class="n4-word" data-word="件名"><ruby>件名<rt>けんめい</rt>
+                                    </ruby></span></label><span>【<span class="n4-word" data-word="重要"><ruby>重要<rt>
+                                            じゅうよう</rt></ruby></span>】システムエラーについて</span></div>
+                        <div class="email-body">お<ruby>疲<rt>つか</rt></ruby>れ<ruby>様<rt>さま</rt></ruby>です。〇〇です。<ruby>現在<rt>
+                                    げんざい</rt></ruby>、システムでエラーが<span class="n4-word" data-word="発生"><ruby>発生<rt>はっせい</rt>
+                                </ruby></span>しております。<br>
+                            【<span class="n4-word" data-word="問題"><ruby>問題<rt>もんだい</rt></ruby></span>】<input type="text"
+                                class="blank-input" data-answer="ログインできない" placeholder="何がおきている？"><br>
+                            【<span class="n4-word" data-word="原因"><ruby>原因<rt>げんいん</rt></ruby></span>】<input type="text"
+                                class="blank-input" data-answer="サーバーのエラー" placeholder="何が原因？"><br>
+                            【<ruby>直<rt>なお</rt></ruby>る<span class="n4-word" data-word="予定"><ruby>予定<rt>よてい</rt>
+                                </ruby></span>】<input type="text" class="blank-input" data-answer="今日の15:00"
+                                placeholder="いつ直る？"><br>
+                            よろしくお<ruby>願<rt>ねが</rt></ruby>いいたします。</div>
+                    </div>
+                </div>
+
+                <!-- Q2 パターンA -->
+                <div class="q-card">
+                    <span class="q-number"><ruby>第<rt>だい</rt></ruby>2<ruby>問<rt>もん</rt></ruby></span><span
+                        class="q-pattern">パターンA：システムエラー</span>
+                    <div class="chat-bubble">
+                        <ruby>株式会社<rt>かぶしきがいしゃ</rt></ruby>さくらデザインの<ruby>鈴木<rt>すずき</rt>
+                        </ruby><ruby>様<rt>さま</rt></ruby></span>あてに<span class="n4-word" data-word="連絡"><ruby>連絡
+                                <rt>れんらく</rt>
+                            </ruby></span>してくれる？<ruby>商品<rt>しょうひん</rt>
+                        </ruby>ページの<ruby>写真<rt>しゃしん</rt></ruby>が<ruby>出<rt>で</rt></ruby>ない</span><ruby>件<rt>けん
+                            </rt></ruby>なんだけど、<ruby>実<rt>じつ</rt></ruby>はこっちのミスで<ruby>画像<rt>がぞう
+                            </rt></ruby>ファイルが<ruby>壊<rt>こわ</rt></ruby>れている</span>んだよね……。でも<ruby>今日<rt>きょう</rt>
+                        </ruby>の16:30</span>には<ruby>直<rt>なお</rt>
+                        </ruby>る<span class="n4-word" data-word="予定"><ruby>予定<rt>よてい</rt></ruby></span>だから、そう<span
+                            class="n4-word" data-word="伝える"><ruby>伝<rt>つた</rt></ruby>えて</span>おいて！
+                    </div>
+                    <div class="email-form">
+                        <div class="email-header"><strong>📧 メール<ruby>作成<rt>さくせい</rt></ruby></strong></div>
+                        <div class="email-row"><label><span class="n4-word" data-word="宛先"><ruby>宛先<rt>あてさき</rt>
+                                    </ruby></span></label><input type="text" data-answer="株式会社さくらデザインの鈴木様"
+                                placeholder="だれに送る？"></div>
+                        <div class="email-row"><label><span class="n4-word" data-word="件名"><ruby>件名<rt>けんめい</rt>
+                                    </ruby></span></label><span>【<ruby>重要<rt>じゅうよう</rt></ruby>】システムエラーについて</span>
+                        </div>
+                        <div class="email-body">お<ruby>疲<rt>つか</rt></ruby>れ<ruby>様<rt>さま</rt></ruby>です。〇〇です。<ruby>現在<rt>
+                                    げんざい</rt></ruby>、システムでエラーが<ruby>発生<rt>はっせい</rt></ruby>しております。<br>
+                            【<ruby>問題<rt>もんだい</rt></ruby>】<input type="text" class="blank-input"
+                                data-answer="商品ページの写真が出ない" placeholder="何がおきている？"><br>
+                            【<ruby>原因<rt>げんいん</rt></ruby>】<input type="text" class="blank-input"
+                                data-answer="画像ファイルが壊れている" placeholder="何が原因？"><br>
+                            【<ruby>直<rt>なお</rt></ruby>る<ruby>予定<rt>よてい</rt></ruby>】<input type="text"
+                                class="blank-input" data-answer="今日の16:30" placeholder="いつ直る？"><br>
+                            よろしくお<ruby>願<rt>ねが</rt></ruby>いいたします。</div>
+                    </div>
+                </div>
+
+                <!-- Q3 パターンA -->
+                <div class="q-card">
+                    <span class="q-number"><ruby>第<rt>だい</rt></ruby>3<ruby>問<rt>もん</rt></ruby></span><span
+                        class="q-pattern">パターンA：システムエラー</span>
+                    <div class="chat-bubble">
+                        <span class="n4-word" data-word="至急"><ruby>至急<rt>しきゅう</rt></ruby></span>、<ruby>全<rt>ぜん</rt>
+                        </ruby><span class="n4-word" data-word="社員"><ruby>社員
+                                <rt>しゃいん</rt>
+                            </ruby></span>に<span class="n4-word" data-word="共有"><ruby>共有<rt>
+                                    きょうゆう</rt></ruby></span>をお<ruby>願<rt>ねが</rt></ruby>いします！どうもネットワークのシステム<span
+                            class="n4-word" data-word="障害"><ruby>障害<rt>しょうがい</rt>
+                            </ruby></span>みたいで、<ruby>現在<rt>げんざい</rt></ruby><ruby>社内
+                            <rt>しゃない</rt>
+                        </ruby>のメールが<ruby>送<rt>おく</rt>
+                        </ruby>れない</span><ruby>状態<rt>じょうたい</rt></ruby>になっています。<span class="n4-word"
+                            data-word="復旧"><ruby>復旧<rt>ふっきゅう</rt></ruby></span><span class="n4-word"
+                            data-word="作業"><ruby>作業<rt>さぎょう</rt></ruby></span>を<ruby>進<rt>すす</rt></ruby>めていて、<ruby>明日
+                            <rt>あした</rt>
+                        </ruby>の<ruby>朝<rt>あさ</rt>
+                        </ruby>9:00には<ruby>直<rt>なお</rt></ruby>る<ruby>予定<rt>よてい</rt></ruby>です。
+                    </div>
+                    <div class="email-form">
+                        <div class="email-header"><strong>📧 メール<ruby>作成<rt>さくせい</rt></ruby></strong></div>
+                        <div class="email-row"><label><ruby>宛先<rt>あてさき</rt></ruby></label><input type="text"
+                                data-answer="全社員" placeholder="だれに送る？"></div>
+                        <div class="email-row"><label><ruby>件名<rt>けんめい</rt></ruby></label><span>【<ruby>重要<rt>じゅうよう</rt>
+                                </ruby>】システムエラーについて</span></div>
+                        <div class="email-body">お<ruby>疲<rt>つか</rt></ruby>れ<ruby>様<rt>さま</rt></ruby>です。〇〇です。<ruby>現在<rt>
+                                    げんざい</rt></ruby>、システムでエラーが<ruby>発生<rt>はっせい</rt></ruby>しております。<br>
+                            【<ruby>問題<rt>もんだい</rt></ruby>】<input type="text" class="blank-input"
+                                data-answer="社内のメールが送れない" placeholder="何がおきている？"><br>
+                            【<ruby>原因<rt>げんいん</rt></ruby>】<input type="text" class="blank-input"
+                                data-answer="ネットワークのシステム障害" placeholder="何が原因？"><br>
+                            【<ruby>直<rt>なお</rt></ruby>る<ruby>予定<rt>よてい</rt></ruby>】<input type="text"
+                                class="blank-input" data-answer="明日の朝9:00" placeholder="いつ直る？"><br>
+                            よろしくお<ruby>願<rt>ねが</rt></ruby>いいたします。</div>
+                    </div>
+                </div>
+
+                <!-- Q4 パターンB -->
+                <div class="q-card">
+                    <span class="q-number"><ruby>第<rt>だい</rt></ruby>4<ruby>問<rt>もん</rt></ruby></span><span
+                        class="q-pattern">パターンB：スケジュール<span class="n4-word" data-word="変更"><ruby>変更<rt>へんこう</rt>
+                            </ruby></span></span>
+                    <div class="chat-bubble">
+                        <span class="answer-hint"><ruby>株式会社<rt>かぶしきがいしゃ</rt></ruby>グローバル<ruby>商事<rt>しょうじ</rt>
+                            </ruby>の<ruby>田中<rt>たなか</rt></ruby>マネージャー</span>にメールお<ruby>願<rt>ねが</rt>
+                        </ruby>い！こっちの<ruby>他<rt>ほか</rt></ruby>のお<ruby>客様<rt>きゃくさま</rt></ruby>との<ruby>会議<rt>かいぎ</rt>
+                        </ruby>が<ruby>長引<rt>ながび</rt></ruby>くため、<span class="answer-hint"><ruby>明日<rt>あした</rt>
+                            </ruby>のミーティング</span>の<ruby>時間<rt>じかん</rt></ruby>を<ruby>変更<rt>へんこう</rt>
+                        </ruby>したいです。<ruby>元々<rt>もともと</rt></ruby>は<span class="answer-hint">13:00<ruby>開始<rt>かいし
+                                </rt></ruby></span>だったけど、<span class="answer-hint">15:00</span>にずらしてもらえるかな？
+                    </div>
+                    <div class="email-form">
+                        <div class="email-header"><strong>📧 メール<ruby>作成<rt>さくせい</rt></ruby></strong></div>
+                        <div class="email-row"><label><ruby>宛先<rt>あてさき</rt></ruby></label><input type="text"
+                                data-answer="株式会社グローバル商事の田中マネージャー" placeholder="だれに送る？"></div>
+                        <div class="email-row"><label><ruby>件名<rt>けんめい</rt></ruby></label><span>【<ruby>連絡<rt>れんらく</rt>
+                                </ruby>】<ruby>予定<rt>よてい</rt></ruby>の<ruby>変更<rt>へんこう</rt></ruby>について</span></div>
+                        <div class="email-body">お<ruby>疲<rt>つか</rt></ruby>れ<ruby>様<rt>さま</rt></ruby>です。〇〇です。<ruby>予定<rt>
+                                    よてい</rt></ruby>が<ruby>変更<rt>へんこう</rt></ruby>になりましたので、<ruby>連絡<rt>れんらく</rt>
+                            </ruby>します。<br>
+                            【<span class="n4-word" data-word="対象"><ruby>対象<rt>たいしょう</rt></ruby></span>】<input
+                                type="text" class="blank-input" data-answer="明日のミーティング" placeholder="何の予定？"><br>
+                            【<ruby>変更前<rt>へんこうまえ</rt></ruby>】<input type="text" class="blank-input"
+                                data-answer="13:00開始" placeholder="もとの予定"><br>
+                            【<ruby>変更後<rt>へんこうご</rt></ruby>】<input type="text" class="blank-input" data-answer="15:00"
+                                placeholder="新しい予定"><br>
+                            【<ruby>理由<rt>りゆう</rt></ruby>】<input type="text" class="blank-input"
+                                data-answer="他のお客様との会議が長引くため" placeholder="なぜ変更？"><br>
+                            よろしくお<ruby>願<rt>ねが</rt></ruby>いいたします。</div>
+                    </div>
+                </div>
+
+                <!-- Q5 パターンB -->
+                <div class="q-card">
+                    <span class="q-number"><ruby>第<rt>だい</rt></ruby>5<ruby>問<rt>もん</rt></ruby></span><span
+                        class="q-pattern">パターンB：スケジュール<ruby>変更<rt>へんこう</rt></ruby></span>
+                    <div class="chat-bubble">
+                        インフラ<ruby>開発<rt>かいはつ</rt></ruby><ruby>部<rt>ぶ</rt></ruby>のみんなにチャットで<span class="n4-word"
+                            data-word="伝える"><ruby>伝<rt>つた</rt></ruby>えて</span>おいて。<ruby>今週<rt>こんしゅう</rt>
+                        </ruby>のデータベースのアップデートだけど、テストにもう<ruby>少<rt>すこ</rt></ruby>し<ruby>時間<rt>じかん
+                            </rt></ruby>が<span class="n4-word" data-word="必要"><ruby>必要<rt>ひつよう</rt>
+                            </ruby></span>なため、<span class="n4-word" data-word="延期"><ruby>延期<rt>えんき</rt>
+                            </ruby></span>することになったよ。<ruby>今週<rt>こんしゅう</rt>
+                        </ruby>の<ruby>金曜日<rt>きんようび</rt></ruby>の<ruby>予定<rt>よてい</rt></ruby>だったけど、<ruby>来週<rt>らいしゅう</rt>
+                        </ruby>の<ruby>月曜日<rt>げつようび</rt>
+                        </ruby>になります。
+                    </div>
+                    <div class="email-form">
+                        <div class="email-header"><strong>📧 メール<ruby>作成<rt>さくせい</rt></ruby></strong></div>
+                        <div class="email-row"><label><ruby>宛先<rt>あてさき</rt></ruby></label><input type="text"
+                                data-answer="インフラ開発部のみんな" placeholder="だれに送る？"></div>
+                        <div class="email-row"><label><ruby>件名<rt>けんめい</rt></ruby></label><span>【<ruby>連絡<rt>れんらく</rt>
+                                </ruby>】<ruby>予定<rt>よてい</rt></ruby>の<ruby>変更<rt>へんこう</rt></ruby>について</span></div>
+                        <div class="email-body">お<ruby>疲<rt>つか</rt></ruby>れ<ruby>様<rt>さま</rt></ruby>です。〇〇です。<ruby>予定<rt>
+                                    よてい</rt></ruby>が<ruby>変更<rt>へんこう</rt></ruby>になりましたので、<ruby>連絡<rt>れんらく</rt>
+                            </ruby>します。<br>
+                            【<ruby>対象<rt>たいしょう</rt></ruby>】<input type="text" class="blank-input"
+                                data-answer="データベースのアップデート" placeholder="何の予定？"><br>
+                            【<ruby>変更前<rt>へんこうまえ</rt></ruby>】<input type="text" class="blank-input" data-answer="今週の金曜日"
+                                placeholder="もとの予定"><br>
+                            【<ruby>変更後<rt>へんこうご</rt></ruby>】<input type="text" class="blank-input" data-answer="来週の月曜日"
+                                placeholder="新しい予定"><br>
+                            【<ruby>理由<rt>りゆう</rt></ruby>】<input type="text" class="blank-input"
+                                data-answer="テストにもう少し時間が必要なため" placeholder="なぜ変更？"><br>
+                            よろしくお<ruby>願<rt>ねが</rt></ruby>いいたします。</div>
+                    </div>
+                </div>
+
+                <!-- Q6 パターンB -->
+                <div class="q-card">
+                    <span class="q-number"><ruby>第<rt>だい</rt></ruby>6<ruby>問<rt>もん</rt></ruby></span><span
+                        class="q-pattern">パターンB：スケジュール<ruby>変更<rt>へんこう</rt></ruby></span>
+                    <div class="chat-bubble">
+                        デザイン<ruby>制作<rt>せいさく</rt></ruby>チームへ<ruby>連絡<rt>れんらく</rt></ruby>をお<ruby>願<rt>ねが</rt></ruby>
+                        い。クライアントからの<span class="n4-word" data-word="修正"><ruby>修正<rt>しゅうせい</rt></ruby></span>が<ruby>多<rt>おお</rt></ruby>いため、デザインの<span class="n4-word"
+                            data-word="提出"><ruby>提出<rt>ていしゅつ</rt></ruby></span>スケジュールを<ruby>変<rt>か</rt></ruby>えさせてもらいたいんだよね。5<ruby>月<rt>がつ</rt></ruby>10<ruby>日<rt>にち</rt></ruby>
+                        から5<ruby>月<rt>がつ</rt></ruby>15<ruby>日<rt>にち</rt></ruby>に<ruby>変更<rt>へんこう</rt></ruby>させて
+                        ほしいって<ruby>伝<rt>つた</rt></ruby>えておいて！
+                    </div>
+                    <div class="email-form">
+                        <div class="email-header"><strong>📧 メール<ruby>作成<rt>さくせい</rt></ruby></strong></div>
+                        <div class="email-row"><label><ruby>宛先<rt>あてさき</rt></ruby></label><input type="text"
+                                data-answer="デザイン制作チーム" placeholder="だれに送る？"></div>
+                        <div class="email-row"><label><ruby>件名<rt>けんめい</rt></ruby></label><span>【<ruby>連絡<rt>れんらく</rt>
+                                </ruby>】<ruby>予定<rt>よてい</rt></ruby>の<ruby>変更<rt>へんこう</rt></ruby>について</span></div>
+                        <div class="email-body">お<ruby>疲<rt>つか</rt></ruby>れ<ruby>様<rt>さま</rt></ruby>です。〇〇です。<ruby>予定<rt>
+                                    よてい</rt></ruby>が<ruby>変更<rt>へんこう</rt></ruby>になりましたので、<ruby>連絡<rt>れんらく</rt>
+                            </ruby>します。<br>
+                            【<ruby>対象<rt>たいしょう</rt></ruby>】<input type="text" class="blank-input"
+                                data-answer="デザインの提出スケジュール" placeholder="何の予定？"><br>
+                            【<ruby>変更前<rt>へんこうまえ</rt></ruby>】<input type="text" class="blank-input" data-answer="5月10日"
+                                placeholder="もとの予定"><br>
+                            【<ruby>変更後<rt>へんこうご</rt></ruby>】<input type="text" class="blank-input" data-answer="5月15日"
+                                placeholder="新しい予定"><br>
+                            【<ruby>理由<rt>りゆう</rt></ruby>】<input type="text" class="blank-input"
+                                data-answer="クライアントからの修正が多いため" placeholder="なぜ変更？"><br>
+                            よろしくお<ruby>願<rt>ねが</rt></ruby>いいたします。</div>
+                    </div>
+                </div>
+
+                <!-- Q7 パターンC -->
+                <div class="q-card">
+                    <span class="q-number"><ruby>第<rt>だい</rt></ruby>7<ruby>問<rt>もん</rt></ruby></span><span
+                        class="q-pattern">パターンC：お<ruby>願<rt>ねが</rt></ruby>い・<span class="n4-word"
+                            data-word="依頼"><ruby>依頼<rt>いらい</rt></ruby></span></span>
+                    <div class="chat-bubble">
+                        <span class="answer-hint"><ruby>開発<rt>かいはつ</rt></ruby>2<ruby>課<rt>か</rt></ruby>の<ruby>山田<rt>やまだ
+                                </rt></ruby>さん</span>あてにお<ruby>願<rt>ねが</rt></ruby>い！<ruby>明日<rt>あした</rt></ruby>の<ruby>朝
+                            <rt>あさ</rt>
+                        </ruby>にリリースするため、<span class="answer-hint">コードの<span class="n4-word" data-word="確認"><ruby>確認<rt>
+                                        かくにん</rt></ruby></span></span>を<ruby>頼<rt>たの</rt>
+                        </ruby>みたいんだよね。<ruby>見<rt>み</rt></ruby>てほしいのは<span class="answer-hint">ログイン<ruby>画面<rt>がめん
+                                </rt></ruby>のプログラム</span>です。<span class="answer-hint"><ruby>今日<rt>きょう</rt>
+                            </ruby>の17:00</span>までに<ruby>終<rt>お</rt></ruby>わらせてほしい。あと、<span
+                            class="answer-hint">スマホ<ruby>版<rt>ばん</rt></ruby>も<ruby>確認<rt>かくにん</rt>
+                            </ruby>すること</span>って<ruby>付<rt>つ</rt></ruby>け<ruby>加<rt>くわ</rt></ruby>えといて！
+                    </div>
+                    <div class="email-form">
+                        <div class="email-header"><strong>📧 メール<ruby>作成<rt>さくせい</rt></ruby></strong></div>
+                        <div class="email-row"><label><ruby>宛先<rt>あてさき</rt></ruby></label><input type="text"
+                                data-answer="開発2課の山田さん" placeholder="だれに送る？"></div>
+                        <div class="email-row"><label><ruby>件名<rt>けんめい</rt></ruby></label><span>【<ruby>依頼<rt>いらい</rt>
+                                </ruby>】<ruby>作業<rt>さぎょう</rt></ruby>のお<ruby>願<rt>ねが</rt></ruby>い</span></div>
+                        <div class="email-body">お<ruby>疲<rt>つか</rt></ruby>れ<ruby>様<rt>さま</rt></ruby>です。〇〇です。<ruby>以下<rt>
+                                    いか</rt></ruby>の<ruby>作業<rt>さぎょう</rt></ruby>をお<ruby>願<rt>ねが</rt></ruby>いします。<br>
+                            【<ruby>依頼<rt>いらい</rt></ruby><ruby>内容<rt>ないよう</rt></ruby>】<input type="text"
+                                class="blank-input" data-answer="コードの確認" placeholder="何をしてほしい？"><br>
+                            【<ruby>対象<rt>たいしょう</rt></ruby>】<input type="text" class="blank-input"
+                                data-answer="ログイン画面のプログラム" placeholder="どこを？"><br>
+                            【<span class="n4-word" data-word="期限"><ruby>期限<rt>きげん</rt></ruby></span>】<input type="text"
+                                class="blank-input" data-answer="今日の17:00" placeholder="いつまでに？"><br>
+                            【<ruby>理由<rt>りゆう</rt></ruby>】<input type="text" class="blank-input"
+                                data-answer="明日の朝にリリースするため" placeholder="なぜ？"><br>
+                            【<span class="n4-word" data-word="注意点"><ruby>注意点<rt>ちゅういてん</rt></ruby></span>】<input
+                                type="text" class="blank-input" data-answer="スマホ版も確認すること" placeholder="気をつけること"><br>
+                            よろしくお<ruby>願<rt>ねが</rt></ruby>いいたします。</div>
+                    </div>
+                </div>
+
+                <!-- Q8 パターンC -->
+                <div class="q-card">
+                    <span class="q-number"><ruby>第<rt>だい</rt></ruby>8<ruby>問<rt>もん</rt></ruby></span><span
+                        class="q-pattern">パターンC：お<ruby>願<rt>ねが</rt></ruby>い・<ruby>依頼<rt>いらい</rt></ruby></span>
+                    <div class="chat-bubble">
+                        <span class="n4-word" data-word="品質管理"><ruby>品質管理<rt>ひんしつかんり</rt>
+                            </ruby></span>（QA）チームの<ruby>皆様<rt>みなさま</rt></ruby>にお<ruby>願<rt>ねが</rt>
+                        </ruby>いの<ruby>連絡<rt>れんらく</rt></ruby>をしてくれる？<ruby>新<rt>あたら</rt>
+                        </ruby>しい<ruby>検索<rt>けんさく</rt></ruby><span class="n4-word" data-word="機能"><ruby>機能<rt>
+                                    きのう</rt></ruby></span>のテストを<ruby>急<rt>いそ</rt></ruby>ぎでやってほしいです。<ruby>対象
+                            <rt>たいしょう</rt>
+                        </ruby>はPC<ruby>版<rt>ばん</rt>
+                        </ruby>のウェブサイトで、<ruby>明日<rt>あした</rt>
+                        </ruby>の12:00が<ruby>期限<rt>きげん</rt></ruby>です。<ruby>明日<rt>あした</rt></ruby>の<ruby>午後
+                            <rt>ごご</rt>
+                        </ruby>にリリースするためなんだよね。スマホ<ruby>版<rt>ばん</rt>
+                        </ruby>はテストしなくていいことも<ruby>書<rt>か</rt></ruby>いておいてね。
+                    </div>
+                    <div class="email-form">
+                        <div class="email-header"><strong>📧 メール<ruby>作成<rt>さくせい</rt></ruby></strong></div>
+                        <div class="email-row"><label><ruby>宛先<rt>あてさき</rt></ruby></label><input type="text"
+                                data-answer="品質管理（QA）チームの皆様" placeholder="だれに送る？"></div>
+                        <div class="email-row"><label><ruby>件名<rt>けんめい</rt></ruby></label><span>【<ruby>依頼<rt>いらい</rt>
+                                </ruby>】<ruby>作業<rt>さぎょう</rt></ruby>のお<ruby>願<rt>ねが</rt></ruby>い</span></div>
+                        <div class="email-body">お<ruby>疲<rt>つか</rt></ruby>れ<ruby>様<rt>さま</rt></ruby>です。〇〇です。<ruby>以下<rt>
+                                    いか</rt></ruby>の<ruby>作業<rt>さぎょう</rt></ruby>をお<ruby>願<rt>ねが</rt></ruby>いします。<br>
+                            【<ruby>依頼<rt>いらい</rt></ruby><ruby>内容<rt>ないよう</rt></ruby>】<input type="text"
+                                class="blank-input" data-answer="新しい検索機能のテスト" placeholder="何をしてほしい？"><br>
+                            【<ruby>対象<rt>たいしょう</rt></ruby>】<input type="text" class="blank-input"
+                                data-answer="PC版のウェブサイト" placeholder="どこを？"><br>
+                            【<ruby>期限<rt>きげん</rt></ruby>】<input type="text" class="blank-input" data-answer="明日の12:00"
+                                placeholder="いつまでに？"><br>
+                            【<ruby>理由<rt>りゆう</rt></ruby>】<input type="text" class="blank-input"
+                                data-answer="明日の午後にリリースするため" placeholder="なぜ？"><br>
+                            【<ruby>注意点<rt>ちゅういてん</rt></ruby>】<input type="text" class="blank-input"
+                                data-answer="スマホ版はテストしなくていいこと" placeholder="気をつけること"><br>
+                            よろしくお<ruby>願<rt>ねが</rt></ruby>いいたします。</div>
+                    </div>
+                </div>
+
+                <!-- Q9 パターンC -->
+                <div class="q-card">
+                    <span class="q-number"><ruby>第<rt>だい</rt></ruby>9<ruby>問<rt>もん</rt></ruby></span><span
+                        class="q-pattern">パターンC：お<ruby>願<rt>ねが</rt></ruby>い・<ruby>依頼<rt>いらい</rt></ruby></span>
+                    <div class="chat-bubble">
+                        <span class="n4-word" data-word="営業"><ruby>営業<rt>えいぎょう</rt>
+                            </ruby></span><ruby>部<rt>ぶ</rt></ruby>の<ruby>渡辺<rt>わたなべ</rt></ruby><ruby>部長<rt>ぶちょう
+                            </rt></ruby>に<ruby>連絡<rt>れんらく</rt></ruby>をお<ruby>願<rt>ねが</rt></ruby>いします！<ruby>来週
+                            <rt>らいしゅう</rt>
+                        </ruby>、<ruby>海外<rt>かいがい</rt></ruby>のお<ruby>客様<rt>きゃくさま</rt></ruby>に<ruby>送
+                            <rt>おく</rt>
+                        </ruby>るため、マニュアルの<ruby>英語<rt>えいご</rt></ruby><span class="n4-word" data-word="翻訳"><ruby>翻訳<rt>
+                                    ほんやく</rt></ruby></span>をお<ruby>願<rt>ねが
+                            </rt></ruby>いしたいです。<ruby>翻訳<rt>ほんやく</rt></ruby>する<ruby>場所<rt>ばしょ</rt></ruby>はユーザー<ruby>向<rt>
+                                む</rt></ruby>け<ruby>説明書<rt>せつめいしょ</rt>
+                        </ruby>の3ページから5ページなんだけど、<ruby>期限<rt>きげん</rt></ruby>を<ruby>今週<rt>こんしゅう</rt></ruby>の<ruby>金曜日<rt>
+                                きんようび</rt>
+                        </ruby>の18:00にしてほしいな。わからない<ruby>単語<rt>たんご</rt>
+                        </ruby>は<span class="n4-word" data-word="絶対"><ruby>必<rt>かなら</rt></ruby>ず</span><ruby>質問
+                            <rt>しつもん</rt>
+                        </ruby>することって<ruby>注意書<rt>ちゅういが</rt></ruby>きも<ruby>入<rt>い</rt>
+                        </ruby>れといて！
+                    </div>
+                    <div class="email-form">
+                        <div class="email-header"><strong>📧 メール<ruby>作成<rt>さくせい</rt></ruby></strong></div>
+                        <div class="email-row"><label><ruby>宛先<rt>あてさき</rt></ruby></label><input type="text"
+                                data-answer="営業部の渡辺部長" placeholder="だれに送る？"></div>
+                        <div class="email-row"><label><ruby>件名<rt>けんめい</rt></ruby></label><span>【<ruby>依頼<rt>いらい</rt>
+                                </ruby>】<ruby>作業<rt>さぎょう</rt></ruby>のお<ruby>願<rt>ねが</rt></ruby>い</span></div>
+                        <div class="email-body">お<ruby>疲<rt>つか</rt></ruby>れ<ruby>様<rt>さま</rt></ruby>です。〇〇です。<ruby>以下<rt>
+                                    いか</rt></ruby>の<ruby>作業<rt>さぎょう</rt></ruby>をお<ruby>願<rt>ねが</rt></ruby>いします。<br>
+                            【<ruby>依頼<rt>いらい</rt></ruby><ruby>内容<rt>ないよう</rt></ruby>】<input type="text"
+                                class="blank-input" data-answer="マニュアルの英語翻訳" placeholder="何をしてほしい？"><br>
+                            【<ruby>対象<rt>たいしょう</rt></ruby>】<input type="text" class="blank-input"
+                                data-answer="ユーザー向け説明書の3ページから5ページ" placeholder="どこを？"><br>
+                            【<ruby>期限<rt>きげん</rt></ruby>】<input type="text" class="blank-input"
+                                data-answer="今週の金曜日の18:00" placeholder="いつまでに？"><br>
+                            【<ruby>理由<rt>りゆう</rt></ruby>】<input type="text" class="blank-input"
+                                data-answer="来週、海外のお客様に送るため" placeholder="なぜ？"><br>
+                            【<ruby>注意点<rt>ちゅういてん</rt></ruby>】<input type="text" class="blank-input"
+                                data-answer="わからない単語は必ず質問すること" placeholder="気をつけること"><br>
+                            よろしくお<ruby>願<rt>ねが</rt></ruby>いいたします。</div>
+                    </div>
+                </div>
+
+                <!-- Q10 パターンC -->
+                <div class="q-card">
+                    <span class="q-number"><ruby>第<rt>だい</rt></ruby>10<ruby>問<rt>もん</rt></ruby></span><span
+                        class="q-pattern">パターンC：お<ruby>願<rt>ねが</rt></ruby>い・<ruby>依頼<rt>いらい</rt></ruby></span>
+                    <div class="chat-bubble">
+                        アプリ<ruby>開発<rt>かいはつ</rt></ruby>チームに<ruby>連絡<rt>れんらく</rt></ruby>しといて！<ruby>今日<rt>きょう</rt>
+                        </ruby>の16:00にテスト<span class="n4-word" data-word="環境"><ruby>環境<rt>かんきょう</rt>
+                            </ruby></span>を<ruby>閉<rt>と</rt></ruby>じるため、バグが<ruby>直<rt>なお
+                            </rt></ruby>ったかの<ruby>最終<rt>さいしゅう</rt></ruby>チェックを<ruby>大<span class="n4-word"
+                                data-word="至急"><ruby>至急<rt>しきゅう</rt></ruby></span></ruby>お<ruby>願<rt>ねが</rt>
+                        </ruby>いしたいです。チェックするのは<span class="n4-word" data-word="決済"><ruby>決済
+                                <rt>けっさい</rt>
+                            </ruby></span><ruby>画面<rt>がめん</rt>
+                        </ruby>ね。<ruby>遅<rt>おそ</rt></ruby>くても<ruby>今日<rt>きょう
+                            </rt></ruby>の15:00までにやってほしい！エラーが<ruby>出<rt>で</rt>
+                        </ruby>たらすぐに<ruby>私<rt>わたし</rt></ruby>に<ruby>教<rt>おし</rt></ruby>えることって<ruby>念押
+                            <rt>ねんお</rt>
+                        </ruby>ししといてね。
+                    </div>
+                    <div class="email-form">
+                        <div class="email-header"><strong>📧 メール<ruby>作成<rt>さくせい</rt></ruby></strong></div>
+                        <div class="email-row"><label><ruby>宛先<rt>あてさき</rt></ruby></label><input type="text"
+                                data-answer="アプリ開発チーム" placeholder="だれに送る？"></div>
+                        <div class="email-row"><label><ruby>件名<rt>けんめい</rt></ruby></label><span>【<ruby>依頼<rt>いらい</rt>
+                                </ruby>】<ruby>作業<rt>さぎょう</rt></ruby>のお<ruby>願<rt>ねが</rt></ruby>い</span></div>
+                        <div class="email-body">お<ruby>疲<rt>つか</rt></ruby>れ<ruby>様<rt>さま</rt></ruby>です。〇〇です。<ruby>以下<rt>
+                                    いか</rt></ruby>の<ruby>作業<rt>さぎょう</rt></ruby>をお<ruby>願<rt>ねが</rt></ruby>いします。<br>
+                            【<ruby>依頼<rt>いらい</rt></ruby><ruby>内容<rt>ないよう</rt></ruby>】<input type="text"
+                                class="blank-input" data-answer="バグが直ったかの最終チェック" placeholder="何をしてほしい？"><br>
+                            【<ruby>対象<rt>たいしょう</rt></ruby>】<input type="text" class="blank-input" data-answer="決済画面"
+                                placeholder="どこを？"><br>
+                            【<ruby>期限<rt>きげん</rt></ruby>】<input type="text" class="blank-input" data-answer="今日の15:00"
+                                placeholder="いつまでに？"><br>
+                            【<ruby>理由<rt>りゆう</rt></ruby>】<input type="text" class="blank-input"
+                                data-answer="今日の16:00にテスト環境を閉じるため" placeholder="なぜ？"><br>
+                            【<ruby>注意点<rt>ちゅういてん</rt></ruby>】<input type="text" class="blank-input"
+                                data-answer="エラーが出たらすぐに私に教えること" placeholder="気をつけること"><br>
+                            よろしくお<ruby>願<rt>ねが</rt></ruby>いいたします。</div>
+                    </div>
+                </div>
+            </div><!-- end tab-beginner --><!-- ===== 上級タブ ===== -->
+            <div class="tab-content" id="tab-advanced">
+                <div class="name-pdf-bar">
+                    <label><ruby>名前<rt>なまえ</rt></ruby>：</label>
+                    <input type="text" class="name-input" id="name-advanced" placeholder="あなたの名前">
+                    <button class="pdf-btn" onclick="printTab('advanced')">📄 PDF<ruby>出力<rt>しゅつりょく</rt></ruby></button>
+                </div>
+
+                <p style="margin-bottom:20px;color:#64748b">Slack<ruby>風<rt>ふう</rt></ruby>のメッセージを<ruby>作成<rt>さくせい</rt>
+                    </ruby>してください。<ruby>下<rt>した</rt></ruby>の<span class="n4-word" data-word="情報"><ruby>情報<rt>じょうほう</rt>
+                        </ruby></span>をもとに、<ruby>分<rt>わ</rt></ruby>かりやすい<span class="n4-word" data-word="連絡"><ruby>連絡
+                            <rt>れんらく
+                            </rt>
+                        </ruby></span>メッセージを<ruby>書<rt>か</rt></ruby>きましょう。</p>
+
+                <!-- Advanced Q1 -->
+                <div class="q-card">
+                    <span class="q-number"><ruby>第<rt>だい</rt></ruby>1<ruby>問<rt>もん</rt></ruby></span><span
+                        class="level-badge level-1">レベル1</span>
+                    <div class="slack-msg">
+                        <div class="slack-header">
+                            <div class="slack-avatar">You</div>
+                            <div>
+                                <div class="slack-name">あなた</div>
+                                <div class="slack-channel"><span class="n4-word" data-word="宛先"><ruby>宛先<rt>あてさき</rt>
+                                        </ruby></span>：フロントエンド<ruby>開発<rt>かいはつ</rt></ruby>チーム (@frontend_team)</div>
+                            </div>
+                        </div>
+                        <p style="margin-bottom:12px;color:#64748b;font-size:14px">📋 テスト<ruby>用<rt>よう</rt>
+                            </ruby>のURLが<ruby>変<rt>か
+                                </rt></ruby>わった。（<ruby>変更前<rt>へんこうまえ</rt></ruby>：http://test-server1 → <ruby>変更後<rt>
+                                    へんこうご</rt>
+                            </ruby>：http://test-server2）</p>
+                        <textarea class="slack-input" style="min-height: 240px"
+                            placeholder="ここにSlackメッセージを書いてください..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Advanced Q2 -->
+                <div class="q-card">
+                    <span class="q-number"><ruby>第<rt>だい</rt></ruby>2<ruby>問<rt>もん</rt></ruby></span><span
+                        class="level-badge level-2">レベル2</span>
+                    <div class="slack-msg">
+                        <div class="slack-header">
+                            <div class="slack-avatar">You</div>
+                            <div>
+                                <div class="slack-name">あなた</div>
+                                <div class="slack-channel"><ruby>宛先<rt>あてさき</rt></ruby>：システム<ruby>開発<rt>かいはつ</rt>
+                                    </ruby><ruby>部<rt>ぶ
+                                        </rt></ruby> (@system_dev)</div>
+                            </div>
+                        </div>
+                        <p style="margin-bottom:12px;color:#64748b;font-size:14px">📋 データベースの<span class="n4-word"
+                                data-word="仕様書"><ruby>仕様書<rt>しようしょ</rt></ruby></span>が<ruby>新<rt>あたら</rt>
+                            </ruby>しくなった。（<ruby>変更前<rt>
+                                    へんこうまえ</rt></ruby>：バージョン1.0 → <ruby>変更後<rt>へんこうご</rt></ruby>：バージョン2.0）<ruby>新<rt>あたら
+                                </rt>
+                            </ruby>しいファイルを<span class="n4-word" data-word="確認"><ruby>確認<rt>かくにん</rt></ruby></span>してほしい。
+                        </p>
+                        <textarea class="slack-input" style="min-height: 240px"
+                            placeholder="ここにSlackメッセージを書いてください..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Advanced Q3 -->
+                <div class="q-card">
+                    <span class="q-number"><ruby>第<rt>だい</rt></ruby>3<ruby>問<rt>もん</rt></ruby></span><span
+                        class="level-badge level-2">レベル2</span>
+                    <div class="slack-msg">
+                        <div class="slack-header">
+                            <div class="slack-avatar">You</div>
+                            <div>
+                                <div class="slack-name">あなた</div>
+                                <div class="slack-channel"><ruby>宛先<rt>あてさき</rt></ruby>：<ruby>全<rt>ぜん</rt>
+                                    </ruby><ruby>社員<rt>しゃいん
+                                        </rt></ruby> (@all_staff)</div>
+                            </div>
+                        </div>
+                        <p style="margin-bottom:12px;color:#64748b;font-size:14px">📋 <ruby>今日<rt>きょう</rt>
+                            </ruby>の22:00〜23:00に<ruby>社内<rt>しゃない</rt></ruby>サーバーの<span class="n4-word"
+                                data-word="メンテナンス">メンテナンス</span>（<ruby>点検<rt>てんけん</rt></ruby>）をする。その<ruby>時間<rt>じかん</rt>
+                            </ruby>はテスト<span class="n4-word" data-word="環境"><ruby>環境<rt>かんきょう</rt></ruby></span>が<ruby>使
+                                <rt>つか
+                                </rt>
+                            </ruby>えない。</p>
+                        <textarea class="slack-input" style="min-height: 240px"
+                            placeholder="ここにSlackメッセージを書いてください..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Advanced Q4 -->
+                <div class="q-card">
+                    <span class="q-number"><ruby>第<rt>だい</rt></ruby>4<ruby>問<rt>もん</rt></ruby></span><span
+                        class="level-badge level-2">レベル2</span>
+                    <div class="slack-msg">
+                        <div class="slack-header">
+                            <div class="slack-avatar">You</div>
+                            <div>
+                                <div class="slack-name">あなた</div>
+                                <div class="slack-channel"><ruby>宛先<rt>あてさき</rt></ruby>：インフラ<ruby>管理<rt>かんり</rt>
+                                    </ruby>チーム
+                                    (@infra_team)</div>
+                            </div>
+                        </div>
+                        <p style="margin-bottom:12px;color:#64748b;font-size:14px">📋 <ruby>新<rt>あたら</rt>
+                            </ruby>しいコードの<span class="n4-word" data-word="デプロイ">デプロイ</span>が<ruby>終<rt>お</rt>
+                            </ruby>わった。<ruby>新<rt>あたら</rt>
+                            </ruby>しい<span class="n4-word" data-word="機能"><ruby>機能<rt>きのう</rt></ruby></span>（<ruby>検索
+                                <rt>けんさく
+                                </rt>
+                            </ruby><ruby>機能<rt>きのう</rt></ruby>）が<ruby>使<rt>つか</rt></ruby>えるようになった。<ruby>何<rt>なに
+                                </rt>
+                            </ruby>かエラーが<ruby>出<rt>で</rt></ruby>たら<ruby>教<rt>おし</rt></ruby>えてほしい。</p>
+                        <textarea class="slack-input" style="min-height: 240px"
+                            placeholder="ここにSlackメッセージを書いてください..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Advanced Q5 -->
+                <div class="q-card">
+                    <span class="q-number"><ruby>第<rt>だい</rt></ruby>5<ruby>問<rt>もん</rt></ruby></span><span
+                        class="level-badge level-3">レベル3</span>
+                    <div class="slack-msg">
+                        <div class="slack-header">
+                            <div class="slack-avatar">You</div>
+                            <div>
+                                <div class="slack-name">あなた</div>
+                                <div class="slack-channel"><ruby>宛先<rt>あてさき</rt></ruby>：<span class="n4-word"
+                                        data-word="品質管理"><ruby>品質管理<rt>ひんしつかんり</rt></ruby></span>チーム (@qa_team)</div>
+                            </div>
+                        </div>
+                        <p style="margin-bottom:12px;color:#64748b;font-size:14px">📋 ログインできないバグを<ruby>直<rt>なお</rt>
+                            </ruby>した。<ruby>最新<rt>さいしん</rt></ruby>のプログラムをテスト<ruby>環境<rt>かんきょう</rt></ruby>に<ruby>入<rt>い
+                                </rt>
+                            </ruby>れた。<ruby>明日<rt>あした</rt></ruby>の12:00までに、もう<ruby>一度<rt>いちど</rt></ruby>テストをしてほしい。</p>
+                        <textarea class="slack-input" style="min-height: 240px"
+                            placeholder="ここにSlackメッセージを書いてください..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Advanced Q6 -->
+                <div class="q-card">
+                    <span class="q-number"><ruby>第<rt>だい</rt></ruby>6<ruby>問<rt>もん</rt></ruby></span><span
+                        class="level-badge level-3">レベル3</span>
+                    <div class="slack-msg">
+                        <div class="slack-header">
+                            <div class="slack-avatar">You</div>
+                            <div>
+                                <div class="slack-name">あなた</div>
+                                <div class="slack-channel"><ruby>宛先<rt>あてさき</rt></ruby>：バックエンド<ruby>開発<rt>かいはつ</rt>
+                                    </ruby>チーム
+                                    (@backend_team)</div>
+                            </div>
+                        </div>
+                        <p style="margin-bottom:12px;color:#64748b;font-size:14px">📋 データベースを<ruby>新<rt>あたら</rt>
+                            </ruby>しくする。<ruby>時間
+                                <rt>じかん</rt>
+                            </ruby>は<ruby>今日<rt>きょう</rt></ruby>の18:00〜18:30。データが<ruby>壊<rt>こわ</rt></ruby>れるのを<ruby>防
+                                <rt>ふせ</rt>
+                            </ruby>ぐため、その<ruby>時間<rt>じかん</rt></ruby>は<span class="n4-word" data-word="絶対"><ruby>絶対
+                                    <rt>ぜったい</rt>
+                                </ruby></span>にデータベースを<ruby>使<rt>つか</rt></ruby>わないでほしい。</p>
+                        <textarea class="slack-input" style="min-height: 240px"
+                            placeholder="ここにSlackメッセージを書いてください..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Advanced Q7 -->
+                <div class="q-card">
+                    <span class="q-number"><ruby>第<rt>だい</rt></ruby>7<ruby>問<rt>もん</rt></ruby></span><span
+                        class="level-badge level-4">レベル4</span>
+                    <div class="slack-msg">
+                        <div class="slack-header">
+                            <div class="slack-avatar">You</div>
+                            <div>
+                                <div class="slack-name">あなた</div>
+                                <div class="slack-channel"><ruby>宛先<rt>あてさき</rt></ruby>：<ruby>全<rt>ぜん</rt>
+                                    </ruby><ruby>社員<rt>しゃいん
+                                        </rt></ruby> (@all_staff)</div>
+                            </div>
+                        </div>
+                        <p style="margin-bottom:12px;color:#64748b;font-size:14px">📋 さっきリリースした<ruby>新<rt>あたら</rt>
+                            </ruby>しい<ruby>機能
+                                <rt>きのう</rt>
+                            </ruby>に<ruby>重大<rt>じゅうだい</rt></ruby>なバグが<ruby>見<rt>み</rt></ruby>つかった。<span class="n4-word"
+                                data-word="被害"><ruby>被害<rt>ひがい</rt></ruby></span>を<ruby>防<rt>ふせ</rt>
+                            </ruby>ぐため、<ruby>今<rt>いま</rt></ruby>からプログラムを<ruby>古<rt>ふる</rt></ruby>いバージョンに<ruby>戻<rt>もど
+                                </rt>
+                            </ruby>す。<ruby>今<rt>いま</rt></ruby>から10<ruby>分間<rt>ふんかん</rt></ruby>、サービスが<ruby>止<rt>と</rt>
+                            </ruby>まるので<ruby>申<rt>もう</rt></ruby>し<ruby>訳<rt>わけ</rt></ruby>ないこと。</p>
+                        <textarea class="slack-input" style="min-height: 240px"
+                            placeholder="ここにSlackメッセージを書いてください..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Advanced Q8 -->
+                <div class="q-card">
+                    <span class="q-number"><ruby>第<rt>だい</rt></ruby>8<ruby>問<rt>もん</rt></ruby></span><span
+                        class="level-badge level-4">レベル4</span>
+                    <div class="slack-msg">
+                        <div class="slack-header">
+                            <div class="slack-avatar">You</div>
+                            <div>
+                                <div class="slack-name">あなた</div>
+                                <div class="slack-channel"><ruby>宛先<rt>あてさき</rt></ruby>：<ruby>開発<rt>かいはつ</rt>
+                                    </ruby>チーム<ruby>全員<rt>
+                                            ぜんいん</rt></ruby> (@dev_team_all)</div>
+                            </div>
+                        </div>
+                        <p style="margin-bottom:12px;color:#64748b;font-size:14px">📋 <ruby>誰<rt>だれ</rt>
+                            </ruby>かが<ruby>間違<rt>まちが
+                                </rt></ruby>えて、テスト<ruby>用<rt>よう</rt></ruby>のデータベースを<ruby>消<rt>け</rt>
+                            </ruby>してしまった。<ruby>現在<rt>げんざい
+                                </rt></ruby>、バックアップからデータを<ruby>直<rt>なお</rt></ruby>している。あと30<ruby>分<rt>ぷん</rt>
+                            </ruby>はテスト<ruby>環境<rt>
+                                    かんきょう</rt></ruby>を<ruby>使<rt>つか</rt></ruby>わないでほしいこと。</p>
+                        <textarea class="slack-input" style="min-height: 240px"
+                            placeholder="ここにSlackメッセージを書いてください..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Advanced Q9 -->
+                <div class="q-card">
+                    <span class="q-number"><ruby>第<rt>だい</rt></ruby>9<ruby>問<rt>もん</rt></ruby></span><span
+                        class="level-badge level-4">レベル4</span>
+                    <div class="slack-msg">
+                        <div class="slack-header">
+                            <div class="slack-avatar">You</div>
+                            <div>
+                                <div class="slack-name">あなた</div>
+                                <div class="slack-channel"><ruby>宛先<rt>あてさき</rt></ruby>：フロントエンド<ruby>開発<rt>かいはつ</rt>
+                                    </ruby>チーム
+                                    (@frontend_team)</div>
+                            </div>
+                        </div>
+                        <p style="margin-bottom:12px;color:#64748b;font-size:14px">📋 API（データをもらうシステム）の<ruby>形<rt>かたち
+                                </rt>
+                            </ruby>が<ruby>急<rt>きゅう</rt></ruby>に<span class="n4-word" data-word="変更"><ruby>変更<rt>へんこう
+                                    </rt>
+                                </ruby></span>になった。<ruby>今<rt>いま</rt></ruby>のままだと<ruby>画面<rt>がめん</rt></ruby>にエラーが<ruby>出
+                                <rt>で
+                                </rt>
+                            </ruby>てしまう。<ruby>申<rt>もう</rt></ruby>し<ruby>訳<rt>わけ</rt></ruby>ないが、<ruby>急<rt>いそ
+                                </rt>
+                            </ruby>いで<ruby>新<rt>あたら</rt></ruby>しいAPIに<ruby>合<rt>あ</rt></ruby>わせてプログラムを<ruby>書<rt>か</rt>
+                            </ruby>き<ruby>直<rt>なお</rt></ruby>してほしいこと。</p>
+                        <textarea class="slack-input" style="min-height: 240px"
+                            placeholder="ここにSlackメッセージを書いてください..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Advanced Q10 自由記述 -->
+                <div class="q-card">
+                    <span class="q-number"><ruby>第<rt>だい</rt></ruby>10<ruby>問<rt>もん</rt></ruby></span><span
+                        class="level-badge level-4">レベル4（<ruby>自由<rt>じゆう</rt></ruby><ruby>記述<rt>きじゅつ</rt></ruby>）</span>
+                    <div class="slack-msg">
+                        <div class="slack-header">
+                            <div class="slack-avatar">You</div>
+                            <div>
+                                <div class="slack-name">あなた</div>
+                                <div class="slack-channel"><ruby>宛先<rt>あてさき</rt></ruby>：<ruby>自由<rt>じゆう</rt>
+                                    </ruby>に<ruby>決<rt>き
+                                        </rt></ruby>めてください</div>
+                            </div>
+                        </div>
+                        <p style="margin-bottom:12px;color:#64748b;font-size:14px">📋 <ruby>今<rt>いま</rt>
+                            </ruby>までやった<ruby>問題<rt>もんだい
+                                </rt></ruby>のように、<ruby>連絡<rt>れんらく</rt></ruby>のシチュエーションを<span class="n4-word"
+                                data-word="想定"><ruby>想定
+                                    <rt>そうてい</rt>
+                                </ruby></span>して、メッセージを<ruby>作成<rt>さくせい</rt></ruby>してください。<br><strong><ruby>想定<rt>
+                                        そうてい</rt></ruby>とメッセージの<ruby>両方<rt>りょうほう</rt></ruby>を<ruby>回答<rt>かいとう</rt>
+                                </ruby>に<ruby>書
+                                    <rt>か</rt>
+                                </ruby>いてください。</strong></p>
+                        <p style="margin-bottom:8px;font-weight:700;font-size:14px">【<ruby>想定<rt>そうてい</rt></ruby>】</p>
+                        <textarea class="slack-input" style="min-height:80px"
+                            placeholder="どんな状況ですか？（宛先、何がおきたか etc.）"></textarea>
+                        <p style="margin:12px 0 8px;font-weight:700;font-size:14px">【メッセージ】</p>
+                        <textarea class="slack-input" style="min-height: 240px"
+                            placeholder="ここにSlackメッセージを書いてください..."></textarea>
+                    </div>
+                </div>
+            </div><!-- end tab-advanced -->
+        </section>
+    </main>
+
+    <script src="app.js"></script>
+    <script>
+
+
+        function switchTab(name) {
+            document.querySelectorAll('.tab-btn').forEach((b, i) => { b.classList.toggle('active', name === 'beginner' ? i === 0 : i === 1) });
+            document.querySelectorAll('.tab-content').forEach(t => { t.classList.toggle('active', t.id === 'tab-' + name) });
+        }
+
+        function printTab(name) {
+            var nameVal = document.getElementById('name-' + name).value || '名前未入力';
+            var style = document.createElement('style');
+            style.id = 'print-override';
+
+            // PDF出力時の強制スタイル（背景色、ボーダー、非表示要素など）
+            var printCss = `
+                @media print {
+                    @page { margin: 15mm; size: A4 portrait; }
+                    body {
+                        font-family: 'Noto Sans JP', sans-serif !important;
+                        background: #fff !important;
+                        color: #000 !important;
+                        font-size: 12pt !important;
+                    }
+                    * {
+                        -webkit-print-color-adjust: exact !important;
+                        print-color-adjust: exact !important;
+                    }
+                    .tab-bar, .pdf-btn, header, footer, .nav-cards, .hero, .section-title {
+                        display: none !important;
+                    }
+                    .q-card {
+                        box-shadow: none !important;
+                        border: 1px solid #000 !important;
+                        page-break-inside: avoid !important;
+                        break-inside: avoid !important;
+                        margin-bottom: 20px !important;
+                        padding: 15px !important;
+                    }
+                    .chat-bubble {
+                        background: #f8f9fa !important;
+                        border: 1px solid #dee2e6 !important;
+                        color: #000 !important;
+                    }
+                    input[type="text"], textarea {
+                        border: 1px solid #000 !important;
+                        border-bottom: 1px solid #000 !important;
+                        background: transparent !important;
+                        font-family: 'Noto Sans JP', sans-serif !important;
+                    }
+                    .email-form {
+                        border: 1px solid #000 !important;
+                    }
+                    .email-header, .email-row {
+                        border-bottom: 1px solid #000 !important;
+                    }
+                    #tab-advanced, #tab-beginner {
+                        display: none !important;
+                    }
+                    #tab-${name} {
+                        display: block !important;
+                    }
+                }
+            `;
+            style.textContent = printCss;
+            document.head.appendChild(style);
+
+            // 入力内容を属性に反映して印刷に確実に出るようにする
+            var target = document.getElementById('tab-' + name);
+            target.querySelectorAll('input, textarea').forEach(el => {
+                if (el.tagName === 'INPUT') el.setAttribute('value', el.value);
+                if (el.tagName === 'TEXTAREA') {
+                    el.textContent = el.value;
+                }
+            });
+
+            // 名前表示の切り替え
+            var nameEls = document.querySelectorAll('.name-pdf-bar');
+            nameEls.forEach(function (el) { el.dataset.orig = el.innerHTML });
+            var activeBar = document.querySelector('#tab-' + name + ' .name-pdf-bar');
+            if (activeBar) {
+                activeBar.innerHTML = '<h3 style="margin:0 0 20px 0; border-bottom: 2px solid #000; padding-bottom: 5px;">連絡文問題 (' + (name === 'beginner' ? '初級' : '上級') + ') - 名前：' + nameVal + '</h3>';
+            }
+
+            // 印刷ダイアログ表示
+            setTimeout(() => {
+                window.print();
+
+                // 元に戻す
+                nameEls.forEach(function (el) { el.innerHTML = el.dataset.orig });
+                var s = document.getElementById('print-override');
+                if (s) s.remove();
+            }, 100);
+        }
+    </script>
+</body>
+
+</html>

@@ -421,5 +421,13 @@ export const GAKUSHU_TERMS: Readonly<Record<string, readonly string[]>> = {
     "shiraberu",
     "mitsukeru",
     "sagasu",
+    "pi-emu",
+    "torisimariyaku",
+    "honbun",
+    "joutai",
+    "hinsitukanri",
+    "sirasemasu",
+    "sinki",
+    "zentai",
   ],
 };

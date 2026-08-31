@@ -61,6 +61,24 @@ const hiragana = z
 /** 読み辞書エントリ: [表記, よみ]。複合語を先に置く（最長一致）。 */
 export const furiganaEntrySchema = z.tuple([plainText, hiragana]);
 
+/**
+ * 画像スロット（設計07 §4・§5 共通）。
+ * 「生成する／アップロードする／あとで」を status で表し、prompt / refs は再生成用に保存する。
+ *
+ * **ここに 置いて ある**のは、問題（`quizCommon`）・記事・まんが・人物の どれもが
+ * これを 使うため。const は 巻き上がらないので、いちばん 早く 使う ところ
+ *（この 下の 問題セット）より 前に 無いと、読みこんだ 瞬間に 落ちる。
+ */
+export const imageSlotSchema = z.object({
+  /** 表示する画像。未生成なら省略。 */
+  src: z.string().min(1).optional(),
+  /** 生成に渡したプロンプト全文（再現・「少し直して再生成」用）。 */
+  prompt: z.string().min(1).optional(),
+  /** 参照画像（キャラ正典・同一場面の直前パネルなど）。 */
+  refs: z.array(z.string().min(1)).default([]),
+  status: z.enum(["empty", "generating", "done"]).default("empty"),
+});
+
 const noJapanese = z
   .string()
   .min(1)
@@ -310,6 +328,22 @@ const quizCommon = {
    * 産出（`free`）の 問いでは「考える ヒント」として 使う。
    */
   hints: z.array(z.object({ title: plainText, text: plainText })).min(1).optional(),
+  /**
+   * 設問の **場面の 絵**（省略できる）。設問文の 上に 出る。
+   *
+   * 字だけの 設問は、N4の 学習者には **読むだけで 力を 使い切る**。
+   * とくに「いま 話しかけて よいか」を 聞く 問いは、**先輩の 机の まわりが
+   * どう なって いるか**が 答えの もと なので、それを 字で 書き並べると
+   * 測って いるのが 場面の 読みでは なく **長い 日本語を 読む 速さ**に なる。
+   * 絵に すれば 見た 瞬間に 場面が 入り、考える ところに 力が 残る。
+   *
+   * `optionImages`（選択肢ごとの 絵）とは 別もの。あちらは **えらぶ もの**の 絵で、
+   * こちらは **問いが 起きて いる 場面**の 絵——1問に 1枚 しか 無い。
+   *
+   * 絵が まだ 無い あいだ（`status: "empty"`）は 画面に 点線の わくが 出る。
+   * 空けて おくと **作り忘れが 画面から 見えなく なる**（記事の 絵と 同じ 決めごと）。
+   */
+  image: imageSlotSchema.optional(),
 };
 
 /** 4択（読解確認）。 */
@@ -692,6 +726,34 @@ export const listeningSchema = z
      * 本番は R2 等の配信先URLを入れる。
      */
     audioUrl: z.string().optional(),
+    /**
+     * 動画ファイル（2026-08-29 の指定「リスニングも動画の場合も対応できるように」）。
+     *
+     * ## 音と 同じ 道に 載せる
+     * 聞き取りチェックも 原稿の ひらきも 速さの ボタンも **そのまま 効く**。
+     * `<audio>` と `<video>` は どちらも `HTMLMediaElement` なので、
+     * 画面が 出す 札を 変えるだけで よい（`playbackRate` も `preservesPitch` も 同じ）。
+     *
+     * ## 音と 両方は 置けない（下の 検査）
+     * どちらを 鳴らすかが データから 読めなく なる。片方が 黙って 無視される のは
+     * 先生から いちばん 見えない 壊れ方なので、保存の 時点で 止める。
+     */
+    videoUrl: z.string().optional(),
+    /**
+     * YouTube で 聞かせる ばあい（2026-08-29 の 指定）。ID でも URL でも よい。
+     *
+     * **速さの ボタンは 出ない。** YouTube の プレイヤーは 別の 会社の 枠の 中に
+     * あって、こちらから `playbackRate` を 触れない。押しても 何も 起きない ボタンを
+     * 置くと「効かない 画面」に なる（docs/constraints.md「いま 触っても 意味の 無い
+     * ものは 押せない形に する」）ので、**YouTube の ときは 出さず**、
+     * 速さは 動画の 中の ⚙ で 変えて もらう。
+     */
+    youtube: z.string().optional(),
+    /**
+     * 動画を 読みこむ 前に 出す 絵（`videoUrl` / `youtube` の ときだけ 効く）。
+     * 省くと 黒い 面に 再生ボタンが 出る。回線の 細い 教室では 無い ほうが 軽い。
+     */
+    posterUrl: z.string().optional(),
     /** 聞き取りチェック: 聞こえた言葉を入れて見つける。 */
     keywords: z.array(plainText).default([]),
     /** 隠し原稿リベールのクリア条件（原稿の表示率%）。ここを超えると答え合わせへ進める。 */
@@ -723,6 +785,22 @@ export const listeningSchema = z
     furigana: z.array(furiganaEntrySchema).optional(),
   })
   .superRefine((listening, ctx) => {
+    /*
+     * 鳴らす ものは **1つだけ**。2つ 置くと どちらが 鳴るかが データから 読めず、
+     * 片方が 黙って 無視される——先生から いちばん 見えない 壊れ方なので ここで 止める。
+     */
+    const sources = [listening.audioUrl, listening.videoUrl, listening.youtube].filter(
+      Boolean,
+    ).length;
+    if (sources > 1) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["videoUrl"],
+        message:
+          "音・動画・YouTube は どれか 1つだけ — どれを 鳴らすかが 決まらない（ほかを 消す）",
+      });
+    }
+
     const known = new Set([...listening.participants.map((p) => p.id), "me", "narration"]);
     listening.script.forEach((line, i) => {
       if (!known.has(line.speaker)) {
@@ -904,6 +982,7 @@ export const CONTENT_REF_TYPES = [
   "meeting",
   "wordstage",
   "link",
+  "skit",
 ] as const;
 
 const contentRefTypeSchema = z.enum(CONTENT_REF_TYPES);
@@ -983,6 +1062,7 @@ export const RESERVED_STAGE_IDS = [
   "map",
   "nexmax",
   "quiz",
+  "skit",
   "slides",
   "studio",
   "talk",
@@ -1039,20 +1119,6 @@ export const stageSchema = z.object({
   wordStageIds: z.array(z.string().min(1)).default([]),
   /** マップでこのステージが立つ土地。 */
   area: mapAreaSchema.optional(),
-});
-
-/**
- * 画像スロット（設計07 §4・§5 共通）。
- * 「生成する／アップロードする／あとで」を status で表し、prompt / refs は再生成用に保存する。
- */
-export const imageSlotSchema = z.object({
-  /** 表示する画像。未生成なら省略。 */
-  src: z.string().min(1).optional(),
-  /** 生成に渡したプロンプト全文（再現・「少し直して再生成」用）。 */
-  prompt: z.string().min(1).optional(),
-  /** 参照画像（キャラ正典・同一場面の直前パネルなど）。 */
-  refs: z.array(z.string().min(1)).default([]),
-  status: z.enum(["empty", "generating", "done"]).default("empty"),
 });
 
 /** ことばチップ（語・読み・意味）。タップで辞書ポップアップ。 */
@@ -1326,6 +1392,63 @@ export const articleBlockSchema = z.discriminatedUnion("kind", [
   }),
   z.object({ kind: z.literal("paragraph"), text: plainText }),
   imageSlotSchema.extend({ kind: z.literal("image"), caption: plainText.optional() }),
+  /**
+   * 動画（2026-08-29 の指定「動画ブロック追加お願いします」）。
+   *
+   * ## なぜ 絵の スロットに 相乗りさせないか
+   * `imageSlotSchema` は **生成のための 型**で、`prompt` と `refs`（参照画像）と
+   * `status: "generating"` を 持つ。動画は こちらが 差し替える もので、
+   * AIに 作らせる 道が 無い——空の 欄を 3つ 抱えた 型に なる。
+   *
+   * ## 中の ことばは 覆えない
+   * 動画の 中の 音と 字には ふりがなを 振れない（PDFの スライドと 同じ立場）。
+   * だから `note` を 持つ。**その 動画で 何を 見るか**を 先生の ことばで 添えると、
+   * 聞き取れなかった 学習者にも つかむ ものが 1つ 残る（`slidesSchema.notes` と 同じ 受け皿）。
+   */
+  z
+    .object({
+    kind: z.literal("video"),
+    /** 動画の 場所（`/video/...`）。YouTube の ときは 空に する。 */
+    src: z.string().min(1).optional(),
+    /**
+     * YouTube（2026-08-29 の 指定「ファイルの場合と youtube の場合と」）。
+     *
+     * 先生が **見て いる ページの URL を そのまま 貼れる**ように、ID でも
+     * `watch?v=` でも `youtu.be` でも 受ける（読み取りは `src/lib/video.ts`）。
+     * 保存されるのは 貼った ものそのままで、ID への 直しは 出す ときに 1回 する
+     *——直して 保存すると、先生が あとで 見た ときに **自分が 貼った ものと
+     * ちがう 字**が 入って いて、直して よいのか 分からなく なる。
+     */
+    youtube: z.string().min(1).optional(),
+    /**
+     * 読みこむ 前に 出す 絵。**省ける**——無ければ 黒い 面に 再生ボタンが 出る。
+     *
+     * 置くと 1枚ぶん 先に 落ちる ので、**回線の 細い 教室では 無い ほうが 軽い**。
+     * 「何の 動画か」は 下の `note` が ことばで 言う。
+     */
+    poster: z.string().min(1).optional(),
+    /** 読み上げ用（画面には 出さない — 絵の `caption` と 同じ 扱い）。 */
+    caption: plainText.optional(),
+    /** その 動画で 見るところ。学習者が 読む 文。 */
+    note: plainText.optional(),
+    })
+    .superRefine((block, ctx) => {
+      /*
+       * **どちらか 1つ**。両方 空だと 黒い 枠だけが 出て、両方 あると どちらを
+       * 出すかが データから 読めない——どちらも 先生の 画面からは 見えない 壊れ方。
+       */
+      const sources = [block.src, block.youtube].filter(Boolean).length;
+      if (sources !== 1) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["src"],
+          message:
+            sources === 0
+              ? "動画の 場所が 空です — ファイルの ばしょ か YouTube の どちらかを 書く"
+              : "ファイルと YouTube の 両方は 置けない — どちらか 1つに する",
+        });
+      }
+    }),
   z.object({ kind: z.literal("callout"), tone: z.enum(["point", "care"]), text: plainText }),
   z.object({ kind: z.literal("list"), items: z.array(plainText).min(1) }),
   /*
@@ -1693,6 +1816,103 @@ export const linkSchema = z.object({
   furigana: z.array(furiganaEntrySchema).optional(),
 });
 
+/* ------------------------------------------------------------------ *
+ * スキット（お手本の 会話を 1行ずつ 聞いて、口に 出して まねる）
+ * ------------------------------------------------------------------ */
+
+/** スキットの 登場人物。**声**を 持つのは 人物カード側なので id で つなぐ。 */
+const skitRoleSchema = z.object({
+  /** `content/characters/<id>.json` の id か、その スキットだけの 名前。 */
+  id: z.string().regex(/^[a-z0-9_-]+$/),
+  name: plainText,
+  /** 立場（「PM」「先輩」）。**敬語の 宛先**が 読めないと まねる 意味が 半分 消える。 */
+  role: plainText,
+  /** ふきだしの 色（リスニングの 参加者と 同じ 名前を 使う）。 */
+  accent: z.enum(["sky", "leaf", "sun", "coral", "grape"]).default("sky"),
+  /**
+   * ふきだしを 左右 どちらに 寄せるか。
+   *
+   * 学習者が **自分で 言う ほうの 役**を `right` に する。旧アプリの スキットも
+   * 左右で 分けて いて、色だけで 分けるより「どっちが 自分の セリフか」が 速く 分かる。
+   */
+  side: z.enum(["left", "right"]).default("left"),
+});
+
+/**
+ * スキットの 1行。
+ *
+ * ## なぜ 行ごとに 音を 持つのか
+ * まるごと 1本の 音声（リスニング教材）とは **ねらいが ちがう**。あちらは
+ * 通して 聞いて 中身を つかむ 練習で、こちらは **1行を 何度も 聞いて まねる**
+ * 練習である。通しの音では「その1行だけ」に 戻れないので、行ごとに 分けて 持つ。
+ */
+const skitLineSchema = z.object({
+  /** `roles` の id、または "narration"（ト書き）。 */
+  speaker: z.string().min(1),
+  text: plainText,
+  /**
+   * その行の 音（`/audio/...`）。**空でも よい**——画面は そのとき
+   * ブラウザの 読み上げで 鳴らす（旧アプリの スキットと 同じ 動き）ので、
+   * 音を 作る 前でも スピーカーの ボタンは 使える。
+   */
+  audioUrl: z.string().optional(),
+  /**
+   * その行に 添える 絵（省ける）。**行の となり**に 置くので、
+   * 「どの セリフの 場面か」が 迷わない。
+   */
+  image: imageSlotSchema.optional(),
+  /** 言い方の ひとこと（「ここで 一度 止まる」）。学習者が 読む 文。 */
+  note: plainText.optional(),
+});
+
+/**
+ * スキット教材 — お手本の 会話を 1行ずつ 聞いて、口に 出して まねる
+ *
+ * ## なぜ リスニングと 別の 種別に するか
+ * リスニング（`listeningSchema`）は **聞き取れたかを 測る** 教材で、台本は
+ * 既定で 伏せて ある（`check.showScript` の 既定が false）。スキットは 逆で、
+ * **台本を 見ながら 声に 出す**のが 目的だから、伏せる 仕組みが まるごと 邪魔に なる。
+ * 同じ型に 押し込むと「台本を 見せる リスニング」という、名前と 中身の 食い違った
+ * 教材が できる——先生は 一覧の どちらを 開けば 直せるのか 分からなくなる
+ *（たいわ と ミーティングを 分けたのと 同じ 判断）。
+ *
+ * ## 絵は 行に つく
+ * 場面の 絵を 1枚 上に 置く 持ち方も あるが、それだと 会話が 進んでも 絵は
+ * そのままで、**どの セリフの 場面か**が 見えない。てじゅん（`steps`）に
+ * 1歩ずつ 絵を 置いた のと 同じ 理由で、絵は 行に 持たせる。
+ * 表紙の 1枚だけは 別に `cover` で 置ける。
+ */
+export const skitSchema = z
+  .object({
+    kind: z.literal("skit"),
+    id: z.string().regex(/^[a-z0-9_-]+$/),
+    title: plainText,
+    description: plainText,
+    /** 何に 気をつけて まねるか。読む 前に 渡す 視点（設計01 P6）。 */
+    focus: plainText,
+    /** 表紙の 絵（省ける）。 */
+    cover: imageSlotSchema.optional(),
+    roles: z.array(skitRoleSchema).min(1),
+    lines: z.array(skitLineSchema).min(2),
+    furigana: z.array(furiganaEntrySchema).optional(),
+  })
+  .superRefine((skit, ctx) => {
+    const ids = skit.roles.map((r) => r.id);
+    if (new Set(ids).size !== ids.length) {
+      ctx.addIssue({ code: "custom", path: ["roles"], message: "roles の id が重複している" });
+    }
+    const known = new Set([...ids, "narration"]);
+    skit.lines.forEach((line, i) => {
+      if (!known.has(line.speaker)) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["lines", i, "speaker"],
+          message: `話者「${line.speaker}」が roles にない（narration は使える）`,
+        });
+      }
+    });
+  });
+
 /**
  * ミーティングの質問1つ。
  *
@@ -1971,6 +2191,7 @@ export const contentSchema = z.discriminatedUnion("kind", [
   articleSchema,
   slidesSchema,
   linkSchema,
+  skitSchema,
 ]);
 
 export type VocabWord = z.infer<typeof vocabWordSchema>;
@@ -2012,4 +2233,7 @@ export type ArticleBlock = z.infer<typeof articleBlockSchema>;
 export type Slides = z.infer<typeof slidesSchema>;
 export type SlideNote = z.infer<typeof slideNoteSchema>;
 export type LinkContent = z.infer<typeof linkSchema>;
+export type Skit = z.infer<typeof skitSchema>;
+export type SkitRole = z.infer<typeof skitRoleSchema>;
+export type SkitLine = z.infer<typeof skitLineSchema>;
 export type Content = z.infer<typeof contentSchema>;

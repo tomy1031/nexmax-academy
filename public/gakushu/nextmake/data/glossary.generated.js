@@ -1051,6 +1051,12 @@ export const GLOSSARY = [
   },
   { term: "上手", reading: "じょうず", meaning: "good at it", en: "" },
   {
+    term: "状態",
+    reading: "じょうたい",
+    meaning: "いま どう なって いるかと いう、ようすです。",
+    en: "Condition / State",
+  },
+  {
     term: "承認",
     reading: "しょうにん",
     meaning: "上の 人が「いいです」と 決める ことです。",
@@ -1077,6 +1083,12 @@ export const GLOSSARY = [
   },
   { term: "書式", reading: "しょしき", meaning: "書きかたの きまった 形です。", en: "Format" },
   {
+    term: "知らせます",
+    reading: "しらせます",
+    meaning: "あいてに つたえて、わかるように する ことです。",
+    en: "To inform",
+  },
+  {
     term: "調べる",
     reading: "しらべる",
     meaning: "分からない ことを、本や Webサイトで さがして たしかめる ことです。",
@@ -1099,6 +1111,12 @@ export const GLOSSARY = [
     reading: "しる",
     meaning: "そのことが 分かる ように なる ことです。",
     en: "To know / To learn",
+  },
+  {
+    term: "新規",
+    reading: "しんき",
+    meaning: "いままでに なかった、あたらしい ものです。",
+    en: "New",
   },
   {
     term: "進行",
@@ -1283,6 +1301,12 @@ export const GLOSSARY = [
     reading: "せつりつ",
     meaning: "会社が できた ことです。できた 日が 書いて あります。",
     en: "Establishment (founding)",
+  },
+  {
+    term: "全体",
+    reading: "ぜんたい",
+    meaning: "ばらばらの ぶぶんでは なく、まとまり ぜんぶの ことです。",
+    en: "Whole / Entire",
   },
   {
     term: "先端",
@@ -1577,6 +1601,12 @@ export const GLOSSARY = [
   },
   { term: "塗装", reading: "とそう", meaning: "ペンキを ぬる ことです。", en: "Painting" },
   {
+    term: "取締役",
+    reading: "とりしまりやく",
+    meaning: "会社の 大切な ことを 決める 立場の 人です。",
+    en: "Board Director",
+  },
+  {
     term: "取引",
     reading: "とりひき",
     meaning: "会社と 会社で、ものや お金を やりとりする ことです。",
@@ -1712,6 +1742,12 @@ export const GLOSSARY = [
     meaning: "お客さまの 話を、よく 聞く ことです。",
     en: "Hearing / interview",
   },
+  {
+    term: "PM",
+    reading: "ぴーえむ",
+    meaning: "プロジェクトを まとめて 進める 人です。",
+    en: "Project Manager",
+  },
   { term: "飛行", reading: "ひこう", meaning: "空を 飛ぶ ことです。", en: "Flight" },
   {
     term: "被災地",
@@ -1740,6 +1776,12 @@ export const GLOSSARY = [
   { term: "人々", reading: "ひとびと", meaning: "たくさんの 人たちの ことです。", en: "People" },
   { term: "日々", reading: "ひび", meaning: "まいにちの ことです。", en: "Day to day" },
   { term: "品質", reading: "ひんしつ", meaning: "ものや 仕事の よさの ことです。", en: "Quality" },
+  {
+    term: "品質管理",
+    reading: "ひんしつかんり",
+    meaning: "できた ものが 良いか どうかを 見る 仕事です。",
+    en: "Quality control",
+  },
   {
     term: "VR",
     reading: "ぶいあーる",
@@ -1884,6 +1926,12 @@ export const GLOSSARY = [
     reading: "ほんとう",
     meaning: "うそでは ない こと。じっさいに あった こと",
     en: "real, true",
+  },
+  {
+    term: "本文",
+    reading: "ほんぶん",
+    meaning: "メールの、あいさつの あとに 書く 中身です。",
+    en: "Body (of message)",
   },
   {
     term: "本物",

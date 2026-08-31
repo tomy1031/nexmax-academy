@@ -1,0 +1,400 @@
+{
+  "kind": "manga",
+  "id": "renraku_manga",
+  "format": "story",
+  "title": "まんが：連絡が なかった 日",
+  "description": "連絡を あとまわしに した 日、チームに 何が 起きたでしょうか。リスニングの 前に 読む ものがたりです。",
+  "characters": [
+    {
+      "id": "nyam",
+      "name": "ニャム",
+      "role": "同期"
+    },
+    {
+      "id": "hendy",
+      "name": "ヘンディ",
+      "role": "先輩"
+    }
+  ],
+  "pages": [
+    {
+      "title": "金曜日の 夕方 — オフィス",
+      "panels": [
+        {
+          "size": "normal",
+          "image": {
+            "prompt": "Anime manga panel, no readable text. A bright modern software office in the late afternoon, warm orange light through the window. a young Southeast Asian junior engineer man (Nyam, short black hair swept up off the forehead, coral cardigan over a cream button-down shirt) sits at his desk looking at a sticky note on his monitor, thinking, one hand on his chin. Medium shot, clean line art, flat cel shading, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. Keep empty space at the top of the frame. No text, no letters, no numbers, no signage, no speech bubbles, no readable text.",
+            "refs": [
+              "/img/characters/nyam/sheet.webp",
+              "/img/characters/hendy/sheet.webp"
+            ],
+            "status": "empty"
+          },
+          "lines": [
+            {
+              "speaker": "narration",
+              "text": "金曜日の 夕方です。ニャムさんは 検証サーバーの アップデートを たのまれました。"
+            },
+            {
+              "speaker": "nyam",
+              "text": "きょうの 20時に やろう。すぐ 終わる 仕事だ。"
+            }
+          ]
+        },
+        {
+          "size": "normal",
+          "image": {
+            "prompt": "Anime manga panel, no readable text. Close shot on a young Southeast Asian junior engineer man (Nyam, short black hair swept up off the forehead, coral cardigan over a cream button-down shirt) at the same desk, one hand hovering over the keyboard, a chat app open as abstract blurred bubbles on the screen, his eyes glancing away with a slightly guilty look. Medium shot, clean line art, flat cel shading, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. Keep empty space at the top of the frame. No text, no letters, no numbers, no signage, no speech bubbles, no readable text.",
+            "refs": [
+              "/img/characters/nyam/sheet.webp",
+              "/img/characters/hendy/sheet.webp"
+            ],
+            "status": "empty"
+          },
+          "lines": [
+            {
+              "speaker": "nyam",
+              "text": "連絡は…… あとで いいか。"
+            },
+            {
+              "speaker": "narration",
+              "text": "ニャムさんは 連絡を あとまわしに しました。"
+            }
+          ]
+        },
+        {
+          "size": "wide",
+          "image": {
+            "prompt": "Anime manga panel, no readable text. Wide shot of the office at night, dark blue palette, only one desk lamp on where a young Southeast Asian junior engineer man (Nyam, short black hair swept up off the forehead, coral cardigan over a cream button-down shirt) works alone. By the wall, a small server rack with one status light glowing red instead of green. Medium shot, clean line art, flat cel shading, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. Keep empty space at the top of the frame. No text, no letters, no numbers, no signage, no speech bubbles, no readable text.",
+            "refs": [
+              "/img/characters/nyam/sheet.webp",
+              "/img/characters/hendy/sheet.webp"
+            ],
+            "status": "empty"
+          },
+          "lines": [
+            {
+              "speaker": "narration",
+              "text": "20時。検証サーバーが 止まりました。だれも 知りません。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "その 夜 と 月曜日の 朝",
+      "panels": [
+        {
+          "size": "normal",
+          "image": {
+            "prompt": "Anime manga panel, no readable text. Night at a home desk with a warm lamp. a friendly Southeast Asian senior engineer man (Hendy, short black hair, light blue shirt, ID lanyard) wearing a casual gray hoodie instead of his shirt, looking at a laptop that shows an abstract empty error dialog, confused expression, tilting his head. Medium shot, clean line art, flat cel shading, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. Keep empty space at the top of the frame. No text, no letters, no numbers, no signage, no speech bubbles, no readable text.",
+            "refs": [
+              "/img/characters/nyam/sheet.webp",
+              "/img/characters/hendy/sheet.webp"
+            ],
+            "status": "empty"
+          },
+          "lines": [
+            {
+              "speaker": "narration",
+              "text": "同じ ころ。ヘンディさんは 家で 確認作業を して いました。"
+            },
+            {
+              "speaker": "hendy",
+              "text": "あれ？ 検証環境に つながらない……。"
+            }
+          ]
+        },
+        {
+          "size": "normal",
+          "image": {
+            "prompt": "Anime manga panel, no readable text. Same home desk at night. a friendly Southeast Asian senior engineer man (Hendy, short black hair, light blue shirt, ID lanyard) in the casual gray hoodie leans back with both hands on his head, looking at the ceiling, tired, the laptop screen dim. Medium shot, clean line art, flat cel shading, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. Keep empty space at the top of the frame. No text, no letters, no numbers, no signage, no speech bubbles, no readable text.",
+            "refs": [
+              "/img/characters/nyam/sheet.webp",
+              "/img/characters/hendy/sheet.webp"
+            ],
+            "status": "empty"
+          },
+          "lines": [
+            {
+              "speaker": "hendy",
+              "text": "保存する 前に 止まった……。きょうの 作業が 消えて しまった。"
+            }
+          ]
+        },
+        {
+          "size": "wide",
+          "image": {
+            "prompt": "Anime manga panel, no readable text. Monday morning in the bright office. a young Southeast Asian junior engineer man (Nyam, short black hair swept up off the forehead, coral cardigan over a cream button-down shirt) bows apologetically beside a desk. a friendly Southeast Asian senior engineer man (Hendy, short black hair, light blue shirt, ID lanyard) turns from his chair with a calm, kind expression, soft morning light through the window. Medium shot, clean line art, flat cel shading, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. Keep empty space at the top of the frame. No text, no letters, no numbers, no signage, no speech bubbles, no readable text.",
+            "refs": [
+              "/img/characters/nyam/sheet.webp",
+              "/img/characters/hendy/sheet.webp"
+            ],
+            "status": "empty"
+          },
+          "lines": [
+            {
+              "speaker": "nyam",
+              "text": "すみません。金曜の 夜、わたしが サーバーを 止めました。連絡を して いませんでした。"
+            },
+            {
+              "speaker": "hendy",
+              "text": "そうだったんですね。では、つぎの 一手を 考えましょう。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "月曜日の 昼 — 二人で 連絡",
+      "note": "この 連絡は、つぎの リスニングで ヘンディさんが 読み上げる 連絡に つながります。",
+      "panels": [
+        {
+          "size": "normal",
+          "image": {
+            "prompt": "Anime manga panel, no readable text. a friendly Southeast Asian senior engineer man (Hendy, short black hair, light blue shirt, ID lanyard) and a young Southeast Asian junior engineer man (Nyam, short black hair swept up off the forehead, coral cardigan over a cream button-down shirt) sit side by side at one laptop. Hendy points at the screen with a pen, Nyam nods holding a small notebook. Medium shot, clean line art, flat cel shading, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. Keep empty space at the top of the frame. No text, no letters, no numbers, no signage, no speech bubbles, no readable text.",
+            "refs": [
+              "/img/characters/nyam/sheet.webp",
+              "/img/characters/hendy/sheet.webp"
+            ],
+            "status": "empty"
+          },
+          "lines": [
+            {
+              "speaker": "hendy",
+              "text": "いっしょに 連絡の 文を 作りましょう。いつ・何が・どう なるか・何を して ほしいか、です。"
+            }
+          ]
+        },
+        {
+          "size": "normal",
+          "image": {
+            "prompt": "Anime manga panel, no readable text. Close-up of the laptop screen showing a chat compose box as abstract blurred lines, a young Southeast Asian junior engineer man (Nyam, short black hair swept up off the forehead, coral cardigan over a cream button-down shirt) pressing the enter key with one finger, focused hopeful face. Medium shot, clean line art, flat cel shading, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. Keep empty space at the top of the frame. No text, no letters, no numbers, no signage, no speech bubbles, no readable text.",
+            "refs": [
+              "/img/characters/nyam/sheet.webp",
+              "/img/characters/hendy/sheet.webp"
+            ],
+            "status": "empty"
+          },
+          "lines": [
+            {
+              "speaker": "nyam",
+              "text": "あしたの 18時から 19時まで、検証サーバーを 止めます。"
+            },
+            {
+              "speaker": "nyam",
+              "text": "その 前に、データを 保存して ください。"
+            }
+          ]
+        },
+        {
+          "size": "wide",
+          "image": {
+            "prompt": "Anime manga panel, no readable text. The chat window on a laptop screen with one abstract message bubble and three colorful round reaction icons floating beside it: an eye icon, a thumbs-up icon, and folded hands icon. Behind the laptop, a young Southeast Asian junior engineer man (Nyam, short black hair swept up off the forehead, coral cardigan over a cream button-down shirt) and a friendly Southeast Asian senior engineer man (Hendy, short black hair, light blue shirt, ID lanyard) smile at each other, bright cheerful light. Medium shot, clean line art, flat cel shading, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. Keep empty space at the top of the frame. No text, no letters, no numbers, no signage, no speech bubbles, no readable text.",
+            "refs": [
+              "/img/characters/nyam/sheet.webp",
+              "/img/characters/hendy/sheet.webp"
+            ],
+            "status": "empty"
+          },
+          "lines": [
+            {
+              "speaker": "narration",
+              "text": "スタンプが ならびました。「読みました」の 合図です。"
+            },
+            {
+              "speaker": "nyam",
+              "text": "連絡は、みんなの 時間を まもるんですね。"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "furigana": [
+    [
+      "検証環境",
+      "けんしょうかんきょう"
+    ],
+    [
+      "確認作業",
+      "かくにんさぎょう"
+    ],
+    [
+      "金曜日",
+      "きんようび"
+    ],
+    [
+      "月曜日",
+      "げつようび"
+    ],
+    [
+      "連絡",
+      "れんらく"
+    ],
+    [
+      "先輩",
+      "せんぱい"
+    ],
+    [
+      "仕事",
+      "しごと"
+    ],
+    [
+      "作業",
+      "さぎょう"
+    ],
+    [
+      "確認",
+      "かくにん"
+    ],
+    [
+      "合図",
+      "あいず"
+    ],
+    [
+      "環境",
+      "かんきょう"
+    ],
+    [
+      "保存",
+      "ほぞん"
+    ],
+    [
+      "時間",
+      "じかん"
+    ],
+    [
+      "検証",
+      "けんしょう"
+    ],
+    [
+      "夕方",
+      "ゆうがた"
+    ],
+    [
+      "金曜",
+      "きんよう"
+    ],
+    [
+      "二人",
+      "ふたり"
+    ],
+    [
+      "一手",
+      "いって"
+    ],
+    [
+      "同期",
+      "どうき"
+    ],
+    [
+      "人",
+      "ひと"
+    ],
+    [
+      "前",
+      "まえ"
+    ],
+    [
+      "時",
+      "じ"
+    ],
+    [
+      "日",
+      "にち"
+    ],
+    [
+      "月",
+      "げつ"
+    ],
+    [
+      "作",
+      "つく"
+    ],
+    [
+      "止",
+      "と"
+    ],
+    [
+      "終",
+      "お"
+    ],
+    [
+      "知",
+      "し"
+    ],
+    [
+      "考",
+      "かんが"
+    ],
+    [
+      "読",
+      "よ"
+    ],
+    [
+      "何",
+      "なに"
+    ],
+    [
+      "連",
+      "れん"
+    ],
+    [
+      "先",
+      "さき"
+    ],
+    [
+      "同",
+      "おな"
+    ],
+    [
+      "上",
+      "うえ"
+    ],
+    [
+      "間",
+      "ま"
+    ],
+    [
+      "合",
+      "あ"
+    ],
+    [
+      "朝",
+      "あさ"
+    ],
+    [
+      "起",
+      "お"
+    ],
+    [
+      "文",
+      "ぶん"
+    ],
+    [
+      "金",
+      "かね"
+    ],
+    [
+      "夜",
+      "よる"
+    ],
+    [
+      "家",
+      "いえ"
+    ],
+    [
+      "消",
+      "き"
+    ],
+    [
+      "昼",
+      "ひる"
+    ],
+    [
+      "方",
+      "かた"
+    ]
+  ]
+}
