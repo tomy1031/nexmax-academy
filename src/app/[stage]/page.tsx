@@ -221,12 +221,12 @@ export default async function StagePage({ params }: { params: Promise<{ stage: s
   const items = resolved.filter((item): item is StageContentItem => item !== null);
 
   /*
-   * 単語ステージは独立したアプリ（ことばアーケード）なので行き先も /arcade のまま。
+   * 単語ステージは独立したアプリ（単語テスト）なので行き先も /wordtest のまま。
    *
-   * **名前の 無い グループは 1枚に まとめる**。学習者から 見れば その ステージで
+   * **ぶら下がった グループは 1枚に まとめる**。学習者から 見れば その ステージで
    * ならった ことばは 1かたまりで、どちらを やるかの 判断は 学習では ない
-   *（2026-08-19 の指定）。まとめた ぶんは `/arcade/<ステージID>` で 開く。
-   * **先生が セット名を 付けた もの**（初級・中級…）は 分けて 出す（願い #203）。
+   *（2026-08-19 の指定）。まとめた ぶんは `/wordtest/<ステージID>` で 開く。
+   * セット名（初級・中級…）で 分けるのも やめた（願い #280・2026-08-31）。
    * 参照切れは 落とす。
    */
   const loaded = await Promise.all(stage.wordStageIds.map((id) => getWordStage(id)));

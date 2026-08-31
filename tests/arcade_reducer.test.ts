@@ -56,7 +56,7 @@ function answerAllCorrect(state: ArcadeState): ArcadeState {
   return s;
 }
 
-describe("ことばアーケードの状態機械", () => {
+describe("単語テストの状態機械", () => {
   it("読み → 意味 → 解説 の順に進む（中心体験を崩さない）", () => {
     const s0 = createSession({ stage, mode: "test", rng: seededRng(7) });
     expect(s0.phase.kind).toBe("reading");

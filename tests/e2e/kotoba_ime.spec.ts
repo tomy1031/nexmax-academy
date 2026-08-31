@@ -2,7 +2,7 @@ import { expect, test, type CDPSession } from "@playwright/test";
 import { shot } from "./helpers";
 
 /**
- * ことばアーケード — 日本語入力（IME）の 確定の Enter で 先へ 進めない
+ * 単語テスト — 日本語入力（IME）の 確定の Enter で 先へ 進めない
  *
  * テストの前の「ひらがな入力チェック」で、打った字が 消えない 不具合が あった
  * （2026-08-25 実発生）。原因は **変換を 確定する Enter**を けってい と
@@ -46,7 +46,7 @@ test("ひらがな入力チェック: 変換の Enter では 進まず、次の 
   page,
   context,
 }) => {
-  await page.goto("/arcade/hajimari_kotoba");
+  await page.goto("/wordtest/hajimari_kotoba");
   await page
     .getByRole("button", { name: /テスト/ })
     .first()
@@ -74,7 +74,7 @@ test("ひらがな入力チェック: 変換の Enter では 進まず、次の 
 });
 
 test("ゲームの よみ入力欄も、変換の Enter では こたえに ならない", async ({ page, context }) => {
-  await page.goto("/arcade/hajimari_kotoba");
+  await page.goto("/wordtest/hajimari_kotoba");
   await page
     .getByRole("button", { name: /テスト/ })
     .first()

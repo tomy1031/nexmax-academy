@@ -276,7 +276,7 @@ async function renderContent(ref: StageContentRef) {
       if (!skit) notFound();
       return <SkitView skit={skit} embedded />;
     }
-    // 単語ステージは contents[] に入らない（wordStageIds 側・行き先は /arcade）。
+    // 単語ステージは contents[] に入らない（wordStageIds 側・行き先は /wordtest）。
     // ここに来るのは壊れたデータなので 404 にする。
     case "wordstage":
       notFound();

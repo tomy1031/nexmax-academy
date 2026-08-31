@@ -129,7 +129,7 @@ describe("ステージの ことば", () => {
   });
 });
 
-describe("セット名で 分ける（願い #203）", () => {
+describe("セット名が あっても 1つに まとめる（願い #280）", () => {
   /** 初級・中級の 2セットを ぶら下げた ステージ（kaisha と 同じ かたち）。 */
   const shokyu: WordStage = { ...hajimari, id: "set_shokyu", label: "初級" };
   const chukyu: WordStage = { ...orientation, id: "set_chukyu", label: "中級" };
@@ -140,46 +140,44 @@ describe("セット名で 分ける（願い #203）", () => {
     wordStageIds: ["set_shokyu", "set_chukyu"],
   };
 
-  it("名前が 無ければ これまでどおり 1つに まとまる", () => {
+  it("名前が 無ければ 1つに まとまる", () => {
     const sets = stageWordSets(INTRO, [intro, orientation]);
     expect(sets.map((s) => s.id)).toEqual(["intro"]);
   });
 
-  it("名前が あれば 分かれる。ならびは wordStageIds の 順", () => {
+  /*
+   * 2026-08-25（願い #203）は セット名で 分けて いた。2026-08-31（願い #280）に
+   * 戻した——「初級・中級・上級などの セットの ものは 一つに まとめてください」。
+   */
+  it("名前が あっても 分かれない。見出しは ステージの 名前", () => {
     const sets = stageWordSets(LEVELED, [shokyu, chukyu]);
-    expect(sets.map((s) => s.id)).toEqual(["set_shokyu", "set_chukyu"]);
-    expect(sets.map((s) => s.label)).toEqual(["初級", "中級"]);
-    /*
-     * 名前の 付いた セットは **自分の 見出しを 保つ**。ステージの 名前に そろえると
-     * 同じ 名前が 何行も ならんで えらべなく なる（名前なしの 統合とは 逆）。
-     */
-    expect(sets.map((s) => s.title)).toEqual([hajimari.title, orientation.title]);
+    expect(sets.map((s) => s.id)).toEqual(["leveled"]);
+    expect(sets[0]!.title).toBe("会社を 知る");
+    expect(sets[0]!.label).toBeUndefined();
+    expect(sets[0]!.words.length).toBe(hajimari.words.length + orientation.words.length);
     // ステージの 名前の よみは 読み辞書に 入る（見出しに 漢字が あっても 裸に しない）
     expect(sets[0]!.furigana).toContainEqual(["会社を 知る", "かいしゃを しる"]);
   });
 
-  it("名前の 有る 無しが まざったら、無い ものだけ 1つに まとまる", () => {
+  it("名前の 有る 無しが まざっても 1つ", () => {
     const sets = stageWordSets(LEVELED, [intro, shokyu, orientation]);
-    expect(sets.map((s) => s.id)).toEqual(["leveled", "set_shokyu"]);
-    expect(sets[0]!.words.length).toBe(intro.words.length + orientation.words.length);
+    expect(sets.map((s) => s.id)).toEqual(["leveled"]);
+    expect(sets[0]!.words.length).toBe(
+      new Set([...intro.words, ...hajimari.words, ...orientation.words].map((w) => w.term)).size,
+    );
   });
 
-  it("ステージIDで 引くと セットが ぜんぶ、単語ステージIDなら その 1つ", () => {
+  it("ステージIDでも 単語ステージIDでも 同じ 1つが 返る（古いリンクを 切らない）", () => {
     const stages = [LEVELED];
     const words = [shokyu, chukyu];
-    expect(findLearnerWordSets("leveled", stages, words).map((s) => s.id)).toEqual([
-      "set_shokyu",
-      "set_chukyu",
-    ]);
-    expect(findLearnerWordSets("set_chukyu", stages, words).map((s) => s.id)).toEqual([
-      "set_chukyu",
-    ]);
+    expect(findLearnerWordSets("leveled", stages, words).map((s) => s.id)).toEqual(["leveled"]);
+    expect(findLearnerWordSets("set_chukyu", stages, words).map((s) => s.id)).toEqual(["leveled"]);
     expect(findLearnerWordSets("nai", stages, words)).toEqual([]);
   });
 
-  it("セットは それぞれ 最後まで 遊べる", () => {
-    const [first] = stageWordSets(LEVELED, [shokyu, chukyu]);
-    const end = playAllCorrect(first!);
+  it("まとめた ものは 最後まで 遊べる", () => {
+    const [only] = stageWordSets(LEVELED, [shokyu, chukyu]);
+    const end = playAllCorrect(only!);
     expect(end.phase.kind).toBe("finished");
     expect(summarize(end).score).toBe(summarize(end).maxScore);
   });

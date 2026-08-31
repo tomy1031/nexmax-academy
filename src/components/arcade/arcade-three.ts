@@ -1,5 +1,5 @@
 /**
- * ことばアーケードの3D世界 — 旧 wordtest の three.js シーンの移植。
+ * 単語テストの3D世界 — 旧 wordtest の three.js シーンの移植。
  *
  * 原典: nextmake_onboarding_training/wordtest/src/main.js の
  *   initThree / buildField / FIELD_BUILDERS / moveScenery /

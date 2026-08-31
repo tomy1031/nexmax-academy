@@ -22,14 +22,14 @@ test("ことばは 教材より 先に、1枚だけ 出る", async ({ page }) =>
   const contentsY = (await contents.boundingBox())!.y;
   expect(wordsY).toBeLessThan(contentsY);
 
-  const cards = page.locator('a[href^="/arcade/"]');
+  const cards = page.locator('a[href^="/wordtest/"]');
   await expect(cards).toHaveCount(1);
-  await expect(cards.first()).toHaveAttribute("href", "/arcade/intro");
+  await expect(cards.first()).toHaveAttribute("href", "/wordtest/intro");
   await expect(page.getByText("ことば 44こ")).toBeVisible();
 });
 
 test("単語ゲームの 見出しは「はじめに」", async ({ page }) => {
-  await page.goto("/arcade/intro");
+  await page.goto("/wordtest/intro");
 
   /*
    * 見出しが **ちょうど「はじめに」**であること（「はじめに の ことば」に 戻らない）。
@@ -44,6 +44,6 @@ test("単語ゲームの 見出しは「はじめに」", async ({ page }) => {
 });
 
 test("単語ステージの 古い URL も 同じ まとまりに つながる", async ({ page }) => {
-  await page.goto("/arcade/intro_kotoba");
+  await page.goto("/wordtest/intro_kotoba");
   await expect(page.getByText("ことば 44こ ／ 1回の もんだい 44こ ／ 合格 80%")).toBeVisible();
 });

@@ -15,7 +15,7 @@ import {
 } from "./studio-ui";
 
 /**
- * 単語ステージ（ことばアーケード）のエディタ
+ * 単語ステージ（単語テスト）のエディタ
  *
  * これまでスタジオに無かった。「ことばを ぬき出す」がAIで作るところまでは出来ても、
  * **作ったあと1語も直せない**ので、AIの言い回しがそのまま学習者に出ていた。
@@ -62,14 +62,14 @@ export function WordStageEditor({
 
   return (
     <div className="space-y-4">
-      <StudioSection title="きほん" hint="ことばアーケードで あそぶ 1ステージぶんです。">
+      <StudioSection title="きほん" hint="単語テストの 1ステージぶんです。">
         <div className="grid gap-4 sm:grid-cols-2">
           <TextField
             label="ID（半角の 英小文字・数字・- _）"
             value={value.id}
             onChange={(id) => patch({ id })}
             placeholder="houkoku_words"
-            hint={value.id ? `学習者は /arcade/${value.id} で あそびます。` : undefined}
+            hint={value.id ? `学習者は /wordtest/${value.id} で 受けます。` : undefined}
           />
           <TextField
             label="タイトル"

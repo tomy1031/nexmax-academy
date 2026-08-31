@@ -23,7 +23,7 @@ if (!base) {
 }
 
 /** 授業の入室で必ず通る道。未ログインは 307（タイトルへ）で返るが、それも Worker が生きて返した証拠。 */
-const PATHS = ["/", "/map", "/arcade", "/dictionary", "/api/version"];
+const PATHS = ["/", "/map", "/wordtest", "/dictionary", "/api/version"];
 const PARALLEL = 20; // 授業の同時人数に合わせる
 
 /** 1リクエスト。リダイレクトは追わない（追うと1回が2回に膨れて枠を余計に食う）。 */

@@ -24,7 +24,7 @@ export interface Feedback {
  * 使える文言の全集合。増やすときはここに足す（画面側で文字列を書かない）。
  */
 export const FEEDBACK = {
-  /* --- 読みフェーズ（ことばアーケード） --- */
+  /* --- 読みフェーズ（単語テスト） --- */
   "reading.correct": { tone: "praise", title: "よみ、あってる！", next: "つぎは 意味を えらぼう" },
   "reading.retry": {
     tone: "encourage",

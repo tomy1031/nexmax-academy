@@ -154,11 +154,11 @@ export interface MapStageActions {
    * 📖「単語を 勉強」の行き先。**ひもづく単語ステージが無ければ null＝札を出さない**
    *（2026-08-25 の指定）。
    *
-   * 以前は無いときも `/arcade`（ことばアーケードの一覧）へ送っていた。だが札には
+   * 以前は無いときも `/wordtest`（単語テストの一覧）へ送っていた。だが札には
    * 「この ステージの ことば」と書いてあるので、学習者はそれを探して、どの課のものか
    * 分からない一覧の前で止まる。ことばだけ練習したい人にはサイドメニューの「単語」がある。
    *
-   * 行き先は **ステージID**（`/arcade/<ステージID>`）。セットが 1つなら そのまま 開き、
+   * 行き先は **ステージID**（`/wordtest/<ステージID>`）。セットが 1つなら そのまま 開き、
    * 2つ以上（初級・中級…）なら えらぶ 画面に なる。以前は `wordStageIds[0]` へ
    * 直に 送って いて、**ステージトップと 行き先が ちがって いた**（願い #203 で そろえた）。
    */
@@ -177,6 +177,6 @@ export function mapStageActions(stage: MapStage, progressCodes: string): MapStag
     resumeIndex,
     allDone: firstUnfinished < 0 && items.length > 0,
     restartHref: first && resume && first.href !== resume.href ? `/${stage.id}` : null,
-    wordsHref: stage.wordStageIds.length > 0 ? `/arcade/${stage.id}` : null,
+    wordsHref: stage.wordStageIds.length > 0 ? `/wordtest/${stage.id}` : null,
   };
 }
