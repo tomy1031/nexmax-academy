@@ -1,4 +1,27 @@
 {
+  "permissions": {
+    "allow": [
+      "Bash(git fetch:*)",
+      "Bash(git push)",
+      "Bash(git push -u origin :*)",
+      "Bash(git push origin :*)",
+      "Bash(git merge origin/integration:*)",
+      "Bash(gh pr create:*)",
+      "Bash(gh pr merge:*)",
+      "Bash(gh pr checks:*)",
+      "Bash(gh pr view:*)",
+      "Bash(gh pr list:*)",
+      "Bash(gh pr comment:*)",
+      "Bash(gh issue create:*)",
+      "Bash(gh issue close:*)",
+      "Bash(gh issue reopen:*)",
+      "Bash(gh issue comment:*)",
+      "Bash(gh issue view:*)",
+      "Bash(gh issue list:*)",
+      "Bash(gh run list:*)",
+      "Bash(gh run view:*)"
+    ]
+  },
   "hooks": {
     "PreToolUse": [
       {
