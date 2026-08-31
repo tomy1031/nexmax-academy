@@ -39,7 +39,7 @@ export function isPlayable(
 /**
  * ゲームの 語の かたちへ 直す。
  *
- * ことばアーケードは `Word`（`meaningEn` / `explanationJa`）で できている。
+ * 単語テストは `Word`（`meaningEn` / `explanationJa`）で できている。
  * 正の かたちを 変える たびに ゲームを 書き直すのは 割に 合わないので、
  * **境目を ここ 1つに する**。
  */

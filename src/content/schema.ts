@@ -1068,6 +1068,7 @@ export const RESERVED_STAGE_IDS = [
   "talk",
   "tutorial",
   "welcome",
+  "wordtest",
 ] as const;
 
 export const stageSchema = z.object({

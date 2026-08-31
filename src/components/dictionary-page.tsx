@@ -41,10 +41,10 @@ export function DictionaryPage({ entries }: { entries: readonly DictionaryEntry[
         </Link>
         <Link
           prefetch={false}
-          href="/arcade"
+          href="/wordtest"
           className="text-sky text-sm font-extrabold underline underline-offset-4"
         >
-          🕹️ ことばで あそぶ
+          🕹️ 単語テスト
         </Link>
       </header>
 
@@ -111,10 +111,10 @@ export function DictionaryPage({ entries }: { entries: readonly DictionaryEntry[
               {entry.stageId ? (
                 <Link
                   prefetch={false}
-                  href={`/arcade/${entry.stageId}`}
+                  href={`/wordtest/${entry.stageId}`}
                   className="text-sky mt-2 inline-block text-xs font-black underline underline-offset-4"
                 >
-                  🕹️ {entry.stageTitle} で あそぶ
+                  🕹️ {entry.stageTitle} の 単語テスト
                 </Link>
               ) : null}
             </li>
