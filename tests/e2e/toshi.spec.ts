@@ -454,13 +454,14 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
      */
     /*
      * 2026-08-31 に 準備が 7問に なり（社長の しつもんと 1対1）、カードも 7枚に なった。
-     * **足した 2枚（5 Japanese IT Pathway / 6 日本に 行くまでに）の 絵が まだ 無い**ので、
-     * 点線の 空わくが 2つ 出る。下絵の 文は `scripts/images/kaisha_junbi_scenes.json`。
-     * 数を 固定して おくと、**絵が できた ときに ここが 落ちて 0 に 戻す 合図に なる**。
+     * 足した 2枚（5 Japanese IT Pathway / 6 日本に 行くまでに）の 絵も 同じ日に 作った ので、
+     * **空わくは 0 に 戻す**。0 で 固定して おくと、絵を 消した ときや 差しかえに
+     * 失敗した ときに ここが 落ちる——「空わくを 出す」決まりは 生きた まま、
+     * 作り忘れの 見張りとして 効き つづける。
      */
-    await expect(page.locator('[data-slot="empty"]')).toHaveCount(2);
-    /* 絵の ある カード 5枚（1・2・3・4・7）＋ A/B の 分かれ道 2枚。 */
-    await expect(page.locator('img[src*="/img/articles/kaisha_matsui_junbi/"]')).toHaveCount(7);
+    await expect(page.locator('[data-slot="empty"]')).toHaveCount(0);
+    /* 「これから 考える 7つの こと」の 7枚 ＋ A/B の 分かれ道 2枚。 */
+    await expect(page.locator('img[src*="/img/articles/kaisha_matsui_junbi/"]')).toHaveCount(9);
     await shot(page, "07-junbi-article");
 
     await readToEnd(page);

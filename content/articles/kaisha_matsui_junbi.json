@@ -1486,12 +1486,24 @@
         {
           "label": "5",
           "title": "Japanese IT Pathway は どんな プログラム？",
-          "text": "あなたが 今 いる プログラムを、自分の ことばで 説明します。"
+          "text": "あなたが 今 いる プログラムを、自分の ことばで 説明します。",
+          "image": {
+            "refs": [],
+            "status": "done",
+            "src": "/img/articles/kaisha_matsui_junbi/j5.webp",
+            "prompt": "5 Japanese IT Pathway は どんな プログラム？（2年の 道のりを 説明する） → scripts/images/kaisha_junbi_scenes.json"
+          }
         },
         {
           "label": "6",
           "title": "日本に 行くまでに 何を がんばる？",
-          "text": "これから やりたい ことと、その りゆうを 考えます。"
+          "text": "これから やりたい ことと、その りゆうを 考えます。",
+          "image": {
+            "refs": [],
+            "status": "done",
+            "src": "/img/articles/kaisha_matsui_junbi/j6.webp",
+            "prompt": "6 日本に 行くまでに 何を がんばる？（これからの ことを 思いえがく） → scripts/images/kaisha_junbi_scenes.json"
+          }
         },
         {
           "label": "7",
