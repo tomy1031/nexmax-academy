@@ -212,7 +212,25 @@ export interface TalkContext {
   found: readonly string[];
   /** あと いくつ 見つけるか。 */
   remaining: number;
+  /**
+   * この しつもんで **とくに 見る ところ**（2026-08-31 の 指定）。
+   *
+   * 画面は これを 答える 前に 学習者へ 予告し、好感度も これで 計算する。
+   * ここへも 渡さないと、**ほめる ところ（praise）と 直す ところ（fix）だけが
+   * 別の ものさしで 書かれる**——「会社の ことを 言いましょう」と 言われた のに
+   * その 観点は 点に なって いない、という ずれに なる。
+   *
+   * 空（`undefined`）は これまでどおり ぜんぶ の 観点で 見る。
+   */
+  focus?: readonly ("concrete" | "reason" | "feeling")[];
 }
+
+/** 観点の 呼び名（指示文に 出す）。 */
+const FOCUS_NAMES: Readonly<Record<"concrete" | "reason" | "feeling", string>> = {
+  concrete: "concrete（会社の 中身）",
+  reason: "reason（りゆう）",
+  feeling: "feeling（気もち・考え）",
+};
 
 /**
  * 見かたの 指示文。
@@ -253,6 +271,15 @@ export function buildTalkPrompt(context: TalkContext, kanaRetry = false): string
     "UTTERANCE>>>",
     "",
     "## 観点（ここが 好感度に なります。見た まま 正直に）",
+    /*
+     * **この しつもんの 山場を 先に 言う**（2026-08-31 の 指定）。観点は ぜんぶ 返させる
+     *（好感度の 計算は 画面が する）が、ほめる ところと 直す ところは
+     * 山場に そろえないと、**画面が 予告した ものさしと 言われる ことが ずれる**。
+     */
+    context.focus && context.focus.length > 0 && !listen
+      ? `この しつもんで とくに 見るのは ${context.focus.map((key) => FOCUS_NAMES[key]).join(" と ")} です。` +
+        "praise と fix は この 2つに そろえて ください。ほかの 観点は 見た まま 返すだけで かまいません。"
+      : "",
     "- onTopic: いま 聞かれた ことに かみ合って いる。ことばが 少ない・形が くずれて いる",
     "  ことを りゆうに false に しないで ください",
     /*

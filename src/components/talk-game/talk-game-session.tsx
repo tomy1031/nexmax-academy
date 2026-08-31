@@ -5,6 +5,8 @@ import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore
 import { motion } from "motion/react";
 import { DictionaryText } from "@/components/dictionary-text";
 import { AnswerNotebook } from "@/components/answers/answer-notebook";
+import { readNotebook, type Notebook, type NotebookLine } from "@/lib/answers/notebook";
+import type { AnswerNotebookSource } from "@/components/answers/answer-notebook";
 import { RubyText } from "@/components/ruby-text";
 import { HintModal } from "@/components/meeting/hint-modal";
 import { SpeakButton } from "@/components/meeting/speak-button";
@@ -29,11 +31,12 @@ import {
   EMPTY_TALK,
   applyTurn,
   foundCount,
+  type TalkFocus,
   type TalkPlan,
   type TalkState,
   type TalkObservations,
 } from "@/lib/talkgame/affinity";
-import { localObservations, localTopic } from "@/lib/talkgame/local";
+import { localObservations, localReply, localTopic } from "@/lib/talkgame/local";
 import {
   clearTalkResume,
   parseTalkResume,
@@ -44,7 +47,7 @@ import {
 } from "@/lib/talkgame/resume";
 import { readAloud, talkInstruction } from "@/lib/talkgame/instructions";
 import { buildFuriganaIndex, mergeFuriganaEntries } from "@/lib/text/furigana";
-import { TalkFeedback, FEEDBACK_FURIGANA } from "./talk-feedback";
+import { TalkFeedback, TalkRubric, FEEDBACK_FURIGANA } from "./talk-feedback";
 import { TalkScene } from "./talk-scene";
 
 /**
@@ -108,6 +111,8 @@ type Phase = "lobby" | "host" | "me" | "thinking" | "feedback" | "clear";
 
 interface TurnResult {
   observations: TalkObservations;
+  /** その 発話を 見た ときに 効いて いた「見る ところ」（答える前の 予告と そろえる）。 */
+  focus?: readonly TalkFocus[];
   gained: number;
   /** 話しきった ぶんの 底上げ（観点とは 別に 見せる）。 */
   lifted: number;
@@ -139,6 +144,42 @@ function readNameOnServer(): string {
   return "";
 }
 
+/**
+ * 準備フォームの こたえを **文字列の まま** 取る。
+ *
+ * `useSyncExternalStore` は 同じ 中身なら 同じ 値が 返る ことを 求める。
+ * 行の 並び（オブジェクト）を そのまま 返すと 毎回 別物に なり、描き直しが 止まらない。
+ * しおりの 読み方（`readTalkResumeRaw` → `parseTalkResume`）と 同じ 形に そろえて ある。
+ *
+ * `reportOnly` の 束（調査シート）は 見ない——`from` が 指すのは 準備フォームの 設問。
+ */
+function prepSnapshot(sources: readonly AnswerNotebookSource[] | undefined): string {
+  const books = (sources ?? [])
+    .filter((one) => !one.reportOnly)
+    .map((one) => readNotebook(one.ref))
+    .filter((one): one is Notebook => one !== null);
+  return books.length === 0 ? "" : JSON.stringify(books);
+}
+
+function prepSnapshotOnServer(): string {
+  return "";
+}
+
+/** 設問ID → 書いた 行。同じ IDが 2つ あれば 先に 出た ほうを 残す。 */
+function parsePrep(raw: string): Readonly<Record<string, NotebookLine>> {
+  if (raw === "") return {};
+  const map: Record<string, NotebookLine> = {};
+  try {
+    for (const book of JSON.parse(raw) as Notebook[]) {
+      for (const one of book.lines) if (!(one.questionId in map)) map[one.questionId] = one;
+    }
+  } catch {
+    // 壊れた 保存値は「まだ 無い」として 扱う（会話は 止めない・notebook.ts と 同じ）
+    return {};
+  }
+  return map;
+}
+
 export function TalkGameSession({
   meeting,
   hostVoice,
@@ -165,6 +206,33 @@ export function TalkGameSession({
   const [talk, setTalk] = useState<TalkState>(EMPTY_TALK);
   const [queue, setQueue] = useState<readonly string[]>([]);
   const [askText, setAskText] = useState("");
+  /**
+   * いま 聞かれて いる しつもんの「見る ところ」と、準備フォームの どこで 書いた ことか。
+   *
+   * `askText` は セリフの 列（`queue`）を 使いきった ときに 決まるが、こちらは
+   * **列に 積む ときに** 決まる（列は 文字列しか 持たないので、付いて 回れない）。
+   * 深掘りの しつもん（AIが その場で 作る）には 対応する 準備が 無いので、
+   * `from` は 空に なる——そこは 画面が「じゅんびに ない しつもん」と 断る。
+   */
+  const [askFocus, setAskFocus] = useState<readonly TalkFocus[] | undefined>(undefined);
+  const [askFrom, setAskFrom] = useState("");
+  /**
+   * 準備フォームで 書いた ことを、しつもんの 横に 出す ための 引き（設問ID → 行）。
+   *
+   * **調べた ことを 見ながら 話す**引き先は ひきだし（`AnswerNotebook`）と 同じ
+   * `meeting.notes`。ただし ここで 読むのは **口に 出して 報告する ぶんだけの
+   * ものでは ない**ので、`reportOnly` の 束（調査シート）は 見ない——
+   * `from` が 指すのは あくまで 準備フォームの 設問 だから。
+   *
+   * 端末の 中（localStorage）を 読むので、**画面が 出て から** 読む
+   *（サーバでは 読めない。ロビーの ちらつきを 作らない）。
+   */
+  const prepRaw = useSyncExternalStore(
+    subscribeToProfile,
+    () => prepSnapshot(meeting.notes),
+    prepSnapshotOnServer,
+  );
+  const prep = useMemo(() => parsePrep(prepRaw), [prepRaw]);
   const [typed, setTyped] = useState("");
   const [result, setResult] = useState<TurnResult | null>(null);
   const [hintOpen, setHintOpen] = useState(false);
@@ -224,6 +292,13 @@ export function TalkGameSession({
     () => talkInstruction({ persona: meeting.persona, hostName: meeting.host.name }, learnerName),
     [meeting.persona, meeting.host.name, learnerName],
   );
+
+  /**
+   * `turns` 回目に 出す 出だしの しつもん（使いきったら null）。
+   *
+   * 教材は 文字列でも 書けるので（前からの 形）、読み口を ここに 1つだけ 置く。
+   */
+  const openerAt = useCallback((turns: number) => game?.openers[turns] ?? null, [game]);
 
   /** いま 出て いる 社長の ことば。 */
   const line = queue[0] ?? "";
@@ -301,16 +376,23 @@ export function TalkGameSession({
      * 切れて いる ので、同じ 会話には 戻らない（`src/lib/talkgame/resume.ts`）。
      */
     if (from.round === "listen") {
+      setAskFocus(undefined);
+      setAskFrom("");
       setQueue([withName(game.listenInvite)]);
     } else if (from.turns > 0) {
-      const scripted = game.openers[from.turns] ?? "";
+      const opener = openerAt(from.turns);
       const probe = game.probes[from.turns % Math.max(1, game.probes.length)] ?? "";
-      setQueue([withName(scripted) || withName(probe)]);
+      setAskFocus(opener?.focus);
+      setAskFrom(opener?.from ?? "");
+      setQueue([withName(opener?.ask ?? "") || withName(probe)]);
     } else {
-      setQueue([withName(game.opening), withName(game.openers[0] ?? "")]);
+      const opener = openerAt(0);
+      setAskFocus(opener?.focus);
+      setAskFrom(opener?.from ?? "");
+      setQueue([withName(game.opening), withName(opener?.ask ?? "")]);
     }
     recordContentProgress(meeting.id, { status: "started" });
-  }, [game, meeting.id, saved, withName]);
+  }, [game, meeting.id, saved, withName, openerAt]);
 
   /**
    * 1つの 発話を 見る。こえでも 文字でも、ここを 通る。
@@ -340,6 +422,7 @@ export function TalkGameSession({
       const answer = await requestTalkTurn(`${meeting.id}:${talk.round}`, {
         round: talk.round,
         ask: askText,
+        focus: talk.round === "talk" ? askFocus : undefined,
         hint: hints[0] ?? "",
         judgePrompt: meeting.judgePrompt ?? "",
         hostName: meeting.host.name,
@@ -386,12 +469,18 @@ export function TalkGameSession({
         ? answer.judgement.observations
         : localObservations(talk.round, said);
       const topic = answer.ok ? answer.judgement.topic : localTopic(talk.round, said, observations);
-      const step = applyTurn(talk, plan, observations, topic || null);
+      /*
+       * **その しつもんの 観点で 見る**（2026-08-31 の 指定）。答える前に 予告した 表と
+       * 同じ ものを 使う——ここで 別の 表を 使うと、予告と 内訳が 食い違う。
+       */
+      const focus = talk.round === "talk" ? askFocus : undefined;
+      const step = applyTurn(talk, plan, observations, topic || null, focus);
       setTalk(step.state);
       // 画面が 自分で 出す 文は **かなだけ**（その場の 文には ルビを 合成できない）
       setNote(answer.ok ? null : "AIの みかたが いま つかえません。すすみかたは おなじです。");
       setResult({
         observations,
+        focus,
         gained: step.gained,
         lifted: step.lifted,
         judgedAs: step.judgedAs,
@@ -401,23 +490,35 @@ export function TalkGameSession({
         /* AIが 「null」「なし」の 文字を 返す ことが ある。そのまま 出すと 画面に 出る */
         fix: answer.ok ? cleanFix(answer.judgement.fix) : "",
         example: answer.ok ? answer.judgement.exampleAnswer : "",
-        reply: answer.ok ? answer.judgement.reply : "",
+        /*
+         * **答えた ことに 相手が 何も 言わない、を 作らない**（2026-08-31 の 指定
+         * 「判定画面ですぐに次の質問に行ってしまう」）。AIに 通せない ときも、
+         * 受け取った ことだけは 必ず 返す（`localReply`）。
+         */
+        reply: (answer.ok ? answer.judgement.reply : "") || localReply(talk.round, talk.turns),
         nextAsk: answer.ok ? answer.judgement.nextAsk : "",
       });
       setPhase("feedback");
     },
-    [game, meeting, plan, talk, askText, hints, learnerName],
+    [game, meeting, plan, talk, askText, askFocus, hints, learnerName],
   );
 
   /** 見かたを 読み終えたら、社長の ことばへ もどる。 */
   const afterFeedback = useCallback(() => {
     if (!game || !result) return;
     const lines: string[] = [];
+    /*
+     * **返事が 先、しつもんは その あと**。ここを 1つの 列に 積んで 順に 出すので、
+     * 学習者は「言った ことが 届いた」→「つぎを 聞かれる」の 2拍で 進む。
+     * `result.reply` は `judge` で 必ず 中身が 入る（AIが 無い ときは `localReply`）。
+     */
     if (result.reply) lines.push(result.reply);
     if (talk.round === "clear") {
       lines.push(withName(game.reward));
       setEnding(true);
     } else if (talk.round === "listen") {
+      setAskFocus(undefined);
+      setAskFrom("");
       lines.push(withName(game.listenInvite));
     } else {
       /*
@@ -426,7 +527,7 @@ export function TalkGameSession({
        * そこから 先の 深掘りは AIが 作る——学習者が 何を おもしろいと 言うかは
        * 先に 書けないので、書けるのは 入口だけ。
        */
-      const scripted = game.openers[talk.turns] ?? "";
+      const opener = openerAt(talk.turns);
       /*
        * 予備は **出だしを 使いきった ところから** 順に 回す。`turns` で そのまま
        * 割って いた ころは、予備の 1つめ（「どうして、それが おもしろいと…」）が
@@ -434,12 +535,20 @@ export function TalkGameSession({
        */
       const at = Math.max(0, talk.turns - game.openers.length);
       const probe = game.probes[at % Math.max(1, game.probes.length)] ?? "";
-      lines.push(withName(scripted) || result.nextAsk || withName(probe));
+      /*
+       * 出だしを 使いきった あとの 深掘りには **準備の 対応が 無い**。観点は
+       * 共通の 表（`focus` を 渡さない）に 戻し、`from` も 空に する——
+       * 対応が 無いのに 「じゅんびの ◯」と 出すと、学習者は 書いた はずの ものを
+       * 探しに 行って 見つけられない。
+       */
+      setAskFocus(opener?.focus);
+      setAskFrom(opener?.from ?? "");
+      lines.push(withName(opener?.ask ?? "") || result.nextAsk || withName(probe));
     }
     setResult(null);
     setQueue(lines.filter((one) => one !== ""));
     setPhase("host");
-  }, [game, result, talk.round, talk.turns, withName]);
+  }, [game, result, talk.round, talk.turns, withName, openerAt]);
 
   /*
    * ばんが 変わったら **黙って つなぎ直す**（指示文は つなぐ ときにしか 渡せない）。
@@ -640,10 +749,13 @@ export function TalkGameSession({
           <AnswerPanel
             ask={askText}
             furigana={furigana}
+            boardFurigana={boardFurigana}
             dictionary={dictionary}
             typed={typed}
             note={note}
             round={talk.round}
+            focus={talk.round === "talk" ? askFocus : undefined}
+            prepared={askFrom ? (prep[askFrom] ?? null) : null}
             hasHint={hints.length > 0}
             voice={voice}
             hostVoice={hostVoice}
@@ -657,6 +769,7 @@ export function TalkGameSession({
         {phase === "feedback" && result ? (
           <TalkFeedback
             round={result.judgedAs}
+            focus={result.focus}
             observations={result.observations}
             gained={result.gained}
             lifted={result.lifted}
@@ -732,10 +845,13 @@ function SpeechPanel({
 function AnswerPanel({
   ask,
   furigana,
+  boardFurigana,
   dictionary,
   typed,
   note,
   round,
+  focus,
+  prepared,
   hasHint,
   voice,
   hostVoice,
@@ -746,10 +862,16 @@ function AnswerPanel({
 }: {
   ask: string;
   furigana: ReturnType<typeof buildFuriganaIndex>;
+  /** 画面の ことば（観点の 見出し）まで 覆う 索引。 */
+  boardFurigana: ReturnType<typeof buildFuriganaIndex>;
   dictionary?: readonly DictionaryEntry[];
   typed: string;
   note: string | null;
   round: TalkState["round"];
+  /** この しつもんの「見る ところ」（答える前に 予告する）。 */
+  focus?: readonly TalkFocus[];
+  /** 準備フォームで この しつもんに あたる ものを 書いて いれば、その 行。 */
+  prepared: NotebookLine | null;
   hasHint: boolean;
   voice: ReturnType<typeof useLiveVoice>;
   hostVoice?: string;
@@ -772,6 +894,31 @@ function AnswerPanel({
         <p data-ask className="text-navy text-sm font-bold sm:text-base">
           <DictionaryText text={ask} index={furigana} show dictionary={dictionary} />
         </p>
+
+        {/*
+          **じゅんびで 書いた ことを、その しつもんの 横に 出す**（2026-08-31 の 指定
+          「質問の内容が事前にまとめた内容と一致していない箇所があります」）。
+          ひきだし（AnswerNotebook）は 5問ぶんを まとめて 出す ので、いま 聞かれて
+          いるのが どれかは 学習者が 自分で 探す ことに なって いた。
+        */}
+        {prepared && prepared.answer.trim() !== "" ? (
+          <div
+            data-prepared
+            className="rounded-xl border-2 px-3 py-2"
+            style={{ borderColor: "var(--color-hairline)", background: "var(--color-cream)" }}
+          >
+            <p className="text-ink-soft text-[11px] font-black">
+              <RubyText text="じゅんびで 書いた こと" index={boardFurigana} show />
+              {prepared.section ? `（${prepared.section}）` : ""}
+            </p>
+            <p className="text-navy mt-0.5 text-xs font-bold break-words">
+              {prepared.answer.trim()}
+            </p>
+          </div>
+        ) : null}
+
+        {/* **何を 見るかを 先に 出す**（採点の ものさしを 答える前に 見せる）。 */}
+        <TalkRubric round={round} focus={focus} furigana={boardFurigana} />
 
         {note ? <p className="text-ink-soft text-[11px] font-bold">{note}</p> : null}
 
