@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { ArcadeGame } from "@/components/arcade/arcade-game";
 import { listStages, listWordStages } from "@/lib/content";
-import { learnerWordStages } from "@/lib/wordstage-merge";
+import { learnerWordGroups } from "@/lib/wordstage-merge";
 
 export const metadata: Metadata = {
   title: "単語テスト | Japanese IT Pathway",
@@ -20,6 +20,11 @@ export const revalidate = 300;
  */
 export default async function ArcadeIndexPage() {
   const [stages, words] = await Promise.all([listStages(), listWordStages()]);
-  // 一覧も **1ステージ＝1つ**（同じ ことばが 2つの 名前で 出ないように）。
-  return <ArcadeGame stages={learnerWordStages(stages, words)} />;
+  /*
+   * 一覧は **1ステージ 1行**（同じ ステージが 何行も ならばない）。押した 先で
+   * 初級・中級・上級を えらぶ（願い #280・2026-08-31「会社を知るを選ぶと、
+   * 初級・中級・上級が選択できるようにしてください」）。
+   */
+  const { heads, sets } = learnerWordGroups(stages, words);
+  return <ArcadeGame stages={sets} groups={heads} />;
 }

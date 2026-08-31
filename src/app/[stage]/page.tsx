@@ -22,7 +22,7 @@ import {
   getWordStage,
 } from "@/lib/content";
 import { stageStepNumber } from "@/lib/map-data";
-import { stageWordSets } from "@/lib/wordstage-merge";
+import { stageWordStage } from "@/lib/wordstage-merge";
 import { stageContentPath } from "@/lib/stage-routes";
 
 /**
@@ -223,15 +223,18 @@ export default async function StagePage({ params }: { params: Promise<{ stage: s
   /*
    * 単語ステージは独立したアプリ（単語テスト）なので行き先も /wordtest のまま。
    *
-   * **ぶら下がった グループは 1枚に まとめる**。学習者から 見れば その ステージで
-   * ならった ことばは 1かたまりで、どちらを やるかの 判断は 学習では ない
-   *（2026-08-19 の指定）。まとめた ぶんは `/wordtest/<ステージID>` で 開く。
-   * セット名（初級・中級…）で 分けるのも やめた（願い #280・2026-08-31）。
+   * **ここは 1行**。学習者から 見れば その ステージで ならった ことばは
+   * 1かたまりで、どちらを やるかの 判断は 学習では ない（2026-08-19 の指定）。
+   * まとめた ぶんは `/wordtest/<ステージID>` で 開く。
+   * **セット名（初級・中級…）は その 先で えらぶ**（願い #280・2026-08-31
+   *「会社を知るを選ぶと、初級・中級・上級が選択できるようにしてください」）——
+   * ステージトップに 3行 ならべると、どれを やれば いいのか 決められない。
    * 参照切れは 落とす。
    */
   const loaded = await Promise.all(stage.wordStageIds.map((id) => getWordStage(id)));
   const found = loaded.filter((item): item is NonNullable<typeof item> => item !== null);
-  const wordStages: StageWordItem[] = stageWordSets(stage, found).map((set) => ({
+  const merged = stageWordStage(stage, found);
+  const wordStages: StageWordItem[] = (merged ? [merged] : []).map((set) => ({
     // 1つだけの ときは その 単語ステージへ、まとめた ときは ステージIDへ
     id: set.id,
     title: set.title,

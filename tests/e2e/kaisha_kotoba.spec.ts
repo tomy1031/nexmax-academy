@@ -1,75 +1,90 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { expect, test } from "@playwright/test";
 
 /**
- * 会社を知る の ことば — **セットに 分けず 1つ**（願い #280・2026-08-31）
+ * 会社を知る の ことば — **一段目は 1行、二段目で 初級・中級・上級**（願い #280）
  *
- * 2026-08-25（願い #203）は 初級・中級・上級を 別々の 行に 出して いた。
- * ユーザーの ことば:「初級・中級・上級などのセットのものは一つにまとめてください
- *（会社を知る、報連相：連絡）」。**1ステージ＝1つの 単語テスト**に なった。
+ * ユーザーの ことば（2026-08-31）:
+ *   「初級・中級・上級などのセットのものは一つにまとめてください（会社を知る、報連相：連絡）」
+ *   →「会社を知るを選ぶと、初級・中級・上級が選択できるようにしてください。
+ *      まとめるの伝え方が悪かったです」
  *
- * 見るのは 4つ:
- *  - ステージトップの ことばの 行が **1つ**（初級・中級・上級の 札が ならばない）
- *  - `/wordtest/kaisha` は **えらぶ 画面を はさまず** やりかた選びから 始まる
- *  - 古い URL（単語ステージID・`/arcade/...`）が 同じ ところへ つながる
- *  - **センテンスが 遊べる**（長い ひとことでも 画面から はみ出さない）
+ * つまり **まとめるのは 一覧の 行**で、セットを 消す ことでは ない。
+ *
+ * 見るのは 5つ:
+ *  - ステージトップの ことばの 行が **1つ**（初級・中級・上級が 3行 ならばない）
+ *  - `/wordtest/kaisha` は **えらぶ 画面**で、セットが ぜんぶ ならぶ
+ *  - `/wordtest` の 一覧も 1ステージ 1行。押すと えらぶ 画面へ 移る
+ *  - 名前が 変わる 前の URL（`/arcade/...`）が 同じ ところへ つながる
+ *  - **センテンスの セットが 遊べる**（長い ひとことでも 画面から はみ出さない）
  */
 
-/** モード選び（やりかた選び）の 画面に 居ることの 目じるし。 */
-const MODE_BUTTON = /もんだいだけ/;
+/**
+ * セットの 数は **教材から 読む**（画面の 数字を ベタ書きしない）。
+ * 先生が セットを 足しても 減らしても、この 検査は そのまま 生きる。
+ */
+const STAGE = JSON.parse(
+  readFileSync(join(__dirname, "..", "..", "content", "stages", "kaisha.json"), "utf8"),
+) as { wordStageIds: string[] };
 
-/** 「ことば 152こ ／ 1回の もんだい 152こ ／ 合格 80%」の 行。 */
-const COUNT_LINE = /ことば \d+こ ／ 1回の もんだい \d+こ ／ 合格 \d+%/;
-
-test("ステージトップの ことばは 1行だけ", async ({ page }) => {
+test("ステージトップの ことばは 1行だけ（行き先は ステージID）", async ({ page }) => {
   await page.goto("/kaisha");
 
   const cards = page.locator('a[href^="/wordtest/"]');
   await expect(cards).toHaveCount(1);
   await expect(cards.first()).toHaveAttribute("href", "/wordtest/kaisha");
 
-  // セット名の 札（初級・中級・上級）は もう 出ない
+  // セット名の 札（初級・中級・上級）は ここには 出ない——えらぶのは 押した 先
   for (const label of ["初級", "中級", "上級"]) {
     await expect(cards.first()).not.toContainText(label);
   }
 });
 
-test("ステージIDで 開くと えらぶ 画面を はさまない", async ({ page }) => {
+test("ステージIDで 開くと セットを えらぶ 画面に なる", async ({ page }) => {
   await page.goto("/wordtest/kaisha");
 
-  await expect(page.getByRole("button", { name: MODE_BUTTON })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "ことばの セットを えらぶ" })).toHaveCount(0);
-
-  // 3つの セットの ことばが 1つに 入って いる（いちばん 多い セットより 多い）
-  const line = await page.getByText(COUNT_LINE).innerText();
-  const count = Number(line.match(/ことば (\d+)こ/)![1]);
-  expect(count).toBeGreaterThan(60);
+  await expect(page.getByRole("heading", { name: "ことばの セットを えらぶ" })).toBeVisible();
+  // ならぶ 数は ステージが 持って いる セットの 数
+  await expect(page.getByText(/ことば \d+こ ／ 合格 \d+%/)).toHaveCount(STAGE.wordStageIds.length);
+  for (const label of ["初級", "中級", "上級"]) {
+    await expect(page.getByText(label, { exact: true }).first()).toBeVisible();
+  }
 });
 
-test("古い URL は 同じ まとまりに つながる", async ({ page }) => {
-  await page.goto("/wordtest/kaisha");
-  const expected = await page.getByText(COUNT_LINE).innerText();
+test("一覧の「会社を 知る」を 押すと、初級・中級・上級が 出る", async ({ page }) => {
+  await page.goto("/wordtest");
 
-  // 単語ステージID（セットに 分かれて いた ころの リンク）
-  await page.goto("/wordtest/stage23_kaisha_jokyu");
-  await expect(page.getByText(COUNT_LINE)).toHaveText(expected);
+  /*
+   * 一覧は 1ステージ 1行。見出しには ルビが 合成される ので、
+   * 通しの 字では 引けない——目じるしの ことばだけを 見る。
+   */
+  const rows = page.getByRole("button", { name: /会社/ });
+  await expect(rows).toHaveCount(1);
+  await rows.first().click();
 
-  // 名前が「ことばアーケード」だった ころの URL
+  await expect(page).toHaveURL(/\/wordtest\/kaisha$/);
+  await expect(page.getByRole("heading", { name: "ことばの セットを えらぶ" })).toBeVisible();
+  await expect(page.getByText(/ことば \d+こ ／ 合格 \d+%/)).toHaveCount(STAGE.wordStageIds.length);
+});
+
+test("名前が 変わる 前の URL も 同じ ところへ つながる", async ({ page }) => {
   await page.goto("/arcade/kaisha");
   await expect(page).toHaveURL(/\/wordtest\/kaisha$/);
+
   await page.goto("/arcade");
   await expect(page).toHaveURL(/\/wordtest$/);
 });
 
-test("センテンスが 遊べて、長い ひとことが 画面に 収まる", async ({ page }) => {
-  await page.goto("/wordtest/kaisha");
+test("センテンスの セットが 遊べて、長い ひとことが 画面に 収まる", async ({ page }) => {
+  await page.goto("/wordtest/stage23_kaisha_jokyu");
 
-  await page.getByRole("button", { name: MODE_BUTTON }).click();
+  await page.getByRole("button", { name: /もんだいだけ/ }).click();
   await expect(page.getByText("英語の 意味を えらぼう！")).toBeVisible({ timeout: 20_000 });
 
   /*
    * 4択の あいだ 出て いる ひとことが **390px の 中に 収まって いる**こと。
    * 前は 1行 固定で、長い 文の 両はしが 画面の 外に 出て いた（実機で 実際に 切れた）。
-   * 上級の センテンスも いまは この 1つの まとまりに 入って いる。
    */
   const box = await page.evaluate(() => {
     const rubies = [...document.querySelectorAll("ruby")];

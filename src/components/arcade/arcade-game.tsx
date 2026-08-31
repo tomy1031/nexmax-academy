@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import type { Word, WordStage } from "@/content/schema";
+import type { WordGroupHead } from "@/lib/wordstage-merge";
 import { FeedbackMessage } from "@/components/feedback-message";
 import { RubyText } from "@/components/ruby-text";
 import { buildFuriganaIndex } from "@/lib/text/furigana";
@@ -52,12 +53,42 @@ import { useCountdown } from "./use-countdown";
 
 type Screen =
   | { kind: "stageSelect" }
+  /** 一覧の 1行を 押した あと、その 中の セット（初級・中級…）を えらぶ。 */
+  | { kind: "setSelect"; groupId: string }
   | { kind: "mode"; stageId: string }
   | { kind: "hiraCheck"; stageId: string; mode: ArcadeMode }
   | { kind: "play"; stageId: string }
   | { kind: "result"; stageId: string }
   | { kind: "flashcard"; stageId: string }
   | { kind: "dictionary"; stageId: string };
+
+/**
+ * えらぶ 画面の 1行。一段目（ステージ）でも 二段目（セット）でも 同じ 形にする——
+ * 札の 中身が 場所で 変わると、学習者は 同じ ものを 2通りの 顔で 覚えることになる。
+ */
+type SelectItem = Omit<WordGroupHead, "setIds">;
+
+function headItem(head: WordGroupHead): SelectItem {
+  return {
+    id: head.id,
+    title: head.title,
+    furigana: head.furigana,
+    wordCount: head.wordCount,
+    passRate: head.passRate,
+    ...(head.label ? { label: head.label } : {}),
+  };
+}
+
+function itemOfSet(set: WordStage): SelectItem {
+  return {
+    id: set.id,
+    title: set.title,
+    furigana: set.furigana,
+    wordCount: set.words.length,
+    passRate: set.passRate,
+    ...(set.label ? { label: set.label } : {}),
+  };
+}
 
 /** 解説の自動送り（旧アプリと同じく、押すと早送りできる）。 */
 const EXPLAIN_MS = 2800;
@@ -78,10 +109,23 @@ export function ArcadeGame({
    * どの ステージにも 付いて いない ことばでは 未指定。そのときは これまでどおり マップ。
    */
   backTo,
+  /**
+   * 一覧（`/wordtest`）の 行。**1ステージ 1行**で、中に セットが 入って いる。
+   *
+   * これを 渡すと 画面が **二段**に なる（願い #280 の 直し・2026-08-31
+   *「会社を知るを選ぶと、初級・中級・上級が選択できるようにしてください」）:
+   * 一覧の 行 → セットを えらぶ → やりかたを えらぶ。セットが 1つの 行は
+   * えらぶ 画面を はさまず、そのまま やりかた選びに 入る。
+   *
+   * ステージから 来た ときは 未指定。手わたされる `stages` が すでに
+   * **その ステージの セットだけ**なので、一段目が 要らない。
+   */
+  groups,
 }: {
   stages: readonly WordStage[];
   initialStageId?: string;
   backTo?: string;
+  groups?: readonly WordGroupHead[];
 }) {
   const router = useRouter();
   const store = useMemo(() => createProgressStore(), []);
@@ -123,11 +167,51 @@ export function ArcadeGame({
 
   // ロックは置かない（願い #26）。どのグループもすぐ開ける。
   // データの `password` は残っているが、もう見ない。
-  const openStage = useCallback((target: WordStage) => {
-    setScreen({ kind: "mode", stageId: target.id });
+  const openStage = useCallback((id: string) => {
+    setScreen({ kind: "mode", stageId: id });
   }, []);
 
+  /**
+   * 一覧の 行を 押した とき。セットが 2つ以上 なら **えらぶ 画面**を はさむ。
+   * 1つなら そのまま やりかた選びへ（余計な 1画面を 見せない）。
+   */
+  const openGroup = useCallback(
+    (id: string) => {
+      const group = groups?.find((g) => g.id === id);
+      if (group && group.setIds.length > 1) setScreen({ kind: "setSelect", groupId: id });
+      else setScreen({ kind: "mode", stageId: group?.setIds[0] ?? id });
+    },
+    [groups],
+  );
+
+  /** その 行の 中の セット（ならびは `stageWordSets` の 順のまま）。 */
+  const setsOfGroup = useCallback(
+    (groupId: string) => {
+      const ids = groups?.find((g) => g.id === groupId)?.setIds ?? [];
+      return ids.flatMap((id) => stages.filter((set) => set.id === id));
+    },
+    [groups, stages],
+  );
+
   const leave = useCallback(() => router.push(backTo ?? "/map"), [router, backTo]);
+
+  /*
+   * やりかた選びから 戻る 先。**近い ほうから** 見る:
+   * その 行の セット選び（初級・中級…）→ 一覧 → 来た ステージ（または マップ）。
+   * 画面の 状態では なく データから 決めるので、URLを 直接 開いた 人にも 同じ 道が 出る。
+   */
+  const modeGroup = groups?.find((group) => group.setIds.includes(stageId ?? ""));
+  const modeBack: "sets" | "list" | "leave" =
+    modeGroup && modeGroup.setIds.length > 1
+      ? "sets"
+      : (groups ? groups.length : stages.length) > 1
+        ? "list"
+        : "leave";
+  const goBackFromMode = useCallback(() => {
+    if (modeBack === "sets" && modeGroup) setScreen({ kind: "setSelect", groupId: modeGroup.id });
+    else if (modeBack === "list") setScreen({ kind: "stageSelect" });
+    else leave();
+  }, [modeBack, modeGroup, leave]);
 
   /*
    * **1問 ごとに 進み具合を 書く**（2026-08-26）。
@@ -190,8 +274,8 @@ export function ArcadeGame({
           <div className="pointer-events-none w-full max-w-2xl">
             {screen.kind === "stageSelect" && (
               <StageSelect
-                stages={stages}
-                onPick={openStage}
+                items={groups ? groups.map(headItem) : stages.map(itemOfSet)}
+                onPick={groups ? openGroup : openStage}
                 onLeave={leave}
                 leaveLabel={
                   backTo && ownerTitle ? (
@@ -203,20 +287,33 @@ export function ArcadeGame({
               />
             )}
 
+            {/*
+              一覧の 行の 中の セット（初級・中級・上級）。1行に 1セットしか 無ければ
+              `openGroup` が ここを 飛ばす ので、この 画面が 出るのは 2つ以上の ときだけ。
+            */}
+            {screen.kind === "setSelect" && (
+              <StageSelect
+                items={setsOfGroup(screen.groupId).map(itemOfSet)}
+                onPick={openStage}
+                onLeave={() => setScreen({ kind: "stageSelect" })}
+                leaveLabel="← ほかの ことばを えらぶ"
+              />
+            )}
+
             {screen.kind === "mode" && stage && (
               <ModeSelect
                 stage={stage}
                 furigana={furigana}
                 difficulty={difficulty}
                 /*
-                  手わたされた セットが 2つ以上 なら、まず **えらびなおす**道を 出す。
-                  ここに 並ぶのは その ステージの セット（初級・中級…）だけなので、
-                  よその 課の ことばを 選ばせる ことには ならない
-                  （ぜんぶ 見たい 人の 入口は /wordtest のまま 残って いる）。
-                  1つしか 無ければ、来た ステージへ そのまま 帰す。
+                  えらびなおす 先が あれば、まず **そこへ 戻る**道を 出す
+                  （その 行の セット → 一覧の 順に 近い ほうへ）。ここに 並ぶのは
+                  その ステージの セット（初級・中級…）だけなので、よその 課の
+                  ことばを 選ばせる ことには ならない。
+                  戻る 先が 無ければ、来た ステージへ そのまま 帰す。
                 */
                 backLabel={
-                  stages.length > 1 ? (
+                  modeBack !== "leave" ? (
                     "ほかの セットを えらぶ"
                   ) : backTo ? (
                     <BackToStage title={stage.title} furigana={furigana} />
@@ -231,7 +328,7 @@ export function ArcadeGame({
                 }}
                 onFlashcard={() => setScreen({ kind: "flashcard", stageId: stage.id })}
                 onDictionary={() => setScreen({ kind: "dictionary", stageId: stage.id })}
-                onBack={() => (stages.length > 1 ? setScreen({ kind: "stageSelect" }) : leave())}
+                onBack={goBackFromMode}
               />
             )}
 
@@ -579,14 +676,18 @@ const MODE_LABEL: Record<ArcadeMode, string> = {
  * ステージ選択（単語だけで開いたときの入り口）
  * ------------------------------------------------------------------ */
 
+/**
+ * えらぶ 画面。**一段目（ステージの 一覧）でも 二段目（その中の セット）でも 同じ**
+ * ——札の 中身が 場所で 変わると、同じ ものを 2通りの 顔で 覚えることになる。
+ */
 function StageSelect({
-  stages,
+  items,
   onPick,
   onLeave,
   leaveLabel,
 }: {
-  stages: readonly WordStage[];
-  onPick: (stage: WordStage) => void;
+  items: readonly SelectItem[];
+  onPick: (id: string) => void;
   onLeave: () => void;
   /** 出る ボタンの 字。行き先を 決める 親が 言葉も 決める。 */
   leaveLabel: ReactNode;
@@ -597,26 +698,26 @@ function StageSelect({
         まなびたい ことばの セットを えらんでね。
       </p>
       <ul className="mt-4 grid gap-3 sm:grid-cols-2">
-        {stages.map((stage) => {
-          const index = buildFuriganaIndex(stage.furigana);
+        {items.map((item) => {
+          const index = buildFuriganaIndex(item.furigana);
           return (
-            <li key={stage.id}>
+            <li key={item.id}>
               <button
                 type="button"
-                onClick={() => onPick(stage)}
+                onClick={() => onPick(item.id)}
                 className="border-hairline hover:border-sky w-full rounded-[20px] border-2 bg-white p-4 text-left transition hover:scale-[1.02]"
               >
                 <p className="text-sky text-xs font-black">
-                  ことば {stage.words.length}こ ／ 合格 {stage.passRate}%
+                  ことば {item.wordCount}こ ／ 合格 {item.passRate}%
                 </p>
                 <span className="mt-1 flex flex-wrap items-baseline gap-x-2 gap-y-1">
                   <RubyText
                     className="text-ink block text-lg font-black"
-                    text={stage.title}
+                    text={item.title}
                     index={index}
                   />
                   {/* セット名（初級・中級…）。同じ 見出しが ならぶので、ここが 目じるし。 */}
-                  {stage.label ? <SetBadge label={stage.label} index={index} /> : null}
+                  {item.label ? <SetBadge label={item.label} index={index} /> : null}
                 </span>
               </button>
             </li>
