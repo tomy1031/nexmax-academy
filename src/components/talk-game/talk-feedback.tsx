@@ -108,6 +108,7 @@ function ribbonOf(gained: number, max: number): { text: string; color: string } 
 export function TalkFeedback({
   round,
   focus,
+  judged = true,
   observations,
   gained,
   lifted,
@@ -122,6 +123,14 @@ export function TalkFeedback({
   round: TalkRound;
   /** **その とき 聞かれて いた しつもんの**「見る ところ」。答える前の 予告と 同じ 表に する。 */
   focus?: readonly TalkFocus[];
+  /**
+   * AIの 見かたに つなげたか。false なら 端末の 規則だけで 見て いる。
+   *
+   * 規則では **会社の 中身・りゆう・気もちが 判らない**ので、そこを ✗ の 顔で 出すと
+   *「NMClaw が 先進的で いいと 思いました」に「会社の ことが 入って いる ✗」が 付く。
+   * **見て いない ことと、できて いない ことは ちがう。**
+   */
+  judged?: boolean;
   observations: TalkObservations;
   /** 観点から 上がった ぶん。下の 内訳の 合計と 一致する。 */
   gained: number;
@@ -136,6 +145,13 @@ export function TalkFeedback({
   onNext: () => void;
 }) {
   const rows = breakdown(round, observations, focus);
+  /*
+   * 端末の 規則では 判らない 観点（`src/lib/talkgame/local.ts` が いつも false に する もの）。
+   * 立って いれば そのまま ✓、立って いなければ「?」——見て いないから である。
+   */
+  const unseen = new Set<keyof TalkObservations>(
+    judged ? [] : (["concrete", "reason", "feeling"] as const).filter((key) => !observations[key]),
+  );
   const max = rows.reduce((sum, row) => sum + row.points, 0);
   const ribbon = ribbonOf(gained, max);
 
@@ -182,7 +198,7 @@ export function TalkFeedback({
                     color: row.on ? "var(--color-on-accent)" : "var(--color-ink-faint)",
                   }}
                 >
-                  {row.on ? "✓" : "・"}
+                  {row.on ? "✓" : unseen.has(row.key) ? "?" : "・"}
                 </span>
                 <span className={row.on ? "text-ink" : "text-ink-faint"}>
                   <RubyText text={LABELS[row.key]} index={furigana} show />
@@ -196,6 +212,18 @@ export function TalkFeedback({
               </li>
             ))}
           </ul>
+
+          {/*
+            **見て いない ことを、できて いない 顔で 出さない**（2026-08-31 の 指摘）。
+            端末の 規則は 会社の 中身・りゆう・気もちを 判らない ので、そこは「?」に して
+            断りを 置く。ここが 無かった ころ、名前を 名指した 答えに
+            「会社の ことが 入って いる ✗ +0%」が 付いて いた。
+          */}
+          {rows.some((row) => unseen.has(row.key)) ? (
+            <p className="text-ink-faint mt-2 text-[11px] font-bold">
+              ? は、いまは AIに つなげないので みて いない ところです。 こうかんどは さがりません。
+            </p>
+          ) : null}
         </div>
 
         {fix ? (
