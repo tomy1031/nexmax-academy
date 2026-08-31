@@ -592,7 +592,12 @@ write(
           },
         ],
       },
-      { kind: "image", ...img(`${HOUKOKU_IMG}/hourenso.webp`), caption: "報連相の 3つ" },
+      {
+        kind: "image",
+        size: "wide",
+        ...img(`${HOUKOKU_IMG}/hourenso.webp`),
+        caption: "報連相の 3つ",
+      },
       { kind: "heading", level: 2, text: "なぜ 報告を するの？" },
       { kind: "image", ...img(`${HOUKOKU_IMG}/teamwork.webp`), caption: "チームワーク" },
       {
@@ -655,6 +660,7 @@ write(
       { kind: "heading", level: 2, text: "会社の ポジション（階級）" },
       {
         kind: "image",
+        size: "wide",
         ...img("/img/hourensou/listening/houkoku_hierarchy.webp"),
         caption: "会社の 階級",
       },
@@ -968,7 +974,7 @@ write(
         text: "前の「報告」に つづいて、ここでは チーム全体に かかわる「連絡」を 学びます。日本の IT会社や リモートワークでは、SlackやDiscordなどの チャットツールを うまく 使えるかが 大切です。",
       },
       { kind: "heading", level: 2, text: "1. 連絡は「事実」だけで いい" },
-      { kind: "image", ...img(`${RENRAKU_IMG}/s1.webp`), caption: "事実だけを 言う" },
+      { kind: "image", size: "wide", ...img(`${RENRAKU_IMG}/s1.webp`), caption: "事実だけを 言う" },
       {
         kind: "paragraph",
         text: "連絡の 目的は、情報を 早く シェアする ことです。ここに 自分の 気持ち（つらい・焦って いる・がんばって いる）は いりません。まず 事実だけを 伝えて ください。",
@@ -996,7 +1002,12 @@ write(
         text: "気持ちを 伝えると、相手は あなたを 慰める ことに 時間を 使って しまいます。事実だけを 伝えれば、相手は すぐに 解決の ために 動けます。",
       },
       { kind: "heading", level: 2, text: "2. 短い 時間で 伝わる コツ" },
-      { kind: "image", ...img(`${RENRAKU_IMG}/s3.webp`), caption: "良い 連絡の コツ" },
+      {
+        kind: "image",
+        size: "wide",
+        ...img(`${RENRAKU_IMG}/s3.webp`),
+        caption: "良い 連絡の コツ",
+      },
       {
         kind: "cards",
         columns: 2,
@@ -1027,7 +1038,12 @@ write(
         text: "忙しい エンジニアは、通知の 最初の 1行しか 見て いない ことも あります。",
       },
       { kind: "heading", level: 2, text: "3. メールは【 】で 読みやすく する" },
-      { kind: "image", ...img(`${RENRAKU_IMG}/s4.webp`), caption: "メールの 書きかた" },
+      {
+        kind: "image",
+        size: "wide",
+        ...img(`${RENRAKU_IMG}/s4.webp`),
+        caption: "メールの 書きかた",
+      },
       {
         kind: "paragraph",
         text: "社外の お客様や、他の 部署への メールなど、少し フォーマルな 連絡には【 】を 使いましょう。",
@@ -1077,7 +1093,7 @@ write(
         tone: "care",
         text: "とても 親しい チームなら 面白い スタンプも 使いますが、最初の うちは ベーシックな ものが 無難です。",
       },
-      { kind: "image", ...img(`${RENRAKU_IMG}/s2.webp`), caption: "ケーススタディ" },
+      { kind: "image", size: "wide", ...img(`${RENRAKU_IMG}/s2.webp`), caption: "ケーススタディ" },
     ],
   }),
 );
@@ -1403,7 +1419,7 @@ write(
           "インターネットで 調べますか。",
         ],
       },
-      { kind: "image", ...img(`${SOUDAN_IMG}/slide2.webp`) },
+      { kind: "image", size: "wide", ...img(`${SOUDAN_IMG}/slide2.webp`) },
       {
         kind: "paragraph",
         text: "日本の IT会社では、自分だけで わからない ことは、上司や 同僚に「相談」します。",
@@ -1414,7 +1430,7 @@ write(
         tone: "point",
         text: "ITの 仕事は チームで します。一人で ずっと 悩んで いると、チーム全体の 仕事が 遅れて しまいます。人と 一緒に 考えると、もっと 良い 答えが 見つかります。",
       },
-      { kind: "image", ...img(`${SOUDAN_IMG}/slide4.webp`) },
+      { kind: "image", size: "wide", ...img(`${SOUDAN_IMG}/slide4.webp`) },
       { kind: "heading", level: 2, text: "ITで 相談する ばめん" },
       {
         kind: "cards",
@@ -1462,11 +1478,11 @@ write(
           },
         ],
       },
-      { kind: "image", ...img(`${SOUDAN_IMG}/slide5-1.webp`) },
-      { kind: "image", ...img(`${SOUDAN_IMG}/slide5-2.webp`) },
+      { kind: "image", size: "wide", ...img(`${SOUDAN_IMG}/slide5-1.webp`) },
+      { kind: "image", size: "wide", ...img(`${SOUDAN_IMG}/slide5-2.webp`) },
       { kind: "heading", level: 2, text: "相談の テクニック" },
       { kind: "heading", level: 3, text: "ポイント①：30分ルール" },
-      { kind: "image", ...img(`${SOUDAN_IMG}/slide6.webp`) },
+      { kind: "image", size: "wide", ...img(`${SOUDAN_IMG}/slide6.webp`) },
       {
         kind: "cards",
         columns: 3,
@@ -1529,7 +1545,7 @@ write(
         kind: "paragraph",
         text: "ただ「わかりません」と 言うのでは、相手も 助けにくいです。「◯◯を 調べました。でも わかりません」と、自分が した ことを 具体的に 説明しましょう。",
       },
-      { kind: "image", ...img(`${SOUDAN_IMG}/slide7.webp`) },
+      { kind: "image", size: "wide", ...img(`${SOUDAN_IMG}/slide7.webp`) },
       { kind: "heading", level: 3, text: "ポイント③：自分なりの アイデアを 持つ" },
       {
         kind: "paragraph",
@@ -1549,7 +1565,7 @@ write(
           "私は ◯◯が いいと 思うのですが、いかがでしょうか。",
         ],
       },
-      { kind: "image", ...img(`${SOUDAN_IMG}/slide9.webp`) },
+      { kind: "image", size: "wide", ...img(`${SOUDAN_IMG}/slide9.webp`) },
       { kind: "heading", level: 2, text: "やって みよう（ロールプレイ）" },
       {
         kind: "paragraph",

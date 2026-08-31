@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { ZoomableImage } from "@/components/media/zoomable-image";
 import type { ArticleBlock } from "@/content/schema";
 import { DictionaryText } from "@/components/dictionary-text";
 import { RubyText } from "@/components/ruby-text";
@@ -74,6 +75,7 @@ export function ImageSlotFrame({
   ratio = "h-40",
   furigana,
   show,
+  compact,
 }: {
   slot?: Slot;
   /** 何の 絵かを ことばで。わくの 中にも 出す。 */
@@ -84,17 +86,27 @@ export function ImageSlotFrame({
   /** わくの 中に 出す `alt` の 読み（教材の 読み辞書）。 */
   furigana?: FuriganaIndex;
   show?: boolean;
+  /** 小さな サムネイル（80px 前後）。ひろげる しるしを 小さく する。 */
+  compact?: boolean;
 }) {
   if (slot?.status === "done" && slot.src) {
+    /*
+     * 絵は **ひろげて 見られる**（2026-08-30 の 指定「説明用の画像が小さすぎて…」）。
+     * ここは 表紙・カード・調べること・クイズの 設問の 4系統が 通る ので、
+     * 包むのは この 1か所で よい。並びの 大きさは 変えない——変えると
+     *「7つ ある」という 形が 目で 追えなく なる。
+     */
     return (
-      <Image
-        src={slot.src}
-        alt={alt ?? ""}
-        width={1200}
-        height={675}
-        unoptimized
-        className={className ?? `w-full ${ratio} rounded-[18px] object-cover`}
-      />
+      <ZoomableImage label={alt} size={compact ? "small" : "normal"}>
+        <Image
+          src={slot.src}
+          alt={alt ?? ""}
+          width={1200}
+          height={675}
+          unoptimized
+          className={className ?? `w-full ${ratio} rounded-[18px] object-cover`}
+        />
+      </ZoomableImage>
     );
   }
   return (
@@ -432,6 +444,7 @@ export function MissionsBlock({
                 alt={item.title}
                 ratio="h-16"
                 className="h-16 w-20 shrink-0 rounded-[12px] border-2 border-white object-cover"
+                compact
                 furigana={furigana}
                 show={show}
               />

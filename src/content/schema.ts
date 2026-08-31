@@ -1391,7 +1391,23 @@ export const articleBlockSchema = z.discriminatedUnion("kind", [
     text: plainText,
   }),
   z.object({ kind: z.literal("paragraph"), text: plainText }),
-  imageSlotSchema.extend({ kind: z.literal("image"), caption: plainText.optional() }),
+  imageSlotSchema.extend({
+    kind: z.literal("image"),
+    caption: plainText.optional(),
+    /**
+     * 絵の 大きさ（省ける。省くと これまでどおり）。
+     *
+     * - 省略 … 本文の 幅より 少し しぼる。**絵が「見出し」に 見えない**ため の 既定
+     * - `"wide"` … 本文の 幅いっぱい。**説明の 図**（中に 字が ある もの）はこちら
+     *
+     * ## なぜ 一律に 大きく しないのか
+     * 2026-08-30 の 指定「説明用の画像が小さすぎて…ちゃんとわかるようにしてください」
+     *「**他の要素では小さくないといけない場合もあるので、この時は大きくするような設定に
+     * してください**」。てじゅんの サムネイルは 小さい ことに 意味が あり（並びを 目で 追う）、
+     * 場面の さし絵は 大きすぎると 本文と 切れる。**大きく したい 絵にだけ 付ける**。
+     */
+    size: z.enum(["normal", "wide"]).optional(),
+  }),
   /**
    * 動画（2026-08-29 の指定「動画ブロック追加お願いします」）。
    *

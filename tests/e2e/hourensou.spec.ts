@@ -291,6 +291,30 @@ for (const { id, title, skitId } of STAGES) {
     }
   });
 
+  test(`報連相：${title} — 説明の 図が 大きく 出て、ひろげられる`, async ({ page, context }) => {
+    const article = pathsOf(id).find((item) => item.type === "article");
+    if (!article) return;
+    // 関門が 閉じて いると 教材の 代わりに「まだ ひらけません」の 板が 出る
+    await seedAlmostDone(context, id);
+    await open(page, article.path);
+
+    /*
+     * 2026-08-30 の 指定「説明用の画像が小さすぎて…ちゃんとわかるようにしてください」。
+     * 見張るのは 2つ:
+     *  - **説明の 図（size: "wide"）は 本文の 幅で 出る**。412px に 戻ったら 気づく
+     *  - **どの 絵も ひろげられる**（ふりがなの ような 小さい 字の 逃げ道）
+     * 場面の さし絵が 大きく なって いない ことも 同時に 見る——一律に 大きく すると
+     * 「7つ ある」の ような 並びが 目で 追えなく なる。
+     */
+    const zoom = page.getByRole("button", { name: /ひろげて 見る/ });
+    expect(await zoom.count()).toBeGreaterThan(0);
+
+    await zoom.first().click();
+    await expect(page.locator(".fixed.inset-0").first()).toBeVisible();
+    await page.keyboard.press("Escape");
+    await expect(page.locator(".fixed.inset-0")).toHaveCount(0);
+  });
+
   test(`報連相：${title} — 裸の 漢字が 出て いない`, async ({ page, context }) => {
     /*
      * **順に 進んだ 学習者**として 見る。関門（🔒）が 閉じたままだと、教材の 代わりに
