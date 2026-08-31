@@ -5,7 +5,7 @@ import { RubyText } from "@/components/ruby-text";
 import { WordPopover } from "@/components/word-popover";
 import { findDictionaryTerms, type DictionaryEntry } from "@/lib/dictionary";
 import { canHover } from "@/lib/pointer";
-import type { FuriganaIndex } from "@/lib/text/furigana";
+import { rubyInnerPositions, type FuriganaIndex } from "@/lib/text/furigana";
 
 /**
  * 本文に 辞書の ことばを 埋める（教材の本文用）
@@ -49,7 +49,9 @@ export function DictionaryText({
   dictionary?: readonly DictionaryEntry[];
   className?: string;
 }) {
-  const matches = dictionary?.length ? findDictionaryTerms(text, dictionary) : [];
+  /* ルビの ついた ことばの 途中では 切らない（切ると 片側が 裸の 漢字に なる）。 */
+  const noCut = index ? rubyInnerPositions(text, index) : undefined;
+  const matches = dictionary?.length ? findDictionaryTerms(text, dictionary, noCut) : [];
   if (matches.length === 0) {
     return <RubyText text={text} index={index} show={show} className={className} />;
   }

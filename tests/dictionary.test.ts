@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { VocabBook, VocabWord, WordStage } from "../src/content/schema";
 import { buildDictionary, findDictionaryTerms, termOwners } from "../src/lib/dictionary";
+import { buildFuriganaIndex, rubyInnerPositions, uncoveredKanji } from "../src/lib/text/furigana";
 
 /**
  * 辞書は **ことばの 正**から 引く。単語テストの セットは
@@ -191,5 +192,44 @@ describe("termOwners", () => {
     expect(owners.get("報告")).toBe("1課の ことば");
     expect(owners.get("納期")).toBe("2課の ことば");
     expect(owners.has("見積")).toBe(false);
+  });
+});
+
+/*
+ * **ルビの ことばを 切らない**（2026-08-31 の 実発生）。
+ * 当たった ところで 文字列を 切るので、ルビの ことばの 途中で 切ると
+ * 切れた 側が 読み辞書に 当たらず 裸の 漢字に なる。
+ * 「お客様」の 中の「様」だけが 辞書に あると「お客」＋「様」に 割れ、
+ * 「客」の ルビが 消えた（`hourensou.spec` が 見つけた）。
+ */
+describe("findDictionaryTerms — ルビの ことばは 切らない", () => {
+  const dictionary = buildDictionary([book([vocab("様", "さま"), vocab("直接", "ちょくせつ")])]);
+  const text = "お客様と 直接 話します。";
+  /* 読み辞書は **漢字の 位置でしか 引かない**ので、見出しは「客様」（お は 入れない）。 */
+  const index = buildFuriganaIndex([
+    ["客様", "きゃくさま"],
+    ["直接", "ちょくせつ"],
+    ["話", "はな"],
+  ]);
+
+  it("何も 渡さなければ ルビの 中でも 切る（前の ふるまい）", () => {
+    expect(findDictionaryTerms(text, dictionary).map((m) => m.entry.term)).toEqual(["様", "直接"]);
+  });
+
+  it("noCut を 渡すと ルビの 内側では 当てない", () => {
+    const found = findDictionaryTerms(text, dictionary, rubyInnerPositions(text, index));
+    expect(found.map((m) => m.entry.term)).toEqual(["直接"]);
+  });
+
+  it("切ったあとの 地の文に 裸の 漢字が 残らない", () => {
+    const found = findDictionaryTerms(text, dictionary, rubyInnerPositions(text, index));
+    let cursor = 0;
+    const plain: string[] = [];
+    for (const { at, length } of found) {
+      if (at > cursor) plain.push(text.slice(cursor, at));
+      cursor = at + length;
+    }
+    if (cursor < text.length) plain.push(text.slice(cursor));
+    expect(plain.flatMap((part) => uncoveredKanji(part, index))).toEqual([]);
   });
 });

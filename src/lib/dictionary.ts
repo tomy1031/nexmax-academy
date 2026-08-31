@@ -157,10 +157,22 @@ export interface DictionaryMatch {
  * 左から 見て、その 位置で **いちばん長く 当たる 語**を 取り、その ぶんだけ 進む。
  * 短い 語を 先に 取ると「報告」が あるのに「報」だけが 下線に なる。
  * 重なりは 出ない（`annotateRuby` と 同じ 走査）。
+ *
+ * ## ルビの ことばは 切らない
+ * 当たった ところで 文字列を 切るので、**ルビの ことばの 途中で 切ると
+ * 切れた 側が 読み辞書に 当たらず 裸の 漢字に なる**。「お客様」の「様」だけが
+ * 辞書に あると「お客」と「様」に 割れて「客」の ルビが 消えた
+ *（2026-08-31 に 実発生）。`noCut` に 内側の 位置を もらって、そこは 飛ばす。
  */
 export function findDictionaryTerms(
   text: string,
   entries: readonly DictionaryEntry[],
+  /**
+   * **ここでは 切らない**位置（`rubyInnerPositions`）。
+   * ルビの ついた ことばの 途中で 切ると、切れた 側が 読み辞書に 当たらず
+   * 裸の 漢字に なる。渡さなければ どこでも 切る。
+   */
+  noCut?: ReadonlySet<number>,
 ): DictionaryMatch[] {
   /*
    * まず この 文に 出て くる 語だけに しぼる。辞書は 600語 近く あるので、
@@ -181,7 +193,11 @@ export function findDictionaryTerms(
   const matches: DictionaryMatch[] = [];
   let i = 0;
   while (i < text.length) {
-    const hit = candidates.find((c) => text.startsWith(c.surface, i));
+    const hit = candidates.find(
+      (c) =>
+        text.startsWith(c.surface, i) &&
+        (!noCut || (!noCut.has(i) && !noCut.has(i + c.surface.length))),
+    );
     if (!hit) {
       i += 1;
       continue;
