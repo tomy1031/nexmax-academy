@@ -409,7 +409,20 @@ async function main(): Promise<void> {
   }
 }
 
-void main().catch((error: unknown) => {
-  console.error(error instanceof Error ? error.message : String(error));
-  process.exit(1);
-});
+/*
+ * **作り終えたら 自分で 終わる**（2026-08-31）。
+ *
+ * Live の つなぎ（WebSocket）は 閉じても すぐには 片づかない ので、`main()` が
+ * 終わっても node は 待ち続ける。GitHub Actions では これが **30分の 上限まで 居座り**、
+ * そのあと ジョブごと 落ちる——**音は もう 出来て いるのに、コミットの 手前で 消える**。
+ *
+ * 実際に そうなった: 14本 ぜんぶ 12:52 に 出来て いたのに、19分 止まった まま
+ * 打ち切られ、`opener-1.wav` は runner ごと 捨てられた（run 33393730779）。
+ * 書き終えた ところで はっきり 0 を 返す。
+ */
+void main()
+  .then(() => process.exit(0))
+  .catch((error: unknown) => {
+    console.error(error instanceof Error ? error.message : String(error));
+    process.exit(1);
+  });
