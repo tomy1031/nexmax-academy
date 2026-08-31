@@ -1,0 +1,85 @@
+{
+  "refs": [],
+  "_comment": "開発の 工程の **文字入りの 図**。特定の 登場人物を 出さない ので 参照画像は 持たない——**1枚目に 合格した 絵が 以後の 絵柄の アンカーに なる**（gen_images.mjs が 自動で 足す）。だから dev_process を いちばん 上に 置いて ある。旧アプリの 当て画像は 英語の 副題と 説明文が びっしり 入って いて、1800px を 1048px に 縮めると どれも 読めなかった。**名前だけ 大きく・絵で 見せる**に 作り替える。",
+  "style": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This one is a teaching diagram: few large elements, generous spacing, each label sitting on a soft cream panel with a rounded border, arranged so the eye reads it in one pass.",
+  "noText": "Japanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana. Spell every character exactly as given. No English words or subtitles anywhere. No other letters, numbers, logos or watermarks anywhere in the picture.",
+  "negative": "Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, English captions or subtitles under the Japanese, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+  "output": "1536x1024",
+  "scenes": [
+    {
+      "out": "dev_process",
+      "dest": "public/img/kaihatsu/dev_process.webp",
+      "title": "システム開発の 流れ（7つの 工程）",
+      "where": "scripts/gen_kaihatsu_content.mjs kaihatsu_lecture blocks[0]（hero）と blocks[2]（image・wide）の 2か所で 同じ 絵を 使う",
+      "priority": "A",
+      "scene": "A teaching diagram of seven large rounded cream cards laid out as a grid on a soft sky-blue background — four cards across the top row and three across the bottom row — connected in reading order by soft coral arrows that flow left to right along the top row and then left to right along the bottom row. Each card holds one simple drawing of that stage and its Japanese name printed across the top of the card: an engineer and a customer talking across a desk; an engineer at a desk with a calculator and a wall calendar; an engineer drawing boxes and lines on a whiteboard; an engineer typing at a two-monitor desk; an engineer holding a checklist beside a screen showing a large tick; an engineer pressing a key while a server rack lights up; an engineer watching graphs on a wall display at night. Same office, same warm light in every card.",
+      "text": [
+        "要件定義（ようけんていぎ）",
+        "見積もり（みつもり）",
+        "設計（せっけい）",
+        "開発（かいはつ）",
+        "テスト",
+        "デプロイ",
+        "保守運用（ほしゅうんよう）"
+      ]
+    },
+    {
+      "out": "design",
+      "dest": "public/img/kaihatsu/design.webp",
+      "title": "設計の 2つの 段階",
+      "where": "scripts/gen_kaihatsu_content.mjs kaihatsu_lecture 「3. 設計」の image（wide）",
+      "priority": "A",
+      "scene": "One wide picture split into two equal halves by a soft vertical cream gutter. LEFT HALF, on a pale sky-blue ground: two engineers stand at a large whiteboard on which big simple boxes are joined by thick lines, sketching the shape of the whole system, and one of them holds a marker and steps back to look at the whole board. RIGHT HALF, on a pale cream ground: one engineer sits close to a desk drawing a small careful flow chart of rounded shapes on paper, a ruler beside the sheet, leaning in to work on the fine detail. A rounded cream label panel sits at the top of each half carrying the Japanese words given here.",
+      "text": ["基本設計（きほんせっけい）", "詳細設計（しょうさいせっけい）"]
+    },
+    {
+      "out": "testing",
+      "dest": "public/img/kaihatsu/testing.webp",
+      "title": "3つの テスト",
+      "where": "scripts/gen_kaihatsu_content.mjs kaihatsu_lecture 「5. テスト」の image（wide）",
+      "priority": "A",
+      "scene": "One wide picture divided into three equal vertical panels by thin cream gutters. LEFT: an engineer holds a magnifying glass over one single large button drawn on a screen, checking that one part on its own. MIDDLE: two engineers stand either side of a screen on which three large rounded boxes are joined by thick arrows, following how the pieces work together, one of them tracing the arrow with a finger. RIGHT: a customer in a jacket sits in front of the finished screen with an engineer standing beside her, and the customer smiles and gives a small nod of approval. Same office, same warm light in all three. A rounded cream label panel sits at the top of each panel carrying the Japanese words given here.",
+      "text": [
+        "単体テスト（たんたいテスト）",
+        "結合テスト（けつごうテスト）",
+        "受け入れテスト（うけいれテスト）"
+      ]
+    },
+    {
+      "out": "deploy",
+      "dest": "public/img/kaihatsu/deploy.webp",
+      "title": "デプロイの 3つの 場面",
+      "where": "scripts/gen_kaihatsu_content.mjs kaihatsu_lecture 「6. デプロイ」の image",
+      "priority": "B",
+      "scene": "One wide picture divided into three equal vertical panels by thin cream gutters. LEFT: two engineers carefully pack a finished piece of work into a large rounded box beside a server rack, getting it ready to move. MIDDLE: one engineer presses a single large key on a keyboard while the server rack beside her lights up warmly and a soft arrow rises from it. RIGHT: two engineers look at a browser window on a big screen where a large tick sits in the middle, and one of them raises a thumb. Same office, same warm light in all three. A rounded cream label panel sits at the top of each panel carrying the Japanese words given here.",
+      "text": [
+        "デプロイ準備（デプロイじゅんび）",
+        "デプロイ実行（デプロイじっこう）",
+        "稼働確認（かどうかくにん）"
+      ]
+    },
+    {
+      "out": "maintenance",
+      "dest": "public/img/kaihatsu/maintenance.webp",
+      "title": "保守運用の 4つの 仕事",
+      "where": "scripts/gen_kaihatsu_content.mjs kaihatsu_lecture 「7. 保守運用」の image（wide）",
+      "priority": "B",
+      "scene": "A teaching diagram of four large rounded cream cards in a two-by-two grid on a soft sky-blue background. TOP LEFT: an engineer sits watching a wall display of large simple line graphs, calm and steady. TOP RIGHT: an engineer hurries to a server rack with a toolbox while a small warning lamp glows softly amber. BOTTOM LEFT: an engineer plugs a fresh part into the rack, and a soft shield shape glows behind it. BOTTOM RIGHT: two engineers sit side by side at one laptop pointing at a rising graph and talking happily about an idea. Each card carries its Japanese label printed across the top of the card.",
+      "text": [
+        "システム監視（システムかんし）",
+        "障害対応（しょうがいたいおう）",
+        "システム更新（システムこうしん）",
+        "改善提案（かいぜんていあん）"
+      ]
+    },
+    {
+      "out": "waterfall_agile",
+      "dest": "public/img/kaihatsu/waterfall_agile.webp",
+      "title": "ウォーターフォールと アジャイルの ちがい",
+      "where": "scripts/gen_kaihatsu_content.mjs kaihatsu_lecture 「ウォーターフォールと アジャイル」の image（wide）",
+      "priority": "A",
+      "scene": "One wide picture split into two equal halves by a soft vertical cream gutter. LEFT HALF, on a pale sky-blue ground: six broad steps descend from the top left to the bottom right like a wide staircase with water flowing gently down them, and one engineer walks down the steps one at a time, never turning back, each step finished behind him. RIGHT HALF, on a pale cream ground: a wide circular track with four rounded stations around it, and a small team of three engineers walks the circle together handing a small finished piece to a smiling customer each time they pass her, then setting off around the circle again. A rounded cream label panel sits at the top of each half carrying the Japanese words given here.",
+      "text": ["ウォーターフォール", "アジャイル"]
+    }
+  ]
+}
