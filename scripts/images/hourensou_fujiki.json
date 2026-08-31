@@ -1,0 +1,26 @@
+{
+  "refs": ["public/img/characters/fujiki/sheet.webp", "public/img/characters/fujiki/reference.jpg"],
+  "_comment": "藤木取締役が 出る 絵。人物カード content/characters/fujiki.json の looks が 正——20代後半・紺の ジャケットに 白い Tシャツ・**ほうれい線を 描かない**（2026-08-14 の 指定）。この 台帳は **文字を 焼く**ので noText を 外して ある。",
+  "style": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This one is a teaching diagram: few large elements, generous spacing, each label sitting on a soft cream panel with a rounded border, arranged so the eye reads it in one pass.",
+  "noText": "Japanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana. Spell every character exactly as given. No other letters, numbers, logos or watermarks anywhere in the picture.",
+  "negative": "Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+  "output": "1536x1024",
+  "scenes": [
+    {
+      "out": "houkoku_hierarchy",
+      "dest": "public/img/hourensou/listening/houkoku_hierarchy.webp",
+      "title": "会社の ポジション（階級）の 図",
+      "where": "scripts/gen_hourensou_content.mjs houkoku_lecture blocks[15]（image）",
+      "priority": "A",
+      "scene": "A clear teaching diagram of the levels of a Japanese company, drawn as five rounded cream panels stacked as a gentle pyramid on a soft sky-blue background, each panel holding one waist-up character and one label. From the top: a friendly company president in a dark suit; then Fujiki the director, taken from the attached character sheet, in his navy blazer over a white T-shirt, smiling brightly; then a department manager; then a section manager; then two ordinary staff members side by side at the bottom, one of them the young junior engineer. Thin soft arrows run down the left side. Each panel carries the Japanese label given below, printed on the cream panel beside the person.",
+      "text": [
+        "社長（しゃちょう）",
+        "取締役（とりしまりやく）",
+        "部長（ぶちょう）",
+        "課長（かちょう）",
+        "社員（しゃいん）"
+      ]
+    }
+  ],
+  "_hold": "2026-08-30 ユーザー判断: **差し替えない**。元の 動物の 図（ライオン=社長・フクロウ=取締役…＋ビルの 階層＋英語併記）の ほうが 分かりやすい。作り直す ときは (1) 社長を **松井社長**に 寄せる（取締役を 藤木さんの 設定画で 描くなら 社長だけ 無名の 人は ちぐはぐ）、(2) 動物・ビルの 階層・英語併記・次長/係長まで 入れる、の 3つを 満たす こと。 図の「藤田さん（Mr. Fujita）」は 本文の「藤木さん」と ちがうが、**元の まま でよい**（2026-08-30 ユーザー判断。この 図が 教えるのは 会社の 仕組みで、人の 名前は 本題では ない）。"
+}

@@ -576,6 +576,23 @@ export function MeetingSession({
     [meeting.questions, withName],
   );
 
+  /**
+   * **ひとことでも 答えた しつもん**。板の カードの ことばを 出したままに する
+   *（2026-08-31 の 指摘「一度 開かれた はずの カードが 非表示の 状態に 戻って しまった」）。
+   *
+   * ✓（`openIds`）は 判定で 動くが、答えた ことは 取り消されない。
+   * 答えは しおりにも 残る ので、開き直しても ことばは 消えない。
+   */
+  const answeredIds = useMemo(
+    () =>
+      new Set(
+        Object.entries(answers)
+          .filter(([, said]) => said !== "")
+          .map(([id]) => id),
+      ),
+    [answers],
+  );
+
   /** 聞き出せた ことの 見出し（しゅうりょうしょうに 並べる）。 */
   const foundLabels = useMemo(
     () => meeting.discover.filter((d) => found.has(d.id)).map((d) => d.label),
@@ -1758,6 +1775,7 @@ export function MeetingSession({
               order={meeting.questions.map((q) => q.id)}
               labels={cardLabels}
               openIds={openIds}
+              answeredIds={answeredIds}
               currentId={question?.id ?? null}
               reachedAt={frontier}
               justOpenedId={justOpenedId}

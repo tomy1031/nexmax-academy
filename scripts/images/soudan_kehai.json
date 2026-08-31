@@ -1,0 +1,64 @@
+{
+  "refs": ["public/img/characters/okuda/sheet.webp"],
+  "_comment": "場面クイズ「いま 話しかけて いい？」の 6枚（content/quizsets/soudan_kehai.json の questions[].image）。6枚とも **同じ 鈴木先輩・同じ 机**である ことが この 教材の 芯なので、style を 逐語で 共有する。refs は 絵柄（線と 色）を そろえる ための アンカー。1枚目が 合格したら それが 次からの 参照に なる。文字は 1文字も 描かせない（設問文は アプリが 出す）。 2026-08-30 の 指定「鈴木さんは 社内に いる 誰かに して。奥田さんとか」で、人物を 鈴木先輩から **奥田さん**へ 置きかえた（奥田さんには 人物カードと 設定画が ある）。参照も 差しかえて ある。",
+  "style": "Anime illustration, no readable text. A bright modern software office, clean line art, flat cel shading, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. Same character in every image: Okuda the senior engineer, drawn from the attached character sheet: a Japanese man in his mid twenties, wavy messy black hair with volume, black rectangular thick-rimmed glasses, a dark green pullover hoodie with drawstrings and no writing on it at his desk with a laptop and a small potted plant. Viewed from a coworker's standing viewpoint a few steps away. No text, no letters, no numbers, no speech bubbles.",
+  "noText": "Absolutely no readable text, letters, numbers, logos or speech bubbles anywhere in the picture.",
+  "negative": "Never: photo-realistic rendering, harsh shadows, extra fingers, distorted hands, dark or scary mood, angry faces, watermarks.",
+  "output": "1536x1024",
+  "scenes": [
+    {
+      "out": "k1_denwa",
+      "dest": "public/img/quiz/soudan_kehai/k1_denwa.webp",
+      "title": "電話中（受話器を 耳に あてて メモ）",
+      "scene": "Scene: Okuda holds a phone to his ear, taking notes on a notepad, eyes down, mid-conversation.",
+      "output": "Output: one landscape illustration, 1536x1024.",
+      "where": "scripts/gen_hourensou_content.mjs soudan_kehai の questions[0].image",
+      "priority": "A"
+    },
+    {
+      "out": "k2_shuuchuu",
+      "dest": "public/img/quiz/soudan_kehai/k2_shuuchuu.webp",
+      "title": "ヘッドホンで 超集中（速く 打って いる）",
+      "scene": "Scene: Okuda wears big headphones, leaning close to the screen, both hands typing fast, several code windows open, an energy drink beside the keyboard.",
+      "output": "Output: one landscape illustration, 1536x1024.",
+      "where": "scripts/gen_hourensou_content.mjs soudan_kehai の questions[1].image",
+      "priority": "A"
+    },
+    {
+      "out": "k3_hitoiki",
+      "dest": "public/img/quiz/soudan_kehai/k3_hitoiki.webp",
+      "title": "お茶で 一息（のびを して いる）",
+      "scene": "Scene: Okuda leans back in his chair, stretching, holding a warm cup of tea, relaxed small smile, screen dimmed.",
+      "output": "Output: one landscape illustration, 1536x1024.",
+      "where": "scripts/gen_hourensou_content.mjs soudan_kehai の questions[2].image",
+      "priority": "A"
+    },
+    {
+      "out": "k4_komarigao",
+      "dest": "public/img/quiz/soudan_kehai/k4_komarigao.webp",
+      "title": "困り顔（画面を にらんで 髪に 手）",
+      "scene": "Scene: Okuda frowns at the screen with one hand in his hair, shoulders slumped, clearly stuck and troubled.",
+      "output": "Output: one landscape illustration, 1536x1024.",
+      "where": "scripts/gen_hourensou_content.mjs soudan_kehai の questions[3].image",
+      "priority": "A"
+    },
+    {
+      "out": "k5_isogu",
+      "dest": "public/img/quiz/soudan_kehai/k5_isogu.webp",
+      "title": "急いで いる（PCを かかえて 時計を 見る）",
+      "scene": "Scene: Okuda stands, laptop under one arm, glancing at his wristwatch, walking quickly away from the desk.",
+      "output": "Output: one landscape illustration, 1536x1024.",
+      "where": "scripts/gen_hourensou_content.mjs soudan_kehai の questions[4].image",
+      "priority": "A"
+    },
+    {
+      "out": "k6_asa",
+      "dest": "public/img/quiz/soudan_kehai/k6_asa.webp",
+      "title": "朝いちばん（かばんを 置いた ところ）",
+      "scene": "Scene: Morning light through the window. Okuda has just arrived, putting his bag down beside the desk, computer still starting up, jacket half off.",
+      "output": "Output: one landscape illustration, 1536x1024.",
+      "where": "scripts/gen_hourensou_content.mjs soudan_kehai の questions[5].image",
+      "priority": "A"
+    }
+  ]
+}

@@ -58,6 +58,13 @@ const META: Record<ContentRefType, ContentKindMeta> = {
   // 関門にしない理由はスライドと同じで、**中で何が起きたかがアプリから見えない**から
   // （schema.ts の linkSchema）。おわった記録は残すが、先へは進める。
   link: { icon: "🔗", label: "リンク", href: (id) => `/link/${id}`, gates: false },
+  // スキットは お手本の会話を 1行ずつ 聞いて まねる 教材。リスニング（聞き取れたかを
+  // 測る）と 呼び名も 行き先も 分ける——学習者が「聞くだけ」の つもりで 入らないように。
+  //
+  // 関門にしない（gates: false）。おわりは **声に 出せたか**で、それは アプリからは
+  // 見えない。見えないものを 通行の条件に すると、スライドと 同じで 1本の 教材で
+  // ステージが 止まる（schema.ts の linkSchema と 同じ 考え方）。
+  skit: { icon: "🎭", label: "スキット", href: (id) => `/skit/${id}`, gates: false },
 };
 
 export function contentKindMeta(type: ContentRefType): ContentKindMeta {

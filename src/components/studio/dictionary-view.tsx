@@ -21,6 +21,7 @@ export function DictionaryView({
   wordStages,
   vocabBooks,
   dbStatusOf,
+  gitBacked,
   onOpen,
   onNew,
   onRemove,
@@ -30,6 +31,8 @@ export function DictionaryView({
   /** ことばの 正。辞書の 見出しは ここから 出す（テストの セットではない）。 */
   vocabBooks: readonly VocabBook[];
   dbStatusOf: (kind: string, id: string) => "draft" | "published" | null;
+  /** git にも 実体が あるか（ある ものは DB版を 消しても 一覧から 消えない）。 */
+  gitBacked: (id: string) => boolean;
   onOpen: (id: string) => void;
   onNew: () => void;
   onRemove: (id: string, title: string) => void;
@@ -118,7 +121,7 @@ export function DictionaryView({
                 </MiniButton>
                 {dbStatusOf("wordstage", stage.id) ? (
                   <MiniButton tone="danger" onClick={() => onRemove(stage.id, stage.title)}>
-                    けす
+                    {gitBacked(stage.id) ? "直しを もどす" : "けす"}
                   </MiniButton>
                 ) : null}
               </li>

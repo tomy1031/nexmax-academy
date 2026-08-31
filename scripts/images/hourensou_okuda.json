@@ -1,0 +1,42 @@
+{
+  "refs": ["public/img/characters/okuda/sheet.webp"],
+  "_comment": "相談ステージの 先輩＝奥田さん。2026-08-30 の 指定「鈴木さんは 社内に いる 誰かに して。奥田さんとか」で、もとの「鈴木先輩」から 置きかえた。人物カード content/characters/okuda.json の looks が 正——20代なかば・くせのある 黒髪・黒ぶちの 四角い メガネ・深緑の パーカー。 **文字入りの 図は hourensou_okuda_zukai.json に 分けて ある**（生成ドライバは 台帳ごとに 文字あり／なしを 切りかえるため）。",
+  "style": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. Two different people appear in these pictures and they must never look alike. OKUDA is the senior engineer shown in the attached character sheet: a Japanese man in his mid twenties, wavy messy black hair with volume, black rectangular thick-rimmed glasses, a dark green pullover hoodie. THE JUNIOR ENGINEER is a DIFFERENT and YOUNGER man: a Southeast Asian man in his early twenties, warm brown skin, short cropped black hair, NO GLASSES, a plain cream polo shirt and dark grey trousers. Only Okuda wears glasses and a green hoodie. Never give the two men the same face, hair, glasses or clothes.",
+  "noText": "No text, no letters, no kanji, no kana, no numbers anywhere in the image. Screens, papers, whiteboards, books and signs are blank or show only soft abstract shapes and simple pictures. No watermark, no signature, no logo, no speech balloons, no floating symbols such as question marks, exclamation marks, arrows, light bulbs, stars or hearts.",
+  "negative": "Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+  "output": "1536x1024",
+  "scenes": [
+    {
+      "out": "slide1",
+      "dest": "public/img/hourensou/soudan/slide1.webp",
+      "title": "相談ステージの 表紙",
+      "where": "scripts/gen_hourensou_content.mjs soudan_lecture blocks[0].image（hero）",
+      "priority": "B",
+      "scene": "The young junior engineer has rolled his chair over to Okuda's desk and points at his own laptop screen with a slightly troubled but hopeful face. Okuda turns towards him, one hand on the back of his chair, listening carefully with a calm kind smile. The screen shows only soft abstract grey shapes. Warm afternoon light, a plant between the desks. Wide medium two-shot."
+    },
+    {
+      "out": "slide7",
+      "dest": "public/img/hourensou/soudan/slide7.webp",
+      "title": "相談する 前に「何を したか」を 伝える",
+      "where": "scripts/gen_hourensou_content.mjs soudan_lecture blocks[22]（image）",
+      "priority": "B",
+      "scene": "One wide picture split into two equal panels by a thin cream gutter. LEFT: the junior engineer stands at Okuda's desk with empty open hands and a lost expression; Okuda tilts his head, wanting to help but with nothing to work from. RIGHT: the same two people, but now the junior engineer holds out an open notebook and points at his own notes while speaking; Okuda leans in with a bright understanding smile and reaches towards the notebook. The notebook pages show only soft abstract handwriting lines."
+    },
+    {
+      "out": "slide8",
+      "dest": "public/img/hourensou/soudan/slide8.webp",
+      "title": "自分なりの アイデアを 持つ",
+      "where": "scripts/gen_hourensou_content.mjs soudan_lecture blocks[25]（image）",
+      "priority": "B",
+      "scene": "The junior engineer holds up a tablet towards Okuda. On the tablet, two large rounded blank cards sit side by side, one glowing slightly brighter than the other — he has already made a choice and is explaining why. He gestures at the brighter card with his free hand and looks straight at Okuda with a confident face. Okuda strokes his chin, impressed, nodding. Medium two-shot."
+    },
+    {
+      "out": "slide10",
+      "dest": "public/img/hourensou/soudan/slide10.webp",
+      "title": "相談スキットの 表紙（動画の ポスターも 兼ねる）",
+      "where": "scripts/gen_hourensou_content.mjs soudan_lecture blocks[30] の poster ＋ soudan_skit の cover",
+      "priority": "A",
+      "scene": "A warm, inviting two-shot of the junior engineer and Okuda sitting at right angles at the same desk, in the middle of a good conversation — the junior engineer speaking and gesturing at his notebook, Okuda listening with his chin on his hand and a genuine smile. Bright office, big window, plants. Plenty of clean space at the top of the frame. Wide shot."
+    }
+  ]
+}

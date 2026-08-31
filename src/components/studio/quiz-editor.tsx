@@ -2,8 +2,15 @@
 
 import { useId, useState } from "react";
 import { NEXMAX_FAMILY } from "@/components/nexmax";
-import { BLANK_MARK, type Content, type QuizQuestion, type QuizSet } from "@/content/schema";
+import {
+  BLANK_MARK,
+  type Content,
+  type ImageSlot,
+  type QuizQuestion,
+  type QuizSet,
+} from "@/content/schema";
 import { emptyQuizQuestion } from "./drafts";
+import { ImageSlotEditor } from "./image-slot-editor";
 import { moveItem, removeAt, replaceAt } from "./list-ops";
 import {
   CheckChoice,
@@ -31,6 +38,21 @@ import { QuizMaker } from "./lesson-maker";
 
 /** 語群の穴埋めの問題（判定関数の入口を1つにするための別名）。 */
 export type WordbankQuestion = Extract<QuizQuestion, { type: "wordbank" }>;
+
+/** まだ 絵を さわって いない もんだいに 出す 空の わく。 */
+const EMPTY_IMAGE_SLOT: ImageSlot = { refs: [], status: "empty" };
+
+/**
+ * 中身の 無い わくは **保存しない**（`undefined` に して 欄ごと 落とす）。
+ *
+ * 絵の 欄を 開いた だけで 全問に 空の わくが 残ると、教材データが 空欄で
+ * ふくらみ、あとから 見た 人には「絵を 入れる つもりだった 問い」と
+ * 区別が つかなく なる。
+ */
+function keepImageSlot(slot: ImageSlot): ImageSlot | undefined {
+  if (slot.src || slot.prompt || slot.refs.length > 0) return slot;
+  return undefined;
+}
 
 /** 選択で答える型。産出フェーズには置けない（AGENTS.md 規律3）。 */
 const SELECTION_TYPES: readonly QuizQuestion["type"][] = ["choose", "multi", "emotion"];
@@ -371,6 +393,7 @@ export function QuizEditor({
               question={question}
               index={index}
               count={value.questions.length}
+              setId={value.id}
               typeOptions={typeOptions}
               onChange={(next) => patch({ questions: replaceAt(value.questions, index, next) })}
               onMove={(delta) => patch({ questions: moveItem(value.questions, index, delta) })}
@@ -434,6 +457,7 @@ function QuestionCard({
   question,
   index,
   count,
+  setId,
   typeOptions,
   onChange,
   onMove,
@@ -442,6 +466,8 @@ function QuestionCard({
   question: QuizQuestion;
   index: number;
   count: number;
+  /** 絵の 置き場を 決めるのに 使う（`quiz/<教材ID>`）。 */
+  setId: string;
   typeOptions: readonly { value: QuizQuestion["type"]; label: string }[];
   onChange: (question: QuizQuestion) => void;
   onMove: (delta: number) => void;
@@ -513,6 +539,23 @@ function QuestionCard({
           value={question.q}
           onChange={(q) => onChange({ ...question, q })}
         />
+
+        {/*
+          場面の 絵。学習者の 画面では **といの 上**に 出る。
+          字で 書くと 長く なる 場面（先輩の 机の ようす など）を 絵に すると、
+          学習者は 読む ことでは なく 考える ことに 力を 使える。
+        */}
+        <div>
+          <p className="text-ink text-xs font-black">場面の 絵（なくてもよい）</p>
+          <p className="text-ink-soft mb-2 text-xs font-bold">
+            といの 上に 出ます。上げるまでは 学習者の 画面に 点線の わくが 出ます。
+          </p>
+          <ImageSlotEditor
+            slot={question.image ?? EMPTY_IMAGE_SLOT}
+            prefix={`quiz/${setId.length > 0 ? setId : "draft"}`}
+            onChange={(slot) => onChange({ ...question, image: keepImageSlot(slot) })}
+          />
+        </div>
 
         <QuestionBody question={question} groupName={groupName} onChange={onChange} />
 

@@ -174,6 +174,70 @@ describe("参照整合の検査", () => {
     expect(findings).toHaveLength(1);
     expect(findings[0]?.message).toContain("m1");
   });
+
+  /*
+   * ことばの 正に あっても、**対訳の1語と 誤答3つ**が そろって いない 語は
+   * 単語ゲームに 出せない（`src/lib/vocabulary.ts` の `isPlayable`）。
+   * 参照は 生きて いる ので 参照切れの 検査には かからず、セットが 黙って 短く なる。
+   */
+  const playable = Array.from({ length: 6 }, (_, i) => ({
+    id: `w${i}`,
+    term: `報告${i}`,
+    reading: "ほうこく",
+    meaningJa: "しごとの ようすを つたえる こと",
+    englishTerm: `Report ${i}`,
+    wrongMeanings: [`Plan ${i}`, `Check ${i}`, `Share ${i}`],
+  }));
+
+  const vocab = (words: unknown[] = playable) =>
+    parse({ kind: "vocab", id: "vocabulary", title: "ことば", words });
+
+  /** `wordIds` で ことばの 正を 参照する 単語ステージ（いまの 保存の かたち）。 */
+  const wordSet = (wordIds: string[]) =>
+    parse({
+      kind: "wordstage",
+      id: "ws1",
+      title: "ことば",
+      description: "ことばの れんしゅう",
+      fieldSequence: ["forest"],
+      questionCount: 6,
+      passRate: 70,
+      wordIds,
+    });
+
+  const allIds = playable.map((word) => word.id);
+
+  /** 誤答を 持たない＝辞書・ツールチップにだけ 出る 語。 */
+  const dictionaryOnly = (() => {
+    const { wrongMeanings: _unused, ...rest } = playable[0]!;
+    return [rest, ...playable.slice(1)];
+  })();
+
+  it("対訳も誤答も そろった語だけを 参照して いれば通す", () => {
+    expect(
+      checkReferenceIntegrity([entry(wordSet(allIds), "ws1.json"), entry(vocab(), "vocab.json")]),
+    ).toEqual([]);
+  });
+
+  it("誤答3つが 無い語を 出題しようと して いたら弾く（セットが黙って短くなる）", () => {
+    const findings = checkReferenceIntegrity([
+      entry(wordSet(allIds), "ws1.json"),
+      entry(vocab(dictionaryOnly), "vocab.json"),
+    ]);
+    expect(findings).toHaveLength(1);
+    expect(findings[0]?.file).toBe("ws1.json");
+    expect(findings[0]?.message).toContain("w0");
+    expect(findings[0]?.message).toContain("wrongMeanings");
+  });
+
+  it("誤答を 持たない語も、まんが・記事の ことばカードからは 参照してよい", () => {
+    expect(
+      checkReferenceIntegrity([
+        entry(manga({ vocabIds: ["w0"] })),
+        entry(vocab(dictionaryOnly), "vocab.json"),
+      ]),
+    ).toEqual([]);
+  });
 });
 
 describe("保存するときの参照切れ（スタジオの保存経路）", () => {

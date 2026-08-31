@@ -439,16 +439,13 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
      * **まだ 無い 絵の ところは 空けずに わくを 出す**（2026-08-27 の 指定）。
      * 空だと 作り忘れが 画面から 見えない。ここには 空わくが 6か所 あった。
      *
-     * 2026-08-28 に **ぜんぶ 絵に した**ので 0 に なった。
-     * 2026-08-31 に 準備の カードが 5枚→7枚に なり（社長の しつもんと 1対1 に そろえた）、
-     * **足した 2枚（5 Japanese IT Pathway / 6 日本に 行くまでに）の 絵が まだ 無い**。
-     * 下絵の 文は `scripts/images/kaisha_junbi_scenes.json` に 置いて ある。
-     * 数を 固定して おくと、**絵が できた ときに ここが 落ちて 0 に 戻す 合図に なる**——
-     * 「空わくを 出す」決まりは 生きた まま、作り忘れの 見張りとして 効き つづける。
+     * 2026-08-28 に **ぜんぶ 絵に した**ので 0 に する。0 で 固定して おくと、
+     * 絵を 消した ときや 差しかえに 失敗した ときに ここが 落ちる——
+     * 「空わくを 出す」決まりは 生きた まま、**作り忘れの 見張り**として 効き つづける。
      */
-    await expect(page.locator('[data-slot="empty"]')).toHaveCount(2);
-    /* 絵の ある カード 5枚（1・2・3・4・7）＋ A/B の 分かれ道 2枚。 */
-    await expect(page.locator('img[src*="/img/articles/kaisha_matsui_junbi/"]')).toHaveCount(7);
+    await expect(page.locator('[data-slot="empty"]')).toHaveCount(0);
+    /* 「これから 考える 3つの こと」の 3枚 ＋ A/B の 分かれ道 2枚。 */
+    await expect(page.locator('img[src*="/img/articles/kaisha_matsui_junbi/"]')).toHaveCount(5);
     await shot(page, "07-junbi-article");
 
     await readToEnd(page);
@@ -474,18 +471,10 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
     // ぜんぶ うめるまで 出せない（`requireAll`）
     await expect(page.getByRole("button", { name: /こたえを 出/ })).toHaveCount(0);
 
-    /*
-     * **並びは 社長の しつもんの 順**（2026-08-31 に 準備を 7問に して、
-     * `talkGame.openers` の 6本と ①〜⑥ が 1対1 に なった。⑦ は 聞く ばんの ぶん）。
-     */
     const written = [
       "観光DX が いいと 思いました。まちを あるきたいからです。",
       "私は 日本語が 得意です。報告に 使いたいです。",
       "私は AIを 使う 仕事を やって みたいです。",
-      "カンボジアの 学生は 新しい ことを 早く おぼえると 思います。",
-      "Japanese IT Pathway は 日本語と ITを 勉強する プログラムです。",
-      "私は 日本語を がんばりたいです。日本で はたらきたいからです。",
-      "社長に 聞きたい ことは、どうして この 会社を 作りましたかです。",
     ];
     expect(written).toHaveLength(JUNBI_TOTAL);
     for (const [at, text] of written.entries()) await jp.nth(at).fill(text);

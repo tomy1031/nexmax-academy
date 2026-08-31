@@ -4,6 +4,9 @@
  * 宝さがしの「なにを 作る 会社？」と「はたらきかた」の 答えが ここに ある。
  * 「受託開発」「常駐」は 本物の サイトでは 見つけにくい 語なので、ここでは
  * **語を 出して 意味を そえる**（漢字は 残す。ひらがなに 開かない）。
+ * 出す 場所は 「2つの はたらきかた」の カード。冒頭の 段落に あった
+ * 「これを 受託開発と 言います。」は 2026-08-31 に 消した（ユーザー指定）——
+ * 同じ 語を 2回 名のる ぶん、いちばん 最初の 1文が 重く なって いた。
  */
 
 export const MAKING = {
@@ -20,9 +23,9 @@ export const MAKING = {
     {
       kind: "paragraph",
       text: {
-        n4: "会社の 大きな しごとは、お客さまの ために ものを 作る ことです。これを 受託開発と 言います。",
-        n3: "会社の中心的な仕事は、お客さまのために開発を行うことです。これを受託開発といいます。",
-        en: "Our main work is building things for clients. In Japanese this is called jutaku kaihatsu, contract development.",
+        n4: "会社の 大きな しごとは、お客さまの ために ものを 作る ことです。",
+        n3: "会社の中心的な仕事は、お客さまのために開発を行うことです。",
+        en: "Our main work is building things for clients.",
       },
     },
     { kind: "heading", text: { n4: "作れる もの", n3: "提供するサービス", en: "What we build" } },
