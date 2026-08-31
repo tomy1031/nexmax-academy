@@ -1,0 +1,24 @@
+{
+  "refs": ["public/img/characters/okuda/sheet.webp"],
+  "_comment": "奥田さんが 出る **文字入りの 図**。文字なしの 絵は hourensou_okuda.json に ある。",
+  "style": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This one is a teaching diagram: few large elements, generous spacing, each label sitting on a soft cream panel with a rounded border, arranged so the eye reads it in one pass.",
+  "noText": "Japanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana. Spell every character exactly as given. No other letters, numbers, logos or watermarks anywhere in the picture.",
+  "negative": "Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+  "output": "1536x1024",
+  "scenes": [
+    {
+      "out": "slide9",
+      "dest": "public/img/hourensou/soudan/slide9.webp",
+      "title": "相談で よく 使う 日本語 4つ",
+      "where": "scripts/gen_hourensou_content.mjs soudan_lecture blocks[27]（image）",
+      "priority": "A",
+      "scene": "A teaching diagram of four rounded cream cards in a two by two grid on a soft sky-blue background. In each card a small waist-up drawing shows the junior engineer speaking to Okuda at the moment that phrase is used: first he raises a hand to ask for a moment of time; second he points at his laptop to state the fact; third he holds up his notebook to say what he already checked; fourth he presses his palms together in thanks. Under each little drawing the card carries the Japanese phrase given here.",
+      "text": [
+        "今、お時間 よろしいですか（いま、おじかん よろしいですか）",
+        "◯◯で 困って います（◯◯で こまって います）",
+        "◯◯を 調べました（◯◯を しらべました）",
+        "ありがとう ございます"
+      ]
+    }
+  ]
+}

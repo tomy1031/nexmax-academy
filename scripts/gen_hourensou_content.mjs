@@ -17,7 +17,7 @@
  * 実行: node scripts/gen_hourensou_content.mjs
  * そのあと `npm run gen:content` で バンドルへ 焼き込む。
  */
-import { mkdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 const ROOT = join(import.meta.dirname, "..");
@@ -51,8 +51,8 @@ const FURIGANA = {
   全体: "ぜんたい",
   人: "ひと",
   藤木: "ふじき",
-  冨永: "とみなが",
-  鈴木: "すずき",
+  富田: "とみた",
+  奥田: "おくだ",
   日本: "にほん",
   // しごと
   仕事: "しごと",
@@ -338,7 +338,7 @@ const FURIGANA = {
   語: "ご",
   覚: "おぼ",
   勝: "か",
-  鈴木先輩: "すずきせんぱい",
+  奥田先輩: "おくだせんぱい",
   // 追加分（「もっと 楽しく」企画・2026-08-29）
   役: "やく",
   質問: "しつもん",
@@ -411,8 +411,89 @@ function furiganaFor(...texts) {
     .sort((a, b) => b[0].length - a[0].length);
 }
 
-/** 絵の スロット（もう ある 絵）。 */
-const img = (src) => ({ src, refs: [], status: "done" });
+/* ------------------------------------------------------------------ *
+ * 絵の スロット — プロンプトは **台帳（scripts/images/）が 正**
+ *
+ * 移植した ときの 絵は `{ src, refs: [], status: "done" }` だけを 持って いて、
+ * **どう 描いた 絵なのかが どこにも 無かった**。だから 作り直そうと すると、
+ * 45枚ぶんの プロンプトを ゼロから 書き起こす ことに なる。
+ *
+ * かと いって プロンプトを ここに 直書きすると、**同じ 文が 台帳と ここの 2か所**に
+ * できる。片方を 直した 日に もう片方が 古いまま 残り、先生が 管理画面で
+ * 「少し 直して 作り直す」を 押した ときに **古い 指示で 再生成される**——
+ * いちばん 気づけない 壊れ方に なる。
+ *
+ * そこで **台帳を 読んで、置き場（dest）で 引く**。教材データに 焼かれる プロンプトは
+ * 台帳が 実際に 画像生成へ 渡すのと 同じ 組み立て（style ＋ scene ＋ noText ＋ negative）
+ * なので、管理画面から 押しても ローカルで 流しても 同じ 絵に なる。
+ * ------------------------------------------------------------------ */
+
+/** 台帳を ぜんぶ 読み、`/img/...` → { prompt, refs } の 索引に する。 */
+function loadImageLedgers() {
+  const dir = join(ROOT, "scripts", "images");
+  const index = new Map();
+  for (const file of readdirSync(dir).filter((f) => f.endsWith(".json"))) {
+    let ledger;
+    try {
+      ledger = JSON.parse(readFileSync(join(dir, file), "utf8"));
+    } catch {
+      continue; // 台帳では ない JSON は 飛ばす
+    }
+    if (!Array.isArray(ledger.scenes)) continue;
+    for (const scene of ledger.scenes) {
+      if (!scene.dest || !scene.scene) continue;
+      // `public/img/...` は 配信では `/img/...`
+      const url = scene.dest.replace(/^public/, "");
+      const parts = [ledger.style, scene.scene];
+      if (Array.isArray(scene.text) && scene.text.length > 0) {
+        parts.push(`The Japanese words in this picture are exactly: ${scene.text.join(" / ")}.`);
+      }
+      parts.push(ledger.noText, ledger.negative);
+      index.set(url, {
+        prompt: parts.filter(Boolean).join(" "),
+        refs: (ledger.refs ?? []).map((r) => r.replace(/^public/, "")),
+      });
+    }
+  }
+  return index;
+}
+
+const IMAGE_LEDGER = loadImageLedgers();
+
+/** 作り直しの 台帳に まだ 載って いない 絵（見つけたら 台帳に 足す）。 */
+const imgWithoutPrompt = new Set();
+
+/**
+ * 絵の スロット（もう ある 絵）。台帳に あれば プロンプトと 参照画像も 付ける。
+ *
+ * `status` は `"done"` の まま に する。**同じ パスに 新しい 絵を 上書きすれば
+ * 画面が 変わる**ので、絵が 届いた ときに JSON を 書き換えなくて よい。
+ */
+/**
+ * まだ 絵の 無い スロット（画面は 点線わくを 出す）。プロンプトと 参照は **台帳が 正**。
+ *
+ * ここに プロンプトを 直書きして いた ころ、まんがの 9コマは ヘンディの 見た目を
+ * 「light blue shirt, ID lanyard」と 書いて いて、人物カードの「紺の スーツ・ネクタイ・
+ * ストラップ無し」と **食い違った まま 9コマ ぜんぶに 焼かれて いた**。
+ * 台帳から 引けば、カードを 直した 日に ここも そろう。
+ */
+const emptySlot = (url) => {
+  const found = IMAGE_LEDGER.get(url);
+  if (!found) {
+    imgWithoutPrompt.add(url);
+    return { refs: [], status: "empty" };
+  }
+  return { prompt: found.prompt, refs: found.refs, status: "empty" };
+};
+
+const img = (src) => {
+  const found = IMAGE_LEDGER.get(src);
+  if (!found) {
+    imgWithoutPrompt.add(src);
+    return { src, refs: [], status: "done" };
+  }
+  return { src, prompt: found.prompt, refs: found.refs, status: "done" };
+};
 
 const write = (dir, id, data) => {
   const target = join(ROOT, "content", dir);
@@ -524,13 +605,13 @@ write(
         text: "上司は、あなたの 仕事が 進んで いるか、とても 心配して います。だから 報告は 大切です。",
       },
       { kind: "image", ...img(`${HOUKOKU_IMG}/houkoku.webp`), caption: "報告する 場面" },
-      { kind: "heading", level: 2, text: "やって みよう：冨永さんに 報告する" },
+      { kind: "heading", level: 2, text: "やって みよう：富田さんに 報告する" },
       {
         kind: "banner",
         tone: "goal",
         icon: "🎯",
         title: "場面",
-        text: "上司（PM）の 冨永さんは パソコンを 見て、忙しそうに 仕事を して います。あなたは PGで、「ログイン機能の テスト」が 終わりました。",
+        text: "上司（PM）の 富田さんは パソコンを 見て、忙しそうに 仕事を して います。あなたは PGで、「ログイン機能の テスト」が 終わりました。",
         badges: ["PM＝プロジェクトマネージャー", "PG＝プログラマー"],
       },
       {
@@ -598,17 +679,17 @@ write(
       kind: "skit",
       id: "houkoku_skit",
       title: "スキット：仕事が 終わった ときの 報告",
-      description: "テストが 終わった ことを、上司の 冨永さんに 報告します。",
+      description: "テストが 終わった ことを、上司の 富田さんに 報告します。",
       focus: "「今、お時間 よろしいですか」から 始める ところに 注目して、まねして みましょう。",
       cover: img(`${HOUKOKU_IMG}/skit.webp`),
       roles: [
         { id: "pg", name: "あなた", role: "PG（プログラマー）", accent: "leaf", side: "right" },
-        { id: "pm", name: "冨永さん", role: "PM（上司）", accent: "sky", side: "left" },
+        { id: "pm", name: "富田さん", role: "PM（上司）", accent: "sky", side: "left" },
       ],
       lines: [
         {
           speaker: "pg",
-          text: "冨永さん、お疲れさまです。今、お時間 よろしいですか。",
+          text: "富田さん、お疲れさまです。今、お時間 よろしいですか。",
           note: "いきなり 話を 始めないで、まず 許可を もらいます。",
         },
         { speaker: "pm", text: "はい、いいですよ。どう しましたか。" },
@@ -1478,7 +1559,7 @@ write(
         kind: "video",
         src: `${SOUDAN_VIDEO}/soudan_skit.mp4`,
         poster: `${SOUDAN_IMG}/slide10.webp`,
-        caption: "ソクさんが 鈴木先輩に 相談する お手本",
+        caption: "ソクさんが 奥田先輩に 相談する お手本",
         note: "この あとの スキットで、同じ 会話を 1行ずつ 聞いて まねします。",
       },
     ],
@@ -1493,27 +1574,27 @@ write(
       kind: "skit",
       id: "soudan_skit",
       title: "スキット：先輩に 相談する",
-      description: "検索の バグに ついて、鈴木先輩に 相談します。",
+      description: "検索の バグに ついて、奥田先輩に 相談します。",
       focus: "「自分が 何を 調べたか」を 先に 言う ところに 注目して、まねして みましょう。",
       cover: img(`${SOUDAN_IMG}/slide10.webp`),
       roles: [
         { id: "sok", name: "ソクさん", role: "PG（プログラマー）", accent: "leaf", side: "right" },
-        { id: "suzuki", name: "鈴木先輩", role: "先輩", accent: "sky", side: "left" },
+        { id: "okuda", name: "奥田先輩", role: "先輩", accent: "sky", side: "left" },
       ],
       lines: [
         {
           speaker: "sok",
-          text: "鈴木さん、今 少し よろしいですか。商品検索の 処理で 相談です。",
+          text: "奥田さん、今 少し よろしいですか。商品検索の 処理で 相談です。",
           note: "まず 許可を もらい、何の 話かを 先に 言います。",
         },
-        { speaker: "suzuki", text: "はい、どう しました。" },
+        { speaker: "okuda", text: "はい、どう しました。" },
         {
           speaker: "sok",
           text: "検索結果が 0件に なります。SQLが 正しい ことは 確認しました。他の 原因が わからないので、コードを 見て いただけませんか。",
           note: "「調べた こと」→「わからない こと」→「お願い」の 順です。",
         },
         {
-          speaker: "suzuki",
+          speaker: "okuda",
           text: "なるほど。SQLが OKなら、検索ワードの データ型が 怪しいですね。変数を 見て みましょう。",
         },
         { speaker: "sok", text: "ありがとう ございます。よろしく お願いします。" },
@@ -1968,15 +2049,10 @@ write(
  * 「少し 待つ」「チャットで 先に 送る」が 正解に なる 場面も 作り、
  * **答えが 状況で 変わる**のが ゲーム性（露骨な 正解肢を 消す）。
  *
- * 絵は 6枚とも 同じ 人物（鈴木先輩）・同じ 机。プロンプトの 人物描写を
+ * 絵は 6枚とも 同じ 人物（奥田先輩）・同じ 机。プロンプトの 人物描写を
  * 逐語で そろえて あるのは、コマ間の 見た目ドリフトを 防ぐ 定石
  *（docs/skills/codex_image_generation.md）。ローカル生成まで 空スロット。
  * ------------------------------------------------------------------ */
-
-const KEHAI_STYLE =
-  "Anime illustration, no readable text. A bright modern software office, clean line art, flat cel shading, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. Same character in every image: a Japanese senior engineer man (Suzuki, mid-30s, short black hair, thin silver glasses, navy blue cardigan over a white shirt) at his desk with a laptop and a small potted plant. Viewed from a coworker's standing viewpoint a few steps away. No text, no letters, no numbers, no speech bubbles.";
-
-const kehaiImg = (scene) => ({ prompt: `${scene} ${KEHAI_STYLE}`, refs: [], status: "empty" });
 
 write(
   "quizsets",
@@ -1993,10 +2069,8 @@ write(
       {
         id: "k1_denwa",
         type: "choose",
-        q: "鈴木先輩に 相談したい ことが あります。先輩は いま、電話で 話して います。どう しますか。",
-        image: kehaiImg(
-          "Suzuki holds a phone to his ear, taking notes on a notepad, eyes down, mid-conversation.",
-        ),
+        q: "奥田先輩に 相談したい ことが あります。先輩は いま、電話で 話して います。どう しますか。",
+        image: img("/img/quiz/soudan_kehai/k1_denwa.webp"),
         options: [
           "🧍 机の 前に 立って、終わるまで じっと 待つ",
           "💬 あとで また 来る。急ぐ ときは チャットで 先に 送って おく",
@@ -2009,10 +2083,8 @@ write(
       {
         id: "k2_shuuchuu",
         type: "emotion",
-        q: "鈴木先輩は ヘッドホンを して、画面に 顔を 近づけて、キーボードを 打ちつづけて います。いま、先輩は どんな 様子ですか。",
-        image: kehaiImg(
-          "Suzuki wears big headphones, leaning close to the screen, both hands typing fast, several code windows open, an energy drink beside the keyboard.",
-        ),
+        q: "奥田先輩は ヘッドホンを して、画面に 顔を 近づけて、キーボードを 打ちつづけて います。いま、先輩は どんな 様子ですか。",
+        image: img("/img/quiz/soudan_kehai/k2_shuuchuu.webp"),
         feelings: [
           "🙂 ひまで、だれかと 話したい",
           "🎧 集中して いて、切られたくない",
@@ -2032,10 +2104,8 @@ write(
       {
         id: "k3_hitoiki",
         type: "choose",
-        q: "鈴木先輩は お茶を 飲んで、のびを して います。いま、どう しますか。",
-        image: kehaiImg(
-          "Suzuki leans back in his chair, stretching, holding a warm cup of tea, relaxed small smile, screen dimmed.",
-        ),
+        q: "奥田先輩は お茶を 飲んで、のびを して います。いま、どう しますか。",
+        image: img("/img/quiz/soudan_kehai/k3_hitoiki.webp"),
         options: [
           "🗣 「今、お時間 よろしいですか」と 声を かける",
           "🌙 休みが 終わるまで、夜まで 待つ",
@@ -2048,10 +2118,8 @@ write(
       {
         id: "k4_komarigao",
         type: "emotion",
-        q: "鈴木先輩は 画面を 見ながら、困った 顔で うなって います。いま、先輩は どんな 気持ちだと 思いますか。",
-        image: kehaiImg(
-          "Suzuki frowns at the screen with one hand in his hair, shoulders slumped, clearly stuck and troubled.",
-        ),
+        q: "奥田先輩は 画面を 見ながら、困った 顔で うなって います。いま、先輩は どんな 気持ちだと 思いますか。",
+        image: img("/img/quiz/soudan_kehai/k4_komarigao.webp"),
         feelings: ["😄 仕事が 順調で、楽しい", "😖 何かに 困って いる", "😠 あなたに 怒って いる"],
         answerFeeling: 1,
         replyQ: "こんな とき、いちばん いい 声の かけ方は どれですか。",
@@ -2067,10 +2135,8 @@ write(
       {
         id: "k5_isogu",
         type: "choose",
-        q: "鈴木先輩は ノートパソコンを かかえて、時計を 見ながら 急いで います。相談は 急ぎません。どう しますか。",
-        image: kehaiImg(
-          "Suzuki stands, laptop under one arm, glancing at his wristwatch, walking quickly away from the desk.",
-        ),
+        q: "奥田先輩は ノートパソコンを かかえて、時計を 見ながら 急いで います。相談は 急ぎません。どう しますか。",
+        image: img("/img/quiz/soudan_kehai/k5_isogu.webp"),
         options: [
           "🏃 歩きながら 相談を 始める",
           "🕒 「会議の あとに 5分 いただけますか」と 短く 伝える",
@@ -2083,10 +2149,8 @@ write(
       {
         id: "k6_asa",
         type: "choose",
-        q: "朝です。鈴木先輩は 出社した ばかりで、かばんを 置いて、パソコンを つけて います。急がない 相談は、いつ 話しかけますか。",
-        image: kehaiImg(
-          "Morning light through the window. Suzuki has just arrived, putting his bag down beside the desk, computer still starting up, jacket half off.",
-        ),
+        q: "朝です。奥田先輩は 出社した ばかりで、かばんを 置いて、パソコンを つけて います。急がない 相談は、いつ 話しかけますか。",
+        image: img("/img/quiz/soudan_kehai/k6_asa.webp"),
         options: [
           "🎒 かばんを 置いた 瞬間に 話しかける",
           "☕ 先輩が メールと 予定を 見おわった ころに 声を かける",
@@ -2109,20 +2173,6 @@ write(
  * 人物の 見た目の 記述は m2_asakai_manga と 逐語で そろえて ある。
  * ------------------------------------------------------------------ */
 
-const MANGA_STYLE =
-  "Medium shot, clean line art, flat cel shading, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. Keep empty space at the top of the frame. No text, no letters, no numbers, no signage, no speech bubbles, no readable text.";
-const NYAM_LOOK =
-  "a young Southeast Asian junior engineer man (Nyam, short black hair swept up off the forehead, coral cardigan over a cream button-down shirt)";
-const HENDY_LOOK =
-  "a friendly Southeast Asian senior engineer man (Hendy, short black hair, light blue shirt, ID lanyard)";
-const CHAR_SHEETS = ["/img/characters/nyam/sheet.webp", "/img/characters/hendy/sheet.webp"];
-
-const mangaSlot = (scene) => ({
-  prompt: `Anime manga panel, no readable text. ${scene} ${MANGA_STYLE}`,
-  refs: CHAR_SHEETS,
-  status: "empty",
-});
-
 write(
   "manga",
   "renraku_manga",
@@ -2143,9 +2193,7 @@ write(
         panels: [
           {
             size: "normal",
-            image: mangaSlot(
-              `A bright modern software office in the late afternoon, warm orange light through the window. ${NYAM_LOOK} sits at his desk looking at a sticky note on his monitor, thinking, one hand on his chin.`,
-            ),
+            image: img("/img/manga/renraku_manga/panel1.webp"),
             lines: [
               {
                 speaker: "narration",
@@ -2156,9 +2204,7 @@ write(
           },
           {
             size: "normal",
-            image: mangaSlot(
-              `Close shot on ${NYAM_LOOK} at the same desk, one hand hovering over the keyboard, a chat app open as abstract blurred bubbles on the screen, his eyes glancing away with a slightly guilty look.`,
-            ),
+            image: img("/img/manga/renraku_manga/panel2.webp"),
             lines: [
               { speaker: "nyam", text: "連絡は…… あとで いいか。" },
               { speaker: "narration", text: "ニャムさんは 連絡を あとまわしに しました。" },
@@ -2166,9 +2212,7 @@ write(
           },
           {
             size: "wide",
-            image: mangaSlot(
-              `Wide shot of the office at night, dark blue palette, only one desk lamp on where ${NYAM_LOOK} works alone. By the wall, a small server rack with one status light glowing red instead of green.`,
-            ),
+            image: img("/img/manga/renraku_manga/panel3.webp"),
             lines: [
               {
                 speaker: "narration",
@@ -2183,9 +2227,7 @@ write(
         panels: [
           {
             size: "normal",
-            image: mangaSlot(
-              `Night at a home desk with a warm lamp. ${HENDY_LOOK} wearing a casual gray hoodie instead of his shirt, looking at a laptop that shows an abstract empty error dialog, confused expression, tilting his head.`,
-            ),
+            image: img("/img/manga/renraku_manga/panel4.webp"),
             lines: [
               {
                 speaker: "narration",
@@ -2196,9 +2238,7 @@ write(
           },
           {
             size: "normal",
-            image: mangaSlot(
-              `Same home desk at night. ${HENDY_LOOK} in the casual gray hoodie leans back with both hands on his head, looking at the ceiling, tired, the laptop screen dim.`,
-            ),
+            image: img("/img/manga/renraku_manga/panel5.webp"),
             lines: [
               {
                 speaker: "hendy",
@@ -2208,9 +2248,7 @@ write(
           },
           {
             size: "wide",
-            image: mangaSlot(
-              `Monday morning in the bright office. ${NYAM_LOOK} bows apologetically beside a desk. ${HENDY_LOOK} turns from his chair with a calm, kind expression, soft morning light through the window.`,
-            ),
+            image: img("/img/manga/renraku_manga/panel6.webp"),
             lines: [
               {
                 speaker: "nyam",
@@ -2227,9 +2265,7 @@ write(
         panels: [
           {
             size: "normal",
-            image: mangaSlot(
-              `${HENDY_LOOK} and ${NYAM_LOOK} sit side by side at one laptop. Hendy points at the screen with a pen, Nyam nods holding a small notebook.`,
-            ),
+            image: img("/img/manga/renraku_manga/panel7.webp"),
             lines: [
               {
                 speaker: "hendy",
@@ -2239,9 +2275,7 @@ write(
           },
           {
             size: "normal",
-            image: mangaSlot(
-              `Close-up of the laptop screen showing a chat compose box as abstract blurred lines, ${NYAM_LOOK} pressing the enter key with one finger, focused hopeful face.`,
-            ),
+            image: img("/img/manga/renraku_manga/panel8.webp"),
             lines: [
               {
                 speaker: "nyam",
@@ -2252,9 +2286,7 @@ write(
           },
           {
             size: "wide",
-            image: mangaSlot(
-              `The chat window on a laptop screen with one abstract message bubble and three colorful round reaction icons floating beside it: an eye icon, a thumbs-up icon, and folded hands icon. Behind the laptop, ${NYAM_LOOK} and ${HENDY_LOOK} smile at each other, bright cheerful light.`,
-            ),
+            image: img("/img/manga/renraku_manga/panel9.webp"),
             lines: [
               {
                 speaker: "narration",
@@ -2317,3 +2349,16 @@ write(
     note: "最後は、自分の 名前で 完成した 連絡が チャンネルに 流れます。",
   }),
 );
+
+/*
+ * 作り直しの 台帳に まだ 載って いない 絵を 最後に 知らせる。
+ * 黙って 通すと「プロンプトの 無い 絵」が また 増えて、次に 作り直す 人が
+ * 同じ ところから やり直す ことに なる。
+ */
+if (imgWithoutPrompt.size > 0) {
+  console.log(`\n⚠ 台帳に まだ 無い 絵 ${imgWithoutPrompt.size}枚:`);
+  for (const src of [...imgWithoutPrompt].sort()) console.log(`   ${src}`);
+  console.log(
+    "   → scripts/images/hourensou_*.json に 足す（docs/teaching/hourensou_絵の作り直し台帳.md）",
+  );
+}

@@ -75,6 +75,14 @@ function scenePrompt(scene) {
     scene.nexmaxInScene ? LEDGER.nexmax : null,
     scene.scene,
     /*
+     * 絵に 焼く ことば。**指示書（gen_image_handoff.mjs の fullPrompt）と 同文**に する。
+     * noText が「上の 場面に 並べた ことばだけ」と 言うので、ここが 抜けると
+     * 焼く ことばが 1つも 渡らない。
+     */
+    Array.isArray(scene.text) && scene.text.length > 0
+      ? `The Japanese words in this picture are exactly: ${scene.text.join(" / ")}.`
+      : null,
+    /*
      * 出す 絵の 形。**1枚ごとに 変えられる**——立ち絵は 縦長で 背景ぬき、
      * 舞台の 絵は 横長、と 1つの 台帳に 混ざる ことが ある（対話ゲーム）。
      */

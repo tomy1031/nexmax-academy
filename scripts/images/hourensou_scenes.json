@@ -1,0 +1,50 @@
+{
+  "refs": [],
+  "_comment": "特定の 登場人物が 出ない **文字なしの 場面**。本文（cards・list）が ことばを 持って いるので、絵は 場面だけを 描く。1枚目が 以後の 絵柄の アンカーに なる。",
+  "style": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME.",
+  "noText": "No text, no letters, no kanji, no kana, no numbers anywhere in the image. Screens, papers, whiteboards, books and signs are blank or show only soft abstract shapes and simple pictures. No watermark, no signature, no logo, no speech balloons, no floating symbols such as question marks, exclamation marks, arrows, light bulbs, stars or hearts.",
+  "negative": "Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+  "output": "1536x1024",
+  "scenes": [
+    {
+      "out": "slide2",
+      "dest": "public/img/hourensou/soudan/slide2.webp",
+      "title": "エラーが 出た とき どう する（3つ）",
+      "where": "scripts/gen_hourensou_content.mjs soudan_lecture blocks[3]（image）",
+      "priority": "A",
+      "scene": "One wide picture divided into three equal vertical panels by thin cream gutters. LEFT: a young engineer sits alone at his desk with his chin on his fist, thinking hard at a blank screen. MIDDLE: the same engineer leans over to a friend at the next desk and they look at one laptop together. RIGHT: the engineer types a search into a blank browser window, one hand on the mouse, curious. Same office, same warm light in all three."
+    },
+    {
+      "out": "slide3",
+      "dest": "public/img/hourensou/soudan/slide3.webp",
+      "title": "相談すると 答えが 見つかる",
+      "where": "scripts/gen_hourensou_content.mjs soudan_lecture blocks[5]（image）",
+      "priority": "B",
+      "scene": "A junior engineer and a senior colleague sit side by side at one desk, both looking at the same laptop. The senior points at the screen and the junior's face lights up with understanding — the moment the answer appears. Warm daylight, a plant behind them, two mugs on the desk. Medium two-shot filling the frame."
+    },
+    {
+      "out": "slide4",
+      "dest": "public/img/hourensou/soudan/slide4.webp",
+      "title": "一人で 悩む と チームで 考える",
+      "where": "scripts/gen_hourensou_content.mjs soudan_lecture blocks[7]（image）",
+      "priority": "B",
+      "scene": "One wide picture split into two equal halves by a soft vertical cream gutter. LEFT HALF, cool and dim: one engineer sits very small and alone in a large empty office, surrounded by too much space, head down. RIGHT HALF, warm and bright: four colleagues stand close together around one desk, all leaning in towards the same laptop, relaxed and involved. The contrast is made with light and spacing only."
+    },
+    {
+      "out": "slide5_1",
+      "dest": "public/img/hourensou/soudan/slide5-1.webp",
+      "title": "相談する ばめん ①〜④",
+      "where": "scripts/gen_hourensou_content.mjs soudan_lecture blocks[10]（image）",
+      "priority": "B",
+      "scene": "One wide picture divided into four equal panels in a single row by thin cream gutters, each a small workplace vignette of the same young engineer. 1: he looks between two laptops, one showing a calm blank screen and the other a screen with a soft red glow — it works on one machine but not the other. 2: he holds up two blank rounded cards and looks from one to the other, choosing. 3: he points at a blank page in a thick document and looks up, having found something missing. 4: he watches a slow spinning circle on his screen, chin on hand, wanting a better way."
+    },
+    {
+      "out": "slide5_2",
+      "dest": "public/img/hourensou/soudan/slide5-2.webp",
+      "title": "相談する ばめん ⑤〜⑧",
+      "where": "scripts/gen_hourensou_content.mjs soudan_lecture blocks[11]（image）",
+      "priority": "B",
+      "scene": "One wide picture divided into four equal panels in a single row by thin cream gutters, each a small workplace vignette of the same young engineer. 5: two soft abstract branching lines on his screen have crossed and tangled, and he looks at them carefully. 6: he sits in front of a laptop with a soft red glow while an open manual lies beside it, comparing the two. 7: he holds a large tablet in landscape and a small phone side by side, and the layout that fits the tablet clearly does not fit the phone. 8: he looks at an empty checklist on his screen with a pen in hand, not yet knowing what to write."
+    }
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "refs": ["public/img/characters/tomita/sheet.webp"],
+  "_comment": "報告ステージに 出る 富田さん（PM・上司）の 絵。**参照写真 富田.jpg は リポジトリ直下に あり、ローカルにしか 無い**（クラウドのセッションからは 見えない）。まず 0番の 設定画を 作り、content/characters/tomita.json の looks を 写真を 見て 確定してから 残りを 流す。**髭は 描かない**。 **文字入りの 図は hourensou_tomita_zukai.json に 分けて ある**（生成ドライバは 台帳ごとに 文字あり／なしを 切りかえるため）。",
+  "style": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. Two different people appear in these pictures and they must never look alike. TOMITA is the project manager shown in the attached character sheet: a Japanese man in his thirties, clean-shaven, soft grey-blue button-down shirt with the sleeves rolled to the elbow, dark navy chinos, brown leather belt. THE JUNIOR ENGINEER is a DIFFERENT and YOUNGER man: a Southeast Asian man in his early twenties, warm brown skin, short cropped black hair, a plain cream polo shirt and dark grey trousers, slimmer and visibly younger than Tomita. Never give the two men the same face, hair or clothes.",
+  "noText": "No text, no letters, no kanji, no kana, no numbers anywhere in the image. Screens, papers, whiteboards, books and signs are blank or show only soft abstract shapes and simple pictures. No watermark, no signature, no logo, no speech balloons, no floating symbols such as question marks, exclamation marks, arrows, light bulbs, stars or hearts.",
+  "negative": "Every character is CLEAN-SHAVEN — no moustache, no beard, no stubble on anyone. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+  "output": "1536x1024",
+  "scenes": [
+    {
+      "out": "tomita_sheet",
+      "dest": "public/img/characters/tomita/sheet.webp",
+      "title": "富田さんの 設定画（三面図＋表情）",
+      "where": "content/characters/tomita.json の sheet。**これを 最初に 作る**",
+      "priority": "A",
+      "scene": "Character model sheet for Tomita, a Japanese man in his thirties who works as a project manager. Build his face and hair from the attached reference photograph 富田.jpg, keeping the same face shape, hairline and eyes, but drawn in this anime style. HE HAS NO MOUSTACHE AND NO BEARD — his face is clean-shaven and completely smooth. Outfit: a soft grey-blue button-down shirt with the sleeves rolled to the elbow, dark navy chinos, brown leather belt. Calm, attentive expression with a small friendly smile. The sheet shows the same man three times on a plain white background — front view, side view and three-quarter view, full body, standing, with generous margins — and a row of four head-only expressions underneath: neutral, smiling, listening carefully, and slightly concerned.",
+      "output": "Output: one square character model sheet, 1024x1024."
+    },
+    {
+      "out": "top",
+      "dest": "public/img/hourensou/houkoku/top.webp",
+      "title": "報告ステージの 表紙",
+      "where": "scripts/gen_hourensou_content.mjs houkoku_lecture blocks[0].image（hero）",
+      "priority": "B",
+      "scene": "A young Southeast Asian junior engineer stands beside the desk of Tomita, the project manager, and reports to him while holding a small notebook. Tomita looks up from his laptop with a calm welcoming expression and gives a small nod. Bright morning light from a large window, a small potted plant on the desk. Waist-up two-shot from a natural standing angle, the two of them filling the frame."
+    },
+    {
+      "out": "houkoku",
+      "dest": "public/img/hourensou/houkoku/houkoku.webp",
+      "title": "報告する 場面（本文の さし絵）",
+      "where": "scripts/gen_hourensou_content.mjs houkoku_lecture blocks[8]（image）",
+      "priority": "B",
+      "scene": "Tomita is working at his laptop, focused. The young junior engineer has stopped a step away from the desk, standing straight with both hands at his sides, waiting politely for Tomita to look up. Tomita is just turning his head towards him with a friendly, unhurried expression. Medium shot from the side, both of them filling the frame."
+    },
+    {
+      "out": "ask_time",
+      "dest": "public/img/hourensou/houkoku/ask_time.webp",
+      "title": "「今、お時間 よろしいですか」と 声を かける",
+      "where": "scripts/gen_hourensou_content.mjs houkoku_lecture blocks[13]（steps）の images[0]",
+      "priority": "B",
+      "scene": "Close two-shot. The junior engineer leans very slightly forward with an open, polite gesture of one hand, asking for a moment of time. Tomita has taken his hands off the keyboard and turned fully towards him, smiling, giving his full attention. Warm daylight, the laptop screen blank."
+    },
+    {
+      "out": "q1",
+      "dest": "public/img/hourensou/houkoku/q1.webp",
+      "title": "Q1 最初に かける ことば",
+      "where": "scripts/gen_hourensou_content.mjs houkoku_lecture blocks[11]（cards）items[0].image",
+      "priority": "B",
+      "scene": "The junior engineer stands beside Tomita's desk with his mouth just opening to speak, one hand raised in a small polite gesture. Tomita is still looking at his laptop, busy. The moment before the first word. Medium shot, warm office light."
+    },
+    {
+      "out": "q2",
+      "dest": "public/img/hourensou/houkoku/q2.webp",
+      "title": "Q2 報告の しかた",
+      "where": "scripts/gen_hourensou_content.mjs houkoku_lecture blocks[11]（cards）items[1].image",
+      "priority": "B",
+      "scene": "The junior engineer is speaking clearly, counting points off on the fingers of one hand. Tomita nods along and writes a short note. Both are relaxed and engaged. Medium shot across the corner of the desk."
+    },
+    {
+      "out": "q3",
+      "dest": "public/img/hourensou/houkoku/q3.webp",
+      "title": "Q3 ほかの 報告",
+      "where": "scripts/gen_hourensou_content.mjs houkoku_lecture blocks[11]（cards）items[2].image",
+      "priority": "B",
+      "scene": "The junior engineer sits at his own desk, resting his chin on one hand, thinking, with a calm curious expression. Around him the office continues: a blank whiteboard, a colleague walking past in the background, a mug of tea. Medium shot."
+    },
+    {
+      "out": "skit",
+      "dest": "public/img/hourensou/houkoku/skit.webp",
+      "title": "報告スキットの 表紙",
+      "where": "scripts/gen_hourensou_content.mjs houkoku_skit の cover",
+      "priority": "B",
+      "scene": "A friendly two-shot of the junior engineer and Tomita facing each other across the desk in mid conversation — the junior engineer speaking, Tomita listening with a warm smile and an open hand gesture. Bright, welcoming, plenty of clean space around them. Wide medium shot."
+    }
+  ]
+}
