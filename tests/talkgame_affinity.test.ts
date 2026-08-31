@@ -5,12 +5,10 @@ import {
   LISTEN_MAX_ASKS,
   LISTEN_MIN_ASKS,
   NO_OBSERVATIONS,
-  TALK_TURN_CAP_RATIO,
-  alreadyFound,
+  TALK_TURN_CAP,
   applyTurn,
   breakdown,
   gainFor,
-  normalizeTopic,
   pointsTable,
   focusPoints,
   ALWAYS_POINTS,
@@ -19,9 +17,9 @@ import {
   type TalkPlan,
   type TalkState,
 } from "../src/lib/talkgame/affinity";
-import { localObservations, localReply, localTopic } from "../src/lib/talkgame/local";
+import { localObservations, localReply } from "../src/lib/talkgame/local";
 
-const PLAN: TalkPlan = { goal: 100, openAt: 60, findCount: 5 };
+const PLAN: TalkPlan = { goal: 100, openAt: 60, askCount: TALK_TURN_CAP };
 
 const PERFECT: TalkObservations = {
   japanese: true,
@@ -33,11 +31,26 @@ const PERFECT: TalkObservations = {
   question: true,
 };
 
-/** 話す ばんで n回 話す。話題は 毎回 新しい。 */
+/** 話す ばんで n回 話す。 */
 function talkFor(count: number, observations: TalkObservations): TalkState {
   let state = EMPTY_TALK;
   for (let i = 0; i < count; i += 1) {
-    state = applyTurn(state, PLAN, observations, `はっけん${i}`).state;
+    state = applyTurn(state, PLAN, observations).state;
+  }
+  return state;
+}
+
+/**
+ * 聞く ばんに 入るまで 話す。
+ *
+ * 何回で 入るかは 答えの 良さで 変わる（好感度が 入口に とどく か、深掘りの 上限）ので、
+ * **回数を 決め打ちに しない**。2026-08-31 に「おもしろい を n個」の 引き金を 廃止して
+ * から、上手な 人と そうで ない 人で 回数が はっきり 分かれる ように なった。
+ */
+function talkUntilListen(observations: TalkObservations): TalkState {
+  let state = EMPTY_TALK;
+  for (let i = 0; i < TALK_TURN_CAP + 1 && state.round === "talk"; i += 1) {
+    state = applyTurn(state, PLAN, observations).state;
   }
   return state;
 }
@@ -47,7 +60,7 @@ describe("好感度は 下がらない", () => {
     let state = EMPTY_TALK;
     for (let i = 0; i < 10; i += 1) {
       const before = state.percent;
-      state = applyTurn(state, PLAN, NO_OBSERVATIONS, null).state;
+      state = applyTurn(state, PLAN, NO_OBSERVATIONS).state;
       expect(state.percent).toBeGreaterThanOrEqual(before);
     }
   });
@@ -106,64 +119,68 @@ describe("観点で 上がる", () => {
 });
 
 describe("ばんの 切りかえ", () => {
-  it("見つける 数に とどいたら 聞く ばんへ 変わる", () => {
-    const state = talkFor(PLAN.findCount, PERFECT);
+  /*
+   * 2026-08-31 に「おもしろい を n個 見つけたら」の 引き金を **廃止した**
+   *（札は AIが 漢字まじりの ラベルを 返すと 立たず、鍵の ある 教室では
+   * ほとんど 数えられて いなかった）。残る 引き金は 好感度と 深掘りの 上限の 2つ。
+   */
+  it("好感度が 入口（openAt）に とどいたら 聞く ばんへ 変わる", () => {
+    let state = EMPTY_TALK;
+    for (let i = 0; i < 20 && state.round === "talk"; i += 1) {
+      state = applyTurn(state, PLAN, PERFECT).state;
+    }
     expect(state.round).toBe("listen");
-    expect(state.found).toHaveLength(PLAN.findCount);
+    expect(state.percent).toBeGreaterThanOrEqual(PLAN.openAt);
   });
 
-  it("見つからなくても 深掘りの 上限で 聞く ばんへ 進む", () => {
+  it("好感度が とどかなくても 深掘りの 上限で 聞く ばんへ 進む", () => {
     let state = EMPTY_TALK;
-    for (let i = 0; i < PLAN.findCount * TALK_TURN_CAP_RATIO; i += 1) {
-      state = applyTurn(state, PLAN, NO_OBSERVATIONS, null).state;
+    for (let i = 0; i < TALK_TURN_CAP; i += 1) {
+      state = applyTurn(state, PLAN, NO_OBSERVATIONS).state;
     }
     expect(state.round).toBe("listen");
   });
 
   it("話しきったら、上手でなくても 聞く ばんの 入口（openAt）に 立てる", () => {
-    const state = talkFor(PLAN.findCount, { ...NO_OBSERVATIONS, japanese: true });
-    expect(state.percent).toBe(PLAN.openAt);
-  });
-
-  it("同じ 話題は 2回 数えない", () => {
     let state = EMPTY_TALK;
-    state = applyTurn(state, PLAN, PERFECT, "カンボジアの プログラム").state;
-    state = applyTurn(state, PLAN, PERFECT, "カンボジアのプログラム").state;
-    expect(state.found).toHaveLength(1);
+    for (let i = 0; i < TALK_TURN_CAP; i += 1) {
+      state = applyTurn(state, PLAN, NO_OBSERVATIONS).state;
+    }
+    expect(state.percent).toBe(PLAN.openAt);
   });
 });
 
 describe("満タンで おわる", () => {
   it("聞く ばんを 話しきれば 100% に なる", () => {
-    let state = talkFor(PLAN.findCount, { ...NO_OBSERVATIONS, japanese: true });
+    let state = talkUntilListen({ ...NO_OBSERVATIONS, japanese: true });
     for (let i = 0; i < LISTEN_MAX_ASKS; i += 1) {
-      state = applyTurn(state, PLAN, NO_OBSERVATIONS, null).state;
+      state = applyTurn(state, PLAN, NO_OBSERVATIONS).state;
     }
     expect(state.round).toBe("clear");
     expect(state.percent).toBe(PLAN.goal);
   });
 
   it("しつもんが 少なすぎる うちは おわらない", () => {
-    let state = talkFor(PLAN.findCount, PERFECT);
-    state = applyTurn(state, PLAN, PERFECT, null).state;
+    let state = talkUntilListen(PERFECT);
+    state = applyTurn(state, PLAN, PERFECT).state;
     expect(state.asked).toBeLessThan(LISTEN_MIN_ASKS);
     expect(state.round).toBe("listen");
   });
 
   it("満タンを こえない", () => {
-    let state = talkFor(PLAN.findCount, PERFECT);
+    let state = talkUntilListen(PERFECT);
     for (let i = 0; i < LISTEN_MAX_ASKS; i += 1) {
-      state = applyTurn(state, PLAN, PERFECT, null).state;
+      state = applyTurn(state, PLAN, PERFECT).state;
     }
     expect(state.percent).toBe(PLAN.goal);
   });
 
   it("クリアの あとは 動かない", () => {
-    let state = talkFor(PLAN.findCount, PERFECT);
+    let state = talkUntilListen(PERFECT);
     for (let i = 0; i < LISTEN_MAX_ASKS; i += 1) {
-      state = applyTurn(state, PLAN, PERFECT, null).state;
+      state = applyTurn(state, PLAN, PERFECT).state;
     }
-    const after = applyTurn(state, PLAN, PERFECT, "あたらしい");
+    const after = applyTurn(state, PLAN, PERFECT);
     expect(after.gained).toBe(0);
     expect(after.state).toBe(state);
   });
@@ -173,31 +190,37 @@ describe("内訳と メーターが 食い違わない", () => {
   it("観点の ぶんと 底上げの ぶんを 分けて 返す", () => {
     let state = EMPTY_TALK;
     const weak = { ...NO_OBSERVATIONS, japanese: true };
-    for (let i = 0; i < PLAN.findCount - 1; i += 1) {
-      const step = applyTurn(state, PLAN, weak, `はっけん${i}`);
+    for (let i = 0; i < TALK_TURN_CAP - 1; i += 1) {
+      const step = applyTurn(state, PLAN, weak);
       expect(step.lifted).toBe(0);
       expect(step.state.percent - state.percent).toBe(step.gained);
       state = step.state;
     }
-    // 5つめ（ばんが 変わる ターン）だけ 底上げが 乗る
-    const last = applyTurn(state, PLAN, weak, "はっけん5");
+    // 上限の ターン（ばんが 変わる ターン）だけ 底上げが 乗る
+    const last = applyTurn(state, PLAN, weak);
     expect(last.turned).toBe("listen");
     expect(last.lifted).toBeGreaterThan(0);
     expect(last.state.percent - state.percent).toBe(last.gained + last.lifted);
   });
 
   it("内訳は「見た ときの ばん」で 描く（切りかえ後では ない）", () => {
-    const state = talkFor(PLAN.findCount - 1, PERFECT);
-    const step = applyTurn(state, PLAN, PERFECT, "さいごの はっけん");
-    expect(step.turned).toBe("listen");
-    expect(step.judgedAs).toBe("talk");
+    let state = EMPTY_TALK;
+    while (true) {
+      const step = applyTurn(state, PLAN, PERFECT);
+      if (step.turned === "listen") {
+        // ばんが 変わる ターンでも、内訳は **答えた ときの ばん**で 描く
+        expect(step.judgedAs).toBe("talk");
+        break;
+      }
+      state = step.state;
+    }
   });
 
   it("満タンに なった ターンで かならず クリアする（100% のまま 続かない）", () => {
     for (const shape of [PERFECT, { ...NO_OBSERVATIONS, japanese: true }]) {
       let state = EMPTY_TALK;
       for (let i = 0; i < 40 && state.round !== "clear"; i += 1) {
-        state = applyTurn(state, PLAN, shape, `はっけん${i}`).state;
+        state = applyTurn(state, PLAN, shape).state;
         if (state.percent >= PLAN.goal) expect(state.round).toBe("clear");
       }
       expect(state.round).toBe("clear");
@@ -208,22 +231,10 @@ describe("内訳と メーターが 食い違わない", () => {
     let state = EMPTY_TALK;
     // 同じ 話題を くり返すと 札は 開かないが、好感度は たまる
     for (let i = 0; i < 6 && state.round === "talk"; i += 1) {
-      state = applyTurn(state, PLAN, PERFECT, "おなじ はなし").state;
+      state = applyTurn(state, PLAN, PERFECT).state;
     }
     expect(state.round).toBe("listen");
     expect(state.percent).toBeGreaterThanOrEqual(PLAN.openAt);
-  });
-});
-
-describe("話題の ならし", () => {
-  it("空白と 記号を 落として 比べる", () => {
-    expect(normalizeTopic("観光 DX・")).toBe(normalizeTopic("観光DX"));
-    expect(alreadyFound(["観光DX"], "観光 DX")).toBe(true);
-    expect(alreadyFound(["観光DX"], "NMClaw")).toBe(false);
-  });
-
-  it("空の ラベルは 見つけた ことに しない", () => {
-    expect(alreadyFound([], "  ")).toBe(true);
   });
 });
 
@@ -232,13 +243,6 @@ describe("鍵が 無い ときの 見かた", () => {
     expect(localObservations("talk", "カンボジアの プログラムが おもしろいです。").concrete).toBe(
       false,
     );
-  });
-
-  it("日本語で 言えて いない ものは 札を 開かない", () => {
-    const english = "I think this company is interesting";
-    expect(localTopic("talk", english, localObservations("talk", english))).toBe("");
-    const nonsense = "asdfghjkl qwertyu";
-    expect(localTopic("talk", nonsense, localObservations("talk", nonsense))).toBe("");
   });
 
   it("りゆう・気もち・ていねいさは 規則で 拾える", () => {
@@ -257,32 +261,6 @@ describe("鍵が 無い ときの 見かた", () => {
     const seen = localObservations("talk", "very interesting");
     expect(seen.japanese).toBe(false);
     expect(seen.onTopic).toBe(false);
-  });
-
-  it("短すぎる ことばは 見つけた ことに しない", () => {
-    const seen = (round: "talk" | "listen", text: string) =>
-      localTopic(round, text, localObservations(round, text));
-    expect(seen("talk", "はい")).toBe("");
-    expect(seen("listen", "とても おもしろいです")).toBe("");
-    expect(seen("talk", "とても おもしろいです")).not.toBe("");
-  });
-
-  /*
-   * 札は **好感度の 記録に 残り、あとから 一覧にも 出る**。実機の 通し検証で
-   *「Japanese IT …」「私は チームで 話す こ…」が 出た（2026-08-27）——
-   * 語の 途中で 切れた ものは、あとで 見ても 何を 見つけたのか 分からない。
-   * 教材の 文は 分かち書きなので、空白まで 戻せば 語の 切れめに なる。
-   */
-  it("長い ことばは ことばの 切れめで 切る", () => {
-    const seen = (text: string) => localTopic("talk", text, localObservations("talk", text));
-    expect(seen("私は チームで 話す ことが 得意です。")).toBe("私は チームで 話す…");
-    expect(seen("Japanese IT Pathway は おもしろいです。")).toBe("Japanese IT…");
-  });
-
-  it("短い ものは 切らない（…を むだに 付けない）", () => {
-    expect(
-      localTopic("talk", "かんこうDX が すき", localObservations("talk", "かんこうDX が すき")),
-    ).toBe("かんこうDX が すき");
   });
 });
 
@@ -333,8 +311,8 @@ describe("しつもんごとの 見る ところ", () => {
 
   it("好感度も その しつもんの 観点で 上がる", () => {
     const noCompany: TalkObservations = { ...PERFECT, concrete: false };
-    const withFocus = applyTurn(EMPTY_TALK, PLAN, noCompany, null, ["reason", "feeling"]);
-    const shared = applyTurn(EMPTY_TALK, PLAN, noCompany, null);
+    const withFocus = applyTurn(EMPTY_TALK, PLAN, noCompany, ["reason", "feeling"]);
+    const shared = applyTurn(EMPTY_TALK, PLAN, noCompany);
     // 共通の 表では concrete の 3% が 空席の まま。しつもんの 表では その席が 無い
     expect(withFocus.gained).toBeGreaterThan(shared.gained);
   });
@@ -361,5 +339,40 @@ describe("見かたが 無い ときの 返事", () => {
 
   it("同じ ことばを 続けて 言わない", () => {
     expect(localReply("talk", 0)).not.toBe(localReply("talk", 1));
+  });
+});
+
+/**
+ * **準備して きた ことを ぜんぶ 聞いたら 聞く ばんへ**（2026-08-31）
+ *
+ * 出だしの しつもんは 準備フォームの 設問と 1対1 なので、使いきった ところが
+ * 自然な 切れ目に なる。ここが 無いと、鍵の 無い 教室（規則ベースでは 会社の 中身が
+ * 立たない）だけ 会話が 長く なる——上手・不上手を **長さ**の 差に して しまう。
+ */
+describe("しつもんを 使いきったら 聞く ばんへ", () => {
+  const SHORT: TalkPlan = { goal: 100, openAt: 60, askCount: 3 };
+
+  it("好感度が とどかなくても、しつもんの 数だけ 話したら 移る", () => {
+    let state = EMPTY_TALK;
+    for (let i = 0; i < SHORT.askCount; i += 1) {
+      state = applyTurn(state, SHORT, { ...NO_OBSERVATIONS, japanese: true }).state;
+    }
+    expect(state.round).toBe("listen");
+    // 話しきった ぶんの 底上げで、入口には ちゃんと 立てる（設計01 P8）
+    expect(state.percent).toBe(SHORT.openAt);
+  });
+
+  it("しつもんの 数より 前でも、好感度が とどけば 移る", () => {
+    const state = applyTurn(EMPTY_TALK, { ...SHORT, openAt: 5 }, PERFECT).state;
+    expect(state.round).toBe("listen");
+  });
+
+  it("しつもんが 多すぎる 教材でも 上限で 止まる", () => {
+    let state = EMPTY_TALK;
+    const many: TalkPlan = { goal: 100, openAt: 60, askCount: 99 };
+    for (let i = 0; i < TALK_TURN_CAP; i += 1) {
+      state = applyTurn(state, many, { ...NO_OBSERVATIONS, japanese: true }).state;
+    }
+    expect(state.round).toBe("listen");
   });
 });
