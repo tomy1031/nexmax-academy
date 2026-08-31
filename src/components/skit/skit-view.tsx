@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { ZoomableImage } from "@/components/media/zoomable-image";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Skit, SkitRole } from "@/content/schema";
 import { NexMax } from "@/components/nexmax";
@@ -301,14 +302,21 @@ export function SkitView({ skit, embedded }: { skit: Skit; embedded?: boolean })
                   </div>
 
                   {line.image?.src ? (
-                    <Image
-                      src={line.image.src}
-                      alt=""
-                      width={320}
-                      height={320}
-                      className="h-20 w-20 shrink-0 rounded-xl object-cover sm:h-28 sm:w-28"
-                      unoptimized
-                    />
+                    /*
+                      **切らずに 全体を 見せる**（`object-cover` → `object-contain`）。
+                      3:2 の 絵を 正方形に 切って いた ので、横の 1/3 が 画面から
+                      消えて いた。大きさは そのまま——押すと 全画面に なる。
+                    */
+                    <ZoomableImage label={line.note} size="small" className="shrink-0">
+                      <Image
+                        src={line.image.src}
+                        alt=""
+                        width={320}
+                        height={320}
+                        className="bg-panel h-20 w-20 rounded-xl object-contain sm:h-28 sm:w-28"
+                        unoptimized
+                      />
+                    </ZoomableImage>
                   ) : line.image ? (
                     /*
                       まだ 無い 絵は **空けずに 点線わく**を 出す（2026-08-27 の指定）。

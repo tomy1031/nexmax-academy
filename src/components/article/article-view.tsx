@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { ZoomableImage } from "@/components/media/zoomable-image";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import type { Article, ArticleBlock } from "@/content/schema";
@@ -727,17 +728,26 @@ function ImageBlock({
     );
   }
 
+  /*
+   * 大きさは **絵に よって 変える**（2026-08-30 の 指定「他の要素では小さくないと
+   * いけない場合もあるので、この時は大きくするような設定にしてください」）。
+   * 既定は これまでどおり 少し しぼる。中に 字の ある 説明の 図だけ `size: "wide"` に して
+   * 本文の 幅いっぱいで 出す——1134px の 図を 412px で 出すと、ふりがなが 潰れて 読めない。
+   */
+  const width = block.size === "wide" ? "max-w-full" : "max-w-[420px]";
   return (
-    <figure className="mx-auto w-full max-w-[420px]">
-      <Image
-        src={block.src}
-        alt={block.caption ?? ""}
-        width={1200}
-        height={675}
-        unoptimized
-        className="h-auto w-full rounded-[20px] border-4 border-white"
-        style={{ boxShadow: "0 6px 0 #b8deed" }}
-      />
+    <figure className={`mx-auto w-full ${width}`}>
+      <ZoomableImage label={block.caption}>
+        <Image
+          src={block.src}
+          alt={block.caption ?? ""}
+          width={1600}
+          height={900}
+          unoptimized
+          className="h-auto w-full rounded-[20px] border-4 border-white"
+          style={{ boxShadow: "0 6px 0 #b8deed" }}
+        />
+      </ZoomableImage>
     </figure>
   );
 }
@@ -750,16 +760,22 @@ function ImageBlock({
  */
 function StepThumb({ image }: { image?: { src?: string; status?: string; caption?: string } }) {
   if (!image || image.status !== "done" || !image.src) return null;
+  /*
+   * **大きさは 変えない**（並びを 目で 追う ための 80px）。
+   * かわりに 押せば 全画面に なる ので、中の 字が 読める。
+   */
   return (
-    <Image
-      src={image.src}
-      alt=""
-      width={480}
-      height={480}
-      unoptimized
-      className="h-20 w-20 shrink-0 rounded-[14px] border-2 border-white object-cover sm:h-24 sm:w-24"
-      style={{ boxShadow: "0 3px 0 #b8deed" }}
-    />
+    <ZoomableImage label={image.caption} size="small" className="shrink-0">
+      <Image
+        src={image.src}
+        alt=""
+        width={480}
+        height={480}
+        unoptimized
+        className="h-20 w-20 rounded-[14px] border-2 border-white object-cover sm:h-24 sm:w-24"
+        style={{ boxShadow: "0 3px 0 #b8deed" }}
+      />
+    </ZoomableImage>
   );
 }
 

@@ -291,6 +291,40 @@ for (const { id, title, skitId } of STAGES) {
     }
   });
 
+  test(`報連相：${title} — 説明の 図が 大きく 出て、ひろげられる`, async ({ page, context }) => {
+    const article = pathsOf(id).find((item) => item.type === "article");
+    if (!article) return;
+    /*
+     * 関門を 開けるのは **この 記事の 手前まで**。ぜんぶ 済ませると
+     * 「ステージ クリア！」の お祝いが `fixed inset-0` で 前に 出て、
+     * **絵の クリックを 受け止めて しまう**（実際に これで 落ちた。絵の 側の 話では なかった）。
+     */
+    await seedAlmostDone(context, id, article.ref);
+    await open(page, article.path);
+
+    /*
+     * 2026-08-30 の 指定「説明用の画像が小さすぎて…ちゃんとわかるようにしてください」。
+     * 見張るのは 2つ:
+     *  - **説明の 図（size: "wide"）は 本文の 幅で 出る**。412px に 戻ったら 気づく
+     *  - **どの 絵も ひろげられる**（ふりがなの ような 小さい 字の 逃げ道）
+     * 場面の さし絵が 大きく なって いない ことも 同時に 見る——一律に 大きく すると
+     * 「7つ ある」の ような 並びが 目で 追えなく なる。
+     */
+    /*
+     * 狙うのは **本文の さし絵**（`figure` の 中）。表紙（hero）や 一覧の サムネイルは
+     * 置かれ方が ちがう ので、ここで まとめて 掴むと どれを 押したのかが 曖昧に なる。
+     */
+    const zoom = page.locator('figure button[aria-label*="ひろげて"]');
+    expect(await zoom.count()).toBeGreaterThan(0);
+
+    const target = zoom.first();
+    await target.scrollIntoViewIfNeeded();
+    await target.click();
+    await expect(page.locator(".fixed.inset-0").first()).toBeVisible();
+    await page.keyboard.press("Escape");
+    await expect(page.locator(".fixed.inset-0")).toHaveCount(0);
+  });
+
   test(`報連相：${title} — 裸の 漢字が 出て いない`, async ({ page, context }) => {
     /*
      * **順に 進んだ 学習者**として 見る。関門（🔒）が 閉じたままだと、教材の 代わりに

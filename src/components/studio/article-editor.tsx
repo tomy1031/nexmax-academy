@@ -198,6 +198,28 @@ function BlockEditor({
               onChange({ ...block, caption: caption.length > 0 ? caption : undefined })
             }
           />
+          {/*
+            大きさ。**既定は 小さめ**（絵が「見出し」に 見えないため）で、
+            中に 字の ある 説明の 図だけ「大きく」に する。
+            2026-08-30 の 指定「他の要素では小さくないといけない場合もあるので、
+            この時は大きくするような設定にしてください」。
+          */}
+          <label className="block">
+            <span className="text-ink-soft text-xs font-black">絵の 大きさ</span>
+            <select
+              value={block.size ?? "normal"}
+              onChange={(event) =>
+                onChange({
+                  ...block,
+                  size: event.target.value === "wide" ? "wide" : undefined,
+                })
+              }
+              className="border-hairline mt-1 w-full rounded-[12px] border-2 bg-white p-2 text-sm font-bold"
+            >
+              <option value="normal">ふつう（本文より 少し 小さく）</option>
+              <option value="wide">大きく（本文の 幅いっぱい・説明の 図むけ）</option>
+            </select>
+          </label>
         </div>
       );
 
