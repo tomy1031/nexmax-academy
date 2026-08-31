@@ -13,6 +13,7 @@ import { SpeakButton } from "@/components/meeting/speak-button";
 import { SpeechSpeedPicker } from "@/components/meeting/speech-speed-picker";
 import { dropJudgeSession, requestTalkTurn } from "@/components/meeting/judge-api";
 import { useLiveVoice } from "@/components/meeting/use-live-voice";
+import { useClipPlayer } from "@/components/meeting/use-clip-player";
 import type { Meeting } from "@/content/schema";
 import type { DictionaryEntry } from "@/lib/dictionary";
 import { getProfile } from "@/lib/profile";
@@ -21,6 +22,7 @@ import { bufferMeetingTurn, flushMeetingTurns } from "@/lib/meeting/log";
 import { fillName } from "@/lib/meeting/speech";
 import {
   DEFAULT_SPEED,
+  rateOf,
   readSpeechSpeed,
   readSpeechSpeedOnServer,
   saveSpeechSpeed,
@@ -115,6 +117,19 @@ type Phase = "lobby" | "host" | "me" | "thinking" | "feedback" | "review" | "cle
  * 置き場で、送るのは 話しきった とき 1回。学習者が **いま 見返す**ための 控えは
  * 別に 画面が 持つ——鍵の 無い 教室でも 同じ ように 見えなければ ならないから。
  */
+/**
+ * 社長が 1つ 話す ぶん。**字と 音を 一緒に 運ぶ**。
+ *
+ * 作り置きの 音（`talkGame.audio`）が ある セリフは その URL を 連れて 歩く——
+ * 列に 積む ときに しか どの セリフか 分からない ので、あとから 引き当てようと
+ * すると 文字列で 照合する ことに なる（`withName` を 通した あとは ずれる）。
+ * その場で AIが 作った ことばには 音が 無い（`audio` は 空）。
+ */
+interface Line {
+  readonly text: string;
+  readonly audio?: string;
+}
+
 interface TurnLog {
   /** そのとき 社長が 聞いた こと。 */
   readonly ask: string;
@@ -217,10 +232,15 @@ export function TalkGameSession({
   const game = meeting.talkGame;
   const learnerName = useSyncExternalStore(subscribeToProfile, readName, readNameOnServer);
   const voice = useLiveVoice();
+  /**
+   * 作り置きの 音を 鳴らす 係（ミーティングと 同じ 部品）。
+   * Live に つながって いなくても、教材の ことばは これで 声に なる。
+   */
+  const clip = useClipPlayer();
 
   const [phase, setPhase] = useState<Phase>("lobby");
   const [talk, setTalk] = useState<TalkState>(EMPTY_TALK);
-  const [queue, setQueue] = useState<readonly string[]>([]);
+  const [queue, setQueue] = useState<readonly Line[]>([]);
   /**
    * もう 出した 社長の ことば（**新しい ものが うしろ**）。
    *
@@ -228,7 +248,7 @@ export function TalkGameSession({
    * いた ころは、押し進めた ことばを **二度と 出せなかった**——聞きのがした 人は
    * ブラウザの 戻るしか 手が 無く、それは 進みごと 消える 操作に なる。
    */
-  const [spoken, setSpoken] = useState<readonly string[]>([]);
+  const [spoken, setSpoken] = useState<readonly Line[]>([]);
   /** これまでの 会話（画面の「これまでの 話」）。 */
   const [log, setLog] = useState<readonly TurnLog[]>([]);
   const [logOpen, setLogOpen] = useState(false);
@@ -287,6 +307,8 @@ export function TalkGameSession({
     readSpeechSpeed,
     readSpeechSpeedOnServer,
   );
+  /** 話す 速さ（作り置きの 音の 再生速度。声の 高さは 変えない）。 */
+  const speedRate = rateOf(speed ?? DEFAULT_SPEED);
 
   const plan: TalkPlan = useMemo(
     () => ({
@@ -329,7 +351,7 @@ export function TalkGameSession({
   const openerAt = useCallback((turns: number) => game?.openers[turns] ?? null, [game]);
 
   /** いま 出て いる 社長の ことば。 */
-  const line = queue[0] ?? "";
+  const line = queue[0]?.text ?? "";
 
   /*
    * 出て いる ことばを、声の 相手にも **そのまま** 言わせる。
@@ -338,17 +360,41 @@ export function TalkGameSession({
    */
   const control = voice.control;
   const spokenRef = useRef<string>("");
+  const clipPlay = clip.play;
+  const clipStop = clip.stop;
   useEffect(() => {
     if (phase !== "host" || !line) {
       // ばんが 変われば 読み上げの 覚えも 捨てる（もう一度 遊ぶ ときに 黙らない ように）
       spokenRef.current = "";
       return;
     }
-    if (voice.status !== "live") return;
     if (spokenRef.current === line) return;
+    /*
+     * **作り置きの 音が あれば それを 鳴らす**（2026-08-31 の 指定
+     *「開いた ときに 音声が 再生される ように して ください」）。
+     *
+     * これまでは 学習者が「🎤 スタート（マイクを つなぐ）」を 押して Live に
+     * つながるまで、社長は **一言も 声を 出さなかった**。鍵を 持たない 学習者は
+     * 最後まで 字だけ だった。教材が 先に 持って いる ことばは 音に して あるので、
+     * 「はじめる」を 押した その 場で 鳴らせる。
+     *
+     * ブラウザは **利用者が 触る 前の 音**を 止める。ロビーの ボタンが その 1回に
+     * あたる ので、ここから 先は 鳴る（断られても `useClipPlayer` が 黙って 諦める）。
+     */
+    const audio = queue[0]?.audio;
+    if (audio) {
+      spokenRef.current = line;
+      clipPlay(audio, speedRate);
+      return;
+    }
+    // 作り置きが 無い ことば（AIが その場で 作った もの）は Live に 読ませる
+    if (voice.status !== "live") return;
     spokenRef.current = line;
     control(readAloud(line));
-  }, [phase, line, voice.status, control]);
+  }, [phase, line, queue, voice.status, control, clipPlay, speedRate]);
+
+  /** 画面から 出る ときは 鳴って いる 音を 止める（次の 教材へ 声を 持ちこさない）。 */
+  useEffect(() => clipStop, [clipStop]);
 
   /** 立ち絵は ばんで 変える（考えて いる あいだは 「考え中」）。 */
   const figure = useMemo(() => {
@@ -365,10 +411,10 @@ export function TalkGameSession({
 
   /** つぎの ことばへ。ぜんぶ 出しきったら 学習者の ばん。 */
   const nextLine = useCallback(() => {
-    const said = queue[0] ?? "";
+    const said = queue[0];
     const rest = queue.slice(1);
     if (rest.length === 0) {
-      setAskText(said);
+      setAskText(said?.text ?? "");
       setPhase(ending ? "clear" : "me");
     }
     setQueue(rest);
@@ -388,8 +434,8 @@ export function TalkGameSession({
    * ぜんぶ もどりきったら、その 前に 出て いた 見かたの 板を もう一度 開く。
    */
   const backLine = useCallback(() => {
-    if (spoken.length > 0) {
-      const last = spoken[spoken.length - 1] ?? "";
+    const last = spoken[spoken.length - 1];
+    if (last) {
       setSpoken((before) => before.slice(0, -1));
       setQueue((before) => [last, ...before]);
       setPhase("host");
@@ -424,39 +470,67 @@ export function TalkGameSession({
     setPhase("lobby");
   }, []);
 
-  const start = useCallback(() => {
-    if (!game) return;
-    turnRef.current += 1;
-    const from = saved ?? EMPTY_TALK;
-    setTalk(from);
-    setResult(null);
-    setSpoken([]);
-    setLog([]);
-    setEnding(false);
-    setPhase("host");
-    /*
-     * つづきの ときは **いまの ばんの 出だし**から 話し直す。
-     * その場で AIが 作った 深掘りの しつもんは 残して いない——相手との つなぎは
-     * 切れて いる ので、同じ 会話には 戻らない（`src/lib/talkgame/resume.ts`）。
-     */
-    if (from.round === "listen") {
-      setAskFocus(undefined);
-      setAskFrom("");
-      setQueue([withName(game.listenInvite)]);
-    } else if (from.turns > 0) {
-      const opener = openerAt(from.turns);
-      const probe = game.probes[from.turns % Math.max(1, game.probes.length)] ?? "";
-      setAskFocus(opener?.focus);
-      setAskFrom(opener?.from ?? "");
-      setQueue([withName(opener?.ask ?? "") || withName(probe)]);
-    } else {
-      const opener = openerAt(0);
-      setAskFocus(opener?.focus);
-      setAskFrom(opener?.from ?? "");
-      setQueue([withName(game.opening), withName(opener?.ask ?? "")]);
-    }
-    recordContentProgress(meeting.id, { status: "started" });
-  }, [game, meeting.id, saved, withName, openerAt]);
+  /**
+   * セリフに 作り置きの 音を つける（`talkGame.audio` の 鍵で 引く）。
+   * 無ければ 音なし——その ときは これまでどおり Live の 声が 読む。
+   */
+  const lineOf = useCallback(
+    (text: string, key?: string): Line => ({
+      text,
+      audio: key ? (game?.audio?.[key] ?? undefined) : undefined,
+    }),
+    [game],
+  );
+
+  /**
+   * 話しはじめる。`fresh` なら **しおりを 捨てて はじめから**
+   *（2026-08-31 の 指定「『つづきから話す』だけでなく『はじめから』ボタンも」）。
+   */
+  const start = useCallback(
+    (fresh = false) => {
+      if (!game) return;
+      turnRef.current += 1;
+      if (fresh) clearTalkResume(meeting.id);
+      const from = fresh ? EMPTY_TALK : (saved ?? EMPTY_TALK);
+      setTalk(from);
+      setResult(null);
+      setSpoken([]);
+      setLog([]);
+      setEnding(false);
+      setPhase("host");
+      /*
+       * つづきの ときは **いまの ばんの 出だし**から 話し直す。
+       * その場で AIが 作った 深掘りの しつもんは 残して いない——相手との つなぎは
+       * 切れて いる ので、同じ 会話には 戻らない（`src/lib/talkgame/resume.ts`）。
+       */
+      if (from.round === "listen") {
+        setAskFocus(undefined);
+        setAskFrom("");
+        setQueue([lineOf(withName(game.listenInvite), "listenInvite")]);
+      } else if (from.turns > 0) {
+        const opener = openerAt(from.turns);
+        const at = from.turns % Math.max(1, game.probes.length);
+        const probe = game.probes[at] ?? "";
+        setAskFocus(opener?.focus);
+        setAskFrom(opener?.from ?? "");
+        setQueue([
+          opener?.ask
+            ? lineOf(withName(opener.ask), `opener-${from.turns}`)
+            : lineOf(withName(probe), `probe-${at}`),
+        ]);
+      } else {
+        const opener = openerAt(0);
+        setAskFocus(opener?.focus);
+        setAskFrom(opener?.from ?? "");
+        setQueue([
+          lineOf(withName(game.opening), "opening"),
+          lineOf(withName(opener?.ask ?? ""), "opener-0"),
+        ]);
+      }
+      recordContentProgress(meeting.id, { status: "started" });
+    },
+    [game, meeting.id, saved, withName, openerAt, lineOf],
+  );
 
   /**
    * 1つの 発話を 見る。こえでも 文字でも、ここを 通る。
@@ -580,20 +654,21 @@ export function TalkGameSession({
   /** 見かたを 読み終えたら、社長の ことばへ もどる。 */
   const afterFeedback = useCallback(() => {
     if (!game || !result) return;
-    const lines: string[] = [];
+    const lines: Line[] = [];
     /*
      * **返事が 先、しつもんは その あと**。ここを 1つの 列に 積んで 順に 出すので、
      * 学習者は「言った ことが 届いた」→「つぎを 聞かれる」の 2拍で 進む。
      * `result.reply` は `judge` で 必ず 中身が 入る（AIが 無い ときは `localReply`）。
      */
-    if (result.reply) lines.push(result.reply);
+    // 返事は **その場の ことば**なので 作り置きの 音は 無い（Live が 読む）
+    if (result.reply) lines.push({ text: result.reply });
     if (talk.round === "clear") {
-      lines.push(withName(game.reward));
+      lines.push(lineOf(withName(game.reward), "reward"));
       setEnding(true);
     } else if (talk.round === "listen") {
       setAskFocus(undefined);
       setAskFrom("");
-      lines.push(withName(game.listenInvite));
+      lines.push(lineOf(withName(game.listenInvite), "listenInvite"));
     } else {
       /*
        * **出だしの 2つは 教材が 決める**（2026-08-24 の 指定
@@ -608,7 +683,8 @@ export function TalkGameSession({
        * 6ターン目まで 出ず、深掘りの 順が くずれて いた（2026-08-24 の 検収指摘）。
        */
       const at = Math.max(0, talk.turns - game.openers.length);
-      const probe = game.probes[at % Math.max(1, game.probes.length)] ?? "";
+      const probeAt = at % Math.max(1, game.probes.length);
+      const probe = game.probes[probeAt] ?? "";
       /*
        * 出だしを 使いきった あとの 深掘りには **準備の 対応が 無い**。観点は
        * 共通の 表（`focus` を 渡さない）に 戻し、`from` も 空に する——
@@ -617,7 +693,13 @@ export function TalkGameSession({
        */
       setAskFocus(opener?.focus);
       setAskFrom(opener?.from ?? "");
-      lines.push(withName(opener?.ask ?? "") || result.nextAsk || withName(probe));
+      /*
+       * 出だしが あれば 作り置きの 音つき。AIの 深掘り（`nextAsk`）は その場の ことば
+       * なので 音は 無い。予備（`probe`）は 教材の ことばなので また 音つきに 戻る。
+       */
+      if (opener?.ask) lines.push(lineOf(withName(opener.ask), `opener-${talk.turns}`));
+      else if (result.nextAsk) lines.push({ text: result.nextAsk });
+      else if (probe) lines.push(lineOf(withName(probe), `probe-${probeAt}`));
     }
     /*
      * **`result` は 消さない**（2026-08-31 の 指定「戻る ボタン」）。消して いた ころは、
@@ -625,9 +707,9 @@ export function TalkGameSession({
      * ときに 上書きされる ので、残って いるのは いつも「ひとつ 前の 見かた」1つ だけ。
      */
     setSpoken([]);
-    setQueue(lines.filter((one) => one !== ""));
+    setQueue(lines.filter((one) => one.text !== ""));
     setPhase("host");
-  }, [game, result, talk.round, talk.turns, withName, openerAt]);
+  }, [game, result, talk.round, talk.turns, withName, openerAt, lineOf]);
 
   /*
    * ばんが 変わったら **黙って つなぎ直す**（指示文は つなぐ ときにしか 渡せない）。
@@ -664,10 +746,16 @@ export function TalkGameSession({
 
   useEffect(() => {
     if (phase !== "clear") return;
+    /*
+     * おわりの ひとことも 作り置きが ある（ミーティングと 同じ `closingAudioUrl`）。
+     * クリアの 画面は 字が 長い ので、ここで 鳴らないと **いちばん 読みでの ある ことば**
+     * だけ 声が つかない ことに なる。
+     */
+    if (meeting.closingAudioUrl) clipPlay(meeting.closingAudioUrl, speedRate);
     recordContentProgress(meeting.id, { status: "completed" });
     // 話しきった。ためた 会話は ここで **1回だけ** 送る（2026-08-28 の 指定）
     void flushMeetingTurns(meeting.id);
-  }, [phase, meeting.id]);
+  }, [phase, meeting.id, meeting.closingAudioUrl, clipPlay, speedRate]);
 
   /*
    * **しおりを 書く**（2026-08-21 の 指定「画面更新などした 場合でも 途中から」）。
@@ -730,7 +818,27 @@ export function TalkGameSession({
             onChange={(id: SpeechSpeedId) => saveSpeechSpeed(id)}
             tone="light"
           />
-          <button type="button" onClick={start} className="btn-game ml-auto rounded-full px-7 py-3">
+          {/*
+            **「はじめから」も 置く**（2026-08-31 の 指定）。しおりが あると
+            「つづきから」しか 無く、もう一度 はじめから 話したい 人は
+            **好感度が 残った 部屋に 座り直す**しか なかった。
+            消える ものが ある ので、目立たせるのは「つづきから」の ほう。
+          */}
+          {saved ? (
+            <button
+              type="button"
+              onClick={() => start(true)}
+              className="text-ink-soft ml-auto rounded-full border-2 px-5 py-3 text-sm font-black"
+              style={{ borderColor: "var(--color-hairline)" }}
+            >
+              はじめから
+            </button>
+          ) : null}
+          <button
+            type="button"
+            onClick={() => start()}
+            className={`btn-game rounded-full px-7 py-3 ${saved ? "" : "ml-auto"}`}
+          >
             {saved ? "つづきから 話す ▶" : "はじめる ▶"}
           </button>
         </div>

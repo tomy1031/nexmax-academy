@@ -65,9 +65,42 @@ const voice: string = existsSync(hostPath)
   ? (JSON.parse(readFileSync(hostPath, "utf8")).voice ?? "Puck")
   : "Puck";
 
-/** 読み上げる 文（しつもん ぜんぶ ＋ おわりの ひとこと）。並びは 画面に 出る 順。 */
+/**
+ * 読み上げる 文。並びは 画面に 出る 順。
+ *
+ * ## 対話ゲーム（`talkGame`）も 音に する（2026-08-31 の 指定
+ * 「松井社長の 用意された セリフは 全て 音声化して ください」）
+ *
+ * 教材が **先に 持って いる ことば**は ぜんぶ 対象に する——第一声・出だしの しつもん・
+ * 深掘りの 予備・聞く ばんの さそい・とっておきの 話・おわりの ひとこと。
+ *
+ * **その場で AIが 作る しつもんと 返事は 作り置きに できない**（毎回 ちがう ことば）。
+ * そこは これまでどおり Live の 声が 読む。鍵の 無い 学習者には 字だけ 出る。
+ */
+const talkGame = meeting.talkGame as
+  | {
+      opening?: string;
+      openers?: { ask?: string }[];
+      probes?: string[];
+      listenInvite?: string;
+      reward?: string;
+    }
+  | undefined;
+
 const lines: { key: string; text: string }[] = [
   ...meeting.questions.map((q: { id: string; ask: string }) => ({ key: q.id, text: q.ask })),
+  ...(talkGame
+    ? [
+        { key: "opening", text: talkGame.opening ?? "" },
+        ...(talkGame.openers ?? []).map((one, at) => ({
+          key: `opener-${at}`,
+          text: one?.ask ?? "",
+        })),
+        ...(talkGame.probes ?? []).map((text, at) => ({ key: `probe-${at}`, text })),
+        { key: "listenInvite", text: talkGame.listenInvite ?? "" },
+        { key: "reward", text: talkGame.reward ?? "" },
+      ]
+    : []),
   { key: "closing", text: meeting.closing },
 ].filter((line) => line.text?.trim());
 
@@ -338,6 +371,28 @@ async function main(): Promise<void> {
     urls[q.id] ? { ...q, audioUrl: urls[q.id] } : q,
   );
   if (urls.closing) meeting.closingAudioUrl = urls.closing;
+  /*
+   * 対話ゲームの ぶんは **1つの 台帳（`talkGame.audio`）**に まとめる。
+   * `probes` は ただの 文字列の 並びで、`opening` / `listenInvite` / `reward` は
+   * 1つずつ 別の 欄——欄ごとに `…AudioUrl` を 足すと 5種類 増える うえ、
+   * `probes` は 形ごと 変える ことに なる。鍵 → 音の URL の 対応表 1枚で 足りる。
+   */
+  if (meeting.talkGame) {
+    const keys = Object.keys(urls).filter(
+      (key) =>
+        key === "opening" ||
+        key === "listenInvite" ||
+        key === "reward" ||
+        key.startsWith("opener-") ||
+        key.startsWith("probe-"),
+    );
+    if (keys.length > 0) {
+      meeting.talkGame.audio = {
+        ...(meeting.talkGame.audio ?? {}),
+        ...Object.fromEntries(keys.map((key) => [key, urls[key]])),
+      };
+    }
+  }
   writeFileSync(meetingPath, `${JSON.stringify(meeting, null, 2)}\n`);
   console.log(
     `${meetingPath} に audioUrl を 書きました（声: ${voice}・${Object.keys(urls).length}/${lines.length}）`,
