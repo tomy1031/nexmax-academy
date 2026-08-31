@@ -871,7 +871,7 @@ function collectLabeledTexts(content: Content): LabeledText[] {
       if (content.talkGame) {
         const game = content.talkGame;
         push("talkGame.opening", game.opening);
-        game.openers.forEach((one, i) => push(`talkGame.openers[${i}]`, one));
+        game.openers.forEach((one, i) => push(`talkGame.openers[${i}].ask`, one.ask));
         game.probes.forEach((one, i) => push(`talkGame.probes[${i}]`, one));
         game.talkHints.forEach((one, i) => push(`talkGame.talkHints[${i}]`, one));
         push("talkGame.listenInvite", game.listenInvite);

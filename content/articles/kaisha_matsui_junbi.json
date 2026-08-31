@@ -2,7 +2,7 @@
   "kind": "article",
   "id": "kaisha_matsui_junbi",
   "title": "AI松井社長と 話す 準備を しよう",
-  "description": "調べた ことに、あなたの 考えを 足します。松井社長に 話す 5つの ことを 考えます。",
+  "description": "調べた ことに、あなたの 考えを 足します。松井社長に 話す 7つの ことを 考えます。",
   "furigana": [
     [
       "代表取締役社長",
@@ -1295,6 +1295,10 @@
     [
       "念",
       "ねん"
+    ],
+    [
+      "説明",
+      "せつめい"
     ]
   ],
   "blocks": [
@@ -1393,7 +1397,7 @@
     {
       "kind": "heading",
       "level": 2,
-      "text": "これから 考える 5つの こと"
+      "text": "これから 考える 7つの こと"
     },
     {
       "kind": "cards",
@@ -1446,12 +1450,22 @@
         },
         {
           "label": "5",
+          "title": "Japanese IT Pathway は どんな プログラム？",
+          "text": "あなたが 今 いる プログラムを、自分の ことばで 説明します。"
+        },
+        {
+          "label": "6",
+          "title": "日本に 行くまでに 何を がんばる？",
+          "text": "これから やりたい ことと、その りゆうを 考えます。"
+        },
+        {
+          "label": "7",
           "title": "松井社長に 何を 聞きたい？",
           "text": "Webサイトだけでは 分からない ことを 質問します。",
           "image": {
             "refs": [],
             "status": "done",
-            "src": "/img/articles/kaisha_matsui_junbi/j5.webp",
+            "src": "/img/articles/kaisha_matsui_junbi/j7.webp",
             "prompt": "card5: a Cambodian woman raises her hand to the president, her notebook filled with prepared questions. → scripts/images/kaisha_junbi_matsui.json"
           }
         }

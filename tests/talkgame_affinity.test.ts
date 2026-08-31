@@ -12,11 +12,14 @@ import {
   gainFor,
   normalizeTopic,
   pointsTable,
+  focusPoints,
+  ALWAYS_POINTS,
+  FOCUS_POINT,
   type TalkObservations,
   type TalkPlan,
   type TalkState,
 } from "../src/lib/talkgame/affinity";
-import { localObservations, localTopic } from "../src/lib/talkgame/local";
+import { localObservations, localReply, localTopic } from "../src/lib/talkgame/local";
 
 const PLAN: TalkPlan = { goal: 100, openAt: 60, findCount: 5 };
 
@@ -280,5 +283,83 @@ describe("鍵が 無い ときの 見かた", () => {
     expect(
       localTopic("talk", "かんこうDX が すき", localObservations("talk", "かんこうDX が すき")),
     ).toBe("かんこうDX が すき");
+  });
+});
+
+/**
+ * しつもんごとの 観点（2026-08-31 の 指定）
+ *
+ * ぜんぶ 同じ 表で 見て いた ころ、「あなたの いい ところは 何ですか」にも
+ * 会社の 中身（concrete）が +3% で かかって いた。聞いて いない ことで 点が 動くと、
+ * 学習者からは 採点の ものさしが 見えない。
+ */
+describe("しつもんごとの 見る ところ", () => {
+  it("えらんだ 観点だけが 点に なり、それ以外は 0 に なる", () => {
+    const table = focusPoints(["reason", "feeling"]);
+    expect(table.reason).toBe(FOCUS_POINT);
+    expect(table.feeling).toBe(FOCUS_POINT);
+    expect(table.concrete).toBe(0);
+    // いつも 見る ものは 消えない
+    expect(table.japanese).toBe(ALWAYS_POINTS.japanese);
+    expect(table.onTopic).toBe(ALWAYS_POINTS.onTopic);
+    expect(table.polite).toBe(ALWAYS_POINTS.polite);
+  });
+
+  it("聞いて いない ことを 空席に しない（内訳に 出さない）", () => {
+    const keys = breakdown("talk", PERFECT, ["reason", "feeling"]).map((row) => row.key);
+    expect(keys).not.toContain("concrete");
+    expect(keys).toContain("reason");
+    expect(keys).toContain("feeling");
+  });
+
+  it("会社の ことを 言わなくても、その しつもんの 満点に とどく", () => {
+    const noCompany: TalkObservations = { ...PERFECT, concrete: false };
+    const focus = ["reason", "feeling"] as const;
+    const rows = breakdown("talk", noCompany, focus);
+    const max = rows.reduce((sum, row) => sum + row.points, 0);
+    expect(gainFor("talk", noCompany, focus)).toBe(max);
+  });
+
+  it("観点を 渡さなければ、これまでの 共通の 表の まま", () => {
+    expect(pointsTable("talk")).toEqual(pointsTable("talk", []));
+    expect(gainFor("talk", PERFECT)).toBe(gainFor("talk", PERFECT, []));
+  });
+
+  it("1ターンの 最大は 12 を こえない（話す ばんを 出る ときの 見立てを 守る）", () => {
+    const table = focusPoints(["concrete", "reason"]);
+    const max = Object.values(table).reduce((sum, one) => sum + one, 0);
+    expect(max).toBeLessThanOrEqual(12);
+  });
+
+  it("好感度も その しつもんの 観点で 上がる", () => {
+    const noCompany: TalkObservations = { ...PERFECT, concrete: false };
+    const withFocus = applyTurn(EMPTY_TALK, PLAN, noCompany, null, ["reason", "feeling"]);
+    const shared = applyTurn(EMPTY_TALK, PLAN, noCompany, null);
+    // 共通の 表では concrete の 3% が 空席の まま。しつもんの 表では その席が 無い
+    expect(withFocus.gained).toBeGreaterThan(shared.gained);
+  });
+});
+
+/**
+ * AIに 通せない ときも、相手は 答えた ことに 何か 返す（2026-08-31 の 指摘
+ * 「判定画面ですぐに次の質問に行ってしまう」）。
+ */
+describe("見かたが 無い ときの 返事", () => {
+  it("どの ターンでも 空に ならない", () => {
+    for (let turn = 0; turn < 12; turn += 1) {
+      expect(localReply("talk", turn).trim()).not.toBe("");
+      expect(localReply("listen", turn).trim()).not.toBe("");
+    }
+  });
+
+  it("その場の 文なので 漢字を 使わない（ルビを 合成できない・規律2）", () => {
+    for (let turn = 0; turn < 12; turn += 1) {
+      expect(localReply("talk", turn)).not.toMatch(/[一-鿿々]/u);
+      expect(localReply("listen", turn)).not.toMatch(/[一-鿿々]/u);
+    }
+  });
+
+  it("同じ ことばを 続けて 言わない", () => {
+    expect(localReply("talk", 0)).not.toBe(localReply("talk", 1));
   });
 });

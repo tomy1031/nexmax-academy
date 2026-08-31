@@ -1,6 +1,6 @@
 {
   "refs": ["public/img/manga/hajimari_manga/p1c2.webp"],
-  "_comment": "ページ「AI松井社長と 話す 準備を しよう」の カード。学生だけが 出る 3枚（1・2・4）。\n\n**1枚ごとに 別の 学生・別の 部屋に する**（2026-08-28 の 指定「同じ女性を使いすぎ」「背景にもバリエーションが欲しい」）。だから **g1 を 参照に 渡さない** —— 渡すと 顔が そろって しまう。人物の 見た目は 場面の 文で 1枚ずつ 決める。そろえるのは **絵柄だけ**（参照は 人が 写って いない コマ 1枚）。\n\n生成 PNG は cwebp -q 84 で webp に して dest へ 置く。",
+  "_comment": "ページ「AI松井社長と 話す 準備を しよう」の カード。学生だけが 出る 5枚（1・2・4・5・6）。\n\n2026-08-31 に カードが 5枚→7枚に なった（準備フォームを 7問に して、社長の しつもんと 1対1 に そろえた）。\n**j5・j6 は まだ 生成して いない**——画面には 点線の 空わくが 出る（作り忘れを 見える ように する 決まり）。\n\n**1枚ごとに 別の 学生・別の 部屋に する**（2026-08-28 の 指定「同じ女性を使いすぎ」「背景にもバリエーションが欲しい」）。だから **g1 を 参照に 渡さない** —— 渡すと 顔が そろって しまう。人物の 見た目は 場面の 文で 1枚ずつ 決める。そろえるのは **絵柄だけ**（参照は 人が 写って いない コマ 1枚）。\n\n生成 PNG は cwebp -q 84 で webp に して dest へ 置く。",
   "style": "Style: warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, soft cel shading with gentle light, bright natural daylight. People are drawn as real human beings with natural proportions and warm friendly faces. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME.",
   "noText": "No text, no letters, no kanji, no kana, no numbers anywhere in the image. Screens, papers, whiteboards, books and signs carry only drawings, diagrams and soft abstract shapes — never readable characters. No watermark, no signature, no logo.",
   "negative": "Never: flat vector icon art, pictograms, infographic diagrams, symbols floating on an empty background, wide empty margins, minimalist clip-art, 3D render, photo realism, harsh gradients, readable letters or numbers, national flags, country outlines, maps with borders, dark or scary tone, angry or crying faces, extra fingers or limbs, robots, mascots. The reference image is ONLY a drawing-style guide — never copy its objects or its people into the scene.",
@@ -25,6 +25,20 @@
       "title": "4 カンボジアの いい ところは？（絵の 多い 資料で 教える）",
       "output": "Output: one square illustration, 1024x1024. Close view — the subject fills the frame edge to edge.",
       "scene": "Scene: a bright presentation room with a large wall screen and warm wooden furniture. THE PRESENTER is a Cambodian woman in her early twenties with long black hair in a single braid over one shoulder and a teal blouse, standing beside the screen with one open hand raised toward it, warmly explaining. The screen is FULL of drawings, not text: a row of young engineers smiling at slim laptops, a modern city of glass towers at sunrise, a busy open-air market with fruit stalls, and the silhouette of a five-tower stone temple among trees. On the table in front of three Japanese office workers lie open printed handouts, and their pages are also covered with drawings and simple bar-and-line charts — never letters or numbers. The listeners lean in, smiling and interested, one taking notes. Warm daylight from a side window, plants in the corner."
+    },
+    {
+      "out": "j5",
+      "dest": "public/img/articles/kaisha_matsui_junbi/j5.webp",
+      "title": "5 Japanese IT Pathway は どんな プログラム？（2年の 道のりを 説明する）",
+      "output": "Output: one square illustration, 1024x1024. Close view — the subject fills the frame edge to edge.",
+      "scene": "Scene: a bright university classroom with big windows and warm wooden desks. THE SPEAKER is a Cambodian man in his early twenties with a short buzz cut and a maroon polo shirt, standing at the front beside a whiteboard, one open hand held toward the board as he explains warmly to the viewer. Draw both hands carefully: exactly five fingers each, no tangled or merged fingers. The whiteboard carries ONLY simple DRAWINGS: a left half showing a student at a desk with an open notebook and a small speech bubble containing three soft brush strokes that look like handwriting practice, an arrow crossing to a right half showing the same student at a laptop with a simple diagram of connected dots and lines. Above the two halves are two small circles, the first empty and the second filled, suggesting a first year and a second year — never letters or numbers. Behind him, seated classmates of different builds and clothes listen and smile, one raising a hand. Late morning daylight, a potted plant by the window."
+    },
+    {
+      "out": "j6",
+      "dest": "public/img/articles/kaisha_matsui_junbi/j6.webp",
+      "title": "6 日本に 行くまでに 何を がんばる？（これからの ことを 思いえがく）",
+      "output": "Output: one square illustration, 1024x1024. Close view — the subject fills the frame edge to edge.",
+      "scene": "Scene: a quiet evening study corner at home, warm lamp light on a wooden desk by a window that shows a dark blue sky. THE STUDENT is a Cambodian woman in her early twenties with shoulder-length black hair pushed back by a simple headband and a soft cream cardigan, sitting upright at the desk with a pen in one relaxed hand, looking up and away with a calm hopeful smile as she imagines what is ahead. Draw both hands carefully: exactly five fingers each. On the desk are an open notebook filled with soft abstract handwriting strokes, a mug, and a closed laptop. Above her shoulder is ONE large rounded speech bubble filled with small simple DRAWINGS ONLY: a sunrise over a city of glass towers, a pair of shoes walking forward, a small open book, and a microphone with three soft sound arcs — pictures only, never letters or numbers. Warm indoor light against the cool night window."
     }
   ]
 }

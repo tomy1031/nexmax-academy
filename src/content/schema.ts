@@ -1734,6 +1734,42 @@ const meetingQuestionSchema = z.object({
  * 画面は `call-shell.tsx`（Zoom風の枠）を共有する。入室のノックから退出のお礼まで、
  * **Zoomの操作そのものにも慣れる**のがねらい。
  */
+/**
+ * 対話ゲームの「見る ところ」に えらべる 観点。
+ *
+ * いつも 見る もの（にほんご・かみ合い・ていねい）は ここに 入れない——
+ * どの しつもんでも 同じ ように 見る ものなので、教材ごとに 書き分ける ものが
+ * 無い（コードが 持つ: `src/lib/talkgame/affinity.ts` の `ALWAYS_POINTS`）。
+ * ここに 並ぶのは **しつもんによって 要る／要らないが 変わる もの**だけ。
+ */
+export const talkFocusKeys = ["concrete", "reason", "feeling"] as const;
+export type TalkFocusKey = (typeof talkFocusKeys)[number];
+
+/**
+ * 話す ばんの 出だしの しつもん 1本。
+ *
+ * 文字列で 書いても 読める（前からの 教材）。その ときの `focus` は
+ * 既定の 2つ（会社の 中身・りゆう）に なる——前と 同じ 見え方に なる ように。
+ */
+const talkOpener = z.preprocess(
+  (value) => (typeof value === "string" ? { ask: value } : value),
+  z.object({
+    /** 相手が 声に 出して 聞く 文。 */
+    ask: plainText,
+    /**
+     * 準備の フォーム（quizset）の 設問ID。無ければ「じゅんびに 無い しつもん」と 出す。
+     */
+    from: z.string().min(1).optional(),
+    /** この しつもんで とくに 見る ところ（1〜3つ）。 */
+    focus: z
+      .array(z.enum(talkFocusKeys))
+      .min(1)
+      .max(talkFocusKeys.length)
+      .default(["concrete", "reason"]),
+  }),
+);
+export type TalkOpener = z.infer<typeof talkOpener>;
+
 export const meetingSchema = z.object({
   kind: z.literal("meeting"),
   /**
@@ -1831,8 +1867,30 @@ export const meetingSchema = z.object({
       findCount: z.number().int().min(1).max(8).default(5),
       /** 相手の 第一声（画面に 出る）。 */
       opening: plainText,
-      /** 話す ばんの 出だしの しつもん（順に 出す）。 */
-      openers: z.array(plainText).min(1),
+      /**
+       * 話す ばんの 出だしの しつもん（順に 出す）。
+       *
+       * ## しつもんごとに「見る ところ」を 持つ（2026-08-31 の 指定）
+       * ぜんぶの しつもんを 同じ 観点で 見て いた ころ、「あなたの いい ところは
+       * 何ですか」にも **会社の 中身が 入って いるか（concrete）が +3%** で
+       * かかって いた——**その しつもんが 聞いて いない ことで 点が 動く**ので、
+       * 学習者からは 採点の ものさしが 見えない
+       *（2026-08-31「採点基準が不明確で嬉しい気持ちにならない」）。
+       *
+       * `focus` に 書いた ものだけが、その しつもんの 山場に なる。
+       * いつも 見る もの（にほんご・かみ合い・ていねい）は コードが 持つ
+       *（`src/lib/talkgame/affinity.ts`）ので ここには 書かない。
+       *
+       * ## `from` は 準備フォームとの 対応
+       * この しつもんが、準備の フォーム（quizset）の どの 設問で 書いた ことかを 指す。
+       * 画面が「じゅんびの ◯ で 書きましたね」と 出せる ように する ため。
+       * **対応の 無い しつもんを 相手に 言わせない**——準備して 来た ことと
+       * 聞かれる ことが ずれると、学習者は 何を 話せば よいのか 分からなく なる
+       *（2026-08-31「質問の内容が事前にまとめた内容と一致していない箇所があります」）。
+       *
+       * 前からの 教材（ただの 文字列の 並び）も そのまま 読める。
+       */
+      openers: z.array(talkOpener).min(1),
       /** 深掘りの 予備。AIの しつもんが 取れなかった ときに 画面が 出す。 */
       probes: z.array(plainText).default([]),
       /** 話す ばんの 型文（答え方の 足場）。 */
