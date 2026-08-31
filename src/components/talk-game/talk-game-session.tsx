@@ -143,6 +143,8 @@ interface TurnLog {
 
 interface TurnResult {
   observations: TalkObservations;
+  /** AIの 見かたに つなげたか（false なら 端末の 規則だけ）。 */
+  judged: boolean;
   /** その 発話を 見た ときに 効いて いた「見る ところ」（答える前の 予告と そろえる）。 */
   focus?: readonly TalkFocus[];
   gained: number;
@@ -614,6 +616,7 @@ export function TalkGameSession({
       setNote(answer.ok ? null : "AIの みかたが いま つかえません。すすみかたは おなじです。");
       setResult({
         observations,
+        judged: answer.ok,
         focus,
         gained: step.gained,
         lifted: step.lifted,
@@ -950,6 +953,7 @@ export function TalkGameSession({
           <TalkFeedback
             round={result.judgedAs}
             focus={result.focus}
+            judged={result.judged}
             observations={result.observations}
             gained={result.gained}
             lifted={result.lifted}
@@ -971,6 +975,7 @@ export function TalkGameSession({
           <TalkFeedback
             round={result.judgedAs}
             focus={result.focus}
+            judged={result.judged}
             observations={result.observations}
             gained={result.gained}
             lifted={result.lifted}

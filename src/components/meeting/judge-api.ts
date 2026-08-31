@@ -19,6 +19,7 @@ import {
   TALK_SYSTEM,
   TALK_TOOL,
   buildTalkPrompt,
+  dropUnreadableText,
   isKanaOnly as isTalkKanaOnly,
   parseTalk,
   type TalkContext,
@@ -170,9 +171,20 @@ async function askTalk(apiKey: string, key: string, context: TalkContext): Promi
       judgement = parseTalk(await session.ask(buildTalkPrompt(context, true)));
     }
     if (!judgement) return { ok: false, reason: "badShape" };
+    /*
+     * **2回 頼んでも 漢字が 残ったら、文だけ 落として 観点は 残す**（2026-08-31 の 指摘）。
+     *
+     * 前は ここで `kanaRetryFailed` を 返して **見かたを まるごと 捨てて** いた。
+     * 落ちた 先の 規則ベースは `concrete` を いつも false に する ので、
+     *「NMClaw が 先進的で いいと 思いました」が **会社の ことが 入って いる ✗ +0%**に なる。
+     * AIは 正しく 見て いたのに、**返事の 文に 漢字が あった**という 別の 理由で
+     * その 判断ごと 消えて いた（`先進的`・`業界`・`応用` は 一覧に 無い）。
+     *
+     * 観点は 真偽値で、漢字とは 関係が 無い。捨てる のは 読めない **文だけ**に する。
+     */
     if (!isTalkKanaOnly(judgement)) {
       dropSlot(SLOTS.talk);
-      return { ok: false, reason: "kanaRetryFailed" };
+      return { ok: true, judgement: dropUnreadableText(judgement), model: session.model };
     }
     return { ok: true, judgement, model: session.model };
   } catch (error) {

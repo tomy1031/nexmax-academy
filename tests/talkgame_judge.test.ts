@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   TALK_RESPONSE_SCHEMA,
   buildTalkPrompt,
+  dropUnreadableText,
   isKanaOnly,
   parseTalk,
   type TalkContext,
@@ -119,5 +120,45 @@ describe("受け取り", () => {
     expect(listen).toContain("本人に しか 聞けない しつもんも true");
     // 話す ばんには 出さない（そこは しつもんを する ばんでは ない）
     expect(buildTalkPrompt(CONTEXT)).not.toContain("本人に しか 聞けない");
+  });
+});
+
+/**
+ * 読めない 漢字が あっても **観点は 捨てない**（2026-08-31 の 指摘）
+ *
+ * 実際に 起きた かたち: 学習者が「NMClaw が 先進的で いいと 思いました。ホテル業界に
+ * 応用したら…」と 言う → AIは concrete も reason も true と 見る → ところが お手本の 文に
+ * `先進的`・`業界`・`応用` が 入り、どれも `AI_KANJI_WORDS` に 無い → かなの 検査に 落ちる →
+ * **見かたを まるごと 捨てて** 規則ベースへ → 規則は concrete を いつも false に する →
+ * 画面には「会社の ことが 入って いる ✗ +0%」。**名前を 名指して いるのに 0点**だった。
+ *
+ * 観点は 真偽値で 漢字とは 関係が 無い。落とすのは 学習者が 読む 文だけに する。
+ */
+describe("読めない 文だけ 落とす", () => {
+  const dirty = parseTalk({
+    ...RAW,
+    praise: "先進的な 発想ですね。",
+    exampleAnswer: "ホテル業界に 応用したいです。",
+    nextAsk: "どの 業界に 応用したいですか。",
+  })!;
+
+  it("観点は そのまま 残る（好感度が 消えない）", () => {
+    const clean = dropUnreadableText(dirty);
+    expect(clean.observations).toEqual(dirty.observations);
+    expect(clean.observations.concrete).toBe(true);
+  });
+
+  it("読めない 文は かなの 決まり文句か 空に なる", () => {
+    const clean = dropUnreadableText(dirty);
+    expect(isKanaOnly(clean)).toBe(true);
+    expect(clean.praise).not.toContain("先進的");
+    expect(clean.exampleAnswer).toBe("");
+    expect(clean.nextAsk).toBe("");
+  });
+
+  it("読める 文は さわらない", () => {
+    const ok = parseTalk({ ...RAW, praise: "上手に 言えました。" })!;
+    expect(dropUnreadableText(ok).praise).toBe("上手に 言えました。");
+    expect(dropUnreadableText(ok).reply).toBe(RAW.reply);
   });
 });

@@ -142,6 +142,39 @@ export function isKanaOnly(output: TalkOutput): boolean {
   return learnerFacingTexts(output).every((text) => usesOnlyAllowedKanji(text));
 }
 
+/**
+ * 読めない 漢字が 混ざった 文だけを 落とし、**観点は 残す**（2026-08-31 の 指摘）。
+ *
+ * ## なぜ 要るか
+ * 前は かなの 検査に 落ちた ときに **見かたを まるごと 捨てて** 規則ベースに 落ちて いた。
+ * ところが 規則ベースは `concrete` を **いつも false** に する（会社の 中身かは 規則では
+ * 判らない）ので、学習者の 画面には こう 出る:
+ *
+ *   「NMClaw が 先進的で いいと 思いました」→ 会社の ことが 入って いる ✗ +0%
+ *
+ * **名前を 名指して いるのに 0点**である。しかも 画面には 何の 断りも 出ない。
+ * AIは ちゃんと「入って いる」と 見て いたのに、**返事の 文に 漢字が あった**という
+ * 別の 理由で その 判断ごと 捨てられて いた——`先進的`・`業界`・`応用` は どれも
+ * `AI_KANJI_WORDS` に 無い（実際に 確かめた）。
+ *
+ * 観点は **真偽値**なので 漢字とは 関係が 無い。捨てる 理由が 無い。
+ * だから 落とすのは **学習者が 読む 文だけ**に して、そこは かなの 決まり文句へ 差しかえる。
+ * 好感度は AIの 見かたの まま 付く。
+ */
+export function dropUnreadableText(output: TalkJudgement): TalkJudgement {
+  const safe = (text: string, fallback: string) =>
+    text === "" || usesOnlyAllowedKanji(text) ? text : fallback;
+  return {
+    ...output,
+    reply: safe(output.reply, "なるほど。ありがとう ございます。"),
+    praise: safe(output.praise, "じぶんの ことばで いえましたね。"),
+    // 直す ところは **無理に 出さない**（読めない ものを 置きかえると 中身が 変わる）
+    fix: usesOnlyAllowedKanji(output.fix) ? output.fix : "",
+    exampleAnswer: safe(output.exampleAnswer, ""),
+    nextAsk: safe(output.nextAsk, ""),
+  };
+}
+
 /** 道具の 引数を 画面に 出せる 形に する。通らなければ null（呼ぶ側が 落とす）。 */
 export function parseTalk(raw: unknown): TalkJudgement | null {
   const parsed = talkOutputSchema.safeParse(raw);
