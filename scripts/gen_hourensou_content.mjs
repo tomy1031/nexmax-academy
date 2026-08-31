@@ -2070,7 +2070,7 @@ write(
         id: "k1_denwa",
         type: "choose",
         q: "奥田先輩に 相談したい ことが あります。先輩は いま、電話で 話して います。どう しますか。",
-        image: emptySlot("/img/quiz/soudan_kehai/k1_denwa.webp"),
+        image: img("/img/quiz/soudan_kehai/k1_denwa.webp"),
         options: [
           "🧍 机の 前に 立って、終わるまで じっと 待つ",
           "💬 あとで また 来る。急ぐ ときは チャットで 先に 送って おく",
@@ -2084,7 +2084,7 @@ write(
         id: "k2_shuuchuu",
         type: "emotion",
         q: "奥田先輩は ヘッドホンを して、画面に 顔を 近づけて、キーボードを 打ちつづけて います。いま、先輩は どんな 様子ですか。",
-        image: emptySlot("/img/quiz/soudan_kehai/k2_shuuchuu.webp"),
+        image: img("/img/quiz/soudan_kehai/k2_shuuchuu.webp"),
         feelings: [
           "🙂 ひまで、だれかと 話したい",
           "🎧 集中して いて、切られたくない",
@@ -2105,7 +2105,7 @@ write(
         id: "k3_hitoiki",
         type: "choose",
         q: "奥田先輩は お茶を 飲んで、のびを して います。いま、どう しますか。",
-        image: emptySlot("/img/quiz/soudan_kehai/k3_hitoiki.webp"),
+        image: img("/img/quiz/soudan_kehai/k3_hitoiki.webp"),
         options: [
           "🗣 「今、お時間 よろしいですか」と 声を かける",
           "🌙 休みが 終わるまで、夜まで 待つ",
@@ -2119,7 +2119,7 @@ write(
         id: "k4_komarigao",
         type: "emotion",
         q: "奥田先輩は 画面を 見ながら、困った 顔で うなって います。いま、先輩は どんな 気持ちだと 思いますか。",
-        image: emptySlot("/img/quiz/soudan_kehai/k4_komarigao.webp"),
+        image: img("/img/quiz/soudan_kehai/k4_komarigao.webp"),
         feelings: ["😄 仕事が 順調で、楽しい", "😖 何かに 困って いる", "😠 あなたに 怒って いる"],
         answerFeeling: 1,
         replyQ: "こんな とき、いちばん いい 声の かけ方は どれですか。",
@@ -2136,7 +2136,7 @@ write(
         id: "k5_isogu",
         type: "choose",
         q: "奥田先輩は ノートパソコンを かかえて、時計を 見ながら 急いで います。相談は 急ぎません。どう しますか。",
-        image: emptySlot("/img/quiz/soudan_kehai/k5_isogu.webp"),
+        image: img("/img/quiz/soudan_kehai/k5_isogu.webp"),
         options: [
           "🏃 歩きながら 相談を 始める",
           "🕒 「会議の あとに 5分 いただけますか」と 短く 伝える",
@@ -2150,7 +2150,7 @@ write(
         id: "k6_asa",
         type: "choose",
         q: "朝です。奥田先輩は 出社した ばかりで、かばんを 置いて、パソコンを つけて います。急がない 相談は、いつ 話しかけますか。",
-        image: emptySlot("/img/quiz/soudan_kehai/k6_asa.webp"),
+        image: img("/img/quiz/soudan_kehai/k6_asa.webp"),
         options: [
           "🎒 かばんを 置いた 瞬間に 話しかける",
           "☕ 先輩が メールと 予定を 見おわった ころに 声を かける",
@@ -2193,7 +2193,7 @@ write(
         panels: [
           {
             size: "normal",
-            image: emptySlot("/img/manga/renraku_manga/panel1.webp"),
+            image: img("/img/manga/renraku_manga/panel1.webp"),
             lines: [
               {
                 speaker: "narration",
@@ -2204,7 +2204,7 @@ write(
           },
           {
             size: "normal",
-            image: emptySlot("/img/manga/renraku_manga/panel2.webp"),
+            image: img("/img/manga/renraku_manga/panel2.webp"),
             lines: [
               { speaker: "nyam", text: "連絡は…… あとで いいか。" },
               { speaker: "narration", text: "ニャムさんは 連絡を あとまわしに しました。" },
@@ -2212,7 +2212,7 @@ write(
           },
           {
             size: "wide",
-            image: emptySlot("/img/manga/renraku_manga/panel3.webp"),
+            image: img("/img/manga/renraku_manga/panel3.webp"),
             lines: [
               {
                 speaker: "narration",
@@ -2227,7 +2227,7 @@ write(
         panels: [
           {
             size: "normal",
-            image: emptySlot("/img/manga/renraku_manga/panel4.webp"),
+            image: img("/img/manga/renraku_manga/panel4.webp"),
             lines: [
               {
                 speaker: "narration",
@@ -2238,7 +2238,7 @@ write(
           },
           {
             size: "normal",
-            image: emptySlot("/img/manga/renraku_manga/panel5.webp"),
+            image: img("/img/manga/renraku_manga/panel5.webp"),
             lines: [
               {
                 speaker: "hendy",
@@ -2248,7 +2248,7 @@ write(
           },
           {
             size: "wide",
-            image: emptySlot("/img/manga/renraku_manga/panel6.webp"),
+            image: img("/img/manga/renraku_manga/panel6.webp"),
             lines: [
               {
                 speaker: "nyam",
@@ -2265,7 +2265,7 @@ write(
         panels: [
           {
             size: "normal",
-            image: emptySlot("/img/manga/renraku_manga/panel7.webp"),
+            image: img("/img/manga/renraku_manga/panel7.webp"),
             lines: [
               {
                 speaker: "hendy",
@@ -2275,7 +2275,7 @@ write(
           },
           {
             size: "normal",
-            image: emptySlot("/img/manga/renraku_manga/panel8.webp"),
+            image: img("/img/manga/renraku_manga/panel8.webp"),
             lines: [
               {
                 speaker: "nyam",
@@ -2286,7 +2286,7 @@ write(
           },
           {
             size: "wide",
-            image: emptySlot("/img/manga/renraku_manga/panel9.webp"),
+            image: img("/img/manga/renraku_manga/panel9.webp"),
             lines: [
               {
                 speaker: "narration",
