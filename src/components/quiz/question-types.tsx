@@ -629,12 +629,12 @@ function FreeInput({
           こたえる
         </button>
       )}
-      <p className="text-ink-faint mt-2 text-xs font-bold">
-        <RubyText
-          text="ただしい こたえは ありません。思った ことを 書けば OK"
-          index={UI_FURIGANA}
-        />
-      </p>
+      {/*
+        ここに あった「ただしい こたえは ありません。思った ことを 書けば OK」は
+        **消した**（2026-08-30 の 指定「これは講師側が頭に入れる情報で生徒には不要」）。
+        自由入力に 正解が 無い ことは、下の 型文（`starter`）と ヒントが すでに 見せて いる。
+        ことばで 先回りせず、ゆるさは **動き**で 出す（AGENTS.md 規律1）。
+      */}
     </form>
   );
 }

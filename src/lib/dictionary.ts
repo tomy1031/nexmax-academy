@@ -140,6 +140,16 @@ export interface DictionaryMatch {
 }
 
 /**
+ * 名詞の あとに 来る 助詞・助動詞。ここが つづくなら 動詞の 活用では ない（「考えを」）。
+ *
+ * 「な」「よ」「さ」は **入れない**——「考えない」「考えよう」「考えさせる」に なるので、
+ * 名詞の しるしに ならない。
+ */
+const NOUN_PARTICLE = /[はがをにへとでものやかだ]/u;
+
+const HIRAGANA = /[ぁ-ゖー]/u;
+
+/**
  * わたした 文字列の 中から、辞書に 載って いる ことばを **ぜんぶ** 見つける。
  *
  * ## むかしは「1文につき 1語」だった
@@ -178,26 +188,53 @@ export function findDictionaryTerms(
    * まず この 文に 出て くる 語だけに しぼる。辞書は 600語 近く あるので、
    * 位置ごとに 全語を 見ると 走査が 文字数×語数に なる。
    */
-  const candidates: { entry: DictionaryEntry; surface: string }[] = [];
+  const candidates: { entry: DictionaryEntry; surface: string; stem: boolean }[] = [];
   for (const entry of entries) {
     if (text.includes(entry.term)) {
-      candidates.push({ entry, surface: entry.term });
+      candidates.push({ entry, surface: entry.term, stem: false });
       continue;
     }
     const stem = stemOf(entry.term);
-    if (stem && text.includes(stem)) candidates.push({ entry, surface: stem });
+    if (stem && text.includes(stem)) candidates.push({ entry, surface: stem, stem: true });
   }
   if (candidates.length === 0) return [];
   candidates.sort((a, b) => b.surface.length - a.surface.length);
 
+  /*
+   * 同じ ところに 同じ 長さで ぶつかった ときの 決め手。
+   *
+   * 名詞「考え」と 動詞「考える」の 語幹は **まったく 同じ ところ**に 当たるので、
+   * 長さだけでは 決まらず **辞書の 並び順で 決まって いた**（「考えます」の ふきだしに
+   * 名詞の「an idea」が 出て いた — 2026-08-30 の 指摘）。
+   * 語幹の 次の 1文字で 見分ける——送りがな（考え**ま**す）なら 動詞、
+   * 助詞（考え**を**）なら 名詞。助詞の ときは いちばん 弱く して、
+   * 言い切りの「考え」を **並び順に よらず** 勝たせる。
+   */
+  const VERB = 2;
+  const EXACT = 1;
+  const STEM_ONLY = 0;
+  const rankAt = (c: (typeof candidates)[number], at: number) => {
+    if (!c.stem) return EXACT;
+    const next = text[at + c.surface.length] ?? "";
+    return next !== "" && !NOUN_PARTICLE.test(next) && HIRAGANA.test(next) ? VERB : STEM_ONLY;
+  };
+
   const matches: DictionaryMatch[] = [];
   let i = 0;
   while (i < text.length) {
-    const hit = candidates.find(
-      (c) =>
-        text.startsWith(c.surface, i) &&
-        (!noCut || (!noCut.has(i) && !noCut.has(i + c.surface.length))),
-    );
+    let hit: (typeof candidates)[number] | null = null;
+    let hitRank = -1;
+    for (const c of candidates) {
+      // 長い順に 見て いるので、当たりより 短い ものは もう 勝てない
+      if (hit && c.surface.length < hit.surface.length) break;
+      if (!text.startsWith(c.surface, i)) continue;
+      if (noCut && (noCut.has(i) || noCut.has(i + c.surface.length))) continue;
+      const rank = rankAt(c, i);
+      if (!hit || rank > hitRank) {
+        hit = c;
+        hitRank = rank;
+      }
+    }
     if (!hit) {
       i += 1;
       continue;
