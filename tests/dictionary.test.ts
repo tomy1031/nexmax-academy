@@ -1,10 +1,11 @@
 import { describe, expect, it } from "vitest";
 import type { VocabBook, VocabWord, WordStage } from "../src/content/schema";
-import { buildDictionary, findDictionaryTerm, termOwners } from "../src/lib/dictionary";
+import { buildDictionary, findDictionaryTerms, termOwners } from "../src/lib/dictionary";
+import { buildFuriganaIndex, rubyInnerPositions, uncoveredKanji } from "../src/lib/text/furigana";
 
 /**
  * 辞書は **ことばの 正**から 引く。単語テストの セットは
- * 「○○で あそぶ」の リンクを 出すためだけに 見る（2026-08-25 の指定
+ * 「○○の 単語テスト」の リンクを 出すためだけに 見る（2026-08-25 の指定
  * 「ポップアップ＝単語テストではない。ポップアップの中から単語テストに出る問題がある」）。
  */
 
@@ -101,27 +102,76 @@ describe("buildDictionary", () => {
   });
 });
 
-describe("findDictionaryTerm", () => {
+describe("findDictionaryTerms", () => {
   const dictionary = buildDictionary([
     book([vocab("報告", "ほうこく"), vocab("報告書", "ほうこくしょ"), vocab("会議", "かいぎ")]),
   ]);
 
-  it("1文につき1語だけ返す", () => {
-    expect(findDictionaryTerm("会議で 報告を します。", dictionary)).not.toBeNull();
+  const terms = (text: string) => findDictionaryTerms(text, dictionary).map((m) => m.entry.term);
+
+  /*
+   * **1文の 中の 当たった ことばを ぜんぶ 返す**（2026-08-31 に 決まりを 書きかえた）。
+   * 前は 1文につき 1語だけで、むずかしい 語が かたまった 文では
+   * 辞書に 載って いるのに 引けない 語が 残って いた。
+   */
+  it("1文の 中の ことばを ぜんぶ 返す", () => {
+    expect(terms("会議で 報告を します。")).toEqual(["会議", "報告"]);
+  });
+
+  it("同じ 語が 2回 出たら 2回とも 返す", () => {
+    expect(terms("報告の あとで、もう 一度 報告を します。")).toEqual(["報告", "報告"]);
   });
 
   it("長い語を優先する（「報告書」があるのに「報告」を取らない）", () => {
-    expect(findDictionaryTerm("報告書を 出します。", dictionary)?.entry.term).toBe("報告書");
+    expect(terms("報告書を 出します。")).toEqual(["報告書"]);
   });
 
-  it("同じ長さなら 文の先頭に近いほう", () => {
-    expect(findDictionaryTerm("会議の あとで 報告を します。", dictionary)?.entry.term).toBe(
-      "会議",
-    );
+  it("出て きた 順に 返す（重なりは 出ない）", () => {
+    const found = findDictionaryTerms("会議の あとで 報告を します。", dictionary);
+    expect(found.map((m) => m.at)).toEqual([0, 8]);
+    expect(found[0]?.entry.term).toBe("会議");
   });
 
-  it("載っていない文は null", () => {
-    expect(findDictionaryTerm("きょうは いい てんきです。", dictionary)).toBeNull();
+  it("載っていない文は 空", () => {
+    expect(findDictionaryTerms("きょうは いい てんきです。", dictionary)).toEqual([]);
+  });
+
+  /*
+   * **名詞と 動詞が 同じ 形で ぶつかる とき**（「考え」と「考える」の 語幹）は、
+   * 次の 1文字で 見分ける。並び順で 決まって いた ころ、「考えます」の ふきだしに
+   * 名詞の 意味が 出て いた（2026-08-30 の 指摘「これの意味は think で『考える』」）。
+   */
+  describe("「考え」と「考える」が ぶつかる とき", () => {
+    const both = buildDictionary([
+      book([vocab("考え", "かんがえ"), vocab("考える", "かんがえる")]),
+    ]);
+    const first = (text: string, dict = both) => findDictionaryTerms(text, dict)[0];
+
+    it("送りがなが つづくなら 動詞（考えます）", () => {
+      expect(first("どう 思ったかを 考えます。")?.entry.term).toBe("考える");
+    });
+
+    it("助詞が つづくなら 名詞（考えを）", () => {
+      expect(first("あなたの 考えを 話します。")?.entry.term).toBe("考え");
+    });
+
+    it("言い切りの 形は そのまま 動詞", () => {
+      expect(first("これから 考える 5つの こと")?.entry.term).toBe("考える");
+    });
+
+    /*
+     * 並び順で 決まって いない ことを 見る。動詞だけを 強く すると、名詞側は
+     * 「たまたま 先に 並んで いる」から 当たって いる だけに なる。
+     */
+    it("辞書の 並び順が 逆でも 同じ 答えに なる", () => {
+      const flipped = [...both].reverse();
+      expect(first("どう 思ったかを 考えます。", flipped)?.entry.term).toBe("考える");
+      expect(first("あなたの 考えを 話します。", flipped)?.entry.term).toBe("考え");
+    });
+
+    it("下線は 語幹の ぶんだけ（「考えま」まで 伸びない）", () => {
+      expect(first("どう 思ったかを 考えます。")?.length).toBe("考え".length);
+    });
   });
 
   /*
@@ -147,7 +197,7 @@ describe("findDictionaryTerm", () => {
         ],
       },
     ]);
-    const hit = findDictionaryTerm("答えを 見つけた ときは、手を あげて ください。", verbs);
+    const hit = findDictionaryTerms("答えを 見つけた ときは、手を あげて ください。", verbs)[0];
     expect(hit?.entry.term).toBe("見つける");
     expect(hit?.length).toBe("見つけ".length);
   });
@@ -169,8 +219,8 @@ describe("findDictionaryTerm", () => {
         ],
       },
     ]);
-    expect(findDictionaryTerm("知識が ふえました。", verbs)).toBeNull();
-    expect(findDictionaryTerm("会社を 知る ことが 大切です。", verbs)?.entry.term).toBe("知る");
+    expect(findDictionaryTerms("知識が ふえました。", verbs)).toEqual([]);
+    expect(findDictionaryTerms("会社を 知る ことが 大切です。", verbs)[0]?.entry.term).toBe("知る");
   });
 });
 
@@ -180,5 +230,44 @@ describe("termOwners", () => {
     expect(owners.get("報告")).toBe("1課の ことば");
     expect(owners.get("納期")).toBe("2課の ことば");
     expect(owners.has("見積")).toBe(false);
+  });
+});
+
+/*
+ * **ルビの ことばを 切らない**（2026-08-31 の 実発生）。
+ * 当たった ところで 文字列を 切るので、ルビの ことばの 途中で 切ると
+ * 切れた 側が 読み辞書に 当たらず 裸の 漢字に なる。
+ * 「お客様」の 中の「様」だけが 辞書に あると「お客」＋「様」に 割れ、
+ * 「客」の ルビが 消えた（`hourensou.spec` が 見つけた）。
+ */
+describe("findDictionaryTerms — ルビの ことばは 切らない", () => {
+  const dictionary = buildDictionary([book([vocab("様", "さま"), vocab("直接", "ちょくせつ")])]);
+  const text = "お客様と 直接 話します。";
+  /* 読み辞書は **漢字の 位置でしか 引かない**ので、見出しは「客様」（お は 入れない）。 */
+  const index = buildFuriganaIndex([
+    ["客様", "きゃくさま"],
+    ["直接", "ちょくせつ"],
+    ["話", "はな"],
+  ]);
+
+  it("何も 渡さなければ ルビの 中でも 切る（前の ふるまい）", () => {
+    expect(findDictionaryTerms(text, dictionary).map((m) => m.entry.term)).toEqual(["様", "直接"]);
+  });
+
+  it("noCut を 渡すと ルビの 内側では 当てない", () => {
+    const found = findDictionaryTerms(text, dictionary, rubyInnerPositions(text, index));
+    expect(found.map((m) => m.entry.term)).toEqual(["直接"]);
+  });
+
+  it("切ったあとの 地の文に 裸の 漢字が 残らない", () => {
+    const found = findDictionaryTerms(text, dictionary, rubyInnerPositions(text, index));
+    let cursor = 0;
+    const plain: string[] = [];
+    for (const { at, length } of found) {
+      if (at > cursor) plain.push(text.slice(cursor, at));
+      cursor = at + length;
+    }
+    if (cursor < text.length) plain.push(text.slice(cursor));
+    expect(plain.flatMap((part) => uncoveredKanji(part, index))).toEqual([]);
   });
 });

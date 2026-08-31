@@ -1068,6 +1068,7 @@ export const RESERVED_STAGE_IDS = [
   "talk",
   "tutorial",
   "welcome",
+  "wordtest",
 ] as const;
 
 export const stageSchema = z.object({
@@ -1970,6 +1971,42 @@ const meetingQuestionSchema = z.object({
  * 画面は `call-shell.tsx`（Zoom風の枠）を共有する。入室のノックから退出のお礼まで、
  * **Zoomの操作そのものにも慣れる**のがねらい。
  */
+/**
+ * 対話ゲームの「見る ところ」に えらべる 観点。
+ *
+ * いつも 見る もの（にほんご・かみ合い・ていねい）は ここに 入れない——
+ * どの しつもんでも 同じ ように 見る ものなので、教材ごとに 書き分ける ものが
+ * 無い（コードが 持つ: `src/lib/talkgame/affinity.ts` の `ALWAYS_POINTS`）。
+ * ここに 並ぶのは **しつもんによって 要る／要らないが 変わる もの**だけ。
+ */
+export const talkFocusKeys = ["concrete", "reason", "feeling"] as const;
+export type TalkFocusKey = (typeof talkFocusKeys)[number];
+
+/**
+ * 話す ばんの 出だしの しつもん 1本。
+ *
+ * 文字列で 書いても 読める（前からの 教材）。その ときの `focus` は
+ * 既定の 2つ（会社の 中身・りゆう）に なる——前と 同じ 見え方に なる ように。
+ */
+const talkOpener = z.preprocess(
+  (value) => (typeof value === "string" ? { ask: value } : value),
+  z.object({
+    /** 相手が 声に 出して 聞く 文。 */
+    ask: plainText,
+    /**
+     * 準備の フォーム（quizset）の 設問ID。無ければ「じゅんびに 無い しつもん」と 出す。
+     */
+    from: z.string().min(1).optional(),
+    /** この しつもんで とくに 見る ところ（1〜3つ）。 */
+    focus: z
+      .array(z.enum(talkFocusKeys))
+      .min(1)
+      .max(talkFocusKeys.length)
+      .default(["concrete", "reason"]),
+  }),
+);
+export type TalkOpener = z.infer<typeof talkOpener>;
+
 export const meetingSchema = z.object({
   kind: z.literal("meeting"),
   /**
@@ -2045,8 +2082,7 @@ export const meetingSchema = z.object({
    * データから 読めなく なる。
    *
    * ## しつもんは データに 全部 書かない
-   * 出だしだけ データが 持ち、**深掘りは その場で AI が 作る**
-   *（「おもしろい」を 5つ 見つけるまで 聞く、という 2026-08-24 の 指定）。
+   * 出だしだけ データが 持ち、**深掘りは その場で AI が 作る**。
    * 学習者が 何を おもしろいと 言うかは 先に 書けないので、書けるのは
    * 「どこから 始めるか」と「どこで 終わるか」だけ。
    */
@@ -2057,18 +2093,43 @@ export const meetingSchema = z.object({
       /**
        * 「聞く ばん」が 開く ところ（%）。**2つの 役**を 持つ。
        *
-       * - ここに とどいたら、見つける 数に 足りて いなくても 聞く ばんへ 移る
+       * - ここに とどいたら 聞く ばんへ 移る
        *   （2026-08-24 の 指定「一定数の 好感度を 得たら、そこから 逆に 学生が 質問する」）
-       * - 見つける ものを 見つけて 移る ときの **底上げ先**。上手で なくても
+       * - 深掘りの 上限で 移る ときの **底上げ先**。上手で なくても
        *   話しきれば ここに 立てる（設計01 P8）
+       *
+       * **ばんが 変わる 引き金は これ 1つ**（2026-08-31 に「おもしろいメーター」を
+       * 廃止した）。前は「おもしろい を n個 見つけたら」も 引き金だった が、
+       * その 札は AIが 漢字まじりの ラベルを 返すと 立たない ので、**鍵の ある 教室では
+       * ほとんど 数えられて いなかった**——見えない ところで 進み方が 変わって いた。
        */
       openAt: z.number().int().min(10).max(95).default(60),
-      /** 話す ばんで 見つける「おもしろい」の 数。 */
-      findCount: z.number().int().min(1).max(8).default(5),
       /** 相手の 第一声（画面に 出る）。 */
       opening: plainText,
-      /** 話す ばんの 出だしの しつもん（順に 出す）。 */
-      openers: z.array(plainText).min(1),
+      /**
+       * 話す ばんの 出だしの しつもん（順に 出す）。
+       *
+       * ## しつもんごとに「見る ところ」を 持つ（2026-08-31 の 指定）
+       * ぜんぶの しつもんを 同じ 観点で 見て いた ころ、「あなたの いい ところは
+       * 何ですか」にも **会社の 中身が 入って いるか（concrete）が +3%** で
+       * かかって いた——**その しつもんが 聞いて いない ことで 点が 動く**ので、
+       * 学習者からは 採点の ものさしが 見えない
+       *（2026-08-31「採点基準が不明確で嬉しい気持ちにならない」）。
+       *
+       * `focus` に 書いた ものだけが、その しつもんの 山場に なる。
+       * いつも 見る もの（にほんご・かみ合い・ていねい）は コードが 持つ
+       *（`src/lib/talkgame/affinity.ts`）ので ここには 書かない。
+       *
+       * ## `from` は 準備フォームとの 対応
+       * この しつもんが、準備の フォーム（quizset）の どの 設問で 書いた ことかを 指す。
+       * 画面が「じゅんびの ◯ で 書きましたね」と 出せる ように する ため。
+       * **対応の 無い しつもんを 相手に 言わせない**——準備して 来た ことと
+       * 聞かれる ことが ずれると、学習者は 何を 話せば よいのか 分からなく なる
+       *（2026-08-31「質問の内容が事前にまとめた内容と一致していない箇所があります」）。
+       *
+       * 前からの 教材（ただの 文字列の 並び）も そのまま 読める。
+       */
+      openers: z.array(talkOpener).min(1),
       /** 深掘りの 予備。AIの しつもんが 取れなかった ときに 画面が 出す。 */
       probes: z.array(plainText).default([]),
       /** 話す ばんの 型文（答え方の 足場）。 */
@@ -2082,6 +2143,24 @@ export const meetingSchema = z.object({
       listenHints: z.array(plainText).default([]),
       /** 満タンで 相手が 話す「とっておきの 話」（報酬は 物語 — 設計01 P2×P7）。 */
       reward: plainText,
+      /**
+       * 作り置きの 音（セリフの 鍵 → `/audio/...` の URL）。2026-08-31 の 指定
+       *「松井社長の 用意された セリフは 全て 音声化して ください」。
+       *
+       * 鍵は `opening` / `opener-<n>` / `probe-<n>` / `listenInvite` / `reward`。
+       * 作るのは `scripts/make_meeting_audio.ts`（鍵が 要るので ふだんは Actions で 回す）。
+       *
+       * ## なぜ 欄ごとの `audioUrl` に しないか
+       * ミーティングの しつもんは 1つずつ オブジェクトなので `audioUrl` を 生やせる。
+       * こちらは `probes` が **ただの 文字列の 並び**で、`opening` / `listenInvite` /
+       * `reward` も 1つずつ 別の 欄——欄ごとに 足すと 5種類 増える うえ、`probes` は
+       * 形ごと 変える ことに なる。**鍵 → URL の 対応表 1枚**で 足りる。
+       *
+       * ## 作り置きに できない ものが ある
+       * その場で AIが 作る 深掘りの しつもんと 返事は 毎回 ちがう ので、ここには 入らない。
+       * そこは これまでどおり Live の 声が 読む（鍵の 無い 学習者には 字だけ 出る）。
+       */
+      audio: z.record(z.string(), z.string()).default({}),
       /** 画面の 背景（`/img/...`）。 */
       background: z.string().min(1),
       /** 相手の 立ち絵。気もちで 差しかえる。 */

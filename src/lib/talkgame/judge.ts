@@ -42,8 +42,6 @@ export const talkOutputSchema = z.object({
   polite: z.boolean(),
   /** しつもんの 形に なって いる（聞く ばんで 見る）。 */
   question: z.boolean(),
-  /** 学習者が 言った「おもしろい ところ」の 短い ラベル。無ければ 空。 */
-  topic: z.string(),
   /** 相手（松井社長）の 返事。2文まで。 */
   reply: z.string().min(1),
   /** できた ことを 1つ。 */
@@ -77,10 +75,6 @@ export const TALK_RESPONSE_SCHEMA = {
     feeling: { type: "BOOLEAN", description: "自分の 気もち・考えが 入って いるか" },
     polite: { type: "BOOLEAN", description: "ですます形で ていねいに 言えて いるか" },
     question: { type: "BOOLEAN", description: "しつもんの 形に なって いるか" },
-    topic: {
-      type: "STRING",
-      description: "学生が 言った「おもしろい ところ」を 3〜10字の ラベルで。無ければ 空文字",
-    },
     reply: { type: "STRING", description: "社長の 返事。かなだけ。2文まで" },
     praise: { type: "STRING", description: "できた ことを 1つ。かなだけ" },
     fix: { type: "STRING", description: "直す ところを 1つだけ。かなだけ。無ければ 空文字" },
@@ -104,7 +98,6 @@ export const TALK_RESPONSE_SCHEMA = {
     "feeling",
     "polite",
     "question",
-    "topic",
     "reply",
     "praise",
     "fix",
@@ -134,7 +127,7 @@ export const TALK_SYSTEM = [
   "日本で はたらきたい 学生（日本語N5〜N4・英語は読める）の れんしゅうを 見ます。",
   "学生の ことばが とどいたら、かならず 1回だけ 道具 taiwa_no_mikata を 呼びます。",
   "声では 返事を しません（道具を 呼ぶだけ）。",
-  "学生が 読む 文（reply・praise・fix・exampleAnswer・nextAsk・topic）は ひらがなと カタカナだけで",
+  "学生が 読む 文（reply・praise・fix・exampleAnswer・nextAsk）は ひらがなと カタカナだけで",
   "書きます。漢字は 1文字も つかいません。ことばの あいだに 空白を 入れます。",
 ].join("\n");
 
@@ -149,27 +142,37 @@ export function isKanaOnly(output: TalkOutput): boolean {
   return learnerFacingTexts(output).every((text) => usesOnlyAllowedKanji(text));
 }
 
-/** 札の ラベルの 長さの 上限（これを 越えると 画面で 「…」に 切られる）。 */
-export const MAX_TOPIC = 12;
-
 /**
- * 札の ラベルを 使える 形に する。使えなければ 空文字（＝この ばんでは 見つけない）。
+ * 読めない 漢字が 混ざった 文だけを 落とし、**観点は 残す**（2026-08-31 の 指摘）。
  *
- * ## なぜ 指示だけでは 足りないか（2026-08-27 の 実機検証）
- * 指示には「3〜10字の ラベル。ひらがな・カタカナ・英字だけ。会社の 中身を 言えて
- * いない ときは 空文字」と 書いて ある。それでも 相手は
- * **「私は チームで 話す こ…」と 発話を まるごと 入れて 返した**。
- * 好感度の 記録に 残る 札に 漢字の 文が 入り、画面では 途中で 切られ、
- * しかも それが 3つめの「おもしろい」に 数えられて **ごほうびが 早く 出た**。
+ * ## なぜ 要るか
+ * 前は かなの 検査に 落ちた ときに **見かたを まるごと 捨てて** 規則ベースに 落ちて いた。
+ * ところが 規則ベースは `concrete` を **いつも false** に する（会社の 中身かは 規則では
+ * 判らない）ので、学習者の 画面には こう 出る:
  *
- * 札は **ルビの 索引を 持ち歩かない**（動的な 文なので ふりがなを 合成できない）。
- * つまり 漢字が 1文字でも 入ったら、その 時点で 学習者が 読めない。
- * ものさしを 指示だけに 置かない——`concrete` の ときと 同じ 学びである。
+ *   「NMClaw が 先進的で いいと 思いました」→ 会社の ことが 入って いる ✗ +0%
+ *
+ * **名前を 名指して いるのに 0点**である。しかも 画面には 何の 断りも 出ない。
+ * AIは ちゃんと「入って いる」と 見て いたのに、**返事の 文に 漢字が あった**という
+ * 別の 理由で その 判断ごと 捨てられて いた——`先進的`・`業界`・`応用` は どれも
+ * `AI_KANJI_WORDS` に 無い（実際に 確かめた）。
+ *
+ * 観点は **真偽値**なので 漢字とは 関係が 無い。捨てる 理由が 無い。
+ * だから 落とすのは **学習者が 読む 文だけ**に して、そこは かなの 決まり文句へ 差しかえる。
+ * 好感度は AIの 見かたの まま 付く。
  */
-export function cleanTopic(topic: string): string {
-  const trimmed = topic.trim();
-  if (trimmed === "" || trimmed.length > MAX_TOPIC) return "";
-  return /[一-鿿々]/u.test(trimmed) ? "" : trimmed;
+export function dropUnreadableText(output: TalkJudgement): TalkJudgement {
+  const safe = (text: string, fallback: string) =>
+    text === "" || usesOnlyAllowedKanji(text) ? text : fallback;
+  return {
+    ...output,
+    reply: safe(output.reply, "なるほど。ありがとう ございます。"),
+    praise: safe(output.praise, "じぶんの ことばで いえましたね。"),
+    // 直す ところは **無理に 出さない**（読めない ものを 置きかえると 中身が 変わる）
+    fix: usesOnlyAllowedKanji(output.fix) ? output.fix : "",
+    exampleAnswer: safe(output.exampleAnswer, ""),
+    nextAsk: safe(output.nextAsk, ""),
+  };
 }
 
 /** 道具の 引数を 画面に 出せる 形に する。通らなければ null（呼ぶ側が 落とす）。 */
@@ -179,7 +182,6 @@ export function parseTalk(raw: unknown): TalkJudgement | null {
   const data = parsed.data;
   return {
     ...data,
-    topic: cleanTopic(data.topic),
     v: 1,
     observations: {
       japanese: data.language === "ja",
@@ -208,11 +210,25 @@ export interface TalkContext {
   learnerName: string;
   /** 学習者の 発話。 */
   utterance: string;
-  /** これまでに 見つけた「おもしろい」。同じ ものを 2回 数えない ため。 */
-  found: readonly string[];
-  /** あと いくつ 見つけるか。 */
-  remaining: number;
+  /**
+   * この しつもんで **とくに 見る ところ**（2026-08-31 の 指定）。
+   *
+   * 画面は これを 答える 前に 学習者へ 予告し、好感度も これで 計算する。
+   * ここへも 渡さないと、**ほめる ところ（praise）と 直す ところ（fix）だけが
+   * 別の ものさしで 書かれる**——「会社の ことを 言いましょう」と 言われた のに
+   * その 観点は 点に なって いない、という ずれに なる。
+   *
+   * 空（`undefined`）は これまでどおり ぜんぶ の 観点で 見る。
+   */
+  focus?: readonly ("concrete" | "reason" | "feeling")[];
 }
+
+/** 観点の 呼び名（指示文に 出す）。 */
+const FOCUS_NAMES: Readonly<Record<"concrete" | "reason" | "feeling", string>> = {
+  concrete: "concrete（会社の 中身）",
+  reason: "reason（りゆう）",
+  feeling: "feeling（気もち・考え）",
+};
 
 /**
  * 見かたの 指示文。
@@ -239,10 +255,6 @@ export function buildTalkPrompt(context: TalkContext, kanaRetry = false): string
     context.ask,
     "## 画面が 見せて いる 型文",
     context.hint,
-    context.found.length > 0
-      ? `## もう 見つかった「おもしろい」（同じ ものは topic に 書かない）\n${context.found.join("、")}`
-      : "",
-    listen ? "" : `## あと ${context.remaining}つ 見つけたい`,
     "",
     "## 学習者",
     `呼び名: ${context.learnerName || "（未設定）"}`,
@@ -253,6 +265,15 @@ export function buildTalkPrompt(context: TalkContext, kanaRetry = false): string
     "UTTERANCE>>>",
     "",
     "## 観点（ここが 好感度に なります。見た まま 正直に）",
+    /*
+     * **この しつもんの 山場を 先に 言う**（2026-08-31 の 指定）。観点は ぜんぶ 返させる
+     *（好感度の 計算は 画面が する）が、ほめる ところと 直す ところは
+     * 山場に そろえないと、**画面が 予告した ものさしと 言われる ことが ずれる**。
+     */
+    context.focus && context.focus.length > 0 && !listen
+      ? `この しつもんで とくに 見るのは ${context.focus.map((key) => FOCUS_NAMES[key]).join(" と ")} です。` +
+        "praise と fix は この 2つに そろえて ください。ほかの 観点は 見た まま 返すだけで かまいません。"
+      : "",
     "- onTopic: いま 聞かれた ことに かみ合って いる。ことばが 少ない・形が くずれて いる",
     "  ことを りゆうに false に しないで ください",
     /*
@@ -303,13 +324,6 @@ export function buildTalkPrompt(context: TalkContext, kanaRetry = false): string
     "## 返す もの",
     "- language: 発話の ことば。日本語なら ja、英語 en、クメール語 km、まじり mixed、空 none",
     listen
-      ? "- topic: 空文字（この ばんでは 使いません）"
-      : "- topic: 学生が 言った「おもしろい ところ」を 3〜10字の ラベルに して 書きます。" +
-        "**新しい もの だけ**（上の「もう 見つかった」と 同じ 中身なら 空文字）。" +
-        "会社の 中身を 言えて いない ときも 空文字。" +
-        "ラベルは **ひらがな・カタカナ・英字だけ**で 書きます" +
-        "（漢字は つかいません。れい: かんこうDX、NMClaw、ベトナムの かいしゃ）",
-    listen
       ? "- reply: 社長の 答え。学生の しつもんを 一度 受け取って から、みじかく 答えます。2文まで"
       : "- reply: 社長の 返事。学生の ことばを 一度 受け取って から よろこびます。2文まで",
     "- praise: できた ことを 1つ。**学生が じっさいに 言った こと だけ**を 書きます",
@@ -327,9 +341,7 @@ export function buildTalkPrompt(context: TalkContext, kanaRetry = false): string
     /*
      * 漢字は **一覧の ことばだけ**（2026-08-25 の 指定）。同じ 一覧から ルビの 索引を
      * 作るので、画面に 出る 漢字には かならず ふりがなが 付く（`src/lib/ai-kanji.ts`）。
-     * ただし `topic`（札の ラベル）は これまでどおり かなと 英字だけ——
-     * 札は 好感度の 記録に 残る 短い ことばで、ルビの 索引を 持ち歩かない。
-     */
+     * */
     "学生が 読む 文（reply・praise・fix・exampleAnswer・nextAsk）に つかえる 漢字は",
     `**つぎの ことばだけ**です: ${AI_KANJI_WORDS.join("・")}`,
     "この 一覧に 無い ことばは ひらがなで 書きます。",

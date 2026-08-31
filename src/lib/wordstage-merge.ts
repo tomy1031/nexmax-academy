@@ -6,8 +6,14 @@
  * 「ITと ビジネス、どっちを やるか」の 判断は 学習では ない。
  *
  * 2026-08-25（願い #203）に **セット名（`label`）**が 入った。初級・中級のように
- * **先生が 名前を 付けた** グループは、学習者から 見ても 別の ものなので **分けて 出す**。
- * 名前が 無い ものは これまでどおり 1つに まとめる（intro の 2本は そのまま）。
+ * 先生が 名前を 付けた グループは、学習者から 見ても 別の ものなので 分けて 出す。
+ *
+ * 2026-08-31（願い #280）に **どこで 分けるか**を 決めた。分かれ目は 二段:
+ *
+ *  1. **一段目（ステージトップ・`/wordtest` の 一覧）は 1ステージ 1行**
+ *     （`stageWordStage`）。「会社を 知る」が 3行 ならぶと えらべない。
+ *  2. **二段目（`/wordtest/<ステージID>`）で 初級・中級・上級を えらぶ**
+ *     （`stageWordSets`）。「会社を知るを選ぶと、初級・中級・上級が選択できる」
  *
  *  - 見出しは **ステージの 名前 そのもの**にそろえる（「はじめに の ことば」は 冗長）。
  *    セット名は 見出しの 横に 別で 出す（`label` を そのまま 運ぶ）。
@@ -45,7 +51,7 @@ function entries(...sources: (readonly FuriganaEntry[] | undefined)[]): [string,
  *
  * - 見出しは **ステージの 名前**。よみは ステージの `reading` を 読み辞書に 足して 出す
  *   （名前に 漢字が あっても 裸に しない — 規律2）
- * - `id` は **1つのときは その 単語ステージのまま**（これまでの `/arcade/<単語ステージID>`
+ * - `id` は **1つのときは その 単語ステージのまま**（これまでの `/wordtest/<単語ステージID>`
  *   と 進み具合の 保存キーを 変えない）。2つ以上を まとめた ときだけ ステージの id を 使う
  * - ことばは **同じ表記なら 先に 出たほうが 勝つ**（`src/lib/dictionary.ts` と同じ規則。
  *   説明が 2つ 育つのを 避ける）
@@ -120,12 +126,17 @@ function withStageTitle(stage: StageHead, part: WordStage): WordStage {
 }
 
 /**
- * ステージの ことばを、学習者に 出す **セットの ならび**に する。
+ * ステージの ことばを、**中に 入って から えらぶ セットの ならび**に する。
+ *
+ * ここが 出すのは **入った あとの 二段目**である（願い #280 の 直し・2026-08-31）。
+ * ステージトップと `/wordtest` の 一覧は 1ステージ 1行（`stageWordStage`）で、
+ * その 行を 押した 先が この ならび——「会社を 知る を えらぶと、
+ * 初級・中級・上級が えらべる」。
  *
  * - **セット名（`label`）の ある もの**は 1本ずつ 別の セット（初級・中級…）。
  *   ならびは `wordStageIds` の 順（先生が スタジオで 並べた 順が そのまま 出る）。
- * - **名前の 無い もの**は これまでどおり 1つに まとめ、その **最初の 出どころの
- *   位置**に 置く。名前の 無い ものしか 無ければ、返るのは 1本だけ（今までと 同じ）。
+ * - **名前の 無い もの**は 1つに まとめ、その **最初の 出どころの 位置**に 置く。
+ *   名前の 無い ものしか 無ければ 返るのは 1本だけ＝えらぶ 画面を はさまない。
  */
 export function stageWordSets(stage: StageHead, parts: readonly WordStage[]): WordStage[] {
   if (parts.length === 0) return [];
@@ -155,21 +166,46 @@ export function stageWordSets(stage: StageHead, parts: readonly WordStage[]): Wo
 }
 
 /**
- * 学習者に 見せる ことばの 一覧。
+ * 一覧の 1行（**一段目**）。中に セットが 1つ以上 入って いる。
  *
- * ことばアーケードを 単独で 開いた ときの 一覧は、ステージの 名前で 並ぶ
- *（同じ ことばが 2つの 名前で 出るのを 防ぐ）。名前の 付いた セットが あれば
- * その ぶんだけ ならぶ。どの ステージにも 付いて いない 単語ステージは、
- * そのまま 後ろに 置く——先生が 作った ものを 消さない
- *（複数の ステージから 語を 集めた「中間テスト対策」の セットも ここに 出る）。
+ * ことばを 積まないのは **一覧の 重さ**のため。行に 要るのは 見出しと 数だけで、
+ * ことばそのものは セット側（`sets`）に 1回 あれば よい。授業では 20人が
+ * 同時に この 画面を 開く（docs/deploy.md §0.7）。
  */
-export function learnerWordStages(
+export interface WordGroupHead {
+  /** 押した 先の URL の 1段目（`/wordtest/<id>`）。 */
+  id: string;
+  title: string;
+  furigana?: readonly FuriganaEntry[];
+  /** そのステージの ことば 全部の 数（セットを 足した 数）。 */
+  wordCount: number;
+  passRate: number;
+  /** 中の セット（`stageWordSets` の ならび）。1つなら えらぶ 画面を はさまない。 */
+  setIds: readonly string[];
+  /** セットが 1つで、そこに 名前が ある ときだけ 出る 札。 */
+  label?: string;
+}
+
+/**
+ * 学習者に 見せる ことばの 一覧 — **一段目（行）と 二段目（セット）を 一度に**。
+ *
+ * - `heads` は **1ステージ 1行**（願い #280）。初級・中級・上級が ぶら下がって
+ *   いても、ここに 出るのは「会社を 知る」1行だけ——同じ ステージが 何行も
+ *   ならぶと、どれを やれば いいのか 学習者には 決められない。
+ * - `sets` は その 行を 押した 先で えらぶ もの（`stageWordSets`）。
+ *
+ * どの ステージにも 付いて いない 単語ステージは、そのまま 後ろに 1行 置く——
+ * 先生が 作った ものを 消さない（複数の ステージから 語を 集めた
+ *「中間テスト対策」の セットも ここに 出る）。
+ */
+export function learnerWordGroups(
   stages: readonly StageWithWords[],
   wordStages: readonly WordStage[],
-): WordStage[] {
+): { heads: WordGroupHead[]; sets: WordStage[] } {
   const byId = new Map(wordStages.map((stage) => [stage.id, stage]));
   const used = new Set<string>();
-  const out: WordStage[] = [];
+  const heads: WordGroupHead[] = [];
+  const sets: WordStage[] = [];
 
   for (const stage of stages) {
     const parts = stage.wordStageIds
@@ -177,24 +213,49 @@ export function learnerWordStages(
       .filter((part): part is WordStage => part !== undefined);
     if (parts.length === 0) continue;
     parts.forEach((part) => used.add(part.id));
-    out.push(...stageWordSets(stage, parts));
+
+    const merged = stageWordStage(stage, parts);
+    if (!merged) continue;
+    const stageSets = stageWordSets(stage, parts);
+    sets.push(...stageSets);
+    heads.push({
+      id: merged.id,
+      title: merged.title,
+      // 行に 要るのは 見出しの ルビだけ。ことば 152語ぶんの 読み辞書は 運ばない
+      furigana: entries(stage.furigana, [[stage.title, stage.reading]]),
+      wordCount: merged.words.length,
+      passRate: merged.passRate,
+      setIds: stageSets.map((set) => set.id),
+      ...(stageSets.length === 1 && stageSets[0]!.label ? { label: stageSets[0]!.label } : {}),
+    });
   }
 
   for (const stage of wordStages) {
-    if (!used.has(stage.id)) out.push(stage);
+    if (used.has(stage.id)) continue;
+    sets.push(stage);
+    heads.push({
+      id: stage.id,
+      title: stage.title,
+      furigana: stage.furigana,
+      wordCount: stage.words.length,
+      passRate: stage.passRate,
+      setIds: [stage.id],
+      ...(stage.label ? { label: stage.label } : {}),
+    });
   }
-  return out;
+
+  return { heads, sets };
 }
 
 /**
  * その ことばを 持って いる ステージ。どこにも 付いて いなければ null。
  *
- * ことばアーケードから **来た ステージへ 戻る**ために 使う。URLの 1段目は
+ * 単語テストから **来た ステージへ 戻る**ために 使う。URLの 1段目は
  * ステージID の ことも 単語ステージID の ことも あるので（`findLearnerWordStage`
  * と 同じ）、どちらでも 引けるように 両方を 見る。
  *
  * 戻り先を クエリ（`?from=`）で 運ばないのは、**URLを 覚えた 学習者**にも
- * 同じ 戻り道を 出すため——`/arcade/<id>` を そのまま 開いても、その ことばが
+ * 同じ 戻り道を 出すため——`/wordtest/<id>` を そのまま 開いても、その ことばが
  * どの ステージの ものかは データから 分かる。
  */
 export function wordStageOwner<T extends StageWithWords>(
@@ -208,9 +269,9 @@ export function wordStageOwner<T extends StageWithWords>(
  * URLの1段目（ステージID でも 単語ステージID でも よい）から、
  * 学習者に 出す ことばの セットを 引く。
  *
- *  - **ステージID**（`/arcade/kaisha`）→ その ステージの セット **ぜんぶ**。
+ *  - **ステージID**（`/wordtest/kaisha`）→ その ステージの セット **ぜんぶ**。
  *    2つ以上 返ったら、開いた 先で「どれを やるか」を えらんで もらう。
- *  - **単語ステージID**（`/arcade/stage23_kaisha`）→ それが 入って いる セット **1つ**。
+ *  - **単語ステージID**（`/wordtest/stage23_kaisha`）→ それが 入って いる セット **1つ**。
  *    名前の 無い ものを 名指しされた ときは、まとまった ほうを 返す
  *    （古い リンクを 切らない）。
  */

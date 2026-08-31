@@ -3,6 +3,24 @@ import { join } from "node:path";
 import { expect, test } from "@playwright/test";
 
 /**
+ * 会社を知る の ことば — **一段目は 1行、二段目で 初級・中級・上級**（願い #280）
+ *
+ * ユーザーの ことば（2026-08-31）:
+ *   「初級・中級・上級などのセットのものは一つにまとめてください（会社を知る、報連相：連絡）」
+ *   →「会社を知るを選ぶと、初級・中級・上級が選択できるようにしてください。
+ *      まとめるの伝え方が悪かったです」
+ *
+ * つまり **まとめるのは 一覧の 行**で、セットを 消す ことでは ない。
+ *
+ * 見るのは 5つ:
+ *  - ステージトップの ことばの 行が **1つ**（初級・中級・上級が 3行 ならばない）
+ *  - `/wordtest/kaisha` は **えらぶ 画面**で、セットが ぜんぶ ならぶ
+ *  - `/wordtest` の 一覧も 1ステージ 1行。押すと えらぶ 画面へ 移る
+ *  - 名前が 変わる 前の URL（`/arcade/...`）が 同じ ところへ つながる
+ *  - **センテンスの セットが 遊べる**（長い ひとことでも 画面から はみ出さない）
+ */
+
+/**
  * セットの 数は **教材から 読む**（画面の 数字を ベタ書きしない）。
  * 先生が セットを 足しても 減らしても、この 検査は そのまま 生きる。
  */
@@ -10,46 +28,66 @@ const STAGE = JSON.parse(
   readFileSync(join(__dirname, "..", "..", "content", "stages", "kaisha.json"), "utf8"),
 ) as { wordStageIds: string[] };
 
-/**
- * 会社を知る の ことば — **セットに 分かれて いる**（願い #203）
- *
- * 見るのは 4つ:
- *  - ステージトップに セットが **ぜんぶ 行で ならぶ**（初級・中級・上級）
- *  - まなびマップの 札と ステージトップの 行き先が **同じ**（/arcade/kaisha）
- *  - `/arcade/kaisha` は **えらぶ 画面**から 始まる
- *  - **センテンスの セットが 遊べる**（長い ひとことでも 画面から はみ出さない）
- */
-
-test("ステージトップに セットが ぜんぶ ならぶ", async ({ page }) => {
+test("ステージトップの ことばは 1行だけ（行き先は ステージID）", async ({ page }) => {
   await page.goto("/kaisha");
 
-  const cards = page.locator('a[href^="/arcade/"]');
-  await expect(cards).toHaveCount(STAGE.wordStageIds.length);
-  await expect(cards.first()).toHaveAttribute("href", `/arcade/${STAGE.wordStageIds[0]}`);
-  await expect(cards.last()).toHaveAttribute(
-    "href",
-    `/arcade/${STAGE.wordStageIds[STAGE.wordStageIds.length - 1]}`,
-  );
+  const cards = page.locator('a[href^="/wordtest/"]');
+  await expect(cards).toHaveCount(1);
+  await expect(cards.first()).toHaveAttribute("href", "/wordtest/kaisha");
 
-  /*
-   * 札の 字は **セット名＋その セットの 見出し**（同じ 名前が 何行も ならばない）。
-   * 見出しには ルビが 合成される ので、字の 間に よみが 入る——
-   * `toContainText` で 通しの 字を 見ずに、目じるしの ことばだけを 見る。
-   */
-  await expect(cards.first()).toContainText("初級");
-  await expect(cards.last()).toContainText("上級");
+  // セット名の 札（初級・中級・上級）は ここには 出ない——えらぶのは 押した 先
+  for (const label of ["初級", "中級", "上級"]) {
+    await expect(cards.first()).not.toContainText(label);
+  }
 });
 
-test("ステージIDで 開くと セットを えらぶ 画面に なる", async ({ page }) => {
-  await page.goto("/arcade/kaisha");
+/**
+ * セット名の 札は ルビが 合成される ので、字は「初しょ級きゅう」と つながる。
+ * `"初級"` の ベタ一致では 引けない——あいだを ゆるく 見る
+ *（同じ わなを `docs/skills/browser_e2e_verification.md` に 書いて ある）。
+ */
+const LEVELS = [/初.*級/, /中.*級/, /上.*級/];
 
+async function expectSetChooser(page: import("@playwright/test").Page) {
   await expect(page.getByRole("heading", { name: "ことばの セットを えらぶ" })).toBeVisible();
   // ならぶ 数は ステージが 持って いる セットの 数
   await expect(page.getByText(/ことば \d+こ ／ 合格 \d+%/)).toHaveCount(STAGE.wordStageIds.length);
+  for (const level of LEVELS) {
+    await expect(page.getByRole("button", { name: level })).toHaveCount(1);
+  }
+}
+
+test("ステージIDで 開くと セットを えらぶ 画面に なる", async ({ page }) => {
+  await page.goto("/wordtest/kaisha");
+  await expectSetChooser(page);
+});
+
+test("一覧の「会社を 知る」を 押すと、初級・中級・上級が 出る", async ({ page }) => {
+  await page.goto("/wordtest");
+
+  /*
+   * 一覧は 1ステージ 1行。見出しには ルビが 合成される ので、
+   * 通しの 字では 引けない——目じるしの ことばだけを 見る。
+   */
+  const rows = page.getByRole("button", { name: /会社/ });
+  await expect(rows).toHaveCount(1);
+  await rows.first().click();
+
+  // えらぶ 画面は **同じ ページの 中**で 開く（一覧へ 1歩で 戻れる）
+  await expect(page).toHaveURL(/\/wordtest$/);
+  await expectSetChooser(page);
+});
+
+test("名前が 変わる 前の URL も 同じ ところへ つながる", async ({ page }) => {
+  await page.goto("/arcade/kaisha");
+  await expect(page).toHaveURL(/\/wordtest\/kaisha$/);
+
+  await page.goto("/arcade");
+  await expect(page).toHaveURL(/\/wordtest$/);
 });
 
 test("センテンスの セットが 遊べて、長い ひとことが 画面に 収まる", async ({ page }) => {
-  await page.goto("/arcade/stage23_kaisha_jokyu");
+  await page.goto("/wordtest/stage23_kaisha_jokyu");
 
   await page.getByRole("button", { name: /もんだいだけ/ }).click();
   await expect(page.getByText("英語の 意味を えらぼう！")).toBeVisible({ timeout: 20_000 });

@@ -36,11 +36,11 @@ export function ArcadeResult({
   onRetryWrong: () => void;
   onBack: () => void;
   /**
-   * ことばアーケードから 出る 道。ステージから 来た ときだけ 渡る
+   * 単語テストから 出る 道。ステージから 来た ときだけ 渡る
    *（arcade-game.tsx の `backTo`）。
    *
    * ここが いちばん 「つぎへ 行きたい」瞬間なのに、出口が 無かった——
-   * けっか →「あそびかたを えらぶ」→ 一覧 → マップ と 3回 押して、
+   * けっか →「やりかたを えらぶ」→ 一覧 → マップ と 3回 押して、
    * さらに 地図の 上から 元の ステージを 探し直す ことに なっていた。
    */
   onLeave?: () => void;
@@ -56,7 +56,7 @@ export function ArcadeResult({
         **合格か 不合格かを 先に、はっきり 出す**（2026-08-26 の 指摘5）。
         前は テストのときだけ「合格！」で、外れたときは「ここまで すすんだね」——
         OKなのか NGなのかが 分からず、それが いちばんの ストレスだった。
-        いまは **どの あそびかたでも 同じ 出しかた**（⭕/❌ の 記号＋ことば）。
+        いまは **どの やりかたでも 同じ 出しかた**（⭕/❌ の 記号＋ことば）。
       */}
       <div className="flex items-center gap-4">
         <NexMax variant={summary.passed ? "cheer" : "guide"} size={84} bob />
@@ -160,7 +160,7 @@ export function ArcadeResult({
           いちばん 大きく 出て いた。次の 一手は「まちがえた ことばだけ」。
         */}
         {/*
-          行き先は **この ことばの あそびかた選び**（れんしゅう／テスト／
+          行き先は **この ことばの やりかた選び**（れんしゅう／テスト／
           フラッシュカード…）で、ステージ選びでは ない。札が「ステージを えらぶ」
           だったので、押した学習者は 出口の つもりで 同じ ことばの 画面に 戻っていた。
         */}
@@ -170,7 +170,7 @@ export function ArcadeResult({
           className="btn-island btn-game px-6 py-3 text-base"
           style={{ "--btn-face": "#4fa8e8", "--btn-shadow": "#0272ae" } as React.CSSProperties}
         >
-          ← あそびかたを えらぶ
+          ← やりかたを えらぶ
         </button>
         {onLeave && (
           <button

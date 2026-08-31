@@ -17,7 +17,7 @@
  *
  * ## 話しきれば 必ず 満タン（`liftTo`）
  * 上手な 人は **少ない ターンで** 満タンに なる。そうで ない 人も、
- * 見つける ものを 見つけ、聞く ばんを 話しきれば 満タンに なる——
+ * 聞く ばんを 話しきれば 満タンに なる——
  * ここが 崩れると、いちばん 助けが 要る 学習者だけが 100% に 届かない。
  * 差は「速さ」に 出て、「届く／届かない」には 出さない。
  */
@@ -89,6 +89,51 @@ export const TALK_POINTS: Readonly<Record<keyof TalkObservations, number>> = {
   question: 0,
 };
 
+/**
+ * どの しつもんでも 同じ ように 見る もの（話す ばん）。
+ *
+ * 日本語で 声を 出した・聞かれた ことに かみ合って いる・ていねいに 言えた——
+ * この 3つは しつもんの 中身と 関係なく 成り立つ ので、教材には 書かせない。
+ */
+export const ALWAYS_POINTS: Readonly<Record<keyof TalkObservations, number>> = {
+  japanese: 2,
+  onTopic: 2,
+  concrete: 0,
+  reason: 0,
+  feeling: 0,
+  polite: 1,
+  question: 0,
+};
+
+/** しつもんが えらんだ「見る ところ」1つぶんの 点（%）。 */
+export const FOCUS_POINT = 3;
+
+/** しつもんごとに えらべる 観点（`talkFocusKeys` と 同じ 並び）。 */
+export type TalkFocus = "concrete" | "reason" | "feeling";
+
+/**
+ * しつもん 1本ぶんの 点表を 作る（2026-08-31 の 指定「質問ごとに 評価する 観点」）。
+ *
+ * ## なぜ しつもんごとに 変えるか
+ * ぜんぶ 同じ 表で 見て いた ころ、「あなたの いい ところは 何ですか」にも
+ * **会社の 中身（concrete）が +3%** で かかって いた。その しつもんは 会社の ことを
+ * 聞いて いないのに、言わなければ 3% ぶん 空席に なる——学習者から すると
+ * 「同じ ように 答えたのに 点が ちがう」に なり、ものさしが 見えない。
+ *
+ * 山場（`focus`）は どれも 同じ 重さ（`FOCUS_POINT`）に する。重みまで 教材ごとに
+ * 動かせる ように すると、しつもんを 1本 足すたびに 満タンまでの 道のりが 黙って 変わる。
+ *
+ * 1ターンの 最大は `2+2+1+3+3 = 11`（`focus` が 2つの とき）。話す ばんを 出る ときの
+ * 好感度が `openAt + 11` を 超えない、という `applyTurn` の 見立ては そのまま 保たれる。
+ */
+export function focusPoints(
+  focus: readonly TalkFocus[],
+): Readonly<Record<keyof TalkObservations, number>> {
+  const table = { ...ALWAYS_POINTS };
+  for (const key of focus) table[key] = FOCUS_POINT;
+  return table;
+}
+
 export const LISTEN_POINTS: Readonly<Record<keyof TalkObservations, number>> = {
   japanese: 1,
   onTopic: 3,
@@ -112,14 +157,29 @@ export function clampPercent(value: number, goal: number): number {
   return Math.max(0, Math.min(goal, Math.round(value)));
 }
 
-/** その ばんの 観点表。 */
-export function pointsTable(round: TalkRound): Readonly<Record<keyof TalkObservations, number>> {
-  return round === "listen" ? LISTEN_POINTS : TALK_POINTS;
+/**
+ * その ばんの 観点表。
+ *
+ * 話す ばんで しつもんが「見る ところ」を 持って いれば、その しつもんの 表を 作る。
+ * 持って いなければ これまでの 共通の 表（`TALK_POINTS`）——前からの 教材が
+ * そのまま 同じ 見え方で 動く ように する ため。
+ */
+export function pointsTable(
+  round: TalkRound,
+  focus?: readonly TalkFocus[],
+): Readonly<Record<keyof TalkObservations, number>> {
+  if (round === "listen") return LISTEN_POINTS;
+  if (!focus || focus.length === 0) return TALK_POINTS;
+  return focusPoints(focus);
 }
 
 /** 1回の 発話で 上がる ぶん（%）。 */
-export function gainFor(round: TalkRound, observations: TalkObservations): number {
-  const table = pointsTable(round);
+export function gainFor(
+  round: TalkRound,
+  observations: TalkObservations,
+  focus?: readonly TalkFocus[],
+): number {
+  const table = pointsTable(round, focus);
   let total = 0;
   for (const [key, on] of Object.entries(observations) as [keyof TalkObservations, boolean][]) {
     if (on) total += table[key];
@@ -131,8 +191,9 @@ export function gainFor(round: TalkRound, observations: TalkObservations): numbe
 export function breakdown(
   round: TalkRound,
   observations: TalkObservations,
+  focus?: readonly TalkFocus[],
 ): { key: keyof TalkObservations; points: number; on: boolean }[] {
-  const table = pointsTable(round);
+  const table = pointsTable(round, focus);
   return (Object.keys(table) as (keyof TalkObservations)[])
     .filter((key) => table[key] > 0)
     .sort((a, b) => table[b] - table[a])
@@ -145,18 +206,24 @@ export interface TalkPlan {
   goal: number;
   /** 聞く ばんが 開く（%）。 */
   openAt: number;
-  /** 話す ばんで 見つける「おもしろい」の 数。 */
-  findCount: number;
+  /**
+   * 話す ばんで 聞く しつもんの 数（＝`talkGame.openers` の 本数）。
+   *
+   * **準備して きた ことを ぜんぶ 聞いたら、聞く ばんへ 移る。** 出だしの しつもんは
+   * 準備フォームの 設問と 1対1 なので、使いきった ところが 自然な 切れ目に なる
+   *（2026-08-31）。教材が 決める 数なので `TalkPlan` が 持つ。
+   */
+  askCount: number;
 }
 
 /**
- * 話す ばんの ターンの 上限。
+ * 話す ばんの ターンの 上限（`askCount` を 持たない 教材の 保険）。
  *
- * 見つからない まま 何十回も 聞かれると、いちばん 助けが 要る 学習者だけが
- * 会話を 終われなく なる（ミーティングの `MAX_ATTEMPTS` と 同じ 考え方）。
- * 見つける 数の 3倍まで 深掘りしたら、そこで 話す ばんを 閉じる。
+ * 好感度が 入口（`openAt`）に 届かない まま 何十回も 聞かれると、いちばん 助けが
+ * 要る 学習者だけが 会話を 終われなく なる（ミーティングの `MAX_ATTEMPTS` と
+ * 同じ 考え方）。
  */
-export const TALK_TURN_CAP_RATIO = 3;
+export const TALK_TURN_CAP = 9;
 
 /** 聞く ばんの しつもんの 数（少なくとも／多くとも）。 */
 export const LISTEN_MIN_ASKS = 3;
@@ -165,8 +232,6 @@ export const LISTEN_MAX_ASKS = 6;
 export interface TalkState {
   readonly round: TalkRound;
   readonly percent: number;
-  /** 見つけた「おもしろい」の ラベル（同じ ものは 入らない）。 */
-  readonly found: readonly string[];
   /** 話した 回数（話す ばん）。 */
   readonly turns: number;
   /** 聞いた 回数（聞く ばん）。 */
@@ -176,7 +241,6 @@ export interface TalkState {
 export const EMPTY_TALK: TalkState = {
   round: "talk",
   percent: 0,
-  found: [],
   turns: 0,
   asked: 0,
 };
@@ -194,8 +258,6 @@ export interface TalkStep {
    * 「+7%」と 出て メーターは 26 動いた（2026-08-24 の 検収指摘）。
    */
   readonly lifted: number;
-  /** 新しく 見つけた「おもしろい」（無ければ null）。 */
-  readonly discovered: string | null;
   /** この ターンで ばんが 変わったか。 */
   readonly turned: TalkRound | null;
   /**
@@ -209,25 +271,6 @@ export interface TalkStep {
 }
 
 /**
- * 同じ「おもしろい」を 2回 数えない ための ならし。
- *
- * AIが 返す ラベルは 揺れる（「カンボジアの プログラム」「カンボジア プログラム」）。
- * 空白と 記号を 落として 比べる——ここを 厳密に すると、同じ 発見で 札が 2枚 開く。
- */
-export function normalizeTopic(label: string): string {
-  return label
-    .replace(/[\s　・、。「」（）()]/g, "")
-    .toLowerCase()
-    .trim();
-}
-
-export function alreadyFound(found: readonly string[], label: string): boolean {
-  const key = normalizeTopic(label);
-  if (!key) return true;
-  return found.some((one) => normalizeTopic(one) === key);
-}
-
-/**
  * 1回の 発話を 状態に 写す。
  *
  * ばんの 切りかえは **ここだけ**が 決める（画面に 書くと、直すたびに 黙って 基準が 動く）。
@@ -236,16 +279,14 @@ export function applyTurn(
   state: TalkState,
   plan: TalkPlan,
   observations: TalkObservations,
-  topic: string | null,
+  /** いま 聞かれて いる しつもんの「見る ところ」（話す ばんだけ 効く）。 */
+  focus?: readonly TalkFocus[],
 ): TalkStep {
   if (state.round === "clear") {
-    return { state, gained: 0, lifted: 0, discovered: null, turned: null, judgedAs: "clear" };
+    return { state, gained: 0, lifted: 0, turned: null, judgedAs: "clear" };
   }
   const judgedAs = state.round;
-  const gained = gainFor(state.round, observations);
-  const fresh =
-    state.round === "talk" && topic && !alreadyFound(state.found, topic) ? topic.trim() : null;
-  const found = fresh ? [...state.found, fresh] : state.found;
+  const gained = gainFor(state.round, observations, focus);
   const turns = state.round === "talk" ? state.turns + 1 : state.turns;
   const asked = state.round === "listen" ? state.asked + 1 : state.asked;
   let percent = clampPercent(state.percent + gained, plan.goal);
@@ -256,23 +297,31 @@ export function applyTurn(
 
   if (state.round === "talk") {
     /*
-     * **聞く ばんへ 移る 3つの 入口**。
+     * **聞く ばんへ 移る 2つの 入口**。
      *
-     * - 見つける ものを 見つけた（ねらいの 本筋）
      * - **好感度が 入口に とどいた**（2026-08-24 の 指定「一定数の 好感度を 得たら、
-     *   そこから 逆に 学生が 質問する」）。上手な 人を 深掘りに 縛りつけない
+     *   そこから 逆に 学生が 質問する」）——これが 本筋
      * - 深掘りの 上限（いちばん 助けが 要る 人だけ 会話を 終われない、を 防ぐ）
      *
-     * 好感度の 入口を 足したのは、**満タンなのに 終われない**を 消す ためでも ある。
+     * 2026-08-31 に **3つめの 入口（「おもしろい」を n個 見つけたら）を 外した**。
+     * 札は AIが 漢字まじりの ラベルを 返すと 立たない ので、鍵の ある 教室では
+     * ほとんど 数えられて いなかった——**見えない ところで 進み方が 変わって いた**。
+     *
      * 1ターンの 最大は 12 なので、話す ばんを 出る ときの 好感度は
      * `openAt + 11` を 超えない。聞く ばんの 1ターンは 最大 10 なので、
      * 少なくとも `LISTEN_MIN_ASKS` 回 聞かないと 満タンには 届かない——
      * 「100% の まま クリアしない」ターンが 生まれない（2026-08-24 の 検収指摘）。
      */
-    const enough =
-      found.length >= plan.findCount ||
-      percent >= plan.openAt ||
-      turns >= plan.findCount * TALK_TURN_CAP_RATIO;
+    /*
+     * **準備して きた ことを ぜんぶ 聞いたら 移る**（2026-08-31）。
+     *
+     * 「おもしろい を n個 見つけたら」を 廃止した とき、ここを 好感度だけに して
+     * いたら **鍵の 無い 教室の 会話が 3回 → 9回 に 伸びた**（規則ベースでは
+     * 会社の 中身が 立たない ぶん、好感度が 60% まで 遠い）。
+     * 出だしの しつもんは 準備の 設問と 1対1 なので、**使いきった ところ**が
+     * 上手・不上手に 関わらず 同じ 切れ目に なる。
+     */
+    const enough = percent >= plan.openAt || turns >= Math.min(plan.askCount, TALK_TURN_CAP);
     if (enough) {
       // 話しきった ぶんの 底上げ（届いた 人と 同じ 場所に 立たせる）
       const before = percent;
@@ -293,19 +342,10 @@ export function applyTurn(
   }
 
   return {
-    state: { round, percent, found, turns, asked },
+    state: { round, percent, turns, asked },
     gained,
     lifted,
-    discovered: fresh,
     turned,
     judgedAs,
   };
-}
-
-/**
- * 話す ばんの 進み具合（画面の 札の 数）。
- * 見つけた 数が 上限を こえて 見えないよう、ここで 畳む。
- */
-export function foundCount(state: TalkState, plan: TalkPlan): number {
-  return Math.min(state.found.length, plan.findCount);
 }

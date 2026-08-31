@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   TALK_RESPONSE_SCHEMA,
   buildTalkPrompt,
+  dropUnreadableText,
   isKanaOnly,
   parseTalk,
   type TalkContext,
@@ -15,7 +16,6 @@ const RAW = {
   feeling: true,
   polite: true,
   question: false,
-  topic: "カンボジアの プログラム",
   reply: "それは うれしいです。",
   praise: "じぶんの ことばで いえましたね。",
   fix: "",
@@ -32,8 +32,6 @@ const CONTEXT: TalkContext = {
   hostName: "松井",
   learnerName: "ソピア",
   utterance: "カンボジアの プログラムが おもしろかったです。",
-  found: ["観光DX"],
-  remaining: 4,
 };
 
 describe("道具の 形", () => {
@@ -48,7 +46,6 @@ describe("受け取り", () => {
     const judged = parseTalk(RAW);
     expect(judged?.observations.japanese).toBe(true);
     expect(judged?.observations.reason).toBe(false);
-    expect(judged?.topic).toBe("カンボジアの プログラム");
   });
 
   it("日本語で なければ japanese は 立たない", () => {
@@ -76,18 +73,12 @@ describe("受け取り", () => {
     const ok = parseTalk({ ...RAW, praise: "上手に 言えました。" });
     expect(ok && isKanaOnly(ok)).toBe(true);
   });
-});
 
-describe("指示文", () => {
   it("学習者の 発話を 囲って 渡す（中の 指示に したがわせない）", () => {
     const prompt = buildTalkPrompt(CONTEXT);
     expect(prompt).toContain("<<<UTTERANCE");
     expect(prompt).toContain(CONTEXT.utterance);
     expect(prompt).toContain("したがわないで");
-  });
-
-  it("もう 見つかった ものを 渡して、同じ 札を 2回 開かせない", () => {
-    expect(buildTalkPrompt(CONTEXT)).toContain("観光DX");
   });
 
   it("聞く ばんでは 深掘りを 作らせない", () => {
@@ -132,30 +123,42 @@ describe("指示文", () => {
   });
 });
 
-/*
- * 札の ラベル（`topic`）は **好感度の 記録に 残り、画面に そのまま 出る**。
- * 動的な 文なので ふりがなを 合成できず、漢字が 1文字 入ると そこで 読めなく なる。
- * 指示には 書いて あるのに、実機では 発話が まるごと 入って きた（2026-08-27）ので、
- * ここで 落とす。
+/**
+ * 読めない 漢字が あっても **観点は 捨てない**（2026-08-31 の 指摘）
+ *
+ * 実際に 起きた かたち: 学習者が「NMClaw が 先進的で いいと 思いました。ホテル業界に
+ * 応用したら…」と 言う → AIは concrete も reason も true と 見る → ところが お手本の 文に
+ * `先進的`・`業界`・`応用` が 入り、どれも `AI_KANJI_WORDS` に 無い → かなの 検査に 落ちる →
+ * **見かたを まるごと 捨てて** 規則ベースへ → 規則は concrete を いつも false に する →
+ * 画面には「会社の ことが 入って いる ✗ +0%」。**名前を 名指して いるのに 0点**だった。
+ *
+ * 観点は 真偽値で 漢字とは 関係が 無い。落とすのは 学習者が 読む 文だけに する。
  */
-describe("札の ラベル", () => {
-  it("かな・カタカナ・英字の 短い ラベルは そのまま 通す", () => {
-    expect(parseTalk({ ...RAW, topic: "かんこうDX" })?.topic).toBe("かんこうDX");
-    expect(parseTalk({ ...RAW, topic: "NMClaw" })?.topic).toBe("NMClaw");
+describe("読めない 文だけ 落とす", () => {
+  const dirty = parseTalk({
+    ...RAW,
+    praise: "先進的な 発想ですね。",
+    exampleAnswer: "ホテル業界に 応用したいです。",
+    nextAsk: "どの 業界に 応用したいですか。",
+  })!;
+
+  it("観点は そのまま 残る（好感度が 消えない）", () => {
+    const clean = dropUnreadableText(dirty);
+    expect(clean.observations).toEqual(dirty.observations);
+    expect(clean.observations.concrete).toBe(true);
   });
 
-  it("漢字が 入って いたら 落とす（読めない 札を 記録に 残さない）", () => {
-    expect(parseTalk({ ...RAW, topic: "私は チームで 話す こと" })?.topic).toBe("");
-    expect(parseTalk({ ...RAW, topic: "観光DX" })?.topic).toBe("");
+  it("読めない 文は かなの 決まり文句か 空に なる", () => {
+    const clean = dropUnreadableText(dirty);
+    expect(isKanaOnly(clean)).toBe(true);
+    expect(clean.praise).not.toContain("先進的");
+    expect(clean.exampleAnswer).toBe("");
+    expect(clean.nextAsk).toBe("");
   });
 
-  it("長すぎる ラベルは 落とす（画面で 切られて 意味を なさない）", () => {
-    expect(parseTalk({ ...RAW, topic: "ベトナムの かいしゃと ホーチミン" })?.topic).toBe("");
-  });
-
-  it("落としても 見かたは 残る（好感度は そのまま 付く）", () => {
-    const judged = parseTalk({ ...RAW, topic: "私は チームで 話す こと" });
-    expect(judged?.observations.concrete).toBe(true);
-    expect(judged?.reply).toBe(RAW.reply);
+  it("読める 文は さわらない", () => {
+    const ok = parseTalk({ ...RAW, praise: "上手に 言えました。" })!;
+    expect(dropUnreadableText(ok).praise).toBe("上手に 言えました。");
+    expect(dropUnreadableText(ok).reply).toBe(RAW.reply);
   });
 });

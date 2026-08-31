@@ -84,6 +84,29 @@ export function annotateRuby(text: string, index: FuriganaIndex): RubySegment[] 
 }
 
 /**
+ * **ルビの ついた ことばの 内側**の 位置を 集める。
+ *
+ * 本文の 辞書の 下線（`DictionaryText`）は、当たった ところで 文字列を 切って
+ * 前後を 別々に `RubyText` へ わたす。この とき **ルビの ことばの 途中で 切ると、
+ * 切れた 側が 読み辞書に 当たらなく なり 裸の 漢字に なる**——
+ * 「お客様」の「様」だけが 辞書に あると、「お客」と「様」に 割れて
+ * 「客」の ルビが 消えた（2026-08-31 に 実発生。`hourensou.spec` が 見つけた）。
+ *
+ * ここが 返す 位置では 切らせない。切ってよいのは ルビの 外か、ことばの 境目だけ。
+ */
+export function rubyInnerPositions(text: string, index: FuriganaIndex): Set<number> {
+  const inner = new Set<number>();
+  let at = 0;
+  for (const segment of annotateRuby(text, index)) {
+    if (segment.reading) {
+      for (let i = at + 1; i < at + segment.text.length; i += 1) inner.add(i);
+    }
+    at += segment.text.length;
+  }
+  return inner;
+}
+
+/**
  * 文を「かなだけ」に直す（絵に焼く文字を作るため）。
  *
  * ## なぜ機械変換なのか

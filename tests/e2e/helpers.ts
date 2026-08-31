@@ -150,23 +150,6 @@ export const JUNBI_TOTAL: number = (
 ).questions.length;
 
 /**
- * 松井社長との 対話ゲームで 見つける「おもしろい」の 数。**教材から 読む**。
- *
- * ここを ベタ書きして いた ため、5つ→3つ に した 日に taiwa-tsuzuki が 落ちた
- *（2026-08-24）。`HOUKOKU_TOTAL` と 同じ 轍。
- */
-export const MATSUI_FIND_COUNT: number = (
-  JSON.parse(
-    readFileSync(join(__dirname, "..", "..", "content", "meetings", "kaisha_matsui.json"), "utf8"),
-  ) as { talkGame: { findCount: number } }
-).talkGame.findCount;
-
-/** 「おもしろい n / m」の 文（対話ゲームの 進みぐあい）。 */
-export function foundText(found: number): string {
-  return `おもしろい ${found} / ${MATSUI_FIND_COUNT}`;
-}
-
-/**
  * その教材より前の教材のID（関門を開けるために「おわった」ことにする分）。
  *
  * **番号ではなく教材そのものを受ける。** 前は `itemsBefore(4)` のように番号で

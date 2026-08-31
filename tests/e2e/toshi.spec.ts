@@ -138,10 +138,19 @@ const HENDY_ANSWERS = [
  * 中身は ぜんぶ ちがう ものに する——同じ 話を くり返すと 札は 開かない
  *（`alreadyFound`）ので、見つけきれずに 深掘りが 続く。
  */
+/**
+ * 社長の 出だしの しつもん（`talkGame.openers`）に 1つずつ 答える。
+ *
+ * **本数を そろえる**（2026-08-31）。しつもんを 使いきった ところで 聞く ばんへ 移るので、
+ * ここが 足りないと 聞く ばんに とどかない。並びは 準備フォームの ①〜⑥ と 同じ。
+ */
 const MATSUI_FINDINGS = [
   "カンボジアの プログラムが おもしろかったです。",
-  "NMClaw は、はなすだけで まとまるから すごいです。",
+  "わたしは にほんごが とくいだから、ほうこくに つかいたいです。",
   "かんこうDX で、まちを あるいて みたいです。",
+  "カンボジアの がくせいは、あたらしい ことを はやく おぼえると おもいます。",
+  "Japanese IT Pathway は、にほんごと ITを べんきょうする プログラムです。",
+  "にほんへ いくまでに、にほんごを がんばりたいです。はなしたいからです。",
 ];
 
 /** そのあと、こんどは 学習者が 社長に 聞く。 */
@@ -443,9 +452,16 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
      * 絵を 消した ときや 差しかえに 失敗した ときに ここが 落ちる——
      * 「空わくを 出す」決まりは 生きた まま、**作り忘れの 見張り**として 効き つづける。
      */
+    /*
+     * 2026-08-31 に 準備が 7問に なり（社長の しつもんと 1対1）、カードも 7枚に なった。
+     * 足した 2枚（5 Japanese IT Pathway / 6 日本に 行くまでに）の 絵も 同じ日に 作った ので、
+     * **空わくは 0 に 戻す**。0 で 固定して おくと、絵を 消した ときや 差しかえに
+     * 失敗した ときに ここが 落ちる——「空わくを 出す」決まりは 生きた まま、
+     * 作り忘れの 見張りとして 効き つづける。
+     */
     await expect(page.locator('[data-slot="empty"]')).toHaveCount(0);
-    /* 「これから 考える 5つの こと」の 5枚 ＋ A/B の 分かれ道 2枚。 */
-    await expect(page.locator('img[src*="/img/articles/kaisha_matsui_junbi/"]')).toHaveCount(7);
+    /* 「これから 考える 7つの こと」の 7枚 ＋ A/B の 分かれ道 2枚。 */
+    await expect(page.locator('img[src*="/img/articles/kaisha_matsui_junbi/"]')).toHaveCount(9);
     await shot(page, "07-junbi-article");
 
     await readToEnd(page);
@@ -471,11 +487,17 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
     // ぜんぶ うめるまで 出せない（`requireAll`）
     await expect(page.getByRole("button", { name: /こたえを 出/ })).toHaveCount(0);
 
+    /*
+     * **並びは 社長の しつもんの 順**（①〜⑥ が 出だしの しつもんと 1対1、
+     * ⑦ は 聞く ばんの ぶん）。
+     */
     const written = [
       "観光DX が いいと 思いました。まちを あるきたいからです。",
       "私は 日本語が 得意です。報告に 使いたいです。",
       "私は AIを 使う 仕事を やって みたいです。",
       "カンボジアの 学生は 新しい ことを 早く おぼえると 思います。",
+      "Japanese IT Pathway は 日本語と ITを 勉強する プログラムです。",
+      "私は 日本語を がんばりたいです。日本で はたらきたいからです。",
       "社長に 聞きたい ことは、どうして この 会社を 作りましたかです。",
     ];
     expect(written).toHaveLength(JUNBI_TOTAL);
@@ -540,7 +562,16 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
         await page.getByLabel("文字で 答える").fill(finding);
         await page.getByRole("button", { name: "おくる" }).click();
         await expect(page.getByText(/^こうかんど \+\d+%$/)).toBeVisible({ timeout: 45_000 });
-        await expect(page.locator('[data-kanten="concrete"]')).toBeVisible();
+        /*
+         * **内訳は その しつもんの 観点だけ**（2026-08-31 の 指定）。
+         * さいごの しつもん（⑥日本に 行くまでに）の 見る ところは りゆうと 気もちなので、
+         * 「会社の ことが 入って いる」は **並ばない**——その しつもんが 聞いて いない
+         * ことで 点が 動かない、という 決まりが ここに 出る。
+         * 「しつもんの 形」は 話す ばんには 出さない（やって いない ことを 責めない）。
+         */
+        await expect(page.locator('[data-kanten="reason"]')).toBeVisible();
+        await expect(page.locator('[data-kanten="feeling"]')).toBeVisible();
+        await expect(page.locator('[data-kanten="concrete"]')).toHaveCount(0);
         await expect(page.locator('[data-kanten="question"]')).toHaveCount(0);
         await page.waitForTimeout(700);
         await shot(page, "10-meeting-matsui-switch");

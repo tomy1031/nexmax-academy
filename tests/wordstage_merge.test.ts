@@ -6,7 +6,7 @@ import { hydrateWordStage } from "../src/lib/vocabulary";
 import {
   findLearnerWordSets,
   findLearnerWordStage,
-  learnerWordStages,
+  learnerWordGroups,
   stageWordSets,
   stageWordStage,
   type StageWithWords,
@@ -129,7 +129,7 @@ describe("ステージの ことば", () => {
   });
 });
 
-describe("セット名で 分ける（願い #203）", () => {
+describe("一段目は 1行、二段目で セットを えらぶ（願い #280）", () => {
   /** 初級・中級の 2セットを ぶら下げた ステージ（kaisha と 同じ かたち）。 */
   const shokyu: WordStage = { ...hajimari, id: "set_shokyu", label: "初級" };
   const chukyu: WordStage = { ...orientation, id: "set_chukyu", label: "中級" };
@@ -140,12 +140,32 @@ describe("セット名で 分ける（願い #203）", () => {
     wordStageIds: ["set_shokyu", "set_chukyu"],
   };
 
-  it("名前が 無ければ これまでどおり 1つに まとまる", () => {
-    const sets = stageWordSets(INTRO, [intro, orientation]);
-    expect(sets.map((s) => s.id)).toEqual(["intro"]);
+  /*
+   * 2026-08-31 の 直し。「まとめる」は **一覧を 1行に する**ことで、
+   * セットを 消す ことでは なかった——「会社を知るを選ぶと、
+   * 初級・中級・上級が選択できるようにしてください」。
+   */
+  it("一段目（一覧）は セット名が あっても 1ステージ 1行", () => {
+    const { heads } = learnerWordGroups([LEVELED], [shokyu, chukyu]);
+    expect(heads.map((head) => head.id)).toEqual(["leveled"]);
+    expect(heads[0]!.title).toBe("会社を 知る");
+    expect(heads[0]!.wordCount).toBe(hajimari.words.length + orientation.words.length);
+    // 行には セット名を 出さない（どれを やるかは 押した 先で えらぶ）
+    expect(heads[0]!.label).toBeUndefined();
+    // 中の セットは 行から 引ける（押した 先で ならべる ため）
+    expect(heads[0]!.setIds).toEqual(["set_shokyu", "set_chukyu"]);
   });
 
-  it("名前が あれば 分かれる。ならびは wordStageIds の 順", () => {
+  it("一覧の 行は ことばを 積まない（見出しの ルビだけ 運ぶ）", () => {
+    const { heads, sets } = learnerWordGroups([LEVELED], [shokyu, chukyu]);
+    expect(heads[0]!.furigana).toContainEqual(["会社を 知る", "かいしゃを しる"]);
+    // ことば 152語ぶんの 読み辞書が 行に 付いて こない（授業で 20人が 同時に 開く）
+    expect(heads[0]!.furigana!.length).toBeLessThan(5);
+    // ことばそのものは セット側に 1回だけ
+    expect(sets.map((set) => set.id)).toEqual(["set_shokyu", "set_chukyu"]);
+  });
+
+  it("二段目（えらぶ 画面）は セット名の ぶんだけ ならぶ。順は wordStageIds の 順", () => {
     const sets = stageWordSets(LEVELED, [shokyu, chukyu]);
     expect(sets.map((s) => s.id)).toEqual(["set_shokyu", "set_chukyu"]);
     expect(sets.map((s) => s.label)).toEqual(["初級", "中級"]);
@@ -156,6 +176,11 @@ describe("セット名で 分ける（願い #203）", () => {
     expect(sets.map((s) => s.title)).toEqual([hajimari.title, orientation.title]);
     // ステージの 名前の よみは 読み辞書に 入る（見出しに 漢字が あっても 裸に しない）
     expect(sets[0]!.furigana).toContainEqual(["会社を 知る", "かいしゃを しる"]);
+  });
+
+  it("名前が 無ければ 二段目も 1つ＝えらぶ 画面を はさまない", () => {
+    const sets = stageWordSets(INTRO, [intro, orientation]);
+    expect(sets.map((s) => s.id)).toEqual(["intro"]);
   });
 
   it("名前の 有る 無しが まざったら、無い ものだけ 1つに まとまる", () => {
@@ -190,15 +215,18 @@ describe("学習者に 見せる ことばの 一覧", () => {
   const words = [intro, orientation, hajimari];
 
   it("名前の 無い ステージは 1ステージ＝1つ のまま", () => {
-    const list = learnerWordStages(stages, words);
-    expect(list.map((s) => s.id)).toEqual(["intro", "hajimari_kotoba"]);
-    expect(list.map((s) => s.title)).toEqual(["はじめに", "はじまり"]);
+    const { heads } = learnerWordGroups(stages, words);
+    expect(heads.map((head) => head.id)).toEqual(["intro", "hajimari_kotoba"]);
+    expect(heads.map((head) => head.title)).toEqual(["はじめに", "はじまり"]);
+    // どちらも セットは 1つ＝えらぶ 画面を はさまない
+    expect(heads.map((head) => head.setIds.length)).toEqual([1, 1]);
   });
 
   it("どの ステージにも 付いて いない ものは そのまま 残る", () => {
     const orphan: WordStage = { ...hajimari, id: "orphan", title: "のこりもの" };
-    const list = learnerWordStages(stages, [...words, orphan]);
-    expect(list.map((s) => s.id)).toContain("orphan");
+    const { heads, sets } = learnerWordGroups(stages, [...words, orphan]);
+    expect(heads.map((head) => head.id)).toContain("orphan");
+    expect(sets.map((set) => set.id)).toContain("orphan");
   });
 
   it("単語ステージIDで 引いても ステージの まとまりが 返る（古いリンクを 切らない）", () => {
