@@ -41,15 +41,25 @@ test("ステージトップの ことばは 1行だけ（行き先は ステー�
   }
 });
 
-test("ステージIDで 開くと セットを えらぶ 画面に なる", async ({ page }) => {
-  await page.goto("/wordtest/kaisha");
+/**
+ * セット名の 札は ルビが 合成される ので、字は「初しょ級きゅう」と つながる。
+ * `"初級"` の ベタ一致では 引けない——あいだを ゆるく 見る
+ *（同じ わなを `docs/skills/browser_e2e_verification.md` に 書いて ある）。
+ */
+const LEVELS = [/初.*級/, /中.*級/, /上.*級/];
 
+async function expectSetChooser(page: import("@playwright/test").Page) {
   await expect(page.getByRole("heading", { name: "ことばの セットを えらぶ" })).toBeVisible();
   // ならぶ 数は ステージが 持って いる セットの 数
   await expect(page.getByText(/ことば \d+こ ／ 合格 \d+%/)).toHaveCount(STAGE.wordStageIds.length);
-  for (const label of ["初級", "中級", "上級"]) {
-    await expect(page.getByText(label, { exact: true }).first()).toBeVisible();
+  for (const level of LEVELS) {
+    await expect(page.getByRole("button", { name: level })).toHaveCount(1);
   }
+}
+
+test("ステージIDで 開くと セットを えらぶ 画面に なる", async ({ page }) => {
+  await page.goto("/wordtest/kaisha");
+  await expectSetChooser(page);
 });
 
 test("一覧の「会社を 知る」を 押すと、初級・中級・上級が 出る", async ({ page }) => {
@@ -63,9 +73,9 @@ test("一覧の「会社を 知る」を 押すと、初級・中級・上級が
   await expect(rows).toHaveCount(1);
   await rows.first().click();
 
-  await expect(page).toHaveURL(/\/wordtest\/kaisha$/);
-  await expect(page.getByRole("heading", { name: "ことばの セットを えらぶ" })).toBeVisible();
-  await expect(page.getByText(/ことば \d+こ ／ 合格 \d+%/)).toHaveCount(STAGE.wordStageIds.length);
+  // えらぶ 画面は **同じ ページの 中**で 開く（一覧へ 1歩で 戻れる）
+  await expect(page).toHaveURL(/\/wordtest$/);
+  await expectSetChooser(page);
 });
 
 test("名前が 変わる 前の URL も 同じ ところへ つながる", async ({ page }) => {
