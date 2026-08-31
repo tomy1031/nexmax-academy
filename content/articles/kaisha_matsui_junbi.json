@@ -2,8 +2,12 @@
   "kind": "article",
   "id": "kaisha_matsui_junbi",
   "title": "AI松井社長と 話す 準備を しよう",
-  "description": "調べた ことに、あなたの 考えを 足します。松井社長に 話す 5つの ことを 考えます。",
+  "description": "調べた ことに、あなたの 考えを 足します。松井社長に 話す 3つの ことを 考えます。",
   "furigana": [
+    [
+      "何でも",
+      "なんでも"
+    ],
     [
       "代表取締役社長",
       "だいひょうとりしまりやくしゃちょう"
@@ -1305,10 +1309,6 @@
       "じじつ"
     ],
     [
-      "受",
-      "う"
-    ],
-    [
       "学校",
       "がっこう"
     ],
@@ -1346,7 +1346,7 @@
         "lines": [
           "調べた 事実を、そのまま 報告しました。",
           "NEXT MAKEは 2018年に できた 会社です。本社は 大阪です。",
-          "お客さまの ホームページや アプリを 作ります。受託開発と 言います。",
+          "お客さまの ホームページや アプリを 作ります。",
           "自分たちの サービスも 5つ あります。NMClaw、観光DX、Verify、セキュリティドローン、Internship Labです。"
         ]
       },
@@ -1387,13 +1387,11 @@
           "icon": "😍",
           "label": "A",
           "title": "松井社長が うれしく なる 答え",
-          "text": "調べた こと ＋ 自分の 考え。5つとも、自分の ことばで 答えて います。",
+          "text": "調べた こと ＋ 自分の 考え。3つとも、自分の ことばで 答えて います。",
           "items": [
-            "NEXT MAKEの どこが 好き？ → NMClawです。話すだけで、お客さま・お金・いつまでを AIが 見つけて くれるからです。",
-            "自分の いい ところは？ → ネットワークが 得意です。学校で サーバを 作りました。",
-            "NEXT MAKEで 何を やって みたい？ → 観光DXです。カンボジアの 町の 物語を 動画に したいです。",
-            "カンボジアの いい ところは？ → 若い 人が 多いです。私の 大学にも ITを 学ぶ 学生が たくさん います。",
-            "松井社長に 何を 聞きたい？ → 観光DXを カンボジアでも しますか。"
+            "NEXT MAKEの どこが 好き？ → NMClawです。カンボジアには ホテルが 多いので、ホテルで 使ったら おもしろいかも しれません。",
+            "自分の いい ところは？ → AIが 得意です。得意な ものを AIに して、学校の AIチャットボットを 作りました。",
+            "NEXT MAKEで 何を やって みたい？ → 観光DXです。カンボジアの 町の 物語を 動画に したいです。AIが 観光ガイドを すれば、もっと おもしろく なります。"
           ],
           "image": {
             "refs": [],
@@ -1406,13 +1404,11 @@
           "icon": "😢",
           "label": "B",
           "title": "松井社長が 悲しく なる 答え",
-          "text": "調べた ことだけ。5つとも、ひとことで 終わって います。",
+          "text": "調べた ことだけ。3つとも、ひとことで 終わって います。",
           "items": [
             "NEXT MAKEの どこが 好き？ → NEXT MAKEは つまらないです。",
             "自分の いい ところは？ → とくに ありません。",
-            "NEXT MAKEで 何を やって みたい？ → 何でも やります。",
-            "カンボジアの いい ところは？ → いい 国です。",
-            "松井社長に 何を 聞きたい？ → だいじょうぶです。"
+            "NEXT MAKEで 何を やって みたい？ → 何でも いいです。"
           ],
           "image": {
             "refs": [],
@@ -1432,12 +1428,12 @@
     {
       "kind": "heading",
       "level": 2,
-      "text": "これから 考える 5つの こと"
+      "text": "これから 考える 3つの こと"
     },
     {
       "kind": "cards",
       "tone": "step",
-      "columns": 5,
+      "columns": 3,
       "items": [
         {
           "label": "1",
@@ -1470,28 +1466,6 @@
             "status": "done",
             "src": "/img/articles/kaisha_matsui_junbi/j3.webp",
             "prompt": "card3: a Cambodian man at a makerspace bench plugs a cable into NexMax and into his laptop, and programs him. → scripts/images/kaisha_junbi_nexmax.json"
-          }
-        },
-        {
-          "label": "4",
-          "title": "カンボジアの いい ところは？",
-          "text": "カンボジアの 人や IT学生の いい ところを 考えます。",
-          "image": {
-            "refs": [],
-            "status": "done",
-            "src": "/img/articles/kaisha_matsui_junbi/j4.webp",
-            "prompt": "card4: a Cambodian woman presents the good sides of Cambodia on a screen full of drawings, with picture-rich handouts. → scripts/images/kaisha_junbi_scenes.json"
-          }
-        },
-        {
-          "label": "5",
-          "title": "松井社長に 何を 聞きたい？",
-          "text": "Webサイトだけでは 分からない ことを 質問します。",
-          "image": {
-            "refs": [],
-            "status": "done",
-            "src": "/img/articles/kaisha_matsui_junbi/j5.webp",
-            "prompt": "card5: a Cambodian woman raises her hand to the president, her notebook filled with prepared questions. → scripts/images/kaisha_junbi_matsui.json"
           }
         }
       ]

@@ -10,6 +10,7 @@
  *  - 秘匿情報の漏れ（シナリオ: 質問で引き出すべき事実を調査用模擬ページに書かない）
  *  - kind別ID重複（ファイル横断。重複すると進捗保存が壊れる）
  *  - 参照整合（stage.contents / wordStageIds の参照先が存在するか — 設計07 §3）
+ *  - 出題できる語か（単語ステージの参照先に 対訳と誤答3つ が そろっているか）
  *  - 導線の一致（article の「つぎは これ」がステージの学習順の直後を指しているか）
  *  - ふりがなの覆い漏れ（学習者が読む文の漢字が読み辞書で全部覆えているか）
  *  - 参照切れの気づき（スタジオの保存経路だけ。止めずに warn で知らせる）
@@ -33,6 +34,9 @@ import {
 } from "./text/furigana";
 // stage-routes.ts も純関数と定数だけ（node:fs も React も持たない）。
 import { INTRO_STAGE_ID } from "./stage-routes";
+// vocabulary.ts も純関数だけ。単語ゲームに出せる語かの判定（isPlayable）は
+// アプリと同じ1か所から引く——ここで作り直すと、片方だけが古くなる。
+import { isPlayable } from "./vocabulary";
 
 export interface Finding {
   file: string;
@@ -328,13 +332,13 @@ export function checkReferenceIntegrity(entries: readonly ContentEntry[]): Findi
    * 単語ステージ → ことばの 正（kind: vocab）。参照が 切れると その語が 画面から
    * 黙って 消える——学習者は「出るはずの ことばが 出ない」と 言えないので、機械で 止める。
    */
-  const vocabIds = new Set(
+  const vocabWords = new Map(
     entries.flatMap(({ content }) =>
-      content.kind === "vocab" ? content.words.map((w) => w.id) : [],
+      content.kind === "vocab" ? content.words.map((w) => [w.id, w] as const) : [],
     ),
   );
   const reportMissing = (file: string, ids: readonly string[]) => {
-    const missing = ids.filter((id) => !vocabIds.has(id));
+    const missing = ids.filter((id) => !vocabWords.has(id));
     if (missing.length === 0) return;
     findings.push({
       file,
@@ -350,6 +354,32 @@ export function checkReferenceIntegrity(entries: readonly ContentEntry[]): Findi
         if (block.kind === "vocab" && block.wordIds) reportMissing(file, block.wordIds);
       }
     }
+  }
+
+  /*
+   * 単語ステージ → **単語ゲームに 出せる 語か**（`isPlayable`）。
+   *
+   * 4択は「対訳の1語（正解）＋ 誤答3つ」で できて いる ので、その2つが 無い 語は
+   * `gameWordsOf` が 黙って 落とす。参照は 生きて いる ので 上の 検査には かからず、
+   * **セットだけが 短く なる**——8語の つもりの セットが 7語で 回り 続ける。
+   * 落ちた 語も 辞書・ツールチップには 出る ので、先生からは 消えたように 見えない。
+   * 参照切れと 同じ 顔の 事故なので、同じ ところで 止める。
+   *
+   * まんが・記事の ことばカードは これで よい（読む ための 助けなので 対訳は 要らない）。
+   * ここで 見るのは **出題する** 単語ステージだけ。
+   */
+  for (const { file, content } of entries) {
+    if (content.kind !== "wordstage" || !content.wordIds) continue;
+    const notPlayable = content.wordIds.filter((id) => {
+      const word = vocabWords.get(id);
+      return word !== undefined && !isPlayable(word);
+    });
+    if (notPlayable.length === 0) continue;
+    findings.push({
+      file,
+      level: "error",
+      message: `単語ゲームに 出せない 語を 出題しようと して いる: ${notPlayable.join(" ")} — 対訳の1語（englishTerm）と 誤答3つ（wrongMeanings）を content/vocab/ に 足すか、この セットから 外す`,
+    });
   }
 
   for (const { file, content } of entries) {
