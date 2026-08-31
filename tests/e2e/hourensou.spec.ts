@@ -294,8 +294,12 @@ for (const { id, title, skitId } of STAGES) {
   test(`報連相：${title} — 説明の 図が 大きく 出て、ひろげられる`, async ({ page, context }) => {
     const article = pathsOf(id).find((item) => item.type === "article");
     if (!article) return;
-    // 関門が 閉じて いると 教材の 代わりに「まだ ひらけません」の 板が 出る
-    await seedAlmostDone(context, id);
+    /*
+     * 関門を 開けるのは **この 記事の 手前まで**。ぜんぶ 済ませると
+     * 「ステージ クリア！」の お祝いが `fixed inset-0` で 前に 出て、
+     * **絵の クリックを 受け止めて しまう**（実際に これで 落ちた。絵の 側の 話では なかった）。
+     */
+    await seedAlmostDone(context, id, article.ref);
     await open(page, article.path);
 
     /*
@@ -306,10 +310,16 @@ for (const { id, title, skitId } of STAGES) {
      * 場面の さし絵が 大きく なって いない ことも 同時に 見る——一律に 大きく すると
      * 「7つ ある」の ような 並びが 目で 追えなく なる。
      */
-    const zoom = page.getByRole("button", { name: /ひろげて 見る/ });
+    /*
+     * 狙うのは **本文の さし絵**（`figure` の 中）。表紙（hero）や 一覧の サムネイルは
+     * 置かれ方が ちがう ので、ここで まとめて 掴むと どれを 押したのかが 曖昧に なる。
+     */
+    const zoom = page.locator('figure button[aria-label*="ひろげて"]');
     expect(await zoom.count()).toBeGreaterThan(0);
 
-    await zoom.first().click();
+    const target = zoom.first();
+    await target.scrollIntoViewIfNeeded();
+    await target.click();
     await expect(page.locator(".fixed.inset-0").first()).toBeVisible();
     await page.keyboard.press("Escape");
     await expect(page.locator(".fixed.inset-0")).toHaveCount(0);
