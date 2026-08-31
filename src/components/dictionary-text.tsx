@@ -1,9 +1,9 @@
 "use client";
 
-import { useId, useRef, useState } from "react";
+import { useId, useRef, useState, type ReactNode } from "react";
 import { RubyText } from "@/components/ruby-text";
 import { WordPopover } from "@/components/word-popover";
-import { findDictionaryTerm, type DictionaryEntry } from "@/lib/dictionary";
+import { findDictionaryTerms, type DictionaryEntry } from "@/lib/dictionary";
 import { canHover } from "@/lib/pointer";
 import type { FuriganaIndex } from "@/lib/text/furigana";
 
@@ -17,24 +17,24 @@ import type { FuriganaIndex } from "@/lib/text/furigana";
  *
  * 辞書は ことばの 正を 畳んだもの（src/lib/dictionary.ts）。新しい保存先は無い。
  *
- * ## **1文につき 1語**（設計07 §2.5）——「1かたまりにつき 1語」では ない
- * 決まりは ずっと「1文につき 下線は 1語だけ」だった。ところが 実装は
- * わたされた 文字列を まるごと 1つと 見て いた ので、3文 入った 段落でも
- * **下線は 1つ**しか 付かなかった（2026-08-28 の 指摘
- *「圧倒的に ポップアップ辞書が 足りません」）。
+ * ## **当たった ことば ぜんぶ**に つける（2026-08-31 に 決まりを 書きかえた）
+ * もとの 決まりは「1文につき 下線は 1語だけ」だった（設計07 §2.5）。
+ * まず 実装が 段落を まるごと 1つと 見て いた ので、3文 入った 段落でも
+ * **下線は 1つ**しか 付かなかった（2026-08-28 の 指摘）。そこで 文に 分けた。
  *
- * ここで **文に 分けてから** 1文ずつ 引く。決まりは 変えて いない——
- * 決まりどおりに 動く ように しただけで、下線の 数は 文の 数だけ 増える。
+ * それでも 足りなかった。むずかしい 語は **1文の 中に かたまって** 出る——
+ *「観光DXで、カンボジアの 町の 物語を 動画に したいです。」で 引けるのは 1語だけ。
+ * 辞書に 載って いるのに 引けない 語が 残る（2026-08-31 の 指摘
+ *「辞書が 足りて いません。DX・物語・動画・チャットボット」）。
  *
- * 性格診断まわりの `GlossaryText` と役割は似ているが、引く先が違う
- *（あちらは診断専用の固定台帳、こちらは ことばの 正）。引き当ての規則も違うので、
- * まとめると片方の当たり方が変わる。
+ * いまは **当たった ところ ぜんぶ**に つける。文に 分ける 必要も 無く なった。
+ *
+ * ## 診断の `GlossaryText` は 1文1語の まま
+ * 役割は 似て いるが 引く先が ちがう（あちらは 診断専用の 固定台帳、こちらは ことばの 正）。
+ * それに あちらは 選択肢が `<button>` で 下線を 置けず、代わりに「ことばメモ」の 帯が
+ * 語を ぜんぶ 並べる（設計07 §3.0.1）ので、下線を 増やす 必要が ない。
+ * 引き当ての 規則が ちがうので、まとめると 片方の 当たり方が 変わる。
  */
-
-/** 文の 切れめ。句点・感嘆符・改行の **うしろ**で 切る（区切りは 前の 文に 残す）。 */
-function splitSentences(text: string): string[] {
-  return text.split(/(?<=[。！？!?\n])/).filter((part) => part !== "");
-}
 
 export function DictionaryText({
   text,
@@ -49,44 +49,43 @@ export function DictionaryText({
   dictionary?: readonly DictionaryEntry[];
   className?: string;
 }) {
-  if (!dictionary || dictionary.length === 0) {
+  const matches = dictionary?.length ? findDictionaryTerms(text, dictionary) : [];
+  if (matches.length === 0) {
     return <RubyText text={text} index={index} show={show} className={className} />;
   }
-  return (
-    <span className={className}>
-      {splitSentences(text).map((sentence, at) => (
-        <Sentence key={at} text={sentence} index={index} show={show} dictionary={dictionary} />
-      ))}
-    </span>
-  );
-}
 
-/** 1文ぶん。当たった ことばが あれば、そこだけ 押せる ようにする。 */
-function Sentence({
-  text,
-  index,
-  show,
-  dictionary,
-}: {
-  text: string;
-  index?: FuriganaIndex;
-  show: boolean;
-  dictionary: readonly DictionaryEntry[];
-}) {
-  const found = findDictionaryTerm(text, dictionary);
-  if (!found) return <RubyText text={text} index={index} show={show} />;
+  /* 当たった ところを 押せる ことばに し、あいだの 地の文は ルビだけ 付ける。 */
+  const parts: ReactNode[] = [];
+  let cursor = 0;
+  for (const { entry, at, length } of matches) {
+    if (at > cursor) {
+      parts.push(
+        <RubyText
+          key={`plain-${cursor}`}
+          text={text.slice(cursor, at)}
+          index={index}
+          show={show}
+        />,
+      );
+    }
+    parts.push(
+      <DictionaryWord
+        key={`word-${at}`}
+        entry={entry}
+        surface={text.slice(at, at + length)}
+        index={index}
+        show={show}
+      />,
+    );
+    cursor = at + length;
+  }
+  if (cursor < text.length) {
+    parts.push(
+      <RubyText key={`plain-${cursor}`} text={text.slice(cursor)} index={index} show={show} />,
+    );
+  }
 
-  const { entry, at, length } = found;
-  const before = text.slice(0, at);
-  const surface = text.slice(at, at + length);
-  const after = text.slice(at + length);
-  return (
-    <>
-      {before ? <RubyText text={before} index={index} show={show} /> : null}
-      <DictionaryWord entry={entry} surface={surface} index={index} show={show} />
-      {after ? <RubyText text={after} index={index} show={show} /> : null}
-    </>
-  );
+  return <span className={className}>{parts}</span>;
 }
 
 function DictionaryWord({

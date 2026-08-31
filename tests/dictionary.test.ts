@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { VocabBook, VocabWord, WordStage } from "../src/content/schema";
-import { buildDictionary, findDictionaryTerm, termOwners } from "../src/lib/dictionary";
+import { buildDictionary, findDictionaryTerms, termOwners } from "../src/lib/dictionary";
 
 /**
  * 辞書は **ことばの 正**から 引く。単語テストの セットは
@@ -101,27 +101,38 @@ describe("buildDictionary", () => {
   });
 });
 
-describe("findDictionaryTerm", () => {
+describe("findDictionaryTerms", () => {
   const dictionary = buildDictionary([
     book([vocab("報告", "ほうこく"), vocab("報告書", "ほうこくしょ"), vocab("会議", "かいぎ")]),
   ]);
 
-  it("1文につき1語だけ返す", () => {
-    expect(findDictionaryTerm("会議で 報告を します。", dictionary)).not.toBeNull();
+  const terms = (text: string) => findDictionaryTerms(text, dictionary).map((m) => m.entry.term);
+
+  /*
+   * **1文の 中の 当たった ことばを ぜんぶ 返す**（2026-08-31 に 決まりを 書きかえた）。
+   * 前は 1文につき 1語だけで、むずかしい 語が かたまった 文では
+   * 辞書に 載って いるのに 引けない 語が 残って いた。
+   */
+  it("1文の 中の ことばを ぜんぶ 返す", () => {
+    expect(terms("会議で 報告を します。")).toEqual(["会議", "報告"]);
+  });
+
+  it("同じ 語が 2回 出たら 2回とも 返す", () => {
+    expect(terms("報告の あとで、もう 一度 報告を します。")).toEqual(["報告", "報告"]);
   });
 
   it("長い語を優先する（「報告書」があるのに「報告」を取らない）", () => {
-    expect(findDictionaryTerm("報告書を 出します。", dictionary)?.entry.term).toBe("報告書");
+    expect(terms("報告書を 出します。")).toEqual(["報告書"]);
   });
 
-  it("同じ長さなら 文の先頭に近いほう", () => {
-    expect(findDictionaryTerm("会議の あとで 報告を します。", dictionary)?.entry.term).toBe(
-      "会議",
-    );
+  it("出て きた 順に 返す（重なりは 出ない）", () => {
+    const found = findDictionaryTerms("会議の あとで 報告を します。", dictionary);
+    expect(found.map((m) => m.at)).toEqual([0, 8]);
+    expect(found[0]?.entry.term).toBe("会議");
   });
 
-  it("載っていない文は null", () => {
-    expect(findDictionaryTerm("きょうは いい てんきです。", dictionary)).toBeNull();
+  it("載っていない文は 空", () => {
+    expect(findDictionaryTerms("きょうは いい てんきです。", dictionary)).toEqual([]);
   });
 
   /*
@@ -147,7 +158,7 @@ describe("findDictionaryTerm", () => {
         ],
       },
     ]);
-    const hit = findDictionaryTerm("答えを 見つけた ときは、手を あげて ください。", verbs);
+    const hit = findDictionaryTerms("答えを 見つけた ときは、手を あげて ください。", verbs)[0];
     expect(hit?.entry.term).toBe("見つける");
     expect(hit?.length).toBe("見つけ".length);
   });
@@ -169,8 +180,8 @@ describe("findDictionaryTerm", () => {
         ],
       },
     ]);
-    expect(findDictionaryTerm("知識が ふえました。", verbs)).toBeNull();
-    expect(findDictionaryTerm("会社を 知る ことが 大切です。", verbs)?.entry.term).toBe("知る");
+    expect(findDictionaryTerms("知識が ふえました。", verbs)).toEqual([]);
+    expect(findDictionaryTerms("会社を 知る ことが 大切です。", verbs)[0]?.entry.term).toBe("知る");
   });
 });
 

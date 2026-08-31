@@ -329,7 +329,7 @@ function BlockView({
       /*
        * 下線つきの説明を出すのは本文だけ。見出し・かじょうがき・ポイント枠にも出すと、
        * 1画面に下線が何本も並び、「どれを見ればよいか」が伝わらなくなる
-       *（1文につき1語という決まりは DictionaryText 側が守る — 設計07 §2.5）。
+       *（本文の どこに 下線を 出すかは DictionaryText 側が 決める — 当たった 語 ぜんぶ）。
        */
       return (
         <div className="flex items-start gap-2">

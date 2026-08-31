@@ -2,7 +2,7 @@
   "kind": "article",
   "id": "kaisha_matsui_junbi",
   "title": "AI松井社長と 話す 準備を しよう",
-  "description": "調べた ことに、あなたの 考えを 足します。松井社長に 話す 5つの ことを 考えます。",
+  "description": "調べた ことに、あなたの 考えを 足します。松井社長に 話す 3つの ことを 考えます。",
   "furigana": [
     [
       "代表取締役社長",
@@ -1393,12 +1393,12 @@
     {
       "kind": "heading",
       "level": 2,
-      "text": "これから 考える 5つの こと"
+      "text": "これから 考える 3つの こと"
     },
     {
       "kind": "cards",
       "tone": "step",
-      "columns": 5,
+      "columns": 3,
       "items": [
         {
           "label": "1",
@@ -1431,28 +1431,6 @@
             "status": "done",
             "src": "/img/articles/kaisha_matsui_junbi/j3.webp",
             "prompt": "card3: a Cambodian man at a makerspace bench plugs a cable into NexMax and into his laptop, and programs him. → scripts/images/kaisha_junbi_nexmax.json"
-          }
-        },
-        {
-          "label": "4",
-          "title": "カンボジアの いい ところは？",
-          "text": "カンボジアの 人や IT学生の いい ところを 考えます。",
-          "image": {
-            "refs": [],
-            "status": "done",
-            "src": "/img/articles/kaisha_matsui_junbi/j4.webp",
-            "prompt": "card4: a Cambodian woman presents the good sides of Cambodia on a screen full of drawings, with picture-rich handouts. → scripts/images/kaisha_junbi_scenes.json"
-          }
-        },
-        {
-          "label": "5",
-          "title": "松井社長に 何を 聞きたい？",
-          "text": "Webサイトだけでは 分からない ことを 質問します。",
-          "image": {
-            "refs": [],
-            "status": "done",
-            "src": "/img/articles/kaisha_matsui_junbi/j5.webp",
-            "prompt": "card5: a Cambodian woman raises her hand to the president, her notebook filled with prepared questions. → scripts/images/kaisha_junbi_matsui.json"
           }
         }
       ]
