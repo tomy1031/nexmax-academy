@@ -49,7 +49,7 @@ const META: Record<ContentRefType, ContentKindMeta> = {
   // ミーティングは たいわ と同じ Zoom風の枠だが、聞き出すのではなく自分のことを話す。
   // 呼び名も行き先も分ける（学習者が「調べて聞く」つもりで入らないように）。
   meeting: { icon: "💬", label: "ミーティング", href: (id) => `/meeting/${id}`, gates: true },
-  wordstage: { icon: "🕹️", label: "ことば", href: (id) => `/arcade/${id}`, gates: true },
+  wordstage: { icon: "🕹️", label: "ことば", href: (id) => `/wordtest/${id}`, gates: true },
   // リンク（1枚で完結する練習ページ・外のサイト）。
   // 単独のURL は ほかの 種別と 同じく **ステージの中の教材なら 本来のURLへ 送り返す**
   // （`src/app/link/[id]/page.tsx`）。2026-08-23 まで この ルートが 無く、記事の中の

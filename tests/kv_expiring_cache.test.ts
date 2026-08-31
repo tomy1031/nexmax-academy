@@ -80,11 +80,11 @@ describe("作りおきの置き場（期限つき）", () => {
   });
 
   it("置く鍵が 元の実装の 鍵と 同じ（ここがずれると 永久に 当たらない）", async () => {
-    await cache.set("/arcade/kaisha", { value: "x" } as never, "cache");
+    await cache.set("/wordtest/kaisha", { value: "x" } as never, "cache");
 
     // 元の実装に 同じ 引数で 鍵を 作らせ、1文字も 違わない ことを 見る
     const expected = (original as unknown as { getKVKey(k: string, t?: string): string }).getKVKey(
-      "/arcade/kaisha",
+      "/wordtest/kaisha",
       "cache",
     );
     expect(puts[0]?.key).toBe(expected);

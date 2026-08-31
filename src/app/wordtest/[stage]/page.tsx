@@ -14,7 +14,7 @@ export const revalidate = 300;
 /**
  * git 由来の ことばはビルド時に切り出す（実行時のファイル読みを起こさない）。
  * ステージIDと 単語ステージID の どちらでも 開けるように、両方を 並べる
- *（古いリンク `/arcade/<単語ステージID>` を 切らない）。
+ *（古いリンク `/wordtest/<単語ステージID>` を 切らない）。
  * DB由来（スタジオで公開したもの）はここに現れないが、dynamicParams の既定により
  * 初回アクセスで生成され、以後は revalidate の間隔でキャッシュされる。
  */
@@ -40,7 +40,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { stage: id } = await params;
   const stage = await resolve(id);
-  return { title: stage ? `${stage.title} | ことばアーケード` : "ことばアーケード" };
+  return { title: stage ? `${stage.title} | 単語テスト` : "単語テスト" };
 }
 
 export default async function ArcadeStagePage({ params }: { params: Promise<{ stage: string }> }) {
@@ -54,7 +54,7 @@ export default async function ArcadeStagePage({ params }: { params: Promise<{ st
    *
    * ここは ステージの「さいしょに ことばを おぼえる」から 直行して 来る 画面なのに、
    * 出口が マップしか 無く、つづきの 教材が ある ステージを 地図の 上から
-   * 探し直させて いた。URL（`/arcade/<id>`）だけ 覚えて 開いた 人にも 同じ 道が
+   * 探し直させて いた。URL（`/wordtest/<id>`）だけ 覚えて 開いた 人にも 同じ 道が
    * 出るよう、出どころは クエリでなく データから 引く。
    *
    * どの ステージにも 付いて いない ことば（先生が 作りかけの もの・横断の セット）は
@@ -63,11 +63,11 @@ export default async function ArcadeStagePage({ params }: { params: Promise<{ st
   const owner = wordStageOwner(sets[0]!.id, stages) ?? wordStageOwner(id, stages);
 
   /*
-   * 手わたすのは **その ステージの セットだけ**。ステージから 来た 人に
-   * よその 課の ことばを 並べても 選べない（ぜんぶ 見たい 人の 入口は /arcade）。
+   * 手わたすのは **その ステージの ことばだけ**。ステージから 来た 人に
+   * よその 課の ことばを 並べても 選べない（ぜんぶ 見たい 人の 入口は /wordtest）。
    * どの ステージにも 付いて いない ことばの ときだけ、これまでどおり 全部を わたす。
    *
-   * セットが 2つ以上 なら `initialStageId` を 渡さない＝**えらぶ 画面から** 始まる。
+   * 1ステージ＝1つ なので（願い #280）、ここは いつも やりかた選びから 始まる。
    */
   const all = learnerWordStages(stages, words);
 

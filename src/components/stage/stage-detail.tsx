@@ -177,9 +177,9 @@ export function StageDetail({
         ことばは **教材より 先**に置く（2026-08-20 の指定「コンテンツの前に単語を学習したい」）。
         1本の 札は 見出しと 語数だけの 1行に する——大きな カードを 2列で 並べる 意味は 無い。
 
-        セット（初級・中級…）が あれば **その ぶんだけ 行が ならぶ**（願い #203・
-        2026-08-25「ステージトップは複数表示」）。字は セット名に する——同じ ステージ名が
-        3行 ならんでも えらべない。
+        セット（初級・中級…）で 分けるのは やめた（願い #280・2026-08-31）。
+        ぶら下がって いる 単語ステージが 何本 でも、ここに 出る 行は **1つ**——
+        その ステージの 単語テスト。
       */}
       {wordStages.length > 0 && (
         <section className="mt-6">
@@ -189,7 +189,7 @@ export function StageDetail({
               <li key={word.id}>
                 <Link
                   prefetch={false}
-                  href={`/arcade/${word.id}`}
+                  href={`/wordtest/${word.id}`}
                   className="card-island flex items-center gap-3 p-4 transition hover:-translate-y-0.5"
                 >
                   <span aria-hidden className="text-2xl leading-none">
@@ -213,7 +213,7 @@ export function StageDetail({
                     />
                   </span>
                   <span className="btn-game shrink-0 px-4 py-1.5 text-sm [--btn-face:#ffc93c] [--btn-shadow:#f0a819]">
-                    あそぶ
+                    スタート
                   </span>
                 </Link>
               </li>

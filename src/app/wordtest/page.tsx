@@ -4,7 +4,7 @@ import { listStages, listWordStages } from "@/lib/content";
 import { learnerWordStages } from "@/lib/wordstage-merge";
 
 export const metadata: Metadata = {
-  title: "ことばアーケード | Japanese IT Pathway",
+  title: "単語テスト | Japanese IT Pathway",
 };
 
 /**
@@ -16,7 +16,7 @@ export const revalidate = 300;
 
 /**
  * 単語だけで開いたときの入り口。ステージ選択から始まる（旧アプリと同じ流れ）。
- * レッスンから来たときは /arcade/[stage] で直接モード選択に入る。
+ * レッスンから来たときは /wordtest/[stage] で直接モード選択に入る。
  */
 export default async function ArcadeIndexPage() {
   const [stages, words] = await Promise.all([listStages(), listWordStages()]);

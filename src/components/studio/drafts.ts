@@ -85,7 +85,7 @@ export function emptyWordStage(): WordStage {
     id: "",
     title: "",
     description: "",
-    // ことばアーケードの景色。既存の単語ステージと同じ並びにしておく
+    // 単語テストの景色。既存の単語ステージと同じ並びにしておく
     //（ここだけ違うと、同じゲームなのに課によって見た目が変わる）。
     fieldSequence: ["forest", "sky", "space"],
     questionCount: 6,

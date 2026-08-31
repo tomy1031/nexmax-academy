@@ -79,7 +79,7 @@ docs/skills/      # 作業手順書（ツール共通の本体。.claude/skills/
 /houkoku                 ステージのトップ（ステージIDがURLの1段目）
 /houkoku/manga           その中の教材（同じ種別が1つなら ID を付けない）
 /houkoku/listening-<ID>  同じ種別が2つ以上あるときだけ ID を足す
-/arcade/<ID>             ことばアーケードは独立したアプリなので別（ステージから直行できる）
+/wordtest/<ID>           単語テストは独立したアプリなので別（ステージから直行できる）
 /dictionary              辞書＝ことばの正（content/vocab）を term で畳んだもの（保存先は増やさない）
 ```
 
@@ -88,7 +88,7 @@ docs/skills/      # 作業手順書（ツール共通の本体。.claude/skills/
   `stageSchema` の `RESERVED_STAGE_IDS` が保存の時点で弾く。
   **`src/app/` に1段目のルートを足したら、この一覧にも足す**（足し忘れると、その名前の
   ステージに永久にたどり着けない。静的ルートが必ず勝つため）。
-- 古いURL（`/stage/<id>`・`/manga/<id>` など）は消さず、本来のURLへリダイレクトする。
+- 古いURL（`/stage/<id>`・`/manga/<id>`・`/arcade/<id>` など）は消さず、本来のURLへリダイレクトする。
 - **`/[stage]` は ISR なので 404 もキャッシュされる。** 新ルート追加直後の 404/200 の揺れは
   `revalidate` 待ちで直る。焦って別の原因を探さない（2026-08-06 実発生）。
 - 先生向けの画面は `/admin` に集約（サイドバー）。`/studio` は `/admin/stages` へ送る。

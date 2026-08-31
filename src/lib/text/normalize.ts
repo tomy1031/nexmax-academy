@@ -168,7 +168,7 @@ function acceptMatches(input: string, accept: string): boolean {
  * 逆に少し甘く通る（偽陽性）ぶんは、直後に必ず読ませる解説が受け止める。
  * だから **迷ったら正解に倒す**——丁寧語の有無・文で答えたかどうかでは落とさない。
  *
- * ただし ことばアーケードの読み判定（readingMatches）はここを通さない。
+ * ただし 単語テストの読み判定（readingMatches）はここを通さない。
  * あちらは「読みそのもの」を見る場なので、厳密さを保つ。
  */
 export function answerMatches(input: string, accepted: readonly string[]): boolean {

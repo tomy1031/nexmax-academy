@@ -10,7 +10,7 @@ import { expect, test, type Locator } from "@playwright/test";
  * 見張るのは **札の字ではなく 行き先**。この3つが 実在した:
  *  - 見つからない URL に 行き先が 1つも 無い（英語の 404 に 落ちる）
  *  - 「← まなびマップ」の 札が `/`（タイトル画面）を 指す
- *  - ことばアーケードが、ステージから 来た 人も いつも マップへ 出す
+ *  - 単語テストが、ステージから 来た 人も いつも マップへ 出す
  *
  * 見るのは **リンクの 行き先（href）**。押した あとの URL では 見張れない——
  * この検証は 鍵ゼロの デモモードで 走るので、`/map` は 中身を 出す 前に
@@ -60,12 +60,12 @@ test("ステージに 入って いない スライドにも 戻る 道が あ�
 });
 
 /**
- * ことばアーケードは ステージから 直行できる（`/[stage]` の「さいしょに ことばを
+ * 単語テストは ステージから 直行できる（`/[stage]` の「さいしょに ことばを
  * おぼえる」）。そこから 来た 人を マップへ 出すと、つづきの 教材が ある ステージを
  * 地図の 上から 探し直す ことに なる。
  */
-test("ステージから 入った ことばアーケードは、その ステージへ もどる", async ({ page }) => {
-  await page.goto("/arcade/hajimari_kotoba");
+test("ステージから 入った 単語テストは、その ステージへ もどる", async ({ page }) => {
+  await page.goto("/wordtest/hajimari_kotoba");
 
   const back = page.getByRole("button", { name: /もどる/ });
   await back.scrollIntoViewIfNeeded();
@@ -81,7 +81,7 @@ test("ステージから 入った ことばアーケードは、その ステ�
  * 塞がない（ステージから 来た ときだけ 行き先が 変わる）。
  */
 test("ことばだけで 開いた ときは、これまでどおり グループ選びに もどる", async ({ page }) => {
-  await page.goto("/arcade");
+  await page.goto("/wordtest");
   await page
     .getByRole("button", { name: /はじまり/ })
     .first()

@@ -174,7 +174,7 @@ export function StageEditor({
 
       {/*
         単語ステージは手で書くと1課ぶんで1時間仕事になる。作られないままだと
-        ステージから「ことばで あそぶ」へ行く道が開かないので、ここから作れるようにする。
+        ステージから「単語テスト」へ行く道が開かないので、ここから作れるようにする。
         作ったIDは上の一覧（wordStageIds）に足す——ステージ側に足さないと、
         単語ステージだけができて、どのステージからも開けないものになる。
       */}
@@ -417,7 +417,7 @@ function AddPanel({
 /**
  * ひもづける単語ステージ。
  *
- * 手で ID を打たせない（打ちまちがえると、ステージから「ことばで あそぶ」が消える）。
+ * 手で ID を打たせない（打ちまちがえると、ステージから「単語テスト」が消える）。
  * 選ぶだけにして、候補は いま存在する単語ステージから出す。
  */
 function WordStages({
@@ -452,7 +452,7 @@ function WordStages({
                 <span className="text-navy block text-sm font-black">
                   {titleById.get(id) ?? id}
                 </span>
-                <span className="text-ink-faint block text-xs font-bold">/arcade/{id}</span>
+                <span className="text-ink-faint block text-xs font-bold">/wordtest/{id}</span>
               </span>
               <MiniButton
                 tone="danger"

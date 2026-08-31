@@ -3,7 +3,7 @@ import { join } from "node:path";
 import { expect, test, type Locator, type Page } from "@playwright/test";
 
 /**
- * ことばアーケード — **⭕と ❌ が ひと目で 分かる**（2026-08-26 の 指摘2・3・5・6）
+ * 単語テスト — **⭕と ❌ が ひと目で 分かる**（2026-08-26 の 指摘2・3・5・6）
  *
  * ユーザーの ことば:
  *   「誤った語を入れても正解になってしまう」
@@ -18,7 +18,7 @@ import { expect, test, type Locator, type Page } from "@playwright/test";
 
 /** 8語の 小さな セット。1回の 通しが 短い。 */
 const SET_ID = "hajimari_kotoba";
-const SET = `/arcade/${SET_ID}`;
+const SET = `/wordtest/${SET_ID}`;
 
 /** 1問の こたえ（正解の 1語と、誤答3つ）。 */
 interface Answer {

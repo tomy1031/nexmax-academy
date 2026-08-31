@@ -50,6 +50,10 @@ const nextConfig: NextConfig = {
       // ログインの画面は無くなり、タイトル画面（＝最初の画面）がログインを兼ねる（願い #13）。
       // 配ったリンクとブックマークを 404 にしないため、消さずに送る。
       { source: "/login", destination: "/", permanent: false },
+      // 名前が「ことばアーケード」から「単語テスト」に変わり、URLも移した（願い #280）。
+      // 先生が授業で配ったリンクとブックマークを 404 にしないため、消さずに送る。
+      { source: "/arcade", destination: "/wordtest", permanent: true },
+      { source: "/arcade/:id", destination: "/wordtest/:id", permanent: true },
     ];
   },
 };

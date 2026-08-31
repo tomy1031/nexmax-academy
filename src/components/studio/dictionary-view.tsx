@@ -86,7 +86,7 @@ export function DictionaryView({
           </button>
         </div>
         <p className="text-ink-soft mt-1 text-xs font-bold">
-          ことばアーケードで あそぶ 単位です。ステージの 本文から つくるときは、 ステージを
+          単語テストの 1ステージぶんの 単位です。ステージの 本文から つくるときは、 ステージを
           ひらいて「ことばを ぬき出す」を つかいます。
         </p>
 
@@ -104,17 +104,17 @@ export function DictionaryView({
                   <p className="text-ink-soft text-xs font-bold">
                     {stage.words.length}語・{stage.questionCount}問 出題
                   </p>
-                  <p className="text-ink-faint text-xs font-bold">/arcade/{stage.id}</p>
+                  <p className="text-ink-faint text-xs font-bold">/wordtest/{stage.id}</p>
                 </div>
                 <SourceBadge status={dbStatusOf("wordstage", stage.id)} />
                 {/* 新しいタブで開く（書きかけの下書きを失わないため） */}
                 <Link
-                  href={`/arcade/${stage.id}`}
+                  href={`/wordtest/${stage.id}`}
                   target="_blank"
                   rel="noreferrer"
                   className="border-hairline text-navy rounded-full border-2 bg-white px-4 py-1 text-xs font-black"
                 >
-                  あそぶ ↗
+                  スタート ↗
                 </Link>
                 <MiniButton tone="accent" onClick={() => onOpen(stage.id)}>
                   ✎ ひらく
