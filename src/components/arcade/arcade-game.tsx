@@ -6,7 +6,7 @@ import type { Word, WordStage } from "@/content/schema";
 import type { WordGroupHead } from "@/lib/wordstage-merge";
 import { FeedbackMessage } from "@/components/feedback-message";
 import { RubyText } from "@/components/ruby-text";
-import { buildFuriganaIndex } from "@/lib/text/furigana";
+import { buildFuriganaIndex, type FuriganaEntry } from "@/lib/text/furigana";
 import { isHiraganaInputReady } from "@/lib/text/normalize";
 import { createProgressStore, recordContentProgress } from "@/lib/progress/store";
 import {
@@ -110,6 +110,14 @@ export function ArcadeGame({
    */
   backTo,
   /**
+   * 出口の 札に 出す **ステージの 名前**（`backTo` の 行き先の 名前）。
+   *
+   * セットの 見出しから 借りない——セット名の 付いた ものは 自分の 見出しを
+   * 持って いる ので（「報連相：連絡の ことば」）、押した 先（`/renraku`）と
+   * 札の 字が ずれる。行き先を 決める 側が 名前も わたす。
+   */
+  backTitle,
+  /**
    * 一覧（`/wordtest`）の 行。**1ステージ 1行**で、中に セットが 入って いる。
    *
    * これを 渡すと 画面が **二段**に なる（願い #280 の 直し・2026-08-31
@@ -125,6 +133,7 @@ export function ArcadeGame({
   stages: readonly WordStage[];
   initialStageId?: string;
   backTo?: string;
+  backTitle?: { title: string; furigana?: readonly FuriganaEntry[] };
   groups?: readonly WordGroupHead[];
 }) {
   const router = useRouter();
@@ -141,14 +150,14 @@ export function ArcadeGame({
   const furigana = useMemo(() => buildFuriganaIndex(stage?.furigana ?? []), [stage?.furigana]);
 
   /*
-   * セットを えらぶ 画面から 出る ときの 行き先の 名前。
-   * ステージから 来た ときは 手わたされる セットが **その ステージの ぶんだけ**で、
-   * どれも 見出しに ステージの 名前を 持つ ので、先頭から 借りれば よい。
+   * セットを えらぶ 画面から 出る ときの 行き先の 名前。**わたされた 名前**を 使い、
+   * 無ければ 先頭の セットの 見出しで 代える（どの ステージにも 付いて いない
+   * ことばには ステージの 名前が 無い）。
    */
   const ownerTitle = useMemo(() => {
-    const head = stages[0];
+    const head = backTitle ?? stages[0];
     return head ? { title: head.title, furigana: buildFuriganaIndex(head.furigana) } : null;
-  }, [stages]);
+  }, [backTitle, stages]);
 
   const dispatch = useCallback((action: ArcadeAction) => {
     setSession((prev) => (prev ? arcadeReducer(prev, action) : prev));

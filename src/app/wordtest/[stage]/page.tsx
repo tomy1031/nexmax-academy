@@ -90,6 +90,14 @@ export default async function ArcadeStagePage({ params }: { params: Promise<{ st
       groups={owner ? undefined : all.heads}
       initialStageId={sets.length === 1 ? sets[0]!.id : undefined}
       backTo={owner ? `/${owner.id}` : undefined}
+      backTitle={
+        owner
+          ? {
+              title: owner.title,
+              furigana: [...(owner.furigana ?? []), [owner.title, owner.reading]],
+            }
+          : undefined
+      }
     />
   );
 }
