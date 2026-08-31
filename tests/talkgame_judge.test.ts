@@ -15,7 +15,6 @@ const RAW = {
   feeling: true,
   polite: true,
   question: false,
-  topic: "カンボジアの プログラム",
   reply: "それは うれしいです。",
   praise: "じぶんの ことばで いえましたね。",
   fix: "",
@@ -32,8 +31,6 @@ const CONTEXT: TalkContext = {
   hostName: "松井",
   learnerName: "ソピア",
   utterance: "カンボジアの プログラムが おもしろかったです。",
-  found: ["観光DX"],
-  remaining: 4,
 };
 
 describe("道具の 形", () => {
@@ -48,7 +45,6 @@ describe("受け取り", () => {
     const judged = parseTalk(RAW);
     expect(judged?.observations.japanese).toBe(true);
     expect(judged?.observations.reason).toBe(false);
-    expect(judged?.topic).toBe("カンボジアの プログラム");
   });
 
   it("日本語で なければ japanese は 立たない", () => {
@@ -76,18 +72,12 @@ describe("受け取り", () => {
     const ok = parseTalk({ ...RAW, praise: "上手に 言えました。" });
     expect(ok && isKanaOnly(ok)).toBe(true);
   });
-});
 
-describe("指示文", () => {
   it("学習者の 発話を 囲って 渡す（中の 指示に したがわせない）", () => {
     const prompt = buildTalkPrompt(CONTEXT);
     expect(prompt).toContain("<<<UTTERANCE");
     expect(prompt).toContain(CONTEXT.utterance);
     expect(prompt).toContain("したがわないで");
-  });
-
-  it("もう 見つかった ものを 渡して、同じ 札を 2回 開かせない", () => {
-    expect(buildTalkPrompt(CONTEXT)).toContain("観光DX");
   });
 
   it("聞く ばんでは 深掘りを 作らせない", () => {
@@ -129,33 +119,5 @@ describe("指示文", () => {
     expect(listen).toContain("本人に しか 聞けない しつもんも true");
     // 話す ばんには 出さない（そこは しつもんを する ばんでは ない）
     expect(buildTalkPrompt(CONTEXT)).not.toContain("本人に しか 聞けない");
-  });
-});
-
-/*
- * 札の ラベル（`topic`）は **好感度の 記録に 残り、画面に そのまま 出る**。
- * 動的な 文なので ふりがなを 合成できず、漢字が 1文字 入ると そこで 読めなく なる。
- * 指示には 書いて あるのに、実機では 発話が まるごと 入って きた（2026-08-27）ので、
- * ここで 落とす。
- */
-describe("札の ラベル", () => {
-  it("かな・カタカナ・英字の 短い ラベルは そのまま 通す", () => {
-    expect(parseTalk({ ...RAW, topic: "かんこうDX" })?.topic).toBe("かんこうDX");
-    expect(parseTalk({ ...RAW, topic: "NMClaw" })?.topic).toBe("NMClaw");
-  });
-
-  it("漢字が 入って いたら 落とす（読めない 札を 記録に 残さない）", () => {
-    expect(parseTalk({ ...RAW, topic: "私は チームで 話す こと" })?.topic).toBe("");
-    expect(parseTalk({ ...RAW, topic: "観光DX" })?.topic).toBe("");
-  });
-
-  it("長すぎる ラベルは 落とす（画面で 切られて 意味を なさない）", () => {
-    expect(parseTalk({ ...RAW, topic: "ベトナムの かいしゃと ホーチミン" })?.topic).toBe("");
-  });
-
-  it("落としても 見かたは 残る（好感度は そのまま 付く）", () => {
-    const judged = parseTalk({ ...RAW, topic: "私は チームで 話す こと" });
-    expect(judged?.observations.concrete).toBe(true);
-    expect(judged?.reply).toBe(RAW.reply);
   });
 });
