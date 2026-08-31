@@ -17,8 +17,10 @@
  * 実行: node scripts/gen_hourensou_content.mjs
  * そのあと `npm run gen:content` で バンドルへ 焼き込む。
  */
-import { mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
+
+import { createImageSlots } from "./lib/image_ledger.mjs";
 
 const ROOT = join(import.meta.dirname, "..");
 
@@ -170,6 +172,21 @@ const FURIGANA = {
   時: "じ",
   分: "ふん",
   日: "にち",
+  /*
+   * 一字の 単位（上）は **読みの ちがう 使い方**に そのまま 当たって しまう。
+   * 「分かりました」は ふんかりました、「テストの 日に」は にちに に なる。
+   * 2026-08-30 の 読み監査（コミット 820cf9f / a1e2edb）で 出た ぶんを、
+   * **長い 見出し**で 上書きする（furiganaFor は 長い 語から 先に 引く）。
+   * 直したのは content の JSON だけ だったので、この 生成器を 走らせると
+   * 静かに 元へ 戻って いた——**辞書は ここが 正**。
+   */
+  分か: "わか",
+  日に: "ひに",
+  日から: "ひから",
+  三日: "みっか",
+  入る: "はいる",
+  少な: "すくな",
+  使い分け: "つかいわけ",
   週間: "しゅうかん",
   月: "げつ",
   行: "ぎょう",
@@ -428,72 +445,15 @@ function furiganaFor(...texts) {
  * なので、管理画面から 押しても ローカルで 流しても 同じ 絵に なる。
  * ------------------------------------------------------------------ */
 
-/** 台帳を ぜんぶ 読み、`/img/...` → { prompt, refs } の 索引に する。 */
-function loadImageLedgers() {
-  const dir = join(ROOT, "scripts", "images");
-  const index = new Map();
-  for (const file of readdirSync(dir).filter((f) => f.endsWith(".json"))) {
-    let ledger;
-    try {
-      ledger = JSON.parse(readFileSync(join(dir, file), "utf8"));
-    } catch {
-      continue; // 台帳では ない JSON は 飛ばす
-    }
-    if (!Array.isArray(ledger.scenes)) continue;
-    for (const scene of ledger.scenes) {
-      if (!scene.dest || !scene.scene) continue;
-      // `public/img/...` は 配信では `/img/...`
-      const url = scene.dest.replace(/^public/, "");
-      const parts = [ledger.style, scene.scene];
-      if (Array.isArray(scene.text) && scene.text.length > 0) {
-        parts.push(`The Japanese words in this picture are exactly: ${scene.text.join(" / ")}.`);
-      }
-      parts.push(ledger.noText, ledger.negative);
-      index.set(url, {
-        prompt: parts.filter(Boolean).join(" "),
-        refs: (ledger.refs ?? []).map((r) => r.replace(/^public/, "")),
-      });
-    }
-  }
-  return index;
-}
-
-const IMAGE_LEDGER = loadImageLedgers();
-
-/** 作り直しの 台帳に まだ 載って いない 絵（見つけたら 台帳に 足す）。 */
-const imgWithoutPrompt = new Set();
-
 /**
- * 絵の スロット（もう ある 絵）。台帳に あれば プロンプトと 参照画像も 付ける。
- *
- * `status` は `"done"` の まま に する。**同じ パスに 新しい 絵を 上書きすれば
- * 画面が 変わる**ので、絵が 届いた ときに JSON を 書き換えなくて よい。
+ * 台帳の 読み方は `scripts/lib/image_ledger.mjs`（**開発の 工程の 生成器と 共有**）。
+ * `img()` は もう ある 絵、`emptySlot()` は まだ 絵の 無い スロット
+ * （画面は 点線わくを 出す）。`status:"done"` の ままに して あるので、
+ * **同じ パスに 新しい 絵を 上書きすれば 画面が 変わる**。
  */
-/**
- * まだ 絵の 無い スロット（画面は 点線わくを 出す）。プロンプトと 参照は **台帳が 正**。
- *
- * ここに プロンプトを 直書きして いた ころ、まんがの 9コマは ヘンディの 見た目を
- * 「light blue shirt, ID lanyard」と 書いて いて、人物カードの「紺の スーツ・ネクタイ・
- * ストラップ無し」と **食い違った まま 9コマ ぜんぶに 焼かれて いた**。
- * 台帳から 引けば、カードを 直した 日に ここも そろう。
- */
-const emptySlot = (url) => {
-  const found = IMAGE_LEDGER.get(url);
-  if (!found) {
-    imgWithoutPrompt.add(url);
-    return { refs: [], status: "empty" };
-  }
-  return { prompt: found.prompt, refs: found.refs, status: "empty" };
-};
-
-const img = (src) => {
-  const found = IMAGE_LEDGER.get(src);
-  if (!found) {
-    imgWithoutPrompt.add(src);
-    return { src, refs: [], status: "done" };
-  }
-  return { src, prompt: found.prompt, refs: found.refs, status: "done" };
-};
+// `emptySlot()`（まだ 絵の 無い スロット）も 共有の 部品に あるが、いまは 45枚 すべて
+// 置いて あるので ここでは 使わない。点線わくを 出す 教材が また 増えたら 足す。
+const { img, missing: imgWithoutPrompt } = createImageSlots();
 
 const write = (dir, id, data) => {
   const target = join(ROOT, "content", dir);
@@ -1959,7 +1919,7 @@ write(
       maxHearts: 6,
       threshold: 5,
       reward:
-        "わたしの はじめての 報告の 話です。日本へ 来て 1か月目、わたしは バグを 3日 隠しました。自分で 直せると 思って いたからです。でも 直せなくて、テストの 日に システムが 止まりました。あの 日から、わたしは 悪い ニュースを いちばん 先に 言う ことに しました。すると、みんなが わたしを 手伝って くれるように なりました。悪い ニュースを 早く 言う 人は、しんらいされる 人に なりますよ。",
+        "わたしの はじめての 報告の 話です。日本へ 来て 1か月目、わたしは バグを 三日 隠しました。自分で 直せると 思って いたからです。でも 直せなくて、テストの 日に システムが 止まりました。あの 日から、わたしは 悪い ニュースを いちばん 先に 言う ことに しました。すると、みんなが わたしを 手伝って くれるように なりました。悪い ニュースを 早く 言う 人は、しんらいされる 人に なりますよ。",
     },
   }),
 );

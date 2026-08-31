@@ -11,16 +11,23 @@
  * ファイルごとに 書くと 1か所 直した ときに 残りが 古いまま 残る。
  * ここで 1つの 辞書を 持ち、使う 語だけを 各ファイルへ 配る。
  *
- * ## 絵は 旧アプリの ものを 縮めて 使う
+ * ## 絵は いま 当て画像（作り直しの 指示は 台帳に ある）
  * 元は 4400px・7MB の PNG が 10枚（合計 26MB）。1800px の WebP に して 914KB。
- * 中に 日本語が 焼き込まれて いるが、**当て画像として そのまま 使う**——
- * 描き直しを 待たない（docs/constraints.md 2026-08-29 の 決めごと）。
- * 説明の 図は `size: "wide"` で 本文の 幅いっぱいに 出し、⛶ で ひろげられる。
+ * 移植の 時点では **当て画像として そのまま 使う**ことに した——描き直しを 待たない
+ * （docs/constraints.md 2026-08-29 の 決めごと）。説明の 図は `size: "wide"` で
+ * 本文の 幅いっぱいに 出し、⛶ で ひろげられる。
+ *
+ * ただし 当て画像は **英語の 副題と 説明文が びっしり**入って いて、1800px を
+ * 1048px に 縮めると どれも 読めない。作り直しの 指示は
+ * `scripts/images/kaihatsu_{zukai,scenes}.json`（台帳）に あり、
+ * `docs/teaching/kaihatsu_絵の作り直し台帳.md` が そこから 出る。生成は ローカル。
  *
  *     node scripts/gen_kaihatsu_content.mjs
  */
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
+
+import { createImageSlots } from "./lib/image_ledger.mjs";
 
 const ROOT = join(import.meta.dirname, "..");
 const IMG = "/img/kaihatsu";
@@ -253,8 +260,17 @@ function furiganaFor(...texts) {
     .sort((a, b) => b[0].length - a[0].length);
 }
 
-/** 絵の スロット（旧アプリから 縮めて 移した 当て画像）。 */
-const img = (name) => ({ src: `${IMG}/${name}.webp`, refs: [], status: "done" });
+/**
+ * 絵の スロット。**プロンプトと 参照画像は 台帳が 正**
+ * （`scripts/images/kaihatsu_*.json`）。
+ *
+ * いま 画面に 出て いるのは 旧アプリから 縮めて 移した 当て画像で、作り直しは
+ * ローカルで 行う（`docs/teaching/kaihatsu_絵の作り直し台帳.md`）。`status` は
+ * `"done"` の ままに して あるので、**同じ パスに 新しい 絵を 上書きすれば
+ * 画面が 変わる**——この ファイルを 触らなくて よい。
+ */
+const { img: imgBySrc, missing: imgWithoutPrompt } = createImageSlots();
+const img = (name) => imgBySrc(`${IMG}/${name}.webp`);
 
 const write = (dir, id, data) => {
   const target = join(ROOT, "content", dir);
@@ -449,7 +465,9 @@ write(
         kind: "paragraph",
         text: "できあがった システムを 本番環境に 置いて、ユーザーが 使える 状態に します。",
       },
-      { kind: "image", ...img("deploy"), caption: "デプロイの 4つの 場面" },
+      // 絵は 3つの 場面（下の カードと 同じ 数）。当て画像は 4つ 描いて あり、
+      // 学習者は **絵に 4つ・カードに 3つ**を 見せられて いた。作り直しで 3つに そろえる。
+      { kind: "image", ...img("deploy"), caption: "デプロイの 3つの 場面" },
       {
         kind: "cards",
         columns: 3,
@@ -574,3 +592,8 @@ write("stages", "kaihatsu", {
     "大きな かわの そばに ひろがる みやこです。",
   ]),
 });
+
+if (imgWithoutPrompt.size > 0) {
+  console.log(`\n⚠ 台帳に まだ 無い 絵 ${imgWithoutPrompt.size}枚:`);
+  for (const src of [...imgWithoutPrompt].sort()) console.log(`   ${src}`);
+}
