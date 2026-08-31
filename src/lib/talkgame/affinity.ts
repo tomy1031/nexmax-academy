@@ -89,6 +89,51 @@ export const TALK_POINTS: Readonly<Record<keyof TalkObservations, number>> = {
   question: 0,
 };
 
+/**
+ * どの しつもんでも 同じ ように 見る もの（話す ばん）。
+ *
+ * 日本語で 声を 出した・聞かれた ことに かみ合って いる・ていねいに 言えた——
+ * この 3つは しつもんの 中身と 関係なく 成り立つ ので、教材には 書かせない。
+ */
+export const ALWAYS_POINTS: Readonly<Record<keyof TalkObservations, number>> = {
+  japanese: 2,
+  onTopic: 2,
+  concrete: 0,
+  reason: 0,
+  feeling: 0,
+  polite: 1,
+  question: 0,
+};
+
+/** しつもんが えらんだ「見る ところ」1つぶんの 点（%）。 */
+export const FOCUS_POINT = 3;
+
+/** しつもんごとに えらべる 観点（`talkFocusKeys` と 同じ 並び）。 */
+export type TalkFocus = "concrete" | "reason" | "feeling";
+
+/**
+ * しつもん 1本ぶんの 点表を 作る（2026-08-31 の 指定「質問ごとに 評価する 観点」）。
+ *
+ * ## なぜ しつもんごとに 変えるか
+ * ぜんぶ 同じ 表で 見て いた ころ、「あなたの いい ところは 何ですか」にも
+ * **会社の 中身（concrete）が +3%** で かかって いた。その しつもんは 会社の ことを
+ * 聞いて いないのに、言わなければ 3% ぶん 空席に なる——学習者から すると
+ * 「同じ ように 答えたのに 点が ちがう」に なり、ものさしが 見えない。
+ *
+ * 山場（`focus`）は どれも 同じ 重さ（`FOCUS_POINT`）に する。重みまで 教材ごとに
+ * 動かせる ように すると、しつもんを 1本 足すたびに 満タンまでの 道のりが 黙って 変わる。
+ *
+ * 1ターンの 最大は `2+2+1+3+3 = 11`（`focus` が 2つの とき）。話す ばんを 出る ときの
+ * 好感度が `openAt + 11` を 超えない、という `applyTurn` の 見立ては そのまま 保たれる。
+ */
+export function focusPoints(
+  focus: readonly TalkFocus[],
+): Readonly<Record<keyof TalkObservations, number>> {
+  const table = { ...ALWAYS_POINTS };
+  for (const key of focus) table[key] = FOCUS_POINT;
+  return table;
+}
+
 export const LISTEN_POINTS: Readonly<Record<keyof TalkObservations, number>> = {
   japanese: 1,
   onTopic: 3,
@@ -112,14 +157,29 @@ export function clampPercent(value: number, goal: number): number {
   return Math.max(0, Math.min(goal, Math.round(value)));
 }
 
-/** その ばんの 観点表。 */
-export function pointsTable(round: TalkRound): Readonly<Record<keyof TalkObservations, number>> {
-  return round === "listen" ? LISTEN_POINTS : TALK_POINTS;
+/**
+ * その ばんの 観点表。
+ *
+ * 話す ばんで しつもんが「見る ところ」を 持って いれば、その しつもんの 表を 作る。
+ * 持って いなければ これまでの 共通の 表（`TALK_POINTS`）——前からの 教材が
+ * そのまま 同じ 見え方で 動く ように する ため。
+ */
+export function pointsTable(
+  round: TalkRound,
+  focus?: readonly TalkFocus[],
+): Readonly<Record<keyof TalkObservations, number>> {
+  if (round === "listen") return LISTEN_POINTS;
+  if (!focus || focus.length === 0) return TALK_POINTS;
+  return focusPoints(focus);
 }
 
 /** 1回の 発話で 上がる ぶん（%）。 */
-export function gainFor(round: TalkRound, observations: TalkObservations): number {
-  const table = pointsTable(round);
+export function gainFor(
+  round: TalkRound,
+  observations: TalkObservations,
+  focus?: readonly TalkFocus[],
+): number {
+  const table = pointsTable(round, focus);
   let total = 0;
   for (const [key, on] of Object.entries(observations) as [keyof TalkObservations, boolean][]) {
     if (on) total += table[key];
@@ -131,8 +191,9 @@ export function gainFor(round: TalkRound, observations: TalkObservations): numbe
 export function breakdown(
   round: TalkRound,
   observations: TalkObservations,
+  focus?: readonly TalkFocus[],
 ): { key: keyof TalkObservations; points: number; on: boolean }[] {
-  const table = pointsTable(round);
+  const table = pointsTable(round, focus);
   return (Object.keys(table) as (keyof TalkObservations)[])
     .filter((key) => table[key] > 0)
     .sort((a, b) => table[b] - table[a])
@@ -237,12 +298,14 @@ export function applyTurn(
   plan: TalkPlan,
   observations: TalkObservations,
   topic: string | null,
+  /** いま 聞かれて いる しつもんの「見る ところ」（話す ばんだけ 効く）。 */
+  focus?: readonly TalkFocus[],
 ): TalkStep {
   if (state.round === "clear") {
     return { state, gained: 0, lifted: 0, discovered: null, turned: null, judgedAs: "clear" };
   }
   const judgedAs = state.round;
-  const gained = gainFor(state.round, observations);
+  const gained = gainFor(state.round, observations, focus);
   const fresh =
     state.round === "talk" && topic && !alreadyFound(state.found, topic) ? topic.trim() : null;
   const found = fresh ? [...state.found, fresh] : state.found;

@@ -10,11 +10,14 @@
     {
       "id": "k1_denwa",
       "type": "choose",
-      "q": "鈴木先輩に 相談したい ことが あります。先輩は いま、電話で 話して います。どう しますか。",
+      "q": "奥田先輩に 相談したい ことが あります。先輩は いま、電話で 話して います。どう しますか。",
       "image": {
-        "prompt": "Suzuki holds a phone to his ear, taking notes on a notepad, eyes down, mid-conversation. Anime illustration, no readable text. A bright modern software office, clean line art, flat cel shading, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. Same character in every image: a Japanese senior engineer man (Suzuki, mid-30s, short black hair, thin silver glasses, navy blue cardigan over a white shirt) at his desk with a laptop and a small potted plant. Viewed from a coworker's standing viewpoint a few steps away. No text, no letters, no numbers, no speech bubbles.",
-        "refs": [],
-        "status": "empty"
+        "src": "/img/quiz/soudan_kehai/k1_denwa.webp",
+        "prompt": "Anime illustration, no readable text. A bright modern software office, clean line art, flat cel shading, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. Same character in every image: Okuda the senior engineer, drawn from the attached character sheet: a Japanese man in his mid twenties, wavy messy black hair with volume, black rectangular thick-rimmed glasses, a dark green pullover hoodie with drawstrings and no writing on it at his desk with a laptop and a small potted plant. Viewed from a coworker's standing viewpoint a few steps away. No text, no letters, no numbers, no speech bubbles. Scene: Okuda holds a phone to his ear, taking notes on a notepad, eyes down, mid-conversation. Absolutely no readable text, letters, numbers, logos or speech bubbles anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra fingers, distorted hands, dark or scary mood, angry faces, watermarks.",
+        "refs": [
+          "/img/characters/okuda/sheet.webp"
+        ],
+        "status": "done"
       },
       "options": [
         "🧍 机の 前に 立って、終わるまで じっと 待つ",
@@ -27,11 +30,14 @@
     {
       "id": "k2_shuuchuu",
       "type": "emotion",
-      "q": "鈴木先輩は ヘッドホンを して、画面に 顔を 近づけて、キーボードを 打ちつづけて います。いま、先輩は どんな 様子ですか。",
+      "q": "奥田先輩は ヘッドホンを して、画面に 顔を 近づけて、キーボードを 打ちつづけて います。いま、先輩は どんな 様子ですか。",
       "image": {
-        "prompt": "Suzuki wears big headphones, leaning close to the screen, both hands typing fast, several code windows open, an energy drink beside the keyboard. Anime illustration, no readable text. A bright modern software office, clean line art, flat cel shading, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. Same character in every image: a Japanese senior engineer man (Suzuki, mid-30s, short black hair, thin silver glasses, navy blue cardigan over a white shirt) at his desk with a laptop and a small potted plant. Viewed from a coworker's standing viewpoint a few steps away. No text, no letters, no numbers, no speech bubbles.",
-        "refs": [],
-        "status": "empty"
+        "src": "/img/quiz/soudan_kehai/k2_shuuchuu.webp",
+        "prompt": "Anime illustration, no readable text. A bright modern software office, clean line art, flat cel shading, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. Same character in every image: Okuda the senior engineer, drawn from the attached character sheet: a Japanese man in his mid twenties, wavy messy black hair with volume, black rectangular thick-rimmed glasses, a dark green pullover hoodie with drawstrings and no writing on it at his desk with a laptop and a small potted plant. Viewed from a coworker's standing viewpoint a few steps away. No text, no letters, no numbers, no speech bubbles. Scene: Okuda wears big headphones, leaning close to the screen, both hands typing fast, several code windows open, an energy drink beside the keyboard. Absolutely no readable text, letters, numbers, logos or speech bubbles anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra fingers, distorted hands, dark or scary mood, angry faces, watermarks.",
+        "refs": [
+          "/img/characters/okuda/sheet.webp"
+        ],
+        "status": "done"
       },
       "feelings": [
         "🙂 ひまで、だれかと 話したい",
@@ -51,11 +57,14 @@
     {
       "id": "k3_hitoiki",
       "type": "choose",
-      "q": "鈴木先輩は お茶を 飲んで、のびを して います。いま、どう しますか。",
+      "q": "奥田先輩は お茶を 飲んで、のびを して います。いま、どう しますか。",
       "image": {
-        "prompt": "Suzuki leans back in his chair, stretching, holding a warm cup of tea, relaxed small smile, screen dimmed. Anime illustration, no readable text. A bright modern software office, clean line art, flat cel shading, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. Same character in every image: a Japanese senior engineer man (Suzuki, mid-30s, short black hair, thin silver glasses, navy blue cardigan over a white shirt) at his desk with a laptop and a small potted plant. Viewed from a coworker's standing viewpoint a few steps away. No text, no letters, no numbers, no speech bubbles.",
-        "refs": [],
-        "status": "empty"
+        "src": "/img/quiz/soudan_kehai/k3_hitoiki.webp",
+        "prompt": "Anime illustration, no readable text. A bright modern software office, clean line art, flat cel shading, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. Same character in every image: Okuda the senior engineer, drawn from the attached character sheet: a Japanese man in his mid twenties, wavy messy black hair with volume, black rectangular thick-rimmed glasses, a dark green pullover hoodie with drawstrings and no writing on it at his desk with a laptop and a small potted plant. Viewed from a coworker's standing viewpoint a few steps away. No text, no letters, no numbers, no speech bubbles. Scene: Okuda leans back in his chair, stretching, holding a warm cup of tea, relaxed small smile, screen dimmed. Absolutely no readable text, letters, numbers, logos or speech bubbles anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra fingers, distorted hands, dark or scary mood, angry faces, watermarks.",
+        "refs": [
+          "/img/characters/okuda/sheet.webp"
+        ],
+        "status": "done"
       },
       "options": [
         "🗣 「今、お時間 よろしいですか」と 声を かける",
@@ -68,11 +77,14 @@
     {
       "id": "k4_komarigao",
       "type": "emotion",
-      "q": "鈴木先輩は 画面を 見ながら、困った 顔で うなって います。いま、先輩は どんな 気持ちだと 思いますか。",
+      "q": "奥田先輩は 画面を 見ながら、困った 顔で うなって います。いま、先輩は どんな 気持ちだと 思いますか。",
       "image": {
-        "prompt": "Suzuki frowns at the screen with one hand in his hair, shoulders slumped, clearly stuck and troubled. Anime illustration, no readable text. A bright modern software office, clean line art, flat cel shading, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. Same character in every image: a Japanese senior engineer man (Suzuki, mid-30s, short black hair, thin silver glasses, navy blue cardigan over a white shirt) at his desk with a laptop and a small potted plant. Viewed from a coworker's standing viewpoint a few steps away. No text, no letters, no numbers, no speech bubbles.",
-        "refs": [],
-        "status": "empty"
+        "src": "/img/quiz/soudan_kehai/k4_komarigao.webp",
+        "prompt": "Anime illustration, no readable text. A bright modern software office, clean line art, flat cel shading, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. Same character in every image: Okuda the senior engineer, drawn from the attached character sheet: a Japanese man in his mid twenties, wavy messy black hair with volume, black rectangular thick-rimmed glasses, a dark green pullover hoodie with drawstrings and no writing on it at his desk with a laptop and a small potted plant. Viewed from a coworker's standing viewpoint a few steps away. No text, no letters, no numbers, no speech bubbles. Scene: Okuda frowns at the screen with one hand in his hair, shoulders slumped, clearly stuck and troubled. Absolutely no readable text, letters, numbers, logos or speech bubbles anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra fingers, distorted hands, dark or scary mood, angry faces, watermarks.",
+        "refs": [
+          "/img/characters/okuda/sheet.webp"
+        ],
+        "status": "done"
       },
       "feelings": [
         "😄 仕事が 順調で、楽しい",
@@ -92,11 +104,14 @@
     {
       "id": "k5_isogu",
       "type": "choose",
-      "q": "鈴木先輩は ノートパソコンを かかえて、時計を 見ながら 急いで います。相談は 急ぎません。どう しますか。",
+      "q": "奥田先輩は ノートパソコンを かかえて、時計を 見ながら 急いで います。相談は 急ぎません。どう しますか。",
       "image": {
-        "prompt": "Suzuki stands, laptop under one arm, glancing at his wristwatch, walking quickly away from the desk. Anime illustration, no readable text. A bright modern software office, clean line art, flat cel shading, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. Same character in every image: a Japanese senior engineer man (Suzuki, mid-30s, short black hair, thin silver glasses, navy blue cardigan over a white shirt) at his desk with a laptop and a small potted plant. Viewed from a coworker's standing viewpoint a few steps away. No text, no letters, no numbers, no speech bubbles.",
-        "refs": [],
-        "status": "empty"
+        "src": "/img/quiz/soudan_kehai/k5_isogu.webp",
+        "prompt": "Anime illustration, no readable text. A bright modern software office, clean line art, flat cel shading, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. Same character in every image: Okuda the senior engineer, drawn from the attached character sheet: a Japanese man in his mid twenties, wavy messy black hair with volume, black rectangular thick-rimmed glasses, a dark green pullover hoodie with drawstrings and no writing on it at his desk with a laptop and a small potted plant. Viewed from a coworker's standing viewpoint a few steps away. No text, no letters, no numbers, no speech bubbles. Scene: Okuda stands, laptop under one arm, glancing at his wristwatch, walking quickly away from the desk. Absolutely no readable text, letters, numbers, logos or speech bubbles anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra fingers, distorted hands, dark or scary mood, angry faces, watermarks.",
+        "refs": [
+          "/img/characters/okuda/sheet.webp"
+        ],
+        "status": "done"
       },
       "options": [
         "🏃 歩きながら 相談を 始める",
@@ -109,11 +124,14 @@
     {
       "id": "k6_asa",
       "type": "choose",
-      "q": "朝です。鈴木先輩は 出社した ばかりで、かばんを 置いて、パソコンを つけて います。急がない 相談は、いつ 話しかけますか。",
+      "q": "朝です。奥田先輩は 出社した ばかりで、かばんを 置いて、パソコンを つけて います。急がない 相談は、いつ 話しかけますか。",
       "image": {
-        "prompt": "Morning light through the window. Suzuki has just arrived, putting his bag down beside the desk, computer still starting up, jacket half off. Anime illustration, no readable text. A bright modern software office, clean line art, flat cel shading, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. Same character in every image: a Japanese senior engineer man (Suzuki, mid-30s, short black hair, thin silver glasses, navy blue cardigan over a white shirt) at his desk with a laptop and a small potted plant. Viewed from a coworker's standing viewpoint a few steps away. No text, no letters, no numbers, no speech bubbles.",
-        "refs": [],
-        "status": "empty"
+        "src": "/img/quiz/soudan_kehai/k6_asa.webp",
+        "prompt": "Anime illustration, no readable text. A bright modern software office, clean line art, flat cel shading, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. Same character in every image: Okuda the senior engineer, drawn from the attached character sheet: a Japanese man in his mid twenties, wavy messy black hair with volume, black rectangular thick-rimmed glasses, a dark green pullover hoodie with drawstrings and no writing on it at his desk with a laptop and a small potted plant. Viewed from a coworker's standing viewpoint a few steps away. No text, no letters, no numbers, no speech bubbles. Scene: Morning light through the window. Okuda has just arrived, putting his bag down beside the desk, computer still starting up, jacket half off. Absolutely no readable text, letters, numbers, logos or speech bubbles anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra fingers, distorted hands, dark or scary mood, angry faces, watermarks.",
+        "refs": [
+          "/img/characters/okuda/sheet.webp"
+        ],
+        "status": "done"
       },
       "options": [
         "🎒 かばんを 置いた 瞬間に 話しかける",
@@ -126,8 +144,8 @@
   ],
   "furigana": [
     [
-      "鈴木先輩",
-      "すずきせんぱい"
+      "奥田先輩",
+      "おくだせんぱい"
     ],
     [
       "会議室",
@@ -154,8 +172,8 @@
       "ひとり"
     ],
     [
-      "鈴木",
-      "すずき"
+      "奥田",
+      "おくだ"
     ],
     [
       "仕事",

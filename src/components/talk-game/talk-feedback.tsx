@@ -2,7 +2,13 @@
 
 import { motion } from "motion/react";
 import { RubyText } from "@/components/ruby-text";
-import { breakdown, type TalkObservations, type TalkRound } from "@/lib/talkgame/affinity";
+import {
+  breakdown,
+  NO_OBSERVATIONS,
+  type TalkFocus,
+  type TalkObservations,
+  type TalkRound,
+} from "@/lib/talkgame/affinity";
 import type { FuriganaIndex } from "@/lib/text/furigana";
 
 /**
@@ -33,6 +39,54 @@ const LABELS: Record<keyof TalkObservations, string> = {
   question: "しつもんの 形に なって いる",
 };
 
+/**
+ * 答える **前**に 見せる「この しつもんで 見る ところ」（2026-08-31 の 指定）。
+ *
+ * ## なぜ 先に 見せるか
+ * 見かたの 板は 答えた あとにしか 出なかった ので、学習者は
+ * **何を 見られて いるのかを 知らない まま** 答えて いた。点が 動いた 理由が
+ * あとから しか 分からないと、上がっても 下がっても ものさしが 見えない
+ *（2026-08-31「採点基準が不明確で嬉しい気持ちにならない」）。
+ *
+ * ここは **予告**なので ✓ を 付けない。付けると、まだ 答えて いないのに
+ * 「できて いない」欄が 並ぶ ことに なる（規律1）。
+ */
+export function TalkRubric({
+  round,
+  focus,
+  furigana,
+}: {
+  round: TalkRound;
+  focus?: readonly TalkFocus[];
+  furigana: FuriganaIndex;
+}) {
+  const rows = breakdown(round, NO_OBSERVATIONS, focus);
+  return (
+    <div
+      className="rounded-xl border-2 px-3 py-2"
+      style={{ borderColor: "var(--color-hairline)", background: "var(--color-panel-tint)" }}
+    >
+      <p className="text-ink-soft text-[11px] font-black">
+        <RubyText text="この しつもんで 見る ところ" index={furigana} show />
+      </p>
+      <ul className="mt-1 flex flex-wrap gap-x-3 gap-y-1">
+        {rows.map((row) => (
+          <li
+            key={row.key}
+            data-rubric={row.key}
+            className="text-ink-soft text-[11px] font-bold whitespace-nowrap"
+          >
+            <RubyText text={LABELS[row.key]} index={furigana} show />
+            <span className="ml-1 tabular-nums" style={{ color: "var(--color-coral-deep)" }}>
+              +{row.points}%
+            </span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 /** 観点の 読み（画面の ことば。教材の 辞書とは 混ぜない）。 */
 export const FEEDBACK_FURIGANA: readonly (readonly [string, string])[] = [
   ["会社", "かいしゃ"],
@@ -53,6 +107,7 @@ function ribbonOf(gained: number, max: number): { text: string; color: string } 
 
 export function TalkFeedback({
   round,
+  focus,
   observations,
   gained,
   lifted,
@@ -66,6 +121,8 @@ export function TalkFeedback({
 }: {
   /** **この 発話を 見た ときの** ばん（切りかえ後では ない）。 */
   round: TalkRound;
+  /** **その とき 聞かれて いた しつもんの**「見る ところ」。答える前の 予告と 同じ 表に する。 */
+  focus?: readonly TalkFocus[];
   observations: TalkObservations;
   /** 観点から 上がった ぶん。下の 内訳の 合計と 一致する。 */
   gained: number;
@@ -81,7 +138,7 @@ export function TalkFeedback({
   furigana: FuriganaIndex;
   onNext: () => void;
 }) {
-  const rows = breakdown(round, observations);
+  const rows = breakdown(round, observations, focus);
   const max = rows.reduce((sum, row) => sum + row.points, 0);
   const ribbon = ribbonOf(gained, max);
 

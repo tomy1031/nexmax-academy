@@ -1,0 +1,73 @@
+{
+  "refs": [],
+  "_comment": "特定の 登場人物が 出ない **文字入りの 図**。参照画像を 持たない ので、**1枚目に 合格した 絵が 以後の 絵柄の アンカーに なる**（gen_images.mjs が 自動で 足す）。だから hourenso を いちばん 上に 置いて ある。",
+  "style": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This one is a teaching diagram: few large elements, generous spacing, each label sitting on a soft cream panel with a rounded border, arranged so the eye reads it in one pass.",
+  "noText": "Japanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana. Spell every character exactly as given. No other letters, numbers, logos or watermarks anywhere in the picture.",
+  "negative": "Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+  "output": "1536x1024",
+  "scenes": [
+    {
+      "out": "hourenso",
+      "dest": "public/img/hourensou/houkoku/hourenso.webp",
+      "title": "報連相の 3つ",
+      "where": "scripts/gen_hourensou_content.mjs houkoku_lecture blocks[3]（image）",
+      "priority": "A",
+      "scene": "A teaching diagram of three large rounded cream cards side by side on a soft sky-blue background. In the first card a junior engineer hands a finished document to a senior colleague. In the second, a colleague types a short message while two others look up from their desks. In the third, a junior engineer and a senior sit side by side looking at one laptop together, thinking. Each card carries its Japanese label printed across the top of the card.",
+      "text": ["報告（ほうこく）", "連絡（れんらく）", "相談（そうだん）"]
+    },
+    {
+      "out": "keypoint",
+      "dest": "public/img/hourensou/houkoku/keypoint.webp",
+      "title": "報告の 型（順番）",
+      "where": "scripts/gen_hourensou_content.mjs houkoku_lecture blocks[13]（steps）の images[1]",
+      "priority": "A",
+      "scene": "A teaching diagram showing an order of four steps, drawn as four rounded cream panels in a row connected by soft coral arrows. In each panel a small simple drawing of the same junior engineer speaking to a senior shows that step: raising a hand for attention; saying the topic; showing a document of facts; bowing slightly to make a request. Each panel carries its Japanese label under the drawing.",
+      "text": ["件（けん）", "結論（けつろん）", "事実（じじつ）", "お願い（おねがい）"]
+    },
+    {
+      "out": "s1",
+      "dest": "public/img/hourensou/renraku/s1.webp",
+      "title": "連絡は 事実だけで いい（対比）",
+      "where": "scripts/gen_hourensou_content.mjs renraku_lecture blocks[3]（image）",
+      "priority": "A",
+      "scene": "One wide picture split into two equal halves by a soft vertical cream gutter. LEFT HALF, on a warm pale coral ground: a young engineer at his desk waves both hands in a flustered, apologetic way while his team leader tilts his head, unsure how to help. RIGHT HALF, on a pale sky-blue ground: the same engineer sits calmly and points at one clear line on his blank screen, and the leader gives a confident thumbs up. A rounded cream label panel sits at the top of each half carrying the Japanese words given here.",
+      "text": ["気持ち（きもち）", "事実（じじつ）"]
+    },
+    {
+      "out": "s3",
+      "dest": "public/img/hourensou/renraku/s3.webp",
+      "title": "短い 時間で 伝わる コツ 2つ",
+      "where": "scripts/gen_hourensou_content.mjs renraku_lecture blocks[8]（image）",
+      "priority": "A",
+      "scene": "A teaching diagram of two large rounded cream cards side by side on a soft sky-blue background. In the first card a colleague holds up a small blank card with a large soft clock face drawn on it, showing an exact amount of time. In the second card a colleague points at the very first line of a long blank message on a screen while a busy teammate reads only that line and nods. Each card carries its Japanese label across the top.",
+      "text": ["具体的な 数字（ぐたいてきな すうじ）", "結論から 書く（けつろんから かく）"]
+    },
+    {
+      "out": "s4",
+      "dest": "public/img/hourensou/renraku/s4.webp",
+      "title": "メールは【 】で 読みやすく する",
+      "where": "scripts/gen_hourensou_content.mjs renraku_lecture blocks[12]（image）",
+      "priority": "A",
+      "scene": "A teaching diagram. A large rounded cream panel in the centre is drawn as a simple mail window: one bold subject line at the top and, below it, three or four soft grey abstract bars standing for the body text, with no readable writing in them. Three rounded coral tags float above the subject line, each carrying one of the Japanese words given here. On the right a colleague scans the tags and nods, understanding at a glance which mail to open first.",
+      "text": ["【重要】（じゅうよう）", "【相談】（そうだん）", "【共有】（きょうゆう）"]
+    },
+    {
+      "out": "s2",
+      "dest": "public/img/hourensou/renraku/s2.webp",
+      "title": "連絡の ケーススタディ（2つの 場面）",
+      "where": "scripts/gen_hourensou_content.mjs renraku_lecture blocks[20]（image）",
+      "priority": "B",
+      "scene": "One wide picture split into two equal panels by a thin cream gutter, each panel a small workplace scene. LEFT PANEL: an engineer at his desk turns to a wall clock and then types a short message — a schedule has changed. RIGHT PANEL: an engineer holds up a tablet to show a teammate something useful he has found, and the teammate smiles. A rounded cream label panel sits at the top of each panel carrying the Japanese words given here.",
+      "text": ["ケース A", "ケース B"]
+    },
+    {
+      "out": "slide6",
+      "dest": "public/img/hourensou/soudan/slide6.webp",
+      "title": "30分ルールの 3つの えらび方",
+      "where": "scripts/gen_hourensou_content.mjs soudan_lecture blocks[14]（image）",
+      "priority": "B",
+      "scene": "One wide picture divided into three equal vertical panels by thin cream gutters. LEFT PANEL: a young engineer sits alone at his desk, shoulders low, staring at his screen for a very long time, the office around him dim. MIDDLE PANEL: the same engineer thinks for a short while with a small clock on the desk, then turns and raises a hand towards a senior colleague, who turns to him — bright and balanced. RIGHT PANEL: the engineer immediately spins his chair to the senior without looking at his own screen at all, and the senior looks a little surprised. A large rounded cream label panel sits at the top of each panel carrying only the single letter given here.",
+      "text": ["A", "B", "C"]
+    }
+  ]
+}

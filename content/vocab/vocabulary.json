@@ -2048,6 +2048,19 @@
       ]
     },
     {
+      "id": "chatbot",
+      "term": "チャットボット",
+      "reading": "ちゃっとぼっと",
+      "meaningJa": "しつもんを 書くと、AIが こたえて くれる しくみです。",
+      "englishTerm": "Chatbot",
+      "example": "学校の しつもんに こたえる チャットボットを 作りました。",
+      "wrongMeanings": [
+        "A chat room",
+        "A robot toy",
+        "A phone call"
+      ]
+    },
+    {
       "id": "kuraudo",
       "term": "クラウド",
       "reading": "くらうど",

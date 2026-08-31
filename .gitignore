@@ -59,3 +59,8 @@ cloudflare-env.d.ts
 /blob-report/
 /e2e-screens/
 /playwright/.cache/
+
+# 絵の 作り直しの 作業場（PNG の 生の 出力・ログ）。置くのは webp だけ
+/.tmp-img/
+# 富田さんの 参考写真。**このリポジトリは public** なので 本人の 写真は 入れない
+/富田.jpg

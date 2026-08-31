@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { listVocabBooks, listWordStages } from "../src/lib/content";
-import { buildDictionary, findDictionaryTerm } from "../src/lib/dictionary";
+import { buildDictionary, findDictionaryTerms } from "../src/lib/dictionary";
 
 /**
  * **ポップアップ辞書と 単語テストは 別**（2026-08-25 の指定）。
@@ -26,7 +26,9 @@ describe("辞書は テストと 別（実データ）", () => {
     // 「テストには 出さないが 読むのに 要る」語の 実例。本文の 中から 引き当てられる
     const sample = entries.find((entry) => entry.term === "観光地");
     expect(sample).toBeDefined();
-    expect(findDictionaryTerm("観光地の 写真を とります。", entries)?.entry.term).toBe("観光地");
+    expect(findDictionaryTerms("観光地の 写真を とります。", entries)[0]?.entry.term).toBe(
+      "観光地",
+    );
   });
 
   it("テストに 出て いる 語には 遊ぶ 先が ある（出て いない 語には 無い）", async () => {
