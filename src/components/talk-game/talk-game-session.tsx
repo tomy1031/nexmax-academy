@@ -30,13 +30,12 @@ import {
 import {
   EMPTY_TALK,
   applyTurn,
-  foundCount,
   type TalkFocus,
   type TalkPlan,
   type TalkState,
   type TalkObservations,
 } from "@/lib/talkgame/affinity";
-import { localObservations, localReply, localTopic } from "@/lib/talkgame/local";
+import { localObservations, localReply } from "@/lib/talkgame/local";
 import {
   clearTalkResume,
   parseTalkResume,
@@ -107,7 +106,25 @@ const CHROME_ENTRIES: readonly (readonly [string, string])[] = [
 
 const CHROME_FURIGANA = buildFuriganaIndex(CHROME_ENTRIES);
 
-type Phase = "lobby" | "host" | "me" | "thinking" | "feedback" | "clear";
+type Phase = "lobby" | "host" | "me" | "thinking" | "feedback" | "review" | "clear";
+
+/**
+ * これまでの 会話 1往復ぶん（画面の「これまでの 話」に 並べる）。
+ *
+ * 台帳（`bufferMeetingTurn`）にも 同じ ものが 流れるが、あちらは **先生が あとで 見る**
+ * 置き場で、送るのは 話しきった とき 1回。学習者が **いま 見返す**ための 控えは
+ * 別に 画面が 持つ——鍵の 無い 教室でも 同じ ように 見えなければ ならないから。
+ */
+interface TurnLog {
+  /** そのとき 社長が 聞いた こと。 */
+  readonly ask: string;
+  /** 学習者が 言った こと。 */
+  readonly said: string;
+  /** その ターンで 上がった ぶん（底上げも 足した、メーターの 動きと 同じ 数）。 */
+  readonly gained: number;
+  /** 社長の 返事。 */
+  readonly reply: string;
+}
 
 interface TurnResult {
   observations: TalkObservations;
@@ -118,7 +135,6 @@ interface TurnResult {
   lifted: number;
   /** この 発話を 見た ときの ばん（切りかえ後では ない）。 */
   judgedAs: TalkState["round"];
-  discovered: string | null;
   said: string;
   praise: string;
   fix: string;
@@ -205,6 +221,17 @@ export function TalkGameSession({
   const [phase, setPhase] = useState<Phase>("lobby");
   const [talk, setTalk] = useState<TalkState>(EMPTY_TALK);
   const [queue, setQueue] = useState<readonly string[]>([]);
+  /**
+   * もう 出した 社長の ことば（**新しい ものが うしろ**）。
+   *
+   * 「もどる」（2026-08-31 の 指定）で 読み返す ために 持つ。`queue` から 捨てて
+   * いた ころは、押し進めた ことばを **二度と 出せなかった**——聞きのがした 人は
+   * ブラウザの 戻るしか 手が 無く、それは 進みごと 消える 操作に なる。
+   */
+  const [spoken, setSpoken] = useState<readonly string[]>([]);
+  /** これまでの 会話（画面の「これまでの 話」）。 */
+  const [log, setLog] = useState<readonly TurnLog[]>([]);
+  const [logOpen, setLogOpen] = useState(false);
   const [askText, setAskText] = useState("");
   /**
    * いま 聞かれて いる しつもんの「見る ところ」と、準備フォームの どこで 書いた ことか。
@@ -265,7 +292,8 @@ export function TalkGameSession({
     () => ({
       goal: game?.goal ?? 100,
       openAt: game?.openAt ?? 60,
-      findCount: game?.findCount ?? 5,
+      // 出だしの しつもんを 使いきったら 聞く ばんへ（準備の 設問と 1対1）
+      askCount: game?.openers.length ?? 0,
     }),
     [game],
   );
@@ -326,7 +354,7 @@ export function TalkGameSession({
   const figure = useMemo(() => {
     if (!game) return "";
     if (phase === "thinking") return game.figures.think;
-    if (phase === "feedback" || phase === "clear") return game.figures.smile;
+    if (phase === "feedback" || phase === "review" || phase === "clear") return game.figures.smile;
     return game.figures.neutral;
   }, [game, phase]);
 
@@ -337,13 +365,46 @@ export function TalkGameSession({
 
   /** つぎの ことばへ。ぜんぶ 出しきったら 学習者の ばん。 */
   const nextLine = useCallback(() => {
+    const said = queue[0] ?? "";
     const rest = queue.slice(1);
     if (rest.length === 0) {
-      setAskText(queue[0] ?? "");
+      setAskText(said);
       setPhase(ending ? "clear" : "me");
     }
     setQueue(rest);
+    // 出した ことばは 捨てずに 積む（「もどる」で 読み返す）
+    if (said) setSpoken((before) => [...before, said]);
   }, [queue, ending]);
+
+  /**
+   * ひとつ 前の ことばへ もどる（2026-08-31 の 指定「戻る ボタン」）。
+   *
+   * ## もどせるのは **読む ところ**だけ
+   * 好感度も、答えた ことも もどさない。好感度は **減る道を 1本も 持たない**
+   *（設計01 P8・`applyTurn`）ので、ターンごと 巻き戻すと その 決まりを 破る ことに なる。
+   * ここで もどるのは「社長が さっき 何と 言ったか」「さっきの 見かたは 何だったか」——
+   * **聞きのがし・読みのがしを 取り返す**ための 道である。
+   *
+   * ぜんぶ もどりきったら、その 前に 出て いた 見かたの 板を もう一度 開く。
+   */
+  const backLine = useCallback(() => {
+    if (spoken.length > 0) {
+      const last = spoken[spoken.length - 1] ?? "";
+      setSpoken((before) => before.slice(0, -1));
+      setQueue((before) => [last, ...before]);
+      setPhase("host");
+      return;
+    }
+    if (result) setPhase("review");
+  }, [spoken, result]);
+
+  /** 見かたの 板を 読み終えて、いま 出て いた ことばへ 帰る。 */
+  const leaveReview = useCallback(() => {
+    setPhase(queue.length > 0 ? "host" : "me");
+  }, [queue.length]);
+
+  /** 「もどる」を 出してよいか（もどる 先が 何も 無い ときは 出さない）。 */
+  const canGoBack = spoken.length > 0 || result !== null;
 
   /**
    * はじめから 話す。
@@ -359,6 +420,7 @@ export function TalkGameSession({
   /** 会話から 出る（やめる・もう一度 はじめる）。飛んで いる 判定を 無効に する。 */
   const leave = useCallback(() => {
     turnRef.current += 1;
+    setLogOpen(false);
     setPhase("lobby");
   }, []);
 
@@ -368,6 +430,8 @@ export function TalkGameSession({
     const from = saved ?? EMPTY_TALK;
     setTalk(from);
     setResult(null);
+    setSpoken([]);
+    setLog([]);
     setEnding(false);
     setPhase("host");
     /*
@@ -417,7 +481,6 @@ export function TalkGameSession({
       turnRef.current = ticket;
       setTyped("");
       setPhase("thinking");
-      const remaining = Math.max(0, plan.findCount - talk.found.length);
       const at = Date.now();
       const answer = await requestTalkTurn(`${meeting.id}:${talk.round}`, {
         round: talk.round,
@@ -428,8 +491,6 @@ export function TalkGameSession({
         hostName: meeting.host.name,
         learnerName,
         utterance: said,
-        found: talk.found,
-        remaining,
       }).catch(() => ({ ok: false as const, reason: "network" }));
 
       // やめた／もう一度 始めた あとの 返事は 捨てる（半券が 変わって いる）
@@ -468,13 +529,12 @@ export function TalkGameSession({
       const observations = answer.ok
         ? answer.judgement.observations
         : localObservations(talk.round, said);
-      const topic = answer.ok ? answer.judgement.topic : localTopic(talk.round, said, observations);
       /*
        * **その しつもんの 観点で 見る**（2026-08-31 の 指定）。答える前に 予告した 表と
        * 同じ ものを 使う——ここで 別の 表を 使うと、予告と 内訳が 食い違う。
        */
       const focus = talk.round === "talk" ? askFocus : undefined;
-      const step = applyTurn(talk, plan, observations, topic || null, focus);
+      const step = applyTurn(talk, plan, observations, focus);
       setTalk(step.state);
       // 画面が 自分で 出す 文は **かなだけ**（その場の 文には ルビを 合成できない）
       setNote(answer.ok ? null : "AIの みかたが いま つかえません。すすみかたは おなじです。");
@@ -484,7 +544,6 @@ export function TalkGameSession({
         gained: step.gained,
         lifted: step.lifted,
         judgedAs: step.judgedAs,
-        discovered: step.discovered,
         said,
         praise: answer.ok ? answer.judgement.praise : "じぶんの ことばで いえましたね。",
         /* AIが 「null」「なし」の 文字を 返す ことが ある。そのまま 出すと 画面に 出る */
@@ -498,6 +557,21 @@ export function TalkGameSession({
         reply: (answer.ok ? answer.judgement.reply : "") || localReply(talk.round, talk.turns),
         nextAsk: answer.ok ? answer.judgement.nextAsk : "",
       });
+      /*
+       * **これまでの 話を 画面に 残す**（2026-08-31 の 指定「今まで どのような 会話を
+       * したかを UI に 入れられますか」）。上がった ぶんは **メーターが 動いた 数**
+       *（観点＋底上げ）に そろえる——控えと リングで ちがう 数が 出ると、
+       * どちらが 本当か 学習者には 決められない。
+       */
+      setLog((before) => [
+        ...before,
+        {
+          ask: askText,
+          said,
+          gained: step.gained + step.lifted,
+          reply: (answer.ok ? answer.judgement.reply : "") || localReply(talk.round, talk.turns),
+        },
+      ]);
       setPhase("feedback");
     },
     [game, meeting, plan, talk, askText, askFocus, hints, learnerName],
@@ -545,7 +619,12 @@ export function TalkGameSession({
       setAskFrom(opener?.from ?? "");
       lines.push(withName(opener?.ask ?? "") || result.nextAsk || withName(probe));
     }
-    setResult(null);
+    /*
+     * **`result` は 消さない**（2026-08-31 の 指定「戻る ボタン」）。消して いた ころは、
+     * 板を 閉じた 瞬間に 見かたが 二度と 出せなく なって いた。つぎの 発話を 見る
+     * ときに 上書きされる ので、残って いるのは いつも「ひとつ 前の 見かた」1つ だけ。
+     */
+    setSpoken([]);
     setQueue(lines.filter((one) => one !== ""));
     setPhase("host");
   }, [game, result, talk.round, talk.turns, withName, openerAt]);
@@ -602,8 +681,6 @@ export function TalkGameSession({
 
   if (!game) return null;
 
-  const found = foundCount(talk, plan);
-
   if (phase === "lobby") {
     return (
       <div className="card-island space-y-4 p-5">
@@ -640,7 +717,7 @@ export function TalkGameSession({
             text={
               saved
                 ? `いま こうかんど ${saved.percent}%。つづきから 話しましょう。`
-                : `「おもしろい」を ${plan.findCount}つ 見つけて、こうかんど ${plan.goal}% を めざしましょう。`
+                : `社長と 話して、こうかんど ${plan.goal}% を めざしましょう。`
             }
             index={CHROME_FURIGANA}
             show
@@ -683,32 +760,8 @@ export function TalkGameSession({
          */
         gained={phase === "feedback" ? (result?.gained ?? 0) + (result?.lifted ?? 0) : 0}
         furigana={furigana}
-        bright={phase === "feedback" || phase === "clear"}
+        bright={phase === "feedback" || phase === "review" || phase === "clear"}
       >
-        {/* 見つけた「おもしろい」の 札 */}
-        {/*
-          板が 出て いる あいだは しまう。デスクトップでは 板が 左上に 来る ので、
-          札と 重なって どちらも 読めなく なる（2026-08-24 の 検収指摘）。
-        */}
-        {phase !== "clear" && phase !== "feedback" ? (
-          <div className="absolute top-24 left-3 flex flex-col gap-1">
-            <span className="text-ink-soft rounded-full bg-white/85 px-2.5 py-0.5 text-[11px] font-black">
-              おもしろい {found} / {plan.findCount}
-            </span>
-            {talk.found.slice(0, plan.findCount).map((one) => (
-              <motion.span
-                key={one}
-                initial={{ opacity: 0, x: -8 }}
-                animate={{ opacity: 1, x: 0 }}
-                className="text-navy max-w-[9rem] truncate rounded-full bg-white/85 px-2.5 py-0.5 text-[11px] font-bold"
-                title={one}
-              >
-                🔎 <RubyText text={one} index={boardFurigana} show />
-              </motion.span>
-            ))}
-          </div>
-        ) : null}
-
         {/*
           **やめる 道を 1つ 置く**（2026-08-24 の 検収指摘）。全画面に なる ので、
           ここが 無いと 途中で 出る 手だてが ブラウザの 戻る しか なくなる——
@@ -726,13 +779,30 @@ export function TalkGameSession({
         ) : null}
 
         {/*
-          **調べた ことを 見ながら 話す**（2026-08-27 の 指定）。
-          対話ゲームでも 引き先は ミーティングと 同じ（`meeting.notes`）——
-          「メモを 見ながら 話す」は 画面ごとに 別の しくみを 持たない。
-          板が 出て いる あいだは しまう（札と 同じ 理由で 重なって 読めなくなる）。
+          **調べた ことを 見ながら 話す**（2026-08-27 の 指定）と **これまでの 話**。
+
+          引き先は ミーティングと 同じ（`meeting.notes`）——「メモを 見ながら 話す」は
+          画面ごとに 別の しくみを 持たない。板が 出て いる あいだは しまう
+          （下に かぶさって どちらも 読めなくなる）。
+
+          **左に 置く**（2026-08-31 の 指摘「好感度と 自分の 答えを 見る ボタンが
+          被っています」）。右上は 好感度の リング（96px）の 場所で、`top-12 right-3` に
+          置いた ボタンは そのまま リングの 上に 乗って いた。左は 名前ふだの 下が
+          空いて いる——「おもしろい」の 札を 廃止した ぶん、まるごと 空いた。
         */}
-        {phase !== "clear" && phase !== "feedback" ? (
-          <AnswerNotebook sources={meeting.notes} className="absolute top-12 right-3" />
+        {phase !== "clear" && phase !== "feedback" && phase !== "review" ? (
+          <div className="absolute top-24 left-3 flex flex-col items-start gap-1.5">
+            <AnswerNotebook sources={meeting.notes} />
+            {log.length > 0 ? (
+              <button
+                type="button"
+                onClick={() => setLogOpen(true)}
+                className="border-hairline bg-panel text-navy rounded-full border-2 px-3 py-1.5 text-xs font-extrabold"
+              >
+                🗒️ <RubyText text="これまでの 話" index={CHROME_FURIGANA} show />（{log.length}）
+              </button>
+            ) : null}
+          </div>
         ) : null}
 
         {phase === "host" || phase === "thinking" ? (
@@ -741,6 +811,7 @@ export function TalkGameSession({
             furigana={furigana}
             dictionary={dictionary}
             thinking={phase === "thinking"}
+            onBack={phase === "host" && canGoBack ? backLine : undefined}
             onNext={nextLine}
           />
         ) : null}
@@ -760,6 +831,7 @@ export function TalkGameSession({
             voice={voice}
             hostVoice={hostVoice}
             instruction={instruction}
+            onBack={canGoBack ? backLine : undefined}
             onHint={() => setHintOpen(true)}
             onTyped={setTyped}
             onSend={() => void judge(typed)}
@@ -777,9 +849,29 @@ export function TalkGameSession({
             praise={result.praise}
             fix={result.fix}
             example={result.example}
-            discovered={result.discovered}
             furigana={boardFurigana}
             onNext={afterFeedback}
+          />
+        ) : null}
+
+        {/*
+          **ひとつ 前の 見かたを もう一度 開く**（「もどる」の 行き止まり）。
+          板そのものは 同じ 部品で、ちがうのは ボタンの ことばだけ——
+          ここで 別の 見た目に すると、同じ ものだと 分からなくなる。
+        */}
+        {phase === "review" && result ? (
+          <TalkFeedback
+            round={result.judgedAs}
+            focus={result.focus}
+            observations={result.observations}
+            gained={result.gained}
+            lifted={result.lifted}
+            said={result.said}
+            praise={result.praise}
+            fix={result.fix}
+            example={result.example}
+            furigana={boardFurigana}
+            onNext={leaveReview}
           />
         ) : null}
 
@@ -787,7 +879,6 @@ export function TalkGameSession({
           <ClearPanel
             hostName={meeting.host.name}
             goal={plan.goal}
-            found={talk.found}
             closing={withName(meeting.closing)}
             furigana={furigana}
             dictionary={dictionary}
@@ -799,6 +890,91 @@ export function TalkGameSession({
       {hintOpen ? (
         <HintModal lines={hints} hasBlank furigana={furigana} onClose={() => setHintOpen(false)} />
       ) : null}
+
+      {logOpen ? (
+        <TalkLog log={log} furigana={boardFurigana} onClose={() => setLogOpen(false)} />
+      ) : null}
+    </div>
+  );
+}
+
+/**
+ * これまでの 話（2026-08-31 の 指定「今まで どのような 会話を したかを UI に」）
+ *
+ * ## なぜ 要るか
+ * この 会話は **その場で 流れて 消える**。しつもんも、自分の こたえも、社長の 返事も、
+ * つぎへ 進んだ 瞬間に 画面から 無くなって いた。学習者は 何を 話したかを 覚えて おく
+ * ために 会話に 気を 取られる——**思い出す 仕事**を 画面が 引き受ける。
+ *
+ * ## ヒントと 同じ「押すと 開く ひきだし」
+ * 出しっぱなしに しない（docs/constraints.md 2026-08-20）。会話の 画面は もう 混んで
+ * いて、常に 出すと 話す ボタンと 相手の 顔を 押し出す（`AnswerNotebook` と 同じ 判断）。
+ *
+ * ## 上がった ぶんだけ 見せる（点を つけ直さない）
+ * 観点の 内訳は 出さない。ここは **何を 話したか**を 思い出す 場所で、
+ * 見直しの 場所では ない。内訳が 要る 人は「もどる」で 見かたの 板を 開ける。
+ */
+function TalkLog({
+  log,
+  furigana,
+  onClose,
+}: {
+  log: readonly TurnLog[];
+  furigana: ReturnType<typeof buildFuriganaIndex>;
+  onClose: () => void;
+}) {
+  return (
+    <div
+      className="absolute inset-0 z-10 grid place-items-end sm:place-items-center"
+      style={{ background: "rgba(15,23,42,.45)" }}
+      role="dialog"
+      aria-modal="true"
+      aria-label="これまでの はなし"
+    >
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="card-island max-h-[80%] w-full space-y-3 overflow-y-auto p-4 sm:max-w-lg sm:p-5"
+      >
+        <p className="text-navy text-base font-black">
+          🗒️ <RubyText text="これまでの 話" index={furigana} show />
+        </p>
+
+        <ol className="space-y-3">
+          {log.map((one, at) => (
+            <li key={at} className="border-hairline rounded-xl border-2 p-3">
+              <p className="text-ink-soft text-[11px] font-black">
+                {at + 1}. <RubyText text="社長" index={furigana} show />
+              </p>
+              <p className="text-navy mt-0.5 text-xs font-bold break-words">{one.ask}</p>
+
+              <p className="text-ink-soft mt-2 text-[11px] font-black">
+                <RubyText text="あなた" index={furigana} show />
+              </p>
+              <p className="text-ink mt-0.5 text-xs font-bold break-words">「{one.said}」</p>
+
+              {one.reply ? (
+                <p className="text-ink-soft mt-2 text-xs font-bold break-words">
+                  → <RubyText text={one.reply} index={furigana} show />
+                </p>
+              ) : null}
+
+              <p
+                className="mt-1 text-right text-xs font-black tabular-nums"
+                style={{ color: "var(--color-coral-deep)" }}
+              >
+                こうかんど +{one.gained}%
+              </p>
+            </li>
+          ))}
+        </ol>
+
+        <div className="flex justify-end">
+          <button type="button" onClick={onClose} className="btn-game rounded-full px-6 py-2.5">
+            とじる
+          </button>
+        </div>
+      </motion.div>
     </div>
   );
 }
@@ -809,12 +985,15 @@ function SpeechPanel({
   furigana,
   dictionary,
   thinking,
+  onBack,
   onNext,
 }: {
   text: string;
   furigana: ReturnType<typeof buildFuriganaIndex>;
   dictionary?: readonly DictionaryEntry[];
   thinking: boolean;
+  /** ひとつ 前へ もどす（もどる 先が 無い ときは 渡さない）。 */
+  onBack?: () => void;
   onNext: () => void;
 }) {
   return (
@@ -827,7 +1006,20 @@ function SpeechPanel({
         <p className="text-navy text-base leading-relaxed font-black sm:text-xl">
           <DictionaryText text={text} index={furigana} show dictionary={dictionary} />
         </p>
-        <div className="mt-3 flex items-center justify-end">
+        <div className="mt-3 flex items-center justify-between gap-3">
+          {/* もどるは 目立たせない（進む ほうが 本筋）。無い ときは 場所だけ 空ける */}
+          {onBack ? (
+            <button
+              type="button"
+              onClick={onBack}
+              className="text-ink-soft rounded-full border-2 px-4 py-2 text-sm font-black"
+              style={{ borderColor: "var(--color-hairline)" }}
+            >
+              ◀ もどる
+            </button>
+          ) : (
+            <span />
+          )}
           {thinking ? (
             <span className="text-ink-soft text-sm font-bold">きいて います…</span>
           ) : (
@@ -856,6 +1048,7 @@ function AnswerPanel({
   voice,
   hostVoice,
   instruction,
+  onBack,
   onHint,
   onTyped,
   onSend,
@@ -876,6 +1069,8 @@ function AnswerPanel({
   voice: ReturnType<typeof useLiveVoice>;
   hostVoice?: string;
   instruction: string;
+  /** 社長の ことばを もう一度 読む（もどる 先が 無い ときは 渡さない）。 */
+  onBack?: () => void;
   onHint: () => void;
   onTyped: (text: string) => void;
   onSend: () => void;
@@ -941,6 +1136,16 @@ function AnswerPanel({
               💡 ヒント
             </button>
           ) : null}
+          {onBack ? (
+            <button
+              type="button"
+              onClick={onBack}
+              className="text-ink-soft rounded-full border-2 px-3 py-1.5 text-xs font-black"
+              style={{ borderColor: "var(--color-hairline)" }}
+            >
+              ◀ もどる
+            </button>
+          ) : null}
         </div>
 
         <form
@@ -976,7 +1181,6 @@ function AnswerPanel({
 function ClearPanel({
   hostName,
   goal,
-  found,
   closing,
   furigana,
   dictionary,
@@ -984,7 +1188,6 @@ function ClearPanel({
 }: {
   hostName: string;
   goal: number;
-  found: readonly string[];
   closing: string;
   furigana: ReturnType<typeof buildFuriganaIndex>;
   dictionary?: readonly DictionaryEntry[];
@@ -1004,19 +1207,6 @@ function ClearPanel({
         <p className="text-ink text-sm font-bold">
           <DictionaryText text={closing} index={furigana} show dictionary={dictionary} />
         </p>
-        {found.length > 0 ? (
-          <ul className="flex flex-wrap justify-center gap-1.5">
-            {found.map((one) => (
-              <li
-                key={one}
-                className="text-navy rounded-full px-3 py-1 text-xs font-bold"
-                style={{ background: "var(--color-sky-soft)" }}
-              >
-                🔎 <RubyText text={one} index={furigana} show />
-              </li>
-            ))}
-          </ul>
-        ) : null}
         <button type="button" onClick={onLeave} className="btn-game rounded-full px-7 py-3">
           おわる
         </button>

@@ -13,7 +13,6 @@ import { createMemoryBackend } from "../src/lib/progress/store";
 const MID: TalkState = {
   round: "listen",
   percent: 60,
-  found: ["カンボジアの プログラム", "観光DX"],
   turns: 5,
   asked: 1,
 };

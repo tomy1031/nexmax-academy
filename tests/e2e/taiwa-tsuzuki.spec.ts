@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { KAISHA, affinity, foundText, itemsBefore, readOn, seedCompleted } from "./helpers";
+import { KAISHA, affinity, itemsBefore, readOn, seedCompleted } from "./helpers";
 
 /**
  * 対話ゲームを 途中で 閉じても、好感度が 0 に 戻らない（願い #177）
@@ -32,5 +32,4 @@ test("画面を 更新しても、好感度と 見つけた ものが 残る", a
   await again.click();
   await readOn(page);
   expect(await affinity(page)).toBe(before);
-  await expect(page.getByText(foundText(1))).toBeVisible();
 });

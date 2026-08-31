@@ -1,13 +1,5 @@
 import { expect, test } from "@playwright/test";
-import {
-  KAISHA,
-  foundText,
-  itemsBefore,
-  readOn,
-  seedCompleted,
-  seedGeminiKey,
-  shot,
-} from "./helpers";
+import { KAISHA, itemsBefore, readOn, seedCompleted, seedGeminiKey, shot } from "./helpers";
 
 /**
  * 対話ゲームの **AIが 効いて いる ところ**を 1往復だけ 見る（願い #177）
@@ -69,13 +61,15 @@ test.describe("対話ゲームの AI（鍵が あるときだけ）", () => {
     await shot(page, "24-taiwa-live-feedback");
 
     /*
-     * ②見つけた「おもしろい」が 1つ 開く。
-     * 板が 出て いる あいだ 札は しまわれる ので、板の 中の ひとことで 見て、
-     * 数は 板を 閉じてから 見る（2026-08-24 の 検収指摘 #9 の あとの 見え方）。
+     * ②板を 閉じると、社長が まず 返事を してから つぎの しつもんへ 進む
+     *（2026-08-31 の 指定。前は 板を 閉じた 瞬間に つぎの しつもんが 出て いた）。
+     *
+     * 「おもしろい n / m」の 札は 2026-08-31 に 廃止した——AIが 漢字まじりの
+     * ラベルを 返すと 立たず、鍵の ある 教室では ほとんど 数えられて いなかった。
      */
-    await expect(page.getByText(/を みつけました！/)).toBeVisible();
     await page.getByRole("button", { name: "つぎへ ▶" }).click();
-    await expect(page.getByText(foundText(1))).toBeVisible();
+    // 板の つぎは **社長の 返事**（しつもんでは ない）
+    await expect(page.getByLabel("文字で 答える")).toHaveCount(0);
     await readOn(page);
     await answer("NMClaw は、はなすだけで まとまるから すごいと 思いました。");
     await page.getByRole("button", { name: "つぎへ ▶" }).click();

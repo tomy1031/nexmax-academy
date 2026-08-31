@@ -115,7 +115,6 @@ export function TalkFeedback({
   praise,
   fix,
   example,
-  discovered,
   furigana,
   onNext,
 }: {
@@ -133,8 +132,6 @@ export function TalkFeedback({
   praise: string;
   fix: string;
   example: string;
-  /** 新しく 見つけた「おもしろい」。 */
-  discovered: string | null;
   furigana: FuriganaIndex;
   onNext: () => void;
 }) {
@@ -200,17 +197,6 @@ export function TalkFeedback({
             ))}
           </ul>
         </div>
-
-        {discovered ? (
-          <motion.p
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="text-leaf-deep text-sm font-black"
-          >
-            🔎 「<RubyText text={discovered} index={furigana} show />
-            」を みつけました！
-          </motion.p>
-        ) : null}
 
         {fix ? (
           <p className="text-ink-soft text-xs font-bold">
