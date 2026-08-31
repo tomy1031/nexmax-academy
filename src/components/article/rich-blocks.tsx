@@ -93,7 +93,14 @@ export function ImageSlotFrame({
         width={1200}
         height={675}
         unoptimized
-        className={className ?? `w-full ${ratio} rounded-[18px] object-cover`}
+        /*
+         * **絵は 元の 縦横比の まま 出す**（2026-08-30 の 指定「画像の縦横比に
+         * 合わせた形にしたほうがいい」）。高さを 決め打ちして `object-cover` で
+         * 切ると、正方形の 絵（1024×1024）は 帯に なって **人の 顔が 画面から
+         * 消える**。`h-auto` なら 横幅に 合わせて 縦が 決まるので、どんな 比の 絵でも
+         * 切れない。`ratio` は これまで どおり **まだ 無い 絵の わく**の 高さに使う。
+         */
+        className={className ?? "h-auto w-full rounded-[18px]"}
       />
     );
   }
@@ -274,11 +281,11 @@ export function CardsBlock({
               /*
                 絵の 高さ。h-28（112px）では **人の 顔が 切れて** 何の 場面かが
                 分からなかった（2026-08-28 の 指定「イラストの縦幅が短すぎる」）。
-                横は カードの はば いっぱいなので、`object-cover` で 上下が 削られる——
-                その 削れる ぶんを 減らす。
+                高さを 決め打ちする かぎり `object-cover` が 上下を 削るので、
+                2026-08-30 に **決め打ちを やめた**——絵は 元の 縦横比の まま 出す。
+                ここの `ratio` は **まだ 無い 絵の わく**の 高さだけに 効く。
               */
               ratio="h-44 sm:h-48"
-              className="h-44 w-full object-cover sm:h-48"
               furigana={furigana}
               show={show}
             />

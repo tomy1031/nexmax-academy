@@ -7,6 +7,7 @@ import type { Article, ArticleBlock } from "@/content/schema";
 import { NexMax, type NexMaxVariant } from "@/components/nexmax";
 import { DictionaryText } from "@/components/dictionary-text";
 import { RubyText } from "@/components/ruby-text";
+import { VideoPlayer } from "@/components/media/video-player";
 import { SpeakButton } from "@/components/speak-button";
 import { recordContentProgress } from "@/lib/progress/store";
 import type { DictionaryEntry } from "@/lib/dictionary";
@@ -329,7 +330,7 @@ function BlockView({
       /*
        * 下線つきの説明を出すのは本文だけ。見出し・かじょうがき・ポイント枠にも出すと、
        * 1画面に下線が何本も並び、「どれを見ればよいか」が伝わらなくなる
-       *（1文につき1語という決まりは DictionaryText 側が守る — 設計07 §2.5）。
+       *（本文の どこに 下線を 出すかは DictionaryText 側が 決める — 当たった 語 ぜんぶ）。
        */
       return (
         <div className="flex items-start gap-2">
@@ -348,6 +349,9 @@ function BlockView({
 
     case "image":
       return <ImageBlock block={block} furigana={furigana} show={show} />;
+
+    case "video":
+      return <VideoBlock block={block} furigana={furigana} show={show} dictionary={dictionary} />;
 
     case "callout":
       return <CalloutBlock block={block} furigana={furigana} show={show} dictionary={dictionary} />;
@@ -637,6 +641,47 @@ function CharactersBlock({
  * 幅も 少し しぼる。画面いっぱいの 絵は「見出し」に 見えてしまい、
  * すぐ 下の 説明と つながらない。
  */
+/**
+ * 動画（2026-08-29 の 指定）。
+ *
+ * ## 先に 落とさない
+ * `preload="none"`。1本 5〜7MB あるので、ページを 開いた だけで 流れると
+ * カンボジアの 教室で 30人ぶんが そのまま 回線に 効く（docs/constraints.md
+ *「30人同時アクセスに耐える」）。押した ときに 初めて 落ち始める。
+ *
+ * ## ことばは 動画の 外に 置く
+ * 中の 音と 字には ふりがなを 振れない。だから `note` を **動画の 下に 出す**
+ *（絵の `caption` は 出さない 決まりだが、あれは 絵を 見れば 分かる から。
+ * 動画は 押すまで 中身が 見えないので、何の 動画かは 字で 言う 必要が ある）。
+ */
+function VideoBlock({
+  block,
+  furigana,
+  show,
+  dictionary,
+}: {
+  block: Extract<ArticleBlock, { kind: "video" }>;
+  furigana: FuriganaIndex;
+  show: boolean;
+  dictionary?: readonly DictionaryEntry[];
+}) {
+  return (
+    <figure className="mx-auto w-full max-w-[720px]">
+      <VideoPlayer
+        src={block.src}
+        youtube={block.youtube}
+        poster={block.poster}
+        label={block.caption}
+      />
+      {block.note ? (
+        <figcaption className="text-ink-soft mt-2 text-sm leading-relaxed font-bold">
+          <DictionaryText text={block.note} index={furigana} show={show} dictionary={dictionary} />
+        </figcaption>
+      ) : null}
+    </figure>
+  );
+}
+
 function ImageBlock({
   block,
   furigana,

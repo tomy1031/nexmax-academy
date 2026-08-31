@@ -5,6 +5,7 @@ import { ArticleView } from "@/components/article/article-view";
 import { MeetingSession } from "@/components/meeting/meeting-session";
 import { TalkSession } from "@/components/listening/live-mode";
 import { LinkView } from "@/components/link/link-view";
+import { SkitView } from "@/components/skit/skit-view";
 import { ListeningPlayer } from "@/components/listening/playback-mode";
 import { MangaReader } from "@/components/manga/manga-reader";
 import { QuizRunner } from "@/components/quiz/quiz-runner";
@@ -21,6 +22,7 @@ import {
   getQuizSet,
   getMeeting,
   getScenario,
+  getSkit,
   getSlides,
   getStage,
   listStages,
@@ -116,6 +118,10 @@ export async function generateMetadata({
     case "link": {
       const link = await getLink(ref.ref);
       return { title: `${link?.title ?? ""} | リンク`, description: link?.description };
+    }
+    case "skit": {
+      const skit = await getSkit(ref.ref);
+      return { title: `${skit?.title ?? ""} | スキット`, description: skit?.description };
     }
   }
 }
@@ -264,6 +270,11 @@ async function renderContent(ref: StageContentRef) {
       const link = await getLink(ref.ref);
       if (!link) notFound();
       return <LinkView link={link} embedded />;
+    }
+    case "skit": {
+      const skit = await getSkit(ref.ref);
+      if (!skit) notFound();
+      return <SkitView skit={skit} embedded />;
     }
     // 単語ステージは contents[] に入らない（wordStageIds 側・行き先は /arcade）。
     // ここに来るのは壊れたデータなので 404 にする。
