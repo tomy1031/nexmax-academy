@@ -37,6 +37,7 @@ import { buildFuriganaIndex, type FuriganaIndex } from "@/lib/text/furigana";
 /** 板の 見出しに 出る 漢字の 読み（教材の 読み辞書とは 混ぜない・規律2）。 */
 const BOARD_FURIGANA = buildFuriganaIndex([
   ["質問", "しつもん"],
+  ["個", "こ"],
   ["答", "こた"],
   ["開", "ひら"],
   ["聞", "き"],
@@ -158,6 +159,7 @@ export function QuestionCards({
   order,
   labels,
   openIds,
+  answeredIds,
   currentId,
   reachedAt,
   justOpenedId,
@@ -171,6 +173,17 @@ export function QuestionCards({
   labels: Readonly<Record<string, string>>;
   /** 話せた しつもんの id。 */
   openIds: ReadonlySet<string>;
+  /**
+   * **ひとことでも 答えた しつもんの id**（2026-08-31 の 指摘
+   *「一度 開かれた はずの カードが 非表示の 状態に 戻って しまった」）。
+   *
+   * ✓ が つくか（`openIds`）と、**ことばが 見えるか**は 別の こと。
+   * ✓ は 判定で 動く——言い直しを 使いきった しつもんは 赤い 印に なり、
+   * 開き直した ときには `openIds` から 落ちる。そこで ことばまで 引っこめると、
+   * 学習者から 見て **一度 見えた ものが ？ に 戻る**。
+   * 答えた ことは 取り消されない ので、ことばは 出したままに する（設計01 P8）。
+   */
+  answeredIds: ReadonlySet<string>;
   /** いま 聞かれて いる しつもんの id（枠を 出す ところ）。 */
   currentId: string | null;
   /**
@@ -192,7 +205,8 @@ export function QuestionCards({
   return (
     <div className="rounded-[var(--radius-card)] bg-[color-mix(in_srgb,var(--color-sky)_14%,white)] p-3">
       <p className="text-navy mb-2 text-sm font-black">
-        🎁 {order.length}つの <RubyText text="質問" index={BOARD_FURIGANA} show />
+        🎁 {order.length}
+        <RubyText text="個の 質問" index={BOARD_FURIGANA} show />
         <span
           className="text-ink-soft ml-2 text-xs font-bold"
           aria-label={`ひらいた カード ${openIds.size} / ${order.length}`}
@@ -214,7 +228,8 @@ export function QuestionCards({
               missed={missed}
               now={currentId === id}
               pop={justOpenedId === id}
-              reveal={false}
+              /* 答えた しつもんは、✓ が 外れても ことばを 出したままに する */
+              reveal={answeredIds.has(id)}
               furigana={furigana}
               /*
                * 押せるのは **これまでに 聞かれた ところまで**
