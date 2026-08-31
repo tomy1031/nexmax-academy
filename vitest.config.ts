@@ -10,7 +10,8 @@ export default defineConfig({
     },
   },
   test: {
-    include: ["tests/**/*.test.ts"],
+    // 部品を そのまま 描いて 見る テスト（`renderToStaticMarkup`）は .tsx で 書く
+    include: ["tests/**/*.test.ts", "tests/**/*.test.tsx"],
     environment: "node",
   },
 });
