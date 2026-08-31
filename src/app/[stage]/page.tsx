@@ -13,6 +13,7 @@ import {
   getListening,
   getManga,
   getQuizSet,
+  getQuest,
   getMeeting,
   getScenario,
   getSkit,
@@ -168,6 +169,16 @@ export async function loadRef(ref: StageContentRef): Promise<LoadedRef | null> {
           title: skit.title,
           description: skit.description,
           furigana: skit.furigana,
+        }
+      );
+    }
+    case "quest": {
+      const quest = await getQuest(ref.ref);
+      return (
+        quest && {
+          title: quest.title,
+          description: quest.description,
+          furigana: quest.furigana,
         }
       );
     }

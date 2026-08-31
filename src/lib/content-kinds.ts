@@ -65,6 +65,11 @@ const META: Record<ContentRefType, ContentKindMeta> = {
   // 見えない。見えないものを 通行の条件に すると、スライドと 同じで 1本の 教材で
   // ステージが 止まる（schema.ts の linkSchema と 同じ 考え方）。
   skit: { icon: "🎭", label: "スキット", href: (id) => `/skit/${id}`, gates: false },
+  /*
+   * クエストは **関門に しない**。1回 30分ほど かかる チーム戦なので、
+   * ここで 止めると 1人で 来た 日に 先へ 進めなく なる。
+   */
+  quest: { icon: "🗺", label: "クエスト", href: (id) => `/quest/${id}`, gates: false },
 };
 
 export function contentKindMeta(type: ContentRefType): ContentKindMeta {

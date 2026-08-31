@@ -983,6 +983,7 @@ export const CONTENT_REF_TYPES = [
   "wordstage",
   "link",
   "skit",
+  "quest",
 ] as const;
 
 const contentRefTypeSchema = z.enum(CONTENT_REF_TYPES);
@@ -1061,6 +1062,7 @@ export const RESERVED_STAGE_IDS = [
   "manga",
   "map",
   "nexmax",
+  "quest",
   "quiz",
   "skit",
   "slides",
@@ -1070,6 +1072,101 @@ export const RESERVED_STAGE_IDS = [
   "welcome",
   "wordtest",
 ] as const;
+
+
+/* ------------------------------------------------------------------ *
+ * クエスト（チームで 遊ぶ 選択の ゲーム）
+ *
+ * 旧アプリの `waterfall_quest.html`（3145行の 1枚もの）を データと エンジンに
+ * 分けた もの。**遊び方・得点式は 原典どおり**で、変えたのは 持ち方だけ——
+ * ことばアーケードを reducer に 切り出した ときと 同じ 判断。
+ *
+ * ## なぜ リンク教材（`public/tools/...`）に しないか
+ * リンク教材は iframe の 中なので、**アプリの React も Supabase の 客も 共有しない**。
+ * この ゲームは 4人の 名簿を 引き、セーブを 4人で 共有して DB に 置く ので、
+ * 中で 何が 起きたかが 見えない 作りだと 成り立たない。
+ * ------------------------------------------------------------------ */
+
+/** クエストの 1手（4つの えらびかたの うちの 1つ）。 */
+const questOptionSchema = z.object({
+  text: plainText,
+  /**
+   * 手の 質。**原典の 3段**を そのまま 持つ。
+   * `critical` … いちばん 良い 手（リスクが 減る）／`hit` … 良い 手／`miss` … その場は 楽な 手
+   */
+  type: z.enum(["critical", "hit", "miss"]),
+  /** 隠れリスクの 増減。critical は -1、hit は 0、miss は +3〜+5。 */
+  risk: z.number().int(),
+  /** その手を 出した 人の 体力の 減り。 */
+  hpCost: z.number().int().min(0),
+  /** お金の 増減（0 か 負の 数）。 */
+  moneyCost: z.number().int().max(0),
+  /** えらんだ あとに 読ませる 説明。**正誤に かかわらず 読ませる**（設計01 P8）。 */
+  explanation: plainText,
+  /** えらんだ 直後の ひとこと。 */
+  resultText: plainText,
+});
+
+/** クエストの 1場面。 */
+const questPhaseSchema = z.object({
+  id: z.number().int().min(1),
+  /** 章の 名前（社内ミーティング・要件定義 など）。 */
+  chapter: plainText,
+  name: plainText,
+  desc: plainText,
+  enemy: z.object({
+    name: plainText,
+    /** 相手の 絵（`src/components/quest/` が 持つ 3人）。 */
+    art: z.enum(["angel", "yamada", "engineer"]),
+  }),
+  /** 場面の 前に 流れる 会話。`hero` は **えらんだ 4人に 順番で 割り当てる**。 */
+  dialogue: z
+    .array(
+      z.object({
+        speaker: z.enum(["hero", "god", "yamada", "engineer", "system"]),
+        text: plainText,
+      }),
+    )
+    .default([]),
+  question: plainText,
+  /** 4つ。critical 1・hit 1・miss 2（下の 検査で 守る）。 */
+  options: z.array(questOptionSchema).length(4),
+});
+
+export const questSchema = z
+  .object({
+    kind: z.literal("quest"),
+    id: z.string().regex(/^[a-z0-9_-]+$/),
+    title: plainText,
+    description: plainText,
+    focus: plainText,
+    /** はじめの お金（人数に よらない ぶん）。 */
+    budgetBase: z.number().int().positive().default(2000),
+    /** 1人 増えるごとに 足す お金。 */
+    budgetPerMember: z.number().int().min(0).default(500),
+    /** 1手ごとに 減る お金（1人あたり）。 */
+    turnCostPerMember: z.number().int().min(0).default(5),
+    startHp: z.number().int().positive().default(100),
+    phases: z.array(questPhaseSchema).min(1),
+    furigana: z.array(furiganaEntrySchema).optional(),
+  })
+  .superRefine((quest, ctx) => {
+    quest.phases.forEach((phase, i) => {
+      /*
+       * **1場面に critical 1つと hit 1つ**。原典は「その 2つを 見つけたら 場面クリア」
+       * という 進み方なので、どちらかが 欠けると **その 場面から 永久に 出られない**。
+       * 画面では 気づけない ので 保存の 時点で 止める。
+       */
+      const count = (type: string) => phase.options.filter((o) => o.type === type).length;
+      if (count("critical") !== 1 || count("hit") !== 1) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["phases", i, "options"],
+          message: `場面 ${phase.id}: いちばん 良い 手と 良い 手を 1つずつ 置く（いまは critical ${count("critical")} / hit ${count("hit")}）`,
+        });
+      }
+    });
+  });
 
 export const stageSchema = z.object({
   kind: z.literal("stage"),
@@ -2287,6 +2384,7 @@ export const contentSchema = z.discriminatedUnion("kind", [
   slidesSchema,
   linkSchema,
   skitSchema,
+  questSchema,
 ]);
 
 export type VocabWord = z.infer<typeof vocabWordSchema>;
@@ -2319,6 +2417,9 @@ export type ContentRefType = StageContentRef["type"];
 export type ImageSlot = z.infer<typeof imageSlotSchema>;
 export type Character = z.infer<typeof characterSchema>;
 export type Manga = z.infer<typeof mangaSchema>;
+export type Quest = z.infer<typeof questSchema>;
+export type QuestPhase = Quest["phases"][number];
+export type QuestOption = QuestPhase["options"][number];
 export type MangaCharacter = z.infer<typeof mangaCharacterSchema>;
 export type MangaPage = Manga["pages"][number];
 export type MangaPanel = MangaPage["panels"][number];

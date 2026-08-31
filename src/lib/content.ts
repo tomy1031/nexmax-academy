@@ -22,6 +22,7 @@ import {
   type Character,
   type Content,
   type LinkContent,
+  type Quest,
   type Listening,
   type Manga,
   type Meeting,
@@ -310,4 +311,15 @@ export const listSkits = cache(async (): Promise<Skit[]> => {
 
 export async function getSkit(id: string): Promise<Skit | null> {
   return (await listSkits()).find((skit) => skit.id === id) ?? null;
+}
+
+export const listQuests = cache(async (): Promise<Quest[]> => {
+  const git = parseAll().filter((c): c is Quest => c.kind === "quest");
+  return mergeContentsById(git, await listPublishedFromDb("quest")).sort((a, b) =>
+    a.id.localeCompare(b.id),
+  );
+});
+
+export async function getQuest(id: string): Promise<Quest | null> {
+  return (await listQuests()).find((quest) => quest.id === id) ?? null;
 }
