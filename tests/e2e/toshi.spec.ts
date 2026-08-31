@@ -444,8 +444,8 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
      * 「空わくを 出す」決まりは 生きた まま、**作り忘れの 見張り**として 効き つづける。
      */
     await expect(page.locator('[data-slot="empty"]')).toHaveCount(0);
-    /* 「これから 考える 5つの こと」の 5枚 ＋ A/B の 分かれ道 2枚。 */
-    await expect(page.locator('img[src*="/img/articles/kaisha_matsui_junbi/"]')).toHaveCount(7);
+    /* 「これから 考える 3つの こと」の 3枚 ＋ A/B の 分かれ道 2枚。 */
+    await expect(page.locator('img[src*="/img/articles/kaisha_matsui_junbi/"]')).toHaveCount(5);
     await shot(page, "07-junbi-article");
 
     await readToEnd(page);
@@ -475,8 +475,6 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
       "観光DX が いいと 思いました。まちを あるきたいからです。",
       "私は 日本語が 得意です。報告に 使いたいです。",
       "私は AIを 使う 仕事を やって みたいです。",
-      "カンボジアの 学生は 新しい ことを 早く おぼえると 思います。",
-      "社長に 聞きたい ことは、どうして この 会社を 作りましたかです。",
     ];
     expect(written).toHaveLength(JUNBI_TOTAL);
     for (const [at, text] of written.entries()) await jp.nth(at).fill(text);
