@@ -1,0 +1,65 @@
+{
+  "kind": "stage",
+  "id": "kaihatsu",
+  "order": 7,
+  "title": "開発の 工程",
+  "reading": "かいはつの こうてい",
+  "description": "システムが できるまでの 7つの 工程を 学びます。最後は クエストで、プロジェクトの 一年を チームで 遊びます。",
+  "color": "sky",
+  "status": "published",
+  "area": {
+    "name": "かわぞいの みやこ",
+    "reading": "かわぞいの みやこ",
+    "image": "/img/scenes/area_riverside_capital.webp",
+    "note": "大きな かわの そばに ひろがる みやこです。"
+  },
+  "contents": [
+    {
+      "ref": "kaihatsu_lecture",
+      "type": "article"
+    },
+    {
+      "ref": "waterfall_quest",
+      "type": "quest"
+    }
+  ],
+  "wordStageIds": [],
+  "furigana": [
+    [
+      "工程",
+      "こうてい"
+    ],
+    [
+      "開発",
+      "かいはつ"
+    ],
+    [
+      "最後",
+      "さいご"
+    ],
+    [
+      "一年",
+      "いちねん"
+    ],
+    [
+      "一",
+      "ひと"
+    ],
+    [
+      "大",
+      "おお"
+    ],
+    [
+      "学",
+      "まな"
+    ],
+    [
+      "年",
+      "ねん"
+    ],
+    [
+      "遊",
+      "あそ"
+    ]
+  ]
+}
