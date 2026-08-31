@@ -2126,6 +2126,24 @@ export const meetingSchema = z.object({
       listenHints: z.array(plainText).default([]),
       /** 満タンで 相手が 話す「とっておきの 話」（報酬は 物語 — 設計01 P2×P7）。 */
       reward: plainText,
+      /**
+       * 作り置きの 音（セリフの 鍵 → `/audio/...` の URL）。2026-08-31 の 指定
+       *「松井社長の 用意された セリフは 全て 音声化して ください」。
+       *
+       * 鍵は `opening` / `opener-<n>` / `probe-<n>` / `listenInvite` / `reward`。
+       * 作るのは `scripts/make_meeting_audio.ts`（鍵が 要るので ふだんは Actions で 回す）。
+       *
+       * ## なぜ 欄ごとの `audioUrl` に しないか
+       * ミーティングの しつもんは 1つずつ オブジェクトなので `audioUrl` を 生やせる。
+       * こちらは `probes` が **ただの 文字列の 並び**で、`opening` / `listenInvite` /
+       * `reward` も 1つずつ 別の 欄——欄ごとに 足すと 5種類 増える うえ、`probes` は
+       * 形ごと 変える ことに なる。**鍵 → URL の 対応表 1枚**で 足りる。
+       *
+       * ## 作り置きに できない ものが ある
+       * その場で AIが 作る 深掘りの しつもんと 返事は 毎回 ちがう ので、ここには 入らない。
+       * そこは これまでどおり Live の 声が 読む（鍵の 無い 学習者には 字だけ 出る）。
+       */
+      audio: z.record(z.string(), z.string()).default({}),
       /** 画面の 背景（`/img/...`）。 */
       background: z.string().min(1),
       /** 相手の 立ち絵。気もちで 差しかえる。 */
