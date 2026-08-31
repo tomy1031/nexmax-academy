@@ -128,6 +128,16 @@ function stemOf(term: string): string | null {
 }
 
 /**
+ * 名詞の あとに 来る 助詞・助動詞。ここが つづくなら 動詞の 活用では ない（「考えを」）。
+ *
+ * 「な」「よ」「さ」は **入れない**——「考えない」「考えよう」「考えさせる」に なるので、
+ * 名詞の しるしに ならない。
+ */
+const NOUN_PARTICLE = /[はがをにへとでものやかだ]/u;
+
+const HIRAGANA = /[ぁ-ゖー]/u;
+
+/**
  * わたした 文字列の 中から、辞書に 載って いる ことばを **1つだけ** 見つける。
  *
  * 1文につき 下線は 1語だけ（設計07 §2.5）。同じ 文で 2回 タップさせない ため、
@@ -143,23 +153,60 @@ export function findDictionaryTerm(
   text: string,
   entries: readonly DictionaryEntry[],
 ): { entry: DictionaryEntry; at: number; length: number } | null {
-  let best: { entry: DictionaryEntry; at: number; length: number } | null = null;
-  const consider = (entry: DictionaryEntry, at: number, length: number) => {
+  /*
+   * 選ぶ 順は **長さ → 文の 先頭に 近い ほう → 下の rank**。
+   *
+   * 3つめは **まったく 同じ ところに 当たった ときだけ**の 決め手である。
+   * 名詞の「考え」と 動詞「考える」の 語幹は 同じ 場所・同じ 長さに 当たるので、
+   * それまでの 2つでは 決まらず、**並び順で 決まって いた**（「考えます」の ふきだしに
+   * 名詞の「an idea」が 出て いた — 2026-08-30 の 指摘）。
+   *
+   * **長さに 混ぜて 数えない。** 混ぜると、離れた ところに ある 動詞が
+   * 別の 語（「得意」）を 押しのけて しまう。順番の いちばん 最後に 置く。
+   */
+  const VERB = 2;
+  /** 言い切りの 形で そのまま 当たった もの。 */
+  const EXACT = 1;
+  /** 語幹で 当たったが、次が 助詞——動詞の 活用では ない（「考えを」の「考える」）。 */
+  const STEM_ONLY = 0;
+
+  let best: { entry: DictionaryEntry; at: number; length: number; rank: number } | null = null;
+  const consider = (entry: DictionaryEntry, at: number, length: number, rank: number) => {
     if (at < 0) return;
-    if (!best || length > best.length || (length === best.length && at < best.at)) {
-      best = { entry, at, length };
-    }
+    const take = () => {
+      best = { entry, at, length, rank };
+    };
+    if (!best) return take();
+    const now = best as { at: number; length: number; rank: number };
+    if (length !== now.length) return length > now.length ? take() : undefined;
+    if (at !== now.at) return at < now.at ? take() : undefined;
+    if (rank > now.rank) return take();
   };
   for (const entry of entries) {
     const at = text.indexOf(entry.term);
     if (at >= 0) {
-      consider(entry, at, entry.term.length);
+      consider(entry, at, entry.term.length, EXACT);
       continue;
     }
     const stem = stemOf(entry.term);
-    if (stem) consider(entry, text.indexOf(stem), stem.length);
+    if (!stem) continue;
+    const stemAt = text.indexOf(stem);
+    /*
+     * 語幹の あとに **送りがなが つづくか**まで 見る。
+     * 送りがな（考え**ま**す・考え**る**）なら 動詞、助詞（考え**を**・考え**の**）なら
+     * 名詞——**次の 1文字**で 見分けられる。
+     *
+     * 助詞が つづく ときは `STEM_ONLY`（いちばん 弱い）に する。こうすると
+     * 「考えを」では 言い切りの「考え」が **並び順に よらず** 勝つ——
+     * 動詞だけを 強く すると、名詞側は まだ 並び順まかせの ままに なる。
+     */
+    const next = stemAt < 0 ? "" : (text[stemAt + stem.length] ?? "");
+    const verb = next !== "" && !NOUN_PARTICLE.test(next) && HIRAGANA.test(next);
+    consider(entry, stemAt, stem.length, verb ? VERB : STEM_ONLY);
   }
-  return best;
+  if (!best) return null;
+  const { entry, at, length } = best as { entry: DictionaryEntry; at: number; length: number };
+  return { entry, at, length };
 }
 
 /** 「この ことばは もう ○○に あります」を出すための索引（term → ステージの見出し）。 */

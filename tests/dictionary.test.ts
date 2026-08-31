@@ -125,6 +125,43 @@ describe("findDictionaryTerm", () => {
   });
 
   /*
+   * **名詞と 動詞が 同じ 形で ぶつかる とき**（「考え」と「考える」の 語幹）は、
+   * 次の 1文字で 見分ける。並び順で 決まって いた ころ、「考えます」の ふきだしに
+   * 名詞の 意味が 出て いた（2026-08-30 の 指摘「これの意味は think で『考える』」）。
+   */
+  describe("「考え」と「考える」が ぶつかる とき", () => {
+    const both = buildDictionary([
+      book([vocab("考え", "かんがえ"), vocab("考える", "かんがえる")]),
+    ]);
+
+    it("送りがなが つづくなら 動詞（考えます）", () => {
+      expect(findDictionaryTerm("どう 思ったかを 考えます。", both)?.entry.term).toBe("考える");
+    });
+
+    it("助詞が つづくなら 名詞（考えを）", () => {
+      expect(findDictionaryTerm("あなたの 考えを 話します。", both)?.entry.term).toBe("考え");
+    });
+
+    it("言い切りの 形は そのまま 動詞", () => {
+      expect(findDictionaryTerm("これから 考える 5つの こと", both)?.entry.term).toBe("考える");
+    });
+
+    /*
+     * 並び順で 決まって いない ことを 見る。動詞だけを 強く すると、名詞側は
+     * 「たまたま 先に 並んで いる」から 当たって いる だけに なる。
+     */
+    it("辞書の 並び順が 逆でも 同じ 答えに なる", () => {
+      const flipped = [...both].reverse();
+      expect(findDictionaryTerm("どう 思ったかを 考えます。", flipped)?.entry.term).toBe("考える");
+      expect(findDictionaryTerm("あなたの 考えを 話します。", flipped)?.entry.term).toBe("考え");
+    });
+
+    it("下線は 語幹の ぶんだけ（「考えま」まで 伸びない）", () => {
+      expect(findDictionaryTerm("どう 思ったかを 考えます。", both)?.length).toBe("考え".length);
+    });
+  });
+
+  /*
    * **送りがなの ついた 形でも 当てる**（2026-08-28 の 指摘
    *「見つける（た）・さがして・考えて・終わった」）。
    * 辞書は 言い切りの 形で 持つが、本文には 活用した 形で 出る。

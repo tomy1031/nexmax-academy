@@ -551,7 +551,17 @@ export function CompareBlock({
       </p>
       <div className="mt-2 space-y-1.5">
         {data.lines.map((line, i) => (
-          <p key={i} className="text-ink text-sm leading-relaxed font-bold">
+          <p
+            key={i}
+            /*
+              「・」で 始まる 行は **ぶら下げ**に する。そのままだと 折り返した 2行目が
+              「・」の 下に 潜り込んで、箇条書きに 見えない（390px の 実機幅で 実際に 折り返す）。
+            */
+            className={[
+              "text-ink text-sm leading-relaxed font-bold",
+              line.startsWith("・") ? "pl-[1em] -indent-[1em]" : "",
+            ].join(" ")}
+          >
             <DictionaryText text={line} index={furigana} show={show} dictionary={dictionary} />
           </p>
         ))}
