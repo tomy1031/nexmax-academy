@@ -98,3 +98,36 @@ describe("foldKana", () => {
     expect(foldKana("ほうれんそう ほうこく")).toBe("ほうれんそう ほうこく");
   });
 });
+
+describe("漢字判定のずれ（検査は緑なのに画面ではルビの無い漢字、の再発防止）", () => {
+  it("normalize.ts の写しは furigana.ts の KANJI と同じ範囲", async () => {
+    // normalize は依存ゼロを保つため範囲を写しで持つ（normalize.ts のコメント参照）。
+    // 範囲が割れると「エンジンには漢字・検査には漢字でない」字が生まれる。
+    const { readFileSync } = await import("node:fs");
+    const { KANJI } = await import("../src/lib/text/furigana");
+    const source = readFileSync(new URL("../src/lib/text/normalize.ts", import.meta.url), "utf8");
+    expect(source).toContain(`const HAS_KANJI = ${KANJI.toString()};`);
+  });
+
+  it("src/ は kuromoji を import しない（辞書18MBが Worker に載る事故の防止）", async () => {
+    // scripts/lib/kuromoji.d.ts のアンビエント宣言はリポジトリ全体から見えるので、
+    // src/ で import しても typecheck は通ってしまう。ここで実物を掃く。
+    const { readdirSync, readFileSync, statSync } = await import("node:fs");
+    const { join } = await import("node:path");
+    const root = new URL("../src", import.meta.url).pathname;
+    const offenders: string[] = [];
+    const walk = (dir: string) => {
+      for (const name of readdirSync(dir)) {
+        const full = join(dir, name);
+        if (statSync(full).isDirectory()) walk(full);
+        else if (
+          /\.(ts|tsx)$/.test(name) &&
+          /from "kuromoji"|require\("kuromoji"\)/.test(readFileSync(full, "utf8"))
+        )
+          offenders.push(full);
+      }
+    };
+    walk(root);
+    expect(offenders).toEqual([]);
+  });
+});

@@ -1744,12 +1744,16 @@
       "ふたり"
     ],
     [
-      "八月",
-      "はちがつ"
+      "年8月",
+      "ねんはちがつ"
     ],
     [
-      "年八月",
-      "ねんはちがつ"
+      "何ですか",
+      "なんですか"
+    ],
+    [
+      "何の",
+      "なんの"
     ]
   ],
   "words": [
@@ -7601,7 +7605,7 @@
       "romaji": "keiyakusho",
       "meaningJa": "守ると 決めた ことを 書いた 紙です。会社と 会社が サインを します。",
       "englishTerm": "Contract document",
-      "example": "2024年八月に、AUPP と 契約書に サインを しました。",
+      "example": "2024年8月に、AUPP と 契約書に サインを しました。",
       "wrongMeanings": [
         "Application form",
         "Receipt",

@@ -9,7 +9,7 @@ import { beforeAll, describe, expect, it } from "vitest";
 import { join } from "node:path";
 import kuromoji, { type Tokenizer } from "kuromoji";
 import { buildFuriganaIndex, type FuriganaEntry } from "../src/lib/text/furigana";
-import { compareReadings } from "../scripts/lib/yomi_check";
+import { checkStageListReadings, compareReadings } from "../scripts/lib/yomi_check";
 
 let tokenizer: Tokenizer;
 
@@ -95,5 +95,61 @@ describe("compareReadings", () => {
 
   it("覆えていない漢字は覆い検査の担当なので、ここでは黙る（二重に言わない）", () => {
     expect(run("考えます", [])).toEqual([]);
+  });
+});
+
+describe("checkStageListReadings（ステージ一覧の混ぜた索引）", () => {
+  // ステージのトップは並んだ教材の furigana を後勝ちで混ぜて題・説明を描くため、
+  // ファイル単位では正しい読みでも、一覧では別ファイルの同表記に上書きされうる
+  //（2026-09-01 code-critic 検収の重大指摘。「連絡が なかった 日(ひ)」が にち になった実例）。
+  const stageEntries = (lectureNichi: boolean) =>
+    [
+      {
+        file: "stages/test.json",
+        content: {
+          kind: "stage",
+          id: "test",
+          contents: [
+            { ref: "m1", type: "manga" },
+            { ref: "a1", type: "article" },
+          ],
+        },
+      },
+      {
+        file: "manga/m1.json",
+        content: {
+          kind: "manga",
+          id: "m1",
+          title: "連絡が なかった 日",
+          furigana: [
+            ["連絡", "れんらく"],
+            ["日", "ひ"],
+          ],
+        },
+      },
+      {
+        file: "articles/a1.json",
+        content: {
+          kind: "article",
+          id: "a1",
+          title: "報告の 練習",
+          furigana: [
+            ["報告", "ほうこく"],
+            ["練習", "れんしゅう"],
+            ...(lectureNichi ? [["日", "にち"] as const] : []),
+          ],
+        },
+      },
+    ] as never;
+
+  it("あとの教材の同表記が題の読みを上書きしたら赤（ひ → にち）", () => {
+    const findings = checkStageListReadings(stageEntries(true), tokenizer);
+    expect(findings).toHaveLength(1);
+    expect(findings[0]!.message).toContain("m1.title");
+    expect(findings[0]!.message).toContain("にち");
+  });
+
+  it("ステージ内で読みがそろっていれば緑", () => {
+    expect(checkStageListReadings(stageEntries(false), tokenizer)).toEqual([]);
   });
 });

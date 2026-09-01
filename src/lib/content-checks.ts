@@ -565,6 +565,9 @@ export interface LabeledText {
 /**
  * 学習者が読む文を、種別ごとに**対象フィールドを名指しして**集める。
  *
+ * **前提: zod（contentSchema）を通った Content を渡すこと。** 生の JSON を渡すと
+ * 既定値（default）が埋まっておらず、必須配列の forEach で落ちる。
+ *
  * データ全体を舐めて文字列を拾う書き方（checkForbiddenWords の collectStrings）は
  * ここでは採らない。ID・画像パス・英語の選択肢・AI判定用キーワード・Liveへの
  * systemInstruction まで拾ってしまい、先生には直しようのない指摘が大量に出る。
@@ -979,6 +982,8 @@ export function collectLearnerTexts(content: Content): string[] {
 
 /**
  * その教材のルビ合成に使える読み辞書。
+ *
+ * **前提: zod（contentSchema）を通った Content を渡すこと**（collectLabeledTexts と同じ）。
  *
  * 原則は `furigana` フィールドだけ。画面（RubyText）も `furigana` から索引を作るので、
  * ここに他の読みを足すと「検査は通るが画面は裸の漢字」というズレになる。

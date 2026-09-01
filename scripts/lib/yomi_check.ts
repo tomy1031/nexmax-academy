@@ -34,7 +34,13 @@
 
 import { join } from "node:path";
 import kuromoji, { type Tokenizer } from "kuromoji";
-import { annotateRuby, buildFuriganaIndex, KANJI } from "../../src/lib/text/furigana";
+import {
+  annotateRuby,
+  buildFuriganaIndex,
+  mergeFuriganaEntries,
+  KANJI,
+  type FuriganaEntry,
+} from "../../src/lib/text/furigana";
 import { foldKana } from "../../src/lib/text/furigana-checks";
 import {
   collectLabeledTexts,
@@ -64,15 +70,19 @@ function getTokenizer(): Promise<Tokenizer> {
  * かたまりの 区切りは 分かち書きの 空白を 含む ことが ある（「行って 」など）ので、
  * 前後の 空白は 落として 比べる——空白の 有無だけで 台帳が 外れると、同じ 読みを
  * ファイルごとに もう一度 確かめさせられる（2026-09-01 の 導入時に 実発生）。
+ *
+ * `where` は **その語の 近傍（前後24字）**で 見る。フィールド全体で 見ると、
+ * 長い ブロックの 中の 別の 文に ある 同じ 語の 誤読まで 一緒に 隠れる
+ * （code-critic 検収の 指摘。台帳の 約束は「この 文脈だけ」）。
  */
-function isAllowed(surface: string, expected: string, text: string): boolean {
+function isAllowed(surface: string, expected: string, near: string): boolean {
   const chunk = surface.trim();
   const foldedExpected = foldKana(expected).trim();
   return YOMI_ALLOW.some(
     (entry) =>
       entry.surface.trim() === chunk &&
       foldKana(entry.reading).trim() === foldedExpected &&
-      (!entry.where || text.includes(entry.where)),
+      (!entry.where || near.includes(entry.where)),
   );
 }
 
@@ -158,10 +168,12 @@ export function compareReadings(
     if (segsIn.some((seg) => !seg.reading && KANJI.test(seg.text))) continue;
 
     const expected = segsIn.map((seg) => seg.reading ?? seg.text).join("");
+    // where の 判定に 使う 近傍（±24字）。台帳の 効き目を この 語の 文脈に 絞る
+    const near = text.slice(Math.max(0, start - 24), Math.min(text.length, end + 24));
 
     const unknown = toksIn.some((tok) => !tok.reading && KANJI.test(tok.surface_form));
     if (unknown) {
-      if (isAllowed(chunk, expected, text)) continue;
+      if (isAllowed(chunk, expected, near)) continue;
       findings.push({
         file,
         level: "error",
@@ -181,7 +193,7 @@ export function compareReadings(
       )
       .join("");
     if (foldKana(expected) === foldKana(actual)) continue;
-    if (isAllowed(chunk, expected, text)) continue;
+    if (isAllowed(chunk, expected, near)) continue;
 
     findings.push({
       file,
@@ -198,7 +210,7 @@ export function compareReadings(
 
 /**
  * 全コンテンツの 学習者向け文を 照合する（lint:content 第7c段）。
- * 索引は 覆い検査と 同じ coverageEntries から 作る＝画面が 引く ものと 同じ。
+ * 索引は 覆い検査と 同じ coverageEntries から 作る＝その教材の 画面が 引く ものと 同じ。
  */
 export async function checkYomiCorrectness(entries: readonly ContentEntry[]): Promise<Finding[]> {
   const tokenizer = await getTokenizer();
@@ -207,6 +219,58 @@ export async function checkYomiCorrectness(entries: readonly ContentEntry[]): Pr
     const index = buildFuriganaIndex(coverageEntries(content));
     for (const source of collectLabeledTexts(content)) {
       findings.push(...compareReadings(file, source, index, tokenizer));
+    }
+  }
+  findings.push(...checkStageListReadings(entries, tokenizer));
+  return findings;
+}
+
+/**
+ * ステージのトップ（stage-detail.tsx）と 教材の並び（content-frame.tsx）は、
+ * **並びに 出る 教材 ぜんぶの furigana を 後勝ちで 混ぜた 索引**で 題と 説明を 描く。
+ * ファイル単位の 照合だけでは この 画面の 読みは 保証されない——
+ * 「連絡が なかった 日（ひ）」が、同じ ステージの 別ファイルの ["日","にち"] に
+ * 上書きされて 画面では にち に なる（2026-09-01 code-critic 検収の 重大指摘）。
+ * ここでは 画面と 同じ 混ぜ方（mergeFuriganaEntries＝後勝ち）を 再現して、
+ * 並びに 出る 文（title / description）だけを 照合する。
+ */
+export function checkStageListReadings(
+  entries: readonly ContentEntry[],
+  tokenizer: Tokenizer,
+): Finding[] {
+  type ListedItem = {
+    readonly id: string;
+    readonly furigana?: readonly FuriganaEntry[];
+    readonly title?: string;
+    readonly description?: string;
+  };
+  const findings: Finding[] = [];
+  const byId = new Map<string, ListedItem>();
+  for (const { content } of entries) {
+    if (content.kind !== "stage") byId.set(content.id, content as unknown as ListedItem);
+  }
+  for (const { file, content } of entries) {
+    if (content.kind !== "stage") continue;
+    const items = content.contents
+      .map((entry) => byId.get(entry.ref))
+      .filter((item): item is ListedItem => item !== undefined);
+    if (items.length === 0) continue;
+    const merged = buildFuriganaIndex(
+      mergeFuriganaEntries(...items.map((item) => item.furigana ?? [])),
+    );
+    for (const item of items) {
+      for (const field of ["title", "description"] as const) {
+        const text = item[field];
+        if (typeof text !== "string" || !text) continue;
+        findings.push(
+          ...compareReadings(
+            file,
+            { field: `一覧の混ぜた索引での ${item.id}.${field}`, text },
+            merged,
+            tokenizer,
+          ),
+        );
+      }
     }
   }
   return findings;

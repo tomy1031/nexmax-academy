@@ -62,6 +62,10 @@ const escapeRe = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
  *  - その他（数字・記号）… 読みに 現れても 現れなくても よい（「第1回 → だいいっかい」）
  */
 function readingPattern(surface: string): RegExp | null {
+  // 異常に長い見出しは判定しない（正規表現のバックトラック量が入力に比例するため、
+  // Worker の CPU 予算（1リクエスト10ms）に載せても安全な上限を切る。ふつうの
+  // 見出しは数文字〜十数文字で、この上限に触れるのは文まるごとのような誤用だけ）
+  if (surface.length > 48 || surface.length === 0) return null;
   const runs = surfaceRuns(surface);
   if (!runs.some((run) => run.type === "kanji")) return null;
   const body = runs
