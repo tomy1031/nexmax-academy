@@ -1,0 +1,157 @@
+{
+  "kind": "article",
+  "id": "kaisha_shugyo_keitai",
+  "title": "就業形態を 知ろう",
+  "description": "エンジニアの はたらきかたは 3つ あります。SES・受託開発・自社開発を スライドで 見ます。",
+  "blocks": [
+    {
+      "kind": "paragraph",
+      "text": "エンジニアの 働き方には、大きく 分けて 3つの 形が あります。スライドを よく 見ましょう。押すと 大きく なります。"
+    },
+    {
+      "kind": "image",
+      "src": "/img/articles/kaisha_shugyo_keitai/slide.webp",
+      "refs": [],
+      "status": "done",
+      "size": "wide",
+      "caption": "SES・受託開発・自社開発。3つの 働き方の スライドです。"
+    },
+    {
+      "kind": "cards",
+      "columns": 3,
+      "items": [
+        {
+          "label": "SES",
+          "title": "お客様の 会社で 働く",
+          "text": "お客様の オフィスへ 行って 仕事を します。",
+          "image": {
+            "src": "/img/articles/kaisha_shugyo_keitai/ses.webp",
+            "refs": [],
+            "status": "done"
+          }
+        },
+        {
+          "label": "受託開発",
+          "title": "たのまれた ものを 作る",
+          "text": "お客様に たのまれて、ネクストメイクの オフィスで 開発します。",
+          "image": {
+            "src": "/img/articles/kaisha_shugyo_keitai/jutaku.webp",
+            "refs": [],
+            "status": "done"
+          }
+        },
+        {
+          "label": "自社開発",
+          "title": "自分の 会社の ものを 作る",
+          "text": "自分たちの オリジナルの サービスや アプリを 作ります。れいは「タンバム」です。",
+          "image": {
+            "src": "/img/articles/kaisha_shugyo_keitai/jisha.webp",
+            "refs": [],
+            "status": "done"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "callout",
+      "tone": "point",
+      "text": "ネクストメイクは、この 3つ 全部を やって いる 会社です。あなたは どの 働き方に 興味が ありますか。"
+    },
+    {
+      "kind": "link",
+      "ref": "kaisha_shugyo_keitai_listening",
+      "type": "listening",
+      "label": "ヘンディさんの 話を 聞く"
+    }
+  ],
+  "furigana": [
+    [
+      "就業形態",
+      "しゅうぎょうけいたい"
+    ],
+    [
+      "受託開発",
+      "じゅたくかいはつ"
+    ],
+    [
+      "自社開発",
+      "じしゃかいはつ"
+    ],
+    [
+      "働き方",
+      "はたらきかた"
+    ],
+    [
+      "客様",
+      "きゃくさま"
+    ],
+    [
+      "仕事",
+      "しごと"
+    ],
+    [
+      "開発",
+      "かいはつ"
+    ],
+    [
+      "自分",
+      "じぶん"
+    ],
+    [
+      "全部",
+      "ぜんぶ"
+    ],
+    [
+      "興味",
+      "きょうみ"
+    ],
+    [
+      "会社",
+      "かいしゃ"
+    ],
+    [
+      "知",
+      "し"
+    ],
+    [
+      "働",
+      "はたら"
+    ],
+    [
+      "大",
+      "おお"
+    ],
+    [
+      "分",
+      "わ"
+    ],
+    [
+      "形",
+      "かたち"
+    ],
+    [
+      "見",
+      "み"
+    ],
+    [
+      "押",
+      "お"
+    ],
+    [
+      "行",
+      "い"
+    ],
+    [
+      "作",
+      "つく"
+    ],
+    [
+      "話",
+      "はなし"
+    ],
+    [
+      "聞",
+      "き"
+    ]
+  ]
+}
