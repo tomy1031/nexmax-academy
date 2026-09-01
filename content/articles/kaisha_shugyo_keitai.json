@@ -1,12 +1,12 @@
 {
   "kind": "article",
   "id": "kaisha_shugyo_keitai",
-  "title": "就業形態を 知ろう",
-  "description": "エンジニアの はたらきかたは 3つ あります。SES・受託開発・自社開発を スライドで 見ます。",
+  "title": "就業形態を 確かめよう",
+  "description": "ヘンディさんが 話した 3つの 働き方を、スライドで 確かめます。SES・受託開発・自社開発です。",
   "blocks": [
     {
       "kind": "paragraph",
-      "text": "エンジニアの 働き方には、大きく 分けて 3つの 形が あります。スライドを よく 見ましょう。押すと 大きく なります。"
+      "text": "ヘンディさんの 話に 出て きた 3つの 働き方です。聞こえた ことを、この スライドで 確かめましょう。押すと 大きく なります。"
     },
     {
       "kind": "image",
@@ -59,9 +59,9 @@
     },
     {
       "kind": "link",
-      "ref": "kaisha_shugyo_keitai_listening",
-      "type": "listening",
-      "label": "ヘンディさんの 話を 聞く"
+      "ref": "kaisha_shugyo_keitai_check",
+      "type": "quizset",
+      "label": "かくにんの もんだいへ"
     }
   ],
   "furigana": [
@@ -110,8 +110,16 @@
       "かいしゃ"
     ],
     [
-      "知",
-      "し"
+      "確",
+      "たし"
+    ],
+    [
+      "話",
+      "はなし"
+    ],
+    [
+      "出",
+      "で"
     ],
     [
       "働",
