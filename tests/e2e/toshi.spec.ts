@@ -142,14 +142,13 @@ const HENDY_ANSWERS = [
  * 社長の 出だしの しつもん（`talkGame.openers`）に 1つずつ 答える。
  *
  * **本数を そろえる**（2026-08-31）。しつもんを 使いきった ところで 聞く ばんへ 移るので、
- * ここが 足りないと 聞く ばんに とどかない。並びは 準備フォームの ①〜⑥ と 同じ。
+ * ここが 足りないと 聞く ばんに とどかない。並びは 準備フォームの ①〜⑤ と 同じ。
  */
 const MATSUI_FINDINGS = [
   "カンボジアの プログラムが おもしろかったです。",
   "わたしは にほんごが とくいだから、ほうこくに つかいたいです。",
   "かんこうDX で、まちを あるいて みたいです。",
   "カンボジアの がくせいは、あたらしい ことを はやく おぼえると おもいます。",
-  "Japanese IT Pathway は、にほんごと ITを べんきょうする プログラムです。",
   "にほんへ いくまでに、にほんごを がんばりたいです。はなしたいからです。",
 ];
 
@@ -159,6 +158,39 @@ const MATSUI_QUESTIONS = [
   "これから、どんな ことを して みたいですか。",
   "しごとで、いちばん たのしい ことは なんですか。",
   "わたしたちに、なにを のぞんで いますか。",
+];
+
+/**
+ * STEP 6 の リスニングで「聞こえた」ことに する ことば。
+ *
+ * 学習者が やる ことと 同じ——**打った ことばが 原稿の 上で 光る**。
+ * キーワード（6つ）だけでは 10% しか ひらかないので、カタカナや ふつうの 語も
+ * まぜて 30%の 関所を 越える。**原稿に 出て こない 語を 混ぜない こと**
+ *（混ぜると ミスが 増えるだけで、関所は 越えられない）。
+ */
+const HEARD = [
+  "エンジニア",
+  "オフィス",
+  "アプリ",
+  "サービス",
+  "システム",
+  "ネクストメイク",
+  "SES",
+  "受託開発",
+  "自社開発",
+  "働き方",
+  "会社",
+  "仕事",
+  "説明",
+  "契約",
+  "お客様",
+  "日本",
+  "興味",
+  "全部",
+  "インドネシア",
+  "おはようございます",
+  "タンバム",
+  "オリジナル",
 ];
 
 test("かいしゃステージを 通しで あそべる（端末に 何も 置かずに 始める）", async ({ page }) => {
@@ -453,15 +485,15 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
      * 「空わくを 出す」決まりは 生きた まま、**作り忘れの 見張り**として 効き つづける。
      */
     /*
-     * 2026-08-31 に 準備が 7問に なり（社長の しつもんと 1対1）、カードも 7枚に なった。
-     * 足した 2枚（5 Japanese IT Pathway / 6 日本に 行くまでに）の 絵も 同じ日に 作った ので、
-     * **空わくは 0 に 戻す**。0 で 固定して おくと、絵を 消した ときや 差しかえに
+     * 2026-08-31 に 準備は 6問（社長の しつもんと 1対1）。「Japanese IT Pathway は
+     * どんな プログラム？」は 同じ日に 外した ので、カードは 6枚に なった。
+     * **空わくは 0**。0 で 固定して おくと、絵を 消した ときや 差しかえに
      * 失敗した ときに ここが 落ちる——「空わくを 出す」決まりは 生きた まま、
      * 作り忘れの 見張りとして 効き つづける。
      */
     await expect(page.locator('[data-slot="empty"]')).toHaveCount(0);
-    /* 「これから 考える 7つの こと」の 7枚 ＋ A/B の 分かれ道 2枚。 */
-    await expect(page.locator('img[src*="/img/articles/kaisha_matsui_junbi/"]')).toHaveCount(9);
+    /* 「これから 考える 6つの こと」の 6枚 ＋ A/B の 分かれ道 2枚。 */
+    await expect(page.locator('img[src*="/img/articles/kaisha_matsui_junbi/"]')).toHaveCount(8);
     await shot(page, "07-junbi-article");
 
     await readToEnd(page);
@@ -496,7 +528,6 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
       "私は 日本語が 得意です。報告に 使いたいです。",
       "私は AIを 使う 仕事を やって みたいです。",
       "カンボジアの 学生は 新しい ことを 早く おぼえると 思います。",
-      "Japanese IT Pathway は 日本語と ITを 勉強する プログラムです。",
       "私は 日本語を がんばりたいです。日本で はたらきたいからです。",
       "社長に 聞きたい ことは、どうして この 会社を 作りましたかです。",
     ];
@@ -609,7 +640,51 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
     await page.getByRole("button", { name: "おわる" }).click();
   });
 
-  await test.step("9. ステージを おえる", async () => {
+  await test.step("9. STEP 6 ページ「就業形態を 知ろう」— はたらきかたの スライド", async () => {
+    await frameNext(page).click();
+    await expect(page).toHaveURL(/article-kaisha_shugyo_keitai$/);
+    /*
+     * 旧アプリの 講義スライド（1枚の 図）の 移植。図の 中の 字には ふりがなを
+     * 振れないので、**図の 下に 同じ ことを ことばでも 置いて ある**（3枚の カード）。
+     * カードの 絵は その 図の 3つの わくを 切り出した もの——390px の 画面では
+     * 1枚の ままだと 字が 読めないので、1つずつ 大きく 見せる。
+     * 図が 消えた ことに 気づける ように、枚数を 固定して 見張る（全体1枚＋3つ）。
+     */
+    await expect(page.locator('img[src*="/img/articles/kaisha_shugyo_keitai/"]')).toHaveCount(4);
+    await expect(page.locator('[data-slot="empty"]')).toHaveCount(0);
+    await shot(page, "13-shugyo-keitai-slide");
+
+    await readToEnd(page);
+    await frameNext(page).click();
+  });
+
+  await test.step("10. STEP 6 リスニング「就業形態」— 打った ことばで 原稿が ひらく", async () => {
+    /*
+     * ステージに リスニングは **1本だけ**なので URL に ID は 付かない
+     *（`stageContentPath`）。ここが `-ID` 付きに なったら、ステージに
+     * 2本目の リスニングが 入った という こと。
+     */
+    await expect(page).toHaveURL(/\/kaisha\/listening$/);
+    await page.getByRole("button", { name: "はじめる" }).click();
+
+    const heard = page.getByLabel("聞こえた ことばを 入力する");
+    for (const word of HEARD) {
+      await heard.fill(word);
+      await page.getByRole("button", { name: "はんてい" }).click();
+    }
+    /*
+     * 30% ひらくと こたえあわせへ 進める（`revealGoal`）。**この 語の 並びで
+     * 関所を 越えられる** ことが、教材の 側の 検査でも ある——キーワードを
+     * 入れ替えて 越えられなく なったら、ここが 落ちる。
+     */
+    await expect(page.getByText(/げんこうが \d+% ひらきました/)).toBeVisible();
+    await shot(page, "14-listening-typing");
+
+    await page.getByRole("button", { name: "こたえあわせに すすむ" }).click();
+    await expect(page.getByRole("heading", { name: "こたえあわせ" })).toBeVisible();
+  });
+
+  await test.step("11. ステージを おえる", async () => {
     const clear = page.getByRole("dialog", { name: "ステージ クリア" });
     await expect(clear).toBeVisible();
     await shot(page, "11-stage-clear");
