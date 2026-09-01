@@ -22,6 +22,7 @@
     "cf:build": "node scripts/check_build_env.mjs && node scripts/copy_pdf_worker.mjs && opennextjs-cloudflare build",
     "check:size": "node scripts/check_worker_size.mjs",
     "e2e": "playwright test",
+    "eval:taiwa": "rm -rf eval-results && playwright test --config playwright.eval.config.ts; node scripts/eval_summary.mjs",
     "cf:preview": "npm run cf:build:local && opennextjs-cloudflare preview",
     "cf:deploy": "npm run cf:build && opennextjs-cloudflare deploy",
     "cf:upload": "npm run cf:build && opennextjs-cloudflare upload",
