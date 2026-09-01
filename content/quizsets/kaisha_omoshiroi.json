@@ -10,6 +10,10 @@
   "requireAll": true,
   "furigana": [
     [
+      "行く",
+      "いく"
+    ],
+    [
       "要望",
       "ようぼう"
     ],
@@ -1416,28 +1420,9 @@
       "points": 1
     },
     {
-      "id": "t5",
-      "type": "free",
-      "section": "5｜Japanese IT Pathway は どんな プログラム？",
-      "sectionNote": "あなたが 今 いる プログラムの こと",
-      "q": "Japanese IT Pathway は、どんな プログラムですか？ サイトで 分かった ことを 自分の ことばで 書きましょう。",
-      "hints": [
-        {
-          "title": "💡 考える ヒント",
-          "text": "2年の プログラム。1年目は 日本語（N3）、2年目は IT。政府と 大学（AUPP・CADT）と いっしょ。"
-        }
-      ],
-      "placeholder": "Japanese IT Pathway は ◯◯の プログラムです。",
-      "starter": "「◯◯を 勉強する プログラムです。」「日本の 会社で はたらく ために ◯◯します。」",
-      "minLength": 8,
-      "report": true,
-      "explain": "自分が いる プログラムを 日本語で 説明できると、日本の 会社の 面接でも そのまま 使えます。",
-      "points": 1
-    },
-    {
       "id": "t6",
       "type": "free",
-      "section": "6｜日本に 行くまでに 何を がんばる？",
+      "section": "5｜日本に 行くまでに 何を がんばる？",
       "sectionNote": "これからの こと",
       "q": "日本に 行くまでに、何を がんばりたいですか？ どうしてですか？",
       "hints": [
@@ -1456,7 +1441,7 @@
     {
       "id": "t7",
       "type": "free",
-      "section": "7｜松井社長に 何を 聞きたい？",
+      "section": "6｜松井社長に 何を 聞きたい？",
       "sectionNote": "Webサイトだけでは 分からない こと",
       "q": "松井社長だから 聞ける 質問を 1つ 考えましょう。",
       "hints": [
