@@ -30,6 +30,7 @@ import { isSchoolChosen } from "@/lib/school";
 import { readContentProgress, subscribeProgress } from "@/lib/progress/store";
 import { statusCode as contentStatusCode } from "@/components/stage/stage-progress";
 import { mapStageActions, type MapStage } from "@/lib/map-data";
+import { rememberAdminFlag } from "@/lib/admin-flag";
 import { fetchOwnProfile, type ProfileRow } from "@/lib/profile-db";
 import {
   clearProfile,
@@ -1376,6 +1377,13 @@ export function MapShell({
           return;
         }
         saveProfile(profileFromRow(stored));
+        /*
+         * 「この人は 先生か」を 端末に 控える（`src/lib/admin-flag.ts`）。
+         * 教材の画面は ISR で 配られるので 誰が 見ているかを 知らず、鍵を
+         * 素通りさせてよいかを 自分では 判断できない。ここは **すでに 本人の行を
+         * 読んだ あと**なので、控えを 取っても 往復は 1つも 増えない。
+         */
+        rememberAdminFlag(stored.id, stored.is_admin === true);
         if (active) setDatabaseProfile(stored);
       } catch {
         router.replace("/welcome");

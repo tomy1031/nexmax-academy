@@ -209,6 +209,22 @@ export async function seedCompleted(
   );
 }
 
+/**
+ * 「この端末を 見ているのは 先生（管理者）」の 覚え書きを 先に置く。
+ *
+ * デモモード（Supabase 未設定）の 通しの検証では ログインが 無いので、
+ * 本物の `is_admin` を 引けない。覚え書きの 形は `src/lib/admin-flag.ts` と
+ * そろえる——デモモードでは 聞き直しに 行かないので、置いた値が そのまま 効く。
+ */
+export async function seedAdmin(context: BrowserContext): Promise<void> {
+  await context.addInitScript(() => {
+    window.localStorage.setItem(
+      "nexmax.isAdmin.v1",
+      JSON.stringify({ admin: true, id: "e2e-teacher", at: Date.now() }),
+    );
+  });
+}
+
 /** 端末に 残った 正式な成績（`src/lib/progress/store.ts` の TestResult）。無ければ null。 */
 export async function readTestResult(page: Page, stageId: string): Promise<unknown> {
   return page.evaluate((id: string) => {
