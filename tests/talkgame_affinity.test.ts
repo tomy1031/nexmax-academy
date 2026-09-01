@@ -31,15 +31,6 @@ const PERFECT: TalkObservations = {
   question: true,
 };
 
-/** 話す ばんで n回 話す。 */
-function talkFor(count: number, observations: TalkObservations): TalkState {
-  let state = EMPTY_TALK;
-  for (let i = 0; i < count; i += 1) {
-    state = applyTurn(state, PLAN, observations).state;
-  }
-  return state;
-}
-
 /**
  * 聞く ばんに 入るまで 話す。
  *

@@ -160,6 +160,39 @@ const MATSUI_QUESTIONS = [
   "わたしたちに、なにを のぞんで いますか。",
 ];
 
+/**
+ * STEP 6 の リスニングで「聞こえた」ことに する ことば。
+ *
+ * 学習者が やる ことと 同じ——**打った ことばが 原稿の 上で 光る**。
+ * キーワード（6つ）だけでは 10% しか ひらかないので、カタカナや ふつうの 語も
+ * まぜて 30%の 関所を 越える。**原稿に 出て こない 語を 混ぜない こと**
+ *（混ぜると ミスが 増えるだけで、関所は 越えられない）。
+ */
+const HEARD = [
+  "エンジニア",
+  "オフィス",
+  "アプリ",
+  "サービス",
+  "システム",
+  "ネクストメイク",
+  "SES",
+  "受託開発",
+  "自社開発",
+  "働き方",
+  "会社",
+  "仕事",
+  "説明",
+  "契約",
+  "お客様",
+  "日本",
+  "興味",
+  "全部",
+  "インドネシア",
+  "おはようございます",
+  "タンバム",
+  "オリジナル",
+];
+
 test("かいしゃステージを 通しで あそべる（端末に 何も 置かずに 始める）", async ({ page }) => {
   await test.step("1. ステージのトップに 教材が 順に ならぶ", async () => {
     await page.goto("/kaisha");
@@ -607,7 +640,51 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
     await page.getByRole("button", { name: "おわる" }).click();
   });
 
-  await test.step("9. ステージを おえる", async () => {
+  await test.step("9. STEP 6 ページ「就業形態を 知ろう」— はたらきかたの スライド", async () => {
+    await frameNext(page).click();
+    await expect(page).toHaveURL(/article-kaisha_shugyo_keitai$/);
+    /*
+     * 旧アプリの 講義スライド（1枚の 図）の 移植。図の 中の 字には ふりがなを
+     * 振れないので、**図の 下に 同じ ことを ことばでも 置いて ある**（3枚の カード）。
+     * カードの 絵は その 図の 3つの わくを 切り出した もの——390px の 画面では
+     * 1枚の ままだと 字が 読めないので、1つずつ 大きく 見せる。
+     * 図が 消えた ことに 気づける ように、枚数を 固定して 見張る（全体1枚＋3つ）。
+     */
+    await expect(page.locator('img[src*="/img/articles/kaisha_shugyo_keitai/"]')).toHaveCount(4);
+    await expect(page.locator('[data-slot="empty"]')).toHaveCount(0);
+    await shot(page, "13-shugyo-keitai-slide");
+
+    await readToEnd(page);
+    await frameNext(page).click();
+  });
+
+  await test.step("10. STEP 6 リスニング「就業形態」— 打った ことばで 原稿が ひらく", async () => {
+    /*
+     * ステージに リスニングは **1本だけ**なので URL に ID は 付かない
+     *（`stageContentPath`）。ここが `-ID` 付きに なったら、ステージに
+     * 2本目の リスニングが 入った という こと。
+     */
+    await expect(page).toHaveURL(/\/kaisha\/listening$/);
+    await page.getByRole("button", { name: "はじめる" }).click();
+
+    const heard = page.getByLabel("聞こえた ことばを 入力する");
+    for (const word of HEARD) {
+      await heard.fill(word);
+      await page.getByRole("button", { name: "はんてい" }).click();
+    }
+    /*
+     * 30% ひらくと こたえあわせへ 進める（`revealGoal`）。**この 語の 並びで
+     * 関所を 越えられる** ことが、教材の 側の 検査でも ある——キーワードを
+     * 入れ替えて 越えられなく なったら、ここが 落ちる。
+     */
+    await expect(page.getByText(/げんこうが \d+% ひらきました/)).toBeVisible();
+    await shot(page, "14-listening-typing");
+
+    await page.getByRole("button", { name: "こたえあわせに すすむ" }).click();
+    await expect(page.getByRole("heading", { name: "こたえあわせ" })).toBeVisible();
+  });
+
+  await test.step("11. ステージを おえる", async () => {
     const clear = page.getByRole("dialog", { name: "ステージ クリア" });
     await expect(clear).toBeVisible();
     await shot(page, "11-stage-clear");
