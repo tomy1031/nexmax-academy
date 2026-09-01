@@ -1,0 +1,1342 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>NexmaxAcademy</title>
+    <!--
+      れんらくビルダー — エンジン（画面と 動き だけ）
+
+      文言は すべて renraku_builder.data.js から 読む。この ファイルに
+      日本語を 直接 書かない（ボタン名も DATA.labels から）。
+
+      画面の 芯: 右（スマホでは 上）の Slack風 プレビューが、選ぶ たびに
+      1行ずつ 育つ。4手 そろったら 送信 → スタンプ → 返信、が 学習者の ごほうび。
+      選び直しは 減点しない。スコア「そだち」は 上がるだけ。
+    -->
+    <style>
+      :root {
+        --sky: #0288d1;
+        --sky-soft: #e1f2fb;
+        --navy: #004f8d;
+        --navy-dark: #003c6b;
+        --ink: #1f3a56;
+        --ink-soft: #5a7089;
+        --ink-faint: #9db0c2;
+        --line: #dcebf5;
+        --leaf: #58c273;
+        --sun: #ffc93c;
+        --coral: #ff8a70;
+        --coral-dark: #f2654a;
+        --cream: #fff7e8;
+        --paper: #ffffff;
+        --radius: 20px;
+        --shadow: 0 6px 18px rgba(31, 58, 86, 0.1);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      [hidden] {
+        display: none !important;
+      }
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        height: 100vh;
+        height: 100dvh;
+        overflow: hidden;
+        color: var(--ink);
+        background: linear-gradient(180deg, #d8f0fc 0%, #f4fbff 46%, var(--cream) 100%);
+        font-family:
+          system-ui,
+          -apple-system,
+          "Hiragino Kaku Gothic ProN",
+          "Noto Sans JP",
+          Meiryo,
+          sans-serif;
+        font-size: 16px;
+        line-height: 2;
+        -webkit-text-size-adjust: 100%;
+      }
+
+      ruby {
+        ruby-align: center;
+      }
+
+      rt {
+        font-size: 0.56em;
+        color: var(--ink-soft);
+        font-weight: 400;
+        line-height: 1.1;
+      }
+
+      button {
+        font: inherit;
+        color: inherit;
+        cursor: pointer;
+      }
+
+      /* ---------------- 全体の 骨組み ---------------- */
+
+      .app {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+      }
+
+      .bar {
+        flex: 0 0 auto;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 14px;
+        background: rgba(255, 255, 255, 0.86);
+        border-bottom: 1px solid var(--line);
+        backdrop-filter: blur(6px);
+      }
+
+      .bar-left {
+        flex: 1 1 auto;
+        min-width: 0;
+      }
+
+      .bar-title {
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: var(--navy);
+        line-height: 1.6;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .dots {
+        display: flex;
+        gap: 6px;
+        margin-top: 2px;
+      }
+
+      .dots i {
+        width: 22px;
+        height: 6px;
+        border-radius: 999px;
+        background: var(--line);
+        transition: background 0.3s;
+      }
+
+      .dots i.on {
+        background: var(--sky);
+      }
+
+      .dots i.done {
+        background: var(--leaf);
+      }
+
+      .score {
+        flex: 0 0 auto;
+        display: flex;
+        align-items: baseline;
+        gap: 6px;
+        padding: 6px 14px;
+        border-radius: 999px;
+        background: var(--sky-soft);
+        color: var(--navy);
+        font-size: 0.8rem;
+        line-height: 1.4;
+      }
+
+      .score b {
+        font-size: 1.25rem;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .score.bump {
+        animation: bump 0.2s ease-out;
+      }
+
+      .main {
+        flex: 1 1 auto;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* ---------------- 1枚もの の 画面（はじめ・場面・おわり） ---------------- */
+
+      .sheet {
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow-y: auto;
+        padding: 20px 16px 32px;
+        text-align: center;
+      }
+
+      .sheet-inner {
+        max-width: 620px;
+        margin: 0 auto;
+      }
+
+      .hero-icon {
+        font-size: 4.4rem;
+        line-height: 1.2;
+        width: 116px;
+        height: 116px;
+        margin: 4px auto 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: radial-gradient(circle at 50% 40%, #ffffff 0%, var(--sky-soft) 100%);
+        box-shadow: var(--shadow);
+        animation: pop 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.3);
+      }
+
+      .sheet h1 {
+        margin: 6px 0 2px;
+        font-size: 1.5rem;
+        line-height: 1.8;
+        color: var(--navy);
+      }
+
+      .sheet h2 {
+        margin: 6px 0 2px;
+        font-size: 1.3rem;
+        line-height: 1.8;
+        color: var(--navy);
+      }
+
+      .sheet .sub {
+        margin: 0 0 16px;
+        font-size: 0.95rem;
+        color: var(--ink-soft);
+      }
+
+      .cards {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin: 14px 0 22px;
+        text-align: left;
+      }
+
+      .card {
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: 12px 16px;
+        box-shadow: 0 2px 8px rgba(31, 58, 86, 0.05);
+        font-size: 1rem;
+        animation: flyIn 0.3s cubic-bezier(0.2, 0.8, 0.3, 1) backwards;
+      }
+
+      .card i {
+        flex: 0 0 auto;
+        width: 10px;
+        height: 10px;
+        margin-top: 14px;
+        border-radius: 50%;
+        background: var(--sky);
+      }
+
+      .chan-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 16px;
+        border-radius: 999px;
+        background: var(--navy);
+        color: #fff;
+        font-size: 0.9rem;
+        font-weight: 700;
+        line-height: 1.6;
+      }
+
+      /* ---------------- ボタン ---------------- */
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-height: 56px;
+        padding: 10px 28px;
+        border: none;
+        border-radius: 999px;
+        background: var(--navy);
+        color: #fff;
+        font-size: 1.05rem;
+        font-weight: 700;
+        line-height: 1.7;
+        box-shadow: 0 4px 0 var(--navy-dark);
+        transition:
+          transform 0.12s,
+          box-shadow 0.12s;
+      }
+
+      /* 色の ついた ボタンの 上では、ふりがなも 白で 読ませる */
+      .btn rt {
+        color: rgba(255, 255, 255, 0.85);
+      }
+
+      .btn:hover {
+        transform: translateY(-1px);
+      }
+
+      .btn:active {
+        transform: translateY(3px);
+        box-shadow: 0 1px 0 var(--navy-dark);
+      }
+
+      .btn[disabled] {
+        opacity: 0.55;
+        cursor: default;
+        transform: none;
+      }
+
+      .btn.send {
+        width: 100%;
+        background: var(--leaf);
+        box-shadow: 0 4px 0 #3aa458;
+      }
+
+      .btn.retry {
+        background: var(--sky);
+        box-shadow: 0 4px 0 var(--navy);
+      }
+
+      .btn.go {
+        min-width: 96px;
+        font-size: 1.6rem;
+        background: var(--sky);
+        box-shadow: 0 4px 0 var(--navy);
+      }
+
+      /* ---------------- あそぶ 画面（2段 / PCは 2列） ---------------- */
+
+      .play {
+        flex: 1 1 auto;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .preview {
+        flex: 0 0 auto;
+        max-height: 44%;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+        background: var(--paper);
+        border-bottom: 1px solid var(--line);
+        box-shadow: 0 4px 14px rgba(31, 58, 86, 0.07);
+      }
+
+      .preview-head {
+        flex: 0 0 auto;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 14px;
+        border-bottom: 1px solid var(--line);
+        background: #f7fbfe;
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: var(--ink-soft);
+        line-height: 1.6;
+      }
+
+      .preview-head .live {
+        margin-left: auto;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--leaf);
+        animation: blink 1.6s infinite;
+      }
+
+      .preview-head.sent {
+        color: var(--navy);
+        background: var(--sky-soft);
+      }
+
+      .stream {
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow-y: auto;
+        padding: 12px 12px 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .post {
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+        padding: 10px 12px;
+        border-radius: 16px;
+        background: var(--paper);
+      }
+
+      .post.draft {
+        border: 2px dashed var(--line);
+      }
+
+      .post.sent {
+        border: 2px solid var(--sky-soft);
+        background: #fbfeff;
+        animation: deliver 0.45s cubic-bezier(0.2, 0.8, 0.3, 1);
+      }
+
+      .post.reply {
+        border: 2px solid var(--line);
+        background: var(--cream);
+        animation: flyIn 0.35s cubic-bezier(0.2, 0.8, 0.3, 1);
+      }
+
+      .avatar {
+        flex: 0 0 auto;
+        width: 42px;
+        height: 42px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+        background: var(--sky-soft);
+        font-size: 1.5rem;
+      }
+
+      .post-body {
+        flex: 1 1 auto;
+        min-width: 0;
+      }
+
+      .post-name {
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: var(--navy);
+        line-height: 1.6;
+      }
+
+      .lines {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+        margin-top: 2px;
+      }
+
+      .line {
+        font-size: 0.95rem;
+        line-height: 1.9;
+        animation: flyIn 0.25s cubic-bezier(0.2, 0.8, 0.3, 1);
+      }
+
+      .line.dest {
+        padding: 2px 12px;
+        border-radius: 999px;
+        background: var(--sky-soft);
+        color: var(--navy);
+        font-size: 0.82rem;
+        font-weight: 700;
+      }
+
+      .skeleton {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding: 6px 0;
+      }
+
+      .skeleton i {
+        display: block;
+        height: 10px;
+        border-radius: 999px;
+        background: var(--line);
+      }
+
+      .skeleton i:nth-child(1) {
+        width: 58%;
+      }
+
+      .skeleton i:nth-child(2) {
+        width: 82%;
+      }
+
+      .skeleton i:nth-child(3) {
+        width: 40%;
+      }
+
+      .reactions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 8px;
+      }
+
+      .reaction {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 2px 10px;
+        border: 1px solid var(--sky-soft);
+        border-radius: 999px;
+        background: #f2faff;
+        font-size: 1rem;
+        line-height: 1.7;
+        animation: pop 0.26s cubic-bezier(0.2, 0.9, 0.3, 1.4);
+      }
+
+      .reaction b {
+        font-size: 0.8rem;
+        color: var(--navy);
+        font-variant-numeric: tabular-nums;
+      }
+
+      .reaction.bump {
+        animation: bump 0.2s ease-out;
+      }
+
+      /* えらぶ 側 */
+
+      .steps {
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow-y: auto;
+        padding: 14px 14px 28px;
+      }
+
+      .steps-inner {
+        max-width: 620px;
+        margin: 0 auto;
+      }
+
+      .scene-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 4px 14px 4px 6px;
+        border-radius: 999px;
+        background: var(--paper);
+        border: 1px solid var(--line);
+        font-size: 0.82rem;
+        font-weight: 700;
+        color: var(--ink-soft);
+        line-height: 1.7;
+      }
+
+      .scene-chip span {
+        font-size: 1.3rem;
+      }
+
+      .pips {
+        display: flex;
+        gap: 8px;
+        margin: 12px 0 6px;
+      }
+
+      .pips i {
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        background: var(--line);
+        transition:
+          background 0.3s,
+          transform 0.3s;
+      }
+
+      .pips i.done {
+        background: var(--leaf);
+      }
+
+      .pips i.on {
+        background: var(--sky);
+        transform: scale(1.25);
+      }
+
+      .prompt {
+        margin: 6px 0 12px;
+        font-size: 1.15rem;
+        line-height: 1.9;
+        color: var(--navy);
+      }
+
+      .options {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .option {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        width: 100%;
+        min-height: 60px;
+        padding: 12px 16px;
+        text-align: left;
+        border: 2px solid var(--line);
+        border-radius: var(--radius);
+        background: var(--paper);
+        font-size: 1rem;
+        line-height: 1.85;
+        box-shadow: 0 2px 8px rgba(31, 58, 86, 0.05);
+        transition:
+          transform 0.12s,
+          border-color 0.2s,
+          box-shadow 0.2s;
+        animation: flyIn 0.25s cubic-bezier(0.2, 0.8, 0.3, 1) backwards;
+      }
+
+      .option:hover {
+        border-color: var(--sky);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(2, 136, 209, 0.16);
+      }
+
+      .option:active {
+        transform: scale(0.985);
+      }
+
+      .option > span {
+        flex: 1 1 auto;
+        min-width: 0;
+      }
+
+      .option em {
+        flex: 0 0 auto;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: var(--sky-soft);
+        color: var(--navy);
+        font-style: normal;
+        font-weight: 700;
+        font-size: 0.95rem;
+      }
+
+      .option.picked {
+        border-color: var(--sky);
+        background: var(--sky-soft);
+      }
+
+      .feedback {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        padding: 16px;
+        border-radius: var(--radius);
+        font-size: 1rem;
+        line-height: 1.95;
+        animation: flyIn 0.28s cubic-bezier(0.2, 0.8, 0.3, 1);
+      }
+
+      .feedback span {
+        flex: 0 0 auto;
+        font-size: 2.2rem;
+        line-height: 1.2;
+      }
+
+      .feedback.good {
+        background: #eefaf1;
+        border: 2px solid var(--leaf);
+      }
+
+      .feedback.hint {
+        background: var(--cream);
+        border: 2px solid var(--sun);
+      }
+
+      .after {
+        display: flex;
+        justify-content: center;
+        margin-top: 16px;
+      }
+
+      .ready-icon {
+        margin: 14px 0 18px;
+        text-align: center;
+        font-size: 3.6rem;
+        line-height: 1.2;
+        animation: pop 0.4s cubic-bezier(0.2, 0.9, 0.3, 1.3);
+      }
+
+      .closing {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        margin: 4px 0 16px;
+        padding: 16px;
+        border-radius: var(--radius);
+        background: var(--sky-soft);
+        font-size: 1rem;
+        line-height: 1.95;
+        animation: flyIn 0.3s cubic-bezier(0.2, 0.8, 0.3, 1);
+      }
+
+      .closing span {
+        font-size: 2rem;
+        line-height: 1.2;
+      }
+
+      /* PC は 2列（プレビューを 左に 置いて つねに 見せる） */
+      @media (min-width: 900px) {
+        .play {
+          flex-direction: row;
+          gap: 0;
+        }
+
+        .preview {
+          flex: 0 0 42%;
+          max-width: 520px;
+          max-height: none;
+          border-bottom: none;
+          border-right: 1px solid var(--line);
+        }
+
+        .steps {
+          flex: 1 1 auto;
+          padding: 22px 24px 40px;
+        }
+
+        .sheet {
+          padding: 32px 24px 40px;
+        }
+
+        .hero-icon {
+          font-size: 5rem;
+          width: 132px;
+          height: 132px;
+        }
+      }
+
+      @keyframes flyIn {
+        from {
+          opacity: 0;
+          transform: translateY(18px) scale(0.97);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+
+      @keyframes pop {
+        0% {
+          opacity: 0;
+          transform: scale(0.3);
+        }
+        70% {
+          opacity: 1;
+          transform: scale(1.18);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      @keyframes bump {
+        0% {
+          transform: scale(1);
+        }
+        45% {
+          transform: scale(1.3);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      @keyframes deliver {
+        0% {
+          transform: translateY(16px) scale(0.97);
+          box-shadow: 0 0 0 8px rgba(2, 136, 209, 0.22);
+        }
+        100% {
+          transform: none;
+          box-shadow: 0 6px 18px rgba(31, 58, 86, 0.1);
+        }
+      }
+
+      @keyframes blink {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.25;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          animation: none !important;
+          transition: none !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <header class="bar">
+        <div class="bar-left">
+          <div class="bar-title" id="barTitle"></div>
+          <div class="dots" id="dots"></div>
+        </div>
+        <div class="score" id="score">
+          <span id="scoreLabel"></span><b id="scoreNum">0</b>
+        </div>
+      </header>
+      <main class="main" id="main"></main>
+    </div>
+
+    <script src="renraku_builder.data.js"></script>
+    <script>
+      (function () {
+        "use strict";
+
+        var DATA = window.BUILDER_DATA;
+        if (!DATA) return;
+
+        /* ---------------- ことばの 組み立て ---------------- */
+
+        /** HTML に なる 文字を 先に 無害化する（素の 連結を しない）。 */
+        function esc(text) {
+          return String(text == null ? "" : text).replace(/[&<>"']/g, function (c) {
+            return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+          });
+        }
+
+        /** {表記|よみ} → <ruby>表記<rt>よみ</rt></ruby>。エスケープした あとで 組む。 */
+        function rubyfy(text) {
+          return esc(text).replace(/\{([^{}|]+)\|([^{}|]+)\}/g, function (_m, base, yomi) {
+            return "<ruby>" + base + "<rt>" + yomi + "</rt></ruby>";
+          });
+        }
+
+        /** ルビ記法を はずした ただの 文字（タイトル用）。 */
+        function plain(text) {
+          return String(text == null ? "" : text).replace(/\{([^{}|]+)\|[^{}|]+\}/g, "$1");
+        }
+
+        /** 要素を 1つ 作る。text は ルビ記法の まま 渡してよい。 */
+        function el(tag, cls, text) {
+          var node = document.createElement(tag);
+          if (cls) node.className = cls;
+          if (text != null) node.innerHTML = rubyfy(text);
+          return node;
+        }
+
+        function clear(node) {
+          while (node.firstChild) node.removeChild(node.firstChild);
+        }
+
+        var L = DATA.labels || {};
+        var YOU = DATA.you || {};
+
+        /* ---------------- 現在地 ---------------- */
+
+        var S = {
+          si: 0, // いま の シナリオ
+          ti: 0, // いま の 手
+          score: 0,
+          token: 0, // 画面を 変えたら 進行中の 演出を 捨てる ための 通し番号
+          doneSent: false,
+        };
+
+        var main = document.getElementById("main");
+        var barTitle = document.getElementById("barTitle");
+        var dots = document.getElementById("dots");
+        var scoreBox = document.getElementById("score");
+        var scoreNum = document.getElementById("scoreNum");
+
+        document.title = plain(DATA.title);
+        document.getElementById("scoreLabel").innerHTML = rubyfy(DATA.scoreLabel || "");
+
+        /** シナリオの 進みぐあい（点で 見せる）。 */
+        function renderDots(activeIndex) {
+          clear(dots);
+          (DATA.scenarios || []).forEach(function (_s, i) {
+            var pip = document.createElement("i");
+            if (i < activeIndex) pip.className = "done";
+            else if (i === activeIndex) pip.className = "on";
+            dots.appendChild(pip);
+          });
+        }
+
+        function addScore(points) {
+          S.score += points;
+          scoreNum.textContent = String(S.score);
+          scoreBox.classList.remove("bump");
+          void scoreBox.offsetWidth;
+          scoreBox.classList.add("bump");
+        }
+
+        /** 演出の 途中で 画面が 変わっても 走り続けない ように する。 */
+        function later(fn, ms, token) {
+          window.setTimeout(function () {
+            if (token !== S.token) return;
+            fn();
+          }, ms);
+        }
+
+        function newScreen() {
+          S.token += 1;
+          clear(main);
+          return S.token;
+        }
+
+        /* ---------------- はじめ の 画面 ---------------- */
+
+        function renderTitle() {
+          newScreen();
+          renderDots(-1);
+          barTitle.innerHTML = rubyfy(DATA.title);
+
+          var sheet = el("div", "sheet");
+          var inner = el("div", "sheet-inner");
+          inner.appendChild(el("div", "hero-icon", "💬"));
+          inner.appendChild(el("h1", null, DATA.title));
+          inner.appendChild(el("p", "sub", DATA.subtitle));
+
+          var cards = el("div", "cards");
+          (DATA.intro || []).forEach(function (text, i) {
+            var card = el("div", "card");
+            card.style.animationDelay = i * 90 + "ms";
+            card.appendChild(document.createElement("i"));
+            card.appendChild(el("div", null, text));
+            cards.appendChild(card);
+          });
+          inner.appendChild(cards);
+
+          var start = el("button", "btn", L.start);
+          start.type = "button";
+          start.addEventListener("click", function () {
+            renderSituation();
+          });
+          inner.appendChild(start);
+
+          sheet.appendChild(inner);
+          main.appendChild(sheet);
+        }
+
+        /* ---------------- 場面 の 画面（絵で 見せる） ---------------- */
+
+        function renderSituation() {
+          var token = newScreen();
+          var sc = DATA.scenarios[S.si];
+          renderDots(S.si);
+          barTitle.innerHTML = rubyfy(sc.title);
+
+          var sheet = el("div", "sheet");
+          var inner = el("div", "sheet-inner");
+          inner.appendChild(el("div", "hero-icon", sc.icon || "💬"));
+          inner.appendChild(el("h2", null, sc.title));
+
+          var cards = el("div", "cards");
+          (sc.situation || []).forEach(function (text, i) {
+            var card = el("div", "card");
+            card.style.animationDelay = i * 110 + "ms";
+            card.appendChild(document.createElement("i"));
+            card.appendChild(el("div", null, text));
+            cards.appendChild(card);
+          });
+          inner.appendChild(cards);
+
+          var start = el("button", "btn", L.start);
+          start.type = "button";
+          start.addEventListener("click", function () {
+            if (token !== S.token) return;
+            renderPlay();
+          });
+          inner.appendChild(start);
+
+          sheet.appendChild(inner);
+          main.appendChild(sheet);
+        }
+
+        /* ---------------- あそぶ 画面 ---------------- */
+
+        var view = null; // いま の シナリオの 画面部品
+
+        function renderPlay() {
+          var token = newScreen();
+          var sc = DATA.scenarios[S.si];
+          S.ti = 0;
+          renderDots(S.si);
+          barTitle.innerHTML = rubyfy(sc.title);
+
+          var play = el("div", "play");
+
+          /* --- 投稿の プレビュー（つねに 見える） --- */
+          var preview = el("div", "preview");
+          var head = el("div", "preview-head");
+          var headText = el("span", null, L.preview);
+          head.appendChild(headText);
+          head.appendChild(el("i", "live"));
+          preview.appendChild(head);
+
+          var stream = el("div", "stream");
+          var post = el("article", "post draft");
+          post.appendChild(el("div", "avatar", YOU.icon || "🧑‍💻"));
+          var body = el("div", "post-body");
+          body.appendChild(el("div", "post-name", YOU.name || ""));
+          var lines = el("div", "lines");
+          var skeleton = el("div", "skeleton");
+          skeleton.appendChild(document.createElement("i"));
+          skeleton.appendChild(document.createElement("i"));
+          skeleton.appendChild(document.createElement("i"));
+          lines.appendChild(skeleton);
+          body.appendChild(lines);
+          var reactions = el("div", "reactions");
+          body.appendChild(reactions);
+          post.appendChild(body);
+          stream.appendChild(post);
+          preview.appendChild(stream);
+          play.appendChild(preview);
+
+          /* --- えらぶ 側 --- */
+          var steps = el("div", "steps");
+          var stepsInner = el("div", "steps-inner");
+          steps.appendChild(stepsInner);
+          play.appendChild(steps);
+
+          main.appendChild(play);
+
+          view = {
+            token: token,
+            sc: sc,
+            head: head,
+            headText: headText,
+            stream: stream,
+            post: post,
+            lines: lines,
+            skeleton: skeleton,
+            reactions: reactions,
+            reactionChips: {},
+            steps: steps,
+            inner: stepsInner,
+          };
+
+          renderStep();
+        }
+
+        /** プレビューに 1行 加える（下から ふわっと）。 */
+        function pushLine(text, isDest) {
+          if (view.skeleton && view.skeleton.parentNode) {
+            view.skeleton.parentNode.removeChild(view.skeleton);
+            view.skeleton = null;
+          }
+          var node = el("div", isDest ? "line dest" : "line", text);
+          view.lines.appendChild(node);
+          view.stream.scrollTop = view.stream.scrollHeight;
+        }
+
+        /** 手の 進みぐあい（丸で 見せる）。 */
+        function pips(total, current) {
+          var wrap = el("div", "pips");
+          for (var i = 0; i < total; i += 1) {
+            var pip = document.createElement("i");
+            if (i < current) pip.className = "done";
+            else if (i === current) pip.className = "on";
+            wrap.appendChild(pip);
+          }
+          return wrap;
+        }
+
+        function sceneChip(sc) {
+          var chip = el("div", "scene-chip");
+          chip.appendChild(el("span", null, sc.icon || "💬"));
+          chip.appendChild(el("b", null, sc.title));
+          return chip;
+        }
+
+        /** いま の 手を 出す（えらぶ ところ）。 */
+        function renderStep() {
+          var sc = view.sc;
+          var step = sc.steps[S.ti];
+          var inner = view.inner;
+          clear(inner);
+          view.steps.scrollTop = 0;
+
+          inner.appendChild(sceneChip(sc));
+          inner.appendChild(pips(sc.steps.length, S.ti));
+          inner.appendChild(el("h3", "prompt", step.prompt));
+
+          var options = el("div", "options");
+          (step.options || []).forEach(function (option, i) {
+            var button = el("button", "option");
+            button.type = "button";
+            button.style.animationDelay = i * 60 + "ms";
+            button.appendChild(el("em", null, String(i + 1)));
+            button.appendChild(el("span", null, option.text));
+            button.addEventListener("click", function () {
+              choose(option, button);
+            });
+            options.appendChild(button);
+          });
+          inner.appendChild(options);
+        }
+
+        function choose(option, button) {
+          var token = view.token;
+          if (token !== S.token) return;
+          button.classList.add("picked");
+          Array.prototype.forEach.call(view.inner.querySelectorAll("button"), function (b) {
+            b.disabled = true;
+          });
+
+          if (option.ok) {
+            if (option.post) pushLine(option.post, S.ti === 0);
+            addScore(10);
+            later(function () {
+              renderResult(option, true);
+            }, 260, token);
+          } else {
+            renderResult(option, false);
+          }
+        }
+
+        /** えらんだ あとの ひとこと。ok なら つぎへ、そうでなければ もう一度 えらぶ。 */
+        function renderResult(option, ok) {
+          var token = view.token;
+          var sc = view.sc;
+          var inner = view.inner;
+          clear(inner);
+          view.steps.scrollTop = 0;
+
+          inner.appendChild(sceneChip(sc));
+          inner.appendChild(pips(sc.steps.length, S.ti));
+
+          var card = el("div", "feedback " + (ok ? "good" : "hint"));
+          card.appendChild(el("span", null, ok ? "✨" : "💡"));
+          card.appendChild(el("div", null, option.feedback));
+          inner.appendChild(card);
+
+          var after = el("div", "after");
+          if (ok) {
+            var go = el("button", "btn go", "→");
+            go.type = "button";
+            go.addEventListener("click", function () {
+              if (token !== S.token) return;
+              S.ti += 1;
+              if (S.ti < sc.steps.length) renderStep();
+              else renderReady();
+            });
+            after.appendChild(go);
+          } else {
+            var retry = el("button", "btn retry", "🔁 " + (L.retry || ""));
+            retry.type = "button";
+            retry.addEventListener("click", function () {
+              if (token !== S.token) return;
+              renderStep();
+            });
+            after.appendChild(retry);
+          }
+          inner.appendChild(after);
+        }
+
+        /** 4手 そろった。あとは 送るだけ。 */
+        function renderReady() {
+          var token = view.token;
+          var sc = view.sc;
+          var inner = view.inner;
+          clear(inner);
+          view.steps.scrollTop = 0;
+
+          inner.appendChild(sceneChip(sc));
+          inner.appendChild(pips(sc.steps.length, sc.steps.length));
+
+          // 4手 そろった しるしは 絵で 出す（文は 足さない）。
+          inner.appendChild(el("div", "ready-icon", "📮"));
+
+          var send = el("button", "btn send", "✈️ " + (L.send || ""));
+          send.type = "button";
+          send.addEventListener("click", function () {
+            if (token !== S.token) return;
+            send.disabled = true;
+            sendPost();
+          });
+          inner.appendChild(send);
+        }
+
+        /** 送信 —— ここが ごほうび。流れる → スタンプ → 返信 → まとめ。 */
+        function sendPost() {
+          var token = view.token;
+          var sc = view.sc;
+
+          view.post.classList.remove("draft");
+          view.post.classList.add("sent");
+          view.head.classList.add("sent");
+          view.headText.innerHTML = rubyfy(sc.channel || "");
+          view.stream.scrollTop = view.stream.scrollHeight;
+
+          var reactions = sc.reactions || [];
+          reactions.forEach(function (emoji, i) {
+            later(
+              function () {
+                addReaction(emoji);
+              },
+              420 + i * 150,
+              token,
+            );
+          });
+
+          var afterReactions = 420 + reactions.length * 150 + 220;
+
+          if (sc.reply) {
+            later(
+              function () {
+                var reply = el("article", "post reply");
+                reply.appendChild(el("div", "avatar", sc.reply.icon || "🧑"));
+                var body = el("div", "post-body");
+                body.appendChild(el("div", "post-name", sc.reply.name || ""));
+                var lines = el("div", "lines");
+                lines.appendChild(el("div", "line", sc.reply.text || ""));
+                body.appendChild(lines);
+                reply.appendChild(body);
+                view.stream.appendChild(reply);
+                view.stream.scrollTop = view.stream.scrollHeight;
+              },
+              afterReactions,
+              token,
+            );
+            afterReactions += 500;
+          }
+
+          later(renderClosing, afterReactions, token);
+        }
+
+        /** スタンプを 1つ 足す。同じ 絵文字なら 数を 増やす（Slack と 同じ）。 */
+        function addReaction(emoji) {
+          var chip = view.reactionChips[emoji];
+          if (chip) {
+            chip.count += 1;
+            chip.num.textContent = String(chip.count);
+            chip.node.classList.remove("bump");
+            void chip.node.offsetWidth;
+            chip.node.classList.add("bump");
+            return;
+          }
+          var node = el("span", "reaction");
+          node.appendChild(el("span", null, emoji));
+          var num = el("b", null, "1");
+          node.appendChild(num);
+          view.reactions.appendChild(node);
+          view.reactionChips[emoji] = { node: node, num: num, count: 1 };
+        }
+
+        /** この シナリオの まとめ。つぎの シナリオ、または おわりへ。 */
+        function renderClosing() {
+          var token = view.token;
+          var sc = view.sc;
+          var inner = view.inner;
+          clear(inner);
+          view.steps.scrollTop = 0;
+
+          inner.appendChild(sceneChip(sc));
+          inner.appendChild(pips(sc.steps.length, sc.steps.length));
+
+          (sc.closing || []).forEach(function (text, i) {
+            var card = el("div", "closing");
+            card.style.animationDelay = i * 100 + "ms";
+            card.appendChild(el("span", null, "🎉"));
+            card.appendChild(el("div", null, text));
+            inner.appendChild(card);
+          });
+
+          var last = S.si >= DATA.scenarios.length - 1;
+          var next = el("button", "btn", last ? "🏁 " + (L.finish || "") : (L.next || "") + " →");
+          next.type = "button";
+          next.addEventListener("click", function () {
+            if (token !== S.token) return;
+            if (last) {
+              renderFinale();
+            } else {
+              S.si += 1;
+              renderSituation();
+            }
+          });
+          inner.appendChild(next);
+        }
+
+        /* ---------------- おわり の 画面 ---------------- */
+
+        function renderFinale() {
+          newScreen();
+          view = null;
+          renderDots(DATA.scenarios.length);
+          barTitle.innerHTML = rubyfy(DATA.title);
+
+          var sheet = el("div", "sheet");
+          var inner = el("div", "sheet-inner");
+          inner.appendChild(el("div", "hero-icon", "🎉"));
+          inner.appendChild(el("h2", null, DATA.title));
+
+          var cards = el("div", "cards");
+          (DATA.finale || []).forEach(function (text, i) {
+            var card = el("div", "card");
+            card.style.animationDelay = i * 120 + "ms";
+            card.appendChild(document.createElement("i"));
+            card.appendChild(el("div", null, text));
+            cards.appendChild(card);
+          });
+          inner.appendChild(cards);
+
+          var finish = el("button", "btn", L.finish);
+          finish.type = "button";
+          finish.addEventListener("click", function () {
+            tellParentDone();
+            clear(finish);
+            finish.innerHTML = rubyfy("✅ " + (L.finish || ""));
+            finish.disabled = true;
+          });
+          inner.appendChild(finish);
+
+          sheet.appendChild(inner);
+          main.appendChild(sheet);
+
+          // 押さないまま 終える 人もいる ので、出た ことで 1回 送る（送るのは 1回だけ）。
+          window.setTimeout(tellParentDone, 1200);
+        }
+
+        /**
+         * おえた ことを、この ページを 埋めている アプリへ 伝える。
+         * 受け手は src/components/link/link-view.tsx。同じ 置き場からの 合図だけを
+         * 受けるので、宛先も 自分の origin に しぼって 投げる。
+         */
+        function tellParentDone() {
+          if (S.doneSent) return;
+          S.doneSent = true;
+          try {
+            if (window.parent && window.parent !== window) {
+              window.parent.postMessage(
+                { type: "nexmax:link-done", id: DATA.id },
+                window.location.origin,
+              );
+            }
+          } catch (_e) {
+            /* 埋め込みでなければ 何も しない */
+          }
+        }
+
+        renderTitle();
+      })();
+    </script>
+  </body>
+</html>

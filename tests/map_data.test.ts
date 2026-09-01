@@ -206,7 +206,7 @@ describe("toMapAreas", () => {
  *
  * 2026-08-25 に直した2つ:
  *  - ことばを1つも持たないステージにも「単語を 勉強」の札が出て、押すと
- *    どの課のものか分からない一覧（`/arcade`）に放り出されていた
+ *    どの課のものか分からない一覧（`/wordtest`）に放り出されていた
  *  - 「最初から」が1本目の教材へ直行し、何が何本あるのかを見せずに中へ入れていた
  */
 describe("mapStageActions", () => {
@@ -233,12 +233,12 @@ describe("mapStageActions", () => {
    */
   it("ひもづいて いれば その ステージの ことばへ 直行する", () => {
     const actions = mapStageActions(mapStage({ wordStageIds: ["hajimari_kotoba"] }), "00");
-    expect(actions.wordsHref).toBe("/arcade/hajimari");
+    expect(actions.wordsHref).toBe("/wordtest/hajimari");
   });
 
   it("セットが 2つ以上でも 札は 1枚（えらぶ 画面へ 送る）", () => {
     const actions = mapStageActions(mapStage({ wordStageIds: ["shokyu", "chukyu"] }), "00");
-    expect(actions.wordsHref).toBe("/arcade/hajimari");
+    expect(actions.wordsHref).toBe("/wordtest/hajimari");
   });
 
   it("「最初から」は ステージのトップ（1本目の教材を いきなり 開かない）", () => {

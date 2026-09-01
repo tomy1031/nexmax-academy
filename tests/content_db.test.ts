@@ -21,7 +21,9 @@ vi.mock("@supabase/supabase-js", () => ({ createClient: plainClientMock }));
 vi.mock("@/lib/env", () => ({ getSupabasePublicConfig: configMock }));
 
 const { fetchDbContents } = await import("@/lib/content-db");
-const { listStages, listMangas, listQuizSets, mergeContentsById } = await import("@/lib/content");
+const { gitContentIds, listStages, listMangas, listQuizSets, mergeContentsById } =
+  await import("@/lib/content");
+const { mapListedStages } = await import("@/lib/map-data");
 
 interface Row {
   id: string;
@@ -303,5 +305,40 @@ describe("ローダーの合流", () => {
     ]);
     const ids = (await listQuizSets()).map((s) => s.id);
     expect(ids).toContain("db_quiz");
+  });
+});
+
+describe("スタジオの 直しが 学習者に とどく（2026-08-29 の 報告）", () => {
+  it("git の ステージを DB で「地図に 出さない」に すると マップから 消える", async () => {
+    // git だけの すがたを 先に 取る（実データの id に 縛られないため）
+    createClientMock.mockResolvedValue(null);
+    const onMap = mapListedStages(await listStages());
+    const target = onMap[0];
+    if (!target) {
+      expect(onMap).toEqual([]);
+      return;
+    }
+
+    // 先生が スタジオで「地図に 出さない」を えらんで こうかいした 状態
+    useRows([
+      row({
+        id: target.id,
+        data: { ...target, listed: false, status: "published" },
+      }),
+    ]);
+    const after = mapListedStages(await listStages());
+    expect(after.map((stage) => stage.id)).not.toContain(target.id);
+
+    // ステージ自体は 生きている（URL を 配れば ひらける）
+    expect((await listStages()).map((stage) => stage.id)).toContain(target.id);
+  });
+
+  it("gitContentIds は git に 実体が ある ものだけを 種別つきで 数える", async () => {
+    createClientMock.mockResolvedValue(null);
+    const gitStages = await listStages();
+    const ids = gitContentIds();
+    for (const stage of gitStages) expect(ids.has(`stage:${stage.id}`)).toBe(true);
+    // DB にしか 無い ものは 入らない＝「けす」と 言ってよい ものが 見分けられる
+    expect(ids.has("stage:db_only_stage")).toBe(false);
   });
 });

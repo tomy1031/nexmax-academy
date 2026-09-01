@@ -25,7 +25,7 @@ import { KAISHA, KAISHA_ITEMS, itemsBefore, seedCompleted, shot } from "./helper
  * ここを 名前で 決め打ちすると、STEP 4 の 中身が 入れ替わった 日に 静かに ずれる
  *（2026-08-28 に 実際に ずれた: `kaisha_jibun` → `kaisha_matsui_junbi`）。
  */
-const NEXT_ITEM = KAISHA_ITEMS[KAISHA_ITEMS.indexOf(KAISHA.meetingHendy) + 1];
+const NEXT_ITEM = KAISHA_ITEMS[KAISHA_ITEMS.indexOf(KAISHA.meetingHendy) + 1]!;
 
 /** ヘンディさんの しつもんの 数。**教材から 読む**（`HOUKOKU_TOTAL` と 同じ 理由）。 */
 const HENDY_QUESTIONS: number = (

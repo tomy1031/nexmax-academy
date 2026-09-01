@@ -36,7 +36,7 @@ export interface DictionaryEntry {
   /**
    * この ことばを **単語テストに 出して いる** セット。
    * どの セットにも 入って いなければ 空——**辞書には 出るが テストには 出ない**語で、
-   * 「ことばで あそぶ」の リンクを 出さない 目じるしに なる。
+   * 「単語テスト」の リンクを 出さない 目じるしに なる。
    */
   stageId: string;
   stageTitle: string;
@@ -127,39 +127,122 @@ function stemOf(term: string): string | null {
   return stem.length >= 2 ? stem : null;
 }
 
+/** 本文の どこに どの ことばが 当たったか。 */
+export interface DictionaryMatch {
+  readonly entry: DictionaryEntry;
+  /** 本文の 中の 位置。 */
+  readonly at: number;
+  /**
+   * **本文で 当たった ところの 長さ**（語幹で 当たった ときは 語幹の 長さ）。
+   * 見出し語の 長さでは ない——ここを 取りちがえると、下線が 本文の 字と ずれる。
+   */
+  readonly length: number;
+}
+
 /**
- * わたした 文字列の 中から、辞書に 載って いる ことばを **1つだけ** 見つける。
+ * 名詞の あとに 来る 助詞・助動詞。ここが つづくなら 動詞の 活用では ない（「考えを」）。
  *
- * 1文につき 下線は 1語だけ（設計07 §2.5）。同じ 文で 2回 タップさせない ため、
- * ここは 意図して「1つ」しか 返さない——**文に 分けるのは 呼ぶ 側**（`DictionaryText`）で、
- * ここには 1文ずつ 渡って くる。
- * どれを 選ぶかは **いちばん長い ところ**を 先に し、同じ 長さなら 文の 先頭に 近い ほう。
- * 短い 語を 先に 取ると「報告」が あるのに「報」だけが 下線に なる。
- *
- * 返す `length` は **本文で 当たった ところの 長さ**（語幹で 当たった ときは 語幹の 長さ）。
- * 見出し語の 長さでは ない——ここを 取りちがえると、下線が 本文の 字と ずれる。
+ * 「な」「よ」「さ」は **入れない**——「考えない」「考えよう」「考えさせる」に なるので、
+ * 名詞の しるしに ならない。
  */
-export function findDictionaryTerm(
+const NOUN_PARTICLE = /[はがをにへとでものやかだ]/u;
+
+const HIRAGANA = /[ぁ-ゖー]/u;
+
+/**
+ * わたした 文字列の 中から、辞書に 載って いる ことばを **ぜんぶ** 見つける。
+ *
+ * ## むかしは「1文につき 1語」だった
+ * 「同じ 文で 2回 タップさせない」ために、ここは 意図して 1つしか 返して いなかった
+ *（設計07 §2.5・呼ぶ 側が 文に 分けて いた）。ところが 本文には むずかしい 語が
+ * かたまって 出る。「観光DXで、カンボジアの 町の 物語を 動画に したいです。」の ような 文では
+ * 4語の うち 1語しか 下線が つかず、**辞書に 載って いるのに 引けない 語**が 残った
+ *（2026-08-31 の 指摘「辞書が 足りて いません。DX・物語・動画・チャットボット」）。
+ *
+ * 決まりを **当たった ところ ぜんぶ**に 書きかえた。読む 手を 止めさせない ための しくみ
+ *（のせるだけで 出る）なので、下線が 増えて 困るのは 読む 人では なく、
+ * 引けない ほうが 困る。
+ *
+ * ## 選びかた
+ * 左から 見て、その 位置で **いちばん長く 当たる 語**を 取り、その ぶんだけ 進む。
+ * 短い 語を 先に 取ると「報告」が あるのに「報」だけが 下線に なる。
+ * 重なりは 出ない（`annotateRuby` と 同じ 走査）。
+ *
+ * ## ルビの ことばは 切らない
+ * 当たった ところで 文字列を 切るので、**ルビの ことばの 途中で 切ると
+ * 切れた 側が 読み辞書に 当たらず 裸の 漢字に なる**。「お客様」の「様」だけが
+ * 辞書に あると「お客」と「様」に 割れて「客」の ルビが 消えた
+ *（2026-08-31 に 実発生）。`noCut` に 内側の 位置を もらって、そこは 飛ばす。
+ */
+export function findDictionaryTerms(
   text: string,
   entries: readonly DictionaryEntry[],
-): { entry: DictionaryEntry; at: number; length: number } | null {
-  let best: { entry: DictionaryEntry; at: number; length: number } | null = null;
-  const consider = (entry: DictionaryEntry, at: number, length: number) => {
-    if (at < 0) return;
-    if (!best || length > best.length || (length === best.length && at < best.at)) {
-      best = { entry, at, length };
-    }
-  };
+  /**
+   * **ここでは 切らない**位置（`rubyInnerPositions`）。
+   * ルビの ついた ことばの 途中で 切ると、切れた 側が 読み辞書に 当たらず
+   * 裸の 漢字に なる。渡さなければ どこでも 切る。
+   */
+  noCut?: ReadonlySet<number>,
+): DictionaryMatch[] {
+  /*
+   * まず この 文に 出て くる 語だけに しぼる。辞書は 600語 近く あるので、
+   * 位置ごとに 全語を 見ると 走査が 文字数×語数に なる。
+   */
+  const candidates: { entry: DictionaryEntry; surface: string; stem: boolean }[] = [];
   for (const entry of entries) {
-    const at = text.indexOf(entry.term);
-    if (at >= 0) {
-      consider(entry, at, entry.term.length);
+    if (text.includes(entry.term)) {
+      candidates.push({ entry, surface: entry.term, stem: false });
       continue;
     }
     const stem = stemOf(entry.term);
-    if (stem) consider(entry, text.indexOf(stem), stem.length);
+    if (stem && text.includes(stem)) candidates.push({ entry, surface: stem, stem: true });
   }
-  return best;
+  if (candidates.length === 0) return [];
+  candidates.sort((a, b) => b.surface.length - a.surface.length);
+
+  /*
+   * 同じ ところに 同じ 長さで ぶつかった ときの 決め手。
+   *
+   * 名詞「考え」と 動詞「考える」の 語幹は **まったく 同じ ところ**に 当たるので、
+   * 長さだけでは 決まらず **辞書の 並び順で 決まって いた**（「考えます」の ふきだしに
+   * 名詞の「an idea」が 出て いた — 2026-08-30 の 指摘）。
+   * 語幹の 次の 1文字で 見分ける——送りがな（考え**ま**す）なら 動詞、
+   * 助詞（考え**を**）なら 名詞。助詞の ときは いちばん 弱く して、
+   * 言い切りの「考え」を **並び順に よらず** 勝たせる。
+   */
+  const VERB = 2;
+  const EXACT = 1;
+  const STEM_ONLY = 0;
+  const rankAt = (c: (typeof candidates)[number], at: number) => {
+    if (!c.stem) return EXACT;
+    const next = text[at + c.surface.length] ?? "";
+    return next !== "" && !NOUN_PARTICLE.test(next) && HIRAGANA.test(next) ? VERB : STEM_ONLY;
+  };
+
+  const matches: DictionaryMatch[] = [];
+  let i = 0;
+  while (i < text.length) {
+    let hit: (typeof candidates)[number] | null = null;
+    let hitRank = -1;
+    for (const c of candidates) {
+      // 長い順に 見て いるので、当たりより 短い ものは もう 勝てない
+      if (hit && c.surface.length < hit.surface.length) break;
+      if (!text.startsWith(c.surface, i)) continue;
+      if (noCut && (noCut.has(i) || noCut.has(i + c.surface.length))) continue;
+      const rank = rankAt(c, i);
+      if (!hit || rank > hitRank) {
+        hit = c;
+        hitRank = rank;
+      }
+    }
+    if (!hit) {
+      i += 1;
+      continue;
+    }
+    matches.push({ entry: hit.entry, at: i, length: hit.surface.length });
+    i += hit.surface.length;
+  }
+  return matches;
 }
 
 /** 「この ことばは もう ○○に あります」を出すための索引（term → ステージの見出し）。 */

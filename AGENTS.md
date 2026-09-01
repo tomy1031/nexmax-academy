@@ -79,7 +79,7 @@ docs/skills/      # 作業手順書（ツール共通の本体。.claude/skills/
 /houkoku                 ステージのトップ（ステージIDがURLの1段目）
 /houkoku/manga           その中の教材（同じ種別が1つなら ID を付けない）
 /houkoku/listening-<ID>  同じ種別が2つ以上あるときだけ ID を足す
-/arcade/<ID>             ことばアーケードは独立したアプリなので別（ステージから直行できる）
+/wordtest/<ID>           単語テストは独立したアプリなので別（ステージから直行できる）
 /dictionary              辞書＝ことばの正（content/vocab）を term で畳んだもの（保存先は増やさない）
 ```
 
@@ -88,7 +88,7 @@ docs/skills/      # 作業手順書（ツール共通の本体。.claude/skills/
   `stageSchema` の `RESERVED_STAGE_IDS` が保存の時点で弾く。
   **`src/app/` に1段目のルートを足したら、この一覧にも足す**（足し忘れると、その名前の
   ステージに永久にたどり着けない。静的ルートが必ず勝つため）。
-- 古いURL（`/stage/<id>`・`/manga/<id>` など）は消さず、本来のURLへリダイレクトする。
+- 古いURL（`/stage/<id>`・`/manga/<id>`・`/arcade/<id>` など）は消さず、本来のURLへリダイレクトする。
 - **`/[stage]` は ISR なので 404 もキャッシュされる。** 新ルート追加直後の 404/200 の揺れは
   `revalidate` 待ちで直る。焦って別の原因を探さない（2026-08-06 実発生）。
 - 先生向けの画面は `/admin` に集約（サイドバー）。`/studio` は `/admin/stages` へ送る。
@@ -213,6 +213,11 @@ git と台帳から現在地（ブランチ・origin/integration との差・本
 
 - **STG の更新は `integration` から、本番の更新は `main` から**（どちらも自動。手で叩かない）。
   作業中の確認は `npm run cf:branch`（自分専用URL）。
+- **STG へ出すのに ユーザーの許可を取らない**（2026-08-31 の指定）。検査（vitest・e2e・lint）が
+  緑なら、PR 作成 → `integration` へマージ → STG 反映まで**そのまま進める**。
+  **Cloudflare の枠は理由にならない**——STG のデプロイは KV へ 1件も書かないので、
+  何回出しても本番の書き込み枠（1000件/日）を減らさない（docs/deploy.md §0.6）。
+  止めてよいのは**本番の手動 dispatch** だけ（ふだんは授業前の自動デプロイに任せる）。
 - **作業開始時と PR 作成前に `origin/integration` を取り込む。** PR の宛先も `integration`。
   ブランチは48時間以内に PR にして閉じる。
 - **緊急の直しだけ `main` へ直接**（バグ・授業当日の事故）。`main` から切って `main` へ PR し、

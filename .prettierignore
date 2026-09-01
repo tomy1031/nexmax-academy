@@ -21,3 +21,9 @@ content/
 
 # pdf.js の worker（npm install のたびに写す他人のコード。整形しない）
 public/pdfjs/
+
+# 旧アプリから そのまま 写した 練習ページの 共有部品（リンク教材の 行き先）。
+# 整形すると 旧アプリとの 差分が 読めなくなり、写し直しの たびに 全行が 動く。
+# 中身は 旧アプリが 正（scripts/migrate_hourensou_tools.mjs が 写す）。
+public/tools/hourensou/app.js
+public/tools/hourensou/styles.css

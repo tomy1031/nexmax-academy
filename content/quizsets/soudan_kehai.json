@@ -1,0 +1,483 @@
+{
+  "kind": "quizset",
+  "id": "soudan_kehai",
+  "title": "👀 いま 話しかけて いい？",
+  "description": "机の まわりの 様子と 顔を 見て、いつ・どう 話しかけるかを えらびます。",
+  "phase": "research",
+  "answerMode": "submit",
+  "passRate": 60,
+  "questions": [
+    {
+      "id": "k1_denwa",
+      "type": "choose",
+      "q": "奥田先輩に 相談したい ことが あります。先輩は いま、電話で 話して います。どう しますか。",
+      "image": {
+        "src": "/img/quiz/soudan_kehai/k1_denwa.webp",
+        "prompt": "Anime illustration, no readable text. A bright modern software office, clean line art, flat cel shading, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. Same character in every image: Okuda the senior engineer, drawn from the attached character sheet: a Japanese man in his mid twenties, wavy messy black hair with volume, black rectangular thick-rimmed glasses, a dark green pullover hoodie with drawstrings and no writing on it at his desk with a laptop and a small potted plant. Viewed from a coworker's standing viewpoint a few steps away. No text, no letters, no numbers, no speech bubbles. Scene: Okuda holds a phone to his ear, taking notes on a notepad, eyes down, mid-conversation. Absolutely no readable text, letters, numbers, logos or speech bubbles anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra fingers, distorted hands, dark or scary mood, angry faces, watermarks.",
+        "refs": [
+          "/img/characters/okuda/sheet.webp"
+        ],
+        "status": "done"
+      },
+      "options": [
+        "🧍 机の 前に 立って、終わるまで じっと 待つ",
+        "💬 あとで また 来る。急ぐ ときは チャットで 先に 送って おく",
+        "🖐 肩を たたいて、すぐに 話しかける"
+      ],
+      "answer": 1,
+      "explain": "電話の 相手にも、あなたの 声や 気配が とどきます。目の 前で 待たれると、先輩は 電話に 集中できません。チャットなら、電話の あとに 読んで もらえます。"
+    },
+    {
+      "id": "k2_shuuchuu",
+      "type": "emotion",
+      "q": "奥田先輩は ヘッドホンを して、画面に 顔を 近づけて、キーボードを 打ちつづけて います。いま、先輩は どんな 様子ですか。",
+      "image": {
+        "src": "/img/quiz/soudan_kehai/k2_shuuchuu.webp",
+        "prompt": "Anime illustration, no readable text. A bright modern software office, clean line art, flat cel shading, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. Same character in every image: Okuda the senior engineer, drawn from the attached character sheet: a Japanese man in his mid twenties, wavy messy black hair with volume, black rectangular thick-rimmed glasses, a dark green pullover hoodie with drawstrings and no writing on it at his desk with a laptop and a small potted plant. Viewed from a coworker's standing viewpoint a few steps away. No text, no letters, no numbers, no speech bubbles. Scene: Okuda wears big headphones, leaning close to the screen, both hands typing fast, several code windows open, an energy drink beside the keyboard. Absolutely no readable text, letters, numbers, logos or speech bubbles anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra fingers, distorted hands, dark or scary mood, angry faces, watermarks.",
+        "refs": [
+          "/img/characters/okuda/sheet.webp"
+        ],
+        "status": "done"
+      },
+      "feelings": [
+        "🙂 ひまで、だれかと 話したい",
+        "🎧 集中して いて、切られたくない",
+        "😣 困って いて、助けて ほしい"
+      ],
+      "answerFeeling": 1,
+      "replyQ": "では、急がない 相談は どう しますか。",
+      "replies": [
+        "🗣 いま すぐ 声を かける",
+        "💬 チャットで「あとで 5分 ください」と 送って おく",
+        "😶 相談を やめて、一人で 悩む"
+      ],
+      "answerReply": 1,
+      "explain": "集中の 時間は、チームの 大切な ざいさんです。チャットなら、先輩は きりの いい ところで 読めます。一人で 悩みつづけない ところも ポイントです。"
+    },
+    {
+      "id": "k3_hitoiki",
+      "type": "choose",
+      "q": "奥田先輩は お茶を 飲んで、のびを して います。いま、どう しますか。",
+      "image": {
+        "src": "/img/quiz/soudan_kehai/k3_hitoiki.webp",
+        "prompt": "Anime illustration, no readable text. A bright modern software office, clean line art, flat cel shading, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. Same character in every image: Okuda the senior engineer, drawn from the attached character sheet: a Japanese man in his mid twenties, wavy messy black hair with volume, black rectangular thick-rimmed glasses, a dark green pullover hoodie with drawstrings and no writing on it at his desk with a laptop and a small potted plant. Viewed from a coworker's standing viewpoint a few steps away. No text, no letters, no numbers, no speech bubbles. Scene: Okuda leans back in his chair, stretching, holding a warm cup of tea, relaxed small smile, screen dimmed. Absolutely no readable text, letters, numbers, logos or speech bubbles anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra fingers, distorted hands, dark or scary mood, angry faces, watermarks.",
+        "refs": [
+          "/img/characters/okuda/sheet.webp"
+        ],
+        "status": "done"
+      },
+      "options": [
+        "🗣 「今、お時間 よろしいですか」と 声を かける",
+        "🌙 休みが 終わるまで、夜まで 待つ",
+        "😶 きょうは 相談しないで、一人で 悩む"
+      ],
+      "answer": 0,
+      "explain": "きりの いい ところが、話しかける チャンスです。さいしょに「お時間 よろしいですか」と 聞けば、休みを こわす ことも ありません。"
+    },
+    {
+      "id": "k4_komarigao",
+      "type": "emotion",
+      "q": "奥田先輩は 画面を 見ながら、困った 顔で うなって います。いま、先輩は どんな 気持ちだと 思いますか。",
+      "image": {
+        "src": "/img/quiz/soudan_kehai/k4_komarigao.webp",
+        "prompt": "Anime illustration, no readable text. A bright modern software office, clean line art, flat cel shading, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. Same character in every image: Okuda the senior engineer, drawn from the attached character sheet: a Japanese man in his mid twenties, wavy messy black hair with volume, black rectangular thick-rimmed glasses, a dark green pullover hoodie with drawstrings and no writing on it at his desk with a laptop and a small potted plant. Viewed from a coworker's standing viewpoint a few steps away. No text, no letters, no numbers, no speech bubbles. Scene: Okuda frowns at the screen with one hand in his hair, shoulders slumped, clearly stuck and troubled. Absolutely no readable text, letters, numbers, logos or speech bubbles anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra fingers, distorted hands, dark or scary mood, angry faces, watermarks.",
+        "refs": [
+          "/img/characters/okuda/sheet.webp"
+        ],
+        "status": "done"
+      },
+      "feelings": [
+        "😄 仕事が 順調で、楽しい",
+        "😖 何かに 困って いる",
+        "😠 あなたに 怒って いる"
+      ],
+      "answerFeeling": 1,
+      "replyQ": "こんな とき、いちばん いい 声の かけ方は どれですか。",
+      "replies": [
+        "🙋 「わたしの 相談を 聞いて ください」と 話しかける",
+        "🤝 「何か 手伝える ことは ありますか」と 声を かける",
+        "🚶 見なかった ことに して、はなれる"
+      ],
+      "answerReply": 1,
+      "explain": "相談は、自分からだけの ものでは ありません。困って いる 人に 気づいて 声を かけるのも、チームの 相談です。あなたの 相談は、その あとで できます。"
+    },
+    {
+      "id": "k5_isogu",
+      "type": "choose",
+      "q": "奥田先輩は ノートパソコンを かかえて、時計を 見ながら 急いで います。相談は 急ぎません。どう しますか。",
+      "image": {
+        "src": "/img/quiz/soudan_kehai/k5_isogu.webp",
+        "prompt": "Anime illustration, no readable text. A bright modern software office, clean line art, flat cel shading, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. Same character in every image: Okuda the senior engineer, drawn from the attached character sheet: a Japanese man in his mid twenties, wavy messy black hair with volume, black rectangular thick-rimmed glasses, a dark green pullover hoodie with drawstrings and no writing on it at his desk with a laptop and a small potted plant. Viewed from a coworker's standing viewpoint a few steps away. No text, no letters, no numbers, no speech bubbles. Scene: Okuda stands, laptop under one arm, glancing at his wristwatch, walking quickly away from the desk. Absolutely no readable text, letters, numbers, logos or speech bubbles anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra fingers, distorted hands, dark or scary mood, angry faces, watermarks.",
+        "refs": [
+          "/img/characters/okuda/sheet.webp"
+        ],
+        "status": "done"
+      },
+      "options": [
+        "🏃 歩きながら 相談を 始める",
+        "🕒 「会議の あとに 5分 いただけますか」と 短く 伝える",
+        "🚪 会議室の 前で ずっと 待つ"
+      ],
+      "answer": 1,
+      "explain": "急いで いる 人には、「いつなら いいか」だけを 短く 渡します。あとの 時間を 予約するのも、上手な 相談です。"
+    },
+    {
+      "id": "k6_asa",
+      "type": "choose",
+      "q": "朝です。奥田先輩は 出社した ばかりで、かばんを 置いて、パソコンを つけて います。急がない 相談は、いつ 話しかけますか。",
+      "image": {
+        "src": "/img/quiz/soudan_kehai/k6_asa.webp",
+        "prompt": "Anime illustration, no readable text. A bright modern software office, clean line art, flat cel shading, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. Same character in every image: Okuda the senior engineer, drawn from the attached character sheet: a Japanese man in his mid twenties, wavy messy black hair with volume, black rectangular thick-rimmed glasses, a dark green pullover hoodie with drawstrings and no writing on it at his desk with a laptop and a small potted plant. Viewed from a coworker's standing viewpoint a few steps away. No text, no letters, no numbers, no speech bubbles. Scene: Morning light through the window. Okuda has just arrived, putting his bag down beside the desk, computer still starting up, jacket half off. Absolutely no readable text, letters, numbers, logos or speech bubbles anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra fingers, distorted hands, dark or scary mood, angry faces, watermarks.",
+        "refs": [
+          "/img/characters/okuda/sheet.webp"
+        ],
+        "status": "done"
+      },
+      "options": [
+        "🎒 かばんを 置いた 瞬間に 話しかける",
+        "☕ 先輩が メールと 予定を 見おわった ころに 声を かける",
+        "📅 あしたまで 待つ"
+      ],
+      "answer": 1,
+      "explain": "朝の さいしょは、きょうの 予定を 整える 時間です。少し 待つと、先輩は ゆっくり 聞けます。急ぎの トラブルだけは、朝でも すぐに 言います。"
+    }
+  ],
+  "furigana": [
+    [
+      "奥田先輩",
+      "おくだせんぱい"
+    ],
+    [
+      "会議室",
+      "かいぎしつ"
+    ],
+    [
+      "相談",
+      "そうだん"
+    ],
+    [
+      "先輩",
+      "せんぱい"
+    ],
+    [
+      "自分",
+      "じぶん"
+    ],
+    [
+      "相手",
+      "あいて"
+    ],
+    [
+      "一人",
+      "ひとり"
+    ],
+    [
+      "奥田",
+      "おくだ"
+    ],
+    [
+      "仕事",
+      "しごと"
+    ],
+    [
+      "予定",
+      "よてい"
+    ],
+    [
+      "様子",
+      "ようす"
+    ],
+    [
+      "気持",
+      "きも"
+    ],
+    [
+      "画面",
+      "がめん"
+    ],
+    [
+      "大切",
+      "たいせつ"
+    ],
+    [
+      "時間",
+      "じかん"
+    ],
+    [
+      "分か",
+      "わか"
+    ],
+    [
+      "上手",
+      "じょうず"
+    ],
+    [
+      "会議",
+      "かいぎ"
+    ],
+    [
+      "出社",
+      "しゅっしゃ"
+    ],
+    [
+      "手伝",
+      "てつだ"
+    ],
+    [
+      "電話",
+      "でんわ"
+    ],
+    [
+      "気配",
+      "けはい"
+    ],
+    [
+      "集中",
+      "しゅうちゅう"
+    ],
+    [
+      "順調",
+      "じゅんちょう"
+    ],
+    [
+      "予約",
+      "よやく"
+    ],
+    [
+      "時計",
+      "とけい"
+    ],
+    [
+      "瞬間",
+      "しゅんかん"
+    ],
+    [
+      "人",
+      "ひと"
+    ],
+    [
+      "今",
+      "いま"
+    ],
+    [
+      "前",
+      "まえ"
+    ],
+    [
+      "時",
+      "じ"
+    ],
+    [
+      "分",
+      "ふん"
+    ],
+    [
+      "言",
+      "い"
+    ],
+    [
+      "聞",
+      "き"
+    ],
+    [
+      "見",
+      "み"
+    ],
+    [
+      "思",
+      "おも"
+    ],
+    [
+      "終",
+      "お"
+    ],
+    [
+      "始",
+      "はじ"
+    ],
+    [
+      "伝",
+      "つた"
+    ],
+    [
+      "困",
+      "こま"
+    ],
+    [
+      "怒",
+      "おこ"
+    ],
+    [
+      "調",
+      "しら"
+    ],
+    [
+      "持",
+      "も"
+    ],
+    [
+      "悩",
+      "なや"
+    ],
+    [
+      "短",
+      "みじか"
+    ],
+    [
+      "顔",
+      "かお"
+    ],
+    [
+      "送",
+      "おく"
+    ],
+    [
+      "読",
+      "よ"
+    ],
+    [
+      "出",
+      "で"
+    ],
+    [
+      "何",
+      "なに"
+    ],
+    [
+      "話",
+      "はな"
+    ],
+    [
+      "大",
+      "おお"
+    ],
+    [
+      "少",
+      "すこ"
+    ],
+    [
+      "中",
+      "なか"
+    ],
+    [
+      "相",
+      "そう"
+    ],
+    [
+      "声",
+      "こえ"
+    ],
+    [
+      "先",
+      "さき"
+    ],
+    [
+      "気",
+      "き"
+    ],
+    [
+      "上",
+      "うえ"
+    ],
+    [
+      "間",
+      "ま"
+    ],
+    [
+      "休",
+      "やす"
+    ],
+    [
+      "助",
+      "たす"
+    ],
+    [
+      "急",
+      "いそ"
+    ],
+    [
+      "朝",
+      "あさ"
+    ],
+    [
+      "様",
+      "さま"
+    ],
+    [
+      "順",
+      "じゅん"
+    ],
+    [
+      "整",
+      "ととの"
+    ],
+    [
+      "切",
+      "き"
+    ],
+    [
+      "目",
+      "め"
+    ],
+    [
+      "来",
+      "き"
+    ],
+    [
+      "楽",
+      "たの"
+    ],
+    [
+      "机",
+      "つくえ"
+    ],
+    [
+      "肩",
+      "かた"
+    ],
+    [
+      "茶",
+      "ちゃ"
+    ],
+    [
+      "待",
+      "ま"
+    ],
+    [
+      "立",
+      "た"
+    ],
+    [
+      "飲",
+      "の"
+    ],
+    [
+      "置",
+      "お"
+    ],
+    [
+      "歩",
+      "ある"
+    ],
+    [
+      "夜",
+      "よる"
+    ],
+    [
+      "近",
+      "ちか"
+    ],
+    [
+      "打",
+      "う"
+    ],
+    [
+      "渡",
+      "わた"
+    ],
+    [
+      "方",
+      "かた"
+    ]
+  ]
+}

@@ -26,6 +26,15 @@ const BASE_URL = `http://127.0.0.1:${PORT}`;
 
 export default defineConfig({
   testDir: "tests/e2e",
+  /*
+   * **ものさし合わせ（`*.eval.spec.ts`）は ふだんの 通し検証に 混ぜない**（2026-09-01 の 指定）。
+   *
+   * あれは Gemini に 何本も 投げて 期待と 返答の 差分を 測る もので、
+   * PR や マージの たびに 走らせる ものでは ない——枠も 時間も 食うし、
+   * AIの 揺れで 赤く なると **ふだんの 検証まで 信じられなく なる**。
+   * 走らせたい ときに `npm run eval:taiwa`（`playwright.eval.config.ts`）で 呼ぶ。
+   */
+  testIgnore: ["**/*.eval.spec.ts"],
   /** 失敗の証拠（トレース・失敗時のスクショ）の置き場。 */
   outputDir: "test-results",
   timeout: 90_000,

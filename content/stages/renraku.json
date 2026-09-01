@@ -1,0 +1,124 @@
+{
+  "kind": "stage",
+  "id": "renraku",
+  "order": 5,
+  "title": "報連相：連絡",
+  "reading": "ほうれんそう れんらく",
+  "description": "チーム全体に 情報を 伝える「連絡」を 学びます。まんがで 始めて、事実だけを 短く 伝える 練習を、スキットと Slack風の 画面で します。",
+  "color": "leaf",
+  "status": "published",
+  "area": {
+    "name": "ふねの うみ",
+    "reading": "ふねの うみ",
+    "image": "/img/scenes/area3_vietnam.webp",
+    "note": "ちいさな しまが たくさん。ふねが しらせを はこびます。"
+  },
+  "contents": [
+    {
+      "ref": "renraku_manga",
+      "type": "manga"
+    },
+    {
+      "ref": "renraku_lecture",
+      "type": "article"
+    },
+    {
+      "ref": "renraku_skit",
+      "type": "skit"
+    },
+    {
+      "ref": "renraku_listening",
+      "type": "listening"
+    },
+    {
+      "ref": "renraku_quiz",
+      "type": "quizset"
+    },
+    {
+      "ref": "renraku_builder",
+      "type": "link"
+    },
+    {
+      "ref": "renraku_slack",
+      "type": "link"
+    },
+    {
+      "ref": "renraku_contact",
+      "type": "link"
+    }
+  ],
+  "wordStageIds": [
+    "hourensou_renraku_kihon",
+    "hourensou_renraku_ouyou"
+  ],
+  "furigana": [
+    [
+      "報連相",
+      "ほうれんそう"
+    ],
+    [
+      "連絡",
+      "れんらく"
+    ],
+    [
+      "全体",
+      "ぜんたい"
+    ],
+    [
+      "事実",
+      "じじつ"
+    ],
+    [
+      "情報",
+      "じょうほう"
+    ],
+    [
+      "画面",
+      "がめん"
+    ],
+    [
+      "練習",
+      "れんしゅう"
+    ],
+    [
+      "始",
+      "はじ"
+    ],
+    [
+      "伝",
+      "つた"
+    ],
+    [
+      "短",
+      "みじか"
+    ],
+    [
+      "報",
+      "ほう"
+    ],
+    [
+      "連",
+      "れん"
+    ],
+    [
+      "相",
+      "そう"
+    ],
+    [
+      "学",
+      "まな"
+    ],
+    [
+      "全",
+      "ぜん"
+    ],
+    [
+      "実",
+      "じつ"
+    ],
+    [
+      "風",
+      "ふう"
+    ]
+  ]
+}

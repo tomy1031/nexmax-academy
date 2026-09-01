@@ -548,7 +548,7 @@ function ViewToggle({ view, onChange }: { view: MapView; onChange: (view: MapVie
  * 押しても「じゅんびちゅう」としか返らない項目は、学習者に 何度も 空振りを させる。
  * 辞書の 画面（`/dictionary`）は 消していない——URLでは これまでどおり 開ける。
  *
- * 「単語」は ことばアーケード（/arcade）。ステージの中からも開けるが、
+ * 「単語」は 単語テスト（/wordtest）。ステージの中からも開けるが、
  * ここからも入れないと、単語だけ練習したい学習者が入口を見つけられない。
  */
 const NAV_CLASS =
@@ -591,7 +591,7 @@ function Navigation({
   }
 
   const arcadeLink = navLink(
-    "/arcade",
+    "/wordtest",
     "📖",
     <ruby>
       単語<rt>たんご</rt>

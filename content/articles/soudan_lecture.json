@@ -1,0 +1,695 @@
+{
+  "kind": "article",
+  "id": "soudan_lecture",
+  "title": "相談の しかた",
+  "description": "一人で 悩まないで、上手に 相談する 3つの ポイントを 学びます。",
+  "blocks": [
+    {
+      "kind": "hero",
+      "eyebrow": "🤝 報連相 3",
+      "title": "相談（そうだん）",
+      "lead": "一人で 悩まないで、チームで 答えを 見つけます。",
+      "note": "相談は 報連相の 中で 一番 難しいところです。",
+      "image": {
+        "src": "/img/hourensou/soudan/slide1.webp",
+        "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. Two different people appear in these pictures and they must never look alike. OKUDA is the senior engineer shown in the attached character sheet: a Japanese man in his mid twenties, wavy messy black hair with volume, black rectangular thick-rimmed glasses, a dark green pullover hoodie. THE JUNIOR ENGINEER is a DIFFERENT and YOUNGER man: a Southeast Asian man in his early twenties, warm brown skin, short cropped black hair, NO GLASSES, a plain cream polo shirt and dark grey trousers. Only Okuda wears glasses and a green hoodie. Never give the two men the same face, hair, glasses or clothes. The young junior engineer has rolled his chair over to Okuda's desk and points at his own laptop screen with a slightly troubled but hopeful face. Okuda turns towards him, one hand on the back of his chair, listening carefully with a calm kind smile. The screen shows only soft abstract grey shapes. Warm afternoon light, a plant between the desks. Wide medium two-shot. No text, no letters, no kanji, no kana, no numbers anywhere in the image. Screens, papers, whiteboards, books and signs are blank or show only soft abstract shapes and simple pictures. No watermark, no signature, no logo, no speech balloons, no floating symbols such as question marks, exclamation marks, arrows, light bulbs, stars or hearts. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+        "refs": [
+          "/img/characters/okuda/sheet.webp"
+        ],
+        "status": "done"
+      }
+    },
+    {
+      "kind": "paragraph",
+      "text": "みなさんは、プログラムを 書いて いて エラーが 出た とき、どう しますか。"
+    },
+    {
+      "kind": "list",
+      "items": [
+        "一人で ずっと 考えますか。",
+        "友だちに 聞きますか。",
+        "インターネットで 調べますか。"
+      ]
+    },
+    {
+      "kind": "image",
+      "size": "wide",
+      "src": "/img/hourensou/soudan/slide2.webp",
+      "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. One wide picture divided into three equal vertical panels by thin cream gutters. LEFT: a young engineer sits alone at his desk with his chin on his fist, thinking hard at a blank screen. MIDDLE: the same engineer leans over to a friend at the next desk and they look at one laptop together. RIGHT: the engineer types a search into a blank browser window, one hand on the mouse, curious. Same office, same warm light in all three. No text, no letters, no kanji, no kana, no numbers anywhere in the image. Screens, papers, whiteboards, books and signs are blank or show only soft abstract shapes and simple pictures. No watermark, no signature, no logo, no speech balloons, no floating symbols such as question marks, exclamation marks, arrows, light bulbs, stars or hearts. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+      "refs": [],
+      "status": "done"
+    },
+    {
+      "kind": "paragraph",
+      "text": "日本の IT会社では、自分だけで わからない ことは、上司や 同僚に「相談」します。"
+    },
+    {
+      "kind": "image",
+      "src": "/img/hourensou/soudan/slide3.webp",
+      "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. A junior engineer and a senior colleague sit side by side at one desk, both looking at the same laptop. The senior points at the screen and the junior's face lights up with understanding — the moment the answer appears. Warm daylight, a plant behind them, two mugs on the desk. Medium two-shot filling the frame. No text, no letters, no kanji, no kana, no numbers anywhere in the image. Screens, papers, whiteboards, books and signs are blank or show only soft abstract shapes and simple pictures. No watermark, no signature, no logo, no speech balloons, no floating symbols such as question marks, exclamation marks, arrows, light bulbs, stars or hearts. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+      "refs": [],
+      "status": "done"
+    },
+    {
+      "kind": "callout",
+      "tone": "point",
+      "text": "ITの 仕事は チームで します。一人で ずっと 悩んで いると、チーム全体の 仕事が 遅れて しまいます。人と 一緒に 考えると、もっと 良い 答えが 見つかります。"
+    },
+    {
+      "kind": "image",
+      "size": "wide",
+      "src": "/img/hourensou/soudan/slide4.webp",
+      "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. One wide picture split into two equal halves by a soft vertical cream gutter. LEFT HALF, cool and dim: one engineer sits very small and alone in a large empty office, surrounded by too much space, head down. RIGHT HALF, warm and bright: four colleagues stand close together around one desk, all leaning in towards the same laptop, relaxed and involved. The contrast is made with light and spacing only. No text, no letters, no kanji, no kana, no numbers anywhere in the image. Screens, papers, whiteboards, books and signs are blank or show only soft abstract shapes and simple pictures. No watermark, no signature, no logo, no speech balloons, no floating symbols such as question marks, exclamation marks, arrows, light bulbs, stars or hearts. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+      "refs": [],
+      "status": "done"
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "ITで 相談する ばめん"
+    },
+    {
+      "kind": "cards",
+      "columns": 2,
+      "items": [
+        {
+          "icon": "🐞",
+          "title": "エラーの 原因が わからない",
+          "text": "自分の パソコンでは 動くのに、テスト環境に 上げると エラーに なる とき。"
+        },
+        {
+          "icon": "🛠",
+          "title": "使う 技術に 迷った",
+          "text": "AとBの ライブラリ、どちらを 使うか 自分だけで 決められない とき。"
+        },
+        {
+          "icon": "📄",
+          "title": "設計書に 書いて いない ことを 見つけた",
+          "text": "お金の 計算で、小さい 数を 切るか 上げるか ルールが ない とき。"
+        },
+        {
+          "icon": "🐢",
+          "title": "コードの 書きかたに 悩んだ",
+          "text": "動いたけれど 処理が とても 遅いので、もっと 良い 書きかたを 聞きたい とき。"
+        },
+        {
+          "icon": "🌿",
+          "title": "Gitで トラブルが 起きた",
+          "text": "他の 人の コードと コンフリクトして、正しく 直せるか 不安な とき。"
+        },
+        {
+          "icon": "⚙️",
+          "title": "環境構築が うまく いかない",
+          "text": "開発ツールや Dockerの 設定で エラーが 出て、説明の とおりでも 進まない とき。"
+        },
+        {
+          "icon": "🎨",
+          "title": "デザインが 決まって いない",
+          "text": "パソコンの デザインしか なくて、スマホで 見ると 使いにくい とき。"
+        },
+        {
+          "icon": "🧪",
+          "title": "テストの やりかたが わからない",
+          "text": "どんな データを 作って テストすれば いいか、アイデアが ほしい とき。"
+        }
+      ]
+    },
+    {
+      "kind": "image",
+      "size": "wide",
+      "src": "/img/hourensou/soudan/slide5-1.webp",
+      "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. One wide picture divided into four equal panels in a single row by thin cream gutters, each a small workplace vignette of the same young engineer. 1: he looks between two laptops, one showing a calm blank screen and the other a screen with a soft red glow — it works on one machine but not the other. 2: he holds up two blank rounded cards and looks from one to the other, choosing. 3: he points at a blank page in a thick document and looks up, having found something missing. 4: he watches a slow spinning circle on his screen, chin on hand, wanting a better way. No text, no letters, no kanji, no kana, no numbers anywhere in the image. Screens, papers, whiteboards, books and signs are blank or show only soft abstract shapes and simple pictures. No watermark, no signature, no logo, no speech balloons, no floating symbols such as question marks, exclamation marks, arrows, light bulbs, stars or hearts. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+      "refs": [],
+      "status": "done"
+    },
+    {
+      "kind": "image",
+      "size": "wide",
+      "src": "/img/hourensou/soudan/slide5-2.webp",
+      "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. One wide picture divided into four equal panels in a single row by thin cream gutters, each a small workplace vignette of the same young engineer. 5: two soft abstract branching lines on his screen have crossed and tangled, and he looks at them carefully. 6: he sits in front of a laptop with a soft red glow while an open manual lies beside it, comparing the two. 7: he holds a large tablet in landscape and a small phone side by side, and the layout that fits the tablet clearly does not fit the phone. 8: he looks at an empty checklist on his screen with a pen in hand, not yet knowing what to write. No text, no letters, no kanji, no kana, no numbers anywhere in the image. Screens, papers, whiteboards, books and signs are blank or show only soft abstract shapes and simple pictures. No watermark, no signature, no logo, no speech balloons, no floating symbols such as question marks, exclamation marks, arrows, light bulbs, stars or hearts. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+      "refs": [],
+      "status": "done"
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "相談の テクニック"
+    },
+    {
+      "kind": "heading",
+      "level": 3,
+      "text": "ポイント①：30分ルール"
+    },
+    {
+      "kind": "image",
+      "size": "wide",
+      "src": "/img/hourensou/soudan/slide6.webp",
+      "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This one is a teaching diagram: few large elements, generous spacing, each label sitting on a soft cream panel with a rounded border, arranged so the eye reads it in one pass. One wide picture divided into three equal vertical panels by thin cream gutters. LEFT PANEL: a young engineer sits alone at his desk, shoulders low, staring at his screen for a very long time, the office around him dim. MIDDLE PANEL: the same engineer thinks for a short while with a small clock on the desk, then turns and raises a hand towards a senior colleague, who turns to him — bright and balanced. RIGHT PANEL: the engineer immediately spins his chair to the senior without looking at his own screen at all, and the senior looks a little surprised. A large rounded cream label panel sits at the top of each panel carrying only the single letter given here. The Japanese words in this picture are exactly: A / B / C. Japanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana. Spell every character exactly as given. No other letters, numbers, logos or watermarks anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+      "refs": [],
+      "status": "done"
+    },
+    {
+      "kind": "cards",
+      "columns": 3,
+      "items": [
+        {
+          "icon": "❌",
+          "label": "A",
+          "title": "一人で ずっと 悩んで、3日 あとに 相談する",
+          "text": "仕事が 予定より 遅れて しまいます。"
+        },
+        {
+          "icon": "⭕",
+          "label": "B",
+          "title": "30分（または 15分）考えて、それでも わからなければ 相談する",
+          "text": "一番 いい タイミングです。自分で 考える 力が つくし、仕事も 遅れません。"
+        },
+        {
+          "icon": "❌",
+          "label": "C",
+          "title": "何も 考えないで、すぐに 相談する",
+          "text": "自分で 考える ことも 大切です。先輩の 時間も 少なく なって しまいます。"
+        }
+      ]
+    },
+    {
+      "kind": "video",
+      "src": "/video/hourensou/soudan_30min_a.mp4",
+      "poster": "/img/hourensou/soudan/poster_30min_a.webp",
+      "caption": "一人で ずっと 悩んで、3日 あとに 相談する 場面",
+      "note": "A：一人で ずっと 悩んで、3日 あとに 相談する。仕事が 予定より 遅れて しまいます。"
+    },
+    {
+      "kind": "video",
+      "src": "/video/hourensou/soudan_30min_b.mp4",
+      "poster": "/img/hourensou/soudan/poster_30min_b.webp",
+      "caption": "30分 考えてから 相談する 場面",
+      "note": "B：30分（または 15分）考えて、それでも わからなければ 相談する。一番 いい タイミングです。"
+    },
+    {
+      "kind": "video",
+      "src": "/video/hourensou/soudan_30min_c.mp4",
+      "poster": "/img/hourensou/soudan/poster_30min_c.webp",
+      "caption": "何も 考えないで すぐに 相談する 場面",
+      "note": "C：何も 考えないで、すぐに 相談する。先輩の 時間も 少なく なって しまいます。"
+    },
+    {
+      "kind": "banner",
+      "tone": "message",
+      "icon": "⏱",
+      "title": "まとめ",
+      "text": "まずは 自分で 調べます。でも 30分（または 15分）調べて わからなかったら、一人で 悩まないで 相談しましょう。",
+      "badges": [
+        "自分で 調べる",
+        "時間を 決める",
+        "相談する"
+      ]
+    },
+    {
+      "kind": "heading",
+      "level": 3,
+      "text": "ポイント②：相談する 前に「何を したか」を 伝える"
+    },
+    {
+      "kind": "paragraph",
+      "text": "ただ「わかりません」と 言うのでは、相手も 助けにくいです。「◯◯を 調べました。でも わかりません」と、自分が した ことを 具体的に 説明しましょう。"
+    },
+    {
+      "kind": "image",
+      "size": "wide",
+      "src": "/img/hourensou/soudan/slide7.webp",
+      "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. Two different people appear in these pictures and they must never look alike. OKUDA is the senior engineer shown in the attached character sheet: a Japanese man in his mid twenties, wavy messy black hair with volume, black rectangular thick-rimmed glasses, a dark green pullover hoodie. THE JUNIOR ENGINEER is a DIFFERENT and YOUNGER man: a Southeast Asian man in his early twenties, warm brown skin, short cropped black hair, NO GLASSES, a plain cream polo shirt and dark grey trousers. Only Okuda wears glasses and a green hoodie. Never give the two men the same face, hair, glasses or clothes. One wide picture split into two equal panels by a thin cream gutter. LEFT: the junior engineer stands at Okuda's desk with empty open hands and a lost expression; Okuda tilts his head, wanting to help but with nothing to work from. RIGHT: the same two people, but now the junior engineer holds out an open notebook and points at his own notes while speaking; Okuda leans in with a bright understanding smile and reaches towards the notebook. The notebook pages show only soft abstract handwriting lines. No text, no letters, no kanji, no kana, no numbers anywhere in the image. Screens, papers, whiteboards, books and signs are blank or show only soft abstract shapes and simple pictures. No watermark, no signature, no logo, no speech balloons, no floating symbols such as question marks, exclamation marks, arrows, light bulbs, stars or hearts. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+      "refs": [
+        "/img/characters/okuda/sheet.webp"
+      ],
+      "status": "done"
+    },
+    {
+      "kind": "heading",
+      "level": 3,
+      "text": "ポイント③：自分なりの アイデアを 持つ"
+    },
+    {
+      "kind": "paragraph",
+      "text": "「どう 作るか」を 決める ばめん（ライブラリを えらぶ とき、デザインに 迷った とき）では、ただ 聞くだけで なく 自分の 意見も 伝えます。「私は ◯◯だと 思うのですが、どうでしょうか」と 聞くと、とても 良い 相談に なります。"
+    },
+    {
+      "kind": "image",
+      "src": "/img/hourensou/soudan/slide8.webp",
+      "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. Two different people appear in these pictures and they must never look alike. OKUDA is the senior engineer shown in the attached character sheet: a Japanese man in his mid twenties, wavy messy black hair with volume, black rectangular thick-rimmed glasses, a dark green pullover hoodie. THE JUNIOR ENGINEER is a DIFFERENT and YOUNGER man: a Southeast Asian man in his early twenties, warm brown skin, short cropped black hair, NO GLASSES, a plain cream polo shirt and dark grey trousers. Only Okuda wears glasses and a green hoodie. Never give the two men the same face, hair, glasses or clothes. The junior engineer holds up a tablet towards Okuda. On the tablet, two large rounded blank cards sit side by side, one glowing slightly brighter than the other — he has already made a choice and is explaining why. He gestures at the brighter card with his free hand and looks straight at Okuda with a confident face. Okuda strokes his chin, impressed, nodding. Medium two-shot. No text, no letters, no kanji, no kana, no numbers anywhere in the image. Screens, papers, whiteboards, books and signs are blank or show only soft abstract shapes and simple pictures. No watermark, no signature, no logo, no speech balloons, no floating symbols such as question marks, exclamation marks, arrows, light bulbs, stars or hearts. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+      "refs": [
+        "/img/characters/okuda/sheet.webp"
+      ],
+      "status": "done"
+    },
+    {
+      "kind": "banner",
+      "tone": "quote",
+      "icon": "🌟",
+      "title": "相談で よく 使う 日本語",
+      "text": "この 4つを 覚えると、相談を 始められます。",
+      "badges": [
+        "◯◯さん、今、お時間 よろしいでしょうか。",
+        "◯◯に ついて、相談が あります。",
+        "自分で ◯◯を 調べましたが、わかりませんでした。教えて いただけませんか。",
+        "私は ◯◯が いいと 思うのですが、いかがでしょうか。"
+      ]
+    },
+    {
+      "kind": "image",
+      "size": "wide",
+      "src": "/img/hourensou/soudan/slide9.webp",
+      "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This one is a teaching diagram: few large elements, generous spacing, each label sitting on a soft cream panel with a rounded border, arranged so the eye reads it in one pass. A teaching diagram of four rounded cream cards in a two by two grid on a soft sky-blue background. In each card a small waist-up drawing shows the junior engineer speaking to Okuda at the moment that phrase is used: first he raises a hand to ask for a moment of time; second he points at his laptop to state the fact; third he holds up his notebook to say what he already checked; fourth he presses his palms together in thanks. Under each little drawing the card carries the Japanese phrase given here. The Japanese words in this picture are exactly: 今、お時間 よろしいですか（いま、おじかん よろしいですか） / ◯◯で 困って います（◯◯で こまって います） / ◯◯を 調べました（◯◯を しらべました） / ありがとう ございます. Japanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana. Spell every character exactly as given. No other letters, numbers, logos or watermarks anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+      "refs": [
+        "/img/characters/okuda/sheet.webp"
+      ],
+      "status": "done"
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "やって みよう（ロールプレイ）"
+    },
+    {
+      "kind": "paragraph",
+      "text": "学んだ ことばを 使って、2人1組で 相談の 練習を しましょう。まず お手本の 動画を 見ます。"
+    },
+    {
+      "kind": "video",
+      "src": "/video/hourensou/soudan_skit.mp4",
+      "poster": "/img/hourensou/soudan/slide10.webp",
+      "caption": "ソクさんが 奥田先輩に 相談する お手本",
+      "note": "この あとの スキットで、同じ 会話を 1行ずつ 聞いて まねします。"
+    }
+  ],
+  "furigana": [
+    [
+      "環境構築",
+      "かんきょうこうちく"
+    ],
+    [
+      "奥田先輩",
+      "おくだせんぱい"
+    ],
+    [
+      "報連相",
+      "ほうれんそう"
+    ],
+    [
+      "設計書",
+      "せっけいしょ"
+    ],
+    [
+      "具体的",
+      "ぐたいてき"
+    ],
+    [
+      "日本語",
+      "にほんご"
+    ],
+    [
+      "相談",
+      "そうだん"
+    ],
+    [
+      "会社",
+      "かいしゃ"
+    ],
+    [
+      "上司",
+      "じょうし"
+    ],
+    [
+      "先輩",
+      "せんぱい"
+    ],
+    [
+      "同僚",
+      "どうりょう"
+    ],
+    [
+      "自分",
+      "じぶん"
+    ],
+    [
+      "相手",
+      "あいて"
+    ],
+    [
+      "一人",
+      "ひとり"
+    ],
+    [
+      "全体",
+      "ぜんたい"
+    ],
+    [
+      "奥田",
+      "おくだ"
+    ],
+    [
+      "日本",
+      "にほん"
+    ],
+    [
+      "仕事",
+      "しごと"
+    ],
+    [
+      "予定",
+      "よてい"
+    ],
+    [
+      "開発",
+      "かいはつ"
+    ],
+    [
+      "意見",
+      "いけん"
+    ],
+    [
+      "不安",
+      "ふあん"
+    ],
+    [
+      "原因",
+      "げんいん"
+    ],
+    [
+      "設定",
+      "せってい"
+    ],
+    [
+      "環境",
+      "かんきょう"
+    ],
+    [
+      "構築",
+      "こうちく"
+    ],
+    [
+      "処理",
+      "しょり"
+    ],
+    [
+      "技術",
+      "ぎじゅつ"
+    ],
+    [
+      "大切",
+      "たいせつ"
+    ],
+    [
+      "一番",
+      "いちばん"
+    ],
+    [
+      "一緒",
+      "いっしょ"
+    ],
+    [
+      "練習",
+      "れんしゅう"
+    ],
+    [
+      "場面",
+      "ばめん"
+    ],
+    [
+      "時間",
+      "じかん"
+    ],
+    [
+      "少な",
+      "すくな"
+    ],
+    [
+      "上手",
+      "じょうず"
+    ],
+    [
+      "会話",
+      "かいわ"
+    ],
+    [
+      "計算",
+      "けいさん"
+    ],
+    [
+      "説明",
+      "せつめい"
+    ],
+    [
+      "動画",
+      "どうが"
+    ],
+    [
+      "手本",
+      "てほん"
+    ],
+    [
+      "人",
+      "ひと"
+    ],
+    [
+      "進",
+      "すす"
+    ],
+    [
+      "今",
+      "いま"
+    ],
+    [
+      "前",
+      "まえ"
+    ],
+    [
+      "時",
+      "じ"
+    ],
+    [
+      "分",
+      "ふん"
+    ],
+    [
+      "日",
+      "にち"
+    ],
+    [
+      "行",
+      "ぎょう"
+    ],
+    [
+      "言",
+      "い"
+    ],
+    [
+      "聞",
+      "き"
+    ],
+    [
+      "見",
+      "み"
+    ],
+    [
+      "書",
+      "か"
+    ],
+    [
+      "使",
+      "つか"
+    ],
+    [
+      "思",
+      "おも"
+    ],
+    [
+      "作",
+      "つく"
+    ],
+    [
+      "直",
+      "なお"
+    ],
+    [
+      "遅",
+      "おく"
+    ],
+    [
+      "良",
+      "よ"
+    ],
+    [
+      "始",
+      "はじ"
+    ],
+    [
+      "教",
+      "おし"
+    ],
+    [
+      "伝",
+      "つた"
+    ],
+    [
+      "困",
+      "こま"
+    ],
+    [
+      "調",
+      "しら"
+    ],
+    [
+      "持",
+      "も"
+    ],
+    [
+      "考",
+      "かんが"
+    ],
+    [
+      "決",
+      "き"
+    ],
+    [
+      "迷",
+      "まよ"
+    ],
+    [
+      "悩",
+      "なや"
+    ],
+    [
+      "答",
+      "こた"
+    ],
+    [
+      "動",
+      "うご"
+    ],
+    [
+      "出",
+      "で"
+    ],
+    [
+      "他",
+      "ほか"
+    ],
+    [
+      "何",
+      "なに"
+    ],
+    [
+      "話",
+      "はな"
+    ],
+    [
+      "大",
+      "おお"
+    ],
+    [
+      "小",
+      "ちい"
+    ],
+    [
+      "少",
+      "すこ"
+    ],
+    [
+      "中",
+      "なか"
+    ],
+    [
+      "報",
+      "ほう"
+    ],
+    [
+      "連",
+      "れん"
+    ],
+    [
+      "相",
+      "そう"
+    ],
+    [
+      "学",
+      "まな"
+    ],
+    [
+      "先",
+      "さき"
+    ],
+    [
+      "同",
+      "おな"
+    ],
+    [
+      "上",
+      "うえ"
+    ],
+    [
+      "開",
+      "ひら"
+    ],
+    [
+      "間",
+      "ま"
+    ],
+    [
+      "助",
+      "たす"
+    ],
+    [
+      "全",
+      "ぜん"
+    ],
+    [
+      "正",
+      "ただ"
+    ],
+    [
+      "難",
+      "むずか"
+    ],
+    [
+      "友",
+      "とも"
+    ],
+    [
+      "起",
+      "お"
+    ],
+    [
+      "組",
+      "くみ"
+    ],
+    [
+      "金",
+      "かね"
+    ],
+    [
+      "数",
+      "かず"
+    ],
+    [
+      "切",
+      "き"
+    ],
+    [
+      "力",
+      "ちから"
+    ],
+    [
+      "私",
+      "わたし"
+    ],
+    [
+      "語",
+      "ご"
+    ],
+    [
+      "覚",
+      "おぼ"
+    ]
+  ]
+}

@@ -318,3 +318,32 @@ export function replayListening(state: ListeningState, inputs: readonly string[]
 export function remainingKeywords(state: ListeningState): number {
   return state.keywords.length - state.foundKeywords.length;
 }
+
+/* ------------------------------------------------------------------ *
+ * 何を 鳴らすか（音か 動画か）
+ * ------------------------------------------------------------------ */
+
+/**
+ * その 教材が 鳴らす もの。
+ *
+ * ## なぜ 画面の 中で 分岐させないか
+ * 判断そのものを **試せる ところに 置く** ため。画面（`playback-mode.tsx`）は
+ * この 答えで 札を 選ぶだけに して、決まりは ここで 1回 書く。
+ * 単体テストは DOM を 持たない（`vitest.config.ts` の environment は node）ので、
+ * JSX の 中に 埋めると **この 分岐だけ 誰も 確かめられなく なる**。
+ *
+ * ## 2つ 以上 来たら 動画 → YouTube → 音 の 順
+ * 2つ 置くのは スキーマが 止める（`listeningSchema` の検査）。それでも 来たら
+ * どれかを 出す——**画面が 落ちない** ほうへ 倒す（合流は git ∪ DB で、
+ * DB側は 古いスキーマの ままでも 読める）。
+ */
+export function mediaKind(listening: {
+  audioUrl?: string;
+  videoUrl?: string;
+  youtube?: string;
+}): "video" | "youtube" | "audio" | "none" {
+  if (listening.videoUrl) return "video";
+  if (listening.youtube) return "youtube";
+  if (listening.audioUrl) return "audio";
+  return "none";
+}

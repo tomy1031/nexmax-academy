@@ -1,7 +1,9 @@
-import { expect, test, type Page } from "@playwright/test";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+import { expect, test, type Locator, type Page } from "@playwright/test";
 
 /**
- * ことばアーケード — **⭕と ❌ が ひと目で 分かる**（2026-08-26 の 指摘2・3・5・6）
+ * 単語テスト — **⭕と ❌ が ひと目で 分かる**（2026-08-26 の 指摘2・3・5・6）
  *
  * ユーザーの ことば:
  *   「誤った語を入れても正解になってしまう」
@@ -15,7 +17,86 @@ import { expect, test, type Page } from "@playwright/test";
  */
 
 /** 8語の 小さな セット。1回の 通しが 短い。 */
-const SET = "/arcade/hajimari_kotoba";
+const SET_ID = "hajimari_kotoba";
+const SET = `/wordtest/${SET_ID}`;
+
+/** 1問の こたえ（正解の 1語と、誤答3つ）。 */
+interface Answer {
+  readonly correct: string;
+  readonly wrong: readonly string[];
+}
+
+/**
+ * セットの こたえ表（表記 → 正解＋誤答）。**教材から 読む**
+ *（`helpers.ts` の `HOUKOKU_TOTAL` と 同じ 作法。語も 数も ベタ書きしない）。
+ *
+ * これが 無いと「わざと 外す」が できない——どの語が 出るかも、4択の 並びも
+ * 乱数で 決まる ので、押す 前に 正解を 知って いる 必要が ある。
+ * 組み立ては アプリと 同じ 道（`src/lib/vocabulary.ts` の `gameWordsOf`）:
+ * wordstage の `wordIds` から ことばの 正を 引き、**対訳の1語（`englishTerm`）と
+ * 誤答3つ（`wrongMeanings`）が そろった 語だけ**が ゲームに 出る。
+ */
+const ANSWERS: ReadonlyMap<string, Answer> = (() => {
+  const root = join(__dirname, "..", "..");
+  const set = JSON.parse(
+    readFileSync(join(root, "content", "wordstages", `${SET_ID}.json`), "utf8"),
+  ) as { wordIds: string[] };
+  const vocab = JSON.parse(
+    readFileSync(join(root, "content", "vocab", "vocabulary.json"), "utf8"),
+  ) as { words: { id: string; term: string; englishTerm?: string; wrongMeanings?: string[] }[] };
+
+  const byId = new Map(vocab.words.map((word) => [word.id, word]));
+  const table = new Map<string, Answer>();
+  for (const id of set.wordIds) {
+    const word = byId.get(id);
+    if (!word?.englishTerm || word.wrongMeanings?.length !== 3) continue;
+    table.set(word.term, { correct: word.englishTerm, wrong: word.wrongMeanings });
+  }
+  if (table.size === 0) throw new Error(`${SET_ID} に 遊べる ことばが 1つも ありません`);
+  return table;
+})();
+
+/** 4択の 札を 1つ、書いてある ことばで 掴む。 */
+function choice(page: Page, label: string): Locator {
+  return page
+    .getByRole("group", { name: "いみの こたえ" })
+    .getByRole("button", { name: label, exact: true });
+}
+
+/**
+ * こたえた あとに 出る 解説カード（押すと つぎの 問題へ）。
+ *
+ * **カードの 中の 字で 掴まない。** 前は えらんだ こたえを `getByText(/^（.+）$/)` で
+ * 見て いたが、同じ カードの 足もとに ある「（おす／Enter で つぎへ）」にも 当たる。
+ * 外した ときだけ 2つに なって Playwright の strict mode が 投げ、それを
+ * `.catch(() => false)` が 飲んで いた——**当たりと 外れが 逆さま**に 読まれ、
+ * 外し つづけた ときだけ「6問 つづけて 正解を 引いた」で 落ちて いた
+ *（4回に 1回。実測 (3/4)^6 ≒ 18%。2026-08-30 に 直した）。
+ */
+function explainCard(page: Page): Locator {
+  return page.getByRole("button", { name: /おす／Enter で つぎへ/ });
+}
+
+/**
+ * いま 出て いる ことばの こたえを こたえ表から 引く。
+ *
+ * 4択の あいだ、画面の まん中には 用語が 出て いる（`McqTerm`）。読むのは
+ * **地の 字だけ**——`<ruby>手紙<rt>てがみ</rt></ruby>` の よみまで 混ぜると 表が 引けない。
+ */
+async function askedAnswer(page: Page): Promise<Answer> {
+  const term = await page
+    .locator("ruby.mcq-term")
+    .first()
+    .evaluate((el) =>
+      [...el.childNodes]
+        .filter((node) => node.nodeType === Node.TEXT_NODE)
+        .map((node) => node.textContent ?? "")
+        .join(""),
+    );
+  const answer = ANSWERS.get(term);
+  if (!answer) throw new Error(`こたえ表に ない ことばが 出ました: ${term}`);
+  return answer;
+}
 
 /**
  * 解説カードを 押して つぎの 問題へ。**押せなくても 進む**。
@@ -30,9 +111,7 @@ const SET = "/arcade/hajimari_kotoba";
  * 進んだ ことは、呼ぶ 側が「つぎの 問題が 出たか」で 確かめる。
  */
 async function advance(page: Page): Promise<void> {
-  await page
-    .getByText(/せいかい|ちがう/)
-    .first()
+  await explainCard(page)
     .click({ timeout: 3_000 })
     .catch(() => {});
 }
@@ -66,33 +145,33 @@ test("こたえた あと、**正しい こたえ**が ⭕ つきで 出る", as
   await page.getByRole("button", { name: /もんだいだけ/ }).click();
   await expect(page.getByText("英語の 意味を えらぼう！")).toBeVisible({ timeout: 20_000 });
 
-  const choices = page.getByRole("group", { name: "いみの こたえ" }).getByRole("button");
+  /*
+   * **わざと 外す**。前は `choices.first()` を 6回まで 押して 外れるのを 待って いたので、
+   * 何を 見た かが 走らせる たびに 変わって いた。出て いる ことばを 読んで 誤答を
+   * 名指しで 押せば、外した ときと 当てた ときを **1回ずつ 確かに** 通せる。
+   */
+  const missed = await askedAnswer(page);
+  const chosen = missed.wrong[0]!;
+  await choice(page, chosen).click();
 
   /*
-   * 解説カードには **自動送り**（2.8秒）が ある ので、押した 直後に 見る。
-   * どれが 正解かは 乱数で 決まる ので、**外れるまで 何問か 進める**——
-   * ただし 見たい ことは 両方に 共通で、「正しい こたえが ⭕ つきで 出る」こと。
+   * カードは 2.8秒で 自動送りされる ので、**1回 読んでから** 調べる
+   *（`toContainText` を 2つ 並べると、2つ目の 手前で カードが 消えうる）。
    */
-  for (let i = 0; i < 6; i += 1) {
-    await choices.first().click();
-    await expect(page.getByText(/^⭕/).first()).toBeVisible({ timeout: 3_000 });
+  const afterMiss = (await explainCard(page).textContent()) ?? "";
+  expect(afterMiss).toContain(`❌ちがう（${chosen}）`); // ❌ の しるしと、えらんだ こたえ
+  expect(afterMiss).toContain(`⭕${missed.correct}`); // そして **正しい こたえ**が ⭕ つきで
 
-    // 外した ときだけ、えらんだ こたえが 小さく 添う（（Sport）の ような 形）
-    if (
-      await page
-        .getByText(/^（.+）$/)
-        .isVisible()
-        .catch(() => false)
-    ) {
-      // ここまで 来れば 見たい ことは 出て いる（⭕ の 正解＋えらんだ こたえ）。
-      // 見出しの ❌ を さらに 待たない——カードは 2.8秒で 自動送りされる ので、
-      // 待つ ほど 落ちやすく なるだけで、確かめる 中身は 増えない。
-      return;
-    }
-    await advance(page);
-    await expect(page.getByText("英語の 意味を えらぼう！")).toBeVisible({ timeout: 20_000 });
-  }
-  throw new Error("6問 つづけて 正解を 引いた — 乱数を 見直す");
+  await advance(page);
+  await expect(page.getByText("英語の 意味を えらぼう！")).toBeVisible({ timeout: 20_000 });
+
+  // 当てた ときも 同じ カードに 正しい こたえが 出る（しるしだけが 変わる）
+  const hit = await askedAnswer(page);
+  await choice(page, hit.correct).click();
+
+  const afterHit = (await explainCard(page).textContent()) ?? "";
+  expect(afterHit).toContain("⭕せいかい");
+  expect(afterHit).toContain(`⭕${hit.correct}`);
 });
 
 test("さいごまで やると 合格か 不合格が はっきり 出て、ゼロからの やり直しは 無い", async ({

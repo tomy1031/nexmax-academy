@@ -145,10 +145,15 @@ export function StageEditor({
             value={value.listed ? "map" : "url"}
             options={LISTED_OPTIONS}
             onChange={(where) => patch({ listed: where === "map" })}
+            /*
+             * 「いつ 変わるか」を 必ず 書く。マップは 作りおき（5分）＋写し（1分）で
+             * 配るので、ほぞんした すぐ あとに 見ると 前の ままが 出る。それを
+             * 言わないと「設定が 効いていない」に 見える（2026-08-29 の 報告）。
+             */
             hint={
               value.listed
-                ? "地図に 停留所として ならびます。"
-                : `地図には 出ません。${value.id ? `/${value.id}` : "URL"} を リンクで 配って ひらいてもらいます。`
+                ? "地図に 停留所として ならびます。ほぞんの あと、学習者の マップに 出るまで さいだい 6分 かかります。"
+                : `地図には 出ません。${value.id ? `/${value.id}` : "URL"} を リンクで 配って ひらいてもらいます。ほぞんの あと、学習者の マップから 消えるまで さいだい 6分 かかります。`
             }
           />
         </div>
@@ -169,7 +174,7 @@ export function StageEditor({
 
       {/*
         単語ステージは手で書くと1課ぶんで1時間仕事になる。作られないままだと
-        ステージから「ことばで あそぶ」へ行く道が開かないので、ここから作れるようにする。
+        ステージから「単語テスト」へ行く道が開かないので、ここから作れるようにする。
         作ったIDは上の一覧（wordStageIds）に足す——ステージ側に足さないと、
         単語ステージだけができて、どのステージからも開けないものになる。
       */}
@@ -412,7 +417,7 @@ function AddPanel({
 /**
  * ひもづける単語ステージ。
  *
- * 手で ID を打たせない（打ちまちがえると、ステージから「ことばで あそぶ」が消える）。
+ * 手で ID を打たせない（打ちまちがえると、ステージから「単語テスト」が消える）。
  * 選ぶだけにして、候補は いま存在する単語ステージから出す。
  */
 function WordStages({
@@ -447,7 +452,7 @@ function WordStages({
                 <span className="text-navy block text-sm font-black">
                   {titleById.get(id) ?? id}
                 </span>
-                <span className="text-ink-faint block text-xs font-bold">/arcade/{id}</span>
+                <span className="text-ink-faint block text-xs font-bold">/wordtest/{id}</span>
               </span>
               <MiniButton
                 tone="danger"

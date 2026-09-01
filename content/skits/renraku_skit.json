@@ -1,0 +1,209 @@
+{
+  "kind": "skit",
+  "id": "renraku_skit",
+  "title": "スキット：トラブルの 連絡",
+  "description": "エラーが 出た ことを、事実だけで リーダーに 連絡します。",
+  "focus": "気持ちでは なく 事実と 数字で 言う ところに 注目して、まねして みましょう。",
+  "cover": {
+    "src": "/img/hourensou/renraku/s1.webp",
+    "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This one is a teaching diagram: few large elements, generous spacing, each label sitting on a soft cream panel with a rounded border, arranged so the eye reads it in one pass. One wide picture split into two equal halves by a soft vertical cream gutter. LEFT HALF, on a warm pale coral ground: a young engineer at his desk waves both hands in a flustered, apologetic way while his team leader tilts his head, unsure how to help. RIGHT HALF, on a pale sky-blue ground: the same engineer sits calmly and points at one clear line on his blank screen, and the leader gives a confident thumbs up. A rounded cream label panel sits at the top of each half carrying the Japanese words given here. The Japanese words in this picture are exactly: 気持ち（きもち） / 事実（じじつ）. Japanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana. Spell every character exactly as given. No other letters, numbers, logos or watermarks anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+    "refs": [],
+    "status": "done"
+  },
+  "roles": [
+    {
+      "id": "me",
+      "name": "あなた",
+      "role": "PG（プログラマー）",
+      "accent": "leaf",
+      "side": "right"
+    },
+    {
+      "id": "leader",
+      "name": "田中さん",
+      "role": "リーダー",
+      "accent": "sky",
+      "side": "left"
+    }
+  ],
+  "lines": [
+    {
+      "speaker": "me",
+      "text": "田中さん、お疲れさまです。連絡が あります。",
+      "note": "はじめに「連絡が あります」と 言うと、相手は 聞く 用意が できます。",
+      "audioUrl": "/audio/skits/renraku_skit/l01.mp3"
+    },
+    {
+      "speaker": "me",
+      "text": "現在、ログイン画面で エラー500が 発生して います。原因は 調査中です。",
+      "note": "「焦って います」では なく、起きて いる 事実を 言います。",
+      "audioUrl": "/audio/skits/renraku_skit/l02.mp3"
+    },
+    {
+      "speaker": "me",
+      "text": "解決まで 30分ほど かかる 見込みです。",
+      "note": "「もうすぐ」では なく 数字で 言います。",
+      "audioUrl": "/audio/skits/renraku_skit/l03.mp3"
+    },
+    {
+      "speaker": "leader",
+      "text": "OK、ありがとう。他の メンバーを ヘルプに 入れるね。",
+      "audioUrl": "/audio/skits/renraku_skit/l04.mp3"
+    },
+    {
+      "speaker": "me",
+      "text": "ありがとう ございます。直ったら すぐに 連絡します。",
+      "audioUrl": "/audio/skits/renraku_skit/l05.mp3"
+    }
+  ],
+  "furigana": [
+    [
+      "調査中",
+      "ちょうさちゅう"
+    ],
+    [
+      "連絡",
+      "れんらく"
+    ],
+    [
+      "相手",
+      "あいて"
+    ],
+    [
+      "調査",
+      "ちょうさ"
+    ],
+    [
+      "事実",
+      "じじつ"
+    ],
+    [
+      "数字",
+      "すうじ"
+    ],
+    [
+      "気持",
+      "きも"
+    ],
+    [
+      "原因",
+      "げんいん"
+    ],
+    [
+      "解決",
+      "かいけつ"
+    ],
+    [
+      "発生",
+      "はっせい"
+    ],
+    [
+      "見込",
+      "みこ"
+    ],
+    [
+      "画面",
+      "がめん"
+    ],
+    [
+      "用意",
+      "ようい"
+    ],
+    [
+      "現在",
+      "げんざい"
+    ],
+    [
+      "注目",
+      "ちゅうもく"
+    ],
+    [
+      "田中",
+      "たなか"
+    ],
+    [
+      "分",
+      "ふん"
+    ],
+    [
+      "言",
+      "い"
+    ],
+    [
+      "聞",
+      "き"
+    ],
+    [
+      "見",
+      "み"
+    ],
+    [
+      "直",
+      "なお"
+    ],
+    [
+      "調",
+      "しら"
+    ],
+    [
+      "持",
+      "も"
+    ],
+    [
+      "決",
+      "き"
+    ],
+    [
+      "焦",
+      "あせ"
+    ],
+    [
+      "疲",
+      "つか"
+    ],
+    [
+      "出",
+      "で"
+    ],
+    [
+      "入",
+      "い"
+    ],
+    [
+      "他",
+      "ほか"
+    ],
+    [
+      "中",
+      "なか"
+    ],
+    [
+      "連",
+      "れん"
+    ],
+    [
+      "相",
+      "そう"
+    ],
+    [
+      "気",
+      "き"
+    ],
+    [
+      "実",
+      "じつ"
+    ],
+    [
+      "起",
+      "お"
+    ],
+    [
+      "数",
+      "かず"
+    ],
+    [
+      "目",
+      "め"
+    ]
+  ]
+}

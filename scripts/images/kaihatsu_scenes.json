@@ -1,0 +1,37 @@
+{
+  "refs": [],
+  "_comment": "開発の 工程の **場面の 絵**（文字なし）。本文と カードが ことばを 持って いるので、絵は 場面だけを 見せる。**kaihatsu_zukai を 先に 流して から**（1枚目が 絵柄の アンカーに なる。gen_images.mjs が 自動で 足す）。",
+  "style": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME.",
+  "noText": "No text, no letters, no kanji, no kana, no numbers anywhere in the image. Screens, papers, whiteboards, books and signs are blank or show only soft abstract shapes and simple pictures. No watermark, no signature, no logo, no speech balloons, no floating symbols such as question marks, exclamation marks, arrows, light bulbs, stars or hearts.",
+  "negative": "Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+  "output": "1536x1024",
+  "scenes": [
+    {
+      "out": "youken_teigi",
+      "dest": "public/img/kaihatsu/youken_teigi.webp",
+      "title": "要件定義の ようす（お客様に 聞く）",
+      "where": "scripts/gen_kaihatsu_content.mjs kaihatsu_lecture 「1. 要件定義」の image",
+      "priority": "B",
+      "scene": "A bright meeting room with a wide window. A customer in a jacket sits on one side of the table talking with open hands, clearly explaining what she wants, while two engineers sit facing her — one leaning in and listening closely, the other writing on a notepad. A large blank whiteboard stands behind them and a mug sits on the table. Warm daylight, an easy friendly mood.",
+      "text": []
+    },
+    {
+      "out": "estimation",
+      "dest": "public/img/kaihatsu/estimation.webp",
+      "title": "見積もりの ようす（時間と お金を 出す）",
+      "where": "scripts/gen_kaihatsu_content.mjs kaihatsu_lecture 「2. 見積もり」の image",
+      "priority": "B",
+      "scene": "An engineer sits at a tidy desk working out how long the work will take. One hand rests on a calculator, the other points at a large blank wall calendar beside the desk, and a colleague standing next to him counts something off on his fingers as they talk it through. Sticky notes in soft coral and sky blue are grouped in neat columns on the wall. Warm daylight from the window, a calm and careful mood.",
+      "text": []
+    },
+    {
+      "out": "development",
+      "dest": "public/img/kaihatsu/development.webp",
+      "title": "開発の ようす（手分けして 作る）",
+      "where": "scripts/gen_kaihatsu_content.mjs kaihatsu_lecture 「4. 開発」の image",
+      "priority": "B",
+      "scene": "Three engineers work side by side at a long shared desk of two-monitor workstations, each on their own part of the same job. The one in the middle turns to the one on her right to check something on his screen and he points at it, while the third keeps typing. A blank board on the wall behind them carries a neat row of small cards moved into three columns. Mugs and a small plant on the desk, warm daylight, a busy but relaxed mood.",
+      "text": []
+    }
+  ]
+}

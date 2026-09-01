@@ -31,6 +31,7 @@ export interface KaishaItem {
  * STEP1 調べかたを 学ぶ → STEP2 サイトを 見て 調査シートを うめる →
  * STEP3 ヘンディさんに 報告 → STEP4 社長と 話す 準備（ページ＋フォーム）→
  * STEP5 社長と 話す。
+ * そのあとに STEP6（就業形態の スライド＋リスニング）が 付いた。
  */
 export const KAISHA = {
   /** STEP 1 NEXT MAKEを 調べよう！ */
@@ -75,6 +76,21 @@ export const KAISHA = {
     path: "/kaisha/meeting-kaisha_matsui",
     kind: "ミーティング",
   },
+  /** STEP 6 の ページ「就業形態を 知ろう」（旧アプリの 講義スライドの 移植）。 */
+  article3: {
+    id: "kaisha_shugyo_keitai",
+    path: "/kaisha/article-kaisha_shugyo_keitai",
+    kind: "ページ",
+  },
+  /*
+   * STEP 6 の リスニング。ステージに リスニングが **1本だけ**なので、
+   * URL に ID は 付かない（`stageContentPath`）。
+   */
+  listening: {
+    id: "kaisha_shugyo_keitai_listening",
+    path: "/kaisha/listening",
+    kind: "リスニング",
+  },
 } as const satisfies Record<string, KaishaItem>;
 
 /** 学習者が進む順（content/stages/kaisha.json の contents[] と同じ並び）。 */
@@ -86,6 +102,8 @@ export const KAISHA_ITEMS: readonly KaishaItem[] = [
   KAISHA.article2,
   KAISHA.junbi,
   KAISHA.meetingMatsui,
+  KAISHA.article3,
+  KAISHA.listening,
 ];
 
 /**
@@ -148,23 +166,6 @@ export const JUNBI_TOTAL: number = (
     ),
   ) as { questions: unknown[] }
 ).questions.length;
-
-/**
- * 松井社長との 対話ゲームで 見つける「おもしろい」の 数。**教材から 読む**。
- *
- * ここを ベタ書きして いた ため、5つ→3つ に した 日に taiwa-tsuzuki が 落ちた
- *（2026-08-24）。`HOUKOKU_TOTAL` と 同じ 轍。
- */
-export const MATSUI_FIND_COUNT: number = (
-  JSON.parse(
-    readFileSync(join(__dirname, "..", "..", "content", "meetings", "kaisha_matsui.json"), "utf8"),
-  ) as { talkGame: { findCount: number } }
-).talkGame.findCount;
-
-/** 「おもしろい n / m」の 文（対話ゲームの 進みぐあい）。 */
-export function foundText(found: number): string {
-  return `おもしろい ${found} / ${MATSUI_FIND_COUNT}`;
-}
 
 /**
  * その教材より前の教材のID（関門を開けるために「おわった」ことにする分）。

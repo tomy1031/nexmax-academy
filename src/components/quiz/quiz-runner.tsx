@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { Fragment, memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "motion/react";
-import type { QuizQuestion, QuizSet } from "@/content/schema";
+import type { ImageSlot, QuizQuestion, QuizSet } from "@/content/schema";
+import { ImageSlotFrame } from "@/components/article/rich-blocks";
 import { FeedbackMessage } from "@/components/feedback-message";
 import { NexMax } from "@/components/nexmax";
 import { DictionaryText } from "@/components/dictionary-text";
@@ -279,7 +280,7 @@ export function QuizRunner({
    * 点数を **先生が見る成績**（TestResult）にも残す。
    *
    * これまで もんだいは 進捗（おわった／とちゅう）しか 書いておらず、何点だったかは
-   * 画面を閉じた瞬間に 消えていた。同じ「テスト」なのに ことばアーケードの点だけが
+   * 画面を閉じた瞬間に 消えていた。同じ「テスト」なのに 単語テストの点だけが
    * 残る、という 割れ方をしていた。
    *
    * **初回だけが正式**（store の recordFirstTestResult が2回目以降を捨てる）。
@@ -552,6 +553,8 @@ export function QuizRunner({
                   <RubyText text={question.section} index={furigana} />
                 </p>
               )}
+              {/* 場面の 絵は 設問文の 上（読む 前に 場面が 入る）。 */}
+              <QuestionScene image={question.image} />
               {/* 設問の 「＊◯◯の ページ」は 行を 変えて 出す（2026-08-25 の 指定）。
                   データの 改行を そのまま 出すため whitespace-pre-line。 */}
               <p className="text-ink text-lg leading-relaxed font-extrabold whitespace-pre-line">
@@ -1352,6 +1355,9 @@ const QuestionRow = memo(function QuestionRow({
           {index + 1}
         </span>
         <div className="min-w-0 flex-1">
+          {/* 場面の 絵は 設問文の 上。番号の 右（＝その もんだいの 列）に 置いて、
+              25問 並ぶ ページでも どの 問いの 絵かが 見て 分かる ように する。 */}
+          <QuestionScene image={question.image} />
           <h2 className="text-ink text-lg font-extrabold whitespace-pre-line">
             <DictionaryText text={question.q} index={furigana} dictionary={dictionary} />
           </h2>
@@ -1382,6 +1388,31 @@ const QuestionRow = memo(function QuestionRow({
     </>
   );
 });
+
+/**
+ * 設問の **場面の 絵**（`question.image`）。設問文の すぐ 上に 出す。
+ *
+ * 「いま 話しかけて よいか」の ような 問いは、**先輩の 机の まわりが どう なって
+ * いるか**が 答えの もとに なる。それを 字で 書き並べると、測って いるのが
+ * 場面の 読みでは なく **長い 日本語を 読む 速さ**に なる（`optionImages` と 同じ 判断）。
+ *
+ * わくは 記事の 絵と 同じ `ImageSlotFrame` を 使う。**同じ「まだ 無い」を 2つの
+ * 見た目で 出さない**ため——学習者には ちがう ことが 起きて いるように 見える。
+ *
+ * `status` を `src` の 有無で 読み替えるのは、教材データを 手で 書いた ときに
+ * `status` の 書き忘れで **絵が 黙って 出ない**のを 防ぐため。絵が あるなら 出す。
+ */
+function QuestionScene({ image }: { image: ImageSlot | undefined }) {
+  if (!image) return null;
+  return (
+    <figure className="mx-auto mb-3 w-full max-w-[480px]">
+      <ImageSlotFrame
+        slot={{ ...image, status: image.src ? "done" : image.status }}
+        className="h-auto w-full rounded-[20px] border-4 border-white shadow-[0_6px_0_#b8deed]"
+      />
+    </figure>
+  );
+}
 
 /**
  * どこを 見れば 分かるか（🔎 の 札）。

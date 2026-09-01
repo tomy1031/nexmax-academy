@@ -1,0 +1,1933 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <!-- 見出しは データから 入れる（このファイルに 日本語を 書かない）。 -->
+    <title></title>
+
+    <style>
+      /* =====================================================================
+       * 報告クエスト『バグの 一日』 — エンジンの 見た目
+       *
+       * 文言は houkoku_quest.data.js だけが 持つ。ここは 色と かたちだけ。
+       * 色は「あおぞらパスウェイ」（docs/design/04）から。styles.css は 読まない
+       *（あれは 旧アプリの 写しなので さわらない）。
+       *
+       * 390px（教室の スマホ）を 第一に する。ボタンは 指で 押せる 大きさ（56px 以上）。
+       * ===================================================================== */
+
+      :root {
+        --sky: #0288d1;
+        --sky-deep: #0272ae;
+        --sky-soft: #e1f2fb;
+        --navy: #004f8d;
+        --ink: #1f3a56;
+        --ink-soft: #5a7089;
+        --ink-faint: #9db0c2;
+        --leaf: #58c273;
+        --leaf-deep: #3aa458;
+        --sun: #ffc93c;
+        --sun-deep: #f0a819;
+        --coral: #ff8a70;
+        --coral-deep: #f2654a;
+        --line: #dcebf5;
+        --cream: #fff7e8;
+        --r-lg: 22px;
+        --r-md: 16px;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      /* hidden は いつでも 効かせる（.btn の display より 強く）。 */
+      [hidden] {
+        display: none !important;
+      }
+
+      html {
+        -webkit-text-size-adjust: 100%;
+      }
+
+      body {
+        min-height: 100vh;
+        font-family:
+          system-ui,
+          -apple-system,
+          "Hiragino Kaku Gothic ProN",
+          "Noto Sans JP",
+          "IPAGothic",
+          "Yu Gothic",
+          sans-serif;
+        font-size: 16px;
+        line-height: 1.7;
+        color: var(--ink);
+        background: linear-gradient(180deg, #d8f0fc 0%, #f4fbff 45%, #fff7e8 100%);
+        background-attachment: fixed;
+      }
+
+      /* ふりがなは 地の 文と 同じ 色（濃い 面の 上でも 沈まない）。 */
+      ruby {
+        ruby-align: center;
+      }
+      rt {
+        font-size: 0.52em;
+        font-weight: 700;
+        color: currentColor;
+        opacity: 0.72;
+      }
+
+      .app {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        width: 100%;
+        max-width: 560px;
+        min-height: 100vh;
+        margin: 0 auto;
+        padding: 10px 12px 20px;
+      }
+
+      /* ---------- メーター（時間・しんらい・リスク） ---------- */
+
+      .hud {
+        flex: none;
+        background: rgba(255, 255, 255, 0.94);
+        border: 2px solid var(--line);
+        border-radius: var(--r-lg);
+        padding: 9px 12px;
+        box-shadow: 0 3px 0 rgba(31, 58, 86, 0.06);
+      }
+      .hud[hidden] {
+        display: none;
+      }
+
+      .meter {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .meter + .meter {
+        margin-top: 7px;
+        padding-top: 7px;
+        border-top: 2px dotted var(--line);
+      }
+      .meter-label {
+        flex: none;
+        width: 78px;
+        font-size: 11px;
+        font-weight: 900;
+        line-height: 1.3;
+        white-space: nowrap;
+        color: var(--ink-soft);
+      }
+
+      .clock {
+        flex: none;
+        min-width: 2.6em;
+        text-align: center;
+        font-size: 21px;
+        font-weight: 900;
+        color: var(--navy);
+      }
+      .clock.tick {
+        animation: tick 0.5s ease-out;
+      }
+      .tickmark {
+        flex: none;
+        font-size: 10px;
+        font-weight: 900;
+        color: var(--ink-faint);
+      }
+      .segs {
+        display: flex;
+        flex: 1;
+        gap: 3px;
+      }
+      .seg {
+        flex: 1;
+        height: 15px;
+        border: 1px solid var(--line);
+        border-radius: 4px;
+        background: #eaf4fa;
+        transition:
+          background 0.35s ease,
+          border-color 0.35s ease;
+      }
+      .seg.on {
+        border-color: var(--sun-deep);
+        background: linear-gradient(180deg, var(--sun), var(--sun-deep));
+      }
+
+      .hearts {
+        position: relative;
+        flex: none;
+        line-height: 1;
+      }
+      .hearts-row {
+        font-size: 19px;
+        letter-spacing: 3px;
+        white-space: nowrap;
+      }
+      .hearts-back {
+        filter: grayscale(1);
+        opacity: 0.3;
+      }
+      .hearts-fill {
+        position: absolute;
+        inset: 0;
+        width: 50%;
+        overflow: hidden;
+        transition: width 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+      }
+      .num {
+        font-size: 12px;
+        font-weight: 900;
+        color: var(--ink-faint);
+      }
+
+      .risk-bar {
+        position: relative;
+        flex: 1;
+        height: 17px;
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 9px;
+        background: #eef5fa;
+      }
+      .risk-fill {
+        width: 0;
+        height: 100%;
+        border-radius: 9px;
+        background: linear-gradient(90deg, var(--sun), var(--coral-deep));
+        transition: width 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+      }
+      .risk-hide {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: 900;
+        letter-spacing: 3px;
+        color: #fff;
+        background: repeating-linear-gradient(45deg, #9db0c2 0 8px, #8697a8 8px 16px);
+        animation: breathe 2.2s ease-in-out infinite;
+      }
+      .risk-hide[hidden] {
+        display: none;
+      }
+      .risk-open .risk-bar {
+        box-shadow: 0 0 0 3px rgba(242, 101, 74, 0.35);
+      }
+
+      .delta {
+        position: absolute;
+        left: 50%;
+        top: -2px;
+        font-size: 13px;
+        font-weight: 900;
+        pointer-events: none;
+        animation: float-up 0.9s ease-out forwards;
+      }
+      .delta.plus {
+        color: var(--leaf-deep);
+      }
+      .delta.minus {
+        color: var(--coral-deep);
+      }
+
+      /* ---------- 画面 ---------- */
+
+      .screen {
+        display: none;
+        flex: 1;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .screen.on {
+        display: flex;
+      }
+
+      .head {
+        text-align: center;
+        padding: 2px 0 0;
+      }
+      .head h1 {
+        font-size: 20px;
+        font-weight: 900;
+        line-height: 1.5;
+        color: var(--navy);
+      }
+      .head p {
+        margin-top: 2px;
+        font-size: 12px;
+        font-weight: 800;
+        color: var(--ink-soft);
+      }
+
+      .chip {
+        align-self: flex-start;
+        max-width: 100%;
+        padding: 4px 13px;
+        border-radius: 999px;
+        background: var(--navy);
+        color: #fff;
+        font-size: 12px;
+        font-weight: 900;
+        line-height: 1.6;
+      }
+      .chip[hidden] {
+        display: none;
+      }
+
+      /* 場面は 大きな 絵で 見せる（絵文字を 巨大に）。 */
+      .scene {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: min(38vh, 250px);
+        padding: 12px;
+        border: 2px solid var(--line);
+        border-radius: var(--r-lg);
+        background: linear-gradient(180deg, #eaf6fd 0%, #ffffff 100%);
+        box-shadow: 0 4px 0 rgba(31, 58, 86, 0.05);
+      }
+      /* 一日の 画面の 絵は、えらぶ ところを 下に 出す ため 少し 低くする。 */
+      #day-scene {
+        min-height: 122px;
+        padding: 8px;
+      }
+      .scene-icon {
+        font-size: clamp(4rem, 22vw, 6rem);
+        line-height: 1.15;
+        text-align: center;
+        filter: drop-shadow(0 6px 10px rgba(31, 58, 86, 0.18));
+        animation: enter 0.45s ease-out;
+      }
+      #day-scene .scene-icon {
+        font-size: clamp(3rem, 15vw, 4rem);
+      }
+      .scene-icon[hidden] {
+        display: none;
+      }
+      .scene.pop .scene-icon {
+        animation: pop 0.6s cubic-bezier(0.2, 1.4, 0.4, 1);
+      }
+      .scene.shake {
+        animation: shake 0.55s ease-in-out;
+      }
+
+      .stars {
+        font-size: clamp(2.6rem, 14vw, 4.2rem);
+        letter-spacing: 6px;
+        line-height: 1.2;
+        text-align: center;
+      }
+      .stars span {
+        display: inline-block;
+        color: var(--sun-deep);
+        animation: starpop 0.55s cubic-bezier(0.2, 1.5, 0.4, 1) backwards;
+      }
+      .stars span.off {
+        color: #d3e0ea;
+        animation: none;
+      }
+
+      .fuda-name {
+        text-align: center;
+        font-size: 17px;
+        font-weight: 900;
+        color: var(--navy);
+      }
+      .fuda-name[hidden] {
+        display: none;
+      }
+
+      .line {
+        padding: 14px 16px;
+        border: 2px solid var(--line);
+        border-radius: var(--r-lg);
+        background: #fff;
+        box-shadow: 0 4px 0 rgba(31, 58, 86, 0.05);
+        font-size: 17px;
+        font-weight: 800;
+        line-height: 1.95;
+      }
+      .line.big {
+        font-size: 20px;
+        text-align: center;
+        border-color: var(--sun);
+        background: var(--cream);
+      }
+
+      /* ---------- ボタン ---------- */
+
+      .btn {
+        appearance: none;
+        display: block;
+        width: 100%;
+        min-height: 58px;
+        padding: 12px 18px;
+        border: none;
+        border-radius: 18px;
+        background: var(--face, var(--sky));
+        box-shadow: 0 5px 0 var(--edge, var(--sky-deep));
+        color: #fff;
+        font: inherit;
+        font-size: 18px;
+        font-weight: 900;
+        cursor: pointer;
+        transition:
+          transform 0.08s ease,
+          box-shadow 0.08s ease;
+      }
+      .btn:active {
+        transform: translateY(3px);
+        box-shadow: 0 2px 0 var(--edge, var(--sky-deep));
+      }
+      .btn:disabled {
+        --face: #cfdce6;
+        --edge: #b7c8d6;
+        cursor: default;
+      }
+      .btn:focus-visible {
+        outline: 3px solid var(--navy);
+        outline-offset: 3px;
+      }
+      .btn-next {
+        margin-top: auto;
+      }
+      .btn-ghost {
+        --face: #fff;
+        --edge: #cdddea;
+        color: var(--navy);
+        border: 2px solid var(--line);
+      }
+
+      .actions {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      /* えらぶ ところは 大きな カード（アイコン＋みじかい 文）。 */
+      .act {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        width: 100%;
+        min-height: 62px;
+        padding: 10px 13px;
+        border: 2px solid var(--line);
+        border-radius: var(--r-lg);
+        background: #fff;
+        box-shadow: 0 5px 0 rgba(31, 58, 86, 0.08);
+        color: var(--ink);
+        font: inherit;
+        text-align: left;
+        cursor: pointer;
+        transition:
+          transform 0.08s ease,
+          box-shadow 0.08s ease;
+      }
+      .act:active {
+        transform: translateY(3px);
+        box-shadow: 0 2px 0 rgba(31, 58, 86, 0.08);
+      }
+      .act:focus-visible {
+        outline: 3px solid var(--navy);
+        outline-offset: 3px;
+      }
+      .act-ic {
+        flex: none;
+        width: 42px;
+        font-size: 30px;
+        line-height: 1.1;
+        text-align: center;
+      }
+      .act-body {
+        flex: 1;
+        min-width: 0;
+      }
+      .act-txt {
+        font-size: 15px;
+        font-weight: 900;
+        line-height: 1.55;
+      }
+      .act-cost {
+        flex: none;
+        padding: 3px 8px;
+        border-radius: 999px;
+        background: var(--sky-soft);
+        color: var(--navy);
+        font-size: 11px;
+        font-weight: 900;
+        white-space: nowrap;
+      }
+      .act-badge {
+        display: inline-block;
+        margin-top: 3px;
+        padding: 2px 8px;
+        border-radius: 999px;
+        background: var(--coral);
+        color: #fff;
+        font-size: 11px;
+        font-weight: 900;
+      }
+      .act.tempt {
+        background: #fffaf0;
+        border-color: #f4e3c2;
+      }
+      .act.report {
+        min-height: 68px;
+        margin-top: 4px;
+        border-color: var(--coral-deep);
+        background: linear-gradient(180deg, #ffa189 0%, var(--coral) 100%);
+        box-shadow: 0 5px 0 var(--coral-deep);
+        color: #fff;
+      }
+      .act.report .act-txt {
+        font-size: 17px;
+      }
+      .act.report .act-ic {
+        font-size: 34px;
+      }
+      .act:disabled {
+        cursor: default;
+        background: #eef3f7;
+        border-color: #dbe6ee;
+        box-shadow: 0 5px 0 #dbe6ee;
+        color: var(--ink-faint);
+      }
+      .act:disabled .act-ic {
+        filter: grayscale(1);
+        opacity: 0.5;
+      }
+
+      .choices {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .choices[hidden] {
+        display: none;
+      }
+      .choice-no {
+        flex: none;
+        width: 42px;
+        font-size: 26px;
+        font-weight: 900;
+        color: var(--sky);
+        text-align: center;
+      }
+
+      /* ---------- わかったことの 絵札 ---------- */
+
+      .deck {
+        flex: none;
+        padding: 8px 10px 10px;
+        border: 2px solid var(--line);
+        border-radius: var(--r-lg);
+        background: rgba(255, 255, 255, 0.9);
+      }
+      .deck-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        font-size: 12px;
+        font-weight: 900;
+        color: var(--ink-soft);
+      }
+      .deck-count {
+        font-size: 12px;
+        font-weight: 900;
+        color: var(--navy);
+      }
+      .deck-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 6px;
+      }
+      .fuda {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 1px;
+        min-width: 66px;
+        max-width: 114px;
+        padding: 6px 7px;
+        border: 2px solid var(--sun-deep);
+        border-radius: 14px;
+        background: linear-gradient(180deg, #fffdf5 0%, #fff1cd 100%);
+        box-shadow: 0 3px 0 rgba(240, 168, 25, 0.4);
+      }
+      .fuda .ic {
+        font-size: 25px;
+        line-height: 1.2;
+      }
+      .fuda .nm {
+        font-size: 12px;
+        font-weight: 900;
+        line-height: 1.35;
+        color: var(--navy);
+        text-align: center;
+      }
+      .fuda .nm rt {
+        font-size: 0.6em;
+      }
+      .fuda.empty {
+        min-width: 46px;
+        border: 2px dashed #c8d8e4;
+        background: #f5fafd;
+        box-shadow: none;
+      }
+      .fuda.empty .ic {
+        color: #b6c7d5;
+      }
+      .fuda.pop {
+        animation: pop 0.6s cubic-bezier(0.2, 1.4, 0.4, 1);
+      }
+      .deck-empty {
+        margin-top: 6px;
+        font-size: 12px;
+        font-weight: 800;
+        line-height: 1.7;
+        color: var(--ink-soft);
+      }
+      .deck-empty[hidden] {
+        display: none;
+      }
+
+      /* ---------- 報告（チャット） ---------- */
+
+      .chat {
+        display: flex;
+        /* のびるのは 中身ぶんだけ。長く なったら 中で 巻く（つぎへ は いつも 下） */
+        flex: 0 1 auto;
+        flex-direction: column;
+        gap: 9px;
+        min-height: 0;
+        max-height: 62vh;
+        overflow-y: auto;
+        padding: 12px;
+        border: 2px solid var(--line);
+        border-radius: var(--r-lg);
+        background: #fff;
+      }
+      .bub {
+        display: flex;
+        align-items: flex-end;
+        gap: 7px;
+        animation: rise 0.3s ease-out;
+      }
+      .bub.me {
+        flex-direction: row-reverse;
+      }
+      .bub .av {
+        flex: none;
+        font-size: 25px;
+        line-height: 1.2;
+      }
+      .bub .bwrap {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        max-width: 80%;
+      }
+      .bub.me .bwrap {
+        align-items: flex-end;
+      }
+      .bub .bnm {
+        font-size: 10px;
+        font-weight: 900;
+        color: var(--ink-faint);
+      }
+      .bub .tx {
+        padding: 9px 13px;
+        border-radius: 16px;
+        font-size: 15px;
+        font-weight: 800;
+        line-height: 1.8;
+      }
+      .bub.pm .tx {
+        border: 2px solid #f0dfbe;
+        border-bottom-left-radius: 4px;
+        background: var(--cream);
+      }
+      .bub.me .tx {
+        border: 2px solid var(--sky-deep);
+        border-bottom-right-radius: 4px;
+        background: var(--sky);
+        color: #fff;
+      }
+      .bub.ask .tx {
+        border-color: var(--coral-deep);
+        background: #fff1ec;
+      }
+      .bub .tx .lead {
+        margin-right: 5px;
+        font-size: 17px;
+      }
+
+      /* ---------- けっか ---------- */
+
+      .res-title {
+        font-size: 21px;
+        font-weight: 900;
+        line-height: 1.5;
+        text-align: center;
+        color: var(--navy);
+      }
+      .nextbox {
+        display: flex;
+        gap: 9px;
+        padding: 12px 14px;
+        border: 2px solid var(--leaf);
+        border-radius: var(--r-lg);
+        background: #f2fbf4;
+        font-size: 16px;
+        font-weight: 900;
+        line-height: 1.8;
+      }
+      .nextbox .ic {
+        flex: none;
+        font-size: 24px;
+      }
+      .rubric {
+        list-style: none;
+        padding: 10px 12px;
+        border: 2px dotted var(--line);
+        border-radius: var(--r-md);
+        background: rgba(255, 255, 255, 0.7);
+      }
+      .rubric li {
+        font-size: 12px;
+        font-weight: 800;
+        line-height: 1.8;
+        color: var(--ink-soft);
+      }
+      .rubric li + li {
+        margin-top: 2px;
+      }
+      .res-btns {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-top: 4px;
+      }
+      .closed [data-close-hide] {
+        display: none;
+      }
+
+      /* ---------- 動き ---------- */
+
+      @keyframes enter {
+        from {
+          opacity: 0;
+          transform: translateY(10px) scale(0.94);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      @keyframes pop {
+        0% {
+          transform: scale(0.55);
+          opacity: 0;
+        }
+        60% {
+          transform: scale(1.18);
+          opacity: 1;
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+      @keyframes rise {
+        from {
+          opacity: 0;
+          transform: translateY(9px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      @keyframes starpop {
+        0% {
+          transform: scale(0.2) rotate(-25deg);
+          opacity: 0;
+        }
+        70% {
+          transform: scale(1.25) rotate(6deg);
+          opacity: 1;
+        }
+        100% {
+          transform: scale(1) rotate(0);
+        }
+      }
+      @keyframes tick {
+        0% {
+          transform: scale(1);
+        }
+        45% {
+          transform: scale(1.35);
+          color: var(--coral-deep);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+      @keyframes breathe {
+        0%,
+        100% {
+          opacity: 0.85;
+        }
+        50% {
+          opacity: 1;
+        }
+      }
+      @keyframes float-up {
+        0% {
+          opacity: 0;
+          transform: translate(-50%, 0);
+        }
+        25% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0;
+          transform: translate(-50%, -26px);
+        }
+      }
+      @keyframes shake {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        15% {
+          transform: translateX(-9px);
+        }
+        30% {
+          transform: translateX(8px);
+        }
+        45% {
+          transform: translateX(-6px);
+        }
+        60% {
+          transform: translateX(5px);
+        }
+        80% {
+          transform: translateX(-3px);
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+
+      /* ---------- PC（390px の 次） ---------- */
+
+      @media (min-width: 640px) {
+        .app {
+          max-width: 620px;
+          padding: 18px 20px 28px;
+        }
+        .line {
+          font-size: 19px;
+        }
+        .act-txt {
+          font-size: 17px;
+        }
+        .act.report .act-txt {
+          font-size: 19px;
+        }
+        .scene {
+          min-height: 260px;
+        }
+        .scene-icon {
+          font-size: 7rem;
+        }
+        #day-scene .scene-icon {
+          font-size: 4.4rem;
+        }
+        .head h1 {
+          font-size: 24px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="app" id="app">
+      <!-- メーター（時間・しんらい・リスク） -->
+      <div class="hud" id="hud" hidden>
+        <div class="meter">
+          <div class="meter-label" id="m-time"></div>
+          <div class="clock" id="clock"></div>
+          <span class="tickmark" id="tick-start"></span>
+          <div class="segs" id="segs"></div>
+          <span class="tickmark" id="tick-end"></span>
+        </div>
+        <div class="meter">
+          <div class="meter-label" id="m-trust"></div>
+          <div class="hearts" id="hearts">
+            <div class="hearts-row hearts-back" aria-hidden="true">❤️❤️❤️❤️❤️</div>
+            <div class="hearts-fill" id="hearts-fill">
+              <div class="hearts-row" aria-hidden="true">❤️❤️❤️❤️❤️</div>
+            </div>
+          </div>
+          <span class="num" id="trust-num"></span>
+        </div>
+        <div class="meter" id="risk-meter">
+          <div class="meter-label" id="m-risk"></div>
+          <div class="risk-bar">
+            <div class="risk-fill" id="risk-fill"></div>
+            <div class="risk-hide" id="risk-hide"></div>
+          </div>
+          <span class="num" id="risk-num"></span>
+        </div>
+      </div>
+
+      <!-- 1画面1文の 場面 -->
+      <section class="screen" id="scr-story">
+        <div class="head" id="story-head" hidden>
+          <h1 id="q-title"></h1>
+          <p id="q-sub"></p>
+        </div>
+        <div class="chip" id="story-chip" hidden></div>
+        <div class="scene" id="story-scene">
+          <div class="scene-icon" id="story-icon"></div>
+          <div class="stars" id="story-stars" hidden></div>
+        </div>
+        <p class="fuda-name" id="story-name" hidden></p>
+        <p class="line" id="story-text"></p>
+        <div class="choices" id="story-choices" hidden></div>
+        <button class="btn btn-next" id="story-next" type="button"></button>
+      </section>
+
+      <!-- 一日の 画面（えらぶ ところ） -->
+      <section class="screen" id="scr-day">
+        <div class="scene" id="day-scene">
+          <div class="scene-icon" id="day-icon">🧑‍💻</div>
+        </div>
+        <div class="deck">
+          <div class="deck-head">
+            <span id="deck-label"></span>
+            <span class="deck-count" id="deck-count"></span>
+          </div>
+          <div class="deck-row" id="deck-row"></div>
+          <p class="deck-empty" id="deck-empty"></p>
+        </div>
+        <div class="actions" id="actions"></div>
+      </section>
+
+      <!-- 報告（チャット） -->
+      <section class="screen" id="scr-chat">
+        <div class="chip" id="chat-chip"></div>
+        <div class="chat" id="chat-log"></div>
+        <button class="btn btn-next" id="chat-next" type="button"></button>
+      </section>
+
+      <!-- けっか -->
+      <section class="screen" id="scr-result">
+        <div class="stars" id="res-stars"></div>
+        <h2 class="res-title" id="res-title"></h2>
+        <div class="deck" data-close-hide>
+          <div class="deck-head">
+            <span id="res-deck-label"></span>
+            <span class="deck-count" id="res-deck-count"></span>
+          </div>
+          <div class="deck-row" id="res-deck-row"></div>
+          <p class="deck-empty" id="res-deck-empty"></p>
+        </div>
+        <div class="nextbox" data-close-hide>
+          <span class="ic" aria-hidden="true">⏭</span>
+          <span id="res-next"></span>
+        </div>
+        <ul class="rubric" id="res-rubric" data-close-hide></ul>
+        <div class="res-btns">
+          <button class="btn" id="res-replay" type="button"></button>
+          <button class="btn btn-ghost" id="res-finish" type="button" data-close-hide></button>
+        </div>
+      </section>
+    </div>
+
+    <script src="houkoku_quest.data.js"></script>
+    <script>
+      /* =====================================================================
+       * 報告クエスト『バグの 一日』 — エンジン
+       *
+       * 文言は window.QUEST_DATA だけから 読む（このファイルに 日本語を 書かない）。
+       * 状態・スコア・★の 決めごとは data ファイル 冒頭の「エンジンの 決めごと」に 従う。
+       * ===================================================================== */
+      (function () {
+        "use strict";
+
+        var D = window.QUEST_DATA;
+        if (!D) {
+          // データが 無いときは 何も 出さない（外に つなぎに いかない）。
+          if (window.console) console.error("QUEST_DATA is missing");
+          return;
+        }
+
+        /* ------------------------------------------------------------------
+         * ことば（ルビ）
+         * ------------------------------------------------------------------ */
+
+        /** 素の 文字を HTML として 安全に する。 */
+        function esc(text) {
+          var box = document.createElement("div");
+          box.textContent = String(text == null ? "" : text);
+          return box.innerHTML;
+        }
+
+        /**
+         * データの {表記|よみ} を <ruby> に する。
+         * **必ず esc() を 通してから** タグを 組む（素の 連結は しない）。
+         */
+        function rubyHtml(text) {
+          var source = String(text == null ? "" : text);
+          var re = /\{([^{}|]+)\|([^{}|]+)\}/g;
+          var out = "";
+          var last = 0;
+          var m;
+          while ((m = re.exec(source)) !== null) {
+            out += esc(source.slice(last, m.index));
+            out += "<ruby>" + esc(m[1]) + "<rt>" + esc(m[2]) + "</rt></ruby>";
+            last = m.index + m[0].length;
+          }
+          return out + esc(source.slice(last));
+        }
+
+        /** ルビ記法を 外した ただの 文字（title 属性・判定用）。 */
+        function plain(text) {
+          return String(text == null ? "" : text).replace(/\{([^{}|]+)\|([^{}|]+)\}/g, "$1");
+        }
+
+        function el(id) {
+          return document.getElementById(id);
+        }
+
+        /** 名まえの もと（呼びかけの「さん」を のぞく）。だれの セリフかを 見わける ため。 */
+        function nameKey(who) {
+          return plain(who && who.name).replace(/さん$/, "");
+        }
+
+        /** 「」の ある 行は 話し手の 顔を 出す。だれの ものでも なければ 場面の 絵。 */
+        function speakerIcon(line, fallback) {
+          var text = plain(line);
+          if (text.indexOf("「") < 0) return fallback;
+          var buddy = nameKey(D.buddy);
+          if (buddy && text.indexOf(buddy) >= 0) return D.buddy.icon;
+          var pm = nameKey(D.pm);
+          if (pm && text.indexOf(pm) >= 0) return D.pm.icon;
+          return fallback;
+        }
+
+        function setRuby(node, text) {
+          node.innerHTML = rubyHtml(text);
+        }
+
+        /* ------------------------------------------------------------------
+         * 絵（場面の 絵文字）
+         *
+         * データに icon が あるものは それを 使い、無い 場面だけ ここで 選ぶ。
+         * 数が 合わない ときは 既定の 絵に 落ちる（データを 足しても 壊れない）。
+         * ------------------------------------------------------------------ */
+
+        var INTRO_ICONS = ["🌅", "🚨", "⏳", "🔍", "⚠️"];
+        var ICON = {
+          intro: "📘",
+          hint: "🙋",
+          tempt: "🧪",
+          temptNote: "🤫",
+          me: "🙋",
+          reveal: "🛡️",
+          reportChat: "💬",
+          think: "🤔",
+          event: "📌",
+          demoGood: "🖥️👥",
+          demoBad: "🚨",
+          lunch: "🍽️",
+          demoWarn: "💬",
+          newFact: "🔎",
+          star3: "🎉",
+          star2: "👏",
+          star1: "🌇",
+        };
+        var EVENT_ICONS = {
+          lunch: ICON.lunch,
+          demo_warn: ICON.demoWarn,
+          new_fact: ICON.newFact,
+        };
+
+        /* ------------------------------------------------------------------
+         * 状態
+         * ------------------------------------------------------------------ */
+
+        var CRITICAL = D.cards
+          .filter(function (c) {
+            return c.critical;
+          })
+          .map(function (c) {
+            return c.id;
+          });
+
+        var state = {};
+        var doneSent = false;
+        var chatTimer = null;
+
+        function resetState() {
+          state = {
+            hour: D.startHour,
+            trust: D.trustStart,
+            risk: D.riskStart,
+            cards: [], // 持ち札（取った 順）
+            reportedCards: [], // 報告で 伝えた 札
+            askedCards: [], // PMに 聞かれた 札
+            reported: false,
+            riskFrozen: false,
+            riskShown: false,
+            fullReportHour: null, // critical 3枚が そろった 報告の 時刻
+            correctionShown: false,
+            corrected: false,
+            demoOk: false,
+            lastCard: null, // 直前に 取った 札（光らせる ため）
+          };
+        }
+
+        function cardById(id) {
+          for (var i = 0; i < D.cards.length; i++) if (D.cards[i].id === id) return D.cards[i];
+          return null;
+        }
+
+        function has(id) {
+          return state.cards.indexOf(id) >= 0;
+        }
+
+        /** まだ 報告して いない 持ち札。 */
+        function pendingCards() {
+          return state.cards.filter(function (id) {
+            return state.reportedCards.indexOf(id) < 0;
+          });
+        }
+
+        function addTrust(delta) {
+          if (!delta) return;
+          state.trust = Math.max(0, Math.min(100, state.trust + delta));
+          renderHud();
+          showDelta(delta);
+        }
+
+        function showDelta(delta) {
+          var host = el("hearts");
+          if (!host) return;
+          var tag = document.createElement("span");
+          tag.className = "delta " + (delta > 0 ? "plus" : "minus");
+          tag.textContent = (delta > 0 ? "+" : "−") + Math.abs(delta);
+          host.appendChild(tag);
+          setTimeout(function () {
+            if (tag.parentNode) tag.parentNode.removeChild(tag);
+          }, 950);
+        }
+
+        function openRisk() {
+          state.riskShown = true;
+          renderHud();
+          var meter = el("risk-meter");
+          meter.classList.add("risk-open");
+          setTimeout(function () {
+            meter.classList.remove("risk-open");
+          }, 1400);
+        }
+
+        /* ------------------------------------------------------------------
+         * メーター
+         * ------------------------------------------------------------------ */
+
+        var HOURS = Math.max(1, D.endHour - D.startHour);
+
+        function buildHud() {
+          setRuby(el("m-time"), D.meters.time);
+          setRuby(el("m-trust"), D.meters.trust);
+          setRuby(el("m-risk"), D.meters.risk);
+          // 目もりの 端は 数字だけ（ふりがなの 要る 字を 小さく しない）
+          el("tick-start").textContent = String(D.startHour);
+          el("tick-end").textContent = String(D.endHour);
+          setRuby(el("risk-hide"), D.meters.riskHidden);
+
+          var segs = el("segs");
+          segs.innerHTML = "";
+          for (var i = 0; i < HOURS; i++) {
+            var seg = document.createElement("div");
+            seg.className = "seg";
+            segs.appendChild(seg);
+          }
+        }
+
+        /** リスクは 倍々に 増える ので、太さは log で 見せる（棒が 端まで 行く）。 */
+        function riskPercent() {
+          var base = Math.log(Math.max(1, D.riskStart)) / Math.LN2;
+          var top = base + HOURS;
+          var now = Math.log(Math.max(1, state.risk)) / Math.LN2;
+          var pct = ((now - base) / Math.max(1, top - base)) * 100;
+          return Math.max(7, Math.min(100, pct));
+        }
+
+        function renderHud() {
+          el("clock").innerHTML = rubyHtml(String(state.hour) + D.labels.hour);
+          var segs = el("segs").children;
+          for (var i = 0; i < segs.length; i++) {
+            segs[i].className = "seg" + (i < state.hour - D.startHour ? " on" : "");
+          }
+          el("hearts-fill").style.width = state.trust + "%";
+          el("trust-num").textContent = String(state.trust);
+
+          var hide = el("risk-hide");
+          if (state.riskShown) {
+            hide.hidden = true;
+            el("risk-fill").style.width = riskPercent() + "%";
+            el("risk-num").textContent = String(state.risk);
+          } else {
+            hide.hidden = false;
+            el("risk-fill").style.width = "0%";
+            el("risk-num").textContent = "";
+          }
+        }
+
+        function pulseClock() {
+          var clock = el("clock");
+          clock.classList.remove("tick");
+          // 続けて 押した ときも もう一度 動くように 読み直す
+          void clock.offsetWidth;
+          clock.classList.add("tick");
+        }
+
+        function setHud(on) {
+          el("hud").hidden = !on;
+        }
+
+        /* ------------------------------------------------------------------
+         * 画面の 出し分け
+         * ------------------------------------------------------------------ */
+
+        var SCREENS = ["scr-story", "scr-day", "scr-chat", "scr-result"];
+
+        function showScreen(id) {
+          SCREENS.forEach(function (name) {
+            el(name).classList.toggle("on", name === id);
+          });
+          window.scrollTo(0, 0);
+        }
+
+        /* ------------------------------------------------------------------
+         * 絵札（わかったこと）
+         * ------------------------------------------------------------------ */
+
+        function renderDeck(rowId, countId, emptyId, labelId, withEmpty) {
+          var row = el(rowId);
+          row.innerHTML = "";
+          D.cards.forEach(function (card) {
+            var got = has(card.id);
+            if (!got && !withEmpty) return;
+            var box = document.createElement("div");
+            box.className =
+              "fuda" + (got ? "" : " empty") + (got && state.lastCard === card.id ? " pop" : "");
+            var ic = document.createElement("div");
+            ic.className = "ic";
+            ic.setAttribute("aria-hidden", "true");
+            ic.textContent = got ? card.icon : "？";
+            box.appendChild(ic);
+            if (got) {
+              var nm = document.createElement("div");
+              nm.className = "nm";
+              setRuby(nm, card.name);
+              box.appendChild(nm);
+            }
+            row.appendChild(box);
+          });
+          setRuby(el(labelId), D.meters.cards);
+          el(countId).textContent = state.cards.length + "/" + D.cards.length;
+          var empty = el(emptyId);
+          if (state.cards.length === 0) {
+            empty.hidden = false;
+            setRuby(empty, D.labels.cardsEmpty);
+          } else {
+            empty.hidden = true;
+          }
+          state.lastCard = null;
+        }
+
+        /* ------------------------------------------------------------------
+         * 進行（歩を ならべて 1つずつ 出す）
+         *
+         * 歩の かたち:
+         *   {t:"line"}   … 1画面1文
+         *   {t:"fuda"}   … 札を 取った 画面
+         *   {t:"choice"} … えらぶ 画面
+         *   {t:"chat"}   … 報告（ふきだしが 積み上がる）
+         *   {t:"stars"}  … ★の 発表
+         *   {t:"result"} … けっか
+         *   {t:"act"}    … 画面の 無い 処理（時計を すすめる など）
+         * ------------------------------------------------------------------ */
+
+        var queue = [];
+
+        function run(steps) {
+          queue = steps.slice();
+          next();
+        }
+
+        function next() {
+          var step = queue.shift();
+          if (!step) {
+            showDay();
+            return;
+          }
+          render(step);
+        }
+
+        function render(step) {
+          if (step.t === "act") {
+            if (step.fn) step.fn();
+            next();
+            return;
+          }
+          if (step.t === "chat") {
+            renderChat(step);
+            return;
+          }
+          if (step.t === "result") {
+            renderResult(step);
+            return;
+          }
+          renderStory(step);
+        }
+
+        function renderStory(step) {
+          setHud(step.hud !== false);
+
+          var head = el("story-head");
+          head.hidden = !step.head;
+          if (step.head) {
+            setRuby(el("q-title"), D.title);
+            setRuby(el("q-sub"), D.subtitle);
+          }
+
+          var chip = el("story-chip");
+          if (step.chip) {
+            chip.hidden = false;
+            setRuby(chip, step.chip);
+          } else {
+            chip.hidden = true;
+          }
+
+          var scene = el("story-scene");
+          scene.className =
+            "scene" + (step.t === "fuda" ? " pop" : "") + (step.shake ? " shake" : "");
+
+          var icon = el("story-icon");
+          var stars = el("story-stars");
+          if (step.t === "stars") {
+            icon.hidden = true;
+            stars.hidden = false;
+            stars.innerHTML = "";
+            for (var i = 0; i < 3; i++) {
+              var s = document.createElement("span");
+              s.textContent = "★";
+              if (i >= step.stars) s.className = "off";
+              else s.style.animationDelay = i * 0.22 + "s";
+              stars.appendChild(s);
+            }
+          } else {
+            stars.hidden = true;
+            icon.hidden = false;
+            icon.setAttribute("aria-hidden", "true");
+            icon.textContent = step.icon || ICON.intro;
+          }
+
+          var name = el("story-name");
+          if (step.name) {
+            name.hidden = false;
+            setRuby(name, step.name);
+          } else {
+            name.hidden = true;
+          }
+
+          var text = el("story-text");
+          text.className = "line" + (step.t === "stars" ? " big" : "");
+          setRuby(text, step.text);
+
+          var choices = el("story-choices");
+          var nextBtn = el("story-next");
+          choices.innerHTML = "";
+          if (step.t === "choice") {
+            choices.hidden = false;
+            nextBtn.hidden = true;
+            step.choices.forEach(function (choice, index) {
+              choices.appendChild(
+                actionCard({
+                  no: index === 0 ? "①" : index === 1 ? "②" : String(index + 1),
+                  text: choice.label,
+                  onClick: function () {
+                    pick(step, choice);
+                  },
+                }),
+              );
+            });
+          } else {
+            choices.hidden = true;
+            nextBtn.hidden = false;
+            setRuby(nextBtn, D.labels.advance);
+          }
+
+          if (step.fn) step.fn();
+          showScreen("scr-story");
+        }
+
+        el("story-next").addEventListener("click", function () {
+          next();
+        });
+
+        function pick(step, choice) {
+          state.corrected = !!choice.correct;
+          if (choice.trust) addTrust(choice.trust);
+          var lines = (choice.result || []).map(function (line) {
+            return {
+              t: "line",
+              chip: step.chip,
+              icon: speakerIcon(line, ICON.reportChat),
+              text: line,
+            };
+          });
+          queue = lines.concat(queue);
+          next();
+        }
+
+        /* ------------------------------------------------------------------
+         * 一日の 画面
+         * ------------------------------------------------------------------ */
+
+        function actionCard(opts) {
+          var btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "act" + (opts.cls ? " " + opts.cls : "");
+          if (opts.disabled) btn.disabled = true;
+
+          var ic = document.createElement("div");
+          ic.className = opts.no ? "choice-no" : "act-ic";
+          ic.setAttribute("aria-hidden", "true");
+          ic.textContent = opts.no || opts.icon || "";
+          btn.appendChild(ic);
+
+          var body = document.createElement("div");
+          body.className = "act-body";
+          var txt = document.createElement("div");
+          txt.className = "act-txt";
+          setRuby(txt, opts.text);
+          body.appendChild(txt);
+          if (opts.badge) {
+            var badge = document.createElement("span");
+            badge.className = "act-badge";
+            setRuby(badge, opts.badge);
+            body.appendChild(badge);
+          }
+          btn.appendChild(body);
+
+          if (opts.cost) {
+            var cost = document.createElement("span");
+            cost.className = "act-cost";
+            cost.innerHTML = "⏰ +1" + rubyHtml(D.labels.hour);
+            btn.appendChild(cost);
+          }
+          if (opts.onClick) btn.addEventListener("click", opts.onClick);
+          return btn;
+        }
+
+        function showDay() {
+          setHud(true);
+          renderHud();
+          renderDeck("deck-row", "deck-count", "deck-empty", "deck-label", true);
+
+          var box = el("actions");
+          box.innerHTML = "";
+
+          D.cards.forEach(function (card) {
+            if (has(card.id)) return;
+            if (card.needs && !has(card.needs)) return; // 前の 札が 要る しらべものは まだ 出さない
+            box.appendChild(
+              actionCard({
+                icon: card.icon,
+                text: card.action,
+                cost: true,
+                badge: state.askedCards.indexOf(card.id) >= 0 ? D.labels.reinvestigate : null,
+                onClick: function () {
+                  investigate(card);
+                },
+              }),
+            );
+          });
+
+          box.appendChild(
+            actionCard({
+              icon: ICON.tempt,
+              text: D.tempt.label,
+              cost: true,
+              cls: "tempt",
+              onClick: keepTesting,
+            }),
+          );
+
+          var canReport = !state.reported || pendingCards().length > 0;
+          box.appendChild(
+            actionCard({
+              icon: ICON.me,
+              text: D.report.label,
+              cls: "report",
+              disabled: !canReport,
+              onClick: doReport,
+            }),
+          );
+
+          showScreen("scr-day");
+        }
+
+        /* ------------------------------------------------------------------
+         * しらべる／つづける／時計
+         * ------------------------------------------------------------------ */
+
+        function investigate(card) {
+          run([
+            { t: "line", icon: card.icon, text: card.scene },
+            {
+              t: "fuda",
+              icon: card.icon,
+              name: card.name,
+              text: card.fact,
+              chip: D.labels.cardGet,
+              fn: function () {
+                if (!has(card.id)) state.cards.push(card.id);
+                state.lastCard = card.id;
+              },
+            },
+            { t: "act", fn: tick },
+          ]);
+        }
+
+        function keepTesting() {
+          run([
+            { t: "line", icon: ICON.tempt, text: D.tempt.scene },
+            { t: "line", icon: ICON.temptNote, text: D.tempt.note },
+            { t: "act", fn: tick },
+          ]);
+        }
+
+        /** 1時間 すすめる。報告が まだなら リスクは 倍に なる。 */
+        function tick() {
+          state.hour += 1;
+          if (!state.riskFrozen) state.risk *= 2;
+          renderHud();
+          pulseClock();
+
+          var event = null;
+          for (var i = 0; i < D.events.length; i++) {
+            if (D.events[i].at === state.hour) event = D.events[i];
+          }
+          var steps = event ? eventSteps(event) : [];
+          queue = steps.concat(queue);
+          if (state.hour >= D.endHour) queue = queue.concat(endingSteps());
+        }
+
+        /* ------------------------------------------------------------------
+         * 出来事（12時・13時・14時・15時）
+         * ------------------------------------------------------------------ */
+
+        function eventSteps(event) {
+          if (event.onlyIfReported && !state.reported) return [];
+
+          var lines;
+          var delta = 0;
+          var reveal = false;
+          var icon = EVENT_ICONS[event.id] || ICON.event;
+          var bad = false;
+
+          if (event.good || event.bad) {
+            // デモは 報告済みなら good、未報告なら bad
+            var branch = state.reported ? event.good : event.bad;
+            state.demoOk = !!state.reported;
+            bad = !state.reported;
+            lines = branch.lines.slice();
+            delta = branch.trust || 0;
+            reveal = !!branch.revealRisk;
+            icon = state.reported ? ICON.demoGood : ICON.demoBad;
+          } else {
+            lines = (state.reported && event.linesDone ? event.linesDone : event.lines).slice();
+          }
+
+          var hasChoice = !!(event.choices && event.choices.length);
+          if (hasChoice) state.correctionShown = true;
+
+          return lines.map(function (line, index) {
+            var last = index === lines.length - 1;
+            if (last && hasChoice) {
+              return {
+                t: "choice",
+                chip: event.title,
+                icon: ICON.think,
+                text: line,
+                choices: event.choices,
+              };
+            }
+            return {
+              t: "line",
+              chip: event.title,
+              icon: speakerIcon(line, icon),
+              text: line,
+              shake: bad && index === 0,
+              fn: last
+                ? function () {
+                    if (delta) addTrust(delta);
+                    if (reveal) openRisk();
+                  }
+                : null,
+            };
+          });
+        }
+
+        /* ------------------------------------------------------------------
+         * 報告（ふきだしが 1つずつ 積み上がる）
+         * ------------------------------------------------------------------ */
+
+        function shuffled(list) {
+          var copy = list.slice();
+          for (var i = copy.length - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * (i + 1));
+            var swap = copy[i];
+            copy[i] = copy[j];
+            copy[j] = swap;
+          }
+          return copy;
+        }
+
+        function doReport() {
+          var first = !state.reported;
+          var fresh = pendingCards();
+          var willHave = state.reportedCards.concat(fresh);
+          var bubbles = [];
+
+          bubbles.push({ side: "me", text: first ? D.report.opening : D.report.updateOpening });
+          bubbles.push({ side: "pm", text: first ? D.report.pmYes : D.report.pmUpdate });
+
+          if (fresh.length === 0) {
+            // 札が 無くても 報告は できる（それも 判断の ひとつ）
+            bubbles.push({ side: "me", text: D.report.emptySays });
+          } else {
+            var praise = shuffled(D.report.pmGood);
+            fresh.forEach(function (id, index) {
+              var card = cardById(id);
+              bubbles.push({
+                side: "me",
+                icon: card.icon,
+                text: card.says,
+                fn: function () {
+                  state.reportedCards.push(id);
+                  addTrust(5);
+                },
+              });
+              bubbles.push({ side: "pm", text: praise[index % praise.length] });
+            });
+          }
+
+          // 持って いない critical 札は、PMの 追い質問に なる（1枚 につき 1回だけ）
+          var missing = CRITICAL.filter(function (id) {
+            if (!D.report.pmQuestions[id]) return false; // 聞く ことばの 無い 札は 飛ばす
+            return willHave.indexOf(id) < 0 && state.askedCards.indexOf(id) < 0;
+          });
+          missing.forEach(function (id) {
+            bubbles.push({
+              side: "pm",
+              ask: true,
+              text: D.report.pmQuestions[id],
+              fn: function () {
+                state.askedCards.push(id);
+                addTrust(-5);
+              },
+            });
+          });
+          if (missing.length) bubbles.push({ side: "pm", text: D.report.pmMissing });
+
+          var steps = [
+            { t: "chat", bubbles: bubbles },
+            {
+              t: "act",
+              fn: function () {
+                state.reported = true;
+                state.riskFrozen = true; // 話した ので リスクの 複利は ここで 止まる
+                if (state.fullReportHour === null && coversCritical(state.reportedCards)) {
+                  state.fullReportHour = state.hour;
+                }
+              },
+            },
+          ];
+          if (first) {
+            steps.push({
+              t: "line",
+              icon: ICON.reveal,
+              text: D.report.reveal,
+              fn: function () {
+                openRisk();
+              },
+            });
+          }
+          run(steps);
+        }
+
+        function coversCritical(list) {
+          return CRITICAL.every(function (id) {
+            return list.indexOf(id) >= 0;
+          });
+        }
+
+        function bubbleNode(bubble) {
+          var row = document.createElement("div");
+          row.className =
+            "bub " + (bubble.side === "me" ? "me" : "pm") + (bubble.ask ? " ask" : "");
+
+          var av = document.createElement("div");
+          av.className = "av";
+          av.setAttribute("aria-hidden", "true");
+          av.textContent = bubble.side === "me" ? ICON.me : D.pm.icon;
+          row.appendChild(av);
+
+          var wrap = document.createElement("div");
+          wrap.className = "bwrap";
+          if (bubble.side !== "me") {
+            var nm = document.createElement("div");
+            nm.className = "bnm";
+            setRuby(nm, D.pm.name);
+            wrap.appendChild(nm);
+          }
+          var tx = document.createElement("div");
+          tx.className = "tx";
+          if (bubble.icon) {
+            var lead = document.createElement("span");
+            lead.className = "lead";
+            lead.setAttribute("aria-hidden", "true");
+            lead.textContent = bubble.icon;
+            tx.appendChild(lead);
+          }
+          var body = document.createElement("span");
+          setRuby(body, bubble.text);
+          tx.appendChild(body);
+          wrap.appendChild(tx);
+          row.appendChild(wrap);
+          return row;
+        }
+
+        function renderChat(step) {
+          setHud(true);
+          renderHud();
+          var chip = el("chat-chip");
+          chip.innerHTML = "";
+          var mark = document.createElement("span");
+          mark.setAttribute("aria-hidden", "true");
+          mark.textContent = D.pm.icon + " ";
+          chip.appendChild(mark);
+          var who = document.createElement("span");
+          setRuby(who, D.pm.name + " " + D.pm.role);
+          chip.appendChild(who);
+
+          var log = el("chat-log");
+          log.innerHTML = "";
+          var nextBtn = el("chat-next");
+          setRuby(nextBtn, D.labels.advance);
+          nextBtn.disabled = true;
+
+          var index = 0;
+          var total = step.bubbles.length;
+
+          function emit() {
+            var bubble = step.bubbles[index++];
+            log.appendChild(bubbleNode(bubble));
+            log.scrollTop = log.scrollHeight;
+            if (bubble.fn) bubble.fn();
+          }
+          function done() {
+            chatTimer = null;
+            nextBtn.disabled = false;
+          }
+          function tickBubble() {
+            if (index >= total) {
+              done();
+              return;
+            }
+            emit();
+            chatTimer = setTimeout(tickBubble, 380);
+          }
+          // 待ちきれない ときは ふきだしを 押すと 最後まで 出る
+          log.onclick = function () {
+            if (chatTimer) {
+              clearTimeout(chatTimer);
+              chatTimer = null;
+            }
+            while (index < total) emit();
+            log.scrollTop = log.scrollHeight;
+            done();
+          };
+
+          showScreen("scr-chat");
+          tickBubble();
+        }
+
+        el("chat-next").addEventListener("click", function () {
+          if (chatTimer) {
+            clearTimeout(chatTimer);
+            chatTimer = null;
+          }
+          next();
+        });
+
+        /* ------------------------------------------------------------------
+         * おわり（★の 決めごと）
+         * ------------------------------------------------------------------ */
+
+        function computeStars() {
+          var stars = 1; // さいごまで 遊べば ★1
+          if (state.reported && state.trust >= 50) stars = 2;
+          var inTime = state.fullReportHour !== null && state.fullReportHour <= 13;
+          var honest = !state.correctionShown || state.corrected;
+          if (state.reported && inTime && honest) stars = 3;
+          return stars;
+        }
+
+        function endingSteps() {
+          var stars = computeStars();
+          var ending =
+            stars === 3 ? D.endings.star3 : stars === 2 ? D.endings.star2 : D.endings.star1;
+          var icon = stars === 3 ? ICON.star3 : stars === 2 ? ICON.star2 : ICON.star1;
+
+          var steps = [{ t: "act", fn: sendDone }];
+          steps.push({
+            t: "stars",
+            stars: stars,
+            // ★は 大きな しるしで 出す ので、見出しからは 外す
+            text: String(ending.title).replace(/^[★☆\s]+/, ""),
+          });
+          ending.lines.forEach(function (line) {
+            steps.push({
+              t: "line",
+              icon: speakerIcon(line, icon),
+              text: line,
+            });
+          });
+          steps.push({ t: "result", stars: stars, ending: ending });
+          return steps;
+        }
+
+        /** この ページを 埋めて いる アプリへ「おわった」を 1回だけ 伝える。 */
+        function sendDone() {
+          if (doneSent) return;
+          doneSent = true;
+          try {
+            if (window.parent && window.parent !== window) {
+              window.parent.postMessage(
+                { type: "nexmax:link-done", id: D.id },
+                window.location.origin,
+              );
+            }
+          } catch (error) {
+            /* 埋め込みでなければ 何も しない */
+          }
+        }
+
+        function renderResult(step) {
+          setHud(true);
+          renderHud();
+          el("scr-result").classList.remove("closed");
+
+          var stars = el("res-stars");
+          stars.innerHTML = "";
+          for (var i = 0; i < 3; i++) {
+            var s = document.createElement("span");
+            s.textContent = "★";
+            if (i >= step.stars) s.className = "off";
+            else s.style.animationDelay = i * 0.18 + "s";
+            stars.appendChild(s);
+          }
+          setRuby(el("res-title"), String(step.ending.title).replace(/^[★☆\s]+/, ""));
+
+          renderDeck("res-deck-row", "res-deck-count", "res-deck-empty", "res-deck-label", true);
+          setRuby(el("res-next"), step.ending.next);
+
+          var rubric = el("res-rubric");
+          rubric.innerHTML = "";
+          (D.endings.rubric || []).forEach(function (line) {
+            var li = document.createElement("li");
+            setRuby(li, line);
+            rubric.appendChild(li);
+          });
+
+          setRuby(el("res-replay"), D.labels.replay);
+          setRuby(el("res-finish"), D.labels.finish);
+          showScreen("scr-result");
+        }
+
+        el("res-replay").addEventListener("click", start);
+        el("res-finish").addEventListener("click", function () {
+          sendDone();
+          // ★と 見出しだけ 残して たたむ（もう一度 遊ぶ 道は 残す）
+          el("scr-result").classList.add("closed");
+          window.scrollTo(0, 0);
+        });
+
+        /* ------------------------------------------------------------------
+         * はじまり
+         * ------------------------------------------------------------------ */
+
+        function introSteps() {
+          var steps = D.intro.map(function (line, index) {
+            return {
+              t: "line",
+              icon: INTRO_ICONS[index] || ICON.intro,
+              text: line,
+              head: true,
+              hud: false,
+            };
+          });
+          if (D.introHint) {
+            steps.push({ t: "line", icon: ICON.hint, text: D.introHint, head: true, hud: false });
+          }
+          return steps;
+        }
+
+        function start() {
+          if (chatTimer) {
+            clearTimeout(chatTimer);
+            chatTimer = null;
+          }
+          resetState();
+          buildHud();
+          renderHud();
+          setHud(false);
+          run(introSteps());
+        }
+
+        document.title = plain(D.title);
+        start();
+      })();
+    </script>
+  </body>
+</html>

@@ -25,7 +25,7 @@ export const revalidate = 300;
  *
  * ステージからも開けるが、この一覧が無いと たいわ は ステージ経由でしか
  * 開けない。話す練習だけをもう一度やりたい学習者が入口を見つけられるように、
- * 単語（/arcade）と同じく教材そのものの一覧を持たせる。
+ * 単語（/wordtest）と同じく教材そのものの一覧を持たせる。
  */
 export default async function TalkIndexPage() {
   const scenarios = await listScenarios();

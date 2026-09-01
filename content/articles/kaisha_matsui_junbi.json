@@ -2,8 +2,16 @@
   "kind": "article",
   "id": "kaisha_matsui_junbi",
   "title": "AI松井社長と 話す 準備を しよう",
-  "description": "調べた ことに、あなたの 考えを 足します。松井社長に 話す 5つの ことを 考えます。",
+  "description": "調べた ことに、あなたの 考えを 足します。松井社長に 話す 6つの ことを 考えます。",
   "furigana": [
+    [
+      "行く",
+      "いく"
+    ],
+    [
+      "何でも",
+      "なんでも"
+    ],
     [
       "代表取締役社長",
       "だいひょうとりしまりやくしゃちょう"
@@ -494,7 +502,7 @@
     ],
     [
       "考え",
-      "かんが"
+      "かんがえ"
     ],
     [
       "調",
@@ -1295,6 +1303,30 @@
     [
       "念",
       "ねん"
+    ],
+    [
+      "物語",
+      "ものがたり"
+    ],
+    [
+      "事実",
+      "じじつ"
+    ],
+    [
+      "学校",
+      "がっこう"
+    ],
+    [
+      "悲",
+      "かな"
+    ],
+    [
+      "多",
+      "おお"
+    ],
+    [
+      "説明",
+      "せつめい"
     ]
   ],
   "blocks": [
@@ -1311,6 +1343,31 @@
       }
     },
     {
+      "kind": "heading",
+      "level": 2,
+      "text": "ヘンディさんへの 報告と 何が ちがう？"
+    },
+    {
+      "kind": "compare",
+      "before": {
+        "title": "ヘンディさんに 話した こと",
+        "lines": [
+          "調べた 事実を、そのまま 報告しました。",
+          "・NEXT MAKEは 2018年に できた 会社です。本社は 大阪です。",
+          "・お客さまの ホームページや アプリを 作ります。",
+          "・自分たちの サービスも 5つ あります。NMClaw、観光DX、Verify、セキュリティドローン、Internship Labです。"
+        ]
+      },
+      "after": {
+        "title": "松井社長に 話す こと",
+        "lines": [
+          "調べた こと ＋ あなたの 考えを 話します。",
+          "・私は NMClawが おもしろいと 思いました。話すだけで 情報が 整理されるからです。",
+          "・私は 観光DXを カンボジアの 町でも やって みたいです。"
+        ]
+      }
+    },
+    {
       "kind": "banner",
       "tone": "goal",
       "icon": "🎯",
@@ -1321,30 +1378,6 @@
         "💙 NEXT MAKEへの 興味を 伝える",
         "🌱 これからの 成長を 伝える"
       ]
-    },
-    {
-      "kind": "heading",
-      "level": 2,
-      "text": "ヘンディさんへの 報告と 何が ちがう？"
-    },
-    {
-      "kind": "compare",
-      "before": {
-        "title": "ヘンディさんに 話した こと",
-        "lines": [
-          "Webサイトで 調べた ことを 報告しました。",
-          "「NEXT MAKEは こんな 会社です。」",
-          "「こんな 仕事を して います。」"
-        ]
-      },
-      "after": {
-        "title": "松井社長に 話す こと",
-        "lines": [
-          "調べた こと ＋ あなたの 考えを 話します。",
-          "「私は ここが いいと 思いました。」",
-          "「私は これを やって みたいです。」"
-        ]
-      }
     },
     {
       "kind": "banner",
@@ -1361,8 +1394,13 @@
         {
           "icon": "😍",
           "label": "A",
-          "title": "「NEXT MAKEの ここが 好きです！」",
-          "text": "調べた ことに、自分の 考えを 足して 話して います。",
+          "title": "松井社長が うれしく なる 答え",
+          "text": "調べた こと ＋ 自分の 考え。3つとも、自分の ことばで 答えて います。",
+          "items": [
+            "NEXT MAKEの どこが 好き？ → NMClawです。カンボジアには ホテルが 多いので、ホテルで 使ったら おもしろいかも しれません。",
+            "自分の いい ところは？ → AIが 得意です。得意な ものを AIに して、大学の AIチャットボットを 作りました。",
+            "NEXT MAKEで 何を やって みたい？ → 観光DXです。カンボジアの 町の 物語を 動画に したいです。AIが 観光ガイドを すれば、もっと おもしろく なります。"
+          ],
           "image": {
             "refs": [],
             "status": "done",
@@ -1373,8 +1411,13 @@
         {
           "icon": "😢",
           "label": "B",
-          "title": "「とくに ありません。」",
-          "text": "調べた ことだけを 話して います。",
+          "title": "松井社長が 悲しく なる 答え",
+          "text": "調べた ことだけ。3つとも、ひとことで 終わって います。",
+          "items": [
+            "NEXT MAKEの どこが 好き？ → NEXT MAKEは つまらないです。",
+            "自分の いい ところは？ → とくに ありません。",
+            "NEXT MAKEで 何を やって みたい？ → 何でも いいです。"
+          ],
           "image": {
             "refs": [],
             "status": "done",
@@ -1393,12 +1436,12 @@
     {
       "kind": "heading",
       "level": 2,
-      "text": "これから 考える 5つの こと"
+      "text": "これから 考える 6つの こと"
     },
     {
       "kind": "cards",
       "tone": "step",
-      "columns": 5,
+      "columns": 3,
       "items": [
         {
           "label": "1",
@@ -1446,23 +1489,27 @@
         },
         {
           "label": "5",
+          "title": "日本に 行くまでに 何を がんばる？",
+          "text": "これから やりたい ことと、その りゆうを 考えます。",
+          "image": {
+            "refs": [],
+            "status": "done",
+            "src": "/img/articles/kaisha_matsui_junbi/j6.webp",
+            "prompt": "6 日本に 行くまでに 何を がんばる？（これからの ことを 思いえがく） → scripts/images/kaisha_junbi_scenes.json"
+          }
+        },
+        {
+          "label": "6",
           "title": "松井社長に 何を 聞きたい？",
           "text": "Webサイトだけでは 分からない ことを 質問します。",
           "image": {
             "refs": [],
             "status": "done",
-            "src": "/img/articles/kaisha_matsui_junbi/j5.webp",
+            "src": "/img/articles/kaisha_matsui_junbi/j7.webp",
             "prompt": "card5: a Cambodian woman raises her hand to the president, her notebook filled with prepared questions. → scripts/images/kaisha_junbi_matsui.json"
           }
         }
       ]
-    },
-    {
-      "kind": "banner",
-      "tone": "message",
-      "icon": "💡",
-      "title": "大切な こと",
-      "text": "「いい 答え」を 作る ことが 目的では ありません。あなたが 本当に どう 思ったかを 話しましょう。"
     },
     {
       "kind": "link",

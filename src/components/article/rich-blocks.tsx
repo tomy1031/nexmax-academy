@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { ZoomableImage } from "@/components/media/zoomable-image";
 import type { ArticleBlock } from "@/content/schema";
 import { DictionaryText } from "@/components/dictionary-text";
 import { RubyText } from "@/components/ruby-text";
@@ -74,6 +75,7 @@ export function ImageSlotFrame({
   ratio = "h-40",
   furigana,
   show,
+  compact,
 }: {
   slot?: Slot;
   /** 何の 絵かを ことばで。わくの 中にも 出す。 */
@@ -84,17 +86,34 @@ export function ImageSlotFrame({
   /** わくの 中に 出す `alt` の 読み（教材の 読み辞書）。 */
   furigana?: FuriganaIndex;
   show?: boolean;
+  /** 小さな サムネイル（80px 前後）。ひろげる しるしを 小さく する。 */
+  compact?: boolean;
 }) {
   if (slot?.status === "done" && slot.src) {
+    /*
+     * 絵は **ひろげて 見られる**（2026-08-30 の 指定「説明用の画像が小さすぎて…」）。
+     * ここは 表紙・カード・調べること・クイズの 設問の 4系統が 通る ので、
+     * 包むのは この 1か所で よい。並びの 大きさは 変えない——変えると
+     *「7つ ある」という 形が 目で 追えなく なる。
+     */
     return (
-      <Image
-        src={slot.src}
-        alt={alt ?? ""}
-        width={1200}
-        height={675}
-        unoptimized
-        className={className ?? `w-full ${ratio} rounded-[18px] object-cover`}
-      />
+      <ZoomableImage label={alt} size={compact ? "small" : "normal"}>
+        <Image
+          src={slot.src}
+          alt={alt ?? ""}
+          width={1200}
+          height={675}
+          unoptimized
+          /*
+           * **絵は 元の 縦横比の まま 出す**（2026-08-30 の 指定「画像の縦横比に
+           * 合わせた形にしたほうがいい」）。高さを 決め打ちして `object-cover` で
+           * 切ると、正方形の 絵（1024×1024）は 帯に なって **人の 顔が 画面から
+           * 消える**。`h-auto` なら 横幅に 合わせて 縦が 決まるので、どんな 比の 絵でも
+           * 切れない。`ratio` は これまで どおり **まだ 無い 絵の わく**の 高さに使う。
+           */
+          className={className ?? "h-auto w-full rounded-[18px]"}
+        />
+      </ZoomableImage>
     );
   }
   return (
@@ -274,11 +293,11 @@ export function CardsBlock({
               /*
                 絵の 高さ。h-28（112px）では **人の 顔が 切れて** 何の 場面かが
                 分からなかった（2026-08-28 の 指定「イラストの縦幅が短すぎる」）。
-                横は カードの はば いっぱいなので、`object-cover` で 上下が 削られる——
-                その 削れる ぶんを 減らす。
+                高さを 決め打ちする かぎり `object-cover` が 上下を 削るので、
+                2026-08-30 に **決め打ちを やめた**——絵は 元の 縦横比の まま 出す。
+                ここの `ratio` は **まだ 無い 絵の わく**の 高さだけに 効く。
               */
               ratio="h-44 sm:h-48"
-              className="h-44 w-full object-cover sm:h-48"
               furigana={furigana}
               show={show}
             />
@@ -432,6 +451,7 @@ export function MissionsBlock({
                 alt={item.title}
                 ratio="h-16"
                 className="h-16 w-20 shrink-0 rounded-[12px] border-2 border-white object-cover"
+                compact
                 furigana={furigana}
                 show={show}
               />

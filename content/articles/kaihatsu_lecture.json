@@ -1,0 +1,1085 @@
+{
+  "kind": "article",
+  "id": "kaihatsu_lecture",
+  "title": "システム開発の 流れ",
+  "description": "システムが できるまでの 7つの 工程を、はじめから おわりまで 見ます。",
+  "blocks": [
+    {
+      "kind": "hero",
+      "eyebrow": "🛠 開発の 工程",
+      "title": "システム開発の 流れ",
+      "lead": "プログラミングだけが 開発では ありません。",
+      "note": "家を 作るのに 計画や 設計が 要るように、システムにも 順番が あります。",
+      "image": {
+        "src": "/img/kaihatsu/dev_process.webp",
+        "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This one is a teaching diagram: few large elements, generous spacing, each label sitting on a soft cream panel with a rounded border, arranged so the eye reads it in one pass. A teaching diagram of seven large rounded cream cards laid out as a grid on a soft sky-blue background — four cards across the top row and three across the bottom row — connected in reading order by soft coral arrows that flow left to right along the top row and then left to right along the bottom row. Each card holds one simple drawing of that stage and its Japanese name printed across the top of the card: an engineer and a customer talking across a desk; an engineer at a desk with a calculator and a wall calendar; an engineer drawing boxes and lines on a whiteboard; an engineer typing at a two-monitor desk; an engineer holding a checklist beside a screen showing a large tick; an engineer pressing a key while a server rack lights up; an engineer watching graphs on a wall display at night. Same office, same warm light in every card. The Japanese words in this picture are exactly: 要件定義（ようけんていぎ） / 見積もり（みつもり） / 設計（せっけい） / 開発（かいはつ） / テスト / デプロイ / 保守運用（ほしゅうんよう）. Japanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana. Spell every character exactly as given. No English words or subtitles anywhere. No other letters, numbers, logos or watermarks anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, English captions or subtitles under the Japanese, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+        "refs": [],
+        "status": "done"
+      }
+    },
+    {
+      "kind": "paragraph",
+      "text": "システム開発は、プログラミングだけでは ありません。家を 作るのに 計画や 設計が 必要なように、色々な ステップが 必要です。"
+    },
+    {
+      "kind": "image",
+      "size": "wide",
+      "src": "/img/kaihatsu/dev_process.webp",
+      "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This one is a teaching diagram: few large elements, generous spacing, each label sitting on a soft cream panel with a rounded border, arranged so the eye reads it in one pass. A teaching diagram of seven large rounded cream cards laid out as a grid on a soft sky-blue background — four cards across the top row and three across the bottom row — connected in reading order by soft coral arrows that flow left to right along the top row and then left to right along the bottom row. Each card holds one simple drawing of that stage and its Japanese name printed across the top of the card: an engineer and a customer talking across a desk; an engineer at a desk with a calculator and a wall calendar; an engineer drawing boxes and lines on a whiteboard; an engineer typing at a two-monitor desk; an engineer holding a checklist beside a screen showing a large tick; an engineer pressing a key while a server rack lights up; an engineer watching graphs on a wall display at night. Same office, same warm light in every card. The Japanese words in this picture are exactly: 要件定義（ようけんていぎ） / 見積もり（みつもり） / 設計（せっけい） / 開発（かいはつ） / テスト / デプロイ / 保守運用（ほしゅうんよう）. Japanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana. Spell every character exactly as given. No English words or subtitles anywhere. No other letters, numbers, logos or watermarks anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, English captions or subtitles under the Japanese, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+      "refs": [],
+      "status": "done",
+      "caption": "システム開発の 全体の 流れ"
+    },
+    {
+      "kind": "paragraph",
+      "text": "全体の 流れは、つぎの 順番で 進みます。"
+    },
+    {
+      "kind": "cards",
+      "columns": 3,
+      "items": [
+        {
+          "badge": "1",
+          "title": "要件定義",
+          "text": "何を 作りたいかを 決めます。"
+        },
+        {
+          "badge": "2",
+          "title": "見積もり",
+          "text": "費用と スケジュールを 出します。"
+        },
+        {
+          "badge": "3",
+          "title": "設計",
+          "text": "画面ごとに どんな 処理が 要るかを 書きます。"
+        },
+        {
+          "badge": "4",
+          "title": "開発",
+          "text": "実際に プログラムを 書きます。"
+        },
+        {
+          "badge": "5",
+          "title": "テスト",
+          "text": "正しく 動くか 確認します。"
+        },
+        {
+          "badge": "6",
+          "title": "デプロイ",
+          "text": "サーバーに 上げて、みんなが 使えるように します。"
+        },
+        {
+          "badge": "7",
+          "title": "保守運用",
+          "text": "バグや サーバーを 見て、動き続けるように 守ります。"
+        }
+      ]
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "1. 要件定義"
+    },
+    {
+      "kind": "paragraph",
+      "text": "システム開発の 基本の ステップです。お客様の 要望を 聞いて、システムで 実現する 中身を 明確に します。"
+    },
+    {
+      "kind": "image",
+      "src": "/img/kaihatsu/youken_teigi.webp",
+      "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. A bright meeting room with a wide window. A customer in a jacket sits on one side of the table talking with open hands, clearly explaining what she wants, while two engineers sit facing her — one leaning in and listening closely, the other writing on a notepad. A large blank whiteboard stands behind them and a mug sits on the table. Warm daylight, an easy friendly mood. No text, no letters, no kanji, no kana, no numbers anywhere in the image. Screens, papers, whiteboards, books and signs are blank or show only soft abstract shapes and simple pictures. No watermark, no signature, no logo, no speech balloons, no floating symbols such as question marks, exclamation marks, arrows, light bulbs, stars or hearts. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+      "refs": [],
+      "status": "done",
+      "caption": "要件定義の ようす"
+    },
+    {
+      "kind": "cards",
+      "columns": 2,
+      "items": [
+        {
+          "badge": "📋",
+          "title": "要求定義",
+          "text": "まず お客様と 話します。「システムで 何を したいのか」「どんな 課題を 解決したいのか」という ゴールを 明確に します。"
+        },
+        {
+          "badge": "⚙️",
+          "title": "システム要件定義",
+          "text": "要望を もとに、要る 機能を 決めます。ログインや 決済などの「機能要件」と、セキュリティや 処理速度などの「非機能要件」が あります。"
+        }
+      ]
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "2. 見積もり"
+    },
+    {
+      "kind": "paragraph",
+      "text": "要件定義で 決まった 中身を もとに、完成までに 必要な 工数（時間）・費用・スケジュールを 出します。"
+    },
+    {
+      "kind": "image",
+      "src": "/img/kaihatsu/estimation.webp",
+      "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. An engineer sits at a tidy desk working out how long the work will take. One hand rests on a calculator, the other points at a large blank wall calendar beside the desk, and a colleague standing next to him counts something off on his fingers as they talk it through. Sticky notes in soft coral and sky blue are grouped in neat columns on the wall. Warm daylight from the window, a calm and careful mood. No text, no letters, no kanji, no kana, no numbers anywhere in the image. Screens, papers, whiteboards, books and signs are blank or show only soft abstract shapes and simple pictures. No watermark, no signature, no logo, no speech balloons, no floating symbols such as question marks, exclamation marks, arrows, light bulbs, stars or hearts. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+      "refs": [],
+      "status": "done",
+      "caption": "見積もりの ようす"
+    },
+    {
+      "kind": "cards",
+      "columns": 2,
+      "items": [
+        {
+          "badge": "🧩",
+          "title": "作業を 洗い出す",
+          "text": "必要な 作業を 細かく 出します（WBS）。"
+        },
+        {
+          "badge": "🧮",
+          "title": "工数を 計算する",
+          "text": "「DB設計」や「環境構築」などに 何時間 かかるかを 計算し、要る 人と 費用を 出します。"
+        }
+      ]
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "3. 設計"
+    },
+    {
+      "kind": "paragraph",
+      "text": "見積もりが 承認されたら、設計図を 作ります。開発する 人が 迷わないように するためです。設計は 2つの 段階に 分かれます。"
+    },
+    {
+      "kind": "image",
+      "size": "wide",
+      "src": "/img/kaihatsu/design.webp",
+      "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This one is a teaching diagram: few large elements, generous spacing, each label sitting on a soft cream panel with a rounded border, arranged so the eye reads it in one pass. One wide picture split into two equal halves by a soft vertical cream gutter. LEFT HALF, on a pale sky-blue ground: two engineers stand at a large whiteboard on which big simple boxes are joined by thick lines, sketching the shape of the whole system, and one of them holds a marker and steps back to look at the whole board. RIGHT HALF, on a pale cream ground: one engineer sits close to a desk drawing a small careful flow chart of rounded shapes on paper, a ruler beside the sheet, leaning in to work on the fine detail. A rounded cream label panel sits at the top of each half carrying the Japanese words given here. The Japanese words in this picture are exactly: 基本設計（きほんせっけい） / 詳細設計（しょうさいせっけい）. Japanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana. Spell every character exactly as given. No English words or subtitles anywhere. No other letters, numbers, logos or watermarks anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, English captions or subtitles under the Japanese, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+      "refs": [],
+      "status": "done",
+      "caption": "設計の 2つの 段階"
+    },
+    {
+      "kind": "cards",
+      "columns": 2,
+      "items": [
+        {
+          "badge": "📐",
+          "title": "基本設計",
+          "text": "システム全体の 大きな 仕組みを 決めます。サーバーの 構成や、画面の レイアウト（ワイヤーフレーム）などです。"
+        },
+        {
+          "badge": "🔍",
+          "title": "詳細設計",
+          "text": "基本設計を もとに、コードを 書ける ところまで 細かく 決めます。フローチャートなどを 作ります。"
+        }
+      ]
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "4. 開発"
+    },
+    {
+      "kind": "paragraph",
+      "text": "設計図を もとに、実際に プログラムを 書いて システムを 作ります。"
+    },
+    {
+      "kind": "image",
+      "src": "/img/kaihatsu/development.webp",
+      "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. Three engineers work side by side at a long shared desk of two-monitor workstations, each on their own part of the same job. The one in the middle turns to the one on her right to check something on his screen and he points at it, while the third keeps typing. A blank board on the wall behind them carries a neat row of small cards moved into three columns. Mugs and a small plant on the desk, warm daylight, a busy but relaxed mood. No text, no letters, no kanji, no kana, no numbers anywhere in the image. Screens, papers, whiteboards, books and signs are blank or show only soft abstract shapes and simple pictures. No watermark, no signature, no logo, no speech balloons, no floating symbols such as question marks, exclamation marks, arrows, light bulbs, stars or hearts. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+      "refs": [],
+      "status": "done",
+      "caption": "開発の ようす"
+    },
+    {
+      "kind": "cards",
+      "columns": 3,
+      "items": [
+        {
+          "badge": "💻",
+          "title": "コーディング",
+          "text": "エンジニアが 手分けして コードを 書き、機能を 作ります。"
+        },
+        {
+          "badge": "🔀",
+          "title": "バージョン管理",
+          "text": "GitHubなどで、誰が どこを 変えたかの 履歴を 残しながら 進めます。"
+        },
+        {
+          "badge": "📊",
+          "title": "進捗管理",
+          "text": "どこまで できたかを チームで 共有し、予定どおりかを 確認します。"
+        }
+      ]
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "5. テスト"
+    },
+    {
+      "kind": "paragraph",
+      "text": "開発が 終わったら、正しく 動くかを 確認します。バグを 見つけて 直すことで、品質の 高い システムを 届けられます。"
+    },
+    {
+      "kind": "image",
+      "size": "wide",
+      "src": "/img/kaihatsu/testing.webp",
+      "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This one is a teaching diagram: few large elements, generous spacing, each label sitting on a soft cream panel with a rounded border, arranged so the eye reads it in one pass. One wide picture divided into three equal vertical panels by thin cream gutters. LEFT: an engineer holds a magnifying glass over one single large button drawn on a screen, checking that one part on its own. MIDDLE: two engineers stand either side of a screen on which three large rounded boxes are joined by thick arrows, following how the pieces work together, one of them tracing the arrow with a finger. RIGHT: a customer in a jacket sits in front of the finished screen with an engineer standing beside her, and the customer smiles and gives a small nod of approval. Same office, same warm light in all three. A rounded cream label panel sits at the top of each panel carrying the Japanese words given here. The Japanese words in this picture are exactly: 単体テスト（たんたいテスト） / 結合テスト（けつごうテスト） / 受け入れテスト（うけいれテスト）. Japanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana. Spell every character exactly as given. No English words or subtitles anywhere. No other letters, numbers, logos or watermarks anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, English captions or subtitles under the Japanese, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+      "refs": [],
+      "status": "done",
+      "caption": "3つの テスト"
+    },
+    {
+      "kind": "cards",
+      "columns": 3,
+      "items": [
+        {
+          "badge": "🧩",
+          "title": "単体テスト",
+          "text": "ボタンや フォームなど、1つ1つの 機能を 個別に たしかめます。"
+        },
+        {
+          "badge": "🔗",
+          "title": "結合テスト",
+          "text": "複数の 機能を 組みあわせて、データが 正しく 流れるかを たしかめます。"
+        },
+        {
+          "badge": "🖥️",
+          "title": "受け入れテスト",
+          "text": "お客様が 見て、要望どおりかを 最後に たしかめます。"
+        }
+      ]
+    },
+    {
+      "kind": "callout",
+      "tone": "point",
+      "text": "バグの 流れは いつも 同じです。見つける → 報告する → 直す → もう一度 テストする。この くり返しで 品質が 上がります。"
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "6. デプロイ"
+    },
+    {
+      "kind": "paragraph",
+      "text": "できあがった システムを 本番環境に 置いて、ユーザーが 使える 状態に します。"
+    },
+    {
+      "kind": "image",
+      "src": "/img/kaihatsu/deploy.webp",
+      "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This one is a teaching diagram: few large elements, generous spacing, each label sitting on a soft cream panel with a rounded border, arranged so the eye reads it in one pass. One wide picture divided into three equal vertical panels by thin cream gutters. LEFT: two engineers carefully pack a finished piece of work into a large rounded box beside a server rack, getting it ready to move. MIDDLE: one engineer presses a single large key on a keyboard while the server rack beside her lights up warmly and a soft arrow rises from it. RIGHT: two engineers look at a browser window on a big screen where a large tick sits in the middle, and one of them raises a thumb. Same office, same warm light in all three. A rounded cream label panel sits at the top of each panel carrying the Japanese words given here. The Japanese words in this picture are exactly: デプロイ準備（デプロイじゅんび） / デプロイ実行（デプロイじっこう） / 稼働確認（かどうかくにん）. Japanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana. Spell every character exactly as given. No English words or subtitles anywhere. No other letters, numbers, logos or watermarks anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, English captions or subtitles under the Japanese, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+      "refs": [],
+      "status": "done",
+      "caption": "デプロイの 3つの 場面"
+    },
+    {
+      "kind": "cards",
+      "columns": 3,
+      "items": [
+        {
+          "badge": "📦",
+          "title": "デプロイ準備",
+          "text": "本番環境に 持っていく ために、サーバーなどを 用意します。"
+        },
+        {
+          "badge": "🚀",
+          "title": "デプロイ実行",
+          "text": "用意した ものを 本番の サーバーへ 送り、動かします。"
+        },
+        {
+          "badge": "✅",
+          "title": "稼働確認",
+          "text": "本番で 画面が 正しく 出るか、動いているかを 最後に たしかめます。"
+        }
+      ]
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "7. 保守運用"
+    },
+    {
+      "kind": "paragraph",
+      "text": "システムは 完成して 終わりでは ありません。ユーザーが いつでも 安全に 快適に 使えるように 守り続けます。"
+    },
+    {
+      "kind": "image",
+      "size": "wide",
+      "src": "/img/kaihatsu/maintenance.webp",
+      "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This one is a teaching diagram: few large elements, generous spacing, each label sitting on a soft cream panel with a rounded border, arranged so the eye reads it in one pass. A teaching diagram of four large rounded cream cards in a two-by-two grid on a soft sky-blue background. TOP LEFT: an engineer sits watching a wall display of large simple line graphs, calm and steady. TOP RIGHT: an engineer hurries to a server rack with a toolbox while a small warning lamp glows softly amber. BOTTOM LEFT: an engineer plugs a fresh part into the rack, and a soft shield shape glows behind it. BOTTOM RIGHT: two engineers sit side by side at one laptop pointing at a rising graph and talking happily about an idea. Each card carries its Japanese label printed across the top of the card. The Japanese words in this picture are exactly: システム監視（システムかんし） / 障害対応（しょうがいたいおう） / システム更新（システムこうしん） / 改善提案（かいぜんていあん）. Japanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana. Spell every character exactly as given. No English words or subtitles anywhere. No other letters, numbers, logos or watermarks anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, English captions or subtitles under the Japanese, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+      "refs": [],
+      "status": "done",
+      "caption": "保守運用の 4つの 仕事"
+    },
+    {
+      "kind": "cards",
+      "columns": 2,
+      "items": [
+        {
+          "badge": "📡",
+          "title": "システム監視",
+          "text": "サーバーの 負荷や アクセスを 見て、異常が ないか 見ます。"
+        },
+        {
+          "badge": "🔧",
+          "title": "障害対応",
+          "text": "エラーが 起きたら、原因を 見つけて すぐに 復旧します。"
+        },
+        {
+          "badge": "🔄",
+          "title": "システム更新",
+          "text": "OSの アップデートや セキュリティパッチを 定期的に 当てます。"
+        },
+        {
+          "badge": "📈",
+          "title": "改善提案",
+          "text": "データから 良く できる ところを 見つけて、もっと 使いやすく します。"
+        }
+      ]
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "ウォーターフォールと アジャイル"
+    },
+    {
+      "kind": "paragraph",
+      "text": "進め方には 2つの やり方が あります。絵の 左が ウォーターフォール、右が アジャイルです。"
+    },
+    {
+      "kind": "image",
+      "size": "wide",
+      "src": "/img/kaihatsu/waterfall_agile.webp",
+      "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This one is a teaching diagram: few large elements, generous spacing, each label sitting on a soft cream panel with a rounded border, arranged so the eye reads it in one pass. One wide picture split into two equal halves by a soft vertical cream gutter. LEFT HALF, on a pale sky-blue ground: six broad steps descend from the top left to the bottom right like a wide staircase with water flowing gently down them, and one engineer walks down the steps one at a time, never turning back, each step finished behind him. RIGHT HALF, on a pale cream ground: a wide circular track with four rounded stations around it, and a small team of three engineers walks the circle together handing a small finished piece to a smiling customer each time they pass her, then setting off around the circle again. A rounded cream label panel sits at the top of each half carrying the Japanese words given here. The Japanese words in this picture are exactly: ウォーターフォール / アジャイル. Japanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana. Spell every character exactly as given. No English words or subtitles anywhere. No other letters, numbers, logos or watermarks anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, English captions or subtitles under the Japanese, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+      "refs": [],
+      "status": "done",
+      "caption": "ウォーターフォールと アジャイルの ちがい"
+    },
+    {
+      "kind": "cards",
+      "columns": 2,
+      "items": [
+        {
+          "badge": "💧",
+          "title": "ウォーターフォール",
+          "text": "英語で「滝」です。1の 要件定義から 6の デプロイまで、階段を 降りるように 上から 順番に 終わらせます。前が 終わらないと 次に 進みません。"
+        },
+        {
+          "badge": "🔄",
+          "title": "アジャイル",
+          "text": "英語で「素早い」です。全部を 一度に 作らないで、小さな 機能を 何度も くり返して 作ります。短い 期間（スプリント）で 1回りします。"
+        }
+      ]
+    },
+    {
+      "kind": "compare",
+      "before": {
+        "title": "💧 ウォーターフォールの ところ",
+        "lines": [
+          "✅ いつ 何が 終わるかが 分かりやすいです。スケジュールと 費用の 見とおしが 立ちます。",
+          "⚠️ 最後に できあがるので、途中で 変えたく なると 戻るのが 大変です。"
+        ]
+      },
+      "after": {
+        "title": "🔄 アジャイルの ところ",
+        "lines": [
+          "✅ ユーザーの 意見を 聞いてから 改善するので、途中の 変更に 強いです。",
+          "⚠️ 予定が よく 変わるので、全体が いつ 完成するかを 見るのが 少し 難しいです。"
+        ]
+      }
+    },
+    {
+      "kind": "callout",
+      "tone": "care",
+      "text": "どちらが 良い わけでは ありません。作る ものと お客様に 合わせて えらびます。"
+    }
+  ],
+  "furigana": [
+    [
+      "非機能要件",
+      "ひきのうようけん"
+    ],
+    [
+      "受け入れ",
+      "うけいれ"
+    ],
+    [
+      "機能要件",
+      "きのうようけん"
+    ],
+    [
+      "進捗管理",
+      "しんちょくかんり"
+    ],
+    [
+      "詳細設計",
+      "しょうさいせっけい"
+    ],
+    [
+      "基本設計",
+      "きほんせっけい"
+    ],
+    [
+      "要求定義",
+      "ようきゅうていぎ"
+    ],
+    [
+      "要件定義",
+      "ようけんていぎ"
+    ],
+    [
+      "環境構築",
+      "かんきょうこうちく"
+    ],
+    [
+      "本番環境",
+      "ほんばんかんきょう"
+    ],
+    [
+      "処理速度",
+      "しょりそくど"
+    ],
+    [
+      "保守運用",
+      "ほしゅうんよう"
+    ],
+    [
+      "障害対応",
+      "しょうがいたいおう"
+    ],
+    [
+      "稼働確認",
+      "かどうかくにん"
+    ],
+    [
+      "改善提案",
+      "かいぜんていあん"
+    ],
+    [
+      "設計図",
+      "せっけいず"
+    ],
+    [
+      "定期的",
+      "ていきてき"
+    ],
+    [
+      "何時間",
+      "なんじかん"
+    ],
+    [
+      "結合",
+      "けつごう"
+    ],
+    [
+      "単体",
+      "たんたい"
+    ],
+    [
+      "見積",
+      "みつ"
+    ],
+    [
+      "工程",
+      "こうてい"
+    ],
+    [
+      "工数",
+      "こうすう"
+    ],
+    [
+      "費用",
+      "ひよう"
+    ],
+    [
+      "承認",
+      "しょうにん"
+    ],
+    [
+      "段階",
+      "だんかい"
+    ],
+    [
+      "構成",
+      "こうせい"
+    ],
+    [
+      "構築",
+      "こうちく"
+    ],
+    [
+      "履歴",
+      "りれき"
+    ],
+    [
+      "管理",
+      "かんり"
+    ],
+    [
+      "監視",
+      "かんし"
+    ],
+    [
+      "更新",
+      "こうしん"
+    ],
+    [
+      "改善",
+      "かいぜん"
+    ],
+    [
+      "提案",
+      "ていあん"
+    ],
+    [
+      "課題",
+      "かだい"
+    ],
+    [
+      "解決",
+      "かいけつ"
+    ],
+    [
+      "要望",
+      "ようぼう"
+    ],
+    [
+      "実現",
+      "じつげん"
+    ],
+    [
+      "明確",
+      "めいかく"
+    ],
+    [
+      "定義",
+      "ていぎ"
+    ],
+    [
+      "必要",
+      "ひつよう"
+    ],
+    [
+      "順番",
+      "じゅんばん"
+    ],
+    [
+      "全体",
+      "ぜんたい"
+    ],
+    [
+      "計画",
+      "けいかく"
+    ],
+    [
+      "設計",
+      "せっけい"
+    ],
+    [
+      "開発",
+      "かいはつ"
+    ],
+    [
+      "実際",
+      "じっさい"
+    ],
+    [
+      "確認",
+      "かくにん"
+    ],
+    [
+      "品質",
+      "ひんしつ"
+    ],
+    [
+      "報告",
+      "ほうこく"
+    ],
+    [
+      "準備",
+      "じゅんび"
+    ],
+    [
+      "実行",
+      "じっこう"
+    ],
+    [
+      "稼働",
+      "かどう"
+    ],
+    [
+      "状態",
+      "じょうたい"
+    ],
+    [
+      "安全",
+      "あんぜん"
+    ],
+    [
+      "快適",
+      "かいてき"
+    ],
+    [
+      "負荷",
+      "ふか"
+    ],
+    [
+      "異常",
+      "いじょう"
+    ],
+    [
+      "原因",
+      "げんいん"
+    ],
+    [
+      "復旧",
+      "ふっきゅう"
+    ],
+    [
+      "完成",
+      "かんせい"
+    ],
+    [
+      "機能",
+      "きのう"
+    ],
+    [
+      "画面",
+      "がめん"
+    ],
+    [
+      "処理",
+      "しょり"
+    ],
+    [
+      "作業",
+      "さぎょう"
+    ],
+    [
+      "時間",
+      "じかん"
+    ],
+    [
+      "計算",
+      "けいさん"
+    ],
+    [
+      "複数",
+      "ふくすう"
+    ],
+    [
+      "個別",
+      "こべつ"
+    ],
+    [
+      "最後",
+      "さいご"
+    ],
+    [
+      "途中",
+      "とちゅう"
+    ],
+    [
+      "期間",
+      "きかん"
+    ],
+    [
+      "素早",
+      "すばや"
+    ],
+    [
+      "階段",
+      "かいだん"
+    ],
+    [
+      "英語",
+      "えいご"
+    ],
+    [
+      "意見",
+      "いけん"
+    ],
+    [
+      "一度",
+      "いちど"
+    ],
+    [
+      "色々",
+      "いろいろ"
+    ],
+    [
+      "仕事",
+      "しごと"
+    ],
+    [
+      "対応",
+      "たいおう"
+    ],
+    [
+      "共有",
+      "きょうゆう"
+    ],
+    [
+      "予定",
+      "よてい"
+    ],
+    [
+      "変更",
+      "へんこう"
+    ],
+    [
+      "大変",
+      "たいへん"
+    ],
+    [
+      "何度",
+      "なんど"
+    ],
+    [
+      "場面",
+      "ばめん"
+    ],
+    [
+      "本番",
+      "ほんばん"
+    ],
+    [
+      "用意",
+      "ようい"
+    ],
+    [
+      "決済",
+      "けっさい"
+    ],
+    [
+      "客様",
+      "きゃくさま"
+    ],
+    [
+      "中身",
+      "なかみ"
+    ],
+    [
+      "仕組",
+      "しく"
+    ],
+    [
+      "手分",
+      "てわ"
+    ],
+    [
+      "全部",
+      "ぜんぶ"
+    ],
+    [
+      "基本",
+      "きほん"
+    ],
+    [
+      "流",
+      "なが"
+    ],
+    [
+      "洗",
+      "あら"
+    ],
+    [
+      "細",
+      "こま"
+    ],
+    [
+      "組",
+      "く"
+    ],
+    [
+      "短",
+      "みじか"
+    ],
+    [
+      "返",
+      "かえ"
+    ],
+    [
+      "降",
+      "お"
+    ],
+    [
+      "滝",
+      "たき"
+    ],
+    [
+      "変",
+      "か"
+    ],
+    [
+      "直",
+      "なお"
+    ],
+    [
+      "戻",
+      "もど"
+    ],
+    [
+      "少",
+      "すこ"
+    ],
+    [
+      "守",
+      "まも"
+    ],
+    [
+      "続",
+      "つづ"
+    ],
+    [
+      "見",
+      "み"
+    ],
+    [
+      "作",
+      "つく"
+    ],
+    [
+      "書",
+      "か"
+    ],
+    [
+      "決",
+      "き"
+    ],
+    [
+      "進",
+      "すす"
+    ],
+    [
+      "聞",
+      "き"
+    ],
+    [
+      "話",
+      "はな"
+    ],
+    [
+      "使",
+      "つか"
+    ],
+    [
+      "動",
+      "うご"
+    ],
+    [
+      "終",
+      "お"
+    ],
+    [
+      "出",
+      "だ"
+    ],
+    [
+      "入",
+      "い"
+    ],
+    [
+      "上",
+      "うえ"
+    ],
+    [
+      "前",
+      "まえ"
+    ],
+    [
+      "次",
+      "つぎ"
+    ],
+    [
+      "何",
+      "なに"
+    ],
+    [
+      "人",
+      "ひと"
+    ],
+    [
+      "家",
+      "いえ"
+    ],
+    [
+      "一",
+      "ひと"
+    ],
+    [
+      "大",
+      "おお"
+    ],
+    [
+      "小",
+      "ちい"
+    ],
+    [
+      "高",
+      "たか"
+    ],
+    [
+      "安",
+      "やす"
+    ],
+    [
+      "速",
+      "はや"
+    ],
+    [
+      "新",
+      "あたら"
+    ],
+    [
+      "番",
+      "ばん"
+    ],
+    [
+      "送",
+      "おく"
+    ],
+    [
+      "正",
+      "ただ"
+    ],
+    [
+      "要",
+      "い"
+    ],
+    [
+      "済",
+      "す"
+    ],
+    [
+      "届",
+      "とど"
+    ],
+    [
+      "持",
+      "も"
+    ],
+    [
+      "置",
+      "お"
+    ],
+    [
+      "立",
+      "た"
+    ],
+    [
+      "残",
+      "のこ"
+    ],
+    [
+      "良",
+      "よ"
+    ],
+    [
+      "誰",
+      "だれ"
+    ],
+    [
+      "起",
+      "お"
+    ],
+    [
+      "迷",
+      "まよ"
+    ],
+    [
+      "難",
+      "むずか"
+    ],
+    [
+      "面",
+      "めん"
+    ],
+    [
+      "部",
+      "ぶ"
+    ],
+    [
+      "絵",
+      "え"
+    ],
+    [
+      "身",
+      "み"
+    ],
+    [
+      "中",
+      "なか"
+    ],
+    [
+      "仕",
+      "し"
+    ],
+    [
+      "全",
+      "ぜん"
+    ],
+    [
+      "分",
+      "わ"
+    ],
+    [
+      "右",
+      "みぎ"
+    ],
+    [
+      "左",
+      "ひだり"
+    ],
+    [
+      "合",
+      "あ"
+    ],
+    [
+      "同",
+      "おな"
+    ],
+    [
+      "回",
+      "まわ"
+    ],
+    [
+      "場",
+      "ば"
+    ],
+    [
+      "客",
+      "きゃく"
+    ],
+    [
+      "様",
+      "さま"
+    ],
+    [
+      "度",
+      "ど"
+    ],
+    [
+      "強",
+      "つよ"
+    ],
+    [
+      "当",
+      "あ"
+    ],
+    [
+      "手",
+      "て"
+    ],
+    [
+      "方",
+      "かた"
+    ],
+    [
+      "本",
+      "ほん"
+    ]
+  ]
+}

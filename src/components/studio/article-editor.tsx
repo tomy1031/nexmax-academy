@@ -198,6 +198,85 @@ function BlockEditor({
               onChange({ ...block, caption: caption.length > 0 ? caption : undefined })
             }
           />
+          {/*
+            大きさ。**既定は 小さめ**（絵が「見出し」に 見えないため）で、
+            中に 字の ある 説明の 図だけ「大きく」に する。
+            2026-08-30 の 指定「他の要素では小さくないといけない場合もあるので、
+            この時は大きくするような設定にしてください」。
+          */}
+          <label className="block">
+            <span className="text-ink-soft text-xs font-black">絵の 大きさ</span>
+            <select
+              value={block.size ?? "normal"}
+              onChange={(event) =>
+                onChange({
+                  ...block,
+                  size: event.target.value === "wide" ? "wide" : undefined,
+                })
+              }
+              className="border-hairline mt-1 w-full rounded-[12px] border-2 bg-white p-2 text-sm font-bold"
+            >
+              <option value="normal">ふつう（本文より 少し 小さく）</option>
+              <option value="wide">大きく（本文の 幅いっぱい・説明の 図むけ）</option>
+            </select>
+          </label>
+        </div>
+      );
+
+    /*
+     * 動画。**上げる 口は 置かない**（絵の `ImageSlotEditor` と ちがう）。
+     * 動画は こちらが `public/video/` へ 置く もので、先生は 場所を 書くだけ——
+     * 5〜7MB の ファイルを スタジオから 上げられるように すると、
+     * 置き場（Supabase）の 無料枠を 数本で 使い切る。
+     */
+    case "video":
+      return (
+        <div className="space-y-3">
+          <TextField
+            label="動画の 場所（ファイルの とき）"
+            value={block.src ?? ""}
+            onChange={(src) =>
+              onChange({ ...block, src: src.length > 0 ? src : undefined, youtube: undefined })
+            }
+            placeholder="/video/hourensou/xxx.mp4"
+            hint="ファイルは こちらで 置きます。置いた 場所を ここに 書いてください。"
+          />
+          <TextField
+            label="YouTube（YouTube の とき）"
+            value={block.youtube ?? ""}
+            onChange={(youtube) =>
+              onChange({
+                ...block,
+                youtube: youtube.length > 0 ? youtube : undefined,
+                src: undefined,
+              })
+            }
+            placeholder="https://www.youtube.com/watch?v=..."
+            hint="動画の ページの URL を そのまま 貼って ください。ファイルの 場所とは どちらか 1つです。"
+          />
+          <TextField
+            label="この 動画で 見るところ（なくてもよい）"
+            value={block.note ?? ""}
+            onChange={(note) => onChange({ ...block, note: note.length > 0 ? note : undefined })}
+            hint="動画の 中の ことばには ふりがなを 振れません。ここに 書いた 文が 動画の 下に 出ます。"
+          />
+          <TextField
+            label="読み上げ用の せつめい（なくてもよい）"
+            value={block.caption ?? ""}
+            onChange={(caption) =>
+              onChange({ ...block, caption: caption.length > 0 ? caption : undefined })
+            }
+            hint="画面には 出ません。目の 見えない 人の 読み上げに 使います。"
+          />
+          <TextField
+            label="読みこむ 前に 出す 絵（なくてもよい）"
+            value={block.poster ?? ""}
+            onChange={(poster) =>
+              onChange({ ...block, poster: poster.length > 0 ? poster : undefined })
+            }
+            placeholder="/img/hourensou/xxx.webp"
+            hint="空なら 黒い 面に 再生ボタンが 出ます。回線の 細い 教室では 空の ほうが 軽いです。"
+          />
         </div>
       );
 

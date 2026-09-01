@@ -24,7 +24,7 @@ describe("contentHref", () => {
     expect(contentHref("listening", "m2-asakai-listening")).toBe("/listening/m2-asakai-listening");
     expect(contentHref("quizset", "m2-asakai-quiz")).toBe("/quiz/m2-asakai-quiz");
     expect(contentHref("scenario", "s1-hearing")).toBe("/talk/s1-hearing");
-    expect(contentHref("wordstage", "stage12_asakai")).toBe("/arcade/stage12_asakai");
+    expect(contentHref("wordstage", "stage12_asakai")).toBe("/wordtest/stage12_asakai");
   });
 
   it("スキーマの全種別に見た目と行き先がある", () => {

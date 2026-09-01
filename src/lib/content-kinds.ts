@@ -49,7 +49,7 @@ const META: Record<ContentRefType, ContentKindMeta> = {
   // ミーティングは たいわ と同じ Zoom風の枠だが、聞き出すのではなく自分のことを話す。
   // 呼び名も行き先も分ける（学習者が「調べて聞く」つもりで入らないように）。
   meeting: { icon: "💬", label: "ミーティング", href: (id) => `/meeting/${id}`, gates: true },
-  wordstage: { icon: "🕹️", label: "ことば", href: (id) => `/arcade/${id}`, gates: true },
+  wordstage: { icon: "🕹️", label: "ことば", href: (id) => `/wordtest/${id}`, gates: true },
   // リンク（1枚で完結する練習ページ・外のサイト）。
   // 単独のURL は ほかの 種別と 同じく **ステージの中の教材なら 本来のURLへ 送り返す**
   // （`src/app/link/[id]/page.tsx`）。2026-08-23 まで この ルートが 無く、記事の中の
@@ -58,6 +58,18 @@ const META: Record<ContentRefType, ContentKindMeta> = {
   // 関門にしない理由はスライドと同じで、**中で何が起きたかがアプリから見えない**から
   // （schema.ts の linkSchema）。おわった記録は残すが、先へは進める。
   link: { icon: "🔗", label: "リンク", href: (id) => `/link/${id}`, gates: false },
+  // スキットは お手本の会話を 1行ずつ 聞いて まねる 教材。リスニング（聞き取れたかを
+  // 測る）と 呼び名も 行き先も 分ける——学習者が「聞くだけ」の つもりで 入らないように。
+  //
+  // 関門にしない（gates: false）。おわりは **声に 出せたか**で、それは アプリからは
+  // 見えない。見えないものを 通行の条件に すると、スライドと 同じで 1本の 教材で
+  // ステージが 止まる（schema.ts の linkSchema と 同じ 考え方）。
+  skit: { icon: "🎭", label: "スキット", href: (id) => `/skit/${id}`, gates: false },
+  /*
+   * クエストは **関門に しない**。1回 30分ほど かかる チーム戦なので、
+   * ここで 止めると 1人で 来た 日に 先へ 進めなく なる。
+   */
+  quest: { icon: "🗺", label: "クエスト", href: (id) => `/quest/${id}`, gates: false },
 };
 
 export function contentKindMeta(type: ContentRefType): ContentKindMeta {

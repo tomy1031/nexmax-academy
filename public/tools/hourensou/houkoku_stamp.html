@@ -1,0 +1,996 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>NexmaxAcademy</title>
+    <!--
+      済スタンプで 聞く『報告の 4つの パーツ』 — エンジン（画面と 動き だけ）
+
+      文言は すべて houkoku_stamp.data.js から 読む。この ファイルに
+      日本語を 直接 書かない（ボタン名も DATA.labels から）。
+
+      芯: 音声を 流しながら、聞こえた パーツの スタンプを 押す。押すたびに
+      カウンターが ぽん、と 跳ねる。答え合わせは 回数だけを くらべ、台本の
+      セリフを ならべて 見せる。減点は しない。
+    -->
+    <style>
+      :root {
+        --sky: #0288d1;
+        --sky-soft: #e1f2fb;
+        --navy: #004f8d;
+        --navy-dark: #003c6b;
+        --ink: #1f3a56;
+        --ink-soft: #5a7089;
+        --ink-faint: #9db0c2;
+        --line: #dcebf5;
+        --leaf: #58c273;
+        --leaf-dark: #3aa458;
+        --sun: #ffc93c;
+        --coral: #ff8a70;
+        --coral-dark: #f2654a;
+        --cream: #fff7e8;
+        --paper: #ffffff;
+        --radius: 20px;
+        --shadow: 0 6px 18px rgba(31, 58, 86, 0.1);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      [hidden] {
+        display: none !important;
+      }
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        height: 100vh;
+        height: 100dvh;
+        overflow: hidden;
+        color: var(--ink);
+        background: linear-gradient(180deg, #d8f0fc 0%, #f4fbff 46%, var(--cream) 100%);
+        font-family:
+          system-ui,
+          -apple-system,
+          "Hiragino Kaku Gothic ProN",
+          "Noto Sans JP",
+          Meiryo,
+          sans-serif;
+        font-size: 16px;
+        line-height: 2;
+        -webkit-text-size-adjust: 100%;
+      }
+
+      ruby {
+        ruby-align: center;
+      }
+
+      rt {
+        font-size: 0.56em;
+        color: var(--ink-soft);
+        font-weight: 400;
+        line-height: 1.1;
+      }
+
+      button {
+        font: inherit;
+        color: inherit;
+        cursor: pointer;
+      }
+
+      .app {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+      }
+
+      .bar {
+        flex: 0 0 auto;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 14px;
+        background: rgba(255, 255, 255, 0.86);
+        border-bottom: 1px solid var(--line);
+      }
+
+      .bar-icon {
+        font-size: 1.4rem;
+      }
+
+      .bar-title {
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: var(--navy);
+        line-height: 1.6;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .main {
+        flex: 1 1 auto;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* ---------------- 1枚もの の 画面 ---------------- */
+
+      .sheet {
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow-y: auto;
+        padding: 20px 16px 32px;
+        text-align: center;
+      }
+
+      .sheet-inner {
+        max-width: 660px;
+        margin: 0 auto;
+      }
+
+      .hero-icon {
+        font-size: 4.4rem;
+        line-height: 1.2;
+        width: 116px;
+        height: 116px;
+        margin: 4px auto 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: radial-gradient(circle at 50% 40%, #ffffff 0%, var(--sky-soft) 100%);
+        box-shadow: var(--shadow);
+        animation: pop 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.3);
+      }
+
+      .sheet h1 {
+        margin: 6px 0 2px;
+        font-size: 1.4rem;
+        line-height: 1.8;
+        color: var(--navy);
+      }
+
+      .sheet .sub {
+        margin: 0 0 16px;
+        font-size: 0.95rem;
+        color: var(--ink-soft);
+      }
+
+      .cards {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin: 14px 0 22px;
+        text-align: left;
+      }
+
+      .card {
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: 12px 16px;
+        box-shadow: 0 2px 8px rgba(31, 58, 86, 0.05);
+        font-size: 1rem;
+        animation: flyIn 0.3s cubic-bezier(0.2, 0.8, 0.3, 1) backwards;
+      }
+
+      .card i {
+        flex: 0 0 auto;
+        width: 10px;
+        height: 10px;
+        margin-top: 14px;
+        border-radius: 50%;
+        background: var(--sky);
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-height: 56px;
+        padding: 10px 26px;
+        border: none;
+        border-radius: 999px;
+        background: var(--navy);
+        color: #fff;
+        font-size: 1.05rem;
+        font-weight: 700;
+        line-height: 1.7;
+        box-shadow: 0 4px 0 var(--navy-dark);
+        transition:
+          transform 0.12s,
+          box-shadow 0.12s;
+      }
+
+      /* 色の ついた ボタンの 上では、ふりがなも 白で 読ませる */
+      .btn rt {
+        color: rgba(255, 255, 255, 0.85);
+      }
+
+      .btn:hover {
+        transform: translateY(-1px);
+      }
+
+      .btn:active {
+        transform: translateY(3px);
+        box-shadow: 0 1px 0 var(--navy-dark);
+      }
+
+      .btn[disabled] {
+        opacity: 0.55;
+        cursor: default;
+        transform: none;
+      }
+
+      .btn.wide {
+        width: 100%;
+      }
+
+      .btn.check {
+        background: var(--leaf);
+        box-shadow: 0 4px 0 var(--leaf-dark);
+      }
+
+      .btn.again {
+        background: var(--sky);
+        box-shadow: 0 4px 0 var(--navy);
+      }
+
+      /* ---------------- 聞きながら 押す 画面 ---------------- */
+
+      .play {
+        flex: 1 1 auto;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        padding: 12px 14px 14px;
+        gap: 12px;
+      }
+
+      .player {
+        flex: 0 0 auto;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 14px;
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+      }
+
+      .eq {
+        flex: 0 0 auto;
+        display: flex;
+        align-items: flex-end;
+        gap: 3px;
+        height: 30px;
+      }
+
+      .eq i {
+        width: 5px;
+        height: 8px;
+        border-radius: 3px;
+        background: var(--sky);
+        opacity: 0.35;
+      }
+
+      .player.playing .eq i {
+        opacity: 1;
+        animation: eq 0.8s ease-in-out infinite alternate;
+      }
+
+      .player.playing .eq i:nth-child(2) {
+        animation-delay: 0.18s;
+      }
+
+      .player.playing .eq i:nth-child(3) {
+        animation-delay: 0.36s;
+      }
+
+      .player audio {
+        flex: 1 1 auto;
+        min-width: 0;
+        width: 100%;
+        height: 38px;
+      }
+
+      .grid {
+        flex: 1 1 auto;
+        min-height: 0;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-auto-rows: 1fr;
+        gap: 12px;
+      }
+
+      .stamp {
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2px;
+        min-height: 118px;
+        padding: 12px 10px;
+        border: 2px solid var(--line);
+        border-radius: 24px;
+        background: var(--paper);
+        box-shadow: 0 3px 10px rgba(31, 58, 86, 0.07);
+        transition:
+          transform 0.1s,
+          border-color 0.2s,
+          box-shadow 0.2s;
+      }
+
+      .stamp:hover {
+        border-color: var(--sky);
+        box-shadow: 0 6px 16px rgba(2, 136, 209, 0.16);
+      }
+
+      .stamp:active {
+        transform: scale(0.96);
+      }
+
+      .stamp .face {
+        font-size: 3rem;
+        line-height: 1.1;
+      }
+
+      .stamp .name {
+        font-size: 1.05rem;
+        font-weight: 700;
+        line-height: 1.5;
+        color: var(--navy);
+      }
+
+      .stamp .desc {
+        font-size: 0.74rem;
+        line-height: 1.6;
+        color: var(--ink-soft);
+        text-align: center;
+      }
+
+      .stamp .count {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        min-width: 34px;
+        height: 34px;
+        padding: 0 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 999px;
+        background: var(--coral);
+        color: #fff;
+        font-size: 1.15rem;
+        font-weight: 700;
+        line-height: 1;
+        font-variant-numeric: tabular-nums;
+        box-shadow: 0 2px 6px rgba(242, 101, 74, 0.4);
+      }
+
+      .stamp .count.bump {
+        animation: bump 0.2s ease-out;
+      }
+
+      .imprint {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 92px;
+        height: 92px;
+        margin: -46px 0 0 -46px;
+        border: 5px solid var(--coral-dark);
+        border-radius: 50%;
+        pointer-events: none;
+        animation: imprint 0.5s ease-out forwards;
+      }
+
+      .play-foot {
+        flex: 0 0 auto;
+      }
+
+      /* ---------------- 答え合わせ ---------------- */
+
+      .result {
+        text-align: left;
+        border: 2px solid var(--line);
+        border-radius: var(--radius);
+        background: var(--paper);
+        padding: 12px 14px;
+        margin-bottom: 12px;
+        animation: flyIn 0.3s cubic-bezier(0.2, 0.8, 0.3, 1) backwards;
+      }
+
+      .result.match {
+        border-color: var(--leaf);
+        background: #f4fdf6;
+      }
+
+      .result-head {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .result-head .face {
+        font-size: 2rem;
+        line-height: 1.2;
+      }
+
+      .result-head .name {
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: var(--navy);
+        line-height: 1.6;
+      }
+
+      .counts {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .count-chip {
+        display: inline-flex;
+        align-items: baseline;
+        gap: 4px;
+        padding: 2px 12px;
+        border-radius: 999px;
+        background: var(--sky-soft);
+        color: var(--navy);
+        font-size: 0.75rem;
+        line-height: 1.7;
+      }
+
+      .count-chip.you {
+        background: #ffe9e3;
+        color: var(--coral-dark);
+      }
+
+      .count-chip b {
+        font-size: 1.15rem;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .quotes {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-top: 10px;
+      }
+
+      .quote {
+        display: flex;
+        gap: 8px;
+        align-items: flex-start;
+        padding: 8px 12px;
+        border-radius: 14px;
+        background: #f7fbfe;
+        font-size: 0.92rem;
+        line-height: 1.9;
+      }
+
+      .quote span {
+        flex: 0 0 auto;
+        color: var(--ink-faint);
+      }
+
+      .summary {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        text-align: left;
+        padding: 16px;
+        margin-bottom: 14px;
+        border-radius: var(--radius);
+        background: var(--sky-soft);
+        font-size: 1rem;
+        line-height: 1.95;
+        animation: flyIn 0.3s cubic-bezier(0.2, 0.8, 0.3, 1);
+      }
+
+      .summary span {
+        font-size: 2.2rem;
+        line-height: 1.2;
+      }
+
+      .bonus {
+        text-align: center;
+        padding: 18px 16px;
+        margin: 16px 0 18px;
+        border: 2px solid var(--sun);
+        border-radius: var(--radius);
+        background: var(--cream);
+        animation: pop 0.4s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+      }
+
+      .bonus .face {
+        font-size: 3rem;
+        line-height: 1.2;
+      }
+
+      .bonus .name {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--navy);
+        line-height: 1.7;
+      }
+
+      .bubble {
+        position: relative;
+        margin: 12px 0;
+        padding: 14px 16px;
+        border-radius: 18px;
+        background: var(--paper);
+        border: 1px solid var(--line);
+        text-align: left;
+        font-size: 1rem;
+        line-height: 1.95;
+      }
+
+      .bubble::before {
+        content: "";
+        position: absolute;
+        top: -9px;
+        left: 28px;
+        width: 16px;
+        height: 16px;
+        background: var(--paper);
+        border-left: 1px solid var(--line);
+        border-top: 1px solid var(--line);
+        transform: rotate(45deg);
+      }
+
+      .bonus .note {
+        text-align: left;
+        font-size: 0.92rem;
+        line-height: 1.9;
+        color: var(--ink-soft);
+      }
+
+      .foot-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 6px;
+      }
+
+      .foot-buttons .btn {
+        font-size: 0.98rem;
+        padding: 10px 18px;
+        text-align: center;
+      }
+
+      @media (min-width: 760px) {
+        .sheet {
+          padding: 30px 24px 40px;
+        }
+
+        .play {
+          width: 100%;
+          max-width: 980px;
+          margin: 0 auto;
+          padding: 18px 24px 20px;
+          gap: 16px;
+        }
+
+        .grid {
+          grid-template-columns: repeat(4, 1fr);
+          grid-auto-rows: minmax(0, 330px);
+          align-content: center;
+        }
+
+        .stamp .face {
+          font-size: 3.6rem;
+        }
+
+        .stamp .name {
+          font-size: 1.15rem;
+        }
+
+        .stamp .desc {
+          font-size: 0.82rem;
+        }
+
+        .play-foot {
+          display: flex;
+          justify-content: center;
+        }
+
+        .play-foot .btn.wide {
+          width: auto;
+          min-width: 340px;
+        }
+
+        .foot-buttons {
+          flex-direction: row;
+          justify-content: center;
+        }
+
+        .foot-buttons .btn {
+          min-width: 260px;
+          font-size: 1.02rem;
+        }
+      }
+
+      @keyframes flyIn {
+        from {
+          opacity: 0;
+          transform: translateY(18px) scale(0.97);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+
+      @keyframes pop {
+        0% {
+          opacity: 0;
+          transform: scale(0.3);
+        }
+        70% {
+          opacity: 1;
+          transform: scale(1.16);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      @keyframes bump {
+        0% {
+          transform: scale(1);
+        }
+        45% {
+          transform: scale(1.3);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      @keyframes imprint {
+        0% {
+          opacity: 0.9;
+          transform: scale(0.55) rotate(-14deg);
+        }
+        100% {
+          opacity: 0;
+          transform: scale(1.5) rotate(6deg);
+        }
+      }
+
+      @keyframes eq {
+        from {
+          height: 8px;
+        }
+        to {
+          height: 26px;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          animation: none !important;
+          transition: none !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <header class="bar">
+        <div class="bar-icon">🎧</div>
+        <div class="bar-title" id="barTitle"></div>
+      </header>
+      <main class="main" id="main"></main>
+    </div>
+
+    <script src="houkoku_stamp.data.js"></script>
+    <script>
+      (function () {
+        "use strict";
+
+        var DATA = window.STAMP_DATA;
+        if (!DATA) return;
+
+        /* ---------------- ことばの 組み立て ---------------- */
+
+        /** HTML に なる 文字を 先に 無害化する（素の 連結を しない）。 */
+        function esc(text) {
+          return String(text == null ? "" : text).replace(/[&<>"']/g, function (c) {
+            return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+          });
+        }
+
+        /** {表記|よみ} → <ruby>表記<rt>よみ</rt></ruby>。エスケープした あとで 組む。 */
+        function rubyfy(text) {
+          return esc(text).replace(/\{([^{}|]+)\|([^{}|]+)\}/g, function (_m, base, yomi) {
+            return "<ruby>" + base + "<rt>" + yomi + "</rt></ruby>";
+          });
+        }
+
+        /** ルビ記法を はずした ただの 文字（タイトル用）。 */
+        function plain(text) {
+          return String(text == null ? "" : text).replace(/\{([^{}|]+)\|[^{}|]+\}/g, "$1");
+        }
+
+        function el(tag, cls, text) {
+          var node = document.createElement(tag);
+          if (cls) node.className = cls;
+          if (text != null) node.innerHTML = rubyfy(text);
+          return node;
+        }
+
+        function clear(node) {
+          while (node.firstChild) node.removeChild(node.firstChild);
+        }
+
+        var L = DATA.labels || {};
+        var STAMPS = DATA.stamps || [];
+
+        var main = document.getElementById("main");
+        var barTitle = document.getElementById("barTitle");
+        barTitle.innerHTML = rubyfy(DATA.title);
+        document.title = plain(DATA.title);
+
+        /* ---------------- 現在地 ---------------- */
+
+        var counts = {}; // スタンプID → 押した 回数
+        var audio = null; // 画面を またいで 同じ 音を 使う
+        var doneSent = false;
+
+        function resetCounts() {
+          STAMPS.forEach(function (stamp) {
+            counts[stamp.id] = 0;
+          });
+        }
+        resetCounts();
+
+        /* ---------------- はじめ の 画面 ---------------- */
+
+        function renderTitle() {
+          clear(main);
+          var sheet = el("div", "sheet");
+          var inner = el("div", "sheet-inner");
+          inner.appendChild(el("div", "hero-icon", "🎧"));
+          inner.appendChild(el("h1", null, DATA.title));
+          inner.appendChild(el("p", "sub", DATA.subtitle));
+
+          var cards = el("div", "cards");
+          (DATA.intro || []).forEach(function (text, i) {
+            var card = el("div", "card");
+            card.style.animationDelay = i * 90 + "ms";
+            card.appendChild(document.createElement("i"));
+            card.appendChild(el("div", null, text));
+            cards.appendChild(card);
+          });
+          inner.appendChild(cards);
+
+          var start = el("button", "btn", L.start);
+          start.type = "button";
+          start.addEventListener("click", renderPlay);
+          inner.appendChild(start);
+
+          sheet.appendChild(inner);
+          main.appendChild(sheet);
+        }
+
+        /* ---------------- 聞きながら 押す 画面 ---------------- */
+
+        function ensureAudio() {
+          if (audio) return audio;
+          audio = document.createElement("audio");
+          audio.controls = true;
+          audio.preload = "metadata";
+          audio.src = DATA.audioUrl || "";
+          return audio;
+        }
+
+        function renderPlay() {
+          clear(main);
+          var play = el("div", "play");
+
+          var player = el("div", "player");
+          var eq = el("div", "eq");
+          eq.appendChild(document.createElement("i"));
+          eq.appendChild(document.createElement("i"));
+          eq.appendChild(document.createElement("i"));
+          player.appendChild(eq);
+          var sound = ensureAudio();
+          player.appendChild(sound);
+          sound.addEventListener("play", function () {
+            player.classList.add("playing");
+          });
+          sound.addEventListener("pause", function () {
+            player.classList.remove("playing");
+          });
+          sound.addEventListener("ended", function () {
+            player.classList.remove("playing");
+          });
+          if (!sound.paused) player.classList.add("playing");
+          play.appendChild(player);
+
+          var grid = el("div", "grid");
+          STAMPS.forEach(function (stamp) {
+            var button = el("button", "stamp");
+            button.type = "button";
+
+            var badge = el("div", "count", String(counts[stamp.id] || 0));
+            badge.hidden = !counts[stamp.id];
+            button.appendChild(badge);
+            button.appendChild(el("div", "face", stamp.icon || "🔵"));
+            button.appendChild(el("div", "name", stamp.label));
+            button.appendChild(el("div", "desc", stamp.desc));
+
+            button.addEventListener("click", function () {
+              counts[stamp.id] = (counts[stamp.id] || 0) + 1;
+              badge.hidden = false;
+              badge.textContent = String(counts[stamp.id]);
+              badge.classList.remove("bump");
+              void badge.offsetWidth;
+              badge.classList.add("bump");
+              stampMark(button);
+            });
+
+            grid.appendChild(button);
+          });
+          play.appendChild(grid);
+
+          var foot = el("div", "play-foot");
+          var check = el("button", "btn check wide", "🔎 " + (L.check || ""));
+          check.type = "button";
+          check.addEventListener("click", renderCheck);
+          foot.appendChild(check);
+          play.appendChild(foot);
+
+          main.appendChild(play);
+        }
+
+        /** 押した しるし（はんこの あと）を 1枚 重ねて、消えたら 片づける。 */
+        function stampMark(button) {
+          var mark = el("div", "imprint");
+          button.appendChild(mark);
+          window.setTimeout(function () {
+            if (mark.parentNode) mark.parentNode.removeChild(mark);
+          }, 520);
+        }
+
+        /* ---------------- 答え合わせ ---------------- */
+
+        function countChip(labelText, value, mine) {
+          var chip = el("div", "count-chip" + (mine ? " you" : ""));
+          chip.appendChild(el("span", null, labelText));
+          chip.appendChild(el("b", null, String(value)));
+          chip.appendChild(el("span", null, L.times || ""));
+          return chip;
+        }
+
+        function renderCheck() {
+          if (audio && !audio.paused) audio.pause();
+          clear(main);
+
+          var matched = 0;
+          STAMPS.forEach(function (stamp) {
+            if ((counts[stamp.id] || 0) === stamp.count) matched += 1;
+          });
+
+          var sheet = el("div", "sheet");
+          var inner = el("div", "sheet-inner");
+
+          var messages = DATA.messages || {};
+          var summary = el("div", "summary");
+          summary.appendChild(el("span", null, "🎧"));
+          summary.appendChild(el("div", null, messages[matched] || messages.other || ""));
+          inner.appendChild(summary);
+
+          STAMPS.forEach(function (stamp, i) {
+            var mine = counts[stamp.id] || 0;
+            var same = mine === stamp.count;
+            var row = el("div", "result" + (same ? " match" : ""));
+            row.style.animationDelay = i * 80 + "ms";
+
+            var head = el("div", "result-head");
+            head.appendChild(el("div", "face", stamp.icon || "🔵"));
+            head.appendChild(el("div", "name", stamp.label));
+            var chips = el("div", "counts");
+            chips.appendChild(countChip(L.yourCount, mine, true));
+            chips.appendChild(countChip(L.scriptCount, stamp.count, false));
+            chips.appendChild(el("div", "face", same ? "✅" : "👂"));
+            head.appendChild(chips);
+            row.appendChild(head);
+
+            var quotes = el("div", "quotes");
+            (stamp.quotes || []).forEach(function (text) {
+              var quote = el("div", "quote");
+              quote.appendChild(el("span", null, "💬"));
+              quote.appendChild(el("div", null, text));
+              quotes.appendChild(quote);
+            });
+            row.appendChild(quotes);
+
+            inner.appendChild(row);
+          });
+
+          var bonus = DATA.bonus;
+          if (bonus) {
+            var box = el("div", "bonus");
+            box.appendChild(el("div", "face", bonus.icon || "🌟"));
+            box.appendChild(el("div", "name", bonus.title));
+            box.appendChild(el("div", "bubble", bonus.quote));
+            box.appendChild(el("div", "note", bonus.note));
+            inner.appendChild(box);
+          }
+
+          var buttons = el("div", "foot-buttons");
+
+          var again = el("button", "btn again", "🔁 " + (L.again || ""));
+          again.type = "button";
+          again.addEventListener("click", function () {
+            resetCounts();
+            renderPlay();
+          });
+          buttons.appendChild(again);
+
+          var finish = el("button", "btn", "🏁 " + (L.finish || ""));
+          finish.type = "button";
+          finish.addEventListener("click", function () {
+            tellParentDone();
+            finish.innerHTML = rubyfy("✅ " + (L.finish || ""));
+            finish.disabled = true;
+          });
+          buttons.appendChild(finish);
+
+          inner.appendChild(buttons);
+          sheet.appendChild(inner);
+          main.appendChild(sheet);
+
+          // 回数が そろって いなくても、ここまで 来たら 完走。1回だけ 送る。
+          window.setTimeout(tellParentDone, 1200);
+        }
+
+        /**
+         * おえた ことを、この ページを 埋めている アプリへ 伝える。
+         * 受け手は src/components/link/link-view.tsx。同じ 置き場からの 合図だけを
+         * 受けるので、宛先も 自分の origin に しぼって 投げる。
+         */
+        function tellParentDone() {
+          if (doneSent) return;
+          doneSent = true;
+          try {
+            if (window.parent && window.parent !== window) {
+              window.parent.postMessage(
+                { type: "nexmax:link-done", id: DATA.id },
+                window.location.origin,
+              );
+            }
+          } catch (_e) {
+            /* 埋め込みでなければ 何も しない */
+          }
+        }
+
+        renderTitle();
+      })();
+    </script>
+  </body>
+</html>

@@ -1,12 +1,14 @@
 "use client";
 
 import Image from "next/image";
+import { ZoomableImage } from "@/components/media/zoomable-image";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import type { Article, ArticleBlock } from "@/content/schema";
 import { NexMax, type NexMaxVariant } from "@/components/nexmax";
 import { DictionaryText } from "@/components/dictionary-text";
 import { RubyText } from "@/components/ruby-text";
+import { VideoPlayer } from "@/components/media/video-player";
 import { SpeakButton } from "@/components/speak-button";
 import { recordContentProgress } from "@/lib/progress/store";
 import type { DictionaryEntry } from "@/lib/dictionary";
@@ -329,7 +331,7 @@ function BlockView({
       /*
        * 下線つきの説明を出すのは本文だけ。見出し・かじょうがき・ポイント枠にも出すと、
        * 1画面に下線が何本も並び、「どれを見ればよいか」が伝わらなくなる
-       *（1文につき1語という決まりは DictionaryText 側が守る — 設計07 §2.5）。
+       *（本文の どこに 下線を 出すかは DictionaryText 側が 決める — 当たった 語 ぜんぶ）。
        */
       return (
         <div className="flex items-start gap-2">
@@ -348,6 +350,9 @@ function BlockView({
 
     case "image":
       return <ImageBlock block={block} furigana={furigana} show={show} />;
+
+    case "video":
+      return <VideoBlock block={block} furigana={furigana} show={show} dictionary={dictionary} />;
 
     case "callout":
       return <CalloutBlock block={block} furigana={furigana} show={show} dictionary={dictionary} />;
@@ -637,6 +642,47 @@ function CharactersBlock({
  * 幅も 少し しぼる。画面いっぱいの 絵は「見出し」に 見えてしまい、
  * すぐ 下の 説明と つながらない。
  */
+/**
+ * 動画（2026-08-29 の 指定）。
+ *
+ * ## 先に 落とさない
+ * `preload="none"`。1本 5〜7MB あるので、ページを 開いた だけで 流れると
+ * カンボジアの 教室で 30人ぶんが そのまま 回線に 効く（docs/constraints.md
+ *「30人同時アクセスに耐える」）。押した ときに 初めて 落ち始める。
+ *
+ * ## ことばは 動画の 外に 置く
+ * 中の 音と 字には ふりがなを 振れない。だから `note` を **動画の 下に 出す**
+ *（絵の `caption` は 出さない 決まりだが、あれは 絵を 見れば 分かる から。
+ * 動画は 押すまで 中身が 見えないので、何の 動画かは 字で 言う 必要が ある）。
+ */
+function VideoBlock({
+  block,
+  furigana,
+  show,
+  dictionary,
+}: {
+  block: Extract<ArticleBlock, { kind: "video" }>;
+  furigana: FuriganaIndex;
+  show: boolean;
+  dictionary?: readonly DictionaryEntry[];
+}) {
+  return (
+    <figure className="mx-auto w-full max-w-[720px]">
+      <VideoPlayer
+        src={block.src}
+        youtube={block.youtube}
+        poster={block.poster}
+        label={block.caption}
+      />
+      {block.note ? (
+        <figcaption className="text-ink-soft mt-2 text-sm leading-relaxed font-bold">
+          <DictionaryText text={block.note} index={furigana} show={show} dictionary={dictionary} />
+        </figcaption>
+      ) : null}
+    </figure>
+  );
+}
+
 function ImageBlock({
   block,
   furigana,
@@ -682,17 +728,26 @@ function ImageBlock({
     );
   }
 
+  /*
+   * 大きさは **絵に よって 変える**（2026-08-30 の 指定「他の要素では小さくないと
+   * いけない場合もあるので、この時は大きくするような設定にしてください」）。
+   * 既定は これまでどおり 少し しぼる。中に 字の ある 説明の 図だけ `size: "wide"` に して
+   * 本文の 幅いっぱいで 出す——1134px の 図を 412px で 出すと、ふりがなが 潰れて 読めない。
+   */
+  const width = block.size === "wide" ? "max-w-full" : "max-w-[420px]";
   return (
-    <figure className="mx-auto w-full max-w-[420px]">
-      <Image
-        src={block.src}
-        alt={block.caption ?? ""}
-        width={1200}
-        height={675}
-        unoptimized
-        className="h-auto w-full rounded-[20px] border-4 border-white"
-        style={{ boxShadow: "0 6px 0 #b8deed" }}
-      />
+    <figure className={`mx-auto w-full ${width}`}>
+      <ZoomableImage label={block.caption}>
+        <Image
+          src={block.src}
+          alt={block.caption ?? ""}
+          width={1600}
+          height={900}
+          unoptimized
+          className="h-auto w-full rounded-[20px] border-4 border-white"
+          style={{ boxShadow: "0 6px 0 #b8deed" }}
+        />
+      </ZoomableImage>
     </figure>
   );
 }
@@ -705,16 +760,22 @@ function ImageBlock({
  */
 function StepThumb({ image }: { image?: { src?: string; status?: string; caption?: string } }) {
   if (!image || image.status !== "done" || !image.src) return null;
+  /*
+   * **大きさは 変えない**（並びを 目で 追う ための 80px）。
+   * かわりに 押せば 全画面に なる ので、中の 字が 読める。
+   */
   return (
-    <Image
-      src={image.src}
-      alt=""
-      width={480}
-      height={480}
-      unoptimized
-      className="h-20 w-20 shrink-0 rounded-[14px] border-2 border-white object-cover sm:h-24 sm:w-24"
-      style={{ boxShadow: "0 3px 0 #b8deed" }}
-    />
+    <ZoomableImage label={image.caption} size="small" className="shrink-0">
+      <Image
+        src={image.src}
+        alt=""
+        width={480}
+        height={480}
+        unoptimized
+        className="h-20 w-20 rounded-[14px] border-2 border-white object-cover sm:h-24 sm:w-24"
+        style={{ boxShadow: "0 3px 0 #b8deed" }}
+      />
+    </ZoomableImage>
   );
 }
 
