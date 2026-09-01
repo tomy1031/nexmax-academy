@@ -183,6 +183,8 @@ export function answerMatches(input: string, accepted: readonly string[]): boole
 /** 学習者の入力に見つかった問題の種類。文言は feedback.ts が持つ。 */
 export type InputIssue = "kanji" | "latin" | "katakana" | "notKana";
 
+// furigana.ts の KANJI と同じ範囲（このモジュールは依存ゼロを保つため写しで持つ。
+// 範囲を変えるときは両方いっしょに——tests/furigana_checks.test.ts が食い違いを見張る）
 const HAS_KANJI = /[㐀-鿿々]/;
 const HAS_LATIN = /[A-Za-zＡ-Ｚａ-ｚ]/;
 const HAS_KATAKANA = /[ァ-ヶ]/;

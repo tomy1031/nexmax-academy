@@ -5,6 +5,7 @@ import {
   checkDanglingRefs,
   checkForbiddenWords,
   checkFuriganaCoverageOf,
+  checkFuriganaEntrySoundness,
   checkSecretLeaks,
   type Finding,
 } from "@/lib/content-checks";
@@ -55,6 +56,11 @@ function runContentChecks(content: Content, publishing: boolean): Finding[] {
   const findings = checkForbiddenWords(label, content);
   findings.push(...checkCountryNames(label, content));
   findings.push(...checkFuriganaCoverageOf(label, content, publishing ? "error" : "warn"));
+  // エントリ自体の壊れ（死にエントリ・送りがな落ち・同表記異読）は下書きでも error——
+  // 「作りかけだから仕方ない」ものではなく、書いた時点で画面が壊れているため。
+  // DB は git より勝つので、ここで止めないと死にエントリが保存の瞬間に復活する
+  // （読みの照合（kuromoji）は辞書が Worker に載らないため届かない。願い #299）。
+  findings.push(...checkFuriganaEntrySoundness([{ file: label, content }]));
   if (content.kind === "scenario") findings.push(...checkSecretLeaks(label, content));
   return findings;
 }
