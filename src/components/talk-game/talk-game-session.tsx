@@ -266,6 +266,15 @@ export function TalkGameSession({
   const [askFocus, setAskFocus] = useState<readonly TalkFocus[] | undefined>(undefined);
   const [askFrom, setAskFrom] = useState("");
   /**
+   * いま 聞かれて いる しつもんの 型文と お手本（2026-09-01 の 指定）。
+   *
+   * 前は `talkHints` を **ぜんぶ まとめて** 出して いたので、3問目の 学習者にも
+   * 1問目・6問目の 型文が 並んで いた。**いま 要る 1本を 見つけるのが 学習者の しごと**に
+   * なって いて、ヒントを 押すたびに 読む ものが 増えて いた。
+   */
+  const [askHint, setAskHint] = useState("");
+  const [askExample, setAskExample] = useState("");
+  /**
    * 準備フォームで 書いた ことを、しつもんの 横に 出す ための 引き（設問ID → 行）。
    *
    * **調べた ことを 見ながら 話す**引き先は ひきだし（`AnswerNotebook`）と 同じ
@@ -352,6 +361,25 @@ export function TalkGameSession({
    */
   const openerAt = useCallback((turns: number) => game?.openers[turns] ?? null, [game]);
 
+  /**
+   * しつもんを 出す ときに、そのしつもんの 見かた・準備・型文・お手本を まとめて 決める。
+   *
+   * **1か所で 決める**。前は `focus` と `from` を 積む ところ 3か所に 書き写して いて、
+   * 型文を 足す ときに 1か所 忘れれば 黙って ずれる 形だった。
+   *
+   * 型文は しつもんの 中（`hint`）から 取り、無ければ 前からの 並び（`talkHints`）の
+   * 同じ 番号に 落ちる——前からの 教材が そのまま 動く ように。
+   */
+  const applyOpener = useCallback(
+    (opener: ReturnType<typeof openerAt>, turns: number) => {
+      setAskFocus(opener?.focus);
+      setAskFrom(opener?.from ?? "");
+      setAskHint(opener?.hint ?? game?.talkHints[turns] ?? "");
+      setAskExample(opener?.example ?? "");
+    },
+    [game],
+  );
+
   /** いま 出て いる 社長の ことば。 */
   const line = queue[0]?.text ?? "";
 
@@ -406,10 +434,23 @@ export function TalkGameSession({
     return game.figures.neutral;
   }, [game, phase]);
 
+  /**
+   * ヒントに 出す 型文。
+   *
+   * 話す ばんは **いまの しつもんの 1本だけ**。聞く ばんは しつもんするのが 学習者なので
+   *「その ときの 問い」が 無く、これまでどおり ぜんぶ 出す。
+   */
   const hints = useMemo(() => {
     if (!game) return [] as readonly string[];
-    return talk.round === "listen" ? game.listenHints : game.talkHints;
-  }, [game, talk.round]);
+    if (talk.round === "listen") return game.listenHints;
+    return askHint === "" ? [] : [askHint];
+  }, [game, talk.round, askHint]);
+
+  /** ヒントの `(ex)`。ばんで 出どころが ちがう。 */
+  const example = useMemo(() => {
+    if (!game) return "";
+    return talk.round === "listen" ? (game.listenExample ?? "") : askExample;
+  }, [game, talk.round, askExample]);
 
   /** つぎの ことばへ。ぜんぶ 出しきったら 学習者の ばん。 */
   const nextLine = useCallback(() => {
@@ -508,13 +549,14 @@ export function TalkGameSession({
       if (from.round === "listen") {
         setAskFocus(undefined);
         setAskFrom("");
+        setAskHint("");
+        setAskExample("");
         setQueue([lineOf(withName(game.listenInvite), "listenInvite")]);
       } else if (from.turns > 0) {
         const opener = openerAt(from.turns);
         const at = from.turns % Math.max(1, game.probes.length);
         const probe = game.probes[at] ?? "";
-        setAskFocus(opener?.focus);
-        setAskFrom(opener?.from ?? "");
+        applyOpener(opener, from.turns);
         setQueue([
           opener?.ask
             ? lineOf(withName(opener.ask), `opener-${from.turns}`)
@@ -522,8 +564,7 @@ export function TalkGameSession({
         ]);
       } else {
         const opener = openerAt(0);
-        setAskFocus(opener?.focus);
-        setAskFrom(opener?.from ?? "");
+        applyOpener(opener, 0);
         setQueue([
           lineOf(withName(game.opening), "opening"),
           lineOf(withName(opener?.ask ?? ""), "opener-0"),
@@ -562,7 +603,7 @@ export function TalkGameSession({
         round: talk.round,
         ask: askText,
         focus: talk.round === "talk" ? askFocus : undefined,
-        hint: hints[0] ?? "",
+        hint: askHint || (hints[0] ?? ""),
         judgePrompt: meeting.judgePrompt ?? "",
         hostName: meeting.host.name,
         learnerName,
@@ -651,7 +692,7 @@ export function TalkGameSession({
       ]);
       setPhase("feedback");
     },
-    [game, meeting, plan, talk, askText, askFocus, hints, learnerName],
+    [game, meeting, plan, talk, askText, askFocus, askHint, hints, learnerName],
   );
 
   /** 見かたを 読み終えたら、社長の ことばへ もどる。 */
@@ -694,8 +735,7 @@ export function TalkGameSession({
        * 対応が 無いのに 「じゅんびの ◯」と 出すと、学習者は 書いた はずの ものを
        * 探しに 行って 見つけられない。
        */
-      setAskFocus(opener?.focus);
-      setAskFrom(opener?.from ?? "");
+      applyOpener(opener, talk.turns);
       /*
        * 出だしが あれば 作り置きの 音つき。AIの 深掘り（`nextAsk`）は その場の ことば
        * なので 音は 無い。予備（`probe`）は 教材の ことばなので また 音つきに 戻る。
@@ -712,7 +752,7 @@ export function TalkGameSession({
     setSpoken([]);
     setQueue(lines.filter((one) => one.text !== ""));
     setPhase("host");
-  }, [game, result, talk.round, talk.turns, withName, openerAt, lineOf]);
+  }, [game, result, talk.round, talk.turns, withName, openerAt, applyOpener, lineOf]);
 
   /*
    * ばんが 変わったら **黙って つなぎ直す**（指示文は つなぐ ときにしか 渡せない）。
@@ -938,7 +978,7 @@ export function TalkGameSession({
             round={talk.round}
             focus={talk.round === "talk" ? askFocus : undefined}
             prepared={askFrom ? (prep[askFrom] ?? null) : null}
-            hasHint={hints.length > 0}
+            hasHint={hints.length > 0 || example !== ""}
             voice={voice}
             hostVoice={hostVoice}
             instruction={instruction}
@@ -1001,7 +1041,13 @@ export function TalkGameSession({
       </TalkScene>
 
       {hintOpen ? (
-        <HintModal lines={hints} hasBlank furigana={furigana} onClose={() => setHintOpen(false)} />
+        <HintModal
+          lines={hints}
+          hasBlank
+          example={example}
+          furigana={furigana}
+          onClose={() => setHintOpen(false)}
+        />
       ) : null}
 
       {logOpen ? (

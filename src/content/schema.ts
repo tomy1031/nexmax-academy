@@ -2100,6 +2100,29 @@ const talkOpener = z.preprocess(
       .min(1)
       .max(talkFocusKeys.length)
       .default(["concrete", "reason"]),
+    /**
+     * この しつもんの ヒント（答え方の 型文）。
+     *
+     * **しつもんごとに 持つ**（2026-09-01 の 指定「その時の問いにあったヒントを出して欲しい」）。
+     * 前は `talkGame.talkHints` を **ぜんぶ まとめて** 出して いたので、
+     * 3問目の 学習者にも 1問目・6問目の 型文が 並んで いた——読む ものが 増える だけで、
+     * いま 要る 1本を 見つけるのは 学習者の しごとに なって いた。
+     *
+     * 無ければ `talkHints` の 同じ 番号に 落ちる（前からの 教材が そのまま 動く）。
+     */
+    hint: plainText.optional(),
+    /**
+     * その しつもんの **お手本**（画面には `(ex)` として 出す）。
+     *
+     * 型文（`hint`）が「言い方の かたち」なのに 対して、こちらは
+     * **中身まで 入った 1つの 答え**。相手の 心が 動く のは どういう 答えかを 見せる
+     *（2026-09-01 の 指定「松井社長の心を打ちそうな例を表示して欲しい」）。
+     *
+     * ## 写させる ためでは ない
+     * だから **型文と 並べて 出す**。型文の ◯◯ は 空の まま 残して あるので、
+     * お手本を 見た あとでも 自分の ことばを 入れる ところは 自分で 埋める ことに なる。
+     */
+    example: plainText.optional(),
   }),
 );
 export type TalkOpener = z.infer<typeof talkOpener>;
@@ -2238,6 +2261,13 @@ export const meetingSchema = z.object({
       listenInvite: plainText,
       /** 聞く ばんの 型文（聞き方の 足場）。 */
       listenHints: z.array(plainText).default([]),
+      /**
+       * 聞く ばんの お手本（`(ex)`）。
+       *
+       * 聞く ばんには「その ときの 問い」が 無い（しつもんするのは 学習者）ので、
+       * 型文は これまでどおり ぜんぶ 出す。お手本だけ 1つ 添える。
+       */
+      listenExample: plainText.optional(),
       /** 満タンで 相手が 話す「とっておきの 話」（報酬は 物語 — 設計01 P2×P7）。 */
       reward: plainText,
       /**
