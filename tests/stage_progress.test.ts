@@ -117,6 +117,24 @@ describe("gateStage（関門）", () => {
   });
 });
 
+describe("gateStage（先生には 鍵を かけない）", () => {
+  it("まだ 順番の 来ていない 教材も ぜんぶ ひらける", () => {
+    const gating = gateStage(codes("000"), gatesOf(["manga", "article", "quizset"]), true);
+    expect(gating.openable).toEqual([true, true, true]);
+  });
+
+  it("進み具合は 動かさない（のぞいただけで クリアに しない）", () => {
+    const gating = gateStage(codes("000"), gatesOf(["manga", "article", "quizset"]), true);
+    expect(gating.passed).toEqual([false, false, false]);
+    expect(gating.blockedAt).toBe(0);
+    expect(gating.allPassed).toBe(false);
+  });
+
+  it("渡さなければ これまでどおり 鍵は かかる", () => {
+    expect(gateStage(codes("00"), gatesOf(["manga", "article"])).openable).toEqual([true, false]);
+  });
+});
+
 describe("resolveGates（ステージ側の 関門指定）", () => {
   it("書いていなければ 種別の 既定に したがう", () => {
     expect(resolveGates("quizset")).toBe(true);

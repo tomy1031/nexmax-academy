@@ -72,18 +72,25 @@ export interface StageGating {
 }
 
 /**
- * @param codes  教材ごとの進捗（statusCode）
- * @param gates  教材ごとに 関門か（content-kinds.ts の `gates`）
+ * @param codes     教材ごとの進捗（statusCode）
+ * @param gates     教材ごとに 関門か（content-kinds.ts の `gates`）
+ * @param unlocked  この人には 鍵を かけない（先生＝管理者。2026-09-01 の指定）。
+ *   **開く/開かない だけ**に効かせる——`passed` と `allPassed` は 進捗そのものなので
+ *   触らない。ここまで 一緒に true にすると、先生が 教材を のぞいただけで
+ *   ステージが クリア済みに なり、地図の 現在地が 勝手に 進む。
  */
 export function gateStage(
   codes: readonly ContentStatusCode[],
   gates: readonly boolean[],
+  unlocked = false,
 ): StageGating {
   const passed = codes.map((code, index) => code === "2" || gates[index] === false);
   const blockedAt = passed.findIndex((ok) => !ok);
   // 関門の手前までは開ける。関門そのものも開ける（開けないと おわらせられない）
   const openUntil = blockedAt < 0 ? passed.length - 1 : blockedAt;
-  const openable = passed.map((_, index) => index <= openUntil || gates[index] === false);
+  const openable = passed.map(
+    (_, index) => unlocked || index <= openUntil || gates[index] === false,
+  );
   return { passed, openable, blockedAt, allPassed: codes.length > 0 && blockedAt < 0 };
 }
 
