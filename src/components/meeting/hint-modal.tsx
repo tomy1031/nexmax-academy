@@ -20,6 +20,7 @@ import type { FuriganaIndex } from "@/lib/text/furigana";
 export function HintModal({
   lines,
   hasBlank,
+  example,
   furigana,
   onClose,
 }: {
@@ -27,6 +28,14 @@ export function HintModal({
   lines: readonly string[];
   /** ◯◯（自分の ことばを 入れる 穴）が あるか。 */
   hasBlank: boolean;
+  /**
+   * お手本（`(ex)`）。**中身まで 入った 1つの 答え**（2026-09-01 の 指定）。
+   *
+   * 型文は「言い方の かたち」しか 見せないので、**どこまで 言えば 相手に 届くのか**が
+   * 分からない ままだった。相手の 心が 動く のは どういう 答えかを 1つ 見せる。
+   * 写させる ためでは ないので 型文と 並べて 出す——◯◯ は 空の まま 残って いる。
+   */
+  example?: string;
   /** 教材の 読み辞書（型文の 漢字に ふりがなを 合成する）。 */
   furigana: FuriganaIndex;
   onClose: () => void;
@@ -72,6 +81,18 @@ export function HintModal({
         </ul>
         {hasBlank ? (
           <p className="text-ink-faint mt-2 text-xs font-bold">◯◯ は あなたの ことばです。</p>
+        ) : null}
+
+        {example ? (
+          <div
+            className="mt-4 rounded-xl border-2 px-4 py-3"
+            style={{ borderColor: "var(--color-leaf)", background: "var(--color-panel-tint)" }}
+          >
+            <p className="text-leaf-deep text-xs font-black">(ex) こう 言うと よく つたわります</p>
+            <p className="text-ink mt-1 text-sm font-bold break-words">
+              「<RubyText text={example} index={furigana} show />」
+            </p>
+          </div>
         ) : null}
         <button
           type="button"

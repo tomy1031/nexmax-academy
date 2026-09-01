@@ -35,6 +35,12 @@ describe("AIが 書ける ことば", () => {
     const quiz = read("content/quizsets/kaisha_omoshiroi.json");
     return [
       ...(meeting.talkGame?.talkHints ?? []),
+      // 型文と お手本は しつもんの 中へ 移った（2026-09-01）。**両方 見る**——
+      // 片方だけに すると、移した ときに 見張りが 黙って 外れる
+      ...(meeting.talkGame?.openers ?? []).flatMap((one: { hint?: string; example?: string }) => [
+        one.hint ?? "",
+        one.example ?? "",
+      ]),
       ...(meeting.talkGame?.listenHints ?? []),
       ...quiz.questions.map((q: { q: string }) => q.q),
     ];
@@ -53,6 +59,12 @@ describe("AIが 書ける ことば", () => {
     const meeting = read("content/meetings/kaisha_matsui.json");
     const hints: string[] = [
       ...(meeting.talkGame?.talkHints ?? []),
+      // 型文と お手本は しつもんの 中へ 移った（2026-09-01）。**両方 見る**——
+      // 片方だけに すると、移した ときに 見張りが 黙って 外れる
+      ...(meeting.talkGame?.openers ?? []).flatMap((one: { hint?: string; example?: string }) => [
+        one.hint ?? "",
+        one.example ?? "",
+      ]),
       ...(meeting.talkGame?.listenHints ?? []),
     ];
     for (const hint of hints) {

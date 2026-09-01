@@ -910,11 +910,17 @@ function collectLabeledTexts(content: Content): LabeledText[] {
       if (content.talkGame) {
         const game = content.talkGame;
         push("talkGame.opening", game.opening);
-        game.openers.forEach((one, i) => push(`talkGame.openers[${i}].ask`, one.ask));
+        game.openers.forEach((one, i) => {
+          push(`talkGame.openers[${i}].ask`, one.ask);
+          // 型文と お手本も **学習者が 読む 字**（ヒントの ポップアップに 出る）
+          if (one.hint) push(`talkGame.openers[${i}].hint`, one.hint);
+          if (one.example) push(`talkGame.openers[${i}].example`, one.example);
+        });
         game.probes.forEach((one, i) => push(`talkGame.probes[${i}]`, one));
         game.talkHints.forEach((one, i) => push(`talkGame.talkHints[${i}]`, one));
         push("talkGame.listenInvite", game.listenInvite);
         game.listenHints.forEach((one, i) => push(`talkGame.listenHints[${i}]`, one));
+        if (game.listenExample) push("talkGame.listenExample", game.listenExample);
         push("talkGame.reward", game.reward);
       }
       // persona / judgePrompt は Live への指示（scenario の interview.persona と同じ扱い）
