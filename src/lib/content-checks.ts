@@ -32,6 +32,9 @@ import {
   uncoveredKanji,
   type FuriganaEntry,
 } from "./text/furigana";
+// furigana-checks.ts も純関数だけ。エントリそのものの壊れ（死にエントリ・送りがな落ち・
+// 同表記異読）は、覆い検査より前の段で見る——保存した時点で壊れているものを通さない。
+import { checkFuriganaEntries } from "./text/furigana-checks";
 // stage-routes.ts も純関数と定数だけ（node:fs も React も持たない）。
 import { INTRO_STAGE_ID } from "./stage-routes";
 // vocabulary.ts も純関数だけ。単語ゲームに出せる語かの判定（isPlayable）は
@@ -554,7 +557,7 @@ export function checkLinkOrder(entries: readonly ContentEntry[]): Finding[] {
  * ------------------------------------------------------------------ */
 
 /** 学習者が読む文と、その置き場所（先生が直しに行く場所）。 */
-interface LabeledText {
+export interface LabeledText {
   readonly field: string;
   readonly text: string;
 }
@@ -572,7 +575,7 @@ interface LabeledText {
  * 原則そのまま対象に含める。例外は wordstage の words[].term だけ（下の
  * coverageEntries を参照）。
  */
-function collectLabeledTexts(content: Content): LabeledText[] {
+export function collectLabeledTexts(content: Content): LabeledText[] {
   const out: LabeledText[] = [];
   const push = (field: string, text: string | undefined) => {
     if (text) out.push({ field, text });
@@ -989,7 +992,7 @@ export function collectLearnerTexts(content: Content): string[] {
  * - wordstage: 語カードが term と reading を並べて見せるので、term の読みは学習者に
  *   届いている。解説文・例文に同じ語が出たときに先生へ二重登録を強いない。
  */
-function coverageEntries(content: Content): FuriganaEntry[] {
+export function coverageEntries(content: Content): FuriganaEntry[] {
   switch (content.kind) {
     case "stage": {
       const entries: FuriganaEntry[] = [
@@ -1048,6 +1051,8 @@ const VERIFIED_SPLIT_COMPOUNDS: ReadonlySet<string> = new Set([
   "配属初日",
   // 「18時以降」— 時（じ）＋以降（いこう）で じいこう。数の あとの 単位なので 正しい
   "時以降",
+  // 「1年間日本語を…」— 年間（ねんかん）＋日本語（にほんご）。2026-09-01 に目で確認
+  "年間日本語",
 ]);
 
 const KANJI_RUN = /[々一-鿿]{2,}/g;
@@ -1132,4 +1137,83 @@ export function checkFuriganaCoverageOf(
     });
   }
   return findings;
+}
+
+/* ------------------------------------------------------------------ *
+ * 読み辞書エントリそのものの壊れ（死にエントリ・送りがな落ち・同表記異読）
+ *
+ * 覆い検査は「漢字にルビが付いたか」しか見ないので、**エントリが壊れていても
+ * 別のエントリが同じ漢字を覆っていれば緑になる**。「お時間→おじかん」の 死にエントリは
+ * 4件が 覆い検査の 緑の 陰で 生きていた（2026-09-01 の 監査）。
+ * 検査の実体は src/lib/text/furigana-checks.ts（コード側の読み台帳とも共用）。
+ * ------------------------------------------------------------------ */
+
+/** content の中の furigana 配列（[表記, よみ] の配列）を、置き場所つきで全部集める。 */
+function collectFuriganaArrays(
+  value: unknown,
+  path: string,
+  out: { path: string; list: FuriganaEntry[] }[],
+) {
+  if (!value || typeof value !== "object") return;
+  if (Array.isArray(value)) {
+    value.forEach((v, i) => collectFuriganaArrays(v, `${path}[${i}]`, out));
+    return;
+  }
+  for (const [key, v] of Object.entries(value)) {
+    const at = path ? `${path}.${key}` : key;
+    if (
+      key === "furigana" &&
+      Array.isArray(v) &&
+      v.every(
+        (item) =>
+          Array.isArray(item) &&
+          item.length === 2 &&
+          typeof item[0] === "string" &&
+          typeof item[1] === "string",
+      )
+    ) {
+      out.push({ path: at, list: v as unknown as FuriganaEntry[] });
+      continue;
+    }
+    collectFuriganaArrays(v, at, out);
+  }
+}
+
+/**
+ * 読み辞書エントリの構造検査（規律2の前段）。
+ *
+ * **level は error。** どの型も「書いた人には正しく見えるのに画面では壊れている」
+ * 種類のミスで、目視のレビューでは 4件の 死にエントリが 誰にも 見つからなかった。
+ *
+ * 明示の furigana 配列には 全検査（死にエントリ・送りがな整合・同表記異読）を当て、
+ * ファイル全体の索引（coverageEntries: 束＋語ごと＋term/reading）には 同表記異読だけを
+ * 当てる——term は 文や かな始まりが 正当なので、死にエントリ検査の 対象にしない。
+ */
+export function checkFuriganaEntrySoundness(entries: readonly ContentEntry[]): Finding[] {
+  return entries.flatMap(({ file, content }) => {
+    const findings: Finding[] = [];
+    const arrays: { path: string; list: FuriganaEntry[] }[] = [];
+    collectFuriganaArrays(content, "", arrays);
+
+    const conflictReported = new Set<string>();
+    for (const { path, list } of arrays) {
+      for (const problem of checkFuriganaEntries(list)) {
+        if (problem.kind === "conflict") conflictReported.add(problem.surface);
+        findings.push({ file, level: "error", message: `${path}: ${problem.message}` });
+      }
+    }
+
+    // ファイル全体の索引プール（画面が実際に引く形）での同表記異読。
+    // 並び順の先勝ち／後勝ちで検査と画面が逆になるので、プールの中でも1表記1読みを守る。
+    for (const problem of checkFuriganaEntries(coverageEntries(content))) {
+      if (problem.kind !== "conflict" || conflictReported.has(problem.surface)) continue;
+      conflictReported.add(problem.surface);
+      findings.push({
+        file,
+        level: "error",
+        message: `索引プール（furigana＋語ごと＋term/reading を合わせたもの）: ${problem.message}`,
+      });
+    }
+    return findings;
+  });
 }

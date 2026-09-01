@@ -256,7 +256,7 @@ export const GLOSSARY = [
     meaning: "中身を、あとから かえて しまう ことです。",
     en: "Alteration",
   },
-  { term: "会話", reading: "かいわ", meaning: "2人 以上で 話す ことです。", en: "Conversation" },
+  { term: "会話", reading: "かいわ", meaning: "二人 以上で 話す ことです。", en: "Conversation" },
   {
     term: "書きかえ",
     reading: "かきかえ",
@@ -686,7 +686,7 @@ export const GLOSSARY = [
     en: "International",
   },
   { term: "国内", reading: "こくない", meaning: "その 国の 中の ことです。", en: "Domestic" },
-  { term: "個人", reading: "こじん", meaning: "1人の 人の ことです。", en: "Individual" },
+  { term: "個人", reading: "こじん", meaning: "一人の 人の ことです。", en: "Individual" },
   {
     term: "個人情報",
     reading: "こじんじょうほう",
