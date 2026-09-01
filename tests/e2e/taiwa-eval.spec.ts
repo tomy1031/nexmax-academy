@@ -45,6 +45,14 @@ interface Case {
    * 「たぶん こう なる」を 落とす 材料に すると、AIの 揺れで 毎回 赤く なる。
    */
   readonly must?: readonly Kanten[];
+  /**
+   * 何問目の しつもんに 向けた ことばか（既定は 1問目）。
+   *
+   * **ここを 間違えると 測定の ほうが 嘘に なる。** 1回目の 測定で、
+   * 2問目（あなたの いい ところ）への 答えを 1問目（NEXT MAKEの どこが いい）に
+   * ぶつけて いて、`onTopic: false` が 返って きた——**AIは 正しく、台帳が 誤り**だった。
+   */
+  readonly atAsk?: number;
 }
 
 /**
@@ -64,6 +72,8 @@ const CASES: readonly Case[] = [
     // その2。しつもんは ちがう ものだったが、りゆうの 見かたを 同じ 土俵で 測る
     name: "強み＋使いみち（訴えの ことば その2）",
     say: "私のいいところはコミュニケーション力が高いところです。え、客先で働く時に、コミュニケーションをお客さんととって、確実な要件定義をしてアプリケーションが作れたらいいなと思ってます。",
+    // これは **2問目**（あなたの いい ところ）への 答え。1問目に ぶつけない
+    atAsk: 2,
     expect: { japanese: true, onTopic: true, reason: true },
   },
   {
@@ -109,6 +119,15 @@ test.describe("採点の ものさし（鍵が あるときだけ）", () => {
       await page.goto(KAISHA.meetingMatsui.path);
       await page.getByRole("button", { name: "はじめる ▶" }).click();
       await readOn(page);
+
+      // その ことばが 向けられた しつもんまで 進む（手前は 当たりさわりの ない 一言で 通す）
+      for (let at = 1; at < (one.atAsk ?? 1); at += 1) {
+        await page.getByLabel("文字で 答える").fill("はい、見ました。");
+        await page.getByRole("button", { name: "おくる" }).click();
+        await expect(page.getByText(/^こうかんど \+\d+%$/)).toBeVisible({ timeout: 45_000 });
+        await page.getByRole("button", { name: "つぎへ ▶" }).click();
+        await readOn(page);
+      }
 
       const ask = (await page.locator("[data-ask]").innerText()).trim();
       await page.getByLabel("文字で 答える").fill(one.say);
@@ -171,9 +190,15 @@ test("会話の 流れ: 判定 → 社長の 返事 → つぎの しつもん�
   // ①板を 閉じた つぎは **答える 欄では ない**（社長が 何か 言う）
   await page.getByRole("button", { name: "つぎへ ▶" }).click();
   await expect(page.getByLabel("文字で 答える")).toHaveCount(0);
-  const reply = (await page.locator("p.text-navy").first().innerText()).trim();
+  /*
+   * **`data-line` で 引く。** 1回目は `p.text-navy` の 先頭を 取って いて、
+   * ステージの 見出し（「会社を 知る」）を 社長の 返事として 記録して いた——
+   * 通って いたのに 中身が ちがう、という いちばん たちの 悪い 測りかた だった。
+   */
+  const reply = (await page.locator("[data-line]").innerText()).trim();
   console.log(`[eval] 社長の 返事=「${reply}」`);
   expect(reply.length).toBeGreaterThan(0);
+  expect(reply).not.toContain("会社を 知る");
 
   // ②その つぎで しつもんに 進み、1問目とは ちがう ことを 聞く
   await readOn(page);
