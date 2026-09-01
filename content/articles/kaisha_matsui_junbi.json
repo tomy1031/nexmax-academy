@@ -2,8 +2,12 @@
   "kind": "article",
   "id": "kaisha_matsui_junbi",
   "title": "AI松井社長と 話す 準備を しよう",
-  "description": "調べた ことに、あなたの 考えを 足します。松井社長に 話す 7つの ことを 考えます。",
+  "description": "調べた ことに、あなたの 考えを 足します。松井社長に 話す 6つの ことを 考えます。",
   "furigana": [
+    [
+      "行く",
+      "いく"
+    ],
     [
       "何でも",
       "なんでも"
@@ -1432,7 +1436,7 @@
     {
       "kind": "heading",
       "level": 2,
-      "text": "これから 考える 7つの こと"
+      "text": "これから 考える 6つの こと"
     },
     {
       "kind": "cards",
@@ -1485,17 +1489,6 @@
         },
         {
           "label": "5",
-          "title": "Japanese IT Pathway は どんな プログラム？",
-          "text": "あなたが 今 いる プログラムを、自分の ことばで 説明します。",
-          "image": {
-            "refs": [],
-            "status": "done",
-            "src": "/img/articles/kaisha_matsui_junbi/j5.webp",
-            "prompt": "5 Japanese IT Pathway は どんな プログラム？（2年の 道のりを 説明する） → scripts/images/kaisha_junbi_scenes.json"
-          }
-        },
-        {
-          "label": "6",
           "title": "日本に 行くまでに 何を がんばる？",
           "text": "これから やりたい ことと、その りゆうを 考えます。",
           "image": {
@@ -1506,7 +1499,7 @@
           }
         },
         {
-          "label": "7",
+          "label": "6",
           "title": "松井社長に 何を 聞きたい？",
           "text": "Webサイトだけでは 分からない ことを 質問します。",
           "image": {

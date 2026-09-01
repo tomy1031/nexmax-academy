@@ -1116,7 +1116,8 @@ function SpeechPanel({
         animate={{ opacity: 1, y: 0 }}
         className="rounded-3xl bg-white/95 p-4 shadow-xl sm:p-6"
       >
-        <p className="text-navy text-base leading-relaxed font-black sm:text-xl">
+        {/* `data-line` は 検証の 手がかり（社長が いま 言って いる ことば）。 */}
+        <p data-line className="text-navy text-base leading-relaxed font-black sm:text-xl">
           <DictionaryText text={text} index={furigana} show dictionary={dictionary} />
         </p>
         <div className="mt-3 flex items-center justify-between gap-3">

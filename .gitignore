@@ -64,3 +64,6 @@ cloudflare-env.d.ts
 /.tmp-img/
 # 富田さんの 参考写真。**このリポジトリは public** なので 本人の 写真は 入れない
 /富田.jpg
+
+# ものさし合わせの 結果（その場かぎり。表に して 読むだけ）
+/eval-results/
