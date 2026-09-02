@@ -4,6 +4,7 @@ import {
   mayPublishShared,
   shouldPopulateRemoteCache,
   toAlias,
+  usesAssetsCache,
 } from "../scripts/preview_alias.mjs";
 import { cachePopulated } from "../scripts/lib/cache_populated.mjs";
 
@@ -102,12 +103,28 @@ describe("staging へ上げてよいかの判定", () => {
 });
 
 /**
- * STG のデプロイで KV を温めない（2026-08-27）。
+ * 作りおきの置き場を どちらにするか（2026-09-02）。
  *
- * 統合ブランチ運用で STG の更新が頻繁になるため、1回 約70件 × 1日十数回で
- * 無料枠（書き込み 1000件/日）を食い潰し、**その日の本番が作りおきゼロで出る**
- * ——2026-08-26 に実発生した事故を構造から断つ。
+ * **STG も 静的アセット側**にした。それまでの「KV のまま温めない」（2026-08-27）は、
+ * 各ページ初回のフルSSRで後追いに温まる前提だったが、重いページはその初回が
+ * Error 1102 で落ちるので **永久に温まらない**。実測で STG の KV は 13鍵しか
+ * 無かった（本番は 132鍵）。理由と数字は preview_alias.mjs の `usesAssetsCache`。
+ *
+ * KV で温め直す道は塞がっている: STG は平均 8.2回/日 × 約110件 ＝ 900件/日で、
+ * 無料枠（書き込み 1000件/日）を本番の温めと取り合い、
+ * **その日の本番が作りおきゼロで出る**（2026-08-26 に実発生）。
  */
+describe("作りおきをどこから読ませるか", () => {
+  it("STG（staging）は静的アセット側 — KV書き込み0件で全ページ分が載る", () => {
+    expect(usesAssetsCache("staging", undefined)).toBe(true);
+  });
+
+  it("ブランチ確認URLは環境変数で選ぶ（これまでどおり）", () => {
+    expect(usesAssetsCache("my-branch", "assets")).toBe(true);
+    expect(usesAssetsCache("my-branch", undefined)).toBe(false);
+  });
+});
+
 describe("上げたあとに KV の作りおきを温めるか", () => {
   it("STG（staging）では温めない — デプロイ時の KV 書き込みを 0件にする", () => {
     expect(shouldPopulateRemoteCache("staging", false)).toBe(false);
@@ -135,12 +152,23 @@ describe("上げるときの引数（作りおきをどこから読ませるか�
     ]);
   });
 
-  it("staging には付けない（付くと先生の直しが60秒で出なくなる）", () => {
-    expect(buildUploadArgs("staging", false)).toEqual([
+  it("STG にも付ける（作りおきを必ず全ページ載せて Error 1102 を断つ）", () => {
+    expect(buildUploadArgs("staging", usesAssetsCache("staging", undefined))).toEqual([
       "versions",
       "upload",
       "--preview-alias",
       "staging",
+      "--var",
+      "OPEN_NEXT_CACHE:assets",
+    ]);
+  });
+
+  it("KV モードのときは付けない（本番と同じ経路で作りおきを読む）", () => {
+    expect(buildUploadArgs("my-branch", false)).toEqual([
+      "versions",
+      "upload",
+      "--preview-alias",
+      "my-branch",
     ]);
   });
 });
