@@ -913,7 +913,7 @@ function collectLabeledTexts(content: Content): LabeledText[] {
         game.openers.forEach((one, i) => {
           push(`talkGame.openers[${i}].ask`, one.ask);
           // 型文と お手本も **学習者が 読む 字**（ヒントの ポップアップに 出る）
-          if (one.hint) push(`talkGame.openers[${i}].hint`, one.hint);
+          (one.hint ?? []).forEach((line, at) => push(`talkGame.openers[${i}].hint[${at}]`, line));
           if (one.example) push(`talkGame.openers[${i}].example`, one.example);
         });
         game.probes.forEach((one, i) => push(`talkGame.probes[${i}]`, one));
