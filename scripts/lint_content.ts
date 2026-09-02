@@ -59,7 +59,7 @@ import {
 // スタジオ（ブラウザ・Worker）へは持ち込めない——辞書 約18MB が載らないため。
 import { checkYomiCorrectness } from "./lib/yomi_check";
 // 焼き込みモジュールの作り手と同じ関数で組み立てて比べる（作り方が2つに割れないように）
-import { buildGeneratedSource, GENERATED_PATH } from "./generate_content_index.mjs";
+import { buildGeneratedSource, GENERATED_PATH } from "./lib/bake_content";
 import { buildSceneSource, SCENE_GENERATED_PATH } from "./generate_scene_index.mjs";
 import {
   buildGlossarySource,

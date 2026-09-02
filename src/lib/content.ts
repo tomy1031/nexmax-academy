@@ -17,7 +17,6 @@
 
 import { cache } from "react";
 import {
-  contentSchema,
   type Article,
   type Character,
   type Content,
@@ -50,47 +49,47 @@ import { hydrateArticle, hydrateManga, hydrateWordStage } from "@/lib/vocabulary
  */
 
 /**
- * スキーマに通ったものだけを返す（lint:content がCIで先に落とす前提）。
+ * 焼き込みずみの教材を、種別ごとに分けて持つ。
  *
  * 元は content/ を readdirSync で読んでいたが、`revalidate` を付けた時点で
  * ページの再生成がリクエスト中に走るようになり、fs の無い Cloudflare Workers で
  * 黙って空になっていた（詳細ページが404、マップが既定値に後退）。
  * いまはバンドルへ焼き込んだ GIT_CONTENTS を読むので、実行環境を選ばない。
  *
- * 毎回パースし直さないよう1度だけ組み立てる（同じ配列を使い回す）。
- */
-/**
- * **要る 種別だけ 検証する。**
+ * **ここで zod を通さない**（2026-09-02）。GIT_CONTENTS は
+ * `scripts/lib/bake_content.ts` が **contentSchema に通した出力**を焼いたもので、
+ * 既定値（`.default()` が 57か所ある）も入り、未知の鍵も落ちている。git 由来の
+ * 教材は pre-commit と CI の `lint:content` が同じスキーマで止めているので、
+ * Worker の上で通し直しても分かることは1つも増えない。
  *
- * 前は 1回の 問い合わせで **全76ファイルを zod に かけて** いた。教材が 増える ほど
- * 重く なり、Cloudflare Workers の CPU の 上限に 当たって Error 1102 に なる
- *（上の `cache()` の 注記と 同じ 事故。2026-09-01 に クエスト（107KB）を 足した
- * あと、ステージへ 戻る ところで 再発した）。
+ * 通し直していた頃の代償（実測 2026-09-02）:
+ *   - 全 kind の `safeParse` … 手元の Mac で 33.9ms（通さなければ 0.11ms）。
+ *     本番 Worker の同等処理は `wrangler tail` で 500〜665ms だった
+ *   - 検証は全オブジェクトの複製を作るので、生と検証ずみを二重に抱えて
+ *     1 isolate 128MB のメモリを圧迫する
+ * 同時アクセスでそこに当たったのが Error 1102（Worker exceeded resource limits）。
+ * STG は作りおきを温めないぶん ほぼ毎リクエストがフルSSRなので、先に出た。
  *
- * `kind` は 検証の 前でも 生データから 読める ので、**まず 種別で 分けて**から、
- * 聞かれた 種別だけ 検証する。ステージ1つを 開く のに 要るのは 数ファイル。
+ * DB 由来（スタジオ公開分）は焼き込みを通らないので、**これまでどおり zod にかける**
+ *（`src/lib/content-db.ts`）。そのまま信じてよいのは git 側だけである。
  */
-const rawByKind = new Map<string, unknown[]>();
-for (const raw of GIT_CONTENTS) {
-  const kind = (raw as { kind?: unknown }).kind;
+const gitByKind = new Map<string, Content[]>();
+for (const item of GIT_CONTENTS) {
+  const kind = (item as { kind?: unknown }).kind;
   if (typeof kind !== "string") continue;
-  const bucket = rawByKind.get(kind);
-  if (bucket) bucket.push(raw);
-  else rawByKind.set(kind, [raw]);
+  const bucket = gitByKind.get(kind);
+  if (bucket) bucket.push(item as Content);
+  else gitByKind.set(kind, [item as Content]);
 }
 
-/** 検証ずみを 種別ごとに 覚える（同じ 配列を 使い回す）。 */
-const parsedByKind = new Map<string, readonly Content[]>();
-
-function parseKind<T extends Content>(kind: T["kind"]): T[] {
-  const hit = parsedByKind.get(kind);
-  if (hit) return hit as T[];
-  const list = (rawByKind.get(kind) ?? []).flatMap((raw) => {
-    const parsed = contentSchema.safeParse(raw);
-    return parsed.success ? [parsed.data] : [];
-  });
-  parsedByKind.set(kind, list);
-  return list as T[];
+/**
+ * git 由来の教材から、その種別のぶんを返す。
+ *
+ * 呼び手は必ず `mergeContentsById` へ渡して新しい配列を作るので、ここは
+ * 覚えてある配列をそのまま返す（以前の実装も同じ配列を使い回していた）。
+ */
+function gitContentsOfKind<T extends Content>(kind: T["kind"]): T[] {
+  return (gitByKind.get(kind) ?? []) as T[];
 }
 
 /**
@@ -156,7 +155,7 @@ async function listPublishedFromDb<K extends Content["kind"]>(
 }
 
 export const listCharacters = cache(async (): Promise<Character[]> => {
-  const git = parseKind<Character>("character");
+  const git = gitContentsOfKind<Character>("character");
   return mergeContentsById(git, await listPublishedFromDb("character")).sort((a, b) =>
     a.id.localeCompare(b.id),
   );
@@ -171,7 +170,7 @@ export async function getCharacter(id: string): Promise<Character | null> {
  * DBに 同じ id の 行が あれば そちらが 勝つ（先生の 直しが 常に 上）。
  */
 export const listVocabBooks = cache(async (): Promise<VocabBook[]> => {
-  const git = parseKind<VocabBook>("vocab");
+  const git = gitContentsOfKind<VocabBook>("vocab");
   return mergeContentsById(git, await listPublishedFromDb("vocab")).sort((a, b) =>
     a.id.localeCompare(b.id),
   );
@@ -191,7 +190,7 @@ export async function listVocabWords(): Promise<VocabWord[]> {
  * 参照が 切れた ステージは 一覧から 落ちる（`lint:content` が 別に 止める）。
  */
 export const listWordStages = cache(async (): Promise<WordStage[]> => {
-  const git = parseKind<StoredWordStage>("wordstage");
+  const git = gitContentsOfKind<StoredWordStage>("wordstage");
   const stored = mergeContentsById(git, await listPublishedFromDb("wordstage")).sort((a, b) =>
     a.id.localeCompare(b.id),
   );
@@ -208,7 +207,7 @@ export async function getWordStage(id: string): Promise<WordStage | null> {
 }
 
 export const listQuizSets = cache(async (): Promise<QuizSet[]> => {
-  const git = parseKind<QuizSet>("quizset");
+  const git = gitContentsOfKind<QuizSet>("quizset");
   return mergeContentsById(git, await listPublishedFromDb("quizset")).sort((a, b) =>
     a.id.localeCompare(b.id),
   );
@@ -219,7 +218,7 @@ export async function getQuizSet(id: string): Promise<QuizSet | null> {
 }
 
 export const listListenings = cache(async (): Promise<Listening[]> => {
-  const git = parseKind<Listening>("listening");
+  const git = gitContentsOfKind<Listening>("listening");
   return mergeContentsById(git, await listPublishedFromDb("listening")).sort((a, b) =>
     a.id.localeCompare(b.id),
   );
@@ -230,7 +229,7 @@ export async function getListening(id: string): Promise<Listening | null> {
 }
 
 export const listScenarios = cache(async (): Promise<Scenario[]> => {
-  const git = parseKind<Scenario>("scenario");
+  const git = gitContentsOfKind<Scenario>("scenario");
   // シナリオだけは order 昇順（一覧の並びが学習の順番そのものなので id 順にしない）。
   return mergeContentsById(git, await listPublishedFromDb("scenario")).sort(
     (a, b) => a.order - b.order,
@@ -242,7 +241,7 @@ export async function getScenario(id: string): Promise<Scenario | null> {
 }
 
 export const listMeetings = cache(async (): Promise<Meeting[]> => {
-  const git = parseKind<Meeting>("meeting");
+  const git = gitContentsOfKind<Meeting>("meeting");
   return mergeContentsById(git, await listPublishedFromDb("meeting")).sort((a, b) =>
     a.id.localeCompare(b.id),
   );
@@ -253,7 +252,7 @@ export async function getMeeting(id: string): Promise<Meeting | null> {
 }
 
 export const listStages = cache(async (): Promise<Stage[]> => {
-  const git = parseKind<Stage>("stage");
+  const git = gitContentsOfKind<Stage>("stage");
   return mergeContentsById(git, await listPublishedFromDb("stage")).sort(
     (a, b) => a.order - b.order || a.id.localeCompare(b.id),
   );
@@ -264,7 +263,7 @@ export async function getStage(id: string): Promise<Stage | null> {
 }
 
 export const listMangas = cache(async (): Promise<Manga[]> => {
-  const git = parseKind<Manga>("manga");
+  const git = gitContentsOfKind<Manga>("manga");
   const merged = mergeContentsById(git, await listPublishedFromDb("manga")).sort((a, b) =>
     a.id.localeCompare(b.id),
   );
@@ -278,7 +277,7 @@ export async function getManga(id: string): Promise<Manga | null> {
 }
 
 export const listArticles = cache(async (): Promise<Article[]> => {
-  const git = parseKind<Article>("article");
+  const git = gitContentsOfKind<Article>("article");
   const merged = mergeContentsById(git, await listPublishedFromDb("article")).sort((a, b) =>
     a.id.localeCompare(b.id),
   );
@@ -314,7 +313,7 @@ export async function getArticleCharacters(article: Article) {
 }
 
 export const listSlides = cache(async (): Promise<Slides[]> => {
-  const git = parseKind<Slides>("slides");
+  const git = gitContentsOfKind<Slides>("slides");
   return mergeContentsById(git, await listPublishedFromDb("slides")).sort((a, b) =>
     a.id.localeCompare(b.id),
   );
@@ -325,7 +324,7 @@ export async function getSlides(id: string): Promise<Slides | null> {
 }
 
 export const listLinks = cache(async (): Promise<LinkContent[]> => {
-  const git = parseKind<LinkContent>("link");
+  const git = gitContentsOfKind<LinkContent>("link");
   return mergeContentsById(git, await listPublishedFromDb("link")).sort((a, b) =>
     a.id.localeCompare(b.id),
   );
@@ -336,7 +335,7 @@ export async function getLink(id: string): Promise<LinkContent | null> {
 }
 
 export const listSkits = cache(async (): Promise<Skit[]> => {
-  const git = parseKind<Skit>("skit");
+  const git = gitContentsOfKind<Skit>("skit");
   return mergeContentsById(git, await listPublishedFromDb("skit")).sort((a, b) =>
     a.id.localeCompare(b.id),
   );
@@ -347,7 +346,7 @@ export async function getSkit(id: string): Promise<Skit | null> {
 }
 
 export const listQuests = cache(async (): Promise<Quest[]> => {
-  const git = parseKind<Quest>("quest");
+  const git = gitContentsOfKind<Quest>("quest");
   return mergeContentsById(git, await listPublishedFromDb("quest")).sort((a, b) =>
     a.id.localeCompare(b.id),
   );
