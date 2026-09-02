@@ -9,18 +9,19 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 ## 必読ドキュメント（該当する作業の前に必ず読む）
 
-| ファイル                                   | 読むべきとき                                                               |
-| ------------------------------------------ | -------------------------------------------------------------------------- |
-| `docs/constraints.md`                      | **すべての作業の前**（ユーザーが伝えた制約・好みの永続台帳）               |
-| `docs/design/01_理解設計ガイド.md`         | 教材・UI文言・シナリオ・フィードバックを書く前（13原則＋アンチパターン集） |
-| `docs/design/02_拡張カリキュラム設計書.md` | 新モジュール（M1〜M12）を実装する前                                        |
-| `docs/design/03_リニューアル設計方針.md`   | アーキテクチャ・DB・検収・移行に関わる作業の前                             |
-| `docs/design/review_rubric.md`             | 検収・レビューを行うとき（証拠必須ルーブリック）                           |
-| `docs/design/04_ビジュアルテーマ.md`       | UI・画面・キャラクターに触る前（あおぞらパスウェイ／ネクマックス）         |
-| `docs/skills/codex_image_generation.md`    | 画像アセットを作るとき（image-gen-2・一貫性ルール）                        |
-| `docs/skills/manga_generation.md`          | まんが教材（コマ割り・セリフ・ふりがな）を作る・直すとき                   |
-| `docs/codex-backend.md`                    | 生成バックエンド（Codex／Gemini）に触る前                                  |
-| `docs/skills/browser_e2e_verification.md`  | ブラウザ自動操作で実機検証をする前（本番データ事故の再発防止）             |
+| ファイル                                   | 読むべきとき                                                                  |
+| ------------------------------------------ | ----------------------------------------------------------------------------- |
+| `docs/constraints.md`                      | **すべての作業の前**（ユーザーが伝えた制約・好みの永続台帳）                  |
+| `docs/design/01_理解設計ガイド.md`         | 教材・UI文言・シナリオ・フィードバックを書く前（13原則＋アンチパターン集）    |
+| `docs/design/02_拡張カリキュラム設計書.md` | 新モジュール（M1〜M12）を実装する前                                           |
+| `docs/design/03_リニューアル設計方針.md`   | アーキテクチャ・DB・検収・移行に関わる作業の前                                |
+| `docs/design/review_rubric.md`             | 検収・レビューを行うとき（証拠必須ルーブリック）                              |
+| `docs/skills/agent_team.md`                | 検収を別の目で回すとき（エージェント編成・ペルソナ・モデル選定・Codexの分担） |
+| `docs/design/04_ビジュアルテーマ.md`       | UI・画面・キャラクターに触る前（あおぞらパスウェイ／ネクマックス）            |
+| `docs/skills/codex_image_generation.md`    | 画像アセットを作るとき（image-gen-2・一貫性ルール）                           |
+| `docs/skills/manga_generation.md`          | まんが教材（コマ割り・セリフ・ふりがな）を作る・直すとき                      |
+| `docs/codex-backend.md`                    | 生成バックエンド（Codex／Gemini）に触る前                                     |
+| `docs/skills/browser_e2e_verification.md`  | ブラウザ自動操作で実機検証をする前（本番データ事故の再発防止）                |
 
 ## 絶対規律（1・2・5・6・9 は `lint:content` が機械検査。**3・7・8 は検査が無い＝文章だけが頼り**）
 
@@ -168,6 +169,10 @@ OpenNext（`@opennextjs/cloudflare`）経由。手順の詳細は `docs/deploy.m
 - Gemini: Liveペルソナの実機挙動検証（`.gemini/rules.md` 参照）
 
 指摘には必ず該当箇所の引用を付ける。引用できない指摘は出さない。
+
+実行体は `.claude/agents/`（rubric-checker・yomi-kensa・playwright-player・code-critic）。
+回しかた・ペルソナ・モデル選定・Codex のローカル起動レシピは `docs/skills/agent_team.md`
+（Claude では `/kenshu` で発火。クラウドに codex CLI は無いので code-critic が代行）。
 
 ## 多スレッド運用ルール（2026-08-05 導入・Claude / Codex / Gemini 共通）
 

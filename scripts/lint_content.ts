@@ -15,6 +15,11 @@
  *     マップは「1ステージ＝1エリア＝背景画像1枚」（src/content/areas.ts）。
  *  7. ふりがなの覆い漏れ（学習者が読む文の漢字が読み辞書で全部覆えているか — 規律2）
  *  7b. 熟語が2語に割れた読み（「報告書」→「報告」＋「書」＝ほうこくか）
+ *  7c. 読み辞書エントリの壊れ（死にエントリ・送りがな落ち・同表記異読 —
+ *      src/lib/text/furigana-checks.ts）
+ *  7d. 読みの正しさの照合（画面と同じルビ合成 × 形態素解析。食い違いはエラー、
+ *      確かめ済みは scripts/lib/yomi_allow.ts — 「考え→かんが」が緑のまま
+ *      4ファイルで生き残った 2026-08-30 の再発防止）
  *  8. 焼き込みモジュールのずれ（src/content/git-contents.generated.ts）。
  *     アプリはこの生成物だけを読むので、ずれると JSON を直しても画面が変わらない。
  *  9. スライドのファイル面（fileUrl の PDF が public/ に実在するか・pageCount が
@@ -40,6 +45,7 @@ import {
   checkForbiddenWords,
   checkCountryNames,
   checkFuriganaCoverage,
+  checkFuriganaEntrySoundness,
   checkSplitCompoundReadings,
   checkIntroStage,
   checkLinkOrder,
@@ -49,6 +55,9 @@ import {
   type ContentEntry,
   type Finding,
 } from "../src/lib/content-checks";
+// 読みの正しさの照合は kuromoji（devDependency）に依存するので scripts 側に置く。
+// スタジオ（ブラウザ・Worker）へは持ち込めない——辞書 約18MB が載らないため。
+import { checkYomiCorrectness } from "./lib/yomi_check";
 // 焼き込みモジュールの作り手と同じ関数で組み立てて比べる（作り方が2つに割れないように）
 import { buildGeneratedSource, GENERATED_PATH } from "./lib/bake_content";
 import { buildSceneSource, SCENE_GENERATED_PATH } from "./generate_scene_index.mjs";
@@ -319,6 +328,8 @@ async function main() {
   findings.push(...checkIntroStage(entries));
   findings.push(...checkFuriganaCoverage(entries));
   findings.push(...checkSplitCompoundReadings(entries));
+  findings.push(...checkFuriganaEntrySoundness(entries));
+  findings.push(...(await checkYomiCorrectness(entries)));
   findings.push(...checkGeneratedIndex());
   findings.push(...(await checkSlidesFiles(entries)));
 

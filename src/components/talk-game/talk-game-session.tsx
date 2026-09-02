@@ -272,7 +272,7 @@ export function TalkGameSession({
    * 1問目・6問目の 型文が 並んで いた。**いま 要る 1本を 見つけるのが 学習者の しごと**に
    * なって いて、ヒントを 押すたびに 読む ものが 増えて いた。
    */
-  const [askHint, setAskHint] = useState("");
+  const [askHint, setAskHint] = useState<readonly string[]>([]);
   const [askExample, setAskExample] = useState("");
   /**
    * 準備フォームで 書いた ことを、しつもんの 横に 出す ための 引き（設問ID → 行）。
@@ -374,7 +374,12 @@ export function TalkGameSession({
     (opener: ReturnType<typeof openerAt>, turns: number) => {
       setAskFocus(opener?.focus);
       setAskFrom(opener?.from ?? "");
-      setAskHint(opener?.hint ?? game?.talkHints[turns] ?? "");
+      /*
+       * 型文は **文ごとに 1つ**（2026-09-02）。前からの 教材は 1文の 文字列 1本なので、
+       * その ときだけ 1要素の 並びに 包む。
+       */
+      const fallback = game?.talkHints[turns];
+      setAskHint(opener?.hint ?? (fallback ? [fallback] : []));
       setAskExample(opener?.example ?? "");
     },
     [game],
@@ -443,7 +448,7 @@ export function TalkGameSession({
   const hints = useMemo(() => {
     if (!game) return [] as readonly string[];
     if (talk.round === "listen") return game.listenHints;
-    return askHint === "" ? [] : [askHint];
+    return askHint;
   }, [game, talk.round, askHint]);
 
   /** ヒントの `(ex)`。ばんで 出どころが ちがう。 */
@@ -549,7 +554,7 @@ export function TalkGameSession({
       if (from.round === "listen") {
         setAskFocus(undefined);
         setAskFrom("");
-        setAskHint("");
+        setAskHint([]);
         setAskExample("");
         setQueue([lineOf(withName(game.listenInvite), "listenInvite")]);
       } else if (from.turns > 0) {
@@ -603,7 +608,8 @@ export function TalkGameSession({
         round: talk.round,
         ask: askText,
         focus: talk.round === "talk" ? askFocus : undefined,
-        hint: askHint || (hints[0] ?? ""),
+        // AIには 型文を **1つに つないで** 渡す（画面は ふきだしを 分ける）
+        hint: (askHint.length > 0 ? askHint : hints).join(" "),
         judgePrompt: meeting.judgePrompt ?? "",
         hostName: meeting.host.name,
         learnerName,
