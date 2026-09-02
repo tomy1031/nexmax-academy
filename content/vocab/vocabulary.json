@@ -5172,6 +5172,18 @@
       ]
     },
     {
+      "id": "saisentan",
+      "term": "最先端",
+      "reading": "さいせんたん",
+      "meaningJa": "いちばん 新しい ところ、と いう ことです。",
+      "englishTerm": "Cutting edge",
+      "wrongMeanings": [
+        "Front door",
+        "First step",
+        "Top floor"
+      ]
+    },
+    {
       "id": "senshin",
       "term": "先進",
       "reading": "せんしん",

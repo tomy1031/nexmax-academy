@@ -9,7 +9,7 @@
     "sky",
     "space"
   ],
-  "questionCount": 42,
+  "questionCount": 34,
   "passRate": 80,
   "furigana": [
     [
@@ -32,7 +32,6 @@
   "wordIds": [
     "houjin",
     "jichitai",
-    "kankeigaisha",
     "jigyousha",
     "renkei",
     "kikaku",
@@ -47,14 +46,13 @@
     "kingaku",
     "uriage",
     "hacchuu",
-    "hojokin",
     "futan",
     "keigen",
     "kouritsuka",
     "kashika",
     "kison",
     "shikumi",
-    "sentan",
+    "saisentan",
     "gijutsusha",
     "kaiseki",
     "kenchi",
@@ -63,14 +61,8 @@
     "kojinjouhou",
     "shoumeisho",
     "hakkou",
-    "shinseisei",
     "ikusei",
     "kouken",
-    "ojikan_arigatou_gozaimasu",
-    "mousiwakegozaimasen",
-    "dou_iu_imi_desu_ka",
-    "mouichido_onegaishimasu",
-    "sukoshi_kangaeru_jikan_wo_kudasai",
-    "benkyou_ni_narimashita"
+    "mousiwakegozaimasen"
   ]
 }
