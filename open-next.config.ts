@@ -1,3 +1,4 @@
+import type { Queue } from "@opennextjs/aws/types/overrides";
 import { defineCloudflareConfig } from "@opennextjs/cloudflare";
 import { withRegionalCache } from "@opennextjs/cloudflare/overrides/incremental-cache/regional-cache";
 import staticAssetsIncrementalCache from "@opennextjs/cloudflare/overrides/incremental-cache/static-assets-incremental-cache";
@@ -67,6 +68,36 @@ import expiringKvIncrementalCache from "./src/lib/cache/kv-expiring-cache";
 const useAssetsCache = process.env.OPEN_NEXT_CACHE === "assets";
 
 /**
+ * assets モードでは **作り直しを 頼まない**（2026-09-02）。
+ *
+ * 静的アセットの 置き場は **読み取り専用**で、`set` は必ず失敗する
+ *（`static-assets-incremental-cache.js` は「revalidation を 望まない アプリだけに
+ * 使え」と 自分で 書いている）。しかも 作りおきの 鮮度は **ビルド時刻**で決まるので、
+ * `revalidate = 300` の 学習者ページは **ビルドの5分後には ぜんぶ「古い」**になる。
+ *
+ * そこから 先が 効いてくる。OpenNext の 横取り（cacheInterceptor）は 古いと 判定すると
+ * **`await queue.send(...)` を リクエストの 中で 待つ**。既定の memoryQueue は
+ * `WORKER_SELF_REFERENCE` 経由で **自分自身へ HEAD を 投げ、まるごと フルSSR** する。
+ * 書き込みは 読み取り専用なので 必ず 失敗し、ビルド時刻も 変わらないので、
+ * **同じページが 毎リクエスト 永久に 作り直され続ける**。
+ *
+ * 2026-09-02、STG を assets モードへ 移した 直後に
+ * `/houkoku/link-houkoku_stamp` が Error 1102 を 出したのが これである
+ *（デプロイの 36分後＝とっくに 古い）。**このとき 通った 検査は 役に 立たなかった**——
+ * `/` は `force-static`（作り直しが 無い）、`/api/health/content` は `force-dynamic`
+ *（横取りを 通らない）で、**どちらも この罠に 当たらない 2種類**だったため。
+ *
+ * 何もしない キューに すると、横取りは 古い 作りおきを そのまま 返して 終わる。
+ * 中身は ビルド時点で 固定されるが、それは assets モードの 前提そのもの
+ *（先生の 直しは 次の デプロイで 出る — `scripts/preview_alias.mjs` の `usesAssetsCache`）。
+ * **本番は KV モードなので、これまでどおり memoryQueue で 作り直す。**
+ */
+const noopQueue: Queue = {
+  name: "noop-queue",
+  send: async () => {},
+};
+
+/**
  * ## KV の前に「土地のキャッシュ」を重ねる理由（2026-08-25）
  *
  * 授業で20人が同時に遊ぶと、20人は同じ土地（同じ Cloudflare 拠点）から来る。
@@ -90,6 +121,6 @@ export default defineCloudflareConfig({
   incrementalCache: useAssetsCache
     ? staticAssetsIncrementalCache
     : withRegionalCache(expiringKvIncrementalCache, { mode: "short-lived" }),
-  queue: memoryQueue,
+  queue: useAssetsCache ? noopQueue : memoryQueue,
   enableCacheInterception: true,
 });
