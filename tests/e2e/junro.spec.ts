@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { itemsBefore, KAISHA, seedCompleted, shot } from "./helpers";
+import { itemsBefore, KAISHA, seedAdmin, seedCompleted, shot } from "./helpers";
 
 /**
  * 順路（関門）— まだ 順番の 来ていない 教材は ひらかない
@@ -37,6 +37,20 @@ test("それでも 見る を おせば、先生も 中身を たしかめられ
    * 舞台に 入る「はじめる」から 始まる。
    */
   await expect(page.getByRole("button", { name: "はじめる ▶" })).toBeVisible();
+});
+
+test("先生（管理者）は、鍵の ついた 教材を そのまま ひらける", async ({ page, context }) => {
+  await seedAdmin(context);
+  await page.goto(KAISHA.meetingMatsui.path);
+
+  // 「それでも 見る」を 押さずに、中身が そのまま 出る
+  await expect(page.getByText("まだ この きょうざいの じゅんばんでは ありません")).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "はじめる ▶" })).toBeVisible();
+
+  // 脇の並びに 鍵は 残らず、なぜ ぜんぶ 開いているのかが 書いてある
+  await expect(page.locator("aside").getByText("🔒")).toHaveCount(0);
+  await expect(page.locator("aside").getByText("せんせいは ぜんぶ ひらけます")).toBeVisible();
+  await shot(page, "22-admin-unlocked");
 });
 
 test("5番目まで おわった 端末では、5番目が ひらき、6番目は まだ ひらかない", async ({

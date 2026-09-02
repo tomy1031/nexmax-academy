@@ -6,10 +6,12 @@ import type { ContentRefType } from "@/content/schema";
 import { NexMax } from "@/components/nexmax";
 import { RubyText } from "@/components/ruby-text";
 import { CelebrationBurst } from "@/components/quiz/celebration";
+import { useIsAdmin } from "@/lib/admin-flag";
 import { contentKindMeta } from "@/lib/content-kinds";
 import { getClearedStageIds, markStageCleared } from "@/lib/progress";
 import { readContentProgress, subscribeProgress } from "@/lib/progress/store";
 import {
+  KANJI,
   buildFuriganaIndex,
   mergeFuriganaEntries,
   type FuriganaEntry,
@@ -23,8 +25,8 @@ import {
   STATUS_BADGE,
 } from "./stage-progress";
 
-/** 見出しに ルビが 要るか。漢字が 無い 名前には よみを 出さない（map-shell と 同じ）。 */
-const HAS_KANJI = /[一-鿿]/;
+/** 見出しに ルビが 要るか。漢字が 無い 名前には よみを 出さない（判定はルビ合成と同じ KANJI を共用）。 */
+const HAS_KANJI = KANJI;
 
 /**
  * 教材の外枠 — どのステージのどこにいるかを、教材の種類によらず同じ形で見せる
@@ -91,6 +93,16 @@ export function ContentFrame({
 }) {
   const [navOpen, setNavOpen] = useState(false);
   const [forced, setForced] = useState(false);
+  /*
+   * 先生（管理者）には 鍵を かけない（2026-09-01 の指定）。
+   *
+   * 順番の制御は **学習者のため**の しくみで、教材を 確かめる人には ただの
+   * 通せんぼでしかない。これまでも「それでも 見る」で 抜けられたが、教材を
+   * 1本 見るたびに 押させていた。押させる意味が 無いなら、押させない。
+   *
+   * ここが false に なっても 失うものは 無い——鍵の 逃げ道は 残してある。
+   */
+  const isAdmin = useIsAdmin();
 
   /*
    * 並びに出る教材ぜんぶの読み辞書を1つの索引にまとめる（StageDetail と同じ組み方）。
@@ -121,6 +133,7 @@ export function ContentFrame({
   const gating = gateStage(
     codes,
     items.map((item) => resolveGates(item.type, item.gates)),
+    isAdmin,
   );
   const locked = !gating.openable[currentIndex] && !forced;
   // 止めている当人（まだ通っていない最初の関門）。無ければ先頭を指す
@@ -130,6 +143,11 @@ export function ContentFrame({
   const next = items[currentIndex + 1];
   /** つぎへ進んでよいか。スライドは 見ていなくても true。 */
   const currentDone = gating.passed[currentIndex] === true;
+  /*
+   * 先生は おわらせなくても つぎへ 行ける。並びの ほうは もう ぜんぶ 押せるので、
+   * ここだけ 灰色の 札のままだと「押せない ボタンが 1つ 残っている」に なる。
+   */
+  const canAdvance = currentDone || isAdmin;
 
   /*
     ステージの中身を全部おえたら、ステージをクリア済みにする。
@@ -164,6 +182,7 @@ export function ContentFrame({
           codes={codes}
           currentIndex={currentIndex}
           openable={gating.openable}
+          unlocked={isAdmin}
           furigana={itemFurigana}
           open={navOpen}
           onToggle={() => setNavOpen((value) => !value)}
@@ -195,7 +214,7 @@ export function ContentFrame({
                   ← ステージに もどる
                 </Link>
                 {next ? (
-                  currentDone ? (
+                  canAdvance ? (
                     <Link
                       prefetch={false}
                       href={next.href}
@@ -214,7 +233,7 @@ export function ContentFrame({
                       すすめます
                     </span>
                   )
-                ) : currentDone ? (
+                ) : canAdvance ? (
                   <Link
                     prefetch={false}
                     href={`/${stage.id}`}
@@ -290,6 +309,7 @@ function StageRail({
   codes,
   currentIndex,
   openable,
+  unlocked,
   furigana,
   open,
   onToggle,
@@ -300,6 +320,8 @@ function StageRail({
   currentIndex: number;
   /** その教材を いま ひらけるか（関門でない種別は いつでも true）。 */
   openable: readonly boolean[];
+  /** 鍵が かかっていない人（先生）か。なぜ ぜんぶ 開いているのかを 一言 添える。 */
+  unlocked: boolean;
   /** 教材名の読み辞書（枠に出る教材ぜんぶをまとめた索引）。 */
   furigana: FuriganaIndex;
   open: boolean;
@@ -356,6 +378,16 @@ function StageRail({
     </ol>
   );
 
+  /*
+    なぜ ぜんぶ 押せるのかを 先生に 見せる。書かないと、学習者の画面でも
+    鍵が 効いていないのでは と 疑うことになる（確かめる すべが 無い）。
+  */
+  const unlockedNote = unlocked ? (
+    <p className="text-ink-faint text-[10px] leading-relaxed font-bold">
+      🛡️ せんせいは ぜんぶ ひらけます
+    </p>
+  ) : null;
+
   const heading = (
     <div>
       <Link
@@ -384,6 +416,7 @@ function StageRail({
       <aside className="card-island sticky top-4 hidden h-fit w-60 shrink-0 space-y-3 p-4 lg:block">
         {heading}
         {list}
+        {unlockedNote}
         <Link
           prefetch={false}
           href="/map"
@@ -405,7 +438,12 @@ function StageRail({
             {open ? "▲" : `${currentIndex + 1}/${items.length} ▼`}
           </span>
         </button>
-        {open ? <div className="card-island mt-2 space-y-3 p-3">{list}</div> : null}
+        {open ? (
+          <div className="card-island mt-2 space-y-3 p-3">
+            {list}
+            {unlockedNote}
+          </div>
+        ) : null}
       </div>
     </>
   );

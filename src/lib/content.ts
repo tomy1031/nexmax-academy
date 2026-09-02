@@ -59,15 +59,38 @@ import { hydrateArticle, hydrateManga, hydrateWordStage } from "@/lib/vocabulary
  *
  * 毎回パースし直さないよう1度だけ組み立てる（同じ配列を使い回す）。
  */
-let parsedCache: Content[] | null = null;
+/**
+ * **要る 種別だけ 検証する。**
+ *
+ * 前は 1回の 問い合わせで **全76ファイルを zod に かけて** いた。教材が 増える ほど
+ * 重く なり、Cloudflare Workers の CPU の 上限に 当たって Error 1102 に なる
+ *（上の `cache()` の 注記と 同じ 事故。2026-09-01 に クエスト（107KB）を 足した
+ * あと、ステージへ 戻る ところで 再発した）。
+ *
+ * `kind` は 検証の 前でも 生データから 読める ので、**まず 種別で 分けて**から、
+ * 聞かれた 種別だけ 検証する。ステージ1つを 開く のに 要るのは 数ファイル。
+ */
+const rawByKind = new Map<string, unknown[]>();
+for (const raw of GIT_CONTENTS) {
+  const kind = (raw as { kind?: unknown }).kind;
+  if (typeof kind !== "string") continue;
+  const bucket = rawByKind.get(kind);
+  if (bucket) bucket.push(raw);
+  else rawByKind.set(kind, [raw]);
+}
 
-function parseAll(): Content[] {
-  if (parsedCache) return parsedCache;
-  parsedCache = GIT_CONTENTS.flatMap((raw) => {
+/** 検証ずみを 種別ごとに 覚える（同じ 配列を 使い回す）。 */
+const parsedByKind = new Map<string, readonly Content[]>();
+
+function parseKind<T extends Content>(kind: T["kind"]): T[] {
+  const hit = parsedByKind.get(kind);
+  if (hit) return hit as T[];
+  const list = (rawByKind.get(kind) ?? []).flatMap((raw) => {
     const parsed = contentSchema.safeParse(raw);
     return parsed.success ? [parsed.data] : [];
   });
-  return parsedCache;
+  parsedByKind.set(kind, list);
+  return list as T[];
 }
 
 /**
@@ -85,7 +108,17 @@ function parseAll(): Content[] {
 let gitIdCache: Set<string> | null = null;
 
 export function gitContentIds(): Set<string> {
-  if (!gitIdCache) gitIdCache = new Set(parseAll().map((c) => `${c.kind}:${c.id}`));
+  if (gitIdCache) return gitIdCache;
+  /*
+   * ここは **id が ある かどうか**しか 見ないので、zod を 通さない。
+   * 通すと この 1つの 問い合わせの ために 全教材を 検証する ことに なる。
+   */
+  gitIdCache = new Set(
+    GIT_CONTENTS.flatMap((raw) => {
+      const { kind, id } = raw as { kind?: unknown; id?: unknown };
+      return typeof kind === "string" && typeof id === "string" ? [`${kind}:${id}`] : [];
+    }),
+  );
   return gitIdCache;
 }
 
@@ -123,7 +156,7 @@ async function listPublishedFromDb<K extends Content["kind"]>(
 }
 
 export const listCharacters = cache(async (): Promise<Character[]> => {
-  const git = parseAll().filter((c): c is Character => c.kind === "character");
+  const git = parseKind<Character>("character");
   return mergeContentsById(git, await listPublishedFromDb("character")).sort((a, b) =>
     a.id.localeCompare(b.id),
   );
@@ -138,7 +171,7 @@ export async function getCharacter(id: string): Promise<Character | null> {
  * DBに 同じ id の 行が あれば そちらが 勝つ（先生の 直しが 常に 上）。
  */
 export const listVocabBooks = cache(async (): Promise<VocabBook[]> => {
-  const git = parseAll().filter((c): c is VocabBook => c.kind === "vocab");
+  const git = parseKind<VocabBook>("vocab");
   return mergeContentsById(git, await listPublishedFromDb("vocab")).sort((a, b) =>
     a.id.localeCompare(b.id),
   );
@@ -158,7 +191,7 @@ export async function listVocabWords(): Promise<VocabWord[]> {
  * 参照が 切れた ステージは 一覧から 落ちる（`lint:content` が 別に 止める）。
  */
 export const listWordStages = cache(async (): Promise<WordStage[]> => {
-  const git = parseAll().filter((c): c is StoredWordStage => c.kind === "wordstage");
+  const git = parseKind<StoredWordStage>("wordstage");
   const stored = mergeContentsById(git, await listPublishedFromDb("wordstage")).sort((a, b) =>
     a.id.localeCompare(b.id),
   );
@@ -175,7 +208,7 @@ export async function getWordStage(id: string): Promise<WordStage | null> {
 }
 
 export const listQuizSets = cache(async (): Promise<QuizSet[]> => {
-  const git = parseAll().filter((c): c is QuizSet => c.kind === "quizset");
+  const git = parseKind<QuizSet>("quizset");
   return mergeContentsById(git, await listPublishedFromDb("quizset")).sort((a, b) =>
     a.id.localeCompare(b.id),
   );
@@ -186,7 +219,7 @@ export async function getQuizSet(id: string): Promise<QuizSet | null> {
 }
 
 export const listListenings = cache(async (): Promise<Listening[]> => {
-  const git = parseAll().filter((c): c is Listening => c.kind === "listening");
+  const git = parseKind<Listening>("listening");
   return mergeContentsById(git, await listPublishedFromDb("listening")).sort((a, b) =>
     a.id.localeCompare(b.id),
   );
@@ -197,7 +230,7 @@ export async function getListening(id: string): Promise<Listening | null> {
 }
 
 export const listScenarios = cache(async (): Promise<Scenario[]> => {
-  const git = parseAll().filter((c): c is Scenario => c.kind === "scenario");
+  const git = parseKind<Scenario>("scenario");
   // シナリオだけは order 昇順（一覧の並びが学習の順番そのものなので id 順にしない）。
   return mergeContentsById(git, await listPublishedFromDb("scenario")).sort(
     (a, b) => a.order - b.order,
@@ -209,7 +242,7 @@ export async function getScenario(id: string): Promise<Scenario | null> {
 }
 
 export const listMeetings = cache(async (): Promise<Meeting[]> => {
-  const git = parseAll().filter((c): c is Meeting => c.kind === "meeting");
+  const git = parseKind<Meeting>("meeting");
   return mergeContentsById(git, await listPublishedFromDb("meeting")).sort((a, b) =>
     a.id.localeCompare(b.id),
   );
@@ -220,7 +253,7 @@ export async function getMeeting(id: string): Promise<Meeting | null> {
 }
 
 export const listStages = cache(async (): Promise<Stage[]> => {
-  const git = parseAll().filter((c): c is Stage => c.kind === "stage");
+  const git = parseKind<Stage>("stage");
   return mergeContentsById(git, await listPublishedFromDb("stage")).sort(
     (a, b) => a.order - b.order || a.id.localeCompare(b.id),
   );
@@ -231,7 +264,7 @@ export async function getStage(id: string): Promise<Stage | null> {
 }
 
 export const listMangas = cache(async (): Promise<Manga[]> => {
-  const git = parseAll().filter((c): c is Manga => c.kind === "manga");
+  const git = parseKind<Manga>("manga");
   const merged = mergeContentsById(git, await listPublishedFromDb("manga")).sort((a, b) =>
     a.id.localeCompare(b.id),
   );
@@ -245,7 +278,7 @@ export async function getManga(id: string): Promise<Manga | null> {
 }
 
 export const listArticles = cache(async (): Promise<Article[]> => {
-  const git = parseAll().filter((c): c is Article => c.kind === "article");
+  const git = parseKind<Article>("article");
   const merged = mergeContentsById(git, await listPublishedFromDb("article")).sort((a, b) =>
     a.id.localeCompare(b.id),
   );
@@ -281,7 +314,7 @@ export async function getArticleCharacters(article: Article) {
 }
 
 export const listSlides = cache(async (): Promise<Slides[]> => {
-  const git = parseAll().filter((c): c is Slides => c.kind === "slides");
+  const git = parseKind<Slides>("slides");
   return mergeContentsById(git, await listPublishedFromDb("slides")).sort((a, b) =>
     a.id.localeCompare(b.id),
   );
@@ -292,7 +325,7 @@ export async function getSlides(id: string): Promise<Slides | null> {
 }
 
 export const listLinks = cache(async (): Promise<LinkContent[]> => {
-  const git = parseAll().filter((c): c is LinkContent => c.kind === "link");
+  const git = parseKind<LinkContent>("link");
   return mergeContentsById(git, await listPublishedFromDb("link")).sort((a, b) =>
     a.id.localeCompare(b.id),
   );
@@ -303,7 +336,7 @@ export async function getLink(id: string): Promise<LinkContent | null> {
 }
 
 export const listSkits = cache(async (): Promise<Skit[]> => {
-  const git = parseAll().filter((c): c is Skit => c.kind === "skit");
+  const git = parseKind<Skit>("skit");
   return mergeContentsById(git, await listPublishedFromDb("skit")).sort((a, b) =>
     a.id.localeCompare(b.id),
   );
@@ -314,7 +347,7 @@ export async function getSkit(id: string): Promise<Skit | null> {
 }
 
 export const listQuests = cache(async (): Promise<Quest[]> => {
-  const git = parseAll().filter((c): c is Quest => c.kind === "quest");
+  const git = parseKind<Quest>("quest");
   return mergeContentsById(git, await listPublishedFromDb("quest")).sort((a, b) =>
     a.id.localeCompare(b.id),
   );

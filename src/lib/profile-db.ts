@@ -130,6 +130,29 @@ export async function fetchOwnProfile(): Promise<ProfileRow | null> {
   return data as ProfileRow | null;
 }
 
+/**
+ * 本人が 先生（管理者）かだけを 読む。
+ *
+ * 行まるごとの `fetchOwnProfile()` と 分けるのは、**学習者 全員が 通る 教材の画面**
+ * から 呼ぶため（`src/lib/admin-flag.ts`）。読むのは 1列で、返るのも 1行だけにする。
+ *
+ * @returns Supabase 未設定（デモモード）・未ログインなら null。
+ */
+export async function fetchOwnAdminFlag(): Promise<{ id: string; admin: boolean } | null> {
+  const supabase = createClient();
+  if (!supabase) return null;
+  const id = await readOwnId(supabase);
+  if (!id) return null;
+
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("is_admin")
+    .eq("id", id)
+    .maybeSingle();
+  if (error) throw error;
+  return { id, admin: (data as { is_admin?: boolean } | null)?.is_admin === true };
+}
+
 export async function upsertOwnProfile(data: OwnProfileInput): Promise<ProfileRow> {
   const supabase = requireClient();
   const id = await requireOwnId(supabase);

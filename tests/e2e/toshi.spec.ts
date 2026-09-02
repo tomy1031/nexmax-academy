@@ -13,6 +13,7 @@ import {
   waitForAsk,
   KAISHA,
   KAISHA_ITEMS,
+  SHUGYO_TOTAL,
   joinCall,
   leaveCall,
   openedCards,
@@ -191,6 +192,20 @@ const HEARD = [
   "おはようございます",
   "タンバム",
   "オリジナル",
+];
+
+/**
+ * 「就業形態の かくにん」の 4択（`content/quizsets/kaisha_shugyo_keitai_check.json`）。
+ *
+ * 文字では なく **番号**で えらぶ（ルビが 合成されるので 文字では 掴めない
+ *——`HOUKOKU_CHOICES` の 覚書と 同じ）。教材の 並びを 変えたら ここも 落ちる。
+ */
+const SHUGYO_CHOICES: readonly (readonly [string, number])[] = [
+  ["q_kuni", 0],
+  ["q_ikutsu", 2],
+  ["q_ses", 0],
+  ["q_jutaku", 1],
+  ["q_zenbu", 3],
 ];
 
 test("かいしゃステージを 通しで あそべる（端末に 何も 置かずに 始める）", async ({ page }) => {
@@ -640,30 +655,16 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
     await page.getByRole("button", { name: "おわる" }).click();
   });
 
-  await test.step("9. STEP 6 ページ「就業形態を 知ろう」— はたらきかたの スライド", async () => {
-    await frameNext(page).click();
-    await expect(page).toHaveURL(/article-kaisha_shugyo_keitai$/);
+  await test.step("9. STEP 6 リスニング「就業形態」— 資料より 先に 聞く", async () => {
     /*
-     * 旧アプリの 講義スライド（1枚の 図）の 移植。図の 中の 字には ふりがなを
-     * 振れないので、**図の 下に 同じ ことを ことばでも 置いて ある**（3枚の カード）。
-     * カードの 絵は その 図の 3つの わくを 切り出した もの——390px の 画面では
-     * 1枚の ままだと 字が 読めないので、1つずつ 大きく 見せる。
-     * 図が 消えた ことに 気づける ように、枚数を 固定して 見張る（全体1枚＋3つ）。
-     */
-    await expect(page.locator('img[src*="/img/articles/kaisha_shugyo_keitai/"]')).toHaveCount(4);
-    await expect(page.locator('[data-slot="empty"]')).toHaveCount(0);
-    await shot(page, "13-shugyo-keitai-slide");
-
-    await readToEnd(page);
-    await frameNext(page).click();
-  });
-
-  await test.step("10. STEP 6 リスニング「就業形態」— 打った ことばで 原稿が ひらく", async () => {
-    /*
+     * **スライドより 先**（2026-09-01 の 指定）。先に 資料を 見せると、
+     * 聞き取りでは なく 読んだ ことを 思い出す 練習に なる。
+     *
      * ステージに リスニングは **1本だけ**なので URL に ID は 付かない
      *（`stageContentPath`）。ここが `-ID` 付きに なったら、ステージに
      * 2本目の リスニングが 入った という こと。
      */
+    await frameNext(page).click();
     await expect(page).toHaveURL(/\/kaisha\/listening$/);
     await page.getByRole("button", { name: "はじめる" }).click();
 
@@ -678,13 +679,51 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
      * 入れ替えて 越えられなく なったら、ここが 落ちる。
      */
     await expect(page.getByText(/げんこうが \d+% ひらきました/)).toBeVisible();
-    await shot(page, "14-listening-typing");
+    await shot(page, "13-listening-typing");
 
     await page.getByRole("button", { name: "こたえあわせに すすむ" }).click();
     await expect(page.getByRole("heading", { name: "こたえあわせ" })).toBeVisible();
+    await frameNext(page).click();
   });
 
-  await test.step("11. ステージを おえる", async () => {
+  await test.step("10. STEP 6 ページ「就業形態を 確かめよう」— 聞いた ことを 資料で 確かめる", async () => {
+    await expect(page).toHaveURL(/article-kaisha_shugyo_keitai$/);
+    /*
+     * 旧アプリの 講義スライド（1枚の 図）の 移植。図の 中の 字には ふりがなを
+     * 振れないので、**図の 下に 同じ ことを ことばでも 置いて ある**（3枚の カード）。
+     * カードの 絵は その 図の 3つの わくを 切り出した もの——390px の 画面では
+     * 1枚の ままだと 字が 読めないので、1つずつ 大きく 見せる。
+     * 図が 消えた ことに 気づける ように、枚数を 固定して 見張る（全体1枚＋3つ）。
+     */
+    await expect(page.locator('img[src*="/img/articles/kaisha_shugyo_keitai/"]')).toHaveCount(4);
+    await expect(page.locator('[data-slot="empty"]')).toHaveCount(0);
+    await shot(page, "14-shugyo-keitai-slide");
+
+    await readToEnd(page);
+    await frameNext(page).click();
+  });
+
+  await test.step("11. STEP 6 もんだい「就業形態の かくにん」— 軽い 内容確認", async () => {
+    await expect(page).toHaveURL(/quiz-kaisha_shugyo_keitai_check$/);
+    await page.getByRole("button", { name: "はじめる" }).click();
+
+    /* この 教材も `answerMode: "all"`。6問が 同時に 見えて いる。 */
+    await expect(page.getByText(`1/${SHUGYO_TOTAL}`, { exact: true })).toBeVisible();
+    // ぜんぶ うめるまで 出す ボタンは 出ない（`requireAll`）
+    await expect(page.getByRole("button", { name: /こたえを 出/ })).toHaveCount(0);
+
+    for (const [questionId, at] of SHUGYO_CHOICES) {
+      await pickChoiceIn(page, questionId, at);
+    }
+    await writeIn(page, "q_apuri", "たんばむ"); // ひらがなで 打っても 通る（normalize）
+    await shot(page, "15-shugyo-check");
+
+    await expect(page.getByRole("button", { name: /こたえを 出/ })).toBeVisible();
+    await submitAnswers(page);
+    await expect(page.getByText(`${SHUGYO_TOTAL} / ${SHUGYO_TOTAL} もん`)).toBeVisible();
+  });
+
+  await test.step("12. ステージを おえる", async () => {
     const clear = page.getByRole("dialog", { name: "ステージ クリア" });
     await expect(clear).toBeVisible();
     await shot(page, "11-stage-clear");

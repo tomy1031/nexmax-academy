@@ -31,7 +31,9 @@ export interface KaishaItem {
  * STEP1 調べかたを 学ぶ → STEP2 サイトを 見て 調査シートを うめる →
  * STEP3 ヘンディさんに 報告 → STEP4 社長と 話す 準備（ページ＋フォーム）→
  * STEP5 社長と 話す。
- * そのあとに STEP6（就業形態の スライド＋リスニング）が 付いた。
+ * そのあとに STEP6（就業形態）が 付いた。**まず 聞いて、スライドで 確かめ、
+ * さいごに かくにんの もんだい**——先に 資料を 見せると 聞く 練習に ならない
+ *（2026-09-01 の 指定「リスニングとプレゼンの順番が逆です」）。
  */
 export const KAISHA = {
   /** STEP 1 NEXT MAKEを 調べよう！ */
@@ -76,20 +78,26 @@ export const KAISHA = {
     path: "/kaisha/meeting-kaisha_matsui",
     kind: "ミーティング",
   },
-  /** STEP 6 の ページ「就業形態を 知ろう」（旧アプリの 講義スライドの 移植）。 */
-  article3: {
-    id: "kaisha_shugyo_keitai",
-    path: "/kaisha/article-kaisha_shugyo_keitai",
-    kind: "ページ",
-  },
   /*
-   * STEP 6 の リスニング。ステージに リスニングが **1本だけ**なので、
+   * STEP 6 の リスニング（**先に 聞く**）。ステージに リスニングが **1本だけ**なので、
    * URL に ID は 付かない（`stageContentPath`）。
    */
   listening: {
     id: "kaisha_shugyo_keitai_listening",
     path: "/kaisha/listening",
     kind: "リスニング",
+  },
+  /** STEP 6 の ページ「就業形態を 確かめよう」（旧アプリの 講義スライドの 移植）。 */
+  article3: {
+    id: "kaisha_shugyo_keitai",
+    path: "/kaisha/article-kaisha_shugyo_keitai",
+    kind: "ページ",
+  },
+  /** STEP 6 の かくにんの もんだい（聞いた ことと スライドの 内容確認）。 */
+  shugyoCheck: {
+    id: "kaisha_shugyo_keitai_check",
+    path: "/kaisha/quiz-kaisha_shugyo_keitai_check",
+    kind: "もんだい",
   },
 } as const satisfies Record<string, KaishaItem>;
 
@@ -102,8 +110,9 @@ export const KAISHA_ITEMS: readonly KaishaItem[] = [
   KAISHA.article2,
   KAISHA.junbi,
   KAISHA.meetingMatsui,
-  KAISHA.article3,
   KAISHA.listening,
+  KAISHA.article3,
+  KAISHA.shugyoCheck,
 ];
 
 /**
@@ -168,6 +177,18 @@ export const JUNBI_TOTAL: number = (
 ).questions.length;
 
 /**
+ * 「就業形態の かくにん」の 問数。**教材から 読む**（`HOUKOKU_TOTAL` と 同じ 理由）。
+ */
+export const SHUGYO_TOTAL: number = (
+  JSON.parse(
+    readFileSync(
+      join(__dirname, "..", "..", "content", "quizsets", "kaisha_shugyo_keitai_check.json"),
+      "utf8",
+    ),
+  ) as { questions: unknown[] }
+).questions.length;
+
+/**
  * その教材より前の教材のID（関門を開けるために「おわった」ことにする分）。
  *
  * **番号ではなく教材そのものを受ける。** 前は `itemsBefore(4)` のように番号で
@@ -207,6 +228,22 @@ export async function seedCompleted(
     },
     [...contentIds],
   );
+}
+
+/**
+ * 「この端末を 見ているのは 先生（管理者）」の 覚え書きを 先に置く。
+ *
+ * デモモード（Supabase 未設定）の 通しの検証では ログインが 無いので、
+ * 本物の `is_admin` を 引けない。覚え書きの 形は `src/lib/admin-flag.ts` と
+ * そろえる——デモモードでは 聞き直しに 行かないので、置いた値が そのまま 効く。
+ */
+export async function seedAdmin(context: BrowserContext): Promise<void> {
+  await context.addInitScript(() => {
+    window.localStorage.setItem(
+      "nexmax.isAdmin.v1",
+      JSON.stringify({ admin: true, id: "e2e-teacher", at: Date.now() }),
+    );
+  });
 }
 
 /** 端末に 残った 正式な成績（`src/lib/progress/store.ts` の TestResult）。無ければ null。 */

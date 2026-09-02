@@ -2,7 +2,6 @@
 
 import { useCallback, useMemo, useRef, useState } from "react";
 import type { Quest } from "@/content/schema";
-import { NexMax } from "@/components/nexmax";
 import { RubyText } from "@/components/ruby-text";
 import { buildFuriganaIndex } from "@/lib/text/furigana";
 import { recordContentProgress } from "@/lib/progress/store";
@@ -25,6 +24,24 @@ import { QuestPlay } from "./quest-play";
 import { QuestResult } from "./quest-result";
 import { QuestSetup } from "./quest-setup";
 import { PlayerFace } from "./quest-art";
+import { QuestWindow } from "./quest-window";
+
+/**
+ * ゆれ（原典の `.animate-shake`）。**globals.css には 置かない**——
+ * ゲームでしか 使わない 動きなので、テーマの 共有ファイルを 太らせない。
+ */
+const QUEST_KEYFRAMES = `
+@keyframes quest-shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-5px) rotate(-1deg); }
+  40%, 80% { transform: translateX(5px) rotate(1deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .quest-shell *, .quest-shell *::before, .quest-shell *::after {
+    animation: none !important;
+  }
+}
+`;
 
 const UI_FURIGANA = buildFuriganaIndex([
   ["続", "つづ"],
@@ -167,7 +184,7 @@ export function QuestView({ quest, embedded }: { quest: Quest; embedded?: boolea
         />
       );
     }
-    if (!state) return <QuestSetup onStart={onStart} busy={busy} />;
+    if (!state) return <QuestSetup title={quest.title} onStart={onStart} busy={busy} />;
     if (state.status.kind !== "playing" && state.event === null) {
       return <QuestResult quest={quest} state={state} onRestart={restart} />;
     }
@@ -183,38 +200,24 @@ export function QuestView({ quest, embedded }: { quest: Quest; embedded?: boolea
     );
   })();
 
+  /*
+   * ## ゲームの 場を 黒で 囲う
+   * 2026-09-01 の 指定「ゲーム風UIが 売り」。ステージの 中に 埋めこんでも、
+   * ここから 内側は **黒地・等幅の ゲーム画面**に する。`-mx-*` で 親の
+   * 余白を 打ち消し、画面の はしまで 黒を 伸ばす——枠の 外に サイトの 白が
+   * 残ると「ページの 中の 部品」に 見えて、遊びの 場に 入った 感じが 出ない。
+   *
+   * **数字は 親（`content-frame.tsx` の `px-3 sm:px-5`）と そろえる。**
+   * 多く 引くと その ぶん 横に あふれ、390px で 横スクロールが 出る。
+   */
   return (
-    <div className={embedded ? "" : "mx-auto w-full max-w-3xl px-4 py-6"}>
-      {state === null ? (
-        <section className="card-island mb-3 p-5 sm:p-6">
-          <div className="flex flex-wrap items-start gap-4">
-            <NexMax variant="hello" size={64} bob />
-            <div className="min-w-0 flex-1">
-              <h1 className="text-ink text-2xl font-extrabold break-words sm:text-3xl">
-                <RubyText text={quest.title} index={furigana} show={furiganaOn} />
-              </h1>
-              <p className="text-ink-soft mt-1 font-bold break-words">
-                <RubyText text={quest.description} index={furigana} show={furiganaOn} />
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={() => setFuriganaOn((on) => !on)}
-              aria-pressed={furiganaOn}
-              className={`rounded-full border-2 px-3 py-1 text-xs font-extrabold ${
-                furiganaOn
-                  ? "bg-sky border-sky text-white"
-                  : "border-hairline text-ink-soft bg-panel"
-              }`}
-            >
-              ふりがな {furiganaOn ? "ON" : "OFF"}
-            </button>
-          </div>
-          <p className="bg-panel-tint text-ink mt-4 rounded-2xl px-4 py-3 leading-relaxed font-bold">
-            🎯 <RubyText text={quest.focus} index={furigana} show={furiganaOn} />
-          </p>
-        </section>
-      ) : null}
+    <div
+      data-quest="shell"
+      className={`quest-shell bg-black font-mono text-slate-100 ${
+        embedded ? "-mx-3 sm:-mx-5" : "min-h-[100dvh]"
+      }`}
+    >
+      <style>{QUEST_KEYFRAMES}</style>
       {body}
     </div>
   );
@@ -234,47 +237,49 @@ function ResumeChoice({
   onFresh: () => void;
 }) {
   return (
-    <section className="card-island p-5 sm:p-6">
-      <h2 className="text-navy text-xl font-black">
-        <RubyText text="つづきが ありました" index={UI_FURIGANA} />
-      </h2>
-      <p className="text-ink mt-2 font-bold">
-        <RubyText
-          text={`場面 ${resume.saved.clearedPhases + 1} から つづけられます。`}
-          index={UI_FURIGANA}
-        />
-      </p>
+    <div className="flex items-center justify-center px-2 py-6">
+      <QuestWindow title="CONTINUE" className="w-full max-w-md">
+        <h2 className="mt-2 text-xl font-bold tracking-widest text-yellow-300">
+          <RubyText text="つづきが ありました" index={UI_FURIGANA} />
+        </h2>
+        <p className="mt-2 text-sm font-bold text-white">
+          <RubyText
+            text={`場面 ${resume.saved.clearedPhases + 1} から つづけられます。`}
+            index={UI_FURIGANA}
+          />
+        </p>
 
-      <ul className="mt-4 flex flex-wrap gap-2">
-        {resume.saved.players.map((player) => (
-          <li
-            key={player.id}
-            className="border-hairline bg-panel flex items-center gap-2 rounded-full border-2 px-2 py-1"
+        <ul className="mt-4 flex flex-wrap gap-2">
+          {resume.saved.players.map((player) => (
+            <li
+              key={player.id}
+              className="flex items-center gap-2 rounded border border-slate-600 bg-black px-2 py-1"
+            >
+              <PlayerFace player={player} size={24} />
+              <span className="text-xs font-bold text-white">{player.name}</span>
+            </li>
+          ))}
+        </ul>
+
+        <div className="mt-5 flex flex-col gap-3">
+          <button
+            type="button"
+            data-quest="resume"
+            onClick={onResume}
+            className="w-full rounded border-2 border-white bg-blue-800 py-3 text-sm font-bold text-white transition-colors hover:bg-blue-700"
           >
-            <PlayerFace player={player} size={28} />
-            <span className="text-ink text-xs font-black">{player.name}</span>
-          </li>
-        ))}
-      </ul>
-
-      <div className="mt-5 flex flex-wrap gap-3">
-        <button
-          type="button"
-          data-quest="resume"
-          onClick={onResume}
-          className="btn-game px-6 py-3 [--btn-face:#58c273] [--btn-shadow:#3aa458]"
-        >
-          <RubyText text="つづきから" index={UI_FURIGANA} />
-        </button>
-        <button
-          type="button"
-          data-quest="fresh"
-          onClick={onFresh}
-          className="btn-game px-5 py-3 text-[#1f3a56] [--btn-face:#ffffff] [--btn-shadow:#cfe6f3]"
-        >
-          <RubyText text="最初から" index={UI_FURIGANA} />
-        </button>
-      </div>
-    </section>
+            <RubyText text="つづきから" index={UI_FURIGANA} />
+          </button>
+          <button
+            type="button"
+            data-quest="fresh"
+            onClick={onFresh}
+            className="w-full rounded border-2 border-white bg-slate-800 py-3 text-sm font-bold text-white transition-colors hover:bg-slate-700"
+          >
+            <RubyText text="最初から" index={UI_FURIGANA} />
+          </button>
+        </div>
+      </QuestWindow>
+    </div>
   );
 }

@@ -4,7 +4,7 @@
   "order": 2,
   "title": "会社を 知る",
   "reading": "かいしゃを しる",
-  "description": "6つの STEPで NEXT MAKEを 調べます。まず 調べかたを 学びます。Webサイトで 調査シートを うめて、ヘンディさんに 報告します。そのあと AI松井社長と 話す 準備を して、社長と 話します。さいごに、3つの 働き方（就業形態）を 知ります。",
+  "description": "6つの STEPで NEXT MAKEを 調べます。まず 調べかたを 学びます。Webサイトで 調査シートを うめて、ヘンディさんに 報告します。そのあと AI松井社長と 話す 準備を して、社長と 話します。さいごに、ヘンディさんの 話を 聞いて、3つの 働き方（就業形態）を スライドで 確かめます。",
   "color": "leaf",
   "status": "published",
   "area": {
@@ -43,12 +43,16 @@
       "type": "meeting"
     },
     {
+      "ref": "kaisha_shugyo_keitai_listening",
+      "type": "listening"
+    },
+    {
       "ref": "kaisha_shugyo_keitai",
       "type": "article"
     },
     {
-      "ref": "kaisha_shugyo_keitai_listening",
-      "type": "listening"
+      "ref": "kaisha_shugyo_keitai_check",
+      "type": "quizset"
     }
   ],
   "wordStageIds": [
@@ -68,6 +72,14 @@
     [
       "働き方",
       "はたらきかた"
+    ],
+    [
+      "聞",
+      "き"
+    ],
+    [
+      "確",
+      "たし"
     ],
     [
       "準備",
@@ -114,8 +126,16 @@
       "かんが"
     ],
     [
+      "話し",
+      "はなし"
+    ],
+    [
+      "話す",
+      "はなす"
+    ],
+    [
       "話",
-      "はな"
+      "はなし"
     ]
   ]
 }
