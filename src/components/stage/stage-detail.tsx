@@ -5,7 +5,12 @@ import { useMemo, useState, useSyncExternalStore } from "react";
 import type { ContentRefType } from "@/content/schema";
 import { RubyText } from "@/components/ruby-text";
 import { readContentProgress, subscribeProgress } from "@/lib/progress/store";
-import { buildFuriganaIndex, mergeFuriganaEntries, type FuriganaEntry } from "@/lib/text/furigana";
+import {
+  KANJI,
+  buildFuriganaIndex,
+  mergeFuriganaEntries,
+  type FuriganaEntry,
+} from "@/lib/text/furigana";
 import {
   contentKindMeta,
   STATUS_BADGE,
@@ -49,8 +54,8 @@ export interface StageWordItem {
   furigana?: readonly FuriganaEntry[];
 }
 
-/** 漢字を含む見出しか。含むならタイトル全体に よみ をふる（map-shell と同じ判定）。 */
-const HAS_KANJI = /[一-鿿]/;
+/** 漢字を含む見出しか。含むならタイトル全体に よみ をふる（判定はルビ合成と同じ KANJI を共用）。 */
+const HAS_KANJI = KANJI;
 
 export interface StageHeader {
   id: string;

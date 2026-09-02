@@ -37,8 +37,9 @@ describe("AIが 書ける ことば", () => {
       ...(meeting.talkGame?.talkHints ?? []),
       // 型文と お手本は しつもんの 中へ 移った（2026-09-01）。**両方 見る**——
       // 片方だけに すると、移した ときに 見張りが 黙って 外れる
-      ...(meeting.talkGame?.openers ?? []).flatMap((one: { hint?: string; example?: string }) => [
-        one.hint ?? "",
+      // 型文は **文ごとに 1つ**の 並び（2026-09-02）。1本ずつ ばらして 見る
+      ...(meeting.talkGame?.openers ?? []).flatMap((one: { hint?: string[]; example?: string }) => [
+        ...(one.hint ?? []),
         one.example ?? "",
       ]),
       ...(meeting.talkGame?.listenHints ?? []),
@@ -61,8 +62,8 @@ describe("AIが 書ける ことば", () => {
       ...(meeting.talkGame?.talkHints ?? []),
       // 型文と お手本は しつもんの 中へ 移った（2026-09-01）。**両方 見る**——
       // 片方だけに すると、移した ときに 見張りが 黙って 外れる
-      ...(meeting.talkGame?.openers ?? []).flatMap((one: { hint?: string; example?: string }) => [
-        one.hint ?? "",
+      ...(meeting.talkGame?.openers ?? []).flatMap((one: { hint?: string[]; example?: string }) => [
+        ...(one.hint ?? []),
         one.example ?? "",
       ]),
       ...(meeting.talkGame?.listenHints ?? []),

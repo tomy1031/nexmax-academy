@@ -11,6 +11,7 @@ import { contentKindMeta } from "@/lib/content-kinds";
 import { getClearedStageIds, markStageCleared } from "@/lib/progress";
 import { readContentProgress, subscribeProgress } from "@/lib/progress/store";
 import {
+  KANJI,
   buildFuriganaIndex,
   mergeFuriganaEntries,
   type FuriganaEntry,
@@ -24,8 +25,8 @@ import {
   STATUS_BADGE,
 } from "./stage-progress";
 
-/** 見出しに ルビが 要るか。漢字が 無い 名前には よみを 出さない（map-shell と 同じ）。 */
-const HAS_KANJI = /[一-鿿]/;
+/** 見出しに ルビが 要るか。漢字が 無い 名前には よみを 出さない（判定はルビ合成と同じ KANJI を共用）。 */
+const HAS_KANJI = KANJI;
 
 /**
  * 教材の外枠 — どのステージのどこにいるかを、教材の種類によらず同じ形で見せる

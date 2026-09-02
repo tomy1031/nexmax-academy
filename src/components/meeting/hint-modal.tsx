@@ -88,7 +88,14 @@ export function HintModal({
             className="mt-4 rounded-xl border-2 px-4 py-3"
             style={{ borderColor: "var(--color-leaf)", background: "var(--color-panel-tint)" }}
           >
-            <p className="text-leaf-deep text-xs font-black">(ex) こう 言うと よく つたわります</p>
+            {/*
+              **見出しに 言い方を 書かない**（2026-09-02 の 指定
+              「こう 言うと よく つたわります → こういう表現を使うとそう言えば良いと
+              勘違いしてしまうので削除」）。ヒントの 中の 字は 学習者に とって
+              **ぜんぶ「言う ことば」の 候補**に 見える——説明の つもりの 一言でも、
+              そのまま 口に 出す 材料に なる。`(ex)` だけ 置いて、中身で 語らせる。
+            */}
+            <p className="text-leaf-deep text-xs font-black">(ex)</p>
             <p className="text-ink mt-1 text-sm font-bold break-words">
               「<RubyText text={example} index={furigana} show />」
             </p>
