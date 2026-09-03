@@ -74,15 +74,15 @@ describe("原稿から 学習者が読む文を 取り出す", () => {
     const html = `<!doctype html><html><head><style>
       .x { justify-content: center; }
       .pageno::before { content: counter(slide) " / 22"; }
-      .bad::after { content: "だから 不正解"; }
+      .bad::after { content: "だから ダメです"; }
     </style></head><body><div class="slide"><p>こんにちは</p></div></body></html>`;
     const texts = extractManuscriptTexts(html);
-    expect(texts).toContain("だから 不正解");
+    expect(texts).toContain("だから ダメです");
     expect(texts).toContain("/ 22");
     expect(texts).not.toContain("center");
     const findings = checkManuscript("f.html", html);
     expect(findings).toHaveLength(1);
-    expect(findings[0]?.message).toContain("不正解");
+    expect(findings[0]?.message).toContain("ダメです");
   });
 
   it("br や ブロックの閉じで 行を分け、別の行の字を 貼り付けない", () => {
@@ -101,20 +101,36 @@ describe("原稿から 学習者が読む文を 取り出す", () => {
 });
 
 describe("原稿の 禁止語（規律1）", () => {
+  /*
+   * 禁止語は 2026-09-03 に 「ダメです」「ダメだ」の 2語だけに なった
+   *（AGENTS.md 規律1）。**「不正解」「間違いです」は もう 禁止語では ない**——
+   * 判定が 要る 場面で ぼかす 方が 害だから。見本の 語を 差しかえただけで、
+   * 見て いる もの（ルビ分断・前後の 添え）は 前と 同じ。
+   */
   it("ルビで 分断されていても 捕まえる（rt を除くのは このため）", () => {
     const findings = checkManuscript(
       "f.html",
-      manuscript(`<div class="slide"><p><ruby>間違<rt>まちが</rt></ruby>いです</p></div>`),
+      manuscript(`<div class="slide"><p><ruby>ダメ<rt>だめ</rt></ruby>です</p></div>`),
     );
     expect(findings).toHaveLength(1);
     expect(findings[0]?.level).toBe("error");
-    expect(findings[0]?.message).toContain("間違いです");
+    expect(findings[0]?.message).toContain("ダメです");
+  });
+
+  it("判定そのもの（「不正解です」）は 通す — ぼかす 方が 害（2026-09-03）", () => {
+    const findings = checkManuscript(
+      "f.html",
+      manuscript(
+        `<div class="slide"><p>この こたえは 不正解です。正しい こたえは 3つです。</p></div>`,
+      ),
+    );
+    expect(findings).toHaveLength(0);
   });
 
   it("どこに出たかが分かるよう、前後を添えて出す", () => {
     const findings = checkManuscript(
       "f.html",
-      manuscript(`<div class="slide"><p>この こたえは 不正解です。つぎへ。</p></div>`),
+      manuscript(`<div class="slide"><p>この こたえは ダメです。つぎへ。</p></div>`),
     );
     expect(findings[0]?.message).toContain("つぎへ");
   });
