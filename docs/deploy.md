@@ -777,6 +777,17 @@ Cloudflare を いくら 直しても 効かない、別の 天井である。
 >
 > 形は `scripts/lib/db_url.mjs` が 見張る。違って いれば `check_migrations` /
 > `check_rls` が **つなぐ前に** 名指しで 止める。
+>
+> **手で 組み立てなくてよい**（2026-09-03）:
+>
+> ```
+> node scripts/register_db_secret.mjs <project-ref>
+> ```
+>
+> ホスト名は `scripts/find_db_host.mjs` が **合言葉を 送らずに** 突き止める
+> （32個の プーラーへ Postgres の 最初の ひと言だけを 送り、
+> 「合言葉を どうぞ」と 返した 1つを 採る。ほかは `tenant/user not found`）。
+> 人が 打つのは 合言葉だけで、画面にも ファイルにも 残らない。
 
 `NEXT_PUBLIC_SUPABASE_URL` **では代用できない**。あれはブラウザに埋め込む公開の
 API窓口で、SQL は流せない（2026-08-26 に実際に取りちがえかけた）。

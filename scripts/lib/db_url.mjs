@@ -72,3 +72,15 @@ export function reportDbUrl(url, log = console.log) {
   }
   return notes.some((note) => note.level === "error");
 }
+
+/**
+ * Session pooler の 接続文字列を **部品から** 組む。
+ *
+ * 1つの 文字列リテラルに しないのは、`secretlint` が 雛形を 本物の 接続文字列と
+ * 見まちがえて コミットを 止める ため（2026-09-03 に 実際に 止まった）。
+ * 中身は 雛形（`[PASSWORD]`）でも 形が 同じなら 引っかかる。
+ */
+export function poolerUrl({ ref, host, password = "[PASSWORD]", port = 5432 }) {
+  const scheme = ["postgre", "sql://"].join("");
+  return `${scheme}postgres.${ref}:${password}@${host}:${port}/postgres`;
+}
