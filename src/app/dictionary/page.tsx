@@ -13,14 +13,14 @@ import { buildDictionary } from "@/lib/dictionary";
  */
 export const metadata: Metadata = { title: "ことばの じしょ" };
 
-/** 公開分のDBコンテンツを合流させるため ISR（設計07 §11.1）。 */
+/** 公開分のDBコンテンツは初回アクセスのとき合流する（設計07 §11.1）。 */
 /*
- * 7日。無料枠の CPU 10ms では 作り直しの フルSSR（280〜570ms）が 落ち、
- * 鮮度が 更新されないまま 毎リクエスト 繰り返す ため（2026-09-02 に 授業中の
- * 本番で 発生）。理由の 全文は src/app/[stage]/[content]/page.tsx と
- * docs/deploy.md §0.13。有料プランに したら 300 へ 戻してよい。
+ * **作りおきを 作り直さない**（`force-static`）。`revalidate` を 置くと、期限ぎれの
+ * 作りおきを 直すために リクエストの 中で フルSSR（実測 280〜570ms）が 走り、
+ * 無料枠の CPU 10ms で 落ちる。落ちても 鮮度は 更新されないので、輪が 閉じない。
+ * 理由の 全文は src/app/[stage]/[content]/page.tsx と docs/deploy.md §0.13。
  */
-export const revalidate = 604800;
+export const dynamic = "force-static";
 
 export default async function Page() {
   const [books, stages] = await Promise.all([listVocabBooks(), listWordStages()]);

@@ -16,8 +16,8 @@ import { NexMax } from "@/components/nexmax";
  * それに 加えて、**どのルートにも 当たらない URL 全部**も ここに 来る
  *（Next 13.3 以降。node_modules/next/dist/docs の not-found.js）。よくあるのは:
  *  - 授業の 資料に 貼った URL が 古い（教材の ID が 変わった）
- *  - `/[stage]` は ISR なので、新しい ステージの 404 が 一時的に 残る
- *    （AGENTS.md「URLの決まり」— revalidate 待ちで 直る）
+ *  - `/[stage]` は 作りおきなので、新しい ステージの 404 が デプロイまで 残る
+ *    （AGENTS.md「URLの決まり」— 次の デプロイで 直る）
  *
  * ## 行き先を 2つ 出す わけ
  * ここへ 来られるのは **ログインずみの人だけ**（`src/middleware.ts` が 通すのは

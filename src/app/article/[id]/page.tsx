@@ -5,21 +5,21 @@ import { getArticle, getArticleCharacters, listArticles } from "@/lib/content";
 import { canonicalContentPath } from "@/lib/stage-lookup";
 
 /**
- * 公開分のDBコンテンツを合流させるため ISR にする（設計07 §11.1
- * 「gitコンテンツは静的生成のまま。DBコンテンツはリクエスト時取得（ISR/短いキャッシュ）」）。
- * スタジオで「こうかい」した教材は、再デプロイを待たずこの間隔で届く。
+ * 公開分のDBコンテンツは **初回アクセスのとき** に合流する（設計07 §11.1
+ * 「gitコンテンツは静的生成のまま。DBコンテンツはリクエスト時取得」）。
+ * スタジオで「こうかい」した教材が **すでにある ページ** に届くのは 次のデプロイ。
  */
 /*
- * 7日。無料枠の CPU 10ms では 作り直しの フルSSR（280〜570ms）が 落ち、
- * 鮮度が 更新されないまま 毎リクエスト 繰り返す ため（2026-09-02 に 授業中の
- * 本番で 発生）。理由の 全文は src/app/[stage]/[content]/page.tsx と
- * docs/deploy.md §0.13。有料プランに したら 300 へ 戻してよい。
+ * **作りおきを 作り直さない**（`force-static`）。`revalidate` を 置くと、期限ぎれの
+ * 作りおきを 直すために リクエストの 中で フルSSR（実測 280〜570ms）が 走り、
+ * 無料枠の CPU 10ms で 落ちる。落ちても 鮮度は 更新されないので、輪が 閉じない。
+ * 理由の 全文は src/app/[stage]/[content]/page.tsx と docs/deploy.md §0.13。
  */
-export const revalidate = 604800;
+export const dynamic = "force-static";
 /**
  * git 由来の教材はビルド時に切り出す（実行時のファイル読みを起こさない）。
  * DB由来（スタジオで公開したもの）はここに現れないが、dynamicParams の既定により
- * 初回アクセスで生成され、以後は revalidate の間隔でキャッシュされる。
+ * 初回アクセスで生成され、以後は **作り直さない**作りおきになる。
  */
 export async function generateStaticParams() {
   return (await listArticles()).map((item) => ({ id: item.id }));
