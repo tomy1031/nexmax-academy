@@ -28,12 +28,10 @@
  * bake_content.ts と 同じ 理由（ビルド順に 依存させない）。ずれていたら
  * `npm run lint:content` が error で 落とす。
  */
-import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import { writeFileSync, mkdirSync } from "node:fs";
 import { join, relative } from "node:path";
-import { contentSchema, type StoredWordStage, type VocabBook } from "../../src/content/schema";
 import { buildDictionary } from "../../src/lib/dictionary";
-import { hydrateWordStage } from "../../src/lib/vocabulary";
-import { collectContentFiles } from "./bake_content";
+import { gitWordData } from "./git-word-data";
 
 const ROOT = join(import.meta.dirname, "..", "..");
 export const DICTIONARY_GENERATED_PATH = join(ROOT, "public", "dictionary", "learner.json");
@@ -49,23 +47,7 @@ export const DICTIONARY_URL = "/dictionary/learner.json";
  * **git の 分**で、先生が スタジオで 足した 語は 次の デプロイで 合流する。
  */
 export function buildDictionaryJson(): string {
-  const books: VocabBook[] = [];
-  const stored: StoredWordStage[] = [];
-  for (const file of collectContentFiles()) {
-    const parsed = contentSchema.safeParse(JSON.parse(readFileSync(file, "utf8")));
-    if (!parsed.success) continue;
-    if (parsed.data.kind === "vocab") books.push(parsed.data);
-    else if (parsed.data.kind === "wordstage") stored.push(parsed.data);
-  }
-  books.sort((a, b) => a.id.localeCompare(b.id));
-  stored.sort((a, b) => a.id.localeCompare(b.id));
-
-  const words = books.flatMap((book) => book.words);
-  const furigana = books.flatMap((book) => book.furigana ?? []);
-  const stages = stored
-    .map((stage) => hydrateWordStage(stage, words, furigana))
-    .filter((stage) => stage !== null);
-
+  const { books, stages } = gitWordData();
   return `${JSON.stringify(buildDictionary(books, stages))}\n`;
 }
 

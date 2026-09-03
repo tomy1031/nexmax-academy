@@ -31,6 +31,11 @@ export default async function ArcadeIndexPage() {
    * 初級・中級・上級を えらぶ（願い #280・2026-08-31「会社を知るを選ぶと、
    * 初級・中級・上級が選択できるようにしてください」）。
    */
-  const { heads, sets } = learnerWordGroups(stages, words);
-  return <ArcadeGame stages={sets} groups={heads} />;
+  const { heads } = learnerWordGroups(stages, words);
+  /*
+   * 渡すのは **行だけ**（13KB）。中の セット 10本（213KB）は ブラウザが 取りに 行く
+   *（`src/lib/wordset-store.ts`）。ここで 渡して いた ころは、この 1ページの
+   * 作りおきが 1.1MB あった（docs/deploy.md §0.14）。
+   */
+  return <ArcadeGame groups={heads} />;
 }

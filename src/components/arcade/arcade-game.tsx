@@ -33,6 +33,7 @@ import { FlashcardDeck } from "./flashcard-deck";
 import { MeaningChoice } from "./meaning-choice";
 import { ReadingInput } from "./reading-input";
 import { WordDictionary } from "./word-dictionary";
+import { useLearnerWordSets } from "@/lib/wordset-store";
 import { fieldForIndex } from "./scheduler";
 import { useCountdown } from "./use-countdown";
 
@@ -94,7 +95,18 @@ function itemOfSet(set: WordStage): SelectItem {
 const EXPLAIN_MS = 2800;
 
 export function ArcadeGame({
-  stages,
+  /**
+   * 遊ぶ セット。**渡さないと ブラウザが 取りに 行く**（`src/lib/wordset-store.ts`）。
+   *
+   * ぜんぶ 見せる 入口（`/wordtest` と、どの ステージにも 付いて いない ことば）で
+   * セット 10本を ここに 渡して いた ころは、213KB の データが **作りおき 1.1MB**に
+   * なって いた —— サーバ部品から クライアント部品への 受け渡しは HTML と RSC の
+   * 両方に 積まれる ため（docs/deploy.md §0.14）。
+   *
+   * ステージから 来た ときは **その ステージの セットだけ**を 渡す（数十KB）。
+   * ここを 取りに 行かせると、二段目の えらぶ 画面に よその 課の ことばが 並ぶ。
+   */
+  stages: provided,
   /** レッスンから直接呼ばれたときの入り口。単語だけで開いたときは未指定。 */
   initialStageId,
   /**
@@ -130,12 +142,20 @@ export function ArcadeGame({
    */
   groups,
 }: {
-  stages: readonly WordStage[];
+  stages?: readonly WordStage[];
   initialStageId?: string;
   backTo?: string;
   backTitle?: { title: string; furigana?: readonly FuriganaEntry[] };
   groups?: readonly WordGroupHead[];
 }) {
+  const fetched = useLearnerWordSets();
+  const stages = provided ?? fetched;
+  /*
+   * 取りに 行って いる あいだ。一覧の 行（`groups`）は サーバで 描いて あるので
+   * **押す ものは すぐ 出る**。中身が 要る 画面（セット選び・やりかた選び）だけ
+   * ここで 待たせる。
+   */
+  const waiting = stages.length === 0;
   const router = useRouter();
   const store = useMemo(() => createProgressStore(), []);
   const [screen, setScreen] = useState<Screen>(() =>
@@ -339,6 +359,18 @@ export function ArcadeGame({
                 onDictionary={() => setScreen({ kind: "dictionary", stageId: stage.id })}
                 onBack={goBackFromMode}
               />
+            )}
+
+            {/*
+              セットを 取りに 行って いる あいだ（`src/lib/wordset-store.ts`）。
+              一覧の 行は サーバで 描いて あるので、ここに 来るのは 行を 押した あと。
+            */}
+            {waiting && (screen.kind === "setSelect" || screen.kind === "mode") && (
+              <div className="pointer-events-none rounded-3xl bg-black/60 p-8 text-center">
+                <p className="text-lg font-black text-white">
+                  ことばを よみこんで います<span className="sr-only">。</span>
+                </p>
+              </div>
             )}
 
             {screen.kind === "hiraCheck" && stage && (

@@ -80,7 +80,9 @@ export default async function ArcadeStagePage({ params }: { params: Promise<{ st
   /*
    * 手わたすのは **その ステージの セットだけ**。ステージから 来た 人に
    * よその 課の ことばを 並べても 選べない（ぜんぶ 見たい 人の 入口は /wordtest）。
-   * どの ステージにも 付いて いない ことばの ときだけ、これまでどおり 全部を わたす。
+   * どの ステージにも 付いて いない ことばの ときは 渡さず、**ブラウザに 取りに
+   * 行かせる**（`src/lib/wordset-store.ts`）——全部を ここで 渡して いた ころは
+   * この ページの 作りおきが 1.1MB あった（docs/deploy.md §0.14）。
    *
    * セットが 2つ以上 なら `initialStageId` を 渡さない＝**えらぶ 画面から** 始まる
    *（願い #280「会社を知るを選ぶと、初級・中級・上級が選択できるように」）。
@@ -92,7 +94,7 @@ export default async function ArcadeStagePage({ params }: { params: Promise<{ st
 
   return (
     <ArcadeGame
-      stages={owner ? sets : all.sets}
+      stages={owner ? sets : undefined}
       groups={owner ? undefined : all.heads}
       initialStageId={sets.length === 1 ? sets[0]!.id : undefined}
       backTo={owner ? `/${owner.id}` : undefined}

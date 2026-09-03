@@ -61,6 +61,7 @@ import { checkYomiCorrectness } from "./lib/yomi_check";
 // 焼き込みモジュールの作り手と同じ関数で組み立てて比べる（作り方が2つに割れないように）
 import { buildGeneratedSource, GENERATED_PATH } from "./lib/bake_content";
 import { buildDictionaryJson, DICTIONARY_GENERATED_PATH } from "./lib/bake_dictionary";
+import { buildWordSetsJson, WORDSETS_GENERATED_PATH } from "./lib/bake_wordsets";
 import { buildSceneSource, SCENE_GENERATED_PATH } from "./generate_scene_index.mjs";
 import {
   buildGlossarySource,
@@ -203,6 +204,8 @@ function checkGeneratedIndex(): Finding[] {
      *（scripts/lib/bake_dictionary.ts に 理由と 実測値）。
      */
     ...checkGenerated(DICTIONARY_GENERATED_PATH, buildDictionaryJson, "content/vocab/"),
+    /* 単語テストの セットも 同じ（scripts/lib/bake_wordsets.ts）。 */
+    ...checkGenerated(WORDSETS_GENERATED_PATH, buildWordSetsJson, "content/wordstages/"),
   ];
 }
 

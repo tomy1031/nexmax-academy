@@ -23,6 +23,8 @@ const BAKERS = [
   join(ROOT, "scripts", "lib", "bake_content.ts"),
   // ポップアップ辞書を public/ の 1枚に する（ページの 積み荷から 降ろす）。
   join(ROOT, "scripts", "lib", "bake_dictionary.ts"),
+  // 単語テストの セットも 同じく public/ の 1枚に する。
+  join(ROOT, "scripts", "lib", "bake_wordsets.ts"),
 ];
 
 for (const baker of BAKERS) {
