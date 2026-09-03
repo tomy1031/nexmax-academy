@@ -48,7 +48,34 @@ import { loadRef } from "../page";
  */
 
 /** DBで公開した教材を合流させるため ISR（設計07 §11.1）。 */
-export const revalidate = 300;
+/*
+ * **7日**（300秒では ない）。理由は 無料枠の CPU 上限 10ms である。
+ *
+ * 作りおきが「古い」判定に なると、OpenNext の 横取りは リクエストの 中で
+ * `await queue.send()` し、自分自身へ HEAD を 投げて **まるごと フルSSR** する。
+ * フルSSR 1回は 実測 280〜570ms —— 上限の 30〜60倍で、落ちる。落ちると 鮮度が
+ * 更新されないので **次の リクエストも また 作り直そうとする**。輪が 閉じない。
+ *
+ * 2026-09-02、授業中の 本番で これが 起きた（`wrangler tail --format json`）:
+ *
+ *     outcome=exceededCpu cpu=10ms  Error: Worker exceeded CPU time limit.
+ *     log: ['Revalidation failed for /kaisha/link with status 503']
+ *
+ * 567ms が ok で 通った 直後に 10ms で 連続して 落ちている——**無料枠は バーストを
+ * 見逃すが、使い切ると そこから 全部 10ms で 切られる**。「成功した リクエストが
+ * 10ms を 超えている」は 上限を 否定する 証拠に ならない。
+ *
+ * 7日に すると、デプロイの 間（本番は 火・水・金、STG は 1日8回）は 一度も
+ * 古くならないので、この 輪に 入らない。ついでに `s-maxage` が 大きく なるので
+ * Cloudflare の 拠点キャッシュが 効き、**そもそも Worker が 起きない**。
+ * **教材は デプロイのたびに 作り直される**ので、学習者が 見るのは 常に その日の
+ * 授業前に 出した 中身である。
+ *
+ * 代償: 先生が スタジオで 直した 内容（DB）が 出るのが「300秒後」から
+ * 「次の デプロイ」に なる。**Workers 有料（$5/月）に すれば CPU が 30秒に なり、
+ * この 制約ごと 消える**ので、そのときは 300 に 戻してよい（docs/deploy.md §0.13）。
+ */
+export const revalidate = 604800;
 
 export async function generateStaticParams() {
   const stages = await listStages();
