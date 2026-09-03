@@ -108,6 +108,22 @@ ${body}
 `;
 }
 
+/**
+ * content/ の JSON を **contentSchema に通した形で** 読む（焼き込みと 同じ 中身）。
+ *
+ * 焼き込み以外の 書き出し（ポップアップ辞書・単語セット）も ここから 読む。
+ * `src/lib/content.ts` を 通さないのは、あれが **生成物を 読む** ため——
+ * 作り直す 側が 作り直す 前の ものを 読むと、1回ぶん 遅れる。
+ */
+export function parsedContents(): unknown[] {
+  const out: unknown[] = [];
+  for (const file of collectContentFiles()) {
+    const parsed = contentSchema.safeParse(JSON.parse(readFileSync(file, "utf8")));
+    if (parsed.success) out.push(parsed.data);
+  }
+  return out;
+}
+
 export function writeGenerated(): number {
   writeFileSync(GENERATED_PATH, buildGeneratedSource());
   return collectContentFiles().length;

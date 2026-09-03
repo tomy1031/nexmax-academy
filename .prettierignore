@@ -19,6 +19,11 @@ docs/
 # コンテンツJSON（lint:content が別途スキーマ検証する）
 content/
 
+# ポップアップ辞書（content/vocab から 焼いた 1枚。ブラウザが 取りに 来る）。
+# 整形すると 焼いた 中身と 1バイト ずれ、lint:content の ずれ検査が 落ちる。
+public/dictionary/learner.json
+public/wordtest/sets.json
+
 # pdf.js の worker（npm install のたびに写す他人のコード。整形しない）
 public/pdfjs/
 

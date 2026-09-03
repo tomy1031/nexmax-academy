@@ -8,17 +8,17 @@ export const metadata: Metadata = {
 };
 
 /**
- * 公開分のDBコンテンツを合流させるため ISR にする（設計07 §11.1
- * 「gitコンテンツは静的生成のまま。DBコンテンツはリクエスト時取得（ISR/短いキャッシュ）」）。
+ * 公開分のDBコンテンツは **初回アクセスのとき** に合流する（設計07 §11.1
+ * 「gitコンテンツは静的生成のまま。DBコンテンツはリクエスト時取得」）。
  * スタジオで「こうかい」した単語ステージは、再デプロイを待たずこの間隔で届く。
  */
 /*
- * 7日。無料枠の CPU 10ms では 作り直しの フルSSR（280〜570ms）が 落ち、
- * 鮮度が 更新されないまま 毎リクエスト 繰り返す ため（2026-09-02 に 授業中の
- * 本番で 発生）。理由の 全文は src/app/[stage]/[content]/page.tsx と
- * docs/deploy.md §0.13。有料プランに したら 300 へ 戻してよい。
+ * **作りおきを 作り直さない**（`force-static`）。`revalidate` を 置くと、期限ぎれの
+ * 作りおきを 直すために リクエストの 中で フルSSR（実測 280〜570ms）が 走り、
+ * 無料枠の CPU 10ms で 落ちる。落ちても 鮮度は 更新されないので、輪が 閉じない。
+ * 理由の 全文は src/app/[stage]/[content]/page.tsx と docs/deploy.md §0.13。
  */
-export const revalidate = 604800;
+export const dynamic = "force-static";
 
 /**
  * 単語だけで開いたときの入り口。ステージ選択から始まる（旧アプリと同じ流れ）。
@@ -31,6 +31,11 @@ export default async function ArcadeIndexPage() {
    * 初級・中級・上級を えらぶ（願い #280・2026-08-31「会社を知るを選ぶと、
    * 初級・中級・上級が選択できるようにしてください」）。
    */
-  const { heads, sets } = learnerWordGroups(stages, words);
-  return <ArcadeGame stages={sets} groups={heads} />;
+  const { heads } = learnerWordGroups(stages, words);
+  /*
+   * 渡すのは **行だけ**（13KB）。中の セット 10本（213KB）は ブラウザが 取りに 行く
+   *（`src/lib/wordset-store.ts`）。ここで 渡して いた ころは、この 1ページの
+   * 作りおきが 1.1MB あった（docs/deploy.md §0.14）。
+   */
+  return <ArcadeGame groups={heads} />;
 }

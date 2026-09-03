@@ -19,12 +19,12 @@ import { canonicalContentPath } from "@/lib/stage-lookup";
  *（スタジオで 作りかけの ものを 先生が 確かめられる 必要が ある）。
  */
 /*
- * 7日。無料枠の CPU 10ms では 作り直しの フルSSR（280〜570ms）が 落ち、
- * 鮮度が 更新されないまま 毎リクエスト 繰り返す ため（2026-09-02 に 授業中の
- * 本番で 発生）。理由の 全文は src/app/[stage]/[content]/page.tsx と
- * docs/deploy.md §0.13。有料プランに したら 300 へ 戻してよい。
+ * **作りおきを 作り直さない**（`force-static`）。`revalidate` を 置くと、期限ぎれの
+ * 作りおきを 直すために リクエストの 中で フルSSR（実測 280〜570ms）が 走り、
+ * 無料枠の CPU 10ms で 落ちる。落ちても 鮮度は 更新されないので、輪が 閉じない。
+ * 理由の 全文は src/app/[stage]/[content]/page.tsx と docs/deploy.md §0.13。
  */
-export const revalidate = 604800;
+export const dynamic = "force-static";
 
 export async function generateStaticParams() {
   return (await listLinks()).map((link) => ({ id: link.id }));

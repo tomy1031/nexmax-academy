@@ -9,7 +9,6 @@ import { FeedbackMessage } from "@/components/feedback-message";
 import { NexMax } from "@/components/nexmax";
 import { DictionaryText } from "@/components/dictionary-text";
 import { RubyText } from "@/components/ruby-text";
-import type { DictionaryEntry } from "@/lib/dictionary";
 import type { FeedbackKey } from "@/lib/feedback";
 import { buildFuriganaIndex } from "@/lib/text/furigana";
 import { createProgressStore, recordContentProgress } from "@/lib/progress/store";
@@ -76,20 +75,9 @@ export function QuizRunner({
    * 別の一覧へ放り出される）。
    */
   embedded = false,
-  /**
-   * ことばの ポップアップ辞書（読みものと 同じ 引き先 — `@/lib/dictionary`）。
-   *
-   * **もんだいにも 辞書を 出す**（2026-08-27 の 指定「全ての コンテンツに ついて、
-   * 辞書を 細かく つける」）。調査シートには「実績」「受託開発」「オフショア開発」
-   * のような 語が 設問文に 直に 出て くるのに、**そこだけ 意味を 引けなかった**
-   *——読みものと ミーティングでは 引けるので、学習者から 見ると 画面ごとに
-   * 助けが 消える。渡さなければ 下線は 1本も 出ない（これまでどおり）。
-   */
-  dictionary,
 }: {
   set: QuizSet;
   embedded?: boolean;
-  dictionary?: readonly DictionaryEntry[];
 }) {
   const furigana = useMemo(() => buildFuriganaIndex(set.furigana ?? []), [set.furigana]);
   /*
@@ -481,7 +469,6 @@ export function QuizRunner({
           drafts={state.drafts}
           retryIds={retryIds}
           furigana={furigana}
-          dictionary={dictionary}
           requireAll={set.requireAll}
           inputIssue={state.phase.kind === "ask" ? state.phase.inputIssue : undefined}
           inputIssueQuestionId={
@@ -558,12 +545,12 @@ export function QuizRunner({
               {/* 設問の 「＊◯◯の ページ」は 行を 変えて 出す（2026-08-25 の 指定）。
                   データの 改行を そのまま 出すため whitespace-pre-line。 */}
               <p className="text-ink text-lg leading-relaxed font-extrabold whitespace-pre-line">
-                <DictionaryText text={question.q} index={furigana} dictionary={dictionary} />
+                <DictionaryText text={question.q} index={furigana} />
               </p>
               <QuestionSource question={question} furigana={furigana} />
               {state.phase.kind !== "explain" && (
                 <div className="mt-3">
-                  <QuestionHints question={question} furigana={furigana} dictionary={dictionary} />
+                  <QuestionHints question={question} furigana={furigana} />
                 </div>
               )}
 
@@ -1141,7 +1128,6 @@ function AllQuestionsCard({
   drafts,
   retryIds,
   furigana,
-  dictionary,
   requireAll,
   inputIssue,
   inputIssueQuestionId,
@@ -1153,7 +1139,6 @@ function AllQuestionsCard({
   /** 前の 回で もう一度に なった もんだい（赤い しるしを 出す）。 */
   retryIds: readonly string[];
   furigana: ReturnType<typeof buildFuriganaIndex>;
-  dictionary: readonly DictionaryEntry[] | undefined;
   /** ぜんぶ うめるまで 出せなく するか（教材ごと・`quizSet.requireAll`）。 */
   requireAll: boolean;
   inputIssue: FeedbackKey | undefined;
@@ -1245,7 +1230,6 @@ function AllQuestionsCard({
                 answered={draftAnswered(q, drafts[q.id])}
                 draft={drafts[q.id]}
                 furigana={furigana}
-                dictionary={dictionary}
                 dispatch={dispatchers.get(q.id)!}
                 inputIssue={inputIssueQuestionId === q.id ? inputIssue : undefined}
               />
@@ -1326,7 +1310,6 @@ const QuestionRow = memo(function QuestionRow({
   answered,
   draft,
   furigana,
-  dictionary,
   dispatch,
   inputIssue,
 }: {
@@ -1336,7 +1319,6 @@ const QuestionRow = memo(function QuestionRow({
   answered: boolean;
   draft: Parameters<typeof draftAnswerText>[1];
   furigana: ReturnType<typeof buildFuriganaIndex>;
-  dictionary: readonly DictionaryEntry[] | undefined;
   dispatch: (action: QuizAction) => void;
   inputIssue: FeedbackKey | undefined;
 }) {
@@ -1359,7 +1341,7 @@ const QuestionRow = memo(function QuestionRow({
               25問 並ぶ ページでも どの 問いの 絵かが 見て 分かる ように する。 */}
           <QuestionScene image={question.image} />
           <h2 className="text-ink text-lg font-extrabold whitespace-pre-line">
-            <DictionaryText text={question.q} index={furigana} dictionary={dictionary} />
+            <DictionaryText text={question.q} index={furigana} />
           </h2>
           <QuestionSource question={question} furigana={furigana} />
         </div>
@@ -1368,7 +1350,7 @@ const QuestionRow = memo(function QuestionRow({
         </span>
       </div>
 
-      <QuestionHints question={question} furigana={furigana} dictionary={dictionary} />
+      <QuestionHints question={question} furigana={furigana} />
 
       <QuestionBody
         question={question}
@@ -1449,11 +1431,9 @@ function QuestionSource({
 function QuestionHints({
   question,
   furigana,
-  dictionary,
 }: {
   question: QuizQuestion;
   furigana: ReturnType<typeof buildFuriganaIndex>;
-  dictionary?: readonly DictionaryEntry[];
 }) {
   const hints = question.hints ?? [];
   if (hints.length === 0) return null;
@@ -1468,7 +1448,7 @@ function QuestionHints({
             <RubyText text={hint.title} index={furigana} />
           </summary>
           <p className="text-ink mt-1.5 text-sm leading-relaxed font-bold">
-            <DictionaryText text={hint.text} index={furigana} dictionary={dictionary} />
+            <DictionaryText text={hint.text} index={furigana} />
           </p>
         </details>
       ))}

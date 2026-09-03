@@ -14,11 +14,24 @@ import { spawnSync } from "node:child_process";
 import { join } from "node:path";
 
 const ROOT = join(import.meta.dirname, "..");
-const BAKER = join(ROOT, "scripts", "lib", "bake_content.ts");
 
-const result = spawnSync(process.execPath, ["--import", "tsx", BAKER], { stdio: "inherit" });
-if (result.error) {
-  console.error(`✗ 焼き込みを起動できませんでした: ${result.error.message}`);
-  process.exit(1);
+/**
+ * 順に 走らせる。辞書（2つ目）は content/ の vocab / wordstage から 作るので、
+ * 教材の 焼き込みとは 独立に 動く（並びに 意味は 無いが、失敗を まとめて 出す）。
+ */
+const BAKERS = [
+  join(ROOT, "scripts", "lib", "bake_content.ts"),
+  // ポップアップ辞書を public/ の 1枚に する（ページの 積み荷から 降ろす）。
+  join(ROOT, "scripts", "lib", "bake_dictionary.ts"),
+  // 単語テストの セットも 同じく public/ の 1枚に する。
+  join(ROOT, "scripts", "lib", "bake_wordsets.ts"),
+];
+
+for (const baker of BAKERS) {
+  const result = spawnSync(process.execPath, ["--import", "tsx", baker], { stdio: "inherit" });
+  if (result.error) {
+    console.error(`✗ 焼き込みを起動できませんでした: ${result.error.message}`);
+    process.exit(1);
+  }
+  if (result.status !== 0) process.exit(result.status ?? 1);
 }
-process.exit(result.status ?? 1);

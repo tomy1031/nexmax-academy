@@ -6,7 +6,6 @@ import type { Meeting, MeetingQuestion } from "@/content/schema";
 import { CallShell } from "@/components/call-shell";
 import { DictionaryText } from "@/components/dictionary-text";
 import { RubyText } from "@/components/ruby-text";
-import type { DictionaryEntry } from "@/lib/dictionary";
 import { buildFuriganaIndex, kanaOf, type FuriganaIndex } from "@/lib/text/furigana";
 import { HINT_BLANK, hintPatterns } from "@/lib/meeting/hint";
 import { MAX_ATTEMPTS, type JudgeResult } from "@/lib/meeting/judge";
@@ -243,22 +242,12 @@ export function MeetingSession({
   hostVoice,
   /** 相手の口パクの絵（人物カードの mouth）。無ければ置き場の決まりに従う。 */
   hostMouth,
-  /**
-   * ことばの 辞書（単語ステージを 畳んだもの）。相手の しつもんと
-   * 「きょう やること」の ことばに 下線が つき、タップで 意味が 出る。
-   *
-   * 読みもの（`article-view`）と 同じ 引き先を 使う——ミーティング専用の
-   * 用語集を 別に 持つと、同じ「先輩」の 説明が 2つに 割れて 育つ。
-   * 中身は 先生が スタジオ（DB）で 直せる（`src/lib/dictionary.ts`）。
-   */
-  dictionary,
   /** ステージの枠の中に置くとき。戻り先は枠が持つ。 */
   embedded = false,
 }: {
   meeting: Meeting;
   hostVoice?: string;
   hostMouth?: Partial<Record<Viseme, string>>;
-  dictionary?: readonly DictionaryEntry[];
   embedded?: boolean;
 }) {
   const furigana = useMemo(() => buildFuriganaIndex(meeting.furigana ?? []), [meeting.furigana]);
@@ -1412,7 +1401,6 @@ export function MeetingSession({
             hostName={meeting.host.name}
             furigana={furigana}
             hostFurigana={hostFurigana}
-            dictionary={dictionary}
             /*
              * もう いちど 聞く。**相手が 話して いる あいだは 押せない**（音が 重なる）。
              * しつもん（作り置き）は「こたえる」ばんだけ、その場の こえは
@@ -1474,12 +1462,7 @@ export function MeetingSession({
     <div className="space-y-3">
       <div className="card-island p-5">
         <p className="text-navy text-lg font-black">
-          <DictionaryText
-            text={withName(meeting.closing)}
-            index={furigana}
-            show
-            dictionary={dictionary}
-          />
+          <DictionaryText text={withName(meeting.closing)} index={furigana} show />
         </p>
       </div>
 
@@ -1746,7 +1729,6 @@ export function MeetingSession({
         /* 題・きょう やること・名札の 漢字に ふりがなを つける（教材の 読み辞書） */
         furigana={furigana}
         /* 「きょう やること」の ことばに 意味の 吹き出しを つける */
-        dictionary={dictionary}
         /* 話す 教材なので 見出しは「はなす まえに」 */
         purpose="speak"
         /*
@@ -1929,7 +1911,6 @@ function ChatLine({
   hostName,
   furigana,
   hostFurigana,
-  dictionary,
   onReplay,
 }: {
   entry: ChatEntry;
@@ -1937,7 +1918,6 @@ function ChatLine({
   furigana: FuriganaIndex;
   /** 相手の 吹き出し用（教材の 読み ＋ AIに 許した ことばの 読み）。 */
   hostFurigana: FuriganaIndex;
-  dictionary?: readonly DictionaryEntry[];
   onReplay?: () => void;
 }) {
   if (entry.kind === "coach") {
@@ -2006,7 +1986,7 @@ function ChatLine({
         </p>
         <p className="text-ink mt-0.5 leading-relaxed font-bold break-words">
           {entry.kind === "ask" ? (
-            <DictionaryText text={entry.text} index={furigana} show dictionary={dictionary} />
+            <DictionaryText text={entry.text} index={furigana} show />
           ) : (
             /*
              * AIの 返事にも ルビを 合成する（2026-08-25）。AIには

@@ -5,24 +5,24 @@ import { listStages, listWordStages } from "@/lib/content";
 import { findLearnerWordSets, learnerWordGroups, wordStageOwner } from "@/lib/wordstage-merge";
 
 /**
- * 公開分のDBコンテンツを合流させるため ISR にする（設計07 §11.1
- * 「gitコンテンツは静的生成のまま。DBコンテンツはリクエスト時取得（ISR/短いキャッシュ）」）。
+ * 公開分のDBコンテンツは **初回アクセスのとき** に合流する（設計07 §11.1
+ * 「gitコンテンツは静的生成のまま。DBコンテンツはリクエスト時取得」）。
  * スタジオで「こうかい」した単語ステージは、再デプロイを待たずこの間隔で届く。
  */
 /*
- * 7日。無料枠の CPU 10ms では 作り直しの フルSSR（280〜570ms）が 落ち、
- * 鮮度が 更新されないまま 毎リクエスト 繰り返す ため（2026-09-02 に 授業中の
- * 本番で 発生）。理由の 全文は src/app/[stage]/[content]/page.tsx と
- * docs/deploy.md §0.13。有料プランに したら 300 へ 戻してよい。
+ * **作りおきを 作り直さない**（`force-static`）。`revalidate` を 置くと、期限ぎれの
+ * 作りおきを 直すために リクエストの 中で フルSSR（実測 280〜570ms）が 走り、
+ * 無料枠の CPU 10ms で 落ちる。落ちても 鮮度は 更新されないので、輪が 閉じない。
+ * 理由の 全文は src/app/[stage]/[content]/page.tsx と docs/deploy.md §0.13。
  */
-export const revalidate = 604800;
+export const dynamic = "force-static";
 
 /**
  * git 由来の ことばはビルド時に切り出す（実行時のファイル読みを起こさない）。
  * ステージIDと 単語ステージID の どちらでも 開けるように、両方を 並べる
  *（古いリンク `/wordtest/<単語ステージID>` を 切らない）。
  * DB由来（スタジオで公開したもの）はここに現れないが、dynamicParams の既定により
- * 初回アクセスで生成され、以後は revalidate の間隔でキャッシュされる。
+ * 初回アクセスで生成され、以後は **作り直さない**作りおきになる。
  */
 export async function generateStaticParams() {
   const [stages, words] = await Promise.all([listStages(), listWordStages()]);
@@ -80,7 +80,9 @@ export default async function ArcadeStagePage({ params }: { params: Promise<{ st
   /*
    * 手わたすのは **その ステージの セットだけ**。ステージから 来た 人に
    * よその 課の ことばを 並べても 選べない（ぜんぶ 見たい 人の 入口は /wordtest）。
-   * どの ステージにも 付いて いない ことばの ときだけ、これまでどおり 全部を わたす。
+   * どの ステージにも 付いて いない ことばの ときは 渡さず、**ブラウザに 取りに
+   * 行かせる**（`src/lib/wordset-store.ts`）——全部を ここで 渡して いた ころは
+   * この ページの 作りおきが 1.1MB あった（docs/deploy.md §0.14）。
    *
    * セットが 2つ以上 なら `initialStageId` を 渡さない＝**えらぶ 画面から** 始まる
    *（願い #280「会社を知るを選ぶと、初級・中級・上級が選択できるように」）。
@@ -92,7 +94,7 @@ export default async function ArcadeStagePage({ params }: { params: Promise<{ st
 
   return (
     <ArcadeGame
-      stages={owner ? sets : all.sets}
+      stages={owner ? sets : undefined}
       groups={owner ? undefined : all.heads}
       initialStageId={sets.length === 1 ? sets[0]!.id : undefined}
       backTo={owner ? `/${owner.id}` : undefined}
