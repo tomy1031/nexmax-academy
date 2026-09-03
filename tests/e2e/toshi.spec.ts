@@ -691,13 +691,15 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
   await test.step("10. STEP 6 ページ「案件の 3つの 形を 確かめよう」— 聞いた ことを 資料で 確かめる", async () => {
     await expect(page).toHaveURL(/article-kaisha_shugyo_keitai$/);
     /*
-     * 旧アプリの 講義スライド（1枚の 図）の 移植。図の 中の 字には ふりがなを
-     * 振れないので、**図の 下に 同じ ことを ことばでも 置いて ある**（3枚の カード）。
-     * カードの 絵は その 図の 3つの わくを 切り出した もの——390px の 画面では
-     * 1枚の ままだと 字が 読めないので、1つずつ 大きく 見せる。
-     * 図が 消えた ことに 気づける ように、枚数を 固定して 見張る（全体1枚＋3つ）。
+     * カード 3枚（SES・受託開発・自社開発）。**絵に 字は 無い**——説明は カードの
+     * text に HTML で 置いて ある（設計01 §4-10「画像内に重要テキストを閉じ込めない」）。
+     *
+     * 旧アプリからの 移植では 全体1枚の スライド＋切り出し3枚の 4枚だったが、
+     * 全体の 1枚は **字が 絵に 焼き込まれて いて**「（例：タンバム）」が 直せず、
+     * 2026-09-03 に 捨てた（タンバムは 自社開発の 主流では なく なった）。
+     * 絵が 消えた ことに 気づける ように、枚数を 固定して 見張る。
      */
-    await expect(page.locator('img[src*="/img/articles/kaisha_shugyo_keitai/"]')).toHaveCount(4);
+    await expect(page.locator('img[src*="/img/articles/kaisha_shugyo_keitai/"]')).toHaveCount(3);
     await expect(page.locator('[data-slot="empty"]')).toHaveCount(0);
     await shot(page, "14-shugyo-keitai-slide");
 

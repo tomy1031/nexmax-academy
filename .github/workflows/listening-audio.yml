@@ -1,0 +1,117 @@
+name: リスニングの 音声づくり
+
+# リスニングの 原稿を 音に して、PR に する。
+#
+# なぜ GitHub Actions で やるか:
+#   「ミーティングの 音声づくり」（meeting-audio.yml）と 同じ 理由。音づくりには
+#   Gemini の 鍵が 要るが、この プロジェクトは BYOK 方式で サーバにも `.env` にも
+#   Cloudflare にも 鍵を 置かない（docs/deploy.md の 表・scripts/check_build_env.mjs）。
+#   唯一 置いて ある のは **Environment「Preview」の Secrets** なので、
+#   鍵の 要る 作業は ここで 回す。ユーザーに コマンドを 叩かせない ため
+#   （docs/constraints.md 運用の制約）。
+#
+# なぜ ミーティングと 別の ファイルか:
+#   置き先も、教材に 書き足す 札も、つなぎ方も ちがう——ミーティングは 1文ずつ
+#   別の wav（会話が 行ったり 来たり する）、リスニングは **1本に つないだ wav**
+#   （頭から おわりまで 通して 聞く）。読み上げの 本体は
+#   `scripts/lib/live_tts.ts` で 共用して いる ので、二重に なって いるのは
+#   受け渡しの 段どりだけ。
+#
+# 使い方: Actions タブ → この ワークフロー → Run workflow → 教材ID を 入れる。
+#   出来上がりは **ブランチ**で 届く（PR は 作れない ことが ある ので 下を 読む）。
+
+on:
+  workflow_dispatch:
+    inputs:
+      listening:
+        description: どの リスニングか（content/listening/<ID>.json の ID）
+        type: string
+        required: true
+        default: kaisha_shugyo_keitai_listening
+      force:
+        description: すでに 音が あっても 作り直す
+        type: boolean
+        required: false
+        default: false
+
+concurrency:
+  group: listening-audio-${{ github.event.inputs.listening }}
+  cancel-in-progress: false
+
+jobs:
+  make:
+    runs-on: ubuntu-latest
+    # 鍵は Environment「Preview」に ある（リポジトリ直下の Secrets とは 別物）
+    environment: Preview
+    timeout-minutes: 30
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: integration
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+
+      # 音づくり本体。**ビルドには 鍵を 渡さない**（OpenNext が バンドルへ 焼き込む）
+      - name: 音を つくる
+        run: |
+          node --import tsx scripts/make_listening_audio.ts \
+            "${{ github.event.inputs.listening }}" \
+            ${{ github.event.inputs.force == 'true' && '--force' || '' }}
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+
+      # 教材データを 直したので、焼き込みモジュールも 作り直す
+      - name: 焼き込みを 作り直す
+        run: npm run gen:content
+
+      - name: 検収
+        run: npm run lint:content
+
+      - name: ブランチに して PR を 作る
+        env:
+          GH_TOKEN: ${{ github.token }}
+          LISTENING: ${{ github.event.inputs.listening }}
+        run: |
+          set -euo pipefail
+          # 名義を そろえる（Actions の 実行が 承認待ちで 止まらない ように）
+          git config user.name tomy1031
+          git config user.email 33148568+tomy1031@users.noreply.github.com
+          BRANCH="audio/${LISTENING}-${GITHUB_RUN_ID}"
+          git switch -c "$BRANCH"
+          git add public/audio/listening "content/listening/${LISTENING}.json" src/content/git-contents.generated.ts
+          if git diff --cached --quiet; then
+            echo "変わった ものが ありません（音は すでに あります。作り直すなら force を on）"
+            exit 0
+          fi
+          {
+            echo "feat(リスニング): ${LISTENING} の 音を 作り置きする"
+            echo
+            echo "原稿を 読み上げて 1本の wav に つなぎ、教材に audioUrl を 付けた。"
+            echo "つないで いない 学習者にも 声が 届き、開いた 瞬間に 鳴る。"
+            echo
+            echo "Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"
+          } > /tmp/audio-commit.txt
+          # 共有ファイルの 検問は 承認済みの 変更として 通す（生成物だけを 入れる）
+          ALLOW_SHARED=1 git commit -F /tmp/audio-commit.txt
+          git push -u origin "$BRANCH"
+          {
+            echo "Actions の「リスニングの 音声づくり」で 作りました。声は 人物カードの voice。"
+            echo
+            echo "- 置き場: public/audio/listening/${LISTENING}.wav（ブロックの あいだに 0.6秒の 無音）"
+            echo "- 教材の audioUrl を 更新"
+            echo "- 読み上げが 原稿と 合わない ときは 書かずに 落ちる（scripts/lib/live_tts.ts）"
+          } > /tmp/audio-pr.txt
+          # PR を 作れない 設定の ことが ある（Actions に PR 作成の 権限が 無い）。
+          # そこで 落とすと **作った 音まで 無かった ことに 見える**ので、
+          # 作れなかった ときは ブランチへの 行き方を 出して 終わる。
+          gh pr create --base integration --head "$BRANCH" \
+            --title "feat(リスニング): ${LISTENING} の 音を 作り置きする" --body-file /tmp/audio-pr.txt \
+            || echo "PR は 作れませんでした。ブランチ: $BRANCH（${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/compare/integration...$BRANCH）"
