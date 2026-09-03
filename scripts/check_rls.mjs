@@ -25,6 +25,7 @@ import { spawnSync } from "node:child_process";
 import { existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+import { reportDbUrl } from "./lib/db_url.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const SQL = join(ROOT, "supabase", "tests", "rls_check.sql");
@@ -46,6 +47,12 @@ if (!url) {
     "  中身を そのまま 流せば、同じ 検査が できます（最後に rollback するので 何も 残らない）。",
   );
   process.exit(strict ? 1 : 0);
+}
+
+/* つなぎに 行く 前に 形を 見る（scripts/lib/db_url.mjs に 理由）。 */
+if (reportDbUrl(url)) {
+  console.error("✗ SUPABASE_DB_URL の 形が 違います（上を 見てください）");
+  process.exit(1);
 }
 
 const psql = spawnSync("psql", [url, "-v", "ON_ERROR_STOP=1", "-f", SQL], {
