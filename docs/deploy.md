@@ -992,6 +992,43 @@ Workers 有料（$5/月）に すると CPU は 10ms → 30秒 に なる。**�
 上の 軽量化の 代わりに ならない** —— 1.5MB を 毎回 読み解く 作りは、上限が
 広がっても 20人 同時の ときに そのまま 遅い。判断は 依頼主が する。
 
+### 0.14 当たって いても 重い —— 辞書が ページに 乗って いた（2026-09-03 に 解消）
+
+作りおきに **当たって いる** リクエストが 50〜137ms かかって いた。原因は
+**作りおき 1件が 1.5MB** あった こと。OpenNext の 横取りは 当たった 中身を
+毎回 JSON から 起こし直し、指紋（etag）を 取り直すので、大きさが そのまま CPU に なる。
+
+大きさの 出どころは **ポップアップ辞書 701語**だった。`learnerDictionary()` を
+サーバで 呼び、ページの props として 渡して いたので、読みもの・もんだい・
+ミーティングの **どのページにも 同じ 辞書が 丸ごと** 入って いた。
+
+実測（`.open-next/cache/`。同じ 読みものでも 経路で 違う）:
+
+| 作りおき | 前 | 後 |
+| --- | --- | --- |
+| `kaisha/article-kaisha_shirabekata` | 1635 KB | 206 KB |
+| `kaisha/meeting-kaisha_houkoku_meeting` | 1562 KB | 163 KB |
+| `kaisha/quiz-kaisha_houkoku` | 1572 KB | 166 KB |
+| `dictionary` | 1715 KB | 15 KB |
+| `article/houkoku_lecture`（元から 渡して いない） | 32 KB | 13 KB |
+
+#### 直し: `public/` に 置いて ブラウザに 取りに 行かせる
+
+`public/dictionary/learner.json`（250KB・gzip 49KB）を 1枚 書き出し、
+ブラウザが 1回だけ 取る（`src/lib/dictionary-store.ts`）。
+
+**`public/` の ファイルは Worker を 通らない。** `.open-next/assets` に 入り、
+Cloudflare が そのまま 返す（`wrangler.jsonc` に `run_worker_first` を 書いて
+いないので 既定の false ＝ アセットが 先）。だから この ぶんの CPU は **0** に なる。
+
+取れるまでの あいだも **本文は ふつうに 読める**（ルビは 教材 自身の 読み辞書が
+付ける）。取れた 時点で 下線と ふきだしが 足される。取れなくても 学習は 止まらない。
+
+書き出しは `npm run gen:content`（`scripts/lib/bake_dictionary.ts`）。
+content/ と ずれたら `npm run lint:content` が error で 落とす。
+見張りは `tests/learner_pages_static.test.ts`（ページが 束を サーバで
+組み立て直したら 落ちる）。
+
 ## 1. 環境の位置づけ
 
 現行（Cloudflare 移行後）:

@@ -29,7 +29,6 @@ import {
   getStage,
   listStages,
 } from "@/lib/content";
-import { learnerDictionary } from "@/lib/dictionary-server";
 import { stageStepNumber } from "@/lib/map-data";
 import { resolveStageContent, stageContentPath, stageContentSegments } from "@/lib/stage-routes";
 import { loadRef } from "../page";
@@ -236,14 +235,9 @@ async function renderContent(ref: StageContentRef) {
     case "article": {
       const article = await getArticle(ref.ref);
       if (!article) notFound();
-      /* ことばの意味は 正ぜんぶから 引く（`learnerDictionary`）。 */
+      /* ことばの 意味は ブラウザが 取りに 行く（src/lib/dictionary-store.ts）。 */
       return (
-        <ArticleView
-          article={article}
-          dictionary={await learnerDictionary()}
-          characters={await getArticleCharacters(article)}
-          embedded
-        />
+        <ArticleView article={article} characters={await getArticleCharacters(article)} embedded />
       );
     }
     case "slides": {
@@ -259,8 +253,8 @@ async function renderContent(ref: StageContentRef) {
     case "quizset": {
       const set = await getQuizSet(ref.ref);
       if (!set) notFound();
-      /* もんだいの 設問文・ヒントにも 辞書を 出す（読みものと 同じ 引き先）。 */
-      return <QuizRunner set={set} dictionary={await learnerDictionary()} embedded />;
+      /* もんだいの 設問文・ヒントにも 辞書が 出る（引き先は 読みものと 同じ）。 */
+      return <QuizRunner set={set} embedded />;
     }
     case "scenario": {
       const scenario = await getScenario(ref.ref);
@@ -284,21 +278,13 @@ async function renderContent(ref: StageContentRef) {
        * ヘンディさんの 会話を 直すたびに 松井社長が 黙って 動く ので、入口で 分ける。
        */
       if (meeting.talkGame) {
-        return (
-          <TalkGameSession
-            meeting={meeting}
-            hostVoice={host?.voice}
-            dictionary={await learnerDictionary()}
-          />
-        );
+        return <TalkGameSession meeting={meeting} hostVoice={host?.voice} />;
       }
       return (
         <MeetingSession
           meeting={meeting}
           hostVoice={host?.voice}
           hostMouth={host?.mouth}
-          /* ことばの 意味は 読みものと 同じ 辞書から 出す（`learnerDictionary`）。 */
-          dictionary={await learnerDictionary()}
           embedded
         />
       );

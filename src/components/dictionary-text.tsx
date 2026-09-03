@@ -4,6 +4,7 @@ import { useId, useRef, useState, type ReactNode } from "react";
 import { RubyText } from "@/components/ruby-text";
 import { WordPopover } from "@/components/word-popover";
 import { findDictionaryTerms, type DictionaryEntry } from "@/lib/dictionary";
+import { useLearnerDictionary } from "@/lib/dictionary-store";
 import { canHover } from "@/lib/pointer";
 import { rubyInnerPositions, type FuriganaIndex } from "@/lib/text/furigana";
 
@@ -40,18 +41,23 @@ export function DictionaryText({
   text,
   index,
   show = true,
-  dictionary,
   className,
 }: {
   text: string;
   index?: FuriganaIndex;
   show?: boolean;
-  dictionary?: readonly DictionaryEntry[];
   className?: string;
 }) {
+  /*
+   * 辞書は **ブラウザが 取りに 行く**（`src/lib/dictionary-store.ts`）。
+   * ページの props で 受け取って いた ころは、辞書 701語が 画面ごとに 積み荷へ
+   * 入り、作りおき 1件が 1.5MB に なって いた（同じ 読みもので 渡さない 経路は 32KB）。
+   * 取れるまでは 空なので、下線は 出ないが **本文は そのまま 読める**。
+   */
+  const dictionary = useLearnerDictionary();
   /* ルビの ついた ことばの 途中では 切らない（切ると 片側が 裸の 漢字に なる）。 */
   const noCut = index ? rubyInnerPositions(text, index) : undefined;
-  const matches = dictionary?.length ? findDictionaryTerms(text, dictionary, noCut) : [];
+  const matches = dictionary.length ? findDictionaryTerms(text, dictionary, noCut) : [];
   if (matches.length === 0) {
     return <RubyText text={text} index={index} show={show} className={className} />;
   }

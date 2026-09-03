@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { RubyText } from "@/components/ruby-text";
-import type { DictionaryEntry } from "@/lib/dictionary";
+import { useLearnerDictionary } from "@/lib/dictionary-store";
 
 /**
  * ことばの じしょ（学習者向け）
@@ -13,8 +13,13 @@ import type { DictionaryEntry } from "@/lib/dictionary";
  * あの ことば」をあとから探す道がないと、そこで学習が止まる。
  *
  * 中身は単語ステージを畳んだもの（src/lib/dictionary.ts）。別の保存先は無い。
+ *
+ * **束は ブラウザが 取りに 行く**（src/lib/dictionary-store.ts）。サーバで 描いて
+ * いた ころは、この 1ページの 作りおきだけで 1.7MB あった（701語ぶんの 説明文・
+ * 例文・読み辞書が そのまま HTML に 入る）。取れるまでは「もうすこし まってね」を 出す。
  */
-export function DictionaryPage({ entries }: { entries: readonly DictionaryEntry[] }) {
+export function DictionaryPage() {
+  const entries = useLearnerDictionary();
   const [query, setQuery] = useState("");
 
   const filtered = useMemo(() => {

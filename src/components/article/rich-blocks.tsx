@@ -6,7 +6,6 @@ import type { ArticleBlock } from "@/content/schema";
 import { DictionaryText } from "@/components/dictionary-text";
 import { RubyText } from "@/components/ruby-text";
 import { SpeakButton } from "@/components/speak-button";
-import type { DictionaryEntry } from "@/lib/dictionary";
 import { buildFuriganaIndex, type FuriganaIndex } from "@/lib/text/furigana";
 import { joinItemsForSpeech } from "./article-blocks";
 
@@ -158,11 +157,9 @@ export function HeroBlock({
   block,
   furigana,
   show,
-  dictionary,
   asTitle = false,
 }: {
   block: HeroBlockData;
-  dictionary?: readonly DictionaryEntry[];
   /**
    * この 表紙が **ページの タイトル**か（2026-08-28）。
    * ページの いちばん上に 出す ときだけ true——見出しの 段は 1ページに 1つの h1 から
@@ -189,31 +186,16 @@ export function HeroBlock({
             </span>
           )}
           <Title className="text-navy mt-2 text-2xl leading-tight font-black sm:text-4xl">
-            <DictionaryText
-              text={block.title}
-              index={furigana}
-              show={show}
-              dictionary={dictionary}
-            />
+            <DictionaryText text={block.title} index={furigana} show={show} />
           </Title>
           {block.lead && (
             <p className="text-ink mt-3 leading-relaxed font-extrabold sm:text-lg">
-              <DictionaryText
-                text={block.lead}
-                index={furigana}
-                show={show}
-                dictionary={dictionary}
-              />
+              <DictionaryText text={block.lead} index={furigana} show={show} />
             </p>
           )}
           {block.note && (
             <p className="text-ink-soft mt-2 text-sm leading-relaxed font-bold">
-              <DictionaryText
-                text={block.note}
-                index={furigana}
-                show={show}
-                dictionary={dictionary}
-              />
+              <DictionaryText text={block.note} index={furigana} show={show} />
             </p>
           )}
           <div className="mt-3 flex">
@@ -256,12 +238,7 @@ const STEP_COLORS = [
   "var(--color-navy)",
 ] as const;
 
-export function CardsBlock({
-  block,
-  furigana,
-  show,
-  dictionary,
-}: { block: CardsBlockData; dictionary?: readonly DictionaryEntry[] } & Common) {
+export function CardsBlock({ block, furigana, show }: { block: CardsBlockData } & Common) {
   const columns =
     CARD_COLUMNS[block.columns ?? Math.min(block.items.length, 3)] ?? "sm:grid-cols-3";
   const dark = block.tone === "dark";
@@ -321,12 +298,7 @@ export function CardsBlock({
                 dark ? "mt-1 font-extrabold text-white" : "text-navy leading-snug font-extrabold"
               }
             >
-              <DictionaryText
-                text={item.title}
-                index={furigana}
-                show={show}
-                dictionary={dictionary}
-              />
+              <DictionaryText text={item.title} index={furigana} show={show} />
             </h3>
             {item.text && (
               <p
@@ -340,12 +312,7 @@ export function CardsBlock({
                 {dark ? (
                   <RubyText text={item.text} index={furigana} show={show} />
                 ) : (
-                  <DictionaryText
-                    text={item.text}
-                    index={furigana}
-                    show={show}
-                    dictionary={dictionary}
-                  />
+                  <DictionaryText text={item.text} index={furigana} show={show} />
                 )}
               </p>
             )}
@@ -407,12 +374,7 @@ export function CardsBlock({
  * けれど 閉じて いる ことが 分かる 見た目に する（三角と「ヒントを 見る」の 文字）。
  * 詰まった 学習者が 助けを 見つけられない ほうが、ずっと まずい。
  */
-export function MissionsBlock({
-  block,
-  furigana,
-  show,
-  dictionary,
-}: { block: MissionsBlockData; dictionary?: readonly DictionaryEntry[] } & Common) {
+export function MissionsBlock({ block, furigana, show }: { block: MissionsBlockData } & Common) {
   return (
     <div className="grid gap-3 sm:grid-cols-2">
       {block.items.map((item, i) => (
@@ -436,12 +398,7 @@ export function MissionsBlock({
               {item.badge ?? i + 1}
             </span>
             <h3 className="text-navy leading-snug font-extrabold">
-              <DictionaryText
-                text={item.title}
-                index={furigana}
-                show={show}
-                dictionary={dictionary}
-              />
+              <DictionaryText text={item.title} index={furigana} show={show} />
             </h3>
             {/* 絵は 右上に 小さく。大きいと 1枚ごとに 画面が 1つ 分 流れ、
                 「7つ ある」という 形が 目で 追えなくなる（StepThumb と同じ判断）。 */}
@@ -463,12 +420,7 @@ export function MissionsBlock({
               <span aria-hidden className="mr-1">
                 🔎
               </span>
-              <DictionaryText
-                text={item.where}
-                index={furigana}
-                show={show}
-                dictionary={dictionary}
-              />
+              <DictionaryText text={item.where} index={furigana} show={show} />
             </p>
           )}
 
@@ -482,12 +434,7 @@ export function MissionsBlock({
                   ✓
                 </span>
                 <span>
-                  <DictionaryText
-                    text={point}
-                    index={furigana}
-                    show={show}
-                    dictionary={dictionary}
-                  />
+                  <DictionaryText text={point} index={furigana} show={show} />
                 </span>
               </li>
             ))}
@@ -498,12 +445,7 @@ export function MissionsBlock({
               どれを 見れば よいか 伝わらない — article-view の 決めごと）。 */}
           {item.note && (
             <p className="text-ink-soft mt-2 text-xs leading-relaxed font-bold">
-              <DictionaryText
-                text={item.note}
-                index={furigana}
-                show={show}
-                dictionary={dictionary}
-              />
+              <DictionaryText text={item.note} index={furigana} show={show} />
             </p>
           )}
 
@@ -513,12 +455,7 @@ export function MissionsBlock({
                 💡 <RubyText text="ヒントを 見る" index={UI_FURIGANA} />
               </summary>
               <p className="text-ink mt-2 text-sm leading-relaxed font-bold">
-                <DictionaryText
-                  text={item.hint}
-                  index={furigana}
-                  show={show}
-                  dictionary={dictionary}
-                />
+                <DictionaryText text={item.hint} index={furigana} show={show} />
               </p>
             </details>
           )}
@@ -539,12 +476,7 @@ export function MissionsBlock({
  * まえと あとの くらべ
  * ------------------------------------------------------------------ */
 
-export function CompareBlock({
-  block,
-  furigana,
-  show,
-  dictionary,
-}: { block: CompareBlockData; dictionary?: readonly DictionaryEntry[] } & Common) {
+export function CompareBlock({ block, furigana, show }: { block: CompareBlockData } & Common) {
   const side = (
     data: CompareBlockData["before"],
     tone: { border: string; shadow: string; chip: string; mark: string },
@@ -560,12 +492,12 @@ export function CompareBlock({
         <span aria-hidden className="mr-1">
           {tone.mark}
         </span>
-        <DictionaryText text={data.title} index={furigana} show={show} dictionary={dictionary} />
+        <DictionaryText text={data.title} index={furigana} show={show} />
       </p>
       <div className="mt-2 space-y-1.5">
         {data.lines.map((line, i) => (
           <p key={i} className="text-ink text-sm leading-relaxed font-bold">
-            <DictionaryText text={line} index={furigana} show={show} dictionary={dictionary} />
+            <DictionaryText text={line} index={furigana} show={show} />
           </p>
         ))}
       </div>
@@ -641,12 +573,7 @@ const BANNER_STYLE: Record<
   },
 };
 
-export function BannerBlock({
-  block,
-  furigana,
-  show,
-  dictionary,
-}: { block: BannerBlockData; dictionary?: readonly DictionaryEntry[] } & Common) {
+export function BannerBlock({ block, furigana, show }: { block: BannerBlockData } & Common) {
   const tone = BANNER_STYLE[block.tone];
   return (
     <aside
@@ -666,21 +593,11 @@ export function BannerBlock({
         <div className="min-w-0 flex-1">
           {block.title && (
             <h3 className="text-lg font-black" style={{ color: tone.title }}>
-              <DictionaryText
-                text={block.title}
-                index={furigana}
-                show={show}
-                dictionary={dictionary}
-              />
+              <DictionaryText text={block.title} index={furigana} show={show} />
             </h3>
           )}
           <p className="mt-1 leading-relaxed font-bold" style={{ color: tone.body }}>
-            <DictionaryText
-              text={block.text}
-              index={furigana}
-              show={show}
-              dictionary={dictionary}
-            />
+            <DictionaryText text={block.text} index={furigana} show={show} />
           </p>
           {block.badges && block.badges.length > 0 && (
             <div className="mt-3 flex flex-wrap gap-2">

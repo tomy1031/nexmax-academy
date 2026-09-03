@@ -15,7 +15,6 @@ import { dropJudgeSession, requestTalkTurn } from "@/components/meeting/judge-ap
 import { useLiveVoice } from "@/components/meeting/use-live-voice";
 import { useClipPlayer } from "@/components/meeting/use-clip-player";
 import type { Meeting } from "@/content/schema";
-import type { DictionaryEntry } from "@/lib/dictionary";
 import { getProfile } from "@/lib/profile";
 import { recordContentProgress } from "@/lib/progress/store";
 import { bufferMeetingTurn, flushMeetingTurns } from "@/lib/meeting/log";
@@ -216,12 +215,10 @@ function parsePrep(raw: string): Readonly<Record<string, NotebookLine>> {
 export function TalkGameSession({
   meeting,
   hostVoice,
-  dictionary,
   embedded = false,
 }: {
   meeting: Meeting;
   hostVoice?: string;
-  dictionary?: readonly DictionaryEntry[];
   /**
    * 先生の 画面（スタジオの「話して みる」）に 埋めこむ ときは true。
    *
@@ -836,12 +833,7 @@ export function TalkGameSession({
               <RubyText text={meeting.title} index={furigana} show />
             </h2>
             <p className="text-ink text-sm font-bold">
-              <DictionaryText
-                text={withName(meeting.focus)}
-                index={furigana}
-                show
-                dictionary={dictionary}
-              />
+              <DictionaryText text={withName(meeting.focus)} index={furigana} show />
             </p>
           </div>
         </div>
@@ -966,7 +958,6 @@ export function TalkGameSession({
           <SpeechPanel
             text={line}
             furigana={furigana}
-            dictionary={dictionary}
             thinking={phase === "thinking"}
             onBack={phase === "host" && canGoBack ? backLine : undefined}
             onNext={nextLine}
@@ -978,7 +969,6 @@ export function TalkGameSession({
             ask={askText}
             furigana={furigana}
             boardFurigana={boardFurigana}
-            dictionary={dictionary}
             typed={typed}
             note={note}
             round={talk.round}
@@ -1040,7 +1030,6 @@ export function TalkGameSession({
             goal={plan.goal}
             closing={withName(meeting.closing)}
             furigana={furigana}
-            dictionary={dictionary}
             onLeave={leave}
           />
         ) : null}
@@ -1148,14 +1137,12 @@ function TalkLog({
 function SpeechPanel({
   text,
   furigana,
-  dictionary,
   thinking,
   onBack,
   onNext,
 }: {
   text: string;
   furigana: ReturnType<typeof buildFuriganaIndex>;
-  dictionary?: readonly DictionaryEntry[];
   thinking: boolean;
   /** ひとつ 前へ もどす（もどる 先が 無い ときは 渡さない）。 */
   onBack?: () => void;
@@ -1170,7 +1157,7 @@ function SpeechPanel({
       >
         {/* `data-line` は 検証の 手がかり（社長が いま 言って いる ことば）。 */}
         <p data-line className="text-navy text-base leading-relaxed font-black sm:text-xl">
-          <DictionaryText text={text} index={furigana} show dictionary={dictionary} />
+          <DictionaryText text={text} index={furigana} show />
         </p>
         <div className="mt-3 flex items-center justify-between gap-3">
           {/* もどるは 目立たせない（進む ほうが 本筋）。無い ときは 場所だけ 空ける */}
@@ -1204,7 +1191,6 @@ function AnswerPanel({
   ask,
   furigana,
   boardFurigana,
-  dictionary,
   typed,
   note,
   round,
@@ -1223,7 +1209,6 @@ function AnswerPanel({
   furigana: ReturnType<typeof buildFuriganaIndex>;
   /** 画面の ことば（観点の 見出し）まで 覆う 索引。 */
   boardFurigana: ReturnType<typeof buildFuriganaIndex>;
-  dictionary?: readonly DictionaryEntry[];
   typed: string;
   note: string | null;
   round: TalkState["round"];
@@ -1253,7 +1238,7 @@ function AnswerPanel({
         </p>
         {/* `data-ask` は 検証の 手がかり（その場で 作られた しつもんかを 外から 見る）。 */}
         <p data-ask className="text-navy text-sm font-bold sm:text-base">
-          <DictionaryText text={ask} index={furigana} show dictionary={dictionary} />
+          <DictionaryText text={ask} index={furigana} show />
         </p>
 
         {/*
@@ -1349,14 +1334,12 @@ function ClearPanel({
   goal,
   closing,
   furigana,
-  dictionary,
   onLeave,
 }: {
   hostName: string;
   goal: number;
   closing: string;
   furigana: ReturnType<typeof buildFuriganaIndex>;
-  dictionary?: readonly DictionaryEntry[];
   onLeave: () => void;
 }) {
   return (
@@ -1371,7 +1354,7 @@ function ClearPanel({
           <RubyText text={`${hostName}さんとの こうかんど ${goal}%`} index={furigana} show />
         </p>
         <p className="text-ink text-sm font-bold">
-          <DictionaryText text={closing} index={furigana} show dictionary={dictionary} />
+          <DictionaryText text={closing} index={furigana} show />
         </p>
         <button type="button" onClick={onLeave} className="btn-game rounded-full px-7 py-3">
           おわる

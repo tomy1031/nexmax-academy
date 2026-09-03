@@ -9,7 +9,6 @@ import { NexMax } from "@/components/nexmax";
 import { NexMaxFamily } from "@/components/nexmax-types";
 import { DictionaryText } from "@/components/dictionary-text";
 import { RubyText } from "@/components/ruby-text";
-import type { DictionaryEntry } from "@/lib/dictionary";
 import { getProfile, type NexmaxProfile } from "@/lib/profile";
 import { buildFuriganaIndex, type FuriganaEntry, type FuriganaIndex } from "@/lib/text/furigana";
 
@@ -117,14 +116,6 @@ export function CallShell({
   controlsAt = "top",
   /** 教材の読み辞書。渡すと 題・きょう やること・名札に ふりがなが つく。 */
   furigana,
-  /**
-   * ことばの 辞書（単語ステージを 畳んだもの）。渡すと「きょう やること」の
-   * ことばに 下線が つき、タップで 意味が 出る。
-   *
-   * 保存先を 増やさない——先生が スタジオ（DB）で 直した 単語ステージが
-   * そのまま ここに 出る（`src/lib/dictionary.ts`）。
-   */
-  dictionary,
   /** 入る前の見出し。話す教材は "speak"（既定は "listen"）。 */
   purpose = "listen",
   /**
@@ -170,7 +161,6 @@ export function CallShell({
   children?: React.ReactNode;
   controlsAt?: CallControlsAt;
   furigana?: FuriganaIndex | readonly FuriganaEntry[];
-  dictionary?: readonly DictionaryEntry[];
   purpose?: CallPurpose;
   tone?: "dark" | "light";
   side?: React.ReactNode;
@@ -204,7 +194,6 @@ export function CallShell({
         title={title}
         focus={focus}
         furigana={index}
-        dictionary={dictionary}
         purpose={purpose}
         settings={settings}
         camera={camera}
@@ -373,7 +362,6 @@ function Lobby({
   title,
   focus,
   furigana,
-  dictionary,
   purpose,
   settings,
   camera,
@@ -384,7 +372,6 @@ function Lobby({
   title: string;
   focus: string;
   furigana: FuriganaIndex;
-  dictionary?: readonly DictionaryEntry[];
   purpose: CallPurpose;
   settings?: React.ReactNode;
   camera: CameraStream;
@@ -413,7 +400,7 @@ function Lobby({
         <p className="text-ink-soft text-sm font-extrabold">{BEFORE_LABEL[purpose]}</p>
         <p className="text-ink mt-1 leading-relaxed font-bold">
           {/* 「きょう やること」は 教材の 文。ことばの 意味は タップで 出す（規律2・辞書） */}
-          <DictionaryText text={focus} index={furigana} show dictionary={dictionary} />
+          <DictionaryText text={focus} index={furigana} show />
         </p>
       </div>
 

@@ -11,7 +11,6 @@ import { RubyText } from "@/components/ruby-text";
 import { VideoPlayer } from "@/components/media/video-player";
 import { SpeakButton } from "@/components/speak-button";
 import { recordContentProgress } from "@/lib/progress/store";
-import type { DictionaryEntry } from "@/lib/dictionary";
 import { canHover } from "@/lib/pointer";
 import {
   buildFuriganaIndex,
@@ -53,7 +52,6 @@ export function ArticleView({
    *（指の きかいは タップ）と説明を出す。
    * 渡さなければ 下線は1つも出ない——辞書が無い環境（プレビューなど）でも本文は読める。
    */
-  dictionary,
   /**
    * ステージの枠（ContentFrame）の中に置くとき。自前の外枠と「マップに もどる」を
    * 出さない——戻り先は枠が持つ（教材ごとに戻り先が違うと、学習者は
@@ -69,7 +67,6 @@ export function ArticleView({
 }: {
   article: Article;
   preview?: boolean;
-  dictionary?: readonly DictionaryEntry[];
   embedded?: boolean;
   characters?: readonly ArticleCharacter[];
 }) {
@@ -179,13 +176,7 @@ export function ArticleView({
         */}
         {cover && (
           <div className="mt-4">
-            <HeroBlock
-              block={cover}
-              furigana={furigana}
-              show={rubyOn}
-              dictionary={dictionary}
-              asTitle
-            />
+            <HeroBlock block={cover} furigana={furigana} show={rubyOn} asTitle />
           </div>
         )}
 
@@ -218,7 +209,6 @@ export function ArticleView({
               articleId={article.id}
               furigana={furigana}
               show={rubyOn}
-              dictionary={dictionary}
               characters={characters}
             />
           ))}
@@ -288,19 +278,10 @@ interface BlockProps {
   articleId: string;
   furigana: FuriganaIndex;
   show: boolean;
-  dictionary?: readonly DictionaryEntry[];
   characters?: readonly ArticleCharacter[];
 }
 
-function BlockView({
-  block,
-  blockIndex,
-  articleId,
-  furigana,
-  show,
-  dictionary,
-  characters,
-}: BlockProps) {
+function BlockView({ block, blockIndex, articleId, furigana, show, characters }: BlockProps) {
   switch (block.kind) {
     case "heading":
       return block.level === 2 ? (
@@ -313,7 +294,7 @@ function BlockView({
             className="inline-block h-6 w-2.5 shrink-0 rounded-full"
             style={{ background: "var(--color-sky)" }}
           />
-          <DictionaryText text={block.text} index={furigana} show={show} dictionary={dictionary} />
+          <DictionaryText text={block.text} index={furigana} show={show} />
         </h2>
       ) : (
         <h3
@@ -323,7 +304,7 @@ function BlockView({
           <span aria-hidden className="text-sky mr-1.5">
             ◆
           </span>
-          <DictionaryText text={block.text} index={furigana} show={show} dictionary={dictionary} />
+          <DictionaryText text={block.text} index={furigana} show={show} />
         </h3>
       );
 
@@ -336,12 +317,7 @@ function BlockView({
       return (
         <div className="flex items-start gap-2">
           <p className="text-ink min-w-0 flex-1 leading-loose font-bold">
-            <DictionaryText
-              text={block.text}
-              index={furigana}
-              show={show}
-              dictionary={dictionary}
-            />
+            <DictionaryText text={block.text} index={furigana} show={show} />
           </p>
           {/* 読み上げるのは データのまま（ルビ合成前）の本文。 */}
           <SpeakButton text={block.text} label="この ぶんを よみあげる" />
@@ -352,10 +328,10 @@ function BlockView({
       return <ImageBlock block={block} furigana={furigana} show={show} />;
 
     case "video":
-      return <VideoBlock block={block} furigana={furigana} show={show} dictionary={dictionary} />;
+      return <VideoBlock block={block} furigana={furigana} show={show} />;
 
     case "callout":
-      return <CalloutBlock block={block} furigana={furigana} show={show} dictionary={dictionary} />;
+      return <CalloutBlock block={block} furigana={furigana} show={show} />;
 
     case "list":
       return (
@@ -367,12 +343,7 @@ function BlockView({
                   ●
                 </span>
                 <span>
-                  <DictionaryText
-                    text={item}
-                    index={furigana}
-                    show={show}
-                    dictionary={dictionary}
-                  />
+                  <DictionaryText text={item} index={furigana} show={show} />
                 </span>
               </li>
             ))}
@@ -398,12 +369,7 @@ function BlockView({
                 </span>
                 <StepThumb image={block.images?.[i]} />
                 <span className="text-ink leading-relaxed font-bold">
-                  <DictionaryText
-                    text={item}
-                    index={furigana}
-                    show={show}
-                    dictionary={dictionary}
-                  />
+                  <DictionaryText text={item} index={furigana} show={show} />
                 </span>
               </li>
             ))}
@@ -497,21 +463,19 @@ function BlockView({
      * 1画面に 収まらなく なり、目次や 進捗の コードを またいで 直す ことになる。
      */
     case "hero":
-      return <HeroBlock block={block} furigana={furigana} show={show} dictionary={dictionary} />;
+      return <HeroBlock block={block} furigana={furigana} show={show} />;
 
     case "cards":
-      return <CardsBlock block={block} furigana={furigana} show={show} dictionary={dictionary} />;
+      return <CardsBlock block={block} furigana={furigana} show={show} />;
 
     case "missions":
-      return (
-        <MissionsBlock block={block} furigana={furigana} show={show} dictionary={dictionary} />
-      );
+      return <MissionsBlock block={block} furigana={furigana} show={show} />;
 
     case "compare":
-      return <CompareBlock block={block} furigana={furigana} show={show} dictionary={dictionary} />;
+      return <CompareBlock block={block} furigana={furigana} show={show} />;
 
     case "banner":
-      return <BannerBlock block={block} furigana={furigana} show={show} dictionary={dictionary} />;
+      return <BannerBlock block={block} furigana={furigana} show={show} />;
   }
 }
 
@@ -659,12 +623,10 @@ function VideoBlock({
   block,
   furigana,
   show,
-  dictionary,
 }: {
   block: Extract<ArticleBlock, { kind: "video" }>;
   furigana: FuriganaIndex;
   show: boolean;
-  dictionary?: readonly DictionaryEntry[];
 }) {
   return (
     <figure className="mx-auto w-full max-w-[720px]">
@@ -676,7 +638,7 @@ function VideoBlock({
       />
       {block.note ? (
         <figcaption className="text-ink-soft mt-2 text-sm leading-relaxed font-bold">
-          <DictionaryText text={block.note} index={furigana} show={show} dictionary={dictionary} />
+          <DictionaryText text={block.note} index={furigana} show={show} />
         </figcaption>
       ) : null}
     </figure>
@@ -795,12 +757,10 @@ function CalloutBlock({
   block,
   furigana,
   show,
-  dictionary,
 }: {
   block: CalloutBlockData;
   furigana: FuriganaIndex;
   show: boolean;
-  dictionary?: readonly DictionaryEntry[];
 }) {
   const tone = CALLOUT_STYLE[block.tone];
   return (
@@ -816,7 +776,7 @@ function CalloutBlock({
           </p>
         )}
         <p className="text-ink leading-relaxed font-bold">
-          <DictionaryText text={block.text} index={furigana} show={show} dictionary={dictionary} />
+          <DictionaryText text={block.text} index={furigana} show={show} />
         </p>
       </div>
       {/*

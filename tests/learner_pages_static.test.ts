@@ -54,6 +54,27 @@ describe("学習者ページは 作り直さない 作りおき", () => {
     expect(armed).toEqual([]);
   });
 
+  /**
+   * 辞書 701語を サーバで 描かない（2026-09-03）
+   *
+   * `learnerDictionary()` を ページの props に 渡して いた ころ、作りおき 1件は
+   * **1.5MB** あった（同じ 読みもので 渡さない 経路は 32KB）。作りおきに 当たって
+   * いても Worker は その 1.5MB を 毎回 JSON から 起こし直して 指紋を 取り直すので、
+   * 1リクエスト 50〜137ms —— 無料枠の CPU 上限 10ms を 超える。
+   *
+   * いまは `public/dictionary/learner.json` を **ブラウザが 取りに 行く**
+   *（src/lib/dictionary-store.ts）。`public/` は Cloudflare が Worker を 起こさずに
+   * 返すので、この ぶんの CPU は 0 に なる。サーバ側で 束を 組み立て直す コードが
+   * 生えたら、また 積み荷に 入る —— ここで 止める。
+   */
+  it("ページは 辞書の 束を サーバで 組み立てない", () => {
+    const offenders = FILES.filter((path) => {
+      const src = readFileSync(path, "utf8");
+      return /\b(learnerDictionary|buildDictionary)\b/.test(src);
+    }).map(rel);
+    expect(offenders).toEqual([]);
+  });
+
   it("学習者が 開く 18の ページは `force-static`", () => {
     const learner = [
       "[stage]/[content]/page.tsx",

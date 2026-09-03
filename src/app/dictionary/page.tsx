@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
 import { DictionaryPage } from "@/components/dictionary-page";
-import { listVocabBooks, listWordStages } from "@/lib/content";
-import { buildDictionary } from "@/lib/dictionary";
 
 /**
  * ことばの辞書（学習者向け）
@@ -22,7 +20,10 @@ export const metadata: Metadata = { title: "ことばの じしょ" };
  */
 export const dynamic = "force-static";
 
-export default async function Page() {
-  const [books, stages] = await Promise.all([listVocabBooks(), listWordStages()]);
-  return <DictionaryPage entries={buildDictionary(books, stages)} />;
+export default function Page() {
+  /*
+   * 語の 束は **ブラウザが 取りに 行く**（src/lib/dictionary-store.ts）。
+   * サーバで 描いて いた ころは、この 1ページの 作りおきだけで 1.7MB あった。
+   */
+  return <DictionaryPage />;
 }

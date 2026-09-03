@@ -60,6 +60,7 @@ import {
 import { checkYomiCorrectness } from "./lib/yomi_check";
 // 焼き込みモジュールの作り手と同じ関数で組み立てて比べる（作り方が2つに割れないように）
 import { buildGeneratedSource, GENERATED_PATH } from "./lib/bake_content";
+import { buildDictionaryJson, DICTIONARY_GENERATED_PATH } from "./lib/bake_dictionary";
 import { buildSceneSource, SCENE_GENERATED_PATH } from "./generate_scene_index.mjs";
 import {
   buildGlossarySource,
@@ -195,6 +196,13 @@ function checkGeneratedIndex(): Finding[] {
       () => buildGlossarySource(collectGlossaryEntries()),
       "content/vocab/",
     ),
+    /*
+     * ポップアップ辞書は **ブラウザが 取りに来る 1枚**（public/dictionary/learner.json）。
+     * ずれると 本文の 下線と ふきだしだけ 古い 説明に なる —— しかも 画面は 動くので
+     * 気づけない。ページの 積み荷から 降ろした 代わりに、ここで 見張る
+     *（scripts/lib/bake_dictionary.ts に 理由と 実測値）。
+     */
+    ...checkGenerated(DICTIONARY_GENERATED_PATH, buildDictionaryJson, "content/vocab/"),
   ];
 }
 

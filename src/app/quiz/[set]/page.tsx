@@ -2,7 +2,6 @@ import { notFound, redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { QuizRunner } from "@/components/quiz/quiz-runner";
 import { getQuizSet, listQuizSets } from "@/lib/content";
-import { learnerDictionary } from "@/lib/dictionary-server";
 import { canonicalContentPath } from "@/lib/stage-lookup";
 
 /**
@@ -47,5 +46,5 @@ export default async function QuizSetPage({ params }: { params: Promise<{ set: s
   const canonical = await canonicalContentPath("quizset", id);
   if (canonical) redirect(canonical);
 
-  return <QuizRunner set={set} dictionary={await learnerDictionary()} />;
+  return <QuizRunner set={set} />;
 }
