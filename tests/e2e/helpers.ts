@@ -87,7 +87,7 @@ export const KAISHA = {
     path: "/kaisha/listening",
     kind: "リスニング",
   },
-  /** STEP 6 の ページ「就業形態を 確かめよう」（旧アプリの 講義スライドの 移植）。 */
+  /** STEP 6 の ページ「案件の 3つの 形を 確かめよう」（旧アプリの 講義スライドの 移植）。 */
   article3: {
     id: "kaisha_shugyo_keitai",
     path: "/kaisha/article-kaisha_shugyo_keitai",

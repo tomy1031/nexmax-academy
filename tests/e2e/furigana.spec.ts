@@ -46,7 +46,7 @@ const SCREENS: readonly { name: string; path: string; open: KaishaItem }[] = [
   { name: "もんだい（社長に 何を 話す）", path: KAISHA.junbi.path, open: KAISHA.junbi },
   { name: "ミーティング（ヘンディ）", path: KAISHA.meetingHendy.path, open: KAISHA.meetingHendy },
   { name: "ミーティング（松井社長）", path: KAISHA.meetingMatsui.path, open: KAISHA.meetingMatsui },
-  { name: "ページ（就業形態を 確かめよう）", path: KAISHA.article3.path, open: KAISHA.article3 },
+  { name: "ページ（案件の 3つの 形）", path: KAISHA.article3.path, open: KAISHA.article3 },
 ];
 
 for (const screen of SCREENS) {
