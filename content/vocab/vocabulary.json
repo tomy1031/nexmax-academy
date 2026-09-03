@@ -9996,6 +9996,48 @@
         "Fail",
         "Forget"
       ]
+    },
+    {
+      "id": "tasseikan",
+      "term": "達成感",
+      "reading": "たっせいかん",
+      "romaji": "tasseikan",
+      "meaningJa": "やりおえた ときの、うれしい 気もちです。",
+      "englishTerm": "Sense of accomplishment",
+      "example": "完成した ときに 達成感が あります。",
+      "wrongMeanings": [
+        "Deadline",
+        "Teamwork",
+        "Salary"
+      ]
+    },
+    {
+      "id": "kansei",
+      "term": "完成",
+      "reading": "かんせい",
+      "romaji": "kansei",
+      "meaningJa": "さいごまで 作りおえる ことです。",
+      "englishTerm": "Completion",
+      "example": "システムが 完成しました。",
+      "wrongMeanings": [
+        "Design",
+        "Meeting",
+        "Repair"
+      ]
+    },
+    {
+      "id": "kibou",
+      "term": "希望",
+      "reading": "きぼう",
+      "romaji": "kibou",
+      "meaningJa": "こう して ほしいと 思う ことです。",
+      "englishTerm": "Wish / request",
+      "example": "お客さまの 希望を 聞きます。",
+      "wrongMeanings": [
+        "Complaint",
+        "Schedule",
+        "Budget"
+      ]
     }
   ]
 }

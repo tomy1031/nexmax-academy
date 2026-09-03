@@ -170,28 +170,28 @@ const MATSUI_QUESTIONS = [
  *（混ぜると ミスが 増えるだけで、関所は 越えられない）。
  */
 const HEARD = [
-  "エンジニア",
-  "オフィス",
-  "アプリ",
-  "サービス",
-  "システム",
-  "ネクストメイク",
   "SES",
   "受託開発",
   "自社開発",
-  "働き方",
-  "会社",
-  "仕事",
-  "説明",
-  "契約",
+  "案件",
+  "オフィス",
+  "サービス",
   "お客様",
-  "日本",
+  "会社",
+  "エンジニア",
+  "アプリ",
+  "場所",
+  "働きます",
+  "経験",
+  "技術",
+  "完成",
+  "自分",
   "興味",
-  "全部",
-  "インドネシア",
-  "おはようございます",
-  "タンバム",
-  "オリジナル",
+  "IT業界",
+  "進め方",
+  "達成感",
+  "成長",
+  "希望",
 ];
 
 /**
@@ -201,10 +201,12 @@ const HEARD = [
  *——`HOUKOKU_CHOICES` の 覚書と 同じ）。教材の 並びを 変えたら ここも 落ちる。
  */
 const SHUGYO_CHOICES: readonly (readonly [string, number])[] = [
-  ["q_kuni", 0],
-  ["q_ikutsu", 2],
   ["q_ses", 0],
   ["q_jutaku", 1],
+  ["q_jisha", 1],
+  ["q_ii_ses", 0],
+  ["q_ii_jutaku", 1],
+  ["q_ii_jisha", 2],
   ["q_zenbu", 3],
 ];
 
@@ -686,7 +688,7 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
     await frameNext(page).click();
   });
 
-  await test.step("10. STEP 6 ページ「就業形態を 確かめよう」— 聞いた ことを 資料で 確かめる", async () => {
+  await test.step("10. STEP 6 ページ「案件の 3つの 形を 確かめよう」— 聞いた ことを 資料で 確かめる", async () => {
     await expect(page).toHaveURL(/article-kaisha_shugyo_keitai$/);
     /*
      * 旧アプリの 講義スライド（1枚の 図）の 移植。図の 中の 字には ふりがなを
@@ -707,7 +709,7 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
     await expect(page).toHaveURL(/quiz-kaisha_shugyo_keitai_check$/);
     await page.getByRole("button", { name: "はじめる" }).click();
 
-    /* この 教材も `answerMode: "all"`。6問が 同時に 見えて いる。 */
+    /* この 教材も `answerMode: "all"`。7問が 同時に 見えて いる（ぜんぶ 4択・3択）。 */
     await expect(page.getByText(`1/${SHUGYO_TOTAL}`, { exact: true })).toBeVisible();
     // ぜんぶ うめるまで 出す ボタンは 出ない（`requireAll`）
     await expect(page.getByRole("button", { name: /こたえを 出/ })).toHaveCount(0);
@@ -715,7 +717,6 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
     for (const [questionId, at] of SHUGYO_CHOICES) {
       await pickChoiceIn(page, questionId, at);
     }
-    await writeIn(page, "q_apuri", "たんばむ"); // ひらがなで 打っても 通る（normalize）
     await shot(page, "15-shugyo-check");
 
     await expect(page.getByRole("button", { name: /こたえを 出/ })).toBeVisible();
