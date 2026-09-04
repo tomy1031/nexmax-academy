@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion } from "motion/react";
 import { RubyText } from "@/components/ruby-text";
-import type { FuriganaIndex } from "@/lib/text/furigana";
+import { annotateRuby, type FuriganaIndex } from "@/lib/text/furigana";
 import { readListeningFinds, saveListeningFinds } from "@/lib/progress/store";
 import {
   createListening,
@@ -233,22 +233,11 @@ export function ListeningPanel({
           className="border-hairline bg-panel-tint mt-4 rounded-[var(--radius-card)] border-2 p-4 leading-loose font-bold break-words whitespace-pre-wrap"
           aria-label="原稿"
         >
-          {[...state.transcript].map((char, i) =>
-            state.revealed.has(i) ? (
-              <span key={i} className="text-ink">
-                {char}
-              </span>
-            ) : (
-              <span
-                key={i}
-                className="rounded-[3px]"
-                style={{ background: "var(--color-hairline)", color: "transparent" }}
-                aria-hidden
-              >
-                {char === "\n" ? "\n" : "　"}
-              </span>
-            ),
-          )}
+          <RevealedScript
+            transcript={state.transcript}
+            revealed={state.revealed}
+            furigana={furigana}
+          />
         </p>
       ) : null}
 
@@ -294,6 +283,67 @@ const BADGE: Record<HitKind, { label: string; color: string }> = {
   romaji: { label: "ローマ字みたい", color: "#f0a819" },
   miss: { label: "本文に 出てこない", color: "#9db0c2" },
 };
+
+/**
+ * 穴埋めの 原稿。**開いた ことばには ふりがなを 出す**（2026-09-04 の 指定
+ *「文章は 漢字主体（ふりがなあり表示）が よい かも」）。
+ *
+ * ## なぜ 1文字ずつでは 足りないのか
+ * 前は 1文字ずつ 出して いた。開いて いく 仕組みには それで よいが、
+ * **ルビは ことば 単位でしか 振れない**ので、漢字が 裸の まま 出て いた——
+ * 漢字主体で 原稿を 書くと、そこで 読めなく なる（規律2）。
+ *
+ * そこで 読み辞書で **ことばに 割ってから** 出し、
+ * **その ことばが まるごと 開いた ときだけ** ルビを 振る。
+ * 半分 開いた ことばに 読みを 付けると、**まだ 当てて いない ぶんの 答えを 見せて しまう**。
+ */
+function RevealedScript({
+  transcript,
+  revealed,
+  furigana,
+}: {
+  transcript: string;
+  revealed: ReadonlySet<number>;
+  furigana: FuriganaIndex;
+}) {
+  const out: React.ReactNode[] = [];
+  let at = 0;
+  for (const [index, segment] of annotateRuby(transcript, furigana).entries()) {
+    const start = at;
+    const chars = [...segment.text];
+    const whole = chars.every((_, k) => revealed.has(start + k));
+    if (segment.reading && whole) {
+      out.push(
+        <ruby key={`r${index}`} className="text-ink">
+          {segment.text}
+          <rt className="text-[0.6em] font-bold">{segment.reading}</rt>
+        </ruby>,
+      );
+    } else {
+      chars.forEach((char, k) => {
+        const i = start + k;
+        out.push(
+          revealed.has(i) ? (
+            <span key={i} className="text-ink">
+              {char}
+            </span>
+          ) : (
+            <span
+              key={i}
+              className="rounded-[3px]"
+              style={{ background: "var(--color-hairline)", color: "transparent" }}
+              aria-hidden
+            >
+              {char === "\n" ? "\n" : "　"}
+            </span>
+          ),
+        );
+      });
+    }
+    at += segment.text.length;
+  }
+  return <>{out}</>;
+}
 
 function Stat({ label, value, accent }: { label: string; value: string | number; accent: string }) {
   return (

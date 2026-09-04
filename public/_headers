@@ -30,10 +30,18 @@
 # そこで **教材の 直しが 届く 間隔（ページの `revalidate = 300`）に そろえる**。
 # 5分 以内の 開き直しは 手元の ものを 使い、5分 過ぎたら 裏で 取り直す
 #（`stale-while-revalidate` なので 待たされない）。授業中の 取り直しは これで 消える。
+# 音と 絵は **URL に 中身の 版番号（?v=）が 付く**ので、変わった ものは
+# 別の URL に なる（`src/lib/asset-url.ts`・`scripts/generate_asset_versions.mjs`）。
+# だから 長く 持たせて よい。
+#
+# 前は `max-age=300,stale-while-revalidate=86400` だった——**最大 24時間 古い
+# ファイルを 返す**ので、リスニングの 音を 作り直しても 古い 音が 鳴った
+#（2026-09-04 に 実発生）。短くする 案は 採らない: 変えて いない 資産まで
+# 毎回 取り直させ、教室の 細い 回線を 食う。
 /audio/*
-  Cache-Control: public,max-age=300,stale-while-revalidate=86400
+  Cache-Control: public,max-age=31536000,immutable
 /img/*
-  Cache-Control: public,max-age=300,stale-while-revalidate=86400
+  Cache-Control: public,max-age=31536000,immutable
 /slides/*
   Cache-Control: public,max-age=300,stale-while-revalidate=86400
 
