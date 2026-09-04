@@ -24,43 +24,47 @@
 begin;
 
 -- ── 1. 被験者と 期待値を 先に 取る（ここは まだ 管理者の 目で 読む）──
-select set_config('app.me', (
+--
+-- **値を そのまま 返さない。** `select set_config(...)` は 設定した 値を 返すので、
+-- psql が それを 表に して 出す —— 学習者の UUID が **public な Actions の ログに
+-- 残る**（2026-09-04 に 実際に 出た）。`count()` で 包んで 件数だけに する。
+select count(set_config('app.me', (
   select p.id::text from public.profiles p
   where coalesce(p.is_admin, false) = false
   order by (select count(*) from public.quiz_results q where q.profile_id = p.id) desc, p.id
   limit 1
-), true);
+), true)) as ok;
 
-select set_config('app.other', (
+select count(set_config('app.other', (
   select p.id::text from public.profiles p
   where coalesce(p.is_admin, false) = false
   order by (select count(*) from public.quiz_results q where q.profile_id = p.id) desc, p.id
   offset 1 limit 1
-), true);
+), true)) as ok;
 
-select set_config('app.my_quiz', (
+select count(set_config('app.my_quiz', (
   select count(*)::text from public.quiz_results
   where profile_id = nullif(current_setting('app.me', true), '')::uuid
-), true);
+), true)) as ok;
 
-select set_config('app.other_quiz', (
+select count(set_config('app.other_quiz', (
   select count(*)::text from public.quiz_results
   where profile_id = nullif(current_setting('app.other', true), '')::uuid
-), true);
+), true)) as ok;
 
-select set_config('app.published', (
+select count(set_config('app.published', (
   select count(*)::text from public.studio_contents where status = 'published'
-), true);
+), true)) as ok;
 
-select set_config('app.all_studio', (select count(*)::text from public.studio_contents), true);
+select count(set_config('app.all_studio', (select count(*)::text from public.studio_contents), true)) as ok;
 
 -- ── 2. その 学習者に なりすます ──
 set local role authenticated;
-select set_config(
+select count(set_config(
   'request.jwt.claims',
   json_build_object('sub', current_setting('app.me', true), 'role', 'authenticated')::text,
   true
-);
+)) as ok;
 
 -- ── 3. 許可と 拒否を 数える ──
 do $$
