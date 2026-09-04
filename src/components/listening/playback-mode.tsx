@@ -9,6 +9,7 @@ import { getProfile } from "@/lib/profile";
 import { recordContentProgress } from "@/lib/progress/store";
 import { CallShell } from "@/components/call-shell";
 import { VideoPlayer } from "@/components/media/video-player";
+import { ImageSlotFrame } from "@/components/article/rich-blocks";
 import { ListeningPanel } from "./listening-panel";
 import { mediaKind, revealRate, type ListeningState } from "./listening-checks";
 
@@ -95,6 +96,20 @@ export function ListeningPlayer({
 
   const body = (
     <>
+      {/*
+        聞く 前の 1枚（`cover`）。**答えは 描かない**——この 教材の 問いは
+        「どこで 働くか／何を 作るか」なので、そこまで 描くと 聞かずに 答えられる。
+        描いて あるのは それぞれの タイプの 雰囲気まで（2026-09-04 の 指定）。
+        答え合わせの あとも 出したまま に する——聞き直す ときの 手がかりに なる。
+      */}
+      {listening.cover?.status === "done" && listening.cover.src ? (
+        <ImageSlotFrame
+          slot={listening.cover}
+          alt={listening.title}
+          furigana={furigana}
+          className="mb-3 h-auto w-full rounded-[18px]"
+        />
+      ) : null}
       {phase === "listen" ? (
         <>
           <Player

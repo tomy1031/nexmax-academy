@@ -132,5 +132,10 @@
       "ちゅうもく"
     ]
   ],
-  "audioUrl": "/audio/listening/kaisha_shugyo_keitai_listening.wav"
+  "audioUrl": "/audio/listening/kaisha_shugyo_keitai_listening.wav",
+  "cover": {
+    "src": "/img/listening/kaisha_shugyo_keitai/cover.webp",
+    "refs": [],
+    "status": "done"
+  }
 }
