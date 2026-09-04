@@ -5,7 +5,7 @@ export const ASSET_VERSIONS: Readonly<Record<string, string>> = {
   "/audio/hourensou/renraku.wav": "6980987c",
   "/audio/hourensou/soudan.wav": "e7a489c9",
   "/audio/kaisha/shugyo_keitai.wav": "f749d89e",
-  "/audio/listening/kaisha_shugyo_keitai_listening.wav": "4b4b83a4",
+  "/audio/listening/kaisha_shugyo_keitai_listening.wav": "19a4f9ec",
   "/audio/meetings/hajimari_meeting/closing.wav": "84c0524b",
   "/audio/meetings/hajimari_meeting/q10_place.wav": "00b46b89",
   "/audio/meetings/hajimari_meeting/q11_friend.wav": "1022dafa",

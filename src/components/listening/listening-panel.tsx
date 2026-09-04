@@ -58,6 +58,8 @@ export function ListeningPanel({
     ),
   );
   const [value, setValue] = useState("");
+  /** 「はじめから」の 確認板を 出して いるか。 */
+  const [asking, setAsking] = useState(false);
   /**
    * 当たらなかったときに 入力欄を 小さく 首ふりさせるか（減点はしない）。
    *
@@ -103,6 +105,22 @@ export function ListeningPanel({
       setShaking(true);
     }
     setValue("");
+  };
+
+  /**
+   * 打った ことばを ぜんぶ 捨てて、原稿を 閉じ直す。
+   *
+   * **押した その場では 消さない**（2026-09-04 の 指定）——ここまでに 当てた ことばは
+   * 学習者が 何回も 聞いて 積み上げた もので、うっかり 押して 消えると 取り返せない。
+   * 板で 一度 確かめてから 消す。
+   */
+  const reset = () => {
+    setAsking(false);
+    setValue("");
+    const fresh = createListening(transcript, keywords, rules, furigana);
+    setState(fresh);
+    saveListeningFinds(contentId, []);
+    onChange?.(fresh);
   };
 
   return (
@@ -218,6 +236,23 @@ export function ListeningPanel({
         </ul>
       )}
 
+      {/*
+        はじめから。**打った ことばが 1つも 無い ときは 出さない**——
+        押しても 何も 起きない ボタンを 置かない（constraints「いま 触っても 意味の
+        無い ものは 押せない形に する」）。
+      */}
+      {state.usedInputs.length > 0 && (
+        <div className="mt-3 flex justify-end">
+          <button
+            type="button"
+            onClick={() => setAsking(true)}
+            className="text-ink-soft border-hairline rounded-full border-2 px-3 py-1 text-xs font-black"
+          >
+            はじめから やりなおす
+          </button>
+        </div>
+      )}
+
       {state.misses >= rules.maxMiss && !cleared && (
         <p className="text-ink-soft mt-3 text-sm font-bold">
           もういちど 聞いてみよう。上の ▶ を おすと、はじめから きけます。
@@ -240,6 +275,48 @@ export function ListeningPanel({
           />
         </p>
       ) : null}
+
+      {asking && (
+        <div
+          className="fixed inset-0 z-50 grid place-items-center p-4"
+          style={{ background: "rgba(31,58,86,.45)" }}
+          role="dialog"
+          aria-modal="true"
+          aria-label="はじめから やりなおす かくにん"
+        >
+          <motion.div
+            initial={{ opacity: 0, scale: 0.94 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="card-island w-full max-w-md p-6"
+          >
+            <h2 className="text-ink text-xl font-extrabold">
+              <RubyText text="はじめから やりなおしますか？" index={furigana} />
+            </h2>
+            <p className="text-ink-soft mt-2 text-sm font-bold">
+              <RubyText
+                text={`いま までに 見つけた ${state.usedInputs.length}この ことばが 消えます。原稿も 閉じます。`}
+                index={furigana}
+              />
+            </p>
+            <div className="mt-5 flex gap-2">
+              <button
+                type="button"
+                onClick={() => setAsking(false)}
+                className="border-hairline text-ink flex-1 rounded-full border-2 py-2.5 text-sm font-black"
+              >
+                やめる
+              </button>
+              <button
+                type="button"
+                onClick={reset}
+                className="btn-island btn-game flex-1 py-2.5 text-sm font-black"
+              >
+                やりなおす
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
 
       <p className="sr-only" aria-live="polite">
         {latest ? `${latest.input}: ${BADGE[latest.kind].label} ${latest.points}点` : ""}
