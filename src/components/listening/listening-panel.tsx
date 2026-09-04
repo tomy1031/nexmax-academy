@@ -51,7 +51,11 @@ export function ListeningPanel({
 }) {
   const [state, setState] = useState<ListeningState>(() =>
     // 前に当てた言葉を流し込んで、続きから始める
-    replayListening(createListening(transcript, keywords, rules), readListeningFinds(contentId)),
+    replayListening(
+      // 読み辞書を 渡す —— これが 無いと ひらがなで 打っても 当たらない
+      createListening(transcript, keywords, rules, furigana),
+      readListeningFinds(contentId),
+    ),
   );
   const [value, setValue] = useState("");
   /**
@@ -83,11 +87,22 @@ export function ListeningPanel({
       setState(next);
       saveListeningFinds(contentId, next.usedInputs);
     }
-    if (entry && (entry.kind === "miss" || entry.kind === "tooShort" || entry.kind === "close")) {
-      setShaking(true); // 当たらなかったときは入力欄が小さく首をふるだけ（減点なし）
-    } else {
-      setValue("");
+    /*
+     * **当たらなかった ときも 入力を 消す**（2026-09-04 の 指定）。
+     * 前は 残して いた——首を ふるだけ だったので、学習者は 消してから 打ち直す
+     * ことに なり、次の ことばを 入れる のに 手間が 1つ 増えて いた。
+     */
+    if (
+      entry &&
+      (entry.kind === "miss" ||
+        entry.kind === "partway" ||
+        entry.kind === "romaji" ||
+        entry.kind === "tooShort" ||
+        entry.kind === "close")
+    ) {
+      setShaking(true);
     }
+    setValue("");
   };
 
   return (
@@ -189,6 +204,12 @@ export function ListeningPanel({
                   {entry.keywords.join(" ＋ ")}
                 </span>
               )}
+              {/* 外れた ときの 手がかり（どこまで 合って いたか・ローマ字だ、など） */}
+              {entry.hint && (
+                <span className="text-ink-soft w-full text-xs font-bold break-words">
+                  {entry.hint}
+                </span>
+              )}
               {entry.points > 0 && (
                 <span className="ml-auto font-black text-[#f0a819]">+{entry.points}</span>
               )}
@@ -258,7 +279,20 @@ const BADGE: Record<HitKind, { label: string; color: string }> = {
   close: { label: "おしい！", color: "#f0a819" },
   partial: { label: "本文に ある", color: "#8d6ae8" },
   tooShort: { label: "みじかいよ", color: "#9db0c2" },
-  miss: { label: "まだ 出ていないみたい", color: "#9db0c2" },
+  /*
+   * さっき 打った ことば。**「まだ 出ていないみたい」と 言わない**——
+   * 1回目に「本文に ある」と 言った ばかりの ことばに それを 言うと 嘘に なる
+   *（2026-09-04 の 指摘）。
+   */
+  repeat: { label: "もう 見つけたよ", color: "#0272ae" },
+  /*
+   * 「まだ 出ていないみたい」1つに まとめて いた のを、**理由ごとに 割った**
+   *（2026-09-04 の 指摘「意味不明」）。学習者に 要るのは 否定では なく
+   * **打ち直す 手がかり**なので、どこまで 合って いたかも 出す（entry.hint）。
+   */
+  partway: { label: "とちゅうまで 合ってる", color: "#f0a819" },
+  romaji: { label: "ローマ字みたい", color: "#f0a819" },
+  miss: { label: "本文に 出てこない", color: "#9db0c2" },
 };
 
 function Stat({ label, value, accent }: { label: string; value: string | number; accent: string }) {

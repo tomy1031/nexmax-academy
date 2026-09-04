@@ -173,25 +173,21 @@ const HEARD = [
   "SES",
   "受託開発",
   "自社開発",
-  "案件",
-  "オフィス",
+  "会社",
+  "仕事",
   "サービス",
   "お客様",
-  "会社",
+  "チーム",
   "エンジニア",
   "アプリ",
   "場所",
   "働きます",
-  "経験",
-  "技術",
-  "完成",
+  "仲間",
   "自分",
-  "興味",
-  "IT業界",
-  "進め方",
-  "達成感",
-  "成長",
-  "希望",
+  "タイプ",
+  "アイデア",
+  "NMClaw",
+  "観光DX",
 ];
 
 /**
@@ -208,6 +204,8 @@ const SHUGYO_CHOICES: readonly (readonly [string, number])[] = [
   ["q_ii_jutaku", 1],
   ["q_ii_jisha", 2],
   ["q_zenbu", 3],
+  // さいごは 学習者じしんの こたえ（正解も 不正解も ない）
+  ["q_yaritai", 0],
 ];
 
 test("かいしゃステージを 通しで あそべる（端末に 何も 置かずに 始める）", async ({ page }) => {
@@ -688,7 +686,7 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
     await frameNext(page).click();
   });
 
-  await test.step("10. STEP 6 ページ「案件の 3つの 形を 確かめよう」— 聞いた ことを 資料で 確かめる", async () => {
+  await test.step("10. STEP 6 ページ「仕事の 3つの タイプを 確かめよう」— 聞いた ことを 資料で 確かめる", async () => {
     await expect(page).toHaveURL(/article-kaisha_shugyo_keitai$/);
     /*
      * カード 3枚（SES・受託開発・自社開発）。**絵に 字は 無い**——説明は カードの
@@ -707,11 +705,11 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
     await frameNext(page).click();
   });
 
-  await test.step("11. STEP 6 もんだい「就業形態の かくにん」— 軽い 内容確認", async () => {
+  await test.step("11. STEP 6 もんだい「仕事の 3つの タイプの かくにん」— 内容確認＋自分の こたえ", async () => {
     await expect(page).toHaveURL(/quiz-kaisha_shugyo_keitai_check$/);
     await page.getByRole("button", { name: "はじめる" }).click();
 
-    /* この 教材も `answerMode: "all"`。7問が 同時に 見えて いる（ぜんぶ 4択・3択）。 */
+    /* この 教材も `answerMode: "all"`。9問が 同時に 見えて いる（4択・3択＋自由記述1）。 */
     await expect(page.getByText(`1/${SHUGYO_TOTAL}`, { exact: true })).toBeVisible();
     // ぜんぶ うめるまで 出す ボタンは 出ない（`requireAll`）
     await expect(page.getByRole("button", { name: /こたえを 出/ })).toHaveCount(0);
@@ -719,6 +717,8 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
     for (const [questionId, at] of SHUGYO_CHOICES) {
       await pickChoiceIn(page, questionId, at);
     }
+    // 「どうして やって みたいか」は 自由記述。正解も 不正解も 無い（type: free）
+    await writeIn(page, "q_naze", "いろいろな 会社を 見たいからです。");
     await shot(page, "15-shugyo-check");
 
     await expect(page.getByRole("button", { name: /こたえを 出/ })).toBeVisible();
