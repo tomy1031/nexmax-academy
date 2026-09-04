@@ -354,3 +354,53 @@ describe("全問 出題", () => {
     expect(s.questions).toHaveLength(stage.words.length);
   });
 });
+
+describe("学習者が 打った ものを 記録に 残す（先生の 画面が 読む）", () => {
+  it("打った 読みと 打ち直した 回数が 記録に 入る", () => {
+    const s0 = createSession({ stage, mode: "test", rng: seededRng(31) });
+    const word = currentWord(s0)!;
+    let s = arcadeReducer(s0, { type: "submitReading", input: "まちがったよみ" });
+    s = arcadeReducer(s, { type: "submitReading", input: word.reading });
+    s = arcadeReducer(s, { type: "chooseMeaning", choice: word.meaningEn });
+    const outcome = s.outcomes[0]!;
+    expect(outcome.readingInput).toBe(word.reading);
+    expect(outcome.readingTries).toBe(2);
+    expect(outcome.meaningInput).toBe(word.meaningEn);
+  });
+
+  it("時間切れなら「打って いない」が 残る（0点 と 見分ける）", () => {
+    const s0 = createSession({ stage, mode: "test", rng: seededRng(32) });
+    let s = arcadeReducer(s0, { type: "readingTimeout" });
+    s = arcadeReducer(s, { type: "meaningTimeout" });
+    const outcome = s.outcomes[0]!;
+    expect(outcome.readingInput).toBe("");
+    expect(outcome.readingTries).toBe(0);
+    expect(outcome.readingOk).toBe(false);
+    expect(outcome.meaningInput).toBe("");
+  });
+
+  it("いみだけの 遊びかたでは 読みを 聞いて いない（null）", () => {
+    const s0 = createSession({ stage, mode: "quiz", rng: seededRng(33) });
+    const word = currentWord(s0)!;
+    const s = arcadeReducer(s0, { type: "chooseMeaning", choice: word.meaningEn });
+    expect(s.outcomes[0]!.readingOk).toBeNull();
+    expect(s.outcomes[0]!.readingInput).toBe("");
+  });
+
+  it("次の 語に 進むと 打った ものは 持ち越さない", () => {
+    const s0 = createSession({ stage, mode: "test", rng: seededRng(34) });
+    const first = currentWord(s0)!;
+    let s = arcadeReducer(s0, { type: "submitReading", input: first.reading });
+    s = arcadeReducer(s, { type: "chooseMeaning", choice: first.meaningEn });
+    s = arcadeReducer(s, { type: "advance" });
+    expect(s.readingInput).toBe("");
+    expect(s.readingTries).toBe(0);
+  });
+
+  it("漢字・英字の 打ちまちがいは 回数に 数えない（こたえでは なく 迷い）", () => {
+    const s0 = createSession({ stage, mode: "test", rng: seededRng(35) });
+    const s = arcadeReducer(s0, { type: "submitReading", input: "要件定義" });
+    expect(s.readingTries).toBe(0);
+    expect(s.readingInput).toBe("");
+  });
+});

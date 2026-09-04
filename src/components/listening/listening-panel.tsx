@@ -26,7 +26,13 @@ import {
  * 当てた言葉をこの端末に残し、次に来たときに流し込み直す
  *（listening-checks の replayListening）。保存するのは**開いた位置ではなく
  * 入力した言葉**——位置は台本を1文字直すだけでずれる。
- * DBには置かない。消えても学習が止まらない種類のデータである。
+ *
+ * ## 台帳（`listening_results`）へは まとめて 写す
+ * 打つたびに 送るのでは なく、**端末に 置くだけ**（通信しない）。写すのは
+ * `src/lib/records/sync.ts` が 10秒に 1回 まとめて 行う。
+ * 2026-09-04 まで ここは 端末だけに 置いて いて、**学習者が 打った ことばは
+ * 先生から 一度も 見えなかった**——どの ことばが 聞き取れて いないかは、
+ * 音声を 作り直す ときに いちばん 効く 手がかりである。
  */
 export function ListeningPanel({
   contentId,
@@ -87,7 +93,12 @@ export function ListeningPanel({
     const entry = next.log[0];
     if (next !== state) {
       setState(next);
-      saveListeningFinds(contentId, next.usedInputs);
+      // 先生の 画面は「どこまで 開いたか」も 見る。入力からは 導けない（台本と
+      // 読み辞書が 要る）ので、数えた ここで 一緒に 置く。
+      saveListeningFinds(contentId, next.usedInputs, {
+        revealPercent: revealRate(next),
+        keywordsLeft: remainingKeywords(next),
+      });
     }
     /*
      * **当たらなかった ときも 入力を 消す**（2026-09-04 の 指定）。
@@ -119,7 +130,7 @@ export function ListeningPanel({
     setValue("");
     const fresh = createListening(transcript, keywords, rules, furigana);
     setState(fresh);
-    saveListeningFinds(contentId, []);
+    saveListeningFinds(contentId, [], { revealPercent: 0, keywordsLeft: keywords.length });
     onChange?.(fresh);
   };
 

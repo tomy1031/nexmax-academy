@@ -84,6 +84,19 @@ export interface WordOutcome {
   /** null は「読みを聞いていない」。 */
   readonly readingOk: boolean | null;
   readonly meaningOk: boolean;
+  /**
+   * 学習者が **最後に 打った 読み**。空 = 一度も 打たなかった（時間切れ・quiz）。
+   *
+   * ⭕✕ だけでは「どの ことばで 止まるか」しか 分からない。**何と 打ったか**が
+   * 分かると、止まる 理由が 読める——「けんしゅう」を「けんしゅ」と 打つ 人が
+   * 何人も いるなら、疑うのは 学生では なく 長音の 教え方である
+   *（もんだい側の `quiz_results.answer_text` が いちばん 効いたのと 同じ）。
+   */
+  readonly readingInput: string;
+  /** 何回 打ち直したか。打ち直しに 代償は 無いので、迷いの 深さは ここにしか 出ない。 */
+  readonly readingTries: number;
+  /** えらんだ いみの 文そのもの。空 = 時間切れで えらべなかった。 */
+  readonly meaningInput: string;
 }
 
 export interface ArcadeState {
@@ -109,6 +122,15 @@ export interface ArcadeState {
   readonly flash: FlashKind | null;
   /** 手ごたえの 通し番号（同じ しるしが つづいても 演出を 出し直す）。 */
   readonly flashSeq: number;
+  /**
+   * いまの 語で 最後に 打った 読みと、打った 回数（次の 語で 0 に 戻す）。
+   *
+   * `outcomes` に 入れられるのは 語が 片づいた ときなので、**打った 瞬間の 言葉**は
+   * どこかに 置いて おかないと 失われる。画面には 出さない（打ち直しの 合図は
+   * 横揺れだけ という 決めごとを 変えない）。
+   */
+  readonly readingInput: string;
+  readonly readingTries: number;
 }
 
 export type ArcadeAction =
@@ -168,6 +190,8 @@ export function createSession({
     hint: null,
     flash: null,
     flashSeq: 0,
+    readingInput: "",
+    readingTries: 0,
   };
 }
 
@@ -224,11 +248,13 @@ export function arcadeReducer(state: ArcadeState, action: ArcadeAction): ArcadeS
        * 前は 1回 外した 時点で 読みを 打ち切って いた。1文字の 打ちまちがいでも
        * そこで 終わって しまい、「打てた はずなのに」が 残って いた。
        */
+      // 打った ことばを 残す（当たっても 外しても）。台帳に 出すのは これ。
+      const typed = { readingInput: action.input.trim(), readingTries: state.readingTries + 1 };
       return readingMatches(action.input, word.reading)
-        ? onReadingCorrect(state)
+        ? onReadingCorrect({ ...state, ...typed })
         : // 打ち直しに 文は 出さない（2026-08-27「変にポジティブにするルール…ここに適用しても無意味」）。
           // 合図は 横揺れ・入力欄が 空に なる こと・小さな ❌ の 3つだけ。
-          { ...state, hint: null, ...flashOf(state, "retry") };
+          { ...state, ...typed, hint: null, ...flashOf(state, "retry") };
     }
 
     case "readingTimeout":
@@ -256,7 +282,15 @@ export function arcadeReducer(state: ArcadeState, action: ArcadeAction): ArcadeS
       if (next >= state.questions.length) {
         return { ...state, phase: { kind: "finished", reason: "cleared" } };
       }
-      return { ...state, index: next, phase: startPhase(state.mode), hint: null, flash: null };
+      return {
+        ...state,
+        index: next,
+        phase: startPhase(state.mode),
+        hint: null,
+        flash: null,
+        readingInput: "",
+        readingTries: 0,
+      };
     }
 
     default:
@@ -321,7 +355,17 @@ function closeQuestion(
     score: state.score + gain,
     lastGain: gain,
     life: !meaningOk && state.mode === "practice" ? state.life - 1 : state.life,
-    outcomes: [...state.outcomes, { wordId: word.id, readingOk, meaningOk }],
+    outcomes: [
+      ...state.outcomes,
+      {
+        wordId: word.id,
+        readingOk,
+        meaningOk,
+        readingInput: state.readingInput,
+        readingTries: state.readingTries,
+        meaningInput: chosen ?? "",
+      },
+    ],
     phase: {
       kind: "explain",
       feedback: meaningOk ? "meaning.correct" : timeup ? "meaning.timeup" : "meaning.retry",

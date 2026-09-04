@@ -45,6 +45,17 @@ const GROUPS: readonly { title: string; items: readonly Item[] }[] = [
     items: [
       { href: "/admin", icon: "📊", label: "ダッシュボード" },
       { href: "/admin/users", icon: "👥", label: "ユーザー", match: "/admin/users" },
+      /*
+       * 学習の きろく。ミーティング／テストの 2つより **上**に 置く——あちらは
+       * 1つの 表しか 見えないが、ここは 5種類を 同じ 絞り込み（所属・期生・
+       * メンバー・ステージ・単元）で 通して 見られる 入口である。
+       */
+      {
+        href: "/admin/records",
+        icon: "📋",
+        label: "学習の きろく",
+        match: "/admin/records",
+      },
       {
         href: "/admin/meetings",
         icon: "💬",

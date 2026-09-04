@@ -18,6 +18,15 @@ export interface ProgressBackend {
   get(key: string): string | null;
   set(key: string, value: string): void;
   remove(key: string): void;
+  /**
+   * その 接頭辞で 始まる 鍵を ぜんぶ 返す（名前空間つきの まま）。
+   *
+   * 台帳へ 写す 層（`src/lib/records/sync.ts`）が「前に 送ってから 何が 変わったか」を
+   * 数えるのに 要る。**画面ごとに 送る 呼び出しを 足さない**ための 一手で、これが
+   * 無いと 教材 11種別の 記録する 場所すべてに 通信を 書き足す ことに なる
+   *（1か所 書き忘れたら、その 教材だけ 先生から 見えない）。
+   */
+  keys(prefix: string): string[];
 }
 
 /** SSR・localStorage 不許可環境でも落ちないメモリ実装。 */
@@ -27,6 +36,7 @@ export function createMemoryBackend(): ProgressBackend {
     get: (k) => map.get(k) ?? null,
     set: (k, v) => void map.set(k, v),
     remove: (k) => void map.delete(k),
+    keys: (prefix) => [...map.keys()].filter((k) => k.startsWith(prefix)),
   };
 }
 
@@ -51,6 +61,18 @@ function createLocalStorageBackend(): ProgressBackend {
         window.localStorage.removeItem(key);
       } catch {
         /* 同上 */
+      }
+    },
+    keys(prefix) {
+      try {
+        const found: string[] = [];
+        for (let i = 0; i < window.localStorage.length; i += 1) {
+          const key = window.localStorage.key(i);
+          if (key !== null && key.startsWith(prefix)) found.push(key);
+        }
+        return found;
+      } catch {
+        return [];
       }
     },
   };
@@ -242,6 +264,13 @@ export function createProgressStore(backend: ProgressBackend = defaultBackend())
  * コンテンツ進捗（stage 内の manga / article / listening / quizset / scenario）
  * ------------------------------------------------------------------ */
 
+/** 鍵の 形（台帳へ 写す 層が 同じ ものを 走査する）。 */
+export const CONTENT_KEY_PREFIX = `${NAMESPACE}:content:`;
+
+export function contentIdOfKey(key: string): string {
+  return key.startsWith(CONTENT_KEY_PREFIX) ? key.slice(CONTENT_KEY_PREFIX.length) : "";
+}
+
 export function readContentProgress(
   contentId: string,
   backend: ProgressBackend = defaultBackend(),
@@ -272,29 +301,94 @@ export function recordContentProgress(
  * ------------------------------------------------------------------ */
 
 /**
+ * リスニングの いまの すがた。
+ *
+ * `inputs` は **当たった 入力を 打った 順に**（外した ものは 残らない）。
+ * `revealPercent` / `keywordsLeft` は 先生の 画面が「どこまで 聞き取れたか」を
+ * 教材を 読み直さずに 出す ための 数で、**入力から 導けない**——導くには 台本と
+ * 読み辞書が 要り、それは 先生の 画面には 無い。
+ */
+export interface ListeningFinds {
+  readonly inputs: readonly string[];
+  readonly revealPercent: number;
+  readonly keywordsLeft: number;
+}
+
+const EMPTY_FINDS: ListeningFinds = { inputs: [], revealPercent: 0, keywordsLeft: 0 };
+
+/**
+ * 保存の 形は **2つ ある**。
+ *
+ * 2026-09-04 より 前は ただの `string[]` を 置いて いた。ここを 読み分けるのは、
+ * すでに 教室の 端末に 入って いる 古い 形を **捨てない**ため——捨てると、
+ * 何回も 聞いて 積み上げた 言葉が 更新の 日に 消える。
+ */
+function parseFinds(saved: unknown): ListeningFinds {
+  if (Array.isArray(saved)) {
+    return { ...EMPTY_FINDS, inputs: saved.filter((v): v is string => typeof v === "string") };
+  }
+  if (saved && typeof saved === "object") {
+    const record = saved as Partial<Record<keyof ListeningFinds, unknown>>;
+    const inputs = Array.isArray(record.inputs)
+      ? record.inputs.filter((v): v is string => typeof v === "string")
+      : [];
+    return {
+      inputs,
+      revealPercent: typeof record.revealPercent === "number" ? record.revealPercent : 0,
+      keywordsLeft: typeof record.keywordsLeft === "number" ? record.keywordsLeft : 0,
+    };
+  }
+  return EMPTY_FINDS;
+}
+
+/** 鍵の 形（台帳へ 写す 層が 同じ ものを 走査する）。 */
+export const LISTENING_KEY_PREFIX = `${NAMESPACE}:listening:`;
+
+export function listeningIdOfKey(key: string): string {
+  return key.startsWith(LISTENING_KEY_PREFIX) ? key.slice(LISTENING_KEY_PREFIX.length) : "";
+}
+
+/**
+ * いまの すがた ぜんぶ。台帳へ 写す 層と 先生の 画面が これを 読む。
+ */
+export function readListeningResult(
+  contentId: string,
+  backend: ProgressBackend = defaultBackend(),
+): ListeningFinds {
+  return parseFinds(readJson<unknown>(backend, `listening:${contentId}`, null));
+}
+
+/**
  * 一度ひらいた原稿は、次に来ても ひらいたままにする。
  *
  * 保存するのは**開いた位置ではなく入力した言葉**。位置は台本を1文字直すだけで
  * ずれるが、言葉なら意味が変わらない（listening-checks の replayListening が
  * これを流し込んで状態を組み直す）。
- *
- * DBには置かない。1画面ぶんの「しおり」に毎回の入力を送るのは重すぎるし、
- * 消えても学習が止まらない種類のデータである。
  */
 export function readListeningFinds(
   contentId: string,
   backend: ProgressBackend = defaultBackend(),
 ): string[] {
-  const saved = readJson<unknown>(backend, `listening:${contentId}`, []);
-  return Array.isArray(saved)
-    ? saved.filter((item): item is string => typeof item === "string")
-    : [];
+  return [...readListeningResult(contentId, backend).inputs];
 }
 
+/**
+ * 打った ことばを 端末に 残す。
+ *
+ * 通信は しない。台帳（`listening_results`）へ 送るのは、これを 走査する
+ * `src/lib/records/sync.ts` が **10秒 ためて まとめて** 行う——1文字ごとに
+ * 送ると、教室の 1本の 回線から 出る 書き込みが 人数ぶん 重なる。
+ */
 export function saveListeningFinds(
   contentId: string,
   inputs: readonly string[],
+  stat: { revealPercent: number; keywordsLeft: number } = { revealPercent: 0, keywordsLeft: 0 },
   backend: ProgressBackend = defaultBackend(),
 ): void {
-  writeJson(backend, `listening:${contentId}`, [...inputs]);
+  const value: ListeningFinds = {
+    inputs: [...inputs],
+    revealPercent: Math.round(stat.revealPercent),
+    keywordsLeft: stat.keywordsLeft,
+  };
+  writeJson(backend, `listening:${contentId}`, value);
 }
