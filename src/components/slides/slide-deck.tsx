@@ -241,13 +241,13 @@ export function SlideDeck({ slides, embedded }: { slides: Slides; embedded?: boo
                 以前は ここが 下の まん中で、PDF の 中にも 焼いた 番号が 右下に あり、
                 同じ ことが 2か所に 出ていた。焼き込みの ほうを 消して、
                 読みやすい こちら（黒の 札）を 右下へ 移した。 */}
-            <span className="pointer-events-none absolute right-2 bottom-2 rounded-full bg-black/55 px-3 py-1 text-xs font-black text-white">
+            <span className="pointer-events-none absolute right-2 bottom-2 rounded-full bg-black/45 px-3 py-1 text-xs font-black text-white">
               {index + 1} / {pageCount} まい
             </span>
             <button
               type="button"
               onClick={wide ? collapse : expand}
-              className="absolute top-2 right-2 rounded-full bg-black/55 px-3 py-1.5 text-xs font-black text-white"
+              className="absolute top-2 right-2 rounded-full bg-black/45 px-3 py-1.5 text-xs font-black text-white"
             >
               {wide ? "✕ もどす" : "⛶ ひろげる"}
             </button>

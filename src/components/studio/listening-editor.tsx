@@ -11,6 +11,7 @@ import {
   SPEAKER_NARRATION,
 } from "./listening-drafts";
 import { AudioMaker } from "./audio-maker";
+import { ImageSlotEditor } from "./image-slot-editor";
 import {
   CheckChoice,
   FuriganaEditor,
@@ -335,6 +336,17 @@ export function ListeningEditor({
           げんこうは ふつう 見せません（見えていると 読む れんしゅうに なってしまいます）。 学習者は
           画面の「げんこう ON」で 出せます。
         </p>
+      </StudioSection>
+
+      <StudioSection
+        title="聞く 前の 1枚（なくてもよい）"
+        hint="画面の いちばん 上に 出ます。**答えを 描かない こと**——「どこで 働くか」「何を 作るか」を 絵で 見せると、聞かずに 答えられて しまいます。描いて よいのは 場面の 雰囲気までです。"
+      >
+        <ImageSlotEditor
+          slot={value.cover ?? { refs: [], status: "empty" }}
+          prefix={`listening/${value.id.length > 0 ? value.id : "draft"}`}
+          onChange={(cover) => onChange({ ...value, cover })}
+        />
       </StudioSection>
 
       <AudioMaker value={value} onChange={onChange} />

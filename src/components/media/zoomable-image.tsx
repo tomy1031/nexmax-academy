@@ -82,8 +82,8 @@ export function ZoomableImage({
 
   const badge =
     size === "small"
-      ? "absolute right-0.5 bottom-0.5 grid h-5 w-5 place-items-center rounded-full bg-black/55 text-[10px] text-white"
-      : "absolute right-2 bottom-2 rounded-full bg-black/55 px-2.5 py-1 text-xs font-black text-white";
+      ? "absolute right-0.5 bottom-0.5 grid h-5 w-5 place-items-center rounded-full bg-black/45 text-[10px] text-white"
+      : "absolute right-2 bottom-2 rounded-full bg-black/45 px-2.5 py-1 text-xs font-black text-white";
 
   return (
     <>
@@ -121,7 +121,7 @@ export function ZoomableImage({
           <button
             type="button"
             onClick={collapse}
-            className="absolute top-3 right-3 rounded-full bg-black/55 px-3 py-1.5 text-xs font-black text-white"
+            className="absolute top-3 right-3 rounded-full bg-black/45 px-3 py-1.5 text-xs font-black text-white"
           >
             ✕ もどす
           </button>

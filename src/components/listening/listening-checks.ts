@@ -8,11 +8,19 @@
  * 「キーワード発見」と「原稿リベール」は別々の機能ではなく、
  * ひとつの入力に対する結果の大小でしかない。
  *
- * 旧実装は漢字用とひらがな用の配列を別々に持って分岐していたが、
- * ここは共有の正規化（normalize.ts）を1回通すだけで両方に当たる。
+ * ## ひらがなで 打っても 当たる（2026-09-04 に 直した）
+ * 前は `normalizeReading` を 1回 通すだけ だった。これは **カタカナを ひらがなに
+ * するだけ**で 漢字は 漢字の まま 残る——だから 原稿の 「達成感」に 対して
+ * 「たっせいかん」と 打っても **絶対に 当たらなかった**。学習者は 聞いた とおりに
+ * かなで 打つ のに、漢字で 書かないと 点に ならない 作りに なっていた。
+ *
+ * いまは **原稿も 入力も、教材の 読み辞書（furigana）で かなへ 倒してから 比べる**
+ *（`annotateRuby` → 読みへ 置換）。辞書に 無い 漢字の ために、素の 形の 見かたも
+ * 同時に 持ち、**どちらかに 当たれば 当たり**に する。
  */
 
-import { normalizeReading } from "@/lib/text/normalize";
+import { looseReading, normalizeReading } from "@/lib/text/normalize";
+import { annotateRuby, type FuriganaIndex } from "@/lib/text/furigana";
 
 /** 判定の種類。点数と文言はここで決まる（原典の配点をそのまま使う）。 */
 export type HitKind =
@@ -28,7 +36,23 @@ export type HitKind =
   | "partial"
   /** 短すぎて判定できない。 */
   | "tooShort"
-  /** 本文に出てこない。 */
+  /**
+   * さっき 打った ことば。
+   *
+   * **`miss` と 混ぜない**（2026-09-04 の 指摘）。前は 同じ ことばを 2回 打つと
+   * 「まだ 出ていないみたい」と 出て いた——1回目に「本文に ある」と 言われた
+   * ばかりの ことばなのに、である。出て いない のでは なく **もう 見つけて いる**。
+   */
+  | "repeat"
+  /**
+   * 本文には あるが、入力の **途中まで**しか 合って いない。
+   * 「まだ 出ていないみたい」だけでは 何が ちがうのか 分からない
+   *（2026-09-04 の 指摘「意味不明」）ので、**どこまで 合って いたか**を 返す。
+   */
+  | "partway"
+  /** ローマ字（英字）で 打った。 */
+  | "romaji"
+  /** 本文に まったく 出て こない。 */
   | "miss";
 
 /**
@@ -50,6 +74,9 @@ export const POINTS: Record<HitKind, number> = {
   close: 0,
   partial: 2,
   tooShort: 0,
+  repeat: 0,
+  partway: 0,
+  romaji: 0,
   miss: 0,
 };
 
@@ -67,6 +94,19 @@ export interface ListeningRules {
 }
 
 export const DEFAULT_RULES: ListeningRules = { minLength: MIN_LENGTH, maxMiss: MAX_MISS };
+
+/**
+ * 原稿を「かなに 倒した 並び」と、その 1文字ずつが **元の どこから 来たか**の 対応表。
+ *
+ * 読みは 表記と 長さが ちがう（達成感=3字 → たっせいかん=6字）ので、
+ * かなの 1文字が 元の 1文字に 対応するとは 限らない。だから **読みの どこに 当たっても
+ * その ことば まるごとを ひらく**——漢字を 半分だけ ひらいても 読めないからである。
+ */
+interface KanaView {
+  readonly kana: string;
+  /** kana[i] を ひらく ときに 開ける 元の 位置（複数）。 */
+  readonly owners: readonly (readonly number[])[];
+}
 
 export interface ListeningState {
   readonly transcript: string;
@@ -91,6 +131,18 @@ export interface ListeningState {
   readonly misses: number;
   /** 原稿の見えている文字の位置。 */
   readonly revealed: ReadonlySet<number>;
+  /** 読み辞書で かなへ 倒した 見かた（ひらがな入力は これに 当てる）。 */
+  readonly kanaView: KanaView;
+  /** 素の 見かた（辞書に 無い 漢字・英字は こちらで 当てる）。 */
+  readonly rawView: KanaView;
+  /** 入力を かなへ 倒す ための 辞書。 */
+  readonly furigana: FuriganaIndex;
+  /**
+   * 長音を 母音に 開いた 見かた（「さーばー」＝「さあばあ」）。
+   * `looseReading` は 1文字を 1文字に 置きかえる ので 長さが 変わらず、
+   * 位置の 対応表（owners）は そのまま 使える。
+   */
+  readonly looseViews: readonly KanaView[];
   /** 入力の履歴（新しい順に画面へ出す）。 */
   readonly log: readonly LogEntry[];
 }
@@ -101,13 +153,105 @@ export interface LogEntry {
   readonly points: number;
   /** 見つかったキーワード（contains のときは複数）。 */
   readonly keywords: readonly string[];
+  /**
+   * 外れた ときの 手がかり（「はじめの『じしゃ』は ありました」など）。
+   * 何が ちがうのか 分からない まま 打ち直させない ため。
+   */
+  readonly hint?: string;
+}
+
+/**
+ * 原稿を かなの 並びへ 倒し、1文字ずつ「元の どこか」を 覚える。
+ *
+ * `withReadings` が true の ときだけ 読み辞書を 使う（漢字→読み）。
+ * false の ときは 1文字ずつ `normalizeReading` を 通すだけ——
+ * 辞書に 無い 漢字や 英字（SES など）は こちらで 当てる。
+ */
+function buildView(transcript: string, index: FuriganaIndex, withReadings: boolean): KanaView {
+  const owners: (readonly number[])[] = [];
+  let kana = "";
+  let at = 0;
+  const segments = withReadings ? annotateRuby(transcript, index) : [{ text: transcript }];
+  for (const segment of segments) {
+    const reading = "reading" in segment ? segment.reading : undefined;
+    if (withReadings && reading) {
+      // 読みの どこに 当たっても、その ことば まるごとを ひらく
+      const whole = Array.from({ length: segment.text.length }, (_, k) => at + k);
+      const piece = normalizeReading(reading);
+      for (let k = 0; k < piece.length; k += 1) owners.push(whole);
+      kana += piece;
+    } else {
+      for (let c = 0; c < segment.text.length; c += 1) {
+        const plain = normalizeReading(segment.text[c] ?? "");
+        // 読みの 見かたでは 英字も 1文字ずつ 開く（SES → えすいーえす）
+        const piece = withReadings ? spellLatin(plain) : plain;
+        for (let k = 0; k < piece.length; k += 1) owners.push([at + c]);
+        kana += piece;
+      }
+    }
+    at += segment.text.length;
+  }
+  return { kana, owners };
+}
+
+/**
+ * 英字 1文字ずつの 読み。**リスニングでは 字が 想像できない**ので、
+ * 「SES」を 聞いて「えすいーえす」と 打つ 学習者を 落とさない
+ *（2026-09-04 の 指定「できる限り 許容範囲を 広げて欲しい」）。
+ */
+const LATIN_KANA: Record<string, string> = {
+  a: "えー",
+  b: "びー",
+  c: "しー",
+  d: "でぃー",
+  e: "いー",
+  f: "えふ",
+  g: "じー",
+  h: "えいち",
+  i: "あい",
+  j: "じぇー",
+  k: "けー",
+  l: "える",
+  m: "えむ",
+  n: "えぬ",
+  o: "おー",
+  p: "ぴー",
+  q: "きゅー",
+  r: "あーる",
+  s: "えす",
+  t: "てぃー",
+  u: "ゆー",
+  v: "ぶい",
+  w: "だぶりゅー",
+  x: "えっくす",
+  y: "わい",
+  z: "ぜっと",
+};
+
+/** 英字の 連なりを 1文字ずつの 読みに 開く（ses → えすいーえす）。 */
+function spellLatin(text: string): string {
+  return [...text].map((ch) => LATIN_KANA[ch] ?? ch).join("");
+}
+
+/** 入力を 読み辞書で かなへ 倒す（辞書に 無い 漢字は そのまま 残る）。 */
+function toKana(text: string, index: FuriganaIndex): string {
+  return annotateRuby(text, index)
+    .map((segment) =>
+      segment.reading
+        ? normalizeReading(segment.reading)
+        : spellLatin(normalizeReading(segment.text)),
+    )
+    .join("");
 }
 
 export function createListening(
   transcript: string,
   keywords: readonly string[],
   rules: ListeningRules = DEFAULT_RULES,
+  furigana: FuriganaIndex = { entries: [], maxLength: 0 },
 ): ListeningState {
+  const kanaView = buildView(transcript, furigana, true);
+  const rawView = buildView(transcript, furigana, false);
   // 記号・空白は最初から見えている（形だけ分かると「発掘」しやすい）
   const revealed = new Set<number>();
   let hideableCount = 0;
@@ -119,6 +263,13 @@ export function createListening(
     transcript,
     keywords,
     rules,
+    furigana,
+    kanaView,
+    rawView,
+    looseViews: [kanaView, rawView].map((view) => ({
+      kana: looseReading(view.kana),
+      owners: view.owners,
+    })),
     hideableCount,
     foundKeywords: [],
     usedInputs: [],
@@ -147,31 +298,52 @@ export function submitListening(state: ListeningState, raw: string): ListeningSt
 
   const needle = normalizeReading(input);
   if (!needle) return state;
+  /** 入力を 読み辞書で かなへ 倒した 形（「達成感」→「たっせいかん」）。 */
+  const kana = toKana(input, state.furigana);
 
-  // 同じ入力で二度は稼げない
-  if (state.usedInputs.includes(needle)) {
-    return push(state, { input, kind: "miss", points: 0, keywords: [] }, { countMiss: false });
+  /*
+   * 同じ ことばで 二度は 稼げない。ただし **「まだ 出ていない」とは 言わない**——
+   * さっき 見つけた ばかりの ことばに それを 言うと 嘘に なる（2026-09-04 の 指摘）。
+   *
+   * 見るのは **表記では なく ことば**。「たっせいかん」の あとに 「達成感」と
+   * 打っても 同じ ことばなので 二度は 数えない（読みへ 倒してから 見くらべる）。
+   */
+  const alreadyUsed = state.usedInputs.some(
+    (used) => used === needle || toKana(used, state.furigana) === kana,
+  );
+  if (alreadyUsed) {
+    return push(state, { input, kind: "repeat", points: 0, keywords: [] }, { countMiss: false });
   }
 
   const remaining = state.keywords.filter((kw) => !state.foundKeywords.includes(kw));
 
-  // 1. キーワードそのもの
+  // 1. キーワードそのもの（表記／読みの どちらでも）
   const exact = remaining.find((kw) => kw === input);
-  const byReading = remaining.find((kw) => normalizeReading(kw) === needle);
+  const mine = needleForms(needle, kana);
+  const byReading = remaining.find((kw) => {
+    const theirs = needleForms(normalizeReading(kw), toKana(kw, state.furigana));
+    return theirs.some((one) => mine.includes(one));
+  });
   if (exact || byReading) {
     const hit = exact ?? byReading!;
     const kind: HitKind = exact ? "keyword" : "hiragana";
-    return award(state, input, needle, kind, POINTS[kind] + lengthBonus(input, state.rules), [hit]);
+    return award(state, input, needle, kana, kind, POINTS[kind] + lengthBonus(input, state.rules), [
+      hit,
+    ]);
   }
 
   // 2. キーワードを含む言い方
-  const contained = remaining.filter((kw) => needle.includes(normalizeReading(kw)));
+  const contained = remaining.filter((kw) => {
+    const theirs = needleForms(normalizeReading(kw), toKana(kw, state.furigana));
+    return theirs.some((one) => one.length > 0 && mine.some((form) => form.includes(one)));
+  });
   if (contained.length > 0) {
-    if (isInTranscript(state, needle)) {
+    if (isInTranscript(state, needle, kana)) {
       return award(
         state,
         input,
         needle,
+        kana,
         "contains",
         POINTS.contains * contained.length + lengthBonus(input, state.rules),
         contained,
@@ -188,33 +360,90 @@ export function submitListening(state: ListeningState, raw: string): ListeningSt
   }
 
   // 4. キーワードではないが本文に出てくる
-  if (isInTranscript(state, needle)) {
+  if (isInTranscript(state, needle, kana)) {
     return award(
       state,
       input,
       needle,
+      kana,
       "partial",
       POINTS.partial + lengthBonus(input, state.rules),
       [],
     );
   }
 
-  // 5. 該当なし
-  return push(state, { input, kind: "miss", points: 0, keywords: [] });
+  // 5. 該当なし —— **なぜ 外れたか**を 切り分けて 返す
+  return push(state, { input, ...diagnose(state, input, needle, kana) });
+}
+
+/**
+ * 外れた ときに「何が ちがうのか」を 言う。
+ *
+ * 2026-09-04 の 指摘:「まだ出てないみたい」は 意味不明。
+ * 学習者は **打ち直す 手がかり**が 要る のであって、否定が 要る のでは ない。
+ * 見分けるのは 3つ:
+ *   - ローマ字で 打った（日本語に すれば 当たる かもしれない）
+ *   - 途中までは 合って いる（続きだけ ちがう）
+ *   - 本当に 出て こない
+ */
+function diagnose(
+  state: ListeningState,
+  input: string,
+  needle: string,
+  kana: string,
+): { kind: HitKind; points: number; keywords: readonly string[]; hint?: string } {
+  const base = { points: 0, keywords: [] as readonly string[] };
+
+  // ローマ字のまま（かなに ならなかった）
+  if (/^[a-z0-9\s]+$/.test(needle) && needle.trim().length > 0) {
+    return {
+      ...base,
+      kind: "romaji",
+      hint: `「${input}」は ローマ字です。日本語で 打って みて ください。`,
+    };
+  }
+
+  /*
+   * 途中までは 合って いるか。**長い ほうから** 見て、いちばん 長く 合った
+   * ところを 返す（2文字 未満は 手がかりに ならない ので 出さない）。
+   */
+  const forms = needleForms(needle, kana).filter((form) => form.length >= 3);
+  for (const form of forms) {
+    for (let end = form.length - 1; end >= 2; end -= 1) {
+      const head = form.slice(0, end);
+      if (allViews(state).some((view) => view.kana.includes(head))) {
+        return {
+          ...base,
+          kind: "partway",
+          hint: `「${head}」までは 本文に あります。つづきを もう 一度 聞いて みて ください。`,
+        };
+      }
+    }
+  }
+
+  return { ...base, kind: "miss", hint: `「${input}」は 本文に 出て きません。` };
 }
 
 function award(
   state: ListeningState,
   input: string,
   needle: string,
+  kana: string,
   kind: HitKind,
   points: number,
   keywords: readonly string[],
 ): ListeningState {
-  // 当たった言葉と、そのキーワードの表記の両方で原稿を開く
+  /*
+   * 当たった ことばと、その キーワードの 表記の 両方で 原稿を ひらく。
+   * **素の 形と 読みの 形の 両方で 探す**——「たっせいかん」で 当てた 学習者にも
+   * 「達成感」で 当てた 学習者にも、同じ ところが ひらかなければ ならない。
+   */
   let revealed = state.revealed;
   for (const form of [input, ...keywords]) {
-    revealed = revealWith(state.transcript, revealed, normalizeReading(form));
+    const forms = needleForms(normalizeReading(form), toKana(form, state.furigana));
+    for (const view of allViews(state)) {
+      for (const one of forms) revealed = revealWith(view, revealed, one);
+    }
   }
 
   const next: ListeningState = {
@@ -247,38 +476,55 @@ function push(
  * 原稿の開きぐあい
  * ------------------------------------------------------------------ */
 
-/** 正規化した原稿の上で探し、元の位置へ戻して開く。 */
+/**
+ * かなの 並びの 上で 探し、当たった ところが 元の どこかを たどって ひらく。
+ *
+ * 見かたは `createListening` で 1度だけ 組み立てて ある（前は 入力の たびに
+ * 原稿ぜんぶを 組み直して いた）。
+ */
 function revealWith(
-  transcript: string,
+  view: KanaView,
   revealed: ReadonlySet<number>,
   needle: string,
 ): ReadonlySet<number> {
   if (!needle) return revealed;
-
-  const map: number[] = [];
-  let normalized = "";
-  for (let i = 0; i < transcript.length; i += 1) {
-    const piece = normalizeReading(transcript[i] ?? "");
-    for (let k = 0; k < piece.length; k += 1) map.push(i);
-    normalized += piece;
-  }
-
   const next = new Set(revealed);
   let from = 0;
   for (;;) {
-    const at = normalized.indexOf(needle, from);
+    const at = view.kana.indexOf(needle, from);
     if (at < 0) break;
     for (let k = at; k < at + needle.length; k += 1) {
-      const original = map[k];
-      if (original !== undefined) next.add(original);
+      for (const original of view.owners[k] ?? []) next.add(original);
     }
     from = at + 1;
   }
   return next;
 }
 
-function isInTranscript(state: ListeningState, needle: string): boolean {
-  return normalizeReading(state.transcript).includes(needle);
+/**
+ * その ことばが 原稿に あるか。**素の 形でも 読みの 形でも 当たれば あり**。
+ *
+ * 前は `normalizeReading(transcript)` を 見て いた——カタカナを ひらがなに するだけ なので
+ * 漢字は 漢字の まま で、かなで 打った 学習者は 永久に 当たらなかった。
+ */
+function isInTranscript(state: ListeningState, needle: string, kana: string): boolean {
+  return allViews(state).some((view) =>
+    needleForms(needle, kana).some((form) => form.length > 0 && view.kana.includes(form)),
+  );
+}
+
+/** 原稿の 見かた ぜんぶ（素・読み・長音を 開いた もの）。 */
+function allViews(state: ListeningState): readonly KanaView[] {
+  return [state.rawView, state.kanaView, ...state.looseViews];
+}
+
+/**
+ * 入力の 形 ぜんぶ。**リスニングでは 字が 想像できない**ので、
+ * ひらがな・カタカナ・漢字・英字の どれで 打っても 当たる ように 手を 広げる
+ *（2026-09-04 の 指定）。重複は 落とす。
+ */
+function needleForms(needle: string, kana: string): readonly string[] {
+  return [...new Set([needle, kana, looseReading(needle), looseReading(kana)])];
 }
 
 /**

@@ -87,7 +87,7 @@ export const KAISHA = {
     path: "/kaisha/listening",
     kind: "リスニング",
   },
-  /** STEP 6 の ページ「案件の 3つの 形を 確かめよう」（旧アプリの 講義スライドの 移植）。 */
+  /** STEP 6 の ページ「仕事の 3つの タイプを 確かめよう」（旧アプリの 講義スライドの 移植）。 */
   article3: {
     id: "kaisha_shugyo_keitai",
     path: "/kaisha/article-kaisha_shugyo_keitai",
@@ -373,9 +373,18 @@ export async function placeWordsIn(
   }
 }
 
-/** 自由入力の もんだいに 書く（上と 同じ 理由で もんだいの id で しぼる）。 */
+/**
+ * 自由入力の もんだいに 書く（上と 同じ 理由で もんだいの id で しぼる）。
+ *
+ * **札が 2種類 ある。** `keyword`（こたえが 1つ ある 問い）は「こたえを 入力する」、
+ * `free`（正解も 不正解も 無い 問い）は「じゆうに 書く」——後者に 前者の 札で
+ * 当てに 行くと、90秒 待って 落ちる（2026-09-04 に 実発生）。
+ */
 export async function writeIn(page: Page, questionId: string, text: string): Promise<void> {
-  await page.locator(`#q-${questionId}`).getByLabel("こたえを 入力する").fill(text);
+  const box = page.locator(`#q-${questionId}`);
+  const answer = box.getByLabel("こたえを 入力する");
+  const free = box.getByLabel("じゆうに 書く");
+  await ((await answer.count()) > 0 ? answer : free).fill(text);
 }
 
 /**

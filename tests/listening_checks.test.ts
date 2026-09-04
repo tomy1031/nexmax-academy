@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { buildFuriganaIndex } from "@/lib/text/furigana";
 import {
   createListening,
   DEFAULT_RULES,
@@ -133,5 +134,76 @@ describe("聞き取り判定（入力欄は1つ・原典の配点）", () => {
     expect(revealRate(restored)).toBe(revealRate(played));
     // 前回のミスは持ち越さない
     expect(restored.misses).toBe(0);
+  });
+
+  /*
+   * 2026-09-04 の 指摘 3つ。どれも 「学習者が 実際に やる こと」で 見張る。
+   */
+});
+
+describe("ひらがなで 打っても 当たる（読み辞書を 通す）", () => {
+  const 原稿 = "受託開発では、完成した ときに 達成感を 感じられます。";
+  const 辞書 = buildFuriganaIndex([
+    ["受託開発", "じゅたくかいはつ"],
+    ["達成感", "たっせいかん"],
+    ["完成", "かんせい"],
+    ["感", "かん"],
+  ]);
+  const rules = { minLength: 2, maxMiss: 5 };
+
+  it("原稿の 漢字を **かなで** 打って 当たる（前は 絶対に 当たらなかった）", () => {
+    const state = submitListening(createListening(原稿, ["受託開発"], rules, 辞書), "たっせいかん");
+    expect(state.log[0]?.kind).toBe("partial");
+    expect(revealRate(state)).toBeGreaterThan(0);
+  });
+
+  it("キーワードも かなで 当たる", () => {
+    const state = submitListening(
+      createListening(原稿, ["受託開発"], rules, 辞書),
+      "じゅたくかいはつ",
+    );
+    expect(state.log[0]?.kind).toBe("hiragana");
+    expect(state.foundKeywords).toEqual(["受託開発"]);
+  });
+
+  it("辞書が 無い ときは 素の 形で 当たる（英字・カタカナ）", () => {
+    const state = submitListening(createListening("SESの 話です。", ["SES"], rules), "SES");
+    expect(state.log[0]?.kind).toBe("keyword");
+  });
+
+  it("かなで 当てても 漢字で 当てても、同じ ところが ひらく", () => {
+    const かな = submitListening(createListening(原稿, [], rules, 辞書), "たっせいかん");
+    const 漢字 = submitListening(createListening(原稿, [], rules, 辞書), "達成感");
+    expect(revealRate(かな)).toBe(revealRate(漢字));
+  });
+});
+
+describe("同じ ことばを 2回 打った とき", () => {
+  const 原稿 = "達成感が あります。";
+  const 辞書 = buildFuriganaIndex([["達成感", "たっせいかん"]]);
+  const rules = { minLength: 2, maxMiss: 5 };
+
+  it("「まだ 出ていない」では なく repeat に する", () => {
+    let state = createListening(原稿, [], rules, 辞書);
+    state = submitListening(state, "たっせいかん");
+    state = submitListening(state, "たっせいかん");
+    expect(state.log[0]?.kind).toBe("repeat");
+    expect(state.log[0]?.kind).not.toBe("miss");
+  });
+
+  it("表記が ちがっても 同じ ことばなら 二度は 稼げない", () => {
+    let state = createListening(原稿, [], rules, 辞書);
+    state = submitListening(state, "たっせいかん");
+    const 点 = state.score;
+    state = submitListening(state, "達成感");
+    expect(state.log[0]?.kind).toBe("repeat");
+    expect(state.score).toBe(点);
+  });
+
+  it("repeat は ミスに 数えない", () => {
+    let state = createListening(原稿, [], rules, 辞書);
+    state = submitListening(state, "たっせいかん");
+    state = submitListening(state, "たっせいかん");
+    expect(state.misses).toBe(0);
   });
 });
