@@ -1,6 +1,7 @@
-name: ミーティングの 音声づくり
+name: 教材の 音声づくり
 
-# 教材の しつもんと おわりの ひとことを 音に して、PR に する。
+# 教材の 決まって いる ことばを 音に して、PR に する。
+# **ミーティングと リスニングの 両方**を 作れる。
 #
 # なぜ GitHub Actions で やるか:
 #   音づくりには Gemini の 鍵が 要るが、この プロジェクトは BYOK 方式で
@@ -9,14 +10,24 @@ name: ミーティングの 音声づくり
 #   **Environment「Preview」の Secrets** なので、鍵の 要る 作業は ここで 回す。
 #   ユーザーに コマンドを 叩かせない ため（docs/constraints.md 運用の制約）。
 #
-# 使い方: Actions タブ → この ワークフロー → Run workflow → 教材ID を 入れる。
-#   出来上がりは **PR** で 届く（main へ 直接 入れない）。
+# ## なぜ 入力を 増やさず 「listening:<ID>」と 書くのか（2026-09-04）
+# `workflow_dispatch` は **ファイル名が 既定ブランチ（main）に 無いと 起動できない**。
+# 走る 中身は `--ref` で 指定した ブランチの ものだが、**入力の 名前**まで
+# 増やすと 既定ブランチ側の 定義と 食いちがう 恐れが ある。
+# そこで **入力は `meeting` 1つの まま**にして、値の 頭に `listening:` を 付けたら
+# リスニングとして 扱う。おかげで `integration` に 入れた その日から
+# `--ref integration` で 走らせられる（main への 昇格を 待たなくて よい）。
+#
+# 使い方:
+#   ミーティング … gh workflow run meeting-audio.yml --ref integration -f meeting=<ID>
+#   リスニング   … gh workflow run meeting-audio.yml --ref integration -f meeting=listening:<ID>
+#   出来上がりは **PR** で 届く（直接 入れない）。
 
 on:
   workflow_dispatch:
     inputs:
       meeting:
-        description: どの ミーティングか（content/meetings/<ID>.json の ID）
+        description: "教材ID。リスニングは 頭に listening: を 付ける（例 listening:kaisha_shugyo_keitai_listening）"
         type: string
         required: true
         default: hajimari_meeting
@@ -35,6 +46,7 @@ jobs:
       contents: write
       pull-requests: write
     steps:
+      # ref は 指定しない —— dispatch した ブランチを そのまま 使う
       - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
@@ -46,9 +58,17 @@ jobs:
 
       # 音づくり本体。**ビルドには 鍵を 渡さない**（OpenNext が バンドルへ 焼き込む）
       - name: 音を つくる
-        run: node --import tsx scripts/make_meeting_audio.ts "${{ github.event.inputs.meeting }}"
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          TARGET: ${{ github.event.inputs.meeting }}
+        run: |
+          set -euo pipefail
+          if [ "${TARGET#listening:}" != "$TARGET" ]; then
+            # リスニングは 原稿を 1本の wav に つなぐ。作り直しなので --force
+            node --import tsx scripts/make_listening_audio.ts "${TARGET#listening:}" --force
+          else
+            node --import tsx scripts/make_meeting_audio.ts "$TARGET"
+          fi
 
       # 教材データを 直したので、焼き込みモジュールも 作り直す
       - name: 焼き込みを 作り直す
@@ -60,23 +80,26 @@ jobs:
       - name: PR に する
         env:
           GH_TOKEN: ${{ github.token }}
-          MEETING: ${{ github.event.inputs.meeting }}
+          TARGET: ${{ github.event.inputs.meeting }}
         run: |
           set -euo pipefail
           # 名義を そろえる（Actions の 実行が 承認待ちで 止まらない ように）
           git config user.name tomy1031
           git config user.email 33148568+tomy1031@users.noreply.github.com
-          BRANCH="audio/${MEETING}-${GITHUB_RUN_ID}"
+          SLUG="${TARGET#listening:}"
+          if [ "${TARGET#listening:}" != "$TARGET" ]; then KIND=リスニング; else KIND=ミーティング; fi
+          BRANCH="audio/${SLUG}-${GITHUB_RUN_ID}"
           git switch -c "$BRANCH"
-          git add public/audio "content/meetings/${MEETING}.json" src/content/git-contents.generated.ts
+          # ミーティングと リスニングで 置き場が ちがう ので、両方 まとめて 拾う
+          git add public/audio content/meetings content/listening src/content/git-contents.generated.ts
           if git diff --cached --quiet; then
             echo "変わった ものが ありません（音は すでに あります）"
             exit 0
           fi
           {
-            echo "feat(ミーティング): ${MEETING} の こえを 作り置きする"
+            echo "feat(${KIND}): ${SLUG} の こえを 作り置きする"
             echo
-            echo "しつもんと おわりの ひとことを 音に して、教材に audioUrl を 付けた。"
+            echo "決まって いる ことばを 音に して、教材に audioUrl を 付けた。"
             echo "つないで いない 学習者にも 声が 届き、開いた 瞬間に 鳴る。"
             echo
             echo "Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"
@@ -85,14 +108,15 @@ jobs:
           ALLOW_SHARED=1 git commit -F /tmp/audio-commit.txt
           git push -u origin "$BRANCH"
           {
-            echo "Actions の「ミーティングの 音声づくり」で 作りました。声は 人物カードの voice。"
+            echo "Actions の「教材の 音声づくり」で 作りました。声は 人物カードの voice。"
             echo
-            echo "- 置き場: public/audio/meetings/${MEETING}/"
-            echo "- 教材の audioUrl / closingAudioUrl を 更新"
-            echo "- 学習者は チャットの 🔊 で 何度でも 聞き直せる"
+            echo "- リスニングは 原稿を 1本の wav に つなぐ（ブロックの あいだに 0.6秒の 無音）"
+            echo "- ミーティングは しつもんごとに 別の wav"
+            echo "- 読み上げが 原稿と 合わない ときは 書かずに 落ちる（scripts/lib/live_tts.ts）"
           } > /tmp/audio-pr.txt
           # PR を 作れない 設定の ことが ある（Actions に PR 作成の 権限が 無い）。
           # そこで 落とすと **作った 音まで 無かった ことに 見える**ので、
           # 作れなかった ときは ブランチへの 行き方を 出して 終わる。
-          gh pr create --base main --head "$BRANCH" --title "feat(ミーティング): ${MEETING} の こえを 作り置きする" --body-file /tmp/audio-pr.txt \
-            || echo "PR は 作れませんでした。ブランチ: $BRANCH（${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/compare/main...$BRANCH）"
+          gh pr create --base integration --head "$BRANCH" \
+            --title "feat(${KIND}): ${SLUG} の こえを 作り置きする" --body-file /tmp/audio-pr.txt \
+            || echo "PR は 作れませんでした。ブランチ: $BRANCH（${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/compare/integration...$BRANCH）"
