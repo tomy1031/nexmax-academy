@@ -90,3 +90,14 @@ jobs:
         env:
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
         run: node scripts/check_migrations.mjs --strict
+
+      # 「書いてある」と「効いている」は別。他人のデータを読めない・書けないことを
+      # 本物のDBに聞いて確かめる（supabase/tests/rls_check.sql）。ぜんぶ1つの
+      # トランザクションで走り、最後に rollback するので何も残らない。
+      #
+      # ブラウザから Supabase を直に呼ぶ使い方に進むなら、**RLS だけが境界**になる。
+      # 移行SQLが RLS をゆるめてしまっても、ここで止まる。
+      - name: RLS が 効いて いるか
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: node scripts/check_rls.mjs --strict
