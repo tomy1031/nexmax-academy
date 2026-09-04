@@ -18,6 +18,27 @@ import { NARRATOR_INSTRUCTION } from "../../src/lib/audio/narrator";
 /** Live が 返す 音の サンプリングレート（Live API の 決まり）。 */
 export const OUT_RATE = 24_000;
 
+/**
+ * **読み上げ用の 言い換え**（画面の 字は 変えない）。
+ *
+ * ラテン文字の 商品名は、そのまま 渡すと **綴りから 読まれて 別の 音に なる**——
+ * `NMClaw` が「エヌエムシーロー」に なった（2026-09-04 に 実発生。正しくは エヌエムクロー）。
+ * 学習者に 見せる 字は `NMClaw` の ままに して、**Live へ 渡す 文だけ** カタカナに する。
+ *
+ * 頭字語（SES・DX・IT）は 綴りどおり 1字ずつ 読まれる ので 直さなくて よい。
+ * ここに 足すのは **綴りから 読めない 名前**だけ。
+ */
+const SPEECH_ALIASES: readonly (readonly [string, string])[] = [["NMClaw", "エヌエムクロー"]];
+
+/** 読み上げる 前に 言い換える（長い ものから 当てる）。 */
+export function forSpeech(text: string): string {
+  let out = text;
+  for (const [from, to] of [...SPEECH_ALIASES].sort((a, b) => b[0].length - a[0].length)) {
+    out = out.split(from).join(to);
+  }
+  return out;
+}
+
 /** だれの 声で 読むか。声は 人物カード（`content/characters/<id>.json`）の `voice`。 */
 export interface Speaker {
   readonly apiKey: string;
@@ -213,7 +234,8 @@ function readingLooksRight(
  * 同じ モデルでも 2回目で 読み上げに なる ことが ある（会話の モデルなので
  * ゆらぐ）。だから モデルの 一覧を 2周する。
  */
-export async function synthesizeWithFallback(text: string, speaker: Speaker): Promise<Spoken> {
+export async function synthesizeWithFallback(raw: string, speaker: Speaker): Promise<Spoken> {
+  const text = forSpeech(raw);
   const failures: string[] = [];
   for (let round = 0; round < 2; round += 1) {
     for (const model of LIVE_TTS_MODELS) {
