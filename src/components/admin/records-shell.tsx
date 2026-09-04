@@ -19,6 +19,7 @@
  */
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AdminError, AdminHeader, AdminLoading, AdminPageFrame } from "@/components/admin/admin-ui";
 import { fetchAllProfiles, fetchOwnProfile, type ProfileRow } from "@/lib/profile-db";
@@ -47,6 +48,7 @@ import {
   progressTable,
   quizTable,
   RECORD_KINDS,
+  summaryTable,
   talkTable,
   wordTable,
   type RecordFilter,
@@ -58,12 +60,19 @@ import type { UnitIndex } from "@/lib/records/units";
 /** 1画面に 出す 行数。**続きは ボタンで 足す**（学期ぶんを 一気に 描くと 開かない）。 */
 const PAGE_SIZE = 200;
 
-export function RecordsShell({ index }: { index: UnitIndex }) {
+export function RecordsShell({
+  index,
+  initialKind = "progress",
+}: {
+  index: UnitIndex;
+  /** 畳んだ 古い URL（`/admin/meetings`・`/admin/quizzes`）から 来た ときの タブ。 */
+  initialKind?: RecordKind;
+}) {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [profiles, setProfiles] = useState<ProfileRow[]>([]);
-  const [kind, setKind] = useState<RecordKind>("progress");
+  const [kind, setKind] = useState<RecordKind>(initialKind);
   const [filter, setFilter] = useState<RecordFilter>(EMPTY_FILTER);
   /**
    * 読み終えた 表と、それが **どの タブの ものか**。
@@ -173,11 +182,23 @@ export function RecordsShell({ index }: { index: UnitIndex }) {
     [table, filter, lookups],
   );
 
+  /*
+   * つまずきの まとめ。**いま 見えて いる 行から** 数える ので、絞り込みが そのまま 効く
+   *（畳む 前の 2画面は 全員ぶんの 集計しか 出せなかった）。
+   */
+  const summary = useMemo(() => (table ? summaryTable(kind, rows) : null), [table, kind, rows]);
+
   const downloadCsv = useCallback(() => {
     if (!table) return;
-    const blob = new Blob([buildRecordsCsv(table.columns, rows)], {
-      type: "text/csv;charset=utf-8",
-    });
+    /*
+     * まとめも 一緒に 落とす。**畳む 前の 2画面の 集計は 画面の 中だけ**で、
+     * 先生は それを 手で 写して いた。1つの ファイルに 2つの 表を 入れるのは
+     * 行き儀が わるいが、CSV を 2つ 落とさせる ほうが 手間である。
+     */
+    const body = summary
+      ? `${buildRecordsCsv(summary.columns, summary.rows)}\r\n\r\n${buildRecordsCsv(table.columns, rows)}`
+      : buildRecordsCsv(table.columns, rows);
+    const blob = new Blob([body], { type: "text/csv;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const anchor = document.createElement("a");
     anchor.href = url;
@@ -186,7 +207,7 @@ export function RecordsShell({ index }: { index: UnitIndex }) {
     anchor.click();
     anchor.remove();
     URL.revokeObjectURL(url);
-  }, [table, rows, kind]);
+  }, [table, rows, kind, summary]);
 
   if (errorMessage) return <AdminError message={errorMessage} />;
   if (loading) return <AdminLoading />;
@@ -339,6 +360,40 @@ export function RecordsShell({ index }: { index: UnitIndex }) {
         </p>
       ) : null}
 
+      {summary && summary.rows.length > 0 ? (
+        <section className="card-island mb-3 p-4 sm:p-5">
+          <h2 className="text-navy text-lg font-black">どこで つまずいて いるか</h2>
+          <p className="text-ink-soft mt-1 text-xs font-bold">
+            わるい順に 並べて います。1つだけ ひくいときは、学生ではなく その 教材の 作りか、前の
+            説明を 見なおします。上の 絞り込みが そのまま 効きます。
+          </p>
+          <div className="mt-3 overflow-x-auto">
+            <table className="w-full min-w-[36rem] text-sm">
+              <thead>
+                <tr className="text-ink-soft border-b-2 text-left text-xs font-black">
+                  {summary.columns.map((column) => (
+                    <th key={column.key} className="py-2 pr-3 whitespace-nowrap">
+                      {column.label}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {summary.rows.map((row, i) => (
+                  <tr key={i} className="border-hairline text-ink border-b font-bold">
+                    {summary.columns.map((column) => (
+                      <td key={column.key} className="max-w-[28rem] py-2 pr-3 align-top">
+                        {row.cells[column.key] ?? ""}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      ) : null}
+
       <section className="card-island p-4 sm:p-5">
         <div className="mb-2 flex flex-wrap items-baseline justify-between gap-2">
           <h2 className="text-navy text-lg font-black">
@@ -379,7 +434,21 @@ export function RecordsShell({ index }: { index: UnitIndex }) {
                     >
                       {table?.columns.map((column) => (
                         <td key={column.key} className="max-w-[24rem] py-2 pr-3 align-top">
-                          {row.cells[column.key] ?? ""}
+                          {/*
+                            名前から その子の 画面へ 行けるように する（畳む 前の
+                            テストの きろくが そうだった）。1人を 追いかける ときに、
+                            ここで 切れると 名簿へ 戻って 探し直す ことに なる。
+                          */}
+                          {column.key === "student" && row.profileId !== "" ? (
+                            <Link
+                              href={`/admin/students/${row.profileId}`}
+                              className="text-sky underline underline-offset-2"
+                            >
+                              {row.cells[column.key] ?? ""}
+                            </Link>
+                          ) : (
+                            (row.cells[column.key] ?? "")
+                          )}
                         </td>
                       ))}
                     </tr>

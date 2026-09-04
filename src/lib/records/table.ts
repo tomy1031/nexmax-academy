@@ -43,6 +43,38 @@ export interface RecordRow {
   /** 並べ替えに 使う 時こく（ISO）。 */
   readonly at: string;
   readonly cells: Readonly<Record<string, string>>;
+  /** つまずきを 数える ための 素の 値（無い 行は 数えない）。 */
+  readonly stat?: RecordStat;
+}
+
+/**
+ * つまずきを 数える ための **素の 値**。
+ *
+ * 画面に 出す 文字（"○" や "もう いちど"）から 数え直さない。表示は いつか 変わる もので、
+ * 変えた 瞬間に 集計が 黙って 狂う——「○」を「できた」に 直した 日に 正答率が
+ * 全部 0% に なる、という 壊れかたを する。
+ */
+export interface RecordStat {
+  /** 何ごとに まとめるか（設問ID・語ID・教材ID）。 */
+  readonly group: string;
+  /** その まとまりの 見出し（先生が 読む 名前）。 */
+  readonly groupLabel: string;
+  /** 並べ替え用の 通し番号（Q1・Q2… の 順）。 */
+  readonly order: number;
+  /** できたか。`undefined` = 正誤の 無い 記録（進み具合・会話）。 */
+  readonly ok?: boolean;
+  /** 学習者が 書いた・打った もの（まちがいの 集計に 使う）。 */
+  readonly answer?: string;
+  /** 会話の 見かた（veryGood / good / miss）。 */
+  readonly grade?: string;
+  /** 言い直し（2回目 以降の 発話）か。 */
+  readonly retried?: boolean;
+  /** AIに 通せなかったか。 */
+  readonly noAi?: boolean;
+  /** おわった か（進み具合）。 */
+  readonly done?: boolean;
+  /** 平均を 出す 値（リスニングの 開いた％）。 */
+  readonly value?: number;
 }
 
 export interface RecordTable {
@@ -134,6 +166,12 @@ export function progressTable(
       profileId: record.profile_id,
       unitId: record.content_id,
       at: record.updated_at,
+      stat: {
+        group: record.content_id,
+        groupLabel: lookups.units.get(record.content_id)?.title ?? record.content_id,
+        order: lookups.units.get(record.content_id)?.order ?? 0,
+        done: record.status === "completed",
+      },
       cells: {
         ...commonCells(record.profile_id, record.content_id, lookups),
         status: record.status === "completed" ? "おわった" : "とちゅう",
@@ -152,36 +190,101 @@ function formatPosition(position: Record<string, number> | null): string {
   return parts.join(" ");
 }
 
+/**
+ * 1回の 挑戦に **何回目か**を ふる。
+ *
+ * 「何回目」を 端末に 数えさせない（localStorage を 消した 学習者で 1に 戻り、嘘を つく）。
+ * 人ごとに 古い順に 番号を ふるのが 正しい——これは 端末に 依存しない
+ *（`@/lib/quiz/results-db` の `attemptsOf` と 同じ 数えかた）。
+ */
+function numberAttempts(
+  records: readonly { profile_id: string; attempt_id: string; created_at: string }[],
+): Map<string, number> {
+  const firstAt = new Map<string, { profileId: string; at: string }>();
+  for (const record of records) {
+    const seen = firstAt.get(record.attempt_id);
+    if (!seen || record.created_at < seen.at) {
+      firstAt.set(record.attempt_id, { profileId: record.profile_id, at: record.created_at });
+    }
+  }
+  const byProfile = new Map<string, { attemptId: string; at: string }[]>();
+  for (const [attemptId, { profileId, at }] of firstAt) {
+    const list = byProfile.get(profileId) ?? [];
+    list.push({ attemptId, at });
+    byProfile.set(profileId, list);
+  }
+  const nth = new Map<string, number>();
+  for (const list of byProfile.values()) {
+    list.sort((a, b) => a.at.localeCompare(b.at));
+    list.forEach((one, index) => nth.set(one.attemptId, index + 1));
+  }
+  return nth;
+}
+
+const QUIZ_TYPE_LABEL: Record<string, string> = {
+  choose: "4たく",
+  multi: "ぜんぶ えらぶ",
+  keyword: "じぶんで 書く",
+  wordbank: "語群から あなうめ",
+  emotion: "気もち → 言い方",
+};
+
 export function quizTable(records: readonly QuizRecord[], lookups: Lookups): RecordTable {
+  const nth = numberAttempts(records);
+  /* 1回の 挑戦の 合計点。**行ごとに 出す**——先生は「この回は 何点だったか」を
+     行を 目で 足さずに 読みたい（畳む 前の テストの きろくが そうだった）。 */
+  const attemptScore = new Map<string, { earned: number; points: number }>();
+  for (const record of records) {
+    const sum = attemptScore.get(record.attempt_id) ?? { earned: 0, points: 0 };
+    attemptScore.set(record.attempt_id, {
+      earned: sum.earned + record.earned,
+      points: sum.points + record.max_points,
+    });
+  }
+
   return {
     columns: [
       ...COMMON_COLUMNS,
       { key: "question", label: "もんだい" },
+      { key: "type", label: "かたち" },
       { key: "answer", label: "学生の こたえ" },
       { key: "correct", label: "正誤" },
       { key: "points", label: "点" },
+      { key: "attemptScore", label: "その回の 点" },
+      { key: "nth", label: "何回目" },
       { key: "fullSet", label: "まるごと" },
-      { key: "attempt", label: "挑戦の 鍵" },
       { key: "at", label: "日時" },
     ],
-    rows: records.map((record) => ({
-      profileId: record.profile_id,
-      unitId: record.quiz_set_id,
-      at: record.created_at,
-      cells: {
-        ...commonCells(record.profile_id, record.quiz_set_id, lookups),
-        // 何問目かを 添える。設問IDだけでは 先生が 教材を 開かないと 分からない。
-        question: `Q${record.question_index + 1} ${record.question_id}`,
-        // 空 = 何も 書かずに「こたえを 見る」を 押した。**そこで 詰まった 証拠**なので
-        // 空欄の ままに せず、そう 書く。
-        answer: record.answer_text === "" ? "（書いて いません）" : record.answer_text,
-        correct: record.correct ? "○" : "×",
-        points: `${record.earned}/${record.max_points}`,
-        fullSet: record.full_set ? "まるごと" : "まちがえた ぶんだけ",
-        attempt: record.attempt_id.slice(0, 8),
-        at: formatAt(record.created_at),
-      },
-    })),
+    rows: records.map((record) => {
+      const score = attemptScore.get(record.attempt_id);
+      return {
+        profileId: record.profile_id,
+        unitId: record.quiz_set_id,
+        at: record.created_at,
+        stat: {
+          group: record.question_id,
+          groupLabel: `Q${record.question_index + 1} ${record.question_id}`,
+          order: record.question_index,
+          ok: record.correct,
+          answer: record.answer_text,
+        },
+        cells: {
+          ...commonCells(record.profile_id, record.quiz_set_id, lookups),
+          // 何問目かを 添える。設問IDだけでは 先生が 教材を 開かないと 分からない。
+          question: `Q${record.question_index + 1} ${record.question_id}`,
+          type: QUIZ_TYPE_LABEL[record.question_type] ?? record.question_type,
+          // 空 = 何も 書かずに「こたえを 見る」を 押した。**そこで 詰まった 証拠**なので
+          // 空欄の ままに せず、そう 書く。
+          answer: record.answer_text === "" ? "（書いて いません）" : record.answer_text,
+          correct: record.correct ? "○" : "×",
+          points: `${record.earned}/${record.max_points}`,
+          attemptScore: score ? `${score.earned}/${score.points}` : "",
+          nth: `${nth.get(record.attempt_id) ?? 1}回目`,
+          fullSet: record.full_set ? "まるごと" : "まちがえた ぶんだけ",
+          at: formatAt(record.created_at),
+        },
+      };
+    }),
   };
 }
 
@@ -218,6 +321,17 @@ export function wordTable(
         profileId: answer.profile_id,
         unitId: answer.stage_id,
         at: answer.created_at,
+        stat: {
+          group: answer.word_id,
+          groupLabel: answer.term || answer.word_id,
+          order: answer.word_index,
+          // 読みを 聞いた 語は **読みも いみも 合って はじめて できた**。
+          // いみだけの 遊びかた（readingOk が null）では いみだけで 数える。
+          ok:
+            answer.reading_ok === null ? answer.meaning_ok : answer.reading_ok && answer.meaning_ok,
+          // まちがいの 集計に 出すのは **打った 読み**（いちばん 効く 手がかり）。
+          answer: answer.reading_ok === false ? answer.reading_input : "",
+        },
         cells: {
           ...commonCells(answer.profile_id, answer.stage_id, lookups),
           word: answer.term || answer.word_id,
@@ -276,6 +390,15 @@ export function talkTable(
       profileId: record.profile_id,
       unitId: record.meeting_id,
       at: record.created_at,
+      stat: {
+        group: record.question_id,
+        groupLabel: record.question_id,
+        order: 0,
+        grade: record.grade ?? "",
+        // 2回目 以降の 発話 = 言い直し。効いたかを 数える。
+        retried: record.attempt > 1,
+        noAi: Boolean(record.fallback) && record.fallback !== "none",
+      },
       cells: {
         ...commonCells(record.profile_id, record.meeting_id, lookups),
         kind: "ミーティング",
@@ -287,6 +410,23 @@ export function talkTable(
           (record.grade ? (GRADE_LABEL[record.grade] ?? record.grade) : "") +
           // AIに 通せなかった 回は そう 書く。見かたが 空なのと 「AIなし」は 別物。
           (record.fallback && record.fallback !== "none" ? `（AIなし: ${record.fallback}）` : ""),
+        /*
+         * AIの 見かたの 中身。**`grade` だけでは「もう いちど と 言われた」ことしか
+         * 分からず、何を どう 直せば よかったかが 見えない**（畳む 前の
+         * ミーティングの きろくは ここまで 開いて いた）。
+         * 軸（ことば・かみ合い・かたち）は **持って いる 行にだけ** 出す——
+         * 松井社長との 会話は 三段の 評価では ないので この 4つを 持たない。
+         */
+        reply: record.judge?.reply ?? "",
+        praise: record.judge?.praise ?? "",
+        fix: record.judge?.fix ?? "",
+        example: record.judge?.exampleAnswer ?? "",
+        axes: record.judge?.language
+          ? `ことば: ${record.judge.language} / かみ合い: ${record.judge.relevance} / かたち: ${record.judge.form}` +
+            ((record.judge.glossary?.length ?? 0) > 0
+              ? ` / 語釈: ${(record.judge.glossary ?? []).map((one) => one.term).join("、")}`
+              : "")
+          : "",
         attempt: `${record.attempt}回目`,
         at: formatAt(record.created_at),
       },
@@ -295,6 +435,17 @@ export function talkTable(
       profileId: record.profile_id,
       unitId: record.talk_id,
       at: record.created_at,
+      /*
+       * たいわ には `stat` を 付けない ＝ **つまずきの まとめには 出ない**。
+       *
+       * まとめの 列は 三段の 評価（すばらしい／つたわった／もう いちど）で、
+       * たいわ の 会話は そもそも それで 進まない——聞き出せたか どうかだけである。
+       * ここで 「聞き出せた＝すばらしい」と 読み替えると、まとめの 数字は
+       * **全部 すばらしい**に なり、先生は それを 三段の 評価として 読む。
+       * 数えられない ものを 数えた ことに するのが いちばん 悪い
+       *（`@/lib/meeting/log` の `MeetingTurnJudge` と 同じ 判断）。
+       * たいわ の 手ごたえは 明細の「見かた」列（`N/M 聞き出せた`）で 読む。
+       */
       cells: {
         ...commonCells(record.profile_id, record.talk_id, lookups),
         kind: "たいわ",
@@ -317,6 +468,11 @@ export function talkTable(
       { key: "topic", label: "しつもん／聞き出せた こと" },
       { key: "way", label: "やりかた" },
       { key: "note", label: "見かた" },
+      { key: "reply", label: "あいての 返事" },
+      { key: "praise", label: "ほめた ところ" },
+      { key: "fix", label: "直す ところ" },
+      { key: "example", label: "お手本" },
+      { key: "axes", label: "見かたの ないわけ" },
       { key: "attempt", label: "何回目" },
       { key: "at", label: "日時" },
     ],
@@ -338,6 +494,12 @@ export function listeningTable(records: readonly ListeningRecord[], lookups: Loo
       profileId: record.profile_id,
       unitId: record.listening_id,
       at: record.updated_at,
+      stat: {
+        group: record.listening_id,
+        groupLabel: lookups.units.get(record.listening_id)?.title ?? record.listening_id,
+        order: lookups.units.get(record.listening_id)?.order ?? 0,
+        value: record.reveal_percent,
+      },
       cells: {
         ...commonCells(record.profile_id, record.listening_id, lookups),
         inputs: (record.inputs ?? []).join(" / "),
@@ -347,6 +509,217 @@ export function listeningTable(records: readonly ListeningRecord[], lookups: Loo
         updatedAt: formatAt(record.updated_at),
       },
     })),
+  };
+}
+
+/* ------------------------------------------------------------------ *
+ * つまずき（まとめ）
+ *
+ * 畳む 前の `/admin/meetings`・`/admin/quizzes` が **いちばん 上に 置いて いた**もの。
+ * 先生が まず 知りたいのは 誰が できなかったかでは なく **どこで 止まるか**である
+ *（1つだけ 低いなら、疑うのは 学生では なく その 設問の 作りか 前の 教材の 説明）。
+ * 直す順が 一覧を 上から 読むだけで 分かる ように **わるい順**に 並べる。
+ *
+ * 畳んだ ぶん **良く なった ところ**が 2つ ある。
+ *   1. 絞り込み（所属・期生・メンバー・ステージ）が そのまま 効く。前は 全員ぶんの
+ *      集計しか 出せず、「CADT の 2期生だけ」は 数えられなかった。
+ *   2. CSV に 出せる。前の 2画面の 集計は 画面の 中だけだった。
+ * ------------------------------------------------------------------ */
+
+/** その まとまりに 集まった 行。 */
+interface Bucket {
+  readonly label: string;
+  readonly order: number;
+  readonly rows: RecordRow[];
+}
+
+function bucketize(rows: readonly RecordRow[], keep: (stat: RecordStat) => boolean): Bucket[] {
+  const map = new Map<string, Bucket & { rows: RecordRow[] }>();
+  for (const row of rows) {
+    if (!row.stat || !keep(row.stat)) continue;
+    const found = map.get(row.stat.group);
+    if (found) found.rows.push(row);
+    else
+      map.set(row.stat.group, {
+        label: row.stat.groupLabel,
+        order: row.stat.order,
+        rows: [row],
+      });
+  }
+  return [...map.values()];
+}
+
+function percent(part: number, whole: number): string {
+  return whole === 0 ? "—" : `${Math.round((part / whole) * 100)}%`;
+}
+
+/** まちがえた こたえを 多い順に（上位8つ）。書き方の ゆれ・まぎらわしい 選択肢が ここで 出る。 */
+function missedAnswers(rows: readonly RecordRow[]): string {
+  const count = new Map<string, number>();
+  for (const row of rows) {
+    if (!row.stat || row.stat.ok !== false) continue;
+    const answer = row.stat.answer ?? "";
+    const key = answer === "" ? "（書いて いません）" : answer;
+    count.set(key, (count.get(key) ?? 0) + 1);
+  }
+  return [...count.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 8)
+    .map(([answer, n]) => `${answer}（${n}）`)
+    .join(" / ");
+}
+
+/**
+ * いま 見て いる 行から「つまずき」を 数える。
+ *
+ * **絞り込んだ あとの 行**を 受ける（引数が `RecordRow[]`）ので、集計も 絞り込みに
+ * 従う。数えるのは 表示の 文字では なく `stat`（素の 値）——表示を 直した 日に
+ * 集計が 黙って 狂うのを 避ける。
+ *
+ * 数える ものが 無ければ null（画面は 何も 出さない）。
+ */
+export function summaryTable(kind: RecordKind, rows: readonly RecordRow[]): RecordTable | null {
+  const cell = (values: Record<string, string>): RecordRow => ({
+    profileId: "",
+    unitId: "",
+    at: "",
+    cells: values,
+  });
+
+  if (kind === "quiz" || kind === "word") {
+    const buckets = bucketize(rows, (stat) => stat.ok !== undefined);
+    if (buckets.length === 0) return null;
+    const isQuiz = kind === "quiz";
+    return {
+      columns: [
+        { key: "group", label: isQuiz ? "もんだい" : "ことば" },
+        { key: "answered", label: "こたえた" },
+        { key: "correct", label: "できた" },
+        { key: "rate", label: isQuiz ? "正答率" : "できた率" },
+        { key: "people", label: "人数" },
+        { key: "misses", label: isQuiz ? "まちがえた こたえ（多い順）" : "まちがえた 打ちかた" },
+      ],
+      // わるい順（同率なら 教材の 出題順）。上から 読むだけで 直す順が 分かる。
+      rows: buckets
+        .map((bucket) => {
+          const answered = bucket.rows.length;
+          const correct = bucket.rows.filter((row) => row.stat?.ok === true).length;
+          return {
+            rate: answered === 0 ? 0 : correct / answered,
+            order: bucket.order,
+            row: cell({
+              group: bucket.label,
+              answered: String(answered),
+              correct: String(correct),
+              rate: percent(correct, answered),
+              people: String(new Set(bucket.rows.map((row) => row.profileId)).size),
+              misses: missedAnswers(bucket.rows),
+            }),
+          };
+        })
+        .sort((a, b) => a.rate - b.rate || a.order - b.order)
+        .map((one) => one.row),
+    };
+  }
+
+  if (kind === "talk") {
+    const buckets = bucketize(rows, (stat) => stat.grade !== undefined && stat.grade !== "");
+    if (buckets.length === 0) return null;
+    return {
+      columns: [
+        { key: "group", label: "しつもん／聞き出せた こと" },
+        { key: "turns", label: "はなした 回数" },
+        { key: "veryGood", label: "すばらしい" },
+        { key: "good", label: "つたわった" },
+        { key: "miss", label: "もう いちど" },
+        { key: "retried", label: "言い直し" },
+        { key: "noAi", label: "AIなし" },
+        { key: "people", label: "人数" },
+      ],
+      // 「もう いちど」が 多い順。高い しつもんは、学生では なく ヒントの 作りを 疑う。
+      rows: buckets
+        .map((bucket) => {
+          const count = (grade: string) =>
+            bucket.rows.filter((row) => row.stat?.grade === grade).length;
+          return {
+            miss: count("miss"),
+            row: cell({
+              group: bucket.label,
+              turns: String(bucket.rows.length),
+              veryGood: String(count("veryGood")),
+              good: String(count("good")),
+              miss: String(count("miss")),
+              retried: String(bucket.rows.filter((row) => row.stat?.retried).length),
+              noAi: String(bucket.rows.filter((row) => row.stat?.noAi).length),
+              people: String(new Set(bucket.rows.map((row) => row.profileId)).size),
+            }),
+          };
+        })
+        .sort((a, b) => b.miss - a.miss)
+        .map((one) => one.row),
+    };
+  }
+
+  if (kind === "progress") {
+    const buckets = bucketize(rows, (stat) => stat.done !== undefined);
+    if (buckets.length === 0) return null;
+    return {
+      columns: [
+        { key: "group", label: "単元" },
+        { key: "opened", label: "開いた 人" },
+        { key: "done", label: "おわった 人" },
+        { key: "rate", label: "おわった 率" },
+      ],
+      // 低い順。**まだ 誰も 終えて いない 教材**が いちばん 上に 来る。
+      rows: buckets
+        .map((bucket) => {
+          const opened = new Set(bucket.rows.map((row) => row.profileId)).size;
+          const done = new Set(
+            bucket.rows.filter((row) => row.stat?.done).map((row) => row.profileId),
+          ).size;
+          return {
+            rate: opened === 0 ? 0 : done / opened,
+            order: bucket.order,
+            row: cell({
+              group: bucket.label,
+              opened: String(opened),
+              done: String(done),
+              rate: percent(done, opened),
+            }),
+          };
+        })
+        .sort((a, b) => a.rate - b.rate || a.order - b.order)
+        .map((one) => one.row),
+    };
+  }
+
+  const buckets = bucketize(rows, (stat) => stat.value !== undefined);
+  if (buckets.length === 0) return null;
+  return {
+    columns: [
+      { key: "group", label: "単元" },
+      { key: "people", label: "やった 人" },
+      { key: "average", label: "へいきん 開いた％" },
+      { key: "lowest", label: "いちばん ひくい 人" },
+    ],
+    // 開けて いない 順。原稿が 開かない 教材は、音か キーワードの 作りを 疑う。
+    rows: buckets
+      .map((bucket) => {
+        const values = bucket.rows.map((row) => row.stat?.value ?? 0);
+        const average = values.reduce((sum, one) => sum + one, 0) / values.length;
+        return {
+          average,
+          order: bucket.order,
+          row: cell({
+            group: bucket.label,
+            people: String(new Set(bucket.rows.map((row) => row.profileId)).size),
+            average: `${Math.round(average)}%`,
+            lowest: `${Math.min(...values)}%`,
+          }),
+        };
+      })
+      .sort((a, b) => a.average - b.average || a.order - b.order)
+      .map((one) => one.row),
   };
 }
 
