@@ -43,6 +43,15 @@ export type LiveStatus = "idle" | "connecting" | "live" | "notReady" | "error";
 export interface LiveTurn {
   readonly from: "client" | "me";
   readonly text: string;
+  /**
+   * 学習者が **どうやって** 出したか（`from: "me"` のときだけ 意味が ある）。
+   *
+   * 画面には 出さない。台帳（`talk_turn_logs`）が 分けて 数える ため——
+   * 声で 話した 回数が 0 の 学習者は、マイクが 使えて いない 合図である
+   *（`meeting_turn_logs.mode` と 同じ 分けかた）。ここで 持たずに あとから
+   * 文字列を 見比べて 当てようとすると、同じ 文を 打っても 話しても 見分けが つかない。
+   */
+  readonly mode: "text" | "voice";
 }
 
 /** 返る音声のサンプリングレート（Live API の決まり）。送る側は mic-capture.ts が持つ。 */
@@ -230,7 +239,7 @@ export function useLiveSession(): LiveSession {
                 heardRef.current = "";
                 utteranceIdRef.current += 1;
                 const id = utteranceIdRef.current;
-                setTranscript((prev) => [...prev, { from: "me", text: heard }]);
+                setTranscript((prev) => [...prev, { from: "me", text: heard, mode: "voice" }]);
                 setLastUtterance({ id, text: heard });
               }
               saidRef.current += piece.text;
@@ -238,7 +247,7 @@ export function useLiveSession(): LiveSession {
             if (isTurnComplete(message) && saidRef.current.trim()) {
               const said = saidRef.current.trim();
               saidRef.current = "";
-              setTranscript((prev) => [...prev, { from: "client", text: said }]);
+              setTranscript((prev) => [...prev, { from: "client", text: said, mode: "voice" }]);
             }
             for (const pcm of readAudio(message)) play(outRef.current, pcm);
           },
@@ -282,7 +291,7 @@ export function useLiveSession(): LiveSession {
   const send = useCallback((text: string) => {
     const session = sessionRef.current;
     if (!session || !text.trim()) return;
-    setTranscript((prev) => [...prev, { from: "me", text }]);
+    setTranscript((prev) => [...prev, { from: "me", text, mode: "text" }]);
     session.sendClientContent({ turns: text, turnComplete: true });
   }, []);
 
@@ -335,11 +344,12 @@ function readTranscript(message: unknown): LiveTurn | null {
   const content = (message as { serverContent?: Record<string, unknown> }).serverContent;
   if (!content) return null;
 
+  // どちらも 音声の 文字起こしなので mode は "voice"（書いて 送った ぶんは `send` が 作る）。
   const output = content.outputTranscription as { text?: string } | undefined;
-  if (output?.text) return { from: "client", text: output.text };
+  if (output?.text) return { from: "client", text: output.text, mode: "voice" };
 
   const input = content.inputTranscription as { text?: string } | undefined;
-  if (input?.text) return { from: "me", text: input.text };
+  if (input?.text) return { from: "me", text: input.text, mode: "voice" };
 
   return null;
 }

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { M_PLUS_Rounded_1c, Noto_Sans_JP } from "next/font/google";
+import { RecordsSync } from "@/components/records-sync";
 import { RegisterOnLogin } from "@/components/register-on-login";
 import "./globals.css";
 
@@ -45,6 +46,8 @@ export default function RootLayout({
       <body className="flex min-h-full flex-col">
         {/* 画面は出さない。ログインした人を登録し、端末にある情報を送る（2026-08-25）。 */}
         <RegisterOnLogin />
+        {/* 画面は出さない。端末にしか無かった学習の記録を、まとめて台帳へ写す（2026-09-04）。 */}
+        <RecordsSync />
         {children}
       </body>
     </html>
