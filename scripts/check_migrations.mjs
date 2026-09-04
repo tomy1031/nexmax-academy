@@ -76,6 +76,12 @@ export function readRepoMigrations(entries) {
  * 表の形が変わっても壊れないように、**行の中に現れる14桁の並びのうち
  * 2つ目以降**ではなく「Remote 列」を列位置で読む。
  *
+ * **飾り（バックティック）を落としてから 見る。** supabase CLI は 版を
+ * `` `20260725090000` `` のように 囲んで 出す ようになって いて、素の 14桁で
+ * 突き合わせて いた ころは **1つも 拾えず「全部 流し忘れ」と 報告した**
+ * （2026-09-04 に 実発生。DB は 30本 とも そろって いた）。この 見張りの
+ * いちばん 悪い 壊れかたは 嘘の 合格だが、嘘の 不合格も 直しかたを 探す 時間を 奪う。
+ *
  * @param {string} stdout `supabase migration list` の出力
  * @returns {Set<string>} DBに記録ずみの版
  */
@@ -83,7 +89,7 @@ export function parseMigrationList(stdout) {
   const applied = new Set();
   for (const line of stdout.split("\n")) {
     if (!line.includes("|")) continue;
-    const columns = line.split("|").map((cell) => cell.trim());
+    const columns = line.split("|").map((cell) => cell.replaceAll("`", "").trim());
     if (columns.length < 2) continue;
     const remote = columns[1];
     if (/^\d{14}$/.test(remote)) applied.add(remote);
