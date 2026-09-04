@@ -759,7 +759,35 @@ Cloudflare を いくら 直しても 効かない、別の 天井である。
 
 | 名前 | 取りかた |
 | --- | --- |
-| `SUPABASE_DB_URL` | ダッシュボード上部 **Connect** → Connection string → **URI**（パスワード入り） |
+| `SUPABASE_DB_URL` | ダッシュボード上部 **Connect** → **Session pooler** の 文字列（パスワード入り） |
+
+> **「URI」を 選ばない**（2026-09-03 に 確かめた）。あれは **直結**
+> （`db.<project-ref>.supabase.co`）で、そのホストには **A レコードが 無い**:
+>
+> ```
+> dig +short db.<project-ref>.supabase.co A      → （空）
+> dig +short db.<project-ref>.supabase.co AAAA   → 2406:da18:...（IPv6 だけ）
+> ```
+>
+> GitHub の ubuntu ランナーは IPv4 しか 持たないので、これを 登録すると
+> **鍵は 入ったのに「つながらない」で 落ちる**——鍵不足の 次に 待って いる
+> 2つめの 落とし穴で、原因が ぜんぜん 違うので 探し直しに なる。
+> 正しいのは **Session pooler**（`...pooler.supabase.com:5432`）。
+> **Transaction pooler（:6543）では 移行SQLは 流せない。**
+>
+> 形は `scripts/lib/db_url.mjs` が 見張る。違って いれば `check_migrations` /
+> `check_rls` が **つなぐ前に** 名指しで 止める。
+>
+> **手で 組み立てなくてよい**（2026-09-03）:
+>
+> ```
+> node scripts/register_db_secret.mjs <project-ref>
+> ```
+>
+> ホスト名は `scripts/find_db_host.mjs` が **合言葉を 送らずに** 突き止める
+> （32個の プーラーへ Postgres の 最初の ひと言だけを 送り、
+> 「合言葉を どうぞ」と 返した 1つを 採る。ほかは `tenant/user not found`）。
+> 人が 打つのは 合言葉だけで、画面にも ファイルにも 残らない。
 
 `NEXT_PUBLIC_SUPABASE_URL` **では代用できない**。あれはブラウザに埋め込む公開の
 API窓口で、SQL は流せない（2026-08-26 に実際に取りちがえかけた）。

@@ -44,6 +44,7 @@ import { execFileSync } from "node:child_process";
 import { readdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+import { reportDbUrl } from "./lib/db_url.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const MIGRATIONS_DIR = join(ROOT, "supabase", "migrations");
@@ -158,6 +159,18 @@ function main() {
     console.log("    select version from supabase_migrations.schema_migrations order by version;");
     console.log(connectorHandbook(repo));
     process.exit(strict ? 1 : 0);
+    return;
+  }
+
+  /*
+   * つなぎに 行く 前に **形**を 見る。ダッシュボードの「URI」は 直結で、
+   * そのホストは IPv6 しか 持たない —— GitHub の ランナー（IPv4）からは 届かない。
+   * 鍵不足の 次に 待って いる 落とし穴なので、原因を 先に 名指しする
+   * （scripts/lib/db_url.mjs）。
+   */
+  if (reportDbUrl(dbUrl)) {
+    console.error("✗ SUPABASE_DB_URL の 形が 違います（上を 見てください）");
+    process.exit(1);
     return;
   }
 
