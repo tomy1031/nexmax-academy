@@ -50,7 +50,9 @@ create table if not exists public.content_progress (
   profile_id uuid not null references public.profiles (id) on delete cascade,
   content_id text not null,
   -- 'started' = 開いた / 'completed' = おわりまで 行った。
-  -- **completed は started に 戻らない**（アプリ側 `recordContentProgress` と 同じ）。
+  -- **completed は started に 戻らない**——端末（`recordContentProgress`）だけでなく
+  -- DB でも 守る（下の `app.stamp_content_completed`）。2台目の 端末や
+  -- localStorage を 消した 学習者が `started` を 送って くる ため。
   status text not null check (status in ('started', 'completed')),
   -- しおり（例: まんがなら `{"page":3,"panel":2}`）。**中身の 形は 教材ごとに ちがう**ので
   -- 列に 開かない。先生の 画面は「3ページ目」のように そのまま 読むだけ。
@@ -320,19 +322,38 @@ create policy listening_results_delete_admin on public.listening_results
   for delete using (public.is_admin());
 
 -- =====================================================================
--- おわった 時こくは DB が 1回だけ 打つ
+-- 「おわった」は もう 戻らない（DB が 守る）
 -- =====================================================================
 --
--- すでに 入って いれば 触らない（**はじめて 終えた 日**が 正）。
--- 'started' に 戻る ことは アプリ側でも 起きない（`recordContentProgress`）が、
--- 万一 戻っても 消さない——一度 終えた 事実は 消えない。
+-- ## なぜ DB で 守る 必要が あるか
+-- 端末の `recordContentProgress` は completed を started で 上書きしないが、
+-- それは **その端末の 中の 話**である。学習者が
+--   * 2台目の 端末（教室の PC と 自分の スマホ）で 開いた
+--   * localStorage を 消した／Safari が 7日で 捨てた
+--   * 別の ブラウザで 入り直した
+-- とき、その端末には 何も 無いので `started` から やり直す。それを そのまま 写すと
+-- **台帳の「おわった」が「とちゅう」に 落ちる**——先生の 一覧（`status` を そのまま
+-- 読む）で、終えた はずの 学習者が 未了に 見える。
+--
+-- この 機能の ねらいは「端末が 消えても 記録が 残る」ことなので、これは ねらいと
+-- 逆向きの 事故に なる。だから **DB が 最後の 砦**に なる: 一度 completed に なった 行は
+-- status も completed_at も 戻さない。しおり（position）は 新しい ほうを 受ける
+-- ——読み直して いる 場所は 動いて よい。
 create or replace function app.stamp_content_completed()
 returns trigger
 language plpgsql
+-- 検索パスを 固定する（`20260727013350_academy_fix_function_search_path.sql` と 同じ 流儀。
+-- Supabase の 診断 `function_search_path_mutable` が 再点灯しない ように）。
+-- `now()` は pg_catalog に ある ので、空の 検索パスでも そのまま 動く。
+set search_path = ''
 as $$
 begin
+  if tg_op = 'UPDATE' and old.status = 'completed' then
+    new.status := 'completed';
+    new.completed_at := old.completed_at;
+  end if;
   if new.status = 'completed' and new.completed_at is null then
-    new.completed_at := coalesce(old.completed_at, now());
+    new.completed_at := now();
   end if;
   return new;
 end;

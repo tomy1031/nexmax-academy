@@ -51,6 +51,12 @@ import {
 import { createClient } from "@/lib/supabase/client";
 import { readOwnId } from "@/lib/supabase/claims";
 
+/**
+ * 試験で 差し替えられる ように、使う ぶんだけを 型に する。
+ * 本物（`createClient()`）は これを 満たす。
+ */
+type SupabaseLike = NonNullable<ReturnType<typeof createClient>>;
+
 /** 進捗ストアと同じ名前空間（あちらの定数は非公開なので、鍵の形だけ合わせる）。 */
 const NAMESPACE = "nexmax:v1";
 
@@ -87,14 +93,12 @@ const MISSING_TABLE_CODES = new Set(["42P01", "PGRST205"]);
  * 並びが 崩れ、しかも 読み直すたびに「おわった とき」が 上書きされる。
  */
 export interface ContentProgressRow {
-  readonly profile_id: string;
   readonly content_id: string;
   readonly status: "started" | "completed";
   readonly position: Record<string, number>;
 }
 
 export interface ListeningResultRow {
-  readonly profile_id: string;
   readonly listening_id: string;
   readonly inputs: string[];
   readonly reveal_percent: number;
@@ -121,34 +125,60 @@ export interface PendingRecords {
 
 type SentMap = Record<string, string>;
 
-function readSent(backend: ProgressBackend): SentMap {
+/**
+ * 送った 印には **持ち主**を 一緒に 置く。
+ *
+ * 端末の 記録（`nexmax:v1:content:*`）は ログアウトでは 消えない
+ *（`clearNexmaxCache` が 消すのは `nexmax.` で 始まる 鍵だけ）。教室の PC のように
+ * 1台を 何人かで 使う ところでは、**A が 流し切る 前に ログアウトし、B が ログインする**
+ * ことが 起きる。持ち主を 見て いないと、そこで **A の 学習が B の 名前で 台帳に 載る**
+ * ——記録が 消えるより 悪い（先生が 見る 名簿が 静かに 嘘に なる）。
+ *
+ * 古い 形（持ち主の 無い ただの 対応表）も 読む。すでに 端末に 入って いる 印を
+ * 捨てると、その端末の 記録を もう一度 ぜんぶ 送り直す ことに なる。
+ */
+interface SentLedger {
+  /** 前に 送った 人。"" = まだ 誰も 送って いない（デモモードで ためた 端末）。 */
+  readonly owner: string;
+  readonly marks: SentMap;
+}
+
+function readSent(backend: ProgressBackend): SentLedger {
   const raw = backend.get(SENT_KEY);
-  if (!raw) return {};
+  if (!raw) return { owner: "", marks: {} };
   try {
     const parsed: unknown = JSON.parse(raw);
     // 壊れた 写しは「まだ 何も 送って いない」として 扱う（もう一度 送るだけ）。
-    return parsed && typeof parsed === "object" && !Array.isArray(parsed)
-      ? (parsed as SentMap)
-      : {};
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+      return { owner: "", marks: {} };
+    }
+    const record = parsed as { owner?: unknown; marks?: unknown };
+    if (typeof record.owner === "string" && record.marks && typeof record.marks === "object") {
+      return { owner: record.owner, marks: record.marks as SentMap };
+    }
+    // 2026-09-04 より 前の 形（鍵 → 印 の 対応表そのもの）。持ち主は 分からない。
+    return { owner: "", marks: parsed as SentMap };
   } catch {
-    return {};
+    return { owner: "", marks: {} };
   }
 }
 
-function writeSent(backend: ProgressBackend, sent: SentMap): void {
-  backend.set(SENT_KEY, JSON.stringify(sent));
+function writeSent(backend: ProgressBackend, ledger: SentLedger): void {
+  backend.set(SENT_KEY, JSON.stringify(ledger));
 }
 
 /**
  * 端末を 走査して、**前に 送ってから 変わった ぶん**だけを 組み立てる。
  *
+ * **誰の ものかを ここでは 決めない**（`profile_id` は 送る 直前に 入れる）。
+ * 数えるだけなら ログインを 確かめる 必要が 無く、送る ものが 0 の ときに
+ * 認証の 往復を 1回も 払わずに 済む——ここは **全ページで 10秒ごとに** 通る 道で、
+ * 教室は ふつう 1本の 回線＝1つの IP から 出る（docs/deploy.md §0.10）。
+ *
  * 純関数に して あるので、ブラウザが 無い ところでも 単体テストで 確かめられる。
  */
-export function collectPending(
-  profileId: string,
-  backend: ProgressBackend = defaultBackend(),
-): PendingRecords {
-  const sent = readSent(backend);
+export function collectPending(backend: ProgressBackend = defaultBackend()): PendingRecords {
+  const sent = readSent(backend).marks;
   const progress: PendingRow<ContentProgressRow>[] = [];
   const listening: PendingRow<ListeningResultRow>[] = [];
 
@@ -164,7 +194,7 @@ export function collectPending(
     progress.push({
       key,
       fingerprint,
-      row: { profile_id: profileId, content_id: contentId, status: value.status, position },
+      row: { content_id: contentId, status: value.status, position },
     });
   }
 
@@ -173,15 +203,22 @@ export function collectPending(
     const listeningId = listeningIdOfKey(key);
     if (listeningId === "") continue;
     const value = readListeningResult(listeningId, backend);
-    // 1つも 当てて いない 行は 送らない（「開いただけ」は 進み具合が すでに 持って いる）。
-    if (value.inputs.length === 0) continue;
+    /*
+     * 1つも 当てて いない 行は 送らない——ただし **一度 送った ことが ある なら 送る**。
+     *
+     * 「はじめから」を 押した 学習者（`saveListeningFinds(contentId, [])`）を
+     * 落とさない ため。空を 飛ばすだけに すると、台帳には 前の 良い 数字が 残り、
+     * 先生は **実態より できて いる** 姿を 見つづける ことに なる。
+     * 一度も 送って いない 空（開いただけ）は、進み具合が すでに 持って いるので 要らない。
+     */
+    const everSent = sent[key] !== undefined;
+    if (value.inputs.length === 0 && !everSent) continue;
     const fingerprint = JSON.stringify(value);
     if (sent[key] === fingerprint) continue;
     listening.push({
       key,
       fingerprint,
       row: {
-        profile_id: profileId,
         listening_id: listeningId,
         inputs: [...value.inputs],
         reveal_percent: value.revealPercent,
@@ -204,34 +241,82 @@ export function pendingCount(pending: PendingRecords): number {
 /** 同時に 2つ 流れない ようにする（タブの 切り替えと 時間切れが 重なる）。 */
 let flushing = false;
 
+/** `flushRecords` の 結果。**まだ 残って いるか**を 呼ぶ側が 知る ため。 */
+export interface FlushOutcome {
+  /** 送った 行の 数（0 = 送る ものが 無かった／送れなかった）。 */
+  readonly sent: number;
+  /**
+   * まだ 残って いるか。true なら 呼ぶ側は もう一度 予約する。
+   *
+   * 残る 道は 3つ——1回の 上限（`MAX_ROWS`）で 切った／別の 流しが 走って いて
+   * 見送った／送れなかった。**どれも 黙って 止まらない**ように、ここで 正直に 返す。
+   * 返さないと「残りは 次の 流しで 入る」が **誰も 呼ばないので 起きない**。
+   */
+  readonly more: boolean;
+}
+
 /**
  * ためた ぶんを 送る。**送れた ものだけ**「送った」と 印を つける。
  *
  * 送れなかった ら 印を つけない——次の 流しで もう一度 送れる
  *（`flushMeetingTurns` と 同じ 流儀。黙って 消えるのを 作らない）。
+ *
+ * `client` を 差し替えられる のは **試験の ため**（`{ error }` を 返す 偽物を 渡して、
+ * 落ちた ときに 印が つかない ことを 固定する）。ふだんは 省く。
  */
-export async function flushRecords(backend: ProgressBackend = defaultBackend()): Promise<void> {
-  if (flushing) return;
+export async function flushRecords(
+  backend: ProgressBackend = defaultBackend(),
+  client: SupabaseLike | null = createClient(),
+): Promise<FlushOutcome> {
+  if (flushing) return { sent: 0, more: true };
   flushing = true;
   try {
-    const supabase = createClient();
-    if (!supabase) return;
-    const profileId = await readOwnId(supabase).catch(() => null);
+    if (!client) return { sent: 0, more: false };
+
+    /*
+     * **数えるのが 先、名乗るのが あと。**
+     *
+     * 送る ものが 無い ときに 認証を 払わない ため。ここは 全ページで 10秒ごとに
+     * 通る 道で、ふだんは 空振りする——教室は 1本の 回線＝1つの IP なので、
+     * 空振りの たびに 認証へ 往復すると 人数ぶん 同じ 枠を 削り合う。
+     */
+    const pending = collectPending(backend);
+    if (pendingCount(pending) === 0) return { sent: 0, more: false };
+
+    const profileId = await readOwnId(client).catch(() => null);
     // ログインして いない（デモモード）ときは **印を つけずに 残す**。
     // 消すと、あとで ログインしても もう 送れない。
-    if (!profileId) return;
+    if (!profileId) return { sent: 0, more: true };
 
-    const pending = collectPending(profileId, backend);
-    if (pendingCount(pending) === 0) return;
+    const ledger = readSent(backend);
+    /*
+     * **持ち主が 変わって いたら、引き取らずに 印だけ 付ける。**
+     *
+     * 教室の PC は 1台を 何人かで 使う。前の 学習者の ぶんを いまの 学習者の 名前で
+     * 送ると、先生の 名簿が 静かに 嘘に なる——記録が 1回 消えるより 悪い。
+     * 印を 付けるのは、そのままだと **毎回 引き取ろうとして 送りつづける**ため。
+     * 持ち主が "" のときは 引き取る（デモモードで ためた 端末が はじめて ログインした
+     * ときの 道。2026-08-25 の `registerOnLogin` と 同じ 考え方）。
+     */
+    if (ledger.owner !== "" && ledger.owner !== profileId) {
+      const adopted: SentMap = { ...ledger.marks };
+      for (const one of [...pending.progress, ...pending.listening]) {
+        adopted[one.key] = one.fingerprint;
+      }
+      writeSent(backend, { owner: profileId, marks: adopted });
+      return { sent: 0, more: false };
+    }
 
     const done: SentMap = {};
+    let sent = 0;
     const mark = (rows: readonly PendingRow<unknown>[]) => {
       for (const { key, fingerprint } of rows) done[key] = fingerprint;
+      sent += rows.length;
     };
 
     if (pending.progress.length > 0) {
-      const { error } = await supabase.from("content_progress").upsert(
-        pending.progress.map((one) => one.row),
+      const { error } = await client.from("content_progress").upsert(
+        pending.progress.map((one) => ({ ...one.row, profile_id: profileId })),
         { onConflict: "profile_id,content_id" },
       );
       if (error) warn("進み具合", error);
@@ -239,20 +324,30 @@ export async function flushRecords(backend: ProgressBackend = defaultBackend()):
     }
 
     if (pending.listening.length > 0) {
-      const { error } = await supabase.from("listening_results").upsert(
-        pending.listening.map((one) => one.row),
+      const { error } = await client.from("listening_results").upsert(
+        pending.listening.map((one) => ({ ...one.row, profile_id: profileId })),
         { onConflict: "profile_id,listening_id" },
       );
       if (error) warn("リスニング", error);
       else mark(pending.listening);
     }
 
-    if (Object.keys(done).length > 0) writeSent(backend, { ...readSent(backend), ...done });
+    if (sent > 0) {
+      writeSent(backend, { owner: profileId, marks: { ...ledger.marks, ...done } });
+    }
+    // 送れなかった ぶんも、上限で 切った ぶんも「まだ 残って いる」。
+    return { sent, more: sent < pendingCount(pending) || truncated(pending) };
   } catch {
     // 写せなくても 学習は 続く（台帳は あとから 見る ための もの）
+    return { sent: 0, more: true };
   } finally {
     flushing = false;
   }
+}
+
+/** 1回の 上限で 切った か（切って いれば 呼ぶ側が もう一度 予約する）。 */
+function truncated(pending: PendingRecords): boolean {
+  return pending.progress.length >= MAX_ROWS || pending.listening.length >= MAX_ROWS;
 }
 
 function warn(what: string, error: { code?: string; message: string }): void {

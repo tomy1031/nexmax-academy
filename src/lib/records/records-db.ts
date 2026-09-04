@@ -8,6 +8,15 @@
  * 5種類を いちどに 読むと、学期の 終わりに 先生の 画面が 開かなく なる。
  * 見て いる タブの 表だけを その場で 読む。
  *
+ * ## 絞り込みは **DB へ 渡す**（手もとで ふるいに かけない）
+ * 上限（`RECORDS_LIMIT`）は 新しい ほうから 数えるので、取って きた あとに
+ * 手もとで 絞ると **上限より 前の 記録には 永久に たどり着けない**。
+ * ことばの 明細は 1語 1行（30人 × 20語 × 2回 = 1200行／1コマ）なので、
+ * 2コマで 上限に 届く——「先週の この子」が 誰にも 見えなく なる。
+ * しかも 画面は「絞り込んでください」と 案内する ので、**言われた とおりに しても
+ * 何も 増えない**（いちばん 静かに 効く 取りこぼし）。
+ * だから 学生・ステージ・単元は `where` に して 送り、絞るたびに 読み直す。
+ *
  * ## 表が まだ 無い ときは「じゅんびちゅう」
  * 移行SQL が 流れる 前でも 画面は 開く（`fetchMeetingLogs` と 同じ 流儀）。
  * 生の エラー文を 先生に 見せない——直せるのは 先生では ないので、
@@ -28,7 +37,27 @@ export type RecordsResult<Row> =
   /** preparing = 表が まだ 無い（移行SQL 未適用）。壊れて いるのでは ない。 */
   | { readonly ok: false; readonly preparing: boolean; readonly message: string };
 
-async function fetchTable<Row>(table: string, order: string): Promise<RecordsResult<Row>> {
+/**
+ * DB へ 渡す 絞り込み。
+ *
+ * `profileIds` が **空の 配列**（＝条件に 合う 学生が 1人も いない）と `null`（絞らない）
+ * は ちがう。空を 「絞らない」と 読むと、いない はずの 学生の 記録が 全員ぶん 出る。
+ */
+export interface RecordsQuery {
+  /** その 学生たちの ぶんだけ。null = 絞らない。 */
+  readonly profileIds: readonly string[] | null;
+  /** その 教材の ぶんだけ（記録の 表ごとに 列の 名前が ちがう）。null = 絞らない。 */
+  readonly unitIds: readonly string[] | null;
+}
+
+export const NO_QUERY: RecordsQuery = { profileIds: null, unitIds: null };
+
+async function fetchTable<Row>(
+  table: string,
+  order: string,
+  unitColumn: string,
+  query: RecordsQuery,
+): Promise<RecordsResult<Row>> {
   const supabase = createClient();
   if (!supabase) {
     return {
@@ -37,11 +66,15 @@ async function fetchTable<Row>(table: string, order: string): Promise<RecordsRes
       message: "きろくは じゅんびちゅう（データベースの設定後に 見られます）",
     };
   }
-  const { data, error } = await supabase
-    .from(table)
-    .select("*")
-    .order(order, { ascending: false })
-    .limit(RECORDS_LIMIT);
+  // 条件に 合う 学生・教材が 1つも 無いなら、読みに 行かずに 空を 返す
+  //（`.in(col, [])` は 0件だが、往復は 払う）。
+  if (query.profileIds?.length === 0 || query.unitIds?.length === 0) {
+    return { ok: true, rows: [], truncated: false };
+  }
+  let request = supabase.from(table).select("*");
+  if (query.profileIds) request = request.in("profile_id", [...query.profileIds]);
+  if (query.unitIds) request = request.in(unitColumn, [...query.unitIds]);
+  const { data, error } = await request.order(order, { ascending: false }).limit(RECORDS_LIMIT);
   if (error) {
     const preparing = MISSING_TABLE_CODES.has(error.code ?? "");
     return {
@@ -162,30 +195,44 @@ export interface ListeningRecord {
  * 読む
  * ------------------------------------------------------------------ */
 
-export function fetchContentProgress(): Promise<RecordsResult<ContentProgressRecord>> {
-  return fetchTable<ContentProgressRecord>("content_progress", "updated_at");
+export function fetchContentProgress(
+  query: RecordsQuery = NO_QUERY,
+): Promise<RecordsResult<ContentProgressRecord>> {
+  return fetchTable<ContentProgressRecord>("content_progress", "updated_at", "content_id", query);
 }
 
-export function fetchQuizRecords(): Promise<RecordsResult<QuizRecord>> {
-  return fetchTable<QuizRecord>("quiz_results", "created_at");
+export function fetchQuizRecords(
+  query: RecordsQuery = NO_QUERY,
+): Promise<RecordsResult<QuizRecord>> {
+  return fetchTable<QuizRecord>("quiz_results", "created_at", "quiz_set_id", query);
 }
 
-export function fetchWordTestRecords(): Promise<RecordsResult<WordTestRecord>> {
-  return fetchTable<WordTestRecord>("word_test_results", "created_at");
+export function fetchWordTestRecords(
+  query: RecordsQuery = NO_QUERY,
+): Promise<RecordsResult<WordTestRecord>> {
+  return fetchTable<WordTestRecord>("word_test_results", "created_at", "stage_id", query);
 }
 
-export function fetchWordAnswerRecords(): Promise<RecordsResult<WordAnswerRecord>> {
-  return fetchTable<WordAnswerRecord>("word_test_answers", "created_at");
+export function fetchWordAnswerRecords(
+  query: RecordsQuery = NO_QUERY,
+): Promise<RecordsResult<WordAnswerRecord>> {
+  return fetchTable<WordAnswerRecord>("word_test_answers", "created_at", "stage_id", query);
 }
 
-export function fetchTalkRecords(): Promise<RecordsResult<TalkRecord>> {
-  return fetchTable<TalkRecord>("talk_turn_logs", "created_at");
+export function fetchTalkRecords(
+  query: RecordsQuery = NO_QUERY,
+): Promise<RecordsResult<TalkRecord>> {
+  return fetchTable<TalkRecord>("talk_turn_logs", "created_at", "talk_id", query);
 }
 
-export function fetchMeetingRecords(): Promise<RecordsResult<MeetingRecord>> {
-  return fetchTable<MeetingRecord>("meeting_turn_logs", "created_at");
+export function fetchMeetingRecords(
+  query: RecordsQuery = NO_QUERY,
+): Promise<RecordsResult<MeetingRecord>> {
+  return fetchTable<MeetingRecord>("meeting_turn_logs", "created_at", "meeting_id", query);
 }
 
-export function fetchListeningRecords(): Promise<RecordsResult<ListeningRecord>> {
-  return fetchTable<ListeningRecord>("listening_results", "updated_at");
+export function fetchListeningRecords(
+  query: RecordsQuery = NO_QUERY,
+): Promise<RecordsResult<ListeningRecord>> {
+  return fetchTable<ListeningRecord>("listening_results", "updated_at", "listening_id", query);
 }

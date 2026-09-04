@@ -32,7 +32,9 @@ import {
   fetchTalkRecords,
   fetchWordAnswerRecords,
   fetchWordTestRecords,
+  NO_QUERY,
   RECORDS_LIMIT,
+  type RecordsQuery,
   type RecordsResult,
 } from "@/lib/records/records-db";
 import {
@@ -73,16 +75,46 @@ export function RecordsShell({ index }: { index: UnitIndex }) {
    */
   const [loaded, setLoaded] = useState<{
     kind: RecordKind;
+    /** どの 絞り込みで 読んだ ものか。変わったら 読み直す。 */
+    query: RecordsQuery;
     table: RecordTable;
     note: string | null;
   } | null>(null);
   const [shown, setShown] = useState(PAGE_SIZE);
 
-  const busy = loaded === null || loaded.kind !== kind;
-  const table = loaded?.kind === kind ? loaded.table : null;
-  const note = loaded?.kind === kind ? loaded.note : null;
-
   const lookups = useMemo(() => buildLookups(profiles, index.units), [profiles, index.units]);
+
+  /*
+   * 絞り込みを **DB へ 渡す かたち**に ほどく。
+   *
+   * 手もとで ふるいに かけるだけに すると、上限（新しい ほうから 2000行）より 前の
+   * 記録には 永久に たどり着けない——ことばの 明細は 1語 1行なので、2コマで 上限に 届く。
+   * ここで `where` に して 送れば、「先週の この子」も 出る。
+   *
+   * ことばの 絞り込みだけは 手もとに 残す（DB の 全文検索は 置いて いない）。
+   */
+  const query: RecordsQuery = useMemo(() => {
+    const byPerson =
+      filter.profileId !== ""
+        ? [filter.profileId]
+        : filter.university !== "" || filter.cohort !== 0
+          ? profiles
+              .filter((profile) => matchesProfile(profile, { ...filter, profileId: "" }))
+              .map((profile) => profile.id)
+          : null;
+    const byUnit =
+      filter.unitId !== ""
+        ? [filter.unitId]
+        : filter.stageId !== ""
+          ? index.units.filter((unit) => unit.stageId === filter.stageId).map((unit) => unit.id)
+          : null;
+    return { profileIds: byPerson, unitIds: byUnit };
+  }, [filter, profiles, index.units]);
+
+  const fresh = loaded !== null && loaded.kind === kind && loaded.query === query;
+  const busy = !fresh;
+  const table = fresh ? loaded.table : null;
+  const note = fresh ? loaded.note : null;
 
   /* 先生かどうかを 確かめて、名簿を 読む。関所は RLS なので、ここは 見せ方の 話。 */
   useEffect(() => {
@@ -127,14 +159,14 @@ export function RecordsShell({ index }: { index: UnitIndex }) {
     if (loading) return;
     let active = true;
     void (async () => {
-      const built = await loadTable(kind, lookups);
+      const built = await loadTable(kind, lookups, query);
       if (!active) return;
-      setLoaded({ kind, table: built.table, note: built.note });
+      setLoaded({ kind, query, table: built.table, note: built.note });
     })();
     return () => {
       active = false;
     };
-  }, [kind, loading, lookups]);
+  }, [kind, loading, lookups, query]);
 
   const rows = useMemo(
     () => (table ? filterRows(table, filter, lookups) : []),
@@ -393,6 +425,7 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 async function loadTable(
   kind: RecordKind,
   lookups: ReturnType<typeof buildLookups>,
+  query: RecordsQuery = NO_QUERY,
 ): Promise<{ table: RecordTable; note: string | null }> {
   const wrap = (table: RecordTable, results: readonly RecordsResult<unknown>[]) => {
     const failed = results.find(
@@ -410,17 +443,17 @@ async function loadTable(
   };
 
   if (kind === "progress") {
-    const got = await fetchContentProgress();
+    const got = await fetchContentProgress(query);
     return wrap(progressTable(got.ok ? got.rows : [], lookups), [got]);
   }
   if (kind === "quiz") {
-    const got = await fetchQuizRecords();
+    const got = await fetchQuizRecords(query);
     return wrap(quizTable(got.ok ? got.rows : [], lookups), [got]);
   }
   if (kind === "word") {
     const [answers, results] = await Promise.all([
-      fetchWordAnswerRecords(),
-      fetchWordTestRecords(),
+      fetchWordAnswerRecords(query),
+      fetchWordTestRecords(query),
     ]);
     return wrap(
       wordTable(answers.ok ? answers.rows : [], results.ok ? results.rows : [], lookups),
@@ -428,12 +461,15 @@ async function loadTable(
     );
   }
   if (kind === "talk") {
-    const [meetings, talks] = await Promise.all([fetchMeetingRecords(), fetchTalkRecords()]);
+    const [meetings, talks] = await Promise.all([
+      fetchMeetingRecords(query),
+      fetchTalkRecords(query),
+    ]);
     return wrap(talkTable(meetings.ok ? meetings.rows : [], talks.ok ? talks.rows : [], lookups), [
       meetings,
       talks,
     ]);
   }
-  const got = await fetchListeningRecords();
+  const got = await fetchListeningRecords(query);
   return wrap(listeningTable(got.ok ? got.rows : [], lookups), [got]);
 }
