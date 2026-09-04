@@ -61,6 +61,23 @@ describe("DBに記録ずみの版を読む", () => {
     expect(applied.has("20260824090000")).toBe(false);
   });
 
+  /**
+   * いまの supabase CLI は 版を バックティックで 囲んで 出す。
+   * 素の 14桁で 突き合わせて いた ころは **1つも 拾えず「全部 流し忘れ」**に なった
+   * （2026-09-04。DB は 30本 とも そろって いたのに 赤くなった）。
+   */
+  it("版がバックティックで囲まれていても読む（supabase CLI の いまの 出力）", () => {
+    const quoted = [
+      "   Local            | Remote           | Time (UTC)            ",
+      "  ------------------|------------------|-----------------------",
+      "   `20260725090000` | `20260725090000` | `2026-07-25 09:00:00` ",
+      "   `20260824090000` |                  |                       ",
+    ].join("\n");
+    const applied = parseMigrationList(quoted);
+    expect(applied.has("20260725090000")).toBe(true);
+    expect(applied.has("20260824090000")).toBe(false);
+  });
+
   it("表でない行（見出し・空行）を数えない", () => {
     expect(parseMigrationList("Connecting to remote database...\n\n").size).toBe(0);
   });
