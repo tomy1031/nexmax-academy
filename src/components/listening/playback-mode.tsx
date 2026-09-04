@@ -10,6 +10,7 @@ import { recordContentProgress } from "@/lib/progress/store";
 import { CallShell } from "@/components/call-shell";
 import { VideoPlayer } from "@/components/media/video-player";
 import { ImageSlotFrame } from "@/components/article/rich-blocks";
+import { assetUrl } from "@/lib/asset-url";
 import { ListeningPanel } from "./listening-panel";
 import { mediaKind, revealRate, type ListeningState } from "./listening-checks";
 
@@ -275,16 +276,16 @@ function Player({
     <section className="card-island space-y-3 p-4">
       {mediaKind(listening) === "video" || mediaKind(listening) === "youtube" ? (
         <VideoPlayer
-          src={listening.videoUrl}
+          src={assetUrl(listening.videoUrl)}
           youtube={listening.youtube}
-          poster={listening.posterUrl}
+          poster={assetUrl(listening.posterUrl)}
           label={listening.title}
           mediaRef={mediaRef}
         />
       ) : mediaKind(listening) === "audio" ? (
         <audio
           ref={mediaRef as React.RefObject<HTMLAudioElement | null>}
-          src={listening.audioUrl}
+          src={assetUrl(listening.audioUrl)}
           controls
           className="w-full"
         />

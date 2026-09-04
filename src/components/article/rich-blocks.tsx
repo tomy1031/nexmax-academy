@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { ZoomableImage } from "@/components/media/zoomable-image";
+import { assetUrl } from "@/lib/asset-url";
 import type { ArticleBlock } from "@/content/schema";
 import { DictionaryText } from "@/components/dictionary-text";
 import { RubyText } from "@/components/ruby-text";
@@ -98,7 +99,7 @@ export function ImageSlotFrame({
     return (
       <ZoomableImage label={alt} size={compact ? "small" : "normal"}>
         <Image
-          src={slot.src}
+          src={assetUrl(slot.src) ?? slot.src}
           alt={alt ?? ""}
           width={1200}
           height={675}
