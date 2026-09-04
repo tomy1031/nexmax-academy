@@ -26,6 +26,7 @@
 
 import { createClient } from "@/lib/supabase/client";
 import type { JudgeGrade } from "@/lib/meeting/judge";
+import type { MeetingTurnJudge } from "@/lib/meeting/log";
 
 /** 一度に 読む 上限。全部 読むと 学期の 終わりに 画面が 開かなく なる。 */
 export const RECORDS_LIMIT = 2000;
@@ -177,6 +178,14 @@ export interface MeetingRecord {
   attempt: number;
   mode: "text" | "voice";
   utterance: string;
+  /**
+   * AIの 見かたの 生JSON（返事・ほめた ところ・直す ところ・お手本・軸）。
+   *
+   * **持って いる ぶんだけ**（松井社長との 会話には 軸が 無い）。先生の 画面は
+   * ここまで 開く——`grade` だけでは「もう いちど と 言われた」ことしか 分からず、
+   * **何を どう 直せば よかったか**が 見えない。
+   */
+  judge: MeetingTurnJudge | null;
   grade: JudgeGrade | null;
   fallback: string;
   created_at: string;
