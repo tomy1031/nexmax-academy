@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>事前調査：Aobaを 調べる</title>
+<!--
+  この 3枚の 中身は content/scenarios/youken_aoba.json の research.pages と
+  **同じ 文字列**です。たいわ の エンジンが research を 画面に 出せるように
+  なったら、この ファイルは 要らなく なります（issue を 見て ください）。
+  ずれて いないかは tests/youken_research_page.test.ts が 見張って います。
+-->
+<style>
+  :root { color-scheme: light; }
+  body { margin:0; font-family: "Hiragino Sans","Noto Sans JP",system-ui,sans-serif;
+         background:#eaf4fb; color:#123; line-height:1.9; }
+  header { padding:16px 16px 8px; }
+  h1.page { font-size:18px; margin:0 0 4px; }
+  p.hint { margin:0; font-size:13px; color:#456; }
+  nav { display:flex; gap:8px; padding:12px 16px; flex-wrap:wrap; }
+  .tab { border:2px solid #b9d9ee; background:#fff; color:#123; border-radius:999px;
+         padding:8px 14px; font-size:14px; font-weight:700; cursor:pointer; }
+  .tab.on { background:#1b7fc4; border-color:#1b7fc4; color:#fff; }
+  .panel { display:none; padding:0 16px 32px; }
+  .panel.on { display:block; }
+  .guide { background:#fff6d9; border:2px solid #f0d17a; border-radius:12px;
+           padding:10px 12px; font-size:14px; margin:0 0 10px; }
+  .bar { background:#dceaf5; border-radius:8px; padding:6px 10px; font-size:12px;
+         color:#456; margin:0 0 10px; word-break:break-all; }
+  .body { background:#fff; border-radius:14px; padding:16px; box-shadow:0 2px 10px rgba(0,60,110,.08); }
+  .body.phone { max-width:420px; margin:0 auto; }
+  .body h1 { font-size:20px; margin:0 0 8px; }
+  .body h2 { font-size:16px; margin:20px 0 6px; border-left:5px solid #6bbf59; padding-left:8px; }
+  .body p.lead { font-size:18px; font-weight:700; color:#3a7d2c; }
+  .body p.note { font-size:12px; color:#789; }
+  .body table { border-collapse:collapse; width:100%; font-size:14px; }
+  .body th, .body td { border:1px solid #d6e6f2; padding:6px 8px; text-align:left; }
+  .body hr { border:0; border-top:1px dashed #cfe0ee; margin:16px 0; }
+  .body ul { padding-left:20px; }
+</style>
+</head>
+<body>
+<header>
+  <h1 class="page">🔎 事前調査：Aobaを 調べる</h1>
+  <p class="hint">3つの ページを 見て ください。あとで かくにんの もんだいが あります。<br>
+    むずかしい ところは、上の 🔰 の 帯を 読むと 何の ページか わかります。</p>
+</header>
+<nav>
+      <button class="tab on" data-i="0">Aobaの サイト</button>
+      <button class="tab" data-i="1">Instagram</button>
+      <button class="tab" data-i="2">雑誌の インタビュー</button>
+</nav>
+
+    <section class="panel on" data-i="0">
+      <p class="guide">🔰 これは Aobaの 会社の サイトです。会社が 大切に して いる こと、人気の メニュー、日本の 3つの 店が 書いて あります。</p>
+      <p class="bar">🌐 www.aoba-matcha.example.com</p>
+      <div class="body browser"><h1>Aoba株式会社</h1><p class="lead">本物の抹茶を、毎日の楽しみに</p><h2>私たちの こだわり</h2><p>静岡県の 茶葉だけを 使って います。香りが 高く、深い 味の 抹茶です。抹茶を「特別な日の もの」から「毎日の 楽しみ」に 変えたいと 考えて います。</p><p>店の 空間にも こだわって います。日本の 美しさを 入れながら、今の 時代に 合った、きれいで 落ちついた 場所です。ひとりでも、友だちや 家族とでも、気もちよく すごせる 店で ありたいと 思って います。</p><h2>人気の メニュー</h2><ul><li>Aoba特製 濃茶ラテ（いちばん 人気）</li><li>極み抹茶ソフトクリーム</li><li>贅沢 抹茶パフェ</li></ul><h2>日本の 店</h2><table><tr><th>店</th><th>場所</th><th>席</th></tr><tr><td>青山 本店</td><td>東京都港区南青山</td><td>45席</td></tr><tr><td>代官山店</td><td>東京都渋谷区代官山町</td><td>32席</td></tr><tr><td>静岡 浅間通り店</td><td>静岡県静岡市葵区</td><td>50席</td></tr></table><p>どの 店も「まちの さわがしさを わすれる、落ちついた 和の 空間」を コンセプトに して います。週末は 行列が できる ことも あります。</p><p class="note">※これは 学習用の ダミーサイトです。</p></div>
+    </section>
+
+    <section class="panel" data-i="1">
+      <p class="guide">🔰 これは Aobaの Instagramです。お客様が どの 投稿を 気に 入って いるか、コメントに 何を 書いて いるかを 見て ください。</p>
+      <p class="bar">📱 instagram.com/aoba_matcha_official</p>
+      <div class="body phone"><h1>aoba_matcha_official</h1><p>124 posts ・ 18.5K followers ・ 52 following</p><p>Aoba | 本物の抹茶を、毎日の楽しみに<br>静岡県産の 抹茶を 使った スイーツ＆ドリンク<br>青山 / 代官山 / 静岡</p><hr><p><b>春限定「桜と抹茶の春色パフェ」がスタート</b><br>いいね 3,402 ・ コメント 145</p><p>sato.ayaka「週末に 友だちと 行こうと 思います！ 予約って できますか？」</p><hr><p><b>ご注文を いただいてから、一杯ずつ ていねいに お茶を 点てて います</b><br>いいね 2,891 ・ コメント 42</p><p>mai_style「動画で 点てて いる ところを 見て みたいです！」</p><hr><p><b>青山店「抹茶ラテアート体験イベント」が 終了しました。大好評に つき、来月も 開催決定</b><br>いいね 4,120 ・ コメント 285</p><p>ayaka.03「今回 スグに 枠が うまって 予約できなかったので、来月こそ 行きたいです」</p><p>hina_chan12「リンク先から もう 来月の 予約 できますか？？」</p><p class="note">※これは 学習用の ダミーサイトです。</p></div>
+    </section>
+
+    <section class="panel" data-i="2">
+      <p class="guide">🔰 これは 雑誌の インタビューです。山本社長が、会社の 考えと プノンペンを えらんだ わけを 話して います。</p>
+      <p class="bar">🌐 business-trends.example.com/2026-03/aoba</p>
+      <div class="body browser"><h1>BUSINESS TRENDS Monthly 2026年3月号</h1><h2>Aoba山本社長が 話す、プノンペンへの 新しい 挑戦</h2><p>日本で 抹茶の カフェを 3店 出して いる Aoba株式会社。次に 店を 出す 場所に えらんだのは、プノンペンでした。</p><p><b>——大切に して いる 考えを 教えて ください。</b><br>「『抹茶を もっと 毎日の 生活の 中に 入れたい』。これだけです。コーヒーを 毎日 飲むのと 同じように、抹茶を 楽しんで ほしいんです。」</p><p><b>——店を つくる ときに 大切に して いる ことは。</b><br>「日本の 雰囲気は 大切ですが、『だれでも 入りやすい こと』も 大切です。だから ブランドの 色も、深い 緑と 白に して います。」</p><p><b>——なぜ プノンペンですか。</b><br>「これまで 何度も、プノンペンの ボランティアイベントで 抹茶を 飲んで もらいました。その ときの みなさんの 『おいしい！』と いう 笑顔が わすれられなくて。」</p><p><b>——BKK1への 出店は 新しい 挑戦ですね。</b><br>「はい。日本の 店の よい ところは 残しながら、プノンペンの まちの 人に 愛される 店に したいです。いまは Webサイトを 作る 準備を 急いで います。」</p><p class="note">※これは 学習用の ダミー記事です。</p></div>
+    </section>
+<script>
+  document.querySelectorAll(".tab").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const i = btn.dataset.i;
+      document.querySelectorAll(".tab").forEach((b) => b.classList.toggle("on", b === btn));
+      document.querySelectorAll(".panel").forEach((p) => p.classList.toggle("on", p.dataset.i === i));
+      window.scrollTo(0, 0);
+    });
+  });
+</script>
+</body>
+</html>

@@ -76,6 +76,11 @@ export const YOMI_ALLOW: readonly YomiAllowEntry[] = [
   { surface: "行", reading: "ぎょう", note: "「1行」「3行で」＝テキストの行。解析は こう" },
   { surface: "後に", reading: "あとに", note: "「どれを 後に するか」。解析は ごに" },
   { surface: "何ですか", reading: "なんですか", note: "解析は なにですか" },
+  {
+    surface: "何でしょうか",
+    reading: "なんでしょうか",
+    note: "「して ほしい ことは 何でしょうか」。ていねいな 問いの 何 は なん。解析は なに（何ですか と 同型）",
+  },
   { surface: "何でも", reading: "なんでも", note: "解析は なにでも" },
   { surface: "日間", reading: "かかん", note: "「5日間」＝いつかかん。解析は にちかん" },
   {

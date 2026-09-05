@@ -109,10 +109,14 @@
   "check": {
     "minLength": 2,
     "maxMiss": 5,
-    "showScript": false,
+    "showScript": true,
     "showTyping": true
   },
   "furigana": [
+    [
+      "何でしょうか",
+      "なんでしょうか"
+    ],
     [
       "株式会社",
       "かぶしきがいしゃ"
