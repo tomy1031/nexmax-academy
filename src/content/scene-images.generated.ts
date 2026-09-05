@@ -10,6 +10,7 @@ export const SCENE_IMAGES: readonly string[] = [
   "/img/scenes/area1_cambodia.webp",
   "/img/scenes/area3_vietnam.webp",
   "/img/scenes/area5_taiwan.webp",
+  "/img/scenes/area_matcha_town.webp",
   "/img/scenes/area_misty_peaks.webp",
   "/img/scenes/area_palace_town.webp",
   "/img/scenes/area_riverside_capital.webp",
