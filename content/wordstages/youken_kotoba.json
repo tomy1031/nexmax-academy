@@ -1,0 +1,49 @@
+{
+  "kind": "wordstage",
+  "id": "youken_kotoba",
+  "title": "要件定義の ことば",
+  "description": "抹茶カフェの 採用ページを 作る しごとで 出て きた ことばです。",
+  "fieldSequence": [
+    "forest",
+    "sky",
+    "space"
+  ],
+  "questionCount": 8,
+  "passRate": 80,
+  "wordIds": [
+    "youkenteigi",
+    "mokuteki",
+    "jouken",
+    "yosan",
+    "nouki",
+    "oubo",
+    "saiyo",
+    "maccha",
+    "sadou",
+    "shikaku",
+    "tenchou",
+    "kyuuryou"
+  ],
+  "furigana": [
+    [
+      "要件定義",
+      "ようけんていぎ"
+    ],
+    [
+      "抹茶",
+      "まっちゃ"
+    ],
+    [
+      "採用",
+      "さいよう"
+    ],
+    [
+      "出",
+      "で"
+    ],
+    [
+      "作",
+      "つく"
+    ]
+  ]
+}

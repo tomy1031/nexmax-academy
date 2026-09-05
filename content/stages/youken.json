@@ -1,0 +1,129 @@
+{
+  "kind": "stage",
+  "id": "youken",
+  "order": 8,
+  "title": "要件定義",
+  "reading": "ようけんていぎ",
+  "description": "お客様に 聞いて、何を 作るかを 決める しごとです。Aoba株式会社の 山本社長に 質問して、採用ページの 要件定義書を まとめます。",
+  "color": "leaf",
+  "status": "published",
+  "area": {
+    "name": "ちゃみせの まち",
+    "reading": "ちゃみせの まち",
+    "image": "/img/scenes/area_matcha_town.webp",
+    "note": "新しい 抹茶の 店が できる まちです。ここで お客様に 会います。"
+  },
+  "contents": [
+    {
+      "ref": "youken_matcha",
+      "type": "article"
+    },
+    {
+      "ref": "youken_hearing",
+      "type": "listening"
+    },
+    {
+      "ref": "youken_hearing_check",
+      "type": "quizset"
+    },
+    {
+      "ref": "youken_skit",
+      "type": "skit"
+    },
+    {
+      "ref": "youken_research",
+      "type": "link",
+      "gates": true
+    },
+    {
+      "ref": "youken_research_check",
+      "type": "quizset"
+    },
+    {
+      "ref": "youken_aoba",
+      "type": "scenario"
+    },
+    {
+      "ref": "youken_doc",
+      "type": "article"
+    },
+    {
+      "ref": "youken_design",
+      "type": "article"
+    },
+    {
+      "ref": "youken_recruit_sample",
+      "type": "link",
+      "gates": true
+    }
+  ],
+  "wordStageIds": [
+    "youken_kotoba"
+  ],
+  "furigana": [
+    [
+      "要件定義書",
+      "ようけんていぎしょ"
+    ],
+    [
+      "株式会社",
+      "かぶしきがいしゃ"
+    ],
+    [
+      "山本社長",
+      "やまもとしゃちょう"
+    ],
+    [
+      "新しい",
+      "あたらしい"
+    ],
+    [
+      "決める",
+      "きめる"
+    ],
+    [
+      "客様",
+      "きゃくさま"
+    ],
+    [
+      "山本",
+      "やまもと"
+    ],
+    [
+      "社長",
+      "しゃちょう"
+    ],
+    [
+      "質問",
+      "しつもん"
+    ],
+    [
+      "採用",
+      "さいよう"
+    ],
+    [
+      "抹茶",
+      "まっちゃ"
+    ],
+    [
+      "作る",
+      "つくる"
+    ],
+    [
+      "聞い",
+      "きい"
+    ],
+    [
+      "会い",
+      "あい"
+    ],
+    [
+      "何",
+      "なに"
+    ],
+    [
+      "店",
+      "みせ"
+    ]
+  ]
+}

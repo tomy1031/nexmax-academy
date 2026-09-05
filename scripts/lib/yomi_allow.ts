@@ -56,6 +56,17 @@ export const YOMI_ALLOW: readonly YomiAllowEntry[] = [
   { surface: "日本人", reading: "にほんじん", note: "同上" },
   { surface: "一人", reading: "ひとり", note: "解析は 一(いち)+人(にん) と割る。熟字訓" },
   { surface: "二人", reading: "ふたり", note: "同上" },
+  {
+    surface: "一人目",
+    reading: "ひとりめ",
+    note: "「一人目の 仕事」。熟字訓の 一人 に 目 が つく。解析は 一(いち)+人(にん)+目 と割る",
+  },
+  { surface: "二人目", reading: "ふたりめ", note: "同上" },
+  {
+    surface: "日づけ",
+    reading: "ひづけ",
+    note: "「お金・日づけ・条件」＝日付（ひづけ）。解析は にちづけ",
+  },
   { surface: "三日", reading: "みっか", note: "解析は さんにち。a1e2edb で「3日」から直した読み" },
   { surface: "人手不足", reading: "ひとでぶそく", note: "解析は ふそく（連濁を落とす）" },
   { surface: "右上", reading: "みぎうえ", note: "解析は みぎじょう" },
@@ -65,6 +76,11 @@ export const YOMI_ALLOW: readonly YomiAllowEntry[] = [
   { surface: "行", reading: "ぎょう", note: "「1行」「3行で」＝テキストの行。解析は こう" },
   { surface: "後に", reading: "あとに", note: "「どれを 後に するか」。解析は ごに" },
   { surface: "何ですか", reading: "なんですか", note: "解析は なにですか" },
+  {
+    surface: "何でしょうか",
+    reading: "なんでしょうか",
+    note: "「して ほしい ことは 何でしょうか」。ていねいな 問いの 何 は なん。解析は なに（何ですか と 同型）",
+  },
   { surface: "何でも", reading: "なんでも", note: "解析は なにでも" },
   { surface: "日間", reading: "かかん", note: "「5日間」＝いつかかん。解析は にちかん" },
   {
