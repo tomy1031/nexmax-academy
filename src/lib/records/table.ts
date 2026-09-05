@@ -109,13 +109,33 @@ const COMMON_COLUMNS: readonly RecordColumn[] = [
 export interface Lookups {
   readonly profiles: ReadonlyMap<string, ProfileRow>;
   readonly units: ReadonlyMap<string, UnitRef>;
+  /** 問いの 文（鍵は `<教材id>:<問いid>`）。`loadUnitIndex` が 教材から 引いた もの。 */
+  readonly prompts: Readonly<Record<string, string>>;
 }
 
-export function buildLookups(profiles: readonly ProfileRow[], units: readonly UnitRef[]): Lookups {
+export function buildLookups(
+  profiles: readonly ProfileRow[],
+  units: readonly UnitRef[],
+  prompts: Readonly<Record<string, string>> = {},
+): Lookups {
   return {
     profiles: new Map(profiles.map((profile) => [profile.id, profile])),
     units: new Map(units.map((unit) => [unit.id, unit])),
+    prompts,
   };
+}
+
+/**
+ * 問いを **先生が 読める 一文**に する。
+ *
+ * 台帳が 持って いるのは id だけ（`q1-1`）で、それだけでは どんな 質問か 分からない
+ *（2026-09-05 の 指定）。教材から 引いた 文が あれば それを 出し、無ければ id を 出す。
+ *
+ * **id を 落とさない のは 引けなかった ときだけ**。教材から 消した 問いでも
+ * 「その問いに 何人が つまずいたか」は 数えられるので、行ごと 消して しまわない。
+ */
+function promptOf(lookups: Lookups, contentId: string, questionId: string): string {
+  return lookups.prompts[`${contentId}:${questionId}`] || questionId;
 }
 
 /**
@@ -263,15 +283,16 @@ export function quizTable(records: readonly QuizRecord[], lookups: Lookups): Rec
         at: record.created_at,
         stat: {
           group: record.question_id,
-          groupLabel: `Q${record.question_index + 1} ${record.question_id}`,
+          groupLabel: `Q${record.question_index + 1} ${promptOf(lookups, record.quiz_set_id, record.question_id)}`,
           order: record.question_index,
           ok: record.correct,
           answer: record.answer_text,
         },
         cells: {
           ...commonCells(record.profile_id, record.quiz_set_id, lookups),
-          // 何問目かを 添える。設問IDだけでは 先生が 教材を 開かないと 分からない。
-          question: `Q${record.question_index + 1} ${record.question_id}`,
+          // 何問目か ＋ **設問文そのもの**。id（`q1-1`）だけでは、先生が 教材を
+          // 開かないと どんな 質問か 分からない（2026-09-05 の 指定）。
+          question: `Q${record.question_index + 1} ${promptOf(lookups, record.quiz_set_id, record.question_id)}`,
           type: QUIZ_TYPE_LABEL[record.question_type] ?? record.question_type,
           // 空 = 何も 書かずに「こたえを 見る」を 押した。**そこで 詰まった 証拠**なので
           // 空欄の ままに せず、そう 書く。
@@ -392,7 +413,7 @@ export function talkTable(
       at: record.created_at,
       stat: {
         group: record.question_id,
-        groupLabel: record.question_id,
+        groupLabel: promptOf(lookups, record.meeting_id, record.question_id),
         order: 0,
         grade: record.grade ?? "",
         // 2回目 以降の 発話 = 言い直し。効いたかを 数える。
@@ -403,7 +424,8 @@ export function talkTable(
         ...commonCells(record.profile_id, record.meeting_id, lookups),
         kind: "ミーティング",
         speaker: "学生",
-        topic: record.question_id,
+        // ヘンディさんが 何を 聞いたか。id では 中身が 見えない。
+        topic: promptOf(lookups, record.meeting_id, record.question_id),
         body: record.utterance,
         way: record.mode === "voice" ? "こえ" : "もじ",
         note:
@@ -450,7 +472,11 @@ export function talkTable(
         ...commonCells(record.profile_id, record.talk_id, lookups),
         kind: "たいわ",
         speaker: record.speaker === "learner" ? "学生" : "あいて",
-        topic: record.opened_req_id === "" ? "" : `聞き出せた: ${record.opened_req_id}`,
+        // 要件ボードの 見出し（`r3` では なく「よさん」）。
+        topic:
+          record.opened_req_id === ""
+            ? ""
+            : `聞き出せた: ${promptOf(lookups, record.talk_id, record.opened_req_id)}`,
         body: record.body,
         way: record.mode === "voice" ? "こえ" : "もじ",
         note: `${record.opened_count}/${record.req_total} 聞き出せた`,

@@ -61,7 +61,17 @@ const UNITS: UnitRef[] = [
   },
 ];
 
-const LOOKUPS = buildLookups([AYA, BOPHA, NOSCHOOL], UNITS);
+/**
+ * 問いの 文（`loadUnitIndex` が 教材から 引いた もの）。鍵は `<教材id>:<問いid>`。
+ * これが 無いと 先生の 画面は `q1-1` のような id しか 出せない。
+ */
+const PROMPTS = {
+  "houkoku-quiz:q1-1": "なぜ そう 思いましたか",
+  "houkoku-meeting:q1": "きのうは 何を しましたか",
+  "kaisha-talk:r3": "よさん",
+};
+
+const LOOKUPS = buildLookups([AYA, BOPHA, NOSCHOOL], UNITS, PROMPTS);
 
 describe("学習のきろくを1つの表にそろえる", () => {
   it("先頭の5列は だれ・どこ（種類が変わっても同じ）", () => {
@@ -686,5 +696,74 @@ describe("つまずきの まとめ", () => {
       answered: "1",
       rate: "0%",
     });
+  });
+});
+
+/* ------------------------------------------------------------------ *
+ * 問いの 文と 紐づける（2026-09-05 の 指定）
+ *
+ * 台帳は id しか 持たない（教材を 直しても 去年の 記録が 読める ように）。
+ * 先生の 画面を 開く ときに 教材から 引き直す——その 引き直しを ここで 固定する。
+ * ------------------------------------------------------------------ */
+
+describe("問いの 文を 出す", () => {
+  it("もんだいは 設問文そのものを 出す（id では 中身が 見えない）", () => {
+    const table = quizTable([quizRow({ question_id: "q1-1", question_index: 0 })], LOOKUPS);
+    expect(table.rows[0]?.cells.question).toBe("Q1 なぜ そう 思いましたか");
+  });
+
+  it("ミーティングは ヘンディさんの しつもんを 出す", () => {
+    const table = talkTable([meetingRow({ question_id: "q1" })], [], LOOKUPS);
+    expect(table.rows[0]?.cells.topic).toBe("きのうは 何を しましたか");
+  });
+
+  it("たいわは 要件ボードの 見出しを 出す", () => {
+    const table = talkTable(
+      [],
+      [
+        {
+          id: "t1",
+          profile_id: "aya",
+          talk_id: "kaisha-talk",
+          session_id: "s1",
+          turn_index: 0,
+          speaker: "learner",
+          mode: "voice",
+          body: "よさんは いくらですか",
+          opened_req_id: "r3",
+          opened_count: 1,
+          req_total: 5,
+          created_at: "2026-09-02T05:00:00.000Z",
+        },
+      ],
+      LOOKUPS,
+    );
+    expect(table.rows[0]?.cells.topic).toBe("聞き出せた: よさん");
+  });
+
+  it("つまずきの まとめにも 文が 出る（並べ替えの 見出しが 読める）", () => {
+    const table = quizTable(
+      [quizRow({ question_id: "q1-1", question_index: 0, correct: false })],
+      LOOKUPS,
+    );
+    expect(summaryTable("quiz", table.rows)?.rows[0]?.cells.group).toBe(
+      "Q1 なぜ そう 思いましたか",
+    );
+  });
+
+  it("教材から 消した 問いは id が そのまま 出る（行ごと 消さない）", () => {
+    const table = quizTable([quizRow({ question_id: "けした-とい", question_index: 4 })], LOOKUPS);
+    expect(table.rows[0]?.cells.question).toBe("Q5 けした-とい");
+    // 記録は 残って いるので、まとめからも 落とさない
+    expect(summaryTable("quiz", table.rows)?.rows).toHaveLength(1);
+  });
+
+  it("問いの id は 教材の 中でしか 一意で ないので、教材と 組で 引く", () => {
+    // 別の 教材の 同じ id（`q1-1`）を 引いても、こちらの 文は 出ない
+    const table = quizTable(
+      [quizRow({ quiz_set_id: "hoka-quiz", question_id: "q1-1", question_index: 0 })],
+      LOOKUPS,
+    );
+    expect(table.rows[0]?.cells.question).toBe("Q1 q1-1");
   });
 });

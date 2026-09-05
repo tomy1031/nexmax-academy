@@ -91,7 +91,10 @@ export function RecordsShell({
   } | null>(null);
   const [shown, setShown] = useState(PAGE_SIZE);
 
-  const lookups = useMemo(() => buildLookups(profiles, index.units), [profiles, index.units]);
+  const lookups = useMemo(
+    () => buildLookups(profiles, index.units, index.prompts),
+    [profiles, index.units, index.prompts],
+  );
 
   /*
    * 絞り込みを **DB へ 渡す かたち**に ほどく。
