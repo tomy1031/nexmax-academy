@@ -31,15 +31,6 @@
       "type": "skit"
     },
     {
-      "ref": "youken_research",
-      "type": "link",
-      "gates": true
-    },
-    {
-      "ref": "youken_research_check",
-      "type": "quizset"
-    },
-    {
       "ref": "youken_aoba",
       "type": "scenario"
     },
