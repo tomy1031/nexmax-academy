@@ -7,11 +7,15 @@ import type { Scenario } from "@/content/schema";
 import { FeedbackMessage } from "@/components/feedback-message";
 import type { FeedbackKey } from "@/lib/feedback";
 import { RubyText } from "@/components/ruby-text";
-import { buildFuriganaIndex } from "@/lib/text/furigana";
+import { buildFuriganaIndex, type FuriganaEntry } from "@/lib/text/furigana";
 import { recordContentProgress } from "@/lib/progress/store";
 import { bufferTalkTurn, flushTalkTurns, newTalkSessionId } from "@/lib/records/talk-log";
 import { CaptionBar, CallShell } from "@/components/call-shell";
 import { LiveReason } from "./live-reason";
+import { MemoStep } from "./memo-step";
+import { MissionStep } from "./mission-step";
+import { ResearchStep } from "./research-step";
+import { TalkResult } from "./talk-result";
 import { resolveMatch } from "./req-matcher";
 import { useLiveSession } from "./use-live-session";
 
@@ -26,6 +30,13 @@ import { useLiveSession } from "./use-live-session";
  * 判定は3層（AI → ローカルのキーワード救済 → 手動）で、AIの誤判定で
  * 正しい質問が却下されないようにする（設計01 §3）。
  *
+ * ## 教材が 事前調査を 持つと、5段の 道に なる
+ * `scenario.research` が あるときだけ「ミッション → しらべる → しつもんメモ →
+ * インタビュー → けっか」の 5段で 進む（旧アプリ youken_teigi/hearing の 5話が この形）。
+ * 持たない 教材——山本社長に 質問する（youken_aoba）・朝会の 報告——は **これまでどおり**
+ * 会話の 画面だけを 出す。段を すべての 教材に 付けると、調べる 材料が 無い 教材が
+ * 空の 調査画面を 抱えることに なる（2026-09-06 に データごと 外した ばかりの ところ）。
+ *
  * ## 声も 文字も、同じ judge() を通る
  * 以前は判定がテキスト送信のときにしか走らず、**声で話した学習者は何をしても
  * ボードが1つも開かなかった**。いまは聞き取り（相手が話しはじめた合図で1つに
@@ -37,6 +48,84 @@ import { useLiveSession } from "./use-live-session";
  * 「番ちがい」ではなく「おしい」を返す——1語 当てた 学習者を 迷子に しない。
  */
 const CLOSE_NOTE: FeedbackKey = "talk.close";
+
+/**
+ * 訪問の 第一声（お客さまインタビューの 5話）。
+ *
+ * 旧アプリ（hearing.js の `openPreInterviewModal`）が ドアを ノックする 前に
+ * 「まずは あいさつ」として 出して いた 文を **逐語で** 移した もの。5話 共通で ある。
+ *
+ * 教材から 引く（`buildOpeningLine`）道を 使わないのは、この 5話には
+ * **第一声に 使える 引用が 無い**ため。教訓の 中の かぎ括弧を 拾うと
+ * 「しつれいします。ところで、〜は どうですか？。」（穴あきの 記号ごと）や
+ * 「しつれいします。会社で 調べて、ご連絡します。」（帰りぎわの 文が 第一声に）に なる。
+ * 白紙恐怖を 越えさせる ための 型文が、押した 学習者を 意味不明な 一言に
+ * 着地させて いた（2026-09-07 の R4 検収）。
+ */
+const VISIT_OPENING =
+  "はじめまして。ネクストメイクの エンジニアです。今日は よろしく おねがいします。";
+
+/** 上の 文に 出る 漢字の 読み。画面が 自分で 出す 字なので、教材の 辞書には 載らない。 */
+const VISIT_OPENING_FURIGANA: FuriganaEntry[] = [["今日", "きょう"]];
+
+/**
+ * 事前調査を 持って いても **5段に 乗せない** 教材。
+ *
+ * 朝会の 報告（`talk-asakai-report`）が それ。`research` を 持って いるが、
+ * 5段の 画面は お客さま訪問の ことばで できて いる:
+ *   - けっかの 見出しが「要件定義書」——この 教材の `doc` は「相談メモ」
+ *   - しつもんメモの ボタンが「〜さんに 会いに 行く」——朝会は 同席して いる 相手
+ *   - 模擬ページに ふりがなの 無い 漢字が 20字 残って いる（規律2）。
+ *     いままで 描かれて いなかったので 誰も 気づかなかった
+ * この3つを 直すのは お客さまインタビューの 移植の 外なので、直るまでは
+ * これまでどおり 会話の 画面 1枚で 出す（2026-09-07 のコード検収）。
+ */
+const NOT_FIVE_STEP: ReadonlySet<string> = new Set(["talk-asakai-report"]);
+
+/** 5段の どこに いるか。事前調査を 持たない 教材は ずっと "interview"。 */
+type Phase = "mission" | "research" | "memo" | "interview" | "result";
+
+/** 帯に 出す 段の 名前（旧アプリ hearing.js の STEPS と 同じ 並び・同じ 呼び名）。 */
+const STEPS: readonly { readonly id: Phase; readonly label: string }[] = [
+  { id: "mission", label: "ミッション" },
+  { id: "research", label: "しらべる" },
+  { id: "memo", label: "しつもんメモ" },
+  { id: "interview", label: "インタビュー" },
+  { id: "result", label: "けっか" },
+];
+
+/**
+ * いま どこに いるかの 帯。
+ *
+ * 5段は 長い。**あと 何回 押せば 相手に 会えるのか**が 見えないと、途中で
+ * 「この 教材は 終わらない」と 感じる（設計01 P8: 先を 見せる）。
+ */
+function StepBar({ current }: { current: Phase }) {
+  const at = STEPS.findIndex((step) => step.id === current);
+  return (
+    <ol className="mb-4 flex flex-wrap items-center gap-1.5" aria-label="いまの ところ">
+      {STEPS.map((step, i) => {
+        const done = i < at;
+        const now = i === at;
+        return (
+          <li
+            key={step.id}
+            aria-current={now ? "step" : undefined}
+            className={`rounded-full px-3 py-1 text-xs font-extrabold ${
+              now
+                ? "bg-navy text-white"
+                : done
+                  ? "bg-sky-soft text-navy"
+                  : "bg-panel text-ink-faint border-hairline border-2"
+            }`}
+          >
+            {done ? "✓" : i + 1} {step.label}
+          </li>
+        );
+      })}
+    </ol>
+  );
+}
 
 export function TalkSession({
   scenario,
@@ -52,6 +141,14 @@ export function TalkSession({
 }) {
   const furigana = useMemo(() => buildFuriganaIndex(scenario.furigana ?? []), [scenario.furigana]);
   const live = useLiveSession();
+  /** 事前調査を 持つ 教材だけ 5段で 進む（無ければ 会話の 画面 1枚のまま）。 */
+  const research = NOT_FIVE_STEP.has(scenario.id) ? undefined : scenario.research;
+  const [phase, setPhase] = useState<Phase>(research ? "mission" : "interview");
+  /**
+   * しつもんメモ（3つ）。会話の 画面まで 持って いく——手元に 何も 無い まま
+   * 相手の 前に 立たせない。端末の 中だけに 置く（台帳へは 送らない）。
+   */
+  const [memo, setMemo] = useState<readonly string[]>(["", "", ""]);
   const [open, setOpen] = useState<ReadonlySet<string>>(new Set());
   // 画面に出す文言は型付きキーだけ（自由文字列を書けなくする — 設計03 §1.3-1）
   const [note, setNote] = useState<FeedbackKey | null>(null);
@@ -67,6 +164,16 @@ export function TalkSession({
   const [hintId, setHintId] = useState<string | null>(null);
   /** 「はじめの 一言」カードを閉じたか。 */
   const [openerClosed, setOpenerClosed] = useState(false);
+  /**
+   * この回、自分から 一度でも 話したか（声・文字の どちらでも）。
+   *
+   * 字幕（`live.transcript`）を 数えない。`disconnect` は 字幕を 消さない ので
+   *——止めた あとも 読み返せる ように、わざと そう して ある——「もう一度」で
+   * 戻った 学習者は **前の回の 発話を 持ったまま** 会話の 画面に 立つ。
+   * それを「話した」と 数えると、けっかへの 出口が 最初から 開き、
+   * いちばん 助けが 要る 2回目に「はじめの 一言」が 出なく なる（2026-09-07 のコード検収）。
+   */
+  const [spoke, setSpoke] = useState(false);
   /**
    * すでに開いた項目。判定はAIを待つあいだに進むので、**待つ前の写しではなく
    * ここを見る**（待っているあいだに開いた項目を、もう一度開けにいかないため）。
@@ -108,6 +215,7 @@ export function TalkSession({
   const judge = useCallback(
     (utterance: string) => {
       const reqs = scenario.interview.reqs;
+      if (utterance.trim()) setSpoke(true);
       const closed = reqs.filter((req) => !openRef.current.has(req.id));
       if (closed.length === 0 || !utterance.trim()) return;
 
@@ -214,23 +322,316 @@ export function TalkSession({
 
   const handleLeft = useCallback(() => {
     live.disconnect();
-    recordContentProgress(scenario.id, { status: "completed" });
+    /*
+     * 5段の 教材は、**1つも 聞き出せて いない 回を「おわった」に しない**。
+     * 入室して すぐ 退室する だけで 次の話が 開くと、5話の 階段を 一言も 話さずに
+     * 上がりきれる（2026-09-07 の R4・コード検収）。「とちゅう」で 残して おけば
+     * 学習者は もう一度 同じ話に 戻れるし、けっかの 画面は そのまま 見られる。
+     * 事前調査を 持たない 教材（山本社長・朝会の 報告）は これまでどおり。
+     */
+    const earned = !research || openRef.current.size > 0;
+    recordContentProgress(scenario.id, { status: earned ? "completed" : "started" });
     void flushTalkTurns(scenario.id);
-  }, [live, scenario.id]);
+    // 5段の 教材は、退出したら そのまま けっか（要件定義書）へ。会話を おえた 学習者を
+    // 何も 出さずに 一覧へ 返すと、聞き出した ことが どこにも 残らない。
+    if (research) setPhase("result");
+  }, [live, scenario.id, research]);
+
+  /** もう一度 やる。開いた 項目・字幕・メモを 元に 戻して ミッションから。 */
+  const handleRetry = useCallback(() => {
+    live.disconnect();
+    openRef.current = new Set();
+    judgedRef.current = 0;
+    bufferedRef.current = 0;
+    sessionIdRef.current = "";
+    openedHintRef.current = null;
+    setOpen(new Set());
+    setNote(null);
+    setHintId(null);
+    setOpenerClosed(false);
+    setSpoke(false);
+    setMemo(["", "", ""]);
+    setPhase("mission");
+  }, [live]);
 
   const askable = scenario.interview.reqs.filter((r) => !open.has(r.id));
   // 聞き出せた項目のヒントは引っこめる（もう要らないものが残っていると、
   // 「まだ聞けていない」と勘違いする）
   const hint = askable.find((req) => req.id === hintId) ?? null;
 
-  /** あいさつの型文（教材の言い回しから借りる）。無ければカードは goal と tip だけ。 */
-  const openingLine = useMemo(() => buildOpeningLine(scenario), [scenario]);
+  /**
+   * あいさつの型文。5話（事前調査を 持つ 教材）は 旧アプリと 同じ 固定の 第一声、
+   * それ以外は これまでどおり 教材の 言い回しから 借りる。無ければカードは goal と tip だけ。
+   */
+  const openingLine = useMemo(
+    () => (research ? VISIT_OPENING : buildOpeningLine(scenario)),
+    [research, scenario],
+  );
+  /** 第一声の 読み。教材の 辞書に 画面の ことばの 読みを 混ぜない（先生が 消せて しまう）。 */
+  const openingFurigana = useMemo(
+    () => buildFuriganaIndex([...VISIT_OPENING_FURIGANA, ...(scenario.furigana ?? [])]),
+    [scenario.furigana],
+  );
   /**
    * 「はじめの 一言」を出すか。つながった直後で、まだ一度も話していないとき。
    * 何を言えばよいか分からないまま画面と向き合う時間を作らないため。
    */
-  const showOpener =
-    live.status === "live" && !openerClosed && !live.transcript.some((turn) => turn.from === "me");
+  const showOpener = live.status === "live" && !openerClosed && !spoke;
+
+  const callView = (
+    <CallShell
+      title={scenario.title}
+      focus={scenario.mission.goal}
+      participants={participants}
+      activeSpeaker={live.status === "live" ? "client" : null}
+      onLeft={handleLeft}
+      controls={
+        <div className="card-island flex flex-wrap items-center gap-2 p-3">
+          {live.status === "idle" && (
+            <button
+              type="button"
+              // 声は人物カードで決めたもの（まんが・ミーティングと同じ人の声にする）
+              onClick={() => void live.connect(scenario.interview.persona, scenario.client.voice)}
+              className="btn-island btn-game px-6 py-2.5 text-sm"
+            >
+              🎙️ 話しはじめる
+            </button>
+          )}
+          {live.status === "connecting" && (
+            <span className="text-ink-soft text-sm font-extrabold">つないでいます…</span>
+          )}
+          {live.status === "live" && (
+            <>
+              <span className="bg-leaf/15 text-leaf-deep rounded-full px-3 py-1 text-xs font-extrabold">
+                ● つながっています
+              </span>
+              {/*
+                  マイクを 断られても つないだまま 続ける（劣化運転）。
+                  ここで 何も 言わないと、声が 届いていない ことに 気づけない。
+                */}
+              {!live.voiceOn && (
+                <span className="text-ink-soft text-xs font-extrabold">
+                  マイクは つかえません。下に 書いて 送れば、そのまま すすめます
+                </span>
+              )}
+              <button
+                type="button"
+                onClick={live.disconnect}
+                className="btn-island btn-game px-4 py-2 text-xs"
+                style={
+                  { "--btn-face": "#ffffff", "--btn-shadow": "#cfe6f3" } as React.CSSProperties
+                }
+              >
+                <span className="text-ink">いったん とめる</span>
+              </button>
+            </>
+          )}
+          {live.status === "error" && (
+            <span className="text-coral-deep text-sm font-extrabold">
+              つながりませんでした。下に りゆうが 出ています
+            </span>
+          )}
+        </div>
+      }
+    >
+      {/*
+        つながらなかった りゆう。以前は これを 出す ときに **会話の 中身ごと
+        差し替えて** いた——つまり 鍵が 無い 環境で「話しはじめる」を 押すと、
+        文字で 送る 欄まで 画面から 消えて、退室 以外に 道が 無くなった
+        （2026-09-07 の 通しプレイ検収）。判定は もともと 端末の 中だけで 動くので、
+        **声が つながらなくても 文字で 最後まで 進める**。りゆうは 上に 添えるだけに する。
+      */}
+      {(live.status === "notReady" || live.status === "error") && (
+        <LiveReason reason={live.reason} />
+      )}
+      <>
+        {/*
+              はじめの 一言。つながった直後の「何を 言えば いいか わからない」を
+              いちばん 短い 道で 越えさせる（設計01 P8: 次の行動を 見せる）。
+              文は 教材データから 借りる——ここで 新しい 日本語を 書くと、その漢字の
+              読みが 読み辞書に 無く、学習者が そこで 止まる（規律2）。
+            */}
+        {showOpener && (
+          <section className="card-island p-4" aria-label="はじめの 一言">
+            <div className="flex items-start justify-between gap-2">
+              <h3 className="text-ink font-extrabold">🌱 はじめの 一言</h3>
+              <button
+                type="button"
+                onClick={() => setOpenerClosed(true)}
+                aria-label="はじめの 一言を とじる"
+                className="text-ink-soft hover:text-ink shrink-0 px-2 text-sm font-black"
+              >
+                ✕
+              </button>
+            </div>
+            <p className="text-ink-soft mt-1 text-sm font-bold">
+              🎯 <RubyText text={scenario.mission.goal} index={furigana} />
+            </p>
+            <p className="text-ink-soft mt-1 text-sm font-bold">
+              💡 <RubyText text={scenario.client.tip} index={furigana} />
+            </p>
+            {openingLine && (
+              <button
+                type="button"
+                /*
+                 * あいさつは「聞き出す こと」では ないので、ボードは 動かさない
+                 *（判定に かけると、あいさつした だけで ヒントが 出て とまどう）。
+                 */
+                onClick={() => {
+                  live.send(openingLine);
+                  setOpenerClosed(true);
+                }}
+                className="border-hairline bg-panel-tint text-ink mt-3 rounded-full border-2 px-4 py-2 text-sm font-extrabold"
+              >
+                <RubyText text={openingLine} index={openingFurigana} />
+                <span className="text-sky ml-2">▶ これを 送る</span>
+              </button>
+            )}
+          </section>
+        )}
+
+        {/*
+            文字起こしは必ず見せる（AIの誤判定を目で確かめられるように）。
+            ただし つないで いない あいだは 出さない——「もう一度」で 戻った 直後に
+            前の回の 4行が 残って いると、まだ 話して いないのに 話した ように 見える。
+          */}
+        <section className="flex flex-col gap-2">
+          {(live.status === "idle" && !spoke ? [] : live.transcript.slice(-4)).map((turn, i) => (
+            <CaptionBar
+              key={i}
+              speaker={turn.from === "me" ? "あなた" : scenario.client.name}
+              text={turn.text}
+            />
+          ))}
+        </section>
+
+        {/* 文字でも聞ける（音声が使えない環境でも学習を止めない） */}
+        <form
+          className="flex gap-2"
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (!draft.trim()) return;
+            live.send(draft);
+            void judge(draft);
+            setDraft("");
+          }}
+        >
+          <input
+            type="text"
+            value={draft}
+            onChange={(e) => setDraft(e.target.value)}
+            placeholder="しつもんを 書いて 送る"
+            aria-label="しつもんを 入力する"
+            className="border-hairline bg-panel text-ink w-full rounded-[var(--radius-button)] border-2 px-4 py-2.5 font-bold"
+          />
+          <button type="submit" className="btn-island btn-game shrink-0 px-6 py-2.5 text-sm">
+            きく
+          </button>
+        </form>
+
+        {note && <FeedbackMessage messageKey={note} />}
+      </>
+
+      {/* 要件ボード（？？？フリップ） */}
+      <section className="card-island p-5">
+        <h3 className="text-ink font-extrabold">
+          📋 聞き出すこと（{open.size} / {scenario.interview.reqs.length}）
+        </h3>
+        <ul className="mt-3 grid gap-2 sm:grid-cols-2">
+          {scenario.interview.reqs.map((req) => {
+            const isOpen = open.has(req.id);
+            return (
+              <motion.li
+                key={req.id}
+                layout
+                className="border-hairline rounded-[var(--radius-card)] border-2 px-3 py-2"
+                style={{ background: isOpen ? "var(--color-sky-soft)" : "var(--color-panel)" }}
+              >
+                <p className="text-ink text-sm font-extrabold">
+                  <span className="mr-1">{req.icon}</span>
+                  <RubyText text={req.label} index={furigana} />
+                </p>
+                <p className="text-ink-soft mt-0.5 text-sm font-bold">
+                  {isOpen ? <RubyText text={req.secret} index={furigana} /> : "？？？"}
+                </p>
+              </motion.li>
+            );
+          })}
+        </ul>
+
+        {askable.length > 0 && (
+          <div className="mt-3">
+            <button
+              type="button"
+              onClick={() => {
+                // まだ聞けていないものから ひとつ。同じものが続かないよう、
+                // いま出しているものは候補から外す。
+                const pool = askable.filter((req) => req.id !== hintId);
+                const from = pool.length > 0 ? pool : askable;
+                setHintId(from[Math.floor(Math.random() * from.length)]!.id);
+              }}
+              className="btn-game px-4 py-2 text-sm [--btn-face:#ffc93c] [--btn-shadow:#f0a819]"
+            >
+              💡 ヒントを 1つ もらう（のこり {askable.length}）
+            </button>
+            {hint && (
+              <p className="bg-panel-tint text-ink mt-2 rounded-2xl px-4 py-2 text-sm font-bold">
+                <span className="mr-1">{hint.icon}</span>
+                <RubyText text={hint.hint} index={furigana} />
+              </p>
+            )}
+          </div>
+        )}
+      </section>
+
+      {/*
+        自分で 書いた しつもんメモ。**会話の 最中に 見える ところ**に 置く——
+        旧アプリは メモの 画面を 出た 時点で 捨てて いて、いちばん 要る ところで
+        手元に 何も 残らなかった。
+      */}
+      {research && memo.some((line) => line.trim()) && (
+        <section className="card-island p-4">
+          <h3 className="text-ink text-sm font-extrabold">📝 じぶんの しつもんメモ</h3>
+          <ul className="mt-2 grid gap-1.5">
+            {memo
+              .filter((line) => line.trim())
+              .map((line) => (
+                <li key={line} className="text-ink-soft text-sm font-bold">
+                  ・<RubyText text={line} index={furigana} />
+                </li>
+              ))}
+          </ul>
+        </section>
+      )}
+
+      {/*
+        けっかへ。退出ボタン（Zoom枠の 中）でも 行けるが、**話しはじめる 前に
+        押してしまう ボタン**の 近くにしか 出口が 無いと、聞きおえた 学習者が
+        要件定義書に たどりつけない。
+
+        ただし **一言も 話さないうちは 出さない**。けっかの 画面は 聞けなかった 項目の
+        答え（`secret`）を ぜんぶ 並べるので、そこへ 1押しで 行ける 出口が あると、
+        「？？？」で 伏せた 意味が なくなる（2026-09-07 の R3・R4 検収が そろって 指摘）。
+        話さずに 出たい 人の 道は 残って いる——Zoom枠の「退室」が それで、
+        こちらは 会話の 画面の 中に あるので まちがえて 押しにくい。
+      */}
+      {research && (spoke || open.size > 0) && (
+        <div className="flex justify-end">
+          <button
+            type="button"
+            onClick={handleLeft}
+            className="btn-island btn-game px-6 py-3 text-sm"
+          >
+            📄 けっかを{" "}
+            <ruby>
+              見<rt>み</rt>
+            </ruby>
+            る →
+          </button>
+        </div>
+      )}
+    </CallShell>
+  );
 
   return (
     <div className={embedded ? "" : "mx-auto w-full max-w-3xl px-4 py-6"}>
@@ -259,201 +660,33 @@ export function TalkSession({
         </header>
       )}
 
-      <CallShell
-        title={scenario.title}
-        focus={scenario.mission.goal}
-        participants={participants}
-        activeSpeaker={live.status === "live" ? "client" : null}
-        onLeft={handleLeft}
-        controls={
-          <div className="card-island flex flex-wrap items-center gap-2 p-3">
-            {live.status === "idle" && (
-              <button
-                type="button"
-                // 声は人物カードで決めたもの（まんが・ミーティングと同じ人の声にする）
-                onClick={() => void live.connect(scenario.interview.persona, scenario.client.voice)}
-                className="btn-island btn-game px-6 py-2.5 text-sm"
-              >
-                🎙️ 話しはじめる
-              </button>
-            )}
-            {live.status === "connecting" && (
-              <span className="text-ink-soft text-sm font-extrabold">つないでいます…</span>
-            )}
-            {live.status === "live" && (
-              <>
-                <span className="bg-leaf/15 text-leaf-deep rounded-full px-3 py-1 text-xs font-extrabold">
-                  ● つながっています
-                </span>
-                {/*
-                  マイクを 断られても つないだまま 続ける（劣化運転）。
-                  ここで 何も 言わないと、声が 届いていない ことに 気づけない。
-                */}
-                {!live.voiceOn && (
-                  <span className="text-ink-soft text-xs font-extrabold">
-                    マイクは つかえません。下に 書いて 送れば、そのまま すすめます
-                  </span>
-                )}
-                <button
-                  type="button"
-                  onClick={live.disconnect}
-                  className="btn-island btn-game px-4 py-2 text-xs"
-                  style={
-                    { "--btn-face": "#ffffff", "--btn-shadow": "#cfe6f3" } as React.CSSProperties
-                  }
-                >
-                  <span className="text-ink">いったん とめる</span>
-                </button>
-              </>
-            )}
-            {live.status === "error" && (
-              <span className="text-coral-deep text-sm font-extrabold">
-                つながりませんでした。下に りゆうが 出ています
-              </span>
-            )}
-          </div>
-        }
-      >
-        {live.status === "notReady" || live.status === "error" ? (
-          <LiveReason reason={live.reason} />
-        ) : (
-          <>
-            {/*
-              はじめの 一言。つながった直後の「何を 言えば いいか わからない」を
-              いちばん 短い 道で 越えさせる（設計01 P8: 次の行動を 見せる）。
-              文は 教材データから 借りる——ここで 新しい 日本語を 書くと、その漢字の
-              読みが 読み辞書に 無く、学習者が そこで 止まる（規律2）。
-            */}
-            {showOpener && (
-              <section className="card-island p-4" aria-label="はじめの 一言">
-                <div className="flex items-start justify-between gap-2">
-                  <h3 className="text-ink font-extrabold">🌱 はじめの 一言</h3>
-                  <button
-                    type="button"
-                    onClick={() => setOpenerClosed(true)}
-                    aria-label="はじめの 一言を とじる"
-                    className="text-ink-soft hover:text-ink shrink-0 px-2 text-sm font-black"
-                  >
-                    ✕
-                  </button>
-                </div>
-                <p className="text-ink-soft mt-1 text-sm font-bold">
-                  🎯 <RubyText text={scenario.mission.goal} index={furigana} />
-                </p>
-                <p className="text-ink-soft mt-1 text-sm font-bold">
-                  💡 <RubyText text={scenario.client.tip} index={furigana} />
-                </p>
-                {openingLine && (
-                  <button
-                    type="button"
-                    /*
-                     * あいさつは「聞き出す こと」では ないので、ボードは 動かさない
-                     *（判定に かけると、あいさつした だけで ヒントが 出て とまどう）。
-                     */
-                    onClick={() => {
-                      live.send(openingLine);
-                      setOpenerClosed(true);
-                    }}
-                    className="border-hairline bg-panel-tint text-ink mt-3 rounded-full border-2 px-4 py-2 text-sm font-extrabold"
-                  >
-                    <RubyText text={openingLine} index={furigana} />
-                    <span className="text-sky ml-2">▶ これを 送る</span>
-                  </button>
-                )}
-              </section>
-            )}
+      {/* 5段の 教材だけ、いま どこに いるかを 帯で 見せる */}
+      {research && <StepBar current={phase} />}
 
-            {/* 文字起こしは必ず見せる（AIの誤判定を目で確かめられるように） */}
-            <section className="flex flex-col gap-2">
-              {live.transcript.slice(-4).map((turn, i) => (
-                <CaptionBar
-                  key={i}
-                  speaker={turn.from === "me" ? "あなた" : scenario.client.name}
-                  text={turn.text}
-                />
-              ))}
-            </section>
-
-            {/* 文字でも聞ける（音声が使えない環境でも学習を止めない） */}
-            <form
-              className="flex gap-2"
-              onSubmit={(e) => {
-                e.preventDefault();
-                if (!draft.trim()) return;
-                live.send(draft);
-                void judge(draft);
-                setDraft("");
-              }}
-            >
-              <input
-                type="text"
-                value={draft}
-                onChange={(e) => setDraft(e.target.value)}
-                placeholder="しつもんを 書いて 送る"
-                aria-label="しつもんを 入力する"
-                className="border-hairline bg-panel text-ink w-full rounded-[var(--radius-button)] border-2 px-4 py-2.5 font-bold"
-              />
-              <button type="submit" className="btn-island btn-game shrink-0 px-6 py-2.5 text-sm">
-                きく
-              </button>
-            </form>
-
-            {note && <FeedbackMessage messageKey={note} />}
-          </>
-        )}
-
-        {/* 要件ボード（？？？フリップ） */}
-        <section className="card-island p-5">
-          <h3 className="text-ink font-extrabold">
-            📋 聞き出すこと（{open.size} / {scenario.interview.reqs.length}）
-          </h3>
-          <ul className="mt-3 grid gap-2 sm:grid-cols-2">
-            {scenario.interview.reqs.map((req) => {
-              const isOpen = open.has(req.id);
-              return (
-                <motion.li
-                  key={req.id}
-                  layout
-                  className="border-hairline rounded-[var(--radius-card)] border-2 px-3 py-2"
-                  style={{ background: isOpen ? "var(--color-sky-soft)" : "var(--color-panel)" }}
-                >
-                  <p className="text-ink text-sm font-extrabold">
-                    <span className="mr-1">{req.icon}</span>
-                    <RubyText text={req.label} index={furigana} />
-                  </p>
-                  <p className="text-ink-soft mt-0.5 text-sm font-bold">
-                    {isOpen ? <RubyText text={req.secret} index={furigana} /> : "？？？"}
-                  </p>
-                </motion.li>
-              );
-            })}
-          </ul>
-
-          {askable.length > 0 && (
-            <div className="mt-3">
-              <button
-                type="button"
-                onClick={() => {
-                  // まだ聞けていないものから ひとつ。同じものが続かないよう、
-                  // いま出しているものは候補から外す。
-                  const pool = askable.filter((req) => req.id !== hintId);
-                  const from = pool.length > 0 ? pool : askable;
-                  setHintId(from[Math.floor(Math.random() * from.length)]!.id);
-                }}
-                className="btn-game px-4 py-2 text-sm [--btn-face:#ffc93c] [--btn-shadow:#f0a819]"
-              >
-                💡 ヒントを 1つ もらう（のこり {askable.length}）
-              </button>
-              {hint && (
-                <p className="bg-panel-tint text-ink mt-2 rounded-2xl px-4 py-2 text-sm font-bold">
-                  <span className="mr-1">{hint.icon}</span>
-                  <RubyText text={hint.hint} index={furigana} />
-                </p>
-              )}
-            </div>
-          )}
-        </section>
-      </CallShell>
+      {research && phase === "mission" ? (
+        <MissionStep scenario={scenario} furigana={furigana} onDone={() => setPhase("research")} />
+      ) : research && phase === "research" ? (
+        <ResearchStep
+          research={research}
+          furigana={furigana}
+          onBack={() => setPhase("mission")}
+          onDone={() => setPhase("memo")}
+        />
+      ) : research && phase === "memo" ? (
+        <MemoStep
+          findings={research.findings}
+          clientName={scenario.client.name}
+          memo={memo}
+          onChange={setMemo}
+          furigana={furigana}
+          onBack={() => setPhase("research")}
+          onDone={() => setPhase("interview")}
+        />
+      ) : phase === "result" ? (
+        <TalkResult scenario={scenario} opened={open} furigana={furigana} onRetry={handleRetry} />
+      ) : (
+        callView
+      )}
     </div>
   );
 }
@@ -482,7 +715,15 @@ export function buildOpeningLine(scenario: Scenario): string | null {
 
   for (const source of sources) {
     const phrase = QUOTED.exec(source)?.[1]?.trim();
-    if (phrase) return `${greeting}${phrase.replace(/[。、]+$/u, "")}。`;
+    /*
+     * 穴あき（〜）や 問い切りの 記号（？！）を 含む 引用は 第一声に ならない——
+     * うしろに 「。」を 継ぐので「〜は どうですか？。」に なる。拾える 文が
+     * 無ければ null を 返し、カードは goal と tip だけに する（黙って 変な 文を
+     * 送らせない）。2026-09-07 の R4 検収で 実際に そう なって いた。
+     */
+    if (phrase && !/[〜～？?！!]/u.test(phrase)) {
+      return `${greeting}${phrase.replace(/[。、]+$/u, "")}。`;
+    }
   }
   return null;
 }
