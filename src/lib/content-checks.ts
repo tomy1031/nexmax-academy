@@ -102,8 +102,15 @@ export function checkForbiddenWords(file: string, data: unknown): Finding[] {
  * 一致しない**。読みを 捨ててから 剥がすと、素の 文（取り置き）が 残る。
  */
 function researchProse(scenario: Scenario): string {
-  return (scenario.research?.pages ?? [])
-    .map((page) => page.html)
+  const research = scenario.research;
+  if (!research) return "";
+  /*
+   * ページの HTML だけで なく **findings（調査で わかったこと）も 見る**。
+   * findings は しらべる 段の おわりと しつもんメモ の 左側の 両方に 出る、
+   * 学習者が いちばん 読み返す ところで ある。ここに 答えが 書いて あれば、
+   * 模擬ページに 書いて あるのと 変わらない（2026-09-07 のコード検収）。
+   */
+  return [...research.pages.map((page) => page.html), ...research.findings]
     .join("\n")
     .replace(/<rt\b[^>]*>[\s\S]*?<\/rt\s*>/gi, "")
     .replace(/<rp\b[^>]*>[\s\S]*?<\/rp\s*>/gi, "")

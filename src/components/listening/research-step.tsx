@@ -6,7 +6,7 @@ import type { Scenario } from "@/content/schema";
 import { FeedbackMessage } from "@/components/feedback-message";
 import { RubyText } from "@/components/ruby-text";
 import type { FuriganaIndex } from "@/lib/text/furigana";
-import { sanitizeMockPage } from "@/lib/text/mock-page";
+import { parseMockPage, type MockNode } from "@/lib/text/mock-page";
 import styles from "./research-page.module.css";
 
 /**
@@ -51,7 +51,7 @@ export function ResearchStep({
   const [picked, setPicked] = useState<number | null>(null);
 
   const page = research.pages[pageIdx] ?? research.pages[0]!;
-  const markup = useMemo(() => sanitizeMockPage(page.html), [page.html]);
+  const body = useMemo(() => parseMockPage(page.html), [page.html]);
   const quiz = research.quiz[quizIdx];
   const cleared = quizIdx >= research.quiz.length;
   const hit = quiz != null && picked != null && picked === quiz.answer;
@@ -121,11 +121,14 @@ export function ResearchStep({
           {/*
             教材の 見た目を そのまま 出す ところ。読みは HTML に 焼いて ある
             （旧アプリが 書いた <ruby>）ので、ここでは 合成しない。
+
+            innerHTML は 使わない。教材データは 先生が 直せる 場所なので、
+            通す タグと 属性を 決めた 木（`parseMockPage`）から 組み立てる——
+            そうすれば 文字が もう一度 HTML として 読み直される 場所が どこにも 無い。
           */}
-          <div
-            className={`${styles.frame} max-h-[70vh] overflow-y-auto bg-white text-[#111827]`}
-            dangerouslySetInnerHTML={{ __html: markup }}
-          />
+          <div className={`${styles.frame} max-h-[70vh] overflow-y-auto bg-white text-[#111827]`}>
+            <MockBody nodes={body} />
+          </div>
         </div>
       </section>
 
@@ -237,5 +240,22 @@ export function ResearchStep({
         </button>
       </div>
     </div>
+  );
+}
+
+/** ほどいた 木を そのまま 描く。ここに 属性を 足さない（足した 瞬間に 穴に なる）。 */
+function MockBody({ nodes }: { nodes: readonly MockNode[] }) {
+  return (
+    <>
+      {nodes.map((node, i) =>
+        node.kind === "text" ? (
+          node.text
+        ) : (
+          <node.tag key={i} className={node.className} style={node.style}>
+            {node.tag === "br" ? null : <MockBody nodes={node.children} />}
+          </node.tag>
+        ),
+      )}
+    </>
   );
 }

@@ -96,7 +96,7 @@
         "tab": "🌐 宿のサイト",
         "frame": "browser",
         "url": "tabiya-gh.jp",
-        "html": "\n<div class=\"ws-page\">\n  <div class=\"ws-title\">🏮 ゲストハウス<ruby>旅屋<rt>たびや</rt></ruby></div>\n  <p class=\"ws-lead\"><ruby>古<rt>ふる</rt></ruby>い <ruby>日本<rt>にほん</rt></ruby>の <ruby>家<rt>いえ</rt></ruby>を <ruby>直<rt>なお</rt></ruby>した <ruby>宿<rt>やど</rt></ruby>です。<ruby>外国<rt>がいこく</rt></ruby>からの お<ruby>客<rt>きゃく</rt></ruby>さまが 7<ruby>割<rt>わり</rt></ruby>です。</p>\n  <div class=\"ws-h\">ご<ruby>料金<rt>りょうきん</rt></ruby></div>\n  <table class=\"ws-table\">\n    <tr><td>ドミトリー（1<ruby>泊<rt>ぱく</rt></ruby>）</td><td>2,500<ruby>円<rt>えん</rt></ruby>〜</td></tr>\n    <tr><td><ruby>個室<rt>こしつ</rt></ruby>（1<ruby>泊<rt>ぱく</rt></ruby>・1<ruby>人<rt>にん</rt></ruby>）</td><td>3,500<ruby>円<rt>えん</rt></ruby>〜</td></tr>\n    <tr><td><ruby>朝<rt>あさ</rt></ruby>ごはん</td><td>500<ruby>円<rt>えん</rt></ruby></td></tr>\n  </table>\n  <div class=\"ws-h\">チェックイン</div>\n  <p class=\"ws-text\">15:00〜21:00<br>それより おそい <ruby>時間<rt>じかん</rt></ruby>は、<ruby>前<rt>まえ</rt></ruby>もって ご<ruby>連絡<rt>れんらく</rt></ruby>ください。</p>\n  <div class=\"ws-h\"><ruby>周辺<rt>しゅうへん</rt></ruby>の ご<ruby>案内<rt>あんない</rt></ruby></div>\n  <p class=\"ws-text\"><ruby>駅<rt>えき</rt></ruby>から <ruby>歩<rt>ある</rt></ruby>いて 8<ruby>分<rt>ぷん</rt></ruby>・<ruby>温泉<rt>おんせん</rt></ruby>まで <ruby>歩<rt>ある</rt></ruby>いて 10<ruby>分<rt>ぷん</rt></ruby></p>\n</div>"
+        "html": "\n<div class=\"ws-page\">\n  <div class=\"ws-title\">🏮 ゲストハウス<ruby>旅屋<rt>たびや</rt></ruby></div>\n  <p class=\"ws-lead\"><ruby>古<rt>ふる</rt></ruby>い <ruby>日本<rt>にほん</rt></ruby>の <ruby>家<rt>いえ</rt></ruby>を <ruby>直<rt>なお</rt></ruby>した <ruby>宿<rt>やど</rt></ruby>です。<ruby>外国<rt>がいこく</rt></ruby>からの お<ruby>客<rt>きゃく</rt></ruby>さまが 7<ruby>割<rt>わり</rt></ruby>です。</p>\n  <div class=\"ws-h\">ご<ruby>料金<rt>りょうきん</rt></ruby></div>\n  <table class=\"ws-table\">\n    <tr><td>ドミトリー（1<ruby>泊<rt>ぱく</rt></ruby>）</td><td>2,500<ruby>円<rt>えん</rt></ruby>〜</td></tr>\n    <tr><td><ruby>個室<rt>こしつ</rt></ruby>（1<ruby>泊<rt>ぱく</rt></ruby>・1<ruby>人<rt>ひとり</rt></ruby>）</td><td>3,500<ruby>円<rt>えん</rt></ruby>〜</td></tr>\n    <tr><td><ruby>朝<rt>あさ</rt></ruby>ごはん</td><td>500<ruby>円<rt>えん</rt></ruby></td></tr>\n  </table>\n  <div class=\"ws-h\">チェックイン</div>\n  <p class=\"ws-text\">15:00〜21:00<br>それより おそい <ruby>時間<rt>じかん</rt></ruby>は、<ruby>前<rt>まえ</rt></ruby>もって ご<ruby>連絡<rt>れんらく</rt></ruby>ください。</p>\n  <div class=\"ws-h\"><ruby>周辺<rt>しゅうへん</rt></ruby>の ご<ruby>案内<rt>あんない</rt></ruby></div>\n  <p class=\"ws-text\"><ruby>駅<rt>えき</rt></ruby>から <ruby>歩<rt>ある</rt></ruby>いて 8<ruby>分<rt>ぷん</rt></ruby>・<ruby>温泉<rt>おんせん</rt></ruby>まで <ruby>歩<rt>ある</rt></ruby>いて 10<ruby>分<rt>ぷん</rt></ruby></p>\n</div>"
       }
     ],
     "quiz": [
@@ -158,7 +158,9 @@
           "なんかい",
           "大変",
           "たいへん",
-          "チェックイン"
+          "チェックイン",
+          "なぜ",
+          "作りたい"
         ],
         "hint": "「なぜ アプリを 作りたいですか？」と 聞いて みよう"
       },
@@ -168,7 +170,6 @@
         "icon": "👤",
         "label": "だれが 使う？",
         "secret": "外国人ゲスト（7割）。英語・中国語・韓国語の人が多い",
-        "secretShort": "外国人ゲスト（7割）",
         "fact": "使う人は 外国人の ゲスト（7割）。英語・中国語・韓国語の 人が 多い",
         "keywords": [
           "外国人",
@@ -178,7 +179,9 @@
           "ななわり",
           "英語",
           "中国語",
-          "韓国語"
+          "韓国語",
+          "どんな",
+          "お客さま"
         ],
         "hint": "「どんな お客さまが 使いますか？」と 聞いて みよう"
       },
@@ -197,7 +200,9 @@
           "つかいかた",
           "ハウスルール",
           "案内",
-          "あんない"
+          "あんない",
+          "いい",
+          "できると"
         ],
         "hint": "「アプリで 何が できると いいですか？」と 聞いて みよう"
       },
@@ -207,7 +212,6 @@
         "icon": "🌏",
         "label": "きのう②多言語",
         "secret": "日本語・英語・中国語・韓国語の 4つの言語",
-        "secretShort": "4つの言語で見られる",
         "fact": "日本語・英語・中国語・韓国語の 4つの 言語で 見られる",
         "keywords": [
           "言語",
@@ -218,7 +222,8 @@
           "英語",
           "中国語",
           "韓国語",
-          "4つ"
+          "4つ",
+          "どの"
         ],
         "hint": "「どの 言語が 必要ですか？」と 聞いて みよう。使う人を 思い出してね"
       },
@@ -228,7 +233,6 @@
         "icon": "🗺",
         "label": "きのう③周辺マップ",
         "secret": "周辺の おすすめ（ラーメン屋・温泉・コンビニ）の 地図",
-        "secretShort": "周辺のおすすめの地図",
         "fact": "周辺の おすすめ（ラーメン屋・温泉・コンビニ）の 地図が ほしい",
         "keywords": [
           "周辺",
@@ -240,7 +244,9 @@
           "温泉",
           "おんせん",
           "ラーメン",
-          "コンビニ"
+          "コンビニ",
+          "宿の",
+          "情報"
         ],
         "hint": "「宿の まわりの 情報も 入れたいですか？」と 聞いて みよう"
       },
@@ -260,7 +266,9 @@
           "電波",
           "でんぱ",
           "外でも",
-          "そとでも"
+          "そとでも",
+          "ない",
+          "場所で"
         ],
         "hint": "「Wi-Fiが ない 場所でも 使いますか？」と 聞いて みよう"
       },
@@ -281,7 +289,9 @@
           "上げたい",
           "あげたい",
           "目標",
-          "もくひょう"
+          "もくひょう",
+          "どう",
+          "なったら"
         ],
         "hint": "「アプリで、どう なったら うれしいですか？」と 聞いて みよう。口コミの 点数に ヒントが あったね"
       },
@@ -316,7 +326,8 @@
           "40万",
           "予算",
           "よさん",
-          "いくら"
+          "いくら",
+          "ご予算"
         ],
         "hint": "「ご予算は どのくらいですか？」と 聞いて みよう"
       },
@@ -335,7 +346,8 @@
           "シーズン",
           "秋",
           "あき",
-          "いつまで"
+          "いつまで",
+          "必要"
         ],
         "hint": "「いつまでに 必要ですか？」と 聞いて みよう"
       }

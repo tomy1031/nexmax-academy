@@ -90,7 +90,7 @@
         "tab": "🌐 みらい塾のサイト",
         "frame": "browser",
         "url": "mirai-juku.jp",
-        "html": "\n<div class=\"ws-page\">\n  <div class=\"ws-header\">\n    <div class=\"ws-title\">みらい<ruby>塾<rt>じゅく</rt></ruby></div>\n    <div class=\"ws-catch\"><ruby>一人<rt>ひとり</rt></ruby>ひとりを、<ruby>大切<rt>たいせつ</rt></ruby>に。</div>\n  </div>\n  <div class=\"ws-nav\">\n    <a><ruby>塾<rt>じゅく</rt></ruby>について</a>\n    <a><ruby>料金<rt>りょうきん</rt></ruby></a>\n    <a><ruby>保護者<rt>ほごしゃ</rt></ruby>の<ruby>声<rt>こえ</rt></ruby></a>\n    <a>お<ruby>知<rt>し</rt></ruby>らせ</a>\n  </div>\n  <div class=\"ws-hero\">\n    <div class=\"ws-hero-emoji\" style=\"background:linear-gradient(135deg,#ede9fe,#a78bfa)\">📚</div>\n    <div class=\"ws-hero-text\">\n      <b><ruby>小学生<rt>しょうがくせい</rt></ruby>・<ruby>中学生<rt>ちゅうがくせい</rt></ruby>のための <ruby>学習塾<rt>がくしゅうじゅく</rt></ruby>。</b><br>\n      <ruby>生徒<rt>せいと</rt></ruby>120<ruby>人<rt>にん</rt></ruby>が、<ruby>元気<rt>げんき</rt></ruby>に <ruby>通<rt>かよ</rt></ruby>って います。\n    </div>\n    <div class=\"ws-badges\">\n      <span class=\"ws-badge\">🧒 <ruby>生徒<rt>せいと</rt></ruby>120<ruby>人<rt>にん</rt></ruby></span>\n      <span class=\"ws-badge\">🏫 1クラス 15<ruby>人<rt>にん</rt></ruby>まで</span>\n      <span class=\"ws-badge\">🚶 さくら<ruby>駅<rt>えき</rt></ruby>から <ruby>歩<rt>ある</rt></ruby>いて7<ruby>分<rt>ぷん</rt></ruby></span>\n    </div>\n  </div>\n  <div class=\"ws-section\">\n    <h3>🏫 <ruby>塾<rt>じゅく</rt></ruby>について</h3>\n    <p>\n      みらい<ruby>塾<rt>じゅく</rt></ruby>は、2011<ruby>年<rt>ねん</rt></ruby>に できた <ruby>学習塾<rt>がくしゅうじゅく</rt></ruby>です。\n      ことしで 15<ruby>年<rt>ねん</rt></ruby>に なります。\n    </p>\n    <p>\n      <ruby>先生<rt>せんせい</rt></ruby>は、<ruby>塾長<rt>じゅくちょう</rt></ruby>の <ruby>星野<rt>ほしの</rt></ruby>と、3<ruby>人<rt>にん</rt></ruby>の <ruby>先生<rt>せんせい</rt></ruby>の、あわせて 4<ruby>人<rt>にん</rt></ruby>です。\n      1クラスは 15<ruby>人<rt>にん</rt></ruby>まで。<ruby>一人<rt>ひとり</rt></ruby>ひとりの <ruby>顔<rt>かお</rt></ruby>を <ruby>見<rt>み</rt></ruby>て、ていねいに <ruby>教<rt>おし</rt></ruby>えます。\n    </p>\n    <ul class=\"ws-list\">\n      <li>📖 <ruby>学校<rt>がっこう</rt></ruby>の <ruby>宿題<rt>しゅくだい</rt></ruby>も、しっかり サポートします</li>\n      <li>🪑 <ruby>自習室<rt>じしゅうしつ</rt></ruby>は、いつでも <ruby>使<rt>つか</rt></ruby>えます</li>\n      <li>📝 テストの <ruby>前<rt>まえ</rt></ruby>は、<ruby>特別<rt>とくべつ</rt></ruby><ruby>授業<rt>じゅぎょう</rt></ruby>が あります</li>\n    </ul>\n  </div>\n  <div class=\"ws-section\">\n    <h3>💴 <ruby>料金<rt>りょうきん</rt></ruby></h3>\n    <table class=\"ws-table\">\n      <tr>\n        <th>コース</th>\n        <th><ruby>回数<rt>かいすう</rt></ruby></th>\n        <th><ruby>料金<rt>りょうきん</rt></ruby>（1か<ruby>月<rt>げつ</rt></ruby>）</th>\n      </tr>\n      <tr>\n        <td><ruby>小学生<rt>しょうがくせい</rt></ruby>コース</td>\n        <td><ruby>週<rt>しゅう</rt></ruby>2<ruby>回<rt>かい</rt></ruby></td>\n        <td>8,000<ruby>円<rt>えん</rt></ruby></td>\n      </tr>\n      <tr>\n        <td><ruby>中学生<rt>ちゅうがくせい</rt></ruby>コース</td>\n        <td><ruby>週<rt>しゅう</rt></ruby>3<ruby>回<rt>かい</rt></ruby></td>\n        <td>15,000<ruby>円<rt>えん</rt></ruby></td>\n      </tr>\n    </table>\n    <p class=\"ws-note\">\n      🎁 <ruby>兄弟割引<rt>きょうだいわりびき</rt></ruby>：ごきょうだいで <ruby>通<rt>かよ</rt></ruby>う <ruby>場合<rt>ばあい</rt></ruby>、<ruby>2人目<rt>ふたりめ</rt></ruby>は <ruby>半額<rt>はんがく</rt></ruby>です。\n    </p>\n  </div>\n  <div class=\"ws-section\">\n    <h3>💬 <ruby>保護者<rt>ほごしゃ</rt></ruby>の<ruby>声<rt>こえ</rt></ruby></h3>\n    <div class=\"ws-card\">\n      <p>「<ruby>先生<rt>せんせい</rt></ruby>が よく <ruby>電話<rt>でんわ</rt></ruby>で <ruby>連絡<rt>れんらく</rt></ruby>を くれます。ありがたいです」</p>\n      <div class=\"ws-card-by\">（<ruby>小<rt>しょう</rt></ruby>4の お<ruby>母<rt>かあ</rt></ruby>さま）</div>\n    </div>\n    <div class=\"ws-card\">\n      <p>「<ruby>台風<rt>たいふう</rt></ruby>の<ruby>日<rt>ひ</rt></ruby>の お<ruby>休<rt>やす</rt></ruby>みの <ruby>連絡<rt>れんらく</rt></ruby>が、もう<ruby>少<rt>すこ</rt></ruby>し <ruby>早<rt>はや</rt></ruby>いと うれしいです」</p>\n      <div class=\"ws-card-by\">（<ruby>中<rt>ちゅう</rt></ruby>2の お<ruby>父<rt>とう</rt></ruby>さま）</div>\n    </div>\n  </div>\n  <div class=\"ws-section\">\n    <h3>📢 お<ruby>知<rt>し</rt></ruby>らせ</h3>\n    <div class=\"ws-news\">\n      <div class=\"ws-news-item\">\n        <span class=\"ws-news-date\">1<ruby>月<rt>がつ</rt></ruby>20<ruby>日<rt>にち</rt></ruby></span>\n        <ruby>個人面談<rt>こじんめんだん</rt></ruby>の お<ruby>知<rt>し</rt></ruby>らせ（<ruby>成績<rt>せいせき</rt></ruby>の お<ruby>話<rt>はなし</rt></ruby>は <ruby>面談<rt>めんだん</rt></ruby>で）\n      </div>\n      <div class=\"ws-news-item\">\n        <span class=\"ws-news-date\">1<ruby>月<rt>がつ</rt></ruby>8<ruby>日<rt>にち</rt></ruby></span>\n        <ruby>新学期<rt>しんがっき</rt></ruby>の <ruby>予定表<rt>よていひょう</rt></ruby>の プリントを <ruby>配<rt>くば</rt></ruby>りました。かばんを ご<ruby>確認<rt>かくにん</rt></ruby>ください\n      </div>\n      <div class=\"ws-news-item\">\n        <span class=\"ws-news-date\">10<ruby>月<rt>がつ</rt></ruby>14<ruby>日<rt>にち</rt></ruby></span>\n        ☔ <ruby>台風<rt>たいふう</rt></ruby>の<ruby>日<rt>ひ</rt></ruby>は お<ruby>休<rt>やす</rt></ruby>みです。お<ruby>電話<rt>でんわ</rt></ruby>で ご<ruby>連絡<rt>れんらく</rt></ruby>します\n      </div>\n    </div>\n  </div>\n  <div class=\"ws-footer\">\n    みらい<ruby>塾<rt>じゅく</rt></ruby>｜さくら<ruby>市<rt>し</rt></ruby> みどり<ruby>町<rt>ちょう</rt></ruby>2-3-5｜☎ 042-123-4567<br>\n    <ruby>受付<rt>うけつけ</rt></ruby>：<ruby>火<rt>か</rt></ruby>〜<ruby>土<rt>ど</rt></ruby> 14:00〜21:00（<ruby>日<rt>にち</rt></ruby>・<ruby>月<rt>げつ</rt></ruby>は お<ruby>休<rt>やす</rt></ruby>み）\n  </div>\n</div>"
+        "html": "\n<div class=\"ws-page\">\n  <div class=\"ws-header\">\n    <div class=\"ws-title\">みらい<ruby>塾<rt>じゅく</rt></ruby></div>\n    <div class=\"ws-catch\"><ruby>一人<rt>ひとり</rt></ruby>ひとりを、<ruby>大切<rt>たいせつ</rt></ruby>に。</div>\n  </div>\n  <div class=\"ws-nav\">\n    <a><ruby>塾<rt>じゅく</rt></ruby>について</a>\n    <a><ruby>料金<rt>りょうきん</rt></ruby></a>\n    <a><ruby>保護者<rt>ほごしゃ</rt></ruby>の<ruby>声<rt>こえ</rt></ruby></a>\n    <a>お<ruby>知<rt>し</rt></ruby>らせ</a>\n  </div>\n  <div class=\"ws-hero\">\n    <div class=\"ws-hero-emoji\" style=\"background:linear-gradient(135deg,#ede9fe,#a78bfa)\">📚</div>\n    <div class=\"ws-hero-text\">\n      <b><ruby>小学生<rt>しょうがくせい</rt></ruby>・<ruby>中学生<rt>ちゅうがくせい</rt></ruby>のための <ruby>学習塾<rt>がくしゅうじゅく</rt></ruby>。</b><br>\n      <ruby>生徒<rt>せいと</rt></ruby>120<ruby>人<rt>にん</rt></ruby>が、<ruby>元気<rt>げんき</rt></ruby>に <ruby>通<rt>かよ</rt></ruby>って います。\n    </div>\n    <div class=\"ws-badges\">\n      <span class=\"ws-badge\">🧒 <ruby>生徒<rt>せいと</rt></ruby>120<ruby>人<rt>にん</rt></ruby></span>\n      <span class=\"ws-badge\">🏫 1クラス 15<ruby>人<rt>にん</rt></ruby>まで</span>\n      <span class=\"ws-badge\">🚶 さくら<ruby>駅<rt>えき</rt></ruby>から <ruby>歩<rt>ある</rt></ruby>いて7<ruby>分<rt>ふん</rt></ruby></span>\n    </div>\n  </div>\n  <div class=\"ws-section\">\n    <h3>🏫 <ruby>塾<rt>じゅく</rt></ruby>について</h3>\n    <p>\n      みらい<ruby>塾<rt>じゅく</rt></ruby>は、2011<ruby>年<rt>ねん</rt></ruby>に できた <ruby>学習塾<rt>がくしゅうじゅく</rt></ruby>です。\n      ことしで 15<ruby>年<rt>ねん</rt></ruby>に なります。\n    </p>\n    <p>\n      <ruby>先生<rt>せんせい</rt></ruby>は、<ruby>塾長<rt>じゅくちょう</rt></ruby>の <ruby>星野<rt>ほしの</rt></ruby>と、3<ruby>人<rt>にん</rt></ruby>の <ruby>先生<rt>せんせい</rt></ruby>の、あわせて 4<ruby>人<rt>にん</rt></ruby>です。\n      1クラスは 15<ruby>人<rt>にん</rt></ruby>まで。<ruby>一人<rt>ひとり</rt></ruby>ひとりの <ruby>顔<rt>かお</rt></ruby>を <ruby>見<rt>み</rt></ruby>て、ていねいに <ruby>教<rt>おし</rt></ruby>えます。\n    </p>\n    <ul class=\"ws-list\">\n      <li>📖 <ruby>学校<rt>がっこう</rt></ruby>の <ruby>宿題<rt>しゅくだい</rt></ruby>も、しっかり サポートします</li>\n      <li>🪑 <ruby>自習室<rt>じしゅうしつ</rt></ruby>は、いつでも <ruby>使<rt>つか</rt></ruby>えます</li>\n      <li>📝 テストの <ruby>前<rt>まえ</rt></ruby>は、<ruby>特別<rt>とくべつ</rt></ruby><ruby>授業<rt>じゅぎょう</rt></ruby>が あります</li>\n    </ul>\n  </div>\n  <div class=\"ws-section\">\n    <h3>💴 <ruby>料金<rt>りょうきん</rt></ruby></h3>\n    <table class=\"ws-table\">\n      <tr>\n        <th>コース</th>\n        <th><ruby>回数<rt>かいすう</rt></ruby></th>\n        <th><ruby>料金<rt>りょうきん</rt></ruby>（1か<ruby>月<rt>げつ</rt></ruby>）</th>\n      </tr>\n      <tr>\n        <td><ruby>小学生<rt>しょうがくせい</rt></ruby>コース</td>\n        <td><ruby>週<rt>しゅう</rt></ruby>2<ruby>回<rt>かい</rt></ruby></td>\n        <td>8,000<ruby>円<rt>えん</rt></ruby></td>\n      </tr>\n      <tr>\n        <td><ruby>中学生<rt>ちゅうがくせい</rt></ruby>コース</td>\n        <td><ruby>週<rt>しゅう</rt></ruby>3<ruby>回<rt>かい</rt></ruby></td>\n        <td>15,000<ruby>円<rt>えん</rt></ruby></td>\n      </tr>\n    </table>\n    <p class=\"ws-note\">\n      🎁 <ruby>兄弟割引<rt>きょうだいわりびき</rt></ruby>：ごきょうだいで <ruby>通<rt>かよ</rt></ruby>う <ruby>場合<rt>ばあい</rt></ruby>、<ruby>2人目<rt>ふたりめ</rt></ruby>は <ruby>半額<rt>はんがく</rt></ruby>です。\n    </p>\n  </div>\n  <div class=\"ws-section\">\n    <h3>💬 <ruby>保護者<rt>ほごしゃ</rt></ruby>の<ruby>声<rt>こえ</rt></ruby></h3>\n    <div class=\"ws-card\">\n      <p>「<ruby>先生<rt>せんせい</rt></ruby>が よく <ruby>電話<rt>でんわ</rt></ruby>で <ruby>連絡<rt>れんらく</rt></ruby>を くれます。ありがたいです」</p>\n      <div class=\"ws-card-by\">（<ruby>小<rt>しょう</rt></ruby>4の お<ruby>母<rt>かあ</rt></ruby>さま）</div>\n    </div>\n    <div class=\"ws-card\">\n      <p>「<ruby>台風<rt>たいふう</rt></ruby>の<ruby>日<rt>ひ</rt></ruby>の お<ruby>休<rt>やす</rt></ruby>みの <ruby>連絡<rt>れんらく</rt></ruby>が、もう<ruby>少<rt>すこ</rt></ruby>し <ruby>早<rt>はや</rt></ruby>いと うれしいです」</p>\n      <div class=\"ws-card-by\">（<ruby>中<rt>ちゅう</rt></ruby>2の お<ruby>父<rt>とう</rt></ruby>さま）</div>\n    </div>\n  </div>\n  <div class=\"ws-section\">\n    <h3>📢 お<ruby>知<rt>し</rt></ruby>らせ</h3>\n    <div class=\"ws-news\">\n      <div class=\"ws-news-item\">\n        <span class=\"ws-news-date\">1<ruby>月<rt>がつ</rt></ruby>20<ruby>日<rt>にち</rt></ruby></span>\n        <ruby>個人面談<rt>こじんめんだん</rt></ruby>の お<ruby>知<rt>し</rt></ruby>らせ（<ruby>成績<rt>せいせき</rt></ruby>の お<ruby>話<rt>はなし</rt></ruby>は <ruby>面談<rt>めんだん</rt></ruby>で）\n      </div>\n      <div class=\"ws-news-item\">\n        <span class=\"ws-news-date\">1<ruby>月<rt>がつ</rt></ruby>8<ruby>日<rt>にち</rt></ruby></span>\n        <ruby>新学期<rt>しんがっき</rt></ruby>の <ruby>予定表<rt>よていひょう</rt></ruby>の プリントを <ruby>配<rt>くば</rt></ruby>りました。かばんを ご<ruby>確認<rt>かくにん</rt></ruby>ください\n      </div>\n      <div class=\"ws-news-item\">\n        <span class=\"ws-news-date\">10<ruby>月<rt>がつ</rt></ruby>14<ruby>日<rt>にち</rt></ruby></span>\n        ☔ <ruby>台風<rt>たいふう</rt></ruby>の<ruby>日<rt>ひ</rt></ruby>は お<ruby>休<rt>やす</rt></ruby>みです。お<ruby>電話<rt>でんわ</rt></ruby>で ご<ruby>連絡<rt>れんらく</rt></ruby>します\n      </div>\n    </div>\n  </div>\n  <div class=\"ws-footer\">\n    みらい<ruby>塾<rt>じゅく</rt></ruby>｜さくら<ruby>市<rt>し</rt></ruby> みどり<ruby>町<rt>ちょう</rt></ruby>2-3-5｜☎ 042-123-4567<br>\n    <ruby>受付<rt>うけつけ</rt></ruby>：<ruby>火<rt>か</rt></ruby>〜<ruby>土<rt>ど</rt></ruby> 14:00〜21:00（<ruby>日<rt>にち</rt></ruby>・<ruby>月<rt>げつ</rt></ruby>は お<ruby>休<rt>やす</rt></ruby>み）\n  </div>\n</div>"
       },
       {
         "tab": "📰 塾長のインタビュー記事",
@@ -156,7 +156,9 @@
           "電話",
           "でんわ",
           "プリント",
-          "毎日"
+          "毎日",
+          "なぜ",
+          "作りたい"
         ],
         "hint": "「なぜ アプリを 作りたいですか？」と 聞いて みよう"
       },
@@ -166,7 +168,6 @@
         "icon": "👤",
         "label": "だれが 使う？",
         "secret": "保護者（30〜40代・LINEに なれている）と 先生四人",
-        "secretShort": "保護者と先生四人",
         "fact": "使う人は 保護者（30〜40代・LINEに なれている）と、先生 四人",
         "keywords": [
           "30代",
@@ -174,7 +175,9 @@
           "LINE",
           "ライン",
           "お母さん",
-          "先生"
+          "先生",
+          "使い",
+          "どんな"
         ],
         "hint": "「どんな 人が 使いますか？」と 聞いて みよう"
       },
@@ -184,7 +187,6 @@
         "icon": "📢",
         "label": "きのう①一斉配信",
         "secret": "お知らせの 一斉配信（★一番 ほしい 機能）",
-        "secretShort": "お知らせの一斉配信",
         "fact": "お知らせの 一斉配信（★星野さんの 一番 ほしい 機能）",
         "keywords": [
           "一斉",
@@ -192,7 +194,8 @@
           "配信",
           "はいしん",
           "一番",
-          "いちばん"
+          "いちばん",
+          "どれ"
         ],
         "hint": "「一番 大事な 機能は どれですか？」と 聞いて みよう"
       },
@@ -208,7 +211,9 @@
           "けっせき",
           "遅刻",
           "ちこく",
-          "休みの連絡"
+          "休みの連絡",
+          "保護者から",
+          "連絡したいこと"
         ],
         "hint": "「保護者からも 連絡したいことは ありますか？」と 聞いて みよう"
       },
@@ -224,7 +229,9 @@
           "しゅくだい",
           "写真",
           "しゃしん",
-          "チェック"
+          "チェック",
+          "ほか",
+          "ほしい"
         ],
         "hint": "「ほかに ほしい 機能は ありますか？」と 聞いて みよう"
       },
@@ -234,14 +241,15 @@
         "icon": "⚠️",
         "label": "やらないこと",
         "secret": "成績は アプリで 見せない（面談で 話す）",
-        "secretShort": "成績はアプリで見せない",
         "fact": "成績は アプリで 見せない（個人面談で 直接 話したいから）",
         "keywords": [
           "成績",
           "せいせき",
           "面談",
           "めんだん",
-          "見せない"
+          "見せない",
+          "やらないこと",
+          "アプリ"
         ],
         "hint": "「アプリで やらないことは ありますか？」と 聞いて みよう。お知らせにも ヒントが あったね"
       },
@@ -257,7 +265,8 @@
           "きょうだい",
           "アカウント",
           "二人分",
-          "ふたり"
+          "ふたり",
+          "兄弟割引"
         ],
         "hint": "Webサイトに「兄弟割引」が あったね。兄弟の 家庭の ことも 聞いて みよう"
       },
@@ -274,7 +283,8 @@
           "パスワード",
           "安全",
           "あんぜん",
-          "心配"
+          "心配",
+          "心配なこと"
         ],
         "hint": "「心配なことは ありますか？」と 聞いて みよう"
       },
@@ -292,7 +302,8 @@
           "つきづき",
           "毎月",
           "予算",
-          "よさん"
+          "よさん",
+          "ご予算"
         ],
         "hint": "「ご予算は どのくらいですか？」と 聞いて みよう"
       },
@@ -308,7 +319,8 @@
           "しがつ",
           "新学期",
           "しんがっき",
-          "いつまで"
+          "いつまで",
+          "必要"
         ],
         "hint": "「いつまでに 必要ですか？」と 聞いて みよう"
       }

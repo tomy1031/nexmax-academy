@@ -85,7 +85,8 @@ export const YOMI_ALLOW: readonly YomiAllowEntry[] = [
   {
     surface: "市場",
     reading: "いちば",
-    note: "農家が 野菜を 出す 市場。解析は しじょう（経済の 市場）",
+    where: "出せない",
+    note: "「市場に 出せない」＝農家が 野菜を 出す 市場。解析は しじょう（経済の 市場）。将来 書かれる 経済の 市場（しじょう）まで 通さない ように 絞る",
   },
   { surface: "紙", reading: "かみ", where: "紙の カルテ", note: "「紙の カルテ」。解析は し" },
   { surface: "実", reading: "みのる", where: "田中 実", note: "人名（田中実）。解析は み" },
@@ -105,14 +106,9 @@ export const YOMI_ALLOW: readonly YomiAllowEntry[] = [
   },
   { surface: "月の", reading: "がつの", where: "4月の", note: "「4月の 新学期」。解析は つき" },
   {
-    surface: "行ったら",
-    reading: "いったら",
-    note: "「15時に 行ったら」。解析は 行う と 取りちがえる",
-  },
-  {
     surface: "行ったら、もう ",
     reading: "いったら、もう ",
-    note: "同上。うしろの 語まで 1つの 照合単位に なる ことが ある",
+    note: "「15時に 行ったら、もう 何も…」。解析は 行う と 取りちがえる。うしろの 語まで 1つの 照合単位に なる",
   },
   {
     surface: "月々払い",
@@ -127,21 +123,15 @@ export const YOMI_ALLOW: readonly YomiAllowEntry[] = [
   { surface: "四人", reading: "よにん", note: "解析は よんにん。教材は よにん でそろえる" },
   { surface: "二人分", reading: "ふたりぶん", note: "「兄弟 二人分」。解析は ににんぶん" },
   {
-    surface: "千八百人",
-    reading: "せんはっぴゃくにん",
-    note: "解析は せんはちひゃくにん（促音・半濁音を 落とす）",
-  },
-  {
-    surface: "三百二十人",
-    reading: "さんびゃくにじゅうにん",
-    note: "解析は さんひゃく…（連濁を 落とす）",
-  },
-  {
     surface: "約千八百人",
     reading: "やくせんはっぴゃくにん",
-    note: "同上（熟語ごと 照合される ことが ある）",
+    note: "Instagramの フォロワー数。解析は せんはちひゃくにん（促音・半濁音を 落とす）",
   },
-  { surface: "約三百二十人", reading: "やくさんびゃくにじゅうにん", note: "同上" },
+  {
+    surface: "約三百二十人",
+    reading: "やくさんびゃくにじゅうにん",
+    note: "口コミ件数。解析は さんひゃく…（連濁を 落とす）",
+  },
   { surface: "先生四人", reading: "せんせいよにん", note: "同上（四人＝よにん）" },
   { surface: "兄弟二人分", reading: "きょうだいふたりぶん", note: "同上（二人分＝ふたりぶん）" },
   {

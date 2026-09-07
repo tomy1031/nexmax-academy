@@ -47,13 +47,31 @@ export function TalkResult({
   return (
     <div className="flex flex-col gap-4">
       <section className="card-island p-6 text-center">
+        {/*
+          見出しで 祝わない ときが ある。1つも 聞き出せなかった 回に
+          「🎉 おつかれさまでした！」を 出すと、0 / 10 と ★0 の 真上で
+          結果を ぼかす ことに なる（規律1・2026-09-07 の R3 検収）。
+          言い切った あとで、下の「つぎは これを 聞いて みよう」へ 送る。
+
+          **星の 数（`starsOf`）では 分けない。** ★は 出来ばえの 目安で、1〜4件の 回は
+          ★0 だが「1つも 聞き出せて いない」わけでは ない——星で 分けた ときは
+          4 / 10 の 回に「まだ 聞き出せて いません」と 出て いた。見出しは 数そのもので 決める。
+        */}
         <h2 className="text-ink text-lg font-extrabold">
-          {stars === 3 ? "🏆 ぜんぶ 聞き出せました！" : "🎉 おつかれさまでした！"}
+          {covered === reqs.length
+            ? "🏆 ぜんぶ 聞き出せました！"
+            : covered > 0
+              ? "🎉 おつかれさまでした！"
+              : "🌱 まだ 聞き出せて いません"}
         </h2>
         {/* 数で 言い切る（規律1）。割合や「よくできました」だけに しない */}
         <p className="text-navy mt-3 text-3xl font-black">
           {covered} / {reqs.length}
         </p>
+        {/*
+          数の 下の 一文も 結果に 合わせる。0 のとき「要件を 聞き出せました」と
+          出て いた——見出しで 言い切った ことを、すぐ 下で 取り消して いた（規律1）。
+        */}
         <p className="text-ink-soft text-sm font-extrabold">
           <ruby>
             要件<rt>ようけん</rt>
@@ -66,7 +84,7 @@ export function TalkResult({
           <ruby>
             出<rt>だ</rt>
           </ruby>
-          せました
+          {covered > 0 ? "せました" : "せて いません"}
         </p>
         <p aria-hidden className="mt-2 text-2xl">
           <span className="text-sun-deep">{"★".repeat(stars)}</span>
