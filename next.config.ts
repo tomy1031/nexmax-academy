@@ -54,6 +54,14 @@ const nextConfig: NextConfig = {
       // 先生が授業で配ったリンクとブックマークを 404 にしないため、消さずに送る。
       { source: "/arcade", destination: "/wordtest", permanent: true },
       { source: "/arcade/:id", destination: "/wordtest/:id", permanent: true },
+      /*
+       * 就業形態の 3本を かいしゃステージから しごとステージへ 切り出した
+       *（2026-09-07）。ID の 付いた URL は ページ側が 引き直して 送るが
+       *（`splitContentSegment` — src/app/[stage]/[content]/page.tsx）、
+       * **ID の 付いて いない 短い形は URL に 手がかりが 残って いない**ので、
+       * ここに 書くしか ない。かいしゃに リスニングは 1本しか 無かった。
+       */
+      { source: "/kaisha/listening", destination: "/shigoto/listening", permanent: true },
     ];
   },
 };

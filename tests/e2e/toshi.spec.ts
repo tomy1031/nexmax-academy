@@ -13,6 +13,8 @@ import {
   waitForAsk,
   KAISHA,
   KAISHA_ITEMS,
+  SHIGOTO,
+  SHIGOTO_ITEMS,
   SHUGYO_TOTAL,
   joinCall,
   leaveCall,
@@ -655,17 +657,60 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
     await page.getByRole("button", { name: "おわる" }).click();
   });
 
-  await test.step("9. STEP 6 リスニング「就業形態」— 資料より 先に 聞く", async () => {
+  await test.step("9. ステージを おえる", async () => {
     /*
-     * **スライドより 先**（2026-09-01 の 指定）。先に 資料を 見せると、
-     * 聞き取りでは なく 読んだ ことを 思い出す 練習に なる。
-     *
+     * かいしゃステージは **社長と 話して おわり**。就業形態の 3本は
+     * 2026-09-07 に しごとステージへ 切り出した（次の テスト）。
+     */
+    const clear = page.getByRole("dialog", { name: "ステージ クリア" });
+    await expect(clear).toBeVisible();
+    await shot(page, "11-stage-clear");
+    await clear.getByRole("link", { name: "ステージに もどる" }).click();
+
+    await expect(page.getByText(progressText(KAISHA_ITEMS.length))).toBeVisible();
+    /*
+     * 進みぐあいの「100%」だけを 見る。松井社長の 説明文にも「100%」が 出る ように
+     * なった（対話ゲーム）ので、部分一致だと 2つに 当たる。
+     */
+    await expect(page.getByText("100%", { exact: true })).toBeVisible();
+    await shot(page, "12-stage-top-done");
+  });
+});
+
+/**
+ * しごとステージ（ITの 仕事の 3つの タイプ）の 通し
+ *
+ * もとは かいしゃステージの STEP 6 だった 3本。**まず 聞いて、資料で 確かめ、
+ * さいごに かくにんの もんだい**という 並びが 保たれて いる ことも、ここで 見張る
+ *（先に 資料を 見せると 聞く 練習に ならない — 2026-09-01 の 指定）。
+ *
+ * かいしゃの 通しと 分けて あるのは、**関門が ステージの 中だけ**だから——
+ * しごとの 1本目は、かいしゃを 1本も おえて いなくても 開く。
+ */
+test("しごとステージを 通しで あそべる（端末に 何も 置かずに 始める）", async ({ page }) => {
+  await test.step("1. ステージのトップに 教材が 順に ならぶ", async () => {
+    await page.goto("/shigoto");
+    // 見出しは 漢字＋ふりがな。ルビが 合成されるので 名前で 引く（仕事しごとの 3つの タイプ）。
+    await expect(page.getByRole("heading", { name: /仕事.*3つの タイプ/ })).toBeVisible();
+
+    const list = page.locator("ol > li > a");
+    await expect(list).toHaveCount(SHIGOTO_ITEMS.length);
+    for (const [index, item] of SHIGOTO_ITEMS.entries()) {
+      await expect(list.nth(index)).toContainText(item.kind);
+    }
+    await expect(page.getByText(progressText(0, SHIGOTO_ITEMS.length))).toBeVisible();
+    await shot(page, "20-shigoto-stage-top");
+
+    await list.first().click();
+  });
+
+  await test.step("2. リスニング「仕事の 3つの タイプ」— 資料より 先に 聞く", async () => {
+    /*
      * ステージに リスニングは **1本だけ**なので URL に ID は 付かない
      *（`stageContentPath`）。ここが `-ID` 付きに なったら、ステージに
      * 2本目の リスニングが 入った という こと。
      */
-    await frameNext(page).click();
-    await expect(page).toHaveURL(/\/kaisha\/listening$/);
+    await expect(page).toHaveURL(new RegExp(`${SHIGOTO.listening.path}$`));
     await page.getByRole("button", { name: "はじめる" }).click();
 
     const heard = page.getByLabel("聞こえた ことばを 入力する");
@@ -679,15 +724,15 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
      * 入れ替えて 越えられなく なったら、ここが 落ちる。
      */
     await expect(page.getByText(/げんこうが \d+% ひらきました/)).toBeVisible();
-    await shot(page, "13-listening-typing");
+    await shot(page, "21-listening-typing");
 
     await page.getByRole("button", { name: "こたえあわせに すすむ" }).click();
     await expect(page.getByRole("heading", { name: "こたえあわせ" })).toBeVisible();
     await frameNext(page).click();
   });
 
-  await test.step("10. STEP 6 ページ「仕事の 3つの タイプを 確かめよう」— 聞いた ことを 資料で 確かめる", async () => {
-    await expect(page).toHaveURL(/article-kaisha_shugyo_keitai$/);
+  await test.step("3. ページ「仕事の 3つの タイプを 確かめよう」— 聞いた ことを 資料で 確かめる", async () => {
+    await expect(page).toHaveURL(new RegExp(`${SHIGOTO.article.path}$`));
     /*
      * カード 3枚（SES・受託開発・自社開発）。**絵に 字は 無い**——説明は カードの
      * text に HTML で 置いて ある（設計01 §4-10「画像内に重要テキストを閉じ込めない」）。
@@ -699,14 +744,14 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
      */
     await expect(page.locator('img[src*="/img/articles/kaisha_shugyo_keitai/"]')).toHaveCount(3);
     await expect(page.locator('[data-slot="empty"]')).toHaveCount(0);
-    await shot(page, "14-shugyo-keitai-slide");
+    await shot(page, "22-shugyo-keitai-slide");
 
     await readToEnd(page);
     await frameNext(page).click();
   });
 
-  await test.step("11. STEP 6 もんだい「仕事の 3つの タイプの かくにん」— 内容確認＋自分の こたえ", async () => {
-    await expect(page).toHaveURL(/quiz-kaisha_shugyo_keitai_check$/);
+  await test.step("4. もんだい「仕事の 3つの タイプの かくにん」— 内容確認＋自分の こたえ", async () => {
+    await expect(page).toHaveURL(new RegExp(`${SHIGOTO.check.path}$`));
     await page.getByRole("button", { name: "はじめる" }).click();
 
     /* この 教材も `answerMode: "all"`。9問が 同時に 見えて いる（4択・3択＋自由記述1）。 */
@@ -719,26 +764,24 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
     }
     // 「どうして やって みたいか」は 自由記述。正解も 不正解も 無い（type: free）
     await writeIn(page, "q_naze", "いろいろな 会社を 見たいからです。");
-    await shot(page, "15-shugyo-check");
+    await shot(page, "23-shugyo-check");
 
     await expect(page.getByRole("button", { name: /こたえを 出/ })).toBeVisible();
     await submitAnswers(page);
     await expect(page.getByText(`${SHUGYO_TOTAL} / ${SHUGYO_TOTAL} もん`)).toBeVisible();
   });
 
-  await test.step("12. ステージを おえる", async () => {
+  await test.step("5. ステージを おえる", async () => {
     const clear = page.getByRole("dialog", { name: "ステージ クリア" });
     await expect(clear).toBeVisible();
-    await shot(page, "11-stage-clear");
+    await shot(page, "24-shigoto-stage-clear");
     await clear.getByRole("link", { name: "ステージに もどる" }).click();
 
-    await expect(page.getByText(progressText(KAISHA_ITEMS.length))).toBeVisible();
-    /*
-     * 進みぐあいの「100%」だけを 見る。松井社長の 説明文にも「100%」が 出る ように
-     * なった（対話ゲーム）ので、部分一致だと 2つに 当たる。
-     */
+    await expect(
+      page.getByText(progressText(SHIGOTO_ITEMS.length, SHIGOTO_ITEMS.length)),
+    ).toBeVisible();
     await expect(page.getByText("100%", { exact: true })).toBeVisible();
-    await shot(page, "12-stage-top-done");
+    await shot(page, "25-shigoto-stage-top-done");
   });
 });
 
