@@ -172,8 +172,18 @@ describe("toMapAreas", () => {
     const [area] = toMapAreas([stage({ id: "studio-new" })]);
     expect(area?.stageId).toBe("studio-new");
     expect(area?.image).toBe("");
-    // 名前が空だと札が消えるので、ステージの見出しで代わりにする
-    expect(area?.name).toBe("スタジオの ステージ");
+    // 景色の名前は任意。ステージの見出しで埋めない——埋めると名前を消せなくなる
+    expect(area?.name).toBeUndefined();
+  });
+
+  it("景色の名前だけ書かない土地は、名前が空のまま渡る（地図は札を出さない）", () => {
+    const noName = { image: AREA.image, note: AREA.note };
+    const [area] = toMapAreas([stage({ id: "a", area: noName })]);
+    expect(area?.name).toBeUndefined();
+    expect(area?.reading).toBeUndefined();
+    // 絵と一言は残る＝土地そのものは地図にある
+    expect(area?.image).toBe(AREA.image);
+    expect(area?.note).toBe(AREA.note);
   });
 
   it("エリアのIDは重複しない（React の key と aria-label に使うため）", () => {

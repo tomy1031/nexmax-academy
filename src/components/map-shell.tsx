@@ -292,6 +292,9 @@ function MapLayer({ children }: { children: ReactNode }) {
 /**
  * エリア名の札。ステージと反対側の肩に置く。
  * 出すのは景色の名前だけで、国名は出さない（`MAP_AREAS` の方針。areas.ts を参照）。
+ *
+ * **名前が無ければ札そのものを出さない**（2026-09-07 の指定）。景色の名前は任意なので、
+ * 付けていない土地に空の札や見出しの札が立つと、名前を消す方法が無くなる。
  */
 function AreaLabel({
   area,
@@ -302,6 +305,7 @@ function AreaLabel({
   onRight: boolean;
   cleared: boolean;
 }) {
+  if (!area.name) return null;
   return (
     <div
       className={`absolute top-6 z-30 flex items-center gap-1.5 rounded-full border-2 px-3 py-1 text-xs font-black shadow-[0_3px_0_rgba(0,79,141,.25)] backdrop-blur-sm sm:text-sm ${
@@ -976,7 +980,9 @@ function RouteArea({
 
   return (
     <section
-      aria-label={area.name}
+      /* 札は名前が無ければ出ないが、読み上げには土地の呼び名が要る。
+         名前が無い土地はステージの見出しで呼ぶ（画面には出ない） */
+      aria-label={area.name || stage?.title || "エリア"}
       /* 狭い画面ではレッスンパネルが丸の真下に縦長で開くので、そのぶん背を高くする。
          詰めるとパネルが次のエリアまではみ出し、エリア名の札に重なる */
       className="relative h-[940px] w-full md:h-[clamp(680px,64vh,780px)]"

@@ -1040,15 +1040,27 @@ export const stageContentRefSchema = z.object({
  * 画面文言が国に依存していると差し替えのたびに UI を直すことになる。
  * とくに「タイ」は使用禁止（AGENTS.md）。都市名・遺跡名は国名ではないので使ってよい。
  */
-export const mapAreaSchema = z.object({
-  /** 画面に出す景色の名前。国名を入れない。 */
-  name: plainText,
-  reading: hiragana,
-  /** 背景画像。`/img/scenes/...` か、スタジオでアップロードした画像のURL。 */
-  image: z.string().min(1),
-  /** 地図に小さく添える一言。 */
-  note: plainText,
-});
+export const mapAreaSchema = z
+  .object({
+    /**
+     * 画面に出す景色の名前。国名を入れない。**任意**。
+     *
+     * 書かなければ地図に札を出さない（2026-09-07 の指定）。土地の名前は付けたい先生だけが
+     * 付けるもので、必須にすると「何か書かないと保存できない」から適当な名前が並ぶ。
+     * 名前が無くても絵と一言は出るので、土地そのものが消えるわけではない。
+     */
+    name: plainText.optional(),
+    /** 名前の よみ（ルビに つかう）。名前を書いたときだけ要る。 */
+    reading: hiragana.optional(),
+    /** 背景画像。`/img/scenes/...` か、スタジオでアップロードした画像のURL。 */
+    image: z.string().min(1),
+    /** 地図に小さく添える一言。 */
+    note: plainText,
+  })
+  .refine((area) => !area.name || Boolean(area.reading), {
+    path: ["reading"],
+    message: "景色の 名前を 書いたら、よみ（ひらがな）も 書く（ルビはこれで合成する）",
+  });
 
 /**
  * ステージのIDに使えない語。
