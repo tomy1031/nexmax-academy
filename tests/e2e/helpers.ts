@@ -31,9 +31,8 @@ export interface KaishaItem {
  * STEP1 調べかたを 学ぶ → STEP2 サイトを 見て 調査シートを うめる →
  * STEP3 ヘンディさんに 報告 → STEP4 社長と 話す 準備（ページ＋フォーム）→
  * STEP5 社長と 話す。
- * そのあとに STEP6（就業形態）が 付いた。**まず 聞いて、スライドで 確かめ、
- * さいごに かくにんの もんだい**——先に 資料を 見せると 聞く 練習に ならない
- *（2026-09-01 の 指定「リスニングとプレゼンの順番が逆です」）。
+ * ここで おわる。そのあとに 付いていた STEP6（就業形態）は、2026-09-07 に
+ * **しごとステージへ 切り出した**（`SHIGOTO`）。
  */
 export const KAISHA = {
   /** STEP 1 NEXT MAKEを 調べよう！ */
@@ -78,25 +77,40 @@ export const KAISHA = {
     path: "/kaisha/meeting-kaisha_matsui",
     kind: "ミーティング",
   },
-  /*
-   * STEP 6 の リスニング（**先に 聞く**）。ステージに リスニングが **1本だけ**なので、
-   * URL に ID は 付かない（`stageContentPath`）。
-   */
+} as const satisfies Record<string, KaishaItem>;
+
+/**
+ * しごとステージ（ITの 仕事の 3つの タイプ）の 教材。
+ *
+ * もとは かいしゃステージの 8〜10本目（STEP 6）だった。2026-09-07 に
+ * **別の ステージへ 切り出した**——「会社を 調べて 報告する」練習と、
+ * 「ITの 仕事の 種類を 知る」学びは、続けて 置くと 1本の ステージが 長すぎた。
+ * 教材の ID は 変えていない（ID は 進捗の 鍵なので、変えると 進みぐあいが 消える）。
+ *
+ * 3本とも **その 種別が ステージに 1本だけ**なので、URL に ID は 付かない
+ *（`stageContentPath`）。`-ID` 付きに なったら、同じ種別の 2本目が 入ったという こと。
+ *
+ * 並びは **まず 聞いて、資料で 確かめ、さいごに かくにんの もんだい**——
+ * 先に 資料を 見せると 聞く 練習に ならない（2026-09-01 の 指定
+ * 「リスニングとプレゼンの順番が逆です」）。
+ */
+export const SHIGOTO = {
+  /** リスニング「仕事の 3つの タイプ」（**先に 聞く**）。 */
   listening: {
     id: "kaisha_shugyo_keitai_listening",
-    path: "/kaisha/listening",
+    path: "/shigoto/listening",
     kind: "リスニング",
   },
-  /** STEP 6 の ページ「仕事の 3つの タイプを 確かめよう」（旧アプリの 講義スライドの 移植）。 */
-  article3: {
+  /** ページ「仕事の 3つの タイプを 確かめよう」（旧アプリの 講義スライドの 移植）。 */
+  article: {
     id: "kaisha_shugyo_keitai",
-    path: "/kaisha/article-kaisha_shugyo_keitai",
+    path: "/shigoto/article",
     kind: "ページ",
   },
-  /** STEP 6 の かくにんの もんだい（聞いた ことと スライドの 内容確認）。 */
-  shugyoCheck: {
+  /** かくにんの もんだい（聞いた ことと 資料の 内容確認）。 */
+  check: {
     id: "kaisha_shugyo_keitai_check",
-    path: "/kaisha/quiz-kaisha_shugyo_keitai_check",
+    path: "/shigoto/quiz",
     kind: "もんだい",
   },
 } as const satisfies Record<string, KaishaItem>;
@@ -110,9 +124,13 @@ export const KAISHA_ITEMS: readonly KaishaItem[] = [
   KAISHA.article2,
   KAISHA.junbi,
   KAISHA.meetingMatsui,
-  KAISHA.listening,
-  KAISHA.article3,
-  KAISHA.shugyoCheck,
+];
+
+/** 学習者が進む順（content/stages/shigoto.json の contents[] と同じ並び）。 */
+export const SHIGOTO_ITEMS: readonly KaishaItem[] = [
+  SHIGOTO.listening,
+  SHIGOTO.article,
+  SHIGOTO.check,
 ];
 
 /**
@@ -141,9 +159,12 @@ export const ASAKAI_QUIZ_TOTAL: number = (
  *
  * 数を **ベタ書きしない**。前は「6つ の うち …」と 書いて いて、ステージに 教材を
  * 1本 足した 日に 4つの spec が いっせいに 落ちた（2026-08-23）。
+ *
+ * `total` を 省くと かいしゃステージの 本数。しごとステージのように 別の ステージを
+ * 見る ときだけ 渡す。
  */
-export function progressText(done: number): string {
-  return `${KAISHA_ITEMS.length}つ の うち ${done}つ おわりました`;
+export function progressText(done: number, total: number = KAISHA_ITEMS.length): string {
+  return `${total}つ の うち ${done}つ おわりました`;
 }
 
 /**
@@ -197,9 +218,17 @@ export const SHUGYO_TOTAL: number = (
  * 手前か」を語らないので、ずれても テストは 静かに 別の 画面を 見に行く。
  */
 export function itemsBefore(item: KaishaItem): string[] {
-  const at = KAISHA_ITEMS.findIndex((candidate) => candidate.id === item.id);
-  if (at < 0) throw new Error(`かいしゃステージに ない 教材です: ${item.id}`);
-  return KAISHA_ITEMS.slice(0, at).map((candidate) => candidate.id);
+  /*
+   * **関門は ステージの中だけ**（ContentFrame の `gateStage`）。だから 探すのも
+   * その教材が いる ステージの 並びの 中だけで いい——かいしゃと しごとを
+   * 1本に つなげて 数えると、しごとの 1本目を 見るために かいしゃ 7本ぶんの
+   * 進捗を 置くことに なる（置かなくても 開く のに）。
+   */
+  for (const items of [KAISHA_ITEMS, SHIGOTO_ITEMS]) {
+    const at = items.findIndex((candidate) => candidate.id === item.id);
+    if (at >= 0) return items.slice(0, at).map((candidate) => candidate.id);
+  }
+  throw new Error(`かいしゃ／しごとステージに ない 教材です: ${item.id}`);
 }
 
 /* ------------------------------------------------------------------ *
