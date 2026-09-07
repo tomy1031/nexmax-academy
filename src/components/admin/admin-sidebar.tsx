@@ -45,17 +45,18 @@ const GROUPS: readonly { title: string; items: readonly Item[] }[] = [
     items: [
       { href: "/admin", icon: "📊", label: "ダッシュボード" },
       { href: "/admin/users", icon: "👥", label: "ユーザー", match: "/admin/users" },
+      /*
+       * 学習の きろく。ここに **ミーティングと テストの きろくを 畳んだ**
+       *（2026-09-04）。前は 3つの 入口が あり、どれも 1つの 表しか 見えず、
+       * 絞り込みも CSV も 無かった。いまは 5種類を 同じ 絞り込み（所属・期生・
+       * メンバー・ステージ・単元）で 通して 見られる。
+       * 古い URL は 消さず、この タブへ 送り返す（`/admin/meetings` 等）。
+       */
       {
-        href: "/admin/meetings",
-        icon: "💬",
-        label: "ミーティングの きろく",
-        match: "/admin/meetings",
-      },
-      {
-        href: "/admin/quizzes",
-        icon: "✏️",
-        label: "テストの きろく",
-        match: "/admin/quizzes",
+        href: "/admin/records",
+        icon: "📋",
+        label: "学習の きろく",
+        match: "/admin/records",
       },
       { href: "/nexmax", icon: "🧑‍🎨", label: "ネクマックス16人" },
       { href: "/admin/ai", icon: "🤖", label: "AI設定", match: "/admin/ai" },

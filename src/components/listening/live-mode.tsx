@@ -9,6 +9,7 @@ import type { FeedbackKey } from "@/lib/feedback";
 import { RubyText } from "@/components/ruby-text";
 import { buildFuriganaIndex } from "@/lib/text/furigana";
 import { recordContentProgress } from "@/lib/progress/store";
+import { bufferTalkTurn, flushTalkTurns, newTalkSessionId } from "@/lib/records/talk-log";
 import { CaptionBar, CallShell } from "@/components/call-shell";
 import { LiveReason } from "./live-reason";
 import { resolveMatch } from "./req-matcher";
@@ -73,6 +74,20 @@ export function TalkSession({
   const openRef = useRef<ReadonlySet<string>>(new Set());
   /** 判定ずみの発話ID（同じ発話を二度見ない）。 */
   const judgedRef = useRef(0);
+  /**
+   * 台帳（`talk_turn_logs`）へ ためる ための 3つ。
+   *
+   * 2026-09-04 まで、この 教材だけ 会話が **1行も 残って いなかった**。ミーティングも
+   * 松井社長も 残るのに、お客さまと 話す たいわ だけ その場で 消えて いた。
+   *
+   * - `sessionIdRef`  … 1回の たいわ を まとめる 鍵（つないだ ときに 1つ）
+   * - `bufferedRef`   … どこまで ためたか（字幕は 増える たびに 全部 通るので、印が 要る）
+   * - `openedHintRef` … その 発話で **開いた 項目**。判定（`judge`）しか 知らないので、
+   *                     ためる 側へ 手渡しする
+   */
+  const sessionIdRef = useRef("");
+  const bufferedRef = useRef(0);
+  const openedHintRef = useRef<{ text: string; reqId: string } | null>(null);
 
   const participants = useMemo(
     () => [
@@ -117,6 +132,8 @@ export function TalkSession({
         const opened = new Set([...openRef.current, outcome.reqId]);
         openRef.current = opened;
         setOpen(opened);
+        // どの 発話が どの 項目を 開いたかは ここでしか 分からない。ためる 側へ 渡す。
+        openedHintRef.current = { text: utterance, reqId: outcome.reqId };
         setNote("talk.itemFound");
         return;
       }
@@ -137,14 +154,68 @@ export function TalkSession({
     judge(heard.text);
   }, [live.lastUtterance, judge]);
 
+  /*
+   * 字幕を **端末に ためる**（通信しない）。送るのは 退出の ときに 1回
+   *（`@/lib/records/talk-log` — `flushMeetingTurns` と 同じ 「ためて、おわりに 1回」）。
+   *
+   * 声の 判定より **あと**に 置く。同じ 描画では 上から 順に 走るので、
+   * `judge` が `openedHintRef` を 置いた あとで ここが 拾える。
+   */
+  useEffect(() => {
+    const turns = live.transcript;
+    if (turns.length === 0) {
+      // つなぎ直すと 字幕は 空に 戻る（`connect`）。次は 別の 回として 数える。
+      bufferedRef.current = 0;
+      sessionIdRef.current = "";
+      return;
+    }
+    if (sessionIdRef.current === "") sessionIdRef.current = newTalkSessionId();
+    for (let index = bufferedRef.current; index < turns.length; index += 1) {
+      const turn = turns[index];
+      if (!turn) continue;
+      const learner = turn.from === "me";
+      let openedReqId = "";
+      if (learner && openedHintRef.current?.text === turn.text) {
+        openedReqId = openedHintRef.current.reqId;
+        openedHintRef.current = null;
+      }
+      bufferTalkTurn({
+        talkId: scenario.id,
+        sessionId: sessionIdRef.current,
+        turnIndex: index,
+        speaker: learner ? "learner" : "partner",
+        mode: turn.mode,
+        body: turn.text,
+        openedReqId,
+        // その 時点で 何個 開いて いたか。あとから 項目を 増やしても
+        // 「その日 何個中 何個 だったか」が 読める ように 一緒に 凍らせる。
+        openedCount: openRef.current.size,
+        reqTotal: scenario.interview.reqs.length,
+      });
+    }
+    bufferedRef.current = turns.length;
+  }, [live.transcript, scenario.id, scenario.interview.reqs.length]);
+
   // ステージの進み具合に反映する（設計07 §3）。退出まで行ったら「おわった」。
   useEffect(() => {
     recordContentProgress(scenario.id, { status: "started" });
   }, [scenario.id]);
 
+  /*
+   * 画面を 出る ときにも 流す。**退出ボタンを 押さずに 戻る 人が いる**ので、
+   * ここが 無いと その 回の 会話が 次に 開くまで 台帳に 出ない
+   *（消えはしない——端末に 残って いて、次に 開いた ときに 流れる）。
+   */
+  useEffect(() => {
+    return () => {
+      void flushTalkTurns(scenario.id);
+    };
+  }, [scenario.id]);
+
   const handleLeft = useCallback(() => {
     live.disconnect();
     recordContentProgress(scenario.id, { status: "completed" });
+    void flushTalkTurns(scenario.id);
   }, [live, scenario.id]);
 
   const askable = scenario.interview.reqs.filter((r) => !open.has(r.id));
