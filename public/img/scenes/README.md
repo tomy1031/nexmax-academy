@@ -48,11 +48,10 @@ ClaudeCode に「STEP 7 の マップの絵を 作って」と たのんでも O
 スタジオの「えらぶ」に 出る **じゅんばんは、出発地から 日本へ 近い順**です
 （カンボジア → ベトナム → マカオ・香港・台湾 → 中国 → 韓国 → 日本は 西から）。
 
-- **正方形の 22まい**（`area_pepper_riverside` 〜 `area_red_tower_city`）…
-  2026-09-07 に ふやした ぶん。かわまち・うみべ・みなと・おしろ・もり・やしろ など
-- **たて長の 6まい**（`area1_cambodia` `area_riverside_capital` `area3_vietnam`
-  `area5_taiwan` `area_misty_peaks` `area_palace_town`）… まえの 形の 絵。
-  いまも つかえます（もう 土地に つかって いる ものが あります）
+- **土地の 絵 28まい**（`area` で はじまる もの）… ぜんぶ 正方形 1024×1024 です。
+  2026-09-07 に 22まい ふやし、まえから あった 6まい
+  （アンコールワット・プノンペン・うみの いわやま・かいだんの まち・きりの やまなみ・
+  みやこの まち）も **同じ 名前の まま 中身を 作り直しました**
 - `japan_goal.webp` … ゴールの 日本（よこ長）
 - `map_cambodia.webp` `map_japan.webp` `title_keyart.webp` `welcome_bg.webp`
   `office_president.webp` … べつの ページで つかう 絵。マップの はいけいには なりません
