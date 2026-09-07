@@ -8,23 +8,75 @@
   "color": "sky",
   "status": "published",
   "contents": [
-    { "ref": "bakery", "type": "scenario" },
-    { "ref": "salon", "type": "scenario" },
-    { "ref": "farm", "type": "scenario" },
-    { "ref": "juku", "type": "scenario" },
-    { "ref": "guesthouse", "type": "scenario" }
+    {
+      "ref": "bakery",
+      "type": "scenario"
+    },
+    {
+      "ref": "salon",
+      "type": "scenario"
+    },
+    {
+      "ref": "farm",
+      "type": "scenario"
+    },
+    {
+      "ref": "juku",
+      "type": "scenario"
+    },
+    {
+      "ref": "guesthouse",
+      "type": "scenario"
+    }
   ],
   "furigana": [
-    ["美容室", "びようしつ"],
-    ["聞き出す", "ききだす"],
-    ["練習", "れんしゅう"],
-    ["質問", "しつもん"],
-    ["農園", "のうえん"],
-    ["五人", "ごにん"],
-    ["作り", "つくり"],
-    ["会い", "あい"],
-    ["客", "きゃく"],
-    ["屋", "や"],
-    ["塾", "じゅく"]
-  ]
+    [
+      "美容室",
+      "びようしつ"
+    ],
+    [
+      "聞き出す",
+      "ききだす"
+    ],
+    [
+      "練習",
+      "れんしゅう"
+    ],
+    [
+      "質問",
+      "しつもん"
+    ],
+    [
+      "農園",
+      "のうえん"
+    ],
+    [
+      "五人",
+      "ごにん"
+    ],
+    [
+      "作り",
+      "つくり"
+    ],
+    [
+      "会い",
+      "あい"
+    ],
+    [
+      "客",
+      "きゃく"
+    ],
+    [
+      "屋",
+      "や"
+    ],
+    [
+      "塾",
+      "じゅく"
+    ]
+  ],
+  "area": {
+    "image": "/img/scenes/area_stone_facade_plaza.webp",
+    "note": "いしの ひろばと さかみちの まちです。ここで お客さまに 会います。"
+  }
 }

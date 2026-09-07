@@ -328,7 +328,7 @@ export const ASSET_VERSIONS: Readonly<Record<string, string>> = {
   "/img/quiz/soudan_kehai/k4_komarigao.webp": "f77b5326",
   "/img/quiz/soudan_kehai/k5_isogu.webp": "016453d9",
   "/img/quiz/soudan_kehai/k6_asa.webp": "0c0a524a",
-  "/img/scenes/README.md": "4c5be5fa",
+  "/img/scenes/README.md": "8de13420",
   "/img/scenes/area1_cambodia.webp": "82659dd2",
   "/img/scenes/area3_vietnam.webp": "91e763fe",
   "/img/scenes/area5_taiwan.webp": "646ec414",
