@@ -1,4 +1,4 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { RESERVED_STAGE_IDS, type Stage, type StageContentRef } from "@/content/schema";
 import { ArticleView } from "@/components/article/article-view";
@@ -30,7 +30,13 @@ import {
   listStages,
 } from "@/lib/content";
 import { stageStepNumber } from "@/lib/map-data";
-import { resolveStageContent, stageContentPath, stageContentSegments } from "@/lib/stage-routes";
+import {
+  resolveStageContent,
+  splitContentSegment,
+  stageContentPath,
+  stageContentSegments,
+} from "@/lib/stage-routes";
+import { canonicalContentPath } from "@/lib/stage-lookup";
 import { loadRef } from "../page";
 
 /**
@@ -200,7 +206,21 @@ export default async function StageContentPage({
 }) {
   const { stage: stageId, content } = await params;
   const found = await resolve(stageId, content);
-  if (!found) notFound();
+  if (!found) {
+    /*
+     * **教材が 別の ステージへ 引っ越した あとの 古いURL**は、本来のURLへ 送る
+     *（CLAUDE.md「古いURLは 消さず、本来のURLへ リダイレクトする」）。
+     * 2026-09-07 に 就業形態の 3本を かいしゃステージから しごとステージへ
+     * 切り出した ときの ように、教材の 引っ越しは これからも 起きる。
+     * 先生が 配った リンクだけが 404 に なる、という 終わりかたを させない。
+     *
+     * 引けるのは **ID が URL に 残って いる 形**だけ（`splitContentSegment`）。
+     */
+    const moved = splitContentSegment(content);
+    const canonical = moved ? await canonicalContentPath(moved.type, moved.ref) : null;
+    if (canonical) redirect(canonical);
+    notFound();
+  }
   const { stage, ref } = found;
 
   const [items, allStages] = await Promise.all([frameItems(stage), listStages()]);

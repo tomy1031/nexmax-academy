@@ -103,6 +103,25 @@ export function resolveStageContent(
   return null;
 }
 
+/**
+ * URLの2段目を「種別＋ID」に割る。当てはまらなければ null。
+ *
+ * 使い道は **引っ越したあとの 古いURL**。教材を 別の ステージへ 切り出すと
+ *（2026-09-07 の 就業形態 → しごとステージ）、前の ステージの URL は
+ * どこも 指さなく なる。ID が URL に 残って いる 形（`article-kaisha_shugyo_keitai`）なら、
+ * ここで 割って 本来のURLを 引き直せる（`canonicalContentPath`）。
+ *
+ * **ID の 付いて いない 短い形は null**（`/kaisha/listening`）。どの教材を
+ * 指して いたのかが URL に 残って いないので、引き当てようが ない。
+ */
+export function splitContentSegment(segment: string): { type: ContentRefType; ref: string } | null {
+  for (const type of IN_STAGE_TYPES) {
+    const seg = CONTENT_SEGMENTS[type];
+    if (segment.startsWith(`${seg}-`)) return { type, ref: segment.slice(seg.length + 1) };
+  }
+  return null;
+}
+
 /** そのステージが持つ 全教材ぶんの2段目（generateStaticParams 用）。 */
 export function stageContentSegments(contents: readonly StageContentRef[]): string[] {
   return contents
