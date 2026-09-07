@@ -115,12 +115,16 @@ export function toMapStages(stages: readonly Stage[]): MapStage[] {
  *
  * 絵が無くても空色の帯として出す——絵の用意が遅れただけでステージが地図から消えると、
  * 学習者は昨日あった教材を探しまわることになる。
+ *
+ * **景色の名前は任意**（2026-09-07 の指定）。書かれていなければ空のまま渡し、地図は札を
+ * 出さない。以前はステージの見出しで埋めていたが、それだと「名前を消す」ことができず、
+ * 土地の名前を付けていないステージにも見出しの札が立っていた。
  */
 export function toMapAreas(stages: readonly Stage[]): MapArea[] {
   return sortStages(stages).map((stage) => ({
     id: `area-${stage.id}`,
-    name: stage.area?.name ?? stage.title,
-    reading: stage.area?.reading ?? stage.reading,
+    name: stage.area?.name,
+    reading: stage.area?.reading,
     image: stage.area?.image ?? "",
     stageId: stage.id,
     note: stage.area?.note ?? stage.description,

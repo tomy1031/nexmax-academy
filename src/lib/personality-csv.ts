@@ -10,9 +10,18 @@ import { hasCompletedPersonality, latestResultsByProfile } from "@/lib/personali
 import { formatSchool } from "@/lib/school";
 import type { PersonalityResultRow, ProfileRow } from "@/lib/profile-db";
 
+/**
+ * CSV の 1マス。
+ *
+ * `=` `+` `-` `@` タブ・復帰 で 始まる マスは Excel が **数式**として 読むので、
+ * 先頭に `'` を 足して 文字として 読ませる。この 表にも 学習者が 自分で 打った もの
+ *（呼び名・苗字・名前）が 入る ので、他人の 端末で 開かれる CSV としては 同じ 蓋が 要る
+ *（`src/lib/records/table.ts` の `escapeCsv` と そろえて ある）。
+ */
 function escapeCsv(value: string | number): string {
   const text = String(value);
-  return /[",\r\n]/.test(text) ? `"${text.replaceAll('"', '""')}"` : text;
+  const safe = /^[=+\-@\t\r]/.test(text) ? `'${text}` : text;
+  return /[",\r\n]/.test(safe) ? `"${safe.replaceAll('"', '""')}"` : safe;
 }
 
 /**

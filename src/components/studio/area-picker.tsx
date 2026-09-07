@@ -35,6 +35,23 @@ const SOURCES: readonly { key: Source; label: string; hint: string }[] = [
 
 type Area = NonNullable<Stage["area"]>;
 
+/**
+ * 空欄は「書いていない」として落とす。
+ *
+ * 景色の名前とよみは任意なので、消したときに `""` を残すと保存の検証で弾かれる
+ *（プレーンテキストは1文字以上）。地図の側も「名前が無い」を空文字ではなく
+ * 未設定で見ているので、ここでそろえる。
+ */
+function withoutBlanks(area: Area): Area {
+  const name = area.name?.trim();
+  const reading = area.reading?.trim();
+  return {
+    ...area,
+    name: name ? name : undefined,
+    reading: reading ? reading : undefined,
+  };
+}
+
 export function AreaPicker({
   stageId,
   value,
@@ -45,25 +62,25 @@ export function AreaPicker({
   onChange: (area: Stage["area"]) => void;
 }) {
   const [source, setSource] = useState<Source>("pick");
-  const area: Area = value ?? { name: "", reading: "", image: "", note: "" };
-  const patch = (part: Partial<Area>) => onChange({ ...area, ...part });
+  const area: Area = value ?? { image: "", note: "" };
+  const patch = (part: Partial<Area>) => onChange(withoutBlanks({ ...area, ...part }));
 
   return (
     <StudioSection
       title="② エリアの 絵"
-      hint="マップで この ステージが 立つ 土地です。景色の 名前で 呼びます（国の 名前は 入れません）。"
+      hint="マップで この ステージが 立つ 土地です。名前を 付けるなら 景色の 名前で 呼びます（国の 名前は 入れません）。名前は なくても かまいません。"
     >
       <div className="grid gap-4 sm:grid-cols-2">
         <TextField
-          label="景色の 名前（国の 名前は 入れない）"
-          value={area.name}
+          label="景色の 名前（国の 名前は 入れない・任意）"
+          value={area.name ?? ""}
           onChange={(name) => patch({ name })}
           placeholder="きりの やまなみ"
-          hint="まちの 名前・いせきの 名前は つかえます。"
+          hint="まちの 名前・いせきの 名前は つかえます。空に すると 地図に 札を 出しません。"
         />
         <TextField
-          label="よみ（ひらがな）"
-          value={area.reading}
+          label="よみ（ひらがな・名前を 書いたときだけ）"
+          value={area.reading ?? ""}
           onChange={(reading) => patch({ reading })}
           placeholder="きりの やまなみ"
         />
@@ -243,7 +260,7 @@ function MakeImage({
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const subject = scenery.trim().length > 0 ? scenery.trim() : area.name.trim();
+  const subject = scenery.trim().length > 0 ? scenery.trim() : (area.name?.trim() ?? "");
 
   const make = async () => {
     if (subject.length === 0) {

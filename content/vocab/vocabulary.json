@@ -10038,6 +10038,314 @@
         "Schedule",
         "Budget"
       ]
+    },
+    {
+      "id": "maccha",
+      "term": "抹茶",
+      "reading": "まっちゃ",
+      "romaji": "maccha",
+      "meaningJa": "みどりの こなに した 日本の お茶です。おゆを 入れて、竹の 道具で まぜて 飲みます。",
+      "englishTerm": "Matcha",
+      "example": "Aoba株式会社は、静岡の 抹茶を 使って います。",
+      "wrongMeanings": [
+        "Coffee",
+        "Black tea",
+        "Milk"
+      ],
+      "furigana": [
+        [
+          "抹茶",
+          "まっちゃ"
+        ],
+        [
+          "日本",
+          "にほん"
+        ],
+        [
+          "道具",
+          "どうぐ"
+        ],
+        [
+          "株式会社",
+          "かぶしきがいしゃ"
+        ],
+        [
+          "静岡",
+          "しずおか"
+        ],
+        [
+          "使",
+          "つか"
+        ],
+        [
+          "飲",
+          "の"
+        ],
+        [
+          "入れて",
+          "いれて"
+        ],
+        [
+          "竹",
+          "たけ"
+        ],
+        [
+          "茶",
+          "ちゃ"
+        ]
+      ]
+    },
+    {
+      "id": "sadou",
+      "term": "茶道",
+      "reading": "さどう",
+      "romaji": "sadou",
+      "meaningJa": "お茶を 入れる 日本の 文化です。きれいな 動きと、あいさつも 大切に します。",
+      "englishTerm": "Tea ceremony",
+      "example": "茶道を 勉強した 人は、先生の 資格を もらう ことが あります。",
+      "wrongMeanings": [
+        "Flower arranging",
+        "Calligraphy",
+        "Judo"
+      ],
+      "furigana": [
+        [
+          "茶道",
+          "さどう"
+        ],
+        [
+          "日本",
+          "にほん"
+        ],
+        [
+          "文化",
+          "ぶんか"
+        ],
+        [
+          "大切",
+          "たいせつ"
+        ],
+        [
+          "勉強",
+          "べんきょう"
+        ],
+        [
+          "先生",
+          "せんせい"
+        ],
+        [
+          "資格",
+          "しかく"
+        ],
+        [
+          "動",
+          "うご"
+        ],
+        [
+          "入れる",
+          "いれる"
+        ],
+        [
+          "人",
+          "ひと"
+        ],
+        [
+          "茶",
+          "ちゃ"
+        ]
+      ]
+    },
+    {
+      "id": "shikaku",
+      "term": "資格",
+      "reading": "しかく",
+      "romaji": "shikaku",
+      "meaningJa": "その しごとが できる、と 見せる ための 紙です。",
+      "englishTerm": "Qualification",
+      "example": "茶道の 資格が ある 人を さがして います。",
+      "wrongMeanings": [
+        "Salary",
+        "Uniform",
+        "Contract"
+      ],
+      "furigana": [
+        [
+          "資格",
+          "しかく"
+        ],
+        [
+          "茶道",
+          "さどう"
+        ],
+        [
+          "見",
+          "み"
+        ],
+        [
+          "紙",
+          "かみ"
+        ],
+        [
+          "人",
+          "ひと"
+        ]
+      ]
+    },
+    {
+      "id": "oubo",
+      "term": "応募",
+      "reading": "おうぼ",
+      "romaji": "oubo",
+      "meaningJa": "その しごとを したいです、と 会社に 出す ことです。",
+      "englishTerm": "Application",
+      "example": "ページを 見た 人に、フォームから 応募して ほしいです。",
+      "wrongMeanings": [
+        "Reply",
+        "Delivery",
+        "Discount"
+      ],
+      "furigana": [
+        [
+          "応募",
+          "おうぼ"
+        ],
+        [
+          "会社",
+          "かいしゃ"
+        ],
+        [
+          "出す",
+          "だす"
+        ],
+        [
+          "見",
+          "み"
+        ],
+        [
+          "人",
+          "ひと"
+        ]
+      ]
+    },
+    {
+      "id": "jouken",
+      "term": "条件",
+      "reading": "じょうけん",
+      "romaji": "jouken",
+      "meaningJa": "その しごとを する ために、要る ものです。",
+      "englishTerm": "Requirement",
+      "example": "必要な 条件は、茶道の 資格と ことばです。",
+      "wrongMeanings": [
+        "Benefit",
+        "Schedule",
+        "Location"
+      ],
+      "furigana": [
+        [
+          "条件",
+          "じょうけん"
+        ],
+        [
+          "必要",
+          "ひつよう"
+        ],
+        [
+          "茶道",
+          "さどう"
+        ],
+        [
+          "資格",
+          "しかく"
+        ],
+        [
+          "要る",
+          "いる"
+        ]
+      ]
+    },
+    {
+      "id": "yosan",
+      "term": "予算",
+      "reading": "よさん",
+      "romaji": "yosan",
+      "meaningJa": "その しごとに 使える お金です。",
+      "englishTerm": "Budget",
+      "example": "サイトの 予算は 50万円の 予定です。",
+      "wrongMeanings": [
+        "Deadline",
+        "Invoice",
+        "Savings"
+      ],
+      "furigana": [
+        [
+          "予算",
+          "よさん"
+        ],
+        [
+          "予定",
+          "よてい"
+        ],
+        [
+          "使",
+          "つか"
+        ],
+        [
+          "金",
+          "かね"
+        ],
+        [
+          "万円",
+          "まんえん"
+        ]
+      ]
+    },
+    {
+      "id": "tenchou",
+      "term": "店長",
+      "reading": "てんちょう",
+      "romaji": "tenchou",
+      "meaningJa": "その 店を まとめる 人です。スタッフや お金の ことを 見ます。",
+      "englishTerm": "Store manager",
+      "example": "もう 一人は、店長候補を さがして います。",
+      "wrongMeanings": [
+        "Cashier",
+        "Chef",
+        "Waiter"
+      ],
+      "furigana": [
+        [
+          "店長候補",
+          "てんちょうこうほ"
+        ],
+        [
+          "店長",
+          "てんちょう"
+        ],
+        [
+          "候補",
+          "こうほ"
+        ],
+        [
+          "一人",
+          "ひとり"
+        ],
+        [
+          "店",
+          "みせ"
+        ],
+        [
+          "金",
+          "かね"
+        ],
+        [
+          "見",
+          "み"
+        ],
+        [
+          "人",
+          "ひと"
+        ]
+      ]
     }
   ]
 }

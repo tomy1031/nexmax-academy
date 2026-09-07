@@ -180,6 +180,26 @@ export const FEEDBACK = {
     title: "じゅんびちゅう",
     next: "先生に 「AIの せってい」を たのんでね",
   },
+
+  /* --- 事前調査（しらべる） --- */
+  /**
+   * 調査クイズで えらんだ ものが 答えでは なかった とき。
+   *
+   * ぼかさない（規律1）——「ちがいます」と 先に 言い切ってから、**どこを 見れば
+   * 分かるか**を 次の 一手に する。ここで「おしい」とだけ 返すと、学習者は
+   * 自分の こたえが 通ったのか どうかも 分からないまま 次を 押す。
+   */
+  "research.retry": {
+    tone: "encourage",
+    title: "ちがいます",
+    next: "上の ページを もう一度 見て、えらび直そう",
+  },
+  /** 3もん ぜんぶ 当たった あと。分かった ことを 見て、しつもんメモへ。 */
+  "research.done": {
+    tone: "praise",
+    title: "しらべ おわりました！",
+    next: "分かった ことを 見てから、しつもんメモへ",
+  },
 } as const satisfies Record<string, Feedback>;
 
 export type FeedbackKey = keyof typeof FEEDBACK;
@@ -227,6 +247,9 @@ export const FEEDBACK_FURIGANA: FuriganaEntry[] = [
   ["気", "き"],
   ["下", "した"],
   ["番", "ばん"],
+  // 事前調査（しらべる）の 文言で 出る 字
+  ["分かっ", "わかっ"],
+  ["上", "うえ"],
 ];
 
 /** 入力の問題（normalize.ts の InputIssue）を文言キーに写す。 */

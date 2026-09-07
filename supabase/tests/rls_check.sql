@@ -122,6 +122,33 @@ begin
   if n = 0 then raise notice '✓ 拒否 仲間で ない quest_saves は 見えない';
   else bad := bad + 1; raise warning '✗ 仲間で ない quest_saves が % 件 見えている', n; end if;
 
+  -- 2026-09-04 に 足した 5つ（進み具合・ことばの テスト・たいわ・リスニング）。
+  -- 進み具合には 名前が 入らないが、**何を どこまで やったか**も 個人の 情報である。
+  -- 表が まだ 無い 環境（移行SQL の 前）でも 検査ぜんたいを 止めない。
+  begin
+    n := (select count(*) from public.content_progress where profile_id = other);
+    if n = 0 then raise notice '✓ 拒否 他人の content_progress は 見えない';
+    else bad := bad + 1; raise warning '✗ 他人の content_progress が % 件 見えている', n; end if;
+
+    n := (select count(*) from public.word_test_results where profile_id = other);
+    if n = 0 then raise notice '✓ 拒否 他人の word_test_results は 見えない';
+    else bad := bad + 1; raise warning '✗ 他人の word_test_results が % 件 見えている', n; end if;
+
+    n := (select count(*) from public.word_test_answers where profile_id = other);
+    if n = 0 then raise notice '✓ 拒否 他人の word_test_answers は 見えない';
+    else bad := bad + 1; raise warning '✗ 他人の word_test_answers が % 件 見えている', n; end if;
+
+    n := (select count(*) from public.talk_turn_logs where profile_id = other);
+    if n = 0 then raise notice '✓ 拒否 他人の talk_turn_logs は 見えない';
+    else bad := bad + 1; raise warning '✗ 他人の talk_turn_logs が % 件 見えている', n; end if;
+
+    n := (select count(*) from public.listening_results where profile_id = other);
+    if n = 0 then raise notice '✓ 拒否 他人の listening_results は 見えない';
+    else bad := bad + 1; raise warning '✗ 他人の listening_results が % 件 見えている', n; end if;
+  exception when undefined_table then
+    raise notice 'ℹ 学習のきろくの 表は まだ ありません（移行SQL 20260904120000 の 前）';
+  end;
+
   -- 教材は 公開ぶんだけ
   n := (select count(*) from public.studio_contents);
   if n = published then raise notice '✓ 教材は 公開ぶんだけ 見える（%/% 件）', n, all_studio;
@@ -148,6 +175,30 @@ begin
     raise warning '✗ 他人の profile_id で quiz_results に 保存できた';
   exception when insufficient_privilege then
     raise notice '✓ 拒否 他人の profile_id では 保存できない（42501）';
+  end;
+
+  begin
+    insert into public.content_progress (profile_id, content_id, status)
+    values (other, '__rls_probe__', 'started');
+    bad := bad + 1;
+    raise warning '✗ 他人の profile_id で content_progress に 保存できた';
+  exception
+    when insufficient_privilege then
+      raise notice '✓ 拒否 他人の profile_id では content_progress に 保存できない（42501）';
+    when undefined_table then
+      raise notice 'ℹ content_progress は まだ ありません（移行SQL 20260904120000 の 前）';
+  end;
+
+  begin
+    insert into public.talk_turn_logs (profile_id, talk_id, session_id, speaker)
+    values (other, '__rls_probe__', gen_random_uuid(), 'learner');
+    bad := bad + 1;
+    raise warning '✗ 他人の profile_id で talk_turn_logs に 保存できた';
+  exception
+    when insufficient_privilege then
+      raise notice '✓ 拒否 他人の profile_id では talk_turn_logs に 保存できない（42501）';
+    when undefined_table then
+      raise notice 'ℹ talk_turn_logs は まだ ありません（移行SQL 20260904120000 の 前）';
   end;
 
   begin

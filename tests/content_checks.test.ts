@@ -4,6 +4,7 @@ import {
   checkDuplicateIds,
   checkFuriganaCoverage,
   checkReferenceIntegrity,
+  checkSecretLeaks,
   checkStageOrder,
   collectLearnerTexts,
   type ContentEntry,
@@ -643,5 +644,155 @@ describe("ふりがなの覆い漏れ検査", () => {
     expect(texts).toContain("会議の 資料です");
     // IDやファイル名は入らない（先生が直せないものを指摘しないため）
     expect(texts).not.toContain("m1");
+  });
+});
+
+/**
+ * 秘匿漏れの 検査（規律6・P4）。
+ *
+ * ここは 2026-09-07 に **見る ものを 取り替えた**——キーワード（学習者が 言いそうな 語）
+ * から、答え そのもの（`secret` / `fact`）へ。取り替えた 側が 効いて いる ことと、
+ * 伏線（P4）を 潰しに 戻って いない ことを、両方 見張る。
+ */
+describe("秘匿漏れの検査（規律6・P4）", () => {
+  /** reqs 10本ぶん。1本目だけ 中身を 差し替えられる。 */
+  function reqs(first: Record<string, unknown> = {}) {
+    return Array.from({ length: 10 }, (_, i) => ({
+      id: `r${i + 1}`,
+      cat: "what",
+      icon: "📌",
+      label: "しめきり",
+      secret: "らいしゅうの きんようびまでに ほしい",
+      fact: "納期は 来週の 金曜日まで",
+      keywords: ["しめきり", "納期", "きんよう"],
+      hint: "いつまでに ひつようですか",
+      ...(i === 0 ? first : {}),
+    }));
+  }
+
+  /** 模擬ページの html だけ 差し替えられる シナリオ。 */
+  function withPage(html: string, first: Record<string, unknown> = {}): Content {
+    const list = reqs(first);
+    return parse({
+      kind: "scenario",
+      id: "sc_leak",
+      order: 1,
+      title: "おみせの アプリ",
+      subtitle: "はじめての ヒアリング",
+      subtitleEn: "first hearing",
+      emoji: "🛒",
+      color: "sky",
+      difficulty: 1,
+      client: {
+        name: "たなかさん",
+        role: "てんちょう",
+        desc: "おみせを やって います",
+        voice: "Aoede",
+        avatar: "shop",
+        tip: "ゆっくり きいて みよう",
+      },
+      mission: {
+        chat: [
+          { from: "hendy", text: "きょうは ヒアリングです" },
+          { from: "me", text: "がんばります" },
+        ],
+        goal: "ようけんを ぜんぶ ききだす",
+      },
+      words: [
+        { w: "納期", r: "のうき", en: "deadline", m: "しごとの しめきり" },
+        { w: "予算", r: "よさん", en: "budget", m: "つかえる おかね" },
+        { w: "要件", r: "ようけん", en: "requirement", m: "つくる ものの きまり" },
+        { w: "確認", r: "かくにん", en: "check", m: "まちがいが ないか みる こと" },
+      ],
+      research: {
+        intro: "まず おみせの ことを しらべます",
+        pages: [{ tab: "おみせの ページ", frame: "browser", url: "https://example.com", html }],
+        quiz: Array.from({ length: 3 }, (_, i) => ({
+          q: `しつもん ${i + 1}`,
+          options: ["ひとつめ", "ふたつめ", "みっつめ"],
+          answer: 0,
+          why: "しらべると わかります",
+        })),
+        findings: ["わかった こと1", "わかった こと2", "わかった こと3"],
+      },
+      interview: { persona: "あなたは 店長です。聞かれるまで 言いません。", reqs: list },
+      doc: {
+        projectName: "おみせの アプリ",
+        clientLine: "たなかさん",
+        sections: [
+          {
+            title: "きめた こと",
+            items: list.map((r) => ({ reqId: r.id, text: "きめた ことを かきます" })),
+          },
+        ],
+      },
+      lesson: { title: "きょうの まとめ", points: ["ひとつめ", "ふたつめ"] },
+    });
+  }
+
+  const scenarioOf = (c: Content) => {
+    if (c.kind !== "scenario") throw new Error("fixture が scenario ではない");
+    return c;
+  };
+
+  it("答え（secret）が そのまま 模擬ページに あると 止める", () => {
+    const found = checkSecretLeaks(
+      "f.json",
+      scenarioOf(withPage("<p>らいしゅうの きんようびまでに ほしいです</p>")),
+    );
+    const errors = found.filter((f) => f.level === "error");
+    expect(errors.length).toBeGreaterThan(0);
+    expect(errors[0]?.message).toContain("secret");
+  });
+
+  it("判定用の 事実（fact）も 同じく 止める", () => {
+    const found = checkSecretLeaks(
+      "f.json",
+      scenarioOf(withPage("<p>納期は 来週の 金曜日まで</p>")),
+    );
+    expect(found.some((f) => f.level === "error" && f.message.includes("fact"))).toBe(true);
+  });
+
+  it("ルビで 読みを はさんでも 見のがさない（<rt> を 先に 捨てる）", () => {
+    const ruby =
+      "<p>らいしゅうの きんようびまでに ほしい</p>" +
+      "<p><ruby>納期<rt>のうき</rt></ruby>は <ruby>来週<rt>らいしゅう</rt></ruby>の " +
+      "<ruby>金曜日<rt>きんようび</rt></ruby>まで</p>";
+    expect(
+      checkSecretLeaks("f.json", scenarioOf(withPage(ruby))).some(
+        (f) => f.level === "error" && f.message.includes("fact"),
+      ),
+    ).toBe(true);
+  });
+
+  it("キーワードが 出て いるだけなら 止めない（P4の 伏線は 残す）", () => {
+    const found = checkSecretLeaks(
+      "f.json",
+      scenarioOf(withPage("<p><ruby>納期<rt>のうき</rt></ruby>の ごそうだんは DMへ</p>")),
+    );
+    expect(found.every((f) => f.level === "warn")).toBe(true);
+    expect(found.length).toBeGreaterThan(0);
+  });
+
+  it("短い 答えは 拾わない（たまたまの 一致で 検査が 無視されないように）", () => {
+    const found = checkSecretLeaks(
+      "f.json",
+      scenarioOf(
+        withPage("<p>はい、やって います</p>", {
+          secret: "はい",
+          fact: "はい",
+          keywords: ["ぜんぜん", "ちがう", "ことば"],
+        }),
+      ),
+    );
+    expect(found.filter((f) => f.message.startsWith("r1"))).toEqual([]);
+  });
+
+  it("事前調査が 無い 教材は そもそも 漏れようが ない", () => {
+    const bare = parse({
+      ...JSON.parse(JSON.stringify(withPage("<p>らいしゅうの きんようびまでに ほしい</p>"))),
+      research: undefined,
+    });
+    expect(checkSecretLeaks("f.json", scenarioOf(bare))).toEqual([]);
   });
 });
