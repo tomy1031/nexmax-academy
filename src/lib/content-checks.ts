@@ -1064,7 +1064,10 @@ export function coverageEntries(content: Content): FuriganaEntry[] {
         ...(content.furigana ?? []),
         [content.title, content.reading],
       ];
-      if (content.area) entries.push([content.area.name, content.area.reading]);
+      // 景色の名前は任意。付いているときだけ読み辞書に入れる（名前 → よみ）
+      if (content.area?.name && content.area.reading) {
+        entries.push([content.area.name, content.area.reading]);
+      }
       return entries;
     }
     case "vocab":
