@@ -83,17 +83,21 @@ export function AreaPicker({
             <img
               src={area.image}
               alt=""
-              className="border-hairline h-32 w-24 rounded-xl border-2 object-cover"
+              className="border-hairline h-24 w-24 rounded-xl border-2 object-cover"
             />
           ) : (
-            <div className="border-hairline text-ink-faint grid h-32 w-24 place-items-center rounded-xl border-2 border-dashed text-center text-[11px] font-bold">
+            <div className="border-hairline text-ink-faint grid h-24 w-24 place-items-center rounded-xl border-2 border-dashed text-center text-[11px] font-bold">
               まだ
               <br />
               ありません
             </div>
           )}
           <div className="min-w-[12rem] flex-1 space-y-2">
-            <p className="text-navy text-xs font-black">はいけいの 絵（たて長 1024×1536）</p>
+            <p className="text-navy text-xs font-black">はいけいの 絵（正方形 1024×1024）</p>
+            <p className="text-ink-faint text-xs font-bold">
+              マップは 絵を 画面の 形に 切って 出します。PCでは よこ長に、スマホでは たて長に
+              切られる ので、見せたい ものは <b>まん中</b>に 入れてください。
+            </p>
             <p className="text-ink-faint text-xs font-bold">
               絵が なくても ステージは マップに 出ます（空色の おびに なります）。
             </p>
