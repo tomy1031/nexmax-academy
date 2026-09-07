@@ -136,6 +136,42 @@
       "title": "東京 — あかい タワーと まちなみ",
       "output": "Output: ONE SQUARE illustration, exactly 1024x1024 pixels (square — not landscape, not portrait).",
       "scene": "Scene: an enormous dense capital on a plain. In the centre, a tall red-and-white steel lattice tower rising above a sea of low blocks and mid-rise offices, with a green temple roof and a small park at its foot. Around it: a huge scramble crossing surrounded by blank-screened buildings, elevated expressways and a white bullet train on a viaduct, a wide palace moat with pine trees and stone walls, a five-storey wooden pagoda with a big paper lantern gateway, and far away a very tall slim white lattice tower and a snow-capped cone-shaped mountain on the horizon. Buildings fill all four edges."
+    },
+    {
+      "out": "area_temple_towers",
+      "title": "アンコールワット — もりの いしの てら",
+      "output": "Output: ONE SQUARE illustration, exactly 1024x1024 pixels (square — not landscape, not portrait).",
+      "scene": "Scene: a vast stone temple complex deep in tropical forest. In the centre, a grey sandstone temple with five tall corn-cob shaped towers on a stepped terrace, enclosed by galleries and a long straight causeway crossing a wide rectangular moat with lotus flowers. Around it: dense jungle with silk-cotton trees whose roots grip smaller ruins, rows of sugar palms, ox carts on a red-earth road, monks in orange robes on the causeway, a village of wooden stilt houses with a fish pond, and rice paddies. Forest and fields reach every edge of the frame."
+    },
+    {
+      "out": "area_river_confluence",
+      "title": "プノンペン — ふたつの かわの みやこ",
+      "output": "Output: ONE SQUARE illustration, exactly 1024x1024 pixels (square — not landscape, not portrait).",
+      "scene": "Scene: a flat riverside capital where two wide brown-green rivers meet. In the centre, a walled royal compound of golden-spired halls with steep orange-tiled roofs and gilded finials, set in a green garden, facing a broad riverfront promenade with palm trees, flag-less poles and moored wooden passenger boats. Around it: a domed art-deco market hall with four yellow arms, pastel colonial shophouses with shutters, busy streets of tuk-tuks and motorbikes, a cluster of glass office towers, and low tin-roofed neighbourhoods with mango trees. The city runs off all four edges."
+    },
+    {
+      "out": "area_limestone_bay",
+      "title": "うみの いわやま（北の 湾）",
+      "output": "Output: ONE SQUARE illustration, exactly 1024x1024 pixels (square — not landscape, not portrait).",
+      "scene": "Scene: a wide emerald bay crowded with steep limestone karst islands. In the centre, a cluster of tall jungle-topped limestone towers rising straight out of jade water, with a cave mouth at the waterline and wooden junk boats with red-brown sails passing between them. Around them: a floating village of blue-roofed rafts and round bamboo coracles, fish pens, a stilted pier, and on the near shore terraced rice paddies climbing green hills with a small tiled village and a stone bridge. Water, islands and terraces reach every edge of the frame."
+    },
+    {
+      "out": "area_stair_lantern_town",
+      "title": "かいだんの まち",
+      "output": "Output: ONE SQUARE illustration, exactly 1024x1024 pixels (square — not landscape, not portrait).",
+      "scene": "Scene: a hillside town of narrow stone staircases above the sea. In the centre, a long flight of stone steps climbing between tall dark wooden tea houses hung with rows of red lanterns, with balconies, laundry poles and steep tiled roofs stacked on top of each other. Around them: winding alleys, a small shrine with curved eaves, terraced tea fields on the slopes, misty forested mountains behind, and far below a blue harbour with a breakwater and fishing boats. Buildings and hillside fill all four edges."
+    },
+    {
+      "out": "area_misty_gorge",
+      "title": "きりの やまなみ",
+      "output": "Output: ONE SQUARE illustration, exactly 1024x1024 pixels (square — not landscape, not portrait).",
+      "scene": "Scene: a river gorge between tall thin rock pinnacles wrapped in mist, painted like a soft ink landscape but in full colour. In the centre, a jade-green river winds between the pinnacles, crossed by an arched stone bridge, with pine trees growing from cracks in the rock and a wooden pavilion on a ledge. Around them: bamboo rafts with a fisherman, a walled town of grey-tiled roofs and a multi-storey pagoda on the near bank, stepped tea fields, and layered misty peaks receding to the edges of the frame."
+    },
+    {
+      "out": "area_tiled_palace_town",
+      "title": "みやこの まち",
+      "output": "Output: ONE SQUARE illustration, exactly 1024x1024 pixels (square — not landscape, not portrait).",
+      "scene": "Scene: an old capital in autumn. In the centre, a walled palace of long timber halls with curved grey-tiled roofs and painted eaves around a wide flagstone courtyard, with a gate tower and a bronze cauldron in front. Around it: a maze of low courtyard houses with grey roofs and small trees, red and gold maples along a canal with an arched stone bridge, a lively street of market stalls under blank awnings, and a line of modern glass towers at the back edge. Roofs and streets run off all four edges."
     }
   ]
 }
