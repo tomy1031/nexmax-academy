@@ -55,5 +55,9 @@
       "話",
       "はなし"
     ]
-  ]
+  ],
+  "area": {
+    "image": "/img/scenes/area_pepper_riverside.webp",
+    "note": "コショウばたけの ある、かわぞいの まちです。"
+  }
 }
