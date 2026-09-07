@@ -1,0 +1,844 @@
+{
+  "kind": "scenario",
+  "id": "salon",
+  "order": 4,
+  "title": "ヘアサロンSAKURA",
+  "subtitle": "24時間ネット予約アプリ",
+  "subtitleEn": "24h online booking app",
+  "emoji": "💈",
+  "color": "sky",
+  "difficulty": 1,
+  "client": {
+    "name": "桜井 翔太",
+    "role": "店長",
+    "desc": "ていねいで、やさしい人。ITの 言葉が 苦手です。",
+    "voice": "Puck",
+    "avatar": "salon",
+    "tip": "桜井さんは ITの 言葉が 苦手。『サーバー』『データベース』などは 使わないで、やさしい 言葉で 聞いてね"
+  },
+  "mission": {
+    "chat": [
+      {
+        "from": "hendy",
+        "text": "おつかれさまです！ 次の お仕事の そうだんです。"
+      },
+      {
+        "from": "hendy",
+        "text": "美容室「ヘアサロンSAKURA」の 桜井店長が、「ネットで 予約できる アプリが ほしい」と 言っています。"
+      },
+      {
+        "from": "hendy",
+        "text": "でも、くわしい 希望は、まだ 聞けて いません。"
+      },
+      {
+        "from": "me",
+        "text": "わかりました。私が 話を 聞いて きます！"
+      },
+      {
+        "from": "hendy",
+        "text": "お願いします！ 訪問の前に、お店の Webサイトと、クーポンサイトの 口コミを 見て おきましょう。"
+      },
+      {
+        "from": "hendy",
+        "text": "口コミには、お客さまの ほんとうの 声が ありますよ😊"
+      }
+    ],
+    "goal": "桜井さんに 質問して、「作りたい アプリ」を くわしく 聞き出そう"
+  },
+  "words": [
+    {
+      "w": "予約",
+      "r": "よやく",
+      "en": "booking",
+      "m": "「この日、この時間に 行きます」と、先に 約束すること"
+    },
+    {
+      "w": "指名",
+      "r": "しめい",
+      "en": "nominating a stylist",
+      "m": "「この人に おねがいします」と、スタッフを えらぶこと"
+    },
+    {
+      "w": "手数料",
+      "r": "てすうりょう",
+      "en": "commission fee",
+      "m": "サービスを 使うときに 払う お金"
+    },
+    {
+      "w": "口コミ",
+      "r": "くちこみ",
+      "en": "review",
+      "m": "お客さまが 書く、お店の 感想"
+    },
+    {
+      "w": "定休日",
+      "r": "ていきゅうび",
+      "en": "regular holiday",
+      "m": "お店が 毎週 休む 日"
+    },
+    {
+      "w": "リマインド",
+      "r": "りまいんど",
+      "en": "reminder",
+      "m": "「あしたは 予約の 日ですよ」と 思い出させる お知らせ"
+    }
+  ],
+  "research": {
+    "intro": "お店の Webサイトと、クーポンサイトの 口コミを 見て みましょう。お客さまの 声に、大切な ヒントが ありますよ。",
+    "pages": [
+      {
+        "tab": "🌐 お店のサイト",
+        "frame": "browser",
+        "url": "sakura-hair.jp",
+        "html": "\n<div class=\"ws-page ws-old\">\n  <div class=\"ws-header\">\n    <div class=\"ws-title\">💈 ヘアサロンSAKURA</div>\n    <div class=\"ws-tagline\">〜あなたの <ruby>髪<rt>かみ</rt></ruby>の パートナー〜</div>\n  </div>\n  <div class=\"ws-nav\">\n    <span>ホーム</span>\n    <span>メニュー</span>\n    <span>スタッフ</span>\n    <span>お<ruby>知<rt>し</rt></ruby>らせ</span>\n    <span>アクセス</span>\n  </div>\n  <div class=\"ph ws-hero\" style=\"background:linear-gradient(135deg,#bfdbfe,#3b82f6)\">💈</div>\n  <div class=\"ws-section\">\n    <h3 class=\"ws-h\">ごあいさつ</h3>\n    <p>\n      ようこそ！ ヘアサロンSAKURAの ホームページへ！！<br>\n      <ruby>当店<rt>とうてん</rt></ruby>は、さくら<ruby>駅<rt>えき</rt></ruby>から <ruby>歩<rt>ある</rt></ruby>いて 5<ruby>分<rt>ふん</rt></ruby>の、<ruby>小<rt>ちい</rt></ruby>さな <ruby>美容室<rt>びようしつ</rt></ruby>です。<br>\n      <ruby>店長<rt>てんちょう</rt></ruby>の <ruby>桜井<rt>さくらい</rt></ruby> <ruby>翔太<rt>しょうた</rt></ruby>です。スタッフ<ruby>一同<rt>いちどう</rt></ruby>、ご<ruby>来店<rt>らいてん</rt></ruby>を お<ruby>待<rt>ま</rt></ruby>ちして おります！\n    </p>\n  </div>\n  <div class=\"ws-section\">\n    <h3 class=\"ws-h\">ご<ruby>案内<rt>あんない</rt></ruby></h3>\n    <table class=\"ws-table\">\n      <tr><th><ruby>営業時間<rt>えいぎょうじかん</rt></ruby></th><td>10:00〜19:00</td></tr>\n      <tr><th><ruby>定休日<rt>ていきゅうび</rt></ruby></th><td><ruby>毎週<rt>まいしゅう</rt></ruby> <ruby>月曜日<rt>げつようび</rt></ruby></td></tr>\n      <tr><th>お<ruby>電話<rt>でんわ</rt></ruby></th><td>03-XXXX-XXXX</td></tr>\n      <tr><th>ご<ruby>予約<rt>よやく</rt></ruby></th><td>お<ruby>電話<rt>でんわ</rt></ruby>にて お<ruby>願<rt>ねが</rt></ruby>いします</td></tr>\n    </table>\n  </div>\n  <div class=\"ws-section\">\n    <h3 class=\"ws-h\">メニュー</h3>\n    <table class=\"ws-table\">\n      <tr><th>カット</th><td>4,400<ruby>円<rt>えん</rt></ruby></td></tr>\n      <tr><th>カラー</th><td>7,700<ruby>円<rt>えん</rt></ruby></td></tr>\n      <tr><th>パーマ</th><td>8,800<ruby>円<rt>えん</rt></ruby></td></tr>\n      <tr><th>シャンプー・ブロー</th><td>2,200<ruby>円<rt>えん</rt></ruby></td></tr>\n    </table>\n  </div>\n  <div class=\"ws-section\">\n    <h3 class=\"ws-h\">スタッフ<ruby>紹介<rt>しょうかい</rt></ruby></h3>\n    <div class=\"ws-staff\">\n      <div class=\"ws-card\">\n        <div class=\"ph ws-face\" style=\"background:linear-gradient(135deg,#bfdbfe,#3b82f6)\">👨</div>\n        <div class=\"ws-card-name\"><ruby>桜井<rt>さくらい</rt></ruby> <ruby>翔太<rt>しょうた</rt></ruby></div>\n        <div class=\"ws-card-role\"><ruby>店長<rt>てんちょう</rt></ruby>。カットが <ruby>得意<rt>とくい</rt></ruby>です。</div>\n      </div>\n      <div class=\"ws-card\">\n        <div class=\"ph ws-face\" style=\"background:linear-gradient(135deg,#fbcfe8,#ec4899)\">👩</div>\n        <div class=\"ws-card-name\">ユイ</div>\n        <div class=\"ws-card-role\">スタイリスト。カラーが <ruby>得意<rt>とくい</rt></ruby>です。</div>\n      </div>\n      <div class=\"ws-card\">\n        <div class=\"ph ws-face\" style=\"background:linear-gradient(135deg,#d9f99d,#65a30d)\">🧑</div>\n        <div class=\"ws-card-name\">ケン</div>\n        <div class=\"ws-card-role\">スタイリスト。パーマが <ruby>得意<rt>とくい</rt></ruby>です。</div>\n      </div>\n    </div>\n  </div>\n  <div class=\"ws-section\">\n    <h3 class=\"ws-h\">お<ruby>知<rt>し</rt></ruby>らせ</h3>\n    <div class=\"ws-news\">\n      <div class=\"ws-news-item\"><span class=\"ws-news-date\">2024.01.10</span> あけまして おめでとうございます。<ruby>今年<rt>ことし</rt></ruby>も よろしく お<ruby>願<rt>ねが</rt></ruby>いします。</div>\n      <div class=\"ws-news-item\"><span class=\"ws-news-date\">2023.09.01</span> カットの <ruby>料金<rt>りょうきん</rt></ruby>を 4,400<ruby>円<rt>えん</rt></ruby>に <ruby>変更<rt>へんこう</rt></ruby>しました。</div>\n      <div class=\"ws-news-item\"><span class=\"ws-news-date\">2023.04.10</span> <ruby>新<rt>あたら</rt></ruby>しい スタイリストの ケンが <ruby>入<rt>はい</rt></ruby>りました。よろしく お<ruby>願<rt>ねが</rt></ruby>いします。</div>\n    </div>\n  </div>\n  <div class=\"ws-section\">\n    <h3 class=\"ws-h\">リンク<ruby>集<rt>しゅう</rt></ruby></h3>\n    <p>・さくら<ruby>駅前<rt>えきまえ</rt></ruby><ruby>商店街<rt>しょうてんがい</rt></ruby>の ページ<br>・<ruby>相互<rt>そうご</rt></ruby>リンク <ruby>募集中<rt>ぼしゅうちゅう</rt></ruby>です！</p>\n  </div>\n  <div class=\"ws-counter\">あなたは <b>034872</b><ruby>人目<rt>にんめ</rt></ruby>の お<ruby>客<rt>きゃく</rt></ruby>さまです</div>\n  <div class=\"ws-footer\">\n    <ruby>最終<rt>さいしゅう</rt></ruby><ruby>更新<rt>こうしん</rt></ruby>：2024.01.10<br>\n    このページは Internet Explorer で <ruby>見<rt>み</rt></ruby>ることを おすすめします。<br>\n    Copyright (C) 2018 Hair Salon SAKURA All Rights Reserved.\n  </div>\n</div>"
+      },
+      {
+        "tab": "💇 クーポンサイト",
+        "frame": "browser",
+        "url": "beauty-navi.example.com/sakura",
+        "html": "\n<div class=\"cp-page\">\n  <div class=\"cp-head\">\n    <span class=\"cp-logo\">💇 Beauty Navi</span>\n    <span class=\"cp-head-sub\">サロン<ruby>検索<rt>けんさく</rt></ruby>・<ruby>予約<rt>よやく</rt></ruby>サイト</span>\n  </div>\n  <div class=\"cp-crumb\">ホーム ＞ <ruby>東京<rt>とうきょう</rt></ruby> ＞ さくら<ruby>駅<rt>えき</rt></ruby> ＞ ヘアサロンSAKURA</div>\n  <div class=\"cp-shop\">\n    <div class=\"ph cp-shop-img\" style=\"background:linear-gradient(135deg,#93c5fd,#3b82f6)\">💈</div>\n    <div class=\"cp-shop-info\">\n      <div class=\"cp-shop-name\">ヘアサロンSAKURA</div>\n      <div class=\"cp-shop-meta\">さくら<ruby>駅<rt>えき</rt></ruby>から <ruby>徒歩<rt>とほ</rt></ruby>5<ruby>分<rt>ふん</rt></ruby>／カット 4,400<ruby>円<rt>えん</rt></ruby>〜</div>\n      <div class=\"cp-rating\">★ <b>4.5</b> <span class=\"cp-rating-n\"><ruby>口<rt>くち</rt></ruby>コミ 89<ruby>件<rt>けん</rt></ruby></span></div>\n    </div>\n  </div>\n  <div class=\"cp-btns\">\n    <span class=\"cp-btn cp-btn-tel\">📞 <ruby>電話<rt>でんわ</rt></ruby>で <ruby>予約<rt>よやく</rt></ruby></span>\n    <span class=\"cp-btn cp-btn-off\">💻 ネット<ruby>予約<rt>よやく</rt></ruby>（この お<ruby>店<rt>みせ</rt></ruby>は できません）</span>\n  </div>\n  <div class=\"cp-coupon\">\n    🎟 <b>クーポン</b>：<ruby>新規<rt>しんき</rt></ruby><ruby>限定<rt>げんてい</rt></ruby>！ カット 10%オフ（4,400<ruby>円<rt>えん</rt></ruby> → 3,960<ruby>円<rt>えん</rt></ruby>）\n  </div>\n  <div class=\"cp-photos\">\n    <div class=\"ph\" style=\"background:linear-gradient(135deg,#bfdbfe,#3b82f6)\">💇</div>\n    <div class=\"ph\" style=\"background:linear-gradient(135deg,#fbcfe8,#ec4899)\">🪞</div>\n    <div class=\"ph\" style=\"background:linear-gradient(135deg,#fde68a,#f59e0b)\">✂️</div>\n  </div>\n  <div class=\"cp-sec-title\">メニュー・<ruby>料金<rt>りょうきん</rt></ruby></div>\n  <div class=\"cp-menu\">\n    <div class=\"cp-menu-row\"><span>カット</span><span>4,400<ruby>円<rt>えん</rt></ruby></span></div>\n    <div class=\"cp-menu-row\"><span>カット＋カラー</span><span>9,900<ruby>円<rt>えん</rt></ruby></span></div>\n    <div class=\"cp-menu-row\"><span>パーマ</span><span>8,800<ruby>円<rt>えん</rt></ruby></span></div>\n    <div class=\"cp-menu-row\"><span><ruby>指名料<rt>しめいりょう</rt></ruby>（スタッフを えらぶ）</span><span>＋550<ruby>円<rt>えん</rt></ruby></span></div>\n  </div>\n  <div class=\"cp-sec-title\"><ruby>口<rt>くち</rt></ruby>コミ（89<ruby>件<rt>けん</rt></ruby>から 3<ruby>件<rt>けん</rt></ruby>）</div>\n  <div class=\"cp-review\">\n    <div class=\"cp-review-head\">\n      <span class=\"cp-review-user\">🍊 みかん さん（30<ruby>代<rt>だい</rt></ruby>・<ruby>女性<rt>じょせい</rt></ruby>）</span>\n      <span class=\"cp-review-stars\">★★★ 3.0</span>\n    </div>\n    <div class=\"cp-review-date\">2026.01.18 ／ カットで <ruby>利用<rt>りよう</rt></ruby></div>\n    <div class=\"cp-review-body\">カットは<ruby>最高<rt>さいこう</rt></ruby>！でも <ruby>電話<rt>でんわ</rt></ruby>が ぜんぜん つながりません。</div>\n    <div class=\"cp-reply\">🏪 お<ruby>店<rt>みせ</rt></ruby>から：<ruby>電話<rt>でんわ</rt></ruby>が つながりにくくて、ごめんなさい。</div>\n  </div>\n  <div class=\"cp-review\">\n    <div class=\"cp-review-head\">\n      <span class=\"cp-review-user\">🌙 よるねこ さん（20<ruby>代<rt>だい</rt></ruby>・<ruby>女性<rt>じょせい</rt></ruby>）</span>\n      <span class=\"cp-review-stars\">★★★★ 4.0</span>\n    </div>\n    <div class=\"cp-review-date\">2026.01.06 ／ カラーで <ruby>利用<rt>りよう</rt></ruby></div>\n    <div class=\"cp-review-body\"><ruby>予約<rt>よやく</rt></ruby>が <ruby>電話<rt>でんわ</rt></ruby>だけなのが <ruby>不便<rt>ふべん</rt></ruby>。<ruby>夜<rt>よる</rt></ruby>に スマホで <ruby>予約<rt>よやく</rt></ruby>したいです。</div>\n  </div>\n  <div class=\"cp-review\">\n    <div class=\"cp-review-head\">\n      <span class=\"cp-review-user\">🌸 さくらこ さん（40<ruby>代<rt>だい</rt></ruby>・<ruby>女性<rt>じょせい</rt></ruby>）</span>\n      <span class=\"cp-review-stars\">★★★★★ 5.0</span>\n    </div>\n    <div class=\"cp-review-date\">2025.12.20 ／ カラーで <ruby>利用<rt>りよう</rt></ruby></div>\n    <div class=\"cp-review-body\">ユイさんの カラーが お<ruby>気<rt>き</rt></ruby>に<ruby>入<rt>い</rt></ruby>り。いつも ユイさんに おねがいします。</div>\n  </div>\n  <div class=\"cp-foot\">Beauty Navi ── サロンを さがすなら ビューティーナビ</div>\n</div>"
+      }
+    ],
+    "quiz": [
+      {
+        "q": "予約は 今、どうやって しますか？",
+        "options": [
+          "電話だけ",
+          "ネットで いつでも できる",
+          "お店で 紙に 書く"
+        ],
+        "answer": 0,
+        "why": "お店の サイトに「ご予約は お電話にて」と ありました。ネット予約は、まだ ないんですね。"
+      },
+      {
+        "q": "口コミで、お客さまが こまって いたことは 何ですか？",
+        "options": [
+          "値段が 高い",
+          "電話が つながらない",
+          "お店が 遠い"
+        ],
+        "answer": 1,
+        "why": "「電話が ぜんぜん つながりません」という 口コミが ありましたね。お客さまの 声は、アプリの 大きな ヒントに なります。"
+      },
+      {
+        "q": "お店には、スタッフが 何人 いますか？",
+        "options": [
+          "二人",
+          "五人",
+          "三人"
+        ],
+        "answer": 2,
+        "why": "スタッフ紹介に、桜井さん・ユイさん・ケンさんの 三人が いました。「いつも ユイさんに おねがい」という 口コミも ありましたね。"
+      }
+    ],
+    "findings": [
+      "予約は 今、電話だけ（ネット予約は できない）",
+      "口コミ：「電話が ぜんぜん つながらない」と こまっている お客さまが いる",
+      "スタッフは 三人。「いつも ユイさんに」という 指名の お客さまが いる",
+      "サイトの お知らせは、2年前から 止まっている",
+      "クーポンサイト「Beauty Navi」に 出店している（★4.5・口コミ89件）"
+    ]
+  },
+  "interview": {
+    "persona": "あなたは、日本の 小さな 美容室「ヘアサロンSAKURA」の 店長、桜井翔太（30代・男性）です。\nていねいで、やさしい 人です。髪の 仕事と お客さまが 大好きです。ITの 言葉は 苦手です。\n\n【今日の場面】\nIT会社「ネクストメイク」の 若い エンジニア（日本語を 勉強中の 外国人）が、あなたの お店に 来ました。\nあなたは「アプリを 作りたい」と 思っていて、今日は その 相談を します。\n\n【最初のあいさつ】\n学生（エンジニア）が あいさつを したら、ていねいに あいさつを 返してください。\nそのあと、こう 話して ください（2〜3文で、短く）：\n「今日は 来てくれて ありがとうございます。24時間 ネットで 予約できる アプリを 作りたいんです。うちは 予約が 電話だけで…。カットを している間は、電話に 出られないんです。」\nこれ以上は 自分から 説明しません。「何でも 聞いて ください」と 言って、質問を 待ちます。\n\n【あなたが知っていること（聞かれたら 答える。聞かれるまで 言わない）】\n- 目的: カットを している間は 電話に 出られない。それで、とれるはずの 予約を のがしている。\n- こまりごと: クーポンサイトの 手数料が 月5万円 かかっていて、高い。自分の お店の アプリに したい。\n- 使う人: 20〜40代の お客さまが 多い。夜に スマホで 予約したい 人が 多い。\n- ほしい機能1: 24時間 いつでも ネットで 予約できること。\n- ほしい機能2: スタイリスト（三人）を 指名できること。指名の お客さまが 多いから。\n- ほしい機能3: 予約の 前の 日に、リマインドの 通知を 送りたい。ドタキャンや、予約を 忘れる お客さまを へらしたい。\n- やらないこと: 口コミの 機能は 作らない。悪い 口コミが つくのが こわいから。\n- 予算: 50万円まで。月々の 費用は、少しなら 大丈夫。\n- 納期: 2か月後の 春の キャンペーンまでに 使いたい。\n- お客さま台帳: 今、お客さまの 情報（カルテ）は 紙に 書いている。アプリに お客さまの 情報を 残して、スタッフ三人で 見たい。\n\n【話し方のルール（かならず 守る）】\n1. やさしい 日本語（JLPT N4レベル）で 話す。むずかしい 言葉は 使わない。\n2. 1回の 返事は 1〜2文。短く、ゆっくり 話す。\n3. ていねいな 「です・ます」で 話す。おだやかで、やさしく。\n4. 聞かれたことだけ 答える。聞かれていない 情報は 言わない。\n5. あなたは ITの 言葉が 苦手です。学生が 専門用語（サーバー、データベース、クラウドなど）を 使ったら、「すみません、それは どういう 意味ですか？」と 聞き返す。学生が やさしい 言葉で 説明したら、「なるほど、そういう ことですか」と よろこぶ。\n6. 学生の 日本語が 間違っていても、直さない。意味が わからない ときは「すみません、もう一度 いいですか？」と 聞き返す。\n7. 学生が「〜ですね？」と 確認したら、正しければ「はい、そうです」と 答える。\n8. 学生が 質問に こまって いたら、「ゆっくりで いいですよ」と やさしく 言う。\n9. 学生が「ありがとうございました」「以上です」など、おわりの あいさつを したら、\n   「こちらこそ ありがとうございました。いい アプリ、楽しみに していますね」と 答えて 終わる。\n10. ITの むずかしい 言葉（データベース、サーバー、APIなど）は 知りません。自分からは 使いません。聞かれたら「すみません、よく わかりません」と 答えて ください。",
+    "reqs": [
+      {
+        "id": "r1",
+        "cat": "why",
+        "icon": "💭",
+        "label": "なぜ 作りたい？",
+        "secret": "カット中は 電話に 出られなくて、予約を のがしている",
+        "fact": "カットを している間は 電話に 出られなくて、とれるはずの 予約を のがしている",
+        "keywords": [
+          "カット中",
+          "出られない",
+          "でられない",
+          "のがして",
+          "逃して",
+          "つながらない",
+          "チャンス"
+        ],
+        "hint": "「なぜ アプリを 作りたいですか？」と 聞いて みよう"
+      },
+      {
+        "id": "r2",
+        "cat": "why",
+        "icon": "😥",
+        "label": "今の こまりごと",
+        "secret": "クーポンサイトの 手数料が 月5万円で 高い",
+        "fact": "クーポンサイトの 手数料が 月5万円で 高い。自分の お店の アプリに したい",
+        "keywords": [
+          "手数料",
+          "てすうりょう",
+          "5万",
+          "5万円",
+          "クーポンサイト",
+          "高い",
+          "たかい"
+        ],
+        "hint": "「今 使っている クーポンサイトで、こまって いませんか？」と 聞いて みよう"
+      },
+      {
+        "id": "r3",
+        "cat": "who",
+        "icon": "👤",
+        "label": "だれが 使う？",
+        "secret": "20〜40代の お客さま。夜に スマホで 予約したい人が 多い",
+        "secretShort": "20〜40代のお客さま",
+        "fact": "使う人は 20〜40代の お客さま。夜に スマホで 予約したい 人が 多い",
+        "keywords": [
+          "20代",
+          "30代",
+          "40代",
+          "夜",
+          "よる",
+          "スマホ",
+          "わかい",
+          "どんな"
+        ],
+        "hint": "「どんな お客さまが 使いますか？」と 聞いて みよう"
+      },
+      {
+        "id": "r4",
+        "cat": "what",
+        "icon": "📦",
+        "label": "きのう①予約",
+        "secret": "24時間 いつでも ネット予約できる",
+        "fact": "24時間 いつでも ネットで 予約できる",
+        "keywords": [
+          "24時間",
+          "いつでも",
+          "ネット",
+          "予約",
+          "よやく"
+        ],
+        "hint": "「アプリで 何が できると いいですか？」と 聞いて みよう"
+      },
+      {
+        "id": "r5",
+        "cat": "what",
+        "icon": "💇",
+        "label": "きのう②指名",
+        "secret": "スタイリスト（三人）を 指名できる",
+        "fact": "スタイリスト（三人）を 指名できる。指名の お客さまが 多い",
+        "keywords": [
+          "指名",
+          "しめい",
+          "スタイリスト",
+          "スタッフ",
+          "えらぶ",
+          "えらべる",
+          "ユイ"
+        ],
+        "hint": "「スタッフを えらぶ 機能は 必要ですか？」と 聞いて みよう。口コミにも ヒントが あったね"
+      },
+      {
+        "id": "r6",
+        "cat": "what",
+        "icon": "🔔",
+        "label": "きのう③リマインド",
+        "secret": "前の日に リマインド通知を 送る",
+        "fact": "予約の 前の 日に、リマインドの 通知を 送りたい（ドタキャン・忘れる 人を へらす）",
+        "keywords": [
+          "リマインド",
+          "通知",
+          "つうち",
+          "前の日",
+          "まえのひ",
+          "ドタキャン",
+          "忘れ",
+          "わすれ"
+        ],
+        "hint": "「予約を 忘れる お客さまは、いませんか？」と 聞いて みよう"
+      },
+      {
+        "id": "r7",
+        "cat": "scope",
+        "icon": "⚠️",
+        "label": "やらないこと",
+        "secret": "口コミ機能は 作らない",
+        "fact": "口コミの 機能は 作らない（悪い 口コミが こわいから）",
+        "keywords": [
+          "口コミ",
+          "くちこみ",
+          "レビュー",
+          "作らない",
+          "つくらない",
+          "こわい",
+          "いらない"
+        ],
+        "hint": "「アプリに 口コミの 機能も つけますか？」と 聞いて みよう"
+      },
+      {
+        "id": "r8",
+        "cat": "money",
+        "icon": "💰",
+        "label": "予算",
+        "secret": "50万円まで（月々の 費用は 少しなら OK）",
+        "secretShort": "50万円まで",
+        "fact": "予算は 50万円まで。月々の 費用は 少しなら OK",
+        "keywords": [
+          "50万",
+          "予算",
+          "よさん",
+          "いくら",
+          "月々",
+          "つきづき",
+          "毎月"
+        ],
+        "hint": "「ご予算は どのくらいですか？」と 聞いて みよう"
+      },
+      {
+        "id": "r9",
+        "cat": "when",
+        "icon": "📅",
+        "label": "いつまで？",
+        "secret": "2か月後の 春の キャンペーンまで",
+        "fact": "2か月後の 春の キャンペーンまでに 使いたい",
+        "keywords": [
+          "2か月",
+          "2ヶ月",
+          "春",
+          "はる",
+          "キャンペーン",
+          "いつまで"
+        ],
+        "hint": "「いつまでに 必要ですか？」と 聞いて みよう"
+      },
+      {
+        "id": "r10",
+        "cat": "how",
+        "icon": "🛠",
+        "label": "お客さま台帳",
+        "secret": "紙の カルテを アプリに 残して、スタッフ三人で 見たい",
+        "secretShort": "紙のカルテをアプリに",
+        "fact": "今、お客さまの 情報（カルテ）は 紙。アプリに 残して、スタッフ三人で 見たい",
+        "keywords": [
+          "カルテ",
+          "紙",
+          "かみ",
+          "台帳",
+          "だいちょう",
+          "情報",
+          "じょうほう",
+          "三人で"
+        ],
+        "hint": "「お客さまの 情報は、今 どうやって 管理して いますか？」と 聞いて みよう"
+      }
+    ]
+  },
+  "doc": {
+    "projectName": "ヘアサロンSAKURA ネット予約アプリ",
+    "clientLine": "ヘアサロンSAKURA 店長 桜井翔太 様",
+    "sections": [
+      {
+        "title": "1. 背景・目的",
+        "items": [
+          {
+            "reqId": "r1",
+            "text": "予約は 今、電話だけ。カット中は 電話に 出られず、とれるはずの 予約を のがしている。これを なくしたい。"
+          },
+          {
+            "reqId": "r2",
+            "text": "クーポンサイトの 手数料が 月5万円 かかっている。自分の お店の アプリで、この 費用を へらしたい。"
+          }
+        ]
+      },
+      {
+        "title": "2. 使う人",
+        "items": [
+          {
+            "reqId": "r3",
+            "text": "20〜40代の お客さま。夜、仕事の あとに スマホで 予約したい 人が 多い。"
+          }
+        ]
+      },
+      {
+        "title": "3. 必要な機能（Must）",
+        "items": [
+          {
+            "reqId": "r4",
+            "text": "24時間 いつでも ネットで 予約できる。"
+          },
+          {
+            "reqId": "r5",
+            "text": "スタイリスト（三人）を 指名して 予約できる。"
+          },
+          {
+            "reqId": "r6",
+            "text": "予約の 前の日に、リマインドの 通知を 自動で 送る。"
+          }
+        ]
+      },
+      {
+        "title": "4. やらないこと（スコープ外）",
+        "items": [
+          {
+            "reqId": "r7",
+            "text": "口コミ機能は 作らない。"
+          }
+        ]
+      },
+      {
+        "title": "5. 条件",
+        "items": [
+          {
+            "reqId": "r8",
+            "text": "予算：50万円まで（月々の 費用は 少しなら OK）。"
+          },
+          {
+            "reqId": "r9",
+            "text": "納期：2か月後の 春の キャンペーンまで。"
+          },
+          {
+            "reqId": "r10",
+            "text": "運用：紙の カルテを アプリの「お客さま台帳」にして、スタッフ三人で 見られるように する。"
+          }
+        ]
+      },
+      {
+        "title": "6. 事前調査より",
+        "items": [
+          {
+            "reqId": null,
+            "text": "営業時間：10:00〜19:00（月曜定休）。クーポンサイトの 評価は ★4.5（口コミ89件）。"
+          }
+        ]
+      }
+    ]
+  },
+  "lesson": {
+    "title": "『なぜ？』を 聞くと、ほんとうの 課題が 見える",
+    "points": [
+      "口コミは、お客さまの 本音です。「電話が つながらない」は、アプリの 大切な ヒントでした。",
+      "「なぜ 電話は だめですか？」と 聞くと、「カット中は 出られない」という、ほんとうの 理由が わかります。",
+      "今 使っている サービス（クーポンサイト）の ことも 聞くと、お金の 課題が 見つかります。"
+    ]
+  },
+  "furigana": [
+    [
+      "事前調査",
+      "じぜんちょうさ"
+    ],
+    [
+      "営業時間",
+      "えいぎょうじかん"
+    ],
+    [
+      "桜井店長",
+      "さくらいてんちょう"
+    ],
+    [
+      "桜井翔太",
+      "さくらいしょうた"
+    ],
+    [
+      "月曜定休",
+      "げつようていきゅう"
+    ],
+    [
+      "美容室",
+      "びようしつ"
+    ],
+    [
+      "手数料",
+      "てすうりょう"
+    ],
+    [
+      "定休日",
+      "ていきゅうび"
+    ],
+    [
+      "時間",
+      "じかん"
+    ],
+    [
+      "予約",
+      "よやく"
+    ],
+    [
+      "桜井",
+      "さくらい"
+    ],
+    [
+      "翔太",
+      "しょうた"
+    ],
+    [
+      "店長",
+      "てんちょう"
+    ],
+    [
+      "言葉",
+      "ことば"
+    ],
+    [
+      "苦手",
+      "にがて"
+    ],
+    [
+      "仕事",
+      "しごと"
+    ],
+    [
+      "希望",
+      "きぼう"
+    ],
+    [
+      "訪問",
+      "ほうもん"
+    ],
+    [
+      "質問",
+      "しつもん"
+    ],
+    [
+      "出そ",
+      "だそ"
+    ],
+    [
+      "出さ",
+      "ださ"
+    ],
+    [
+      "約束",
+      "やくそく"
+    ],
+    [
+      "感想",
+      "かんそう"
+    ],
+    [
+      "毎週",
+      "まいしゅう"
+    ],
+    [
+      "大切",
+      "たいせつ"
+    ],
+    [
+      "電話",
+      "でんわ"
+    ],
+    [
+      "何で",
+      "なんで"
+    ],
+    [
+      "値段",
+      "ねだん"
+    ],
+    [
+      "何人",
+      "なんにん"
+    ],
+    [
+      "紹介",
+      "しょうかい"
+    ],
+    [
+      "指名",
+      "しめい"
+    ],
+    [
+      "出店",
+      "しゅってん"
+    ],
+    [
+      "万円",
+      "まんえん"
+    ],
+    [
+      "機能",
+      "きのう"
+    ],
+    [
+      "必要",
+      "ひつよう"
+    ],
+    [
+      "通知",
+      "つうち"
+    ],
+    [
+      "予算",
+      "よさん"
+    ],
+    [
+      "月々",
+      "つきづき"
+    ],
+    [
+      "費用",
+      "ひよう"
+    ],
+    [
+      "月後",
+      "げつご"
+    ],
+    [
+      "台帳",
+      "だいちょう"
+    ],
+    [
+      "情報",
+      "じょうほう"
+    ],
+    [
+      "管理",
+      "かんり"
+    ],
+    [
+      "背景",
+      "はいけい"
+    ],
+    [
+      "目的",
+      "もくてき"
+    ],
+    [
+      "自分",
+      "じぶん"
+    ],
+    [
+      "自動",
+      "じどう"
+    ],
+    [
+      "条件",
+      "じょうけん"
+    ],
+    [
+      "納期",
+      "のうき"
+    ],
+    [
+      "運用",
+      "うんよう"
+    ],
+    [
+      "月曜",
+      "げつよう"
+    ],
+    [
+      "定休",
+      "ていきゅう"
+    ],
+    [
+      "評価",
+      "ひょうか"
+    ],
+    [
+      "課題",
+      "かだい"
+    ],
+    [
+      "本音",
+      "ほんね"
+    ],
+    [
+      "理由",
+      "りゆう"
+    ],
+    [
+      "五人",
+      "ごにん"
+    ],
+    [
+      "三人",
+      "さんにん"
+    ],
+    [
+      "二人",
+      "ふたり"
+    ],
+    [
+      "年前",
+      "ねんまえ"
+    ],
+    [
+      "人",
+      "ひと"
+    ],
+    [
+      "使",
+      "つか"
+    ],
+    [
+      "聞",
+      "き"
+    ],
+    [
+      "次",
+      "つぎ"
+    ],
+    [
+      "言",
+      "い"
+    ],
+    [
+      "私",
+      "わたし"
+    ],
+    [
+      "話",
+      "はなし"
+    ],
+    [
+      "願",
+      "ねが"
+    ],
+    [
+      "前",
+      "まえ"
+    ],
+    [
+      "店",
+      "みせ"
+    ],
+    [
+      "口",
+      "くち"
+    ],
+    [
+      "見",
+      "み"
+    ],
+    [
+      "客",
+      "きゃく"
+    ],
+    [
+      "声",
+      "こえ"
+    ],
+    [
+      "作",
+      "つく"
+    ],
+    [
+      "出",
+      "で"
+    ],
+    [
+      "日",
+      "ひ"
+    ],
+    [
+      "行",
+      "い"
+    ],
+    [
+      "先",
+      "さき"
+    ],
+    [
+      "払",
+      "はら"
+    ],
+    [
+      "金",
+      "かね"
+    ],
+    [
+      "書",
+      "か"
+    ],
+    [
+      "休",
+      "やす"
+    ],
+    [
+      "思",
+      "おも"
+    ],
+    [
+      "知",
+      "し"
+    ],
+    [
+      "今",
+      "いま"
+    ],
+    [
+      "紙",
+      "かみ"
+    ],
+    [
+      "何",
+      "なに"
+    ],
+    [
+      "高",
+      "たか"
+    ],
+    [
+      "遠",
+      "とお"
+    ],
+    [
+      "大",
+      "おお"
+    ],
+    [
+      "年",
+      "ねん"
+    ],
+    [
+      "止",
+      "と"
+    ],
+    [
+      "件",
+      "けん"
+    ],
+    [
+      "中",
+      "ちゅう"
+    ],
+    [
+      "月",
+      "つき"
+    ],
+    [
+      "代",
+      "だい"
+    ],
+    [
+      "夜",
+      "よる"
+    ],
+    [
+      "多",
+      "おお"
+    ],
+    [
+      "送",
+      "おく"
+    ],
+    [
+      "忘",
+      "わす"
+    ],
+    [
+      "少",
+      "すこ"
+    ],
+    [
+      "春",
+      "はる"
+    ],
+    [
+      "残",
+      "のこ"
+    ],
+    [
+      "様",
+      "さま"
+    ],
+    [
+      "外",
+      "がい"
+    ]
+  ]
+}

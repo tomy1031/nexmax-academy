@@ -94,24 +94,74 @@ export function checkForbiddenWords(file: string, data: unknown): Finding[] {
 }
 
 /**
- * 秘匿漏れ検査。reqs のキーワードが調査用模擬ページに書かれていたら落とす。
+ * 模擬ページの タグを 落として 地の文だけに する（空白の ゆれも 潰す）。
  *
- * **level は error。** 以前は warn だったが、warn は `lint_content.ts` の終了コードにも
- * 保存APIの可否にも効かないので、実質「何も止めていない」状態だった。
- * 漏れたシナリオは、学習者が**質問しなくても答えが手に入る**ため、
- * 「質問で引き出す」という産出練習そのものが成立しなくなる（規律6・P4）。
- * 教材が壊れているのに動いてしまう類なので、止める側に倒す。
+ * **ルビの 中身（`<rt>`）を 先に 捨てる**のが 肝。旧アプリ由来の 模擬ページは
+ * `<ruby>取<rt>と</rt>り<ruby>置<rt>お</rt>き` の ように 読みが 挟まって いるので、
+ * タグだけ 剥がすと「取とり置おき」に なり、**答えが 丸ごと 書いて あっても
+ * 一致しない**。読みを 捨ててから 剥がすと、素の 文（取り置き）が 残る。
+ */
+function researchProse(scenario: Scenario): string {
+  return (scenario.research?.pages ?? [])
+    .map((page) => page.html)
+    .join("\n")
+    .replace(/<rt\b[^>]*>[\s\S]*?<\/rt\s*>/gi, "")
+    .replace(/<rp\b[^>]*>[\s\S]*?<\/rp\s*>/gi, "")
+    .replace(/<[^>]*>/g, "")
+    .replace(/\s+/gu, "");
+}
+
+/**
+ * 秘匿漏れ検査（規律6・P4）— **答えが 調査ページに 書いて あるか**を見る。
+ *
+ * 規律6が 禁じて いるのは「質問で 引き出すべき **事実**を 模擬ページに 書く」こと。
+ * だから 見るのは `secret`（札に 出る 答え）と `fact`（判定に 渡す 事実）である。
+ * これが ページに 丸ごと あると、学習者は **質問しなくても 答えが 手に入る**——
+ * 「質問で 引き出す」という 産出練習そのものが 成立しなくなる。ここは error。
+ *
+ * ## キーワードは 警告に とどめる（2026-09-07）
+ * ここは 長らく **`keywords` が ページに あるか**だけを 見て error に して いた。
+ * ところが `keywords` は 秘匿情報では なく、**学習者が 言いそうな 語**である
+ *（AI判定が 外した ときに 札を 開く 救済 — `req-matcher.ts`）。
+ * 設計01 P4 は 調査ページに「後の 会話で 回収される **伏線**を 最低1本 埋める」と
+ * 決めて いるので、伏線の 語と 救済の 語は **かぶるのが 正しい**。
+ *
+ * 実例（お客さまインタビュー「ベーカリーひまわり」）: Instagramに
+ *「取り置きの ご連絡は DMへ（お返事が おそくて ごめんなさい）」と 伏線が あり、
+ * r2「今の こまりごと」の キーワードに `DM` `返事` が 入って いる。答え
+ *（「DMの 返事が おそく、取り置きが さばけない」）は ページに 無い——
+ * つまり 教材は 正しいのに、検査だけが 落ちて いた。
+ *
+ * 旧アプリ由来の 5話で 25項目が この 型で 落ちたのを 機に、**事実を 直接 見る**
+ * 形へ 直した。守りは 弱く なって いない: これまで `secret` / `fact` は
+ * **1度も 見て いなかった**ので、事実の 丸写しは 素通りして いた。
+ * `lint_content.ts` の 見出しも もともと「警告」と 書いて あり、実装だけが
+ * それより 厳しかった（コメントと コードの ずれ）。
  */
 export function checkSecretLeaks(file: string, scenario: Scenario): Finding[] {
   const findings: Finding[] = [];
-  const pagesHtml = scenario.research.pages.map((p) => p.html).join("\n");
+  const prose = researchProse(scenario);
   for (const req of scenario.interview.reqs) {
-    const leaked = req.keywords.filter((kw) => kw.length >= 2 && pagesHtml.includes(kw));
+    /*
+     * 答えの 丸写し。短い 文（8字未満）は たまたま 一致しうるので 見ない——
+     * 「はい」「まだです」のような 答えまで 拾うと、検査が 無視される 側へ 倒れる。
+     */
+    for (const field of ["secret", "fact"] as const) {
+      const answer = req[field].replace(/\s+/gu, "");
+      if (answer.length >= 8 && prose.includes(answer)) {
+        findings.push({
+          file,
+          level: "error",
+          message: `${req.id}（${req.label}）の ${field}「${req[field]}」が そのまま 調査ページに ある — 質問しなくても 答えが 手に入る。模擬ページから 消す（規律6・P4）`,
+        });
+      }
+    }
+    const leaked = req.keywords.filter((kw) => kw.length >= 2 && prose.includes(kw));
     if (leaked.length > 0) {
       findings.push({
         file,
-        level: "error",
-        message: `${req.id}（${req.label}）のキーワード [${leaked.join(", ")}] が調査ページ内にある — 質問で引き出す情報なら模擬ページから削除する（規律6・P4）`,
+        level: "warn",
+        message: `${req.id}（${req.label}）のキーワード [${leaked.join(", ")}] が調査ページにも出ている — 伏線なら そのままでよい。答え（secret）まで 書いていないか だけ 確かめる（規律6・P4）`,
       });
     }
   }
@@ -844,14 +894,17 @@ export function collectLabeledTexts(content: Content): LabeledText[] {
         push(`words[${i}].w`, word.w);
         push(`words[${i}].m`, word.m);
       });
-      push("research.intro", content.research.intro);
-      content.research.pages.forEach((page, i) => push(`research.pages[${i}].tab`, page.tab));
-      content.research.quiz.forEach((quiz, i) => {
-        push(`research.quiz[${i}].q`, quiz.q);
-        quiz.options.forEach((option, j) => push(`research.quiz[${i}].options[${j}]`, option));
-        push(`research.quiz[${i}].why`, quiz.why);
-      });
-      content.research.findings.forEach((finding, i) => push(`research.findings[${i}]`, finding));
+      // 事前調査は 省ける（調べる 場面が 無い 教材が ある — scenarioSchema.research）
+      if (content.research) {
+        push("research.intro", content.research.intro);
+        content.research.pages.forEach((page, i) => push(`research.pages[${i}].tab`, page.tab));
+        content.research.quiz.forEach((quiz, i) => {
+          push(`research.quiz[${i}].q`, quiz.q);
+          quiz.options.forEach((option, j) => push(`research.quiz[${i}].options[${j}]`, option));
+          push(`research.quiz[${i}].why`, quiz.why);
+        });
+        content.research.findings.forEach((finding, i) => push(`research.findings[${i}]`, finding));
+      }
       content.interview.reqs.forEach((req, i) => {
         // fact と keywords は判定の材料（AI・ローカル照合）で、画面には出ない
         push(`interview.reqs[${i}].label`, req.label);
