@@ -657,23 +657,47 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
     await page.getByRole("button", { name: "おわる" }).click();
   });
 
-  await test.step("9. ステージを おえる", async () => {
+  await test.step("9. 関門を 全部 おえた ので「ステージ クリア」が 出る", async () => {
     /*
-     * かいしゃステージは **社長と 話して おわり**。就業形態の 3本は
-     * 2026-09-07 に しごとステージへ 切り出した（次の テスト）。
+     * 8本目の スライドは **関門では ない**（`content-kinds.ts`: `gates: false`
+     * ——先生の しりょうなので、必要な 所だけ 開く ことも、あとで 見直す ことも ある）。
+     * だから 社長と 話し終えた この 時点で 板が 出るのが 正しい。
+     * ここが 出なく なった 日は、スライドが 関門に なって ステージが 進まなく なった、
+     * という こと（`gates: false` を 消すと そう なる）。
      */
     const clear = page.getByRole("dialog", { name: "ステージ クリア" });
     await expect(clear).toBeVisible();
     await shot(page, "11-stage-clear");
     await clear.getByRole("link", { name: "ステージに もどる" }).click();
 
+    // 板は 出たが、スライドが まだ なので 100% では ない
+    await expect(page.getByText(progressText(KAISHA_ITEMS.length - 1))).toBeVisible();
+  });
+
+  await test.step("10. STEP 6 スライド「松井社長と 話す ときに 大切な こと」— さいごの 1まいまで 見る", async () => {
+    await page.locator("ol > li > a").nth(KAISHA_ITEMS.indexOf(KAISHA.slides)).click();
+    await expect(page).toHaveURL(new RegExp(`${KAISHA.slides.path}$`));
+
+    /*
+     * PDF は 19まい。1まいずつ 送らせると 通しが 長く なるだけ なので、
+     * 「さいごの 1まいへ」で 飛ぶ——**さいごに 着いた ことが 終わりの 印**
+     *（`slide-deck.tsx`: `index >= last` で `completed` を 記録する）。
+     * ボタンが 消えた 日は ここが 落ちる＝終われない 教材に なった、という こと。
+     */
+    await page.getByRole("button", { name: "さいごの 1まいへ" }).click();
+    await expect(page.getByText("さいごまで 見ました！")).toBeVisible();
+    await shot(page, "12-slides-matsui");
+  });
+
+  await test.step("11. ステージを おえる", async () => {
+    await page.goto("/kaisha");
     await expect(page.getByText(progressText(KAISHA_ITEMS.length))).toBeVisible();
     /*
      * 進みぐあいの「100%」だけを 見る。松井社長の 説明文にも「100%」が 出る ように
      * なった（対話ゲーム）ので、部分一致だと 2つに 当たる。
      */
     await expect(page.getByText("100%", { exact: true })).toBeVisible();
-    await shot(page, "12-stage-top-done");
+    await shot(page, "13-stage-top-done");
   });
 });
 
