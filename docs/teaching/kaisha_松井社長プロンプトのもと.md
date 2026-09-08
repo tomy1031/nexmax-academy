@@ -81,7 +81,7 @@ CI の `taiwa-live` が落ちた）。**ものさしが 2つあると、必ず�
 npm run lint:content     # openers / listenHints の ふりがな覆い（persona と judgePrompt は対象外＝AIへの指示）
 ```
 
-実機は `tests/e2e/taiwa-live.spec.ts`（`GEMINI_API_KEY` があるときだけ走る）。
+実機は `tests/e2e/taiwa-live.ai.spec.ts`（`GEMINI_API_KEY` があり、かつ 対話まわりを 触った PR のときだけ走る）。
 `persona` / `judgePrompt` は画面に出ないので、**返事の中身を見るには実際に Live へ通すしかない**。
 
 ## 2026-08-31 の直し（準備フォームが 5問 → 3問）

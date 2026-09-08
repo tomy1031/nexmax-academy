@@ -10,7 +10,7 @@ import { KAISHA, itemsBefore, readOn, seedCompleted, seedGeminiKey, shot } from 
  * 1. 「会社の ことが 入って いる」が 立つ（規則ベースは いつも 立てない）
  * 2. 出だしの 2つを 過ぎたら、**その場で 作った 深掘りの しつもん**に なる
  *
- * 鍵の 渡し方・トレースを 切る 理由は `judge.spec.ts` と 同じ（鍵が 記録に 残らない ように）。
+ * 鍵の 渡し方・トレースを 切る 理由は `judge.ai.spec.ts` と 同じ（鍵が 記録に 残らない ように）。
  */
 test.use({ trace: "off", video: "off" });
 
@@ -45,7 +45,7 @@ test.describe("対話ゲームの AI（鍵が あるときだけ）", () => {
     if ((await fellBack.count()) > 0) {
       /*
        * AIに 通せない ことは 仕様の うち（鍵切れ・混雑）。**緑で 通して 黙って 消さず**、
-       * とばした ことが 分かる ように 残す（judge.spec.ts と 同じ 決まり）。
+       * とばした ことが 分かる ように 残す（judge.ai.spec.ts と 同じ 決まり）。
        */
       console.log("[taiwa] AIに 通せませんでした（鍵切れ・混雑）");
       test.skip(true, "AIに 通せませんでした");
