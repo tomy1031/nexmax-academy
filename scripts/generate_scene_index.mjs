@@ -53,11 +53,11 @@ const SCENE_ORDER = [
   "area_palace_town.webp", // みやこの まち
   "area_palace_river_capital.webp", // ソウル
   "area_volcano_fields.webp", // チェジュ
-  // 日本（西から東へ）
-  "area_stall_bay_town.webp", // 福岡
+  // 日本（2026-09-07 の 指定の 順。おおむね 南西から 東へ）
   "area_cedar_moss_forest.webp", // 屋久島
-  "area_sea_torii_delta.webp", // 広島
+  "area_stall_bay_town.webp", // 福岡
   "area_great_rope_shrine.webp", // 出雲
+  "area_sea_torii_delta.webp", // 広島
   "area_port_tower_ridge.webp", // 神戸
   "area_castle_canal_town.webp", // 大阪
   "area_pagoda_lane.webp", // 京都
