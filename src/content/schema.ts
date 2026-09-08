@@ -848,9 +848,27 @@ const reqCatSchema = z.enum([
   "other",
 ]);
 
+/**
+ * 要件の 種類（要件定義の 整理の 軸）。
+ *
+ * 「アプリの 要件定義」（youken2）で 足した。ボードは この 種類ごとに 段を 分けて 出す
+ *（こまって いる こと → 機能要件 → 非機能要件 → 予算と 納期）。**聞き出した ことを
+ * どの 箱に 入れるか**が 教材の 学びそのものなので、cat（なぜ・だれ・何…）とは 別に 持つ。
+ * 省ける——無い 教材（1人の お客さま）は これまでどおり 1つの 段で 出る。
+ */
+const reqKindSchema = z.enum(["problem", "functional", "nonfunctional", "constraint"]);
+
 const reqSchema = z.object({
-  id: z.string().regex(/^r(10|[1-9])$/),
+  id: z.string().regex(/^r([1-9]|1[0-2])$/),
   cat: reqCatSchema,
+  /**
+   * この ことを 知って いる 人（`"client"` か `interview.others[].id`）。省くと 主催者（client）。
+   *
+   * 相手が 3人 いる 教材では、**だれに 聞くか**が 答えの 半分である。ちがう 人に 聞くと
+   * 「それは ◯◯が くわしいです」と 返り、札は 開かない（live-mode.tsx の judge）。
+   */
+  owner: z.string().regex(/^[a-z0-9_-]+$/).optional(),
+  kind: reqKindSchema.optional(),
   icon: z.string().min(1),
   label: plainText,
   /** ボードが開いたとき表示される中身。 */
@@ -880,6 +898,30 @@ const researchPageSchema = z.object({
   html: z.string().min(1),
 });
 
+/** 主催者（お客さま）。 */
+const clientSchema = z.object({
+  name: plainText,
+  role: plainText,
+  desc: plainText,
+  /** Live音声プリセット名。 */
+  voice: z.string().min(1),
+  /** `/img/...` なら タイルに 顔として 出す。それ以外の 名前は 頭文字の 丸に なる。 */
+  avatar: z.string().min(1),
+  /** 先輩キャラの攻略ひとこと。 */
+  tip: plainText,
+});
+
+/** 同席する ほかの 相手（`interview.others`）。client の 形＋ id・色・自分の persona。 */
+const otherPersonSchema = clientSchema.extend({
+  id: z
+    .string()
+    .regex(/^[a-z0-9_-]+$/)
+    .refine((id) => id !== "client" && id !== "me", { message: "client / me は 予約語" }),
+  accent: z.enum(["sky", "leaf", "sun", "coral", "grape"]).default("sky"),
+  /** この 人の Live systemInstruction 全文。 */
+  persona: plainText,
+});
+
 export const scenarioSchema = z
   .object({
     kind: z.literal("scenario"),
@@ -891,16 +933,7 @@ export const scenarioSchema = z
     emoji: z.string().min(1),
     color: z.string().min(1),
     difficulty: z.number().int().min(1).max(3),
-    client: z.object({
-      name: plainText,
-      role: plainText,
-      desc: plainText,
-      /** Live音声プリセット名。 */
-      voice: z.string().min(1),
-      avatar: z.string().min(1),
-      /** 先輩キャラの攻略ひとこと。 */
-      tip: plainText,
-    }),
+    client: clientSchema,
     mission: z.object({
       chat: z
         .array(
@@ -945,9 +978,19 @@ export const scenarioSchema = z
       })
       .optional(),
     interview: z.object({
-      /** Live systemInstruction 全文。10か条契約・分かち書き・プレーン。 */
+      /** Live systemInstruction 全文（client の ぶん）。10か条契約・分かち書き・プレーン。 */
       persona: plainText,
-      reqs: z.array(reqSchema).length(10),
+      /**
+       * 同じ 会議に いる **ほかの 相手**（2026-09-08「複数人を Zoom UI で」）。
+       *
+       * それぞれが 自分の persona と 声を 持ち、学習者は 🎤 で **だれに 話しかけるか**を
+       * 選んで 聞く。省くと これまでどおり client 1人の たいわ。
+       * 主催者を `client` に 残して あるのは、1人の 教材（お客さまインタビュー 5話・
+       * 山本社長）の データと 画面を 1つも 変えない ため。
+       */
+      others: z.array(otherPersonSchema).min(1).max(4).optional(),
+      /** 6〜12件。1人の 教材は 10件（旧アプリの 形）、3人の 教材は 4件ずつの 12件。 */
+      reqs: z.array(reqSchema).min(6).max(12),
     }),
     doc: z.object({
       projectName: plainText,
@@ -980,6 +1023,21 @@ export const scenarioSchema = z
     if (new Set(reqIds).size !== reqIds.length) {
       ctx.addIssue({ code: "custom", message: "reqs の id が重複している" });
     }
+    const otherIds = (s.interview.others ?? []).map((p) => p.id);
+    if (new Set(otherIds).size !== otherIds.length) {
+      ctx.addIssue({ code: "custom", message: "interview.others の id が重複している" });
+    }
+    // 担当（owner）は 会議に いる 人でなければ ならない。いない 人の 札は 永久に 開かない
+    const people = new Set(["client", ...otherIds]);
+    s.interview.reqs.forEach((req, i) => {
+      if (req.owner && !people.has(req.owner)) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["interview", "reqs", i, "owner"],
+          message: `owner「${req.owner}」が client でも interview.others の id でも ない`,
+        });
+      }
+    });
     const docReqIds = new Set(
       s.doc.sections.flatMap((sec) =>
         sec.items.map((i) => i.reqId).filter((x): x is string => x !== null),
@@ -2494,6 +2552,9 @@ export type Listening = z.infer<typeof listeningSchema>;
 export type ListeningParticipant = z.infer<typeof participantSchema>;
 export type ListeningScriptLine = z.infer<typeof scriptLineSchema>;
 export type Scenario = z.infer<typeof scenarioSchema>;
+export type ScenarioReq = Scenario["interview"]["reqs"][number];
+export type ScenarioReqKind = z.infer<typeof reqKindSchema>;
+export type ScenarioOther = NonNullable<Scenario["interview"]["others"]>[number];
 export type Meeting = z.infer<typeof meetingSchema>;
 export type MeetingQuestion = z.infer<typeof meetingQuestionSchema>;
 export type Stage = z.infer<typeof stageSchema>;

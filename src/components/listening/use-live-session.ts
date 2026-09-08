@@ -36,6 +36,14 @@ import { startMicCapture, IN_RATE, type MicCapture } from "@/components/meeting/
  * 1つに束ねて**から渡す（use-live-voice と同じ約束）。
  *
  * キーが未登録のときは status="notReady" になり、画面は理由つきの案内に落ちる。
+ *
+ * ## つなぎ直しの 世代（epoch）— 2026-09-08
+ * 3人の たいわ は 相手を かえる たびに `disconnect()` → `connect()` する。世代を 持たないと、
+ * **閉じた 側の コールバックが 生きたまま 新しい つなぎの state を 書く**——古い close が
+ * あとから 届いて「話しはじめる」に 戻る、前の 人の 声が 新しい 出力から 鳴る、つなぎ途中に
+ * 切りかえると まだ null の session を 閉じられず 居座る（マイク・AudioContext も 漏れる）。
+ * `connect` は 自分の 世代を 持ち、await の あとと コールバックの 中で 世代を 確かめる。
+ * ちがえば **何も せず 片づけて 帰る**（call-shell の `cancelled` と 同じ 型）。
  */
 
 export type LiveStatus = "idle" | "connecting" | "live" | "notReady" | "error";
@@ -104,8 +112,11 @@ export function useLiveSession(): LiveSession {
   } | null>(null);
   const micRef = useRef<{ capture: MicCapture; stream: MediaStream } | null>(null);
   const outRef = useRef<{ ctx: AudioContext; node: GainNode; playAt: number } | null>(null);
+  /** いまの つなぎの 世代。`connect` と `disconnect` の たびに 進む。 */
+  const epochRef = useRef(0);
 
-  const disconnect = useCallback(() => {
+  /** 持って いる ものを 全部 止める（状態は 触らない）。 */
+  const release = useCallback(() => {
     sessionRef.current?.close();
     sessionRef.current = null;
     micRef.current?.capture.stop();
@@ -113,176 +124,226 @@ export function useLiveSession(): LiveSession {
     micRef.current = null;
     void outRef.current?.ctx.close();
     outRef.current = null;
+  }, []);
+
+  const disconnect = useCallback(() => {
+    epochRef.current += 1;
+    release();
     setVoiceOn(false);
     setStatus("idle");
     setReason(null);
-  }, []);
+  }, [release]);
 
-  const connect = useCallback(async (systemInstruction: string, voice?: string) => {
-    setStatus("connecting");
-    setReason(null);
-    setTranscript([]);
-    setLastUtterance(null);
-    setVoiceOn(false);
-    heardRef.current = "";
-    saidRef.current = "";
+  const connect = useCallback(
+    async (systemInstruction: string, voice?: string) => {
+      // 前の つなぎが 残って いても、ここで 必ず 片づけてから 始める（二重接続を 作らない）
+      epochRef.current += 1;
+      const epoch = epochRef.current;
+      const stale = () => epoch !== epochRef.current;
+      release();
+      setStatus("connecting");
+      setReason(null);
+      setTranscript([]);
+      setLastUtterance(null);
+      setVoiceOn(false);
+      heardRef.current = "";
+      saidRef.current = "";
 
-    const apiKey = getGeminiKey();
-    if (!apiKey) {
-      setStatus("notReady");
-      setReason("noKey");
-      return;
-    }
-
-    /*
-     * 本人のキーはこの端末に保存されている（はじめの設定ウィザードで登録）。
-     * **キーはサーバへ渡さない**（2026-08-17）。短命トークンもこの端末で作る——
-     * うちの Worker は香港で動くことがあり、そこを通すと(1) Google に断られ、
-     * (2) キーが香港で復号される。両方とも、通さなければ起きない。
-     *
-     * 設定してあるモデル → 既定（新しいほう）の順にためす。Live の preview モデルは
-     * **名前ごと入れ替わる**ので、前に選んだ名前が消えていることがある。1つで諦めると
-     * 画面には「じゅんびちゅう」としか出ず、キーを疑い続けることになる（2026-08-06 実発生）。
-     */
-    const wanted = [getLiveModel(), ...LIVE_TALK_MODELS].filter(
-      (name, index, all): name is string => Boolean(name) && all.indexOf(name) === index,
-    );
-    const models = wanted.length > 0 ? wanted : [DEFAULT_LIVE_TALK_MODEL];
-    const minted = await createLiveToken({ apiKey });
-    /*
-     * 短命トークンが作れないキーでも、たいわを止めない（2026-08-17）
-     *
-     * Google は APIキーを 新形式（`AQ.` で はじまる auth key）へ 移していて、
-     * 新形式は **authTokens.create だけ 通らない**という 報告がある。旧形式は
-     * 2026年9月に 廃止される。ここで 諦めると、その日に たいわが 全滅する。
-     *
-     * 最後の手段として、本人のキーで 直接つなぐ。キーは もともと この端末に
-     * ある（BYOK）ので 新しく 配るわけでは ないが、「漏れても30分で 切れる」
-     * 効き目は 失う。だから **トークンが 作れなかったときだけ**に 限る。
-     * 権限・使いすぎの ときは 直接つないでも 同じなので 落ちるに まかせる。
-     */
-    const lastReason = minted.ok ? "upstream" : minted.reason;
-    const canUseKeyDirectly = lastReason === "tokenRejected" || lastReason === "invalidRequest";
-    const auth = minted.ok ? minted.token : canUseKeyDirectly ? apiKey : null;
-    const liveModel = models[0] ?? DEFAULT_LIVE_TALK_MODEL;
-    if (!auth) {
-      setStatus("notReady");
-      setReason(lastReason);
-      return;
-    }
-
-    /*
-     * マイクは**つなぐ前**に許可を取る。つないでから断られると、相手だけが話して
-     * 学習者が答えられない状態で残る。
-     * ただし**断られても止めない**——書いて送れば会話は成り立つ（劣化運転）。
-     */
-    let stream: MediaStream | null = null;
-    try {
-      stream = await navigator.mediaDevices.getUserMedia({
-        audio: {
-          channelCount: 1,
-          // 相手の声がスピーカーから回り込むと、そのまま聞き取りに混ざる
-          echoCancellation: true,
-          noiseSuppression: true,
-          autoGainControl: true,
-        },
-      });
-    } catch {
-      stream = null;
-    }
-
-    try {
-      // SDK は接続時にだけ要る。初期表示のバンドルに載せない。
-      const { GoogleGenAI, Modality } = await import("@google/genai");
-      const ai = new GoogleGenAI({ apiKey: auth, apiVersion: "v1beta" });
-
-      // 再生側。24kHz で受けて、切れ目なく順に鳴らす
-      const outCtx = new AudioContext({ sampleRate: OUT_RATE });
-      // 自動再生の制限で止まったまま始まることがある。動かさないと1音も出ない
-      if (outCtx.state === "suspended") await outCtx.resume();
-      const node = outCtx.createGain();
-      node.connect(outCtx.destination);
-      outRef.current = { ctx: outCtx, node, playAt: 0 };
-
-      const session = await ai.live.connect({
-        model: liveModel,
-        config: {
-          responseModalities: [Modality.AUDIO],
-          systemInstruction,
-          // 文字起こしを必ず出す。学習者が「何を言ったか」を目で確かめられるようにする。
-          inputAudioTranscription: {},
-          outputAudioTranscription: {},
-          /*
-           * 声は**人物カードで決めたもの**を使う（scenario の client.voice）。
-           * 決めていないときは Live の既定に任せる——ここで別の声を勝手に当てると、
-           * まんがや ミーティングと 声が 違う人になる。
-           */
-          speechConfig: {
-            languageCode: "ja-JP",
-            ...(voice ? { voiceConfig: { prebuiltVoiceConfig: { voiceName: voice } } } : {}),
-          },
-        },
-        callbacks: {
-          onopen: () => setStatus("live"),
-          onmessage: (message: unknown) => {
-            /*
-             * 文字起こしは**細切れで**届く。1つずつ字幕にすると読めないし、
-             * 途中で判定すると言い終える前に見られることになる。だから:
-             *   聞き取り（学習者）… 相手が話しはじめた合図で 1つに束ねて流す
-             *   返事（相手）      … turnComplete で 1つに束ねる
-             */
-            const piece = readTranscript(message);
-            if (piece?.from === "me") heardRef.current += piece.text;
-            if (piece?.from === "client") {
-              const heard = heardRef.current.trim();
-              if (heard) {
-                heardRef.current = "";
-                utteranceIdRef.current += 1;
-                const id = utteranceIdRef.current;
-                setTranscript((prev) => [...prev, { from: "me", text: heard, mode: "voice" }]);
-                setLastUtterance({ id, text: heard });
-              }
-              saidRef.current += piece.text;
-            }
-            if (isTurnComplete(message) && saidRef.current.trim()) {
-              const said = saidRef.current.trim();
-              saidRef.current = "";
-              setTranscript((prev) => [...prev, { from: "client", text: said, mode: "voice" }]);
-            }
-            for (const pcm of readAudio(message)) play(outRef.current, pcm);
-          },
-          onerror: () => setStatus("error"),
-          onclose: () => setStatus("idle"),
-        },
-      });
-
-      sessionRef.current = session as unknown as NonNullable<typeof sessionRef.current>;
+      const apiKey = getGeminiKey();
+      if (!apiKey) {
+        setStatus("notReady");
+        setReason("noKey");
+        return;
+      }
 
       /*
-       * マイク → 16kHz PCM → 送信。落とす処理は mic-capture.ts が持つ
-       *（音声スレッドで動かすため。メインスレッドで作ると、画面が忙しいときに
-       * 語の途中が丸ごと落ちて、何を言っても書き起こしが崩れる）。
+       * 本人のキーはこの端末に保存されている（はじめの設定ウィザードで登録）。
+       * **キーはサーバへ渡さない**（2026-08-17）。短命トークンもこの端末で作る——
+       * うちの Worker は香港で動くことがあり、そこを通すと(1) Google に断られ、
+       * (2) キーが香港で復号される。両方とも、通さなければ起きない。
+       *
+       * 設定してあるモデル → 既定（新しいほう）の順にためす。Live の preview モデルは
+       * **名前ごと入れ替わる**ので、前に選んだ名前が消えていることがある。1つで諦めると
+       * 画面には「じゅんびちゅう」としか出ず、キーを疑い続けることになる（2026-08-06 実発生）。
        */
-      if (stream) {
-        const capture = await startMicCapture(stream, (pcm) => {
-          sessionRef.current?.sendRealtimeInput({
-            audio: {
-              data: bytesToBase64(new Uint8Array(pcm.buffer, pcm.byteOffset, pcm.byteLength)),
-              mimeType: `audio/pcm;rate=${IN_RATE}`,
-            },
-          });
-        });
-        micRef.current = { capture, stream };
-        setVoiceOn(true);
+      const wanted = [getLiveModel(), ...LIVE_TALK_MODELS].filter(
+        (name, index, all): name is string => Boolean(name) && all.indexOf(name) === index,
+      );
+      const models = wanted.length > 0 ? wanted : [DEFAULT_LIVE_TALK_MODEL];
+      const minted = await createLiveToken({ apiKey });
+      if (stale()) return;
+      /*
+       * 短命トークンが作れないキーでも、たいわを止めない（2026-08-17）
+       *
+       * Google は APIキーを 新形式（`AQ.` で はじまる auth key）へ 移していて、
+       * 新形式は **authTokens.create だけ 通らない**という 報告がある。旧形式は
+       * 2026年9月に 廃止される。ここで 諦めると、その日に たいわが 全滅する。
+       *
+       * 最後の手段として、本人のキーで 直接つなぐ。キーは もともと この端末に
+       * ある（BYOK）ので 新しく 配るわけでは ないが、「漏れても30分で 切れる」
+       * 効き目は 失う。だから **トークンが 作れなかったときだけ**に 限る。
+       * 権限・使いすぎの ときは 直接つないでも 同じなので 落ちるに まかせる。
+       */
+      const lastReason = minted.ok ? "upstream" : minted.reason;
+      const canUseKeyDirectly = lastReason === "tokenRejected" || lastReason === "invalidRequest";
+      const auth = minted.ok ? minted.token : canUseKeyDirectly ? apiKey : null;
+      const liveModel = models[0] ?? DEFAULT_LIVE_TALK_MODEL;
+      if (!auth) {
+        setStatus("notReady");
+        setReason(lastReason);
+        return;
       }
-    } catch {
-      // 例外の中身は出さない。短命トークンが混ざりうるうえ、SDK の生メッセージは
-      // 学習者にも先生にも読めない。理由の名前だけ渡す。
-      stream?.getTracks().forEach((track) => track.stop());
-      setStatus("error");
-      setReason("connect");
-    }
-  }, []);
+
+      /*
+       * マイクは**つなぐ前**に許可を取る。つないでから断られると、相手だけが話して
+       * 学習者が答えられない状態で残る。
+       * ただし**断られても止めない**——書いて送れば会話は成り立つ（劣化運転）。
+       */
+      let stream: MediaStream | null = null;
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({
+          audio: {
+            channelCount: 1,
+            // 相手の声がスピーカーから回り込むと、そのまま聞き取りに混ざる
+            echoCancellation: true,
+            noiseSuppression: true,
+            autoGainControl: true,
+          },
+        });
+      } catch {
+        stream = null;
+      }
+      if (stale()) {
+        stream?.getTracks().forEach((track) => track.stop());
+        return;
+      }
+
+      try {
+        // SDK は接続時にだけ要る。初期表示のバンドルに載せない。
+        const { GoogleGenAI, Modality } = await import("@google/genai");
+        if (stale()) {
+          stream?.getTracks().forEach((track) => track.stop());
+          return;
+        }
+        const ai = new GoogleGenAI({ apiKey: auth, apiVersion: "v1beta" });
+
+        // 再生側。24kHz で受けて、切れ目なく順に鳴らす
+        const outCtx = new AudioContext({ sampleRate: OUT_RATE });
+        // 自動再生の制限で止まったまま始まることがある。動かさないと1音も出ない
+        if (outCtx.state === "suspended") await outCtx.resume();
+        if (stale()) {
+          void outCtx.close();
+          stream?.getTracks().forEach((track) => track.stop());
+          return;
+        }
+        const node = outCtx.createGain();
+        node.connect(outCtx.destination);
+        const out = { ctx: outCtx, node, playAt: 0 };
+        outRef.current = out;
+
+        const session = await ai.live.connect({
+          model: liveModel,
+          config: {
+            responseModalities: [Modality.AUDIO],
+            systemInstruction,
+            // 文字起こしを必ず出す。学習者が「何を言ったか」を目で確かめられるようにする。
+            inputAudioTranscription: {},
+            outputAudioTranscription: {},
+            /*
+             * 声は**人物カードで決めたもの**を使う（scenario の client.voice）。
+             * 決めていないときは Live の既定に任せる——ここで別の声を勝手に当てると、
+             * まんがや ミーティングと 声が 違う人になる。
+             */
+            speechConfig: {
+              languageCode: "ja-JP",
+              ...(voice ? { voiceConfig: { prebuiltVoiceConfig: { voiceName: voice } } } : {}),
+            },
+          },
+          callbacks: {
+            onopen: () => {
+              if (!stale()) setStatus("live");
+            },
+            onmessage: (message: unknown) => {
+              // 閉じた 世代からの 届きもの（声・字幕）は 捨てる。新しい 相手の 名で 出て しまう
+              if (stale()) return;
+              /*
+               * 文字起こしは**細切れで**届く。1つずつ字幕にすると読めないし、
+               * 途中で判定すると言い終える前に見られることになる。だから:
+               *   聞き取り（学習者）… 相手が話しはじめた合図で 1つに束ねて流す
+               *   返事（相手）      … turnComplete で 1つに束ねる
+               */
+              const piece = readTranscript(message);
+              if (piece?.from === "me") heardRef.current += piece.text;
+              if (piece?.from === "client") {
+                const heard = heardRef.current.trim();
+                if (heard) {
+                  heardRef.current = "";
+                  utteranceIdRef.current += 1;
+                  const id = utteranceIdRef.current;
+                  setTranscript((prev) => [...prev, { from: "me", text: heard, mode: "voice" }]);
+                  setLastUtterance({ id, text: heard });
+                }
+                saidRef.current += piece.text;
+              }
+              if (isTurnComplete(message) && saidRef.current.trim()) {
+                const said = saidRef.current.trim();
+                saidRef.current = "";
+                setTranscript((prev) => [...prev, { from: "client", text: said, mode: "voice" }]);
+              }
+              for (const pcm of readAudio(message)) play(out, pcm);
+            },
+            onerror: () => {
+              if (!stale()) setStatus("error");
+            },
+            onclose: () => {
+              if (!stale()) setStatus("idle");
+            },
+          },
+        });
+
+        if (stale()) {
+          // つなぎ途中に 相手が かわった。届いた セッションは 使わずに 閉じる（居座らせない）
+          (session as unknown as { close: () => void }).close();
+          void outCtx.close();
+          stream?.getTracks().forEach((track) => track.stop());
+          return;
+        }
+        sessionRef.current = session as unknown as NonNullable<typeof sessionRef.current>;
+
+        /*
+         * マイク → 16kHz PCM → 送信。落とす処理は mic-capture.ts が持つ
+         *（音声スレッドで動かすため。メインスレッドで作ると、画面が忙しいときに
+         * 語の途中が丸ごと落ちて、何を言っても書き起こしが崩れる）。
+         */
+        if (stream) {
+          const capture = await startMicCapture(stream, (pcm) => {
+            if (stale()) return;
+            sessionRef.current?.sendRealtimeInput({
+              audio: {
+                data: bytesToBase64(new Uint8Array(pcm.buffer, pcm.byteOffset, pcm.byteLength)),
+                mimeType: `audio/pcm;rate=${IN_RATE}`,
+              },
+            });
+          });
+          if (stale()) {
+            capture.stop();
+            stream.getTracks().forEach((track) => track.stop());
+            return;
+          }
+          micRef.current = { capture, stream };
+          setVoiceOn(true);
+        }
+      } catch {
+        if (stale()) return;
+        // 例外の中身は出さない。短命トークンが混ざりうるうえ、SDK の生メッセージは
+        // 学習者にも先生にも読めない。理由の名前だけ渡す。
+        stream?.getTracks().forEach((track) => track.stop());
+        setStatus("error");
+        setReason("connect");
+      }
+    },
+    [release],
+  );
 
   /**
    * 書いて送る。**相手は声で返す**（Live は入力が文字でも音声で答える）。

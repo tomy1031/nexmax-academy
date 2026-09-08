@@ -912,6 +912,13 @@ export function collectLabeledTexts(content: Content): LabeledText[] {
         });
         content.research.findings.forEach((finding, i) => push(`research.findings[${i}]`, finding));
       }
+      // 同席する ほかの 相手（名札・立場・ひとこと・攻略ひとこと は 画面に 出る。persona は 出ない）
+      (content.interview.others ?? []).forEach((person, i) => {
+        push(`interview.others[${i}].name`, person.name);
+        push(`interview.others[${i}].role`, person.role);
+        push(`interview.others[${i}].desc`, person.desc);
+        push(`interview.others[${i}].tip`, person.tip);
+      });
       content.interview.reqs.forEach((req, i) => {
         // fact と keywords は判定の材料（AI・ローカル照合）で、画面には出ない
         push(`interview.reqs[${i}].label`, req.label);

@@ -1,0 +1,117 @@
+{
+  "kind": "stage",
+  "id": "youken2",
+  "order": 10,
+  "title": "アプリの 要件定義",
+  "reading": "あぷりの ようけんていぎ",
+  "description": "1年前に 採用ページを 作った Aobaの 店は、大にぎわいに なりました。こんどは 店の アプリを 作ります。山本社長・お茶の 先生・店長の 三人に 聞いて、要件を まとめます。",
+  "color": "leaf",
+  "status": "published",
+  "area": {
+    "image": "/img/scenes/area_lantern_night_market.webp",
+    "note": "あかりの ならぶ 夜の 市場の まちです。ここで 三人に 会います。"
+  },
+  "contents": [
+    {
+      "ref": "youken2_ichinengo",
+      "type": "article"
+    },
+    {
+      "ref": "youken2_hearing",
+      "type": "listening"
+    },
+    {
+      "ref": "youken2_hearing_check",
+      "type": "quizset"
+    },
+    {
+      "ref": "youken2_kinou",
+      "type": "article"
+    },
+    {
+      "ref": "youken2_skit",
+      "type": "skit"
+    },
+    {
+      "ref": "youken2_aoba_app",
+      "type": "scenario"
+    },
+    {
+      "ref": "youken2_doc",
+      "type": "article"
+    }
+  ],
+  "wordStageIds": [
+    "youken2_kotoba"
+  ],
+  "furigana": [
+    [
+      "大にぎわい",
+      "おおにぎわい"
+    ],
+    [
+      "山本社長",
+      "やまもとしゃちょう"
+    ],
+    [
+      "要件定義",
+      "ようけんていぎ"
+    ],
+    [
+      "三人",
+      "さんにん"
+    ],
+    [
+      "会い",
+      "あい"
+    ],
+    [
+      "作っ",
+      "つくっ"
+    ],
+    [
+      "作り",
+      "つくり"
+    ],
+    [
+      "先生",
+      "せんせい"
+    ],
+    [
+      "市場",
+      "いちば"
+    ],
+    [
+      "年前",
+      "ねんまえ"
+    ],
+    [
+      "店長",
+      "てんちょう"
+    ],
+    [
+      "採用",
+      "さいよう"
+    ],
+    [
+      "聞い",
+      "きい"
+    ],
+    [
+      "要件",
+      "ようけん"
+    ],
+    [
+      "夜",
+      "よる"
+    ],
+    [
+      "店",
+      "みせ"
+    ],
+    [
+      "茶",
+      "ちゃ"
+    ]
+  ]
+}

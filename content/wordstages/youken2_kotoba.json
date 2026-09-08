@@ -1,0 +1,49 @@
+{
+  "kind": "wordstage",
+  "id": "youken2_kotoba",
+  "title": "アプリの 要件定義の ことば",
+  "description": "Aobaの 店の アプリを 考える 会議で 出て きた ことばです。",
+  "fieldSequence": [
+    "forest",
+    "sky",
+    "space"
+  ],
+  "questionCount": 8,
+  "passRate": 80,
+  "wordIds": [
+    "youkenteigi",
+    "kinou_youken",
+    "hikinou_youken",
+    "yoyaku",
+    "zaiko",
+    "yakuwari",
+    "unei",
+    "shifuto",
+    "teiden",
+    "tenchou",
+    "yosan",
+    "nouki"
+  ],
+  "furigana": [
+    [
+      "要件定義",
+      "ようけんていぎ"
+    ],
+    [
+      "考える",
+      "かんがえる"
+    ],
+    [
+      "会議",
+      "かいぎ"
+    ],
+    [
+      "出",
+      "で"
+    ],
+    [
+      "店",
+      "みせ"
+    ]
+  ]
+}
