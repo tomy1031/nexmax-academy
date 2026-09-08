@@ -60,6 +60,11 @@ const GROUPS: readonly { title: string; items: readonly Item[] }[] = [
       },
       { href: "/nexmax", icon: "🧑‍🎨", label: "ネクマックス16人" },
       { href: "/admin/ai", icon: "🤖", label: "AI設定", match: "/admin/ai" },
+      /*
+       * じゅんろの 鍵。教材の 不具合で 関門が 開かなく なって 授業が 止まった とき、
+       * 先生が 全員ぶんを まとめて 外すための レバー（願い #333・#246）。
+       */
+      { href: "/admin/lock", icon: "🔓", label: "じゅんろの 鍵", match: "/admin/lock" },
     ],
   },
 ];
