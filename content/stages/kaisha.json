@@ -4,13 +4,13 @@
   "order": 2,
   "title": "会社を 知る",
   "reading": "かいしゃを しる",
-  "description": "6つの STEPで NEXT MAKEを 調べます。まず 調べかたを 学びます。Webサイトで 調査シートを うめて、ヘンディさんに 報告します。そのあと AI松井社長と 話す 準備を して、社長と 話します。さいごに、ヘンディさんの 話を 聞いて、仕事の 3つの タイプ（SES・受託開発・自社開発）を スライドで 確かめます。",
+  "description": "5つの STEPで NEXT MAKEを 調べます。まず 調べかたを 学びます。Webサイトで 調査シートを うめて、ヘンディさんに 報告します。さいごに AI松井社長と 話す 準備を して、社長と 話します。",
   "color": "leaf",
   "status": "published",
   "area": {
-    "name": "おうきゅうの まち",
-    "reading": "おうきゅうの まち",
-    "image": "/img/scenes/area_palace_town.webp",
+    "name": "プノンペン",
+    "reading": "ぷのんぺん",
+    "image": "/img/scenes/area_riverside_capital.webp",
     "note": "ふるい たてものと たかい ビルが ならぶ まちです。この まちにも、たくさんの かいしゃが あります。"
   },
   "contents": [
@@ -41,18 +41,6 @@
     {
       "ref": "kaisha_matsui",
       "type": "meeting"
-    },
-    {
-      "ref": "kaisha_shugyo_keitai_listening",
-      "type": "listening"
-    },
-    {
-      "ref": "kaisha_shugyo_keitai",
-      "type": "article"
-    },
-    {
-      "ref": "kaisha_shugyo_keitai_check",
-      "type": "quizset"
     }
   ],
   "wordStageIds": [
@@ -64,26 +52,6 @@
     [
       "松井社長",
       "まついしゃちょう"
-    ],
-    [
-      "自社開発",
-      "じしゃかいはつ"
-    ],
-    [
-      "仕事",
-      "しごと"
-    ],
-    [
-      "受託開発",
-      "じゅたくかいはつ"
-    ],
-    [
-      "聞",
-      "き"
-    ],
-    [
-      "確",
-      "たし"
     ],
     [
       "準備",

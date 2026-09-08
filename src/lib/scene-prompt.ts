@@ -12,16 +12,38 @@
  * 純関数。テストから直接読める（tests/scene_prompt.test.ts）。
  */
 
-/** まなびマップの背景はすべてこの比率。地図は縦にスクロールする。 */
-export const SCENE_ASPECT = "3:4";
+/**
+ * まなびマップの背景はすべてこの比率。**正方形**にしてあるのは、地図が絵を
+ * 画面の形に合わせて切り取る（`object-cover`）ためである。エリアの帯は
+ * PCで横長（およそ 1440×680）・スマホで縦長（390×940）なので、縦長の絵を渡すと
+ * PCでは真ん中の3割しか残らず、横長の絵を渡すとスマホで真ん中の3割しか残らない。
+ * 正方形は そのどちらでも 半分ちかくが残る、いちばんましな形。
+ */
+export const SCENE_ASPECT = "1:1";
 
-/** 画風の決まり（設計04「あおぞらパスウェイ」）。 */
+/** 画風の決まり（設計04「あおぞらパスウェイ」・既存のタイルに合わせる）。 */
 const STYLE = [
-  "children's-book style digital illustration, soft gouache texture",
-  "bright airy palette: sky blue, warm sand, fresh leaf green",
-  "gentle rounded shapes, no harsh shadows, no dark or cyberpunk mood",
-  "wide aerial vista seen from a plane, horizon in the upper third",
-  "top 10% and bottom 10% fading into flat pale sky blue so the tiles join seamlessly",
+  "highly detailed isometric miniature diorama seen from a high bird's-eye angle",
+  "like a tilt-shift toy town or a colourful city-builder game",
+  "tiny crisp buildings, tiny trees, tiny boats and vehicles, thin clean outlines",
+  "bright saturated cheerful palette, soft even daylight, no harsh shadows, no gloom",
+].join(", ");
+
+/**
+ * 構図の決まり。**島にしない**のが要点（2026-09-07 の指定「島でなくてOK」）。
+ *
+ * 以前は「四辺すべてが海」を契約にしていたので、島でない土地まで まるい島になり、
+ * まわりの空色の余白ぶんだけ 景色が小さく写っていた。継ぎ目は `CloudBand` の雲海が
+ * 完全に覆うので、絵の端がどんな色でも継ぎ目は出ない——島にする必要がそもそも無い。
+ *
+ * かわりに要るのが**まん中に寄せること**。地図は絵を切り取って出すので、
+ * 外側の4分の1は どちらかの画面で消える。
+ */
+const FRAME = [
+  "the land fills the whole square frame and runs off all four edges",
+  "never a floating island: no round patch of land ringed by empty water, no flat empty margin",
+  "the landmark of the place stands in the centre and fills about the middle third",
+  "the outer quarter of the frame is ordinary streets, fields, forest, roofs or water (it may be cropped away)",
 ].join(", ");
 
 /** 入れてはいけないもの。 */
@@ -40,10 +62,11 @@ export function buildScenePrompt(scenery: string, note = ""): string {
   const subject = scenery.trim();
   const mood = note.trim();
   return [
-    `A vertical ${SCENE_ASPECT} background tile for a language-learning map.`,
+    `A square ${SCENE_ASPECT} background tile for a language-learning map.`,
     `Scenery: ${subject}.`,
     mood ? `Mood: ${mood}.` : "",
     `Style: ${STYLE}.`,
+    `Composition: ${FRAME}.`,
     `Avoid: ${AVOID}.`,
   ]
     .filter((line) => line.length > 0)

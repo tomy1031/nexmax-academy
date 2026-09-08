@@ -1,0 +1,63 @@
+{
+  "kind": "stage",
+  "id": "shigoto",
+  "order": 3,
+  "title": "ITの 仕事の 3つの タイプ",
+  "reading": "あいてぃーの しごとの みっつの たいぷ",
+  "description": "ITの 仕事には 3つの タイプが あります。SES・受託開発・自社開発です。まず ヘンディさんの 話を 聞きます。つぎに 3つの ちがいを 見て 確かめます。さいごに もんだいに こたえて、やって みたい タイプを 書きます。",
+  "color": "sky",
+  "status": "published",
+  "contents": [
+    {
+      "ref": "kaisha_shugyo_keitai_listening",
+      "type": "listening"
+    },
+    {
+      "ref": "kaisha_shugyo_keitai",
+      "type": "article"
+    },
+    {
+      "ref": "kaisha_shugyo_keitai_check",
+      "type": "quizset"
+    }
+  ],
+  "wordStageIds": [],
+  "furigana": [
+    [
+      "受託開発",
+      "じゅたくかいはつ"
+    ],
+    [
+      "自社開発",
+      "じしゃかいはつ"
+    ],
+    [
+      "仕事",
+      "しごと"
+    ],
+    [
+      "確",
+      "たし"
+    ],
+    [
+      "聞",
+      "き"
+    ],
+    [
+      "見",
+      "み"
+    ],
+    [
+      "書",
+      "か"
+    ],
+    [
+      "話",
+      "はなし"
+    ]
+  ],
+  "area": {
+    "image": "/img/scenes/area_pepper_riverside.webp",
+    "note": "コショウばたけの ある、かわぞいの まちです。"
+  }
+}

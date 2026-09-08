@@ -1,0 +1,82 @@
+{
+  "kind": "stage",
+  "id": "interview",
+  "order": 9,
+  "title": "お客さまインタビュー",
+  "reading": "おきゃくさまいんたびゅー",
+  "description": "パン屋・美容室・農園・塾・ゲストハウスの 五人の お客さまに 会います。質問して、「作りたい アプリ」を 聞き出す 練習です。",
+  "color": "sky",
+  "status": "published",
+  "contents": [
+    {
+      "ref": "bakery",
+      "type": "scenario"
+    },
+    {
+      "ref": "salon",
+      "type": "scenario"
+    },
+    {
+      "ref": "farm",
+      "type": "scenario"
+    },
+    {
+      "ref": "juku",
+      "type": "scenario"
+    },
+    {
+      "ref": "guesthouse",
+      "type": "scenario"
+    }
+  ],
+  "furigana": [
+    [
+      "美容室",
+      "びようしつ"
+    ],
+    [
+      "聞き出す",
+      "ききだす"
+    ],
+    [
+      "練習",
+      "れんしゅう"
+    ],
+    [
+      "質問",
+      "しつもん"
+    ],
+    [
+      "農園",
+      "のうえん"
+    ],
+    [
+      "五人",
+      "ごにん"
+    ],
+    [
+      "作り",
+      "つくり"
+    ],
+    [
+      "会い",
+      "あい"
+    ],
+    [
+      "客",
+      "きゃく"
+    ],
+    [
+      "屋",
+      "や"
+    ],
+    [
+      "塾",
+      "じゅく"
+    ]
+  ],
+  "area": {
+    "image": "/img/scenes/area_harbour_peak.webp",
+    "note": "みなとと やまの あいだの まちです。ここで お客さまに 会います。"
+  }
+}

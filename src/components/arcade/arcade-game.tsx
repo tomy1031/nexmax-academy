@@ -9,6 +9,7 @@ import { RubyText } from "@/components/ruby-text";
 import { buildFuriganaIndex, type FuriganaEntry } from "@/lib/text/furigana";
 import { isHiraganaInputReady } from "@/lib/text/normalize";
 import { createProgressStore, recordContentProgress } from "@/lib/progress/store";
+import { newWordTestAttemptId, saveWordTest } from "@/lib/records/word-test-db";
 import {
   arcadeReducer,
   choiceSeconds,
@@ -164,6 +165,14 @@ export function ArcadeGame({
   const [difficulty, setDifficulty] = useState<Difficulty>(DEFAULT_DIFFICULTY);
   const [session, setSession] = useState<ArcadeState | null>(null);
   const savedRef = useRef<string | null>(null);
+  /**
+   * この 1回の 挑戦を まとめる 鍵（台帳の `attempt_id`）。
+   *
+   * 遊びを 始める ときに 作り、けっか画面で 明細と まとめの 両方に 同じ 値を 書く。
+   * 「何回目か」を 端末が 数えないのは `quiz_results` と 同じ 理由——端末の 申告は
+   * localStorage を 消した 学習者で 1に 戻り、嘘を つく。
+   */
+  const attemptIdRef = useRef<string>("");
 
   const stageId = "stageId" in screen ? screen.stageId : (initialStageId ?? stages[0]?.id);
   const stage = stages.find((s) => s.id === stageId) ?? null;
@@ -189,6 +198,7 @@ export function ArcadeGame({
       setSession(createSession({ stage: target, mode, difficulty, mastery, onlyWordIds }));
       savedRef.current = null;
       savedCountRef.current = 0;
+      attemptIdRef.current = newWordTestAttemptId();
       setScreen({ kind: "play", stageId: target.id });
     },
     [difficulty, store],
@@ -387,6 +397,7 @@ export function ArcadeGame({
                 furigana={furigana}
                 store={store}
                 savedRef={savedRef}
+                attemptIdRef={attemptIdRef}
                 onRetryWrong={(ids) => start(stage, session.mode, ids)}
                 onBack={() => setScreen({ kind: "mode", stageId: stage.id })}
                 /* おわった 直後が いちばん 出たい 瞬間。ステージから 来た ときだけ 出す */
@@ -1009,6 +1020,7 @@ function ResultLayer({
   furigana,
   store,
   savedRef,
+  attemptIdRef,
   onRetryWrong,
   onBack,
   onLeave,
@@ -1019,6 +1031,7 @@ function ResultLayer({
   furigana: ReturnType<typeof buildFuriganaIndex>;
   store: ReturnType<typeof createProgressStore>;
   savedRef: React.RefObject<string | null>;
+  attemptIdRef: React.RefObject<string>;
   onRetryWrong: (ids: readonly string[]) => void;
   onBack: () => void;
   onLeave?: () => void;
@@ -1050,7 +1063,21 @@ function ResultLayer({
         at: new Date().toISOString(),
       });
     }
-  }, [stage.id, state, summary, store, savedRef]);
+
+    /*
+     * 台帳へは **れんしゅうも 残す**（端末の `recordFirstTestResult` と ちがう）。
+     *
+     * 端末は「初回の 点が 正式」なので 2回目以降を 捨てるが、先生が いちばん 見たいのは
+     * **2回目・3回目で 上がったか**である（学習が 起きた 証拠）。捨てるのは 数えかたの
+     * 話で、記録の 話では ない。「初回が 正式」は 先生の 画面が 古い順に 番号を ふれば 出せる。
+     *
+     * 待たない（`void`）。記録の ために けっか画面が 遅れるのが いちばん まずい。
+     */
+    // 鍵は 遊びを 始める ときに 作って ある。万一 空でも **uuid を 作る**——
+    // ステージIDを 代わりに 入れると uuid の 列に 入らず、1行も 残らない。
+    if (attemptIdRef.current === "") attemptIdRef.current = newWordTestAttemptId();
+    void saveWordTest({ state, summary, words: stage.words, attemptId: attemptIdRef.current });
+  }, [stage, state, summary, store, savedRef, attemptIdRef]);
 
   return (
     <div className="pointer-events-auto">

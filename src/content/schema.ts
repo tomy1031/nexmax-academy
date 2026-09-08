@@ -923,12 +923,27 @@ export const scenarioSchema = z
         }),
       )
       .min(4),
-    research: z.object({
-      intro: plainText,
-      pages: z.array(researchPageSchema).min(1),
-      quiz: z.array(researchQuizSchema).length(3),
-      findings: z.array(plainText).min(3),
-    }),
+    /**
+     * 事前調査（模擬ページ → 3もん → 分かった こと）。**省ける**。
+     *
+     * お客さまインタビュー（旧アプリ由来の 5話）は「調べてから 訪問する」が 本体なので
+     * 必ず 持つ。いっぽう、調べる 場面が もともと 無い 教材も ある——要件定義の
+     * 「山本社長に 質問する」は 旧アプリの ワンページに 事前調査の 画面が 無く、
+     * 2026-09-06 に ユーザーの 指定で 外した。必須の ままだと、**出さない 教材が
+     * 空の 模擬ページを 抱える**ことに なる（データが 眠り、先生から 見て
+     * 「なぜ ここに あるのか」が 分からない）。
+     *
+     * 省いた 教材では 秘匿漏れの 検査（`checkSecretLeaks`）も 走らない——
+     * 調べる 素材が 無いのだから 漏れようが ない。
+     */
+    research: z
+      .object({
+        intro: plainText,
+        pages: z.array(researchPageSchema).min(1),
+        quiz: z.array(researchQuizSchema).length(3),
+        findings: z.array(plainText).min(3),
+      })
+      .optional(),
     interview: z.object({
       /** Live systemInstruction 全文。10か条契約・分かち書き・プレーン。 */
       persona: plainText,
@@ -1040,15 +1055,27 @@ export const stageContentRefSchema = z.object({
  * 画面文言が国に依存していると差し替えのたびに UI を直すことになる。
  * とくに「タイ」は使用禁止（AGENTS.md）。都市名・遺跡名は国名ではないので使ってよい。
  */
-export const mapAreaSchema = z.object({
-  /** 画面に出す景色の名前。国名を入れない。 */
-  name: plainText,
-  reading: hiragana,
-  /** 背景画像。`/img/scenes/...` か、スタジオでアップロードした画像のURL。 */
-  image: z.string().min(1),
-  /** 地図に小さく添える一言。 */
-  note: plainText,
-});
+export const mapAreaSchema = z
+  .object({
+    /**
+     * 画面に出す景色の名前。国名を入れない。**任意**。
+     *
+     * 書かなければ地図に札を出さない（2026-09-07 の指定）。土地の名前は付けたい先生だけが
+     * 付けるもので、必須にすると「何か書かないと保存できない」から適当な名前が並ぶ。
+     * 名前が無くても絵と一言は出るので、土地そのものが消えるわけではない。
+     */
+    name: plainText.optional(),
+    /** 名前の よみ（ルビに つかう）。名前を書いたときだけ要る。 */
+    reading: hiragana.optional(),
+    /** 背景画像。`/img/scenes/...` か、スタジオでアップロードした画像のURL。 */
+    image: z.string().min(1),
+    /** 地図に小さく添える一言。 */
+    note: plainText,
+  })
+  .refine((area) => !area.name || Boolean(area.reading), {
+    path: ["reading"],
+    message: "景色の 名前を 書いたら、よみ（ひらがな）も 書く（ルビはこれで合成する）",
+  });
 
 /**
  * ステージのIDに使えない語。

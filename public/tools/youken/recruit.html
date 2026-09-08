@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aoba株式会社 プノンペン新店 オープニングスタッフ募集</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500&family=Noto+Serif+JP:wght@200;300;400;500&family=Cormorant+Garamond:wght@300;400&family=Shippori+Mincho:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'wakaba': '#8EBA43',        /* アクセントの若葉色 */
+                        'bg-base': '#FBFBF9',       /* 和紙のような温かみのある白 */
+                        'bg-sub': '#F2F3F0',        /* ごく薄いグレーグリーン */
+                        'text-main': '#333333',     /* 本文の墨色 */
+                        'text-light': '#666666',    /* サブテキスト */
+                        'border-light': '#E5E5E0',  /* 繊細な罫線 */
+                    },
+                    fontFamily: {
+                        'sans': ['"Noto Sans JP"', 'YuGothic', '"Yu Gothic"', 'sans-serif'],
+                        'serif': ['"Noto Serif JP"', '"Yu Mincho"', '"Hiragino Mincho ProN"', 'serif'],
+                        'en-serif': ['"Cormorant Garamond"', 'serif'],
+                        'shippori': ['"Shippori Mincho"', 'serif'],
+                    },
+                    letterSpacing: {
+                        'widest-lg': '0.2em',
+                        'widest-xl': '0.3em',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #FBFBF9;
+            color: #333333;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* 縦書き設定 */
+        .vertical-rl {
+            writing-mode: vertical-rl;
+            -webkit-writing-mode: vertical-rl;
+            text-orientation: mixed;
+        }
+
+        /* 繊細な余白と行間 */
+        .leading-loose-lg {
+            line-height: 2.2;
+        }
+
+        /* スクロールフェードインアニメーション */
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 1s cubic-bezier(0.215, 0.61, 0.355, 1), transform 1s cubic-bezier(0.215, 0.61, 0.355, 1);
+        }
+        .fade-in-up.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* スクロールダウンインジケーター */
+        .scroll-down {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            opacity: 0.8;
+            z-index: 20;
+        }
+        .scroll-down span {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 10px;
+            letter-spacing: 0.2em;
+            color: #fff;
+            margin-bottom: 10px;
+            writing-mode: vertical-rl;
+        }
+        .scroll-down::after {
+            content: '';
+            width: 1px;
+            height: 60px;
+            background: rgba(255,255,255,0.5);
+            animation: scrollLine 2s infinite ease-in-out;
+            transform-origin: top;
+        }
+        @keyframes scrollLine {
+            0% { transform: scaleY(0); }
+            50% { transform: scaleY(1); }
+            100% { transform: scaleY(0); transform-origin: bottom; }
+        }
+
+        /* 入力フォームのプレースホルダー色 */
+        ::placeholder {
+            color: #BDBDBD;
+            font-weight: 300;
+        }
+
+        /* ヒーロー背景画像のパララックス風 */
+        .hero-bg {
+            background-image: url('/img/youken/hero.webp');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+    </style>
+</head>
+<body class="font-sans font-light">
+
+
+    <div id="main-content">
+    <!-- Header -->
+    <header id="header" class="fixed top-0 left-0 w-full z-50 transition-all duration-500 py-6 px-6 md:px-12 flex justify-between items-center bg-transparent">
+        <div class="flex items-center gap-4">
+            <h1 class="font-en-serif text-2xl tracking-widest-xl text-white transition-colors duration-500" id="header-logo">AOBA Recruit</h1>
+        </div>
+        <nav class="hidden md:flex gap-10 text-xs tracking-widest text-white transition-colors duration-500 font-en-serif" id="header-nav">
+            <a href="#story" class="hover:opacity-60 transition">STORY (<ruby>想<rt>おも</rt></ruby>い)</a>
+            <a href="#recruit" class="hover:opacity-60 transition">RECRUIT (<ruby>募集職種<rt>ぼしゅうしょくしゅ</rt></ruby>)</a>
+            <a href="#faq" class="hover:opacity-60 transition">FAQ (<ruby>質問<rt>しつもん</rt></ruby>)</a>
+            <a href="#apply" class="hover:opacity-60 transition">ENTRY (<ruby>応募<rt>おうぼ</rt></ruby>)</a>
+        </nav>
+        <a href="#apply" class="md:hidden text-xs tracking-widest text-white border border-white px-4 py-2 rounded-full transition-colors duration-500" id="header-btn">
+            ENTRY
+        </a>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative h-screen min-h-[600px] flex items-center justify-center hero-bg">
+        <!-- 暗めのオーバーレイで写真を落ち着かせる -->
+        <div class="absolute inset-0 bg-black/40"></div>
+        
+        <div class="relative z-10 w-full max-w-6xl mx-auto px-6 flex justify-end items-center h-full pb-20 md:pb-0">
+            <!-- 縦書きキャッチコピー -->
+            <div class="text-white fade-in-up is-visible">
+                <span class="vertical-rl font-en-serif text-xs tracking-[0.3em] mb-8 ml-4 opacity-80 uppercase block">Phnom Penh BKK1</span>
+                <h2 class="vertical-rl font-shippori text-3xl md:text-5xl lg:text-[54px] font-medium leading-[2.5] tracking-[0.2em] text-shadow-sm">
+                    <ruby>日本<rt>にほん</rt></ruby>の<br>
+                    <ruby>抹茶<rt>まっちゃ</rt></ruby>カルチャーを<br>
+                    <ruby>世界<rt>せかい</rt></ruby>に
+                </h2>
+            </div>
+        </div>
+
+        <!-- スクロールダウン -->
+        <div class="scroll-down">
+            <span>SCROLL</span>
+        </div>
+    </section>
+
+    <!-- Intro Section -->
+    <section class="py-24 md:py-32 bg-bg-base">
+        <div class="max-w-3xl mx-auto px-6 text-center fade-in-up">
+            <h3 class="font-shippori text-xl md:text-2xl tracking-widest-lg mb-8 text-wakaba font-medium"><ruby>日本<rt>にほん</rt></ruby>の<ruby>和<rt>わ</rt></ruby>を、プノンペンの<ruby>心<rt>こころ</rt></ruby>へ。</h3>
+            <p class="text-sm md:text-base leading-loose-lg text-text-light tracking-wider">
+                Aoba<ruby>株式会社<rt>かぶしきがいしゃ</rt></ruby><br>
+                カンボジア・プノンペンBKK1<ruby>新店<rt>しんてん</rt></ruby><br>
+                オープニングスタッフ<ruby>募集<rt>ぼしゅう</rt></ruby>
+            </p>
+        </div>
+    </section>
+
+    <!-- Story Section -->
+    <section id="story" class="py-24 md:py-40 bg-bg-sub relative">
+        <div class="max-w-6xl mx-auto px-6 relative z-10">
+            <div class="flex flex-col md:flex-row gap-16 md:gap-24 items-center md:items-start justify-center">
+                
+                <!-- テキスト領域（縦書き） -->
+                <div class="order-2 md:order-1 fade-in-up">
+                    <h3 class="font-en-serif text-3xl text-gray-400 mb-8 text-center md:text-right tracking-widest">Our Story</h3>
+                    <div class="vertical-rl font-shippori text-base md:text-lg leading-[3] tracking-widest text-text-main mx-auto md:mx-0 h-[420px]">
+                        <p>カンボジアでボランティアとして</p>
+                        <p>ふるまった<ruby>一杯<rt>いっぱい</rt></ruby>の<ruby>抹茶<rt>まっちゃ</rt></ruby>。</p>
+                        <p>その<ruby>一杯<rt>いっぱい</rt></ruby>に<ruby>笑顔<rt>えがお</rt></ruby>で<ruby>応<rt>こた</rt></ruby>えてくれた<ruby>人<rt>ひと</rt></ruby>たちとの</p>
+                        <p><ruby>出会<rt>であ</rt></ruby>いが、このお<ruby>店<rt>みせ</rt></ruby>の<ruby>始<rt>はじ</rt></ruby>まりでした。</p>
+                        <br>
+                        <p><ruby>抹茶<rt>まっちゃ</rt></ruby>を<ruby>通<rt>とお</rt></ruby>して、<ruby>人<rt>ひと</rt></ruby>が</p>
+                        <p>ほっとできる<ruby>場所<rt>ばしょ</rt></ruby>をプノンペンに。</p>
+                        <p class="text-wakaba font-shippori font-medium text-xl">その<ruby>想<rt>おも</rt></ruby>いを<ruby>一緒<rt>いっしょ</rt></ruby>に<ruby>形<rt>かたち</rt></ruby>にしてくれる<ruby>仲間<rt>なかま</rt></ruby>を</p>
+                        <p class="text-wakaba font-shippori font-medium text-xl"><ruby>募集<rt>ぼしゅう</rt></ruby>しています。</p>
+                    </div>
+                </div>
+
+                <!-- 画像領域（ブロークングリッド配置） -->
+                <div class="order-1 md:order-2 relative w-full md:w-1/2 max-w-md mx-auto md:mx-0 fade-in-up">
+                    <img src="/img/youken/macha_latte.webp" alt="抹茶と和菓子" class="w-4/5 h-auto ml-auto aspect-square object-cover shadow-sm grayscale-[20%]">
+                    <img src="/img/youken/shop_image.webp" alt="店舗イメージ" class="w-3/5 h-auto absolute -bottom-16 left-0 aspect-[4/3] object-cover shadow-lg border-4 border-bg-sub">
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Shared Conditions Section -->
+    <section class="py-32 bg-bg-base border-t border-border-light">
+        <div class="max-w-5xl mx-auto px-6">
+            <div class="text-center mb-20 fade-in-up">
+                <span class="font-en-serif text-xs tracking-widest-xl text-wakaba block mb-4">CONDITIONS</span>
+                <h3 class="font-serif text-2xl tracking-widest text-text-main"><ruby>求<rt> もと</rt></ruby>める<ruby>人物像<rt>じんぶつぞう</rt></ruby>と<ruby>選考<rt>せんこう</rt></ruby>について</h3>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-16 md:gap-24">
+                <div class="fade-in-up">
+                    <h4 class="font-serif text-lg tracking-widest border-b border-border-light pb-4 mb-8 text-text-main flex items-center">
+                        こんな<ruby>方<rt>かた</rt></ruby>をお<ruby>待<rt>ま</rt></ruby>ちしています
+                        <span class="w-1.5 h-1.5 bg-wakaba rotate-45"></span>
+                    </h4>
+                    <ul class="space-y-4 text-sm tracking-wider text-text-light font-light leading-relaxed">
+                        <li class="pl-4 relative before:content-[''] before:absolute before:left-0 before:top-[0.6rem] before:w-1 before:h-1 before:bg-border-light before:rounded-full"><ruby>海外勤務<rt>かいがいきんむ</rt></ruby>に<ruby>前向<rt>まえむ</rt></ruby>きな<ruby>方<rt>かた</rt></ruby></li>
+                        <li class="pl-4 relative before:content-[''] before:absolute before:left-0 before:top-[0.6rem] before:w-1 before:h-1 before:bg-border-light before:rounded-full"><ruby>日本文化<rt>にほんぶんか</rt></ruby>や<ruby>接客<rt>せっきゃく</rt></ruby>を<ruby>大切<rt>たいせつ</rt></ruby>にする<ruby>方<rt>かた</rt></ruby></li>
+                        <li class="pl-4 relative before:content-[''] before:absolute before:left-0 before:top-[0.6rem] before:w-1 before:h-1 before:bg-border-light before:rounded-full"><ruby>新<rt>あたら</rt></ruby>しいお<ruby>店<rt>みせ</rt></ruby>づくりに<ruby>関<rt>かか</rt></ruby>わりたい<ruby>方<rt>かた</rt></ruby></li>
+                        <li class="pl-4 relative before:content-[''] before:absolute before:left-0 before:top-[0.6rem] before:w-1 before:h-1 before:bg-border-light before:rounded-full">ていねいで<ruby>清潔感<rt>せいけつかん</rt></ruby>のある<ruby>方<rt>かた</rt></ruby></li>
+                        <li class="pl-4 relative before:content-[''] before:absolute before:left-0 before:top-[0.6rem] before:w-1 before:h-1 before:bg-border-light before:rounded-full"><ruby>現場<rt>げんば</rt></ruby>で<ruby>柔軟<rt>じゅうなん</rt></ruby>に<ruby>動<rt>うご</rt></ruby>き、<ruby>協調性<rt>きょうちょうせい</rt></ruby>のある<ruby>方<rt>かた</rt></ruby></li>
+                    </ul>
+                </div>
+
+                <div class="fade-in-up" style="transition-delay: 0.2s;">
+                    <h4 class="font-serif text-lg tracking-widest border-b border-border-light pb-4 mb-8 text-text-main flex items-center">
+                        <ruby>基本情報<rt>きほんじょうほう</rt></ruby>・<ruby>選考<rt>せんこう</rt></ruby>フロー
+                        <span class="w-1.5 h-1.5 bg-wakaba rotate-45"></span>
+                    </h4>
+                    <dl class="text-sm tracking-wider text-text-light font-light space-y-6">
+                        <div class="flex flex-col sm:flex-row sm:gap-4">
+                            <dt class="min-w-[5rem] text-text-main"><ruby>勤務開始<rt>きんむかいし</rt></ruby></dt>
+                            <dd>2026<ruby>年<rt>ねん</rt></ruby>8<ruby>月頃<rt>がつごろ</rt></ruby>を<ruby>想定<rt>そうてい</rt></ruby></dd>
+                        </div>
+                        <div class="flex flex-col sm:flex-row sm:gap-4">
+                            <dt class="min-w-[5rem] text-text-main"><ruby>勤務地<rt>きんむち</rt></ruby></dt>
+                            <dd>カンボジア プノンペン BKK1エリア</dd>
+                        </div>
+                        <div class="flex flex-col sm:flex-row sm:gap-4">
+                            <dt class="min-w-[5rem] text-text-main"><ruby>休日<rt>きゅうじつ</rt></ruby></dt>
+                            <dd><ruby>週休<rt>しゅうきゅう</rt></ruby>2<ruby>日<rt>にち</rt></ruby>を<ruby>基本<rt>きほん</rt></ruby></dd>
+                        </div>
+                        <div class="flex flex-col sm:flex-row sm:gap-4 pt-6 border-t border-border-light/50">
+                            <dt class="min-w-[5rem] text-text-main"><ruby>選考<rt>せんこう</rt></ruby></dt>
+                            <dd class="leading-loose"><ruby>書類選考<rt>しょるいせんこう</rt></ruby><br><span class="text-[10px] text-border-light mx-1">▼</span><br>オンライン<ruby>面接<rt>めんせつ</rt></ruby> (1~2<ruby>回<rt>かい</rt></ruby>)<br><span class="text-[10px] text-border-light mx-1">▼</span><br><ruby>内定<rt>ないてい</rt></ruby></dd>
+                        </div>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Recruit Section -->
+    <section id="recruit" class="py-32 bg-bg-sub relative">
+        <div class="max-w-6xl mx-auto px-6 relative z-10">
+            <div class="text-center mb-20 fade-in-up">
+                <span class="font-en-serif text-xs tracking-widest-xl text-wakaba block mb-4">RECRUIT</span>
+                <h3 class="font-serif text-2xl tracking-widest text-text-main">募集職種</h3>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-10 lg:gap-16">
+                
+                <!-- Job 1 -->
+                <div class="bg-white p-10 md:p-14 fade-in-up hover:shadow-xl transition-shadow duration-500 group">
+                    <div class="border-b border-border-light pb-8 mb-8">
+                        <span class="text-[10px] tracking-widest text-text-light block mb-2 font-en-serif uppercase">Position 01</span>
+                        <h4 class="font-serif text-2xl tracking-widest text-text-main mb-2"><ruby>茶道<rt>さどう</rt></ruby>の<ruby>先生<rt>せんせい</rt></ruby></h4>
+                        <p class="text-xs text-text-light tracking-wider">＋ <ruby>空間<rt>くうかん</rt></ruby>アドバイス<ruby>担当<rt>たんとう</rt></ruby></p>
+                    </div>
+                    
+                    <div class="space-y-8 text-sm tracking-wider text-text-light font-light leading-loose mb-12">
+                        <div>
+                            <span class="block text-xs font-medium text-text-main mb-2 tracking-widest"><ruby>仕事内容<rt>しごとないよう</rt></ruby></span>
+                            <ruby>茶道体験<rt>さどうたいけん</rt></ruby>イベントの<ruby>企画<rt>きかく</rt></ruby>・<ruby>運営<rt>うんえい</rt></ruby>を<ruby>行<rt>おこな</rt></ruby>う。<ruby>来店客<rt>らいてんきゃく</rt></ruby>に<ruby>茶道文化<rt>さどうぶんか</rt></ruby>を<ruby>説明<rt>せつめい</rt></ruby>する。<ruby>日本<rt>にほん</rt></ruby>らしい<ruby>空間<rt>くうかん</rt></ruby>づくりについて<ruby>助言<rt>じょげん</rt></ruby>する。お<ruby>客<rt>きゃく</rt></ruby><ruby>様<rt>さま</rt></ruby>の<ruby>体験<rt>たいけん</rt></ruby>の<ruby>質<rt>しつ</rt></ruby>を<ruby>高<rt>たか</rt></ruby>める<ruby>提案<rt>ていあん</rt></ruby>をする。
+                        </div>
+                        <div>
+                            <span class="block text-xs font-medium text-text-main mb-2 tracking-widest"><ruby>必要<rt>ひつよう</rt></ruby>な<ruby>条件<rt>じょうけん</rt></ruby></span>
+                            <ul class="list-none space-y-2">
+                                <li class="gap-2"><span class="text-wakaba mt-1 text-[10px]">■</span><ruby>茶道<rt>さどう</rt></ruby>の<ruby>資格<rt>しかく</rt></ruby>または<ruby>免状<rt>めんじょう</rt></ruby>を<ruby>持<rt>も</rt></ruby>っていること</li>
+                                <li class="gap-2"><span class="text-wakaba mt-1 text-[10px]">■</span><ruby>英語<rt>えいご</rt></ruby>またはクメール<ruby>語<rt>ご</rt></ruby>で<ruby>日常会話<rt>にちじょうかいわ</rt></ruby>ができること</li>
+                                <li class="gap-2"><span class="text-wakaba mt-1 text-[10px]">■</span>カンボジアに<ruby>住<rt>す</rt></ruby>んで<ruby>勤務<rt>きんむ</rt></ruby>できること</li>
+                            </ul>
+                        </div>
+                        <div class="bg-bg-base p-6 text-xs space-y-3 mt-8">
+                            <div class="flex"><span class="w-16 text-text-main"><ruby>給与<rt>きゅうよ</rt></ruby></span><span><ruby>月給<rt>げっきゅう</rt></ruby>300,000<ruby>円<rt>えん</rt></ruby>から。<ruby>経験<rt>けいけん</rt></ruby>や <ruby>役割<rt>やくわり</rt></ruby>によって <ruby>相談<rt>そうだん</rt></ruby>します。</span></div>
+                            <div class="flex"><span class="w-16 text-text-main"><ruby>働<rt>はたら</rt></ruby>く<ruby>場所<rt>ばしょ</rt></ruby></span><span>カンボジア・プノンペンBKK1</span></div>
+                            <div class="flex"><span class="w-16 text-text-main"><ruby>開始時期<rt>かいしじき</rt></ruby></span><span>2026<ruby>年<rt>ねん</rt></ruby>8<ruby>月頃<rt>がつごろ</rt></ruby>の <ruby>予定<rt>よてい</rt></ruby>です。</span></div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center mt-auto">
+                        <a href="#apply" onclick="selectJob('茶道の先生')" class="inline-block relative overflow-hidden group/btn px-12 py-4 border border-text-main text-xs tracking-widest hover:text-white transition-colors duration-300">
+                            <span class="relative z-10 font-en-serif">ENTRY</span>
+                            <div class="absolute inset-0 bg-text-main transform scale-x-0 origin-left group-hover/btn:scale-x-100 transition-transform duration-500 ease-out z-0"></div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Job 2 -->
+                <div class="bg-white p-10 md:p-14 fade-in-up hover:shadow-xl transition-shadow duration-500 group" style="transition-delay: 0.2s;">
+                    <div class="border-b border-border-light pb-8 mb-8">
+                        <span class="text-[10px] tracking-widest text-text-light block mb-2 font-en-serif uppercase">Position 02</span>
+                        <h4 class="font-serif text-2xl tracking-widest text-text-main mb-2"><ruby>店長<rt>てんちょう</rt></ruby><ruby>候補<rt>こうほ</rt></ruby></h4>
+                        <p class="text-xs text-text-light tracking-wider"><ruby>新店立<rt>しんてんた</rt></ruby>ち<ruby>上<rt>あ</rt></ruby>げの<ruby>中心<rt>ちゅうしん</rt></ruby>メンバー</p>
+                    </div>
+                    
+                    <div class="space-y-8 text-sm tracking-wider text-text-light font-light leading-loose mb-12">
+                        <div>
+                            <span class="block text-xs font-medium text-text-main mb-2 tracking-widest"><ruby>仕事内容<rt>しごとないよう</rt></ruby></span>
+                            <ruby>店舗運営全般<rt>てんぽうんえいぜんぱん</rt></ruby>を<ruby>行<rt>おこな</rt></ruby>う。スタッフ<ruby>管理<rt>かんり</rt></ruby>、<ruby>在庫管理<rt>ざいこかんり</rt></ruby>、<ruby>売上確認<rt>うりあげかくにん</rt></ruby>、<ruby>日本本社<rt>にほんほんしゃ</rt></ruby>への<ruby>報告<rt>ほうこく</rt></ruby>、オープン<ruby>準備<rt>じゅんび</rt></ruby>、<ruby>現地運営<rt>げんちうんえい</rt></ruby>の<ruby>調整<rt>ちょうせい</rt></ruby>を<ruby>行<rt>おこな</rt></ruby>う。<ruby>現地<rt>げんち</rt></ruby>スタッフと<ruby>日常的<rt>にちじょうてき</rt></ruby>にコミュニケーションを<ruby>取<rt>と</rt></ruby>る。
+                        </div>
+                        <div>
+                            <span class="block text-xs font-medium text-text-main mb-2 tracking-widest"><ruby>必要<rt>ひつよう</rt></ruby>な<ruby>条件<rt>じょうけん</rt></ruby></span>
+                            <ul class="list-none space-y-2">
+                                <li class="gap-2"><span class="text-wakaba mt-1 text-[10px]">■</span><ruby>飲食店<rt>いんしょくてん</rt></ruby>マネジャー<ruby>経験<rt>けいけん</rt></ruby>があること</li>
+                                <li class="gap-2"><span class="text-wakaba mt-1 text-[10px]">■</span><ruby>店長<rt>てんちょう</rt></ruby>または<ruby>副店長経験<rt>ふくてんちょうけいけん</rt></ruby>があること</li>
+                                <li class="gap-2"><span class="text-wakaba mt-1 text-[10px]">■</span><ruby>本社<rt>ほんしゃ</rt></ruby>への<ruby>報告<rt>ほうこく</rt></ruby>・<ruby>連絡<rt>れんらく</rt></ruby>・<ruby>調整<rt>ちょうせい</rt></ruby>をていねいに<ruby>進<rt>すす</rt></ruby>められること</li>
+                                <li class="gap-2"><span class="text-wakaba mt-1 text-[10px]">■</span><ruby>英語<rt>えいご</rt></ruby>またはクメール<ruby>語<rt>ご</rt></ruby>で<ruby>日常会話<rt>にちじょうかいわ</rt></ruby>ができること</li>
+                                <li class="gap-2"><span class="text-wakaba mt-1 text-[10px]">■</span>カンボジアに<ruby>住<rt>す</rt></ruby>んで<ruby>勤務<rt>きんむ</rt></ruby>できること</li>
+                            </ul>
+                        </div>
+                        <div class="bg-bg-base p-6 text-xs space-y-3 mt-8">
+                            <div class="flex"><span class="w-16 text-text-main"><ruby>給与<rt>きゅうよ</rt></ruby></span><span><ruby>月給<rt>げっきゅう</rt></ruby>350,000<ruby>円<rt>えん</rt></ruby>から。<ruby>経験<rt>けいけん</rt></ruby>や <ruby>役割<rt>やくわり</rt></ruby>によって <ruby>相談<rt>そうだん</rt></ruby>します。</span></div>
+                            <div class="flex"><span class="w-16 text-text-main"><ruby>働<rt>はたら</rt></ruby>く<ruby>場所<rt>ばしょ</rt></ruby></span><span>カンボジア・プノンペンBKK1</span></div>
+                            <div class="flex"><span class="w-16 text-text-main"><ruby>開始時期<rt>かいしじき</rt></ruby></span><span>2026<ruby>年<rt>ねん</rt></ruby>8<ruby>月頃<rt>がつごろ</rt></ruby>の <ruby>予定<rt>よてい</rt></ruby>です。</span></div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center mt-auto">
+                        <a href="#apply" onclick="selectJob('店長候補')" class="inline-block relative overflow-hidden group/btn px-12 py-4 border border-text-main text-xs tracking-widest hover:text-white transition-colors duration-300">
+                            <span class="relative z-10 font-en-serif">ENTRY</span>
+                            <div class="absolute inset-0 bg-text-main transform scale-x-0 origin-left group-hover/btn:scale-x-100 transition-transform duration-500 ease-out z-0"></div>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq" class="py-32 bg-bg-base border-t border-border-light">
+        <div class="max-w-4xl mx-auto px-6">
+            <div class="text-center mb-20 fade-in-up">
+                <span class="font-en-serif text-xs tracking-widest-xl text-wakaba block mb-4">FAQ</span>
+                <h3 class="font-serif text-2xl tracking-widest text-text-main"><ruby>良<rt>よ</rt></ruby>くあるご<ruby>質問<rt>しつもん</rt></ruby></h3>
+            </div>
+
+            <div class="space-y-6 fade-in-up">
+                <div class="border border-border-light p-8 bg-white">
+                    <div class="font-medium text-text-main mb-4 flex gap-4">
+                        <span class="text-wakaba font-en-serif">Q.</span>
+                        <span><ruby>応募<rt>おうぼ</rt></ruby>に <ruby>何<rt>なに</rt></ruby>が <ruby>必要<rt>ひつよう</rt></ruby>ですか。</span>
+                    </div>
+                    <div class="text-sm text-text-light leading-relaxed flex gap-4">
+                        <span class="text-gray-300 font-en-serif">A.</span>
+                        <span><ruby>履歴書<rt>りれきしょ</rt></ruby>と <ruby>職務経歴書<rt>しょくむけいれきしょ</rt></ruby>を <ruby>送<rt>おく</rt></ruby>ってください。</span>
+                    </div>
+                </div>
+                <div class="border border-border-light p-8 bg-white">
+                    <div class="font-medium text-text-main mb-4 flex gap-4">
+                        <span class="text-wakaba font-en-serif">Q.</span>
+                        <span><ruby>選考<rt>せんこう</rt></ruby>の <ruby>流<rt>なが</rt></ruby>れはどうなりますか。</span>
+                    </div>
+                    <div class="text-sm text-text-light leading-relaxed flex gap-4">
+                        <span class="text-gray-300 font-en-serif">A.</span>
+                        <span><ruby>書類選考<rt>しょるいせんこう</rt></ruby>のあと、オンラインで 1〜2<ruby>回<rt>かい</rt></ruby> <ruby>面接<rt>めんせつ</rt></ruby>をします。</span>
+                    </div>
+                </div>
+                <div class="border border-border-light p-8 bg-white">
+                    <div class="font-medium text-text-main mb-4 flex gap-4">
+                        <span class="text-wakaba font-en-serif">Q.</span>
+                        <span>カンボジアに <ruby>住<rt>す</rt></ruby>む <ruby>必要<rt>ひつよう</rt></ruby>がありますか。</span>
+                    </div>
+                    <div class="text-sm text-text-light leading-relaxed flex gap-4">
+                        <span class="text-gray-300 font-en-serif">A.</span>
+                        <span>はい。プノンペンに <ruby>住<rt>す</rt></ruby>んで <ruby>働<rt>はたら</rt></ruby>ける <ruby>方<rt>かた</rt></ruby>を <ruby>募集<rt>ぼしゅう</rt></ruby>しています。</span>
+                    </div>
+                </div>
+                <div class="border border-border-light p-8 bg-white">
+                    <div class="font-medium text-text-main mb-4 flex gap-4">
+                        <span class="text-wakaba font-en-serif">Q.</span>
+                        <span><ruby>英語<rt>えいご</rt></ruby>やクメール<ruby>語<rt>ご</rt></ruby>は <ruby>必要<rt>ひつよう</rt></ruby>ですか。</span>
+                    </div>
+                    <div class="text-sm text-text-light leading-relaxed flex gap-4">
+                        <span class="text-gray-300 font-en-serif">A.</span>
+                        <span>はい。<ruby>日常会話<rt>にちじょうかいわ</rt></ruby>ができるレベルの <ruby>語学力<rt>ごがくりょく</rt></ruby>が <ruby>必要<rt>ひつよう</rt></ruby>です。(どちらの<ruby>言語<rt>げんご</rt></ruby>でもOK)
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Application Form Section -->
+    <section id="apply" class="py-32 bg-bg-base relative">
+        <div class="max-w-2xl mx-auto px-6">
+            <div class="text-center mb-16 fade-in-up">
+                <span class="font-en-serif text-xs tracking-widest-xl text-wakaba block mb-4">ENTRY</span>
+                <h3 class="font-serif text-2xl tracking-widest text-text-main mb-6">応募フォーム</h3>
+                <p class="text-xs text-text-light tracking-wider leading-relaxed">
+                    必要事項をご入力の上、送信してください。<br>
+                    ※ 履歴書・職務経歴書の添付が必須となります。
+                </p>
+            </div>
+
+            <!-- 送信成功メッセージ -->
+            <div id="success-message" class="hidden text-center fade-in-up border border-border-light bg-white p-16">
+                <span class="block w-1 h-12 bg-wakaba mx-auto mb-8"></span>
+                <h4 class="font-serif text-xl tracking-widest text-text-main mb-6">ご応募を受け付けました</h4>
+                <p class="text-xs text-text-light tracking-wider leading-loose mb-12">
+                    ご入力いただいた内容を確認の上、<br>担当者よりご連絡いたします。
+                </p>
+                <button onclick="resetForm()" class="text-xs tracking-widest text-text-light border-b border-text-light pb-1 hover:text-text-main hover:border-text-main transition-colors">フォームに戻る</button>
+            </div>
+
+            <!-- 入力フォーム -->
+            <form id="application-form" class="fade-in-up space-y-10">
+                
+                <div class="space-y-2 border-b border-border-light pb-2 focus-within:border-text-main transition-colors">
+                    <label class="block text-[10px] tracking-widest text-text-main uppercase font-en-serif">Position <span class="text-wakaba ml-1">*</span></label>
+                    <select id="job-select" name="jobType" required class="w-full bg-transparent py-3 text-sm tracking-wider focus:outline-none text-text-main appearance-none cursor-pointer">
+                        <option value="" disabled selected class="text-text-light">希望職種を選択してください</option>
+                        <option value="茶道の先生">茶道の先生・空間アドバイス担当</option>
+                        <option value="店長候補">店長候補</option>
+                    </select>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-10">
+                    <div class="space-y-2 border-b border-border-light pb-2 focus-within:border-text-main transition-colors">
+                        <label class="block text-[10px] tracking-widest text-text-main uppercase font-en-serif">Name <span class="text-wakaba ml-1">*</span></label>
+                        <input type="text" name="name" required placeholder="山田 太郎" class="w-full bg-transparent py-3 text-sm tracking-wider focus:outline-none text-text-main">
+                    </div>
+                    <div class="space-y-2 border-b border-border-light pb-2 focus-within:border-text-main transition-colors">
+                        <label class="block text-[10px] tracking-widest text-text-main uppercase font-en-serif">Phone <span class="text-wakaba ml-1">*</span></label>
+                        <input type="tel" name="phone" required placeholder="090-1234-5678" class="w-full bg-transparent py-3 text-sm tracking-wider focus:outline-none text-text-main">
+                    </div>
+                </div>
+
+                <div class="space-y-2 border-b border-border-light pb-2 focus-within:border-text-main transition-colors">
+                    <label class="block text-[10px] tracking-widest text-text-main uppercase font-en-serif">Email <span class="text-wakaba ml-1">*</span></label>
+                    <input type="email" name="email" required placeholder="email@example.com" class="w-full bg-transparent py-3 text-sm tracking-wider focus:outline-none text-text-main">
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-10 pt-4">
+                    <div class="space-y-2">
+                        <label class="block text-[10px] tracking-widest text-text-main uppercase font-en-serif">Resume <span class="text-wakaba ml-1">*</span></label>
+                        <p class="text-[10px] text-text-light mb-2">履歴書 (PDF/Word)</p>
+                        <input type="file" required accept=".pdf,.doc,.docx" class="w-full text-xs text-text-light file:mr-4 file:py-2 file:px-6 file:border file:border-border-light file:bg-transparent file:text-text-main file:text-xs file:tracking-widest file:hover:bg-bg-sub file:cursor-pointer transition-colors">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-[10px] tracking-widest text-text-main uppercase font-en-serif">Curriculum Vitae <span class="text-wakaba ml-1">*</span></label>
+                        <p class="text-[10px] text-text-light mb-2">職務経歴書 (PDF/Word)</p>
+                        <input type="file" required accept=".pdf,.doc,.docx" class="w-full text-xs text-text-light file:mr-4 file:py-2 file:px-6 file:border file:border-border-light file:bg-transparent file:text-text-main file:text-xs file:tracking-widest file:hover:bg-bg-sub file:cursor-pointer transition-colors">
+                    </div>
+                </div>
+
+                <div class="space-y-2 border-b border-border-light pb-2 focus-within:border-text-main transition-colors pt-4">
+                    <label class="block text-[10px] tracking-widest text-text-main uppercase font-en-serif">Message</label>
+                    <textarea name="message" rows="1" placeholder="ひとこと・ご質問などがあればご記入ください" class="w-full bg-transparent py-3 text-sm tracking-wider focus:outline-none text-text-main resize-none min-h-[40px] overflow-hidden" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'"></textarea>
+                </div>
+
+                <div class="text-center pt-10">
+                    <label class="inline-flex items-center cursor-pointer mb-10 group">
+                        <input type="checkbox" required class="w-4 h-4 text-wakaba border-border-light focus:ring-wakaba accent-wakaba appearance-none border checked:bg-wakaba checked:border-transparent relative after:content-['✓'] after:absolute after:text-white after:text-xs after:left-[2px] after:-top-[1px] after:hidden checked:after:block transition-all">
+                        <span class="ml-3 text-xs tracking-wider text-text-light group-hover:text-text-main transition">個人情報の取り扱いに同意します</span>
+                    </label>
+                    <br>
+                    <button type="submit" class="inline-block bg-text-main text-white text-xs tracking-widest px-16 py-5 hover:bg-wakaba transition-colors duration-500 font-en-serif uppercase">
+                        Submit
+                    </button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-bg-sub py-16 text-center border-t border-border-light">
+        <h2 class="font-en-serif text-xl tracking-widest-xl text-text-main mb-6">AOBA<ruby>採用<rt>さいよう</rt></ruby>サイト</h2>
+        <p class="text-[10px] text-text-light tracking-widest mb-2 font-serif">Aoba<ruby>株式会社<rt>かぶしきがいしゃ</rt></ruby> プノンペンBKK1<ruby>店<rt>てん</rt></ruby></p>
+        <p class="text-[9px] text-text-light/50 tracking-[0.2em] font-en-serif uppercase">© 2026 Aoba Co., Ltd. All Rights Reserved.</p>
+    </footer>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+
+        // ヘッダーのスクロール追従（背景色変更）
+        window.addEventListener('scroll', () => {
+            const header = document.getElementById('header');
+            const logo = document.getElementById('header-logo');
+            const nav = document.getElementById('header-nav');
+            const btn = document.getElementById('header-btn');
+            
+            if (window.scrollY > 50) {
+                header.classList.remove('bg-transparent', 'py-6');
+                header.classList.add('bg-white/95', 'backdrop-blur-sm', 'py-4', 'shadow-sm');
+                logo.classList.replace('text-white', 'text-text-main');
+                nav.classList.replace('text-white', 'text-text-main');
+                btn.classList.replace('text-white', 'text-text-main');
+                btn.classList.replace('border-white', 'border-text-main');
+            } else {
+                header.classList.add('bg-transparent', 'py-6');
+                header.classList.remove('bg-white/95', 'backdrop-blur-sm', 'py-4', 'shadow-sm');
+                logo.classList.replace('text-text-main', 'text-white');
+                nav.classList.replace('text-text-main', 'text-white');
+                btn.classList.replace('text-text-main', 'text-white');
+                btn.classList.replace('border-text-main', 'border-white');
+            }
+        });
+
+        // Intersection Observer を用いたフェードインアニメーション
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.15
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in-up').forEach(element => {
+            observer.observe(element);
+        });
+
+        // 職種カードからフォームへの値渡し
+        function selectJob(jobName) {
+            const selectElement = document.getElementById('job-select');
+            if (selectElement) {
+                selectElement.value = jobName;
+            }
+        }
+
+        // フォーム送信処理
+        document.getElementById('application-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            document.getElementById('application-form').classList.add('hidden');
+            const successMsg = document.getElementById('success-message');
+            successMsg.classList.remove('hidden');
+            // フェードインさせるための小細工
+            setTimeout(() => {
+                successMsg.classList.add('is-visible');
+            }, 10);
+            
+            document.getElementById('apply').scrollIntoView({ behavior: 'smooth' });
+        });
+
+        // フォームリセット処理
+        function resetForm() {
+            document.getElementById('application-form').reset();
+            const successMsg = document.getElementById('success-message');
+            successMsg.classList.remove('is-visible');
+            setTimeout(() => {
+                successMsg.classList.add('hidden');
+                document.getElementById('application-form').classList.remove('hidden');
+            }, 300);
+        }
+    </script>
+</body>
+</html>

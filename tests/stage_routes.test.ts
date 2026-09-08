@@ -3,6 +3,7 @@ import { RESERVED_STAGE_IDS, stageSchema } from "../src/content/schema";
 import {
   CONTENT_SEGMENTS,
   resolveStageContent,
+  splitContentSegment,
   stageContentPath,
   stageContentSegments,
   stageRefPath,
@@ -82,6 +83,38 @@ describe("stageContentSegments", () => {
     const segments = stageContentSegments(TWO_LISTENINGS);
     expect(segments).toEqual(["manga", "listening-listen-a", "listening-listen-b"]);
     expect(new Set(segments).size).toBe(segments.length);
+  });
+});
+
+describe("splitContentSegment（引っ越したあとの 古いURLを 引き直す）", () => {
+  it("ID の 付いた 形は 種別と ID に 割れる", () => {
+    expect(splitContentSegment("article-kaisha_shugyo_keitai")).toEqual({
+      type: "article",
+      ref: "kaisha_shugyo_keitai",
+    });
+    expect(splitContentSegment("quiz-kaisha_shugyo_keitai_check")).toEqual({
+      type: "quizset",
+      ref: "kaisha_shugyo_keitai_check",
+    });
+  });
+
+  it("ID の 付いて いない 短い形は null（どの教材か URL に 残って いない）", () => {
+    for (const segment of Object.values(CONTENT_SEGMENTS)) {
+      expect(splitContentSegment(segment)).toBeNull();
+    }
+  });
+
+  it("知らない 2段目は null", () => {
+    expect(splitContentSegment("nazo-abc")).toBeNull();
+    expect(splitContentSegment("")).toBeNull();
+  });
+
+  it("組み立てた URL を そのまま 割り戻せる", () => {
+    const path = stageContentPath("x", TWO_LISTENINGS, 2);
+    expect(splitContentSegment(path!.slice("/x/".length))).toEqual({
+      type: "listening",
+      ref: "listen-b",
+    });
   });
 });
 

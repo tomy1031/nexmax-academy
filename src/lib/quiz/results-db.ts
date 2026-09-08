@@ -11,10 +11,11 @@
  * が 一度も 見えなかった。会話側の `meeting_turn_logs` と 同じ 考え方で、
  * 1問ぶんを 1行 残して 管理画面で 読む。
  *
- * ## いちばん 効くのは 設問ごとの 正答率
- * ある設問だけ 極端に 低いなら、疑うのは 学生ではなく **その設問の 問い方**か
- * **前の 教材の 説明**である。だから `statsByQuestion` は 正答率の **低い順**に 並べる
- * ——先生は 一覧を 上から 読むだけで 直す順が 分かる。
+ * ## 読むのは 先生の 画面（`/admin/records`）
+ * ここは **書く 側だけ**を 持つ。読み出しと 集計（設問ごとの 正答率・まちがえた こたえ・
+ * 生徒ごとの 何回目）は 2026-09-04 に「学習の きろく」へ 移した——
+ * 5種類の 記録を 同じ 絞り込み（所属・期生・メンバー・ステージ・単元）で 見る ためで、
+ * ここに 読み手を 残すと **同じ 集計が 2か所に 育つ**（片方だけ 直る）。
  *
  * ## 書き込みは 送りっぱなし
  * 記録の ために 学習が 止まるのが いちばん まずい。だから 保存は 待たないし、
@@ -134,150 +135,4 @@ export async function saveQuizResults({
     // 学習者の 画面は 止めない（ここで throw しない）。
     console.warn("[quiz-results] 記録できませんでした:", error.message);
   }
-}
-
-/** 読み出しの結果。テーブルがまだ無いときは "preparing"（logs-db.ts と同じ扱い）。 */
-export type QuizResultsState =
-  | { readonly state: "ready"; readonly rows: readonly QuizResultRow[] }
-  | { readonly state: "preparing" }
-  | { readonly state: "error"; readonly message: string };
-
-/** 先生向け。セットで絞って、新しい順に読む。 */
-export async function fetchQuizResults({
-  quizSetId,
-  profileId,
-  limit = 2000,
-}: {
-  quizSetId?: string;
-  profileId?: string;
-  limit?: number;
-} = {}): Promise<QuizResultsState> {
-  const supabase = createClient();
-  if (!supabase) return { state: "preparing" };
-
-  let query = supabase
-    .from(TABLE)
-    .select("*")
-    .order("created_at", { ascending: false })
-    .limit(limit);
-  if (quizSetId) query = query.eq("quiz_set_id", quizSetId);
-  if (profileId) query = query.eq("profile_id", profileId);
-
-  const { data, error } = await query;
-  if (error) {
-    if (MISSING_TABLE_CODES.has(error.code)) return { state: "preparing" };
-    return { state: "error", message: error.message };
-  }
-  return { state: "ready", rows: (data ?? []) as QuizResultRow[] };
-}
-
-/** 設問ごとの集計（先生の画面の主役）。 */
-export interface QuizQuestionStat {
-  readonly questionId: string;
-  readonly questionIndex: number;
-  readonly questionType: string;
-  readonly answered: number;
-  readonly correct: number;
-  /** 正答率（0〜1）。答えた人が0なら 0。 */
-  readonly rate: number;
-  readonly earned: number;
-  readonly points: number;
-  /** まちがえた人が実際に書いた・選んだ言葉（多い順・最大8件）。 */
-  readonly misses: readonly { readonly answer: string; readonly count: number }[];
-}
-
-/**
- * 設問ごとにまとめる。**正答率の低い順**に並べる（直す順がそのまま上から読める）。
- * 純関数なので、画面を立てずにテストできる。
- */
-export function statsByQuestion(rows: readonly QuizResultRow[]): QuizQuestionStat[] {
-  const byQuestion = new Map<string, QuizResultRow[]>();
-  for (const row of rows) {
-    const list = byQuestion.get(row.question_id) ?? [];
-    list.push(row);
-    byQuestion.set(row.question_id, list);
-  }
-
-  const stats = [...byQuestion.entries()].map(([questionId, list]) => {
-    const correct = list.filter((r) => r.correct).length;
-    const missCount = new Map<string, number>();
-    for (const row of list) {
-      if (row.correct) continue;
-      // 空文字 = 何も書かずに「こたえを 見る」を押した。これも見せる（そこで詰まった証拠）
-      const key = row.answer_text;
-      missCount.set(key, (missCount.get(key) ?? 0) + 1);
-    }
-    return {
-      questionId,
-      questionIndex: list[0]?.question_index ?? 0,
-      questionType: list[0]?.question_type ?? "",
-      answered: list.length,
-      correct,
-      rate: list.length === 0 ? 0 : correct / list.length,
-      earned: list.reduce((sum, r) => sum + r.earned, 0),
-      points: list.reduce((sum, r) => sum + r.max_points, 0),
-      misses: [...missCount.entries()]
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 8)
-        .map(([answer, count]) => ({ answer, count })),
-    };
-  });
-
-  return stats.sort((a, b) => a.rate - b.rate || a.questionIndex - b.questionIndex);
-}
-
-/** 1回の挑戦（同じ attempt_id）のまとめ。生徒ごとの一覧に使う。 */
-export interface QuizAttemptSummary {
-  readonly attemptId: string;
-  readonly profileId: string;
-  readonly quizSetId: string;
-  readonly at: string;
-  readonly earned: number;
-  readonly points: number;
-  readonly answered: number;
-  readonly fullSet: boolean;
-  /** 何回目の挑戦か（古い順に1から）。端末の申告ではなく、この画面で数える。 */
-  readonly nth: number;
-}
-
-/**
- * 挑戦ごとにまとめる。**合否は画面側で** `passRate`（教材の値）と比べて出す
- * ——しきい値を DB に焼くと、教材を直した日に過去の行と食い違う。
- */
-export function attemptsOf(rows: readonly QuizResultRow[]): QuizAttemptSummary[] {
-  const byAttempt = new Map<string, QuizResultRow[]>();
-  for (const row of rows) {
-    const list = byAttempt.get(row.attempt_id) ?? [];
-    list.push(row);
-    byAttempt.set(row.attempt_id, list);
-  }
-
-  const summaries = [...byAttempt.entries()].map(([attemptId, list]) => {
-    const at = list.map((r) => r.created_at ?? "").sort()[0] ?? "";
-    return {
-      attemptId,
-      profileId: list[0]?.profile_id ?? "",
-      quizSetId: list[0]?.quiz_set_id ?? "",
-      at,
-      earned: list.reduce((sum, r) => sum + r.earned, 0),
-      points: list.reduce((sum, r) => sum + r.max_points, 0),
-      answered: list.length,
-      fullSet: list.every((r) => r.full_set),
-      nth: 0,
-    };
-  });
-
-  // 人ごとに古い順で「何回目」をふる（端末に依存しない数え方）
-  const byProfile = new Map<string, QuizAttemptSummary[]>();
-  for (const s of summaries) {
-    const list = byProfile.get(s.profileId) ?? [];
-    list.push(s);
-    byProfile.set(s.profileId, list);
-  }
-  const numbered: QuizAttemptSummary[] = [];
-  for (const list of byProfile.values()) {
-    list.sort((a, b) => a.at.localeCompare(b.at));
-    list.forEach((s, i) => numbered.push({ ...s, nth: i + 1 }));
-  }
-  return numbered.sort((a, b) => b.at.localeCompare(a.at));
 }

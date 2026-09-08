@@ -8,10 +8,8 @@
   "color": "sky",
   "status": "published",
   "area": {
-    "name": "きりの みね",
-    "reading": "きりの みね",
-    "image": "/img/scenes/area_misty_peaks.webp",
-    "note": "たかい いわやまと たきの あいだに、まちが あります。"
+    "image": "/img/scenes/area_crab_shore.webp",
+    "note": "うみの うえの いちばから、ふねが しらせを はこびます。"
   },
   "contents": [
     {
