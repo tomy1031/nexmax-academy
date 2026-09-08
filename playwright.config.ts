@@ -34,7 +34,20 @@ export default defineConfig({
    * AIの 揺れで 赤く なると **ふだんの 検証まで 信じられなく なる**。
    * 走らせたい ときに `npm run eval:taiwa`（`playwright.eval.config.ts`）で 呼ぶ。
    */
-  testIgnore: ["**/*.eval.spec.ts"],
+  /*
+   * **AIの 判定に かかる 通し（`*.ai.spec.ts`）も ふだんは 外す**（2026-09-08 の 指定
+   *「無関係なタスクはCIから外し、関係ある時に発動する」）。
+   *
+   * `taiwa-live` は 学習者の ひとことを Gemini が「会社の ことが 入って いる」と
+   * 判定するかを 見る。境界の 文なので **通ったり 落ちたり する**——2026-09-07〜08 の
+   * 実測で 6回 失敗・3回 成功。絵を 足しただけの PR まで 赤く なり、毎回 再実行する
+   * ことに なって いた。赤が ふつうに なると、**本物の 赤に 気づかなく なる**。
+   *
+   * 走らせるのは 関係する ときだけ: `E2E_AI=1` を 付ける。CI は 対話まわりを
+   * 触った PR と、統合・本番への push で 自動で 付ける（.github/workflows/ci.yml）。
+   */
+  testIgnore:
+    process.env.E2E_AI === "1" ? ["**/*.eval.spec.ts"] : ["**/*.eval.spec.ts", "**/*.ai.spec.ts"],
   /** 失敗の証拠（トレース・失敗時のスクショ）の置き場。 */
   outputDir: "test-results",
   timeout: 90_000,

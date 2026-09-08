@@ -124,8 +124,51 @@ jobs:
         run: npm run build
 
       # webServer（playwright.config.ts）が `next start` を 立てて 待つ
+      #
+      # ここで **`*.ai.spec.ts` は 走らない**（playwright.config.ts の testIgnore）。
+      # AIの 返答で 合否が 変わる ものを 毎回 走らせると、中身と 関係ない PR まで
+      # 赤く なる——2026-09-07〜08 に taiwa-live が 6回 失敗・3回 成功し、絵を
+      # 足しただけの PR で 毎回 再実行して いた。**赤が ふつうに なると、本物の 赤に
+      # 気づかなく なる**（2026-09-08 の 指定「無関係なタスクはCIから外し、関係ある
+      # 時に発動する」）。
       - name: 通し検証
         run: npx playwright test
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+
+      # ── AIの 通しを 走らせるか 決める
+      #
+      # 走らせるのは 2つの とき:
+      #   1. **対話まわりを 触った PR**（判定・ミーティング・対話ゲーム・AIの 入口）
+      #   2. **integration / main への push**（統合の あとに 1回 見る）
+      - name: AIの 通しが 要るか 決める
+        id: aineed
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" != "pull_request" ]; then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+            echo "::notice::push なので AIの 通しも 走らせます"
+            exit 0
+          fi
+          changed=$(gh api "repos/${{ github.repository }}/pulls/${{ github.event.number }}/files" \
+            --paginate --jq '.[].filename')
+          if printf '%s\n' "$changed" | grep -qE '^(src/lib/(ai|talkgame|meeting)/|src/components/(talk-game|meeting)/|src/app/api/|content/(meetings|scenarios)/|tests/e2e/([^/]*\.ai\.spec\.ts|helpers\.ts)|playwright\.config\.ts)'; then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+            echo "::notice::対話まわりの 変更が あるので AIの 通しを 走らせます"
+          else
+            echo "run=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::対話まわりの 変更が 無いので AIの 通しは とばします"
+          fi
+
+      # 落ちても **PR は 止めない**（continue-on-error）。AIの 返答は こちらで
+      # 決められないので、赤で 人を 止めるのでは なく **記録に 残して 見に 行ける**
+      # 形に する。写真と ログは 下の 成果物に 入る。
+      - name: AIの 通し検証（関係する ときだけ）
+        if: steps.aineed.outputs.run == 'true'
+        continue-on-error: true
+        run: E2E_AI=1 npx playwright test '\.ai\.spec\.ts'
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
 
