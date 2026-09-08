@@ -4,6 +4,7 @@ import { motion } from "motion/react";
 import type { Scenario } from "@/content/schema";
 import { RubyText } from "@/components/ruby-text";
 import type { FuriganaIndex } from "@/lib/text/furigana";
+import { ownerOf } from "./people";
 
 /**
  * けっか — 聞き出せた ようけんを かぞえ、**プロが まとめた 要件定義書**を 見せる 段。
@@ -19,11 +20,15 @@ import type { FuriganaIndex } from "@/lib/text/furigana";
  * 直しようが ない。
  */
 
-/** 星の 数（旧アプリと 同じ しきい値）。 */
+/**
+ * 星の 数。10件の 教材では 旧アプリと 同じ しきい値（10 / 8 / 5）。
+ * 12件の 教材（3人の たいわ）も 同じ 割合で 見る——件数を 決め打ちすると、
+ * 12件 中 8件 でも ★2 に なり、10件の ときより ゆるく なる。
+ */
 function starsOf(covered: number, total: number): number {
   if (covered >= total) return 3;
-  if (covered >= 8) return 2;
-  if (covered >= 5) return 1;
+  if (covered / total >= 0.8) return 2;
+  if (covered / total >= 0.5) return 1;
   return 0;
 }
 
@@ -31,12 +36,15 @@ export function TalkResult({
   scenario,
   opened,
   furigana,
+  people,
   onRetry,
 }: {
   scenario: Scenario;
   /** 聞き出せた req の id。 */
   opened: ReadonlySet<string>;
   furigana: FuriganaIndex;
+  /** 相手が 3人 いる 教材では、人ごとの 聞き出せた 数も 出す（だれに 聞き足りなかったか）。 */
+  people?: readonly { readonly id: string; readonly name: string }[];
   onRetry: () => void;
 }) {
   const reqs = scenario.interview.reqs;
@@ -90,6 +98,22 @@ export function TalkResult({
           <span className="text-sun-deep">{"★".repeat(stars)}</span>
           <span className="text-ink-faint">{"★".repeat(3 - stars)}</span>
         </p>
+        {people && (
+          <ul className="mt-3 flex flex-wrap justify-center gap-2" aria-label="人ごとの 数">
+            {people.map((person) => {
+              const mine = reqs.filter((r) => ownerOf(r) === person.id);
+              const got = mine.filter((r) => opened.has(r.id)).length;
+              return (
+                <li
+                  key={person.id}
+                  className="bg-panel-tint text-ink rounded-full px-3 py-1 text-xs font-extrabold"
+                >
+                  👤 <RubyText text={person.name} index={furigana} /> {got} / {mine.length}
+                </li>
+              );
+            })}
+          </ul>
+        )}
       </section>
 
       {missed.length > 0 && (

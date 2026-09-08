@@ -49,6 +49,7 @@ export const MEMO_FURIGANA: readonly FuriganaEntry[] = [
 export function MemoStep({
   findings,
   clientName,
+  people,
   memo,
   onChange,
   furigana,
@@ -57,6 +58,12 @@ export function MemoStep({
 }: {
   findings: readonly string[];
   clientName: string;
+  /**
+   * 相手が 3人 いる 教材（アプリの 要件定義）では、**1人に 1つ**ずつ 書く。
+   * 「だれに 何を 聞くか」を 会う 前に 決めさせる——役割を 考える 練習は ここから 始まる。
+   * 渡さなければ これまでどおり 3つの 欄。
+   */
+  people?: readonly { readonly id: string; readonly name: string; readonly role: string }[];
   memo: readonly string[];
   onChange: (next: readonly string[]) => void;
   furigana: FuriganaIndex;
@@ -129,20 +136,31 @@ export function MemoStep({
               こう）
             </h3>
             <div className="mt-2 grid gap-2">
-              {[0, 1, 2].map((i) => (
-                <input
-                  key={i}
-                  type="text"
-                  value={memo[i] ?? ""}
-                  onChange={(e) => {
-                    setFull(false);
-                    onChange(memo.map((m, j) => (j === i ? e.target.value : m)));
-                  }}
-                  placeholder={`しつもん ${i + 1}`}
-                  aria-label={`しつもん ${i + 1}`}
-                  className="border-hairline bg-panel text-ink w-full rounded-[var(--radius-button)] border-2 px-4 py-2.5 font-bold"
-                />
-              ))}
+              {[0, 1, 2].map((i) => {
+                const person = people?.[i];
+                return (
+                  <label key={i} className="grid gap-1">
+                    {person && (
+                      <span className="text-ink-soft text-xs font-extrabold">
+                        🎤 <RubyText text={person.name} index={furigana} />（
+                        <RubyText text={person.role} index={furigana} />
+                        ）に
+                      </span>
+                    )}
+                    <input
+                      type="text"
+                      value={memo[i] ?? ""}
+                      onChange={(e) => {
+                        setFull(false);
+                        onChange(memo.map((m, j) => (j === i ? e.target.value : m)));
+                      }}
+                      placeholder={person ? `${person.name}に 聞く こと` : `しつもん ${i + 1}`}
+                      aria-label={person ? `${person.name}に 聞く こと` : `しつもん ${i + 1}`}
+                      className="border-hairline bg-panel text-ink w-full rounded-[var(--radius-button)] border-2 px-4 py-2.5 font-bold"
+                    />
+                  </label>
+                );
+              })}
             </div>
             <p className="text-ink-soft mt-3 text-xs font-bold">
               つかえる{" "}
@@ -198,15 +216,31 @@ export function MemoStep({
           disabled={written === 0}
           className="btn-island btn-game px-6 py-3 disabled:opacity-40"
         >
-          🚪 {clientName}さんに{" "}
-          <ruby>
-            会<rt>あ</rt>
-          </ruby>
-          いに
-          <ruby>
-            行<rt>い</rt>
-          </ruby>
-          く →
+          {people ? (
+            <>
+              🚪 {people.length}
+              <ruby>
+                人<rt>にん</rt>
+              </ruby>
+              の ミーティングに{" "}
+              <ruby>
+                入<rt>はい</rt>
+              </ruby>
+              る →
+            </>
+          ) : (
+            <>
+              🚪 {clientName}さんに{" "}
+              <ruby>
+                会<rt>あ</rt>
+              </ruby>
+              いに
+              <ruby>
+                行<rt>い</rt>
+              </ruby>
+              く →
+            </>
+          )}
         </button>
       </div>
     </div>

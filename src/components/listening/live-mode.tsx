@@ -1,9 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "motion/react";
 import type { Scenario } from "@/content/schema";
+import { assetUrl } from "@/lib/asset-url";
 import { FeedbackMessage } from "@/components/feedback-message";
 import type { FeedbackKey } from "@/lib/feedback";
 import { RubyText } from "@/components/ruby-text";
@@ -16,7 +18,18 @@ import { MemoStep } from "./memo-step";
 import { MissionStep } from "./mission-step";
 import { ResearchStep } from "./research-step";
 import { TalkResult } from "./talk-result";
-import { resolveMatch } from "./req-matcher";
+import {
+  avatarSrc,
+  CLIENT_ID,
+  groupReqsByKind,
+  judgeAddressed,
+  ownerOf,
+  PEOPLE_FURIGANA,
+  personaWithContext,
+  REQ_KIND_LABEL,
+  talkPeople,
+  type TalkLine,
+} from "./people";
 import { useLiveSession } from "./use-live-session";
 
 /**
@@ -36,6 +49,16 @@ import { useLiveSession } from "./use-live-session";
  * 持たない 教材——山本社長に 質問する（youken_aoba）・朝会の 報告——は **これまでどおり**
  * 会話の 画面だけを 出す。段を すべての 教材に 付けると、調べる 材料が 無い 教材が
  * 空の 調査画面を 抱えることに なる（2026-09-06 に データごと 外した ばかりの ところ）。
+ *
+ * ## 相手が 3人 いる 教材（アプリの 要件定義・2026-09-08）
+ * `scenario.interview.others` が あると、Zoom の タイルに 3人 並び、学習者は 🎤 で
+ * **だれに 話しかけるか**を 選んで 聞く。Live は 1本の つなぎに 1人の 声しか 持てない ので、
+ * 相手を かえる＝その人の persona と 声で つなぎ直す（これまでの 会話を 添える —
+ * `personaWithContext`）。会話の 記録（`history`）は つなぎ直しても 消さない。
+ * 札は **担当の 人に 聞いた ときだけ** 開く（`judgeAddressed`）。ちがう 人に 聞くと
+ * 「◯◯が くわしいです」と 返って、話しかける 相手を かえる ことに なる——
+ * 「それぞれの 役割を どう 考えるか」が この 教材の 学びそのもの。
+ * 相手が 1人の 教材は、担当が 全部 その人なので これまでと 同じ 動きに なる。
  *
  * ## 声も 文字も、同じ judge() を通る
  * 以前は判定がテキスト送信のときにしか走らず、**声で話した学習者は何をしても
@@ -162,6 +185,8 @@ export function TalkSession({
    * ひとつだけ出す。
    */
   const [hintId, setHintId] = useState<string | null>(null);
+  /** 担当ちがいで 札が 開かなかった とき、だれが くわしいか（feedback は 名前を 持てない）。 */
+  const [wrongOwner, setWrongOwner] = useState<string | null>(null);
   /** 「はじめの 一言」カードを閉じたか。 */
   const [openerClosed, setOpenerClosed] = useState(false);
   /**
@@ -196,16 +221,51 @@ export function TalkSession({
   const bufferedRef = useRef(0);
   const openedHintRef = useRef<{ text: string; reqId: string } | null>(null);
 
+  /** 会議に いる 相手（先頭は 主催者）。1人の 教材でも 同じ 形で 持つ。 */
+  const people = useMemo(() => talkPeople(scenario), [scenario]);
+  const multi = people.length > 1;
+  /** いま 🎤 を 向けて いる 人。 */
+  const [targetId, setTargetId] = useState<string>(CLIENT_ID);
+  const target = people.find((p) => p.id === targetId) ?? people[0]!;
+  /**
+   * 会話の 記録（字幕）。`live.transcript` は つなぐ たびに 空に 戻る ので、
+   * 相手を 切りかえても 残る ものを ここで 持つ。だれの 発言かは id で 持つ
+   *（`from`）——3人 いると「相手」だけでは 読み返せない。
+   *
+   * 2つに 分けて 持つ:
+   *   - `past`    … 確定した 行（前の つなぎの 字幕・台本の 返事）。state
+   *   - いまの つなぎの 字幕 … `live.transcript` から **描くときに 作る**（`folded` より 後ろ）
+   * effect の 中で setState を しないため（描画が 連鎖する）。つなぎ直す・台本を 出す
+   * 直前に、いまの 字幕を `past` へ たたむ（`foldCurrent`）。
+   */
+  const [past, setPast] = useState<readonly TalkLine[]>([]);
+  /** `live.transcript` の うち、もう `past` へ たたんだ 行数。 */
+  const [folded, setFolded] = useState(0);
+  /** いま つないで いる 相手（返事の 名乗り）。 */
+  const [connectedId, setConnectedId] = useState<string>(CLIENT_ID);
+  const connectedRef = useRef<string>(CLIENT_ID);
+  const current = useMemo<readonly TalkLine[]>(
+    () =>
+      live.transcript.slice(folded).map((turn) => ({
+        from: turn.from === "me" ? "me" : connectedId,
+        text: turn.text,
+        mode: turn.mode,
+      })),
+    [live.transcript, folded, connectedId],
+  );
+  const history = useMemo<readonly TalkLine[]>(() => [...past, ...current], [past, current]);
+  /** 画面の ことばの 読み（教材の 辞書と 混ぜない）。 */
+  const uiFurigana = useMemo(() => buildFuriganaIndex(PEOPLE_FURIGANA), []);
+
   const participants = useMemo(
-    () => [
-      {
-        id: "client",
-        name: scenario.client.name,
-        role: scenario.client.role,
-        accent: "leaf" as const,
-      },
-    ],
-    [scenario.client],
+    () =>
+      people.map((person) => ({
+        id: person.id,
+        name: person.name,
+        role: person.role,
+        accent: person.accent,
+      })),
+    [people],
   );
 
   /**
@@ -216,6 +276,7 @@ export function TalkSession({
     (utterance: string) => {
       const reqs = scenario.interview.reqs;
       if (utterance.trim()) setSpoke(true);
+      setWrongOwner(null);
       const closed = reqs.filter((req) => !openRef.current.has(req.id));
       if (closed.length === 0 || !utterance.trim()) return;
 
@@ -230,25 +291,56 @@ export function TalkSession({
        * 意味の 見かたを 戻す ときは、**Live の つなぎの 中**で もらう
        *（ミーティングの `judge-api.ts` と 同じ やり方）。
        */
-      const outcome = resolveMatch({
+      const outcome = judgeAddressed({
         utterance,
         reqs,
         openIds: openRef.current,
-        aiReqId: null,
+        targetId: target.id,
       });
-      if (outcome.reqId) {
+      /*
+       * Live が つながって いない とき（鍵ゼロの 教室・デモ）は、相手の 返事を
+       * **教材の 台本**で 出す。開いた 札の 中身（secret）は 相手が 答える 文そのものなので、
+       * それを その人の 字幕として 置く。以前は 何を 聞いても 相手が 一言も 返さず、
+       * 「聞き出せたね！」だけが 出て いた——会議に 見えない。
+       */
+      const scripted = live.status !== "live" && live.status !== "connecting";
+      if (scripted && outcome.kind !== "opened") {
+        // 相手の 返事が 無くても、自分が 聞いた ことは 記録に 残す（送ったのに 消えると 不安になる）
+        setPast((prev) => [...prev, ...current, { from: "me", text: utterance, mode: "text" }]);
+        setFolded(live.transcript.length);
+      }
+      if (outcome.kind === "opened") {
         const opened = new Set([...openRef.current, outcome.reqId]);
         openRef.current = opened;
         setOpen(opened);
         // どの 発話が どの 項目を 開いたかは ここでしか 分からない。ためる 側へ 渡す。
         openedHintRef.current = { text: utterance, reqId: outcome.reqId };
         setNote("talk.itemFound");
+        if (scripted) {
+          const req = reqs.find((r) => r.id === outcome.reqId);
+          if (req) {
+            // いまの 字幕を たたんでから 足す（順番が 前後しない ように）
+            setPast((prev) => [
+              ...prev,
+              ...current,
+              { from: "me", text: utterance, mode: "text" },
+              { from: ownerOf(req), text: req.secret, mode: "text", scripted: true },
+            ]);
+            setFolded(live.transcript.length);
+          }
+        }
+        return;
+      }
+      if (outcome.kind === "wrongPerson") {
+        // 話題は 合って いる。でも 聞いた 相手は 担当では ない——札は 開かず、担当を 教える
+        setWrongOwner(outcome.ownerId);
+        setNote("talk.askOwner");
         return;
       }
       // 1語だけ当たった＝話題は合っている。「ずれている」ではなく「あと ひとこと」へ
-      setNote(outcome.near ? CLOSE_NOTE : "talk.offTopic");
+      setNote(outcome.kind === "close" ? CLOSE_NOTE : "talk.offTopic");
     },
-    [scenario],
+    [scenario, target.id, live.status, live.transcript.length, current],
   );
 
   /*
@@ -272,9 +364,12 @@ export function TalkSession({
   useEffect(() => {
     const turns = live.transcript;
     if (turns.length === 0) {
-      // つなぎ直すと 字幕は 空に 戻る（`connect`）。次は 別の 回として 数える。
+      /*
+       * つなぎ直すと 字幕は 空に 戻る（`connect`）。数え直す 印だけ 戻す。
+       * 回の 鍵（sessionId）は **戻さない**——相手を 切りかえる たびに つなぎ直す ので、
+       * ここで 切ると 1回の 会議が 3回ぶんに 割れて 台帳に 残る。切るのは「もう一度」のとき。
+       */
       bufferedRef.current = 0;
-      sessionIdRef.current = "";
       return;
     }
     if (sessionIdRef.current === "") sessionIdRef.current = newTalkSessionId();
@@ -350,9 +445,109 @@ export function TalkSession({
     setHintId(null);
     setOpenerClosed(false);
     setSpoke(false);
+    setWrongOwner(null);
+    setPast([]);
+    setFolded(0);
+    setTargetId(CLIENT_ID);
+    setConnectedId(CLIENT_ID);
+    connectedRef.current = CLIENT_ID;
     setMemo(["", "", ""]);
     setPhase("mission");
   }, [live]);
+
+  /**
+   * つなぐ（いま 🎤 を 向けて いる 人の persona と 声で）。
+   * 相手を かえて つなぎ直す ときは、これまでの 会話を 添える（`personaWithContext`）。
+   */
+  const connectTo = useCallback(
+    (personId: string) => {
+      const person = people.find((p) => p.id === personId) ?? people[0]!;
+      // いまの 字幕を たたむ（`connect` が transcript を 空に 戻す ので、その 前に）
+      setPast((prev) => [...prev, ...current]);
+      setFolded(0);
+      connectedRef.current = person.id;
+      setConnectedId(person.id);
+      void live.connect(personaWithContext(person, history, people), person.voice);
+    },
+    [live, people, history, current],
+  );
+
+  /**
+   * 🎤 を 別の 人へ 向ける。つないで いる 最中なら、その人で つなぎ直す
+   *（Live は 1本に 1人の 声。切りかえは つなぎ直しでしか できない）。
+   */
+  const switchTo = useCallback(
+    (personId: string) => {
+      if (personId === targetId) return;
+      setTargetId(personId);
+      setWrongOwner(null);
+      setHintId(null);
+      if (live.status === "live" || live.status === "connecting") {
+        live.disconnect();
+        connectTo(personId);
+      }
+    },
+    [targetId, live, connectTo],
+  );
+
+  /**
+   * 絵が 読めなかった 人（まだ 描いて いない 顔）。壊れた 画像の 印を 出さず、
+   * 頭文字の 丸に 落とす——絵の 用意が 遅れただけで 会議に 穴が 空いた ように 見せない。
+   */
+  const [brokenFaces, setBrokenFaces] = useState<ReadonlySet<string>>(new Set());
+  /** 顔の 絵（`/img/...` の ときだけ）。タイルを 押すと その人に 🎤 が 向く。 */
+  const faces = useMemo(() => {
+    const map: Record<string, React.ReactNode> = {};
+    for (const person of people) {
+      const src = brokenFaces.has(person.id) ? null : avatarSrc(person);
+      const chosen = multi && person.id === targetId;
+      if (!src && !multi) continue;
+      map[person.id] = (
+        <button
+          type="button"
+          onClick={() => switchTo(person.id)}
+          aria-pressed={chosen}
+          aria-label={`${person.name}に 話しかける`}
+          className="absolute inset-0 h-full w-full text-left"
+          style={{ outline: chosen ? "3px solid #ffc93c" : "none", outlineOffset: "-3px" }}
+        >
+          {src ? (
+            <Image
+              src={assetUrl(src) ?? src}
+              alt=""
+              fill
+              unoptimized
+              sizes="(max-width: 640px) 50vw, 33vw"
+              className="object-cover"
+              onError={() => setBrokenFaces((prev) => new Set([...prev, person.id]))}
+            />
+          ) : (
+            <span
+              className="absolute inset-0 grid place-items-center text-white"
+              style={{ background: "#16324a" }}
+            >
+              {/* 絵が まだ 無い 人は 名前を ルビつきで（頭文字 1字だと 読めない 漢字が 裸で 出る — 規律2） */}
+              <span
+                className="rounded-full px-4 py-2 text-base font-extrabold"
+                style={{ background: "var(--color-sky)" }}
+              >
+                <RubyText text={person.name} index={furigana} show />
+              </span>
+            </span>
+          )}
+          {chosen ? (
+            <span className="absolute top-1.5 right-2 rounded-full bg-[#ffc93c] px-2 py-0.5 text-[11px] font-black text-[#3b2a00]">
+              🎤 いま この
+              <ruby>
+                人<rt>ひと</rt>
+              </ruby>
+            </span>
+          ) : null}
+        </button>
+      );
+    }
+    return map;
+  }, [people, multi, targetId, switchTo, brokenFaces, furigana]);
 
   const askable = scenario.interview.reqs.filter((r) => !open.has(r.id));
   // 聞き出せた項目のヒントは引っこめる（もう要らないものが残っていると、
@@ -364,8 +559,8 @@ export function TalkSession({
    * それ以外は これまでどおり 教材の 言い回しから 借りる。無ければカードは goal と tip だけ。
    */
   const openingLine = useMemo(
-    () => (research ? VISIT_OPENING : buildOpeningLine(scenario)),
-    [research, scenario],
+    () => (research && !multi ? VISIT_OPENING : buildOpeningLine(scenario)),
+    [research, multi, scenario],
   );
   /** 第一声の 読み。教材の 辞書に 画面の ことばの 読みを 混ぜない（先生が 消せて しまう）。 */
   const openingFurigana = useMemo(
@@ -383,18 +578,61 @@ export function TalkSession({
       title={scenario.title}
       focus={scenario.mission.goal}
       participants={participants}
-      activeSpeaker={live.status === "live" ? "client" : null}
+      activeSpeaker={live.status === "live" ? target.id : null}
+      faces={faces}
+      furigana={scenario.furigana}
+      purpose="speak"
       onLeft={handleLeft}
+      speak={
+        multi ? (
+          <div
+            role="radiogroup"
+            aria-label="だれに 話しかけるか"
+            className="flex flex-wrap items-center gap-2"
+          >
+            <span className="text-xs font-extrabold text-white/70">
+              🎤 <RubyText text="だれに 話しかける？" index={uiFurigana} show />
+            </span>
+            {people.map((person) => {
+              const chosen = person.id === target.id;
+              return (
+                <button
+                  key={person.id}
+                  type="button"
+                  role="radio"
+                  aria-checked={chosen}
+                  onClick={() => switchTo(person.id)}
+                  className="rounded-full px-3 py-1.5 text-xs font-extrabold"
+                  style={{
+                    background: chosen ? "#ffc93c" : "rgba(255,255,255,0.12)",
+                    color: chosen ? "#3b2a00" : "#fff",
+                  }}
+                >
+                  {chosen ? "🎤 " : ""}
+                  <RubyText text={person.name} index={furigana} show />
+                  <span className="ml-1 opacity-70">
+                    <RubyText text={person.role} index={furigana} show />
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        ) : undefined
+      }
       controls={
         <div className="card-island flex flex-wrap items-center gap-2 p-3">
           {live.status === "idle" && (
             <button
               type="button"
               // 声は人物カードで決めたもの（まんが・ミーティングと同じ人の声にする）
-              onClick={() => void live.connect(scenario.interview.persona, scenario.client.voice)}
+              onClick={() => connectTo(target.id)}
               className="btn-island btn-game px-6 py-2.5 text-sm"
             >
-              🎙️ 話しはじめる
+              🎙️{" "}
+              <ruby>
+                話<rt>はな</rt>
+              </ruby>
+              しはじめる
             </button>
           )}
           {live.status === "connecting" && (
@@ -468,7 +706,7 @@ export function TalkSession({
               🎯 <RubyText text={scenario.mission.goal} index={furigana} />
             </p>
             <p className="text-ink-soft mt-1 text-sm font-bold">
-              💡 <RubyText text={scenario.client.tip} index={furigana} />
+              💡 <RubyText text={target.tip} index={furigana} />
             </p>
             {openingLine && (
               <button
@@ -495,14 +733,20 @@ export function TalkSession({
             ただし つないで いない あいだは 出さない——「もう一度」で 戻った 直後に
             前の回の 4行が 残って いると、まだ 話して いないのに 話した ように 見える。
           */}
-        <section className="flex flex-col gap-2">
-          {(live.status === "idle" && !spoke ? [] : live.transcript.slice(-4)).map((turn, i) => (
-            <CaptionBar
-              key={i}
-              speaker={turn.from === "me" ? "あなた" : scenario.client.name}
-              text={turn.text}
-            />
-          ))}
+        <section className="flex flex-col gap-2" aria-label="会話の 記録">
+          {(live.status === "idle" && !spoke ? [] : history.slice(-4)).map((turn, i) => {
+            const who = people.find((p) => p.id === turn.from);
+            return (
+              <CaptionBar
+                key={`${history.length}-${i}`}
+                speaker={turn.from === "me" ? "あなた" : (who?.name ?? scenario.client.name)}
+                text={
+                  // 台本の 返事は 教材の 文なので、読み辞書で ふりがなを 付ける（規律2）
+                  turn.scripted ? <RubyText text={turn.text} index={furigana} /> : turn.text
+                }
+              />
+            );
+          })}
         </section>
 
         {/* 文字でも聞ける（音声が使えない環境でも学習を止めない） */}
@@ -530,34 +774,72 @@ export function TalkSession({
         </form>
 
         {note && <FeedbackMessage messageKey={note} />}
+        {note === "talk.askOwner" && wrongOwner && (
+          <p className="bg-panel-tint text-ink rounded-2xl px-4 py-2 text-sm font-bold">
+            👉{" "}
+            <RubyText text={people.find((p) => p.id === wrongOwner)?.name ?? ""} index={furigana} />
+            が くわしいよ。
+          </p>
+        )}
       </>
 
       {/* 要件ボード（？？？フリップ） */}
       <section className="card-island p-5">
         <h3 className="text-ink font-extrabold">
-          📋 聞き出すこと（{open.size} / {scenario.interview.reqs.length}）
+          📋{" "}
+          <ruby>
+            聞<rt>き</rt>
+          </ruby>
+          き
+          <ruby>
+            出<rt>だ</rt>
+          </ruby>
+          すこと（{open.size} / {scenario.interview.reqs.length}）
         </h3>
-        <ul className="mt-3 grid gap-2 sm:grid-cols-2">
-          {scenario.interview.reqs.map((req) => {
-            const isOpen = open.has(req.id);
-            return (
-              <motion.li
-                key={req.id}
-                layout
-                className="border-hairline rounded-[var(--radius-card)] border-2 px-3 py-2"
-                style={{ background: isOpen ? "var(--color-sky-soft)" : "var(--color-panel)" }}
-              >
-                <p className="text-ink text-sm font-extrabold">
-                  <span className="mr-1">{req.icon}</span>
-                  <RubyText text={req.label} index={furigana} />
-                </p>
-                <p className="text-ink-soft mt-0.5 text-sm font-bold">
-                  {isOpen ? <RubyText text={req.secret} index={furigana} /> : "？？？"}
-                </p>
-              </motion.li>
-            );
-          })}
-        </ul>
+        {/*
+          札は **要件の 種類ごとの 段**に 分けて 出す（こまって いる こと → 機能要件 →
+          非機能要件 → 予算・納期）。聞き出した ことを どの 箱に 入れるかが 要件定義の
+          整理そのもの。種類の 無い 教材（1人の お客さま）は 1つの 段に 並ぶ。
+        */}
+        {groupReqsByKind(scenario.interview.reqs).map((group) => (
+          <div key={group.kind ?? "all"} className="mt-3">
+            {group.kind && (
+              <h4 className="text-navy text-xs font-extrabold">
+                <RubyText text={REQ_KIND_LABEL[group.kind]} index={uiFurigana} />
+              </h4>
+            )}
+            <ul className="mt-1.5 grid gap-2 sm:grid-cols-2">
+              {group.reqs.map((req) => {
+                const isOpen = open.has(req.id);
+                const owner = people.find((p) => p.id === ownerOf(req));
+                return (
+                  <motion.li
+                    key={req.id}
+                    layout
+                    className="border-hairline rounded-[var(--radius-card)] border-2 px-3 py-2"
+                    style={{
+                      background: isOpen ? "var(--color-sky-soft)" : "var(--color-panel)",
+                    }}
+                  >
+                    <p className="text-ink text-sm font-extrabold">
+                      <span className="mr-1">{req.icon}</span>
+                      <RubyText text={req.label} index={furigana} />
+                    </p>
+                    <p className="text-ink-soft mt-0.5 text-sm font-bold">
+                      {isOpen ? <RubyText text={req.secret} index={furigana} /> : "？？？"}
+                    </p>
+                    {/* だれから 聞き出したか。開いて はじめて 見える（開く 前は だれに 聞くかを 考える） */}
+                    {multi && isOpen && owner && (
+                      <p className="text-navy mt-1 text-xs font-extrabold">
+                        👤 <RubyText text={owner.name} index={furigana} />
+                      </p>
+                    )}
+                  </motion.li>
+                );
+              })}
+            </ul>
+          </div>
+        ))}
 
         {askable.length > 0 && (
           <div className="mt-3">
@@ -676,6 +958,7 @@ export function TalkSession({
         <MemoStep
           findings={research.findings}
           clientName={scenario.client.name}
+          people={multi ? people : undefined}
           memo={memo}
           onChange={setMemo}
           furigana={furigana}
@@ -683,7 +966,13 @@ export function TalkSession({
           onDone={() => setPhase("interview")}
         />
       ) : phase === "result" ? (
-        <TalkResult scenario={scenario} opened={open} furigana={furigana} onRetry={handleRetry} />
+        <TalkResult
+          scenario={scenario}
+          opened={open}
+          furigana={furigana}
+          people={multi ? people : undefined}
+          onRetry={handleRetry}
+        />
       ) : (
         callView
       )}

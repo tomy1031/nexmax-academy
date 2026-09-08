@@ -29,6 +29,11 @@ export interface YomiAllowEntry {
 export const YOMI_ALLOW: readonly YomiAllowEntry[] = [
   // ---- 固有名詞・この現場のことば（IPA辞書が知らない読み） ----
   {
+    surface: "二組",
+    reading: "ふたくみ",
+    note: "「同じ 時間に 二組」（アプリの 要件定義）。解析は にくみ。2つの グループの 意味では ふたくみ",
+  },
+  {
     surface: "朝会",
     reading: "あさかい",
     note: "会社の朝のミーティング。解析は ちょうかい（禅の用語）と読む",

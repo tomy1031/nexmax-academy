@@ -1,0 +1,604 @@
+{
+  "kind": "article",
+  "id": "youken2_ichinengo",
+  "title": "1年後の Aoba",
+  "description": "採用ページから 1年。Aobaの プノンペンの 店は 大にぎわいです。でも、店の 運営が 大変に なりました。こんどは アプリを 作ります。",
+  "blocks": [
+    {
+      "kind": "hero",
+      "eyebrow": "ステップ 1",
+      "title": "1年後の Aoba",
+      "lead": "あなたの チームが 作った 採用ページで、二人が Aobaに 来ました。店は 大にぎわいです。",
+      "note": "うれしい ことです。でも、店の 中は 毎日 大変です。山本社長から、こんどは「アプリを 作りたい」と 相談が 来ました。",
+      "image": {
+        "prompt": "Japanese-style anime illustration, warm flat colors, soft outlines, no readable text anywhere. A small Japanese matcha cafe in Phnom Penh, BKK1, seen from the street in the evening. A queue of happy customers of many nationalities waits outside under warm lantern light; inside, a tea teacher in kimono whisks matcha and a busy store manager writes on a clipboard. Cozy, lively, slightly overwhelmed atmosphere.",
+        "refs": [],
+        "status": "empty"
+      }
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "前回の 話"
+    },
+    {
+      "kind": "steps",
+      "items": [
+        "山本社長に 聞いて、採用ページの 要件定義書を 作った",
+        "採用ページから、お茶の 先生と 店長が 応募して 来た",
+        "2026年11月、プノンペンBKK1に Aobaの 店が オープンした",
+        "茶道体験が 人気に なり、毎日 満席に なった"
+      ]
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "今の Aoba"
+    },
+    {
+      "kind": "paragraph",
+      "text": "お客様は 増えました。でも、予約・在庫・報告は、ぜんぶ 人の 手で やって います。スタッフは 夜 遅くまで 働いて います。"
+    },
+    {
+      "kind": "cards",
+      "columns": 3,
+      "items": [
+        {
+          "icon": "📩",
+          "title": "予約",
+          "text": "茶道体験の 予約は Instagramの DMと 電話です。返事が 間に合いません。",
+          "image": {
+            "prompt": "Japanese-style anime illustration, warm flat colors, soft outlines, no readable text anywhere. Close-up of a smartphone screen full of unread direct-message bubbles (blank bubbles, no text) held by a worried woman in kimono. A paper notebook with scribbled reservation marks beside it.",
+            "refs": [],
+            "status": "empty"
+          }
+        },
+        {
+          "icon": "📦",
+          "title": "在庫",
+          "text": "抹茶は 静岡から 送って もらいます。売り切れる 日が あります。",
+          "image": {
+            "prompt": "Japanese-style anime illustration, warm flat colors, soft outlines, no readable text anywhere. An almost-empty shelf of green matcha tins in a cafe back room, one last tin left; a store manager looks at the shelf and scratches his head. A cardboard box from Japan with a tea-leaf mark in the corner.",
+            "refs": [],
+            "status": "empty"
+          }
+        },
+        {
+          "icon": "📊",
+          "title": "報告",
+          "text": "毎晩、店長が 売上を 本社に 送ります。紙と 写真で、夜 12時まで かかります。",
+          "image": {
+            "prompt": "Japanese-style anime illustration, warm flat colors, soft outlines, no readable text anywhere. Late at night in a closed cafe, a tired store manager types on a laptop under a single lamp, surrounded by paper receipts and a wall clock showing midnight.",
+            "refs": [],
+            "status": "empty"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "callout",
+      "tone": "point",
+      "text": "山本社長は「アプリを 作りたい」と 言って います。でも、どんな アプリかは、まだ 決まって いません。それを 決めるのが、あなたたちの 仕事です。"
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "きょう 会う 三人"
+    },
+    {
+      "kind": "paragraph",
+      "text": "こんどの 会議には、三人が 出ます。三人は 同じ 店に いますが、見て いる ものが ちがいます。"
+    },
+    {
+      "kind": "cards",
+      "columns": 3,
+      "items": [
+        {
+          "icon": "🏢",
+          "label": "社長",
+          "title": "山本社長",
+          "text": "Aoba株式会社の 社長。お金と 目的と、いつまでに 作るかを 決めます。",
+          "items": [
+            "お金（予算）",
+            "いつまで（納期）",
+            "何の ために 作るか"
+          ],
+          "image": {
+            "src": "/img/youken/yamamoto.webp",
+            "refs": [],
+            "status": "done"
+          }
+        },
+        {
+          "icon": "🍵",
+          "label": "お茶の 先生",
+          "title": "佐々木先生",
+          "text": "採用ページから 来た 一人目。茶道体験を 教え、お客様と 話します。",
+          "items": [
+            "お客様の こまりごと",
+            "予約の こと",
+            "茶室の 雰囲気"
+          ],
+          "image": {
+            "prompt": "Japanese-style anime illustration, warm flat colors, soft outlines, no readable text anywhere. Portrait of a calm Japanese woman in her forties wearing a deep green kimono, hair neatly tied, gentle smile, holding a tea whisk (chasen). Plain warm background, bust shot, facing camera.",
+            "refs": [],
+            "status": "empty"
+          }
+        },
+        {
+          "icon": "🏪",
+          "label": "店長",
+          "title": "田中店長",
+          "text": "採用ページから 来た 二人目。スタッフ・在庫・売上を 見て、本社に 報告します。",
+          "items": [
+            "毎日の 仕事",
+            "スタッフと シフト",
+            "在庫と 売上の 数"
+          ],
+          "image": {
+            "prompt": "Japanese-style anime illustration, warm flat colors, soft outlines, no readable text anywhere. Portrait of an energetic Japanese man in his thirties wearing a dark apron over a white shirt, short hair, sleeves rolled up, holding a tablet and a pen, friendly determined expression. Plain warm background, bust shot, facing camera.",
+            "refs": [],
+            "status": "empty"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "要件定義は、アプリを 作る 第一歩"
+    },
+    {
+      "kind": "paragraph",
+      "text": "アプリは、いきなり 作りません。まず「何を 作るか」を 決めます。この 順番で 進めます。"
+    },
+    {
+      "kind": "cards",
+      "tone": "step",
+      "columns": 5,
+      "items": [
+        {
+          "icon": "🔍",
+          "title": "調べる",
+          "text": "サイト・SNS・記事を 見て、こまって いる ことを つかむ"
+        },
+        {
+          "icon": "🎤",
+          "title": "聞く",
+          "text": "三人に 質問する。だれが 何を 知って いるかを 考えて 聞く"
+        },
+        {
+          "icon": "🗂️",
+          "title": "整理する",
+          "text": "「する こと」と「まもる こと」に 分ける（機能要件・非機能要件）"
+        },
+        {
+          "icon": "📄",
+          "title": "書く",
+          "text": "要件定義書に まとめる。決まって いない ことも 書く"
+        },
+        {
+          "icon": "🚦",
+          "title": "順番を 決める",
+          "text": "何から 作るかを 決める（フェーズ）。ぜんぶを 一度に 作らない"
+        }
+      ]
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "きょうの ことば"
+    },
+    {
+      "kind": "vocab",
+      "wordIds": [
+        "youkenteigi",
+        "yoyaku",
+        "zaiko",
+        "unei",
+        "yakuwari",
+        "kinou_youken"
+      ]
+    },
+    {
+      "kind": "link",
+      "ref": "youken2_hearing",
+      "type": "listening",
+      "label": "山本社長からの 電話を 聞く"
+    }
+  ],
+  "furigana": [
+    [
+      "佐々木先生",
+      "ささきせんせい"
+    ],
+    [
+      "売り切れる",
+      "うりきれる"
+    ],
+    [
+      "要件定義書",
+      "ようけんていぎしょ"
+    ],
+    [
+      "非機能要件",
+      "ひきのうようけん"
+    ],
+    [
+      "山本社長",
+      "やまもとしゃちょう"
+    ],
+    [
+      "株式会社",
+      "かぶしきがいしゃ"
+    ],
+    [
+      "機能要件",
+      "きのうようけん"
+    ],
+    [
+      "田中店長",
+      "たなかてんちょう"
+    ],
+    [
+      "茶道体験",
+      "さどうたいけん"
+    ],
+    [
+      "要件定義",
+      "ようけんていぎ"
+    ],
+    [
+      "間に合い",
+      "まにあい"
+    ],
+    [
+      "一人目",
+      "ひとりめ"
+    ],
+    [
+      "二人目",
+      "ふたりめ"
+    ],
+    [
+      "分ける",
+      "わける"
+    ],
+    [
+      "決まっ",
+      "きまっ"
+    ],
+    [
+      "決める",
+      "きめる"
+    ],
+    [
+      "第一歩",
+      "だいいっぽ"
+    ],
+    [
+      "調べる",
+      "しらべる"
+    ],
+    [
+      "雰囲気",
+      "ふんいき"
+    ],
+    [
+      "一度",
+      "いちど"
+    ],
+    [
+      "三人",
+      "さんにん"
+    ],
+    [
+      "予算",
+      "よさん"
+    ],
+    [
+      "予約",
+      "よやく"
+    ],
+    [
+      "二人",
+      "ふたり"
+    ],
+    [
+      "人気",
+      "にんき"
+    ],
+    [
+      "仕事",
+      "しごと"
+    ],
+    [
+      "会う",
+      "あう"
+    ],
+    [
+      "会議",
+      "かいぎ"
+    ],
+    [
+      "作っ",
+      "つくっ"
+    ],
+    [
+      "作ら",
+      "つくら"
+    ],
+    [
+      "作り",
+      "つくり"
+    ],
+    [
+      "作る",
+      "つくる"
+    ],
+    [
+      "働い",
+      "はたらい"
+    ],
+    [
+      "先生",
+      "せんせい"
+    ],
+    [
+      "写真",
+      "しゃしん"
+    ],
+    [
+      "前回",
+      "ぜんかい"
+    ],
+    [
+      "同じ",
+      "おなじ"
+    ],
+    [
+      "在庫",
+      "ざいこ"
+    ],
+    [
+      "報告",
+      "ほうこく"
+    ],
+    [
+      "増え",
+      "ふえ"
+    ],
+    [
+      "売上",
+      "うりあげ"
+    ],
+    [
+      "大変",
+      "たいへん"
+    ],
+    [
+      "客様",
+      "きゃくさま"
+    ],
+    [
+      "年後",
+      "ねんご"
+    ],
+    [
+      "店長",
+      "てんちょう"
+    ],
+    [
+      "応募",
+      "おうぼ"
+    ],
+    [
+      "抹茶",
+      "まっちゃ"
+    ],
+    [
+      "採用",
+      "さいよう"
+    ],
+    [
+      "教え",
+      "おしえ"
+    ],
+    [
+      "整理",
+      "せいり"
+    ],
+    [
+      "書く",
+      "かく"
+    ],
+    [
+      "本社",
+      "ほんしゃ"
+    ],
+    [
+      "毎日",
+      "まいにち"
+    ],
+    [
+      "毎晩",
+      "まいばん"
+    ],
+    [
+      "決め",
+      "きめ"
+    ],
+    [
+      "満席",
+      "まんせき"
+    ],
+    [
+      "目的",
+      "もくてき"
+    ],
+    [
+      "相談",
+      "そうだん"
+    ],
+    [
+      "知っ",
+      "しっ"
+    ],
+    [
+      "社長",
+      "しゃちょう"
+    ],
+    [
+      "納期",
+      "のうき"
+    ],
+    [
+      "考え",
+      "かんがえ"
+    ],
+    [
+      "聞い",
+      "きい"
+    ],
+    [
+      "聞く",
+      "きく"
+    ],
+    [
+      "茶室",
+      "ちゃしつ"
+    ],
+    [
+      "言っ",
+      "いっ"
+    ],
+    [
+      "記事",
+      "きじ"
+    ],
+    [
+      "話し",
+      "はなし"
+    ],
+    [
+      "質問",
+      "しつもん"
+    ],
+    [
+      "返事",
+      "へんじ"
+    ],
+    [
+      "送っ",
+      "おくっ"
+    ],
+    [
+      "送り",
+      "おくり"
+    ],
+    [
+      "進め",
+      "すすめ"
+    ],
+    [
+      "遅く",
+      "おそく"
+    ],
+    [
+      "運営",
+      "うんえい"
+    ],
+    [
+      "電話",
+      "でんわ"
+    ],
+    [
+      "静岡",
+      "しずおか"
+    ],
+    [
+      "順番",
+      "じゅんばん"
+    ],
+    [
+      "中",
+      "なか"
+    ],
+    [
+      "人",
+      "ひと"
+    ],
+    [
+      "今",
+      "いま"
+    ],
+    [
+      "何",
+      "なに"
+    ],
+    [
+      "出",
+      "で"
+    ],
+    [
+      "夜",
+      "よる"
+    ],
+    [
+      "大",
+      "だい"
+    ],
+    [
+      "年",
+      "ねん"
+    ],
+    [
+      "店",
+      "みせ"
+    ],
+    [
+      "手",
+      "て"
+    ],
+    [
+      "数",
+      "かず"
+    ],
+    [
+      "日",
+      "ひ"
+    ],
+    [
+      "時",
+      "じ"
+    ],
+    [
+      "月",
+      "がつ"
+    ],
+    [
+      "来",
+      "き"
+    ],
+    [
+      "紙",
+      "かみ"
+    ],
+    [
+      "茶",
+      "ちゃ"
+    ],
+    [
+      "見",
+      "み"
+    ],
+    [
+      "話",
+      "はなし"
+    ],
+    [
+      "金",
+      "かね"
+    ]
+  ]
+}
