@@ -7,6 +7,7 @@ import { NexMax } from "@/components/nexmax";
 import { RubyText } from "@/components/ruby-text";
 import { CelebrationBurst } from "@/components/quiz/celebration";
 import { useIsAdmin } from "@/lib/admin-flag";
+import { useGatesUnlocked } from "@/lib/unlock-flag";
 import { contentKindMeta } from "@/lib/content-kinds";
 import { getClearedStageIds, markStageCleared } from "@/lib/progress";
 import { readContentProgress, subscribeProgress } from "@/lib/progress/store";
@@ -103,6 +104,18 @@ export function ContentFrame({
    * ここが false に なっても 失うものは 無い——鍵の 逃げ道は 残してある。
    */
   const isAdmin = useIsAdmin();
+  /*
+   * 先生が 管理画面から 外した「みんなの 鍵」（`/admin/lock`）。
+   *
+   * 教材の 不具合で 関門が 開かなく なると 授業が その場で 止まる。原因を 直すまでの
+   * あいだ、先生が スイッチ1つで 全員ぶんの 鍵を 外せるようにして ある
+   *（願い #333「札が3/10しか開かない」・#246「ヘンディさんの あとに 進めない」）。
+   *
+   * 上の 先生バイパスと **足し合わせる**だけ——どちらか 一方でも 立って いれば 開く。
+   */
+  const gatesUnlocked = useGatesUnlocked();
+  /** 鍵を 素通りしてよいか。先生 本人か、みんなの 鍵が 外れて いるか。 */
+  const unlocked = isAdmin || gatesUnlocked;
 
   /*
    * 並びに出る教材ぜんぶの読み辞書を1つの索引にまとめる（StageDetail と同じ組み方）。
@@ -133,7 +146,7 @@ export function ContentFrame({
   const gating = gateStage(
     codes,
     items.map((item) => resolveGates(item.type, item.gates)),
-    isAdmin,
+    unlocked,
   );
   const locked = !gating.openable[currentIndex] && !forced;
   // 止めている当人（まだ通っていない最初の関門）。無ければ先頭を指す
@@ -147,7 +160,7 @@ export function ContentFrame({
    * 先生は おわらせなくても つぎへ 行ける。並びの ほうは もう ぜんぶ 押せるので、
    * ここだけ 灰色の 札のままだと「押せない ボタンが 1つ 残っている」に なる。
    */
-  const canAdvance = currentDone || isAdmin;
+  const canAdvance = currentDone || unlocked;
 
   /*
     ステージの中身を全部おえたら、ステージをクリア済みにする。
@@ -182,7 +195,7 @@ export function ContentFrame({
           codes={codes}
           currentIndex={currentIndex}
           openable={gating.openable}
-          unlocked={isAdmin}
+          unlockedReason={isAdmin ? "admin" : gatesUnlocked ? "all" : null}
           furigana={itemFurigana}
           open={navOpen}
           onToggle={() => setNavOpen((value) => !value)}
@@ -309,7 +322,7 @@ function StageRail({
   codes,
   currentIndex,
   openable,
-  unlocked,
+  unlockedReason,
   furigana,
   open,
   onToggle,
@@ -320,8 +333,15 @@ function StageRail({
   currentIndex: number;
   /** その教材を いま ひらけるか（関門でない種別は いつでも true）。 */
   openable: readonly boolean[];
-  /** 鍵が かかっていない人（先生）か。なぜ ぜんぶ 開いているのかを 一言 添える。 */
-  unlocked: boolean;
+  /**
+   * 鍵を 素通りして いる 理由。なぜ ぜんぶ 開いているのかを 一言 添える。
+   * `"admin"` は 先生 本人、`"all"` は 先生が 全員ぶんを 外して いる とき、
+   * `null` は ふつうに 鍵が かかって いる とき。
+   *
+   * 真偽値 1つに まとめない——学習者の 画面に「せんせいは ぜんぶ ひらけます」と
+   * 出てしまい、なぜ 開いて いるのかが 読んだ人に 伝わらない。
+   */
+  unlockedReason: "admin" | "all" | null;
   /** 教材名の読み辞書（枠に出る教材ぜんぶをまとめた索引）。 */
   furigana: FuriganaIndex;
   open: boolean;
@@ -382,9 +402,11 @@ function StageRail({
     なぜ ぜんぶ 押せるのかを 先生に 見せる。書かないと、学習者の画面でも
     鍵が 効いていないのでは と 疑うことになる（確かめる すべが 無い）。
   */
-  const unlockedNote = unlocked ? (
+  const unlockedNote = unlockedReason ? (
     <p className="text-ink-faint text-[10px] leading-relaxed font-bold">
-      🛡️ せんせいは ぜんぶ ひらけます
+      {unlockedReason === "admin"
+        ? "🛡️ せんせいは ぜんぶ ひらけます"
+        : "🔓 いまは ぜんぶ ひらけます"}
     </p>
   ) : null;
 
