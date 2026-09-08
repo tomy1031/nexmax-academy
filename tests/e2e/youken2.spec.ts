@@ -78,12 +78,19 @@ test("3人の たいわ: 担当を えらんで 聞くと 札が 開く（鍵ゼ
   await page.getByLabel("しつもんを 入力する").fill(ZAIKO);
   await page.getByRole("button", { name: "きく" }).click();
   await expect(page.getByText(/（1 \/ 12）/)).toBeVisible();
-  await expect(page.getByText("田中", { exact: true })).toBeVisible();
+  // 記録は 3行（あなた×2 ＋ 店長の 台本の 返事）。会話が 始まった あとも ルビの 外に 裸の 漢字が 無い
+  await expect(page.getByLabel("会話の 記録").locator(".card-island")).toHaveCount(3);
+  expect(await bareKanjiTexts(page)).toEqual([]);
   await noOverflow(page);
   await shot(page, "youken2-05-opened");
 
-  // 6) けっかへ。人ごとの 数が 出る
+  // ヒントは 2段（だれに・何の こと → 言い方）
+  await page.getByRole("button", { name: /ヒントを 1つ もらう/ }).click();
+  await expect(page.getByRole("button", { name: /言い方も 見る/ })).toBeVisible();
+
+  // 6) けっかへ。近道からでも「お礼を 言いましたか」の 一呼吸が 入る。人ごとの 数が 出る
   await page.getByRole("button", { name: /けっかを/ }).click();
+  await page.getByRole("button", { name: /けっかへ/ }).click();
   await expect(page.getByText("1 / 12", { exact: true })).toBeVisible();
   await expect(page.getByRole("list", { name: "人ごとの 数" })).toBeVisible();
   await shot(page, "youken2-06-result");

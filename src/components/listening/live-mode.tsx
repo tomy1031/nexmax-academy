@@ -171,7 +171,9 @@ export function TalkSession({
    * しつもんメモ（3つ）。会話の 画面まで 持って いく——手元に 何も 無い まま
    * 相手の 前に 立たせない。端末の 中だけに 置く（台帳へは 送らない）。
    */
-  const [memo, setMemo] = useState<readonly string[]>(["", "", ""]);
+  const [memo, setMemo] = useState<readonly string[]>(() =>
+    Array.from({ length: Math.max(3, talkPeople(scenario).length) }, () => ""),
+  );
   const [open, setOpen] = useState<ReadonlySet<string>>(new Set());
   // 画面に出す文言は型付きキーだけ（自由文字列を書けなくする — 設計03 §1.3-1）
   const [note, setNote] = useState<FeedbackKey | null>(null);
@@ -185,6 +187,14 @@ export function TalkSession({
    * ひとつだけ出す。
    */
   const [hintId, setHintId] = useState<string | null>(null);
+  /**
+   * ヒントの 段。1段目は **だれに・何の ことを** だけ（自分で 文を 作る 余地を 残す）、
+   * 2段目で そのまま 言える 文を 出す。1押し目から 完成文を 出すと、上から 順に
+   * 読み上げるだけで 全部 そろう（2026-09-08 の R4 検収）。
+   */
+  const [hintLevel, setHintLevel] = useState<1 | 2>(1);
+  /** 「けっかを 見る」の 近道を 押した あとの、お礼の 一呼吸（Zoom の 退室と 同じ）。 */
+  const [leaveAsk, setLeaveAsk] = useState(false);
   /** 担当ちがいで 札が 開かなかった とき、だれが くわしいか（feedback は 名前を 持てない）。 */
   const [wrongOwner, setWrongOwner] = useState<string | null>(null);
   /** 「はじめの 一言」カードを閉じたか。 */
@@ -243,7 +253,14 @@ export function TalkSession({
   const [folded, setFolded] = useState(0);
   /** いま つないで いる 相手（返事の 名乗り）。 */
   const [connectedId, setConnectedId] = useState<string>(CLIENT_ID);
-  const connectedRef = useRef<string>(CLIENT_ID);
+  /**
+   * 台帳（`talk_turn_logs`）の 通し番号の 下駄。
+   * 相手を かえると `live.transcript` は 0 から 数え直す ので、そのまま `turnIndex` に すると
+   * 同じ 回の 同じ 番で **上書き**され、3人に 聞いた 会議が 最後の 1人ぶんしか 残らない
+   *（`talk-log.ts` は sessionId＋turnIndex で 1つに まとめる。2026-09-08 のコード検収）。
+   * 前の つなぎで ためた 行数を ここに 足して いく。
+   */
+  const logOffsetRef = useRef(0);
   const current = useMemo<readonly TalkLine[]>(
     () =>
       live.transcript.slice(folded).map((turn) => ({
@@ -275,10 +292,20 @@ export function TalkSession({
   const judge = useCallback(
     (utterance: string) => {
       const reqs = scenario.interview.reqs;
-      if (utterance.trim()) setSpoke(true);
+      if (!utterance.trim()) return;
+      setSpoke(true);
       setWrongOwner(null);
+      const scripted = live.status !== "live" && live.status !== "connecting";
       const closed = reqs.filter((req) => !openRef.current.has(req.id));
-      if (closed.length === 0 || !utterance.trim()) return;
+      if (closed.length === 0) {
+        // ぜんぶ 開いた あとの 発言。前の 案内を 残さず、送った ことだけ 記録に 残す
+        setNote(null);
+        if (scripted) {
+          setPast((prev) => [...prev, ...current, { from: "me", text: utterance, mode: "text" }]);
+          setFolded(live.transcript.length);
+        }
+        return;
+      }
 
       /*
        * 判定は **端末の 中だけ**で 済ませる（2026-08-20・絶対ルール）。
@@ -303,7 +330,6 @@ export function TalkSession({
        * それを その人の 字幕として 置く。以前は 何を 聞いても 相手が 一言も 返さず、
        * 「聞き出せたね！」だけが 出て いた——会議に 見えない。
        */
-      const scripted = live.status !== "live" && live.status !== "connecting";
       if (scripted && outcome.kind !== "opened") {
         // 相手の 返事が 無くても、自分が 聞いた ことは 記録に 残す（送ったのに 消えると 不安になる）
         setPast((prev) => [...prev, ...current, { from: "me", text: utterance, mode: "text" }]);
@@ -369,6 +395,7 @@ export function TalkSession({
        * 回の 鍵（sessionId）は **戻さない**——相手を 切りかえる たびに つなぎ直す ので、
        * ここで 切ると 1回の 会議が 3回ぶんに 割れて 台帳に 残る。切るのは「もう一度」のとき。
        */
+      logOffsetRef.current += bufferedRef.current;
       bufferedRef.current = 0;
       return;
     }
@@ -385,7 +412,7 @@ export function TalkSession({
       bufferTalkTurn({
         talkId: scenario.id,
         sessionId: sessionIdRef.current,
-        turnIndex: index,
+        turnIndex: logOffsetRef.current + index,
         speaker: learner ? "learner" : "partner",
         mode: turn.mode,
         body: turn.text,
@@ -443,6 +470,7 @@ export function TalkSession({
     setOpen(new Set());
     setNote(null);
     setHintId(null);
+    setHintLevel(1);
     setOpenerClosed(false);
     setSpoke(false);
     setWrongOwner(null);
@@ -450,10 +478,11 @@ export function TalkSession({
     setFolded(0);
     setTargetId(CLIENT_ID);
     setConnectedId(CLIENT_ID);
-    connectedRef.current = CLIENT_ID;
-    setMemo(["", "", ""]);
+    logOffsetRef.current = 0;
+    setLeaveAsk(false);
+    setMemo(Array.from({ length: Math.max(3, people.length) }, () => ""));
     setPhase("mission");
-  }, [live]);
+  }, [live, people.length]);
 
   /**
    * つなぐ（いま 🎤 を 向けて いる 人の persona と 声で）。
@@ -465,7 +494,6 @@ export function TalkSession({
       // いまの 字幕を たたむ（`connect` が transcript を 空に 戻す ので、その 前に）
       setPast((prev) => [...prev, ...current]);
       setFolded(0);
-      connectedRef.current = person.id;
       setConnectedId(person.id);
       void live.connect(personaWithContext(person, history, people), person.voice);
     },
@@ -482,6 +510,7 @@ export function TalkSession({
       setTargetId(personId);
       setWrongOwner(null);
       setHintId(null);
+      setHintLevel(1);
       if (live.status === "live" || live.status === "connecting") {
         live.disconnect();
         connectTo(personId);
@@ -571,7 +600,11 @@ export function TalkSession({
    * 「はじめの 一言」を出すか。つながった直後で、まだ一度も話していないとき。
    * 何を言えばよいか分からないまま画面と向き合う時間を作らないため。
    */
-  const showOpener = live.status === "live" && !openerClosed && !spoke;
+  /*
+   * 鍵ゼロの 教室（既定の 道）でも 出す。以前は `status === "live"` の ときだけで、
+   * 文字だけで 進める 学習者には 足場が 一度も 見えなかった（2026-09-08 の R4・試遊）。
+   */
+  const showOpener = live.status !== "connecting" && !openerClosed && !spoke;
 
   const callView = (
     <CallShell
@@ -692,7 +725,12 @@ export function TalkSession({
         {showOpener && (
           <section className="card-island p-4" aria-label="はじめの 一言">
             <div className="flex items-start justify-between gap-2">
-              <h3 className="text-ink font-extrabold">🌱 はじめの 一言</h3>
+              <h3 className="text-ink font-extrabold">
+                🌱 はじめの{" "}
+                <ruby>
+                  一言<rt>ひとこと</rt>
+                </ruby>
+              </h3>
               <button
                 type="button"
                 onClick={() => setOpenerClosed(true)}
@@ -708,6 +746,15 @@ export function TalkSession({
             <p className="text-ink-soft mt-1 text-sm font-bold">
               💡 <RubyText text={target.tip} index={furigana} />
             </p>
+            {live.status !== "live" && (
+              <p className="text-ink-soft mt-1 text-sm font-bold">
+                ⌨️{" "}
+                <RubyText
+                  text="AIが つながらない ときも、下に 書いて 送れば 会議は 進みます。"
+                  index={uiFurigana}
+                />
+              </p>
+            )}
             {openingLine && (
               <button
                 type="button"
@@ -716,13 +763,30 @@ export function TalkSession({
                  *（判定に かけると、あいさつした だけで ヒントが 出て とまどう）。
                  */
                 onClick={() => {
-                  live.send(openingLine);
+                  if (live.status === "live") {
+                    live.send(openingLine);
+                  } else {
+                    // つながって いなければ、言った ことだけ 記録に 残す（会議は 文字で 続く）
+                    setPast((prev) => [
+                      ...prev,
+                      ...current,
+                      { from: "me", text: openingLine, mode: "text" },
+                    ]);
+                    setFolded(live.transcript.length);
+                    setSpoke(true);
+                  }
                   setOpenerClosed(true);
                 }}
                 className="border-hairline bg-panel-tint text-ink mt-3 rounded-full border-2 px-4 py-2 text-sm font-extrabold"
               >
                 <RubyText text={openingLine} index={openingFurigana} />
-                <span className="text-sky ml-2">▶ これを 送る</span>
+                <span className="text-sky ml-2">
+                  ▶ これを{" "}
+                  <ruby>
+                    送<rt>おく</rt>
+                  </ruby>
+                  る
+                </span>
               </button>
             )}
           </section>
@@ -734,16 +798,21 @@ export function TalkSession({
             前の回の 4行が 残って いると、まだ 話して いないのに 話した ように 見える。
           */}
         <section className="flex flex-col gap-2" aria-label="会話の 記録">
-          {(live.status === "idle" && !spoke ? [] : history.slice(-4)).map((turn, i) => {
+          {(live.status === "idle" && !spoke ? [] : history.slice(-4)).map((turn, i, shown) => {
             const who = people.find((p) => p.id === turn.from);
             return (
               <CaptionBar
-                key={`${history.length}-${i}`}
-                speaker={turn.from === "me" ? "あなた" : (who?.name ?? scenario.client.name)}
-                text={
-                  // 台本の 返事は 教材の 文なので、読み辞書で ふりがなを 付ける（規律2）
-                  turn.scripted ? <RubyText text={turn.text} index={furigana} /> : turn.text
+                // 通し番号を 鍵に する（並びの 位置だと 1行 増える たびに 4本 全部が 入場し直す）
+                key={history.length - shown.length + i}
+                speaker={
+                  turn.from === "me" ? (
+                    "あなた"
+                  ) : (
+                    <RubyText text={who?.name ?? scenario.client.name} index={furigana} />
+                  )
                 }
+                // 教材の 読み辞書で ふりがなを 付ける（台本の 返事は 全部 覆える。Live の 字幕は 覆える ぶんだけ）
+                text={<RubyText text={turn.text} index={furigana} />}
               />
             );
           })}
@@ -846,21 +915,45 @@ export function TalkSession({
             <button
               type="button"
               onClick={() => {
-                // まだ聞けていないものから ひとつ。同じものが続かないよう、
-                // いま出しているものは候補から外す。
-                const pool = askable.filter((req) => req.id !== hintId);
-                const from = pool.length > 0 ? pool : askable;
-                setHintId(from[Math.floor(Math.random() * from.length)]!.id);
+                // まだ聞けていないものから、いま出しているものの **つぎ**を 出す
+                //（ボードの 並びの 順。くじ引きだと 同じ ものが 続いたり、段の 順が 崩れたりする）
+                const at = askable.findIndex((req) => req.id === hintId);
+                setHintId(askable[(at + 1) % askable.length]!.id);
+                setHintLevel(1);
               }}
               className="btn-game px-4 py-2 text-sm [--btn-face:#ffc93c] [--btn-shadow:#f0a819]"
             >
               💡 ヒントを 1つ もらう（のこり {askable.length}）
             </button>
             {hint && (
-              <p className="bg-panel-tint text-ink mt-2 rounded-2xl px-4 py-2 text-sm font-bold">
-                <span className="mr-1">{hint.icon}</span>
-                <RubyText text={hint.hint} index={furigana} />
-              </p>
+              <div className="bg-panel-tint text-ink mt-2 rounded-2xl px-4 py-2 text-sm font-bold">
+                {/* 1段目: だれに・何の こと。文は 自分で 作る */}
+                <p>
+                  <span className="mr-1">{hint.icon}</span>
+                  🎤{" "}
+                  <RubyText
+                    text={people.find((p) => p.id === ownerOf(hint))?.name ?? ""}
+                    index={furigana}
+                  />
+                  に、「
+                  <RubyText text={hint.label} index={furigana} />
+                  」の ことを <RubyText text="聞いて みよう" index={uiFurigana} />
+                </p>
+                {hintLevel === 2 ? (
+                  <p className="mt-1">
+                    💬 <RubyText text={hint.hint} index={furigana} />
+                  </p>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => setHintLevel(2)}
+                    aria-label="言い方も 見る"
+                    className="border-hairline bg-panel text-ink mt-1.5 rounded-full border-2 px-3 py-1 text-xs font-extrabold"
+                  >
+                    💬 <RubyText text="言い方も 見る" index={uiFurigana} />
+                  </button>
+                )}
+              </div>
             )}
           </div>
         )}
@@ -898,18 +991,50 @@ export function TalkSession({
         こちらは 会話の 画面の 中に あるので まちがえて 押しにくい。
       */}
       {research && (spoke || open.size > 0) && (
-        <div className="flex justify-end">
-          <button
-            type="button"
-            onClick={handleLeft}
-            className="btn-island btn-game px-6 py-3 text-sm"
-          >
-            📄 けっかを{" "}
-            <ruby>
-              見<rt>み</rt>
-            </ruby>
-            る →
-          </button>
+        <div className="flex flex-col items-end gap-2">
+          {leaveAsk ? (
+            // Zoom の「退室」と 同じ 一呼吸。近道からでも お礼を 飛ばさない（2026-09-08 の 試遊）
+            <div className="card-island w-full p-4 sm:w-auto">
+              <p className="text-ink font-extrabold">
+                お<RubyText text="礼を 言いましたか？" index={uiFurigana} />
+              </p>
+              <p className="text-ink-soft mt-1 text-sm font-bold">
+                「ありがとうございました」と ひとこと{" "}
+                <RubyText text="言ってから 出ましょう。" index={uiFurigana} />
+              </p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={handleLeft}
+                  className="btn-island btn-game px-5 py-2.5 text-sm"
+                >
+                  <RubyText text="言いました。けっかへ" index={uiFurigana} />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setLeaveAsk(false)}
+                  className="btn-island btn-game px-5 py-2.5 text-sm"
+                  style={
+                    { "--btn-face": "#ffffff", "--btn-shadow": "#cfe6f3" } as React.CSSProperties
+                  }
+                >
+                  <span className="text-ink">もどる</span>
+                </button>
+              </div>
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={() => setLeaveAsk(true)}
+              className="btn-island btn-game px-6 py-3 text-sm"
+            >
+              📄 けっかを{" "}
+              <ruby>
+                見<rt>み</rt>
+              </ruby>
+              る →
+            </button>
+          )}
         </div>
       )}
     </CallShell>
@@ -992,12 +1117,18 @@ const QUOTED = /[『「]([^』」]{2,40})[』」]/u;
  * あいさつは相手の場面に合わせる（朝会なら「おはようございます。」）。
  */
 export function buildOpeningLine(scenario: Scenario): string | null {
-  const sources = [
-    // 教訓（lesson）→ 先輩の助言（mission.chat）→ 攻略ひとこと（tip）の順に探す
-    ...scenario.lesson.points,
-    ...scenario.mission.chat.filter((line) => line.from === "hendy").map((line) => line.text),
-    scenario.client.tip,
-  ];
+  const hendy = scenario.mission.chat
+    .filter((line) => line.from === "hendy")
+    .map((line) => line.text);
+  /*
+   * 相手が 3人 いる 教材は **攻略ひとこと（tip）を 先に** 見る。教訓（lesson）から 先に
+   * 拾うと、『これは だれが 知って いる ことか』のような 考える 文が 第一声に なる
+   *（2026-09-08 の R4 検収で 実発生）。相手が 1人の 教材は これまでの 順の まま
+   *（`talk_opening_line.test.ts` が その 文を 固定して いる）。
+   */
+  const sources = scenario.interview.others?.length
+    ? [scenario.client.tip, ...scenario.lesson.points, ...hendy]
+    : [...scenario.lesson.points, ...hendy, scenario.client.tip];
   const greeting = scenario.interview.persona.includes("おはよう")
     ? "おはようございます。"
     : "しつれいします。";

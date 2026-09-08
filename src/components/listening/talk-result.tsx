@@ -51,6 +51,12 @@ export function TalkResult({
   const covered = reqs.filter((r) => opened.has(r.id)).length;
   const stars = starsOf(covered, reqs.length);
   const missed = reqs.filter((r) => !opened.has(r.id));
+  /*
+   * **1つも 開いて いない 回は、答えを 見せない。** 退室や「けっかを 見る」は 発話ゼロでも
+   * 押せる ので、ここで 全部 並べると「？？？」で 伏せた 意味が 消える（2026-09-08 の R4・試遊）。
+   * 1つでも 自分で 聞き出した 回は、プロの まとめと 見くらべる 段として 全部 出す。
+   */
+  const revealed = covered > 0;
 
   return (
     <div className="flex flex-col gap-4">
@@ -134,7 +140,7 @@ export function TalkResult({
                 <p className="text-ink text-sm font-extrabold">
                   <span className="mr-1">{r.icon}</span>
                   <RubyText text={r.label} index={furigana} />：
-                  <RubyText text={r.secret} index={furigana} />
+                  {revealed ? <RubyText text={r.secret} index={furigana} /> : "？？？"}
                 </p>
                 <p className="text-ink-soft mt-1 text-sm font-bold">
                   💡 <RubyText text={r.hint} index={furigana} />
@@ -211,7 +217,11 @@ export function TalkResult({
                         {item.reqId === null ? "🔍" : got ? "✅" : "▢"}
                       </span>
                       <span className="text-ink text-sm font-bold">
-                        <RubyText text={item.text} index={furigana} />
+                        {got || revealed ? (
+                          <RubyText text={item.text} index={furigana} />
+                        ) : (
+                          "？？？"
+                        )}
                         {!got && (
                           <span className="text-ink-soft ml-2 text-xs font-extrabold">
                             （

@@ -136,7 +136,7 @@ export function MemoStep({
               こう）
             </h3>
             <div className="mt-2 grid gap-2">
-              {[0, 1, 2].map((i) => {
+              {Array.from({ length: Math.max(3, people?.length ?? 0) }, (_, i) => i).map((i) => {
                 const person = people?.[i];
                 return (
                   <label key={i} className="grid gap-1">
@@ -162,6 +162,20 @@ export function MemoStep({
                 );
               })}
             </div>
+            {/* 押せない 理由を 言う。ただ 薄い ボタンだけだと、何を すれば 進めるかが 読めない（2026-09-08 試遊） */}
+            {written === 0 && (
+              <p className="text-ink-soft mt-2 text-xs font-bold">
+                1つ{" "}
+                <ruby>
+                  書<rt>か</rt>
+                </ruby>
+                くと、つぎへ{" "}
+                <ruby>
+                  進<rt>すす</rt>
+                </ruby>
+                めます。
+              </p>
+            )}
             <p className="text-ink-soft mt-3 text-xs font-bold">
               つかえる{" "}
               <ruby>

@@ -869,7 +869,8 @@ export function CaptionBar({
   text,
   hidden,
 }: {
-  speaker: string;
+  /** 話者の 名札。教材の 名前（漢字）は ルビつきの 要素で 渡せる（規律2）。 */
+  speaker: React.ReactNode;
   text: React.ReactNode;
   hidden?: boolean;
 }) {

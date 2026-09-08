@@ -20,8 +20,10 @@
 
 ## Zoom の タイルの 顔（2枚）— `content/scenarios/youken2_aoba_app.json` の `interview.others[].avatar`
 
-タイルは **絵が 無いあいだ 頭文字の 丸**で 出る（`live-mode.tsx` の `brokenFaces`）。
-ファイルを 置くだけで 顔に 変わる（データは もう その パスを 指している）。
+タイルは **絵が 無いあいだ 名前を ルビつきの 丸**で 出す。`avatar` は いま `"sasaki"` / `"tanaka"`
+（パスでは ない 名前）に して あり、**絵を 置いたら `avatar` を `/img/youken2/sasaki.webp` /
+`/img/youken2/tanaka.webp` に 書きかえる**（パスに すると タイルが 顔に なる。無い ファイルを
+指した ままだと 毎回 404 を 引くので、来るまで 名前に して ある）。
 
 | # | ファイル | 何の絵か |
 | - | ------------------------------- | -------- |

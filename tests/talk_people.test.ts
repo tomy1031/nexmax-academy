@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { scenarioSchema, type Scenario } from "../src/content/schema";
+import { buildOpeningLine } from "../src/components/listening/live-mode";
 import {
   CLIENT_ID,
   groupReqsByKind,
@@ -197,6 +198,32 @@ describe("youken2: ヒントどおりに 担当へ 聞けば 開く", () => {
       });
       expect(out, `${req.id}: ${question(req.hint)}`).toEqual({ kind: "opened", reqId: req.id });
     }
+  });
+
+  it("ことばが 重なる 札でも、話しかけて いる 人の 札を 先に 見る", () => {
+    // 「機能・ほしい・どんな」は 先生（r6）にも 店長（r10）にも ある。田中に 聞けば 田中の 札
+    const out = judgeAddressed({
+      utterance: "どんな 機能が ほしいですか",
+      reqs,
+      openIds: new Set(),
+      targetId: "tanaka",
+    });
+    expect(out).toEqual({ kind: "opened", reqId: "r10" });
+    // 同じ 文を 先生に 聞けば 先生の 札（追い返さない）
+    expect(
+      judgeAddressed({
+        utterance: "どんな 機能が ほしいですか",
+        reqs,
+        openIds: new Set(),
+        targetId: "sasaki",
+      }),
+    ).toEqual({ kind: "opened", reqId: "r6" });
+  });
+
+  it("3人の 教材の 第一声は 攻略ひとことから（教訓の 考える 文を 拾わない）", () => {
+    expect(buildOpeningLine(scenario)).toBe(
+      "しつれいします。お久しぶりです。きょうは よろしく お願いします。",
+    );
   });
 
   it("担当では ない 人に 聞くと、開かずに 担当を 教える", () => {
