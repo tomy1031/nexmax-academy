@@ -41,6 +41,10 @@
     {
       "ref": "kaisha_matsui",
       "type": "meeting"
+    },
+    {
+      "ref": "matsui_shachou",
+      "type": "slides"
     }
   ],
   "wordStageIds": [
