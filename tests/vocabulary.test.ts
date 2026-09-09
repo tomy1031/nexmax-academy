@@ -32,7 +32,7 @@ describe("ことばの 正", () => {
     const terms = vocabByTerm(book.words);
     expect(terms.has("要件定義")).toBe(true); // 単語ステージ
     expect(terms.has("アプリ")).toBe(true); // 語彙メモ（glossary.ts）
-    expect(terms.has("ほうれんそう")).toBe(true); // はじめに の ことば
+    expect(terms.has("報連相")).toBe(true); // はじめに の ことば
   });
 
   it("単語ステージが 参照する 語は ぜんぶ 正に ある（参照切れが 無い）", () => {

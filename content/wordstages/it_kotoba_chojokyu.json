@@ -1,0 +1,104 @@
+{
+  "kind": "wordstage",
+  "id": "it_kotoba_chojokyu",
+  "title": "ITの単語",
+  "description": "環境・リリース・保守運用・進行管理で 出る 50語です。現場の 判断で 使う ことばです。",
+  "label": "超上級",
+  "fieldSequence": [
+    "forest",
+    "sky",
+    "space"
+  ],
+  "questionCount": 50,
+  "passRate": 80,
+  "furigana": [
+    [
+      "単語",
+      "たんご"
+    ],
+    [
+      "環境",
+      "かんきょう"
+    ],
+    [
+      "保守運用",
+      "ほしゅうんよう"
+    ],
+    [
+      "進行管理",
+      "しんこうかんり"
+    ],
+    [
+      "出る",
+      "でる"
+    ],
+    [
+      "語",
+      "ご"
+    ],
+    [
+      "現場",
+      "げんば"
+    ],
+    [
+      "判断",
+      "はんだん"
+    ],
+    [
+      "使う",
+      "つかう"
+    ]
+  ],
+  "wordIds": [
+    "kaihatukankyou",
+    "sutejingukankyou",
+    "honbankankyou",
+    "ririsu",
+    "depuroi",
+    "kirimodoshi",
+    "enki",
+    "miokuri",
+    "hoshu",
+    "unyou",
+    "unyouruuru",
+    "toiawase",
+    "fukkyuu",
+    "saihatsuboushi",
+    "kanshi",
+    "keikakansatsu",
+    "arato",
+    "rogu",
+    "temodori",
+    "makitori",
+    "chien",
+    "risuke",
+    "chousei",
+    "esukareeshon",
+    "yuusentaiou",
+    "atomawashi",
+    "sukoopu",
+    "sukoopugai",
+    "chakushu",
+    "michakushu",
+    "asain",
+    "hikitsugi",
+    "kadaikanri",
+    "shinchokukanri",
+    "chiketsuto",
+    "kihyou",
+    "kensyu",
+    "nouhin",
+    "teirei",
+    "ririsukahi",
+    "kirikae",
+    "kadou",
+    "baffa",
+    "pendingu",
+    "maedaoshi",
+    "bakkuappu",
+    "fukugen",
+    "taisei",
+    "renkei",
+    "shuuchi"
+  ]
+}

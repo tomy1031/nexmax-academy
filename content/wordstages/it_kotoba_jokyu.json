@@ -1,0 +1,96 @@
+{
+  "kind": "wordstage",
+  "id": "it_kotoba_jokyu",
+  "title": "ITの単語",
+  "description": "開発・レビュー・テストで 出る 50語です。不具合を 追う ときの ことばが 中心です。",
+  "label": "上級",
+  "fieldSequence": [
+    "forest",
+    "sky",
+    "space"
+  ],
+  "questionCount": 50,
+  "passRate": 80,
+  "furigana": [
+    [
+      "単語",
+      "たんご"
+    ],
+    [
+      "開発",
+      "かいはつ"
+    ],
+    [
+      "出る",
+      "でる"
+    ],
+    [
+      "語",
+      "ご"
+    ],
+    [
+      "不具合",
+      "ふぐあい"
+    ],
+    [
+      "追う",
+      "おう"
+    ],
+    [
+      "中心",
+      "ちゅうしん"
+    ]
+  ],
+  "wordIds": [
+    "araidashi",
+    "kadaiseiri",
+    "saikentou",
+    "kobetsutaiou",
+    "ikkatsutaiou",
+    "zanteitaiou",
+    "jissou",
+    "kaishuu",
+    "kizonkinou",
+    "shinkikinou",
+    "kyoutsuuka",
+    "sairiyou",
+    "hanei",
+    "dousakakunin",
+    "fuguai",
+    "shougai",
+    "saigen",
+    "jishou",
+    "hasseijouken",
+    "geninchousa",
+    "kiriwake",
+    "tokutei",
+    "tesutokeesu",
+    "kitaikekka",
+    "jikkoukekka",
+    "seijoukei",
+    "ijoukei",
+    "kyoukaichi",
+    "kanten",
+    "kenshou",
+    "shuuseizumi",
+    "taiouzumi",
+    "mikaiketsu",
+    "saihatsu",
+    "degure",
+    "kaikitesuto",
+    "kouryomore",
+    "reigaishori",
+    "tesutokankyou",
+    "kenshoukankyou",
+    "koodingu",
+    "koodorebyuu",
+    "maaji",
+    "konfurikuto",
+    "sashimodoshi",
+    "saitesuto",
+    "shouseki",
+    "tantaitesuto",
+    "ketsugoutesuto",
+    "ukeiretesuto"
+  ]
+}

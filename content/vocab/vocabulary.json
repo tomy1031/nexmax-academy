@@ -1754,6 +1754,18 @@
     [
       "食",
       "た"
+    ],
+    [
+      "工程",
+      "こうてい"
+    ],
+    [
+      "動かし",
+      "うごかし"
+    ],
+    [
+      "落として",
+      "おとして"
     ]
   ],
   "words": [
@@ -1871,16 +1883,16 @@
     },
     {
       "id": "hourensou",
-      "term": "ほうれんそう",
+      "term": "報連相",
       "reading": "ほうれんそう",
       "romaji": "hourensou",
       "meaningJa": "報告・連絡・相談の 3つを まとめた 言い方です。",
-      "englishTerm": "Report, contact and consult — the three basics of work",
-      "example": "「ほうれんそう」の「ほう」は 報告です。",
+      "englishTerm": "Report, contact and consult",
+      "example": "「報連相」の「報」は 報告の ことです。",
       "wrongMeanings": [
-        "A kind of meeting room",
-        "A yearly exam",
-        "A company uniform"
+        "Report, contact and confirm",
+        "Report, meeting and decision",
+        "Contact, consult and apologize"
       ]
     },
     {
@@ -1962,9 +1974,15 @@
       "englishTerm": "Materials / Handout documents",
       "example": "英語の 資料も 読めるように なります。",
       "wrongMeanings": [
-        "Furniture",
-        "Ticket",
-        "Uniform"
+        "Funds for the project",
+        "Qualifications for the job",
+        "Room for the meeting"
+      ],
+      "furigana": [
+        [
+          "資料",
+          "しりょう"
+        ]
       ]
     },
     {
@@ -2219,9 +2237,9 @@
       "englishTerm": "Screen / Display",
       "example": "画面の はしの「A」を「あ」に すると、じゅんびが おわります。",
       "wrongMeanings": [
-        "Keyboard",
-        "Cable",
-        "Folder"
+        "Screen transition",
+        "Field / item",
+        "Keyboard / mouse"
       ],
       "englishMeaning": "the part of a computer or phone that shows things"
     },
@@ -2328,13 +2346,19 @@
       "term": "仕様書",
       "reading": "しようしょ",
       "romaji": "siyousho",
-      "meaningJa": "仕様書は、何をどう作るかを書いた紙・書類です。",
+      "meaningJa": "何を どう 作るかを 書いた 書類です。",
       "englishTerm": "Specifications document",
-      "example": "①読む（仕様書、メール）。",
+      "example": "仕様書を 読んでから、コードを 書きます。",
       "wrongMeanings": [
-        "Receipt",
-        "Menu",
-        "Diary"
+        "Requirements list",
+        "Design document",
+        "User manual"
+      ],
+      "furigana": [
+        [
+          "仕様書",
+          "しようしょ"
+        ]
       ]
     },
     {
@@ -2398,13 +2422,23 @@
       "term": "申し訳ございません",
       "reading": "もうしわけございません",
       "romaji": "mousiwakegozaimasen",
-      "meaningJa": "申し訳ございませんは、「ごめんなさい」のとても丁寧な言い方です。",
+      "meaningJa": "仕事で 謝る ときの、「ごめんなさい」の とても 丁寧な 言い方です。",
       "englishTerm": "I am terribly sorry",
-      "example": "申し訳ございません（I am very sorry）",
+      "example": "申し訳ございません。すぐ 直します。",
       "wrongMeanings": [
-        "Thank you",
-        "Hello",
-        "Good morning"
+        "Thank you very much",
+        "Excuse me for leaving first",
+        "Please take care of it"
+      ],
+      "furigana": [
+        [
+          "申し訳ございません",
+          "もうしわけございません"
+        ],
+        [
+          "謝る",
+          "あやまる"
+        ]
       ]
     },
     {
@@ -2427,13 +2461,19 @@
       "term": "要件定義",
       "reading": "ようけんていぎ",
       "romaji": "youkenteigi",
-      "meaningJa": "要件定義は、どんなシステムを作るかを決めることです。",
+      "meaningJa": "どんな システムを 作るかを、お客さまと 決める 工程です。",
       "englishTerm": "Requirements definition",
-      "example": "【IT専門の日本語】要件定義。",
+      "example": "来月から 要件定義が 始まります。",
       "wrongMeanings": [
-        "Programming",
-        "Testing",
-        "Release"
+        "Basic design",
+        "Program testing",
+        "Spec writing"
+      ],
+      "furigana": [
+        [
+          "工程",
+          "こうてい"
+        ]
       ]
     },
     {
@@ -2441,13 +2481,13 @@
       "term": "設計書",
       "reading": "せっけいしょ",
       "romaji": "sekkeisho",
-      "meaningJa": "設計書は、システムをどう作るかを書いた書類です。",
+      "meaningJa": "システムを どう 作るかを 書いた 書類です。",
       "englishTerm": "Design document",
-      "example": "【IT専門の日本語】設計書。",
+      "example": "設計書を 読んでから、プログラムを 書いて ください。",
       "wrongMeanings": [
-        "Textbook",
-        "Invoice",
-        "History"
+        "Basic design",
+        "Detailed design",
+        "Meeting minutes"
       ]
     },
     {
@@ -2469,13 +2509,13 @@
       "term": "相談",
       "reading": "そうだん",
       "romaji": "soudan",
-      "meaningJa": "相談は、困ったときに人に話して意見を聞くことです。",
+      "meaningJa": "困った ときに、人に 話して 意見を 聞く ことです。",
       "englishTerm": "Consultation",
-      "example": "チームのメンバーと相談ができない。",
+      "example": "一人で 決めないで、先輩に 相談します。",
       "wrongMeanings": [
-        "Fight",
-        "Ignore",
-        "Hide"
+        "Request",
+        "Question",
+        "Report"
       ]
     },
     {
@@ -2483,13 +2523,13 @@
       "term": "報告",
       "reading": "ほうこく",
       "romaji": "houkoku",
-      "meaningJa": "報告は、仕事の結果や様子を人に知らせることです。",
+      "meaningJa": "仕事の 結果や 様子を、上司に 知らせる ことです。",
       "englishTerm": "Report",
-      "example": "「ほうれんそう」（報告・連絡・相談）。",
+      "example": "テストが 終わったら、すぐに 報告します。",
       "wrongMeanings": [
-        "Shopping",
-        "Cooking",
-        "Sleeping"
+        "Consultation",
+        "Contact",
+        "Request"
       ]
     },
     {
@@ -2822,25 +2862,41 @@
       "term": "手順",
       "reading": "てじゅん",
       "meaningJa": "しごとの じゅんばん",
-      "englishTerm": "steps",
+      "englishTerm": "Steps",
       "englishMeaning": "the order you do a job in",
       "wrongMeanings": [
-        "Turn to speak",
-        "Handbook",
-        "Effort and time"
+        "Method",
+        "Policy",
+        "Manual"
+      ],
+      "romaji": "tejun",
+      "example": "手順どおりに、一つずつ 進めます。",
+      "furigana": [
+        [
+          "手順",
+          "てじゅん"
+        ]
       ]
     },
     {
       "id": "unyou",
       "term": "運用",
       "reading": "うんよう",
-      "meaningJa": "つくった システムを まいにち うごかしつづける しごと",
+      "meaningJa": "作った システムを、毎日 止めずに 動かし つづける 仕事です。",
       "englishTerm": "Running a service",
       "englishMeaning": "keeping a finished system running every day",
       "wrongMeanings": [
-        "Building a service",
-        "Selling a service",
-        "Stopping a service"
+        "Maintaining a service",
+        "Monitoring a service",
+        "Building a service"
+      ],
+      "romaji": "unyou",
+      "example": "来月から、新しい システムの 運用が 始まります。",
+      "furigana": [
+        [
+          "止めず",
+          "とめず"
+        ]
       ]
     },
     {
@@ -2848,14 +2904,21 @@
       "term": "対応",
       "reading": "たいおう",
       "meaningJa": "もんだいが 出た とき、それを なおす しごと",
-      "englishTerm": "handling",
+      "englishTerm": "Handling",
       "englishMeaning": "dealing with a problem when one comes up",
       "wrongMeanings": [
-        "Comparison",
-        "Waiting",
-        "Facing each other"
+        "Comparing",
+        "Facing",
+        "Answering"
       ],
-      "example": "エラーに ついて、今 いそいで 対応して います。"
+      "example": "エラーに ついて、今 いそいで 対応して います。",
+      "romaji": "taiou",
+      "furigana": [
+        [
+          "対応",
+          "たいおう"
+        ]
+      ]
     },
     {
       "id": "shikumi",
@@ -3258,14 +3321,15 @@
       "term": "質問",
       "reading": "しつもん",
       "meaningJa": "わからない ことを、人に たずねる こと",
-      "englishTerm": "question",
+      "englishTerm": "Question",
       "englishMeaning": "asking someone about something you do not know",
       "wrongMeanings": [
-        "Ignore",
-        "Guess",
-        "Forget"
+        "Answer",
+        "Request",
+        "Consultation"
       ],
-      "example": "わからない 言葉は、必ず 質問します。"
+      "example": "わからない 言葉は、必ず 質問します。",
+      "romaji": "shitsumon"
     },
     {
       "id": "genki",
@@ -3441,8 +3505,25 @@
       "id": "chiketsuto",
       "term": "チケット",
       "reading": "ちけっと",
-      "meaningJa": "お金を はらった しるしです。これが あると 中に 入れます。",
-      "englishTerm": "Ticket"
+      "meaningJa": "バグや 作業を 1つずつ 番号を つけて 書いた、仕事の カードです。",
+      "englishTerm": "Ticket",
+      "romaji": "chiketto",
+      "example": "バグを 見つけたら、チケットを 作って ください。",
+      "wrongMeanings": [
+        "Entry pass",
+        "Receipt",
+        "Report"
+      ],
+      "furigana": [
+        [
+          "作業",
+          "さぎょう"
+        ],
+        [
+          "番号",
+          "ばんごう"
+        ]
+      ]
     },
     {
       "id": "kuni",
@@ -4077,9 +4158,17 @@
       "meaningJa": "その 仕事を うけもつ ことです。",
       "englishTerm": "In charge of",
       "wrongMeanings": [
-        "Simple",
-        "Short term",
-        "Single unit"
+        "In progress",
+        "On hold",
+        "Out of scope"
+      ],
+      "romaji": "tantou",
+      "example": "この 画面の 担当は 私です。",
+      "furigana": [
+        [
+          "担当",
+          "たんとう"
+        ]
       ]
     },
     {
@@ -4177,11 +4266,18 @@
       "meaningJa": "人に「して ください」と たのむ ことです。",
       "englishTerm": "Request",
       "wrongMeanings": [
-        "Reliance on luck",
-        "Arrival",
-        "Invitation"
+        "Consultation",
+        "Question",
+        "Reliance"
       ],
-      "example": "他部署から 調査の 依頼が 来て います。"
+      "example": "他部署から 調査の 依頼が 来て います。",
+      "romaji": "irai",
+      "furigana": [
+        [
+          "依頼",
+          "いらい"
+        ]
+      ]
     },
     {
       "id": "youbou",
@@ -4190,9 +4286,17 @@
       "meaningJa": "こう して ほしい、と いう ねがいです。",
       "englishTerm": "Request / wish",
       "wrongMeanings": [
-        "Appearance",
-        "Care",
-        "Warning"
+        "Requirement / demand",
+        "Suggestion / idea",
+        "Complaint / claim"
+      ],
+      "romaji": "youbou",
+      "example": "お客さまから 新しい 要望が とどきました。",
+      "furigana": [
+        [
+          "要望",
+          "ようぼう"
+        ]
       ]
     },
     {
@@ -4214,9 +4318,21 @@
       "meaningJa": "できた ものを、お客さまに わたす ことです。",
       "englishTerm": "Delivery",
       "wrongMeanings": [
-        "Sample",
-        "Return of goods",
-        "Storage"
+        "Inspection",
+        "Release",
+        "Return of goods"
+      ],
+      "romaji": "nouhin",
+      "example": "金曜日に、お客さまへ 納品します。",
+      "furigana": [
+        [
+          "納品",
+          "のうひん"
+        ],
+        [
+          "金曜日",
+          "きんようび"
+        ]
       ]
     },
     {
@@ -4224,11 +4340,23 @@
       "term": "納期",
       "reading": "のうき",
       "meaningJa": "できた ものを わたす、やくそくの 日です。",
-      "englishTerm": "Deadline",
+      "englishTerm": "Delivery date",
       "wrongMeanings": [
-        "Storage room",
-        "Farm season",
-        "Payment"
+        "Start date",
+        "Payment date",
+        "Storage period"
+      ],
+      "romaji": "nouki",
+      "example": "納期は 来週の 金曜日です。おくれないように します。",
+      "furigana": [
+        [
+          "納期",
+          "のうき"
+        ],
+        [
+          "金曜日",
+          "きんようび"
+        ]
       ]
     },
     {
@@ -4402,9 +4530,17 @@
       "meaningJa": "本当に そうかを、見て たしかめる ことです。",
       "englishTerm": "Confirmation",
       "wrongMeanings": [
-        "Determination",
-        "Reservation",
+        "Consideration",
+        "Decision",
         "Permission"
+      ],
+      "romaji": "kakunin",
+      "example": "送る 前に、もう 一度 内容を 確認します。",
+      "furigana": [
+        [
+          "確認",
+          "かくにん"
+        ]
       ]
     },
     {
@@ -4458,9 +4594,17 @@
       "meaningJa": "これから なおさなければ ならない ことです。",
       "englishTerm": "Issue / challenge",
       "wrongMeanings": [
-        "Homework charge",
-        "Large size",
-        "Extra fee"
+        "Problem / Trouble",
+        "Cause / Reason",
+        "Task / Operation"
+      ],
+      "romaji": "kadai",
+      "example": "今の 課題は、テストが 足りない ことです。",
+      "furigana": [
+        [
+          "課題",
+          "かだい"
+        ]
       ]
     },
     {
@@ -4641,9 +4785,17 @@
       "meaningJa": "ほかの 人や 会社と、力を 合わせる ことです。",
       "englishTerm": "Cooperation",
       "wrongMeanings": [
-        "Continuation",
-        "Contact address",
-        "Practice"
+        "Team structure",
+        "Announcement",
+        "Contact address"
+      ],
+      "romaji": "renkei",
+      "example": "営業と 開発が 連携して、進めます。",
+      "furigana": [
+        [
+          "連携",
+          "れんけい"
+        ]
       ]
     },
     {
@@ -4768,9 +4920,17 @@
       "meaningJa": "作る ものに 何が 要るか、と いう 中身です。",
       "englishTerm": "Requirements",
       "wrongMeanings": [
-        "Important person",
-        "Summary",
-        "Permission"
+        "Specification",
+        "Estimate",
+        "Design"
+      ],
+      "romaji": "youken",
+      "example": "お客さまの 要件を まとめて、資料に 書きます。",
+      "furigana": [
+        [
+          "要件",
+          "ようけん"
+        ]
       ]
     },
     {
@@ -4778,7 +4938,20 @@
       "term": "仕様",
       "reading": "しよう",
       "meaningJa": "その ものが どう うごくかを 決めた ことです。",
-      "englishTerm": "Specification"
+      "englishTerm": "Specification",
+      "romaji": "shiyou",
+      "example": "仕様を 変える ときは、必ず 先に 相談します。",
+      "wrongMeanings": [
+        "Requirements",
+        "Usage",
+        "Conditions"
+      ],
+      "furigana": [
+        [
+          "仕様",
+          "しよう"
+        ]
+      ]
     },
     {
       "id": "hoshu",
@@ -4787,9 +4960,17 @@
       "meaningJa": "作った あとも、こわれないように 見る 仕事です。",
       "englishTerm": "Maintenance",
       "wrongMeanings": [
-        "Insurance",
-        "Guarantee",
-        "Storage"
+        "Operation",
+        "Monitoring",
+        "Insurance"
+      ],
+      "romaji": "hoshu",
+      "example": "リリースの あとは、保守の 仕事が つづきます。",
+      "furigana": [
+        [
+          "保守",
+          "ほしゅ"
+        ]
       ]
     },
     {
@@ -4823,9 +5004,21 @@
       "meaningJa": "きかいを 手で うごかす ことです。",
       "englishTerm": "Operating a machine",
       "wrongMeanings": [
-        "Making a machine",
-        "Selling a machine",
-        "Fixing a machine"
+        "Behavior of a machine",
+        "Fixing a machine",
+        "Setting up a machine"
+      ],
+      "romaji": "sousa",
+      "example": "この 画面の 操作を、お客さまに 説明します。",
+      "furigana": [
+        [
+          "操作",
+          "そうさ"
+        ],
+        [
+          "説明",
+          "せつめい"
+        ]
       ]
     },
     {
@@ -4833,7 +5026,24 @@
       "term": "出力",
       "reading": "しゅつりょく",
       "meaningJa": "中の ものを、外へ 出す ことです。",
-      "englishTerm": "Output"
+      "englishTerm": "Output",
+      "romaji": "shutsuryoku",
+      "example": "この 一覧を、CSVで 出力して ください。",
+      "wrongMeanings": [
+        "Input",
+        "Upload",
+        "Storage"
+      ],
+      "furigana": [
+        [
+          "出力",
+          "しゅつりょく"
+        ],
+        [
+          "一覧",
+          "いちらん"
+        ]
+      ]
     },
     {
       "id": "kensaku",
@@ -4846,7 +5056,8 @@
         "Inspection",
         "Reservation"
       ],
-      "example": "新しい 検索機能の テストを 急いで お願いします。"
+      "example": "新しい 検索機能の テストを 急いで お願いします。",
+      "romaji": "kensaku"
     },
     {
       "id": "hozon",
@@ -4855,11 +5066,18 @@
       "meaningJa": "きえないように、とって おく ことです。",
       "englishTerm": "Saving",
       "wrongMeanings": [
-        "Deleting",
-        "Printing",
+        "Updating",
+        "Registering",
         "Sending"
       ],
-      "example": "大事な ファイルは、必ず 保存して ください。"
+      "example": "大事な ファイルは、必ず 保存して ください。",
+      "romaji": "hozon",
+      "furigana": [
+        [
+          "保存",
+          "ほぞん"
+        ]
+      ]
     },
     {
       "id": "koushin",
@@ -4868,11 +5086,12 @@
       "meaningJa": "新しい 中身に 書きかえる ことです。",
       "englishTerm": "Update",
       "wrongMeanings": [
-        "Deleting",
-        "Copying",
-        "Locking"
+        "Register",
+        "Save",
+        "Delete"
       ],
-      "example": "毎朝、ウイルスの ファイルを 更新して ください。"
+      "example": "毎朝、ウイルスの ファイルを 更新して ください。",
+      "romaji": "koushin"
     },
     {
       "id": "tsuika",
@@ -4884,6 +5103,14 @@
         "Removing",
         "Replacing",
         "Repeating"
+      ],
+      "romaji": "tsuika",
+      "example": "ボタンを 一つ 追加します。",
+      "furigana": [
+        [
+          "追加",
+          "ついか"
+        ]
       ]
     },
     {
@@ -4891,7 +5118,24 @@
       "term": "削除",
       "reading": "さくじょ",
       "meaningJa": "いらない ものを けす ことです。",
-      "englishTerm": "Deleting"
+      "englishTerm": "Deleting",
+      "romaji": "sakujo",
+      "example": "古い データを 削除して いいですか。",
+      "wrongMeanings": [
+        "Adding",
+        "Hiding",
+        "Replacing"
+      ],
+      "furigana": [
+        [
+          "削除",
+          "さくじょ"
+        ],
+        [
+          "古い",
+          "ふるい"
+        ]
+      ]
     },
     {
       "id": "henshuu",
@@ -4912,11 +5156,18 @@
       "meaningJa": "同じ ものを、みんなで つかえるように する ことです。",
       "englishTerm": "Sharing",
       "wrongMeanings": [
-        "Sharing money",
-        "Sending back",
-        "Deleting"
+        "Reporting",
+        "Contacting",
+        "Consulting"
       ],
-      "example": "会議の 記録を チームに 共有します。"
+      "example": "会議の 記録を チームに 共有します。",
+      "romaji": "kyouyuu",
+      "furigana": [
+        [
+          "共有",
+          "きょうゆう"
+        ]
+      ]
     },
     {
       "id": "tsuuchi",
@@ -4942,7 +5193,14 @@
         "Input",
         "Process"
       ],
-      "example": "エラーメッセージが 表示されて います。"
+      "example": "エラーメッセージが 表示されて います。",
+      "romaji": "hyouji",
+      "furigana": [
+        [
+          "表示",
+          "ひょうじ"
+        ]
+      ]
     },
     {
       "id": "gazou",
@@ -5162,9 +5420,17 @@
       "meaningJa": "書く ことを わけた、1つ1つの ことです。",
       "englishTerm": "Item / field",
       "wrongMeanings": [
-        "Volume",
-        "Chapter",
-        "Title"
+        "Screen / page",
+        "Button / link",
+        "Table / list"
+      ],
+      "romaji": "koumoku",
+      "example": "入力する 項目が 多いので、画面を 2つに 分けます。",
+      "furigana": [
+        [
+          "項目",
+          "こうもく"
+        ]
       ]
     },
     {
@@ -5174,9 +5440,21 @@
       "meaningJa": "ぜんぶを 1つの 表に ならべた ものです。",
       "englishTerm": "List",
       "wrongMeanings": [
-        "Quick glance",
-        "Cover page",
-        "Long sentence"
+        "Details",
+        "Summary",
+        "Preview"
+      ],
+      "romaji": "ichiran",
+      "example": "登録した ユーザーを、一覧で 見ます。",
+      "furigana": [
+        [
+          "一覧",
+          "いちらん"
+        ],
+        [
+          "登録",
+          "とうろく"
+        ]
       ]
     },
     {
@@ -5322,11 +5600,18 @@
       "meaningJa": "ぜんぶ おわる ことです。",
       "englishTerm": "Completion",
       "wrongMeanings": [
-        "Started",
-        "Failed",
-        "Continued"
+        "Start",
+        "Delay",
+        "Approval"
       ],
-      "example": "テストが 完了しましたと 報告します。"
+      "example": "テストが 完了しましたと 報告します。",
+      "romaji": "kanryou",
+      "furigana": [
+        [
+          "完了",
+          "かんりょう"
+        ]
+      ]
     },
     {
       "id": "kaizen",
@@ -5699,11 +5984,18 @@
       "meaningJa": "いま どう なって いるか、と いう ことです。",
       "englishTerm": "Situation",
       "wrongMeanings": [
-        "Name",
-        "Address",
-        "Phone number"
+        "Progress",
+        "Result",
+        "Report"
       ],
-      "example": "上司に 今の 状況を つたえます。"
+      "example": "上司に 今の 状況を つたえます。",
+      "romaji": "joukyou",
+      "furigana": [
+        [
+          "状況",
+          "じょうきょう"
+        ]
+      ]
     },
     {
       "id": "haaku",
@@ -5938,7 +6230,20 @@
       "term": "方法",
       "reading": "ほうほう",
       "meaningJa": "やりかたの ことです。",
-      "englishTerm": "Method"
+      "englishTerm": "Method",
+      "romaji": "houhou",
+      "example": "データを 送る 方法を 教えて ください。",
+      "wrongMeanings": [
+        "Policy",
+        "Direction",
+        "Law"
+      ],
+      "furigana": [
+        [
+          "方法",
+          "ほうほう"
+        ]
+      ]
     },
     {
       "id": "rikai",
@@ -6287,11 +6592,12 @@
       "meaningJa": "いつ 何を するか、と いう 予定です。",
       "englishTerm": "Schedule",
       "wrongMeanings": [
-        "Budget",
-        "Manual",
-        "Rule"
+        "Deadline",
+        "Estimate",
+        "Progress"
       ],
-      "example": "提出の スケジュールを 変えたいです。"
+      "example": "提出の スケジュールを 変えたいです。",
+      "romaji": "sukejuuru"
     },
     {
       "id": "tasuku",
@@ -6324,10 +6630,12 @@
       "meaningJa": "お客さまの 話を、よく 聞く ことです。",
       "englishTerm": "Hearing / interview",
       "wrongMeanings": [
-        "Reading aloud",
-        "Training",
-        "Announcement"
-      ]
+        "Hearing test",
+        "Listening practice",
+        "Health check"
+      ],
+      "romaji": "hiaringu",
+      "example": "来週、お客さまに ヒアリングを します。"
     },
     {
       "id": "rebyu",
@@ -6339,6 +6647,18 @@
         "Preview",
         "Interview",
         "Rehearsal"
+      ],
+      "romaji": "rebyuu",
+      "example": "コードの レビューを お願いします。",
+      "furigana": [
+        [
+          "作っ",
+          "つくっ"
+        ],
+        [
+          "願い",
+          "ねがい"
+        ]
       ]
     },
     {
@@ -6348,11 +6668,12 @@
       "meaningJa": "作った ものを、世の中へ 出す ことです。",
       "englishTerm": "Release",
       "wrongMeanings": [
-        "Reserve",
-        "Rehearsal",
-        "Repair"
+        "Deploy",
+        "Switch-over",
+        "Rehearsal"
       ],
-      "example": "来週の 月曜日に 新しい アプリを リリースします。"
+      "example": "来週の 月曜日に 新しい アプリを リリースします。",
+      "romaji": "ririisu"
     },
     {
       "id": "rinyuaru",
@@ -6520,9 +6841,11 @@
       "englishTerm": "Alert",
       "wrongMeanings": [
         "Alarm clock",
-        "Advertisement",
-        "Award"
-      ]
+        "Announcement",
+        "Log"
+      ],
+      "romaji": "araato",
+      "example": "アラートが 来たら、すぐに ログを 見ます。"
     },
     {
       "id": "riarutaimu",
@@ -6910,9 +7233,21 @@
       "meaningJa": "仕事の 結果 できあがった ものです。",
       "englishTerm": "Deliverable",
       "wrongMeanings": [
+        "Fruit product",
         "Raw material",
-        "Sample product",
-        "Spare part"
+        "Sample product"
+      ],
+      "romaji": "seikabutsu",
+      "example": "成果物を 金曜日までに 出します。",
+      "furigana": [
+        [
+          "成果物",
+          "せいかぶつ"
+        ],
+        [
+          "金曜日",
+          "きんようび"
+        ]
       ]
     },
     {
@@ -7011,9 +7346,21 @@
       "meaningJa": "本当に そうかを、しらべて たしかめる ことです。",
       "englishTerm": "Verification",
       "wrongMeanings": [
-        "Invention",
-        "Translation",
-        "Presentation"
+        "Implementation",
+        "Reproduction",
+        "Reconsideration"
+      ],
+      "romaji": "kenshou",
+      "example": "修正が 正しいかどうか、検証を お願いします。",
+      "furigana": [
+        [
+          "検証",
+          "けんしょう"
+        ],
+        [
+          "正しい",
+          "ただしい"
+        ]
       ]
     },
     {
@@ -7059,11 +7406,18 @@
       "meaningJa": "うまく うごかなく なる、こまった ことです。",
       "englishTerm": "System failure",
       "wrongMeanings": [
-        "A tall wall",
-        "A long meeting",
-        "A busy day"
+        "Defect / Bug",
+        "Observed event",
+        "Recurring after the fix"
       ],
-      "example": "ネットワークの 障害で メールが 送れません。"
+      "example": "ネットワークの 障害で メールが 送れません。",
+      "romaji": "shougai",
+      "furigana": [
+        [
+          "障害",
+          "しょうがい"
+        ]
+      ]
     },
     {
       "id": "shougaibutsu",
@@ -8464,9 +8818,9 @@
       "englishTerm": "Research / Survey",
       "example": "Webサイトを 見て、調査シートを 書きます。",
       "wrongMeanings": [
-        "Shopping",
-        "Cooking",
-        "Sleeping"
+        "Confirmation / Check",
+        "Consideration / Thinking",
+        "Correction / Repair"
       ]
     },
     {
@@ -8636,9 +8990,15 @@
       "englishTerm": "Problem / Issue",
       "example": "仕事が 終わった ときや、問題が ある ときは 必ず 報告します。",
       "wrongMeanings": [
-        "Solution",
-        "Success",
-        "Prize"
+        "Challenge / Goal",
+        "Cause / Reason",
+        "Solution / Answer"
+      ],
+      "furigana": [
+        [
+          "問題",
+          "もんだい"
+        ]
       ]
     },
     {
@@ -8749,8 +9109,14 @@
       "example": "サーバーエラーが 出ました。今、原因を 調べて います。",
       "wrongMeanings": [
         "Result",
-        "Future",
-        "Dream"
+        "Effect",
+        "Symptom"
+      ],
+      "furigana": [
+        [
+          "原因",
+          "げんいん"
+        ]
       ]
     },
     {
@@ -8804,9 +9170,9 @@
       "englishTerm": "Assign",
       "example": "ヘンディさんが プログラマーとして アサインされて います。",
       "wrongMeanings": [
-        "Resigned",
-        "Fired",
-        "Ignored"
+        "Sign",
+        "Hand over",
+        "Resign"
       ]
     },
     {
@@ -8877,20 +9243,6 @@
         "Door",
         "Window",
         "Wall"
-      ]
-    },
-    {
-      "id": "yasai",
-      "term": "野菜",
-      "reading": "やさい",
-      "romaji": "yasai",
-      "meaningJa": "はたけで そだつ、食べる ための ものです。",
-      "englishTerm": "Vegetable",
-      "example": "ほうれんそうは 野菜の 名前ですが、ここでは 報告・連絡・相談の ことです。",
-      "wrongMeanings": [
-        "Meat",
-        "Fish",
-        "Fruit"
       ]
     },
     {
@@ -8972,9 +9324,15 @@
       "englishTerm": "Priority order / Priority items",
       "example": "仕事が 多い ときは、優先順位を 決めて から 始めます。",
       "wrongMeanings": [
-        "Personal Info",
-        "Seating",
-        "Height"
+        "Ranking of team members",
+        "Order of the work steps",
+        "Schedule of the deadlines"
+      ],
+      "furigana": [
+        [
+          "優先順位",
+          "ゆうせんじゅんい"
+        ]
       ]
     },
     {
@@ -9014,9 +9372,19 @@
       "englishTerm": "Development environment",
       "example": "新しい パソコンに 開発環境を 作ります。",
       "wrongMeanings": [
-        "Natural environment",
-        "Living room",
-        "Game center"
+        "Staging environment",
+        "Production environment",
+        "Natural environment"
+      ],
+      "furigana": [
+        [
+          "開発環境",
+          "かいはつかんきょう"
+        ],
+        [
+          "環境",
+          "かんきょう"
+        ]
       ]
     },
     {
@@ -9028,9 +9396,9 @@
       "englishTerm": "Deploy",
       "example": "できた システムを 本番の サーバーへ デプロイします。",
       "wrongMeanings": [
+        "Release",
         "Download",
-        "Shutdown",
-        "Login"
+        "Rollback"
       ]
     },
     {
@@ -9042,9 +9410,15 @@
       "englishTerm": "Defect / Malfunction",
       "example": "画面が 出ないと いう 不具合の 連絡が ありました。",
       "wrongMeanings": [
-        "Success",
-        "Benefit",
-        "Discount"
+        "System failure",
+        "Observed event",
+        "Overlooked condition"
+      ],
+      "furigana": [
+        [
+          "不具合",
+          "ふぐあい"
+        ]
       ]
     },
     {
@@ -9056,9 +9430,15 @@
       "englishTerm": "Fix / Correction",
       "example": "原因が わかったので、コードを 修正します。",
       "wrongMeanings": [
-        "Break",
-        "Delete",
-        "Ignore"
+        "Change / Modification",
+        "Delete / Removal",
+        "Add / Extension"
+      ],
+      "furigana": [
+        [
+          "原因",
+          "げんいん"
+        ]
       ]
     },
     {
@@ -9154,9 +9534,15 @@
       "englishTerm": "Change / Modification",
       "example": "仕様が 変更に なったので、設計書を 書きなおします。",
       "wrongMeanings": [
-        "Fixed",
-        "Perfect",
-        "Same"
+        "Fix / Correction",
+        "Add / Extension",
+        "Confirm / Check"
+      ],
+      "furigana": [
+        [
+          "変更",
+          "へんこう"
+        ]
       ]
     },
     {
@@ -9193,12 +9579,18 @@
       "reading": "ふっきゅう",
       "romaji": "fukkyuu",
       "meaningJa": "うごかなく なった ものが、また うごくように なる ことです。",
-      "englishTerm": "Restoration",
+      "englishTerm": "Recovery",
       "example": "サーバーは すぐに 復旧しました。",
       "wrongMeanings": [
-        "Breakdown",
-        "Worse",
-        "Flaming"
+        "Rollback",
+        "Backup",
+        "Data restore"
+      ],
+      "furigana": [
+        [
+          "復旧",
+          "ふっきゅう"
+        ]
       ]
     },
     {
@@ -9350,9 +9742,15 @@
       "englishTerm": "Scope of impact",
       "example": "この 修正の 影響範囲を 調べます。",
       "wrongMeanings": [
-        "Distance",
-        "Expiration",
-        "Eye test"
+        "Scope of the target",
+        "Shadow of the change",
+        "Cause of the bug"
+      ],
+      "furigana": [
+        [
+          "影響範囲",
+          "えいきょうはんい"
+        ]
       ]
     },
     {
@@ -9409,6 +9807,16 @@
         "Production Environment",
         "Development Environment",
         "Local Environment"
+      ],
+      "furigana": [
+        [
+          "検証環境",
+          "けんしょうかんきょう"
+        ],
+        [
+          "環境",
+          "かんきょう"
+        ]
       ]
     },
     {
@@ -9437,6 +9845,12 @@
         "Discussion",
         "Review",
         "Meeting"
+      ],
+      "furigana": [
+        [
+          "作業",
+          "さぎょう"
+        ]
       ]
     },
     {
@@ -9491,8 +9905,14 @@
       "example": "テストに 時間が いるので、リリースを 延期します。",
       "wrongMeanings": [
         "Cancellation",
-        "Advance",
-        "Continuation"
+        "Moving earlier",
+        "Lower priority"
+      ],
+      "furigana": [
+        [
+          "延期",
+          "えんき"
+        ]
       ]
     },
     {
@@ -9518,9 +9938,15 @@
       "englishTerm": "Deadline",
       "example": "この 仕事の 期限は 今日の 夕方です。",
       "wrongMeanings": [
+        "Delivery date",
         "Start date",
-        "Duration",
-        "Capacity"
+        "Duration"
+      ],
+      "furigana": [
+        [
+          "期限",
+          "きげん"
+        ]
       ]
     },
     {
@@ -9658,9 +10084,19 @@
       "englishTerm": "Target / Subject",
       "example": "変更の 対象は、来週の 会議です。",
       "wrongMeanings": [
-        "Result",
-        "Exception",
-        "Excuse"
+        "Scope / Range",
+        "Comparison / Contrast",
+        "Out of scope / Excluded"
+      ],
+      "furigana": [
+        [
+          "対象",
+          "たいしょう"
+        ],
+        [
+          "変更",
+          "へんこう"
+        ]
       ]
     },
     {
@@ -9728,9 +10164,15 @@
       "englishTerm": "Test environment",
       "example": "今日の 夕方に テスト環境を 閉じます。",
       "wrongMeanings": [
-        "Production",
-        "Office",
-        "Cafeteria"
+        "Staging environment",
+        "Production environment",
+        "Development environment"
+      ],
+      "furigana": [
+        [
+          "環境",
+          "かんきょう"
+        ]
       ]
     },
     {
@@ -9798,9 +10240,15 @@
       "englishTerm": "Progress",
       "example": "毎朝、作業の 進捗を 連絡します。",
       "wrongMeanings": [
+        "Situation",
         "Delay",
-        "Budget",
-        "Problem"
+        "Schedule"
+      ],
+      "furigana": [
+        [
+          "作業",
+          "さぎょう"
+        ]
       ]
     },
     {
@@ -9983,6 +10431,12 @@
         "Connect",
         "Commit",
         "Download"
+      ],
+      "furigana": [
+        [
+          "合わない",
+          "あわない"
+        ]
       ]
     },
     {
@@ -10277,12 +10731,12 @@
       "reading": "じょうけん",
       "romaji": "jouken",
       "meaningJa": "その しごとを する ために、要る ものです。",
-      "englishTerm": "Requirement",
+      "englishTerm": "Condition",
       "example": "必要な 条件は、茶道の 資格と ことばです。",
       "wrongMeanings": [
-        "Benefit",
-        "Schedule",
-        "Location"
+        "Specification",
+        "Contract",
+        "Permission"
       ],
       "furigana": [
         [
@@ -10648,6 +11102,3944 @@
         [
           "動",
           "うご"
+        ]
+      ]
+    },
+    {
+      "id": "otsukaresama",
+      "term": "お疲れ様",
+      "reading": "おつかれさま",
+      "romaji": "otsukaresama",
+      "meaningJa": "会社で 人に 会った ときや、仕事の あとに 言う、あいさつの 言葉です。",
+      "englishTerm": "Everyday greeting between coworkers",
+      "example": "お疲れ様です。",
+      "wrongMeanings": [
+        "Greeting used only when leaving",
+        "Thanking someone for a gift",
+        "Asking if someone is tired"
+      ],
+      "furigana": [
+        [
+          "疲れ様",
+          "つかれさま"
+        ]
+      ]
+    },
+    {
+      "id": "yoroshiideshouka",
+      "term": "よろしいでしょうか",
+      "reading": "よろしいでしょうか",
+      "romaji": "yoroshiideshouka",
+      "meaningJa": "「いいですか」の 丁寧な 言い方で、相手に 話しかける 前に 聞きます。",
+      "englishTerm": "Is it all right with you?",
+      "example": "今、よろしいでしょうか。",
+      "wrongMeanings": [
+        "Please go ahead first",
+        "Are you really sure?",
+        "Sorry to keep you waiting"
+      ],
+      "furigana": [
+        [
+          "丁寧",
+          "ていねい"
+        ],
+        [
+          "言い方",
+          "いいかた"
+        ]
+      ]
+    },
+    {
+      "id": "oisogashiitokoro",
+      "term": "お忙しいところ",
+      "reading": "おいそがしいところ",
+      "romaji": "oisogashiitokoro",
+      "meaningJa": "相手が 仕事を して いる ときに、話しかける 前に 言う ことばです。",
+      "englishTerm": "Sorry to interrupt your work",
+      "example": "お忙しい ところ すみません。",
+      "wrongMeanings": [
+        "I am very busy now",
+        "Please come back later",
+        "Thank you for your hard work"
+      ],
+      "furigana": [
+        [
+          "忙しい",
+          "いそがしい"
+        ]
+      ]
+    },
+    {
+      "id": "gohoukoku",
+      "term": "ご報告",
+      "reading": "ごほうこく",
+      "romaji": "gohoukoku",
+      "meaningJa": "仕事の 結果や 様子を、上司に 伝える ことです。",
+      "englishTerm": "Report to a superior",
+      "example": "ご報告します。",
+      "wrongMeanings": [
+        "Request for advice",
+        "Sharing just in case",
+        "Asking for a check"
+      ],
+      "furigana": [
+        [
+          "報告",
+          "ほうこく"
+        ]
+      ]
+    },
+    {
+      "id": "taiouchuu",
+      "term": "対応中",
+      "reading": "たいおうちゅう",
+      "romaji": "taiouchuu",
+      "meaningJa": "いま その 仕事を して いる ところ、と いう 状態です。",
+      "englishTerm": "Being handled now",
+      "example": "その 不具合は、今 対応中です。",
+      "wrongMeanings": [
+        "Already handled",
+        "Not handled yet",
+        "Cannot be handled"
+      ],
+      "furigana": [
+        [
+          "対応中",
+          "たいおうちゅう"
+        ],
+        [
+          "対応",
+          "たいおう"
+        ],
+        [
+          "状態",
+          "じょうたい"
+        ],
+        [
+          "不具合",
+          "ふぐあい"
+        ]
+      ]
+    },
+    {
+      "id": "honjitsuchuu",
+      "term": "本日中",
+      "reading": "ほんじつちゅう",
+      "romaji": "honjitsuchuu",
+      "meaningJa": "今日が 終わる までに、と いう 意味です。",
+      "englishTerm": "By the end of today",
+      "example": "本日中に 終わる 予定です。",
+      "wrongMeanings": [
+        "Within this week",
+        "During the daytime only",
+        "By tomorrow morning"
+      ],
+      "furigana": [
+        [
+          "本日中",
+          "ほんじつちゅう"
+        ],
+        [
+          "本日",
+          "ほんじつ"
+        ]
+      ]
+    },
+    {
+      "id": "gosoudan",
+      "term": "ご相談",
+      "reading": "ごそうだん",
+      "romaji": "gosoudan",
+      "meaningJa": "困った ことや 決められない ことを、上司や 先輩に 話して 意見を もらう ことです。",
+      "englishTerm": "Asking for advice",
+      "example": "ご相談が あります。",
+      "wrongMeanings": [
+        "Report to a superior",
+        "Asking for permission",
+        "Giving an instruction"
+      ],
+      "furigana": [
+        [
+          "相談",
+          "そうだん"
+        ]
+      ]
+    },
+    {
+      "id": "atteimasuka",
+      "term": "合っていますか",
+      "reading": "あっていますか",
+      "romaji": "atteimasuka",
+      "meaningJa": "自分の 考えが 正しいか どうかを、相手に 聞く 言い方です。",
+      "englishTerm": "Is this correct?",
+      "example": "この 理解で 合っていますか。",
+      "wrongMeanings": [
+        "Does this fit?",
+        "Have we met before?",
+        "Is it all right with you?"
+      ],
+      "furigana": [
+        [
+          "理解",
+          "りかい"
+        ],
+        [
+          "合っ",
+          "あっ"
+        ]
+      ]
+    },
+    {
+      "id": "yuusen",
+      "term": "優先",
+      "reading": "ゆうせん",
+      "romaji": "yuusen",
+      "meaningJa": "いくつか ある 中で、ある ものを 先に する ことです。",
+      "englishTerm": "Priority",
+      "example": "どちらを 優先しますか。",
+      "wrongMeanings": [
+        "Kindness",
+        "Excellence",
+        "Postponement"
+      ],
+      "furigana": [
+        [
+          "優先",
+          "ゆうせん"
+        ]
+      ]
+    },
+    {
+      "id": "otesuudesuga",
+      "term": "お手数ですが",
+      "reading": "おてすうですが",
+      "romaji": "otesuudesuga",
+      "meaningJa": "相手に 何かを 頼む とき、その 前に つける 丁寧な ことばです。",
+      "englishTerm": "Sorry for the trouble, but",
+      "example": "お手数ですが、お願いします。",
+      "wrongMeanings": [
+        "Please count with your hands",
+        "Sorry to interrupt your work",
+        "Please do it urgently"
+      ],
+      "furigana": [
+        [
+          "手数",
+          "てすう"
+        ],
+        [
+          "頼む",
+          "たのむ"
+        ]
+      ]
+    },
+    {
+      "id": "gokakunin",
+      "term": "ご確認",
+      "reading": "ごかくにん",
+      "romaji": "gokakunin",
+      "meaningJa": "相手に、見て たしかめて ください、と 丁寧に たのむ ときの 言い方です。",
+      "englishTerm": "Please check it",
+      "example": "ご確認を お願いします。",
+      "wrongMeanings": [
+        "Please approve it",
+        "Please decide it",
+        "Please fix it"
+      ],
+      "furigana": [
+        [
+          "確認",
+          "かくにん"
+        ]
+      ]
+    },
+    {
+      "id": "shikyuu",
+      "term": "至急",
+      "reading": "しきゅう",
+      "romaji": "shikyuu",
+      "meaningJa": "今 すぐに、と いう、いちばん 急いで ほしい ときの 言い方です。",
+      "englishTerm": "Right now, urgently",
+      "example": "至急 お願いします。",
+      "wrongMeanings": [
+        "Later, when you are free",
+        "Payment of salary",
+        "Just a little bit"
+      ],
+      "furigana": [
+        [
+          "至急",
+          "しきゅう"
+        ]
+      ]
+    },
+    {
+      "id": "shouchishimashita",
+      "term": "承知しました",
+      "reading": "しょうちしました",
+      "romaji": "shouchishimashita",
+      "meaningJa": "上司や お客さまの 話を 聞いて、「分かりました」と 丁寧に 答える 言い方です。",
+      "englishTerm": "Certainly, understood",
+      "example": "承知しました。",
+      "wrongMeanings": [
+        "I will think about it",
+        "I did not understand",
+        "Please go ahead"
+      ],
+      "furigana": [
+        [
+          "承知",
+          "しょうち"
+        ],
+        [
+          "客さま",
+          "きゃくさま"
+        ]
+      ]
+    },
+    {
+      "id": "shoushou",
+      "term": "少々",
+      "reading": "しょうしょう",
+      "romaji": "shoushou",
+      "meaningJa": "「少し」の 丁寧な 言い方で、待って もらう ときなどに 使います。",
+      "englishTerm": "A little bit",
+      "example": "少々 お待ちください。",
+      "wrongMeanings": [
+        "A little bit of money",
+        "Not at all",
+        "For a long time"
+      ],
+      "furigana": [
+        [
+          "少々",
+          "しょうしょう"
+        ],
+        [
+          "少し",
+          "すこし"
+        ]
+      ]
+    },
+    {
+      "id": "nochihodo",
+      "term": "後ほど",
+      "reading": "のちほど",
+      "romaji": "nochihodo",
+      "meaningJa": "「あとで」の 丁寧な 言い方で、同じ 日の 少し あとの 時を さします。",
+      "englishTerm": "Later today",
+      "example": "後ほど ご連絡します。",
+      "wrongMeanings": [
+        "Right away",
+        "Behind you",
+        "Next week"
+      ],
+      "furigana": [
+        [
+          "後ほど",
+          "のちほど"
+        ],
+        [
+          "少し",
+          "すこし"
+        ]
+      ]
+    },
+    {
+      "id": "gozaimasen",
+      "term": "ございません",
+      "reading": "ございません",
+      "romaji": "gozaimasen",
+      "meaningJa": "「ありません」の とても 丁寧な 言い方で、お客さまや 上司に 使います。",
+      "englishTerm": "There is not (polite form)",
+      "example": "問題 ございません。",
+      "wrongMeanings": [
+        "I do not have time",
+        "There is a problem",
+        "Please do not do that"
+      ],
+      "furigana": [
+        [
+          "問題",
+          "もんだい"
+        ],
+        [
+          "客さま",
+          "きゃくさま"
+        ]
+      ]
+    },
+    {
+      "id": "hikitsuzuki",
+      "term": "引き続き",
+      "reading": "ひきつづき",
+      "romaji": "hikitsuzuki",
+      "meaningJa": "今 して いる ことを、その まま 続ける、と いう 意味です。",
+      "englishTerm": "Continuing as before",
+      "example": "引き続き お願いします。",
+      "wrongMeanings": [
+        "Let's stop here",
+        "From next month",
+        "Pulling it back"
+      ],
+      "furigana": [
+        [
+          "引き続き",
+          "ひきつづき"
+        ],
+        [
+          "続ける",
+          "つづける"
+        ]
+      ]
+    },
+    {
+      "id": "mitsumori2",
+      "term": "見積もり",
+      "reading": "みつもり",
+      "romaji": "mitsumori",
+      "meaningJa": "仕事に かかる 時間や お金を、先に 計算して 出す ことです。",
+      "englishTerm": "Estimate",
+      "example": "見積もりを 明日までに お客さまに 送ります。",
+      "wrongMeanings": [
+        "Budget",
+        "Work hours",
+        "Bill"
+      ],
+      "furigana": [
+        [
+          "見積もり",
+          "みつもり"
+        ],
+        [
+          "計算",
+          "けいさん"
+        ]
+      ]
+    },
+    {
+      "id": "kousuu",
+      "term": "工数",
+      "reading": "こうすう",
+      "romaji": "kousuu",
+      "meaningJa": "その 仕事に、人が 何時間 かかるかと いう 量です。",
+      "englishTerm": "Amount of work",
+      "example": "この 機能の 工数は、二人で 三日です。",
+      "wrongMeanings": [
+        "Number of workers",
+        "Cost estimate",
+        "Number of steps"
+      ],
+      "furigana": [
+        [
+          "工数",
+          "こうすう"
+        ],
+        [
+          "量",
+          "りょう"
+        ],
+        [
+          "三日",
+          "みっか"
+        ]
+      ]
+    },
+    {
+      "id": "kakuninjikou",
+      "term": "確認事項",
+      "reading": "かくにんじこう",
+      "romaji": "kakuninjikou",
+      "meaningJa": "相手に 聞いて、たしかめる 必要が ある ことです。",
+      "englishTerm": "Things to confirm",
+      "example": "確認事項を 三つ、メールに 書きました。",
+      "wrongMeanings": [
+        "Things not yet clear",
+        "Things already decided",
+        "Things to report"
+      ],
+      "furigana": [
+        [
+          "確認事項",
+          "かくにんじこう"
+        ],
+        [
+          "三つ",
+          "みっつ"
+        ]
+      ]
+    },
+    {
+      "id": "fumeiten",
+      "term": "不明点",
+      "reading": "ふめいてん",
+      "romaji": "fumeiten",
+      "meaningJa": "読んでも、まだ よく わからない ところです。",
+      "englishTerm": "Unclear points",
+      "example": "仕様書の 不明点を、明日の 会議で 質問します。",
+      "wrongMeanings": [
+        "Points to confirm",
+        "Points to fix",
+        "Dark points on screen"
+      ],
+      "furigana": [
+        [
+          "不明点",
+          "ふめいてん"
+        ]
+      ]
+    },
+    {
+      "id": "ninshikiawase",
+      "term": "認識合わせ",
+      "reading": "にんしきあわせ",
+      "romaji": "ninshikiawase",
+      "meaningJa": "同じ 理解を して いるか、話して そろえる ことです。",
+      "englishTerm": "Aligning our understanding",
+      "example": "作る 前に、お客さまと 認識合わせを します。",
+      "wrongMeanings": [
+        "Matching your memory",
+        "Sharing the notes",
+        "Fixing the schedule"
+      ],
+      "furigana": [
+        [
+          "認識合わせ",
+          "にんしきあわせ"
+        ],
+        [
+          "理解",
+          "りかい"
+        ]
+      ]
+    },
+    {
+      "id": "zentei",
+      "term": "前提",
+      "reading": "ぜんてい",
+      "romaji": "zentei",
+      "meaningJa": "話を 進める ために、はじめから そうだと 決めて おく ことです。",
+      "englishTerm": "Precondition",
+      "example": "この 見積もりの 前提は、二人で 作る ことです。",
+      "wrongMeanings": [
+        "Conclusion",
+        "Requirements",
+        "Previous topic"
+      ],
+      "furigana": [
+        [
+          "前提",
+          "ぜんてい"
+        ],
+        [
+          "見積もり",
+          "みつもり"
+        ]
+      ]
+    },
+    {
+      "id": "hani",
+      "term": "範囲",
+      "reading": "はんい",
+      "romaji": "hani",
+      "meaningJa": "どこから どこまでか、と いう 広さです。",
+      "englishTerm": "Scope",
+      "example": "今回の テストの 範囲を 決めましょう。",
+      "wrongMeanings": [
+        "Target",
+        "Out of scope",
+        "Distance"
+      ],
+      "furigana": [
+        [
+          "範囲",
+          "はんい"
+        ]
+      ]
+    },
+    {
+      "id": "taishougai",
+      "term": "対象外",
+      "reading": "たいしょうがい",
+      "romaji": "taishougai",
+      "meaningJa": "今回は しない、あつかわない もの、と いう ことです。",
+      "englishTerm": "Out of scope",
+      "example": "古い ブラウザは、今回の テストの 対象外です。",
+      "wrongMeanings": [
+        "Target of the work",
+        "Scope of the work",
+        "Outside the company"
+      ],
+      "furigana": [
+        [
+          "対象外",
+          "たいしょうがい"
+        ],
+        [
+          "対象",
+          "たいしょう"
+        ],
+        [
+          "古い",
+          "ふるい"
+        ]
+      ]
+    },
+    {
+      "id": "houshin",
+      "term": "方針",
+      "reading": "ほうしん",
+      "romaji": "houshin",
+      "meaningJa": "どちらの 方向へ 進めるか、と いう 大きな 決めかたです。",
+      "englishTerm": "Policy / Direction",
+      "example": "まず 方針を 決めてから、方法を 考えます。",
+      "wrongMeanings": [
+        "Method / Way",
+        "Steps / Procedure",
+        "Needle / Compass"
+      ],
+      "furigana": [
+        [
+          "方針",
+          "ほうしん"
+        ],
+        [
+          "方向",
+          "ほうこう"
+        ],
+        [
+          "方法",
+          "ほうほう"
+        ]
+      ]
+    },
+    {
+      "id": "kaitou",
+      "term": "回答",
+      "reading": "かいとう",
+      "romaji": "kaitou",
+      "meaningJa": "聞かれた ことに、答えを 返す ことです。",
+      "englishTerm": "Answer to a question",
+      "example": "お客さまの 質問に、今日中に 回答します。",
+      "wrongMeanings": [
+        "Question to a person",
+        "Report to the boss",
+        "Turning around again"
+      ],
+      "furigana": [
+        [
+          "回答",
+          "かいとう"
+        ],
+        [
+          "今日中",
+          "きょうじゅう"
+        ]
+      ]
+    },
+    {
+      "id": "kentou",
+      "term": "検討",
+      "reading": "けんとう",
+      "romaji": "kentou",
+      "meaningJa": "どう するのが いいか、よく 考える ことです。",
+      "englishTerm": "Consideration",
+      "example": "その 案は、チームで 検討します。",
+      "wrongMeanings": [
+        "Confirmation",
+        "Decision",
+        "Inspection"
+      ],
+      "furigana": [
+        [
+          "検討",
+          "けんとう"
+        ],
+        [
+          "案",
+          "あん"
+        ]
+      ]
+    },
+    {
+      "id": "kettei",
+      "term": "決定",
+      "reading": "けってい",
+      "romaji": "kettei",
+      "meaningJa": "いくつかの 中から、一つに 決める ことです。",
+      "englishTerm": "Decision",
+      "example": "リリースの 日は、会議で 決定しました。",
+      "wrongMeanings": [
+        "Final confirmation",
+        "Consideration",
+        "Hold"
+      ],
+      "furigana": [
+        [
+          "決定",
+          "けってい"
+        ]
+      ]
+    },
+    {
+      "id": "kakutei",
+      "term": "確定",
+      "reading": "かくてい",
+      "romaji": "kakutei",
+      "meaningJa": "決まった ことが、もう 変わらないと はっきり する ことです。",
+      "englishTerm": "Final confirmation",
+      "example": "納期が 確定したら、すぐ 連絡します。",
+      "wrongMeanings": [
+        "Decision",
+        "Estimate",
+        "Hold"
+      ],
+      "furigana": [
+        [
+          "確定",
+          "かくてい"
+        ],
+        [
+          "納期",
+          "のうき"
+        ]
+      ]
+    },
+    {
+      "id": "horyuu",
+      "term": "保留",
+      "reading": "ほりゅう",
+      "romaji": "horyuu",
+      "meaningJa": "今は 決めないで、そのまま 置いて おく ことです。",
+      "englishTerm": "On hold",
+      "example": "この 話は、いったん 保留に します。",
+      "wrongMeanings": [
+        "In storage",
+        "Confirmed",
+        "Rejected"
+      ],
+      "furigana": [
+        [
+          "保留",
+          "ほりゅう"
+        ],
+        [
+          "置いて",
+          "おいて"
+        ]
+      ]
+    },
+    {
+      "id": "youkyuu",
+      "term": "要求",
+      "reading": "ようきゅう",
+      "romaji": "youkyuu",
+      "meaningJa": "「これが 必要だ」と、相手に つよく もとめる ことです。",
+      "englishTerm": "Requirement / demand",
+      "example": "お客さまの 要求を、全部 書き出して ください。",
+      "wrongMeanings": [
+        "Request / wish",
+        "Suggestion / idea",
+        "Approval / OK"
+      ],
+      "furigana": [
+        [
+          "要求",
+          "ようきゅう"
+        ],
+        [
+          "全部",
+          "ぜんぶ"
+        ]
+      ]
+    },
+    {
+      "id": "shiyouhenkou",
+      "term": "仕様変更",
+      "reading": "しようへんこう",
+      "romaji": "shiyouhenkou",
+      "meaningJa": "一度 決めた 仕様（どう 作るかの 決まり）を、あとから 変える ことです。",
+      "englishTerm": "Specification change",
+      "example": "仕様変更が あったので、設計書を 直します。",
+      "wrongMeanings": [
+        "Requirement change",
+        "Design change",
+        "Schedule change"
+      ],
+      "furigana": [
+        [
+          "仕様変更",
+          "しようへんこう"
+        ],
+        [
+          "変更",
+          "へんこう"
+        ]
+      ]
+    },
+    {
+      "id": "youkenhenkou",
+      "term": "要件変更",
+      "reading": "ようけんへんこう",
+      "romaji": "youkenhenkou",
+      "meaningJa": "システムに 必要な 条件（要件）そのものが、あとから 変わる ことです。",
+      "englishTerm": "Requirement change",
+      "example": "要件変更が 出たら、見積もりも 出しなおします。",
+      "wrongMeanings": [
+        "Specification change",
+        "Schedule change",
+        "Price change"
+      ],
+      "furigana": [
+        [
+          "要件変更",
+          "ようけんへんこう"
+        ],
+        [
+          "要件",
+          "ようけん"
+        ],
+        [
+          "変更",
+          "へんこう"
+        ],
+        [
+          "条件",
+          "じょうけん"
+        ],
+        [
+          "見積もり",
+          "みつもり"
+        ]
+      ]
+    },
+    {
+      "id": "henkouten",
+      "term": "変更点",
+      "reading": "へんこうてん",
+      "romaji": "henkouten",
+      "meaningJa": "前と くらべて 変わった ところを、1つずつ あげた ものです。",
+      "englishTerm": "Changed points",
+      "example": "変更点を 一覧に して、お客さまに 送ります。",
+      "wrongMeanings": [
+        "Points to fix",
+        "Version diff",
+        "Points to check"
+      ],
+      "furigana": [
+        [
+          "変更点",
+          "へんこうてん"
+        ],
+        [
+          "変更",
+          "へんこう"
+        ],
+        [
+          "一覧",
+          "いちらん"
+        ]
+      ]
+    },
+    {
+      "id": "sabun",
+      "term": "差分",
+      "reading": "さぶん",
+      "romaji": "sabun",
+      "meaningJa": "古い ものと 新しい ものを くらべて 出て くる、ちがう 部分です。",
+      "englishTerm": "Version diff",
+      "example": "古い ファイルとの 差分だけを、見せて ください。",
+      "wrongMeanings": [
+        "Changed points",
+        "Points to fix",
+        "Full copy"
+      ],
+      "furigana": [
+        [
+          "差分",
+          "さぶん"
+        ],
+        [
+          "部分",
+          "ぶぶん"
+        ],
+        [
+          "古い",
+          "ふるい"
+        ]
+      ]
+    },
+    {
+      "id": "shuuseiten",
+      "term": "修正点",
+      "reading": "しゅうせいてん",
+      "romaji": "shuuseiten",
+      "meaningJa": "直す 必要が ある ところです。",
+      "englishTerm": "Points to fix",
+      "example": "レビューで 出た 修正点は、3つです。",
+      "wrongMeanings": [
+        "Changed points",
+        "Version diff",
+        "Points to add"
+      ],
+      "furigana": [
+        [
+          "修正点",
+          "しゅうせいてん"
+        ]
+      ]
+    },
+    {
+      "id": "shiteki",
+      "term": "指摘",
+      "reading": "してき",
+      "romaji": "shiteki",
+      "meaningJa": "「ここが おかしい」「ここは 直した ほうが いい」と、相手に 教える ことです。",
+      "englishTerm": "Pointing out (a problem)",
+      "example": "レビューで、先輩から 指摘を もらいました。",
+      "wrongMeanings": [
+        "Fixing (a problem)",
+        "Approving (a plan)",
+        "Picking (with fingers)"
+      ],
+      "furigana": [
+        [
+          "指摘",
+          "してき"
+        ]
+      ]
+    },
+    {
+      "id": "saikakunin",
+      "term": "再確認",
+      "reading": "さいかくにん",
+      "romaji": "saikakunin",
+      "meaningJa": "一度 確認した ことを、もう 一度 確認する ことです。",
+      "englishTerm": "Checking again",
+      "example": "納品の 前に、日付を 再確認して ください。",
+      "wrongMeanings": [
+        "Checking first",
+        "Waiting for a check",
+        "Checking together"
+      ],
+      "furigana": [
+        [
+          "再確認",
+          "さいかくにん"
+        ],
+        [
+          "納品",
+          "のうひん"
+        ],
+        [
+          "日付",
+          "ひづけ"
+        ]
+      ]
+    },
+    {
+      "id": "gaisan",
+      "term": "概算",
+      "reading": "がいさん",
+      "romaji": "gaisan",
+      "meaningJa": "こまかく 計算する 前の、だいたいの 金額や 時間です。",
+      "englishTerm": "Rough estimate",
+      "example": "まず 概算で いいので、金額を 出して ください。",
+      "wrongMeanings": [
+        "Basic assumption",
+        "Exact calculation",
+        "Final payment"
+      ],
+      "furigana": [
+        [
+          "概算",
+          "がいさん"
+        ],
+        [
+          "計算",
+          "けいさん"
+        ],
+        [
+          "金額",
+          "きんがく"
+        ]
+      ]
+    },
+    {
+      "id": "soutei",
+      "term": "想定",
+      "reading": "そうてい",
+      "romaji": "soutei",
+      "meaningJa": "「たぶん こう なるだろう」と、先に 考えて おく ことです。",
+      "englishTerm": "Assumption",
+      "example": "アクセスは 多くても 1万件と 想定して、設計します。",
+      "wrongMeanings": [
+        "Estimate",
+        "Decision",
+        "Promise"
+      ],
+      "furigana": [
+        [
+          "想定",
+          "そうてい"
+        ],
+        [
+          "万件",
+          "まんけん"
+        ]
+      ]
+    },
+    {
+      "id": "risuku",
+      "term": "リスク",
+      "reading": "りすく",
+      "romaji": "risuku",
+      "meaningJa": "あとで 問題に なるかも しれない ことです。",
+      "englishTerm": "Risk (possible trouble)",
+      "example": "この 方法には、遅れる リスクが あります。",
+      "wrongMeanings": [
+        "Constraint (fixed rule)",
+        "Rescue (giving help)",
+        "Reset (starting over)"
+      ],
+      "furigana": [
+        [
+          "問題",
+          "もんだい"
+        ],
+        [
+          "方法",
+          "ほうほう"
+        ]
+      ]
+    },
+    {
+      "id": "seiyaku",
+      "term": "制約",
+      "reading": "せいやく",
+      "romaji": "seiyaku",
+      "meaningJa": "「これは 変えられない」と 決まって いる 条件です。",
+      "englishTerm": "Constraint (fixed rule)",
+      "example": "予算の 制約が あるので、機能を しぼります。",
+      "wrongMeanings": [
+        "Risk (possible trouble)",
+        "Contract (signed paper)",
+        "Promise (what you said)"
+      ],
+      "furigana": [
+        [
+          "制約",
+          "せいやく"
+        ],
+        [
+          "条件",
+          "じょうけん"
+        ],
+        [
+          "予算",
+          "よさん"
+        ]
+      ]
+    },
+    {
+      "id": "nuke",
+      "term": "抜け",
+      "reading": "ぬけ",
+      "romaji": "nuke",
+      "meaningJa": "入って いるべき ものが、入って いない ことです。",
+      "englishTerm": "Gap (not filled in)",
+      "example": "設計書に 抜けが ないか、見て ください。",
+      "wrongMeanings": [
+        "Omission (forgot it)",
+        "Duplicate (same twice)",
+        "Removal (took it out)"
+      ],
+      "furigana": [
+        [
+          "抜け",
+          "ぬけ"
+        ]
+      ]
+    },
+    {
+      "id": "more",
+      "term": "漏れ",
+      "reading": "もれ",
+      "romaji": "more",
+      "meaningJa": "やるべき ことや 書くべき ことを、わすれて 落として しまう ことです。",
+      "englishTerm": "Omission (forgot it)",
+      "example": "テストの 漏れが ないか、リストで 確認します。",
+      "wrongMeanings": [
+        "Gap (not filled in)",
+        "Duplicate (same twice)",
+        "Leak (water dripping)"
+      ],
+      "furigana": [
+        [
+          "漏れ",
+          "もれ"
+        ],
+        [
+          "落とし",
+          "おとし"
+        ]
+      ]
+    },
+    {
+      "id": "choufuku",
+      "term": "重複",
+      "reading": "ちょうふく",
+      "romaji": "choufuku",
+      "meaningJa": "同じ ものが、2つ 以上 ある ことです。",
+      "englishTerm": "Duplicate (same twice)",
+      "example": "名前の 重複が ないか、確認して ください。",
+      "wrongMeanings": [
+        "Gap (not filled in)",
+        "Omission (forgot it)",
+        "Heavy load (too much)"
+      ],
+      "furigana": [
+        [
+          "重複",
+          "ちょうふく"
+        ]
+      ]
+    },
+    {
+      "id": "taioukahi",
+      "term": "対応可否",
+      "reading": "たいおうかひ",
+      "romaji": "taioukahi",
+      "meaningJa": "その たのみに こたえられるか どうか（できるか、できないか）です。",
+      "englishTerm": "Whether we can handle it",
+      "example": "この 要望の 対応可否を、来週までに 返事します。",
+      "wrongMeanings": [
+        "Whether it can be built",
+        "Whether it is finished",
+        "Whether it is needed"
+      ],
+      "furigana": [
+        [
+          "対応可否",
+          "たいおうかひ"
+        ],
+        [
+          "対応",
+          "たいおう"
+        ],
+        [
+          "要望",
+          "ようぼう"
+        ]
+      ]
+    },
+    {
+      "id": "jitsugenkahi",
+      "term": "実現可否",
+      "reading": "じつげんかひ",
+      "romaji": "jitsugenkahi",
+      "meaningJa": "ほしい ものを、本当に 作れるか どうかです。",
+      "englishTerm": "Whether it can be built",
+      "example": "この 機能の 実現可否を、開発チームに 聞きます。",
+      "wrongMeanings": [
+        "Whether we can handle it",
+        "Whether it is finished",
+        "Whether it is real"
+      ],
+      "furigana": [
+        [
+          "実現可否",
+          "じつげんかひ"
+        ],
+        [
+          "実現",
+          "じつげん"
+        ]
+      ]
+    },
+    {
+      "id": "hihyouji",
+      "term": "非表示",
+      "reading": "ひひょうじ",
+      "romaji": "hihyouji",
+      "meaningJa": "画面に 出さないで、見えない ように する ことです。",
+      "englishTerm": "Hidden (not shown)",
+      "example": "この ボタンは、管理者だけに 表示して、ほかの 人には 非表示に します。",
+      "wrongMeanings": [
+        "Shown (displayed)",
+        "Deleted (removed)",
+        "Disabled (cannot use)"
+      ],
+      "furigana": [
+        [
+          "非表示",
+          "ひひょうじ"
+        ],
+        [
+          "表示",
+          "ひょうじ"
+        ],
+        [
+          "管理者",
+          "かんりしゃ"
+        ]
+      ]
+    },
+    {
+      "id": "shousai",
+      "term": "詳細",
+      "reading": "しょうさい",
+      "romaji": "shousai",
+      "meaningJa": "1つの ものに ついて、こまかい ところまで ぜんぶ 書いた ものです。",
+      "englishTerm": "Details",
+      "example": "一覧の 名前を おすと、詳細が ひらきます。",
+      "wrongMeanings": [
+        "List",
+        "Summary",
+        "Overview"
+      ],
+      "furigana": [
+        [
+          "詳細",
+          "しょうさい"
+        ],
+        [
+          "一覧",
+          "いちらん"
+        ]
+      ]
+    },
+    {
+      "id": "touroku",
+      "term": "登録",
+      "reading": "とうろく",
+      "romaji": "touroku",
+      "meaningJa": "新しい データを、はじめて システムに 入れる ことです。",
+      "englishTerm": "Register",
+      "example": "新しい 社員を、システムに 登録して ください。",
+      "wrongMeanings": [
+        "Update",
+        "Save",
+        "Search"
+      ],
+      "furigana": [
+        [
+          "登録",
+          "とうろく"
+        ]
+      ]
+    },
+    {
+      "id": "sentaku",
+      "term": "選択",
+      "reading": "せんたく",
+      "romaji": "sentaku",
+      "meaningJa": "いくつかの 中から、1つか いくつかを えらぶ ことです。",
+      "englishTerm": "Selecting (choosing)",
+      "example": "一覧から 一人を 選択して、「編集」を おします。",
+      "wrongMeanings": [
+        "Sorting (in order)",
+        "Searching (finding)",
+        "Washing (laundry)"
+      ],
+      "furigana": [
+        [
+          "選択",
+          "せんたく"
+        ],
+        [
+          "一覧",
+          "いちらん"
+        ],
+        [
+          "編集",
+          "へんしゅう"
+        ]
+      ]
+    },
+    {
+      "id": "hissu",
+      "term": "必須",
+      "reading": "ひっす",
+      "romaji": "hissu",
+      "meaningJa": "必ず 入れなければ ならない、と 決まって いる ことです。",
+      "englishTerm": "Required (must fill in)",
+      "example": "メールアドレスは 必須項目なので、必ず 入れて ください。",
+      "wrongMeanings": [
+        "Optional (may skip)",
+        "Hidden (not shown)",
+        "Default (already filled)"
+      ],
+      "furigana": [
+        [
+          "必須項目",
+          "ひっすこうもく"
+        ],
+        [
+          "必須",
+          "ひっす"
+        ],
+        [
+          "項目",
+          "こうもく"
+        ],
+        [
+          "入れ",
+          "いれ"
+        ]
+      ]
+    },
+    {
+      "id": "nini",
+      "term": "任意",
+      "reading": "にんい",
+      "romaji": "nin'i",
+      "meaningJa": "入れても 入れなくても いい、自分で 決めて いい ことです。",
+      "englishTerm": "Optional (may skip)",
+      "example": "電話番号は 任意なので、書かなくても 大丈夫です。",
+      "wrongMeanings": [
+        "Required (must fill in)",
+        "Hidden (not shown)",
+        "Random (any value)"
+      ],
+      "furigana": [
+        [
+          "任意",
+          "にんい"
+        ],
+        [
+          "電話番号",
+          "でんわばんごう"
+        ],
+        [
+          "入れ",
+          "いれ"
+        ]
+      ]
+    },
+    {
+      "id": "shokichi",
+      "term": "初期値",
+      "reading": "しょきち",
+      "romaji": "shokichi",
+      "meaningJa": "何も 入れて いない ときに、はじめから 入って いる 値です。",
+      "englishTerm": "Default value",
+      "example": "国の 初期値は「日本」に して おきます。",
+      "wrongMeanings": [
+        "First period price",
+        "Latest value",
+        "Required value"
+      ],
+      "furigana": [
+        [
+          "初期値",
+          "しょきち"
+        ],
+        [
+          "値",
+          "あたい"
+        ],
+        [
+          "入れ",
+          "いれ"
+        ]
+      ]
+    },
+    {
+      "id": "dousa",
+      "term": "動作",
+      "reading": "どうさ",
+      "romaji": "dousa",
+      "meaningJa": "ボタンを おした ときなどに、システムが どう うごくかです。",
+      "englishTerm": "Behavior of a system",
+      "example": "ブラウザを 変えても、同じ 動作に なるか テストします。",
+      "wrongMeanings": [
+        "Operating a system",
+        "Building a system",
+        "Stopping a system"
+      ]
+    },
+    {
+      "id": "eraa",
+      "term": "エラー",
+      "reading": "えらー",
+      "romaji": "eraa",
+      "meaningJa": "うまく 動かなくて、正しく おわらない ことです。",
+      "englishTerm": "Error",
+      "example": "保存の ときに、エラーが 出ました。",
+      "wrongMeanings": [
+        "Warning",
+        "Notice",
+        "Area"
+      ],
+      "furigana": [
+        [
+          "保存",
+          "ほぞん"
+        ]
+      ]
+    },
+    {
+      "id": "messeeji",
+      "term": "メッセージ",
+      "reading": "めっせーじ",
+      "romaji": "messeeji",
+      "meaningJa": "画面に 出て、ユーザーに 知らせる みじかい 文です。",
+      "englishTerm": "Message (short notice)",
+      "example": "保存が おわったら、「完了しました」と メッセージを 出します。",
+      "wrongMeanings": [
+        "Error (something broke)",
+        "Massage (rubbing the body)",
+        "Manual (how-to book)"
+      ],
+      "furigana": [
+        [
+          "保存",
+          "ほぞん"
+        ],
+        [
+          "完了",
+          "かんりょう"
+        ]
+      ]
+    },
+    {
+      "id": "gamensenni",
+      "term": "画面遷移",
+      "reading": "がめんせんい",
+      "romaji": "gamensen'i",
+      "meaningJa": "ある 画面から、別の 画面へ うつる ことです。",
+      "englishTerm": "Screen transition",
+      "example": "ログインの あとの 画面遷移を、図に して ください。",
+      "wrongMeanings": [
+        "Screen / display",
+        "Screen size",
+        "Screen layout"
+      ],
+      "furigana": [
+        [
+          "画面遷移",
+          "がめんせんい"
+        ],
+        [
+          "別",
+          "べつ"
+        ]
+      ]
+    },
+    {
+      "id": "kengen",
+      "term": "権限",
+      "reading": "けんげん",
+      "romaji": "kengen",
+      "meaningJa": "その ユーザーに ゆるされて いる、できる ことの はんいです。",
+      "englishTerm": "Permission (what you may do)",
+      "example": "この 画面は、管理者の 権限が ないと 見られません。",
+      "wrongMeanings": [
+        "Password (secret key)",
+        "Job title (position)",
+        "Upper limit (maximum)"
+      ],
+      "furigana": [
+        [
+          "権限",
+          "けんげん"
+        ],
+        [
+          "管理者",
+          "かんりしゃ"
+        ]
+      ]
+    },
+    {
+      "id": "taishoudeeta",
+      "term": "対象データ",
+      "reading": "たいしょうでーた",
+      "romaji": "taishoudeeta",
+      "meaningJa": "今回の 作業で あつかう、その データの ことです。",
+      "englishTerm": "Target data",
+      "example": "今月の 注文だけを、対象データに します。",
+      "wrongMeanings": [
+        "Opposite data",
+        "Elephant data",
+        "All the data"
+      ],
+      "furigana": [
+        [
+          "対象",
+          "たいしょう"
+        ],
+        [
+          "作業",
+          "さぎょう"
+        ],
+        [
+          "今月",
+          "こんげつ"
+        ],
+        [
+          "注文",
+          "ちゅうもん"
+        ]
+      ]
+    },
+    {
+      "id": "kentouchuu",
+      "term": "検討中",
+      "reading": "けんとうちゅう",
+      "romaji": "kentouchuu",
+      "meaningJa": "どう するか、まだ 考えて いる ところです。",
+      "englishTerm": "Still thinking about it",
+      "example": "その 機能は、まだ 検討中です。",
+      "wrongMeanings": [
+        "Waiting for confirmation",
+        "Waiting for an answer",
+        "Already decided"
+      ],
+      "furigana": [
+        [
+          "検討中",
+          "けんとうちゅう"
+        ],
+        [
+          "検討",
+          "けんとう"
+        ]
+      ]
+    },
+    {
+      "id": "kakuninmachi",
+      "term": "確認待ち",
+      "reading": "かくにんまち",
+      "romaji": "kakuninmachi",
+      "meaningJa": "自分の 作業は おわって、ほかの 人が 確認するのを 待って いる ところです。",
+      "englishTerm": "Waiting for confirmation",
+      "example": "設計書は、上司の 確認待ちです。",
+      "wrongMeanings": [
+        "Still thinking about it",
+        "Waiting for an answer",
+        "Already confirmed"
+      ],
+      "furigana": [
+        [
+          "確認待ち",
+          "かくにんまち"
+        ],
+        [
+          "作業",
+          "さぎょう"
+        ]
+      ]
+    },
+    {
+      "id": "kaitoumachi",
+      "term": "回答待ち",
+      "reading": "かいとうまち",
+      "romaji": "kaitoumachi",
+      "meaningJa": "相手に 質問を 送って、その 返事を 待って いる ところです。",
+      "englishTerm": "Waiting for an answer",
+      "example": "お客さまに 質問を 送ったので、いまは 回答待ちです。",
+      "wrongMeanings": [
+        "Still thinking about it",
+        "Waiting for confirmation",
+        "Already answered"
+      ],
+      "furigana": [
+        [
+          "回答待ち",
+          "かいとうまち"
+        ],
+        [
+          "回答",
+          "かいとう"
+        ]
+      ]
+    },
+    {
+      "id": "kihonsekkei",
+      "term": "基本設計",
+      "reading": "きほんせっけい",
+      "romaji": "kihonsekkei",
+      "meaningJa": "システムの 大きな 形（画面・データ・つながり）を、まず 決める 設計です。",
+      "englishTerm": "Basic design",
+      "example": "来月から、基本設計に 入ります。",
+      "wrongMeanings": [
+        "Detailed design",
+        "Design document",
+        "Basic testing"
+      ],
+      "furigana": [
+        [
+          "基本設計",
+          "きほんせっけい"
+        ],
+        [
+          "基本",
+          "きほん"
+        ]
+      ]
+    },
+    {
+      "id": "shousaisekkei",
+      "term": "詳細設計",
+      "reading": "しょうさいせっけい",
+      "romaji": "shousaisekkei",
+      "meaningJa": "プログラムを 書ける ように、こまかい ところまで 決める 設計です。",
+      "englishTerm": "Detailed design",
+      "example": "詳細設計が おわったら、プログラムを 書きはじめます。",
+      "wrongMeanings": [
+        "Basic design",
+        "Design document",
+        "Detailed testing"
+      ],
+      "furigana": [
+        [
+          "詳細設計",
+          "しょうさいせっけい"
+        ],
+        [
+          "詳細",
+          "しょうさい"
+        ]
+      ]
+    },
+    {
+      "id": "gyoumufuroo",
+      "term": "業務フロー",
+      "reading": "ぎょうむふろー",
+      "romaji": "gyoumufuroo",
+      "meaningJa": "仕事が、だれから だれへ、どんな 順番で 進むかを あらわした 流れです。",
+      "englishTerm": "Work flow (order of tasks)",
+      "example": "お客さまの 業務フローを 聞いてから、画面を 決めます。",
+      "wrongMeanings": [
+        "Office floor (the room)",
+        "Industry duty (a task)",
+        "Cash flow (money)"
+      ],
+      "furigana": [
+        [
+          "業務",
+          "ぎょうむ"
+        ],
+        [
+          "順番",
+          "じゅんばん"
+        ],
+        [
+          "流れ",
+          "ながれ"
+        ]
+      ]
+    },
+    {
+      "id": "gijiroku",
+      "term": "議事録",
+      "reading": "ぎじろく",
+      "romaji": "gijiroku",
+      "meaningJa": "会議で 話した ことと 決めた ことを、あとで 読める ように 書いた 記録です。",
+      "englishTerm": "Meeting minutes",
+      "example": "今日の 会議の 議事録を、明日までに 送ります。",
+      "wrongMeanings": [
+        "Meeting agenda",
+        "Design document",
+        "Video recording"
+      ],
+      "furigana": [
+        [
+          "議事録",
+          "ぎじろく"
+        ]
+      ]
+    },
+    {
+      "id": "araidashi",
+      "term": "洗い出し",
+      "reading": "あらいだし",
+      "romaji": "araidashi",
+      "meaningJa": "必要な ものや 問題を、もれが ないように 全部 書き出す ことです。",
+      "englishTerm": "Listing up everything",
+      "example": "まず、直す ところを 洗い出しましょう。",
+      "wrongMeanings": [
+        "Washing out the dirt",
+        "Sorting out the issues",
+        "Narrowing down the area"
+      ],
+      "furigana": [
+        [
+          "洗い出し",
+          "あらいだし"
+        ],
+        [
+          "書き出す",
+          "かきだす"
+        ],
+        [
+          "問題",
+          "もんだい"
+        ],
+        [
+          "全部",
+          "ぜんぶ"
+        ]
+      ]
+    },
+    {
+      "id": "kadaiseiri",
+      "term": "課題整理",
+      "reading": "かだいせいり",
+      "romaji": "kadaiseiri",
+      "meaningJa": "たくさんある 課題を 分けて、何から やるか 分かりやすく する ことです。",
+      "englishTerm": "Sorting out the issues",
+      "example": "会議の 前に 課題整理を しておいて ください。",
+      "wrongMeanings": [
+        "Listing up everything",
+        "Reconsidering the plan",
+        "Fixing all the issues"
+      ],
+      "furigana": [
+        [
+          "課題整理",
+          "かだいせいり"
+        ],
+        [
+          "課題",
+          "かだい"
+        ]
+      ]
+    },
+    {
+      "id": "saikentou",
+      "term": "再検討",
+      "reading": "さいけんとう",
+      "romaji": "saikentou",
+      "meaningJa": "一度 決めた ことを、もう 一度 考え直す ことです。",
+      "englishTerm": "Reconsideration",
+      "example": "この 仕様は 再検討が 必要だと 思います。",
+      "wrongMeanings": [
+        "Reproduction",
+        "Verification",
+        "Retest"
+      ],
+      "furigana": [
+        [
+          "再検討",
+          "さいけんとう"
+        ],
+        [
+          "考え直す",
+          "かんがえなおす"
+        ]
+      ]
+    },
+    {
+      "id": "kobetsutaiou",
+      "term": "個別対応",
+      "reading": "こべつたいおう",
+      "romaji": "kobetsutaiou",
+      "meaningJa": "全部 同じ やり方では なく、その 場合だけ 別の やり方で 対応する ことです。",
+      "englishTerm": "Case-by-case handling",
+      "example": "この お客さまだけ 個別対応に なります。",
+      "wrongMeanings": [
+        "Handling all at once",
+        "Temporary fix",
+        "Handling by one person"
+      ],
+      "furigana": [
+        [
+          "個別対応",
+          "こべつたいおう"
+        ],
+        [
+          "対応",
+          "たいおう"
+        ],
+        [
+          "全部",
+          "ぜんぶ"
+        ],
+        [
+          "場合",
+          "ばあい"
+        ],
+        [
+          "別の",
+          "べつの"
+        ]
+      ]
+    },
+    {
+      "id": "ikkatsutaiou",
+      "term": "一括対応",
+      "reading": "いっかつたいおう",
+      "romaji": "ikkatsutaiou",
+      "meaningJa": "同じ 種類の ものを、一つずつでは なく まとめて 対応する ことです。",
+      "englishTerm": "Handling all at once",
+      "example": "同じ 不具合が 3件 あるので、一括対応 します。",
+      "wrongMeanings": [
+        "Case-by-case handling",
+        "Temporary fix",
+        "Handling just one of them"
+      ],
+      "furigana": [
+        [
+          "一括対応",
+          "いっかつたいおう"
+        ],
+        [
+          "対応",
+          "たいおう"
+        ],
+        [
+          "不具合",
+          "ふぐあい"
+        ],
+        [
+          "件",
+          "けん"
+        ]
+      ]
+    },
+    {
+      "id": "zanteitaiou",
+      "term": "暫定対応",
+      "reading": "ざんていたいおう",
+      "romaji": "zanteitaiou",
+      "meaningJa": "ちゃんとした 直しが できるまで、とりあえず 今 できる 方法で 対応する ことです。",
+      "englishTerm": "Temporary fix",
+      "example": "今日は 暫定対応で 動かして、来週 ちゃんと 直します。",
+      "wrongMeanings": [
+        "Permanent fix",
+        "Case-by-case handling",
+        "Handling all at once"
+      ],
+      "furigana": [
+        [
+          "暫定対応",
+          "ざんていたいおう"
+        ],
+        [
+          "対応",
+          "たいおう"
+        ],
+        [
+          "方法",
+          "ほうほう"
+        ]
+      ]
+    },
+    {
+      "id": "jissou",
+      "term": "実装",
+      "reading": "じっそう",
+      "romaji": "jissou",
+      "meaningJa": "設計で 決めた 中身を、実際に プログラムとして 書く ことです。",
+      "englishTerm": "Implementation",
+      "example": "来週から ログイン機能の 実装に 入ります。",
+      "wrongMeanings": [
+        "Installation",
+        "Modification",
+        "Verification"
+      ],
+      "furigana": [
+        [
+          "実装",
+          "じっそう"
+        ]
+      ]
+    },
+    {
+      "id": "kaishuu",
+      "term": "改修",
+      "reading": "かいしゅう",
+      "romaji": "kaishuu",
+      "meaningJa": "今 動いている システムを、直したり よくしたり する ことです。",
+      "englishTerm": "Modifying an existing system",
+      "example": "古い 検索機能の 改修を お願いします。",
+      "wrongMeanings": [
+        "Building a brand-new system",
+        "Writing code from the design",
+        "Applying changes to production"
+      ],
+      "furigana": [
+        [
+          "改修",
+          "かいしゅう"
+        ],
+        [
+          "古い",
+          "ふるい"
+        ]
+      ]
+    },
+    {
+      "id": "kizonkinou",
+      "term": "既存機能",
+      "reading": "きそんきのう",
+      "romaji": "kisonkinou",
+      "meaningJa": "今の システムに もう 入っている 機能です。",
+      "englishTerm": "Existing feature",
+      "example": "既存機能が 壊れて いないか、確認して ください。",
+      "wrongMeanings": [
+        "New feature",
+        "Shared feature",
+        "Reused feature"
+      ],
+      "furigana": [
+        [
+          "既存機能",
+          "きそんきのう"
+        ],
+        [
+          "既存",
+          "きそん"
+        ]
+      ]
+    },
+    {
+      "id": "shinkikinou",
+      "term": "新規機能",
+      "reading": "しんききのう",
+      "romaji": "shinkikinou",
+      "meaningJa": "今は まだ なくて、これから 新しく 作る 機能です。",
+      "englishTerm": "New feature",
+      "example": "新規機能の 仕様書を 読んで おいて ください。",
+      "wrongMeanings": [
+        "Existing feature",
+        "Repaired feature",
+        "Newest version"
+      ],
+      "furigana": [
+        [
+          "新規機能",
+          "しんききのう"
+        ],
+        [
+          "新規",
+          "しんき"
+        ]
+      ]
+    },
+    {
+      "id": "kyoutsuuka",
+      "term": "共通化",
+      "reading": "きょうつうか",
+      "romaji": "kyoutsuuka",
+      "meaningJa": "何か所にも ある 同じ 処理を 一つに まとめて、みんなで 使える ように する ことです。",
+      "englishTerm": "Making one shared part",
+      "example": "同じ 処理が いくつも あるので、共通化 しましょう。",
+      "wrongMeanings": [
+        "Using the same part again",
+        "Sharing the code with the team",
+        "Making a common language"
+      ],
+      "furigana": [
+        [
+          "共通化",
+          "きょうつうか"
+        ],
+        [
+          "何か所",
+          "なんかしょ"
+        ],
+        [
+          "処理",
+          "しょり"
+        ]
+      ]
+    },
+    {
+      "id": "sairiyou",
+      "term": "再利用",
+      "reading": "さいりよう",
+      "romaji": "sairiyou",
+      "meaningJa": "前に 作った ものを、新しく 作らないで もう 一度 使う ことです。",
+      "englishTerm": "Reusing what exists",
+      "example": "前の 案件の コードを 再利用 できますか。",
+      "wrongMeanings": [
+        "Making one shared part",
+        "Rewriting from the start",
+        "Reproducing the problem"
+      ],
+      "furigana": [
+        [
+          "再利用",
+          "さいりよう"
+        ],
+        [
+          "案件",
+          "あんけん"
+        ]
+      ]
+    },
+    {
+      "id": "hanei",
+      "term": "反映",
+      "reading": "はんえい",
+      "romaji": "hanei",
+      "meaningJa": "直した 内容を、実際の システムや 画面に 入れて 見える ように する ことです。",
+      "englishTerm": "Applying the change",
+      "example": "修正は 明日の 朝に 本番へ 反映します。",
+      "wrongMeanings": [
+        "Modifying an existing system",
+        "Sending back for rework",
+        "Checking that it works"
+      ],
+      "furigana": [
+        [
+          "反映",
+          "はんえい"
+        ],
+        [
+          "朝に",
+          "あさに"
+        ]
+      ]
+    },
+    {
+      "id": "dousakakunin",
+      "term": "動作確認",
+      "reading": "どうさかくにん",
+      "romaji": "dousakakunin",
+      "meaningJa": "作った ものを 実際に 動かして、思った とおりに 動くか 見る ことです。",
+      "englishTerm": "Checking that it works",
+      "example": "反映の あとで、動作確認を お願いします。",
+      "wrongMeanings": [
+        "Reviewing the code by eye",
+        "Retesting the fixed code",
+        "Reproducing the problem"
+      ],
+      "furigana": [
+        [
+          "動作確認",
+          "どうさかくにん"
+        ],
+        [
+          "反映",
+          "はんえい"
+        ]
+      ]
+    },
+    {
+      "id": "saigen",
+      "term": "再現",
+      "reading": "さいげん",
+      "romaji": "saigen",
+      "meaningJa": "報告された 不具合を、自分の 手で もう 一度 起こして 見る ことです。",
+      "englishTerm": "Reproducing the problem",
+      "example": "この 不具合は テスト環境で 再現 できましたか。",
+      "wrongMeanings": [
+        "Recurring after the fix",
+        "Retesting the fixed code",
+        "Reconsidering the plan"
+      ],
+      "furigana": [
+        [
+          "再現",
+          "さいげん"
+        ],
+        [
+          "不具合",
+          "ふぐあい"
+        ],
+        [
+          "起こして",
+          "おこして"
+        ],
+        [
+          "環境",
+          "かんきょう"
+        ]
+      ]
+    },
+    {
+      "id": "jishou",
+      "term": "事象",
+      "reading": "じしょう",
+      "romaji": "jishou",
+      "meaningJa": "原因は まだ 分からなくても、実際に 起きて いる ことや 見えて いる 動きです。",
+      "englishTerm": "Observed event",
+      "example": "まず、お客さまから 聞いた 事象を そのまま 書いて ください。",
+      "wrongMeanings": [
+        "Root cause",
+        "Defect / Malfunction",
+        "Business matter"
+      ],
+      "furigana": [
+        [
+          "事象",
+          "じしょう"
+        ],
+        [
+          "原因",
+          "げんいん"
+        ],
+        [
+          "起きて",
+          "おきて"
+        ]
+      ]
+    },
+    {
+      "id": "hasseijouken",
+      "term": "発生条件",
+      "reading": "はっせいじょうけん",
+      "romaji": "hasseijouken",
+      "meaningJa": "どんな 操作や 状態の ときに、その 不具合が 起きるかと いう 条件です。",
+      "englishTerm": "Conditions that trigger it",
+      "example": "発生条件が 分からないと、再現 できません。",
+      "wrongMeanings": [
+        "Steps to fix it",
+        "Result that we expect",
+        "Values at the edge"
+      ],
+      "furigana": [
+        [
+          "発生条件",
+          "はっせいじょうけん"
+        ],
+        [
+          "操作",
+          "そうさ"
+        ],
+        [
+          "状態",
+          "じょうたい"
+        ],
+        [
+          "不具合",
+          "ふぐあい"
+        ],
+        [
+          "起きる",
+          "おきる"
+        ],
+        [
+          "条件",
+          "じょうけん"
+        ],
+        [
+          "再現",
+          "さいげん"
+        ]
+      ]
+    },
+    {
+      "id": "geninchousa",
+      "term": "原因調査",
+      "reading": "げんいんちょうさ",
+      "romaji": "geninchousa",
+      "meaningJa": "不具合が なぜ 起きたのかを、ログや コードを 見て 調べる ことです。",
+      "englishTerm": "Investigating the cause",
+      "example": "原因調査に もう 少し 時間を ください。",
+      "wrongMeanings": [
+        "Narrowing down the area",
+        "Identifying the cause",
+        "Reproducing the problem"
+      ],
+      "furigana": [
+        [
+          "原因調査",
+          "げんいんちょうさ"
+        ],
+        [
+          "不具合",
+          "ふぐあい"
+        ],
+        [
+          "起きた",
+          "おきた"
+        ],
+        [
+          "少し",
+          "すこし"
+        ]
+      ]
+    },
+    {
+      "id": "kiriwake",
+      "term": "切り分け",
+      "reading": "きりわけ",
+      "romaji": "kiriwake",
+      "meaningJa": "問題が どこに あるかを、ネットワーク・サーバー・アプリ などに 分けて しぼって いく ことです。",
+      "englishTerm": "Narrowing down the area",
+      "example": "まず、ネットワークか アプリか 切り分けを しましょう。",
+      "wrongMeanings": [
+        "Cutting into small pieces",
+        "Investigating the cause",
+        "Identifying the cause"
+      ],
+      "furigana": [
+        [
+          "切り分け",
+          "きりわけ"
+        ],
+        [
+          "問題",
+          "もんだい"
+        ]
+      ]
+    },
+    {
+      "id": "tokutei",
+      "term": "特定",
+      "reading": "とくてい",
+      "romaji": "tokutei",
+      "meaningJa": "原因や 場所が 「これだ」と はっきり 分かる ことです。",
+      "englishTerm": "Identifying the cause",
+      "example": "原因が 特定 できたので、修正に 入ります。",
+      "wrongMeanings": [
+        "Investigating the cause",
+        "Narrowing down the area",
+        "Special handling"
+      ],
+      "furigana": [
+        [
+          "特定",
+          "とくてい"
+        ],
+        [
+          "原因",
+          "げんいん"
+        ]
+      ]
+    },
+    {
+      "id": "tesutokeesu",
+      "term": "テストケース",
+      "reading": "てすとけーす",
+      "romaji": "tesutokeesu",
+      "meaningJa": "「どんな 入力を したら、どう なるはずか」を 一つずつ 書いた テストの 条件です。",
+      "englishTerm": "Test case",
+      "example": "異常系の テストケースが 足りません。",
+      "wrongMeanings": [
+        "Test environment",
+        "Test evidence",
+        "Test box"
+      ],
+      "furigana": [
+        [
+          "条件",
+          "じょうけん"
+        ],
+        [
+          "異常系",
+          "いじょうけい"
+        ]
+      ]
+    },
+    {
+      "id": "kitaikekka",
+      "term": "期待結果",
+      "reading": "きたいけっか",
+      "romaji": "kitaikekka",
+      "meaningJa": "テストで、本来 こう なるべきだと 決めて おいた 結果です。",
+      "englishTerm": "Expected result",
+      "example": "期待結果と 実行結果が 違って います。",
+      "wrongMeanings": [
+        "Actual result",
+        "Test result",
+        "Best result"
+      ],
+      "furigana": [
+        [
+          "期待結果",
+          "きたいけっか"
+        ],
+        [
+          "実行結果",
+          "じっこうけっか"
+        ],
+        [
+          "本来",
+          "ほんらい"
+        ]
+      ]
+    },
+    {
+      "id": "jikkoukekka",
+      "term": "実行結果",
+      "reading": "じっこうけっか",
+      "romaji": "jikkoukekka",
+      "meaningJa": "実際に プログラムを 動かした ときに、本当に 出た 結果です。",
+      "englishTerm": "Actual result",
+      "example": "実行結果を スクリーンショットで 残して ください。",
+      "wrongMeanings": [
+        "Expected result",
+        "Review result",
+        "Test evidence"
+      ],
+      "furigana": [
+        [
+          "実行結果",
+          "じっこうけっか"
+        ],
+        [
+          "残して",
+          "のこして"
+        ]
+      ]
+    },
+    {
+      "id": "seijoukei",
+      "term": "正常系",
+      "reading": "せいじょうけい",
+      "romaji": "seijoukei",
+      "meaningJa": "ユーザーが 正しい 操作を したときに、うまく いく 流れの テストです。",
+      "englishTerm": "Normal case",
+      "example": "正常系は 全部 通りましたが、異常系で 落ちます。",
+      "wrongMeanings": [
+        "Error case",
+        "Correct answer",
+        "Main system"
+      ],
+      "furigana": [
+        [
+          "正常系",
+          "せいじょうけい"
+        ],
+        [
+          "異常系",
+          "いじょうけい"
+        ],
+        [
+          "正しい",
+          "ただしい"
+        ],
+        [
+          "操作",
+          "そうさ"
+        ],
+        [
+          "流れ",
+          "ながれ"
+        ],
+        [
+          "全部",
+          "ぜんぶ"
+        ],
+        [
+          "落ちます",
+          "おちます"
+        ]
+      ]
+    },
+    {
+      "id": "ijoukei",
+      "term": "異常系",
+      "reading": "いじょうけい",
+      "romaji": "ijoukei",
+      "meaningJa": "入力の まちがいや 通信の 失敗など、うまく いかない ときの 流れの テストです。",
+      "englishTerm": "Error case",
+      "example": "異常系も 忘れずに テストして ください。",
+      "wrongMeanings": [
+        "Normal case",
+        "Strange system",
+        "Exception handling"
+      ],
+      "furigana": [
+        [
+          "異常系",
+          "いじょうけい"
+        ],
+        [
+          "流れ",
+          "ながれ"
+        ],
+        [
+          "忘れず",
+          "わすれず"
+        ]
+      ]
+    },
+    {
+      "id": "kyoukaichi",
+      "term": "境界値",
+      "reading": "きょうかいち",
+      "romaji": "kyoukaichi",
+      "meaningJa": "「100まで OK」の 100と 101のように、結果が 変わる ぎりぎりの 値です。",
+      "englishTerm": "Boundary value",
+      "example": "境界値の テストケースを 足して ください。",
+      "wrongMeanings": [
+        "Price at the border",
+        "Average value",
+        "Default value"
+      ],
+      "furigana": [
+        [
+          "境界値",
+          "きょうかいち"
+        ],
+        [
+          "変わる",
+          "かわる"
+        ],
+        [
+          "値です",
+          "あたいです"
+        ]
+      ]
+    },
+    {
+      "id": "kanten",
+      "term": "観点",
+      "reading": "かんてん",
+      "romaji": "kanten",
+      "meaningJa": "「速さ」「安全」「見た目」のように、何に 気を つけて 見るかと いう 見方です。",
+      "englishTerm": "Checking viewpoint",
+      "example": "「使いやすさ」の 観点が レビューに 抜けて います。",
+      "wrongMeanings": [
+        "Review score",
+        "Test evidence",
+        "Boundary value"
+      ],
+      "furigana": [
+        [
+          "観点",
+          "かんてん"
+        ],
+        [
+          "速さ",
+          "はやさ"
+        ],
+        [
+          "安全",
+          "あんぜん"
+        ],
+        [
+          "見方",
+          "みかた"
+        ],
+        [
+          "抜けて",
+          "ぬけて"
+        ]
+      ]
+    },
+    {
+      "id": "shuuseizumi",
+      "term": "修正済み",
+      "reading": "しゅうせいずみ",
+      "romaji": "shuuseizumi",
+      "meaningJa": "不具合の コードは もう 直して あると いう 状態です。",
+      "englishTerm": "Already fixed",
+      "example": "この チケットは 修正済みですが、まだ 再テストが 終わって いません。",
+      "wrongMeanings": [
+        "Already handled",
+        "Not solved yet",
+        "Being fixed now"
+      ],
+      "furigana": [
+        [
+          "修正済み",
+          "しゅうせいずみ"
+        ],
+        [
+          "再テスト",
+          "さいてすと"
+        ],
+        [
+          "不具合",
+          "ふぐあい"
+        ],
+        [
+          "状態",
+          "じょうたい"
+        ]
+      ]
+    },
+    {
+      "id": "taiouzumi",
+      "term": "対応済み",
+      "reading": "たいおうずみ",
+      "romaji": "taiouzumi",
+      "meaningJa": "直すだけで なく、テストや お客さまへの 連絡まで、必要な ことが 全部 終わって いる 状態です。",
+      "englishTerm": "Already handled",
+      "example": "昨日の 問い合わせは 対応済みです。",
+      "wrongMeanings": [
+        "Already fixed",
+        "Not solved yet",
+        "Being handled now"
+      ],
+      "furigana": [
+        [
+          "対応済み",
+          "たいおうずみ"
+        ],
+        [
+          "全部",
+          "ぜんぶ"
+        ],
+        [
+          "状態",
+          "じょうたい"
+        ],
+        [
+          "昨日",
+          "きのう"
+        ]
+      ]
+    },
+    {
+      "id": "mikaiketsu",
+      "term": "未解決",
+      "reading": "みかいけつ",
+      "romaji": "mikaiketsu",
+      "meaningJa": "問題が まだ 直って いなくて、これからも 対応が 必要な 状態です。",
+      "englishTerm": "Not solved yet",
+      "example": "未解決の 不具合が あと 3件 あります。",
+      "wrongMeanings": [
+        "Already handled",
+        "Cannot be solved",
+        "Not decided yet"
+      ],
+      "furigana": [
+        [
+          "未解決",
+          "みかいけつ"
+        ],
+        [
+          "問題",
+          "もんだい"
+        ],
+        [
+          "対応",
+          "たいおう"
+        ],
+        [
+          "状態",
+          "じょうたい"
+        ],
+        [
+          "不具合",
+          "ふぐあい"
+        ],
+        [
+          "件",
+          "けん"
+        ]
+      ]
+    },
+    {
+      "id": "saihatsu",
+      "term": "再発",
+      "reading": "さいはつ",
+      "romaji": "saihatsu",
+      "meaningJa": "一度 直した はずの 問題が、あとで また 起きる ことです。",
+      "englishTerm": "Recurring after the fix",
+      "example": "同じ 障害が 再発 しないように、原因を 調べます。",
+      "wrongMeanings": [
+        "Reproducing the problem",
+        "Retesting the fixed code",
+        "Reconsidering the plan"
+      ],
+      "furigana": [
+        [
+          "再発",
+          "さいはつ"
+        ],
+        [
+          "問題",
+          "もんだい"
+        ],
+        [
+          "起きる",
+          "おきる"
+        ],
+        [
+          "原因",
+          "げんいん"
+        ]
+      ]
+    },
+    {
+      "id": "degure",
+      "term": "デグレ",
+      "reading": "でぐれ",
+      "romaji": "degure",
+      "meaningJa": "直したせいで、前は 動いて いた 別の 機能が 動かなく なる ことです。",
+      "englishTerm": "Breaking what used to work",
+      "example": "この 修正で デグレが 起きて いないか、回帰テストを します。",
+      "wrongMeanings": [
+        "A degree of quality",
+        "Deleting old code",
+        "Debugging old code"
+      ],
+      "furigana": [
+        [
+          "回帰テスト",
+          "かいきてすと"
+        ],
+        [
+          "回帰",
+          "かいき"
+        ],
+        [
+          "別の",
+          "べつの"
+        ],
+        [
+          "起きて",
+          "おきて"
+        ]
+      ]
+    },
+    {
+      "id": "kaikitesuto",
+      "term": "回帰テスト",
+      "reading": "かいきてすと",
+      "romaji": "kaikitesuto",
+      "meaningJa": "直した あとで、ほかの 機能が 壊れて いないか、前と 同じ テストを もう 一度 全部 やる ことです。",
+      "englishTerm": "Regression test",
+      "example": "リリースの 前に 回帰テストを 全部 通します。",
+      "wrongMeanings": [
+        "Unit test",
+        "Integration test",
+        "Acceptance test"
+      ],
+      "furigana": [
+        [
+          "回帰テスト",
+          "かいきてすと"
+        ],
+        [
+          "回帰",
+          "かいき"
+        ],
+        [
+          "全部",
+          "ぜんぶ"
+        ]
+      ]
+    },
+    {
+      "id": "kouryomore",
+      "term": "考慮漏れ",
+      "reading": "こうりょもれ",
+      "romaji": "kouryomore",
+      "meaningJa": "「こういう 場合も ある」と 考えて おくべき 条件を、考えて いなかった ことです。",
+      "englishTerm": "Overlooked condition",
+      "example": "何も 入力しない ときの 考慮漏れが ありました。",
+      "wrongMeanings": [
+        "Exception handling",
+        "Leaking of ideas",
+        "Boundary value"
+      ],
+      "furigana": [
+        [
+          "考慮漏れ",
+          "こうりょもれ"
+        ],
+        [
+          "場合",
+          "ばあい"
+        ],
+        [
+          "条件",
+          "じょうけん"
+        ]
+      ]
+    },
+    {
+      "id": "reigaishori",
+      "term": "例外処理",
+      "reading": "れいがいしょり",
+      "romaji": "reigaishori",
+      "meaningJa": "通信が 切れた ときなど、ふつうと 違う ことが 起きた ときに、プログラムが 行う 処理です。",
+      "englishTerm": "Exception handling",
+      "example": "ここに 例外処理が ないので、エラーで 止まります。",
+      "wrongMeanings": [
+        "Error case",
+        "Overlooked condition",
+        "Handling of an example"
+      ],
+      "furigana": [
+        [
+          "例外処理",
+          "れいがいしょり"
+        ],
+        [
+          "処理",
+          "しょり"
+        ],
+        [
+          "切れた",
+          "きれた"
+        ],
+        [
+          "起きた",
+          "おきた"
+        ],
+        [
+          "行う",
+          "おこなう"
+        ],
+        [
+          "止まります",
+          "とまります"
+        ]
+      ]
+    },
+    {
+      "id": "koodingu",
+      "term": "コーディング",
+      "reading": "こーでぃんぐ",
+      "romaji": "koodingu",
+      "meaningJa": "設計を 見ながら、実際に プログラムの コードを 書いて いく 作業です。",
+      "englishTerm": "Writing the code",
+      "example": "設計が 終わったので、明日から コーディングに 入ります。",
+      "wrongMeanings": [
+        "Reviewing the code",
+        "Merging the code",
+        "Making a secret code"
+      ],
+      "furigana": [
+        [
+          "作業",
+          "さぎょう"
+        ]
+      ]
+    },
+    {
+      "id": "koodorebyuu",
+      "term": "コードレビュー",
+      "reading": "こーどれびゅー",
+      "romaji": "koodorebyuu",
+      "meaningJa": "書いた コードを、ほかの 人が 読んで、問題が ないか 確認する ことです。",
+      "englishTerm": "Code check by others",
+      "example": "プルリクエストを 出したので、コードレビューを お願いします。",
+      "wrongMeanings": [
+        "Checking that it works",
+        "Preview of the screen",
+        "Interview with the coder"
+      ],
+      "furigana": [
+        [
+          "問題",
+          "もんだい"
+        ]
+      ]
+    },
+    {
+      "id": "maaji",
+      "term": "マージ",
+      "reading": "まーじ",
+      "romaji": "maaji",
+      "meaningJa": "別々に 直した コードを、一つの コードに まとめて 入れる ことです。",
+      "englishTerm": "Merging branches together",
+      "example": "レビューが 終わったら、mainに マージして ください。",
+      "wrongMeanings": [
+        "Sending back for rework",
+        "Conflict between changes",
+        "Margin of the page"
+      ],
+      "furigana": [
+        [
+          "別々",
+          "べつべつ"
+        ]
+      ]
+    },
+    {
+      "id": "sashimodoshi",
+      "term": "差し戻し",
+      "reading": "さしもどし",
+      "romaji": "sashimodoshi",
+      "meaningJa": "レビューで 問題が 見つかった ときに、OKを 出さないで、書いた 人に 直しを たのむ ことです。",
+      "englishTerm": "Sending back for rework",
+      "example": "テストの 証跡が ないので、この プルリクエストは 差し戻しに します。",
+      "wrongMeanings": [
+        "Sending back by hand",
+        "Merging branches together",
+        "Reconsideration of the plan"
+      ],
+      "furigana": [
+        [
+          "差し戻し",
+          "さしもどし"
+        ],
+        [
+          "証跡",
+          "しょうせき"
+        ],
+        [
+          "問題",
+          "もんだい"
+        ],
+        [
+          "見つかった",
+          "みつかった"
+        ]
+      ]
+    },
+    {
+      "id": "saitesuto",
+      "term": "再テスト",
+      "reading": "さいてすと",
+      "romaji": "saitesuto",
+      "meaningJa": "直した あとで、その 不具合が 本当に 直ったか、同じ テストを もう 一度 やる ことです。",
+      "englishTerm": "Retesting the fixed code",
+      "example": "修正済みに なったので、明日 再テストを します。",
+      "wrongMeanings": [
+        "Reproducing the problem",
+        "Regression test",
+        "Recurring after the fix"
+      ],
+      "furigana": [
+        [
+          "再テスト",
+          "さいてすと"
+        ],
+        [
+          "修正済み",
+          "しゅうせいずみ"
+        ],
+        [
+          "不具合",
+          "ふぐあい"
+        ]
+      ]
+    },
+    {
+      "id": "shouseki",
+      "term": "証跡",
+      "reading": "しょうせき",
+      "romaji": "shouseki",
+      "meaningJa": "「たしかに テストした」と あとから 見せられる、スクリーンショットや ログなどの 記録です。",
+      "englishTerm": "Evidence record",
+      "example": "テストの 証跡を チケットに はって ください。",
+      "wrongMeanings": [
+        "Footprints as proof",
+        "Test case",
+        "Checking viewpoint"
+      ],
+      "furigana": [
+        [
+          "証跡",
+          "しょうせき"
+        ],
+        [
+          "見せられる",
+          "みせられる"
+        ]
+      ]
+    },
+    {
+      "id": "tantaitesuto",
+      "term": "単体テスト",
+      "reading": "たんたいてすと",
+      "romaji": "tantaitesuto",
+      "meaningJa": "関数や クラスなど、小さな 部品を 一つだけ 取り出して 動きを 確かめる テストです。",
+      "englishTerm": "Unit test",
+      "example": "単体テストは 全部 通って います。",
+      "wrongMeanings": [
+        "Integration test",
+        "Acceptance test",
+        "Regression test"
+      ],
+      "furigana": [
+        [
+          "単体テスト",
+          "たんたいてすと"
+        ],
+        [
+          "単体",
+          "たんたい"
+        ],
+        [
+          "関数",
+          "かんすう"
+        ],
+        [
+          "部品",
+          "ぶひん"
+        ],
+        [
+          "取り出して",
+          "とりだして"
+        ],
+        [
+          "確かめる",
+          "たしかめる"
+        ],
+        [
+          "全部",
+          "ぜんぶ"
+        ]
+      ]
+    },
+    {
+      "id": "ketsugoutesuto",
+      "term": "結合テスト",
+      "reading": "けつごうてすと",
+      "romaji": "ketsugoutesuto",
+      "meaningJa": "いくつかの 部品や 機能を つないで、いっしょに 動かした ときに うまく いくか 確かめる テストです。",
+      "englishTerm": "Integration test",
+      "example": "来週から 結合テストが 始まります。",
+      "wrongMeanings": [
+        "Unit test",
+        "Acceptance test",
+        "Regression test"
+      ],
+      "furigana": [
+        [
+          "結合テスト",
+          "けつごうてすと"
+        ],
+        [
+          "結合",
+          "けつごう"
+        ],
+        [
+          "部品",
+          "ぶひん"
+        ],
+        [
+          "確かめる",
+          "たしかめる"
+        ]
+      ]
+    },
+    {
+      "id": "ukeiretesuto",
+      "term": "受け入れテスト",
+      "reading": "うけいれてすと",
+      "romaji": "ukeiretesuto",
+      "meaningJa": "開発の 最後に、お客さまや 使う 人が、「たのんだ とおりに できて いるか」を 確かめる テストです。",
+      "englishTerm": "Acceptance test",
+      "example": "受け入れテストで お客さまから 3件 指摘が ありました。",
+      "wrongMeanings": [
+        "Unit test",
+        "Integration test",
+        "Regression test"
+      ],
+      "furigana": [
+        [
+          "受け入れテスト",
+          "うけいれてすと"
+        ],
+        [
+          "受け入れ",
+          "うけいれ"
+        ],
+        [
+          "確かめる",
+          "たしかめる"
+        ],
+        [
+          "指摘",
+          "してき"
+        ],
+        [
+          "件",
+          "けん"
+        ]
+      ]
+    },
+    {
+      "id": "sutejingukankyou",
+      "term": "ステージング環境",
+      "reading": "すてーじんぐかんきょう",
+      "romaji": "sutejingukankyou",
+      "meaningJa": "本番に 出す 前に、本番と 同じ 形で 試す ための 環境です。",
+      "englishTerm": "Staging environment",
+      "example": "ステージング環境で 確認してから、本番に 出します。",
+      "wrongMeanings": [
+        "Development environment",
+        "Production environment",
+        "Theater stage"
+      ],
+      "furigana": [
+        [
+          "環境",
+          "かんきょう"
+        ]
+      ]
+    },
+    {
+      "id": "honbankankyou",
+      "term": "本番環境",
+      "reading": "ほんばんかんきょう",
+      "romaji": "honbankankyou",
+      "meaningJa": "お客さまや 使う 人が、本当に 使って いる 環境です。",
+      "englishTerm": "Production environment",
+      "example": "本番環境の データは、テストで 使いません。",
+      "wrongMeanings": [
+        "Staging environment",
+        "Development environment",
+        "Backup environment"
+      ],
+      "furigana": [
+        [
+          "本番環境",
+          "ほんばんかんきょう"
+        ],
+        [
+          "環境",
+          "かんきょう"
+        ]
+      ]
+    },
+    {
+      "id": "kirimodoshi",
+      "term": "切り戻し",
+      "reading": "きりもどし",
+      "romaji": "kirimodoshi",
+      "meaningJa": "新しい ものに 問題が あった とき、前の 状態に 戻す ことです。",
+      "englishTerm": "Going back to the old version",
+      "example": "エラーが 出たので、すぐに 切り戻しを しました。",
+      "wrongMeanings": [
+        "Moving forward to the new version",
+        "Cutting it and returning it",
+        "Getting the system working again"
+      ],
+      "furigana": [
+        [
+          "切り戻し",
+          "きりもどし"
+        ],
+        [
+          "問題",
+          "もんだい"
+        ],
+        [
+          "状態",
+          "じょうたい"
+        ],
+        [
+          "戻す",
+          "もどす"
+        ]
+      ]
+    },
+    {
+      "id": "miokuri",
+      "term": "見送り",
+      "reading": "みおくり",
+      "romaji": "miokuri",
+      "meaningJa": "今回は やらないと 決めて、あとの 日も 決めない ことです。",
+      "englishTerm": "Not doing it this time",
+      "example": "この 機能は、今回は 見送りに なりました。",
+      "wrongMeanings": [
+        "Doing it at a later date",
+        "Doing it after other tasks",
+        "Seeing someone off at the station"
+      ],
+      "furigana": [
+        [
+          "見送り",
+          "みおくり"
+        ]
+      ]
+    },
+    {
+      "id": "unyouruuru",
+      "term": "運用ルール",
+      "reading": "うんようるーる",
+      "romaji": "unyouruuru",
+      "meaningJa": "システムを 毎日 動かす ときに、みんなが 守る 決まりです。",
+      "englishTerm": "Rules for daily operation",
+      "example": "運用ルールに 合わせて、毎朝 ログを 確認します。",
+      "wrongMeanings": [
+        "Rules for writing code",
+        "Rules for fixing bugs",
+        "Rules for the meetings"
+      ]
+    },
+    {
+      "id": "toiawase",
+      "term": "問い合わせ",
+      "reading": "といあわせ",
+      "romaji": "toiawase",
+      "meaningJa": "使う 人や お客さまから 来る、質問や 連絡の ことです。",
+      "englishTerm": "Inquiry",
+      "example": "お客さまから、ログインできないと 問い合わせが ありました。",
+      "wrongMeanings": [
+        "Complaint",
+        "Reply",
+        "Order"
+      ]
+    },
+    {
+      "id": "saihatsuboushi",
+      "term": "再発防止",
+      "reading": "さいはつぼうし",
+      "romaji": "saihatsuboushi",
+      "meaningJa": "同じ 問題が もう 一度 起きないように、原因を 直す ことです。",
+      "englishTerm": "Preventing a repeat",
+      "example": "障害の あとで、再発防止の 案を 出します。",
+      "wrongMeanings": [
+        "Redoing an earlier step",
+        "Taking over a coworker's work",
+        "Fixing it for now"
+      ],
+      "furigana": [
+        [
+          "再発防止",
+          "さいはつぼうし"
+        ],
+        [
+          "問題",
+          "もんだい"
+        ],
+        [
+          "起き",
+          "おき"
+        ],
+        [
+          "原因",
+          "げんいん"
+        ],
+        [
+          "案",
+          "あん"
+        ]
+      ]
+    },
+    {
+      "id": "kanshi",
+      "term": "監視",
+      "reading": "かんし",
+      "romaji": "kanshi",
+      "meaningJa": "システムが 正しく 動いて いるか、いつも 見て いる ことです。",
+      "englishTerm": "Monitoring",
+      "example": "監視の 画面で、サーバーの 様子を 見ます。",
+      "wrongMeanings": [
+        "Maintenance",
+        "Wait and see",
+        "Security camera"
+      ],
+      "furigana": [
+        [
+          "監視",
+          "かんし"
+        ]
+      ]
+    },
+    {
+      "id": "keikakansatsu",
+      "term": "経過観察",
+      "reading": "けいかかんさつ",
+      "romaji": "keikakansatsu",
+      "meaningJa": "すぐには 直さないで、しばらく 様子を 見て 決める ことです。",
+      "englishTerm": "Wait and see for a while",
+      "example": "この バグは 小さいので、今週は 経過観察に します。",
+      "wrongMeanings": [
+        "Watch the system all the time",
+        "Look back at what has passed",
+        "Fix it right away"
+      ],
+      "furigana": [
+        [
+          "経過観察",
+          "けいかかんさつ"
+        ],
+        [
+          "今週",
+          "こんしゅう"
+        ]
+      ]
+    },
+    {
+      "id": "rogu",
+      "term": "ログ",
+      "reading": "ろぐ",
+      "romaji": "rogu",
+      "meaningJa": "システムが いつ 何を したかを、順番に 書いた 記録です。",
+      "englishTerm": "Log",
+      "example": "エラーの 原因は、ログを 読んで さがします。",
+      "wrongMeanings": [
+        "Alert",
+        "Login",
+        "Backup"
+      ],
+      "furigana": [
+        [
+          "順番",
+          "じゅんばん"
+        ],
+        [
+          "原因",
+          "げんいん"
+        ]
+      ]
+    },
+    {
+      "id": "temodori",
+      "term": "手戻り",
+      "reading": "てもどり",
+      "romaji": "temodori",
+      "meaningJa": "前の 作業に 戻って、もう 一度 やり直す ことです。",
+      "englishTerm": "Going back to redo work",
+      "example": "仕様の 確認が 足りなくて、手戻りが 出ました。",
+      "wrongMeanings": [
+        "Returning by hand",
+        "Taking over a coworker's work",
+        "Going back to the old version"
+      ],
+      "furigana": [
+        [
+          "手戻り",
+          "てもどり"
+        ],
+        [
+          "作業",
+          "さぎょう"
+        ],
+        [
+          "戻って",
+          "もどって"
+        ]
+      ]
+    },
+    {
+      "id": "makitori",
+      "term": "巻き取り",
+      "reading": "まきとり",
+      "romaji": "makitori",
+      "meaningJa": "ほかの 人の 作業を 引き受けて、自分が 進める ことです。",
+      "englishTerm": "Taking over a coworker's work",
+      "example": "先輩が 休みなので、この タスクは 私が 巻き取ります。",
+      "wrongMeanings": [
+        "Rolling up and taking it",
+        "Handing over your own work",
+        "Going back to redo work"
+      ],
+      "furigana": [
+        [
+          "巻き取り",
+          "まきとり"
+        ],
+        [
+          "作業",
+          "さぎょう"
+        ],
+        [
+          "引き受け",
+          "ひきうけ"
+        ],
+        [
+          "休み",
+          "やすみ"
+        ]
+      ]
+    },
+    {
+      "id": "chien",
+      "term": "遅延",
+      "reading": "ちえん",
+      "romaji": "chien",
+      "meaningJa": "予定より 作業が 遅れて いる ことです。",
+      "englishTerm": "Delay",
+      "example": "テストで 遅延が 出て いるので、報告します。",
+      "wrongMeanings": [
+        "Postponement",
+        "Extension",
+        "Rescheduling"
+      ],
+      "furigana": [
+        [
+          "遅延",
+          "ちえん"
+        ],
+        [
+          "作業",
+          "さぎょう"
+        ]
+      ]
+    },
+    {
+      "id": "risuke",
+      "term": "リスケ",
+      "reading": "りすけ",
+      "romaji": "risuke",
+      "meaningJa": "決めて いた 予定を、別の 日や 時間に 変える ことです。",
+      "englishTerm": "Changing the schedule",
+      "example": "会議は 明日に リスケしても いいですか。",
+      "wrongMeanings": [
+        "Rescue work",
+        "Research of the schedule",
+        "Cancelling the meeting"
+      ],
+      "furigana": [
+        [
+          "別",
+          "べつ"
+        ]
+      ]
+    },
+    {
+      "id": "chousei",
+      "term": "調整",
+      "reading": "ちょうせい",
+      "romaji": "chousei",
+      "meaningJa": "日程や 担当を、みんなに 合うように 決め直す ことです。",
+      "englishTerm": "Adjustment",
+      "example": "来週の 会議の 時間を 調整します。",
+      "wrongMeanings": [
+        "Cooperation",
+        "Announcement",
+        "Correction"
+      ],
+      "furigana": [
+        [
+          "調整",
+          "ちょうせい"
+        ],
+        [
+          "日程",
+          "にってい"
+        ],
+        [
+          "担当",
+          "たんとう"
+        ]
+      ]
+    },
+    {
+      "id": "esukareeshon",
+      "term": "エスカレーション",
+      "reading": "えすかれーしょん",
+      "romaji": "esukareeshon",
+      "meaningJa": "自分では 決められない ことを、上の 人に 上げて 判断を もらう ことです。",
+      "englishTerm": "Passing it up to a manager",
+      "example": "お客さまの 要望が 大きいので、部長に エスカレーションします。",
+      "wrongMeanings": [
+        "Riding up an escalator",
+        "Handing it to a coworker",
+        "Putting it on hold"
+      ],
+      "furigana": [
+        [
+          "上げて",
+          "あげて"
+        ],
+        [
+          "判断",
+          "はんだん"
+        ],
+        [
+          "要望",
+          "ようぼう"
+        ],
+        [
+          "部長",
+          "ぶちょう"
+        ]
+      ]
+    },
+    {
+      "id": "yuusentaiou",
+      "term": "優先対応",
+      "reading": "ゆうせんたいおう",
+      "romaji": "yuusentaiou",
+      "meaningJa": "ほかの 仕事より 先に、その ことを する ことです。",
+      "englishTerm": "Dealing with it first",
+      "example": "本番の 障害なので、優先対応に なります。",
+      "wrongMeanings": [
+        "Dealing with it later",
+        "Putting it on hold",
+        "Passing it to a manager"
+      ],
+      "furigana": [
+        [
+          "優先対応",
+          "ゆうせんたいおう"
+        ],
+        [
+          "優先",
+          "ゆうせん"
+        ],
+        [
+          "対応",
+          "たいおう"
+        ]
+      ]
+    },
+    {
+      "id": "atomawashi",
+      "term": "後回し",
+      "reading": "あとまわし",
+      "romaji": "atomawashi",
+      "meaningJa": "今は しないで、ほかの 仕事の あとで する ことです。",
+      "englishTerm": "Doing it after other tasks",
+      "example": "その 直しは 小さいので、後回しに します。",
+      "wrongMeanings": [
+        "Doing it before other tasks",
+        "Not doing it this time",
+        "Moving the date later"
+      ],
+      "furigana": [
+        [
+          "後回し",
+          "あとまわし"
+        ]
+      ]
+    },
+    {
+      "id": "sukoopu",
+      "term": "スコープ",
+      "reading": "すこーぷ",
+      "romaji": "sukoopu",
+      "meaningJa": "今回の プロジェクトで やると 決めた、仕事の 範囲です。",
+      "englishTerm": "What the project covers",
+      "example": "その 機能は、今回の スコープに 入って います。",
+      "wrongMeanings": [
+        "What the project leaves out",
+        "How long the project takes",
+        "Who is on the project team"
+      ],
+      "furigana": [
+        [
+          "範囲",
+          "はんい"
+        ]
+      ]
+    },
+    {
+      "id": "sukoopugai",
+      "term": "スコープ外",
+      "reading": "すこーぷがい",
+      "romaji": "sukoopugai",
+      "meaningJa": "今回の プロジェクトでは やらないと 決めた、仕事の 範囲です。",
+      "englishTerm": "What the project leaves out",
+      "example": "画面の デザインの 変更は、スコープ外です。",
+      "wrongMeanings": [
+        "What the project covers",
+        "Work done outside the office",
+        "Work with an outside company"
+      ],
+      "furigana": [
+        [
+          "範囲",
+          "はんい"
+        ],
+        [
+          "変更",
+          "へんこう"
+        ],
+        [
+          "外です",
+          "がいです"
+        ]
+      ]
+    },
+    {
+      "id": "chakushu",
+      "term": "着手",
+      "reading": "ちゃくしゅ",
+      "romaji": "chakushu",
+      "meaningJa": "その 作業を 実際に 始める ことです。",
+      "englishTerm": "Starting the work",
+      "example": "明日から、新しい 機能の 開発に 着手します。",
+      "wrongMeanings": [
+        "Finishing the work",
+        "Not starting the work yet",
+        "Getting the work assigned"
+      ],
+      "furigana": [
+        [
+          "着手",
+          "ちゃくしゅ"
+        ],
+        [
+          "作業",
+          "さぎょう"
+        ]
+      ]
+    },
+    {
+      "id": "michakushu",
+      "term": "未着手",
+      "reading": "みちゃくしゅ",
+      "romaji": "michakushu",
+      "meaningJa": "まだ 作業を 始めて いない ことです。",
+      "englishTerm": "Not yet started",
+      "example": "この チケットは、まだ 未着手です。",
+      "wrongMeanings": [
+        "Already started",
+        "Not yet finished",
+        "Not yet assigned"
+      ],
+      "furigana": [
+        [
+          "未着手",
+          "みちゃくしゅ"
+        ],
+        [
+          "着手",
+          "ちゃくしゅ"
+        ],
+        [
+          "作業",
+          "さぎょう"
+        ]
+      ]
+    },
+    {
+      "id": "hikitsugi",
+      "term": "引き継ぎ",
+      "reading": "ひきつぎ",
+      "romaji": "hikitsugi",
+      "meaningJa": "自分の 仕事や 情報を、次の 担当者に 渡す ことです。",
+      "englishTerm": "Handing over work to someone",
+      "example": "来月 チームが 変わるので、引き継ぎの 資料を 作ります。",
+      "wrongMeanings": [
+        "Taking over someone's work",
+        "Passing a problem up to a boss",
+        "Choosing who does the work"
+      ],
+      "furigana": [
+        [
+          "引き継ぎ",
+          "ひきつぎ"
+        ],
+        [
+          "担当者",
+          "たんとうしゃ"
+        ],
+        [
+          "担当",
+          "たんとう"
+        ],
+        [
+          "渡す",
+          "わたす"
+        ]
+      ]
+    },
+    {
+      "id": "kadaikanri",
+      "term": "課題管理",
+      "reading": "かだいかんり",
+      "romaji": "kadaikanri",
+      "meaningJa": "課題を 一覧に 書いて、それぞれが どう なったかを 見て いく ことです。",
+      "englishTerm": "Keeping track of issues",
+      "example": "課題管理の 表を、毎週 みんなで 見ます。",
+      "wrongMeanings": [
+        "Keeping track of progress",
+        "Keeping track of costs",
+        "Keeping track of members"
+      ],
+      "furigana": [
+        [
+          "課題管理",
+          "かだいかんり"
+        ],
+        [
+          "課題",
+          "かだい"
+        ],
+        [
+          "管理",
+          "かんり"
+        ],
+        [
+          "一覧",
+          "いちらん"
+        ],
+        [
+          "毎週",
+          "まいしゅう"
+        ]
+      ]
+    },
+    {
+      "id": "shinchokukanri",
+      "term": "進捗管理",
+      "reading": "しんちょくかんり",
+      "romaji": "shinchokukanri",
+      "meaningJa": "作業が 予定どおり 進んで いるかを、いつも 見て いく ことです。",
+      "englishTerm": "Keeping track of progress",
+      "example": "リーダーは、チーム全体の 進捗管理を します。",
+      "wrongMeanings": [
+        "Keeping track of issues",
+        "Keeping track of the budget",
+        "Keeping track of quality"
+      ],
+      "furigana": [
+        [
+          "進捗管理",
+          "しんちょくかんり"
+        ],
+        [
+          "管理",
+          "かんり"
+        ],
+        [
+          "作業",
+          "さぎょう"
+        ],
+        [
+          "全体",
+          "ぜんたい"
+        ]
+      ]
+    },
+    {
+      "id": "kihyou",
+      "term": "起票",
+      "reading": "きひょう",
+      "romaji": "kihyou",
+      "meaningJa": "新しい 課題や 作業を、チケットとして 登録する ことです。",
+      "englishTerm": "Opening a new ticket",
+      "example": "この バグは、私が 起票して おきます。",
+      "wrongMeanings": [
+        "Closing a finished ticket",
+        "Standing up to vote",
+        "Writing the daily report"
+      ],
+      "furigana": [
+        [
+          "起票",
+          "きひょう"
+        ],
+        [
+          "課題",
+          "かだい"
+        ],
+        [
+          "作業",
+          "さぎょう"
+        ],
+        [
+          "登録",
+          "とうろく"
+        ]
+      ]
+    },
+    {
+      "id": "kensyu",
+      "term": "検収",
+      "reading": "けんしゅう",
+      "romaji": "kenshuu",
+      "meaningJa": "とどいた ものが 注文どおりか、お客さまが 調べて うけとる ことです。",
+      "englishTerm": "Acceptance inspection",
+      "example": "来週、お客さまの 検収が あります。",
+      "wrongMeanings": [
+        "Product delivery",
+        "Vendor's final test",
+        "Release approval"
+      ],
+      "furigana": [
+        [
+          "検収",
+          "けんしゅう"
+        ],
+        [
+          "注文",
+          "ちゅうもん"
+        ]
+      ]
+    },
+    {
+      "id": "teirei",
+      "term": "定例",
+      "reading": "ていれい",
+      "romaji": "teirei",
+      "meaningJa": "毎週 など、決まった 日に いつも する 会議の ことです。",
+      "englishTerm": "Regular meeting",
+      "example": "月曜日の 定例で、進捗を 報告します。",
+      "wrongMeanings": [
+        "Emergency meeting",
+        "Kickoff meeting",
+        "Standard example"
+      ],
+      "furigana": [
+        [
+          "定例",
+          "ていれい"
+        ],
+        [
+          "毎週",
+          "まいしゅう"
+        ]
+      ]
+    },
+    {
+      "id": "ririsukahi",
+      "term": "リリース可否",
+      "reading": "りりーすかひ",
+      "romaji": "ririisukahi",
+      "meaningJa": "今 リリースしても よいか どうかを 決める ことです。",
+      "englishTerm": "Whether it can be released",
+      "example": "テストの 結果を 見て、リリース可否を 判断します。",
+      "wrongMeanings": [
+        "When it will be released",
+        "Whether it was delivered",
+        "Whether the customer accepted it"
+      ],
+      "furigana": [
+        [
+          "可否",
+          "かひ"
+        ],
+        [
+          "判断",
+          "はんだん"
+        ]
+      ]
+    },
+    {
+      "id": "kirikae",
+      "term": "切り替え",
+      "reading": "きりかえ",
+      "romaji": "kirikae",
+      "meaningJa": "古い システムや 環境を やめて、新しい ものに 変える ことです。",
+      "englishTerm": "Switching to the new system",
+      "example": "日曜日の 夜に、新しい サーバーへ 切り替えます。",
+      "wrongMeanings": [
+        "Going back to the old system",
+        "Cutting the system in two",
+        "Shutting the system down"
+      ],
+      "furigana": [
+        [
+          "切り替え",
+          "きりかえ"
+        ],
+        [
+          "古い",
+          "ふるい"
+        ],
+        [
+          "環境",
+          "かんきょう"
+        ],
+        [
+          "日曜日",
+          "にちようび"
+        ],
+        [
+          "夜",
+          "よる"
+        ]
+      ]
+    },
+    {
+      "id": "kadou",
+      "term": "稼働",
+      "reading": "かどう",
+      "romaji": "kadou",
+      "meaningJa": "システムが 本番で 実際に 動いて、使われて いる ことです。",
+      "englishTerm": "Running and in use",
+      "example": "新しい システムは、来月から 稼働します。",
+      "wrongMeanings": [
+        "Working to earn money",
+        "Stopped for repairs",
+        "Being tested"
+      ],
+      "furigana": [
+        [
+          "稼働",
+          "かどう"
+        ]
+      ]
+    },
+    {
+      "id": "baffa",
+      "term": "バッファ",
+      "reading": "ばっふぁ",
+      "romaji": "baffa",
+      "meaningJa": "遅れても 間に合うように、予定に 入れて おく 余裕の 時間です。",
+      "englishTerm": "Spare time in the schedule",
+      "example": "テストの 予定には、少し バッファを 入れて あります。",
+      "wrongMeanings": [
+        "A buffet of choices",
+        "A person who polishes",
+        "A task put on hold"
+      ],
+      "furigana": [
+        [
+          "間に合う",
+          "まにあう"
+        ],
+        [
+          "入れて",
+          "いれて"
+        ],
+        [
+          "余裕",
+          "よゆう"
+        ],
+        [
+          "少し",
+          "すこし"
+        ]
+      ]
+    },
+    {
+      "id": "pendingu",
+      "term": "ペンディング",
+      "reading": "ぺんでぃんぐ",
+      "romaji": "pendingu",
+      "meaningJa": "決められないので、いったん 止めて 待って いる 状態です。",
+      "englishTerm": "Put on hold for now",
+      "example": "その 話は、お客さまの 返事を 待って ペンディングに します。",
+      "wrongMeanings": [
+        "Writing with a pen",
+        "Spare time in the plan",
+        "Cancelled for this time"
+      ],
+      "furigana": [
+        [
+          "止めて",
+          "とめて"
+        ],
+        [
+          "状態",
+          "じょうたい"
+        ]
+      ]
+    },
+    {
+      "id": "maedaoshi",
+      "term": "前倒し",
+      "reading": "まえだおし",
+      "romaji": "maedaoshi",
+      "meaningJa": "予定より 早い 日に する ように 変える ことです。",
+      "englishTerm": "Moving the date earlier",
+      "example": "リリースを 一週間 前倒しできますか。",
+      "wrongMeanings": [
+        "Moving the date later",
+        "Falling down forward",
+        "Doing it after other tasks"
+      ],
+      "furigana": [
+        [
+          "前倒し",
+          "まえだおし"
+        ],
+        [
+          "一週間",
+          "いっしゅうかん"
+        ]
+      ]
+    },
+    {
+      "id": "bakkuappu",
+      "term": "バックアップ",
+      "reading": "ばっくあっぷ",
+      "romaji": "bakkuappu",
+      "meaningJa": "データが 消えても 困らないように、別の 場所に コピーを 保存して おく ことです。",
+      "englishTerm": "Saving a copy of the data",
+      "example": "毎晩、データベースの バックアップを とって います。",
+      "wrongMeanings": [
+        "Putting saved data back",
+        "Going back to the old version",
+        "Supporting a coworker from behind"
+      ],
+      "furigana": [
+        [
+          "消え",
+          "きえ"
+        ],
+        [
+          "別",
+          "べつ"
+        ],
+        [
+          "保存",
+          "ほぞん"
+        ],
+        [
+          "毎晩",
+          "まいばん"
+        ]
+      ]
+    },
+    {
+      "id": "fukugen",
+      "term": "復元",
+      "reading": "ふくげん",
+      "romaji": "fukugen",
+      "meaningJa": "保存して おいた コピーから、データを 元の 状態に 戻す ことです。",
+      "englishTerm": "Putting saved data back",
+      "example": "消えた ファイルを、バックアップから 復元しました。",
+      "wrongMeanings": [
+        "Saving a copy of the data",
+        "Getting the system working again",
+        "Going back to the old version"
+      ],
+      "furigana": [
+        [
+          "復元",
+          "ふくげん"
+        ],
+        [
+          "保存",
+          "ほぞん"
+        ],
+        [
+          "元の",
+          "もとの"
+        ],
+        [
+          "状態",
+          "じょうたい"
+        ],
+        [
+          "戻す",
+          "もどす"
+        ],
+        [
+          "消え",
+          "きえ"
+        ]
+      ]
+    },
+    {
+      "id": "taisei",
+      "term": "体制",
+      "reading": "たいせい",
+      "romaji": "taisei",
+      "meaningJa": "プロジェクトを 進める 人と、それぞれの 役割の 組み合わせです。",
+      "englishTerm": "Who does what in the team",
+      "example": "新しい プロジェクトの 体制を、みんなに 説明します。",
+      "wrongMeanings": [
+        "Working together as a team",
+        "Telling the whole team",
+        "Physical condition of a person"
+      ],
+      "furigana": [
+        [
+          "体制",
+          "たいせい"
+        ],
+        [
+          "役割",
+          "やくわり"
+        ],
+        [
+          "組み合わせ",
+          "くみあわせ"
+        ],
+        [
+          "説明",
+          "せつめい"
+        ]
+      ]
+    },
+    {
+      "id": "shuuchi",
+      "term": "周知",
+      "reading": "しゅうち",
+      "romaji": "shuuchi",
+      "meaningJa": "知って おくべき ことを、関係する 人 みんなに 知らせる ことです。",
+      "englishTerm": "Letting everyone know",
+      "example": "新しい 運用ルールを、社内に 周知して ください。",
+      "wrongMeanings": [
+        "Working with other teams",
+        "Deciding who does what",
+        "Knowing everything around"
+      ],
+      "furigana": [
+        [
+          "周知",
+          "しゅうち"
+        ],
+        [
+          "関係",
+          "かんけい"
         ]
       ]
     }

@@ -1,0 +1,87 @@
+{
+  "kind": "wordstage",
+  "id": "business_kotoba",
+  "title": "ビジネス表現",
+  "description": "職場で 毎日 使う 30の 言い方です。声かけ・報告・相談・依頼・応答・おわびを まとめて あります。",
+  "fieldSequence": [
+    "forest",
+    "sky",
+    "space"
+  ],
+  "questionCount": 30,
+  "passRate": 80,
+  "furigana": [
+    [
+      "表現",
+      "ひょうげん"
+    ],
+    [
+      "職場",
+      "しょくば"
+    ],
+    [
+      "毎日",
+      "まいにち"
+    ],
+    [
+      "使う",
+      "つかう"
+    ],
+    [
+      "言い方",
+      "いいかた"
+    ],
+    [
+      "声",
+      "こえ"
+    ],
+    [
+      "報告",
+      "ほうこく"
+    ],
+    [
+      "相談",
+      "そうだん"
+    ],
+    [
+      "依頼",
+      "いらい"
+    ],
+    [
+      "応答",
+      "おうとう"
+    ]
+  ],
+  "wordIds": [
+    "otsukaresama",
+    "yoroshiideshouka",
+    "oisogashiitokoro",
+    "gohoukoku",
+    "kanryou",
+    "taiouchuu",
+    "sinchoku",
+    "honjitsuchuu",
+    "fuguai",
+    "nouki",
+    "kyouyuu",
+    "gosoudan",
+    "kakunin",
+    "shiyou",
+    "atteimasuka",
+    "yuusen",
+    "genin",
+    "otesuudesuga",
+    "gokakunin",
+    "rebyu",
+    "shiryou",
+    "shikyuu",
+    "kigen",
+    "shouchishimashita",
+    "taiou",
+    "shoushou",
+    "nochihodo",
+    "gozaimasen",
+    "mousiwakegozaimasen",
+    "hikitsuzuki"
+  ]
+}
