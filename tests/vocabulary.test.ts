@@ -1,8 +1,9 @@
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { vocabSchema, wordStageSchema, type VocabBook } from "../src/content/schema";
 import { checkFuriganaCoverageOf } from "../src/lib/content-checks";
+import { buildFuriganaIndex, uncoveredKanji } from "../src/lib/text/furigana";
 import {
   gameWordsOf,
   hydrateArticle,
@@ -206,5 +207,65 @@ describe("読みを 足せる（語ごとの よみ辞書）", () => {
       vocab: [{ term: book.words[0]!.term, reading: book.words[0]!.reading, meaning: "紙に 書く" }],
     };
     expect(checkFuriganaCoverageOf("m.json", borrowed as never, "error")).toEqual([]);
+  });
+});
+
+/*
+ * **単語テストの 画面で 裸の 漢字が 出て いないか。**
+ *
+ * `lint:content` の 覆い検査は、ことばの正の 中で **語ごとの `furigana` を
+ * ぜんぶ プールして** 見る。ところが 画面へ 運ぶ `hydrateWordStage` は、
+ * ながらく その 足し前を 落として いた——検査は 緑、画面は 裸、という ずれが
+ * 2026-09-09 に 147の 文で 見つかった（「お手数[てすう]」が 束の 1字の 見出しに
+ * 負けて「お手[て]数[かず]」に なる など）。
+ *
+ * ここは **画面が 使う 索引そのもの**（`hydrateWordStage` の 戻り値）で 見るので、
+ * 同じ ずれが 起きたら 落ちる。
+ */
+describe("単語テストの 画面の ふりがな", () => {
+  const stageIds = readdirSync(join(__dirname, "..", "content", "wordstages"))
+    .filter((f) => f.endsWith(".json"))
+    .map((f) => f.replace(/\.json$/, ""));
+
+  it("どの セットでも、説明文と 例文に 裸の 漢字が 残らない", () => {
+    const bare: string[] = [];
+    for (const id of stageIds) {
+      const stage = hydrateWordStage(wordStage(id), book.words, book.furigana);
+      if (!stage) continue;
+      const index = buildFuriganaIndex(stage.furigana as [string, string][]);
+      for (const word of stage.words) {
+        for (const text of [word.explanationJa, word.example]) {
+          if (!text) continue;
+          const missing = uncoveredKanji(text, index);
+          if (missing.length > 0) bare.push(`${id}／${word.term}: ${missing.join("")} … ${text}`);
+        }
+      }
+    }
+    expect(bare).toEqual([]);
+  });
+
+  it("語ごとの 足し前が 画面の 読み辞書に 入る（落とさない）", () => {
+    const withOwn = book.words.find((w) => (w.furigana ?? []).length > 0)!;
+    const stage = hydrateWordStage(
+      wordStageSchema.parse({
+        kind: "wordstage",
+        id: "t",
+        title: "て",
+        description: "て",
+        fieldSequence: ["forest"],
+        questionCount: 1,
+        passRate: 80,
+        wordIds: book.words
+          .slice(0, 6)
+          .map((w) => w.id)
+          .includes(withOwn.id)
+          ? book.words.slice(0, 6).map((w) => w.id)
+          : [withOwn.id, ...book.words.slice(0, 5).map((w) => w.id)],
+      }),
+      book.words,
+      book.furigana,
+    )!;
+    const [surface, reading] = withOwn.furigana![0]!;
+    expect(stage.furigana).toContainEqual([surface, reading]);
   });
 });

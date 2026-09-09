@@ -1081,6 +1081,7 @@ export const PERSONALITY_RESULT_READINGS: readonly Reading[] = [
   { text: "参考", reading: "さんこう" },
   { text: "仕組み", reading: "しくみ" },
   { text: "手順", reading: "てじゅん" },
+  { text: "問題", reading: "もんだい" },
   { text: "仲間", reading: "なかま" },
   { text: "運用", reading: "うんよう" },
   { text: "対応", reading: "たいおう" },
