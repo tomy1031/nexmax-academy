@@ -1766,6 +1766,14 @@
     [
       "落として",
       "おとして"
+    ],
+    [
+      "機械",
+      "きかい"
+    ],
+    [
+      "壊れない",
+      "こわれない"
     ]
   ],
   "words": [
@@ -3646,13 +3654,13 @@
       "term": "チケット",
       "reading": "ちけっと",
       "meaningJa": "バグや 作業を 1つずつ 番号を つけて 書いた、仕事の カードです。",
-      "englishTerm": "Ticket",
+      "englishTerm": "Card for one task",
       "romaji": "chiketto",
       "example": "バグを 見つけたら、チケットを 作って ください。",
       "wrongMeanings": [
-        "Entry pass",
-        "Receipt",
-        "Report"
+        "Pass to enter a place",
+        "Paper you get after paying",
+        "Report of the results"
       ],
       "furigana": [
         [
@@ -4455,7 +4463,7 @@
       "id": "nouhin",
       "term": "納品",
       "reading": "のうひん",
-      "meaningJa": "できた ものを、お客さまに わたす ことです。",
+      "meaningJa": "できた ものを、お客さまに 渡す ことです。",
       "englishTerm": "Delivery",
       "wrongMeanings": [
         "Inspection",
@@ -4466,12 +4474,20 @@
       "example": "金曜日に、お客さまへ 納品します。",
       "furigana": [
         [
+          "金曜日",
+          "きんようび"
+        ],
+        [
           "納品",
           "のうひん"
         ],
         [
-          "金曜日",
-          "きんようび"
+          "渡す",
+          "わたす"
+        ],
+        [
+          "客",
+          "きゃく"
         ]
       ]
     },
@@ -4479,7 +4495,7 @@
       "id": "nouki",
       "term": "納期",
       "reading": "のうき",
-      "meaningJa": "できた ものを わたす、やくそくの 日です。",
+      "meaningJa": "できた ものを 渡す、やくそくの 日です。",
       "englishTerm": "Delivery date",
       "wrongMeanings": [
         "Start date",
@@ -4487,15 +4503,31 @@
         "Storage period"
       ],
       "romaji": "nouki",
-      "example": "納期は 来週の 金曜日です。おくれないように します。",
+      "example": "納期は 来週の 金曜日です。遅れないように します。",
       "furigana": [
+        [
+          "遅れない",
+          "おくれない"
+        ],
+        [
+          "金曜日",
+          "きんようび"
+        ],
+        [
+          "日です",
+          "ひです"
+        ],
         [
           "納期",
           "のうき"
         ],
         [
-          "金曜日",
-          "きんようび"
+          "渡す",
+          "わたす"
+        ],
+        [
+          "来週",
+          "らいしゅう"
         ]
       ]
     },
@@ -4667,7 +4699,7 @@
       "id": "kakunin",
       "term": "確認",
       "reading": "かくにん",
-      "meaningJa": "まちがいが ないかを、しっかり 見て たしかめる ことです。",
+      "meaningJa": "まちがいが ないかを、しっかり 見て 確かめる ことです。",
       "englishTerm": "Confirmation",
       "wrongMeanings": [
         "Consideration",
@@ -4677,6 +4709,10 @@
       "romaji": "kakunin",
       "example": "送る 前に、もう 一度 内容を 確認します。",
       "furigana": [
+        [
+          "確かめる",
+          "たしかめる"
+        ],
         [
           "確認",
           "かくにん"
@@ -5121,7 +5157,7 @@
       "id": "hoshu",
       "term": "保守",
       "reading": "ほしゅ",
-      "meaningJa": "作った あとも、こわれないように 見る 仕事です。",
+      "meaningJa": "作った あとも、壊れないように 見つづける 仕事です。",
       "englishTerm": "Maintenance",
       "wrongMeanings": [
         "Operation",
@@ -5132,8 +5168,24 @@
       "example": "リリースの あとは、保守の 仕事が つづきます。",
       "furigana": [
         [
+          "見つづける",
+          "みつづける"
+        ],
+        [
+          "壊れない",
+          "こわれない"
+        ],
+        [
+          "作った",
+          "つくった"
+        ],
+        [
           "保守",
           "ほしゅ"
+        ],
+        [
+          "仕事",
+          "しごと"
         ]
       ]
     },
@@ -5165,7 +5217,7 @@
       "id": "sousa",
       "term": "操作",
       "reading": "そうさ",
-      "meaningJa": "きかいを 手で うごかす ことです。",
+      "meaningJa": "機械や 画面を、手で 動かして 使う ことです。",
       "englishTerm": "Operating a machine",
       "wrongMeanings": [
         "Behavior of a machine",
@@ -5176,12 +5228,36 @@
       "example": "この 画面の 操作を、お客さまに 説明します。",
       "furigana": [
         [
+          "動かして",
+          "うごかして"
+        ],
+        [
           "操作",
           "そうさ"
         ],
         [
           "説明",
           "せつめい"
+        ],
+        [
+          "機械",
+          "きかい"
+        ],
+        [
+          "画面",
+          "がめん"
+        ],
+        [
+          "使う",
+          "つかう"
+        ],
+        [
+          "手",
+          "て"
+        ],
+        [
+          "客",
+          "きゃく"
         ]
       ]
     },
@@ -5227,7 +5303,7 @@
       "id": "hozon",
       "term": "保存",
       "reading": "ほぞん",
-      "meaningJa": "きえないように、とって おく ことです。",
+      "meaningJa": "消えないように、とって おく ことです。",
       "englishTerm": "Saving",
       "wrongMeanings": [
         "Updating",
@@ -5238,8 +5314,20 @@
       "romaji": "hozon",
       "furigana": [
         [
+          "消えない",
+          "きえない"
+        ],
+        [
           "保存",
           "ほぞん"
+        ],
+        [
+          "大事",
+          "だいじ"
+        ],
+        [
+          "必ず",
+          "かならず"
         ]
       ]
     },
@@ -7056,11 +7144,11 @@
       "term": "アラート",
       "reading": "あらーと",
       "meaningJa": "あぶない ことを 知らせる 通知です。",
-      "englishTerm": "Alert",
+      "englishTerm": "Message that warns you",
       "wrongMeanings": [
-        "Alarm clock",
-        "Announcement",
-        "Log"
+        "Clock that rings in the morning",
+        "Notice to everyone in the office",
+        "Record of what happened"
       ],
       "romaji": "araato",
       "example": "アラートが 来たら、すぐに ログを 見ます。",
@@ -7579,7 +7667,7 @@
       "id": "kenshou",
       "term": "検証",
       "reading": "けんしょう",
-      "meaningJa": "本当に 正しいかを、実際に 動かして たしかめる ことです。",
+      "meaningJa": "本当に 正しいかを、実際に 動かして 確かめる ことです。",
       "englishTerm": "Verification",
       "wrongMeanings": [
         "Implementation",
@@ -7592,6 +7680,10 @@
         [
           "動かして",
           "うごかして"
+        ],
+        [
+          "確かめる",
+          "たしかめる"
         ],
         [
           "正しい",
@@ -10097,7 +10189,7 @@
       "reading": "けんしょうかんきょう",
       "romaji": "kenshoukankyou",
       "meaningJa": "本番の 前に、うごきを ためす 場所です。",
-      "englishTerm": "Staging Environment",
+      "englishTerm": "Place to try out changes",
       "example": "明日から 検証環境が 使えなく なります。",
       "wrongMeanings": [
         "Production Environment",
@@ -11134,24 +11226,12 @@
           "じょうけん"
         ],
         [
-          "必要",
-          "ひつよう"
-        ],
-        [
-          "茶道",
-          "さどう"
-        ],
-        [
-          "資格",
-          "しかく"
+          "仕事",
+          "しごと"
         ],
         [
           "要る",
           "いる"
-        ],
-        [
-          "仕事",
-          "しごと"
         ],
         [
           "機能",
@@ -12966,7 +13046,7 @@
       "term": "権限",
       "reading": "けんげん",
       "romaji": "kengen",
-      "meaningJa": "その ユーザーに ゆるされて いる、できる ことの 範囲です。",
+      "meaningJa": "その ユーザーに 許されて いる、できる ことの 範囲です。",
       "englishTerm": "Allowed actions",
       "example": "この 画面は、管理者の 権限が ないと 見られません。",
       "wrongMeanings": [
@@ -12978,6 +13058,10 @@
         [
           "見られません",
           "みられません"
+        ],
+        [
+          "許されて",
+          "ゆるされて"
         ],
         [
           "管理者",
@@ -13202,7 +13286,7 @@
       "term": "洗い出し",
       "reading": "あらいだし",
       "romaji": "araidashi",
-      "meaningJa": "必要な ものや 問題を、もれが ないように 全部 書き出す ことです。",
+      "meaningJa": "必要な ものや 問題を、漏れが ないように 全部 書き出す ことです。",
       "englishTerm": "Listing up everything",
       "example": "まず、直す ところを 洗い出しましょう。",
       "wrongMeanings": [
@@ -13226,6 +13310,14 @@
         [
           "全部",
           "ぜんぶ"
+        ],
+        [
+          "漏れ",
+          "もれ"
+        ],
+        [
+          "必要",
+          "ひつよう"
         ]
       ]
     },
@@ -13710,7 +13802,7 @@
       "term": "切り分け",
       "reading": "きりわけ",
       "romaji": "kiriwake",
-      "meaningJa": "問題が どこに あるかを、ネットワーク・サーバー・アプリ などに 分けて しぼって いく ことです。",
+      "meaningJa": "問題が どこに あるかを、場所ごとに 分けて しぼる ことです。",
       "englishTerm": "Narrowing down the area",
       "example": "まず、ネットワークか アプリか 切り分けを しましょう。",
       "wrongMeanings": [
@@ -13724,8 +13816,16 @@
           "きりわけ"
         ],
         [
+          "分けて",
+          "わけて"
+        ],
+        [
           "問題",
           "もんだい"
+        ],
+        [
+          "場所",
+          "ばしょ"
         ]
       ]
     },
@@ -14002,7 +14102,7 @@
       "term": "対応済み",
       "reading": "たいおうずみ",
       "romaji": "taiouzumi",
-      "meaningJa": "直すだけで なく、テストや お客さまへの 連絡まで、必要な ことが 全部 終わって いる 状態です。",
+      "meaningJa": "直しも テストも 連絡も、必要な ことが 全部 終わった 状態です。",
       "englishTerm": "Already handled",
       "example": "昨日の 問い合わせは 対応済みです。",
       "wrongMeanings": [
@@ -14016,6 +14116,10 @@
           "たいおうずみ"
         ],
         [
+          "終わった",
+          "おわった"
+        ],
+        [
           "全部",
           "ぜんぶ"
         ],
@@ -14026,6 +14130,18 @@
         [
           "昨日",
           "きのう"
+        ],
+        [
+          "直し",
+          "なおし"
+        ],
+        [
+          "連絡",
+          "れんらく"
+        ],
+        [
+          "必要",
+          "ひつよう"
         ]
       ]
     },
@@ -14138,7 +14254,7 @@
       "term": "回帰テスト",
       "reading": "かいきてすと",
       "romaji": "kaikitesuto",
-      "meaningJa": "直した あとで、ほかの 機能が 壊れて いないか、前と 同じ テストを もう 一度 全部 やる ことです。",
+      "meaningJa": "直した あとで、ほかの 機能が 壊れて いないか 確かめる テストです。",
       "englishTerm": "Regression test",
       "example": "リリースの 前に 回帰テストを 全部 通します。",
       "wrongMeanings": [
@@ -14152,12 +14268,28 @@
           "かいきてすと"
         ],
         [
+          "確かめる",
+          "たしかめる"
+        ],
+        [
+          "直した",
+          "なおした"
+        ],
+        [
+          "壊れて",
+          "こわれて"
+        ],
+        [
           "回帰",
           "かいき"
         ],
         [
           "全部",
           "ぜんぶ"
+        ],
+        [
+          "機能",
+          "きのう"
         ]
       ]
     },
@@ -14294,7 +14426,7 @@
       "term": "差し戻し",
       "reading": "さしもどし",
       "romaji": "sashimodoshi",
-      "meaningJa": "レビューで 問題が 見つかった ときに、OKを 出さないで、書いた 人に 直しを たのむ ことです。",
+      "meaningJa": "レビューで 問題が あった とき、書いた 人に 直しを たのむ ことです。",
       "englishTerm": "Sending back for rework",
       "example": "テストの 証跡が ないので、この プルリクエストは 差し戻しに します。",
       "wrongMeanings": [
@@ -14304,8 +14436,16 @@
       ],
       "furigana": [
         [
+          "見つかった",
+          "みつかった"
+        ],
+        [
           "差し戻し",
           "さしもどし"
+        ],
+        [
+          "書いた",
+          "かいた"
         ],
         [
           "証跡",
@@ -14316,8 +14456,12 @@
           "もんだい"
         ],
         [
-          "見つかった",
-          "みつかった"
+          "直し",
+          "なおし"
+        ],
+        [
+          "人",
+          "ひと"
         ]
       ]
     },
@@ -14354,7 +14498,7 @@
       "term": "証跡",
       "reading": "しょうせき",
       "romaji": "shouseki",
-      "meaningJa": "「たしかに テストした」と あとから 見せられる、スクリーンショットや ログなどの 記録です。",
+      "meaningJa": "テストを した 証拠に なる、写真や ログなどの 記録です。",
       "englishTerm": "Evidence record",
       "example": "テストの 証跡を チケットに はって ください。",
       "wrongMeanings": [
@@ -14364,12 +14508,24 @@
       ],
       "furigana": [
         [
+          "見せられる",
+          "みせられる"
+        ],
+        [
           "証跡",
           "しょうせき"
         ],
         [
-          "見せられる",
-          "みせられる"
+          "証拠",
+          "しょうこ"
+        ],
+        [
+          "写真",
+          "しゃしん"
+        ],
+        [
+          "記録",
+          "きろく"
         ]
       ]
     },
@@ -14422,7 +14578,7 @@
       "term": "結合テスト",
       "reading": "けつごうてすと",
       "romaji": "ketsugoutesuto",
-      "meaningJa": "いくつかの 部品や 機能を つないで、いっしょに 動かした ときに うまく いくか 確かめる テストです。",
+      "meaningJa": "いくつかの 機能を つないで、いっしょに 動くか 確かめる テストです。",
       "englishTerm": "Integration test",
       "example": "来週から 結合テストが 始まります。",
       "wrongMeanings": [
@@ -14436,6 +14592,10 @@
           "けつごうてすと"
         ],
         [
+          "確かめる",
+          "たしかめる"
+        ],
+        [
           "結合",
           "けつごう"
         ],
@@ -14444,8 +14604,12 @@
           "ぶひん"
         ],
         [
-          "確かめる",
-          "たしかめる"
+          "機能",
+          "きのう"
+        ],
+        [
+          "動く",
+          "うごく"
         ]
       ]
     },
@@ -14454,7 +14618,7 @@
       "term": "受け入れテスト",
       "reading": "うけいれてすと",
       "romaji": "ukeiretesuto",
-      "meaningJa": "開発の 最後に、お客さまや 使う 人が、「たのんだ とおりに できて いるか」を 確かめる テストです。",
+      "meaningJa": "使う 人が、たのんだ とおりに できて いるか 確かめる テストです。",
       "englishTerm": "Acceptance test",
       "example": "受け入れテストで お客さまから 3件 指摘が ありました。",
       "wrongMeanings": [
@@ -14480,8 +14644,16 @@
           "してき"
         ],
         [
+          "使う",
+          "つかう"
+        ],
+        [
           "件",
           "けん"
+        ],
+        [
+          "人",
+          "ひと"
         ]
       ]
     },
@@ -14491,7 +14663,7 @@
       "reading": "すてーじんぐかんきょう",
       "romaji": "sutejingukankyou",
       "meaningJa": "本番に 出す 前に、本番と 同じ 形で 試す ための 環境です。",
-      "englishTerm": "Staging environment",
+      "englishTerm": "Copy of production for the last check",
       "example": "ステージング環境で 確認してから、本番に 出します。",
       "wrongMeanings": [
         "Development environment",

@@ -112,7 +112,15 @@ export function hydrateWordStage(
    * 「お手数[てすう]」が「お手[て]数[かず]」に なり、147の 文で ルビが 消えて いた。
    * 検査と 画面が 同じ 索引を 見るように、ここで 合流させる。
    */
-  const fromVocab = vocab.filter((word) => wordIds.includes(word.id));
+  /*
+   * 並びは **`wordIds` の 順**（正の JSONの 行の 順では ない）。同じ 表記が
+   * ぶつかった ときの 勝ち負けが、ことばの正を 並べ替えただけで 黙って
+   * 変わらないように する。
+   */
+  const byId = new Map(vocab.map((word) => [word.id, word]));
+  const fromVocab = wordIds
+    .map((id) => byId.get(id))
+    .filter((word): word is VocabWord => word !== undefined);
   const terms = fromVocab.map((word): FuriganaEntry => [word.term, word.reading]);
   const perWord = fromVocab.flatMap((word) => word.furigana ?? []);
   return {

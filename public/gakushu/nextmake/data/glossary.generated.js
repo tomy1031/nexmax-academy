@@ -22,7 +22,7 @@ export const GLOSSARY = [
     term: "アラート",
     reading: "あらーと",
     meaning: "あぶない ことを 知らせる 通知です。",
-    en: "Alert",
+    en: "Message that warns you",
   },
   {
     term: "アライアンス",
@@ -267,7 +267,7 @@ export const GLOSSARY = [
   {
     term: "確認",
     reading: "かくにん",
-    meaning: "まちがいが ないかを、しっかり 見て たしかめる ことです。",
+    meaning: "まちがいが ないかを、しっかり 見て 確かめる ことです。",
     en: "Confirmation",
   },
   {
@@ -570,7 +570,7 @@ export const GLOSSARY = [
   {
     term: "検証",
     reading: "けんしょう",
-    meaning: "本当に 正しいかを、実際に 動かして たしかめる ことです。",
+    meaning: "本当に 正しいかを、実際に 動かして 確かめる ことです。",
     en: "Verification",
   },
   {
@@ -1347,7 +1347,7 @@ export const GLOSSARY = [
   {
     term: "操作",
     reading: "そうさ",
-    meaning: "きかいを 手で うごかす ことです。",
+    meaning: "機械や 画面を、手で 動かして 使う ことです。",
     en: "Operating a machine",
   },
   {
@@ -1475,7 +1475,7 @@ export const GLOSSARY = [
     term: "チケット",
     reading: "ちけっと",
     meaning: "バグや 作業を 1つずつ 番号を つけて 書いた、仕事の カードです。",
-    en: "Ticket",
+    en: "Card for one task",
   },
   { term: "地図", reading: "ちず", meaning: "進む 道が 書いて ある 絵です。", en: "Map" },
   {
@@ -1676,7 +1676,7 @@ export const GLOSSARY = [
   {
     term: "納期",
     reading: "のうき",
-    meaning: "できた ものを わたす、やくそくの 日です。",
+    meaning: "できた ものを 渡す、やくそくの 日です。",
     en: "Delivery date",
   },
   {
@@ -1688,7 +1688,7 @@ export const GLOSSARY = [
   {
     term: "納品",
     reading: "のうひん",
-    meaning: "できた ものを、お客さまに わたす ことです。",
+    meaning: "できた ものを、お客さまに 渡す ことです。",
     en: "Delivery",
   },
   { term: "能力", reading: "のうりょく", meaning: "その 人が できる 力です。", en: "Ability" },
@@ -1917,7 +1917,7 @@ export const GLOSSARY = [
   {
     term: "保守",
     reading: "ほしゅ",
-    meaning: "作った あとも、こわれないように 見る 仕事です。",
+    meaning: "作った あとも、壊れないように 見つづける 仕事です。",
     en: "Maintenance",
   },
   {
@@ -1929,7 +1929,7 @@ export const GLOSSARY = [
   {
     term: "保存",
     reading: "ほぞん",
-    meaning: "きえないように、とって おく ことです。",
+    meaning: "消えないように、とって おく ことです。",
     en: "Saving",
   },
   {
