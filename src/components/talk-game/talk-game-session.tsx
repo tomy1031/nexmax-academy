@@ -647,6 +647,11 @@ export function TalkGameSession({
         meetingId: meeting.id,
         // 「何問目」の 無い 自由な 会話なので、**ばん**を 鍵に する（話す／聞く）
         questionId: `talk:${talk.round}`,
+        /*
+         * しつもんは AI が その場で 作る ので、**ばんの id からは 引き直せない**。
+         * 話した とおりの 文を 一緒に 残す（2026-09-09 の 指定）。
+         */
+        ask: askText,
         attempt: talk.turns + 1,
         mode,
         utterance: said,

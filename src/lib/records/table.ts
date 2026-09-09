@@ -25,6 +25,7 @@ import type {
   ListeningRecord,
   MeetingRecord,
   QuizRecord,
+  RecordIndexRow,
   TalkRecord,
   WordAnswerRecord,
   WordTestRecord,
@@ -136,6 +137,35 @@ export function buildLookups(
  */
 function promptOf(lookups: Lookups, contentId: string, questionId: string): string {
   return lookups.prompts[`${contentId}:${questionId}`] || questionId;
+}
+
+/**
+ * **AIが 学生に 聞いた 文**。
+ *
+ * 引く 順は 3つ。
+ *   1. 台帳に 残って いれば それが 正（`meeting_turn_logs.ask`。話した とおりの 文）
+ *   2. **ばん＋何手目**（`<教材>:talk:talk#3`）——対話ゲーム（松井社長）の 出だしの
+ *      しつもんは 教材が 手数ぶん 持って いる。`attempt` は この 教材では
+ *      言い直しの 回数では なく **何手目か** なので、そのまま 番号に なる
+ *   3. 問いの id（ヘンディさんの ミーティング。`questions[].ask`）
+ *
+ * どれでも 引けなければ **空**。ここに id（`talk:talk`）や 予備の 文を 落とすと、
+ * しつもんの 列に **聞かれて いない もの**が 並ぶ（`promptOf` が id を 落とさない
+ * のは、まとめの 見出しで「その問いに 何人 つまずいたか」を 数える ためで、役目が ちがう）。
+ */
+function askOf(
+  lookups: Lookups,
+  contentId: string,
+  questionId: string,
+  saved: string,
+  attempt: number,
+): string {
+  return (
+    saved ||
+    lookups.prompts[`${contentId}:${questionId}#${attempt}`] ||
+    lookups.prompts[`${contentId}:${questionId}`] ||
+    ""
+  );
 }
 
 /**
@@ -395,6 +425,34 @@ const GRADE_LABEL: Record<string, string> = {
 };
 
 /**
+ * たいわ の「元の しつもん」＝ **その手の 直前に 相手が 言った こと**。
+ *
+ * たいわ には しつもんの id が 無い（相手の ことばは その場で 作られ、行として
+ * 残る）。だから 学生の 手に、同じ 会話の 中で 直前に 相手が 言った ことを 添える。
+ * 相手の 行そのものには 添えない——それが しつもん だから、同じ 文が 2回 並ぶ。
+ *
+ * 鍵は 記録の id。読めた ぶんの 中だけで 引く（上限で 切れて 相手の 手が
+ * 入って いなければ 空に なる。作り話を しない）。
+ */
+function askedInTalk(talks: readonly TalkRecord[]): Map<string, string> {
+  const bySession = new Map<string, TalkRecord[]>();
+  for (const record of talks) {
+    const list = bySession.get(record.session_id) ?? [];
+    list.push(record);
+    bySession.set(record.session_id, list);
+  }
+  const asked = new Map<string, string>();
+  for (const list of bySession.values()) {
+    let last = "";
+    for (const record of list.toSorted((a, b) => a.turn_index - b.turn_index)) {
+      if (record.speaker === "partner") last = record.body;
+      else asked.set(record.id, last);
+    }
+  }
+  return asked;
+}
+
+/**
  * 会話は **ミーティングと たいわ を 1つの 表**に する。
  *
  * 別々に すると、先生は「この子は 話せて いるか」を 2つの 画面を 行き来して 見る
@@ -406,6 +464,7 @@ export function talkTable(
   talks: readonly TalkRecord[],
   lookups: Lookups,
 ): RecordTable {
+  const asked = askedInTalk(talks);
   const rows: RecordRow[] = [
     ...meetings.map((record) => ({
       profileId: record.profile_id,
@@ -423,9 +482,17 @@ export function talkTable(
       cells: {
         ...commonCells(record.profile_id, record.meeting_id, lookups),
         kind: "ミーティング",
+        // ヘンディさんが／松井社長が 何を 聞いたか。id では 中身が 見えない。
+        ask: askOf(
+          lookups,
+          record.meeting_id,
+          record.question_id,
+          record.ask ?? "",
+          record.attempt,
+        ),
         speaker: "学生",
-        // ヘンディさんが 何を 聞いたか。id では 中身が 見えない。
-        topic: promptOf(lookups, record.meeting_id, record.question_id),
+        // 聞き出す 教材では ないので 空（この 列は たいわ の もの）。
+        topic: "",
         body: record.utterance,
         way: record.mode === "voice" ? "こえ" : "もじ",
         note:
@@ -471,6 +538,8 @@ export function talkTable(
       cells: {
         ...commonCells(record.profile_id, record.talk_id, lookups),
         kind: "たいわ",
+        // 学生の 手に、**その 直前に 相手が 言った こと**を 添える（＝聞かれた こと）。
+        ask: asked.get(record.id) ?? "",
         speaker: record.speaker === "learner" ? "学生" : "あいて",
         // 要件ボードの 見出し（`r3` では なく「よさん」）。
         topic:
@@ -489,9 +558,16 @@ export function talkTable(
     columns: [
       ...COMMON_COLUMNS,
       { key: "kind", label: "しゅるい" },
+      /*
+       * **元の しつもんを 先に 置く**（2026-09-09 の 指定「会話に関しては、元の質問
+       *（AIが生徒に確認する内容）も 表示して欲しい」）。前は 9列目に あり、横に
+       * 送らないと 見えなかった——学生の 答えだけ 読んでも、何を 聞かれた 答えかが
+       * 分からない。
+       */
+      { key: "ask", label: "元の しつもん（AI）" },
       { key: "speaker", label: "話し手" },
       { key: "body", label: "話した こと" },
-      { key: "topic", label: "しつもん／聞き出せた こと" },
+      { key: "topic", label: "聞き出せた こと" },
       { key: "way", label: "やりかた" },
       { key: "note", label: "見かた" },
       { key: "reply", label: "あいての 返事" },
@@ -786,6 +862,84 @@ export function matchesProfile(profile: ProfileRow | undefined, filter: RecordFi
   // 未設定の ままの 学生は、先生が 声を かける 相手である。
   if (filter.cohort === -1 && (profile?.cohort ?? 0) !== 0) return false;
   return true;
+}
+
+/* ------------------------------------------------------------------ *
+ * 見取り図 —— **どこに 記録が あるか**
+ *
+ * 2026-09-09 の 指定で、画面の 順が 変わった:
+ *   前 … 種類を えらぶ → 絞り込む → 表
+ *   今 … 絞り込む → **出た データの 種類**を えらぶ → 表
+ * その ために、表を 読む 前に「この 絞り込みで どこに 記録が あるか」が 要る。
+ * 中身は 見ない（件数だけ）ので、素の 表を 読むより ずっと 軽い。
+ * ------------------------------------------------------------------ */
+
+/** 人の 絞り込み（所属・期生・メンバー）だけを 見る。ステージ・単元は ここでは 効かせない。 */
+function personOnly(filter: RecordFilter): RecordFilter {
+  return { ...filter, stageId: "", unitId: "", text: "" };
+}
+
+/**
+ * 記録の ある 単元。
+ *
+ * **人の 絞り込みを 効かせる**——「3期生の この子」を えらんだら、その子が
+ * さわった 教材だけに なる。ステージ・単元は 効かせない（自分自身を 絞る ことに なる）。
+ */
+export function unitsWithRecords(
+  index: readonly RecordIndexRow[],
+  filter: RecordFilter,
+  lookups: Lookups,
+): ReadonlySet<string> {
+  const who = personOnly(filter);
+  const found = new Set<string>();
+  for (const row of index) {
+    if (row.n <= 0) continue;
+    if (!matchesProfile(lookups.profiles.get(row.profile_id), who)) continue;
+    found.add(row.unit_id);
+  }
+  return found;
+}
+
+/**
+ * 記録の ある 種類（ボタンに 出す ぶん）。並びは `RECORD_KINDS` の まま。
+ *
+ * 人・ステージ・単元の 絞り込みを ぜんぶ 効かせる。ことばで さがす は 効かせない
+ *（あれは 出た 行を 絞る ものなので、種類の ボタンが 打つたびに 消えては 困る）。
+ */
+export function kindsWithRecords(
+  index: readonly RecordIndexRow[],
+  filter: RecordFilter,
+  lookups: Lookups,
+): readonly RecordKind[] {
+  const who = personOnly(filter);
+  const found = new Set<string>();
+  for (const row of index) {
+    if (row.n <= 0) continue;
+    if (!matchesProfile(lookups.profiles.get(row.profile_id), who)) continue;
+    if (filter.unitId !== "" && row.unit_id !== filter.unitId) continue;
+    if (filter.stageId !== "" && (lookups.units.get(row.unit_id)?.stageId ?? "") !== filter.stageId)
+      continue;
+    found.add(row.kind);
+  }
+  return RECORD_KINDS.map((one) => one.id).filter((id) => found.has(id));
+}
+
+/**
+ * 既定の 種類 ＝ **学生が 入れた ほう**（2026-09-09 の 指定
+ * 「デフォルトは入力されたデータにしてほしい」）。
+ *
+ * 進み具合は「開いた・おわった」しか 言わない。先生が まず 読みたいのは
+ * 書いた こと・話した ことなので、それが ある ならそちらを 先に 出す。
+ * 何も 無ければ 進み具合（表は 空で、画面が そう 言う）。
+ */
+/** ボタンと 同じ 並び。ただし **進み具合だけ うしろ**に 回す。 */
+const KIND_PREFERENCE: readonly RecordKind[] = [
+  ...RECORD_KINDS.map((one) => one.id).filter((id) => id !== "progress"),
+  "progress",
+];
+
+export function defaultKind(available: readonly RecordKind[]): RecordKind {
+  return KIND_PREFERENCE.find((id) => available.includes(id)) ?? "progress";
 }
 
 export function filterRows(

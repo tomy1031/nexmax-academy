@@ -24,6 +24,7 @@ function turn(overrides: Partial<MeetingTurnLog> = {}): MeetingTurnLog {
   return {
     meetingId: "kaisha_houkoku_meeting",
     questionId: "q1_itsu",
+    ask: "会社は いつ できましたか。",
     attempt: 1,
     mode: "text",
     utterance: "2018年に できました。",

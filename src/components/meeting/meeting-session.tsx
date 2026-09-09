@@ -797,6 +797,8 @@ export function MeetingSession({
       bufferMeetingTurn({
         meetingId: meeting.id,
         questionId: asked.id,
+        // 先生の 画面に **聞かれた 文そのもの**を 出す（学生の 名前を 入れた あとの 形）。
+        ask: withName(asked.ask),
         attempt,
         mode: spoken ? "voice" : "text",
         utterance,
