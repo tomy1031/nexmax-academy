@@ -73,6 +73,12 @@ const PROMPTS = {
   "houkoku-quiz:q1-1": "なぜ そう 思いましたか",
   "houkoku-meeting:q1": "きのうは 何を しましたか",
   "kaisha-talk:r3": "よさん",
+  /*
+   * 対話ゲーム（松井社長）は **ばん＋何手目**で 引く。`attempt` が この 教材では
+   * 言い直しの 回数では なく 何手目か だから（`loadUnitIndex` が 作る 鍵）。
+   */
+  "kaisha-talkgame:talk:talk#2": "NEXT MAKEで、どんな 仕事を やって みたいですか。",
+  "kaisha-talkgame:talk:listen": "では、こんどは あなたの ばんです。",
 };
 
 const LOOKUPS = buildLookups([AYA, BOPHA, NOSCHOOL], UNITS, PROMPTS);
@@ -756,9 +762,28 @@ describe("問いの 文を 出す", () => {
     expect(table.rows[0]?.cells.ask).toBe("その 会社の どこが おもしろいと 思いましたか");
   });
 
-  it("しつもんが どこにも 無ければ 空に する（id を しつもんの 列に 落とさない）", () => {
+  it("対話ゲームは 何手目かで 出だしの しつもんを 引き当てる（attempt = 手数）", () => {
     const table = talkTable(
-      [meetingRow({ meeting_id: "kaisha-talkgame", question_id: "talk:talk" })],
+      [meetingRow({ meeting_id: "kaisha-talkgame", question_id: "talk:talk", attempt: 2 })],
+      [],
+      LOOKUPS,
+    );
+    expect(table.rows[0]?.cells.ask).toBe("NEXT MAKEで、どんな 仕事を やって みたいですか。");
+  });
+
+  it("聞く ばんは うながしの 文（手数では 分かれない）", () => {
+    const table = talkTable(
+      [meetingRow({ meeting_id: "kaisha-talkgame", question_id: "talk:listen", attempt: 6 })],
+      [],
+      LOOKUPS,
+    );
+    expect(table.rows[0]?.cells.ask).toBe("では、こんどは あなたの ばんです。");
+  });
+
+  it("出だしを 使いきった あとの 深掘りは 空に する（予備の 文で 埋めない）", () => {
+    // AIが その場で 作る しつもんは 教材に 無い。**聞かれて いない 文**を 出すより 空。
+    const table = talkTable(
+      [meetingRow({ meeting_id: "kaisha-talkgame", question_id: "talk:talk", attempt: 9 })],
       [],
       LOOKUPS,
     );

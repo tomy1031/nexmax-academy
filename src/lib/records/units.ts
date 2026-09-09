@@ -107,6 +107,7 @@ export async function loadUnitIndex(): Promise<UnitIndex> {
    *   もんだい（quizset） … `questions[].q`   … 設問文
    *   ミーティング        … `questions[].ask` … 相手（ヘンディさん）の しつもん
    *   たいわ（scenario）  … `interview.reqs[].label` … 要件ボードの 見出し
+   *   対話ゲーム（松井社長）… `talkGame.openers[].ask` … 出だしの しつもん（下で 別に 拾う）
    * どれも「先生が 読んで 中身が 分かる 一文」なので、同じ 引き出しに 入れる。
    */
   const prompts: Record<string, string> = {};
@@ -119,6 +120,32 @@ export async function loadUnitIndex(): Promise<UnitIndex> {
   }
   for (const scenario of scenarios) {
     for (const req of scenario.interview.reqs) prompts[`${scenario.id}:${req.id}`] = req.label;
+  }
+
+  /*
+   * 対話ゲーム（松井社長）の しつもんは **ばん＋何手目**で 引く（2026-09-09 の 指定
+   *「元のしつもんが 空でしたが、これは 接続不可能ですか？」）。
+   *
+   * 記録に 入って いるのは `talk:talk` / `talk:listen` という **ばん**だけで、
+   * それだけでは 1問目と 5問目の 区別が つかない。ただ 台帳は もう1つ 数を 持って
+   * いる——`attempt` は この 教材では 言い直しの 回数では なく **何手目か**
+   *（`talk-game-session.tsx` が `talk.turns + 1` を 入れる）。出だしの しつもんは
+   * `openers[手数]` なので、そこから 引き当てられる。
+   *
+   * **引けるのは 出だしの ぶんだけ**。openers を 使いきった あとの 深掘りは AI が
+   * その場で 作る ので 教材に 無く、引き当てない（`ask` 列が 空に なる。
+   * `probes` で 埋めると **聞かれて いない 文**を 先生に 見せる ことに なる）。
+   *
+   * 聞く ばんは しつもんするのが 学習者なので、うながしの 文（`listenInvite`）を
+   * その まま 出す。手数では 分かれない ので 鍵に 番号を 付けない。
+   */
+  for (const meeting of meetings) {
+    const game = meeting.talkGame;
+    if (!game) continue;
+    game.openers.forEach((opener, turn) => {
+      if (opener.ask) prompts[`${meeting.id}:talk:talk#${turn + 1}`] = opener.ask;
+    });
+    if (game.listenInvite) prompts[`${meeting.id}:talk:listen`] = game.listenInvite;
   }
 
   const titles = new Map<string, string>();
