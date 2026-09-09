@@ -1,0 +1,104 @@
+{
+  "kind": "wordstage",
+  "id": "it_kotoba_1_shokyu",
+  "title": "ITの単語",
+  "description": "毎日の 仕事で いちばん よく 出る 50語です。報告と 相談の 場で そのまま 使います。",
+  "label": "初級",
+  "fieldSequence": [
+    "forest",
+    "sky",
+    "space"
+  ],
+  "questionCount": 50,
+  "passRate": 80,
+  "furigana": [
+    [
+      "単語",
+      "たんご"
+    ],
+    [
+      "毎日",
+      "まいにち"
+    ],
+    [
+      "仕事",
+      "しごと"
+    ],
+    [
+      "出る",
+      "でる"
+    ],
+    [
+      "語",
+      "ご"
+    ],
+    [
+      "報告",
+      "ほうこく"
+    ],
+    [
+      "相談",
+      "そうだん"
+    ],
+    [
+      "場",
+      "ば"
+    ],
+    [
+      "使い",
+      "つかい"
+    ]
+  ],
+  "wordIds": [
+    "youken",
+    "youkenteigi",
+    "shiyou",
+    "siyousho",
+    "mitsumori2",
+    "kousuu",
+    "sukejuru",
+    "nouki",
+    "kigen",
+    "tantou",
+    "taiou",
+    "taiouchuu",
+    "kakunin",
+    "shuusei",
+    "henkou",
+    "tsuika",
+    "sakujo",
+    "chousa",
+    "genin",
+    "kadai",
+    "mondai",
+    "sinchoku",
+    "kanryou",
+    "yuusenjunni",
+    "eikyouhanni",
+    "kakuninjikou",
+    "fumeiten",
+    "ninshikiawase",
+    "zentei",
+    "jouken",
+    "hani",
+    "taishou",
+    "taishougai",
+    "houshin",
+    "houhou",
+    "tejun",
+    "sagyou",
+    "joukyou",
+    "kyouyuu",
+    "houkoku",
+    "soudan",
+    "irai",
+    "kaitou",
+    "shitsumon",
+    "kentou",
+    "kettei",
+    "kakutei",
+    "horyuu",
+    "rebyu",
+    "seikabutsu"
+  ]
+}

@@ -429,5 +429,10 @@ export const GAKUSHU_TERMS: Readonly<Record<string, readonly string[]>> = {
     "sirasemasu",
     "sinki",
     "zentai",
+    "gosoudan",
+    "mitsumori2",
+    "more",
+    "dousa",
+    "rogu",
   ],
 };

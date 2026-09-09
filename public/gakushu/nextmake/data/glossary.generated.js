@@ -21,7 +21,7 @@ export const GLOSSARY = [
   {
     term: "アラート",
     reading: "あらーと",
-    meaning: "あぶない ことを 知らせる、しらせです。",
+    meaning: "あぶない ことを 知らせる 通知です。",
     en: "Alert",
   },
   {
@@ -131,7 +131,7 @@ export const GLOSSARY = [
   {
     term: "運用",
     reading: "うんよう",
-    meaning: "つくった システムを まいにち うごかしつづける しごと",
+    meaning: "作った システムを、毎日 止めずに 動かし つづける 仕事です。",
     en: "Running a service",
   },
   { term: "映像", reading: "えいぞう", meaning: "うごく 絵の ことです。", en: "Footage" },
@@ -267,7 +267,7 @@ export const GLOSSARY = [
   {
     term: "確認",
     reading: "かくにん",
-    meaning: "本当に そうかを、見て たしかめる ことです。",
+    meaning: "まちがいが ないかを、しっかり 見て たしかめる ことです。",
     en: "Confirmation",
   },
   {
@@ -280,8 +280,8 @@ export const GLOSSARY = [
   {
     term: "課題",
     reading: "かだい",
-    meaning: "これから なおさなければ ならない ことです。",
-    en: "Issue / challenge",
+    meaning: "もっと よく するために、これから 解決する ことです。",
+    en: "Challenge to solve",
   },
   { term: "価値", reading: "かち", meaning: "その ものの よさ、大切さです。", en: "Value" },
   {
@@ -559,7 +559,7 @@ export const GLOSSARY = [
     term: "検索",
     reading: "けんさく",
     meaning: "たくさんの 中から、さがす ことです。",
-    en: "Search",
+    en: "Searching for it",
   },
   {
     term: "検出",
@@ -570,7 +570,7 @@ export const GLOSSARY = [
   {
     term: "検証",
     reading: "けんしょう",
-    meaning: "本当に そうかを、しらべて たしかめる ことです。",
+    meaning: "本当に 正しいかを、実際に 動かして たしかめる ことです。",
     en: "Verification",
   },
   {
@@ -692,6 +692,12 @@ export const GLOSSARY = [
     reading: "こじんじょうほう",
     meaning: "その 人が だれか わかって しまう 情報です。",
     en: "Personal information",
+  },
+  {
+    term: "ご相談",
+    reading: "ごそうだん",
+    meaning: "困った ことや 決められない ことを、上司や 先輩に 話して 意見を もらう ことです。",
+    en: "Asking for advice",
   },
   {
     term: "国家",
@@ -1104,7 +1110,7 @@ export const GLOSSARY = [
     term: "資料",
     reading: "しりょう",
     meaning: "読む ための 紙や ファイルです。会議の 前に くばります。",
-    en: "Materials / Handout documents",
+    en: "Documents for the meeting",
   },
   {
     term: "知る",
@@ -1269,7 +1275,7 @@ export const GLOSSARY = [
   {
     term: "設計書",
     reading: "せっけいしょ",
-    meaning: "設計書は、システムをどう作るかを書いた書類です。",
+    meaning: "システムを どう 作るかを 書いた 書類です。",
     en: "Design document",
   },
   {
@@ -1359,7 +1365,7 @@ export const GLOSSARY = [
   {
     term: "相談",
     reading: "そうだん",
-    meaning: "相談は、困ったときに人に話して意見を聞くことです。",
+    meaning: "困った ときに、人に 話して 意見を 聞く ことです。",
     en: "Consultation",
   },
   {
@@ -1378,8 +1384,8 @@ export const GLOSSARY = [
   {
     term: "対応",
     reading: "たいおう",
-    meaning: "もんだいが 出た とき、それを なおす しごと",
-    en: "handling",
+    meaning: "問題が 出た とき、それを 直す 仕事です。",
+    en: "Handling",
   },
   {
     term: "大学",
@@ -1468,7 +1474,7 @@ export const GLOSSARY = [
   {
     term: "チケット",
     reading: "ちけっと",
-    meaning: "お金を はらった しるしです。これが あると 中に 入れます。",
+    meaning: "バグや 作業を 1つずつ 番号を つけて 書いた、仕事の カードです。",
     en: "Ticket",
   },
   { term: "地図", reading: "ちず", meaning: "進む 道が 書いて ある 絵です。", en: "Map" },
@@ -1546,7 +1552,7 @@ export const GLOSSARY = [
     meaning: "コンピューターで あつかえる かたち、と いう ことです。",
     en: "Digital",
   },
-  { term: "手順", reading: "てじゅん", meaning: "しごとの じゅんばん", en: "steps" },
+  { term: "手順", reading: "てじゅん", meaning: "仕事を する ときの、順番です。", en: "Steps" },
   { term: "テスト", reading: "てすと", meaning: "test / exam", en: "Testing" },
   {
     term: "展開",
@@ -1573,6 +1579,12 @@ export const GLOSSARY = [
     reading: "とうごう",
     meaning: "いくつかを 1つに まとめる ことです。",
     en: "Integration",
+  },
+  {
+    term: "動作",
+    reading: "どうさ",
+    meaning: "ボタンを おした ときなどに、システムが どう うごくかです。",
+    en: "Behavior of a system",
   },
   {
     term: "登場",
@@ -1653,7 +1665,7 @@ export const GLOSSARY = [
     term: "入力",
     reading: "にゅうりょく",
     meaning: "キーボードで 字を 打って、コンピューターに 入れる ことです。",
-    en: "Input / Typing in",
+    en: "Input",
   },
   {
     term: "ネットワーク",
@@ -1665,7 +1677,7 @@ export const GLOSSARY = [
     term: "納期",
     reading: "のうき",
     meaning: "できた ものを わたす、やくそくの 日です。",
-    en: "Deadline",
+    en: "Delivery date",
   },
   {
     term: "農業",
@@ -1740,7 +1752,7 @@ export const GLOSSARY = [
     term: "ヒアリング",
     reading: "ひありんぐ",
     meaning: "お客さまの 話を、よく 聞く ことです。",
-    en: "Hearing / interview",
+    en: "Interview to gather needs",
   },
   {
     term: "PM",
@@ -1880,7 +1892,7 @@ export const GLOSSARY = [
   {
     term: "報告",
     reading: "ほうこく",
-    meaning: "報告は、仕事の結果や様子を人に知らせることです。",
+    meaning: "仕事の 結果や 様子を、上司に 知らせる ことです。",
     en: "Report",
   },
   {
@@ -1889,7 +1901,12 @@ export const GLOSSARY = [
     meaning: "会社や 団体など、人の あつまりの ことです。",
     en: "Corporation",
   },
-  { term: "方法", reading: "ほうほう", meaning: "やりかたの ことです。", en: "Method" },
+  {
+    term: "方法",
+    reading: "ほうほう",
+    meaning: "その 仕事を、どのように 進めるかと いう ことです。",
+    en: "Method",
+  },
   { term: "訪問", reading: "ほうもん", meaning: "相手の ところへ 行く ことです。", en: "Visit" },
   {
     term: "ホームページ",
@@ -1969,6 +1986,12 @@ export const GLOSSARY = [
     meaning: "いくら かかるかを、先に 出す ことです。",
     en: "Estimate",
   },
+  {
+    term: "見積もり",
+    reading: "みつもり",
+    meaning: "仕事に かかる 時間や お金を、先に 計算して 出す ことです。",
+    en: "Estimate",
+  },
   { term: "未来", reading: "みらい", meaning: "future の ことばです。", en: "future" },
   {
     term: "無料",
@@ -2013,6 +2036,12 @@ export const GLOSSARY = [
     en: "Story",
   },
   {
+    term: "漏れ",
+    reading: "もれ",
+    meaning: "やるべき ことや 書くべき ことを、わすれて 落として しまう ことです。",
+    en: "Omission (forgot it)",
+  },
+  {
     term: "やって みます",
     reading: "やって みます",
     meaning: "「ためしに します」と 前向きに 答える ことばです。",
@@ -2051,7 +2080,7 @@ export const GLOSSARY = [
   {
     term: "要件定義",
     reading: "ようけんていぎ",
-    meaning: "要件定義は、どんなシステムを作るかを決めることです。",
+    meaning: "どんな システムを 作るかを、お客さまと 決める 工程です。",
     en: "Requirements definition",
   },
   {
@@ -2101,7 +2130,7 @@ export const GLOSSARY = [
     term: "リリース",
     reading: "りりーす",
     meaning: "作った ものを、世の中へ 出す ことです。",
-    en: "Release",
+    en: "Making it usable for everyone",
   },
   {
     term: "離陸",
@@ -2163,5 +2192,11 @@ export const GLOSSARY = [
     reading: "れんらく",
     meaning: "連絡は、予定や情報を相手に伝えることです。",
     en: "Contact",
+  },
+  {
+    term: "ログ",
+    reading: "ろぐ",
+    meaning: "システムが いつ 何を したかを、順番に 書いた 記録です。",
+    en: "Record of what happened",
   },
 ];

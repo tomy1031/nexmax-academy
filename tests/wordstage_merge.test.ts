@@ -82,7 +82,7 @@ describe("ステージの ことば", () => {
     const merged = stageWordStage(INTRO, [intro, orientation])!;
     expect(merged.id).toBe("intro");
     expect(merged.words.length).toBe(intro.words.length + orientation.words.length);
-    expect(merged.words.map((w) => w.term)).toContain("ほうれんそう");
+    expect(merged.words.map((w) => w.term)).toContain("報連相");
     expect(merged.words.map((w) => w.term)).toContain("要件定義");
   });
 

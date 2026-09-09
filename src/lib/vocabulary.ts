@@ -104,13 +104,20 @@ export function hydrateWordStage(
   /*
    * 読み辞書は **正の 側**が 運ぶ（説明文・例文の 漢字は 正に 書いて あるため）。
    * ステージが 自分の 読み辞書を 持って いれば、そちらを 後ろに 置いて 勝たせる。
+   *
+   * **語ごとの `furigana`（その語だけの 足し前）も 運ぶ**（2026-09-09）。
+   * ここが 落ちて いた ころ、単語テストの 画面だけ 読みが 別に なって いた——
+   * 検収（`lint:content` の `coverageEntries`）は 語ごとの 足し前を **プールして**
+   * 見るので 緑の まま、画面では 束の 1字の 見出し（入→はい・日→ひ）が 勝って
+   * 「お手数[てすう]」が「お手[て]数[かず]」に なり、147の 文で ルビが 消えて いた。
+   * 検査と 画面が 同じ 索引を 見るように、ここで 合流させる。
    */
-  const fromVocab = vocab
-    .filter((word) => wordIds.includes(word.id))
-    .map((word): FuriganaEntry => [word.term, word.reading]);
+  const fromVocab = vocab.filter((word) => wordIds.includes(word.id));
+  const terms = fromVocab.map((word): FuriganaEntry => [word.term, word.reading]);
+  const perWord = fromVocab.flatMap((word) => word.furigana ?? []);
   return {
     ...rest,
-    furigana: mergeFuriganaEntries(fromVocab, vocabFurigana, furigana).map(
+    furigana: mergeFuriganaEntries(terms, perWord, vocabFurigana, furigana).map(
       ([surface, reading]): [string, string] => [surface, reading],
     ),
     words: picked.words,

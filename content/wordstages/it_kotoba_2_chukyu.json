@@ -1,0 +1,100 @@
+{
+  "kind": "wordstage",
+  "id": "it_kotoba_2_chukyu",
+  "title": "ITの単語",
+  "description": "要件定義・見積もり・画面設計で 出る 50語です。似た ことばの ちがいを 見分けます。",
+  "label": "中級",
+  "fieldSequence": [
+    "forest",
+    "sky",
+    "space"
+  ],
+  "questionCount": 50,
+  "passRate": 80,
+  "furigana": [
+    [
+      "単語",
+      "たんご"
+    ],
+    [
+      "要件定義",
+      "ようけんていぎ"
+    ],
+    [
+      "見積もり",
+      "みつもり"
+    ],
+    [
+      "画面設計",
+      "がめんせっけい"
+    ],
+    [
+      "出る",
+      "でる"
+    ],
+    [
+      "語",
+      "ご"
+    ],
+    [
+      "似た",
+      "にた"
+    ],
+    [
+      "見分け",
+      "みわけ"
+    ]
+  ],
+  "wordIds": [
+    "youbou",
+    "youkyuu",
+    "hiaringu",
+    "shiyouhenkou",
+    "youkenhenkou",
+    "henkouten",
+    "sabun",
+    "shuuseiten",
+    "shiteki",
+    "saikakunin",
+    "gaisan",
+    "soutei",
+    "risuku",
+    "seiyaku",
+    "nuke",
+    "more",
+    "choufuku",
+    "taioukahi",
+    "jitsugenkahi",
+    "gamen",
+    "koumoku",
+    "nyuuryoku",
+    "shutsuryoku",
+    "hyouji",
+    "hihyouji",
+    "ichiran",
+    "shousai",
+    "kensaku",
+    "touroku",
+    "koushin",
+    "hozon",
+    "sentaku",
+    "hissu",
+    "nini",
+    "shokichi",
+    "sousa",
+    "dousa",
+    "eraa",
+    "messeeji",
+    "gamensenni",
+    "kengen",
+    "taishoudeeta",
+    "kentouchuu",
+    "kakuninmachi",
+    "kaitoumachi",
+    "kihonsekkei",
+    "shousaisekkei",
+    "sekkeisho",
+    "gyoumufuroo",
+    "gijiroku"
+  ]
+}
