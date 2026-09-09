@@ -175,6 +175,17 @@ export interface MeetingRecord {
   profile_id: string;
   meeting_id: string;
   question_id: string;
+  /**
+   * AIが 学生に 聞いた 文そのもの。
+   *
+   * 空 = この 列（移行SQL 20260909120000）より 前の 記録。そのときは 教材から
+   * 引き直す（`talkTable`）——ヘンディさんの ミーティングは それで 出るが、
+   * 松井社長との たいわ は しつもんを AI が その場で 作る ので 引けない。
+   *
+   * `select *` は **列が まだ 無い DB では この 鍵を 返さない**ので、任意に する
+   *（移行SQL が 流れる 前でも 画面は 開く）。
+   */
+  ask?: string;
   attempt: number;
   mode: "text" | "voice";
   utterance: string;
@@ -238,6 +249,52 @@ export function fetchMeetingRecords(
   query: RecordsQuery = NO_QUERY,
 ): Promise<RecordsResult<MeetingRecord>> {
   return fetchTable<MeetingRecord>("meeting_turn_logs", "created_at", "meeting_id", query);
+}
+
+/**
+ * 「どこに 記録が あるか」の 見取り図（view `record_index` の 1行）。
+ *
+ * 中身は 持たない——(種類, 学生, 教材) ごとの **件数だけ**。
+ */
+export interface RecordIndexRow {
+  kind: string;
+  profile_id: string;
+  unit_id: string;
+  n: number;
+}
+
+/**
+ * 見取り図を 読む。
+ *
+ * ## なぜ 素の 表を 数えに 行かないか
+ * 画面は 新しい ほうから `RECORDS_LIMIT` 行までしか 読まない。単元の 一覧を
+ * それで 作ると、上限に 当たった 日から **古い 教材が 黙って 消える**——
+ * 先生には「その 教材の 記録が 無い」ようにしか 見えない。数えるのは DB の 仕事。
+ *
+ * 上限を 付けないのは、返るのが (種類, 学生, 教材) ごとの 1行だけ だから
+ *（学期を 通しても 数千行）。
+ */
+export async function fetchRecordIndex(): Promise<RecordsResult<RecordIndexRow>> {
+  const supabase = createClient();
+  if (!supabase) {
+    return {
+      ok: false,
+      preparing: true,
+      message: "きろくは じゅんびちゅう（データベースの設定後に 見られます）",
+    };
+  }
+  const { data, error } = await supabase.from("record_index").select("*");
+  if (error) {
+    const preparing = MISSING_TABLE_CODES.has(error.code ?? "");
+    return {
+      ok: false,
+      preparing,
+      message: preparing
+        ? "記録の 見取り図（record_index）が まだ ありません。単元と 種類の 一覧は しぼらずに 出します。"
+        : "記録の 見取り図を 読めませんでした。単元と 種類の 一覧は しぼらずに 出します。",
+    };
+  }
+  return { ok: true, rows: (data ?? []) as RecordIndexRow[], truncated: false };
 }
 
 export function fetchListeningRecords(

@@ -45,6 +45,14 @@ export type MeetingTurnJudge = Partial<JudgeResult>;
 export interface MeetingTurnLog {
   meetingId: string;
   questionId: string;
+  /**
+   * **AIが その場で 聞いた 文**（先生の 画面の「元の しつもん」列）。
+   *
+   * `questionId` から 教材を 引き直す 道も あるが、松井社長との たいわ は
+   * しつもんを AI が その場で 作る ので **どこにも 残らない**——`talk:talk` の
+   * ような ばんしか 出なかった（2026-09-09 の 指定）。話した とおりの 文を 残す。
+   */
+  ask: string;
   /** 同じ質問への何回目の発話か（1始まり）。言い直しの効果はこれで追う。 */
   attempt: number;
   mode: "text" | "voice";
@@ -149,6 +157,12 @@ export async function flushMeetingTurns(
         profile_id: user.id,
         meeting_id: log.meetingId,
         question_id: log.questionId,
+        /*
+         * 列は 移行SQL 20260909120000 で 足した。まだ 流れて いない DB では
+         * この insert が 落ちるが、**溜めた ものは 消さない**（下の `error` の 道）ので、
+         * 流れた あとに そのまま 送られる。
+         */
+        ask: log.ask,
         attempt: log.attempt,
         mode: log.mode,
         utterance: log.utterance,
