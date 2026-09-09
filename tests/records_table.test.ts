@@ -3,16 +3,20 @@ import type { ProfileRow } from "../src/lib/profile-db";
 import {
   buildLookups,
   buildRecordsCsv,
+  defaultKind,
   EMPTY_FILTER,
   filterRows,
+  kindsWithRecords,
   listeningTable,
   matchesProfile,
   progressTable,
   quizTable,
   summaryTable,
   talkTable,
+  unitsWithRecords,
   wordTable,
 } from "../src/lib/records/table";
+import type { RecordIndexRow } from "../src/lib/records/records-db";
 import type { UnitRef } from "../src/lib/records/units";
 
 function profile(over: Partial<ProfileRow> & { id: string }): ProfileRow {
@@ -523,6 +527,24 @@ function meetingRow(over: Partial<Parameters<typeof talkTable>[0][number]>) {
   };
 }
 
+function talkRow(over: Partial<Parameters<typeof talkTable>[1][number]>) {
+  return {
+    id: Math.random().toString(36).slice(2),
+    profile_id: "aya",
+    talk_id: "kaisha-talk",
+    session_id: "s1",
+    turn_index: 0,
+    speaker: "learner" as const,
+    mode: "text" as const,
+    body: "はい",
+    opened_req_id: "",
+    opened_count: 0,
+    req_total: 5,
+    created_at: "2026-09-02T05:00:00.000Z",
+    ...over,
+  };
+}
+
 describe("つまずきの まとめ", () => {
   it("もんだいは 正答率の ひくい順（直す順が 上から 読める）", () => {
     const table = quizTable(
@@ -714,7 +736,54 @@ describe("問いの 文を 出す", () => {
 
   it("ミーティングは ヘンディさんの しつもんを 出す", () => {
     const table = talkTable([meetingRow({ question_id: "q1" })], [], LOOKUPS);
-    expect(table.rows[0]?.cells.topic).toBe("きのうは 何を しましたか");
+    // 2026-09-09 に **列が 移った**（`topic` の 9列目 → `ask` の 6列目）。
+    // 引き直す ところは 同じ。学生の 答えの となりで 読める ように しただけ。
+    expect(table.rows[0]?.cells.ask).toBe("きのうは 何を しましたか");
+  });
+
+  it("台帳に 残った しつもんが 教材より 先（松井社長の たいわ は 引き直せない）", () => {
+    const table = talkTable(
+      [
+        meetingRow({
+          meeting_id: "kaisha-talkgame",
+          question_id: "talk:talk",
+          ask: "その 会社の どこが おもしろいと 思いましたか",
+        }),
+      ],
+      [],
+      LOOKUPS,
+    );
+    expect(table.rows[0]?.cells.ask).toBe("その 会社の どこが おもしろいと 思いましたか");
+  });
+
+  it("しつもんが どこにも 無ければ 空に する（id を しつもんの 列に 落とさない）", () => {
+    const table = talkTable(
+      [meetingRow({ meeting_id: "kaisha-talkgame", question_id: "talk:talk" })],
+      [],
+      LOOKUPS,
+    );
+    expect(table.rows[0]?.cells.ask).toBe("");
+  });
+
+  it("たいわ は 直前に 相手が 言った ことを しつもんに する", () => {
+    const table = talkTable(
+      [],
+      [
+        talkRow({
+          id: "t1",
+          turn_index: 0,
+          speaker: "partner",
+          body: "よさんは まだ 決めて いません",
+        }),
+        talkRow({ id: "t2", turn_index: 1, speaker: "learner", body: "よさんは いくらですか" }),
+      ],
+      LOOKUPS,
+    );
+    const learner = table.rows.find((row) => row.cells.speaker === "学生");
+    const partner = table.rows.find((row) => row.cells.speaker === "あいて");
+    expect(learner?.cells.ask).toBe("よさんは まだ 決めて いません");
+    // 相手の 行そのものは しつもん なので、同じ 文を 2回 並べない
+    expect(partner?.cells.ask).toBe("");
   });
 
   it("たいわは 要件ボードの 見出しを 出す", () => {
@@ -765,5 +834,74 @@ describe("問いの 文を 出す", () => {
       LOOKUPS,
     );
     expect(table.rows[0]?.cells.question).toBe("Q1 q1-1");
+  });
+});
+
+/* ------------------------------------------------------------------ *
+ * 見取り図（2026-09-09 の 指定・願い #346）
+ *
+ * 画面の 順が「絞る → 出た データの 種類を えらぶ」に 変わった。その 判断を する
+ * のが ここ。中身は 見ない（件数だけ）ので、素の 表より ずっと 軽い。
+ * ------------------------------------------------------------------ */
+
+function indexRow(
+  over: Partial<RecordIndexRow> & { unit_id: string; kind: string },
+): RecordIndexRow {
+  return { profile_id: "aya", n: 1, ...over };
+}
+
+describe("どこに 記録が あるか", () => {
+  const INDEX: RecordIndexRow[] = [
+    indexRow({ kind: "progress", unit_id: "asakai-manga" }),
+    indexRow({ kind: "quiz", unit_id: "houkoku-quiz" }),
+    indexRow({ kind: "listening", unit_id: "houkoku-quiz", profile_id: "bopha" }),
+  ];
+
+  it("記録の ある 単元だけを 返す", () => {
+    expect([...unitsWithRecords(INDEX, EMPTY_FILTER, LOOKUPS)].toSorted()).toEqual([
+      "asakai-manga",
+      "houkoku-quiz",
+    ]);
+  });
+
+  it("人で 絞ると その子が さわった 単元だけに なる", () => {
+    const only = unitsWithRecords(INDEX, { ...EMPTY_FILTER, profileId: "bopha" }, LOOKUPS);
+    expect([...only]).toEqual(["houkoku-quiz"]);
+  });
+
+  it("種類は 記録の ある ものだけ（ボタンの 並びは そのまま）", () => {
+    expect(kindsWithRecords(INDEX, EMPTY_FILTER, LOOKUPS)).toEqual([
+      "progress",
+      "quiz",
+      "listening",
+    ]);
+  });
+
+  it("単元で 絞ると その 単元に ある 種類だけに なる", () => {
+    expect(kindsWithRecords(INDEX, { ...EMPTY_FILTER, unitId: "asakai-manga" }, LOOKUPS)).toEqual([
+      "progress",
+    ]);
+  });
+
+  it("ステージで 絞れる（単元から ステージを 引き直す）", () => {
+    expect(kindsWithRecords(INDEX, { ...EMPTY_FILTER, stageId: "houkoku" }, LOOKUPS)).toEqual([
+      "quiz",
+      "listening",
+    ]);
+  });
+
+  it("ことばで さがす は 種類を 減らさない（出た 行を 絞る ものだから）", () => {
+    expect(kindsWithRecords(INDEX, { ...EMPTY_FILTER, text: "よさん" }, LOOKUPS)).toEqual([
+      "progress",
+      "quiz",
+      "listening",
+    ]);
+  });
+
+  it("既定は 学生が 入れた ほう（進み具合では ない）", () => {
+    expect(defaultKind(["progress", "quiz"])).toBe("quiz");
+    expect(defaultKind(["progress"])).toBe("progress");
+    // 何も 無い ときも 画面が 座る 先を 返す（表は 空で、画面が そう 言う）
+    expect(defaultKind([])).toBe("progress");
   });
 });

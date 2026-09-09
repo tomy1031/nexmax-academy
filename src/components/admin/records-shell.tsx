@@ -8,10 +8,20 @@
  * ことばの テスト・たいわ・リスニングは **そもそも 残って いなかった**。
  * ここは その 5種類を **1つの 表の かたち**で 読む 場所である。
  *
- * ## 絞り込みは いつも 同じ 5つ
- * 所属（AUPP／CADT／講師・スタッフ）・期生・メンバー・ステージ・単元。
- * 種類を 切り替えても 絞り込みは そのまま 残す——「3期生の この子」を 選び直すのに
- * タブを 変えるたび 5回 選ぶのは、先生の 手を 止める。
+ * ## 順は「絞る → 出た データの 種類を えらぶ」（2026-09-09 の 指定・願い #346）
+ * 前は **種類を 先に えらばせて** いた（画面の いちばん 上に タブ）。先生が 先に
+ * 決めたいのは **誰の・どこの** であって 種類では ない。だから
+ *   1. 所属（AUPP／CADT／講師・スタッフ）・期生・メンバー・ステージ・単元 で 絞る
+ *   2. その 条件に **記録の ある 種類**だけを 表の 上に 出す
+ *   3. 既定は **学生が 入れた ほう**（進み具合では なく 書いた・話した もの）
+ * 絞り込みは 種類を 切り替えても そのまま 残す——「3期生の この子」を 選び直すのに
+ * 種類を 変えるたび 5回 選ぶのは、先生の 手を 止める。
+ *
+ * ## 単元は 記録の ある ものだけ
+ * 教材は 82本 あるが、記録が あるのは その 一部である。無い ものを 並べると、
+ * 先生は **当たりの 無い くじ**を 引かされる。どこに 記録が あるかは
+ * `record_index`（DBの 見取り図）に 1回 聞く——素の 表を 数えると 上限
+ *（新しい ほうから 2000行）に 当たった 日から 古い 教材が 黙って 消える。
  *
  * ## 表は 横に スクロールする
  * 列を 減らして 収める 道は 採らない。先生が 見たいのは **学生が 書いた 言葉**で、
@@ -30,19 +40,23 @@ import {
   fetchListeningRecords,
   fetchMeetingRecords,
   fetchQuizRecords,
+  fetchRecordIndex,
   fetchTalkRecords,
   fetchWordAnswerRecords,
   fetchWordTestRecords,
   NO_QUERY,
   RECORDS_LIMIT,
+  type RecordIndexRow,
   type RecordsQuery,
   type RecordsResult,
 } from "@/lib/records/records-db";
 import {
   buildLookups,
   buildRecordsCsv,
+  defaultKind,
   EMPTY_FILTER,
   filterRows,
+  kindsWithRecords,
   listeningTable,
   matchesProfile,
   progressTable,
@@ -50,6 +64,7 @@ import {
   RECORD_KINDS,
   summaryTable,
   talkTable,
+  unitsWithRecords,
   wordTable,
   type RecordFilter,
   type RecordKind,
@@ -62,18 +77,28 @@ const PAGE_SIZE = 200;
 
 export function RecordsShell({
   index,
-  initialKind = "progress",
+  initialKind,
 }: {
   index: UnitIndex;
-  /** 畳んだ 古い URL（`/admin/meetings`・`/admin/quizzes`）から 来た ときの タブ。 */
+  /** 畳んだ 古い URL（`/admin/meetings`・`/admin/quizzes`）から 来た ときの 種類。 */
   initialKind?: RecordKind;
 }) {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [profiles, setProfiles] = useState<ProfileRow[]>([]);
-  const [kind, setKind] = useState<RecordKind>(initialKind);
+  /**
+   * 先生が **自分で えらんだ** 種類。null = まだ えらんで いない ＝ 既定に まかせる。
+   *
+   * `kind` を そのまま 持たない。持つと、絞り込みを 変えて 記録の 無い 種類に なっても
+   * そこに 座り続け、**「まだ きろくが ありません」だけが 出る**——先生には
+   * 絞り込みが 悪いのか 記録が 無いのか 分からない。
+   */
+  const [chosenKind, setChosenKind] = useState<RecordKind | null>(initialKind ?? null);
   const [filter, setFilter] = useState<RecordFilter>(EMPTY_FILTER);
+  /** 「どこに 記録が あるか」の 見取り図。null = 読めなかった（＝しぼらずに 出す）。 */
+  const [recordIndex, setRecordIndex] = useState<readonly RecordIndexRow[] | null>(null);
+  const [indexNote, setIndexNote] = useState<string | null>(null);
   /**
    * 読み終えた 表と、それが **どの タブの ものか**。
    *
@@ -123,6 +148,24 @@ export function RecordsShell({
     return { profileIds: byPerson, unitIds: byUnit };
   }, [filter, profiles, index.units]);
 
+  /**
+   * その 絞り込みで **記録の ある 種類**。見取り図が 無い ときは 全部 出す
+   *（前と 同じ 見え方に 落ちる。勝手に 隠さない）。
+   */
+  const kinds = useMemo(
+    () =>
+      recordIndex
+        ? kindsWithRecords(recordIndex, filter, lookups)
+        : RECORD_KINDS.map((one) => one.id),
+    [recordIndex, filter, lookups],
+  );
+
+  /*
+   * 先生の えらびが **いまの 条件で 生きて いれば** それ、でなければ 既定
+   *（＝学生が 入れた ほう）。絞り込みを 変えるたび 自動で 座り直す。
+   */
+  const kind = chosenKind !== null && kinds.includes(chosenKind) ? chosenKind : defaultKind(kinds);
+
   const fresh = loaded !== null && loaded.kind === kind && loaded.query === query;
   const busy = !fresh;
   const table = fresh ? loaded.table : null;
@@ -148,9 +191,15 @@ export function RecordsShell({
           router.replace("/map");
           return;
         }
-        const all = await fetchAllProfiles();
+        /*
+         * 名簿と 見取り図は **一緒に 読む**。見取り図を あとから 読むと、
+         * 既定の 種類が 途中で 変わって 表を 2回 読みに 行く。
+         */
+        const [all, found] = await Promise.all([fetchAllProfiles(), fetchRecordIndex()]);
         if (!active) return;
         setProfiles(all);
+        setRecordIndex(found.ok ? found.rows : null);
+        setIndexNote(found.ok ? null : found.message);
         setLoading(false);
       } catch (error) {
         if (!active) return;
@@ -191,6 +240,12 @@ export function RecordsShell({
    */
   const summary = useMemo(() => (table ? summaryTable(kind, rows) : null), [table, kind, rows]);
 
+  /* 絞り込みを 変えたら 出す 行数を 数え直す（前の 条件で 押した ぶんを 持ち越さない）。 */
+  const changeFilter = useCallback((patch: Partial<RecordFilter>) => {
+    setFilter((prev) => ({ ...prev, ...patch }));
+    setShown(PAGE_SIZE);
+  }, []);
+
   const downloadCsv = useCallback(() => {
     if (!table) return;
     /*
@@ -220,8 +275,17 @@ export function RecordsShell({
     .filter((profile) => matchesProfile(profile, { ...filter, profileId: "" }))
     .toSorted((a, b) => a.display_name.localeCompare(b.display_name, "ja"));
 
+  /*
+   * 単元は **記録の ある ものだけ**（2026-09-09 の 指定）。人の 絞り込みも 効くので、
+   * 「この子」を えらべば その子が さわった 教材だけに なる。
+   *
+   * いま えらんで いる ものは、記録が 無く なっても 残す——消すと 選びが 黙って
+   * 外れ、先生には「別の 単元の 表を 見せられた」ように 見える。
+   */
+  const withRecords = recordIndex ? unitsWithRecords(recordIndex, filter, lookups) : null;
   const units = index.units
     .filter((unit) => filter.stageId === "" || unit.stageId === filter.stageId)
+    .filter((unit) => withRecords === null || withRecords.has(unit.id) || unit.id === filter.unitId)
     .toSorted((a, b) => a.order - b.order);
 
   return (
@@ -232,135 +296,147 @@ export function RecordsShell({
         onCsv={table && rows.length > 0 ? downloadCsv : undefined}
       />
 
-      <nav aria-label="きろくの しゅるい" className="mb-3 flex flex-wrap gap-2">
-        {RECORD_KINDS.map((one) => (
-          <button
-            key={one.id}
-            type="button"
-            onClick={() => {
-              setKind(one.id);
-              // 出す 行数は タブごとに 数え直す（前の タブで 何度も 押した ぶんを 持ち越さない）。
-              setShown(PAGE_SIZE);
-            }}
-            aria-current={kind === one.id ? "page" : undefined}
-            className={`rounded-full px-4 py-2 text-sm font-black transition ${
-              kind === one.id ? "bg-navy text-white" : "border-hairline text-ink border-2 bg-white"
-            }`}
-          >
-            <span aria-hidden className="mr-1">
-              {one.icon}
-            </span>
-            {one.label}
-          </button>
-        ))}
-      </nav>
+      <section className="card-island mb-3 p-4">
+        <h2 className="text-navy text-lg font-black">だれの・どこの きろくを 見ますか</h2>
+        <p className="text-ink-soft mt-1 mb-3 text-xs font-bold">
+          えらぶと、その 条件で 入って いる きろくを そのまま 出します。
+        </p>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <Field label="所属">
+            <select
+              value={filter.university}
+              onChange={(e) =>
+                // 所属を 変えたら メンバーの 選びを 外す（別の 学校の 人が 選ばれた ままに ならない）
+                changeFilter({ university: e.target.value, profileId: "" })
+              }
+              className={SELECT}
+            >
+              <option value="">ぜんぶ</option>
+              {AFFILIATIONS.map((one) => (
+                <option key={one} value={one}>
+                  {one}
+                </option>
+              ))}
+            </select>
+          </Field>
 
-      <section className="card-island mb-3 grid gap-3 p-4 sm:grid-cols-2 lg:grid-cols-3">
-        <Field label="所属">
-          <select
-            value={filter.university}
-            onChange={(e) =>
-              // 所属を 変えたら メンバーの 選びを 外す（別の 学校の 人が 選ばれた ままに ならない）
-              setFilter((prev) => ({ ...prev, university: e.target.value, profileId: "" }))
-            }
-            className={SELECT}
-          >
-            <option value="">ぜんぶ</option>
-            {AFFILIATIONS.map((one) => (
-              <option key={one} value={one}>
-                {one}
-              </option>
-            ))}
-          </select>
-        </Field>
+          <Field label="期生">
+            <select
+              value={String(filter.cohort)}
+              onChange={(e) => changeFilter({ cohort: Number(e.target.value), profileId: "" })}
+              className={SELECT}
+            >
+              <option value="0">ぜんぶ</option>
+              {COHORTS.map((one) => (
+                <option key={one} value={String(one)}>
+                  {one}期生
+                </option>
+              ))}
+              <option value="-1">未設定</option>
+            </select>
+          </Field>
 
-        <Field label="期生">
-          <select
-            value={String(filter.cohort)}
-            onChange={(e) =>
-              setFilter((prev) => ({ ...prev, cohort: Number(e.target.value), profileId: "" }))
-            }
-            className={SELECT}
-          >
-            <option value="0">ぜんぶ</option>
-            {COHORTS.map((one) => (
-              <option key={one} value={String(one)}>
-                {one}期生
-              </option>
-            ))}
-            <option value="-1">未設定</option>
-          </select>
-        </Field>
+          <Field label="メンバー">
+            <select
+              value={filter.profileId}
+              onChange={(e) => changeFilter({ profileId: e.target.value })}
+              className={SELECT}
+            >
+              <option value="">ぜんぶ（{pickable.length}人）</option>
+              {pickable.map((profile) => (
+                <option key={profile.id} value={profile.id}>
+                  {profile.display_name || profile.email}
+                  {formatSchool(profile) ? `（${formatSchool(profile)}）` : ""}
+                </option>
+              ))}
+            </select>
+          </Field>
 
-        <Field label="メンバー">
-          <select
-            value={filter.profileId}
-            onChange={(e) => setFilter((prev) => ({ ...prev, profileId: e.target.value }))}
-            className={SELECT}
-          >
-            <option value="">ぜんぶ（{pickable.length}人）</option>
-            {pickable.map((profile) => (
-              <option key={profile.id} value={profile.id}>
-                {profile.display_name || profile.email}
-                {formatSchool(profile) ? `（${formatSchool(profile)}）` : ""}
-              </option>
-            ))}
-          </select>
-        </Field>
+          <Field label="ステージ">
+            <select
+              value={filter.stageId}
+              onChange={(e) =>
+                // ステージを 変えたら 単元の 選びを 外す（別の ステージの 教材が 残らない）
+                changeFilter({ stageId: e.target.value, unitId: "" })
+              }
+              className={SELECT}
+            >
+              <option value="">ぜんぶ</option>
+              {index.stages.map((stage) => (
+                <option key={stage.id} value={stage.id}>
+                  {stage.title}
+                </option>
+              ))}
+            </select>
+          </Field>
 
-        <Field label="ステージ">
-          <select
-            value={filter.stageId}
-            onChange={(e) =>
-              // ステージを 変えたら 単元の 選びを 外す（別の ステージの 教材が 残らない）
-              setFilter((prev) => ({ ...prev, stageId: e.target.value, unitId: "" }))
-            }
-            className={SELECT}
-          >
-            <option value="">ぜんぶ</option>
-            {index.stages.map((stage) => (
-              <option key={stage.id} value={stage.id}>
-                {stage.title}
-              </option>
-            ))}
-          </select>
-        </Field>
+          <Field label="単元">
+            <select
+              value={filter.unitId}
+              onChange={(e) => changeFilter({ unitId: e.target.value })}
+              className={SELECT}
+            >
+              <option value="">ぜんぶ</option>
+              {units.map((unit) => (
+                <option key={`${unit.type}:${unit.id}`} value={unit.id}>
+                  {unit.title}
+                  {unit.stageTitle === "" ? "（ステージに 入って いません）" : ""}
+                </option>
+              ))}
+            </select>
+          </Field>
 
-        <Field label="単元">
-          <select
-            value={filter.unitId}
-            onChange={(e) => setFilter((prev) => ({ ...prev, unitId: e.target.value }))}
-            className={SELECT}
-          >
-            <option value="">ぜんぶ</option>
-            {units.map((unit) => (
-              <option key={`${unit.type}:${unit.id}`} value={unit.id}>
-                {unit.title}
-                {unit.stageTitle === "" ? "（ステージに 入って いません）" : ""}
-              </option>
-            ))}
-          </select>
-        </Field>
-
-        <Field label="ことばで さがす">
-          <input
-            type="search"
-            value={filter.text}
-            onChange={(e) => setFilter((prev) => ({ ...prev, text: e.target.value }))}
-            placeholder="学生の こたえ・名前"
-            className={SELECT}
-          />
-        </Field>
+          <Field label="ことばで さがす">
+            <input
+              type="search"
+              value={filter.text}
+              onChange={(e) => changeFilter({ text: e.target.value })}
+              placeholder="学生の こたえ・名前"
+              className={SELECT}
+            />
+          </Field>
+        </div>
       </section>
 
-      {note ? (
-        <p
-          role="status"
-          className="mb-3 rounded-2xl border-2 bg-white p-4 text-sm font-black"
-          style={{ borderColor: "var(--color-sun)", color: "var(--color-ink)" }}
-        >
-          {note}
-        </p>
+      {[indexNote, note]
+        .filter((one): one is string => one !== null)
+        .map((one) => (
+          <p
+            key={one}
+            role="status"
+            className="mb-3 rounded-2xl border-2 bg-white p-4 text-sm font-black"
+            style={{ borderColor: "var(--color-sun)", color: "var(--color-ink)" }}
+          >
+            {one}
+          </p>
+        ))}
+
+      {kinds.length > 0 ? (
+        <nav aria-label="見る きろくの しゅるい" className="mb-3 flex flex-wrap items-center gap-2">
+          <span className="text-ink-soft text-xs font-black">この 条件で 見られる もの:</span>
+          {RECORD_KINDS.filter((one) => kinds.includes(one.id)).map((one) => (
+            <button
+              key={one.id}
+              type="button"
+              onClick={() => {
+                setChosenKind(one.id);
+                // 出す 行数は 種類ごとに 数え直す（前の 種類で 押した ぶんを 持ち越さない）。
+                setShown(PAGE_SIZE);
+              }}
+              aria-current={kind === one.id ? "page" : undefined}
+              className={`rounded-full px-4 py-2 text-sm font-black transition ${
+                kind === one.id
+                  ? "bg-navy text-white"
+                  : "border-hairline text-ink border-2 bg-white"
+              }`}
+            >
+              <span aria-hidden className="mr-1">
+                {one.icon}
+              </span>
+              {one.label}
+            </button>
+          ))}
+        </nav>
       ) : null}
 
       {summary && summary.rows.length > 0 ? (

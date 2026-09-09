@@ -149,6 +149,18 @@ begin
     raise notice 'ℹ 学習のきろくの 表は まだ ありません（移行SQL 20260904120000 の 前）';
   end;
 
+  -- 記録の 見取り図（view record_index・移行SQL 20260909120000）。
+  -- **view は それ自体に RLS を 置けない**。`security_invoker = true` が 付いて いて
+  -- はじめて 素の 表の RLS が 効く——付け忘れると、学習者が 自分の 画面から
+  -- 「誰が どの 教材を どれだけ やったか」を 数えられる。ここは その 1点を 見る。
+  begin
+    n := (select count(*) from public.record_index where profile_id = other);
+    if n = 0 then raise notice '✓ 拒否 他人の record_index（記録の 見取り図）は 見えない';
+    else bad := bad + 1; raise warning '✗ 他人の record_index が % 行 見えている（security_invoker を 疑う）', n; end if;
+  exception when undefined_table then
+    raise notice 'ℹ record_index は まだ ありません（移行SQL 20260909120000 の 前）';
+  end;
+
   -- 教材は 公開ぶんだけ
   n := (select count(*) from public.studio_contents);
   if n = published then raise notice '✓ 教材は 公開ぶんだけ 見える（%/% 件）', n, all_studio;
