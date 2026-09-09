@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, type ReactNode, type RefObject } from "react";
+import { useState, useSyncExternalStore, type ReactNode, type RefObject } from "react";
 import { CARD_EDGE_SM } from "@/components/card-edge";
+import { GeminiKeyCheck, GeminiKeyCheckGallery } from "@/components/gemini-key-check";
 import { katakanaNotice, MAX_NAME_LENGTH, type LearnerNames } from "@/lib/name";
 import { COHORTS, UNIVERSITIES, type LearnerSchool } from "@/lib/school";
 import type { Gender } from "@/lib/profile";
@@ -334,6 +335,12 @@ export function GeminiKeyCard({
   className?: string;
 }) {
   const [showKey, setShowKey] = useState(false);
+  // 見本（全パターン）は URL に `keycheck=all` が あるときだけ。ふだんの 学習者には 出ない。
+  const showGallery = useSyncExternalStore(
+    subscribeNever,
+    () => new URLSearchParams(window.location.search).get("keycheck") === "all",
+    () => false,
+  );
 
   return (
     <article className={`card-pop p-5 ${CARD_EDGE_SM} ${className}`}>
@@ -377,6 +384,14 @@ export function GeminiKeyCard({
         </button>
       </div>
       <p className="text-ink-soft mt-2 text-xs font-bold">{note}</p>
+      {/* その場で ためせる（2026-09-09）。先生の端末で 通る キーが 学習者の端末で 通らない 事が あるため。 */}
+      <GeminiKeyCheck value={value} inputRef={inputRef} />
+      {showGallery ? <GeminiKeyCheckGallery /> : null}
     </article>
   );
+}
+
+/** URL は 画面の あいだ 変わらないので、購読は しない。 */
+function subscribeNever() {
+  return () => {};
 }

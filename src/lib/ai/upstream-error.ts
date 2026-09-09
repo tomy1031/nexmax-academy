@@ -30,6 +30,22 @@ export interface UpstreamCode {
 export const NO_UPSTREAM_CODE: UpstreamCode = { status: null, reason: null };
 
 /**
+ * `reasonFromCode` が返しうる名前の全部。**ここに足したら、学習者向けの文言
+ * （`src/lib/ai/key-check.ts`）が型で足りなくなる**——黙って「返事が ありませんでした」に
+ * 落ちないための縛り。
+ */
+export type UpstreamReason =
+  | "badKey"
+  | "keyExpired"
+  | "keyRestricted"
+  | "apiDisabled"
+  | "wrongKeyType"
+  | "locationNotSupported"
+  | "noPermission"
+  | "rateLimited"
+  | "modelNotFound";
+
+/**
  * 通してよい形。大文字・数字・下線だけの短い記号に限る。
  * 文章（空白や句読点を含む）・キー（小文字や `.` を含む）はこの形にならない。
  */
@@ -65,7 +81,7 @@ export function readUpstreamCode(body: unknown): UpstreamCode {
  * 呼ぶ側が HTTP の番号で決める（同じ 400 でも、モデル一覧と トークン発行では
  * 次にやることが違うため、ここで一本化しない）。
  */
-export function reasonFromCode(code: UpstreamCode): string | null {
+export function reasonFromCode(code: UpstreamCode): UpstreamReason | null {
   switch (code.reason) {
     case "API_KEY_INVALID":
       return "badKey";
