@@ -140,16 +140,32 @@ function promptOf(lookups: Lookups, contentId: string, questionId: string): stri
 }
 
 /**
- * **AIが その場で 聞いた 文**。
+ * **AIが 学生に 聞いた 文**。
  *
- * 台帳に 残って いれば それが 正（`meeting_turn_logs.ask`）。松井社長との たいわ は
- * しつもんを AI が その場で 作る ので、教材からは 引けない——残って いない 古い 行は
- * **空に する**。ここに id（`talk:talk`）を 落とすと、しつもんの 列に しつもんで ない
- * ものが 並ぶ（`promptOf` が id を 落とさない のは、まとめの 見出しで
- * 「その問いに 何人 つまずいたか」を 数える ためで、役目が ちがう）。
+ * 引く 順は 3つ。
+ *   1. 台帳に 残って いれば それが 正（`meeting_turn_logs.ask`。話した とおりの 文）
+ *   2. **ばん＋何手目**（`<教材>:talk:talk#3`）——対話ゲーム（松井社長）の 出だしの
+ *      しつもんは 教材が 手数ぶん 持って いる。`attempt` は この 教材では
+ *      言い直しの 回数では なく **何手目か** なので、そのまま 番号に なる
+ *   3. 問いの id（ヘンディさんの ミーティング。`questions[].ask`）
+ *
+ * どれでも 引けなければ **空**。ここに id（`talk:talk`）や 予備の 文を 落とすと、
+ * しつもんの 列に **聞かれて いない もの**が 並ぶ（`promptOf` が id を 落とさない
+ * のは、まとめの 見出しで「その問いに 何人 つまずいたか」を 数える ためで、役目が ちがう）。
  */
-function askOf(lookups: Lookups, contentId: string, questionId: string, saved: string): string {
-  return saved || lookups.prompts[`${contentId}:${questionId}`] || "";
+function askOf(
+  lookups: Lookups,
+  contentId: string,
+  questionId: string,
+  saved: string,
+  attempt: number,
+): string {
+  return (
+    saved ||
+    lookups.prompts[`${contentId}:${questionId}#${attempt}`] ||
+    lookups.prompts[`${contentId}:${questionId}`] ||
+    ""
+  );
 }
 
 /**
@@ -467,7 +483,13 @@ export function talkTable(
         ...commonCells(record.profile_id, record.meeting_id, lookups),
         kind: "ミーティング",
         // ヘンディさんが／松井社長が 何を 聞いたか。id では 中身が 見えない。
-        ask: askOf(lookups, record.meeting_id, record.question_id, record.ask ?? ""),
+        ask: askOf(
+          lookups,
+          record.meeting_id,
+          record.question_id,
+          record.ask ?? "",
+          record.attempt,
+        ),
         speaker: "学生",
         // 聞き出す 教材では ないので 空（この 列は たいわ の もの）。
         topic: "",
