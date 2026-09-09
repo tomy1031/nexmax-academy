@@ -77,6 +77,15 @@ export const KAISHA = {
     path: "/kaisha/meeting-kaisha_matsui",
     kind: "ミーティング",
   },
+  /*
+   * STEP 6 スライド「松井社長と 話す ときに 大切な こと」（19まいの PDF）。
+   * その 種別が ステージに 1本だけ なので URL に ID は 付かない（`stageContentPath`）。
+   */
+  slides: {
+    id: "matsui_shachou",
+    path: "/kaisha/slides",
+    kind: "スライド",
+  },
 } as const satisfies Record<string, KaishaItem>;
 
 /**
@@ -124,6 +133,7 @@ export const KAISHA_ITEMS: readonly KaishaItem[] = [
   KAISHA.article2,
   KAISHA.junbi,
   KAISHA.meetingMatsui,
+  KAISHA.slides,
 ];
 
 /** 学習者が進む順（content/stages/shigoto.json の contents[] と同じ並び）。 */
