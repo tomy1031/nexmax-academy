@@ -1,4 +1,4 @@
-import { readUpstreamCode, reasonFromCode } from "@/lib/ai/upstream-error";
+import { readUpstreamCode, reasonFromCode, type UpstreamReason } from "@/lib/ai/upstream-error";
 
 /**
  * Gemini Live の短命トークン（ブラウザで作る）
@@ -32,11 +32,25 @@ const TOKEN_TTL_MINUTES = 30;
 /** このトークンで新しいセッションを開始できる時間。 */
 const NEW_SESSION_WINDOW_MINUTES = 2;
 
+/**
+ * ここが返しうる理由の名前の全部（上流の名前＋HTTP番号からの当て推量＋回線）。
+ * `LiveTokenResult.reason` は string のまま（呼ぶ側が別の名前と比べている所があり、
+ * そこを巻き込まない）。学習者向け文言の網羅（`key-check.ts`）だけがこの型で縛られる。
+ */
+export type LiveTokenReason =
+  | UpstreamReason
+  | "tokenRejected"
+  | "noPermission"
+  | "modelNotFound"
+  | "rateLimited"
+  | "network"
+  | "upstream";
+
 export type LiveTokenResult =
   { ok: true; token: string; expiresAt: string } | { ok: false; reason: string };
 
 /** 名前が読めなかったときだけ使う、HTTP番号からの当て推量。 */
-function fallbackReason(status: number): string {
+function fallbackReason(status: number): LiveTokenReason {
   // 400 を「キーが違う」と言い切らない。新形式（AQ.）のキーでここだけ落ちる例がある
   if (status === 400) return "tokenRejected";
   if (status === 401 || status === 403) return "noPermission";
