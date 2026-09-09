@@ -1,7 +1,9 @@
 "use client";
 
 import { motion } from "motion/react";
+import { RubyText } from "@/components/ruby-text";
 import { filledHearts } from "@/lib/meeting/affection";
+import type { FuriganaIndex } from "@/lib/text/furigana";
 
 /**
  * 好感度メーター — ハートは 増えるだけ（設計01 P8「罰を見せない」）
@@ -14,6 +16,13 @@ import { filledHearts } from "@/lib/meeting/affection";
  * ## 「あと ♥n」は 罰ではなく 箱の 予告
  * とっておきの話までの残りを出すのは、P2 の「開く箱」を見せるため。
  * 届かなかったときに責める文は出さない（そもそも 完走すれば 届く配分にしてある）。
+ *
+ * ## 相手の 名前は 必ず ルビを 通す（規律2）
+ * ここは 相手の 名前を 3か所に 差し込む。ヘンディ・ニャムの ような カタカナの
+ * 名前だけを 見ていると 気づけないが、**漢字の 名前**（富田さん）を 相手にした
+ * 瞬間、画面に 裸の漢字が 出る——2026-09-09 に 夕礼の 教材を 足して 実際に 出た。
+ * `furigana`（その教材の 読み辞書）を 受け取って `RubyText` に 通す。
+ * 索引が 無いときは これまでどおり 地の文だけを 出す（壊れない）。
  */
 
 export function AffectionMeter({
@@ -24,12 +33,15 @@ export function AffectionMeter({
   /** とっておきの話が開く点。 */
   threshold,
   hostName,
+  /** その教材の 読み辞書（相手の 名前の ルビに 使う）。 */
+  furigana,
 }: {
   hearts: number;
   maxHearts: number;
   gained: number;
   threshold: number;
   hostName: string;
+  furigana?: FuriganaIndex;
 }) {
   const filled = filledHearts(hearts, maxHearts);
   const fresh = Math.min(gained, filled);
@@ -38,7 +50,7 @@ export function AffectionMeter({
   return (
     <section className="card-island p-4" aria-label="こうかんど メーター">
       <p className="text-ink text-sm font-extrabold">
-        💗 {hostName}さんとの きょり
+        💗 <RubyText text={`${hostName}さんとの きょり`} index={furigana} show />
         <span className="text-ink-soft ml-2 text-xs font-bold">
           {hearts} / {maxHearts}
         </span>
@@ -75,9 +87,15 @@ export function AffectionMeter({
       ) : null}
 
       <p className="text-ink-soft mt-1.5 text-xs font-bold break-words">
-        {remain > 0
-          ? `あと ♥${remain} で、${hostName}さんの とっておきの はなしが きけます。`
-          : `${hostName}さんが、とっておきの はなしを したそうです。`}
+        <RubyText
+          text={
+            remain > 0
+              ? `あと ♥${remain} で、${hostName}さんの とっておきの はなしが きけます。`
+              : `${hostName}さんが、とっておきの はなしを したそうです。`
+          }
+          index={furigana}
+          show
+        />
       </p>
     </section>
   );
