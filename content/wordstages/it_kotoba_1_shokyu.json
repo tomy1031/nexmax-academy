@@ -1,7 +1,7 @@
 {
   "kind": "wordstage",
   "id": "it_kotoba_1_shokyu",
-  "title": "ITの単語",
+  "title": "毎日の 仕事の ことば",
   "description": "毎日の 仕事で いちばん よく 使う ことばです。報告と 相談の 場で そのまま 使います。",
   "label": "初級",
   "fieldSequence": [
@@ -9,13 +9,9 @@
     "sky",
     "space"
   ],
-  "questionCount": 50,
+  "questionCount": 52,
   "passRate": 80,
   "furigana": [
-    [
-      "単語",
-      "たんご"
-    ],
     [
       "毎日",
       "まいにち"
@@ -43,10 +39,6 @@
     [
       "初級",
       "しょきゅう"
-    ],
-    [
-      "語",
-      "ご"
     ],
     [
       "場",
@@ -103,6 +95,8 @@
     "kakutei",
     "horyuu",
     "rebyu",
-    "seikabutsu"
+    "seikabutsu",
+    "gamen",
+    "hozon"
   ]
 }

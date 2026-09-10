@@ -1,7 +1,7 @@
 {
   "kind": "wordstage",
   "id": "it_kotoba_3_jokyu",
-  "title": "ITの単語",
+  "title": "開発と テストの ことば",
   "description": "開発・レビュー・テストの 場で 使う ことばです。不具合を 追う ときの ことばが 中心です。",
   "label": "上級",
   "fieldSequence": [
@@ -9,16 +9,12 @@
     "sky",
     "space"
   ],
-  "questionCount": 51,
+  "questionCount": 52,
   "passRate": 80,
   "furigana": [
     [
       "不具合",
       "ふぐあい"
-    ],
-    [
-      "単語",
-      "たんご"
     ],
     [
       "開発",
@@ -51,7 +47,6 @@
     "saikentou",
     "kobetsutaiou",
     "ikkatsutaiou",
-    "zanteitaiou",
     "jissou",
     "kaishuu",
     "kizonkinou",
@@ -92,10 +87,12 @@
     "konfurikuto",
     "sashimodoshi",
     "saitesuto",
-    "shouseki",
     "tantaitesuto",
     "ketsugoutesuto",
     "ukeiretesuto",
-    "ro-rubakku"
+    "ro-rubakku",
+    "taioukahi",
+    "jitsugenkahi",
+    "gyoumufuroo"
   ]
 }

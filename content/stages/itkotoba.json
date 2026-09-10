@@ -1,0 +1,33 @@
+{
+  "kind": "stage",
+  "id": "itkotoba",
+  "order": 901,
+  "title": "ITの単語",
+  "reading": "あいてぃーの たんご",
+  "description": "IT の 現場で 使う ことばを、初級から 超上級まで 4つの 段に 分けて おぼえます。",
+  "color": "sky",
+  "status": "published",
+  "listed": false,
+  "contents": [
+    {
+      "ref": "kotoba_jiten",
+      "type": "link"
+    }
+  ],
+  "wordStageIds": [
+    "it_kotoba_1_shokyu",
+    "it_kotoba_2_chukyu",
+    "it_kotoba_3_jokyu",
+    "it_kotoba_4_chojokyu"
+  ],
+  "furigana": [
+    ["超上級", "ちょうじょうきゅう"],
+    ["初級", "しょきゅう"],
+    ["上級", "じょうきゅう"],
+    ["現場", "げんば"],
+    ["単語", "たんご"],
+    ["使う", "つかう"],
+    ["分けて", "わけて"],
+    ["段", "だん"]
+  ]
+}
