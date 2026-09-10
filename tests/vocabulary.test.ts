@@ -5,6 +5,7 @@ import { vocabSchema, wordStageSchema, type VocabBook } from "../src/content/sch
 import { checkFuriganaCoverageOf } from "../src/lib/content-checks";
 import { buildFuriganaIndex, uncoveredKanji } from "../src/lib/text/furigana";
 import {
+  dehydrateWordStage,
   gameWordsOf,
   hydrateArticle,
   hydrateManga,
@@ -13,6 +14,7 @@ import {
   toGameWord,
   vocabByTerm,
 } from "../src/lib/vocabulary";
+import { appendToSet } from "../src/components/studio/vocab-extractor";
 
 const book: VocabBook = vocabSchema.parse(
   JSON.parse(readFileSync(join(__dirname, "..", "content", "vocab", "vocabulary.json"), "utf8")),
@@ -267,5 +269,75 @@ describe("単語テストの 画面の ふりがな", () => {
     )!;
     const [surface, reading] = withOwn.furigana![0]!;
     expect(stage.furigana).toContainEqual([surface, reading]);
+  });
+});
+
+/**
+ * 保存で 読み辞書が 焼き付かない
+ *
+ * 読み出し（`hydrateWordStage`）は 正の 束（441件）を 混ぜて 返す。それを その まま
+ * 保存すると、束が セットに 焼き付く——DBが git に 勝つ ので、あとから 束や 語ごとの
+ * 読みを 直しても **その セットにだけ 届かない**（読みが その日の まま 凍る）。
+ * しかも 画面は 動くので、直したのに 変わらない ことにしか 現れない。
+ *
+ * 逆に 丸ごと 落とすと セット自身の 足し前が 消える。だから **正から 引き直せる ぶんだけ 引く**。
+ * ここは その 往復（hydrate → dehydrate → hydrate）を 見る。
+ */
+describe("保存の かたちに 戻す（焼き付きを 作らない）", () => {
+  const stored = wordStage("intro_kotoba");
+  const hydrated = hydrateWordStage(stored, book.words, book.furigana)!;
+
+  it("読み出しでは 正の 束が 混ざって いる（焼き付きの もと）", () => {
+    expect(hydrated.furigana!.length).toBeGreaterThan(400);
+  });
+
+  it("保存の かたちに 戻すと 束は 持って いかない", () => {
+    const saved = dehydrateWordStage(hydrated, stored.wordIds!, book.words, book.furigana);
+    expect(saved.words).toBeUndefined();
+    expect(saved.wordIds).toEqual(stored.wordIds);
+    expect((saved.furigana ?? []).length).toBeLessThan(20);
+    // 束の 見出しを 1つも 連れて いかない（連れて いくと そこで 読みが 凍る）
+    const surfaces = new Set((saved.furigana ?? []).map(([surface]) => surface));
+    const carried = (book.furigana ?? []).filter(
+      ([surface, reading]) =>
+        surfaces.has(surface) && saved.furigana!.some(([s, r]) => s === surface && r === reading),
+    );
+    expect(carried).toEqual([]);
+  });
+
+  it("セット自身の 足し前は 残す（束と 読みが 違う ものが ある）", () => {
+    const saved = dehydrateWordStage(hydrated, stored.wordIds!, book.words, book.furigana);
+    // intro_kotoba の 「会→あ」。束は 「会→かい」なので、落とすと まちがった 読みで 出る
+    expect(saved.furigana).toContainEqual(["会", "あ"]);
+    expect(book.furigana).toContainEqual(["会", "かい"]);
+  });
+
+  it("往復しても 画面の 読み辞書は 変わらない", () => {
+    const saved = dehydrateWordStage(hydrated, stored.wordIds!, book.words, book.furigana);
+    const again = hydrateWordStage(wordStageSchema.parse(saved), book.words, book.furigana)!;
+    expect(new Map(again.furigana as [string, string][])).toEqual(
+      new Map(hydrated.furigana as [string, string][]),
+    );
+  });
+
+  it("スタジオの「ことばを 足す」も 束を 焼き付けない", () => {
+    const added = book.words.find((w) => !stored.wordIds!.includes(w.id) && isPlayable(w))!;
+    const saved = appendToSet(
+      hydrated,
+      [...stored.wordIds!, added.id],
+      book.words,
+      book.furigana ?? [],
+    );
+    // スキーマを 通る＝ほんとうに 保存できる かたち
+    const parsed = wordStageSchema.parse(saved);
+    expect(parsed.wordIds).toContain(added.id);
+    expect(parsed.words).toBeUndefined();
+    expect((parsed.furigana ?? []).length).toBeLessThan(20);
+    expect(JSON.stringify(parsed).length).toBeLessThan(2000);
+    // 足した 語の 読みは 保存に 持たない（正から 引き直す）
+    expect(parsed.furigana ?? []).not.toContainEqual([added.term, added.reading]);
+    const back = hydrateWordStage(parsed, book.words, book.furigana)!;
+    expect(back.words.map((w) => w.id)).toContain(added.id);
+    expect(back.furigana).toContainEqual(["会", "あ"]);
   });
 });
