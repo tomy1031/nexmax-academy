@@ -12,7 +12,7 @@
       "note": "同じで なくて かまいません。ちがう ところが、きょう 学ぶ ところです。",
       "image": {
         "src": "/img/hourensou/houkoku/keypoint.webp",
-        "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This one is a teaching diagram: few large elements, generous spacing, each label sitting on a soft cream panel with a rounded border, arranged so the eye reads it in one pass. A teaching diagram showing an order of four steps, drawn as four rounded cream panels in a row connected by soft coral arrows. In each panel a small simple drawing of the same junior engineer speaking to a senior shows that step: raising a hand for attention; saying the topic; showing a document of facts; bowing slightly to make a request. Each panel carries its Japanese label under the drawing. The Japanese words in this picture are exactly: 件（けん） / 結論（けつろん） / 事実（じじつ） / お願い（おねがい）. Japanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana. Spell every character exactly as given. No other letters, numbers, logos or watermarks anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+        "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This one is a teaching diagram: few large elements, generous spacing, each label sitting on a soft cream panel with a rounded border, arranged so the eye reads it in one pass. A teaching diagram showing an order of four steps, drawn as four rounded cream panels in a row connected by soft coral arrows. In each panel a small simple drawing of the same junior engineer speaking to a senior shows that step: raising a hand for attention; saying the topic; showing a document of facts; bowing slightly to make a request. Each panel carries its Japanese label under the drawing. The Japanese words in this picture are exactly: 用件（ようけん） / 結論（けつろん） / 事実（じじつ） / お願い（おねがい）. Japanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana. Spell every character exactly as given. No other letters, numbers, logos or watermarks anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
         "refs": [],
         "status": "done"
       }
@@ -20,7 +20,7 @@
     {
       "kind": "heading",
       "level": 2,
-      "text": "日本の 会社で 一番 大切な こと"
+      "text": "日本の 会社で 一番 大切な ことは なんだと 思いますか？"
     },
     {
       "kind": "image",
@@ -34,7 +34,11 @@
     },
     {
       "kind": "paragraph",
-      "text": "答えは「チームワーク（Teamwork）」です。仕事が 終わった とき、問題（Error / Bug）が ある とき、必ず 上司（Boss）に 言います。これを「報告（Report）」と 言います。"
+      "text": "答えは「チームワーク（Teamwork）」です。仕事は あなただけの ものでは ありません。チームや リーダーと 共有（シェア）する ことが 大切です。"
+    },
+    {
+      "kind": "paragraph",
+      "text": "仕事が 終わった とき、必ず 上司（Boss）に 言います。問題（Error / Bug）が ある ときも 言います。これを「報告（Report）」と 言います。"
     },
     {
       "kind": "callout",
@@ -50,7 +54,7 @@
       "kind": "steps",
       "items": [
         "最初に 声を かける。忙しい 人に 話しかける ときは、「今、お時間 よろしいですか」と 許可を もらいます。",
-        "件 → 結論 → 事実 → お願い の 順に 言う。何の 件かを 先に 言うと、相手は すぐ 分かります。"
+        "用件 → 結論 → 事実 → お願い（して ほしい ことが あれば）の 順に 言う。何の 用件かを 先に 言うと、相手は すぐ 分かります。"
       ],
       "images": [
         {
@@ -63,7 +67,7 @@
         },
         {
           "src": "/img/hourensou/houkoku/keypoint.webp",
-          "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This one is a teaching diagram: few large elements, generous spacing, each label sitting on a soft cream panel with a rounded border, arranged so the eye reads it in one pass. A teaching diagram showing an order of four steps, drawn as four rounded cream panels in a row connected by soft coral arrows. In each panel a small simple drawing of the same junior engineer speaking to a senior shows that step: raising a hand for attention; saying the topic; showing a document of facts; bowing slightly to make a request. Each panel carries its Japanese label under the drawing. The Japanese words in this picture are exactly: 件（けん） / 結論（けつろん） / 事実（じじつ） / お願い（おねがい）. Japanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana. Spell every character exactly as given. No other letters, numbers, logos or watermarks anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+          "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This one is a teaching diagram: few large elements, generous spacing, each label sitting on a soft cream panel with a rounded border, arranged so the eye reads it in one pass. A teaching diagram showing an order of four steps, drawn as four rounded cream panels in a row connected by soft coral arrows. In each panel a small simple drawing of the same junior engineer speaking to a senior shows that step: raising a hand for attention; saying the topic; showing a document of facts; bowing slightly to make a request. Each panel carries its Japanese label under the drawing. The Japanese words in this picture are exactly: 用件（ようけん） / 結論（けつろん） / 事実（じじつ） / お願い（おねがい）. Japanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana. Spell every character exactly as given. No other letters, numbers, logos or watermarks anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
           "refs": [],
           "status": "done"
         }
@@ -72,12 +76,12 @@
     {
       "kind": "callout",
       "tone": "care",
-      "text": "「件（けん）」は、いま 話して いる その ことです。「ログイン機能の 件ですが」は「ログイン機能の ことですが」と 同じです。"
+      "text": "「用件（Topic / Matter）」は、いま 話して いる その ことです。「ログイン機能の 用件ですが」は「ログイン機能の ことですが」と 同じです。"
     },
     {
       "kind": "callout",
       "tone": "point",
-      "text": "件・結論・事実・お願いが そろって いれば、悪い ニュースでも ちゃんと 伝わります。相手は すぐ つぎの 手を 考えられます。"
+      "text": "用件・結論・事実・お願いが そろって いれば、相手は すぐ つぎの 手（Next action）を 考えられます。「つぎの 手」は、つぎに する ことです。"
     },
     {
       "kind": "heading",
@@ -86,7 +90,7 @@
     },
     {
       "kind": "paragraph",
-      "text": "ITの 仕事で よく する 報告は、大きく 3つです。どれも 同じ 順（件 → 結論 → 事実 → お願い）で 言います。"
+      "text": "ITの 仕事で よく する 報告は、大きく 3つです。どれも 同じ 順（用件 → 結論 → 事実 → お願い）で 言います。"
     },
     {
       "kind": "cards",
@@ -96,13 +100,13 @@
           "icon": "✅",
           "label": "1",
           "title": "終わった とき",
-          "text": "「ログイン機能の 件ですが、テストが 終わりました。確認を お願いします。」"
+          "text": "「ログイン機能の 用件ですが、テストが 終わりました。確認を お願いします。」"
         },
         {
           "icon": "🆘",
           "label": "2",
           "title": "困った とき",
-          "text": "「ログイン機能の 件ですが、エラーが 出て います。直すのに 1日 かかりそうです。」"
+          "text": "「ログイン機能の 用件ですが、エラーが 出て います。直すのに 1日 かかりそうです。」"
         },
         {
           "icon": "👀",
@@ -130,6 +134,10 @@
       "ほうれんそう"
     ],
     [
+      "用件",
+      "ようけん"
+    ],
+    [
       "報告",
       "ほうこく"
     ],
@@ -152,6 +160,10 @@
     [
       "仕事",
       "しごと"
+    ],
+    [
+      "共有",
+      "きょうゆう"
     ],
     [
       "確認",
@@ -210,6 +222,10 @@
       "わか"
     ],
     [
+      "思",
+      "おも"
+    ],
+    [
       "人",
       "ひと"
     ],
@@ -238,10 +254,6 @@
       "にち"
     ],
     [
-      "件",
-      "けん"
-    ],
-    [
       "言",
       "い"
     ],
@@ -258,16 +270,8 @@
       "なお"
     ],
     [
-      "悪",
-      "わる"
-    ],
-    [
       "終",
       "お"
-    ],
-    [
-      "伝",
-      "つた"
     ],
     [
       "困",

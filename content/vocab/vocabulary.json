@@ -16536,6 +16536,42 @@
       ]
     },
     {
+      "id": "youken_matter",
+      "term": "用件",
+      "reading": "ようけん",
+      "romaji": "youken",
+      "meaningJa": "これから 話す、その 話の ことです。",
+      "englishTerm": "Matter / Topic",
+      "example": "ログイン機能の 用件ですが、テストが 終わりました。",
+      "wrongMeanings": [
+        "Requirements",
+        "Place",
+        "Price"
+      ],
+      "furigana": [
+        [
+          "用件",
+          "ようけん"
+        ],
+        [
+          "機能",
+          "きのう"
+        ],
+        [
+          "終わりました",
+          "おわりました"
+        ],
+        [
+          "話す",
+          "はなす"
+        ],
+        [
+          "話",
+          "はなし"
+        ]
+      ]
+    },
+    {
       "id": "kaikyuu",
       "term": "階級",
       "reading": "かいきゅう",
