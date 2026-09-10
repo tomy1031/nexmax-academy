@@ -188,6 +188,8 @@ codex -i public/img/characters/nexmax/reference.png \
 | `scripts/images/kaisha_junbi_people.json` | 同 2枚（A/B の 分かれ道。松井社長＋吹き出しの ネクマックス） | 2026-08-28 |
 | `scripts/images/kaisha_junbi_matsui.json` | 同 1枚（松井社長に 質問する） | 2026-08-28 |
 | `scripts/images/kaisha_junbi_hendy.json` | 同 1枚（ヘンディさんが 出る） | 2026-08-28 |
+| `scripts/images/asakai_cards.json` | 朝礼ページの 3点セットの カード 3枚（きのう・きょう・こまりごと。文字なし） | 2026-09-10 |
+| `scripts/images/asakai_zukai.json` | 同 1枚（朝の 会・夕方の 会・文字で 書く 会 の 図。**文字あり**） | 2026-09-10 |
 
 **学習者役を 毎回 同じ 顔に しない**（2026-08-28 の 指摘「同じ女性を使いすぎ」「背景にもバリエーションが
 欲しい」）。§6.7 は「学習者役の 学生は 1枚目を 絵柄アンカーに して 顔と 服を そろえる」と 書いて いるが、

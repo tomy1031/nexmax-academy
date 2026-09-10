@@ -21,8 +21,9 @@
       "title": "きょう やる こと",
       "where": "content/articles/asakai_lecture.json blocks[5].items[1].image",
       "priority": "A",
-      "scene": "Close view of the same young engineer facing forward at the desk, sleeves rolled up, one hand on the laptop and the other pointing ahead, ready to start today's work. Bright morning light, energetic mood.",
-      "output": "Output: one square illustration, 1024x1024. Close view — the subject fills the frame edge to edge."
+      "scene": "Close view of the same young engineer in a red cardigan over a white shirt, seated at his desk in the morning and looking down at the work he is about to start. An OPEN laptop stands in front of him with a completely blank white screen, and on the desk between him and the laptop lie three small blank sticky notes in a neat row, waiting to be worked through one by one. He reaches out with one hand and points down at the sticky notes, and HIS EYES FOLLOW THE SAME HAND — he is looking down at the notes on his own desk, seen from a three-quarter side angle. HE NEVER POINTS AT THE VIEWER AND NEVER LOOKS AT THE CAMERA. His other hand rests flat on the desk beside the laptop. Positive, ready-to-start expression with a small confident smile. Bright morning light from the window, the same early morning hour as the picture of yesterday's finished work.",
+      "output": "Output: one square illustration, 1024x1024. Close view — the subject fills the frame edge to edge.",
+      "_note": "2026-09-10: 1回目は 差分行が the other pointing ahead だったので、男性が 見る 人を まっすぐ 指さす 絵に なった。「あなた！」に 読めて、「きょう する こと」を 説明して いない（絵だけで きのう／きょう／こまりごと を 見分ける ための 3枚。docs/constraints.md「絵で 分かるように する」）。きのうの 絵が「閉じた ノートPC・そろえた 紙・チェックの 紙」で “終わった” を 読ませて いるのに、きょうの 絵には “これから” の 小道具が 無かった。開いた ノートPC（白紙の 画面）＋机の 付箋 3枚に 直し、指さす 先と 目線を その 付箋へ 向けた（見る 人を 指さす ことは 明文で 禁じた）。"
     },
     {
       "out": "asakai_komari",
@@ -30,8 +31,9 @@
       "title": "こまって いる こと（だれも 怒って いない）",
       "where": "content/articles/asakai_lecture.json blocks[5].items[2].image",
       "priority": "A",
-      "scene": "Close view of the same young engineer turning to a nearby senior colleague and raising one hand a little to ask for help, a small puzzled but hopeful expression. The senior colleague leans in kindly to listen. Warm, safe mood — nobody looks angry.",
-      "output": "Output: one square illustration, 1024x1024. Close view — the subject fills the frame edge to edge."
+      "scene": "Close view of the same young engineer turning to a nearby senior colleague and raising one hand to shoulder height, palm open, to ask for help, a small puzzled but hopeful expression. THE SENIOR COLLEAGUE IS A DIFFERENT AND OLDER MAN with short neatly parted hair going grey at the temples, thin glasses and a light blue shirt — never give the two men the same face or hair. He leans in towards the junior at the same eye level, both hands relaxed, listening with a warm open smile. Warm, safe mood — nobody looks angry and nobody looks down on anyone.",
+      "output": "Output: one square illustration, 1024x1024. Close view — the subject fills the frame edge to edge.",
+      "_note": "2026-09-10: 1回目は 2人が 同じ 顔に なり（skill §「2人 出る 絵は 別人だと 書かないと 同じ 顔に なる」）、手も あがらず、先輩が 頬づえで 見下ろす 絵に なった。差分行を 具体化して 撮り直した。"
     }
   ]
 }
