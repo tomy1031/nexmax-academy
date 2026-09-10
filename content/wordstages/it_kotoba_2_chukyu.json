@@ -1,7 +1,7 @@
 {
   "kind": "wordstage",
   "id": "it_kotoba_2_chukyu",
-  "title": "ITの単語",
+  "title": "要件定義と 画面の ことば",
   "description": "要件定義・画面設計から リリースまでの 場で 使う ことばです。似た ことばの ちがいを 見分けます。",
   "label": "中級",
   "fieldSequence": [
@@ -9,7 +9,7 @@
     "sky",
     "space"
   ],
-  "questionCount": 57,
+  "questionCount": 52,
   "passRate": 80,
   "furigana": [
     [
@@ -25,8 +25,8 @@
       "みわけ"
     ],
     [
-      "単語",
-      "たんご"
+      "画面",
+      "がめん"
     ],
     [
       "使う",
@@ -63,9 +63,6 @@
     "nuke",
     "more",
     "choufuku",
-    "taioukahi",
-    "jitsugenkahi",
-    "gamen",
     "koumoku",
     "nyuuryoku",
     "shutsuryoku",
@@ -76,7 +73,6 @@
     "kensaku",
     "touroku",
     "koushin",
-    "hozon",
     "sentaku",
     "hissu",
     "nini",
@@ -94,7 +90,6 @@
     "kihonsekkei",
     "shousaisekkei",
     "sekkeisho",
-    "gyoumufuroo",
     "gijiroku",
     "kaihatukankyou",
     "sutejingukankyou",

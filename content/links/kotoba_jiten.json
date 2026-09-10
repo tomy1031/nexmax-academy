@@ -1,0 +1,17 @@
+{
+  "kind": "link",
+  "title": "ことばの じてん",
+  "id": "kotoba_jiten",
+  "description": "この アプリに 出て くる ことばを、読みと 意味から さがせます。",
+  "url": "/dictionary",
+  "view": "fullscreen",
+  "height": 720,
+  "newTab": true,
+  "note": "おぼえた ことばが ふえると、じてんの 中の ことばも ふえます。",
+  "furigana": [
+    ["意味", "いみ"],
+    ["読み", "よみ"],
+    ["出て", "でて"],
+    ["中", "なか"]
+  ]
+}
