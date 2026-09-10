@@ -3567,7 +3567,33 @@
       "id": "junchou",
       "term": "順調",
       "reading": "じゅんちょう",
-      "meaningJa": "よてい どおりに すすんで いること"
+      "meaningJa": "予定 どおりに 進んで いる ことです。",
+      "romaji": "junchou",
+      "englishTerm": "Going well",
+      "example": "「順調です」だけでは、どこまで 進んだかが 伝わりません。",
+      "wrongMeanings": [
+        "Running late",
+        "Getting stuck",
+        "Being cancelled"
+      ],
+      "furigana": [
+        [
+          "順調",
+          "じゅんちょう"
+        ],
+        [
+          "予定",
+          "よてい"
+        ],
+        [
+          "進",
+          "すす"
+        ],
+        [
+          "伝",
+          "つた"
+        ]
+      ]
     },
     {
       "id": "purojiekutomane-ja",
@@ -3711,7 +3737,45 @@
       "id": "asakai",
       "term": "朝会",
       "reading": "あさかい",
-      "meaningJa": "あさに する みじかい かいぎ"
+      "meaningJa": "朝に する みじかい 会議です。朝礼とも 言います。",
+      "romaji": "asakai",
+      "englishTerm": "Daily stand-up",
+      "example": "開発チームは 毎朝 みじかい 朝会を します。",
+      "wrongMeanings": [
+        "Year-end party",
+        "Job interview",
+        "Training camp"
+      ],
+      "furigana": [
+        [
+          "朝会",
+          "あさかい"
+        ],
+        [
+          "朝礼",
+          "ちょうれい"
+        ],
+        [
+          "会議",
+          "かいぎ"
+        ],
+        [
+          "開発",
+          "かいはつ"
+        ],
+        [
+          "毎朝",
+          "まいあさ"
+        ],
+        [
+          "朝",
+          "あさ"
+        ],
+        [
+          "言",
+          "い"
+        ]
+      ]
     },
     {
       "id": "jidai",
@@ -15490,6 +15554,142 @@
         [
           "関係",
           "かんけい"
+        ]
+      ]
+    },
+    {
+      "id": "chourei",
+      "term": "朝礼",
+      "reading": "ちょうれい",
+      "romaji": "chourei",
+      "meaningJa": "仕事を 始める 前に、みんなで 集まって する みじかい 会です。",
+      "englishTerm": "Morning meeting",
+      "example": "朝礼で、きょう する ことを 伝えます。",
+      "wrongMeanings": [
+        "Lunch break",
+        "Year-end party",
+        "Training camp"
+      ],
+      "furigana": [
+        [
+          "朝礼",
+          "ちょうれい"
+        ],
+        [
+          "仕事",
+          "しごと"
+        ],
+        [
+          "始",
+          "はじ"
+        ],
+        [
+          "前",
+          "まえ"
+        ],
+        [
+          "集",
+          "あつ"
+        ],
+        [
+          "会",
+          "かい"
+        ],
+        [
+          "伝",
+          "つた"
+        ]
+      ]
+    },
+    {
+      "id": "yuurei",
+      "term": "夕礼",
+      "reading": "ゆうれい",
+      "romaji": "yuurei",
+      "meaningJa": "一日の おわりに、みんなで 集まって する みじかい 会です。",
+      "englishTerm": "End-of-day meeting",
+      "example": "この チームは 朝礼では なく 夕礼を します。",
+      "wrongMeanings": [
+        "Morning meeting",
+        "Farewell party",
+        "Overtime work"
+      ],
+      "furigana": [
+        [
+          "夕礼",
+          "ゆうれい"
+        ],
+        [
+          "一日",
+          "いちにち"
+        ],
+        [
+          "朝礼",
+          "ちょうれい"
+        ],
+        [
+          "集",
+          "あつ"
+        ],
+        [
+          "会",
+          "かい"
+        ]
+      ]
+    },
+    {
+      "id": "tsumaru",
+      "term": "詰まる",
+      "reading": "つまる",
+      "romaji": "tsumaru",
+      "meaningJa": "そこから 先に 進めなく なる ことです。",
+      "englishTerm": "Getting stuck",
+      "example": "エラーの 意味が 分からなくて、詰まって います。",
+      "wrongMeanings": [
+        "Getting faster",
+        "Getting easier",
+        "Getting bigger"
+      ],
+      "furigana": [
+        [
+          "詰",
+          "つ"
+        ],
+        [
+          "先",
+          "さき"
+        ],
+        [
+          "進",
+          "すす"
+        ],
+        [
+          "意味",
+          "いみ"
+        ],
+        [
+          "分",
+          "わ"
+        ]
+      ]
+    },
+    {
+      "id": "eikyou",
+      "term": "影響",
+      "reading": "えいきょう",
+      "romaji": "eikyou",
+      "meaningJa": "ほかの ものが うける、よい ことや こまる ことです。",
+      "englishTerm": "Impact",
+      "example": "この バグは、あしたの リリースに 影響が あります。",
+      "wrongMeanings": [
+        "Estimate",
+        "Permission",
+        "Attendance"
+      ],
+      "furigana": [
+        [
+          "影響",
+          "えいきょう"
         ]
       ]
     }

@@ -4,7 +4,7 @@
   "order": 4,
   "title": "報連相：報告",
   "reading": "ほうれんそう ほうこく",
-  "description": "日本の 会社の「報連相」を 学びます。報告の しかたを 読んで、聞いて、声に 出して 練習して、最後は 報告クエストで 一日を 遊びます。",
+  "description": "日本の 会社の「報連相」を 学びます。上司への 報告の しかたを 読んで、聞いて、声に 出して 練習します。さいごは 毎朝の 朝礼で、きのう・きょう・こまりごとの 3つを 話します。",
   "color": "sky",
   "status": "published",
   "area": {
@@ -37,12 +37,32 @@
       "type": "meeting"
     },
     {
-      "ref": "houkoku_quest",
+      "ref": "houkoku_search",
       "type": "link"
     },
     {
-      "ref": "houkoku_search",
-      "type": "link"
+      "ref": "asakai_manga",
+      "type": "manga"
+    },
+    {
+      "ref": "asakai_lecture",
+      "type": "article"
+    },
+    {
+      "ref": "asakai_memo",
+      "type": "quizset"
+    },
+    {
+      "ref": "asakai_meeting",
+      "type": "meeting"
+    },
+    {
+      "ref": "asakai_komari_meeting",
+      "type": "meeting"
+    },
+    {
+      "ref": "yuurei_meeting",
+      "type": "meeting"
     }
   ],
   "wordStageIds": [
@@ -78,6 +98,22 @@
       "いちにち"
     ],
     [
+      "出し",
+      "だし"
+    ],
+    [
+      "上司",
+      "じょうし"
+    ],
+    [
+      "毎朝",
+      "まいあさ"
+    ],
+    [
+      "朝礼",
+      "ちょうれい"
+    ],
+    [
       "後",
       "あと"
     ],
@@ -92,10 +128,6 @@
     [
       "読",
       "よ"
-    ],
-    [
-      "出し",
-      "だし"
     ],
     [
       "出",
@@ -124,6 +156,10 @@
     [
       "遊",
       "あそ"
+    ],
+    [
+      "話",
+      "はな"
     ]
   ]
 }

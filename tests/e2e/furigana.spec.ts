@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { expect, test } from "@playwright/test";
 import {
   bareKanjiTexts,
@@ -98,6 +100,30 @@ test("対話ゲームの 中（はじめた あと・答える前）にも 裸�
   await page.getByRole("button", { name: "はじめる ▶" }).click();
   await readOn(page);
   await expect(page.getByLabel("文字で 答える")).toBeVisible();
+
+  const bare = await bareKanjiTexts(page);
+  expect(bare.filter((text) => !KNOWN_BARE_KANJI.includes(text))).toEqual([]);
+});
+
+/**
+ * **漢字の 名前の 相手**の ミーティングも 見る（2026-09-09）。
+ *
+ * 上の 1本は ヘンディさん——**カタカナの 名前**なので、画面が 名前を ルビに
+ * 通して いなくても 裸の漢字が 出ない。夕礼で 富田さんを 相手に した とたん、
+ * 好感度メーター・判定ポップアップ・修了証の 3か所で 漢字が 裸に なった。
+ * 名前は データから 来る ので、**漢字の 名前を 1本 通して おかないと 見張れない**。
+ */
+test("ミーティングの 中（漢字の 名前の 相手）にも 裸の漢字が 無い", async ({ page, context }) => {
+  const stage = JSON.parse(
+    readFileSync(join(__dirname, "..", "..", "content", "stages", "houkoku.json"), "utf8"),
+  ) as { contents: { ref: string }[] };
+  const refs = stage.contents.map((item) => item.ref);
+  const at = refs.indexOf("yuurei_meeting");
+  expect(at, "夕礼の ミーティングが 報告ステージに ある").toBeGreaterThan(0);
+
+  await seedCompleted(context, refs.slice(0, at));
+  await page.goto("/houkoku/meeting-yuurei_meeting");
+  await joinCall(page);
 
   const bare = await bareKanjiTexts(page);
   expect(bare.filter((text) => !KNOWN_BARE_KANJI.includes(text))).toEqual([]);

@@ -103,7 +103,8 @@ export function CertificateModal({
 
         {/* 話せた 数と ハート */}
         <p className="text-leaf-deep mt-3 text-sm font-black">
-          {hostName}さんと <span className="text-lg">{record.lines.length}</span> こ 話せました
+          <RubyText text={`${hostName}さんと`} index={furigana} show />{" "}
+          <span className="text-lg">{record.lines.length}</span> こ 話せました
         </p>
         {typeof hearts === "number" && typeof maxHearts === "number" ? (
           <p className="mt-1 text-sm font-extrabold" aria-label={`ハート ${hearts} / ${maxHearts}`}>
@@ -124,8 +125,8 @@ export function CertificateModal({
         {record.lines.length > 0 ? (
           <section className="mt-4 text-left" aria-label={`${hostName}さんに 話した こと`}>
             <h3 className="text-ink-soft text-xs font-black">
-              💬 {hostName}さんに <RubyText text="話した こと" index={FURIGANA} show />（
-              {record.lines.length}）
+              💬 <RubyText text={`${hostName}さんに`} index={furigana} show />{" "}
+              <RubyText text="話した こと" index={FURIGANA} show />（{record.lines.length}）
             </h3>
             <ul className="mt-1.5 space-y-2">
               {record.lines.map((line) => (
@@ -143,8 +144,8 @@ export function CertificateModal({
         {discovered.length > 0 ? (
           <section className="mt-4 text-left" aria-label={`${hostName}さんから 聞けた こと`}>
             <h3 className="text-ink-soft text-xs font-black">
-              🔎 {hostName}さんから <RubyText text="聞けた こと" index={FURIGANA} show />（
-              {discovered.length}）
+              🔎 <RubyText text={`${hostName}さんから`} index={furigana} show />{" "}
+              <RubyText text="聞けた こと" index={FURIGANA} show />（{discovered.length}）
             </h3>
             <ul className="mt-1.5 space-y-1.5">
               {discovered.map((label) => (

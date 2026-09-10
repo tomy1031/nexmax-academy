@@ -68,6 +68,14 @@ export function VisemeFace({
   /** 正方形で置きたいときの一辺。省略すると**親いっぱい**に広がる（Zoomのタイル用）。 */
   size,
   alt = "",
+  /**
+   * 絵が 無い ときに 丸の 中に 出す 1文字。
+   *
+   * 名前の 頭を そのまま 出すと、**漢字の 名前**（富田さん）では 読めない 字が
+   * 1つ 置かれる（規律2）。丸の 中に ルビは 入らない ので、呼ぶ側が **読みの
+   * 1文字目**を 渡す。省くと これまでどおり 名前の 頭を 出す。
+   */
+  initial,
 }: {
   dir: string;
   sources?: Partial<Record<Viseme, string>>;
@@ -75,6 +83,7 @@ export function VisemeFace({
   analyser?: AnalyserNode | null;
   size?: number;
   alt?: string;
+  initial?: string;
 }) {
   const [viseme, setViseme] = useState<Viseme>("closed");
   /**
@@ -145,7 +154,7 @@ export function VisemeFace({
       style={size === undefined ? undefined : { width: size, height: size }}
     >
       {missing ? (
-        <QuietFace initial={alt.slice(0, 1)} speaking={speaking} />
+        <QuietFace initial={initial ?? alt.slice(0, 1)} speaking={speaking} />
       ) : (
         /*
           6枚すべてを重ねて置き、出すものだけ不透明にする。
