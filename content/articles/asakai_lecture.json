@@ -1,0 +1,552 @@
+{
+  "kind": "article",
+  "id": "asakai_lecture",
+  "title": "朝礼 — 朝の 報告",
+  "description": "毎朝 する みじかい 会です。何を 話すか、なぜ するかを 見ます。会社や プロジェクトで やり方が ちがう ことも 知ります。",
+  "furigana": [
+    [
+      "入ったら",
+      "はいったら"
+    ],
+    [
+      "入れる",
+      "いれる"
+    ],
+    [
+      "間に合",
+      "まにあ"
+    ],
+    [
+      "報連相",
+      "ほうれんそう"
+    ],
+    [
+      "言い方",
+      "いいかた"
+    ],
+    [
+      "分かり",
+      "わかり"
+    ],
+    [
+      "分から",
+      "わから"
+    ],
+    [
+      "報告",
+      "ほうこく"
+    ],
+    [
+      "入れ",
+      "いれ"
+    ],
+    [
+      "朝礼",
+      "ちょうれい"
+    ],
+    [
+      "朝会",
+      "あさかい"
+    ],
+    [
+      "夕礼",
+      "ゆうれい"
+    ],
+    [
+      "夕方",
+      "ゆうがた"
+    ],
+    [
+      "定例",
+      "ていれい"
+    ],
+    [
+      "日報",
+      "にっぽう"
+    ],
+    [
+      "進捗",
+      "しんちょく"
+    ],
+    [
+      "順調",
+      "じゅんちょう"
+    ],
+    [
+      "毎朝",
+      "まいあさ"
+    ],
+    [
+      "毎日",
+      "まいにち"
+    ],
+    [
+      "会社",
+      "かいしゃ"
+    ],
+    [
+      "日本",
+      "にほん"
+    ],
+    [
+      "仕事",
+      "しごと"
+    ],
+    [
+      "時間",
+      "じかん"
+    ],
+    [
+      "予定",
+      "よてい"
+    ],
+    [
+      "大切",
+      "たいせつ"
+    ],
+    [
+      "先輩",
+      "せんぱい"
+    ],
+    [
+      "数字",
+      "すうじ"
+    ],
+    [
+      "意味",
+      "いみ"
+    ],
+    [
+      "機能",
+      "きのう"
+    ],
+    [
+      "週間",
+      "しゅうかん"
+    ],
+    [
+      "文字",
+      "もじ"
+    ],
+    [
+      "回数",
+      "かいすう"
+    ],
+    [
+      "場面",
+      "ばめん"
+    ],
+    [
+      "言う",
+      "いう"
+    ],
+    [
+      "言え",
+      "いえ"
+    ],
+    [
+      "言い",
+      "いい"
+    ],
+    [
+      "信頼",
+      "しんらい"
+    ],
+    [
+      "共有",
+      "きょうゆう"
+    ],
+    [
+      "言",
+      "い"
+    ],
+    [
+      "方",
+      "かた"
+    ],
+    [
+      "会",
+      "かい"
+    ],
+    [
+      "週",
+      "しゅう"
+    ],
+    [
+      "回",
+      "かい"
+    ],
+    [
+      "分",
+      "ふん"
+    ],
+    [
+      "秒",
+      "びょう"
+    ],
+    [
+      "人",
+      "ひと"
+    ],
+    [
+      "何",
+      "なに"
+    ],
+    [
+      "中",
+      "なか"
+    ],
+    [
+      "朝",
+      "あさ"
+    ],
+    [
+      "前",
+      "まえ"
+    ],
+    [
+      "集",
+      "あつ"
+    ],
+    [
+      "話",
+      "はな"
+    ],
+    [
+      "始",
+      "はじ"
+    ],
+    [
+      "多",
+      "おお"
+    ],
+    [
+      "早",
+      "はや"
+    ],
+    [
+      "見",
+      "み"
+    ],
+    [
+      "直",
+      "なお"
+    ],
+    [
+      "助",
+      "たす"
+    ],
+    [
+      "答",
+      "こた"
+    ],
+    [
+      "知",
+      "し"
+    ],
+    [
+      "手",
+      "て"
+    ],
+    [
+      "貸",
+      "か"
+    ],
+    [
+      "同",
+      "おな"
+    ],
+    [
+      "終",
+      "お"
+    ],
+    [
+      "小",
+      "ちい"
+    ],
+    [
+      "進",
+      "すす"
+    ],
+    [
+      "詰",
+      "つ"
+    ],
+    [
+      "願",
+      "ねが"
+    ],
+    [
+      "聞",
+      "き"
+    ],
+    [
+      "立",
+      "た"
+    ],
+    [
+      "書",
+      "か"
+    ],
+    [
+      "無",
+      "な"
+    ],
+    [
+      "伝",
+      "つた"
+    ],
+    [
+      "長",
+      "なが"
+    ],
+    [
+      "新",
+      "あたら"
+    ],
+    [
+      "来",
+      "き"
+    ],
+    [
+      "間",
+      "ま"
+    ],
+    [
+      "教",
+      "おし"
+    ],
+    [
+      "型",
+      "かた"
+    ],
+    [
+      "合",
+      "あ"
+    ]
+  ],
+  "blocks": [
+    {
+      "kind": "hero",
+      "eyebrow": "🌅 報連相 2",
+      "title": "朝礼（ちょうれい）",
+      "lead": "毎朝、仕事を 始める 前に、チームで 集まる みじかい 会です。",
+      "note": "ひとり 30秒〜1分。きのう・きょう・こまりごとの 3つを 話します。",
+      "image": {
+        "src": "/img/manga/m2-asakai-manga/panel1.webp",
+        "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. Five colleagues stand in a loose half circle beside a blank whiteboard in a bright morning office, holding mugs and small notebooks, listening to one young engineer who is speaking. Everyone is standing, relaxed and attentive. Morning sunlight through a big window, plants nearby. Wide shot filling the frame. No text, no letters, no kanji, no kana, no numbers anywhere in the image. Screens, papers, whiteboards, books and signs are blank or show only soft abstract shapes and simple pictures. No watermark, no signature, no logo, no speech balloons, no floating symbols such as question marks, exclamation marks, arrows, light bulbs, stars or hearts. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+        "refs": [
+          "/img/characters/hendy/sheet.webp"
+        ],
+        "status": "done"
+      }
+    },
+    {
+      "kind": "paragraph",
+      "text": "日本の 会社では、朝に みんなで 集まって 話す ことが 多いです。この 会を 朝礼、または 朝会と 言います。エンジニアの チームには、ほとんど 毎日 あります。"
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "なぜ 朝礼を するの？"
+    },
+    {
+      "kind": "cards",
+      "tone": "plain",
+      "columns": 3,
+      "items": [
+        {
+          "icon": "🕘",
+          "title": "おくれを 早く 見つける",
+          "text": "きょうの おくれは、きょうの うちに 言えば 直せます。だまって いると、チーム ぜんぶが おくれます。"
+        },
+        {
+          "icon": "🤝",
+          "title": "早く 助けて もらえる",
+          "text": "こまって いる ことを 言うと、答えを 知って いる 人が 手を 貸して くれます。"
+        },
+        {
+          "icon": "🗺",
+          "title": "きょうの 予定を そろえる",
+          "text": "だれが 何を するかが、みんなに 分かります。同じ 仕事を ふたりで して しまう ことが なくなります。"
+        }
+      ]
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "話す ことは 3つだけ"
+    },
+    {
+      "kind": "cards",
+      "tone": "step",
+      "columns": 3,
+      "items": [
+        {
+          "title": "きのう やった こと",
+          "text": "どこまで 終わったかを 言います。",
+          "image": {
+            "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. Close view of a young engineer at a desk in the morning, looking back over yesterday's finished work: a closed laptop with a blank screen, a tidy stack of papers pushed to one side, and a small blank checklist card lying flat on the desk. Calm, satisfied expression. No text, no letters, no kanji, no kana, no numbers anywhere in the image. Screens, papers, whiteboards, books and signs are blank or show only soft abstract shapes and simple pictures. No watermark, no signature, no logo, no speech balloons, no floating symbols such as question marks, exclamation marks, arrows, light bulbs, stars or hearts. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+            "refs": [
+              "/img/characters/nyam/sheet.webp"
+            ],
+            "status": "empty"
+          }
+        },
+        {
+          "title": "きょう やる こと",
+          "text": "1つか 2つで じゅうぶんです。",
+          "image": {
+            "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. Close view of the same young engineer facing forward at the desk, sleeves rolled up, one hand on the laptop and the other pointing ahead, ready to start today's work. Bright morning light, energetic mood. No text, no letters, no kanji, no kana, no numbers anywhere in the image. Screens, papers, whiteboards, books and signs are blank or show only soft abstract shapes and simple pictures. No watermark, no signature, no logo, no speech balloons, no floating symbols such as question marks, exclamation marks, arrows, light bulbs, stars or hearts. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+            "refs": [
+              "/img/characters/nyam/sheet.webp"
+            ],
+            "status": "empty"
+          }
+        },
+        {
+          "title": "こまって いる こと",
+          "text": "小さくても 言います。ここが いちばん 大切です。",
+          "image": {
+            "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. Close view of the same young engineer turning to a nearby senior colleague and raising one hand a little to ask for help, a small puzzled but hopeful expression. The senior colleague leans in kindly to listen. Warm, safe mood — nobody looks angry. No text, no letters, no kanji, no kana, no numbers anywhere in the image. Screens, papers, whiteboards, books and signs are blank or show only soft abstract shapes and simple pictures. No watermark, no signature, no logo, no speech balloons, no floating symbols such as question marks, exclamation marks, arrows, light bulbs, stars or hearts. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+            "refs": [
+              "/img/characters/nyam/sheet.webp"
+            ],
+            "status": "empty"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "callout",
+      "tone": "point",
+      "text": "「こまって いる こと」は 言いにくいです。でも、朝礼は それを 言う ための 時間です。早く 言う 人は、信頼される 人に なります。"
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "言い方の 型"
+    },
+    {
+      "kind": "steps",
+      "items": [
+        "「きのうは、ログイン機能の テストを しました。80%まで 終わりました。」— どこまで 進んだかを 数字で 言います。",
+        "「きょうは、のこりの テストを します。」— きょう する ことを 1つか 2つ 言います。",
+        "「エラーの 意味が 分からなくて、詰まって います。あとで 30分、見て いただけませんか。」— こまりごとは、お願いまで 言います。"
+      ]
+    },
+    {
+      "kind": "callout",
+      "tone": "point",
+      "text": "数字を 1つ 入れると、聞く 人に すぐ 伝わります。80%・あと 2時間・のこり 3つ、など。"
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "「順調です」だけでは 伝わりません"
+    },
+    {
+      "kind": "compare",
+      "before": {
+        "title": "伝わらない 朝礼",
+        "lines": [
+          "「きのうも きょうも、順調です。」",
+          "「こまって いる ことは、とくに ありません。」",
+          "1週間 あと。テストが 間に合わない ことが 分かりました。"
+        ]
+      },
+      "after": {
+        "title": "伝わる 朝礼",
+        "lines": [
+          "「きのうは テストを 80%まで しました。」",
+          "「きょうは のこりを します。」",
+          "「エラーで 詰まって います。30分 見て いただけませんか。」",
+          "すぐに 先輩が となりに 来て くれました。"
+        ]
+      }
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "会社に よって、プロジェクトに よって ちがいます"
+    },
+    {
+      "kind": "paragraph",
+      "text": "朝礼の やり方は 1つでは ありません。会社が ちがえば ちがいます。同じ 会社の 中でも、プロジェクトが ちがえば ちがいます。"
+    },
+    {
+      "kind": "cards",
+      "tone": "plain",
+      "columns": 2,
+      "items": [
+        {
+          "icon": "⏰",
+          "title": "時間",
+          "text": "朝に する ところと、夕方に する ところが あります。夕方の 会は 夕礼と 言います。"
+        },
+        {
+          "icon": "📅",
+          "title": "回数",
+          "text": "毎日 する ところも、週に 1回だけの ところも あります。週に 1回の 会は 定例と 言う ことが 多いです。"
+        },
+        {
+          "icon": "💬",
+          "title": "やり方",
+          "text": "立って 話す ところ、すわって 話す ところ、チャットに 文字で 書く ところが あります。"
+        },
+        {
+          "icon": "🙂",
+          "title": "しない ところ",
+          "text": "朝礼が 無い チームも あります。その ときは 日報や チャットで 進捗を 共有します。"
+        }
+      ]
+    },
+    {
+      "kind": "image",
+      "size": "wide",
+      "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. A teaching diagram of three large rounded cream cards side by side on a soft sky-blue background. In the first card colleagues stand in a circle in the morning light. In the second card colleagues sit around a table in warm evening light from the window. In the third card one engineer types on a laptop alone at a desk, sharing a written note with the team. Few large elements, generous spacing. No text, no letters, no kanji, no kana, no numbers anywhere in the image. Screens, papers, whiteboards, books and signs are blank or show only soft abstract shapes and simple pictures. No watermark, no signature, no logo, no speech balloons, no floating symbols such as question marks, exclamation marks, arrows, light bulbs, stars or hearts. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+      "refs": [],
+      "status": "empty",
+      "caption": "朝の 会・夕方の 会・文字で 書く 会"
+    },
+    {
+      "kind": "callout",
+      "tone": "care",
+      "text": "だから、新しい 会社や プロジェクトに 入ったら、はじめの 1週間は よく 見ます。だれが さきに 話すか、どのくらいの 長さかを 見て、同じように します。分からない ときは 先輩に 聞きます。「朝礼では 何を 話しますか」と 聞けば、教えて くれます。"
+    },
+    {
+      "kind": "banner",
+      "tone": "goal",
+      "icon": "🎯",
+      "title": "きょうの ゴール",
+      "text": "きのう・きょう・こまりごとの 3つを、1分で 言えるように なる。",
+      "badges": [
+        "きのう",
+        "きょう",
+        "こまりごと",
+        "数字を 1つ"
+      ]
+    },
+    {
+      "kind": "vocab",
+      "wordIds": [
+        "chourei",
+        "asakai",
+        "yuurei",
+        "teirei",
+        "sinchoku",
+        "junchou",
+        "tsumaru",
+        "kyouyuu",
+        "nippou",
+        "shinrai"
+      ]
+    },
+    {
+      "kind": "link",
+      "ref": "asakai_memo",
+      "type": "quizset",
+      "label": "朝礼メモを 書く"
+    }
+  ]
+}

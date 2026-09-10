@@ -1604,6 +1604,7 @@ export function MeetingSession({
           gained={gained}
           threshold={meeting.affection.threshold}
           hostName={meeting.host.name}
+          furigana={furigana}
         />
       ) : null}
       {main}
@@ -1641,7 +1642,9 @@ export function MeetingSession({
     </div>
   ) : (
     <div className="card-island space-y-3 p-4">
-      <p className="text-sky-deep text-sm font-black">💬 {meeting.host.name}さんから しつもん</p>
+      <p className="text-sky-deep text-sm font-black">
+        💬 <RubyText text={`${meeting.host.name}さんから しつもん`} index={furigana} show />
+      </p>
 
       {/* しつもんの 吹き出し。答える 直前に もう一度 読める ように 大きく 出す */}
       {askText ? (
@@ -1823,6 +1826,8 @@ export function MeetingSession({
               /* 作り置きを鳴らしているあいだは そちらの音で 口を動かす */
               analyser={clip.playing ? clip.analyser : voice.analyser}
               alt={meeting.host.name}
+              /* 絵が まだ 無い 相手でも、丸の 中の 1文字が 読める ように する */
+              initial={(kanaOf(meeting.host.name, furigana) ?? meeting.host.name).slice(0, 1)}
             />
           ),
         }}
@@ -1930,7 +1935,9 @@ function ChatLine({
         initial={{ opacity: 0, y: 6 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        {entry.judge ? <JudgeCard judge={entry.judge} hostName={hostName} /> : null}
+        {entry.judge ? (
+          <JudgeCard judge={entry.judge} hostName={hostName} furigana={furigana} />
+        ) : null}
         {/* AIに 通せなかった 理由。あとから 読み返せる ように チャットにも 残す */}
         {entry.note ? (
           <p className="text-ink-faint mt-1 text-xs font-bold break-words">{entry.note}</p>
@@ -1973,7 +1980,7 @@ function ChatLine({
         }`}
       >
         <p className={`text-[11px] font-extrabold ${mine ? "text-navy" : "text-sky"}`}>
-          {mine ? "あなた" : hostName}
+          {mine ? "あなた" : <RubyText text={hostName} index={furigana} show />}
           {/* 作り置きの こえが ある ときだけ、その 行を 聞き直せる */}
           {onReplay ? (
             <button
