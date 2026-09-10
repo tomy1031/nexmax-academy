@@ -285,7 +285,8 @@ export function DiscoverCards({
   return (
     <div className="rounded-[var(--radius-card)] bg-[color-mix(in_srgb,var(--color-sun)_16%,white)] p-3">
       <p className="text-navy mb-2 text-sm font-black">
-        🔎 {hostName}さんに <RubyText text="聞いて みよう" index={BOARD_FURIGANA} show />
+        🔎 <RubyText text={`${hostName}さんに`} index={furigana} show />{" "}
+        <RubyText text="聞いて みよう" index={BOARD_FURIGANA} show />
         <span
           className="text-ink-soft ml-2 text-xs font-bold"
           aria-label={`きけた カード ${foundIds.size} / ${order.length}`}

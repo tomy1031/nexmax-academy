@@ -19,6 +19,7 @@
  */
 import { writeFileSync, mkdirSync } from "node:fs";
 import { join, relative } from "node:path";
+import type { WordStage } from "../../src/content/schema";
 import { learnerWordGroups } from "../../src/lib/wordstage-merge";
 import { gitWordData } from "./git-word-data";
 
@@ -28,10 +29,55 @@ export const WORDSETS_GENERATED_PATH = join(ROOT, "public", "wordtest", "sets.js
 /** ブラウザが 取りに 行く 場所。`src/lib/wordset-store.ts` と そろえる。 */
 export const WORDSETS_URL = "/wordtest/sets.json";
 
+/**
+ * その セットの 画面に **ルビが 付きうる 文**を ぜんぶ つなげた もの。
+ *
+ * `ArcadeGame` が セットの 読み辞書で 描くのは 5か所 だけ——見出し（`title`）・
+ * セット名（`label`）・説明（`description`）・説明文（`explanationJa`）・例文（`example`）。
+ * 見出し語（`term`）は `<ruby>` に `reading` を 直に 置くので 読み辞書を 通らないが、
+ * `src/lib/dictionary.ts` と そろえて ここにも 入れて おく。
+ *
+ * 対訳（`meaningEn`）と 誤答（`wrongMeanings`）は 英語で、どこでも `RubyText` を
+ * 通らない。**ここに 足す 文を 減らすと 画面の ルビが 静かに 消える**ので、
+ * 描く ところを 増やした ときは この 一覧も 足す。
+ */
+function rubiedText(set: WordStage): string {
+  return [
+    set.title,
+    set.label ?? "",
+    set.description,
+    ...set.words.flatMap((word) => [word.term, word.explanationJa, word.example ?? ""]),
+  ].join("\n");
+}
+
+/**
+ * その セットの 本文に **出て くる 見出しだけ**を 読み辞書に 残す。
+ *
+ * `hydrateWordStage` は 正の 読み辞書を **まるごと** どの セットにも 積む。
+ * 覆いを 落とさない ための 作りだが、ブラウザへ 配る ときは 荷物に なる——
+ * 実測（2026-09-09）で 8,388件 の うち **5,806件（69%）は その セットの 文に
+ * 一度も 出て こない**（raw 139KB ぶん）。授業では 20人が 同時に 取りに 来る。
+ *
+ * `src/lib/dictionary.ts` の `furiganaFor` が 語ごとに やって いるのと 同じ 絞り方を、
+ * セットごとに 当てる。**本文に 無い 見出しは `annotateRuby` の どの 位置にも
+ * 当たらない**（走査は `text.startsWith(surface, i)` だけ）ので、合成される ルビは
+ * 1文字も 変わらない。`buildFuriganaIndex` の `maxLength` は 残った 見出しから
+ * 数え直されるが、判定は `surface.length <= maxLength` なので これも 効かない。
+ *
+ * 並びは 変えない（`filter` は 順を 保つ）。同じ 長さで ぶつかった ときの 勝ち負けは
+ * `buildFuriganaIndex` の 安定ソート＝元の 並び順で 決まるので、ここを 入れ替えると
+ * 読みが 変わりうる。
+ */
+export function trimWordSetFurigana(set: WordStage): WordStage {
+  const text = rubiedText(set);
+  return { ...set, furigana: (set.furigana ?? []).filter(([surface]) => text.includes(surface)) };
+}
+
 /** 書き出す 中身（比較にも 使うので 純関数）。並びは `learnerWordGroups` に まかせる。 */
 export function buildWordSetsJson(): string {
   const { stages, lessons } = gitWordData();
-  return `${JSON.stringify(learnerWordGroups(lessons, stages).sets)}\n`;
+  const sets = learnerWordGroups(lessons, stages).sets.map(trimWordSetFurigana);
+  return `${JSON.stringify(sets)}\n`;
 }
 
 export function writeWordSets(): number {

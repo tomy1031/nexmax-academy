@@ -91,7 +91,7 @@ export function RewardCard({
       aria-label="とっておきの はなし"
     >
       <p className="text-xs font-black" style={{ color: "var(--color-grape-deep)" }}>
-        🎁 {hostName}さんの とっておきの はなし
+        🎁 <RubyText text={`${hostName}さんの とっておきの はなし`} index={furigana} show />
       </p>
       <p className="text-ink mt-2 leading-relaxed font-bold break-words">
         <RubyText text={text} index={furigana} show />

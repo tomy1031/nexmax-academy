@@ -10,7 +10,12 @@ import { NexMaxFamily } from "@/components/nexmax-types";
 import { DictionaryText } from "@/components/dictionary-text";
 import { RubyText } from "@/components/ruby-text";
 import { getProfile, type NexmaxProfile } from "@/lib/profile";
-import { buildFuriganaIndex, type FuriganaEntry, type FuriganaIndex } from "@/lib/text/furigana";
+import {
+  buildFuriganaIndex,
+  kanaOf,
+  type FuriganaEntry,
+  type FuriganaIndex,
+} from "@/lib/text/furigana";
 
 /**
  * Zoom風の通話画面（モードに依存しない外枠）。
@@ -765,7 +770,7 @@ function ParticipantTile({
           className="grid h-14 w-14 place-items-center rounded-full text-xl font-extrabold text-white"
           style={{ background: accent }}
         >
-          {person.name.slice(0, 1)}
+          {initialOf(person.name, furigana)}
         </span>
       )}
       {/* 名札も 教材の 文（「松井」「社長」）。読み辞書が あれば ふりがなを つける */}
@@ -777,6 +782,18 @@ function ParticipantTile({
       </span>
     </div>
   );
+}
+
+/**
+ * まるい アバターに 出す 1文字。
+ *
+ * 名前の 頭を そのまま 出すと、**漢字の 名前**（富田さん）では 読めない 字が
+ * 1つ 置かれる（規律2）。丸の 中に ルビは 入らない ので、**読みの 1文字目**を 出す
+ *（富田 → と、ヘンディ → ヘ）。すぐ 下の 名札には 漢字＋ふりがなが 出るので、
+ * 「と」と「富田(とみた)」が 目で つながる。読みが 引けない ときは これまでどおり。
+ */
+function initialOf(name: string, furigana: FuriganaIndex): string {
+  return (kanaOf(name, furigana) ?? name).slice(0, 1);
 }
 
 /** 自分のタイル。Webカメラの実映像を映す（アバター画像は使わない）。 */

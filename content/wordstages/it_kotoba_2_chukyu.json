@@ -1,48 +1,48 @@
 {
   "kind": "wordstage",
   "id": "it_kotoba_2_chukyu",
-  "title": "ITの単語",
-  "description": "要件定義・見積もり・画面設計で 出る 50語です。似た ことばの ちがいを 見分けます。",
+  "title": "要件定義と 画面の ことば",
+  "description": "要件定義・画面設計から リリースまでの 場で 使う ことばです。似た ことばの ちがいを 見分けます。",
   "label": "中級",
   "fieldSequence": [
     "forest",
     "sky",
     "space"
   ],
-  "questionCount": 50,
+  "questionCount": 52,
   "passRate": 80,
   "furigana": [
     [
-      "単語",
-      "たんご"
-    ],
-    [
       "要件定義",
       "ようけんていぎ"
-    ],
-    [
-      "見積もり",
-      "みつもり"
     ],
     [
       "画面設計",
       "がめんせっけい"
     ],
     [
-      "出る",
-      "でる"
+      "見分け",
+      "みわけ"
     ],
     [
-      "語",
-      "ご"
+      "画面",
+      "がめん"
+    ],
+    [
+      "使う",
+      "つかう"
     ],
     [
       "似た",
       "にた"
     ],
     [
-      "見分け",
-      "みわけ"
+      "中級",
+      "ちゅうきゅう"
+    ],
+    [
+      "場",
+      "ば"
     ]
   ],
   "wordIds": [
@@ -63,9 +63,6 @@
     "nuke",
     "more",
     "choufuku",
-    "taioukahi",
-    "jitsugenkahi",
-    "gamen",
     "koumoku",
     "nyuuryoku",
     "shutsuryoku",
@@ -76,7 +73,6 @@
     "kensaku",
     "touroku",
     "koushin",
-    "hozon",
     "sentaku",
     "hissu",
     "nini",
@@ -94,7 +90,13 @@
     "kihonsekkei",
     "shousaisekkei",
     "sekkeisho",
-    "gyoumufuroo",
-    "gijiroku"
+    "gijiroku",
+    "kaihatukankyou",
+    "sutejingukankyou",
+    "honbankankyou",
+    "ririsu",
+    "depuroi",
+    "chiketsuto",
+    "bakkuappu"
   ]
 }

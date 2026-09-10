@@ -1,36 +1,28 @@
 {
   "kind": "wordstage",
   "id": "it_kotoba_3_jokyu",
-  "title": "ITの単語",
-  "description": "開発・レビュー・テストで 出る 50語です。不具合を 追う ときの ことばが 中心です。",
+  "title": "開発と テストの ことば",
+  "description": "開発・レビュー・テストの 場で 使う ことばです。不具合を 追う ときの ことばが 中心です。",
   "label": "上級",
   "fieldSequence": [
     "forest",
     "sky",
     "space"
   ],
-  "questionCount": 50,
+  "questionCount": 52,
   "passRate": 80,
   "furigana": [
     [
-      "単語",
-      "たんご"
+      "不具合",
+      "ふぐあい"
     ],
     [
       "開発",
       "かいはつ"
     ],
     [
-      "出る",
-      "でる"
-    ],
-    [
-      "語",
-      "ご"
-    ],
-    [
-      "不具合",
-      "ふぐあい"
+      "使う",
+      "つかう"
     ],
     [
       "追う",
@@ -39,6 +31,14 @@
     [
       "中心",
       "ちゅうしん"
+    ],
+    [
+      "上級",
+      "じょうきゅう"
+    ],
+    [
+      "場",
+      "ば"
     ]
   ],
   "wordIds": [
@@ -47,7 +47,6 @@
     "saikentou",
     "kobetsutaiou",
     "ikkatsutaiou",
-    "zanteitaiou",
     "jissou",
     "kaishuu",
     "kizonkinou",
@@ -88,9 +87,12 @@
     "konfurikuto",
     "sashimodoshi",
     "saitesuto",
-    "shouseki",
     "tantaitesuto",
     "ketsugoutesuto",
-    "ukeiretesuto"
+    "ukeiretesuto",
+    "ro-rubakku",
+    "taioukahi",
+    "jitsugenkahi",
+    "gyoumufuroo"
   ]
 }
