@@ -70,6 +70,8 @@ const vocabularyData = {
     '設定': { reading: 'せってい', meaning: 'setting / configuration' },
     '入力': { reading: 'にゅうりょく', meaning: 'input / entry' },
     '直す': { reading: 'なおす', meaning: 'fix / repair' },
+    '階級': { reading: 'かいきゅう', meaning: 'Rank / Hierarchy' },
+    '件': { reading: 'けん', meaning: 'Matter / Subject (the thing you are talking about)' },
     '取締役': { reading: 'とりしまりやく', meaning: 'Director / Board Member' },
     '文字': { reading: 'もじ', meaning: 'character / letter' },
     '謝る': { reading: 'あやまる', meaning: 'apologize' },

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>調べ学習 - 報連相 - ネクストメイク入社研修</title>
+    <title>調査（リサーチ） - 報連相 - ネクストメイク入社研修</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
@@ -88,7 +88,7 @@
     <!-- Hero Section -->
     <section class="hero">
         <div class="hero-content">
-            <h1><ruby>調<rt>しら</rt></ruby>べ<ruby>学習<rt>がくしゅう</rt></ruby></h1>
+            <h1><span class="n4-word" data-word="調査"><ruby>調査<rt>ちょうさ</rt></ruby></span>（リサーチ）</h1>
             <p>
                 <span class="n4-word" data-word="報告">
                     <ruby>報告<rt>ほうこく</rt></ruby>
@@ -110,9 +110,9 @@
 
                 <div style="margin-bottom: 24px;">
                     <h3 style="font-size: 18px; margin-bottom: 8px; color: var(--primary-dark);">Q1. <ruby>日本<rt>にほん
-                            </rt></ruby>の<ruby>階級<rt>かいきゅう</rt></ruby> (Hierarchy)</h3>
+                            </rt></ruby>の<span class="n4-word" data-word="階級"><ruby>階級<rt>かいきゅう</rt></ruby></span> (Hierarchy)</h3>
                     <p style="font-size: 16px;">
-                        <ruby>日本<rt>にほん</rt></ruby>の<ruby>階級<rt>かいきゅう</rt></ruby>をたくさん<ruby>調<rt>しら</rt>
+                        <ruby>日本<rt>にほん</rt></ruby>の<span class="n4-word" data-word="階級"><ruby>階級<rt>かいきゅう</rt></ruby></span>をたくさん<ruby>調<rt>しら</rt>
                         </ruby>べてみましょう。<br>
                         えらい<ruby>順<rt>じゅん</rt></ruby>に<ruby>並<rt>なら</rt></ruby>べてください。<br>
                         <span class="n4-word" data-word="取締役"><ruby>取締役<rt>とりしまりやく</rt></ruby></span>の<ruby>藤木<rt>ふじき
@@ -121,11 +121,9 @@
                 </div>
 
                 <div style="margin-bottom: 24px;">
-                    <h3 style="font-size: 18px; margin-bottom: 8px; color: var(--primary-dark);">Q2. 【<ruby>応用問題<rt>
-                                おうようもんだい</rt></ruby>】カンボジアと<ruby>日本<rt>
-                                にほん</rt></ruby>の<ruby>違<rt>ちが</rt></ruby>い</h3>
+                    <h3 style="font-size: 18px; margin-bottom: 8px; color: var(--primary-dark);">Q2. もう 1つ：カンボジアと<ruby>日本<rt>にほん</rt></ruby>の<ruby>違<rt>ちが</rt></ruby>い</h3>
                     <p style="font-size: 16px;">
-                        ・カンボジアの<ruby>階級<rt>かいきゅう</rt></ruby>を<ruby>教<rt>おし</rt></ruby>えてください。<br>
+                        ・カンボジアの<span class="n4-word" data-word="階級"><ruby>階級<rt>かいきゅう</rt></ruby></span>を<ruby>教<rt>おし</rt></ruby>えてください。<br>
                         ・カンボジアと<ruby>日本<rt>にほん</rt></ruby>の「<ruby>報告<rt>ほうこく</rt></ruby>」への<ruby>考<rt>かんが</rt>
                         </ruby>え<ruby>方<rt>かた</rt></ruby>の<ruby>違<rt>ちが</rt></ruby>いを<ruby>教<rt>おし</rt>
                         </ruby>えてください。<br>
@@ -140,12 +138,38 @@
                         ✍️ <ruby>回答<rt>かいとう</rt></ruby>をここに<ruby>書<rt>か</rt></ruby>く
                     </a>
                 </div>
+
+                <!-- 書きおわりの 合図。これが 無いと ステージの 関門に できない
+                     （アプリは この ページの 中を 見られないので、押した ことだけが 手がかり）。 -->
+                <div style="text-align: center; margin-top: 24px;">
+                    <button type="button" id="doneBtn" class="unlock-btn" style="padding: 12px 28px; font-size: 17px;">
+                        ✅ <ruby>書<rt>か</rt></ruby>けました
+                    </button>
+                    <p id="doneMsg" style="display: none; margin-top: 12px; font-size: 15px; color: #2e7d5b;">
+                        おつかれさまでした。つぎの ページで<ruby>答<rt>こた</rt></ruby>え<ruby>合<rt>あ</rt></ruby>わせを します。
+                    </p>
+                </div>
             </div>
         </section>
 
     </main>
 
     <script src="app.js"></script>
+    <script>
+        // ステージの 関門に する ための 合図（1回だけ 送る）。
+        document.getElementById('doneBtn').addEventListener('click', function () {
+            document.getElementById('doneMsg').style.display = 'block';
+            this.disabled = true;
+            try {
+                window.parent.postMessage(
+                    { type: 'nexmax:link-done', id: 'houkoku_search' },
+                    window.location.origin
+                );
+            } catch (e) {
+                /* 単独で 開いた ときは 送り先が 無い。画面は そのまま 使える。 */
+            }
+        });
+    </script>
 </body>
 
 </html>

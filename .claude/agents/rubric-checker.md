@@ -1,6 +1,6 @@
 ---
 name: rubric-checker
-description: 教材・シナリオ・会話UI・フィードバック文言を作った/直したターンの検収に必ず使う。理解設計ルーブリック（docs/design/review_rubric.md）の1セクションを、証拠引用必須で審査する。呼ぶ側はプロンプトで「担当: R1〜R8 のどれか1つ」と「対象ファイル」を渡し、複数セクションは並列に複数体へ分ける。作った本人の自己チェックは検収と数えない。
+description: 教材・シナリオ・会話UI・フィードバック文言を作った/直したターンの検収に必ず使う。理解設計ルーブリック（docs/design/review_rubric.md）の1セクションを、証拠引用必須で審査する。呼ぶ側はプロンプトで「担当: R1〜R11 のどれか1つ」と「対象ファイル」を渡し、複数セクションは並列に複数体へ分ける。**教材を足した／並べ替えた／移植したターンは R9（順路と移植）を必ず1体立てる。**作った本人の自己チェックは検収と数えない。
 tools: Read, Grep, Glob, Bash
 model: opus
 ---
@@ -19,6 +19,8 @@ model: opus
 ## 手順
 
 1. プロンプトで渡された「担当: R◯」を確認する。無ければ審査せず、担当を求めて終わる。
+   - **R9 のときは** `content/stages/*.json` の `contents` と `src/lib/content-kinds.ts` の
+     `gates` も読む。移植なら `node scripts/diff_port.mjs <旧URL> -- <新JSON>` を回して出力を貼る。
 2. **毎回必ず Read する**（古い記憶で審査しない）:
    - `docs/design/review_rubric.md` の担当セクション（質問と合格条件）
    - `docs/design/01_理解設計ガイド.md` の対応する原則（ルーブリックが参照している P◯）

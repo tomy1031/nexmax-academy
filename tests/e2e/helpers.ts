@@ -174,7 +174,7 @@ export const ASAKAI_QUIZ_TOTAL: number = (
  * 見る ときだけ 渡す。
  */
 export function progressText(done: number, total: number = KAISHA_ITEMS.length): string {
-  return `${total}つ の うち ${done}つ おわりました`;
+  return `${total}この うち ${done}こ おわりました`;
 }
 
 /**
