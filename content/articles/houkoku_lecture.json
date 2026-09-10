@@ -1,15 +1,15 @@
 {
   "kind": "article",
   "id": "houkoku_lecture",
-  "title": "報告の しかた",
-  "description": "日本の 会社の「報連相」を 知り、上司への 報告の しかたを 学びます。",
+  "title": "報告って なに？",
+  "description": "日本の 会社の「報連相」を 知り、上司に 報告する 場面を 考えます。",
   "blocks": [
     {
       "kind": "hero",
       "eyebrow": "🗣 報連相 1",
       "title": "報告（ほうこく）",
-      "lead": "日本の 会社で 一番 大切なのは チームワークです。",
-      "note": "仕事が 終わった とき、問題が あった とき、必ず 上司に 言います。",
+      "lead": "あなたは ネクストメイクの PG（プログラマー）です。",
+      "note": "日本の 会社の ルール「報連相（ほうれんそう）」を 見て いきます。",
       "image": {
         "src": "/img/hourensou/houkoku/top.webp",
         "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. Two different people appear in these pictures and they must never look alike. TOMITA is the project manager shown in the attached character sheet: a Japanese man in his thirties, clean-shaven, soft grey-blue button-down shirt with the sleeves rolled to the elbow, dark navy chinos, brown leather belt. THE JUNIOR ENGINEER is a DIFFERENT and YOUNGER man: a Southeast Asian man in his early twenties, warm brown skin, short cropped black hair, a plain cream polo shirt and dark grey trousers, slimmer and visibly younger than Tomita. Never give the two men the same face, hair or clothes. A young Southeast Asian junior engineer stands beside the desk of Tomita, the project manager, and reports to him while holding a small notebook. Tomita looks up from his laptop with a calm welcoming expression and gives a small nod. Bright morning light from a large window, a small potted plant on the desk. Waist-up two-shot from a natural standing angle, the two of them filling the frame. No text, no letters, no kanji, no kana, no numbers anywhere in the image. Screens, papers, whiteboards, books and signs are blank or show only soft abstract shapes and simple pictures. No watermark, no signature, no logo, no speech balloons, no floating symbols such as question marks, exclamation marks, arrows, light bulbs, stars or hearts. Every character is CLEAN-SHAVEN — no moustache, no beard, no stubble on anyone. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
@@ -31,19 +31,19 @@
           "icon": "📣",
           "label": "報",
           "title": "報告 / Report",
-          "text": "上司の 指示の とおりに 動いたか、事実を 伝えます。"
+          "text": "上司の 指示の とおりに 動いたか、事実（Fact）を 伝えます。"
         },
         {
           "icon": "📨",
           "label": "連",
           "title": "連絡 / Contact",
-          "text": "予定や 情報を 伝えます。"
+          "text": "予定や 情報（Information）を 伝えます。"
         },
         {
           "icon": "🤝",
           "label": "相",
           "title": "相談 / Consult",
-          "text": "困った ときに、意見を 聞きます。"
+          "text": "困った ときに、意見（Opinion）を 聞きます。"
         }
       ]
     },
@@ -57,28 +57,18 @@
       "caption": "報連相の 3つ"
     },
     {
+      "kind": "paragraph",
+      "text": "きょうは、この 中の「報告」を 練習します。"
+    },
+    {
       "kind": "heading",
       "level": 2,
-      "text": "なぜ 報告を するの？"
-    },
-    {
-      "kind": "image",
-      "src": "/img/hourensou/houkoku/teamwork.webp",
-      "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. Four colleagues stand together around a low table in a bright open office, working as one team: Hendy on the left points at a large blank whiteboard, a young woman colleague holds a laptop, a young man places a blank sticky note on the board, and a fourth colleague hands over a mug. Everyone looks relaxed and involved. Warm daylight from a big window, plants nearby. Wide shot filling the frame. No text, no letters, no kanji, no kana, no numbers anywhere in the image. Screens, papers, whiteboards, books and signs are blank or show only soft abstract shapes and simple pictures. No watermark, no signature, no logo, no speech balloons, no floating symbols such as question marks, exclamation marks, arrows, light bulbs, stars or hearts. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
-      "refs": [
-        "/img/characters/hendy/sheet.webp"
-      ],
-      "status": "done",
-      "caption": "チームワーク"
-    },
-    {
-      "kind": "paragraph",
-      "text": "答えは「チームワーク」です。仕事が 終わった とき、問題が ある とき、必ず 上司に 言います。これを「報告」と 言います。"
+      "text": "日本の 会社で 一番 大切な ことは 何ですか。"
     },
     {
       "kind": "callout",
       "tone": "point",
-      "text": "上司は、あなたの 仕事が 進んで いるか、とても 心配して います。だから 報告は 大切です。"
+      "text": "ここでは まだ 答えを 言いません。あなたが 自分で 考えた あとで 出て きます。"
     },
     {
       "kind": "image",
@@ -108,7 +98,7 @@
     },
     {
       "kind": "cards",
-      "columns": 3,
+      "columns": 2,
       "items": [
         {
           "label": "Q1",
@@ -135,84 +125,13 @@
             ],
             "status": "done"
           }
-        },
-        {
-          "label": "Q3",
-          "title": "ほかの 報告",
-          "text": "ITの 仕事では ほかに どんな 報告が 必要だと 思いますか。",
-          "image": {
-            "src": "/img/hourensou/houkoku/q3.webp",
-            "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. Two different people appear in these pictures and they must never look alike. TOMITA is the project manager shown in the attached character sheet: a Japanese man in his thirties, clean-shaven, soft grey-blue button-down shirt with the sleeves rolled to the elbow, dark navy chinos, brown leather belt. THE JUNIOR ENGINEER is a DIFFERENT and YOUNGER man: a Southeast Asian man in his early twenties, warm brown skin, short cropped black hair, a plain cream polo shirt and dark grey trousers, slimmer and visibly younger than Tomita. Never give the two men the same face, hair or clothes. The junior engineer sits at his own desk, resting his chin on one hand, thinking, with a calm curious expression. Around him the office continues: a blank whiteboard, a colleague walking past in the background, a mug of tea. Medium shot. No text, no letters, no kanji, no kana, no numbers anywhere in the image. Screens, papers, whiteboards, books and signs are blank or show only soft abstract shapes and simple pictures. No watermark, no signature, no logo, no speech balloons, no floating symbols such as question marks, exclamation marks, arrows, light bulbs, stars or hearts. Every character is CLEAN-SHAVEN — no moustache, no beard, no stubble on anyone. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
-            "refs": [
-              "/img/characters/tomita/sheet.webp"
-            ],
-            "status": "done"
-          }
         }
       ]
-    },
-    {
-      "kind": "heading",
-      "level": 2,
-      "text": "報告の コツ"
-    },
-    {
-      "kind": "steps",
-      "items": [
-        "最初に 声を かける。忙しい 人に 話しかける ときは、「今、お時間 よろしいですか」と 許可を もらいます。",
-        "結論から 伝える。何の 件か、どう なったかを 先に 言います。",
-        "3つの パターンを 使い分ける。終わった 報告・困って いる 報告・気づいた ことの 報告です。"
-      ],
-      "images": [
-        {
-          "src": "/img/hourensou/houkoku/ask_time.webp",
-          "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. Two different people appear in these pictures and they must never look alike. TOMITA is the project manager shown in the attached character sheet: a Japanese man in his thirties, clean-shaven, soft grey-blue button-down shirt with the sleeves rolled to the elbow, dark navy chinos, brown leather belt. THE JUNIOR ENGINEER is a DIFFERENT and YOUNGER man: a Southeast Asian man in his early twenties, warm brown skin, short cropped black hair, a plain cream polo shirt and dark grey trousers, slimmer and visibly younger than Tomita. Never give the two men the same face, hair or clothes. Close two-shot. The junior engineer leans very slightly forward with an open, polite gesture of one hand, asking for a moment of time. Tomita has taken his hands off the keyboard and turned fully towards him, smiling, giving his full attention. Warm daylight, the laptop screen blank. No text, no letters, no kanji, no kana, no numbers anywhere in the image. Screens, papers, whiteboards, books and signs are blank or show only soft abstract shapes and simple pictures. No watermark, no signature, no logo, no speech balloons, no floating symbols such as question marks, exclamation marks, arrows, light bulbs, stars or hearts. Every character is CLEAN-SHAVEN — no moustache, no beard, no stubble on anyone. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
-          "refs": [
-            "/img/characters/tomita/sheet.webp"
-          ],
-          "status": "done"
-        },
-        {
-          "src": "/img/hourensou/houkoku/keypoint.webp",
-          "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This one is a teaching diagram: few large elements, generous spacing, each label sitting on a soft cream panel with a rounded border, arranged so the eye reads it in one pass. A teaching diagram showing an order of four steps, drawn as four rounded cream panels in a row connected by soft coral arrows. In each panel a small simple drawing of the same junior engineer speaking to a senior shows that step: raising a hand for attention; saying the topic; showing a document of facts; bowing slightly to make a request. Each panel carries its Japanese label under the drawing. The Japanese words in this picture are exactly: 件（けん） / 結論（けつろん） / 事実（じじつ） / お願い（おねがい）. Japanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana. Spell every character exactly as given. No other letters, numbers, logos or watermarks anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
-          "refs": [],
-          "status": "done"
-        },
-        {
-          "src": "/img/hourensou/houkoku/petterns.webp",
-          "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This one is a teaching diagram: few large elements, generous spacing, each label sitting on a soft cream panel with a rounded border, arranged so the eye reads it in one pass. Two different people appear in these pictures and they must never look alike. TOMITA is the project manager shown in the attached character sheet: a Japanese man in his thirties, clean-shaven, soft grey-blue button-down shirt with the sleeves rolled to the elbow, dark navy chinos, brown leather belt. THE JUNIOR ENGINEER is a DIFFERENT and YOUNGER man: a Southeast Asian man in his early twenties, warm brown skin, short cropped black hair, a plain cream polo shirt and dark grey trousers, slimmer and visibly younger than Tomita. Never give the two men the same face, hair or clothes. One wide picture divided into three equal panels by thin cream gutters. In every panel the same two people appear: the young Southeast Asian junior engineer on the left and Tomita the project manager on the right at his desk. LEFT PANEL: the junior engineer smiles and holds up a finished document. MIDDLE PANEL: he points at his laptop with a troubled, honest face. RIGHT PANEL: he holds a sticky note and points at it thoughtfully. Tomita listens warmly in all three. Above each panel sits a rounded cream label panel carrying the Japanese words given here. The Japanese words in this picture are exactly: 終わった 報告（おわった ほうこく） / 困って いる 報告（こまって いる ほうこく） / 気づいた ことの 報告（きづいた ことの ほうこく）. Japanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana. Spell every character exactly as given. No other letters, numbers, logos or watermarks anywhere in the picture. Every character is CLEAN-SHAVEN — no moustache, no beard, no stubble on anyone. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
-          "refs": [
-            "/img/characters/tomita/sheet.webp"
-          ],
-          "status": "done"
-        }
-      ]
-    },
-    {
-      "kind": "heading",
-      "level": 2,
-      "text": "会社の ポジション（階級）"
-    },
-    {
-      "kind": "image",
-      "size": "wide",
-      "src": "/img/hourensou/listening/houkoku_hierarchy.webp",
-      "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This one is a teaching diagram: few large elements, generous spacing, each label sitting on a soft cream panel with a rounded border, arranged so the eye reads it in one pass. A clear teaching diagram of the levels of a Japanese company, drawn as five rounded cream panels stacked as a gentle pyramid on a soft sky-blue background, each panel holding one waist-up character and one label. From the top: a friendly company president in a dark suit; then Fujiki the director, taken from the attached character sheet, in his navy blazer over a white T-shirt, smiling brightly; then a department manager; then a section manager; then two ordinary staff members side by side at the bottom, one of them the young junior engineer. Thin soft arrows run down the left side. Each panel carries the Japanese label given below, printed on the cream panel beside the person. The Japanese words in this picture are exactly: 社長（しゃちょう） / 取締役（とりしまりやく） / 部長（ぶちょう） / 課長（かちょう） / 社員（しゃいん）. Japanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana. Spell every character exactly as given. No other letters, numbers, logos or watermarks anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
-      "refs": [
-        "/img/characters/fujiki/sheet.webp",
-        "/img/characters/fujiki/reference.jpg"
-      ],
-      "status": "done",
-      "caption": "会社の 階級"
-    },
-    {
-      "kind": "paragraph",
-      "text": "会社という チームには、いろいろな ポジション（階級）が あります。日本も カンボジアと 同じで、目上の 人を 大切に して、ていねいに 話します。"
     },
     {
       "kind": "callout",
       "tone": "care",
-      "text": "次の リスニングに 出て くる 藤木さんは「取締役」です。とても 上の ポジションで、お客様と 直接 話して います。"
+      "text": "つぎの ページで、あなたの ことばを 書きます。正しい 答えは ありません。思った とおりに 書いて ください。"
     }
   ],
   "furigana": [
@@ -351,6 +270,18 @@
     [
       "直接",
       "ちょくせつ"
+    ],
+    [
+      "何の",
+      "なんの"
+    ],
+    [
+      "自分",
+      "じぶん"
+    ],
+    [
+      "練習",
+      "れんしゅう"
     ],
     [
       "人",
@@ -537,8 +468,16 @@
       "め"
     ],
     [
-      "何の",
-      "なんの"
+      "書",
+      "か"
+    ],
+    [
+      "中",
+      "なか"
+    ],
+    [
+      "正",
+      "ただ"
     ]
   ]
 }

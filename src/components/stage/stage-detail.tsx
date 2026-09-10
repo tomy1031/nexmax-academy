@@ -150,7 +150,12 @@ export function StageDetail({
 
         <div className="text-ink-soft mt-4 flex items-center justify-between text-xs font-extrabold">
           <span>
-            {summary.total}つ の うち {summary.done}つ おわりました
+            {/*
+              「〜つ」は とお（10）までしか 数えられない。教材が 11本を こえた 日から
+              画面に「15つ」と 出て いた。ほかの 画面は「ことば 31こ」「31この しつもん」と
+              数えて いるので、そちらに そろえる（2026-09-10）。
+            */}
+            {summary.total}この うち {summary.done}こ おわりました
           </span>
           <span>{summary.percent}%</span>
         </div>

@@ -17,28 +17,37 @@
       "type": "article"
     },
     {
+      "ref": "houkoku_answer",
+      "type": "quizset"
+    },
+    {
       "ref": "houkoku_skit",
       "type": "skit"
+    },
+    {
+      "ref": "houkoku_kotsu",
+      "type": "article"
     },
     {
       "ref": "houkoku_listening",
       "type": "listening"
     },
     {
-      "ref": "houkoku_stamp",
-      "type": "link"
-    },
-    {
       "ref": "houkoku_quiz",
       "type": "quizset"
     },
     {
-      "ref": "houkoku_meeting",
-      "type": "meeting"
+      "ref": "houkoku_search",
+      "type": "link",
+      "gates": true
     },
     {
-      "ref": "houkoku_search",
-      "type": "link"
+      "ref": "houkoku_hierarchy",
+      "type": "article"
+    },
+    {
+      "ref": "houkoku_meeting",
+      "type": "meeting"
     },
     {
       "ref": "asakai_manga",
@@ -160,6 +169,18 @@
     [
       "話",
       "はな"
+    ],
+    [
+      "上",
+      "うえ"
+    ],
+    [
+      "朝",
+      "あさ"
+    ],
+    [
+      "礼",
+      "れい"
     ]
   ]
 }
