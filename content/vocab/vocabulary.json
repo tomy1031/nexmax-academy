@@ -4,6 +4,10 @@
   "title": "ことば",
   "furigana": [
     [
+      "火曜日",
+      "かようび"
+    ],
+    [
       "週間",
       "しゅうかん"
     ],
@@ -16966,7 +16970,7 @@
       "romaji": "youbi",
       "meaningJa": "げつ・か・すい・もく・きん・ど・にち の ことです。",
       "englishTerm": "Day of the week",
-      "example": "会は 何曜日ですか。",
+      "example": "あしたは 火曜日です。",
       "wrongMeanings": [
         "Weather",
         "Season",
