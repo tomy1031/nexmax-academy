@@ -4,6 +4,90 @@
   "title": "ことば",
   "furigana": [
     [
+      "週間",
+      "しゅうかん"
+    ],
+    [
+      "先週",
+      "せんしゅう"
+    ],
+    [
+      "今週",
+      "こんしゅう"
+    ],
+    [
+      "半日",
+      "はんにち"
+    ],
+    [
+      "半分",
+      "はんぶん"
+    ],
+    [
+      "書き方",
+      "かきかた"
+    ],
+    [
+      "見直",
+      "みなお"
+    ],
+    [
+      "持ちもの",
+      "もちもの"
+    ],
+    [
+      "小学校",
+      "しょうがっこう"
+    ],
+    [
+      "不合格",
+      "ふごうかく"
+    ],
+    [
+      "進み",
+      "すすみ"
+    ],
+    [
+      "日づけ",
+      "ひづけ"
+    ],
+    [
+      "印刷",
+      "いんさつ"
+    ],
+    [
+      "旅行",
+      "りょこう"
+    ],
+    [
+      "部品",
+      "ぶひん"
+    ],
+    [
+      "支払",
+      "しはら"
+    ],
+    [
+      "司会",
+      "しかい"
+    ],
+    [
+      "見本",
+      "みほん"
+    ],
+    [
+      "午前",
+      "ごぜん"
+    ],
+    [
+      "午後",
+      "ごご"
+    ],
+    [
+      "曜日",
+      "ようび"
+    ],
+    [
       "申し訳ございません",
       "もうしわけございません"
     ],
@@ -1774,6 +1858,38 @@
     [
       "壊れない",
       "こわれない"
+    ],
+    [
+      "昼",
+      "ひる"
+    ],
+    [
+      "週",
+      "しゅう"
+    ],
+    [
+      "借",
+      "か"
+    ],
+    [
+      "忘",
+      "わす"
+    ],
+    [
+      "秒",
+      "びょう"
+    ],
+    [
+      "台",
+      "だい"
+    ],
+    [
+      "枚",
+      "まい"
+    ],
+    [
+      "古",
+      "ふる"
     ]
   ],
   "words": [
@@ -2776,7 +2892,7 @@
       "romaji": "douki",
       "meaningJa": "同じ年に会社に入った仲間のことです。",
       "englishTerm": "Colleagues who joined in the same year",
-      "example": "同期のニャムさんと一緒にランチに行きました。",
+      "example": "4月に 入った 同期と、いっしょに 昼ごはんを 食べました。",
       "wrongMeanings": [
         "Motivation",
         "Synchronization",
@@ -16617,6 +16733,552 @@
           "中",
           "なか"
         ]
+      ]
+    },
+    {
+      "id": "mihon",
+      "term": "見本",
+      "reading": "みほん",
+      "romaji": "mihon",
+      "meaningJa": "さきに 見せる れいです。おなじように すれば いいです。",
+      "englishTerm": "Example / Model",
+      "example": "ヘンディさんの 報告が 見本です。",
+      "wrongMeanings": [
+        "Mirror",
+        "Notebook",
+        "Picture"
+      ]
+    },
+    {
+      "id": "shikai",
+      "term": "司会",
+      "reading": "しかい",
+      "romaji": "shikai",
+      "meaningJa": "会を すすめる 人です。",
+      "englishTerm": "Facilitator",
+      "example": "会の 司会を します。",
+      "wrongMeanings": [
+        "Speaker",
+        "Guest",
+        "Manager"
+      ]
+    },
+    {
+      "id": "honjitsu",
+      "term": "本日",
+      "reading": "ほんじつ",
+      "romaji": "honjitsu",
+      "meaningJa": "「きょう」の ていねいな 言い方です。",
+      "englishTerm": "Today (formal)",
+      "example": "本日の 予定を 話します。",
+      "wrongMeanings": [
+        "Tomorrow",
+        "Yesterday",
+        "This week"
+      ]
+    },
+    {
+      "id": "buhin",
+      "term": "部品",
+      "reading": "ぶひん",
+      "romaji": "buhin",
+      "meaningJa": "ものを 作る ときの、小さい パーツです。",
+      "englishTerm": "Part / Component",
+      "example": "画面の 部品を 3つ 作りました。",
+      "wrongMeanings": [
+        "Design",
+        "Tool",
+        "Manual"
+      ]
+    },
+    {
+      "id": "settei",
+      "term": "設定",
+      "reading": "せってい",
+      "romaji": "settei",
+      "meaningJa": "アプリの きまりを きめる ことです。",
+      "englishTerm": "Setting",
+      "example": "通知の 設定を 直しました。",
+      "wrongMeanings": [
+        "Design",
+        "Report",
+        "Question"
+      ]
+    },
+    {
+      "id": "shiharai",
+      "term": "支払い",
+      "reading": "しはらい",
+      "romaji": "shiharai",
+      "meaningJa": "お金を はらう ことです。",
+      "englishTerm": "Payment",
+      "example": "支払いの 画面を 作って います。",
+      "wrongMeanings": [
+        "Delivery",
+        "Discount",
+        "Receipt"
+      ]
+    },
+    {
+      "id": "pasuwaado",
+      "term": "パスワード",
+      "reading": "ぱすわーど",
+      "romaji": "pasuwaado",
+      "meaningJa": "じぶんだけが 知って いる、ひみつの 文字です。",
+      "englishTerm": "Password",
+      "example": "パスワードの 画面を 作ります。",
+      "wrongMeanings": [
+        "Username",
+        "Address",
+        "Nickname"
+      ]
+    },
+    {
+      "id": "hiduke",
+      "term": "日づけ",
+      "reading": "ひづけ",
+      "romaji": "hiduke",
+      "meaningJa": "いつかを あらわす ものです。",
+      "englishTerm": "Date",
+      "example": "一覧に 日づけが 出ます。",
+      "wrongMeanings": [
+        "Time",
+        "Place",
+        "Name"
+      ]
+    },
+    {
+      "id": "hanbun",
+      "term": "半分",
+      "reading": "はんぶん",
+      "romaji": "hanbun",
+      "meaningJa": "2つに 分けた ときの、1つです。",
+      "englishTerm": "Half",
+      "example": "テストは 半分 終わりました。",
+      "wrongMeanings": [
+        "All",
+        "Double",
+        "None"
+      ]
+    },
+    {
+      "id": "hannichi",
+      "term": "半日",
+      "reading": "はんにち",
+      "romaji": "hannichi",
+      "meaningJa": "だいたい 4時間です。朝から お昼までです。",
+      "englishTerm": "Half a day",
+      "example": "調べるのに 半日 かかります。",
+      "wrongMeanings": [
+        "Half an hour",
+        "Two days",
+        "One week"
+      ]
+    },
+    {
+      "id": "gozen",
+      "term": "午前",
+      "reading": "ごぜん",
+      "romaji": "gozen",
+      "meaningJa": "朝から お昼までです。",
+      "englishTerm": "Morning (a.m.)",
+      "example": "午前に 会を します。",
+      "wrongMeanings": [
+        "Afternoon",
+        "Night",
+        "Weekend"
+      ]
+    },
+    {
+      "id": "gogo",
+      "term": "午後",
+      "reading": "ごご",
+      "romaji": "gogo",
+      "meaningJa": "お昼から 夕方までです。",
+      "englishTerm": "Afternoon (p.m.)",
+      "example": "午後に テストを します。",
+      "wrongMeanings": [
+        "Morning",
+        "Midnight",
+        "Noon"
+      ]
+    },
+    {
+      "id": "yuugata",
+      "term": "夕方",
+      "reading": "ゆうがた",
+      "romaji": "yuugata",
+      "meaningJa": "しごとが おわる ころです。",
+      "englishTerm": "Evening",
+      "example": "夕方に 夕礼を します。",
+      "wrongMeanings": [
+        "Dawn",
+        "Noon",
+        "Midnight"
+      ]
+    },
+    {
+      "id": "senshuu",
+      "term": "先週",
+      "reading": "せんしゅう",
+      "romaji": "senshuu",
+      "meaningJa": "いまの 週の 1つ 前の 週です。",
+      "englishTerm": "Last week",
+      "example": "先週の 金曜日に おわりました。",
+      "wrongMeanings": [
+        "Next week",
+        "This week",
+        "Last month"
+      ]
+    },
+    {
+      "id": "raishuu",
+      "term": "来週",
+      "reading": "らいしゅう",
+      "romaji": "raishuu",
+      "meaningJa": "いまの 週の つぎの 週です。",
+      "englishTerm": "Next week",
+      "example": "来週の 月曜日に 始めます。",
+      "wrongMeanings": [
+        "Last week",
+        "This week",
+        "Next month"
+      ]
+    },
+    {
+      "id": "konshuu",
+      "term": "今週",
+      "reading": "こんしゅう",
+      "romaji": "konshuu",
+      "meaningJa": "いま いる 週です。",
+      "englishTerm": "This week",
+      "example": "今週の ゴールを 話します。",
+      "wrongMeanings": [
+        "Last week",
+        "Next week",
+        "Today"
+      ]
+    },
+    {
+      "id": "youbi",
+      "term": "曜日",
+      "reading": "ようび",
+      "romaji": "youbi",
+      "meaningJa": "げつ・か・すい・もく・きん・ど・にち の ことです。",
+      "englishTerm": "Day of the week",
+      "example": "会は 何曜日ですか。",
+      "wrongMeanings": [
+        "Weather",
+        "Season",
+        "Holiday"
+      ]
+    },
+    {
+      "id": "furui",
+      "term": "古い",
+      "reading": "ふるい",
+      "romaji": "furui",
+      "meaningJa": "新しくないです。前から ある ものです。",
+      "englishTerm": "Old",
+      "example": "古い スマホでも 通知が 来ます。",
+      "wrongMeanings": [
+        "New",
+        "Broken",
+        "Small"
+      ]
+    },
+    {
+      "id": "kariru",
+      "term": "借りる",
+      "reading": "かりる",
+      "romaji": "kariru",
+      "meaningJa": "人の ものを、少しの あいだ つかわせて もらう ことです。",
+      "englishTerm": "Borrow",
+      "example": "先輩に スマホを 借ります。",
+      "wrongMeanings": [
+        "Lend",
+        "Buy",
+        "Sell"
+      ]
+    },
+    {
+      "id": "wasureru",
+      "term": "忘れる",
+      "reading": "わすれる",
+      "romaji": "wasureru",
+      "meaningJa": "おぼえて いた ことが、分からなく なる ことです。",
+      "englishTerm": "Forget",
+      "example": "パスワードを 忘れました。",
+      "wrongMeanings": [
+        "Remember",
+        "Find",
+        "Repeat"
+      ]
+    },
+    {
+      "id": "dai_counter",
+      "term": "台",
+      "reading": "だい",
+      "romaji": "dai",
+      "meaningJa": "きかいを 数える ときの ことばです。スマホ 1台。",
+      "englishTerm": "Counter for machines",
+      "example": "会社に スマホは 1台だけです。",
+      "wrongMeanings": [
+        "Counter for people",
+        "Counter for paper",
+        "Counter for books"
+      ]
+    },
+    {
+      "id": "mai_counter",
+      "term": "枚",
+      "reading": "まい",
+      "romaji": "mai",
+      "meaningJa": "うすい ものを 数える ときの ことばです。紙 3枚。",
+      "englishTerm": "Counter for flat things",
+      "example": "おしらせを 18枚 出します。",
+      "wrongMeanings": [
+        "Counter for machines",
+        "Counter for animals",
+        "Counter for cars"
+      ]
+    },
+    {
+      "id": "byou",
+      "term": "秒",
+      "reading": "びょう",
+      "romaji": "byou",
+      "meaningJa": "とても みじかい 時間です。",
+      "englishTerm": "Second",
+      "example": "一覧が 開くのに 3秒 かかります。",
+      "wrongMeanings": [
+        "Minute",
+        "Hour",
+        "Day"
+      ]
+    },
+    {
+      "id": "moji",
+      "term": "文字",
+      "reading": "もじ",
+      "romaji": "moji",
+      "meaningJa": "字の ことです。",
+      "englishTerm": "Letter / Character",
+      "example": "文字を 大きく して ほしいです。",
+      "wrongMeanings": [
+        "Picture",
+        "Sound",
+        "Number"
+      ]
+    },
+    {
+      "id": "kakikata",
+      "term": "書き方",
+      "reading": "かきかた",
+      "romaji": "kakikata",
+      "meaningJa": "どう 書くかの やり方です。",
+      "englishTerm": "How to write",
+      "example": "一覧の 書き方が 分かりません。",
+      "wrongMeanings": [
+        "How to read",
+        "How to speak",
+        "How to listen"
+      ]
+    },
+    {
+      "id": "hyou",
+      "term": "表",
+      "reading": "ひょう",
+      "romaji": "hyou",
+      "meaningJa": "たてと よこに 分けて、見やすく した ものです。",
+      "englishTerm": "Table",
+      "example": "テストの 表を まとめます。",
+      "wrongMeanings": [
+        "Graph",
+        "Photo",
+        "List of names"
+      ]
+    },
+    {
+      "id": "omoi",
+      "term": "重い",
+      "reading": "おもい",
+      "romaji": "omoi",
+      "meaningJa": "うごきが おそいです。",
+      "englishTerm": "Heavy / Slow",
+      "example": "一覧が 重いです。",
+      "wrongMeanings": [
+        "Light",
+        "Fast",
+        "Easy"
+      ]
+    },
+    {
+      "id": "go-ru",
+      "term": "ゴール",
+      "reading": "ごーる",
+      "romaji": "goru",
+      "meaningJa": "めざす ところです。",
+      "englishTerm": "Goal",
+      "example": "今週の ゴールを 見ます。",
+      "wrongMeanings": [
+        "Start",
+        "Rule",
+        "Prize"
+      ]
+    },
+    {
+      "id": "kotae",
+      "term": "答え",
+      "reading": "こたえ",
+      "romaji": "kotae",
+      "meaningJa": "しつもんに かえす ことばです。",
+      "englishTerm": "Answer",
+      "example": "答えが まだ 決まって いません。",
+      "wrongMeanings": [
+        "Question",
+        "Order",
+        "Reason"
+      ]
+    },
+    {
+      "id": "insatsu",
+      "term": "印刷",
+      "reading": "いんさつ",
+      "romaji": "insatsu",
+      "meaningJa": "紙に 字や 絵を 出す ことです。",
+      "englishTerm": "Printing",
+      "example": "おしらせを 印刷します。",
+      "wrongMeanings": [
+        "Copying",
+        "Sending",
+        "Saving"
+      ]
+    },
+    {
+      "id": "minaosu",
+      "term": "見直す",
+      "reading": "みなおす",
+      "romaji": "minaosu",
+      "meaningJa": "もう 一度 見て、まちがいを さがす ことです。",
+      "englishTerm": "Review again",
+      "example": "画面の 日本語を 見直します。",
+      "wrongMeanings": [
+        "Look away",
+        "Throw away",
+        "Give up"
+      ]
+    },
+    {
+      "id": "susumiguai",
+      "term": "進みぐあい",
+      "reading": "すすみぐあい",
+      "romaji": "susumiguai",
+      "meaningJa": "どこまで 進んだかの ようすです。",
+      "englishTerm": "Progress",
+      "example": "進みぐあいを 話します。",
+      "wrongMeanings": [
+        "Result",
+        "Reason",
+        "Plan"
+      ]
+    },
+    {
+      "id": "furikaeri",
+      "term": "ふりかえり",
+      "reading": "ふりかえり",
+      "romaji": "furikaeri",
+      "meaningJa": "した ことを あとから 見なおす ことです。",
+      "englishTerm": "Looking back",
+      "example": "金曜日は 今週の ふりかえりです。",
+      "wrongMeanings": [
+        "Planning",
+        "Reporting",
+        "Waiting"
+      ]
+    },
+    {
+      "id": "oshirase",
+      "term": "おしらせ",
+      "reading": "おしらせ",
+      "romaji": "oshirase",
+      "meaningJa": "つたえたい ことを、みんなに 知らせる ことばです。",
+      "englishTerm": "Notice",
+      "example": "学校から おしらせが 来ます。",
+      "wrongMeanings": [
+        "Question",
+        "Answer",
+        "Order"
+      ]
+    },
+    {
+      "id": "mochimono",
+      "term": "持ちもの",
+      "reading": "もちもの",
+      "romaji": "mochimono",
+      "meaningJa": "その日に 持って 行く ものです。",
+      "englishTerm": "Things to bring",
+      "example": "あしたの 持ちものを 見ます。",
+      "wrongMeanings": [
+        "Homework",
+        "Uniform",
+        "Lunch"
+      ]
+    },
+    {
+      "id": "shougakkou",
+      "term": "小学校",
+      "reading": "しょうがっこう",
+      "romaji": "shougakkou",
+      "meaningJa": "6さいから 12さいまでの 子どもが 行く 学校です。",
+      "englishTerm": "Elementary school",
+      "example": "小学校の アプリを 作ります。",
+      "wrongMeanings": [
+        "High school",
+        "University",
+        "Kindergarten"
+      ]
+    },
+    {
+      "id": "fugoukaku",
+      "term": "不合格",
+      "reading": "ふごうかく",
+      "romaji": "fugoukaku",
+      "meaningJa": "合格しなかった ことです。",
+      "englishTerm": "Fail",
+      "example": "不合格の ときは、もう 一度 話します。",
+      "wrongMeanings": [
+        "Pass",
+        "Absent",
+        "Late"
+      ]
+    },
+    {
+      "id": "ryokou",
+      "term": "旅行",
+      "reading": "りょこう",
+      "romaji": "ryokou",
+      "meaningJa": "ほかの 町や 国へ 出かける ことです。",
+      "englishTerm": "Travel",
+      "example": "旅行の アプリを 作って います。",
+      "wrongMeanings": [
+        "Work",
+        "Study",
+        "Shopping"
+      ]
+    },
+    {
+      "id": "kategori",
+      "term": "カテゴリ",
+      "reading": "かてごり",
+      "romaji": "kategori",
+      "meaningJa": "同じ なかまで 分けた グループです。",
+      "englishTerm": "Category",
+      "example": "カテゴリで 店を さがします。",
+      "wrongMeanings": [
+        "Price",
+        "Place",
+        "Name"
       ]
     }
   ]
