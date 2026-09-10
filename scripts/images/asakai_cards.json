@@ -1,0 +1,37 @@
+{
+  "refs": ["public/img/characters/nyam/sheet.webp"],
+  "_comment": "朝礼ページ（content/articles/asakai_lecture.json）の 3点セットの カード。台帳が 正で、教材JSONの prompt は その 写し（scripts/lib/image_ledger.mjs）。文字は 焼かない。",
+  "style": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME.",
+  "noText": "No text, no letters, no kanji, no kana, no numbers anywhere in the image. Screens, papers, whiteboards, books and signs are blank or show only soft abstract shapes and simple pictures. No watermark, no signature, no logo, no speech balloons, no floating symbols such as question marks, exclamation marks, arrows, light bulbs, stars or hearts.",
+  "negative": "Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+  "output": "1024x1024",
+  "scenes": [
+    {
+      "out": "asakai_kinou",
+      "dest": "public/img/articles/asakai_lecture/kinou.webp",
+      "title": "きのう やった こと",
+      "where": "content/articles/asakai_lecture.json blocks[5].items[0].image",
+      "priority": "A",
+      "scene": "Close view of a young engineer at a desk in the morning, looking back over yesterday's finished work: a closed laptop with a blank screen, a tidy stack of papers pushed to one side, and a small blank checklist card lying flat on the desk. Calm, satisfied expression.",
+      "output": "Output: one square illustration, 1024x1024. Close view — the subject fills the frame edge to edge."
+    },
+    {
+      "out": "asakai_kyou",
+      "dest": "public/img/articles/asakai_lecture/kyou.webp",
+      "title": "きょう やる こと",
+      "where": "content/articles/asakai_lecture.json blocks[5].items[1].image",
+      "priority": "A",
+      "scene": "Close view of the same young engineer facing forward at the desk, sleeves rolled up, one hand on the laptop and the other pointing ahead, ready to start today's work. Bright morning light, energetic mood.",
+      "output": "Output: one square illustration, 1024x1024. Close view — the subject fills the frame edge to edge."
+    },
+    {
+      "out": "asakai_komari",
+      "dest": "public/img/articles/asakai_lecture/komari.webp",
+      "title": "こまって いる こと（だれも 怒って いない）",
+      "where": "content/articles/asakai_lecture.json blocks[5].items[2].image",
+      "priority": "A",
+      "scene": "Close view of the same young engineer turning to a nearby senior colleague and raising one hand a little to ask for help, a small puzzled but hopeful expression. The senior colleague leans in kindly to listen. Warm, safe mood — nobody looks angry.",
+      "output": "Output: one square illustration, 1024x1024. Close view — the subject fills the frame edge to edge."
+    }
+  ]
+}
