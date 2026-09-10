@@ -9,7 +9,7 @@
     "sky",
     "space"
   ],
-  "questionCount": 50,
+  "questionCount": 51,
   "passRate": 80,
   "furigana": [
     [
@@ -103,6 +103,7 @@
     "shouseki",
     "tantaitesuto",
     "ketsugoutesuto",
-    "ukeiretesuto"
+    "ukeiretesuto",
+    "kirimodoshi"
   ]
 }

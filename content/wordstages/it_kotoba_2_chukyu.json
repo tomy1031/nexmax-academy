@@ -9,7 +9,7 @@
     "sky",
     "space"
   ],
-  "questionCount": 50,
+  "questionCount": 57,
   "passRate": 80,
   "furigana": [
     [
@@ -107,6 +107,13 @@
     "shousaisekkei",
     "sekkeisho",
     "gyoumufuroo",
-    "gijiroku"
+    "gijiroku",
+    "kaihatukankyou",
+    "sutejingukankyou",
+    "honbankankyou",
+    "ririsu",
+    "depuroi",
+    "chiketsuto",
+    "bakkuappu"
   ]
 }

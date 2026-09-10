@@ -9,7 +9,7 @@
     "sky",
     "space"
   ],
-  "questionCount": 50,
+  "questionCount": 41,
   "passRate": 80,
   "furigana": [
     [
@@ -66,12 +66,6 @@
     ]
   ],
   "wordIds": [
-    "kaihatukankyou",
-    "sutejingukankyou",
-    "honbankankyou",
-    "ririsu",
-    "depuroi",
-    "kirimodoshi",
     "enki",
     "miokuri",
     "hoshu",
@@ -93,14 +87,12 @@
     "yuusentaiou",
     "atomawashi",
     "sukoopu",
-    "sukoopugai",
     "chakushu",
     "michakushu",
     "asain",
     "hikitsugi",
     "kadaikanri",
     "shinchokukanri",
-    "chiketsuto",
     "kihyou",
     "kensyu",
     "nouhin",
@@ -111,7 +103,6 @@
     "baffa",
     "pendingu",
     "maedaoshi",
-    "bakkuappu",
     "fukugen",
     "taisei",
     "renkei",
