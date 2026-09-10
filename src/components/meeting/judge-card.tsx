@@ -4,6 +4,7 @@ import { motion } from "motion/react";
 import { RubyText } from "@/components/ruby-text";
 import { JUDGE_FURIGANA } from "@/components/meeting/ui-furigana";
 import type { JudgeGrade, JudgeResult } from "@/lib/meeting/judge";
+import type { FuriganaIndex } from "@/lib/text/furigana";
 
 /**
  * 返事の見かた（AIの判定）を出すカード。
@@ -31,7 +32,16 @@ const BADGE: Record<JudgeGrade, { label: string; face: string; shadow: string }>
   miss: { label: "もう いちど いってみよう", face: "#f0a500", shadow: "#c98700" },
 };
 
-export function JudgeCard({ judge, hostName }: { judge: JudgeResult; hostName: string }) {
+export function JudgeCard({
+  judge,
+  hostName,
+  /** 教材の 読み辞書（相手の 名前の ルビに 使う）。 */
+  furigana,
+}: {
+  judge: JudgeResult;
+  hostName: string;
+  furigana?: FuriganaIndex;
+}) {
   const badge = BADGE[judge.grade];
   return (
     <motion.div
@@ -48,7 +58,7 @@ export function JudgeCard({ judge, hostName }: { judge: JudgeResult; hostName: s
           {badge.label}
         </span>
         <span className="text-ink-faint text-xs font-bold">
-          {hostName}さんが{" "}
+          <RubyText text={`${hostName}さんが`} index={furigana} show />{" "}
           <ruby>
             聞<rt>き</rt>
           </ruby>

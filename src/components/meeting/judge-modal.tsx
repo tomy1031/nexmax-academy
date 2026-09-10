@@ -78,7 +78,18 @@ const LOOK: Record<
 };
 
 /** 見出し1つぶん（丸い 絵 ＋ 色の ついた 字）。 */
-function SectionLabel({ face, text, tone }: { face: string; text: string; tone: string }) {
+function SectionLabel({
+  face,
+  text,
+  tone,
+  /** 読み辞書。相手の 名前が 入る 札には **教材の 索引**を 渡す（下の 覚書）。 */
+  index = FURIGANA,
+}: {
+  face: string;
+  text: string;
+  tone: string;
+  index?: FuriganaIndex;
+}) {
   return (
     <p className="flex items-center gap-1.5 text-xs font-black" style={{ color: tone }}>
       <span
@@ -87,7 +98,7 @@ function SectionLabel({ face, text, tone }: { face: string; text: string; tone: 
       >
         {face}
       </span>
-      <RubyText text={text} index={FURIGANA} show />
+      <RubyText text={text} index={index} show />
     </p>
   );
 }
@@ -191,7 +202,12 @@ export function JudgeModal({
 
         <div className="mt-3 space-y-3 text-left">
           <div>
-            <SectionLabel face="❓" text={`${hostName}さんの しつもん`} tone="var(--color-sky)" />
+            <SectionLabel
+              face="❓"
+              text={`${hostName}さんの しつもん`}
+              tone="var(--color-sky)"
+              index={askFurigana}
+            />
             <p className="border-hairline bg-panel text-ink mt-1 rounded-xl border px-3 py-2 text-sm font-bold break-words">
               <RubyText text={ask} index={askFurigana} show />
             </p>
@@ -211,6 +227,7 @@ export function JudgeModal({
                 face="💬"
                 text={`${hostName}さんの へんじ`}
                 tone="var(--color-leaf-deep)"
+                index={askFurigana}
               />
               <p className="border-hairline bg-panel text-ink mt-1 rounded-xl border px-3 py-2 font-bold break-words">
                 <RubyText text={reply} index={FURIGANA} show />
@@ -223,6 +240,7 @@ export function JudgeModal({
               face="💡"
               text={`${hostName}さんからの アドバイス`}
               tone="var(--color-coral-deep)"
+              index={askFurigana}
             />
             {/* ほめる ところと 直す ところを **線で 分ける**（続けて 書くと 混ざる） */}
             <div className="border-hairline bg-panel mt-1 rounded-xl border px-3 py-2">
@@ -274,7 +292,8 @@ export function JudgeModal({
         </button>
         {waiting ? (
           <p className="text-ink-soft mt-2 text-center text-xs font-black">
-            🔊 {hostName}さんが 話して います
+            🔊 <RubyText text={`${hostName}さん`} index={askFurigana} show />
+            <RubyText text="が 話して います" index={FURIGANA} show />
           </p>
         ) : look.footnote ? (
           <p className="text-coral-deep mt-2 text-center text-xs font-black">

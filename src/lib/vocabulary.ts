@@ -112,7 +112,15 @@ export function hydrateWordStage(
    * 「お手数[てすう]」が「お手[て]数[かず]」に なり、147の 文で ルビが 消えて いた。
    * 検査と 画面が 同じ 索引を 見るように、ここで 合流させる。
    */
-  const fromVocab = vocab.filter((word) => wordIds.includes(word.id));
+  /*
+   * 並びは **`wordIds` の 順**（正の JSONの 行の 順では ない）。同じ 表記が
+   * ぶつかった ときの 勝ち負けが、ことばの正を 並べ替えただけで 黙って
+   * 変わらないように する。
+   */
+  const byId = new Map(vocab.map((word) => [word.id, word]));
+  const fromVocab = wordIds
+    .map((id) => byId.get(id))
+    .filter((word): word is VocabWord => word !== undefined);
   const terms = fromVocab.map((word): FuriganaEntry => [word.term, word.reading]);
   const perWord = fromVocab.flatMap((word) => word.furigana ?? []);
   return {
@@ -121,6 +129,54 @@ export function hydrateWordStage(
       ([surface, reading]): [string, string] => [surface, reading],
     ),
     words: picked.words,
+  };
+}
+
+/**
+ * 読み出しの かたち（`words` が ある）を、**保存の かたち**（`wordIds` の 参照）に 戻す。
+ * `hydrateWordStage` の 逆で、スタジオが 保存する 前に かならず ここを 通す。
+ *
+ * **読み辞書を 丸ごと 落とさない**のが 肝である。
+ *
+ * hydrate は `mergeFuriganaEntries(terms, perWord, vocabFurigana, furigana)` で
+ * **正の 側の 束**（`content/vocab/vocabulary.json` の top-level・441件）を 混ぜて 返す。
+ * その まま 保存すると 束が セットに **焼き付く**——DBが git に 勝つ ので、あとから
+ * 束や 語ごとの 読みを 直しても **その セットにだけ 届かない**。しかも 画面は 動くので
+ * 気づけない（読みが その日の まま 凍る）。
+ *
+ * かと言って 丸ごと 落とすと、セット自身の 足し前が 消える。2026-09-10 に 数えたところ
+ * 18セット中 10セットが 束から 引き直せない entry を 持って いて、`intro_kotoba` の
+ * 「会→あ」は 束の 「会→かい」と **読みが 違う**（送りがなで 変わる 語）。落とせば
+ * 見出しと 説明文の ルビが 消えるか、まちがった 読みで 出る。
+ *
+ * そこで **正から 引き直せる ぶんだけ 引く**。残るのは セット自身の 足し前だけで、
+ * 読むときに hydrate が 同じ 索引を 組み立て直す（往復しても 画面は 変わらない）。
+ */
+export function dehydrateWordStage(
+  stage: WordStage,
+  /** 保存する 語の 並び（足したぶんを 含む 最終形）。 */
+  wordIds: readonly string[],
+  vocab: readonly VocabWord[],
+  /** 正の 読み辞書（束）。hydrate に 渡す ものと 同じ。 */
+  vocabFurigana: readonly FuriganaEntry[] = [],
+): StoredWordStage {
+  const { words: _words, furigana, ...rest } = stage;
+  const fromVocab = vocab.filter((word) => wordIds.includes(word.id));
+  /* hydrate が 足す ぶん。ここに 同じ [表記, よみ] が あれば、持たなくても 戻ってくる。 */
+  const derived = new Map(
+    mergeFuriganaEntries(
+      fromVocab.map((word): FuriganaEntry => [word.term, word.reading]),
+      fromVocab.flatMap((word) => word.furigana ?? []),
+      vocabFurigana,
+    ),
+  );
+  // 表記だけでなく **よみも** 見て 引く。束と 読みが 違う 足し前（会→あ）は セットの ものなので 残す。
+  const own = (furigana ?? []).filter(([surface, reading]) => derived.get(surface) !== reading);
+  return {
+    ...rest,
+    kind: "wordstage",
+    ...(own.length > 0 ? { furigana: own } : {}),
+    wordIds: [...wordIds],
   };
 }
 
