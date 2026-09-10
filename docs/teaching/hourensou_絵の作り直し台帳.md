@@ -35,8 +35,10 @@ node scripts/slides/gen_images.mjs scripts/images/hourensou_tomita.json .tmp-img
 
 PNG で 出る ので **WebP に 変換してから 置く**: `cwebp -q 84 in.png -o out.webp`
 
-**`content/*.json` を 手で 直さない。** `scripts/gen_hourensou_content.mjs` が 作り直すので
-消える。絵を **同じ パスに 上書き**すれば、データを 触らずに 画面が 変わる。
+**`scripts/gen_hourensou_content.mjs` は 走らせない**（2026-09-10 の 制約）。教材は
+`content/*.json` の ほうが 新しい。絵を **同じ パスに 上書き**すれば、データを 触らずに
+画面が 変わる。**文字を 焼いた 絵の 文言を 変える ときだけ**、台帳と
+`content/*.json` の `prompt` を そろえて 直す。
 
 ## いちばん 先に やる こと — ふりがなの 試作
 
@@ -443,15 +445,15 @@ Warm modern anime illustration, like a friendly Japanese educational manga — c
 ### 20. 報告の 型（順番）
 
 - **出力する 先** … `public/img/hourensou/houkoku/keypoint.webp`
-- **書き込む 先** … scripts/gen_hourensou_content.mjs houkoku_lecture blocks[13]（steps）の images[1]
-- **絵の 中の 文字** … 「件（けん）」・「結論（けつろん）」・「事実（じじつ）」・「お願い（おねがい）」
+- **書き込む 先** … content/articles/houkoku_kotsu.json の hero（blocks[0]）と steps（blocks[7]）の images[1]
+- **絵の 中の 文字** … 「用件（ようけん）」・「結論（けつろん）」・「事実（じじつ）」・「お願い（おねがい）」
 - **大きさ** … Output: one landscape illustration, 1536x1024.
 - **優先度** … A
 
 <details><summary>プロンプト全文（そのまま 貼る）</summary>
 
 ```text
-Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This one is a teaching diagram: few large elements, generous spacing, each label sitting on a soft cream panel with a rounded border, arranged so the eye reads it in one pass. A teaching diagram showing an order of four steps, drawn as four rounded cream panels in a row connected by soft coral arrows. In each panel a small simple drawing of the same junior engineer speaking to a senior shows that step: raising a hand for attention; saying the topic; showing a document of facts; bowing slightly to make a request. Each panel carries its Japanese label under the drawing. The Japanese words in this picture are exactly: 件（けん） / 結論（けつろん） / 事実（じじつ） / お願い（おねがい）. Output: one landscape illustration, 1536x1024. Japanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana. Spell every character exactly as given. No other letters, numbers, logos or watermarks anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.
+Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This one is a teaching diagram: few large elements, generous spacing, each label sitting on a soft cream panel with a rounded border, arranged so the eye reads it in one pass. A teaching diagram showing an order of four steps, drawn as four rounded cream panels in a row connected by soft coral arrows. In each panel a small simple drawing of the same junior engineer speaking to a senior shows that step: raising a hand for attention; saying the topic; showing a document of facts; bowing slightly to make a request. Each panel carries its Japanese label under the drawing. The Japanese words in this picture are exactly: 用件（ようけん） / 結論（けつろん） / 事実（じじつ） / お願い（おねがい）. Output: one landscape illustration, 1536x1024. Japanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana. Spell every character exactly as given. No other letters, numbers, logos or watermarks anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.
 ```
 
 </details>

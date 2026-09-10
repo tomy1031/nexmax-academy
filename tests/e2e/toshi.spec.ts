@@ -815,9 +815,12 @@ test("しごとステージを 通しで あそべる（端末に 何も 置か�
  * 「おわった」は 末尾の しるしが 見えた ことで 決まる（article-view.tsx の
  * IntersectionObserver）。だから スクロールを 本当に 起こして、枠の
  * 「つぎは …」が 出るまで 待つ——出た＝おわったことが 進捗に 書けた、である。
+ *
+ * しるしは `data-testid="article-end"` で つかむ。**文言で つかまない**——
+ * ねぎらいの ことばを 消した 日（2026-09-10）に この 検証が 道づれで 落ちた。
  */
 async function readToEnd(page: Page): Promise<void> {
-  await page.getByText("さいごまで よんだね").scrollIntoViewIfNeeded();
+  await page.getByTestId("article-end").scrollIntoViewIfNeeded();
   await page.mouse.wheel(0, 2000);
   await expect(frameNext(page)).toBeVisible();
 }

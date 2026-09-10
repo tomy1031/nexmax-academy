@@ -19,10 +19,10 @@
       "out": "keypoint",
       "dest": "public/img/hourensou/houkoku/keypoint.webp",
       "title": "報告の 型（順番）",
-      "where": "scripts/gen_hourensou_content.mjs houkoku_lecture blocks[13]（steps）の images[1]",
+      "where": "content/articles/houkoku_kotsu.json の hero（blocks[0]）と steps（blocks[7]）の images[1]",
       "priority": "A",
       "scene": "A teaching diagram showing an order of four steps, drawn as four rounded cream panels in a row connected by soft coral arrows. In each panel a small simple drawing of the same junior engineer speaking to a senior shows that step: raising a hand for attention; saying the topic; showing a document of facts; bowing slightly to make a request. Each panel carries its Japanese label under the drawing.",
-      "text": ["件（けん）", "結論（けつろん）", "事実（じじつ）", "お願い（おねがい）"]
+      "text": ["用件（ようけん）", "結論（けつろん）", "事実（じじつ）", "お願い（おねがい）"]
     },
     {
       "out": "s1",

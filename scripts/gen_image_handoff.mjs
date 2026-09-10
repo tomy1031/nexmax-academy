@@ -171,10 +171,10 @@ writeDoc("hourensou_絵の作り直し台帳", (out) => {
   out();
   out("PNG で 出る ので **WebP に 変換してから 置く**: `cwebp -q 84 in.png -o out.webp`");
   out();
-  out(
-    "**`content/*.json` を 手で 直さない。** `scripts/gen_hourensou_content.mjs` が 作り直すので",
-  );
-  out("消える。絵を **同じ パスに 上書き**すれば、データを 触らずに 画面が 変わる。");
+  out("**`scripts/gen_hourensou_content.mjs` は 走らせない**（2026-09-10 の 制約）。教材は");
+  out("`content/*.json` の ほうが 新しい。絵を **同じ パスに 上書き**すれば、データを 触らずに");
+  out("画面が 変わる。**文字を 焼いた 絵の 文言を 変える ときだけ**、台帳と");
+  out("`content/*.json` の `prompt` を そろえて 直す。");
   out();
   out("## いちばん 先に やる こと — ふりがなの 試作");
   out();

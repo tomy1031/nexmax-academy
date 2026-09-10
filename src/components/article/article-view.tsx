@@ -214,10 +214,9 @@ export function ArticleView({
           ))}
         </div>
 
-        <p className="text-ink-faint mt-8 text-center text-xs font-extrabold">
-          さいごまで よんだね。おつかれさま！
-        </p>
-        <div ref={endRef} aria-hidden className="h-px" />
+        {/* ねぎらいの ことばは 置かない（2026-09-10 の 指定）。ページの おわりは
+            つぎへ 進む 導線だけに する —— 同じ ことばが 教材の あちこちに 出て いた。 */}
+        <div ref={endRef} aria-hidden data-testid="article-end" className="mt-8 h-px" />
       </article>
     </div>
   );
