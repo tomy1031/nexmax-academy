@@ -94,6 +94,7 @@
   <h2>報連相「報告」レビュー</h2>
   <p class="sub">理解設計レビュー報告書</p>
   <ol>
+    <li><a href="#s0">0. 訂正（v1.1）</a></li>
     <li><a href="#s1">1. 結論</a></li>
     <li><a href="#s2">2. 何を どう 調べたか</a></li>
     <li><a href="#s3">3. 学習の道すじ 旧 → 現状</a></li>
@@ -104,7 +105,7 @@
     <li><a href="#s8">8. なぜ こうなったか（原因）</a></li>
     <li><a href="#s9">9. 再発防止（指示系統の変更案）</a></li>
     <li><a href="#s10">10. ペルソナ検収の生データ</a></li>
-    <li><a href="#s11">11. 判断していただきたいこと</a></li>
+    <li><a href="#s11">11. やったこと と 残り</a></li>
     <li><a href="#changelog">変更履歴 / Changelog</a></li>
   </ol>
 </nav>
@@ -115,22 +116,32 @@
     <h1>報連相「報告」ステージ 理解設計レビュー</h1>
     <p class="en">Why the learner gets lost, and what to change</p>
     <p class="meta">
-      <span>版: v1.0</span>
+      <span>版: v1.2</span>
       <span>作成日: 2026-09-10</span>
       <span>対象: <code>/houkoku</code> ステージの8本＋その順番</span>
-      <span>状態: <strong>変更前の報告。まだ1文字も直していません</strong></span>
+      <span>状態: <strong>v1.2 — ご指摘を受けて訂正し、合意分は実装済み</strong></span>
     </p>
   </div>
 
   <details class="changelog" id="changelog">
     <summary>
       <span class="chev">▶</span>変更履歴 / Changelog
-      <span class="latest">最新: v1.0 (2026-09-10)</span>
+      <span class="latest">最新: v1.2 (2026-09-10)</span>
     </summary>
     <div class="cl-body">
       <p>本書への変更を記録する。各エントリの「修正箇所」リンクから該当章へ移動できる。</p>
       <table>
         <tr><th>版</th><th>日付</th><th>変更内容</th><th>修正箇所</th></tr>
+        <tr>
+          <td>v1.2</td><td>2026-09-10</td>
+          <td><strong>合意分を実装。</strong>順路の作り直し・済スタンプ削除・調査（リサーチ）への改名・語彙追加・検問の新設（R9〜R11／diff_port.mjs）まで反映。</td>
+          <td><a href="#s5">5</a> ・ <a href="#s7">7</a> ・ <a href="#s9">9</a></td>
+        </tr>
+        <tr>
+          <td>v1.1</td><td>2026-09-10</td>
+          <td><strong>3件の訂正。</strong>阻害4を取り下げ（藤田＝実在モデル）、阻害5を整理し直し（事前紹介は意図的）、阻害7の帰属を訂正（原文だった）。あわせて「土台が13本だった」「生成スクリプトが古かった」を追記。</td>
+          <td><a href="#s0">0</a> ・ <a href="#s4">4</a> ・ <a href="#s8">8</a></td>
+        </tr>
         <tr>
           <td>v1.0</td><td>2026-09-10</td>
           <td>初版。N5/N4/N3の3ペルソナ検収と旧アプリの原典照合をもとに、阻害要因・対策・変更箇所・再発防止を報告。</td>
@@ -141,6 +152,90 @@
   </details>
 
   <div class="wrap">
+
+  <!-- ============ 0 ============ -->
+  <section class="chapter" id="s0">
+    <h2 class="sec"><span class="num">0</span>訂正（v1.1 で 直したこと）</h2>
+
+    <div class="callout bad">
+      <strong>初版に 3つの誤りがありました。</strong>いただいたご指摘とコードの確認で分かったものです。
+      以下は<strong>取り下げ／書き直し</strong>ます。
+    </div>
+
+    <h3>訂正1：阻害4「藤田さん／藤木さん」は <span class="badge b-x">取り下げ</span></h3>
+    <p><strong>誤り</strong>：図の「取締役 － 藤田さん」と本文の「藤木さん」が食い違っている、と書きました。</p>
+    <p><strong>事実</strong>：<strong>藤木取締役は、実在の藤田取締役をモデルにしたキャラクター</strong>です。
+      松井社長を除く全登場人物が、実在のネクストメイク社員・役員の名前を少し変えたものです。
+      <strong>問題ではありません。絵もそのままにします。</strong></p>
+    <p>これは <code>docs/constraints.md</code> に記録しました。あわせて、
+      <strong>ネガティブな例（できない人・失敗する人）を、名前のある登場人物にやらせない</strong>という規律を
+      AGENTS.md に足しています（失敗の役は、登場人物ではない架空の新人＝山田さん・田中さんなどに担わせる）。</p>
+
+    <h3>訂正2：阻害5「階級の位置」は <span class="badge b-w">書き直し</span></h3>
+    <p><strong>誤り</strong>：「会う前の人を説明している」ことを問題として書きました。</p>
+    <p><strong>事実</strong>：<strong>事前に相手と場面を渡すのは意図的な設計</strong>です
+      （音声に自己紹介のやりとりを入れないための配慮）。<strong>削ってはいけないものでした。</strong></p>
+    <p><strong>では何が支離滅裂だったのか</strong> — 3つに分けると、こうなります。</p>
+    <table>
+      <tr><th>#</th><th>実際の問題</th><th>証拠</th></tr>
+      <tr><td>1</td><td><strong>紹介に「会社の階級の授業」を合体させた</strong>。旧アプリでは、藤木さんの役割紹介（リスニング直前）と階級の一覧（調べ学習の答え合わせ）は<strong>別ページ・別目的</strong>だった</td>
+        <td>旧 <code>listening/houkoku/index.html</code>（紹介）と <code>listening/houkoku/hierarchy.html</code>（階級）は別ファイル</td></tr>
+      <tr><td>2</td><td><strong>因果が削られた</strong>。これが支離滅裂の正体</td>
+        <td>旧「藤木さんは、いつも お客様と 直接 話を しています。<strong>ですから</strong>、もし ヘンディさんの プログラミングで 何か 問題が あっても、藤木さんが お客様に すぐ 確認して くれます」＋「藤木取締役が 取ってきた プロジェクトに、ヘンディさんが プログラマーとして アサインされて います」 → <strong>全文削除</strong>。代わりに「とても 上の ポジションで」という評価語が足された</td></tr>
+      <tr><td>3</td><td><strong>置き場所が遠い</strong>。旧は聞く直前（リスニングページの冒頭）、新は1つ前の教材（記事）の末尾</td>
+        <td>間にスキット（富田さん）が挟まる</td></tr>
+    </table>
+    <div class="callout good"><strong>直し方</strong>：紹介は<strong>復活させて厚くし、リスニングの直前に戻す</strong>。
+      階級の一覧だけを切り離して調査の後へ移す。<strong>実装済みです</strong>（<a href="#s7">7章</a>）。</div>
+
+    <h3>訂正3：阻害7「日本もカンボジアと同じで」は <span class="badge b-x">帰属が誤り</span></h3>
+    <p><strong>誤り</strong>：AIが足したおせっかいの一言、と読める書き方をしました。</p>
+    <p><strong>事実</strong>：<strong>この文は旧アプリの原文です</strong>
+      （旧 <code>hierarchy.html</code>「日本もカンボジアと同じで上の人を大切にして、丁寧にします。」）。
+      <strong>矛盾を作ったのは文ではなく、順番の反転</strong>でした。
+      旧では「調べる → この文で答え合わせ」だったので筋が通っていました。</p>
+
+    <h3>では、AIが実際に足した／削ったのは何か</h3>
+    <p>旧アプリと新アプリの本文を<strong>文単位で突き合わせ</strong>ました。おせっかいの正体はこれです。</p>
+    <table>
+      <tr><th>種類</th><th>旧</th><th>新</th><th>何が起きたか</th></tr>
+      <tr><td><span class="badge b-x">足した</span><br>答えを冒頭へ</td>
+        <td>「日本の会社で一番大切なことは何ですか？」→ パスワード → 答え</td>
+        <td>hero の1行目に <code>"日本の 会社で 一番 大切なのは チームワークです。"</code></td>
+        <td><strong>問いが消えて、答えがページの1行目になった</strong></td></tr>
+      <tr><td><span class="badge b-x">足した</span><br>問いの差し替え</td>
+        <td>「一番大切なことは何ですか？」</td><td><code>"なぜ 報告を するの？"</code></td>
+        <td>答え「チームワーク」と<strong>噛み合わない問い</strong>になった</td></tr>
+      <tr><td><span class="badge b-x">足した</span><br>評価の一言</td>
+        <td>（無し）</td><td><code>"とても 上の ポジションで"</code></td>
+        <td>削った因果の代わりに、position の話が入った</td></tr>
+      <tr><td><span class="badge b-w">削った</span><br>因果</td>
+        <td>「<strong>ですから</strong>、…藤木さんが お客様に すぐ 確認して くれます」</td><td>（無し）</td>
+        <td><strong>なぜ藤木さんに報告するのかが丸ごと消えた</strong></td></tr>
+      <tr><td><span class="badge b-w">削った</span><br>英語の添え</td>
+        <td>問題（Error/Bug）・上司（Boss）・事実（Fact）・報告（Report）・チームワーク（Teamwork）</td>
+        <td>すべて日本語のみ</td>
+        <td>N5ペルソナが「英語がない」と詰まった。<strong>01ガイド P10「足場は消さずに重ねる」に真っ向から反する</strong></td></tr>
+    </table>
+
+    <h3>訂正4：土台が古かった（8本ではなく13本）</h3>
+    <p>初版は <code>origin/integration</code> を取り込む前に書きました。実際の報告ステージは
+      <strong>13本</strong>で、09-09 の並行スレッドが<strong>朝礼の一式</strong>（まんが→ページ→メモ→ミーティング3本）を足し、
+      <strong>報告クエストをステージから外して</strong>いました。</p>
+
+    <h3>訂正5：直す場所は生成スクリプトではなかった</h3>
+    <p>初版は「直す場所は必ず <code>scripts/gen_hourensou_content.mjs</code>」と書きました。
+      <strong>これは危険な誤りでした。</strong>実際に走らせたところ、
+      <strong>他スレッドの committed な直しを巻き戻しました</strong>
+      （読み辞書の修正・まなびマップの土地・朝礼6本）。</p>
+    <p>このスクリプトは<strong>移植の1回きりのもの</strong>で、以後 <code>content/*.json</code> は
+      各スレッドが直接編集してきました。<strong>いまは JSON のほうが新しい。</strong>
+      走らせずに JSON を直接直すのが正しく、それを <code>docs/constraints.md</code> に記録しました。</p>
+    <div class="callout warn">
+      <strong>これは3つめの構造的な原因です。</strong>「正本がどれか」が二重化していて、どこにも書かれていませんでした。
+      気づけたのは、走らせて <code>git status</code> を見たからです。
+    </div>
+  </section>
 
   <!-- ============ 1 ============ -->
   <section class="chapter" id="s1">
@@ -320,7 +415,8 @@ flowchart TD
     <blockquote>N4ペルソナ：「文は3つ、絵は4つ。<strong>どちらを覚えるのか分かりませんでした。</strong>」<br>
       N5ペルソナ：「3つと4つ、どっちが本当か分からなくなった」</blockquote>
 
-    <h3>阻害4 <span class="badge b-x">最重</span> 階級の図と本文で、取締役の名前が違う</h3>
+    <h3 style="text-decoration:line-through;opacity:.55">阻害4 階級の図と本文で、取締役の名前が違う</h3>
+    <div class="callout bad"><strong>取り下げました。</strong>藤木取締役は実在の藤田取締役がモデルで、松井社長を除く全登場人物が同じ作り方です。絵もそのまま。→ <a href="#s0">0章 訂正1</a></div>
     <p><strong>現象</strong>：本文は <code>"次の リスニングに 出て くる 藤木さんは「取締役」です。"</code>。
       そのすぐ上に置かれた図 <code>houkoku_hierarchy.webp</code> には、<strong>「取締役 － 藤田さん (Director - Mr. Fujita)」</strong>と大書されています。
       さらに図の会社名は<strong>「株式会社どうぶつ商事」</strong>、社長は<strong>「松井社長」</strong>（このアプリの別ステージに実在する別キャラクター）、
@@ -333,7 +429,8 @@ flowchart TD
       <strong>移植の際に「藤木さんは取締役です」という文を図の隣に新しく足したことで、衝突が生まれています。</strong>
     </div>
 
-    <h3>阻害5 <span class="badge b-w">重</span> 会う前の人を説明している（階級の位置）</h3>
+    <h3>阻害5 <span class="badge b-w">重</span> <span style="text-decoration:line-through;opacity:.55">会う前の人を説明している</span> → <strong>紹介に階級を混ぜ、因果を削り、置き場所を遠ざけた</strong></h3>
+    <div class="callout warn"><strong>書き直しました。</strong>事前紹介そのものは意図的な設計で、正しいものでした。→ <a href="#s0">0章 訂正2</a></div>
     <p><strong>現象</strong>：記事の末尾で、まだ声も聞いていない藤木さんについて
       <code>"とても 上の ポジションで、お客様と 直接 話して います。"</code> と説明されます。</p>
     <p><strong>なぜ理解が壊れるか</strong>：人物の属性は、<strong>その人に会って印象ができたあと</strong>でないと結びつきません。
@@ -355,7 +452,7 @@ flowchart TD
       <strong>これは『聞き分ける』練習ではなく『押す作業』です。</strong>」</blockquote>
     <p class="callout bad"><strong>判定</strong>：ご指摘のとおり<strong>却下が妥当</strong>です。詳細と、救う場合の唯一の条件は<a href="#s6">6章</a>。</p>
 
-    <h3>阻害7 <span class="badge b-w">重</span> 記事が「同じ」と断定した直後に、「違いを調べろ」と言う</h3>
+    <h3>阻害7 <span class="badge b-w">重</span> 記事が「同じ」と断定した直後に、「違いを調べろ」と言う<br><span style="font-size:14px;color:#a8434a">※この文は旧アプリの原文でした。矛盾を作ったのは順番の反転です → <a href="#s0">0章 訂正3</a></span></h3>
     <p><strong>現象</strong>：記事 <code>"日本も カンボジアと 同じで、目上の 人を 大切に して、ていねいに 話します。"</code>
       → 調べ学習「カンボジアと日本の『報告』への考え方の違いを教えてください。」</p>
     <p><strong>なぜ理解が壊れるか</strong>：課題が矛盾しているため、何を書けば良いか決められません。
@@ -923,29 +1020,71 @@ flowchart TD
 
   <!-- ============ 11 ============ -->
   <section class="chapter" id="s11">
-    <h2 class="sec"><span class="num">11</span>判断していただきたいこと（3つだけ）</h2>
+    <h2 class="sec"><span class="num">11</span>やったこと と 残り</h2>
 
+    <h3>11.1 実装しました（検査はすべて緑）</h3>
     <table>
-      <tr><th>#</th><th>お伺い</th><th>こちらの推奨</th></tr>
-      <tr><td>1</td><td><strong>順路の作り直し</strong>（<a href="#s5">5章</a>の10本の並び）で着手してよいか。
-        とくに「記事を3本に割る（問い／コツ／階級）」と「調査を答えの前に戻す」の2点</td>
-        <td><strong>この並びで着手</strong>。データの並べ替えが中心で、新しい部品は作りません</td></tr>
-      <tr><td>2</td><td><strong>済スタンプは削除でよいか</strong>（ファイルごと消すか、ステージから外して残すか）</td>
-        <td><strong>ステージから外し、ファイルも消す</strong>。良かった一文は記事へ回収します</td></tr>
-      <tr><td>3</td><td><strong>保護ファイルを触る許可</strong>（<a href="#s9">9章</a>の再発防止：<code>AGENTS.md</code>・<code>docs/design/review_rubric.md</code>・<code>01_理解設計ガイド.md</code>・PRテンプレ）</td>
-        <td><strong>案1・2・4から着手</strong>（ルーブリックR9・検収エージェント・PRテンプレ）。AGENTS.md と 01ガイドは、その後で</td></tr>
+      <tr><th>やったこと</th><th>中身</th></tr>
+      <tr><td><strong>順路を作り直した</strong></td>
+        <td>ページ①（問いで終わる）→ <strong>もんだい「あなたなら、何と 言いますか」＝壁</strong> → スキット → ページ②「報告の コツ」（答え）→ リスニング → もんだい → <strong>🔍 調査（リサーチ）</strong> → ページ③「会社の ポジション」（答え合わせ）→ ミーティング → （朝礼の6本）</td></tr>
+      <tr><td><strong>壁は「書かせる」</strong></td><td>自由記述3問。<strong>正しい答えのない問い</strong>だけ。Q3（ITの他の報告）はここから外し、ページ②の「いつ 報告するか」で説明</td></tr>
+      <tr><td><strong>リスニングの因果を復活</strong></td><td>旧アプリの導入を全文戻した（「…<strong>ですから</strong>、藤木さんが お客様に すぐ 確認して くれます」）</td></tr>
+      <tr><td><strong>枠組みを1つに</strong></td><td>順番＝<strong>件→結論→事実→お願い</strong>（絵と同じことば）。「3つのパターン」は<strong>「いつ 報告するか」</strong>に役割を分け、3つとも言い方の例を書いた</td></tr>
+      <tr><td><strong>済スタンプを削除</strong></td><td>ステージから外し、ファイルも削除。救った一文は<strong>ぼかして</strong>ページ②へ：「件・結論・事実・お願いが そろって いれば、悪い ニュースでも <strong>ちゃんと 伝わります</strong>。相手は すぐ つぎの 手を 考えられます。」</td></tr>
+      <tr><td><strong>調査（リサーチ）</strong></td><td>改名。「階級」「件」に意味の吹き出しを付け、「応用問題」を「もう 1つ」に。<strong>関門にした</strong>（ページが完了の合図を送るようにした）</td></tr>
+      <tr><td><strong>ことばを足した</strong></td><td>「件」「階級」を語彙台帳と単語テストへ（「件」は3教材に出て一度も説明がなかった）</td></tr>
+      <tr><td><strong>意味不明な日本語を直した</strong></td><td>「れいに できる こと」→「たとえば、こんな こと」（2件）／ステージの進みぐあい「15つ」→「15この うち」</td></tr>
+    </table>
+    <p class="callout good"><strong>検査</strong>：<code>lint:content</code> エラー0 ／ <code>vitest</code> 1607件 緑 ／
+      <code>playwright</code> 108件 緑（skip 9）／ <code>typecheck</code> 緑 ／ <code>format:check</code> 緑。
+      画面でも <code>/houkoku</code> を開いて15本の並びと、調査ページの吹き出し（階級＝Rank / Hierarchy）を確認しました。</p>
+
+    <h3>11.2 再発防止も入れました</h3>
+    <table>
+      <tr><th>足したもの</th><th>何を止めるか</th></tr>
+      <tr><td><strong><code>scripts/diff_port.mjs</code></strong>（新設）</td>
+        <td>移植で<strong>足した文・書き換えた文・落とした文</strong>を機械で並べる。「おせっかいの一言」と「因果の削除」はここでしか捕まらない</td></tr>
+      <tr><td><strong>ルーブリック R9</strong>（順路と移植）</td><td>並び／答えの位置／同じ素材の連続／枠組みの数／関門／<strong>仕組みを外したときの引き継ぎ先</strong></td></tr>
+      <tr><td><strong>R10</strong>（設問が単独で成り立つか）</td><td><strong>ヒントを閉じたまま答えられるか。</strong>朝礼メモで起きたこと</td></tr>
+      <tr><td><strong>R11</strong>（日本語が文として成り立つか）</td><td>「れいに できる こと」「15つ」。機械検査は意味を見ない</td></tr>
+      <tr><td><strong>rubric-checker を R1〜R11 へ</strong></td><td>教材を足した／並べ替えた／移植したターンは R9 を必ず1体立てる</td></tr>
+      <tr><td><strong>PRテンプレに2欄</strong></td><td>「順路（before→after）」と「ペルソナ通しの記録」。<strong>機械の緑だけでは検収と数えない</strong></td></tr>
+      <tr><td><strong>AGENTS.md 規律10</strong></td><td>移植は差分ゼロ／仕組みを外すときは引き継ぎ先を決める／枠組みは1つ／並びは前提が揃う順／設問はヒント無しで成り立つ／<strong>ネガティブな例を登場人物にやらせない</strong></td></tr>
+      <tr><td><strong>01ガイド アンチパターン13〜17</strong>・<strong>constraints 5件</strong></td><td>実例つきで残した（次に読む人が同じ判断をしないため）</td></tr>
     </table>
 
-    <div class="callout good">
-      <strong>ご返事は「1 OK／2 OK／3 OK」の3語で足ります。</strong>
-      違うご判断があれば、その番号だけ書き換えてください。
+    <div class="callout">
+      <strong>「このやり方が妥当か」について</strong>：正直に言うと、<strong>文章のルールだけでは止まりません</strong>。
+      その場では「良くしている」ように見えるからです（今回の書き換えは全部そう見えるものでした）。
+      止まるのは、<strong>diff_port.mjs のように「足した文を並べて見せる」機械の手つき</strong>と、
+      <strong>PRに順路とペルソナ記録を書かせること</strong>の2つだと考えています。
+      規律の文はその2つを呼び出すための索引として置いています。
     </div>
 
-    <h3>着手後にお見せするもの</h3>
-    <ul>
-      <li>STG（<code>staging-academy.nexmax.workers.dev</code>）の <code>/houkoku</code> を開いて、<strong>上から順に押していくだけ</strong>で確かめられる形にします</li>
-      <li>直したあと、<strong>同じN5/N4/N3の3体でもう一度通し</strong>、詰まりが何件残ったかを報告します</li>
-    </ul>
+    <h3>11.3 残り（別の票へ）</h3>
+    <table>
+      <tr><th>票</th><th>中身</th></tr>
+      <tr><td><strong>#366</strong></td><td><strong>朝礼・夕礼を1ステージに分け、5つのシチュエーションを場面転換で通す。</strong>ミーティングの作り直し（パネル判定・追い質問・複数名・見本・藤木さんの総括・💗きょりの削除）、朝礼メモの状況説明、「はじめての 朝礼」の扱い、朝礼と夕礼の違いのWeb調査。<strong>設計書を先に出します</strong></td></tr>
+      <tr><td><strong>#357</strong></td><td>朝礼ページの空わくの絵4枚。<strong>今回作ると決めました</strong>（別コミット）</td></tr>
+      <tr><td><strong>#358</strong></td><td>連絡ステージ。<strong>ニャムさんが「連絡をあとまわしにした人」として描かれている</strong>ので、架空の新人への差し替えを申し送ります（連絡は並行スレッドが作業中のため、こちらでは触りません）</td></tr>
+    </table>
+
+    <h3>11.4 報告クエストについて（ご質問への回答）</h3>
+    <p><strong>ペルソナ3体は「遊んで」いません。JSONを読んだだけです。</strong>
+      評価したのは紙の上の設計（リスクが「？？？」で隠れ、報告した瞬間に止まる）で、
+      <strong>操作して伝わるかは測っていません</strong>。実際に遊んで「何を選ぶのが正解か分からない」なら、そちらが正しい証拠です。
+      <strong>これは私の検収方法の穴で、そのまま再発防止に入れました</strong>（データを読むペルソナは「遊べるか」を測れない）。</p>
+    <p>ただし1つだけ、あの中に<strong>#366 でいま欲しい仕組みそのもの</strong>が入っています。</p>
+    <pre>pmQuestions: { error: "どんな エラーですか。ログには 何と 出て いますか。",
+               when:  "いつ 起きますか。まいかい ですか。",
+               fix:   "直すのに どのくらい かかりそうですか。" },
+pmMissing:   "……そこは、調べてから もう一度 教えて ください。",
+pmGood:      ["事実が そろって いますね。助かります。", "数字まで あるので、予定が 立てられます。"],</pre>
+    <p><strong>足りない情報を追い質問する仕組みは実装ずみ。ただし判定しているのは「集めた札」で、
+      「学習者が言ったこと」ではありません。</strong>だからボタンを押して札を集めるだけになり、日本語を作らずに進めてしまう
+      ——ここが「学習をどう活かすのか分からない」の正体だと思います。</p>
+    <p class="callout good"><strong>結論</strong>：<strong>クエストはステージに戻しません</strong>（いまも外れたままです）。
+      この追い質問の仕組みを、#366 の朝礼ミーティングへ<strong>「学習者が言ったこと」で判定する形に変えて移します</strong>。</p>
   </section>
 
   </div>
