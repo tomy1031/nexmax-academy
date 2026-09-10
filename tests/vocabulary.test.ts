@@ -305,11 +305,38 @@ describe("保存の かたちに 戻す（焼き付きを 作らない）", () =
     expect(carried).toEqual([]);
   });
 
-  it("セット自身の 足し前は 残す（束と 読みが 違う ものが ある）", () => {
-    const saved = dehydrateWordStage(hydrated, stored.wordIds!, book.words, book.furigana);
-    // intro_kotoba の 「会→あ」。束は 「会→かい」なので、落とすと まちがった 読みで 出る
-    expect(saved.furigana).toContainEqual(["会", "あ"]);
-    expect(book.furigana).toContainEqual(["会", "かい"]);
+  /*
+   * ここが 丸ごと 落とす 直しかたとの 別れ道。**全18セット**で 見るのは、
+   * 1つを 名指しすると 別スレッドが その セットを 直した 日に 意味を 失うから。
+   * 例（2026-09-10）: `intro_kotoba` の 「会→あ」は 束の 「会→かい」と 読みが 違う
+   *（送りがなで 変わる 語）。落とせば ルビが 消えるか、まちがった 読みで 出る。
+   */
+  it("どの セットでも、束から 引き直せない 足し前は 残す", () => {
+    const kept: string[] = [];
+    const lost: string[] = [];
+    for (const id of readdirSync(join(__dirname, "..", "content", "wordstages"))
+      .filter((f) => f.endsWith(".json"))
+      .map((f) => f.replace(/\.json$/, ""))) {
+      const from = wordStage(id);
+      const stage = hydrateWordStage(from, book.words, book.furigana);
+      if (!stage) continue;
+      const saved = dehydrateWordStage(stage, from.wordIds!, book.words, book.furigana);
+      const survivors = new Map(saved.furigana ?? []);
+      // 読み出しの 索引に あって、正から 引き直せない entry＝そのセットが 持つ しかない もの
+      const derived = new Map(
+        hydrateWordStage({ ...from, furigana: undefined }, book.words, book.furigana)!.furigana as [
+          string,
+          string,
+        ][],
+      );
+      for (const [surface, reading] of from.furigana ?? []) {
+        if (derived.get(surface) === reading) continue;
+        (survivors.get(surface) === reading ? kept : lost).push(`${id}／${surface}→${reading}`);
+      }
+    }
+    expect(lost).toEqual([]);
+    // 空振りの テストに ならない ことを 見る（実測 2026-09-10: 10セット・31件）
+    expect(kept.length).toBeGreaterThan(0);
   });
 
   it("往復しても 画面の 読み辞書は 変わらない", () => {
@@ -336,8 +363,9 @@ describe("保存の かたちに 戻す（焼き付きを 作らない）", () =
     expect(JSON.stringify(parsed).length).toBeLessThan(2000);
     // 足した 語の 読みは 保存に 持たない（正から 引き直す）
     expect(parsed.furigana ?? []).not.toContainEqual([added.term, added.reading]);
+    // 読み出しに 戻すと、足した 語も セット自身の 足し前も そろって いる
     const back = hydrateWordStage(parsed, book.words, book.furigana)!;
     expect(back.words.map((w) => w.id)).toContain(added.id);
-    expect(back.furigana).toContainEqual(["会", "あ"]);
+    for (const entry of stored.furigana ?? []) expect(back.furigana).toContainEqual(entry);
   });
 });
