@@ -7,6 +7,7 @@ import {
   hasNumber,
   initialPanelStates,
   nextProbePanel,
+  type PanelState,
   type ReportPanel,
 } from "@/lib/meeting/panels";
 import { parseFactJudge, resolveFacts } from "@/components/listening/req-matcher";
@@ -200,7 +201,7 @@ describe("むずかしい（夕礼）— まとめられたかを 数で 見る"
   });
 
   it("こまりごとは 3つの 箱が そろって はじめて ⭕", () => {
-    let states = initialPanelStates(HARD_MON);
+    let states: readonly PanelState[] = initialPanelStates(HARD_MON);
     states = applyUtterance({
       utterance: "iPhone に 通知が 来ません。",
       panels: HARD_MON,
@@ -264,7 +265,7 @@ describe("むずかしい（夕礼）— まとめられたかを 数で 見る"
 });
 
 describe("AIの 返しと ことばの 照合を 重ねる", () => {
-  const facts = HARD_MON[0].facts;
+  const facts = HARD_MON[0]!.facts;
 
   it("AIが 返した 行も 言えたに 数える（ことばが 当たらなくても）", () => {
     const said = resolveFacts({
