@@ -13,6 +13,7 @@ import {
   toGameWord,
   vocabByTerm,
 } from "../src/lib/vocabulary";
+import { mergeFuriganaEntries, type FuriganaEntry } from "../src/lib/text/furigana";
 
 const book: VocabBook = vocabSchema.parse(
   JSON.parse(readFileSync(join(__dirname, "..", "content", "vocab", "vocabulary.json"), "utf8")),
@@ -267,5 +268,128 @@ describe("単語テストの 画面の ふりがな", () => {
     )!;
     const [surface, reading] = withOwn.furigana![0]!;
     expect(stage.furigana).toContainEqual([surface, reading]);
+  });
+});
+
+/*
+ * **記事・まんがの ことばチップで 裸の 漢字が 出て いないか。**
+ *
+ * 単語テストと 同じ 抜けが、借り手の 側にも 残って いた——`toVocabItem` が 返すのは
+ * `term / reading / meaning / en` の 4つで、語ごとの `furigana`（その語だけの 足し前）は
+ * 落ちて いた。`lint:content` は **借りた ぶんを 借り手で 検査しない**
+ *（tests 上の「借りた ことばは 借り手で 検査しない」）ので、どの 見張りも 止めない。
+ * 2026-09-10 に 数えたら、説明文の 裸の 漢字は **29件**あった。
+ *
+ * ここは **画面が 組み立てる 索引そのもの**で 見る。組み立てかたを 画面と そろえて
+ * おかないと、また「検査は 緑・画面は 裸」に 戻る。
+ */
+describe("記事・まんがの ことばチップの ふりがな", () => {
+  const dir = (name: string) => join(__dirname, "..", "content", name);
+  const filesIn = (name: string) => readdirSync(dir(name)).filter((f) => f.endsWith(".json"));
+  const load = (name: string, file: string) =>
+    JSON.parse(readFileSync(join(dir(name), file), "utf8"));
+
+  /** 人物カード（記事の しょうかいブロックが 名前の 読みを ここから 引く）。 */
+  const people = new Map<string, { name: string; reading: string }>(
+    filesIn("characters")
+      .map((f) => load("characters", f))
+      .map((person) => [person.id, person]),
+  );
+
+  /** 読み出したあとの 記事（型は 検査の 中だけで つかう ゆるい かたち）。 */
+  type ArticleShape = {
+    blocks: {
+      kind: string;
+      items?: { term: string; reading: string; meaning?: string; ref?: string }[];
+    }[];
+    furigana?: [string, string][];
+  };
+
+  /** `article-view.tsx` が 作る 索引と 同じ もの（並びも そろえる）。 */
+  function articleIndex(article: ArticleShape) {
+    const refs = new Set(
+      article.blocks.flatMap((block) =>
+        block.kind === "characters" ? (block.items ?? []).map((item) => item.ref!) : [],
+      ),
+    );
+    return buildFuriganaIndex(
+      mergeFuriganaEntries(
+        [...refs].flatMap((id): FuriganaEntry[] => {
+          const person = people.get(id);
+          return person ? [[person.name, person.reading]] : [];
+        }),
+        article.blocks.flatMap((block): FuriganaEntry[] =>
+          block.kind === "vocab"
+            ? (block.items ?? []).map((item): FuriganaEntry => [item.term, item.reading])
+            : [],
+        ),
+        article.furigana ?? [],
+      ),
+    );
+  }
+
+  it("どの 記事でも、ことばチップの 見出しと 説明文に 裸の 漢字が 残らない", () => {
+    const bare: string[] = [];
+    for (const file of filesIn("articles")) {
+      const article = hydrateArticle(load("articles", file), book.words) as ArticleShape;
+      const index = articleIndex(article);
+      for (const block of article.blocks) {
+        if (block.kind !== "vocab") continue;
+        for (const item of block.items ?? []) {
+          for (const text of [item.term, item.meaning ?? ""]) {
+            const missing = uncoveredKanji(text, index);
+            if (missing.length > 0)
+              bare.push(`${file}／${item.term}: ${missing.join("")} … ${text}`);
+          }
+        }
+      }
+    }
+    expect(bare).toEqual([]);
+  });
+
+  it("どの まんがでも、ことばの 見出しと 説明文に 裸の 漢字が 残らない", () => {
+    const bare: string[] = [];
+    for (const file of filesIn("manga")) {
+      // `manga-slides.tsx` は まんがの 読み辞書 1本で 描く（借りた ぶんは そこへ 合流する）
+      const manga = hydrateManga(load("manga", file), book.words) as {
+        furigana?: [string, string][];
+        vocab?: { term: string; meaning: string }[];
+      };
+      const index = buildFuriganaIndex(manga.furigana ?? []);
+      for (const item of manga.vocab ?? []) {
+        for (const text of [item.term, item.meaning]) {
+          const missing = uncoveredKanji(text, index);
+          if (missing.length > 0) bare.push(`${file}／${item.term}: ${missing.join("")} … ${text}`);
+        }
+      }
+    }
+    expect(bare).toEqual([]);
+  });
+
+  it("語ごとの 足し前が 記事の 読み辞書に 入る（落とさない）", () => {
+    const withOwn = book.words.find((w) => (w.furigana ?? []).length > 0)!;
+    const hydrated = hydrateArticle(
+      { blocks: [{ kind: "vocab", wordIds: [withOwn.id] }] },
+      book.words,
+    ) as { furigana?: [string, string][] };
+    expect(hydrated.furigana).toContainEqual(withOwn.furigana![0]!);
+  });
+
+  it("語ごとの 足し前が まんがの 読み辞書に 入る（落とさない）", () => {
+    const withOwn = book.words.find((w) => (w.furigana ?? []).length > 0)!;
+    const hydrated = hydrateManga({ vocabIds: [withOwn.id] }, book.words) as {
+      furigana?: [string, string][];
+    };
+    expect(hydrated.furigana).toContainEqual(withOwn.furigana![0]!);
+  });
+
+  it("借り手が 自分で 書いた 読みが 勝つ（借りた ぶんに 上書きされない）", () => {
+    const withOwn = book.words.find((w) => (w.furigana ?? []).length > 0)!;
+    const [surface] = withOwn.furigana![0]!;
+    const hydrated = hydrateManga(
+      { vocabIds: [withOwn.id], furigana: [[surface, "かりての よみ"]] as [string, string][] },
+      book.words,
+    ) as { furigana?: [string, string][] };
+    expect(hydrated.furigana).toContainEqual([surface, "かりての よみ"]);
   });
 });

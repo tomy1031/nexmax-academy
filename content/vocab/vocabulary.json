@@ -1809,6 +1809,24 @@
         "Calendar",
         "Menu",
         "Dictionary"
+      ],
+      "furigana": [
+        [
+          "進",
+          "すす"
+        ],
+        [
+          "道",
+          "みち"
+        ],
+        [
+          "書",
+          "か"
+        ],
+        [
+          "絵",
+          "え"
+        ]
       ]
     },
     {
@@ -1823,6 +1841,12 @@
         "Time",
         "Reason",
         "Price"
+      ],
+      "furigana": [
+        [
+          "勉強",
+          "べんきょう"
+        ]
       ]
     },
     {
@@ -2018,7 +2042,17 @@
         "Reason",
         "Price"
       ],
-      "englishMeaning": "what you decided to do, and when"
+      "englishMeaning": "what you decided to do, and when",
+      "furigana": [
+        [
+          "何",
+          "なに"
+        ],
+        [
+          "先",
+          "さき"
+        ]
+      ]
     },
     {
       "id": "aite",
@@ -2549,6 +2583,18 @@
         [
           "工程",
           "こうてい"
+        ],
+        [
+          "作",
+          "つく"
+        ],
+        [
+          "客",
+          "きゃく"
+        ],
+        [
+          "決",
+          "き"
         ]
       ]
     },
@@ -2606,6 +2652,28 @@
         "Consultation",
         "Contact",
         "Request"
+      ],
+      "furigana": [
+        [
+          "仕事",
+          "しごと"
+        ],
+        [
+          "結果",
+          "けっか"
+        ],
+        [
+          "様子",
+          "ようす"
+        ],
+        [
+          "上司",
+          "じょうし"
+        ],
+        [
+          "知",
+          "し"
+        ]
       ]
     },
     {
@@ -2747,6 +2815,20 @@
         "Office building",
         "Meeting",
         "Salary"
+      ],
+      "furigana": [
+        [
+          "会社",
+          "かいしゃ"
+        ],
+        [
+          "仕事",
+          "しごと"
+        ],
+        [
+          "内容",
+          "ないよう"
+        ]
       ]
     },
     {
@@ -2817,6 +2899,16 @@
         "Branch office",
         "Factory",
         "Warehouse"
+      ],
+      "furigana": [
+        [
+          "会社",
+          "かいしゃ"
+        ],
+        [
+          "中心",
+          "ちゅうしん"
+        ]
       ]
     },
     {
@@ -3498,6 +3590,12 @@
         "Apply form",
         "Appointment",
         "Approval"
+      ],
+      "furigana": [
+        [
+          "中",
+          "なか"
+        ]
       ]
     },
     {
@@ -4818,6 +4916,12 @@
         "Transport",
         "Exercise",
         "Luck"
+      ],
+      "furigana": [
+        [
+          "会",
+          "かい"
+        ]
       ]
     },
     {
