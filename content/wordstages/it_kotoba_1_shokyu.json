@@ -2,7 +2,7 @@
   "kind": "wordstage",
   "id": "it_kotoba_1_shokyu",
   "title": "ITの単語",
-  "description": "毎日の 仕事で いちばん よく 使う 50語です。報告と 相談の 場で そのまま 使います。",
+  "description": "毎日の 仕事で いちばん よく 使う ことばです。報告と 相談の 場で そのまま 使います。",
   "label": "初級",
   "fieldSequence": [
     "forest",
@@ -23,10 +23,6 @@
     [
       "仕事",
       "しごと"
-    ],
-    [
-      "出る",
-      "でる"
     ],
     [
       "報告",

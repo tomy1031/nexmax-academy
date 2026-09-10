@@ -2,7 +2,7 @@
   "kind": "wordstage",
   "id": "it_kotoba_3_jokyu",
   "title": "ITの単語",
-  "description": "開発・レビュー・テストの 場で 使う 50語です。不具合を 追う ときの ことばが 中心です。",
+  "description": "開発・レビュー・テストの 場で 使う ことばです。不具合を 追う ときの ことばが 中心です。",
   "label": "上級",
   "fieldSequence": [
     "forest",
@@ -25,8 +25,8 @@
       "かいはつ"
     ],
     [
-      "出る",
-      "でる"
+      "使う",
+      "つかう"
     ],
     [
       "追う",
@@ -37,16 +37,8 @@
       "ちゅうしん"
     ],
     [
-      "使う",
-      "つかう"
-    ],
-    [
       "上級",
       "じょうきゅう"
-    ],
-    [
-      "語",
-      "ご"
     ],
     [
       "場",
@@ -104,6 +96,6 @@
     "tantaitesuto",
     "ketsugoutesuto",
     "ukeiretesuto",
-    "kirimodoshi"
+    "ro-rubakku"
   ]
 }
