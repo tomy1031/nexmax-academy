@@ -132,6 +132,54 @@ export function hydrateWordStage(
   };
 }
 
+/**
+ * 読み出しの かたち（`words` が ある）を、**保存の かたち**（`wordIds` の 参照）に 戻す。
+ * `hydrateWordStage` の 逆で、スタジオが 保存する 前に かならず ここを 通す。
+ *
+ * **読み辞書を 丸ごと 落とさない**のが 肝である。
+ *
+ * hydrate は `mergeFuriganaEntries(terms, perWord, vocabFurigana, furigana)` で
+ * **正の 側の 束**（`content/vocab/vocabulary.json` の top-level・441件）を 混ぜて 返す。
+ * その まま 保存すると 束が セットに **焼き付く**——DBが git に 勝つ ので、あとから
+ * 束や 語ごとの 読みを 直しても **その セットにだけ 届かない**。しかも 画面は 動くので
+ * 気づけない（読みが その日の まま 凍る）。
+ *
+ * かと言って 丸ごと 落とすと、セット自身の 足し前が 消える。2026-09-10 に 数えたところ
+ * 18セット中 10セットが 束から 引き直せない entry を 持って いて、`intro_kotoba` の
+ * 「会→あ」は 束の 「会→かい」と **読みが 違う**（送りがなで 変わる 語）。落とせば
+ * 見出しと 説明文の ルビが 消えるか、まちがった 読みで 出る。
+ *
+ * そこで **正から 引き直せる ぶんだけ 引く**。残るのは セット自身の 足し前だけで、
+ * 読むときに hydrate が 同じ 索引を 組み立て直す（往復しても 画面は 変わらない）。
+ */
+export function dehydrateWordStage(
+  stage: WordStage,
+  /** 保存する 語の 並び（足したぶんを 含む 最終形）。 */
+  wordIds: readonly string[],
+  vocab: readonly VocabWord[],
+  /** 正の 読み辞書（束）。hydrate に 渡す ものと 同じ。 */
+  vocabFurigana: readonly FuriganaEntry[] = [],
+): StoredWordStage {
+  const { words: _words, furigana, ...rest } = stage;
+  const fromVocab = vocab.filter((word) => wordIds.includes(word.id));
+  /* hydrate が 足す ぶん。ここに 同じ [表記, よみ] が あれば、持たなくても 戻ってくる。 */
+  const derived = new Map(
+    mergeFuriganaEntries(
+      fromVocab.map((word): FuriganaEntry => [word.term, word.reading]),
+      fromVocab.flatMap((word) => word.furigana ?? []),
+      vocabFurigana,
+    ),
+  );
+  // 表記だけでなく **よみも** 見て 引く。束と 読みが 違う 足し前（会→あ）は セットの ものなので 残す。
+  const own = (furigana ?? []).filter(([surface, reading]) => derived.get(surface) !== reading);
+  return {
+    ...rest,
+    kind: "wordstage",
+    ...(own.length > 0 ? { furigana: own } : {}),
+    wordIds: [...wordIds],
+  };
+}
+
 /** 記事・まんがの ことばカードの かたちへ 直す。 */
 export function toVocabItem(word: VocabWord): {
   term: string;
@@ -148,42 +196,81 @@ export function toVocabItem(word: VocabWord): {
 }
 
 /**
+ * 借りた 語が **いっしょに 運んで くる 読み辞書**。
+ *
+ * ことばカード（`toVocabItem`）は `term / reading / meaning / en` の 4つで、
+ * 語ごとの `furigana`（その語だけの 足し前）を 置く 場所が 無い。だから
+ * 読みは **借り手の 読み辞書へ 合流させる**——単語ステージで 同じ 抜けを
+ * 直した ときと 同じ かたち（`hydrateWordStage`・2026-09-09）。
+ *
+ * 落として いた ころ、ことばチップの 説明文に 裸の 漢字が 29件 残って いた
+ *（「その 会社が 得意な ことです。ほかの 会社より 良い ところです。」の「良」など）。
+ * `lint:content` は **借りた ぶんを 借り手で 検査しない**（説明文も 読みも 正が 持つ
+ * ので、借り手の 読み辞書で 見ると 当たるはずが ない）ため、どの 見張りも 止めなかった。
+ *
+ * 並びは「語そのものの よみ → 語ごとの 足し前」。呼ぶ側は これを **借り手の
+ * 読み辞書より 前**に 置く——借り手が 自分で 書いた 読みを 勝たせる ため。
+ */
+function borrowedFurigana(words: readonly VocabWord[]): FuriganaEntry[] {
+  return [
+    ...words.map((word): FuriganaEntry => [word.term, word.reading]),
+    ...words.flatMap((word) => word.furigana ?? []),
+  ];
+}
+
+/** 借りた ぶんを 合流させた 読み辞書（借り手の ぶんが 後ろ＝勝つ）。 */
+function withBorrowedFurigana(
+  own: readonly FuriganaEntry[] | undefined,
+  borrowed: readonly VocabWord[],
+): [string, string][] {
+  return mergeFuriganaEntries(borrowedFurigana(borrowed), own).map(
+    ([surface, reading]): [string, string] => [surface, reading],
+  );
+}
+
+/**
  * 記事の ことばブロックを 正から 埋める。
  *
  * 単語ステージと 同じ 考えかた——**保存は 参照、読み出しは 中身**。
  * 記事の 表示（`article-view.tsx`）は これまでどおり `items` を 見れば よい。
  */
-export function hydrateArticle<T extends { blocks: readonly unknown[] }>(
-  article: T,
-  vocab: readonly VocabWord[],
-): T {
+export function hydrateArticle<
+  T extends { blocks: readonly unknown[]; furigana?: readonly FuriganaEntry[] },
+>(article: T, vocab: readonly VocabWord[]): T {
   const index = vocabById(vocab);
-  return {
-    ...article,
-    blocks: article.blocks.map((block) => {
-      const b = block as { kind?: string; wordIds?: string[]; items?: unknown };
-      if (b.kind !== "vocab" || !b.wordIds) return block;
-      const items = b.wordIds
-        .map((id) => index.get(id))
-        .filter(Boolean)
-        .map((w) => toVocabItem(w!));
-      return { ...b, items };
-    }),
-  };
+  const borrowed: VocabWord[] = [];
+  const blocks = article.blocks.map((block) => {
+    const b = block as { kind?: string; wordIds?: string[]; items?: unknown };
+    if (b.kind !== "vocab" || !b.wordIds) return block;
+    const found = b.wordIds
+      .map((id) => index.get(id))
+      .filter((w): w is VocabWord => w !== undefined);
+    borrowed.push(...found);
+    return { ...b, items: found.map(toVocabItem) };
+  });
+  if (borrowed.length === 0) return { ...article, blocks };
+  // 借りた 語の 読みも いっしょに 運ぶ（説明文の 漢字は 正が 覆って いる）。
+  return { ...article, blocks, furigana: withBorrowedFurigana(article.furigana, borrowed) };
 }
 
 /** まんがの 復習語彙を 正から 埋める。 */
-export function hydrateManga<T extends { vocab?: unknown; vocabIds?: readonly string[] }>(
-  manga: T,
-  vocab: readonly VocabWord[],
-): T {
+export function hydrateManga<
+  T extends {
+    vocab?: unknown;
+    vocabIds?: readonly string[];
+    furigana?: readonly FuriganaEntry[];
+  },
+>(manga: T, vocab: readonly VocabWord[]): T {
   if (!manga.vocabIds) return manga;
   const index = vocabById(vocab);
+  const borrowed = manga.vocabIds
+    .map((id) => index.get(id))
+    .filter((w): w is VocabWord => w !== undefined);
+  // 参照が ぜんぶ 切れて いたら 読み辞書は 足さない（空配列を 生やして 保存に 積もらせない）
+  if (borrowed.length === 0) return { ...manga, vocab: [] };
   return {
     ...manga,
-    vocab: manga.vocabIds
-      .map((id) => index.get(id))
-      .filter(Boolean)
-      .map((w) => toVocabItem(w!)),
+    furigana: withBorrowedFurigana(manga.furigana, borrowed),
+    vocab: borrowed.map(toVocabItem),
   };
 }

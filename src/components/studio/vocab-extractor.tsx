@@ -3,6 +3,8 @@
 import { useMemo, useState } from "react";
 import type { StoredWordStage, VocabBook, VocabWord, WordStage } from "@/content/schema";
 import { wordSchema, type Stage } from "@/content/schema";
+import { dehydrateWordStage } from "@/lib/vocabulary";
+import type { FuriganaEntry } from "@/lib/text/furigana";
 import { stageVocabPool } from "@/lib/vocab/stage-pool";
 import { hasCodex } from "@/lib/codex-settings";
 import { getGeminiKey } from "@/lib/profile";
@@ -94,10 +96,18 @@ export function VocabExtractor({
   const vocabWords = useMemo(() => vocabBooks.flatMap((book) => book.words), [vocabBooks]);
   const vocabTerms = useMemo(() => new Map(vocabWords.map((w) => [w.term, w])), [vocabWords]);
   const vocabIds = useMemo(() => new Set(vocabWords.map((w) => w.id)), [vocabWords]);
+  /**
+   * 正の 読み辞書（束）。**保存の ときに 引く ため**にも 使う——読み出しで 混ぜた ぶんを
+   * ここで 引かないと、束が セットに 焼き付いて 読みが その日の まま 凍る。
+   */
+  const vocabFurigana = useMemo(
+    () => vocabBooks.flatMap((book) => book.furigana ?? []),
+    [vocabBooks],
+  );
   /** 読み辞書が「ここで 切れる」と 決めて いる 表記（語の 見つけ方に 効く）。 */
   const readingUnits = useMemo(
-    () => new Set(vocabBooks.flatMap((book) => book.furigana ?? []).map(([surface]) => surface)),
-    [vocabBooks],
+    () => new Set(vocabFurigana.map(([surface]) => surface)),
+    [vocabFurigana],
   );
 
   /** この ステージに ぶら下がって いる セット。 */
@@ -253,7 +263,12 @@ export function VocabExtractor({
      * 語は先生が1つずつ見てチェックしたものなので、ここで公開してよい。
      */
     const draft = targetSet
-      ? appendToSet(targetSet, [...(idsBySet.get(targetSet.id) ?? []), ...chosenIds])
+      ? appendToSet(
+          targetSet,
+          [...(idsBySet.get(targetSet.id) ?? []), ...chosenIds],
+          vocabWords,
+          vocabFurigana,
+        )
       : buildWordStage(stage, [...new Set(chosenIds)], newLabel.trim());
     const result = await saveContent(draft, true);
     setBusy(null);
@@ -713,15 +728,22 @@ function buildWordStage(stage: Stage, wordIds: readonly string[], label: string)
  * いまある セットに 足す。**語は 参照で 持つ**（`wordIds`）ので、
  * 読み出しの かたち（`words`）は 落として 保存の かたちに 戻す。
  * 出題数は 語数を 超えられない（スキーマの superRefine）。
+ *
+ * 戻しかたは `dehydrateWordStage` に 任せる（`hydrateWordStage` の 逆・境目は 1つ）。
+ * ここで `words` だけ 落として いた ころ、`furigana` に 正の 束が 丸ごと 残り、
+ * 先生が「ことばを 足す」を 1回 押した 時点で **その日の 読みが 凍って いた**
+ *（DBが git に 勝つ ので、あとから 束を 直しても その セットにだけ 届かない）。
  */
-function appendToSet(set: WordStage, wordIds: readonly string[]): StoredWordStage {
-  const { words: _words, ...rest } = set;
+export function appendToSet(
+  set: WordStage,
+  wordIds: readonly string[],
+  vocab: readonly VocabWord[],
+  vocabFurigana: readonly FuriganaEntry[],
+): StoredWordStage {
   const ids = [...new Set(wordIds)];
   return {
-    ...rest,
-    kind: "wordstage",
+    ...dehydrateWordStage(set, ids, vocab, vocabFurigana),
     questionCount: Math.min(set.questionCount, ids.length),
-    wordIds: ids,
   };
 }
 

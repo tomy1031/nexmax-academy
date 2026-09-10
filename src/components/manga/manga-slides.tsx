@@ -269,14 +269,15 @@ export function MangaSlides({ manga, embedded }: { manga: Manga; embedded: boole
                     key={item.term}
                     className="border-hairline bg-panel rounded-2xl border-2 px-3 py-2"
                   >
+                    {/*
+                      見出しも 説明文と 同じ スイッチで 出し入れする。手書きの <ruby> だと
+                      「ふりがな OFF」に しても ここだけ ルビが 残り、同じ 行で 割れる。
+                    */}
                     <span className="text-ink text-sm font-extrabold">
-                      <ruby>
-                        {item.term}
-                        <rt>{item.reading}</rt>
-                      </ruby>
+                      <RubyText text={item.term} index={furigana} show={furiganaOn} />
                     </span>
                     <span className="text-ink-soft ml-2 text-sm font-bold">
-                      <VocabMeaning item={item} />
+                      <VocabMeaning item={item} furigana={furigana} furiganaOn={furiganaOn} />
                     </span>
                   </li>
                 ))}
@@ -383,13 +384,26 @@ function PanelView({
  *
  * 英語を 説明文の 中に 書いた 語（「project manager — しごとを まとめる ひと」）と
  * 並びを そろえたいので、英語 → 説明 の 順にする。
+ *
+ * **説明文にも ルビを 付ける**（規律2「学習者が 読む 文の 漢字は 読み辞書で 全部 覆う」）。
+ * ここは ながらく 地の文の まま だった——記事の ことばチップは 説明文を
+ * `RubyText` で 描いて いるのに、まんがだけ 裸の 漢字を 出して いた。
+ * 読みは 借りた 語が 運んで くる（`hydrateManga`）。
  */
-function VocabMeaning({ item }: { item: VocabItem }) {
+function VocabMeaning({
+  item,
+  furigana,
+  furiganaOn,
+}: {
+  item: VocabItem;
+  furigana: FuriganaIndex;
+  furiganaOn: boolean;
+}) {
   return (
     <>
       {item.en ? <span className="text-navy">{item.en}</span> : null}
       {item.en ? " — " : ""}
-      {item.meaning}
+      <RubyText text={item.meaning} index={furigana} show={furiganaOn} />
     </>
   );
 }
@@ -425,7 +439,7 @@ function PanelVocab({
             <RubyText text={item.term} index={furigana} show={furiganaOn} />
           </dt>
           <dd className="text-ink-soft min-w-0 flex-1 text-sm font-bold break-words">
-            <VocabMeaning item={item} />
+            <VocabMeaning item={item} furigana={furigana} furiganaOn={furiganaOn} />
           </dd>
         </div>
       ))}
