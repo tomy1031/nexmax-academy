@@ -2,7 +2,7 @@
   "kind": "wordstage",
   "id": "it_kotoba_4_chojokyu",
   "title": "ITの単語",
-  "description": "環境・リリース・保守運用・進行管理で 出る 50語です。現場の 判断で 使う ことばです。",
+  "description": "保守運用と 進行管理の 場で 使う ことばです。現場の 判断で 出て くる ことばです。",
   "label": "超上級",
   "fieldSequence": [
     "forest",
@@ -13,14 +13,6 @@
   "passRate": 80,
   "furigana": [
     [
-      "単語",
-      "たんご"
-    ],
-    [
-      "環境",
-      "かんきょう"
-    ],
-    [
       "保守運用",
       "ほしゅうんよう"
     ],
@@ -29,12 +21,16 @@
       "しんこうかんり"
     ],
     [
-      "出る",
-      "でる"
+      "超上級",
+      "ちょうじょうきゅう"
     ],
     [
-      "語",
-      "ご"
+      "単語",
+      "たんご"
+    ],
+    [
+      "使う",
+      "つかう"
     ],
     [
       "現場",
@@ -45,17 +41,19 @@
       "はんだん"
     ],
     [
-      "使う",
-      "つかう"
+      "出て",
+      "でて"
+    ],
+    [
+      "上級",
+      "じょうきゅう"
+    ],
+    [
+      "場",
+      "ば"
     ]
   ],
   "wordIds": [
-    "kaihatukankyou",
-    "sutejingukankyou",
-    "honbankankyou",
-    "ririsu",
-    "depuroi",
-    "kirimodoshi",
     "enki",
     "miokuri",
     "hoshu",
@@ -77,14 +75,12 @@
     "yuusentaiou",
     "atomawashi",
     "sukoopu",
-    "sukoopugai",
     "chakushu",
     "michakushu",
     "asain",
     "hikitsugi",
     "kadaikanri",
     "shinchokukanri",
-    "chiketsuto",
     "kihyou",
     "kensyu",
     "nouhin",
@@ -95,10 +91,18 @@
     "baffa",
     "pendingu",
     "maedaoshi",
-    "bakkuappu",
     "fukugen",
     "taisei",
     "renkei",
-    "shuuchi"
+    "shuuchi",
+    "koukyuutaiou",
+    "eikyouchousa",
+    "kadouritsu",
+    "sashikomi",
+    "tanaoroshi",
+    "youin",
+    "tachiai",
+    "tehai",
+    "anteikadou"
   ]
 }

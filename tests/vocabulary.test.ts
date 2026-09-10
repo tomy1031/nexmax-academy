@@ -2,6 +2,7 @@ import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import {
+  stageSchema,
   vocabSchema,
   wordStageSchema,
   type VocabBook,
@@ -231,29 +232,70 @@ describe("読みを 足せる（語ごとの よみ辞書）", () => {
  * 同じ ずれが 起きたら 落ちる。
  */
 describe("単語テストの 画面の ふりがな", () => {
-  const stageIds = readdirSync(join(__dirname, "..", "content", "wordstages"))
-    .filter((f) => f.endsWith(".json"))
-    .map((f) => f.replace(/\.json$/, ""));
+  const dir = (name: string) => join(__dirname, "..", "content", name);
+  const load = <T>(name: string, parse: (raw: unknown) => T): T[] =>
+    readdirSync(dir(name))
+      .filter((f) => f.endsWith(".json"))
+      .map((f) => parse(JSON.parse(readFileSync(join(dir(name), f), "utf8"))));
 
-  it("どの セットでも、説明文と 例文に 裸の 漢字が 残らない", () => {
+  /** 学習者が 実際に 引く かたち（合流ずみ＝`public/wordtest/sets.json` と 同じ）。 */
+  const sets = learnerWordGroups(
+    load("stages", (raw) => stageSchema.parse(raw)),
+    load("wordstages", (raw) =>
+      hydrateWordStage(wordStageSchema.parse(raw), book.words, book.furigana),
+    ).filter((stage): stage is WordStage => stage !== null),
+  ).sets;
+
+  const indexOf = (set: WordStage) => buildFuriganaIndex(set.furigana as [string, string][]);
+
+  it("学習者に 出る 文に、裸の 漢字が 残らない（見出し・セット名・説明・語・例文）", () => {
     const bare: string[] = [];
-    for (const id of stageIds) {
-      const stage = hydrateWordStage(wordStage(id), book.words, book.furigana);
-      if (!stage) continue;
-      const index = buildFuriganaIndex(stage.furigana as [string, string][]);
-      for (const word of stage.words) {
-        for (const text of [word.explanationJa, word.example]) {
-          if (!text) continue;
-          const missing = uncoveredKanji(text, index);
-          if (missing.length > 0) bare.push(`${id}／${word.term}: ${missing.join("")} … ${text}`);
-        }
+    for (const set of sets) {
+      const index = indexOf(set);
+      const texts: [string, string][] = [
+        ["title", set.title],
+        ["description", set.description],
+        ...(set.label ? ([["label", set.label]] as [string, string][]) : []),
+        ...set.words.flatMap((word): [string, string][] => [
+          ["term", word.term],
+          ["explain", word.explanationJa],
+          ...(word.example ? ([["example", word.example]] as [string, string][]) : []),
+        ]),
+      ];
+      for (const [where, text] of texts) {
+        const missing = uncoveredKanji(text, index);
+        if (missing.length > 0) bare.push(`${set.id}／${where}: ${missing.join("")} … ${text}`);
       }
     }
     expect(bare).toEqual([]);
   });
 
-  it("語ごとの 足し前が 画面の 読み辞書に 入る（落とさない）", () => {
-    const withOwn = book.words.find((w) => (w.furigana ?? []).length > 0)!;
+  /*
+   * **覆えて いても 読みが 合って いるとは 限らない。** 「お手数」は 束の 1字の
+   * 見出し（手→て・数→かず）でも ルビが 付くので、上の 検査は 通って しまう。
+   * 実際に 学習者に 出て いた 誤りを、合成した ルビの かな列で 名指しで 止める。
+   */
+  it("合成した ルビの 読みが 合って いる", () => {
+    const spoken = (setId: string, text: string) => {
+      const set = sets.find((s) => s.id === setId)!;
+      return annotateRuby(text, indexOf(set))
+        .map((part) => ("reading" in part ? part.reading : part.text))
+        .join("");
+    };
+    expect(spoken("business_kotoba", "お手数ですが、お願いします。")).toBe(
+      "おてすうですが、おねがいします。",
+    );
+    expect(spoken("it_kotoba_1_shokyu", "今日中に 回答します。")).toBe(
+      "きょうじゅうに かいとうします。",
+    );
+    // セット名（`label`）は 学習者に 見える。ここが 抜けて いると「初[はじ]級」に なる
+    expect(spoken("it_kotoba_1_shokyu", "初級")).toBe("しょきゅう");
+    expect(spoken("it_kotoba_4_chojokyu", "超上級")).toBe("ちょうじょうきゅう");
+  });
+
+  it("語ごとの 足し前が 画面の 読み辞書に 入る（束を 空に しても 残る）", () => {
+    const withOwn = book.words.find((word) => (word.furigana ?? []).length > 0)!;
+    const others = book.words.filter((word) => word.id !== withOwn.id).slice(0, 5);
     const stage = hydrateWordStage(
       wordStageSchema.parse({
         kind: "wordstage",
@@ -263,18 +305,13 @@ describe("単語テストの 画面の ふりがな", () => {
         fieldSequence: ["forest"],
         questionCount: 1,
         passRate: 80,
-        wordIds: book.words
-          .slice(0, 6)
-          .map((w) => w.id)
-          .includes(withOwn.id)
-          ? book.words.slice(0, 6).map((w) => w.id)
-          : [withOwn.id, ...book.words.slice(0, 5).map((w) => w.id)],
+        wordIds: [withOwn.id, ...others.map((word) => word.id)],
       }),
       book.words,
-      book.furigana,
+      // 束を 空で 渡す。ここで 残るのは **語ごとの 足し前だけ**
+      [],
     )!;
-    const [surface, reading] = withOwn.furigana![0]!;
-    expect(stage.furigana).toContainEqual([surface, reading]);
+    expect(stage.furigana).toContainEqual(withOwn.furigana![0]);
   });
 });
 
