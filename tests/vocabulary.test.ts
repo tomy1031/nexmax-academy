@@ -1,9 +1,17 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { vocabSchema, wordStageSchema, type VocabBook } from "../src/content/schema";
+import {
+  vocabSchema,
+  wordStageSchema,
+  type VocabBook,
+  type WordStage,
+} from "../src/content/schema";
 import { checkFuriganaCoverageOf } from "../src/lib/content-checks";
-import { buildFuriganaIndex, uncoveredKanji } from "../src/lib/text/furigana";
+import { annotateRuby, buildFuriganaIndex, uncoveredKanji } from "../src/lib/text/furigana";
+import { learnerWordGroups } from "../src/lib/wordstage-merge";
+import { trimWordSetFurigana } from "../scripts/lib/bake_wordsets";
+import { gitWordData } from "../scripts/lib/git-word-data";
 import {
   dehydrateWordStage,
   gameWordsOf,
@@ -367,5 +375,80 @@ describe("保存の かたちに 戻す（焼き付きを 作らない）", () =
     const back = hydrateWordStage(parsed, book.words, book.furigana)!;
     expect(back.words.map((w) => w.id)).toContain(added.id);
     for (const entry of stored.furigana ?? []) expect(back.furigana).toContainEqual(entry);
+  });
+});
+
+/*
+ * **ブラウザへ 配る セットの 読み辞書（`public/wordtest/sets.json`）。**
+ *
+ * `hydrateWordStage` は 正の 読み辞書を まるごと どの セットにも 積む。覆いを
+ * 落とさない ための 作りだが、配る ときは 荷物に なる——2026-09-09 の 実測で
+ * 8,388件 の うち **5,806件（69%）は その セットの 文に 一度も 出て こなかった**。
+ * `scripts/lib/bake_wordsets.ts` の `trimWordSetFurigana` が そこを 落とす。
+ *
+ * **絞りすぎると 学習者の 画面から 静かに ルビが 消える。** 上の
+ *「単語テストの 画面の ふりがな」と 同じ 見かた（`buildFuriganaIndex` +
+ * `uncoveredKanji`）を、配る かたちそのものに 当てて 止める。
+ */
+describe("配る セットの 読み辞書", () => {
+  const { stages, lessons } = gitWordData();
+  const full = learnerWordGroups(lessons, stages).sets;
+  const trimmed = full.map(trimWordSetFurigana);
+
+  /** `ArcadeGame` が セットの 読み辞書で 描く 文。`bake_wordsets.ts` の 一覧と そろえる。 */
+  function rendered(set: WordStage): { where: string; text: string }[] {
+    return [
+      { where: "title", text: set.title },
+      { where: "label", text: set.label ?? "" },
+      { where: "description", text: set.description },
+      ...set.words.flatMap((word) => [
+        { where: `${word.term}／explanationJa`, text: word.explanationJa },
+        { where: `${word.term}／example`, text: word.example ?? "" },
+      ]),
+    ].filter((one) => one.text !== "");
+  }
+
+  const indexOf = (set: WordStage) =>
+    buildFuriganaIndex((set.furigana ?? []) as [string, string][]);
+
+  it("絞っても 合成される ルビが 1文字も 変わらない", () => {
+    const changed: string[] = [];
+    for (const [i, set] of full.entries()) {
+      const before = indexOf(set);
+      const after = indexOf(trimmed[i]!);
+      for (const { where, text } of rendered(set)) {
+        const b = JSON.stringify(annotateRuby(text, before));
+        const a = JSON.stringify(annotateRuby(text, after));
+        if (b !== a) changed.push(`${set.id}／${where}\n  前: ${b}\n  後: ${a}`);
+      }
+    }
+    expect(changed).toEqual([]);
+  });
+
+  it("絞って 裸の 漢字が 増えない", () => {
+    const added: string[] = [];
+    for (const [i, set] of full.entries()) {
+      const before = indexOf(set);
+      const after = indexOf(trimmed[i]!);
+      for (const { where, text } of rendered(set)) {
+        const was = uncoveredKanji(text, before).join("");
+        const now = uncoveredKanji(text, after).join("");
+        if (now !== was) added.push(`${set.id}／${where}: ${was} → ${now} … ${text}`);
+      }
+    }
+    expect(added).toEqual([]);
+  });
+
+  it("読み辞書の ほかは 何も 落とさない（語・見出し・出題数）", () => {
+    const withoutFurigana = (sets: readonly WordStage[]) =>
+      sets.map((set) => ({ ...set, furigana: [] }));
+    expect(withoutFurigana(trimmed)).toEqual(withoutFurigana(full));
+  });
+
+  it("使わない 読みが ちゃんと 減って いる（絞りが 効かなく なったら 落とす）", () => {
+    const count = (sets: readonly WordStage[]) =>
+      sets.reduce((n, s) => n + (s.furigana ?? []).length, 0);
+    // 実測 8,388 → 2,582（69%減）。半分も 減らなく なったら 絞りが 効いて いない
+    expect(count(trimmed)).toBeLessThan(count(full) / 2);
   });
 });
