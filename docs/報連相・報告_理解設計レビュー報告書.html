@@ -1,0 +1,967 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>報連相「報告」ステージ 理解設計レビュー報告書</title>
+<style>
+  :root {
+    --navy:#1b2545; --navy-deep:#121a35; --gold:#c9a45c; --gold-light:#e7cf95;
+    --cream:#f4ecd8; --ink:#243049; --muted:#6b7793; --line:#d8c79c;
+    --blue:#3a5ba0; --green:#3f7d52; --purple:#6b4f9e; --bg:#f7f2e6; --red:#a8434a;
+  }
+  * { box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { margin:0; font-family:"Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,system-ui,sans-serif;
+         color:var(--ink); background:var(--bg); line-height:1.75; }
+  .layout { display:flex; align-items:flex-start; }
+  nav.toc { position:sticky; top:0; width:280px; min-width:280px; height:100vh; overflow-y:auto;
+    background:linear-gradient(180deg,var(--navy),var(--navy-deep)); color:var(--cream);
+    padding:24px 18px; border-right:3px solid var(--gold); }
+  nav.toc h2 { font-size:15px; color:var(--gold-light); margin:0 0 4px; letter-spacing:.08em; }
+  nav.toc .sub { font-size:11px; color:#9fb0d6; margin:0 0 18px; }
+  nav.toc ol { list-style:none; margin:0; padding:0; }
+  nav.toc li { margin:2px 0; }
+  nav.toc a { display:block; color:#cfd8ef; text-decoration:none; font-size:13px;
+    padding:5px 10px; border-radius:6px; border-left:2px solid transparent; }
+  nav.toc a:hover { background:rgba(201,164,92,.16); color:#fff; border-left-color:var(--gold); }
+  main { flex:1; min-width:0; padding:0 0 80px; }
+  .hero { background:linear-gradient(135deg,var(--navy),var(--navy-deep) 70%); color:var(--cream);
+    padding:56px 60px 48px; border-bottom:4px solid var(--gold); }
+  .hero .eyebrow { color:var(--gold-light); letter-spacing:.24em; font-size:12px; margin:0 0 12px; }
+  .hero h1 { font-size:38px; margin:0 0 8px; letter-spacing:.04em; }
+  .hero .en { color:#aebcdf; font-size:17px; margin:0 0 20px; letter-spacing:.12em; }
+  .hero .meta { font-size:13px; color:#c7d1ec; }
+  .hero .meta span { margin-right:18px; }
+  .wrap { padding:0 60px; max-width:1040px; }
+  section.chapter { padding-top:48px; }
+  h2.sec { font-size:26px; color:var(--navy); margin:0 0 6px; padding-bottom:8px;
+    border-bottom:2px solid var(--gold); display:flex; align-items:baseline; gap:12px; }
+  h2.sec .num { background:var(--gold); color:#fff; font-size:15px; border-radius:6px;
+    padding:2px 10px; flex:0 0 auto; }
+  h3 { font-size:19px; color:var(--blue); margin:32px 0 8px; }
+  h4 { font-size:16px; color:var(--ink); margin:20px 0 6px; }
+  p { margin:8px 0; }
+  ul, ol.body { margin:8px 0 8px 4px; padding-left:22px; }
+  li { margin:4px 0; }
+  code { background:#ece3cc; color:#6b4f22; padding:1px 6px; border-radius:4px;
+    font-family:"SF Mono",Menlo,Consolas,monospace; font-size:13px; }
+  pre:not(.mermaid) { background:var(--navy-deep); color:#e7ecf7; padding:16px 18px; border-radius:10px;
+    overflow-x:auto; font-size:13px; line-height:1.6; border-left:4px solid var(--gold); }
+  blockquote { margin:10px 0; padding:8px 16px; border-left:4px solid var(--line);
+    background:#fffdf6; color:#4a5470; font-size:14px; }
+  .callout { border-left:5px solid var(--blue); background:#eef3fb; padding:12px 18px;
+    border-radius:0 8px 8px 0; margin:16px 0; }
+  .callout.warn { border-color:#c08a2e; background:#fbf3e2; }
+  .callout.good { border-color:var(--green); background:#e9f4ec; }
+  .callout.bad { border-color:var(--red); background:#fbeeee; }
+  .callout strong { color:var(--navy); }
+  table { width:100%; border-collapse:collapse; margin:14px 0; font-size:14px; background:#fff;
+    border-radius:8px; overflow:hidden; box-shadow:0 1px 0 var(--line); }
+  th, td { text-align:left; padding:9px 12px; border-bottom:1px solid #ece3cc; vertical-align:top; }
+  th { background:var(--navy); color:var(--cream); font-weight:600; font-size:13px; }
+  tr:nth-child(even) td { background:#faf6ec; }
+  .badge { display:inline-block; font-size:11px; padding:2px 9px; border-radius:999px; color:#fff;
+    margin-right:4px; font-weight:600; }
+  .b-a { background:var(--green); } .b-b { background:var(--blue); } .b-c { background:var(--purple); }
+  .b-x { background:var(--red); } .b-w { background:#c08a2e; }
+  footer { padding:30px 60px; color:var(--muted); font-size:12px; border-top:1px solid var(--line);
+    margin-top:40px; }
+  details.changelog { margin:24px 60px 0; max-width:1040px; border:1px solid var(--line);
+    border-radius:12px; background:#fff; box-shadow:0 2px 10px rgba(27,37,69,.06); overflow:hidden; }
+  details.changelog > summary { list-style:none; cursor:pointer; user-select:none; padding:14px 22px;
+    background:linear-gradient(90deg,var(--navy),#2a3a6e); color:var(--cream); font-weight:600;
+    font-size:16px; display:flex; align-items:center; gap:10px; }
+  details.changelog > summary::-webkit-details-marker { display:none; }
+  details.changelog > summary .chev { transition:transform .2s; color:var(--gold-light); }
+  details.changelog[open] > summary .chev { transform:rotate(90deg); }
+  details.changelog > summary .latest { margin-left:auto; font-size:12px; font-weight:500; color:#aebcdf; }
+  details.changelog .cl-body { padding:8px 22px 18px; }
+  details.changelog table { margin-top:12px; }
+  details.raw { margin:14px 0; border:1px solid var(--line); border-radius:10px; background:#fff; }
+  details.raw > summary { cursor:pointer; padding:10px 16px; font-weight:600; color:var(--navy); }
+  details.raw .rb { padding:0 18px 14px; font-size:14px; }
+  @media (max-width:860px) {
+    nav.toc { display:none; }
+    .hero, .wrap, footer { padding-left:24px; padding-right:24px; }
+  }
+</style>
+</head>
+<body>
+<div class="layout">
+
+<nav class="toc">
+  <h2>報連相「報告」レビュー</h2>
+  <p class="sub">理解設計レビュー報告書</p>
+  <ol>
+    <li><a href="#s1">1. 結論</a></li>
+    <li><a href="#s2">2. 何を どう 調べたか</a></li>
+    <li><a href="#s3">3. 学習の道すじ 旧 → 現状</a></li>
+    <li><a href="#s4">4. 学習を阻害している要因</a></li>
+    <li><a href="#s5">5. 対策：作り直した順路</a></li>
+    <li><a href="#s6">6. 個別の判断（3件）</a></li>
+    <li><a href="#s7">7. 具体的な変更箇所</a></li>
+    <li><a href="#s8">8. なぜ こうなったか（原因）</a></li>
+    <li><a href="#s9">9. 再発防止（指示系統の変更案）</a></li>
+    <li><a href="#s10">10. ペルソナ検収の生データ</a></li>
+    <li><a href="#s11">11. 判断していただきたいこと</a></li>
+    <li><a href="#changelog">変更履歴 / Changelog</a></li>
+  </ol>
+</nav>
+
+<main>
+  <div class="hero">
+    <p class="eyebrow">DESIGN REVIEW / 着手前の報告</p>
+    <h1>報連相「報告」ステージ 理解設計レビュー</h1>
+    <p class="en">Why the learner gets lost, and what to change</p>
+    <p class="meta">
+      <span>版: v1.0</span>
+      <span>作成日: 2026-09-10</span>
+      <span>対象: <code>/houkoku</code> ステージの8本＋その順番</span>
+      <span>状態: <strong>変更前の報告。まだ1文字も直していません</strong></span>
+    </p>
+  </div>
+
+  <details class="changelog" id="changelog">
+    <summary>
+      <span class="chev">▶</span>変更履歴 / Changelog
+      <span class="latest">最新: v1.0 (2026-09-10)</span>
+    </summary>
+    <div class="cl-body">
+      <p>本書への変更を記録する。各エントリの「修正箇所」リンクから該当章へ移動できる。</p>
+      <table>
+        <tr><th>版</th><th>日付</th><th>変更内容</th><th>修正箇所</th></tr>
+        <tr>
+          <td>v1.0</td><td>2026-09-10</td>
+          <td>初版。N5/N4/N3の3ペルソナ検収と旧アプリの原典照合をもとに、阻害要因・対策・変更箇所・再発防止を報告。</td>
+          <td><a href="#s4">4</a> ・ <a href="#s5">5</a> ・ <a href="#s7">7</a> ・ <a href="#s9">9</a></td>
+        </tr>
+      </table>
+    </div>
+  </details>
+
+  <div class="wrap">
+
+  <!-- ============ 1 ============ -->
+  <section class="chapter" id="s1">
+    <h2 class="sec"><span class="num">1</span>結論</h2>
+
+    <div class="callout bad">
+      <strong>ご指摘は全て事実でした。</strong>そのうえで、原因は「文言が難しい」ことではなく、
+      <strong>教材の並び順が、学習者の頭の中の順序と逆になっている</strong>ことです。
+      旧アプリは <em>謎 → 壁 → 答え</em> の順でしたが、現状は <em>答え → 謎の形をした復習</em> になっています。
+    </div>
+
+    <h3>1.1 3行でいうと</h3>
+    <ol class="body">
+      <li><strong>答えが問いより先に置かれている。</strong>「会社の階級」も「報告のコツ」も「一番大切なのはチームワーク」も、
+        学習者が考える前に画面に出ています。だから最後の「調べ学習」に、調べる理由が残っていません。</li>
+      <li><strong>藤木取締役に会う前に、藤木取締役の説明が始まっている。</strong>
+        旧アプリでは「藤木さんに報告する場面を聞く → だから階級を知りたくなる → 調べる → 答え合わせ」でしたが、
+        現状は「階級の図を見る → 7画面あとに調べさせる」になっています。</li>
+      <li><strong>覚えるべき枠組みが、同じステージに3つある。</strong>
+        文は「3つのパターン」、絵は「件→結論→事実→お願い」、済スタンプは「こえかけ・じじつ・みこみ・おねがい」。
+        <strong>3つとも別のことばです。</strong></li>
+    </ol>
+
+    <h3>1.2 やること（提案）</h3>
+    <table>
+      <tr><th>#</th><th>やること</th><th>効き目</th></tr>
+      <tr><td>A</td><td><strong>順路を組み直す</strong>（8本 → 10本。階級を「調べる → 答え合わせ」の位置へ戻し、問いと答えの間に<strong>書く壁</strong>を入れる）</td><td>ご指摘の「順番」「いきなり階級」が同時に解ける</td></tr>
+      <tr><td>B</td><td><strong>済スタンプ『報告の4つのパーツ』を却下</strong>（ステージから外す）</td><td>枠組みが3つ→1つに減る。同じ音声の3連も解ける</td></tr>
+      <tr><td>C</td><td><strong>枠組みを1つに統一</strong>（絵に合わせて「件 → 結論 → 事実 → お願い」。「3つのパターン」は<strong>「いつ 報告するか」</strong>へ役割分け）</td><td>文・絵・練習・ゲームで同じことばになる</td></tr>
+      <tr><td>D</td><td><strong>「調べ学習」を改名</strong>し、ページを分かち書きで書き直す</td><td>ここだけ急に読めなくなる崖が消える</td></tr>
+      <tr><td>E</td><td><strong>「件」「階級」をことばの台帳に足す</strong></td><td>3回出て一度も説明されない語が消える</td></tr>
+      <tr><td>F</td><td><strong>検収に「順路」の観点を新設</strong>（ルーブリックR9・PRテンプレ・AGENTS.md）</td><td>同じ壊れ方が二度と通らなくなる</td></tr>
+    </table>
+
+    <div class="callout warn">
+      <strong>お願い</strong>：この報告書は<strong>着手前</strong>のものです。<a href="#s11">11章</a>に、
+      ご判断いただきたいことを<strong>3つだけ</strong>まとめました。そこだけ読んでいただければ着手できます。
+    </div>
+  </section>
+
+  <!-- ============ 2 ============ -->
+  <section class="chapter" id="s2">
+    <h2 class="sec"><span class="num">2</span>何を どう 調べたか</h2>
+
+    <table>
+      <tr><th>調べたもの</th><th>方法</th><th>出どころ</th></tr>
+      <tr><td>旧アプリの本来の順路</td><td>公開サイトと旧リポジトリから全ページを取得して読み直した</td>
+        <td><code>nextmake-onboarding.netlify.app</code> ／ <code>tomy1031/nextmake_onbording</code> の <code>lecture/houkoku/*</code>・<code>listening/houkoku/*</code></td></tr>
+      <tr><td>現状の8本の中身と並び</td><td>コンテンツJSONと生成スクリプトを直読</td>
+        <td><code>content/stages/houkoku.json</code> ほか7本 ／ <code>scripts/gen_hourensou_content.mjs</code></td></tr>
+      <tr><td>学習者から見た詰まり</td><td><strong>カンボジア人学生ペルソナ3体（N5 / N4 / N3）</strong>に、画面の順どおり通読させた。引用のない指摘は採用しない条件つき</td>
+        <td>報告の生データは<a href="#s10">10章</a></td></tr>
+      <tr><td>絵の中身</td><td>ペルソナの指摘を、画像そのものを開いて突き合わせた</td>
+        <td><code>houkoku_hierarchy.webp</code> ／ <code>keypoint.webp</code></td></tr>
+      <tr><td>どこで壊れたか</td><td>移植PRと追加PRの本文を読み直した</td>
+        <td>PR #252（移植）・PR #257（教材追加）</td></tr>
+      <tr><td>段階的な進行の作り直し方</td><td><strong>fable と設計相談</strong>（旧・新の順路を渡し、診断／4つのパーツの可否／推奨順路／壁の作り方／命名を諮問）</td>
+        <td>回答は<a href="#s5">5章</a>・<a href="#s6">6章</a>に反映。<strong>こちらの前提の誤りが2件見つかり、コードで確認して訂正しました</strong></td></tr>
+    </table>
+
+    <div class="callout">
+      <strong>この報告書のルール</strong>：指摘には必ず原文の引用を付けています（AGENTS.md「引用できない指摘は出さない」）。
+      引用は<code>コード体</code>または「かぎかっこ」で示します。
+    </div>
+  </section>
+
+  <!-- ============ 3 ============ -->
+  <section class="chapter" id="s3">
+    <h2 class="sec"><span class="num">3</span>学習の道すじ — 旧アプリ と 現状</h2>
+
+    <h3>3.1 旧アプリは「謎 → 壁 → 答え」だった</h3>
+    <pre class="mermaid">
+flowchart TD
+  A["レクチャー<br/>報連相の3つ"] --> B{"問い<br/>日本の会社で一番<br/>大切なことは何？"}
+  B -->|パスワード| C["答え：チームワーク"]
+  C --> D["場面：富田さんに報告する"]
+  D --> E{"Q1 最初の言葉は？<br/>Q2 どう報告する？<br/>Q3 他にどんな報告が要る？"}
+  E -->|パスワード| F["解説ページ<br/>A1 声をかける／A2 結論から／A3 パターン3つ"]
+  F --> G["スキット（ペアで暗記）"]
+  G --> H["リスニング導入<br/>ここで藤木取締役が初登場<br/>『お客様と直接話している。だから…』"]
+  H --> I["リスニング問題<br/>穴埋め＋内容確認5問"]
+  I --> J{"調べ学習<br/>取締役の藤木さんは<br/>どのくらいえらい？"}
+  J --> K["会社の階級ページ<br/>＝調べた答え合わせ"]
+  style B fill:#fbf3e2,stroke:#c08a2e
+  style E fill:#fbf3e2,stroke:#c08a2e
+  style J fill:#fbf3e2,stroke:#c08a2e
+  style K fill:#e9f4ec,stroke:#3f7d52
+    </pre>
+
+    <h3>3.2 現状は「答え → 謎の形をした復習」になっている</h3>
+    <pre class="mermaid">
+flowchart TD
+  A1["1. ページ『報告の しかた』"] --> A2["冒頭で答えを言う<br/>『一番 大切なのは チームワークです』"]
+  A2 --> A3{"Q1〜Q3<br/>自分で考える"}
+  A3 --> A4["すぐ下に答え<br/>『報告の コツ』3つ"]
+  A4 --> A5["さらに『会社の ポジション（階級）』<br/>＋階級の図＋藤木さんの予告"]
+  A5 --> B["2. スキット"]
+  B --> C["3. リスニング<br/>ここで藤木さんが初登場"]
+  C --> D["4. 済スタンプ『4つのパーツ』<br/>同じ音声・2回目"]
+  D --> E["5. もんだい<br/>同じ会話・3回目"]
+  E --> F["6. ミーティング（産出）"]
+  F --> G["7. 報告クエスト<br/>ステージ説明は『最後は クエスト』"]
+  G --> H["8. 調べ学習<br/>『藤木さんはどのくらいえらい？』<br/>＝答えは1で読み終えている"]
+  style A2 fill:#fbeeee,stroke:#a8434a
+  style A4 fill:#fbeeee,stroke:#a8434a
+  style A5 fill:#fbeeee,stroke:#a8434a
+  style H fill:#fbeeee,stroke:#a8434a
+    </pre>
+
+    <h3>3.3 役割ごとに何が失われたか</h3>
+    <table>
+      <tr><th>学習の役割</th><th>旧アプリ</th><th>現状</th><th>失われたもの</th></tr>
+      <tr><td>大きな問い</td><td>「日本の会社で一番大切なことは何ですか？」→ 壁 → 答え</td>
+        <td>冒頭に <code>"日本の 会社で 一番 大切なのは チームワークです。"</code>／その後で見出し <code>"なぜ 報告を するの？"</code> → <code>"答えは「チームワーク」です。"</code></td>
+        <td>考える時間。問いが「答えの復唱」に降格した</td></tr>
+      <tr><td>自分で作る場</td><td>Q1〜Q3を考える → 壁 → 解説ページでA1〜A3</td>
+        <td>Q1の直後、同じ画面に <code>"最初に 声を かける。…「今、お時間 よろしいですか」と 許可を もらいます。"</code></td>
+        <td>入力欄と、答えとの間の壁。3問とも読み物になった</td></tr>
+      <tr><td>報告パターン3つ</td><td>解説ページで中身を説明</td>
+        <td><code>"3つの パターンを 使い分ける。終わった 報告・困って いる 報告・気づいた ことの 報告です。"</code> の1行だけ</td>
+        <td><strong>中身が丸ごと。</strong>8本のどこにも「困っている報告」の言い方が無い</td></tr>
+      <tr><td>藤木さんの紹介</td><td>リスニング直前に「お客様と直接話しています。<strong>ですから</strong>、問題があっても藤木さんがお客様にすぐ確認してくれます」</td>
+        <td>記事の最後に <code>"次の リスニングに 出て くる 藤木さんは「取締役」です。"</code></td>
+        <td><strong>「だから」の因果。</strong>報告が届くとお客様に届く、という報告する理由そのもの</td></tr>
+      <tr><td>階級の謎</td><td>調べ学習（謎）→ 次ページで階級の図（答え合わせ）</td>
+        <td>記事の中に階級の図と答え → <strong>7画面あとに</strong>調べ学習</td>
+        <td>調べる理由</td></tr>
+      <tr><td>カンボジアとの比較</td><td>調べ学習で自分が考える</td>
+        <td>記事が先に <code>"日本も カンボジアと 同じで、目上の 人を 大切に して、ていねいに 話します。"</code> と断定</td>
+        <td>比べる余地。<strong>「同じ」と結論を出したあとで「違いを調べろ」と言っている</strong></td></tr>
+      <tr><td>調べたあとの着地</td><td>ボタン「次のページへ」でアプリ内の階級ページへ戻る</td>
+        <td><code>"答えを 書く シートは 新しい タブで 開きます。"</code> → 外部シートで終了</td>
+        <td>帰り道。書いた答えに誰も返事をしない</td></tr>
+    </table>
+
+    <div class="callout warn">
+      <strong>設計上の発見</strong>：<strong>パスワードという不便な仕掛けは、実は「考える時間を強制的に作る装置」でした。</strong>
+      それを外したのは正しい判断（ご指示どおり）ですが、<strong>装置が担っていた役割の引き継ぎ先が決まっていませんでした</strong>。
+      これが今回の壊れ方の本体です（<a href="#s8">8章 原因1</a>）。
+    </div>
+  </section>
+
+  <!-- ============ 4 ============ -->
+  <section class="chapter" id="s4">
+    <h2 class="sec"><span class="num">4</span>何が どのように 学習を阻害しているか</h2>
+
+    <p>ペルソナ3体（N5 / N4 / N3）が実際に詰まった所を、重い順に12件。<strong>「読みにくい」ではなく「理解が壊れる」ものだけ</strong>を載せています。</p>
+
+    <h3>阻害1 <span class="badge b-x">最重</span> 答えを読んでから、その答えを探させている</h3>
+    <p><strong>現象</strong>：記事の一番上に <code>"日本の 会社で 一番 大切なのは チームワークです。"</code>（hero の lead）。
+      少し下に見出し <code>"なぜ 報告を するの？"</code>、その直後に <code>"答えは「チームワーク」です。"</code>。</p>
+    <p><strong>なぜ理解が壊れるか</strong>：最初の3秒で「このページは自分に何も聞いてこない」と分かってしまいます。
+      以降、学習者は<strong>読み飛ばす姿勢</strong>に切り替わり、そのあとに来るQ1〜Q3も読み物として流れていきます。</p>
+    <blockquote>N3ペルソナ：「答え→問い→答えの順。最初の3秒でこのページの読み方が決まってしまう」</blockquote>
+
+    <h3>阻害2 <span class="badge b-x">最重</span> 考える前に、答えが3センチ下にある</h3>
+    <p><strong>現象</strong>：<code>"あなたは 最初に どんな ことばを かけますか。"</code>（Q1）の直後に、見出し「報告の コツ」と
+      <code>"最初に 声を かける。忙しい 人に 話しかける ときは、「今、お時間 よろしいですか」と 許可を もらいます。"</code>。
+      <strong>書く欄も、押して開くボタンもありません。</strong></p>
+    <p><strong>なぜ理解が壊れるか</strong>：自分の言葉を一度作ってから見本を見ると、差分が学習になります。
+      見本を先に見た場合、脳は「知っている」と判定して記憶に残しません（<strong>考えた人だけが損をする作り</strong>）。</p>
+    <p><strong>付随する壊れ</strong>：Q3 <code>"ITの 仕事では ほかに どんな 報告が 必要だと 思いますか。"</code> だけは、
+      答えがステージのどこにもありません。<strong>3問のうち2問だけ答えが即出る</strong>という、非対称な形になっています。</p>
+
+    <h3>阻害3 <span class="badge b-x">最重</span> 覚える枠組みが3つある（文・絵・ゲームで全部ちがう）</h3>
+    <table>
+      <tr><th>どこ</th><th>いくつ</th><th>ことば</th></tr>
+      <tr><td>記事の文（steps）</td><td>3つ</td><td>声をかける／結論から／<strong>3つのパターン</strong>（終わった・困っている・気づいた）</td></tr>
+      <tr><td>記事の絵 <code>keypoint.webp</code></td><td><strong>4つ</strong></td><td><strong>件 → 結論 → 事実 → お願い</strong>（画面いっぱいの大きな字）</td></tr>
+      <tr><td>済スタンプ</td><td><strong>4つ</strong></td><td><strong>こえかけ・じじつ・みこみ／あたり・おねがい</strong></td></tr>
+      <tr><td>クエストの中</td><td>—</td><td>同じものを<strong>「札（ふだ）」</strong>と呼ぶ</td></tr>
+    </table>
+    <p><strong>なぜ理解が壊れるか</strong>：<code>docs/constraints.md</code> の指定どおり
+      <strong>「文章では理解できない人がいる前提。絵で分かるようにする」</strong>のなら、学習者が最も強く受け取るのは
+      <strong>絵の「件→結論→事実→お願い」</strong>です。ところがその4語は、以後どの教材でもその名前で呼ばれません。
+      <strong>いちばん記憶に残る枠組みが、いちばん回収されない</strong>という配置になっています。</p>
+    <blockquote>N4ペルソナ：「文は3つ、絵は4つ。<strong>どちらを覚えるのか分かりませんでした。</strong>」<br>
+      N5ペルソナ：「3つと4つ、どっちが本当か分からなくなった」</blockquote>
+
+    <h3>阻害4 <span class="badge b-x">最重</span> 階級の図と本文で、取締役の名前が違う</h3>
+    <p><strong>現象</strong>：本文は <code>"次の リスニングに 出て くる 藤木さんは「取締役」です。"</code>。
+      そのすぐ上に置かれた図 <code>houkoku_hierarchy.webp</code> には、<strong>「取締役 － 藤田さん (Director - Mr. Fujita)」</strong>と大書されています。
+      さらに図の会社名は<strong>「株式会社どうぶつ商事」</strong>、社長は<strong>「松井社長」</strong>（このアプリの別ステージに実在する別キャラクター）、
+      登場人物は全員<strong>動物</strong>です。</p>
+    <p><strong>なぜ理解が壊れるか</strong>：学習者は「藤木さんと藤田さんは同じ人か、別人か」を判断できません。
+      N4ペルソナは<strong>これをステージ全体で一番混乱した点</strong>に挙げました。</p>
+    <div class="callout">
+      <strong>公平な注記</strong>：この図は旧アプリの原本と<strong>ピクセル単位で同一</strong>で、名前の食い違いは旧アプリから引き継いだものです。
+      ただし旧アプリでは、この図は<strong>最終ページに単独で置かれ、藤木さんの名前とは並んでいませんでした</strong>。
+      <strong>移植の際に「藤木さんは取締役です」という文を図の隣に新しく足したことで、衝突が生まれています。</strong>
+    </div>
+
+    <h3>阻害5 <span class="badge b-w">重</span> 会う前の人を説明している（階級の位置）</h3>
+    <p><strong>現象</strong>：記事の末尾で、まだ声も聞いていない藤木さんについて
+      <code>"とても 上の ポジションで、お客様と 直接 話して います。"</code> と説明されます。</p>
+    <p><strong>なぜ理解が壊れるか</strong>：人物の属性は、<strong>その人に会って印象ができたあと</strong>でないと結びつきません。
+      旧アプリが「藤木さんは<strong>ですから</strong>お客様にすぐ確認してくれます」と<strong>因果でつないでいた</strong>のに対し、
+      現状は属性の羅列になっており、覚える理由がありません。</p>
+    <blockquote>N4ペルソナ：「藤木さんは、ページの最後で名前を見たばかりの人です。<strong>声を聞くまで、わたしにとっては『知らない人』でした。</strong>」<br>
+      N4ペルソナ（希望）：「藤木さんの声を聞いたあとに『あの人は取締役で、上から2番めです』と教えてほしいです。<strong>会う前に予告されても覚えられません。</strong>」</blockquote>
+
+    <h3>阻害6 <span class="badge b-w">重</span> 「済スタンプ：報告の4つのパーツ」— 教わっていない分類で作業させている</h3>
+    <table>
+      <tr><th>問題</th><th>証拠</th></tr>
+      <tr><td>4つのパーツを<strong>どこでも教えていない</strong></td><td>「こえかけ／じじつ／みこみ・あたり／おねがい」はこのツールと、そのリンク定義にしか存在しない</td></tr>
+      <tr><td><strong>同じ音声の2回目</strong>（3本目のもんだいも同じ会話）</td><td>リスニングもスタンプも <code>"audioUrl": "/audio/hourensou/houkoku.wav"</code></td></tr>
+      <tr><td>「聞こえた瞬間に押す」と言うのに、<strong>瞬間を見ていない</strong></td><td>ツールの設計コメント：<code>"音声の タイムスタンプは 持って いない。回数だけ くらべる（何秒で 押したかは 見ない）"</code></td></tr>
+      <tr><td>名前が読めない</td><td>「済（すみ）」はN5の学習範囲外。「パーツ」は実装側の言い方</td></tr>
+      <tr><td>押し始めが分からない</td><td>音声の冒頭5行はナレーション（<code>"はじめに「報告」に ついて 話します。"</code>）でパーツが無いのに、そう書いていない</td></tr>
+    </table>
+    <blockquote>N3ペルソナ：「答え合わせは回数を並べるだけ。いつ押したかは見ていない。つまり6回、それらしい所で押せば当たる。
+      <strong>これは『聞き分ける』練習ではなく『押す作業』です。</strong>」</blockquote>
+    <p class="callout bad"><strong>判定</strong>：ご指摘のとおり<strong>却下が妥当</strong>です。詳細と、救う場合の唯一の条件は<a href="#s6">6章</a>。</p>
+
+    <h3>阻害7 <span class="badge b-w">重</span> 記事が「同じ」と断定した直後に、「違いを調べろ」と言う</h3>
+    <p><strong>現象</strong>：記事 <code>"日本も カンボジアと 同じで、目上の 人を 大切に して、ていねいに 話します。"</code>
+      → 調べ学習「カンボジアと日本の『報告』への考え方の違いを教えてください。」</p>
+    <p><strong>なぜ理解が壊れるか</strong>：課題が矛盾しているため、何を書けば良いか決められません。
+      さらに<strong>学習者の母国について、教材が先に結論を出している</strong>形になっています。</p>
+    <blockquote>N3ペルソナ：「<strong>カンボジア人の自分としては、自分の国の答えを先に決められた感じがして、正直いやだった</strong>」</blockquote>
+    <p>これは <code>docs/design/01_理解設計ガイド.md</code> P1「学習者の母国・現地感覚が<strong>武器</strong>になる場面を埋め込む」の、ちょうど逆です。</p>
+
+    <h3>阻害8 <span class="badge b-w">重</span> 「調べ学習」のページだけ、日本語の書き方が別物</h3>
+    <p><strong>現象</strong>：アプリの全教材は分かち書き（<code>"日本の 会社で 一番 大切なのは"</code>）ですが、
+      このページだけ旧アプリのHTMLをそのまま使っているため、<strong>すきまがありません</strong>（「日本の階級をたくさん調べてみましょう。」）。</p>
+    <blockquote>N5ペルソナ：「ここまでは ことばの間にすきまがあったのに、このページは すきまが無い。
+      <strong>同じN5のわたしなのに、ここだけ急に難しくなった。</strong>」</blockquote>
+    <p>加えて、<strong>「調べ学習」「応用問題」という語自体が説明されていません</strong>（N5：「『応用』が何か知らない。やるものか、やらなくていいものか判断できない」）。
+      ご指摘のとおり、この語は学習者向けの画面名として不適切です。</p>
+
+    <h3>阻害9 <span class="badge b-b">中</span> 「件」が3つの教材に出て、一度も説明されない</h3>
+    <p><strong>現象</strong>：記事 <code>"何の 件か、どう なったかを 先に 言います。"</code>／スキット <code>"ログイン機能の 件ですが"</code>／
+      ミーティング <code>"何の 件か、どう なったか。"</code>。
+      <strong>そして <code>content/vocab/vocabulary.json</code>（866語）に「件」が入っていません。</strong>
+      辞書ポップアップも出ず、単語テストにも出ません（「事実」「結論」「取締役」「見込み」は入っています）。</p>
+    <p><strong>なぜ理解が壊れるか</strong>：「件」は報告の型（件→結論→事実→お願い）の<strong>1番目</strong>です。
+      ここが空白のまま型を教えているので、型そのものが立ちません。<strong>「階級」も同じく未登録です。</strong></p>
+
+    <h3>阻害10 <span class="badge b-b">中</span> 上司が3人入れ替わる</h3>
+    <p>記事・スキット・クエスト＝<strong>富田さん（PM）</strong>／リスニング・スタンプ＝<strong>藤木さん（取締役）</strong>／
+      ミーティング＝<strong>ヘンディさんが上司役</strong>。
+      とくにヘンディさんは、リスニングでは<strong>報告する側（部下）</strong>でした。</p>
+    <blockquote>N5ペルソナ：「同じ人がなぜ立場を変えたのか分からなくて止まった」<br>
+      N3ペルソナ：「誰に報告する練習をしているのか、途中で分からなくなった」</blockquote>
+
+    <h3>阻害11 <span class="badge b-b">中</span> ステージの説明と、実際の終わりが違う</h3>
+    <p>ステージ説明は <code>"最後は 報告クエストで 一日を 遊びます。"</code>。
+      しかし contents の最後はクエストではなく<strong>調べ学習</strong>です。</p>
+    <blockquote>N5ペルソナ：「終わったと思ったのに、まだあった。<strong>気持ちが切れた後にいちばん難しいページが来る</strong>」</blockquote>
+    <p>しかも調べ学習は種別が <code>link</code> で<strong>関門になりません</strong>（<code>content-kinds.ts</code> の <code>gates: false</code>）。
+      つまり<strong>いちばん頭を使う課題が、いちばん踏まれにくい位置</strong>にあります。</p>
+
+    <h3>阻害12 <span class="badge b-b">中</span> もんだいがリスニングしか測っていない</h3>
+    <p>6問すべてが音声の内容確認です。記事で読んだ「コツ」も、押した「4つのパーツ」も、1問も出ません。</p>
+    <blockquote>N5ペルソナ：「<strong>読んだ所と押した所が、テストされない。</strong>覚えたかどうか自分で分からない」</blockquote>
+
+    <details class="raw">
+      <summary>さらに細かい指摘（小・9件）</summary>
+      <div class="rb">
+        <ul>
+          <li><strong>1ページに同じ文が2回</strong>：hero の <code>"仕事が 終わった とき、問題が あった とき、必ず 上司に 言います。"</code> と本文の <code>"…問題が ある とき、必ず 上司に 言います。"</code>。読み飛ばす癖がここでつく（N3）</li>
+          <li><strong>敬語の形が4つ、説明なしで出る</strong>：「よろしいですか」「よろしいでしょうか」「いただけませんでしょうか」「いただけませんか」。どれを使えばいいか分からない（N4）</li>
+          <li><strong>「3つのパターン」の中身が無い</strong>：「困っている報告」の言い方が8本のどこにも無い（N3・N4）</li>
+          <li><strong>もんだいに音を出すボタンが無い</strong>：3回目に聞き直せると思っていた（N4）</li>
+          <li><strong>リスニング音声が結論を先に言う</strong>：<code>"悪い ニュースほど、早く 言わなければ なりません。"</code> を会話の前に言い、その復唱がクイズ h_q5 になっている（N3）</li>
+          <li><strong>「無事」「あたり」「応用」に意味の助けが無い</strong>（N4・N5）</li>
+          <li><strong>ミーティングの質問文が、そのヒントより難しい</strong>：<code>"報告の あと、わたしに して ほしい ことは ありますか。"</code> はヒント「確認を お願いします。」を見て初めて意味が分かった（N4）</li>
+          <li><strong>ステージで一番いい話が、いちばん届きにくい所にある</strong>：ヘンディ先輩の「バグを三日隠した」話が、6問目・ハート5つの向こう（N3）</li>
+          <li><strong>調べ学習の答えに誰も返事をしない</strong>：外部シートに書いて終わり。輪が閉じない（N3）</li>
+        </ul>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ 5 ============ -->
+  <section class="chapter" id="s5">
+    <h2 class="sec"><span class="num">5</span>対策：作り直した順路</h2>
+
+    <h3>5.1 設計の芯（1行）</h3>
+    <div class="callout good">
+      <strong>藤木取締役に会う → 「この人はどのくらいえらいの？」と思う → 調べる → 答え合わせ。</strong>
+      この因果を、ステージの並びで作り直します。旧アプリの意図そのものです。
+    </div>
+
+    <h3>5.2 新しい順路</h3>
+    <pre class="mermaid">
+flowchart TD
+  W["ことば（単語テスト）<br/>件・階級・調査 を足す"] --> S1["1 ページ①『報告って なに？』<br/>役割 → 報連相の3つ → 場面 → Q1〜Q3<br/>★問いで終わる（答えを書かない）"]
+  S1 --> S2["2 もんだい『自分の 答え』<br/>Q1〜Q3を自由記述で書く<br/>★これが壁。書かないと先へ進めない"]
+  S2 --> S3["3 スキット<br/>お手本の会話で Q1・Q2 の答え合わせ"]
+  S3 --> S4["4 ページ②『報告の コツ』<br/>件→結論→事実→お願い ＋ いつ報告するか3つ"]
+  S4 --> S5["5 リスニング<br/>藤木取締役 初登場（因果つき紹介を復活）"]
+  S5 --> S6["6 もんだい"]
+  S6 --> S7["7 調査『藤木さんは どのくらい えらい 人？』<br/>★ここで初めて問う"]
+  S7 --> S8["8 ページ③『会社の ポジション』<br/>＝調べた答え合わせ"]
+  S8 --> S9["9 ミーティング（自分の声で報告）"]
+  S9 --> S10["10 報告クエスト（最後・ごほうび）"]
+  style S1 fill:#fbf3e2,stroke:#c08a2e
+  style S2 fill:#fbf3e2,stroke:#c08a2e
+  style S7 fill:#fbf3e2,stroke:#c08a2e
+  style S8 fill:#e9f4ec,stroke:#3f7d52
+  style S10 fill:#e9f4ec,stroke:#3f7d52
+    </pre>
+
+    <h3>5.3 1本ずつ「何を持って来て、何を得るか」</h3>
+    <table>
+      <tr><th>#</th><th>教材（種別）</th><th>ここに来た時点で持っているもの</th><th>ここで得るもの</th><th>関門</th></tr>
+      <tr><td>0</td><td>ことば（単語テスト）</td><td>—</td><td>上司・事実・結論・取締役・<strong>件</strong>・<strong>階級</strong>・<strong>調査</strong></td><td>—</td></tr>
+      <tr><td>1</td><td>ページ①「報告って なに？」（article）</td><td>語彙</td><td>自分の役（PG）と場面。<strong>考えるべき3つの問い</strong></td><td>◯</td></tr>
+      <tr><td>2</td><td><strong>もんだい「自分の 答え」（quizset・自由記述×3）</strong></td><td>問い</td><td><strong>自分の言葉。書いた事実が残る</strong>（正誤は見ない。書けば通る）</td><td><strong>◯＝壁</strong></td></tr>
+      <tr><td>3</td><td>スキット（skit）</td><td>自分が書いた言い方</td><td>お手本との<strong>ずれ</strong>。口に出せる型</td><td>×</td></tr>
+      <tr><td>4</td><td>ページ②「報告の コツ」（article）</td><td>自分の答えとお手本</td><td>型の名前（件→結論→事実→お願い）と、<strong>「いつ 報告するか」3つの中身</strong></td><td>◯</td></tr>
+      <tr><td>5</td><td>リスニング（listening）</td><td>良いニュースの報告</td><td>悪いニュースの報告。<strong>藤木取締役という人</strong>と「取締役って どのくらい 上？」の種</td><td>◯</td></tr>
+      <tr><td>6</td><td>もんだい（quizset）</td><td>聞いた会話</td><td>聞き取りの確認＋<strong>型と語の確認（新設1〜2問）</strong></td><td>◯</td></tr>
+      <tr><td>7</td><td>調査（旧・調べ学習）</td><td>藤木さんの印象</td><td><strong>謎</strong>：この人はどのくらい上なのか。自国との違い</td><td>◯</td></tr>
+      <tr><td>8</td><td>ページ③「会社の ポジション」（article）</td><td>自分で並べた順</td><td><strong>答え合わせ</strong>。報告が上へ流れてお客様に届く筋</td><td>◯</td></tr>
+      <tr><td>9</td><td>ミーティング（meeting）</td><td>型・場面・相手</td><td>自分の声で報告できた事実</td><td>◯</td></tr>
+      <tr><td>10</td><td>報告クエスト（link）</td><td>全部</td><td>一日を通した判断。★3への再挑戦</td><td>×</td></tr>
+    </table>
+
+    <div class="callout warn">
+      <strong>設計相談で、こちらの前提が2つ訂正されました（コードで確認済み）。</strong>
+      <ol class="body">
+        <li><strong>リンク教材も関門にできます。</strong>種別の既定は「関門にしない」ですが、
+          <code>contents[].gates: true</code> で1本だけ関門にできます（実例：要件定義ステージの <code>youken_recruit_sample</code>）。
+          <strong>ただし今回それは使えません</strong>——関門にできるのは、ツール側が完了の合図
+          （<code>nexmax:link-done</code>）を送る場合だけで、
+          <strong><code>houkoku_search.html</code> はその合図を送っていません</strong>（クエストは送っています）。
+          <code>gates: true</code> を付けると<strong>ステージが二度と進まなくなります</strong>。
+          → だから 7 は <code>quizset</code> への作り替えが必要です。</li>
+        <li><strong>壁は「記事を割る」より「書かせる」ほうが強い。</strong>
+          自由記述のもんだい（<code>type: "free"</code>）には
+          <code>starter</code>（打ちながら見られる型文）・<code>placeholder</code>・<code>english</code>（英語で下書きしてよい欄）が
+          <strong>すでに揃っています</strong>。白紙で固まらせずに壁を作れます。
+          Q3「ITの仕事では ほかに どんな 報告が 必要？」も、ここで初めて<strong>答える場所</strong>を得ます。</li>
+      </ol>
+    </div>
+
+    <h3>5.4 「3つ」と「4つ」を、ぶつからない形に分ける</h3>
+    <p>枠組みを1つに減らすと「3つのパターン」が行き場を失うため、<strong>役割で分けます</strong>。</p>
+    <table>
+      <tr><th></th><th>いま</th><th>あと</th><th>問い</th></tr>
+      <tr><td>順番</td><td>文は3つ／絵は4つ／ゲームは別名の4つ</td><td><strong>件 → 結論 → 事実 → お願い</strong>（絵と同じことば）</td><td>「どの順に 言うか」</td></tr>
+      <tr><td>種類</td><td>「3つのパターン」（名前だけ）</td><td><strong>「いつ 報告するか」3つ</strong>：終わった とき／困った とき／気づいた とき。<strong>それぞれの言い方の例を書く</strong></td><td>「いつ 言うか」</td></tr>
+    </table>
+    <p>数字が2つ出ても、<strong>問いが違うので混ざりません</strong>（いまは同じ「報告のしかた」に数字違いの枠が並んでいます）。</p>
+
+    <h3>5.5 この並びが、ご指摘のどれを解くか</h3>
+    <table>
+      <tr><th>ご指摘</th><th>この順路での解け方</th></tr>
+      <tr><td>「説明の順番が適切ではない」</td><td>考える(1) → 見本(2) → 言語化(3) → 応用(4) の階段になる。答えは常に問いの後ろへ移動</td></tr>
+      <tr><td>「いきなり会社の階級が出てくる」</td><td>階級の節を記事から切り離し、<strong>藤木さんに会った後の(6)(7)</strong>へ移す</td></tr>
+      <tr><td>「もとは藤木取締役が出てきて → 階級を知って → 他の階級を調べる」</td><td>(4)登場 →(6)調べる →(7)答え合わせ。旧アプリの因果をそのまま復元</td></tr>
+      <tr><td>「4つのパーツは却下」</td><td>ステージから外す。枠組みは絵と同じ「件→結論→事実→お願い」1本に統一</td></tr>
+      <tr><td>「調べ学習という言葉」</td><td>改名＋分かち書きで書き直し（<a href="#s6">6章</a>）</td></tr>
+    </table>
+  </section>
+
+  <!-- ============ 6 ============ -->
+  <section class="chapter" id="s6">
+    <h2 class="sec"><span class="num">6</span>個別の判断（3件）</h2>
+
+    <h3>6.1 済スタンプ『報告の4つのパーツ』 → <span class="badge b-x">却下</span></h3>
+    <p><strong>結論：ステージから外します。</strong>救う条件は1つだけ考えられますが、それを満たしても効果が小さいと判断しました。</p>
+    <table>
+      <tr><th>観点</th><th>判定</th></tr>
+      <tr><td>教える場所があるか</td><td>無い。4語はこのツールにしか存在しない</td></tr>
+      <tr><td>他の教材と枠組みが揃うか</td><td>揃わない。絵は「件・結論・事実・お願い」、ゲームは「札」</td></tr>
+      <tr><td>課題として成立しているか</td><td>していない。「聞こえた瞬間」を測らず回数だけ比べる</td></tr>
+      <tr><td>新しい情報があるか</td><td>無い。同じ音声の2回目、直後のもんだいが3回目</td></tr>
+      <tr><td>唯一の救い方</td><td><strong>リスニングの「2周目」として内蔵する</strong>（1周目＝聞くだけ／2周目＝型を押す）。ただし別教材として1本立てる価値は無い</td></tr>
+    </table>
+    <p><strong>もったいない部分の回収</strong>：ツールの中の一文
+      <code>"4つの パーツが そろった 報告は、悪い ニュースでも「ありがとう」で 受け取られます。"</code> は、
+      N4ペルソナが<strong>「このステージでいちばん腑に落ちた一文」</strong>と書いています。
+      これは<strong>ページ②「報告の コツ」へ移して残します</strong>（捨てません）。</p>
+
+    <h3>6.2 「調べ学習」の改名</h3>
+    <p>ご指摘のとおり、学習者向けの画面名としては使いません。3案です。</p>
+    <table>
+      <tr><th>案</th><th>画面名</th><th>語をどこで教えるか</th><th>評価</th></tr>
+      <tr><td>A<br><span class="badge b-a">推奨</span></td><td><strong>🔍 調査：藤木さんは どのくらい えらい 人？</strong></td>
+        <td>「調査（ちょうさ）」は<strong>すでに <code>content/vocab/vocabulary.json</code> に登録済み</strong>なので、
+          押せば辞書の吹き出しが出ます。単語テスト <code>hourensou_houkoku</code> にも足す</td>
+        <td>ご指定「調査の意味を教えて使うならOK」に合致。<strong>何が分かるかが題になっている</strong>ので押したくなる</td></tr>
+      <tr><td>B</td><td><strong>🔍 しらべて ならべる：会社の ポジション</strong></td><td>語の説明が不要（動詞のまま）</td><td>N5でも読める。ただし「何が分かるか」が題に出ない</td></tr>
+      <tr><td>C</td><td><strong>🔍 リサーチ：えらい 順に ならべよう</strong></td><td>IT学生には英語由来が通りやすい</td><td>カタカナ語が増える。他の画面名との統一感が落ちる</td></tr>
+    </table>
+    <div class="callout good">
+      <strong>案Aを推す決め手（設計相談で出た指摘）</strong>：この語は<strong>アプリの中で初めて出る語ではありません</strong>。
+      ステージ2「会社を 知る」で、学習者はすでに<strong>「調査シート」</strong>を使っています
+      （<code>content/articles/kaisha_shirabekata.json</code> ほか）。
+      つまり<strong>「調べ学習」だけが、この1画面のためだけの語</strong>でした。
+      「調査」に寄せると、アプリ全体で同じことばになり、IT現場の語（原因調査）にもつながります。
+    </div>
+    <p class="callout"><strong>改名だけでは足りません。</strong>ページ本文を<strong>分かち書きで書き直し</strong>、
+      「応用問題」を「もう1つ（むずかしい）」等に置き換え、記事の「日本もカンボジアと同じで」の断定を外す必要があります（阻害7・8）。</p>
+
+    <h3>6.3 「答えを先に見せない」を、パスワード無しで作る</h3>
+    <p>ご指示の「パスワードは無し」は維持したまま、壁を復活させる方法です。</p>
+    <table>
+      <tr><th>案</th><th>やり方</th><th>実装の重さ</th><th>評価</th></tr>
+      <tr><td>1<br><span class="badge b-a">推奨</span></td>
+        <td><strong>書かせて壁にする</strong>。記事を「問い」と「答え」に割り、その間に
+          <strong>自由記述のもんだい「自分の 答え」を1本入れる</strong>。もんだいは関門なので、
+          <strong>書かないと答えのページが開きません</strong></td>
+        <td><strong>小</strong>（既存の部品だけ。JSON 3本＋並びの更新。エンジンは触らない）</td>
+        <td>壁が確実に立つ。<strong>「考える」が画面上の行為になる</strong>。
+          <code>starter</code>（型文）・<code>english</code>（英語で下書き可）で白紙恐怖も防げる。
+          <strong>Q3に初めて答える場所ができる</strong></td></tr>
+      <tr><td>2</td><td><strong>順路だけで隠す</strong>。記事を2本に割り、間にスキットを挟む（書く欄は作らない）</td>
+        <td><strong>ゼロ</strong>（並べ替えのみ）</td>
+        <td>答えの先出しは消えるが、<strong>考えたかどうかは学習者まかせ</strong>。案1が採れないときの最低線</td></tr>
+      <tr><td>3</td><td><strong>押して開くブロック</strong>を記事に新設（<code>kind: "reveal"</code>）</td>
+        <td>中（<code>schema.ts</code>＋表示部品＋検査。<strong>共有ファイル＝要許可・横断変更</strong>）</td>
+        <td>タップ1回で開けるので<strong>関門にならず</strong>、予測を作らないまま開く人が残る。案1で足ります</td></tr>
+    </table>
+    <p><strong>推奨は案1</strong>です。ご指示の「パスワードは無し」を守ったまま、
+      パスワードが担っていた<strong>「考える時間を強制する」役割だけ</strong>を引き継げます。</p>
+  </section>
+
+  <!-- ============ 7 ============ -->
+  <section class="chapter" id="s7">
+    <h2 class="sec"><span class="num">7</span>具体的な変更箇所</h2>
+
+    <div class="callout warn">
+      <strong>先に重要な注意</strong>：報連相3ステージのコンテンツJSONは<strong>手書きではなく生成物</strong>です。
+      正本は <code>scripts/gen_hourensou_content.mjs</code>（2,340行）で、
+      <code>content/**.json</code> はそこから書き出されています。
+      <strong>JSONだけ直すと、次に生成した人が元に戻します。</strong>直す場所は必ずこのスクリプトです。
+    </div>
+
+    <h3>変更1：ステージの並び</h3>
+    <p><strong>場所</strong>：<code>scripts/gen_hourensou_content.mjs</code> L877〜L901（<code>write("stages","houkoku",…)</code> の <code>contents</code>）
+      → 生成先 <code>content/stages/houkoku.json</code></p>
+    <table>
+      <tr><th>いま</th><th>あと</th></tr>
+      <tr><td><code>houkoku_lecture(article)<br>houkoku_skit(skit)<br>houkoku_listening(listening)<br>houkoku_stamp(link)<br>houkoku_quiz(quizset)<br>houkoku_meeting(meeting)<br>houkoku_quest(link)<br>houkoku_search(link)</code></td>
+        <td><code>houkoku_lecture(article) ←問いまで<br>houkoku_answer(quizset) ←新設・壁<br>houkoku_skit(skit)<br>houkoku_kotsu(article) ←新設・答え<br>houkoku_listening(listening)<br>houkoku_quiz(quizset)<br>houkoku_search(quizset) ←改名・種別変更<br>houkoku_hierarchy(article) ←新設・答え合わせ<br>houkoku_meeting(meeting)<br>houkoku_quest(link)</code></td></tr>
+    </table>
+    <p>あわせて <code>description</code> の <code>"最後は 報告クエストで 一日を 遊びます。"</code> が事実と一致します（阻害11の解消）。</p>
+
+    <h3>変更2：記事を3本に割る</h3>
+    <p><strong>場所</strong>：同スクリプト L510〜L640（<code>write("articles","houkoku_lecture",…)</code>）</p>
+    <table>
+      <tr><th>いまのブロック</th><th>行き先</th><th>直す内容</th></tr>
+      <tr><td>[0] hero</td><td>ページ①</td><td>lead から <code>"一番 大切なのは チームワークです"</code> を<strong>削除</strong>（答えの先出し）。代わりに<strong>役割</strong>「あなたは PG（プログラマー）です」を冒頭へ</td></tr>
+      <tr><td>[1]〜[3] 報連相の3つ</td><td>ページ①</td><td>そのまま。カードに英語を補う（「指示」「事実」）</td></tr>
+      <tr><td>[4]〜[8] なぜ報告するの？＋答え</td><td>ページ①</td><td>見出しを旧アプリの問い <code>"日本の 会社で 一番 大切な ことは 何ですか。"</code> に戻し、<strong>答えの段落[6]はページ②へ移す</strong></td></tr>
+      <tr><td>[9]〜[11] 場面＋Q1〜Q3</td><td>ページ①<strong>の最後</strong></td><td>そのまま。ここでページを終える＝壁になる</td></tr>
+      <tr><td>[12][13] 報告の コツ</td><td><strong>ページ②（新設 <code>houkoku_kotsu</code>）</strong></td><td>枠組みを絵に合わせて<strong>「件 → 結論 → 事実 → お願い」</strong>に統一。「3つのパターン」を<strong>「いつ 報告するか」3つ</strong>に言い換え、<strong>それぞれの言い方の例を書き足す</strong>。スタンプから救った一文をここへ</td></tr>
+      <tr><td>[14]〜[17] 会社の ポジション（階級）</td><td><strong>ページ③（新設 <code>houkoku_hierarchy</code>）＝調査の後</strong></td><td>藤木さんの予告文を<strong>「さっき聞いた藤木さんは、この位置です」</strong>に書き換え。<code>"日本も カンボジアと 同じで"</code> の断定を外す</td></tr>
+    </table>
+
+    <h3>変更2b：壁になる「自分の 答え」を新設（<code>houkoku_answer</code>）</h3>
+    <p><strong>場所</strong>：同スクリプトに <code>write("quizsets","houkoku_answer",…)</code> を新規追加</p>
+    <ul>
+      <li>Q1〜Q3をそのまま <code>type: "free"</code> の3問に（<code>phase: "production"</code>）</li>
+      <li>各問に <code>starter</code>（打ちながら見られる型文）と <code>placeholder</code> を置く。
+        <strong>ただし答えそのものは書かない</strong>（ヒントは穴あきパターン文まで＝ルーブリック R4-3）</li>
+      <li><code>english</code> 欄を開けておく（英語で下書きしてよい。採点は日本語欄だけ）</li>
+      <li><strong>正誤は見ません。</strong>書けば通ります（<code>minLength</code> で短すぎる返事だけ止める）</li>
+    </ul>
+
+    <h3>変更3：階級の図の名前の食い違い</h3>
+    <p><strong>場所</strong>：<code>public/img/hourensou/listening/houkoku_hierarchy.webp</code></p>
+    <table>
+      <tr><th>案</th><th>やり方</th><th>コスト</th></tr>
+      <tr><td>推奨</td><td><strong>図を作り直す</strong>（Codex image-gen-2）。取締役を<strong>藤木さん</strong>に、会社名をネクストメイクに、絵柄をアプリのテイスト（人間・温かいアニメ調）へ。報連相の絵44枚はすでに作り直し済みなので、この1枚だけ取り残されている状態</td><td>絵1枚</td></tr>
+      <tr><td>暫定</td><td>図はそのままにし、本文を<strong>「これは べつの 会社（どうぶつ商事）の れいです」</strong>と明示する</td><td>1行</td></tr>
+    </table>
+
+    <h3>変更4：済スタンプを外す</h3>
+    <ul>
+      <li><code>scripts/gen_hourensou_content.mjs</code> L2302〜（<code>write("links","houkoku_stamp",…)</code>）を削除</li>
+      <li><code>content/links/houkoku_stamp.json</code> を削除 → <code>src/content/git-contents.generated.ts</code> を再生成</li>
+      <li><code>public/tools/hourensou/houkoku_stamp.html</code> ／ <code>.data.js</code> を削除</li>
+      <li><strong>検査の追随が要ります</strong>：<code>tests/e2e/hourensou.spec.ts</code>（ツールページの有無を見ている）と
+        <code>tests/opennext_cache_mode.test.ts</code>（経路一覧）。
+        <em>教材の数を減らすとE2Eが落ちるのは既知の型です</em></li>
+    </ul>
+
+    <h3>変更5：調べ学習を「調査」に作り替える</h3>
+    <ul>
+      <li><strong>種別を <code>link</code> → <code>quizset</code>（<code>type: "free"</code> の自由記述）へ</strong>。関門になり、素通りできなくなる。
+        答えがアプリの中に残るので、先生が <code>/admin/records</code> で読める（いまは外部シートに書いて終わり）。
+        <em>※ <code>link</code> のまま <code>gates: true</code> を付ける手は使えません——<code>houkoku_search.html</code> は完了の合図を送らないため、
+        ステージが進まなくなります（<a href="#s5">5.3の注記</a>）</em></li>
+      <li>画面名：<strong>「🔍 調査：藤木さんは どのくらい えらい 人？」</strong>（6.2 案A）</li>
+      <li>本文を<strong>分かち書き</strong>で書き直す。「応用問題」を平易な言い方へ</li>
+      <li>設問は2問だけに絞る：①日本の階級を えらい順に ならべる ②<strong>カンボジアでは どうですか</strong>（比較を学習者に開く）</li>
+      <li>外部シートへのリンクは<strong>残す</strong>（先生の運用）。ただし答えの本体はアプリ内に置く</li>
+    </ul>
+
+    <h3>変更6：ことばの台帳</h3>
+    <ul>
+      <li><code>content/vocab/vocabulary.json</code> に <strong>「件（けん）」「階級（かいきゅう）」</strong>を追加（英語つき）</li>
+      <li><code>content/wordstages/hourensou_houkoku.json</code> の <code>wordIds</code> に足す</li>
+      <li>あわせて記事の <code>furigana</code> 辞書も更新（ことばチップの吹き出しは記事の読み辞書を使うため）</li>
+    </ul>
+
+    <h3>変更7：もんだいに1〜2問足す</h3>
+    <ul>
+      <li>型の確認：「報告は どの 順に 言いますか」（件→結論→事実→お願い の並べ替え）</li>
+      <li>語の確認：「『ログイン機能の <strong>件</strong>ですが』の『件』は どういう 意味ですか」</li>
+      <li>ナレーションの復唱問題（<code>h_q5</code>・<code>h_blank1</code>）は<strong>減らす</strong>（音声の冒頭を思い出すだけの問い）</li>
+    </ul>
+
+    <h3>変更8（小）：ミーティングの役の入れ替わりを明示</h3>
+    <p><code>focus</code> に「<strong>きょうは ヘンディさんが 上司の 役を します</strong>」を先頭で大きく出す。
+      リスニングで部下だった人が上司になることを、始まる前に伝える。</p>
+
+    <details class="raw">
+      <summary>影響範囲（触るファイル一覧）</summary>
+      <div class="rb">
+        <table>
+          <tr><th>ファイル</th><th>種類</th><th>共有ファイルか</th></tr>
+          <tr><td><code>scripts/gen_hourensou_content.mjs</code></td><td>正本（生成元）</td><td>いいえ</td></tr>
+          <tr><td><code>content/stages/houkoku.json</code> ほか教材6本</td><td>生成物</td><td>いいえ</td></tr>
+          <tr><td><code>content/articles/houkoku_kotsu.json</code>／<code>houkoku_hierarchy.json</code>／<code>content/quizsets/houkoku_answer.json</code></td><td>新規（生成物）</td><td>いいえ</td></tr>
+          <tr><td><code>content/vocab/vocabulary.json</code>／<code>wordstages/hourensou_houkoku.json</code></td><td>語彙台帳</td><td>いいえ（ただし他ステージの画面に語チップが増える）</td></tr>
+          <tr><td><code>public/tools/hourensou/houkoku_search.html</code></td><td>練習ページ</td><td>いいえ</td></tr>
+          <tr><td><code>public/img/hourensou/listening/houkoku_hierarchy.webp</code></td><td>画像</td><td>いいえ</td></tr>
+          <tr><td><code>tests/e2e/hourensou.spec.ts</code>／<code>tests/opennext_cache_mode.test.ts</code></td><td>検査</td><td>いいえ</td></tr>
+          <tr><td><code>src/content/schema.ts</code>（案2「押して開く」を採る場合のみ）</td><td>スキーマ</td><td><strong>はい・要許可</strong></td></tr>
+        </table>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ 8 ============ -->
+  <section class="chapter" id="s8">
+    <h2 class="sec"><span class="num">8</span>なぜ こうなったか（原因）</h2>
+
+    <p>「AIが手を抜いた」という説明では再発を防げないので、<strong>どの判断が、どの指示のもとで、どう化けたか</strong>を追跡しました。</p>
+
+    <h3>原因1 <span class="badge b-x">本体</span> 「パスワードは無し」が「隠すのは無し」に化けた</h3>
+    <p><strong>証拠</strong>：移植PR #252 の対応表に、こう書かれています。</p>
+    <blockquote>「パスワードで 開く 仕組みは なし」 → 「<strong>旧アプリの 関門を ぜんぶ 外した</strong>（進行は ステージの 関門に まかせる）」</blockquote>
+    <p><strong>何が起きたか</strong>：ご指示は<strong>認証の仕組み</strong>（先生が配るパスワード）の廃止でした。
+      ところがAI側は<strong>その仕組みが担っていた学習上の役割</strong>——「自分で考える時間を強制的に作る」——まで一緒に捨てました。
+      「ステージの関門にまかせる」と書いていますが、<strong>ステージの関門は教材と教材の間にしかありません</strong>。
+      1本の記事の中の「問い → 答え」の壁は、誰も引き継いでいません。</p>
+    <p><strong>これで同時に破れた規律</strong>：
+      <code>01_理解設計ガイド.md</code> P2「開く箱」、
+      <code>review_rubric.md</code> R3-3「最初から全部読める構成は違反」、R4-4「模範解答は隠されている」。
+      <strong>ルーブリックには項目があったのに、この移植では誰も回していません。</strong></p>
+
+    <h3>原因2 <span class="badge b-x">本体</span> 「順路」を検収する仕組みが、そもそも無い</h3>
+    <p><strong>証拠</strong>：<code>docs/design/review_rubric.md</code> の R1〜R8 は<strong>すべて「教材1本の中」</strong>を見ます。
+      R4-1 の「インプット→変換→産出」も1本の中の話です。
+      一方 <code>src/content/schema.ts</code> は <code>contents</code> にこう注釈しています：</p>
+    <blockquote><code>/** 学習順そのもの（並びが正）。 */</code></blockquote>
+    <p><strong>何が起きたか</strong>：<strong>「学習順そのもの」と宣言されている配列を、機械も人も検査していません。</strong>
+      <code>npm run lint:content</code> は並びを見ません。検収エージェント（rubric-checker）も担当が R1〜R8 なので見ません。
+      その結果、「答え → 問い」「未登場の人物の説明」が誰にも止められませんでした。</p>
+
+    <h3>原因3 <span class="badge b-w">重</span> 「遊びが薄い」への答えが「本数を足す」になった</h3>
+    <p><strong>証拠</strong>：追加PR #257 の冒頭。</p>
+    <blockquote>「報連相の3ステージは 読んで 聞くばかりで 遊びが 薄かった。企画から ユーザーが えらんだ <strong>7つの 教材＋ことば</strong>を 入れる。」</blockquote>
+    <p><strong>何が起きたか</strong>：足す教材の企画はご承認いただいたものですが、
+      <strong>PR本文のどこにも「足したあとの順路」が書かれていません</strong>（教材の一覧表だけ）。
+      結果、報告ステージは5本→8本になり、<strong>同じ音声を使う教材が2本連続</strong>し、
+      いちばん頭を使う課題（調べ学習）がゲームの後ろへ押し出されました。
+      <strong>並びは「足した順」に決まってしまった</strong>のが実態です。</p>
+
+    <h3>原因4 <span class="badge b-w">重</span> 新しい枠組みを発明することに、歯止めが無い</h3>
+    <p><strong>証拠</strong>：「報告の4つのパーツ（こえかけ・じじつ・みこみ・おねがい）」は
+      <code>content/links/houkoku_stamp.json</code> と <code>public/tools/hourensou/houkoku_stamp.data.js</code> にしか存在せず、
+      レクチャー・スキット・リスニングのどこでも教えていません。
+      一方で記事は「3つのパターン」、絵は「件・結論・事実・お願い」と言っています。</p>
+    <p><strong>何が起きたか</strong>：ミニゲームを面白くするために<strong>新しい分類軸が必要になり、その場で作られました</strong>。
+      作った側から見れば「4つに分けたほうがゲームになる」は正しい判断です。
+      しかし学習者から見ると、<strong>覚える対象が1つ増えただけ</strong>です。
+      <code>01_理解設計ガイド.md</code> のアンチパターン2「概念ラベルを学習者に見せない」・4「UIメタ用語を画面に出さない」に触れますが、
+      <strong>「本文に無い枠組みを新設してはいけない」という条文は、どこにもありませんでした。</strong></p>
+
+    <div class="callout bad">
+      <strong>これは1ステージの事故ではありません。</strong>
+      昨日（2026-09-09）に立てた台帳 <strong>#358「報連相：連絡 の 理解設計 立て直し」</strong>の1番目の指摘は、
+      <strong>「覚える『型』が 1ステージに 5種類ある」</strong>でした。今回の報告ステージは「3種類」。
+      <strong>同じ壊れ方が、隣のステージでも起きています。</strong>
+      つまり原因4（枠組みの発明に歯止めが無い）と原因2（順路を誰も検収しない）は、
+      <strong>報告ステージ固有の失敗ではなく、いまの作り方が構造的に生む失敗</strong>です。
+      <a href="#s9">9章</a>の再発防止は、この2ステージ分をまとめて塞ぐものとして読んでください。
+    </div>
+
+    <h3>原因5 <span class="badge b-b">中</span> ペルソナ通しの記録が、PRに残っていない</h3>
+    <p><strong>証拠</strong>：<code>01_理解設計ガイド.md</code> Step 9 と品質チェックリストの最終行は、こう要求しています。</p>
+    <blockquote>「<strong>最後に必ず『N4のカンボジア人学生』のペルソナで最初から最後まで通しプレイする</strong>」</blockquote>
+    <p>しかし PR #257 の「検証」欄にあるのは、<code>check_fast</code>・e2e 18件・390pxのスクショ・サイズ——<strong>すべて機械の証拠</strong>です。
+      ペルソナ通しの記録はありません。<strong>機械は「動くか」しか見ません。「分かるか」は見ません。</strong></p>
+    <p>今回、実際にN5/N4/N3の3体を通したところ、<strong>12件の理解の壊れ</strong>が出ました。
+      同じことを作った直後にやっていれば、リリース前に止まっていた種類のものです。</p>
+
+    <h3>原因6 <span class="badge b-b">中</span> 移植の「正」がどこにも記録されなかった</h3>
+    <p><strong>証拠</strong>：旧アプリの順路は、HTMLのボタンでしか表現されていませんでした——
+      <code>question.html</code> のボタン「<strong>調べ学習へ (Research)</strong>」→ <code>search.html</code> の「<strong>次のページへ</strong>」→ <code>hierarchy.html</code>。
+      この<strong>3ページの因果が、移植先のどの文書にも書き写されていません。</strong></p>
+    <p><strong>何が起きたか</strong>：移植PRは「どの素材を どこへ移したか」の表は作りましたが、
+      <strong>「どの順に並んでいたか・なぜその順だったか」の表は作りませんでした</strong>。
+      素材は全部移りましたが、<strong>順番という設計情報だけが移送中に落ちました</strong>。</p>
+  </section>
+
+  <!-- ============ 9 ============ -->
+  <section class="chapter" id="s9">
+    <h2 class="sec"><span class="num">9</span>再発防止：指示系統のどこを どう 変えるか</h2>
+
+    <p>原因1〜6に1対1で対応させた変更案です。<strong>すべて「文章だけが頼り」の箇所ではなく、
+      検問・テンプレ・エージェントの担当という形にして、忘れても効くようにしています。</strong></p>
+
+    <h3>変更案1：<code>docs/design/review_rubric.md</code> に <strong>R9「順路」</strong>を新設 <span class="badge b-a">最優先</span></h3>
+    <p><strong>効く原因</strong>：2・3・6</p>
+    <pre>## R9. 順路（ステージの並び）※教材を足した・並べ替えた・移植したときは必須
+
+| #    | 質問                                                                 | 合格条件 |
+|------|----------------------------------------------------------------------|----------|
+| R9-1 | contents を順に並べ、各教材が前提とする語・人物・枠組みを引用せよ     | すべて「前の教材まで」に出ている。未登場の人物・語の説明は違反 |
+| R9-2 | 問い（考えさせる箇所）と、その答えの位置を対で引用せよ               | 答えが問いより後ろにある。同一画面で問いの直下に答えがあれば違反 |
+| R9-3 | 同じ素材（音声・台本・図）を使う教材を列挙せよ                        | 2本を超えて連続していない。2本目に新しい課題があることを引用で示す |
+| R9-4 | 学習者に見せる枠組み（型・部品・パターン）をすべて列挙せよ            | ステージ内で1つ。文・絵・練習で同じことばを使っている |
+| R9-5 | ステージの description が示す終わりと、contents の最後は一致するか     | 一致する |
+| R9-6 | 関門にならない種別（link・skit・quest）に置かれた課題を列挙せよ        | 一番頭を使う課題が素通りできる位置に無い |</pre>
+
+    <h3>変更案2：<code>.claude/agents/rubric-checker.md</code> の担当範囲を広げる</h3>
+    <p><strong>効く原因</strong>：2</p>
+    <table>
+      <tr><th>いま</th><th>あと</th></tr>
+      <tr><td><code>description</code>：「担当: <strong>R1〜R8</strong> のどれか1つ」</td><td>「担当: <strong>R1〜R9</strong> のどれか1つ。<strong>教材を足した／並べ替えた／移植したターンは R9 を必ず1体立てる</strong>」</td></tr>
+      <tr><td>本文の手順2：ルーブリックの担当セクションを読む</td><td>同じ。R9のときは <code>content/stages/*.json</code> の <code>contents</code> と <code>content-kinds.ts</code> の <code>gates</code> も読む</td></tr>
+    </table>
+
+    <h3>変更案3：<code>AGENTS.md</code> の絶対規律に1条追加</h3>
+    <p><strong>効く原因</strong>：1・4</p>
+    <div class="callout">
+      <strong>追加案（絶対規律 10）</strong><br>
+      <strong>10. 順路と枠組みを勝手に作らない・崩さない。</strong>
+      <ul>
+        <li><strong>仕組みを外すときは、その仕組みが担っていた学習上の役割を先に書き出し、引き継ぎ先を決めてから外す。</strong>
+          （パスワードを外す＝答えを隠さない、ではない。2026-09-10 の指摘の本体）</li>
+        <li><strong>学習者に見せる枠組み（型・部品・パターンの数と名前）を、教材の本文に無いところで新しく作らない。</strong>
+          必要なら先に本文へ足す。<strong>1ステージに枠組みは1つ。文・絵・練習で同じことばを使う。</strong></li>
+        <li><strong>教材を足す／並べ替えるときは、ステージの並びを before → after で書いてから着手する。</strong>
+          並びは「足した順」ではなく「前提が揃う順」で決める。</li>
+      </ul>
+      <em>※ 1・2・5・6・9 と違い、この規律に機械検査はありません。だから R9（検収）とPRテンプレ（記録）の2つで支えます。</em>
+    </div>
+
+    <h3>変更案4：<code>.github/pull_request_template.md</code> に2欄追加</h3>
+    <p><strong>効く原因</strong>：3・5</p>
+    <pre>## 順路（教材を足した・並べ替えた・移植したときだけ）
+
+&lt;!-- before → after を並べて書く。並びが変わらないなら「変更なし」と書く --&gt;
+
+| # | before | after | なぜその位置か |
+|---|--------|-------|----------------|
+
+## ペルソナ通しの記録（教材を触ったときだけ）
+
+&lt;!-- N5/N4/N3 から2体以上。詰まった所と、直したかを書く。機械の緑だけでは検収と数えない --&gt;
+
+- 通したペルソナ:
+- 詰まった所（引用つき）:
+- 直したもの / 台帳へ戻したもの:</pre>
+
+    <h3>変更案5：<code>docs/design/01_理解設計ガイド.md</code> アンチパターン集に2件追加</h3>
+    <p><strong>効く原因</strong>：1・4</p>
+    <table>
+      <tr><th>#</th><th>追加する項目</th><th>由来（実例）</th></tr>
+      <tr><td>13</td><td><strong>「不便な仕掛け」を外すときは、それが作っていた時間・順序・緊張を数え直す。</strong>パスワード・ゲート・伏せ字は、面倒なだけの装置ではなく<strong>考える時間を強制する装置</strong>である</td><td>2026-09-10 報告ステージ。「パスワードは無し」の指示で、問いと答えの壁まで消えた</td></tr>
+      <tr><td>14</td><td><strong>ミニゲームのために新しい分類軸を発明しない。</strong>ゲームは<strong>本文にある枠組みを使って</strong>作る。どうしても新しい軸が要るなら、先に本文（レクチャー）へ足し、絵の中のことばとも揃える</td><td>2026-09-10 報告ステージ。文3つ・絵4つ・ゲーム4つ（名前ちがい）・クエスト「札」の4重化</td></tr>
+    </table>
+
+    <h3>変更案6：移植したステージに「原典対応表」を残す</h3>
+    <p><strong>効く原因</strong>：6</p>
+    <p><code>docs/teaching/</code> に、移植元URL → 新しい教材ID → <strong>旧アプリでの並び順と、その順の理由</strong>を1枚で残します。
+      次に誰かが並べ替えるとき、<strong>何を壊そうとしているかが見える</strong>ようにするためです。</p>
+
+    <h3>優先順位</h3>
+    <table>
+      <tr><th>順</th><th>変更案</th><th>効き目</th><th>手間</th></tr>
+      <tr><td>1</td><td>R9 新設 ＋ rubric-checker の担当拡張（案1・2）</td><td><strong>大</strong>（同じ壊れ方が検収で止まる）</td><td>小</td></tr>
+      <tr><td>2</td><td>PRテンプレに2欄（案4）</td><td>大（記録が残る＝次の人が壊さない）</td><td>小</td></tr>
+      <tr><td>3</td><td>AGENTS.md 規律10（案3）</td><td>中（判断の基準になる）</td><td>小・<strong>要許可</strong></td></tr>
+      <tr><td>4</td><td>01ガイドのアンチパターン追加（案5）</td><td>中</td><td>小・<strong>要許可</strong></td></tr>
+      <tr><td>5</td><td>原典対応表（案6）</td><td>小〜中（移植のときだけ）</td><td>中</td></tr>
+    </table>
+    <div class="callout warn">
+      <strong>許可のお願い</strong>：<code>AGENTS.md</code> と <code>docs/design/</code> は検問で保護されています
+      （Claudeのフックと pre-commit の <code>check_protected_paths.mjs</code> の2重）。
+      案1・3・4・5 はそこに触るので、<strong>着手のご許可をいただいてから</strong>触ります（<a href="#s11">11章</a>）。
+    </div>
+  </section>
+
+  <!-- ============ 10 ============ -->
+  <section class="chapter" id="s10">
+    <h2 class="sec"><span class="num">10</span>ペルソナ検収の生データ</h2>
+
+    <p>カンボジアのIT専攻学生として、<strong>画面に出る順どおりに</strong>8本を通読させました。
+      引用のない指摘は採用しない条件をつけています。</p>
+
+    <table>
+      <tr><th>ペルソナ</th><th>設定</th><th>いちばん重い指摘</th></tr>
+      <tr><td><strong>N5</strong>（19歳・学習1年）</td><td>漢字は「日・本・人・会社」程度。長文は途中で意味が飛ぶ</td>
+        <td>調べ学習のページだけ<strong>分かち書きが無く、急に読めなくなる</strong>／「件」が3回出て一度も説明されない</td></tr>
+      <tr><td><strong>N4</strong>（20歳・学習1年半）</td><td>N4に受かったばかり。長い敬語は聞いても取れない</td>
+        <td>階級の図の<strong>「藤田さん」と本文の「藤木さん」</strong>／<strong>3つと4つ、どちらを覚えるのか</strong></td></tr>
+      <tr><td><strong>N3</strong>（21歳・学習2年）</td><td>クラスで一番できる。退屈だと集中が切れる</td>
+        <td>旧＝「謎→壁→答え」、新＝<strong>「答え→謎の形をした復習」</strong>／済スタンプは<strong>押す作業</strong></td></tr>
+    </table>
+
+    <h3>3体が一致した点</h3>
+    <ul>
+      <li><strong>スキットは良い。</strong>短く、まねでき、自信がつく（3体とも「変えないでほしい」）</li>
+      <li><strong>報告クエストが一番おもしろい。</strong>説明されずに遊んで分かる。<strong>最後に置くべき</strong>（N3：「ここだけ他の7本と作った人が違うみたい」）</li>
+      <li><strong>階級は、藤木さんに会った後に置いてほしい。</strong>（N4：「会う前に予告されても覚えられません」／N5：「階級の話が始まった所で調べるのが自然」）</li>
+      <li><strong>3つと4つの食い違いは全員が指摘した。</strong></li>
+    </ul>
+
+    <h3>3体で割れた点（＝設計判断が要る所）</h3>
+    <table>
+      <tr><th>論点</th><th>N5</th><th>N4</th><th>N3</th><th>本報告の採用</th></tr>
+      <tr><td>済スタンプ</td><td>押すだけならできた。名前を変えれば残してよい</td><td>同じ音声だと先に言ってほしい</td><td>単独の1本として置くのは反対。リスニングの2周目に</td><td><strong>却下</strong>（ご指定に沿う）。良かった一文だけ記事へ回収</td></tr>
+      <tr><td>クエストの位置</td><td>最後（楽しく終わりたい）</td><td>最後</td><td><strong>最初</strong>（何も知らずに失敗して、報告の必要を自分の問題にする）</td><td><strong>最後</strong>。N3案は魅力的だが、30分かかりチーム戦で、関門にできないため入口には置けない</td></tr>
+      <tr><td>ミーティングの位置</td><td>後ろ</td><td><strong>前半と後半に割って、スキットとリスニングの直後に</strong></td><td>後ろ</td><td><strong>後ろ（産出は最後の1つ手前）</strong>。割る案は次の改善候補として台帳へ</td></tr>
+    </table>
+
+    <h3>設計相談（fable）の結論</h3>
+    <p>段階的な進行の作り直しについて、別モデル（fable）に諮問しました。要点だけ：</p>
+    <ul>
+      <li><strong>済スタンプは却下すべき</strong>——「位置を変えても、①同じ音声の3回目 ②修正信号が無い（回数しか見ない）
+        ③数字枠の衝突、の3つは残る」</li>
+      <li><strong>壁は「書かせる」で作る</strong>——記事を割るだけでなく、間に自由記述のもんだいを入れる（本報告 6.3 案1として採用）</li>
+      <li><strong>「3つ」は「いつ 報告するか」に言い換えて残す</strong>——順番（4つ）と種類（3つ）は問いが違うので衝突しない（本報告 5.4 として採用）</li>
+      <li><strong>命名は「調査」に寄せる</strong>——ステージ2「会社を 知る」で既に「調査シート」を使っているため（本報告 6.2 案Aの決め手）</li>
+      <li><strong>こちらの前提の誤りを2件指摘</strong>——リンクも <code>gates: true</code> で関門にできる／自由記述には足場の部品が既にある。
+        <strong>両方コードで確認し、本報告に反映しました</strong>（ただし調査ページは完了の合図を送らないため <code>gates: true</code> は使えない、という追加の確認をこちらで行っています）</li>
+    </ul>
+
+    <details class="raw">
+      <summary>N5ペルソナ：印象的だった箇所（抜粋）</summary>
+      <div class="rb">
+        <ul>
+          <li>「『済スタンプ』が分からない。『スタンプ』はLINEのだと分かるけど、『済（すみ）』は習っていない」</li>
+          <li>「『ログイン機能の <strong>件</strong>ですが』——『件』が2回目。まだ誰も教えてくれない」</li>
+          <li>「『来週の テストを 1日 遅らせて いただけませんでしょうか。』——この言い方は読めない。長すぎる。<strong>自分では絶対に作れない</strong>」</li>
+          <li>「ログを見る／もう一度起こしてみる／他の画面もためす——<strong>全部分かる。ここはITの言葉なので、いちばん自信を持って読めた。うれしかった</strong>」（クエスト）</li>
+          <li>「もんだいは全部リスニングの話しか聞かない。<strong>読んだ所と押した所が、テストされない</strong>」</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="raw">
+      <summary>N4ペルソナ：印象的だった箇所（抜粋）</summary>
+      <div class="rb">
+        <ul>
+          <li>「文は3つ、絵は4つ。<strong>どちらを覚えるのか分かりませんでした</strong>」</li>
+          <li>「絵には『取締役 － 藤田さん』と書いてあります。藤木さんではなく藤田さんです。<strong>同じ人なのか、別の人なのか、わたしには分かりませんでした</strong>」</li>
+          <li>「『よろしいですか』『よろしいでしょうか』『いただけませんでしょうか』『いただけませんか』——<strong>4つの形が説明なしで出てくる</strong>」</li>
+          <li>「『4つの パーツが そろった 報告は、悪い ニュースでも「ありがとう」で 受け取られます。』——<strong>このステージでいちばん腑に落ちた一文</strong>です」</li>
+          <li>「もう調べる必要がありません。<strong>絵を写すだけです</strong>」（調べ学習）</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="raw">
+      <summary>N3ペルソナ：印象的だった箇所（抜粋）</summary>
+      <div class="rb">
+        <ul>
+          <li>「<strong>答えが3センチ下にあるのに考える人はいない。</strong>書く欄も、押して開くボタンも、何もない」</li>
+          <li>「旧は『謎 → 壁 → 答え』、新は『答え → 謎の形をした復習』。<strong>パスワードという不便な仕掛けが、実は考える時間を強制的に作る装置だった</strong>」</li>
+          <li>「回数しか見ない＝タイミングが要らない。<strong>挑戦ではなく作業</strong>」（済スタンプ）</li>
+          <li>「教材が『同じ』と結論を出したあとで『違いを調べろ』と言っている。<strong>自分の国の答えを先に決められた感じがして、正直いやだった</strong>」</li>
+          <li>「ヘンディ先輩の『バグを三日隠した』話が<strong>このステージで一番おもしろい。なのにハートが5つ貯まらないと出ない所に埋まっている</strong>」</li>
+          <li>「『調べ学習』——画面を開く前に想像したのは『宿題のページ』。<strong>8番目にこれがあると分かった時点で、ここで終わりだなと思いました</strong>」</li>
+        </ul>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ 11 ============ -->
+  <section class="chapter" id="s11">
+    <h2 class="sec"><span class="num">11</span>判断していただきたいこと（3つだけ）</h2>
+
+    <table>
+      <tr><th>#</th><th>お伺い</th><th>こちらの推奨</th></tr>
+      <tr><td>1</td><td><strong>順路の作り直し</strong>（<a href="#s5">5章</a>の10本の並び）で着手してよいか。
+        とくに「記事を3本に割る（問い／コツ／階級）」と「調査を答えの前に戻す」の2点</td>
+        <td><strong>この並びで着手</strong>。データの並べ替えが中心で、新しい部品は作りません</td></tr>
+      <tr><td>2</td><td><strong>済スタンプは削除でよいか</strong>（ファイルごと消すか、ステージから外して残すか）</td>
+        <td><strong>ステージから外し、ファイルも消す</strong>。良かった一文は記事へ回収します</td></tr>
+      <tr><td>3</td><td><strong>保護ファイルを触る許可</strong>（<a href="#s9">9章</a>の再発防止：<code>AGENTS.md</code>・<code>docs/design/review_rubric.md</code>・<code>01_理解設計ガイド.md</code>・PRテンプレ）</td>
+        <td><strong>案1・2・4から着手</strong>（ルーブリックR9・検収エージェント・PRテンプレ）。AGENTS.md と 01ガイドは、その後で</td></tr>
+    </table>
+
+    <div class="callout good">
+      <strong>ご返事は「1 OK／2 OK／3 OK」の3語で足ります。</strong>
+      違うご判断があれば、その番号だけ書き換えてください。
+    </div>
+
+    <h3>着手後にお見せするもの</h3>
+    <ul>
+      <li>STG（<code>staging-academy.nexmax.workers.dev</code>）の <code>/houkoku</code> を開いて、<strong>上から順に押していくだけ</strong>で確かめられる形にします</li>
+      <li>直したあと、<strong>同じN5/N4/N3の3体でもう一度通し</strong>、詰まりが何件残ったかを報告します</li>
+    </ul>
+  </section>
+
+  </div>
+
+  <footer>報連相「報告」ステージ 理解設計レビュー報告書 v1.0 ・ 2026-09-10 ・
+    出典: 旧アプリ（<code>nextmake_onbording</code>）／<code>content/</code>・<code>scripts/gen_hourensou_content.mjs</code>／PR #252・#257／
+    <code>docs/design/01_理解設計ガイド.md</code>・<code>docs/design/review_rubric.md</code>／N5・N4・N3ペルソナ検収</footer>
+</main>
+
+</div>
+
+<script type="module">
+  import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+  mermaid.initialize({ startOnLoad: true, theme: "base",
+    themeVariables: { primaryColor:"#eaf0fb", primaryBorderColor:"#3a5ba0",
+      lineColor:"#c9a45c", fontFamily:"system-ui, sans-serif" } });
+</script>
+</body>
+</html>
