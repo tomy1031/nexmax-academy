@@ -98,12 +98,13 @@
     <li><a href="#s2">2. いまの形と、その問題</a></li>
     <li><a href="#s3">3. 朝礼と夕礼の違い（調査）</a></li>
     <li><a href="#s4">4. ミーティングの作り直し</a></li>
-    <li><a href="#s5">5. 5つの シチュエーション</a></li>
-    <li><a href="#s6">6. 場面転換の 演出</a></li>
-    <li><a href="#s7">7. ステージの 形</a></li>
-    <li><a href="#s8">8. エンジンに 要る 変更</a></li>
-    <li><a href="#s9">9. 段取りと 見積り</a></li>
-    <li><a href="#s10">10. 判断していただきたいこと</a></li>
+    <li><a href="#s5">5. 2つの モード</a></li>
+    <li><a href="#s6">6. <strong>シナリオ 本文</strong></a></li>
+    <li><a href="#s7">7. N5と N3の 両立</a></li>
+    <li><a href="#s8">8. 日本語の 見かた</a></li>
+    <li><a href="#s9">9. 朝礼メモ と ヘンディさんの 話</a></li>
+    <li><a href="#s10">10. エンジンと 段取り</a></li>
+    <li><a href="#s11">11. 判断していただきたいこと</a></li>
     <li><a href="#changelog">変更履歴 / Changelog</a></li>
   </ol>
 </nav>
@@ -114,7 +115,7 @@
     <h1>朝礼・夕礼 ステージ 設計書</h1>
     <p class="en">One stage, five situations, panels that open when you say it</p>
     <p class="meta">
-      <span>版: v1.0</span>
+      <span>版: v2.0</span>
       <span>作成日: 2026-09-10</span>
       <span>台帳: #366</span>
       <span>状態: <strong>まだ何も実装していません</strong></span>
@@ -124,11 +125,14 @@
   <details class="changelog" id="changelog">
     <summary>
       <span class="chev">▶</span>変更履歴 / Changelog
-      <span class="latest">最新: v1.0 (2026-09-10)</span>
+      <span class="latest">最新: v2.0 (2026-09-10)</span>
     </summary>
     <div class="cl-body">
       <table>
         <tr><th>版</th><th>日付</th><th>変更内容</th><th>修正箇所</th></tr>
+        <tr><td>v2.0</td><td>2026-09-10</td>
+          <td><strong>大きく足した。</strong>①2モード（1週間／いろいろな案件）②場面を5→<strong>16本</strong>（上級つき）③<strong>シナリオ本文3本を全文で</strong>④N5とN3の両立と申し送り案⑤日本語の見かたを8つに深める案⑥朝礼メモは1問だけ残す／ヘンディさんの話は外す。</td>
+          <td><a href="#s5">5</a> ・ <a href="#s6">6</a> ・ <a href="#s7">7</a> ・ <a href="#s8">8</a> ・ <a href="#s9">9</a></td></tr>
         <tr><td>v1.0</td><td>2026-09-10</td>
           <td>初版。2026-09-10 のご指定（1ステージにまとめる／5シチュエーション／追い質問／複数パネル／見本／藤木さんの総括／💗の削除）を設計に落とした。</td>
           <td><a href="#s4">4</a> ・ <a href="#s5">5</a> ・ <a href="#s8">8</a></td></tr>
@@ -165,16 +169,22 @@ flowchart LR
     <h3>ご指定と、どう応えるか</h3>
     <table>
       <tr><th>ご指定</th><th>設計</th></tr>
-      <tr><td>1ステージにまとめ、時間経過が分かるアナウンス（モーダル）を入れる</td><td><a href="#s6">6章</a>の<strong>時間カード</strong>（全画面・曜日と時刻・チームのようす）</td></tr>
-      <tr><td>5つくらいのシチュエーション、やや難易度をつける</td><td><a href="#s5">5章</a>。<strong>開くパネルが3→4→5→5→6と増える</strong></td></tr>
-      <tr><td>事前にメモを取らせない。詳しい情報を先に与える</td><td><strong>朝礼メモ（`asakai_memo`）は廃止</strong>。場面カードで情報を渡す（<a href="#s4">4.2</a>）</td></tr>
-      <tr><td>足りない情報はヘンディさんが追い質問を繰り返す</td><td><a href="#s4">4.3</a>。未開封のパネルから1つ選んで聞き返す</td></tr>
-      <tr><td>複数答えられていたら複数パネルが同時に開く</td><td><strong>エンジン変更が要ります</strong>（いまは1発話＝1パネル）。<a href="#s8">8章</a></td></tr>
+      <tr><td>1ステージにまとめ、時間経過が分かるアナウンス（モーダル）を入れる</td><td><a href="#tenkan">5.2</a> の<strong>時間カード</strong>（全画面・曜日と時刻・チームのようす）。実物は <a href="#s6">6章</a> のシナリオに</td></tr>
+      <tr><td>5つくらいのシチュエーション、やや難易度をつける</td><td><a href="#s5">5章</a>。<strong>5本にこだわらず16本</strong>（★1〜★3）。開くパネルは3→6と増える</td></tr>
+      <tr><td>事前にメモを取らせない。詳しい情報を先に与える</td><td><strong>朝礼メモは1問だけ残す</strong>（2026-09-10 の指定。<a href="#s9">9.1</a>）。情報は場面カードで渡す（<a href="#s4">4.2</a>）</td></tr>
+      <tr><td>足りない情報はヘンディさんが追い質問を繰り返す</td><td><a href="#s4">4.3</a>。未開封のパネルから1つ選んで聞き返す。実物は <a href="#s6">6章</a></td></tr>
+      <tr><td>複数答えられていたら複数パネルが同時に開く</td><td><strong>エンジン変更が要ります</strong>（いまは1発話＝1パネル）。<a href="#s10">10.1</a></td></tr>
       <tr><td>最初は見本。別の人が先に報告する</td><td>ヘンディさんが先に話す形は<strong>すでにあります</strong>。これを場面ごとに置く</td></tr>
-      <tr><td>全部開いたら残りのメンバーが報告し、藤木取締役が総括して終わる</td><td><a href="#s4">4.4</a>。<strong>複数名の参加＝エンジン変更</strong></td></tr>
+      <tr><td>全部開いたら残りのメンバーが報告し、藤木取締役が総括して終わる</td><td><a href="#s4">4.4</a>。<strong>複数名の参加＝エンジン変更</strong>。実物は <a href="#s6">6.3</a> の藤木さんの総括</td></tr>
       <tr><td>💗きょり／エピソードは無駄</td><td><strong>この教材では `affection` を持たない</strong>。<a href="#s4">4.5</a></td></tr>
-      <tr><td>「はじめての 朝礼」は消したい</td><td><strong>削除に賛成です。</strong>理由は <a href="#s2">2.3</a></td></tr>
+      <tr><td>「はじめての 朝礼」は消したい</td><td><strong>削除に賛成です。</strong>理由は <a href="#s2">2.3</a>（順路の逆＋ニャムさんをできない例にしている）</td></tr>
       <tr><td>朝礼と夕礼の違いをWebで調べて説明文を作る</td><td><a href="#s3">3章</a>。調べた結果と、教材に載せる文案</td></tr>
+      <tr><td><strong>時間経過と、いろいろな案件の2パターンいけますか</strong></td><td><strong>両方できます。</strong>同じエンジンで、並べ方だけ変える（<a href="#s5">5章</a>）</td></tr>
+      <tr><td><strong>5個にこだわらない。10〜20、上級もあっていい</strong></td><td><strong>16本。</strong>★1が6本・★2が5本・★3が5本（<a href="#s5">5.1</a>）</td></tr>
+      <tr><td><strong>N5がついていけて、N3も満足するように。申し送りにしたい</strong></td><td><a href="#s7">7章</a>。4つのダイヤル＋<strong>AGENTS.md 規律11の案</strong></td></tr>
+      <tr><td><strong>日本語のチェックと言い方の提示をもっと分析的に</strong></td><td><a href="#s8">8章</a>。<strong>見かたを8つに</strong>＋<strong>文を色の帯に分ける</strong>（鍵ゼロで動く）</td></tr>
+      <tr><td><strong>朝礼メモは最初の問題だけほしい</strong></td><td><a href="#s9">9.1</a>。1問だけ残し、場面カードのあとに置く</td></tr>
+      <tr><td><strong>ヘンディさんの話は実在の人物へのマイナスになる</strong></td><td><a href="#s9">9.2</a>。<strong>外すことを推します</strong>（新キャラのコストが話1本に見合わない）</td></tr>
     </table>
   </section>
 
@@ -349,173 +359,547 @@ flowchart LR
 
   <!-- ============ 5 ============ -->
   <section class="chapter" id="s5">
-    <h2 class="sec"><span class="num">5</span>5つの シチュエーション</h2>
-
-    <p><strong>難しさは「開くパネルの数」と「どこまで自分で足すか」で上げます。</strong>日本語の難しさは上げません。</p>
-
-    <table>
-      <tr><th>#</th><th>場面</th><th>いつ・だれ</th><th>開くパネル</th><th>ここで新しく学ぶこと</th></tr>
-      <tr><td>1</td><td><strong>はじめての 朝礼</strong></td><td>月曜 9:30<br>司会=ヘンディ</td>
-        <td>3枚：きのう／きょう／こまりごと</td><td><strong>3つの形</strong>。こまりごとは「ありません」でも開く</td></tr>
-      <tr><td>2</td><td><strong>数字を 入れる 朝</strong></td><td>火曜 9:30<br>司会=ヘンディ</td>
-        <td>4枚：きのう／<strong>どこまで（数字）</strong>／きょう／こまりごと</td><td><strong>数字を1つ入れる</strong>と、聞く人が予定を立てられる</td></tr>
-      <tr><td>3</td><td><strong>こまって いる 朝</strong></td><td>水曜 9:30<br>司会=ヘンディ</td>
-        <td>5枚：＋<strong>見込み</strong>／<strong>お願い</strong></td><td>「こまっています」で終わらせない。<strong>見込みとお願いまで</strong></td></tr>
-      <tr><td>4</td><td><strong>夕礼（この チームは 朝礼を しない）</strong></td><td>木曜 17:30<br>司会=富田</td>
-        <td>4枚：きょう／<strong>あした</strong>／こまりごと／お願い</td><td><strong>ことばが変わる</strong>（きのう→きょう、きょう→あした）</td></tr>
-      <tr><td>5</td><td><strong>リリース前日の 朝</strong></td><td>金曜 9:30<br>司会=ヘンディ<br>藤木さん同席</td>
-        <td>6枚：＋<strong>影響</strong></td><td><strong>その こまりごとが、いつ・だれに ひびくか</strong></td></tr>
-    </table>
+    <h2 class="sec"><span class="num">5</span>2つの モード（ご指定の 2パターン）</h2>
 
     <div class="callout good">
-      <strong>1週間の物語になっています。</strong>月→火→水→木→金。
-      場面4で「このチームは朝礼をしません」と場が切り替わるので、
-      <strong>「会社やプロジェクトでやり方がちがう」を、読むのではなく体験します</strong>（ご指定の芯）。
+      <strong>両方できます。しかも同じエンジンで動きます。</strong>変わるのは
+      <strong>場面の並べ方だけ</strong>です。5本にこだわらず、<strong>場面プールを16本</strong>用意し、
+      そこから2つの入り口を作ります。
     </div>
 
-    <h3>各場面の「渡す情報」（抜粋・場面3）</h3>
-    <pre>【水曜 9:30 — こまって いる 朝】
+    <table>
+      <tr><th></th><th>モードA「チームの 1週間」</th><th>モードB「いろいろな 朝礼」</th></tr>
+      <tr><td>並び</td><td><strong>月→金の 固定5本</strong></td><td><strong>プールから えらぶ</strong>（★でしぼる）</td></tr>
+      <tr><td>案件</td><td>1つ（ログイン機能）を追いかける</td><td><strong>案件も 相手も 毎回ちがう</strong></td></tr>
+      <tr><td>時間の演出</td><td><strong>効く。</strong>「火曜 9:30」で時間がとぶ</td><td>効かない。かわりに<strong>案件カード</strong>が変わる</td></tr>
+      <tr><td>強み</td><td>物語がつながる。<strong>朝礼が毎日あるものだと体で分かる</strong></td><td><strong>数を増やせる。</strong>上級も置ける。くり返し遊べる</td></tr>
+      <tr><td>役割</td><td><strong>最初の1回</strong>（ここで型を覚える）</td><td><strong>2回目から何度でも</strong>（型を使う）</td></tr>
+      <tr><td>合格</td><td>5本とも通す</td><td><strong>★1を3本</strong>通せばステージは終わる。★2★3は上限</td></tr>
+    </table>
 
-  あなたの きのう : 検索の 画面を 直した（3つの うち 2つ）
-  あなたの きょう : のこりの 1つを 直す
-  こまって いる  : エラーの 意味が 分からない。もう 40分 止まって いる
-  分かって いること: エラーは「500」。ログには「timeout」と 出て いる
+    <pre class="mermaid">
+flowchart TD
+  P["ページ『朝礼と 夕礼』"] --> A["モードA チームの 1週間<br/>月→金の 5本（固定）"]
+  A --> B["モードB いろいろな 朝礼<br/>16本の プールから えらぶ"]
+  B --> B1["★1 やさしい（6本）"]
+  B --> B2["★2 ふつう（5本）"]
+  B --> B3["★3 むずかしい（5本）"]
+  style A fill:#eef3fb,stroke:#3a5ba0
+  style B fill:#fbf3e2,stroke:#c08a2e
+    </pre>
 
-  ★ 開くパネル（5枚）
-    きのう / きょう / こまりごと / 見込み / お願い</pre>
-    <p>ヒントは<strong>穴あきの型文まで</strong>（答えは書かない＝R4-3）。例：「◯◯が 分からなくて、あと ◯◯くらい かかりそうです。」</p>
+    <p class="callout"><strong>なぜAが先か</strong>：いきなり案件が毎回変わると、
+      <strong>「朝礼とは何か」が身につく前に場面の読み取りで手一杯</strong>になります。
+      Aの5本で型を体に入れてから、Bで「相手と案件が変わっても同じ型で話せる」を確かめます
+      （設計01 のスパイラル・カリキュラム＝同じ型を形を変えて3回以上）。</p>
+
+    <h3>5.1 場面プール（16本）</h3>
+    <p>ご指定どおり<strong>5本にこだわらず、上級まで置きます</strong>。
+      <strong>難しさは日本語ではなく「言うことの数」と「場の複雑さ」で上げます</strong>
+      （漢字を難しくしません）。</p>
+
+    <table>
+      <tr><th>★</th><th>#</th><th>場面</th><th>案件・相手</th><th>パネル</th><th>ここが新しい</th></tr>
+      <tr><td rowspan="6"><strong>★1</strong></td><td>1</td><td><strong>月曜の 朝礼</strong> <span class="badge b-b">Aの1</span></td><td>ログイン機能／ヘンディ</td><td>3</td><td>きのう・きょう・こまりごと</td></tr>
+      <tr><td>2</td><td><strong>火曜の 朝礼</strong> <span class="badge b-b">Aの2</span></td><td>ログイン機能／ヘンディ</td><td>4</td><td><strong>数字を1つ入れる</strong></td></tr>
+      <tr><td>3</td><td><strong>木曜の 夕礼</strong> <span class="badge b-b">Aの4</span></td><td>ログイン機能／富田</td><td>4</td><td><strong>きょう→あした</strong>にことばが変わる</td></tr>
+      <tr><td>4</td><td>チャットで 書く 朝会</td><td>ログイン機能／文字だけ</td><td>3</td><td><strong>声ではなく書く。</strong>読み返せる</td></tr>
+      <tr><td>5</td><td>休む 日の 朝礼</td><td>／ヘンディ</td><td>4</td><td><strong>休むけれど 引き継ぎを 言う</strong></td></tr>
+      <tr><td>6</td><td>はじめての チームの 朝礼</td><td>／奥田</td><td>3</td><td><strong>まず 見る。</strong>まねしてよい</td></tr>
+
+      <tr><td rowspan="5"><strong>★2</strong></td><td>7</td><td><strong>水曜の 朝礼</strong> <span class="badge b-b">Aの3</span></td><td>ログイン機能／ヘンディ</td><td>5</td><td><strong>見込みと お願い</strong>まで</td></tr>
+      <tr><td>8</td><td>抹茶カフェの 案件</td><td>Aoba 山本社長の アプリ／ヘンディ</td><td>5</td><td>デザインが 決まらない＝<strong>待っている理由を言う</strong></td></tr>
+      <tr><td>9</td><td>そら書店の 案件</td><td>大空社長の サイト／富田</td><td>5</td><td><strong>速さの 問題</strong>を 数字で 言う</td></tr>
+      <tr><td>10</td><td>週1の 定例</td><td>／藤木 同席</td><td>5</td><td><strong>1週間ぶんを まとめる</strong>（範囲が広い）</td></tr>
+      <tr><td>11</td><td>人に お願いする 朝</td><td>／ニャム</td><td>5</td><td><strong>だれに 何を いつまでに</strong></td></tr>
+
+      <tr><td rowspan="5"><strong>★3</strong></td><td>12</td><td><strong>リリース前日の 朝礼</strong> <span class="badge b-b">Aの5</span></td><td>ログイン機能／ヘンディ・藤木</td><td>6</td><td><strong>影響</strong>（いつ・だれに ひびくか）</td></tr>
+      <tr><td>13</td><td>リリースが 失敗した 朝</td><td>／藤木</td><td>6</td><td><strong>戻すか 直すか</strong>の 判断を そえる</td></tr>
+      <tr><td>14</td><td>見込みが 外れた 朝</td><td>／ヘンディ</td><td>5</td><td><strong>前の 報告を 訂正する</strong></td></tr>
+      <tr><td>15</td><td>お客さまが 同席する 朝礼</td><td>Aoba 山本社長 同席</td><td>6</td><td><strong>専門用語を 使わずに 言う</strong></td></tr>
+      <tr><td>16</td><td>3分しか ない 朝</td><td>／藤木</td><td>4</td><td><strong>削る。</strong>いちばん 大事な ことだけ</td></tr>
+    </table>
+
+    <div class="callout warn">
+      <strong>案件は新しく作りません。</strong>Aoba（山本社長・抹茶カフェ）・そら書店（大空社長）は
+      すでにこのアプリの世界にいる顧客です（設計01 §2.1「新しい世界を作らず、この世界に新しい場面を足す」）。
+      <strong>要件定義ステージで会った相手に、こんどは報告する</strong>——学習者から見ると世界がつながります。
+    </div>
   </section>
 
-  <!-- ============ 6 ============ -->
-  <section class="chapter" id="s6">
-    <h2 class="sec"><span class="num">6</span>場面転換の 演出</h2>
-
-    <p>ご指定「時間が経過したことがわかるアナウンス（モーダルなど）」を、<strong>時間カード</strong>として作ります。</p>
-
+    <h3 id="tenkan">5.2 場面転換の 演出（時間カード）</h3>
+    <p>モードAでは<strong>時間がとんだこと</strong>を、モードBでは<strong>案件が変わったこと</strong>を、
+      同じ形のカードで見せます。実物は <a href="#s6">6章</a> のシナリオ本文の①にあります。</p>
     <pre class="mermaid">
 sequenceDiagram
   participant 学習者
   participant 画面
-  学習者->>画面: 場面1が おわる
+  学習者->>画面: 場面が おわる
   画面->>学習者: 🌙 くらくなる（0.6秒）
   画面->>学習者: 時間カード「火曜日 9:30／きのう テストを 半分 した」
   学習者->>画面: 「はじめる」を 押す
-  画面->>学習者: 場面2 の 部屋（明るくなる）
+  画面->>学習者: つぎの 場面（明るくなる）
     </pre>
-
     <table>
       <tr><th>要素</th><th>中身</th><th>なぜ</th></tr>
-      <tr><td><strong>曜日と時刻</strong></td><td>「火曜日 9:30」を大きく</td><td>時間がとんだことが、字を読まなくても分かる</td></tr>
-      <tr><td><strong>時計の絵</strong></td><td>朝＝太陽が低い／夕方＝オレンジ</td><td>朝か夕方かを絵で分ける（夕礼の回で効く）</td></tr>
+      <tr><td><strong>曜日と時刻／案件名</strong></td><td>「火曜日 9:30」または「案件: Aoba の アプリ」を大きく</td><td>場が変わったことが、字を読まなくても分かる</td></tr>
+      <tr><td><strong>朝か 夕方かの 絵</strong></td><td>朝＝太陽が低い／夕方＝オレンジ</td><td>夕礼の回で効く</td></tr>
       <tr><td><strong>1行の あらすじ</strong></td><td>「きのうは テストを 半分 しました」</td><td>次の報告の材料になる</td></tr>
-      <tr><td><strong>集まる人の顔</strong></td><td>参加者のアイコンが並ぶ</td><td>だれがいる場かが分かる（場面5は藤木さんが増える）</td></tr>
-      <tr><td><strong>暗転</strong></td><td>0.6秒。音は鳴らさない</td><td>教室で使うので音は出さない</td></tr>
+      <tr><td><strong>集まる人の 顔</strong></td><td>参加者のアイコンが並ぶ</td><td>だれがいる場かが分かる（★3では藤木さんが増える）</td></tr>
+      <tr><td><strong>暗転</strong></td><td>0.6秒。<strong>音は鳴らさない</strong></td><td>教室で使うため</td></tr>
     </table>
-    <p class="callout warn"><strong>やらないこと</strong>：カウントダウン・急かす演出・「はやく答えて」。
-      朝礼は<strong>こまりごとを安心して出す場</strong>なので、急かす演出はこの教材の目的と逆になります。</p>
+    <p class="callout warn"><strong>やらないこと</strong>：カウントダウン・急かす演出。
+      朝礼は<strong>こまりごとを安心して出す場</strong>なので、急かす演出は目的と逆になります。</p>
+
+    <h3 id="stagekata">5.3 ステージの 形</h3>
+    <table>
+      <tr><th>#</th><th>教材</th><th>種別</th><th>関門</th><th>中身</th></tr>
+      <tr><td>1</td><td><strong>朝礼と 夕礼</strong></td><td>article</td><td>◯</td><td>いまの「朝礼 — 朝の 報告」＋<a href="#s3">3章</a>の違いの節。<strong>絵4枚は入れ終わりました</strong></td></tr>
+      <tr><td>2</td><td><strong>朝礼メモ</strong></td><td>quizset</td><td>◯</td><td><strong>1問だけ</strong>（<a href="#s9">9.1</a>）</td></tr>
+      <tr><td>3</td><td><strong>チームの 1週間</strong>（モードA）</td><td>meeting</td><td>◯</td><td>5場面。時間カードで場面転換</td></tr>
+      <tr><td>4</td><td><strong>いろいろな 朝礼</strong>（モードB）</td><td>meeting</td><td>×</td><td>16本のプールから選ぶ。くり返し遊べる</td></tr>
+      <tr><td>5</td><td>ことば</td><td>wordstage</td><td>—</td><td>朝礼・夕礼・定例・進捗・見込み・影響</td></tr>
+    </table>
+    <div class="callout">
+      <strong>ステージ名</strong>：<code>報連相：報告（朝礼・夕礼）</code>／URL は <code>/asakai</code> を提案します。
+      <strong>報告ステージは9本に戻り</strong>、その <code>description</code> の「さいごは 毎朝の 朝礼で…」も書き直します
+      （いまは事実と合いません）。
+    </div>
+
+  <!-- ============ 6 ============ -->
+  <section class="chapter" id="s6">
+    <h2 class="sec"><span class="num">6</span>シナリオ 本文（3本を 全文で）</h2>
+
+    <p>ご要望の「シナリオを見せてください」です。<strong>実際に画面に出る文</strong>を書きました。
+      ★1・★2・★3 から1本ずつ、<strong>場面カードから総括まで通しで</strong>載せます。</p>
+
+    <h3>6.1 ★1 #1「月曜の 朝礼」— いちばんやさしい</h3>
+
+    <h4>① 時間カード（全画面・0.6秒の暗転のあと）</h4>
+    <pre>          🌅  月曜日  9:30
+
+        開発チームの 朝礼が 始まります
+
+     きょうの メンバー: ヘンディ（司会）・ニャム・奥田・あなた
+
+                 [ はじめる ]</pre>
+
+    <h4>② 場面カード（あなたの きのう・きょう）</h4>
+    <pre>┌─ あなた（PG）の 手もと ────────────────────────┐
+│                                                   │
+│  きのう やった こと                                │
+│    ログイン画面の テスト                           │
+│    ☑☑☑☑☑☑☑☑☑☑☑☑☑☑☑☑ ☐☐☐☐   16 / 20      │
+│                                                   │
+│  きょう やる こと                                  │
+│    のこりの 4こを テストする                       │
+│                                                   │
+│  いま こまって いる こと                           │
+│    ⚠ エラーの 意味が 分からない（30分 止まって いる）│
+│                                                   │
+└───────────────────────────────────────────────────┘</pre>
+    <p class="callout"><strong>ここが「メモを書かせない」の中身です。</strong>
+      チェックの四角16こ／空の四角4こ、時計、赤い札——<strong>数と状態は絵で出し、字は添えもの</strong>。
+      学習者が考えるのは<strong>「これをどう言うか」だけ</strong>になります。</p>
+
+    <h4>③ 見本（ヘンディさんが 先に 話す）</h4>
+    <blockquote>
+      <strong>ヘンディ</strong>：「おはよう ございます。9時30分、朝礼を 始めます。まず わたしから。<br>
+      きのうは、テストを 半分まで しました。<br>
+      きょうは、のこりの テストを します。<br>
+      こまって いる ことは、テストの サーバーが 夕方に 止まる ことです。<br>
+      では ◯◯さん、お願いします。」
+    </blockquote>
+    <p><strong>ヘンディさんの見本が、そのまま型になっています</strong>（きのう→きょう→こまりごと）。
+      学習者は<strong>まねするだけで1枚目が開きます</strong>。</p>
+
+    <h4>④ パネル（3枚）と 追い質問</h4>
+    <p>
+      <span class="panel">？ きのう した こと</span>
+      <span class="panel">？ きょう する こと</span>
+      <span class="panel">？ こまって いる こと</span>
+    </p>
+    <table>
+      <tr><th>パネル</th><th>開く合図（ローカル判定の例）</th><th>開かないときの 聞き返し</th></tr>
+      <tr><td>きのう した こと</td><td>「テスト」「しました」「終わり」など</td><td>「きのうは 何を しましたか。」</td></tr>
+      <tr><td>きょう する こと</td><td>「きょう」「します」「のこり」など</td><td>「ありがとう ございます。きょうは 何を しますか。」</td></tr>
+      <tr><td>こまって いる こと</td><td>「こまって」「分からない」「エラー」<br><strong>「ありません」でも開く</strong></td><td>「いま こまって いる ことは ありますか。小さい ことでも かまいません。」</td></tr>
+    </table>
+    <p><strong>例</strong>：学習者が「きのうは テストを しました。きょうは のこりを します。」と言うと、
+      <strong>2枚が同時に開きます</strong>。残り1枚をヘンディさんが聞き返します。</p>
+
+    <h4>⑤ 全部開いたあと（ほかのメンバー → 総括）</h4>
+    <blockquote>
+      <strong>ニャム</strong>：「きのうは 画面の デザインを 直しました。きょうは 色を 決めます。こまって いる ことは ありません。」<br>
+      <strong>奥田</strong>：「きのうは サーバーの 設定を しました。<strong>あと 2時間</strong>で 終わります。きょうは テストの 準備を します。ヘンディさん、<strong>午後に 30分</strong> 見て いただけませんか。」<br><br>
+      <strong>ヘンディ（まとめ）</strong>：「みなさん、ありがとう ございます。<br>
+      きょうは ◯◯さんが テストの のこりを、ニャムさんが 色を、わたしが サーバーを 見ます。<br>
+      ◯◯さんの エラー、わたしも あとで 見ます。**こまって いる ことを 朝に 出すと、その日の うちに 手が 集まります。**<br>
+      では、きょうも お願いします。」
+    </blockquote>
+    <p class="callout good"><strong>奥田さんの報告が「次の★」になっています。</strong>
+      数字（あと2時間・30分）とお願いが入っている——★1では求めませんが、<strong>上手な例として耳に残ります</strong>。</p>
+
+    <h3>6.2 ★2 #8「抹茶カフェの 案件」— 待っている理由を 言う</h3>
+
+    <h4>① 時間カード</h4>
+    <pre>          🌅  火曜日  9:30      案件: Aoba（抹茶カフェ）の アプリ
+
+        山本社長の お店の アプリを 作って います
+        きょうの メンバー: ヘンディ（司会）・ニャム・あなた</pre>
+
+    <h4>② 場面カード</h4>
+    <pre>┌─ あなた（PG）の 手もと ────────────────────────┐
+│  きのう : 予約の 画面を 作った（3つの うち 2つ）    │
+│  きょう : のこりの 1つを 作る                       │
+│  ⚠ こまって いる: <strong>デザインが まだ 決まって いない</strong> │
+│           → 山本社長の 返事を 待って いる（2日目）   │
+│  分かって いる こと: 返事が 来れば <strong>半日</strong>で 作れる │
+└───────────────────────────────────────────────────┘</pre>
+
+    <h4>③ パネル（5枚）</h4>
+    <p>
+      <span class="panel">？ きのう した こと</span>
+      <span class="panel">？ どこまで（数字）</span>
+      <span class="panel">？ きょう する こと</span>
+      <span class="panel">？ 何を 待って いるか</span>
+      <span class="panel">？ 来たら どのくらいで できるか</span>
+    </p>
+    <p><strong>この場面の学び</strong>：「こまっている」の中身が<strong>「自分が できない」ではなく「待っている」</strong>であること。
+      日本の現場では<strong>「待っていること」を言わないと、待っていることが誰にも見えません</strong>。</p>
+
+    <h4>④ 追い質問（未開封のとき）</h4>
+    <table>
+      <tr><th>未開封</th><th>ヘンディさんの 聞き返し</th></tr>
+      <tr><td>何を 待って いるか</td><td>「いま、何かを 待って いますか。」</td></tr>
+      <tr><td>来たら どのくらいで</td><td>「デザインが 来たら、どのくらいで できそうですか。」</td></tr>
+      <tr><td>どこまで（数字）</td><td>「3つの うち、いくつ 終わりましたか。」</td></tr>
+    </table>
+
+    <h4>⑤ 総括</h4>
+    <blockquote>
+      <strong>ヘンディ</strong>：「ありがとう ございます。デザイン待ちですね。<br>
+      きょう わたしから 山本社長に 聞いて みます。<strong>『待って います』と 言って くれたので、わたしが 動けます。</strong><br>
+      言わないと、◯◯さんが 2日 止まって いる ことに だれも 気づきません。」
+    </blockquote>
+
+    <h3>6.3 ★3 #13「リリースが 失敗した 朝」— いちばん むずかしい</h3>
+
+    <h4>① 時間カード</h4>
+    <pre>          🌅  月曜日  9:00      ⚠ きのうの 夜、リリースを しました
+
+        でも、けさ お客さまから 電話が ありました
+        きょうの メンバー: 藤木取締役（司会）・富田・ヘンディ・あなた</pre>
+
+    <h4>② 場面カード</h4>
+    <pre>┌─ あなた（PG）の 手もと ────────────────────────┐
+│  きのう 22:00 : 新しい ログイン画面を 出した        │
+│  けさ  8:40 : お客さまから 電話                    │
+│      「ログインできない お客さまが いる」            │
+│                                                   │
+│  分かって いる こと                                │
+│    ・エラーは スマホだけ。パソコンは 大丈夫          │
+│    ・古い スマホ（3年前の もの）で 起きる            │
+│    ・いま 分かって いるのは 2人                     │
+│  えらべる 手                                       │
+│    (a) 前の 画面に もどす … 30分                   │
+│    (b) 直す … 2時間くらい（まだ はっきりしない）     │
+└───────────────────────────────────────────────────┘</pre>
+
+    <h4>③ パネル（6枚）</h4>
+    <p>
+      <span class="panel">？ 何が 起きて いるか</span>
+      <span class="panel">？ どのくらいの 人に（数字）</span>
+      <span class="panel">？ 分かって いる 原因</span>
+      <span class="panel">？ 影響（だれに・いつまで）</span>
+      <span class="panel">？ えらべる 手（もどす／直す）</span>
+      <span class="panel">？ お願い（判断を もらう）</span>
+    </p>
+    <div class="callout warn"><strong>ここが上級の芯です。</strong>
+      「バグが 出ました。すみません」で 終わらせない。
+      <strong>事実 → 数 → 分かっている原因 → 影響 → えらべる手 → 判断のお願い</strong>まで並べると、
+      <strong>上の人は その場で 決められます</strong>。★1と日本語の難しさは変わりません。<strong>言うことの数だけが増えます。</strong></div>
+
+    <h4>④ 見本（富田さんが 先に 話す）</h4>
+    <blockquote>
+      <strong>富田</strong>：「藤木さん、けさの 件です。<br>
+      <strong>事実</strong>：新しい ログイン画面で、古い スマホから 入れない お客さまが います。いま 2人 分かって います。<br>
+      <strong>原因</strong>：おそらく 新しい 部品が 古い スマホで 動かない ことです。<br>
+      <strong>影響</strong>：きょう 一日で、10人くらいに 広がるかも しれません。<br>
+      <strong>手</strong>：前に もどすなら 30分、直すなら 2時間くらいです。<br>
+      <strong>お願い</strong>：どちらに するか、決めて いただけませんか。」
+    </blockquote>
+
+    <h4>⑤ 総括（藤木取締役）</h4>
+    <blockquote>
+      <strong>藤木</strong>：「分かりました。<strong>前に もどして ください。</strong>30分の ほうが お客さまに やさしいです。<br>
+      直すのは そのあとで いいです。<br>
+      お客さまには わたしから 連絡します。『いま もどして います。30分で 直ります』と 言えます。<br>
+      <strong>◯◯さん、朝いちばんに 教えて くれて ありがとう ございます。</strong>
+      数と 影響が 分かったので、わたしは お客さまに 本当の ことを 言えます。<br>
+      これが、報告が いちばん 役に立つ ときです。」
+    </blockquote>
+    <p class="callout good"><strong>報告ステージのリスニングと、同じ筋がここで完成します。</strong>
+      「藤木さんは お客さまと 直接 話して いる。<strong>ですから</strong> あなたの報告が お客さまに届く」——
+      それを、こんどは<strong>自分の報告で</strong>体験します。</p>
   </section>
 
   <!-- ============ 7 ============ -->
   <section class="chapter" id="s7">
-    <h2 class="sec"><span class="num">7</span>ステージの 形</h2>
+    <h2 class="sec"><span class="num">7</span>N5が ついていけて、N3が 満足する</h2>
 
-    <table>
-      <tr><th>#</th><th>教材</th><th>種別</th><th>関門</th><th>中身</th></tr>
-      <tr><td>1</td><td><strong>朝礼と 夕礼</strong></td><td>article</td><td>◯</td><td>いまの「朝礼 — 朝の 報告」＋<a href="#s3">3章</a>の違いの節。絵4枚（#357）</td></tr>
-      <tr><td>2</td><td><strong>チームの 1週間</strong></td><td>meeting</td><td>◯</td><td><strong>5つの場面を通しで。</strong>時間カードで場面転換</td></tr>
-      <tr><td>3</td><td>ことば</td><td>wordstage</td><td>—</td><td>朝礼・夕礼・定例・進捗・見込み・影響</td></tr>
-    </table>
-
-    <div class="callout">
-      <strong>ステージ名</strong>：<code>報連相：報告（朝礼・夕礼）</code>／URL は <code>/asakai</code> を提案します
-      （<code>RESERVED_STAGE_IDS</code> との衝突は着手時に確認します）。
-      まなびマップのピンが1つ増えます。<strong>報告ステージは9本に戻り、こちらが6本→3本になります。</strong>
+    <div class="callout bad">
+      <strong>ご指摘のとおり、いまは差がついています。</strong>
+      N5ペルソナは「『いただけませんでしょうか』は読めない。自分では絶対に作れない」、
+      N3ペルソナは「押すだけの作業。挑戦になっていない」と、<strong>同じ教材に正反対の不満</strong>が出ました。
     </div>
 
-    <h3>報告ステージ側の変化</h3>
-    <p>いまの15本から朝礼の6本が抜けて<strong>9本</strong>になり、<code>description</code> の
-      「さいごは 毎朝の 朝礼で…」も書き直します（いまは事実と合わなくなります）。</p>
+    <p>設計01 の P11 は「レベル差は<strong>同じ教材の別モード</strong>で吸収する」と書いています。
+      ただし<strong>この教材でどう実装するかは書かれていません</strong>。ここで具体化します。</p>
+
+    <h3>7.1 やってはいけない吸収のしかた</h3>
+    <table>
+      <tr><th>やりがちな手</th><th>なぜだめか</th></tr>
+      <tr><td>N3向けに<strong>漢字や語彙を難しくする</strong></td><td>N5が落ちる。しかも実務語彙は両方に必要（P10「足場は消さずに重ねる」）</td></tr>
+      <tr><td>N5向けに<strong>やさしく言い換える</strong></td><td>実務から遠ざかる。「要件定義」→「決めること」は違反（R6-1）</td></tr>
+      <tr><td><strong>教材を2本に分ける</strong></td><td>教室が割れる。同じ場面を一緒に話せなくなる</td></tr>
+    </table>
+
+    <h3>7.2 この教材での吸収（4つの ダイヤル）</h3>
+    <p><strong>日本語の難しさは動かしません。</strong>動かすのは次の4つで、<strong>どれも学習者が自分で回せます</strong>。</p>
+
+    <table>
+      <tr><th>ダイヤル</th><th>N5のとき</th><th>N3のとき</th><th>だれが回すか</th></tr>
+      <tr><td><strong>① 開けるパネルの数</strong></td>
+        <td><strong>3枚 開けば 合格</strong>（★1）。それ以上は「おまけ」</td>
+        <td>6枚ぜんぶ開けて★3。<strong>合格ラインは低く、上限は高く</strong></td><td>自然に（結果）</td></tr>
+      <tr><td><strong>② 型文（starter）</strong></td>
+        <td><strong>最初から見えている</strong>。まねして言える</td>
+        <td><strong>たたむ。</strong>「見ないでやる」を押すと★が1つ増える</td><td><strong>学習者</strong></td></tr>
+      <tr><td><strong>③ 見本の出かた</strong></td>
+        <td>ヘンディさんが<strong>直前に</strong>お手本を話す</td>
+        <td><strong>先に自分が話し、あとで見本と並べる</strong>（差分が学び）</td><td><strong>学習者</strong></td></tr>
+      <tr><td><strong>④ 追い質問の深さ</strong></td>
+        <td>「きょうは 何を しますか。」（そのまま聞く）</td>
+        <td>「その <strong>2時間</strong>は、どこから 出た 数字ですか。」（根拠を聞く）</td><td>アプリ（★で決まる）</td></tr>
+    </table>
+
+    <div class="callout good">
+      <strong>いちばん効くのは②です。</strong>いまのミーティングは型文がボタンの向こうにあり、
+      <strong>N5は開かないと言えず、N3は開かなくても言える</strong>。
+      これを<strong>「見せておく／たたむ」を学習者が選ぶ</strong>形にすると、
+      1つの場面が2つの難しさを持ちます。<strong>実装は小さい</strong>（表示の切りかえ＋★の重みだけ）。
+    </div>
+
+    <h3>7.3 星のつけかた（合格は 低く、上限は 高く）</h3>
+    <table>
+      <tr><th>★</th><th>条件</th><th>ねらい</th></tr>
+      <tr><td>★</td><td><strong>さいごまで 話した</strong>（パネルが何枚でも）</td><td>だれでも取れる。0点で終わらせない（P8）</td></tr>
+      <tr><td>★★</td><td>その場面の<strong>パネルを ぜんぶ 開けた</strong></td><td>N5の目標</td></tr>
+      <tr><td>★★★</td><td>ぜんぶ開けた ＋ <strong>型文を たたんだまま</strong> ＋ <strong>数字が 1つ 入って いた</strong></td><td>N3の目標。<strong>日本語の難しさではなく、自力と正確さ</strong>で取る</td></tr>
+    </table>
+
+    <h3>7.4 申し送り案（ご指定「今後のものづくりの申し送りにしたい」）</h3>
+    <div class="callout warn">
+      <strong>AGENTS.md の絶対規律に足す案</strong>（規律11）:<br><br>
+      <strong>11. N5が ついていけて、N3が 満足する 形で 作る。</strong>
+      教室には N5〜N3挑戦が 混ざって いる。**教材を レベルで 分けない**（教室が 割れる）。
+      同じ 教材の 中に、**学習者が 自分で 回せる ダイヤル**を 置く。
+      <ul>
+        <li><strong>難しさを 日本語で 作らない。</strong>漢字・語彙・敬語は 両方に 同じ ものを 出す
+          （P10「足場は 消さずに 重ねる」）。難しさは <strong>言うことの 数・場の 複雑さ・自力の 度合い</strong>で 作る</li>
+        <li><strong>足場は「出す／たたむ」を 学習者に えらばせる。</strong>型文・ヒント・見本を
+          最初から 見せる 形と、たたむ 形の 両方を 持つ。<strong>たたんだら ★が 増える</strong></li>
+        <li><strong>合格ラインは 低く、上限は 高く。</strong>さいごまで やれば ★1。
+          上は 何段でも 用意して よい</li>
+        <li><strong>上手な 例を、場面の 中に 置く。</strong>先輩キャラの 発話を「次の ★」に する
+          （N5には 耳に 残るだけ、N3には まねできる 目標に なる）</li>
+      </ul>
+      <em>※ 検収は ルーブリック R6-4（星の 2軸）と R6-2（負荷調整が 2種以上）で 見る。</em>
+    </div>
   </section>
 
   <!-- ============ 8 ============ -->
   <section class="chapter" id="s8">
-    <h2 class="sec"><span class="num">8</span>エンジンに 要る 変更</h2>
+    <h2 class="sec"><span class="num">8</span>日本語の 見かたを 深くする（アイデア）</h2>
 
-    <p>調べたところ、<strong>部品はほとんど揃っています</strong>。足りないのは3つです。</p>
+    <p>ご要望「日本語や表現方法に対するチェックや言い方の提示を、もっと分析できるといい」への案です。</p>
 
+    <h3>8.1 いまあるもの</h3>
+    <p><code>src/components/meeting/japanese-check.ts</code> に<strong>ルールで見る層</strong>があります。
+      見ているのは4つだけです。</p>
+    <pre>AdviceKey = "empty" | "tooShort" | "notPolite" | "noPeriod" | "good"</pre>
+    <p>このファイル自身がこう書いています——<strong>「意味の当否や自然さの助言は、AIを足すときにこの層の外側へ重ねる」</strong>。
+      つまり<strong>広げる場所が最初から用意されています</strong>。</p>
+
+    <h3>8.2 増やす「見かた」8つ（ぜんぶ ルールで 測れる＝鍵ゼロで 動く）</h3>
     <table>
-      <tr><th>#</th><th>要ること</th><th>いまの状態</th><th>変更の大きさ</th></tr>
-      <tr><td>1</td><td><strong>1発話で複数パネルを開く</strong></td>
-        <td><code>src/components/listening/req-matcher.ts</code> に<strong>3層判定（AI＋キーワード＋手動）が実装ずみ</strong>。鍵が無くても層2だけで動く。<strong>ただし <code>parseReqJudge</code> が返すのは id 1つ</strong></td>
-        <td><span class="badge b-w">中</span>「1つ」→「複数」に変える。純関数なので単体テストで守れる</td></tr>
-      <tr><td>2</td><td><strong>複数名の参加</strong></td>
-        <td><code>meetingSchema</code> の <code>host</code> は1人だけ</td>
-        <td><span class="badge b-w">中</span> <code>participants[]</code> を足す（listening は既に持っている形）</td></tr>
-      <tr><td>3</td><td><strong>場面（ラウンド）と時間カード</strong></td>
-        <td>ミーティングは1本＝1場面。<strong>ただし talk-game は「ばん」を持っていて、板もばんの数だけある</strong></td>
-        <td><span class="badge b-w">中</span> <code>scenes[]</code> を足し、あいだに時間カードを出す</td></tr>
-      <tr><td>4</td><td>💗を外す</td><td><code>affection</code> は任意フィールド</td><td><span class="badge b-a">ゼロ</span> データから消すだけ</td></tr>
-      <tr><td>5</td><td>追い質問</td><td>クエストに<strong>文案の作り</strong>がある（<code>pmQuestions</code> / <code>pmMissing</code> / <code>pmGood</code>）</td><td><span class="badge b-a">小</span> 形を借りてスキーマに入れる</td></tr>
+      <tr><th>#</th><th>見かた</th><th>測り方</th><th>返す ことば（例）</th></tr>
+      <tr><td>1</td><td><strong>結論が 先か</strong></td><td>「終わりました／あります／できません」等の結論語が、文全体の<strong>前半にあるか</strong></td><td>「結論を さきに 言うと、もっと 早く 伝わります。れい:『◯◯の 件ですが、終わりました。』」</td></tr>
+      <tr><td>2</td><td><strong>数字が あるか</strong></td><td>数量表現（16こ・30分・2時間・80%・あと3つ）の有無</td><td>「数字を 1つ 入れると、聞く人は 予定を 立てられます。」</td></tr>
+      <tr><td>3</td><td><strong>あいまい語</strong></td><td>たぶん・ちょっと・いろいろ・けっこう・だいたい の数</td><td>「『ちょっと』を 数字に すると 強く なります。『ちょっと かかります』→『30分 かかります』」</td></tr>
+      <tr><td>4</td><td><strong>一文の 長さ</strong></td><td>句点までが<strong>40字を超える</strong>文の数</td><td>「1つの 文が 長いです。2つに 切ると 読みやすく なります。」</td></tr>
+      <tr><td>5</td><td><strong>ていねいさの ゆれ</strong></td><td>常体（〜した・〜だ）と敬体（〜ました・〜です）の<strong>混在</strong></td><td>「『終わった』→『終わりました』。さいごまで ですます形で そろえます。」</td></tr>
+      <tr><td>6</td><td><strong>言いさし</strong></td><td>「〜けど…」「〜ので…」で終わっている</td><td>「さいごまで 言うと 伝わります。『〜ので、◯◯して いただけませんか。』」</td></tr>
+      <tr><td>7</td><td><strong>お願いの 形</strong></td><td>「〜てください」（命令寄り）／「〜ていただけませんか」（依頼）</td><td>「上の 人には『〜て いただけませんか』が やわらかいです。」</td></tr>
+      <tr><td>8</td><td><strong>だれの 話か</strong></td><td>「わたし／◯◯さん／チーム」等の主語の有無</td><td>「だれの 話かを 入れると、まちがいが 減ります。」</td></tr>
     </table>
+    <p class="callout"><strong>ぜんぶ規則で判るので、鍵ゼロでも同じ助言が返ります。</strong>
+      しかも<strong>同じまちがいには毎回同じ言葉</strong>——これは既存ファイルが理由まで書いている設計です。
+      <strong>1回に出すのは 1つだけ</strong>（3つ並べると「ぜんぶだめだった」に読まれる）も そのまま守ります。</p>
 
-    <div class="callout warn">
-      <strong>共有ファイルに触ります</strong>：<code>src/content/schema.ts</code>（検問あり・要許可）と
-      <code>src/components/meeting/</code>（<strong>検問が無い＝文章ルールだけが頼りの場所</strong>）。
-      AGENTS.md の「横断変更は自スレッドで行わず専用タスクとして提案する」に当たるので、
-      <strong>着手前に画面の言葉で範囲を宣言します</strong>。
-    </div>
+    <h3>8.3 見せかたの アイデア — <strong>文を 色の 帯に 分ける</strong></h3>
+    <p><strong>これがいちばん効くと思います。</strong>学習者の文を、パネルの色でそのまま塗り分けます。</p>
+    <pre>あなたの 報告
 
-    <h3>作らないもの（大事）</h3>
-    <ul>
-      <li><strong>新しい会話エンジンを作りません。</strong>いまのミーティング（Zoom風の枠・マイク・速度・字幕）はそのまま使います</li>
-      <li><strong>判定の仕組みを作り直しません。</strong><code>req-matcher</code> の3層をそのまま使います（鍵ゼロでも動くのが大事）</li>
-      <li><strong>報告クエストは戻しません。</strong>追い質問の<strong>文案の作り</strong>だけ借ります</li>
-    </ul>
+  <span style="background:#dfeeff;padding:2px 6px;border-radius:4px">きのうは テストを しました。</span><span style="background:#e9f4ec;padding:2px 6px;border-radius:4px">16こ 終わりました。</span>
+  <span style="background:#fbeeee;padding:2px 6px;border-radius:4px">エラーの 意味が 分かりません。</span>
+
+  🟦 きのう  🟩 どこまで（数字）  🟥 こまりごと
+  ⬜ きょう する こと  ⬜ 見込み          ← <strong>白い ところが 足りない ところ</strong></pre>
+    <p><strong>字を読まなくても「足りない」が見えます</strong>（constraints「絵で分かるようにする」）。
+      N5には<strong>白い帯を埋めるゲーム</strong>になり、N3には<strong>自分の文の構造が見える鏡</strong>になります。</p>
+
+    <h3>8.4 見せかたの アイデア — <strong>2回目に、1回目の 自分と 並べる</strong></h3>
+    <pre>1回目（月曜）  「エラーが あります。」
+2回目（きょう）「ログインの 件ですが、エラーが 出て います。
+                いま 2人に 起きて います。30分で 直りそうです。」
+
+                     ↑ 数字が 2つ 増えました</pre>
+    <p><strong>成長を、教材が数えて見せます。</strong>同じ場面をくり返し遊べるモードB（16本のプール）と相性がよく、
+      <strong>「2回目の自分」がそのまま成績表</strong>になります（N3ペルソナが報告クエストで求めていたものです）。</p>
+
+    <h3>8.5 AIに まかせる ところ（あれば 効く・無くても 動く）</h3>
+    <table>
+      <tr><th>層</th><th>見るもの</th><th>鍵が 無いとき</th></tr>
+      <tr><td><strong>ルール</strong>（8.2）</td><td>順番・数字・長さ・ていねいさ・形</td><td><strong>そのまま動く</strong></td></tr>
+      <tr><td><strong>パネル</strong>（<a href="#s4">4章</a>）</td><td>何を言ったか</td><td><strong>キーワードで動く</strong>（<code>req-matcher</code> 層2）</td></tr>
+      <tr><td><strong>AI</strong></td><td>自然さ／現場の言い方への言い換え（before → after）</td><td>この層だけ静かに消える</td></tr>
+    </table>
+    <div class="callout good"><strong>だいじな設計判断</strong>：
+      <strong>いちばん役に立つ助言（順番・数字・長さ）をAIに置かない</strong>。
+      鍵の無い教室でも、教材がいちばん教えたいことは返ってきます。</div>
   </section>
 
   <!-- ============ 9 ============ -->
   <section class="chapter" id="s9">
-    <h2 class="sec"><span class="num">9</span>段取りと 見積り</h2>
+    <h2 class="sec"><span class="num">9</span>朝礼メモ と ヘンディさんの 話</h2>
 
-    <p><code>docs/constraints.md</code>「AI生成は必ず段階を踏む」に従い、<strong>4段に分けます。各段の終わりにSTGで見られる形にします。</strong></p>
-
+    <h3>9.1 朝礼メモ — <strong>最初の1問だけ 残す</strong>（ご指定）</h3>
+    <p>いまは5問あり、しかも場面の説明がありません。<strong>1問だけにして、場面カードのあとに置きます。</strong></p>
     <table>
-      <tr><th>段</th><th>やること</th><th>おわりに見られるもの</th><th>大きさ</th></tr>
-      <tr><td>1</td><td><strong>ページと ことば</strong>。朝礼と夕礼の違いの節を足し、絵4枚（#357）を入れる。「はじめての 朝礼」を削除</td>
-        <td>STGで新しいページが読める</td><td>S</td></tr>
-      <tr><td>2</td><td><strong>エンジン</strong>。複数パネル・複数名・場面と時間カード（単体テストつき）</td>
-        <td>いまの朝礼ミーティングが、1本の報告＋パネルで動く（場面1だけ）</td><td>M</td></tr>
-      <tr><td>3</td><td><strong>5つの場面</strong>のデータ。追い質問・ほかのメンバーの報告・藤木さんの総括</td>
-        <td>STGで月→金を通しで遊べる</td><td>M</td></tr>
-      <tr><td>4</td><td><strong>ステージを分ける</strong>。報告ステージから朝礼を抜き、新ステージを立てる。E2Eの台帳を直す</td>
-        <td>まなびマップにピンが1つ増える</td><td>S</td></tr>
+      <tr><th></th><th>いま</th><th>これから</th></tr>
+      <tr><td>問い</td><td>5問（きのう・きょう・こまりごと・見込み・お願い）</td><td><strong>1問だけ</strong>：「きのう した ことを、みじかく 書いて みましょう。」</td></tr>
+      <tr><td>場面</td><td><strong>無い</strong>（ヒントを開くまで書けない）</td><td><strong>場面カードを 見た あと</strong>に書く</td></tr>
+      <tr><td>役割</td><td>ミーティングの下書き</td><td><strong>口で言う前の 助走。</strong>1文だけ書いてから声に出す</td></tr>
+      <tr><td>ヒント</td><td>「💡 たとえば、こんな こと」（答えの一覧）</td><td><strong>穴あきの型文まで</strong>：「きのうは ◯◯を しました。」</td></tr>
     </table>
+    <p class="callout good"><strong>1問にする理由</strong>：5問書かせると、口に出す前に力を使い切ります。
+      <strong>1文だけ書いて、あとは声</strong>——書くのは「はじめの一歩が出ない」を防ぐためだけに使います。</p>
 
-    <p class="callout"><strong>各段でペルソナ通し（N5/N4/N3から2体以上）を回し、PRに貼ります</strong>
-      ——ただし今回は<strong>データを読むだけでなく、実際に操作させます</strong>。
-      報告クエストで分かったとおり、<strong>読むペルソナは「遊べるか」を測れません</strong>。
-      <code>playwright-player</code> エージェントがその役です。</p>
+    <h3>9.2 ヘンディさんの「バグを 三日 隠した」話</h3>
+    <blockquote>ご指定：「現在進行だと実在の人物へのマイナスになると思うので、鈴木さんなど仮のキャラクターを作ってやることはOK。
+      ただし、鈴木さんへの無駄な説明を必要とするので、それをしても価値があるかは精査必要」</blockquote>
+
+    <p><strong>精査した結果、外すことを推します。</strong>3つの理由です。</p>
+    <ol class="body">
+      <li><strong>新しい人を1人足すコストが、話1本に見合いません。</strong>
+        設計01 は「新しい会社・キャラを乱造しない。相手には①人間的動機②数字のプロフィール③癖 を与える」としています。
+        <strong>逸話1本のために、その3つを用意して説明する</strong>ことになります</li>
+      <li><strong>同じ教訓が、もっと強い形ですでに入っています。</strong>
+        <a href="#s6">6.3</a> の藤木さんの総括——「<strong>数と影響が分かったので、わたしはお客さまに本当のことを言えます</strong>」。
+        <strong>他人の昔話</strong>より、<strong>自分がいま出した報告への返事</strong>のほうが強く届きます</li>
+      <li><strong>いま埋まっている場所が悪すぎます。</strong>💗5つの向こうで、N3ペルソナが
+        「このステージで一番おもしろいのに、届かない人が多いと思う」と書いていました。
+        <strong>💗を外す以上、置き場所を作り直すか、外すかの二択</strong>です</li>
+    </ol>
+
+    <div class="callout warn">
+      <strong>いま動いている教材にも同じ話が入っています。</strong>
+      <code>content/meetings/houkoku_meeting.json</code>（報告ステージ・STG反映済み）と
+      <code>content/meetings/asakai_komari_meeting.json</code> の <code>affection.reward</code> に、
+      <strong>ヘンディさんが「バグを三日隠した」と語る文</strong>があります。
+      ご指定の考え方はこの2か所にもあたるので、<strong>あわせて直すかどうか</strong>を
+      <a href="#s11">11章 判断3</a>でうかがいます。
+    </div>
+
+    <p><strong>もし残すなら</strong>：新キャラを作らず、<strong>「前に いた 人」として名前を出さずに語る</strong>のが
+      いちばん安いです（「わたしの 友だちの 話です」）。ただし<strong>誰の話でもない話は、弱くなります</strong>。
+      その意味でも、藤木さんの総括に寄せるほうが良いと考えています。</p>
   </section>
 
   <!-- ============ 10 ============ -->
   <section class="chapter" id="s10">
-    <h2 class="sec"><span class="num">10</span>判断していただきたいこと</h2>
+    <h2 class="sec"><span class="num">10</span>エンジンに 要る 変更 と 段取り</h2>
+
+    <h3>10.1 足りない部品（4つ）</h3>
+    <table>
+      <tr><th>#</th><th>要ること</th><th>いまの状態</th><th>大きさ</th></tr>
+      <tr><td>1</td><td><strong>1発話で 複数パネルを 開く</strong></td>
+        <td><code>src/components/listening/req-matcher.ts</code> に<strong>3層判定（AI＋キーワード＋手動）が実装ずみ。鍵ゼロでも動く</strong>。ただし返すのは id 1つ</td>
+        <td><span class="badge b-w">中</span> 「1つ」→「複数」。純関数なので単体テストで守れる</td></tr>
+      <tr><td>2</td><td><strong>複数名の 参加</strong></td><td><code>meetingSchema</code> の <code>host</code> は1人</td>
+        <td><span class="badge b-w">中</span> <code>participants[]</code> を足す（listening は既に持つ形）</td></tr>
+      <tr><td>3</td><td><strong>場面（ラウンド）と 時間カード</strong></td>
+        <td>ミーティングは1本＝1場面。talk-game は「ばん」を持ち、板もばんの数だけある</td>
+        <td><span class="badge b-w">中</span> <code>scenes[]</code> を足す</td></tr>
+      <tr><td>4</td><td><strong>日本語の 見かたを 8つに</strong>（<a href="#s8">8.2</a>）＋<strong>色の帯</strong>（8.3）</td>
+        <td><code>japanese-check.ts</code> に4つ。<strong>広げる前提で書かれている</strong></td>
+        <td><span class="badge b-w">中</span> ルールを足す＋表示部品1つ。<strong>ぜんぶ純関数＝テストしやすい</strong></td></tr>
+      <tr><td>5</td><td>型文の 出す／たたむ（<a href="#s7">7.2 ②</a>）</td><td>いまは常に閉じている</td>
+        <td><span class="badge b-a">小</span> 表示の切りかえ＋★の重み</td></tr>
+      <tr><td>6</td><td>💗を 外す</td><td><code>affection</code> は任意</td><td><span class="badge b-a">ゼロ</span> データから消すだけ</td></tr>
+    </table>
+
+    <div class="callout warn">
+      <strong>共有ファイルに触ります</strong>：<code>src/content/schema.ts</code>（検問あり・要許可）と
+      <code>src/components/meeting/</code>・<code>src/components/listening/req-matcher.ts</code>
+      （<strong>検問が無い＝文章ルールだけが頼りの場所</strong>）。着手前に画面の言葉で範囲を宣言します。
+    </div>
+
+    <h3>10.2 段取り（各段の おわりに STGで 見られる）</h3>
+    <table>
+      <tr><th>段</th><th>やること</th><th>おわりに 見られる もの</th><th>大きさ</th></tr>
+      <tr><td>1</td><td><strong>ページと ことば。</strong>朝礼と夕礼の違いの節（<a href="#s3">3章</a>）／絵4枚は<strong>入れ終わり</strong>／「はじめての 朝礼」を削除／朝礼メモを1問に</td>
+        <td>STGで新しいページが読める</td><td>S</td></tr>
+      <tr><td>2</td><td><strong>エンジン。</strong>複数パネル・複数名・場面と時間カード・<strong>日本語の見かた8つ＋色の帯</strong>（単体テストつき）</td>
+        <td>いまの朝礼ミーティングが、1本の報告＋パネルで動く（場面1だけ）</td><td>M</td></tr>
+      <tr><td>3</td><td><strong>モードA（1週間・5本）</strong>のデータ。追い質問・ほかのメンバー・総括</td>
+        <td>STGで月→金を通しで遊べる</td><td>M</td></tr>
+      <tr><td>4</td><td><strong>モードB（プール）</strong>。まず★1を6本、次に★2・★3を各5本</td>
+        <td>16本から選んでくり返し遊べる</td><td>M（分けて出せる）</td></tr>
+      <tr><td>5</td><td><strong>ステージを 分ける。</strong>報告ステージから朝礼を抜き、新ステージを立てる。E2Eの台帳を直す</td>
+        <td>まなびマップにピンが1つ増える</td><td>S</td></tr>
+    </table>
+    <p class="callout"><strong>段4は分けて出せます。</strong>★1の6本が入った時点でステージは成立するので、
+      ★2・★3はあとから足していけます（<strong>16本そろうのを待たずにSTGへ出せます</strong>）。</p>
+
+    <p><strong>各段でペルソナ通しを回します</strong>——ただし<strong>読むだけでなく実際に操作させます</strong>。
+      報告クエストで分かったとおり、<strong>読むペルソナは「遊べるか」を測れません</strong>
+      （<code>playwright-player</code> がその役）。<strong>N5とN3の2体は必ず入れます</strong>（7章の両立を確かめるため）。</p>
+  </section>
+
+  <!-- ============ 11 ============ -->
+  <section class="chapter" id="s11">
+    <h2 class="sec"><span class="num">11</span>判断していただきたいこと</h2>
 
     <table>
       <tr><th>#</th><th>お伺い</th><th>こちらの推奨</th></tr>
-      <tr><td>1</td><td><strong>この設計で着手してよいか</strong>（5場面・1週間の物語・パネル＋追い質問・藤木さんの総括）</td>
-        <td><strong>この形で</strong>。段1から順に、各段でSTGに出します</td></tr>
-      <tr><td>2</td><td><strong>朝礼メモ（<code>asakai_memo</code>）は廃止でよいか</strong>。場面カードで情報を渡す形に変わります</td>
-        <td><strong>廃止</strong>。「事前にメモを取らせない」というご指定に直接あたります</td></tr>
-      <tr><td>3</td><td><strong>ヘンディ先輩の「バグを三日隠した」話をどうするか</strong>。💗を外すと出す場所が無くなります</td>
-        <td><strong>場面3（こまっている朝）の最後に、藤木さんの総括の前に置く</strong>。ハートに関係なく必ず読める形に</td></tr>
-      <tr><td>4</td><td><strong>ステージのURL は <code>/asakai</code> でよいか</strong>（画面名は「報連相：報告（朝礼・夕礼）」）</td>
-        <td><code>/asakai</code>。短くて、あとから増える「定例」なども入ります</td></tr>
+      <tr><td>1</td><td><strong>この設計で着手してよいか</strong>（2モード・16場面・パネル＋追い質問・藤木さんの総括）</td>
+        <td><strong>この形で。</strong>段1から順に、各段でSTGに出します</td></tr>
+      <tr><td>2</td><td><strong>シナリオ本文（<a href="#s6">6章</a>）の書きぶりでよいか。</strong>とくに★3「リリースが失敗した朝」の難しさ</td>
+        <td><strong>この水準で。</strong>日本語は★1と同じ。増やしたのは「言うことの数」だけです</td></tr>
+      <tr><td>3</td><td><strong>ヘンディさんの「バグを三日隠した」話を、いま動いている2か所からも外すか</strong>
+        （<code>houkoku_meeting</code>・<code>asakai_komari_meeting</code> の 💗ごほうび）</td>
+        <td><strong>外す。</strong>同じ教訓は藤木さんの総括のほうが強く届きます（<a href="#s9">9.2</a>）</td></tr>
+      <tr><td>4</td><td><strong>申し送り（<a href="#s7">7.4</a>「N5がついていけて、N3が満足する」）を AGENTS.md の規律11 に足してよいか</strong></td>
+        <td><strong>足す。</strong>いまは 01ガイド P11 に原則だけあって、<strong>やり方がどこにも無い</strong>状態です</td></tr>
+      <tr><td>5</td><td>ステージのURL は <code>/asakai</code> でよいか（画面名は「報連相：報告（朝礼・夕礼）」）</td>
+        <td><code>/asakai</code></td></tr>
     </table>
 
     <div class="callout good">
-      <strong>ご返事は「1 OK／2 OK／3 OK／4 OK」で足ります。</strong>違うご判断があれば、その番号だけ書き換えてください。
-      <strong>1 だけ決まれば段1に着手できます</strong>（2〜4 は段3・段4までに決まれば間に合います）。
+      <strong>1 と 2 だけ決まれば、段1と段2に着手できます。</strong>3・4・5 は後でも間に合います。
     </div>
   </section>
 
