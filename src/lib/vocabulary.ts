@@ -186,7 +186,9 @@ export function hydrateArticle<
   const blocks = article.blocks.map((block) => {
     const b = block as { kind?: string; wordIds?: string[]; items?: unknown };
     if (b.kind !== "vocab" || !b.wordIds) return block;
-    const found = b.wordIds.map((id) => index.get(id)).filter((w) => Boolean(w)) as VocabWord[];
+    const found = b.wordIds
+      .map((id) => index.get(id))
+      .filter((w): w is VocabWord => w !== undefined);
     borrowed.push(...found);
     return { ...b, items: found.map(toVocabItem) };
   });
@@ -207,7 +209,9 @@ export function hydrateManga<
   const index = vocabById(vocab);
   const borrowed = manga.vocabIds
     .map((id) => index.get(id))
-    .filter((w) => Boolean(w)) as VocabWord[];
+    .filter((w): w is VocabWord => w !== undefined);
+  // 参照が ぜんぶ 切れて いたら 読み辞書は 足さない（空配列を 生やして 保存に 積もらせない）
+  if (borrowed.length === 0) return { ...manga, vocab: [] };
   return {
     ...manga,
     furigana: withBorrowedFurigana(manga.furigana, borrowed),

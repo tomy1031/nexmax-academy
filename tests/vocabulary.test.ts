@@ -3,7 +3,13 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { vocabSchema, wordStageSchema, type VocabBook } from "../src/content/schema";
 import { checkFuriganaCoverageOf } from "../src/lib/content-checks";
-import { buildFuriganaIndex, uncoveredKanji } from "../src/lib/text/furigana";
+import {
+  annotateRuby,
+  buildFuriganaIndex,
+  mergeFuriganaEntries,
+  uncoveredKanji,
+  type FuriganaEntry,
+} from "../src/lib/text/furigana";
 import {
   gameWordsOf,
   hydrateArticle,
@@ -13,7 +19,6 @@ import {
   toGameWord,
   vocabByTerm,
 } from "../src/lib/vocabulary";
-import { mergeFuriganaEntries, type FuriganaEntry } from "../src/lib/text/furigana";
 
 const book: VocabBook = vocabSchema.parse(
   JSON.parse(readFileSync(join(__dirname, "..", "content", "vocab", "vocabulary.json"), "utf8")),
@@ -381,6 +386,71 @@ describe("記事・まんがの ことばチップの ふりがな", () => {
       furigana?: [string, string][];
     };
     expect(hydrated.furigana).toContainEqual(withOwn.furigana![0]!);
+  });
+
+  /*
+   * 語そのものの よみ（`[term, reading]`）も 運ぶ。**熟語が 割れない ため**——
+   * 借り手に「会社」だけ あって「会社概要」が 無いと、チップが
+   * 「会社[かいしゃ]概要」と 割れて 概要が 裸で 残る（2026-08-27 実発生）。
+   * 語ごとの 足し前だけ 運んで いても 裸の 漢字は 0件の まま なので、
+   * この 半分は **専用の 検査が 無いと 落としても 気づけない**。
+   */
+  it("語そのものの よみも 運ぶ（熟語が 1字に 割れない）", () => {
+    // 漢字だけで 3字以上の 語（1字の 見出しに 割れうる かたち）
+    const word = book.words.find((w) => /^[\u3400-\u9fff\u3005]{3,}$/.test(w.term))!;
+    const host = { furigana: [[word.term[0]!, "だみー"]] as [string, string][] };
+    const hydrated = hydrateManga({ ...host, vocabIds: [word.id] }, book.words) as {
+      furigana?: [string, string][];
+    };
+    // 借り手の 1字より 長い 見出しが 勝つ＝最長一致で ひとかたまりに なる
+    const index = buildFuriganaIndex(hydrated.furigana!);
+    expect(annotateRuby(word.term, index)).toEqual([{ text: word.term, reading: word.reading }]);
+  });
+
+  /*
+   * **借りた 読みは ルビの かたまりを 広げても、読みそのものを 変えては ならない。**
+   *
+   * 借りた 語は 文脈しだいの 1字を 運んで くる（`risa-chi` の `["行","い"]` など）。
+   * 借り手が 同じ 表記に 別の 読みを 持って いれば 借り手が 勝つが、**長さの ちがう
+   * 見出し**は 最長一致で 追い越せる——そのとき 本文の 読みが 黙って 変わる。
+   * 覆い検査（裸の 漢字が 何件か）では 見えないので、ここで 読みそのものを 見る。
+   */
+  const readingOf = (text: string, entries: readonly (readonly [string, string])[]) =>
+    annotateRuby(text, buildFuriganaIndex(entries as [string, string][]))
+      .map((seg) => seg.reading ?? seg.text)
+      .join("");
+  const textsOf = (value: unknown, out: string[] = []): string[] => {
+    if (typeof value === "string") out.push(value);
+    else if (Array.isArray(value)) value.forEach((v) => textsOf(v, out));
+    else if (value && typeof value === "object")
+      Object.values(value).forEach((v) => textsOf(v, out));
+    return out;
+  };
+
+  it("借りた 読みで、本文の 読みが 変わらない（かたまりは 広がってよい）", () => {
+    const changed: string[] = [];
+    for (const file of filesIn("articles")) {
+      const raw = load("articles", file);
+      const hydrated = hydrateArticle(raw, book.words) as ArticleShape;
+      for (const text of textsOf(hydrated.blocks.filter((b) => b.kind !== "vocab"))) {
+        const before = readingOf(text, raw.furigana ?? []);
+        const after = readingOf(text, hydrated.furigana ?? []);
+        if (before !== after) changed.push(`${file}\n  前: ${before}\n  後: ${after}`);
+      }
+    }
+    for (const file of filesIn("manga")) {
+      const raw = load("manga", file);
+      const hydrated = hydrateManga(raw, book.words) as {
+        furigana?: [string, string][];
+        vocab?: unknown;
+      };
+      for (const text of textsOf({ ...raw, furigana: undefined, vocab: undefined })) {
+        const before = readingOf(text, raw.furigana ?? []);
+        const after = readingOf(text, hydrated.furigana ?? []);
+        if (before !== after) changed.push(`${file}\n  前: ${before}\n  後: ${after}`);
+      }
+    }
+    expect(changed).toEqual([]);
   });
 
   it("借り手が 自分で 書いた 読みが 勝つ（借りた ぶんに 上書きされない）", () => {

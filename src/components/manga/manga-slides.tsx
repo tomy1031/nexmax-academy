@@ -269,11 +269,12 @@ export function MangaSlides({ manga, embedded }: { manga: Manga; embedded: boole
                     key={item.term}
                     className="border-hairline bg-panel rounded-2xl border-2 px-3 py-2"
                   >
+                    {/*
+                      見出しも 説明文と 同じ スイッチで 出し入れする。手書きの <ruby> だと
+                      「ふりがな OFF」に しても ここだけ ルビが 残り、同じ 行で 割れる。
+                    */}
                     <span className="text-ink text-sm font-extrabold">
-                      <ruby>
-                        {item.term}
-                        <rt>{item.reading}</rt>
-                      </ruby>
+                      <RubyText text={item.term} index={furigana} show={furiganaOn} />
                     </span>
                     <span className="text-ink-soft ml-2 text-sm font-bold">
                       <VocabMeaning item={item} furigana={furigana} furiganaOn={furiganaOn} />
