@@ -1,0 +1,626 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>朝礼・夕礼 シナリオ集</title>
+<style>
+  :root {
+    --navy:#1b2545; --navy-deep:#121a35; --gold:#c9a45c; --gold-light:#e7cf95;
+    --cream:#f4ecd8; --ink:#243049; --muted:#6b7793; --line:#d8c79c;
+    --blue:#3a5ba0; --green:#3f7d52; --purple:#6b4f9e; --bg:#f7f2e6; --red:#a8434a;
+  }
+  * { box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { margin:0; font-family:"Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,system-ui,sans-serif;
+         color:var(--ink); background:var(--bg); line-height:1.75; }
+  .layout { display:flex; align-items:flex-start; }
+  nav.toc { position:sticky; top:0; width:280px; min-width:280px; height:100vh; overflow-y:auto;
+    background:linear-gradient(180deg,var(--navy),var(--navy-deep)); color:var(--cream);
+    padding:24px 18px; border-right:3px solid var(--gold); }
+  nav.toc h2 { font-size:15px; color:var(--gold-light); margin:0 0 4px; letter-spacing:.08em; }
+  nav.toc .sub { font-size:11px; color:#9fb0d6; margin:0 0 18px; }
+  nav.toc ol { list-style:none; margin:0; padding:0; }
+  nav.toc li { margin:2px 0; }
+  nav.toc a { display:block; color:#cfd8ef; text-decoration:none; font-size:13px;
+    padding:5px 10px; border-radius:6px; border-left:2px solid transparent; }
+  nav.toc a:hover { background:rgba(201,164,92,.16); color:#fff; border-left-color:var(--gold); }
+  main { flex:1; min-width:0; padding:0 0 80px; }
+  .hero { background:linear-gradient(135deg,var(--navy),var(--navy-deep) 70%); color:var(--cream);
+    padding:56px 60px 48px; border-bottom:4px solid var(--gold); }
+  .hero .eyebrow { color:var(--gold-light); letter-spacing:.24em; font-size:12px; margin:0 0 12px; }
+  .hero h1 { font-size:38px; margin:0 0 8px; letter-spacing:.04em; }
+  .hero .en { color:#aebcdf; font-size:17px; margin:0 0 20px; letter-spacing:.12em; }
+  .hero .meta { font-size:13px; color:#c7d1ec; }
+  .hero .meta span { margin-right:18px; }
+  .wrap { padding:0 60px; max-width:1040px; }
+  section.chapter { padding-top:48px; }
+  h2.sec { font-size:26px; color:var(--navy); margin:0 0 6px; padding-bottom:8px;
+    border-bottom:2px solid var(--gold); display:flex; align-items:baseline; gap:12px; }
+  h2.sec .num { background:var(--gold); color:#fff; font-size:15px; border-radius:6px;
+    padding:2px 10px; flex:0 0 auto; }
+  h3 { font-size:19px; color:var(--blue); margin:32px 0 8px; }
+  h4 { font-size:16px; color:var(--ink); margin:20px 0 6px; }
+  p { margin:8px 0; }
+  ul, ol.body { margin:8px 0 8px 4px; padding-left:22px; }
+  li { margin:4px 0; }
+  code { background:#ece3cc; color:#6b4f22; padding:1px 6px; border-radius:4px;
+    font-family:"SF Mono",Menlo,Consolas,monospace; font-size:13px; }
+  pre:not(.mermaid) { background:var(--navy-deep); color:#e7ecf7; padding:16px 18px; border-radius:10px;
+    overflow-x:auto; font-size:13px; line-height:1.6; border-left:4px solid var(--gold); }
+  blockquote { margin:10px 0; padding:8px 16px; border-left:4px solid var(--line);
+    background:#fffdf6; color:#4a5470; font-size:14px; }
+  .callout { border-left:5px solid var(--blue); background:#eef3fb; padding:12px 18px;
+    border-radius:0 8px 8px 0; margin:16px 0; }
+  .callout.warn { border-color:#c08a2e; background:#fbf3e2; }
+  .callout.good { border-color:var(--green); background:#e9f4ec; }
+  .callout.bad { border-color:var(--red); background:#fbeeee; }
+  .callout strong { color:var(--navy); }
+  table { width:100%; border-collapse:collapse; margin:14px 0; font-size:14px; background:#fff;
+    border-radius:8px; overflow:hidden; box-shadow:0 1px 0 var(--line); }
+  th, td { text-align:left; padding:9px 12px; border-bottom:1px solid #ece3cc; vertical-align:top; }
+  th { background:var(--navy); color:var(--cream); font-weight:600; font-size:13px; }
+  tr:nth-child(even) td { background:#faf6ec; }
+  .badge { display:inline-block; font-size:11px; padding:2px 9px; border-radius:999px; color:#fff;
+    margin-right:4px; font-weight:600; }
+  .b-a { background:var(--green); } .b-b { background:var(--blue); } .b-c { background:var(--purple); }
+  .b-x { background:var(--red); } .b-w { background:#c08a2e; }
+  footer { padding:30px 60px; color:var(--muted); font-size:12px; border-top:1px solid var(--line);
+    margin-top:40px; }
+  details.changelog { margin:24px 60px 0; max-width:1040px; border:1px solid var(--line);
+    border-radius:12px; background:#fff; box-shadow:0 2px 10px rgba(27,37,69,.06); overflow:hidden; }
+  details.changelog > summary { list-style:none; cursor:pointer; user-select:none; padding:14px 22px;
+    background:linear-gradient(90deg,var(--navy),#2a3a6e); color:var(--cream); font-weight:600;
+    font-size:16px; display:flex; align-items:center; gap:10px; }
+  details.changelog > summary::-webkit-details-marker { display:none; }
+  details.changelog > summary .chev { transition:transform .2s; color:var(--gold-light); }
+  details.changelog[open] > summary .chev { transform:rotate(90deg); }
+  details.changelog > summary .latest { margin-left:auto; font-size:12px; font-weight:500; color:#aebcdf; }
+  details.changelog .cl-body { padding:8px 22px 18px; }
+  details.changelog table { margin-top:12px; }
+  .panel { display:inline-block; border:2px dashed #b9c6da; border-radius:10px; padding:6px 14px;
+    margin:4px 6px 4px 0; font-weight:700; color:#7b8aa3; background:#fff; }
+  .panel.open { border:2px solid var(--green); color:var(--navy); background:#e9f4ec; border-style:solid; }
+  @media (max-width:860px) {
+    nav.toc { display:none; }
+    .hero, .wrap, footer { padding-left:24px; padding-right:24px; }
+  }
+</style></head>
+<body>
+<div class="layout">
+
+<nav class="toc">
+  <h2>朝礼・夕礼 シナリオ集</h2>
+  <p class="sub">裏設定から作った案（承認まち）</p>
+  <ol>
+    <li><a href="#s0">0. これは何か／裏取りメモ</a></li>
+    <li><a href="#s1">1. プロジェクトの 裏設定</a></li>
+    <li><a href="#s2">2. A／B の 分け方</a></li>
+    <li><a href="#s3">3. 6日間の 台帳（全員）</a></li>
+    <li><a href="#s4">4. <strong>シナリオ 本文</strong></a></li>
+    <li><a href="#s5">5. やさしい／むずかしい の 作り方</a></li>
+    <li><a href="#s6">6. ミス役の 仮キャラ</a></li>
+    <li><a href="#s7">7. 判断していただきたいこと</a></li>
+  </ol>
+</nav>
+
+<main>
+  <div class="hero">
+    <p class="eyebrow">SCENARIO / 承認まち — 実装前</p>
+    <h1>朝礼・夕礼 シナリオ集</h1>
+    <p class="en">One project, six days, two levels</p>
+    <p class="meta">
+      <span>版: v1.0</span><span>作成日: 2026-09-10</span><span>台帳: #366</span>
+      <span>状態: <strong>まだ何も実装していません</strong></span>
+    </p>
+  </div>
+
+  <div class="wrap">
+
+  <section class="chapter" id="s0">
+    <h2 class="sec"><span class="num">0</span>これは何か／裏取りメモ</h2>
+
+    <div class="callout bad">
+      <strong>前の案（Aoba抹茶カフェ・そら書店を流用したもの）は取り下げました。</strong>
+      先のステージで初めて出るものを先に出すと、後の教材の初登場を壊します。
+      規律10とルーブリックR9-9に入れ、<strong>案件は完全オリジナルで作り直しました</strong>。
+    </div>
+
+    <p>ご指示どおり、<strong>私の案は一切渡さず</strong>、いただいた言葉をそのまま fable に引き渡して作らせたものです。
+      土台にしたのは<strong>「どのような案件で、いまどこまで進んでいて、それぞれどのような進捗なのか」</strong>という裏設定で、
+      これは<strong>これまでどこにも書かれていませんでした</strong>。設定の荒さの原因はここです。</p>
+
+    <h3>私が裏を取ったこと（2件）</h3>
+    <table>
+      <tr><th>案の中の記述</th><th>裏取りの結果</th><th>どうするか</th></tr>
+      <tr><td><strong>DeepL はクメール語・ネパール語に対応していないので Google を使う</strong>（技術選定の理由）</td>
+        <td><span class="badge b-a">確認できた</span> DeepL は31言語で、主にヨーロッパ系。クメール語・ネパール語は含まれない。Google Cloud Translation は両方に対応</td>
+        <td><strong>このまま使えます。</strong>学習者の母語（クメール語）が技術選定の理由になっているのは、設計01 P1「母国が武器になる場面」そのものです</td></tr>
+      <tr><td><strong>市の保育ICT補助金 100万円（3/4補助・上限100万）</strong>／実績報告 3/31締切</td>
+        <td><span class="badge b-w">注意</span> 「保育所等におけるICT化推進等事業」は実在しますが、<strong>金額・補助率・実施の有無は市区町村ごとに違います</strong>（実施主体が自治体）。上限10万円としている自治体の例もありました</td>
+        <td><strong>判断1でうかがいます。</strong>年度末の締切が物語の推進力なので仕組みは残し、<strong>実在の市名と具体的な補助条件を結びつけない</strong>のが安全だと考えています</td></tr>
+    </table>
+  </section>
+
+  <section class="chapter" id="s1">
+    <h2 class="sec"><span class="num">1</span>プロジェクトの 裏設定</h2>
+
+    <h3>1.1 お客さま</h3>
+    <table>
+      <tr><th>項目</th><th>内容</th></tr>
+      <tr><td>お客さま</td><td><strong>どんぐり保育園</strong>（私立の認可保育園）</td></tr>
+      <tr><td>園長</td><td><strong>小林 ゆき</strong>（58歳）。保育士歴35年。ITは苦手だが「<strong>動くものを見せてくれれば分かる</strong>」人</td></tr>
+      <tr><td>規模</td><td>園児 <strong>92人</strong>（0歳9・1歳14・2歳16・3歳18・4歳17・5歳18）／保育士15人／事務1人／調理2人</td></tr>
+      <tr><td>外国につながる家庭</td><td><strong>18家庭</strong>（ベトナム7・中国4・ネパール3・フィリピン3・<strong>カンボジア1</strong>）</td></tr>
+      <tr><td>いまの不便</td><td>①連絡帳が<strong>紙</strong>（先生が毎日40分手書き）②欠席連絡は8:00〜8:30の<strong>電話（多い日は20本）</strong>③お知らせは日本語の紙だけ ④写真は掲示板</td></tr>
+      <tr><td><strong>人間的動機</strong></td><td>昨年10月の遠足。ネパールの家庭が「おべんとう・すいとう」の紙を読めず、<strong>4歳の子だけお弁当が無かった</strong>。担任が自分の弁当を分けた。園長は「入園式までに、どのお母さんも読める連絡帳を」と決めた</td></tr>
+      <tr><td>お金</td><td>制作費 180万円（税別）／月額保守 12,000円。うち市の補助金（<a href="#s0">0章の注意</a>）</td></tr>
+    </table>
+
+    <h3>1.2 作っているもの ——「どんぐり れんらく」</h3>
+    <p>スマホで使うWebアプリ（親）＋先生用のタブレット画面。</p>
+    <table>
+      <tr><th>#</th><th>機能</th><th>中身</th><th>担当</th></tr>
+      <tr><td>F1</td><td><strong>欠席・遅刻 連絡</strong></td><td>親が8:30までに送る。<strong>理由は自分の言語で書ける</strong>→先生には日本語で見える</td><td><strong>学習者</strong></td></tr>
+      <tr><td>F2</td><td>連絡帳</td><td>先生→親（文＋写真3枚）、親→先生（体温・朝ごはん・ひとこと）</td><td>ニャム・奥田</td></tr>
+      <tr><td>F3</td><td>多言語</td><td>先生が日本語で書く→6言語に自動翻訳（英・ベトナム・中国・ネパール・タガログ・<strong>クメール</strong>）</td><td>ニャム</td></tr>
+      <tr><td>F4</td><td>お知らせ＋既読</td><td>誰が読んでいないかが先生に見える</td><td>奥田</td></tr>
+      <tr><td>F5</td><td>プッシュ通知</td><td>—</td><td>ニャム</td></tr>
+      <tr><td>F6</td><td>写真アルバム</td><td>アップロード・縮小・一覧</td><td><strong>宮本</strong>（仮キャラ）</td></tr>
+      <tr><td>—</td><td>対象外</td><td>請求（市のシステム）、お迎え時間の変更（<strong>フェーズ2</strong>）</td><td>—</td></tr>
+    </table>
+    <p class="callout good"><strong>技術選定に、学習者の母語が効いています。</strong>
+      翻訳に DeepL を使わないのは、<strong>DeepLがクメール語・ネパール語に対応していない</strong>から。
+      チームでクメール語が分かるのは学習者だけ——<strong>ガイドの確認も画面の確認も、学習者にしかできません</strong>。</p>
+
+    <h3>1.3 納期と、その事業上の理由（2段）</h3>
+    <table>
+      <tr><th>期限</th><th>理由</th></tr>
+      <tr><td><strong>3月29日（月）稼働</strong></td><td>補助金の<strong>実績報告が3月31日締切</strong>。「動いている画面の写真」と「検収書」が要る</td></tr>
+      <tr><td><strong>4月3日（土）入園式</strong></td><td>新入園<strong>23家庭</strong>にその場でアプリを配る。逃すと紙の運用がもう1年続く</td></tr>
+    </table>
+    <p>そのため <strong>3月19日（金）10:00 に園で検収</strong>、3/22〜26 に全クラス展開と保育士研修。</p>
+
+    <h3>1.4 いま どこか（3月15日 月曜の朝）</h3>
+    <pre>11月  ヒアリング（藤木2回）
+12月  要件確定 12/4 → 設計（ヘンディ）→ 契約 12/18
+1月   開発（ニャム・奥田・ヘンディ）
+2/1   学習者 配属（研修あけ）。宮本さん 合流（〜4/30 業務委託）
+3/1〜3/12  試し使い（りす組14＋ぱんだ組18 ＝ 32家庭）
+3/12（金） 富田が園で声を集める → 直し 12件
+──── いま ここ ────
+3/15〜3/19  直しの週。金曜 10:00 園で検収（24項目）
+3/22〜3/26  全クラス展開・92人の登録・保育士研修・案内配布
+3/29（月）  稼働（7:45 から全員立ち会い）
+3/31（水）  補助金 実績報告
+4/3（土）   入園式（新入園 23家庭）</pre>
+
+    <h3>1.5 チームと、いまの進捗（3/15 朝）</h3>
+    <p>朝礼は<strong>平日 9:30、立って10分</strong>。検収週なので藤木も毎朝出ます。</p>
+    <table>
+      <tr><th>人</th><th>役</th><th>3/15 朝の進捗</th></tr>
+      <tr><td><strong>ヘンディ</strong>（4年目・PM兼PG）</td><td>設計全体・レビュー・<strong>朝礼の司会</strong></td><td>12件を4人に振り分け済み。手順書70%</td></tr>
+      <tr><td><strong>富田</strong>（PM）</td><td>日程・園の窓口・検収・研修</td><td>検収表24項目を本日11:00に確定。木曜14:00 園訪問</td></tr>
+      <tr><td><strong>藤木</strong>（取締役）</td><td>営業・要件・園長と市役所・<strong>まとめ役</strong></td><td>金曜に園長の声を聞いた。隣の園が興味を示している（次の案件）</td></tr>
+      <tr><td><strong>ニャム</strong>（<strong>ベトナムのベテラン・38歳・12年</strong>）</td><td>バックエンド・翻訳・通知</td><td>連絡帳API・翻訳・通知は完成。キュー移行80%。直し3件</td></tr>
+      <tr><td><strong>奥田</strong>（PG）</td><td>先生のタブレット画面。<strong>ふだんは客先。3月だけ会社に戻っている</strong></td><td>直し3件。1件が半分</td></tr>
+      <tr><td><strong>宮本</strong>（<strong>仮キャラ・業務委託</strong>）</td><td>写真アルバム（2/1〜4/30）</td><td><strong>iPhoneの3MB超で413。木曜から止まっている</strong></td></tr>
+      <tr><td>西田（事務）</td><td>契約・補助金・請求</td><td>実績報告書の下書き中</td></tr>
+      <tr><td>湯川（広報営業）</td><td>使い方ガイド6言語・研修・動画</td><td>クメール語は<strong>学習者に依頼</strong></td></tr>
+      <tr><td><strong>学習者</strong>（新人PG・カンボジア出身）</td><td><strong>F1 欠席・遅刻連絡</strong>＋クメール語の確認</td><td>直し4件（下記）</td></tr>
+    </table>
+
+    <h3>1.6 学習者が任されている4件</h3>
+    <table>
+      <tr><th>#</th><th>内容</th><th>3/15 朝の状態</th></tr>
+      <tr><td>#31</td><td>同じ日に2回送れて、一覧に同じ子が2回出る</td><td>金曜に一意制約を追加 →<strong>2回目の送信で500エラー</strong>。16:30〜17:00 の30分止まって帰った</td></tr>
+      <tr><td>#32</td><td>「8時30分をすぎました」の判定が<strong>17:30</strong>に出る（サーバーがUTC）</td><td>未着手</td></tr>
+      <tr><td>#33</td><td>先生のタブレットで<strong>クメール語が □□□</strong>（フォント無し）</td><td>未着手</td></tr>
+      <tr><td>#34</td><td>欠席の「理由」を親が母語で書く→先生が読めない</td><td>未着手（ニャムの関数を借りればよいが、使い方を知らない）</td></tr>
+    </table>
+    <div class="callout good"><strong>教材の芯はここです。</strong>4件とも小さいのに、
+      <strong>自分だけでは決められない・確かめられないものが混ざっています</strong>
+      （#32 の古いデータは園の判断、#33 は園の実機でしか確かめられない、#34 はニャムの関数を借りる）。
+      <strong>朝礼で誰に何を頼むかを言えないと、金曜に間に合いません。</strong></div>
+  </section>
+  <section class="chapter" id="s2">
+    <h2 class="sec"><span class="num">2</span>A／B の 分け方</h2>
+
+    <div class="callout good">
+      <strong>A＝やさしい（N4/N5）、B＝むずかしい（N3）。同じ案件・同じ6日間・同じ登場人物。</strong>
+      曜日には一切のせません。
+    </div>
+
+    <h3>なぜ「レベル」で分け、「曜日」で分けないか</h3>
+    <ol class="body">
+      <li>曜日に難易度をのせると、<strong>物語の連続（月→火→水）と難易度の段（易→難）が同じ軸に重なります</strong>。
+        学習者は「火曜の話が分からない」のが<strong>日本語のせいか、話の続きを見逃したせいか区別できません</strong>。
+        前の案が混乱したのはこれが原因です</li>
+      <li>朝礼と夕礼は<strong>中身の型が同じ</strong>（3つを話す）で、違うのは時間と「きのう／きょう／あした」のことばだけ。
+        これを難易度にすると嘘になります。だから<strong>朝礼／夕礼は両方の中に同じ形で入れます</strong>（5日目が夕礼）</li>
+      <li>レベルで分けると<strong>変わるものを表にして見せられます</strong>——「内容が変わるなら明確に」に応えられます</li>
+    </ol>
+
+    <h3>変わるもの（ぜんぶ）</h3>
+    <table>
+      <tr><th></th><th>A やさしい</th><th>B むずかしい</th></tr>
+      <tr><td>学習者の日本語</td><td>N4/N5。1文20字前後</td><td>N3。1文30字まで。<strong>影響・見込み・対応・〜次第</strong>を使う</td></tr>
+      <tr><td><strong>場面カード</strong></td><td><strong>3つの絵札</strong>に事実が並ぶ。<strong>文に直すだけ</strong>でよい</td><td><strong>手元にある物そのまま</strong>（作業の札・チャット・ログ・予定表）。<strong>何を言い、何を言わないかを自分で選ぶ</strong></td></tr>
+      <tr><td>開くパネル</td><td><strong>3枚</strong>：した こと／する こと／こまって いる こと</td><td><strong>5枚</strong>：＋<strong>見込み</strong>／<strong>お願い（だれに・何を）</strong>。こまりごとに<strong>名前・時刻</strong>が要る</td></tr>
+      <tr><td>聞き返し</td><td>1段</td><td><strong>2段</strong>（足りなければ「それは何というエラーですか。ログには？」まで）</td></tr>
+      <tr><td><strong>ヒント</strong></td><td>既定で<strong>開いている</strong>。<strong>導く型</strong>（その日の名詞入り穴埋め）</td><td>既定で<strong>閉じている</strong>。<strong>考えさせる型</strong>（問いだけ。名詞を入れない）</td></tr>
+      <tr><td>見本の報告</td><td>3文。パネルと1対1</td><td>5要素。自然なつなぎ</td></tr>
+      <tr><td>ほかのメンバー</td><td>短い。<strong>全員がきちんと報告する</strong></td><td>自然な長さ。<strong>2日目に宮本さんの「順調です」をヘンディが見抜く</strong>（Bだけ）</td></tr>
+      <tr><td>まとめ（藤木）</td><td>お客さまの反応＋次の1つ</td><td>＋チームが何を努力するか＋数字</td></tr>
+      <tr><td>6日目（稼働日）</td><td>3枚</td><td><strong>5枚＝障害の第一報の型</strong>（何が／影響／した対応／これから／お願い）</td></tr>
+    </table>
+
+    <div class="callout warn"><strong>画面での明示</strong>：ステージ入口で<strong>「やさしい／むずかしい」を1回選ぶ</strong>（記憶する）。
+      以後<strong>すべての画面の右上に札を出し続けます</strong>。切り替えは入口に戻ればできます。
+      両方終えると修了が2つ並びます（Aを終えた人がBに挑む導線）。<strong>💗やエピソードはありません。</strong></div>
+  </section>
+
+  <section class="chapter" id="s3">
+    <h2 class="sec"><span class="num">3</span>6日間の 台帳（全員）</h2>
+    <p><strong>セリフはこの台帳と矛盾させません。</strong>日付・件数・時刻が全日つながっています。</p>
+    <table>
+      <tr><th>日</th><th>学習者</th><th>ニャム</th><th>奥田</th><th>宮本</th><th>その他</th></tr>
+      <tr><td><strong>3/15 月</strong></td>
+        <td>朝礼後10分でニャムが教える→#31完了 10:40。#32 で timezone を直すと<strong>古い23件が9時間ずれて見える</strong>→16:00 相談→「富田さんに朝礼で出して」</td>
+        <td>キュー完了→18:00 マージ</td><td>#38完了。タブレットは明日10:00に園から借りる</td>
+        <td>A: 413をヘンディと直す ／ <strong>B: 「順調です」で隠したまま</strong></td>
+        <td>富田: 検収表24項目 確定。湯川: クメール語確認を依頼</td></tr>
+      <tr><td><strong>3/16 火</strong></td>
+        <td>#34着手（ニャムに5分）。古い23件は園に聞く</td><td>#35完了。学習者に翻訳関数を見せる</td>
+        <td>タブレット到着。実機OK。夕方 学習者に貸す→<strong>□□□を確認</strong></td>
+        <td><strong>B: ヘンディが札の停滞から見抜く</strong>→413は10分、横向きは奥田が30分</td>
+        <td>西田出社。藤木: 前日みなみ保育園を訪問</td></tr>
+      <tr><td><strong>3/17 水</strong></td>
+        <td>#34完了。園「古い23件は消してよい」→バックアップ後 削除。ガイド3か所直す。#33 Webフォント→実機OK。<strong>ただし園のWiFiが通すか不明</strong>→同梱版も用意</td>
+        <td>#36完了。翻訳の使用量を数える（全園で月30万字の見込み）</td><td>#40着手</td><td>#39完了</td>
+        <td>湯川: 動画撮影。富田: 木曜の予行を決める</td></tr>
+      <tr><td><strong>3/18 木</strong></td>
+        <td>9:00〜12:00 予行。14:00 園へ。<strong>園のWiFiでフォントOK</strong>。ソカーさんに5分クメール語で説明</td>
+        <td>予行の裏方</td><td>予行 11/12</td><td>予行。サムネイルは検収後と決める</td>
+        <td>西田: 納品書・検収書。藤木: 園長と検収の進め方</td></tr>
+      <tr><td><strong>3/19 金</strong></td>
+        <td>10:00〜11:30 検収。<strong>24項目中22 OK・2条件付き</strong>。学習者の4項目は全部OK。園長が<strong>「お迎え時間の変更もここから」</strong>（契約外）</td>
+        <td>全部OK</td><td>#40条件付き</td><td>#43新規</td>
+        <td><strong>夕礼 17:30（富田が司会）</strong></td></tr>
+      <tr><td><strong>3/29 月</strong><br>（稼働）</td>
+        <td>7:45立ち会い。<strong>8:05 欠席一覧が空</strong>→8:06 報告。<strong>8:05〜8:22 502</strong>。8:22復旧。<strong>12家庭が送れず電話</strong></td>
+        <td>キュー0エラー・134件・平均2.1秒</td><td>先生の代理入力を電話で支援</td>
+        <td><strong>サムネイル無しが502の原因の1つ</strong>。本日16:00までに入れる</td>
+        <td>園長「電話12本。前は40本だった」</td></tr>
+    </table>
+    <p class="callout"><strong>危ないところが、あらかじめ仕込まれています。</strong>
+      写真のサムネイルを検収の後回しにしたチームの判断が、<strong>6日目の稼働障害の原因になります</strong>。
+      誰のミスでもなく、<strong>優先順位のつけ方の結果</strong>として起きる——これが上級回の教材価値です。</p>
+  </section>
+  <section class="chapter" id="s4">
+    <h2 class="sec"><span class="num">4</span>シナリオ 本文</h2>
+
+    <h3>共通の進行（エンジンの型）</h3>
+    <pre>① 司会の あいさつ（日付・時刻・きょうの位置）
+② 見本の 人が 報告（パネルと 同じ 要素で）
+③ 司会「では ◯◯さん、お願いします」→ 学習者が 1本 話す
+④ 言えた 要素の パネルが 開く（複数 同時に 開く）
+⑤ 開いて いない パネルを 司会が 聞き返す（A: 1段 ／ B: 2段）
+⑥ 全部 開いたら、司会が ひとこと → ほかの メンバーが 報告
+⑦ 藤木が まとめて 終了</pre>
+    <p><strong>聞き返しの共通ルール</strong>：学習者の日本語は直さない。分からなければ「すみません、もう一度 お願いします。」。
+      言えた要素は具体的にほめ、<strong>足りない要素だけを聞く</strong>。</p>
+
+    <h3>4.1 1日目 ── 3月15日（月）朝礼 9:30「直しの 週の はじまり」</h3>
+    <p><strong>司会: ヘンディ</strong>（開発リーダー。学習者にとって「先に同じ道を歩いた人」なので、追い質問が責めにならない）</p>
+
+    <h4>A（やさしい）── 場面カード（3枚の絵札）</h4>
+    <pre>🗓 3月15日（月）9:30。金曜日が 検収。
+
+🟩 金曜日に した こと
+   「同じ 日に 2回 送れない ように した」🔒
+   でも「2回目を 送ると エラーの 画面（500）が 出る」
+   16時30分から 30分 止まった
+
+🟦 きょう する こと
+   ① エラーの 画面を「もう 送って あります」に 変える
+   ② 「8時30分を すぎました」が 17時30分に 出る バグを 直す
+
+🟥 こまって いる こと
+   500 エラーを どこで 直せば いいか 分からない。ニャムさんが くわしい</pre>
+
+    <h4>A ── 見本（ニャム）</h4>
+    <blockquote>はい。金曜日は、翻訳を 速く する 作業を しました。80% まで 終わりました。<br>
+      きょうは、のこりの 20% を して、夕方 ヘンディさんに レビューを 出します。<br>
+      こまって いる ことは、iPhone で 通知が 来ない ことです。ホーム画面に 追加しないと 来ません。<br>
+      これは 直せないので、ガイドに 書きたいです。以上です。</blockquote>
+
+    <h4>A ── パネルと 聞き返し</h4>
+    <p><span class="panel">？ した こと（どこまで）</span><span class="panel">？ する こと</span><span class="panel">？ こまって いる こと</span></p>
+    <table>
+      <tr><th>パネル</th><th>聞き返し</th></tr>
+      <tr><td>した こと</td><td>「◯◯さん、金曜日は 何を しましたか。どこまで 終わりましたか。」</td></tr>
+      <tr><td>する こと</td><td>「きょうは 何を しますか。1つで いいです。」</td></tr>
+      <tr><td>こまって いる こと</td><td>「こまって いる ことは ありますか。小さい ことでも いいです。<strong>エラーの 名前が あると、助けやすいです。</strong>」</td></tr>
+    </table>
+    <p><strong>全部開いたあと</strong> ── ヘンディ：「500 の ことは、朝礼の あと ニャムさんが 10分 見ます。10時には 直りますよ。」</p>
+
+    <h4>A ── ほかのメンバー ＆ まとめ</h4>
+    <blockquote>
+      <strong>奥田</strong>：金曜日は、クラスを 切り替えると 文が 消える 問題を 直し始めました。半分 終わりました。きょうは のこりを 直して、テストを します。こまって いる ことは、園の タブレットで 試したい ことです。会社には 同じ ものが ありません。富田さん、1台 借りられますか。<br>
+      <strong>富田</strong>：あしたの 10時に 1台 借ります。<br>
+      <strong>宮本</strong>：写真の 機能です。金曜日は、アンドロイドで アップロードが できる ところまで 終わりました。きょうは iPhone の 大きい 写真を 調べます。3MB の 写真で 413 と いう エラーが 出ます。こまって いる ことは、その エラーです。<br>
+      <strong>ヘンディ</strong>：413 は サーバーの 設定です。朝礼の あとで いっしょに 見ましょう。10分で 直ります。<br>
+      <strong>富田</strong>：検収の 表は 24項目です。きょう 11時に 園長先生と 電話で 決めます。木曜日に 園へ 行きます。
+    </blockquote>
+    <blockquote><strong>藤木（まとめ）</strong>：みなさん、ありがとう ございます。園長先生は 金曜日、こう 言って いました。
+      <strong>「ベトナムの お母さんが、はじめて 自分で 連絡帳を 読めました。」</strong>うれしい 声です。
+      でも、直しが 12件 あります。検収まで あと 4日。こまって いる ことは、朝礼で 言って ください。
+      きょうも 2つ、朝礼の あとで 直りますね。では、始めましょう。</blockquote>
+
+    <details class="raw"><summary><strong>B（むずかしい）── 同じ日を、手元の物だけで</strong></summary><div class="rb">
+      <h4>場面カード（手元にある物そのまま）</h4>
+      <pre>📋 作業の札（あなたの 4件）
+  #31 欠席連絡が 2回 送れる → 一意制約: 進行中（金 追加。2回目の 送信で 500）
+  #32 8:30 締切の 判定が 17:30 に 出る（サーバーが UTC）: 未着手
+  #33 先生の タブレットで クメール語が □□□: 未着手
+  #34 欠席の 理由が 外国語 → 先生が 読めない: 未着手
+
+💬 チャット
+  金 16:48 ヘンディ「#31 の 500、月曜の 朝礼で 出して ください。ニャムさんが 早いです」
+  金 17:02 富田「検収は 3/19（金）10:00 園にて。検収表 24項目は 月曜 11:00 に 確定」
+  金 17:10 湯川「ガイドの クメール語、水曜までに 見て もらえますか🙏」
+
+📄 ログ（金 16:31）
+  [2027-03-12 16:31:07] local.ERROR: SQLSTATE[23000]: Integrity constraint violation:
+  1062 Duplicate entry '41-2027-03-12-absent' for key 'absences.absences_child_id_date_type_unique'
+
+🗓 月 9:30 朝礼／11:00 検収表 確定／木 14:00 園 訪問／金 10:00 検収</pre>
+      <p class="callout"><strong>Bの学習者は、ここから自分で組み立てます</strong>：金曜＝制約追加・2回目500／きょう＝メッセージ＋#32／
+        こまり＝500をどこでつかまえるか／見込み＝#31午前中・#32きょう中／お願い＝ニャムさんに10分。</p>
+
+      <h4>見本（ニャム）</h4>
+      <blockquote>金曜日は、翻訳の 処理を キューに 移す 作業を 進め、8割まで 終わりました。
+        きょうは 残りの テストを して、夕方までに ヘンディさんに レビューを 出します。
+        困って いる ことは、iPhone の 通知が ホーム画面に 追加しないと 届かない 点です。
+        これは 仕組み上 直せないので、ガイドに 1ページ 要ります。
+        見込みは、キューは きょう 中、ガイドは 湯川さん 次第です。湯川さん、1ページ お願いできますか。以上です。</blockquote>
+
+      <h4>パネル（5枚）と 2段の 聞き返し</h4>
+      <p><span class="panel">？ した こと（数字）</span><span class="panel">？ する こと</span><span class="panel">？ こまって いる こと（名前・時刻）</span><span class="panel">？ 見込み</span><span class="panel">？ お願い（だれに・何を）</span></p>
+      <table>
+        <tr><th>パネル</th><th>1段目</th><th>2段目（まだ足りないとき）</th></tr>
+        <tr><td>した こと</td><td>「金曜日は 何を しましたか。どこまで 進みましたか。」</td><td>「<strong>数字で 言えますか。</strong>終わった もの、のこった もの。」</td></tr>
+        <tr><td>する こと</td><td>「きょう する ことは 何ですか。」</td><td>「<strong>順番は どちらが 先ですか。</strong>」</td></tr>
+        <tr><td>こまって いる こと</td><td>「こまって いる ことは ありますか。」</td><td>「<strong>それは 何と いう エラーですか。画面か ログに 何と 出て いますか。いつからですか。</strong>」</td></tr>
+        <tr><td>見込み</td><td>「それは、いつまでに 直りそうですか。」</td><td>「<strong>◯時まで、◯分くらい、の 形で</strong> お願いします。」</td></tr>
+        <tr><td>お願い</td><td>「だれに、何を お願いしたいですか。」</td><td>「<strong>時間も 言って ください。</strong>10分なのか、1時間なのか。」</td></tr>
+      </table>
+      <p><strong>全部開いたあと</strong> ── ヘンディ：「名前と 時間まで 言って くれたので、すぐ 動けます。ニャムさん、朝礼の あと 10分 お願いします。」</p>
+
+      <h4>ほかのメンバー ＆ まとめ（B）</h4>
+      <blockquote>
+        <strong>奥田</strong>：金曜日は #38、クラスを 切り替えると 書いた 文が 消える 件です。自動保存を 入れ始めて、半分 終わりました。きょう 残りを 入れて、午後 テストです。困って いるのは、園の タブレットが Android 8 で、会社に 同じ 機種が ない 点です。見込みは、実機が あれば あすの 午前で 終わります。富田さん、1台 借りて いただけますか。<br>
+        <strong>宮本</strong>：写真の 機能は 順調です。きょうも 続けます。困って いる ことは ありません。<br>
+        <strong>ヘンディ</strong>：ありがとう ございます。<br>
+        <strong>富田</strong>：日程を 2つ。検収表 24項目は きょう 11時に 園長先生と 確定します。木曜 14時に 園へ 行くので、実機で 確かめたい 人は 私に 言って ください。
+      </blockquote>
+      <blockquote><strong>藤木（まとめ）</strong>：園長先生の 金曜日の ことばを 伝えます。「りす組の ベトナムの お母さんが、はじめて 自分で 連絡帳を 読んで、翌朝 先生に お礼を 言いに 来ました。」これが この 案件の 意味です。
+        一方で、市役所からは「実績報告には 稼働して いる 画面の 写真が 要る」と 確認が 取れました。つまり <strong>3月29日の 朝に 動いて いなければ、園は 自分で 払います。</strong>
+        検収まで 4日、12件。きょうの 朝礼で、こまりごとが 2つ 出て、2つとも 朝礼の あと 10分で 動きます。
+        <strong>言った 人が 早く 直る。</strong>これが この 週の 合言葉です。始めましょう。</blockquote>
+    </div></details>
+
+    <h3>4.2 2日目 ── 3月16日（火）「決められない ことを 上に 上げる」</h3>
+    <p><strong>この日の学び</strong>：直したら<strong>新しい問題が生まれた</strong>（古い23件が9時間ずれる）。
+      しかも<strong>消すか直すかは園が決めること</strong>——技術の問題ではなく<strong>決める問題</strong>だと分けて言えるか。</p>
+
+    <h4>A ── 場面カード ＆ 学習者のパネル</h4>
+    <pre>🗓 3月16日（火）9:30。検収まで あと 3日。
+
+🟩 きのう した こと
+   500 エラー →「もう 送って あります」に 直した ✓ 10:40
+   8時30分の バグも 直した ✓
+   でも、古い データ 23件の 時間が 9時間 ずれて 見える
+   （3/12 8:10 → 3/11 23:10）
+
+🟦 きょう する こと
+   ① 理由の 翻訳（お母さんが クメール語で 書く → 先生に 日本語）
+   ② ガイドの クメール語を 見る
+
+🟥 こまって いる こと
+   古い 23件を 消すか、直すか、自分では 決められない。園に 聞いて ほしい</pre>
+    <p><strong>聞き返し（P3）</strong>：「こまって いる ことは ありますか。<strong>自分で 決められない ことも、こまりごとです。</strong>」</p>
+    <p><strong>全部開いたあと</strong> ── ヘンディ：「自分で 決めないで 出して くれて、助かります。」／富田：「教えて くれて ありがとう。午後に 園長先生に 電話します。」</p>
+    <blockquote><strong>藤木（まとめ・A）</strong>：きのう、隣の みなみ保育園に 行きました。「どんぐり保育園が うまく いったら、うちも」と 言って いました。この 案件は、次の 案件に つながって います。
+      ◯◯さん、古い データの ことは、自分で 決めないで 出して くれて、正しいです。<strong>園の データは 園の ものです。</strong></blockquote>
+
+    <details class="raw"><summary><strong>B ── ここで「宮本さんの 順調です」をヘンディが見抜く</strong></summary><div class="rb">
+      <p><strong>Bの聞き返し（P3の2段目）</strong>：「<strong>それは 技術の 問題ですか、決める 問題ですか。</strong>」
+        <br><strong>全部開いたあと</strong> ── ヘンディ：「『決める 問題』だと 分けて 言えたのが、いちばん よかったです。」</p>
+      <blockquote>
+        <strong>ニャム</strong>：きのう キューを マージし、夜の 翻訳 40件が 平均 2.3秒で 通りました。きょうは #35 ネパール語の 改行を 直し、朝礼の あと ◯◯さんに 翻訳の 関数を 5分 見せます。困って いる ことは ありません。<br>
+        <strong>宮本</strong>：写真の 機能は 順調です。きょうも 続けます。困って いる ことは ありません。<br>
+        <strong>ヘンディ</strong>：ありがとう ございます。1つ 聞かせて ください。<strong>写真の 札が、金曜日から「進行中」の まま 動いて いません。きのうは 何が 終わりましたか。</strong><br>
+        <strong>宮本</strong>：……iPhone の 3MB を 超える 写真で、413 の エラーが 出ます。<strong>先週の 木曜からです。</strong>それと、縦で 撮った 写真が 横に なります。<strong>自分で 直せると 思って いました。</strong><br>
+        <strong>ヘンディ</strong>：教えて くれて ありがとう ございます。413 は nginx の 設定で、朝礼の あと 10分で 直します。横に なるのは 写真の 向きの 情報で、奥田さんが 前の 案件で 直しました。奥田さん、11時に 30分 お願いできますか。<br>
+        <strong>奥田</strong>：はい、11時に。<br>
+        <strong>ヘンディ</strong>：宮本さん、あしたからは、<strong>止まって いる ことも 朝礼で 出して ください。この チームでは、それが いちばん 助かります。</strong>
+      </blockquote>
+      <blockquote><strong>藤木（まとめ・B）</strong>：きょうは 2つ 見えました。◯◯さんは「決める 問題」を 自分で 決めずに 上げて くれた。宮本さんの 2日分の 止まりが 見えた。
+        <strong>責める 話では ありません。見えた 日から 直せる、それだけです。</strong>
+        木曜からは 全員 わたしと 同じ 目で 見て ください。「動いて いない 札は、だれの 札か」。</blockquote>
+    </div></details>
+
+    <h3>4.3 3日目 ── 3月17日（水）「確かめられない ことを どう 言うか」</h3>
+    <p><strong>この日の学び</strong>：会社では動いた。<strong>でも園のWiFiで動くかは分からない</strong>（園のタブレットはYouTubeが開かない＝フィルタ）。
+      <strong>「分からない」を、理由と保険つきで言えるか。</strong></p>
+    <details class="raw"><summary>本文（A／B）</summary><div class="rb">
+      <p><strong>A のこまりごと</strong>：「園の WiFi で フォントが 出るか <strong>分からない</strong>（園の タブレットは YouTube が 見られない）。あした 園で 5分 試したい。」</p>
+      <p><strong>A の聞き返し（P3）</strong>：「こまって いる ことは ありますか。<strong>『分からない』も こまりごとです。</strong>」</p>
+      <p><strong>B の見込み（2段目）</strong>：「<strong>うまく 行った 場合と、行かなかった 場合の 2つで。</strong>」
+        → 期待される答え：「会社では きょう 中。園では あす 14時に 分かります。通らなければ <strong>フォントを 同梱した 版に 10分で 切り替え</strong>られます。」</p>
+      <blockquote><strong>ニャム（見本・B）</strong>：きのうは #36 既読の 人数の ずれを 直しました。<strong>退園した 子を 数えて いたのが 原因です。</strong>
+        あわせて 翻訳の 使用量を 数えました。試し使い 2週間 32家庭で 5万8千字、全園 92家庭に 広げると 月に 約30万字。<strong>無料枠の 50万字に 収まります。</strong>
+        きょうは 実機 3台で 通知を 試します。困って いる ことは ありません。見込みは 午前中。お願いも ありません。以上です。</blockquote>
+      <blockquote><strong>藤木（まとめ）</strong>：きのうの 宮本さんの 2件が、きょう 直って います。<strong>早く 言えば 早く 直る、を みんなで 見ました。</strong>
+        ◯◯さん、<strong>分からない ことを「分からない」と 言う</strong>のは、いい 報告です。
+        数字を 1つ。ニャムさんの 計算で、翻訳の 費用は ゼロで 回ります。園長先生に「月額は そのまま」と 言えます。
+        あす 14時、園。<strong>園長先生は 画面で 判断する 人です。</strong></blockquote>
+    </div></details>
+
+    <h3>4.4 4日目 ── 3月18日（木）「検収の 前の 日」</h3>
+    <p><strong>この日の学び</strong>：<strong>こまりごとが「ありません」の日</strong>。「ありません」とはっきり言うのも報告だと知る。
+      加えて、園長の依頼で<strong>ソカーさん（カンボジアのお母さん）にクメール語で5分説明する</strong>——学習者の母語が仕事になる日。</p>
+    <details class="raw"><summary>本文（A／B）</summary><div class="rb">
+      <p><strong>A の聞き返し（P3）</strong>：「こまって いる ことは ありますか。<strong>無い ときは『ありません』で いいです。</strong>」
+        <br><strong>全部開いたあと</strong> ── ヘンディ：「『ありません』を はっきり 言えるのも 報告です。園で 会う ソカーさんは、◯◯さんの ことばで 話せます。楽しみですね。」</p>
+      <blockquote><strong>奥田（見本・B）</strong>：きのうは #40 の 文字の 大きさを 直し、実機で 確かめました。自分の 12項目の うち 11が 準備 済みで、残り 1つは 写真の 順番で 宮本さんと 合わせます。
+        きょうは 9時から 予行、14時に 園で タブレットを 返し、園の 先生 2人に 5分 触って もらいます。困って いる ことは ありません。見込みは 予行が 12時、園が 15時。
+        お願いは、予行で 園長役の 富田さんに、<strong>わざと 間違った 操作を して いただきたい</strong>です。以上です。</blockquote>
+      <blockquote><strong>藤木（まとめ）</strong>：園長先生と 検収の 進め方を 決めました。<strong>24項目を 園長先生が 自分の 指で 触ります。私たちは 横で 見るだけ。説明は しません。</strong>
+        ここで 園長先生が「これは 分からない」と 言ったら、<strong>それは 園長先生の 問題では なく、画面の 問題です。</strong>
+        ◯◯さん、園長先生は「カンボジアの お母さんに、カンボジアの ことばで 説明して ほしい」と 言った あと、<strong>「そういう 会社に 頼んで よかった」</strong>と 言いました。</blockquote>
+    </div></details>
+
+    <h3>4.5 5日目 ── 3月19日（金）<strong>夕礼 17:30</strong>「検収の 日の ふりかえり」</h3>
+    <div class="callout good"><strong>ここで初めて夕礼になります。</strong>朝は全員が園にいて朝礼ができませんでした。
+      <strong>「朝が使えない日は夕方にする」</strong>——やり方の違いを、説明ではなく<strong>出来事として</strong>見せます。
+      司会は<strong>富田さん</strong>（夕礼＝きょうのふりかえり＝PMの領分。「よくない知らせでも責めない」人なので、契約外の要望を出しやすい）。</p></div>
+    <details class="raw"><summary>本文（A／B）</summary><div class="rb">
+      <p><strong>この日のこまりごと</strong>：園長が「<strong>お迎え時間の変更も、この画面から送りたい</strong>」と言った。
+        <strong>これは契約に入っていない</strong>（フェーズ2）。作るかどうかは自分では決められない。</p>
+      <p><strong>B の聞き返し（P3の2段目）</strong>：「<strong>それは 技術の 問題ですか、契約の 問題ですか。</strong>」
+        <br><strong>全部開いたあと</strong> ── 富田：「『契約の 問題』と 分けて 言えたのが よかったです。藤木さんと 私で 月曜の 朝礼までに 決めます。」</p>
+      <blockquote><strong>藤木（まとめ）</strong>：園長先生の 反応を 2つ 伝えます。1つ目。24項目を 自分の 指で 触った あと、<strong>「紙の 連絡帳を やめる 日が 決まった」</strong>と 言いました。
+        2つ目。<strong>ソカーさんが 園長先生に「はじめて、娘の 園での 一日が 分かりました」と 言い、園長先生が 泣きました。</strong>これが この 仕事の 中身です。
+        きょう 出た 要望は、契約の 外です。でも 園長先生が 言った 理由は「入園式で 新しい お母さんに 聞かれる」。<strong>理由が 分かれば、答えは 出ます。</strong>月曜に 決めます。
+        来週は 研修と 稼働。29日の 朝は 7時45分。<strong>92家庭が 同じ 時間に 使う 朝は、まだ 一度も 来て いません。</strong>それを 忘れないで ください。</blockquote>
+    </div></details>
+
+    <h3>4.6 6日目 ── 3月29日（月）「稼働の 朝の 第一報」<span class="badge b-x">上級</span></h3>
+    <div class="callout bad"><strong>8時5分、欠席一覧が空。</strong>502 Bad Gateway。
+      原因は<strong>写真アルバムの一覧がサムネイル無し</strong>で、朝のアクセスがサーバーの処理を占有したこと。
+      <strong>12家庭が送れず園に電話</strong>。8:22 復旧。
+      <strong>誰のミスでもなく、「サムネイルを検収の後に回した」というチームの判断の結果</strong>です。</div>
+    <p><strong>Bのパネルは「障害の第一報の型」そのもの</strong>になります。</p>
+    <p><span class="panel open">① 何が 起きたか（時刻＋名前）</span><span class="panel open">② 影響（何家庭・いつまで）</span><span class="panel open">③ した 対応（だれが 何時に）</span><span class="panel open">④ これから（きょう）</span><span class="panel open">⑤ お願い</span></p>
+    <details class="raw"><summary>本文（A／B）</summary><div class="rb">
+      <h4>B ── 手元の物（けさの 時間の 記録）</h4>
+      <pre>7:45 立ち会い 開始。欠席一覧を 表示して 待つ
+8:05 一覧が 空の まま。親の 画面を 自分の スマホで 開く → 502 Bad Gateway
+8:06 ヘンディさんへ 口頭で 報告
+8:09 ヘンディ「nginx が 502。php-fpm を 見る」
+8:12 ログ: server reached pm.max_children setting (5), consider raising it
+8:15 ヘンディ「重い 要求が 写真一覧（元の 大きさ 3MB×30枚）。
+              処理が ぜんぶ ふさがって、欠席フォームまで 502」
+8:22 設定を 5 → 20 に。再起動。復旧
+8:22〜9:00 欠席 9件・遅刻 3件 正常
+8:30 富田さん（園）「12家庭が 送れずに 電話。先生が 代理入力」
+8:50 代理入力 12件 完了</pre>
+      <p><strong>Bの聞き返し（2段目の例）</strong>：「<strong>何家庭ですか。データは 消えましたか、残りましたか。</strong>」／
+        「<strong>同じ ことが 起きない ために、きょう 何を しますか。</strong>」</p>
+      <blockquote><strong>宮本（B）</strong>：けさの 502の 原因の 1つは、写真一覧に サムネイルが 無く、元の 3MB を 30枚 返して いた ことです。
+        先週 上限を 先に 作り、<strong>サムネイルを 後ろに 回しました。</strong>きょう 16時までに 入れます。テストは 奥田さんに 30分 お願いします。</blockquote>
+      <blockquote><strong>藤木（まとめ・B）</strong>：園の 反応から。園長先生は 怒って いません。<strong>「電話は 12本。前は 40本 でした」</strong>——これが お客さまの 数字です。
+        ただし、12家庭は「送れなかった」を 経験しました。きょう 中の お知らせで、あすの 朝に 取り返します。<br>
+        チームの 努力の 話を 3つ。1つ、<strong>サムネイルを 後ろに 回したのは チームの 判断で、だれの せいでも ない。</strong>きょう 直す。
+        2つ、<strong>92家庭が 同時に 使う 朝は、テストで 一度も 作って いなかった。</strong>次の 園からは、稼働の 前に 簡単な 負荷試験を 入れる。
+        3つ、<strong>8時5分に 気づいて 8時6分に 言った 1分が、17分で 直った 理由です。</strong><br>
+        4月3日、入園式、23家庭。<strong>きょうが 1日目です。</strong></blockquote>
+    </div></details>
+  </section>
+  <section class="chapter" id="s5">
+    <h2 class="sec"><span class="num">5</span>やさしい／むずかしい の 作り方</h2>
+
+    <p>いただいた4案を、実装の可否と効き目で並べました。<strong>4つとも可能です。</strong></p>
+
+    <table>
+      <tr><th>案</th><th>可否</th><th>どう作るか</th><th>評価</th></tr>
+      <tr><td>① ヒントの表示／非表示の既定を分ける</td><td><span class="badge b-a">可能・安い</span></td>
+        <td>入口で選んだレベルを保存し、A はヒントを開いた状態、B は閉じた状態で始める（どちらも指1本で切り替えられる）</td>
+        <td>効果は小さめ。<strong>単独では差になりません</strong>（Bの学習者が毎回開けばAと同じ）。②と組にする</td></tr>
+      <tr><td>② ヒントを「導く型」と「考えさせる型」で分ける</td><td><span class="badge b-a">可能・<strong>本命</strong></span></td>
+        <td>パネル1枚につきヒントを2本持つ。<br><strong>A＝その日の名詞を入れた穴埋め</strong>「金曜日は 2回 送れない ように しました。でも ◯◯が 出ます。」<br><strong>B＝問いだけ</strong>「何を した？ どこまで？ 数字は？」（<strong>名詞を入れない</strong>）</td>
+        <td><strong>いちばん効きます。</strong>Aは「文にするだけ」、Bは「情報を選ぶ」段が加わる。場面カードの粗さ（絵札 vs 手元の物）と同じ思想なので、<strong>教材全体が1本の筋になります</strong></td></tr>
+      <tr><td>③ AIが返す言葉を N3／N4・N5 で切り替える</td><td><span class="badge b-a">可能・安い</span></td>
+        <td>相手の話し方に段の指示を差し込む（N4/N5:「1文15〜20字・ですます・漢語を避ける」／N3:「1文30字まで・影響／見込み／対応／〜次第 を使う」）。<br><strong>ただし固定文（見本・聞き返し・他メンバー・まとめ）はA/Bの2本をデータで持ちます</strong>（4章がそれ）</td>
+        <td>AIは段の指示を守りきれないことがあるので、<strong>学習者がいちばん読む固定文はデータで持つのが正しい</strong>。切り替え自体は1つのフラグ</td></tr>
+      <tr><td>④ 評価の文面の「N3レベルとして」を切り替える</td><td><span class="badge b-a">可能・安い</span></td>
+        <td>いま <code>judge-api.ts</code> に<strong>「日本語N5〜N4」とべた書きされています</strong>。ここを差し替え可能にする。<br><strong>「ふさわしい」の中身を段ごとに書き出す</strong>のが要点：<br>N4＝「した／する／こまっている が言えた・数字が1つ」<br>N3＝「＋見込み・お願い・接続（〜ので／〜ため）・依頼形（〜いただけませんか）」</td>
+        <td>有効。<strong>中身を列挙しないとAIの判定が揺れます。</strong>合格ラインは低くを守り、N3にも「言えた要素」を先に返す</td></tr>
+    </table>
+
+    <div class="callout good">
+      <strong>推し：②を軸に、①③④を「入口で選ぶ1つのフラグ」で一括して切り替える。</strong>
+      難しさは<strong>「日本語」と「整理する量」の両方</strong>で作ります（ご指定どおり）。
+      ②と場面カードの粗さが<strong>「量」</strong>を、③④が<strong>「日本語」</strong>を担います。
+      学習者から見えるスイッチは<strong>入口の1つだけ</strong>で、画面には常に「やさしい／むずかしい」の札を出します。
+    </div>
+    <p class="callout warn"><strong>前に書いた「難しさを日本語で作らない」は取り下げました。</strong>
+      ご指摘のとおり、日本語の難易度で分けることも必要です。上の③④がその担当になります。</p>
+  </section>
+
+  <section class="chapter" id="s6">
+    <h2 class="sec"><span class="num">6</span>ミス役の 仮キャラ</h2>
+
+    <p><strong>判断：必要（Bだけ）。Aには入れない。</strong></p>
+    <table>
+      <tr><th></th><th>理由</th></tr>
+      <tr><td><strong>必要な理由</strong></td>
+        <td>朝礼のページは「だまって いると チーム ぜんぶが おくれる」と教えますが、<strong>ミーティング本体にそれが起きる場面が一度もありません</strong>。
+          学習者本人のパネルが閉じているだけでは「言わないと何が起きるか」は見えない。
+          <strong>Bの2日目に1回だけ</strong>置くことで、「見込み」「お願い」を言う理由が体験になります</td></tr>
+      <tr><td><strong>Aに入れない理由</strong></td>
+        <td>Aは型を覚える段階。<strong>悪い例を見せると型が2つになります</strong>（01ガイド アンチパターン14「新しい軸を発明しない」と同じ壊れ方）</td></tr>
+      <tr><td><strong>既存キャラにさせない</strong></td>
+        <td>実在の社員・役員がモデルのため（規律10）。<strong>ニャムさんは見本の役に回しました</strong></td></tr>
+    </table>
+
+    <h3>仮キャラ：宮本 大地（みやもと だいち）</h3>
+    <table>
+      <tr><td>年齢・立場</td><td>34歳。<strong>業務委託（フリーランス）のエンジニア</strong>。2/1〜4/30 の3か月契約で写真アルバムだけを担当。経験8年（<strong>学習者から見て先輩</strong>）</td></tr>
+      <tr><td>なぜそこにいるか</td><td>1月に園から「写真も欲しい」が加わり、社内の手が足りずヘンディの知人経由で入った。<strong>3か月で去る人なので、名前のある社員に失敗を背負わせずに済む</strong></td></tr>
+      <tr><td>癖（1つだけ）</td><td><strong>一人で仕事をしてきたので「終わってから言う」。</strong>止まっていても「順調です」と言う</td></tr>
+      <tr><td><strong>成長する</strong></td><td>2日目にヘンディが札の停滞から気づく。<strong>3日目からは数字つきで報告する。</strong>晒し者にしない</td></tr>
+      <tr><td>絵</td><td>新規生成が要ります（三十代・既存と被らない服）。既存キャラの参照は使わない</td></tr>
+    </table>
+  </section>
+
+  <section class="chapter" id="s7">
+    <h2 class="sec"><span class="num">7</span>判断していただきたいこと</h2>
+
+    <table>
+      <tr><th>#</th><th>お伺い</th><th>こちらの推奨</th></tr>
+      <tr><td>1</td><td><strong>補助金の書き方。</strong>「保育所等におけるICT化推進等事業」は実在しますが、<strong>金額・補助率・実施の有無は自治体ごとに違います</strong>（上限10万円の自治体もある）。実在の市名と具体的な補助条件を結びつけてよいか</td>
+        <td><strong>市名を出さず、金額も書かない。</strong>「市の 補助金の 報告が 3月31日まで」だけ残せば、物語の推進力は変わりません</td></tr>
+      <tr><td>2</td><td><strong>題材が「保育園」でよいか。</strong>年度末の締切と入園式という必然が作れ、<strong>学習者の母語が技術選定の理由になる</strong>のが強みです。ただし子どもの情報・写真の扱いが本文に出ます</td>
+        <td><strong>このまま。</strong>「読めない紙のせいで、4歳の子だけお弁当が無かった」という動機は、この教材のどの案件より強いと思います</td></tr>
+      <tr><td>3</td><td><strong>Bの2日目に「宮本さんの 順調です」を入れてよいか。</strong>仮キャラとはいえ、ネガティブな例を朝礼本体に入れる初めてのケースです</td>
+        <td><strong>入れる。</strong>ただし<strong>3日目に必ず直っているところまで見せる</strong>（晒し者にしない）。ヘンディの言い方も「教えてくれてありがとうございます」から入ります</td></tr>
+      <tr><td>4</td><td><strong>6日でよいか。</strong>いまは1案件・6日（A/B で12本）です。<strong>16本のプールにするなら、案件をもう1つ作る</strong>ことになります</td>
+        <td><strong>まず6日ぶんを作り、STGで遊べる形にしてから増やす。</strong>案件をもう1つ足せば12日ぶんになります</td></tr>
+    </table>
+
+    <div class="callout good">
+      <strong>1〜3 が決まれば着手できます。</strong>4 は作りながらで間に合います。
+    </div>
+
+    <h3>あわせて出てきた宿題（判断は要りません）</h3>
+    <ul>
+      <li><code>content/vocab</code> に <strong>欠席・遅刻・保育園・連絡帳・園長・設定・負荷</strong> がありません。教材化のときに足します</li>
+      <li><code>content/characters/nyam.json</code> の <code>role</code>・<code>personality</code> は<strong>もう直しました</strong>（ベトナムのベテランエンジニア・先輩）</li>
+      <li><code>asakai_manga</code>（はじめての朝礼）はニャムさんを新人として描いていますが、<strong>削除する方針</strong>なので矛盾は残りません</li>
+    </ul>
+  </section>
+
+  </div>
+
+  <footer>朝礼・夕礼 シナリオ集 v1.0 ・ 2026-09-10 ・ 台帳 #366 ・
+    案は fable が作成（クライアントの言葉をそのまま引き渡し、こちらの案は渡していません）。
+    裏取り: DeepL 対応言語／保育ICT補助金は自治体ごとに条件が異なる</footer>
+</main>
+
+</div>
+</body>
+</html>
