@@ -482,6 +482,30 @@ describe("配る セットの 読み辞書", () => {
     expect(added).toEqual([]);
   });
 
+  /*
+   * **くらべっこ だけでは 足りない。** 上の 2つは どちらも 絞る 前と 後の 差しか
+   * 見て いないので、**もともと 裸**の ものは 素通りする。実際 セット名（`label`）の
+   *「初級」「中級」「上級」「超上級」は 絞りとは 無関係に 前から 裸で、
+   * 2026-09-10 の 絞りの 検証で 数えて はじめて 見つかった。
+   *
+   * 絞る 前の かたちは 上の「単語テストの 画面の ふりがな」が 絶対値で 見て いる
+   *（`label` を 含む）ので、ここが 引き受けるのは **絞った 後**——
+   * `public/wordtest/sets.json` として ブラウザに 配る かたち そのもの。
+   * `ArcadeGame` は ステージから 来た ときは 絞る 前を 直に 受け取り、
+   * `/wordtest` から 来た ときは この JSON を 取りに 行く。**どちらも 学習者に 届く**。
+   */
+  it("配る かたち（絞った後）に、裸の 漢字が 1文字も 無い（label も 含む）", () => {
+    const bare: string[] = [];
+    for (const set of trimmed) {
+      const index = indexOf(set);
+      for (const { where, text } of rendered(set)) {
+        const now = uncoveredKanji(text, index);
+        if (now.length > 0) bare.push(`${set.id}／${where}: ${now.join("")} … ${text}`);
+      }
+    }
+    expect(bare).toEqual([]);
+  });
+
   it("読み辞書の ほかは 何も 落とさない（語・見出し・出題数）", () => {
     const withoutFurigana = (sets: readonly WordStage[]) =>
       sets.map((set) => ({ ...set, furigana: [] }));
