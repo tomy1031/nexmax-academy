@@ -286,43 +286,82 @@ export function checkForbiddenWordsInTexts(file: string, texts: readonly string[
 /* ------------------------------------------------------------------
  * 説明文の 守備範囲（アプリの 仕組みを 学習者に 説明しない）
  *
- * ステージ・教材の `description` は「ここに 何が あるか」を 書く 欄である。
+ * ステージ・教材の 説明は「ここに 何が あるか」を 書く 欄である。
  * ところが 作り手の 目の まま 書くと、進み方の 話が 混ざる:
  *
  *   「毎日の 朝礼と 夕礼は つぎの ステージです。」（stage:houkoku）
  *   「夕礼は とばしても、この ステージは 終わります。」（stage:asakai）
  *   「やらなくても ステージは 終わります。」（meeting:asakai_muzukashii）
  *
- * どれも 学習者が 知る 必要の 無い ことで（順番は 番号で、終わったかは
- * しるしで すでに 画面に 出ている）、しかも 説明の 場所を 食う——教材カードの
- * 説明は 2行で 切れる（stage-detail.tsx の line-clamp-2）ので、仕組みの 話を
- * 足すと **中身の 説明の ほうが 画面から 消える**。
+ * どれも 学習者が 知る 必要の 無い ことで、順番は カードの 通し番号が、
+ * 終わったかは しるしが すでに 画面で 見せている（stage-detail.tsx）。
+ * おまけに **教材カードの 説明は 2行で 切れる**（同ファイルの line-clamp-2。
+ * ステージ自身の 説明は 切れない）ので、カードに 仕組みの 話を 足すと
+ * 中身の 説明の ほうが 画面から 押し出される。
  *
  * 2026-09-11「それ生徒が知る必要ありますか？ありませんよね？そもそもここは
  * ステージの内容の説明です」。文章の ルールだけに して おくと 同じ 間違いが
  * 何度でも 戻って くるので（規律3・7・8 と 同じ 型）、機械で 止める。
  * ------------------------------------------------------------------ */
 
-/** 中身では なく 仕組みを 指す ことば（説明文に 出たら エラー）。 */
+/**
+ * 中身では なく 仕組みを 指す ことば（説明文に 出たら エラー）。
+ *
+ * **少ない ほうへ 倒す。** 説明文の 検査は 下書きの 保存まで 止める（studio の
+ * route.ts）ので、誤検出は 先生の 手を 止める。だから 迷う 語は 入れない:
+ * 「ロック」は ブロック・クロック・デッドロック・ロック画面 と IT の ことばに
+ * 埋もれて いるのに、止めたい 言い回し（「ロックが 外れる」）は たいてい
+ * ステージか クリアと 一緒に 出るので、外して ある。
+ *
+ * 中身の 話として 正しい 言い回しが 見つかったら、`exceptions` に 足す
+ * （VERIFIED_SPLIT_COMPOUNDS と 同じ「目で 確かめた 印」）。
+ */
 const APP_MECHANICS_WORDS: readonly {
   readonly word: string;
   readonly exceptions: readonly string[];
 }[] = [
   // 「ステージング環境」は IT の ことば（ITの単語の 説明に 出る）。
   { word: "ステージ", exceptions: ["ステージング"] },
-  { word: "クリア", exceptions: [] },
-  // 「ブロック」は まんが・記事の 部品の 名前でも あり、IT の ことばでも ある。
-  { word: "ロック", exceptions: ["ブロック"] },
-  { word: "スキップ", exceptions: [] },
+  // 「キャッシュを クリア」「メモリを クリア」は IT の ことば。
+  { word: "クリア", exceptions: ["キャッシュを クリア", "キャッシュクリア", "メモリを クリア"] },
+  // 「テストを スキップ」は IT の ことば。
+  { word: "スキップ", exceptions: ["テストを スキップ"] },
 ];
 
 /**
- * 説明文として 見る フィールド（collectLabeledTexts の field 名）。
+ * 説明文として 見る 欄を 集める。
  *
- * 本文（記事・まんが・セリフ）は 対象外——物語の 中で 人物が「クリア」と
- * 言う ことは あり得る。止めたいのは **カードの 説明**に 仕組みが 出る ことだけ。
+ * **collectLabeledTexts（ふりがな検査の walker）は 使わない。** あの walker は
+ * 種別ごとの switch で 出来て いて `quest` の case が 無い——クエストこそ
+ * 「クリア」と 書きたく なる 教材なのに、素通しに なる。ここでは 欄の 名前で
+ * 直に 引く ので、種別が 増えても 穴が 開かない。
+ *
+ * 見る 欄は 説明の 役を する ものだけ:
+ *   description … 全種別（マップのカード・ステージトップ・教材カード）
+ *   subtitle    … シナリオの 副題（description が 無い 種別）
+ *   focus       … リスニング・ミーティング・スキットの「この 教材の 見どころ」
+ *   note        … リンク教材の ひとこと
+ *   area.note   … まなびマップの 土地の ひとこと
+ *
+ * 本文（記事・まんが・セリフ）は 見ない——物語の 中で 人物が「クリア」と
+ * 言う ことは あり得る。止めたいのは **説明の 欄**に 仕組みが 出る ことだけ。
  */
-const DESCRIPTION_FIELDS: ReadonlySet<string> = new Set(["description", "area.note", "note"]);
+function descriptionTexts(content: Content): LabeledText[] {
+  const bag = content as unknown as Record<string, unknown>;
+  const out: LabeledText[] = [];
+  const push = (field: string, value: unknown) => {
+    if (typeof value === "string" && value) out.push({ field, text: value });
+  };
+  push("description", bag.description);
+  push("subtitle", bag.subtitle);
+  push("focus", bag.focus);
+  push("note", bag.note);
+  const area = bag.area;
+  if (area && typeof area === "object") {
+    push("area.note", (area as Record<string, unknown>).note);
+  }
+  return out;
+}
 
 /** 仕組みの ことばが 当たった 位置（例外の 語の 一部なら 飛ばす。無ければ -1）。 */
 function indexOfMechanics(text: string, word: string, exceptions: readonly string[]): number {
@@ -330,9 +369,13 @@ function indexOfMechanics(text: string, word: string, exceptions: readonly strin
   for (;;) {
     const at = text.indexOf(word, from);
     if (at < 0) return -1;
+    // 例外の 語の どの 位置に 入って いても 飛ばす（「キャッシュを クリア」のように
+    // 語が 例外の 途中に ある ものが ある。同じ 語が 2度 入る 例外にも 耐える）。
     const partOfException = exceptions.some((ex) => {
-      const offset = ex.indexOf(word);
-      return offset >= 0 && text.startsWith(ex, at - offset);
+      for (let offset = ex.indexOf(word); offset >= 0; offset = ex.indexOf(word, offset + 1)) {
+        if (text.startsWith(ex, at - offset)) return true;
+      }
+      return false;
     });
     if (!partOfException) return at;
     from = at + 1;
@@ -342,12 +385,11 @@ function indexOfMechanics(text: string, word: string, exceptions: readonly strin
 /**
  * 説明文に アプリの 仕組みの 話が 混ざって いないか。
  *
- * **前提: zod（contentSchema）を通った Content を渡すこと**（collectLabeledTexts と同じ）。
+ * **前提: zod（contentSchema）を通った Content を渡すこと**（既定値が 埋まる）。
  */
 export function checkDescriptionScope(file: string, content: Content): Finding[] {
   const findings: Finding[] = [];
-  for (const { field, text } of collectLabeledTexts(content)) {
-    if (!DESCRIPTION_FIELDS.has(field)) continue;
+  for (const { field, text } of descriptionTexts(content)) {
     for (const { word, exceptions } of APP_MECHANICS_WORDS) {
       const at = indexOfMechanics(text, word, exceptions);
       if (at < 0) continue;
