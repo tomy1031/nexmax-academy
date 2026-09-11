@@ -211,7 +211,7 @@ export const ASSET_VERSIONS: Readonly<Record<string, string>> = {
   "/img/emblems/ISTJ.webp": "c067680d",
   "/img/emblems/ISTP.webp": "77dd8aaf",
   "/img/hourensou/houkoku/ask_time.webp": "c98b10e5",
-  "/img/hourensou/houkoku/houkoku.webp": "a6b7df5f",
+  "/img/hourensou/houkoku/houkoku.webp": "89c62ef5",
   "/img/hourensou/houkoku/hourenso.webp": "d393b34c",
   "/img/hourensou/houkoku/keypoint.webp": "7a96ed0f",
   "/img/hourensou/houkoku/petterns.webp": "1446680f",
