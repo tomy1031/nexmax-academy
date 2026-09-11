@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { contentSchema, type Content, type Stage } from "@/content/schema";
 import {
   checkCountryNames,
+  checkDescriptionScope,
   checkDanglingRefs,
   checkForbiddenWords,
   checkFuriganaCoverageOf,
@@ -48,13 +49,14 @@ import { fail, requireAdmin } from "@/lib/studio/admin-gate";
  * 下書きと公開で強さを変える:
  *   - 公開 … ふりがなの抜けは error（読めない漢字が1つあると、学習者はそこで止まる）
  *   - 下書き … warn（作りかけを保存させないと、先生は途中でやめられない）
- * 禁止語・秘匿漏れ・国名は**下書きでも error**。これらは「作りかけだから仕方ない」
+ * 禁止語・秘匿漏れ・国名・説明文の守備範囲は**下書きでも error**。これらは「作りかけだから仕方ない」
  * ものではなく、書いてしまった時点で直すべきものだから。
  */
 function runContentChecks(content: Content, publishing: boolean): Finding[] {
   const label = `${content.kind}:${content.id}`;
   const findings = checkForbiddenWords(label, content);
   findings.push(...checkCountryNames(label, content));
+  findings.push(...checkDescriptionScope(label, content));
   findings.push(...checkFuriganaCoverageOf(label, content, publishing ? "error" : "warn"));
   // エントリ自体の壊れ（死にエントリ・送りがな落ち・同表記異読）は下書きでも error——
   // 「作りかけだから仕方ない」ものではなく、書いた時点で画面が壊れているため。

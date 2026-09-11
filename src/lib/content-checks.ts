@@ -13,6 +13,7 @@
  *  - 出題できる語か（単語ステージの参照先に 対訳と誤答3つ が そろっているか）
  *  - 導線の一致（article の「つぎは これ」がステージの学習順の直後を指しているか）
  *  - ふりがなの覆い漏れ（学習者が読む文の漢字が読み辞書で全部覆えているか）
+ *  - 説明文の守備範囲（説明に アプリの仕組み（ステージ・クリア）の話を書かない）
  *  - 参照切れの気づき（スタジオの保存経路だけ。止めずに warn で知らせる）
  */
 
@@ -276,6 +277,84 @@ export function checkForbiddenWordsInTexts(file: string, texts: readonly string[
         file,
         level: "error",
         message: `禁止語「${word}」が 学習者に見える文にある: 「…${near(text, at, word.length)}…」 — フィードバックは励まし＋次の行動に（P8）`,
+      });
+    }
+  }
+  return findings;
+}
+
+/* ------------------------------------------------------------------
+ * 説明文の 守備範囲（アプリの 仕組みを 学習者に 説明しない）
+ *
+ * ステージ・教材の `description` は「ここに 何が あるか」を 書く 欄である。
+ * ところが 作り手の 目の まま 書くと、進み方の 話が 混ざる:
+ *
+ *   「毎日の 朝礼と 夕礼は つぎの ステージです。」（stage:houkoku）
+ *   「夕礼は とばしても、この ステージは 終わります。」（stage:asakai）
+ *   「やらなくても ステージは 終わります。」（meeting:asakai_muzukashii）
+ *
+ * どれも 学習者が 知る 必要の 無い ことで（順番は 番号で、終わったかは
+ * しるしで すでに 画面に 出ている）、しかも 説明の 場所を 食う——教材カードの
+ * 説明は 2行で 切れる（stage-detail.tsx の line-clamp-2）ので、仕組みの 話を
+ * 足すと **中身の 説明の ほうが 画面から 消える**。
+ *
+ * 2026-09-11「それ生徒が知る必要ありますか？ありませんよね？そもそもここは
+ * ステージの内容の説明です」。文章の ルールだけに して おくと 同じ 間違いが
+ * 何度でも 戻って くるので（規律3・7・8 と 同じ 型）、機械で 止める。
+ * ------------------------------------------------------------------ */
+
+/** 中身では なく 仕組みを 指す ことば（説明文に 出たら エラー）。 */
+const APP_MECHANICS_WORDS: readonly {
+  readonly word: string;
+  readonly exceptions: readonly string[];
+}[] = [
+  // 「ステージング環境」は IT の ことば（ITの単語の 説明に 出る）。
+  { word: "ステージ", exceptions: ["ステージング"] },
+  { word: "クリア", exceptions: [] },
+  // 「ブロック」は まんが・記事の 部品の 名前でも あり、IT の ことばでも ある。
+  { word: "ロック", exceptions: ["ブロック"] },
+  { word: "スキップ", exceptions: [] },
+];
+
+/**
+ * 説明文として 見る フィールド（collectLabeledTexts の field 名）。
+ *
+ * 本文（記事・まんが・セリフ）は 対象外——物語の 中で 人物が「クリア」と
+ * 言う ことは あり得る。止めたいのは **カードの 説明**に 仕組みが 出る ことだけ。
+ */
+const DESCRIPTION_FIELDS: ReadonlySet<string> = new Set(["description", "area.note", "note"]);
+
+/** 仕組みの ことばが 当たった 位置（例外の 語の 一部なら 飛ばす。無ければ -1）。 */
+function indexOfMechanics(text: string, word: string, exceptions: readonly string[]): number {
+  let from = 0;
+  for (;;) {
+    const at = text.indexOf(word, from);
+    if (at < 0) return -1;
+    const partOfException = exceptions.some((ex) => {
+      const offset = ex.indexOf(word);
+      return offset >= 0 && text.startsWith(ex, at - offset);
+    });
+    if (!partOfException) return at;
+    from = at + 1;
+  }
+}
+
+/**
+ * 説明文に アプリの 仕組みの 話が 混ざって いないか。
+ *
+ * **前提: zod（contentSchema）を通った Content を渡すこと**（collectLabeledTexts と同じ）。
+ */
+export function checkDescriptionScope(file: string, content: Content): Finding[] {
+  const findings: Finding[] = [];
+  for (const { field, text } of collectLabeledTexts(content)) {
+    if (!DESCRIPTION_FIELDS.has(field)) continue;
+    for (const { word, exceptions } of APP_MECHANICS_WORDS) {
+      const at = indexOfMechanics(text, word, exceptions);
+      if (at < 0) continue;
+      findings.push({
+        file,
+        level: "error",
+        message: `説明文（${field}）に 仕組みの ことば「${word}」がある: 「…${near(text, at, word.length)}…」 — 説明は 教材の 中身だけを 書く。進み方・クリア条件・つぎに 何が あるかは 学習者に 要らない（2026-09-11 の指定）`,
       });
     }
   }

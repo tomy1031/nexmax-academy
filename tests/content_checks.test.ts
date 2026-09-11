@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   checkDanglingRefs,
+  checkDescriptionScope,
   checkDuplicateIds,
   checkFuriganaCoverage,
   checkReferenceIntegrity,
@@ -84,6 +85,90 @@ describe("ID重複の検査", () => {
 
   it("IDが全部ちがえば何も出ない", () => {
     expect(checkDuplicateIds([entry(stage()), entry(manga())])).toEqual([]);
+  });
+});
+
+describe("説明文の 守備範囲の 検査", () => {
+  /**
+   * 説明は「ここに 何が あるか」だけを 書く。進み方・クリア条件は 学習者に 要らない
+   * （順番は 番号で、終わったかは しるしで 画面に 出ている）うえ、教材カードの 説明は
+   * 2行で 切れるので、仕組みの 話を 足すと 中身の 説明が 画面から 押し出される。
+   * 2026-09-11 の指定「それ生徒が知る必要ありますか？ありませんよね？」の 実行体。
+   */
+  it("つぎの ステージの 予告を 弾く（引用と 直し方まで 出す）", () => {
+    const findings = checkDescriptionScope(
+      "houkoku.json",
+      stage({ description: "報告の しかたを 学びます。朝礼は つぎの ステージです。" }),
+    );
+    expect(findings).toHaveLength(1);
+    expect(findings[0]?.level).toBe("error");
+    expect(findings[0]?.message).toContain("つぎの ステージ");
+    expect(findings[0]?.message).toContain("教材の 中身だけ");
+  });
+
+  it("とばしても終わる（クリア条件）の 説明を 弾く", () => {
+    const findings = checkDescriptionScope(
+      "asakai.json",
+      stage({
+        description: "毎日の 朝礼で 報告します。夕礼は とばしても、この ステージは 終わります。",
+      }),
+    );
+    expect(findings).toHaveLength(1);
+    expect(findings[0]?.message).toContain("ステージ");
+  });
+
+  it("ステージ以外の 教材の 説明も 見る（仕組みの 話は どこに 書いても 同じ）", () => {
+    const findings = checkDescriptionScope(
+      "m1.json",
+      manga({ description: "朝礼の まんがです。クリアすると つぎが 開きます。" }),
+    );
+    expect(findings).toHaveLength(1);
+    expect(findings[0]?.message).toContain("クリア");
+  });
+
+  it("まなびマップの ひとことも 見る（カードの 説明と 同じ 場所に 出る）", () => {
+    const findings = checkDescriptionScope(
+      "s1.json",
+      stage({
+        area: {
+          name: "しごとの しま",
+          reading: "しごとの しま",
+          image: "/img/scenes/area_office_island.webp",
+          note: "ロックが 外れると 行けます。",
+        },
+      }),
+    );
+    expect(findings.some((f) => f.message.includes("area.note"))).toBe(true);
+  });
+
+  it("中身だけを 書いた 説明は 通す", () => {
+    expect(
+      checkDescriptionScope(
+        "s1.json",
+        stage({ description: "上司への 報告の しかたを 読んで、聞いて、声に 出して 練習します。" }),
+      ),
+    ).toEqual([]);
+  });
+
+  it("「ステージング環境」「ブロック」は IT の ことばなので 通す", () => {
+    expect(
+      checkDescriptionScope(
+        "m1.json",
+        manga({ description: "ステージング環境と ブロックチェーンの 話です。" }),
+      ),
+    ).toEqual([]);
+  });
+
+  it("本文（セリフ）は 見ない — 物語の 中で「クリア」と 言う ことは ある", () => {
+    const withLine = parse({
+      kind: "manga",
+      id: "m2",
+      format: "yonkoma",
+      title: "まんが",
+      description: "ゲームの 話の まんがです。",
+      pages: [{ panels: [{ lines: [{ speaker: "narration", text: "ゲームを クリアした。" }] }] }],
+    });
+    expect(checkDescriptionScope("m2.json", withLine)).toEqual([]);
   });
 });
 
