@@ -27,6 +27,11 @@
       アプリ（`src/components/link/link-view.tsx`）は 同じ 置き場からの 合図だけを 受ける。
       1枚で 開いた ときは 送り先が 無いので、黙って 何も しない（画面は そのまま 使える）。
 
+      ## 書いた ものは 先生にも 届く
+      出した ときに `postMessage({type:"nexmax:link-answers", …})` で 親へ 渡し、
+      アプリが 学習の きろく（`quiz_results`）に 残す。ここでは 保存しない
+      ——静的な 1枚に DBの 鍵を 置かない（規律4）。
+
       ## 書いた ものは 端末に 残す
       localStorage に 置く。授業中に うっかり 閉じても 書き直しに ならない。
       使えない 設定の 端末でも 落ちないよう、読み書きは try で 包む。
@@ -737,6 +742,31 @@
           }
         }
 
+        /**
+         * 書いた ものを **先生の 画面へ 届ける**ため、親に 渡す（2026-09-11 の 指定 B）。
+         *
+         * この ページは 静的な 1枚なので、DBの 鍵も ログインの 情報も 持って いない。
+         * だから **保存は アプリ側の 仕事**に して、ここは 中身を 渡すだけに する。
+         * 受け手は `src/components/link/link-view.tsx` → `src/lib/answers/link-answers-db.ts`。
+         *
+         * **出した ときだけ 送る**（開き直しでは 送らない）。開くたびに 送ると、
+         * 同じ こたえが 何行も 先生の 画面に 並ぶ。
+         */
+        function sendAnswers() {
+          var answers = [{ id: "kaikyuu_order", text: filledRows().join("　") }];
+          DATA.compare.fields.forEach(function (field) {
+            answers.push({ id: field.id, text: state.answers[field.id].trim() });
+          });
+          try {
+            window.parent.postMessage(
+              { type: "nexmax:link-answers", id: DATA.id, answers: answers },
+              window.location.origin,
+            );
+          } catch (e) {
+            /* 1枚で 開いた ときは 送り先が 無い。書いた ものは 端末に 残る */
+          }
+        }
+
         function showDone() {
           var list = document.getElementById("doneList");
           while (list.firstChild) list.removeChild(list.firstChild);
@@ -774,6 +804,7 @@
           }
           state.submitted = true;
           save();
+          sendAnswers();
           tellApp();
           showDone();
         });

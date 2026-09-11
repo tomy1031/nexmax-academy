@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest";
 import { FORBIDDEN_LEARNER_WORDS } from "@/content/schema";
 import { checkCountryNamesInTexts } from "@/lib/content-checks";
 import { KANJI } from "@/lib/text/furigana";
+import { LINK_ANSWER_PROMPTS } from "@/content/link-answers";
 
 /**
  * 調査（リサーチ）の ツール（public/tools/hourensou/houkoku_search.*）の 文言を 機械で 見る。
@@ -101,6 +102,35 @@ describe("調査ツールの 文言", () => {
     expect(rank.min).toBeGreaterThan(0);
     expect(rank.start).toBeGreaterThanOrEqual(rank.min);
     expect(rank.max).toBeGreaterThanOrEqual(rank.start);
+  });
+
+  /*
+   * 先生の 画面（`/admin/records`）は、この ツールの こたえの 問いを
+   * `src/content/link-answers.ts` の 台帳から 引く。文が 2か所に ある ので、
+   * **片方だけ 直すと 先生の 画面だけが 古い 問いを 出す**。ここで 突き合わせる。
+   */
+  describe("先生の 画面へ 送る こたえ", () => {
+    const prompts = LINK_ANSWER_PROMPTS[DATA.id as string] ?? {};
+    const fields = (DATA.compare as { fields: { id: string; label: string }[] }).fields;
+
+    it("しつもんの 欄が ぜんぶ 台帳に ある（届いても 問いの 文が 無い 欄を 作らない）", () => {
+      for (const field of fields) {
+        expect(Object.keys(prompts), `${field.id} が 台帳に 無い`).toContain(field.id);
+      }
+      // ならべ替えた 階級の ぶんも 1つ 送る
+      expect(Object.keys(prompts)).toContain("kaikyuu_order");
+    });
+
+    it("台帳の 問いの 文が、ツールの 文と 同じ（ルビを はずして くらべる）", () => {
+      for (const field of fields) {
+        expect(prompts[field.id]).toBe(plain(field.label));
+      }
+    });
+
+    it("台帳に 余計な 欄が 無い（ツールが 送らない 問いを 先生に 見せない）", () => {
+      const sent = new Set(["kaikyuu_order", ...fields.map((field) => field.id)]);
+      expect(Object.keys(prompts).filter((id) => !sent.has(id))).toEqual([]);
+    });
   });
 
   it("画面（HTML）に 日本語を 直接 書いて いない（文言は データ側に 置く）", () => {

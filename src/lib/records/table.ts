@@ -277,6 +277,9 @@ const QUIZ_TYPE_LABEL: Record<string, string> = {
   keyword: "じぶんで 書く",
   wordbank: "語群から あなうめ",
   emotion: "気もち → 言い方",
+  // 正解の 無い こたえ（自由記述の もんだいと、ツール教材に 書いた もの）
+  free: "じゆうに 書く",
+  list: "いくつか 書く",
 };
 
 export function quizTable(records: readonly QuizRecord[], lookups: Lookups): RecordTable {

@@ -10,6 +10,7 @@ import {
   recordContentProgress,
   subscribeProgress,
 } from "@/lib/progress/store";
+import { parseLinkAnswers, saveLinkAnswers } from "@/lib/answers/link-answers-db";
 
 /**
  * リンク教材 — 1枚で完結する練習ページを、ステージの中から 全画面で 開く
@@ -55,6 +56,15 @@ const DONE_MESSAGE = "nexmax:link-done";
  */
 const OWNS_DONE_MESSAGE = "nexmax:link-owns-done";
 
+/**
+ * 中のページが **学習者の 書いた ものを 渡して くる** ときの 合図。
+ *
+ * ツールは 静的な 1枚で DBの 鍵を 持たない（規律4）ので、保存は こちらで 行う
+ *（`@/lib/answers/link-answers-db`）。2026-09-11 の 指定「先生の 画面（/admin）へ
+ * 届ける」。届かなくても 学習は 止めない——送りっぱなしに する。
+ */
+const ANSWERS_MESSAGE = "nexmax:link-answers";
+
 /** 画面じたいの 文言の 読み辞書（教材データの 辞書は UIの 文言まで 覆わない・規律2）。 */
 const UI_FURIGANA = buildFuriganaIndex([
   ["中", "なか"],
@@ -99,8 +109,22 @@ export function LinkView({ link, embedded }: { link: LinkContent; embedded?: boo
     const onMessage = (event: MessageEvent) => {
       if (event.origin !== window.location.origin) return;
       const data = event.data as { type?: unknown; id?: unknown } | null;
-      if (data?.type !== DONE_MESSAGE && data?.type !== OWNS_DONE_MESSAGE) return;
+      if (
+        data?.type !== DONE_MESSAGE &&
+        data?.type !== OWNS_DONE_MESSAGE &&
+        data?.type !== ANSWERS_MESSAGE
+      )
+        return;
       if (typeof data.id === "string" && data.id !== link.id) return;
+      if (data.type === ANSWERS_MESSAGE) {
+        // 名乗りと 同じく **IDを 必須**に する（だれの こたえかを 取りちがえない）
+        if (data.id !== link.id) return;
+        void saveLinkAnswers({
+          linkId: link.id,
+          answers: parseLinkAnswers((data as { answers?: unknown }).answers),
+        });
+        return;
+      }
       if (data.type === OWNS_DONE_MESSAGE) {
         /*
          * 名乗りだけは **ID を 必須**に する（おわったの 合図より きびしく）。
