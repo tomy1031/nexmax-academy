@@ -2240,6 +2240,180 @@ const talkOpener = z.preprocess(
 );
 export type TalkOpener = z.infer<typeof talkOpener>;
 
+/* ------------------------------------------------------------------ *
+ * 朝礼・夕礼（台帳 #366）の 形
+ * ------------------------------------------------------------------ */
+
+/** 作り置きの セリフ 1行（司会・見本・メンバー・総括）。 */
+const asakaiLineSchema = z.object({
+  /** `people` の id。 */
+  speakerId: z.string().regex(/^[a-z0-9_-]+$/),
+  text: plainText,
+  /** 作り置きの 音。**5日ぶんは 同じ 文でも 別の URL に する**——
+   * 鳴らした 覚え書きは URL で 持つので、使い回すと 2日目が 鳴らない。 */
+  audio: z.string().optional(),
+});
+
+/**
+ * パネルの 中の「言えた ことの 最小単位」。
+ *
+ * `box` を 書くと 画面に 箱の 名前が 出る（むずかしいの こまりごとの 3つ）。
+ */
+const asakaiFactSchema = z.object({
+  id: z.string().regex(/^[A-Za-z0-9_-]+$/),
+  /** 箱の 名前（「こまって いる こと」「いつまでに」「お願い」）。 */
+  box: plainText.optional(),
+  /** ことばの 照合に 使う 語（表記ゆれ込み）。AIへの 言い渡しにも 並べる。 */
+  keywords: z.array(plainText).min(1),
+  /** 判定に 要る 当たりの 数（既定 1）。 */
+  minHits: z.number().int().min(1).max(5).optional(),
+  /**
+   * **すべての グループから 1つ以上**当たって はじめて 言えたに する。
+   *
+   * 数だけで 見ると 開いては いけない ものが 開く。実例:
+   * お願いの 箱は「見て」「ほしい」で 2つ 当たるので、
+   * **「だれかに 見て ほしいです」でも 立って いた**（だれに が 無い）。
+   */
+  allOf: z.array(z.array(plainText).min(1)).min(2).optional(),
+  /** AIに 渡す「言えたら わかる 中身」。画面には 出ない。 */
+  fact: plainText,
+});
+
+/** 学習者が 開く パネル（1場面 4枚）。 */
+const asakaiPanelSchema = z
+  .object({
+    id: z.string().regex(/^[a-z0-9_-]+$/),
+    /** 画面に 出る 札。**ページの ことばと 同じに する**（規律10・R9-4）。 */
+    label: plainText,
+    /** ことばでは なく 形で 見る（数字が 1つ 以上 あるか）。 */
+    rule: z.literal("number").optional(),
+    /** 開くのに 要る 行の 数（既定 1。むずかしいの きょう・あしたは 2）。 */
+    openAt: z.number().int().min(1).max(5).optional(),
+    facts: z.array(asakaiFactSchema).default([]),
+    /**
+     * 聞き返しの 固定文（1回目・2回目）。
+     *
+     * **Live の 相手役に 質問させない**（2026-08-21 の 決まり）——
+     * 当たり判定は 学習者の 発話だけを 見るので、相手が 聞き返すと
+     * **その 答えで 札が 開く**。だから 文は 教材が 持ち、アプリが 選ぶ。
+     */
+    followups: z.array(asakaiLineSchema).length(2),
+    /** 2回 聞いても 開かない ときに 司会が 見せる れい。0点で 終わらせない ため。 */
+    example: asakaiLineSchema,
+  })
+  .superRefine((panel, ctx) => {
+    if (panel.rule === "number") return;
+    if (panel.facts.length === 0) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `パネル ${panel.id} に 行（facts）が ない — 何を 言えば 開くのかが データから 読めない`,
+      });
+    }
+  });
+
+/** 進みぐあいの 箱（5つ）。数は 絵で 見せ、名前は 字で 出す。 */
+const asakaiProgressSchema = z.object({
+  label: plainText.max(12),
+  state: z.enum(["done", "now", "later"]),
+});
+
+/** 場面カード。かんたんは `rows`、むずかしいは `memo` と `todo` を 持つ。 */
+const asakaiCardSchema = z.object({
+  /** 「担当: ◯◯」。**毎場面 同じ 位置に 出す**（いま 何を する 必要が あるか）。 */
+  duty: plainText,
+  goal: plainText,
+  /** むずかしいだけ。「いつまでに」。 */
+  deadline: plainText.optional(),
+  progress: z.array(asakaiProgressSchema).length(5),
+  /** かんたん: きのう／きょう／こまりごと（＋お願い）の 行。 */
+  rows: z
+    .array(
+      z.object({
+        key: z.enum(["kinou", "kyou", "ashita", "komari", "onegai"]),
+        label: plainText,
+        text: plainText,
+        image: imageSlotSchema.optional(),
+        /** 「20この うち 16こ」を 四角と ✓ で 描く（数を 絵に 焼かせない）。 */
+        count: z
+          .object({
+            total: z.number().int().min(1).max(60),
+            done: z.number().int().min(0),
+            now: z.number().int().min(0).default(0),
+          })
+          .optional(),
+      }),
+    )
+    .optional(),
+  /** むずかしい: 1日の メモ（時間順・バラバラ）。**分類を 示す 色や 絵を 付けない**。 */
+  memo: z
+    .array(
+      z.object({
+        /** 行頭（「10:30」「あした」「来週の 月曜日」）。 */
+        head: plainText.max(10),
+        text: plainText,
+        /** 報告に 要らない 行（昼ごはん）。言っても 減らさない。 */
+        aside: z.boolean().default(false),
+      }),
+    )
+    .optional(),
+  /** 付せん（固定の 事実）。 */
+  pin: plainText.optional(),
+  /** 「やること」（何を どの 順で 報告するか）。 */
+  todo: z.array(plainText).optional(),
+});
+
+/** 1場面（1日）。 */
+const asakaiSceneSchema = z
+  .object({
+    day: z.enum(["mon", "tue", "wed", "thu", "fri"]),
+    /** 「9:30」「17:30」。 */
+    time: plainText.max(6),
+    /** 朝礼か 夕礼か（空の 色・太陽の 位置を 決める）。 */
+    kind: z.enum(["asa", "yuu"]),
+    /** 場面の 札（「月曜日 9:30 朝礼 ・ 司会 ヘンディさん」）。 */
+    title: plainText,
+    /** 時間カードの 1行の あらすじ（次の 報告の 材料に なる）。 */
+    lead: plainText.optional(),
+    card: asakaiCardSchema,
+    /** 司会の 開き。 */
+    opening: z.array(asakaiLineSchema).min(1),
+    /** 見本（先輩が 先に 報告する）。 */
+    sample: asakaiLineSchema,
+    /** 「では 次に ◯◯さん、お願いします。」 */
+    prompt: asakaiLineSchema,
+    /** ぜんぶ 開いた ときの 受け止め。 */
+    ack: asakaiLineSchema,
+    /** ほかの メンバーの 報告（1場面 2人まで。長さを 抑える）。 */
+    members: z.array(asakaiLineSchema).max(2),
+    /** お願いへの 采配（司会が だれかに 頼む）。お願いが 言えた とき／言えない とき。 */
+    arrange: z.object({ done: asakaiLineSchema, missing: asakaiLineSchema }).optional(),
+    /** 司会の 閉じ（金曜は 藤木取締役の まとめを 先に 置く）。 */
+    closing: z.array(asakaiLineSchema).min(1),
+    panels: z.array(asakaiPanelSchema).min(3).max(5),
+    /** 💡 に 出す 行。かんたんは 型文、むずかしいは 問いかけ。 */
+    hintLines: z.array(plainText).min(1),
+  })
+  .superRefine((scene, ctx) => {
+    const ids = new Set<string>();
+    for (const panel of scene.panels) {
+      if (ids.has(panel.id)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `場面 ${scene.day} に 同じ パネル id（${panel.id}）が 2つ ある`,
+        });
+      }
+      ids.add(panel.id);
+    }
+    const hasMemo = (scene.card.memo?.length ?? 0) > 0;
+    const hasRows = (scene.card.rows?.length ?? 0) > 0;
+    if (!hasMemo && !hasRows) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `場面 ${scene.day} の カードに 行（rows）も メモ（memo）も ない — 学習者に 渡す 材料が 1つも 無い`,
+      });
+    }
+  });
+
 export const meetingSchema = z.object({
   kind: z.literal("meeting"),
   /**
@@ -2300,6 +2474,71 @@ export const meetingSchema = z.object({
       reward: plainText,
     })
     .optional(),
+  /**
+   * 朝礼・夕礼（1週間を 5場面で 通す 報告の 練習・台帳 #366）。
+   *
+   * この 欄が あると、教材は **`AsakaiSession`** で 開く（`talkGame` と 同じ 分かれ方）。
+   * ミーティング本体（`MeetingSession`）に 5場面の ループを 継ぎ足さないのは、
+   * あちらが すでに「ばん・札・frontier」の 3つの 状態を 持って いて、
+   * **もう 1つ 足すと どれが 進行を 決めて いるのか データから 読めなく なる**ため。
+   *
+   * ## `questions` と 何が ちがうか
+   * `questions` は「アプリが 1問ずつ 聞き、学習者が 1問ずつ 答える」形。
+   * ここは **学習者が 1本の 報告を して、足りない ところだけ 聞き返される**形。
+   * 前者は 聞く 順が 決まって いるが、後者は **学習者が 順を 決める**。
+   * だから しつもんでは なく **パネル**（言えたら 開く 札）で 持つ。
+   *
+   * ## 何が 開くかを AIに 決めさせない
+   * AIが 返すのは「どの 行を 言えたか」だけで、パネルが 開くかは
+   * `src/lib/meeting/panels.ts` が 数える。AIの さじ加減で 難しさが 変わらない ように。
+   *
+   * ## 持たない もの
+   * `affection`（💗）・`notes`（こたえノート）・`discover`（聞く ばん）は 書かない。
+   * 「正しく 自分の 状況を 伝えられるか」だけを 見る 教材なので、
+   * 距離も 思い出も 要らない（2026-09-10 の 指定）。
+   */
+  asakai: z
+    .object({
+      /**
+       * 難しさ。**同じ 場面の 難易度ちがいでは なく、別の 場面**を 持つ
+       *（やさしい＝朝礼／むずかしい＝夕礼。2026-09-10 の 指定）。
+       * 画面の 作り（板の 列幅・カードの 型）と、AIへの 言い渡しの レベルを 決める。
+       */
+      level: z.enum(["easy", "hard"]),
+      /** 司会。**PM は 司会だけ して 報告しない**（2026-09-10 の 指定）。 */
+      chairId: z.string().regex(/^[a-z0-9_-]+$/),
+      /**
+       * 帯に 出す 人。**担当（`duty`）は 週を 通して 変えない**——
+       * 人と 仕事の 対応を 5回 くり返して 覚えられる ように する ため。
+       */
+      people: z
+        .array(
+          participantSchema.extend({
+            /** 帯に 出す 担当（3〜6字）。長いと 390px で 折れる。 */
+            duty: plainText.max(8),
+            /** 金曜だけ 増える 人（藤木取締役）。 */
+            fridayOnly: z.boolean().default(false),
+          }),
+        )
+        .min(2),
+      /**
+       * 合格の 線。**開いた 数だけで 決めない**——
+       * 数字と きょうで 稼いで、**こまりごとを 5日 落としたまま 合格**を 作らない
+       *（ページが「ここが いちばん 大切です」と 書いて いる ところ）。
+       */
+      pass: z.object({
+        /** 開いた パネル（かんたん 20枚中）／言えた 行（むずかしい 30こ中）。 */
+        units: z.number().int().min(1),
+        /** かんたん: こまりごとが 開いた 日の 数（5日中）。 */
+        komariDays: z.number().int().min(0).optional(),
+        /** むずかしい: こまりごとの 箱の 数（15こ中）。 */
+        komariBoxes: z.number().int().min(0).optional(),
+      }),
+      /** 月〜金の 5場面。並びが そのまま 週の 流れ。 */
+      scenes: z.array(asakaiSceneSchema).length(5),
+    })
+    .optional(),
+
   /**
    * 対話ゲーム（好感度 100% を 目ざす 会話・願い #177）。
    *

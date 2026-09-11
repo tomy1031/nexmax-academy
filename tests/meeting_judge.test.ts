@@ -145,10 +145,20 @@ describe("受け取り", () => {
     expect(result?.v).toBe(1);
   });
 
+  /*
+   * **空の praise は 通す**（2026-09-10「がんばったね、などの無駄な表現も省いて」）。
+   * 前は `min(1)` で 弾いて いたので、AIは 名指しできる ことが 無い ときも
+   * 何かを 書かざるを えず、「だいじょうぶです」の ような 中身の 無い 1行が 出て いた。
+   * いまは 空を 許し、**画面が 欄ごと 消す**（judge-modal / judge-card）。
+   */
+  it("空の ほめことばは 通す（画面が 欄ごと 消す）", () => {
+    expect(parseJudge({ ...judge(), praise: "" }, 1)?.praise).toBe("");
+  });
+
   it("欠けている・知らない値は 通さない（画面に 出す前に 落とす）", () => {
     expect(parseJudge({ ...judge(), grade: "veryGood" satisfies string }, 1)).not.toBeNull();
     expect(parseJudge({ ...judge(), relevance: "maybe" }, 1)).toBeNull();
-    expect(parseJudge({ ...judge(), praise: "" }, 1)).toBeNull();
+    expect(parseJudge({ ...judge(), praise: undefined }, 1)).toBeNull();
     expect(parseJudge({ ...judge(), reply: undefined }, 1)).toBeNull();
     expect(parseJudge("こわれた", 1)).toBeNull();
   });
