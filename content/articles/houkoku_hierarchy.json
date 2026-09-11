@@ -41,17 +41,12 @@
       "items": [
         "社長（President）— 会社で いちばん 上の 人。",
         "取締役（Director）— 藤木さん。会社の 大切な ことを 決める 人。",
-        "部長（General Manager）— 大きな チームの 長。",
-        "次長（Deputy General Manager）— 部長の つぎ。",
-        "課長（Manager）— 小さな チームの 長。",
-        "係長（Chief）— 課長の つぎ。",
+        "部長（General Manager）— 大きな チームの リーダー。",
+        "次長（Deputy General Manager）— 部長の サポートを する 人。",
+        "課長（Manager）— 小さな チームの リーダー。",
+        "係長（Chief）— 課長の サポートを する 人。",
         "社員（Employee / Staff）— あなたは ここから 始まります。"
       ]
-    },
-    {
-      "kind": "callout",
-      "tone": "care",
-      "text": "絵の 中の「相談役（Advisor）」は、えらい 順の 中では ありません。社長に 意見を 言う 役です。"
     },
     {
       "kind": "paragraph",
@@ -60,7 +55,7 @@
     {
       "kind": "callout",
       "tone": "point",
-      "text": "さっき 聞いた 藤木さんは「取締役」です。上から 2つめの ポジションです。だから 藤木さんは、お客様と 直接 話を して います。"
+      "text": "さっき 聞いた 藤木さんは「取締役」です。上から 2つめの ポジションです。"
     }
   ],
   "furigana": [
