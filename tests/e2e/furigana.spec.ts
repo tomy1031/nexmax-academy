@@ -121,7 +121,12 @@ test("ミーティングの 中（漢字の 名前の 相手）にも 裸の漢�
   const at = refs.indexOf("asakai_muzukashii");
   expect(at, "夕礼の ミーティングが 朝礼・夕礼ステージに ある").toBeGreaterThan(0);
 
-  await seedCompleted(context, refs.slice(0, at));
+  /*
+   * 手前を **1本 残して** 開く。ぜんぶ 埋めると ステージが クリアに なり、
+   * 「ステージ クリア」の 板が ロビーの ボタンを 覆う（夕礼は `gates: false` なので
+   * 手前が ぜんぶ 済んだ 時点で ステージが おわった ことに なる）。
+   */
+  await seedCompleted(context, refs.slice(0, at - 1));
   await page.goto("/asakai/meeting-asakai_muzukashii");
   await joinCall(page);
 

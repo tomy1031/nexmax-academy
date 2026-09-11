@@ -499,6 +499,11 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
                 <button
                   type="button"
                   onClick={toGap}
+                  aria-label={
+                    sceneAt + 1 >= asakai.scenes.length
+                      ? "今週の けっかを 見る"
+                      : "きょうの けっかを 見る"
+                  }
                   className="btn-island btn-game w-full px-6 py-3"
                 >
                   <RubyText
@@ -546,6 +551,8 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
                       type="button"
                       onClick={send}
                       disabled={!answer.trim()}
+                      /* ルビの かなが 字の あいだに 挟まるので、読み上げ用の 名前は 別に 持つ。 */
+                      aria-label="報告する"
                       className="btn-island btn-game flex-1 px-4 py-2 disabled:opacity-45"
                     >
                       <RubyText text="報告する" index={index} show />
@@ -649,7 +656,7 @@ function TimeCard({
           <RubyText text={`${nextDay}から つづけます`} index={index} show />
         </span>
         <span className="block text-xs tabular-nums">
-          {at + 1}日目 / {total}日
+          <RubyText text={`${at + 1}日目 / ${total}日`} index={index} show />
         </span>
       </button>
     </div>
@@ -756,7 +763,9 @@ function WeekResult({
               <td className="py-1 tabular-nums">
                 {row.units} / {row.unitTotal}
               </td>
-              <td className="py-1 tabular-nums">{row.probes}回</td>
+              <td className="py-1 tabular-nums">
+                <RubyText text={`${row.probes}回`} index={index} show />
+              </td>
             </tr>
           ))}
         </tbody>

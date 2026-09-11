@@ -17,7 +17,8 @@ import { bareKanjiTexts, joinCall, seedCompleted, shot } from "./helpers";
  * 画面の 字は ほとんどが `RubyText` を 通るので、`getByText("話すと 開きます")` は
  * 当たらない（`<rt>` の かなが 字の あいだに 挟まる）。だから
  * **`rt` を 外した 字**（`readingFreeText`）で 突き合わせる。
- * ボタンだけは かなの ところ（「ほうこくする」「おわり」「つづけます」）で さがす。
+ * ボタンは かなの ところ（「つづけます」「けっかを 見る」）か、
+ * 正規表現（`/報告する/` は ルビの かなを またがない 短い 語）で さがす。
  */
 
 const PHONE = { width: 390, height: 844 };
@@ -70,7 +71,7 @@ test("朝礼（かんたん）— 報告すると カードが 開く", async ({
 
   /* 板の 上の 1行が「この 4枚は 何か」を 言っている。 */
   await expect(page.getByText("（0 / 4）")).toBeVisible();
-  await expectOnScreen(page, "話すと 開きます");
+  await expectOnScreen(page, "報告すると 開きます");
   await expectOnScreen(page, "担当");
   await shot(page, "asakai-02-kantan-mon");
 
@@ -81,11 +82,11 @@ test("朝礼（かんたん）— 報告すると カードが 開く", async ({
         "きょうは テストの 一覧を 書いて、テストを 始めます。20こ ぐらいです。" +
         "一覧の 書き方が 分からなくて、こまって います。",
     );
-  await page.getByRole("button", { name: "ほうこくする" }).click();
+  await page.getByRole("button", { name: "報告する" }).click();
 
   /* 4枚 そろったので 聞き返しが 無く、その 場面は おわる。 */
   await expect(page.getByText("（4 / 4）")).toBeVisible();
-  const owari = page.getByRole("button", { name: /おわり/ });
+  const owari = page.getByRole("button", { name: /けっかを 見る/ });
   await expect(owari).toBeVisible();
   await shot(page, "asakai-03-kantan-opened");
 
@@ -125,7 +126,7 @@ test("夕礼（むずかしい）— メモと カードが 同じ 画面に 並
   await page
     .locator("#asakai-answer")
     .fill("一覧に 日づけと 先生の 名前が 出るように なりました。");
-  await page.getByRole("button", { name: "ほうこくする" }).click();
+  await page.getByRole("button", { name: "報告する" }).click();
   await expect(page.getByText("（0 / 4）")).toBeVisible();
   await shot(page, "asakai-07-muzukashii-probe");
 
