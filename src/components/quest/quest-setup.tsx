@@ -20,6 +20,9 @@ const UI_FURIGANA = buildFuriganaIndex([
   ["名前", "なまえ"],
   ["同", "おな"],
   ["学校", "がっこう"],
+  ["名簿", "めいぼ"],
+  ["進", "すす"],
+  ["入", "はい"],
   ["期", "き"],
   ["読", "よ"],
   ["冒険", "ぼうけん"],
@@ -169,8 +172,15 @@ export function QuestSetup({
                 </span>
                 {picked ? <PlayerFace player={picked} size={34} /> : null}
                 <label className="min-w-0 flex-1">
-                  <span className="sr-only">{`${index + 2}人目`}</span>
+                  {/*
+                   * 名前は `aria-label` で 持つ。前は 画面に 出さない `sr-only` の
+                   * 字を DOM に 置いて いたが、裸の漢字の 見張り（`furigana.spec`）は
+                   * **見えない 字も 数える**（`helpers.ts` の TreeWalker は
+                   * text node を そのまま 拾う）。属性に すれば 読み上げの 名前は
+                   * そのまま「2人目」で、数える 字は 増えない。
+                   */}
                   <select
+                    aria-label={`${index + 2}人目`}
                     value={value ?? ""}
                     onChange={(event) => choose(index, event.target.value)}
                     disabled={loading || roster.length === 0}
