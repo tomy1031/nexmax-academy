@@ -996,6 +996,67 @@ export function collectLabeledTexts(content: Content): LabeledText[] {
         if (game.listenExample) push("talkGame.listenExample", game.listenExample);
         push("talkGame.reward", game.reward);
       }
+      /*
+       * 朝礼・夕礼（台帳 #366）。**ここも ぜんぶ 学習者が 読む**——
+       * 帯の 名前と 担当、場面の 札、いまの しごとの 3行、どこまで できたかの 箱、
+       * その日の 行／メモ／やること、司会と メンバーの セリフ、カードの 札と 箱の 名前、
+       * 聞き返しと れい、💡 の 行。
+       *
+       * 漏らすと **画面の まん中（メモ 10行・カードの 札）だけ 裸の 漢字**に なる。
+       * 2026-09-11 に 実発生——`card.goal` の「…までに テストを ぜんぶ 通す」と
+       * 帯の「奥田」が ルビ無しで 出て いたのを、e2e の 裸の漢字チェックが 先に 見つけた。
+       * 機械が 先に 止められる ように ここへ 足す。
+       *
+       * `facts[].keywords` と `facts[].fact` は 当たり判定と AI への 材料で、画面には 出ない。
+       */
+      if (content.asakai) {
+        const asakai = content.asakai;
+        asakai.people.forEach((person, i) => {
+          push(`asakai.people[${i}].name`, person.name);
+          push(`asakai.people[${i}].duty`, person.duty);
+          /* いまの 画面は `duty` を 出して いるが、`role` も 参加者の 欄。
+             片方だけ 検査すると、出しかたを 変えた 日に 黙って 穴が あく。 */
+          push(`asakai.people[${i}].role`, person.role);
+        });
+        asakai.scenes.forEach((scene, i) => {
+          const at = (field: string) => `asakai.scenes[${i}].${field}`;
+          push(at("title"), scene.title);
+          push(at("lead"), scene.lead);
+          push(at("card.duty"), scene.card.duty);
+          push(at("card.goal"), scene.card.goal);
+          push(at("card.deadline"), scene.card.deadline);
+          push(at("card.pin"), scene.card.pin);
+          scene.card.progress.forEach((box, j) => push(at(`card.progress[${j}].label`), box.label));
+          (scene.card.rows ?? []).forEach((row, j) => {
+            push(at(`card.rows[${j}].label`), row.label);
+            push(at(`card.rows[${j}].text`), row.text);
+          });
+          (scene.card.memo ?? []).forEach((row, j) => {
+            push(at(`card.memo[${j}].head`), row.head);
+            push(at(`card.memo[${j}].text`), row.text);
+          });
+          (scene.card.todo ?? []).forEach((row, j) => push(at(`card.todo[${j}]`), row));
+          const lines = [
+            ...scene.opening,
+            scene.sample,
+            scene.prompt,
+            scene.ack,
+            ...scene.members,
+            ...(scene.arrange ? [scene.arrange.done, scene.arrange.missing] : []),
+            ...scene.closing,
+          ];
+          lines.forEach((line, j) => push(at(`lines[${j}].text`), line.text));
+          scene.panels.forEach((panel, j) => {
+            push(at(`panels[${j}].label`), panel.label);
+            panel.facts.forEach((fact, k) => push(at(`panels[${j}].facts[${k}].box`), fact.box));
+            panel.followups.forEach((line, k) =>
+              push(at(`panels[${j}].followups[${k}]`), line.text),
+            );
+            push(at(`panels[${j}].example`), panel.example.text);
+          });
+          scene.hintLines.forEach((line, j) => push(at(`hintLines[${j}]`), line));
+        });
+      }
       // persona / judgePrompt は Live への指示（scenario の interview.persona と同じ扱い）
       break;
     }
@@ -1138,6 +1199,18 @@ const VERIFIED_SPLIT_COMPOUNDS: ReadonlySet<string> = new Set([
   "確認待",
   "回答待",
   "見送",
+  /*
+   * 「見込み」— 読み辞書は ["見込み","みこみ"] で 画面は 正しいが、ここが 見るのは
+   * 漢字の かたまり（見込）だけ。組み立ての 読み（みこ＋み）も 正しい。
+   * 2026-09-11 に 目で 確認（朝礼・夕礼の ことば）。
+   */
+  "見込",
+  /*
+   * 「藤木取締役」— 藤木（ふじき）＋取締役（とりしまりやく）。役職を 付けた 名前は
+   * かならず 2語に 割れるが、組み立ての 読みは 正しい（松井社長 と 同じ）。
+   * 2026-09-11 に 目で 確認（朝礼・夕礼の 金曜）。
+   */
+  "藤木取締役",
 ]);
 
 const KANJI_RUN = /[々一-鿿]{2,}/g;

@@ -27,29 +27,36 @@ export interface AdviceText {
   readonly example: string | null;
 }
 
+/*
+ * **ねぎらいの ことばを 置かない**（2026-09-10「がんばったね、などの無駄な表現も
+ * 省いてください」）。ここが 見て いるのは **形だけ**（長さ・ていねいさ・句点）なので、
+ * 「つたわりました」「いい 答えです」は **見て いない ことを 言って いた**。
+ * 名指しできる ことが 無い ときは `praise` を 空に する——画面が 欄ごと 消す。
+ */
 const ADVICE: Record<AdviceKey, (answer: string) => AdviceText> = {
   empty: () => ({
-    praise: "だいじょうぶです。ゆっくりで いいですよ。",
+    praise: "",
     fix: "まだ 何も 書いて いません。ヒントを 見て、1つだけ 書いて みましょう。",
     example: null,
   }),
   tooShort: (answer) => ({
-    praise: "書けましたね。",
+    praise: "",
     fix: "もう すこし 長く 言うと、もっと よく つたわります。",
     example: `${answer}です。`,
   }),
   notPolite: (answer) => ({
-    praise: "つたわりました！",
+    praise: "",
     fix: "しごとでは「です」「ます」を つかいます。",
     example: `${answer}です。`,
   }),
   noPeriod: () => ({
-    praise: "いい 答えです。",
+    praise: "",
     fix: "さいごに「。」を つけると、文が おわった ことが わかります。",
     example: null,
   }),
+  /* ここだけ 残すのは、規則が **実際に 確かめた こと**を 名指しして いるから。 */
   good: () => ({
-    praise: "とても いい 言い方です！ そのままで つうじます。",
+    praise: "ていねいな 形（です・ます）で 言えました。",
     fix: null,
     example: null,
   }),

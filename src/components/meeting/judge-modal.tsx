@@ -235,34 +235,43 @@ export function JudgeModal({
             </div>
           ) : null}
 
+          {/* ほめる ところと 直す ところを **線で 分ける**（続けて 書くと 混ざる）。
+              どちらも 無い ときは **見出しごと** 出さない——中身の 無い ほめことばで
+              埋めない ため（2026-09-10 の 指定）。見出しだけ 残すと
+              「アドバイス」と 書いて ある 空の 箱に なる。 */}
           <div>
-            <SectionLabel
-              face="💡"
-              text={`${hostName}さんからの アドバイス`}
-              tone="var(--color-coral-deep)"
-              index={askFurigana}
-            />
-            {/* ほめる ところと 直す ところを **線で 分ける**（続けて 書くと 混ざる） */}
-            <div className="border-hairline bg-panel mt-1 rounded-xl border px-3 py-2">
-              <p className="text-ink flex gap-2 font-bold break-words">
-                <span aria-hidden className="shrink-0">
-                  💗
-                </span>
-                <span className="flex-1">
-                  <RubyText text={judge.praise} index={FURIGANA} show />
-                </span>
-              </p>
-              {judge.fix ? (
-                <p className="border-hairline text-ink mt-2 flex gap-2 border-t border-dashed pt-2 font-bold break-words">
-                  <span aria-hidden className="shrink-0">
-                    ❗
-                  </span>
-                  <span className="flex-1">
-                    <RubyText text={judge.fix} index={FURIGANA} show />
-                  </span>
-                </p>
-              ) : null}
-            </div>
+            {judge.praise || judge.fix ? (
+              <SectionLabel
+                face="💡"
+                text={`${hostName}さんからの アドバイス`}
+                tone="var(--color-coral-deep)"
+                index={askFurigana}
+              />
+            ) : null}
+            {judge.praise || judge.fix ? (
+              <div className="border-hairline bg-panel mt-1 rounded-xl border px-3 py-2">
+                {judge.praise ? (
+                  <p className="text-ink flex gap-2 font-bold break-words">
+                    <span aria-hidden className="shrink-0">
+                      💗
+                    </span>
+                    <span className="flex-1">
+                      <RubyText text={judge.praise} index={FURIGANA} show />
+                    </span>
+                  </p>
+                ) : null}
+                {judge.fix ? (
+                  <p className="border-hairline text-ink mt-2 flex gap-2 border-t border-dashed pt-2 font-bold break-words">
+                    <span aria-hidden className="shrink-0">
+                      ❗
+                    </span>
+                    <span className="flex-1">
+                      <RubyText text={judge.fix} index={FURIGANA} show />
+                    </span>
+                  </p>
+                ) : null}
+              </div>
+            ) : null}
           </div>
 
           <div>

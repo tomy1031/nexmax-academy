@@ -115,14 +115,19 @@ test("対話ゲームの 中（はじめた あと・答える前）にも 裸�
  */
 test("ミーティングの 中（漢字の 名前の 相手）にも 裸の漢字が 無い", async ({ page, context }) => {
   const stage = JSON.parse(
-    readFileSync(join(__dirname, "..", "..", "content", "stages", "houkoku.json"), "utf8"),
+    readFileSync(join(__dirname, "..", "..", "content", "stages", "asakai.json"), "utf8"),
   ) as { contents: { ref: string }[] };
   const refs = stage.contents.map((item) => item.ref);
-  const at = refs.indexOf("yuurei_meeting");
-  expect(at, "夕礼の ミーティングが 報告ステージに ある").toBeGreaterThan(0);
+  const at = refs.indexOf("asakai_muzukashii");
+  expect(at, "夕礼の ミーティングが 朝礼・夕礼ステージに ある").toBeGreaterThan(0);
 
-  await seedCompleted(context, refs.slice(0, at));
-  await page.goto("/houkoku/meeting-yuurei_meeting");
+  /*
+   * 手前を **1本 残して** 開く。ぜんぶ 埋めると ステージが クリアに なり、
+   * 「ステージ クリア」の 板が ロビーの ボタンを 覆う（夕礼は `gates: false` なので
+   * 手前が ぜんぶ 済んだ 時点で ステージが おわった ことに なる）。
+   */
+  await seedCompleted(context, refs.slice(0, at - 1));
+  await page.goto("/asakai/meeting-asakai_muzukashii");
   await joinCall(page);
 
   const bare = await bareKanjiTexts(page);

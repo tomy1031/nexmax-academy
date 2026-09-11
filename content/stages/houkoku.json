@@ -4,7 +4,7 @@
   "order": 4,
   "title": "報連相：報告",
   "reading": "ほうれんそう ほうこく",
-  "description": "日本の 会社の「報連相」を 学びます。上司への 報告の しかたを 読んで、聞いて、声に 出して 練習します。さいごは 毎朝の 朝礼で、きのう・きょう・こまりごとの 3つを 話します。",
+  "description": "日本の 会社の「報連相」を 学びます。上司への 報告の しかたを 読んで、聞いて、声に 出して 練習します。さいごは ヘンディ先輩を 上司の 役に して、自分の ことばで 報告します。毎日の 朝礼と 夕礼は つぎの ステージです。",
   "color": "sky",
   "status": "published",
   "area": {
@@ -48,30 +48,6 @@
     {
       "ref": "houkoku_meeting",
       "type": "meeting"
-    },
-    {
-      "ref": "asakai_manga",
-      "type": "manga"
-    },
-    {
-      "ref": "asakai_lecture",
-      "type": "article"
-    },
-    {
-      "ref": "asakai_memo",
-      "type": "quizset"
-    },
-    {
-      "ref": "asakai_meeting",
-      "type": "meeting"
-    },
-    {
-      "ref": "asakai_komari_meeting",
-      "type": "meeting"
-    },
-    {
-      "ref": "yuurei_meeting",
-      "type": "meeting"
     }
   ],
   "wordStageIds": [
@@ -81,6 +57,34 @@
     [
       "報連相",
       "ほうれんそう"
+    ],
+    [
+      "夕礼",
+      "ゆうれい"
+    ],
+    [
+      "先輩",
+      "せんぱい"
+    ],
+    [
+      "自分",
+      "じぶん"
+    ],
+    [
+      "毎日",
+      "まいにち"
+    ],
+    [
+      "役",
+      "やく"
+    ],
+    [
+      "夕",
+      "ゆう"
+    ],
+    [
+      "毎",
+      "まい"
     ],
     [
       "報告",

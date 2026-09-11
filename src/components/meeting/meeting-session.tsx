@@ -202,7 +202,7 @@ type ChatBody =
 type ChatEntry = ChatBody & { id: string };
 
 const NOTICE = {
-  empty: "だいじょうぶです。ヒントの 文を そのまま 書いても いいですよ。",
+  empty: "まだ 何も 書いて いません。ヒントの 文を そのまま 書いても いいです。",
   latin: "キーボードが 日本語入力に なって いないかも しれません。たしかめて みましょう。",
 } as const;
 type NoticeKey = keyof typeof NOTICE;
