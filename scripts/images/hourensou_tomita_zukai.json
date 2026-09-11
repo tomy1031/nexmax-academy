@@ -10,13 +10,17 @@
       "out": "petterns",
       "dest": "public/img/hourensou/houkoku/petterns.webp",
       "title": "報告の 3つの パターン",
-      "where": "scripts/gen_hourensou_content.mjs houkoku_lecture blocks[13]（steps）の images[2]",
+      "where": "content/articles/houkoku_kotsu.json blocks[13]（image）",
       "priority": "A",
-      "scene": "One wide picture divided into three equal panels by thin cream gutters. In every panel the same two people appear: the young Southeast Asian junior engineer on the left and Tomita the project manager on the right at his desk. LEFT PANEL: the junior engineer smiles and holds up a finished document. MIDDLE PANEL: he points at his laptop with a troubled, honest face. RIGHT PANEL: he holds a sticky note and points at it thoughtfully. Tomita listens warmly in all three. Above each panel sits a rounded cream label panel carrying the Japanese words given here.",
+      "scene": "One wide picture divided into three equal panels. The same young Southeast Asian junior engineer and Tomita appear in every panel. LEFT: completion — the junior engineer shows a completed login-test document. MIDDLE: trouble — a server error appears on the laptop and he explains that he is investigating the cause. RIGHT: delay — a calendar and clock show the deadline while he apologizes politely. Tomita listens warmly in all three. Use a title, large panel headings and speech bubbles matching the reference image.",
       "text": [
-        "終わった 報告（おわった ほうこく）",
-        "困って いる 報告（こまって いる ほうこく）",
-        "気づいた ことの 報告（きづいた ことの ほうこく）"
+        "ITプログラマーの 報告パターン（Patterns）",
+        "1. 完了（Completion）",
+        "ログイン機能の テストが 終わりました。確認を お願いします。",
+        "2. トラブル（Trouble）",
+        "サーバーエラーが 出ました。原因を 調べて います。",
+        "3. 遅れ（Delay）",
+        "明日まで かかりそうです。すみません。"
       ]
     }
   ]
