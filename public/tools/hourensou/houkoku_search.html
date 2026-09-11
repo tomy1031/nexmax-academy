@@ -1,175 +1,806 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>NexmaxAcademy</title>
+    <!--
+      調査（リサーチ）：日本の 会社の 階級 — エンジン（画面と 動き だけ）
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>調査（リサーチ） - 報連相 - ネクストメイク入社研修</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+      文言は すべて houkoku_search.data.js から 読む。この ファイルに
+      日本語を 直接 書かない（ボタン名も DATA.labels から）。
+
+      ## 何を する ページか
+      学習者が **自分で 調べた 階級を 入力し、えらい 順に ならべ替えて 出す**。
+      出すまで ステージの つぎへ 進めない（2026-09-11 の 指定）。
+      以前は Google スプレッドシートへ 飛ばして いたが、
+      アプリの 外に 出ると 書いた ものが 学習者の 手もとに 残らず、
+      「出した」ことも アプリに 伝わらなかった。
+
+      ## 答えは ここに 置かない
+      正しい 並びは **つぎの ページ**の 答え合わせで 出す。ここに 語群や 例として
+      混ぜると、調べる 理由が 消える（設計01 P2・P4）。ページの もとの 字は
+      学習者にも 読めるので、ここにも 書かない。
+
+      ## 出した ことを どう 伝えるか
+      `postMessage({type:"nexmax:link-done", id:"houkoku_search"})` を 1回だけ 送る。
+      アプリ（`src/components/link/link-view.tsx`）は 同じ 置き場からの 合図だけを 受ける。
+      1枚で 開いた ときは 送り先が 無いので、黙って 何も しない（画面は そのまま 使える）。
+
+      ## 書いた ものは 端末に 残す
+      localStorage に 置く。授業中に うっかり 閉じても 書き直しに ならない。
+      使えない 設定の 端末でも 落ちないよう、読み書きは try で 包む。
+    -->
     <style>
-        /* Password Section Styles (Standardized) */
-        .interactive-section {
-            background: #fff;
-            border: 2px solid var(--border-color);
-            border-radius: var(--radius-md);
-            padding: 24px;
-            margin-top: 24px;
+      :root {
+        --sky: #0288d1;
+        --sky-soft: #e1f2fb;
+        --navy: #004f8d;
+        --ink: #1f3a56;
+        --ink-soft: #5a7089;
+        --ink-faint: #9db0c2;
+        --line: #dcebf5;
+        --leaf: #58c273;
+        --leaf-deep: #3aa458;
+        --sun: #ffc93c;
+        --cream: #fff7e8;
+        --paper: #ffffff;
+        --radius: 20px;
+        --shadow: 0 6px 18px rgba(31, 58, 86, 0.1);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        padding: 0 0 40px;
+        background: linear-gradient(180deg, #d8f0fc 0%, #f4fbff 220px);
+        color: var(--ink);
+        font-family:
+          "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic", system-ui, sans-serif;
+        font-weight: 700;
+        line-height: 1.9;
+      }
+
+      rt {
+        color: var(--ink-soft);
+        font-size: 0.5em;
+        font-weight: 700;
+      }
+
+      .wrap {
+        margin: 0 auto;
+        max-width: 720px;
+        padding: 0 14px;
+      }
+
+      header.hero {
+        padding: 22px 0 16px;
+        text-align: center;
+      }
+
+      header.hero h1 {
+        margin: 0;
+        color: var(--navy);
+        font-size: 22px;
+        line-height: 1.6;
+      }
+
+      header.hero p {
+        margin: 6px 0 0;
+        color: var(--ink-soft);
+        font-size: 15px;
+      }
+
+      section.card {
+        margin-top: 16px;
+        padding: 16px;
+        border: 2px solid var(--line);
+        border-radius: var(--radius);
+        background: var(--paper);
+        box-shadow: var(--shadow);
+      }
+
+      h2 {
+        margin: 0 0 6px;
+        color: var(--navy);
+        font-size: 18px;
+      }
+
+      .lead {
+        margin: 0 0 10px;
+        font-size: 15px;
+      }
+
+      ul.hints {
+        margin: 0 0 12px;
+        padding-left: 20px;
+        color: var(--ink-soft);
+        font-size: 14px;
+      }
+
+      .edge {
+        color: var(--ink-faint);
+        font-size: 13px;
+      }
+
+      ol.rows {
+        margin: 4px 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      li.row {
+        display: grid;
+        grid-template-columns: 28px 1fr auto;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 0;
+      }
+
+      /*
+       * せまい 画面（390px の 端末）では、入力欄が 180px まで つぶれ、
+       * この 教材の 中心の 操作（↑↓）が 指の 大きさを 下回る。
+       * 2行に して、指で 押せる 大きさ（44px）を 取りもどす。
+       */
+      @media (max-width: 460px) {
+        li.row {
+          grid-template-columns: 28px 1fr;
         }
 
-        .password-form {
-            text-align: center;
+        .ops {
+          grid-column: 2;
+          justify-content: flex-end;
         }
 
-        .password-input {
-            padding: 8px 16px;
-            border: 2px solid var(--border-color);
-            border-radius: 4px;
-            font-size: 16px;
-            margin-right: 8px;
-            width: 200px;
+        button.icon {
+          width: 44px;
+          height: 44px;
         }
+      }
 
-        .password-input.error {
-            border-color: #e74c3c;
-            animation: shake 0.5s;
+      .no {
+        display: grid;
+        width: 28px;
+        height: 28px;
+        flex: 0 0 auto;
+        border-radius: 999px;
+        background: var(--sky-soft);
+        color: var(--navy);
+        font-size: 13px;
+        place-items: center;
+      }
+
+      input.rank,
+      textarea {
+        width: 100%;
+        min-width: 0;
+        padding: 9px 12px;
+        border: 2px solid var(--line);
+        border-radius: 14px;
+        background: var(--paper);
+        color: var(--ink);
+        font-family: inherit;
+        font-size: 16px; /* 16px 未満は iOS が 勝手に 拡大する */
+        font-weight: 700;
+      }
+
+      input.rank:focus,
+      textarea:focus {
+        border-color: var(--sky);
+        outline: none;
+      }
+
+      .ops {
+        display: flex;
+        flex: 0 0 auto;
+        gap: 4px;
+      }
+
+      button {
+        border-radius: 999px;
+        font-family: inherit;
+        font-weight: 800;
+        cursor: pointer;
+      }
+
+      button.icon {
+        width: 34px;
+        height: 34px;
+        border: 2px solid var(--line);
+        background: var(--paper);
+        color: var(--navy);
+        font-size: 15px;
+        line-height: 1;
+      }
+
+      button.icon:disabled {
+        color: var(--ink-faint);
+        cursor: default;
+        opacity: 0.45;
+      }
+
+      button.add {
+        margin-top: 8px;
+        padding: 8px 16px;
+        border: 2px dashed var(--line);
+        background: var(--paper);
+        color: var(--navy);
+        font-size: 14px;
+      }
+
+      .field {
+        margin-top: 12px;
+      }
+
+      .field label {
+        display: block;
+        margin-bottom: 4px;
+        font-size: 15px;
+      }
+
+      textarea {
+        min-height: 74px;
+        resize: vertical;
+      }
+
+      .foot {
+        margin-top: 18px;
+        text-align: center;
+      }
+
+      button.submit {
+        padding: 14px 34px;
+        border: none;
+        background: var(--leaf);
+        box-shadow: 0 4px 0 var(--leaf-deep);
+        color: #fff;
+        font-size: 17px;
+      }
+
+      button.submit:active {
+        transform: translateY(2px);
+        box-shadow: 0 2px 0 var(--leaf-deep);
+      }
+
+      button.edit {
+        margin-top: 12px;
+        padding: 9px 20px;
+        border: 2px solid var(--line);
+        background: var(--paper);
+        color: var(--navy);
+        font-size: 14px;
+      }
+
+      .note {
+        margin: 10px 0 0;
+        color: var(--ink-soft);
+        font-size: 14px;
+        min-height: 1.9em;
+      }
+
+      .done {
+        border-color: var(--leaf);
+        background: var(--cream);
+        animation: pop 0.32s ease-out;
+      }
+
+      /* 出した 瞬間の 小さな 祝い（動きを 好まない 端末では 止める）。 */
+      @keyframes pop {
+        from {
+          transform: scale(0.96) translateY(8px);
+          opacity: 0;
         }
-
-        .unlock-btn {
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 4px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background 0.3s;
+        to {
+          transform: none;
+          opacity: 1;
         }
+      }
 
-        .unlock-btn:hover {
-            background: var(--primary-dark);
+      @media (prefers-reduced-motion: reduce) {
+        .done {
+          animation: none;
         }
+      }
 
-        @keyframes shake {
-            0% {
-                transform: translateX(0);
-            }
+      /* 出せない ときの 合図（押した ことに 必ず 反応する）。 */
+      .shake {
+        animation: shake 0.3s;
+      }
 
-            25% {
-                transform: translateX(-5px);
-            }
-
-            50% {
-                transform: translateX(5px);
-            }
-
-            75% {
-                transform: translateX(-5px);
-            }
-
-            100% {
-                transform: translateX(0);
-            }
+      @keyframes shake {
+        25% {
+          transform: translateX(-4px);
         }
-
-        .error-msg {
-            color: #e74c3c;
-            font-size: 14px;
-            margin-top: 8px;
-            display: none;
+        75% {
+          transform: translateX(4px);
         }
+      }
+
+      .done h2 {
+        color: var(--leaf-deep);
+      }
+
+      ol.answer {
+        margin: 8px 0 0;
+        padding-left: 22px;
+        font-size: 16px;
+      }
+
+      .hidden {
+        display: none !important;
+      }
     </style>
-</head>
+  </head>
 
-<body>
+  <body>
+    <div class="wrap">
+      <header class="hero">
+        <h1 id="title"></h1>
+        <p id="subtitle"></p>
+      </header>
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero-content">
-            <h1><span class="n4-word" data-word="調査"><ruby>調査<rt>ちょうさ</rt></ruby></span>（リサーチ）</h1>
-            <p>
-                <span class="n4-word" data-word="報告">
-                    <ruby>報告<rt>ほうこく</rt></ruby>
-                </span>
-            </p>
-        </div>
-    </section>
+      <section class="card" id="introCard">
+        <p class="lead" id="intro"></p>
+      </section>
 
-    <!-- Main Content -->
-    <main class="main-container">
+      <!-- 1. 階級を 入れて ならべる -->
+      <section class="card" id="rankCard">
+        <h2 id="rankHeading"></h2>
+        <p class="lead" id="rankLead"></p>
+        <ul class="hints" id="rankHints"></ul>
+        <p class="edge" id="topLabel"></p>
+        <ol class="rows" id="rows"></ol>
+        <p class="edge" id="bottomLabel"></p>
+        <button type="button" class="add" id="addRow"></button>
+      </section>
 
-        <!-- Research Section -->
-        <section class="research-section animate-fade-in">
-            <h2 class="research-title">🔍 もっと<ruby>調<rt>しら</rt></ruby>べてみよう！</h2>
-            <div class="section-text">
-                <p style="margin-bottom: 24px; text-align: center;">
-                    <ruby>次<rt>つぎ</rt></ruby>のことをインターネットで<ruby>調<rt>しら</rt></ruby>べてみましょう。
-                </p>
+      <!-- 2. カンボジアとの ちがい -->
+      <section class="card" id="compareCard">
+        <h2 id="compareHeading"></h2>
+        <p class="lead" id="compareLead"></p>
+        <div id="fields"></div>
+      </section>
 
-                <div style="margin-bottom: 24px;">
-                    <h3 style="font-size: 18px; margin-bottom: 8px; color: var(--primary-dark);">Q1. <ruby>日本<rt>にほん
-                            </rt></ruby>の<span class="n4-word" data-word="階級"><ruby>階級<rt>かいきゅう</rt></ruby></span> (Hierarchy)</h3>
-                    <p style="font-size: 16px;">
-                        <ruby>日本<rt>にほん</rt></ruby>の<span class="n4-word" data-word="階級"><ruby>階級<rt>かいきゅう</rt></ruby></span>をたくさん<ruby>調<rt>しら</rt>
-                        </ruby>べてみましょう。<br>
-                        えらい<ruby>順<rt>じゅん</rt></ruby>に<ruby>並<rt>なら</rt></ruby>べてください。<br>
-                        <span class="n4-word" data-word="取締役"><ruby>取締役<rt>とりしまりやく</rt></ruby></span>の<ruby>藤木<rt>ふじき
-                            </rt></ruby>さんはどのくらいえらいかな？
-                    </p>
-                </div>
+      <div class="foot" id="foot">
+        <button type="button" class="submit" id="submit"></button>
+        <p class="note" id="note" role="status" aria-live="polite"></p>
+      </div>
 
-                <div style="margin-bottom: 24px;">
-                    <h3 style="font-size: 18px; margin-bottom: 8px; color: var(--primary-dark);">Q2. もう 1つ：カンボジアと<ruby>日本<rt>にほん</rt></ruby>の<ruby>違<rt>ちが</rt></ruby>い</h3>
-                    <p style="font-size: 16px;">
-                        ・カンボジアの<span class="n4-word" data-word="階級"><ruby>階級<rt>かいきゅう</rt></ruby></span>を<ruby>教<rt>おし</rt></ruby>えてください。<br>
-                        ・カンボジアと<ruby>日本<rt>にほん</rt></ruby>の「<ruby>報告<rt>ほうこく</rt></ruby>」への<ruby>考<rt>かんが</rt>
-                        </ruby>え<ruby>方<rt>かた</rt></ruby>の<ruby>違<rt>ちが</rt></ruby>いを<ruby>教<rt>おし</rt>
-                        </ruby>えてください。<br>
-                        ・カンボジアと<ruby>日本<rt>にほん</rt></ruby>の「<ruby>上司<rt>じょうし</rt></ruby>」との<ruby>関係<rt>かんけい</rt>
-                        </ruby>の<ruby>違<rt>ちが</rt></ruby>いについて<ruby>調<rt>しら</rt></ruby>べてください。
-                    </p>
-                </div>
+      <!-- 出した あとの 画面 -->
+      <section class="card done hidden" id="doneCard">
+        <h2 id="doneTitle"></h2>
+        <p class="lead" id="doneListLabel"></p>
+        <ol class="answer" id="doneList"></ol>
+        <p class="note" id="doneNext"></p>
+        <p class="edge" id="savedNote"></p>
+        <button type="button" class="edit" id="edit"></button>
+      </section>
+    </div>
 
-                <div style="text-align: center;">
-                    <a href="https://docs.google.com/spreadsheets/d/1lcyFFoWd-oGgMqgie3MJvW0jaFadurD9PnmKp902_wU/edit?usp=sharing"
-                        target="_blank" class="research-link-btn">
-                        ✍️ <ruby>回答<rt>かいとう</rt></ruby>をここに<ruby>書<rt>か</rt></ruby>く
-                    </a>
-                </div>
-
-                <!-- 書きおわりの 合図。これが 無いと ステージの 関門に できない
-                     （アプリは この ページの 中を 見られないので、押した ことだけが 手がかり）。 -->
-                <div style="text-align: center; margin-top: 24px;">
-                    <button type="button" id="doneBtn" class="unlock-btn" style="padding: 12px 28px; font-size: 17px;">
-                        ✅ <ruby>書<rt>か</rt></ruby>けました
-                    </button>
-                    <p id="doneMsg" style="display: none; margin-top: 12px; font-size: 15px; color: #2e7d5b;">
-                        おつかれさまでした。つぎの ページで<ruby>答<rt>こた</rt></ruby>え<ruby>合<rt>あ</rt></ruby>わせを します。
-                    </p>
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <script src="app.js"></script>
+    <script src="houkoku_search.data.js"></script>
     <script>
-        // ステージの 関門に する ための 合図（1回だけ 送る）。
-        document.getElementById('doneBtn').addEventListener('click', function () {
-            document.getElementById('doneMsg').style.display = 'block';
-            this.disabled = true;
-            try {
-                window.parent.postMessage(
-                    { type: 'nexmax:link-done', id: 'houkoku_search' },
-                    window.location.origin
-                );
-            } catch (e) {
-                /* 単独で 開いた ときは 送り先が 無い。画面は そのまま 使える。 */
-            }
-        });
-    </script>
-</body>
+      (function () {
+        "use strict";
 
+        var DATA = window.SEARCH_DATA;
+        var L = DATA.labels;
+        var M = DATA.messages;
+        var STORE_KEY = "nexmax:houkoku_search:v1";
+
+        /* ---------------- ことばの 組み立て ---------------- */
+
+        /** HTML に なる 文字を 先に 無害化する（素の 連結を しない）。 */
+        function esc(text) {
+          return String(text == null ? "" : text).replace(/[&<>"']/g, function (c) {
+            return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+          });
+        }
+
+        /** {表記|よみ} → <ruby>表記<rt>よみ</rt></ruby>。エスケープした あとで 組む。 */
+        function rubyfy(text) {
+          return esc(text).replace(/\{([^{}|]+)\|([^{}|]+)\}/g, function (_m, base, yomi) {
+            return "<ruby>" + base + "<rt>" + yomi + "</rt></ruby>";
+          });
+        }
+
+        /** ルビ記法を はずした ただの 文字（placeholder・aria-label 用）。 */
+        function plain(text) {
+          return String(text == null ? "" : text).replace(/\{([^{}|]+)\|[^{}|]+\}/g, "$1");
+        }
+
+        function put(id, text) {
+          document.getElementById(id).innerHTML = rubyfy(text);
+        }
+
+        /**
+         * ボタンには **ルビの 無い 名前**も 付ける。
+         *
+         * ルビを 入れると、読み上げも 機械の 検査も「{出|だ}す」を「出だす」と
+         * 読む（ルビの 字が 名前に 混ざる）。押す ものは 名前で 引けないと 困る。
+         */
+        function putButton(id, text) {
+          var node = document.getElementById(id);
+          node.innerHTML = rubyfy(text);
+          node.setAttribute("aria-label", plain(text));
+        }
+
+        /* ---------------- 覚えて おく もの ---------------- */
+
+        function blankState() {
+          var rows = [];
+          for (var i = 0; i < DATA.rank.start; i++) rows.push("");
+          var answers = {};
+          DATA.compare.fields.forEach(function (field) {
+            answers[field.id] = "";
+          });
+          return { rows: rows, answers: answers, submitted: false };
+        }
+
+        function load() {
+          var state = blankState();
+          try {
+            var saved = JSON.parse(window.localStorage.getItem(STORE_KEY) || "null");
+            if (!saved) return state;
+            if (Array.isArray(saved.rows) && saved.rows.length > 0) {
+              state.rows = saved.rows.slice(0, DATA.rank.max).map(function (v) {
+                return typeof v === "string" ? v : "";
+              });
+            }
+            if (saved.answers) {
+              Object.keys(state.answers).forEach(function (key) {
+                if (typeof saved.answers[key] === "string") state.answers[key] = saved.answers[key];
+              });
+            }
+            state.submitted = saved.submitted === true;
+          } catch (e) {
+            /* 使えない 端末でも 学習は 止めない */
+          }
+          return state;
+        }
+
+        function save() {
+          try {
+            window.localStorage.setItem(STORE_KEY, JSON.stringify(state));
+          } catch (e) {
+            /* 同上 */
+          }
+        }
+
+        var state = load();
+
+        /* ---------------- 画面を 組む ---------------- */
+
+        put("title", DATA.title);
+        put("subtitle", DATA.subtitle);
+        put("intro", DATA.intro);
+        put("rankHeading", DATA.rank.heading);
+        put("rankLead", DATA.rank.lead);
+        put("topLabel", DATA.rank.topLabel);
+        put("bottomLabel", DATA.rank.bottomLabel);
+        putButton("addRow", L.add);
+        put("compareHeading", DATA.compare.heading);
+        put("compareLead", DATA.compare.lead);
+        putButton("submit", L.submit);
+        put("doneTitle", L.doneTitle);
+        put("doneListLabel", L.doneList);
+        put("doneNext", L.doneNext);
+        put("savedNote", L.saved);
+        putButton("edit", L.edit);
+
+        var hints = document.getElementById("rankHints");
+        DATA.rank.hints.forEach(function (text) {
+          var li = document.createElement("li");
+          li.innerHTML = rubyfy(text);
+          hints.appendChild(li);
+        });
+
+        var fields = document.getElementById("fields");
+        DATA.compare.fields.forEach(function (field) {
+          var box = document.createElement("div");
+          box.className = "field";
+
+          var label = document.createElement("label");
+          label.htmlFor = "field-" + field.id;
+          label.innerHTML = rubyfy(field.label);
+
+          var area = document.createElement("textarea");
+          area.id = "field-" + field.id;
+          area.placeholder = plain(field.placeholder);
+          area.value = state.answers[field.id];
+          area.addEventListener("input", function () {
+            state.answers[field.id] = area.value;
+            save();
+            updateNote();
+          });
+
+          box.appendChild(label);
+          box.appendChild(area);
+          fields.appendChild(box);
+        });
+
+        /* ---------------- 階級の 行 ---------------- */
+
+        var rowsEl = document.getElementById("rows");
+
+        /**
+         * 行を ぜんぶ 描き直す。
+         *
+         * 並べ替えは **要素ごと 作り直す**（中身だけ 入れ替えると、いま 打って いる
+         * 欄が どれか 分からなく なる）。動かした あとは、その 欄に 目を もどす。
+         */
+        function renderRows(focusIndex) {
+          while (rowsEl.firstChild) rowsEl.removeChild(rowsEl.firstChild);
+
+          state.rows.forEach(function (value, index) {
+            var li = document.createElement("li");
+            li.className = "row";
+
+            var no = document.createElement("span");
+            no.className = "no";
+            no.textContent = String(index + 1);
+
+            var input = document.createElement("input");
+            input.className = "rank";
+            input.type = "text";
+            input.value = value;
+            input.placeholder = plain(DATA.rank.placeholder);
+            input.setAttribute("aria-label", index + 1 + "ばんめ");
+            input.addEventListener("input", function () {
+              state.rows[index] = input.value;
+              save();
+              updateNote();
+            });
+
+            var ops = document.createElement("span");
+            ops.className = "ops";
+            ops.appendChild(opButton("↑", L.up, index === 0, function () { move(index, -1); }));
+            ops.appendChild(
+              opButton("↓", L.down, index === state.rows.length - 1, function () { move(index, 1); }),
+            );
+            ops.appendChild(
+              opButton("✕", L.remove, state.rows.length <= 2, function () { removeRow(index); }),
+            );
+
+            li.appendChild(no);
+            li.appendChild(input);
+            li.appendChild(ops);
+            rowsEl.appendChild(li);
+          });
+
+          if (typeof focusIndex === "number") {
+            var inputs = rowsEl.querySelectorAll("input.rank");
+            if (inputs[focusIndex]) inputs[focusIndex].focus();
+          }
+          document.getElementById("addRow").disabled = state.rows.length >= DATA.rank.max;
+        }
+
+        function opButton(mark, label, disabled, onClick) {
+          var button = document.createElement("button");
+          button.type = "button";
+          button.className = "icon";
+          button.textContent = mark;
+          button.setAttribute("aria-label", plain(label));
+          button.disabled = disabled;
+          button.addEventListener("click", onClick);
+          return button;
+        }
+
+        function move(index, step) {
+          var to = index + step;
+          if (to < 0 || to >= state.rows.length) return;
+          var moved = state.rows[index];
+          state.rows[index] = state.rows[to];
+          state.rows[to] = moved;
+          save();
+          renderRows(to);
+          updateNote();
+        }
+
+        function removeRow(index) {
+          state.rows.splice(index, 1);
+          save();
+          renderRows(Math.max(0, index - 1));
+          updateNote();
+        }
+
+        document.getElementById("addRow").addEventListener("click", function () {
+          if (state.rows.length >= DATA.rank.max) return;
+          state.rows.push("");
+          save();
+          renderRows(state.rows.length - 1);
+          updateNote();
+        });
+
+        /* ---------------- 出せるか どうか ---------------- */
+
+        function filledRows() {
+          return state.rows
+            .map(function (value) {
+              return value.trim();
+            })
+            .filter(function (value) {
+              return value !== "";
+            });
+        }
+
+        function emptyFields() {
+          return DATA.compare.fields.filter(function (field) {
+            return state.answers[field.id].trim().length < 2;
+          }).length;
+        }
+
+        function hasDuplicate() {
+          var seen = Object.create(null);
+          return filledRows().some(function (value) {
+            if (seen[value]) return true;
+            seen[value] = true;
+            return false;
+          });
+        }
+
+        /**
+         * のこりを **数で** 言う。
+         *
+         * 「まだ 出せません」だけでは、あと 何を すれば いいか 分からない。
+         * 足りない ものを 1つずつ、数で 言う（規律1「結果を ぼかさない」）。
+         */
+        function updateNote() {
+          var short = DATA.rank.min - filledRows().length;
+          var left = emptyFields();
+          var untouched = filledRows().length === 0 && left === DATA.compare.fields.length;
+          var text;
+          /*
+           * まだ 何も 書いて いない ときは **やる ことの ほう**を 出す。
+           * 開いた 瞬間に「あと 5つ たりません」と 言われても、何を すれば
+           * いいのかは 分からない（足りないのは 書く 前なので 当たり前）。
+           */
+          if (untouched) {
+            text = M.howto
+              .replace("{n}", String(DATA.rank.min))
+              .replace("{m}", String(DATA.compare.fields.length));
+          } else if (short > 0) text = M.needMore.replace("{n}", String(short));
+          else if (left > 0) text = M.needCompare.replace("{n}", String(left));
+          else if (hasDuplicate()) text = M.duplicate;
+          else text = M.ready;
+          document.getElementById("note").innerHTML = rubyfy(text);
+          return short <= 0 && left <= 0;
+        }
+
+        /**
+         * 出せない とき、**足りない ところへ 連れて 行く**。
+         *
+         * 同じ 文が 出るだけでは 画面が 1ドットも 変わらず（読み上げも
+         * 同じ 文では 黙る）、「押したのに 何も 起きない」に なる。
+         */
+        function goToMissing() {
+          var inputs = rowsEl.querySelectorAll("input.rank");
+          for (var i = 0; i < inputs.length; i++) {
+            if (inputs[i].value.trim() === "") {
+              inputs[i].focus();
+              inputs[i].scrollIntoView({ block: "center" });
+              return;
+            }
+          }
+          for (var j = 0; j < DATA.compare.fields.length; j++) {
+            var field = DATA.compare.fields[j];
+            if (state.answers[field.id].trim().length < 2) {
+              var area = document.getElementById("field-" + field.id);
+              area.focus();
+              area.scrollIntoView({ block: "center" });
+              return;
+            }
+          }
+          // 行が 足りない ときは 1行 足して そこへ
+          if (state.rows.length < DATA.rank.max) {
+            state.rows.push("");
+            save();
+            renderRows(state.rows.length - 1);
+          }
+        }
+
+        /* ---------------- 出す ---------------- */
+
+        var sent = false;
+
+        /**
+         * アプリに「**おわりの しるしは こちらで 出す**」と 名乗る。
+         *
+         * これを 送ると、アプリ側の「おわりました」ボタンが 引っこむ
+         *（`src/components/link/link-view.tsx`）。出さずに 押すだけで 関門が
+         * 開いては、出す ことに 意味が 無くなる。
+         */
+        function claimDone() {
+          try {
+            window.parent.postMessage(
+              { type: "nexmax:link-owns-done", id: DATA.id },
+              window.location.origin,
+            );
+          } catch (e) {
+            /* 1枚で 開いた ときは 送り先が 無い */
+          }
+        }
+
+        /** アプリに「おわった」を 伝える（同じ 置き場の ときだけ 届く）。 */
+        function tellApp() {
+          if (sent) return;
+          sent = true;
+          try {
+            window.parent.postMessage(
+              { type: "nexmax:link-done", id: DATA.id },
+              window.location.origin,
+            );
+          } catch (e) {
+            /* 1枚で 開いた ときは 送り先が 無い。画面は そのまま 使える */
+          }
+        }
+
+        function showDone() {
+          var list = document.getElementById("doneList");
+          while (list.firstChild) list.removeChild(list.firstChild);
+          filledRows().forEach(function (value) {
+            var li = document.createElement("li");
+            li.textContent = value;
+            list.appendChild(li);
+          });
+          document.getElementById("rankCard").classList.add("hidden");
+          document.getElementById("compareCard").classList.add("hidden");
+          document.getElementById("introCard").classList.add("hidden");
+          document.getElementById("foot").classList.add("hidden");
+          document.getElementById("doneCard").classList.remove("hidden");
+          document.getElementById("doneCard").scrollIntoView({ block: "start" });
+        }
+
+        function showForm() {
+          document.getElementById("doneCard").classList.add("hidden");
+          document.getElementById("rankCard").classList.remove("hidden");
+          document.getElementById("compareCard").classList.remove("hidden");
+          document.getElementById("introCard").classList.remove("hidden");
+          document.getElementById("foot").classList.remove("hidden");
+          updateNote();
+        }
+
+        document.getElementById("submit").addEventListener("click", function () {
+          if (!updateNote()) {
+            var note = document.getElementById("note");
+            note.classList.remove("shake");
+            // いったん 外して すぐ 付け直さないと、2回目が 動かない
+            void note.offsetWidth;
+            note.classList.add("shake");
+            goToMissing();
+            return;
+          }
+          state.submitted = true;
+          save();
+          tellApp();
+          showDone();
+        });
+
+        document.getElementById("edit").addEventListener("click", showForm);
+
+        /* ---------------- はじめの 画面 ---------------- */
+
+        /*
+         * **画面が 立ってから 名乗る。** 名乗りは 親の「おわりました」を
+         * 引っこめる＝関門の 鍵を こちらへ 預ける 合図なので、先に 出すと、
+         * 描画で こけた とき 学習者は **入力欄も ボタンも 無い 画面**に
+         * 取り残される（その先の 8教材が ぜんぶ 閉じたままに なる）。
+         */
+        renderRows();
+        updateNote();
+        claimDone();
+        if (state.submitted) {
+          /*
+           * 出した あとに 開き直した ときも、アプリに もう一度 伝える。
+           * ステージの 関門は アプリ側が 覚えて いるが、別の 端末・
+           * 記録が 消えた あとでも「出した 人」が 止まらないように する。
+           */
+          tellApp();
+          showDone();
+        }
+      })();
+    </script>
+  </body>
 </html>
