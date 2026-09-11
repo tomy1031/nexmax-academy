@@ -102,6 +102,14 @@ export function LinkView({ link, embedded }: { link: LinkContent; embedded?: boo
       if (data?.type !== DONE_MESSAGE && data?.type !== OWNS_DONE_MESSAGE) return;
       if (typeof data.id === "string" && data.id !== link.id) return;
       if (data.type === OWNS_DONE_MESSAGE) {
+        /*
+         * 名乗りだけは **ID を 必須**に する（おわったの 合図より きびしく）。
+         * これは 手押しの ボタンを 引っこめる＝関門の 鍵を 中の ページに 預ける
+         * 合図なので、どの ページの ことか 分からない まま 受け取らない。
+         * `nexmax:link-done` の ほうは ID の 無い 古い ページ
+         *（`public/tools/romaji/app.js`）が 残って いるので これまでどおり。
+         */
+        if (data.id !== link.id) return;
         setOwnsDone(true);
         return;
       }

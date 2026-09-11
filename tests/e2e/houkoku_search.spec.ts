@@ -29,7 +29,7 @@ const PATH = "/houkoku/link";
  * 「まだ この きょうざいの じゅんばんでは ありません」で 止まる。
  * 順路そのものは 別の テストが 見る（`junro.spec.ts`）。
  */
-async function openTool(page: Page, context: BrowserContext) {
+async function seedUpToTool(context: BrowserContext) {
   const stage = JSON.parse(readFileSync(join("content", "stages", "houkoku.json"), "utf8")) as {
     contents: { ref: string }[];
   };
@@ -40,6 +40,10 @@ async function openTool(page: Page, context: BrowserContext) {
     )
     .map((content) => content.ref);
   await seedCompleted(context, before);
+}
+
+async function openTool(page: Page, context: BrowserContext) {
+  await seedUpToTool(context);
   await page.goto(PATH);
   await page
     .getByRole("button", { name: /ひらく/ })
@@ -81,6 +85,44 @@ test("調査（リサーチ）: 入れて ならべて 出すと、はじめて 
   await expect(tool.locator("#doneList li")).toHaveText(MOVED);
   await expect(page.getByRole("button", { name: /おわりました/ })).toBeVisible();
   await shot(page, "houkoku-search-02-done");
+});
+
+test("調査（リサーチ）: 出すまで つぎの ページが 開かない（関門）", async ({ page, context }) => {
+  await seedUpToTool(context);
+
+  /*
+   * ここが この 教材の 芯（2026-09-11「提出して初めて次の画面に行けます」）。
+   * 手押しの ボタンを 隠しただけでは 意味が なく、**関門が 実際に 閉じて いる**
+   * ことと、**出したら 開く** ことの 両方が 要る。
+   */
+  const NEXT = "/houkoku/article-houkoku_hierarchy";
+  await page.goto(NEXT);
+  await expect(page.getByText("じゅんばんでは ありません")).toBeVisible();
+
+  const tool = await openTool(page, context);
+  for (const [index, word] of MOVED.entries()) {
+    await tool.getByLabel(`${index + 1}ばんめ`).fill(word);
+  }
+  const areas = tool.locator("textarea");
+  for (let i = 0; i < 3; i++) await areas.nth(i).fill("Cambodia is different.");
+  await tool.getByRole("button", { name: /出す/ }).click();
+  await expect(tool.locator("#doneList li")).toHaveCount(MOVED.length);
+
+  // 出した あと: 答え合わせの ページが 開く
+  await page.goto(NEXT);
+  await expect(page.getByText("じゅんばんでは ありません")).toHaveCount(0);
+  await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+
+  /*
+   * 出した ことは 端末に 残り、開き直した ときも もう一度 アプリへ 伝わる
+   *（別の タブで 出した 人が 止まらない ための 道）。
+   */
+  await page.goto(PATH);
+  await page
+    .getByRole("button", { name: /ひらく/ })
+    .first()
+    .click();
+  await expect(page.frameLocator("iframe").locator("#doneList li")).toHaveCount(MOVED.length);
 });
 
 test("調査（リサーチ）: 足りない ものを 数で 言う（ぼかさない）", async ({ page, context }) => {

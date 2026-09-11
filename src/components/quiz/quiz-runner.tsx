@@ -808,7 +808,7 @@ function ExplainCard({
       <FeedbackMessage messageKey={feedback} />
 
       <div className="border-hairline bg-panel-tint mt-4 rounded-[var(--radius-card)] border-2 p-4">
-        <AnswerPair question={question} answer={answer} furigana={furigana} />
+        <AnswerPair question={question} answer={answer} correct={correct} furigana={furigana} />
         <p className="text-ink-soft mt-3 leading-relaxed font-bold">
           <RubyText text={question.explain} index={furigana} />
         </p>
@@ -833,10 +833,13 @@ function ExplainCard({
 function AnswerPair({
   question,
   answer,
+  correct,
   furigana,
 }: {
   question: QuizQuestion;
   answer?: string;
+  /** 採点の けっか（穴うめの 答え合わせを 採点と そろえる ため）。 */
+  correct?: boolean;
   furigana: ReturnType<typeof buildFuriganaIndex>;
 }) {
   const own = answer?.trim() ?? "";
@@ -847,7 +850,14 @@ function AnswerPair({
    * どの あなを まちがえたのかを、番号で 数えながら 見くらべる 学習者は いない。
    */
   if (question.type === "wordbank") {
-    return <WordbankReview question={question} answer={own} furigana={furigana} />;
+    return (
+      <WordbankReview
+        question={question}
+        answer={answer ?? ""}
+        correct={correct}
+        furigana={furigana}
+      />
+    );
   }
 
   return (
@@ -1620,7 +1630,12 @@ function ReviewRow({
       </p>
 
       {wordbank ? (
-        <WordbankReview question={wordbank} answer={own} furigana={furigana} />
+        <WordbankReview
+          question={wordbank}
+          answer={result.answer ?? ""}
+          correct={ok}
+          furigana={furigana}
+        />
       ) : (
         say !== "" && (
           <p className="text-ink mt-1 leading-relaxed font-extrabold">

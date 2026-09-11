@@ -3,7 +3,7 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { FORBIDDEN_LEARNER_WORDS } from "@/content/schema";
 import { checkCountryNamesInTexts } from "@/lib/content-checks";
-import { buildFuriganaIndex, uncoveredKanji, type FuriganaEntry } from "@/lib/text/furigana";
+import { KANJI } from "@/lib/text/furigana";
 
 /**
  * 調査（リサーチ）の ツール（public/tools/hourensou/houkoku_search.*）の 文言を 機械で 見る。
@@ -45,11 +45,16 @@ function learnerTexts(): string[] {
   return texts.filter((text) => text !== DATA.id);
 }
 
-/** `{表記|よみ}` を 読み辞書に する（画面の rubyfy と 同じ 読み方）。 */
-function readingsOf(text: string): FuriganaEntry[] {
-  return [...text.matchAll(/\{([^{}|]+)\|([^{}|]+)\}/g)].map(
-    (hit) => [hit[1] ?? "", hit[2] ?? ""] as FuriganaEntry,
-  );
+/**
+ * ルビが 付く ところを **取り除いた** 残り（画面の rubyfy と 同じ 見方）。
+ *
+ * 教材データの 読み辞書とは 当たり方が ちがう。あちらは 辞書を 文ぜんたいに 当てるが、
+ * この ページの rubyfy は `{…|…}` と 書いた **その 場所だけ**を ルビに する。
+ * だから 同じ 漢字が 1文に 2回 出て 片方に 書き忘れると、辞書の モデルでは
+ * 見つからない（「{出|だ}す ボタンを おしたら 出せます」が 通って しまう）。
+ */
+function outsideRuby(text: string): string {
+  return text.replace(/\{[^{}|]+\|[^{}|]+\}/g, "");
 }
 
 /** ルビ記法を はずした、画面に 出る ただの 文字。 */
@@ -61,8 +66,7 @@ describe("調査ツールの 文言", () => {
   it("読めない 漢字が 残って いない（規律2）", () => {
     const bare: string[] = [];
     for (const text of learnerTexts()) {
-      const index = buildFuriganaIndex(readingsOf(text));
-      const missing = uncoveredKanji(plain(text), index);
+      const missing = [...outsideRuby(text)].filter((char) => KANJI.test(char));
       if (missing.length > 0) bare.push(`${missing.join("")} ← 「${plain(text)}」`);
     }
     expect(bare).toEqual([]);
@@ -106,7 +110,8 @@ describe("調査ツールの 文言", () => {
       .replace(/<!--[\s\S]*?-->/g, "")
       .replace(/\/\*[\s\S]*?\*\//g, "")
       .replace(/^\s*\/\/.*$/gm, "");
-    const kana = code.match(/[぀-ヿ一-龯]+/g) ?? [];
+    // 字の 範囲は エンジンと そろえる（別の 範囲を 書くと 検査だけ すり抜ける）
+    const kana = code.match(/[぀-ヿ]+|[㐀-鿿々]+/g) ?? [];
     // 残ってよいのは 番号の 読み上げ（「ばんめ」）だけ
     expect(kana.filter((word) => word !== "ばんめ")).toEqual([]);
   });

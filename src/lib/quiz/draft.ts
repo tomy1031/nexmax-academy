@@ -288,7 +288,14 @@ export function formatWordbankAnswer(filled: readonly string[]): string {
   return filled.map((value, i) => `（${i + 1}）${value}`).join("　");
 }
 
-/** 上の 文を 穴ごとに 読み戻す。読めない 形（古い 記録・壊れた 文）は 空欄で 返す。 */
+/**
+ * 上の 文を 穴ごとに 読み戻す。読めない 形（古い 記録・壊れた 文）は 空欄で 返す。
+ *
+ * **限界**: ことばの 中に 区切りと 同じ 形（全角スペース＋`（数字）`）が 入って いると
+ * 分け方が ずれる。教材の 語群に そんな 語は 無い（`tests/wordbank_review.test.tsx` で
+ * 形を 固定して ある）うえ、**採点の けっかが 合格なら 表示は ぜんぶ ○に する**
+ *（`checkWordbank` の `correct`）ので、画面が 自分に 矛盾する ことは ない。
+ */
 export function parseWordbankAnswer(answer: string, count: number): string[] {
   const filled = Array.from({ length: count }, () => "");
   for (const part of answer.split(/\u3000(?=（\d+）)/)) {
@@ -319,12 +326,35 @@ export interface BlankCheck {
 export function checkWordbank(
   question: Extract<QuizQuestion, { type: "wordbank" }>,
   answer: string,
+  /**
+   * 採点の けっか（`QuizResult.correct`）。**渡されて いて、それが 合格なら
+   * 穴は ぜんぶ ○**に する。
+   *
+   * 採点は 下書き（配列）を 見て いるのに、ここは 文から 読み戻して いる。
+   * ことばの 中に 区切りと 同じ 形が 入ると 読み戻しが ずれ、**帯は「できた」なのに
+   * 中身に ✗が 並ぶ**——画面が 自分で 自分に 矛盾する。採点の ほうを 正に する。
+   */
+  correct?: boolean,
 ): BlankCheck[] {
   const filled = parseWordbankAnswer(answer, question.blanks.length);
+  /*
+   * `unordered` は 位置を 見ないが、**同じ ことばを 2つの 穴に 置いた ときは
+   * 1つぶんしか 当たらない**（採点の `sameSet` と 同じ 数え方）。
+   * `includes` で 見ると、A・A と 置いた 人に ○が 2つ 並び、帯の
+   *「もう一度」と 食いちがう。
+   */
+  const pool = [...question.blanks];
   return question.blanks.map((right, i) => {
     const own = filled[i] ?? "";
-    const ok = question.unordered ? own !== "" && question.blanks.includes(own) : own === right;
-    return { own, right, ok };
+    let ok: boolean;
+    if (question.unordered) {
+      const at = own === "" ? -1 : pool.indexOf(own);
+      ok = at >= 0;
+      if (at >= 0) pool.splice(at, 1);
+    } else {
+      ok = own === right;
+    }
+    return { own, right, ok: correct === true || ok };
   });
 }
 
@@ -345,7 +375,9 @@ export function correctAnswerText(question: QuizQuestion): string {
     case "list":
       return question.groups.map((g) => g.label).join(" ／ ");
     case "wordbank":
-      return question.blanks.map((b, i) => `（${i + 1}）${b}`).join("　");
+      // 組み立ては 1か所だけ（`formatWordbankAnswer`）。ここで 別に 組むと、
+      // 区切りを 直した 日に こたえノートの 正解だけが 静かに ずれる
+      return formatWordbankAnswer(question.blanks);
     case "emotion":
       return `${question.feelings[question.answerFeeling] ?? ""} → ${
         question.replies[question.answerReply] ?? ""

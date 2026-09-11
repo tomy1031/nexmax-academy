@@ -62,11 +62,29 @@ const unordered = set.questions[1] as Extract<QuizQuestion, { type: "wordbank" }
 const furigana = buildFuriganaIndex(set.furigana ?? []);
 
 describe("こたえの 文の 組み立てと 読み戻し", () => {
-  it("空白の 入った ことばでも、そのまま 往復できる", () => {
+  it("分かち書きの 空白（半角）が 入った ことばでも、そのまま 往復できる", () => {
     const filled = ["悪い ニュース", "問題"];
     const text = formatWordbankAnswer(filled);
+    // 区切りは 全角スペース、ことばの 中の 空白は 半角。混ざらない
     expect(text).toBe("（1）悪い ニュース　（2）問題");
     expect(parseWordbankAnswer(text, 2)).toEqual(filled);
+  });
+
+  it("うしろに 空白の ある ことばでも 消さない（先生が 入れた ままの 形で 見る）", () => {
+    const text = formatWordbankAnswer(["会議", "問題 "]);
+    expect(parseWordbankAnswer(text, 2)).toEqual(["会議", "問題 "]);
+  });
+
+  it("ことばの 中に 区切りと 同じ 形が あると 分け方は ずれる（既知の 限界）", () => {
+    // この 形の 語は 教材の 語群に 無い。**ずれても 画面が 矛盾しない**ことを 下で 見る
+    const text = formatWordbankAnswer(["あ　（2）わな", "い"]);
+    expect(parseWordbankAnswer(text, 2)).not.toEqual(["あ　（2）わな", "い"]);
+    const checks = checkWordbank(
+      { ...ordered, blanks: ["あ　（2）わな", "い"] } as typeof ordered,
+      text,
+      true,
+    );
+    expect(checks.every((check) => check.ok)).toBe(true);
   });
 
   it("採点が 残す 文を、そのまま 読み戻せる（2か所が ずれて いない）", () => {
@@ -92,6 +110,15 @@ describe("穴ごとの 答え合わせ", () => {
   it("unordered では 位置で くらべない（そろって いれば ○）", () => {
     const checks = checkWordbank(unordered, formatWordbankAnswer(["問題", "お時間"]));
     expect(checks.map((c) => c.ok)).toEqual([true, true]);
+  });
+
+  it("unordered で 同じ ことばを 2つ 置いたら、2つめは ✗（採点と そろえる）", () => {
+    const answer = formatWordbankAnswer(["お時間", "お時間"]);
+    // 採点は 不合格（`sameSet` は 数まで 見る）
+    expect(gradeDraft(unordered, { kind: "wordbank", filled: ["お時間", "お時間"] }).correct).toBe(
+      false,
+    );
+    expect(checkWordbank(unordered, answer).map((c) => c.ok)).toEqual([true, false]);
   });
 });
 
@@ -124,16 +151,36 @@ describe("答え合わせの 画面", () => {
     expect(html.split("問題").length - 1).toBe(1);
   });
 
-  it("いくつ まちがえたかを ことばでも 言う（色と 記号だけに たよらない）", () => {
+  it("いくつ 直すかを ことばでも 言う（色と 記号だけに たよらない）", () => {
     expect(html).toContain("1つ");
   });
 
-  it("書かなかった 穴は 空白の まま 出さない（言って あげる）", () => {
+  it("えらばなかった 穴は「まだ」で 出す（まちがいと 同じ 顔に しない）", () => {
     const blank = renderToStaticMarkup(
       <WordbankReview question={ordered} answer="" furigana={furigana} />,
     );
-    // 画面では 「書」に ルビが 付く（規律2）ので、そのままの 文字列では 出ない
-    expect(blank).toContain("<ruby>書<rt>か</rt></ruby>");
-    expect(blank).toContain("いて いません");
+    expect(blank).toContain("まだ");
+    // ✗（まちがい）の しるしは 付けない——えらばなかった ことは 別の 出来事
+    expect(blank).not.toContain("✗");
+    // こたえは 出す（何が 入る はずだったかは 見せる）
+    expect(blank).toContain("時間");
+  });
+
+  it("合って いた 数から 言う（手ぶらで 帰さない）", () => {
+    expect(html).toContain("✓が");
+    // 「直」には ルビが 付く ので、地の 文の ほうで 見る
+    expect(html).toContain("す ところが");
+  });
+
+  it("採点が 合格の 回は、穴も ぜんぶ ○に する（画面が 自分に 矛盾しない）", () => {
+    const agreed = renderToStaticMarkup(
+      <WordbankReview
+        question={ordered}
+        answer={formatWordbankAnswer(["会議", "問題"])}
+        correct
+        furigana={furigana}
+      />,
+    );
+    expect(agreed).not.toContain("✗");
   });
 });

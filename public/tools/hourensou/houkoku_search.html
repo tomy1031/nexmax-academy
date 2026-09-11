@@ -18,8 +18,9 @@
       「出した」ことも アプリに 伝わらなかった。
 
       ## 答えは ここに 置かない
-      正しい 並び（社長・取締役・…）は **つぎの ページ**の 答え合わせで 出す。
-      ここに 語群や 例として 混ぜると、調べる 理由が 消える（設計01 P2・P4）。
+      正しい 並びは **つぎの ページ**の 答え合わせで 出す。ここに 語群や 例として
+      混ぜると、調べる 理由が 消える（設計01 P2・P4）。ページの もとの 字は
+      学習者にも 読めるので、ここにも 書かない。
 
       ## 出した ことを どう 伝えるか
       `postMessage({type:"nexmax:link-done", id:"houkoku_search"})` を 1回だけ 送る。
@@ -132,10 +133,32 @@
       }
 
       li.row {
-        display: flex;
+        display: grid;
+        grid-template-columns: 28px 1fr auto;
         align-items: center;
         gap: 6px;
         padding: 4px 0;
+      }
+
+      /*
+       * せまい 画面（390px の 端末）では、入力欄が 180px まで つぶれ、
+       * この 教材の 中心の 操作（↑↓）が 指の 大きさを 下回る。
+       * 2行に して、指で 押せる 大きさ（44px）を 取りもどす。
+       */
+      @media (max-width: 460px) {
+        li.row {
+          grid-template-columns: 28px 1fr;
+        }
+
+        .ops {
+          grid-column: 2;
+          justify-content: flex-end;
+        }
+
+        button.icon {
+          width: 44px;
+          height: 44px;
+        }
       }
 
       .no {
@@ -261,6 +284,39 @@
       .done {
         border-color: var(--leaf);
         background: var(--cream);
+        animation: pop 0.32s ease-out;
+      }
+
+      /* 出した 瞬間の 小さな 祝い（動きを 好まない 端末では 止める）。 */
+      @keyframes pop {
+        from {
+          transform: scale(0.96) translateY(8px);
+          opacity: 0;
+        }
+        to {
+          transform: none;
+          opacity: 1;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .done {
+          animation: none;
+        }
+      }
+
+      /* 出せない ときの 合図（押した ことに 必ず 反応する）。 */
+      .shake {
+        animation: shake 0.3s;
+      }
+
+      @keyframes shake {
+        25% {
+          transform: translateX(-4px);
+        }
+        75% {
+          transform: translateX(4px);
+        }
       }
 
       .done h2 {
@@ -577,7 +633,7 @@
         }
 
         function hasDuplicate() {
-          var seen = {};
+          var seen = Object.create(null);
           return filledRows().some(function (value) {
             if (seen[value]) return true;
             seen[value] = true;
@@ -594,13 +650,55 @@
         function updateNote() {
           var short = DATA.rank.min - filledRows().length;
           var left = emptyFields();
+          var untouched = filledRows().length === 0 && left === DATA.compare.fields.length;
           var text;
-          if (short > 0) text = M.needMore.replace("{n}", String(short));
+          /*
+           * まだ 何も 書いて いない ときは **やる ことの ほう**を 出す。
+           * 開いた 瞬間に「あと 5つ たりません」と 言われても、何を すれば
+           * いいのかは 分からない（足りないのは 書く 前なので 当たり前）。
+           */
+          if (untouched) {
+            text = M.howto
+              .replace("{n}", String(DATA.rank.min))
+              .replace("{m}", String(DATA.compare.fields.length));
+          } else if (short > 0) text = M.needMore.replace("{n}", String(short));
           else if (left > 0) text = M.needCompare.replace("{n}", String(left));
           else if (hasDuplicate()) text = M.duplicate;
           else text = M.ready;
           document.getElementById("note").innerHTML = rubyfy(text);
           return short <= 0 && left <= 0;
+        }
+
+        /**
+         * 出せない とき、**足りない ところへ 連れて 行く**。
+         *
+         * 同じ 文が 出るだけでは 画面が 1ドットも 変わらず（読み上げも
+         * 同じ 文では 黙る）、「押したのに 何も 起きない」に なる。
+         */
+        function goToMissing() {
+          var inputs = rowsEl.querySelectorAll("input.rank");
+          for (var i = 0; i < inputs.length; i++) {
+            if (inputs[i].value.trim() === "") {
+              inputs[i].focus();
+              inputs[i].scrollIntoView({ block: "center" });
+              return;
+            }
+          }
+          for (var j = 0; j < DATA.compare.fields.length; j++) {
+            var field = DATA.compare.fields[j];
+            if (state.answers[field.id].trim().length < 2) {
+              var area = document.getElementById("field-" + field.id);
+              area.focus();
+              area.scrollIntoView({ block: "center" });
+              return;
+            }
+          }
+          // 行が 足りない ときは 1行 足して そこへ
+          if (state.rows.length < DATA.rank.max) {
+            state.rows.push("");
+            save();
+            renderRows(state.rows.length - 1);
+          }
         }
 
         /* ---------------- 出す ---------------- */
@@ -665,7 +763,15 @@
         }
 
         document.getElementById("submit").addEventListener("click", function () {
-          if (!updateNote()) return;
+          if (!updateNote()) {
+            var note = document.getElementById("note");
+            note.classList.remove("shake");
+            // いったん 外して すぐ 付け直さないと、2回目が 動かない
+            void note.offsetWidth;
+            note.classList.add("shake");
+            goToMissing();
+            return;
+          }
           state.submitted = true;
           save();
           tellApp();
@@ -676,9 +782,15 @@
 
         /* ---------------- はじめの 画面 ---------------- */
 
-        claimDone();
+        /*
+         * **画面が 立ってから 名乗る。** 名乗りは 親の「おわりました」を
+         * 引っこめる＝関門の 鍵を こちらへ 預ける 合図なので、先に 出すと、
+         * 描画で こけた とき 学習者は **入力欄も ボタンも 無い 画面**に
+         * 取り残される（その先の 8教材が ぜんぶ 閉じたままに なる）。
+         */
         renderRows();
         updateNote();
+        claimDone();
         if (state.submitted) {
           /*
            * 出した あとに 開き直した ときも、アプリに もう一度 伝える。
