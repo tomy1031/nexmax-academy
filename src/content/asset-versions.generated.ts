@@ -254,7 +254,7 @@ export const ASSET_VERSIONS: Readonly<Record<string, string>> = {
   "/img/kaihatsu/testing.webp": "7ded5694",
   "/img/kaihatsu/waterfall_agile.webp": "c5cd5b8f",
   "/img/kaihatsu/youken_teigi.webp": "c7b97044",
-  "/img/listening/houkoku_listening/cover.webp": "2583a7c5",
+  "/img/listening/houkoku_listening/cover.webp": "8a25613e",
   "/img/listening/kaisha_shugyo_keitai/cover.webp": "a595f992",
   "/img/manga/hajimari_manga/p1c1.webp": "ca158be8",
   "/img/manga/hajimari_manga/p1c2.webp": "533096d9",

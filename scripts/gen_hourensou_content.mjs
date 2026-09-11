@@ -1450,7 +1450,7 @@ write(
           {
             icon: "❌",
             label: "A",
-            title: "一人で ずっと 悩んで、3日 あとに 相談する",
+            title: "一人で ずっと 悩んで、三日 あとに 相談する",
             text: "仕事が 予定より 遅れて しまいます。",
           },
           {
@@ -1475,8 +1475,8 @@ write(
         kind: "video",
         src: `${SOUDAN_VIDEO}/soudan_30min_a.mp4`,
         poster: `${SOUDAN_IMG}/poster_30min_a.webp`,
-        caption: "一人で ずっと 悩んで、3日 あとに 相談する 場面",
-        note: "A：一人で ずっと 悩んで、3日 あとに 相談する。仕事が 予定より 遅れて しまいます。",
+        caption: "一人で ずっと 悩んで、三日 あとに 相談する 場面",
+        note: "A：一人で ずっと 悩んで、三日 あとに 相談する。仕事が 予定より 遅れて しまいます。",
       },
       {
         kind: "video",
