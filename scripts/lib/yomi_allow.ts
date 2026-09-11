@@ -59,6 +59,11 @@ export const YOMI_ALLOW: readonly YomiAllowEntry[] = [
     reading: "ほうれんそう ほうこく",
     note: "ステージ名。読みの空白は：の代わり（title/reading の作法）",
   },
+  {
+    surface: "報連相：報告（朝礼と 夕礼）",
+    reading: "ほうれんそう ほうこく ちょうれいと ゆうれい",
+    note: "ステージ名。相＝そう（上の 報連相 と 同じ）。読みの 空白は ：（ ） の 代わり",
+  },
   { surface: "報連相：連絡", reading: "ほうれんそう れんらく", note: "同上" },
   { surface: "報連相：相談", reading: "ほうれんそう そうだん", note: "同上" },
   { surface: "修和", reading: "しゅうわ", note: "人名（川村修和）。解析は おさむわ と割る" },

@@ -4,6 +4,22 @@
   "title": "ことば",
   "furigana": [
     [
+      "円",
+      "えん"
+    ],
+    [
+      "金額",
+      "きんがく"
+    ],
+    [
+      "通貨",
+      "つうか"
+    ],
+    [
+      "多言語対応",
+      "たげんごたいおう"
+    ],
+    [
       "小さく",
       "ちいさく"
     ],
@@ -17349,6 +17365,34 @@
         "Good news",
         "A meeting",
         "A question"
+      ]
+    },
+    {
+      "id": "tagengo_taiou",
+      "term": "多言語対応",
+      "reading": "たげんごたいおう",
+      "romaji": "tagengo taiou",
+      "meaningJa": "1つの アプリを、いくつもの 国の ことばで 使えるように する 仕事です。",
+      "englishTerm": "Multilingual support / i18n",
+      "example": "多言語対応の 担当は ヘンディさんです。",
+      "wrongMeanings": [
+        "Voice input",
+        "Map search",
+        "Card payment"
+      ]
+    },
+    {
+      "id": "tsuuka",
+      "term": "通貨",
+      "reading": "つうか",
+      "romaji": "tsuuka",
+      "meaningJa": "その 国で 使う お金の ことです。円・ドル・リエルは どれも 通貨です。",
+      "englishTerm": "Currency",
+      "example": "通貨が ちがうと、金額の 書き方も 変わります。",
+      "wrongMeanings": [
+        "Bank",
+        "Price tag",
+        "Receipt"
       ]
     }
   ]
