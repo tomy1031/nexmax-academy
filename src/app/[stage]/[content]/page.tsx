@@ -11,6 +11,7 @@ import { ListeningPlayer } from "@/components/listening/playback-mode";
 import { MangaReader } from "@/components/manga/manga-reader";
 import { QuizRunner } from "@/components/quiz/quiz-runner";
 import { SlideDeck } from "@/components/slides/slide-deck";
+import { AsakaiSession } from "@/components/asakai/asakai-session";
 import { TalkGameSession } from "@/components/talk-game/talk-game-session";
 import { ContentFrame, type FrameItem } from "@/components/stage/content-frame";
 import {
@@ -299,6 +300,16 @@ async function renderContent(ref: StageContentRef) {
        */
       if (meeting.talkGame) {
         return <TalkGameSession meeting={meeting} hostVoice={host?.voice} />;
+      }
+      /*
+       * **朝礼・夕礼も 別の 画面**（台帳 #366）。
+       *
+       * `MeetingSession` は 1問ずつ 聞いて 1問ずつ 答える 形で、
+       * こちらは **1本の 報告を して、足りない ところだけ 聞き返される** 形。
+       * 対話ゲームと 同じ 理由で 入口で 分ける。
+       */
+      if (meeting.asakai) {
+        return <AsakaiSession meeting={meeting} />;
       }
       return (
         <MeetingSession
