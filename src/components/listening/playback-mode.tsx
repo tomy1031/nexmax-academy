@@ -97,20 +97,7 @@ export function ListeningPlayer({
 
   const body = (
     <>
-      {/*
-        聞く 前の 1枚（`cover`）。**答えは 描かない**——この 教材の 問いは
-        「どこで 働くか／何を 作るか」なので、そこまで 描くと 聞かずに 答えられる。
-        描いて あるのは それぞれの タイプの 雰囲気まで（2026-09-04 の 指定）。
-        答え合わせの あとも 出したまま に する——聞き直す ときの 手がかりに なる。
-      */}
-      {listening.cover?.status === "done" && listening.cover.src ? (
-        <ImageSlotFrame
-          slot={listening.cover}
-          alt={listening.title}
-          furigana={furigana}
-          className="mb-3 h-auto w-full rounded-[18px]"
-        />
-      ) : null}
+      <Cover listening={listening} furigana={furigana} className="mb-3" />
       {phase === "listen" ? (
         <>
           <Player
@@ -201,6 +188,42 @@ export function ListeningPlayer({
   );
 }
 
+/**
+ * 表紙の 1枚（`cover`）。**題の すぐ 下**に 出す。
+ *
+ * ## なぜ 題の 下なのか
+ * 開いた ところで まず 見えるのは 題と この 絵で、**だれの 話を 聞くのかが
+ * 読む 前に 分かる**（設計01 P6・constraints「文章では 理解できない 人が いる
+ * 前提で 作る。まず 絵で 伝える」）。前は「はじめる」を 押した あとにしか
+ * 出て いなかったので、いちばん 迷う まえおきの 画面が 文字だけ だった。
+ *
+ * ## 答えは 描かない
+ * 聞き取りの 問いに 当たる ところ（この 教材なら バグの 中身・かかる 日数）は
+ * 絵に しない。描いて よいのは **だれが・どこで の ところまで**。
+ *
+ * 聞いて いる 間も 答え合わせの あとも 出したまま に する——聞き直す ときの
+ * 手がかりに なる。
+ */
+function Cover({
+  listening,
+  furigana,
+  className,
+}: {
+  listening: Listening;
+  furigana: FuriganaIndex;
+  className: string;
+}) {
+  if (listening.cover?.status !== "done" || !listening.cover.src) return null;
+  return (
+    <ImageSlotFrame
+      slot={listening.cover}
+      alt={listening.title}
+      furigana={furigana}
+      className={`${className} h-auto w-full rounded-[18px]`}
+    />
+  );
+}
+
 /** 聞く前に「何に注目するか」を渡す（設計01 P6）。ここで はじめる を押してもらう。 */
 function Intro({
   listening,
@@ -217,6 +240,7 @@ function Intro({
       <h1 className="text-ink mt-1 text-2xl font-extrabold break-words sm:text-3xl">
         <RubyText text={listening.title} index={furigana} />
       </h1>
+      <Cover listening={listening} furigana={furigana} className="mt-3" />
       <p className="text-ink-soft mt-2 leading-relaxed font-bold break-words">
         <RubyText text={listening.description} index={furigana} />
       </p>
