@@ -1214,6 +1214,59 @@ export function collectLabeledTexts(content: Content): LabeledText[] {
       });
       break;
     }
+
+    case "quest": {
+      /*
+       * クエストは **30の 場面が まるごと 検査の 外**に 出て いた（2026-09-11）。
+       * 種別ごとの switch に `case "quest"` が 無い だけで、セリフも 4択も
+       * えらんだ あとの 解説も 1件も 数えられて いなかった——`lint:content` は
+       * 緑の まま、画面にだけ 裸の 漢字が 出る。朝礼・夕礼と 同じ 形の 穴である。
+       *
+       * 数える 欄は **教材が 持つ 字**だけ。`quest-play.tsx` の `ruby()`（教材の
+       * 読み辞書）は それ以外に **コードが 組み立てる ログ文**（「レベルが 上がった！」
+       * 「【警告】…個の 大きな バグ」）と `SPEAKER_NAME` も 同じ 辞書で 描くが、
+       * データに 無い 字は ここからは 見えない——**画面の ことばの 読みは
+       * 画面が 持つ**（`UI_FURIGANA`）のが 決まりなので、その ずれは 画面側の 話。
+       * 2026-09-11 の 検収で 実際に ログ文の 誤読・裸の 漢字が 見つかって いる。
+       *
+       * 見出し（title）は **ステージの カード**が 教材の 読み辞書で ルビを 振る
+       *（`src/app/[stage]/page.tsx` が title・description・furigana を 渡す）ので
+       * ほかの 種別と 同じく 数える。
+       *
+       * `phases[].desc` は **どこからも 引かれて いない**（2026-09-11 に 全 src を
+       * 確認）。画面に 出ない 字に 読みを 求めると、先生には 直しようの ない 指摘に
+       * なる ので 数えない。出す ように なったら ここへ 足す。
+       * `enemy.art` は 絵の 名前、`speaker` は だれが 言うかの id で、字では ない。
+       */
+      push("title", content.title);
+      push("description", content.description);
+      push("focus", content.focus);
+      content.phases.forEach((phase, i) => {
+        const at = (field: string) => `phases[${i}].${field}`;
+        // 章の 名前は 工程表（PROCESS CHART）の 一覧に 出る
+        push(at("chapter"), phase.chapter);
+        /*
+         * 場面の 名前。画面（`chapterLabel`）に 出るのは **「：」より 後ろだけ**
+         * だが、**まるごと 数える**。切り出した 文字列を 数えると
+         * `tests/coverage_walker.test.ts` が 本文と 突き合わせられず
+         *「検査の 外に 出て いる」と 見えて しまう ためで、
+         * 覆う 側に 倒して ある。いまの 本文では 前の「第N章」も
+         * ほかの 欄（options[].explanation）に 出る 漢字なので 実害は 無い。
+         */
+        push(at("name"), phase.name);
+        push(at("enemy.name"), phase.enemy.name);
+        phase.dialogue.forEach((line, j) => push(at(`dialogue[${j}].text`), line.text));
+        push(at("question"), phase.question);
+        phase.options.forEach((option, j) => {
+          const card = (field: string) => at(`options[${j}].${field}`);
+          push(card("text"), option.text);
+          // えらんだ 直後の ひとことは 結果の 札と 記録（HISTORY）の 両方に 出る
+          push(card("resultText"), option.resultText);
+          push(card("explanation"), option.explanation);
+        });
+      });
+      break;
+    }
   }
 
   return out;
@@ -1338,6 +1391,52 @@ const VERIFIED_SPLIT_COMPOUNDS: ReadonlySet<string> = new Set([
    * 2026-09-11 に 目で 確認（朝礼・夕礼の 金曜）。
    */
   "藤木取締役",
+  /*
+   * ウォーターフォール クエスト（2026-09-11 に 種別ごと 検査の 対象へ 入った ぶん）。
+   *
+   * 大半は **程度・数の 語＋動詞**（一番＋多い・全部＋作る）か **熟語＋熟語**
+   *（参考＋資料・直接＋聞く）で、割れても 組み立ての 読みは そのまま 正しい。
+   * 「出来上」だけは 別の 形で、読み辞書が ["出来上が","できあが"] と
+   * **送りがなまで 見出しに 入れて いる**ため、漢字の かたまり（出来上）では
+   * 永久に 当たらない（確認待・回答待・見送 と 同じ）。画面は できあがった と 読む。
+   * 28件を 2026-09-11 に 目で 確認。
+   *
+   * **網が 広い 2語**（この 一覧は 全教材に 効く ので、書き残す）:
+   * - 「出来上」… 正しさは ["出来上が","できあが"] が 生きて いる ことに ぶら下がる。
+   *   その 見出しを 消すと 画面は できうえ に 戻るが、**この 行が 警告を 黙らせ続ける**
+   * - 「設計通」… 通は どお／とお／つう に 割れる。よその 教材が ["通","つう"] を 持って
+   *   「設計通り」と 書くと、せっけいつうり が 黙る
+   * どちらも 2026-09-11 時点では 全教材を 走査して 当たる 箇所が ほかに 無い。
+   */
+  "一番大切",
+  "一番安",
+  "一番伝",
+  "一番良",
+  "一番少",
+  "一番多",
+  "一番忙",
+  "一度決",
+  "万円",
+  "何人同時",
+  "何日働",
+  "全然足",
+  "全部入",
+  "全部作",
+  "全部壊",
+  "全部消",
+  "全部書",
+  "出来上",
+  "半年間放置",
+  "参考資料",
+  "来年作",
+  "将来別",
+  "当日持",
+  "今聞",
+  "直接書",
+  "直接聞",
+  "設計通",
+  // 「長い間連絡がなく」— 間（あいだ）＋連絡（れんらく）。時の へだたりの 間
+  "間連絡",
 ]);
 
 const KANJI_RUN = /[々一-鿿]{2,}/g;

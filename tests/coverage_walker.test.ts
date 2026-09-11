@@ -89,6 +89,13 @@ const NOT_LEARNER_TEXT: readonly { key: RegExp; why: string }[] = [
   { key: /(^|\.)refs(\[|$)/, why: "絵の 置き場" },
   { key: /(^|\.)looks$/, why: "絵を 作る ための 英語の 指示" },
   { key: /(^|\.)speaker$/, why: "だれが 言うかの id" },
+  /*
+   * クエストの 場面の おぼえがき。`phases` を 持つ 教材は クエストだけ なので、
+   * この 形で クエストにだけ 効く。2026-09-11 に `src/components/quest/` を
+   * 全部 見て、**どの 画面も 引いて いない**ことを 確かめた
+   *（ヘッダに 出るのは `name`、工程表に 出るのは `chapter`）。
+   */
+  { key: /^phases\[\d+\]\.desc$/, why: "クエストの 場面の おぼえがき（画面に 出ない）" },
 ];
 
 /** 漢字か かなを 含む＝日本語の 文（記号・英数だけの 値は 見ない）。 */
@@ -133,9 +140,9 @@ function contentFiles(): { file: string; content: Content }[] {
  *
  * 借金の 中身（2026-09-11 現在・のべ 1617件）:
  *
- * - `quest.*` … **クエスト教材 まるごと**（のべ 583件）。30の 場面の セリフ・
- *   4択の 本文・結果の 文が 1つも 検査されて いない。朝礼・夕礼と 同じ 形の 穴で、
- *   いちばん 大きい。別タスクで 拾う
+ * - ~~`quest.*`~~ … **2026-09-11 に 返した**（のべ 583件）。`collectLabeledTexts` に
+ *   `case "quest"` を 足し、読み辞書の 穴 124件と 読みの 食い違い 36件を 埋めた。
+ *   画面に 出ない `phases[].desc` だけ `NOT_LEARNER_TEXT` へ 移した
  * - `vocab.words[].term` … ことばの 見出し（917件）。`coverageEntries` が
  *   「見出しと 読みを 並べて 見せる ので 覆われて いる」と 扱って いる ぶん
  * - `scenario.research.pages[].html` … 調査用の 模擬ページ（HTMLの 中身）
@@ -148,18 +155,6 @@ const KNOWN_ESCAPED: readonly string[] = [
   "character.personality",
   "character.role",
   "manga.pages[].note",
-  "quest.description",
-  "quest.focus",
-  "quest.phases[].chapter",
-  "quest.phases[].desc",
-  "quest.phases[].dialogue[].text",
-  "quest.phases[].enemy.name",
-  "quest.phases[].name",
-  "quest.phases[].options[].explanation",
-  "quest.phases[].options[].resultText",
-  "quest.phases[].options[].text",
-  "quest.phases[].question",
-  "quest.title",
   "quizset.questions[].groups[].label",
   "quizset.questions[].placeholder",
   "scenario.research.pages[].html",
