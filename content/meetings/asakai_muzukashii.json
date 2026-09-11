@@ -152,45 +152,54 @@
         "opening": [
           {
             "speakerId": "tomita",
-            "text": "お疲れさまです。17時30分に なりましたので、夕礼を 始めます。きょうは ニャムさんから お願いします。"
+            "text": "お疲れさまです。17時30分に なりましたので、夕礼を 始めます。きょうは ニャムさんから お願いします。",
+            "audio": "/audio/meetings/asakai_muzukashii/s0-opening-0-43327fed.wav"
           }
         ],
         "sample": {
           "speakerId": "nyam",
-          "text": "はい。ニャムです。担当は「きょうは 休みます」の 画面です。本日は、おうちの 人が 送る ところを 実装しました。送る ところまで 動きました。明日は、先生の 側で 受け取る 一覧を 実装します。1日で 終わる 見込みです。こまって いることが 1つ あります。古い スマホで 字が 出ません。明日の 昼までに 分かる 見込みです。奥田さんに、古い スマホを 30分 借りられませんか。以上です。"
+          "text": "はい。ニャムです。担当は「きょうは 休みます」の 画面です。本日は、おうちの 人が 送る ところを 実装しました。送る ところまで 動きました。明日は、先生の 側で 受け取る 一覧を 実装します。1日で 終わる 見込みです。こまって いることが 1つ あります。古い スマホで 字が 出ません。明日の 昼までに 分かる 見込みです。奥田さんに、古い スマホを 30分 借りられませんか。以上です。",
+          "audio": "/audio/meetings/asakai_muzukashii/s0-sample-d88ea421.wav"
         },
         "prompt": {
           "speakerId": "tomita",
-          "text": "ありがとう ございます。では 次に ◯◯さん、お願いします。きょうの メモを 見ながらで かまいません。"
+          "text": "ありがとう ございます。では 次に ◯◯さん、お願いします。きょうの メモを 見ながらで かまいません。",
+          "audio": "/audio/meetings/asakai_muzukashii/s0-prompt-b3b864e0.wav"
         },
         "ack": {
           "speakerId": "tomita",
-          "text": "はい。きょう・あした・こまって いること、ぜんぶ 聞けました。数字も 入って いました。"
+          "text": "はい。きょう・あした・こまって いること、ぜんぶ 聞けました。数字も 入って いました。",
+          "audio": "/audio/meetings/asakai_muzukashii/s0-ack-b88dbc1f.wav"
         },
         "members": [
           {
             "speakerId": "okuda",
-            "text": "奥田です。担当は「あしたの 持ちもの」の 画面です。本日は 持ちものの 写真が 出る ところまで できました。明日は、先生が 写真を 上げる 機能を 作ります。こまって いることは ありません。以上です。"
+            "text": "奥田です。担当は「あしたの 持ちもの」の 画面です。本日は 持ちものの 写真が 出る ところまで できました。明日は、先生が 写真を 上げる 機能を 作ります。こまって いることは ありません。以上です。",
+            "audio": "/audio/meetings/asakai_muzukashii/s0-member-0-da54fc80.wav"
           },
           {
             "speakerId": "hendy",
-            "text": "ヘンディです。担当は 先生が おしらせを 書く 画面です。本日は 画面の 日本語を 見直しました。12こ 直しました。明日は 学校に 見せる 順番を 考えます。こまって いることは ありません。以上です。"
+            "text": "ヘンディです。担当は 先生が おしらせを 書く 画面です。本日は 画面の 日本語を 見直しました。12こ 直しました。明日は 学校に 見せる 順番を 考えます。こまって いることは ありません。以上です。",
+            "audio": "/audio/meetings/asakai_muzukashii/s0-member-1-271c0563.wav"
           }
         ],
         "arrange": {
           "done": {
             "speakerId": "tomita",
-            "text": "ニャムさん、明日 30分、◯◯さんと 通知を 見て ください。"
+            "text": "ニャムさん、明日 30分、◯◯さんと 通知を 見て ください。",
+            "audio": "/audio/meetings/asakai_muzukashii/s0-arrange-done-e6a45b02.wav"
           },
           "missing": {
             "speakerId": "tomita",
-            "text": "iPhone の 通知は ニャムさんが くわしいです。「ニャムさんに 30分 見て いただけませんか」と 言えると、その 場で 決まります。ニャムさん、明日 お願いします。"
+            "text": "iPhone の 通知は ニャムさんが くわしいです。「ニャムさんに 30分 見て いただけませんか」と 言えると、その 場で 決まります。ニャムさん、明日 お願いします。",
+            "audio": "/audio/meetings/asakai_muzukashii/s0-arrange-missing-859084fb.wav"
           }
         },
         "closing": [
           {
             "speakerId": "tomita",
-            "text": "では、きょうの 夕礼は ここまでです。金曜日まで あと 四日です。お疲れさまでした。"
+            "text": "では、きょうの 夕礼は ここまでです。金曜日まで あと 四日です。お疲れさまでした。",
+            "audio": "/audio/meetings/asakai_muzukashii/s0-closing-0-9bc76324.wav"
           }
         ],
         "panels": [
@@ -230,16 +239,19 @@
             "followups": [
               {
                 "speakerId": "tomita",
-                "text": "本日 した ことを、もう 少し くわしく お願いします。"
+                "text": "本日 した ことを、もう 少し くわしく お願いします。",
+                "audio": "/audio/meetings/asakai_muzukashii/s0-kyou-fu0-6799474d.wav"
               },
               {
                 "speakerId": "tomita",
-                "text": "メモの 午前と 午後に、した ことが もう 1つ あります。それも お願いします。"
+                "text": "メモの 午前と 午後に、した ことが もう 1つ あります。それも お願いします。",
+                "audio": "/audio/meetings/asakai_muzukashii/s0-kyou-fu1-ae160bfe.wav"
               }
             ],
             "example": {
               "speakerId": "tomita",
-              "text": "「一覧に 日づけと 名前が 出るように なりました。通知を テストして、Android では 来る ことを 確認しました。読んだ の しるしは 半分まで 作りました。」"
+              "text": "「一覧に 日づけと 名前が 出るように なりました。通知を テストして、Android では 来る ことを 確認しました。読んだ の しるしは 半分まで 作りました。」",
+              "audio": "/audio/meetings/asakai_muzukashii/s0-kyou-ex-a709e4e1.wav"
             },
             "openAt": 2
           },
@@ -275,11 +287,13 @@
             "followups": [
               {
                 "speakerId": "tomita",
-                "text": "明日の 予定を 教えて ください。"
+                "text": "明日の 予定を 教えて ください。",
+                "audio": "/audio/meetings/asakai_muzukashii/s0-ashita-fu0-495642de.wav"
               },
               {
                 "speakerId": "tomita",
-                "text": "メモの「あした」の 行は 3つ あります。3つ ぜんぶ お願いします。"
+                "text": "メモの「あした」の 行は 3つ あります。3つ ぜんぶ お願いします。",
+                "audio": "/audio/meetings/asakai_muzukashii/s0-ashita-fu1-3ccae9fa.wav"
               }
             ],
             "example": {
@@ -351,7 +365,8 @@
             "followups": [
               {
                 "speakerId": "tomita",
-                "text": "何か 詰まって いる ところは ありませんか。"
+                "text": "何か 詰まって いる ところは ありませんか。",
+                "audio": "/audio/meetings/asakai_muzukashii/s0-komari-fu0-848b7d65.wav"
               },
               {
                 "speakerId": "tomita",
@@ -360,7 +375,8 @@
             ],
             "example": {
               "speakerId": "tomita",
-              "text": "「iPhone に 通知が 来ません。Android には 来ます。原因は まだ 分かりません。あした 半日 調べれば 分かる 見込みです。ニャムさんに 30分 見て いただけませんか。」"
+              "text": "「iPhone に 通知が 来ません。Android には 来ます。原因は まだ 分かりません。あした 半日 調べれば 分かる 見込みです。ニャムさんに 30分 見て いただけませんか。」",
+              "audio": "/audio/meetings/asakai_muzukashii/s0-komari-ex-845f3079.wav"
             }
           },
           {
@@ -371,7 +387,8 @@
             "followups": [
               {
                 "speakerId": "tomita",
-                "text": "数字で 言うと、どのくらいですか。"
+                "text": "数字で 言うと、どのくらいですか。",
+                "audio": "/audio/meetings/asakai_muzukashii/s0-suuji-fu0-445a671f.wav"
               },
               {
                 "speakerId": "tomita",
@@ -380,7 +397,8 @@
             ],
             "example": {
               "speakerId": "tomita",
-              "text": "「3回 ためして、3回とも 来ませんでした。」"
+              "text": "「3回 ためして、3回とも 来ませんでした。」",
+              "audio": "/audio/meetings/asakai_muzukashii/s0-suuji-ex-2489a17e.wav"
             }
           }
         ],
@@ -489,34 +507,41 @@
         ],
         "sample": {
           "speakerId": "okuda",
-          "text": "はい。奥田です。担当は「あしたの 持ちもの」の 画面です。本日は、先生が 写真を 上げる 機能を 実装しました。3枚まで 上げられます。明日は、持ちものの 一覧の テストを 始めます。6こ あります。こまって いることは ありません。以上です。"
+          "text": "はい。奥田です。担当は「あしたの 持ちもの」の 画面です。本日は、先生が 写真を 上げる 機能を 実装しました。3枚まで 上げられます。明日は、持ちものの 一覧の テストを 始めます。6こ あります。こまって いることは ありません。以上です。",
+          "audio": "/audio/meetings/asakai_muzukashii/s1-sample-37739a3a.wav"
         },
         "prompt": {
           "speakerId": "tomita",
-          "text": "ありがとう ございます。では 次に ◯◯さん、お願いします。"
+          "text": "ありがとう ございます。では 次に ◯◯さん、お願いします。",
+          "audio": "/audio/meetings/asakai_muzukashii/s1-prompt-1c9a269e.wav"
         },
         "ack": {
           "speakerId": "tomita",
-          "text": "はい。きょう・あした・こまって いること、ぜんぶ 聞けました。数字も 入って いました。"
+          "text": "はい。きょう・あした・こまって いること、ぜんぶ 聞けました。数字も 入って いました。",
+          "audio": "/audio/meetings/asakai_muzukashii/s1-ack-b88dbc1f.wav"
         },
         "members": [
           {
             "speakerId": "nyam",
-            "text": "ニャムです。担当は「きょうは 休みます」の 画面です。本日は 受け取る 一覧を 実装しました。◯◯さんの 通知の 原因も、30分 いっしょに 見ました。明日は テストを 10こ します。こまって いることは ありません。以上です。"
+            "text": "ニャムです。担当は「きょうは 休みます」の 画面です。本日は 受け取る 一覧を 実装しました。◯◯さんの 通知の 原因も、30分 いっしょに 見ました。明日は テストを 10こ します。こまって いることは ありません。以上です。",
+            "audio": "/audio/meetings/asakai_muzukashii/s1-member-0-756b2586.wav"
           },
           {
             "speakerId": "hendy",
-            "text": "ヘンディです。担当は 先生の 画面です。本日は 学校に 見せる 順番を 考えました。明日、富田さんと ◯◯さんと 15分で 決めます。こまって いることは ありません。以上です。"
+            "text": "ヘンディです。担当は 先生の 画面です。本日は 学校に 見せる 順番を 考えました。明日、富田さんと ◯◯さんと 15分で 決めます。こまって いることは ありません。以上です。",
+            "audio": "/audio/meetings/asakai_muzukashii/s1-member-1-c670c1e7.wav"
           }
         ],
         "arrange": {
           "done": {
             "speakerId": "tomita",
-            "text": "奥田さん、明日の 午後、古い iPhone で ◯◯さんと テストを お願いします。"
+            "text": "奥田さん、明日の 午後、古い iPhone で ◯◯さんと テストを お願いします。",
+            "audio": "/audio/meetings/asakai_muzukashii/s1-arrange-done-3c2afafe.wav"
           },
           "missing": {
             "speakerId": "tomita",
-            "text": "古い iPhone は 奥田さんが 持って います。「奥田さんに 借りられますか」と 言えると、その 場で 決まります。奥田さん、明日の 午後 お願いします。"
+            "text": "古い iPhone は 奥田さんが 持って います。「奥田さんに 借りられますか」と 言えると、その 場で 決まります。奥田さん、明日の 午後 お願いします。",
+            "audio": "/audio/meetings/asakai_muzukashii/s1-arrange-missing-c311b1fb.wav"
           }
         },
         "closing": [
@@ -564,16 +589,19 @@
             "followups": [
               {
                 "speakerId": "tomita",
-                "text": "本日 した ことを、もう 少し くわしく お願いします。"
+                "text": "本日 した ことを、もう 少し くわしく お願いします。",
+                "audio": "/audio/meetings/asakai_muzukashii/s1-kyou-fu0-6799474d.wav"
               },
               {
                 "speakerId": "tomita",
-                "text": "メモの 午前と 午後に、した ことが もう 1つ あります。それも お願いします。"
+                "text": "メモの 午前と 午後に、した ことが もう 1つ あります。それも お願いします。",
+                "audio": "/audio/meetings/asakai_muzukashii/s1-kyou-fu1-ae160bfe.wav"
               }
             ],
             "example": {
               "speakerId": "tomita",
-              "text": "「原因が 分かって、設定を 直しました。しるしは ぜんぶ できて、テストを 2こ 始めました。」"
+              "text": "「原因が 分かって、設定を 直しました。しるしは ぜんぶ できて、テストを 2こ 始めました。」",
+              "audio": "/audio/meetings/asakai_muzukashii/s1-kyou-ex-798be2d5.wav"
             },
             "openAt": 2
           },
@@ -610,16 +638,19 @@
             "followups": [
               {
                 "speakerId": "tomita",
-                "text": "明日の 予定を 教えて ください。"
+                "text": "明日の 予定を 教えて ください。",
+                "audio": "/audio/meetings/asakai_muzukashii/s1-ashita-fu0-495642de.wav"
               },
               {
                 "speakerId": "tomita",
-                "text": "メモの「あした」の 行は 3つ あります。3つ ぜんぶ お願いします。"
+                "text": "メモの「あした」の 行は 3つ あります。3つ ぜんぶ お願いします。",
+                "audio": "/audio/meetings/asakai_muzukashii/s1-ashita-fu1-3ccae9fa.wav"
               }
             ],
             "example": {
               "speakerId": "tomita",
-              "text": "「明日は テストの のこり 8こと、古い iPhone の 確認を します。見せる 順番も 富田さんと 15分 決めます。」"
+              "text": "「明日は テストの のこり 8こと、古い iPhone の 確認を します。見せる 順番も 富田さんと 15分 決めます。」",
+              "audio": "/audio/meetings/asakai_muzukashii/s1-ashita-ex-eb1ec21d.wav"
             },
             "openAt": 2
           },
@@ -685,16 +716,19 @@
             "followups": [
               {
                 "speakerId": "tomita",
-                "text": "何か 詰まって いる ところは ありませんか。"
+                "text": "何か 詰まって いる ところは ありませんか。",
+                "audio": "/audio/meetings/asakai_muzukashii/s1-komari-fu0-848b7d65.wav"
               },
               {
                 "speakerId": "tomita",
-                "text": "こまって いることは 3つ 言います。①何が こまって いるか ②いつまでに 分かりそうか ③だれに 何を して ほしいか。まだ 言って いない ものを お願いします。"
+                "text": "こまって いることは 3つ 言います。①何が こまって いるか ②いつまでに 分かりそうか ③だれに 何を して ほしいか。まだ 言って いない ものを お願いします。",
+                "audio": "/audio/meetings/asakai_muzukashii/s1-komari-fu1-f3aac75b.wav"
               }
             ],
             "example": {
               "speakerId": "tomita",
-              "text": "「会社に 古い iPhone が 無くて、テストできません。水曜の 夕方までに 半分は 終わる 見込みです。奥田さんに、古い iPhone を 借りて、いっしょに テストして いただけませんか。」"
+              "text": "「会社に 古い iPhone が 無くて、テストできません。水曜の 夕方までに 半分は 終わる 見込みです。奥田さんに、古い iPhone を 借りて、いっしょに テストして いただけませんか。」",
+              "audio": "/audio/meetings/asakai_muzukashii/s1-komari-ex-4c8f719e.wav"
             }
           },
           {
@@ -705,11 +739,13 @@
             "followups": [
               {
                 "speakerId": "tomita",
-                "text": "数字で 言うと、どのくらいですか。"
+                "text": "数字で 言うと、どのくらいですか。",
+                "audio": "/audio/meetings/asakai_muzukashii/s1-suuji-fu0-445a671f.wav"
               },
               {
                 "speakerId": "tomita",
-                "text": "「3回とも 来ない」「半分まで」の ように、数を 入れて ください。"
+                "text": "「3回とも 来ない」「半分まで」の ように、数を 入れて ください。",
+                "audio": "/audio/meetings/asakai_muzukashii/s1-suuji-fu1-eb36b5a5.wav"
               }
             ],
             "example": {
@@ -818,7 +854,8 @@
         "opening": [
           {
             "speakerId": "tomita",
-            "text": "お疲れさまです。夕礼を 始めます。きょうは ヘンディさんから お願いします。"
+            "text": "お疲れさまです。夕礼を 始めます。きょうは ヘンディさんから お願いします。",
+            "audio": "/audio/meetings/asakai_muzukashii/s2-opening-0-f884dc81.wav"
           }
         ],
         "sample": {
@@ -827,11 +864,13 @@
         },
         "prompt": {
           "speakerId": "tomita",
-          "text": "ありがとう ございます。では 次に ◯◯さん、お願いします。"
+          "text": "ありがとう ございます。では 次に ◯◯さん、お願いします。",
+          "audio": "/audio/meetings/asakai_muzukashii/s2-prompt-1c9a269e.wav"
         },
         "ack": {
           "speakerId": "tomita",
-          "text": "はい。きょう・あした・こまって いること、ぜんぶ 聞けました。数字も 入って いました。"
+          "text": "はい。きょう・あした・こまって いること、ぜんぶ 聞けました。数字も 入って いました。",
+          "audio": "/audio/meetings/asakai_muzukashii/s2-ack-b88dbc1f.wav"
         },
         "members": [
           {
@@ -898,11 +937,13 @@
             "followups": [
               {
                 "speakerId": "tomita",
-                "text": "本日 した ことを、もう 少し くわしく お願いします。"
+                "text": "本日 した ことを、もう 少し くわしく お願いします。",
+                "audio": "/audio/meetings/asakai_muzukashii/s2-kyou-fu0-6799474d.wav"
               },
               {
                 "speakerId": "tomita",
-                "text": "メモの 午前と 午後に、した ことが もう 1つ あります。それも お願いします。"
+                "text": "メモの 午前と 午後に、した ことが もう 1つ あります。それも お願いします。",
+                "audio": "/audio/meetings/asakai_muzukashii/s2-kyou-fu1-ae160bfe.wav"
               }
             ],
             "example": {
@@ -946,11 +987,13 @@
             "followups": [
               {
                 "speakerId": "tomita",
-                "text": "明日の 予定を 教えて ください。"
+                "text": "明日の 予定を 教えて ください。",
+                "audio": "/audio/meetings/asakai_muzukashii/s2-ashita-fu0-495642de.wav"
               },
               {
                 "speakerId": "tomita",
-                "text": "メモの「あした」の 行は 3つ あります。3つ ぜんぶ お願いします。"
+                "text": "メモの「あした」の 行は 3つ あります。3つ ぜんぶ お願いします。",
+                "audio": "/audio/meetings/asakai_muzukashii/s2-ashita-fu1-3ccae9fa.wav"
               }
             ],
             "example": {
@@ -1024,11 +1067,13 @@
             "followups": [
               {
                 "speakerId": "tomita",
-                "text": "何か 詰まって いる ところは ありませんか。"
+                "text": "何か 詰まって いる ところは ありませんか。",
+                "audio": "/audio/meetings/asakai_muzukashii/s2-komari-fu0-848b7d65.wav"
               },
               {
                 "speakerId": "tomita",
-                "text": "こまって いることは 3つ 言います。①何が こまって いるか ②いつまでに 分かりそうか ③だれに 何を して ほしいか。まだ 言って いない ものを お願いします。"
+                "text": "こまって いることは 3つ 言います。①何が こまって いるか ②いつまでに 分かりそうか ③だれに 何を して ほしいか。まだ 言って いない ものを お願いします。",
+                "audio": "/audio/meetings/asakai_muzukashii/s2-komari-fu1-f3aac75b.wav"
               }
             ],
             "example": {
@@ -1044,11 +1089,13 @@
             "followups": [
               {
                 "speakerId": "tomita",
-                "text": "数字で 言うと、どのくらいですか。"
+                "text": "数字で 言うと、どのくらいですか。",
+                "audio": "/audio/meetings/asakai_muzukashii/s2-suuji-fu0-445a671f.wav"
               },
               {
                 "speakerId": "tomita",
-                "text": "「3回とも 来ない」「半分まで」の ように、数を 入れて ください。"
+                "text": "「3回とも 来ない」「半分まで」の ように、数を 入れて ください。",
+                "audio": "/audio/meetings/asakai_muzukashii/s2-suuji-fu1-eb36b5a5.wav"
               }
             ],
             "example": {
@@ -1166,11 +1213,13 @@
         },
         "prompt": {
           "speakerId": "tomita",
-          "text": "ありがとう ございます。では 次に ◯◯さん、お願いします。"
+          "text": "ありがとう ございます。では 次に ◯◯さん、お願いします。",
+          "audio": "/audio/meetings/asakai_muzukashii/s3-prompt-1c9a269e.wav"
         },
         "ack": {
           "speakerId": "tomita",
-          "text": "はい。きょう・あした・こまって いること、ぜんぶ 聞けました。数字も 入って いました。"
+          "text": "はい。きょう・あした・こまって いること、ぜんぶ 聞けました。数字も 入って いました。",
+          "audio": "/audio/meetings/asakai_muzukashii/s3-ack-b88dbc1f.wav"
         },
         "members": [
           {
@@ -1237,11 +1286,13 @@
             "followups": [
               {
                 "speakerId": "tomita",
-                "text": "本日 した ことを、もう 少し くわしく お願いします。"
+                "text": "本日 した ことを、もう 少し くわしく お願いします。",
+                "audio": "/audio/meetings/asakai_muzukashii/s3-kyou-fu0-6799474d.wav"
               },
               {
                 "speakerId": "tomita",
-                "text": "メモの 午前と 午後に、した ことが もう 1つ あります。それも お願いします。"
+                "text": "メモの 午前と 午後に、した ことが もう 1つ あります。それも お願いします。",
+                "audio": "/audio/meetings/asakai_muzukashii/s3-kyou-fu1-ae160bfe.wav"
               }
             ],
             "example": {
@@ -1285,11 +1336,13 @@
             "followups": [
               {
                 "speakerId": "tomita",
-                "text": "明日の 予定を 教えて ください。"
+                "text": "明日の 予定を 教えて ください。",
+                "audio": "/audio/meetings/asakai_muzukashii/s3-ashita-fu0-495642de.wav"
               },
               {
                 "speakerId": "tomita",
-                "text": "メモの「あした」の 行は 3つ あります。3つ ぜんぶ お願いします。"
+                "text": "メモの「あした」の 行は 3つ あります。3つ ぜんぶ お願いします。",
+                "audio": "/audio/meetings/asakai_muzukashii/s3-ashita-fu1-3ccae9fa.wav"
               }
             ],
             "example": {
@@ -1374,7 +1427,8 @@
             "followups": [
               {
                 "speakerId": "tomita",
-                "text": "何か 詰まって いる ところは ありませんか。"
+                "text": "何か 詰まって いる ところは ありませんか。",
+                "audio": "/audio/meetings/asakai_muzukashii/s3-komari-fu0-848b7d65.wav"
               },
               {
                 "speakerId": "tomita",
@@ -1394,11 +1448,13 @@
             "followups": [
               {
                 "speakerId": "tomita",
-                "text": "数字で 言うと、どのくらいですか。"
+                "text": "数字で 言うと、どのくらいですか。",
+                "audio": "/audio/meetings/asakai_muzukashii/s3-suuji-fu0-445a671f.wav"
               },
               {
                 "speakerId": "tomita",
-                "text": "「3回とも 来ない」「半分まで」の ように、数を 入れて ください。"
+                "text": "「3回とも 来ない」「半分まで」の ように、数を 入れて ください。",
+                "audio": "/audio/meetings/asakai_muzukashii/s3-suuji-fu1-eb36b5a5.wav"
               }
             ],
             "example": {
@@ -1517,11 +1573,13 @@
         },
         "prompt": {
           "speakerId": "tomita",
-          "text": "ありがとう ございます。では 次に ◯◯さん、お願いします。"
+          "text": "ありがとう ございます。では 次に ◯◯さん、お願いします。",
+          "audio": "/audio/meetings/asakai_muzukashii/s4-prompt-1c9a269e.wav"
         },
         "ack": {
           "speakerId": "tomita",
-          "text": "はい。きょう・あした・こまって いること、ぜんぶ 聞けました。数字も 入って いました。"
+          "text": "はい。きょう・あした・こまって いること、ぜんぶ 聞けました。数字も 入って いました。",
+          "audio": "/audio/meetings/asakai_muzukashii/s4-ack-b88dbc1f.wav"
         },
         "members": [
           {
@@ -1594,11 +1652,13 @@
             "followups": [
               {
                 "speakerId": "tomita",
-                "text": "本日 した ことを、もう 少し くわしく お願いします。"
+                "text": "本日 した ことを、もう 少し くわしく お願いします。",
+                "audio": "/audio/meetings/asakai_muzukashii/s4-kyou-fu0-6799474d.wav"
               },
               {
                 "speakerId": "tomita",
-                "text": "メモの 午前と 午後に、した ことが もう 1つ あります。それも お願いします。"
+                "text": "メモの 午前と 午後に、した ことが もう 1つ あります。それも お願いします。",
+                "audio": "/audio/meetings/asakai_muzukashii/s4-kyou-fu1-ae160bfe.wav"
               }
             ],
             "example": {
@@ -1650,7 +1710,8 @@
               },
               {
                 "speakerId": "tomita",
-                "text": "メモの「あした」の 行は 3つ あります。3つ ぜんぶ お願いします。"
+                "text": "メモの「あした」の 行は 3つ あります。3つ ぜんぶ お願いします。",
+                "audio": "/audio/meetings/asakai_muzukashii/s4-ashita-fu1-3ccae9fa.wav"
               }
             ],
             "example": {
@@ -1719,11 +1780,13 @@
             "followups": [
               {
                 "speakerId": "tomita",
-                "text": "何か 詰まって いる ところは ありませんか。"
+                "text": "何か 詰まって いる ところは ありませんか。",
+                "audio": "/audio/meetings/asakai_muzukashii/s4-komari-fu0-848b7d65.wav"
               },
               {
                 "speakerId": "tomita",
-                "text": "こまって いることは 3つ 言います。①何が こまって いるか ②いつまでに 分かりそうか ③だれに 何を して ほしいか。まだ 言って いない ものを お願いします。"
+                "text": "こまって いることは 3つ 言います。①何が こまって いるか ②いつまでに 分かりそうか ③だれに 何を して ほしいか。まだ 言って いない ものを お願いします。",
+                "audio": "/audio/meetings/asakai_muzukashii/s4-komari-fu1-f3aac75b.wav"
               }
             ],
             "example": {
@@ -1739,11 +1802,13 @@
             "followups": [
               {
                 "speakerId": "tomita",
-                "text": "数字で 言うと、どのくらいですか。"
+                "text": "数字で 言うと、どのくらいですか。",
+                "audio": "/audio/meetings/asakai_muzukashii/s4-suuji-fu0-445a671f.wav"
               },
               {
                 "speakerId": "tomita",
-                "text": "「3回とも 来ない」「半分まで」の ように、数を 入れて ください。"
+                "text": "「3回とも 来ない」「半分まで」の ように、数を 入れて ください。",
+                "audio": "/audio/meetings/asakai_muzukashii/s4-suuji-fu1-eb36b5a5.wav"
               }
             ],
             "example": {
