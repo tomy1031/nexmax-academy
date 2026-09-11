@@ -83,9 +83,51 @@ const EMPTY_INDEX: FuriganaIndex = buildFuriganaIndex([]);
 const SHELL_FURIGANA: FuriganaIndex = buildFuriganaIndex([
   ["消", "け"],
   ["退室", "たいしつ"],
-  ["人", "にん"],
   ["参加中", "さんかちゅう"],
 ]);
+
+/**
+ * 「◯人」の 読み。**読みは ここが 持つ**（asakai の DayProgress と 同じ 型）。
+ *
+ * `annotateRuby` は **漢字の 位置からしか 辞書を 引かない**ので、数字で 始まる
+ * 「2人」は 読み辞書に 当たらず、うしろの 1字だけが 引かれる。
+ * ["人","にん"] を 置いて いた あいだ、**ミーティングの 画面は ぜんぶ
+ * 「2人が 参加中」＝ ににん**と 読ませて いた（正しくは ふたり）。
+ * 1人・2人 は 人 の 読みその ものが り に 変わるので、字を 足しても 追いつかない。
+ * 2026-09-11 の 数字＋助数詞の 読み監査で 見つけた。
+ */
+const PEOPLE_READING = [
+  "",
+  "ひとり",
+  "ふたり",
+  "さんにん",
+  "よにん",
+  "ごにん",
+  "ろくにん",
+  "ななにん",
+  "はちにん",
+  "きゅうにん",
+];
+
+/** 「◯人」を ふりがなつきで 描く。一覧に 無い 数は 人 だけに ルビを 振る。 */
+function PeopleCount({ count }: { count: number }) {
+  const reading = PEOPLE_READING[count];
+  if (!reading) {
+    return (
+      <>
+        {count}
+        <ruby>
+          人<rt>にん</rt>
+        </ruby>
+      </>
+    );
+  }
+  return (
+    <ruby>
+      {count}人<rt>{reading}</rt>
+    </ruby>
+  );
+}
 
 const ACCENT: Record<ListeningParticipant["accent"], string> = {
   sky: "#4fa8e8",
@@ -291,8 +333,8 @@ export function CallShell({
                 : "text-xs font-bold text-white/60"
             }
           >
-            👥{" "}
-            <RubyText text={`${participants.length + 1}人が 参加中`} index={SHELL_FURIGANA} show />
+            👥 <PeopleCount count={participants.length + 1} />
+            <RubyText text="が 参加中" index={SHELL_FURIGANA} show />
           </span>
         </div>
 

@@ -216,6 +216,9 @@ const DAY_DOTS: readonly (readonly [string, string])[] = [
 /** 「◯日目」の 読み（1日目＝いちにちめ）。 */
 const NTH_DAY = ["", "いちにちめ", "ふつかめ", "みっかめ", "よっかめ", "いつかめ"];
 
+/** 「◯日」の 読み（5日＝いつか）。 */
+const DAYS = ["", "いちにち", "ふつか", "みっか", "よっか", "いつか"];
+
 export function DayDots({ at }: { at: number }) {
   return (
     <span className="flex items-center gap-1" aria-label={`5日の うち ${at + 1}日目`}>
@@ -243,5 +246,27 @@ export function DayDots({ at }: { at: number }) {
         </ruby>
       </span>
     </span>
+  );
+}
+
+/**
+ * 「◯日目 / ◯日」（時間カードの 進みぐあい）。**読みは ここが 持つ**——DayDots と 同じ 理由に
+ * もう 1つ ある。`annotateRuby` は **漢字の 位置からしか 辞書を 引かない**ので、
+ * 数字で 始まる「2日目」「5日」は 教材の 読み辞書に **永久に 当たらない**。
+ * 当たるのは うしろの 1字だけで、画面は **ふたにちめ・ごにち** と 読ませて いた
+ *（2026-09-11 の 数字＋助数詞の 読み監査で 見つけた）。
+ */
+export function DayProgress({ at, total }: { at: number; total: number }) {
+  return (
+    <>
+      <ruby>
+        {at}日目
+        <rt>{NTH_DAY[at] ?? ""}</rt>
+      </ruby>
+      {" / "}
+      <ruby>
+        {total}日<rt>{DAYS[total] ?? ""}</rt>
+      </ruby>
+    </>
   );
 }
