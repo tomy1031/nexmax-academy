@@ -113,6 +113,18 @@ describe("調査ツールの 文言", () => {
     const prompts = LINK_ANSWER_PROMPTS[DATA.id as string] ?? {};
     const fields = (DATA.compare as { fields: { id: string; label: string }[] }).fields;
 
+    /** ツールが ほんとうに 送る id（HTML の `sendAnswers()` ＋ データ側の 欄）。 */
+    function sentIds(): Set<string> {
+      const html = readFileSync(
+        join("public", "tools", "hourensou", "houkoku_search.html"),
+        "utf8",
+      );
+      const body = html.slice(html.indexOf("function sendAnswers"));
+      const block = body.slice(0, body.indexOf("postMessage"));
+      const literals = [...block.matchAll(/id:\s*"([^"]+)"/g)].map((hit) => hit[1] ?? "");
+      return new Set([...literals, ...fields.map((field) => field.id)]);
+    }
+
     it("しつもんの 欄が ぜんぶ 台帳に ある（届いても 問いの 文が 無い 欄を 作らない）", () => {
       for (const field of fields) {
         expect(Object.keys(prompts), `${field.id} が 台帳に 無い`).toContain(field.id);
@@ -128,8 +140,18 @@ describe("調査ツールの 文言", () => {
     });
 
     it("台帳に 余計な 欄が 無い（ツールが 送らない 問いを 先生に 見せない）", () => {
-      const sent = new Set(["kaikyuu_order", ...fields.map((field) => field.id)]);
-      expect(Object.keys(prompts).filter((id) => !sent.has(id))).toEqual([]);
+      expect(Object.keys(prompts).filter((id) => !sentIds().has(id))).toEqual([]);
+    });
+
+    /*
+     * **実際に 送る id は HTML の 中に ある。** データ側の 欄と 台帳だけを
+     * 突き合わせても、HTML の `sendAnswers()` が 別の id を 書いた 日は 緑の まま
+     * ——その 問いだけが 先生の 画面から 黙って 消える。
+     */
+    it("HTML が 送る id が、ぜんぶ 台帳に ある", () => {
+      for (const id of sentIds()) {
+        expect(Object.keys(prompts), `${id} が 台帳に 無い`).toContain(id);
+      }
     });
   });
 

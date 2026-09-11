@@ -11,6 +11,7 @@ import {
   subscribeProgress,
 } from "@/lib/progress/store";
 import { parseLinkAnswers, saveLinkAnswers } from "@/lib/answers/link-answers-db";
+import { readLinkMessage } from "@/lib/answers/link-message";
 
 /**
  * リンク教材 — 1枚で完結する練習ページを、ステージの中から 全画面で 開く
@@ -39,31 +40,12 @@ import { parseLinkAnswers, saveLinkAnswers } from "@/lib/answers/link-answers-db
  * 記録が 無くても 先へは 進める。
  */
 
-/** 中のページが「おわった」を伝えてくるときの合図。 */
-const DONE_MESSAGE = "nexmax:link-done";
-
-/**
- * 中のページが「**おわりの しるしは こちらで 出す**」と 名乗る 合図。
- *
- * 中で「出す」まで つぎへ 進ませたくない 教材が ある（調査の ツールは
- * 出して はじめて 答え合わせへ 行く——2026-09-11 の 指定）。ところが この 画面には
- * 学習者が 自分で 押せる「おわりました」が いつも 出て いて、**何も 書かずに
- * 押すだけで 関門が 開いて いた**。
- *
- * 種別（schema）を 増やさずに 済ませる ため、**中のページが 名乗る**形に する。
- * 名乗った ページの ときだけ 手で 押す ボタンを 引っこめる。名乗らない
- * これまでの ページ（外のサイト・読むだけの ページ）は そのまま。
+/*
+ * 中のページから 届く 合図（「おわった」「おわりの しるしは こちらで 出す」
+ * 「学習者の 書いた もの」）の 読み取りは `@/lib/answers/link-message` に 置いて ある。
+ * 画面の 効果の 中では テストから 通しにくい のに、**関門の 鍵と 学習者の こたえ**を
+ * 運ぶ 道で 取りちがえの 害が いちばん 大きい ため。
  */
-const OWNS_DONE_MESSAGE = "nexmax:link-owns-done";
-
-/**
- * 中のページが **学習者の 書いた ものを 渡して くる** ときの 合図。
- *
- * ツールは 静的な 1枚で DBの 鍵を 持たない（規律4）ので、保存は こちらで 行う
- *（`@/lib/answers/link-answers-db`）。2026-09-11 の 指定「先生の 画面（/admin）へ
- * 届ける」。届かなくても 学習は 止めない——送りっぱなしに する。
- */
-const ANSWERS_MESSAGE = "nexmax:link-answers";
 
 /** 画面じたいの 文言の 読み辞書（教材データの 辞書は UIの 文言まで 覆わない・規律2）。 */
 const UI_FURIGANA = buildFuriganaIndex([
@@ -107,34 +89,26 @@ export function LinkView({ link, embedded }: { link: LinkContent; embedded?: boo
    */
   useEffect(() => {
     const onMessage = (event: MessageEvent) => {
+      // 差出人は ここで 見る（**同じ 置き場から 来た ものだけ**）
       if (event.origin !== window.location.origin) return;
-      const data = event.data as { type?: unknown; id?: unknown } | null;
-      if (
-        data?.type !== DONE_MESSAGE &&
-        data?.type !== OWNS_DONE_MESSAGE &&
-        data?.type !== ANSWERS_MESSAGE
-      )
-        return;
-      if (typeof data.id === "string" && data.id !== link.id) return;
-      if (data.type === ANSWERS_MESSAGE) {
-        // 名乗りと 同じく **IDを 必須**に する（だれの こたえかを 取りちがえない）
-        if (data.id !== link.id) return;
-        void saveLinkAnswers({
-          linkId: link.id,
-          answers: parseLinkAnswers((data as { answers?: unknown }).answers),
-        });
+      const message = readLinkMessage(event.data, link.id);
+      if (!message) return;
+      if (message.kind === "owns-done") {
+        setOwnsDone(true);
         return;
       }
-      if (data.type === OWNS_DONE_MESSAGE) {
+      if (message.kind === "answers") {
         /*
-         * 名乗りだけは **ID を 必須**に する（おわったの 合図より きびしく）。
-         * これは 手押しの ボタンを 引っこめる＝関門の 鍵を 中の ページに 預ける
-         * 合図なので、どの ページの ことか 分からない まま 受け取らない。
-         * `nexmax:link-done` の ほうは ID の 無い 古い ページ
-         *（`public/tools/romaji/app.js`）が 残って いるので これまでどおり。
+         * 記録は **送りっぱなし**。`saveLinkAnswers` は 自分で 例外を 握るが、
+         * ここでも 受けて おく——`void` で 捨てた 約束が 落ちると、
+         * 画面にも コンソールにも 何も 出ない まま こたえが 消える。
          */
-        if (data.id !== link.id) return;
-        setOwnsDone(true);
+        void saveLinkAnswers({
+          linkId: link.id,
+          answers: parseLinkAnswers(message.answers),
+        }).catch(() => {
+          /* 記録できなくても 学習は 止めない */
+        });
         return;
       }
       markDone();

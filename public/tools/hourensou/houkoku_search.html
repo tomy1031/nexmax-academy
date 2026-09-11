@@ -441,7 +441,8 @@
           DATA.compare.fields.forEach(function (field) {
             answers[field.id] = "";
           });
-          return { rows: rows, answers: answers, submitted: false };
+          // `sent` は **最後に 先生へ 送った 中身**（同じ ものを 2度 送らない ため）
+          return { rows: rows, answers: answers, submitted: false, sent: "" };
         }
 
         function load() {
@@ -460,6 +461,7 @@
               });
             }
             state.submitted = saved.submitted === true;
+            if (typeof saved.sent === "string") state.sent = saved.sent;
           } catch (e) {
             /* 使えない 端末でも 学習は 止めない */
           }
@@ -513,6 +515,8 @@
 
           var area = document.createElement("textarea");
           area.id = "field-" + field.id;
+          // 先生の 表は 1行に そのまま 描くので、際限なく 太らせない
+          area.maxLength = 600;
           area.placeholder = plain(field.placeholder);
           area.value = state.answers[field.id];
           area.addEventListener("input", function () {
@@ -757,6 +761,17 @@
           DATA.compare.fields.forEach(function (field) {
             answers.push({ id: field.id, text: state.answers[field.id].trim() });
           });
+          /*
+           * **中身が 前と 同じなら 送らない。**
+           *
+           * 「直す → 出す」は 1回ごとに 別の 記録に なる（先生の 画面の「何回目」）。
+           * それは 直した ことが 見える 形で よいが、**何も 変えずに もう一度 押した**
+           * だけで 同じ 4行が 増えるのは ただの 雑音に なる。
+           */
+          var stamp = JSON.stringify(answers);
+          if (stamp === state.sent) return;
+          state.sent = stamp;
+          save();
           try {
             window.parent.postMessage(
               { type: "nexmax:link-answers", id: DATA.id, answers: answers },

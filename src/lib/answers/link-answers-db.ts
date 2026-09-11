@@ -16,14 +16,19 @@
  * ——答えの 文だけを 残し、問いは 教材の 正から 引く のが この アプリの 流儀）。
  *
  * ## 正解は 無い
- * 調べて 書く ものなので 採点しない。`correct: true` / `earned = max_points` で
- * 残す——自由記述だけの もんだい（`content/quizsets/houkoku_answer.json`）と 同じ
- * 扱いに して、先生の 画面で ○×の 意味を そろえる。
+ * 調べて 書く ものなので 採点しない。`correct: true` / `earned = max_points` で 残す。
+ *
+ * **自由記述の もんだい（`free`）とは 同じでは ない**——あちらは「`minLength` より
+ * 長く 書けたか」を 見て いる（`src/lib/quiz/draft.ts`）ので ×に なる ことが ある。
+ * ここは 中身を いっさい 見ない。先生の 画面の ○は「出した」という 意味に なる。
+ * 正答率の まとまりは 教材と 問いの 組で 分かれる（`src/lib/records/table.ts` の
+ * `stat.group`）ので、もんだいの 正答率に この 行が 混ざる ことは ない。
  */
 "use client";
 
 import { linkAnswerOrder } from "@/content/link-answers";
-import { fetchOwnProfile } from "@/lib/profile-db";
+import { createClient } from "@/lib/supabase/client";
+import { readOwnId } from "@/lib/supabase/claims";
 import { insertQuizResultRows, newAttemptId, type QuizResultRow } from "@/lib/quiz/results-db";
 
 /** ツールから 届く 1つぶん。 */
@@ -31,6 +36,15 @@ export interface LinkAnswer {
   readonly id: string;
   readonly text: string;
 }
+
+/**
+ * 1つの こたえの 長さの 上限。
+ *
+ * 先生の 表は こたえを そのまま 1行に 描く（`src/lib/records/table.ts`）ので、
+ * 際限なく 太ると 表が 読めなく なる。ツール側でも `maxlength` で 止めて いるが、
+ * **合図は 外から 来る もの**なので ここでも 切る。
+ */
+const MAX_TEXT = 1000;
 
 /**
  * 届いた ものが この 形か（外から 来る ものは 信じない）。
@@ -43,7 +57,7 @@ export function parseLinkAnswers(value: unknown): LinkAnswer[] {
     if (!item || typeof item !== "object") continue;
     const { id, text } = item as { id?: unknown; text?: unknown };
     if (typeof id !== "string" || id === "" || typeof text !== "string") continue;
-    out.push({ id, text });
+    out.push({ id, text: text.slice(0, MAX_TEXT) });
   }
   return out;
 }
@@ -93,7 +107,12 @@ export function linkAnswerRows({
 /**
  * 出した こたえを 残す。**待たない・投げない**（記録の ために 学習を 止めない）。
  *
- * ログインして いない（デモモード・先生の 下見）ときは 何も しない。
+ * ログインして いない（デモモード）ときは 何も しない。**投げないのが 大事**で、
+ * 呼び出し側は `void` で 捨てる ので、ここから 例外が 出ると 誰も 受け取らない
+ *（画面には 何も 出ず、記録も 残らず、警告すら 出ない）。だから 自分で 握って 書く。
+ *
+ * id は `readOwnId`（トークンの 中みを その場で 確かめる）で 取る——**外へ 出ない**し、
+ * 学習者の 行 まるごと（answers/scores の JSON 込み）を 取りに 行かずに 済む。
  */
 export async function saveLinkAnswers({
   linkId,
@@ -103,9 +122,16 @@ export async function saveLinkAnswers({
   answers: readonly LinkAnswer[];
 }): Promise<void> {
   if (answers.length === 0) return;
-  const profile = await fetchOwnProfile();
-  if (!profile?.id) return;
-  await insertQuizResultRows(
-    linkAnswerRows({ profileId: profile.id, linkId, answers, attemptId: newAttemptId() }),
-  );
+  try {
+    const supabase = createClient();
+    if (!supabase) return; // デモモード（鍵ゼロ）。学習は そのまま 進む
+    const profileId = await readOwnId(supabase);
+    if (!profileId) return; // ログインして いない
+    await insertQuizResultRows(
+      linkAnswerRows({ profileId, linkId, answers, attemptId: newAttemptId() }),
+    );
+  } catch (error) {
+    // 先生の 画面に 出ない ことに 気づける ように、**黙らせない**
+    console.warn("[link-answers] 記録できませんでした:", error);
+  }
 }

@@ -42,6 +42,35 @@ async function seedUpToTool(context: BrowserContext) {
   await seedCompleted(context, before);
 }
 
+/**
+ * 画面で 投げられた 例外を ためる。
+ *
+ * 記録の 送信（`saveLinkAnswers`）は **`void` で 捨てる**ので、途中で 投げると
+ * 画面には 何も 出ないまま こたえが 消える。デモモード（鍵ゼロ）の e2e は
+ * まさに その 道を 通る ——見張りが 無いと CI は 緑の まま すり抜ける
+ *（2026-09-11 の 検収で 実際に すり抜けた）。
+ */
+async function watchErrors(page: Page, context: BrowserContext): Promise<() => Promise<string[]>> {
+  const errors: string[] = [];
+  page.on("pageerror", (error) => errors.push(error.message));
+  /*
+   * **`pageerror` だけでは 足りない。** 約束（Promise）の 中で 投げた ものは
+   * そこに 来ない ——実際に わざと 壊して 確かめた（`saveLinkAnswers` が 投げても
+   * テストは 緑の まま だった）。だから 画面側でも 受けて ためる。
+   */
+  await context.addInitScript(() => {
+    const box: string[] = [];
+    (window as unknown as { __rejections: string[] }).__rejections = box;
+    window.addEventListener("unhandledrejection", (event) => box.push(String(event.reason)));
+  });
+  return async () => [
+    ...errors,
+    ...(await page.evaluate(
+      () => (window as unknown as { __rejections?: string[] }).__rejections ?? [],
+    )),
+  ];
+}
+
 async function openTool(page: Page, context: BrowserContext) {
   await seedUpToTool(context);
   await page.goto(PATH);
@@ -58,6 +87,7 @@ const TYPED = ["社長", "部長", "取締役", "課長", "社員"];
 const MOVED = ["社長", "取締役", "部長", "課長", "社員"];
 
 test("調査（リサーチ）: 入れて ならべて 出すと、はじめて ✅ に なる", async ({ page, context }) => {
+  const errors = await watchErrors(page, context);
   const tool = await openTool(page, context);
   await expect(tool.getByLabel("1ばんめ")).toBeVisible();
 
@@ -85,6 +115,9 @@ test("調査（リサーチ）: 入れて ならべて 出すと、はじめて 
   await expect(tool.locator("#doneList li")).toHaveText(MOVED);
   await expect(page.getByRole("button", { name: /おわりました/ })).toBeVisible();
   await shot(page, "houkoku-search-02-done");
+
+  // 記録の 送信が 黙って こけて いない（鍵ゼロでも 例外に しない）
+  expect(await errors()).toEqual([]);
 });
 
 test("調査（リサーチ）: 出すまで つぎの ページが 開かない（関門）", async ({ page, context }) => {

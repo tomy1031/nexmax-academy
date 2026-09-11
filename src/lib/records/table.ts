@@ -248,20 +248,35 @@ function formatPosition(position: Record<string, number> | null): string {
  *（`@/lib/quiz/results-db` の `attemptsOf` と 同じ 数えかた）。
  */
 function numberAttempts(
-  records: readonly { profile_id: string; attempt_id: string; created_at: string }[],
+  records: readonly {
+    profile_id: string;
+    quiz_set_id: string;
+    attempt_id: string;
+    created_at: string;
+  }[],
 ): Map<string, number> {
-  const firstAt = new Map<string, { profileId: string; at: string }>();
+  const firstAt = new Map<string, { key: string; at: string }>();
   for (const record of records) {
     const seen = firstAt.get(record.attempt_id);
     if (!seen || record.created_at < seen.at) {
-      firstAt.set(record.attempt_id, { profileId: record.profile_id, at: record.created_at });
+      /*
+       * **人ごとでは なく「人 × 教材」ごとに 数える。**
+       *
+       * 人だけで まとめると、別の 教材を 1回 やった だけで つぎの 教材が
+       * 「2回目」に なる。先生が 読みたいのは「この 教材を 何回 やったか」で
+       * ある（調査ツールの こたえも 同じ 表に 入る ように なって、ずれが 大きく なった）。
+       */
+      firstAt.set(record.attempt_id, {
+        key: `${record.profile_id}:${record.quiz_set_id}`,
+        at: record.created_at,
+      });
     }
   }
   const byProfile = new Map<string, { attemptId: string; at: string }[]>();
-  for (const [attemptId, { profileId, at }] of firstAt) {
-    const list = byProfile.get(profileId) ?? [];
+  for (const [attemptId, { key, at }] of firstAt) {
+    const list = byProfile.get(key) ?? [];
     list.push({ attemptId, at });
-    byProfile.set(profileId, list);
+    byProfile.set(key, list);
   }
   const nth = new Map<string, number>();
   for (const list of byProfile.values()) {
@@ -277,7 +292,9 @@ const QUIZ_TYPE_LABEL: Record<string, string> = {
   keyword: "じぶんで 書く",
   wordbank: "語群から あなうめ",
   emotion: "気もち → 言い方",
-  // 正解の 無い こたえ（自由記述の もんだいと、ツール教材に 書いた もの）
+  // 自由記述（`free`）と 順不同の 入力（`list`）。これまで 生の 英語が 出て いた。
+  // ※ `list` は 採点する（`draft.ts` の `hits === groups.length`）。無採点なのは `free` と
+  //   ツール教材に 書いた こたえだけ
   free: "じゆうに 書く",
   list: "いくつか 書く",
 };
@@ -315,7 +332,9 @@ export function quizTable(records: readonly QuizRecord[], lookups: Lookups): Rec
         unitId: record.quiz_set_id,
         at: record.created_at,
         stat: {
-          group: record.question_id,
+          // 問いの id は **教材の 中でしか 一意では ない**（units.ts の 註）。
+          // 教材と 組に しないと、別の 教材の 同じ id の 行が 1つの 正答率に 混ざる
+          group: `${record.quiz_set_id}:${record.question_id}`,
           groupLabel: `Q${record.question_index + 1} ${promptOf(lookups, record.quiz_set_id, record.question_id)}`,
           order: record.question_index,
           ok: record.correct,
