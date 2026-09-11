@@ -87,17 +87,17 @@ export const YOMI_ALLOW: readonly YomiAllowEntry[] = [
   {
     surface: "二日",
     reading: "ふつか",
-    note: "解析は ににち。夕礼の「あと 二日です」「二日 ぐらい」。「2日」から直した読み",
+    note: "解析は ににち。夕礼の「あと 二日です」「二日 ぐらい」。4abd71a で「2日」から直した読み",
   },
   {
     surface: "四日",
     reading: "よっか",
-    note: "解析は よんにち。夕礼の「金曜日まで あと 四日です」。「4日」から直した読み",
+    note: "解析は よんにち。夕礼の「金曜日まで あと 四日です」。4abd71a で「4日」から直した読み",
   },
   {
     surface: "三日間",
     reading: "みっかかん",
-    note: "解析は さんにちかん。「3日間」から直した読み",
+    note: "解析は さんにちかん。4abd71a で「3日間」から直した読み",
   },
   /*
    * 日づけの 5日・1日。**本文は 数字の ままに する**（会社紹介の ページと
@@ -114,6 +114,16 @@ export const YOMI_ALLOW: readonly YomiAllowEntry[] = [
     surface: "月1日",
     reading: "がつついたち",
     note: "「9月1日・10月1日・12月1日」の ついたち（kaisha_houkoku）",
+  },
+  {
+    surface: "年9月1日",
+    reading: "ねんくがつついたち",
+    note: "「2024年9月1日」＝くがつついたち。9月 は く なので 月1日 だけでは 足りない（kaisha_houkoku）",
+  },
+  {
+    surface: "一回り",
+    reading: "ひとまわり",
+    note: "解析は いちまわり（一＋回り と 割る）。「1回り」から直した読み（kaihatsu_lecture）",
   },
   { surface: "人手不足", reading: "ひとでぶそく", note: "解析は ふそく（連濁を落とす）" },
   { surface: "右上", reading: "みぎうえ", note: "解析は みぎじょう" },
