@@ -51,7 +51,11 @@ export function quizSchemaFor(phase: "research" | "production") {
     type: "object",
     properties: {
       title: { type: "string", description: "もんだいの見出し（15文字いない）" },
-      description: { type: "string", description: "1文の説明" },
+      description: {
+        type: "string",
+        description:
+          "1文の説明。中身だけを 書く（ステージ・クリア・スキップ など アプリの 仕組みの 話は 書かない）",
+      },
       furigana: FURIGANA_SCHEMA,
       questions: {
         type: "array",
@@ -166,7 +170,11 @@ export const ARTICLE_SCHEMA = {
   type: "object",
   properties: {
     title: { type: "string", description: "ページの見出し（15文字いない）" },
-    description: { type: "string", description: "1文の説明" },
+    description: {
+      type: "string",
+      description:
+        "1文の説明。中身だけを 書く（ステージ・クリア・スキップ など アプリの 仕組みの 話は 書かない）",
+    },
     furigana: FURIGANA_SCHEMA,
     blocks: {
       type: "array",
