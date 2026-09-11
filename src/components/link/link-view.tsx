@@ -41,6 +41,26 @@ import {
 /** 中のページが「おわった」を伝えてくるときの合図。 */
 const DONE_MESSAGE = "nexmax:link-done";
 
+/**
+ * 中のページが「**おわりの しるしは こちらで 出す**」と 名乗る 合図。
+ *
+ * 中で「出す」まで つぎへ 進ませたくない 教材が ある（調査の ツールは
+ * 出して はじめて 答え合わせへ 行く——2026-09-11 の 指定）。ところが この 画面には
+ * 学習者が 自分で 押せる「おわりました」が いつも 出て いて、**何も 書かずに
+ * 押すだけで 関門が 開いて いた**。
+ *
+ * 種別（schema）を 増やさずに 済ませる ため、**中のページが 名乗る**形に する。
+ * 名乗った ページの ときだけ 手で 押す ボタンを 引っこめる。名乗らない
+ * これまでの ページ（外のサイト・読むだけの ページ）は そのまま。
+ */
+const OWNS_DONE_MESSAGE = "nexmax:link-owns-done";
+
+/** 画面じたいの 文言の 読み辞書（教材データの 辞書は UIの 文言まで 覆わない・規律2）。 */
+const UI_FURIGANA = buildFuriganaIndex([
+  ["中", "なか"],
+  ["出", "だ"],
+]);
+
 export function LinkView({ link, embedded }: { link: LinkContent; embedded?: boolean }) {
   const furigana = useMemo(() => buildFuriganaIndex(link.furigana ?? []), [link.furigana]);
   const [furiganaOn, setFuriganaOn] = useState(true);
@@ -67,6 +87,9 @@ export function LinkView({ link, embedded }: { link: LinkContent; embedded?: boo
     recordContentProgress(link.id, { status: "completed" });
   }, [link.id]);
 
+  /** 中のページが おわりの しるしを 自分で 出すと 名乗ったか（`OWNS_DONE_MESSAGE`）。 */
+  const [ownsDone, setOwnsDone] = useState(false);
+
   /*
    * 中のページからの 合図。**同じ置き場（origin）から 来たものだけ** 受ける。
    * 外のサイトを 埋めている 場合、その中身は こちらの 管理外なので、
@@ -76,8 +99,12 @@ export function LinkView({ link, embedded }: { link: LinkContent; embedded?: boo
     const onMessage = (event: MessageEvent) => {
       if (event.origin !== window.location.origin) return;
       const data = event.data as { type?: unknown; id?: unknown } | null;
-      if (data?.type !== DONE_MESSAGE) return;
+      if (data?.type !== DONE_MESSAGE && data?.type !== OWNS_DONE_MESSAGE) return;
       if (typeof data.id === "string" && data.id !== link.id) return;
+      if (data.type === OWNS_DONE_MESSAGE) {
+        setOwnsDone(true);
+        return;
+      }
       markDone();
     };
     window.addEventListener("message", onMessage);
@@ -193,19 +220,33 @@ export function LinkView({ link, embedded }: { link: LinkContent; embedded?: boo
         >
           {wide ? "✕ もどす" : "⛶ 大きく する"}
         </button>
-        <button
-          type="button"
-          onClick={markDone}
-          className={
-            done
-              ? `rounded-full px-4 py-1.5 text-xs font-black ${
-                  wide ? "bg-white/90 text-[#0b2138]" : "bg-sky-soft text-navy"
-                }`
-              : "btn-game px-5 py-1.5 text-xs [--btn-face:#58c273] [--btn-shadow:#3aa458]"
-          }
-        >
-          {done ? "✅ おわりました" : "おわりました"}
-        </button>
+        {ownsDone && !done ? (
+          /*
+            中で「出す」と ✅ に なる ページ。手で 押す ボタンは 出さない
+            ——押すだけで 関門が 開いては、出す ことに 意味が 無くなる。
+          */
+          <span
+            className={`rounded-full px-4 py-1.5 text-xs font-black ${
+              wide ? "bg-white/90 text-[#0b2138]" : "bg-sky-soft text-navy"
+            }`}
+          >
+            <RubyText text="中で 出すと ✅ に なります" index={UI_FURIGANA} />
+          </span>
+        ) : (
+          <button
+            type="button"
+            onClick={markDone}
+            className={
+              done
+                ? `rounded-full px-4 py-1.5 text-xs font-black ${
+                    wide ? "bg-white/90 text-[#0b2138]" : "bg-sky-soft text-navy"
+                  }`
+                : "btn-game px-5 py-1.5 text-xs [--btn-face:#58c273] [--btn-shadow:#3aa458]"
+            }
+          >
+            {done ? "✅ おわりました" : "おわりました"}
+          </button>
+        )}
       </div>
     </div>
   ) : null;
