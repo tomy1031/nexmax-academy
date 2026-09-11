@@ -50,6 +50,21 @@ if (!meetingId) {
 }
 /** 何を 読み上げる つもりか **だけ** 出して 終わる（鍵が 要らない・目で 確かめる ため）。 */
 const listOnly: boolean = process.argv.includes("--list");
+/**
+ * 作る のを やめる 時間（分）。**作った ぶんを 落とさない ため**に ある。
+ *
+ * Actions の ジョブには 30分の 上限が あり、そこで 切られると 音は できて いても
+ * **コミットの 手前で 捨てられる**（2026-08-31 に 実発生。run 33393730779 で
+ * 14本 ぜんぶ 出来て いたのに runner ごと 消えた）。朝礼は 1教材で 100本を 超える ので
+ * 1回では 終わらない——**時間で 区切って、できた ぶんを PR に する**。
+ * つぎに 走らせる ときは、その PR が 入った ref から 続きを 作る
+ *（すでに ある ファイルは 飛ばす）。
+ */
+const budgetMinutes: number = (() => {
+  const at = process.argv.indexOf("--budget-min");
+  const value = at >= 0 ? Number(process.argv[at + 1]) : NaN;
+  return Number.isFinite(value) && value > 0 ? value : 20;
+})();
 const apiKey: string = process.env.GEMINI_API_KEY ?? "";
 if (!apiKey && !listOnly) {
   console.error("GEMINI_API_KEY が ありません（GitHub の Environment「Preview」に あります）");
@@ -244,6 +259,10 @@ async function main(): Promise<void> {
   /** 同じ 文・同じ 声は **1回だけ** 作って 中身を 写す（5日ぶんの 同じ ふりなど）。 */
   const already = new Map<string, string>();
 
+  const startedAt = Date.now();
+  /** 時間切れで 手を つけなかった ぶん（報告に 出す）。 */
+  let left = 0;
+
   for (const [index, line] of lines.entries()) {
     const file = join(outDir, `${line.key}.wav`);
     const url = `/audio/meetings/${meetingId}/${line.key}.wav`;
@@ -272,6 +291,15 @@ async function main(): Promise<void> {
       line.apply(url);
       made += 1;
       console.log(`(${index + 1}/${lines.length}) ${line.key} … 同じ 文を 写しました`);
+      continue;
+    }
+
+    /*
+     * 時間切れ。**ここで やめて 下へ 進む**（投げない）——投げると 書き戻しも
+     * PR も 走らず、作った ぶんが 丸ごと 消える。
+     */
+    if (Date.now() - startedAt > budgetMinutes * 60_000) {
+      left += 1;
       continue;
     }
 
@@ -335,6 +363,11 @@ async function main(): Promise<void> {
   writeFileSync(meetingPath, `${JSON.stringify(meeting, null, 2)}\n`);
   console.log(`${meetingPath} に 音の 場所を 書きました（${made}/${lines.length}）`);
 
+  if (left > 0) {
+    console.warn(
+      `⏳ 時間切れで ${left}本 のこりました（${budgetMinutes}分）。この ぶんを 入れてから もう一度 走らせると 続きを 作ります`,
+    );
+  }
   if (failed.length > 0) {
     console.warn(
       `⚠ 作れなかった もの: ${failed.join(" ")}（もう一度 走らせると 足りない ぶんだけ 作ります）`,
@@ -344,6 +377,10 @@ async function main(): Promise<void> {
     console.error("1つも 作れませんでした");
     process.exit(1);
   }
+  /*
+   * のこりが ある うちは **成功で 終える**。ここで 落とすと ワークフローが
+   * PR を 作らず、時間内に 作れた ぶんも 届かない。
+   */
 }
 
 /*
