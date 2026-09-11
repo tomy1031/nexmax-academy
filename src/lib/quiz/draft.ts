@@ -246,7 +246,7 @@ export function gradeDraft(question: QuizQuestion, draft: QuizDraft | undefined)
       return {
         correct,
         earned: correct ? question.points : 0,
-        answer: question.blanks.map((_, i) => `（${i + 1}）${draft.filled[i] ?? ""}`).join("　"),
+        answer: formatWordbankAnswer(question.blanks.map((_, i) => draft.filled[i] ?? "")),
         partial: !correct && someRight,
       };
     }
@@ -271,6 +271,61 @@ function sameSet(filled: readonly (string | null)[], blanks: readonly string[]):
   const left = [...filled].filter((v): v is string => v !== null && v !== "").sort();
   const right = [...blanks].sort();
   return left.length === right.length && left.every((v, i) => v === right[i]);
+}
+
+/* ------------------------------------------------------------------ *
+ * 穴うめ（wordbank）の こたえの 文 — **組み立てと 読み戻しを 並べて 置く**
+ *
+ * 記録に 残るのは 文（`QuizResult.answer`）だけなので、答え合わせの 画面で
+ * 「**どの 穴が どう ちがったか**」を 出すには、その 文を 穴ごとに 読み戻す
+ * 必要が ある（2026-09-11 の 指定「答えが 出るだけで、どこを どう 間違えたか
+ * わかりません」）。組み立てる 側と 読み戻す 側が 離れて いると、片方だけ
+ * 直した 日に 静かに ずれる——だから 2つを 隣に 置き、往復の テストで 固定する。
+ * ------------------------------------------------------------------ */
+
+/** 穴ごとの ことばを 1つの 文に する（`（1）◯◯　（2）◯◯`）。 */
+export function formatWordbankAnswer(filled: readonly string[]): string {
+  return filled.map((value, i) => `（${i + 1}）${value}`).join("　");
+}
+
+/** 上の 文を 穴ごとに 読み戻す。読めない 形（古い 記録・壊れた 文）は 空欄で 返す。 */
+export function parseWordbankAnswer(answer: string, count: number): string[] {
+  const filled = Array.from({ length: count }, () => "");
+  for (const part of answer.split(/\u3000(?=（\d+）)/)) {
+    const hit = /^（(\d+)）([\s\S]*)$/.exec(part);
+    if (!hit) continue;
+    const index = Number(hit[1]) - 1;
+    if (index >= 0 && index < count) filled[index] = hit[2] ?? "";
+  }
+  return filled;
+}
+
+/** 穴うめの 答え合わせ 1つぶん（穴の 番号は 並びの とおり）。 */
+export interface BlankCheck {
+  /** 学習者が 入れた ことば（入れて いなければ 空文字）。 */
+  readonly own: string;
+  /** その 穴の 正解。 */
+  readonly right: string;
+  readonly ok: boolean;
+}
+
+/**
+ * 穴うめを **穴ごとに** 見る。
+ *
+ * `unordered`（並びに 意味の 無い 問い）では 位置で くらべない——そこは
+ * 「そろって いれば 合格」なので、位置で ○× を 付けると、合って いる のに
+ * ×が 並ぶ。入れた ことばが 正解の どれかで あれば ○に する。
+ */
+export function checkWordbank(
+  question: Extract<QuizQuestion, { type: "wordbank" }>,
+  answer: string,
+): BlankCheck[] {
+  const filled = parseWordbankAnswer(answer, question.blanks.length);
+  return question.blanks.map((right, i) => {
+    const own = filled[i] ?? "";
+    const ok = question.unordered ? own !== "" && question.blanks.includes(own) : own === right;
+    return { own, right, ok };
+  });
 }
 
 /** 学習者の こたえの 文だけ 要る ところ（かくにん画面）。 */

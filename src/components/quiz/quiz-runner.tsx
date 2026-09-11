@@ -19,6 +19,7 @@ import { newAttemptId, saveQuizResults } from "@/lib/quiz/results-db";
 import { fetchOwnProfile } from "@/lib/profile-db";
 import { CelebrationBurst, StampRow } from "./celebration";
 import { QuestionBody } from "./question-types";
+import { WordbankReview } from "./wordbank-review";
 import {
   answeredCount,
   createQuizSession,
@@ -841,6 +842,14 @@ function AnswerPair({
   const own = answer?.trim() ?? "";
   const right = correctAnswerText(question);
 
+  /*
+   * 穴うめは **文の 中で** 答え合わせを する（`（1）…（2）…` を 並べない）。
+   * どの あなを まちがえたのかを、番号で 数えながら 見くらべる 学習者は いない。
+   */
+  if (question.type === "wordbank") {
+    return <WordbankReview question={question} answer={own} furigana={furigana} />;
+  }
+
   return (
     <>
       <p className="text-ink-soft text-xs font-bold">
@@ -1565,9 +1574,13 @@ function ReviewRow({
    * 番号は 読み上げの じゃまに なる（設問文は すぐ 上に 出て いる）。
    * 自由記述に 正解は 無いので、書いた ものが そのまま 言う ことばに なる。
    */
-  const right =
-    question.type === "wordbank" ? question.blanks.join("　") : correctAnswerText(question);
+  const right = correctAnswerText(question);
   const say = ok ? own : right !== "" ? right : own;
+  /*
+   * 穴うめだけは **文の 中で** 返す（`WordbankReview`）。ことばを 横に 並べた
+   * だけの 行は、どの あなの ことか 分からず、カンペにも ならなかった。
+   */
+  const wordbank = question.type === "wordbank" ? question : null;
 
   return (
     <li
@@ -1606,10 +1619,14 @@ function ReviewRow({
         <RubyText text={question.q} index={furigana} />
       </p>
 
-      {say !== "" && (
-        <p className="text-ink mt-1 leading-relaxed font-extrabold">
-          <RubyText text={say} index={furigana} />
-        </p>
+      {wordbank ? (
+        <WordbankReview question={wordbank} answer={own} furigana={furigana} />
+      ) : (
+        say !== "" && (
+          <p className="text-ink mt-1 leading-relaxed font-extrabold">
+            <RubyText text={say} index={furigana} />
+          </p>
+        )
       )}
 
       {/*
@@ -1618,6 +1635,7 @@ function ReviewRow({
       */}
       {!freeOnly &&
         !ok &&
+        !wordbank &&
         (own === "" ? (
           <p className="text-ink-faint mt-0.5 text-xs font-bold">
             <RubyText text="まだ かいて いません" index={UI_FURIGANA} />
