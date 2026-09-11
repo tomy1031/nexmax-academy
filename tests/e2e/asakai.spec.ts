@@ -64,12 +64,33 @@ async function expectOnScreen(page: Page, text: string): Promise<void> {
 
 test.use({ viewport: PHONE });
 
-test("ステージの トップに 4本 並ぶ", async ({ page }) => {
+test("ステージの トップに 5本 並ぶ", async ({ page }) => {
   await page.goto("/asakai");
   await expectOnScreen(page, "毎日の 朝礼と 夕礼");
   await expectOnScreen(page, "朝礼と 夕礼");
   await expectOnScreen(page, "朝礼メモ");
+  /* 前ばなしの ページ（台帳 #387 の 7〜9）。朝礼の 前に 場面と 役を 渡す。 */
+  await expectOnScreen(page, "チームと アプリ");
   await shot(page, "asakai-00-stage");
+
+  expect(await bareKanjiTexts(page)).toEqual([]);
+});
+
+/**
+ * 前ばなしの ページ — **朝礼の 前に「何を 作って いるか」と「あなたの 担当」**
+ *（台帳 #387 の 7〜9「そもそも何のアプリを作っているのか説明が一切ない」）。
+ */
+test("前ばなしの ページに アプリと 担当が 書いて ある", async ({ page }) => {
+  await page.goto("/asakai/article-asakai_team");
+  const skip = page.getByText("それでも 見る");
+  if (await skip.count()) await skip.first().click();
+  await expectOnScreen(page, "Khmersabai");
+  await expectOnScreen(page, "旅行アプリ");
+  await expectOnScreen(page, "あなたは ログインの 担当です");
+  /* 4人の しょうかいカード（絵は 人物カードから 引く）。 */
+  await expectOnScreen(page, "ヘンディ");
+  await expectOnScreen(page, "ニャム");
+  await shot(page, "asakai-01-team");
 
   expect(await bareKanjiTexts(page)).toEqual([]);
 });
@@ -98,6 +119,10 @@ test("朝礼（かんたん）— 報告すると カードが 開く", async ({
         "一覧の 書き方が 分からなくて、こまって います。",
     );
   await page.getByRole("button", { name: "報告する" }).click();
+
+  /* **見かたは モーダルで 出る。閉じてから 司会と メンバーが 話す**（2026-09-11 の 指定）。 */
+  await expect(page.getByRole("dialog", { name: "報告の 見かた" })).toBeVisible();
+  await page.getByRole("button", { name: "みんなの 報告を 聞く" }).click();
 
   /* 4枚 そろったので 聞き返しが 無く、その 場面は おわる。 */
   await expect(page.getByText("（4 / 4）")).toBeVisible();
@@ -142,6 +167,8 @@ test("夕礼（むずかしい）— メモと カードが 同じ 画面に 並
     .locator("#asakai-answer")
     .fill("一覧に 日づけと 先生の 名前が 出るように なりました。");
   await page.getByRole("button", { name: "報告する" }).click();
+  await expect(page.getByRole("dialog", { name: "報告の 見かた" })).toBeVisible();
+  await page.getByRole("button", { name: "つづける" }).click();
   await expect(page.getByText("（0 / 4）")).toBeVisible();
   await shot(page, "asakai-07-muzukashii-probe");
 
@@ -149,35 +176,41 @@ test("夕礼（むずかしい）— メモと カードが 同じ 画面に 並
 });
 
 /**
- * **入力欄が 見えて いる とき、カードの 板も 見えて いる**（2026-09-11 の 再発防止）
+ * **入った ところで、カードの 板と マイクが 同時に 見える**（2026-09-11 の 再発防止）
  *
- * 板（`sticky top-0`）と 入力欄（`sticky bottom-0`）は、親に `overflow-hidden` が
- * あると **そこが スクロールの 器に なり**、画面の 外へ 流れて いく。
- * 390px の 実機では「どの カードが まだかを 見ながら 書く」が できなく なって いた。
- * 見た目では 気づきにくい ので、**位置を 数で** 見る。
+ * 板（`sticky top-0`）は Zoom の 枠の 中に あり、親に `overflow-hidden` が あると
+ * **そこが スクロールの 器に なって** 画面の 外へ 流れて いく。
+ * 既存の ミーティングと 同じ 並びに した ので、入った 直後は
+ * 「枠 → 板 → 報告パネル（マイク）」が 1画面に 収まる はず。数で 見る。
  */
-test("390px で 入力欄と カードの 板が 同時に 見える", async ({ page, context }) => {
+test("390px で 板 → マイク → チャット の 順に 並ぶ", async ({ page, context }) => {
   const refs = stageRefs();
   const at = refs.indexOf("asakai_muzukashii");
   await seedCompleted(context, refs.slice(0, at - 1));
   await page.goto("/asakai/meeting-asakai_muzukashii");
   await joinCall(page);
 
-  /* メモ 10行の 下まで スクロールして、入力欄が 見える 位置に する。 */
-  const input = page.locator("#asakai-answer");
-  await input.scrollIntoViewIfNeeded();
+  const board = await page.getByRole("group", { name: "カードの 板" }).boundingBox();
+  const mic = await page
+    .getByRole("button", { name: /マイク|話す/ })
+    .first()
+    .boundingBox();
+  const chat = await page.getByText("テキストチャット").first().boundingBox();
 
-  const board = page.getByRole("group", { name: "カードの 板" });
-  const inputBox = await input.boundingBox();
-  const boardBox = await board.boundingBox();
-  expect(inputBox, "入力欄が 画面に ある").not.toBeNull();
-  expect(boardBox, "カードの 板が 画面に ある").not.toBeNull();
+  expect(board).not.toBeNull();
+  expect(mic).not.toBeNull();
+  expect(chat).not.toBeNull();
 
-  const height = PHONE.height;
-  expect(inputBox!.y, "入力欄が 画面の 中に ある").toBeLessThan(height);
-  expect(boardBox!.y + boardBox!.height, "板が 画面の 上に 貼りついて いる").toBeGreaterThan(0);
-  expect(boardBox!.y, "板が 画面の 中に ある").toBeLessThan(height);
-  await shot(page, "asakai-08-sticky-390");
+  /*
+   * 既存の ミーティングと 同じ 並び: 枠（板）→ 報告パネル（マイク）→ 会話の 記録。
+   * 前は 場面カードと メモ 10行が あいだに 入り、**チャットが 1500px 下**に あった
+   *（2026-09-11 の 指摘「テキストチャットのUIが下にいったら混乱する」）。
+   */
+  expect(board!.y, "板が いちばん 上").toBeLessThan(mic!.y);
+  expect(mic!.y, "マイクが チャットより 上").toBeLessThan(chat!.y);
+  /* チャットまでの 高さ。**画面 3つぶんを 超えない**こと。 */
+  expect(chat!.y).toBeLessThan(PHONE.height * 3);
+  await shot(page, "asakai-08-order-390");
 });
 
 /**
@@ -201,6 +234,7 @@ test("月曜を 終えて 開き直すと、火曜から つづく", async ({ pa
         "一覧の 書き方が 分からなくて、こまって います。",
     );
   await page.getByRole("button", { name: "報告する" }).click();
+  await page.getByRole("button", { name: "みんなの 報告を 聞く" }).click();
   await page.getByRole("button", { name: /けっかを 見る/ }).click();
   await expectOnScreen(page, "月曜日の 朝礼 おわり");
 
@@ -230,6 +264,7 @@ test("5日 通すと、合否と 数が 読める", async ({ page, context }) =>
   for (const [day, utterance] of exampleUtterances().entries()) {
     await page.locator("#asakai-answer").fill(utterance);
     await page.getByRole("button", { name: "報告する" }).click();
+    await page.getByRole("button", { name: "みんなの 報告を 聞く" }).click();
     await page.getByRole("button", { name: /けっかを 見る/ }).click();
     if (day < 4) await page.getByRole("button", { name: /つづけます/ }).click();
   }

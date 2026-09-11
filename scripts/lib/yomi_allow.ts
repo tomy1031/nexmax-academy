@@ -95,6 +95,12 @@ export const YOMI_ALLOW: readonly YomiAllowEntry[] = [
   { surface: "他", reading: "ほか", note: "「他の 会社」など。解析は た" },
   { surface: "型", reading: "かた", note: "「あいさつの型」など単独の型。解析は がた" },
   { surface: "行", reading: "ぎょう", note: "「1行」「3行で」＝テキストの行。解析は こう" },
+  {
+    surface: "行の 間",
+    reading: "ぎょうの あいだ",
+    where: "1.3倍",
+    note: "「行の 間を 1.3倍に しました」（asakai_kantan・フォントの 直し）＝行間。解析は 行＝くだり・間＝ま と 読む",
+  },
   { surface: "後に", reading: "あとに", note: "「どれを 後に するか」。解析は ごに" },
   { surface: "何ですか", reading: "なんですか", note: "解析は なにですか" },
   {

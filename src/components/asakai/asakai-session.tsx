@@ -25,11 +25,24 @@
  * 合否が 変わらない ので、CI でも 通しで 確かめられる。
  */
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 
 import { CallShell } from "@/components/call-shell";
+import { DictionaryText } from "@/components/dictionary-text";
 import { HintModal } from "@/components/meeting/hint-modal";
+import { SpeakButton } from "@/components/meeting/speak-button";
+import { SpeechSpeedPicker } from "@/components/meeting/speech-speed-picker";
+import { useLiveVoice } from "@/components/meeting/use-live-voice";
+import { VisemeFace } from "@/components/meeting/viseme-face";
 import { RubyText } from "@/components/ruby-text";
+import {
+  rateOf,
+  readSpeechSpeed,
+  readSpeechSpeedOnServer,
+  saveSpeechSpeed,
+  subscribeSpeechSpeed,
+} from "@/lib/meeting/speed";
+import { useVoiceQueue } from "@/components/asakai/use-voice-queue";
 import {
   CardBoard,
   CountBoxes,
@@ -73,6 +86,28 @@ const DAY_NAME: Record<Scene["day"], string> = {
 const KIND_NAME: Record<Scene["kind"], string> = { asa: "朝礼", yuu: "夕礼" };
 
 /**
+ * Live への 言い渡し — **聞くだけ**。
+ *
+ * 相手役に 質問させない（この ファイル 冒頭の 決まり）。当たり判定は 学習者の
+ * 発話だけを 見るので、相手が 聞き返すと **その 答えで カードが 開く**。
+ * 司会の ことばは 教材が 持ち、画面が 選ぶ。ここは **声を 文字に する** ためだけに 使う。
+ */
+/**
+ * 口の 絵（母音5つ＋閉じ）が すでに ある 人。
+ *
+ * 無い 人に `VisemeFace` を 渡すと、静かな 丸に **裸の 漢字**が 出る。
+ * 絵を 足したら ここに id を 足す（`docs/朝礼・夕礼_口パク画像_別スレッド指示.md`）。
+ */
+const HAS_MOUTH = new Set(["hendy", "nyam"]);
+
+const LISTEN_ONLY = [
+  "あなたは 朝礼の 司会の となりで 聞いて いる 係です。",
+  "学生が 話し終わったら、**何も 言いません**。声でも 文字でも 返事を しません。",
+  "しつもんも しません。あいづちも 打ちません。ただ 聞くだけです。",
+  "つぎに 何を 聞くかは 画面が 決めます。",
+].join("\n");
+
+/**
  * **画面が 自分で 出す 字**の 読み（`CallShell` の `SHELL_FURIGANA` と 同じ 流儀）。
  *
  * 教材の 読み辞書だけで 描いて いた ころ、週の けっかの「合格」が
@@ -108,6 +143,18 @@ interface ChatLine {
   readonly speakerId: string;
   readonly text: string;
   readonly self?: boolean;
+  /** 作り置きの こえ（教材の `audio`）。あれば 🔊 で 聞き返せる。 */
+  readonly audio?: string;
+}
+
+/** チャットの 行を 1つ 作る（`audio` を 落とさない ため 1か所に する）。 */
+function toChatLine(line: Line, nameOf: ReadonlyMap<string, string>): ChatLine {
+  return {
+    who: nameOf.get(line.speakerId) ?? "",
+    speakerId: line.speakerId,
+    text: line.text,
+    audio: line.audio,
+  };
 }
 
 export function AsakaiSession({ meeting }: { meeting: Meeting }) {
@@ -148,16 +195,53 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
   const [phase, setPhase] = useState<"talk" | "gap" | "done">("talk");
   const [results, setResults] = useState<readonly DayResult[]>(start.results);
 
+  /*
+   * **声が 本線**（2026-09-11 の 指定「マイクで話すのがメインです」）。
+   * Live は **聞くだけ**に 使う——相手役に 質問させると、当たり判定は 学習者の
+   * 発話だけを 見るので その 答えで カードが 開く（この ファイル 冒頭の 決まり）。
+   * 司会の ことばは 教材が 持ち、画面が 選ぶ。
+   */
+  const voice = useLiveVoice();
+  /* 速さは 端末の 覚え書き（`MeetingSession` と 同じ 読みかた）。 */
+  const speed = useSyncExternalStore(
+    subscribeSpeechSpeed,
+    readSpeechSpeed,
+    readSpeechSpeedOnServer,
+  );
+  /*
+   * 作り置きの こえ。**鍵を 持たない 学習者にも 声が 届く**——朝礼は
+   * 司会と メンバーの ことばを 教材が 先に 持って いるので、Live に つながずに
+   * そのまま 鳴らせる（`scripts/make_meeting_audio.ts` が 作る）。
+   */
+  const clips = useVoiceQueue();
+
+  /**
+   * 報告の 見かた（モーダル）。**モーダルを 閉じてから 司会と メンバーが 話す**
+   *（2026-09-11 の 指定「評価はモーダルで出してください。モーダルの後に、
+   * 各担当者が報告をします」）。閉じるまで 会話を 積まないので、
+   * 学習者は 自分の 報告の けっかを 読んでから つぎへ 進める。
+   */
+  const [judge, setJudge] = useState<{
+    readonly opened: readonly string[];
+    readonly shut: readonly string[];
+    readonly sceneOver: boolean;
+    readonly after: (() => void) | null;
+  } | null>(null);
+
   const scene = asakai?.scenes[sceneAt];
   const panels = useMemo(() => toPanels(scene), [scene]);
 
+  /*
+   * 1行 積んで、作り置きの こえも 順に 鳴らす。
+   * **積む その場で 鳴らす**——効果に すると 状態の 更新が 連鎖する
+   *（`use-voice-queue.ts` の「送り出しは 効果では なく 事件で する」）。
+   */
   const say = useCallback(
-    (line: Line) =>
-      setLines((prev) => [
-        ...prev,
-        { who: nameOf.get(line.speakerId) ?? "", speakerId: line.speakerId, text: line.text },
-      ]),
-    [nameOf],
+    (line: Line) => {
+      setLines((prev) => [...prev, toChatLine(line, nameOf)]);
+      clips.push([line], rateOf(speed));
+    },
+    [nameOf, clips, speed],
   );
 
   /** 場面の はじめ（司会の 開き → 見本 → あなたの 番）を チャットに 積む。 */
@@ -165,14 +249,12 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
     (at: number) => {
       const next = asakai?.scenes[at];
       if (!next) return;
-      const rows = [...next.opening, next.sample, next.prompt].map((line) => ({
-        who: nameOf.get(line.speakerId) ?? "",
-        speakerId: line.speakerId,
-        text: line.text,
-      }));
-      setLines(rows);
+      const said = [...next.opening, next.sample, next.prompt];
+      setLines(said.map((line) => toChatLine(line, nameOf)));
+      clips.stop();
+      clips.push(said, rateOf(speed));
     },
-    [asakai, nameOf],
+    [asakai, nameOf, clips, speed],
   );
 
   /** 報告が 終わった ときの ひとかたまり（受け止め → 采配 → メンバー → 閉じ）。 */
@@ -242,78 +324,143 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
       const tail: Line[] = [ack];
       if (scene.arrange) tail.push(komari?.full ? scene.arrange.done : scene.arrange.missing);
       tail.push(...scene.members, ...scene.closing);
-      setLines((prev) => [
-        ...prev,
-        ...tail.map((line) => ({
-          who: nameOf.get(line.speakerId) ?? "",
-          speakerId: line.speakerId,
-          text: line.text,
-        })),
-      ]);
+      setLines((prev) => [...prev, ...tail.map((line) => toChatLine(line, nameOf))]);
+      clips.push(tail, rateOf(speed));
       setAskedId(null);
     },
-    [scene, asakai, panels, nameOf, meeting.id],
+    [scene, asakai, panels, nameOf, meeting.id, clips, speed],
   );
 
-  const send = useCallback(() => {
-    const text = answer.trim();
-    if (!text || !scene) return;
-    setAnswer("");
-    setLines((prev) => [...prev, { who: "あなた", speakerId: "self", text, self: true }]);
+  /**
+   * 1本の 報告を 受ける。**声でも 文字でも ここに 来る**。
+   *
+   * 司会と メンバーの ことばは **すぐには 積まない**——先に 見かたの モーダルを 出し、
+   * 閉じた ときに まとめて 積む（2026-09-11 の 指定
+   *「評価はモーダルで出してください。モーダルの後に、各担当者が報告をします」）。
+   * 声を 入れると 一人ずつ 順に 話す ことに なるので、**話し始める 合図**が 要る。
+   */
+  const send = useCallback(
+    (spoken?: string) => {
+      const text = (spoken ?? answer).trim();
+      if (!text || !scene) return;
+      if (spoken === undefined) setAnswer("");
+      setLines((prev) => [...prev, { who: "あなた", speakerId: "self", text, self: true }]);
 
-    const step = applyUtterance({ utterance: text, panels, states });
-    const target = nextProbePanel(panels, step.states);
-    if (!target) {
-      setStates(step.states);
-      finishScene(step.states, probes);
-      return;
-    }
+      const step = applyUtterance({ utterance: text, panels, states });
+      const target = nextProbePanel(panels, step.states);
 
-    const count = (attempts[target.id] ?? 0) + 1;
-    const data = scene.panels.find((p) => p.id === target.id);
-    if (!data) {
-      setStates(step.states);
-      return;
-    }
+      /* この 1本で **新しく ⭕ に なった 札**と、まだ 残って いる 札。 */
+      const wasFull = new Set(states.filter((one) => one.full).map((one) => one.id));
+      const labelOf = (id: string) => panels.find((one) => one.id === id)?.label ?? id;
+      const opened = step.states
+        .filter((one) => one.full && !wasFull.has(one.id))
+        .map((one) => labelOf(one.id));
 
-    /* 2回 聞いても 開かない カードは、司会が れいを 見せて 先へ 進める。 */
-    if (count > MAX_PROBE) {
-      say({ ...data.example, text: `こう 言うと 開きます。${data.example.text}` });
-      const passed = step.states.map((s) => (s.id === target.id ? { ...s, gaveUp: true } : s));
-      setStates(passed);
-      const after = nextProbePanel(panels, passed);
-      if (!after) {
-        setAttempts({ ...attempts, [target.id]: count });
-        finishScene(passed, probes);
+      if (!target) {
+        setStates(step.states);
+        setJudge({
+          opened,
+          shut: [],
+          sceneOver: true,
+          after: () => finishScene(step.states, probes),
+        });
         return;
       }
-      const afterCount = (attempts[after.id] ?? 0) + 1;
-      const afterData = scene.panels.find((p) => p.id === after.id);
-      const followup = afterData?.followups[Math.min(afterCount, 2) - 1];
-      if (followup) say(followup);
-      setAttempts({ ...attempts, [target.id]: count, [after.id]: afterCount });
-      setAskedId(after.id);
-      setProbes((n) => n + 1);
-      return;
-    }
 
-    const followup = data.followups[Math.min(count, data.followups.length) - 1];
-    if (followup) say(followup);
-    setStates(step.states);
-    setAttempts({ ...attempts, [target.id]: count });
-    setAskedId(target.id);
-    setProbes((n) => n + 1);
-  }, [answer, scene, panels, states, attempts, probes, say, finishScene]);
+      const shut = panels
+        .filter((one) => !step.states.find((x) => x.id === one.id)?.full)
+        .map((one) => one.label);
+      const count = (attempts[target.id] ?? 0) + 1;
+      const data = scene.panels.find((one) => one.id === target.id);
+      if (!data) {
+        setStates(step.states);
+        return;
+      }
+
+      /* 2回 聞いても 開かない カードは、司会が れいを 見せて 先へ 進める。 */
+      if (count > MAX_PROBE) {
+        const passed = step.states.map((one) =>
+          one.id === target.id ? { ...one, gaveUp: true } : one,
+        );
+        setStates(passed);
+        const next = nextProbePanel(panels, passed);
+        if (!next) {
+          setAttempts({ ...attempts, [target.id]: count });
+          setJudge({
+            opened,
+            shut,
+            sceneOver: true,
+            after: () => finishScene(passed, probes),
+          });
+          return;
+        }
+        const nextCount = (attempts[next.id] ?? 0) + 1;
+        const nextData = scene.panels.find((one) => one.id === next.id);
+        const followup = nextData?.followups[Math.min(nextCount, 2) - 1];
+        setAttempts({ ...attempts, [target.id]: count, [next.id]: nextCount });
+        setProbes((n) => n + 1);
+        setJudge({
+          opened,
+          shut,
+          sceneOver: false,
+          after: () => {
+            say({ ...data.example, text: `こう 言うと 開きます。${data.example.text}` });
+            if (followup) say(followup);
+            setAskedId(next.id);
+          },
+        });
+        return;
+      }
+
+      const followup = data.followups[Math.min(count, data.followups.length) - 1];
+      setStates(step.states);
+      setAttempts({ ...attempts, [target.id]: count });
+      setProbes((n) => n + 1);
+      setJudge({
+        opened,
+        shut,
+        sceneOver: false,
+        after: () => {
+          if (followup) say(followup);
+          setAskedId(target.id);
+        },
+      });
+    },
+    [answer, scene, panels, states, attempts, probes, say, finishScene],
+  );
+
+  /** 見かたの モーダルを 閉じる。**ここで はじめて 司会と メンバーが 話す**。 */
+  const closeJudge = useCallback(() => {
+    const after = judge?.after;
+    setJudge(null);
+    after?.();
+  }, [judge]);
+
+  /*
+   * 声で 答えた ぶんを 受ける。`lastUtterance` は **学習者の ことば**で、
+   * 相手の 返事では ない（`useLiveVoice` の 覚え書き）。
+   */
+  const spokenAt = useRef(0);
+  useEffect(() => {
+    const heard = voice.lastUtterance;
+    if (!heard || heard.id === spokenAt.current) return;
+    spokenAt.current = heard.id;
+    if (!heard.text.trim()) return;
+    /* 効果の 中で そのまま 状態を 変えない（描き直しが 連なる）。1つ 後ろへ ずらす。 */
+    void Promise.resolve().then(() => send(heard.text));
+  }, [voice.lastUtterance, send]);
 
   /** 時間カードへ。金曜だけは そのまま 週の けっかへ。 */
   const toGap = useCallback(() => {
     if (!asakai) return;
+    /* 場面を 離れる ときは 鳴って いる こえも 止める（次の 日に 持ちこさない）。 */
+    clips.stop();
     if (sceneAt + 1 >= asakai.scenes.length) {
       setPhase("done");
       return;
     }
     setPhase("gap");
-  }, [asakai, sceneAt, meeting.id]);
+  }, [asakai, sceneAt, clips]);
 
   /**
    * 週の けっかを 読み終えた とき。
@@ -364,6 +511,262 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
     };
   });
 
+  const dayHeading = `${DAY_NAME[scene.day]}の ${KIND_NAME[scene.kind]}`;
+  /** 場面の あいだ（時間カード・週の けっか）は 報告の 道具を ぜんぶ 消す。 */
+  const between = phase !== "talk";
+
+  /*
+   * 口パクの 顔。
+   *
+   * **口の 絵が ある 人にだけ 渡す。** `VisemeFace` は 絵が 無い とき
+   * 静かな 丸に 名前の 1文字を 出すが、それは **裸の 漢字**に なる（奥・富・藤）。
+   * `CallShell` は 渡さなければ かなの 頭文字を 出す ので、そちらに まかせる。
+   * 絵が そろったら ここに id を 足す
+   *（`docs/朝礼・夕礼_口パク画像_別スレッド指示.md`）。
+   */
+  const faces = Object.fromEntries(
+    asakai.people
+      .filter((person) => HAS_MOUTH.has(person.id))
+      .map((person) => [
+        person.id,
+        <VisemeFace
+          key={person.id}
+          dir={`/img/characters/${person.id}/mouth`}
+          utterance={last && last.speakerId === person.id ? last.text : ""}
+          /*
+           * 解析器は **鳴って いる 人にだけ** 渡す。1つしか 無いので、
+           * 全員に 渡すと 全員の 口が いっしょに 動く。
+           * 作り置きの 音が 無い 人は これまでどおり 字の 長さで 動く。
+           */
+          analyser={clips.speakingId === person.id ? clips.analyser : null}
+        />,
+      ]),
+  );
+
+  /* 帯（`MeetingSession` の「01 …」の 帯と 同じ 席）。 */
+  const steps = (
+    <div className="card-island flex items-center gap-2 px-3 py-2">
+      <SkyStrip kind={scene.kind} />
+      <DayDots at={sceneAt} />
+    </div>
+  );
+
+  /*
+   * 左の 報告パネル。**並びは 既存の ミーティングと そろえる**
+   *（見出し → 相手の ことば → 「声で 答えましょう！」→ 速さ｜🎤｜💡）。
+   * 2026-09-11 の 指定「UIをまるきり作り変えるな、既存のUIをできる限り使え」。
+   */
+  const reportPanel = between ? null : (
+    <div className="card-island space-y-3 p-3">
+      <p className="text-navy text-sm font-black">
+        💬 <RubyText text={dayHeading} index={index} show />
+      </p>
+
+      {lastSaid ? (
+        <div className="border-hairline bg-panel rounded-xl border px-3 py-2">
+          <p className="text-ink-soft flex items-center gap-2 text-[11px] font-black">
+            <RubyText text={`${lastSaid.who}さんの ことば`} index={index} show />
+            {/* 作り置きの こえが ある ときだけ 出す。聞きとれなかった 人の 逃げ道。 */}
+            {lastSaid.audio ? (
+              <button
+                type="button"
+                aria-label="もう一度 聞く"
+                onClick={() => clips.play(lastSaid.audio as string, rateOf(speed))}
+                className="btn-island px-2 py-0.5 text-xs"
+              >
+                🔊
+              </button>
+            ) : null}
+          </p>
+          <p className="text-ink mt-1 font-bold break-words">
+            {/* 教材が 書いた 固定文なので **タップで 意味が 出る**（2026-09-11 の 指定）。 */}
+            <DictionaryText text={lastSaid.text} index={index} />
+          </p>
+        </div>
+      ) : null}
+
+      {sceneOver ? (
+        <button
+          type="button"
+          onClick={toGap}
+          aria-label={
+            sceneAt + 1 >= asakai.scenes.length ? "今週の けっかを 見る" : "きょうの けっかを 見る"
+          }
+          className="btn-island btn-game w-full px-6 py-3"
+        >
+          <RubyText
+            text={
+              sceneAt + 1 >= asakai.scenes.length
+                ? "今週の けっかを 見る ▶"
+                : "きょうの けっかを 見る ▶"
+            }
+            index={index}
+            show
+          />
+        </button>
+      ) : (
+        <>
+          <p className="text-ink-soft text-center text-sm font-black">
+            <RubyText text="声で 答えましょう！" index={index} show />
+          </p>
+          {/*
+           * スピード｜🎤｜💡 の 並びは 既存の ミーティングと 同じ。
+           * ただし 390px で 3列に すると **マイクの 字が 3行に 折れる** ので、
+           * せまい ときは マイクが 1行 まるごと 使い、下に スピードと ヒントを 並べる。
+           */}
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div className="order-1 w-full sm:order-2 sm:w-auto sm:flex-1">
+              <SpeakButton
+                status={voice.status}
+                reason={voice.reason}
+                talking={voice.talking}
+                disabled={judge !== null}
+                waitNote={judge ? "見かたを 読んでから 話します。" : null}
+                onConnect={() => void voice.start(LISTEN_ONLY)}
+                onStartTalking={voice.startTalking}
+                onStopTalking={voice.stopTalking}
+              />
+            </div>
+            <div className="order-2 sm:order-1">
+              <SpeechSpeedPicker
+                value={speed}
+                onChange={saveSpeechSpeed}
+                tone="light"
+                disabled={judge !== null}
+              />
+            </div>
+            <button
+              type="button"
+              onClick={() => setHint(true)}
+              className="btn-island order-3 px-3 py-2 text-sm font-black"
+            >
+              💡 <RubyText text="ヒント" index={index} show />
+            </button>
+          </div>
+
+          {/*
+           * 声が 使えない ときの 道（鍵が 無い・マイクが 無い）。**たたまない**。
+           *
+           * `<details>` に 閉じて いた ころ、鍵の 無い 学習者は
+           * **開ける ものが ある ことに 気づかず 行き止まり**に なった。
+           * 声が 本線なので マイクを 大きく 上に 置き、文字は 小さく 下に 残す。
+           */}
+          <div className="space-y-2">
+            <label className="text-ink-soft block text-[11px] font-black" htmlFor="asakai-answer">
+              <RubyText text="声が 使えない ときは、文字でも 答えられます。" index={index} show />
+            </label>
+            <textarea
+              id="asakai-answer"
+              value={answer}
+              onChange={(event) => setAnswer(event.target.value)}
+              rows={2}
+              className="border-hairline w-full rounded-xl border p-2 text-sm font-bold"
+            />
+            <button
+              type="button"
+              onClick={() => send()}
+              disabled={!answer.trim() || judge !== null}
+              aria-label="報告する"
+              className="btn-island w-full px-4 py-2 text-sm font-black disabled:opacity-45"
+            >
+              <RubyText text="報告する" index={index} show />
+            </button>
+          </div>
+        </>
+      )}
+    </div>
+  );
+
+  /* 場面カード（担当・ゴール・どこまで・その日の 行／メモ）。 */
+  const sceneCard = between ? null : (
+    <div className="card-island space-y-3 p-3">
+      <p className="text-navy text-sm font-black">
+        <RubyText text={scene.title} index={index} show />
+      </p>
+
+      <div className="border-hairline rounded-xl border bg-white/70 p-2 text-sm">
+        <Tag text="担当" index={index} />
+        <DictionaryText text={scene.card.duty} index={index} />
+        <p className="mt-1 font-bold">
+          <Tag text="今週の ゴール" index={index} />
+          <DictionaryText text={scene.card.goal} index={index} />
+        </p>
+        {scene.card.deadline ? (
+          <p className="mt-1 font-bold">
+            <Tag text="いつまでに" index={index} />
+            <DictionaryText text={scene.card.deadline} index={index} />
+          </p>
+        ) : null}
+      </div>
+
+      <ProgressBoxes items={scene.card.progress} index={index} />
+
+      {scene.card.rows?.length ? (
+        <dl className="space-y-2 text-sm">
+          {scene.card.rows.map((row) => (
+            <div key={row.key}>
+              <dt className="text-blue-deep font-black">
+                <RubyText text={row.label} index={index} show />
+              </dt>
+              <dd className="m-0 font-bold">
+                <DictionaryText text={row.text} index={index} />
+                {row.count ? (
+                  <CountBoxes total={row.count.total} done={row.count.done} now={row.count.now} />
+                ) : null}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      ) : null}
+
+      {scene.card.memo?.length ? (
+        <div>
+          <p className="text-ink-soft text-[11px] font-black">
+            <RubyText text="きょうの メモ" index={index} show />
+          </p>
+          <ul className="mt-1 list-none space-y-1 border-l-[3px] border-[#8a5a3e] pl-2">
+            {scene.card.memo.map((row, at) => (
+              <li
+                key={`${row.head}-${at}`}
+                /*
+                 * `aside`（報告に 要らない 行）でも **見た目を 変えない**。
+                 * 灰色に して いた ころ、どれを 落とすかを 画面が 先に
+                 * 答えて いた——えらぶ 練習に ならない（2026-09-11）。
+                 */
+                className="grid grid-cols-[3.6rem_minmax(0,1fr)] gap-2 text-[13px] leading-snug font-bold"
+              >
+                <span className="text-[#8a5a3e] tabular-nums">
+                  <RubyText text={row.head} index={index} show />
+                </span>
+                <span>
+                  <DictionaryText text={row.text} index={index} />
+                </span>
+              </li>
+            ))}
+          </ul>
+          {scene.card.pin ? (
+            <p className="mt-2 rounded-md border border-[#d8c77a] bg-[#fdf6c8] px-3 py-2 text-sm font-bold">
+              📌 <DictionaryText text={scene.card.pin} index={index} />
+            </p>
+          ) : null}
+        </div>
+      ) : null}
+
+      {scene.card.todo?.length ? (
+        <div className="bg-panel-tint rounded-xl px-3 py-2 text-sm">
+          <p className="text-ink-soft text-[11px] font-black">
+            <RubyText text="やること" index={index} show />
+          </p>
+          {scene.card.todo.map((row, at) => (
+            <p key={at} className="font-bold">
+              <DictionaryText text={row} index={index} />
+            </p>
+          ))}
+        </div>
+      ) : null}
+    </div>
+  );
+
   return (
     <CallShell
       title={meeting.title}
@@ -380,9 +783,16 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
           role: person.duty,
           accent: person.accent,
         }))}
-      onJoined={() => openScene(0)}
-      side={<Chat lines={lines} index={index} />}
-      speak={
+      faces={faces}
+      settings={<SpeechSpeedPicker value={speed} onChange={saveSpeechSpeed} />}
+      onJoined={() => openScene(start.sceneAt)}
+      onLeft={() => {
+        voice.stop();
+        clips.stop();
+      }}
+      side={<Chat lines={lines} index={index} onReplay={(url) => clips.play(url, rateOf(speed))} />}
+      speak={between ? null : <CardBoard cards={cards} index={index} />}
+      controls={
         phase === "done" ? (
           <WeekResult asakai={asakai} rows={results} index={index} onClose={closeResult} />
         ) : phase === "gap" ? (
@@ -396,191 +806,109 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
             onNext={goNext}
           />
         ) : (
-          <div className="flex flex-col">
-            <CardBoard cards={cards} index={index} />
-
-            <div className="card-island mt-2 space-y-3 p-3">
-              <div className="flex items-center gap-2">
-                <SkyStrip kind={scene.kind} />
-                <DayDots at={sceneAt} />
-              </div>
-              <p className="text-navy text-sm font-black">
-                <RubyText text={scene.title} index={index} show />
-              </p>
-
-              <div className="border-hairline rounded-xl border bg-white/70 p-2 text-sm">
-                <Tag text="担当" index={index} />
-                <RubyText text={scene.card.duty} index={index} show />
-                <p className="mt-1 font-bold">
-                  <Tag text="今週の ゴール" index={index} />
-                  <RubyText text={scene.card.goal} index={index} show />
-                </p>
-                {scene.card.deadline ? (
-                  <p className="mt-1 font-bold">
-                    <Tag text="いつまでに" index={index} />
-                    <RubyText text={scene.card.deadline} index={index} show />
-                  </p>
-                ) : null}
-              </div>
-
-              <ProgressBoxes items={scene.card.progress} index={index} />
-
-              {scene.card.rows?.length ? (
-                <dl className="space-y-2 text-sm">
-                  {scene.card.rows.map((row) => (
-                    <div key={row.key}>
-                      <dt className="text-blue-deep font-black">
-                        <RubyText text={row.label} index={index} show />
-                      </dt>
-                      <dd className="m-0 font-bold">
-                        <RubyText text={row.text} index={index} show />
-                        {row.count ? (
-                          <CountBoxes
-                            total={row.count.total}
-                            done={row.count.done}
-                            now={row.count.now}
-                          />
-                        ) : null}
-                      </dd>
-                    </div>
-                  ))}
-                </dl>
-              ) : null}
-
-              {scene.card.memo?.length ? (
-                <div>
-                  <p className="text-ink-soft text-[11px] font-black">
-                    <RubyText text="きょうの メモ" index={index} show />
-                  </p>
-                  <ul className="mt-1 list-none space-y-1 border-l-[3px] border-[#8a5a3e] pl-2">
-                    {scene.card.memo.map((row, at) => (
-                      <li
-                        key={`${row.head}-${at}`}
-                        /*
-                         * `aside`（報告に 要らない 行）でも **見た目を 変えない**。
-                         * 灰色に して いた ころ、どれを 落とすかを 画面が 先に
-                         * 答えて いた——えらぶ 練習に ならない（2026-09-11）。
-                         */
-                        className="grid grid-cols-[3.6rem_minmax(0,1fr)] gap-2 text-[13px] leading-snug font-bold"
-                      >
-                        <span className="text-[#8a5a3e] tabular-nums">
-                          <RubyText text={row.head} index={index} show />
-                        </span>
-                        <span>
-                          <RubyText text={row.text} index={index} show />
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                  {scene.card.pin ? (
-                    <p className="mt-2 rounded-md border border-[#d8c77a] bg-[#fdf6c8] px-3 py-2 text-sm font-bold">
-                      📌 <RubyText text={scene.card.pin} index={index} show />
-                    </p>
-                  ) : null}
-                </div>
-              ) : null}
-
-              {scene.card.todo?.length ? (
-                <div className="bg-panel-tint rounded-xl px-3 py-2 text-sm">
-                  <p className="text-ink-soft text-[11px] font-black">
-                    <RubyText text="やること" index={index} show />
-                  </p>
-                  {scene.card.todo.map((row, at) => (
-                    <p key={at} className="font-bold">
-                      <RubyText text={row} index={index} show />
-                    </p>
-                  ))}
-                </div>
-              ) : null}
-            </div>
-
-            <div className="border-hairline sticky bottom-0 z-20 mt-2 border-t bg-white/95 px-2 py-2 backdrop-blur">
-              {sceneOver ? (
-                <button
-                  type="button"
-                  onClick={toGap}
-                  aria-label={
-                    sceneAt + 1 >= asakai.scenes.length
-                      ? "今週の けっかを 見る"
-                      : "きょうの けっかを 見る"
-                  }
-                  className="btn-island btn-game w-full px-6 py-3"
-                >
-                  <RubyText
-                    text={
-                      sceneAt + 1 >= asakai.scenes.length
-                        ? "今週の けっかを 見る ▶"
-                        : "きょうの けっかを 見る ▶"
-                    }
-                    index={index}
-                    show
-                  />
-                </button>
-              ) : (
-                <div className="space-y-2">
-                  {/*
-                   * **いま 言われた 1行**を 入力欄の すぐ上に 置く（2026-09-11）。
-                   *
-                   * 会話の 記録（`side`）は 390px では カメラの 列の さらに 下に 積まれる。
-                   * カードが ❓ に 変わっても、**何を 聞かれたかは 画面 1つぶん 下**に あった。
-                   * 打つ 手の すぐ上に 相手の ことばを 置く（`MeetingSession` と 同じ 形）。
-                   */}
-                  {lastSaid ? (
-                    <p className="bg-panel-tint rounded-xl px-3 py-2 text-sm font-bold">
-                      <span className="text-ink-soft mr-1 text-[11px] font-black">
-                        <RubyText text={lastSaid.who} index={index} show />
-                      </span>
-                      <RubyText text={lastSaid.text} index={index} show />
-                    </p>
-                  ) : null}
-                  <label
-                    className="text-ink-soft block text-[11px] font-black"
-                    htmlFor="asakai-answer"
-                  >
-                    <RubyText text="あなたの 番です。報告を 書いて ください。" index={index} show />
-                  </label>
-                  <textarea
-                    id="asakai-answer"
-                    value={answer}
-                    onChange={(event) => setAnswer(event.target.value)}
-                    rows={3}
-                    className="border-hairline w-full rounded-xl border p-2 text-sm font-bold"
-                  />
-                  <div className="flex gap-2">
-                    <button
-                      type="button"
-                      onClick={send}
-                      disabled={!answer.trim()}
-                      /* ルビの かなが 字の あいだに 挟まるので、読み上げ用の 名前は 別に 持つ。 */
-                      aria-label="報告する"
-                      className="btn-island btn-game flex-1 px-4 py-2 disabled:opacity-45"
-                    >
-                      <RubyText text="報告する" index={index} show />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setHint(true)}
-                      className="btn-island px-4 py-2 text-sm font-black"
-                    >
-                      💡 <RubyText text="ヒント" index={index} show />
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {hint ? (
-              <HintModal
-                lines={scene.hintLines}
-                hasBlank={scene.hintLines.some((line) => line.includes("◯"))}
-                furigana={index}
-                onClose={() => setHint(false)}
-              />
-            ) : null}
+          <div className="space-y-2">
+            {steps}
+            {reportPanel}
           </div>
         )
       }
-    />
+      controlsAt="top"
+    >
+      {sceneCard}
+      {hint ? (
+        <HintModal
+          lines={scene.hintLines}
+          hasBlank={scene.hintLines.some((line) => line.includes("◯"))}
+          furigana={index}
+          onClose={() => setHint(false)}
+        />
+      ) : null}
+      {judge ? (
+        <ReportJudge
+          opened={judge.opened}
+          shut={judge.shut}
+          sceneOver={judge.sceneOver}
+          index={index}
+          onClose={closeJudge}
+        />
+      ) : null}
+    </CallShell>
+  );
+}
+
+/**
+ * 報告の 見かた（モーダル）。
+ *
+ * **これを 閉じてから 司会と メンバーが 話す**（2026-09-11 の 指定）。
+ * 前は 報告の 直後に 会話が 積まれ、しかも その 会話は 画面の 下に 流れて いた ので、
+ * 学習者は **自分の 報告が どう 受け取られたかを 一度も 読まずに** 先へ 進めた。
+ *
+ * 中身は 数と 札だけ。ねぎらいの ことばは 置かない（規律1・2026-09-03 の 指定）。
+ */
+function ReportJudge({
+  opened,
+  shut,
+  sceneOver,
+  index,
+  onClose,
+}: {
+  opened: readonly string[];
+  shut: readonly string[];
+  sceneOver: boolean;
+  index: FuriganaIndex;
+  onClose: () => void;
+}) {
+  return (
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-label="報告の 見かた"
+      className="fixed inset-0 z-50 grid place-items-center p-4"
+      style={{ background: "rgba(15,34,51,0.55)" }}
+      onClick={onClose}
+    >
+      <div
+        className="card-island max-h-[88vh] w-full max-w-md overflow-y-auto p-5"
+        onClick={(event) => event.stopPropagation()}
+      >
+        <p className="text-navy text-center text-lg font-black">
+          <RubyText text="いまの 報告" index={index} show />
+        </p>
+
+        <div className="border-hairline bg-panel mt-3 rounded-xl border px-3 py-2">
+          <p className="text-leaf-deep text-[11px] font-black">
+            ✓ <RubyText text="開いた カード" index={index} show />
+          </p>
+          <p className="mt-0.5 text-sm font-bold">
+            {opened.length > 0 ? (
+              <RubyText text={opened.join("・")} index={index} show />
+            ) : (
+              <RubyText text="ありません。" index={index} show />
+            )}
+          </p>
+        </div>
+
+        {shut.length > 0 ? (
+          <div className="border-hairline bg-panel mt-2 rounded-xl border px-3 py-2">
+            <p className="text-coral-deep text-[11px] font-black">
+              ▢ <RubyText text="まだ 言って いない カード" index={index} show />
+            </p>
+            <p className="mt-0.5 text-sm font-bold">
+              <RubyText text={shut.join("・")} index={index} show />
+            </p>
+          </div>
+        ) : null}
+
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label={sceneOver ? "みんなの 報告を 聞く" : "つづける"}
+          className="btn-island btn-game mt-4 w-full px-6 py-3"
+        >
+          <RubyText text={sceneOver ? "みんなの 報告を 聞く ▶" : "つづける ▶"} index={index} show />
+        </button>
+      </div>
+    </div>
   );
 }
 
@@ -799,7 +1127,16 @@ function WeekResult({
   );
 }
 
-function Chat({ lines, index }: { lines: readonly ChatLine[]; index: FuriganaIndex }) {
+function Chat({
+  lines,
+  index,
+  onReplay,
+}: {
+  lines: readonly ChatLine[];
+  index: FuriganaIndex;
+  /** 🔊 を 押した とき（作り置きの こえが ある 行だけ 出る）。 */
+  onReplay: (url: string) => void;
+}) {
   const box = useRef<HTMLDivElement>(null);
   /* 行が 増えたら いちばん下へ。受け止め・采配・閉じの ことばが 箱の 中に 隠れる。 */
   useEffect(() => {
@@ -807,16 +1144,30 @@ function Chat({ lines, index }: { lines: readonly ChatLine[]; index: FuriganaInd
     if (node) node.scrollTop = node.scrollHeight;
   }, [lines]);
   return (
-    <div ref={box} className="card-island h-[46vh] overflow-y-auto p-3 text-sm sm:h-[62vh]">
-      {lines.map((line, at) => (
-        <p key={at} className={`mb-2 font-bold ${line.self ? "text-blue-deep" : ""}`}>
-          {/* 名前も 教材の 字（富田・奥田）。ルビを 通さないと 裸の 漢字に なる。 */}
-          <span className="text-ink-soft mr-1 text-[11px] font-black">
-            <RubyText text={line.who} index={index} show />
-          </span>
-          <RubyText text={line.text} index={index} show />
-        </p>
-      ))}
+    <div className="card-island p-3">
+      <p className="text-navy mb-2 text-sm font-black">💬 テキストチャット</p>
+      <div ref={box} className="h-[42vh] overflow-y-auto pr-1 text-sm sm:h-[58vh]">
+        {lines.map((line, at) => (
+          <p key={at} className={`mb-2 font-bold ${line.self ? "text-blue-deep" : ""}`}>
+            {/* 名前も 教材の 字（富田・奥田）。ルビを 通さないと 裸の 漢字に なる。 */}
+            <span className="text-ink-soft mr-1 text-[11px] font-black">
+              <RubyText text={line.who} index={index} show />
+            </span>
+            <RubyText text={line.text} index={index} show />
+            {/* 流れて いった ことばを 聞き直せる（`MeetingSession` と 同じ 逃げ道）。 */}
+            {line.audio ? (
+              <button
+                type="button"
+                aria-label={`${line.who}さんの ことばを もう一度 聞く`}
+                onClick={() => onReplay(line.audio as string)}
+                className="btn-island ml-1 px-1.5 py-0.5 align-middle text-[11px]"
+              >
+                🔊
+              </button>
+            ) : null}
+          </p>
+        ))}
+      </div>
     </div>
   );
 }

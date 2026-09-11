@@ -47,18 +47,23 @@ if (!meetingId) {
   console.error("使い方: node --import tsx scripts/make_meeting_audio.ts <教材ID>");
   process.exit(1);
 }
+/** 何を 読み上げる つもりか **だけ** 出して 終わる（鍵が 要らない・目で 確かめる ため）。 */
+const listOnly: boolean = process.argv.includes("--list");
 const apiKey: string = process.env.GEMINI_API_KEY ?? "";
-if (!apiKey) {
+if (!apiKey && !listOnly) {
   console.error("GEMINI_API_KEY が ありません（GitHub の Environment「Preview」に あります）");
   process.exit(1);
 }
 
 const meetingPath = join("content", "meetings", `${meetingId}.json`);
 const meeting = JSON.parse(readFileSync(meetingPath, "utf8"));
-const hostPath = join("content", "characters", `${meeting.host.id}.json`);
-const voice: string = existsSync(hostPath)
-  ? (JSON.parse(readFileSync(hostPath, "utf8")).voice ?? "Puck")
-  : "Puck";
+
+/** 人物カードの 声（まんが・たいわ・ミーティングで 同じ 人は 同じ 声）。 */
+function voiceOf(id: string): string {
+  const path = join("content", "characters", `${id}.json`);
+  return existsSync(path) ? (JSON.parse(readFileSync(path, "utf8")).voice ?? "Puck") : "Puck";
+}
+const voice: string = voiceOf(meeting.host.id);
 
 /**
  * 読み上げる 文。並びは 画面に 出る 順。
@@ -82,22 +87,104 @@ const talkGame = meeting.talkGame as
     }
   | undefined;
 
-const lines: { key: string; text: string }[] = [
-  ...meeting.questions.map((q: { id: string; ask: string }) => ({ key: q.id, text: q.ask })),
-  ...(talkGame
-    ? [
-        { key: "opening", text: talkGame.opening ?? "" },
-        ...(talkGame.openers ?? []).map((one, at) => ({
-          key: `opener-${at}`,
-          text: one?.ask ?? "",
-        })),
-        ...(talkGame.probes ?? []).map((text, at) => ({ key: `probe-${at}`, text })),
-        { key: "listenInvite", text: talkGame.listenInvite ?? "" },
-        { key: "reward", text: talkGame.reward ?? "" },
-      ]
-    : []),
-  { key: "closing", text: meeting.closing },
-].filter((line) => line.text?.trim());
+/**
+ * 朝礼・夕礼（`asakai`）の 読み上げる 行
+ *
+ * ## しつもんが 無い 教材
+ * 朝礼は 学習者が **1本の 報告を して、足りない ところだけ 聞き返される** 形なので
+ * `questions` を 持たない（`src/content/schema.ts` の superRefine が そう 決めて いる）。
+ * 代わりに 5つの 場面が それぞれ **開き → 見本 → ふり → 受け止め → 采配 →
+ * メンバー → 閉じ**を 持つ。ここを 上から 音に する。
+ *
+ * ## 声は **話す 人ごと**
+ * 司会・ニャム・奥田・藤木が 1つの 場面で 順に 話す。ミーティングの ように
+ * ホスト 1人の 声で 通すと、だれが 話して いるか 耳では 分からない。
+ *
+ * ## `◯◯` の 行は 作らない
+ * この 教材の `◯◯` は **穴うめの 目印**でも ある（「きのうは ◯◯を しました」の 形で）。
+ * 名前として 埋めると 意味が 壊れる 行が あるので、`◯◯` を 含む 行は そのまま
+ * 字で 読む（読み上げの 照合も「まるまる」で 落ちる）。
+ */
+interface AsakaiLine {
+  speakerId: string;
+  text: string;
+  audio?: string;
+}
+interface Job {
+  key: string;
+  text: string;
+  voice: string;
+  /** 音が できた ときに 教材へ 書き戻す。 */
+  apply: (url: string) => void;
+}
+
+function asakaiJobs(): Job[] {
+  const jobs: Job[] = [];
+  const add = (key: string, line: AsakaiLine | undefined): void => {
+    if (!line?.text?.trim() || line.text.includes("◯")) return;
+    jobs.push({
+      key,
+      text: line.text,
+      voice: voiceOf(line.speakerId),
+      apply: (url) => {
+        line.audio = url;
+      },
+    });
+  };
+  const scenes = meeting.asakai.scenes as {
+    opening: AsakaiLine[];
+    sample: AsakaiLine;
+    prompt: AsakaiLine;
+    ack: AsakaiLine;
+    members: AsakaiLine[];
+    arrange?: { done: AsakaiLine; missing: AsakaiLine };
+    closing: AsakaiLine[];
+  }[];
+  for (const [at, scene] of scenes.entries()) {
+    scene.opening.forEach((line, n) => add(`s${at}-opening-${n}`, line));
+    add(`s${at}-sample`, scene.sample);
+    add(`s${at}-prompt`, scene.prompt);
+    add(`s${at}-ack`, scene.ack);
+    scene.members.forEach((line, n) => add(`s${at}-member-${n}`, line));
+    add(`s${at}-arrange-done`, scene.arrange?.done);
+    add(`s${at}-arrange-missing`, scene.arrange?.missing);
+    scene.closing.forEach((line, n) => add(`s${at}-closing-${n}`, line));
+  }
+  return jobs;
+}
+
+/** しつもん・対話ゲーム・おわりの ひとこと（これまでの 教材）。声は ホスト 1人。 */
+function classicJobs(urls: Record<string, string>): Job[] {
+  return [
+    ...meeting.questions.map((q: { id: string; ask: string }) => ({ key: q.id, text: q.ask })),
+    ...(talkGame
+      ? [
+          { key: "opening", text: talkGame.opening ?? "" },
+          ...(talkGame.openers ?? []).map((one, at) => ({
+            key: `opener-${at}`,
+            text: one?.ask ?? "",
+          })),
+          ...(talkGame.probes ?? []).map((text, at) => ({ key: `probe-${at}`, text })),
+          { key: "listenInvite", text: talkGame.listenInvite ?? "" },
+          { key: "reward", text: talkGame.reward ?? "" },
+        ]
+      : []),
+    { key: "closing", text: meeting.closing },
+  ]
+    .filter((line) => line.text?.trim())
+    .map((line) => ({
+      ...line,
+      voice,
+      /* 書き戻しは これまでどおり **まとめて** する（下の `writeClassic`）。 */
+      apply: (url: string) => {
+        urls[line.key] = url;
+      },
+    }));
+}
+
+/** 作れた ものの 一覧（これまでの 教材の 書き戻しに 使う）。 */
+const urls: Record<string, string> = {};
+const lines: Job[] = meeting.asakai ? asakaiJobs() : classicJobs(urls);
 
 /**
  * 本体。**トップレベルの await を 使わない**——このリポジトリの `.ts` は
@@ -105,11 +192,20 @@ const lines: { key: string; text: string }[] = [
  * トップレベルで await すると 変換の 時点で 落ちる（2026-08-18 に 実発生）。
  */
 async function main(): Promise<void> {
+  if (listOnly) {
+    for (const [at, line] of lines.entries()) {
+      console.log(`${at + 1}\t${line.key}\t${line.voice}\t${line.text}`);
+    }
+    console.log(`合計 ${lines.length}本`);
+    return;
+  }
   const outDir = join("public", "audio", "meetings", meetingId);
   mkdirSync(outDir, { recursive: true });
 
-  const urls: Record<string, string> = {};
   const failed: string[] = [];
+  let made = 0;
+  /** 同じ 文・同じ 声は **1回だけ** 作って 中身を 写す（5日ぶんの 同じ ふりなど）。 */
+  const already = new Map<string, string>();
 
   for (const [index, line] of lines.entries()) {
     const file = join(outDir, `${line.key}.wav`);
@@ -122,15 +218,33 @@ async function main(): Promise<void> {
      */
     if (existsSync(file) && !force) {
       console.log(`(${index + 1}/${lines.length}) ${line.key} … すでに あります`);
-      urls[line.key] = url;
+      line.apply(url);
+      made += 1;
+      already.set(`${line.voice}|${line.text}`, file);
+      continue;
+    }
+
+    /*
+     * 同じ 文を もう一度 Gemini に 読ませない。5日ぶんの「では 次に …」の ように
+     * **文は 同じでも URL は 別**に する 決まり（`asakaiLineSchema` の 説明）なので、
+     * ファイルは 5つ 要るが、作るのは 1回で よい。枠も 時間も 5分の1に なる。
+     */
+    const twin = already.get(`${line.voice}|${line.text}`);
+    if (twin) {
+      writeFileSync(file, readFileSync(twin));
+      line.apply(url);
+      made += 1;
+      console.log(`(${index + 1}/${lines.length}) ${line.key} … 同じ 文を 写しました`);
       continue;
     }
 
     process.stdout.write(`(${index + 1}/${lines.length}) ${line.key} … `);
     try {
-      const spoken = await synthesizeWithFallback(line.text, { apiKey, voice });
+      const spoken = await synthesizeWithFallback(line.text, { apiKey, voice: line.voice });
       writeFileSync(file, toWav(spoken.pcm));
-      urls[line.key] = url;
+      line.apply(url);
+      made += 1;
+      already.set(`${line.voice}|${line.text}`, file);
       const seconds = (spoken.pcm.byteLength / OUT_RATE / 2).toFixed(1);
       // **読み上げた 中身を 残す**。あとから ログだけで 台本と 見くらべられる
       console.log(`${seconds}秒 「${spoken.transcript.trim()}」`);
@@ -147,17 +261,23 @@ async function main(): Promise<void> {
     }
   }
 
-  meeting.questions = meeting.questions.map((q: { id: string }) =>
-    urls[q.id] ? { ...q, audioUrl: urls[q.id] } : q,
-  );
-  if (urls.closing) meeting.closingAudioUrl = urls.closing;
+  /*
+   * 朝礼・夕礼は `apply` が **その行に 直接** 書いて いる（`asakai.scenes[].*.audio`）。
+   * 下の 書き戻しは これまでの 教材（しつもん・対話ゲーム）の ためだけの もの。
+   */
+  if (!meeting.asakai) {
+    meeting.questions = meeting.questions.map((q: { id: string }) =>
+      urls[q.id] ? { ...q, audioUrl: urls[q.id] } : q,
+    );
+    if (urls.closing) meeting.closingAudioUrl = urls.closing;
+  }
   /*
    * 対話ゲームの ぶんは **1つの 台帳（`talkGame.audio`）**に まとめる。
    * `probes` は ただの 文字列の 並びで、`opening` / `listenInvite` / `reward` は
    * 1つずつ 別の 欄——欄ごとに `…AudioUrl` を 足すと 5種類 増える うえ、
    * `probes` は 形ごと 変える ことに なる。鍵 → 音の URL の 対応表 1枚で 足りる。
    */
-  if (meeting.talkGame) {
+  if (meeting.talkGame && !meeting.asakai) {
     const keys = Object.keys(urls).filter(
       (key) =>
         key === "opening" ||
@@ -174,16 +294,14 @@ async function main(): Promise<void> {
     }
   }
   writeFileSync(meetingPath, `${JSON.stringify(meeting, null, 2)}\n`);
-  console.log(
-    `${meetingPath} に audioUrl を 書きました（声: ${voice}・${Object.keys(urls).length}/${lines.length}）`,
-  );
+  console.log(`${meetingPath} に 音の 場所を 書きました（${made}/${lines.length}）`);
 
   if (failed.length > 0) {
     console.warn(
       `⚠ 作れなかった もの: ${failed.join(" ")}（もう一度 走らせると 足りない ぶんだけ 作ります）`,
     );
   }
-  if (Object.keys(urls).length === 0) {
+  if (made === 0) {
     console.error("1つも 作れませんでした");
     process.exit(1);
   }

@@ -21,6 +21,10 @@
       "type": "quizset"
     },
     {
+      "ref": "asakai_team",
+      "type": "article"
+    },
+    {
       "ref": "asakai_kantan",
       "type": "meeting"
     },

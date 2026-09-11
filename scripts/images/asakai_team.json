@@ -1,0 +1,32 @@
+{
+  "refs": [
+    "public/img/characters/hendy/sheet.webp",
+    "public/img/characters/nyam/sheet.webp",
+    "public/img/characters/okuda/sheet.webp"
+  ],
+  "_comment": "前ばなしの ページ（content/articles/asakai_team.json）の 絵 2枚。台帳が 正で、教材JSONの prompt は その 写し（scripts/lib/image_ledger.mjs）。文字は 焼かない。",
+  "style": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME.",
+  "noText": "No text, no letters, no kanji, no kana, no numbers anywhere in the image. Screens, papers, whiteboards, books and signs are blank or show only soft abstract shapes and simple pictures. No watermark, no signature, no logo, no speech balloons, no floating symbols such as question marks, exclamation marks, arrows, light bulbs, stars or hearts.",
+  "negative": "Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+  "output": "1536x1024",
+  "scenes": [
+    {
+      "out": "asakai_team_hero",
+      "dest": "public/img/articles/asakai_team/team.webp",
+      "title": "チームの 4人（前ばなしの 表紙）",
+      "where": "content/articles/asakai_team.json blocks[0].image",
+      "priority": "A",
+      "scene": "Four software colleagues stand together in a loose group beside a completely blank whiteboard in a bright morning office: a tall man in a navy suit with no tie, a young man in a red cardigan over a white shirt, a man in a light blue shirt with a plain dark lanyard, and an older man in a grey jacket standing slightly apart at the right. They face the viewer's side of the room in a relaxed half circle, holding mugs and small blank notebooks, calm and welcoming. Morning sunlight through a big window, plants nearby. Wide shot filling the frame.",
+      "output": "Output: one landscape illustration, 1536x1024."
+    },
+    {
+      "out": "asakai_team_app",
+      "dest": "public/img/articles/asakai_team/app.webp",
+      "title": "作って いる 旅行アプリ（手に 持った スマホ）",
+      "where": "content/articles/asakai_team.json blocks[5].image",
+      "priority": "A",
+      "scene": "Close view of two hands holding a smartphone upright at chest height. THE PHONE SCREEN IS COMPLETELY BLANK AND WHITE — nothing is drawn on it. Behind the phone, softly out of focus, a sunny street of small family shops with cloth awnings, fruit stalls, parked motorbikes and palm trees in warm afternoon light. Only the hands and the phone are sharp. The phone fills the middle of the frame.",
+      "output": "Output: one landscape illustration, 1536x1024."
+    }
+  ]
+}
