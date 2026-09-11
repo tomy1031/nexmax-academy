@@ -7,6 +7,7 @@ import {
   checkReferenceIntegrity,
   checkSecretLeaks,
   checkStageOrder,
+  collectLabeledTexts,
   collectLearnerTexts,
   type ContentEntry,
 } from "../src/lib/content-checks";
@@ -891,7 +892,14 @@ describe("ふりがなの覆い漏れ検査", () => {
     });
   }
 
+  /*
+   * **「何も出ない」だけの 検査は 釘に ならない。** `collectLabeledTexts` は
+   * 既定節を 持たないので、`case "quest"` を 消すと 集める 文が 0本に なり、
+   * 覆い漏れも 0件＝この 検査は 通って しまう（2026-09-11 の 検収の 指摘）。
+   * だから **欄の 名前を 数える**——空回りと 合格を 区別できる のは ここだけ。
+   */
   it("クエストの かなだけの 場面は 何も出ない（土台が 空回りして いない）", () => {
+    expect(collectLabeledTexts(quest()).map((t) => t.field)).toContain("phases[0].question");
     expect(checkFuriganaCoverage([entry(quest())])).toEqual([]);
   });
 
@@ -959,6 +967,8 @@ describe("ふりがなの覆い漏れ検査", () => {
         ["見", "み"],
       ],
     });
+    // 集めて いない ことを「覆えた」と 取り違えない
+    expect(collectLabeledTexts(covered).map((t) => t.field)).toContain("title");
     expect(checkFuriganaCoverage([entry(covered)])).toEqual([]);
   });
 
@@ -978,6 +988,10 @@ describe("ふりがなの覆い漏れ検査", () => {
         },
       ],
     });
+    const fields = collectLabeledTexts(hidden).map((t) => t.field);
+    // 集めて いる ことを 確かめた 上で、おぼえがきだけが 外れて いると 言う
+    expect(fields).toContain("phases[0].enemy.name");
+    expect(fields).not.toContain("phases[0].desc");
     expect(checkFuriganaCoverage([entry(hidden)])).toEqual([]);
   });
 

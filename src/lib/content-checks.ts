@@ -1222,9 +1222,12 @@ export function collectLabeledTexts(content: Content): LabeledText[] {
        * えらんだ あとの 解説も 1件も 数えられて いなかった——`lint:content` は
        * 緑の まま、画面にだけ 裸の 漢字が 出る。朝礼・夕礼と 同じ 形の 穴である。
        *
-       * 数える 欄は **`quest-play.tsx` が `ruby()`（教材の 読み辞書）で 描く 字**に
-       * そろえる。`UI_FURIGANA` で 描く 字（「物語」「記録」「工程」など）は
-       * コード側の 台帳が 持つ ので ここでは 見ない。
+       * 数える 欄は **教材が 持つ 字**だけ。`quest-play.tsx` の `ruby()`（教材の
+       * 読み辞書）は それ以外に **コードが 組み立てる ログ文**（「レベルが 上がった！」
+       * 「【警告】…個の 大きな バグ」）と `SPEAKER_NAME` も 同じ 辞書で 描くが、
+       * データに 無い 字は ここからは 見えない——**画面の ことばの 読みは
+       * 画面が 持つ**（`UI_FURIGANA`）のが 決まりなので、その ずれは 画面側の 話。
+       * 2026-09-11 の 検収で 実際に ログ文の 誤読・裸の 漢字が 見つかって いる。
        *
        * 見出し（title）は **ステージの カード**が 教材の 読み辞書で ルビを 振る
        *（`src/app/[stage]/page.tsx` が title・description・furigana を 渡す）ので
@@ -1242,8 +1245,14 @@ export function collectLabeledTexts(content: Content): LabeledText[] {
         const at = (field: string) => `phases[${i}].${field}`;
         // 章の 名前は 工程表（PROCESS CHART）の 一覧に 出る
         push(at("chapter"), phase.chapter);
-        // 場面の 名前は ヘッダの 右肩に 出る（「：」より 後ろだけだが、
-        // 前の「第N章」も 同じ 漢字で 読ませる ので まるごと 数える）
+        /*
+         * 場面の 名前。画面（`chapterLabel`）に 出るのは **「：」より 後ろだけ**
+         * だが、**まるごと 数える**。切り出した 文字列を 数えると
+         * `tests/coverage_walker.test.ts` が 本文と 突き合わせられず
+         *「検査の 外に 出て いる」と 見えて しまう ためで、
+         * 覆う 側に 倒して ある。いまの 本文では 前の「第N章」も
+         * ほかの 欄（options[].explanation）に 出る 漢字なので 実害は 無い。
+         */
         push(at("name"), phase.name);
         push(at("enemy.name"), phase.enemy.name);
         phase.dialogue.forEach((line, j) => push(at(`dialogue[${j}].text`), line.text));
@@ -1385,6 +1394,13 @@ const VERIFIED_SPLIT_COMPOUNDS: ReadonlySet<string> = new Set([
    * **送りがなまで 見出しに 入れて いる**ため、漢字の かたまり（出来上）では
    * 永久に 当たらない（確認待・回答待・見送 と 同じ）。画面は できあがった と 読む。
    * 28件を 2026-09-11 に 目で 確認。
+   *
+   * **網が 広い 2語**（この 一覧は 全教材に 効く ので、書き残す）:
+   * - 「出来上」… 正しさは ["出来上が","できあが"] が 生きて いる ことに ぶら下がる。
+   *   その 見出しを 消すと 画面は できうえ に 戻るが、**この 行が 警告を 黙らせ続ける**
+   * - 「設計通」… 通は どお／とお／つう に 割れる。よその 教材が ["通","つう"] を 持って
+   *   「設計通り」と 書くと、せっけいつうり が 黙る
+   * どちらも 2026-09-11 時点では 全教材を 走査して 当たる 箇所が ほかに 無い。
    */
   "一番大切",
   "一番安",
