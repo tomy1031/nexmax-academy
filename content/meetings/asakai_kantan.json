@@ -104,45 +104,54 @@
         "opening": [
           {
             "speakerId": "hendy",
-            "text": "おはよう ございます。9時30分に なりました。今週も 朝礼を 始めます。今週の ゴールは、金曜日に テスト版を 出す ことです。ログイン・地図・決済・3つの ことばを、1つに つなぎます。まず わたしから。"
+            "text": "おはよう ございます。9時30分に なりました。今週も 朝礼を 始めます。今週の ゴールは、金曜日に テスト版を 出す ことです。ログイン・地図・決済・3つの ことばを、1つに つなぎます。まず わたしから。",
+            "audio": "/audio/meetings/asakai_kantan/s0-opening-0-3cb6e419.wav"
           }
         ],
         "sample": {
           "speakerId": "hendy",
-          "text": "先週の 金曜日は、3つの ことばの 表を 作りました。アプリの ことばは ぜんぶで 180こ あります。日本語は 180こ、英語は 120こ 入りました。きょうは 英語の のこり 60こを 入れます。こまって いることが 1つ あります。英語は 日本語より 1.5倍 長いです。ボタンから 字が はみ出す ところが 8こ あります。あしたまでに 直る 見込みです。みなさん、自分の 画面で はみ出す ところを 見つけたら、教えて ください。"
+          "text": "先週の 金曜日は、3つの ことばの 表を 作りました。アプリの ことばは ぜんぶで 180こ あります。日本語は 180こ、英語は 120こ 入りました。きょうは 英語の のこり 60こを 入れます。こまって いることが 1つ あります。英語は 日本語より 1.5倍 長いです。ボタンから 字が はみ出す ところが 8こ あります。あしたまでに 直る 見込みです。みなさん、自分の 画面で はみ出す ところを 見つけたら、教えて ください。",
+          "audio": "/audio/meetings/asakai_kantan/s0-sample-1b1bfe9a.wav"
         },
         "prompt": {
           "speakerId": "hendy",
-          "text": "では 次に ◯◯さん、お願いします。"
+          "text": "では 次に ◯◯さん、お願いします。",
+          "audio": "/audio/meetings/asakai_kantan/s0-prompt-23d0278f.wav"
         },
         "ack": {
           "speakerId": "hendy",
-          "text": "はい。きのう・きょう・こまって いること、ぜんぶ 聞けました。数字も 入って いました。"
+          "text": "はい。きのう・きょう・こまって いること、ぜんぶ 聞けました。数字も 入って いました。",
+          "audio": "/audio/meetings/asakai_kantan/s0-ack-431b5929.wav"
         },
         "members": [
           {
             "speakerId": "nyam",
-            "text": "ニャムです。担当は 決済です。先週の 金曜日は、カードで 払う 画面を 作り始めました。カードの 番号を 入れて、PayWay（決済の サービス）に 送る ところまで できました。半分です。きょうは 払った あとの 画面と、レシートの メールを 作ります。こまって いることは ありません。"
+            "text": "ニャムです。担当は 決済です。先週の 金曜日は、カードで 払う 画面を 作り始めました。カードの 番号を 入れて、PayWay（決済の サービス）に 送る ところまで できました。半分です。きょうは 払った あとの 画面と、レシートの メールを 作ります。こまって いることは ありません。",
+            "audio": "/audio/meetings/asakai_kantan/s0-member-0-b6f55549.wav"
           },
           {
             "speakerId": "okuda",
-            "text": "奥田です。担当は 地図です。先週の 金曜日は、地図に 店の ピンを 出す 部品を 作りました。Khmersabai から 店の 一覧も 来ました。100けんです。きょうは 100けんを 地図に 出します。こまって いることが 1つ あります。12けんは 住所だけで、地図に 出す 場所の 数字が ありません。Khmersabai に 聞いて います。水曜日までに 分かる 見込みです。先に 88けんで 進めます。"
+            "text": "奥田です。担当は 地図です。先週の 金曜日は、地図に 店の ピンを 出す 部品を 作りました。Khmersabai から 店の 一覧も 来ました。100けんです。きょうは 100けんを 地図に 出します。こまって いることが 1つ あります。12けんは 住所だけで、地図に 出す 場所の 数字が ありません。Khmersabai に 聞いて います。水曜日までに 分かる 見込みです。先に 88けんで 進めます。",
+            "audio": "/audio/meetings/asakai_kantan/s0-member-1-6e31d7f1.wav"
           }
         ],
         "arrange": {
           "done": {
             "speakerId": "hendy",
-            "text": "先週の 一覧を 送ります。同じ 形で 書けば だいじょうぶです。聞いて くれて 助かります。"
+            "text": "先週の 一覧を 送ります。同じ 形で 書けば だいじょうぶです。聞いて くれて 助かります。",
+            "audio": "/audio/meetings/asakai_kantan/s0-arrange-done-c946c783.wav"
           },
           "missing": {
             "speakerId": "hendy",
-            "text": "先週の 一覧を 送ります。同じ 形で 書けば だいじょうぶです。"
+            "text": "先週の 一覧を 送ります。同じ 形で 書けば だいじょうぶです。",
+            "audio": "/audio/meetings/asakai_kantan/s0-arrange-missing-34132682.wav"
           }
         },
         "closing": [
           {
             "speakerId": "hendy",
-            "text": "では、きょうの 朝礼は ここまでです。奥田さんの 12けんは、わたしからも Khmersabai に 聞きます。今週は 金曜日に、藤木さんも 朝礼に 来ます。"
+            "text": "では、きょうの 朝礼は ここまでです。奥田さんの 12けんは、わたしからも Khmersabai に 聞きます。今週は 金曜日に、藤木さんも 朝礼に 来ます。",
+            "audio": "/audio/meetings/asakai_kantan/s0-closing-0-2303e0ef.wav"
           }
         ],
         "panels": [
@@ -172,7 +181,8 @@
             "followups": [
               {
                 "speakerId": "hendy",
-                "text": "きのう した ことを、もう いちど お願いします。"
+                "text": "きのう した ことを、もう いちど お願いします。",
+                "audio": "/audio/meetings/asakai_kantan/s0-kinou-fu0-b19e071f.wav"
               },
               {
                 "speakerId": "hendy",
@@ -181,7 +191,8 @@
             ],
             "example": {
               "speakerId": "hendy",
-              "text": "「先週の 金曜日は、ログインの 画面を 作りました。ぜんぶ できました。」"
+              "text": "「先週の 金曜日は、ログインの 画面を 作りました。ぜんぶ できました。」",
+              "audio": "/audio/meetings/asakai_kantan/s0-kinou-ex-2cc64e46.wav"
             }
           },
           {
@@ -209,16 +220,19 @@
             "followups": [
               {
                 "speakerId": "hendy",
-                "text": "きょうは 何を しますか。"
+                "text": "きょうは 何を しますか。",
+                "audio": "/audio/meetings/asakai_kantan/s0-kyou-fu0-cc52b10f.wav"
               },
               {
                 "speakerId": "hendy",
-                "text": "「きょうは ◯◯を します」の 形で お願いします。"
+                "text": "「きょうは ◯◯を します」の 形で お願いします。",
+                "audio": "/audio/meetings/asakai_kantan/s0-kyou-fu1-241a8b0e.wav"
               }
             ],
             "example": {
               "speakerId": "hendy",
-              "text": "「きょうは テストケースを 書いて、テストを 始めます。」"
+              "text": "「きょうは テストケースを 書いて、テストを 始めます。」",
+              "audio": "/audio/meetings/asakai_kantan/s0-kyou-ex-ddf17204.wav"
             }
           },
           {
@@ -248,12 +262,14 @@
               },
               {
                 "speakerId": "hendy",
-                "text": "ある ときは「◯◯が ◯◯で、こまって います」。ない ときは「こまって いることは ありません」。"
+                "text": "ある ときは「◯◯が ◯◯で、こまって います」。ない ときは「こまって いることは ありません」。",
+                "audio": "/audio/meetings/asakai_kantan/s0-komari-fu1-c66e2ada.wav"
               }
             ],
             "example": {
               "speakerId": "hendy",
-              "text": "「一覧の 書き方が 分からなくて、こまって います。」"
+              "text": "「一覧の 書き方が 分からなくて、こまって います。」",
+              "audio": "/audio/meetings/asakai_kantan/s0-komari-ex-e6d656b6.wav"
             }
           },
           {
@@ -264,7 +280,8 @@
             "followups": [
               {
                 "speakerId": "hendy",
-                "text": "数字で 言うと、どのくらいですか。"
+                "text": "数字で 言うと、どのくらいですか。",
+                "audio": "/audio/meetings/asakai_kantan/s0-suuji-fu0-445a671f.wav"
               },
               {
                 "speakerId": "hendy",
@@ -273,7 +290,8 @@
             ],
             "example": {
               "speakerId": "hendy",
-              "text": "「20こ ぐらいです。」"
+              "text": "「20こ ぐらいです。」",
+              "audio": "/audio/meetings/asakai_kantan/s0-suuji-ex-7f4ef694.wav"
             }
           }
         ],
@@ -340,45 +358,54 @@
         "opening": [
           {
             "speakerId": "hendy",
-            "text": "おはよう ございます。朝礼を 始めます。まず わたしから。"
+            "text": "おはよう ございます。朝礼を 始めます。まず わたしから。",
+            "audio": "/audio/meetings/asakai_kantan/s1-opening-0-ed5530e4.wav"
           }
         ],
         "sample": {
           "speakerId": "hendy",
-          "text": "きのうは 英語の のこり 60こを 入れました。180こ ぜんぶ 入りました。はみ出す 8こも 直しました。きょうは ことばを 切りかえる しくみを 作ります。はじめて 開いた ときは、スマホの ことばで 自動で 決めます。設定でも 変えられます。こまって いることは ありません。"
+          "text": "きのうは 英語の のこり 60こを 入れました。180こ ぜんぶ 入りました。はみ出す 8こも 直しました。きょうは ことばを 切りかえる しくみを 作ります。はじめて 開いた ときは、スマホの ことばで 自動で 決めます。設定でも 変えられます。こまって いることは ありません。",
+          "audio": "/audio/meetings/asakai_kantan/s1-sample-ab222044.wav"
         },
         "prompt": {
           "speakerId": "hendy",
-          "text": "では 次に ◯◯さん、お願いします。"
+          "text": "では 次に ◯◯さん、お願いします。",
+          "audio": "/audio/meetings/asakai_kantan/s1-prompt-23d0278f.wav"
         },
         "ack": {
           "speakerId": "hendy",
-          "text": "はい。きのう・きょう・こまって いること、ぜんぶ 聞けました。数字も 入って いました。"
+          "text": "はい。きのう・きょう・こまって いること、ぜんぶ 聞けました。数字も 入って いました。",
+          "audio": "/audio/meetings/asakai_kantan/s1-ack-431b5929.wav"
         },
         "members": [
           {
             "speakerId": "nyam",
-            "text": "ニャムです。担当は 決済です。きのうは カード払いが ぜんぶ できました。テスト用の カードで 5回 払って、5回 通りました。きょうは KHQR（カンボジアの QR払い）を 作り始めます。こまって いることが 1つ あります。KHQR の テスト用の アカウントが まだ ありません。先週 Khmersabai に 頼みました。来るまでは、にせの 返事で 作って おきます。藤木さんに、ひとこと 言って いただけませんか。"
+            "text": "ニャムです。担当は 決済です。きのうは カード払いが ぜんぶ できました。テスト用の カードで 5回 払って、5回 通りました。きょうは KHQR（カンボジアの QR払い）を 作り始めます。こまって いることが 1つ あります。KHQR の テスト用の アカウントが まだ ありません。先週 Khmersabai に 頼みました。来るまでは、にせの 返事で 作って おきます。藤木さんに、ひとこと 言って いただけませんか。",
+            "audio": "/audio/meetings/asakai_kantan/s1-member-0-b275dc05.wav"
           },
           {
             "speakerId": "okuda",
-            "text": "奥田です。担当は 地図です。きのうは 88けんの ピンが 地図に 出ました。ピンを 押すと、店の 名前と 写真が 出ます。きょうは 店を さがす しくみを 作ります。ごはん・ホテル・トゥクトゥク・見る ところの 4つで 分けます。こまって いることは ありません。"
+            "text": "奥田です。担当は 地図です。きのうは 88けんの ピンが 地図に 出ました。ピンを 押すと、店の 名前と 写真が 出ます。きょうは 店を さがす しくみを 作ります。ごはん・ホテル・トゥクトゥク・見る ところの 4つで 分けます。こまって いることは ありません。",
+            "audio": "/audio/meetings/asakai_kantan/s1-member-1-72fcf935.wav"
           }
         ],
         "arrange": {
           "done": {
             "speakerId": "hendy",
-            "text": "そうですか。ないなら、それも 大事な 報告です。"
+            "text": "そうですか。ないなら、それも 大事な 報告です。",
+            "audio": "/audio/meetings/asakai_kantan/s1-arrange-done-077bb437.wav"
           },
           "missing": {
             "speakerId": "hendy",
-            "text": "そうですか。ないなら、それも 大事な 報告です。"
+            "text": "そうですか。ないなら、それも 大事な 報告です。",
+            "audio": "/audio/meetings/asakai_kantan/s1-arrange-missing-077bb437.wav"
           }
         },
         "closing": [
           {
             "speakerId": "hendy",
-            "text": "では、きょうの 朝礼は ここまでです。ニャムさんの テスト用の アカウントは、きょう 藤木さんに 伝えます。"
+            "text": "では、きょうの 朝礼は ここまでです。ニャムさんの テスト用の アカウントは、きょう 藤木さんに 伝えます。",
+            "audio": "/audio/meetings/asakai_kantan/s1-closing-0-c716532f.wav"
           }
         ],
         "panels": [
@@ -404,7 +431,8 @@
             "followups": [
               {
                 "speakerId": "hendy",
-                "text": "きのう した ことを、もう いちど お願いします。"
+                "text": "きのう した ことを、もう いちど お願いします。",
+                "audio": "/audio/meetings/asakai_kantan/s1-kinou-fu0-b19e071f.wav"
               },
               {
                 "speakerId": "hendy",
@@ -437,11 +465,13 @@
             "followups": [
               {
                 "speakerId": "hendy",
-                "text": "きょうは 何を しますか。"
+                "text": "きょうは 何を しますか。",
+                "audio": "/audio/meetings/asakai_kantan/s1-kyou-fu0-cc52b10f.wav"
               },
               {
                 "speakerId": "hendy",
-                "text": "「きょうは ◯◯を します」の 形で お願いします。"
+                "text": "「きょうは ◯◯を します」の 形で お願いします。",
+                "audio": "/audio/meetings/asakai_kantan/s1-kyou-fu1-241a8b0e.wav"
               }
             ],
             "example": {
@@ -473,7 +503,8 @@
               },
               {
                 "speakerId": "hendy",
-                "text": "ある ときは「◯◯が ◯◯で、こまって います」。ない ときは「こまって いることは ありません」。"
+                "text": "ある ときは「◯◯が ◯◯で、こまって います」。ない ときは「こまって いることは ありません」。",
+                "audio": "/audio/meetings/asakai_kantan/s1-komari-fu1-c66e2ada.wav"
               }
             ],
             "example": {
@@ -489,7 +520,8 @@
             "followups": [
               {
                 "speakerId": "hendy",
-                "text": "数字で 言うと、どのくらいですか。"
+                "text": "数字で 言うと、どのくらいですか。",
+                "audio": "/audio/meetings/asakai_kantan/s1-suuji-fu0-445a671f.wav"
               },
               {
                 "speakerId": "hendy",
@@ -566,7 +598,8 @@
         "opening": [
           {
             "speakerId": "hendy",
-            "text": "おはよう ございます。朝礼を 始めます。まず わたしから。"
+            "text": "おはよう ございます。朝礼を 始めます。まず わたしから。",
+            "audio": "/audio/meetings/asakai_kantan/s2-opening-0-ed5530e4.wav"
           }
         ],
         "sample": {
@@ -575,11 +608,13 @@
         },
         "prompt": {
           "speakerId": "hendy",
-          "text": "では 次に ◯◯さん、お願いします。"
+          "text": "では 次に ◯◯さん、お願いします。",
+          "audio": "/audio/meetings/asakai_kantan/s2-prompt-23d0278f.wav"
         },
         "ack": {
           "speakerId": "hendy",
-          "text": "はい。きのう・きょう・こまって いること、ぜんぶ 聞けました。数字も 入って いました。"
+          "text": "はい。きのう・きょう・こまって いること、ぜんぶ 聞けました。数字も 入って いました。",
+          "audio": "/audio/meetings/asakai_kantan/s2-ack-431b5929.wav"
         },
         "members": [
           {
@@ -630,7 +665,8 @@
             "followups": [
               {
                 "speakerId": "hendy",
-                "text": "きのう した ことを、もう いちど お願いします。"
+                "text": "きのう した ことを、もう いちど お願いします。",
+                "audio": "/audio/meetings/asakai_kantan/s2-kinou-fu0-b19e071f.wav"
               },
               {
                 "speakerId": "hendy",
@@ -668,11 +704,13 @@
             "followups": [
               {
                 "speakerId": "hendy",
-                "text": "きょうは 何を しますか。"
+                "text": "きょうは 何を しますか。",
+                "audio": "/audio/meetings/asakai_kantan/s2-kyou-fu0-cc52b10f.wav"
               },
               {
                 "speakerId": "hendy",
-                "text": "「きょうは ◯◯を します」の 形で お願いします。"
+                "text": "「きょうは ◯◯を します」の 形で お願いします。",
+                "audio": "/audio/meetings/asakai_kantan/s2-kyou-fu1-241a8b0e.wav"
               }
             ],
             "example": {
@@ -712,7 +750,8 @@
               },
               {
                 "speakerId": "hendy",
-                "text": "ある ときは「◯◯が ◯◯で、こまって います」。ない ときは「こまって いることは ありません」。"
+                "text": "ある ときは「◯◯が ◯◯で、こまって います」。ない ときは「こまって いることは ありません」。",
+                "audio": "/audio/meetings/asakai_kantan/s2-komari-fu1-c66e2ada.wav"
               }
             ],
             "example": {
@@ -728,7 +767,8 @@
             "followups": [
               {
                 "speakerId": "hendy",
-                "text": "数字で 言うと、どのくらいですか。"
+                "text": "数字で 言うと、どのくらいですか。",
+                "audio": "/audio/meetings/asakai_kantan/s2-suuji-fu0-445a671f.wav"
               },
               {
                 "speakerId": "hendy",
@@ -809,7 +849,8 @@
         "opening": [
           {
             "speakerId": "hendy",
-            "text": "おはよう ございます。朝礼を 始めます。まず わたしから。"
+            "text": "おはよう ございます。朝礼を 始めます。まず わたしから。",
+            "audio": "/audio/meetings/asakai_kantan/s3-opening-0-ed5530e4.wav"
           }
         ],
         "sample": {
@@ -818,11 +859,13 @@
         },
         "prompt": {
           "speakerId": "hendy",
-          "text": "では 次に ◯◯さん、お願いします。"
+          "text": "では 次に ◯◯さん、お願いします。",
+          "audio": "/audio/meetings/asakai_kantan/s3-prompt-23d0278f.wav"
         },
         "ack": {
           "speakerId": "hendy",
-          "text": "はい。きのう・きょう・こまって いること、ぜんぶ 聞けました。数字も 入って いました。"
+          "text": "はい。きのう・きょう・こまって いること、ぜんぶ 聞けました。数字も 入って いました。",
+          "audio": "/audio/meetings/asakai_kantan/s3-ack-431b5929.wav"
         },
         "members": [
           {
@@ -876,7 +919,8 @@
             "followups": [
               {
                 "speakerId": "hendy",
-                "text": "きのう した ことを、もう いちど お願いします。"
+                "text": "きのう した ことを、もう いちど お願いします。",
+                "audio": "/audio/meetings/asakai_kantan/s3-kinou-fu0-b19e071f.wav"
               },
               {
                 "speakerId": "hendy",
@@ -910,11 +954,13 @@
             "followups": [
               {
                 "speakerId": "hendy",
-                "text": "きょうは 何を しますか。"
+                "text": "きょうは 何を しますか。",
+                "audio": "/audio/meetings/asakai_kantan/s3-kyou-fu0-cc52b10f.wav"
               },
               {
                 "speakerId": "hendy",
-                "text": "「きょうは ◯◯を します」の 形で お願いします。"
+                "text": "「きょうは ◯◯を します」の 形で お願いします。",
+                "audio": "/audio/meetings/asakai_kantan/s3-kyou-fu1-241a8b0e.wav"
               }
             ],
             "example": {
@@ -1034,7 +1080,8 @@
             "followups": [
               {
                 "speakerId": "hendy",
-                "text": "数字で 言うと、どのくらいですか。"
+                "text": "数字で 言うと、どのくらいですか。",
+                "audio": "/audio/meetings/asakai_kantan/s3-suuji-fu0-445a671f.wav"
               },
               {
                 "speakerId": "hendy",
@@ -1121,11 +1168,13 @@
         },
         "prompt": {
           "speakerId": "hendy",
-          "text": "では 次に ◯◯さん、お願いします。"
+          "text": "では 次に ◯◯さん、お願いします。",
+          "audio": "/audio/meetings/asakai_kantan/s4-prompt-23d0278f.wav"
         },
         "ack": {
           "speakerId": "hendy",
-          "text": "はい。きのう・きょう・こまって いること、ぜんぶ 聞けました。数字も 入って いました。"
+          "text": "はい。きのう・きょう・こまって いること、ぜんぶ 聞けました。数字も 入って いました。",
+          "audio": "/audio/meetings/asakai_kantan/s4-ack-431b5929.wav"
         },
         "members": [
           {
@@ -1179,7 +1228,8 @@
             "followups": [
               {
                 "speakerId": "hendy",
-                "text": "きのう した ことを、もう いちど お願いします。"
+                "text": "きのう した ことを、もう いちど お願いします。",
+                "audio": "/audio/meetings/asakai_kantan/s4-kinou-fu0-b19e071f.wav"
               },
               {
                 "speakerId": "hendy",
@@ -1214,11 +1264,13 @@
             "followups": [
               {
                 "speakerId": "hendy",
-                "text": "きょうは 何を しますか。"
+                "text": "きょうは 何を しますか。",
+                "audio": "/audio/meetings/asakai_kantan/s4-kyou-fu0-cc52b10f.wav"
               },
               {
                 "speakerId": "hendy",
-                "text": "「きょうは ◯◯を します」の 形で お願いします。"
+                "text": "「きょうは ◯◯を します」の 形で お願いします。",
+                "audio": "/audio/meetings/asakai_kantan/s4-kyou-fu1-241a8b0e.wav"
               }
             ],
             "example": {
@@ -1250,7 +1302,8 @@
               },
               {
                 "speakerId": "hendy",
-                "text": "ある ときは「◯◯が ◯◯で、こまって います」。ない ときは「こまって いることは ありません」。"
+                "text": "ある ときは「◯◯が ◯◯で、こまって います」。ない ときは「こまって いることは ありません」。",
+                "audio": "/audio/meetings/asakai_kantan/s4-komari-fu1-c66e2ada.wav"
               }
             ],
             "example": {
@@ -1266,7 +1319,8 @@
             "followups": [
               {
                 "speakerId": "hendy",
-                "text": "数字で 言うと、どのくらいですか。"
+                "text": "数字で 言うと、どのくらいですか。",
+                "audio": "/audio/meetings/asakai_kantan/s4-suuji-fu0-445a671f.wav"
               },
               {
                 "speakerId": "hendy",
