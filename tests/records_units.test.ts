@@ -33,6 +33,19 @@ describe("教材から しつもんを 引き直す", () => {
     );
   });
 
+  it("ツール教材（調査）の こたえも 問いの 文で 引ける", async () => {
+    const { prompts } = await loadUnitIndex();
+    /*
+     * 調査（リサーチ）の ツールは 静的な 1枚で、問いの 文は アプリから 読めない。
+     * 台帳（`src/content/link-answers.ts`）から 引けて はじめて、先生の 画面の
+     * 「もんだい」の 列が id（`kaikyuu`）では なく 文に なる（2026-09-11）。
+     */
+    expect(prompts["houkoku_search:kaikyuu_order"]).toBe(
+      "日本の 会社の 階級を、えらい 順に ならべて ください。",
+    );
+    expect(prompts["houkoku_search:joushi"]).toBe("「上司」との 関係は、日本と ちがいますか。");
+  });
+
   it("出だしを 使いきった あとは 鍵を 作らない（AIの 深掘りは 教材に 無い）", async () => {
     const { prompts } = await loadUnitIndex();
     // 予備の 文（`probes`）で 埋めると、**聞かれて いない 文**を 先生に 見せる ことに なる。

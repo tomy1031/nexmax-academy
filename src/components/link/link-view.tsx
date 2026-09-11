@@ -10,6 +10,8 @@ import {
   recordContentProgress,
   subscribeProgress,
 } from "@/lib/progress/store";
+import { parseLinkAnswers, saveLinkAnswers } from "@/lib/answers/link-answers-db";
+import { readLinkMessage } from "@/lib/answers/link-message";
 
 /**
  * リンク教材 — 1枚で完結する練習ページを、ステージの中から 全画面で 開く
@@ -38,8 +40,18 @@ import {
  * 記録が 無くても 先へは 進める。
  */
 
-/** 中のページが「おわった」を伝えてくるときの合図。 */
-const DONE_MESSAGE = "nexmax:link-done";
+/*
+ * 中のページから 届く 合図（「おわった」「おわりの しるしは こちらで 出す」
+ * 「学習者の 書いた もの」）の 読み取りは `@/lib/answers/link-message` に 置いて ある。
+ * 画面の 効果の 中では テストから 通しにくい のに、**関門の 鍵と 学習者の こたえ**を
+ * 運ぶ 道で 取りちがえの 害が いちばん 大きい ため。
+ */
+
+/** 画面じたいの 文言の 読み辞書（教材データの 辞書は UIの 文言まで 覆わない・規律2）。 */
+const UI_FURIGANA = buildFuriganaIndex([
+  ["中", "なか"],
+  ["出", "だ"],
+]);
 
 export function LinkView({ link, embedded }: { link: LinkContent; embedded?: boolean }) {
   const furigana = useMemo(() => buildFuriganaIndex(link.furigana ?? []), [link.furigana]);
@@ -67,6 +79,9 @@ export function LinkView({ link, embedded }: { link: LinkContent; embedded?: boo
     recordContentProgress(link.id, { status: "completed" });
   }, [link.id]);
 
+  /** 中のページが おわりの しるしを 自分で 出すと 名乗ったか（`OWNS_DONE_MESSAGE`）。 */
+  const [ownsDone, setOwnsDone] = useState(false);
+
   /*
    * 中のページからの 合図。**同じ置き場（origin）から 来たものだけ** 受ける。
    * 外のサイトを 埋めている 場合、その中身は こちらの 管理外なので、
@@ -74,10 +89,28 @@ export function LinkView({ link, embedded }: { link: LinkContent; embedded?: boo
    */
   useEffect(() => {
     const onMessage = (event: MessageEvent) => {
+      // 差出人は ここで 見る（**同じ 置き場から 来た ものだけ**）
       if (event.origin !== window.location.origin) return;
-      const data = event.data as { type?: unknown; id?: unknown } | null;
-      if (data?.type !== DONE_MESSAGE) return;
-      if (typeof data.id === "string" && data.id !== link.id) return;
+      const message = readLinkMessage(event.data, link.id);
+      if (!message) return;
+      if (message.kind === "owns-done") {
+        setOwnsDone(true);
+        return;
+      }
+      if (message.kind === "answers") {
+        /*
+         * 記録は **送りっぱなし**。`saveLinkAnswers` は 自分で 例外を 握るが、
+         * ここでも 受けて おく——`void` で 捨てた 約束が 落ちると、
+         * 画面にも コンソールにも 何も 出ない まま こたえが 消える。
+         */
+        void saveLinkAnswers({
+          linkId: link.id,
+          answers: parseLinkAnswers(message.answers),
+        }).catch(() => {
+          /* 記録できなくても 学習は 止めない */
+        });
+        return;
+      }
       markDone();
     };
     window.addEventListener("message", onMessage);
@@ -193,19 +226,33 @@ export function LinkView({ link, embedded }: { link: LinkContent; embedded?: boo
         >
           {wide ? "✕ もどす" : "⛶ 大きく する"}
         </button>
-        <button
-          type="button"
-          onClick={markDone}
-          className={
-            done
-              ? `rounded-full px-4 py-1.5 text-xs font-black ${
-                  wide ? "bg-white/90 text-[#0b2138]" : "bg-sky-soft text-navy"
-                }`
-              : "btn-game px-5 py-1.5 text-xs [--btn-face:#58c273] [--btn-shadow:#3aa458]"
-          }
-        >
-          {done ? "✅ おわりました" : "おわりました"}
-        </button>
+        {ownsDone && !done ? (
+          /*
+            中で「出す」と ✅ に なる ページ。手で 押す ボタンは 出さない
+            ——押すだけで 関門が 開いては、出す ことに 意味が 無くなる。
+          */
+          <span
+            className={`rounded-full px-4 py-1.5 text-xs font-black ${
+              wide ? "bg-white/90 text-[#0b2138]" : "bg-sky-soft text-navy"
+            }`}
+          >
+            <RubyText text="中で 出すと ✅ に なります" index={UI_FURIGANA} />
+          </span>
+        ) : (
+          <button
+            type="button"
+            onClick={markDone}
+            className={
+              done
+                ? `rounded-full px-4 py-1.5 text-xs font-black ${
+                    wide ? "bg-white/90 text-[#0b2138]" : "bg-sky-soft text-navy"
+                  }`
+                : "btn-game px-5 py-1.5 text-xs [--btn-face:#58c273] [--btn-shadow:#3aa458]"
+            }
+          >
+            {done ? "✅ おわりました" : "おわりました"}
+          </button>
+        )}
       </div>
     </div>
   ) : null;

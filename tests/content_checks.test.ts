@@ -1,11 +1,13 @@
 import { describe, expect, it } from "vitest";
 import {
   checkDanglingRefs,
+  checkDescriptionScope,
   checkDuplicateIds,
   checkFuriganaCoverage,
   checkReferenceIntegrity,
   checkSecretLeaks,
   checkStageOrder,
+  collectLabeledTexts,
   collectLearnerTexts,
   type ContentEntry,
 } from "../src/lib/content-checks";
@@ -84,6 +86,191 @@ describe("ID重複の検査", () => {
 
   it("IDが全部ちがえば何も出ない", () => {
     expect(checkDuplicateIds([entry(stage()), entry(manga())])).toEqual([]);
+  });
+});
+
+describe("説明文の 守備範囲の 検査", () => {
+  /**
+   * 説明は「ここに 何が あるか」だけを 書く。進み方・クリア条件は 学習者に 要らない
+   * （順番は カードの 通し番号、終わったかは しるしが 画面で 見せている）うえ、
+   * 教材カードの 説明は 2行で 切れるので、仕組みの 話を 足すと 中身の 説明が
+   * 画面から 押し出される。2026-09-11 の指定「それ生徒が知る必要ありますか？
+   * ありませんよね？そもそもここはステージの内容の説明です」の 実行体。
+   */
+
+  /** 説明の 欄だけを 差し替えた ステージ（既定の 説明は 中身の 話に して おく）。 */
+  const described = (description: string, over: Record<string, unknown> = {}) =>
+    stage({ description, ...over });
+
+  /** クエストは 種別ごとの walker から 漏れやすい（「クリア」と 書きたく なる 教材）。 */
+  const quest = (description: string): Content =>
+    parse({
+      kind: "quest",
+      id: "q1",
+      title: "クエスト",
+      description,
+      focus: "チームで 一年を 進みます。",
+      phases: [
+        {
+          id: 1,
+          chapter: "社内ミーティング",
+          name: "はじまり",
+          desc: "はじめの 場面です。",
+          enemy: { name: "山田さん", art: "yamada" },
+          question: "どう しますか。",
+          options: [
+            {
+              text: "先に 聞く",
+              type: "critical",
+              risk: -1,
+              hpCost: 0,
+              moneyCost: 0,
+              explanation: "先に 聞くと ずれが 減ります。",
+              resultText: "ずれが 減りました。",
+            },
+            {
+              text: "メモを 取る",
+              type: "hit",
+              risk: 0,
+              hpCost: 0,
+              moneyCost: 0,
+              explanation: "メモは あとで 役に 立ちます。",
+              resultText: "メモを 取りました。",
+            },
+            {
+              text: "だまって 進む",
+              type: "miss",
+              risk: 3,
+              hpCost: 5,
+              moneyCost: 0,
+              explanation: "聞かないと あとで 直しが 出ます。",
+              resultText: "直しが 出ました。",
+            },
+            {
+              text: "あとで 考える",
+              type: "miss",
+              risk: 4,
+              hpCost: 5,
+              moneyCost: 0,
+              explanation: "あとまわしは 時間を 食います。",
+              resultText: "時間が 減りました。",
+            },
+          ],
+        },
+      ],
+    });
+
+  it("つぎの ステージの 予告を 弾く（引用と 直し方まで 出す）", () => {
+    const findings = checkDescriptionScope(
+      "houkoku.json",
+      described("報告の しかたを 学びます。朝礼は つぎの ステージです。"),
+    );
+    expect(findings).toHaveLength(1);
+    expect(findings[0]?.level).toBe("error");
+    expect(findings[0]?.message).toContain("つぎの ステージ");
+    expect(findings[0]?.message).toContain("教材の 中身だけ");
+  });
+
+  it("とばしても終わる（クリア条件）の 説明を 弾く", () => {
+    const findings = checkDescriptionScope(
+      "asakai.json",
+      described("毎日の 朝礼で 報告します。夕礼は とばしても、この ステージは 終わります。"),
+    );
+    expect(findings).toHaveLength(1);
+    expect(findings[0]?.message).toContain("ステージ");
+  });
+
+  it("ステージ以外の 教材の 説明も 見る（仕組みの 話は どこに 書いても 同じ）", () => {
+    const findings = checkDescriptionScope(
+      "m1.json",
+      manga({ description: "朝礼の まんがです。クリアすると つぎが 開きます。" }),
+    );
+    expect(findings).toHaveLength(1);
+    expect(findings[0]?.message).toContain("クリア");
+  });
+
+  it("クエストの 説明も 見る（種別ごとの walker では 素通りしていた）", () => {
+    const findings = checkDescriptionScope(
+      "q1.json",
+      quest("クリアすると つぎの ステージが 開きます。"),
+    );
+    expect(findings).toHaveLength(2);
+    expect(findings.map((f) => f.message.includes("説明文（description）"))).toEqual([true, true]);
+  });
+
+  it("見どころ（focus）に 書き写しても 弾く（欄を 移すだけの 逃げ道を 作らない）", () => {
+    const listening = parse({
+      kind: "listening",
+      id: "l1",
+      title: "リスニング",
+      description: "朝の 会話を 聞きます。",
+      focus: "やらなくても ステージは 終わります。",
+      audioUrl: "/audio/l1.mp3",
+      participants: [{ id: "hendy", name: "ヘンディ", role: "先輩" }],
+      script: [
+        { speaker: "hendy", text: "おはようございます。" },
+        { speaker: "me", text: "おはようございます。" },
+      ],
+      questions: [],
+    });
+    const findings = checkDescriptionScope("l1.json", listening);
+    expect(findings).toHaveLength(1);
+    expect(findings[0]?.message).toContain("説明文（focus）");
+  });
+
+  it("まなびマップの ひとことも 見る（カードの 説明と 同じ 場所に 出る）", () => {
+    const findings = checkDescriptionScope(
+      "s1.json",
+      described("報告の しかたを 練習します。", {
+        area: {
+          name: "しごとの しま",
+          reading: "しごとの しま",
+          image: "/img/scenes/area_office_island.webp",
+          note: "この ステージを 終わると 行けます。",
+        },
+      }),
+    );
+    expect(findings).toHaveLength(1);
+    expect(findings[0]?.message).toContain("説明文（area.note）");
+  });
+
+  it("中身だけを 書いた 説明は 通す", () => {
+    expect(
+      checkDescriptionScope(
+        "s1.json",
+        described("上司への 報告の しかたを 読んで、聞いて、声に 出して 練習します。"),
+      ),
+    ).toEqual([]);
+  });
+
+  it("IT の ことば（ステージング環境・キャッシュを クリア）は 通す", () => {
+    expect(
+      checkDescriptionScope(
+        "m1.json",
+        manga({ description: "ステージング環境で ためして、キャッシュを クリアします。" }),
+      ),
+    ).toEqual([]);
+  });
+
+  it("「ロック」は 語に 入れない（ブロック・クロック・デッドロックの 誤検出を 避ける）", () => {
+    expect(
+      checkDescriptionScope(
+        "m1.json",
+        manga({ description: "デッドロックと ブロックチェーンの 話です。" }),
+      ),
+    ).toEqual([]);
+  });
+
+  it("本文（セリフ）は 見ない — 物語の 中で「クリア」と 言う ことは ある", () => {
+    const withLine = parse({
+      kind: "manga",
+      id: "m2",
+      format: "yonkoma",
+      title: "まんが",
+      description: "ゲームの 話の まんがです。",
+      pages: [{ panels: [{ lines: [{ speaker: "narration", text: "ゲームを クリアした。" }] }] }],
+    });
+    expect(checkDescriptionScope("m2.json", withLine)).toEqual([]);
   });
 });
 
@@ -637,6 +824,175 @@ describe("ふりがなの覆い漏れ検査", () => {
     expect(findings).toHaveLength(1);
     expect(findings[0]?.message).toContain("participants[0].name");
     expect(findings[0]?.message).toContain("藤 木");
+  });
+
+  /**
+   * クエスト（30の 場面の 選択ゲーム）は、種別ごとの switch に `case "quest"` が
+   * 無かった あいだ **まるごと 検査の 外**に いた（2026-09-11 に 気づいた。
+   * `lint:content` は 緑の まま、画面にだけ 裸の 漢字が 出て いた）。
+   * 朝礼・夕礼（`meeting.asakai`）と 同じ 形の 穴なので、欄ごとに 釘を 打つ。
+   */
+  function quest(over: Record<string, unknown> = {}): Content {
+    return parse({
+      kind: "quest",
+      id: "q1",
+      title: "クエスト",
+      description: "しごとの ながれを ためす ゲーム",
+      focus: "きいてから つくる じゅんばんを たしかめる",
+      phases: [
+        {
+          id: 1,
+          chapter: "しゃないミーティング",
+          name: "だい1しょう：しゃないミーティング",
+          desc: "かいしゃの なかでの じゅんび",
+          enemy: { name: "やまださん", art: "yamada" },
+          dialogue: [{ speaker: "yamada", text: "あたらしい しごとだよ" }],
+          question: "まず なにを しますか",
+          options: [
+            {
+              text: "おきゃくさまの ことを しらべる",
+              type: "critical",
+              risk: -1,
+              hpCost: 5,
+              moneyCost: 0,
+              explanation: "しらべるのが だいいっぽです",
+              resultText: "【いちばん いい て】よく わかった",
+            },
+            {
+              text: "やまださんに きく",
+              type: "hit",
+              risk: 0,
+              hpCost: 10,
+              moneyCost: 0,
+              explanation: "きくのも たいせつです",
+              resultText: "【いい て】ヒントが もらえた",
+            },
+            {
+              text: "すぐに つくりはじめる",
+              type: "miss",
+              risk: 5,
+              hpCost: 10,
+              moneyCost: 0,
+              explanation: "さきに きく ほうが よいです",
+              resultText: "【あとに ひびく て】やりなおしに なった",
+            },
+            {
+              text: "なにも しない",
+              type: "miss",
+              risk: 5,
+              hpCost: 15,
+              moneyCost: 0,
+              explanation: "うごかないと すすみません",
+              resultText: "【あとに ひびく て】じかんが なくなった",
+            },
+          ],
+        },
+      ],
+      ...over,
+    });
+  }
+
+  /*
+   * **「何も出ない」だけの 検査は 釘に ならない。** `collectLabeledTexts` は
+   * 既定節を 持たないので、`case "quest"` を 消すと 集める 文が 0本に なり、
+   * 覆い漏れも 0件＝この 検査は 通って しまう（2026-09-11 の 検収の 指摘）。
+   * だから **欄の 名前を 数える**——空回りと 合格を 区別できる のは ここだけ。
+   */
+  it("クエストの かなだけの 場面は 何も出ない（土台が 空回りして いない）", () => {
+    expect(collectLabeledTexts(quest()).map((t) => t.field)).toContain("phases[0].question");
+    expect(checkFuriganaCoverage([entry(quest())])).toEqual([]);
+  });
+
+  it("クエストの セリフ・しつもん・4択・解説・結果の ひとことを ぜんぶ数える", () => {
+    const phase = (quest() as Extract<Content, { kind: "quest" }>).phases[0]!;
+    const withKanji = quest({
+      phases: [
+        {
+          ...phase,
+          dialogue: [{ speaker: "yamada", text: "新しい 案件です" }],
+          question: "最初に なにを しますか",
+          options: [
+            { ...phase.options[0]!, text: "会社を しらべる", explanation: "調査が 先です" },
+            { ...phase.options[1]!, resultText: "【いい て】相談できた" },
+            phase.options[2]!,
+            phase.options[3]!,
+          ],
+        },
+      ],
+    });
+    const fields = checkFuriganaCoverage([entry(withKanji)]).map((f) => f.message);
+    expect(fields.some((m) => m.includes("phases[0].dialogue[0].text"))).toBe(true);
+    expect(fields.some((m) => m.includes("phases[0].question"))).toBe(true);
+    expect(fields.some((m) => m.includes("phases[0].options[0].text"))).toBe(true);
+    expect(fields.some((m) => m.includes("phases[0].options[0].explanation"))).toBe(true);
+    expect(fields.some((m) => m.includes("phases[0].options[1].resultText"))).toBe(true);
+    // 字まで 言わないと、先生は 何を 足せばよいか 分からない
+    expect(fields.find((m) => m.includes("phases[0].question"))).toContain("最 初");
+  });
+
+  it("クエストの 見出し・説明・見どころ・章・場面・相手の 名前も数える", () => {
+    const withKanji = quest({ title: "冒険", description: "会社の 話", focus: "順番を 見る" });
+    const fields = checkFuriganaCoverage([entry(withKanji)]).map((f) => f.message);
+    expect(fields.some((m) => m.includes("title"))).toBe(true);
+    expect(fields.some((m) => m.includes("description"))).toBe(true);
+    expect(fields.some((m) => m.includes("focus"))).toBe(true);
+
+    const base = quest() as Extract<Content, { kind: "quest" }>;
+    const withPhaseKanji = quest({
+      phases: [
+        {
+          ...base.phases[0]!,
+          chapter: "開発",
+          name: "第7章：開発",
+          enemy: { name: "神社長", art: "angel" },
+        },
+      ],
+    });
+    const more = checkFuriganaCoverage([entry(withPhaseKanji)]).map((f) => f.message);
+    expect(more.some((m) => m.includes("phases[0].chapter"))).toBe(true);
+    expect(more.some((m) => m.includes("phases[0].name"))).toBe(true);
+    expect(more.some((m) => m.includes("phases[0].enemy.name"))).toBe(true);
+  });
+
+  it("クエストも 読み辞書で覆えば通る", () => {
+    const covered = quest({
+      title: "冒険",
+      description: "会社の 話",
+      focus: "順番を 見る",
+      furigana: [
+        ["冒険", "ぼうけん"],
+        ["会社", "かいしゃ"],
+        ["話", "はなし"],
+        ["順番", "じゅんばん"],
+        ["見", "み"],
+      ],
+    });
+    // 集めて いない ことを「覆えた」と 取り違えない
+    expect(collectLabeledTexts(covered).map((t) => t.field)).toContain("title");
+    expect(checkFuriganaCoverage([entry(covered)])).toEqual([]);
+  });
+
+  /**
+   * `phases[].desc` は 2026-09-11 現在 **どの 画面も 引いて いない**
+   *（`src/components/quest/` を 全部 見た）。画面に 出ない 字に 読みを 求めると、
+   * 先生には 直しようの ない 指摘に なる。出す ように なったら ここを 裏返す。
+   */
+  it("画面に出ない欄（場面の おぼえがき・相手の 絵・話し手のid）は対象にしない", () => {
+    const base = quest() as Extract<Content, { kind: "quest" }>;
+    const hidden = quest({
+      phases: [
+        {
+          ...base.phases[0]!,
+          desc: "会社の 中での 準備",
+          enemy: { name: "やまださん", art: "engineer" },
+        },
+      ],
+    });
+    const fields = collectLabeledTexts(hidden).map((t) => t.field);
+    // 集めて いる ことを 確かめた 上で、おぼえがきだけが 外れて いると 言う
+    expect(fields).toContain("phases[0].enemy.name");
+    expect(fields).not.toContain("phases[0].desc");
+    expect(checkFuriganaCoverage([entry(hidden)])).toEqual([]);
   });
 
   it("集める文はスタジオと検査で同じ（collectLearnerTexts が同じ本文を返す）", () => {

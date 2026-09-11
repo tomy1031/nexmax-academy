@@ -47,6 +47,7 @@ import {
   CardBoard,
   CountBoxes,
   DayDots,
+  DayProgress,
   ProgressBoxes,
   SkyStrip,
 } from "@/components/asakai/asakai-parts";
@@ -989,7 +990,7 @@ function TimeCard({
           <RubyText text={`${nextDay}から つづけます`} index={index} show />
         </span>
         <span className="block text-xs tabular-nums">
-          <RubyText text={`${at + 1}日目 / ${total}日`} index={index} show />
+          <DayProgress at={at + 1} total={total} />
         </span>
       </button>
     </div>

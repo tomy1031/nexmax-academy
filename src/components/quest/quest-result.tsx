@@ -23,6 +23,14 @@ const UI_FURIGANA = buildFuriganaIndex([
   ["闇", "やみ"],
   ["飲", "の"],
   ["直", "なお"],
+  ["一度", "いちど"],
+  ["相談", "そうだん"],
+  ["体力", "たいりょく"],
+  ["早", "はや"],
+  ["減", "へ"],
+  ["見", "み"],
+  ["金", "かね"],
+  ["万", "まん"],
 ]);
 
 /**
@@ -98,7 +106,9 @@ export function QuestResult({
               <span className="text-slate-300">
                 <RubyText text="最終の 残高" index={UI_FURIGANA} />
               </span>
-              <span className="font-bold text-yellow-400">{state.budget} 万G</span>
+              <span className="font-bold text-yellow-400">
+                <RubyText text={`${state.budget} 万`} index={UI_FURIGANA} />G
+              </span>
             </div>
             <div className="flex items-center justify-between rounded border border-slate-800 bg-black p-2">
               <span className="text-slate-300">

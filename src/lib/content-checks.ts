@@ -13,6 +13,7 @@
  *  - 出題できる語か（単語ステージの参照先に 対訳と誤答3つ が そろっているか）
  *  - 導線の一致（article の「つぎは これ」がステージの学習順の直後を指しているか）
  *  - ふりがなの覆い漏れ（学習者が読む文の漢字が読み辞書で全部覆えているか）
+ *  - 説明文の守備範囲（説明に アプリの仕組み（ステージ・クリア）の話を書かない）
  *  - 参照切れの気づき（スタジオの保存経路だけ。止めずに warn で知らせる）
  */
 
@@ -276,6 +277,126 @@ export function checkForbiddenWordsInTexts(file: string, texts: readonly string[
         file,
         level: "error",
         message: `禁止語「${word}」が 学習者に見える文にある: 「…${near(text, at, word.length)}…」 — フィードバックは励まし＋次の行動に（P8）`,
+      });
+    }
+  }
+  return findings;
+}
+
+/* ------------------------------------------------------------------
+ * 説明文の 守備範囲（アプリの 仕組みを 学習者に 説明しない）
+ *
+ * ステージ・教材の 説明は「ここに 何が あるか」を 書く 欄である。
+ * ところが 作り手の 目の まま 書くと、進み方の 話が 混ざる:
+ *
+ *   「毎日の 朝礼と 夕礼は つぎの ステージです。」（stage:houkoku）
+ *   「夕礼は とばしても、この ステージは 終わります。」（stage:asakai）
+ *   「やらなくても ステージは 終わります。」（meeting:asakai_muzukashii）
+ *
+ * どれも 学習者が 知る 必要の 無い ことで、順番は カードの 通し番号が、
+ * 終わったかは しるしが すでに 画面で 見せている（stage-detail.tsx）。
+ * おまけに **教材カードの 説明は 2行で 切れる**（同ファイルの line-clamp-2。
+ * ステージ自身の 説明は 切れない）ので、カードに 仕組みの 話を 足すと
+ * 中身の 説明の ほうが 画面から 押し出される。
+ *
+ * 2026-09-11「それ生徒が知る必要ありますか？ありませんよね？そもそもここは
+ * ステージの内容の説明です」。文章の ルールだけに して おくと 同じ 間違いが
+ * 何度でも 戻って くるので（規律3・7・8 と 同じ 型）、機械で 止める。
+ * ------------------------------------------------------------------ */
+
+/**
+ * 中身では なく 仕組みを 指す ことば（説明文に 出たら エラー）。
+ *
+ * **少ない ほうへ 倒す。** 説明文の 検査は 下書きの 保存まで 止める（studio の
+ * route.ts）ので、誤検出は 先生の 手を 止める。だから 迷う 語は 入れない:
+ * 「ロック」は ブロック・クロック・デッドロック・ロック画面 と IT の ことばに
+ * 埋もれて いるのに、止めたい 言い回し（「ロックが 外れる」）は たいてい
+ * ステージか クリアと 一緒に 出るので、外して ある。
+ *
+ * 中身の 話として 正しい 言い回しが 見つかったら、`exceptions` に 足す
+ * （VERIFIED_SPLIT_COMPOUNDS と 同じ「目で 確かめた 印」）。
+ */
+const APP_MECHANICS_WORDS: readonly {
+  readonly word: string;
+  readonly exceptions: readonly string[];
+}[] = [
+  // 「ステージング環境」は IT の ことば（ITの単語の 説明に 出る）。
+  { word: "ステージ", exceptions: ["ステージング"] },
+  // 「キャッシュを クリア」「メモリを クリア」は IT の ことば。
+  { word: "クリア", exceptions: ["キャッシュを クリア", "キャッシュクリア", "メモリを クリア"] },
+  // 「テストを スキップ」は IT の ことば。
+  { word: "スキップ", exceptions: ["テストを スキップ"] },
+];
+
+/**
+ * 説明文として 見る 欄を 集める。
+ *
+ * **collectLabeledTexts（ふりがな検査の walker）は 使わない。** あの walker は
+ * 種別ごとの switch で 出来て いて `quest` の case が 無い——クエストこそ
+ * 「クリア」と 書きたく なる 教材なのに、素通しに なる。ここでは 欄の 名前で
+ * 直に 引く ので、種別が 増えても 穴が 開かない。
+ *
+ * 見る 欄は 説明の 役を する ものだけ:
+ *   description … 全種別（マップのカード・ステージトップ・教材カード）
+ *   subtitle    … シナリオの 副題（description が 無い 種別）
+ *   focus       … リスニング・ミーティング・スキットの「この 教材の 見どころ」
+ *   note        … リンク教材の ひとこと
+ *   area.note   … まなびマップの 土地の ひとこと
+ *
+ * 本文（記事・まんが・セリフ）は 見ない——物語の 中で 人物が「クリア」と
+ * 言う ことは あり得る。止めたいのは **説明の 欄**に 仕組みが 出る ことだけ。
+ */
+function descriptionTexts(content: Content): LabeledText[] {
+  const bag = content as unknown as Record<string, unknown>;
+  const out: LabeledText[] = [];
+  const push = (field: string, value: unknown) => {
+    if (typeof value === "string" && value) out.push({ field, text: value });
+  };
+  push("description", bag.description);
+  push("subtitle", bag.subtitle);
+  push("focus", bag.focus);
+  push("note", bag.note);
+  const area = bag.area;
+  if (area && typeof area === "object") {
+    push("area.note", (area as Record<string, unknown>).note);
+  }
+  return out;
+}
+
+/** 仕組みの ことばが 当たった 位置（例外の 語の 一部なら 飛ばす。無ければ -1）。 */
+function indexOfMechanics(text: string, word: string, exceptions: readonly string[]): number {
+  let from = 0;
+  for (;;) {
+    const at = text.indexOf(word, from);
+    if (at < 0) return -1;
+    // 例外の 語の どの 位置に 入って いても 飛ばす（「キャッシュを クリア」のように
+    // 語が 例外の 途中に ある ものが ある。同じ 語が 2度 入る 例外にも 耐える）。
+    const partOfException = exceptions.some((ex) => {
+      for (let offset = ex.indexOf(word); offset >= 0; offset = ex.indexOf(word, offset + 1)) {
+        if (text.startsWith(ex, at - offset)) return true;
+      }
+      return false;
+    });
+    if (!partOfException) return at;
+    from = at + 1;
+  }
+}
+
+/**
+ * 説明文に アプリの 仕組みの 話が 混ざって いないか。
+ *
+ * **前提: zod（contentSchema）を通った Content を渡すこと**（既定値が 埋まる）。
+ */
+export function checkDescriptionScope(file: string, content: Content): Finding[] {
+  const findings: Finding[] = [];
+  for (const { field, text } of descriptionTexts(content)) {
+    for (const { word, exceptions } of APP_MECHANICS_WORDS) {
+      const at = indexOfMechanics(text, word, exceptions);
+      if (at < 0) continue;
+      findings.push({
+        file,
+        level: "error",
+        message: `説明文（${field}）に 仕組みの ことば「${word}」がある: 「…${near(text, at, word.length)}…」 — 説明は 教材の 中身だけを 書く。進み方・クリア条件・つぎに 何が あるかは 学習者に 要らない（2026-09-11 の指定）`,
       });
     }
   }
@@ -1093,6 +1214,59 @@ export function collectLabeledTexts(content: Content): LabeledText[] {
       });
       break;
     }
+
+    case "quest": {
+      /*
+       * クエストは **30の 場面が まるごと 検査の 外**に 出て いた（2026-09-11）。
+       * 種別ごとの switch に `case "quest"` が 無い だけで、セリフも 4択も
+       * えらんだ あとの 解説も 1件も 数えられて いなかった——`lint:content` は
+       * 緑の まま、画面にだけ 裸の 漢字が 出る。朝礼・夕礼と 同じ 形の 穴である。
+       *
+       * 数える 欄は **教材が 持つ 字**だけ。`quest-play.tsx` の `ruby()`（教材の
+       * 読み辞書）は それ以外に **コードが 組み立てる ログ文**（「レベルが 上がった！」
+       * 「【警告】…個の 大きな バグ」）と `SPEAKER_NAME` も 同じ 辞書で 描くが、
+       * データに 無い 字は ここからは 見えない——**画面の ことばの 読みは
+       * 画面が 持つ**（`UI_FURIGANA`）のが 決まりなので、その ずれは 画面側の 話。
+       * 2026-09-11 の 検収で 実際に ログ文の 誤読・裸の 漢字が 見つかって いる。
+       *
+       * 見出し（title）は **ステージの カード**が 教材の 読み辞書で ルビを 振る
+       *（`src/app/[stage]/page.tsx` が title・description・furigana を 渡す）ので
+       * ほかの 種別と 同じく 数える。
+       *
+       * `phases[].desc` は **どこからも 引かれて いない**（2026-09-11 に 全 src を
+       * 確認）。画面に 出ない 字に 読みを 求めると、先生には 直しようの ない 指摘に
+       * なる ので 数えない。出す ように なったら ここへ 足す。
+       * `enemy.art` は 絵の 名前、`speaker` は だれが 言うかの id で、字では ない。
+       */
+      push("title", content.title);
+      push("description", content.description);
+      push("focus", content.focus);
+      content.phases.forEach((phase, i) => {
+        const at = (field: string) => `phases[${i}].${field}`;
+        // 章の 名前は 工程表（PROCESS CHART）の 一覧に 出る
+        push(at("chapter"), phase.chapter);
+        /*
+         * 場面の 名前。画面（`chapterLabel`）に 出るのは **「：」より 後ろだけ**
+         * だが、**まるごと 数える**。切り出した 文字列を 数えると
+         * `tests/coverage_walker.test.ts` が 本文と 突き合わせられず
+         *「検査の 外に 出て いる」と 見えて しまう ためで、
+         * 覆う 側に 倒して ある。いまの 本文では 前の「第N章」も
+         * ほかの 欄（options[].explanation）に 出る 漢字なので 実害は 無い。
+         */
+        push(at("name"), phase.name);
+        push(at("enemy.name"), phase.enemy.name);
+        phase.dialogue.forEach((line, j) => push(at(`dialogue[${j}].text`), line.text));
+        push(at("question"), phase.question);
+        phase.options.forEach((option, j) => {
+          const card = (field: string) => at(`options[${j}].${field}`);
+          push(card("text"), option.text);
+          // えらんだ 直後の ひとことは 結果の 札と 記録（HISTORY）の 両方に 出る
+          push(card("resultText"), option.resultText);
+          push(card("explanation"), option.explanation);
+        });
+      });
+      break;
+    }
   }
 
   return out;
@@ -1206,11 +1380,63 @@ const VERIFIED_SPLIT_COMPOUNDS: ReadonlySet<string> = new Set([
    */
   "見込",
   /*
+   * 「一回り」— 読み辞書は ["一回り","ひとまわり"] で 画面は 正しいが、ここが 見るのは
+   * 漢字の かたまり（一回）だけ。組み立ての 読み（ひとまわ＋り）も 正しい。
+   * 2026-09-11 に 目で 確認（開発の 工程。「1回り」から 直した）。
+   */
+  "一回",
+  /*
    * 「藤木取締役」— 藤木（ふじき）＋取締役（とりしまりやく）。役職を 付けた 名前は
    * かならず 2語に 割れるが、組み立ての 読みは 正しい（松井社長 と 同じ）。
    * 2026-09-11 に 目で 確認（朝礼・夕礼の 金曜）。
    */
   "藤木取締役",
+  /*
+   * ウォーターフォール クエスト（2026-09-11 に 種別ごと 検査の 対象へ 入った ぶん）。
+   *
+   * 大半は **程度・数の 語＋動詞**（一番＋多い・全部＋作る）か **熟語＋熟語**
+   *（参考＋資料・直接＋聞く）で、割れても 組み立ての 読みは そのまま 正しい。
+   * 「出来上」だけは 別の 形で、読み辞書が ["出来上が","できあが"] と
+   * **送りがなまで 見出しに 入れて いる**ため、漢字の かたまり（出来上）では
+   * 永久に 当たらない（確認待・回答待・見送 と 同じ）。画面は できあがった と 読む。
+   * 28件を 2026-09-11 に 目で 確認。
+   *
+   * **網が 広い 2語**（この 一覧は 全教材に 効く ので、書き残す）:
+   * - 「出来上」… 正しさは ["出来上が","できあが"] が 生きて いる ことに ぶら下がる。
+   *   その 見出しを 消すと 画面は できうえ に 戻るが、**この 行が 警告を 黙らせ続ける**
+   * - 「設計通」… 通は どお／とお／つう に 割れる。よその 教材が ["通","つう"] を 持って
+   *   「設計通り」と 書くと、せっけいつうり が 黙る
+   * どちらも 2026-09-11 時点では 全教材を 走査して 当たる 箇所が ほかに 無い。
+   */
+  "一番大切",
+  "一番安",
+  "一番伝",
+  "一番良",
+  "一番少",
+  "一番多",
+  "一番忙",
+  "一度決",
+  "万円",
+  "何人同時",
+  "何日働",
+  "全然足",
+  "全部入",
+  "全部作",
+  "全部壊",
+  "全部消",
+  "全部書",
+  "出来上",
+  "半年間放置",
+  "参考資料",
+  "来年作",
+  "将来別",
+  "当日持",
+  "今聞",
+  "直接書",
+  "直接聞",
+  "設計通",
+  // 「長い間連絡がなく」— 間（あいだ）＋連絡（れんらく）。時の へだたりの 間
+  "間連絡",
 ]);
 
 const KANJI_RUN = /[々一-鿿]{2,}/g;

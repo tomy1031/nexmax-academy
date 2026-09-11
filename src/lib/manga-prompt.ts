@@ -297,7 +297,11 @@ export const MANGA_SCRIPT_SCHEMA = {
   type: "object",
   properties: {
     title: { type: "string", description: "まんがの見出し（15文字いない）" },
-    description: { type: "string", description: "1文の説明" },
+    description: {
+      type: "string",
+      description:
+        "1文の説明。中身だけを 書く（ステージ・クリア・スキップ など アプリの 仕組みの 話は 書かない）",
+    },
     furigana: {
       type: "array",
       description: "読み辞書。[表記, よみ] の組。漢字を1つも残さない",

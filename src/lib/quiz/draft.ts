@@ -246,7 +246,7 @@ export function gradeDraft(question: QuizQuestion, draft: QuizDraft | undefined)
       return {
         correct,
         earned: correct ? question.points : 0,
-        answer: question.blanks.map((_, i) => `（${i + 1}）${draft.filled[i] ?? ""}`).join("　"),
+        answer: formatWordbankAnswer(question.blanks.map((_, i) => draft.filled[i] ?? "")),
         partial: !correct && someRight,
       };
     }
@@ -273,6 +273,91 @@ function sameSet(filled: readonly (string | null)[], blanks: readonly string[]):
   return left.length === right.length && left.every((v, i) => v === right[i]);
 }
 
+/* ------------------------------------------------------------------ *
+ * 穴うめ（wordbank）の こたえの 文 — **組み立てと 読み戻しを 並べて 置く**
+ *
+ * 記録に 残るのは 文（`QuizResult.answer`）だけなので、答え合わせの 画面で
+ * 「**どの 穴が どう ちがったか**」を 出すには、その 文を 穴ごとに 読み戻す
+ * 必要が ある（2026-09-11 の 指定「答えが 出るだけで、どこを どう 間違えたか
+ * わかりません」）。組み立てる 側と 読み戻す 側が 離れて いると、片方だけ
+ * 直した 日に 静かに ずれる——だから 2つを 隣に 置き、往復の テストで 固定する。
+ * ------------------------------------------------------------------ */
+
+/** 穴ごとの ことばを 1つの 文に する（`（1）◯◯　（2）◯◯`）。 */
+export function formatWordbankAnswer(filled: readonly string[]): string {
+  return filled.map((value, i) => `（${i + 1}）${value}`).join("　");
+}
+
+/**
+ * 上の 文を 穴ごとに 読み戻す。読めない 形（古い 記録・壊れた 文）は 空欄で 返す。
+ *
+ * **限界**: ことばの 中に 区切りと 同じ 形（全角スペース＋`（数字）`）が 入って いると
+ * 分け方が ずれる。教材の 語群に そんな 語は 無い（`tests/wordbank_review.test.tsx` で
+ * 形を 固定して ある）うえ、**採点の けっかが 合格なら 表示は ぜんぶ ○に する**
+ *（`checkWordbank` の `correct`）ので、画面が 自分に 矛盾する ことは ない。
+ */
+export function parseWordbankAnswer(answer: string, count: number): string[] {
+  const filled = Array.from({ length: count }, () => "");
+  for (const part of answer.split(/\u3000(?=（\d+）)/)) {
+    const hit = /^（(\d+)）([\s\S]*)$/.exec(part);
+    if (!hit) continue;
+    const index = Number(hit[1]) - 1;
+    if (index >= 0 && index < count) filled[index] = hit[2] ?? "";
+  }
+  return filled;
+}
+
+/** 穴うめの 答え合わせ 1つぶん（穴の 番号は 並びの とおり）。 */
+export interface BlankCheck {
+  /** 学習者が 入れた ことば（入れて いなければ 空文字）。 */
+  readonly own: string;
+  /** その 穴の 正解。 */
+  readonly right: string;
+  readonly ok: boolean;
+}
+
+/**
+ * 穴うめを **穴ごとに** 見る。
+ *
+ * `unordered`（並びに 意味の 無い 問い）では 位置で くらべない——そこは
+ * 「そろって いれば 合格」なので、位置で ○× を 付けると、合って いる のに
+ * ×が 並ぶ。入れた ことばが 正解の どれかで あれば ○に する。
+ */
+export function checkWordbank(
+  question: Extract<QuizQuestion, { type: "wordbank" }>,
+  answer: string,
+  /**
+   * 採点の けっか（`QuizResult.correct`）。**渡されて いて、それが 合格なら
+   * 穴は ぜんぶ ○**に する。
+   *
+   * 採点は 下書き（配列）を 見て いるのに、ここは 文から 読み戻して いる。
+   * ことばの 中に 区切りと 同じ 形が 入ると 読み戻しが ずれ、**帯は「できた」なのに
+   * 中身に ✗が 並ぶ**——画面が 自分で 自分に 矛盾する。採点の ほうを 正に する。
+   */
+  correct?: boolean,
+): BlankCheck[] {
+  const filled = parseWordbankAnswer(answer, question.blanks.length);
+  /*
+   * `unordered` は 位置を 見ないが、**同じ ことばを 2つの 穴に 置いた ときは
+   * 1つぶんしか 当たらない**（採点の `sameSet` と 同じ 数え方）。
+   * `includes` で 見ると、A・A と 置いた 人に ○が 2つ 並び、帯の
+   *「もう一度」と 食いちがう。
+   */
+  const pool = [...question.blanks];
+  return question.blanks.map((right, i) => {
+    const own = filled[i] ?? "";
+    let ok: boolean;
+    if (question.unordered) {
+      const at = own === "" ? -1 : pool.indexOf(own);
+      ok = at >= 0;
+      if (at >= 0) pool.splice(at, 1);
+    } else {
+      ok = own === right;
+    }
+    return { own, right, ok: correct === true || ok };
+  });
+}
+
 /** 学習者の こたえの 文だけ 要る ところ（かくにん画面）。 */
 export function draftAnswerText(question: QuizQuestion, draft: QuizDraft | undefined): string {
   return gradeDraft(question, draft).answer;
@@ -290,7 +375,9 @@ export function correctAnswerText(question: QuizQuestion): string {
     case "list":
       return question.groups.map((g) => g.label).join(" ／ ");
     case "wordbank":
-      return question.blanks.map((b, i) => `（${i + 1}）${b}`).join("　");
+      // 組み立ては 1か所だけ（`formatWordbankAnswer`）。ここで 別に 組むと、
+      // 区切りを 直した 日に こたえノートの 正解だけが 静かに ずれる
+      return formatWordbankAnswer(question.blanks);
     case "emotion":
       return `${question.feelings[question.answerFeeling] ?? ""} → ${
         question.replies[question.answerReply] ?? ""

@@ -7,6 +7,8 @@
  * 検査項目:
  *  1. zodスキーマ検証（src/content/schema.ts が唯一の契約）
  *  2. 禁止語（学習者向け文言に「不正解」等を使わない — 理解設計ガイド P8）
+ *  2b. 説明文の守備範囲（説明に「つぎの ステージです」等の 仕組みの話を書かない —
+ *      2026-09-11 の指定。学習者に 要らない うえ、中身の説明を 画面から 押し出す）
  *  3. 秘匿情報の漏れ（シナリオ: reqs の答え（secret / fact）が調査用模擬ページに
  *     そのまま書かれていたらエラー。キーワードが出ているだけなら警告——伏線は
  *     設計01 P4 が求めているもので、救済用の語とかぶるのが正しい）
@@ -45,6 +47,7 @@ import {
   checkDuplicateIds,
   checkForbiddenWords,
   checkCountryNames,
+  checkDescriptionScope,
   checkFuriganaCoverage,
   checkFuriganaEntrySoundness,
   checkSplitCompoundReadings,
@@ -328,6 +331,7 @@ async function main() {
     entries.push({ file: rel, content: parsed.data });
     findings.push(...checkForbiddenWords(rel, data));
     findings.push(...checkCountryNames(rel, parsed.data));
+    findings.push(...checkDescriptionScope(rel, parsed.data));
     if (parsed.data.kind === "scenario") {
       findings.push(...checkSecretLeaks(rel, parsed.data));
     }

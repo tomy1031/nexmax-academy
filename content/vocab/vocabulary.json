@@ -1592,6 +1592,10 @@
       "か"
     ],
     [
+      "四月",
+      "しがつ"
+    ],
+    [
       "月",
       "つき"
     ],
@@ -2936,7 +2940,7 @@
       "romaji": "douki",
       "meaningJa": "同じ年に会社に入った仲間のことです。",
       "englishTerm": "Colleagues who joined in the same year",
-      "example": "4月に 入った 同期と、いっしょに 昼ごはんを 食べました。",
+      "example": "四月に 入った 同期と、いっしょに 昼ごはんを 食べました。",
       "wrongMeanings": [
         "Motivation",
         "Synchronization",
@@ -16702,7 +16706,7 @@
       "romaji": "youken",
       "meaningJa": "これから 話す、その 話の ことです。",
       "englishTerm": "Matter / Topic",
-      "example": "ログイン機能の 用件ですが、テストが 終わりました。",
+      "example": "報告は、用件から 先に 言います。",
       "wrongMeanings": [
         "Requirements",
         "Place",
@@ -16714,20 +16718,16 @@
           "ようけん"
         ],
         [
-          "機能",
-          "きのう"
+          "報告",
+          "ほうこく"
         ],
         [
-          "終わりました",
-          "おわりました"
+          "先",
+          "さき"
         ],
         [
-          "話す",
-          "はなす"
-        ],
-        [
-          "話",
-          "はなし"
+          "言",
+          "い"
         ]
       ]
     },

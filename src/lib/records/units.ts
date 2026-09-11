@@ -39,6 +39,7 @@ import {
   listStages,
   listWordStages,
 } from "@/lib/content";
+import { LINK_ANSWER_PROMPTS } from "@/content/link-answers";
 import { sortStages } from "@/lib/map-data";
 
 /** 1つの 教材（＝記録の id が 指す もの）。 */
@@ -120,6 +121,16 @@ export async function loadUnitIndex(): Promise<UnitIndex> {
   }
   for (const scenario of scenarios) {
     for (const req of scenario.interview.reqs) prompts[`${scenario.id}:${req.id}`] = req.label;
+  }
+  /*
+   * ツール教材（link）に 書いた こたえ。問いの 文は 静的な 1枚の 中に あって
+   * ここからは 読めない ので、**台帳**（`src/content/link-answers.ts`）から 引く。
+   * 置かないと、先生の 画面の「もんだい」の 列に id（`kaikyuu`）が 並ぶ。
+   */
+  for (const [linkId, questions] of Object.entries(LINK_ANSWER_PROMPTS)) {
+    for (const [questionId, text] of Object.entries(questions)) {
+      prompts[`${linkId}:${questionId}`] = text;
+    }
   }
 
   /*
