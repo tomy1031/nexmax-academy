@@ -203,6 +203,11 @@ export function ListeningPlayer({
  *
  * 聞いて いる 間も 答え合わせの あとも 出したまま に する——聞き直す ときの
  * 手がかりに なる。
+ *
+ * ## 余白は 絵の 外に 置く
+ * `className` を そのまま `ImageSlotFrame` に 渡すと、余白は **絵そのもの**に 付く。
+ * 絵は 全画面に ひろげる ボタンに 包まれて いる ので、**題の すぐ 下の 余白を
+ * 触っただけで 全画面に 飛ぶ**。外側の わくに 付けかえる。
  */
 function Cover({
   listening,
@@ -215,12 +220,14 @@ function Cover({
 }) {
   if (listening.cover?.status !== "done" || !listening.cover.src) return null;
   return (
-    <ImageSlotFrame
-      slot={listening.cover}
-      alt={listening.title}
-      furigana={furigana}
-      className={`${className} h-auto w-full rounded-[18px]`}
-    />
+    <div className={className}>
+      <ImageSlotFrame
+        slot={listening.cover}
+        alt={listening.title}
+        furigana={furigana}
+        className="h-auto w-full rounded-[18px]"
+      />
+    </div>
   );
 }
 
