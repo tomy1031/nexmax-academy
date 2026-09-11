@@ -15,6 +15,13 @@
 import { RubyText } from "@/components/ruby-text";
 import type { FuriganaIndex } from "@/lib/text/furigana";
 
+/**
+ * カードの 顔。
+ *
+ * `asked` は **いま 聞かれて いる**か、**箱が まだ 残って いる**（開いたが ⭕ で ない）。
+ * 2つを 同じ 顔に して あるのは、どちらも 学習者が やる ことが 同じ
+ *「まだ 言う ことが ある」だから（2026-09-11）。
+ */
 export type CardState = "closed" | "asked" | "open" | "missed";
 
 const CARD_FACE: Record<CardState, { mark: string; cls: string; badge: string }> = {
@@ -95,7 +102,7 @@ export function ProgressBoxes({
 /**
  * カードの 板。**押せない**（`div` で 出す）。
  *
- * 上に 1行「話すと 開きます（n / m）」を 置くのは、
+ * 上に 1行「報告すると 開きます（n / m）」を 置くのは、
  * **この 4枚が 何かを 言わないと ？が 残る**から（fable の 棚卸し）。
  */
 export function CardBoard({
@@ -110,13 +117,24 @@ export function CardBoard({
   }[];
   index: FuriganaIndex;
 }) {
+  /*
+   * **⭕ の 数だけを 数える**（2026-09-11）。
+   *
+   * 前は `open`（＝1つでも 言えた）で 数えて いた ので、こまりごとが
+   * 3つの 箱の うち 1つしか 言えて いなくても「4 / 4」と 出て、
+   * それでも 司会は 聞き返しつづけ、「おわり」の ボタンも 出なかった。
+   * 数と 会話が ちがう ことを 言って いた。
+   */
   const open = cards.filter((c) => c.state === "open").length;
   return (
     <div className="border-hairline sticky top-0 z-10 border-b bg-white/95 px-2 py-2 backdrop-blur">
       <p className="text-ink-soft mb-1 text-[11px] font-black">
-        <RubyText text="話すと 開きます" index={index} show />{" "}
+        <RubyText text="報告すると 開きます" index={index} show />{" "}
         <span className="tabular-nums">
           （{open} / {cards.length}）
+        </span>
+        <span className="text-ink-faint ml-1 font-bold">
+          ❓ <RubyText text="まだ 言う ことが あります" index={index} show />
         </span>
       </p>
       <ul className="grid grid-cols-4 gap-1.5">
@@ -144,7 +162,7 @@ export function CardBoard({
                       className="text-ink-soft flex items-center gap-1 text-[10px] font-bold"
                     >
                       <span aria-hidden>{CARD_FACE[box.state].mark}</span>
-                      <span className="truncate">
+                      <span className="min-w-0 text-left leading-tight break-keep">
                         <RubyText text={box.label} index={index} show />
                       </span>
                     </span>
@@ -175,15 +193,31 @@ export function SkyStrip({ kind }: { kind: "asa" | "yuu" }) {
   );
 }
 
-/** 月〜金の どこに いるか。押せない。 */
+/**
+ * 月〜金の どこに いるか。押せない。
+ *
+ * **曜日の 1字にも ルビを 付ける**（規律2）。丸の 中は 1字なので 読み辞書に
+ * 当てず 直に 書いて いた ころ、390px の 通しで 裸の「月 火 水 木 金」と
+ * 「日目」が 出て いた（2026-09-11、e2e の 裸の漢字チェックが 先に 見つけた）。
+ * 教材の 読み辞書に 曜日が あるとは かぎらないので、**読みは ここが 持つ**。
+ */
+const DAY_DOTS: readonly (readonly [string, string])[] = [
+  ["月", "げつ"],
+  ["火", "か"],
+  ["水", "すい"],
+  ["木", "もく"],
+  ["金", "きん"],
+];
+
+/** 「◯日目」の 読み（1日目＝いちにちめ）。 */
+const NTH_DAY = ["", "いちにちめ", "ふつかめ", "みっかめ", "よっかめ", "いつかめ"];
+
 export function DayDots({ at }: { at: number }) {
-  const days = ["月", "火", "水", "木", "金"];
   return (
     <span className="flex items-center gap-1" aria-label={`5日の うち ${at + 1}日目`}>
-      {days.map((day, i) => (
+      {DAY_DOTS.map(([day, reading], i) => (
         <span
           key={day}
-          aria-hidden
           className={
             i < at
               ? "bg-leaf grid h-6 w-6 place-items-center rounded-full text-[11px] font-black text-white"
@@ -192,10 +226,18 @@ export function DayDots({ at }: { at: number }) {
                 : "border-hairline text-ink-faint grid h-6 w-6 place-items-center rounded-full border bg-white text-[11px] font-black"
           }
         >
-          {day}
+          <ruby>
+            {day}
+            <rt className="text-[7px] leading-none">{reading}</rt>
+          </ruby>
         </span>
       ))}
-      <span className="text-ink-soft ml-1 text-[11px] font-black tabular-nums">{at + 1}日目</span>
+      <span className="text-ink-soft ml-1 text-[11px] font-black">
+        <ruby>
+          {at + 1}日目
+          <rt className="text-[7px] leading-none">{NTH_DAY[at + 1] ?? ""}</rt>
+        </ruby>
+      </span>
     </span>
   );
 }

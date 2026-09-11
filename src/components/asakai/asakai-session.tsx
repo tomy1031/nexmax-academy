@@ -25,7 +25,7 @@
  * 合否が 変わらない ので、CI でも 通しで 確かめられる。
  */
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { CallShell } from "@/components/call-shell";
 import { HintModal } from "@/components/meeting/hint-modal";
@@ -39,7 +39,7 @@ import {
 } from "@/components/asakai/asakai-parts";
 import type { CardState } from "@/components/asakai/asakai-parts";
 import type { Meeting } from "@/content/schema";
-import { buildFuriganaIndex, type FuriganaIndex } from "@/lib/text/furigana";
+import { buildFuriganaIndex, mergeFuriganaEntries, type FuriganaIndex } from "@/lib/text/furigana";
 import {
   applyUtterance,
   initialPanelStates,
@@ -48,6 +48,12 @@ import {
   type ReportPanel,
 } from "@/lib/meeting/panels";
 import { recordContentProgress } from "@/lib/progress/store";
+import {
+  clearAsakaiResume,
+  restoreAsakai,
+  saveAsakaiResume,
+  type DayResult,
+} from "@/lib/meeting/asakai-resume";
 
 type Asakai = NonNullable<Meeting["asakai"]>;
 type Scene = Asakai["scenes"][number];
@@ -66,6 +72,37 @@ const DAY_NAME: Record<Scene["day"], string> = {
 
 const KIND_NAME: Record<Scene["kind"], string> = { asa: "朝礼", yuu: "夕礼" };
 
+/**
+ * **画面が 自分で 出す 字**の 読み（`CallShell` の `SHELL_FURIGANA` と 同じ 流儀）。
+ *
+ * 教材の 読み辞書だけで 描いて いた ころ、週の けっかの「合格」が
+ * かんたんの 辞書に ある ["合","あ"] を 拾って **「あ格」**に なって いた
+ *（2026-09-11。教材の 辞書は 教材の 文の ために 作られて いる）。
+ * 画面の ことばは 教材ごとに 変わらない ので、ここで 持つ。
+ */
+const UI_FURIGANA: readonly (readonly [string, string])[] = [
+  ["合格", "ごうかく"],
+  ["不合格", "ふごうかく"],
+  ["以上", "いじょう"],
+  ["曜日", "ようび"],
+  ["聞き返し", "ききかえし"],
+  ["開いた", "ひらいた"],
+  ["開きます", "ひらきます"],
+  ["開かなかった", "ひらかなかった"],
+  ["言えた", "いえた"],
+  ["報告", "ほうこく"],
+  ["担当", "たんとう"],
+  ["今週", "こんしゅう"],
+  ["目標", "もくひょう"],
+  ["番", "ばん"],
+  ["書いて", "かいて"],
+  ["見る", "みる"],
+  ["増えます", "ふえます"],
+  ["数", "かず"],
+  ["回", "かい"],
+  ["日", "にち"],
+];
+
 interface ChatLine {
   readonly who: string;
   readonly speakerId: string;
@@ -73,34 +110,32 @@ interface ChatLine {
   readonly self?: boolean;
 }
 
-/** 1日の けっか。**合否に 数える もの**と、表に 出す ものを 分けて 持つ。 */
-interface DayResult {
-  readonly day: string;
-  readonly kind: Scene["kind"];
-  readonly cards: number;
-  readonly cardTotal: number;
-  /** 合否の 単位（かんたん＝開いた カード／むずかしい＝言えた 行）。 */
-  readonly units: number;
-  readonly unitTotal: number;
-  readonly komariOpen: boolean;
-  readonly komariBoxes: number;
-  readonly komariTotal: number;
-  readonly probes: number;
-  readonly chips: readonly { label: string; open: boolean }[];
-}
-
 export function AsakaiSession({ meeting }: { meeting: Meeting }) {
   const asakai = meeting.asakai;
-  const index = useMemo(() => buildFuriganaIndex(meeting.furigana), [meeting.furigana]);
+  /* 教材の 読みが 先（後勝ち）。画面の ことばは そこに 無い ものだけ 拾う。 */
+  const index = useMemo(
+    () => buildFuriganaIndex(mergeFuriganaEntries(UI_FURIGANA, meeting.furigana)),
+    [meeting.furigana],
+  );
   const nameOf = useMemo(() => {
     const map = new Map<string, string>();
     for (const person of asakai?.people ?? []) map.set(person.id, person.name);
     return map;
   }, [asakai]);
 
-  const [sceneAt, setSceneAt] = useState(0);
+  /**
+   * しおり。**日の はじめに 戻す**（場面の 途中には 戻さない）。
+   *
+   * 5日で 30分を 超える ので、1回の 授業で 終わらない ことが ふつうに ある。
+   * ここを 読まないと、水曜まで 進んだ 人が 開き直すたびに 月曜へ 落ちる
+   *（`MeetingSession` で 2026-08-28 に 実発生した のと 同じ 形）。
+   * `useState` の 初期化関数で 1回だけ 読む——描くたびに 端末を 触らない。
+   */
+  const start = useState(() => restoreAsakai(meeting.id, asakai?.scenes.length ?? 0))[0];
+
+  const [sceneAt, setSceneAt] = useState(start.sceneAt);
   const [states, setStates] = useState<readonly PanelState[]>(() =>
-    initialPanelStates(toPanels(asakai?.scenes[0])),
+    initialPanelStates(toPanels(asakai?.scenes[start.sceneAt])),
   );
   /** カードごとに 何回 聞き返したか（2回で 打ち切る）。 */
   const [attempts, setAttempts] = useState<Record<string, number>>({});
@@ -111,7 +146,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
   const [hint, setHint] = useState(false);
   /** `"talk"` 報告中 ／ `"gap"` 時間カード ／ `"done"` 週の けっか。 */
   const [phase, setPhase] = useState<"talk" | "gap" | "done">("talk");
-  const [results, setResults] = useState<readonly DayResult[]>([]);
+  const [results, setResults] = useState<readonly DayResult[]>(start.results);
 
   const scene = asakai?.scenes[sceneAt];
   const panels = useMemo(() => toPanels(scene), [scene]);
@@ -153,11 +188,11 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
       const row: DayResult = {
         day: DAY_NAME[scene.day],
         kind: scene.kind,
-        cards: final.filter((s) => s.open).length,
+        cards: final.filter((s) => s.full).length,
         cardTotal: panels.length,
         units: isHard
           ? scored.reduce((sum, s) => sum + s.said.length, 0)
-          : final.filter((s) => s.open).length,
+          : final.filter((s) => s.full).length,
         unitTotal: isHard
           ? scoredPanels.reduce((sum, p) => sum + p.facts.length, 0)
           : panels.length,
@@ -167,14 +202,44 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
         probes: usedProbes,
         chips: panels.map((panel) => ({
           label: panel.label,
-          open: final.find((s) => s.id === panel.id)?.open ?? false,
+          open: final.find((s) => s.id === panel.id)?.full ?? false,
         })),
       };
-      setResults((prev) => [...prev, row]);
+      setResults((prev) => {
+        const done = [...prev, row];
+        saveAsakaiResume(meeting.id, done);
+        return done;
+      });
+
+      /*
+       * **開かなかった カードが ある 日に「ぜんぶ 聞けました」と 言わない**（規律1）。
+       *
+       * 教材の `ack` は「4枚 そろった とき」の 受け止めで、司会が れいを 見せて
+       * 先へ 進めた 日にも そのまま 出て いた——**言えて いないのに 分かった ことに
+       * なる**。そろわなかった 日は、開いた 札と 開かなかった 札を そのまま 読み上げる。
+       * 名指しの 材料は カードの 札（教材の ことば）だけで、新しい 呼び名を 作らない。
+       */
+      const openLabels = panels
+        .filter((panel) => final.find((s) => s.id === panel.id)?.full)
+        .map((panel) => panel.label);
+      const shutLabels = panels
+        .filter((panel) => !final.find((s) => s.id === panel.id)?.full)
+        .map((panel) => panel.label);
+      const ack: Line =
+        shutLabels.length === 0
+          ? scene.ack
+          : {
+              speakerId: asakai.chairId,
+              text:
+                (openLabels.length > 0
+                  ? `はい。${openLabels.join("・")}は 聞けました。`
+                  : "はい。") +
+                `${shutLabels.join("・")}は 言えて いません。あしたは そこも お願いします。`,
+            };
 
       /* 采配は「お願いまで 言えたか」で 分ける。言えて いない ときは
          司会が **言い方を 見せてから** 自分で 段取りする（0点で 終わらせない）。 */
-      const tail: Line[] = [scene.ack];
+      const tail: Line[] = [ack];
       if (scene.arrange) tail.push(komari?.full ? scene.arrange.done : scene.arrange.missing);
       tail.push(...scene.members, ...scene.closing);
       setLines((prev) => [
@@ -187,7 +252,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
       ]);
       setAskedId(null);
     },
-    [scene, asakai, panels, nameOf],
+    [scene, asakai, panels, nameOf, meeting.id],
   );
 
   const send = useCallback(() => {
@@ -213,7 +278,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
 
     /* 2回 聞いても 開かない カードは、司会が れいを 見せて 先へ 進める。 */
     if (count > MAX_PROBE) {
-      say(data.example);
+      say({ ...data.example, text: `こう 言うと 開きます。${data.example.text}` });
       const passed = step.states.map((s) => (s.id === target.id ? { ...s, gaveUp: true } : s));
       setStates(passed);
       const after = nextProbePanel(panels, passed);
@@ -245,11 +310,24 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
     if (!asakai) return;
     if (sceneAt + 1 >= asakai.scenes.length) {
       setPhase("done");
-      recordContentProgress(meeting.id, { status: "completed" });
       return;
     }
     setPhase("gap");
   }, [asakai, sceneAt, meeting.id]);
+
+  /**
+   * 週の けっかを 読み終えた とき。
+   *
+   * **「おわった」を ここで 書く**（`toGap` では 書かない）。先に 書くと
+   * ステージの「クリア」の 板が けっかの 上に かぶさり、合格か 不合格かが
+   * 読めなく なる（規律1。2026-09-11 に 390px の 通しで 実発生）。
+   * `MeetingSession` が 修了証を 閉じた ときに 書くのと 同じ 順番。
+   */
+  const closeResult = useCallback(() => {
+    recordContentProgress(meeting.id, { status: "completed" });
+    /* 話しきった 人が もう一度 開いたら 月曜から。しおりは ここで 消す。 */
+    clearAsakaiResume(meeting.id);
+  }, [meeting.id]);
 
   const goNext = useCallback(() => {
     if (!asakai) return;
@@ -266,6 +344,8 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
   if (!asakai || !scene) return null;
 
   const last = lines[lines.length - 1];
+  /** 相手の さいごの ことば（自分の 発話は とばす）。 */
+  const lastSaid = [...lines].reverse().find((line) => !line.self);
   const sceneOver = nextProbePanel(panels, states) === null;
   const cards = panels.map((panel) => {
     const state = states.find((s) => s.id === panel.id);
@@ -304,7 +384,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
       side={<Chat lines={lines} index={index} />}
       speak={
         phase === "done" ? (
-          <WeekResult asakai={asakai} rows={results} index={index} />
+          <WeekResult asakai={asakai} rows={results} index={index} onClose={closeResult} />
         ) : phase === "gap" ? (
           <TimeCard
             result={results[results.length - 1]}
@@ -376,7 +456,12 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
                     {scene.card.memo.map((row, at) => (
                       <li
                         key={`${row.head}-${at}`}
-                        className={`grid grid-cols-[3.6rem_minmax(0,1fr)] gap-2 text-[13px] leading-snug font-bold ${row.aside ? "text-ink-faint" : ""}`}
+                        /*
+                         * `aside`（報告に 要らない 行）でも **見た目を 変えない**。
+                         * 灰色に して いた ころ、どれを 落とすかを 画面が 先に
+                         * 答えて いた——えらぶ 練習に ならない（2026-09-11）。
+                         */
+                        className="grid grid-cols-[3.6rem_minmax(0,1fr)] gap-2 text-[13px] leading-snug font-bold"
                       >
                         <span className="text-[#8a5a3e] tabular-nums">
                           <RubyText text={row.head} index={index} show />
@@ -417,13 +502,32 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
                   className="btn-island btn-game w-full px-6 py-3"
                 >
                   <RubyText
-                    text={`${DAY_NAME[scene.day]}の ${KIND_NAME[scene.kind]} おわり`}
+                    text={
+                      sceneAt + 1 >= asakai.scenes.length
+                        ? "今週の けっかを 見る ▶"
+                        : "きょうの けっかを 見る ▶"
+                    }
                     index={index}
                     show
                   />
                 </button>
               ) : (
                 <div className="space-y-2">
+                  {/*
+                   * **いま 言われた 1行**を 入力欄の すぐ上に 置く（2026-09-11）。
+                   *
+                   * 会話の 記録（`side`）は 390px では カメラの 列の さらに 下に 積まれる。
+                   * カードが ❓ に 変わっても、**何を 聞かれたかは 画面 1つぶん 下**に あった。
+                   * 打つ 手の すぐ上に 相手の ことばを 置く（`MeetingSession` と 同じ 形）。
+                   */}
+                  {lastSaid ? (
+                    <p className="bg-panel-tint rounded-xl px-3 py-2 text-sm font-bold">
+                      <span className="text-ink-soft mr-1 text-[11px] font-black">
+                        <RubyText text={lastSaid.who} index={index} show />
+                      </span>
+                      <RubyText text={lastSaid.text} index={index} show />
+                    </p>
+                  ) : null}
                   <label
                     className="text-ink-soft block text-[11px] font-black"
                     htmlFor="asakai-answer"
@@ -444,7 +548,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
                       disabled={!answer.trim()}
                       className="btn-island btn-game flex-1 px-4 py-2 disabled:opacity-45"
                     >
-                      <RubyText text="ほうこくする" index={index} show />
+                      <RubyText text="報告する" index={index} show />
                     </button>
                     <button
                       type="button"
@@ -531,14 +635,21 @@ function TimeCard({
         </>
       ) : null}
       {lead ? (
-        <p className="bg-panel-tint rounded-xl px-3 py-2 text-sm font-bold">
-          <RubyText text={lead} index={index} show />
-        </p>
+        <div className="bg-panel-tint rounded-xl px-3 py-2">
+          <p className="text-ink-soft text-[11px] font-black">
+            <RubyText text="この あと あった こと" index={index} show />
+          </p>
+          <p className="mt-0.5 text-sm font-bold">
+            <RubyText text={lead} index={index} show />
+          </p>
+        </div>
       ) : null}
       <button type="button" onClick={onNext} className="btn-island btn-game w-full px-6 py-3">
-        <RubyText text={`${nextDay}から つづけます`} index={index} show />{" "}
-        <span className="tabular-nums">
-          （{at + 1}日目 / {total}日）
+        <span className="block break-keep">
+          <RubyText text={`${nextDay}から つづけます`} index={index} show />
+        </span>
+        <span className="block text-xs tabular-nums">
+          {at + 1}日目 / {total}日
         </span>
       </button>
     </div>
@@ -549,19 +660,27 @@ function TimeCard({
  * 週の けっか。**合否を 字で はっきり 出す**（規律1）。ねぎらいの ことばは 置かない。
  *
  * 数える 単位は レベルで ちがう——かんたんは **開いた カード**（20枚）、
- * むずかしいは **言えた 行**（30こ）と **こまりごとの 箱**（15こ）。
+ * むずかしいは **言えた こと**（30こ）と **こまりごとで 言えた こと**（15こ）。
  * どちらも「数字と きょうで 稼いで こまりごとを 5日 落とす」を 合格に しない ため、
  * 2本の 線を 両方 越えた ときだけ 合格に する。
+ *
+ * ## 表の 列は **合否と 同じ ものさし**に する
+ * 上の 行が「言えた こと 23 / 30」で、下の 表が「開いた カード 3 / 4」だと、
+ * **どちらが 合格に 効くのかが 画面から 読めない**（数の 単位が 2つ 並ぶ）。
+ * だから 表の 列見出しも `unitName` と そろえ、中身も その日の `units` を 出す。
  */
 function WeekResult({
   asakai,
   rows,
   index,
+  onClose,
 }: {
   asakai: Asakai;
   rows: readonly DayResult[];
   index: FuriganaIndex;
+  onClose: () => void;
 }) {
+  const [closed, setClosed] = useState(false);
   const units = rows.reduce((sum, row) => sum + row.units, 0);
   const unitTotal = rows.reduce((sum, row) => sum + row.unitTotal, 0);
   const komariDays = rows.filter((row) => row.komariOpen).length;
@@ -571,7 +690,7 @@ function WeekResult({
   const needUnits = asakai.pass.units;
   const needDays = asakai.pass.komariDays;
   const needBoxes = asakai.pass.komariBoxes;
-  const unitName = asakai.level === "hard" ? "言えた 行" : "開いた カード";
+  const unitName = asakai.level === "hard" ? "言えた こと" : "開いた カード";
   const secondOk =
     needBoxes !== undefined
       ? komariBoxes >= needBoxes
@@ -596,7 +715,7 @@ function WeekResult({
       </p>
       {needBoxes !== undefined ? (
         <p className="text-sm font-bold">
-          <RubyText text="こまりごとの 箱" index={index} show />{" "}
+          <RubyText text="こまりごとで 言えた こと" index={index} show />{" "}
           <span className="tabular-nums">
             {komariBoxes} / {komariTotal}
           </span>{" "}
@@ -621,7 +740,7 @@ function WeekResult({
               <RubyText text="曜日" index={index} show />
             </th>
             <th scope="col" className="py-1">
-              <RubyText text="開いた カード" index={index} show />
+              <RubyText text={unitName} index={index} show />
             </th>
             <th scope="col" className="py-1">
               <RubyText text="聞き返し" index={index} show />
@@ -635,7 +754,7 @@ function WeekResult({
                 <RubyText text={row.day} index={index} show />
               </td>
               <td className="py-1 tabular-nums">
-                {row.cards} / {row.cardTotal}
+                {row.units} / {row.unitTotal}
               </td>
               <td className="py-1 tabular-nums">{row.probes}回</td>
             </tr>
@@ -645,23 +764,41 @@ function WeekResult({
 
       {pass ? null : (
         <p className="text-sm font-bold">
-          <RubyText
-            text="開かなかった 曜日を もう いちど 話すと、数が 増えます。"
-            index={index}
-            show
-          />
+          <RubyText text="もう いちど はじめから 話すと、数は 数え直します。" index={index} show />
         </p>
       )}
+
+      {/* **これを 押すまで「おわった」を 書かない**（上のコメント）。 */}
+      <button
+        type="button"
+        disabled={closed}
+        onClick={() => {
+          setClosed(true);
+          onClose();
+        }}
+        className="btn-island btn-game w-full px-6 py-3 disabled:opacity-45"
+      >
+        <RubyText text={closed ? "読みました" : "けっかを 読みました ▶"} index={index} show />
+      </button>
     </div>
   );
 }
 
 function Chat({ lines, index }: { lines: readonly ChatLine[]; index: FuriganaIndex }) {
+  const box = useRef<HTMLDivElement>(null);
+  /* 行が 増えたら いちばん下へ。受け止め・采配・閉じの ことばが 箱の 中に 隠れる。 */
+  useEffect(() => {
+    const node = box.current;
+    if (node) node.scrollTop = node.scrollHeight;
+  }, [lines]);
   return (
-    <div className="card-island h-[46vh] overflow-y-auto p-3 text-sm sm:h-[62vh]">
+    <div ref={box} className="card-island h-[46vh] overflow-y-auto p-3 text-sm sm:h-[62vh]">
       {lines.map((line, at) => (
         <p key={at} className={`mb-2 font-bold ${line.self ? "text-blue-deep" : ""}`}>
-          <span className="text-ink-soft mr-1 text-[11px] font-black">{line.who}</span>
+          {/* 名前も 教材の 字（富田・奥田）。ルビを 通さないと 裸の 漢字に なる。 */}
+          <span className="text-ink-soft mr-1 text-[11px] font-black">
+            <RubyText text={line.who} index={index} show />
+          </span>
           <RubyText text={line.text} index={index} show />
         </p>
       ))}
@@ -687,10 +824,17 @@ function toPanels(scene: Scene | undefined): ReportPanel[] {
   }));
 }
 
+/**
+ * カードの 顔。**⭕ は「ぜんぶ 言えた」（`full`）とき だけ**（2026-09-11）。
+ *
+ * `open`（1つでも 言えた）を ⭕ に して いた ころ、こまりごとの 3つの 箱の
+ * うち 1つしか 言えて いない のに 板は「4 / 4」で、司会は 聞き返しつづけて
+ * いた——**画面の 数と 会話が 別の ことを 言って いた**。
+ */
 function faceOf(state: PanelState | undefined, asked: boolean): CardState {
   if (!state) return "closed";
   if (state.gaveUp) return "missed";
-  if (state.open) return "open";
-  if (asked) return "asked";
+  if (state.full) return "open";
+  if (state.open || asked) return "asked";
   return "closed";
 }

@@ -68,12 +68,20 @@ export interface PanelState {
  * ④和語の 数（ひとつ〜いつつ）。教材ごとに 書き並べない。
  */
 const ARABIC = /\d/u;
-const KANJI_NUMBER = /[一二三四五六七八九十百]\s*[こつ人分秒時回台枚日名％%]/u;
+const KANJI_NUMBER = /[一二三四五六七八九十百千][こつ個件人分秒時回台枚日名円％%]/u;
 const HALF = /(半分|半日|はんぶん|はんにち)/u;
 const WAGO = /(ひとつ|ふたつ|みっつ|よっつ|いつつ|むっつ|ななつ|やっつ|ここのつ)/u;
+/**
+ * 数に 見えるが 数では ない ことば。
+ *
+ * 「十分（じゅうぶん）」は **足りて いる**の 意味で、数え方では ない。
+ * これを 数字と 数えて いた ころ、「まだ 十分 できて いません」で
+ * 数字の カードが 開いて いた（かんたんでは 20枚中 1枚の 得点）。
+ */
+const NOT_A_COUNT = /(十分|充分|十分に)/u;
 
 export function hasNumber(utterance: string): boolean {
-  const text = normalizeReading(utterance);
+  const text = normalizeReading(utterance).replace(NOT_A_COUNT, "");
   return ARABIC.test(text) || KANJI_NUMBER.test(text) || HALF.test(text) || WAGO.test(text);
 }
 
@@ -133,6 +141,15 @@ export function applyUtterance({
       gaveUp: false,
     };
 
+    /*
+     * **れいを 見せて 先へ 進めた パネルは、もう 動かさない**（2026-09-11）。
+     *
+     * 前は `gaveUp` でも 照合を つづけて いた ので、司会の れいを そのまま
+     * 書き写すと `open` だけ true に なり、**板は ❌ なのに 合否は ⭕** に なった。
+     * 言えなかった ことを 言えた ことに しない（規律1）。
+     */
+    if (prev.gaveUp) return prev;
+
     // 形で 見る パネル（数字）は 行を 持たない
     if (panel.rule === "number") {
       if (prev.open || !hasNumber(utterance)) return prev;
@@ -179,7 +196,12 @@ export function nextProbePanel(
   return null;
 }
 
-/** 開いた 数（合否に 使う）。`gaveUp` は 数えない。 */
+/**
+ * 開いた 数（合否に 使う）。
+ *
+ * `gaveUp` は `applyUtterance` が その 時点で 止める ので、
+ * 開かない まま 打ち切られた パネルは ここでも 数に 入らない。
+ */
 export function countOpen(states: readonly PanelState[]): number {
   return states.filter((s) => s.open).length;
 }
