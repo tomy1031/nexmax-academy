@@ -298,7 +298,8 @@
             ],
             "example": {
               "speakerId": "tomita",
-              "text": "「明日は しるしの のこりを 作って、通知の 原因を 半日 調べます。テストケースも 10こ 書きます。」"
+              "text": "「明日は しるしの のこりを 作って、通知の 原因を 半日 調べます。テストケースも 10こ 書きます。」",
+              "audio": "/audio/meetings/asakai_muzukashii/s0-ashita-ex-a20892aa.wav"
             },
             "openAt": 2
           },
@@ -370,7 +371,8 @@
               },
               {
                 "speakerId": "tomita",
-                "text": "こまって いることは 3つ 言います。①何が こまって いるか ②いつまでに 分かりそうか ③だれに 何を して ほしいか。まだ 言って いない ものを お願いします。"
+                "text": "こまって いることは 3つ 言います。①何が こまって いるか ②いつまでに 分かりそうか ③だれに 何を して ほしいか。まだ 言って いない ものを お願いします。",
+                "audio": "/audio/meetings/asakai_muzukashii/s0-komari-fu1-f3aac75b.wav"
               }
             ],
             "example": {
@@ -392,7 +394,8 @@
               },
               {
                 "speakerId": "tomita",
-                "text": "「3回とも 来ない」「半分まで」の ように、数を 入れて ください。"
+                "text": "「3回とも 来ない」「半分まで」の ように、数を 入れて ください。",
+                "audio": "/audio/meetings/asakai_muzukashii/s0-suuji-fu1-eb36b5a5.wav"
               }
             ],
             "example": {
@@ -502,7 +505,8 @@
         "opening": [
           {
             "speakerId": "tomita",
-            "text": "お疲れさまです。夕礼を 始めます。きょうは 奥田さんから お願いします。"
+            "text": "お疲れさまです。夕礼を 始めます。きょうは 奥田さんから お願いします。",
+            "audio": "/audio/meetings/asakai_muzukashii/s1-opening-0-6c65ebcc.wav"
           }
         ],
         "sample": {
@@ -547,7 +551,8 @@
         "closing": [
           {
             "speakerId": "tomita",
-            "text": "では、きょうの 夕礼は ここまでです。金曜日まで あと 三日です。お疲れさまでした。"
+            "text": "では、きょうの 夕礼は ここまでです。金曜日まで あと 三日です。お疲れさまでした。",
+            "audio": "/audio/meetings/asakai_muzukashii/s1-closing-0-ce6d921f.wav"
           }
         ],
         "panels": [
@@ -750,7 +755,8 @@
             ],
             "example": {
               "speakerId": "tomita",
-              "text": "「5回 ためして 5回 来ました。」"
+              "text": "「5回 ためして 5回 来ました。」",
+              "audio": "/audio/meetings/asakai_muzukashii/s1-suuji-ex-ecbe526a.wav"
             }
           }
         ],
@@ -875,27 +881,32 @@
         "members": [
           {
             "speakerId": "nyam",
-            "text": "はい。11時に 見ます。ニャムです。担当は「きょうは 休みます」です。本日は テストを 10この うち 8こ しました。明日は のこりの 2こを します。こまって いることは ありません。以上です。"
+            "text": "はい。11時に 見ます。ニャムです。担当は「きょうは 休みます」です。本日は テストを 10この うち 8こ しました。明日は のこりの 2こを します。こまって いることは ありません。以上です。",
+            "audio": "/audio/meetings/asakai_muzukashii/s2-member-0-322de449.wav"
           },
           {
             "speakerId": "okuda",
-            "text": "奥田です。担当は「あしたの 持ちもの」です。本日は ◯◯さんと 古い iPhone で 通知を 見ました。持ちものの テストは 6この うち 4こ 終わりました。明日は のこりの 2こを します。こまって いることは ありません。以上です。"
+            "text": "奥田です。担当は「あしたの 持ちもの」です。本日は ◯◯さんと 古い iPhone で 通知を 見ました。持ちものの テストは 6この うち 4こ 終わりました。明日は のこりの 2こを します。こまって いることは ありません。以上です。",
+            "audio": "/audio/meetings/asakai_muzukashii/s2-member-1-3cefc085.wav"
           }
         ],
         "arrange": {
           "done": {
             "speakerId": "tomita",
-            "text": "ニャムさん、明日 15分、◯◯さんの 直した コードを 見て ください。"
+            "text": "ニャムさん、明日 15分、◯◯さんの 直した コードを 見て ください。",
+            "audio": "/audio/meetings/asakai_muzukashii/s2-arrange-done-fe2a9d6b.wav"
           },
           "missing": {
             "speakerId": "tomita",
-            "text": "大きい 直しは、だれかに 見て もらうと 安心です。「ニャムさんに コードを 見て いただけませんか」と 言えると いいです。ニャムさん、明日 お願いします。"
+            "text": "大きい 直しは、だれかに 見て もらうと 安心です。「ニャムさんに コードを 見て いただけませんか」と 言えると いいです。ニャムさん、明日 お願いします。",
+            "audio": "/audio/meetings/asakai_muzukashii/s2-arrange-missing-78aecac5.wav"
           }
         },
         "closing": [
           {
             "speakerId": "tomita",
-            "text": "では、きょうの 夕礼は ここまでです。金曜日まで あと 二日です。お疲れさまでした。"
+            "text": "では、きょうの 夕礼は ここまでです。金曜日まで あと 二日です。お疲れさまでした。",
+            "audio": "/audio/meetings/asakai_muzukashii/s2-closing-0-35461dcc.wav"
           }
         ],
         "panels": [
@@ -948,7 +959,8 @@
             ],
             "example": {
               "speakerId": "tomita",
-              "text": "「古い iPhone でも 通知が 来ました。テストは 7こ 終わって、見せる 順番も 決まりました。」"
+              "text": "「古い iPhone でも 通知が 来ました。テストは 7こ 終わって、見せる 順番も 決まりました。」",
+              "audio": "/audio/meetings/asakai_muzukashii/s2-kyou-ex-0dda0ba2.wav"
             },
             "openAt": 2
           },
@@ -998,7 +1010,8 @@
             ],
             "example": {
               "speakerId": "tomita",
-              "text": "「明日は 一覧を 20こずつ 読むように 直して、50こで もう 一度 テストします。テストの のこりは 3こです。」"
+              "text": "「明日は 一覧を 20こずつ 読むように 直して、50こで もう 一度 テストします。テストの のこりは 3こです。」",
+              "audio": "/audio/meetings/asakai_muzukashii/s2-ashita-ex-ddb82548.wav"
             },
             "openAt": 2
           },
@@ -1078,7 +1091,8 @@
             ],
             "example": {
               "speakerId": "tomita",
-              "text": "「おしらせが 50こ あると、一覧が 開くのに 3秒 かかります。木曜の 昼までに 直せる 見込みです。ニャムさんに、直した コードを 15分 レビューして いただけませんか。」"
+              "text": "「おしらせが 50こ あると、一覧が 開くのに 3秒 かかります。木曜の 昼までに 直せる 見込みです。ニャムさんに、直した コードを 15分 レビューして いただけませんか。」",
+              "audio": "/audio/meetings/asakai_muzukashii/s2-komari-ex-8a4de390.wav"
             }
           },
           {
@@ -1204,12 +1218,14 @@
         "opening": [
           {
             "speakerId": "tomita",
-            "text": "お疲れさまです。夕礼を 始めます。あしたは 学校です。きょうは ニャムさんから お願いします。"
+            "text": "お疲れさまです。夕礼を 始めます。あしたは 学校です。きょうは ニャムさんから お願いします。",
+            "audio": "/audio/meetings/asakai_muzukashii/s3-opening-0-72b66797.wav"
           }
         ],
         "sample": {
           "speakerId": "nyam",
-          "text": "はい。ニャムです。担当は「きょうは 休みます」です。本日は テストが 10こ ぜんぶ 通りました。◯◯さんの コードも 15分 見ました。明日は 学校で、休みの れんらくを 実際に 送って 見せます。2分です。すみません。悪い しらせが 1つ あります。学校の Wi-Fi が おそいと、送るのに 10秒 かかります。明日の 朝までに 分かりません。富田さんに、うまく いかない ときの 言い方を 決めて いただけませんか。以上です。"
+          "text": "はい。ニャムです。担当は「きょうは 休みます」です。本日は テストが 10こ ぜんぶ 通りました。◯◯さんの コードも 15分 見ました。明日は 学校で、休みの れんらくを 実際に 送って 見せます。2分です。すみません。悪い しらせが 1つ あります。学校の Wi-Fi が おそいと、送るのに 10秒 かかります。明日の 朝までに 分かりません。富田さんに、うまく いかない ときの 言い方を 決めて いただけませんか。以上です。",
+          "audio": "/audio/meetings/asakai_muzukashii/s3-sample-786a2171.wav"
         },
         "prompt": {
           "speakerId": "tomita",
@@ -1224,27 +1240,32 @@
         "members": [
           {
             "speakerId": "okuda",
-            "text": "奥田です。担当は「あしたの 持ちもの」です。本日は テストが ぜんぶ 通りました。練習では 先生の 役を しました。明日は 持ちものの 画面を 3分 説明します。こまって いることは ありません。以上です。"
+            "text": "奥田です。担当は「あしたの 持ちもの」です。本日は テストが ぜんぶ 通りました。練習では 先生の 役を しました。明日は 持ちものの 画面を 3分 説明します。こまって いることは ありません。以上です。",
+            "audio": "/audio/meetings/asakai_muzukashii/s3-member-0-6d8b978b.wav"
           },
           {
             "speakerId": "hendy",
-            "text": "ヘンディです。担当は 先生の 画面です。本日は 説明の 紙を 書きました。3枚です。明日は 学校で、いちばん 最初に おしらせを 1つ 出します。こまって いることは ありません。以上です。"
+            "text": "ヘンディです。担当は 先生の 画面です。本日は 説明の 紙を 書きました。3枚です。明日は 学校で、いちばん 最初に おしらせを 1つ 出します。こまって いることは ありません。以上です。",
+            "audio": "/audio/meetings/asakai_muzukashii/s3-member-1-2a6f81a7.wav"
           }
         ],
         "arrange": {
           "done": {
             "speakerId": "tomita",
-            "text": "はい、それは わたしが 決めます。今夜 書いて、明日の 朝 9時に 送ります。学校では わたしが 答えます。"
+            "text": "はい、それは わたしが 決めます。今夜 書いて、明日の 朝 9時に 送ります。学校では わたしが 答えます。",
+            "audio": "/audio/meetings/asakai_muzukashii/s3-arrange-done-9262b490.wav"
           },
           "missing": {
             "speakerId": "tomita",
-            "text": "答えは わたしが 決めます。「富田さんに 決めて いただけませんか」と 言えると、その 場で 決まります。今夜 書いて、明日の 朝 送ります。"
+            "text": "答えは わたしが 決めます。「富田さんに 決めて いただけませんか」と 言えると、その 場で 決まります。今夜 書いて、明日の 朝 送ります。",
+            "audio": "/audio/meetings/asakai_muzukashii/s3-arrange-missing-25a2979a.wav"
           }
         },
         "closing": [
           {
             "speakerId": "tomita",
-            "text": "では、きょうの 夕礼は ここまでです。明日は 10時30分に 出ます。お疲れさまでした。"
+            "text": "では、きょうの 夕礼は ここまでです。明日は 10時30分に 出ます。お疲れさまでした。",
+            "audio": "/audio/meetings/asakai_muzukashii/s3-closing-0-fbe6bf4b.wav"
           }
         ],
         "panels": [
@@ -1297,7 +1318,8 @@
             ],
             "example": {
               "speakerId": "tomita",
-              "text": "「一覧を 直して、50こで 0.5秒に なりました。テストは 10こ ぜんぶ 通りました。」"
+              "text": "「一覧を 直して、50こで 0.5秒に なりました。テストは 10こ ぜんぶ 通りました。」",
+              "audio": "/audio/meetings/asakai_muzukashii/s3-kyou-ex-faa7f890.wav"
             },
             "openAt": 2
           },
@@ -1432,12 +1454,14 @@
               },
               {
                 "speakerId": "tomita",
-                "text": "こまって いることは 3つ 言います。①何が こまって いるか（あしたに ひびく ことなら、さいしょに「すみません」）②いつまでに 分かりそうか③だれに 何を して ほしいか。まだ 言って いない ものを お願いします。"
+                "text": "こまって いることは 3つ 言います。①何が こまって いるか（あしたに ひびく ことなら、さいしょに「すみません」）②いつまでに 分かりそうか③だれに 何を して ほしいか。まだ 言って いない ものを お願いします。",
+                "audio": "/audio/meetings/asakai_muzukashii/s3-komari-fu1-ff63e417.wav"
               }
             ],
             "example": {
               "speakerId": "tomita",
-              "text": "「すみません。『通知が 来ない ときは どうしますか』の 答えが、まだ 決まって いません。明日の 朝 10時までに 決めたいです。富田さんに、だれが 対応するかを 決めて いただけませんか。」"
+              "text": "「すみません。『通知が 来ない ときは どうしますか』の 答えが、まだ 決まって いません。明日の 朝 10時までに 決めたいです。富田さんに、だれが 対応するかを 決めて いただけませんか。」",
+              "audio": "/audio/meetings/asakai_muzukashii/s3-komari-ex-a220a1a2.wav"
             }
           },
           {
@@ -1459,7 +1483,8 @@
             ],
             "example": {
               "speakerId": "tomita",
-              "text": "「10こ ぜんぶ 通りました。」"
+              "text": "「10こ ぜんぶ 通りました。」",
+              "audio": "/audio/meetings/asakai_muzukashii/s3-suuji-ex-7cb21413.wav"
             }
           }
         ],
@@ -1564,12 +1589,14 @@
         "opening": [
           {
             "speakerId": "tomita",
-            "text": "お疲れさまです。金曜日の 夕礼を 始めます。きょうは 学校で 見せました。藤木さんも 出て います。まず 奥田さんから お願いします。"
+            "text": "お疲れさまです。金曜日の 夕礼を 始めます。きょうは 学校で 見せました。藤木さんも 出て います。まず 奥田さんから お願いします。",
+            "audio": "/audio/meetings/asakai_muzukashii/s4-opening-0-f30026b4.wav"
           }
         ],
         "sample": {
           "speakerId": "okuda",
-          "text": "はい。奥田です。担当は「あしたの 持ちもの」です。本日は 学校で 持ちものの 画面を 3分 説明しました。先生から「写真が 大きくて 分かりやすい」と 言われました。来週の 月曜日は、前の 日の 夕方に 通知を 出す 機能を 作り始めます。こまって いることは ありません。以上です。"
+          "text": "はい。奥田です。担当は「あしたの 持ちもの」です。本日は 学校で 持ちものの 画面を 3分 説明しました。先生から「写真が 大きくて 分かりやすい」と 言われました。来週の 月曜日は、前の 日の 夕方に 通知を 出す 機能を 作り始めます。こまって いることは ありません。以上です。",
+          "audio": "/audio/meetings/asakai_muzukashii/s4-sample-c18c330e.wav"
         },
         "prompt": {
           "speakerId": "tomita",
@@ -1584,31 +1611,37 @@
         "members": [
           {
             "speakerId": "nyam",
-            "text": "ニャムです。担当は「きょうは 休みます」です。本日は 学校で、休みの れんらくを 実際に 送りました。先生から「何時まで 送れますか」と 質問が 出ました。8時までと 答えました。来週の 月曜日は、8時を 過ぎた ときの 表示を 作ります。こまって いることは ありません。以上です。"
+            "text": "ニャムです。担当は「きょうは 休みます」です。本日は 学校で、休みの れんらくを 実際に 送りました。先生から「何時まで 送れますか」と 質問が 出ました。8時までと 答えました。来週の 月曜日は、8時を 過ぎた ときの 表示を 作ります。こまって いることは ありません。以上です。",
+            "audio": "/audio/meetings/asakai_muzukashii/s4-member-0-3f52689d.wav"
           },
           {
             "speakerId": "hendy",
-            "text": "ヘンディです。担当は 先生の 画面です。本日は 学校で、最初に おしらせを 1つ 出しました。先生から「紙より 早い」と 言われました。来週の 月曜日は、文字を 大きく する 相談を 始めます。こまって いることは ありません。以上です。"
+            "text": "ヘンディです。担当は 先生の 画面です。本日は 学校で、最初に おしらせを 1つ 出しました。先生から「紙より 早い」と 言われました。来週の 月曜日は、文字を 大きく する 相談を 始めます。こまって いることは ありません。以上です。",
+            "audio": "/audio/meetings/asakai_muzukashii/s4-member-1-e738de7f.wav"
           }
         ],
         "arrange": {
           "done": {
             "speakerId": "tomita",
-            "text": "ヘンディさん、月曜日の 午前 30分、◯◯さんと 画面の 相談を お願いします。"
+            "text": "ヘンディさん、月曜日の 午前 30分、◯◯さんと 画面の 相談を お願いします。",
+            "audio": "/audio/meetings/asakai_muzukashii/s4-arrange-done-4ed62176.wav"
           },
           "missing": {
             "speakerId": "tomita",
-            "text": "画面の 形は ヘンディさんが くわしいです。「月曜日に 30分 相談できますか」と 言えると いいです。ヘンディさん、月曜日に お願いします。"
+            "text": "画面の 形は ヘンディさんが くわしいです。「月曜日に 30分 相談できますか」と 言えると いいです。ヘンディさん、月曜日に お願いします。",
+            "audio": "/audio/meetings/asakai_muzukashii/s4-arrange-missing-2322ad7c.wav"
           }
         },
         "closing": [
           {
             "speakerId": "fujiki",
-            "text": "お疲れさまです。きょうは 学校で、先生 18人 ぜんぶの スマホに 通知が 届きました。月曜日、◯◯さんが 通知の ことを 言って くれました。だから、きょう 12人の 先生の スマホが 鳴りました。先生たちは「紙より 早い。来月から 使いたい」と 言って いました。文字を 大きく して ほしい、という 声は 5人から 出ました。来週の 月曜日から、そこを 作りましょう。今週は 毎日 こまって いることが 出ました。毎日、その 日の うちに 手が 集まりました。それが、きょうの 結果です。以上です。"
+            "text": "お疲れさまです。きょうは 学校で、先生 18人 ぜんぶの スマホに 通知が 届きました。月曜日、◯◯さんが 通知の ことを 言って くれました。だから、きょう 12人の 先生の スマホが 鳴りました。先生たちは「紙より 早い。来月から 使いたい」と 言って いました。文字を 大きく して ほしい、という 声は 5人から 出ました。来週の 月曜日から、そこを 作りましょう。今週は 毎日 こまって いることが 出ました。毎日、その 日の うちに 手が 集まりました。それが、きょうの 結果です。以上です。",
+            "audio": "/audio/meetings/asakai_muzukashii/s4-closing-0-f907d6f3.wav"
           },
           {
             "speakerId": "tomita",
-            "text": "今週の 夕礼は これで おわりです。お疲れさまでした。"
+            "text": "今週の 夕礼は これで おわりです。お疲れさまでした。",
+            "audio": "/audio/meetings/asakai_muzukashii/s4-closing-1-0c676aa7.wav"
           }
         ],
         "panels": [
@@ -1663,7 +1696,8 @@
             ],
             "example": {
               "speakerId": "tomita",
-              "text": "「学校で 18人 ぜんぶに 通知が 届きました。一覧の 説明を 3分 して、質問が 3つ 出ました。」"
+              "text": "「学校で 18人 ぜんぶに 通知が 届きました。一覧の 説明を 3分 して、質問が 3つ 出ました。」",
+              "audio": "/audio/meetings/asakai_muzukashii/s4-kyou-ex-bf017e57.wav"
             },
             "openAt": 2
           },
@@ -1706,7 +1740,8 @@
             "followups": [
               {
                 "speakerId": "tomita",
-                "text": "来週の 月曜日の 予定を 教えて ください。"
+                "text": "来週の 月曜日の 予定を 教えて ください。",
+                "audio": "/audio/meetings/asakai_muzukashii/s4-ashita-fu0-595eea3b.wav"
               },
               {
                 "speakerId": "tomita",
@@ -1716,7 +1751,8 @@
             ],
             "example": {
               "speakerId": "tomita",
-              "text": "「来週の 月曜日は、文字を 大きく する 設定を 作り始めます。二日 ぐらいです。質問の 答えも 書いて、富田さんに 送ります。使い方の 紙も 4枚 書きます。」"
+              "text": "「来週の 月曜日は、文字を 大きく する 設定を 作り始めます。二日 ぐらいです。質問の 答えも 書いて、富田さんに 送ります。使い方の 紙も 4枚 書きます。」",
+              "audio": "/audio/meetings/asakai_muzukashii/s4-ashita-ex-e80e78b6.wav"
             },
             "openAt": 2
           },
@@ -1813,7 +1849,8 @@
             ],
             "example": {
               "speakerId": "tomita",
-              "text": "「5人の 先生から 声が 出ました。」"
+              "text": "「5人の 先生から 声が 出ました。」",
+              "audio": "/audio/meetings/asakai_muzukashii/s4-suuji-ex-cf327c66.wav"
             }
           }
         ],
