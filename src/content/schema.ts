@@ -2311,9 +2311,15 @@ const asakaiPanelSchema = z
     }
   });
 
-/** 進みぐあいの 箱（5つ）。数は 絵で 見せ、名前は 字で 出す。 */
+/**
+ * どこまで できたかの 箱（5つ）。数は 絵で 見せ、名前は 字で 出す。
+ *
+ * 16字まで 許すのは、**名前を 短く すると 何の 箱か 分からなく なる**から
+ *（「テスト 20こ」と「テスト 8こ」が 並ぶと どちらの テストか 読めない →
+ *「ログインの テスト 20こ」「パスワードの テスト 8こ」）。画面は 2行まで 折り返す。
+ */
 const asakaiProgressSchema = z.object({
-  label: plainText.max(12),
+  label: plainText.max(16),
   state: z.enum(["done", "now", "later"]),
 });
 
@@ -2736,6 +2742,16 @@ export const meetingSchema = z.object({
    * 先に 分からない）を 埋めさせる ことに なる。
    */
   if (meeting.talkGame) return;
+  /*
+   * **朝礼・夕礼も しつもんを 持たない**（台帳 #366）。
+   *
+   * 学習者が **1本の 報告を して、足りない ところだけ 聞き返される**形なので、
+   * 聞く 順は データに 書けない（学習者が 決める）。書けるのは
+   * **どの カードが 開くか**と **開かない ときの 聞き返しの 文**だけで、
+   * それは `asakai.scenes[].panels[]` が 持つ。
+   * ここで 3つ 求めると、使われない しつもんを 埋めさせる ことに なる。
+   */
+  if (meeting.asakai) return;
   if (meeting.questions.length < 3) {
     ctx.addIssue({
       code: "custom",
