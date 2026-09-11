@@ -262,7 +262,16 @@ export function CallShell({
   return (
     <div className="flex flex-col gap-4">
       <div
-        className="overflow-hidden rounded-[var(--radius-card)] border-2"
+        /*
+         * `overflow-clip` であって `overflow-hidden` では ない。
+         *
+         * `hidden` は **スクロールの 器**を 作るので、中に 置いた `sticky` が
+         * その器の 中でしか 効かず、ページを 送っても 動かない ものに なる
+         *（朝礼・夕礼の カードの 板と 入力欄が、390px で 画面の 外へ 流れて いた。
+         * 2026-09-11。設計 #366 の 罠1）。`clip` は 同じように 角で 切り落とすが
+         * 器を 作らない ので、中の `sticky` が ページに 対して 効く。
+         */
+        className="overflow-clip rounded-[var(--radius-card)] border-2"
         style={{
           borderColor: light ? "var(--color-hairline)" : "var(--color-hairline)",
           background: light ? "#fff" : "#0f2233",

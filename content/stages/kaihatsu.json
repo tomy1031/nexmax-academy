@@ -1,7 +1,7 @@
 {
   "kind": "stage",
   "id": "kaihatsu",
-  "order": 7,
+  "order": 8,
   "title": "開発の 工程",
   "reading": "かいはつの こうてい",
   "description": "システムが できるまでの 7つの 工程を 学びます。最後は クエストで、プロジェクトの 一年を チームで 遊びます。",

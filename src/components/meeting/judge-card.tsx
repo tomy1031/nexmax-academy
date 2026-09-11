@@ -66,9 +66,12 @@ export function JudgeCard({
         </span>
       </div>
 
-      <p className="text-leaf text-sm font-extrabold break-words">
-        🌸 <RubyText text={judge.praise} index={JUDGE_FURIGANA} show />
-      </p>
+      {/* 名指しできる ことが 無い ときは 行ごと 出さない（2026-09-10 の 指定） */}
+      {judge.praise ? (
+        <p className="text-leaf text-sm font-extrabold break-words">
+          🌸 <RubyText text={judge.praise} index={JUDGE_FURIGANA} show />
+        </p>
+      ) : null}
       {judge.fix ? (
         <p className="text-ink-soft text-sm font-bold break-words">
           💡 <RubyText text={judge.fix} index={JUDGE_FURIGANA} show />

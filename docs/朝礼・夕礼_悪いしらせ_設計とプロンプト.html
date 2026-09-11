@@ -1,0 +1,1113 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>悪い しらせを 早く 言う 練習 — 設計と プロンプトの 記録</title>
+</head>
+<body style="margin:0">
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap"
+/>
+<style>
+  :root {
+    --navy: #1b2545;
+    --navy-deep: #121a35;
+    --gold: #c9a45c;
+    --gold-light: #e7cf95;
+    --cream: #f4ecd8;
+    --ink: #243049;
+    --muted: #626e8a;
+    --line: #ddcfa8;
+    --rule: #e6dcc4;
+    --bg: #f7f2e6;
+    --panel: #fffdf7;
+    --blue: #3a5ba0;
+    --green: #3f7d52;
+    --red: #a8434a;
+    --amber: #a97b1f;
+    --code-bg: #1b2545;
+    --code-ink: #e9e2cc;
+    --display: "Zen Old Mincho", "Hiragino Mincho ProN", "Yu Mincho", serif;
+    --body: "Zen Kaku Gothic New", "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo, system-ui,
+      sans-serif;
+    --mono: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
+  }
+  :root:not([data-theme="light"]) {
+    @media (prefers-color-scheme: dark) {
+      --navy: #0e1426;
+      --navy-deep: #080d1a;
+      --gold: #d9b878;
+      --gold-light: #f0dcae;
+      --cream: #efe6d0;
+      --ink: #e4dcc8;
+      --muted: #9aa3b8;
+      --line: #3a4360;
+      --rule: #2b3350;
+      --bg: #10152a;
+      --panel: #171d36;
+      --blue: #8fb0f0;
+      --green: #79c48f;
+      --red: #e4868c;
+      --amber: #e0b45c;
+      --code-bg: #070b16;
+      --code-ink: #dcd4bd;
+    }
+  }
+  :root[data-theme="dark"] {
+    --navy: #0e1426;
+    --navy-deep: #080d1a;
+    --gold: #d9b878;
+    --gold-light: #f0dcae;
+    --cream: #efe6d0;
+    --ink: #e4dcc8;
+    --muted: #9aa3b8;
+    --line: #3a4360;
+    --rule: #2b3350;
+    --bg: #10152a;
+    --panel: #171d36;
+    --blue: #8fb0f0;
+    --green: #79c48f;
+    --red: #e4868c;
+    --amber: #e0b45c;
+    --code-bg: #070b16;
+    --code-ink: #dcd4bd;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--body);
+    line-height: 1.85;
+    font-size: 15px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
+  .layout {
+    display: flex;
+    align-items: flex-start;
+  }
+  nav.toc {
+    position: sticky;
+    top: 0;
+    width: 264px;
+    min-width: 264px;
+    height: 100vh;
+    overflow-y: auto;
+    background: linear-gradient(180deg, var(--navy), var(--navy-deep));
+    color: var(--cream);
+    padding-block: 26px;
+    padding-inline: 18px;
+    border-right: 3px solid var(--gold);
+  }
+  nav.toc .mark {
+    font-family: var(--display);
+    font-size: 16px;
+    color: var(--gold-light);
+    margin: 0 0 2px;
+    letter-spacing: 0.08em;
+  }
+  nav.toc .sub {
+    font-size: 11px;
+    color: #9fb0d6;
+    margin: 0 0 20px;
+    letter-spacing: 0.06em;
+  }
+  nav.toc ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    counter-reset: sec;
+  }
+  nav.toc a {
+    display: flex;
+    gap: 9px;
+    color: #cfd8ef;
+    text-decoration: none;
+    font-size: 13px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    border-left: 2px solid transparent;
+  }
+  nav.toc a::before {
+    counter-increment: sec;
+    content: counter(sec);
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--gold);
+    padding-top: 2px;
+  }
+  nav.toc a:hover {
+    background: rgba(201, 164, 92, 0.16);
+    color: #fff;
+    border-left-color: var(--gold);
+  }
+  nav.toc a:focus-visible {
+    outline: 2px solid var(--gold-light);
+    outline-offset: 1px;
+  }
+
+  main {
+    flex: 1;
+    min-width: 0;
+    padding-bottom: 80px;
+  }
+  .hero {
+    background: linear-gradient(135deg, var(--navy), var(--navy-deep) 72%);
+    color: var(--cream);
+    padding-block: 52px 44px;
+    padding-inline: 56px;
+    border-bottom: 4px solid var(--gold);
+  }
+  .hero .eyebrow {
+    color: var(--gold-light);
+    letter-spacing: 0.24em;
+    font-size: 11px;
+    margin: 0 0 14px;
+    font-family: var(--mono);
+  }
+  .hero h1 {
+    font-family: var(--display);
+    font-size: 34px;
+    line-height: 1.35;
+    margin: 0 0 14px;
+    letter-spacing: 0.03em;
+    text-wrap: balance;
+    max-width: 22ch;
+  }
+  .hero p.lead {
+    margin: 0;
+    max-width: 62ch;
+    color: #cfd8ef;
+    font-size: 15px;
+  }
+  .hero .meta {
+    margin-top: 22px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 18px;
+    font-size: 12px;
+    color: #aebcdf;
+    font-family: var(--mono);
+  }
+
+  .wrap {
+    padding-inline: 56px;
+    max-width: 1000px;
+  }
+  section {
+    padding-top: 46px;
+  }
+  h2.sec {
+    font-family: var(--display);
+    font-size: 24px;
+    color: var(--ink);
+    margin: 0 0 18px;
+    padding-bottom: 9px;
+    border-bottom: 2px solid var(--gold);
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    text-wrap: balance;
+  }
+  h2.sec .num {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--gold);
+  }
+  h3 {
+    font-family: var(--display);
+    font-size: 17px;
+    margin: 30px 0 8px;
+    color: var(--ink);
+    text-wrap: balance;
+  }
+  p {
+    margin: 0 0 14px;
+    max-width: 66ch;
+  }
+  ul,
+  ol {
+    max-width: 66ch;
+    padding-left: 1.3em;
+  }
+  li {
+    margin: 5px 0;
+  }
+  strong {
+    color: var(--navy);
+    font-weight: 700;
+  }
+  :root[data-theme="dark"] strong,
+  :root:not([data-theme="light"]) strong {
+    color: inherit;
+  }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) strong {
+      color: var(--navy);
+    }
+  }
+  code {
+    font-family: var(--mono);
+    font-size: 0.88em;
+    background: color-mix(in srgb, var(--gold) 16%, transparent);
+    padding: 1px 5px;
+    border-radius: 4px;
+  }
+
+  .tablewrap {
+    overflow-x: auto;
+    margin: 16px 0 20px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--panel);
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 13.5px;
+    min-width: 520px;
+  }
+  th,
+  td {
+    text-align: left;
+    padding: 9px 13px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+  thead th {
+    background: color-mix(in srgb, var(--gold) 14%, transparent);
+    font-family: var(--body);
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+  tbody tr:last-child td {
+    border-bottom: 0;
+  }
+  td.num,
+  th.num {
+    font-variant-numeric: tabular-nums;
+    font-family: var(--mono);
+  }
+
+  .note {
+    border-left: 3px solid var(--gold);
+    background: var(--panel);
+    padding: 14px 18px;
+    margin: 18px 0;
+    border-radius: 0 8px 8px 0;
+  }
+  .note p:last-child {
+    margin-bottom: 0;
+  }
+  .note .label {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    color: var(--amber);
+    display: block;
+    margin-bottom: 5px;
+  }
+  .note.bad {
+    border-left-color: var(--red);
+  }
+  .note.bad .label {
+    color: var(--red);
+  }
+  .note.good {
+    border-left-color: var(--green);
+  }
+  .note.good .label {
+    color: var(--green);
+  }
+
+  pre {
+    background: var(--code-bg);
+    color: var(--code-ink);
+    padding: 15px 18px;
+    border-radius: 8px;
+    overflow-x: auto;
+    font-family: var(--mono);
+    font-size: 12.5px;
+    line-height: 1.7;
+    margin: 14px 0 18px;
+    border: 1px solid var(--line);
+  }
+  pre code {
+    background: none;
+    padding: 0;
+    font-size: inherit;
+  }
+
+  .pair {
+    display: grid;
+    gap: 14px;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    margin: 16px 0 20px;
+  }
+  .pair > div {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 14px 16px;
+  }
+  .pair h4 {
+    margin: 0 0 8px;
+    font-size: 13px;
+    font-family: var(--mono);
+    letter-spacing: 0.08em;
+  }
+  .pair.beforeafter > div:first-child h4 {
+    color: var(--red);
+  }
+  .pair.beforeafter > div:last-child h4 {
+    color: var(--green);
+  }
+  .pair p {
+    margin: 0;
+    font-size: 13.5px;
+  }
+
+  .chip {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 1px 8px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    color: var(--muted);
+    margin-right: 6px;
+  }
+  .ok {
+    color: var(--green);
+    font-weight: 700;
+  }
+  .ng {
+    color: var(--red);
+    font-weight: 700;
+  }
+
+  footer {
+    margin-top: 54px;
+    padding-top: 22px;
+    border-top: 1px solid var(--rule);
+    color: var(--muted);
+    font-size: 12.5px;
+  }
+
+  @media (max-width: 860px) {
+    .layout {
+      display: block;
+    }
+    nav.toc {
+      position: static;
+      width: auto;
+      min-width: 0;
+      height: auto;
+      border-right: 0;
+      border-bottom: 3px solid var(--gold);
+      padding-block: 18px;
+    }
+    nav.toc ol {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2px 6px;
+    }
+    .hero {
+      padding-inline: 20px;
+      padding-block: 34px 28px;
+    }
+    .hero h1 {
+      font-size: 26px;
+    }
+    .wrap {
+      padding-inline: 20px;
+    }
+  }
+</style>
+
+<div class="layout">
+  <nav class="toc" aria-label="目次">
+    <p class="mark">悪い しらせ</p>
+    <p class="sub">設計とプロンプトの 記録</p>
+    <ol>
+      <li><a href="#s1">入っていなかった</a></li>
+      <li><a href="#s2">どこに置くか</a></li>
+      <li><a href="#s3">おわびの設計</a></li>
+      <li><a href="#s4">5日の物語</a></li>
+      <li><a href="#s5">判定の作り</a></li>
+      <li><a href="#s6">実測</a></li>
+      <li><a href="#s7">プロンプトの作り</a></li>
+      <li><a href="#s8">機械に落とす</a></li>
+      <li><a href="#s9">残り</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <header class="hero">
+      <p class="eyebrow">台帳 #366 ／ 2026-09-11</p>
+      <h1>悪い しらせほど 早く 言う</h1>
+      <p class="lead">
+        朝礼・夕礼ステージの やさしいレベルに、この 要素を どう 入れたか。
+        設計の 考えかたと、機械が それを どう 見張るか、
+        そして 教材と 検収の プロンプトを どう 書いたかの 記録です。
+      </p>
+      <div class="meta">
+        <span>教材 /asakai</span>
+        <span>ブランチ claude/gifted-ritchie-owcjxd</span>
+        <span>PR #376</span>
+      </div>
+    </header>
+
+    <div class="wrap">
+      <section id="s1">
+        <h2 class="sec"><span class="num">01</span>入っていなかった</h2>
+        <p>
+          まず 確かめた ところ、<strong>やさしいレベルの 練習には 入って いませんでした</strong>。
+          ページ（読みもの）には 考えかたが 書いて ありましたが、
+          <strong>学習者が それを 口に 出す 場面が 1つも 無く</strong>、
+          おわびの ことばは 教材の どこにも ありませんでした。
+        </p>
+
+        <div class="tablewrap">
+          <table>
+            <thead>
+              <tr>
+                <th>どこ</th>
+                <th>入っていたか</th>
+                <th>中身</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>ページ（<code>asakai_lecture</code>）</td>
+                <td class="ok">考えかたは あった</td>
+                <td>
+                  「順調です」だけの 朝礼 → 1週間後に 間に合わないと 分かる、という 対比。
+                  「早く 言う 人は、信頼される 人に なります。」
+                </td>
+              </tr>
+              <tr>
+                <td>朝礼メモ（<code>asakai_memo</code>）</td>
+                <td class="ng">無し</td>
+                <td>きのう・きょう・こまりごと・数字の 4つだけ</td>
+              </tr>
+              <tr>
+                <td>朝礼の 練習（<code>asakai_kantan</code>）</td>
+                <td class="ng">無し</td>
+                <td>5日の こまりごとは どれも「分からない」「動かない」で、<strong>納期に ひびく 話が 1日も 無い</strong></td>
+              </tr>
+              <tr>
+                <td>おわびの ことば</td>
+                <td class="ng">画面には 無し</td>
+                <td>
+                  「すみません」は <code>persona</code>（AIへの 言い渡し）の 中だけ。
+                  学習者には 見えず、しかも この 教材は AIを 呼ばないので 使われても いない
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="note bad">
+          <span class="label">なぜ 落ちたか</span>
+          <p>
+            設計の 段階で、旧アプリの「バグを 三日 隠した」話を <strong>消して いました</strong>。
+            まんがごと 外した 判断は 正しかった（登場人物を できない人として 描いて いた）のですが、
+            <strong>その 話が 担って いた 学習上の 役割の 引き継ぎ先を 決めて いませんでした</strong>。
+            AGENTS.md の 規律10 が まさに これを 禁じて います——
+            「仕組みを 外す ときは、その 仕組みが 担って いた 役割を 先に 書き出し、引き継ぎ先を 決めてから 外す」。
+          </p>
+        </div>
+      </section>
+
+      <section id="s2">
+        <h2 class="sec"><span class="num">02</span>どこに置くか</h2>
+        <p>
+          教える・やる・ふりかえる の 3点セットで 置きました。
+          どれか 1つでも 欠けると、前と 同じ ように 静かに 消えます。
+        </p>
+
+        <div class="tablewrap">
+          <table>
+            <thead>
+              <tr>
+                <th>役</th>
+                <th>どこ</th>
+                <th>何を 置いたか</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>教える</strong></td>
+                <td>ページに 節を 1つ 追加</td>
+                <td>
+                  「悪い ニュースほど 早く 言う」＋ おわびの 型文 ＋
+                  <strong>おわびの 意味を 取りちがえさせない 1枚</strong>
+                </td>
+              </tr>
+              <tr>
+                <td><strong>見せる</strong></td>
+                <td>木曜の 見本（司会 ヘンディ）</td>
+                <td>先輩が <strong>自分の 悪い しらせ</strong>を 型どおりに 出す。学習者の 直前に 1回</td>
+              </tr>
+              <tr>
+                <td><strong>やる</strong></td>
+                <td>木曜の こまりごとカード</td>
+                <td>おわび＋悪い しらせを 言わないと 箱が 開かない</td>
+              </tr>
+              <tr>
+                <td><strong>ふりかえる</strong></td>
+                <td>金曜の 藤木取締役の 総括</td>
+                <td>早く 言ったから 間に合った、という 結果を 名指しで 返す</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>カードを 1枚も 増やさなかった</h3>
+        <p>
+          いちばん 迷った ところです。「悪い しらせ」を 5枚目の カードに するのが
+          いちばん 楽ですが、規律10 の
+          <strong>「1ステージに 枠組みは 1つ」</strong>に 反します。
+          学習者が 覚える 型が きのう・きょう・こまりごと・数字の 4つから 5つに 増え、
+          ページの 本文とも ずれます。
+        </p>
+        <p>
+          そこで <strong>こまりごとカードの 中の 箱</strong>に しました。
+          悪い しらせは 新しい 話題では なく、<strong>こまりごとの 言い方が 変わる だけ</strong>だからです。
+          むずかしいレベルが すでに 3つの 箱（こまって いる こと／いつまでに／お願い）を
+          持って いるので、形も そろいます。
+        </p>
+
+        <div class="pair">
+          <div>
+            <h4>ふつうの 日（月・火・水・金）</h4>
+            <p>こまりごと ＝ 1つの 箱。「◯◯が ◯◯で、こまって います」で 開く。</p>
+          </div>
+          <div>
+            <h4>木曜だけ</h4>
+            <p>
+              こまりごと ＝ 3つの 箱。<br />
+              こまって いる こと ／ <strong>悪い しらせ</strong> ／ お願い
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section id="s3">
+        <h2 class="sec"><span class="num">03</span>おわびの設計</h2>
+
+        <h3>おわびだけでは 通さない。悪い しらせだけでも 通さない</h3>
+        <p>
+          ご指定の「伝える際に、謝罪の言葉も一緒に入れる」を
+          <strong>片方だけでは 絶対に 立たない</strong>形で 作りました。
+          判定は <code>allOf</code>（すべての かたまりから 1つ以上 当たる）で、
+          2つの かたまりを 置いて います。
+        </p>
+        <pre><code>{
+  "id": "warui1",
+  "box": "悪い しらせ",
+  "allOf": [
+    ["すみません", "申し訳", "もうしわけ"],
+    ["間に合わ", "まにあわ", "間に合いません", "おくれ", "遅れ", "むずかし"]
+  ]
+}</code></pre>
+        <p>
+          あやまる ことばだけ 言っても 何も 起きません。
+          悪い しらせだけ 言っても 開きません。
+          <strong>2つ そろって はじめて 1つの 報告に なる</strong>、という 設計です。
+        </p>
+
+        <h3>おわびを 自分を 責める ことばに しない</h3>
+        <p>
+          ここは 慎重に 書きました。N5〜N4 の 学習者に
+          「まちがえたら あやまる」と 覚えさせると、
+          <strong>悪い しらせを 出す ほど 自分が 悪い</strong>という 逆の 学習に なります。
+          それでは 隠す 方向に 進みます。ページに この 1枚を 入れました。
+        </p>
+        <div class="note good">
+          <span class="label">ページの 本文（そのまま）</span>
+          <p>
+            おわびは、自分が わるいと 言う ための ことばでは ありません。
+            相手の 予定が 変わるから 言う ことばです。
+            早く 言えば、みんなで 直せます。おそく 言うと、直せません。
+          </p>
+        </div>
+        <p>
+          司会の 受け止めも 合わせました。木曜に 言えた ときは
+          <strong>「早く 言って くれて 助かります。金曜日の 前に 分かりました。」</strong>と
+          事実を 返します。言えなかった ときも 責めず、言い方を 見せてから 自分で 段取りします。
+        </p>
+
+        <h3>やさしいと むずかしいで 何を 変えたか</h3>
+        <div class="tablewrap">
+          <table>
+            <thead>
+              <tr>
+                <th></th>
+                <th>やさしい（朝礼）</th>
+                <th>むずかしい（夕礼）</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>悪い しらせ</td>
+                <td>カードの 行に <strong>書いて 渡す</strong>（「このままだと 金曜日までに 間に合わない」）</td>
+                <td>メモ10行から <strong>自分で 見つける</strong>（明日 18人に 見せるのに 答えが 決まって いない）</td>
+              </tr>
+              <tr>
+                <td>箱の 名前</td>
+                <td>こまって いる こと ／ 悪い しらせ ／ お願い</td>
+                <td>おわびと 悪い しらせ ／ いつまでに ／ お願い</td>
+              </tr>
+              <tr>
+                <td>型文</td>
+                <td>穴埋めで 渡す（「すみません。◯◯が 金曜日までに 間に合わないかも しれません。」）</td>
+                <td>問いかけだけ（「あしたに ひびく ことなら、さいしょに「すみません」」）</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="s4">
+        <h2 class="sec"><span class="num">04</span>5日の物語</h2>
+        <p>
+          こまりごとの 大きさが 週の 中で 育ち、木曜で いちばん 重く なり、
+          金曜で 回収される、という 並びです。木曜に 置いたのは
+          <strong>週の ゴール（金曜日までに テストを ぜんぶ 通す）に ぎりぎり 間に合う 最後の 日</strong>だからです。
+          水曜では まだ 余裕が あり、金曜では もう 遅い。
+        </p>
+        <div class="tablewrap">
+          <table>
+            <thead>
+              <tr>
+                <th>曜日</th>
+                <th>こまりごと</th>
+                <th>おわび</th>
+                <th>ねらい</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>月</td>
+                <td>一覧の 書き方を 知らない</td>
+                <td>—</td>
+                <td>小さい こまりごとを 出す 練習。見本も こまりごとを 1つ 出す</td>
+              </tr>
+              <tr>
+                <td>火</td>
+                <td>ありません</td>
+                <td>—</td>
+                <td>「無い」も 報告だと 知る</td>
+              </tr>
+              <tr>
+                <td>水</td>
+                <td>部品を 自分で 作るか 分からない</td>
+                <td>—</td>
+                <td>判断を 人に 聞く</td>
+              </tr>
+              <tr>
+                <td><strong>木</strong></td>
+                <td><strong>メールが 来ない。このままだと 金曜日に 間に合わない</strong></td>
+                <td class="ok"><strong>要る</strong></td>
+                <td><strong>納期に ひびく ことを、その日の 朝に 言う</strong></td>
+              </tr>
+              <tr>
+                <td>金</td>
+                <td>ありません（直った）</td>
+                <td>—</td>
+                <td>藤木取締役が「早く 言ったから 間に合った」と 返す</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="note">
+          <span class="label">金曜の 総括（そのまま）</span>
+          <p>
+            木曜日は「金曜日までに 間に合わないかも しれません」と、朝に 言って くれました。
+            だから その 日の うちに ニャムさんが 入って、きょう 間に合いました。
+            もし 金曜日の 朝に 聞いて いたら、直す 時間は ありませんでした。
+            悪い しらせを 早く 出す 人は、チームに いちばん 助かる 人です。
+          </p>
+        </div>
+      </section>
+
+      <section id="s5">
+        <h2 class="sec"><span class="num">05</span>判定の作り</h2>
+
+        <h3>AIを 呼ばない</h3>
+        <p>
+          この 教材の 判定は <strong>ことばの 照合だけ</strong>で 動きます。AIに
+          「この カードを 開いて よいか」を 聞くと、同じ 答えでも 日に よって 開いたり 開かなかったり し、
+          <strong>難しさが 相手の さじ加減で 変わります</strong>。
+          鍵が 無い 教室でも 本番でも 同じ 合否に なり、CI でも 5日 通しで 確かめられます。
+        </p>
+
+        <h3>3つの 見かた</h3>
+        <div class="tablewrap">
+          <table>
+            <thead>
+              <tr>
+                <th>見かた</th>
+                <th>いつ 使うか</th>
+                <th>この 教材での れい</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>keywords</code></td>
+                <td>どれか 1つ 当たれば よい</td>
+                <td>こまって いる こと（メール／来ない／3回…）</td>
+              </tr>
+              <tr>
+                <td><code>minHits</code></td>
+                <td>いくつ 当たれば よいかを 決める</td>
+                <td>むずかしいの こまりごと（2語 以上）</td>
+              </tr>
+              <tr>
+                <td><code>allOf</code></td>
+                <td><strong>すべての かたまりから 1つ以上</strong></td>
+                <td>おわび＋悪い しらせ／お願い（だれに＋何を）</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="note">
+          <span class="label">なぜ allOf が 要るか</span>
+          <p>
+            数だけで 見ると、開いては いけない ものが 開きます。実例:
+            お願いの 箱は「見て」「ほしい」で 2つ 当たるので、
+            <strong>「だれかに 見て ほしいです」でも 立って いました</strong>（だれに が 無い）。
+            同じ 罠を 金曜でも 踏みました——メモに「ヘンディさんが」と「…して ほしい」が
+            別々に あったので、<strong>棒読みで お願いの 箱が 開いて いました</strong>。
+            頼む 形の ことばだけに 絞って 塞ぎました。
+          </p>
+        </div>
+
+        <h3>かなだけで 打つ 人を 落とさない</h3>
+        <p>
+          N5 の 学習者は かなで 打ちます。
+          「すみません。きんようびまでに <strong>まにあわない</strong>かも しれません。」が
+          開かないのでは 意味が ありません。
+          やさしいレベルの 漢字の 当たりことば <strong>40語 ぜんぶに かなの 形を そえました</strong>
+          （<code>間に合わ</code> → <code>まにあわ</code> など）。開く 側にしか 効かないので、
+          増やしても 難しく なりません。
+        </p>
+        <p>
+          あわせて、<strong>1字の 当たりことばは 永久に 当たらない</strong>ことも 見つけました
+          （照合は 2字 以上でしか 当てません。誤爆が 多すぎる ため）。
+          紙・表・欄・形・文・昼 の 6語が 死んで いたので 直し、
+          <strong>二度と 書けない ように 機械の 検査を 足しました</strong>。
+        </p>
+      </section>
+
+      <section id="s6">
+        <h2 class="sec"><span class="num">06</span>実測</h2>
+        <p>
+          木曜の こまりごとカードに、学習者が 書きそうな 9通りを 入れて 測りました。
+        </p>
+        <div class="tablewrap">
+          <table>
+            <thead>
+              <tr>
+                <th>入力した 文</th>
+                <th>立った 箱</th>
+                <th class="num">結果</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>メールが 来なくて こまって います。</td>
+                <td>こまって いる こと</td>
+                <td>△</td>
+              </tr>
+              <tr>
+                <td>すみません。</td>
+                <td>—</td>
+                <td class="ng">▢</td>
+              </tr>
+              <tr>
+                <td>金曜日までに 間に合わないかも しれません。<br /><span class="chip">おわび 無し</span></td>
+                <td>—</td>
+                <td class="ng">▢</td>
+              </tr>
+              <tr>
+                <td>すみません。金曜日までに 間に合わないかも しれません。</td>
+                <td>悪い しらせ</td>
+                <td>△</td>
+              </tr>
+              <tr>
+                <td>申し訳 ありません。テストが おくれそうです。</td>
+                <td>悪い しらせ</td>
+                <td>△</td>
+              </tr>
+              <tr>
+                <td>すみません。きんようびまでに まにあわないかも しれません。<br /><span class="chip">かなだけ</span></td>
+                <td>悪い しらせ</td>
+                <td>△</td>
+              </tr>
+              <tr>
+                <td>メールが 5分 たっても 来ません。すみません。金曜日までに 間に合わないかも しれません。ニャムさんに 30分 見て いただけませんか。</td>
+                <td>3つ ぜんぶ</td>
+                <td class="ok">⭕</td>
+              </tr>
+              <tr>
+                <td>司会の れいを そのまま 言う</td>
+                <td>3つ ぜんぶ</td>
+                <td class="ok">⭕</td>
+              </tr>
+              <tr>
+                <td>見本を そのまま 写す</td>
+                <td>悪い しらせ だけ</td>
+                <td>△</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          さいごの 1行が 大事な ところです。見本は <strong>ヘンディさんの 仕事の 話</strong>なので、
+          写しても おわびの 型しか 移りません。
+          <strong>写すだけでは 満点に ならない</strong>——中身は 自分の カードから 取る 必要が あります。
+        </p>
+      </section>
+
+      <section id="s7">
+        <h2 class="sec"><span class="num">07</span>プロンプトの作り</h2>
+
+        <h3>教材の 中の プロンプト（2本に 分けて 書く）</h3>
+        <p>
+          教材は <code>persona</code>（相手役の 人格）と <code>judgePrompt</code>（見かた）を
+          <strong>別々に</strong> 持ちます。同じ 1本に すると、
+          話し方を 直すたびに 採点の 基準が 黙って 動くからです。
+        </p>
+        <div class="pair">
+          <div>
+            <h4>persona — どう 話すか</h4>
+            <p>
+              だれで、どこまで 話し、何を 言わないか。
+              「返しは くりかえし＋ひとこと、2文まで」
+              「ほめる ことばを 足しません。事実を くりかえします」
+              「つぎに 何を 聞くかは <strong>画面が 決めます</strong>」
+            </p>
+          </div>
+          <div>
+            <h4>judgePrompt — 何を 見るか</h4>
+            <p>
+              何が 言えたら 言えたことに するか。
+              段（natural / rough / hard）と、
+              直すのは 1つだけ、という 決まり。
+            </p>
+          </div>
+        </div>
+
+        <div class="note">
+          <span class="label">プロンプトに 書いても 守れない ことが ある</span>
+          <p>
+            この 教材で いちばん はっきり 出た 学びです。
+            「がんばったね、などの 無駄な 表現を 省く」という ご指定は
+            プロンプトの 文言だけ 直して あり、<strong>道具の スキーマでは
+            ほめことばが 必須の まま</strong>でした。
+            つまり 鍵の ある 教室では、AI は 名指しできる ことが 無い 回でも
+            <strong>何かを 書く しか なく</strong>、中身の 無い ほめことばが 出つづけて いました。
+            必須から 外し、画面は 空なら 欄ごと 出さない ように しました。
+            <strong>プロンプトの お願いは、型で 支えないと 守られません。</strong>
+          </p>
+        </div>
+
+        <h3>検収エージェントの プロンプト</h3>
+        <p>
+          この ターンは 5体を 同時に 走らせました。
+          プロンプトは どれも 同じ 6つの 部品で 書いて います。
+        </p>
+        <ol>
+          <li><strong>担当を 1つに 絞る</strong>（「やさしい側だけ 見る。むずかしい側は 別の エージェント」）</li>
+          <li><strong>読む ファイルを 名ざす</strong>（探させない。探すと 時間が そこで 溶ける）</li>
+          <li><strong>実装の 事実を 先に 渡す</strong>（「判定は ことばの 照合だけ。AI は 呼んで いない」）</li>
+          <li><strong>見る ところを 番号つきで</strong>（7〜20項目。あいまいな「よく 見て」を 書かない）</li>
+          <li><strong>証拠の 形を 指定する</strong>（「入力した 文 → 開いた カード の 表で 出す」「引用できない 指摘は 出さない」）</li>
+          <li><strong>直させない</strong>（「読むだけ。直しは 主スレッドが やる」）</li>
+        </ol>
+        <p>
+          いちばん 効いたのは <strong>3と5</strong>です。
+          前提を 渡さないと「AI の 判定が 不安定では ないか」という 当たらない 指摘に 時間を 使い、
+          証拠の 形を 決めないと 印象論が 返って きます。
+          実際、やさしい側の エージェントは 指示どおり
+          <strong>自分で 発話文を 組み立てて 純関数を 叩き</strong>、
+          「型文だけに 頼ると 月・金は 3/4 に なる」という 数字を 持って 帰って きました。
+        </p>
+
+        <div class="tablewrap">
+          <table>
+            <thead>
+              <tr>
+                <th>エージェント</th>
+                <th>担当</th>
+                <th>いちばん 効いた 発見</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>やさしい側の 試遊</td>
+                <td>N5溺れかけ／N4標準</td>
+                <td>途中で 閉じると 月曜に 戻る（しおりが 無い）</td>
+              </tr>
+              <tr>
+                <td>むずかしい側の 試遊</td>
+                <td>N3挑戦／N4背伸び</td>
+                <td>金曜の お願いの 箱が 頼まなくても 開く／司会の 聞き返しが 画面の 外</td>
+              </tr>
+              <tr>
+                <td>ルーブリック</td>
+                <td>順路・移植・枠組み</td>
+                <td><strong>こまりごとの 見本が 30本 ぜんぶ「ありません」</strong></td>
+              </tr>
+              <tr>
+                <td>コード検収</td>
+                <td>状態機械・合否・大きさ</td>
+                <td>れいを 写すと 板は ❌ なのに 合否は ⭕</td>
+              </tr>
+              <tr>
+                <td>UI 最終チェック</td>
+                <td>画面の 字・390px</td>
+                <td>けっかの 上に「ステージ クリア」が かぶさる</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="s8">
+        <h2 class="sec"><span class="num">08</span>機械に落とす</h2>
+        <p>
+          この ターンの いちばん 大きな 学びは、
+          <strong>検査が 見て いない ことは、検査では 気づけない</strong>という ことでした。
+          ふりがなの 覆い検査の 入り口は 教材の 種類ごとに <strong>手で 書いた 一覧</strong>で、
+          朝礼・夕礼の 5場面を 1つも 歩いて いませんでした。
+          足したとたん <strong>142件</strong>の 裸の 漢字と 読みちがいが 出ました——
+          「先生 18人（ひと）に 見せる」「行（い）は 1つに まとめます」「通知が 来（き）ない」。
+        </p>
+        <p>
+          そこで、同じ 形の 事故が 二度と 起きない ように、
+          <strong>穴の 種類ごとに 見張りを 足しました</strong>。
+        </p>
+
+        <div class="tablewrap">
+          <table>
+            <thead>
+              <tr>
+                <th>起きた こと</th>
+                <th>種類</th>
+                <th>足した 見張り</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>検査が asakai を 歩いて いない</td>
+                <td>欄を 足した 人が 検査を 足し忘れる</td>
+                <td>
+                  <strong>教材の JSON を まるごと 歩いて</strong>、検査の 外に 出て いる
+                  欄を 見つける。いまの 借金（22種）を 記録し、<strong>増えたら 落とす</strong>
+                </td>
+              </tr>
+              <tr>
+                <td>板は「4 / 4」なのに 司会は 聞き返す</td>
+                <td>同じ ことを 2か所で 数えて いた</td>
+                <td>総当たりで 状態を 作り、<strong>聞き返す 先が 無い ＝ どの カードも ⭕</strong> を 見る</td>
+              </tr>
+              <tr>
+                <td>れいを 写すと 板は ❌ なのに 合否は ⭕</td>
+                <td>言えなかった ことが 言えた ことに 化ける</td>
+                <td>打ち切った カードは 動かない ことを 直に 見る</td>
+              </tr>
+              <tr>
+                <td>けっかの 上に「クリア」が かぶさる</td>
+                <td>書く 順番</td>
+                <td><strong>5日 通しプレイ</strong>して、合否の 字と 数が 読める ことを 見る</td>
+              </tr>
+              <tr>
+                <td>途中で 閉じると 月曜に 戻る</td>
+                <td>しおりが 無い</td>
+                <td>月曜を 終えて リロードし、火曜から つづく ことを 見る</td>
+              </tr>
+              <tr>
+                <td>390px で 板と 入力欄が 画面の 外へ</td>
+                <td>親が スクロールの 器に なる</td>
+                <td>入力欄が 見える 位置で、板も 見える ことを <strong>座標で</strong> 見る</td>
+              </tr>
+              <tr>
+                <td>悪い しらせが 練習に 無い</td>
+                <td>役割の 引き継ぎ先を 決めずに 消した</td>
+                <td>
+                  おわびを 求める 箱が ある／片方だけでは 立たない／
+                  見本か れいで 見せて いる／ページが 先に 教えて いる の 4本
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="note good">
+          <span class="label">借金は 見えるように する</span>
+          <p>
+            まるごと 歩く 検査を 足したら、<strong>のべ 1617件</strong>が 検査の 外に
+            出て いる ことが 分かりました。いちばん 大きいのは
+            <strong>クエスト教材まるごと（583件）</strong>——30場面の セリフも 4択の 本文も、
+            1つも 検査されて いません。朝礼・夕礼と まったく 同じ 形の 穴です。
+            いま ここで ぜんぶ 直すのは 別の 仕事なので、
+            <strong>一覧に 書いて 記録し、増えない ことだけを 機械に 守らせました</strong>。
+            1つ 直したら 1行 消す 運用です。
+          </p>
+        </div>
+      </section>
+
+      <section id="s9">
+        <h2 class="sec"><span class="num">09</span>残り</h2>
+        <ul>
+          <li>
+            <strong>クエスト教材の ふりがな検査</strong>（583件）。いちばん 大きい 借金
+          </li>
+          <li>
+            <strong><code>gates: false</code> が 2つの 意味を 持って いる</strong>。
+            「素通りできる」と「いつでも 開ける」を 分けられず、
+            夕礼が ページも 朝礼も 通らずに 開けます。
+            直すと スライド・リンク・スキット・クエスト ぜんぶに 効くので 横断変更として 別タスク
+          </li>
+          <li>
+            <strong>箱ごとの 聞き返し</strong>。いまは 2回目が 3つの 箱を まとめて 名ざす 形で 代えて います
+          </li>
+          <li>絵 12点・富田さんの 顔と 声・セリフの 音</li>
+        </ul>
+
+        <footer>
+          <p>
+            台帳 #366 ／ PR #376 ／ ブランチ <code>claude/gifted-ritchie-owcjxd</code><br />
+            関係する 記録: <code>docs/朝礼・夕礼_設計書.html</code>（全体の 設計）、
+            <code>docs/朝礼・夕礼_逐語とデータ.md</code>（逐語と 検収の 一覧）
+          </p>
+        </footer>
+      </section>
+    </div>
+  </main>
+</div>
+
+</body>
+</html>

@@ -1815,6 +1815,7 @@ export const GLOSSARY = [
     en: "Usually",
   },
   { term: "不要", reading: "ふよう", meaning: "いらない ことです。", en: "Unnecessary" },
+  { term: "古い", reading: "ふるい", meaning: "新しくないです。前から ある ものです。", en: "Old" },
   {
     term: "フロー",
     reading: "ふろー",

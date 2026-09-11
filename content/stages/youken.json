@@ -1,7 +1,7 @@
 {
   "kind": "stage",
   "id": "youken",
-  "order": 8,
+  "order": 9,
   "title": "要件定義",
   "reading": "ようけんていぎ",
   "description": "お客様に 聞いて、何を 作るかを 決める しごとです。Aoba株式会社の 山本社長に 質問して、採用ページの 要件定義書を まとめます。",
