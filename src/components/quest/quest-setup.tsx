@@ -173,9 +173,11 @@ export function QuestSetup({
                 {picked ? <PlayerFace player={picked} size={34} /> : null}
                 <label className="min-w-0 flex-1">
                   {/*
-                   * 名前は `aria-label` で 持つ。画面に 出さない 字を DOM に 置くと、
-                   * 読み上げは ルビで 割れ、裸の漢字の 見張り（`furigana.spec`）も
-                   * 拾って しまう——どちらも 学習者の 役に 立たない。
+                   * 名前は `aria-label` で 持つ。前は 画面に 出さない `sr-only` の
+                   * 字を DOM に 置いて いたが、裸の漢字の 見張り（`furigana.spec`）は
+                   * **見えない 字も 数える**（`helpers.ts` の TreeWalker は
+                   * text node を そのまま 拾う）。属性に すれば 読み上げの 名前は
+                   * そのまま「2人目」で、数える 字は 増えない。
                    */}
                   <select
                     aria-label={`${index + 2}人目`}

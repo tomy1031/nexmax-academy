@@ -58,10 +58,59 @@ const LOG_COLOR: Record<QuestLogTone, string> = {
   system: "text-blue-300",
 };
 
-interface LogLine {
+export interface LogLine {
   readonly id: number;
   readonly text: string;
   readonly tone: QuestLogTone;
+}
+
+/**
+ * ログの 箱 — **ここだけ 2つの 読み辞書を 重ねて 描く**
+ *
+ * 箱には 教材の 字（`option.resultText`）と 画面の 字（`questLogLines` が
+ * 組み立てる 文）が 並ぶ ので、どちらの 読みも 要る。
+ *
+ * **教材の 索引（`furigana`）を 受け取らない**のが この 部品の 役目である。
+ * 受け取れる ように すると「うっかり 教材の 索引だけで 描く」に 戻れる——
+ * 2026-09-11 まで 実際に そう なって いて、画面の ことばの
+ * 「レベルが 上がった！」が 教材の `["上","うえ"]` に 当たって
+ * **うえがった** と 読まれて いた。索引を ここへ 閉じこめれば、その 戻り方が
+ * そもそも 書けなく なる。
+ *
+ * 重ねる 順は **教材が 後（勝ち）**。同じ 表記が ぶつかった ときは、
+ * `lint:content` が 読みを 見張って いる 教材の ほうを 信じる。
+ * 「上が」は 教材の 「上」より 長いので、順に よらず 最長一致で 先に 当たる。
+ */
+export function QuestLogBox({
+  quest,
+  lines,
+  show,
+}: {
+  quest: Quest;
+  lines: readonly LogLine[];
+  show: boolean;
+}) {
+  const index = useMemo(
+    () => buildFuriganaIndex(mergeFuriganaEntries(QUEST_LOG_FURIGANA, quest.furigana)),
+    [quest.furigana],
+  );
+
+  if (lines.length === 0) {
+    return (
+      <p className="text-blue-300">
+        <RubyText text={questLogOpening(quest)} index={index} show={show} />
+      </p>
+    );
+  }
+  return (
+    <>
+      {lines.map((line) => (
+        <p key={line.id} className={LOG_COLOR[line.tone]}>
+          <RubyText text={line.text} index={index} show={show} />
+        </p>
+      ))}
+    </>
+  );
 }
 
 /**
@@ -100,16 +149,6 @@ export function QuestPlay({
   const logBox = useRef<HTMLDivElement | null>(null);
 
   /*
-   * ログの 箱だけは **2つの 辞書を 重ねて** 描く。教材の 字と 画面の 字が
-   * 同じ 箱に 並ぶ からである。同じ 表記は ログ側（後勝ち）を 取る——
-   * 「レベルが 上がった」は 画面の ことばなので、画面の 読みで 読ませる。
-   */
-  const logFurigana = useMemo(
-    () => buildFuriganaIndex(mergeFuriganaEntries(quest.furigana, QUEST_LOG_FURIGANA)),
-    [quest.furigana],
-  );
-
-  /*
    * ログは **画面が 持つ**（セーブには 入れない）。セーブは 4人で 共有する 1行なので、
    * 増え続ける 文字を そこへ 混ぜると 書き込みが どんどん 重く なる。
    * 原典も 読み込み直しで ログは 消える。
@@ -140,7 +179,6 @@ export function QuestPlay({
   if (!phase) return null;
 
   const ruby = (text: string) => <RubyText text={text} index={furigana} show={furiganaOn} />;
-  const logRuby = (text: string) => <RubyText text={text} index={logFurigana} show={furiganaOn} />;
   const chapterLabel = phase.name.replace(/.*：/, "");
 
   return (
@@ -224,15 +262,7 @@ export function QuestPlay({
           data-quest="log"
           className="h-16 overflow-y-auto text-xs leading-relaxed md:h-20 md:text-sm"
         >
-          {log.length === 0 ? (
-            <p className="text-blue-300">{logRuby(questLogOpening(quest))}</p>
-          ) : (
-            log.map((line) => (
-              <p key={line.id} className={LOG_COLOR[line.tone]}>
-                {logRuby(line.text)}
-              </p>
-            ))
-          )}
+          <QuestLogBox quest={quest} lines={log} show={furiganaOn} />
         </div>
       </QuestWindow>
 
@@ -299,11 +329,7 @@ export function QuestPlay({
               {log.length === 0 ? (
                 <p className="text-slate-400">まだ ありません。</p>
               ) : (
-                log.map((line) => (
-                  <p key={line.id} className={LOG_COLOR[line.tone]}>
-                    {logRuby(line.text)}
-                  </p>
-                ))
+                <QuestLogBox quest={quest} lines={log} show={furiganaOn} />
               )}
             </div>
           ) : (
