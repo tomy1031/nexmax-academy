@@ -1,9 +1,15 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { Quest } from "@/content/schema";
 import { RubyText } from "@/components/ruby-text";
-import { buildFuriganaIndex, type FuriganaIndex } from "@/lib/text/furigana";
+import { buildFuriganaIndex, mergeFuriganaEntries, type FuriganaIndex } from "@/lib/text/furigana";
+import {
+  QUEST_LOG_FURIGANA,
+  questLogLines,
+  questLogOpening,
+  type QuestLogTone,
+} from "@/lib/quest/log";
 import {
   currentPhase,
   currentPlayer,
@@ -17,7 +23,12 @@ import { EnemyArt } from "./quest-enemy";
 import { phaseBackground } from "./enemy-svg";
 import { QuestButton, QuestWindow } from "./quest-window";
 
-/** 画面の ことばの 読みは 画面が 持つ（教材の 読み辞書とは 混ぜない）。 */
+/**
+ * 画面の ことばの 読みは 画面が 持つ（教材の 読み辞書とは 混ぜない）。
+ *
+ * **ログの 箱は 別**——教材の 字（`option.resultText`）と 画面の 字が 混ざるので、
+ * そこだけ 2つを 重ねた 索引で 描く（`logFurigana`）。
+ */
 const UI_FURIGANA = buildFuriganaIndex([
   ["場面", "ばめん"],
   ["一手", "いって"],
@@ -32,12 +43,14 @@ const UI_FURIGANA = buildFuriganaIndex([
   ["章", "しょう"],
   ["今", "いま"],
   ["万", "まん"],
+  ["進", "すす"],
+  ["返", "かえ"],
+  ["出", "で"],
+  ["図", "ず"],
 ]);
 
-/** ログの 色（原典の critical / hit / miss / system と 同じ 分け方）。 */
-type LogTone = "normal" | "critical" | "hit" | "miss" | "system";
-
-const LOG_COLOR: Record<LogTone, string> = {
+/** ログの 色（分け方は `QuestLogTone` が 持つ）。 */
+const LOG_COLOR: Record<QuestLogTone, string> = {
   normal: "text-white",
   critical: "font-bold text-yellow-300",
   hit: "text-green-300",
@@ -48,7 +61,7 @@ const LOG_COLOR: Record<LogTone, string> = {
 interface LogLine {
   readonly id: number;
   readonly text: string;
-  readonly tone: LogTone;
+  readonly tone: QuestLogTone;
 }
 
 /**
@@ -87,43 +100,25 @@ export function QuestPlay({
   const logBox = useRef<HTMLDivElement | null>(null);
 
   /*
+   * ログの 箱だけは **2つの 辞書を 重ねて** 描く。教材の 字と 画面の 字が
+   * 同じ 箱に 並ぶ からである。同じ 表記は ログ側（後勝ち）を 取る——
+   * 「レベルが 上がった」は 画面の ことばなので、画面の 読みで 読ませる。
+   */
+  const logFurigana = useMemo(
+    () => buildFuriganaIndex(mergeFuriganaEntries(quest.furigana, QUEST_LOG_FURIGANA)),
+    [quest.furigana],
+  );
+
+  /*
    * ログは **画面が 持つ**（セーブには 入れない）。セーブは 4人で 共有する 1行なので、
    * 増え続ける 文字を そこへ 混ぜると 書き込みが どんどん 重く なる。
    * 原典も 読み込み直しで ログは 消える。
    */
   const event = state.event;
   useEffect(() => {
-    if (!event || !phase) return;
-    const lines: { text: string; tone: LogTone }[] = [];
-    if (event.kind === "turn") {
-      const option = phase.options[event.optionIndex];
-      const player = state.players[event.playerIndex];
-      if (player) lines.push({ text: `${player.name}の 行動！`, tone: "normal" });
-      if (option) lines.push({ text: option.resultText, tone: option.type });
-      if (event.moneyLost > 0) {
-        lines.push({ text: `お金が ${event.moneyLost}万 減った！`, tone: "miss" });
-      }
-      if (event.hpLost > 0 && player) {
-        lines.push({ text: `${player.name}は ${event.hpLost}の ダメージ！`, tone: "miss" });
-        if (player.hp <= 0) {
-          lines.push({ text: `${player.name}は たおれて しまった！`, tone: "miss" });
-        }
-      }
-      if (event.leveledUp && player) {
-        lines.push({ text: `${player.name}は レベルが 上がった！`, tone: "critical" });
-      }
-    } else {
-      lines.push({ text: "===== テスト スタート =====", tone: "system" });
-      if (event.damage === 0) {
-        lines.push({ text: "すごい！ バグは ひとつも なかった！", tone: "critical" });
-      } else {
-        lines.push({ text: `【警告】${event.risk}個の 大きな バグが 見つかった！`, tone: "miss" });
-        lines.push({
-          text: `やり直しだ！ お金 -${event.cost}万、みんなに ${event.damage}の ダメージ！`,
-          tone: "miss",
-        });
-      }
-    }
+    if (!event) return;
+    const lines = questLogLines(quest, state);
+    if (lines.length === 0) return;
     setLog((prev) => [...prev, ...lines.map((line) => ({ ...line, id: (logSeq.current += 1) }))]);
     const rough =
       event.kind === "risk" ? event.damage > 0 : event.optionType === "miss" || event.hpLost > 0;
@@ -145,6 +140,7 @@ export function QuestPlay({
   if (!phase) return null;
 
   const ruby = (text: string) => <RubyText text={text} index={furigana} show={furiganaOn} />;
+  const logRuby = (text: string) => <RubyText text={text} index={logFurigana} show={furiganaOn} />;
   const chapterLabel = phase.name.replace(/.*：/, "");
 
   return (
@@ -229,13 +225,11 @@ export function QuestPlay({
           className="h-16 overflow-y-auto text-xs leading-relaxed md:h-20 md:text-sm"
         >
           {log.length === 0 ? (
-            <p className="text-blue-300">
-              <RubyText text={`${quest.title} が 始まった！`} index={UI_FURIGANA} />
-            </p>
+            <p className="text-blue-300">{logRuby(questLogOpening(quest))}</p>
           ) : (
             log.map((line) => (
               <p key={line.id} className={LOG_COLOR[line.tone]}>
-                {ruby(line.text)}
+                {logRuby(line.text)}
               </p>
             ))
           )}
@@ -307,7 +301,7 @@ export function QuestPlay({
               ) : (
                 log.map((line) => (
                   <p key={line.id} className={LOG_COLOR[line.tone]}>
-                    {ruby(line.text)}
+                    {logRuby(line.text)}
                   </p>
                 ))
               )}
@@ -354,7 +348,14 @@ function PhaseBody({
     return (
       <div data-quest="risk" className="mt-1 flex flex-col gap-3">
         <p className="text-lg font-bold text-red-300">
-          {event.damage === 0 ? "🎉 バグは ひとつも なかった！" : "💥 たまって いた バグが 出た！"}
+          <RubyText
+            text={
+              event.damage === 0
+                ? "🎉 バグは ひとつも なかった！"
+                : "💥 たまって いた バグが 出た！"
+            }
+            index={UI_FURIGANA}
+          />
         </p>
         {event.damage > 0 ? (
           <ul className="flex flex-wrap gap-2 text-xs font-bold text-white">

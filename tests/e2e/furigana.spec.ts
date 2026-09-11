@@ -133,3 +133,53 @@ test("ミーティングの 中（漢字の 名前の 相手）にも 裸の漢�
   const bare = await bareKanjiTexts(page);
   expect(bare.filter((text) => !KNOWN_BARE_KANJI.includes(text))).toEqual([]);
 });
+
+/**
+ * クエストの **ログの 箱**も 見る（2026-09-11）。
+ *
+ * ログは 教材の 字（`option.resultText`）と 画面の 字（コードが 組み立てる 文）が
+ * 同じ 箱に 並ぶ 唯一の 場所で、**どの 機械検査にも かかって いなかった**——
+ * `lint:content` は 教材データしか 見ず、上の SCREENS に クエストが 無かった。
+ * その 穴で 「【警告】N個の…」の 警・告・個 が 裸の まま、「レベルが 上がった！」が
+ * 教材の `["上","うえ"]` に 当たって **うえがった** と 読まれて いた。
+ *
+ * ログの 文そのものは `tests/quest_log.test.ts` が 9つの 型を ぜんぶ 固定する
+ *（レベルアップと 爆発は 第8章まで 遊ばないと 出ない ので、ここでは 出せない）。
+ * ここが 見るのは **画面が 自分で 出す ことば**——札・見出し・解説・3つの しらべる 窓。
+ */
+test("クエストの 中（ログが 出た あと）にも 裸の漢字が 無い", async ({ page }) => {
+  const noBareKanji = async (where: string) => {
+    const bare = await bareKanjiTexts(page);
+    expect(
+      bare.filter((text) => !KNOWN_BARE_KANJI.includes(text)),
+      where,
+    ).toEqual([]);
+  };
+
+  await page.goto("/kaihatsu/quest");
+  await noBareKanji("タイトル");
+
+  await page.locator('[data-quest="start"]').click();
+  await expect(page.locator('[data-quest="log"]')).toBeVisible();
+  await noBareKanji("はじめの 1行");
+
+  // 会話を 送って 4択を 出す（場面の 頭の セリフの 本数は 場面ごとに ちがう）
+  for (let i = 0; i < 8; i += 1) {
+    if (await page.locator('[data-quest="option"]').count()) break;
+    await page.locator('[data-quest="next"]').first().click();
+  }
+  await expect(page.locator('[data-quest="option"]').first()).toBeVisible();
+  await noBareKanji("4択");
+
+  // 1手 打つと ログに 行が 積まれ、解説の 窓が 出る
+  await page.locator('[data-quest="option"]').first().click();
+  await expect(page.locator('[data-quest="next"]').first()).toBeVisible();
+  await noBareKanji("1手 打った あと");
+
+  for (const modal of ["history", "story", "process"] as const) {
+    await page.locator(`[data-quest="${modal}"]`).click();
+    await expect(page.locator('[data-quest="modal"]')).toBeVisible();
+    await noBareKanji(`しらべる 窓（${modal}）`);
+    await page.getByRole("button", { name: "とじる" }).click();
+  }
+});
