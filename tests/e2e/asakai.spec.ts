@@ -34,6 +34,21 @@ function stageRefs(): string[] {
   return stage.contents.map((item) => item.ref);
 }
 
+/**
+ * 各日の「司会の れい」を つないだ 1本の 報告。
+ *
+ * `tests/asakai_data.test.ts` が **れいを そのまま 言えば ⭕ に なる**ことを
+ * 保証して いる ので、ここでは それを 足場どおりに 話した 人の 入力として 使う。
+ */
+function exampleUtterances(): string[] {
+  const meeting = JSON.parse(
+    readFileSync(join(__dirname, "..", "..", "content", "meetings", "asakai_kantan.json"), "utf8"),
+  ) as { asakai: { scenes: { panels: { example: { text: string } }[] }[] } };
+  return meeting.asakai.scenes.map((scene) =>
+    scene.panels.map((panel) => panel.example.text).join(" "),
+  );
+}
+
 /** ふりがな（`rt`）を 外した 画面の 字。空白は ぜんぶ 落として 比べる。 */
 async function readingFreeText(page: Page): Promise<string> {
   return page.evaluate(() => {
@@ -131,4 +146,100 @@ test("夕礼（むずかしい）— メモと カードが 同じ 画面に 並
   await shot(page, "asakai-07-muzukashii-probe");
 
   expect(await bareKanjiTexts(page)).toEqual([]);
+});
+
+/**
+ * **入力欄が 見えて いる とき、カードの 板も 見えて いる**（2026-09-11 の 再発防止）
+ *
+ * 板（`sticky top-0`）と 入力欄（`sticky bottom-0`）は、親に `overflow-hidden` が
+ * あると **そこが スクロールの 器に なり**、画面の 外へ 流れて いく。
+ * 390px の 実機では「どの カードが まだかを 見ながら 書く」が できなく なって いた。
+ * 見た目では 気づきにくい ので、**位置を 数で** 見る。
+ */
+test("390px で 入力欄と カードの 板が 同時に 見える", async ({ page, context }) => {
+  const refs = stageRefs();
+  const at = refs.indexOf("asakai_muzukashii");
+  await seedCompleted(context, refs.slice(0, at - 1));
+  await page.goto("/asakai/meeting-asakai_muzukashii");
+  await joinCall(page);
+
+  /* メモ 10行の 下まで スクロールして、入力欄が 見える 位置に する。 */
+  const input = page.locator("#asakai-answer");
+  await input.scrollIntoViewIfNeeded();
+
+  const board = page.getByRole("group", { name: "カードの 板" });
+  const inputBox = await input.boundingBox();
+  const boardBox = await board.boundingBox();
+  expect(inputBox, "入力欄が 画面に ある").not.toBeNull();
+  expect(boardBox, "カードの 板が 画面に ある").not.toBeNull();
+
+  const height = PHONE.height;
+  expect(inputBox!.y, "入力欄が 画面の 中に ある").toBeLessThan(height);
+  expect(boardBox!.y + boardBox!.height, "板が 画面の 上に 貼りついて いる").toBeGreaterThan(0);
+  expect(boardBox!.y, "板が 画面の 中に ある").toBeLessThan(height);
+  await shot(page, "asakai-08-sticky-390");
+});
+
+/**
+ * **途中で 閉じても 月曜に 戻さない**（2026-09-11 の 再発防止）
+ *
+ * 5日で 30分を 超える ので、1回の 授業で 終わらない ことが ふつうに ある。
+ * しおりが 無かった ころは、開き直すたびに 月曜から やり直しだった。
+ */
+test("月曜を 終えて 開き直すと、火曜から つづく", async ({ page, context }) => {
+  const refs = stageRefs();
+  const at = refs.indexOf("asakai_kantan");
+  await seedCompleted(context, refs.slice(0, at));
+
+  await page.goto("/asakai/meeting-asakai_kantan");
+  await joinCall(page);
+  await page
+    .locator("#asakai-answer")
+    .fill(
+      "先週の 金曜日は、ログインの 画面を 作りました。ぜんぶ できました。" +
+        "きょうは テストの 一覧を 書いて、テストを 始めます。20こ ぐらいです。" +
+        "一覧の 書き方が 分からなくて、こまって います。",
+    );
+  await page.getByRole("button", { name: "報告する" }).click();
+  await page.getByRole("button", { name: /けっかを 見る/ }).click();
+  await expectOnScreen(page, "月曜日の 朝礼 おわり");
+
+  /* ここで 回線が 切れた ことに する。 */
+  await page.reload();
+  await joinCall(page);
+  await expectOnScreen(page, "火曜日");
+  await expectOnScreen(page, "2日目");
+  await shot(page, "asakai-09-resume-tue");
+});
+
+/**
+ * **週の けっかが 読める**（2026-09-11 の 再発防止）
+ *
+ * 「おわった」を けっかを 見せる **前**に 書いて いた ころ、ステージの
+ * 「クリア」の 板が けっかの 上に かぶさり、合格か 不合格かが 読めなかった（規律1）。
+ * 5日 通して、合否の 字と 数が 画面に 出る ことを 見る。
+ */
+test("5日 通すと、合否と 数が 読める", async ({ page, context }) => {
+  const refs = stageRefs();
+  const at = refs.indexOf("asakai_kantan");
+  await seedCompleted(context, refs.slice(0, at));
+  await page.goto("/asakai/meeting-asakai_kantan");
+  await joinCall(page);
+
+  /* 5日とも、その日の 司会の れいを ぜんぶ つないで 話す（足場どおりに 話した 人）。 */
+  for (const [day, utterance] of exampleUtterances().entries()) {
+    await page.locator("#asakai-answer").fill(utterance);
+    await page.getByRole("button", { name: "報告する" }).click();
+    await page.getByRole("button", { name: /けっかを 見る/ }).click();
+    if (day < 4) await page.getByRole("button", { name: /つづけます/ }).click();
+  }
+
+  await expectOnScreen(page, "合格");
+  await expectOnScreen(page, "以上で 合格");
+  await expectOnScreen(page, "聞き返し");
+  expect(await bareKanjiTexts(page)).toEqual([]);
+  await shot(page, "asakai-10-week-result");
+
+  /* 読み終えてから おわりに する（ここまで「クリア」の 板は かぶさらない）。 */
+  await page.getByRole("button", { name: "けっかを 読みました" }).click();
 });

@@ -651,7 +651,12 @@ function TimeCard({
           </p>
         </div>
       ) : null}
-      <button type="button" onClick={onNext} className="btn-island btn-game w-full px-6 py-3">
+      <button
+        type="button"
+        onClick={onNext}
+        aria-label={`${nextDay}から つづけます`}
+        className="btn-island btn-game w-full px-6 py-3"
+      >
         <span className="block break-keep">
           <RubyText text={`${nextDay}から つづけます`} index={index} show />
         </span>
@@ -785,6 +790,7 @@ function WeekResult({
           setClosed(true);
           onClose();
         }}
+        aria-label="けっかを 読みました"
         className="btn-island btn-game w-full px-6 py-3 disabled:opacity-45"
       >
         <RubyText text={closed ? "読みました" : "けっかを 読みました ▶"} index={index} show />

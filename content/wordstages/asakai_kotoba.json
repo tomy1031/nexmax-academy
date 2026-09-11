@@ -2,7 +2,7 @@
   "kind": "wordstage",
   "id": "asakai_kotoba",
   "title": "朝礼と 夕礼の ことば",
-  "description": "朝礼と 夕礼で 使う ことばです。担当・見込み・共有など、毎日の 報告に 出て くる ことばが 入って います。",
+  "description": "朝礼と 夕礼で 使う ことばです。担当・見込み・共有と、悪い しらせを 早く 言う ときの ことばが 入って います。",
   "fieldSequence": [
     "forest",
     "sky",
@@ -11,6 +11,22 @@
   "questionCount": 28,
   "passRate": 80,
   "furigana": [
+    [
+      "言",
+      "い"
+    ],
+    [
+      "言う",
+      "いう"
+    ],
+    [
+      "早く",
+      "はやく"
+    ],
+    [
+      "悪い",
+      "わるい"
+    ],
     [
       "朝礼",
       "ちょうれい"
@@ -138,6 +154,11 @@
     "settei",
     "go-ru",
     "mochimono",
-    "insatsu"
+    "insatsu",
+    "sumimasen",
+    "mousiwakearimasen",
+    "maniau",
+    "okureru",
+    "warui_shirase"
   ]
 }

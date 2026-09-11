@@ -301,3 +301,96 @@ describe("AIの 返しと ことばの 照合を 重ねる", () => {
     expect(said).toEqual([]);
   });
 });
+
+/**
+ * **画面の 数と 会話が 同じ ことを 言って いるか**（2026-09-11 の 再発防止）
+ *
+ * 板は「4 / 4」と 出して いるのに 司会は 聞き返しつづける、という 食いちがいが
+ * 実発生した。原因は **数える 述語が 2つ あった** こと——板は `open`（1つでも 言えた）、
+ * 会話は `full`（ぜんぶ 言えた）を 見て いた。
+ * 同じ ことを 2か所で 決めない、を ここで 見張る。
+ */
+describe("数と 会話が 食いちがわない", () => {
+  const ALL_PANELS = [EASY_TUE, HARD_MON];
+
+  it("聞き返す 先が 無い ＝ どの カードも ⭕ か 打ち切り", () => {
+    for (const panels of ALL_PANELS) {
+      /* 総当たりで 状態を 作り、不変条件を 見る（8〜16通り）。 */
+      const bits = 1 << panels.length;
+      for (let mask = 0; mask < bits; mask += 1) {
+        const states: PanelState[] = panels.map((panel, i) => {
+          const on = (mask >> i) & 1;
+          const said = on ? panel.facts.map((f) => f.id) : [];
+          return {
+            id: panel.id,
+            said,
+            open: on === 1,
+            full: on === 1,
+            gaveUp: false,
+          };
+        });
+        const left = nextProbePanel(panels, states);
+        const everyDone = states.every((s) => s.full || s.gaveUp);
+        expect(left === null).toBe(everyDone);
+      }
+    }
+  });
+
+  it("箱が 1つ 開いただけの カードは、まだ 聞き返す 先に なる", () => {
+    /* こまりごと（3箱）で 1箱だけ 言えた 状態。`open` は true だが `full` は false。 */
+    const step = applyUtterance({
+      utterance: "iPhone に 通知が 来ません。",
+      panels: HARD_MON,
+      states: initialPanelStates(HARD_MON),
+    });
+    const komari = step.states.find((s) => s.id === "komari");
+    expect(komari?.open).toBe(true);
+    expect(komari?.full).toBe(false);
+
+    /* きょう・あした を 埋めても、こまりごとが ⭕ でない かぎり 終わらない。 */
+    const filled = step.states.map((s) =>
+      s.id === "kyou" || s.id === "ashita" || s.id === "suuji"
+        ? { ...s, open: true, full: true }
+        : s,
+    );
+    expect(nextProbePanel(HARD_MON, filled)?.id).toBe("komari");
+  });
+});
+
+/**
+ * **れいを 見せて 打ち切った カードは、そこで 止まる**（2026-09-11 の 再発防止）
+ *
+ * 前は `gaveUp` の パネルも 照合を つづけて いたので、司会の れいを そのまま
+ * 書き写すと **板は ❌ のまま 合否だけ ⭕** に なった。
+ * 言えなかった ことが 言えた ことに 化ける、いちばん たちの 悪い 形。
+ */
+describe("打ち切った カードは 動かない", () => {
+  it("れいを 書き写しても 開かない", () => {
+    const start = initialPanelStates(EASY_TUE).map((s) =>
+      s.id === "kinou" ? { ...s, gaveUp: true } : s,
+    );
+    const step = applyUtterance({
+      utterance: "きのうは テストを しました。20この うち 16こ 終わりました。",
+      panels: EASY_TUE,
+      states: start,
+    });
+    const kinou = step.states.find((s) => s.id === "kinou");
+    expect(kinou?.open).toBe(false);
+    expect(kinou?.said).toEqual([]);
+    expect(step.opened).not.toContain("kinou");
+    /* ほかの カード（数字）は ふつうに 開く。止まるのは 打ち切った 1枚だけ。 */
+    expect(step.opened).toContain("suuji");
+  });
+
+  it("打ち切った カードは 合否の 数にも 入らない", () => {
+    const states = initialPanelStates(EASY_TUE).map((s) =>
+      s.id === "kinou" ? { ...s, gaveUp: true } : s,
+    );
+    const after = applyUtterance({
+      utterance: "きのうは テストを しました。",
+      panels: EASY_TUE,
+      states,
+    });
+    expect(countOpen(after.states)).toBe(0);
+  });
+});

@@ -127,7 +127,11 @@ export function CardBoard({
    */
   const open = cards.filter((c) => c.state === "open").length;
   return (
-    <div className="border-hairline sticky top-0 z-10 border-b bg-white/95 px-2 py-2 backdrop-blur">
+    <div
+      role="group"
+      aria-label="カードの 板"
+      className="border-hairline sticky top-0 z-10 border-b bg-white/95 px-2 py-2 backdrop-blur"
+    >
       <p className="text-ink-soft mb-1 text-[11px] font-black">
         <RubyText text="報告すると 開きます" index={index} show />{" "}
         <span className="tabular-nums">

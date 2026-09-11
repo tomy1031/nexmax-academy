@@ -1014,6 +1014,9 @@ export function collectLabeledTexts(content: Content): LabeledText[] {
         asakai.people.forEach((person, i) => {
           push(`asakai.people[${i}].name`, person.name);
           push(`asakai.people[${i}].duty`, person.duty);
+          /* いまの 画面は `duty` を 出して いるが、`role` も 参加者の 欄。
+             片方だけ 検査すると、出しかたを 変えた 日に 黙って 穴が あく。 */
+          push(`asakai.people[${i}].role`, person.role);
         });
         asakai.scenes.forEach((scene, i) => {
           const at = (field: string) => `asakai.scenes[${i}].${field}`;

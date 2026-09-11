@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import kantan from "../content/meetings/asakai_kantan.json";
 import muzukashii from "../content/meetings/asakai_muzukashii.json";
+import lecture from "../content/articles/asakai_lecture.json";
 import { meetingSchema } from "@/content/schema";
 import {
   applyUtterance,
@@ -114,6 +115,68 @@ describe("合格の 線が 届く ところに ある", () => {
       }
     });
   }
+});
+
+/**
+ * **悪い しらせほど 早く 言う**（2026-09-11 の 指定）。
+ *
+ * ページで 教えて いても、**練習に 無ければ 身に つかない**——この 検査を 入れる
+ * 前は、おわびの ことばが 教材の どこにも 無く、`persona`（学習者に 見えない AIへの
+ * 言い渡し）にだけ「すみません」が 書いて あった。消えても だれも 気づかない 形。
+ */
+describe("悪い しらせと おわび", () => {
+  for (const { name, raw } of MEETINGS) {
+    const meeting = meetingSchema.parse(raw);
+    const asakai = meeting.asakai!;
+
+    it(`${name} に おわびを 求める 箱が ある`, () => {
+      const boxes = asakai.scenes.flatMap((scene) =>
+        scene.panels.flatMap((panel) => panel.facts.filter((fact) => fact.allOf)),
+      );
+      /* おわびの ことばと 中身の **両方**を 求める 行が 1つ 以上 ある。 */
+      const owabi = boxes.filter((fact) =>
+        fact.allOf!.some((group) =>
+          group.some((word) => word.includes("すみません") || word.includes("申し訳")),
+        ),
+      );
+      expect(owabi.length).toBeGreaterThan(0);
+    });
+
+    it(`${name} の おわびは 中身と セットでしか 立たない`, () => {
+      /* 「すみません」だけで 開くと、**あやまれば 通る** 練習に なる。 */
+      const owabi = asakai.scenes
+        .flatMap((scene) => scene.panels.flatMap((panel) => panel.facts))
+        .filter((fact) =>
+          fact.allOf?.some((group) =>
+            group.some((word) => word.includes("すみません") || word.includes("申し訳")),
+          ),
+        );
+      for (const fact of owabi) {
+        expect(fact.allOf!.length).toBeGreaterThanOrEqual(2);
+      }
+    });
+
+    it(`${name} は おわびの 言い方を 見本か れいで 見せて いる`, () => {
+      /* 求めるだけで 見せて いないと、ヒントを 閉じたまま 答えられない（R10）。 */
+      const shown = asakai.scenes.some((scene) => {
+        const lines = [
+          scene.sample.text,
+          ...scene.panels.map((panel) => panel.example.text),
+          ...scene.hintLines,
+        ];
+        return lines.some((line) => line.includes("すみません") || line.includes("申し訳"));
+      });
+      expect(shown).toBe(true);
+    });
+  }
+
+  it("ページが おわびの 言い方を 先に 教えて いる", () => {
+    /* 規律10: 本文に 無い ところで 新しい 型を 作らない。 */
+    const article = JSON.stringify(lecture);
+    expect(article).toContain("すみません");
+    expect(article).toContain("申し訳");
+    expect(article).toContain("悪い ニュースほど 早く 言う");
+  });
 });
 
 describe("数字の 見かた", () => {

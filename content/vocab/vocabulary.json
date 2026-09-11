@@ -4,6 +4,26 @@
   "title": "ことば",
   "furigana": [
     [
+      "小さく",
+      "ちいさく"
+    ],
+    [
+      "間に合わ",
+      "まにあわ"
+    ],
+    [
+      "申し訳",
+      "もうしわけ"
+    ],
+    [
+      "悪い",
+      "わるい"
+    ],
+    [
+      "間に合う",
+      "まにあう"
+    ],
+    [
       "火曜日",
       "かようび"
     ],
@@ -17287,6 +17307,48 @@
         "Price",
         "Place",
         "Name"
+      ]
+    },
+    {
+      "id": "sumimasen",
+      "term": "すみません",
+      "reading": "すみません",
+      "romaji": "sumimasen",
+      "meaningJa": "こまらせた とき、さいしょに 言う ことばです。",
+      "englishTerm": "Sorry / Excuse me",
+      "example": "すみません。テストが 金曜日までに 間に合わないかも しれません。",
+      "wrongMeanings": [
+        "Thank you",
+        "Good morning",
+        "See you"
+      ]
+    },
+    {
+      "id": "maniau",
+      "term": "間に合う",
+      "reading": "まにあう",
+      "romaji": "maniau",
+      "meaningJa": "決めた 日までに 終わる ことです。",
+      "englishTerm": "To make it in time",
+      "example": "金曜日までに 間に合うか、まだ 分かりません。",
+      "wrongMeanings": [
+        "To be late",
+        "To start",
+        "To meet someone"
+      ]
+    },
+    {
+      "id": "warui_shirase",
+      "term": "悪い しらせ",
+      "reading": "わるい しらせ",
+      "romaji": "warui shirase",
+      "meaningJa": "聞く 人が こまる 知らせです。早く 言うほど 小さく なります。",
+      "englishTerm": "Bad news",
+      "example": "悪い しらせほど 早く 言います。",
+      "wrongMeanings": [
+        "Good news",
+        "A meeting",
+        "A question"
       ]
     }
   ]
