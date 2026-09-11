@@ -97,8 +97,6 @@ export async function saveQuizResults({
   fullSet: boolean;
 }): Promise<void> {
   if (!profileId || results.length === 0) return;
-  const supabase = createClient();
-  if (!supabase) return;
 
   const indexOf = new Map(questions.map((q, i) => [q.id, i]));
   const rows: QuizResultRow[] = results.flatMap((result) => {
@@ -120,14 +118,25 @@ export async function saveQuizResults({
       },
     ];
   });
-  if (rows.length === 0) return;
+  await insertQuizResultRows(rows);
+}
 
-  // `ignoreDuplicates: true` は必須。既定の upsert は ON CONFLICT DO UPDATE を生み、
-  // update 権限を要求する——この表に update ポリシーは **わざと置いていない**ので、
-  // 既定のままだと RLS に黙って全部落とされる。
+/**
+ * 行を そのまま 入れる。**表の 名前と 衝突の 扱いを 1か所に する**ため、
+ * 書き手（もんだい・ツール教材の こたえ）は かならず ここを 通す。
+ *
+ * `ignoreDuplicates: true` は必須。既定の upsert は ON CONFLICT DO UPDATE を生み、
+ * update 権限を要求する——この表に update ポリシーは **わざと置いていない**ので、
+ * 既定のままだと RLS に黙って全部落とされる。
+ */
+export async function insertQuizResultRows(rows: readonly QuizResultRow[]): Promise<void> {
+  if (rows.length === 0) return;
+  const supabase = createClient();
+  if (!supabase) return;
+
   const { error } = await supabase
     .from(TABLE)
-    .upsert(rows, { onConflict: "attempt_id,question_id", ignoreDuplicates: true });
+    .upsert([...rows], { onConflict: "attempt_id,question_id", ignoreDuplicates: true });
 
   if (error) {
     // supabase-js は **投げずに 返す**ので、`{ error }` を 受け取らないと 永久に 気づけない
