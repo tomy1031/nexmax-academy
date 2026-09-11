@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   checkDanglingRefs,
+  checkDescriptionScope,
   checkDuplicateIds,
   checkFuriganaCoverage,
   checkReferenceIntegrity,
@@ -84,6 +85,191 @@ describe("ID重複の検査", () => {
 
   it("IDが全部ちがえば何も出ない", () => {
     expect(checkDuplicateIds([entry(stage()), entry(manga())])).toEqual([]);
+  });
+});
+
+describe("説明文の 守備範囲の 検査", () => {
+  /**
+   * 説明は「ここに 何が あるか」だけを 書く。進み方・クリア条件は 学習者に 要らない
+   * （順番は カードの 通し番号、終わったかは しるしが 画面で 見せている）うえ、
+   * 教材カードの 説明は 2行で 切れるので、仕組みの 話を 足すと 中身の 説明が
+   * 画面から 押し出される。2026-09-11 の指定「それ生徒が知る必要ありますか？
+   * ありませんよね？そもそもここはステージの内容の説明です」の 実行体。
+   */
+
+  /** 説明の 欄だけを 差し替えた ステージ（既定の 説明は 中身の 話に して おく）。 */
+  const described = (description: string, over: Record<string, unknown> = {}) =>
+    stage({ description, ...over });
+
+  /** クエストは 種別ごとの walker から 漏れやすい（「クリア」と 書きたく なる 教材）。 */
+  const quest = (description: string): Content =>
+    parse({
+      kind: "quest",
+      id: "q1",
+      title: "クエスト",
+      description,
+      focus: "チームで 一年を 進みます。",
+      phases: [
+        {
+          id: 1,
+          chapter: "社内ミーティング",
+          name: "はじまり",
+          desc: "はじめの 場面です。",
+          enemy: { name: "山田さん", art: "yamada" },
+          question: "どう しますか。",
+          options: [
+            {
+              text: "先に 聞く",
+              type: "critical",
+              risk: -1,
+              hpCost: 0,
+              moneyCost: 0,
+              explanation: "先に 聞くと ずれが 減ります。",
+              resultText: "ずれが 減りました。",
+            },
+            {
+              text: "メモを 取る",
+              type: "hit",
+              risk: 0,
+              hpCost: 0,
+              moneyCost: 0,
+              explanation: "メモは あとで 役に 立ちます。",
+              resultText: "メモを 取りました。",
+            },
+            {
+              text: "だまって 進む",
+              type: "miss",
+              risk: 3,
+              hpCost: 5,
+              moneyCost: 0,
+              explanation: "聞かないと あとで 直しが 出ます。",
+              resultText: "直しが 出ました。",
+            },
+            {
+              text: "あとで 考える",
+              type: "miss",
+              risk: 4,
+              hpCost: 5,
+              moneyCost: 0,
+              explanation: "あとまわしは 時間を 食います。",
+              resultText: "時間が 減りました。",
+            },
+          ],
+        },
+      ],
+    });
+
+  it("つぎの ステージの 予告を 弾く（引用と 直し方まで 出す）", () => {
+    const findings = checkDescriptionScope(
+      "houkoku.json",
+      described("報告の しかたを 学びます。朝礼は つぎの ステージです。"),
+    );
+    expect(findings).toHaveLength(1);
+    expect(findings[0]?.level).toBe("error");
+    expect(findings[0]?.message).toContain("つぎの ステージ");
+    expect(findings[0]?.message).toContain("教材の 中身だけ");
+  });
+
+  it("とばしても終わる（クリア条件）の 説明を 弾く", () => {
+    const findings = checkDescriptionScope(
+      "asakai.json",
+      described("毎日の 朝礼で 報告します。夕礼は とばしても、この ステージは 終わります。"),
+    );
+    expect(findings).toHaveLength(1);
+    expect(findings[0]?.message).toContain("ステージ");
+  });
+
+  it("ステージ以外の 教材の 説明も 見る（仕組みの 話は どこに 書いても 同じ）", () => {
+    const findings = checkDescriptionScope(
+      "m1.json",
+      manga({ description: "朝礼の まんがです。クリアすると つぎが 開きます。" }),
+    );
+    expect(findings).toHaveLength(1);
+    expect(findings[0]?.message).toContain("クリア");
+  });
+
+  it("クエストの 説明も 見る（種別ごとの walker では 素通りしていた）", () => {
+    const findings = checkDescriptionScope(
+      "q1.json",
+      quest("クリアすると つぎの ステージが 開きます。"),
+    );
+    expect(findings).toHaveLength(2);
+    expect(findings.map((f) => f.message.includes("説明文（description）"))).toEqual([true, true]);
+  });
+
+  it("見どころ（focus）に 書き写しても 弾く（欄を 移すだけの 逃げ道を 作らない）", () => {
+    const listening = parse({
+      kind: "listening",
+      id: "l1",
+      title: "リスニング",
+      description: "朝の 会話を 聞きます。",
+      focus: "やらなくても ステージは 終わります。",
+      audioUrl: "/audio/l1.mp3",
+      participants: [{ id: "hendy", name: "ヘンディ", role: "先輩" }],
+      script: [
+        { speaker: "hendy", text: "おはようございます。" },
+        { speaker: "me", text: "おはようございます。" },
+      ],
+      questions: [],
+    });
+    const findings = checkDescriptionScope("l1.json", listening);
+    expect(findings).toHaveLength(1);
+    expect(findings[0]?.message).toContain("説明文（focus）");
+  });
+
+  it("まなびマップの ひとことも 見る（カードの 説明と 同じ 場所に 出る）", () => {
+    const findings = checkDescriptionScope(
+      "s1.json",
+      described("報告の しかたを 練習します。", {
+        area: {
+          name: "しごとの しま",
+          reading: "しごとの しま",
+          image: "/img/scenes/area_office_island.webp",
+          note: "この ステージを 終わると 行けます。",
+        },
+      }),
+    );
+    expect(findings).toHaveLength(1);
+    expect(findings[0]?.message).toContain("説明文（area.note）");
+  });
+
+  it("中身だけを 書いた 説明は 通す", () => {
+    expect(
+      checkDescriptionScope(
+        "s1.json",
+        described("上司への 報告の しかたを 読んで、聞いて、声に 出して 練習します。"),
+      ),
+    ).toEqual([]);
+  });
+
+  it("IT の ことば（ステージング環境・キャッシュを クリア）は 通す", () => {
+    expect(
+      checkDescriptionScope(
+        "m1.json",
+        manga({ description: "ステージング環境で ためして、キャッシュを クリアします。" }),
+      ),
+    ).toEqual([]);
+  });
+
+  it("「ロック」は 語に 入れない（ブロック・クロック・デッドロックの 誤検出を 避ける）", () => {
+    expect(
+      checkDescriptionScope(
+        "m1.json",
+        manga({ description: "デッドロックと ブロックチェーンの 話です。" }),
+      ),
+    ).toEqual([]);
+  });
+
+  it("本文（セリフ）は 見ない — 物語の 中で「クリア」と 言う ことは ある", () => {
+    const withLine = parse({
+      kind: "manga",
+      id: "m2",
+      format: "yonkoma",
+      title: "まんが",
+      description: "ゲームの 話の まんがです。",
+      pages: [{ panels: [{ lines: [{ speaker: "narration", text: "ゲームを クリアした。" }] }] }],
+    });
+    expect(checkDescriptionScope("m2.json", withLine)).toEqual([]);
   });
 });
 
