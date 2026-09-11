@@ -447,7 +447,7 @@
       "eyebrow": "🌅 報連相：報告",
       "title": "朝礼と 夕礼",
       "lead": "毎日 チームで 集まる、みじかい 会です。朝に する 会を 朝礼、夕方に する 会を 夕礼と 言います。",
-      "note": "ひとり 30秒〜1分。きのう・きょう・こまりごとの 3つを 話します。",
+      "note": "ひとり 30秒〜1分。きのう・きょう・こまって いることの 3つを 話します。",
       "image": {
         "src": "/img/manga/m2-asakai-manga/panel1.webp",
         "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. Five colleagues stand in a loose half circle beside a blank whiteboard in a bright morning office, holding mugs and small notebooks, listening to one young engineer who is speaking. Everyone is standing, relaxed and attentive. Morning sunlight through a big window, plants nearby. Wide shot filling the frame. No text, no letters, no kanji, no kana, no numbers anywhere in the image. Screens, papers, whiteboards, books and signs are blank or show only soft abstract shapes and simple pictures. No watermark, no signature, no logo, no speech balloons, no floating symbols such as question marks, exclamation marks, arrows, light bulbs, stars or hearts. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
@@ -479,7 +479,7 @@
         {
           "icon": "🤝",
           "title": "早く 助けて もらえる",
-          "text": "こまって いる ことを 言うと、答えを 知って いる 人が 手を 貸して くれます。"
+          "text": "こまって いることを 言うと、答えを 知って いる 人が 手を 貸して くれます。"
         },
         {
           "icon": "🗺",
@@ -523,7 +523,7 @@
           }
         },
         {
-          "title": "こまって いる こと",
+          "title": "こまって いること",
           "text": "小さくても 言います。ここが いちばん 大切です。",
           "image": {
             "src": "/img/articles/asakai_lecture/komari.webp",
@@ -539,7 +539,7 @@
     {
       "kind": "callout",
       "tone": "point",
-      "text": "「こまって いる こと」は 言いにくいです。でも、朝礼は それを 言う ための 時間です。早く 言う 人は、信頼される 人に なります。"
+      "text": "「こまって いること」は 言いにくいです。でも、朝礼は それを 言う ための 時間です。早く 言う 人は、信頼される 人に なります。"
     },
     {
       "kind": "heading",
@@ -551,7 +551,7 @@
       "items": [
         "「きのうは、ログイン機能の テストを しました。80%まで 終わりました。」— どこまで 進んだかを 数字で 言います。",
         "「きょうは、のこりの テストを します。」— きょう する ことを 1つか 2つ 言います。",
-        "「エラーの 意味が 分からなくて、詰まって います。あとで 30分、見て いただけませんか。」— こまりごとは、お願いまで 言います。"
+        "「エラーの 意味が 分からなくて、詰まって います。あとで 30分、見て いただけませんか。」— こまって いることは、お願いまで 言います。"
       ]
     },
     {
@@ -575,7 +575,7 @@
         "title": "伝わらない 朝礼",
         "lines": [
           "「きのうも きょうも、順調です。」",
-          "「こまって いる ことは、とくに ありません。」",
+          "「こまって いることは、とくに ありません。」",
           "1週間 あと。テストが 間に合わない ことが 分かりました。"
         ]
       },
@@ -681,7 +681,7 @@
     },
     {
       "kind": "paragraph",
-      "text": "話す 中身の 3つ（した こと・する こと・こまって いる こと）は 同じです。ことばだけが 変わります。"
+      "text": "話す 中身の 3つ（した こと・する こと・こまって いること）は 同じです。ことばだけが 変わります。"
     },
     {
       "kind": "callout",
@@ -707,11 +707,11 @@
       "tone": "goal",
       "icon": "🎯",
       "title": "きょうの ゴール",
-      "text": "きのう・きょう・こまりごとの 3つを、1分で 言えるように なる。悪い ニュースは、さいしょに「すみません」を 付ける。",
+      "text": "きのう・きょう・こまって いることの 3つを、1分で 言えるように なる。悪い ニュースは、さいしょに「すみません」を 付ける。",
       "badges": [
         "きのう",
         "きょう",
-        "こまりごと",
+        "こまって いること",
         "数字を 1つ"
       ]
     },

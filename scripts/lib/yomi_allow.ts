@@ -59,6 +59,11 @@ export const YOMI_ALLOW: readonly YomiAllowEntry[] = [
     reading: "ほうれんそう ほうこく",
     note: "ステージ名。読みの空白は：の代わり（title/reading の作法）",
   },
+  {
+    surface: "報連相：報告（朝礼と 夕礼）",
+    reading: "ほうれんそう ほうこく ちょうれいと ゆうれい",
+    note: "ステージ名。相＝そう（上の 報連相 と 同じ）。読みの 空白は ：（ ） の 代わり",
+  },
   { surface: "報連相：連絡", reading: "ほうれんそう れんらく", note: "同上" },
   { surface: "報連相：相談", reading: "ほうれんそう そうだん", note: "同上" },
   { surface: "修和", reading: "しゅうわ", note: "人名（川村修和）。解析は おさむわ と割る" },
@@ -131,6 +136,24 @@ export const YOMI_ALLOW: readonly YomiAllowEntry[] = [
   { surface: "他", reading: "ほか", note: "「他の 会社」など。解析は た" },
   { surface: "型", reading: "かた", note: "「あいさつの型」など単独の型。解析は がた" },
   { surface: "行", reading: "ぎょう", note: "「1行」「3行で」＝テキストの行。解析は こう" },
+  {
+    surface: "日の うちに",
+    reading: "ひの うちに",
+    where: "その 日の うちに",
+    note: "「その 日の うちに 手が 集まりました」（朝礼・夕礼）＝その日じゅうに。解析は にち。「1日の メモ」「1日で 終わる」（いちにち）は 別の 見出しが 守る",
+  },
+  {
+    surface: "前の 日",
+    reading: "まえの ひ",
+    where: "前の 日の 夕方",
+    note: "「前の 日の 夕方に 通知を 出す」（夕礼）＝前日の 夕方。解析は にち",
+  },
+  {
+    surface: "行の 間",
+    reading: "ぎょうの あいだ",
+    where: "1.3倍",
+    note: "「行の 間を 1.3倍に しました」（asakai_kantan・フォントの 直し）＝行間。解析は 行＝くだり・間＝ま と 読む",
+  },
   { surface: "後に", reading: "あとに", note: "「どれを 後に するか」。解析は ごに" },
   { surface: "何ですか", reading: "なんですか", note: "解析は なにですか" },
   {

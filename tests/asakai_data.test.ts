@@ -10,6 +10,15 @@ import {
   initialPanelStates,
   type PanelState,
 } from "@/lib/meeting/panels";
+import { findVoice } from "@/lib/audio/voices";
+import fujiki from "../content/characters/fujiki.json";
+import hendy from "../content/characters/hendy.json";
+import nyam from "../content/characters/nyam.json";
+import okuda from "../content/characters/okuda.json";
+import tomita from "../content/characters/tomita.json";
+
+/** 人物カード（こえの 正）。`scripts/make_meeting_audio.ts` が 読むのと 同じ もの。 */
+const CHARACTERS: Record<string, { voice?: string }> = { fujiki, hendy, nyam, okuda, tomita };
 
 /**
  * 朝礼・夕礼の **実データ**を そのまま 見る（台帳 #366）。
@@ -190,4 +199,38 @@ describe("数字の 見かた", () => {
   it("「一覧」は 数では ない", () => {
     expect(hasNumber("一覧を 書きました。")).toBe(false);
   });
+});
+
+/**
+ * こえの 割り当て（台帳 #387 の 17）
+ *
+ * `scripts/make_meeting_audio.ts` は 話す 人ごとに 人物カードの `voice` を 引く。
+ * **カードに `voice` が 無いと 黙って `"Puck"` に 落ちる**ので、5人が 同じ 声で
+ * 鳴る——耳では だれが 話して いるか 分からなく なるのに、検査は 緑の まま。
+ * 実際に 奥田・藤木・富田の 3人が その 状態だった（2026-09-11）。
+ */
+describe("話す 人の こえ", () => {
+  for (const { name, raw } of MEETINGS) {
+    const meeting = meetingSchema.parse(raw);
+    const asakai = meeting.asakai!;
+
+    it(`${name} は 出る 人 ぜんぶに こえが 決まって いる`, () => {
+      const missing = asakai.people
+        .filter((person) => !(CHARACTERS[person.id]?.voice ?? ""))
+        .map((person) => person.id);
+      expect(missing).toEqual([]);
+    });
+
+    it(`${name} は 同じ こえが 2人に 当たって いない`, () => {
+      const voices = asakai.people.map((person) => CHARACTERS[person.id]?.voice ?? "");
+      expect(new Set(voices).size).toBe(voices.length);
+    });
+
+    it(`${name} の こえは 一覧に ある 名前`, () => {
+      const unknown = asakai.people
+        .map((person) => CHARACTERS[person.id]?.voice ?? "")
+        .filter((voice) => voice !== "" && !findVoice(voice));
+      expect(unknown).toEqual([]);
+    });
+  }
 });

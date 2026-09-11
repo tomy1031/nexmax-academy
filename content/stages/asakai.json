@@ -2,8 +2,8 @@
   "kind": "stage",
   "id": "asakai",
   "order": 5,
-  "title": "毎日の 朝礼と 夕礼",
-  "reading": "まいにちの ちょうれいと ゆうれい",
+  "title": "報連相：報告（朝礼と 夕礼）",
+  "reading": "ほうれんそう ほうこく ちょうれいと ゆうれい",
   "description": "朝は 旅行アプリの チームの 朝礼、夕方は 小学校の アプリの チームの 夕礼で 報告します。どちらも 月曜日から 金曜日まで つづきます。朝礼は「きのう」と「きょう」、夕礼は「きょう」と「あした」を 話します。",
   "color": "sky",
   "status": "published",
@@ -19,6 +19,10 @@
     {
       "ref": "asakai_memo",
       "type": "quizset"
+    },
+    {
+      "ref": "asakai_team",
+      "type": "article"
     },
     {
       "ref": "asakai_kantan",

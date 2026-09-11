@@ -1,0 +1,557 @@
+{
+  "kind": "article",
+  "id": "asakai_team",
+  "title": "チームと アプリ",
+  "description": "朝礼に 出る 前に 読む ページです。いま 作って いる アプリ、チームの みんな、そして あなたの 担当が 分かります。",
+  "blocks": [
+    {
+      "kind": "hero",
+      "eyebrow": "🌏 報連相：報告",
+      "title": "あなたの チームと アプリ",
+      "lead": "あなたは ネクストメイクの エンジニアです。旅行の アプリを 作る チームに います。",
+      "note": "朝礼に 出る 前に、ここを 読みます。3分で 終わります。",
+      "image": {
+        "src": "/img/articles/asakai_team/team.webp",
+        "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. Four software colleagues stand together in a loose group beside a completely blank whiteboard in a bright morning office: a tall man in a navy suit with no tie, a young man in a red cardigan over a white shirt, a man in a light blue shirt with a plain dark lanyard, and an older man in a grey jacket standing slightly apart at the right. They face the viewer's side of the room in a relaxed half circle, holding mugs and small blank notebooks, calm and welcoming. Morning sunlight through a big window, plants nearby. Wide shot filling the frame. No text, no letters, no kanji, no kana, no numbers anywhere in the image. Screens, papers, whiteboards, books and signs are blank or show only soft abstract shapes and simple pictures. No watermark, no signature, no logo, no speech balloons, no floating symbols such as question marks, exclamation marks, arrows, light bulbs, stars or hearts. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+        "refs": [
+          "/img/characters/hendy/sheet.webp",
+          "/img/characters/nyam/sheet.webp",
+          "/img/characters/okuda/sheet.webp"
+        ],
+        "status": "empty"
+      }
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "作って いる もの"
+    },
+    {
+      "kind": "paragraph",
+      "text": "Khmersabai（クメールサバイ）は、カンボジアに ある ネクストメイクの 会社です。2026年6月に できました。会社しらべで 出て きた 名前です。"
+    },
+    {
+      "kind": "paragraph",
+      "text": "その 会社の ための 旅行アプリを 作って います。カンボジアに 来た 外国の 人が、店を さがして、その 場で 決済する ための アプリです。アプリに 出す 店は 100けんです。"
+    },
+    {
+      "kind": "paragraph",
+      "text": "店の ことは Khmersabai の 人が 知って います。だから 店の ことで 分からない ときは、Khmersabai に 聞きます。"
+    },
+    {
+      "kind": "image",
+      "src": "/img/articles/asakai_team/app.webp",
+      "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. Close view of two hands holding a smartphone upright at chest height. THE PHONE SCREEN IS COMPLETELY BLANK AND WHITE — nothing is drawn on it. Behind the phone, softly out of focus, a sunny street of small family shops with cloth awnings, fruit stalls, parked motorbikes and palm trees in warm afternoon light. Only the hands and the phone are sharp. The phone fills the middle of the frame. No text, no letters, no kanji, no kana, no numbers anywhere in the image. Screens, papers, whiteboards, books and signs are blank or show only soft abstract shapes and simple pictures. No watermark, no signature, no logo, no speech balloons, no floating symbols such as question marks, exclamation marks, arrows, light bulbs, stars or hearts. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+      "refs": [
+        "/img/characters/hendy/sheet.webp",
+        "/img/characters/nyam/sheet.webp",
+        "/img/characters/okuda/sheet.webp"
+      ],
+      "status": "empty",
+      "caption": "旅行に 来た 人が、この アプリで 店を さがします。",
+      "size": "wide"
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "アプリで できる こと"
+    },
+    {
+      "kind": "cards",
+      "tone": "plain",
+      "columns": 4,
+      "items": [
+        {
+          "icon": "🔑",
+          "label": "あなたの 担当",
+          "title": "ログイン",
+          "text": "名前と パスワードで アプリに 入ります。パスワードを 忘れた 人の 画面も 作ります。"
+        },
+        {
+          "icon": "🗺",
+          "label": "奥田さん",
+          "title": "地図",
+          "text": "店の 場所を 地図に 出します。店は 100けんです。"
+        },
+        {
+          "icon": "💳",
+          "label": "ニャムさん",
+          "title": "決済",
+          "text": "カードと KHQR（カンボジアの QRコード）で 決済します。"
+        },
+        {
+          "icon": "🌏",
+          "label": "ヘンディさん",
+          "title": "3つの ことば",
+          "text": "日本語・英語・クメール語。同じ 画面が 3つの ことばで 出ます。"
+        }
+      ]
+    },
+    {
+      "kind": "banner",
+      "tone": "goal",
+      "icon": "🎯",
+      "title": "今週の ゴール",
+      "text": "金曜日に テスト版を 出します。ログイン・地図・決済・3つの ことばを、1つに つなぎます。",
+      "badges": [
+        "月曜日から 金曜日まで",
+        "朝礼は 毎朝 9時30分"
+      ]
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "チームの 人"
+    },
+    {
+      "kind": "characters",
+      "items": [
+        {
+          "ref": "hendy",
+          "role": "先輩（朝礼の 司会）",
+          "note": "3つの ことばの 担当です。朝礼の 司会も します。分からない ことは、まず ヘンディさんに 聞きます。"
+        },
+        {
+          "ref": "nyam",
+          "role": "先輩",
+          "note": "決済の 担当です。カードと KHQRの 画面を 作って います。メールの しくみにも くわしいです。"
+        },
+        {
+          "ref": "okuda",
+          "role": "先輩",
+          "note": "地図の 担当です。店の 場所を 地図に 出して います。"
+        },
+        {
+          "ref": "fujiki",
+          "role": "取締役",
+          "note": "お客さまと 話す 人です。金曜日の 朝礼だけ 来ます。"
+        }
+      ]
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "あなたの 担当"
+    },
+    {
+      "kind": "banner",
+      "tone": "message",
+      "icon": "🔑",
+      "title": "ログインの 画面と、パスワードの 画面",
+      "text": "あなたは ログインの 担当です。画面を 作って、テストケースも 自分で 書きます。先週の 金曜日に、ログインの 画面が できました。",
+      "badges": [
+        "ログインの 画面",
+        "パスワードを 忘れた 人の 画面",
+        "テストケース"
+      ]
+    },
+    {
+      "kind": "callout",
+      "tone": "point",
+      "text": "朝礼では、自分の 担当の ことだけ 話します。ほかの 人の 担当の ことは、その 人が 話します。"
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "朝礼で 話す こと"
+    },
+    {
+      "kind": "paragraph",
+      "text": "司会の ヘンディさんが「では 次に ◯◯さん、お願いします」と 言ったら、あなたの ばんです。話す ことは 4つです。画面の 板に 出る 4枚と 同じです。"
+    },
+    {
+      "kind": "list",
+      "items": [
+        "きのう やったこと",
+        "きょう やること",
+        "こまって いること（無い ときは「こまって いることは ありません」）",
+        "数字を 1つ（「20この うち 16こ」）"
+      ]
+    },
+    {
+      "kind": "callout",
+      "tone": "point",
+      "text": "数字は 1つで じゅうぶんです。「20この うち 16こ」の ように 言うと、どこまで 進んだかが 一度で 分かります。"
+    },
+    {
+      "kind": "callout",
+      "tone": "care",
+      "text": "こまって いる ことは、早く 言うほど 助かります。木曜日に「間に合わないかも しれません」と 言えば、まだ 直せます。金曜日の 朝に 言うと、直す 時間が ありません。"
+    },
+    {
+      "kind": "vocab",
+      "wordIds": [
+        "chourei",
+        "tantou",
+        "kessai",
+        "tesutokeesu",
+        "tagengo",
+        "torisimariyaku"
+      ]
+    },
+    {
+      "kind": "link",
+      "ref": "asakai_kantan",
+      "type": "meeting",
+      "label": "月曜日の 朝礼に 出る"
+    }
+  ],
+  "furigana": [
+    [
+      "作ります",
+      "つくります"
+    ],
+    [
+      "書きます",
+      "かきます"
+    ],
+    [
+      "話します",
+      "はなします"
+    ],
+    [
+      "売り買い",
+      "うりかい"
+    ],
+    [
+      "来ます",
+      "きます"
+    ],
+    [
+      "日本語",
+      "にほんご"
+    ],
+    [
+      "客さま",
+      "きゃくさま"
+    ],
+    [
+      "分から",
+      "わから"
+    ],
+    [
+      "分かり",
+      "わかり"
+    ],
+    [
+      "間に合",
+      "まにあ"
+    ],
+    [
+      "月曜日",
+      "げつようび"
+    ],
+    [
+      "金曜日",
+      "きんようび"
+    ],
+    [
+      "報連相",
+      "ほうれんそう"
+    ],
+    [
+      "木曜日",
+      "もくようび"
+    ],
+    [
+      "取締役",
+      "とりしまりやく"
+    ],
+    [
+      "人です",
+      "ひとです"
+    ],
+    [
+      "終わり",
+      "おわり"
+    ],
+    [
+      "英語",
+      "えいご"
+    ],
+    [
+      "決済",
+      "けっさい"
+    ],
+    [
+      "来た",
+      "きた"
+    ],
+    [
+      "報告",
+      "ほうこく"
+    ],
+    [
+      "朝礼",
+      "ちょうれい"
+    ],
+    [
+      "会社",
+      "かいしゃ"
+    ],
+    [
+      "時間",
+      "じかん"
+    ],
+    [
+      "先輩",
+      "せんぱい"
+    ],
+    [
+      "数字",
+      "すうじ"
+    ],
+    [
+      "画面",
+      "がめん"
+    ],
+    [
+      "司会",
+      "しかい"
+    ],
+    [
+      "自分",
+      "じぶん"
+    ],
+    [
+      "同じ",
+      "おなじ"
+    ],
+    [
+      "毎朝",
+      "まいあさ"
+    ],
+    [
+      "出し",
+      "だし"
+    ],
+    [
+      "出す",
+      "だす"
+    ],
+    [
+      "出て",
+      "でて"
+    ],
+    [
+      "先週",
+      "せんしゅう"
+    ],
+    [
+      "言う",
+      "いう"
+    ],
+    [
+      "言え",
+      "いえ"
+    ],
+    [
+      "名前",
+      "なまえ"
+    ],
+    [
+      "旅行",
+      "りょこう"
+    ],
+    [
+      "担当",
+      "たんとう"
+    ],
+    [
+      "今週",
+      "こんしゅう"
+    ],
+    [
+      "地図",
+      "ちず"
+    ],
+    [
+      "場所",
+      "ばしょ"
+    ],
+    [
+      "奥田",
+      "おくだ"
+    ],
+    [
+      "作る",
+      "つくる"
+    ],
+    [
+      "終わ",
+      "おわ"
+    ],
+    [
+      "聞き",
+      "きき"
+    ],
+    [
+      "忘れ",
+      "わすれ"
+    ],
+    [
+      "助か",
+      "たすか"
+    ],
+    [
+      "早く",
+      "はやく"
+    ],
+    [
+      "入り",
+      "はいり"
+    ],
+    [
+      "人の",
+      "ひとの"
+    ],
+    [
+      "読む",
+      "よむ"
+    ],
+    [
+      "直す",
+      "なおす"
+    ],
+    [
+      "外国",
+      "がいこく"
+    ],
+    [
+      "一度",
+      "いちど"
+    ],
+    [
+      "入力",
+      "にゅうりょく"
+    ],
+    [
+      "一つ",
+      "ひとつ"
+    ],
+    [
+      "大切",
+      "たいせつ"
+    ],
+    [
+      "立場",
+      "たちば"
+    ],
+    [
+      "版",
+      "ばん"
+    ],
+    [
+      "分",
+      "ふん"
+    ],
+    [
+      "時",
+      "じ"
+    ],
+    [
+      "年",
+      "ねん"
+    ],
+    [
+      "話",
+      "はな"
+    ],
+    [
+      "言",
+      "い"
+    ],
+    [
+      "書",
+      "か"
+    ],
+    [
+      "読",
+      "よ"
+    ],
+    [
+      "直",
+      "なお"
+    ],
+    [
+      "決",
+      "き"
+    ],
+    [
+      "願",
+      "ねが"
+    ],
+    [
+      "前",
+      "まえ"
+    ],
+    [
+      "朝",
+      "あさ"
+    ],
+    [
+      "次",
+      "つぎ"
+    ],
+    [
+      "人",
+      "ひと"
+    ],
+    [
+      "作",
+      "つく"
+    ],
+    [
+      "場",
+      "ば"
+    ],
+    [
+      "会",
+      "かい"
+    ],
+    [
+      "知",
+      "し"
+    ],
+    [
+      "無",
+      "な"
+    ],
+    [
+      "月",
+      "がつ"
+    ],
+    [
+      "出",
+      "で"
+    ],
+    [
+      "語",
+      "ご"
+    ],
+    [
+      "店",
+      "みせ"
+    ],
+    [
+      "金",
+      "かね"
+    ],
+    [
+      "国",
+      "くに"
+    ],
+    [
+      "進",
+      "すす"
+    ],
+    [
+      "板",
+      "いた"
+    ],
+    [
+      "枚",
+      "まい"
+    ]
+  ]
+}

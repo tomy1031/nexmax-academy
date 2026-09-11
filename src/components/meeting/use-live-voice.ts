@@ -117,7 +117,29 @@ export interface LiveVoice {
   readonly lastAudio: { id: number; url: string } | null;
 }
 
-export function useLiveVoice(): LiveVoice {
+/**
+ * 聞くだけの 相手に つなぐ ときの 目じるし（朝礼・夕礼）。
+ *
+ * ## なぜ 要るのか
+ * 学習者の 文字起こしは **相手が 話しはじめた 合図**（`from: "client"` の かけら）で
+ * 1つに 束ねて 流して いる。ふつうの ミーティングでは 相手が 必ず 返事を するので
+ * それで 足りるが、朝礼は **相手に 何も 言わせない**（司会の ことばは 教材が 持ち、
+ * 画面が 選ぶ）。合図が 永久に 来ないので、ためた ことばは 流れず、
+ * つぎに 話しはじめた ところで `startTalking` が 捨てる——
+ * **声で 報告しても 何も 起きない**（2026-09-11 の 検収で 見つかった）。
+ *
+ * `listenOnly: true` を 渡すと、指を はなした あと **かけらが 止まってから**
+ * 束ねて 流す。相手が 返事を する 教材では これまでどおり（合図が 先に 来る）。
+ */
+export interface LiveVoiceOptions {
+  readonly listenOnly?: boolean;
+}
+
+/** 指を はなしてから かけらを 待つ 時間。文字起こしは 発話より 遅れて 届く。 */
+const FLUSH_AFTER_MS = 1500;
+
+export function useLiveVoice(options: LiveVoiceOptions = {}): LiveVoice {
+  const listenOnly = options.listenOnly ?? false;
   const [status, setStatus] = useState<VoiceStatus>("idle");
   const [reason, setReason] = useState<string | null>(null);
   const [turns, setTurns] = useState<readonly VoiceTurn[]>([]);
@@ -132,6 +154,8 @@ export function useLiveVoice(): LiveVoice {
 
   /** 聞き取りの途中。相手が話しはじめたら1つに束ねて流す。 */
   const heardRef = useRef("");
+  /** 聞くだけの 相手の ときに、かけらが 止まったら 流す ための 予約。 */
+  const flushTimerRef = useRef<number | null>(null);
   const saidRef = useRef("");
   const utteranceIdRef = useRef(0);
 
@@ -208,6 +232,11 @@ export function useLiveVoice(): LiveVoice {
       urlsRef.current = [];
       setLastAudio(null);
     }
+    /* 流す 予約を 残した まま 閉じない（閉じた あとに 1本 流れる）。 */
+    if (flushTimerRef.current !== null) {
+      window.clearTimeout(flushTimerRef.current);
+      flushTimerRef.current = null;
+    }
   }, []);
 
   /**
@@ -264,6 +293,27 @@ export function useLiveVoice(): LiveVoice {
     setAnalyser(null);
     setStatus("idle");
   }, [teardown]);
+
+  /**
+   * ためた 聞き取りを 1つに 束ねて 流す。
+   *
+   * 通り道は 2つ（相手が 話しはじめた 合図 ／ 聞くだけの 相手での 時間切れ）だが、
+   * **やる ことは 同じ**なので 1か所に する。空なら 何も しない ので、
+   * どちらが 先に 来ても 二重には ならない。
+   */
+  const flushHeard = useCallback(() => {
+    if (flushTimerRef.current !== null) {
+      window.clearTimeout(flushTimerRef.current);
+      flushTimerRef.current = null;
+    }
+    const heard = heardRef.current.trim();
+    if (!heard) return;
+    heardRef.current = "";
+    utteranceIdRef.current += 1;
+    const id = utteranceIdRef.current;
+    setTurns((prev) => [...prev, { from: "me", text: heard }]);
+    setLastUtterance({ id, text: heard });
+  }, []);
 
   const connect = useCallback(
     async (
@@ -455,16 +505,19 @@ export function useLiveVoice(): LiveVoice {
                *   返事（相手）      … turnComplete で 1つに束ねる
                */
               const piece = readTranscript(message);
-              if (piece?.from === "me") heardRef.current += piece.text;
-              if (piece?.from === "client") {
-                const heard = heardRef.current.trim();
-                if (heard) {
-                  heardRef.current = "";
-                  utteranceIdRef.current += 1;
-                  const id = utteranceIdRef.current;
-                  setTurns((prev) => [...prev, { from: "me", text: heard }]);
-                  setLastUtterance({ id, text: heard });
+              if (piece?.from === "me") {
+                heardRef.current += piece.text;
+                /*
+                 * 聞くだけの 相手（朝礼）は 合図を くれない ので、**かけらが
+                 * 止まった ところ**で 流す。かけらが 来るたび 予約を 取り直す。
+                 */
+                if (listenOnly) {
+                  if (flushTimerRef.current !== null) window.clearTimeout(flushTimerRef.current);
+                  flushTimerRef.current = window.setTimeout(flushHeard, FLUSH_AFTER_MS);
                 }
+              }
+              if (piece?.from === "client") {
+                flushHeard();
                 saidRef.current += piece.text;
               }
               /*
@@ -557,7 +610,7 @@ export function useLiveVoice(): LiveVoice {
         setReason("connect");
       }
     },
-    [teardown, retryLater],
+    [teardown, retryLater, listenOnly, flushHeard],
   );
 
   useEffect(() => {
