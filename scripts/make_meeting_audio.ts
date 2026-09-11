@@ -36,6 +36,7 @@
  * `--force` は すでに ある ものも 作り直す。
  */
 
+import { createHash } from "node:crypto";
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { OUT_RATE, synthesizeWithFallback, toWav } from "./lib/live_tts";
@@ -100,10 +101,22 @@ const talkGame = meeting.talkGame as
  * 司会・ニャム・奥田・藤木が 1つの 場面で 順に 話す。ミーティングの ように
  * ホスト 1人の 声で 通すと、だれが 話して いるか 耳では 分からない。
  *
- * ## `◯◯` の 行は 作らない
- * この 教材の `◯◯` は **穴うめの 目印**でも ある（「きのうは ◯◯を しました」の 形で）。
- * 名前として 埋めると 意味が 壊れる 行が あるので、`◯◯` を 含む 行は そのまま
- * 字で 読む（読み上げの 照合も「まるまる」で 落ちる）。
+ * ## `◯◯` は 読むけれど 字は 変えない
+ * この 教材の `◯◯` は **穴うめの 目印**（「きのうは ◯◯を しました」の 形で）で、
+ * 名前の 置き場でも ある。日本語では どちらも 声では「まるまる」と 読むので、
+ * **Live へ 渡す 文だけ** 置きかえる（画面の 字は `◯◯` の まま）。
+ * `NMClaw` を カタカナで 読ませる のと 同じ 考え方（`scripts/lib/live_tts.ts`）。
+ *
+ * ## 聞き返しも 音に する
+ * 聞き返し（`panels[].followups`）と れい（`panels[].example`）は、
+ * **学習者が いちばん 聞きたい 行**——言えて いない ときに 司会が 言い直す ところ。
+ * ここを 抜くと、通じなかった ときだけ 無音に なる。
+ *
+ * ## ファイル名に **文の 指紋**を 入れる
+ * 場所だけで 名づける（`s2-member-0`）と、本文を 直しても ファイルは 残り、
+ * 「すでに あります」で 素通しして **古い 声が 鳴りつづける**——しかも
+ * 中身が 変わらないので `assetUrl` の `?v=` も 効かない（2026-09-11 の 検収）。
+ * 文が 変われば 名前も 変わる ように して、直したら 作り直させる。
  */
 interface AsakaiLine {
   speakerId: string;
@@ -112,22 +125,39 @@ interface AsakaiLine {
 }
 interface Job {
   key: string;
+  /** Live へ 渡す 文（`◯◯` は「まるまる」に なって いる）。 */
   text: string;
   voice: string;
   /** 音が できた ときに 教材へ 書き戻す。 */
   apply: (url: string) => void;
+  /** 作れなかった ときに 古い 場所を 消す（無い ファイルを 指したまま に しない）。 */
+  clear: () => void;
+}
+
+/** 声に する ときの 文。画面の 字は 変えない。 */
+function forSpeech(text: string): string {
+  return text.replaceAll("◯◯", "まるまる").replaceAll("◯", "まる");
+}
+
+/** 文の 指紋（8桁）。同じ 声・同じ 文なら 同じ。 */
+function fingerprint(text: string): string {
+  return createHash("sha256").update(text).digest("hex").slice(0, 8);
 }
 
 function asakaiJobs(): Job[] {
   const jobs: Job[] = [];
   const add = (key: string, line: AsakaiLine | undefined): void => {
-    if (!line?.text?.trim() || line.text.includes("◯")) return;
+    if (!line?.text?.trim()) return;
+    const text = forSpeech(line.text);
     jobs.push({
-      key,
-      text: line.text,
+      key: `${key}-${fingerprint(text)}`,
+      text,
       voice: voiceOf(line.speakerId),
       apply: (url) => {
         line.audio = url;
+      },
+      clear: () => {
+        delete line.audio;
       },
     });
   };
@@ -139,6 +169,7 @@ function asakaiJobs(): Job[] {
     members: AsakaiLine[];
     arrange?: { done: AsakaiLine; missing: AsakaiLine };
     closing: AsakaiLine[];
+    panels: { id: string; followups: AsakaiLine[]; example?: AsakaiLine }[];
   }[];
   for (const [at, scene] of scenes.entries()) {
     scene.opening.forEach((line, n) => add(`s${at}-opening-${n}`, line));
@@ -149,6 +180,10 @@ function asakaiJobs(): Job[] {
     add(`s${at}-arrange-done`, scene.arrange?.done);
     add(`s${at}-arrange-missing`, scene.arrange?.missing);
     scene.closing.forEach((line, n) => add(`s${at}-closing-${n}`, line));
+    for (const panel of scene.panels) {
+      panel.followups.forEach((line, n) => add(`s${at}-${panel.id}-fu${n}`, line));
+      add(`s${at}-${panel.id}-ex`, panel.example);
+    }
   }
   return jobs;
 }
@@ -175,10 +210,12 @@ function classicJobs(urls: Record<string, string>): Job[] {
     .map((line) => ({
       ...line,
       voice,
-      /* 書き戻しは これまでどおり **まとめて** する（下の `writeClassic`）。 */
+      /* 書き戻しは これまでどおり **まとめて** する（`main()` の 下のほう）。 */
       apply: (url: string) => {
         urls[line.key] = url;
       },
+      /* これまでの 教材は 場所が 変わらない ので、消す ことは しない。 */
+      clear: () => undefined,
     }));
 }
 
@@ -257,6 +294,8 @@ async function main(): Promise<void> {
        */
       console.log("できませんでした");
       console.error(`  ${error instanceof Error ? error.message : String(error)}`);
+      /* 無い ファイルを 指したまま に しない（指すと 本番で 無音＋行飛び）。 */
+      line.clear();
       failed.push(line.key);
     }
   }

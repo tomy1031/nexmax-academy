@@ -202,7 +202,13 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
    * 発話だけを 見るので その 答えで カードが 開く（この ファイル 冒頭の 決まり）。
    * 司会の ことばは 教材が 持ち、画面が 選ぶ。
    */
-  const voice = useLiveVoice();
+  /*
+   * **聞くだけ**で つなぐ（`LISTEN_ONLY`）。相手が 返事を しない ので、
+   * 学習者の ことばは「相手が 話しはじめた 合図」では 流れて こない——
+   * `listenOnly` を 渡して、かけらが 止まった ところで 束ねて もらう
+   *（2026-09-11 の 検収。これが 無いと **声で 報告しても 何も 起きない**）。
+   */
+  const voice = useLiveVoice({ listenOnly: true });
   /* 速さは 端末の 覚え書き（`MeetingSession` と 同じ 読みかた）。 */
   const speed = useSyncExternalStore(
     subscribeSpeechSpeed,
@@ -215,6 +221,13 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
    * そのまま 鳴らせる（`scripts/make_meeting_audio.ts` が 作る）。
    */
   const clips = useVoiceQueue();
+  /*
+   * 依存に 置くのは **関数だけ**。`clips` そのものは `speakingId` が 1行ごとに
+   * 変わる ので、まるごと 依存に すると 下の `useCallback` が 毎描画 作り直され、
+   * 依存配列が 意味を 失う（2026-09-11 の 検収）。
+   */
+  const pushClips = clips.push;
+  const stopClips = clips.stop;
 
   /**
    * 報告の 見かた（モーダル）。**モーダルを 閉じてから 司会と メンバーが 話す**
@@ -240,9 +253,9 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
   const say = useCallback(
     (line: Line) => {
       setLines((prev) => [...prev, toChatLine(line, nameOf)]);
-      clips.push([line], rateOf(speed));
+      pushClips([line], rateOf(speed));
     },
-    [nameOf, clips, speed],
+    [nameOf, pushClips, speed],
   );
 
   /** 場面の はじめ（司会の 開き → 見本 → あなたの 番）を チャットに 積む。 */
@@ -252,10 +265,10 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
       if (!next) return;
       const said = [...next.opening, next.sample, next.prompt];
       setLines(said.map((line) => toChatLine(line, nameOf)));
-      clips.stop();
-      clips.push(said, rateOf(speed));
+      stopClips();
+      pushClips(said, rateOf(speed));
     },
-    [asakai, nameOf, clips, speed],
+    [asakai, nameOf, pushClips, stopClips, speed],
   );
 
   /** 報告が 終わった ときの ひとかたまり（受け止め → 采配 → メンバー → 閉じ）。 */
@@ -326,10 +339,10 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
       if (scene.arrange) tail.push(komari?.full ? scene.arrange.done : scene.arrange.missing);
       tail.push(...scene.members, ...scene.closing);
       setLines((prev) => [...prev, ...tail.map((line) => toChatLine(line, nameOf))]);
-      clips.push(tail, rateOf(speed));
+      pushClips(tail, rateOf(speed));
       setAskedId(null);
     },
-    [scene, asakai, panels, nameOf, meeting.id, clips, speed],
+    [scene, asakai, panels, nameOf, meeting.id, pushClips, speed],
   );
 
   /**
@@ -445,23 +458,37 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
   useEffect(() => {
     const heard = voice.lastUtterance;
     if (!heard || heard.id === spokenAt.current) return;
+    /*
+     * **遅れて 届いた ぶんは 捨てる**（番号だけ 進める）。
+     *
+     * 文字起こしは 指を はなした あとに 届く ので、その あいだに 見かたの
+     * モーダルが 出て いたり、時間カード／週の けっかへ 移って いたり する。
+     * そのまま `send` に 流すと `setJudge` が 前の 判定を 差しかえ、閉じた ときに
+     * 走る はずの 聞き返しが 消える——**カードだけ 進んで 司会が 何も 言わない**
+     *（2026-09-11 の 検収）。
+     */
     spokenAt.current = heard.id;
     if (!heard.text.trim()) return;
+    if (judge !== null || phase !== "talk") return;
     /* 効果の 中で そのまま 状態を 変えない（描き直しが 連なる）。1つ 後ろへ ずらす。 */
     void Promise.resolve().then(() => send(heard.text));
-  }, [voice.lastUtterance, send]);
+  }, [voice.lastUtterance, send, judge, phase]);
 
   /** 時間カードへ。金曜だけは そのまま 週の けっかへ。 */
   const toGap = useCallback(() => {
     if (!asakai) return;
-    /* 場面を 離れる ときは 鳴って いる こえも 止める（次の 日に 持ちこさない）。 */
-    clips.stop();
+    /*
+     * 場面を 離れる ときは 鳴って いる こえも、つないだ ままの Live も 止める。
+     * 止めないと 遅れて 届いた 1本で けっかの 画面に モーダルが 出る。
+     */
+    stopClips();
+    voice.stop();
     if (sceneAt + 1 >= asakai.scenes.length) {
       setPhase("done");
       return;
     }
     setPhase("gap");
-  }, [asakai, sceneAt, clips]);
+  }, [asakai, sceneAt, stopClips, voice]);
 
   /**
    * 週の けっかを 読み終えた とき。
@@ -494,6 +521,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
   const last = lines[lines.length - 1];
   /** 相手の さいごの ことば（自分の 発話は とばす）。 */
   const lastSaid = [...lines].reverse().find((line) => !line.self);
+  const lastSaidAudio = lastSaid?.audio;
   const sceneOver = nextProbePanel(panels, states) === null;
   const cards = panels.map((panel) => {
     const state = states.find((s) => s.id === panel.id);
@@ -533,11 +561,26 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
         <VisemeFace
           key={person.id}
           dir={`/img/characters/${person.id}/mouth`}
-          utterance={last && last.speakerId === person.id ? last.text : ""}
+          /*
+           * 口を 動かすのは **いま 鳴って いる 行**の 人。
+           *
+           * `finishScene` は 受け止め〜閉じの 5行を 一度に 積む ので、さいごの 行
+           *（司会）で 見ると **鳴って いるのは ニャムさんなのに 司会の 口が 動く**
+           *（2026-09-11 の 検収）。音が ある あいだは 音を 正に し、音が 無い
+           * 教材だけ さいごの 行の 字で 動かす。
+           */
+          utterance={
+            clips.speakingId
+              ? clips.speakingId === person.id
+                ? (clips.speakingAudio ?? "")
+                : ""
+              : last && last.speakerId === person.id
+                ? last.text
+                : ""
+          }
           /*
            * 解析器は **鳴って いる 人にだけ** 渡す。1つしか 無いので、
            * 全員に 渡すと 全員の 口が いっしょに 動く。
-           * 作り置きの 音が 無い 人は これまでどおり 字の 長さで 動く。
            */
           analyser={clips.speakingId === person.id ? clips.analyser : null}
         />,
@@ -568,11 +611,11 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
           <p className="text-ink-soft flex items-center gap-2 text-[11px] font-black">
             <RubyText text={`${lastSaid.who}さんの ことば`} index={index} show />
             {/* 作り置きの こえが ある ときだけ 出す。聞きとれなかった 人の 逃げ道。 */}
-            {lastSaid.audio ? (
+            {lastSaidAudio ? (
               <button
                 type="button"
                 aria-label="もう一度 聞く"
-                onClick={() => clips.play(lastSaid.audio as string, rateOf(speed))}
+                onClick={() => clips.replay(lastSaidAudio, rateOf(speed))}
                 className="btn-island px-2 py-0.5 text-xs"
               >
                 🔊
@@ -791,7 +834,9 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
         voice.stop();
         clips.stop();
       }}
-      side={<Chat lines={lines} index={index} onReplay={(url) => clips.play(url, rateOf(speed))} />}
+      side={
+        <Chat lines={lines} index={index} onReplay={(url) => clips.replay(url, rateOf(speed))} />
+      }
       speak={between ? null : <CardBoard cards={cards} index={index} />}
       controls={
         phase === "done" ? (
@@ -867,6 +912,11 @@ function ReportJudge({
       className="fixed inset-0 z-50 grid place-items-center p-4"
       style={{ background: "rgba(15,34,51,0.55)" }}
       onClick={onClose}
+      /* 閉じないと 会話が 進まない 関門なので、Escape でも 閉じられる ように する
+         （`HintModal` と そろえる）。 */
+      onKeyDown={(event) => {
+        if (event.key === "Escape") onClose();
+      }}
     >
       <div
         className="card-island max-h-[88vh] w-full max-w-md overflow-y-auto p-5"
@@ -904,6 +954,8 @@ function ReportJudge({
           type="button"
           onClick={onClose}
           aria-label={sceneOver ? "みんなの 報告を 聞く" : "つづける"}
+          /* 開いた ときに 指が ここに 来る（`HintModal` と 同じ 作法）。 */
+          autoFocus
           className="btn-island btn-game mt-4 w-full px-6 py-3"
         >
           <RubyText text={sceneOver ? "みんなの 報告を 聞く ▶" : "つづける ▶"} index={index} show />
@@ -1148,26 +1200,29 @@ function Chat({
     <div className="card-island p-3">
       <p className="text-navy mb-2 text-sm font-black">💬 テキストチャット</p>
       <div ref={box} className="h-[42vh] overflow-y-auto pr-1 text-sm sm:h-[58vh]">
-        {lines.map((line, at) => (
-          <p key={at} className={`mb-2 font-bold ${line.self ? "text-blue-deep" : ""}`}>
-            {/* 名前も 教材の 字（富田・奥田）。ルビを 通さないと 裸の 漢字に なる。 */}
-            <span className="text-ink-soft mr-1 text-[11px] font-black">
-              <RubyText text={line.who} index={index} show />
-            </span>
-            <RubyText text={line.text} index={index} show />
-            {/* 流れて いった ことばを 聞き直せる（`MeetingSession` と 同じ 逃げ道）。 */}
-            {line.audio ? (
-              <button
-                type="button"
-                aria-label={`${line.who}さんの ことばを もう一度 聞く`}
-                onClick={() => onReplay(line.audio as string)}
-                className="btn-island ml-1 px-1.5 py-0.5 align-middle text-[11px]"
-              >
-                🔊
-              </button>
-            ) : null}
-          </p>
-        ))}
+        {lines.map((line, at) => {
+          const url = line.audio;
+          return (
+            <p key={at} className={`mb-2 font-bold ${line.self ? "text-blue-deep" : ""}`}>
+              {/* 名前も 教材の 字（富田・奥田）。ルビを 通さないと 裸の 漢字に なる。 */}
+              <span className="text-ink-soft mr-1 text-[11px] font-black">
+                <RubyText text={line.who} index={index} show />
+              </span>
+              <RubyText text={line.text} index={index} show />
+              {/* 流れて いった ことばを 聞き直せる（`MeetingSession` と 同じ 逃げ道）。 */}
+              {url ? (
+                <button
+                  type="button"
+                  aria-label={`${line.who}さんの ことばを もう一度 聞く`}
+                  onClick={() => onReplay(url)}
+                  className="btn-island ml-1 px-1.5 py-0.5 align-middle text-[11px]"
+                >
+                  🔊
+                </button>
+              ) : null}
+            </p>
+          );
+        })}
       </div>
     </div>
   );

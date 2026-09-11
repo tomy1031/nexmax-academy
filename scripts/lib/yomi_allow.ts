@@ -137,6 +137,18 @@ export const YOMI_ALLOW: readonly YomiAllowEntry[] = [
   { surface: "型", reading: "かた", note: "「あいさつの型」など単独の型。解析は がた" },
   { surface: "行", reading: "ぎょう", note: "「1行」「3行で」＝テキストの行。解析は こう" },
   {
+    surface: "日の うちに",
+    reading: "ひの うちに",
+    where: "その 日の うちに",
+    note: "「その 日の うちに 手が 集まりました」（朝礼・夕礼）＝その日じゅうに。解析は にち。「1日の メモ」「1日で 終わる」（いちにち）は 別の 見出しが 守る",
+  },
+  {
+    surface: "前の 日",
+    reading: "まえの ひ",
+    where: "前の 日の 夕方",
+    note: "「前の 日の 夕方に 通知を 出す」（夕礼）＝前日の 夕方。解析は にち",
+  },
+  {
     surface: "行の 間",
     reading: "ぎょうの あいだ",
     where: "1.3倍",
