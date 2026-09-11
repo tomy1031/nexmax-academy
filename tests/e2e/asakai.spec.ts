@@ -66,7 +66,7 @@ test.use({ viewport: PHONE });
 
 test("ステージの トップに 5本 並ぶ", async ({ page }) => {
   await page.goto("/asakai");
-  await expectOnScreen(page, "毎日の 朝礼と 夕礼");
+  await expectOnScreen(page, "報連相：報告（朝礼と 夕礼）");
   await expectOnScreen(page, "朝礼と 夕礼");
   await expectOnScreen(page, "朝礼メモ");
   /* 前ばなしの ページ（台帳 #387 の 7〜9）。朝礼の 前に 場面と 役を 渡す。 */
