@@ -46,7 +46,7 @@ export const ASSET_VERSIONS: Readonly<Record<string, string>> = {
   "/audio/meetings/kaisha_matsui/reward.wav": "0a1556c7",
   "/audio/skits/houkoku_skit/l01.mp3": "bb28aa68",
   "/audio/skits/houkoku_skit/l02.mp3": "5bf1d071",
-  "/audio/skits/houkoku_skit/l03.mp3": "ce83b1f5",
+  "/audio/skits/houkoku_skit/l03.mp3": "b83ab6ec",
   "/audio/skits/houkoku_skit/l04.mp3": "74f167f3",
   "/audio/skits/houkoku_skit/l05.mp3": "2a07811a",
   "/audio/skits/renraku_skit/l01.mp3": "d21aee3e",
