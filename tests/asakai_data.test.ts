@@ -234,3 +234,62 @@ describe("話す 人の こえ", () => {
     });
   }
 });
+
+/**
+ * **画面が 名前で 探す ものは、データに その 名前で ある**（2026-09-13 の 通し検収）
+ *
+ * `AsakaiSession.finishScene` は 問題の カードを **`id === "komari"`** で 探し、
+ * そこから 2つを 決めて いる——采配（`arrange.done` か `missing`）と、
+ * 週の 合格条件（`pass.komariDays`）の 数え。
+ *
+ * 決済開発編へ 差し替えた とき、札を「問題・確認」に 変えた ついでに id も
+ * `mondai` に して しまい、**采配の done が 永久に 選ばれず、合格条件も
+ * 満たせなく なって いた**。型も lint も 緑の まま——`id` は ただの 文字列で、
+ * 名前が 合って いるかは どこも 見て いなかった。
+ *
+ * 札（`label`）は 教材ごとに 変えて よい。**`id` は 画面との 約束**なので 変えない。
+ */
+describe("画面との 約束（id）", () => {
+  for (const { name, raw } of MEETINGS) {
+    const meeting = meetingSchema.parse(raw);
+    const asakai = meeting.asakai!;
+
+    it(`${name} の どの 場面にも 問題の カード（id: komari）が ある`, () => {
+      for (const scene of asakai.scenes) {
+        const ids = scene.panels.map((panel) => panel.id);
+        expect(ids, `${scene.day} の パネル`).toContain("komari");
+      }
+    });
+
+    it(`${name} は 週の 合格条件（komariDays）に とどける`, () => {
+      /* 問題の カードが ある 日の 数が、求める 日数に 足りて いるか。
+         `komariDays` を 置いて いない 教材は この 条件を 使わない。 */
+      const need = asakai.pass.komariDays;
+      if (need === undefined) return;
+      const days = asakai.scenes.filter((scene) =>
+        scene.panels.some((panel) => panel.id === "komari"),
+      ).length;
+      expect(days).toBeGreaterThanOrEqual(need);
+    });
+  }
+});
+
+/**
+ * **型文に かぎ括弧を 書かない**（2026-09-13 の 通し検収）
+ *
+ * `HintModal` が 1行ずつ 「」で 包む ので、データにも 書くと 画面で
+ * 「「きのうは ◯◯を しました。」」に なる。旧・旅行アプリ編から 続いて いた 崩れ。
+ */
+describe("型文の 見た目", () => {
+  for (const { name, raw } of MEETINGS) {
+    const meeting = meetingSchema.parse(raw);
+    const asakai = meeting.asakai!;
+
+    it(`${name} の 型文は かぎ括弧で 包まれて いない`, () => {
+      const wrapped = asakai.scenes.flatMap((scene) =>
+        scene.hintLines.filter((line) => line.startsWith("「") && line.endsWith("」")),
+      );
+      expect(wrapped).toEqual([]);
+    });
+  }
+});

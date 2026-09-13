@@ -85,8 +85,9 @@ test("前ばなしの ページに アプリと 担当が 書いて ある", asy
   const skip = page.getByText("それでも 見る");
   if (await skip.count()) await skip.first().click();
   await expectOnScreen(page, "Khmersabai");
-  await expectOnScreen(page, "旅行アプリ");
-  await expectOnScreen(page, "あなたは ログインの 担当です");
+  /* 決済開発編に なった（旧: 旅行アプリ）。いま 作って いるのは 決済の ところ。 */
+  await expectOnScreen(page, "決済");
+  await expectOnScreen(page, "あなたは 決済フロントエンドの 担当です");
   /* 4人の しょうかいカード（絵は 人物カードから 引く）。 */
   await expectOnScreen(page, "ヘンディ");
   await expectOnScreen(page, "ニャム");
@@ -108,15 +109,28 @@ test("朝礼（かんたん）— 報告すると カードが 開く", async ({
   /* 板の 上の 1行が「この 4枚は 何か」を 言っている。 */
   await expect(page.getByText("（0 / 4）")).toBeVisible();
   await expectOnScreen(page, "報告すると 開きます");
-  await expectOnScreen(page, "担当");
+
+  /*
+   * 担当・進捗・きょう する ことは **画面に 出しっぱなしに しない**
+   *（2026-09-13 の 指定）。ボタンで 開き、読んだら 閉じる。
+   */
+  await page.getByRole("button", { name: "じぶんの 担当を 見る" }).click();
+  const dutyModal = page.getByRole("dialog", { name: "じぶんの 担当" });
+  await expect(dutyModal).toBeVisible();
+  await expectOnScreen(page, "決済フロントエンド機能");
+  await expectOnScreen(page, "進捗");
+  await shot(page, "asakai-02-kantan-duty");
+  await dutyModal.getByRole("button", { name: "とじる" }).click();
+  await expect(dutyModal).toBeHidden();
   await shot(page, "asakai-02-kantan-mon");
 
   await page
     .locator("#asakai-answer")
     .fill(
-      "先週の 金曜日は、ログインの 画面を 作りました。ぜんぶ できました。" +
-        "きょうは テストの 一覧を 書いて、テストを 始めます。20こ ぐらいです。" +
-        "一覧の 書き方が 分からなくて、こまって います。",
+      "先週の 金曜日は、決済の 決まりを 調べて、決済の 画面と ABA Payの ボタンを 作りました。" +
+        "今、決済フロントエンド機能 ぜんたいの 進捗は 20%です。" +
+        "きょうは、注文IDと 合計金額を 画面に 出します。" +
+        "今の ところ 問題は ありません。",
     );
   await page.getByRole("button", { name: "報告する" }).click();
 
@@ -229,9 +243,10 @@ test("月曜を 終えて 開き直すと、火曜から つづく", async ({ pa
   await page
     .locator("#asakai-answer")
     .fill(
-      "先週の 金曜日は、ログインの 画面を 作りました。ぜんぶ できました。" +
-        "きょうは テストの 一覧を 書いて、テストを 始めます。20こ ぐらいです。" +
-        "一覧の 書き方が 分からなくて、こまって います。",
+      "先週の 金曜日は、決済の 決まりを 調べて、決済の 画面と ABA Payの ボタンを 作りました。" +
+        "今、決済フロントエンド機能 ぜんたいの 進捗は 20%です。" +
+        "きょうは、注文IDと 合計金額を 画面に 出します。" +
+        "今の ところ 問題は ありません。",
     );
   await page.getByRole("button", { name: "報告する" }).click();
   await page.getByRole("button", { name: "みんなの 報告を 聞く" }).click();
@@ -242,8 +257,15 @@ test("月曜を 終えて 開き直すと、火曜から つづく", async ({ pa
   await page.reload();
   await joinCall(page);
   await expectOnScreen(page, "火曜日");
-  await expectOnScreen(page, "2日目");
+  /* いまが 何日目かは **タブの えらばれ方**で 見る（2026-09-13 に 点から タブへ）。 */
+  await expect(page.getByRole("tab", { name: /火曜日/ })).toHaveAttribute("aria-selected", "true");
   await shot(page, "asakai-09-resume-tue");
+
+  /* タブで 木曜へ 飛べる（順番に 進まなくても よい）。 */
+  await page.getByRole("tab", { name: /木曜日/ }).click();
+  await expect(page.getByRole("tab", { name: /木曜日/ })).toHaveAttribute("aria-selected", "true");
+  await expectOnScreen(page, "木曜日");
+  await shot(page, "asakai-09b-jump-thu");
 });
 
 /**
