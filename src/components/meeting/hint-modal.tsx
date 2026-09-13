@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "motion/react";
+import { ModalShell } from "@/components/meeting/modal-shell";
 import { RubyText } from "@/components/ruby-text";
 import { hintSegments } from "@/lib/meeting/hint";
 import type { FuriganaIndex } from "@/lib/text/furigana";
@@ -41,75 +41,52 @@ export function HintModal({
   onClose: () => void;
 }) {
   return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      aria-label="ヒントの ポップアップ"
-      className="fixed inset-0 z-50 grid place-items-center p-4"
-      style={{ background: "rgba(15,34,51,0.55)" }}
-      onClick={onClose}
-    >
-      <motion.div
-        initial={{ opacity: 0, scale: 0.96, y: 12 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        className="card-island max-h-[88vh] w-full max-w-md overflow-y-auto p-5"
-        onClick={(event) => event.stopPropagation()}
-      >
-        <p className="text-navy text-center text-lg font-black">💡 ヒント</p>
-        <ul className="mt-3 space-y-2">
-          {lines.map((line, at) => (
-            <li
-              key={`${at}-${line}`}
-              className="bg-cream text-ink rounded-xl px-4 py-3 text-base font-black break-words"
-            >
-              「
-              {hintSegments(line).map((seg, i) =>
-                seg.blank ? (
-                  <span
-                    key={i}
-                    className="border-sky text-sky mx-0.5 border-b-2 border-dashed px-0.5"
-                  >
-                    {seg.text}
-                  </span>
-                ) : (
-                  <RubyText key={i} text={seg.text} index={furigana} show />
-                ),
-              )}
-              」
-            </li>
-          ))}
-        </ul>
-        {hasBlank ? (
-          <p className="text-ink-faint mt-2 text-xs font-bold">◯◯ は あなたの ことばです。</p>
-        ) : null}
-
-        {example ? (
-          <div
-            className="mt-4 rounded-xl border-2 px-4 py-3"
-            style={{ borderColor: "var(--color-leaf)", background: "var(--color-panel-tint)" }}
+    <ModalShell label="ヒントの ポップアップ" title="💡 ヒント" onClose={onClose}>
+      <ul className="mt-3 space-y-2">
+        {lines.map((line, at) => (
+          <li
+            key={`${at}-${line}`}
+            className="bg-cream text-ink rounded-xl px-4 py-3 text-base font-black break-words"
           >
-            {/*
+            「
+            {hintSegments(line).map((seg, i) =>
+              seg.blank ? (
+                <span
+                  key={i}
+                  className="border-sky text-sky mx-0.5 border-b-2 border-dashed px-0.5"
+                >
+                  {seg.text}
+                </span>
+              ) : (
+                <RubyText key={i} text={seg.text} index={furigana} show />
+              ),
+            )}
+            」
+          </li>
+        ))}
+      </ul>
+      {hasBlank ? (
+        <p className="text-ink-faint mt-2 text-xs font-bold">◯◯ は あなたの ことばです。</p>
+      ) : null}
+
+      {example ? (
+        <div
+          className="mt-4 rounded-xl border-2 px-4 py-3"
+          style={{ borderColor: "var(--color-leaf)", background: "var(--color-panel-tint)" }}
+        >
+          {/*
               **見出しに 言い方を 書かない**（2026-09-02 の 指定
               「こう 言うと よく つたわります → こういう表現を使うとそう言えば良いと
               勘違いしてしまうので削除」）。ヒントの 中の 字は 学習者に とって
               **ぜんぶ「言う ことば」の 候補**に 見える——説明の つもりの 一言でも、
               そのまま 口に 出す 材料に なる。`(ex)` だけ 置いて、中身で 語らせる。
             */}
-            <p className="text-leaf-deep text-xs font-black">(ex)</p>
-            <p className="text-ink mt-1 text-sm font-bold break-words">
-              「<RubyText text={example} index={furigana} show />」
-            </p>
-          </div>
-        ) : null}
-        <button
-          type="button"
-          onClick={onClose}
-          autoFocus
-          className="btn-island btn-game mt-5 w-full px-6 py-3 text-base"
-        >
-          とじる
-        </button>
-      </motion.div>
-    </div>
+          <p className="text-leaf-deep text-xs font-black">(ex)</p>
+          <p className="text-ink mt-1 text-sm font-bold break-words">
+            「<RubyText text={example} index={furigana} show />」
+          </p>
+        </div>
+      ) : null}
+    </ModalShell>
   );
 }

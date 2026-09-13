@@ -219,36 +219,6 @@ const NTH_DAY = ["", "いちにちめ", "ふつかめ", "みっかめ", "よっ�
 /** 「◯日」の 読み（5日＝いつか）。 */
 const DAYS = ["", "いちにち", "ふつか", "みっか", "よっか", "いつか"];
 
-export function DayDots({ at }: { at: number }) {
-  return (
-    <span className="flex items-center gap-1" aria-label={`5日の うち ${at + 1}日目`}>
-      {DAY_DOTS.map(([day, reading], i) => (
-        <span
-          key={day}
-          className={
-            i < at
-              ? "bg-leaf grid h-6 w-6 place-items-center rounded-full text-[11px] font-black text-white"
-              : i === at
-                ? "bg-navy ring-sky-soft grid h-6 w-6 place-items-center rounded-full text-[11px] font-black text-white ring-2"
-                : "border-hairline text-ink-faint grid h-6 w-6 place-items-center rounded-full border bg-white text-[11px] font-black"
-          }
-        >
-          <ruby>
-            {day}
-            <rt className="text-[7px] leading-none">{reading}</rt>
-          </ruby>
-        </span>
-      ))}
-      <span className="text-ink-soft ml-1 text-[11px] font-black">
-        <ruby>
-          {at + 1}日目
-          <rt className="text-[7px] leading-none">{NTH_DAY[at + 1] ?? ""}</rt>
-        </ruby>
-      </span>
-    </span>
-  );
-}
-
 /**
  * 「◯日目 / ◯日」（時間カードの 進みぐあい）。**読みは ここが 持つ**——DayDots と 同じ 理由に
  * もう 1つ ある。`annotateRuby` は **漢字の 位置からしか 辞書を 引かない**ので、
@@ -268,5 +238,63 @@ export function DayProgress({ at, total }: { at: number; total: number }) {
         {total}日<rt>{DAYS[total] ?? ""}</rt>
       </ruby>
     </>
+  );
+}
+
+/**
+ * 月〜金の タブ（**押して 行き来できる**・2026-09-13 の 指定）
+ *
+ * ## なぜ 押せるように したか
+ * 順番に しか 進めなかった ころ、水曜の 場面を もう一度 見るには
+ * **月曜から やり直す**しか なかった。授業では「木曜の 遅れの 報告を みんなで 見る」
+ * ような 使い方を する ので、その 日に 直接 行けないと 授業で 使えない。
+ *
+ * ## 顔は `DayDots` と そろえる
+ * 済んだ 日は 緑、いまの 日は 紺、これからは 白——**見え方を 変えない**。
+ * 変えると「押せる ように なった」ことと「意味が 変わった」ことの 区別が つかない。
+ */
+export function DayTabs({
+  at,
+  done,
+  onPick,
+}: {
+  /** いま 見て いる 日（0〜4）。 */
+  at: number;
+  /** 報告が 済んだ 日（true の ところに ✓）。 */
+  done: readonly boolean[];
+  onPick: (at: number) => void;
+}) {
+  return (
+    <div
+      className="flex items-center justify-center gap-1.5"
+      role="tablist"
+      aria-label="月曜日から 金曜日"
+    >
+      {DAY_DOTS.map(([day, reading], i) => {
+        const here = i === at;
+        return (
+          <button
+            key={day}
+            type="button"
+            role="tab"
+            aria-selected={here}
+            aria-label={`${day}曜日${done[i] ? "・報告 ずみ" : ""}`}
+            onClick={() => onPick(i)}
+            className={
+              here
+                ? "bg-navy ring-sky-soft grid h-9 w-9 place-items-center rounded-full text-[13px] font-black text-white ring-2"
+                : done[i]
+                  ? "bg-leaf grid h-9 w-9 place-items-center rounded-full text-[13px] font-black text-white"
+                  : "border-hairline text-ink-soft grid h-9 w-9 place-items-center rounded-full border bg-white text-[13px] font-black"
+            }
+          >
+            <ruby>
+              {day}
+              <rt className="text-[7px] leading-none">{reading}</rt>
+            </ruby>
+          </button>
+        );
+      })}
+    </div>
   );
 }

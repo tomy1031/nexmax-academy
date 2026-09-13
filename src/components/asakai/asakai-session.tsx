@@ -30,6 +30,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore
 import { CallShell } from "@/components/call-shell";
 import { DictionaryText } from "@/components/dictionary-text";
 import { HintModal } from "@/components/meeting/hint-modal";
+import { ModalShell } from "@/components/meeting/modal-shell";
 import { SpeakButton } from "@/components/meeting/speak-button";
 import { SpeechSpeedPicker } from "@/components/meeting/speech-speed-picker";
 import { useLiveVoice } from "@/components/meeting/use-live-voice";
@@ -46,8 +47,8 @@ import { useVoiceQueue } from "@/components/asakai/use-voice-queue";
 import {
   CardBoard,
   CountBoxes,
-  DayDots,
   DayProgress,
+  DayTabs,
   ProgressBoxes,
   SkyStrip,
 } from "@/components/asakai/asakai-parts";
@@ -192,6 +193,16 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
   const [answer, setAnswer] = useState("");
   const [lines, setLines] = useState<readonly ChatLine[]>([]);
   const [hint, setHint] = useState(false);
+  /**
+   * じぶんの 担当（場面カード）を 開いて いるか。
+   *
+   * **出しっぱなしに しない**（2026-09-13 の 指定「タスクの 消化状況や 今日の
+   * タスクなどは 直接 表示せず、モーダル表示に して ください」）。板の 横に
+   * 置いて いた ころ、担当・ゴール・進捗・きょう やる ことで 画面の 半分が うまり、
+   * **会話と 話す ボタンが 下へ 押し出されて いた**（ヒントを ポップアップに した
+   * 2026-08-20 と 同じ 形の 事故）。要る ときに 呼び、読んだら 閉じる。
+   */
+  const [duty, setDuty] = useState(false);
   /** `"talk"` 報告中 ／ `"gap"` 時間カード ／ `"done"` 週の けっか。 */
   const [phase, setPhase] = useState<"talk" | "gap" | "done">("talk");
   const [results, setResults] = useState<readonly DayResult[]>(start.results);
@@ -302,7 +313,16 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
         })),
       };
       setResults((prev) => {
-        const done = [...prev, row];
+        /*
+         * **同じ 日は 1つだけ**。タブで 行き来できる ように なった ので
+         *（2026-09-13）、同じ 日を 2回 報告すると 積み足しでは 2行に なり、
+         * 週の けっかが「6日ぶん」に なって しまう。日で 置きかえて、
+         * **月曜から 金曜の 並び**に そろえ直す（報告した 順では 読めない）。
+         */
+        const order = (day: string) => asakai?.scenes.findIndex((s) => s.day === day) ?? 0;
+        const done = [...prev.filter((r) => r.day !== row.day), row].sort(
+          (a, b) => order(a.day) - order(b.day),
+        );
         saveAsakaiResume(meeting.id, done);
         return done;
       });
@@ -504,17 +524,35 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
     clearAsakaiResume(meeting.id);
   }, [meeting.id]);
 
-  const goNext = useCallback(() => {
-    if (!asakai) return;
-    const at = sceneAt + 1;
-    setSceneAt(at);
-    setStates(initialPanelStates(toPanels(asakai.scenes[at])));
-    setAttempts({});
-    setAskedId(null);
-    setProbes(0);
-    setPhase("talk");
-    openScene(at);
-  }, [asakai, sceneAt, openScene]);
+  /**
+   * その 日へ 移る。**つぎへ 進む ときも、タブで 飛ぶ ときも ここを 通る**。
+   *
+   * 順番に 進む 道しか 無かった ころ（`goNext`）、水曜を もう一度 見るには
+   * 月曜から やり直すしか なかった。授業では「木曜の 遅れの 報告を みんなで 見る」
+   * ように 使う ので、その 日に 直接 行けないと 使えない（2026-09-13 の 指定）。
+   *
+   * 鳴って いる こえと Live を **先に 止める**。止めないと、飛んだ あとに
+   * 前の 日の 司会の 声が 追いかけて きて、板の 中身と 食い違う。
+   */
+  const goToScene = useCallback(
+    (at: number) => {
+      if (!asakai || at < 0 || at >= asakai.scenes.length) return;
+      stopClips();
+      voice.stop();
+      setSceneAt(at);
+      setStates(initialPanelStates(toPanels(asakai.scenes[at])));
+      setAttempts({});
+      setAskedId(null);
+      setProbes(0);
+      setAnswer("");
+      setJudge(null);
+      setPhase("talk");
+      openScene(at);
+    },
+    [asakai, openScene, stopClips, voice],
+  );
+
+  const goNext = useCallback(() => goToScene(sceneAt + 1), [goToScene, sceneAt]);
 
   if (!asakai || !scene) return null;
 
@@ -587,11 +625,37 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
       ]),
   );
 
-  /* 帯（`MeetingSession` の「01 …」の 帯と 同じ 席）。 */
+  /** その 日の 報告が 済んで いるか（タブの 顔に 使う）。 */
+  const doneDays = asakai.scenes.map((s) => results.some((r) => r.day === s.day));
+
+  /*
+   * 帯（`MeetingSession` の「01 …」の 帯と 同じ 席）。
+   * **月〜金の タブ**と **じぶんの 担当**の ボタンを ここに 集める
+   *（2026-09-13 の 指定）。場面の 札と 進捗は 1行に 畳んで、
+   * 会話と 話す ボタンの ための 高さを 空ける。
+   */
   const steps = (
-    <div className="card-island flex items-center gap-2 px-3 py-2">
+    <div className="card-island space-y-2 px-3 py-2">
+      {/*
+        空の 帯は **タブの 上に 敷く**。横に 並べて いた ころ、`flex-1` の 帯が
+        のこりの 幅を ぜんぶ 取り、タブの となりに **空っぽの 水色の カプセル**が
+        居座って いた（390px の 実機幅で 確認・2026-09-13）。
+      */}
       <SkyStrip kind={scene.kind} />
-      <DayDots at={sceneAt} />
+      <DayTabs at={sceneAt} done={doneDays} onPick={goToScene} />
+      <div className="flex items-center justify-between gap-2">
+        <p className="text-navy min-w-0 flex-1 text-[12px] leading-snug font-black">
+          <RubyText text={scene.title} index={index} show />
+        </p>
+        <button
+          type="button"
+          onClick={() => setDuty(true)}
+          aria-label="じぶんの 担当を 見る"
+          className="btn-island shrink-0 px-3 py-1.5 text-[12px] font-black"
+        >
+          📋 <RubyText text="じぶんの 担当" index={index} show />
+        </button>
+      </div>
     </div>
   );
 
@@ -721,13 +785,12 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
     </div>
   );
 
-  /* 場面カード（担当・ゴール・どこまで・その日の 行／メモ）。 */
-  const sceneCard = between ? null : (
-    <div className="card-island space-y-3 p-3">
-      <p className="text-navy text-sm font-black">
-        <RubyText text={scene.title} index={index} show />
-      </p>
-
+  /*
+   * じぶんの 担当（担当・ゴール・進捗・その日の 行／メモ）。
+   * **画面に 出しっぱなしに せず、ポップアップの 中身に する**（2026-09-13 の 指定）。
+   */
+  const dutyBody = (
+    <div className="mt-3 space-y-3">
       <div className="border-hairline rounded-xl border bg-white/70 p-2 text-sm">
         <Tag text="担当" index={index} />
         <DictionaryText text={scene.card.duty} index={index} />
@@ -742,6 +805,18 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
           </p>
         ) : null}
       </div>
+
+      {/*
+        付せん（**その日の 進捗の 数字**）。メモ（夕礼）の 中にだけ 描いて いた ので、
+        行（rows）で 作る 朝礼では **画面の どこにも 出て いなかった**——
+        数字を 言う 設問なのに 数字が 無く、ヒントを 開かないと 答えられなかった
+        （規律10「設問は ヒントを 閉じた まま 答えられる こと」・2026-09-13）。
+      */}
+      {scene.card.pin ? (
+        <p className="rounded-md border border-[#d8c77a] bg-[#fdf6c8] px-3 py-2 text-sm font-bold">
+          📌 <DictionaryText text={scene.card.pin} index={index} />
+        </p>
+      ) : null}
 
       <ProgressBoxes items={scene.card.progress} index={index} />
 
@@ -788,11 +863,6 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
               </li>
             ))}
           </ul>
-          {scene.card.pin ? (
-            <p className="mt-2 rounded-md border border-[#d8c77a] bg-[#fdf6c8] px-3 py-2 text-sm font-bold">
-              📌 <DictionaryText text={scene.card.pin} index={index} />
-            </p>
-          ) : null}
         </div>
       ) : null}
 
@@ -860,7 +930,15 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
       }
       controlsAt="top"
     >
-      {sceneCard}
+      {duty ? (
+        <ModalShell
+          label="じぶんの 担当"
+          title={<RubyText text="📋 じぶんの 担当" index={index} show />}
+          onClose={() => setDuty(false)}
+        >
+          {dutyBody}
+        </ModalShell>
+      ) : null}
       {hint ? (
         <HintModal
           lines={scene.hintLines}
@@ -905,63 +983,36 @@ function ReportJudge({
   onClose: () => void;
 }) {
   return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      aria-label="報告の 見かた"
-      className="fixed inset-0 z-50 grid place-items-center p-4"
-      style={{ background: "rgba(15,34,51,0.55)" }}
-      onClick={onClose}
-      /* 閉じないと 会話が 進まない 関門なので、Escape でも 閉じられる ように する
-         （`HintModal` と そろえる）。 */
-      onKeyDown={(event) => {
-        if (event.key === "Escape") onClose();
-      }}
+    <ModalShell
+      label="報告の 見かた"
+      title={<RubyText text="いまの 報告" index={index} show />}
+      onClose={onClose}
+      closeLabel={sceneOver ? "みんなの 報告を 聞く ▶" : "つづける ▶"}
     >
-      <div
-        className="card-island max-h-[88vh] w-full max-w-md overflow-y-auto p-5"
-        onClick={(event) => event.stopPropagation()}
-      >
-        <p className="text-navy text-center text-lg font-black">
-          <RubyText text="いまの 報告" index={index} show />
+      <div className="border-hairline bg-panel mt-3 rounded-xl border px-3 py-2">
+        <p className="text-leaf-deep text-[11px] font-black">
+          ✓ <RubyText text="開いた カード" index={index} show />
         </p>
+        <p className="mt-0.5 text-sm font-bold">
+          {opened.length > 0 ? (
+            <RubyText text={opened.join("・")} index={index} show />
+          ) : (
+            <RubyText text="ありません。" index={index} show />
+          )}
+        </p>
+      </div>
 
-        <div className="border-hairline bg-panel mt-3 rounded-xl border px-3 py-2">
-          <p className="text-leaf-deep text-[11px] font-black">
-            ✓ <RubyText text="開いた カード" index={index} show />
+      {shut.length > 0 ? (
+        <div className="border-hairline bg-panel mt-2 rounded-xl border px-3 py-2">
+          <p className="text-coral-deep text-[11px] font-black">
+            ▢ <RubyText text="まだ 言って いない カード" index={index} show />
           </p>
           <p className="mt-0.5 text-sm font-bold">
-            {opened.length > 0 ? (
-              <RubyText text={opened.join("・")} index={index} show />
-            ) : (
-              <RubyText text="ありません。" index={index} show />
-            )}
+            <RubyText text={shut.join("・")} index={index} show />
           </p>
         </div>
-
-        {shut.length > 0 ? (
-          <div className="border-hairline bg-panel mt-2 rounded-xl border px-3 py-2">
-            <p className="text-coral-deep text-[11px] font-black">
-              ▢ <RubyText text="まだ 言って いない カード" index={index} show />
-            </p>
-            <p className="mt-0.5 text-sm font-bold">
-              <RubyText text={shut.join("・")} index={index} show />
-            </p>
-          </div>
-        ) : null}
-
-        <button
-          type="button"
-          onClick={onClose}
-          aria-label={sceneOver ? "みんなの 報告を 聞く" : "つづける"}
-          /* 開いた ときに 指が ここに 来る（`HintModal` と 同じ 作法）。 */
-          autoFocus
-          className="btn-island btn-game mt-4 w-full px-6 py-3"
-        >
-          <RubyText text={sceneOver ? "みんなの 報告を 聞く ▶" : "つづける ▶"} index={index} show />
-        </button>
-      </div>
-    </div>
+      ) : null}
+    </ModalShell>
   );
 }
 

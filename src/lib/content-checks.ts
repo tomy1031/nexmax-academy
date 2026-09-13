@@ -1349,6 +1349,15 @@ export function coverageEntries(content: Content): FuriganaEntry[] {
 
 /** 割れているが読みは正しいと確かめ終わった熟語（2026-08-18 に全件を目で確認）。 */
 const VERIFIED_SPLIT_COMPOUNDS: ReadonlySet<string> = new Set([
+  // 決済開発編（朝礼）。分かれて 読まれても 読みは 正しく、むしろ
+  // 注文(ちゅうもん)＋確認(かくにん) と 分かれた ほうが 学習者は 読みやすい。
+  "決済完了",
+  "決済方法",
+  "注文確認",
+  "注文管理",
+  "注文作成",
+  "注文確認機能",
+  "注文管理機能",
   "動作確認用",
   "学生自身",
   "松井社長",
