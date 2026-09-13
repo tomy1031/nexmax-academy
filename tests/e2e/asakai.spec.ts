@@ -85,7 +85,8 @@ test("前ばなしの ページに アプリと 担当が 書いて ある", asy
   const skip = page.getByText("それでも 見る");
   if (await skip.count()) await skip.first().click();
   await expectOnScreen(page, "Khmersabai");
-  await expectOnScreen(page, "旅行アプリ");
+  /* 決済開発編に なった（旧: 旅行アプリ）。いま 作って いるのは 決済の ところ。 */
+  await expectOnScreen(page, "決済");
   await expectOnScreen(page, "あなたは 決済フロントエンドの 担当です");
   /* 4人の しょうかいカード（絵は 人物カードから 引く）。 */
   await expectOnScreen(page, "ヘンディ");
