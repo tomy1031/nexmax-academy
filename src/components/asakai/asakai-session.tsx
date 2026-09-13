@@ -424,7 +424,20 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
             opened,
             shut,
             sceneOver: true,
-            after: () => finishScene(passed, probes),
+            after: () => {
+              /*
+               * **その日の さいごの カードでも れいを 見せる**。
+               *
+               * ここだけ `say(example)` を 呼んで いなかった ので、最後の 1枚で
+               * 2回 つまずいた 学習者は **お手本を 一度も 見ないまま** その日が
+               * 終わって いた（木曜の「お願い」、ほかの 日の「問題・確認」が
+               * これに あたる。2026-09-13 の 通し検収）。
+               * 0点で 終わらせない ための 仕組みが、いちばん つまずく ところで
+               * 効いて いなかった。
+               */
+              say({ ...data.example, text: `こう 言うと 開きます。${data.example.text}` });
+              finishScene(passed, probes);
+            },
           });
           return;
         }
