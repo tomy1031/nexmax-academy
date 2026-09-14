@@ -238,6 +238,59 @@ test("夕礼（むずかしい）— メモと カードが 同じ 画面に 並
 });
 
 /**
+ * **作業記録を そのまま 読み上げても 開かない**（2026-09-14 の 再発防止）
+ *
+ * これが 無かった ころ、記録を 1文字も 変えずに 読み上げるだけで
+ * **5日 とも 合格**して いた（21こ中 16こ・合格ラインは 11）。
+ * 教材の あたまは「作業記録を そのまま 読み上げません」と 書いて いるのに、
+ * 判定が 一度も そこを 見て いなかった。
+ *
+ * 鍵ゼロの まま 走る——止めて いるのは アプリ側の 決まった 見わけ方で、
+ * AIの 見立ては そこに 重ねるだけ（`readsLog`）。
+ */
+test("夕礼 — 作業記録を そのまま 読み上げると 差し戻される", async ({ page, context }) => {
+  const refs = stageRefs();
+  const at = refs.indexOf("asakai_muzukashii");
+  await seedCompleted(context, refs.slice(0, at));
+
+  await page.goto("/asakai/meeting-asakai_muzukashii");
+  await joinCall(page);
+  await expect(page.getByText("（0 / 4）")).toBeVisible();
+
+  /* 月曜の 記録の 冒頭を 時刻ごと そのまま。中身の ことばは ぜんぶ 当たる はず。 */
+  await page
+    .locator("#asakai-answer")
+    .fill(
+      "09:00 学生一覧APIの 仕様を 確認。09:30 学生一覧APIとの 接続開始。" +
+        "10:30 AUPP・CADTの 学生データ 表示完了。11:00 キーワード検索UIを 作成。",
+    );
+  await page.getByRole("button", { name: "報告する" }).click();
+
+  const judge = page.getByRole("dialog", { name: "報告の 見かた" });
+  await expect(judge).toBeVisible();
+  await expectOnScreen(page, "この ぶんは 数えて いません");
+  await shot(page, "asakai-08-muzukashii-marumi");
+  await page.getByRole("button", { name: "つづける" }).click();
+
+  /* 1枚も 開いて いない。板は 入った ときと 同じ。 */
+  await expect(page.getByText("（0 / 4）")).toBeVisible();
+  /* 司会は 教材と 同じ ことばで 言い直しを たのむ。 */
+  await expectOnScreen(page, "大きな 作業を 2つか 3つに まとめて");
+
+  /* まとめて 話せば ふつうに 開く（差し戻しが 正しい 報告を 巻き込まない）。 */
+  await page
+    .locator("#asakai-answer")
+    .fill("今日は 学生一覧APIと つないで、キーワード検索と 大学フィルターを 作りました。");
+  await page.getByRole("button", { name: "報告する" }).click();
+  await expect(judge).toBeVisible();
+  await expectOnScreen(page, "今日 行ったこと");
+  await page.getByRole("button", { name: "つづける" }).click();
+  await expect(page.getByText("（1 / 4）")).toBeVisible();
+
+  expect(await bareKanjiTexts(page)).toEqual([]);
+});
+
+/**
  * **入った ところで、カードの 板と マイクが 同時に 見える**（2026-09-11 の 再発防止）
  *
  * 板（`sticky top-0`）は Zoom の 枠の 中に あり、親に `overflow-hidden` が あると
