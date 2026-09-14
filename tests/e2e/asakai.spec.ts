@@ -64,11 +64,10 @@ async function expectOnScreen(page: Page, text: string): Promise<void> {
 
 test.use({ viewport: PHONE });
 
-test("ステージの トップに 5本 並ぶ", async ({ page }) => {
+test("ステージの トップに 教材が 並ぶ", async ({ page }) => {
   await page.goto("/asakai");
   await expectOnScreen(page, "報連相：報告（朝礼と 夕礼）");
   await expectOnScreen(page, "朝礼と 夕礼");
-  await expectOnScreen(page, "朝礼メモ");
   /* 前ばなしの ページ（台帳 #387 の 7〜9）。朝礼の 前に 場面と 役を 渡す。 */
   await expectOnScreen(page, "チームと アプリ");
   /* 夕礼の 前ばなし（Next Talent）。2026-09-14 に 足した。 */

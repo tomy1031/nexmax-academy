@@ -1360,12 +1360,6 @@
         "きょう すること",
         "問題"
       ]
-    },
-    {
-      "kind": "link",
-      "ref": "asakai_memo",
-      "type": "quizset",
-      "label": "朝礼メモを 書く"
     }
   ]
 }
