@@ -126,30 +126,58 @@ describe("合格の 線が 届く ところに ある", () => {
   }
 });
 
+/** おわびの ことばか どうか。 */
+const isOwabi = (word: string) => word.includes("すみません") || word.includes("申し訳");
+
 /**
  * **悪い しらせほど 早く 言う**（2026-09-11 の 指定）。
  *
  * ページで 教えて いても、**練習に 無ければ 身に つかない**——この 検査を 入れる
  * 前は、おわびの ことばが 教材の どこにも 無く、`persona`（学習者に 見えない AIへの
  * 言い渡し）にだけ「すみません」が 書いて あった。消えても だれも 気づかない 形。
+ *
+ * ## 数えるのは **ステージ 全体**（2026-09-14 に 教材ごと → ステージ単位へ）
+ * 上級（夕礼・Next Talent 編）は、**おわびでは なく タイミング**で 悪い しらせを
+ * 教える 作りに なった——水曜に 17:05 に 見つけて 17:10 に 報告し、17:50 の 夕礼を
+ * 待たない。ユーザーの 判断（2026-09-14「ゆうれいはお詫び不要。ただし悪いニュース
+ * ほど早くがタイムラインに反映されているのでよし」）。
+ *
+ * **守る ものは 変えて いない**——「おわびの 言い方が ステージの どこかに 練習として
+ * ある」。教材ごとに 求めると、初級と 上級で 教え方を 変えられなく なる。
  */
 describe("悪い しらせと おわび", () => {
+  it("ステージの どこかに おわびを 求める 箱が ある", () => {
+    const owabi = MEETINGS.flatMap(({ name, raw }) => {
+      const asakai = meetingSchema.parse(raw).asakai!;
+      return asakai.scenes.flatMap((scene) =>
+        scene.panels.flatMap((panel) =>
+          panel.facts
+            .filter((fact) => fact.allOf?.some((group) => group.some(isOwabi)))
+            .map(() => `${name}/${scene.day}/${panel.id}`),
+        ),
+      );
+    });
+    /* おわびの ことばと 中身の **両方**を 求める 行が、ステージに 1つ 以上 ある。 */
+    expect(owabi.length, "おわびを 練習する 箱が ステージから 消えた").toBeGreaterThan(0);
+  });
+
+  it("ステージの どこかで おわびの 言い方を 見本か れいで 見せて いる", () => {
+    const shown = MEETINGS.some(({ raw }) => {
+      const asakai = meetingSchema.parse(raw).asakai!;
+      return asakai.scenes.some((scene) =>
+        [
+          scene.sample.text,
+          ...scene.panels.map((panel) => panel.example.text),
+          ...scene.hintLines,
+        ].some(isOwabi),
+      );
+    });
+    expect(shown, "求めるだけで 見せて いない（R10）").toBe(true);
+  });
+
   for (const { name, raw } of MEETINGS) {
     const meeting = meetingSchema.parse(raw);
     const asakai = meeting.asakai!;
-
-    it(`${name} に おわびを 求める 箱が ある`, () => {
-      const boxes = asakai.scenes.flatMap((scene) =>
-        scene.panels.flatMap((panel) => panel.facts.filter((fact) => fact.allOf)),
-      );
-      /* おわびの ことばと 中身の **両方**を 求める 行が 1つ 以上 ある。 */
-      const owabi = boxes.filter((fact) =>
-        fact.allOf!.some((group) =>
-          group.some((word) => word.includes("すみません") || word.includes("申し訳")),
-        ),
-      );
-      expect(owabi.length).toBeGreaterThan(0);
-    });
 
     it(`${name} の おわびは 中身と セットでしか 立たない`, () => {
       /* 「すみません」だけで 開くと、**あやまれば 通る** 練習に なる。 */
@@ -163,19 +191,6 @@ describe("悪い しらせと おわび", () => {
       for (const fact of owabi) {
         expect(fact.allOf!.length).toBeGreaterThanOrEqual(2);
       }
-    });
-
-    it(`${name} は おわびの 言い方を 見本か れいで 見せて いる`, () => {
-      /* 求めるだけで 見せて いないと、ヒントを 閉じたまま 答えられない（R10）。 */
-      const shown = asakai.scenes.some((scene) => {
-        const lines = [
-          scene.sample.text,
-          ...scene.panels.map((panel) => panel.example.text),
-          ...scene.hintLines,
-        ];
-        return lines.some((line) => line.includes("すみません") || line.includes("申し訳"));
-      });
-      expect(shown).toBe(true);
     });
   }
 

@@ -903,7 +903,15 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
       tone="light"
       activeSpeaker={last && !last.self ? last.speakerId : undefined}
       participants={asakai.people
-        .filter((person) => !person.fridayOnly || scene.day === "fri")
+        /*
+         * **その日に 話す 人は 出す**。
+         *
+         * `fridayOnly` だけで 見て いた ころ、藤木さんに 火曜と 木曜の 台詞を
+         * 足したのに **顔が 出ない まま 声だけ 流れて いた**（2026-09-13）。
+         * だれが しゃべって いるのか 画面から 追えない。旗では なく
+         * **その場面に 台詞が あるか**で 決める。
+         */
+        .filter((person) => !person.fridayOnly || speakersOf(scene).has(person.id))
         .map((person) => ({
           id: person.id,
           name: person.name,
@@ -1290,6 +1298,32 @@ function Chat({
       </div>
     </div>
   );
+}
+
+/**
+ * その 場面で **声を 出す 人**の id。
+ *
+ * 参加者の 列を「旗（`fridayOnly`）」だけで 決めて いた ころ、台詞を 足した 人の
+ * 顔が 出ない まま 声だけ 流れた。台詞の ある ところを ぜんぶ 見て 決める。
+ */
+function speakersOf(scene: Scene): ReadonlySet<string> {
+  const ids = new Set<string>();
+  const add = (line?: { readonly speakerId: string }) => {
+    if (line) ids.add(line.speakerId);
+  };
+  scene.opening.forEach(add);
+  add(scene.sample);
+  add(scene.prompt);
+  add(scene.ack);
+  scene.members.forEach(add);
+  add(scene.arrange?.done);
+  add(scene.arrange?.missing);
+  scene.closing.forEach(add);
+  for (const panel of scene.panels) {
+    panel.followups.forEach(add);
+    add(panel.example);
+  }
+  return ids;
 }
 
 /** 教材の パネルを 判定の 形へ。`fact` は 画面に 出さない（AIに 渡す 材料）。 */

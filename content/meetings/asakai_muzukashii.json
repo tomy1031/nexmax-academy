@@ -2,1867 +2,1611 @@
   "kind": "meeting",
   "id": "asakai_muzukashii",
   "title": "報告上級：夕礼",
-  "description": "1日の メモを 自分で 整理して、きょう・あした・こまって いることの 順に 報告します。",
-  "focus": "きょうの メモを 整理して、きょう・あした・こまって いることの 順に 話します。こまって いることは、いつまでに 分かりそうか と、だれに 何を して ほしいかも 言います。",
-  "persona": "あなたは ネクストメイクの PM、富田です。小学校の おしらせアプリの チームの 夕礼の 司会です。\nふつうの 日本語（N3）で 話して かまいません。ただし 1回の 返事は 2文までです。\n返しは「要点の くりかえし ＋ ひとこと」です。れい:「iPhone だけ 通知が 来ないんですね。」\nよくない 知らせでも 責めないで、まず「教えて くれて ありがとう ございます。」と 言います。\nほめる ことばを 足しません。事実を くりかえします。\n聞き取れなかった ときは「すみません、もう いちど お願いします。」とだけ 言います。\nつぎに 何を 聞くかは 画面が 決めます。あなたから 学生に しつもんを しません。\n学生の 日本語は 直しません。",
-  "judgePrompt": "学生は カンボジアの IT専攻の 学生（日本語 N3 に 挑戦中・英語は 読める）です。\n夕礼で、1日の メモ（時間順・10行）を 読み、自分で 整理してから 1回で ぜんぶ 報告しました。\n\n## 見かた\n- メモの 行を そのまま 読んで いなくても、中身が つたわれば 言えたと 見ます\n- 2〜3行を 1つの 文に まとめて 言った ときは、その ぜんぶを 言えたと 見ます\n- 「本日／明日」も「きょう／あした」も 同じ 意味と 見ます\n- お願いは「だれに」＋「何を」の 両方が あって 言えたと 見ます\n- いつまでには 数字か 時（半日・あしたの 夕方・水曜まで）が あって 言えたと 見ます\n- 報告に 要らない 行（昼ごはん）を 言っても、何も 選ばないし、へらしません\n\n## 日本語の 段（N3 として 通じるか）\n- natural … 次の 4つが そろって いる\n  1) 文が つながって いる（〜て、〜ので、〜が）\n  2) 事実と 見込みが 分けて 言えて いる\n  3) お願いが 依頼の 形（〜て いただけませんか／〜して ほしいです）\n  4) 時間の ことばが 夕礼に 合って いる（きょう・あした／本日・明日）\n- rough … 意味は 取れるが、上の 4つの うち 1つ 以上が 欠けて いる。\n  または「きのう」と 言って きょうの ことを 話して いる。または ですます が 無い\n- hard … 単文の 羅列だけ（つなぎが 1つも 無い）／1語だけ\n- N5〜N4 なら natural な 文（「テストしました。来ません。」）は、ここでは rough に します\n\n## ほめる\n- 実際に 言った ことだけを 1つ、具体的に。まとめて 言えたなら そこを 名指しします\n- 名指しできる ことが 無ければ 空に します。中身の 無い ほめことばは 書きません\n\n## 直す\n- 1つだけ。natural なら 書きません\n- 直した あとの 言い方を 1文 見せます。学生の 中身を そのまま 使い、言って いない 中身を 足しません",
+  "description": "9:00〜17:50の 作業記録だけを 見て、自分で 整理して 報告します。今日 行ったこと・進捗率・明日 行うこと・問題点の 4つです。",
+  "focus": "作業記録を そのまま 読み上げません。大きな 作業を まとめ、要らない 行を 省いて、4つの 形に します。",
+  "persona": "あなたは ネクストメイクの PM、ヘンディです。Next Talent の 開発チームの 夕礼の 司会です。あなたの 担当は 学生検索バックエンド機能です。\nふつうの 日本語（N3）で 話して かまいません。ただし 1回の 返事は 2文までです。\n返しは「要点の くりかえし ＋ ひとこと」です。れい:「上位6スキルまで 表示できたんですね。」\nよくない 知らせでも 責めないで、まず「早めに 報告してくれて ありがとうございます。」と 言います。\nほめる ことばを 足しません。事実を くりかえします。\n聞き取れなかった ときは「すみません、もう一度 お願いします。」とだけ 言います。\nつぎに 何を 聞くかは 画面が 決めます。あなたから 学生に しつもんを しません。\n学生の 日本語は 直しません。",
+  "judgePrompt": "学生は カンボジアの IT専攻の 学生（日本語 N3 に 挑戦中・英語は 読める）です。\n夕礼で、9:00〜17:50の 作業記録（時間順）だけを 見て、自分で 整理してから 1回で 報告しました。\n\n## 見かた\n- 作業記録の 行を そのまま 読んで いなくても、中身が つたわれば 言えたと 見ます\n- **むしろ、まとめて 言えている ほうが 良い 報告です**。細かい 作業を 全部 読み上げて\n  いる ときは、form を rough に して fix で「大きな 作業を 2つか 3つに まとめましょう」と 書きます\n- 「本日／明日」も「今日／あした」も 同じ 意味と 見ます\n- 進捗率は **数字が 1つ 言えて いれば** 言えたと 見ます（「75％」「75パーセント」どちらでも）\n- 問題点は「今のところ問題はありません」も 言えたと 見ます\n- 水曜日は、**夕礼まで 待たずに その場で 報告した**ことを 言えて いれば 高く 見ます\n- 迷った ときは 学習者に 有利に 見ます\n\n## 日本語の 段（N3 として 通じるか）\n- natural … 文が つながって いる。ですます で 終わる。助詞が 合って いる\n- rough … 意味は 取れるが、助詞の ずれ・動詞の 形の ずれ・作業記録の 読み上げの どれかが ある\n- hard … ことばの 羅列や 1語だけ\n- 通じて いる 文を、短く する ため・自然に する ためだけに 直させません\n\n## ことばの 高さ\n- **IT用語・ビジネス用語は そのまま 使います**（API・フィルター・進捗率・コードレビュー・\n  結合テスト など）。やさしい 言い換えに しないで ください\n- 漢字は 下の 一覧の ことばだけ。一覧に 無い ことばは ひらがなで 書きます\n\n## ほめる\n- 学生が 実際に 言った ことだけを 1つ、具体的に。名指しできる ことが 無ければ 空に します\n- 中身の 無い ほめことば（がんばりました・いいですね）は 書きません\n\n## 直す\n- 1つだけ。natural なら 書きません。文法の 名前は 使いません\n- 直した あとの 言い方を 1文 見せます。学生の 中身を そのまま 活かし、言って いない 中身を 足しません",
   "host": {
-    "id": "tomita",
-    "name": "富田",
-    "role": "司会（PM）",
-    "accent": "sky"
+    "id": "hendy",
+    "name": "ヘンディ",
+    "role": "司会・検索",
+    "accent": "leaf"
   },
-  "closing": "今週の 夕礼は これで おわりです。お疲れさまでした。",
+  "closing": "今週の 夕礼は これで 終わりです。",
   "asakai": {
     "level": "hard",
-    "chairId": "tomita",
+    "chairId": "hendy",
     "people": [
       {
-        "id": "tomita",
-        "name": "富田",
+        "id": "hendy",
+        "name": "ヘンディ",
         "role": "PM",
-        "duty": "司会（PM）",
+        "duty": "司会・検索",
+        "accent": "leaf"
+      },
+      {
+        "id": "okuda",
+        "name": "奥田",
+        "role": "先輩",
+        "duty": "学生詳細",
         "accent": "sky"
       },
       {
         "id": "nyam",
         "name": "ニャム",
         "role": "先輩",
-        "duty": "休みの連絡",
+        "duty": "データ管理",
         "accent": "coral"
-      },
-      {
-        "id": "okuda",
-        "name": "奥田",
-        "role": "先輩",
-        "duty": "持ちもの",
-        "accent": "leaf"
-      },
-      {
-        "id": "hendy",
-        "name": "ヘンディ",
-        "role": "先輩",
-        "duty": "先生の画面",
-        "accent": "sun"
       },
       {
         "id": "fujiki",
         "name": "藤木",
         "role": "取締役",
-        "duty": "お客さま",
+        "duty": "社長の 窓口",
         "accent": "grape",
         "fridayOnly": true
       }
     ],
     "pass": {
-      "units": 23,
-      "komariBoxes": 11
+      "units": 11,
+      "komariBoxes": 5
     },
     "scenes": [
       {
         "day": "mon",
-        "time": "17:30",
+        "time": "17:50",
         "kind": "yuu",
-        "title": "月曜日 17:30 夕礼 ・ 司会 富田さん",
-        "lead": "通知の 原因は、けさ ニャムさんと 30分で 分かりました。",
+        "title": "月曜日 17:50 夕礼 ・ 司会 ヘンディさん",
+        "lead": "学生詳細画面への 移動と スキルグラフに 進みます。",
         "card": {
-          "duty": "おしらせの 一覧の 画面（日づけ・先生の 名前・読んだ／まだ の しるし・通知）",
-          "goal": "金曜日 13時、ひかり小学校で 先生 18人に 見せる",
-          "deadline": "木曜日の 夕方までに、テストを ぜんぶ 通す",
+          "duty": "学生検索・スキル可視化フロントエンド機能",
+          "goal": "金曜日までに、学生を 検索して、詳細を 見て、スキルを グラフで 確認できるように する。",
+          "deadline": "勤務時間は 9:00〜18:00。夕礼は 17:50〜18:00。",
           "progress": [
             {
-              "label": "一覧の 画面",
+              "label": "学生一覧・検索",
               "state": "now"
             },
             {
-              "label": "読んだ の しるし",
+              "label": "絞り込み",
               "state": "now"
             },
             {
-              "label": "通知（iPhone）",
+              "label": "学生詳細への 移動",
               "state": "later"
             },
             {
-              "label": "テスト 10こ",
+              "label": "スキルグラフ",
               "state": "later"
             },
             {
-              "label": "学校で 見せる",
+              "label": "スマホ対応・結合テスト",
               "state": "later"
             }
           ],
           "memo": [
             {
-              "head": "10:30",
-              "text": "おしらせの 一覧に、日づけと 先生の 名前が 出るように なった。",
+              "head": "09:00",
+              "text": "学生一覧APIの 仕様を 確認",
               "aside": false
             },
             {
-              "head": "11:00",
-              "text": "おしらせを 1つ 出して テストした。Android には 通知が 来た。",
-              "aside": false
-            },
-            {
-              "head": "11:20",
-              "text": "iPhone には 通知が 来なかった。3回 ためして、3回とも 来ない。",
-              "aside": false
-            },
-            {
-              "head": "12:00",
-              "text": "昼ごはん。ニャムさんと カレー。",
-              "aside": true
-            },
-            {
-              "head": "13:30",
-              "text": "iPhone の ログを 見た。エラーは 出て いない。原因は まだ 分からない。",
-              "aside": false
-            },
-            {
-              "head": "15:00",
-              "text": "一覧の「読んだ／まだ」の しるしを 作り始めた。半分まで。",
-              "aside": false
-            },
-            {
-              "head": "16:00",
-              "text": "ヘンディさんに 聞いた。iPhone の 通知は ニャムさんが くわしい。",
-              "aside": false
-            },
-            {
-              "head": "あした",
-              "text": "しるしの のこり 半分を 作る。",
-              "aside": false
-            },
-            {
-              "head": "あした",
-              "text": "通知の 原因を 調べる。たぶん 半日 かかる。",
-              "aside": false
-            },
-            {
-              "head": "あした",
-              "text": "テストケースを 書く。10こ ぐらい。",
-              "aside": false
-            }
-          ],
-          "pin": "金曜日 13時、先生 18人に 見せる。iPhone の 先生は 12人。",
-          "todo": [
-            "この メモを 整理します。同じ ことの 行は 1つに まとめます。要らない 行は 言いません。",
-            "きょう・あした・こまって いることの 順に 話します。こまって いることは、いつまでに 分かりそうか と、だれに 何を して ほしいかも 言います。"
-          ]
-        },
-        "opening": [
-          {
-            "speakerId": "tomita",
-            "text": "お疲れさまです。17時30分に なりましたので、夕礼を 始めます。きょうは ニャムさんから お願いします。",
-            "audio": "/audio/meetings/asakai_muzukashii/s0-opening-0-43327fed.wav"
-          }
-        ],
-        "sample": {
-          "speakerId": "nyam",
-          "text": "はい。ニャムです。担当は「きょうは 休みます」の 画面です。本日は、おうちの 人が 送る ところを 実装しました。送る ところまで 動きました。明日は、先生の 側で 受け取る 一覧を 実装します。1日で 終わる 見込みです。こまって いることが 1つ あります。古い スマホで 字が 出ません。明日の 昼までに 分かる 見込みです。奥田さんに、古い スマホを 30分 借りられませんか。以上です。",
-          "audio": "/audio/meetings/asakai_muzukashii/s0-sample-d88ea421.wav"
-        },
-        "prompt": {
-          "speakerId": "tomita",
-          "text": "ありがとう ございます。では 次に ◯◯さん、お願いします。きょうの メモを 見ながらで かまいません。",
-          "audio": "/audio/meetings/asakai_muzukashii/s0-prompt-b3b864e0.wav"
-        },
-        "ack": {
-          "speakerId": "tomita",
-          "text": "はい。きょう・あした・こまって いること、ぜんぶ 聞けました。数字も 入って いました。",
-          "audio": "/audio/meetings/asakai_muzukashii/s0-ack-b88dbc1f.wav"
-        },
-        "members": [
-          {
-            "speakerId": "okuda",
-            "text": "奥田です。担当は「あしたの 持ちもの」の 画面です。本日は 持ちものの 写真が 出る ところまで できました。明日は、先生が 写真を 上げる 機能を 作ります。こまって いることは ありません。以上です。",
-            "audio": "/audio/meetings/asakai_muzukashii/s0-member-0-da54fc80.wav"
-          },
-          {
-            "speakerId": "hendy",
-            "text": "ヘンディです。担当は 先生が おしらせを 書く 画面です。本日は 画面の 日本語を 見直しました。12こ 直しました。明日は 学校に 見せる 順番を 考えます。こまって いることは ありません。以上です。",
-            "audio": "/audio/meetings/asakai_muzukashii/s0-member-1-271c0563.wav"
-          }
-        ],
-        "arrange": {
-          "done": {
-            "speakerId": "tomita",
-            "text": "ニャムさん、明日 30分、◯◯さんと 通知を 見て ください。",
-            "audio": "/audio/meetings/asakai_muzukashii/s0-arrange-done-e6a45b02.wav"
-          },
-          "missing": {
-            "speakerId": "tomita",
-            "text": "iPhone の 通知は ニャムさんが くわしいです。「ニャムさんに 30分 見て いただけませんか」と 言えると、その 場で 決まります。ニャムさん、明日 お願いします。",
-            "audio": "/audio/meetings/asakai_muzukashii/s0-arrange-missing-859084fb.wav"
-          }
-        },
-        "closing": [
-          {
-            "speakerId": "tomita",
-            "text": "では、きょうの 夕礼は ここまでです。金曜日まで あと 四日です。お疲れさまでした。",
-            "audio": "/audio/meetings/asakai_muzukashii/s0-closing-0-9bc76324.wav"
-          }
-        ],
-        "panels": [
-          {
-            "id": "kyou",
-            "label": "きょう やったこと",
-            "facts": [
-              {
-                "id": "K1",
-                "keywords": [
-                  "日づけ",
-                  "名前",
-                  "一覧に"
-                ],
-                "fact": "一覧に 日づけと 先生の 名前が 出るように なった"
-              },
-              {
-                "id": "K2",
-                "keywords": [
-                  "android",
-                  "アンドロイド",
-                  "テストしました",
-                  "確認しました"
-                ],
-                "fact": "通知を テストして、Android では 来る ことを 確認した"
-              },
-              {
-                "id": "K3",
-                "keywords": [
-                  "読んだ",
-                  "半分まで",
-                  "しるしを 半分"
-                ],
-                "fact": "「読んだ／まだ」の しるしを 半分まで 作った"
-              }
-            ],
-            "followups": [
-              {
-                "speakerId": "tomita",
-                "text": "本日 した ことを、もう 少し くわしく お願いします。",
-                "audio": "/audio/meetings/asakai_muzukashii/s0-kyou-fu0-6799474d.wav"
-              },
-              {
-                "speakerId": "tomita",
-                "text": "メモの 午前と 午後に、した ことが もう 1つ あります。それも お願いします。",
-                "audio": "/audio/meetings/asakai_muzukashii/s0-kyou-fu1-ae160bfe.wav"
-              }
-            ],
-            "example": {
-              "speakerId": "tomita",
-              "text": "「一覧に 日づけと 名前が 出るように なりました。通知を テストして、Android では 来る ことを 確認しました。読んだ の しるしは 半分まで 作りました。」",
-              "audio": "/audio/meetings/asakai_muzukashii/s0-kyou-ex-a709e4e1.wav"
-            },
-            "openAt": 2
-          },
-          {
-            "id": "ashita",
-            "label": "あした やること",
-            "facts": [
-              {
-                "id": "A1",
-                "keywords": [
-                  "のこり",
-                  "しるし"
-                ],
-                "fact": "しるしの のこり 半分を 作る"
-              },
-              {
-                "id": "A2",
-                "keywords": [
-                  "原因を 調べ",
-                  "半日"
-                ],
-                "fact": "通知の 原因を 半日 かけて 調べる"
-              },
-              {
-                "id": "A3",
-                "keywords": [
-                  "テストケース",
-                  "10こ"
-                ],
-                "fact": "テストケースを 10こ ぐらい 書く"
-              }
-            ],
-            "followups": [
-              {
-                "speakerId": "tomita",
-                "text": "明日の 予定を 教えて ください。",
-                "audio": "/audio/meetings/asakai_muzukashii/s0-ashita-fu0-495642de.wav"
-              },
-              {
-                "speakerId": "tomita",
-                "text": "メモの「あした」の 行は 3つ あります。3つ ぜんぶ お願いします。",
-                "audio": "/audio/meetings/asakai_muzukashii/s0-ashita-fu1-3ccae9fa.wav"
-              }
-            ],
-            "example": {
-              "speakerId": "tomita",
-              "text": "「明日は しるしの のこりを 作って、通知の 原因を 半日 調べます。テストケースも 10こ 書きます。」",
-              "audio": "/audio/meetings/asakai_muzukashii/s0-ashita-ex-a20892aa.wav"
-            },
-            "openAt": 2
-          },
-          {
-            "id": "komari",
-            "label": "こまって いること",
-            "facts": [
-              {
-                "id": "C1",
-                "keywords": [
-                  "iphone",
-                  "アイフォン",
-                  "通知",
-                  "来ない",
-                  "来ません",
-                  "こない"
-                ],
-                "fact": "iPhone に 通知が 来ない（Android には 来る）",
-                "box": "こまって いること",
-                "minHits": 2
-              },
-              {
-                "id": "C2",
-                "keywords": [
-                  "半日",
-                  "あした",
-                  "までに",
-                  "見込み",
-                  "分かりそう"
-                ],
-                "fact": "原因は まだ。あした 半日で 分かる 見込み",
-                "box": "いつまでに",
-                "minHits": 2
-              },
-              {
-                "id": "C3",
-                "keywords": [
-                  "ニャム",
-                  "見て",
-                  "いただけ",
-                  "ください",
-                  "ほしい",
-                  "お願い",
-                  "30分"
-                ],
-                "fact": "ニャムさんに 30分 見て ほしいと 頼む",
-                "box": "お願い",
-                "allOf": [
-                  [
-                    "ニャム"
-                  ],
-                  [
-                    "見て",
-                    "いただけ",
-                    "ください",
-                    "ほしい",
-                    "お願い",
-                    "手伝",
-                    "30分"
-                  ]
-                ]
-              }
-            ],
-            "followups": [
-              {
-                "speakerId": "tomita",
-                "text": "何か 詰まって いる ところは ありませんか。",
-                "audio": "/audio/meetings/asakai_muzukashii/s0-komari-fu0-848b7d65.wav"
-              },
-              {
-                "speakerId": "tomita",
-                "text": "こまって いることは 3つ 言います。①何が こまって いるか ②いつまでに 分かりそうか ③だれに 何を して ほしいか。まだ 言って いない ものを お願いします。",
-                "audio": "/audio/meetings/asakai_muzukashii/s0-komari-fu1-f3aac75b.wav"
-              }
-            ],
-            "example": {
-              "speakerId": "tomita",
-              "text": "「iPhone に 通知が 来ません。Android には 来ます。原因は まだ 分かりません。あした 半日 調べれば 分かる 見込みです。ニャムさんに 30分 見て いただけませんか。」",
-              "audio": "/audio/meetings/asakai_muzukashii/s0-komari-ex-845f3079.wav"
-            }
-          },
-          {
-            "id": "suuji",
-            "label": "数字を 1つ",
-            "rule": "number",
-            "facts": [],
-            "followups": [
-              {
-                "speakerId": "tomita",
-                "text": "数字で 言うと、どのくらいですか。",
-                "audio": "/audio/meetings/asakai_muzukashii/s0-suuji-fu0-445a671f.wav"
-              },
-              {
-                "speakerId": "tomita",
-                "text": "「3回とも 来ない」「半分まで」の ように、数を 入れて ください。",
-                "audio": "/audio/meetings/asakai_muzukashii/s0-suuji-fu1-eb36b5a5.wav"
-              }
-            ],
-            "example": {
-              "speakerId": "tomita",
-              "text": "「3回 ためして、3回とも 来ませんでした。」",
-              "audio": "/audio/meetings/asakai_muzukashii/s0-suuji-ex-2489a17e.wav"
-            }
-          }
-        ],
-        "hintLines": [
-          "メモの 中で、もう 終わった ことは どれですか。",
-          "あした する ことは いくつ ありますか。",
-          "こまって いることは 何ですか。いつまでに 分かりそうですか。だれに 何を して ほしいですか。",
-          "数字は どれを 言いますか。"
-        ]
-      },
-      {
-        "day": "tue",
-        "time": "17:30",
-        "kind": "yuu",
-        "title": "火曜日 17:30 夕礼 ・ 司会 富田さん",
-        "lead": "古い iPhone は 奥田さんに 借りました。",
-        "card": {
-          "duty": "おしらせの 一覧の 画面（日づけ・先生の 名前・読んだ／まだ の しるし・通知）",
-          "goal": "金曜日 13時、ひかり小学校で 先生 18人に 見せる",
-          "deadline": "木曜日の 夕方までに、テストを ぜんぶ 通す",
-          "progress": [
-            {
-              "label": "一覧の 画面",
-              "state": "done"
-            },
-            {
-              "label": "読んだ の しるし",
-              "state": "done"
-            },
-            {
-              "label": "通知（iPhone）",
-              "state": "now"
-            },
-            {
-              "label": "テスト 10こ",
-              "state": "now"
-            },
-            {
-              "label": "学校で 見せる",
-              "state": "later"
-            }
-          ],
-          "memo": [
-            {
-              "head": "9:40",
-              "text": "ニャムさんと 30分 調べて、原因が 分かった。iPhone の 通知の 設定が 1つ 足りなかった。",
+              "head": "09:30",
+              "text": "学生一覧APIとの 接続開始",
               "aside": false
             },
             {
               "head": "10:30",
-              "text": "設定を 足した。iPhone にも 通知が 来た。5回 ためして 5回 来た。",
-              "aside": false
-            },
-            {
-              "head": "11:30",
-              "text": "しるしの のこりを 作った。ぜんぶ できた。",
-              "aside": false
-            },
-            {
-              "head": "12:00",
-              "text": "昼ごはん。",
-              "aside": true
-            },
-            {
-              "head": "15:00",
-              "text": "テストケースを 書いた。ぜんぶで 10こ。テストを 始めて、2こ 終わった。",
-              "aside": false
-            },
-            {
-              "head": "16:30",
-              "text": "会社に iPhone は 1台だけ。新しい iPhone。先生の iPhone は 古いのも ある。",
-              "aside": false
-            },
-            {
-              "head": "16:40",
-              "text": "奥田さんは 古い iPhone を 持って いる。4年前の。",
-              "aside": false
-            },
-            {
-              "head": "あした",
-              "text": "テストの のこり 8こ。水曜の 夕方までに 半分は 終わりたい。",
-              "aside": false
-            },
-            {
-              "head": "あした",
-              "text": "古い iPhone でも 通知が 来るか、見たい。",
-              "aside": false
-            },
-            {
-              "head": "あした",
-              "text": "金曜に 見せる 順番を 富田さんと 決める。15分。",
-              "aside": false
-            }
-          ],
-          "pin": "金曜日 13時、先生 18人に 見せる。iPhone の 先生は 12人。",
-          "todo": [
-            "この メモを 整理します。同じ ことの 行は 1つに まとめます。要らない 行は 言いません。",
-            "きょう・あした・こまって いることの 順に 話します。こまって いることは、いつまでに 分かりそうか と、だれに 何を して ほしいかも 言います。"
-          ]
-        },
-        "opening": [
-          {
-            "speakerId": "tomita",
-            "text": "お疲れさまです。夕礼を 始めます。きょうは 奥田さんから お願いします。",
-            "audio": "/audio/meetings/asakai_muzukashii/s1-opening-0-6c65ebcc.wav"
-          }
-        ],
-        "sample": {
-          "speakerId": "okuda",
-          "text": "はい。奥田です。担当は「あしたの 持ちもの」の 画面です。本日は、先生が 写真を 上げる 機能を 実装しました。3枚まで 上げられます。明日は、持ちものの 一覧の テストを 始めます。6こ あります。こまって いることは ありません。以上です。",
-          "audio": "/audio/meetings/asakai_muzukashii/s1-sample-37739a3a.wav"
-        },
-        "prompt": {
-          "speakerId": "tomita",
-          "text": "ありがとう ございます。では 次に ◯◯さん、お願いします。",
-          "audio": "/audio/meetings/asakai_muzukashii/s1-prompt-1c9a269e.wav"
-        },
-        "ack": {
-          "speakerId": "tomita",
-          "text": "はい。きょう・あした・こまって いること、ぜんぶ 聞けました。数字も 入って いました。",
-          "audio": "/audio/meetings/asakai_muzukashii/s1-ack-b88dbc1f.wav"
-        },
-        "members": [
-          {
-            "speakerId": "nyam",
-            "text": "ニャムです。担当は「きょうは 休みます」の 画面です。本日は 受け取る 一覧を 実装しました。◯◯さんの 通知の 原因も、30分 いっしょに 見ました。明日は テストを 10こ します。こまって いることは ありません。以上です。",
-            "audio": "/audio/meetings/asakai_muzukashii/s1-member-0-756b2586.wav"
-          },
-          {
-            "speakerId": "hendy",
-            "text": "ヘンディです。担当は 先生の 画面です。本日は 学校に 見せる 順番を 考えました。明日、富田さんと ◯◯さんと 15分で 決めます。こまって いることは ありません。以上です。",
-            "audio": "/audio/meetings/asakai_muzukashii/s1-member-1-c670c1e7.wav"
-          }
-        ],
-        "arrange": {
-          "done": {
-            "speakerId": "tomita",
-            "text": "奥田さん、明日の 午後、古い iPhone で ◯◯さんと テストを お願いします。",
-            "audio": "/audio/meetings/asakai_muzukashii/s1-arrange-done-3c2afafe.wav"
-          },
-          "missing": {
-            "speakerId": "tomita",
-            "text": "古い iPhone は 奥田さんが 持って います。「奥田さんに 借りられますか」と 言えると、その 場で 決まります。奥田さん、明日の 午後 お願いします。",
-            "audio": "/audio/meetings/asakai_muzukashii/s1-arrange-missing-c311b1fb.wav"
-          }
-        },
-        "closing": [
-          {
-            "speakerId": "tomita",
-            "text": "では、きょうの 夕礼は ここまでです。金曜日まで あと 三日です。お疲れさまでした。",
-            "audio": "/audio/meetings/asakai_muzukashii/s1-closing-0-ce6d921f.wav"
-          }
-        ],
-        "panels": [
-          {
-            "id": "kyou",
-            "label": "きょう やったこと",
-            "facts": [
-              {
-                "id": "K1",
-                "keywords": [
-                  "原因",
-                  "設定",
-                  "足りな",
-                  "直し",
-                  "5回"
-                ],
-                "fact": "原因（iPhone の 設定が 1つ 足りない）が 分かり、直した"
-              },
-              {
-                "id": "K2",
-                "keywords": [
-                  "しるし",
-                  "ぜんぶ",
-                  "できました"
-                ],
-                "fact": "しるしが ぜんぶ できた"
-              },
-              {
-                "id": "K3",
-                "keywords": [
-                  "一覧を 書",
-                  "10こ",
-                  "2こ",
-                  "テストを 始"
-                ],
-                "fact": "テストケースを 10こ 書き、2こ 終わった"
-              }
-            ],
-            "followups": [
-              {
-                "speakerId": "tomita",
-                "text": "本日 した ことを、もう 少し くわしく お願いします。",
-                "audio": "/audio/meetings/asakai_muzukashii/s1-kyou-fu0-6799474d.wav"
-              },
-              {
-                "speakerId": "tomita",
-                "text": "メモの 午前と 午後に、した ことが もう 1つ あります。それも お願いします。",
-                "audio": "/audio/meetings/asakai_muzukashii/s1-kyou-fu1-ae160bfe.wav"
-              }
-            ],
-            "example": {
-              "speakerId": "tomita",
-              "text": "「原因が 分かって、設定を 直しました。しるしは ぜんぶ できて、テストを 2こ 始めました。」",
-              "audio": "/audio/meetings/asakai_muzukashii/s1-kyou-ex-798be2d5.wav"
-            },
-            "openAt": 2
-          },
-          {
-            "id": "ashita",
-            "label": "あした やること",
-            "facts": [
-              {
-                "id": "A1",
-                "keywords": [
-                  "のこり",
-                  "8こ"
-                ],
-                "fact": "テストの のこり 8こ"
-              },
-              {
-                "id": "A2",
-                "keywords": [
-                  "古い",
-                  "古い iphone"
-                ],
-                "fact": "古い iPhone でも 通知が 来るか 見る"
-              },
-              {
-                "id": "A3",
-                "keywords": [
-                  "順番",
-                  "富田",
-                  "15分"
-                ],
-                "fact": "金曜に 見せる 順番を 富田さんと 15分で 決める"
-              }
-            ],
-            "followups": [
-              {
-                "speakerId": "tomita",
-                "text": "明日の 予定を 教えて ください。",
-                "audio": "/audio/meetings/asakai_muzukashii/s1-ashita-fu0-495642de.wav"
-              },
-              {
-                "speakerId": "tomita",
-                "text": "メモの「あした」の 行は 3つ あります。3つ ぜんぶ お願いします。",
-                "audio": "/audio/meetings/asakai_muzukashii/s1-ashita-fu1-3ccae9fa.wav"
-              }
-            ],
-            "example": {
-              "speakerId": "tomita",
-              "text": "「明日は テストの のこり 8こと、古い iPhone の 確認を します。見せる 順番も 富田さんと 15分 決めます。」",
-              "audio": "/audio/meetings/asakai_muzukashii/s1-ashita-ex-eb1ec21d.wav"
-            },
-            "openAt": 2
-          },
-          {
-            "id": "komari",
-            "label": "こまって いること",
-            "facts": [
-              {
-                "id": "C1",
-                "keywords": [
-                  "古い",
-                  "1台",
-                  "会社に",
-                  "ありません",
-                  "できません"
-                ],
-                "fact": "会社に 古い iPhone が 無く、テストできない",
-                "box": "こまって いること",
-                "minHits": 2
-              },
-              {
-                "id": "C2",
-                "keywords": [
-                  "水曜",
-                  "夕方",
-                  "までに",
-                  "半分",
-                  "4こ"
-                ],
-                "fact": "水曜の 夕方までに 半分は 終わる 見込み",
-                "box": "いつまでに",
-                "minHits": 2
-              },
-              {
-                "id": "C3",
-                "keywords": [
-                  "奥田",
-                  "借り",
-                  "いっしょ",
-                  "いただけ",
-                  "ください",
-                  "ほしい",
-                  "お願い",
-                  "午後"
-                ],
-                "fact": "奥田さんに 古い iPhone を 借りて いっしょに テストしたいと 頼む",
-                "box": "お願い",
-                "allOf": [
-                  [
-                    "奥田"
-                  ],
-                  [
-                    "借り",
-                    "いっしょ",
-                    "いただけ",
-                    "ください",
-                    "ほしい",
-                    "お願い"
-                  ]
-                ]
-              }
-            ],
-            "followups": [
-              {
-                "speakerId": "tomita",
-                "text": "何か 詰まって いる ところは ありませんか。",
-                "audio": "/audio/meetings/asakai_muzukashii/s1-komari-fu0-848b7d65.wav"
-              },
-              {
-                "speakerId": "tomita",
-                "text": "こまって いることは 3つ 言います。①何が こまって いるか ②いつまでに 分かりそうか ③だれに 何を して ほしいか。まだ 言って いない ものを お願いします。",
-                "audio": "/audio/meetings/asakai_muzukashii/s1-komari-fu1-f3aac75b.wav"
-              }
-            ],
-            "example": {
-              "speakerId": "tomita",
-              "text": "「会社に 古い iPhone が 無くて、テストできません。水曜の 夕方までに 半分は 終わる 見込みです。奥田さんに、古い iPhone を 借りて、いっしょに テストして いただけませんか。」",
-              "audio": "/audio/meetings/asakai_muzukashii/s1-komari-ex-4c8f719e.wav"
-            }
-          },
-          {
-            "id": "suuji",
-            "label": "数字を 1つ",
-            "rule": "number",
-            "facts": [],
-            "followups": [
-              {
-                "speakerId": "tomita",
-                "text": "数字で 言うと、どのくらいですか。",
-                "audio": "/audio/meetings/asakai_muzukashii/s1-suuji-fu0-445a671f.wav"
-              },
-              {
-                "speakerId": "tomita",
-                "text": "「3回とも 来ない」「半分まで」の ように、数を 入れて ください。",
-                "audio": "/audio/meetings/asakai_muzukashii/s1-suuji-fu1-eb36b5a5.wav"
-              }
-            ],
-            "example": {
-              "speakerId": "tomita",
-              "text": "「5回 ためして 5回 来ました。」",
-              "audio": "/audio/meetings/asakai_muzukashii/s1-suuji-ex-ecbe526a.wav"
-            }
-          }
-        ],
-        "hintLines": [
-          "メモの 中で、もう 終わった ことは どれですか。",
-          "あした する ことは いくつ ありますか。",
-          "こまって いることは 何ですか。いつまでに 分かりそうですか。だれに 何を して ほしいですか。",
-          "数字は どれを 言いますか。"
-        ]
-      },
-      {
-        "day": "wed",
-        "time": "17:30",
-        "kind": "yuu",
-        "title": "水曜日 17:30 夕礼 ・ 司会 富田さん",
-        "lead": "重い 一覧は、けさ 直しました。",
-        "card": {
-          "duty": "おしらせの 一覧の 画面（日づけ・先生の 名前・読んだ／まだ の しるし・通知）",
-          "goal": "金曜日 13時、ひかり小学校で 先生 18人に 見せる",
-          "deadline": "木曜日の 夕方までに、テストを ぜんぶ 通す",
-          "progress": [
-            {
-              "label": "一覧の 画面",
-              "state": "done"
-            },
-            {
-              "label": "読んだ の しるし",
-              "state": "done"
-            },
-            {
-              "label": "通知（iPhone）",
-              "state": "done"
-            },
-            {
-              "label": "テスト 10こ",
-              "state": "now"
-            },
-            {
-              "label": "学校で 見せる",
-              "state": "later"
-            }
-          ],
-          "memo": [
-            {
-              "head": "10:00",
-              "text": "テストの つづき。10この うち 5こ 終わった。",
+              "text": "AUPP・CADTの 学生データ 表示完了",
               "aside": false
             },
             {
               "head": "11:00",
-              "text": "テストの 1こが 失敗。おしらせが 50こ あると、一覧が 開くのに 3秒 かかる。",
+              "text": "キーワード検索UIを 作成",
               "aside": false
             },
             {
-              "head": "11:30",
-              "text": "原因が 分かった。一覧が ぜんぶの おしらせを 一度に 読んで いる。",
+              "head": "11:40",
+              "text": "キーワード検索APIと 接続",
               "aside": false
             },
             {
               "head": "12:00",
-              "text": "昼ごはん。",
+              "text": "昼休み",
               "aside": true
             },
             {
               "head": "13:00",
-              "text": "奥田さんと 古い iPhone（4年前）で テスト。通知は 3回とも 来た。",
+              "text": "大学フィルター 作成",
               "aside": false
             },
             {
-              "head": "14:30",
-              "text": "テストを 2こ 進めた。ぜんぶで 7こ 終わった。",
+              "head": "13:40",
+              "text": "JLPTフィルター 作成",
               "aside": false
             },
             {
-              "head": "15:30",
-              "text": "富田さんと 15分。金曜に 見せる 順番が 決まった。一覧は 2番目。",
+              "head": "14:20",
+              "text": "スキルフィルター 作成",
               "aside": false
             },
             {
-              "head": "16:30",
-              "text": "一覧の 読み方を 変えると、しるしの ところも 動く。ニャムさんが 前に 同じ 直しを した ことが ある。",
+              "head": "15:00",
+              "text": "検索APIと 接続",
               "aside": false
             },
             {
-              "head": "あした",
-              "text": "一覧を 20こずつ 読むように 直す。昼までに 終わる 見込み。",
-              "aside": false
-            },
-            {
-              "head": "あした",
-              "text": "直した あと、50こで もう 一度 テスト。のこりの テスト 3こも する。",
-              "aside": false
-            }
-          ],
-          "pin": "金曜日 13時、先生 18人に 見せる。iPhone の 先生は 12人。",
-          "todo": [
-            "この メモを 整理します。同じ ことの 行は 1つに まとめます。要らない 行は 言いません。",
-            "きょう・あした・こまって いることの 順に 話します。こまって いることは、いつまでに 分かりそうか と、だれに 何を して ほしいかも 言います。"
-          ]
-        },
-        "opening": [
-          {
-            "speakerId": "tomita",
-            "text": "お疲れさまです。夕礼を 始めます。きょうは ヘンディさんから お願いします。",
-            "audio": "/audio/meetings/asakai_muzukashii/s2-opening-0-f884dc81.wav"
-          }
-        ],
-        "sample": {
-          "speakerId": "hendy",
-          "text": "はい。ヘンディです。担当は 先生が おしらせを 書く 画面です。本日は 見せる 順番を 富田さんと 決めました。先生の 画面が 1番目、一覧が 2番目です。テストも 始めて、8この うち 5こ 終わりました。明日は のこりの 3こを して、金曜の 説明の 紙を 書きます。こまって いることは ありません。以上です。",
-          "audio": "/audio/meetings/asakai_muzukashii/s2-sample-da5b34f2.wav"
-        },
-        "prompt": {
-          "speakerId": "tomita",
-          "text": "ありがとう ございます。では 次に ◯◯さん、お願いします。",
-          "audio": "/audio/meetings/asakai_muzukashii/s2-prompt-1c9a269e.wav"
-        },
-        "ack": {
-          "speakerId": "tomita",
-          "text": "はい。きょう・あした・こまって いること、ぜんぶ 聞けました。数字も 入って いました。",
-          "audio": "/audio/meetings/asakai_muzukashii/s2-ack-b88dbc1f.wav"
-        },
-        "members": [
-          {
-            "speakerId": "nyam",
-            "text": "はい。11時に 見ます。ニャムです。担当は「きょうは 休みます」です。本日は テストを 10この うち 8こ しました。明日は のこりの 2こを します。こまって いることは ありません。以上です。",
-            "audio": "/audio/meetings/asakai_muzukashii/s2-member-0-322de449.wav"
-          },
-          {
-            "speakerId": "okuda",
-            "text": "奥田です。担当は「あしたの 持ちもの」です。本日は ◯◯さんと 古い iPhone で 通知を 見ました。持ちものの テストは 6この うち 4こ 終わりました。明日は のこりの 2こを します。こまって いることは ありません。以上です。",
-            "audio": "/audio/meetings/asakai_muzukashii/s2-member-1-3cefc085.wav"
-          }
-        ],
-        "arrange": {
-          "done": {
-            "speakerId": "tomita",
-            "text": "ニャムさん、明日 15分、◯◯さんの 直した コードを 見て ください。",
-            "audio": "/audio/meetings/asakai_muzukashii/s2-arrange-done-fe2a9d6b.wav"
-          },
-          "missing": {
-            "speakerId": "tomita",
-            "text": "大きい 直しは、だれかに 見て もらうと 安心です。「ニャムさんに コードを 見て いただけませんか」と 言えると いいです。ニャムさん、明日 お願いします。",
-            "audio": "/audio/meetings/asakai_muzukashii/s2-arrange-missing-78aecac5.wav"
-          }
-        },
-        "closing": [
-          {
-            "speakerId": "tomita",
-            "text": "では、きょうの 夕礼は ここまでです。金曜日まで あと 二日です。お疲れさまでした。",
-            "audio": "/audio/meetings/asakai_muzukashii/s2-closing-0-35461dcc.wav"
-          }
-        ],
-        "panels": [
-          {
-            "id": "kyou",
-            "label": "きょう やったこと",
-            "facts": [
-              {
-                "id": "K1",
-                "keywords": [
-                  "古い iphone",
-                  "4年前",
-                  "通知は 来た",
-                  "3回とも",
-                  "奥田さんと"
-                ],
-                "fact": "古い iPhone（4年前）でも 通知が 来る ことを 確かめた"
-              },
-              {
-                "id": "K2",
-                "keywords": [
-                  "7こ",
-                  "テスト",
-                  "進め"
-                ],
-                "fact": "テストが ぜんぶで 7こ 終わった"
-              },
-              {
-                "id": "K3",
-                "keywords": [
-                  "順番",
-                  "決ま",
-                  "2番目",
-                  "15分"
-                ],
-                "fact": "金曜に 見せる 順番が 決まり、一覧は 2番目"
-              }
-            ],
-            "followups": [
-              {
-                "speakerId": "tomita",
-                "text": "本日 した ことを、もう 少し くわしく お願いします。",
-                "audio": "/audio/meetings/asakai_muzukashii/s2-kyou-fu0-6799474d.wav"
-              },
-              {
-                "speakerId": "tomita",
-                "text": "メモの 午前と 午後に、した ことが もう 1つ あります。それも お願いします。",
-                "audio": "/audio/meetings/asakai_muzukashii/s2-kyou-fu1-ae160bfe.wav"
-              }
-            ],
-            "example": {
-              "speakerId": "tomita",
-              "text": "「古い iPhone でも 通知が 来ました。テストは 7こ 終わって、見せる 順番も 決まりました。」",
-              "audio": "/audio/meetings/asakai_muzukashii/s2-kyou-ex-0dda0ba2.wav"
-            },
-            "openAt": 2
-          },
-          {
-            "id": "ashita",
-            "label": "あした やること",
-            "facts": [
-              {
-                "id": "A1",
-                "keywords": [
-                  "20こずつ",
-                  "読み方",
-                  "直し",
-                  "昼まで"
-                ],
-                "fact": "一覧を 20こずつ 読むように 直す（昼までの 見込み）"
-              },
-              {
-                "id": "A2",
-                "keywords": [
-                  "50こで",
-                  "もう 一度",
-                  "テスト"
-                ],
-                "fact": "直した あと 50こで もう 一度 テストする"
-              },
-              {
-                "id": "A3",
-                "keywords": [
-                  "のこり",
-                  "3こ"
-                ],
-                "fact": "のこりの テスト 3こも する"
-              }
-            ],
-            "followups": [
-              {
-                "speakerId": "tomita",
-                "text": "明日の 予定を 教えて ください。",
-                "audio": "/audio/meetings/asakai_muzukashii/s2-ashita-fu0-495642de.wav"
-              },
-              {
-                "speakerId": "tomita",
-                "text": "メモの「あした」の 行は 3つ あります。3つ ぜんぶ お願いします。",
-                "audio": "/audio/meetings/asakai_muzukashii/s2-ashita-fu1-3ccae9fa.wav"
-              }
-            ],
-            "example": {
-              "speakerId": "tomita",
-              "text": "「明日は 一覧を 20こずつ 読むように 直して、50こで もう 一度 テストします。テストの のこりは 3こです。」",
-              "audio": "/audio/meetings/asakai_muzukashii/s2-ashita-ex-ddb82548.wav"
-            },
-            "openAt": 2
-          },
-          {
-            "id": "komari",
-            "label": "こまって いること",
-            "facts": [
-              {
-                "id": "C1",
-                "keywords": [
-                  "重い",
-                  "3秒",
-                  "50こ",
-                  "開く",
-                  "時間が かかる"
-                ],
-                "fact": "おしらせが 50こ あると 一覧が 開くのに 3秒 かかる",
-                "box": "こまって いること",
-                "minHits": 2
-              },
-              {
-                "id": "C2",
-                "keywords": [
-                  "木曜",
-                  "昼まで",
-                  "までに",
-                  "直す 見込み",
-                  "直せる"
-                ],
-                "fact": "木曜の 昼までに 直せる 見込み",
-                "box": "いつまでに",
-                "minHits": 2
-              },
-              {
-                "id": "C3",
-                "keywords": [
-                  "ニャム",
-                  "コード",
-                  "レビュー",
-                  "見て",
-                  "いただけ",
-                  "ください",
-                  "ほしい",
-                  "お願い",
-                  "15分",
-                  "レビューして"
-                ],
-                "fact": "ニャムさんに 直した コードを 15分 見て ほしいと 頼む",
-                "box": "お願い",
-                "allOf": [
-                  [
-                    "ニャム"
-                  ],
-                  [
-                    "見て",
-                    "いただけ",
-                    "ください",
-                    "ほしい",
-                    "お願い",
-                    "レビュー",
-                    "レビューして"
-                  ]
-                ]
-              }
-            ],
-            "followups": [
-              {
-                "speakerId": "tomita",
-                "text": "何か 詰まって いる ところは ありませんか。",
-                "audio": "/audio/meetings/asakai_muzukashii/s2-komari-fu0-848b7d65.wav"
-              },
-              {
-                "speakerId": "tomita",
-                "text": "こまって いることは 3つ 言います。①何が こまって いるか ②いつまでに 分かりそうか ③だれに 何を して ほしいか。まだ 言って いない ものを お願いします。",
-                "audio": "/audio/meetings/asakai_muzukashii/s2-komari-fu1-f3aac75b.wav"
-              }
-            ],
-            "example": {
-              "speakerId": "tomita",
-              "text": "「おしらせが 50こ あると、一覧が 開くのに 3秒 かかります。木曜の 昼までに 直せる 見込みです。ニャムさんに、直した コードを 15分 レビューして いただけませんか。」",
-              "audio": "/audio/meetings/asakai_muzukashii/s2-komari-ex-8a4de390.wav"
-            }
-          },
-          {
-            "id": "suuji",
-            "label": "数字を 1つ",
-            "rule": "number",
-            "facts": [],
-            "followups": [
-              {
-                "speakerId": "tomita",
-                "text": "数字で 言うと、どのくらいですか。",
-                "audio": "/audio/meetings/asakai_muzukashii/s2-suuji-fu0-445a671f.wav"
-              },
-              {
-                "speakerId": "tomita",
-                "text": "「3回とも 来ない」「半分まで」の ように、数を 入れて ください。",
-                "audio": "/audio/meetings/asakai_muzukashii/s2-suuji-fu1-eb36b5a5.wav"
-              }
-            ],
-            "example": {
-              "speakerId": "tomita",
-              "text": "「50こで 3秒 かかります。」",
-              "audio": "/audio/meetings/asakai_muzukashii/s2-suuji-ex-23350873.wav"
-            }
-          }
-        ],
-        "hintLines": [
-          "メモの 中で、もう 終わった ことは どれですか。",
-          "あした する ことは いくつ ありますか。",
-          "こまって いることは 何ですか。いつまでに 分かりそうですか。だれに 何を して ほしいですか。",
-          "同じ ことを 言って いる 行は、1つに まとめます。"
-        ]
-      },
-      {
-        "day": "thu",
-        "time": "17:30",
-        "kind": "yuu",
-        "title": "木曜日 17:30 夕礼 ・ 司会 富田さん",
-        "lead": "あしたは 学校で 見せます。",
-        "card": {
-          "duty": "おしらせの 一覧の 画面（日づけ・先生の 名前・読んだ／まだ の しるし・通知）",
-          "goal": "金曜日 13時、ひかり小学校で 先生 18人に 見せる",
-          "deadline": "木曜日の 夕方までに、テストを ぜんぶ 通す",
-          "progress": [
-            {
-              "label": "一覧の 画面",
-              "state": "done"
-            },
-            {
-              "label": "読んだ の しるし",
-              "state": "done"
-            },
-            {
-              "label": "通知（iPhone）",
-              "state": "done"
-            },
-            {
-              "label": "テスト 10こ",
-              "state": "done"
-            },
-            {
-              "label": "学校で 見せる",
-              "state": "now"
-            }
-          ],
-          "memo": [
-            {
-              "head": "9:30",
-              "text": "一覧を 20こずつ 読むように 直した。50こで 0.5秒に なった。",
-              "aside": false
-            },
-            {
-              "head": "11:00",
-              "text": "ニャムさんに コードを 15分 見て もらった。直す ところが 1つ あった。直した。",
-              "aside": false
-            },
-            {
-              "head": "11:30",
-              "text": "50こで もう 一度 テスト。OK。",
-              "aside": false
-            },
-            {
-              "head": "12:00",
-              "text": "昼ごはん。",
-              "aside": true
-            },
-            {
-              "head": "14:00",
-              "text": "のこりの テスト 3こ。ぜんぶ 通った。テストは 10こ ぜんぶ OK。",
-              "aside": false
-            },
-            {
-              "head": "16:00",
-              "text": "金曜の 練習を チームで 20分。一覧と 通知の 説明は 自分。3分。",
+              "head": "15:40",
+              "text": "大学＋JLPT＋スキルの 複数条件検索を 確認",
               "aside": false
             },
             {
               "head": "16:20",
-              "text": "練習で 奥田さんが 先生の 役を した。「通知が 来ない ときは どうしますか」と 聞かれた。答えられなかった。",
+              "text": "キーワード＋大学の 検索を 確認",
               "aside": false
             },
             {
-              "head": "16:30",
-              "text": "答えは まだ 決まって いない。だれが 対応するかも 決まって いない。決めるのは 富田さん（PM）。",
+              "head": "17:00",
+              "text": "読み込み中表示を 追加",
               "aside": false
             },
             {
-              "head": "あした",
-              "text": "13時 ひかり小学校。10時30分に 会社を 出る。説明は 3分。",
-              "aside": false
-            },
-            {
-              "head": "あした",
-              "text": "説明の 紙を 朝 印刷する。18枚。",
+              "head": "17:30",
+              "text": "検索結果0件の 場合の 表示を 追加",
               "aside": false
             }
           ],
-          "pin": "金曜日 13時、先生 18人に 見せる。iPhone の 先生は 12人。",
+          "pin": "学生検索・スキル可視化フロントエンド機能全体の 進捗: 35％",
           "todo": [
-            "この メモを 整理します。同じ ことの 行は 1つに まとめます。要らない 行は 言いません。",
-            "きょう・あした・こまって いることの 順に 話します。こまって いることは、いつまでに 分かりそうか と、だれに 何を して ほしいかも 言います。"
+            "作業記録を そのまま 読み上げません。まとめて 話します。",
+            "① 今日 行ったこと",
+            "② 進捗率",
+            "③ 明日 行うこと",
+            "④ 問題点"
           ]
         },
         "opening": [
           {
-            "speakerId": "tomita",
-            "text": "お疲れさまです。夕礼を 始めます。あしたは 学校です。きょうは ニャムさんから お願いします。",
-            "audio": "/audio/meetings/asakai_muzukashii/s3-opening-0-72b66797.wav"
+            "speakerId": "hendy",
+            "text": "お疲れさまです。17時50分に なりました。今日の 夕礼を 始めます。報告は 4つです。今日 行ったこと、担当の 機能全体の 進捗率、明日 行うこと、問題点。まず 私から。"
           }
         ],
         "sample": {
-          "speakerId": "nyam",
-          "text": "はい。ニャムです。担当は「きょうは 休みます」です。本日は テストが 10こ ぜんぶ 通りました。◯◯さんの コードも 15分 見ました。明日は 学校で、休みの れんらくを 実際に 送って 見せます。2分です。すみません。悪い しらせが 1つ あります。学校の Wi-Fi が おそいと、送るのに 10秒 かかります。明日の 朝までに 分かりません。富田さんに、うまく いかない ときの 言い方を 決めて いただけませんか。以上です。",
-          "audio": "/audio/meetings/asakai_muzukashii/s3-sample-786a2171.wav"
+          "speakerId": "hendy",
+          "text": "今日は、大学、JLPTレベル、スキルによる 検索APIを 作りました。複数条件でも 検索できるように しました。現在、学生検索バックエンド機能全体の 進捗は 55％です。明日は、キーワード検索と 検索結果の 並び替えを 作ります。今のところ 問題は ありません。"
         },
         "prompt": {
-          "speakerId": "tomita",
-          "text": "ありがとう ございます。では 次に ◯◯さん、お願いします。",
-          "audio": "/audio/meetings/asakai_muzukashii/s3-prompt-1c9a269e.wav"
+          "speakerId": "hendy",
+          "text": "では 次に ◯◯さん、お願いします。"
         },
         "ack": {
-          "speakerId": "tomita",
-          "text": "はい。きょう・あした・こまって いること、ぜんぶ 聞けました。数字も 入って いました。",
-          "audio": "/audio/meetings/asakai_muzukashii/s3-ack-b88dbc1f.wav"
+          "speakerId": "hendy",
+          "text": "はい。今日 行ったこと、進捗率、明日 行うこと、問題点。4つとも 聞けました。"
         },
         "members": [
           {
             "speakerId": "okuda",
-            "text": "奥田です。担当は「あしたの 持ちもの」です。本日は テストが ぜんぶ 通りました。練習では 先生の 役を しました。明日は 持ちものの 画面を 3分 説明します。こまって いることは ありません。以上です。",
-            "audio": "/audio/meetings/asakai_muzukashii/s3-member-0-6d8b978b.wav"
+            "text": "奥田です。今日は、学生詳細画面に JLPTレベル、ポートフォリオ、スキル一覧を 追加しました。現在、学生詳細フロントエンド機能全体の 進捗は 50％です。明日は、学生一覧から 学生詳細画面へ 移動できるように します。今のところ 問題は ありません。"
           },
           {
-            "speakerId": "hendy",
-            "text": "ヘンディです。担当は 先生の 画面です。本日は 説明の 紙を 書きました。3枚です。明日は 学校で、いちばん 最初に おしらせを 1つ 出します。こまって いることは ありません。以上です。",
-            "audio": "/audio/meetings/asakai_muzukashii/s3-member-1-2a6f81a7.wav"
+            "speakerId": "nyam",
+            "text": "ニャムです。今日は、学生ごとの スキル点数と ポートフォリオ情報を 登録しました。現在、学生・スキルデータ管理機能全体の 進捗は 55％です。明日は、学生詳細APIで スキル名、点数、カテゴリを 返せるように します。今のところ 問題は ありません。"
           }
         ],
-        "arrange": {
-          "done": {
-            "speakerId": "tomita",
-            "text": "はい、それは わたしが 決めます。今夜 書いて、明日の 朝 9時に 送ります。学校では わたしが 答えます。",
-            "audio": "/audio/meetings/asakai_muzukashii/s3-arrange-done-9262b490.wav"
-          },
-          "missing": {
-            "speakerId": "tomita",
-            "text": "答えは わたしが 決めます。「富田さんに 決めて いただけませんか」と 言えると、その 場で 決まります。今夜 書いて、明日の 朝 送ります。",
-            "audio": "/audio/meetings/asakai_muzukashii/s3-arrange-missing-25a2979a.wav"
-          }
-        },
         "closing": [
           {
-            "speakerId": "tomita",
-            "text": "では、きょうの 夕礼は ここまでです。明日は 10時30分に 出ます。お疲れさまでした。",
-            "audio": "/audio/meetings/asakai_muzukashii/s3-closing-0-fbe6bf4b.wav"
+            "speakerId": "hendy",
+            "text": "ありがとうございました。今日の 夕礼は ここまでです。また 明日 お願いします。"
           }
         ],
         "panels": [
           {
             "id": "kyou",
-            "label": "きょう やったこと",
+            "label": "今日 行ったこと",
+            "openAt": 2,
             "facts": [
               {
-                "id": "K1",
+                "id": "k1",
                 "keywords": [
-                  "20こずつ",
-                  "0.5秒",
-                  "直した",
-                  "レビュー",
-                  "見て もらった"
+                  "学生一覧API",
+                  "接続",
+                  "学生データ",
+                  "表示",
+                  "一覧"
                 ],
-                "fact": "一覧を 直して 50こで 0.5秒に なり、レビューも 受けた"
+                "fact": "学生一覧APIと 接続して、実際の 学生データを 表示できるように した"
               },
               {
-                "id": "K2",
+                "id": "k2",
                 "keywords": [
-                  "10こ ぜんぶ",
-                  "ぜんぶ 通",
-                  "全部 通"
+                  "キーワード検索",
+                  "キーワード"
                 ],
-                "fact": "テストが 10こ ぜんぶ 通った"
+                "fact": "キーワード検索を 作った"
               },
               {
-                "id": "K3",
+                "id": "k3",
                 "keywords": [
-                  "練習",
-                  "20分",
-                  "説明",
-                  "3分"
+                  "フィルター",
+                  "絞り込み",
+                  "大学",
+                  "JLPT",
+                  "スキル",
+                  "複数条件"
                 ],
-                "fact": "金曜の 練習を 20分 し、説明は 自分が 3分"
+                "fact": "大学・JLPTレベル・スキルによる 絞り込みと 複数条件検索を 作った"
               }
             ],
             "followups": [
               {
-                "speakerId": "tomita",
-                "text": "本日 した ことを、もう 少し くわしく お願いします。",
-                "audio": "/audio/meetings/asakai_muzukashii/s3-kyou-fu0-6799474d.wav"
+                "speakerId": "hendy",
+                "text": "今日 行ったことを、もう一度 お願いします。"
               },
               {
-                "speakerId": "tomita",
-                "text": "メモの 午前と 午後に、した ことが もう 1つ あります。それも お願いします。",
-                "audio": "/audio/meetings/asakai_muzukashii/s3-kyou-fu1-ae160bfe.wav"
+                "speakerId": "hendy",
+                "text": "作業記録を そのまま 読まずに、まとめて 話して ください。大きな 作業から 2つか 3つで けっこうです。"
               }
             ],
             "example": {
-              "speakerId": "tomita",
-              "text": "「一覧を 直して、50こで 0.5秒に なりました。テストは 10こ ぜんぶ 通りました。」",
-              "audio": "/audio/meetings/asakai_muzukashii/s3-kyou-ex-faa7f890.wav"
-            },
-            "openAt": 2
-          },
-          {
-            "id": "ashita",
-            "label": "あした やること",
-            "facts": [
-              {
-                "id": "A1",
-                "keywords": [
-                  "学校",
-                  "13時",
-                  "10時30分",
-                  "出ます"
-                ],
-                "fact": "13時に ひかり小学校。10時30分に 会社を 出る"
-              },
-              {
-                "id": "A2",
-                "keywords": [
-                  "説明",
-                  "3分"
-                ],
-                "fact": "一覧と 通知の 説明を 3分 する"
-              },
-              {
-                "id": "A3",
-                "keywords": [
-                  "紙を",
-                  "印刷",
-                  "18枚"
-                ],
-                "fact": "説明の 紙を 18枚 印刷する"
-              }
-            ],
-            "followups": [
-              {
-                "speakerId": "tomita",
-                "text": "明日の 予定を 教えて ください。",
-                "audio": "/audio/meetings/asakai_muzukashii/s3-ashita-fu0-495642de.wav"
-              },
-              {
-                "speakerId": "tomita",
-                "text": "メモの「あした」の 行は 3つ あります。3つ ぜんぶ お願いします。",
-                "audio": "/audio/meetings/asakai_muzukashii/s3-ashita-fu1-3ccae9fa.wav"
-              }
-            ],
-            "example": {
-              "speakerId": "tomita",
-              "text": "「明日は 10時30分に 出て、13時に 学校で 3分 説明します。使い方の 紙を 18枚 印刷して 持って 行きます。」",
-              "audio": "/audio/meetings/asakai_muzukashii/s3-ashita-ex-29ec5234.wav"
-            },
-            "openAt": 2
-          },
-          {
-            "id": "komari",
-            "label": "こまって いること",
-            "facts": [
-              {
-                "id": "C1",
-                "keywords": [
-                  "すみません",
-                  "申し訳",
-                  "もうしわけ",
-                  "通知が 来ない とき",
-                  "質問",
-                  "答え",
-                  "決まって いな",
-                  "答えられ"
-                ],
-                "fact": "おわびを 言ってから、明日 聞かれる 質問の 答えが まだ 決まって いないと 伝える",
-                "box": "おわびと 悪い しらせ",
-                "minHits": 2,
-                "allOf": [
-                  [
-                    "すみません",
-                    "申し訳",
-                    "もうしわけ"
-                  ],
-                  [
-                    "通知が 来ない とき",
-                    "質問",
-                    "答え",
-                    "決まって いな",
-                    "答えられ"
-                  ]
-                ]
-              },
-              {
-                "id": "C2",
-                "keywords": [
-                  "あしたの 朝",
-                  "明日の 朝",
-                  "10時",
-                  "までに"
-                ],
-                "fact": "明日の 朝 10時までに 決めたい",
-                "box": "いつまでに",
-                "minHits": 2
-              },
-              {
-                "id": "C3",
-                "keywords": [
-                  "富田",
-                  "決めて",
-                  "いただけ",
-                  "ください",
-                  "ほしい",
-                  "お願い",
-                  "対応"
-                ],
-                "fact": "富田さんに だれが 対応するかを 決めて ほしいと 頼む",
-                "box": "お願い",
-                "allOf": [
-                  [
-                    "富田"
-                  ],
-                  [
-                    "決めて",
-                    "いただけ",
-                    "ください",
-                    "ほしい",
-                    "お願い"
-                  ]
-                ]
-              }
-            ],
-            "followups": [
-              {
-                "speakerId": "tomita",
-                "text": "何か 詰まって いる ところは ありませんか。",
-                "audio": "/audio/meetings/asakai_muzukashii/s3-komari-fu0-848b7d65.wav"
-              },
-              {
-                "speakerId": "tomita",
-                "text": "こまって いることは 3つ 言います。①何が こまって いるか（あしたに ひびく ことなら、さいしょに「すみません」）②いつまでに 分かりそうか③だれに 何を して ほしいか。まだ 言って いない ものを お願いします。",
-                "audio": "/audio/meetings/asakai_muzukashii/s3-komari-fu1-ff63e417.wav"
-              }
-            ],
-            "example": {
-              "speakerId": "tomita",
-              "text": "「すみません。『通知が 来ない ときは どうしますか』の 答えが、まだ 決まって いません。明日の 朝 10時までに 決めたいです。富田さんに、だれが 対応するかを 決めて いただけませんか。」",
-              "audio": "/audio/meetings/asakai_muzukashii/s3-komari-ex-a220a1a2.wav"
+              "speakerId": "hendy",
+              "text": "「今日は、学生一覧APIと 接続して、実際の 学生データを 表示できるように しました。キーワード検索と、大学、JLPTレベル、スキルによる 絞り込みも 作りました。」"
             }
           },
           {
-            "id": "suuji",
-            "label": "数字を 1つ",
+            "id": "shinchoku",
+            "label": "進捗率",
             "rule": "number",
             "facts": [],
             "followups": [
               {
-                "speakerId": "tomita",
-                "text": "数字で 言うと、どのくらいですか。",
-                "audio": "/audio/meetings/asakai_muzukashii/s3-suuji-fu0-445a671f.wav"
+                "speakerId": "hendy",
+                "text": "進捗率を お願いします。"
               },
               {
-                "speakerId": "tomita",
-                "text": "「3回とも 来ない」「半分まで」の ように、数を 入れて ください。",
-                "audio": "/audio/meetings/asakai_muzukashii/s3-suuji-fu1-eb36b5a5.wav"
+                "speakerId": "hendy",
+                "text": "「現在、学生検索・スキル可視化フロントエンド機能全体の進捗は◯◯％です」の 形で お願いします。カードの 付せんに 書いて あります。"
               }
             ],
             "example": {
-              "speakerId": "tomita",
-              "text": "「10こ ぜんぶ 通りました。」",
-              "audio": "/audio/meetings/asakai_muzukashii/s3-suuji-ex-7cb21413.wav"
+              "speakerId": "hendy",
+              "text": "「現在、学生検索・スキル可視化フロントエンド機能全体の進捗は35％です。」"
+            }
+          },
+          {
+            "id": "ashita",
+            "label": "明日 行うこと",
+            "openAt": 2,
+            "facts": [
+              {
+                "id": "a1",
+                "keywords": [
+                  "学生詳細",
+                  "詳細画面",
+                  "移動"
+                ],
+                "fact": "学生詳細画面への 移動を 作る"
+              },
+              {
+                "id": "a2",
+                "keywords": [
+                  "スキルグラフ",
+                  "グラフ"
+                ],
+                "fact": "スキルグラフを 作る"
+              }
+            ],
+            "followups": [
+              {
+                "speakerId": "hendy",
+                "text": "明日 行うことを お願いします。"
+              },
+              {
+                "speakerId": "hendy",
+                "text": "「明日は、◯◯を します」の 形で お願いします。"
+              }
+            ],
+            "example": {
+              "speakerId": "hendy",
+              "text": "「明日は、学生詳細画面への 移動と、スキルグラフの 作成を 進めます。」"
+            }
+          },
+          {
+            "id": "komari",
+            "label": "問題点",
+            "facts": [
+              {
+                "id": "komari1",
+                "keywords": [
+                  "今のところ問題はありません",
+                  "問題はありません",
+                  "問題は ありません",
+                  "ありません",
+                  "ないです",
+                  "特に",
+                  "大きな問題は",
+                  "順調"
+                ],
+                "fact": "今のところ 問題は ない"
+              }
+            ],
+            "followups": [
+              {
+                "speakerId": "hendy",
+                "text": "問題は ありましたか。"
+              },
+              {
+                "speakerId": "hendy",
+                "text": "無ければ「今のところ問題はありません」と 言って ください。"
+              }
+            ],
+            "example": {
+              "speakerId": "hendy",
+              "text": "「今のところ問題はありません。」"
             }
           }
         ],
         "hintLines": [
-          "メモの 中で、もう 終わった ことは どれですか。",
-          "あした する ことは いくつ ありますか。",
-          "こまって いることは 何ですか。いつまでに 分かりそうですか。だれに 何を して ほしいですか。あしたに ひびく ことなら、さいしょに「すみません」と 言います。",
-          "技術の ことでは ない こまって いることも あります。"
+          "作業記録の 中で、今日 終わったことは どれですか。まとめて 1つの 文に できますか。",
+          "担当の 機能 全体の 進捗は 何％ですか。",
+          "明日 することは 何ですか。",
+          "問題は ありましたか。無ければ「今のところ問題はありません」と 言います。"
+        ]
+      },
+      {
+        "day": "tue",
+        "time": "17:50",
+        "kind": "yuu",
+        "title": "火曜日 17:50 夕礼 ・ 司会 ヘンディさん",
+        "lead": "明日は 実際の 学生データで グラフを 確認します。",
+        "card": {
+          "duty": "学生検索・スキル可視化フロントエンド機能",
+          "goal": "金曜日までに、学生を 検索して、詳細を 見て、スキルを グラフで 確認できるように する。",
+          "deadline": "勤務時間は 9:00〜18:00。夕礼は 17:50〜18:00。",
+          "progress": [
+            {
+              "label": "学生一覧・検索",
+              "state": "done"
+            },
+            {
+              "label": "絞り込み",
+              "state": "done"
+            },
+            {
+              "label": "学生詳細への 移動",
+              "state": "done"
+            },
+            {
+              "label": "スキルグラフ",
+              "state": "now"
+            },
+            {
+              "label": "スマホ対応・結合テスト",
+              "state": "later"
+            }
+          ],
+          "memo": [
+            {
+              "head": "09:00",
+              "text": "学生カードから 学生詳細画面への 移動を 作成",
+              "aside": false
+            },
+            {
+              "head": "10:00",
+              "text": "奥田さんの 学生詳細画面への 移動を 確認",
+              "aside": false
+            },
+            {
+              "head": "10:30",
+              "text": "スキルグラフ 作成開始",
+              "aside": false
+            },
+            {
+              "head": "11:20",
+              "text": "仮データで グラフ表示",
+              "aside": false
+            },
+            {
+              "head": "12:00",
+              "text": "昼休み",
+              "aside": true
+            },
+            {
+              "head": "13:00",
+              "text": "ニャムさんの スキルデータ仕様を 確認",
+              "aside": false
+            },
+            {
+              "head": "13:30",
+              "text": "スキル名の 表記を そろえる 処理を 作成",
+              "aside": false
+            },
+            {
+              "head": "14:00",
+              "text": "点数の 高い順に 並べる 処理を 作成",
+              "aside": false
+            },
+            {
+              "head": "14:30",
+              "text": "上位6スキル 取得処理を 作成",
+              "aside": false
+            },
+            {
+              "head": "15:00",
+              "text": "点数未登録の スキルを 除外",
+              "aside": false
+            },
+            {
+              "head": "15:30",
+              "text": "グラフ用データ形式に 変換",
+              "aside": false
+            },
+            {
+              "head": "16:00",
+              "text": "スキルが 多い学生で 表示確認",
+              "aside": false
+            },
+            {
+              "head": "16:30",
+              "text": "スキルが 少ない学生で 表示確認",
+              "aside": false
+            },
+            {
+              "head": "17:00",
+              "text": "奥田さんの 学生詳細画面へ 仮グラフを 組み込み",
+              "aside": false
+            },
+            {
+              "head": "17:30",
+              "text": "グラフの 表示を 調整",
+              "aside": false
+            }
+          ],
+          "pin": "学生検索・スキル可視化フロントエンド機能全体の 進捗: 55％",
+          "todo": [
+            "作業記録を そのまま 読み上げません。まとめて 話します。",
+            "① 今日 行ったこと",
+            "② 進捗率",
+            "③ 明日 行うこと",
+            "④ 問題点"
+          ]
+        },
+        "opening": [
+          {
+            "speakerId": "hendy",
+            "text": "お疲れさまです。火曜日の 夕礼を 始めます。まず 私から。"
+          }
+        ],
+        "sample": {
+          "speakerId": "hendy",
+          "text": "今日は、キーワード検索と 検索結果の 並び替えを 作りました。現在、学生検索バックエンド機能全体の 進捗は 75％です。明日は、検索結果件数と 学生詳細画面で 必要な データを 整理します。今のところ 問題は ありません。"
+        },
+        "prompt": {
+          "speakerId": "hendy",
+          "text": "では 次に ◯◯さん、お願いします。"
+        },
+        "ack": {
+          "speakerId": "hendy",
+          "text": "はい。今日 行ったこと、進捗率、明日 行うこと、問題点。4つとも 聞けました。"
+        },
+        "members": [
+          {
+            "speakerId": "okuda",
+            "text": "奥田です。今日は、学生一覧から 学生詳細画面へ 移動できるように しました。スキルグラフを 表示する 領域も 準備しました。現在、学生詳細フロントエンド機能全体の 進捗は 70％です。明日は、実際の スキルグラフを 学生詳細画面に 組み込みます。今のところ 問題は ありません。"
+          },
+          {
+            "speakerId": "nyam",
+            "text": "ニャムです。今日は、学生詳細APIで スキル名、点数、カテゴリを 返せるように しました。現在、学生・スキルデータ管理機能全体の 進捗は 75％です。明日は、AUPPと CADTの 実際の 学生データを 確認します。今のところ 問題は ありません。"
+          }
+        ],
+        "closing": [
+          {
+            "speakerId": "hendy",
+            "text": "ありがとうございました。明日も よろしく お願いします。"
+          }
+        ],
+        "panels": [
+          {
+            "id": "kyou",
+            "label": "今日 行ったこと",
+            "openAt": 2,
+            "facts": [
+              {
+                "id": "k1",
+                "keywords": [
+                  "学生詳細",
+                  "詳細画面",
+                  "移動"
+                ],
+                "fact": "学生一覧から 学生詳細画面へ 移動できるように した"
+              },
+              {
+                "id": "k2",
+                "keywords": [
+                  "スキルグラフ",
+                  "グラフ"
+                ],
+                "fact": "スキルグラフを 作った"
+              },
+              {
+                "id": "k3",
+                "keywords": [
+                  "スキル名",
+                  "表記",
+                  "そろえ",
+                  "点数",
+                  "並べ",
+                  "上位6",
+                  "除外",
+                  "未登録"
+                ],
+                "fact": "スキル名をそろえ、点数順に並べ、上位6スキルを表示し、点数未登録を除外した"
+              }
+            ],
+            "followups": [
+              {
+                "speakerId": "hendy",
+                "text": "今日 行ったことを、もう一度 お願いします。"
+              },
+              {
+                "speakerId": "hendy",
+                "text": "作業記録を そのまま 読まずに、まとめて 話して ください。大きな 作業から 2つか 3つで けっこうです。"
+              }
+            ],
+            "example": {
+              "speakerId": "hendy",
+              "text": "「今日は、学生一覧から 学生詳細画面へ 移動できるように しました。それから、スキルグラフを 作りました。スキル名を そろえて、点数が 高い順に 並べ、上位6スキルを 表示できるように しました。」"
+            }
+          },
+          {
+            "id": "shinchoku",
+            "label": "進捗率",
+            "rule": "number",
+            "facts": [],
+            "followups": [
+              {
+                "speakerId": "hendy",
+                "text": "進捗率を お願いします。"
+              },
+              {
+                "speakerId": "hendy",
+                "text": "「現在、学生検索・スキル可視化フロントエンド機能全体の進捗は◯◯％です」の 形で お願いします。カードの 付せんに 書いて あります。"
+              }
+            ],
+            "example": {
+              "speakerId": "hendy",
+              "text": "「現在、学生検索・スキル可視化フロントエンド機能全体の進捗は55％です。」"
+            }
+          },
+          {
+            "id": "ashita",
+            "label": "明日 行うこと",
+            "openAt": 2,
+            "facts": [
+              {
+                "id": "a1",
+                "keywords": [
+                  "AUPP",
+                  "CADT",
+                  "実際",
+                  "実データ",
+                  "学生データ"
+                ],
+                "fact": "実際の AUPPと CADTの 学生データを 使う"
+              },
+              {
+                "id": "a2",
+                "keywords": [
+                  "スキルグラフ",
+                  "グラフ",
+                  "確認"
+                ],
+                "fact": "スキルグラフを 確認する"
+              }
+            ],
+            "followups": [
+              {
+                "speakerId": "hendy",
+                "text": "明日 行うことを お願いします。"
+              },
+              {
+                "speakerId": "hendy",
+                "text": "「明日は、◯◯を します」の 形で お願いします。"
+              }
+            ],
+            "example": {
+              "speakerId": "hendy",
+              "text": "「明日は、実際の AUPPと CADTの 学生データを 使って、スキルグラフを 確認します。」"
+            }
+          },
+          {
+            "id": "komari",
+            "label": "問題点",
+            "facts": [
+              {
+                "id": "komari1",
+                "keywords": [
+                  "今のところ問題はありません",
+                  "問題はありません",
+                  "問題は ありません",
+                  "ありません",
+                  "ないです",
+                  "特に",
+                  "大きな問題は",
+                  "順調"
+                ],
+                "fact": "今のところ 問題は ない"
+              }
+            ],
+            "followups": [
+              {
+                "speakerId": "hendy",
+                "text": "問題は ありましたか。"
+              },
+              {
+                "speakerId": "hendy",
+                "text": "無ければ「今のところ問題はありません」と 言って ください。"
+              }
+            ],
+            "example": {
+              "speakerId": "hendy",
+              "text": "「今のところ問題はありません。」"
+            }
+          }
+        ],
+        "hintLines": [
+          "作業記録の 中で、今日 終わったことは どれですか。まとめて 1つの 文に できますか。",
+          "担当の 機能 全体の 進捗は 何％ですか。",
+          "明日 することは 何ですか。",
+          "問題は ありましたか。無ければ「今のところ問題はありません」と 言います。"
+        ]
+      },
+      {
+        "day": "wed",
+        "time": "17:50",
+        "kind": "yuu",
+        "title": "水曜日 17:50 夕礼 ・ 司会 ヘンディさん",
+        "lead": "明日は データ修正後の 確認から 始めます。",
+        "card": {
+          "duty": "学生検索・スキル可視化フロントエンド機能",
+          "goal": "金曜日までに、学生を 検索して、詳細を 見て、スキルを グラフで 確認できるように する。",
+          "deadline": "勤務時間は 9:00〜18:00。夕礼は 17:50〜18:00。",
+          "progress": [
+            {
+              "label": "学生一覧・検索",
+              "state": "done"
+            },
+            {
+              "label": "絞り込み",
+              "state": "done"
+            },
+            {
+              "label": "学生詳細への 移動",
+              "state": "done"
+            },
+            {
+              "label": "スキルグラフ",
+              "state": "now"
+            },
+            {
+              "label": "スマホ対応・結合テスト",
+              "state": "later"
+            }
+          ],
+          "memo": [
+            {
+              "head": "09:00",
+              "text": "AUPP学生の 実データを 確認",
+              "aside": false
+            },
+            {
+              "head": "09:30",
+              "text": "AUPP学生10名の スキルグラフを 確認",
+              "aside": false
+            },
+            {
+              "head": "10:30",
+              "text": "上位6スキルの 表示を 確認",
+              "aside": false
+            },
+            {
+              "head": "11:20",
+              "text": "スキル名の 表示を 調整",
+              "aside": false
+            },
+            {
+              "head": "12:00",
+              "text": "昼休み",
+              "aside": true
+            },
+            {
+              "head": "13:00",
+              "text": "CADT学生の 実データを 確認",
+              "aside": false
+            },
+            {
+              "head": "14:00",
+              "text": "CADT学生10名の スキルグラフを 確認",
+              "aside": false
+            },
+            {
+              "head": "15:00",
+              "text": "奥田さんの 学生詳細画面に スキルグラフを 組み込み",
+              "aside": false
+            },
+            {
+              "head": "16:00",
+              "text": "AUPP・CADTの 複数学生で 表示を 確認",
+              "aside": false
+            },
+            {
+              "head": "17:05",
+              "text": "一部の 学生で、同じ スキルが 別の 名前と 点数で 登録されていることを 確認",
+              "aside": false
+            },
+            {
+              "head": "17:05",
+              "text": "例: JavaScript 85 ／ Java Script 70",
+              "aside": false
+            },
+            {
+              "head": "17:10",
+              "text": "ヘンディさんに 問題を 報告",
+              "aside": false
+            },
+            {
+              "head": "17:15",
+              "text": "ニャムさんが スキルデータを 調査",
+              "aside": false
+            },
+            {
+              "head": "17:15",
+              "text": "調査結果: スキル名の 表記に 揺れ／古い スキルデータが 残っている",
+              "aside": false
+            },
+            {
+              "head": "17:30",
+              "text": "最新の スキル点数のみ 表示する 方針を 確認",
+              "aside": false
+            },
+            {
+              "head": "17:40",
+              "text": "翌日、データ修正後に スキルグラフを 再確認する 予定を 確認",
+              "aside": false
+            }
+          ],
+          "pin": "学生検索・スキル可視化フロントエンド機能全体の 進捗: 75％",
+          "todo": [
+            "作業記録を そのまま 読み上げません。まとめて 話します。",
+            "① 今日 行ったこと",
+            "② 進捗率",
+            "③ 明日 行うこと",
+            "④ 問題点"
+          ]
+        },
+        "opening": [
+          {
+            "speakerId": "hendy",
+            "text": "お疲れさまです。水曜日の 夕礼を 始めます。まず 私から。"
+          }
+        ],
+        "sample": {
+          "speakerId": "hendy",
+          "text": "今日は、検索結果件数と 学生詳細画面で 必要な データを 確認しました。現在、学生検索バックエンド機能全体の 進捗は 90％です。明日は、複数条件検索を 含めて 全体テストを します。スキルデータに 問題が 見つかりましたが、原因は 確認できています。"
+        },
+        "prompt": {
+          "speakerId": "hendy",
+          "text": "では 次に ◯◯さん、お願いします。"
+        },
+        "ack": {
+          "speakerId": "hendy",
+          "text": "はい。今日 行ったこと、進捗率、明日 行うこと、問題点。4つとも 聞けました。"
+        },
+        "members": [
+          {
+            "speakerId": "okuda",
+            "text": "奥田です。今日は、学生詳細画面に スキルグラフを 組み込みました。現在、学生詳細フロントエンド機能全体の 進捗は 85％です。明日は、学生一覧から 学生詳細画面まで 全体を 確認します。スキルデータの 修正後に、グラフも もう一度 確認します。"
+          },
+          {
+            "speakerId": "nyam",
+            "text": "ニャムです。今日は、AUPPと CADTの 学生データを 確認しました。夕方、スキルデータを 調査して、スキル名の 表記に 揺れが あることと、古い スキルデータが 残っていることを 確認しました。現在、学生・スキルデータ管理機能全体の 進捗は 90％です。明日は、古い データを 整理して、最新の スキル点数に そろえます。"
+          }
+        ],
+        "closing": [
+          {
+            "speakerId": "hendy",
+            "text": "では、今日の 夕礼は ここまでです。明日は 修正後の 確認から お願いします。"
+          }
+        ],
+        "panels": [
+          {
+            "id": "kyou",
+            "label": "今日 行ったこと",
+            "openAt": 2,
+            "facts": [
+              {
+                "id": "k1",
+                "keywords": [
+                  "AUPP",
+                  "CADT",
+                  "実データ",
+                  "学生データ",
+                  "スキルグラフ",
+                  "確認"
+                ],
+                "fact": "AUPPと CADTの 実際の 学生データで スキルグラフを 確認した"
+              },
+              {
+                "id": "k2",
+                "keywords": [
+                  "学生詳細",
+                  "詳細画面",
+                  "組み込",
+                  "組込"
+                ],
+                "fact": "学生詳細画面への 組み込みを 進めた"
+              }
+            ],
+            "followups": [
+              {
+                "speakerId": "hendy",
+                "text": "今日 行ったことを、もう一度 お願いします。"
+              },
+              {
+                "speakerId": "hendy",
+                "text": "作業記録を そのまま 読まずに、まとめて 話して ください。大きな 作業から 2つか 3つで けっこうです。"
+              }
+            ],
+            "example": {
+              "speakerId": "hendy",
+              "text": "「今日は、AUPPと CADTの 実際の 学生データを 使って、スキルグラフを 確認しました。学生詳細画面への 組み込みも 進めました。」"
+            }
+          },
+          {
+            "id": "shinchoku",
+            "label": "進捗率",
+            "rule": "number",
+            "facts": [],
+            "followups": [
+              {
+                "speakerId": "hendy",
+                "text": "進捗率を お願いします。"
+              },
+              {
+                "speakerId": "hendy",
+                "text": "「現在、学生検索・スキル可視化フロントエンド機能全体の進捗は◯◯％です」の 形で お願いします。カードの 付せんに 書いて あります。"
+              }
+            ],
+            "example": {
+              "speakerId": "hendy",
+              "text": "「現在、学生検索・スキル可視化フロントエンド機能全体の進捗は75％です。」"
+            }
+          },
+          {
+            "id": "ashita",
+            "label": "明日 行うこと",
+            "openAt": 2,
+            "facts": [
+              {
+                "id": "a1",
+                "keywords": [
+                  "修正",
+                  "データ",
+                  "再確認",
+                  "スキルグラフ"
+                ],
+                "fact": "修正された データで スキルグラフを 再確認する"
+              },
+              {
+                "id": "a2",
+                "keywords": [
+                  "全体テスト",
+                  "テスト",
+                  "結合"
+                ],
+                "fact": "全体テストを する"
+              }
+            ],
+            "followups": [
+              {
+                "speakerId": "hendy",
+                "text": "明日 行うことを お願いします。"
+              },
+              {
+                "speakerId": "hendy",
+                "text": "「明日は、◯◯を します」の 形で お願いします。"
+              }
+            ],
+            "example": {
+              "speakerId": "hendy",
+              "text": "「明日は、修正された データで スキルグラフを 再確認して、そのあと 全体テストを します。」"
+            }
+          },
+          {
+            "id": "komari",
+            "label": "問題点",
+            "openAt": 2,
+            "facts": [
+              {
+                "id": "m1",
+                "keywords": [
+                  "JavaScript",
+                  "2件",
+                  "別の名前",
+                  "別の 名前",
+                  "点数",
+                  "重複",
+                  "見つけ"
+                ],
+                "fact": "同じ スキルが 別の 名前と 点数で 2件 表示される 問題を 見つけた"
+              },
+              {
+                "id": "m2",
+                "keywords": [
+                  "ヘンディ",
+                  "報告",
+                  "夕方",
+                  "すぐ"
+                ],
+                "fact": "夕方、その場で ヘンディさんに 報告した"
+              },
+              {
+                "id": "m3",
+                "keywords": [
+                  "ニャム",
+                  "調査",
+                  "表記",
+                  "揺れ",
+                  "古い",
+                  "原因",
+                  "最新"
+                ],
+                "fact": "ニャムさんが 調査して、表記の 揺れと 古いデータが 原因だと 分かった"
+              }
+            ],
+            "followups": [
+              {
+                "speakerId": "hendy",
+                "text": "夕方の 件も 報告に 入れて ください。"
+              },
+              {
+                "speakerId": "hendy",
+                "text": "何が 起きて、誰に 報告して、何が 分かったか。この 順で お願いします。"
+              }
+            ],
+            "example": {
+              "speakerId": "hendy",
+              "text": "「夕方、JavaScriptが 別の 名前と 点数で 2件 表示される 問題を 見つけたため、ヘンディさんに 報告しました。そのあと、ニャムさんに 調査していただき、スキル名の 表記に 揺れが あることと、古い スキルデータが 残っていることが 分かりました。」"
+            }
+          }
+        ],
+        "hintLines": [
+          "作業記録の 中で、今日 終わったことは どれですか。まとめて 1つの 文に できますか。",
+          "担当の 機能 全体の 進捗は 何％ですか。",
+          "明日 することは 何ですか。",
+          "問題は ありましたか。無ければ「今のところ問題はありません」と 言います。"
+        ],
+        "arrange": {
+          "done": {
+            "speakerId": "hendy",
+            "text": "早めに 報告してくれて ありがとうございます。17時05分に 見つけて、17時10分に 報告。夕礼を 待たなかったのが 良かったです。明日は、データ修正後の 確認から 進めましょう。"
+          },
+          "missing": {
+            "speakerId": "hendy",
+            "text": "夕方の 件を 補足します。17時05分に 問題を 見つけて、17時10分に 報告してくれました。夕礼を 待たずに 報告する。これが 大事です。明日は、データ修正後の 確認から 進めましょう。"
+          }
+        }
+      },
+      {
+        "day": "thu",
+        "time": "17:50",
+        "kind": "yuu",
+        "title": "木曜日 17:50 夕礼 ・ 司会 ヘンディさん",
+        "lead": "明日は 最終テストと コードレビューです。",
+        "card": {
+          "duty": "学生検索・スキル可視化フロントエンド機能",
+          "goal": "金曜日までに、学生を 検索して、詳細を 見て、スキルを グラフで 確認できるように する。",
+          "deadline": "勤務時間は 9:00〜18:00。夕礼は 17:50〜18:00。",
+          "progress": [
+            {
+              "label": "学生一覧・検索",
+              "state": "done"
+            },
+            {
+              "label": "絞り込み",
+              "state": "done"
+            },
+            {
+              "label": "学生詳細への 移動",
+              "state": "done"
+            },
+            {
+              "label": "スキルグラフ",
+              "state": "done"
+            },
+            {
+              "label": "スマホ対応・結合テスト",
+              "state": "now"
+            }
+          ],
+          "memo": [
+            {
+              "head": "09:00",
+              "text": "ニャムさんが 古い スキルデータを 整理",
+              "aside": false
+            },
+            {
+              "head": "09:30",
+              "text": "スキル名の 表記を 統一",
+              "aside": false
+            },
+            {
+              "head": "10:00",
+              "text": "修正された 学生データを 取得",
+              "aside": false
+            },
+            {
+              "head": "10:30",
+              "text": "AUPP学生で スキルグラフを 再確認",
+              "aside": false
+            },
+            {
+              "head": "11:00",
+              "text": "CADT学生で スキルグラフを 再確認",
+              "aside": false
+            },
+            {
+              "head": "11:30",
+              "text": "最新の 点数だけ 表示されることを 確認",
+              "aside": false
+            },
+            {
+              "head": "12:00",
+              "text": "昼休み",
+              "aside": true
+            },
+            {
+              "head": "13:00",
+              "text": "大学＋JLPT＋スキルの 複数条件検索を 確認",
+              "aside": false
+            },
+            {
+              "head": "13:30",
+              "text": "検索結果から 学生詳細画面へ 移動",
+              "aside": false
+            },
+            {
+              "head": "14:00",
+              "text": "学生プロフィール表示を 確認",
+              "aside": false
+            },
+            {
+              "head": "14:30",
+              "text": "スキルグラフ表示を 確認",
+              "aside": false
+            },
+            {
+              "head": "15:00",
+              "text": "ポートフォリオリンクを 確認",
+              "aside": false
+            },
+            {
+              "head": "15:30",
+              "text": "検索結果0件の 場合を 確認",
+              "aside": false
+            },
+            {
+              "head": "16:00",
+              "text": "スマートフォンで 検索画面を 確認",
+              "aside": false
+            },
+            {
+              "head": "16:30",
+              "text": "スマートフォンで 学生詳細画面と スキルグラフを 確認",
+              "aside": false
+            },
+            {
+              "head": "16:40",
+              "text": "スキルグラフの 文字が 一部 重なる 問題を 確認",
+              "aside": false
+            },
+            {
+              "head": "17:00",
+              "text": "表示を 修正",
+              "aside": false
+            },
+            {
+              "head": "17:30",
+              "text": "再テスト完了",
+              "aside": false
+            }
+          ],
+          "pin": "学生検索・スキル可視化フロントエンド機能全体の 進捗: 90％",
+          "todo": [
+            "作業記録を そのまま 読み上げません。まとめて 話します。",
+            "① 今日 行ったこと",
+            "② 進捗率",
+            "③ 明日 行うこと",
+            "④ 問題点"
+          ]
+        },
+        "opening": [
+          {
+            "speakerId": "hendy",
+            "text": "お疲れさまです。木曜日の 夕礼を 始めます。まず 私から。"
+          }
+        ],
+        "sample": {
+          "speakerId": "hendy",
+          "text": "今日は、複数条件検索を 含めて 全体の 動きを 確認しました。現在、学生検索バックエンド機能全体の 進捗は 100％です。明日は、フロントエンドの 最終テストと コードレビューを サポートします。今のところ 大きな 問題は ありません。"
+        },
+        "prompt": {
+          "speakerId": "hendy",
+          "text": "では 次に ◯◯さん、お願いします。"
+        },
+        "ack": {
+          "speakerId": "hendy",
+          "text": "はい。今日 行ったこと、進捗率、明日 行うこと、問題点。4つとも 聞けました。"
+        },
+        "members": [
+          {
+            "speakerId": "okuda",
+            "text": "奥田です。今日は、学生一覧から 学生詳細画面まで 全体を 確認しました。プロフィール、ポートフォリオ、スキルグラフも 確認しました。現在、学生詳細フロントエンド機能全体の 進捗は 100％です。明日は、最終テストで 問題が あれば 修正します。今のところ 問題は ありません。"
+          },
+          {
+            "speakerId": "nyam",
+            "text": "ニャムです。今日は、古い スキルデータを 整理して、スキル名の 表記を そろえました。最新の スキル点数だけ 使える 状態に しました。現在、学生・スキルデータ管理機能全体の 進捗は 100％です。明日は、最終テストで 学生データを 確認します。今のところ 問題は ありません。"
+          }
+        ],
+        "closing": [
+          {
+            "speakerId": "hendy",
+            "text": "ありがとうございました。明日で 最後です。よろしく お願いします。"
+          }
+        ],
+        "panels": [
+          {
+            "id": "kyou",
+            "label": "今日 行ったこと",
+            "openAt": 2,
+            "facts": [
+              {
+                "id": "k1",
+                "keywords": [
+                  "修正",
+                  "再テスト",
+                  "再確認",
+                  "最新",
+                  "点数"
+                ],
+                "fact": "修正された データで 再テストし、最新の 点数だけ 表示されることを 確認した"
+              },
+              {
+                "id": "k2",
+                "keywords": [
+                  "全体",
+                  "通して",
+                  "検索",
+                  "学生詳細",
+                  "スキルグラフ",
+                  "テスト"
+                ],
+                "fact": "検索画面から 学生詳細画面、スキルグラフまで 全体を 通して テストした"
+              }
+            ],
+            "followups": [
+              {
+                "speakerId": "hendy",
+                "text": "今日 行ったことを、もう一度 お願いします。"
+              },
+              {
+                "speakerId": "hendy",
+                "text": "作業記録を そのまま 読まずに、まとめて 話して ください。大きな 作業から 2つか 3つで けっこうです。"
+              }
+            ],
+            "example": {
+              "speakerId": "hendy",
+              "text": "「今日は、昨日 見つかった スキルデータの 問題について、修正された データで 再テストしました。そのあと、検索画面から 学生詳細画面、スキルグラフまで 全体を 通して テストしました。」"
+            }
+          },
+          {
+            "id": "shinchoku",
+            "label": "進捗率",
+            "rule": "number",
+            "facts": [],
+            "followups": [
+              {
+                "speakerId": "hendy",
+                "text": "進捗率を お願いします。"
+              },
+              {
+                "speakerId": "hendy",
+                "text": "「現在、学生検索・スキル可視化フロントエンド機能全体の進捗は◯◯％です」の 形で お願いします。カードの 付せんに 書いて あります。"
+              }
+            ],
+            "example": {
+              "speakerId": "hendy",
+              "text": "「現在、学生検索・スキル可視化フロントエンド機能全体の進捗は90％です。」"
+            }
+          },
+          {
+            "id": "ashita",
+            "label": "明日 行うこと",
+            "openAt": 2,
+            "facts": [
+              {
+                "id": "a1",
+                "keywords": [
+                  "最終テスト",
+                  "テスト"
+                ],
+                "fact": "最終テストを する"
+              },
+              {
+                "id": "a2",
+                "keywords": [
+                  "コードレビュー",
+                  "レビュー"
+                ],
+                "fact": "コードレビューを する"
+              }
+            ],
+            "followups": [
+              {
+                "speakerId": "hendy",
+                "text": "明日 行うことを お願いします。"
+              },
+              {
+                "speakerId": "hendy",
+                "text": "「明日は、◯◯を します」の 形で お願いします。"
+              }
+            ],
+            "example": {
+              "speakerId": "hendy",
+              "text": "「明日は、最終テストと コードレビューを します。」"
+            }
+          },
+          {
+            "id": "komari",
+            "label": "問題点",
+            "openAt": 2,
+            "facts": [
+              {
+                "id": "m1",
+                "keywords": [
+                  "スマートフォン",
+                  "スマホ",
+                  "文字",
+                  "重なる",
+                  "重な"
+                ],
+                "fact": "スマートフォンで スキルグラフの 文字が 重なる 問題が あった"
+              },
+              {
+                "id": "m2",
+                "keywords": [
+                  "修正",
+                  "再テスト",
+                  "今日中",
+                  "完了",
+                  "終わ"
+                ],
+                "fact": "今日中に 修正して 再テストまで 完了している"
+              }
+            ],
+            "followups": [
+              {
+                "speakerId": "hendy",
+                "text": "問題点を お願いします。今 どうなっているかも 教えて ください。"
+              },
+              {
+                "speakerId": "hendy",
+                "text": "何が あって、今 どうなっているか。この 2つで お願いします。"
+              }
+            ],
+            "example": {
+              "speakerId": "hendy",
+              "text": "「スマートフォンで スキルグラフの 文字が 重なる 問題が ありましたが、今日中に 修正して 再テストまで 完了しています。」"
+            }
+          }
+        ],
+        "hintLines": [
+          "作業記録の 中で、今日 終わったことは どれですか。まとめて 1つの 文に できますか。",
+          "担当の 機能 全体の 進捗は 何％ですか。",
+          "明日 することは 何ですか。",
+          "問題は ありましたか。無ければ「今のところ問題はありません」と 言います。"
         ]
       },
       {
         "day": "fri",
-        "time": "17:30",
+        "time": "17:50",
         "kind": "yuu",
-        "title": "金曜日 17:30 夕礼 ・ 司会 富田さん ・ 藤木取締役 同席",
-        "lead": "今週の さいごの 夕礼です。",
+        "title": "金曜日 17:50 夕礼 ・ 司会 ヘンディさん ・ 藤木取締役 同席",
+        "lead": "Next Talent の 学生検索と スキルグラフが 完成しました。",
         "card": {
-          "duty": "おしらせの 一覧の 画面（日づけ・先生の 名前・読んだ／まだ の しるし・通知）",
-          "goal": "金曜日 13時、ひかり小学校で 先生 18人に 見せる",
-          "deadline": "木曜日の 夕方までに、テストを ぜんぶ 通す",
+          "duty": "学生検索・スキル可視化フロントエンド機能",
+          "goal": "金曜日までに、学生を 検索して、詳細を 見て、スキルを グラフで 確認できるように する。",
+          "deadline": "勤務時間は 9:00〜18:00。夕礼は 17:50〜18:00。",
           "progress": [
             {
-              "label": "一覧の 画面",
+              "label": "学生一覧・検索",
               "state": "done"
             },
             {
-              "label": "読んだ の しるし",
+              "label": "絞り込み",
               "state": "done"
             },
             {
-              "label": "通知（iPhone）",
+              "label": "学生詳細への 移動",
               "state": "done"
             },
             {
-              "label": "テスト 10こ",
+              "label": "スキルグラフ",
               "state": "done"
             },
             {
-              "label": "学校で 見せる",
+              "label": "スマホ対応・結合テスト",
               "state": "done"
             }
           ],
           "memo": [
             {
+              "head": "09:00",
+              "text": "最終確認項目を 整理",
+              "aside": false
+            },
+            {
+              "head": "10:00",
+              "text": "キーワード検索を 確認",
+              "aside": false
+            },
+            {
+              "head": "10:30",
+              "text": "大学フィルターを 確認",
+              "aside": false
+            },
+            {
+              "head": "11:00",
+              "text": "JLPTフィルターを 確認",
+              "aside": false
+            },
+            {
+              "head": "11:30",
+              "text": "スキルフィルターを 確認",
+              "aside": false
+            },
+            {
+              "head": "12:00",
+              "text": "昼休み",
+              "aside": true
+            },
+            {
               "head": "13:00",
-              "text": "ひかり小学校。先生 18人。ヘンディさんが おしらせを 1つ 出した。",
-              "aside": false
-            },
-            {
-              "head": "13:05",
-              "text": "18人 ぜんぶの スマホに 通知が 来た。iPhone 12人、Android 6人。",
-              "aside": false
-            },
-            {
-              "head": "13:10",
-              "text": "一覧の 説明を 3分 した。「読んだ／まだ」の しるしに、先生が うなずいた。",
-              "aside": false
-            },
-            {
-              "head": "13:20",
-              "text": "質問が 3つ 出た。通知が 来ない とき。古い スマホ。文字を 大きく できるか。",
+              "text": "複数条件検索を 確認",
               "aside": false
             },
             {
               "head": "13:30",
-              "text": "5人の 先生が「文字を 大きく して ほしい」と 言った。",
+              "text": "学生詳細画面を 確認",
               "aside": false
             },
             {
               "head": "14:00",
-              "text": "先生たちは「紙より 早い。来月から 使いたい」と 言った。",
+              "text": "スキルグラフを 確認",
+              "aside": false
+            },
+            {
+              "head": "14:30",
+              "text": "AUPP・CADTの 複数学生で 確認",
+              "aside": false
+            },
+            {
+              "head": "15:00",
+              "text": "奥田さんが 学生詳細画面を レビュー",
+              "aside": false
+            },
+            {
+              "head": "15:30",
+              "text": "ヘンディさんが コードレビュー",
               "aside": false
             },
             {
               "head": "16:00",
-              "text": "会社に 戻った。文字を 大きく すると、一覧の 形が くずれるか、まだ 分からない。画面の 形は ヘンディさんが くわしい。",
+              "text": "レビュー指摘を 修正",
               "aside": false
             },
             {
-              "head": "来週の 月曜日",
-              "text": "文字を 大きく する 設定を 作り始める。二日 ぐらい。",
+              "head": "16:40",
+              "text": "再テスト",
               "aside": false
             },
             {
-              "head": "来週の 月曜日",
-              "text": "3つの 質問の 答えを 書いて、富田さんに 送る。",
-              "aside": false
-            },
-            {
-              "head": "来週の 月曜日",
-              "text": "先生用の 使い方の 紙を 書き始める。4枚。",
+              "head": "17:20",
+              "text": "全確認項目 完了",
               "aside": false
             }
           ],
-          "pin": "金曜日 13時、先生 18人に 見せる。iPhone の 先生は 12人。",
+          "pin": "学生検索・スキル可視化フロントエンド機能全体の 進捗: 100％",
           "todo": [
-            "この メモを 整理します。同じ ことの 行は 1つに まとめます。要らない 行は 言いません。",
-            "きょう・あした・こまって いることの 順に 話します。こまって いることは、いつまでに 分かりそうか と、だれに 何を して ほしいかも 言います。",
-            "きょうは 金曜日です。「あした」は 来週の 月曜日です。"
+            "作業記録を そのまま 読み上げません。まとめて 話します。",
+            "① 今日 行ったこと",
+            "② 進捗率",
+            "③ 明日 行うこと",
+            "④ 問題点"
           ]
         },
         "opening": [
           {
-            "speakerId": "tomita",
-            "text": "お疲れさまです。金曜日の 夕礼を 始めます。きょうは 学校で 見せました。藤木さんも 出て います。まず 奥田さんから お願いします。",
-            "audio": "/audio/meetings/asakai_muzukashii/s4-opening-0-f30026b4.wav"
+            "speakerId": "hendy",
+            "text": "お疲れさまです。金曜日の 夕礼を 始めます。今日は 藤木取締役も 同席しています。まず 私から。"
           }
         ],
         "sample": {
-          "speakerId": "okuda",
-          "text": "はい。奥田です。担当は「あしたの 持ちもの」です。本日は 学校で 持ちものの 画面を 3分 説明しました。先生から「写真が 大きくて 分かりやすい」と 言われました。来週の 月曜日は、前の 日の 夕方に 通知を 出す 機能を 作り始めます。こまって いることは ありません。以上です。",
-          "audio": "/audio/meetings/asakai_muzukashii/s4-sample-c18c330e.wav"
+          "speakerId": "hendy",
+          "text": "今日は、最終テストと フロントエンドの コードレビューを しました。現在、学生検索バックエンド機能全体の 進捗は 100％です。今回の 学生検索バックエンド機能は 完了です。今のところ 問題は ありません。"
         },
         "prompt": {
-          "speakerId": "tomita",
-          "text": "ありがとう ございます。では 次に ◯◯さん、お願いします。",
-          "audio": "/audio/meetings/asakai_muzukashii/s4-prompt-1c9a269e.wav"
+          "speakerId": "hendy",
+          "text": "では 次に ◯◯さん、お願いします。"
         },
         "ack": {
-          "speakerId": "tomita",
-          "text": "はい。きょう・あした・こまって いること、ぜんぶ 聞けました。数字も 入って いました。",
-          "audio": "/audio/meetings/asakai_muzukashii/s4-ack-b88dbc1f.wav"
+          "speakerId": "hendy",
+          "text": "はい。今日 行ったこと、進捗率、明日 行うこと、問題点。4つとも 聞けました。"
         },
         "members": [
           {
-            "speakerId": "nyam",
-            "text": "ニャムです。担当は「きょうは 休みます」です。本日は 学校で、休みの れんらくを 実際に 送りました。先生から「何時まで 送れますか」と 質問が 出ました。8時までと 答えました。来週の 月曜日は、8時を 過ぎた ときの 表示を 作ります。こまって いることは ありません。以上です。",
-            "audio": "/audio/meetings/asakai_muzukashii/s4-member-0-3f52689d.wav"
+            "speakerId": "okuda",
+            "text": "奥田です。今日は、学生詳細画面の 最終確認を しました。学生一覧から 詳細画面への 移動と、プロフィール、ポートフォリオ、スキルグラフを 確認しました。現在、学生詳細フロントエンド機能全体の 進捗は 100％です。今回の 担当は 完了です。問題は ありません。"
           },
           {
-            "speakerId": "hendy",
-            "text": "ヘンディです。担当は 先生の 画面です。本日は 学校で、最初に おしらせを 1つ 出しました。先生から「紙より 早い」と 言われました。来週の 月曜日は、文字を 大きく する 相談を 始めます。こまって いることは ありません。以上です。",
-            "audio": "/audio/meetings/asakai_muzukashii/s4-member-1-e738de7f.wav"
+            "speakerId": "nyam",
+            "text": "ニャムです。今日は、最終テストで AUPPと CADTの 学生データを 確認しました。スキルデータも 問題 ありませんでした。現在、学生・スキルデータ管理機能全体の 進捗は 100％です。今回の 担当は 完了です。問題は ありません。"
           }
         ],
-        "arrange": {
-          "done": {
-            "speakerId": "tomita",
-            "text": "ヘンディさん、月曜日の 午前 30分、◯◯さんと 画面の 相談を お願いします。",
-            "audio": "/audio/meetings/asakai_muzukashii/s4-arrange-done-4ed62176.wav"
-          },
-          "missing": {
-            "speakerId": "tomita",
-            "text": "画面の 形は ヘンディさんが くわしいです。「月曜日に 30分 相談できますか」と 言えると いいです。ヘンディさん、月曜日に お願いします。",
-            "audio": "/audio/meetings/asakai_muzukashii/s4-arrange-missing-2322ad7c.wav"
-          }
-        },
         "closing": [
           {
             "speakerId": "fujiki",
-            "text": "お疲れさまです。きょうは 学校で、先生 18人 ぜんぶの スマホに 通知が 届きました。月曜日、◯◯さんが 通知の ことを 言って くれました。だから、きょう 12人の 先生の スマホが 鳴りました。先生たちは「紙より 早い。来月から 使いたい」と 言って いました。文字を 大きく して ほしい、という 声は 5人から 出ました。来週の 月曜日から、そこを 作りましょう。今週は 毎日 こまって いることが 出ました。毎日、その 日の うちに 手が 集まりました。それが、きょうの 結果です。以上です。",
-            "audio": "/audio/meetings/asakai_muzukashii/s4-closing-0-f907d6f3.wav"
+            "text": "藤木です。松井社長にも 報告しました。学生を 検索して、詳細を 見て、スキルを グラフで 確認する。ここまで 1週間で 形に なりました。ありがとうございました。"
           },
           {
-            "speakerId": "tomita",
-            "text": "今週の 夕礼は これで おわりです。お疲れさまでした。",
-            "audio": "/audio/meetings/asakai_muzukashii/s4-closing-1-0c676aa7.wav"
+            "speakerId": "hendy",
+            "text": "皆さん、1週間 お疲れさまでした。Next Talent の 学生検索と スキル可視化は これで 完了です。来週は 改善項目の 整理から 始めます。"
           }
         ],
         "panels": [
           {
             "id": "kyou",
-            "label": "きょう やったこと",
+            "label": "今日 行ったこと",
+            "openAt": 2,
             "facts": [
               {
-                "id": "K1",
+                "id": "k1",
                 "keywords": [
-                  "学校",
-                  "見せ",
-                  "18人",
-                  "通知が 来",
-                  "12人"
+                  "最終",
+                  "確認",
+                  "検索",
+                  "スキルグラフ",
+                  "学生詳細"
                 ],
-                "fact": "学校で 見せ、18人 ぜんぶに 通知が 届いた"
+                "fact": "学生検索機能と スキルグラフの 最終確認を した"
               },
               {
-                "id": "K2",
+                "id": "k2",
                 "keywords": [
-                  "説明",
-                  "3分",
-                  "しるし",
-                  "うなずい"
+                  "コードレビュー",
+                  "レビュー",
+                  "指摘",
+                  "修正",
+                  "再テスト"
                 ],
-                "fact": "一覧の 説明を 3分 し、しるしに 先生が うなずいた"
-              },
-              {
-                "id": "K3",
-                "keywords": [
-                  "質問",
-                  "3つ",
-                  "文字",
-                  "大きく",
-                  "5人"
-                ],
-                "fact": "質問が 3つ 出て、5人が 文字を 大きく して ほしいと 言った"
+                "fact": "コードレビューの 指摘を 修正して 再テストまで 完了した"
               }
             ],
             "followups": [
               {
-                "speakerId": "tomita",
-                "text": "本日 した ことを、もう 少し くわしく お願いします。",
-                "audio": "/audio/meetings/asakai_muzukashii/s4-kyou-fu0-6799474d.wav"
+                "speakerId": "hendy",
+                "text": "今日 行ったことを、もう一度 お願いします。"
               },
               {
-                "speakerId": "tomita",
-                "text": "メモの 午前と 午後に、した ことが もう 1つ あります。それも お願いします。",
-                "audio": "/audio/meetings/asakai_muzukashii/s4-kyou-fu1-ae160bfe.wav"
+                "speakerId": "hendy",
+                "text": "作業記録を そのまま 読まずに、まとめて 話して ください。大きな 作業から 2つか 3つで けっこうです。"
               }
             ],
             "example": {
-              "speakerId": "tomita",
-              "text": "「学校で 18人 ぜんぶに 通知が 届きました。一覧の 説明を 3分 して、質問が 3つ 出ました。」",
-              "audio": "/audio/meetings/asakai_muzukashii/s4-kyou-ex-bf017e57.wav"
-            },
-            "openAt": 2
-          },
-          {
-            "id": "ashita",
-            "label": "あした やること（来週の 月曜日）",
-            "facts": [
-              {
-                "id": "A1",
-                "keywords": [
-                  "来週",
-                  "月曜",
-                  "文字",
-                  "大きく",
-                  "設定",
-                  "2日",
-                  "二日",
-                  "ふつか"
-                ],
-                "fact": "文字を 大きく する 設定を 作り始める（二日 ぐらい）"
-              },
-              {
-                "id": "A2",
-                "keywords": [
-                  "質問の 答え",
-                  "富田さんに 送"
-                ],
-                "fact": "3つの 質問の 答えを 書いて 富田さんに 送る"
-              },
-              {
-                "id": "A3",
-                "keywords": [
-                  "使い方",
-                  "紙を",
-                  "4枚"
-                ],
-                "fact": "先生用の 使い方の 紙を 4枚 書き始める"
-              }
-            ],
-            "followups": [
-              {
-                "speakerId": "tomita",
-                "text": "来週の 月曜日の 予定を 教えて ください。",
-                "audio": "/audio/meetings/asakai_muzukashii/s4-ashita-fu0-595eea3b.wav"
-              },
-              {
-                "speakerId": "tomita",
-                "text": "メモの「あした」の 行は 3つ あります。3つ ぜんぶ お願いします。",
-                "audio": "/audio/meetings/asakai_muzukashii/s4-ashita-fu1-3ccae9fa.wav"
-              }
-            ],
-            "example": {
-              "speakerId": "tomita",
-              "text": "「来週の 月曜日は、文字を 大きく する 設定を 作り始めます。二日 ぐらいです。質問の 答えも 書いて、富田さんに 送ります。使い方の 紙も 4枚 書きます。」",
-              "audio": "/audio/meetings/asakai_muzukashii/s4-ashita-ex-e80e78b6.wav"
-            },
-            "openAt": 2
-          },
-          {
-            "id": "komari",
-            "label": "こまって いること",
-            "facts": [
-              {
-                "id": "C1",
-                "keywords": [
-                  "文字",
-                  "大きく",
-                  "形が",
-                  "くずれ",
-                  "分からな"
-                ],
-                "fact": "文字を 大きく すると 一覧の 形が くずれるか 分からない",
-                "box": "こまって いること",
-                "minHits": 2
-              },
-              {
-                "id": "C2",
-                "keywords": [
-                  "月曜",
-                  "夕方",
-                  "までに",
-                  "分かる 見込み"
-                ],
-                "fact": "月曜の 夕方までに 分かる 見込み",
-                "box": "いつまでに",
-                "minHits": 2
-              },
-              {
-                "id": "C3",
-                "keywords": [
-                  "ヘンディ",
-                  "相談",
-                  "30分",
-                  "午前",
-                  "いただけ",
-                  "ください",
-                  "お願いします"
-                ],
-                "fact": "ヘンディさんに 月曜の 午前 30分 相談したいと 頼む",
-                "box": "お願い",
-                "allOf": [
-                  [
-                    "ヘンディ"
-                  ],
-                  [
-                    "相談させて",
-                    "相談できます",
-                    "相談を",
-                    "いただけ",
-                    "ください",
-                    "お願いします"
-                  ]
-                ]
-              }
-            ],
-            "followups": [
-              {
-                "speakerId": "tomita",
-                "text": "何か 詰まって いる ところは ありませんか。",
-                "audio": "/audio/meetings/asakai_muzukashii/s4-komari-fu0-848b7d65.wav"
-              },
-              {
-                "speakerId": "tomita",
-                "text": "こまって いることは 3つ 言います。①何が こまって いるか ②いつまでに 分かりそうか ③だれに 何を して ほしいか。まだ 言って いない ものを お願いします。",
-                "audio": "/audio/meetings/asakai_muzukashii/s4-komari-fu1-f3aac75b.wav"
-              }
-            ],
-            "example": {
-              "speakerId": "tomita",
-              "text": "「文字を 大きく すると、一覧の 形が くずれるか、まだ 分かりません。月曜の 夕方までに 分かる 見込みです。ヘンディさんに、月曜の 午前に 30分 相談させて いただけませんか。」",
-              "audio": "/audio/meetings/asakai_muzukashii/s4-komari-ex-9c0e3018.wav"
+              "speakerId": "hendy",
+              "text": "「今日は、Next Talentの 学生検索機能と スキルグラフの 最終確認を しました。コードレビューで 指摘された 部分を 修正して、再テストまで 完了しました。」"
             }
           },
           {
-            "id": "suuji",
-            "label": "数字を 1つ",
+            "id": "shinchoku",
+            "label": "進捗率",
             "rule": "number",
             "facts": [],
             "followups": [
               {
-                "speakerId": "tomita",
-                "text": "数字で 言うと、どのくらいですか。",
-                "audio": "/audio/meetings/asakai_muzukashii/s4-suuji-fu0-445a671f.wav"
+                "speakerId": "hendy",
+                "text": "進捗率を お願いします。"
               },
               {
-                "speakerId": "tomita",
-                "text": "「3回とも 来ない」「半分まで」の ように、数を 入れて ください。",
-                "audio": "/audio/meetings/asakai_muzukashii/s4-suuji-fu1-eb36b5a5.wav"
+                "speakerId": "hendy",
+                "text": "「現在、学生検索・スキル可視化フロントエンド機能全体の進捗は◯◯％です」の 形で お願いします。カードの 付せんに 書いて あります。"
               }
             ],
             "example": {
-              "speakerId": "tomita",
-              "text": "「5人の 先生から 声が 出ました。」",
-              "audio": "/audio/meetings/asakai_muzukashii/s4-suuji-ex-cf327c66.wav"
+              "speakerId": "hendy",
+              "text": "「現在、学生検索・スキル可視化フロントエンド機能全体の進捗は100％です。」"
+            }
+          },
+          {
+            "id": "ashita",
+            "label": "明日 行うこと",
+            "openAt": 1,
+            "facts": [
+              {
+                "id": "a1",
+                "keywords": [
+                  "改善",
+                  "整理",
+                  "改善項目",
+                  "完成した機能"
+                ],
+                "fact": "完成した 機能を もとに 改善項目を 整理する"
+              }
+            ],
+            "followups": [
+              {
+                "speakerId": "hendy",
+                "text": "明日 行うことを お願いします。"
+              },
+              {
+                "speakerId": "hendy",
+                "text": "「明日は、◯◯を します」の 形で お願いします。"
+              }
+            ],
+            "example": {
+              "speakerId": "hendy",
+              "text": "「次は、完成した 機能を もとに 改善項目を 整理します。」"
+            }
+          },
+          {
+            "id": "komari",
+            "label": "問題点",
+            "facts": [
+              {
+                "id": "komari1",
+                "keywords": [
+                  "今のところ問題はありません",
+                  "問題はありません",
+                  "問題は ありません",
+                  "ありません",
+                  "ないです",
+                  "特に",
+                  "大きな問題は",
+                  "順調"
+                ],
+                "fact": "今のところ 問題は ない"
+              }
+            ],
+            "followups": [
+              {
+                "speakerId": "hendy",
+                "text": "問題は ありましたか。"
+              },
+              {
+                "speakerId": "hendy",
+                "text": "無ければ「今のところ問題はありません」と 言って ください。"
+              }
+            ],
+            "example": {
+              "speakerId": "hendy",
+              "text": "「今のところ問題はありません。」"
             }
           }
         ],
         "hintLines": [
-          "メモの 中で、きょう あった ことは どれですか。",
-          "来週の 月曜日に する ことは いくつ ありますか。",
-          "こまって いることは 何ですか。いつまでに 分かりそうですか。だれに 何を して ほしいですか。",
-          "お客さまが 言った ことも、きょうの できごとです。"
+          "作業記録の 中で、今日 終わったことは どれですか。まとめて 1つの 文に できますか。",
+          "担当の 機能 全体の 進捗は 何％ですか。",
+          "明日 することは 何ですか。",
+          "問題は ありましたか。無ければ「今のところ問題はありません」と 言います。"
         ]
       }
     ]
@@ -3073,10 +2817,6 @@
       "にん"
     ],
     [
-      "何",
-      "なに"
-    ],
-    [
       "自",
       "じ"
     ],
@@ -3281,10 +3021,6 @@
       "さき"
     ],
     [
-      "名",
-      "な"
-    ],
-    [
       "実",
       "じつ"
     ],
@@ -3367,6 +3103,502 @@
     [
       "台",
       "だい"
+    ],
+    [
+      "検索",
+      "けんさく"
+    ],
+    [
+      "詳細",
+      "しょうさい"
+    ],
+    [
+      "管理",
+      "かんり"
+    ],
+    [
+      "社長",
+      "しゃちょう"
+    ],
+    [
+      "窓口",
+      "まどぐち"
+    ],
+    [
+      "移動",
+      "いどう"
+    ],
+    [
+      "作業記録",
+      "さぎょうきろく"
+    ],
+    [
+      "作業",
+      "さぎょう"
+    ],
+    [
+      "記録",
+      "きろく"
+    ],
+    [
+      "進捗率",
+      "しんちょくりつ"
+    ],
+    [
+      "問題点",
+      "もんだいてん"
+    ],
+    [
+      "問題",
+      "もんだい"
+    ],
+    [
+      "大きな",
+      "おおきな"
+    ],
+    [
+      "省いて",
+      "はぶいて"
+    ],
+    [
+      "省く",
+      "はぶく"
+    ],
+    [
+      "仕様",
+      "しよう"
+    ],
+    [
+      "接続",
+      "せつぞく"
+    ],
+    [
+      "開始",
+      "かいし"
+    ],
+    [
+      "表記",
+      "ひょうき"
+    ],
+    [
+      "追加",
+      "ついか"
+    ],
+    [
+      "作成",
+      "さくせい"
+    ],
+    [
+      "複数条件",
+      "ふくすうじょうけん"
+    ],
+    [
+      "複数",
+      "ふくすう"
+    ],
+    [
+      "条件",
+      "じょうけん"
+    ],
+    [
+      "件数",
+      "けんすう"
+    ],
+    [
+      "結合",
+      "けつごう"
+    ],
+    [
+      "読み込み中",
+      "よみこみちゅう"
+    ],
+    [
+      "場合",
+      "ばあい"
+    ],
+    [
+      "学生一覧",
+      "がくせいいちらん"
+    ],
+    [
+      "登録",
+      "とうろく"
+    ],
+    [
+      "除外",
+      "じょがい"
+    ],
+    [
+      "変換",
+      "へんかん"
+    ],
+    [
+      "調整",
+      "ちょうせい"
+    ],
+    [
+      "調査",
+      "ちょうさ"
+    ],
+    [
+      "組み込み",
+      "くみこみ"
+    ],
+    [
+      "組み込",
+      "くみこ"
+    ],
+    [
+      "一部",
+      "いちぶ"
+    ],
+    [
+      "別の",
+      "べつの"
+    ],
+    [
+      "別",
+      "べつ"
+    ],
+    [
+      "点数",
+      "てんすう"
+    ],
+    [
+      "揺れ",
+      "ゆれ"
+    ],
+    [
+      "方針",
+      "ほうしん"
+    ],
+    [
+      "翌日",
+      "よくじつ"
+    ],
+    [
+      "修正",
+      "しゅうせい"
+    ],
+    [
+      "再確認",
+      "さいかくにん"
+    ],
+    [
+      "統一",
+      "とういつ"
+    ],
+    [
+      "取得",
+      "しゅとく"
+    ],
+    [
+      "最新",
+      "さいしん"
+    ],
+    [
+      "最終",
+      "さいしゅう"
+    ],
+    [
+      "最後",
+      "さいご"
+    ],
+    [
+      "状態",
+      "じょうたい"
+    ],
+    [
+      "必要",
+      "ひつよう"
+    ],
+    [
+      "領域",
+      "りょういき"
+    ],
+    [
+      "仮",
+      "かり"
+    ],
+    [
+      "上位",
+      "じょうい"
+    ],
+    [
+      "未登録",
+      "みとうろく"
+    ],
+    [
+      "形式",
+      "けいしき"
+    ],
+    [
+      "少ない",
+      "すくない"
+    ],
+    [
+      "多い",
+      "おおい"
+    ],
+    [
+      "高い",
+      "たかい"
+    ],
+    [
+      "高",
+      "こう"
+    ],
+    [
+      "並べ",
+      "ならべ"
+    ],
+    [
+      "全体",
+      "ぜんたい"
+    ],
+    [
+      "全確認項目",
+      "ぜんかくにんこうもく"
+    ],
+    [
+      "全",
+      "ぜん"
+    ],
+    [
+      "勤務時間",
+      "きんむじかん"
+    ],
+    [
+      "勤務",
+      "きんむ"
+    ],
+    [
+      "改善項目",
+      "かいぜんこうもく"
+    ],
+    [
+      "改善",
+      "かいぜん"
+    ],
+    [
+      "項目",
+      "こうもく"
+    ],
+    [
+      "指摘",
+      "してき"
+    ],
+    [
+      "皆さん",
+      "みなさん"
+    ],
+    [
+      "可視化",
+      "かしか"
+    ],
+    [
+      "補足",
+      "ほそく"
+    ],
+    [
+      "昨日",
+      "きのう"
+    ],
+    [
+      "通して",
+      "とおして"
+    ],
+    [
+      "部分",
+      "ぶぶん"
+    ],
+    [
+      "私",
+      "わたし"
+    ],
+    [
+      "誰に",
+      "だれに"
+    ],
+    [
+      "誰",
+      "だれ"
+    ],
+    [
+      "情報",
+      "じょうほう"
+    ],
+    [
+      "含めて",
+      "ふくめて"
+    ],
+    [
+      "含め",
+      "ふくめ"
+    ],
+    [
+      "動き",
+      "うごき"
+    ],
+    [
+      "処理",
+      "しょり"
+    ],
+    [
+      "絞り込み",
+      "しぼりこみ"
+    ],
+    [
+      "絞り込",
+      "しぼりこ"
+    ],
+    [
+      "松井",
+      "まつい"
+    ],
+    [
+      "在",
+      "ざい"
+    ],
+    [
+      "体",
+      "たい"
+    ],
+    [
+      "位",
+      "い"
+    ],
+    [
+      "例",
+      "れい"
+    ],
+    [
+      "続き",
+      "つづき"
+    ],
+    [
+      "追",
+      "つい"
+    ],
+    [
+      "録",
+      "ろく"
+    ],
+    [
+      "再",
+      "さい"
+    ],
+    [
+      "大学",
+      "だいがく"
+    ],
+    [
+      "現在",
+      "げんざい"
+    ],
+    [
+      "付せん",
+      "ふせん"
+    ],
+    [
+      "用",
+      "よう"
+    ],
+    [
+      "完成",
+      "かんせい"
+    ],
+    [
+      "待た",
+      "また"
+    ],
+    [
+      "待つ",
+      "まつ"
+    ],
+    [
+      "成り",
+      "なり"
+    ],
+    [
+      "順",
+      "じゅん"
+    ],
+    [
+      "表示完了",
+      "ひょうじかんりょう"
+    ],
+    [
+      "作成開始",
+      "さくせいかいし"
+    ],
+    [
+      "今日",
+      "きょう"
+    ],
+    [
+      "今回",
+      "こんかい"
+    ],
+    [
+      "行った",
+      "おこなった"
+    ],
+    [
+      "行う",
+      "おこなう"
+    ],
+    [
+      "行い",
+      "おこない"
+    ],
+    [
+      "行ったこと",
+      "おこなったこと"
+    ],
+    [
+      "行うこと",
+      "おこなうこと"
+    ],
+    [
+      "今のところ",
+      "いまのところ"
+    ],
+    [
+      "名",
+      "めい"
+    ],
+    [
+      "何",
+      "なん"
+    ],
+    [
+      "何が",
+      "なにが"
+    ],
+    [
+      "何を",
+      "なにを"
+    ],
+    [
+      "並び替え",
+      "ならびがえ"
+    ],
+    [
+      "修正後",
+      "しゅうせいご"
+    ],
+    [
+      "今日中",
+      "きょうじゅう"
+    ],
+    [
+      "重なる",
+      "かさなる"
+    ],
+    [
+      "重な",
+      "かさな"
     ]
   ]
 }

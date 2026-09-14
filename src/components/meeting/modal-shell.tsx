@@ -48,10 +48,20 @@ export function ModalShell({
         if (event.key === "Escape") onClose();
       }}
     >
+      {/*
+        指は **島そのもの**に 置く（とじる ボタンでは なく）。
+        ボタンに `autoFocus` を 置いて いた ころ、中身が 長い ポップアップは
+        **開いた 瞬間に いちばん 下へ スクロール**して いた——夕礼の
+        「じぶんの 担当」は 作業記録が 14行 ある ので、担当と 進捗率の 付せんが
+        画面の 外に 出た まま 開いて いた（2026-09-14 に 390px で 実確認）。
+        島に 置けば 指は ポップアップの 中に 入り、見える のは 頭から。
+      */}
       <motion.div
         initial={{ opacity: 0, scale: 0.96, y: 12 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
-        className="card-island max-h-[88vh] w-full max-w-md overflow-y-auto p-5"
+        tabIndex={-1}
+        autoFocus
+        className="card-island max-h-[88vh] w-full max-w-md overflow-y-auto p-5 outline-none"
         onClick={(event) => event.stopPropagation()}
       >
         {title ? <p className="text-navy text-center text-lg font-black">{title}</p> : null}
@@ -59,7 +69,6 @@ export function ModalShell({
         <button
           type="button"
           onClick={onClose}
-          autoFocus
           className="btn-island btn-game mt-5 w-full px-6 py-3 text-base"
         >
           {closeLabel}
