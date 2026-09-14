@@ -2,7 +2,7 @@
   "kind": "article",
   "id": "asakai_lecture",
   "title": "朝礼（ちょうれい）／夕礼（ゆうれい）で 仕事を 報告しよう",
-  "description": "仕事を 始める 前に、チームで 短く 報告する 朝礼を 学びます。話す 4つと、進捗を ％で 伝える わけを 見ます。",
+  "description": "仕事を 始める 前に、チームで 短く 報告する 朝礼を 学びます。報告する 4つの ことと、進捗を ％で 伝える わけを 見ます。",
   "furigana": [
     [
       "報連相",
@@ -35,10 +35,6 @@
     [
       "始め",
       "はじめ"
-    ],
-    [
-      "始",
-      "はじ"
     ],
     [
       "前",
@@ -701,9 +697,10 @@
         {
           "label": "④",
           "title": "問題",
-          "text": "問題が ある ときは、その 問題を 話します。問題が ない ときは、「問題は ありません。」と 話します。",
+          "text": "問題が ある ときは、その 問題を 話します。",
           "items": [
-            "「APIの 接続で エラーが あります。」"
+            "「APIの 接続で エラーが あります。」",
+            "問題が ない ときは、「問題は ありません。」と 話します。"
           ],
           "image": {
             "src": "/img/articles/asakai_lecture/card_mondai.webp",
@@ -747,7 +744,7 @@
         "/img/characters/nyam/sheet.webp"
       ],
       "status": "empty",
-      "caption": "「ログイン画面を 作りました。」では みんなが ？。「進捗は 70％です。」で 分かる"
+      "caption": "「ログイン画面を 作りました。」だけでは、みんなは 全体の 進捗が 分かりません。「ログイン機能 全体の 進捗は 70％です。」なら 分かります"
     },
     {
       "kind": "banner",
@@ -900,26 +897,20 @@
       "text": "「問題が あります」だけでは 分かりません"
     },
     {
-      "kind": "compare",
-      "before": {
-        "title": "あまり 良くない 報告",
-        "lines": [
-          "新人：「問題が あります。」",
-          "上司：「どんな 問題ですか？」"
-        ]
-      },
-      "after": {
-        "title": "分かりやすい 報告",
-        "lines": [
-          "「ログイン画面で 問題が あります。",
-          "ログインボタンを 押しても、次の 画面に 進みません。",
-          "今、原因を 調べて います。」"
-        ]
-      }
+      "kind": "heading",
+      "level": 3,
+      "text": "あまり 良くない 報告"
+    },
+    {
+      "kind": "list",
+      "items": [
+        "新人：「問題が あります。」",
+        "上司：「どんな 問題ですか？」"
+      ]
     },
     {
       "kind": "paragraph",
-      "text": "「問題が あります。」だけでは、チームは 問題の 内容が 分かりません。"
+      "text": "これだけでは、チームは 問題の 内容が 分かりません。"
     },
     {
       "kind": "heading",
@@ -956,23 +947,23 @@
     {
       "kind": "list",
       "items": [
-        "「ログイン画面で 問題が あります。",
-        "ログインボタンを 押しても、次の 画面に 進みません。",
-        "今、原因を 調べて います。」"
+        "「ログイン画面で 問題が あります。」",
+        "「ログインボタンを 押しても、次の 画面に 進みません。」",
+        "「今、原因を 調べて います。」"
       ]
     },
     {
       "kind": "image",
       "size": "wide",
       "src": "/img/articles/asakai_lecture/sec6_mondai.webp",
-      "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This is a TEACHING picture, not a mood picture: what each person is doing must be readable from the picture alone. THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: saying only that there is a problem tells nothing; a clear report shows where it is and what happens. Two equal side-by-side panels. LEFT PANEL: the new engineer — a young Cambodian woman in her early twenties with warm light-brown skin, a round friendly face and black hair tied back in a low ponytail, wearing a mint-green blouse, beige trousers and a lanyard with a blank white card stands in front of the team leader Hendy — a slim man in his late twenties with short black slightly tousled hair, a navy two-button suit, a white shirt and a navy tie (follow his model sheet); her speech balloon says 問題が あります。 Hendy tilts his head, puzzled but kind, with a thought balloon that holds only ？？？. RIGHT PANEL: the new engineer — a young Cambodian woman in her early twenties with warm light-brown skin, a round friendly face and black hair tied back in a low ponytail, wearing a mint-green blouse, beige trousers and a lanyard with a blank white card turns her laptop toward the team leader Hendy — a slim man in his late twenties with short black slightly tousled hair, a navy two-button suit, a white shirt and a navy tie (follow his model sheet) and points at the screen, explaining calmly; the laptop screen shows a simple login form with one rounded button and the word ログイン at the top. Hendy leans in and nods, understanding. The Japanese words in this picture are exactly: 問題が あります。 / ？？？ / ログイン. Japanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana. Spell every character exactly as given. No other letters, numbers, logos or watermarks anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+      "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This is a TEACHING picture, not a mood picture: what each person is doing must be readable from the picture alone. THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: saying only that there is a problem tells nothing; a clear report shows where it is and what happens. Two equal side-by-side panels. LEFT PANEL: the new engineer — a young Cambodian woman in her early twenties with warm light-brown skin, a round friendly face and black hair tied back in a low ponytail, wearing a mint-green blouse, beige trousers and a lanyard with a blank white card stands in front of the team leader Hendy — a slim man in his late twenties with short black slightly tousled hair, a navy two-button suit, a white shirt and a navy tie (follow his model sheet); her speech balloon says 問題が あります。 Hendy tilts his head, puzzled but kind, with a thought balloon that holds only ？？？. RIGHT PANEL: the new engineer — a young Cambodian woman in her early twenties with warm light-brown skin, a round friendly face and black hair tied back in a low ponytail, wearing a mint-green blouse, beige trousers and a lanyard with a blank white card turns her laptop toward the team leader Hendy — a slim man in his late twenties with short black slightly tousled hair, a navy two-button suit, a white shirt and a navy tie (follow his model sheet), points at the screen and explains in words, calmly and confidently; her speech balloon says ログイン画面で 問題が あります。 The laptop screen shows a simple login form with one rounded button and the word ログイン at the top. Hendy leans in and nods, understanding. The Japanese words in this picture are exactly: 問題が あります。 / ？？？ / ログイン画面で 問題が あります。 / ログイン. Japanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana. Spell every character exactly as given. No other letters, numbers, logos or watermarks anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
       "refs": [
         "/img/characters/hendy/sheet.webp",
         "/img/characters/okuda/sheet.webp",
         "/img/characters/nyam/sheet.webp"
       ],
       "status": "empty",
-      "caption": "「問題が あります。」だけでは 上司が ？？？。画面を 見せて 具体的に 話すと 分かる"
+      "caption": "「問題が あります。」だけでは、上司は 分かりません。画面を 見せて、具体的に 話すと 分かります"
     },
     {
       "kind": "heading",
@@ -1204,7 +1195,7 @@
         "/img/characters/nyam/sheet.webp"
       ],
       "status": "empty",
-      "caption": "朝の 朝礼「今日は APIの 接続を します。」と 夕方の 夕礼「今日は APIの 接続を しました。」"
+      "caption": "朝礼「きょうは、APIの 接続を します。」と 夕礼「今日は APIの 接続を しました。」"
     },
     {
       "kind": "heading",
@@ -1278,6 +1269,9 @@
         "soudan",
         "sinchoku",
         "tantou",
+        "kinou",
+        "setsuzoku",
+        "api",
         "tasuku",
         "purojikuto",
         "sukejuru",
@@ -1306,28 +1300,28 @@
           "label": "①",
           "title": "きのう したこと",
           "items": [
-            "きのうは、＿＿＿＿＿＿＿＿ しました。"
+            "きのうは、＿＿＿＿＿＿＿＿しました。"
           ]
         },
         {
           "label": "②",
           "title": "担当の 機能 全体の 進捗",
           "items": [
-            "＿＿＿＿ 機能 全体の 進捗は、＿＿％です。"
+            "＿＿＿＿機能 全体の 進捗は、＿＿％です。"
           ]
         },
         {
           "label": "③",
           "title": "きょう すること",
           "items": [
-            "きょうは、＿＿＿＿＿＿＿＿ します。"
+            "きょうは、＿＿＿＿＿＿＿＿します。"
           ]
         },
         {
           "label": "④",
           "title": "問題",
           "items": [
-            "問題が ある 場合：＿＿＿＿で 問題が あります。今、＿＿＿＿ して います。",
+            "問題が ある 場合：＿＿＿＿で 問題が あります。今、＿＿＿＿して います。",
             "問題が ない 場合：問題は ありません。"
           ]
         }
@@ -1337,6 +1331,11 @@
       "kind": "heading",
       "level": 3,
       "text": "最後に、全部 話して みよう"
+    },
+    {
+      "kind": "heading",
+      "level": 3,
+      "text": "例"
     },
     {
       "kind": "list",

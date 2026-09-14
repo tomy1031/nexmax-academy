@@ -17394,6 +17394,48 @@
         "Price tag",
         "Receipt"
       ]
+    },
+    {
+      "id": "kinou",
+      "term": "機能",
+      "reading": "きのう",
+      "romaji": "kinou",
+      "meaningJa": "システムで できる ことです。",
+      "englishTerm": "Function / Feature",
+      "example": "ログイン機能を 作ります。",
+      "wrongMeanings": [
+        "Screen",
+        "Error",
+        "Schedule"
+      ]
+    },
+    {
+      "id": "setsuzoku",
+      "term": "接続",
+      "reading": "せつぞく",
+      "romaji": "setsuzoku",
+      "meaningJa": "2つの ものを つなぐ ことです。",
+      "englishTerm": "Connection",
+      "example": "APIの 接続を します。",
+      "wrongMeanings": [
+        "Test",
+        "Design",
+        "Report"
+      ]
+    },
+    {
+      "id": "api",
+      "term": "API",
+      "reading": "えーぴーあい",
+      "romaji": "eepiiai",
+      "meaningJa": "システムと システムを つなぐ 仕組みです。",
+      "englishTerm": "API (Application Programming Interface)",
+      "example": "ログイン画面と APIを つなぎます。",
+      "wrongMeanings": [
+        "Password",
+        "Database",
+        "Meeting"
+      ]
     }
   ]
 }
