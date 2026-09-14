@@ -567,7 +567,7 @@
           "/img/characters/okuda/sheet.webp",
           "/img/characters/nyam/sheet.webp"
         ],
-        "status": "empty"
+        "status": "done"
       }
     },
     {
@@ -622,7 +622,7 @@
         "/img/characters/okuda/sheet.webp",
         "/img/characters/nyam/sheet.webp"
       ],
-      "status": "empty",
+      "status": "done",
       "caption": "9:00 朝礼、9:10 仕事スタート。朝礼は 短い 報告です"
     },
     {
@@ -655,7 +655,7 @@
               "/img/characters/okuda/sheet.webp",
               "/img/characters/nyam/sheet.webp"
             ],
-            "status": "empty"
+            "status": "done"
           }
         },
         {
@@ -673,7 +673,7 @@
               "/img/characters/okuda/sheet.webp",
               "/img/characters/nyam/sheet.webp"
             ],
-            "status": "empty"
+            "status": "done"
           }
         },
         {
@@ -691,7 +691,7 @@
               "/img/characters/okuda/sheet.webp",
               "/img/characters/nyam/sheet.webp"
             ],
-            "status": "empty"
+            "status": "done"
           }
         },
         {
@@ -710,7 +710,7 @@
               "/img/characters/okuda/sheet.webp",
               "/img/characters/nyam/sheet.webp"
             ],
-            "status": "empty"
+            "status": "done"
           }
         }
       ]
@@ -743,7 +743,7 @@
         "/img/characters/okuda/sheet.webp",
         "/img/characters/nyam/sheet.webp"
       ],
-      "status": "empty",
+      "status": "done",
       "caption": "「ログイン画面を 作りました。」だけでは、みんなは 全体の 進捗が 分かりません。「ログイン機能 全体の 進捗は 70％です。」なら 分かります"
     },
     {
@@ -805,7 +805,7 @@
         "/img/characters/okuda/sheet.webp",
         "/img/characters/nyam/sheet.webp"
       ],
-      "status": "empty",
+      "status": "done",
       "caption": "ログイン機能 70％。ログイン画面は 完了、API接続は 作業中、テストは まだ"
     },
     {
@@ -845,7 +845,7 @@
         "/img/characters/okuda/sheet.webp",
         "/img/characters/nyam/sheet.webp"
       ],
-      "status": "empty",
+      "status": "done",
       "caption": "朝礼で 報告する 新人"
     },
     {
@@ -962,7 +962,7 @@
         "/img/characters/okuda/sheet.webp",
         "/img/characters/nyam/sheet.webp"
       ],
-      "status": "empty",
+      "status": "done",
       "caption": "「問題が あります。」だけでは、上司は 分かりません。画面を 見せて、具体的に 話すと 分かります"
     },
     {
@@ -1023,7 +1023,7 @@
         "/img/characters/okuda/sheet.webp",
         "/img/characters/nyam/sheet.webp"
       ],
-      "status": "empty",
+      "status": "done",
       "caption": "10:00 エラーが 出る。10:10 上司に 相談する。10:20 一緒に 確認する。仕事を 続ける"
     },
     {
@@ -1073,7 +1073,7 @@
         "/img/characters/okuda/sheet.webp",
         "/img/characters/nyam/sheet.webp"
       ],
-      "status": "empty",
+      "status": "done",
       "caption": "朝礼では 短く 伝えて、朝礼の あとで 上司と 一緒に 確認する"
     },
     {
@@ -1120,7 +1120,7 @@
         "/img/characters/okuda/sheet.webp",
         "/img/characters/nyam/sheet.webp"
       ],
-      "status": "empty",
+      "status": "done",
       "caption": "オフィスで 話す・オンラインで 話す・チャットに 書く"
     },
     {
@@ -1194,7 +1194,7 @@
         "/img/characters/okuda/sheet.webp",
         "/img/characters/nyam/sheet.webp"
       ],
-      "status": "empty",
+      "status": "done",
       "caption": "朝礼「きょうは、APIの 接続を します。」と 夕礼「今日は APIの 接続を しました。」"
     },
     {
