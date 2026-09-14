@@ -101,15 +101,6 @@
       "text": ["朝礼", "今日は APIの 接続を します。", "夕礼", "今日は APIの 接続を しました。"]
     },
     {
-      "out": "bad_report",
-      "dest": "public/img/articles/asakai_lecture/sec4_bad.webp",
-      "title": "あまり 良くない 報告（新人「問題が あります。」／上司「どんな 問題ですか？」）",
-      "where": "content/articles/asakai_lecture.json 4．あまり 良くない 報告",
-      "priority": "A",
-      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: a report that only says there is a problem leaves the leader unable to understand anything. Upper-body view of two people on a soft light-blue office background with lots of space. On the left, the new engineer — a young Cambodian woman in her early twenties with warm light-brown skin, a round friendly face and black hair tied back in a low ponytail, wearing a mint-green blouse, beige trousers and a lanyard with a blank white card speaks with a speech balloon that says 「問題が あります。」 and a small rounded label panel beside her reads 新人. On the right, the team leader Hendy — a slim man in his late twenties with short black slightly tousled hair, a navy two-button suit, a white shirt and a navy tie (follow his model sheet) tilts his head with one hand on his chin, puzzled but kind, with a speech balloon that says 「どんな 問題ですか？」, one small question mark ？ above his head, and a small rounded label panel beside him reads 上司.",
-      "text": ["「問題が あります。」", "「どんな 問題ですか？」", "？", "新人", "上司"]
-    },
-    {
       "out": "kyuu_honban",
       "dest": "public/img/articles/asakai_lecture/sec5_honban.webp",
       "title": "① 本番環境で 大きな 問題（ログインできない）",

@@ -830,31 +830,29 @@
       "text": "4．問題が ある ときは、分かりやすく 話そう"
     },
     {
-      "kind": "callout",
-      "tone": "point",
-      "text": "「問題が あります」だけでは 分かりません。"
-    },
-    {
-      "kind": "heading",
-      "level": 3,
-      "text": "❌ あまり 良くない 報告"
-    },
-    {
-      "kind": "image",
-      "size": "wide",
-      "src": "/img/articles/asakai_lecture/sec4_bad.webp",
-      "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This is a TEACHING picture, not a mood picture: what each person is doing must be readable from the picture alone. THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: a report that only says there is a problem leaves the leader unable to understand anything. Upper-body view of two people on a soft light-blue office background with lots of space. On the left, the new engineer — a young Cambodian woman in her early twenties with warm light-brown skin, a round friendly face and black hair tied back in a low ponytail, wearing a mint-green blouse, beige trousers and a lanyard with a blank white card speaks with a speech balloon that says 「問題が あります。」 and a small rounded label panel beside her reads 新人. On the right, the team leader Hendy — a slim man in his late twenties with short black slightly tousled hair, a navy two-button suit, a white shirt and a navy tie (follow his model sheet) tilts his head with one hand on his chin, puzzled but kind, with a speech balloon that says 「どんな 問題ですか？」, one small question mark ？ above his head, and a small rounded label panel beside him reads 上司. The Japanese words in this picture are exactly: 「問題が あります。」 / 「どんな 問題ですか？」 / ？ / 新人 / 上司. Japanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana. Spell every character exactly as given. No other letters, numbers, logos or watermarks anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
-      "refs": [
-        "/img/characters/hendy/sheet.webp",
-        "/img/characters/okuda/sheet.webp",
-        "/img/characters/nyam/sheet.webp"
-      ],
-      "status": "done",
-      "caption": "新人「問題が あります。」 上司「どんな 問題ですか？」"
-    },
-    {
-      "kind": "paragraph",
-      "text": "これだけでは、チームは 問題の 内容が 分かりません。"
+      "kind": "cards",
+      "tone": "plain",
+      "columns": 2,
+      "items": [
+        {
+          "title": "「問題が あります。」",
+          "text": "これだけでは、上司は 分かりません。",
+          "image": {
+            "src": "/img/articles/asakai_lecture/sec4_compare_bad.webp",
+            "refs": [],
+            "status": "done"
+          }
+        },
+        {
+          "title": "「ログイン画面で 問題が あります。今、原因を 調べて います。」",
+          "text": "画面を 見せて 話すと、分かります。",
+          "image": {
+            "src": "/img/articles/asakai_lecture/sec4_compare_good.webp",
+            "refs": [],
+            "status": "done"
+          }
+        }
+      ]
     },
     {
       "kind": "heading",
@@ -892,51 +890,6 @@
           "text": "「今、原因を 調べて います。」",
           "image": {
             "src": "/img/articles/asakai_lecture/sec4_ima.webp",
-            "refs": [],
-            "status": "done"
-          }
-        }
-      ]
-    },
-    {
-      "kind": "heading",
-      "level": 3,
-      "text": "✅ 全部 話すと"
-    },
-    {
-      "kind": "image",
-      "src": "/img/articles/asakai_lecture/sec4_zenbu.webp",
-      "refs": [],
-      "status": "done",
-      "caption": "問題を 全部 話す 新人"
-    },
-    {
-      "kind": "list",
-      "items": [
-        "「ログイン画面で 問題が あります。」",
-        "「ログインボタンを 押しても、次の 画面に 進みません。」",
-        "「今、原因を 調べて います。」"
-      ]
-    },
-    {
-      "kind": "cards",
-      "tone": "plain",
-      "columns": 2,
-      "items": [
-        {
-          "title": "「問題が あります。」",
-          "text": "これだけでは、上司は 分かりません。",
-          "image": {
-            "src": "/img/articles/asakai_lecture/sec4_compare_bad.webp",
-            "refs": [],
-            "status": "done"
-          }
-        },
-        {
-          "title": "「ログイン画面で 問題が あります。」",
-          "text": "画面を 見せて 話すと、分かります。",
-          "image": {
-            "src": "/img/articles/asakai_lecture/sec4_compare_good.webp",
             "refs": [],
             "status": "done"
           }
