@@ -186,11 +186,11 @@ test("夕礼（むずかしい）— メモと カードが 同じ 画面に 並
   const at = refs.indexOf("asakai_muzukashii");
   expect(at, "夕礼が ステージに ある").toBeGreaterThan(0);
   /*
-   * 手前を **1本 残して** 開く。ぜんぶ 埋めると ステージが クリアに なり、
-   * 「ステージ クリア」の 板が 画面に かぶさって 何も 押せなくなる
-   *（`gates: false` の 教材に 先に 当たる、「はじめに」の かくにんテストと 同じ 形）。
+   * 手前を **ぜんぶ** 開く。夕礼に 関門（`gates`）を 戻した ので（2026-09-14 の R9 検収
+   * 「ステージ最大の 産出が 素通りできる」）、1本 残すと 夕礼が 開かない。
+   * 手前が ぜんぶ 済んでも **夕礼 自身が 未了**なので、ステージは クリアに ならない。
    */
-  await seedCompleted(context, refs.slice(0, at - 1));
+  await seedCompleted(context, refs.slice(0, at));
 
   await page.goto("/asakai/meeting-asakai_muzukashii");
   await joinCall(page);
@@ -239,7 +239,7 @@ test("夕礼（むずかしい）— メモと カードが 同じ 画面に 並
 test("390px で 板 → マイク → チャット の 順に 並ぶ", async ({ page, context }) => {
   const refs = stageRefs();
   const at = refs.indexOf("asakai_muzukashii");
-  await seedCompleted(context, refs.slice(0, at - 1));
+  await seedCompleted(context, refs.slice(0, at));
   await page.goto("/asakai/meeting-asakai_muzukashii");
   await joinCall(page);
 
