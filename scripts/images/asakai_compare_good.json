@@ -1,0 +1,28 @@
+{
+  "refs": [
+    "scripts/images/refs/asakai_compare_good_mock.webp",
+    "public/img/characters/hendy/sheet.webp",
+    "public/img/articles/asakai_lecture/hero.webp"
+  ],
+  "_comment": "朝礼ページ 4節の「わかりやすい」の 絵（content/articles/asakai_lecture.json の 対比カード 2枚目）。元は ユーザーの モック画像から 切り出した 絵（refs の 1枚目）で、2026-09-14 の 指定で「今、原因を 調べて います。」の 吹き出しを 足して 作り直した。文字を 焼く ので noText は asakai_zukai と 同じ。",
+  "style": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This is a TEACHING picture, not a mood picture: what each person is doing must be readable from the picture alone.",
+  "noText": "Japanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana. Spell every character exactly as given. No other letters, numbers, logos or watermarks anywhere in the picture.",
+  "negative": "Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+  "output": "1536x1024",
+  "scenes": [
+    {
+      "out": "compare_good",
+      "dest": "public/img/articles/asakai_lecture/sec4_compare_good.webp",
+      "title": "わかりやすい（ログイン画面で 問題が あります。／今、原因を 調べて います。）",
+      "where": "content/articles/asakai_lecture.json 4節 対比カード items[1]",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: a clear report says where the problem is and what she is doing about it now. Recreate the FIRST reference picture as faithfully as possible — the same composition, the same two people in the same poses, the same laptop turned toward the man showing a simple login form with the word ログイン, the same soft office background, and the same rounded blue label panel in the top-left corner that reads わかりやすい. The woman is the new engineer — a young Cambodian woman with warm light-brown skin, black hair tied back in a low ponytail, a mint-green blouse and a blue lanyard with a blank white card (match her face to the third reference picture). The man is the team leader Hendy in a navy suit, white shirt and navy tie (follow his model sheet), leaning in, smiling and nodding, understanding. THE ONLY CHANGE from the first reference picture: the woman now has TWO speech balloons one after the other. The first balloon says ログイン画面で 問題が あります。 The second balloon, placed just below or beside the first one, says 今、原因を 調べて います。 Both balloons are large enough to read at a glance, and neither covers a face or the laptop screen.",
+      "text": [
+        "わかりやすい",
+        "ログイン画面で 問題が あります。",
+        "今、原因を 調べて います。",
+        "ログイン"
+      ]
+    }
+  ]
+}
