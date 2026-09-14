@@ -122,11 +122,11 @@ test("ミーティングの 中（漢字の 名前の 相手）にも 裸の漢�
   expect(at, "夕礼の ミーティングが 朝礼・夕礼ステージに ある").toBeGreaterThan(0);
 
   /*
-   * 手前を **1本 残して** 開く。ぜんぶ 埋めると ステージが クリアに なり、
-   * 「ステージ クリア」の 板が ロビーの ボタンを 覆う（夕礼は `gates: false` なので
-   * 手前が ぜんぶ 済んだ 時点で ステージが おわった ことに なる）。
+   * 手前を **ぜんぶ** 開く。夕礼に 関門（`gates`）を 戻した ので（2026-09-14 の R9 検収
+   * 「ステージ最大の 産出が 素通りできる」）、1本 残すと 夕礼が 開かない。
+   * 手前が ぜんぶ 済んでも **夕礼 自身が 未了**なので、ステージは クリアに ならない。
    */
-  await seedCompleted(context, refs.slice(0, at - 1));
+  await seedCompleted(context, refs.slice(0, at));
   await page.goto("/asakai/meeting-asakai_muzukashii");
   await joinCall(page);
 

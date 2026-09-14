@@ -71,6 +71,8 @@ test("ステージの トップに 5本 並ぶ", async ({ page }) => {
   await expectOnScreen(page, "朝礼メモ");
   /* 前ばなしの ページ（台帳 #387 の 7〜9）。朝礼の 前に 場面と 役を 渡す。 */
   await expectOnScreen(page, "チームと アプリ");
+  /* 夕礼の 前ばなし（Next Talent）。2026-09-14 に 足した。 */
+  await expectOnScreen(page, "Next Talent");
   await shot(page, "asakai-00-stage");
 
   expect(await bareKanjiTexts(page)).toEqual([]);
@@ -92,6 +94,28 @@ test("前ばなしの ページに アプリと 担当が 書いて ある", asy
   await expectOnScreen(page, "ヘンディ");
   await expectOnScreen(page, "ニャム");
   await shot(page, "asakai-01-team");
+
+  expect(await bareKanjiTexts(page)).toEqual([]);
+});
+
+/**
+ * 夕礼の 前ばなし — **Next Talent が 何で、あなたが 何を 担当するか**
+ *（2026-09-14 の 指定。上級は 作業記録だけを 渡す ので、場面と 役は ここで 渡す）。
+ */
+test("夕礼の 前ばなしに Next Talent と 担当が 書いて ある", async ({ page }) => {
+  await page.goto("/asakai/article-yuurei_nexttalent");
+  const skip = page.getByText("それでも 見る");
+  if (await skip.count()) await skip.first().click();
+  await expectOnScreen(page, "Next Talent");
+  await expectOnScreen(page, "学生検索・スキル可視化フロントエンド");
+  /* データの ながれ（ニャム → ヘンディ → あなた → 奥田 → あなた）。 */
+  await expectOnScreen(page, "ニャムさんが、学生情報と スキル情報を 用意します");
+  /* 作業記録の 読み上げと 仕事の 報告の くらべ。 */
+  await expectOnScreen(page, "作業記録の 読み上げ");
+  await expectOnScreen(page, "仕事の 報告");
+  /* 勤務時間と 夕礼の 時間。 */
+  await expectOnScreen(page, "17:50");
+  await shot(page, "asakai-05b-nexttalent");
 
   expect(await bareKanjiTexts(page)).toEqual([]);
 });
@@ -154,6 +178,15 @@ test("朝礼（かんたん）— 報告すると カードが 開く", async ({
 
   await page.getByRole("button", { name: /つづけます/ }).click();
   await expect(page.getByText("（0 / 4）")).toBeVisible();
+
+  /*
+   * **済んだ 日は タブが 緑に なる**（2026-09-14 の 通し検収で「永久に 付かない」
+   * ことが 分かった。`DayResult.day` は "月曜日"、`scene.day` は "mon" で
+   * そのまま 比べて いた）。タブで 飛べる のに どこが 済んだか 読めないと、
+   * 行き来できる ことが かえって 迷子を 作る。
+   * ※ 時間カードの あいだ タブは 描かれない ので、火曜に 入ってから 見る。
+   */
+  await expect(page.getByRole("tab", { name: /月曜日・報告 ずみ/ })).toBeVisible();
   await shot(page, "asakai-05-kantan-tue");
 });
 
@@ -162,24 +195,39 @@ test("夕礼（むずかしい）— メモと カードが 同じ 画面に 並
   const at = refs.indexOf("asakai_muzukashii");
   expect(at, "夕礼が ステージに ある").toBeGreaterThan(0);
   /*
-   * 手前を **1本 残して** 開く。ぜんぶ 埋めると ステージが クリアに なり、
-   * 「ステージ クリア」の 板が 画面に かぶさって 何も 押せなくなる
-   *（`gates: false` の 教材に 先に 当たる、「はじめに」の かくにんテストと 同じ 形）。
+   * 手前を **ぜんぶ** 開く。夕礼に 関門（`gates`）を 戻した ので（2026-09-14 の R9 検収
+   * 「ステージ最大の 産出が 素通りできる」）、1本 残すと 夕礼が 開かない。
+   * 手前が ぜんぶ 済んでも **夕礼 自身が 未了**なので、ステージは クリアに ならない。
    */
-  await seedCompleted(context, refs.slice(0, at - 1));
+  await seedCompleted(context, refs.slice(0, at));
 
   await page.goto("/asakai/meeting-asakai_muzukashii");
   await joinCall(page);
 
   await expect(page.getByText("（0 / 4）")).toBeVisible();
+  /* 上級の 4枚（初級と 同じ 型で、向きだけ ちがう）。 */
+  await expectOnScreen(page, "今日 行ったこと");
+  await expectOnScreen(page, "進捗率");
+  await expectOnScreen(page, "明日 行うこと");
+
+  /*
+   * 上級は **作業記録（時間順）だけ**を 渡す。整理ずみの 報告文は 出さない
+   *（2026-09-14 の 原本）。カードは ［じぶんの 担当］の 中に ある。
+   */
+  await page.getByRole("button", { name: "じぶんの 担当を 見る" }).click();
+  const yuureiDuty = page.getByRole("dialog", { name: "じぶんの 担当" });
+  await expect(yuureiDuty).toBeVisible();
   await expectOnScreen(page, "きょうの メモ");
+  await expectOnScreen(page, "09:00");
+  await expectOnScreen(page, "学生一覧API");
   await expectOnScreen(page, "やること");
+  await shot(page, "asakai-06-muzukashii-duty");
+  await yuureiDuty.getByRole("button", { name: "とじる" }).click();
+  await expect(yuureiDuty).toBeHidden();
   await shot(page, "asakai-06-muzukashii-mon");
 
   /* 1行では 開かない（`openAt` は 2）。司会が 聞き返す。 */
-  await page
-    .locator("#asakai-answer")
-    .fill("一覧に 日づけと 先生の 名前が 出るように なりました。");
+  await page.locator("#asakai-answer").fill("学生一覧APIと 接続しました。");
   await page.getByRole("button", { name: "報告する" }).click();
   await expect(page.getByRole("dialog", { name: "報告の 見かた" })).toBeVisible();
   await page.getByRole("button", { name: "つづける" }).click();
@@ -200,7 +248,7 @@ test("夕礼（むずかしい）— メモと カードが 同じ 画面に 並
 test("390px で 板 → マイク → チャット の 順に 並ぶ", async ({ page, context }) => {
   const refs = stageRefs();
   const at = refs.indexOf("asakai_muzukashii");
-  await seedCompleted(context, refs.slice(0, at - 1));
+  await seedCompleted(context, refs.slice(0, at));
   await page.goto("/asakai/meeting-asakai_muzukashii");
   await joinCall(page);
 

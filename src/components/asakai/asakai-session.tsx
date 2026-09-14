@@ -319,7 +319,9 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
          * 週の けっかが「6日ぶん」に なって しまう。日で 置きかえて、
          * **月曜から 金曜の 並び**に そろえ直す（報告した 順では 読めない）。
          */
-        const order = (day: string) => asakai?.scenes.findIndex((s) => s.day === day) ?? 0;
+        /* `day` は "月曜日"（`DAY_NAME`）。`scene.day` は "mon" なので 変換して 比べる。 */
+        const order = (day: string) =>
+          asakai?.scenes.findIndex((s) => DAY_NAME[s.day] === day) ?? 0;
         const done = [...prev.filter((r) => r.day !== row.day), row].sort(
           (a, b) => order(a.day) - order(b.day),
         );
@@ -639,7 +641,13 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
   );
 
   /** その 日の 報告が 済んで いるか（タブの 顔に 使う）。 */
-  const doneDays = asakai.scenes.map((s) => results.some((r) => r.day === s.day));
+  /*
+   * `DayResult.day` は **人が 読む 字**（"月曜日"）で 持って いる（`finishScene` の
+   * `day: DAY_NAME[scene.day]`）。`scene.day` は "mon"。そのまま 比べて いた ので
+   * **タブの 緑が 永久に 付かなかった**——タブで 飛べる のに、どこが 済んだか
+   * 画面から 読めなかった（2026-09-14 の 通し検収）。同じ 字に 直してから 比べる。
+   */
+  const doneDays = asakai.scenes.map((s) => results.some((r) => r.day === DAY_NAME[s.day]));
 
   /*
    * 帯（`MeetingSession` の「01 …」の 帯と 同じ 席）。
@@ -903,7 +911,15 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
       tone="light"
       activeSpeaker={last && !last.self ? last.speakerId : undefined}
       participants={asakai.people
-        .filter((person) => !person.fridayOnly || scene.day === "fri")
+        /*
+         * **その日に 話す 人は 出す**。
+         *
+         * `fridayOnly` だけで 見て いた ころ、藤木さんに 火曜と 木曜の 台詞を
+         * 足したのに **顔が 出ない まま 声だけ 流れて いた**（2026-09-13）。
+         * だれが しゃべって いるのか 画面から 追えない。旗では なく
+         * **その場面に 台詞が あるか**で 決める。
+         */
+        .filter((person) => !person.fridayOnly || speakersOf(scene).has(person.id))
         .map((person) => ({
           id: person.id,
           name: person.name,
@@ -1138,6 +1154,13 @@ function WeekResult({
   onClose: () => void;
 }) {
   const [closed, setClosed] = useState(false);
+  /*
+   * 問題の 札は **教材の ことばを 使う**。「こまりごと」と 書き込んで いた ころ、
+   * 5日 ずっと「問題点」と 教えて おいて、最後の 合否だけ 別の 名前で 言って いた
+   *（2026-09-14 の 通し検収。決済編は「問題・確認」、Next Talent 編は「問題点」）。
+   */
+  const komariName =
+    asakai.scenes[0]?.panels.find((panel) => panel.id === "komari")?.label ?? "問題";
   const units = rows.reduce((sum, row) => sum + row.units, 0);
   const unitTotal = rows.reduce((sum, row) => sum + row.unitTotal, 0);
   const komariDays = rows.filter((row) => row.komariOpen).length;
@@ -1172,7 +1195,7 @@ function WeekResult({
       </p>
       {needBoxes !== undefined ? (
         <p className="text-sm font-bold">
-          <RubyText text="こまりごとで 言えた こと" index={index} show />{" "}
+          <RubyText text={`${komariName}で 言えた こと`} index={index} show />{" "}
           <span className="tabular-nums">
             {komariBoxes} / {komariTotal}
           </span>{" "}
@@ -1181,7 +1204,7 @@ function WeekResult({
         </p>
       ) : needDays !== undefined ? (
         <p className="text-sm font-bold">
-          <RubyText text="こまりごとを 言えた 日" index={index} show />{" "}
+          <RubyText text={`${komariName}を 言えた 日`} index={index} show />{" "}
           <span className="tabular-nums">
             {komariDays} / {rows.length}
           </span>{" "}
@@ -1290,6 +1313,32 @@ function Chat({
       </div>
     </div>
   );
+}
+
+/**
+ * その 場面で **声を 出す 人**の id。
+ *
+ * 参加者の 列を「旗（`fridayOnly`）」だけで 決めて いた ころ、台詞を 足した 人の
+ * 顔が 出ない まま 声だけ 流れた。台詞の ある ところを ぜんぶ 見て 決める。
+ */
+function speakersOf(scene: Scene): ReadonlySet<string> {
+  const ids = new Set<string>();
+  const add = (line?: { readonly speakerId: string }) => {
+    if (line) ids.add(line.speakerId);
+  };
+  scene.opening.forEach(add);
+  add(scene.sample);
+  add(scene.prompt);
+  add(scene.ack);
+  scene.members.forEach(add);
+  add(scene.arrange?.done);
+  add(scene.arrange?.missing);
+  scene.closing.forEach(add);
+  for (const panel of scene.panels) {
+    panel.followups.forEach(add);
+    add(panel.example);
+  }
+  return ids;
 }
 
 /** 教材の パネルを 判定の 形へ。`fact` は 画面に 出さない（AIに 渡す 材料）。 */
