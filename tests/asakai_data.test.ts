@@ -2,7 +2,6 @@ import { describe, expect, it } from "vitest";
 
 import kantan from "../content/meetings/asakai_kantan.json";
 import muzukashii from "../content/meetings/asakai_muzukashii.json";
-import lecture from "../content/articles/asakai_lecture.json";
 import { meetingSchema } from "@/content/schema";
 import {
   applyUtterance,
@@ -344,13 +343,11 @@ describe("悪い しらせと おわび", () => {
     });
   }
 
-  it("ページが おわびの 言い方を 先に 教えて いる", () => {
-    /* 規律10: 本文に 無い ところで 新しい 型を 作らない。 */
-    const article = JSON.stringify(lecture);
-    expect(article).toContain("すみません");
-    expect(article).toContain("申し訳");
-    expect(article).toContain("悪い ニュースほど 早く 言う");
-  });
+  /*
+   * 「ページが おわびの 言い方を 先に 教えて いる」は 2026-09-14 に 外した。
+   * 朝礼ページを ユーザー指定の 本文に 差し替え、おわびの 言い方と 土日の 飛ばし方は
+   * 授業で 口頭で 伝える ことに なった（ユーザーの 判断・テスト削除も 承認ずみ）。
+   */
 });
 
 describe("数字の 見かた", () => {
