@@ -256,12 +256,20 @@ export function DayProgress({ at, total }: { at: number; total: number }) {
 export function DayTabs({
   at,
   done,
+  disabled = false,
   onPick,
 }: {
   /** いま 見て いる 日（0〜4）。 */
   at: number;
   /** 報告が 済んだ 日（true の ところに ✓）。 */
   done: readonly boolean[];
+  /**
+   * 押せない あいだ（報告を 見て もらって いる 最中）。
+   *
+   * 待って いる 途中に 日を 変えられると、**前の 日の 見立てが 次の 日に 着地する**
+   *（2026-09-14 の 検収）。番号で 捨てる 守りは あるが、そもそも 押せなく して おく。
+   */
+  disabled?: boolean;
   onPick: (at: number) => void;
 }) {
   return (
@@ -279,6 +287,7 @@ export function DayTabs({
             role="tab"
             aria-selected={here}
             aria-label={`${day}曜日${done[i] ? "・報告 ずみ" : ""}`}
+            disabled={disabled && !here}
             onClick={() => onPick(i)}
             className={
               here

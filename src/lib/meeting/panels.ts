@@ -21,12 +21,13 @@
  * 夕礼の 材料は **時間順の 作業記録**なので、全行を そのまま 読み上げると
  * 教材が 探す ことばに ぜんぶ 当たる。ことばの 照合を いくら 締めても 塞がらない
  *（記録は 正しい ことばで 書かれて いる）。見わけが つくのは
- * **行頭の 時刻を そのまま 並べて いる** ことだけ——`readsLog` が そこを 見る。
+ * **記録の 本文が そのまま 残って いる** ことだけ——`readsLog` が そこを 見る。
  *
- * ## 数字は ことばで 数えない
- * 「数字を 1つ」だけは キーワードでは なく **形**で 見る。
- * 教材ごとに 数字の キーワードを 書き並べると、書き忘れた 言い方
- *（「はんぶん」「よんこ」）で 開かなく なる。
+ * ## 進みぐあいは ことばで 数えない
+ * 進みぐあいの 札だけは キーワードでは なく **形**で 見る（`saysProgress`）。
+ * 教材ごとに 言い方を 書き並べると、書き忘れた 形（「はんぶん」「75パーセント」）で
+ * 開かなく なる。ただし **数なら 何でも よい ことに しない**——作業記録の 時刻
+ *（`09:00`）や 教材の 固有名詞（「上位6スキル」「検索結果0件」）で 開いて いた。
  */
 
 import type { MatchableFact } from "@/components/listening/req-matcher";
@@ -48,7 +49,10 @@ export interface ReportPanel {
   readonly openAt?: number;
   /** ⭕ に なる 行の 数（既定 `facts.length`）。 */
   readonly fullAt?: number;
-  /** ことばでは なく 形で 見る（いまは「数字が 1つ 以上 あるか」だけ）。 */
+  /**
+   * ことばでは なく **形**で 見る。いまの 使い道は 進みぐあいの 札だけで、
+   * 見るのは `saysProgress`（割合の ことば、または「進捗」＋数）。
+   */
   readonly rule?: "number";
 }
 
@@ -102,6 +106,34 @@ export function hasNumber(utterance: string): boolean {
   return ARABIC.test(text) || KANJI_NUMBER.test(text) || HALF.test(text) || WAGO.test(text);
 }
 
+/** 割合の 言い方（`％` は NFKC で `%` に、`パーセント` は かなに 寄る）。 */
+const PERCENT = /(%|ぱーせんと)/u;
+/** 「進捗」と 言って いるか（数と 組んだ ときだけ 見る）。 */
+const PROGRESS_WORD = /(進捗|しんちょく)/u;
+
+/**
+ * **進みぐあいを 数で 言えたか**（`rule: "number"` の パネルが 見る もの）。
+ *
+ * 「数字が 1つ でも あるか」で 見て いた ころ、この 教材の ふつうの 報告が
+ * そのまま 当たって いた——「上位6スキルまで 表示できるように しました」
+ *「検索結果0件の 場合の 表示を 追加しました」「AUPP学生10名の…」。
+ * **パーセントを ひとことも 言わずに ⭕** に なるので、火曜・水曜は
+ * 進捗を 言う 練習が まるごと 飛ばせて いた（2026-09-14 の 通し検収）。
+ * 時刻（`09:00`）で 開いて いたのと 同じ 穴が、教材の 固有名詞に 残って いた。
+ *
+ * 見るのは 2つ。教材が どちらも 教えて いる 形:
+ * - 割合の ことば（`75%`・`75％`・`75パーセント`）
+ * - 「進捗」と いう ことば ＋ 数（「今の 進捗は 45 です」）
+ *
+ * カードの やること は 5日 とも「進捗（%）」、聞き返しも お手本も
+ *「◯◯%です」の 形なので、**学習者は 型を 渡されて いる**。
+ */
+export function saysProgress(utterance: string): boolean {
+  const text = normalizeReading(utterance);
+  if (PERCENT.test(text)) return true;
+  return PROGRESS_WORD.test(text) && hasNumber(utterance);
+}
+
 /* ------------------------------------------------------------------ *
  * 作業記録を そのまま 読んで いないか（夕礼）
  * ------------------------------------------------------------------ */
@@ -115,12 +147,18 @@ export function hasNumber(utterance: string): boolean {
 export const LOG_READ_HEADS = 3;
 
 /**
- * 「そのまま 読んで いる」と 見なす **行の 本文**の 数（時刻を 省いた とき用）。
+ * 「そのまま 読んで いる」と 見なす **行の 本文**の 数。
  *
  * まとめた 報告にも 記録の ことばは 1つ 2つ 混ざる（「スキルグラフを 作りました」）。
- * **5行 まるごと そのまま 並ぶ**のは、まとめた 文では 起こらない。
+ * **4行 まるごと そのまま 並ぶ**のは、まとめた 文では 起こらない。
+ *
+ * 5行から 下げた（2026-09-14 の 通し検収）——**時刻を 外して 4行 貼るだけで 満点**に
+ * なって いた。ひとことも まとめて いない。
  */
-export const LOG_READ_LINES = 5;
+export const LOG_READ_LINES = 4;
+
+/** 時刻と 組んで 見る ときの 本文の 数（時刻だけでは 決めない・下の `readsLog`）。 */
+export const LOG_READ_PAIR = 2;
 
 /** 短すぎる 行は 数えない（「昼休み」は まとめた 文にも 入りうる）。 */
 const LOG_LINE_MIN = 8;
@@ -131,16 +169,35 @@ export interface LogLine {
   readonly text: string;
 }
 
+/**
+ * 行頭の 時刻を、声でも 見つかる 形に ひらく。
+ *
+ * **声が 本線**なので（`asakai-session.tsx` の 覚え書き）、書き起こしは
+ * `09:00` を「9時」「9時ちょうど」、`09:30` を「9時30分」「9時半」と 書く。
+ * 字の 形だけで 探すと、**声で 記録を 読み上げた 人だけ 素通り**する。
+ */
+function headForms(head: string): string[] {
+  const match = /^(\d{1,2}):(\d{2})$/u.exec(normalizeReading(head));
+  if (!match) return [];
+  const hour = Number(match[1]);
+  const minute = Number(match[2]);
+  const forms = [`${match[1]}:${match[2]}`, `${hour}:${match[2]}`];
+  if (minute === 0) forms.push(`${hour}時`);
+  else if (minute === 30) forms.push(`${hour}時30分`, `${hour}時半`);
+  else forms.push(`${hour}時${minute}分`);
+  return forms.map(normalizeReading);
+}
+
 /** 発話の 中に ある 行頭（時刻）の 数。同じ 時刻は 1つに 数える。 */
 export function countLogHeads(utterance: string, lines: readonly LogLine[]): number {
   const haystack = normalizeReading(utterance);
   if (!haystack) return 0;
   const seen = new Set<string>();
   for (const line of lines) {
-    const needle = normalizeReading(line.head);
     /* 時刻の 形（`09:00`）だけを 見る。「あした」「来週の 月曜日」は 数えない */
-    if (!/^\d{1,2}:\d{2}$/u.test(needle)) continue;
-    if (haystack.includes(needle)) seen.add(needle);
+    const forms = headForms(line.head);
+    if (forms.length === 0) continue;
+    if (forms.some((form) => haystack.includes(form))) seen.add(forms[0] ?? line.head);
   }
   return seen.size;
 }
@@ -168,19 +225,39 @@ export function countLogLines(utterance: string, lines: readonly LogLine[]): num
  *（2026-09-14 の 実測: 21こ中 16こ・合格ラインは 11）。
  *
  * ことばの 照合を いくら 締めても ここは 塞がらない——記録は **正しい ことばで
- * 書かれて いる**から。見わけが つくのは **記録の 形が そのまま 残って いる**
- * ことだけ なので、そこを 2つの 目で 見る:
+ * 書かれて いる**から。見わけが つくのは **記録の 本文が そのまま 残って いる**
+ * ことだけ なので、そこを 見る:
  *
- * - 行頭の 時刻を 3つ 以上 並べて いる
- * - 行の 本文を 5行 以上 そのまま 並べて いる（時刻を 省いて 読み上げた とき）
+ * - 行の 本文を 4行 以上 そのまま 並べて いる
+ * - 行頭の 時刻を 3つ 以上 並べ、**かつ** 本文も 2行 そのまま 並べて いる
+ *
+ * ## 時刻だけでは 決めない（2026-09-14 の 検収）
+ * 行頭は 09:00〜17:30 の 丸い 時刻なので、**まとめた 報告**にも ふつうに 入る——
+ *「09:00から 12:00まで 実装、13:00から 17:00まで テストを しました」は
+ * 時刻が 4つ 当たる。これを 読み上げと 見なすと、**いちばん よく まとめた 報告が
+ * 差し戻される**。取りこぼしは 誤って 開く ことより 重い（設計01 P8）ので、
+ * 時刻は **本文の 写しが ある ときの 上乗せ**に とどめる。
  *
  * 鍵が 無くても 同じに 動く（AIの 見立ては ここに 重ねるだけ）。
  */
 export function readsLog(utterance: string, lines: readonly LogLine[]): boolean {
-  return (
-    countLogHeads(utterance, lines) >= LOG_READ_HEADS ||
-    countLogLines(utterance, lines) >= LOG_READ_LINES
-  );
+  const copied = countLogLines(utterance, lines);
+  if (copied >= LOG_READ_LINES) return true;
+  return countLogHeads(utterance, lines) >= LOG_READ_HEADS && copied >= LOG_READ_PAIR;
+}
+
+/**
+ * **AIの 見立てを 効かせて よいか**（写しの あとが 残って いるか）。
+ *
+ * AIが 返す `readsLog` は 引き算（発話 1本を 丸ごと 0に する）なので、
+ * **言い分の 無い ところでは 効かせない**。ここが 無かった ころ、
+ * 記録を 持たない 朝礼でも AIの 一言だけで 発話が 消せた
+ *（発話の 中に 囲いを 書いて 閉じるだけで 作れた）。
+ *
+ * 本文の 写しが 2行 以上 ある ときだけ、AIは「まとめて いない」と 言える。
+ */
+export function couldBeLog(utterance: string, lines: readonly LogLine[]): boolean {
+  return countLogLines(utterance, lines) >= LOG_READ_PAIR;
 }
 
 const openAtOf = (panel: ReportPanel) => panel.openAt ?? 1;
@@ -236,7 +313,13 @@ export function applyUtterance({
   aiSaidIds?: readonly string[];
   /** 作業記録の 行。空なら 丸読みは 見ない（朝礼は 記録を 持たない）。 */
   logLines?: readonly LogLine[];
-  /** AIも「記録の 読み上げ」と 見た（鍵が あれば 届く。無ければ false）。 */
+  /**
+   * AIも「記録の 読み上げ」と 見た（鍵が あれば 届く。無ければ false）。
+   *
+   * **単独では 効かない**——`couldBeLog`（本文の 写しが 2行 以上）と 組んだ ときだけ。
+   * AIの この 印は 引き算なので、言い分の 無い ところで 効かせると
+   * **正しく まとめた 報告が AIの 見誤りだけで 消える**（設計01 P8 に 逆行）。
+   */
   aiReadsLog?: boolean;
 }): PanelStep {
   const byId = new Map(states.map((s) => [s.id, s]));
@@ -250,7 +333,7 @@ export function applyUtterance({
    *「作業記録を そのまま 読み上げません」と 書いて いる ことを、判定が
    * 一度も 見て いなかった。
    */
-  if (readsLog(utterance, logLines) || aiReadsLog) {
+  if (readsLog(utterance, logLines) || (aiReadsLog && couldBeLog(utterance, logLines))) {
     return { states, newFacts: [], opened: [], completed: [], readLog: true };
   }
   const newFacts: string[] = [];
@@ -277,7 +360,7 @@ export function applyUtterance({
 
     // 形で 見る パネル（数字）は 行を 持たない
     if (panel.rule === "number") {
-      if (prev.open || !hasNumber(utterance)) return prev;
+      if (prev.open || !saysProgress(utterance)) return prev;
       opened.push(panel.id);
       completed.push(panel.id);
       return { ...prev, open: true, full: true };

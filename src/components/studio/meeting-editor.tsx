@@ -39,6 +39,15 @@ import {
 /** `meetingSchema` の questions.min(3)。 */
 const MIN_QUESTIONS = 3;
 
+/** 朝礼・夕礼の 場面の 名前（曜日ごとの ひとことの 見出しに 使う）。 */
+const DAY_LABEL: Record<"mon" | "tue" | "wed" | "thu" | "fri", string> = {
+  mon: "月曜日",
+  tue: "火曜日",
+  wed: "水曜日",
+  thu: "木曜日",
+  fri: "金曜日",
+};
+
 /** 受け答えの中で、学習者の言葉に置きかわる目印（meeting-session.tsx と同じ）。 */
 const ECHO_MARK = "◯◯";
 
@@ -189,6 +198,43 @@ export function MeetingEditor({
           placeholder="できた ところを 1つ ほめ、直す ところを 1つだけ 言い、その 言い方の れいを 見せて ください。"
           hint="直す ところを 2つ 以上に すると、学習者は どれから 直すか 決められません。"
         />
+
+        {/*
+          **曜日ごとの ひとこと**（朝礼・夕礼だけ・2026-09-14 の 指定
+          「システムとしては ステージ（曜日）ごとに プロンプトは 変更できると いいと 思います」）。
+
+          上の「見かた」に **継ぎ足す** 形で AIへ 届く。5日ぶんの 写しには しない——
+          写しで 持つと 片方だけ 直り、どちらが 正なのかが 読めなく なる。
+          だから ここに 書くのは **その 日に しか 当てはまらない こと**だけ。
+        */}
+        {value.asakai ? (
+          <div className="space-y-3">
+            <p className="text-ink-soft text-xs font-bold">
+              曜日ごとの ひとこと — 上の「見かた」に 足されます。その 日に しか あてはまらない
+              ことだけを 書いて ください。
+            </p>
+            {value.asakai.scenes.map((scene, index) => (
+              <TextAreaField
+                key={scene.day}
+                label={`${DAY_LABEL[scene.day]}だけの 見かた`}
+                value={scene.judgeNote ?? ""}
+                onChange={(judgeNote) =>
+                  patch({
+                    asakai: {
+                      ...value.asakai!,
+                      scenes: replaceAt(value.asakai!.scenes, index, {
+                        ...scene,
+                        judgeNote: judgeNote.trim() ? judgeNote : undefined,
+                      }),
+                    },
+                  })
+                }
+                rows={3}
+                placeholder="この 日だけの 見かた（空でも かまいません）"
+              />
+            ))}
+          </div>
+        ) : null}
       </StudioSection>
 
       {/*

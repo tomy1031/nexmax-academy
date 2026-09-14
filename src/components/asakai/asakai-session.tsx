@@ -34,7 +34,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore
 import { CallShell } from "@/components/call-shell";
 import { DictionaryText } from "@/components/dictionary-text";
 import { HintModal } from "@/components/meeting/hint-modal";
-import { requestAsakaiJudge } from "@/components/meeting/judge-api";
+import { dropJudgeSession, requestAsakaiJudge } from "@/components/meeting/judge-api";
 import { ModalShell } from "@/components/meeting/modal-shell";
 import { SpeakButton } from "@/components/meeting/speak-button";
 import { SpeechSpeedPicker } from "@/components/meeting/speech-speed-picker";
@@ -382,7 +382,15 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
                 (openLabels.length > 0
                   ? `はい。${openLabels.join("・")}は 聞けました。`
                   : "はい。") +
-                `${shutLabels.join("・")}は 言えて いません。あしたは そこも お願いします。`,
+                `${shutLabels.join("・")}は 言えて いません。` +
+                /*
+                  **金曜に「あした」と 言わない**（2026-09-14 の R5 検収）。
+                  週の さいごの 場面なので、次に 報告するのは 来週。
+                  夕礼の 金曜は 札も「次に 行うこと（来週）」に なって いる。
+                */
+                (sceneAt + 1 >= asakai.scenes.length
+                  ? "来週は そこも お願いします。"
+                  : "あしたは そこも お願いします。"),
             };
 
       /* 采配は「お願いまで 言えたか」で 分ける。言えて いない ときは
@@ -394,7 +402,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
       pushClips(tail, rateOf(speed));
       setAskedId(null);
     },
-    [scene, asakai, panels, nameOf, meeting.id, pushClips, speed],
+    [scene, sceneAt, asakai, panels, nameOf, meeting.id, pushClips, speed],
   );
 
   /**
@@ -428,10 +436,16 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
        *（`focus`:「作業記録を そのまま 読み上げません」）ので、学習者が
        * 知らない 決まりを ここで 新しく 作らない。聞き返しは そのまま 数えるので、
        * 2回 つづけば お手本が 出て 先へ 進む（0点で 終わらせない）。
+       *
+       * ## 言い直しは **聞き返しの 代わり**に 言う（2026-09-14 の R5 検収）
+       * 「まとめて もう いちど」と「つぎは 進捗率を お願いします」を 並べると、
+       * 1回の ターンに **次の 行動が 2つ**に なる（規律1 は 1つ）。
+       * お手本を 見せる ばめん（打ち切り・その日の おわり）では、お手本 そのものが
+       * いちばん 具体的な 次の 行動なので、こちらは 言わない。
        */
       const readLog = step.readLog;
       const sayRedo = () => {
-        if (!readLog || !asakai) return;
+        if (!asakai) return;
         say({
           speakerId: asakai.chairId,
           text: "作業記録を そのまま 読み上げて います。大きな 作業を 2つか 3つに まとめて、もう いちど お願いします。",
@@ -460,7 +474,16 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
       const shut = panels
         .filter((one) => !step.states.find((x) => x.id === one.id)?.full)
         .map((one) => one.label);
-      const count = (attempts[target.id] ?? 0) + 1;
+      /*
+       * **進んだ ターンは 聞き返しに 数えない**（2026-09-14 の 通し検収）。
+       *
+       * こまりごとは 箱が 3つ ある（水曜）。1つずつ ていねいに 言う 学習者は、
+       * **2つ 言えた ところで 打ち切られて** 3つ目を 言う 場所が 無かった——
+       * 箱が 1つ 開いた ターンまで「答えられなかった 回」に 数えて いたため。
+       * 数えるのは **その 札が 1つも 進まなかった とき**だけに する。
+       */
+      const moved = step.newFacts.some((id) => target.facts.some((fact) => fact.id === id));
+      const count = moved ? (attempts[target.id] ?? 0) : (attempts[target.id] ?? 0) + 1;
       const data = scene.panels.find((one) => one.id === target.id);
       if (!data) {
         setStates(step.states);
@@ -482,7 +505,6 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
             readLog,
             sceneOver: true,
             after: () => {
-              sayRedo();
               /*
                * **その日の さいごの カードでも れいを 見せる**。
                *
@@ -510,7 +532,6 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
           readLog,
           sceneOver: false,
           after: () => {
-            sayRedo();
             say({ ...data.example, text: `こう 言うと 開きます。${data.example.text}` });
             if (followup) say(followup);
             setAskedId(next.id);
@@ -529,8 +550,9 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
         readLog,
         sceneOver: false,
         after: () => {
-          sayRedo();
-          if (followup) say(followup);
+          /* 言い直しを たのむ ときは 聞き返さない（次の 行動は 1つ）。 */
+          if (readLog) sayRedo();
+          else if (followup) say(followup);
           setAskedId(target.id);
         },
       });
@@ -568,6 +590,8 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
         `${meeting.id}:${scene.day}`,
         {
           judgePrompt: meeting.judgePrompt ?? "",
+          /* 曜日ごとの ひとこと。**継ぎ足し**なので、無い 日は 教材ぜんたいの 指示だけ。 */
+          dayNote: scene.judgeNote,
           sceneTitle: scene.title,
           panels: scene.panels
             .filter((panel) => panel.facts.length > 0)
@@ -598,6 +622,22 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
    * 声で 答えた ぶんを 受ける。`lastUtterance` は **学習者の ことば**で、
    * 相手の 返事では ない（`useLiveVoice` の 覚え書き）。
    */
+  /**
+   * 画面を 離れる ときの 後始末（`MeetingSession`・`TalkGameSession` と 同じ）。
+   *
+   * - 判定の つなぎを 閉じる。**モジュールに 1本 張りっぱなし**なので、
+   *   閉じないと Live の つなぎが 開いた まま 残り、同じ 日へ 戻った ときに
+   *   前の 往復の 履歴を 抱えた つなぎを 使い回す
+   * - 番号を 1つ 進める。遅れて 届いた 見立てが **もう 居ない 画面**で 走らない ように
+   */
+  useEffect(
+    () => () => {
+      runId.current += 1;
+      dropJudgeSession();
+    },
+    [],
+  );
+
   const spokenAt = useRef(0);
   useEffect(() => {
     const heard = voice.lastUtterance;
@@ -777,7 +817,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
         居座って いた（390px の 実機幅で 確認・2026-09-13）。
       */}
       <SkyStrip kind={scene.kind} />
-      <DayTabs at={sceneAt} done={doneDays} onPick={goToScene} />
+      <DayTabs at={sceneAt} done={doneDays} disabled={waiting} onPick={goToScene} />
       <div className="flex items-center justify-between gap-2">
         <p className="text-navy min-w-0 flex-1 text-[12px] leading-snug font-black">
           <RubyText text={scene.title} index={index} show />
@@ -865,7 +905,11 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
                 talking={voice.talking}
                 disabled={judge !== null || waiting}
                 waitNote={
-                  judge ? "見かたを 読んでから 話します。" : waiting ? "いま 見て います。" : null
+                  judge
+                    ? "見かたを 読んでから 話します。"
+                    : waiting
+                      ? "AIが いま 見て います。"
+                      : null
                 }
                 onConnect={() => void voice.start(LISTEN_ONLY)}
                 onStartTalking={voice.startTalking}
@@ -916,10 +960,10 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
               type="button"
               onClick={() => send()}
               disabled={!answer.trim() || judge !== null || waiting}
-              aria-label={waiting ? "見て います" : "報告する"}
+              aria-label={waiting ? "AIが 見て います" : "報告する"}
               className="btn-island w-full px-4 py-2 text-sm font-black disabled:opacity-45"
             >
-              <RubyText text={waiting ? "見て います…" : "報告する"} index={index} show />
+              <RubyText text={waiting ? "AIが 見て います…" : "報告する"} index={index} show />
             </button>
           </div>
         </>
@@ -1150,7 +1194,16 @@ function ReportJudge({
       {readLog ? (
         <div className="border-hairline bg-panel text-coral-deep mt-3 rounded-xl border px-3 py-2 text-sm font-bold">
           <RubyText
-            text="作業記録を そのまま 読み上げて います。この ぶんは 数えて いません。大きな 作業を 2つか 3つに まとめて ください。"
+            text={
+              /*
+                **次の 行動は、その場で できる ことに する**（規律1・2026-09-14 の R5 検収）。
+                その日が もう 終わって いるのに「もう いちど まとめて ください」と 書くと、
+                言われた ことを する 場所が どこにも 無い まま 画面が 閉じる。
+              */
+              sceneOver
+                ? "作業記録を そのまま 読み上げて います。この ぶんは 数えて いません。つぎの 日は 大きな 作業を 2つか 3つに まとめて ください。"
+                : "作業記録を そのまま 読み上げて います。この ぶんは 数えて いません。大きな 作業を 2つか 3つに まとめて、もう いちど 言って ください。"
+            }
             index={index}
             show
           />

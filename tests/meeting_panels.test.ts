@@ -10,6 +10,7 @@ import {
   initialPanelStates,
   nextProbePanel,
   readsLog,
+  saysProgress,
   type PanelState,
   type ReportPanel,
 } from "@/lib/meeting/panels";
@@ -35,7 +36,7 @@ const EASY_TUE: ReportPanel[] = [
     label: "こまりごと",
     facts: [{ id: "c1", keywords: ["こまりごと", "こまって", "ありません", "ないです", "とくに"] }],
   },
-  { id: "suuji", label: "数字を 1つ", facts: [], rule: "number" },
+  { id: "suuji", label: "進捗", facts: [], rule: "number" },
 ];
 
 /**
@@ -92,7 +93,7 @@ const HARD_MON: ReportPanel[] = [
       },
     ],
   },
-  { id: "suuji", label: "数字を 1つ", facts: [], rule: "number" },
+  { id: "suuji", label: "進捗", facts: [], rule: "number" },
 ];
 
 describe("hasNumber — 数字は ことばで 数えない", () => {
@@ -154,7 +155,7 @@ describe("readsLog — 記録の 読み上げ", () => {
     { head: "13:00", text: "大学フィルター 作成" },
   ];
 
-  it("行頭の 時刻を 3つ 並べたら 読み上げ", () => {
+  it("行頭の 時刻を 3つ、本文も そのまま 並べたら 読み上げ", () => {
     const said = LOG.slice(0, 3)
       .map((row) => `${row.head} ${row.text}`)
       .join("。");
@@ -166,12 +167,35 @@ describe("readsLog — 記録の 読み上げ", () => {
     expect(readsLog("17:30に 検索の 確認が 終わりました。", LOG)).toBe(false);
   });
 
-  it("時刻を 省いても、行を 5つ 並べたら 読み上げ", () => {
-    const said = LOG.slice(0, 5)
+  /**
+   * **時刻だけでは 決めない**（2026-09-14 の 検収）。
+   *
+   * 行頭は 09:00〜17:30 の 丸い 時刻なので、**いちばん よく まとめた 報告**にも
+   * ふつうに 入る。時刻の 数だけで 止めると、そういう 報告が 差し戻される——
+   * 取りこぼしは 誤って 開く ことより 重い（設計01 P8）。
+   */
+  it("時刻を いくつ 言っても、本文が 写しで なければ 読み上げに しない", () => {
+    const said = "09:00から 12:00まで 実装、13:00から 17:00まで テストを しました。";
+    expect(countLogHeads(said, LOG)).toBeGreaterThanOrEqual(3);
+    expect(countLogLines(said, LOG)).toBe(0);
+    expect(readsLog(said, LOG)).toBe(false);
+  });
+
+  /**
+   * **声が 本線**なので、書き起こしの 形でも 見つける。
+   * `09:00` は「9時」、`09:30` は「9時30分」「9時半」と 書き起こされる。
+   */
+  it("こえの 書き起こし（9時・9時半）でも 時刻を 数える", () => {
+    const said = "9時 学生一覧APIの 仕様を 確認。9時半 学生一覧APIとの 接続開始。";
+    expect(countLogHeads(said, LOG)).toBe(2);
+  });
+
+  it("時刻を 省いても、行を 4つ 並べたら 読み上げ", () => {
+    const said = LOG.slice(0, 4)
       .map((row) => row.text)
       .join("。");
     expect(countLogHeads(said, LOG)).toBe(0);
-    expect(countLogLines(said, LOG)).toBe(5);
+    expect(countLogLines(said, LOG)).toBe(4);
     expect(readsLog(said, LOG)).toBe(true);
   });
 
@@ -186,7 +210,7 @@ describe("readsLog — 記録の 読み上げ", () => {
 
   /** **数えない**——罰では なく 言い直し。板は 1つも 動かない。 */
   it("読み上げた ぶんは 1つも 数えない", () => {
-    const said = LOG.slice(0, 5)
+    const said = LOG.slice(0, 4)
       .map((row) => `${row.head} ${row.text}`)
       .join("。");
     const panels: ReportPanel[] = [
@@ -213,15 +237,48 @@ describe("readsLog — 記録の 読み上げ", () => {
     expect(countOpen(step.states)).toBe(0);
   });
 
-  /** AIが「読み上げだ」と 見た ときも 同じ（鍵が あれば 届く）。 */
-  it("AIの 見立てだけでも 止まる", () => {
-    const panels: ReportPanel[] = [
-      { id: "kyou", label: "今日 行ったこと", facts: [{ id: "k1", keywords: ["学生一覧API"] }] },
-    ];
+  /**
+   * **AIの 見立ては 確かめ役**（2026-09-14 の 検収）。
+   *
+   * この 印は 発話 1本を 丸ごと 0に する **引き算**なので、単独では 効かせない。
+   * 効かせて いた ころ、記録を 持たない 朝礼でも AIの 一言だけで 発話が 消せた——
+   * 学習者は「作業記録を そのまま 読み上げて います」と 言われるが、その 教材に
+   * 作業記録は 1行も 無い。
+   */
+  const ONE: ReportPanel[] = [
+    { id: "kyou", label: "今日 行ったこと", facts: [{ id: "k1", keywords: ["学生一覧API"] }] },
+  ];
+
+  it("AIの 見立てだけでは 止まらない（写しの あとが 無い）", () => {
     const step = applyUtterance({
       utterance: "学生一覧APIと つなぎました。",
-      panels,
-      states: initialPanelStates(panels),
+      panels: ONE,
+      states: initialPanelStates(ONE),
+      logLines: LOG,
+      aiReadsLog: true,
+    });
+    expect(step.readLog).toBe(false);
+    expect(countOpen(step.states)).toBe(1);
+  });
+
+  it("記録を 持たない 教材では、AIが 何と 言っても 止まらない", () => {
+    const step = applyUtterance({
+      utterance: "学生一覧APIと つなぎました。",
+      panels: ONE,
+      states: initialPanelStates(ONE),
+      aiReadsLog: true,
+    });
+    expect(step.readLog).toBe(false);
+  });
+
+  it("写しが 2行 あり、AIも そう 見たら 止まる", () => {
+    const said = `${LOG[0]!.text}。${LOG[1]!.text}。`;
+    expect(readsLog(said, LOG)).toBe(false); // ことばだけでは 止めない
+    const step = applyUtterance({
+      utterance: said,
+      panels: ONE,
+      states: initialPanelStates(ONE),
+      logLines: LOG,
       aiReadsLog: true,
     });
     expect(step.readLog).toBe(true);
@@ -229,10 +286,36 @@ describe("readsLog — 記録の 読み上げ", () => {
   });
 });
 
+/**
+ * 進みぐあいは **割合で 言えて はじめて** 開く（2026-09-14 の 通し検収）
+ *
+ * 「数字が 1つ でも あるか」で 見て いた ころ、教材の ふつうの 報告が
+ * そのまま 当たって いた——火曜・水曜は **パーセントを ひとことも 言わずに ⭕**。
+ */
+describe("saysProgress — 進みぐあい", () => {
+  it("割合で 言えたら 開く", () => {
+    expect(saysProgress("今、進捗は 35%です。")).toBe(true);
+    expect(saysProgress("現在、進捗は35％です。")).toBe(true);
+    expect(saysProgress("35パーセントです。")).toBe(true);
+  });
+
+  it("「進捗」と 数でも 開く", () => {
+    expect(saysProgress("今の 進捗は 45 です。")).toBe(true);
+  });
+
+  it("ただの 数では 開かない", () => {
+    expect(saysProgress("上位6スキルまで 表示できるように しました。")).toBe(false);
+    expect(saysProgress("検索結果0件の 場合の 表示を 追加しました。")).toBe(false);
+    expect(saysProgress("AUPP学生10名の スキルグラフを 確認しました。")).toBe(false);
+    expect(saysProgress("3時間 かかりました。")).toBe(false);
+    expect(saysProgress("09:00 学生一覧APIの 仕様を 確認")).toBe(false);
+  });
+});
+
 describe("かんたん（朝礼）— 1回の 発話で 複数 開く", () => {
-  it("「きのうは テストを しました。16こ 終わりました。」で きのう と 数字が 同時に 開く", () => {
+  it("「きのうは テストを しました。進捗は 80%です。」で きのう と 進捗が 同時に 開く", () => {
     const step = applyUtterance({
-      utterance: "きのうは テストを しました。16こ 終わりました。",
+      utterance: "きのうは テストを しました。進捗は 80%です。",
       panels: EASY_TUE,
       states: initialPanelStates(EASY_TUE),
     });
@@ -304,10 +387,10 @@ describe("むずかしい（夕礼）— まとめられたかを 数で 見る"
     expect(two.opened).toContain("kyou");
   });
 
-  it("3行を 1文に まとめると、こまりごとの 箱1と 数字が 同時に 立つ", () => {
+  it("3行を 1文に まとめると、こまりごとの 箱1と 進捗が 同時に 立つ", () => {
     const step = applyUtterance({
       utterance:
-        "通知を テストしました。Android には 来ましたが、iPhone には 3回とも 来ませんでした。",
+        "通知を テストしました。Android には 来ましたが、iPhone には 来ませんでした。進捗は 40%です。",
       panels: HARD_MON,
       states: initialPanelStates(HARD_MON),
     });
@@ -488,7 +571,7 @@ describe("打ち切った カードは 動かない", () => {
       s.id === "kinou" ? { ...s, gaveUp: true } : s,
     );
     const step = applyUtterance({
-      utterance: "きのうは テストを しました。20この うち 16こ 終わりました。",
+      utterance: "きのうは テストを しました。進捗は 80%です。",
       panels: EASY_TUE,
       states: start,
     });

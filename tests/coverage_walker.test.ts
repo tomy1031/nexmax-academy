@@ -48,6 +48,7 @@ const NOT_LEARNER_TEXT: readonly { key: RegExp; why: string }[] = [
   { key: /(^|\.)speakerId$/, why: "だれが 言うかの id" },
   { key: /(^|\.)persona$/, why: "AIへの 言い渡し（画面に 出ない）" },
   { key: /(^|\.)judgePrompt$/, why: "AIへの 言い渡し（画面に 出ない）" },
+  { key: /(^|\.)judgeNote$/, why: "AIへの 言い渡し・曜日ごとの 継ぎ足し（画面に 出ない）" },
   { key: /(^|\.)keywords(\[|$)/, why: "当たり判定の 材料（画面に 出ない）" },
   { key: /(^|\.)accept(\[|$)/, why: "当たり判定の 材料" },
   { key: /(^|\.)allOf(\[|$)/, why: "当たり判定の 材料" },

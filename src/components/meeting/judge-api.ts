@@ -168,14 +168,35 @@ export async function requestAsakaiJudge(
 ): Promise<AsakaiJudgeResult | null> {
   const apiKey = getGeminiKey();
   if (!apiKey || facts.length === 0) return null;
-  return await Promise.race([
-    askAsakai(apiKey, key, context, facts),
-    new Promise<null>((resolve) => setTimeout(() => resolve(null), ASAKAI_TIMEOUT_MS)),
-  ]);
+  /*
+   * **1本ずつ しか 頼まない**（2026-09-14 の 検収）。
+   *
+   * つなぎは `settle` を **1組しか 持たない**（`openSession` の `ask`）。
+   * 待ちを 諦めた あとも 中の 往復は 生きて いる ので、そこへ 2本目を 重ねると
+   * **1本目の 返事が 2本目の 答えに なる**——まとめた 報告が、前の 発話の
+   * 見立て（記録の 読み上げ）で 丸ごと 0点に なる。事実と ちがう 判定を
+   * 断言する ことに なる（規律1 の 逆）。重なった ぶんは 頼まずに 諦める：
+   * ことばの 照合だけで 進むので、学習者は 止まらない。
+   */
+  if (SLOTS.asakai.busy) return null;
+  SLOTS.asakai.busy = true;
+  try {
+    return await Promise.race([
+      askAsakai(apiKey, key, context, facts),
+      new Promise<null>((resolve) => setTimeout(() => resolve(null), ASAKAI_TIMEOUT_MS)),
+    ]);
+  } finally {
+    SLOTS.asakai.busy = false;
+  }
 }
 
-/** 報告の 判定を 待つ 上限。過ぎたら ことばの 照合だけで 先へ 進む。 */
-const ASAKAI_TIMEOUT_MS = 10_000;
+/**
+ * 報告の 判定を 待つ 上限。過ぎたら ことばの 照合だけで 先へ 進む。
+ *
+ * 中の 往復の 上限（`REPLY_TIMEOUT_MS` = 12秒）より **長く** して ある。
+ * 短いと、諦めた あとに 生きて いる 往復が 次の 頼みに ぶつかる。
+ */
+const ASAKAI_TIMEOUT_MS = 13_000;
 
 async function askAsakai(
   apiKey: string,
@@ -183,13 +204,23 @@ async function askAsakai(
   context: AsakaiJudgeContext,
   facts: readonly MatchableFact[],
 ): Promise<AsakaiJudgeResult | null> {
+  let mine: JudgeSession | null = null;
   try {
     const opened = await openJudge(apiKey, "asakai", key);
     if (!opened.ok) return null;
-    const args = await opened.session.ask(buildAsakaiJudgePrompt(context));
+    mine = opened.session;
+    const args = await mine.ask(buildAsakaiJudgePrompt(context));
     return parseAsakaiJudge(args, facts);
   } catch {
-    dropSlot(SLOTS.asakai);
+    /*
+     * **自分が 使った つなぎ だけを 捨てる**（2026-09-14 の 検収）。
+     *
+     * `dropSlot` は スロットの **いまの 中身**を 捨てる ので、日を またいで
+     * 張り直した あとに 前の 日の 失敗が 届くと、**新しい つなぎを 巻き添えに
+     * する**。そこから 先は 毎回 張り直しに なり、9秒×2本の したくで
+     * 上限を 超えつづける＝AIの 見立てが 二度と 届かない。
+     */
+    if (mine && SLOTS.asakai.session === mine) dropSlot(SLOTS.asakai);
     return null;
   }
 }
@@ -334,6 +365,13 @@ interface Slot {
   key: string;
   /** いま 張って いる 途中の もの（続けて 頼まれても つなぎは 1本に する）。 */
   opening: Promise<OpenResult> | null;
+  /**
+   * いま 1本 頼んで いる 最中か。
+   *
+   * つなぎは `settle` を 1組しか 持たない ので、往復を 重ねると
+   * **前の 返事が つぎの 答えに なる**。重なりを 断る ために 立てる。
+   */
+  busy?: boolean;
 }
 
 /**

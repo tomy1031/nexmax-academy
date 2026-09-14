@@ -233,6 +233,49 @@ describe("記録の 丸読みは 合格に ならない", () => {
   });
 });
 
+/**
+ * **曜日ごとの 言い渡しは 継ぎ足しで 持つ**（2026-09-14 の 指定
+ *「システムとしては ステージ（曜日）ごとに プロンプトは 変更できると いいと 思います」）
+ *
+ * 教材ぜんたいの `judgePrompt` は 1本の まま で、場面の `judgeNote` が そこへ 足される。
+ * **5日ぶんの 写しに して しまうと 片方だけ 直る**ので、写しに なって いない ことを 見る。
+ */
+describe("曜日ごとの 見かた", () => {
+  for (const { name, raw } of MEETINGS) {
+    const meeting = meetingSchema.parse(raw);
+    const asakai = meeting.asakai!;
+    const notes = asakai.scenes.map((scene) => scene.judgeNote ?? "");
+
+    it(`${name} は 5日 とも その日の 見かたを 持つ`, () => {
+      expect(notes.filter((note) => note.trim().length > 0)).toHaveLength(5);
+    });
+
+    it(`${name} の その日の 見かたは 5日 とも ちがう（写しに なって いない）`, () => {
+      expect(new Set(notes).size).toBe(5);
+    });
+
+    /**
+     * 継ぎ足しの 相手が 無いと、その日の 見かただけが AIに 届く。
+     * 教材ぜんたいの 指示（ことばの 高さ・ほめかた・直しかた）は こちらに 残す。
+     */
+    it(`${name} は 教材ぜんたいの 見かたも 持って いる`, () => {
+      expect((meeting.judgePrompt ?? "").length).toBeGreaterThan(200);
+    });
+
+    /**
+     * **同じ ことを 2か所に 書かない**。教材ぜんたいの 指示に 曜日の 名前が 出て いたら、
+     * それは 場面へ 移す もの——2か所に あると、片方を 直した ときに もう片方が
+     * 黙って 古い ままに なる。
+     */
+    it(`${name} の 教材ぜんたいの 見かたに 曜日の 名前が 残って いない`, () => {
+      const stray = ["月曜日", "火曜日", "水曜日", "木曜日", "金曜日"].filter((day) =>
+        (meeting.judgePrompt ?? "").includes(day),
+      );
+      expect(stray).toEqual([]);
+    });
+  }
+});
+
 /** おわびの ことばか どうか。 */
 const isOwabi = (word: string) => word.includes("すみません") || word.includes("申し訳");
 
