@@ -8,6 +8,7 @@ import {
   hasNumber,
   initialPanelStates,
   type PanelState,
+  type ReportPanel,
 } from "@/lib/meeting/panels";
 import { findVoice } from "@/lib/audio/voices";
 import fujiki from "../content/characters/fujiki.json";
@@ -121,6 +122,155 @@ describe("合格の 線が 届く ところに ある", () => {
           .map((panel) => `${scene.day}/${panel.id}`);
         expect(shut).toEqual([]);
       }
+    });
+  }
+});
+
+/**
+ * **作業記録を そのまま 読み上げただけでは 合格しない**（夕礼・2026-09-14）
+ *
+ * この 検査を 入れる 前、夕礼は **記録を 1文字も 変えずに 読み上げるだけで
+ * 5日 とも 合格**して いた（実測 21こ中 16こ・合格ラインは 11）。
+ * 教材の あたま（`focus`）が「作業記録を そのまま 読み上げません」と 書いて
+ * いる ことを、判定が 一度も 見て いなかった。
+ *
+ * ことばの 照合を 締めても 塞がらない——記録は **正しい ことばで 書かれて いる**。
+ * 塞ぐのは `readsLog` で、ここが その 見張り。
+ */
+describe("記録の 丸読みは 合格に ならない", () => {
+  const meeting = meetingSchema.parse(muzukashii);
+  const asakai = meeting.asakai!;
+
+  type HardScene = (typeof asakai.scenes)[number];
+
+  const logOf = (scene: HardScene) =>
+    (scene.card.memo ?? []).map((row) => ({ head: row.head, text: row.text }));
+
+  /** 教材の パネルを 判定の 形へ（画面の `toPanels` と 同じ 写し方）。 */
+  const toReportPanels = (scene: HardScene): ReportPanel[] =>
+    scene.panels.map((panel) => ({
+      id: panel.id,
+      label: panel.label,
+      openAt: panel.openAt,
+      rule: panel.rule,
+      facts: panel.facts.map((fact) => ({
+        id: fact.id,
+        box: fact.box,
+        keywords: fact.keywords,
+        minHits: fact.minHits,
+        allOf: fact.allOf,
+      })),
+    }));
+
+  it("夕礼は 作業記録を 持って いる（この 検査の 前提）", () => {
+    for (const scene of asakai.scenes) {
+      expect(logOf(scene).length).toBeGreaterThan(5);
+    }
+  });
+
+  it("どの日も、記録を そのまま 並べたら 1つも 開かない", () => {
+    for (const scene of asakai.scenes) {
+      const log = logOf(scene);
+      const panels = toReportPanels(scene);
+      for (const said of [
+        log.map((row) => `${row.head} ${row.text}`).join("。"), // 時刻ごと
+        log.map((row) => row.text).join("。"), // 時刻を 省いて
+      ]) {
+        const step = applyUtterance({
+          utterance: said,
+          panels,
+          states: initialPanelStates(panels),
+          logLines: log,
+        });
+        expect(step.readLog).toBe(true);
+        expect(step.opened).toEqual([]);
+        expect(step.newFacts).toEqual([]);
+      }
+    }
+  });
+
+  it("1週間 丸読みしても 合格の 線に とどかない", () => {
+    let units = 0;
+    for (const scene of asakai.scenes) {
+      const log = logOf(scene);
+      const panels = toReportPanels(scene);
+      const step = applyUtterance({
+        utterance: log.map((row) => `${row.head} ${row.text}`).join("。"),
+        panels,
+        states: initialPanelStates(panels),
+        logLines: log,
+      });
+      units += step.states
+        .filter((one) => one.id !== "komari")
+        .reduce((sum, one) => sum + one.said.length, 0);
+    }
+    expect(units).toBeLessThan(asakai.pass.units);
+  });
+
+  it("まとめて 話した ぶんは そのまま 数える", () => {
+    /* 差し戻しが **正しい 報告まで 巻き込まない** ことを 見る。
+       教材の れいは まとめた 文なので、記録を 持つ 日でも ぜんぶ 開く。 */
+    for (const scene of asakai.scenes) {
+      const log = logOf(scene);
+      const panels = toReportPanels(scene);
+      let states: readonly PanelState[] = initialPanelStates(panels);
+      for (const panel of scene.panels) {
+        const step = applyUtterance({
+          utterance: panel.example.text,
+          panels,
+          states,
+          logLines: log,
+        });
+        expect(step.readLog).toBe(false);
+        states = step.states;
+      }
+      const shut = panels
+        .filter((panel) => !states.find((s) => s.id === panel.id)?.full)
+        .map((panel) => `${scene.day}/${panel.id}`);
+      expect(shut).toEqual([]);
+    }
+  });
+});
+
+/**
+ * **曜日ごとの 言い渡しは 継ぎ足しで 持つ**（2026-09-14 の 指定
+ *「システムとしては ステージ（曜日）ごとに プロンプトは 変更できると いいと 思います」）
+ *
+ * 教材ぜんたいの `judgePrompt` は 1本の まま で、場面の `judgeNote` が そこへ 足される。
+ * **5日ぶんの 写しに して しまうと 片方だけ 直る**ので、写しに なって いない ことを 見る。
+ */
+describe("曜日ごとの 見かた", () => {
+  for (const { name, raw } of MEETINGS) {
+    const meeting = meetingSchema.parse(raw);
+    const asakai = meeting.asakai!;
+    const notes = asakai.scenes.map((scene) => scene.judgeNote ?? "");
+
+    it(`${name} は 5日 とも その日の 見かたを 持つ`, () => {
+      expect(notes.filter((note) => note.trim().length > 0)).toHaveLength(5);
+    });
+
+    it(`${name} の その日の 見かたは 5日 とも ちがう（写しに なって いない）`, () => {
+      expect(new Set(notes).size).toBe(5);
+    });
+
+    /**
+     * 継ぎ足しの 相手が 無いと、その日の 見かただけが AIに 届く。
+     * 教材ぜんたいの 指示（ことばの 高さ・ほめかた・直しかた）は こちらに 残す。
+     */
+    it(`${name} は 教材ぜんたいの 見かたも 持って いる`, () => {
+      expect((meeting.judgePrompt ?? "").length).toBeGreaterThan(200);
+    });
+
+    /**
+     * **同じ ことを 2か所に 書かない**。教材ぜんたいの 指示に 曜日の 名前が 出て いたら、
+     * それは 場面へ 移す もの——2か所に あると、片方を 直した ときに もう片方が
+     * 黙って 古い ままに なる。
+     */
+    it(`${name} の 教材ぜんたいの 見かたに 曜日の 名前が 残って いない`, () => {
+      const stray = ["月曜日", "火曜日", "水曜日", "木曜日", "金曜日"].filter((day) =>
+        (meeting.judgePrompt ?? "").includes(day),
+      );
+      expect(stray).toEqual([]);
     });
   }
 });
