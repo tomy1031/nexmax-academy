@@ -178,6 +178,15 @@ test("朝礼（かんたん）— 報告すると カードが 開く", async ({
 
   await page.getByRole("button", { name: /つづけます/ }).click();
   await expect(page.getByText("（0 / 4）")).toBeVisible();
+
+  /*
+   * **済んだ 日は タブが 緑に なる**（2026-09-14 の 通し検収で「永久に 付かない」
+   * ことが 分かった。`DayResult.day` は "月曜日"、`scene.day` は "mon" で
+   * そのまま 比べて いた）。タブで 飛べる のに どこが 済んだか 読めないと、
+   * 行き来できる ことが かえって 迷子を 作る。
+   * ※ 時間カードの あいだ タブは 描かれない ので、火曜に 入ってから 見る。
+   */
+  await expect(page.getByRole("tab", { name: /月曜日・報告 ずみ/ })).toBeVisible();
   await shot(page, "asakai-05-kantan-tue");
 });
 
