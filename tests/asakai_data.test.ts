@@ -9,6 +9,7 @@ import {
   hasNumber,
   initialPanelStates,
   type PanelState,
+  type ReportPanel,
 } from "@/lib/meeting/panels";
 import { findVoice } from "@/lib/audio/voices";
 import fujiki from "../content/characters/fujiki.json";
@@ -124,6 +125,112 @@ describe("合格の 線が 届く ところに ある", () => {
       }
     });
   }
+});
+
+/**
+ * **作業記録を そのまま 読み上げただけでは 合格しない**（夕礼・2026-09-14）
+ *
+ * この 検査を 入れる 前、夕礼は **記録を 1文字も 変えずに 読み上げるだけで
+ * 5日 とも 合格**して いた（実測 21こ中 16こ・合格ラインは 11）。
+ * 教材の あたま（`focus`）が「作業記録を そのまま 読み上げません」と 書いて
+ * いる ことを、判定が 一度も 見て いなかった。
+ *
+ * ことばの 照合を 締めても 塞がらない——記録は **正しい ことばで 書かれて いる**。
+ * 塞ぐのは `readsLog` で、ここが その 見張り。
+ */
+describe("記録の 丸読みは 合格に ならない", () => {
+  const meeting = meetingSchema.parse(muzukashii);
+  const asakai = meeting.asakai!;
+
+  type HardScene = (typeof asakai.scenes)[number];
+
+  const logOf = (scene: HardScene) =>
+    (scene.card.memo ?? []).map((row) => ({ head: row.head, text: row.text }));
+
+  /** 教材の パネルを 判定の 形へ（画面の `toPanels` と 同じ 写し方）。 */
+  const toReportPanels = (scene: HardScene): ReportPanel[] =>
+    scene.panels.map((panel) => ({
+      id: panel.id,
+      label: panel.label,
+      openAt: panel.openAt,
+      rule: panel.rule,
+      facts: panel.facts.map((fact) => ({
+        id: fact.id,
+        box: fact.box,
+        keywords: fact.keywords,
+        minHits: fact.minHits,
+        allOf: fact.allOf,
+      })),
+    }));
+
+  it("夕礼は 作業記録を 持って いる（この 検査の 前提）", () => {
+    for (const scene of asakai.scenes) {
+      expect(logOf(scene).length).toBeGreaterThan(5);
+    }
+  });
+
+  it("どの日も、記録を そのまま 並べたら 1つも 開かない", () => {
+    for (const scene of asakai.scenes) {
+      const log = logOf(scene);
+      const panels = toReportPanels(scene);
+      for (const said of [
+        log.map((row) => `${row.head} ${row.text}`).join("。"), // 時刻ごと
+        log.map((row) => row.text).join("。"), // 時刻を 省いて
+      ]) {
+        const step = applyUtterance({
+          utterance: said,
+          panels,
+          states: initialPanelStates(panels),
+          logLines: log,
+        });
+        expect(step.readLog).toBe(true);
+        expect(step.opened).toEqual([]);
+        expect(step.newFacts).toEqual([]);
+      }
+    }
+  });
+
+  it("1週間 丸読みしても 合格の 線に とどかない", () => {
+    let units = 0;
+    for (const scene of asakai.scenes) {
+      const log = logOf(scene);
+      const panels = toReportPanels(scene);
+      const step = applyUtterance({
+        utterance: log.map((row) => `${row.head} ${row.text}`).join("。"),
+        panels,
+        states: initialPanelStates(panels),
+        logLines: log,
+      });
+      units += step.states
+        .filter((one) => one.id !== "komari")
+        .reduce((sum, one) => sum + one.said.length, 0);
+    }
+    expect(units).toBeLessThan(asakai.pass.units);
+  });
+
+  it("まとめて 話した ぶんは そのまま 数える", () => {
+    /* 差し戻しが **正しい 報告まで 巻き込まない** ことを 見る。
+       教材の れいは まとめた 文なので、記録を 持つ 日でも ぜんぶ 開く。 */
+    for (const scene of asakai.scenes) {
+      const log = logOf(scene);
+      const panels = toReportPanels(scene);
+      let states: readonly PanelState[] = initialPanelStates(panels);
+      for (const panel of scene.panels) {
+        const step = applyUtterance({
+          utterance: panel.example.text,
+          panels,
+          states,
+          logLines: log,
+        });
+        expect(step.readLog).toBe(false);
+        states = step.states;
+      }
+      const shut = panels
+        .filter((panel) => !states.find((s) => s.id === panel.id)?.full)
+        .map((panel) => `${scene.day}/${panel.id}`);
+      expect(shut).toEqual([]);
+    }
+  });
 });
 
 /** おわびの ことばか どうか。 */

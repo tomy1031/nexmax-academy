@@ -3,10 +3,13 @@ import { describe, expect, it } from "vitest";
 import {
   applyUtterance,
   countFacts,
+  countLogHeads,
+  countLogLines,
   countOpen,
   hasNumber,
   initialPanelStates,
   nextProbePanel,
+  readsLog,
   type PanelState,
   type ReportPanel,
 } from "@/lib/meeting/panels";
@@ -108,6 +111,121 @@ describe("hasNumber — 数字は ことばで 数えない", () => {
   });
   it("数が 無い 文では 立たない", () => {
     expect(hasNumber("きのうは テストを しました。")).toBe(false);
+  });
+
+  /**
+   * **時刻は 数では ない**（2026-09-14）。
+   *
+   * 夕礼の 作業記録は 行頭が 時刻なので、記録を そのまま 読み上げると
+   * 1行目の `09:00` で 進捗率の カードが 開いて いた——5日 とも、
+   * ひとことも パーセントを 言わない まま。
+   */
+  it("時刻では 立たない", () => {
+    expect(hasNumber("09:00 学生一覧APIの 仕様を 確認")).toBe(false);
+    expect(hasNumber("17:30に 再テストが 終わりました。")).toBe(false);
+    expect(hasNumber("9時30分に はじめました。")).toBe(false);
+    expect(hasNumber("9時半に はじめました。")).toBe(false);
+  });
+
+  it("時間の 長さは 数の まま", () => {
+    expect(hasNumber("3時間 かかりました。")).toBe(true);
+  });
+
+  it("時刻を 言っても、数を 言えば 立つ", () => {
+    expect(hasNumber("17:30の 時点で 進捗は 75%です。")).toBe(true);
+  });
+});
+
+/**
+ * 作業記録を そのまま 読み上げて いないか（夕礼・2026-09-14）
+ *
+ * ここが 無かった ころ、**記録を 1文字も 変えずに 全行 読み上げるだけで
+ * 5日 とも 合格**して いた（21こ中 16こ・合格ラインは 11）。
+ * ことばの 照合では 塞げない——記録は 正しい ことばで 書かれて いるから。
+ */
+describe("readsLog — 記録の 読み上げ", () => {
+  const LOG = [
+    { head: "09:00", text: "学生一覧APIの 仕様を 確認" },
+    { head: "09:30", text: "学生一覧APIとの 接続開始" },
+    { head: "10:30", text: "AUPP・CADTの 学生データ 表示完了" },
+    { head: "11:00", text: "キーワード検索UIを 作成" },
+    { head: "11:40", text: "キーワード検索APIと 接続" },
+    { head: "12:00", text: "昼休み" },
+    { head: "13:00", text: "大学フィルター 作成" },
+  ];
+
+  it("行頭の 時刻を 3つ 並べたら 読み上げ", () => {
+    const said = LOG.slice(0, 3)
+      .map((row) => `${row.head} ${row.text}`)
+      .join("。");
+    expect(readsLog(said, LOG)).toBe(true);
+    expect(countLogHeads(said, LOG)).toBe(3);
+  });
+
+  it("時刻を 1つ 添えただけでは 読み上げに しない", () => {
+    expect(readsLog("17:30に 検索の 確認が 終わりました。", LOG)).toBe(false);
+  });
+
+  it("時刻を 省いても、行を 5つ 並べたら 読み上げ", () => {
+    const said = LOG.slice(0, 5)
+      .map((row) => row.text)
+      .join("。");
+    expect(countLogHeads(said, LOG)).toBe(0);
+    expect(countLogLines(said, LOG)).toBe(5);
+    expect(readsLog(said, LOG)).toBe(true);
+  });
+
+  it("まとめた 報告は 読み上げに しない", () => {
+    const said = "今日は 学生一覧APIと つないで、キーワード検索と 大学フィルターを 作りました。";
+    expect(readsLog(said, LOG)).toBe(false);
+  });
+
+  it("記録を 持たない 教材（朝礼）では いつも false", () => {
+    expect(readsLog("09:00 10:30 11:00 12:00 13:00", [])).toBe(false);
+  });
+
+  /** **数えない**——罰では なく 言い直し。板は 1つも 動かない。 */
+  it("読み上げた ぶんは 1つも 数えない", () => {
+    const said = LOG.slice(0, 5)
+      .map((row) => `${row.head} ${row.text}`)
+      .join("。");
+    const panels: ReportPanel[] = [
+      {
+        id: "kyou",
+        label: "今日 行ったこと",
+        openAt: 2,
+        facts: [
+          { id: "k1", keywords: ["学生一覧API", "接続"] },
+          { id: "k2", keywords: ["キーワード検索"] },
+        ],
+      },
+      { id: "shinchoku", label: "進捗率", facts: [], rule: "number" },
+    ];
+    const step = applyUtterance({
+      utterance: said,
+      panels,
+      states: initialPanelStates(panels),
+      logLines: LOG,
+    });
+    expect(step.readLog).toBe(true);
+    expect(step.newFacts).toEqual([]);
+    expect(step.opened).toEqual([]);
+    expect(countOpen(step.states)).toBe(0);
+  });
+
+  /** AIが「読み上げだ」と 見た ときも 同じ（鍵が あれば 届く）。 */
+  it("AIの 見立てだけでも 止まる", () => {
+    const panels: ReportPanel[] = [
+      { id: "kyou", label: "今日 行ったこと", facts: [{ id: "k1", keywords: ["学生一覧API"] }] },
+    ];
+    const step = applyUtterance({
+      utterance: "学生一覧APIと つなぎました。",
+      panels,
+      states: initialPanelStates(panels),
+      aiReadsLog: true,
+    });
+    expect(step.readLog).toBe(true);
+    expect(countOpen(step.states)).toBe(0);
   });
 });
 

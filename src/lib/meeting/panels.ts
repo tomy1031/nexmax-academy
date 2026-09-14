@@ -17,6 +17,12 @@
  * 「こまりごと」は 3つの 箱（何が／いつまでに／お願い）で、
  * 1つで 開き、3つ そろって ⭕。
  *
+ * ## 記録を そのまま 読んだ ぶんは 数えない（夕礼）
+ * 夕礼の 材料は **時間順の 作業記録**なので、全行を そのまま 読み上げると
+ * 教材が 探す ことばに ぜんぶ 当たる。ことばの 照合を いくら 締めても 塞がらない
+ *（記録は 正しい ことばで 書かれて いる）。見わけが つくのは
+ * **行頭の 時刻を そのまま 並べて いる** ことだけ——`readsLog` が そこを 見る。
+ *
  * ## 数字は ことばで 数えない
  * 「数字を 1つ」だけは キーワードでは なく **形**で 見る。
  * 教材ごとに 数字の キーワードを 書き並べると、書き忘れた 言い方
@@ -79,10 +85,102 @@ const WAGO = /(ひとつ|ふたつ|みっつ|よっつ|いつつ|むっつ|な�
  * 数字の カードが 開いて いた（かんたんでは 20枚中 1枚の 得点）。
  */
 const NOT_A_COUNT = /(十分|充分|十分に)/u;
+/**
+ * **時刻は 数では ない。**
+ *
+ * 夕礼の 作業記録は 行頭が 時刻（`09:00`）なので、記録を そのまま 読み上げると
+ * **1日目の 1行目で 進捗率の カードが 開いて いた**——5日 とも、ひとことも
+ * パーセントを 言わない まま（2026-09-14 の 実測）。「十分（じゅうぶん）」と 同じで、
+ * 数に 見えるが 数えて いない。
+ *
+ * `3時間` の ような **長さ**は 数の まま 残す（`時` の あとに `間` が 来ない ものだけ 落とす）。
+ */
+const CLOCK = /(\d{1,2}:\d{2})|(\d{1,2}時(?!間)(\d{1,2}分|半)?)/gu;
 
 export function hasNumber(utterance: string): boolean {
-  const text = normalizeReading(utterance).replace(NOT_A_COUNT, "");
+  const text = normalizeReading(utterance).replace(NOT_A_COUNT, "").replace(CLOCK, "");
   return ARABIC.test(text) || KANJI_NUMBER.test(text) || HALF.test(text) || WAGO.test(text);
+}
+
+/* ------------------------------------------------------------------ *
+ * 作業記録を そのまま 読んで いないか（夕礼）
+ * ------------------------------------------------------------------ */
+
+/**
+ * 「そのまま 読んで いる」と 見なす 行頭（時刻）の 数。
+ *
+ * 1つや 2つなら、時刻を 添えて 報告して いる だけかも しれない
+ *（「17時に 修正が 終わりました」）。**3つ 並べた ら 記録の 読み上げ**。
+ */
+export const LOG_READ_HEADS = 3;
+
+/**
+ * 「そのまま 読んで いる」と 見なす **行の 本文**の 数（時刻を 省いた とき用）。
+ *
+ * まとめた 報告にも 記録の ことばは 1つ 2つ 混ざる（「スキルグラフを 作りました」）。
+ * **5行 まるごと そのまま 並ぶ**のは、まとめた 文では 起こらない。
+ */
+export const LOG_READ_LINES = 5;
+
+/** 短すぎる 行は 数えない（「昼休み」は まとめた 文にも 入りうる）。 */
+const LOG_LINE_MIN = 8;
+
+/** 作業記録の 1行（行頭の 時刻と 本文）。 */
+export interface LogLine {
+  readonly head: string;
+  readonly text: string;
+}
+
+/** 発話の 中に ある 行頭（時刻）の 数。同じ 時刻は 1つに 数える。 */
+export function countLogHeads(utterance: string, lines: readonly LogLine[]): number {
+  const haystack = normalizeReading(utterance);
+  if (!haystack) return 0;
+  const seen = new Set<string>();
+  for (const line of lines) {
+    const needle = normalizeReading(line.head);
+    /* 時刻の 形（`09:00`）だけを 見る。「あした」「来週の 月曜日」は 数えない */
+    if (!/^\d{1,2}:\d{2}$/u.test(needle)) continue;
+    if (haystack.includes(needle)) seen.add(needle);
+  }
+  return seen.size;
+}
+
+/** 発話の 中に **そのまま** 入って いる 記録の 行（本文）の 数。 */
+export function countLogLines(utterance: string, lines: readonly LogLine[]): number {
+  const haystack = normalizeReading(utterance);
+  if (!haystack) return 0;
+  const seen = new Set<string>();
+  for (const line of lines) {
+    const needle = normalizeReading(line.text);
+    if (needle.length < LOG_LINE_MIN) continue;
+    if (haystack.includes(needle)) seen.add(needle);
+  }
+  return seen.size;
+}
+
+/**
+ * 作業記録を そのまま 読み上げて いるか。
+ *
+ * 夕礼が 学習者に 求めて いるのは **えらぶ・まとめる**で、教材の あたまにも
+ *「作業記録を そのまま 読み上げません」と 書いて ある（`focus`）。
+ * ところが 記録の 行には 教材が 探す ことばが ぜんぶ 入って いる ので、
+ * **1文字も 変えずに 全行 読み上げるだけで 5日 とも 合格**して いた
+ *（2026-09-14 の 実測: 21こ中 16こ・合格ラインは 11）。
+ *
+ * ことばの 照合を いくら 締めても ここは 塞がらない——記録は **正しい ことばで
+ * 書かれて いる**から。見わけが つくのは **記録の 形が そのまま 残って いる**
+ * ことだけ なので、そこを 2つの 目で 見る:
+ *
+ * - 行頭の 時刻を 3つ 以上 並べて いる
+ * - 行の 本文を 5行 以上 そのまま 並べて いる（時刻を 省いて 読み上げた とき）
+ *
+ * 鍵が 無くても 同じに 動く（AIの 見立ては ここに 重ねるだけ）。
+ */
+export function readsLog(utterance: string, lines: readonly LogLine[]): boolean {
+  return (
+    countLogHeads(utterance, lines) >= LOG_READ_HEADS ||
+    countLogLines(utterance, lines) >= LOG_READ_LINES
+  );
 }
 
 const openAtOf = (panel: ReportPanel) => panel.openAt ?? 1;
@@ -108,6 +206,14 @@ export interface PanelStep {
   readonly opened: readonly string[];
   /** この 発話で **⭕ に なった** パネル。 */
   readonly completed: readonly string[];
+  /**
+   * 作業記録を そのまま 読み上げて いた（夕礼）。**この とき 状態は 動かない**。
+   *
+   * 罰では なく **言い直し**。画面は 司会に「まとめて ください」と 言わせ、
+   * 聞き返しは そのまま 数える ので、2回 つづけば お手本が 出て 先へ 進む
+   *（0点で 終わらせない 仕組みは そのまま 効く）。
+   */
+  readonly readLog: boolean;
 }
 
 /**
@@ -121,13 +227,32 @@ export function applyUtterance({
   panels,
   states,
   aiSaidIds = [],
+  logLines = [],
+  aiReadsLog = false,
 }: {
   utterance: string;
   panels: readonly ReportPanel[];
   states: readonly PanelState[];
   aiSaidIds?: readonly string[];
+  /** 作業記録の 行。空なら 丸読みは 見ない（朝礼は 記録を 持たない）。 */
+  logLines?: readonly LogLine[];
+  /** AIも「記録の 読み上げ」と 見た（鍵が あれば 届く。無ければ false）。 */
+  aiReadsLog?: boolean;
 }): PanelStep {
   const byId = new Map(states.map((s) => [s.id, s]));
+
+  /*
+   * **記録を そのまま 読んだ ぶんは 数えない**（2026-09-14）。
+   *
+   * ことばの 照合は 記録の 行に ぜんぶ 当たる——記録は 正しい ことばで
+   * 書かれて いるから。ここで 止めないと、**1文字も 変えずに 読み上げるだけで
+   * 合格**する（21こ中 16こ・合格ラインは 11）。教材の あたまが
+   *「作業記録を そのまま 読み上げません」と 書いて いる ことを、判定が
+   * 一度も 見て いなかった。
+   */
+  if (readsLog(utterance, logLines) || aiReadsLog) {
+    return { states, newFacts: [], opened: [], completed: [], readLog: true };
+  }
   const newFacts: string[] = [];
   const opened: string[] = [];
   const completed: string[] = [];
@@ -171,7 +296,7 @@ export function applyUtterance({
     return { ...prev, said, open, full };
   });
 
-  return { states: next, newFacts, opened, completed };
+  return { states: next, newFacts, opened, completed, readLog: false };
 }
 
 /**

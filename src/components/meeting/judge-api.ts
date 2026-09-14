@@ -1,7 +1,16 @@
 "use client";
 
+import type { MatchableFact } from "@/components/listening/req-matcher";
 import { createLiveToken } from "@/lib/ai/live-token";
 import { LIVE_TEXT_MODELS } from "@/lib/ai/models";
+import {
+  ASAKAI_JUDGE_SYSTEM,
+  ASAKAI_TOOL,
+  buildAsakaiJudgePrompt,
+  parseAsakaiJudge,
+  type AsakaiJudgeContext,
+  type AsakaiJudgeResult,
+} from "@/lib/meeting/asakai-judge";
 import { getGeminiKey } from "@/lib/profile";
 import {
   CARD_TOOL,
@@ -137,6 +146,54 @@ export async function requestCardHit(
   }
 }
 
+/**
+ * 朝礼・夕礼の 報告を 見て もらう（1本の 報告 → 言えた 行の 一覧）。
+ *
+ * ## 失敗は 黙って 何も 見えなかった ことに する
+ * 鍵が 無い・混んで いる・切れた——どれも 学習者の せいでは ない。
+ * 返すのは **足し算の 材料**だけ なので、届かなくても 教材は ことばの 照合で
+ * そのまま 動く（開く 条件も 合格ラインも 1つも 変わらない）。
+ *
+ * ## 待たせない
+ * 学習者は 報告を 言い終えて、司会の 返事を 待って いる。ここが 遅れると
+ * **画面が 止まって 見える**ので、上限を 短くして 先へ 進める。
+ *
+ * `key` に 教材と 曜日を 混ぜるのは、**日が 変わったら 張り直す**ため
+ *（月曜の 履歴を 引きずると、火曜の 報告を 月曜の 行で 見はじめる）。
+ */
+export async function requestAsakaiJudge(
+  key: string,
+  context: AsakaiJudgeContext,
+  facts: readonly MatchableFact[],
+): Promise<AsakaiJudgeResult | null> {
+  const apiKey = getGeminiKey();
+  if (!apiKey || facts.length === 0) return null;
+  return await Promise.race([
+    askAsakai(apiKey, key, context, facts),
+    new Promise<null>((resolve) => setTimeout(() => resolve(null), ASAKAI_TIMEOUT_MS)),
+  ]);
+}
+
+/** 報告の 判定を 待つ 上限。過ぎたら ことばの 照合だけで 先へ 進む。 */
+const ASAKAI_TIMEOUT_MS = 10_000;
+
+async function askAsakai(
+  apiKey: string,
+  key: string,
+  context: AsakaiJudgeContext,
+  facts: readonly MatchableFact[],
+): Promise<AsakaiJudgeResult | null> {
+  try {
+    const opened = await openJudge(apiKey, "asakai", key);
+    if (!opened.ok) return null;
+    const args = await opened.session.ask(buildAsakaiJudgePrompt(context));
+    return parseAsakaiJudge(args, facts);
+  } catch {
+    dropSlot(SLOTS.asakai);
+    return null;
+  }
+}
+
 export type TalkApiResult =
   { ok: true; judgement: TalkJudgement; model: string } | { ok: false; reason: string };
 
@@ -265,7 +322,7 @@ interface JudgeSession {
  * 問題が 変わるまでは 同じ つなぎを 使い回して いた。
  */
 /** つなぎの 役（役ごとに 別の つなぎを 張る）。 */
-type SlotKind = "judge" | "cards" | "talk";
+type SlotKind = "judge" | "cards" | "talk" | "asakai";
 
 interface Slot {
   /** つなぎの 中身（相手に 渡す 決まりと 道具）。 */
@@ -311,6 +368,19 @@ const SLOTS: Record<SlotKind, Slot> = {
     system: TALK_SYSTEM,
     tool: TALK_TOOL,
     temperature: 0.6,
+    session: null,
+    key: "",
+    opening: null,
+  },
+  /*
+   * 報告の 判定（朝礼・夕礼）。**思いつきは 要らない**——同じ 報告は いつも
+   * 同じ 行に 当たって ほしい。合否が 日に よって 動くのを 避ける ため
+   *（設計 #366 の 6.1）。
+   */
+  asakai: {
+    system: ASAKAI_JUDGE_SYSTEM,
+    tool: ASAKAI_TOOL,
+    temperature: 0,
     session: null,
     key: "",
     opening: null,

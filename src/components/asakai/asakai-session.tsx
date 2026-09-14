@@ -18,11 +18,15 @@
  * 教材が 持つ 固定文を **アプリが 選ぶ**。Live に 質問させると、当たり判定は
  * 学習者の 発話だけを 見る ので **その 答えで カードが 開く**（2026-08-21 の 決まり）。
  *
- * ## 判定は ことばの 照合だけで 完結させる
- * `resolveFacts` は AIの 返し（`aiSaidIds`）も 受けられる が、ここでは 渡さない。
- * 5日 × 4枚の 難しさが **その日の AIの 機嫌で 変わる**のを 避ける ため
- *（設計 #366 の 6.1「何行で 開くかは アプリが 数える」）。鍵の 有無で
- * 合否が 変わらない ので、CI でも 通しで 確かめられる。
+ * ## 何枚 開くかは、鍵が あっても アプリが 数える
+ * 鍵が あれば AIにも 報告を 見て もらう（2026-09-14 の 指定「合否ごと AIに 寄せる」）。
+ * ただし AIが 返すのは **言えた 行の id**と **作業記録の 読み上げか どうか**だけで、
+ * `openAt`・`fullAt`・合格ラインは 1つも 動かさない（設計 #366 の 6.1
+ *「何行で 開くかは アプリが 数える」）。AIが 埋めるのは
+ * **教材に 書いて ない 言い方の 取りこぼし**で、これは 足し算＝学習者に 有利。
+ *
+ * 鍵が 無ければ 待たずに ことばの 照合だけで 進む。開く 条件が 同じ なので、
+ * **文字入力の 通し検証（E2E）は 鍵ゼロの まま 決定論で 走る**。
  */
 
 import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
@@ -30,6 +34,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore
 import { CallShell } from "@/components/call-shell";
 import { DictionaryText } from "@/components/dictionary-text";
 import { HintModal } from "@/components/meeting/hint-modal";
+import { requestAsakaiJudge } from "@/components/meeting/judge-api";
 import { ModalShell } from "@/components/meeting/modal-shell";
 import { SpeakButton } from "@/components/meeting/speak-button";
 import { SpeechSpeedPicker } from "@/components/meeting/speech-speed-picker";
@@ -62,6 +67,8 @@ import {
   type PanelState,
   type ReportPanel,
 } from "@/lib/meeting/panels";
+import type { AsakaiJudgeResult } from "@/lib/meeting/asakai-judge";
+import { getGeminiKey } from "@/lib/profile";
 import { recordContentProgress } from "@/lib/progress/store";
 import {
   clearAsakaiResume,
@@ -249,12 +256,35 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
   const [judge, setJudge] = useState<{
     readonly opened: readonly string[];
     readonly shut: readonly string[];
+    /** 作業記録を そのまま 読み上げて いた（数えて いない）。 */
+    readonly readLog: boolean;
     readonly sceneOver: boolean;
     readonly after: (() => void) | null;
   } | null>(null);
 
+  /** AIに 見て もらって いる あいだ（鍵が 無い ときは いつも false）。 */
+  const [waiting, setWaiting] = useState(false);
+
+  /**
+   * いま 何場面目を 見て いるかの 通し番号。
+   *
+   * AIの 返事を 待って いる あいだに タブで **別の 日へ 飛べる**ので、
+   * 遅れて 届いた 見立てを そのまま 当てると **月曜の 報告で 火曜の 板が 開く**。
+   * 場面を 離れる ときに 番号を 進め、届いた ときに 食いちがったら 捨てる。
+   */
+  const runId = useRef(0);
+
   const scene = asakai?.scenes[sceneAt];
   const panels = useMemo(() => toPanels(scene), [scene]);
+
+  /**
+   * 作業記録の 行。**夕礼だけ 中身が ある**——朝礼の カードは
+   * まとめ済みの 行（`rows`）なので、読み上げても それが 報告に なる。
+   */
+  const logLines = useMemo(
+    () => (scene?.card.memo ?? []).map((row) => ({ head: row.head, text: row.text })),
+    [scene],
+  );
 
   /*
    * 1行 積んで、作り置きの こえも 順に 鳴らす。
@@ -368,22 +398,45 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
   );
 
   /**
-   * 1本の 報告を 受ける。**声でも 文字でも ここに 来る**。
+   * 1本の 報告を **数えて**、司会の つぎの ことばを 決める。
    *
    * 司会と メンバーの ことばは **すぐには 積まない**——先に 見かたの モーダルを 出し、
    * 閉じた ときに まとめて 積む（2026-09-11 の 指定
    *「評価はモーダルで出してください。モーダルの後に、各担当者が報告をします」）。
    * 声を 入れると 一人ずつ 順に 話す ことに なるので、**話し始める 合図**が 要る。
+   *
+   * `seen` は AIの 見立て（鍵が 無ければ `null`）。**足し算の 材料**でしか なく、
+   * 開く 条件も 合格ラインも ここでは 変えない（`panels.ts` が 数える）。
    */
-  const send = useCallback(
-    (spoken?: string) => {
-      const text = (spoken ?? answer).trim();
-      if (!text || !scene) return;
-      if (spoken === undefined) setAnswer("");
-      setLines((prev) => [...prev, { who: "あなた", speakerId: "self", text, self: true }]);
-
-      const step = applyUtterance({ utterance: text, panels, states });
+  const apply = useCallback(
+    (text: string, seen: AsakaiJudgeResult | null) => {
+      if (!scene) return;
+      const step = applyUtterance({
+        utterance: text,
+        panels,
+        states,
+        aiSaidIds: seen?.saidIds ?? [],
+        logLines,
+        aiReadsLog: seen?.readsLog ?? false,
+      });
       const target = nextProbePanel(panels, step.states);
+
+      /*
+       * **作業記録を そのまま 読み上げた ぶんは 数えない**（2026-09-14）。
+       *
+       * 罰では なく 言い直し。司会は 教材の あたまと 同じ ことばで 言う
+       *（`focus`:「作業記録を そのまま 読み上げません」）ので、学習者が
+       * 知らない 決まりを ここで 新しく 作らない。聞き返しは そのまま 数えるので、
+       * 2回 つづけば お手本が 出て 先へ 進む（0点で 終わらせない）。
+       */
+      const readLog = step.readLog;
+      const sayRedo = () => {
+        if (!readLog || !asakai) return;
+        say({
+          speakerId: asakai.chairId,
+          text: "作業記録を そのまま 読み上げて います。大きな 作業を 2つか 3つに まとめて、もう いちど お願いします。",
+        });
+      };
 
       /* この 1本で **新しく ⭕ に なった 札**と、まだ 残って いる 札。 */
       const wasFull = new Set(states.filter((one) => one.full).map((one) => one.id));
@@ -397,6 +450,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
         setJudge({
           opened,
           shut: [],
+          readLog,
           sceneOver: true,
           after: () => finishScene(step.states, probes),
         });
@@ -425,8 +479,10 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
           setJudge({
             opened,
             shut,
+            readLog,
             sceneOver: true,
             after: () => {
+              sayRedo();
               /*
                * **その日の さいごの カードでも れいを 見せる**。
                *
@@ -451,8 +507,10 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
         setJudge({
           opened,
           shut,
+          readLog,
           sceneOver: false,
           after: () => {
+            sayRedo();
             say({ ...data.example, text: `こう 言うと 開きます。${data.example.text}` });
             if (followup) say(followup);
             setAskedId(next.id);
@@ -468,14 +526,65 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
       setJudge({
         opened,
         shut,
+        readLog,
         sceneOver: false,
         after: () => {
+          sayRedo();
           if (followup) say(followup);
           setAskedId(target.id);
         },
       });
     },
-    [answer, scene, panels, states, attempts, probes, say, finishScene],
+    [scene, asakai, panels, states, attempts, probes, logLines, say, finishScene],
+  );
+
+  /**
+   * 1本の 報告を 受ける。**声でも 文字でも ここに 来る**。
+   *
+   * ## 鍵が あれば AIにも 見て もらう（2026-09-14 の 指定「合否ごと AIに 寄せる」）
+   * ことばの 照合は **書いて ある 語**しか 見られない ので、正しく 報告して いても
+   * 教材に 無い 言い方だと 開かない。AIは そこを 埋める——返って くるのは
+   * **言えた 行の id**と **記録の 読み上げか どうか**だけで、
+   * 何枚 開くかは `panels.ts` が 数える（AIの さじ加減で 難しさを 変えない）。
+   *
+   * 鍵が 無ければ 待たずに そのまま 数える。**開く 条件も 合格ラインも 同じ**なので、
+   * 文字入力の 通し検証（E2E）は 鍵ゼロの まま 決定論で 走る。
+   */
+  const send = useCallback(
+    (spoken?: string) => {
+      const text = (spoken ?? answer).trim();
+      if (!text || !scene || !asakai) return;
+      if (spoken === undefined) setAnswer("");
+      setLines((prev) => [...prev, { who: "あなた", speakerId: "self", text, self: true }]);
+
+      if (!getGeminiKey()) {
+        apply(text, null);
+        return;
+      }
+      /* 待って いる あいだも 画面は 生きて いる（上限を 過ぎたら 照合だけで 進む）。 */
+      setWaiting(true);
+      const at = runId.current;
+      void requestAsakaiJudge(
+        `${meeting.id}:${scene.day}`,
+        {
+          judgePrompt: meeting.judgePrompt ?? "",
+          sceneTitle: scene.title,
+          panels: scene.panels
+            .filter((panel) => panel.facts.length > 0)
+            .map((panel) => ({ id: panel.id, label: panel.label, facts: panel.facts })),
+          hasLog: logLines.length > 0,
+          utterance: text,
+        },
+        scene.panels.flatMap((panel) => panel.facts),
+      )
+        .catch(() => null)
+        .then((seen) => {
+          if (runId.current !== at) return; // 別の 日へ 移った ぶんは 捨てる
+          setWaiting(false);
+          apply(text, seen);
+        });
+    },
+    [answer, scene, asakai, meeting.id, meeting.judgePrompt, logLines, apply],
   );
 
   /** 見かたの モーダルを 閉じる。**ここで はじめて 司会と メンバーが 話す**。 */
@@ -504,10 +613,11 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
      */
     spokenAt.current = heard.id;
     if (!heard.text.trim()) return;
-    if (judge !== null || phase !== "talk") return;
+    /* AIに 見て もらって いる 最中の ぶんも 捨てる（2本 重なると 見かたが 入れ替わる）。 */
+    if (judge !== null || waiting || phase !== "talk") return;
     /* 効果の 中で そのまま 状態を 変えない（描き直しが 連なる）。1つ 後ろへ ずらす。 */
     void Promise.resolve().then(() => send(heard.text));
-  }, [voice.lastUtterance, send, judge, phase]);
+  }, [voice.lastUtterance, send, judge, waiting, phase]);
 
   /** 時間カードへ。金曜だけは そのまま 週の けっかへ。 */
   const toGap = useCallback(() => {
@@ -516,6 +626,8 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
      * 場面を 離れる ときは 鳴って いる こえも、つないだ ままの Live も 止める。
      * 止めないと 遅れて 届いた 1本で けっかの 画面に モーダルが 出る。
      */
+    runId.current += 1;
+    setWaiting(false);
     stopClips();
     voice.stop();
     if (sceneAt + 1 >= asakai.scenes.length) {
@@ -552,6 +664,8 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
   const goToScene = useCallback(
     (at: number) => {
       if (!asakai || at < 0 || at >= asakai.scenes.length) return;
+      runId.current += 1;
+      setWaiting(false);
       stopClips();
       voice.stop();
       setSceneAt(at);
@@ -749,8 +863,10 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
                 status={voice.status}
                 reason={voice.reason}
                 talking={voice.talking}
-                disabled={judge !== null}
-                waitNote={judge ? "見かたを 読んでから 話します。" : null}
+                disabled={judge !== null || waiting}
+                waitNote={
+                  judge ? "見かたを 読んでから 話します。" : waiting ? "いま 見て います。" : null
+                }
                 onConnect={() => void voice.start(LISTEN_ONLY)}
                 onStartTalking={voice.startTalking}
                 onStopTalking={voice.stopTalking}
@@ -791,14 +907,19 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
               rows={2}
               className="border-hairline w-full rounded-xl border p-2 text-sm font-bold"
             />
+            {/*
+              AIに 見て もらって いる あいだは **押せない ことを 字で 言う**。
+              灰色に なるだけだと、押しても 何も 起きない 故障に 見える。
+              鍵が 無い 端末では ここに 入らない（`waiting` は いつも false）。
+            */}
             <button
               type="button"
               onClick={() => send()}
-              disabled={!answer.trim() || judge !== null}
-              aria-label="報告する"
+              disabled={!answer.trim() || judge !== null || waiting}
+              aria-label={waiting ? "見て います" : "報告する"}
               className="btn-island w-full px-4 py-2 text-sm font-black disabled:opacity-45"
             >
-              <RubyText text="報告する" index={index} show />
+              <RubyText text={waiting ? "見て います…" : "報告する"} index={index} show />
             </button>
           </div>
         </>
@@ -980,6 +1101,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
         <ReportJudge
           opened={judge.opened}
           shut={judge.shut}
+          readLog={judge.readLog}
           sceneOver={judge.sceneOver}
           index={index}
           onClose={closeJudge}
@@ -1001,12 +1123,14 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
 function ReportJudge({
   opened,
   shut,
+  readLog,
   sceneOver,
   index,
   onClose,
 }: {
   opened: readonly string[];
   shut: readonly string[];
+  readLog: boolean;
   sceneOver: boolean;
   index: FuriganaIndex;
   onClose: () => void;
@@ -1018,6 +1142,21 @@ function ReportJudge({
       onClose={onClose}
       closeLabel={sceneOver ? "みんなの 報告を 聞く ▶" : "つづける ▶"}
     >
+      {/*
+        **何も 開かなかった 理由を はっきり 書く**（規律1）。
+        黙って「開いた カード: ありません」だけを 出すと、学習者は
+        ことばが 足りなかったのだと 思って、記録を もう一度 読み上げる。
+      */}
+      {readLog ? (
+        <div className="border-hairline bg-panel text-coral-deep mt-3 rounded-xl border px-3 py-2 text-sm font-bold">
+          <RubyText
+            text="作業記録を そのまま 読み上げて います。この ぶんは 数えて いません。大きな 作業を 2つか 3つに まとめて ください。"
+            index={index}
+            show
+          />
+        </div>
+      ) : null}
+
       <div className="border-hairline bg-panel mt-3 rounded-xl border px-3 py-2">
         <p className="text-leaf-deep text-[11px] font-black">
           ✓ <RubyText text="開いた カード" index={index} show />
