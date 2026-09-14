@@ -174,7 +174,7 @@ export const ASSET_VERSIONS: Readonly<Record<string, string>> = {
   "/img/articles/asakai_lecture/kinou.webp": "2688385f",
   "/img/articles/asakai_lecture/komari.webp": "92a2722a",
   "/img/articles/asakai_lecture/kyou.webp": "ecd0b88f",
-  "/img/articles/asakai_lecture/sec10_yuurei.webp": "ea5f51a1",
+  "/img/articles/asakai_lecture/sec10_yuurei.webp": "2b86a8c0",
   "/img/articles/asakai_lecture/sec1_chourei.webp": "72172bb7",
   "/img/articles/asakai_lecture/sec4_compare_bad.webp": "ada5f84e",
   "/img/articles/asakai_lecture/sec4_compare_good.webp": "22440e23",
