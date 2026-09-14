@@ -500,10 +500,14 @@ function SpeakableGroup({
   label: string;
   children: ReactNode;
 }) {
+  /*
+   * ボタンは まとまりの **右横**（2026-09-14 の 指定）。下の 段に 置くと、
+   * ボタン1つの ために 1行ぶん 空きが できて いた。
+   */
   return (
-    <div>
-      {children}
-      <div className="mt-1 flex justify-end">
+    <div className="flex items-start gap-2">
+      <div className="min-w-0 flex-1">{children}</div>
+      <div className="shrink-0">
         {/* 読み上げるのは データのまま（ルビ合成前）の項目をつないだ文。 */}
         <SpeakButton text={joinItemsForSpeech(items)} label={label} />
       </div>

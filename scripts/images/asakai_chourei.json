@@ -65,59 +65,19 @@
       "text": ["エラー"]
     },
     {
-      "out": "percent_compare",
-      "dest": "public/img/articles/asakai_lecture/sec3_percent.webp",
-      "title": "作業名だけ（？）と 進捗％（分かる）の くらべ",
-      "where": "content/articles/asakai_lecture.json 3．なぜ 進捗を ％で 伝えるの？",
-      "priority": "A",
-      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: saying only the name of a task does not show how far the whole job has gone, but a percentage does. A teaching picture split into two equal side-by-side panels with a thin gap between them. LEFT PANEL: the new engineer — a young Cambodian woman in her early twenties with warm light-brown skin, a round friendly face and black hair tied back in a low ponytail, wearing a mint-green blouse, beige trousers and a lanyard with a blank white card reports to two teammates, Okuda — a man in his mid twenties with wavy messy black hair, black thick-rimmed glasses and a dark green hoodie (follow his model sheet) and Nyam — a Southeast Asian man in his twenties with warm light-brown skin, short black hair swept up and back, and a coral knit cardigan over a cream shirt (follow his model sheet); her speech balloon says ログイン画面を 作りました。 Above each teammate's head floats one large question mark ？, and they tilt their heads, unsure. RIGHT PANEL: the same three people; her speech balloon says ログイン機能 全体の 進捗は 70%です。 Beside her stands a big horizontal progress bar filled to 70 percent with 70% printed on it, and the two teammates look at the bar and nod, understanding.",
-      "text": ["ログイン画面を 作りました。", "？", "ログイン機能 全体の 進捗は 70%です。", "70%"]
-    },
-    {
       "out": "shinchoku_zukai",
       "dest": "public/img/articles/asakai_lecture/sec4_shinchoku.webp",
       "title": "作業ごとの 状態から 機能全体の 進捗を 考える 図",
-      "where": "content/articles/asakai_lecture.json 4．自分の 進捗を 分かるように して おこう",
+      "where": "content/articles/asakai_lecture.json 3．自分の 進捗を 分かるように して おこう",
       "priority": "A",
-      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: you look at each piece of work to decide the progress of the whole feature. A teaching diagram on a soft sky-blue background with no people. At the top centre, one large rounded cream card reads ログイン機能 70% in big letters, with a thick progress bar under the words filled to 70 percent. Three thin connector lines go down from it to a row of three smaller cream cards. The first small card shows a green check mark and reads ログイン画面 完了. The second small card shows a blue circular arrow and reads API接続 作業中. The third small card shows an empty square box and reads テスト まだ. Few large elements, generous spacing.",
-      "text": ["ログイン機能 70%", "ログイン画面 完了", "API接続 作業中", "テスト まだ"]
-    },
-    {
-      "out": "chourei_hanasu",
-      "dest": "public/img/articles/asakai_lecture/sec5_hanasu.webp",
-      "title": "朝礼で 報告する 新人",
-      "where": "content/articles/asakai_lecture.json 5．実際の 朝礼を 見て みよう",
-      "priority": "A",
-      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: this is the new engineer giving her morning report to the team. the new engineer — a young Cambodian woman in her early twenties with warm light-brown skin, a round friendly face and black hair tied back in a low ponytail, wearing a mint-green blouse, beige trousers and a lanyard with a blank white card stands and speaks clearly with one open hand at chest height, holding a small notebook in the other hand, in the bright morning office. the team leader Hendy — a slim man in his late twenties with short black slightly tousled hair, a navy two-button suit, a white shirt and a navy tie (follow his model sheet), Okuda — a man in his mid twenties with wavy messy black hair, black thick-rimmed glasses and a dark green hoodie (follow his model sheet) and Nyam — a Southeast Asian man in his twenties with warm light-brown skin, short black hair swept up and back, and a coral knit cardigan over a cream shirt (follow his model sheet) stand facing her and listen. There is no writing anywhere in this picture."
-    },
-    {
-      "out": "mondai_compare",
-      "dest": "public/img/articles/asakai_lecture/sec6_mondai.webp",
-      "title": "「問題が あります」だけ（？？？）と 具体的な 報告の くらべ",
-      "where": "content/articles/asakai_lecture.json 6．問題が ある ときは、分かりやすく 話そう",
-      "priority": "A",
-      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: saying only that there is a problem tells nothing; a clear report shows where it is and what happens. Two equal side-by-side panels. LEFT PANEL: the new engineer — a young Cambodian woman in her early twenties with warm light-brown skin, a round friendly face and black hair tied back in a low ponytail, wearing a mint-green blouse, beige trousers and a lanyard with a blank white card stands in front of the team leader Hendy — a slim man in his late twenties with short black slightly tousled hair, a navy two-button suit, a white shirt and a navy tie (follow his model sheet); her speech balloon says 問題が あります。 Hendy tilts his head, puzzled but kind, with a thought balloon that holds only ？？？. RIGHT PANEL: the new engineer — a young Cambodian woman in her early twenties with warm light-brown skin, a round friendly face and black hair tied back in a low ponytail, wearing a mint-green blouse, beige trousers and a lanyard with a blank white card turns her laptop toward the team leader Hendy — a slim man in his late twenties with short black slightly tousled hair, a navy two-button suit, a white shirt and a navy tie (follow his model sheet), points at the screen and explains in words, calmly and confidently; her speech balloon says ログイン画面で 問題が あります。 The laptop screen shows a simple login form with one rounded button and the word ログイン at the top. Hendy leans in and nods, understanding.",
-      "text": ["問題が あります。", "？？？", "ログイン画面で 問題が あります。", "ログイン"]
-    },
-    {
-      "out": "soudan_timeline",
-      "dest": "public/img/articles/asakai_lecture/sec7_soudan.webp",
-      "title": "10:00 エラー → 10:10 相談 → 10:20 一緒に 確認 → 仕事を 続ける",
-      "where": "content/articles/asakai_lecture.json 7．困った ことは、早く 報告・相談しよう",
-      "priority": "A",
-      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: when an error appears, she asks for help within ten minutes instead of worrying alone for hours. A teaching picture of four small scenes in one horizontal row, read from left to right and joined by thick soft arrows. Each scene has a label panel above it. Scene 1: the new engineer — a young Cambodian woman in her early twenties with warm light-brown skin, a round friendly face and black hair tied back in a low ponytail, wearing a mint-green blouse, beige trousers and a lanyard with a blank white card at her desk sees an error window on her monitor; label 10:00 エラーが 出る. Scene 2: she walks over to the team leader Hendy — a slim man in his late twenties with short black slightly tousled hair, a navy two-button suit, a white shirt and a navy tie (follow his model sheet) and asks him politely; label 10:10 上司に 相談する. Scene 3: the two of them look at her monitor together; label 10:20 一緒に 確認する. Scene 4: she types at her desk again with a relieved smile and the error is gone; label 仕事を 続ける.",
-      "text": [
-        "10:00 エラーが 出る",
-        "10:10 上司に 相談する",
-        "10:20 一緒に 確認する",
-        "仕事を 続ける"
-      ]
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: you look at each piece of work to decide the progress of the whole feature. A teaching diagram on a soft sky-blue background with no people. At the top centre, one large rounded cream card reads ログイン機能 70% in big letters, with a thick progress bar under the words filled to 70 percent. Three thin connector lines go down from it to a row of three smaller cream cards. The first small card shows a green check mark and reads ログイン画面UI 完了. The second small card shows a blue circular arrow and reads API接続 作業中. The third small card shows an empty square box and reads テスト まだ. Few large elements, generous spacing.",
+      "text": ["ログイン機能 70%", "ログイン画面UI 完了", "API接続 作業中", "テスト まだ"]
     },
     {
       "out": "ato_kakunin",
       "dest": "public/img/articles/asakai_lecture/sec8_ato.webp",
       "title": "朝礼では 短く → 朝礼の あと 2人で 確認",
-      "where": "content/articles/asakai_lecture.json 8．朝礼で すべて 詳しく 話さなくても 大丈夫です",
+      "where": "content/articles/asakai_lecture.json 6．朝礼で すべて 詳しく 話さなくても 大丈夫です",
       "priority": "A",
       "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: in the morning meeting she mentions the error only briefly; the detailed talk happens afterwards with just the leader. Two panels side by side. LEFT PANEL: the four-person morning meeting standing in a circle: the new engineer — a young Cambodian woman in her early twenties with warm light-brown skin, a round friendly face and black hair tied back in a low ponytail, wearing a mint-green blouse, beige trousers and a lanyard with a blank white card speaks, and her short speech balloon says APIの 接続で エラーが あります。 while the team leader Hendy — a slim man in his late twenties with short black slightly tousled hair, a navy two-button suit, a white shirt and a navy tie (follow his model sheet), Okuda — a man in his mid twenties with wavy messy black hair, black thick-rimmed glasses and a dark green hoodie (follow his model sheet) and Nyam — a Southeast Asian man in his twenties with warm light-brown skin, short black hair swept up and back, and a coral knit cardigan over a cream shirt (follow his model sheet) listen. RIGHT PANEL: after the meeting, only the new engineer — a young Cambodian woman in her early twenties with warm light-brown skin, a round friendly face and black hair tied back in a low ponytail, wearing a mint-green blouse, beige trousers and a lanyard with a blank white card and the team leader Hendy — a slim man in his late twenties with short black slightly tousled hair, a navy two-button suit, a white shirt and a navy tie (follow his model sheet) sit side by side at her desk, both looking at her monitor together; the other two have gone back to their own desks in the background.",
       "text": ["APIの 接続で エラーが あります。"]
@@ -126,7 +86,7 @@
       "out": "yarikata3",
       "dest": "public/img/articles/asakai_lecture/sec9_yarikata.webp",
       "title": "オフィス・オンライン・チャットの 3つの やり方",
-      "where": "content/articles/asakai_lecture.json 9．会社や プロジェクトに よって、やり方は 違います",
+      "where": "content/articles/asakai_lecture.json 7．会社や プロジェクトに よって、やり方は 違います",
       "priority": "A",
       "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: teams do the morning report in different ways. Three rounded cream cards side by side on a soft sky-blue background, each with a label at the top. Card 1: colleagues standing together in an office, talking; label オフィスで 話す. Card 2: a laptop screen showing four video-call tiles of smiling colleagues; label オンラインで 話す. Card 3: one engineer typing a short message into a team chat window on a laptop, the chat bubbles showing only blank lines; label チャットに 書く. Few large elements, generous spacing.",
       "text": ["オフィスで 話す", "オンラインで 話す", "チャットに 書く"]
@@ -135,10 +95,54 @@
       "out": "chourei_yuurei",
       "dest": "public/img/articles/asakai_lecture/sec10_yuurei.webp",
       "title": "朝礼（大）と 夕礼（小）",
-      "where": "content/articles/asakai_lecture.json 10．夕方に 報告する 会社も あります",
+      "where": "content/articles/asakai_lecture.json 8．夕方に 報告する 会社も あります",
       "priority": "A",
       "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: the morning meeting is about what you will do today, the evening meeting is about what you did — and the morning meeting is the main one. The picture is split into a LARGE left part about 70 percent of the width and a SMALL right part about 30 percent of the width. LARGE LEFT PART: a bright morning office, the team stands together; the new engineer — a young Cambodian woman in her early twenties with warm light-brown skin, a round friendly face and black hair tied back in a low ponytail, wearing a mint-green blouse, beige trousers and a lanyard with a blank white card speaks with a speech balloon that says 今日は APIの 接続を します。 A label panel at the top of this part reads 朝礼. SMALL RIGHT PART: the same office in warm orange evening light through the window; the new engineer — a young Cambodian woman in her early twenties with warm light-brown skin, a round friendly face and black hair tied back in a low ponytail, wearing a mint-green blouse, beige trousers and a lanyard with a blank white card speaks to the team leader Hendy — a slim man in his late twenties with short black slightly tousled hair, a navy two-button suit, a white shirt and a navy tie (follow his model sheet) with a small speech balloon that says 今日は APIの 接続を しました。 A smaller label panel at the top of this part reads 夕礼.",
       "text": ["朝礼", "今日は APIの 接続を します。", "夕礼", "今日は APIの 接続を しました。"]
+    },
+    {
+      "out": "bad_report",
+      "dest": "public/img/articles/asakai_lecture/sec4_bad.webp",
+      "title": "あまり 良くない 報告（新人「問題が あります。」／上司「どんな 問題ですか？」）",
+      "where": "content/articles/asakai_lecture.json 4．あまり 良くない 報告",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: a report that only says there is a problem leaves the leader unable to understand anything. Upper-body view of two people on a soft light-blue office background with lots of space. On the left, the new engineer — a young Cambodian woman in her early twenties with warm light-brown skin, a round friendly face and black hair tied back in a low ponytail, wearing a mint-green blouse, beige trousers and a lanyard with a blank white card speaks with a speech balloon that says 「問題が あります。」 and a small rounded label panel beside her reads 新人. On the right, the team leader Hendy — a slim man in his late twenties with short black slightly tousled hair, a navy two-button suit, a white shirt and a navy tie (follow his model sheet) tilts his head with one hand on his chin, puzzled but kind, with a speech balloon that says 「どんな 問題ですか？」, one small question mark ？ above his head, and a small rounded label panel beside him reads 上司.",
+      "text": ["「問題が あります。」", "「どんな 問題ですか？」", "？", "新人", "上司"]
+    },
+    {
+      "out": "kyuu_honban",
+      "dest": "public/img/articles/asakai_lecture/sec5_honban.webp",
+      "title": "① 本番環境で 大きな 問題（ログインできない）",
+      "where": "content/articles/asakai_lecture.json 5．すぐに 報告する 問題 cards[0]",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: the live service that real customers use has a big problem — nobody can log in. the new engineer — a young Cambodian woman in her early twenties with warm light-brown skin, a round friendly face and black hair tied back in a low ponytail, wearing a mint-green blouse, beige trousers and a lanyard with a blank white card has just stood up from her desk and turns toward the team leader's desk, raising one hand to call him, ready to report right away. Behind her, a large monitor shows a login screen covered by a big red alert window with the word エラー, and a smartphone on the desk shows the same red alert. Serious and urgent, but not scary. The only person in this picture is the new engineer; do not draw Hendy, Okuda or Nyam.",
+      "text": ["エラー"]
+    },
+    {
+      "out": "kyuu_okane",
+      "dest": "public/img/articles/asakai_lecture/sec5_okane.webp",
+      "title": "② お金に 関係する 問題（決済が 2回）",
+      "where": "content/articles/asakai_lecture.json 5．すぐに 報告する 問題 cards[1]",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: a money problem — the same payment was taken twice. Close view of a monitor showing a payment history list: two identical rows with the same coin mark and the same amount are highlighted in red and joined by a red bracket with a big red label that reads 2回. the new engineer — a young Cambodian woman in her early twenties with warm light-brown skin, a round friendly face and black hair tied back in a low ponytail, wearing a mint-green blouse, beige trousers and a lanyard with a blank white card leans in with a serious face and points at the 2回 label, ready to report right away. The only person in this picture is the new engineer; do not draw Hendy, Okuda or Nyam.",
+      "text": ["2回"]
+    },
+    {
+      "out": "kyuu_data",
+      "dest": "public/img/articles/asakai_lecture/sec5_data.webp",
+      "title": "③ 大切な データを 消して しまった",
+      "where": "content/articles/asakai_lecture.json 5．すぐに 報告する 問題 cards[2]",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: important data was deleted by mistake. the new engineer — a young Cambodian woman in her early twenties with warm light-brown skin, a round friendly face and black hair tied back in a low ponytail, wearing a mint-green blouse, beige trousers and a lanyard with a blank white card has just noticed it; she looks serious but calm and is already turning from her desk to report right away. Her monitor shows a big table that has become completely empty, with a large trash can mark and a red cross beside it, and a small window with the word 削除 on it. The only person in this picture is the new engineer; do not draw Hendy, Okuda or Nyam.",
+      "text": ["削除"]
+    },
+    {
+      "out": "kyuu_security",
+      "dest": "public/img/articles/asakai_lecture/sec5_security.webp",
+      "title": "④ セキュリティの 問題（他の お客様の 情報が 見える）",
+      "where": "content/articles/asakai_lecture.json 5．すぐに 報告する 問題 cards[3]",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: a security problem — another customer's private information can be seen. Close view of a monitor showing a customer profile page with a different person's face photo card and blank detail lines, and a large red OPEN padlock mark over it. the new engineer — a young Cambodian woman in her early twenties with warm light-brown skin, a round friendly face and black hair tied back in a low ponytail, wearing a mint-green blouse, beige trousers and a lanyard with a blank white card notices it, looks serious, points at the open padlock and is ready to report right away. The only person in this picture is the new engineer; do not draw Hendy, Okuda or Nyam. There is no writing anywhere in this picture."
     }
   ]
 }
