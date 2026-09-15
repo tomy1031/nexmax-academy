@@ -66,7 +66,7 @@ PNG で 出る ので **WebP に 変換してから 置く**: `cwebp -q 84 in.pn
 
 ## 富田さん（報告の 相手・PM）
 
-- 台帳: `scripts/images/hourensou_tomita.json`（12枚）
+- 台帳: `scripts/images/hourensou_tomita.json`（13枚）
 - 参照画像: `public/img/characters/tomita/sheet.webp`
 - 絵の 中の 文字: 焼かない
 - まず 0番の 設定画を 作る。それが 以後 ぜんぶの 参照に なる
@@ -255,6 +255,21 @@ Warm modern anime illustration, like a friendly Japanese educational manga — c
 
 </details>
 
+### 13. 報告の コツ の 表紙
+
+- **出力する 先** … `public/img/hourensou/houkoku/kotsu_top.webp`
+- **書き込む 先** … content/articles/houkoku_kotsu.json blocks[0]（hero）の image
+- **大きさ** … Output: one landscape illustration, 1536x1024.
+- **優先度** … A
+
+<details><summary>プロンプト全文（そのまま 貼る）</summary>
+
+```text
+Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. Two different people appear in these pictures and they must never look alike. TOMITA is the project manager shown in the attached character sheet: a Japanese man in his thirties, clean-shaven, soft grey-blue button-down shirt with the sleeves rolled to the elbow, dark navy chinos, brown leather belt. THE JUNIOR ENGINEER is a DIFFERENT and YOUNGER man: a Southeast Asian man in his early twenties, warm brown skin, short cropped black hair, a plain cream polo shirt and dark grey trousers, slimmer and visibly younger than Tomita. Never give the two men the same face, hair or clothes. THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: a junior engineer is giving a short, clear report to his manager, checking the note he wrote beforehand. The junior engineer stands upright beside Tomita's desk, holding a small open notebook in one hand and glancing at it, while he speaks to Tomita with a calm, confident face and a small open-hand gesture. The notebook page shows only a few short grey lines, no letters. Tomita sits at his desk, has turned his chair towards him and listens with a warm nod, his laptop screen blank. Medium two-shot from a natural standing angle, both faces large and clearly visible, the notebook easy to see. Output: one landscape illustration, 1536x1024. No text, no letters, no kanji, no kana, no numbers anywhere in the image. Screens, papers, whiteboards, books and signs are blank or show only soft abstract shapes and simple pictures. No watermark, no signature, no logo, no speech balloons, no floating symbols such as question marks, exclamation marks, arrows, light bulbs, stars or hearts. Every character is CLEAN-SHAVEN — no moustache, no beard, no stubble on anyone. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.
+```
+
+</details>
+
 ---
 
 ## 富田さんの 図（文字あり）
@@ -268,7 +283,7 @@ Warm modern anime illustration, like a friendly Japanese educational manga — c
 node scripts/slides/gen_images.mjs scripts/images/hourensou_tomita_zukai.json .tmp-img/tomita_zukai
 ```
 
-### 13. 報告の 3つの パターン
+### 14. 報告の 3つの パターン
 
 - **出力する 先** … `public/img/hourensou/houkoku/petterns.webp`
 - **書き込む 先** … content/articles/houkoku_kotsu.json blocks[13]（image）
@@ -297,7 +312,7 @@ Warm modern anime illustration, like a friendly Japanese educational manga — c
 node scripts/slides/gen_images.mjs scripts/images/hourensou_okuda.json .tmp-img/okuda
 ```
 
-### 14. 相談ステージの 表紙
+### 15. 相談ステージの 表紙
 
 - **出力する 先** … `public/img/hourensou/soudan/slide1.webp`
 - **書き込む 先** … scripts/gen_hourensou_content.mjs soudan_lecture blocks[0].image（hero）
@@ -312,7 +327,7 @@ Warm modern anime illustration, like a friendly Japanese educational manga — c
 
 </details>
 
-### 15. 相談する 前に「何を したか」を 伝える
+### 16. 相談する 前に「何を したか」を 伝える
 
 - **出力する 先** … `public/img/hourensou/soudan/slide7.webp`
 - **書き込む 先** … scripts/gen_hourensou_content.mjs soudan_lecture blocks[22]（image）
@@ -327,7 +342,7 @@ Warm modern anime illustration, like a friendly Japanese educational manga — c
 
 </details>
 
-### 16. 自分なりの アイデアを 持つ
+### 17. 自分なりの アイデアを 持つ
 
 - **出力する 先** … `public/img/hourensou/soudan/slide8.webp`
 - **書き込む 先** … scripts/gen_hourensou_content.mjs soudan_lecture blocks[25]（image）
@@ -342,7 +357,7 @@ Warm modern anime illustration, like a friendly Japanese educational manga — c
 
 </details>
 
-### 17. 相談スキットの 表紙（動画の ポスターも 兼ねる）
+### 18. 相談スキットの 表紙（動画の ポスターも 兼ねる）
 
 - **出力する 先** … `public/img/hourensou/soudan/slide10.webp`
 - **書き込む 先** … scripts/gen_hourensou_content.mjs soudan_lecture blocks[30] の poster ＋ soudan_skit の cover
@@ -370,7 +385,7 @@ Warm modern anime illustration, like a friendly Japanese educational manga — c
 node scripts/slides/gen_images.mjs scripts/images/hourensou_okuda_zukai.json .tmp-img/okuda_zukai
 ```
 
-### 18. 相談で よく 使う 日本語 4つ
+### 19. 相談で よく 使う 日本語 4つ
 
 - **出力する 先** … `public/img/hourensou/soudan/slide9.webp`
 - **書き込む 先** … scripts/gen_hourensou_content.mjs soudan_lecture blocks[27]（image）
@@ -399,7 +414,7 @@ Warm modern anime illustration, like a friendly Japanese educational manga — c
 node scripts/slides/gen_images.mjs scripts/images/hourensou_hendy.json .tmp-img/hendy
 ```
 
-### 19. 連絡ステージの 表紙
+### 20. 連絡ステージの 表紙
 
 - **出力する 先** … `public/img/hourensou/renraku/renraku.webp`
 - **書き込む 先** … scripts/gen_hourensou_content.mjs renraku_lecture blocks[0].image（hero）
@@ -414,7 +429,7 @@ Warm modern anime illustration, like a friendly Japanese educational manga — c
 
 </details>
 
-### 20. チームワーク（なぜ 報告を するの？）
+### 21. チームワーク（なぜ 報告を するの？）
 
 - **出力する 先** … `public/img/hourensou/houkoku/teamwork.webp`
 - **書き込む 先** … scripts/gen_hourensou_content.mjs houkoku_lecture blocks[5]（image）
@@ -429,7 +444,7 @@ Warm modern anime illustration, like a friendly Japanese educational manga — c
 
 </details>
 
-### 21. スタンプは「読みました」の 合図
+### 22. スタンプは「読みました」の 合図
 
 - **出力する 先** … `public/img/hourensou/renraku/reaction.webp`
 - **書き込む 先** … scripts/gen_hourensou_content.mjs renraku_lecture blocks[16]（image）
@@ -457,7 +472,7 @@ Warm modern anime illustration, like a friendly Japanese educational manga — c
 node scripts/slides/gen_images.mjs scripts/images/hourensou_fujiki.json .tmp-img/fujiki
 ```
 
-### 22. 会社の ポジション（階級）の 図
+### 23. 会社の ポジション（階級）の 図
 
 - **出力する 先** … `public/img/hourensou/listening/houkoku_hierarchy.webp`
 - **書き込む 先** … scripts/gen_hourensou_content.mjs houkoku_lecture blocks[15]（image）
@@ -486,7 +501,7 @@ Warm modern anime illustration, like a friendly Japanese educational manga — c
 node scripts/slides/gen_images.mjs scripts/images/hourensou_zukai.json .tmp-img/zukai
 ```
 
-### 23. 報連相の 3つ
+### 24. 報連相の 3つ
 
 - **出力する 先** … `public/img/hourensou/houkoku/hourenso.webp`
 - **書き込む 先** … scripts/gen_hourensou_content.mjs houkoku_lecture blocks[3]（image）
@@ -502,7 +517,7 @@ Warm modern anime illustration, like a friendly Japanese educational manga — c
 
 </details>
 
-### 24. 報告の 型（順番）
+### 25. 報告の 型（順番）
 
 - **出力する 先** … `public/img/hourensou/houkoku/keypoint.webp`
 - **書き込む 先** … content/articles/houkoku_kotsu.json の hero（blocks[0]）と steps（blocks[7]）の images[1]
@@ -518,7 +533,7 @@ Warm modern anime illustration, like a friendly Japanese educational manga — c
 
 </details>
 
-### 25. 連絡は 事実だけで いい（対比）
+### 26. 連絡は 事実だけで いい（対比）
 
 - **出力する 先** … `public/img/hourensou/renraku/s1.webp`
 - **書き込む 先** … scripts/gen_hourensou_content.mjs renraku_lecture blocks[3]（image）
@@ -534,7 +549,7 @@ Warm modern anime illustration, like a friendly Japanese educational manga — c
 
 </details>
 
-### 26. 短い 時間で 伝わる コツ 2つ
+### 27. 短い 時間で 伝わる コツ 2つ
 
 - **出力する 先** … `public/img/hourensou/renraku/s3.webp`
 - **書き込む 先** … scripts/gen_hourensou_content.mjs renraku_lecture blocks[8]（image）
@@ -550,7 +565,7 @@ Warm modern anime illustration, like a friendly Japanese educational manga — c
 
 </details>
 
-### 27. メールは【 】で 読みやすく する
+### 28. メールは【 】で 読みやすく する
 
 - **出力する 先** … `public/img/hourensou/renraku/s4.webp`
 - **書き込む 先** … scripts/gen_hourensou_content.mjs renraku_lecture blocks[12]（image）
@@ -566,7 +581,7 @@ Warm modern anime illustration, like a friendly Japanese educational manga — c
 
 </details>
 
-### 28. 連絡の ケーススタディ（2つの 場面）
+### 29. 連絡の ケーススタディ（2つの 場面）
 
 - **出力する 先** … `public/img/hourensou/renraku/s2.webp`
 - **書き込む 先** … scripts/gen_hourensou_content.mjs renraku_lecture blocks[20]（image）
@@ -582,7 +597,7 @@ Warm modern anime illustration, like a friendly Japanese educational manga — c
 
 </details>
 
-### 29. 30分ルールの 3つの えらび方
+### 30. 30分ルールの 3つの えらび方
 
 - **出力する 先** … `public/img/hourensou/soudan/slide6.webp`
 - **書き込む 先** … scripts/gen_hourensou_content.mjs soudan_lecture blocks[14]（image）
@@ -611,7 +626,7 @@ Warm modern anime illustration, like a friendly Japanese educational manga — c
 node scripts/slides/gen_images.mjs scripts/images/hourensou_scenes.json .tmp-img/scenes
 ```
 
-### 30. エラーが 出た とき どう する（3つ）
+### 31. エラーが 出た とき どう する（3つ）
 
 - **出力する 先** … `public/img/hourensou/soudan/slide2.webp`
 - **書き込む 先** … scripts/gen_hourensou_content.mjs soudan_lecture blocks[3]（image）
@@ -626,7 +641,7 @@ Warm modern anime illustration, like a friendly Japanese educational manga — c
 
 </details>
 
-### 31. 相談すると 答えが 見つかる
+### 32. 相談すると 答えが 見つかる
 
 - **出力する 先** … `public/img/hourensou/soudan/slide3.webp`
 - **書き込む 先** … scripts/gen_hourensou_content.mjs soudan_lecture blocks[5]（image）
@@ -641,7 +656,7 @@ Warm modern anime illustration, like a friendly Japanese educational manga — c
 
 </details>
 
-### 32. 一人で 悩む と チームで 考える
+### 33. 一人で 悩む と チームで 考える
 
 - **出力する 先** … `public/img/hourensou/soudan/slide4.webp`
 - **書き込む 先** … scripts/gen_hourensou_content.mjs soudan_lecture blocks[7]（image）
@@ -656,7 +671,7 @@ Warm modern anime illustration, like a friendly Japanese educational manga — c
 
 </details>
 
-### 33. 相談する ばめん ①〜④
+### 34. 相談する ばめん ①〜④
 
 - **出力する 先** … `public/img/hourensou/soudan/slide5-1.webp`
 - **書き込む 先** … scripts/gen_hourensou_content.mjs soudan_lecture blocks[10]（image）
@@ -671,7 +686,7 @@ Warm modern anime illustration, like a friendly Japanese educational manga — c
 
 </details>
 
-### 34. 相談する ばめん ⑤〜⑧
+### 35. 相談する ばめん ⑤〜⑧
 
 - **出力する 先** … `public/img/hourensou/soudan/slide5-2.webp`
 - **書き込む 先** … scripts/gen_hourensou_content.mjs soudan_lecture blocks[11]（image）
@@ -699,7 +714,7 @@ Warm modern anime illustration, like a friendly Japanese educational manga — c
 node scripts/slides/gen_images.mjs scripts/images/soudan_kehai.json .tmp-img/soudan_kehai
 ```
 
-### 35. 電話中（受話器を 耳に あてて メモ）
+### 36. 電話中（受話器を 耳に あてて メモ）
 
 - **出力する 先** … `public/img/quiz/soudan_kehai/k1_denwa.webp`
 - **書き込む 先** … scripts/gen_hourensou_content.mjs soudan_kehai の questions[0].image
@@ -714,7 +729,7 @@ Anime illustration, no readable text. A bright modern software office, clean lin
 
 </details>
 
-### 36. ヘッドホンで 超集中（速く 打って いる）
+### 37. ヘッドホンで 超集中（速く 打って いる）
 
 - **出力する 先** … `public/img/quiz/soudan_kehai/k2_shuuchuu.webp`
 - **書き込む 先** … scripts/gen_hourensou_content.mjs soudan_kehai の questions[1].image
@@ -729,7 +744,7 @@ Anime illustration, no readable text. A bright modern software office, clean lin
 
 </details>
 
-### 37. お茶で 一息（のびを して いる）
+### 38. お茶で 一息（のびを して いる）
 
 - **出力する 先** … `public/img/quiz/soudan_kehai/k3_hitoiki.webp`
 - **書き込む 先** … scripts/gen_hourensou_content.mjs soudan_kehai の questions[2].image
@@ -744,7 +759,7 @@ Anime illustration, no readable text. A bright modern software office, clean lin
 
 </details>
 
-### 38. 困り顔（画面を にらんで 髪に 手）
+### 39. 困り顔（画面を にらんで 髪に 手）
 
 - **出力する 先** … `public/img/quiz/soudan_kehai/k4_komarigao.webp`
 - **書き込む 先** … scripts/gen_hourensou_content.mjs soudan_kehai の questions[3].image
@@ -759,7 +774,7 @@ Anime illustration, no readable text. A bright modern software office, clean lin
 
 </details>
 
-### 39. 急いで いる（PCを かかえて 時計を 見る）
+### 40. 急いで いる（PCを かかえて 時計を 見る）
 
 - **出力する 先** … `public/img/quiz/soudan_kehai/k5_isogu.webp`
 - **書き込む 先** … scripts/gen_hourensou_content.mjs soudan_kehai の questions[4].image
@@ -774,7 +789,7 @@ Anime illustration, no readable text. A bright modern software office, clean lin
 
 </details>
 
-### 40. 朝いちばん（かばんを 置いた ところ）
+### 41. 朝いちばん（かばんを 置いた ところ）
 
 - **出力する 先** … `public/img/quiz/soudan_kehai/k6_asa.webp`
 - **書き込む 先** … scripts/gen_hourensou_content.mjs soudan_kehai の questions[5].image
@@ -802,7 +817,7 @@ Anime illustration, no readable text. A bright modern software office, clean lin
 node scripts/slides/gen_images.mjs scripts/images/renraku_manga.json .tmp-img/renraku_manga
 ```
 
-### 41. 金曜日の 夕方 — オフィス / 金曜日の 夕方です。ニャムさんは 検証サーバーの
+### 42. 金曜日の 夕方 — オフィス / 金曜日の 夕方です。ニャムさんは 検証サーバーの
 
 - **出力する 先** … `public/img/manga/renraku_manga/panel1.webp`
 - **書き込む 先** … scripts/gen_hourensou_content.mjs renraku_manga の pages[0].panels[0].image
@@ -817,7 +832,7 @@ Medium shot, clean line art, flat cel shading, soft pastel palette of sky blue, 
 
 </details>
 
-### 42. 金曜日の 夕方 — オフィス / 連絡は…… あとで いいか。
+### 43. 金曜日の 夕方 — オフィス / 連絡は…… あとで いいか。
 
 - **出力する 先** … `public/img/manga/renraku_manga/panel2.webp`
 - **書き込む 先** … scripts/gen_hourensou_content.mjs renraku_manga の pages[0].panels[1].image
@@ -832,7 +847,7 @@ Medium shot, clean line art, flat cel shading, soft pastel palette of sky blue, 
 
 </details>
 
-### 43. 金曜日の 夕方 — オフィス / 20時。検証サーバーが 止まりました。だれも 知
+### 44. 金曜日の 夕方 — オフィス / 20時。検証サーバーが 止まりました。だれも 知
 
 - **出力する 先** … `public/img/manga/renraku_manga/panel3.webp`
 - **書き込む 先** … scripts/gen_hourensou_content.mjs renraku_manga の pages[0].panels[2].image
@@ -847,7 +862,7 @@ Medium shot, clean line art, flat cel shading, soft pastel palette of sky blue, 
 
 </details>
 
-### 44. その 夜 と 月曜日の 朝 / 同じ ころ。ヘンディさんは 家で 確認作業を し
+### 45. その 夜 と 月曜日の 朝 / 同じ ころ。ヘンディさんは 家で 確認作業を し
 
 - **出力する 先** … `public/img/manga/renraku_manga/panel4.webp`
 - **書き込む 先** … scripts/gen_hourensou_content.mjs renraku_manga の pages[1].panels[0].image
@@ -862,7 +877,7 @@ Medium shot, clean line art, flat cel shading, soft pastel palette of sky blue, 
 
 </details>
 
-### 45. その 夜 と 月曜日の 朝 / 保存する 前に 止まった……。きょうの 作業が 
+### 46. その 夜 と 月曜日の 朝 / 保存する 前に 止まった……。きょうの 作業が 
 
 - **出力する 先** … `public/img/manga/renraku_manga/panel5.webp`
 - **書き込む 先** … scripts/gen_hourensou_content.mjs renraku_manga の pages[1].panels[1].image
@@ -877,7 +892,7 @@ Medium shot, clean line art, flat cel shading, soft pastel palette of sky blue, 
 
 </details>
 
-### 46. その 夜 と 月曜日の 朝 / すみません。金曜の 夜、わたしが サーバーを 止
+### 47. その 夜 と 月曜日の 朝 / すみません。金曜の 夜、わたしが サーバーを 止
 
 - **出力する 先** … `public/img/manga/renraku_manga/panel6.webp`
 - **書き込む 先** … scripts/gen_hourensou_content.mjs renraku_manga の pages[1].panels[2].image
@@ -892,7 +907,7 @@ Medium shot, clean line art, flat cel shading, soft pastel palette of sky blue, 
 
 </details>
 
-### 47. 月曜日の 昼 — 二人で 連絡 / いっしょに 連絡の 文を 作りましょう。いつ・何
+### 48. 月曜日の 昼 — 二人で 連絡 / いっしょに 連絡の 文を 作りましょう。いつ・何
 
 - **出力する 先** … `public/img/manga/renraku_manga/panel7.webp`
 - **書き込む 先** … scripts/gen_hourensou_content.mjs renraku_manga の pages[2].panels[0].image
@@ -907,7 +922,7 @@ Medium shot, clean line art, flat cel shading, soft pastel palette of sky blue, 
 
 </details>
 
-### 48. 月曜日の 昼 — 二人で 連絡 / あしたの 18時から 19時まで、検証サーバーを
+### 49. 月曜日の 昼 — 二人で 連絡 / あしたの 18時から 19時まで、検証サーバーを
 
 - **出力する 先** … `public/img/manga/renraku_manga/panel8.webp`
 - **書き込む 先** … scripts/gen_hourensou_content.mjs renraku_manga の pages[2].panels[1].image
@@ -922,7 +937,7 @@ Medium shot, clean line art, flat cel shading, soft pastel palette of sky blue, 
 
 </details>
 
-### 49. 月曜日の 昼 — 二人で 連絡 / スタンプが ならびました。「読みました」の 合図
+### 50. 月曜日の 昼 — 二人で 連絡 / スタンプが ならびました。「読みました」の 合図
 
 - **出力する 先** … `public/img/manga/renraku_manga/panel9.webp`
 - **書き込む 先** … scripts/gen_hourensou_content.mjs renraku_manga の pages[2].panels[2].image
@@ -952,4 +967,4 @@ npm run lint:content     # スキーマ・ふりがな・焼き込みずれ
 npm run e2e              # 通しの 自動検証
 ```
 
-絵の 数: **49枚**（内訳 — 富田さん（報告の 相手・PM） 12 ／ 富田さんの 図（文字あり） 1 ／ 奥田さん（相談の 相手・先輩） 4 ／ 奥田さんの 図（文字あり） 1 ／ ヘンディ先輩（連絡・チーム） 3 ／ 藤木取締役（会社の 階級） 1 ／ 人物を 特定しない 図（文字あり） 7 ／ 人物を 特定しない 場面（文字なし） 5 ／ 場面クイズ「いま 話しかけて いい？」 6 ／ まんが「連絡が なかった 日」 9）
+絵の 数: **50枚**（内訳 — 富田さん（報告の 相手・PM） 13 ／ 富田さんの 図（文字あり） 1 ／ 奥田さん（相談の 相手・先輩） 4 ／ 奥田さんの 図（文字あり） 1 ／ ヘンディ先輩（連絡・チーム） 3 ／ 藤木取締役（会社の 階級） 1 ／ 人物を 特定しない 図（文字あり） 7 ／ 人物を 特定しない 場面（文字なし） 5 ／ 場面クイズ「いま 話しかけて いい？」 6 ／ まんが「連絡が なかった 日」 9）

@@ -59,7 +59,12 @@ import {
 } from "@/components/asakai/asakai-parts";
 import type { CardState } from "@/components/asakai/asakai-parts";
 import type { Meeting } from "@/content/schema";
-import { buildFuriganaIndex, mergeFuriganaEntries, type FuriganaIndex } from "@/lib/text/furigana";
+import {
+  annotateRuby,
+  buildFuriganaIndex,
+  mergeFuriganaEntries,
+  type FuriganaIndex,
+} from "@/lib/text/furigana";
 import {
   applyUtterance,
   initialPanelStates,
@@ -108,7 +113,7 @@ const KIND_NAME: Record<Scene["kind"], string> = { asa: "朝礼", yuu: "夕礼" 
  * 無い 人に `VisemeFace` を 渡すと、静かな 丸に **裸の 漢字**が 出る。
  * 絵を 足したら ここに id を 足す（`docs/朝礼・夕礼_口パク画像_別スレッド指示.md`）。
  */
-const HAS_MOUTH = new Set(["hendy", "nyam"]);
+const HAS_MOUTH = new Set(["hendy", "nyam", "okuda", "fujiki"]);
 
 const LISTEN_ONLY = [
   "あなたは 朝礼の 司会の となりで 聞いて いる 係です。",
@@ -805,6 +810,16 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
    * 絵が そろったら ここに id を 足す
    *（`docs/朝礼・夕礼_口パク画像_別スレッド指示.md`）。
    */
+  /**
+   * 口の 形を 取るための 読み。**読める ところだけ かなに する**。
+   * `kanaOf` は 読みの 無い 漢字が 1字でも あると 行ごと null を 返すので、
+   * そのまま 使うと 読める 漢字まで 口の 形に 数えられなく なる。
+   */
+  const readAloud = (text: string) =>
+    annotateRuby(text, index)
+      .map((segment) => segment.reading ?? segment.text)
+      .join("");
+
   const faces = Object.fromEntries(
     asakai.people
       .filter((person) => HAS_MOUTH.has(person.id))
@@ -820,14 +835,19 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
            *（司会）で 見ると **鳴って いるのは ニャムさんなのに 司会の 口が 動く**
            *（2026-09-11 の 検収）。音が ある あいだは 音を 正に し、音が 無い
            * 教材だけ さいごの 行の 字で 動かす。
+           *
+           * 渡すのは **セリフの かな**（漢字の ままだと 口の 形が 取れない）。
+           * 字が 無い 行だけ 音の URL で「行が 変わった」を 伝える。
            */
           utterance={
             clips.speakingId
               ? clips.speakingId === person.id
-                ? (clips.speakingAudio ?? "")
+                ? clips.speakingText !== null
+                  ? readAloud(clips.speakingText)
+                  : (clips.speakingAudio ?? "")
                 : ""
               : last && last.speakerId === person.id
-                ? last.text
+                ? readAloud(last.text)
                 : ""
           }
           /*
@@ -835,6 +855,8 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
            * 全員に 渡すと 全員の 口が いっしょに 動く。
            */
           analyser={clips.speakingId === person.id ? clips.analyser : null}
+          /* 声の 進みで、セリフの その 位置の 音の 口に する */
+          progress={clips.speakingId === person.id ? clips.progress : undefined}
         />,
       ]),
   );
