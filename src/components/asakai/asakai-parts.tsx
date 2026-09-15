@@ -93,6 +93,16 @@ export function CountBoxes({ total, done, now }: { total: number; done: number; 
  *（報告で「きのう したこと」を 言う ときに 見る ものなのに）。
  *
  * 状態は **印と ことばの 両方**で 言う（色だけに 頼らない）。
+ *
+ * ## 「n / 10」は 出さない
+ * 最初は 見出しに「（2 / 10）」を 添えて いたが、すぐ 上の 付せんが
+ *「◯◯機能 ぜんたいの 進捗: 20%」と 言って いる ので、**同じ 機能の 進み具合を
+ * 名のる 数字が 2つ、ちがう 値で 並ぶ**（2026-09-15 の 通しプレイ検収。木曜は
+ * 60% と 7 / 10 が 3行 ちがいで 同時に 見えて いた）。
+ *
+ * 2つは もともと 別の ものを 数えて いる——付せんは **手間の 割合**（報告で 言う 数字）、
+ * この 表は **しごとの 状態**。学習者に その 区別は 求められないので、
+ * 数字を 名のるのは 付せんに 一本化し、表は ✅ で どれが 終わったかだけを 見せる。
  */
 const PROGRESS_FACE: Record<"done" | "now" | "later", { mark: string; word: string; cls: string }> =
   {
@@ -108,14 +118,10 @@ export function ProgressBoxes({
   items: readonly { label: string; state: "done" | "now" | "later" }[];
   index: FuriganaIndex;
 }) {
-  const done = items.filter((item) => item.state === "done").length;
   return (
     <div>
       <p className="text-ink-soft text-[11px] font-black">
         <RubyText text="どこまで できたか" index={index} show />
-        <span className="ml-1 tabular-nums">
-          （{done} / {items.length}）
-        </span>
       </p>
       <table className="border-hairline mt-1 w-full border-collapse overflow-hidden rounded-lg border bg-white text-left">
         <thead>
