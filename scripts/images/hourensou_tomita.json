@@ -102,6 +102,14 @@
       "where": "content/articles/houkoku_kotsu.json 「用件・結論・事実・お願い」の cards items[3].image（お願い）",
       "priority": "A",
       "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: he politely asks Tomita to check his work. Standing beside the desk, the junior engineer slides his open laptop across the desk towards Tomita with both hands and bows his head slightly. Tomita reaches out with one hand to receive the laptop and nods kindly, accepting the request. Close two-shot; the laptop passing from one man to the other sits at the centre of the frame."
+    },
+    {
+      "out": "kotsu_top",
+      "dest": "public/img/hourensou/houkoku/kotsu_top.webp",
+      "title": "報告の コツ の 表紙",
+      "where": "content/articles/houkoku_kotsu.json blocks[0]（hero）の image",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: a junior engineer is giving a short, clear report to his manager, checking the note he wrote beforehand. The junior engineer stands upright beside Tomita's desk, holding a small open notebook in one hand and glancing at it, while he speaks to Tomita with a calm, confident face and a small open-hand gesture. The notebook page shows only a few short grey lines, no letters. Tomita sits at his desk, has turned his chair towards him and listens with a warm nod, his laptop screen blank. Medium two-shot from a natural standing angle, both faces large and clearly visible, the notebook easy to see."
     }
   ]
 }
