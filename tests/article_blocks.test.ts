@@ -7,6 +7,7 @@ import {
   headingId,
   joinItemsForSpeech,
   shouldShowToc,
+  tocHeadings,
 } from "@/components/article/article-blocks";
 
 describe("contentHref", () => {
@@ -65,6 +66,32 @@ describe("shouldShowToc", () => {
     const headings = [heading(2, "い"), heading(2, "ろ"), heading(2, "は")];
     expect(shouldShowToc(collectHeadings(headings.slice(0, 2)))).toBe(false);
     expect(shouldShowToc(collectHeadings(headings))).toBe(true);
+  });
+});
+
+describe("tocHeadings", () => {
+  it("番号の ある 見出しが あれば、番号の ある 行だけを 目次に 並べる（2026-09-15 の 指定）", () => {
+    const entries = collectHeadings([
+      heading(2, "1．朝礼って 何？"),
+      heading(3, "仕事を 始める 前に、チームで 報告します"),
+      heading(2, "2．朝礼の 報告は 4つです"),
+      heading(3, "✅ 問題を 話す ときは、3つ 考えます"),
+      heading(2, "10. さいごに"),
+    ]);
+    expect(tocHeadings(entries).map((entry) => entry.text)).toEqual([
+      "1．朝礼って 何？",
+      "2．朝礼の 報告は 4つです",
+      "10. さいごに",
+    ]);
+  });
+
+  it("番号の 無い ページは これまでどおり 全部 並べる", () => {
+    const entries = collectHeadings([
+      heading(2, "相談の テクニック"),
+      heading(3, "ポイント①：30分ルール"),
+      heading(2, "やって みよう"),
+    ]);
+    expect(tocHeadings(entries)).toEqual(entries);
   });
 });
 

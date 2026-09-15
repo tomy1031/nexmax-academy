@@ -44,6 +44,21 @@ export function collectHeadings(blocks: readonly ArticleBlock[]): HeadingEntry[]
   );
 }
 
+/** 「1．」「2. 」の ように 番号で 始まる 見出し。 */
+const NUMBERED_HEADING = /^\d+\s*[．.]/;
+
+/**
+ * 目次に 並べる 見出し。**番号の ある 見出しが 1つでも あれば、番号の ある 行だけ**を 並べる。
+ *
+ * 2026-09-15 の 指定「目次の番号以外の行を削除」（朝礼ページ）。節に 番号を 振った
+ * ページでは、番号の 無い 小見出しが 目次に 混ざると どれが 節か 分からなく なる。
+ * 番号を 振って いない ページ（相談の ページの「ポイント①」など）は これまでどおり 全部 並べる。
+ */
+export function tocHeadings(headings: readonly HeadingEntry[]): readonly HeadingEntry[] {
+  const numbered = headings.filter((heading) => NUMBERED_HEADING.test(heading.text));
+  return numbered.length > 0 ? numbered : headings;
+}
+
 /**
  * 目次を出すか。見出しが3つ以上あるときだけ（1〜2個なら目次の方が読むのを邪魔する）。
  */
