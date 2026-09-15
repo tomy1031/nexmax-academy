@@ -24,7 +24,6 @@
     },
     {
       "kind": "cards",
-      "tone": "step",
       "columns": 2,
       "items": [
         {
