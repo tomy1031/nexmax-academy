@@ -26,6 +26,7 @@ import {
   headingId,
   joinItemsForSpeech,
   shouldShowToc,
+  tocHeadings,
   type ArticleCharacter,
   type HeadingEntry,
 } from "./article-blocks";
@@ -99,7 +100,7 @@ export function ArticleView({
     [article.blocks, article.furigana, characters],
   );
   const [rubyOn, setRubyOn] = useState(true);
-  const headings = useMemo(() => collectHeadings(article.blocks), [article.blocks]);
+  const headings = useMemo(() => tocHeadings(collectHeadings(article.blocks)), [article.blocks]);
   /**
    * **表紙（`hero`）が ページの タイトル**（2026-08-28 の 指定
    *「これを目次の前に持ってきて。タイトルにします。その後に目次を入れて」）。

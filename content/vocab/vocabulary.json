@@ -17436,6 +17436,20 @@
         "Database",
         "Meeting"
       ]
+    },
+    {
+      "id": "yakuwaribuntan",
+      "term": "役割分担",
+      "reading": "やくわりぶんたん",
+      "romaji": "yakuwaribuntan",
+      "meaningJa": "チームで、だれが どの 仕事を するかを 分ける ことです。",
+      "englishTerm": "Division of roles",
+      "example": "アプリの 役割分担を 決めます。",
+      "wrongMeanings": [
+        "Schedule",
+        "Budget",
+        "Meeting"
+      ]
     }
   ]
 }

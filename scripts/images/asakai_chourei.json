@@ -83,15 +83,6 @@
       "text": ["APIの 接続で エラーが あります。"]
     },
     {
-      "out": "yarikata3",
-      "dest": "public/img/articles/asakai_lecture/sec9_yarikata.webp",
-      "title": "オフィス・オンライン・チャットの 3つの やり方",
-      "where": "content/articles/asakai_lecture.json 7．会社や プロジェクトに よって、やり方は 違います",
-      "priority": "A",
-      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: teams do the morning report in different ways. Three rounded cream cards side by side on a soft sky-blue background, each with a label at the top. Card 1: colleagues standing together in an office, talking; label オフィスで 話す. Card 2: a laptop screen showing four video-call tiles of smiling colleagues; label オンラインで 話す. Card 3: one engineer typing a short message into a team chat window on a laptop, the chat bubbles showing only blank lines; label チャットに 書く. Few large elements, generous spacing.",
-      "text": ["オフィスで 話す", "オンラインで 話す", "チャットに 書く"]
-    },
-    {
       "out": "chourei_yuurei",
       "dest": "public/img/articles/asakai_lecture/sec10_yuurei.webp",
       "title": "朝礼と 夕礼（半々）",
