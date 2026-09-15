@@ -66,6 +66,7 @@ import { HintModal } from "./hint-modal";
 import { CertificateModal } from "./certificate-modal";
 import { JudgeModal } from "./judge-modal";
 import { SpeakButton } from "./speak-button";
+import { StepTabs } from "./step-tabs";
 import { SpeechSpeedPicker } from "./speech-speed-picker";
 import { VisemeFace, type Viseme } from "./viseme-face";
 import { useClipPlayer } from "./use-clip-player";
@@ -1539,52 +1540,28 @@ export function MeetingSession({
    * 「さっき あった ものが 無い」と 探しはじめる）。
    */
   const roundSteps = (
-    <div className="card-island flex items-center gap-1.5 overflow-x-auto p-2">
-      {(
-        [
-          { key: "ask", label: `${meeting.host.name}さんから しつもん`, locked: false },
-          ...(hasListenRound
-            ? ([
-                {
-                  key: "listen",
-                  label: `${meeting.host.name}さんに しつもん`,
-                  locked: !round1Done,
-                },
-              ] as const)
-            : []),
-        ] as const
-      ).map((step, at) => {
-        const now = round === step.key;
-        const cleared = step.key === "ask" && round1Done;
-        return (
-          <button
-            key={step.key}
-            type="button"
-            onClick={() => setRound(step.key)}
-            disabled={step.locked}
-            aria-current={now ? "step" : undefined}
-            aria-label={`${step.label}${step.locked ? "（まだ ひらきません）" : ""}`}
-            className="flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-extrabold disabled:opacity-45"
-            style={{
-              background: now
-                ? "var(--color-sky-deep)"
-                : cleared
-                  ? "var(--color-panel-tint)"
-                  : "transparent",
-              color: now ? "#fff" : cleared ? "var(--color-ink-soft)" : "var(--color-ink-faint)",
-            }}
-          >
-            <span className="opacity-70">{`0${at + 1}`}</span>
-            <RubyText text={step.label} index={furigana} show />
-            {step.locked ? <span>🔒</span> : cleared ? <span>✅</span> : null}
-          </button>
-        );
-      })}
-      {hasListenRound && !round1Done ? (
-        <span className="text-ink-faint ml-1 shrink-0 text-[11px] font-bold">
-          <RubyText text="全部 答えると 開きます" index={CHROME_FURIGANA} show />
-        </span>
-      ) : null}
+    <StepTabs
+      steps={[
+        {
+          key: "ask",
+          label: `${meeting.host.name}さんから しつもん`,
+          cleared: round1Done,
+        },
+        ...(hasListenRound
+          ? [
+              {
+                key: "listen",
+                label: `${meeting.host.name}さんに しつもん`,
+                locked: !round1Done,
+              },
+            ]
+          : []),
+      ]}
+      current={round}
+      note={hasListenRound && !round1Done ? "全部 答えると 開きます" : undefined}
+      index={furigana}
+      onPick={(key) => setRound(key as "ask" | "listen")}
+    >
       {/*
         **さっき 調べた ことを 見ながら 話す**（2026-08-27 の 指定）。
         帯の 右はしに 置くのは、話す ボタンと 会話の 記録を 押し出さない ため
@@ -1592,7 +1569,7 @@ export function MeetingSession({
         `meeting.notes` が 空の 教材では 部品が 何も 描かない。
       */}
       <AnswerNotebook sources={meeting.notes} className="ml-auto shrink-0" />
-    </div>
+    </StepTabs>
   );
 
   const body = (
