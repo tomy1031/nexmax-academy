@@ -46,6 +46,8 @@ export interface VoiceQueueItem {
   readonly speakerId: string;
   /** 作り置きの 音（`/audio/meetings/<ID>/<キー>.wav`）。無ければ 飛ばす。 */
   readonly audio?: string;
+  /** その 音で 読んで いる セリフ。口の 形を ことばに 合わせるのに 使う。 */
+  readonly text?: string;
 }
 
 export interface VoiceQueue {
@@ -55,6 +57,13 @@ export interface VoiceQueue {
   readonly speakingId: string | null;
   /** いま 鳴って いる 行の 音の URL。鳴って いなければ null。 */
   readonly speakingAudio: string | null;
+  /** いま 鳴って いる 行の セリフ。鳴って いなければ・字が 無ければ null。 */
+  readonly speakingText: string | null;
+  /**
+   * いま 鳴って いる 行が 何割まで 進んだか（0〜1）。口パクが セリフの 位置を 合わせるのに 使う。
+   * 鳴って いない・長さが まだ 読めない ときは null。
+   */
+  readonly progress: () => number | null;
   /** 行を 待ち行列の うしろに 足す（鳴って いなければ すぐ 始める）。 */
   readonly push: (items: readonly VoiceQueueItem[], rate: number) => void;
   /** 1本だけ 聞き返す（🔊）。**待ち行列は 捨てない**——聞き返した あと 続きが 鳴る。 */
@@ -181,6 +190,14 @@ export function useVoiceQueue(): VoiceQueue {
     setSpeaking(null);
   }, []);
 
+  /* 聞き返しの あいだは 待ち行列の 行では ないので 返さない（口も 動かさない） */
+  const progress = useCallback(() => {
+    const audio = audioRef.current;
+    if (!audio || playingRef.current === null) return null;
+    const { duration, currentTime } = audio;
+    return Number.isFinite(duration) && duration > 0 ? currentTime / duration : null;
+  }, []);
+
   useEffect(
     () => () => {
       const audio = audioRef.current;
@@ -202,6 +219,8 @@ export function useVoiceQueue(): VoiceQueue {
     analyser,
     speakingId: speaking?.speakerId ?? null,
     speakingAudio: speaking?.audio ?? null,
+    speakingText: speaking?.text ?? null,
+    progress,
     push,
     replay,
     stop,

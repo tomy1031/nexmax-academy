@@ -18,5 +18,13 @@
   "references": [
     "/img/characters/okuda/reference.jpg"
   ],
-  "voice": "Orus"
+  "voice": "Orus",
+  "mouth": {
+    "closed": "/img/characters/okuda/mouth/closed.webp",
+    "a": "/img/characters/okuda/mouth/a.webp",
+    "i": "/img/characters/okuda/mouth/i.webp",
+    "u": "/img/characters/okuda/mouth/u.webp",
+    "e": "/img/characters/okuda/mouth/e.webp",
+    "o": "/img/characters/okuda/mouth/o.webp"
+  }
 }

@@ -18,5 +18,13 @@
   "references": [
     "/img/characters/fujiki/reference.jpg"
   ],
-  "voice": "Fenrir"
+  "voice": "Fenrir",
+  "mouth": {
+    "closed": "/img/characters/fujiki/mouth/closed.webp",
+    "a": "/img/characters/fujiki/mouth/a.webp",
+    "i": "/img/characters/fujiki/mouth/i.webp",
+    "u": "/img/characters/fujiki/mouth/u.webp",
+    "e": "/img/characters/fujiki/mouth/e.webp",
+    "o": "/img/characters/fujiki/mouth/o.webp"
+  }
 }
