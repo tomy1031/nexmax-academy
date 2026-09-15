@@ -371,6 +371,50 @@ describe("数字の 見かた", () => {
  * 鳴る——耳では だれが 話して いるか 分からなく なるのに、検査は 緑の まま。
  * 実際に 奥田・藤木・富田の 3人が その 状態だった（2026-09-11）。
  */
+/**
+ * **目印の 入った セリフに 作り置きの 音を つけない**（2026-09-15）
+ *
+ * 司会の「では 次に ◯◯さん、お願いします。」は、画面では 学習者の 名前に
+ * 置きかわる（`fillCallName`）。ところが 音は **書いた とおりに 焼く**ので、
+ * そのまま 音に すると **「まるまるさん」と 読み上げる**——字は「ソピアさん」、
+ * こえは「まるまるさん」で 食いちがう。
+ *
+ * いまは どちらの 教材も 音を 1本も 持って いない（台帳 #408 で これから 作る）。
+ * **作る ときに 気づける ように**、ここで 線を 引いて おく。
+ */
+describe("目印の 入った セリフには 音を つけない", () => {
+  for (const { name, raw } of MEETINGS) {
+    const meeting = meetingSchema.parse(raw);
+    const asakai = meeting.asakai!;
+
+    it(`${name} は ◯◯ の ある セリフに audio を 持たない`, () => {
+      const baked: string[] = [];
+      const walk = (value: unknown, path: string): void => {
+        if (value === null || typeof value !== "object") return;
+        if (Array.isArray(value)) {
+          value.forEach((item, i) => walk(item, `${path}[${i}]`));
+          return;
+        }
+        const line = value as { speakerId?: unknown; text?: unknown; audio?: unknown };
+        if (
+          typeof line.speakerId === "string" &&
+          typeof line.text === "string" &&
+          typeof line.audio === "string" &&
+          line.audio !== "" &&
+          line.text.includes("◯◯")
+        ) {
+          baked.push(`${path}: ${line.text}`);
+        }
+        for (const [key, child] of Object.entries(value)) {
+          walk(child, path === "" ? key : `${path}.${key}`);
+        }
+      };
+      walk(asakai, "");
+      expect(baked).toEqual([]);
+    });
+  }
+});
+
 describe("話す 人の こえ", () => {
   for (const { name, raw } of MEETINGS) {
     const meeting = meetingSchema.parse(raw);
