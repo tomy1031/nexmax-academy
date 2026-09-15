@@ -3875,7 +3875,13 @@
       "id": "purogurama-",
       "term": "プログラマー",
       "reading": "ぷろぐらまー",
-      "meaningJa": "programmer — コンピューターを つくる ひと"
+      "meaningJa": "programmer — コンピューターを つくる ひと",
+      "englishTerm": "Programmer",
+      "wrongMeanings": [
+        "Designer",
+        "Customer",
+        "Salesperson"
+      ]
     },
     {
       "id": "jouzu",
@@ -4240,7 +4246,12 @@
       "meaningJa": "後で 見られるように、書いて 残す ことです。",
       "englishTerm": "a record",
       "example": "会議で 決まった ことを 記録します。",
-      "englishMeaning": "writing something down so you can look at it later"
+      "englishMeaning": "writing something down so you can look at it later",
+      "wrongMeanings": [
+        "a plan",
+        "a mistake",
+        "a promise"
+      ]
     },
     {
       "id": "junbi",
@@ -6102,7 +6113,12 @@
       "term": "複数",
       "reading": "ふくすう",
       "meaningJa": "2つ 以上、と いう ことです。",
-      "englishTerm": "Multiple"
+      "englishTerm": "Multiple",
+      "wrongMeanings": [
+        "Single",
+        "Half",
+        "Zero"
+      ]
     },
     {
       "id": "kison",
@@ -6246,7 +6262,12 @@
       "term": "改善",
       "reading": "かいぜん",
       "meaningJa": "わるい ところを、よく する ことです。",
-      "englishTerm": "Improvement"
+      "englishTerm": "Improvement",
+      "wrongMeanings": [
+        "Decline",
+        "Delay",
+        "Cancellation"
+      ]
     },
     {
       "id": "kaishou",
@@ -17435,6 +17456,12 @@
         "Password",
         "Database",
         "Meeting"
+      ],
+      "furigana": [
+        [
+          "仕組み",
+          "しくみ"
+        ]
       ]
     },
     {
@@ -17449,6 +17476,750 @@
         "Schedule",
         "Budget",
         "Meeting"
+      ]
+    },
+    {
+      "id": "gurafu",
+      "term": "グラフ",
+      "reading": "ぐらふ",
+      "romaji": "gurafu",
+      "meaningJa": "数を 線や 棒の 形で 見せる 図です。",
+      "englishTerm": "Graph",
+      "wrongMeanings": [
+        "Table",
+        "Map",
+        "Photo"
+      ],
+      "example": "スキルを グラフで 確認します。",
+      "furigana": [
+        [
+          "数",
+          "かず"
+        ],
+        [
+          "線",
+          "せん"
+        ],
+        [
+          "棒",
+          "ぼう"
+        ],
+        [
+          "形",
+          "かたち"
+        ],
+        [
+          "見せる",
+          "みせる"
+        ],
+        [
+          "図",
+          "ず"
+        ],
+        [
+          "確認",
+          "かくにん"
+        ]
+      ]
+    },
+    {
+      "id": "aidii",
+      "term": "ID",
+      "reading": "あいでぃー",
+      "romaji": "aidii",
+      "meaningJa": "1つ 1つに つける、ほかと ちがう 番号や 名前です。",
+      "englishTerm": "Identifier",
+      "wrongMeanings": [
+        "Password",
+        "Address",
+        "Signature"
+      ],
+      "example": "注文IDを 作って、注文を 保存します。",
+      "furigana": [
+        [
+          "番号",
+          "ばんごう"
+        ],
+        [
+          "名前",
+          "なまえ"
+        ],
+        [
+          "注文",
+          "ちゅうもん"
+        ],
+        [
+          "作って",
+          "つくって"
+        ],
+        [
+          "保存",
+          "ほぞん"
+        ]
+      ]
+    },
+    {
+      "id": "shinchokuritsu",
+      "term": "進捗率",
+      "reading": "しんちょくりつ",
+      "romaji": "shinchokuritsu",
+      "meaningJa": "仕事が どこまで 進んだかを、％で あらわした ものです。",
+      "englishTerm": "Progress rate",
+      "wrongMeanings": [
+        "Error rate",
+        "Pass rate",
+        "Exchange rate"
+      ],
+      "example": "担当の 機能 全体の 進捗率を 報告します。",
+      "furigana": [
+        [
+          "進捗率",
+          "しんちょくりつ"
+        ],
+        [
+          "仕事",
+          "しごと"
+        ],
+        [
+          "進んだ",
+          "すすんだ"
+        ],
+        [
+          "担当",
+          "たんとう"
+        ],
+        [
+          "機能",
+          "きのう"
+        ],
+        [
+          "全体",
+          "ぜんたい"
+        ],
+        [
+          "報告",
+          "ほうこく"
+        ]
+      ]
+    },
+    {
+      "id": "mondaiten",
+      "term": "問題点",
+      "reading": "もんだいてん",
+      "romaji": "mondaiten",
+      "meaningJa": "うまく いって いない ところです。",
+      "englishTerm": "Issue",
+      "wrongMeanings": [
+        "Solution",
+        "Goal",
+        "Result"
+      ],
+      "example": "夕礼では、最後に 問題点を 報告します。",
+      "furigana": [
+        [
+          "問題点",
+          "もんだいてん"
+        ],
+        [
+          "夕礼",
+          "ゆうれい"
+        ],
+        [
+          "最後",
+          "さいご"
+        ],
+        [
+          "報告",
+          "ほうこく"
+        ]
+      ]
+    },
+    {
+      "id": "okure",
+      "term": "遅れ",
+      "reading": "おくれ",
+      "romaji": "okure",
+      "meaningJa": "予定より 時間が かかって、あとに なる ことです。",
+      "englishTerm": "Delay",
+      "wrongMeanings": [
+        "Completion",
+        "Change",
+        "Cancellation"
+      ],
+      "example": "ITの 仕事で よく する 報告は、完了・トラブル・遅れです。",
+      "furigana": [
+        [
+          "遅れ",
+          "おくれ"
+        ],
+        [
+          "予定",
+          "よてい"
+        ],
+        [
+          "時間",
+          "じかん"
+        ],
+        [
+          "仕事",
+          "しごと"
+        ],
+        [
+          "報告",
+          "ほうこく"
+        ],
+        [
+          "完了",
+          "かんりょう"
+        ]
+      ]
+    },
+    {
+      "id": "kiiwaado",
+      "term": "キーワード",
+      "reading": "きーわーど",
+      "romaji": "kiiwaado",
+      "meaningJa": "さがす ときに 入れる、大切な ことばです。",
+      "englishTerm": "Keyword",
+      "wrongMeanings": [
+        "Password",
+        "Username",
+        "Shortcut"
+      ],
+      "example": "キーワードで 学生を 検索します。",
+      "furigana": [
+        [
+          "入れる",
+          "いれる"
+        ],
+        [
+          "大切",
+          "たいせつ"
+        ],
+        [
+          "学生",
+          "がくせい"
+        ],
+        [
+          "検索",
+          "けんさく"
+        ]
+      ]
+    },
+    {
+      "id": "shiborikomi",
+      "term": "絞り込み",
+      "reading": "しぼりこみ",
+      "romaji": "shiborikomi",
+      "meaningJa": "条件を つけて、見る ものを 少なく する ことです。",
+      "englishTerm": "Filtering",
+      "wrongMeanings": [
+        "Sorting",
+        "Copying",
+        "Deleting"
+      ],
+      "example": "大学や JLPTレベルで 絞り込みを します。",
+      "furigana": [
+        [
+          "絞り込み",
+          "しぼりこみ"
+        ],
+        [
+          "条件",
+          "じょうけん"
+        ],
+        [
+          "見る",
+          "みる"
+        ],
+        [
+          "少なく",
+          "すくなく"
+        ],
+        [
+          "大学",
+          "だいがく"
+        ]
+      ]
+    },
+    {
+      "id": "poorutoforio",
+      "term": "ポートフォリオ",
+      "reading": "ぽーとふぉりお",
+      "romaji": "poorutoforio",
+      "meaningJa": "自分が 作った ものを 集めて 見せる 作品集です。",
+      "englishTerm": "Portfolio",
+      "wrongMeanings": [
+        "Resume",
+        "Certificate",
+        "Diary"
+      ],
+      "example": "学生の ページで、ポートフォリオを 見る ことが できます。",
+      "furigana": [
+        [
+          "自分",
+          "じぶん"
+        ],
+        [
+          "作った",
+          "つくった"
+        ],
+        [
+          "集めて",
+          "あつめて"
+        ],
+        [
+          "見せる",
+          "みせる"
+        ],
+        [
+          "作品集",
+          "さくひんしゅう"
+        ],
+        [
+          "学生",
+          "がくせい"
+        ],
+        [
+          "見る",
+          "みる"
+        ]
+      ]
+    },
+    {
+      "id": "firutaa",
+      "term": "フィルター",
+      "reading": "ふぃるたー",
+      "romaji": "firutaa",
+      "meaningJa": "決めた 条件に 合う ものだけを 出す しくみです。",
+      "englishTerm": "Filter",
+      "wrongMeanings": [
+        "Button",
+        "Menu",
+        "Link"
+      ],
+      "example": "大学フィルターを 作ります。",
+      "furigana": [
+        [
+          "決めた",
+          "きめた"
+        ],
+        [
+          "条件",
+          "じょうけん"
+        ],
+        [
+          "合う",
+          "あう"
+        ],
+        [
+          "出す",
+          "だす"
+        ],
+        [
+          "大学",
+          "だいがく"
+        ],
+        [
+          "作ります",
+          "つくります"
+        ]
+      ]
+    },
+    {
+      "id": "suteetasu",
+      "term": "ステータス",
+      "reading": "すてーたす",
+      "romaji": "suteetasu",
+      "meaningJa": "いまの 状態です。",
+      "englishTerm": "Status",
+      "wrongMeanings": [
+        "History",
+        "Price",
+        "Category"
+      ],
+      "example": "決済の あと、注文ステータスを 変えます。",
+      "furigana": [
+        [
+          "状態",
+          "じょうたい"
+        ],
+        [
+          "決済",
+          "けっさい"
+        ],
+        [
+          "注文",
+          "ちゅうもん"
+        ],
+        [
+          "変えます",
+          "かえます"
+        ]
+      ]
+    },
+    {
+      "id": "puroguramingu",
+      "term": "プログラミング",
+      "reading": "ぷろぐらみんぐ",
+      "romaji": "puroguramingu",
+      "meaningJa": "コンピューターに させる ことを、コードで 書く ことです。",
+      "englishTerm": "Programming",
+      "wrongMeanings": [
+        "Designing",
+        "Testing",
+        "Marketing"
+      ],
+      "example": "プログラミングで スケジュールに 遅れそうな とき、どう しますか。",
+      "furigana": [
+        [
+          "書く",
+          "かく"
+        ],
+        [
+          "遅れそう",
+          "おくれそう"
+        ]
+      ]
+    },
+    {
+      "id": "kinmu",
+      "term": "勤務",
+      "reading": "きんむ",
+      "romaji": "kinmu",
+      "meaningJa": "会社で 決まった 時間に 働く ことです。",
+      "englishTerm": "Work",
+      "wrongMeanings": [
+        "Holiday",
+        "Lunch break",
+        "Training"
+      ],
+      "example": "勤務時間は 9:00〜18:00 です。",
+      "furigana": [
+        [
+          "勤務時間",
+          "きんむじかん"
+        ],
+        [
+          "会社",
+          "かいしゃ"
+        ],
+        [
+          "決まった",
+          "きまった"
+        ],
+        [
+          "時間",
+          "じかん"
+        ],
+        [
+          "働く",
+          "はたらく"
+        ]
+      ]
+    },
+    {
+      "id": "douseki",
+      "term": "同席",
+      "reading": "どうせき",
+      "romaji": "douseki",
+      "meaningJa": "会議などに、いっしょに 出る ことです。",
+      "englishTerm": "Attendance",
+      "wrongMeanings": [
+        "Absence",
+        "Presentation",
+        "Reservation"
+      ],
+      "example": "今日は 藤木取締役も 同席して います。",
+      "furigana": [
+        [
+          "会議",
+          "かいぎ"
+        ],
+        [
+          "出る",
+          "でる"
+        ],
+        [
+          "今日",
+          "きょう"
+        ],
+        [
+          "藤木",
+          "ふじき"
+        ],
+        [
+          "取締役",
+          "とりしまりやく"
+        ]
+      ]
+    },
+    {
+      "id": "yuuai",
+      "term": "UI",
+      "reading": "ゆーあい",
+      "romaji": "yuuai",
+      "meaningJa": "人が 見て さわる、画面の ところです。",
+      "englishTerm": "User interface",
+      "wrongMeanings": [
+        "Database",
+        "Server",
+        "Network"
+      ],
+      "example": "キーワード検索の UIを 作ります。",
+      "furigana": [
+        [
+          "人",
+          "ひと"
+        ],
+        [
+          "見て",
+          "みて"
+        ],
+        [
+          "画面",
+          "がめん"
+        ],
+        [
+          "検索",
+          "けんさく"
+        ],
+        [
+          "作ります",
+          "つくります"
+        ]
+      ]
+    },
+    {
+      "id": "keishiki",
+      "term": "形式",
+      "reading": "けいしき",
+      "romaji": "keishiki",
+      "meaningJa": "データや 書類の、決まった 形です。",
+      "englishTerm": "Format",
+      "wrongMeanings": [
+        "Size",
+        "Speed",
+        "Color"
+      ],
+      "example": "グラフ用の データ形式に 変えます。",
+      "furigana": [
+        [
+          "書類",
+          "しょるい"
+        ],
+        [
+          "決まった",
+          "きまった"
+        ],
+        [
+          "形",
+          "かたち"
+        ],
+        [
+          "用",
+          "よう"
+        ],
+        [
+          "変えます",
+          "かえます"
+        ]
+      ]
+    },
+    {
+      "id": "madoguchi",
+      "term": "窓口",
+      "reading": "まどぐち",
+      "romaji": "madoguchi",
+      "meaningJa": "相手と 話す ときに、代表で 話す 人です。",
+      "englishTerm": "Point of contact",
+      "wrongMeanings": [
+        "Decision maker",
+        "New member",
+        "Customer"
+      ],
+      "example": "藤木さんは、社長の 窓口です。",
+      "furigana": [
+        [
+          "相手",
+          "あいて"
+        ],
+        [
+          "話す",
+          "はなす"
+        ],
+        [
+          "代表",
+          "だいひょう"
+        ],
+        [
+          "人",
+          "ひと"
+        ],
+        [
+          "藤木",
+          "ふじき"
+        ],
+        [
+          "社長",
+          "しゃちょう"
+        ]
+      ]
+    },
+    {
+      "id": "buchou",
+      "term": "部長",
+      "reading": "ぶちょう",
+      "romaji": "buchou",
+      "meaningJa": "大きな チームの リーダーです。",
+      "englishTerm": "General manager",
+      "wrongMeanings": [
+        "President",
+        "Chief",
+        "Employee"
+      ],
+      "example": "部長は、大きな チームの リーダーです。",
+      "furigana": [
+        [
+          "大きな",
+          "おおきな"
+        ]
+      ]
+    },
+    {
+      "id": "kachou",
+      "term": "課長",
+      "reading": "かちょう",
+      "romaji": "kachou",
+      "meaningJa": "小さな チームの リーダーです。",
+      "englishTerm": "Section manager",
+      "wrongMeanings": [
+        "General manager",
+        "Director",
+        "Employee"
+      ],
+      "example": "課長は、小さな チームの リーダーです。",
+      "furigana": [
+        [
+          "小さな",
+          "ちいさな"
+        ]
+      ]
+    },
+    {
+      "id": "kakarichou",
+      "term": "係長",
+      "reading": "かかりちょう",
+      "romaji": "kakarichou",
+      "meaningJa": "課長の サポートを する 人です。",
+      "englishTerm": "Chief",
+      "wrongMeanings": [
+        "President",
+        "Director",
+        "Customer"
+      ],
+      "example": "係長は、課長の サポートを する 人です。",
+      "furigana": [
+        [
+          "課長",
+          "かちょう"
+        ],
+        [
+          "人",
+          "ひと"
+        ]
+      ]
+    },
+    {
+      "id": "web",
+      "term": "Web",
+      "reading": "うぇぶ",
+      "romaji": "webu",
+      "meaningJa": "インターネットで 見る ページの しくみです。",
+      "englishTerm": "Web",
+      "wrongMeanings": [
+        "Email",
+        "Printer",
+        "Phone call"
+      ],
+      "example": "Next Talent は、学生を 企業に 紹介する Webシステムです。",
+      "furigana": [
+        [
+          "見る",
+          "みる"
+        ],
+        [
+          "学生",
+          "がくせい"
+        ],
+        [
+          "企業",
+          "きぎょう"
+        ],
+        [
+          "紹介",
+          "しょうかい"
+        ]
+      ]
+    },
+    {
+      "id": "masuta",
+      "term": "マスタ",
+      "reading": "ますた",
+      "romaji": "masuta",
+      "meaningJa": "みんなで 使う、もとに なる データです。",
+      "englishTerm": "Master data",
+      "wrongMeanings": [
+        "Backup data",
+        "Test data",
+        "Log data"
+      ],
+      "example": "ニャムさんが、スキルマスタを 用意します。",
+      "furigana": [
+        [
+          "使う",
+          "つかう"
+        ],
+        [
+          "用意",
+          "ようい"
+        ]
+      ]
+    },
+    {
+      "id": "yomikomi",
+      "term": "読み込み",
+      "reading": "よみこみ",
+      "romaji": "yomikomi",
+      "meaningJa": "データを 取って きて、使える ように する ことです。",
+      "englishTerm": "Loading",
+      "wrongMeanings": [
+        "Saving",
+        "Printing",
+        "Sending"
+      ],
+      "example": "読み込み中の 表示を 追加します。",
+      "furigana": [
+        [
+          "読み込み中",
+          "よみこみちゅう"
+        ],
+        [
+          "取って",
+          "とって"
+        ],
+        [
+          "使える",
+          "つかえる"
+        ],
+        [
+          "表示",
+          "ひょうじ"
+        ],
+        [
+          "追加",
+          "ついか"
+        ]
       ]
     }
   ]

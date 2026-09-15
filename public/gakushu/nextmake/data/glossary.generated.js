@@ -111,6 +111,12 @@ export const GLOSSARY = [
     en: "Infrastructure",
   },
   {
+    term: "Web",
+    reading: "うぇぶ",
+    meaning: "インターネットで 見る ページの しくみです。",
+    en: "Web",
+  },
+  {
     term: "売上",
     reading: "うりあげ",
     meaning: "売って 入って きた お金です。",
@@ -2047,6 +2053,12 @@ export const GLOSSARY = [
     reading: "やって みます",
     meaning: "「ためしに します」と 前向きに 答える ことばです。",
     en: "I will give it a try",
+  },
+  {
+    term: "UI",
+    reading: "ゆーあい",
+    meaning: "人が 見て さわる、画面の ところです。",
+    en: "User interface",
   },
   {
     term: "有効",
