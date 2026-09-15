@@ -288,7 +288,12 @@ export const YOMI_ALLOW: readonly YomiAllowEntry[] = [
     where: "あとまわしに した",
     note: "renraku_manga「連絡を あとまわしに した 日」。解析は にち",
   },
-  { surface: "日から", reading: "ひから", where: "あの 日から", note: "「あの 日から、わたしは」" },
+  {
+    surface: "日から",
+    reading: "ひから",
+    where: "あの 日から",
+    note: "「あの 日から、わたしたちの チームは」",
+  },
   // 「できた 年＝ねん」の 裁定は yomi-kensa 検収が 覆した（同じ 教材が 年が=としが・年と=としと・
   // 同じ年=おなじとし の 3例で とし を 使って いる）。データ側を ["年","とし"]＋["年7月"] に 直した。
   {
