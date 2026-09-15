@@ -70,6 +70,38 @@
       "where": "scripts/gen_hourensou_content.mjs houkoku_skit の cover",
       "priority": "B",
       "scene": "A friendly two-shot of the junior engineer and Tomita facing each other across the desk in mid conversation — the junior engineer speaking, Tomita listening with a warm smile and an open hand gesture. Bright, welcoming, plenty of clean space around them. Wide medium shot."
+    },
+    {
+      "out": "kotsu_youken",
+      "dest": "public/img/hourensou/houkoku/kotsu_youken.webp",
+      "title": "報告の 型 1: 用件（何の 話か）",
+      "where": "content/articles/houkoku_kotsu.json 「用件・結論・事実・お願い」の cards items[0].image（用件）",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: he first tells Tomita WHICH work he is talking about — the login screen. The junior engineer stands beside Tomita's desk holding his open laptop turned towards Tomita, and points with one finger at the screen. The screen clearly shows a simple login screen drawn only as pictures: a small padlock picture at the top, two empty rounded input boxes, and one wide rounded button below them. Tomita has turned away from his own work and looks at that screen with calm attention. Close two-shot from a natural standing angle; the login screen is large and easy to see."
+    },
+    {
+      "out": "kotsu_ketsuron",
+      "dest": "public/img/hourensou/houkoku/kotsu_ketsuron.webp",
+      "title": "報告の 型 2: 結論（どう なったか）",
+      "where": "content/articles/houkoku_kotsu.json 「用件・結論・事実・お願い」の cards items[1].image（結論）",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: he says the result first — the test finished safely. The junior engineer stands beside Tomita's desk with a relieved, bright smile, holding his laptop so the screen faces Tomita. The screen shows the same simple login screen with one very large green circle containing a white check mark on top of it. Tomita smiles and gives a small approving nod. Close two-shot; the big green check mark on the screen is the clearest thing in the picture."
+    },
+    {
+      "out": "kotsu_jijitsu",
+      "dest": "public/img/hourensou/houkoku/kotsu_jijitsu.webp",
+      "title": "報告の 型 3: 事実（本当に あった こと）",
+      "where": "content/articles/houkoku_kotsu.json 「用件・結論・事実・お願い」の cards items[2].image（事実）",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: he shows the facts — every test was done and not one failed. The junior engineer has put his laptop on Tomita's desk and runs one finger down the screen. The screen shows a tidy list of many rows of short grey bars, and every single row ends in a small green check mark; there is no red mark anywhere. Tomita leans forward and reads the list carefully. Close over-the-shoulder shot so the long list of green check marks fills a large part of the frame."
+    },
+    {
+      "out": "kotsu_onegai",
+      "dest": "public/img/hourensou/houkoku/kotsu_onegai.webp",
+      "title": "報告の 型 4: お願い（して ほしい こと）",
+      "where": "content/articles/houkoku_kotsu.json 「用件・結論・事実・お願い」の cards items[3].image（お願い）",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: he politely asks Tomita to check his work. Standing beside the desk, the junior engineer slides his open laptop across the desk towards Tomita with both hands and bows his head slightly. Tomita reaches out with one hand to receive the laptop and nods kindly, accepting the request. Close two-shot; the laptop passing from one man to the other sits at the centre of the frame."
     }
   ]
 }
