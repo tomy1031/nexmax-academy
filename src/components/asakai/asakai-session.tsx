@@ -874,6 +874,12 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
         }))}
         current={String(sceneAt)}
         disabled={waiting}
+        /*
+          **5日 ぜんぶ 見せる**（2026-09-15 の 通しプレイ検収）。横に すべる ままだと
+          390px では 04 木曜日 が 枠の 右端で きれいに 終わって 見え、「5日 あるのに
+          4日しか 無い」と 読める。曜日の 札は 短い ので、折り返せば 2行で ぜんぶ 入る。
+        */
+        wrap
         index={index}
         onPick={(key) => goToScene(Number(key))}
       />
@@ -1231,6 +1237,7 @@ function ReportJudge({
       title={<RubyText text="いまの 報告" index={index} show />}
       onClose={onClose}
       closeLabel={sceneOver ? "みんなの 報告を 聞く ▶" : "つづける ▶"}
+      index={index}
     >
       {/*
         **何も 開かなかった 理由を はっきり 書く**（規律1）。

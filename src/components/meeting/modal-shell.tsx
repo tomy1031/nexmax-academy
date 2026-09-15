@@ -3,6 +3,9 @@
 import { motion } from "motion/react";
 import type { ReactNode } from "react";
 
+import { RubyText } from "@/components/ruby-text";
+import type { FuriganaIndex } from "@/lib/text/furigana";
+
 /**
  * ポップアップの 殻 — **ミーティングと 朝礼で 同じ もの**を 使う
  *
@@ -18,12 +21,23 @@ import type { ReactNode } from "react";
  * ## 収まりかた
  * 高さは 画面の 88%まで。超えたら 中で 縦に すべる（小さい 端末で 上下が
  * 切れて、とじる ボタンに 手が 届かなく なる のを 防ぐ）。
+ *
+ * ## とじる ボタンの ふりがな
+ * `closeLabel` は **殻が ふりがなを 合成する**（`index` を 渡した ときだけ）。
+ * 呼ぶ側が `<RubyText>` を 作って 渡す 形に すると、読み上げの 名前に ふりがなが
+ * 混ざって しまう ので、字は 文字列の まま 受けとり、`aria-label` に そのまま 使う。
+ *
+ * 既定の「とじる」には 漢字が 無いので これまで 気づかなかったが、朝礼・夕礼の
+ * 報告の 見かたは「みんなの 報告を 聞く ▶」を 渡して いて、**報告が 通るたびに
+ * 毎回 裸の 漢字**が 出て いた（2026-09-15 の 通しプレイ検収。既存の e2e は
+ * モーダルを **閉じた あと**に 裸漢字を 数えて いた ので すり抜けて いた）。
  */
 export function ModalShell({
   label,
   title,
   onClose,
   closeLabel = "とじる",
+  index,
   children,
 }: {
   /** 読み上げ用の 名前（`aria-label`）。 */
@@ -33,6 +47,8 @@ export function ModalShell({
   onClose: () => void;
   /** とじる ボタンの 字。 */
   closeLabel?: string;
+  /** 読み辞書。渡すと とじる ボタンに ふりがなを 合成する。 */
+  index?: FuriganaIndex;
   children: ReactNode;
 }) {
   return (
@@ -69,9 +85,10 @@ export function ModalShell({
         <button
           type="button"
           onClick={onClose}
+          aria-label={closeLabel}
           className="btn-island btn-game mt-5 w-full px-6 py-3 text-base"
         >
-          {closeLabel}
+          {index ? <RubyText text={closeLabel} index={index} show /> : closeLabel}
         </button>
       </motion.div>
     </div>

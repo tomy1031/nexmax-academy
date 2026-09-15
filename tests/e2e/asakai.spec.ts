@@ -169,6 +169,8 @@ test("朝礼（かんたん）— 報告すると カードが 開く", async ({
   await expectOnScreen(page, "決済フロントエンド機能");
   await expectOnScreen(page, "進捗");
   await shot(page, "asakai-02-kantan-duty");
+  /* ポップアップが 開いて いる あいだも 裸の 漢字は 0。 */
+  expect(await bareKanjiTexts(page)).toEqual([]);
   await dutyModal.getByRole("button", { name: "とじる" }).click();
   await expect(dutyModal).toBeHidden();
   await shot(page, "asakai-02-kantan-mon");
@@ -185,6 +187,14 @@ test("朝礼（かんたん）— 報告すると カードが 開く", async ({
 
   /* **見かたは モーダルで 出る。閉じてから 司会と メンバーが 話す**（2026-09-11 の 指定）。 */
   await expect(page.getByRole("dialog", { name: "報告の 見かた" })).toBeVisible();
+  /*
+   * **開いて いる あいだに 数える**（2026-09-15 の 通しプレイ検収）。
+   * 前は 閉じた あとにしか 数えて いなかった ので、とじる ボタンの
+   * 「みんなの 報告を 聞く ▶」が **報告が 通るたびに 裸の 漢字**で 出て いたのを
+   * 5日 通しても 一度も 捕まえられなかった。モーダルは 閉じると 消える＝
+   * **閉じた あとの 検査は モーダルを 見て いない**。
+   */
+  expect(await bareKanjiTexts(page)).toEqual([]);
   await page.getByRole("button", { name: "みんなの 報告を 聞く" }).click();
 
   /* 4枚 そろったので 聞き返しが 無く、その 場面は おわる。 */
