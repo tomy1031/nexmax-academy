@@ -163,12 +163,14 @@ test("朝礼（かんたん）— 報告すると カードが 開く", async ({
    * 担当・進捗・きょう する ことは **画面に 出しっぱなしに しない**
    *（2026-09-13 の 指定）。ボタンで 開き、読んだら 閉じる。
    */
-  await page.getByRole("button", { name: "じぶんの 担当を 見る" }).click();
-  const dutyModal = page.getByRole("dialog", { name: "じぶんの 担当" });
+  await page.getByRole("button", { name: "報告メモを 見る" }).click();
+  const dutyModal = page.getByRole("dialog", { name: "報告メモ" });
   await expect(dutyModal).toBeVisible();
   await expectOnScreen(page, "決済フロントエンド機能");
   await expectOnScreen(page, "進捗");
   await shot(page, "asakai-02-kantan-duty");
+  /* ポップアップが 開いて いる あいだも 裸の 漢字は 0。 */
+  expect(await bareKanjiTexts(page)).toEqual([]);
   await dutyModal.getByRole("button", { name: "とじる" }).click();
   await expect(dutyModal).toBeHidden();
   await shot(page, "asakai-02-kantan-mon");
@@ -185,6 +187,14 @@ test("朝礼（かんたん）— 報告すると カードが 開く", async ({
 
   /* **見かたは モーダルで 出る。閉じてから 司会と メンバーが 話す**（2026-09-11 の 指定）。 */
   await expect(page.getByRole("dialog", { name: "報告の 見かた" })).toBeVisible();
+  /*
+   * **開いて いる あいだに 数える**（2026-09-15 の 通しプレイ検収）。
+   * 前は 閉じた あとにしか 数えて いなかった ので、とじる ボタンの
+   * 「みんなの 報告を 聞く ▶」が **報告が 通るたびに 裸の 漢字**で 出て いたのを
+   * 5日 通しても 一度も 捕まえられなかった。モーダルは 閉じると 消える＝
+   * **閉じた あとの 検査は モーダルを 見て いない**。
+   */
+  expect(await bareKanjiTexts(page)).toEqual([]);
   await page.getByRole("button", { name: "みんなの 報告を 聞く" }).click();
 
   /* 4枚 そろったので 聞き返しが 無く、その 場面は おわる。 */
@@ -211,7 +221,7 @@ test("朝礼（かんたん）— 報告すると カードが 開く", async ({
    * 行き来できる ことが かえって 迷子を 作る。
    * ※ 時間カードの あいだ タブは 描かれない ので、火曜に 入ってから 見る。
    */
-  await expect(page.getByRole("tab", { name: /月曜日・報告 ずみ/ })).toBeVisible();
+  await expect(page.getByRole("button", { name: /月曜日・報告 ずみ/ })).toBeVisible();
   await shot(page, "asakai-05-kantan-tue");
 });
 
@@ -237,10 +247,10 @@ test("夕礼（むずかしい）— メモと カードが 同じ 画面に 並
 
   /*
    * 上級は **作業記録（時間順）だけ**を 渡す。整理ずみの 報告文は 出さない
-   *（2026-09-14 の 原本）。カードは ［じぶんの 担当］の 中に ある。
+   *（2026-09-14 の 原本）。カードは ［報告メモ］の 中に ある。
    */
-  await page.getByRole("button", { name: "じぶんの 担当を 見る" }).click();
-  const yuureiDuty = page.getByRole("dialog", { name: "じぶんの 担当" });
+  await page.getByRole("button", { name: "報告メモを 見る" }).click();
+  const yuureiDuty = page.getByRole("dialog", { name: "報告メモ" });
   await expect(yuureiDuty).toBeVisible();
   await expectOnScreen(page, "きょうの メモ");
   await expectOnScreen(page, "09:00");
@@ -384,12 +394,18 @@ test("月曜を 終えて 開き直すと、火曜から つづく", async ({ pa
   await joinCall(page);
   await expectOnScreen(page, "火曜日");
   /* いまが 何日目かは **タブの えらばれ方**で 見る（2026-09-13 に 点から タブへ）。 */
-  await expect(page.getByRole("tab", { name: /火曜日/ })).toHaveAttribute("aria-selected", "true");
+  await expect(page.getByRole("button", { name: /火曜日/ })).toHaveAttribute(
+    "aria-current",
+    "step",
+  );
   await shot(page, "asakai-09-resume-tue");
 
   /* タブで 木曜へ 飛べる（順番に 進まなくても よい）。 */
-  await page.getByRole("tab", { name: /木曜日/ }).click();
-  await expect(page.getByRole("tab", { name: /木曜日/ })).toHaveAttribute("aria-selected", "true");
+  await page.getByRole("button", { name: /木曜日/ }).click();
+  await expect(page.getByRole("button", { name: /木曜日/ })).toHaveAttribute(
+    "aria-current",
+    "step",
+  );
   await expectOnScreen(page, "木曜日");
   await shot(page, "asakai-09b-jump-thu");
 });

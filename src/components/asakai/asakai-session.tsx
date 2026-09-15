@@ -38,6 +38,7 @@ import { dropJudgeSession, requestAsakaiJudge } from "@/components/meeting/judge
 import { ModalShell } from "@/components/meeting/modal-shell";
 import { SpeakButton } from "@/components/meeting/speak-button";
 import { SpeechSpeedPicker } from "@/components/meeting/speech-speed-picker";
+import { StepTabs } from "@/components/meeting/step-tabs";
 import { useLiveVoice } from "@/components/meeting/use-live-voice";
 import { VisemeFace } from "@/components/meeting/viseme-face";
 import { RubyText } from "@/components/ruby-text";
@@ -53,7 +54,6 @@ import {
   CardBoard,
   CountBoxes,
   DayProgress,
-  DayTabs,
   ProgressBoxes,
   SkyStrip,
 } from "@/components/asakai/asakai-parts";
@@ -135,6 +135,17 @@ const UI_FURIGANA: readonly (readonly [string, string])[] = [
   ["不合格", "ふごうかく"],
   ["以上", "いじょう"],
   ["曜日", "ようび"],
+  /*
+   * 曜日は **5つとも 書く**。`annotateRuby` は **漢字の 位置からしか 辞書を 引かない**
+   * ので、「月曜日」は 頭の「月」から 引く——「曜日」だけ 持って いても 当たらず、
+   * 帯に **裸の 漢字**が 出る（丸い タブの ころは 1字ずつ ルビを 手で 付けて いた）。
+   */
+  ["月曜日", "げつようび"],
+  ["火曜日", "かようび"],
+  ["水曜日", "すいようび"],
+  ["木曜日", "もくようび"],
+  ["金曜日", "きんようび"],
+  ["報告メモ", "ほうこくメモ"],
   ["聞き返し", "ききかえし"],
   ["開いた", "ひらいた"],
   ["開きます", "ひらきます"],
@@ -234,7 +245,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
   const [lines, setLines] = useState<readonly ChatLine[]>([]);
   const [hint, setHint] = useState(false);
   /**
-   * じぶんの 担当（場面カード）を 開いて いるか。
+   * 報告メモ（場面カード）を 開いて いるか。
    *
    * **出しっぱなしに しない**（2026-09-13 の 指定「タスクの 消化状況や 今日の
    * タスクなどは 直接 表示せず、モーダル表示に して ください」）。板の 横に
@@ -860,33 +871,51 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
   const doneDays = asakai.scenes.map((s) => results.some((r) => r.day === DAY_NAME[s.day]));
 
   /*
-   * 帯（`MeetingSession` の「01 …」の 帯と 同じ 席）。
-   * **月〜金の タブ**と **じぶんの 担当**の ボタンを ここに 集める
-   *（2026-09-13 の 指定）。場面の 札と 進捗は 1行に 畳んで、
-   * 会話と 話す ボタンの ための 高さを 空ける。
+   * 曜日の 帯。**ミーティングの「ばん」の 帯を そのまま 使う**（`StepTabs`）——
+   * 2026-09-15 の 指定「共通化を 図りたいので、極力 同じで 済む ところは
+   * デザインを そのまま 適用する ように して。作り直さず、元の ものを そのまま」。
+   * 丸い 曜日タブを 別に 持って いた ころは、**同じ 役目の ものが 2つの 見た目**で
+   * 画面に 並んで いた。
+   *
+   * 場面の 札（「木曜日 9:30 朝礼 ・ 司会 ヘンディさん」）は 消した（同日の 指定）。
+   * **札が 担って いた 4つの 引き継ぎ先**（規律10。2026-09-15 の R9 検収で 実在を 確かめた）:
+   * - 曜日 … この 帯（`DAY_NAME`）と、下の 報告パネルの 見出し（`dayHeading`）
+   * - 朝礼／夕礼 … 同じ `dayHeading`（`KIND_NAME`）と、毎日の opening「…の 朝礼を 始めます」
+   * - 9:30 / 17:50 … **直前の 記事**（`asakai_team` の「朝礼は 毎朝 9時30分」／
+   *   `yuurei_nexttalent` の「夕礼 17:50〜18:00」）。どちらも `gates:true` で 素通りできない
+   * - 司会 ヘンディさん … **参加者タイルの `duty`**（「司会・決済」）と、
+   *   `asakai_team`「司会の ヘンディさんが『では 次に ◯◯さん、お願いします』と 言ったら…」
+   *
+   * ここに 「時間と 司会は 会話の 中で 名のる」と 書いて いたが **それは 誤り**だった。
+   * 「司会」は 発話に 1度も 出ず（persona と duty にしか 無い）、時刻も 月曜の 第一声だけ。
+   * 引き継ぎ先を まちがえて 書くと、次に 読む 人が 逆向きに 直す（「会話に 無いから 足そう」
+   * 「タイルの duty は 要らない」）ので、実在する 行き先に 直して ある。
    */
   const steps = (
-    <div className="card-island space-y-2 px-3 py-2">
+    <div className="space-y-2">
       {/*
         空の 帯は **タブの 上に 敷く**。横に 並べて いた ころ、`flex-1` の 帯が
         のこりの 幅を ぜんぶ 取り、タブの となりに **空っぽの 水色の カプセル**が
         居座って いた（390px の 実機幅で 確認・2026-09-13）。
       */}
       <SkyStrip kind={scene.kind} />
-      <DayTabs at={sceneAt} done={doneDays} disabled={waiting} onPick={goToScene} />
-      <div className="flex items-center justify-between gap-2">
-        <p className="text-navy min-w-0 flex-1 text-[12px] leading-snug font-black">
-          <RubyText text={scene.title} index={index} show />
-        </p>
-        <button
-          type="button"
-          onClick={() => setDuty(true)}
-          aria-label="じぶんの 担当を 見る"
-          className="btn-island shrink-0 px-3 py-1.5 text-[12px] font-black"
-        >
-          📋 <RubyText text="じぶんの 担当" index={index} show />
-        </button>
-      </div>
+      <StepTabs
+        steps={asakai.scenes.map((one, at) => ({
+          key: String(at),
+          label: DAY_NAME[one.day],
+          cleared: doneDays[at],
+        }))}
+        current={String(sceneAt)}
+        disabled={waiting}
+        /*
+          **5日 ぜんぶ 見せる**（2026-09-15 の 通しプレイ検収）。横に すべる ままだと
+          390px では 04 木曜日 が 枠の 右端で きれいに 終わって 見え、「5日 あるのに
+          4日しか 無い」と 読める。曜日の 札は 短い ので、折り返せば 2行で ぜんぶ 入る。
+        */
+        wrap
+        index={index}
+        onPick={(key) => goToScene(Number(key))}
+      />
     </div>
   );
 
@@ -990,45 +1019,29 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
           </div>
 
           {/*
-           * 声が 使えない ときの 道（鍵が 無い・マイクが 無い）。**たたまない**。
+           * **報告メモ**（ヒントの 下・2026-09-15 の 指定）。
            *
-           * `<details>` に 閉じて いた ころ、鍵の 無い 学習者は
-           * **開ける ものが ある ことに 気づかず 行き止まり**に なった。
-           * 声が 本線なので マイクを 大きく 上に 置き、文字は 小さく 下に 残す。
+           * 前は 帯の 右に 小さく「📋 じぶんの 担当」と 置いて いた。押すと
+           * ポップアップが 開く ことも、中に 何が ある ことも 字から 読めず、
+           * **押されない まま**だった。名前を 中身で 言い（担当・進捗・きょうの メモ・
+           * やる こと が 入って いる ＝ 報告の もとに なる メモ）、
+           * 話す ボタンの すぐ下＝**手が 届く ところ**に 大きく 置く。
            */}
-          <div className="space-y-2">
-            <label className="text-ink-soft block text-[11px] font-black" htmlFor="asakai-answer">
-              <RubyText text="声が 使えない ときは、文字でも 答えられます。" index={index} show />
-            </label>
-            <textarea
-              id="asakai-answer"
-              value={answer}
-              onChange={(event) => setAnswer(event.target.value)}
-              rows={2}
-              className="border-hairline w-full rounded-xl border p-2 text-sm font-bold"
-            />
-            {/*
-              AIに 見て もらって いる あいだは **押せない ことを 字で 言う**。
-              灰色に なるだけだと、押しても 何も 起きない 故障に 見える。
-              鍵が 無い 端末では ここに 入らない（`waiting` は いつも false）。
-            */}
-            <button
-              type="button"
-              onClick={() => send()}
-              disabled={!answer.trim() || judge !== null || waiting}
-              aria-label={waiting ? "AIが 見て います" : "報告する"}
-              className="btn-island w-full px-4 py-2 text-sm font-black disabled:opacity-45"
-            >
-              <RubyText text={waiting ? "AIが 見て います…" : "報告する"} index={index} show />
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={() => setDuty(true)}
+            aria-label="報告メモを 見る"
+            className="btn-island btn-game w-full px-4 py-3 text-base font-black"
+          >
+            📋 <RubyText text="報告メモ" index={index} show />
+          </button>
         </>
       )}
     </div>
   );
 
   /*
-   * じぶんの 担当（担当・ゴール・進捗・その日の 行／メモ）。
+   * 報告メモ（担当・ゴール・進捗・その日の 行／メモ）。**報告の もとに なる もの**。
    * **画面に 出しっぱなしに せず、ポップアップの 中身に する**（2026-09-13 の 指定）。
    */
   const dutyBody = (
@@ -1155,7 +1168,23 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
         clips.stop();
       }}
       side={
-        <Chat lines={lines} index={index} onReplay={(url) => clips.replay(url, rateOf(speed))} />
+        <Chat
+          lines={lines}
+          index={index}
+          draft={answer}
+          /* 見かたを 読んで いる あいだ・AIが 見て いる あいだ・その日が 終わった あとは 送れない。 */
+          canSend={!between && !sceneOver && judge === null && !waiting}
+          sendNote={
+            judge
+              ? "見かたを 読んでから 送れます"
+              : waiting
+                ? "AIが いま 見て います…"
+                : "いまは 送れません"
+          }
+          onDraft={setAnswer}
+          onSend={() => send()}
+          onReplay={(url) => clips.replay(url, rateOf(speed))}
+        />
       }
       speak={between ? null : <CardBoard cards={cards} index={index} />}
       controls={
@@ -1182,8 +1211,8 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
     >
       {duty ? (
         <ModalShell
-          label="じぶんの 担当"
-          title={<RubyText text="📋 じぶんの 担当" index={index} show />}
+          label="報告メモ"
+          title={<RubyText text="📋 報告メモ" index={index} show />}
           onClose={() => setDuty(false)}
         >
           {dutyBody}
@@ -1241,6 +1270,7 @@ function ReportJudge({
       title={<RubyText text="いまの 報告" index={index} show />}
       onClose={onClose}
       closeLabel={sceneOver ? "みんなの 報告を 聞く ▶" : "つづける ▶"}
+      index={index}
     >
       {/*
         **何も 開かなかった 理由を はっきり 書く**（規律1）。
@@ -1515,13 +1545,34 @@ function WeekResult({
   );
 }
 
+/**
+ * テキストチャット。**書いて 送る 欄は チャットの 足もと**
+ *（`MeetingSession` の `chatPanel` と 同じ 作り・2026-09-15 の 指定
+ *「文字入力の 場合は テキストチャットで 入れる ように して。元の UIを そのまま 使って」）。
+ *
+ * 前は 話す ボタンの 下に 大きな 入力欄が あり、**話す ところと 書く ところが
+ * 画面の 端と 端**に 離れて いた（ミーティングが 2026-08-27 に 直したのと 同じ 形）。
+ */
 function Chat({
   lines,
   index,
+  draft,
+  canSend,
+  sendNote,
+  onDraft,
+  onSend,
   onReplay,
 }: {
   lines: readonly ChatLine[];
   index: FuriganaIndex;
+  /** 書きかけの 字。 */
+  draft: string;
+  /** いま 送れるか（見かたを 読んで いる あいだ・AIを 待って いる あいだは 送れない）。 */
+  canSend: boolean;
+  /** 送れない 理由（placeholder に 出す）。 */
+  sendNote: string;
+  onDraft: (value: string) => void;
+  onSend: () => void;
   /** 🔊 を 押した とき（作り置きの こえが ある 行だけ 出る）。 */
   onReplay: (url: string) => void;
 }) {
@@ -1532,9 +1583,11 @@ function Chat({
     if (node) node.scrollTop = node.scrollHeight;
   }, [lines]);
   return (
-    <div className="card-island p-3">
-      <p className="text-navy mb-2 text-sm font-black">💬 テキストチャット</p>
-      <div ref={box} className="h-[42vh] overflow-y-auto pr-1 text-sm sm:h-[58vh]">
+    <div className="card-island flex h-[52vh] min-h-64 flex-col p-0 sm:h-[68vh]">
+      <p className="text-navy border-hairline border-b px-3 py-2 text-sm font-black">
+        💬 テキストチャット
+      </p>
+      <div ref={box} className="min-h-0 flex-1 overflow-y-auto p-3 text-sm">
         {lines.map((line, at) => {
           const url = line.audio;
           return (
@@ -1559,6 +1612,33 @@ function Chat({
           );
         })}
       </div>
+
+      {/* 書いて 送る 欄は チャットの 足もと（`MeetingSession` と 同じ 席）。 */}
+      <form
+        className="border-hairline flex items-center gap-2 border-t p-2"
+        onSubmit={(event) => {
+          event.preventDefault();
+          onSend();
+        }}
+      >
+        <input
+          id="asakai-answer"
+          value={draft}
+          onChange={(event) => onDraft(event.target.value)}
+          placeholder={canSend ? "報告を 入力…" : sendNote}
+          aria-label="報告を 入力する"
+          disabled={!canSend}
+          className="border-hairline text-ink min-w-0 flex-1 rounded-full border-2 bg-white px-3 py-1.5 text-sm font-bold disabled:opacity-50"
+        />
+        <button
+          type="submit"
+          disabled={!canSend || draft.trim() === ""}
+          aria-label="報告する"
+          className="btn-game shrink-0 rounded-full px-3 py-1.5 text-sm disabled:opacity-40"
+        >
+          ➤
+        </button>
+      </form>
     </div>
   );
 }

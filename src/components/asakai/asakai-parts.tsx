@@ -197,22 +197,6 @@ export function SkyStrip({ kind }: { kind: "asa" | "yuu" }) {
   );
 }
 
-/**
- * 月〜金の どこに いるか。押せない。
- *
- * **曜日の 1字にも ルビを 付ける**（規律2）。丸の 中は 1字なので 読み辞書に
- * 当てず 直に 書いて いた ころ、390px の 通しで 裸の「月 火 水 木 金」と
- * 「日目」が 出て いた（2026-09-11、e2e の 裸の漢字チェックが 先に 見つけた）。
- * 教材の 読み辞書に 曜日が あるとは かぎらないので、**読みは ここが 持つ**。
- */
-const DAY_DOTS: readonly (readonly [string, string])[] = [
-  ["月", "げつ"],
-  ["火", "か"],
-  ["水", "すい"],
-  ["木", "もく"],
-  ["金", "きん"],
-];
-
 /** 「◯日目」の 読み（1日目＝いちにちめ）。 */
 const NTH_DAY = ["", "いちにちめ", "ふつかめ", "みっかめ", "よっかめ", "いつかめ"];
 
@@ -238,72 +222,5 @@ export function DayProgress({ at, total }: { at: number; total: number }) {
         {total}日<rt>{DAYS[total] ?? ""}</rt>
       </ruby>
     </>
-  );
-}
-
-/**
- * 月〜金の タブ（**押して 行き来できる**・2026-09-13 の 指定）
- *
- * ## なぜ 押せるように したか
- * 順番に しか 進めなかった ころ、水曜の 場面を もう一度 見るには
- * **月曜から やり直す**しか なかった。授業では「木曜の 遅れの 報告を みんなで 見る」
- * ような 使い方を する ので、その 日に 直接 行けないと 授業で 使えない。
- *
- * ## 顔は `DayDots` と そろえる
- * 済んだ 日は 緑、いまの 日は 紺、これからは 白——**見え方を 変えない**。
- * 変えると「押せる ように なった」ことと「意味が 変わった」ことの 区別が つかない。
- */
-export function DayTabs({
-  at,
-  done,
-  disabled = false,
-  onPick,
-}: {
-  /** いま 見て いる 日（0〜4）。 */
-  at: number;
-  /** 報告が 済んだ 日（true の ところに ✓）。 */
-  done: readonly boolean[];
-  /**
-   * 押せない あいだ（報告を 見て もらって いる 最中）。
-   *
-   * 待って いる 途中に 日を 変えられると、**前の 日の 見立てが 次の 日に 着地する**
-   *（2026-09-14 の 検収）。番号で 捨てる 守りは あるが、そもそも 押せなく して おく。
-   */
-  disabled?: boolean;
-  onPick: (at: number) => void;
-}) {
-  return (
-    <div
-      className="flex items-center justify-center gap-1.5"
-      role="tablist"
-      aria-label="月曜日から 金曜日"
-    >
-      {DAY_DOTS.map(([day, reading], i) => {
-        const here = i === at;
-        return (
-          <button
-            key={day}
-            type="button"
-            role="tab"
-            aria-selected={here}
-            aria-label={`${day}曜日${done[i] ? "・報告 ずみ" : ""}`}
-            disabled={disabled && !here}
-            onClick={() => onPick(i)}
-            className={
-              here
-                ? "bg-navy ring-sky-soft grid h-9 w-9 place-items-center rounded-full text-[13px] font-black text-white ring-2"
-                : done[i]
-                  ? "bg-leaf grid h-9 w-9 place-items-center rounded-full text-[13px] font-black text-white"
-                  : "border-hairline text-ink-soft grid h-9 w-9 place-items-center rounded-full border bg-white text-[13px] font-black"
-            }
-          >
-            <ruby>
-              {day}
-              <rt className="text-[7px] leading-none">{reading}</rt>
-            </ruby>
-          </button>
-        );
-      })}
-    </div>
   );
 }
