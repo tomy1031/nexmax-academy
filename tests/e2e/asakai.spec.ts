@@ -49,10 +49,21 @@ function exampleUtterances(): string[] {
   );
 }
 
-/** ふりがな（`rt`）を 外した 画面の 字。空白は ぜんぶ 落として 比べる。 */
+/**
+ * ふりがな（`rt`）を 外した **画面の 字**。空白は ぜんぶ 落として 比べる。
+ *
+ * `<script>` は 落とす。Next.js は 本文の おわりに **教材の JSON を そのまま**
+ * 積む（`self.__next_f.push(...)`）ので、`textContent` を そのまま 読むと
+ * **画面に 出て いない 字まで 当たる**。「これは 出て いる」を 見る ぶんには
+ * 気づかないが、「これは 出て いない」を 見る ときに 黙って 嘘に なる
+ *（2026-09-15 に 呼び名の 検査で 実際に 引っかかった）。
+ */
 async function readingFreeText(page: Page): Promise<string> {
   return page.evaluate(() => {
     const clone = document.body.cloneNode(true) as HTMLElement;
+    for (const hidden of Array.from(clone.querySelectorAll("script, style, template"))) {
+      hidden.remove();
+    }
     for (const rt of Array.from(clone.querySelectorAll("rt"))) rt.remove();
     return (clone.textContent ?? "").replace(/\s+/gu, "");
   });
@@ -132,6 +143,21 @@ test("朝礼（かんたん）— 報告すると カードが 開く", async ({
   /* 板の 上の 1行が「この 4枚は 何か」を 言っている。 */
   await expect(page.getByText("（0 / 4）")).toBeVisible();
   await expectOnScreen(page, "報告すると 開きます");
+
+  /*
+   * **司会は 名指しで 呼ぶ**（2026-09-15 の 指定）。画面には ずっと
+   *「では 次に ◯◯さん、お願いします。」と 目印の まま 出て いた。
+   * この 通しは 端末に 呼び名を 置かずに 始める ので、呼びかけごと 落ちる
+   *（「あなたさん」に しない）。名前が ある ときの 埋め方は
+   * `tests/meeting_speech.test.ts` が 固定して いる。
+   */
+  const board = await readingFreeText(page);
+  expect(board, "呼び名の 目印が 画面に 残って いない").not.toContain("◯◯さん");
+  expect(board).toContain("では次にお願いします。");
+  /* 型文の ◯◯（学習者が 埋める 空欄）は 消さない。 */
+  await page.getByRole("button", { name: "ヒント" }).click();
+  await expectOnScreen(page, "きのうは ◯◯を しました");
+  await page.getByRole("dialog").getByRole("button", { name: "とじる" }).click();
 
   /*
    * 担当・進捗・きょう する ことは **画面に 出しっぱなしに しない**

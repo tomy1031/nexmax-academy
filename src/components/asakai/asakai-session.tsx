@@ -68,7 +68,8 @@ import {
   type ReportPanel,
 } from "@/lib/meeting/panels";
 import type { AsakaiJudgeResult } from "@/lib/meeting/asakai-judge";
-import { getGeminiKey } from "@/lib/profile";
+import { getGeminiKey, getProfile } from "@/lib/profile";
+import { fillCallName } from "@/lib/meeting/speech";
 import { recordContentProgress } from "@/lib/progress/store";
 import {
   clearAsakaiResume,
@@ -156,14 +157,41 @@ interface ChatLine {
   readonly audio?: string;
 }
 
-/** チャットの 行を 1つ 作る（`audio` を 落とさない ため 1か所に する）。 */
-function toChatLine(line: Line, nameOf: ReadonlyMap<string, string>): ChatLine {
+/**
+ * チャットの 行を 1つ 作る（`audio` を 落とさない ため 1か所に する）。
+ *
+ * ここで **呼びかけの 名前**を 差し込む（`では 次に ◯◯さん、お願いします。`）。
+ * 司会が 名指しで 呼ぶ 場面なのに、画面には ずっと `◯◯さん` と 出て いた
+ *（2026-09-15 の 指定）。ミーティングと 対話ゲームは 前から 名前を 入れて いる。
+ *
+ * 埋めるのは **`◯◯さん` と 書いて ある ところだけ**。同じ 教材の
+ *「きのうは ◯◯を しました」の `◯◯` は 学習者が 埋める 空欄なので 触らない
+ *（`fillCallName` の 覚え書き）。
+ */
+function toChatLine(
+  line: Line,
+  nameOf: ReadonlyMap<string, string>,
+  learnerName: string,
+): ChatLine {
   return {
     who: nameOf.get(line.speakerId) ?? "",
     speakerId: line.speakerId,
-    text: line.text,
+    text: fillCallName(line.text, learnerName),
     audio: line.audio,
   };
+}
+
+/** 端末に 保存された 呼び名を 読む（別の タブで 変わったら 追いつく）。 */
+function subscribeToProfile(onChange: () => void) {
+  window.addEventListener("storage", onChange);
+  return () => window.removeEventListener("storage", onChange);
+}
+function readLearnerName(): string {
+  return getProfile()?.displayName ?? "";
+}
+/** サーバでは 端末の 保存値が 読めない。名前なしで 描いて、画面が 出てから 差し替える。 */
+function readLearnerNameOnServer(): string {
+  return "";
 }
 
 export function AsakaiSession({ meeting }: { meeting: Meeting }) {
@@ -227,6 +255,12 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
    *（2026-09-11 の 検収。これが 無いと **声で 報告しても 何も 起きない**）。
    */
   const voice = useLiveVoice({ listenOnly: true });
+  /* 司会が 名指しで 呼ぶ ための 呼び名（ミーティングと 同じ 読みかた）。 */
+  const learnerName = useSyncExternalStore(
+    subscribeToProfile,
+    readLearnerName,
+    readLearnerNameOnServer,
+  );
   /* 速さは 端末の 覚え書き（`MeetingSession` と 同じ 読みかた）。 */
   const speed = useSyncExternalStore(
     subscribeSpeechSpeed,
@@ -293,10 +327,10 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
    */
   const say = useCallback(
     (line: Line) => {
-      setLines((prev) => [...prev, toChatLine(line, nameOf)]);
+      setLines((prev) => [...prev, toChatLine(line, nameOf, learnerName)]);
       pushClips([line], rateOf(speed));
     },
-    [nameOf, pushClips, speed],
+    [nameOf, learnerName, pushClips, speed],
   );
 
   /** 場面の はじめ（司会の 開き → 見本 → あなたの 番）を チャットに 積む。 */
@@ -305,11 +339,11 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
       const next = asakai?.scenes[at];
       if (!next) return;
       const said = [...next.opening, next.sample, next.prompt];
-      setLines(said.map((line) => toChatLine(line, nameOf)));
+      setLines(said.map((line) => toChatLine(line, nameOf, learnerName)));
       stopClips();
       pushClips(said, rateOf(speed));
     },
-    [asakai, nameOf, pushClips, stopClips, speed],
+    [asakai, nameOf, learnerName, pushClips, stopClips, speed],
   );
 
   /** 報告が 終わった ときの ひとかたまり（受け止め → 采配 → メンバー → 閉じ）。 */
@@ -398,11 +432,11 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
       const tail: Line[] = [ack];
       if (scene.arrange) tail.push(komari?.full ? scene.arrange.done : scene.arrange.missing);
       tail.push(...scene.members, ...scene.closing);
-      setLines((prev) => [...prev, ...tail.map((line) => toChatLine(line, nameOf))]);
+      setLines((prev) => [...prev, ...tail.map((line) => toChatLine(line, nameOf, learnerName))]);
       pushClips(tail, rateOf(speed));
       setAskedId(null);
     },
-    [scene, sceneAt, asakai, panels, nameOf, meeting.id, pushClips, speed],
+    [scene, sceneAt, asakai, panels, nameOf, learnerName, meeting.id, pushClips, speed],
   );
 
   /**
