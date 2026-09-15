@@ -36,7 +36,8 @@ import { DictionaryText } from "@/components/dictionary-text";
 import { HintModal } from "@/components/meeting/hint-modal";
 import { dropJudgeSession, requestAsakaiJudge } from "@/components/meeting/judge-api";
 import { ModalShell } from "@/components/meeting/modal-shell";
-import { SpeakButton } from "@/components/meeting/speak-button";
+import { AskPanel } from "@/components/meeting/ask-panel";
+import { ChatPanel } from "@/components/meeting/chat-panel";
 import { SpeechSpeedPicker } from "@/components/meeting/speech-speed-picker";
 import { StepTabs } from "@/components/meeting/step-tabs";
 import { useLiveVoice } from "@/components/meeting/use-live-voice";
@@ -871,17 +872,30 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
   const doneDays = asakai.scenes.map((s) => results.some((r) => r.day === DAY_NAME[s.day]));
 
   /*
+   * **終わった 日の つぎまでしか 開かない**（2026-09-15 の 指定
+   *「曜日の クリックは 終わらないと 解放しない もともとの UIの ロジックを 踏襲して」）。
+   *
+   * ミーティングの 帯と 同じ 決まり——`02 ヘンディさんに しつもん` は
+   * ラウンド1を 終えるまで 🔒 で、押せない ことが 鍵の 絵で 分かる。
+   * 前は 5日 ぜんぶ 押せた ので、月曜の 報告を せずに 金曜へ 飛べた。
+   *
+   * いま 見て いる 日（`sceneAt`）は 必ず 開ける——途中から 再開した ときに
+   * 自分の いる 日が 🔒 に なると、そこから 動けなく なる。
+   */
+  const openUpTo = Math.max(doneDays.lastIndexOf(true) + 1, sceneAt);
+
+  /*
    * 曜日の 帯。**ミーティングの「ばん」の 帯を そのまま 使う**（`StepTabs`）——
    * 2026-09-15 の 指定「共通化を 図りたいので、極力 同じで 済む ところは
    * デザインを そのまま 適用する ように して。作り直さず、元の ものを そのまま」。
    * 丸い 曜日タブを 別に 持って いた ころは、**同じ 役目の ものが 2つの 見た目**で
    * 画面に 並んで いた。
    *
-   * 場面の 札（「木曜日 9:30 朝礼 ・ 司会 ヘンディさん」）は 消した（同日の 指定）。
+   * 場面の 札（「木曜日 9:00 朝礼 ・ 司会 ヘンディさん」）は 消した（同日の 指定）。
    * **札が 担って いた 4つの 引き継ぎ先**（規律10。2026-09-15 の R9 検収で 実在を 確かめた）:
    * - 曜日 … この 帯（`DAY_NAME`）と、下の 報告パネルの 見出し（`dayHeading`）
    * - 朝礼／夕礼 … 同じ `dayHeading`（`KIND_NAME`）と、毎日の opening「…の 朝礼を 始めます」
-   * - 9:30 / 17:50 … **直前の 記事**（`asakai_team` の「朝礼は 毎朝 9時30分」／
+   * - 9:00 / 17:50 … **直前の 記事**（`asakai_team` の「朝礼は 毎朝 9時」／
    *   `yuurei_nexttalent` の「夕礼 17:50〜18:00」）。どちらも `gates:true` で 素通りできない
    * - 司会 ヘンディさん … **参加者タイルの `duty`**（「司会・決済」）と、
    *   `asakai_team`「司会の ヘンディさんが『では 次に ◯◯さん、お願いします』と 言ったら…」
@@ -904,18 +918,28 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
           key: String(at),
           label: DAY_NAME[one.day],
           cleared: doneDays[at],
+          locked: at > openUpTo,
         }))}
         current={String(sceneAt)}
+        note={openUpTo + 1 < asakai.scenes.length ? "ぜんぶ 報告すると 開きます" : undefined}
         disabled={waiting}
-        /*
-          **5日 ぜんぶ 見せる**（2026-09-15 の 通しプレイ検収）。横に すべる ままだと
-          390px では 04 木曜日 が 枠の 右端で きれいに 終わって 見え、「5日 あるのに
-          4日しか 無い」と 読める。曜日の 札は 短い ので、折り返せば 2行で ぜんぶ 入る。
-        */
-        wrap
         index={index}
         onPick={(key) => goToScene(Number(key))}
-      />
+      >
+        {/*
+          **報告メモは 帯の 右はし**（2026-09-15 の 指定「添付の『自分の こたえを 見る』の
+          部分に 変えて 欲しい」）。ミーティングの `AnswerNotebook` と 同じ 席・同じ 見た目に する。
+          話す ボタンの 下に 大きく 置いて いた ころは、**その 画面にしか 無い ボタン**だった。
+        */}
+        <button
+          type="button"
+          onClick={() => setDuty(true)}
+          aria-label="報告メモを 見る"
+          className="border-hairline bg-panel text-navy ml-auto shrink-0 rounded-full border-2 px-3 py-1.5 text-xs font-extrabold"
+        >
+          📋 <RubyText text="報告メモ" index={index} show />
+        </button>
+      </StepTabs>
     </div>
   );
 
@@ -924,35 +948,48 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
    *（見出し → 相手の ことば → 「声で 答えましょう！」→ 速さ｜🎤｜💡）。
    * 2026-09-11 の 指定「UIをまるきり作り変えるな、既存のUIをできる限り使え」。
    */
+  /*
+   * 左の 話す カード。**ミーティングと 同じ 部品**（`AskPanel`）を 使う
+   *（2026-09-15 の 指定「オリジナルで 作らずに 元の ものを そのまま 使って 欲しい」
+   *「極力 同じ 環境を そのまま データのみ 差し替えで 使えるように」）。
+   *
+   * 前は 同じ 並びの つもりで **自前に 組み直して** いた ので、速さが 横に なり、
+   * 3列の 固定幅も 崩れて いた。ここが 渡すのは **その日の データだけ**。
+   */
   const reportPanel = between ? null : (
-    <div className="card-island space-y-3 p-3">
-      <p className="text-navy text-sm font-black">
-        💬 <RubyText text={dayHeading} index={index} show />
-      </p>
-
-      {lastSaid ? (
-        <div className="border-hairline bg-panel rounded-xl border px-3 py-2">
-          <p className="text-ink-soft flex items-center gap-2 text-[11px] font-black">
-            <RubyText text={`${lastSaid.who}さんの ことば`} index={index} show />
-            {/* 作り置きの こえが ある ときだけ 出す。聞きとれなかった 人の 逃げ道。 */}
-            {lastSaidAudio ? (
-              <button
-                type="button"
-                aria-label="もう一度 聞く"
-                onClick={() => clips.replay(lastSaidAudio, rateOf(speed))}
-                className="btn-island px-2 py-0.5 text-xs"
-              >
-                🔊
-              </button>
-            ) : null}
-          </p>
-          <p className="text-ink mt-1 font-bold break-words">
-            {/* 教材が 書いた 固定文なので **タップで 意味が 出る**（2026-09-11 の 指定）。 */}
-            <DictionaryText text={lastSaid.text} index={index} />
-          </p>
-        </div>
-      ) : null}
-
+    <AskPanel
+      heading={dayHeading}
+      speaker={lastSaid ? `${lastSaid.who}さんの ことば` : undefined}
+      /* 教材が 書いた 固定文なので **タップで 意味が 出る**（2026-09-11 の 指定）。 */
+      body={lastSaid ? <DictionaryText text={lastSaid.text} index={index} /> : null}
+      /* 作り置きの こえが ある ときだけ 出す。聞きとれなかった 人の 逃げ道。 */
+      onReplay={lastSaidAudio ? () => clips.replay(lastSaidAudio, rateOf(speed)) : undefined}
+      speed={speed}
+      onSpeed={saveSpeechSpeed}
+      speedDisabled={judge !== null}
+      /* その日が 終わったら 話す ところは 出さず、下の「けっかを 見る」に 渡す。 */
+      speak={
+        sceneOver
+          ? null
+          : {
+              status: voice.status,
+              reason: voice.reason,
+              talking: voice.talking,
+              disabled: judge !== null || waiting,
+              waitNote: judge
+                ? "見かたを 読んでから 話します。"
+                : waiting
+                  ? "AIが いま 見て います。"
+                  : null,
+              onConnect: () => void voice.start(LISTEN_ONLY),
+              onStartTalking: voice.startTalking,
+              onStopTalking: voice.stopTalking,
+            }
+      }
+      onHint={() => setHint(true)}
+      hintDisabled={judge !== null}
+      index={index}
+    >
       {sceneOver ? (
         <button
           type="button"
@@ -972,72 +1009,8 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
             show
           />
         </button>
-      ) : (
-        <>
-          <p className="text-ink-soft text-center text-sm font-black">
-            <RubyText text="声で 答えましょう！" index={index} show />
-          </p>
-          {/*
-           * スピード｜🎤｜💡 の 並びは 既存の ミーティングと 同じ。
-           * ただし 390px で 3列に すると **マイクの 字が 3行に 折れる** ので、
-           * せまい ときは マイクが 1行 まるごと 使い、下に スピードと ヒントを 並べる。
-           */}
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <div className="order-1 w-full sm:order-2 sm:w-auto sm:flex-1">
-              <SpeakButton
-                status={voice.status}
-                reason={voice.reason}
-                talking={voice.talking}
-                disabled={judge !== null || waiting}
-                waitNote={
-                  judge
-                    ? "見かたを 読んでから 話します。"
-                    : waiting
-                      ? "AIが いま 見て います。"
-                      : null
-                }
-                onConnect={() => void voice.start(LISTEN_ONLY)}
-                onStartTalking={voice.startTalking}
-                onStopTalking={voice.stopTalking}
-              />
-            </div>
-            <div className="order-2 sm:order-1">
-              <SpeechSpeedPicker
-                value={speed}
-                onChange={saveSpeechSpeed}
-                tone="light"
-                disabled={judge !== null}
-              />
-            </div>
-            <button
-              type="button"
-              onClick={() => setHint(true)}
-              className="btn-island order-3 px-3 py-2 text-sm font-black"
-            >
-              💡 <RubyText text="ヒント" index={index} show />
-            </button>
-          </div>
-
-          {/*
-           * **報告メモ**（ヒントの 下・2026-09-15 の 指定）。
-           *
-           * 前は 帯の 右に 小さく「📋 じぶんの 担当」と 置いて いた。押すと
-           * ポップアップが 開く ことも、中に 何が ある ことも 字から 読めず、
-           * **押されない まま**だった。名前を 中身で 言い（担当・進捗・きょうの メモ・
-           * やる こと が 入って いる ＝ 報告の もとに なる メモ）、
-           * 話す ボタンの すぐ下＝**手が 届く ところ**に 大きく 置く。
-           */}
-          <button
-            type="button"
-            onClick={() => setDuty(true)}
-            aria-label="報告メモを 見る"
-            className="btn-island btn-game w-full px-4 py-3 text-base font-black"
-          >
-            📋 <RubyText text="報告メモ" index={index} show />
-          </button>
-        </>
-      )}
-    </div>
+      ) : null}
+    </AskPanel>
   );
 
   /*
@@ -1583,63 +1556,41 @@ function Chat({
     if (node) node.scrollTop = node.scrollHeight;
   }, [lines]);
   return (
-    <div className="card-island flex h-[52vh] min-h-64 flex-col p-0 sm:h-[68vh]">
-      <p className="text-navy border-hairline border-b px-3 py-2 text-sm font-black">
-        💬 テキストチャット
-      </p>
-      <div ref={box} className="min-h-0 flex-1 overflow-y-auto p-3 text-sm">
-        {lines.map((line, at) => {
-          const url = line.audio;
-          return (
-            <p key={at} className={`mb-2 font-bold ${line.self ? "text-blue-deep" : ""}`}>
-              {/* 名前も 教材の 字（富田・奥田）。ルビを 通さないと 裸の 漢字に なる。 */}
-              <span className="text-ink-soft mr-1 text-[11px] font-black">
-                <RubyText text={line.who} index={index} show />
-              </span>
-              <RubyText text={line.text} index={index} show />
-              {/* 流れて いった ことばを 聞き直せる（`MeetingSession` と 同じ 逃げ道）。 */}
-              {url ? (
-                <button
-                  type="button"
-                  aria-label={`${line.who}さんの ことばを もう一度 聞く`}
-                  onClick={() => onReplay(url)}
-                  className="btn-island ml-1 px-1.5 py-0.5 align-middle text-[11px]"
-                >
-                  🔊
-                </button>
-              ) : null}
-            </p>
-          );
-        })}
-      </div>
-
-      {/* 書いて 送る 欄は チャットの 足もと（`MeetingSession` と 同じ 席）。 */}
-      <form
-        className="border-hairline flex items-center gap-2 border-t p-2"
-        onSubmit={(event) => {
-          event.preventDefault();
-          onSend();
-        }}
-      >
-        <input
-          id="asakai-answer"
-          value={draft}
-          onChange={(event) => onDraft(event.target.value)}
-          placeholder={canSend ? "報告を 入力…" : sendNote}
-          aria-label="報告を 入力する"
-          disabled={!canSend}
-          className="border-hairline text-ink min-w-0 flex-1 rounded-full border-2 bg-white px-3 py-1.5 text-sm font-bold disabled:opacity-50"
-        />
-        <button
-          type="submit"
-          disabled={!canSend || draft.trim() === ""}
-          aria-label="報告する"
-          className="btn-game shrink-0 rounded-full px-3 py-1.5 text-sm disabled:opacity-40"
-        >
-          ➤
-        </button>
-      </form>
-    </div>
+    /* 殻も 入力欄も **ミーティングと 同じ 部品**（`ChatPanel`）。 */
+    <ChatPanel
+      logRef={box}
+      draft={draft}
+      onDraft={onDraft}
+      /* 送れない ばんは **なぜ 送れないか**を 入力欄の 字で 言う。 */
+      placeholder={canSend ? "メッセージを 入力…" : sendNote}
+      canType={canSend}
+      canSend={canSend && draft.trim() !== ""}
+      onSubmit={onSend}
+    >
+      {lines.map((line, at) => {
+        const url = line.audio;
+        return (
+          <p key={at} className={`text-sm font-bold ${line.self ? "text-blue-deep" : ""}`}>
+            {/* 名前も 教材の 字（富田・奥田）。ルビを 通さないと 裸の 漢字に なる。 */}
+            <span className="text-ink-soft mr-1 text-[11px] font-black">
+              <RubyText text={line.who} index={index} show />
+            </span>
+            <RubyText text={line.text} index={index} show />
+            {/* 流れて いった ことばを 聞き直せる（`MeetingSession` と 同じ 逃げ道）。 */}
+            {url ? (
+              <button
+                type="button"
+                aria-label={`${line.who}さんの ことばを もう一度 聞く`}
+                onClick={() => onReplay(url)}
+                className="btn-island ml-1 px-1.5 py-0.5 align-middle text-[11px]"
+              >
+                🔊
+              </button>
+            ) : null}
+          </p>
+        );
+      })}
+    </ChatPanel>
   );
 }
 

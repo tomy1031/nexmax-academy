@@ -18,7 +18,11 @@ import { bareKanjiTexts, joinCall, seedCompleted, shot } from "./helpers";
  * 当たらない（`<rt>` の かなが 字の あいだに 挟まる）。だから
  * **`rt` を 外した 字**（`readingFreeText`）で 突き合わせる。
  * ボタンは かなの ところ（「つづけます」「けっかを 見る」）か、
- * 正規表現（`/報告する/` は ルビの かなを またがない 短い 語）で さがす。
+ * 正規表現（`/けっかを 見る/` は ルビの かなを またがない 短い 語）で さがす。
+ *
+ * 入力欄と ➤ は **ミーティングと 同じ 部品**（`ChatPanel`）に なった ので、
+ * 名前も 同じ（「こたえを 入力する」「おくる」）。2026-09-15 の 指定
+ *「極力 同じ 環境を そのまま データのみ 差し替えで 使えるように」。
  */
 
 const PHONE = { width: 390, height: 844 };
@@ -176,14 +180,14 @@ test("朝礼（かんたん）— 報告すると カードが 開く", async ({
   await shot(page, "asakai-02-kantan-mon");
 
   await page
-    .locator("#asakai-answer")
+    .getByLabel("こたえを 入力する")
     .fill(
       "先週の 金曜日は、決済の 決まりを 調べて、決済の 画面と ABA Payの ボタンを 作りました。" +
         "今、決済フロントエンド機能 ぜんたいの 進捗は 20%です。" +
         "きょうは、注文IDと 合計金額を 画面に 出します。" +
         "今の ところ 問題は ありません。",
     );
-  await page.getByRole("button", { name: "報告する" }).click();
+  await page.getByRole("button", { name: "おくる" }).click();
 
   /* **見かたは モーダルで 出る。閉じてから 司会と メンバーが 話す**（2026-09-11 の 指定）。 */
   await expect(page.getByRole("dialog", { name: "報告の 見かた" })).toBeVisible();
@@ -262,8 +266,8 @@ test("夕礼（むずかしい）— メモと カードが 同じ 画面に 並
   await shot(page, "asakai-06-muzukashii-mon");
 
   /* 1行では 開かない（`openAt` は 2）。司会が 聞き返す。 */
-  await page.locator("#asakai-answer").fill("学生一覧APIと 接続しました。");
-  await page.getByRole("button", { name: "報告する" }).click();
+  await page.getByLabel("こたえを 入力する").fill("学生一覧APIと 接続しました。");
+  await page.getByRole("button", { name: "おくる" }).click();
   await expect(page.getByRole("dialog", { name: "報告の 見かた" })).toBeVisible();
   await page.getByRole("button", { name: "つづける" }).click();
   await expect(page.getByText("（0 / 4）")).toBeVisible();
@@ -294,12 +298,12 @@ test("夕礼 — 作業記録を そのまま 読み上げると 差し戻され
 
   /* 月曜の 記録の 冒頭を 時刻ごと そのまま。中身の ことばは ぜんぶ 当たる はず。 */
   await page
-    .locator("#asakai-answer")
+    .getByLabel("こたえを 入力する")
     .fill(
       "09:00 学生一覧APIの 仕様を 確認。09:30 学生一覧APIとの 接続開始。" +
         "10:30 AUPP・CADTの 学生データ 表示完了。11:00 キーワード検索UIを 作成。",
     );
-  await page.getByRole("button", { name: "報告する" }).click();
+  await page.getByRole("button", { name: "おくる" }).click();
 
   const judge = page.getByRole("dialog", { name: "報告の 見かた" });
   await expect(judge).toBeVisible();
@@ -314,9 +318,9 @@ test("夕礼 — 作業記録を そのまま 読み上げると 差し戻され
 
   /* まとめて 話せば ふつうに 開く（差し戻しが 正しい 報告を 巻き込まない）。 */
   await page
-    .locator("#asakai-answer")
+    .getByLabel("こたえを 入力する")
     .fill("今日は 学生一覧APIと つないで、キーワード検索と 大学フィルターを 作りました。");
-  await page.getByRole("button", { name: "報告する" }).click();
+  await page.getByRole("button", { name: "おくる" }).click();
   await expect(judge).toBeVisible();
   await expectOnScreen(page, "今日 行ったこと");
   await page.getByRole("button", { name: "つづける" }).click();
@@ -377,14 +381,14 @@ test("月曜を 終えて 開き直すと、火曜から つづく", async ({ pa
   await page.goto("/asakai/meeting-asakai_kantan");
   await joinCall(page);
   await page
-    .locator("#asakai-answer")
+    .getByLabel("こたえを 入力する")
     .fill(
       "先週の 金曜日は、決済の 決まりを 調べて、決済の 画面と ABA Payの ボタンを 作りました。" +
         "今、決済フロントエンド機能 ぜんたいの 進捗は 20%です。" +
         "きょうは、注文IDと 合計金額を 画面に 出します。" +
         "今の ところ 問題は ありません。",
     );
-  await page.getByRole("button", { name: "報告する" }).click();
+  await page.getByRole("button", { name: "おくる" }).click();
   await page.getByRole("button", { name: "みんなの 報告を 聞く" }).click();
   await page.getByRole("button", { name: /けっかを 見る/ }).click();
   await expectOnScreen(page, "月曜日の 朝礼 おわり");
@@ -400,14 +404,24 @@ test("月曜を 終えて 開き直すと、火曜から つづく", async ({ pa
   );
   await shot(page, "asakai-09-resume-tue");
 
-  /* タブで 木曜へ 飛べる（順番に 進まなくても よい）。 */
-  await page.getByRole("button", { name: /木曜日/ }).click();
-  await expect(page.getByRole("button", { name: /木曜日/ })).toHaveAttribute(
+  /*
+   * **終わって いない 日は 開かない**（2026-09-15 の 指定「曜日の クリックは
+   * 終わらないと 解放しない もともとの UIの ロジックを 踏襲して」）。
+   *
+   * ミーティングの 帯と 同じ 決まり——`02 …に しつもん` は ラウンド1を 終えるまで 🔒。
+   * 2026-09-13 に「その日へ 直接 飛べる」ように した ぶんは、**済んだ 日へ 戻る**
+   * ところだけ 残る（月曜は 報告 ずみ なので 押せる）。
+   */
+  await expect(page.getByRole("button", { name: /木曜日/ })).toBeDisabled();
+  await expect(page.getByRole("button", { name: /金曜日/ })).toBeDisabled();
+  await expectOnScreen(page, "ぜんぶ 報告すると 開きます");
+  /* 済んだ 月曜へは 戻れる。 */
+  await page.getByRole("button", { name: /月曜日/ }).click();
+  await expect(page.getByRole("button", { name: /月曜日/ })).toHaveAttribute(
     "aria-current",
     "step",
   );
-  await expectOnScreen(page, "木曜日");
-  await shot(page, "asakai-09b-jump-thu");
+  await shot(page, "asakai-09b-locked-thu");
 });
 
 /**
@@ -426,8 +440,8 @@ test("5日 通すと、合否と 数が 読める", async ({ page, context }) =>
 
   /* 5日とも、その日の 司会の れいを ぜんぶ つないで 話す（足場どおりに 話した 人）。 */
   for (const [day, utterance] of exampleUtterances().entries()) {
-    await page.locator("#asakai-answer").fill(utterance);
-    await page.getByRole("button", { name: "報告する" }).click();
+    await page.getByLabel("こたえを 入力する").fill(utterance);
+    await page.getByRole("button", { name: "おくる" }).click();
     await page.getByRole("button", { name: "みんなの 報告を 聞く" }).click();
     await page.getByRole("button", { name: /けっかを 見る/ }).click();
     if (day < 4) await page.getByRole("button", { name: /つづけます/ }).click();
