@@ -65,6 +65,8 @@ import { AnswerNotebook } from "@/components/answers/answer-notebook";
 import { HintModal } from "./hint-modal";
 import { CertificateModal } from "./certificate-modal";
 import { JudgeModal } from "./judge-modal";
+import { AskPanel } from "./ask-panel";
+import { ChatPanel } from "./chat-panel";
 import { SpeakButton } from "./speak-button";
 import { StepTabs } from "./step-tabs";
 import { SpeechSpeedPicker } from "./speech-speed-picker";
@@ -1387,78 +1389,50 @@ export function MeetingSession({
    * 書く ところが 画面の 端と 端**に 離れて いた。
    */
   const chatPanel = (
-    <div className="card-island flex h-[46vh] min-h-64 flex-col p-0 sm:h-[62vh]">
-      <p className="text-navy border-hairline border-b px-3 py-2 text-sm font-black">
-        💬 テキストチャット
-      </p>
-      <div
-        ref={chatRef}
-        role="log"
-        aria-label="かいわ"
-        className="min-h-0 flex-1 space-y-2 overflow-y-auto p-3"
-      >
-        {chat.map((entry) => (
-          <ChatLine
-            key={entry.id}
-            entry={entry}
-            hostName={meeting.host.name}
-            furigana={furigana}
-            hostFurigana={hostFurigana}
-            /*
-             * もう いちど 聞く。**相手が 話して いる あいだは 押せない**（音が 重なる）。
-             * しつもん（作り置き）は「こたえる」ばんだけ、その場の こえは
-             * 相手が 黙って いれば いつでも——聞きとれなかった ときに 押す ものなので、
-             * 判定を 待って いる あいだも 使える ほうが よい。
-             */
-            onReplay={
-              (entry.kind === "ask" || entry.kind === "host") &&
-              entry.audioUrl &&
-              !voice.speaking &&
-              (entry.kind !== "ask" || canAnswer)
-                ? () => clip.play(entry.audioUrl as string, rateOf(speed))
-                : undefined
-            }
-          />
-        ))}
-        {thinking ? (
-          <p className="bg-panel-tint text-ink-soft rounded-[var(--radius-card)] px-4 py-2 text-sm font-black">
-            {meeting.host.name}さんが{" "}
-            <ruby>
-              聞<rt>き</rt>
-            </ruby>
-            いて います…
-          </p>
-        ) : null}
-      </div>
-
-      {/* 書いて 送る 欄は チャットの 足もと（添付の 画面と 同じ） */}
-      <form
-        className="border-hairline flex items-center gap-2 border-t p-2"
-        onSubmit={(e) => {
-          e.preventDefault();
-          submit();
-        }}
-      >
-        <input
-          value={draft}
-          onChange={(e) => setDraft(e.target.value)}
-          placeholder={
-            done && hasListenRound ? "ヘンディさんに 聞いて みましょう" : "メッセージを 入力…"
+    <ChatPanel
+      logRef={chatRef}
+      draft={draft}
+      onDraft={setDraft}
+      placeholder={
+        done && hasListenRound ? "ヘンディさんに 聞いて みましょう" : "メッセージを 入力…"
+      }
+      canType={canType}
+      canSend={canAnswer}
+      onSubmit={submit}
+    >
+      {chat.map((entry) => (
+        <ChatLine
+          key={entry.id}
+          entry={entry}
+          hostName={meeting.host.name}
+          furigana={furigana}
+          hostFurigana={hostFurigana}
+          /*
+           * もう いちど 聞く。**相手が 話して いる あいだは 押せない**（音が 重なる）。
+           * しつもん（作り置き）は「こたえる」ばんだけ、その場の こえは
+           * 相手が 黙って いれば いつでも——聞きとれなかった ときに 押す ものなので、
+           * 判定を 待って いる あいだも 使える ほうが よい。
+           */
+          onReplay={
+            (entry.kind === "ask" || entry.kind === "host") &&
+            entry.audioUrl &&
+            !voice.speaking &&
+            (entry.kind !== "ask" || canAnswer)
+              ? () => clip.play(entry.audioUrl as string, rateOf(speed))
+              : undefined
           }
-          aria-label="こたえを 入力する"
-          disabled={!canType}
-          className="border-hairline text-ink min-w-0 flex-1 rounded-full border-2 bg-white px-3 py-1.5 text-sm font-bold disabled:opacity-50"
         />
-        <button
-          type="submit"
-          disabled={!canAnswer}
-          aria-label="おくる"
-          className="btn-game shrink-0 rounded-full px-3 py-1.5 text-sm disabled:opacity-40"
-        >
-          ➤
-        </button>
-      </form>
-    </div>
+      ))}
+      {thinking ? (
+        <p className="bg-panel-tint text-ink-soft rounded-[var(--radius-card)] px-4 py-2 text-sm font-black">
+          {meeting.host.name}さんが{" "}
+          <ruby>
+            聞<rt>き</rt>
+          </ruby>
+          いて います…
+        </p>
+      ) : null}
+    </ChatPanel>
   );
 
   const main = done ? (
@@ -1618,89 +1592,51 @@ export function MeetingSession({
       />
     </div>
   ) : (
-    <div className="card-island space-y-3 p-4">
-      <p className="text-sky-deep text-sm font-black">
-        💬 <RubyText text={`${meeting.host.name}さんから しつもん`} index={furigana} show />
-      </p>
-
-      {/* しつもんの 吹き出し。答える 直前に もう一度 読める ように 大きく 出す */}
-      {askText ? (
-        <div className="flex items-start gap-2">
-          <p className="border-hairline text-navy min-w-0 flex-1 rounded-2xl border-2 bg-white px-4 py-3 text-lg font-black break-words">
-            <RubyText text={askText} index={furigana} show />
+    /*
+      しつもんの カードは **共有の `AskPanel`**（2026-09-15 の 指定
+      「元の ものを そのまま 使って 欲しい」）。並びと 見た目は ここに 無く、
+      朝礼・夕礼と 同じ 部品が 持つ——**データだけ 差し替える**。
+    */
+    <AskPanel
+      heading={`${meeting.host.name}さんから しつもん`}
+      body={askText ? <RubyText text={askText} index={furigana} show /> : null}
+      onReplay={
+        question?.audioUrl ? () => clip.play(question.audioUrl as string, rateOf(speed)) : undefined
+      }
+      replayDisabled={!canAnswer}
+      speed={speed}
+      onSpeed={saveSpeechSpeed}
+      speedDisabled={phase === "はなす" || phase === "みている" || phase === "みかた"}
+      speak={{
+        status: voice.status,
+        reason: voice.reason,
+        talking: voice.talking,
+        disabled: !canAnswer && phase !== "はなす",
+        waitNote:
+          phase === "きく"
+            ? "いまは きく ばんです"
+            : phase === "みている"
+              ? "いま みて います"
+              : "ポップアップを よんで ください",
+        onConnect: () => void voice.start(instruction, hostVoice),
+        onStartTalking: () => {
+          answeringRef.current = question ?? null;
+          stopClip();
+          voice.startTalking();
+        },
+        onStopTalking: voice.stopTalking,
+      }}
+      onHint={() => setHintOpen(true)}
+      hintDisabled={phase === "みている" || phase === "みかた" || hintLines.length === 0}
+      notice={
+        notice ? (
+          <p className="bg-cream border-hairline text-ink rounded-[var(--radius-card)] border-2 px-4 py-2 text-sm font-bold">
+            <RubyText text={NOTICE[notice]} index={CHROME_FURIGANA} show />
           </p>
-          {question?.audioUrl ? (
-            <button
-              type="button"
-              aria-label="もう いちど 聞く"
-              disabled={!canAnswer}
-              onClick={() => clip.play(question.audioUrl as string, rateOf(speed))}
-              className="text-sky shrink-0 self-center text-2xl disabled:opacity-40"
-            >
-              🔊
-            </button>
-          ) : null}
-        </div>
-      ) : null}
-
-      <p className="text-ink-soft text-center text-xs font-extrabold">
-        <RubyText text="声で 答えましょう！" index={CHROME_FURIGANA} show />
-      </p>
-
-      {/* 速さ｜丸い マイク｜ヒント の 3つ（添付の 画面と 同じ 並び） */}
-      <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
-        <SpeechSpeedPicker
-          value={speed}
-          onChange={saveSpeechSpeed}
-          tone="light"
-          vertical
-          disabled={phase === "はなす" || phase === "みている" || phase === "みかた"}
-        />
-        <SpeakButton
-          status={voice.status}
-          reason={voice.reason}
-          talking={voice.talking}
-          disabled={!canAnswer && phase !== "はなす"}
-          waitNote={
-            phase === "きく"
-              ? "いまは きく ばんです"
-              : phase === "みている"
-                ? "いま みて います"
-                : "ポップアップを よんで ください"
-          }
-          onConnect={() => void voice.start(instruction, hostVoice)}
-          onStartTalking={() => {
-            answeringRef.current = question ?? null;
-            stopClip();
-            voice.startTalking();
-          }}
-          onStopTalking={voice.stopTalking}
-        />
-        <div className="flex justify-end">
-          <button
-            type="button"
-            onClick={() => setHintOpen(true)}
-            disabled={phase === "みている" || phase === "みかた" || hintLines.length === 0}
-            aria-label="ヒントを 見る"
-            className="border-sun-deep bg-cream text-navy rounded-full border-2 px-3 py-2 text-xs font-extrabold whitespace-nowrap disabled:opacity-40"
-          >
-            <RubyText text="💡 ヒント" index={CHROME_FURIGANA} show />
-          </button>
-        </div>
-      </div>
-
-      {notice ? (
-        <p className="bg-cream border-hairline text-ink rounded-[var(--radius-card)] border-2 px-4 py-2 text-sm font-bold">
-          <RubyText text={NOTICE[notice]} index={CHROME_FURIGANA} show />
-        </p>
-      ) : null}
-
-      {/*
-        「こまったら →「すみません、つぎを おねがいします」」の 一行は 消した
-        （2026-08-21 の 指定「その 文字自体が いらない。言って みたけど 何の 役にも
-        立たなかった」）。**逃げ道の 仕組みは 残す**——言えば 通れる ことは 変わらない。
-      */}
-    </div>
+        ) : null
+      }
+      index={furigana}
+    />
   );
 
   return (

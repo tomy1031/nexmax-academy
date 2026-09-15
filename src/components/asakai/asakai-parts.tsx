@@ -24,11 +24,32 @@ import type { FuriganaIndex } from "@/lib/text/furigana";
  */
 export type CardState = "closed" | "asked" | "open" | "missed";
 
-const CARD_FACE: Record<CardState, { mark: string; cls: string; badge: string }> = {
-  closed: { mark: "▢", cls: "border-hairline bg-white text-ink-soft", badge: "bg-ink-faint" },
-  asked: { mark: "❓", cls: "border-sky-deep bg-sky-soft text-navy", badge: "bg-sky-deep" },
-  open: { mark: "✓", cls: "border-leaf bg-leaf-soft text-navy", badge: "bg-leaf" },
-  missed: { mark: "❌", cls: "border-coral bg-coral-soft text-navy", badge: "bg-coral" },
+/**
+ * カードの 顔。**ミーティングの 板（`QuestionCards`）と 同じ 作り**に そろえて ある
+ *（2026-09-15 の 指定「元の ものを そのまま 使って 欲しい」「枠で 囲んで 見やすく」）。
+ *
+ * 地の 色と ふちで 状態を 言い、左上の 丸で もう一度 言う——**色だけに 頼らない**。
+ */
+const CARD_FACE: Record<CardState, { mark: string; face: string; edge: string; badge: string }> = {
+  closed: {
+    mark: "▢",
+    face: "color-mix(in srgb, var(--color-sky) 22%, white)",
+    edge: "transparent",
+    badge: "var(--color-sky-deep)",
+  },
+  asked: {
+    mark: "❓",
+    face: "color-mix(in srgb, var(--color-sky) 22%, white)",
+    edge: "var(--color-sky-deep)",
+    badge: "var(--color-sky-deep)",
+  },
+  open: { mark: "✓", face: "#fff", edge: "var(--color-leaf)", badge: "var(--color-leaf)" },
+  missed: {
+    mark: "❌",
+    face: "color-mix(in srgb, var(--color-coral) 16%, white)",
+    edge: "var(--color-coral-deep)",
+    badge: "var(--color-coral-deep)",
+  },
 };
 
 /**
@@ -61,7 +82,35 @@ export function CountBoxes({ total, done, now }: { total: number; done: number; 
   );
 }
 
-/** どこまで できたか（5つの 箱）。名前は 字で、状態は 色と 形で。 */
+/**
+ * どこまで できたか — **金曜日までの しごとを ぜんぶ 表に 並べる**
+ *
+ * 2026-09-15 の 指定「金曜日までに する タスクを 5つだけでは なく **全て** 表形式で 並べ、
+ * 終わった ものは 終わった ことが 分かる ように チェックを 入れて 欲しい」。
+ *
+ * 前は 5つの 箱を 横に 並べて いた。担当表（原本）の しごとは 10ある ので、
+ * **5つに まとめた 時点で どれが 終わったのかが 言えなく なって** いた
+ *（報告で「きのう したこと」を 言う ときに 見る ものなのに）。
+ *
+ * 状態は **印と ことばの 両方**で 言う（色だけに 頼らない）。
+ *
+ * ## 「n / 10」は 出さない
+ * 最初は 見出しに「（2 / 10）」を 添えて いたが、すぐ 上の 付せんが
+ *「◯◯機能 ぜんたいの 進捗: 20%」と 言って いる ので、**同じ 機能の 進み具合を
+ * 名のる 数字が 2つ、ちがう 値で 並ぶ**（2026-09-15 の 通しプレイ検収。木曜は
+ * 60% と 7 / 10 が 3行 ちがいで 同時に 見えて いた）。
+ *
+ * 2つは もともと 別の ものを 数えて いる——付せんは **手間の 割合**（報告で 言う 数字）、
+ * この 表は **しごとの 状態**。学習者に その 区別は 求められないので、
+ * 数字を 名のるのは 付せんに 一本化し、表は ✅ で どれが 終わったかだけを 見せる。
+ */
+const PROGRESS_FACE: Record<"done" | "now" | "later", { mark: string; word: string; cls: string }> =
+  {
+    done: { mark: "✅", word: "おわり", cls: "bg-leaf text-white" },
+    now: { mark: "▶", word: "いま", cls: "bg-sun text-[#3b2a00]" },
+    later: { mark: "▢", word: "これから", cls: "border-hairline text-ink-faint border bg-white" },
+  };
+
 export function ProgressBoxes({
   items,
   index,
@@ -74,27 +123,38 @@ export function ProgressBoxes({
       <p className="text-ink-soft text-[11px] font-black">
         <RubyText text="どこまで できたか" index={index} show />
       </p>
-      <ul className="mt-1 grid grid-cols-5 gap-1">
-        {items.map((item) => (
-          <li key={item.label} className="min-w-0">
-            <span
-              aria-hidden
-              className={
-                item.state === "done"
-                  ? "bg-leaf grid h-7 place-items-center rounded-lg text-sm text-white"
-                  : item.state === "now"
-                    ? "bg-sun grid h-7 place-items-center rounded-lg text-sm text-[#3b2a00]"
-                    : "border-hairline text-ink-faint grid h-7 place-items-center rounded-lg border bg-white text-sm"
-              }
-            >
-              {item.state === "done" ? "✓" : item.state === "now" ? "▶" : "▢"}
-            </span>
-            <span className="text-ink-soft mt-0.5 block text-center text-[10px] leading-tight break-keep">
-              <RubyText text={item.label} index={index} show />
-            </span>
-          </li>
-        ))}
-      </ul>
+      <table className="border-hairline mt-1 w-full border-collapse overflow-hidden rounded-lg border bg-white text-left">
+        <thead>
+          <tr className="bg-panel-tint text-ink-soft text-[10px] font-black">
+            <th scope="col" className="px-2 py-1">
+              <RubyText text="しごと" index={index} show />
+            </th>
+            <th scope="col" className="w-20 px-2 py-1 text-right">
+              <RubyText text="じょうたい" index={index} show />
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {items.map((item) => {
+            const face = PROGRESS_FACE[item.state];
+            return (
+              <tr key={item.label} className="border-hairline border-t">
+                <td className="text-ink px-2 py-1 text-[11px] leading-tight font-bold break-words">
+                  <RubyText text={item.label} index={index} show />
+                </td>
+                <td className="px-2 py-1 text-right">
+                  <span
+                    className={`inline-flex items-center gap-1 rounded-full px-1.5 py-0.5 text-[10px] font-black whitespace-nowrap ${face.cls}`}
+                  >
+                    <span aria-hidden>{face.mark}</span>
+                    <RubyText text={face.word} index={index} show />
+                  </span>
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
     </div>
   );
 }
@@ -127,35 +187,42 @@ export function CardBoard({
    */
   const open = cards.filter((c) => c.state === "open").length;
   return (
+    /*
+      枠は **ミーティングの 板と 同じ**（色の ついた 面の 中に カードを 並べる）。
+      前は 白い 帯に 細い ふちの カードを 置いて いた ので、4つが 地に 溶けて
+      「きのう したこと」「きょう すること」が 読み取りにくかった（2026-09-15 の 指定）。
+    */
     <div
       role="group"
       aria-label="カードの 板"
-      className="border-hairline sticky top-0 z-10 border-b bg-white/95 px-2 py-2 backdrop-blur"
+      className="sticky top-0 z-10 rounded-[var(--radius-card)] bg-[color-mix(in_srgb,var(--color-sky)_14%,white)] p-3 backdrop-blur"
     >
-      <p className="text-ink-soft mb-1 text-[11px] font-black">
-        <RubyText text="報告すると 開きます" index={index} show />{" "}
-        <span className="tabular-nums">
+      <p className="text-navy mb-2 text-sm font-black">
+        📋 <RubyText text="報告すると 開きます" index={index} show />
+        <span className="text-ink-soft ml-2 text-xs font-bold tabular-nums">
           （{open} / {cards.length}）
         </span>
-        <span className="text-ink-faint ml-1 font-bold">
+        <span className="text-ink-soft ml-2 text-xs font-bold">
           ❓ <RubyText text="まだ 言う ことが あります" index={index} show />
         </span>
       </p>
-      <ul className="grid grid-cols-4 gap-1.5">
+      <ul className="grid grid-cols-2 gap-1.5 sm:grid-cols-4">
         {cards.map((card) => {
           const face = CARD_FACE[card.state];
           return (
             <li
               key={card.id}
-              className={`relative min-h-[64px] rounded-xl border-2 px-1.5 py-2 text-center ${face.cls}`}
+              className="text-navy relative min-h-[72px] rounded-xl border-2 px-1.5 py-4 text-center"
+              style={{ background: face.face, borderColor: face.edge }}
             >
               <span
                 aria-hidden
-                className={`absolute -top-1.5 -left-1.5 grid h-5 w-5 place-items-center rounded-full text-[10px] font-black text-white ${face.badge}`}
+                className="absolute -top-1.5 -left-1.5 grid h-5 w-5 place-items-center rounded-full text-[10px] font-black text-white"
+                style={{ background: face.badge }}
               >
                 {face.mark}
               </span>
-              <span className="block text-[11px] leading-snug font-black break-keep">
+              <span className="block text-[11px] leading-snug font-black break-words">
                 <RubyText text={card.label} index={index} show />
               </span>
               {card.boxes?.length ? (

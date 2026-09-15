@@ -54,9 +54,9 @@
     "scenes": [
       {
         "day": "mon",
-        "time": "9:30",
+        "time": "9:00",
         "kind": "asa",
-        "title": "月曜日 9:30 朝礼 ・ 司会 ヘンディさん",
+        "title": "月曜日 9:00 朝礼 ・ 司会 ヘンディさん",
         "lead": "注文IDと 合計金額が 決済の 画面に 出ました。",
         "card": {
           "duty": "決済フロントエンド機能（決済の 画面）",
@@ -64,22 +64,42 @@
           "progress": [
             {
               "label": "決済の 画面",
+              "state": "done"
+            },
+            {
+              "label": "注文IDと 金額の 表示",
               "state": "now"
             },
             {
-              "label": "決済方法を えらぶ",
+              "label": "支払方法を えらぶ",
               "state": "later"
             },
             {
-              "label": "成功・失敗の 画面",
+              "label": "ABA Payの ボタン",
+              "state": "done"
+            },
+            {
+              "label": "ACLEDA Payを えらぶ",
               "state": "later"
             },
             {
               "label": "決済APIと つなぐ",
+              "state": "now"
+            },
+            {
+              "label": "処理中の 表示",
               "state": "later"
             },
             {
-              "label": "結合テスト",
+              "label": "成功の 画面",
+              "state": "later"
+            },
+            {
+              "label": "失敗の 画面",
+              "state": "later"
+            },
+            {
+              "label": "フロントの テスト",
               "state": "later"
             }
           ],
@@ -111,7 +131,7 @@
         "opening": [
           {
             "speakerId": "hendy",
-            "text": "おはよう ございます。9時30分に なりました。今週も 朝礼を 始めます。今週は 決済の 機能を 仕上げます。注文の 確認から 決済完了まで、1つに つなぎます。報告は 4つです。きのう したこと、担当の 機能 ぜんたいの 進捗、きょう すること、問題です。まず わたしから。"
+            "text": "おはよう ございます。9時に なりました。今週も 朝礼を 始めます。今週は 決済の 機能を 仕上げます。注文の 確認から 決済完了まで、1つに つなぎます。報告は 4つです。きのう したこと、担当の 機能 ぜんたいの 進捗、きょう すること、問題です。まず わたしから。"
           }
         ],
         "sample": {
@@ -281,9 +301,9 @@
       },
       {
         "day": "tue",
-        "time": "9:30",
+        "time": "9:00",
         "kind": "asa",
-        "title": "火曜日 9:30 朝礼 ・ 司会 ヘンディさん",
+        "title": "火曜日 9:00 朝礼 ・ 司会 ヘンディさん",
         "lead": "藤木さんから、ACLEDA Payも 使いたいと いう お願いが ありました。",
         "card": {
           "duty": "決済フロントエンド機能（決済の 画面）",
@@ -294,11 +314,19 @@
               "state": "done"
             },
             {
-              "label": "決済方法を えらぶ",
+              "label": "注文IDと 金額の 表示",
+              "state": "done"
+            },
+            {
+              "label": "支払方法を えらぶ",
               "state": "later"
             },
             {
-              "label": "成功・失敗の 画面",
+              "label": "ABA Payの ボタン",
+              "state": "done"
+            },
+            {
+              "label": "ACLEDA Payを えらぶ",
               "state": "later"
             },
             {
@@ -306,7 +334,19 @@
               "state": "now"
             },
             {
-              "label": "結合テスト",
+              "label": "処理中の 表示",
+              "state": "now"
+            },
+            {
+              "label": "成功の 画面",
+              "state": "later"
+            },
+            {
+              "label": "失敗の 画面",
+              "state": "later"
+            },
+            {
+              "label": "フロントの テスト",
               "state": "later"
             }
           ],
@@ -528,9 +568,9 @@
       },
       {
         "day": "wed",
-        "time": "9:30",
+        "time": "9:00",
         "kind": "asa",
-        "title": "水曜日 9:30 朝礼 ・ 司会 ヘンディさん",
+        "title": "水曜日 9:00 朝礼 ・ 司会 ヘンディさん",
         "lead": "APIと つなぐ ところが、まだ 終わって いません。",
         "card": {
           "duty": "決済フロントエンド機能（決済の 画面）",
@@ -541,19 +581,39 @@
               "state": "done"
             },
             {
-              "label": "決済方法を えらぶ",
+              "label": "注文IDと 金額の 表示",
+              "state": "done"
+            },
+            {
+              "label": "支払方法を えらぶ",
               "state": "now"
             },
             {
-              "label": "成功・失敗の 画面",
-              "state": "later"
+              "label": "ABA Payの ボタン",
+              "state": "done"
+            },
+            {
+              "label": "ACLEDA Payを えらぶ",
+              "state": "now"
             },
             {
               "label": "決済APIと つなぐ",
               "state": "now"
             },
             {
-              "label": "結合テスト",
+              "label": "処理中の 表示",
+              "state": "now"
+            },
+            {
+              "label": "成功の 画面",
+              "state": "now"
+            },
+            {
+              "label": "失敗の 画面",
+              "state": "now"
+            },
+            {
+              "label": "フロントの テスト",
               "state": "later"
             }
           ],
@@ -775,9 +835,9 @@
       },
       {
         "day": "thu",
-        "time": "9:30",
+        "time": "9:00",
         "kind": "asa",
-        "title": "木曜日 9:30 朝礼 ・ 司会 ヘンディさん",
+        "title": "木曜日 9:00 朝礼 ・ 司会 ヘンディさん",
         "lead": "ヘンディさんが、APIを つなぐ ところを 引き取って くれました。",
         "card": {
           "duty": "決済フロントエンド機能（決済の 画面）",
@@ -788,11 +848,19 @@
               "state": "done"
             },
             {
-              "label": "決済方法を えらぶ",
+              "label": "注文IDと 金額の 表示",
               "state": "done"
             },
             {
-              "label": "成功・失敗の 画面",
+              "label": "支払方法を えらぶ",
+              "state": "done"
+            },
+            {
+              "label": "ABA Payの ボタン",
+              "state": "done"
+            },
+            {
+              "label": "ACLEDA Payを えらぶ",
               "state": "done"
             },
             {
@@ -800,7 +868,19 @@
               "state": "now"
             },
             {
-              "label": "結合テスト",
+              "label": "処理中の 表示",
+              "state": "now"
+            },
+            {
+              "label": "成功の 画面",
+              "state": "done"
+            },
+            {
+              "label": "失敗の 画面",
+              "state": "done"
+            },
+            {
+              "label": "フロントの テスト",
               "state": "later"
             }
           ],
@@ -1101,9 +1181,9 @@
       },
       {
         "day": "fri",
-        "time": "9:30",
+        "time": "9:00",
         "kind": "asa",
-        "title": "金曜日 9:30 朝礼 ・ 司会 ヘンディさん ・ 藤木取締役 同席",
+        "title": "金曜日 9:00 朝礼 ・ 司会 ヘンディさん ・ 藤木取締役 同席",
         "lead": "午後の 結合テストで、注文から 決済まで 通りました。",
         "card": {
           "duty": "決済フロントエンド機能（決済の 画面）",
@@ -1114,19 +1194,39 @@
               "state": "done"
             },
             {
-              "label": "決済方法を えらぶ",
+              "label": "注文IDと 金額の 表示",
               "state": "done"
             },
             {
-              "label": "成功・失敗の 画面",
+              "label": "支払方法を えらぶ",
+              "state": "done"
+            },
+            {
+              "label": "ABA Payの ボタン",
+              "state": "done"
+            },
+            {
+              "label": "ACLEDA Payを えらぶ",
               "state": "done"
             },
             {
               "label": "決済APIと つなぐ",
+              "state": "now"
+            },
+            {
+              "label": "処理中の 表示",
               "state": "done"
             },
             {
-              "label": "結合テスト",
+              "label": "成功の 画面",
+              "state": "done"
+            },
+            {
+              "label": "失敗の 画面",
+              "state": "done"
+            },
+            {
+              "label": "フロントの テスト",
               "state": "now"
             }
           ],
@@ -1350,6 +1450,10 @@
     ]
   },
   "furigana": [
+    [
+      "支払方法",
+      "しはらいほうほう"
+    ],
     [
       "日の うちに",
       "ひの うちに"
