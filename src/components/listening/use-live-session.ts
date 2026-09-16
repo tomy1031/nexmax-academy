@@ -6,6 +6,7 @@ import {
   connectLiveInOrder,
   createSetupGate,
   FIRST_AUTH_FRESH_MS,
+  LIVE_SETUP_TIMEOUT_MS,
   reasonFromClose,
   startingWith,
 } from "@/lib/ai/live-connect";
@@ -346,6 +347,8 @@ export function useLiveSession(): LiveSession {
           mint: startingWith(first, mint, firstFreshUntil),
           open,
           stop: stale,
+          // 期限切れで 待って いる つなぎが あれば、決める 前に 少し 待つ（遅い 回線）
+          lateGraceMs: LIVE_SETUP_TIMEOUT_MS,
         });
         if (stale()) {
           // つなぎ途中に 相手が かわった。届いた セッションは 使わずに 閉じる（居座らせない）

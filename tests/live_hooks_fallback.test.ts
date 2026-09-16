@@ -143,7 +143,7 @@ const sdk = vi.hoisted(() => ({
   /** ためした ときに 渡した 指示文（connects と 同じ 順）。 */
   instructions: [] as string[],
   closed: [] as string[],
-  live: [] as { model: string; callbacks: FakeCallbacks }[],
+  live: [] as { model: string; instruction: string; callbacks: FakeCallbacks }[],
 }));
 
 vi.mock("@google/genai", () => ({
@@ -186,7 +186,7 @@ vi.mock("@google/genai", () => ({
           setTimeout(
             () => {
               callbacks.onmessage?.({ setupComplete: {} });
-              sdk.live.push({ model, callbacks });
+              sdk.live.push({ model, instruction: config.systemInstruction ?? "", callbacks });
               resolve(session);
             },
             plan === "late" ? 10_000 : 500,
@@ -293,7 +293,8 @@ describe("ミーティングの 声（use-live-voice）", () => {
     sdk.plan = Object.fromEntries(LIVE_TALK_MODELS.map((m) => [m, "hang" as const]));
     const render = await load();
     void render().start("指示");
-    await vi.advanceTimersByTimeAsync(9_000 * LIVE_TALK_MODELS.length + 1_000);
+    // 1つ 9秒 × モデルの 数 ＋ 遅れて つながる ものを 待つ 9秒
+    await vi.advanceTimersByTimeAsync(9_000 * (LIVE_TALK_MODELS.length + 1) + 1_000);
 
     expect(sdk.connects).toEqual([...LIVE_TALK_MODELS]);
     expect(render().status).toBe("error");
@@ -385,6 +386,26 @@ describe("ミーティングの 声（use-live-voice）", () => {
     expect(sdk.connects).toEqual([HEAD, HEAD, SPARE]);
     expect(sdk.instructions).toEqual(["ラウンド1", "ラウンド1", "ラウンド2"]);
     expect(render().status).toBe("live");
+  });
+
+  it("張り直しの 途中で ラウンドが 変わり、古い 文の つなぎが 遅れて 勝ったら、もう 一度 張り直す", async () => {
+    sdk.plan = { [HEAD]: "accept" };
+    const render = await load();
+    void render().start("ラウンド1");
+    await vi.advanceTimersByTimeAsync(3_000);
+
+    // 切れる → 0.5秒後に 黙って 張り直し。先頭は 遅い（10秒）、控えは 黙る
+    sdk.plan = { [HEAD]: "late", [SPARE]: "hang" };
+    sdk.live[0]!.callbacks.onclose?.({ code: 1006, reason: "" });
+    await vi.advanceTimersByTimeAsync(1_000);
+    // 先頭は もう ラウンド1の 文で 始まって いる。ここで ラウンドが 変わる
+    void render().swapInstruction("ラウンド2");
+    await vi.advanceTimersByTimeAsync(60_000);
+
+    // さいごに つながった つなぎは ラウンド2の 文で 始まって いる
+    expect(sdk.live.at(-1)?.instruction).toBe("ラウンド2");
+    expect(render().status).toBe("live");
+    expect(openStreams()).toBe(1);
   });
 
   it("つなぎの 途中で たいしつ したら、取りかけの マイクも 止める", async () => {

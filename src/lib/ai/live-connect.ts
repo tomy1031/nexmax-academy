@@ -236,6 +236,9 @@ export type LiveConnectResult<S> =
  *   あとに 遅れて つながった ものも、まだ どれも 決まって いなければ 使える
  * - 決まったら 残りは 使わない（門が 閉じる。門を 通さない `open` の ぶんは ここで 閉じる）
  * - `stop` が 真に なったら（画面を 離れた・つなぎ直しが 始まった）残りを ためさない
+ * - `lateGraceMs` を 渡すと、決まらない まま 終わる ときに **期限切れで 待って いる
+ *   つなぎが あれば** その 時間だけ 待つ。候補が 尽きた・つぎの 通行証が 回線の 瞬断で
+ *   作れなかった——その 1秒後に 先頭が つながる 遅い 回線で、使えた ものを 捨てない
  */
 export async function connectLiveInOrder<S extends Closable>(options: {
   readonly models: readonly string[];
@@ -243,6 +246,7 @@ export async function connectLiveInOrder<S extends Closable>(options: {
   readonly open: (auth: string, model: string, claim: (session: S) => boolean) => Promise<S>;
   readonly reasonOf?: (error: unknown) => string;
   readonly stop?: () => boolean;
+  readonly lateGraceMs?: number;
 }): Promise<LiveConnectResult<S>> {
   const reasonOf =
     options.reasonOf ?? ((error) => (error instanceof LiveSetupError ? error.reason : "connect"));
@@ -267,22 +271,16 @@ export async function connectLiveInOrder<S extends Closable>(options: {
   const decided = () => state.winner;
   const reasons: string[] = [];
 
-  const settle = (): LiveConnectResult<S> => {
-    state.finished = true;
-    if (state.winner) return { ok: true, ...state.winner };
-    const reason = reasons.includes("rateLimited")
-      ? "rateLimited"
-      : (reasons[reasons.length - 1] ?? "upstream");
-    return { ok: false, stage: "connect", reason };
-  };
+  /** 通行証が 作れずに やめた ときの 理由（鍵・権限・使いすぎ・回線）。 */
+  let authFailure: string | null = null;
 
   for (const model of options.models) {
     if (decided() || options.stop?.()) break;
     const auth = await Promise.race([options.mint(), claimed]);
     if (decided() || !auth) break;
     if (!auth.ok) {
-      state.finished = true;
-      return { ok: false, stage: "auth", reason: auth.reason };
+      authFailure = auth.reason;
+      break;
     }
     if (options.stop?.()) break;
     const claim = claimFor(model);
@@ -299,5 +297,25 @@ export async function connectLiveInOrder<S extends Closable>(options: {
       reasons.push(reasonOf(error));
     }
   }
-  return settle();
+
+  const grace = options.lateGraceMs ?? 0;
+  if (grace > 0 && !decided() && !options.stop?.() && reasons.includes("timeout")) {
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    await Promise.race([
+      claimed,
+      new Promise<null>((resolve) => {
+        timer = setTimeout(() => resolve(null), grace);
+      }),
+    ]);
+    clearTimeout(timer);
+  }
+
+  state.finished = true;
+  const winner = decided();
+  if (winner) return { ok: true, ...winner };
+  if (authFailure !== null) return { ok: false, stage: "auth", reason: authFailure };
+  const reason = reasons.includes("rateLimited")
+    ? "rateLimited"
+    : (reasons[reasons.length - 1] ?? "upstream");
+  return { ok: false, stage: "connect", reason };
 }

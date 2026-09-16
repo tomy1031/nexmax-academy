@@ -6,6 +6,7 @@ import {
   connectLiveInOrder,
   createSetupGate,
   FIRST_AUTH_FRESH_MS,
+  LIVE_SETUP_TIMEOUT_MS,
   reasonFromClose,
   startingWith,
 } from "@/lib/ai/live-connect";
@@ -205,6 +206,11 @@ export function useLiveVoice(options: LiveVoiceOptions = {}): LiveVoice {
   /** 続けて 失敗した 回数（3回で あきらめる）。 */
   const retriesRef = useRef(0);
   const retryTimerRef = useRef(0);
+  /**
+   * 張り直しの 途中に 入れかえを 頼まれた 指示文（まだ 効いて いない もの）。
+   * つながった つなぎが 別の 文で 始まって いたら、もう 一度だけ 黙って 張り直す。
+   */
+  const swapWantedRef = useRef<string | null>(null);
   /** `connect` 自身を 呼ぶ ための 参照（自分の 中からは 名前で 呼べない）。 */
   const connectRef = useRef<(s: string, v?: string, o?: string, silent?: boolean) => Promise<void>>(
     async () => {},
@@ -356,6 +362,10 @@ export function useLiveVoice(options: LiveVoiceOptions = {}): LiveVoice {
       const stale = () => epoch !== epochRef.current;
       closingRef.current = false;
       argsRef.current = { systemInstruction, voice, opening };
+      // 人が 押して 始めた つなぎは まっさら（前の 入れかえの 頼みを 持ちこさない）
+      if (!silent) swapWantedRef.current = null;
+      /** つながった つなぎが どの 指示文で 始まったか（遅れて 勝った ものも 分かる ように）。 */
+      const startedWith = new Map<VoiceSocket, string>();
 
       /*
        * 黙って 張り直す ときは **画面を 動かさない**。
@@ -499,8 +509,13 @@ export function useLiveVoice(options: LiveVoiceOptions = {}): LiveVoice {
            * この 警告は 当てはまらない と 判断する。
            */
           const ai = new GoogleGenAI({ apiKey: auth, apiVersion: "v1beta" });
+          const latest = argsRef.current ?? { systemInstruction, voice };
           // 期限の あとに 遅れて つながった ものも、まだ どれも 決まって いなければ 使う
-          const gate = createSetupGate<VoiceSocket>(undefined, claim);
+          const gate = createSetupGate<VoiceSocket>(undefined, (session) => {
+            const won = claim(session);
+            if (won) startedWith.set(session, latest.systemInstruction);
+            return won;
+          });
           /**
            * この つなぎからの 届きものを 受け取って よいか。古い 世代・断られた つなぎ・
            * 期限を 過ぎて まだ 使うか 決まって いない つなぎ（`late`）は 捨てる。
@@ -510,10 +525,11 @@ export function useLiveVoice(options: LiveVoiceOptions = {}): LiveVoice {
             return !stale() && (phase === "waiting" || phase === "ready");
           };
           /*
-           * 指示文と 声は **ためす その時の もの**を 使う。つなぎ直しの 途中で ラウンドが
-           * 変わる（`swapInstruction` が 書きかえる）と、始めた ときの 文の ままに なる。
+           * 指示文と 声は **ためす その時の もの**（上の `latest`）を 使う。つなぎ直しの
+           * 途中で ラウンドが 変わる（`swapInstruction` が 書きかえる）と、始めた ときの
+           * 文の ままに なる。すでに 始めた つなぎが 古い 文で 勝った ときは、つないだ あとに
+           * もう 一度 張り直す（`swapWantedRef`）。
            */
-          const latest = argsRef.current ?? { systemInstruction, voice };
 
           const connecting = ai.live.connect({
             model,
@@ -549,12 +565,12 @@ export function useLiveVoice(options: LiveVoiceOptions = {}): LiveVoice {
             },
             callbacks: {
               onmessage: (message: unknown) => {
+                /*
+                 * したくの 合図（setupComplete）では 状態を 変えない。SDK は ためた 合図を
+                 * connect が 返る 前に 流す ので、**使われない（負けた）つなぎの 合図**でも
+                 * 「つながった」に なって しまう。つながったの 印は connect の あとで 立てる。
+                 */
                 if (!mine()) return;
-                if (isSetupComplete(message)) {
-                  // つながった。つぎに 切れた ときは また 3回 ためせる
-                  retriesRef.current = 0;
-                  setStatus("live");
-                }
                 /*
                  * 文字起こしは**細切れで**届く（「わたしは」「プノンペン」…）。
                  * 1つずつ字幕にすると読めないし、途中で判定すると言い終える前に
@@ -647,6 +663,7 @@ export function useLiveVoice(options: LiveVoiceOptions = {}): LiveVoice {
           mint: startingWith(first, mint, firstFreshUntil),
           open,
           stop: stale,
+          lateGraceMs: LIVE_SETUP_TIMEOUT_MS,
         });
         if (stale()) {
           // 待って いる あいだに 次の つなぎが 始まった。届いた ものは 使わずに 閉じる
@@ -729,6 +746,19 @@ export function useLiveVoice(options: LiveVoiceOptions = {}): LiveVoice {
             turnComplete: true,
           });
         }
+
+        /*
+         * 張り直しの 途中で ラウンドが 変わって いて、勝った つなぎが **前の 文で**
+         * 始まって いたら、もう 一度だけ 黙って 張り直す。呼ぶ 側は 入れかえを
+         * 1回しか 頼まない ので、ここで 取りこぼすと ラウンド2が 1の 指示文で 続く。
+         */
+        const swapTo = swapWantedRef.current;
+        swapWantedRef.current = null;
+        const args = argsRef.current;
+        if (swapTo !== null && args && startedWith.get(session) !== swapTo) {
+          retriesRef.current = 0;
+          void connectRef.current(swapTo, args.voice, undefined, true);
+        }
       } catch {
         if (stale()) return;
         if (silent) {
@@ -798,6 +828,7 @@ export function useLiveVoice(options: LiveVoiceOptions = {}): LiveVoice {
         const args = argsRef.current;
         if (args && !closingRef.current) {
           argsRef.current = { ...args, systemInstruction, voice: voice ?? args.voice };
+          swapWantedRef.current = systemInstruction;
         }
         return;
       }
@@ -922,12 +953,6 @@ interface Output {
   setBusy: (busy: boolean) => void;
   /** ターンぶんの 音が できた ときに 呼ぶ（聞き返し用）。 */
   onTurnAudio: (url: string) => void;
-}
-
-/** 相手の したくが 済んだか（ここから 送ってよい）。 */
-function isSetupComplete(message: unknown): boolean {
-  if (!message || typeof message !== "object") return false;
-  return (message as { setupComplete?: unknown }).setupComplete !== undefined;
 }
 
 /** 「そろそろ 切ります」の 予告が 来たか。 */

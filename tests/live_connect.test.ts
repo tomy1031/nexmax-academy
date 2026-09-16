@@ -445,6 +445,49 @@ describe("モデルを 上から 順に ためす", () => {
       expect(connects.get("spare")!.session.closed).toBe(true);
     });
 
+    it("つぎの 通行証が 回線の 瞬断で 作れなくても、期限切れの 先頭が 猶予の うちに つながれば 使う", async () => {
+      const connect = pendingConnect("head");
+      let n = 0;
+      let result: unknown = "pending";
+      void connectLiveInOrder<FakeSession>({
+        models: ["head", "spare"],
+        mint: async (): Promise<LiveAuth> =>
+          (n += 1) === 1 ? { ok: true, auth: "t1" } : { ok: false, reason: "network" },
+        open: async (_auth, _model, claim) => {
+          const gate = createSetupGate<FakeSession>(LIVE_SETUP_TIMEOUT_MS, claim);
+          setTimeout(() => connect.resolve(), 10_000);
+          return await gate.wait(connect.promise);
+        },
+        lateGraceMs: LIVE_SETUP_TIMEOUT_MS,
+      }).then((value) => {
+        result = value;
+      });
+      await vi.advanceTimersByTimeAsync(9_500);
+      expect(result).toBe("pending");
+      await vi.advanceTimersByTimeAsync(1_000);
+      expect(result).toMatchObject({ ok: true, model: "head" });
+      expect(connect.session.closed).toBe(false);
+    });
+
+    it("猶予を 過ぎても つながらなければ、鍵の 理由で 返す", async () => {
+      let n = 0;
+      let result: unknown = "pending";
+      void connectLiveInOrder<FakeSession>({
+        models: ["head", "spare"],
+        mint: async (): Promise<LiveAuth> =>
+          (n += 1) === 1 ? { ok: true, auth: "t1" } : { ok: false, reason: "network" },
+        open: async (_auth, _model, claim) => {
+          const gate = createSetupGate<FakeSession>(LIVE_SETUP_TIMEOUT_MS, claim);
+          return await gate.wait(new Promise<FakeSession>(() => {}));
+        },
+        lateGraceMs: 1_000,
+      }).then((value) => {
+        result = value;
+      });
+      await vi.advanceTimersByTimeAsync(LIVE_SETUP_TIMEOUT_MS + 1_000);
+      expect(result).toEqual({ ok: false, stage: "auth", reason: "network" });
+    });
+
     it("どれも 決まらずに 終わった あとに 届いた ものは 閉じる（居座らせない）", async () => {
       const { mint } = recorder();
       const connect = pendingConnect("only");
