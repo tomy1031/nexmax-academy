@@ -2,8 +2,8 @@
   "listeningId": "houkoku_listening",
   "gapSeconds": 1.5,
   "compareGapSeconds": [2],
-  "complete": false,
-  "missing": [22],
+  "complete": true,
+  "missing": [],
   "sentences": [
     {
       "speaker": "narration",
@@ -320,6 +320,22 @@
       "reading": {
         "expected": "ありがとうございます",
         "spoken": "ありがとうございます",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "hendy",
+      "text": "すぐに 始めます。",
+      "file": "22.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 1.54,
+      "longestPause": 0.33,
+      "transcript": "すぐに始めます",
+      "transcriptBy": "gemini-2.5-flash",
+      "reading": {
+        "expected": "すぐにはじめます",
+        "spoken": "すぐにはじめます",
         "distance": 0
       }
     }
