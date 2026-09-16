@@ -1,3 +1,4 @@
+import { isSupersededLiveDefault } from "@/lib/ai/models";
 import { markReady } from "@/lib/auth-cookie";
 import {
   isPersonalityScores,
@@ -61,7 +62,14 @@ const PROFILE_KEY = "nexmax.profile.v3";
 /** v3 で回答形式・スコアの意味が変わったため、旧版は読まずに削除する。 */
 const LEGACY_PROFILE_KEYS = ["nexmax.profile.v1", "nexmax.profile.v2"];
 const GEMINI_KEY = "nexmax.geminiKey";
-const LIVE_MODEL_KEY = "nexmax.liveModel";
+/**
+ * 先生が **選んだ** Live の モデル（2026-09-16 に 版を 上げた）。
+ * 前の 鍵には「保存」を 押した だけで その時の 既定が 書かれて いて、選んだ ものか
+ * ただの 既定か 区別できなかった。新しい 鍵には 選んだ ときだけ 書く（gemini-key-panel.tsx）。
+ */
+const LIVE_MODEL_KEY = "nexmax.liveModel.v2";
+/** 前の 鍵。前の 既定だけ 捨てて 読み継ぐ（先生が 選んだ ほかの 名前は 引き継ぐ）。 */
+const LEGACY_LIVE_MODEL_KEY = "nexmax.liveModel";
 const MAP_VIEW_KEY = "nexmax.mapView";
 /** 書きかけの20問。保存が済んだら消す（`clearDiagnosisDraft`）。 */
 const DIAGNOSIS_DRAFT_KEY = "nexmax.shindanDraft.v1";
@@ -140,15 +148,27 @@ export function saveGeminiKey(key: string): void {
  * 消えたモデルを指したままだと **キーが正しくても つながらない**。しかも画面には
  * 「じゅんびちゅう」としか出ないので、先生には原因が分からない。
  * だから「AI指示出し」の画面で、そのキーで実際に使えるものから選べるようにする。
+ *
+ * 前の 鍵に 残った **前の 既定**（保存を 押しただけで 残る 名前）は 空と 同じに 返す——
+ * そう しないと、既定を 新しく しても その 端末だけ 古い モデルで 話し続ける
+ *（`isSupersededLiveDefault` の 注記）。新しい 鍵に 書いた ものは、3.1 でも そのまま 使う
+ *（3.8 が 使えない 鍵の 先生が 自分で 戻せる ように）。
  */
 export function getLiveModel(): string {
-  return storage()?.getItem(LIVE_MODEL_KEY) ?? "";
+  const target = storage();
+  if (!target) return "";
+  const chosen = target.getItem(LIVE_MODEL_KEY);
+  if (chosen !== null) return chosen;
+  const legacy = target.getItem(LEGACY_LIVE_MODEL_KEY) ?? "";
+  return isSupersededLiveDefault(legacy) ? "" : legacy;
 }
 
 export function saveLiveModel(model: string): void {
   const target = storage();
   if (!target) return;
   const trimmed = model.trim();
+  // 前の 鍵は 読み継ぎの ためだけに ある。選び直したら もう 要らない
+  target.removeItem(LEGACY_LIVE_MODEL_KEY);
   if (trimmed) target.setItem(LIVE_MODEL_KEY, trimmed);
   else target.removeItem(LIVE_MODEL_KEY);
 }
