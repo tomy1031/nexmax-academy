@@ -1,3 +1,4 @@
+import { isSupersededLiveDefault } from "@/lib/ai/models";
 import { markReady } from "@/lib/auth-cookie";
 import {
   isPersonalityScores,
@@ -140,9 +141,14 @@ export function saveGeminiKey(key: string): void {
  * 消えたモデルを指したままだと **キーが正しくても つながらない**。しかも画面には
  * 「じゅんびちゅう」としか出ないので、先生には原因が分からない。
  * だから「AI指示出し」の画面で、そのキーで実際に使えるものから選べるようにする。
+ *
+ * 前の 既定（保存を 押しただけで 残る 名前）は 空と 同じに 返す——
+ * そう しないと、既定を 新しく しても その 端末だけ 古い モデルで 話し続ける
+ *（`isSupersededLiveDefault` の 注記）。
  */
 export function getLiveModel(): string {
-  return storage()?.getItem(LIVE_MODEL_KEY) ?? "";
+  const stored = storage()?.getItem(LIVE_MODEL_KEY) ?? "";
+  return isSupersededLiveDefault(stored) ? "" : stored;
 }
 
 export function saveLiveModel(model: string): void {
