@@ -74,6 +74,13 @@ async function main(): Promise<void> {
       const seconds = (spoken.pcm.byteLength / OUT_RATE / 2).toFixed(1);
       // 読み上げた 中身を 残す。ログだけで 台本と 見くらべられる
       console.log(`${seconds}秒 「${spoken.transcript.trim()}」`);
+      /*
+       * 作れた あとも ひと呼吸 置く。`synthesizeWithFallback` が 待つのは 失敗した ときだけ で、
+       * 成功が つづくと 1分あたりの つなぎ数に ぶつかる——1回目（2026-09-16・run 35072968831）は
+       * **6本ごとに 1本** 「音が 来ないまま 切れました」に なった（Orus の ように ふだん 使えて
+       * いる 声でも 落ちた ので、声の せいでは ない）。
+       */
+      await new Promise((wait) => setTimeout(wait, 10_000));
     } catch (error) {
       // 1つ 作れなくても 全部を 捨てない。もう一度 走らせれば 足りない ぶんだけ 作る
       console.log("できませんでした");
