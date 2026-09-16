@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Listening } from "@/content/schema";
 import { RubyText } from "@/components/ruby-text";
 import { buildFuriganaIndex, type FuriganaIndex } from "@/lib/text/furigana";
@@ -104,10 +104,12 @@ export function ListeningPlayer({
           <Player
             listening={listening}
             mediaRef={mediaRef}
-            captionsOn={captionsOn}
-            onCaptions={() => setCaptionsOn((on) => !on)}
-            typingOn={typingOn}
-            onTyping={() => setTypingOn((on) => !on)}
+            toggles={{
+              captionsOn,
+              onCaptions: () => setCaptionsOn((on) => !on),
+              typingOn,
+              onTyping: () => setTypingOn((on) => !on),
+            }}
           />
 
           {typingOn ? (
@@ -277,31 +279,61 @@ function Intro({
   );
 }
 
-/** 音（または 動画）の プレイヤーと、表示の 切り替え。 */
+/** はやさの 既定は 遅め（設計01 P10）。ボタンの「すこし ゆっくり」。 */
+const INITIAL_SPEED = 0.85;
+
+/**
+ * 鳴らす ものに 速さを かける。YouTube の ときは 部品が 無い（`null`）ので 何も しない。
+ *
+ * - 速度を変えてもピッチは保つ（低い声にしない — 設計01 P10）
+ * - `defaultPlaybackRate` にも 入れる。`<audio>` / `<video>` は 読み直す
+ *   （`load()`・`src` の 差しかえ）と `playbackRate` を こちらへ 戻すので、
+ *   `playbackRate` だけ だと その たびに ふつうの 速さに 戻る。
+ */
+function applySpeed(media: HTMLMediaElement | null, value: number) {
+  if (!media) return;
+  media.defaultPlaybackRate = value;
+  media.playbackRate = value;
+  media.preservesPitch = true;
+}
+
+/**
+ * 音（または 動画）の プレイヤーと、表示の 切り替え。
+ *
+ * 「きく」と「たしかめ」の 両方で 使う。表示の 切り替え（げんこう・タイピング）は
+ * 「きく」の ときだけ 渡す——こたえあわせでは 原稿は もう 全部 見えて いて、
+ * タイピングも 終わって いるので、押しても 何も 変わらない ボタンに なる。
+ */
 function Player({
   listening,
   mediaRef,
-  captionsOn,
-  onCaptions,
-  typingOn,
-  onTyping,
+  toggles,
 }: {
   listening: Listening;
   mediaRef: React.RefObject<HTMLMediaElement | null>;
-  captionsOn: boolean;
-  onCaptions: () => void;
-  typingOn: boolean;
-  onTyping: () => void;
+  toggles?: {
+    captionsOn: boolean;
+    onCaptions: () => void;
+    typingOn: boolean;
+    onTyping: () => void;
+  };
 }) {
-  const [speed, setSpeedValue] = useState(0.85); // 既定は遅め（設計01 P10）
+  const [speed, setSpeedValue] = useState(INITIAL_SPEED);
+
+  /*
+   * **開いた ときから 札と 音を そろえる。** 前は ボタンを 押した ときにしか
+   * 速さを かけて いなかったので、「すこし ゆっくり」が 押された 札の まま
+   * ふつうの 速さ（`playbackRate` の 既定 1）で 鳴って いた。
+   * 「きく」と「こたえあわせ」の どちらでも、出る たびに 新しい 音の 部品に なる。
+   * かけるのは 定数では なく **いまの 札（`speed`）**——札と 音が ずれる 道を 残さない。
+   */
+  useEffect(() => {
+    applySpeed(mediaRef.current, speed);
+  }, [mediaRef, speed]);
 
   const setSpeed = (value: number) => {
     setSpeedValue(value);
-    // 速度を変えてもピッチは保つ（低い声にしない — 設計01 P10）
-    if (mediaRef.current) {
-      mediaRef.current.playbackRate = value;
-      mediaRef.current.preservesPitch = true;
-    }
+    applySpeed(mediaRef.current, value);
   };
 
   return (
@@ -360,10 +392,12 @@ function Player({
           </>
         )}
 
-        <span className="ml-auto flex flex-wrap gap-2">
-          <Toggle on={captionsOn} onClick={onCaptions} label="げんこう" />
-          <Toggle on={typingOn} onClick={onTyping} label="タイピング" />
-        </span>
+        {toggles ? (
+          <span className="ml-auto flex flex-wrap gap-2">
+            <Toggle on={toggles.captionsOn} onClick={toggles.onCaptions} label="げんこう" />
+            <Toggle on={toggles.typingOn} onClick={toggles.onTyping} label="タイピング" />
+          </span>
+        ) : null}
       </div>
     </section>
   );
@@ -484,6 +518,13 @@ function NextGate({
  *
  * 「きく」のあいだは伏せていたページ送りを、ここで出す。
  * 1行ずつ進めるのは、全部いっぺんに出すと どこを聞き逃したかが分からないため。
+ *
+ * ## ここでも 音を 鳴らせる
+ * 原稿を 読みながら **その場で 聞き直せる** ように、「きく」と 同じ プレイヤーを
+ * 上に 置く（2026-09-16 の 指定）。前は「もういちど 聞く」で 入力の 画面へ
+ * 戻るしか なく、読んで いた 行が 見えなく なった。
+ * 台本に 行ごとの 時刻（`at`）が 入った 教材は まだ 無いので、行ごとの 再生は しない。
+ * 音の 無い 教材では 何も 出さない（鳴らない ボタンを 置かない）。
  */
 function Review({
   listening,
@@ -502,6 +543,7 @@ function Review({
 }) {
   const total = listening.script.length;
   const shown = listening.script.slice(0, line + 1);
+  const mediaRef = useRef<HTMLMediaElement>(null);
 
   return (
     <section className="card-island p-5">
@@ -509,6 +551,12 @@ function Review({
       <p className="text-ink-soft mt-1 text-sm font-bold">
         1つずつ ひらいて、聞こえた ことばと くらべてみましょう。
       </p>
+
+      {mediaKind(listening) === "none" ? null : (
+        <div className="mt-4">
+          <Player listening={listening} mediaRef={mediaRef} />
+        </div>
+      )}
 
       <ol className="mt-4 space-y-2">
         {shown.map((item, index) => (

@@ -26,7 +26,7 @@ import { evalKey } from "./eval-key";
  * 画面の 実装と 同じに して おく——ここの 形が ずれると、この 検証は 何も 守らない。
  *
  * - ミーティング・対話ゲームの 声 … `use-live-voice.ts`（押して 話す・自動の 区切りを 切る）
- * - リスニングの たいわ …………… `use-live-session.ts`（マイクを 流しつづけ、区切りは 相手が 決める）
+ * - たいわ（要件定義 など） ……… `use-live-session.ts`（押して 話す・書いて 送る。2026-09-16 から 🎤 が オンの あいだだけ）
  * - AIの みかた ……………………… `judge-api.ts`（道具で 見かたを 返させる・つなぎを 使い回す）
  * - 音声づくり ……………………… `live-tts.ts`（書いて ある とおりに 読む）
  *
@@ -68,6 +68,10 @@ interface Live {
   heard(): string;
   /** 相手が ターンを 言い終えたか。 */
   turnDone(): boolean;
+  /** 相手の セリフが 途中で 止められたか（割り込み）。 */
+  interrupted(): boolean;
+  /** 届いた 順（音の かけら・割り込み・言い終わり）。reset では 消さない。 */
+  events(): readonly ("audio" | "interrupted" | "complete")[];
   /** reset から あとに 届いた 道具の 呼び出し。 */
   toolCalls(): readonly ToolCall[];
   /** 切られた 理由（切られて いなければ null）。鍵も トークンも 入らない。 */
@@ -90,6 +94,8 @@ async function openLive(key: string, model: string, config: LiveConnectConfig): 
   let said = "";
   let heard = "";
   let done = false;
+  let cut = false;
+  const events: ("audio" | "interrupted" | "complete")[] = [];
   let calls: ToolCall[] = [];
   let closed: string | null = null;
 
@@ -101,11 +107,18 @@ async function openLive(key: string, model: string, config: LiveConnectConfig): 
       onmessage: (message) => {
         const content = message.serverContent;
         for (const part of content?.modelTurn?.parts ?? []) {
-          if (part.inlineData?.data) bytes += Buffer.from(part.inlineData.data, "base64").length;
+          if (!part.inlineData?.data) continue;
+          bytes += Buffer.from(part.inlineData.data, "base64").length;
+          if (events.at(-1) !== "audio") events.push("audio");
         }
+        if (content?.interrupted) events.push("interrupted");
         if (content?.outputTranscription?.text) said += content.outputTranscription.text;
         if (content?.inputTranscription?.text) heard += content.inputTranscription.text;
-        if (content?.turnComplete) done = true;
+        if (content?.turnComplete) {
+          done = true;
+          events.push("complete");
+        }
+        if (content?.interrupted) cut = true;
         for (const call of message.toolCall?.functionCalls ?? []) {
           calls = [...calls, { id: call.id, name: call.name, args: call.args }];
         }
@@ -135,6 +148,8 @@ async function openLive(key: string, model: string, config: LiveConnectConfig): 
     said: () => said,
     heard: () => heard,
     turnDone: () => done,
+    interrupted: () => cut,
+    events: () => events,
     toolCalls: () => calls,
     closedWith: () => closed,
     reset: () => {
@@ -142,6 +157,7 @@ async function openLive(key: string, model: string, config: LiveConnectConfig): 
       said = "";
       heard = "";
       done = false;
+      cut = false;
       calls = [];
     },
     close: () => {
@@ -273,36 +289,62 @@ test.describe("Live の 先頭の モデル（鍵が あるときだけ）", () 
     }
   });
 
-  test(`リスニングの たいわ: ${LIVE_TALK_MODELS[0]} が 流しつづけた 声の 切れ目で 返す`, async () => {
+  test(`たいわ: ${LIVE_TALK_MODELS[0]} が 書いて 送る・話し中に 送る・押して 話すに 返す`, async () => {
     const model = LIVE_TALK_MODELS[0];
+    // `use-live-session.ts` と 同じ 形（2026-09-16 から 自動の 区切りを 切る）
     const live = await openLive(evalKey(), model, {
       responseModalities: [Modality.AUDIO],
       systemInstruction: HOST_SYSTEM,
       inputAudioTranscription: {},
       outputAudioTranscription: {},
+      realtimeInputConfig: { automaticActivityDetection: { disabled: true } },
       speechConfig: {
         languageCode: "ja-JP",
         voiceConfig: { prebuiltVoiceConfig: { voiceName: "Schedar" } },
       },
     });
     try {
-      // マイクは 開きっぱなし: 声の あとに 無音を 流し、区切りは 相手に 決めさせる
-      await streamPcm(live, voiceSampleAt16k());
-      await streamPcm(live, new Int16Array(IN_RATE * 2));
-      await waitFor(live, "声の 切れ目での 返事", () => live.audioBytes() > 0 && live.turnDone());
-      console.log(
-        `[live-models] listening ${model} 聞き取り「${live.heard().trim()}」 → 「${live.said().trim()}」`,
-      );
-      expect(live.heard().trim(), "こちらの 声が 聞き取られて いない").not.toBe("");
+      // 1) 書いて 送る（send は 文字列の turns）
+      live.session.sendClientContent({
+        turns: "はじめまして。アプリの ことを 聞きに きました。",
+        turnComplete: true,
+      });
+      await waitFor(live, "書いて 送った ことへの 声の 返事", () => live.audioBytes() > 0);
 
-      // 書いて 送る（`use-live-session.ts` の send は 文字列の turns）
+      /*
+       * 2) 相手が 話して いる 最中に もう 一度 送る。3.8 は 生成を 止める（割り込み）。
+       * 止まる かどうかは 1つ目の 返事の 長さ しだいなので **記録だけ** する。
+       * 2つ目の 返事は「1つ目の 区切り（言い終わり か 割り込み）の あとの 音 → 言い終わり」で 見る。
+       */
+      const sentAt = live.events().length;
+      const firstDone = live.events().includes("complete");
+      live.session.sendClientContent({ turns: "よさんは いくらですか。", turnComplete: true });
+      await waitFor(live, "話し中に 送った ことへの 返事", () => {
+        const after = live.events().slice(sentAt);
+        const edge = firstDone
+          ? -1
+          : after.findIndex((event) => event === "interrupted" || event === "complete");
+        if (!firstDone && edge < 0) return false;
+        const sound = after.indexOf("audio", edge + 1);
+        return sound >= 0 && after.indexOf("complete", sound + 1) >= 0;
+      });
+      console.log(
+        `[live-models] taiwa ${model} 話し中に 送る（1つ目が 先に 終わって いた ${firstDone}・割り込み ${live.interrupted()}）→ ${live.events().slice(sentAt).join(",")}`,
+      );
+
+      // 3) 押して 話す（🎤 オン → 音 → 🎤 オフ）
+      await sleep(1_000);
       live.reset();
-      live.session.sendClientContent({ turns: "よろしく おねがいします。", turnComplete: true });
+      await pushToTalk(live, voiceSampleAt16k());
       await waitFor(
         live,
-        "書いて 送った ことへの 返事",
+        "押して 話した ことへの 声の 返事",
         () => live.audioBytes() > 0 && live.turnDone(),
       );
+      console.log(
+        `[live-models] taiwa ${model} 聞き取り「${live.heard().trim()}」 → 「${live.said().trim()}」`,
+      );
+      expect(live.heard().trim(), "こちらの 声が 聞き取られて いない").not.toBe("");
       expect(live.closedWith()).toBeNull();
     } finally {
       live.close();
