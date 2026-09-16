@@ -22,6 +22,18 @@ import type { FuriganaIndex } from "@/lib/text/furigana";
  * 高さは 画面の 88%まで。超えたら 中で 縦に すべる（小さい 端末で 上下が
  * 切れて、とじる ボタンに 手が 届かなく なる のを 防ぐ）。
  *
+ * ## 中身は **写せない**
+ * 2026-09-16 の 指定「モーダルの コピペは 禁止に して ください」。
+ *
+ * ポップアップの 中身は **足場**（報告の もとに なる メモ・型文・見かた）で、
+ * 学習者が **自分の ことばに 組み直す**ための ものです。そのまま 選んで 貼れると、
+ * 練習が 写経に なる——「きのう したこと」の 1行を そのまま 送れば カードは 開くのに、
+ * 報告は 一度も 作って いない、という 抜け道に なる。
+ *
+ * 選べなく する（`select-none`）だけでは 足りない。キーボードの Ctrl+A → Ctrl+C は
+ * 通って しまう ブラウザが ある ので、`copy` / `cut` / `dragstart` も 止める。
+ * 読むのと タップして 意味を 見るのは これまでどおり できる。
+ *
  * 幅は ふだん `max-w-md`。中身が 表や 何段もの 箱に なる ものは `wide` を 渡して
  * `max-w-2xl` に する——PC で `max-w-md` の ままだと **細長い 短冊**に なり、
  * 10行の 表が 1行ずつ 折り返して 縦に 伸びる（2026-09-16 の 指定
@@ -85,10 +97,14 @@ export function ModalShell({
         animate={{ opacity: 1, scale: 1, y: 0 }}
         tabIndex={-1}
         autoFocus
-        className={`card-island max-h-[88vh] w-full overflow-y-auto p-5 outline-none ${
+        className={`card-island max-h-[88vh] w-full overflow-y-auto p-5 outline-none select-none ${
           wide ? "max-w-2xl" : "max-w-md"
         }`}
         onClick={(event) => event.stopPropagation()}
+        /* 写して 貼る 道を 閉じる（上の「中身は 写せない」）。 */
+        onCopy={(event) => event.preventDefault()}
+        onCut={(event) => event.preventDefault()}
+        onDragStart={(event) => event.preventDefault()}
       >
         {title ? <p className="text-navy text-center text-lg font-black">{title}</p> : null}
         {children}

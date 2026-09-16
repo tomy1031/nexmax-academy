@@ -197,6 +197,21 @@ test("朝礼（かんたん）— 報告すると カードが 開く", async ({
   await shot(page, "asakai-02-kantan-duty");
   /* ポップアップが 開いて いる あいだも 裸の 漢字は 0。 */
   expect(await bareKanjiTexts(page)).toEqual([]);
+  /*
+   * **中身は 写せない**（2026-09-16 の 指定「モーダルの コピペは 禁止に して ください」）。
+   * そのまま 貼れると、報告を 一度も 作らずに カードが 開く 抜け道に なる。
+   */
+  const copyGuard = await page.evaluate(() => {
+    const island = document.querySelector('[role="dialog"] .card-island') as HTMLElement | null;
+    if (!island) return null;
+    /* React は 根で 受ける ので **bubbles を 立てる**（立てないと 届かない）。 */
+    const blocked = !island.dispatchEvent(
+      new ClipboardEvent("copy", { bubbles: true, cancelable: true }),
+    );
+    return { select: getComputedStyle(island).userSelect, blocked };
+  });
+  expect(copyGuard?.select).toBe("none");
+  expect(copyGuard?.blocked, "コピーが 止まって いない").toBe(true);
   await dutyModal.getByRole("button", { name: "とじる" }).click();
   await expect(dutyModal).toBeHidden();
   await shot(page, "asakai-02-kantan-mon");
