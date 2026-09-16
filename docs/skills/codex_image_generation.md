@@ -191,8 +191,9 @@ codex -i public/img/characters/nexmax/reference.png \
 | `scripts/images/asakai_cards.json` | 朝礼ページの 3点セットの カード 3枚（きのう・きょう・こまりごと。文字なし） | 2026-09-10 |
 | `scripts/images/asakai_zukai.json` | 同 1枚（朝の 会・夕方の 会・文字で 書く 会 の 図。**文字あり**） | 2026-09-10 |
 | `scripts/images/asakai_tasks.json` | 朝礼・夕礼ステージの しごとの 表の 絵 10枚（**80px で 出す 場面の 絵**。§6.8） | 2026-09-16 |
-| `scripts/images/asakai_team.json` | 「KhmerSabaiの 朝礼」ページ 12枚（表紙・ゴール・しごと 8枚・先週・大切。文字なし） | 2026-09-16 |
-| `scripts/images/asakai_team_zukai.json` | 同 11枚（流れの 図・担当 4枚・注文IDと 金額・名前を 呼ばれる・報告 4枚。**文字あり**） | 2026-09-16 |
+| `scripts/images/asakai_team.json` | 「KhmerSabaiの 朝礼」ページ 4枚（表紙・ゴール・先週・大切。文字なし） | 2026-09-16 |
+| `scripts/images/asakai_team_zukai.json` | 同 10枚（流れの 図・担当 4枚・名前を 呼ばれる・報告 4枚。**文字あり**） | 2026-09-16 |
+| — | 同ページの **しごと 9枚は 撮らない**。朝礼の 画面と 同じ `asakai_tasks.json` の 絵を 使う（同じ しごとの 絵が 2枚に ならない ように） | 2026-09-16 |
 | `scripts/images/asakai_team_tabi.json` | 同 4枚（旅行者が アプリを つかう カード。**設定画を 参照に 渡さない**） | 2026-09-16 |
 
 **学習者役を 毎回 同じ 顔に しない**（2026-08-28 の 指摘「同じ女性を使いすぎ」「背景にもバリエーションが

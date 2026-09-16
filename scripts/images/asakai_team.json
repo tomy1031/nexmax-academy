@@ -4,7 +4,7 @@
     "public/img/characters/okuda/sheet.webp",
     "public/img/characters/nyam/sheet.webp"
   ],
-  "_comment": "「KhmerSabaiの 朝礼」ページ（content/articles/asakai_team.json）の 絵の うち、文字を 焼かない 12枚。台帳が 正で、教材JSONの prompt は その 写し（scripts/lib/image_ledger.mjs）。文字を 焼く 11枚は asakai_team_zukai.json、旅行者の 4枚は asakai_team_tabi.json。",
+  "_comment": "「KhmerSabaiの 朝礼」ページ（content/articles/asakai_team.json）の 絵の うち、文字を 焼かない 4枚。台帳が 正で、教材JSONの prompt は その 写し（scripts/lib/image_ledger.mjs）。文字を 焼く 7枚は asakai_team_zukai.json、旅行者の 4枚は asakai_team_tabi.json。**しごとの 9枚は 撮らない**——朝礼の 画面と 同じ 絵（scripts/images/asakai_tasks.json・public/img/asakai/tasks/）を 使う。",
   "style": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This is a TEACHING picture, not a mood picture: what each person is doing must be readable from the picture alone.",
   "noText": "No text, no letters, no kanji, no kana, no numbers anywhere in the image. Screens, papers, whiteboards, books and signs are blank or show only soft abstract shapes and simple pictures. No watermark, no signature, no logo, no speech balloons, no floating symbols such as question marks, exclamation marks, arrows, light bulbs, stars or hearts.",
   "negative": "Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots. Payment cards, wallet icons and payment buttons carry ONLY plain abstract stripes and a small blank chip — never two overlapping coloured circles, never four coloured squares, never a swoosh, and never any mark or wordmark that resembles a real card brand or a real bank.",
@@ -27,78 +27,6 @@
       "priority": "A",
       "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: on Friday the four separate parts are joined into one working flow, and next Monday the whole team tests it together. A bright office meeting corner in the afternoon. the team leader Hendy — a slim man in his late twenties with short black slightly tousled hair, a navy two-button suit, a white shirt and a navy tie (follow his model sheet), Okuda — a man in his mid twenties with wavy messy black hair, black thick-rimmed glasses and a dark green hoodie (follow his model sheet), Nyam — a Southeast Asian man in his twenties with warm light-brown skin, short black hair swept up and back, and a coral knit cardigan over a cream shirt (follow his model sheet) and the two new engineers — a young Cambodian woman in her early twenties with warm light-brown skin, a round friendly face and black hair tied back in a low ponytail, wearing a mint-green blouse and beige trousers, and a young Cambodian man in his early twenties with warm light-brown skin, short black hair with a neat side part, wearing a light blue short-sleeved shirt and dark grey chinos; both wear a lanyard with a blank white card. NEVER GIVE THESE TWO THE SAME FACE — she is clearly a woman and he is clearly a man stand around a low table, all five of them smiling and leaning in. On the table lie four large rounded cards like jigsaw pieces that they are fitting together into one long chain: the first card shows a simple order list drawing, the second a database cylinder drawing, the third a phone with a big button drawing, the fourth a plug and socket drawing. The last two pieces are being pressed together by two different hands, and the joins between the pieces are CLEARLY CLOSED with no gaps. No writing anywhere. Wide shot filling the frame.",
       "output": "Output: one landscape illustration, 1536x1024."
-    },
-    {
-      "out": "asakai_team_job_gamen",
-      "dest": "public/img/articles/asakai_team/job_gamen.webp",
-      "title": "しごと①：決済の 画面",
-      "where": "content/articles/asakai_team.json あなたの 担当 カード1",
-      "priority": "A",
-      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: the payment screen itself — the page where the traveller pays. Close view of one smartphone standing upright on a tidy desk, lit from a window. The screen shows a simple payment page: a wide summary panel at the top with two soft grey placeholder bars, three payment method rows below, each with a small round empty radio mark, and one big rounded sky-blue button at the bottom. No writing at all, no numbers. No people. The phone fills the middle of the frame.",
-      "output": "Output: one square illustration, 1024x1024. Close view — the subject fills the frame edge to edge."
-    },
-    {
-      "out": "asakai_team_job_aba",
-      "dest": "public/img/articles/asakai_team/job_aba.webp",
-      "title": "しごと②：ABA Payの ボタン",
-      "where": "content/articles/asakai_team.json あなたの 担当 カード2",
-      "priority": "A",
-      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: one big payment button on the screen, and a finger pressing it. Very close view of a smartphone held in one hand. The screen is almost blank white, and in the middle of it sits ONE big rounded sky-blue button with a simple generic wallet drawing on it — a plain rounded purse shape, not any real brand mark. A fingertip from the other hand is just touching the button, and a soft ring of light spreads out from the touch. No writing at all, no numbers. Exactly five fingers on each hand.",
-      "output": "Output: one square illustration, 1024x1024. Close view — the subject fills the frame edge to edge."
-    },
-    {
-      "out": "asakai_team_job_erabu",
-      "dest": "public/img/articles/asakai_team/job_erabu.webp",
-      "title": "しごと④：支払方法を えらぶ",
-      "where": "content/articles/asakai_team.json あなたの 担当 カード4",
-      "priority": "A",
-      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: choosing one payment method out of several. Close view of a smartphone standing upright on a desk. The screen shows three payment method rows stacked one under another, each row with a small square card drawing on the left and a round radio mark on the right. The MIDDLE row is clearly chosen: its radio mark is filled in sky blue and the whole row is framed with a thicker sky-blue border, while the other two rows stay pale grey. No writing at all, no numbers. No people.",
-      "output": "Output: one square illustration, 1024x1024. Close view — the subject fills the frame edge to edge."
-    },
-    {
-      "out": "asakai_team_job_api",
-      "dest": "public/img/articles/asakai_team/job_api.webp",
-      "title": "しごと⑤：決済APIと つなぐ",
-      "where": "content/articles/asakai_team.json あなたの 担当 カード5",
-      "priority": "A",
-      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: the phone screen is joined to the payment server by a cable, and both ends are firmly plugged in. Close view on a desk: on the left a smartphone standing upright with a blank white screen, on the right a small rounded server box with a row of soft indicator dots. One thick sky-blue cable runs between them in a gentle curve. BOTH ENDS ARE CLEARLY PLUGGED IN — each connector goes all the way into its socket with no gap, and the cable never ends in mid air. No writing at all, no numbers. No people.",
-      "output": "Output: one square illustration, 1024x1024. Close view — the subject fills the frame edge to edge."
-    },
-    {
-      "out": "asakai_team_job_shori",
-      "dest": "public/img/articles/asakai_team/job_shori.webp",
-      "title": "しごと⑥：処理中の 表示",
-      "where": "content/articles/asakai_team.json あなたの 担当 カード6",
-      "priority": "A",
-      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: the screen says please wait — the payment is still being processed. Close view of a smartphone standing upright on a desk, its screen dimmed with a soft pale overlay. In the middle of the screen sits one large circular loading ring, three quarters sky blue and one quarter pale grey, with a small hourglass drawing inside it. The rest of the screen is blank. No writing at all, no numbers. No people.",
-      "output": "Output: one square illustration, 1024x1024. Close view — the subject fills the frame edge to edge."
-    },
-    {
-      "out": "asakai_team_job_seikou",
-      "dest": "public/img/articles/asakai_team/job_seikou.webp",
-      "title": "しごと⑦：成功の 画面",
-      "where": "content/articles/asakai_team.json あなたの 担当 カード7",
-      "priority": "A",
-      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: the payment worked — the success screen. Close view of a smartphone standing upright on a desk. The screen is bright and clean, and in the middle sits ONE large fresh-green circle with a thick white tick mark inside it, with a few small soft confetti shapes around it. Below the circle, one wide rounded button. No writing at all, no numbers. No people.",
-      "output": "Output: one square illustration, 1024x1024. Close view — the subject fills the frame edge to edge."
-    },
-    {
-      "out": "asakai_team_job_shippai",
-      "dest": "public/img/articles/asakai_team/job_shippai.webp",
-      "title": "しごと⑧：失敗の 画面",
-      "where": "content/articles/asakai_team.json あなたの 担当 カード8",
-      "priority": "A",
-      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: the payment did not go through — the failure screen, calm and not frightening. Close view of a smartphone standing upright on a desk. The screen shows ONE large soft-orange rounded triangle with a thick white exclamation bar inside it in the middle, on a pale cream panel, and one wide rounded button below it. Gentle daylight, calm mood — this is a small everyday problem, not a disaster. No writing at all, no numbers. No people.",
-      "output": "Output: one square illustration, 1024x1024. Close view — the subject fills the frame edge to edge."
-    },
-    {
-      "out": "asakai_team_job_test",
-      "dest": "public/img/articles/asakai_team/job_test.webp",
-      "title": "しごと⑨：フロントの テスト",
-      "where": "content/articles/asakai_team.json あなたの 担当 カード9",
-      "priority": "A",
-      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: checking the finished screens one by one, ticking each one off. Close view of a tidy desk from slightly above: a smartphone lying flat with a blank white screen, a large magnifying glass lying beside it with its lens over the phone, and a cream checklist card standing next to them with five rows — three rows already carrying a thick sky-blue tick and two rows still empty. No writing at all, no numbers. No people.",
-      "output": "Output: one square illustration, 1024x1024. Close view — the subject fills the frame edge to edge."
     },
     {
       "out": "asakai_team_lastweek",

@@ -4,7 +4,7 @@
     "public/img/characters/okuda/sheet.webp",
     "public/img/characters/nyam/sheet.webp"
   ],
-  "_comment": "「KhmerSabaiの 朝礼」ページ（content/articles/asakai_team.json）の 絵の うち、文字を 焼く 11枚。noText は hourensou_zukai／asakai_zukai と 同じ 文を 逐語で 使う。文字を 焼かない 16枚は asakai_team.json。",
+  "_comment": "「KhmerSabaiの 朝礼」ページの 絵の うち、文字を 焼く 10枚。noText は hourensou_zukai／asakai_zukai と 同じ 文を 逐語で 使う。文字を 焼かない 4枚は asakai_team.json、旅行者の 4枚は asakai_team_tabi.json。",
   "style": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This is a TEACHING picture, not a mood picture: what each person is doing must be readable from the picture alone. This one is a teaching diagram: few large elements, generous spacing, each label sitting on a soft cream panel with a rounded border, arranged so the eye reads it in one pass.",
   "noText": "Japanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana. Spell every character exactly as given. No other letters, numbers, logos or watermarks anywhere in the picture.",
   "negative": "Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots. Payment cards, wallet icons and payment buttons carry ONLY plain abstract stripes and a small blank chip — never two overlapping coloured circles, never four coloured squares, never a swoosh, and never any mark or wordmark that resembles a real card brand or a real bank.",
@@ -54,16 +54,6 @@
       "priority": "A",
       "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: Hendy builds the payment server behind the screen, and checks the result that comes back. A teaching diagram on a soft sky-blue background. On the left a smartphone drawing with one big rounded button; on the right a large rounded server box with a row of soft indicator dots, and a cream label panel above it carrying its Japanese label. A thick sky-blue cable runs between the phone and the server, and BOTH ENDS ARE CLEARLY PLUGGED IN — each connector goes all the way into its socket with no gap. Above the cable a smaller cream panel carries its Japanese label, with a small magnifying glass drawing beside it. No people, no other writing. In the BOTTOM RIGHT CORNER of the picture there is a small round portrait inset with a thick cream border — inside it, the head and shoulders of the team leader Hendy — a slim man in his late twenties with short black slightly tousled hair, a navy two-button suit, a white shirt and a navy tie (follow his model sheet), facing the viewer with a calm friendly smile. The inset is about one fifth of the picture height and sits clearly on top of the scene.",
       "text": ["決済API", "決済結果の 確認"]
-    },
-    {
-      "out": "asakai_team_job_hyouji",
-      "dest": "public/img/articles/asakai_team/job_hyouji.webp",
-      "title": "しごと③：注文IDと 金額の 表示",
-      "where": "content/articles/asakai_team.json あなたの 担当 カード3",
-      "priority": "A",
-      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: the payment screen shows which order this is, and how much it costs. Close view of one smartphone standing upright on a tidy desk. The screen is almost blank, and near the top sits one wide cream panel with two lines in it. The first line carries its Japanese label on the left. The second line carries its Japanese label on the left. Nothing else is written on the screen. No people. The phone fills the middle of the frame.",
-      "text": ["注文ID", "合計金額"],
-      "output": "Output: one square illustration, 1024x1024. Close view — the subject fills the frame edge to edge."
     },
     {
       "out": "asakai_team_yobare",
