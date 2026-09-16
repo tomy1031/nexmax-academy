@@ -3,7 +3,7 @@
   "gapSeconds": 1.5,
   "compareGapSeconds": [2],
   "complete": false,
-  "missing": [5, 11, 15, 21, 22],
+  "missing": [5, 15, 21, 22],
   "sentences": [
     {
       "speaker": "narration",
@@ -137,6 +137,21 @@
       "reading": {
         "expected": "もじをにゅうりょくするとしすてむがとまってしまうというばぐがみつかりました",
         "spoken": "もじをにゅうりょくするとしすてむがとまってしまうというばぐがみつかりました",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "hendy",
+      "text": "おそらく 設定の ミスだと 思います。",
+      "file": "11.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 2.75,
+      "longestPause": 0.15,
+      "transcript": "おそらく設定のミスだと思います。",
+      "reading": {
+        "expected": "おそらくせっていのみすだとおもいます",
+        "spoken": "おそらくせっていのみすだとおもいます",
         "distance": 0
       }
     },
