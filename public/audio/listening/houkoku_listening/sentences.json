@@ -1,0 +1,264 @@
+{
+  "listeningId": "houkoku_listening",
+  "gapSeconds": 1.5,
+  "compareGapSeconds": [2],
+  "complete": false,
+  "missing": [5, 11, 15, 21, 22],
+  "sentences": [
+    {
+      "speaker": "narration",
+      "text": "はじめに「報告」に ついて 話します。",
+      "file": "01.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 3.76,
+      "longestPause": 0.76,
+      "transcript": "はじめに「報告」について話します。",
+      "reading": {
+        "expected": "はじめにほうこくについてはなします",
+        "spoken": "はじめにほうこくについてはなします",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "プログラミングで スケジュールに 遅れそうな とき、どう しますか。",
+      "file": "02.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 4.61,
+      "longestPause": 0.33,
+      "transcript": "プログラミングでスケジュールに遅れそうなとき、どうしますか。",
+      "reading": {
+        "expected": "ぷろぐらみんぐですけじゅうるにおくれそうなときどうしますか",
+        "spoken": "ぷろぐらみんぐですけじゅうるにおくれそうなときどうしますか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "「怒られるかも しれない」と 思って、隠す ことは いけません。",
+      "file": "03.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 4.33,
+      "longestPause": 0.38,
+      "transcript": "「怒られるかもしれない」と思って、隠すことはいけません。",
+      "reading": {
+        "expected": "おこられるかもしれないとおもってかくすことはいけません",
+        "spoken": "おこられるかもしれないとおもってかくすことはいけません",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "悪い ニュースほど、早く 言わなければ なりません。",
+      "file": "04.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 3.44,
+      "longestPause": 0.26,
+      "transcript": "悪いニュースほど、早く言わなければなりません。",
+      "reading": {
+        "expected": "わるいにゅうすほどはやくいわなければなりません",
+        "spoken": "わるいにゅうすほどはやくいわなければなりません",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "では、会話を 聞いて みましょう。",
+      "file": "06.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 2.41,
+      "longestPause": 0.5,
+      "transcript": "では、会話を 聞いて みましょう。",
+      "reading": {
+        "expected": "ではかいわをきいてみましょう",
+        "spoken": "ではかいわをきいてみましょう",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "hendy",
+      "text": "藤木さん、お伝えしたい ことが あるんですが、今 少し お時間 よろしいでしょうか。",
+      "file": "07.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 5.38,
+      "longestPause": 0.37,
+      "transcript": "藤木さん、お伝えしたいことが あるんですが、今少しお時間よろしいでしょうか。",
+      "reading": {
+        "expected": "ふじきさんおつたえしたいことがあるんですがいますこしおじかんよろしいでしょうか",
+        "spoken": "ふじきさんおつたえしたいことがあるんですがいますこしおじかんよろしいでしょうか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "fujiki",
+      "text": "はい、何ですか。",
+      "file": "08.wav",
+      "voice": "Algieba",
+      "model": "gemini-3.1-flash-live-preview",
+      "seconds": 1.15,
+      "longestPause": 0.16,
+      "transcript": "はい、何ですか。",
+      "reading": {
+        "expected": "はいなんですか",
+        "spoken": "はいなんですか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "hendy",
+      "text": "今 作って いる システムに 問題が あります。",
+      "file": "09.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 3.4,
+      "longestPause": 0.21,
+      "transcript": "今作っているシステムに問題があります。",
+      "reading": {
+        "expected": "いまつくっているしすてむにもんだいがあります",
+        "spoken": "いまつくっているしすてむにもんだいがあります",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "hendy",
+      "text": "文字を 入力すると システムが 止まって しまうという バグが 見つかりました。",
+      "file": "10.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 4.92,
+      "longestPause": 0.26,
+      "transcript": "文字を入力するとシステムが止まってしまうというバグが見つかりました。",
+      "reading": {
+        "expected": "もじをにゅうりょくするとしすてむがとまってしまうというばぐがみつかりました",
+        "spoken": "もじをにゅうりょくするとしすてむがとまってしまうというばぐがみつかりました",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "fujiki",
+      "text": "そうですか。",
+      "file": "12.wav",
+      "voice": "Algieba",
+      "model": "gemini-3.1-flash-live-preview",
+      "seconds": 0.77,
+      "longestPause": 0.04,
+      "transcript": "そうですか。",
+      "reading": {
+        "expected": "そうですか",
+        "spoken": "そうですか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "fujiki",
+      "text": "直すのに、どのくらい 時間が かかりますか。",
+      "file": "13.wav",
+      "voice": "Algieba",
+      "model": "gemini-3.1-flash-live-preview",
+      "seconds": 2.75,
+      "longestPause": 0.03,
+      "transcript": "直すのに、どのくらい時間がかかりますか。",
+      "reading": {
+        "expected": "なおすのにどのくらいじかんがかかりますか",
+        "spoken": "なおすのにどのくらいじかんがかかりますか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "fujiki",
+      "text": "来週の テストに 間に合いますか。",
+      "file": "14.wav",
+      "voice": "Algieba",
+      "model": "gemini-3.1-flash-live-preview",
+      "seconds": 2.32,
+      "longestPause": 0.03,
+      "transcript": "来週のテストに間に合いますか。",
+      "reading": {
+        "expected": "らいしゅうのてすとにまにあいますか",
+        "spoken": "らいしゅうのてすとにまにあいますか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "hendy",
+      "text": "ですから、来週の テストを 1日 遅らせて いただけませんでしょうか。",
+      "file": "16.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 4.51,
+      "longestPause": 0.25,
+      "transcript": "ですから、来週のテストを1日遅らせていただけませんでしょうか。",
+      "reading": {
+        "expected": "ですかららいしゅうのてすとをいちにちおくらせていただけませんでしょうか",
+        "spoken": "ですかららいしゅうのてすとをいちにちおくらせていただけませんでしょうか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "fujiki",
+      "text": "わかりました。",
+      "file": "17.wav",
+      "voice": "Algieba",
+      "model": "gemini-3.1-flash-live-preview",
+      "seconds": 0.86,
+      "longestPause": 0.01,
+      "transcript": "わかりました。",
+      "reading": {
+        "expected": "わかりました",
+        "spoken": "わかりました",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "fujiki",
+      "text": "テストが 遅れるのは 困りますが、テストの 途中で 止まるより いいです。",
+      "file": "18.wav",
+      "voice": "Algieba",
+      "model": "gemini-3.1-flash-live-preview",
+      "seconds": 4.74,
+      "longestPause": 0.17,
+      "transcript": "テストが遅れるのは困りますが、テストの途中で止まるよりいいです。",
+      "reading": {
+        "expected": "てすとがおくれるのはこまりますがてすとのとちゅうでとまるよりいいです",
+        "spoken": "てすとがおくれるのはこまりますがてすとのとちゅうでとまるよりいいです",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "fujiki",
+      "text": "正直に、早く 教えて くれて ありがとう ございます。",
+      "file": "19.wav",
+      "voice": "Algieba",
+      "model": "gemini-3.1-flash-live-preview",
+      "seconds": 3.56,
+      "longestPause": 0.27,
+      "transcript": "正直に、早く教えてくれてありがとうございます。",
+      "reading": {
+        "expected": "しょうじきにはやくおしえてくれてありがとうございます",
+        "spoken": "しょうじきにはやくおしえてくれてありがとうございます",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "fujiki",
+      "text": "予定を 変えますから、すぐに 直して ください。",
+      "file": "20.wav",
+      "voice": "Algieba",
+      "model": "gemini-3.1-flash-live-preview",
+      "seconds": 3.16,
+      "longestPause": 0.05,
+      "transcript": "予定を変えますから、すぐに直してください。",
+      "reading": {
+        "expected": "よていをかえますからすぐになおしてください",
+        "spoken": "よていをかえますからすぐになおしてください",
+        "distance": 0
+      }
+    }
+  ]
+}
