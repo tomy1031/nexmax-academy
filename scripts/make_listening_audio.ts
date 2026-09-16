@@ -191,6 +191,8 @@ interface SentenceRecord extends SpeakerSentence {
   readonly longestPause: number;
   /** モデルが 返した 文字起こし（何と 読んだか）。 */
   readonly transcript: string;
+  /** 文字起こしを 返した モデル（Live が 空で 別の モデルに 聞き直した ときは その 名前）。 */
+  readonly transcriptBy?: string;
   readonly reading: Pick<ReadingMatch, "expected" | "spoken" | "distance">;
 }
 
@@ -334,7 +336,13 @@ async function makeSentences(activePlan: ListeningAudioPlan): Promise<void> {
     // ためし切って だめ なら 投げる（呼ぶ 側が この 文を 飛ばして つぎへ 進む）
     const spoken = await synthesizeWithFallback(
       sentence.text,
-      { apiKey, voice, instruction: SCRIPT_LINE_INSTRUCTION, quoteOnRetry: true },
+      {
+        apiKey,
+        voice,
+        instruction: SCRIPT_LINE_INSTRUCTION,
+        quoteOnRetry: true,
+        transcribeWhenEmpty: true,
+      },
       accept,
       model ? [model] : undefined,
     );
@@ -352,6 +360,7 @@ async function makeSentences(activePlan: ListeningAudioPlan): Promise<void> {
         seconds: Math.round(seconds(pcm) * 100) / 100,
         longestPause: Math.round(pause * 100) / 100,
         transcript: spoken.transcript.trim(),
+        transcriptBy: spoken.transcriptBy ?? spoken.model,
         reading: { expected: match.expected, spoken: match.spoken, distance: match.distance },
       },
     };

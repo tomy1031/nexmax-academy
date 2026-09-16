@@ -12,7 +12,7 @@
  */
 
 import { GoogleGenAI, Modality } from "@google/genai";
-import { LIVE_TTS_MODELS } from "../../src/lib/ai/models";
+import { LIVE_TTS_MODELS, TEXT_MODEL } from "../../src/lib/ai/models";
 import { NARRATOR_INSTRUCTION } from "../../src/lib/audio/narrator";
 
 /** Live が 返す 音の サンプリングレート（Live API の 決まり）。 */
@@ -51,6 +51,14 @@ export interface Speaker {
    * モデルが ある（2026-09-16。gemini-3.1-flash-live-preview で 4回 続けて 返事に なった）。
    */
   readonly quoteOnRetry?: boolean;
+  /**
+   * Live が 文字起こしを 返さなかった とき、音を **別の モデルで 文字に 起こして** 見くらべる。
+   * gemini-3.8-live は 音は 返すのに 文字起こしが 空の ことが 続いた（2026-09-16。
+   * 「これは とても 大切です。」など 4文が 4回ずつ 空）。確かめられない 音は 通せないので、
+   * 読み上げとは 別の モデル（`TEXT_MODEL`）で 聞き直す——自分の 読み上げを 自分で
+   * 書き起こすより、きびしい 確かめに なる。
+   */
+  readonly transcribeWhenEmpty?: boolean;
 }
 
 /** 生PCM（16bit・モノラル）に WAV の 頭を つける。 */
@@ -79,6 +87,30 @@ export interface Spoken {
   readonly transcript: string;
   /** 読み上げた モデル（同じ 声でも モデルで 声の 質が 変わる ので 残す）。 */
   readonly model: string;
+  /** 文字起こしを 返した モデル（Live 自身で なければ `TEXT_MODEL`）。 */
+  readonly transcriptBy?: string;
+}
+
+/** 音を 文字に 起こす（Live の 文字起こしが 空だった ときの 控え）。 */
+export async function transcribePcm(pcm: Uint8Array, apiKey: string): Promise<string> {
+  const ai = new GoogleGenAI({ apiKey });
+  const response = await ai.models.generateContent({
+    model: TEXT_MODEL,
+    contents: [
+      {
+        role: "user",
+        parts: [
+          { inlineData: { mimeType: "audio/wav", data: toWav(pcm).toString("base64") } },
+          {
+            text:
+              "この日本語の音声を、聞こえたとおりに一字一句そのまま文字起こししてください。" +
+              "言い直しや足りない言葉も直さずに書いてください。文字起こしの文だけを返してください。",
+          },
+        ],
+      },
+    ],
+  });
+  return response.text?.trim() ?? "";
 }
 
 /**
@@ -314,7 +346,15 @@ export async function synthesizeWithFallback(
     for (const model of models) {
       try {
         const turn = speaker.quoteOnRetry && round > 0 ? `「${text}」` : text;
-        const spoken = await synthesize(turn, model, speaker);
+        let spoken = await synthesize(turn, model, speaker);
+        if (speaker.transcribeWhenEmpty && spoken.transcript.trim() === "") {
+          try {
+            const heard = await transcribePcm(spoken.pcm, speaker.apiKey);
+            if (heard) spoken = { ...spoken, transcript: heard, transcriptBy: TEXT_MODEL };
+          } catch (error) {
+            failures.push(`${TEXT_MODEL}: 文字起こし できません — ${String(error)}`);
+          }
+        }
         const seconds = spoken.pcm.byteLength / OUT_RATE / 2;
         const verdict = readingLooksRight(text, spoken.transcript, seconds);
         if (!verdict.ok) {
