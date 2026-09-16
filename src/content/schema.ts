@@ -789,12 +789,16 @@ export const listeningSchema = z
         minLength: z.number().int().min(1).max(8).default(3),
         /** 何回まちがえたら ヒントを出すか。 */
         maxMiss: z.number().int().min(1).max(20).default(3),
-        /** 台本を最初から見せるか。既定は**見せない**（見えていると聞く練習にならない）。 */
-        showScript: z.boolean().default(false),
+        /**
+         * 台本を最初から見せるか。既定は**見せる**（2026-09-16 の 指定）。
+         * 出るのは 当てた ことばだけが 開く 穴埋めの 形なので、答えを 先に 見せる ことには ならない。
+         * 学習者は 画面の「げんこう」ボタンで 消せる。
+         */
+        showScript: z.boolean().default(true),
         /** 聞き取りチェック（タイピング）を出すか。 */
         showTyping: z.boolean().default(true),
       })
-      .default({ minLength: 3, maxMiss: 3, showScript: false, showTyping: true }),
+      .default({ minLength: 3, maxMiss: 3, showScript: true, showTyping: true }),
     furigana: z.array(furiganaEntrySchema).optional(),
   })
   .superRefine((listening, ctx) => {
@@ -2081,8 +2085,9 @@ const skitLineSchema = z.object({
  * スキット教材 — お手本の 会話を 1行ずつ 聞いて、口に 出して まねる
  *
  * ## なぜ リスニングと 別の 種別に するか
- * リスニング（`listeningSchema`）は **聞き取れたかを 測る** 教材で、台本は
- * 既定で 伏せて ある（`check.showScript` の 既定が false）。スキットは 逆で、
+ * リスニング（`listeningSchema`）は **聞き取れたかを 測る** 教材で、台本の ことばは
+ * 当てるまで 伏せて ある（`check.showScript` の 既定は true だが、出るのは
+ * 当てた ことばだけが 開く 穴埋めの 形）。スキットは 逆で、
  * **台本を 見ながら 声に 出す**のが 目的だから、伏せる 仕組みが まるごと 邪魔に なる。
  * 同じ型に 押し込むと「台本を 見せる リスニング」という、名前と 中身の 食い違った
  * 教材が できる——先生は 一覧の どちらを 開けば 直せるのか 分からなくなる
