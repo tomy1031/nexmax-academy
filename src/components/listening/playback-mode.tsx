@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Listening } from "@/content/schema";
 import { RubyText } from "@/components/ruby-text";
 import { buildFuriganaIndex, type FuriganaIndex } from "@/lib/text/furigana";
@@ -279,6 +279,24 @@ function Intro({
   );
 }
 
+/** はやさの 既定は 遅め（設計01 P10）。ボタンの「すこし ゆっくり」。 */
+const INITIAL_SPEED = 0.85;
+
+/**
+ * 鳴らす ものに 速さを かける。YouTube の ときは 部品が 無い（`null`）ので 何も しない。
+ *
+ * - 速度を変えてもピッチは保つ（低い声にしない — 設計01 P10）
+ * - `defaultPlaybackRate` にも 入れる。`<audio>` / `<video>` は 読み直す
+ *   （`load()`・`src` の 差しかえ）と `playbackRate` を こちらへ 戻すので、
+ *   `playbackRate` だけ だと その たびに ふつうの 速さに 戻る。
+ */
+function applySpeed(media: HTMLMediaElement | null, value: number) {
+  if (!media) return;
+  media.defaultPlaybackRate = value;
+  media.playbackRate = value;
+  media.preservesPitch = true;
+}
+
 /**
  * 音（または 動画）の プレイヤーと、表示の 切り替え。
  *
@@ -300,15 +318,21 @@ function Player({
     onTyping: () => void;
   };
 }) {
-  const [speed, setSpeedValue] = useState(0.85); // 既定は遅め（設計01 P10）
+  const [speed, setSpeedValue] = useState(INITIAL_SPEED);
+
+  /*
+   * **開いた ときから 札と 音を そろえる。** 前は ボタンを 押した ときにしか
+   * 速さを かけて いなかったので、「すこし ゆっくり」が 押された 札の まま
+   * ふつうの 速さ（`playbackRate` の 既定 1）で 鳴って いた。
+   * 「きく」と「こたえあわせ」の どちらでも、出る たびに 新しい 音の 部品に なる。
+   */
+  useEffect(() => {
+    applySpeed(mediaRef.current, INITIAL_SPEED);
+  }, [mediaRef]);
 
   const setSpeed = (value: number) => {
     setSpeedValue(value);
-    // 速度を変えてもピッチは保つ（低い声にしない — 設計01 P10）
-    if (mediaRef.current) {
-      mediaRef.current.playbackRate = value;
-      mediaRef.current.preservesPitch = true;
-    }
+    applySpeed(mediaRef.current, value);
   };
 
   return (
