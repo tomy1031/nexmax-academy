@@ -580,11 +580,20 @@ describe("どこまで できたかの 表（朝礼）", () => {
     台帳に 無い 絵が 教材に 生えて いたら、作り直しかたが 分からない 絵に なる
    （`image` に プロンプトを 焼かない と 決めた ぶん、ここが 唯一の 手がかり）。
   */
-  it("絵は ぜんぶ 台帳（asakai_tasks.json）に 載って いる", () => {
-    const ledger = JSON.parse(
-      readFileSync(join(process.cwd(), "scripts", "images", "asakai_tasks.json"), "utf8"),
-    ) as { scenes: { dest: string }[] };
-    const known = new Set(ledger.scenes.map((one) => one.dest.replace(/^public/u, "")));
+  it("絵は ぜんぶ 台帳（asakai_tasks.json / asakai_tasks_moji.json）に 載って いる", () => {
+    /* 字を 入れる 5枚は noText が ちがう ので 台帳を 分けて ある（2026-09-16）。 */
+    const known = new Set<string>();
+    for (const file of ["asakai_tasks.json", "asakai_tasks_moji.json"]) {
+      const ledger = JSON.parse(
+        readFileSync(join(process.cwd(), "scripts", "images", file), "utf8"),
+      ) as { scenes: { dest: string }[] };
+      for (const one of ledger.scenes) {
+        expect(known, `${one.dest} が 2つの 台帳に ある`).not.toContain(
+          one.dest.replace(/^public/u, ""),
+        );
+        known.add(one.dest.replace(/^public/u, ""));
+      }
+    }
     for (const scene of scenes) {
       for (const row of scene.card.progress) {
         expect(known, `${row.label} の 絵が 台帳に ない: ${row.image?.src}`).toContain(

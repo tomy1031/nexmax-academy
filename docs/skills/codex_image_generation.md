@@ -190,7 +190,8 @@ codex -i public/img/characters/nexmax/reference.png \
 | `scripts/images/kaisha_junbi_hendy.json` | 同 1枚（ヘンディさんが 出る） | 2026-08-28 |
 | `scripts/images/asakai_cards.json` | 朝礼ページの 3点セットの カード 3枚（きのう・きょう・こまりごと。文字なし） | 2026-09-10 |
 | `scripts/images/asakai_zukai.json` | 同 1枚（朝の 会・夕方の 会・文字で 書く 会 の 図。**文字あり**） | 2026-09-10 |
-| `scripts/images/asakai_tasks.json` | 朝礼・夕礼ステージの しごとの 表の 絵 10枚（**80px で 出す 場面の 絵**。§6.8） | 2026-09-16 |
+| `scripts/images/asakai_tasks.json` | 朝礼・夕礼ステージの しごとの 表の 絵のうち **字なし** 5枚（ボタン・処理中・成功・失敗・テスト。§6.8） | 2026-09-16 |
+| `scripts/images/asakai_tasks_moji.json` | 同 **字あり** 5枚（決済画面＝Choeung Ek の チケット予約・注文IDと $6・支払方法 3つ・ACLEDA Pay・ABA の サーバ。§6.8） | 2026-09-16 |
 | `scripts/images/asakai_team.json` | 「KhmerSabaiの 朝礼」ページ 4枚（表紙・ゴール・先週・大切。文字なし） | 2026-09-16 |
 | `scripts/images/asakai_team_zukai.json` | 同 10枚（流れの 図・担当 4枚・名前を 呼ばれる・報告 4枚。**文字あり**） | 2026-09-16 |
 | — | 同ページの **しごと 9枚は 撮らない**。朝礼の 画面と 同じ `asakai_tasks.json` の 絵を 使う（同じ しごとの 絵が 2枚に ならない ように） | 2026-09-16 |
@@ -272,6 +273,17 @@ no tangled or merged fingers` を 足すと 直った。
 - **絵文字は 消さない。** 教材データは `icon`（絵文字）と `image`（絵）を 両方 持ち、
   画面は 絵が あれば 絵、無ければ 絵文字を 出す。10枚 いちどに 出すので、1枚でも
   届いて いない 行が あると そこだけ 空の 四角に なる。
+
+**画面の 中身は 具体的に する（字を 入れて よい）。** 2回目の 場面の 絵でも、画面の 中が
+灰色の 帯だけだと「どの 画面か」が まだ 足りなかった。2026-09-16 の 指定で 5枚に 字を 入れた ——
+決済画面は **Choeung Ek Genocidal Center の チケット予約**（塔の 写真＋`Choeung Ek`＋`Book Ticket`）、
+支払方法は `ABA Pay`／`Credit Card`／`Cash`、注文は `Order ID: KS-4827` と `Total: $6`、
+決済APIの サーバには `ABA`、ACLEDA Pay の 画面は `ABA Pay`／`ACLEDA Pay`／`Cash`。
+字の 入る 絵は `noText` が ちがう ので **台帳を 分ける**（`asakai_tasks_moji.json`。
+`asakai_cards` / `asakai_zukai` と 同じ 分けかた）。字は 英語なので ふりがなは 要らない。
+**銀行の ロゴは 描かせない**（名前を 字で 書くだけ）。
+この 絵は 「KhmerSabaiの 朝礼」ページ（`content/articles/asakai_team.json`）の しごとカードでも
+**同じ ファイルを 使う**ので、作り直したら そちらの `prompt` の 写しも 直す。
 
 **何の しごとかの 前ばなしを 先に 読む。** 1回目は「決済の 画面」を ただの 買い物かばんに
 描いて しまった。この アプリ（KhmerSabai）は **カンボジアに 来た 人が 店を さがして
