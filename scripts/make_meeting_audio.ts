@@ -55,10 +55,18 @@ if (!meetingId) {
  * `.github/` は 検問の 内側なので 入力を 増やさず、ここで 見本の 台本へ 回す
  *（ワークフローが `listening:` を 振り分けるのと 同じ 考え方）。
  */
-if (meetingId === "voices") {
+if (meetingId === "voices" || meetingId === "voices-takes") {
+  // `voices-takes` は 声の 高さを 測る 取り直しも 作る（make_voice_samples.ts の `--takes`）
+  const extra = meetingId === "voices-takes" ? ["--takes", "2"] : [];
   const run = spawnSync(
     process.execPath,
-    ["--import", "tsx", join("scripts", "make_voice_samples.ts"), ...process.argv.slice(3)],
+    [
+      "--import",
+      "tsx",
+      join("scripts", "make_voice_samples.ts"),
+      ...extra,
+      ...process.argv.slice(3),
+    ],
     { stdio: "inherit" },
   );
   process.exit(run.status ?? 1);
