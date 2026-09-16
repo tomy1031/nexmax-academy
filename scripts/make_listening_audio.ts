@@ -198,6 +198,13 @@ interface Manifest {
   readonly listeningId: string;
   readonly gapSeconds: number;
   readonly compareGapSeconds: readonly number[];
+  /**
+   * 全部の 文が そろって いるか。**そろって いない ときは つながず、`audioUrl` も 変えない**。
+   * つぎに 走らせると、そろって いる 文は 作り直さずに 続きから 作る（`--force` でも）。
+   */
+  readonly complete: boolean;
+  /** まだ 無い 文の 番号（1から）。 */
+  readonly missing: readonly number[];
   readonly sentences: readonly SentenceRecord[];
 }
 
@@ -227,14 +234,28 @@ function sameSentences(a: readonly SpeakerSentence[], b: readonly SpeakerSentenc
   );
 }
 
-async function makeSentences(activePlan: ListeningAudioPlan): Promise<void> {
-  const sentences = scriptSentences(script);
+/** 1回の 実行で 新しい 文を 作り始めて よい 時間（ミリ秒）。CI の 30分に 収める。 */
+const RUN_BUDGET_MS = 18 * 60_000;
 
-  if (joinOnly || (existsSync(manifestPath) && !force)) {
-    if (!existsSync(manifestPath)) {
+async function makeSentences(activePlan: ListeningAudioPlan): Promise<void> {
+  const startedAt = Date.now();
+  const sentences = scriptSentences(script);
+  const previous: Manifest | null = existsSync(manifestPath)
+    ? (JSON.parse(readFileSync(manifestPath, "utf8")) as Manifest)
+    : null;
+  /** 前の 回が 途中で 終わって いる（続きから 作る）。 */
+  const resuming = previous !== null && previous.complete === false;
+
+  if (joinOnly || (previous !== null && !resuming && !force)) {
+    if (!previous) {
       throw new Error(`${manifestPath} が ありません。先に --force で 1文ずつ 作ってください`);
     }
-    const manifest = JSON.parse(readFileSync(manifestPath, "utf8")) as Manifest;
+    if (resuming) {
+      throw new Error(
+        `まだ そろって いません（無い 文: ${previous.missing.join("・")}）。もう一度 走らせて 続きを 作ってください`,
+      );
+    }
+    const manifest = previous;
     if (!sameSentences(manifest.sentences, sentences)) {
       throw new Error(
         "原稿が 残して ある 音と ちがいます（古い 文の 音を つなぐ ことに なる）。--force で 作り直してください",
@@ -267,6 +288,24 @@ async function makeSentences(activePlan: ListeningAudioPlan): Promise<void> {
   /** 文ごとの 結果（並び順に 入れる。同時に 作るので 終わる 順は ばらばら）。 */
   const done: ({ pcm: Uint8Array; record: SentenceRecord } | undefined)[] = [];
 
+  /*
+   * **前の 回で できた 文は 作り直さない**（2026-09-16。3.8 が 4文目で 崩れる たびに、
+   * 合格して いた 11文まで 捨てて 最初から 作り直して いた）。
+   * 原稿の 同じ 位置の 文と 話す人が 変わって いない ものだけ 使う。
+   */
+  if (resuming) {
+    for (const record of previous.sentences) {
+      const at = Number.parseInt(record.file, 10) - 1;
+      const now = sentences[at];
+      const wav = join(sentenceDir, record.file);
+      if (!now || now.text !== record.text || now.speaker !== record.speaker) continue;
+      if (!existsSync(wav)) continue;
+      done[at] = { pcm: readFileSync(wav).subarray(44), record };
+    }
+    const kept = done.filter(Boolean).length;
+    console.log(`前の 回で できて いる ${kept}文は そのまま 使います`);
+  }
+
   /** 1文を 作る（名指しの 声・固定の モデル）。 */
   const makeOne = async (i: number): Promise<void> => {
     const sentence = sentences[i]!;
@@ -292,27 +331,13 @@ async function makeSentences(activePlan: ListeningAudioPlan): Promise<void> {
       accepted = match;
       return match;
     };
-    /*
-     * ためし切っても だめ なら、**1分 おいて もう一度**（2回まで）。
-     * 1文ずつ 作ると つなぐ 回数が 行ごとの 倍に なり、無料枠の「使いすぎ」に
-     * 当たりやすい（2026-09-16 に 4文目で 当たった）。それでも だめなら
-     * 全部 やめる（行ごとの 作りかたと 同じ 理由）。
-     */
-    let spoken: Awaited<ReturnType<typeof synthesizeWithFallback>> | null = null;
-    for (let attempt = 0; spoken === null; attempt += 1) {
-      try {
-        spoken = await synthesizeWithFallback(
-          sentence.text,
-          { apiKey, voice, instruction: SCRIPT_LINE_INSTRUCTION, quoteOnRetry: true },
-          accept,
-          model ? [model] : undefined,
-        );
-      } catch (error) {
-        if (attempt >= 2) throw error;
-        console.log(`(${i + 1}) だめ でした。60秒 おいて もう一度（${attempt + 2}回目）`);
-        await new Promise((wait) => setTimeout(wait, 60_000));
-      }
-    }
+    // ためし切って だめ なら 投げる（呼ぶ 側が この 文を 飛ばして つぎへ 進む）
+    const spoken = await synthesizeWithFallback(
+      sentence.text,
+      { apiKey, voice, instruction: SCRIPT_LINE_INSTRUCTION, quoteOnRetry: true },
+      accept,
+      model ? [model] : undefined,
+    );
     const match = accepted as ReadingMatch | null;
     if (!match) throw new Error(`(${i + 1}) 照合の 結果が ありません`);
     const pcm = trimSilence(spoken.pcm);
@@ -344,31 +369,61 @@ async function makeSentences(activePlan: ListeningAudioPlan): Promise<void> {
    */
   const lanes = new Map<string, number[]>();
   sentences.forEach((sentence, i) => {
+    if (done[i]) return;
     const lane = activePlan.models[sentence.speaker] ?? "(モデル 指定なし)";
     lanes.set(lane, [...(lanes.get(lane) ?? []), i]);
   });
+  /*
+   * **1文 だめでも 列を 止めない**。その 文は 飛ばして つぎの 文へ 進み、できた ぶんを
+   * 残す。つぎに 走らせた ときに 無い 文だけ 作る。持ち時間を 過ぎたら 新しい 文は 始めない。
+   */
+  const failures: string[] = [];
   await Promise.all(
     [...lanes.values()].map(async (lane) => {
       for (const [k, i] of lane.entries()) {
+        if (Date.now() - startedAt > RUN_BUDGET_MS) {
+          failures.push(`(${i + 1}) 時間切れで 作って いません`);
+          continue;
+        }
         if (k > 0) await new Promise((wait) => setTimeout(wait, 8_000));
-        await makeOne(i);
+        try {
+          await makeOne(i);
+        } catch (error) {
+          const message = error instanceof Error ? error.message : String(error);
+          failures.push(`(${i + 1}) ${message}`);
+          console.log(`(${i + 1}/${sentences.length}) だめ でした。飛ばして つぎへ\n  ${message}`);
+        }
       }
     }),
   );
-  const parts = done.map((one) => one!.pcm);
-  const records = done.map((one) => one!.record);
+  const made = done.flatMap((one, i) => (one ? [{ ...one, i }] : []));
+  const missing = sentences.flatMap((_, i) => (done[i] ? [] : [i + 1]));
 
-  // ぜんぶ そろって から 書く（前の 文ごとの 音は 消してから 置き直す）
+  // 前の 文ごとの 音は 消してから、いま ある ぶんを 置き直す
   rmSync(sentenceDir, { recursive: true, force: true });
   mkdirSync(sentenceDir, { recursive: true });
-  records.forEach((record, i) => writeFileSync(join(sentenceDir, record.file), toWav(parts[i]!)));
+  for (const one of made) writeFileSync(join(sentenceDir, one.record.file), toWav(one.pcm));
   const manifest: Manifest = {
     listeningId,
     gapSeconds: activePlan.gapSeconds,
     compareGapSeconds: activePlan.compareGapSeconds ?? [],
-    sentences: records,
+    complete: missing.length === 0,
+    missing,
+    sentences: made.map((one) => one.record),
   };
   writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
+
+  if (missing.length > 0) {
+    // そろって いない ときは つながない（抜けた 文が 黙って 飛ばされた 音に なる）
+    console.log(
+      `${made.length}/${sentences.length}文を 残しました。まだ 無い 文: ${missing.join("・")}。` +
+        "もう一度 走らせると 続きから 作ります\n  " +
+        failures.join("\n  "),
+    );
+    return;
+  }
+  const parts = made.map((one) => one.pcm);
+  const records = made.map((one) => one.record);
   writeJoined(parts, activePlan);
   pointAudioUrl();
   const off = records.filter((record) => record.reading.distance > 0);
