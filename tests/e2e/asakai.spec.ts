@@ -97,7 +97,7 @@ test("ステージの トップに 教材が 並ぶ", async ({ page }) => {
   await expectOnScreen(page, "報連相：報告（朝礼と 夕礼）");
   await expectOnScreen(page, "朝礼と 夕礼");
   /* 前ばなしの ページ（台帳 #387 の 7〜9）。朝礼の 前に 場面と 役を 渡す。 */
-  await expectOnScreen(page, "チームと アプリ");
+  await expectOnScreen(page, "KhmerSabaiの 朝礼");
   /* 夕礼の 前ばなし（Next Talent）。2026-09-14 に 足した。 */
   await expectOnScreen(page, "Next Talent");
   await shot(page, "asakai-00-stage");
@@ -113,13 +113,19 @@ test("前ばなしの ページに アプリと 担当が 書いて ある", asy
   await page.goto("/asakai/article-asakai_team");
   const skip = page.getByText("それでも 見る");
   if (await skip.count()) await skip.first().click();
-  await expectOnScreen(page, "Khmersabai");
+  await expectOnScreen(page, "KhmerSabai");
   /* 決済開発編に なった（旧: 旅行アプリ）。いま 作って いるのは 決済の ところ。 */
   await expectOnScreen(page, "決済");
-  await expectOnScreen(page, "あなたは 決済フロントエンドの 担当です");
-  /* 4人の しょうかいカード（絵は 人物カードから 引く）。 */
+  /* 担当の カード 4枚（奥田・ニャム・あなた・ヘンディ）。 */
+  await expectOnScreen(page, "決済：フロントエンド");
   await expectOnScreen(page, "ヘンディ");
   await expectOnScreen(page, "ニャム");
+  await expectOnScreen(page, "奥田");
+  /* 藤木さん（社長からの 依頼を 伝える 人）。 */
+  await expectOnScreen(page, "藤木");
+  /* 朝礼で 話す 4つ。 */
+  await expectOnScreen(page, "きのう したこと");
+  await expectOnScreen(page, "きょう すること");
   await shot(page, "asakai-01-team");
 
   expect(await bareKanjiTexts(page)).toEqual([]);
