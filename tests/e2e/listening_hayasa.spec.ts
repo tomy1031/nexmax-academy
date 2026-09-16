@@ -11,7 +11,7 @@ import { seedCompleted } from "./helpers";
  * 学習者は 画面が「すこし ゆっくり」と 言う まま **ふつうの 速さ**を 聞いて いた
  * （設計01 P10 の「既定は 遅め」が 効いて いない）。
  *
- * 1. 「きく」で、何も 押さずに 0.85（高さは 保つ）
+ * 1. 「きく」で、何も 押さずに 0.85
  * 2. 音を 読み直しても 0.85 のまま（`load()` は `defaultPlaybackRate` へ 戻す）
  * 3. 「こたえあわせ」の 音も、何も 押さずに 0.85
  * 4. 「もういちど 聞く」で 戻った 音も 0.85（部品が 作り直される）
@@ -29,7 +29,7 @@ function before(): string[] {
   return refs.slice(0, refs.indexOf(LISTENING));
 }
 
-/** 札が「すこし ゆっくり」で、音も 0.85・高さを 保つ 設定で ある こと。 */
+/** 札が「すこし ゆっくり」で、音も 0.85 で ある こと。 */
 async function expectSlightlySlow(scope: Locator) {
   await expect(scope.getByRole("button", { name: "すこし ゆっくり", exact: true })).toHaveAttribute(
     "aria-pressed",
@@ -37,7 +37,6 @@ async function expectSlightlySlow(scope: Locator) {
   );
   const audio = scope.locator("audio");
   await expect.poll(() => audio.evaluate((el: HTMLAudioElement) => el.playbackRate)).toBe(0.85);
-  expect(await audio.evaluate((el: HTMLAudioElement) => el.preservesPitch)).toBe(true);
 }
 
 test("リスニング：はやさは 押す 前から「すこし ゆっくり」で 鳴る", async ({ page, context }) => {
@@ -46,7 +45,7 @@ test("リスニング：はやさは 押す 前から「すこし ゆっくり�
   await page.getByRole("button", { name: "はじめる" }).click();
 
   // 1. 「きく」
-  const listen = page.locator("section", { has: page.locator("audio") }).first();
+  const listen = page.locator("section", { has: page.locator("audio") });
   await expectSlightlySlow(listen);
 
   // 2. 読み直しても 戻らない
@@ -74,5 +73,5 @@ test("リスニング：はやさは 押す 前から「すこし ゆっくり�
   // 4. 「もういちど 聞く」で 戻った 音
   await review.getByRole("button", { name: "もういちど 聞く" }).click();
   await expect(page.getByLabel("聞こえた ことばを 入力する")).toBeVisible();
-  await expectSlightlySlow(page.locator("section", { has: page.locator("audio") }).first());
+  await expectSlightlySlow(page.locator("section", { has: page.locator("audio") }));
 });

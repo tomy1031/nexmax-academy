@@ -325,10 +325,11 @@ function Player({
    * 速さを かけて いなかったので、「すこし ゆっくり」が 押された 札の まま
    * ふつうの 速さ（`playbackRate` の 既定 1）で 鳴って いた。
    * 「きく」と「こたえあわせ」の どちらでも、出る たびに 新しい 音の 部品に なる。
+   * かけるのは 定数では なく **いまの 札（`speed`）**——札と 音が ずれる 道を 残さない。
    */
   useEffect(() => {
-    applySpeed(mediaRef.current, INITIAL_SPEED);
-  }, [mediaRef]);
+    applySpeed(mediaRef.current, speed);
+  }, [mediaRef, speed]);
 
   const setSpeed = (value: number) => {
     setSpeedValue(value);
