@@ -1,4 +1,9 @@
+import { existsSync, readFileSync } from "node:fs";
+import { join } from "node:path";
+
 import { describe, expect, it } from "vitest";
+
+import { ASSET_VERSIONS } from "@/content/asset-versions.generated";
 
 import kantan from "../content/meetings/asakai_kantan.json";
 import muzukashii from "../content/meetings/asakai_muzukashii.json";
@@ -551,9 +556,122 @@ describe("どこまで できたかの 表（朝礼）", () => {
       for (const row of scene.card.progress) expect(row.icon, row.label).toBeTruthy();
     }
   });
+
+  /*
+    清書の 絵（願い #441）。**置いて あるか**まで 見る——`src` を 書いただけで
+    ファイルが 無いと、画面は 壊れた 絵の 四角を 10個 並べる。
+  */
+  it("どの しごとにも 清書の 絵が あり、ファイルが 置いて ある", () => {
+    for (const scene of scenes) {
+      for (const row of scene.card.progress) {
+        const src = row.image?.src;
+        expect(src, `${row.label} に 絵が ない`).toBeTruthy();
+        expect(row.image?.status, `${row.label} の 絵が done で ない`).toBe("done");
+        expect(
+          existsSync(join(process.cwd(), "public", src!)),
+          `${row.label} の 絵が 置いて ない: ${src}`,
+        ).toBe(true);
+      }
+    }
+  });
+
+  /*
+    **台帳が 正**（`scripts/images/asakai_tasks.json`）。教材の `src` は その 写しなので、
+    台帳に 無い 絵が 教材に 生えて いたら、作り直しかたが 分からない 絵に なる
+   （`image` に プロンプトを 焼かない と 決めた ぶん、ここが 唯一の 手がかり）。
+  */
+  it("絵は ぜんぶ 台帳（asakai_tasks.json）に 載って いる", () => {
+    const ledger = JSON.parse(
+      readFileSync(join(process.cwd(), "scripts", "images", "asakai_tasks.json"), "utf8"),
+    ) as { scenes: { dest: string }[] };
+    const known = new Set(ledger.scenes.map((one) => one.dest.replace(/^public/u, "")));
+    for (const scene of scenes) {
+      for (const row of scene.card.progress) {
+        expect(known, `${row.label} の 絵が 台帳に ない: ${row.image?.src}`).toContain(
+          row.image!.src!,
+        );
+      }
+    }
+  });
+
+  /*
+    **版番号が 無いと 差しかえが 届かない。** `public/_headers` は `/img/*` を
+    `immutable` で 配る ので、`ASSET_VERSIONS` に 鍵が 無い 絵は URL が 変わらず、
+    作り直しても 古い 絵が 出つづける（2026-09-04 に 音で 実発生した 型）。
+    `npm run gen:content` の かけ忘れは これで 止まる。
+  */
+  it("絵に 版番号が ついて いる（gen:content の かけ忘れを 止める）", () => {
+    for (const scene of scenes) {
+      for (const row of scene.card.progress) {
+        expect(ASSET_VERSIONS, `${row.label} の 版番号が ない: ${row.image?.src}`).toHaveProperty(
+          row.image!.src!,
+        );
+      }
+    }
+  });
+
+  /*
+    **画面は 80px で 出す。** 画素が 足りない 絵を 置くと、3倍の 端末で ぼやけ、
+    押して 広げた ときは もっと ぼやける。絵は 見分ける ための ものなので
+   （2026-09-16 の 指定）、表示の 3倍を 下まわらない ことを 見る。
+  */
+  it("絵は 表示（80px）の 3倍 以上 ある", () => {
+    const seen = new Set<string>();
+    for (const scene of scenes) {
+      for (const row of scene.card.progress) {
+        const src = row.image!.src!;
+        if (seen.has(src)) continue;
+        seen.add(src);
+        const bytes = readFileSync(join(process.cwd(), "public", src));
+        const size = webpSize(bytes);
+        expect(size, `${src} の 大きさが 読めない`).toBeTruthy();
+        expect(size!.width, `${src} が 小さすぎる`).toBeGreaterThanOrEqual(240);
+        expect(size!.height, `${src} が 小さすぎる`).toBeGreaterThanOrEqual(240);
+      }
+    }
+  });
+
+  it("同じ しごとは どの 日も 同じ 絵（日で 絵が 入れ替わらない）", () => {
+    const byTask = new Map<string, string>();
+    for (const scene of scenes) {
+      for (const row of scene.card.progress) {
+        const key = baseName(row.label);
+        const src = row.image!.src!;
+        const first = byTask.get(key);
+        if (first === undefined) byTask.set(key, src);
+        else expect(src, `${key} の 絵が 日で ちがう`).toBe(first);
+      }
+    }
+    /* 10の しごとに 10枚。使い回しが あると ここで 落ちる。 */
+    expect(new Set(byTask.values()).size).toBe(byTask.size);
+  });
 });
 
 /** 「決済APIと つなぐ（ABA）」→「決済APIと つなぐ」（日で 変わる 添えを 落とす）。 */
 function baseName(label: string): string {
   return label.replace(/（[^）]*）$/u, "");
+}
+
+/**
+ * WebP の 画の 大きさ（VP8/VP8L/VP8X の 3形式）。
+ * 画像ライブラリを 足さずに 済ませる ため、ヘッダだけを 読む。
+ */
+function webpSize(buf: Buffer): { width: number; height: number } | undefined {
+  if (buf.length < 30 || buf.toString("ascii", 0, 4) !== "RIFF") return undefined;
+  if (buf.toString("ascii", 8, 12) !== "WEBP") return undefined;
+  const kind = buf.toString("ascii", 12, 16);
+  if (kind === "VP8 ") {
+    return { width: buf.readUInt16LE(26) & 0x3fff, height: buf.readUInt16LE(28) & 0x3fff };
+  }
+  if (kind === "VP8L") {
+    const bits = buf.readUInt32LE(21);
+    return { width: (bits & 0x3fff) + 1, height: ((bits >> 14) & 0x3fff) + 1 };
+  }
+  if (kind === "VP8X") {
+    const at = 24;
+    const width = buf[at]! | (buf[at + 1]! << 8) | (buf[at + 2]! << 16);
+    const height = buf[at + 3]! | (buf[at + 4]! << 8) | (buf[at + 5]! << 16);
+    return { width: width + 1, height: height + 1 };
+  }
+  return undefined;
 }
