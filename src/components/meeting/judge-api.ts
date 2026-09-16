@@ -1,6 +1,13 @@
 "use client";
 
 import type { MatchableFact } from "@/components/listening/req-matcher";
+import {
+  authFromToken,
+  connectLiveInOrder,
+  createSetupGate,
+  LiveSetupError,
+  reasonFromClose,
+} from "@/lib/ai/live-connect";
 import { createLiveToken } from "@/lib/ai/live-token";
 import { LIVE_TEXT_MODELS } from "@/lib/ai/models";
 import {
@@ -86,7 +93,12 @@ export type JudgeApiResult =
 /** 1つの 頼みの 返事を 待つ 上限。 */
 const REPLY_TIMEOUT_MS = 12_000;
 
-/** つないで したくが 済むまでの 上限（過ぎたら つぎの モデル名を ためす）。 */
+/**
+ * つないで したくが 済むまでの 上限（過ぎたら つぎの モデル名を ためす）。
+ *
+ * **断られた ときは 待たない**（2026-09-16）。したくの 前に 閉じられたら その場で
+ * つぎへ 進む（`live-connect.ts` の 門）。この 上限が 効くのは 何も 返らない ときだけ。
+ */
 const CONNECT_TIMEOUT_MS = 9_000;
 
 /** 判定ぜんぶの 上限。どこで 詰まっても 必ず 返す（画面を 止めない）。 */
@@ -180,21 +192,50 @@ export async function requestAsakaiJudge(
    */
   if (SLOTS.asakai.busy) return null;
   SLOTS.asakai.busy = true;
-  try {
-    return await Promise.race([
-      askAsakai(apiKey, key, context, facts),
-      new Promise<null>((resolve) => setTimeout(() => resolve(null), ASAKAI_TIMEOUT_MS)),
-    ]);
-  } finally {
+  /*
+   * **札（busy）を 下ろすのは 中の 往復が 本当に 終わった とき**（2026-09-16 の 検収）。
+   *
+   * 前は 待ちを 諦めた 時点（13秒）で 下ろして いた。つなぎの したくに 時間が
+   * かかると 往復は その あとも 生きて いて、つぎの 報告が 同じ つなぎに 重なり、
+   * **1本目の 見立てが 2本目の 答えに なる**（上の 1本ずつの 理由と 同じ 事故）。
+   * 学習者を 待たせる 上限は そのまま——札だけ 往復に 合わせて 持ちつづける。
+   * `askAsakai` は 投げない（失敗は null で 返る）。
+   *
+   * 待ちを 諦めた あとに つながった ときは **頼みを 送らない**（`gaveUp`）。
+   * 答えは どうせ 捨てる ので、Live の 往復 1回と 札を 持つ 時間（最大 12秒）の むだに なる。
+   */
+  let gaveUp = false;
+  const work = askAsakai(apiKey, key, context, facts, () => gaveUp).finally(() => {
     SLOTS.asakai.busy = false;
-  }
+  });
+  return await Promise.race([
+    work,
+    new Promise<null>((resolve) =>
+      setTimeout(() => {
+        gaveUp = true;
+        resolve(null);
+      }, ASAKAI_TIMEOUT_MS),
+    ),
+  ]);
 }
 
 /**
  * 報告の 判定を 待つ 上限。過ぎたら ことばの 照合だけで 先へ 進む。
  *
- * 中の 往復の 上限（`REPLY_TIMEOUT_MS` = 12秒）より **長く** して ある。
- * 短いと、諦めた あとに 生きて いる 往復が 次の 頼みに ぶつかる。
+ * ## 数字の 整合（2026-09-16 の 検収）
+ * この 13秒には、つなぎが 無い ときの **したく**も 入る。
+ * - つながって いる とき … 往復だけ（ふだん 数秒）
+ * - 張り直す とき ………… 通行証 → したく → 往復。先頭の モデルに **断られた** ときは
+ *   待たずに 控えへ 進む（`CONNECT_TIMEOUT_MS` の 注記）ので、控えで つないでも 収まる。
+ *   前は 断られても したくの 上限（9秒）まで 待って いたので、控えの したくと 往復が
+ *   残りの 4秒に 入らず、先頭を 断る 鍵では **その日 最初の 報告が 毎回** 見立て なしだった
+ * - 先頭が **何も 返さない** とき（まれ）は 9秒 待つ ので、その 1本は 間に 合わない。
+ *   つなぎは 裏で 控えまで 進み、**つぎの 報告から** 使える（上限を 伸ばすと
+ *   学習者の 画面が その ぶん 止まる ので、伸ばさない）
+ *
+ * 前は「中の 往復の 上限（`REPLY_TIMEOUT_MS` = 12秒）より 長い」ことで、諦めた あとの
+ * 往復が 次の 頼みに ぶつからない ように して いた。したくの 時間が 足されると
+ * 往復は 13秒を 越えて 生きるので、**いまは 数字では なく 札で 守る**（上の 注記）。
  */
 const ASAKAI_TIMEOUT_MS = 13_000;
 
@@ -203,11 +244,14 @@ async function askAsakai(
   key: string,
   context: AsakaiJudgeContext,
   facts: readonly MatchableFact[],
+  /** 呼んだ 側が 待ちを 諦めたか（つながった ときに 見て、諦めて いたら 頼まない）。 */
+  gaveUp: () => boolean,
 ): Promise<AsakaiJudgeResult | null> {
   let mine: JudgeSession | null = null;
   try {
     const opened = await openJudge(apiKey, "asakai", key);
-    if (!opened.ok) return null;
+    // つなぎは スロットに 残す（つぎの 報告が 使う）。頼みだけ やめる
+    if (!opened.ok || gaveUp()) return null;
     mine = opened.session;
     const args = await mine.ask(buildAsakaiJudgePrompt(context));
     return parseAsakaiJudge(args, facts);
@@ -460,26 +504,26 @@ async function openJudge(apiKey: string, kind: SlotKind, key: string): Promise<O
 }
 
 async function connectJudge(apiKey: string, slot: Slot): Promise<OpenResult> {
-  let lastReason = "upstream";
-  for (const model of LIVE_TEXT_MODELS) {
-    /*
-     * 短命トークンは **1回 使い切り**（live-token.ts の `uses: 1`）。
-     * 名前を ためすたびに 作り直す——1つを 使い回すと 2つ目は 必ず 断られる。
-     * 作るのは モデルを 呼ぶ 数には 入らない（auth_tokens は 別の 入口）。
-     */
-    const minted = await createLiveToken({ apiKey });
-    // 作れない キー（新形式 AQ.）の ときだけ、本人の キーで 直接 つなぐ
-    const canUseKey =
-      !minted.ok && (minted.reason === "tokenRejected" || minted.reason === "invalidRequest");
-    const auth = minted.ok ? minted.token : canUseKey ? apiKey : null;
-    if (!auth) return { ok: false, reason: minted.ok ? "upstream" : minted.reason };
-    try {
-      return { ok: true, session: await openSession(auth, model, slot) };
-    } catch (error) {
-      lastReason = error instanceof JudgeError ? error.reason : "modelNotFound";
-    }
-  }
-  return { ok: false, reason: lastReason };
+  /*
+   * 短命トークンは **1回 使い切り**（live-token.ts の `uses: 1`）。
+   * 名前を ためすたびに 作り直す——1つを 使い回すと 2つ目は 必ず 断られる。
+   * 作るのは モデルを 呼ぶ 数には 入らない（auth_tokens は 別の 入口）。
+   * 作れない キー（新形式 AQ.）の ときだけ、本人の キーで 直接 つなぐ（`authFromToken`）。
+   *
+   * 順番の 決まりは たいわ・声と 同じ 1つ（`connectLiveInOrder`）。ここが 手本だった。
+   */
+  const connected = await connectLiveInOrder({
+    models: LIVE_TEXT_MODELS,
+    mint: async () => authFromToken(await createLiveToken({ apiKey }), apiKey),
+    open: (auth, model) => openSession(auth, model, slot),
+    reasonOf: (error) =>
+      error instanceof JudgeError || error instanceof LiveSetupError
+        ? error.reason
+        : "modelNotFound",
+  });
+  return connected.ok
+    ? { ok: true, session: connected.session }
+    : { ok: false, reason: connected.reason };
 }
 
 /**
@@ -500,6 +544,8 @@ async function openSession(auth: string, model: string, slot: Slot): Promise<Jud
     ready = resolve;
   });
   let session: Session | null = null;
+  /** したくの 合図を 待つ 門。断られたら 期限を 待たずに 投げる（つぎの モデルへ）。 */
+  const gate = createSetupGate<Session>(CONNECT_TIMEOUT_MS);
 
   const connected = ai.live.connect({
     model,
@@ -516,6 +562,8 @@ async function openSession(auth: string, model: string, slot: Slot): Promise<Jud
         setTimeout(ready, 400);
       },
       onmessage: (message: unknown) => {
+        // 諦めた つなぎ（遅れて つながり、門が 閉じる もの）の 届きものは 捨てる
+        if (gate.phase() === "abandoned") return;
         if (isSetupComplete(message)) ready();
         const call = readToolCall(message);
         if (!call) return;
@@ -528,7 +576,13 @@ async function openSession(auth: string, model: string, slot: Slot): Promise<Jud
         fail = null;
         answer?.(call.args);
       },
+      /*
+       * したくの 前の 切断は「この モデルに 断られた」。SDK の connect は 断られても
+       * 返らない ので、門を 落として その場で つぎへ 進む（前は 9秒 待って いた）。
+       * したくの あとなら 門は 何も しない。
+       */
       onerror: () => {
+        gate.fail("upstream");
         alive = false;
         ready();
         const bad = fail;
@@ -536,7 +590,9 @@ async function openSession(auth: string, model: string, slot: Slot): Promise<Jud
         fail = null;
         bad?.(new JudgeError("upstream"));
       },
-      onclose: () => {
+      onclose: (event: unknown) => {
+        // 使いすぎで 閉じられた ときは その 名前で（学習者の 文言が「つかいすぎ」に なる）
+        gate.fail(reasonFromClose(event));
         alive = false;
         ready();
         const bad = fail;
@@ -547,7 +603,7 @@ async function openSession(auth: string, model: string, slot: Slot): Promise<Jud
     },
   });
 
-  session = (await withTimeout(connected, CONNECT_TIMEOUT_MS)) as unknown as Session;
+  session = await gate.wait(connected as unknown as Promise<Session>);
   await withTimeout(setupDone, CONNECT_TIMEOUT_MS);
 
   return {
