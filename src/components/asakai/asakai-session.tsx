@@ -350,7 +350,14 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
     [nameOf, learnerName, pushClips, speed],
   );
 
-  /** 場面の はじめ（司会の 開き → 見本 → あなたの 番）を チャットに 積む。 */
+  /**
+   * 場面の はじめ（司会の 開き → 見本 → あなたの 番）を チャットに 積む。
+   *
+   * あわせて **報告メモを 開く**（2026-09-16 の 指定「曜日を クリックした ときや
+   * 画面を 開いた ときに、モーダルが 出る ように して ください」）。
+   * 報告に 要る 材料（きのう・きょう・問題・進捗・しごとの 表）は ぜんぶ この 中に ある。
+   * 押されるのを 待って いた ころは、**開かない まま 話しはじめる**人が いた。
+   */
   const openScene = useCallback(
     (at: number) => {
       const next = asakai?.scenes[at];
@@ -359,6 +366,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
       setLines(said.map((line) => toChatLine(line, nameOf, learnerName)));
       stopClips();
       pushClips(said, rateOf(speed));
+      setDuty(true);
     },
     [asakai, nameOf, learnerName, pushClips, stopClips, speed],
   );
@@ -1035,6 +1043,45 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
       </div>
 
       {/*
+        **報告の 4つの うち 3つ（きのう・きょう・問題）を いちばん 上に 置く**
+        （2026-09-16 の 指定「昨日 したこと、今日 すること、問題点も 色付きの 枠で 囲ったり
+        ラベル付けするなど して 目立つように。かつ 進捗の 前に 持ってきて」）。
+
+        前は 進捗の 付せんと 表の **下**に 字だけで 並んで いた。報告で まっさきに
+        言う ものが いちばん 下に あり、しかも 見出しが 青い 字だけ だった ので、
+        どこからが「きのう」で どこからが「きょう」か 目で 追えなかった。
+      */}
+      {scene.card.rows?.length ? (
+        <dl className="m-0 space-y-2">
+          {scene.card.rows.map((row) => {
+            const face = ROW_FACE[row.key] ?? ROW_FACE.kinou;
+            return (
+              <div
+                key={row.key}
+                className="rounded-xl border-2 px-3 py-2"
+                style={{ background: face.face, borderColor: face.edge }}
+              >
+                <dt>
+                  <span
+                    className="mr-1 rounded-full px-2 py-0.5 text-[11px] font-black text-white [&_rt]:text-white"
+                    style={{ background: face.edge }}
+                  >
+                    {face.mark} <RubyText text={row.label} index={index} show />
+                  </span>
+                </dt>
+                <dd className="text-ink m-0 mt-1 text-sm font-bold">
+                  <DictionaryText text={row.text} index={index} />
+                  {row.count ? (
+                    <CountBoxes total={row.count.total} done={row.count.done} now={row.count.now} />
+                  ) : null}
+                </dd>
+              </div>
+            );
+          })}
+        </dl>
+      ) : null}
+
+      {/*
         付せん（**その日の 進捗の 数字**）。メモ（夕礼）の 中にだけ 描いて いた ので、
         行（rows）で 作る 朝礼では **画面の どこにも 出て いなかった**——
         数字を 言う 設問なのに 数字が 無く、ヒントを 開かないと 答えられなかった
@@ -1047,24 +1094,6 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
       ) : null}
 
       <ProgressBoxes items={scene.card.progress} index={index} />
-
-      {scene.card.rows?.length ? (
-        <dl className="space-y-2 text-sm">
-          {scene.card.rows.map((row) => (
-            <div key={row.key}>
-              <dt className="text-blue-deep font-black">
-                <RubyText text={row.label} index={index} show />
-              </dt>
-              <dd className="m-0 font-bold">
-                <DictionaryText text={row.text} index={index} />
-                {row.count ? (
-                  <CountBoxes total={row.count.total} done={row.count.done} now={row.count.now} />
-                ) : null}
-              </dd>
-            </div>
-          ))}
-        </dl>
-      ) : null}
 
       {scene.card.memo?.length ? (
         <div>
@@ -1187,6 +1216,9 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
           label="報告メモ"
           title={<RubyText text="📋 報告メモ" index={index} show />}
           onClose={() => setDuty(false)}
+          /* 中身は 3つの 箱＋付せん＋10行の 表。細い ままだと PCで 短冊に なる。 */
+          wide
+          index={index}
         >
           {dutyBody}
         </ModalShell>
@@ -1295,6 +1327,47 @@ function ReportJudge({
     </ModalShell>
   );
 }
+
+/**
+ * 報告の 行（きのう・きょう・問題・お願い）の 顔。
+ *
+ * **4つの 型カードと 同じ 色**に そろえる——板の カードと メモの 箱が 同じ ものを
+ * 指して いる ことが、色で つながる（2026-09-16 の 指定「色付きの 枠で 囲ったり
+ * ラベル付けするなど して 目立つように」）。
+ */
+interface RowFace {
+  readonly mark: string;
+  readonly face: string;
+  readonly edge: string;
+}
+
+const ROW_FACE: Record<string, RowFace | undefined> & { kinou: RowFace } = {
+  kinou: {
+    mark: "📅",
+    face: "color-mix(in srgb, var(--color-sky) 14%, white)",
+    edge: "var(--color-sky-deep)",
+  },
+  kyou: {
+    mark: "▶",
+    face: "color-mix(in srgb, var(--color-sun) 18%, white)",
+    edge: "#b98b16",
+  },
+  ashita: {
+    mark: "⏭",
+    face: "color-mix(in srgb, var(--color-sun) 18%, white)",
+    edge: "#b98b16",
+  },
+  komari: {
+    mark: "❗",
+    face: "color-mix(in srgb, var(--color-coral) 14%, white)",
+    edge: "var(--color-coral-deep)",
+  },
+  onegai: {
+    mark: "🙏",
+    face: "color-mix(in srgb, var(--color-grape, #c9a7e8) 18%, white)",
+    edge: "#7a4fa8",
+  },
+};
 
 function Tag({ text, index }: { text: string; index: FuriganaIndex }) {
   return (

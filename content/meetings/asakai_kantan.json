@@ -64,42 +64,47 @@
           "progress": [
             {
               "label": "決済の 画面",
+              "icon": "🖥️",
+              "state": "done"
+            },
+            {
+              "label": "ABA Payの ボタン",
+              "icon": "🔵",
               "state": "done"
             },
             {
               "label": "注文IDと 金額の 表示",
+              "icon": "🧾",
               "state": "now"
             },
             {
               "label": "支払方法を えらぶ",
+              "icon": "🔀",
               "state": "later"
             },
             {
-              "label": "ABA Payの ボタン",
-              "state": "done"
-            },
-            {
-              "label": "ACLEDA Payを えらぶ",
-              "state": "later"
-            },
-            {
-              "label": "決済APIと つなぐ",
+              "label": "決済APIと つなぐ（ABA）",
+              "icon": "🔌",
               "state": "now"
             },
             {
               "label": "処理中の 表示",
+              "icon": "⏳",
               "state": "later"
             },
             {
               "label": "成功の 画面",
+              "icon": "✅",
               "state": "later"
             },
             {
               "label": "失敗の 画面",
+              "icon": "⚠️",
               "state": "later"
             },
             {
               "label": "フロントの テスト",
+              "icon": "🧪",
               "state": "later"
             }
           ],
@@ -311,42 +316,47 @@
           "progress": [
             {
               "label": "決済の 画面",
+              "icon": "🖥️",
+              "state": "done"
+            },
+            {
+              "label": "ABA Payの ボタン",
+              "icon": "🔵",
               "state": "done"
             },
             {
               "label": "注文IDと 金額の 表示",
+              "icon": "🧾",
               "state": "done"
             },
             {
               "label": "支払方法を えらぶ",
+              "icon": "🔀",
               "state": "later"
             },
             {
-              "label": "ABA Payの ボタン",
-              "state": "done"
-            },
-            {
-              "label": "ACLEDA Payを えらぶ",
-              "state": "later"
-            },
-            {
-              "label": "決済APIと つなぐ",
+              "label": "決済APIと つなぐ（ABA）",
+              "icon": "🔌",
               "state": "now"
             },
             {
               "label": "処理中の 表示",
+              "icon": "⏳",
               "state": "now"
             },
             {
               "label": "成功の 画面",
+              "icon": "✅",
               "state": "later"
             },
             {
               "label": "失敗の 画面",
+              "icon": "⚠️",
               "state": "later"
             },
             {
               "label": "フロントの テスト",
+              "icon": "🧪",
               "state": "later"
             }
           ],
@@ -578,42 +588,53 @@
           "progress": [
             {
               "label": "決済の 画面",
+              "icon": "🖥️",
+              "state": "done"
+            },
+            {
+              "label": "ABA Payの ボタン",
+              "icon": "🔵",
               "state": "done"
             },
             {
               "label": "注文IDと 金額の 表示",
+              "icon": "🧾",
               "state": "done"
             },
             {
               "label": "支払方法を えらぶ",
+              "icon": "🔀",
               "state": "now"
-            },
-            {
-              "label": "ABA Payの ボタン",
-              "state": "done"
             },
             {
               "label": "ACLEDA Payを えらぶ",
-              "state": "now"
+              "icon": "🟠",
+              "state": "now",
+              "added": true
             },
             {
-              "label": "決済APIと つなぐ",
+              "label": "決済APIと つなぐ（ABA/ACLEDA）",
+              "icon": "🔌",
               "state": "now"
             },
             {
               "label": "処理中の 表示",
+              "icon": "⏳",
               "state": "now"
             },
             {
               "label": "成功の 画面",
+              "icon": "✅",
               "state": "now"
             },
             {
               "label": "失敗の 画面",
+              "icon": "⚠️",
               "state": "now"
             },
             {
               "label": "フロントの テスト",
+              "icon": "🧪",
               "state": "later"
             }
           ],
@@ -845,42 +866,52 @@
           "progress": [
             {
               "label": "決済の 画面",
-              "state": "done"
-            },
-            {
-              "label": "注文IDと 金額の 表示",
-              "state": "done"
-            },
-            {
-              "label": "支払方法を えらぶ",
+              "icon": "🖥️",
               "state": "done"
             },
             {
               "label": "ABA Payの ボタン",
+              "icon": "🔵",
+              "state": "done"
+            },
+            {
+              "label": "注文IDと 金額の 表示",
+              "icon": "🧾",
+              "state": "done"
+            },
+            {
+              "label": "支払方法を えらぶ",
+              "icon": "🔀",
               "state": "done"
             },
             {
               "label": "ACLEDA Payを えらぶ",
+              "icon": "🟠",
               "state": "done"
             },
             {
-              "label": "決済APIと つなぐ",
+              "label": "決済APIと つなぐ（ABA/ACLEDA）",
+              "icon": "🔌",
               "state": "now"
             },
             {
               "label": "処理中の 表示",
+              "icon": "⏳",
               "state": "now"
             },
             {
               "label": "成功の 画面",
+              "icon": "✅",
               "state": "done"
             },
             {
               "label": "失敗の 画面",
+              "icon": "⚠️",
               "state": "done"
             },
             {
               "label": "フロントの テスト",
+              "icon": "🧪",
               "state": "later"
             }
           ],
@@ -1191,42 +1222,52 @@
           "progress": [
             {
               "label": "決済の 画面",
-              "state": "done"
-            },
-            {
-              "label": "注文IDと 金額の 表示",
-              "state": "done"
-            },
-            {
-              "label": "支払方法を えらぶ",
+              "icon": "🖥️",
               "state": "done"
             },
             {
               "label": "ABA Payの ボタン",
+              "icon": "🔵",
+              "state": "done"
+            },
+            {
+              "label": "注文IDと 金額の 表示",
+              "icon": "🧾",
+              "state": "done"
+            },
+            {
+              "label": "支払方法を えらぶ",
+              "icon": "🔀",
               "state": "done"
             },
             {
               "label": "ACLEDA Payを えらぶ",
+              "icon": "🟠",
               "state": "done"
             },
             {
-              "label": "決済APIと つなぐ",
+              "label": "決済APIと つなぐ（ABA）",
+              "icon": "🔌",
               "state": "now"
             },
             {
               "label": "処理中の 表示",
+              "icon": "⏳",
               "state": "done"
             },
             {
               "label": "成功の 画面",
+              "icon": "✅",
               "state": "done"
             },
             {
               "label": "失敗の 画面",
+              "icon": "⚠️",
               "state": "done"
             },
             {
               "label": "フロントの テスト",
+              "icon": "🧪",
               "state": "now"
             }
           ],

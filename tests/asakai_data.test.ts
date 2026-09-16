@@ -499,3 +499,61 @@ describe("型文の 見た目", () => {
     });
   }
 });
+
+/**
+ * **金曜日までの しごとの 表**（2026-09-16 の 指定）
+ *
+ * - 並びは **進行順**（実際に 手を つける 順）。曜日が 変わっても 入れ替えない——
+ *   入れ替わると「増えたのか 動いたのか」が 読めない
+ * - **ACLEDA Pay は はじめ 無い**。社長の 要望（火曜の 午後）を 受けて 水曜から 増え、
+ *   **増えた その日だけ**「追加」の 印が つく
+ * - つなぐ 先は 名前に 出す。はじめは（ABA）、要望の あとは（ABA/ACLEDA）
+ */
+describe("どこまで できたかの 表（朝礼）", () => {
+  const meeting = meetingSchema.parse(kantan);
+  const scenes = meeting.asakai!.scenes;
+  const labelsOf = (at: number) => scenes[at]!.card.progress.map((row) => row.label);
+
+  it("並びは 曜日が 変わっても 入れ替わらない（進行順）", () => {
+    for (let at = 1; at < scenes.length; at += 1) {
+      const before = labelsOf(at - 1).map(baseName);
+      const after = labelsOf(at).map(baseName);
+      /* 前の 日の 並びが、次の 日の 並びの 中に 同じ 順で 残って いる。 */
+      expect(after.filter((name) => before.includes(name))).toEqual(before);
+    }
+  });
+
+  it("ACLEDA Pay は 水曜から 増え、その日だけ 追加の 印が つく", () => {
+    const acleda = scenes.map((scene) =>
+      scene.card.progress.find((row) => row.label.includes("ACLEDA")),
+    );
+    expect(acleda[0], "月曜に ACLEDA が ある").toBeUndefined();
+    expect(acleda[1], "火曜に ACLEDA が ある").toBeUndefined();
+    expect(acleda[2]?.added, "水曜に 追加の 印が 無い").toBe(true);
+    expect(acleda[3]?.added, "木曜にも 追加の 印が 残って いる").toBe(false);
+    expect(acleda[4]?.added, "金曜にも 追加の 印が 残って いる").toBe(false);
+  });
+
+  it("つなぐ 先が 名前に 出る（はじめは ABA だけ）", () => {
+    const api = scenes.map(
+      (scene) => scene.card.progress.find((row) => row.label.startsWith("決済APIと つなぐ"))!.label,
+    );
+    expect(api[0]).toBe("決済APIと つなぐ（ABA）");
+    expect(api[1]).toBe("決済APIと つなぐ（ABA）");
+    expect(api[2]).toBe("決済APIと つなぐ（ABA/ACLEDA）");
+    expect(api[3]).toBe("決済APIと つなぐ（ABA/ACLEDA）");
+    /* 金曜は 藤木さんが「ACLEDA Payは 次の 回に します」と 言う ので 戻る。 */
+    expect(api[4]).toBe("決済APIと つなぐ（ABA）");
+  });
+
+  it("どの しごとにも 絵の 印が ついて いる", () => {
+    for (const scene of scenes) {
+      for (const row of scene.card.progress) expect(row.icon, row.label).toBeTruthy();
+    }
+  });
+});
+
+/** 「決済APIと つなぐ（ABA）」→「決済APIと つなぐ」（日で 変わる 添えを 落とす）。 */
+function baseName(label: string): string {
+  return label.replace(/（[^）]*）$/u, "");
+}
