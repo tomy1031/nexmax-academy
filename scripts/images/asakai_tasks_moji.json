@@ -1,0 +1,63 @@
+{
+  "refs": [
+    "public/img/articles/asakai_lecture/card_kinou.webp",
+    "public/img/asakai/tasks/aba.webp"
+  ],
+  "_comment": "朝礼・夕礼ステージ（content/meetings/asakai_kantan.json）の しごとの 表の 絵のうち、**字を 入れる 5枚**。字を 入れない 5枚は asakai_tasks.json（noText が ちがう ので 台帳を 分けた。asakai_cards / asakai_zukai と 同じ 分けかた）。 2026-09-16 の 指定で 描き直し（字を 入れる）: 決済画面は Choeung Ek Genocidal Center の チケット予約／支払い方法は ABA・Credit・Cash／注文IDは ランダムで よく 金額は $6／決済APIの サーバは ABA／ACLEDA Pay を えらぶ 画面は ABA Pay・ACLEDA Pay・Cash の 3つ。 字は 英語（アプリは 外国から 来た 人が 使う）なので ふりがなは 要らない。**銀行の ロゴは 描かない**——名前を 字で 書くだけ。参照入力は 朝礼ページの エンジニア（顔）と、字の 無い 側の aba.webp（絵柄）。 Choeung Ek の 塔は ユーザーが 貼った 写真を 文で 写した（写真は ファイルに なって いなかった）。 台帳が 正で、教材JSONの src は その 写し（scripts/lib/image_ledger.mjs）。",
+  "style": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This is a TEACHING picture, not a mood picture: what the person is doing must be readable from the picture alone. The picture will be shown very small, about 80 pixels wide, so keep it to ONE person and ONE screen, drawn LARGE and simple, with the screen's contents big and bold and a clear dominant colour; leave small details out.",
+  "noText": "Lettering — read this part carefully. The picture contains ONLY the words and numbers written inside double quotation marks in the scene above, and no other writing at all. Print each of them LARGE and horizontally in a clean rounded sans-serif font with generous space around it, spelled EXACTLY as given, letter for letter and digit for digit, so that it stays sharp and easy to read at a glance. Every other part of every screen, card and button is blank or shows only plain grey rounded bars. Payment and bank names are written as plain text only — never draw a bank logo or brand mark. No other letters, numbers, logos, watermarks or speech balloons anywhere in the picture.",
+  "negative": "Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots, a second person, a wide empty room shot where the person and the screen are small. Never: misspelled words, extra words, Japanese writing, a bank logo.",
+  "output": "1024x1024",
+  "scenes": [
+    {
+      "out": "task_screen",
+      "dest": "public/img/asakai/tasks/screen.webp",
+      "title": "1 決済の 画面",
+      "where": "content/meetings/asakai_kantan.json asakai.scenes[].card.progress[].image",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: she is BUILDING the ticket-booking payment screen for a visit to the Choeung Ek Genocidal Center. Close view of the new engineer — a young Cambodian woman in her early twenties with warm light-brown skin, a round friendly face and black hair tied back in a low ponytail, wearing a mint-green blouse, beige trousers and a lanyard with a blank white card, sitting at her desk with both hands on the keyboard and looking up at a large monitor that FILLS most of the frame. On the monitor stands one big upright phone mockup showing the booking page she is building: at the top a wide rounded photo of the Choeung Ek memorial stupa — a tall, slender, white memorial tower standing on a low white base in the middle of a wide green lawn, topped by a tiered Khmer-style roof with golden-yellow gables edged in grey and a tall pointed spire, with leafy green trees on both sides and a bright blue sky with a few white clouds. Under the photo is one line of large text reading \"Choeung Ek\", and at the bottom one wide rounded SKY-BLUE button reading \"Book Ticket\". Calm, focused, respectful expression.",
+      "output": "Output: one square illustration, 1024x1024. Close view — the person and the screen fill the frame edge to edge.",
+      "_note": "2026-09-16 の 指定で 描き直し（字を 入れる）: 決済画面は Choeung Ek Genocidal Center の チケット予約／支払い方法は ABA・Credit・Cash／注文IDは ランダムで よく 金額は $6／決済APIの サーバは ABA／ACLEDA Pay を えらぶ 画面は ABA Pay・ACLEDA Pay・Cash の 3つ。"
+    },
+    {
+      "out": "task_order",
+      "dest": "public/img/asakai/tasks/order.webp",
+      "title": "3 注文IDと 金額の 表示",
+      "where": "content/meetings/asakai_kantan.json asakai.scenes[].card.progress[].image",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: the screen now SHOWS the order number and the price, six dollars. Close view of the new engineer — a young Cambodian woman in her early twenties with warm light-brown skin, a round friendly face and black hair tied back in a low ponytail, wearing a mint-green blouse, beige trousers and a lanyard with a blank white card at her desk, leaning in and pointing with a pen at a large monitor that FILLS most of the frame. On the monitor stands one upright phone mockup showing the order for one Choeung Ek entrance ticket: at the top a small rounded thumbnail of the white memorial stupa with its golden tiered roof beside one plain grey bar, then one line reading \"Order ID: KS-4827\", then a thin divider line, then one big bold line reading \"Total: $6\". These two lines of text are the largest things on the screen. Satisfied, checking expression.",
+      "output": "Output: one square illustration, 1024x1024. Close view — the person and the screen fill the frame edge to edge.",
+      "_note": "2026-09-16 の 指定で 描き直し（字を 入れる）: 決済画面は Choeung Ek Genocidal Center の チケット予約／支払い方法は ABA・Credit・Cash／注文IDは ランダムで よく 金額は $6／決済APIの サーバは ABA／ACLEDA Pay を えらぶ 画面は ABA Pay・ACLEDA Pay・Cash の 3つ。"
+    },
+    {
+      "out": "task_choose",
+      "dest": "public/img/asakai/tasks/choose.webp",
+      "title": "4 支払方法を えらぶ",
+      "where": "content/meetings/asakai_kantan.json asakai.scenes[].card.progress[].image",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: on this screen you PICK ONE of THREE ways to pay. Very close view of the hands of the new engineer — a young Cambodian woman in her early twenties with warm light-brown skin, a round friendly face and black hair tied back in a low ponytail, wearing a mint-green blouse, beige trousers and a lanyard with a blank white card holding one smartphone upright, the phone FILLING most of the frame, her face and shoulders visible behind it at the top, watching the screen. The screen shows THREE wide rounded option rows stacked one above the other, each with a round radio circle on its left and one name in large text: the top row reads \"ABA Pay\", the middle row reads \"Credit Card\", the bottom row reads \"Cash\". Her thumb rests on the top row; that row has a thick BLUE outline and its radio circle is filled in solid blue to show it is the chosen one, while the other two rows are plain white with empty radio circles. Deciding, thoughtful expression.",
+      "output": "Output: one square illustration, 1024x1024. Close view — the person and the screen fill the frame edge to edge.",
+      "_note": "2026-09-16 の 指定で 描き直し（字を 入れる）: 決済画面は Choeung Ek Genocidal Center の チケット予約／支払い方法は ABA・Credit・Cash／注文IDは ランダムで よく 金額は $6／決済APIの サーバは ABA／ACLEDA Pay を えらぶ 画面は ABA Pay・ACLEDA Pay・Cash の 3つ。"
+    },
+    {
+      "out": "task_acleda",
+      "dest": "public/img/asakai/tasks/acleda.webp",
+      "title": "5 ACLEDA Payを えらぶ",
+      "where": "content/meetings/asakai_kantan.json asakai.scenes[].card.progress[].image",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: ACLEDA Pay is now one of the three ways to pay, and it is the one being picked. Close view of the new engineer — a young Cambodian woman in her early twenties with warm light-brown skin, a round friendly face and black hair tied back in a low ponytail, wearing a mint-green blouse, beige trousers and a lanyard with a blank white card at her desk with one hand on the keyboard, looking up at a large monitor that FILLS most of the frame. On the monitor stands an upright phone mockup showing THREE wide rounded option rows stacked one above the other, each with a round radio circle on its left and one name in large text: the top row reads \"ABA Pay\", the middle row reads \"ACLEDA Pay\", the bottom row reads \"Cash\". The middle row has a thick WARM ORANGE outline and its radio circle is filled in solid orange to show it is the chosen one; the other two rows are plain white with empty radio circles. Pleased, decided expression.",
+      "output": "Output: one square illustration, 1024x1024. Close view — the person and the screen fill the frame edge to edge.",
+      "_note": "2026-09-16 の 指定で 描き直し（字を 入れる）: 決済画面は Choeung Ek Genocidal Center の チケット予約／支払い方法は ABA・Credit・Cash／注文IDは ランダムで よく 金額は $6／決済APIの サーバは ABA／ACLEDA Pay を えらぶ 画面は ABA Pay・ACLEDA Pay・Cash の 3つ。"
+    },
+    {
+      "out": "task_api",
+      "dest": "public/img/asakai/tasks/api.webp",
+      "title": "6 決済APIと つなぐ",
+      "where": "content/meetings/asakai_kantan.json asakai.scenes[].card.progress[].image",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: her payment screen is now JOINED BY A CABLE to ABA's payment server. Close view of the new engineer — a young Cambodian woman in her early twenties with warm light-brown skin, a round friendly face and black hair tied back in a low ponytail, wearing a mint-green blouse, beige trousers and a lanyard with a blank white card sitting at her desk on the left with one hand resting on the desk, looking to the right at a large monitor that FILLS the right two thirds of the frame. On the monitor is ONE simple drawing and nothing else: an upright phone on the left whose screen is plain white with three short grey bars on it, and a tall NAVY server cabinet on the right with three shelf slots, two small round lamps and one large white label across its front reading \"ABA\", joined by ONE thick black cable with a chunky SKY-BLUE plug at each end. BOTH ENDS ARE CLEARLY PLUGGED IN, pushed all the way home with no gap, one into the bottom of the phone and one into the front of the server. Focused, satisfied expression.",
+      "output": "Output: one square illustration, 1024x1024. Close view — the person and the screen fill the frame edge to edge.",
+      "_note": "2026-09-16 の 指定で 描き直し（字を 入れる）: 決済画面は Choeung Ek Genocidal Center の チケット予約／支払い方法は ABA・Credit・Cash／注文IDは ランダムで よく 金額は $6／決済APIの サーバは ABA／ACLEDA Pay を えらぶ 画面は ABA Pay・ACLEDA Pay・Cash の 3つ。"
+    }
+  ]
+}
