@@ -1026,6 +1026,25 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
    * 報告メモ（担当・ゴール・進捗・その日の 行／メモ）。**報告の もとに なる もの**。
    * **画面に 出しっぱなしに せず、ポップアップの 中身に する**（2026-09-13 の 指定）。
    */
+  /*
+   * 報告メモに 並べる 箱。**きのう → きょう → 進捗 → 問題（→ お願い）**
+   *（2026-09-16 の 指定「進捗を 今日したことの 次に 入れて ください」）。
+   *
+   * 進捗（`card.pin`）は もとは 黄色い 付せんで、ほかの 行と **別の 作り**だった。
+   * 同じ 形の 箱に 入れて、位置も 並びの 中に きちんと 置く。
+   * `kyou` の 無い 教材では いちばん 後ろに 付く。
+   */
+  const memoRows: { key: string; label: string; text: string; count?: RowCount }[] = [];
+  for (const row of scene.card.rows ?? []) {
+    memoRows.push({ key: row.key, label: row.label, text: row.text, count: row.count });
+    if (row.key === "kyou" && scene.card.pin) {
+      memoRows.push({ key: "shinchoku", label: "進捗", text: scene.card.pin });
+    }
+  }
+  if (scene.card.pin && !memoRows.some((row) => row.key === "shinchoku")) {
+    memoRows.push({ key: "shinchoku", label: "進捗", text: scene.card.pin });
+  }
+
   const dutyBody = (
     <div className="mt-3 space-y-3">
       <div className="border-hairline rounded-xl border bg-white/70 p-2 text-sm">
@@ -1044,17 +1063,21 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
       </div>
 
       {/*
-        **報告の 4つの うち 3つ（きのう・きょう・問題）を いちばん 上に 置く**
-        （2026-09-16 の 指定「昨日 したこと、今日 すること、問題点も 色付きの 枠で 囲ったり
-        ラベル付けするなど して 目立つように。かつ 進捗の 前に 持ってきて」）。
+        **報告の 4つを そのまま 上から 並べる**（2026-09-16 の 指定
+        「昨日 したこと、今日 すること、問題点も 色付きの 枠で 囲ったり ラベル付けする などして
+        目立つように。かつ 進捗の 前に 持ってきて」＋「進捗を 今日したことの 次に 入れて」）。
+
+        並びは **きのう → きょう → 進捗 → 問題（→ お願い）**。
+        進捗は もともと 黄色い 付せん 1枚で、**ほかと 別の 作り**で 浮いて いた ので、
+        同じ 枠・同じ ラベルの 形に そろえた（色だけ ちがう）。
 
         前は 進捗の 付せんと 表の **下**に 字だけで 並んで いた。報告で まっさきに
-        言う ものが いちばん 下に あり、しかも 見出しが 青い 字だけ だった ので、
+        言う ものが いちばん 下に あり、見出しも 青い 字だけ だった ので、
         どこからが「きのう」で どこからが「きょう」か 目で 追えなかった。
       */}
-      {scene.card.rows?.length ? (
+      {memoRows.length > 0 ? (
         <dl className="m-0 space-y-2">
-          {scene.card.rows.map((row) => {
+          {memoRows.map((row) => {
             const face = ROW_FACE[row.key] ?? ROW_FACE.kinou;
             return (
               <div
@@ -1063,8 +1086,14 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
                 style={{ background: face.face, borderColor: face.edge }}
               >
                 <dt>
+                  {/*
+                    ふりがなは 字の **上**に 出るので、札の 行の 高さが 足りないと
+                    上が 切れて 消える（2026-09-16 の 指定「ふりがなを 含む 要素の
+                    縦幅が 足りないため、ふりがなが きえて います」）。
+                    `inline-block` ＋ ゆるい `leading` で ルビの ぶんの 高さを 確保する。
+                  */}
                   <span
-                    className="mr-1 rounded-full px-2 py-0.5 text-[11px] font-black text-white [&_rt]:text-white"
+                    className="mr-1 inline-block rounded-full px-2 py-1 text-[11px] leading-[1.9] font-black text-white [&_rt]:text-white"
                     style={{ background: face.edge }}
                   >
                     {face.mark} <RubyText text={row.label} index={index} show />
@@ -1080,18 +1109,6 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
             );
           })}
         </dl>
-      ) : null}
-
-      {/*
-        付せん（**その日の 進捗の 数字**）。メモ（夕礼）の 中にだけ 描いて いた ので、
-        行（rows）で 作る 朝礼では **画面の どこにも 出て いなかった**——
-        数字を 言う 設問なのに 数字が 無く、ヒントを 開かないと 答えられなかった
-        （規律10「設問は ヒントを 閉じた まま 答えられる こと」・2026-09-13）。
-      */}
-      {scene.card.pin ? (
-        <p className="rounded-md border border-[#d8c77a] bg-[#fdf6c8] px-3 py-2 text-sm font-bold">
-          📌 <DictionaryText text={scene.card.pin} index={index} />
-        </p>
       ) : null}
 
       <ProgressBoxes items={scene.card.progress} index={index} />
@@ -1215,7 +1232,19 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
       {duty ? (
         <ModalShell
           label="報告メモ"
-          title={<RubyText text="📋 報告メモ" index={index} show />}
+          /*
+            **題の 横に 曜日**（2026-09-16 の 指定「報告メモの タイトルの 横に
+            目立つ ように 曜日を 記載して ください」）。中身は 曜日ごとに ぜんぶ 変わる のに、
+            開いた ポップアップだけを 見て いると **いつの メモか**が 分からなかった。
+          */
+          title={
+            <span className="inline-flex flex-wrap items-center justify-center gap-2">
+              <RubyText text="📋 報告メモ" index={index} show />
+              <span className="bg-sky-deep inline-block rounded-full px-3 py-1 text-sm leading-[1.9] font-black text-white [&_rt]:text-white">
+                <RubyText text={DAY_NAME[scene.day]} index={index} show />
+              </span>
+            </span>
+          }
           onClose={() => setDuty(false)}
           /* 中身は 3つの 箱＋付せん＋10行の 表。細い ままだと PCで 短冊に なる。 */
           wide
@@ -1336,6 +1365,13 @@ function ReportJudge({
  * 指して いる ことが、色で つながる（2026-09-16 の 指定「色付きの 枠で 囲ったり
  * ラベル付けするなど して 目立つように」）。
  */
+/** 「20この うち 16こ」の 絵（行が 持つ ことが ある）。 */
+interface RowCount {
+  readonly total: number;
+  readonly done: number;
+  readonly now: number;
+}
+
 interface RowFace {
   readonly mark: string;
   readonly face: string;
@@ -1358,6 +1394,16 @@ const ROW_FACE: Record<string, RowFace | undefined> & { kinou: RowFace } = {
     face: "color-mix(in srgb, var(--color-sun) 18%, white)",
     edge: "#b98b16",
   },
+  /*
+   * 進捗（付せんだった もの）。2026-09-16 の 指定「UIが せっかく 整ったので、
+   * 他の 表示に 合わせた **色ちがいの 枠**に して ください」。
+   * 黄色い 付せん 1枚だけ 別の 作りで 浮いて いた。
+   */
+  shinchoku: {
+    mark: "📊",
+    face: "color-mix(in srgb, var(--color-leaf) 16%, white)",
+    edge: "var(--color-leaf-deep)",
+  },
   komari: {
     mark: "❗",
     face: "color-mix(in srgb, var(--color-coral) 14%, white)",
@@ -1370,9 +1416,17 @@ const ROW_FACE: Record<string, RowFace | undefined> & { kinou: RowFace } = {
   },
 };
 
+/**
+ * 濃い 地の 小さな 札（担当・今週の ゴール など）。
+ *
+ * **`inline-block` ＋ ゆるい `leading`** を 付けるのは、ふりがなが 字の 上に 出るから
+ *（2026-09-16 の 指定「ふりがなを 含む 要素の 縦幅が 足りない ため、ふりがなが
+ * きえて います」）。`py-0.5` の まま 行の 高さを 詰めると、上の かなが 札の 外へ
+ * はみ出して 切れる。
+ */
 function Tag({ text, index }: { text: string; index: FuriganaIndex }) {
   return (
-    <span className="bg-navy mr-1 rounded-full px-2 py-0.5 text-[11px] font-black text-white [&_rt]:text-white">
+    <span className="bg-navy mr-1 inline-block rounded-full px-2 py-1 text-[11px] leading-[1.9] font-black text-white [&_rt]:text-white">
       <RubyText text={text} index={index} show />
     </span>
   );

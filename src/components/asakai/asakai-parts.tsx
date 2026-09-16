@@ -182,14 +182,14 @@ export function ProgressBoxes({
                     黙って 1行 増えても 気づけない（2026-09-16 の 指定）。
                   */}
                   {item.added ? (
-                    <span className="bg-coral ml-1 rounded-full px-1.5 py-0.5 text-[10px] font-black whitespace-nowrap text-white">
+                    <span className="bg-coral ml-1 inline-block rounded-full px-1.5 py-0.5 text-[10px] leading-[1.9] font-black whitespace-nowrap text-white [&_rt]:text-white">
                       ✚ <RubyText text="追加" index={index} show />
                     </span>
                   ) : null}
                 </td>
                 <td className="px-2 py-1 text-right">
                   <span
-                    className={`inline-flex items-center gap-1 rounded-full px-1.5 py-0.5 text-[10px] font-black whitespace-nowrap ${face.cls}`}
+                    className={`inline-flex items-center gap-1 rounded-full px-1.5 py-0.5 text-[10px] leading-[1.9] font-black whitespace-nowrap ${face.cls}`}
                   >
                     <span aria-hidden>{face.mark}</span>
                     <RubyText text={face.word} index={index} show />
