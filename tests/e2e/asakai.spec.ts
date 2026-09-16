@@ -197,6 +197,25 @@ test("朝礼（かんたん）— 報告すると カードが 開く", async ({
    * **月曜は ACLEDA Pay が まだ 無い**（社長の 要望は 火曜の 午後）。
    * つなぐ 先も ABA だけ（2026-09-16 の 指定）。
    */
+  /*
+   * **並びは 報告の 4つの 型と 同じ**（2026-09-16 の 指定
+   *「進捗を 昨日したことの 次に 入れて ください」）。メモを 上から 読めば
+   * そのまま 報告の 順に なる——ここが 入れ替わると、板の 4枚の カードとも ずれる。
+   */
+  const memoOrder = await page.evaluate(() =>
+    Array.from(document.querySelectorAll('[role="dialog"] dt')).map((dt) => {
+      const clone = dt.cloneNode(true) as HTMLElement;
+      for (const rt of Array.from(clone.querySelectorAll("rt"))) rt.remove();
+      return (clone.textContent ?? "").replace(/\s+/gu, "");
+    }),
+  );
+  expect(memoOrder).toEqual([
+    "📅きのうしたこと（先週の金曜日）",
+    "📊進捗",
+    "▶きょうすること",
+    "❗問題・確認",
+  ]);
+
   const memoText = await readingFreeText(page);
   expect(memoText).toContain("決済APIとつなぐ（ABA）");
   expect(memoText, "月曜に ACLEDA Pay が 出て いる").not.toContain("ACLEDAPayをえらぶ");
