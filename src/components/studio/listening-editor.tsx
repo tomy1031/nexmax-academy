@@ -333,8 +333,8 @@ export function ListeningEditor({
           />
         </div>
         <p className="text-ink-faint text-xs font-bold">
-          げんこうは ふつう 見せません（見えていると 読む れんしゅうに なってしまいます）。 学習者は
-          画面の「げんこう ON」で 出せます。
+          げんこうは 当てた ことばだけが 見える 穴埋めの 形で 出ます（答えは 見えません）。 学習者は
+          画面の「げんこう」ボタンで 出したり 消したり できます。
         </p>
       </StudioSection>
 
