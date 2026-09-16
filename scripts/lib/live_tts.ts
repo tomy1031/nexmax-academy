@@ -75,6 +75,14 @@ export interface Spoken {
  * 1文を 読み上げて 音と 文字起こしを 返す。
  *
  * 返事が 来ないまま 開きっぱなしに しない（60秒で あきらめて つぎの モデルへ）。
+ *
+ * ## 読み終えたら **つなぎを 閉じる**
+ * 2026-09-16 まで 閉じて いなかった（ここの 覚書は「ひと呼吸 待ってから 閉じる」と
+ * 書いて いたのに、実際は 結果を 返すだけ だった）。開いた ままの つなぎは
+ * 向こうが 切るまで 残り、**無料枠の 同時に 開ける 数**を 食う。報告の リスニングを
+ * 1文ずつ 作ったら **3文 作った ところで 4文目から 全部の モデルが「使いすぎ」
+ *（code 1011 You exceeded your current quota）**に なった。
+ * 「1分あたりの つなぎ数が 少ない」（下の 覚書）と 見えて いた ものの 一部も これだった おそれが ある。
  */
 async function synthesize(text: string, model: string, speaker: Speaker): Promise<Spoken> {
   const ai = new GoogleGenAI({ apiKey: speaker.apiKey, apiVersion: "v1beta" });
@@ -83,10 +91,20 @@ async function synthesize(text: string, model: string, speaker: Speaker): Promis
 
   return await new Promise<Spoken>((resolve, reject) => {
     let settled = false;
+    let session: { close: () => void } | null = null;
+    const closeSession = () => {
+      try {
+        session?.close();
+      } catch {
+        // もう 閉じて いる ものは 閉じられない（それで よい）
+      }
+    };
     const finish = (fn: () => void) => {
       if (settled) return;
       settled = true;
       clearTimeout(timer);
+      // 閉じると onclose が 呼ばれるが、settled なので 二重には 返らない
+      closeSession();
       fn();
     };
     const timer = setTimeout(
@@ -125,13 +143,18 @@ async function synthesize(text: string, model: string, speaker: Speaker): Promis
                * 「その」だけの 文字起こしを 見て、ちゃんと 読めた 音を 捨てて しまう
                *（2026-08-28 に q5 で 実発生）。ひと呼吸 待ってから 閉じる。
                */
-              setTimeout(() => {
+              const done = () =>
                 finish(() =>
                   chunks.length > 0
                     ? resolve({ pcm: Buffer.concat(chunks), transcript })
                     : reject(new Error(`${model}: 音が 空でした`)),
                 );
-              }, 700);
+              /*
+               * 700ミリ秒 待っても 文字起こしが 1字も 無い ときは、もう 2秒 待つ
+               *（2026-09-16。gemini-3.8-live で 音は あるのに「文字起こしが 空」で 落ちた。
+               * 閉じる ように した ので、待たないと 遅れて 来る 文字起こしを 自分で 切る）。
+               */
+              setTimeout(() => (transcript.trim() ? done() : setTimeout(done, 2_000)), 700);
             }
           },
           onerror: (error: unknown) =>
@@ -144,8 +167,14 @@ async function synthesize(text: string, model: string, speaker: Speaker): Promis
             ),
         },
       })
-      .then((session) => {
-        session.sendClientContent({ turns: text, turnComplete: true });
+      .then((opened) => {
+        session = opened;
+        // つながる 前に 時間切れ などで 終わって いたら、すぐ 閉じる
+        if (settled) {
+          closeSession();
+          return;
+        }
+        opened.sendClientContent({ turns: text, turnComplete: true });
       })
       .catch((error: unknown) => finish(() => reject(new Error(`${model}: ${String(error)}`))));
   });

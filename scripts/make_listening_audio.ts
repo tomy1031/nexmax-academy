@@ -248,12 +248,27 @@ async function makeSentences(activePlan: ListeningAudioPlan): Promise<void> {
     const voice = voiceOf(sentence.speaker);
     process.stdout.write(`(${i + 1}/${sentences.length}) ${sentence.speaker}・${voice} … `);
     let accepted: ReadingMatch | null = null;
-    // 1つでも 落ちたら 全部 やめる（行ごとの 作りかたと 同じ 理由）
-    const spoken = await synthesizeWithFallback(sentence.text, { apiKey, voice }, (candidate) => {
+    const accept = (candidate: { transcript: string }) => {
       const match = matchReading(sentence.text, candidate.transcript, index, tokenizer);
       if (match.ok) accepted = match;
       return match;
-    });
+    };
+    /*
+     * モデルを 2周 しても だめ なら、**1分 おいて もう一度**（2回まで）。
+     * 1文ずつ 作ると つなぐ 回数が 行ごとの 倍に なり、無料枠の「使いすぎ」に
+     * 当たりやすい（2026-09-16 に 4文目で 当たった）。それでも だめなら
+     * 全部 やめる（行ごとの 作りかたと 同じ 理由）。
+     */
+    let spoken: Awaited<ReturnType<typeof synthesizeWithFallback>> | null = null;
+    for (let attempt = 0; spoken === null; attempt += 1) {
+      try {
+        spoken = await synthesizeWithFallback(sentence.text, { apiKey, voice }, accept);
+      } catch (error) {
+        if (attempt >= 2) throw error;
+        console.log(`\n  だめ でした。60秒 おいて もう一度（${attempt + 2}回目）`);
+        await new Promise((wait) => setTimeout(wait, 60_000));
+      }
+    }
     const match = accepted as ReadingMatch | null;
     if (!match) throw new Error(`(${i + 1}) 照合の 結果が ありません`);
     const pcm = trimSilence(spoken.pcm);
