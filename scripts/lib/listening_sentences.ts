@@ -6,59 +6,13 @@
 
 import { SAMPLE_RATE } from "../../src/lib/audio/wav";
 
-/** 文の おわりの 記号。 */
-const SENTENCE_END = /[。？！?!]/;
-/** かっこの 開き と 閉じ。かっこの 中の「。」では 割らない。 */
-const OPEN = /[「『（(]/;
-const CLOSE = /[」』）)]/;
-
-/**
- * 1行を 文に 割る。
- *
- * - 「。」「？」「！」の あとで 割る。
- * - **かっこの 中では 割らない**（「きょうは 休みです。」と 言った——を 2つに しない）。
- * - 文の おわりに 続く 閉じかっこは 前の 文に 付ける。
- * - 前後の 空白は 落とす（分かち書きの 空白が 頭に 残らない ように）。
- */
-export function splitSentences(text: string): string[] {
-  const chars = [...text];
-  const out: string[] = [];
-  let depth = 0;
-  let start = 0;
-  for (let i = 0; i < chars.length; i += 1) {
-    const ch = chars[i]!;
-    if (OPEN.test(ch)) depth += 1;
-    else if (CLOSE.test(ch)) depth = Math.max(0, depth - 1);
-    if (depth > 0 || !SENTENCE_END.test(ch)) continue;
-    let end = i + 1;
-    while (end < chars.length && SENTENCE_END.test(chars[end]!)) end += 1;
-    out.push(chars.slice(start, end).join("").trim());
-    start = end;
-    i = end - 1;
-  }
-  out.push(chars.slice(start).join("").trim());
-  return out.filter((sentence) => sentence.length > 0);
-}
-
-/** 話す人つきの 1文。 */
-export interface SpeakerSentence {
-  readonly speaker: string;
-  readonly text: string;
-}
-
-/** 原稿（行の 並び）を、話す人つきの 文の 並びに する。 */
-export function scriptSentences(
-  script: readonly { readonly speaker: string; readonly text: string }[],
-): SpeakerSentence[] {
-  return script.flatMap((line) =>
-    splitSentences(line.text).map((text) => ({ speaker: line.speaker, text })),
-  );
-}
-
-/** 文ごとの wav の ファイル名（`01.wav` から）。並び順が そのまま つなぐ 順。 */
-export function sentenceFileName(index: number): string {
-  return `${String(index + 1).padStart(2, "0")}.wav`;
-}
+// 文の 割りかたは 画面（こたえあわせの 文ごとの 音）と 共用する（ずらさない ため）
+export {
+  scriptSentences,
+  sentenceFileName,
+  splitSentences,
+  type SpeakerSentence,
+} from "../../src/lib/audio/sentences";
 
 const BYTES_PER_SAMPLE = 2;
 /** 無音か どうかを 見る 窓（10ミリ秒）。 */

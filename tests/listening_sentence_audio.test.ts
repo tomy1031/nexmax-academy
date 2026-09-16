@@ -6,12 +6,13 @@
  * - 読みの 照合が ゆるいと 原稿と ちがう 音が 通り、きびしすぎると 正しい 音まで 落ちる
  *（2026-09-16 の 指定「原稿と 音声が 完璧に 一致する ように」）
  */
-import { readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { beforeAll, describe, expect, it } from "vitest";
 import type { Tokenizer } from "kuromoji";
 import { SAMPLE_RATE } from "../src/lib/audio/wav";
 import { buildFuriganaIndex } from "../src/lib/text/furigana";
+import { lineSentenceClips } from "../src/lib/audio/sentences";
 import { LISTENING_AUDIO_PLANS } from "../scripts/lib/listening_audio_plans";
 import {
   longestInnerPause,
@@ -88,6 +89,55 @@ function pcmWith(silenceBefore: number, voice: number, silenceAfter: number): Ui
   for (let i = from; i < to; i += 1) view.setInt16(i * 2, i % 2 === 0 ? 5000 : -5000, true);
   return new Uint8Array(view.buffer);
 }
+
+describe("こたえあわせの 文ごとの 音（lineSentenceClips）", () => {
+  const script = [
+    { speaker: "a", text: "はい。そうですか。" },
+    { speaker: "b", text: "わかりました。" },
+  ];
+
+  it("行ごとに 文と 音の URL を 通し番号で 並べる", () => {
+    expect(lineSentenceClips("x", script, () => true)).toEqual([
+      [
+        { text: "はい。", url: "/audio/listening/x/01.wav" },
+        { text: "そうですか。", url: "/audio/listening/x/02.wav" },
+      ],
+      [{ text: "わかりました。", url: "/audio/listening/x/03.wav" }],
+    ]);
+  });
+
+  it("1文でも 音が 無ければ 出さない", () => {
+    expect(lineSentenceClips("x", script, (url) => !url.endsWith("03.wav"))).toBeNull();
+  });
+
+  /*
+   * **残して ある 音の 文と、いまの 原稿の 文が そろって いる**こと。
+   * 原稿だけ 直して 音を 作り直さないと、こたえあわせの ▶ が 別の 文を 鳴らす。
+   */
+  it("残して ある 文ごとの 音は、いまの 原稿の 文と 1つずつ そろう", () => {
+    const dir = join("public", "audio", "listening");
+    const ids = readdirSync(dir, { withFileTypes: true })
+      .filter((entry) => entry.isDirectory())
+      .map((entry) => entry.name)
+      .filter((id) => existsSync(join(dir, id, "sentences.json")));
+    expect(ids).toContain("houkoku_listening");
+    for (const id of ids) {
+      const manifest = JSON.parse(readFileSync(join(dir, id, "sentences.json"), "utf8"));
+      const listening = JSON.parse(
+        readFileSync(join("content", "listening", `${id}.json`), "utf8"),
+      );
+      expect(manifest.complete, id).toBe(true);
+      expect(
+        manifest.sentences.map((one: { speaker: string; text: string }) => [one.speaker, one.text]),
+        id,
+      ).toEqual(scriptSentences(listening.script).map((one) => [one.speaker, one.text]));
+      manifest.sentences.forEach((one: { file: string }, i: number) => {
+        expect(one.file).toBe(sentenceFileName(i));
+        expect(existsSync(join(dir, id, one.file)), one.file).toBe(true);
+      });
+    }
+  });
+});
 
 describe("longestInnerPause", () => {
   it("頭と おしりの 無音は 数えず、声の あいだの 間だけを 測る", () => {

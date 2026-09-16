@@ -10,7 +10,8 @@ import { recordContentProgress } from "@/lib/progress/store";
 import { CallShell } from "@/components/call-shell";
 import { VideoPlayer } from "@/components/media/video-player";
 import { ImageSlotFrame } from "@/components/article/rich-blocks";
-import { assetUrl } from "@/lib/asset-url";
+import { assetUrl, hasAsset } from "@/lib/asset-url";
+import { lineSentenceClips, type SentenceClip } from "@/lib/audio/sentences";
 import { ListeningPanel } from "./listening-panel";
 import { mediaKind, revealRate, type ListeningState } from "./listening-checks";
 
@@ -545,73 +546,150 @@ function Review({
   const shown = listening.script.slice(0, line + 1);
   const mediaRef = useRef<HTMLMediaElement>(null);
 
+  /*
+   * **文ごとの 音**（2026-09-16 の 指定「個々の 音声を 答え合わせに 貼る」）。
+   * 1文ずつ 作って 残して ある 教材（報告の リスニング）だけ、文の うしろに ▶ を 出す。
+   * 全部の 文の 音が そろって いない 教材には 出さない（`lineSentenceClips`）。
+   */
+  const clips = useMemo(
+    () => lineSentenceClips(listening.id, listening.script, hasAsset),
+    [listening.id, listening.script],
+  );
+  const clipRef = useRef<HTMLAudioElement>(null);
+  const [playing, setPlaying] = useState<string | null>(null);
+
+  // 上の 通しの 音を 鳴らしたら、文の 音は 止める（2つ 重ねて 鳴らさない）
+  useEffect(() => {
+    const media = mediaRef.current;
+    if (!media) return;
+    const stopClip = () => {
+      clipRef.current?.pause();
+      setPlaying(null);
+    };
+    media.addEventListener("play", stopClip);
+    return () => media.removeEventListener("play", stopClip);
+  }, []);
+
+  const playClip = (clip: SentenceClip) => {
+    const audio = clipRef.current;
+    if (!audio) return;
+    if (playing === clip.url && !audio.paused) {
+      audio.pause();
+      setPlaying(null);
+      return;
+    }
+    mediaRef.current?.pause();
+    audio.src = assetUrl(clip.url) ?? clip.url;
+    // 速さは 上の プレイヤーで えらんだ ものに そろえる（音程は 保つ）
+    applySpeed(audio, mediaRef.current?.playbackRate ?? INITIAL_SPEED);
+    setPlaying(clip.url);
+    void audio.play().catch(() => setPlaying(null));
+  };
+
   return (
-    <section className="card-island p-5">
-      <h2 className="text-navy text-lg font-black">✅ こたえあわせ</h2>
-      <p className="text-ink-soft mt-1 text-sm font-bold">
-        1つずつ ひらいて、聞こえた ことばと くらべてみましょう。
-      </p>
-
-      {mediaKind(listening) === "none" ? null : (
-        <div className="mt-4">
-          <Player listening={listening} mediaRef={mediaRef} />
-        </div>
-      )}
-
-      <ol className="mt-4 space-y-2">
-        {shown.map((item, index) => (
-          <li
-            key={index}
-            className={`border-hairline rounded-2xl border-2 p-3 ${
-              index === line ? "bg-sky-soft" : "bg-white"
-            }`}
-          >
-            <p className="text-sky text-[11px] font-black tracking-widest">
-              {nameOf.get(item.speaker) ?? item.speaker}
-            </p>
-            {/* 長い行でも枠からはみ出さない（横スクロールを出さない） */}
-            <p className="text-ink leading-relaxed font-bold break-words">
-              <RubyText text={item.text} index={furigana} />
-            </p>
-          </li>
-        ))}
-      </ol>
-
-      <div className="mt-4 flex flex-wrap items-center justify-between gap-2">
-        <button
-          type="button"
-          onClick={() => onLine(Math.max(0, line - 1))}
-          disabled={line === 0}
-          className="border-hairline text-navy rounded-full border-2 bg-white px-4 py-1.5 text-xs font-black disabled:opacity-40"
-        >
-          ← まえ
-        </button>
-        <span className="text-ink-soft text-xs font-black">
-          {line + 1} / {total}
-        </span>
-        <button
-          type="button"
-          onClick={() => onLine(Math.min(total - 1, line + 1))}
-          disabled={line >= total - 1}
-          className="btn-game px-5 py-1.5 text-xs [--btn-face:#4fa8e8] [--btn-shadow:#0272ae] disabled:opacity-40"
-        >
-          つぎ →
-        </button>
-      </div>
-
-      <button
-        type="button"
-        onClick={onAgain}
-        className="text-sky mt-4 text-xs font-black underline underline-offset-4"
-      >
-        もういちど 聞く
-      </button>
-
-      {line >= total - 1 ? (
-        <p className="text-leaf-deep mt-4 text-center text-sm font-black">
-          さいごまで たしかめました。下の「つぎは…」から すすめます。
+    <>
+      <section className="card-island p-5">
+        <h2 className="text-navy text-lg font-black">✅ こたえあわせ</h2>
+        <p className="text-ink-soft mt-1 text-sm font-bold">
+          1つずつ ひらいて、聞こえた ことばと くらべてみましょう。
         </p>
+
+        {mediaKind(listening) === "none" ? null : (
+          <div className="mt-4">
+            <Player listening={listening} mediaRef={mediaRef} />
+          </div>
+        )}
+
+        <ol className="mt-4 space-y-2">
+          {shown.map((item, index) => (
+            <li
+              key={index}
+              className={`border-hairline rounded-2xl border-2 p-3 ${
+                index === line ? "bg-sky-soft" : "bg-white"
+              }`}
+            >
+              <p className="text-sky text-[11px] font-black tracking-widest">
+                {nameOf.get(item.speaker) ?? item.speaker}
+              </p>
+              {/* 長い行でも枠からはみ出さない（横スクロールを出さない） */}
+              <p className="text-ink leading-relaxed font-bold break-words">
+                {clips?.[index] ? (
+                  clips[index].map((clip, k) => (
+                    <span key={clip.url}>
+                      {k > 0 ? " " : null}
+                      <RubyText text={clip.text} index={furigana} />
+                      <button
+                        type="button"
+                        onClick={() => playClip(clip)}
+                        aria-label={`${k + 1}文目を 聞く`}
+                        aria-pressed={playing === clip.url}
+                        className={`ml-1 inline-grid h-6 w-6 place-items-center rounded-full border-2 align-middle text-[10px] leading-none ${
+                          playing === clip.url
+                            ? "bg-sky border-sky text-white"
+                            : "border-hairline text-sky bg-white"
+                        }`}
+                      >
+                        {playing === clip.url ? "■" : "▶"}
+                      </button>
+                    </span>
+                  ))
+                ) : (
+                  <RubyText text={item.text} index={furigana} />
+                )}
+              </p>
+            </li>
+          ))}
+        </ol>
+
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-2">
+          <button
+            type="button"
+            onClick={() => onLine(Math.max(0, line - 1))}
+            disabled={line === 0}
+            className="border-hairline text-navy rounded-full border-2 bg-white px-4 py-1.5 text-xs font-black disabled:opacity-40"
+          >
+            ← まえ
+          </button>
+          <span className="text-ink-soft text-xs font-black">
+            {line + 1} / {total}
+          </span>
+          <button
+            type="button"
+            onClick={() => onLine(Math.min(total - 1, line + 1))}
+            disabled={line >= total - 1}
+            className="btn-game px-5 py-1.5 text-xs [--btn-face:#4fa8e8] [--btn-shadow:#0272ae] disabled:opacity-40"
+          >
+            つぎ →
+          </button>
+        </div>
+
+        <button
+          type="button"
+          onClick={onAgain}
+          className="text-sky mt-4 text-xs font-black underline underline-offset-4"
+        >
+          もういちど 聞く
+        </button>
+
+        {line >= total - 1 ? (
+          <p className="text-leaf-deep mt-4 text-center text-sm font-black">
+            さいごまで たしかめました。下の「つぎは…」から すすめます。
+          </p>
+        ) : null}
+      </section>
+      {/*
+        文ごとの 音の 部品。**こたえあわせの 枠の 外**に 置く——枠の 中の 音は
+        通しの プレイヤー 1つ（listening_kotaeawase.spec.ts が そう 見て いる）。
+      */}
+      {clips ? (
+        <audio
+          ref={clipRef}
+          preload="none"
+          onEnded={() => setPlaying(null)}
+          data-sentence-clip=""
+          className="hidden"
+        />
       ) : null}
-    </section>
+    </>
   );
 }
