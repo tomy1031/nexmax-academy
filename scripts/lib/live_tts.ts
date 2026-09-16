@@ -136,11 +136,11 @@ async function synthesize(text: string, model: string, speaker: Speaker): Promis
           },
           onerror: (error: unknown) =>
             finish(() => reject(new Error(`${model}: ${String(error)}`))),
-          onclose: () =>
+          onclose: (event: unknown) =>
             finish(() =>
               chunks.length > 0
                 ? resolve({ pcm: Buffer.concat(chunks), transcript })
-                : reject(new Error(`${model}: 音が 来ないまま 切れました`)),
+                : reject(new Error(`${model}: 音が 来ないまま 切れました${closeReason(event)}`)),
             ),
         },
       })
@@ -149,6 +149,20 @@ async function synthesize(text: string, model: string, speaker: Speaker): Promis
       })
       .catch((error: unknown) => finish(() => reject(new Error(`${model}: ${String(error)}`))));
   });
+}
+
+/**
+ * 切れた 理由（閉じ番号と 理由の 文）。**数の 上限か、声が 無いのか**を 分ける ために 残す
+ *（2026-09-16。Sadachbia だけ 2回 続けて 切れ、どちらか 分からなかった）。
+ * 鍵は URL と ヘッダにしか 無いので ここには 入らない。
+ */
+function closeReason(event: unknown): string {
+  if (typeof event !== "object" || event === null) return "";
+  const { code, reason } = event as { code?: unknown; reason?: unknown };
+  const parts: string[] = [];
+  if (typeof code === "number") parts.push(`code ${code}`);
+  if (typeof reason === "string" && reason.length > 0) parts.push(reason);
+  return parts.length > 0 ? `（${parts.join(" / ")}）` : "";
 }
 
 /**

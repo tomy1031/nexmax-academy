@@ -85,7 +85,7 @@
   "check": {
     "minLength": 2,
     "maxMiss": 5,
-    "showScript": false,
+    "showScript": true,
     "showTyping": true
   },
   "furigana": [

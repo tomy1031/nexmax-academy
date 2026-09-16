@@ -36,6 +36,7 @@
  * `--force` は すでに ある ものも 作り直す。
  */
 
+import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
@@ -47,6 +48,28 @@ const force: boolean = process.argv.includes("--force");
 if (!meetingId) {
   console.error("使い方: node --import tsx scripts/make_meeting_audio.ts <教材ID>");
   process.exit(1);
+}
+/*
+ * `voices` は 教材では なく **声の 見本**（スタジオの「▶ 声を ためす」・2026-09-16）。
+ * 鍵が ある のは ワークフロー「教材の 音声づくり」だけで、入力は `meeting` 1つ。
+ * `.github/` は 検問の 内側なので 入力を 増やさず、ここで 見本の 台本へ 回す
+ *（ワークフローが `listening:` を 振り分けるのと 同じ 考え方）。
+ */
+if (meetingId === "voices" || meetingId === "voices-takes") {
+  // `voices-takes` は 声の 高さを 測る 取り直しも 作る（make_voice_samples.ts の `--takes`）
+  const extra = meetingId === "voices-takes" ? ["--takes", "2"] : [];
+  const run = spawnSync(
+    process.execPath,
+    [
+      "--import",
+      "tsx",
+      join("scripts", "make_voice_samples.ts"),
+      ...extra,
+      ...process.argv.slice(3),
+    ],
+    { stdio: "inherit" },
+  );
+  process.exit(run.status ?? 1);
 }
 /** 何を 読み上げる つもりか **だけ** 出して 終わる（鍵が 要らない・目で 確かめる ため）。 */
 const listOnly: boolean = process.argv.includes("--list");
