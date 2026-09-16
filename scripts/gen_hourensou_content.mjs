@@ -723,7 +723,7 @@ write(
     ],
     keywords: ["報告", "問題", "バグ", "設定", "正直", "予定"],
     revealGoal: 30,
-    check: { minLength: 2, maxMiss: 5, showScript: false, showTyping: true },
+    check: { minLength: 2, maxMiss: 5, showScript: true, showTyping: true },
   }),
 );
 
@@ -1156,7 +1156,7 @@ write(
     ],
     keywords: ["連絡", "検証環境", "保存", "作業中", "復旧"],
     revealGoal: 30,
-    check: { minLength: 2, maxMiss: 5, showScript: false, showTyping: true },
+    check: { minLength: 2, maxMiss: 5, showScript: true, showTyping: true },
   }),
 );
 
@@ -1644,7 +1644,7 @@ write(
     ],
     keywords: ["相談", "意見", "簡単", "管理", "方法"],
     revealGoal: 30,
-    check: { minLength: 2, maxMiss: 5, showScript: false, showTyping: true },
+    check: { minLength: 2, maxMiss: 5, showScript: true, showTyping: true },
   }),
 );
 
