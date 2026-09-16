@@ -409,6 +409,77 @@ test("390px で 板 → マイク → チャット の 順に 並ぶ", async ({ 
 });
 
 /**
+ * しごとの 表の 絵（願い #441）— **絵が どの しごとかを 言う**
+ *
+ * 2026-09-16 の 指定「画像は イメージでは なく、具体的に 何を して いるかを はかる
+ * 重要な 要素です」。学習者は「決済」「注文」「処理」を まだ 読めないので、
+ * 絵が 出て いなければ この 表は 読めない。だから **出て いる ことと
+ * 読めて いる こと**（壊れた 絵の 四角に なって いない こと）を 見る。
+ */
+test("朝礼: しごとの 表に 絵が 出て、押すと ひろがる", async ({ page, context }) => {
+  const refs = stageRefs();
+  await seedCompleted(context, refs.slice(0, refs.indexOf("asakai_kantan")));
+  await page.goto("/asakai/meeting-asakai_kantan");
+  await joinCall(page);
+
+  const memo = page.getByRole("dialog", { name: "報告メモ" });
+  await expect(memo).toBeVisible();
+  const table = memo.locator("table").first();
+  await table.scrollIntoViewIfNeeded();
+
+  /* 月曜の しごとは 9件（ACLEDA Pay は 水曜から）。ぜんぶに 絵が ついて いる。 */
+  const pictures = table.locator("img");
+  await expect(pictures).toHaveCount(9);
+  await page.waitForFunction(
+    () => {
+      const all = [...document.querySelectorAll('[role="dialog"] table img')];
+      return all.length > 0 && all.every((one) => (one as HTMLImageElement).complete);
+    },
+    undefined,
+    { timeout: 15_000 },
+  );
+  const broken = await pictures.evaluateAll((all) =>
+    all
+      .filter((one) => !(one as HTMLImageElement).naturalWidth)
+      .map((one) => (one as HTMLImageElement).src),
+  );
+  expect(broken, "読めない 絵が ある").toEqual([]);
+  await shot(page, "asakai-02c-kantan-tasks");
+
+  /*
+   * 80px は 並びを 目で 追う ための 大きさ。中を 見たい ときの 逃げ道が
+   * `ZoomableImage`（記事の さし絵と 同じ 包み）。
+   */
+  await table
+    .getByRole("button", { name: /決済の 画面/ })
+    .first()
+    .click();
+  const back = page.getByRole("button", { name: "✕ もどす" });
+  await expect(back).toBeVisible();
+  await back.click();
+});
+
+/**
+ * 夕礼の しごとは 絵を 持って いない。**その ときは 欄を 広げない**——
+ * 390px の 画面では 表の 幅が 318px しか なく、88px を 空欄に 使うと
+ * しごとの 名前に 134px しか 残らない（2026-09-16 の 検収）。
+ */
+test("夕礼: 絵の 無い 表は 絵の 欄を 広げない", async ({ page, context }) => {
+  const refs = stageRefs();
+  await seedCompleted(context, refs.slice(0, refs.indexOf("asakai_muzukashii")));
+  await page.goto("/asakai/meeting-asakai_muzukashii");
+  await joinCall(page);
+
+  const memo = page.getByRole("dialog", { name: "報告メモ" });
+  await expect(memo).toBeVisible();
+  const table = memo.locator("table").first();
+  await expect(table.locator("img")).toHaveCount(0);
+  const firstCell = table.locator("tbody tr").first().locator("td").first();
+  const box = await firstCell.boundingBox();
+  expect(box!.width, "絵が 無いのに 欄が 広い").toBeLessThan(40);
+});
+
+/**
  * **途中で 閉じても 月曜に 戻さない**（2026-09-11 の 再発防止）
  *
  * 5日で 30分を 超える ので、1回の 授業で 終わらない ことが ふつうに ある。

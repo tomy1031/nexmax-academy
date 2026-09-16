@@ -1,0 +1,103 @@
+{
+  "refs": ["public/img/articles/asakai_lecture/card_kinou.webp"],
+  "_comment": "朝礼・夕礼ステージ（content/meetings/asakai_kantan.json）の しごとの 表に 出す 絵 10枚。願い #441。 ## これは アイコンでは なく 場面の 絵（2026-09-16 の 指定「この画像だとただのアイコンで、何をするための画面なのか全然わかりません」「画像はイメージではなく、具体的に何をしているかをはかる重要な要素です」）。1回目は ピクトグラム（スマホ・ボタン・チェック）で 作って 不合格。**人が いて、何を して いるかが 絵だけで 読める 場面**に する（skill §6.7・絶対規律の 精神）。 ## それでも 小さく 出る（表の 左・80px）。だから 寄りの 構図に して、**画面の 中身を 大きく**描き、**1枚ごとに 主役の 色を 変える**（青い ボタン／青＋オレンジの 2枚／オレンジ＋＋／紺の サーバ／水色の 輪／みどり／赤）。 ## 何の しごとかの 前ばなし（content/articles/asakai_team.json）: 学習者は ネクストメイクの エンジニアで、KhmerSabai（カンボジアに 来た 外国の 人が 店を さがして その場で お金を はらう アプリ）の **決済フロントエンド**の 担当。10件は ぜんぶ その 決済の しごと。絵の 中の エンジニアは **朝礼ページと 同じ 人**（`asakai_lecture` の card_kinou を 参照入力に 渡す）。 文字は 焼かない。台帳が 正で、教材JSONの src は その 写し（scripts/lib/image_ledger.mjs）。",
+  "style": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This is a TEACHING picture, not a mood picture: what the person is doing must be readable from the picture alone. The picture will be shown very small, about 80 pixels wide, so keep it to ONE person and ONE screen, drawn LARGE and simple, with the screen's contents big and bold and a clear dominant colour; leave small details out.",
+  "noText": "No text, no letters, no kanji, no kana, no numbers and no currency symbols anywhere in the image. Every screen, button, label and card is blank, or shows only plain grey rounded bars standing in for words. No watermark, no signature, no brand logo, no speech balloons. Plain interface marks that ARE the subject of this picture — a tick inside a circle, a warning triangle, a loading ring, a small plus badge, a plug — are allowed and must be drawn large and bold.",
+  "negative": "Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots, a second person, a wide empty room shot where the person and the screen are small.",
+  "output": "1024x1024",
+  "scenes": [
+    {
+      "out": "task_screen",
+      "dest": "public/img/asakai/tasks/screen.webp",
+      "title": "1 決済の 画面",
+      "where": "content/meetings/asakai_kantan.json asakai.scenes[].card.progress[].image",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: she is BUILDING the payment screen of the shop-and-pay app. Close view of the new engineer — a young Cambodian woman in her early twenties with warm light-brown skin, a round friendly face and black hair tied back in a low ponytail, wearing a mint-green blouse, beige trousers and a lanyard with a blank white card, sitting at her desk with both hands on the keyboard and looking up at a large monitor that FILLS most of the frame. On the monitor stands one big upright phone mockup showing the payment page she is building: at the top a rounded picture card of a small street food stall with a striped coral awning and a steaming bowl, under it two plain grey rounded bars standing in for the shop name and the items, and at the bottom one wide rounded SKY-BLUE pay button. Calm, focused expression.",
+      "output": "Output: one square illustration, 1024x1024. Close view — the person and the screen fill the frame edge to edge."
+    },
+    {
+      "out": "task_aba",
+      "dest": "public/img/asakai/tasks/aba.webp",
+      "title": "2 ABA Payの ボタン",
+      "where": "content/meetings/asakai_kantan.json asakai.scenes[].card.progress[].image",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: the big BLUE pay button on the screen now works when you press it. Very close view of the hands of the new engineer — a young Cambodian woman in her early twenties with warm light-brown skin, a round friendly face and black hair tied back in a low ponytail, wearing a mint-green blouse, beige trousers and a lanyard with a blank white card holding one smartphone upright in both hands, the phone FILLING most of the frame, with her face and shoulders visible behind it at the top of the picture, watching the screen. Her thumb presses down on one large rounded BRIGHT BLUE pay button at the bottom of the screen, and a soft blue ring of press-ripple spreads out from under her thumb. Above the button the rest of the payment page is plain grey bars. Pleased, attentive expression.",
+      "output": "Output: one square illustration, 1024x1024. Close view — the person and the screen fill the frame edge to edge."
+    },
+    {
+      "out": "task_order",
+      "dest": "public/img/asakai/tasks/order.webp",
+      "title": "3 注文IDと 金額の 表示",
+      "where": "content/meetings/asakai_kantan.json asakai.scenes[].card.progress[].image",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: the screen now SHOWS the order's number and the total amount to pay. Close view of the new engineer — a young Cambodian woman in her early twenties with warm light-brown skin, a round friendly face and black hair tied back in a low ponytail, wearing a mint-green blouse, beige trousers and a lanyard with a blank white card at her desk, leaning in and pointing with a pen at a large monitor that FILLS most of the frame. On the monitor stands one upright phone mockup showing an order summary: at the top a rounded NAVY ticket tag with a small punched hole standing for the order number, under it three rows that each have a short grey bar on the left and a short grey bar on the right, and at the bottom one row drawn much thicker and darker than the rest with three round GOLD coins resting beside it, standing for the total. Satisfied, checking expression.",
+      "output": "Output: one square illustration, 1024x1024. Close view — the person and the screen fill the frame edge to edge."
+    },
+    {
+      "out": "task_choose",
+      "dest": "public/img/asakai/tasks/choose.webp",
+      "title": "4 支払方法を えらぶ",
+      "where": "content/meetings/asakai_kantan.json asakai.scenes[].card.progress[].image",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: on this screen you PICK ONE of two ways to pay. Very close view of the hands of the new engineer — a young Cambodian woman in her early twenties with warm light-brown skin, a round friendly face and black hair tied back in a low ponytail, wearing a mint-green blouse, beige trousers and a lanyard with a blank white card holding one smartphone upright, the phone FILLING most of the frame, her face and shoulders visible behind it at the top, watching the screen. The screen shows TWO wide rounded payment cards stacked one above the other: the upper card BRIGHT BLUE, the lower card WARM ORANGE, each blank except for a plain grey bar and a round radio circle on its left. Her thumb rests on the upper blue card and that card's radio circle is filled in solid navy, showing it is the chosen one. Deciding, thoughtful expression.",
+      "output": "Output: one square illustration, 1024x1024. Close view — the person and the screen fill the frame edge to edge."
+    },
+    {
+      "out": "task_acleda",
+      "dest": "public/img/asakai/tasks/acleda.webp",
+      "title": "5 ACLEDA Payを えらぶ",
+      "where": "content/meetings/asakai_kantan.json asakai.scenes[].card.progress[].image",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: on the screen she is PICKING the second way to pay, the orange one. Close view of the new engineer — a young Cambodian woman in her early twenties with warm light-brown skin, a round friendly face and black hair tied back in a low ponytail, wearing a mint-green blouse, beige trousers and a lanyard with a blank white card at her desk with one hand on the keyboard, looking up at a large monitor that FILLS most of the frame. On the monitor stands an upright phone mockup showing ONE big WARM ORANGE rounded payment card across the middle of the screen, blank except for a plain grey bar and, on its left, a round radio circle FILLED IN SOLID NAVY to show it is the one that has been chosen. Above and below the orange card the screen is plain white with two short grey bars. Pleased, decided expression.",
+      "output": "Output: one square illustration, 1024x1024. Close view — the person and the screen fill the frame edge to edge.",
+      "_note": "2026-09-16 検収 R3: 1つ前は オレンジの カードが 上から 落ちて きて 紺の ＋の 印を 付けて いた。行の 名前は「ACLEDA Payを えらぶ」なので 絵が「足す」を 言って しまう ばかりか、同じ 行の 右に 出る ✚追加（その日 増えた しごと）と ＋が 2つ 並んで 意味が ぶつかった。えらばれた 状態（紺で 塗った ラジオ）だけを 描く。4枚目（2枚から えらぶ）とは 構図で 分ける。"
+    },
+    {
+      "out": "task_api",
+      "dest": "public/img/asakai/tasks/api.webp",
+      "title": "6 決済APIと つなぐ",
+      "where": "content/meetings/asakai_kantan.json asakai.scenes[].card.progress[].image",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: her screen is now JOINED BY A CABLE to the server that takes the money. Close view of the new engineer — a young Cambodian woman in her early twenties with warm light-brown skin, a round friendly face and black hair tied back in a low ponytail, wearing a mint-green blouse, beige trousers and a lanyard with a blank white card sitting at her desk on the left with one hand resting on the desk, looking to the right at a large monitor that FILLS the right two thirds of the frame. On the monitor is ONE simple drawing and nothing else: an upright phone on the left whose screen is plain white with three short grey bars on it, and a tall NAVY server cabinet with three shelf slots and two small round lamps on the right, joined by ONE thick black cable with a chunky SKY-BLUE plug at each end. BOTH ENDS ARE CLEARLY PLUGGED IN, pushed all the way home with no gap, one into the bottom of the phone and one into the front of the server. Focused, satisfied expression.",
+      "output": "Output: one square illustration, 1024x1024. Close view — the person and the screen fill the frame edge to edge.",
+      "_note": "2026-09-16 検収: 1つ前は スマホの 画面に **みどりの ✓** が 出て しまい、8枚目（成功の 画面）と 同じ 顔に なった うえ、表の 右の ✅（おわり）とも かぶった。つなぐ 絵の 主役は **ケーブルと 差し口**なので、画面の 中は 灰色の 帯だけに する。"
+    },
+    {
+      "out": "task_loading",
+      "dest": "public/img/asakai/tasks/loading.webp",
+      "title": "7 処理中の 表示",
+      "where": "content/meetings/asakai_kantan.json asakai.scenes[].card.progress[].image",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: while the payment is being processed, the screen shows a spinning wait ring. Very close view of the hands of the new engineer — a young Cambodian woman in her early twenties with warm light-brown skin, a round friendly face and black hair tied back in a low ponytail, wearing a mint-green blouse, beige trousers and a lanyard with a blank white card holding one smartphone upright and waiting, the phone FILLING most of the frame, her face and shoulders visible behind it at the top, watching the screen patiently with her chin slightly lowered. The whole screen is plain white except for one huge SKY-BLUE loading ring in the middle — a thick circular arc, open at one side, with a rounded tip and three short curved motion lines following the tip to show it is spinning. Patient, waiting expression.",
+      "output": "Output: one square illustration, 1024x1024. Close view — the person and the screen fill the frame edge to edge."
+    },
+    {
+      "out": "task_success",
+      "dest": "public/img/asakai/tasks/success.webp",
+      "title": "8 成功の 画面",
+      "where": "content/meetings/asakai_kantan.json asakai.scenes[].card.progress[].image",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: the payment WORKED, and the screen says so. Very close view of the new engineer — a young Cambodian woman in her early twenties with warm light-brown skin, a round friendly face and black hair tied back in a low ponytail, wearing a mint-green blouse, beige trousers and a lanyard with a blank white card holding one smartphone up beside her face in one hand and smiling brightly, the phone FILLING most of the frame and turned towards the viewer. The whole phone screen is FRESH GREEN, and in the middle of the green screen sits one very large white tick inside a white circle, with a short pale bar under it and a plain white rounded button at the bottom. A few small green confetti pieces float around the top of the picture. Delighted, relieved expression.",
+      "output": "Output: one square illustration, 1024x1024. Close view — the person and the screen fill the frame edge to edge."
+    },
+    {
+      "out": "task_fail",
+      "dest": "public/img/asakai/tasks/fail.webp",
+      "title": "9 失敗の 画面",
+      "where": "content/meetings/asakai_kantan.json asakai.scenes[].card.progress[].image",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: when the payment FAILS, the screen says so and offers TRY AGAIN. Very close view of the hands of the new engineer — a young Cambodian woman in her early twenties with warm light-brown skin, a round friendly face and black hair tied back in a low ponytail, wearing a mint-green blouse, beige trousers and a lanyard with a blank white card holding one smartphone upright, the phone FILLING most of the frame, her face and shoulders visible behind it at the top, looking at the screen calmly and thinking about what to do next. The screen is pale red, and in the middle sits one very large RED WARNING TRIANGLE with rounded corners and a thick white exclamation bar and dot inside it; under it a short grey bar, and at the bottom a wide rounded CORAL button carrying a bold white circular arrow that curls back on itself, meaning try again. Calm and matter-of-fact — nobody is angry, nobody is crying.",
+      "output": "Output: one square illustration, 1024x1024. Close view — the person and the screen fill the frame edge to edge."
+    },
+    {
+      "out": "task_test",
+      "dest": "public/img/asakai/tasks/test.webp",
+      "title": "10 フロントの テスト",
+      "where": "content/meetings/asakai_kantan.json asakai.scenes[].card.progress[].image",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: she looks closely at one screen at a time to be sure it works. Close view of the new engineer — a young Cambodian woman in her early twenties with warm light-brown skin, a round friendly face and black hair tied back in a low ponytail, wearing a mint-green blouse, beige trousers and a lanyard with a blank white card at her desk with an open laptop that FILLS most of the frame, leaning in and looking carefully at its screen. On the laptop screen stands ONE single large upright phone mockup in the middle, a blank rounded rectangle with two plain grey bars and one rounded button on it. She holds a large black magnifying glass with a sky-blue lens in her right hand, up against that phone mockup, and the part of the mockup seen through the lens is drawn bigger. Careful, checking expression.",
+      "output": "Output: one square illustration, 1024x1024. Close view — the person and the screen fill the frame edge to edge.",
+      "_note": "2026-09-16 検収 R3: 1つ前は ノートPCに スマホ 4つを 並べ、3つに みどりの ✓ を 付けて いた。**数を 絵に 焼かない**（`asakai-parts.tsx` の 決め）に 反する うえ、この 行は 月〜木 ずっと「▢ これから」なので 絵と 表が 真逆に なって いた。1台を 虫めがねで 見る 絵に する。"
+    }
+  ]
+}
