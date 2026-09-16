@@ -596,16 +596,18 @@ describe("たいわの 🎤（オンの あいだだけ 送る）", () => {
     });
   });
 
-  it("相手が 黙った ままでも、つぎに オンに した とき 前の 発話を 判定へ 流す", async () => {
+  it("オンに し直したら、前の 言いかけの 聞き取りは 判定に 回さない（ミーティングと 同じ）", async () => {
     const { render, receive } = await connected();
     render().startTalking();
     receive({ inputTranscription: { text: "よさんは " } });
-    receive({ inputTranscription: { text: "いくらですか" } });
     render().stopTalking();
+    render().startTalking();
     expect(render().lastUtterance).toBeNull();
 
-    render().startTalking();
-    expect(render().lastUtterance?.text).toBe("よさんは いくらですか");
+    receive({ inputTranscription: { text: "納期は いつですか" } });
+    render().stopTalking();
+    receive({ outputTranscription: { text: "来月です。" } });
+    expect(render().lastUtterance?.text).toBe("納期は いつですか");
   });
 
   it("オンの まま 書いて 送ったら、声の ターンを 先に 閉じる", async () => {
@@ -614,6 +616,38 @@ describe("たいわの 🎤（オンの あいだだけ 送る）", () => {
     render().send("こんにちは");
     expect(render().talking).toBe(false);
     expect(kinds()).toEqual(["activityStart", "activityEnd", "client"]);
+  });
+
+  it("オンの まま つなぎ直したら（相手の 切りかえ）、新しい つなぎは オフから 始まる", async () => {
+    const { render } = await connected();
+    render().startTalking();
+    void render().connect("べつの 人", "Schedar");
+    await vi.advanceTimersByTimeAsync(3_000);
+    expect(render().status).toBe("live");
+    expect(render().talking).toBe(false);
+
+    env.captures[1]!.onPcm?.(new Int16Array(160));
+    expect(sdk.live[1]!.sent).toEqual([]);
+  });
+
+  it("つないだ あとに 切れたら オフに 戻り、音を 送らない", async () => {
+    const { render, live, speak, kinds } = await connected();
+    render().startTalking();
+    live.callbacks.onclose?.({ code: 1006, reason: "" });
+    speak();
+    expect(render().talking).toBe(false);
+    expect(kinds()).toEqual(["activityStart"]);
+  });
+
+  it("オンの まま 画面から 消えたら、つなぎと マイクを 閉じて 音を 送らない", async () => {
+    const { render, speak, kinds } = await connected();
+    render().startTalking();
+    react.unmount();
+    speak();
+    expect(kinds()).toEqual(["activityStart"]);
+    expect(sdk.closed).toContain(HEAD);
+    expect(env.captures[0]!.stopped).toBeGreaterThan(0);
+    expect(openStreams()).toBe(0);
   });
 
   it("切ったら オフに 戻り、そのあとの マイクの 音は 送らない", async () => {

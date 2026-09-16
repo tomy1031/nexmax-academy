@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   authFromToken,
   connectLiveInOrder,
@@ -159,9 +159,7 @@ export function useLiveSession(): LiveSession {
   }, []);
 
   /**
-   * 聞き取りの かけらを 1つの 発話に 束ねて 流す（判定・字幕へ）。
-   * 相手が 話しはじめた とき と、つぎに 🎤 を オンに した とき に 呼ぶ——相手が 黙った
-   * ままでも、言った ことを 落とさない。
+   * 聞き取りの かけらを 1つの 発話に 束ねて 流す（判定・字幕へ）。相手が 話しはじめた ときに 呼ぶ。
    */
   const flushHeard = useCallback(() => {
     const heard = heardRef.current.trim();
@@ -180,6 +178,18 @@ export function useLiveSession(): LiveSession {
     setVoiceOn(false);
     setStatus("idle");
     setReason(null);
+  }, [release]);
+
+  /*
+   * **画面から 消える ときは 必ず 閉じる**（2026-09-16・use-live-voice と 同じ）。
+   * 🎤 が オンの まま「ステージに もどる」を 押すと、画面は 消えても つなぎと マイクが
+   * 残り、**教室の 音を 送りつづけて いた**（止める ボタンは もう 画面に 無い）。
+   */
+  useEffect(() => {
+    return () => {
+      epochRef.current += 1;
+      release();
+    };
   }, [release]);
 
   const connect = useCallback(
@@ -428,12 +438,6 @@ export function useLiveSession(): LiveSession {
         }
         const session = connected.session;
         sessionRef.current = session;
-        /*
-         * SDK の connect は したくの 合図を 受け取ってから 返る。ここで はじめて「つながった」。
-         * 前は つなぎが 開いた 瞬間に live に して いたので、**断られる モデルでも**
-         * 一瞬 つながった 画面に なった（2026-09-16）。
-         */
-        setStatus("live");
 
         /*
          * マイク → 16kHz PCM → 送信。落とす処理は mic-capture.ts が持つ
@@ -459,6 +463,14 @@ export function useLiveSession(): LiveSession {
           handedOff = true;
           setVoiceOn(true);
         }
+        /*
+         * SDK の connect は したくの 合図を 受け取ってから 返る。ここで はじめて「つながった」。
+         * 前は つなぎが 開いた 瞬間に live に して いたので、**断られる モデルでも**
+         * 一瞬 つながった 画面に なった（2026-09-16）。
+         * **マイクの 用意が 済んでから** live に する——先に live に すると、用意の あいだ
+         * 画面が「マイクは つかえません」に 切りかわって 🎤 が 一瞬 消える。
+         */
+        setStatus("live");
       } catch {
         if (stale()) return;
         // 例外の中身は出さない。短命トークンが混ざりうるうえ、SDK の生メッセージは
@@ -498,15 +510,19 @@ export function useLiveSession(): LiveSession {
     const session = sessionRef.current;
     if (!session || talkingRef.current) return;
     clearScheduled(outRef.current);
-    // 前の 発話で まだ 束ねて いない かけらは、ここで 1つに して 流す（相手が 黙って いても 落とさない）
-    flushHeard();
+    /*
+     * 前の ターンの **言いかけの 字を 捨てる**（use-live-voice と 同じ）。
+     * 聞き取りの 字は 🎤 を オフに した あとも 遅れて 届く。ここで 判定へ 流すと、
+     * 届いた ぶんだけの 切れた 発話（「よさんは」）が 判定に 回り、直前の 案内を 上書きする。
+     */
+    heardRef.current = "";
     saidRef.current = "";
     // 別の タブを 見て 戻った あとなど、鳴らす 側が 止まって いる ことが ある
     void outRef.current?.ctx.resume();
     talkingRef.current = true;
     setTalking(true);
     session.sendRealtimeInput({ activityStart: {} });
-  }, [flushHeard]);
+  }, []);
 
   /** 🎤 を オフに する。「言い終わった」を 伝えないと、相手は 息つぎだと 思って 待ちつづける。 */
   const stopTalking = useCallback(() => {
