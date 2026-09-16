@@ -97,8 +97,10 @@ const env = vi.hoisted(() => ({
   /** 鍵の 問題を 起こす ときの 理由（null なら トークンを 作れる）。 */
   tokenFails: null as string | null,
   streams: [] as { stopped: number }[],
-  captures: [] as { stopped: number }[],
+  captures: [] as { stopped: number; onPcm?: (pcm: Int16Array) => void }[],
   contexts: [] as { closed: boolean }[],
+  /** 鳴らす 予約（たいわの 割り込みの 見張り）。 */
+  sources: [] as { stopped: boolean }[],
 }));
 
 vi.mock("@/lib/profile", () => ({ getGeminiKey: () => "KEY", getLiveModel: () => "" }));
@@ -113,8 +115,8 @@ vi.mock("@/lib/ai/live-token", () => ({
 
 vi.mock("../src/components/meeting/mic-capture", () => ({
   IN_RATE: 16_000,
-  startMicCapture: async () => {
-    const capture = { stopped: 0, stop: () => (capture.stopped += 1) };
+  startMicCapture: async (_stream: unknown, onPcm: (pcm: Int16Array) => void) => {
+    const capture = { stopped: 0, onPcm, stop: () => (capture.stopped += 1) };
     env.captures.push(capture);
     return capture;
   },
@@ -143,7 +145,14 @@ const sdk = vi.hoisted(() => ({
   /** ためした ときに 渡した 指示文（connects と 同じ 順）。 */
   instructions: [] as string[],
   closed: [] as string[],
-  live: [] as { model: string; instruction: string; callbacks: FakeCallbacks }[],
+  live: [] as {
+    model: string;
+    instruction: string;
+    config: Record<string, unknown>;
+    /** この つなぎへ 送った もの（`realtime` / `client`）を 送った 順に。 */
+    sent: Record<string, unknown>[];
+    callbacks: FakeCallbacks;
+  }[],
 }));
 
 vi.mock("@google/genai", () => ({
@@ -156,15 +165,16 @@ vi.mock("@google/genai", () => ({
         callbacks,
       }: {
         model: string;
-        config: { systemInstruction?: string };
+        config: { systemInstruction?: string } & Record<string, unknown>;
         callbacks: FakeCallbacks;
       }) => {
         sdk.connects.push(model);
         sdk.instructions.push(config.systemInstruction ?? "");
         const plan = sdk.plan[model] ?? "reject";
+        const sent: Record<string, unknown>[] = [];
         const session = {
-          sendRealtimeInput: () => {},
-          sendClientContent: () => {},
+          sendRealtimeInput: (input: unknown) => sent.push({ realtime: input }),
+          sendClientContent: (input: unknown) => sent.push({ client: input }),
           // ブラウザと 同じく、閉じた 知らせ（onclose）は あとから 届く
           close: () => {
             sdk.closed.push(model);
@@ -186,7 +196,13 @@ vi.mock("@google/genai", () => ({
           setTimeout(
             () => {
               callbacks.onmessage?.({ setupComplete: {} });
-              sdk.live.push({ model, instruction: config.systemInstruction ?? "", callbacks });
+              sdk.live.push({
+                model,
+                instruction: config.systemInstruction ?? "",
+                config,
+                sent,
+                callbacks,
+              });
               resolve(session);
             },
             plan === "late" ? 10_000 : 500,
@@ -220,6 +236,23 @@ class FakeAudioContext {
   createGain() {
     return { connect() {} };
   }
+  createBuffer(_channels: number, length: number, rate: number) {
+    return { duration: length / rate, getChannelData: () => new Float32Array(length) };
+  }
+  createBufferSource() {
+    const source = {
+      stopped: false,
+      buffer: null as unknown,
+      onended: null as unknown,
+      connect() {},
+      start() {},
+      stop() {
+        source.stopped = true;
+      },
+    };
+    env.sources.push(source);
+    return source;
+  }
 }
 
 const [HEAD, SPARE] = LIVE_TALK_MODELS;
@@ -233,6 +266,7 @@ beforeEach(() => {
   env.streams = [];
   env.captures = [];
   env.contexts = [];
+  env.sources = [];
   sdk.plan = {};
   sdk.connects = [];
   sdk.instructions = [];
@@ -480,5 +514,114 @@ describe("たいわ（use-live-session）", () => {
     expect(sdk.connects).toEqual([HEAD, HEAD]);
     expect(render().status).toBe("live");
     expect(openStreams()).toBe(1);
+  });
+});
+
+/**
+ * たいわの 🎤（2026-09-16 の 指定「マイクを 押している 間だけの 利用が 前提」）
+ *
+ * 前は つないで いる あいだ ずっと マイクの 音を 送って いた。ミーティングと 同じ
+ * 「オンの あいだだけ 送る」に そろえた ことを、送った ものの 並びで 確かめる。
+ */
+describe("たいわの 🎤（オンの あいだだけ 送る）", () => {
+  async function connected() {
+    sdk.plan = { [HEAD]: "accept" };
+    const { useLiveSession } = await import("../src/components/listening/use-live-session");
+    const render = () => react.render(() => useLiveSession());
+    void render().connect("指示", "Schedar");
+    await vi.advanceTimersByTimeAsync(3_000);
+    expect(render().status).toBe("live");
+    const live = sdk.live[0]!;
+    const mic = env.captures[0]!;
+    /** マイクから 0.01秒ぶんの 音が 来た ことに する。 */
+    const speak = () => mic.onPcm?.(new Int16Array(160));
+    const kinds = () =>
+      live.sent.map((item) => {
+        if (item.client) return "client";
+        const input = item.realtime as Record<string, unknown>;
+        return Object.keys(input)[0];
+      });
+    /** 相手から 届く もの。 */
+    const receive = (serverContent: Record<string, unknown>) =>
+      live.callbacks.onmessage?.({ serverContent });
+    const audio = { modelTurn: { parts: [{ inlineData: { data: "AAAAAA==" } }] } };
+    return { render, live, speak, kinds, receive, audio };
+  }
+
+  it("自動の 区切りを 切って つなぐ", async () => {
+    const { live } = await connected();
+    expect(live.config.realtimeInputConfig).toEqual({
+      automaticActivityDetection: { disabled: true },
+    });
+  });
+
+  it("🎤 が オフの あいだの マイクの 音は 送らず、オンの あいだだけ 送る", async () => {
+    const { render, speak, kinds } = await connected();
+    speak();
+    expect(kinds()).toEqual([]);
+    expect(render().talking).toBe(false);
+
+    render().startTalking();
+    speak();
+    speak();
+    render().stopTalking();
+    speak();
+
+    expect(render().talking).toBe(false);
+    expect(kinds()).toEqual(["activityStart", "audio", "audio", "activityEnd"]);
+  });
+
+  it("オンに したとき、鳴って いる 相手の 声を 止める", async () => {
+    const { render, receive, audio } = await connected();
+    receive(audio);
+    expect(env.sources).toHaveLength(1);
+    expect(env.sources[0]!.stopped).toBe(false);
+
+    render().startTalking();
+    expect(env.sources[0]!.stopped).toBe(true);
+  });
+
+  it("割り込まれたら 鳴らす 予約と 言いかけの 字を 捨てる（つぎの 返事に つながらない）", async () => {
+    const { render, receive, audio } = await connected();
+    receive({ ...audio, outputTranscription: { text: "こんに" } });
+    receive({ interrupted: true });
+    expect(env.sources[0]!.stopped).toBe(true);
+
+    receive({ outputTranscription: { text: "はい、どうぞ。" } });
+    receive({ turnComplete: true });
+    expect(render().transcript.at(-1)).toEqual({
+      from: "client",
+      text: "はい、どうぞ。",
+      mode: "voice",
+    });
+  });
+
+  it("相手が 黙った ままでも、つぎに オンに した とき 前の 発話を 判定へ 流す", async () => {
+    const { render, receive } = await connected();
+    render().startTalking();
+    receive({ inputTranscription: { text: "よさんは " } });
+    receive({ inputTranscription: { text: "いくらですか" } });
+    render().stopTalking();
+    expect(render().lastUtterance).toBeNull();
+
+    render().startTalking();
+    expect(render().lastUtterance?.text).toBe("よさんは いくらですか");
+  });
+
+  it("オンの まま 書いて 送ったら、声の ターンを 先に 閉じる", async () => {
+    const { render, kinds } = await connected();
+    render().startTalking();
+    render().send("こんにちは");
+    expect(render().talking).toBe(false);
+    expect(kinds()).toEqual(["activityStart", "activityEnd", "client"]);
+  });
+
+  it("切ったら オフに 戻り、そのあとの マイクの 音は 送らない", async () => {
+    const { render, speak, kinds } = await connected();
+    render().startTalking();
+    render().disconnect();
+    speak();
+    expect(render().talking).toBe(false);
+    expect(kinds()).toEqual(["activityStart"]);
   });
 });

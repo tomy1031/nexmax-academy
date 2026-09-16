@@ -53,6 +53,15 @@ import { startMicCapture, IN_RATE, type MicCapture } from "@/components/meeting/
  * 切りかえると まだ null の session を 閉じられず 居座る（マイク・AudioContext も 漏れる）。
  * `connect` は 自分の 世代を 持ち、await の あとと コールバックの 中で 世代を 確かめる。
  * ちがえば **何も せず 片づけて 帰る**（call-shell の `cancelled` と 同じ 型）。
+ *
+ * ## 🎤 が オンの あいだだけ 送る — 2026-09-16
+ * 前は つないで いる あいだ ずっと マイクの 音を 送り、区切りは 相手（自動の 検出）に
+ * まかせて いた。教室の 声・となりの 学習者の 声まで 相手に 届き、ミーティングで 覚えた
+ *「🎤を 押して 話す」とも ちがって いた（ユーザーの 指定「マイクを 押している 間だけの
+ * 利用が 前提」）。いまは ミーティング（use-live-voice）と 同じ 約束:
+ *   - 自動の 区切りを 切り、`startTalking` / `stopTalking` で activityStart / activityEnd を 送る
+ *   - マイクは つないで いる あいだ 開いて いるが、**オフの あいだの 音は 端末で 捨てる**
+ *   - オンに したとき 相手が 話して いたら、鳴って いる 音を そこで 止める
  */
 
 export type LiveStatus = "idle" | "connecting" | "live" | "notReady" | "error";
@@ -103,6 +112,12 @@ export interface LiveSession {
    * 画面は「声は使えないが、書けば進める」と伝えるために使う。
    */
   readonly voiceOn: boolean;
+  /** 🎤 が オンか。**オンの あいだだけ** マイクの 音を 送る。 */
+  readonly talking: boolean;
+  /** 🎤 を オンに する（相手が 話して いたら 止める）。 */
+  readonly startTalking: () => void;
+  /** 🎤 を オフに する（ここで 相手が 返事を 作りはじめる）。 */
+  readonly stopTalking: () => void;
   /** `voice` は人物カードで決めた声（scenario の client.voice）。 */
   readonly connect: (systemInstruction: string, voice?: string) => Promise<void>;
   readonly disconnect: () => void;
@@ -115,6 +130,9 @@ export function useLiveSession(): LiveSession {
   const [transcript, setTranscript] = useState<readonly LiveTurn[]>([]);
   const [lastUtterance, setLastUtterance] = useState<{ id: number; text: string } | null>(null);
   const [voiceOn, setVoiceOn] = useState(false);
+  const [talking, setTalking] = useState(false);
+  /** マイクの 音を 送って よいか（音声スレッドの 呼び戻しから 読むので ref でも 持つ）。 */
+  const talkingRef = useRef(false);
 
   /** 聞き取りの途中。相手が話しはじめたら1つに束ねて流す。 */
   const heardRef = useRef("");
@@ -123,12 +141,14 @@ export function useLiveSession(): LiveSession {
 
   const sessionRef = useRef<LiveSocket | null>(null);
   const micRef = useRef<{ capture: MicCapture; stream: MediaStream } | null>(null);
-  const outRef = useRef<{ ctx: AudioContext; node: GainNode; playAt: number } | null>(null);
+  const outRef = useRef<Output | null>(null);
   /** いまの つなぎの 世代。`connect` と `disconnect` の たびに 進む。 */
   const epochRef = useRef(0);
 
   /** 持って いる ものを 全部 止める（状態は 触らない）。 */
   const release = useCallback(() => {
+    // 閉じた つなぎに 音を 送らない（つぎの つなぎも オフから 始める）
+    talkingRef.current = false;
     sessionRef.current?.close();
     sessionRef.current = null;
     micRef.current?.capture.stop();
@@ -138,9 +158,25 @@ export function useLiveSession(): LiveSession {
     outRef.current = null;
   }, []);
 
+  /**
+   * 聞き取りの かけらを 1つの 発話に 束ねて 流す（判定・字幕へ）。
+   * 相手が 話しはじめた とき と、つぎに 🎤 を オンに した とき に 呼ぶ——相手が 黙った
+   * ままでも、言った ことを 落とさない。
+   */
+  const flushHeard = useCallback(() => {
+    const heard = heardRef.current.trim();
+    heardRef.current = "";
+    if (!heard) return;
+    utteranceIdRef.current += 1;
+    const id = utteranceIdRef.current;
+    setTranscript((prev) => [...prev, { from: "me", text: heard, mode: "voice" }]);
+    setLastUtterance({ id, text: heard });
+  }, []);
+
   const disconnect = useCallback(() => {
     epochRef.current += 1;
     release();
+    setTalking(false);
     setVoiceOn(false);
     setStatus("idle");
     setReason(null);
@@ -158,6 +194,7 @@ export function useLiveSession(): LiveSession {
       setTranscript([]);
       setLastUtterance(null);
       setVoiceOn(false);
+      setTalking(false);
       heardRef.current = "";
       saidRef.current = "";
 
@@ -253,7 +290,7 @@ export function useLiveSession(): LiveSession {
         }
         const node = outCtx.createGain();
         node.connect(outCtx.destination);
-        const out = { ctx: outCtx, node, playAt: 0 };
+        const out: Output = { ctx: outCtx, node, playAt: 0, sources: [] };
         outRef.current = out;
 
         /** 1つの モデルで つなぐ。したくの 合図まで 待ち、断られたら 投げる。 */
@@ -283,6 +320,13 @@ export function useLiveSession(): LiveSession {
               inputAudioTranscription: {},
               outputAudioTranscription: {},
               /*
+               * **区切りは こちらが 決める**（自動の 声の 検出を 切る・2026-09-16）。
+               * 🎤 を オンに した ときに activityStart、オフに した ときに activityEnd を 送る。
+               * 自動の まま だと、オフの あいだは 音が 来ない ので 区切りが 立たず、
+               * オンの あいだの 息つぎでも 区切りが 立って 返事が 割り込む（ミーティングで 実発生）。
+               */
+              realtimeInputConfig: { automaticActivityDetection: { disabled: true } },
+              /*
                * 声は**人物カードで決めたもの**を使う（scenario の client.voice）。
                * 決めていないときは Live の既定に任せる——ここで別の声を勝手に当てると、
                * まんがや ミーティングと 声が 違う人になる。
@@ -305,15 +349,18 @@ export function useLiveSession(): LiveSession {
                 const piece = readTranscript(message);
                 if (piece?.from === "me") heardRef.current += piece.text;
                 if (piece?.from === "client") {
-                  const heard = heardRef.current.trim();
-                  if (heard) {
-                    heardRef.current = "";
-                    utteranceIdRef.current += 1;
-                    const id = utteranceIdRef.current;
-                    setTranscript((prev) => [...prev, { from: "me", text: heard, mode: "voice" }]);
-                    setLastUtterance({ id, text: heard });
-                  }
+                  flushHeard();
                   saidRef.current += piece.text;
+                }
+                /*
+                 * 相手の セリフを 途中で 止められた とき（割り込み）。3.8 は 書いて 送ると
+                 * 話して いる 最中でも 止める。**鳴らす 予約と 言いかけの 字を 捨てる**——
+                 * 捨てないと 止めた はずの 声が 鳴りつづけ、言いかけが つぎの 返事と
+                 * 1つの 吹き出しに つながる（use-live-voice と 同じ 扱い）。
+                 */
+                if (isInterrupted(message)) {
+                  clearScheduled(out);
+                  saidRef.current = "";
                 }
                 if (isTurnComplete(message) && saidRef.current.trim()) {
                   const said = saidRef.current.trim();
@@ -330,12 +377,20 @@ export function useLiveSession(): LiveSession {
               onerror: () => {
                 const phase = gate.phase();
                 if (phase === "waiting" || phase === "late") gate.fail("upstream");
-                else if (mine()) setStatus("error");
+                else if (mine()) {
+                  talkingRef.current = false;
+                  setTalking(false);
+                  setStatus("error");
+                }
               },
               onclose: (event: unknown) => {
                 const phase = gate.phase();
                 if (phase === "waiting" || phase === "late") gate.fail(reasonFromClose(event));
-                else if (mine()) setStatus("idle");
+                else if (mine()) {
+                  talkingRef.current = false;
+                  setTalking(false);
+                  setStatus("idle");
+                }
               },
             },
           });
@@ -387,7 +442,8 @@ export function useLiveSession(): LiveSession {
          */
         if (stream) {
           const capture = await startMicCapture(stream, (pcm) => {
-            if (stale()) return;
+            // 🎤 が オフの あいだの 音は **送らずに 捨てる**（教室の 声を 相手に 届けない）
+            if (stale() || !talkingRef.current) return;
             sessionRef.current?.sendRealtimeInput({
               audio: {
                 data: bytesToBase64(new Uint8Array(pcm.buffer, pcm.byteOffset, pcm.byteLength)),
@@ -414,7 +470,7 @@ export function useLiveSession(): LiveSession {
         if (!handedOff) stream?.getTracks().forEach((track) => track.stop());
       }
     },
-    [release],
+    [release, flushHeard],
   );
 
   /**
@@ -424,11 +480,84 @@ export function useLiveSession(): LiveSession {
   const send = useCallback((text: string) => {
     const session = sessionRef.current;
     if (!session || !text.trim()) return;
+    // 🎤 が オンの まま 書いて 送ったら、声の ターンを 先に 閉じる（開いた まま 文字を 重ねない）
+    if (talkingRef.current) {
+      talkingRef.current = false;
+      setTalking(false);
+      session.sendRealtimeInput({ activityEnd: {} });
+    }
     setTranscript((prev) => [...prev, { from: "me", text, mode: "text" }]);
     session.sendClientContent({ turns: text, turnComplete: true });
   }, []);
 
-  return { status, reason, transcript, lastUtterance, voiceOn, connect, disconnect, send };
+  /**
+   * 🎤 を オンに する。**相手が 話して いたら そこで 止める**（Zoom で 割り込むのと 同じ）。
+   * 止めないと、自分の 声と 相手の 声が 重なった まま 聞き取りに 入る。
+   */
+  const startTalking = useCallback(() => {
+    const session = sessionRef.current;
+    if (!session || talkingRef.current) return;
+    clearScheduled(outRef.current);
+    // 前の 発話で まだ 束ねて いない かけらは、ここで 1つに して 流す（相手が 黙って いても 落とさない）
+    flushHeard();
+    saidRef.current = "";
+    // 別の タブを 見て 戻った あとなど、鳴らす 側が 止まって いる ことが ある
+    void outRef.current?.ctx.resume();
+    talkingRef.current = true;
+    setTalking(true);
+    session.sendRealtimeInput({ activityStart: {} });
+  }, [flushHeard]);
+
+  /** 🎤 を オフに する。「言い終わった」を 伝えないと、相手は 息つぎだと 思って 待ちつづける。 */
+  const stopTalking = useCallback(() => {
+    if (!talkingRef.current) return;
+    talkingRef.current = false;
+    setTalking(false);
+    sessionRef.current?.sendRealtimeInput({ activityEnd: {} });
+  }, []);
+
+  return {
+    status,
+    reason,
+    transcript,
+    lastUtterance,
+    voiceOn,
+    talking,
+    startTalking,
+    stopTalking,
+    connect,
+    disconnect,
+    send,
+  };
+}
+
+/** 鳴らす 側。予約した 音を 持って おき、割り込まれたら 止める。 */
+interface Output {
+  readonly ctx: AudioContext;
+  readonly node: GainNode;
+  playAt: number;
+  sources: AudioBufferSourceNode[];
+}
+
+/** 相手の セリフが 途中で 止められたか。 */
+function isInterrupted(message: unknown): boolean {
+  if (!message || typeof message !== "object") return false;
+  const content = (message as { serverContent?: { interrupted?: unknown } }).serverContent;
+  return content?.interrupted === true;
+}
+
+/** 鳴らす 予約を 全部 止める（割り込み・🎤 を オンに した とき）。 */
+function clearScheduled(out: Output | null): void {
+  if (!out) return;
+  for (const source of out.sources) {
+    try {
+      source.stop();
+    } catch {
+      // もう 鳴り終わって いる ものは 止められない（それで よい）
+    }
+  }
+  out.sources = [];
+  out.playAt = 0;
 }
 
 /** 相手が話し終わったか（返事を1つに束ねる合図）。 */
@@ -439,7 +568,7 @@ function isTurnComplete(message: unknown): boolean {
 }
 
 /** 返ってきた24kHzのPCMを、切れ目なく順に鳴らす。 */
-function play(out: { ctx: AudioContext; node: GainNode; playAt: number } | null, pcm: Uint8Array) {
+function play(out: Output | null, pcm: Uint8Array) {
   if (!out) return;
   const samples = new Int16Array(pcm.buffer, pcm.byteOffset, Math.floor(pcm.byteLength / 2));
   const buffer = out.ctx.createBuffer(1, samples.length, OUT_RATE);
@@ -453,6 +582,11 @@ function play(out: { ctx: AudioContext; node: GainNode; playAt: number } | null,
   const at = Math.max(out.ctx.currentTime, out.playAt);
   source.start(at);
   out.playAt = at + buffer.duration;
+  // 割り込まれたら 止められる ように 持つ。鳴り終えた ものは 手放す（ためこまない）
+  out.sources.push(source);
+  source.onended = () => {
+    out.sources = out.sources.filter((s) => s !== source);
+  };
 }
 
 function bytesToBase64(bytes: Uint8Array): string {
