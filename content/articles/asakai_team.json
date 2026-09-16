@@ -180,17 +180,21 @@
             ],
             "status": "done"
           }
+        },
+        {
+          "icon": "📨",
+          "label": "藤木さん",
+          "title": "取締役",
+          "text": "松井社長からの 追加機能や 変更の 依頼を、開発チームに 伝えます。",
+          "image": {
+            "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This is a TEACHING picture, not a mood picture: what each person is doing must be readable from the picture alone. This one is a teaching diagram: few large elements, generous spacing, each label sitting on a soft cream panel with a rounded border, arranged so the eye reads it in one pass. THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: Fujiki carries the president's requests — new features and changes — down to the development team. A teaching diagram on a soft sky-blue background, READ FROM LEFT TO RIGHT. On the far left, a quiet executive office corner drawn small and empty of people: one big leather chair behind a dark wooden desk, a tall window behind it. Resting on that desk, one cream request sheet with two short lines on it; each line carries its Japanese label. A thick sky-blue arrow runs from that sheet to the right, into a bright open-plan office corner where three empty developer desks stand in a row, each with a monitor showing a blank white screen; a cream label panel above those desks carries its Japanese label. NO PEOPLE ARE DRAWN ANYWHERE IN THE SCENE — the two rooms are empty, and the only face in the picture is the one in the corner inset. In the BOTTOM RIGHT CORNER of the picture there is a small round portrait inset with a thick cream border — inside it, the head and shoulders of Fujiki — a man in his late twenties with a lean athletic build, very short cropped black hair, lightly tanned completely smooth skin with no lines or creases anywhere on the face, a youthful rounded jaw, big bright dark brown eyes and thick eyebrows, wearing a charcoal business suit with a white shirt (follow his model sheet), facing the viewer with a calm friendly smile. The inset is about one fifth of the picture height and sits clearly on top of the scene. The Japanese words in this picture are exactly: 追加機能 / 変更 / 開発チーム. Japanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana. Spell every character exactly as given. No other letters, numbers, logos or watermarks anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots. Payment cards, wallet icons and payment buttons carry ONLY plain abstract stripes and a small blank chip — never two overlapping coloured circles, never four coloured squares, never a swoosh, and never any mark or wordmark that resembles a real card brand or a real bank.",
+            "refs": [
+              "/img/characters/fujiki/sheet.webp"
+            ],
+            "status": "empty"
+          }
         }
       ]
-    },
-    {
-      "kind": "heading",
-      "level": 2,
-      "text": "藤木さん"
-    },
-    {
-      "kind": "paragraph",
-      "text": "藤木さんは 取締役です。松井社長からの 追加機能や 変更の 依頼を、開発チームに 伝えます。"
     },
     {
       "kind": "banner",
