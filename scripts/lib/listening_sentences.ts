@@ -100,3 +100,33 @@ export function trimSilence(
   const to = Math.min(samples, loud[loud.length - 1]! + WINDOW + tail);
   return pcm.slice(from * BYTES_PER_SAMPLE, to * BYTES_PER_SAMPLE);
 }
+
+/**
+ * 声の 中で いちばん 長い「間」（秒）。頭と おしりの 無音は 数えない。
+ *
+ * 2026-09-16 に 同じ 文が 前の 回の 倍の 長さ（4.0秒 → 8.6秒）で 返って きた。
+ * 文字起こしは 原稿どおり なので 読みの 照合では 気づけない——文の 途中に
+ * 長い 間が 入った 音は 学習者には「止まった」と 聞こえる。長さで 見る。
+ */
+export function longestInnerPause(pcm: Uint8Array, { threshold = 60 } = {}): number {
+  const view = new DataView(pcm.buffer, pcm.byteOffset, pcm.byteLength);
+  const samples = Math.floor(pcm.byteLength / BYTES_PER_SAMPLE);
+  const loud: boolean[] = [];
+  for (let at = 0; at + WINDOW <= samples; at += WINDOW) {
+    let sum = 0;
+    for (let k = 0; k < WINDOW; k += 1) {
+      const value = view.getInt16((at + k) * BYTES_PER_SAMPLE, true);
+      sum += value * value;
+    }
+    loud.push(Math.sqrt(sum / WINDOW) > threshold);
+  }
+  const first = loud.indexOf(true);
+  const last = loud.lastIndexOf(true);
+  let longest = 0;
+  let run = 0;
+  for (let i = first; first >= 0 && i <= last; i += 1) {
+    run = loud[i] ? 0 : run + 1;
+    longest = Math.max(longest, run);
+  }
+  return (longest * WINDOW) / SAMPLE_RATE;
+}

@@ -14,6 +14,7 @@ import { SAMPLE_RATE } from "../src/lib/audio/wav";
 import { buildFuriganaIndex } from "../src/lib/text/furigana";
 import { LISTENING_AUDIO_PLANS } from "../scripts/lib/listening_audio_plans";
 import {
+  longestInnerPause,
   scriptSentences,
   sentenceFileName,
   splitSentences,
@@ -88,6 +89,17 @@ function pcmWith(silenceBefore: number, voice: number, silenceAfter: number): Ui
   return new Uint8Array(view.buffer);
 }
 
+describe("longestInnerPause", () => {
+  it("頭と おしりの 無音は 数えず、声の あいだの 間だけを 測る", () => {
+    const a = pcmWith(0.5, 0.5, 0);
+    const b = pcmWith(1.2, 0.5, 0.7);
+    const joined = new Uint8Array(a.byteLength + b.byteLength);
+    joined.set(a, 0);
+    joined.set(b, a.byteLength);
+    expect(longestInnerPause(joined)).toBeCloseTo(1.2, 1);
+  });
+});
+
 describe("trimSilence", () => {
   it("前後の 無音を 切り、のりしろ（前 60ms・後 120ms）を 残す", () => {
     const trimmed = trimSilence(pcmWith(0.5, 1, 0.8));
@@ -128,10 +140,14 @@ describe("読みの 照合", () => {
     expect(matchReading("1日くらい", "一日くらい", index, tokenizer).distance).toBe(0);
   });
 
-  it("解析器の 読みの ゆれ 1字は 通す（何ですか）", () => {
+  it("同じ 字は 同じ 辞書で 読むので ずれない（何ですか を なに と 読まない）", () => {
     const match = matchReading("はい、何ですか。", "はい、何ですか。", index, tokenizer);
-    expect(match.distance).toBe(1);
+    expect(match.distance).toBe(0);
     expect(match.ok).toBe(true);
+  });
+
+  it("1字の 読み落としも 落とす（そうですか → そうです）", () => {
+    expect(matchReading("そうですか。", "そうです", index, tokenizer).ok).toBe(false);
   });
 
   it("短い 語の 読み飛ばしは 落とす（とても）", () => {

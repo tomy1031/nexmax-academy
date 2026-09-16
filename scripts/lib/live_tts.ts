@@ -43,6 +43,14 @@ export function forSpeech(text: string): string {
 export interface Speaker {
   readonly apiKey: string;
   readonly voice: string;
+  /** 読み上げの 指示（`NARRATOR_INSTRUCTION`）の あとに 足す 文。 */
+  readonly instruction?: string;
+  /**
+   * 1周目で だめ だったら、2周目からは 文を「」で 囲んで 渡す。
+   * 「わかりました。」の ような 短い 文を 話しかけと 取り違えて **返事を して しまう**
+   * モデルが ある（2026-09-16。gemini-3.1-flash-live-preview で 4回 続けて 返事に なった）。
+   */
+  readonly quoteOnRetry?: boolean;
 }
 
 /** 生PCM（16bit・モノラル）に WAV の 頭を つける。 */
@@ -121,7 +129,9 @@ async function synthesize(text: string, model: string, speaker: Speaker): Promis
           responseModalities: [Modality.AUDIO],
           // モデル自身の 発話の 文字起こし。台本と 見くらべる ために もらう
           outputAudioTranscription: {},
-          systemInstruction: NARRATOR_INSTRUCTION,
+          systemInstruction: speaker.instruction
+            ? `${NARRATOR_INSTRUCTION}${speaker.instruction}`
+            : NARRATOR_INSTRUCTION,
           speechConfig: {
             languageCode: "ja-JP",
             voiceConfig: { prebuiltVoiceConfig: { voiceName: speaker.voice } },
@@ -303,7 +313,8 @@ export async function synthesizeWithFallback(
   for (let round = 0; round < rounds; round += 1) {
     for (const model of models) {
       try {
-        const spoken = await synthesize(text, model, speaker);
+        const turn = speaker.quoteOnRetry && round > 0 ? `「${text}」` : text;
+        const spoken = await synthesize(turn, model, speaker);
         const seconds = spoken.pcm.byteLength / OUT_RATE / 2;
         const verdict = readingLooksRight(text, spoken.transcript, seconds);
         if (!verdict.ok) {

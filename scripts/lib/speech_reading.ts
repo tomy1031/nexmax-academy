@@ -50,14 +50,34 @@ export function scriptReading(text: string, index: FuriganaIndex): string {
   );
 }
 
-/** 文字起こしの 読み（漢字を 含む ことばだけ 解析器の 読みに 置きかえる）。 */
-export function spokenReading(transcript: string, tokenizer: Tokenizer): string {
+/**
+ * 文字起こしの 読み。
+ *
+ * **まず 原稿と 同じ 読み辞書で 引き**、辞書に 無い 漢字だけ 解析器の 読みに する。
+ * 解析器だけに 任せると「何ですか」を なにですか と 読み、原稿（なんですか）と
+ * 1字 ずれる——その 1字を 許す ために「ずれ 1字まで」に して いたら、
+ * **「そうですか」を「そうです」と 読んだ 音**まで 通って しまった（2026-09-16）。
+ * 同じ 辞書を 通せば、同じ 字は 同じ 読みに なり、ずれ 0字を 求められる。
+ */
+export function spokenReading(
+  transcript: string,
+  tokenizer: Tokenizer,
+  index: FuriganaIndex,
+): string {
   return comparable(
-    tokenizer
-      .tokenize(transcript.normalize("NFKC"))
-      .map((token) =>
-        KANJI.test(token.surface_form) ? (token.reading ?? token.surface_form) : token.surface_form,
-      )
+    annotateRuby(transcript.normalize("NFKC"), index)
+      .map((segment) => {
+        if (segment.reading) return segment.reading;
+        if (!KANJI.test(segment.text)) return segment.text;
+        return tokenizer
+          .tokenize(segment.text)
+          .map((token) =>
+            KANJI.test(token.surface_form)
+              ? (token.reading ?? token.surface_form)
+              : token.surface_form,
+          )
+          .join("");
+      })
       .join(""),
   );
 }
@@ -94,14 +114,12 @@ export interface ReadingMatch {
 /**
  * 原稿どおりに 読んだか。
  *
- * ## 何字まで ずれを 許すか
- * **読みの ずれは 文の 長さに かかわらず 1字まで**。0字に しないのは、解析器が
- * 同じ 字を 別の 読みに する ことが ある ため（「何ですか」を なに／なん）。
- * 2026-09-16 に 報告の 原稿 22文を **原稿そのものを 文字起こし と みなして**
- * 通したら、解析器の せいで ずれたのは この 1文の 1字だけ だった。
- * 長い 文ほど 許す（1割 など）と、「とても」の ような 短い 語の 読み飛ばしが 通る。
- * 1字を こえる ずれは 読み飛ばし・言いかえ・足した ことばと みなして 作り直す。
- * どれだけ ずれて いたかは 台帳に 残すので、あとから 人が 1文ずつ 確かめられる。
+ * ## ずれは 1字も 許さない
+ * 文字起こしも 原稿と 同じ 読み辞書で 読む（`spokenReading`）ので、同じ 字なら
+ * 読みは そろう。ずれが あれば 読み飛ばし・言いかえ・足した ことばと みなして 作り直す。
+ * はじめは 解析器の ゆれの ために 1字 許して いたが、「そうですか」→「そうです」
+ *（か の 読み落とし）が 通った（2026-09-16）。長い 文ほど 許す（1割 など）のは もっと 悪い——
+ * 「とても」の ような 短い 語の 読み飛ばしが 通る。
  *
  * 文字起こしが 空の ときは 確かめようが ないので **通さない**。
  */
@@ -115,9 +133,9 @@ export function matchReading(
   if (transcript.trim() === "") {
     return { ok: false, expected, spoken: "", distance: expected.length, why: "文字起こしが 空" };
   }
-  const spoken = spokenReading(transcript, tokenizer);
+  const spoken = spokenReading(transcript, tokenizer, index);
   const distance = editDistance(expected, spoken);
-  const allowed = 1;
+  const allowed = 0;
   return {
     ok: distance <= allowed,
     expected,

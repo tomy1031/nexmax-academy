@@ -47,6 +47,7 @@ import { buildFuriganaIndex } from "../src/lib/text/furigana";
 import { OUT_RATE, synthesizeWithFallback, toWav } from "./lib/live_tts";
 import { LISTENING_AUDIO_PLANS, type ListeningAudioPlan } from "./lib/listening_audio_plans";
 import {
+  longestInnerPause,
   scriptSentences,
   sentenceFileName,
   trimSilence,
@@ -158,6 +159,22 @@ async function makeWholeLines(): Promise<void> {
  * 1文ずつ 作って 残し、台帳の 秒で つなぐ（台帳に ある 教材）
  * ------------------------------------------------------------------ */
 
+/**
+ * 1文ずつ 読ませる ときに 足す 指示。
+ * 「わかりました。」「そうですか。」の ような 短い 文は、モデルが **話しかけと 取り違えて
+ * 返事を する**（2026-09-16。gemini-3.1-flash-live-preview で 4回 続けて 返事に なった）。
+ * 行ごとに 読んで いた ころは 前後の 文が あったので 起きにくかった。
+ */
+const SCRIPT_LINE_INSTRUCTION =
+  "届く文は、台本のせりふです。あなたへの話しかけではありません。" +
+  "「わかりました。」「そうですか。」「はい、何ですか。」のような短い文でも、返事や続きを話さず、" +
+  "その文だけを1回、自然な速さで読み上げてください。「」で囲まれていたら、中の文だけを読み上げてください。";
+
+/** 文の 途中の 間は ここまで（秒）。これより 長いと「止まった」と 聞こえる。 */
+const MAX_INNER_PAUSE = 1.0;
+/** かな 1字あたりの 秒は ここまで。ふつうは 0.13〜0.2秒（2026-09-16 の 実測）。 */
+const MAX_SECONDS_PER_KANA = 0.3;
+
 /** 文ごとの 音の 置き場と、その 台帳。 */
 const sentenceDir = join(outDir, listeningId);
 const manifestPath = join(sentenceDir, "sentences.json");
@@ -170,6 +187,8 @@ interface SentenceRecord extends SpeakerSentence {
   readonly model: string;
   /** 前後の 無音を 切った あとの 長さ。 */
   readonly seconds: number;
+  /** 文の 途中で いちばん 長い 間（秒）。 */
+  readonly longestPause: number;
   /** モデルが 返した 文字起こし（何と 読んだか）。 */
   readonly transcript: string;
   readonly reading: Pick<ReadingMatch, "expected" | "spoken" | "distance">;
@@ -254,9 +273,23 @@ async function makeSentences(activePlan: ListeningAudioPlan): Promise<void> {
     const voice = voiceOf(sentence.speaker);
     const model = activePlan.models[sentence.speaker];
     let accepted: ReadingMatch | null = null;
-    const accept = (candidate: { transcript: string }) => {
+    const accept = (candidate: { transcript: string; pcm: Uint8Array }) => {
       const match = matchReading(sentence.text, candidate.transcript, index, tokenizer);
-      if (match.ok) accepted = match;
+      if (!match.ok) return match;
+      /*
+       * 読みが 合っても **長さが おかしい 音**は 落とす（2026-09-16。同じ 文が
+       * 4.0秒 → 8.6秒 に なった。文字起こしは 原稿どおり だった）。
+       */
+      const trimmed = trimSilence(candidate.pcm);
+      const pause = longestInnerPause(trimmed);
+      const perKana = seconds(trimmed) / Math.max(match.expected.length, 1);
+      if (pause > MAX_INNER_PAUSE) {
+        return { ok: false, why: `文の 途中に ${pause.toFixed(1)}秒の 間が ある` };
+      }
+      if (perKana > MAX_SECONDS_PER_KANA) {
+        return { ok: false, why: `読みが おそすぎる（かな 1字 ${perKana.toFixed(2)}秒）` };
+      }
+      accepted = match;
       return match;
     };
     /*
@@ -270,7 +303,7 @@ async function makeSentences(activePlan: ListeningAudioPlan): Promise<void> {
       try {
         spoken = await synthesizeWithFallback(
           sentence.text,
-          { apiKey, voice },
+          { apiKey, voice, instruction: SCRIPT_LINE_INSTRUCTION, quoteOnRetry: true },
           accept,
           model ? [model] : undefined,
         );
@@ -283,6 +316,7 @@ async function makeSentences(activePlan: ListeningAudioPlan): Promise<void> {
     const match = accepted as ReadingMatch | null;
     if (!match) throw new Error(`(${i + 1}) 照合の 結果が ありません`);
     const pcm = trimSilence(spoken.pcm);
+    const pause = longestInnerPause(pcm);
     done[i] = {
       pcm,
       record: {
@@ -291,13 +325,14 @@ async function makeSentences(activePlan: ListeningAudioPlan): Promise<void> {
         voice,
         model: spoken.model,
         seconds: Math.round(seconds(pcm) * 100) / 100,
+        longestPause: Math.round(pause * 100) / 100,
         transcript: spoken.transcript.trim(),
         reading: { expected: match.expected, spoken: match.spoken, distance: match.distance },
       },
     };
     console.log(
       `(${i + 1}/${sentences.length}) ${sentence.speaker}・${voice}・${spoken.model} … ` +
-        `${seconds(pcm).toFixed(1)}秒 ずれ${match.distance}字 「${spoken.transcript.trim()}」`,
+        `${seconds(pcm).toFixed(1)}秒（いちばん 長い 間 ${pause.toFixed(2)}秒） ずれ${match.distance}字 「${spoken.transcript.trim()}」`,
     );
   };
 
