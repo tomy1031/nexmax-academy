@@ -13,6 +13,7 @@ import { buildFuriganaIndex, type FuriganaEntry } from "@/lib/text/furigana";
 import { recordContentProgress } from "@/lib/progress/store";
 import { bufferTalkTurn, flushTalkTurns, newTalkSessionId } from "@/lib/records/talk-log";
 import { CaptionBar, CallShell } from "@/components/call-shell";
+import { SpeakButton } from "@/components/meeting/speak-button";
 import { LiveReason } from "./live-reason";
 import { MemoStep } from "./memo-step";
 import { MissionStep } from "./mission-step";
@@ -653,38 +654,38 @@ export function TalkSession({
         ) : undefined
       }
       controls={
-        <div className="card-island flex flex-wrap items-center gap-2 p-3">
-          {live.status === "idle" && (
-            <button
-              type="button"
+        /*
+         * 声の ボタンは **ミーティングと 同じ 部品**（`SpeakButton`・2026-09-16 の 指定
+         *「マイクを 押している 間だけの 利用が 前提」）。
+         *
+         * 前は「話しはじめる」で つないだら、つないで いる あいだ ずっと マイクの 音を
+         * 送って いた（区切りは 相手まかせ）。教室の 声・となりの 学習者の 声まで 相手に
+         * 届き、ミーティングで 学習者が 覚えた「🎤を 押して 話す」とも ちがって いた。
+         * いまは 🎤 が オンの あいだだけ 送る（`use-live-session.ts` の startTalking）。
+         */
+        <div className="card-island space-y-2 p-3">
+          {live.status === "live" && !live.voiceOn ? (
+            /*
+             * マイクを 断られても つないだまま 続ける（劣化運転）。
+             * ここで 何も 言わないと、声が 届いていない ことに 気づけない。
+             * 押しても 何も 送れない 🎤 は 出さない。
+             */
+            <p className="text-ink-soft text-center text-xs font-extrabold break-keep">
+              マイクは つかえません。下に 書いて 送れば、そのまま すすめます
+            </p>
+          ) : (
+            <SpeakButton
+              status={live.status}
+              reason={live.reason}
+              talking={live.talking}
               // 声は人物カードで決めたもの（まんが・ミーティングと同じ人の声にする）
-              onClick={() => connectTo(target.id)}
-              className="btn-island btn-game px-6 py-2.5 text-sm"
-            >
-              🎙️{" "}
-              <ruby>
-                話<rt>はな</rt>
-              </ruby>
-              しはじめる
-            </button>
-          )}
-          {live.status === "connecting" && (
-            <span className="text-ink-soft text-sm font-extrabold">つないでいます…</span>
+              onConnect={() => connectTo(target.id)}
+              onStartTalking={live.startTalking}
+              onStopTalking={live.stopTalking}
+            />
           )}
           {live.status === "live" && (
-            <>
-              <span className="bg-leaf/15 text-leaf-deep rounded-full px-3 py-1 text-xs font-extrabold">
-                ● つながっています
-              </span>
-              {/*
-                  マイクを 断られても つないだまま 続ける（劣化運転）。
-                  ここで 何も 言わないと、声が 届いていない ことに 気づけない。
-                */}
-              {!live.voiceOn && (
-                <span className="text-ink-soft text-xs font-extrabold">
-                  マイクは つかえません。下に 書いて 送れば、そのまま すすめます
-                </span>
-              )}
+            <div className="text-center">
               <button
                 type="button"
                 onClick={live.disconnect}
@@ -695,12 +696,12 @@ export function TalkSession({
               >
                 <span className="text-ink">いったん とめる</span>
               </button>
-            </>
+            </div>
           )}
           {live.status === "error" && (
-            <span className="text-coral-deep text-sm font-extrabold">
+            <p className="text-coral-deep text-center text-sm font-extrabold">
               つながりませんでした。下に りゆうが 出ています
-            </span>
+            </p>
           )}
         </div>
       }
