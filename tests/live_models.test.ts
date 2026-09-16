@@ -85,24 +85,39 @@ describe("端末に 残った 前の 既定は、3.8 より 先に 使わない"
     vi.unstubAllGlobals();
   });
 
-  it("「保存」で 残った 3.1 は 選んで いないのと 同じ（一覧の 先頭＝3.8 に なる）", () => {
+  it("前の 鍵に「保存」で 残った 3.1 は 選んで いないのと 同じ（一覧の 先頭＝3.8 に なる）", () => {
     expect(isSupersededLiveDefault("gemini-3.1-flash-live-preview")).toBe(true);
     stubStorage({ "nexmax.liveModel": "gemini-3.1-flash-live-preview" });
     expect(getLiveModel()).toBe("");
   });
 
-  it("先生が 選んだ ほかの 名前は そのまま 使う（締め出さない）", () => {
-    for (const chosen of ["gemini-3.8-live", "gemini-2.5-flash-native-audio-preview-12-2025"]) {
-      expect(isSupersededLiveDefault(chosen)).toBe(false);
-      stubStorage();
+  it("前の 鍵に 残った ほかの 名前は 先生が 選んだ ものとして 読み継ぐ", () => {
+    stubStorage({ "nexmax.liveModel": "gemini-2.5-flash-native-audio-preview-12-2025" });
+    expect(getLiveModel()).toBe("gemini-2.5-flash-native-audio-preview-12-2025");
+  });
+
+  it("選んで 保存した 名前は、3.1 でも そのまま 使う（3.8 が 使えない 鍵の 逃げ道）", () => {
+    for (const chosen of [
+      "gemini-3.8-live",
+      "gemini-3.1-flash-live-preview",
+      "gemini-2.5-flash-native-audio-preview-12-2025",
+    ]) {
+      stubStorage({ "nexmax.liveModel": "gemini-3.1-flash-live-preview" });
       saveLiveModel(chosen);
       expect(getLiveModel()).toBe(chosen);
     }
+  });
+
+  it("選び直したら 前の 鍵は 消える（空に 戻しても 前の 名前が 生き返らない）", () => {
+    stubStorage({ "nexmax.liveModel": "gemini-2.5-flash-native-audio-preview-12-2025" });
+    saveLiveModel("");
+    expect(getLiveModel()).toBe("");
   });
 
   it("何も 残って いなければ 空（呼ぶ側が 一覧の 先頭を 使う）", () => {
     stubStorage();
     expect(getLiveModel()).toBe("");
     expect(isSupersededLiveDefault("")).toBe(false);
+    expect(isSupersededLiveDefault("gemini-3.8-live")).toBe(false);
   });
 });
