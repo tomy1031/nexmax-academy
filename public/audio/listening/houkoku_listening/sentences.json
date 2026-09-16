@@ -3,7 +3,7 @@
   "gapSeconds": 1.5,
   "compareGapSeconds": [2],
   "complete": false,
-  "missing": [5, 15, 21, 22],
+  "missing": [22],
   "sentences": [
     {
       "speaker": "narration",
@@ -62,6 +62,22 @@
       "reading": {
         "expected": "わるいにゅうすほどはやくいわなければなりません",
         "spoken": "わるいにゅうすほどはやくいわなければなりません",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "これは とても 大切です。",
+      "file": "05.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 2.15,
+      "longestPause": 0.32,
+      "transcript": "これはとても大切です。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "これはとてもたいせつです",
+        "spoken": "これはとてもたいせつです",
         "distance": 0
       }
     },
@@ -202,6 +218,22 @@
     },
     {
       "speaker": "hendy",
+      "text": "調べて みましたが、1日くらい かかりそうです。",
+      "file": "15.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 3.39,
+      "longestPause": 0.44,
+      "transcript": "調べてみましたが 1日くらいかかりそうです",
+      "transcriptBy": "gemini-2.5-flash",
+      "reading": {
+        "expected": "しらべてみましたがいちにちくらいかかりそうです",
+        "spoken": "しらべてみましたがいちにちくらいかかりそうです",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "hendy",
       "text": "ですから、来週の テストを 1日 遅らせて いただけませんでしょうか。",
       "file": "16.wav",
       "voice": "Puck",
@@ -272,6 +304,22 @@
       "reading": {
         "expected": "よていをかえますからすぐになおしてください",
         "spoken": "よていをかえますからすぐになおしてください",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "hendy",
+      "text": "ありがとう ございます。",
+      "file": "21.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 1.36,
+      "longestPause": 0,
+      "transcript": "ありがとうございます",
+      "transcriptBy": "gemini-2.5-flash",
+      "reading": {
+        "expected": "ありがとうございます",
+        "spoken": "ありがとうございます",
         "distance": 0
       }
     }
