@@ -12,7 +12,12 @@
  * 「進みぐあい」は ページに 無い 語なので **どこまで できたか**。
  */
 
+import Image from "next/image";
+import { useState } from "react";
+
+import { ZoomableImage } from "@/components/media/zoomable-image";
 import { RubyText } from "@/components/ruby-text";
+import { assetUrl } from "@/lib/asset-url";
 import type { FuriganaIndex } from "@/lib/text/furigana";
 
 /**
@@ -119,11 +124,19 @@ export function ProgressBoxes({
   items: readonly {
     label: string;
     icon?: string;
+    image?: { src?: string; status?: string };
     state: "done" | "now" | "later";
     added?: boolean;
   }[];
   index: FuriganaIndex;
 }) {
+  /*
+    絵の 欄を 広げるのは **絵を 持って いる 表だけ**。
+    夕礼（`asakai_muzukashii`）の しごとは 絵も 絵文字も 持って いないので、
+    いつも 広げると 318px の 表から 88px を 空欄の ために 取り上げる ことに なる
+    （しごとの 名前に 残るのは 134px。2026-09-16 の 検収）。
+  */
+  const hasImage = items.some((item) => taskImage(item.image));
   return (
     <div>
       <p className="text-ink-soft text-[11px] font-black">
@@ -148,9 +161,19 @@ export function ProgressBoxes({
                 {/*
                   やる ことの 印。**字を 読む 前に あたりが つく**ように 置く
                   （2026-09-16 の 指定「各タスクに やる ことが わかる 画像を つけて」）。
+
+                  清書の 絵（`image.src`）が あれば それを、無ければ 絵文字を 出す。
+                  絵文字を 消さないのは、10枚の うち 1枚でも 届いて いない とき
+                  そこだけ 空の 四角に なる のを 避ける ため（願い #441）。
+
+                  **80px で 出し、押すと 全画面**（`ZoomableImage`。てじゅんの さし絵と 同じ
+                  大きさ・同じ 包み）。36px の アイコンで 試した ときは
+                 「何を する 画面なのか 分からない」と なった（2026-09-16 の 指定）。
+                  絵は 飾りでは なく **どの しごとかを 見分ける ための もの**なので、
+                  並びを 目で 追える 大きさは 保った まま、見たい ときだけ 大きく する。
                 */}
-                <td aria-hidden className="w-7 pl-2 text-center text-base leading-none">
-                  {item.icon ?? ""}
+                <td className={hasImage ? "w-[88px] py-1 pl-2" : "w-7 pl-2"}>
+                  <TaskPicture label={item.label} image={item.image} icon={item.icon} />
                 </td>
                 <td className="text-ink px-2 py-1 text-[11px] leading-tight font-bold break-words">
                   <RubyText text={item.label} index={index} show />
@@ -178,6 +201,57 @@ export function ProgressBoxes({
         </tbody>
       </table>
     </div>
+  );
+}
+
+/**
+ * 絵が 出せる 形に なって いる ものだけを 返す。
+ *
+ * `status` を 見るのは、先生が 管理画面で 作り直して いる あいだ（`generating`）や
+ * まだ 作って いない 枠（`empty`）に 古い `src` が 残る ことが ある から
+ *（てじゅんの さし絵 `StepThumb` と 同じ 見かた）。
+ */
+function taskImage(image?: { src?: string; status?: string }): string | undefined {
+  return image?.status === "done" && image.src ? image.src : undefined;
+}
+
+/**
+ * しごと 1件の 絵。**押すと 全画面**（`ZoomableImage`）。
+ *
+ * 絵が 無い ときは 絵文字に 落ちる。**ファイルが 届いて いない ときも 落ちる**——
+ * `src` が あるのに 404 だと、そこだけ 壊れた 絵の 四角に なる ので、
+ * `onError` で 絵文字に 戻す（`viseme-face.tsx` と 同じ 備え）。
+ */
+function TaskPicture({
+  label,
+  image,
+  icon,
+}: {
+  label: string;
+  image?: { src?: string; status?: string };
+  icon?: string;
+}) {
+  const [missing, setMissing] = useState(false);
+  const src = taskImage(image);
+  if (!src || missing) {
+    return (
+      <span aria-hidden className="block text-center text-base leading-none">
+        {icon ?? ""}
+      </span>
+    );
+  }
+  return (
+    <ZoomableImage label={label} size="small" className="block">
+      <Image
+        src={assetUrl(src) ?? src}
+        alt=""
+        width={640}
+        height={640}
+        unoptimized
+        onError={() => setMissing(true)}
+        className="border-hairline mx-auto h-20 w-20 rounded-lg border bg-white object-cover"
+      />
+    </ZoomableImage>
   );
 }
 

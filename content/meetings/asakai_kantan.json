@@ -65,46 +65,82 @@
             {
               "label": "決済の 画面",
               "icon": "🖥️",
+              "image": {
+                "src": "/img/asakai/tasks/screen.webp",
+                "status": "done"
+              },
               "state": "done"
             },
             {
               "label": "ABA Payの ボタン",
               "icon": "🔵",
+              "image": {
+                "src": "/img/asakai/tasks/aba.webp",
+                "status": "done"
+              },
               "state": "done"
             },
             {
               "label": "注文IDと 金額の 表示",
               "icon": "🧾",
+              "image": {
+                "src": "/img/asakai/tasks/order.webp",
+                "status": "done"
+              },
               "state": "now"
             },
             {
               "label": "支払方法を えらぶ",
               "icon": "🔀",
+              "image": {
+                "src": "/img/asakai/tasks/choose.webp",
+                "status": "done"
+              },
               "state": "later"
             },
             {
               "label": "決済APIと つなぐ（ABA）",
               "icon": "🔌",
+              "image": {
+                "src": "/img/asakai/tasks/api.webp",
+                "status": "done"
+              },
               "state": "now"
             },
             {
               "label": "処理中の 表示",
               "icon": "⏳",
+              "image": {
+                "src": "/img/asakai/tasks/loading.webp",
+                "status": "done"
+              },
               "state": "later"
             },
             {
               "label": "成功の 画面",
               "icon": "✅",
+              "image": {
+                "src": "/img/asakai/tasks/success.webp",
+                "status": "done"
+              },
               "state": "later"
             },
             {
               "label": "失敗の 画面",
               "icon": "⚠️",
+              "image": {
+                "src": "/img/asakai/tasks/fail.webp",
+                "status": "done"
+              },
               "state": "later"
             },
             {
               "label": "フロントの テスト",
               "icon": "🧪",
+              "image": {
+                "src": "/img/asakai/tasks/test.webp",
+                "status": "done"
+              },
               "state": "later"
             }
           ],
@@ -317,46 +353,82 @@
             {
               "label": "決済の 画面",
               "icon": "🖥️",
+              "image": {
+                "src": "/img/asakai/tasks/screen.webp",
+                "status": "done"
+              },
               "state": "done"
             },
             {
               "label": "ABA Payの ボタン",
               "icon": "🔵",
+              "image": {
+                "src": "/img/asakai/tasks/aba.webp",
+                "status": "done"
+              },
               "state": "done"
             },
             {
               "label": "注文IDと 金額の 表示",
               "icon": "🧾",
+              "image": {
+                "src": "/img/asakai/tasks/order.webp",
+                "status": "done"
+              },
               "state": "done"
             },
             {
               "label": "支払方法を えらぶ",
               "icon": "🔀",
+              "image": {
+                "src": "/img/asakai/tasks/choose.webp",
+                "status": "done"
+              },
               "state": "later"
             },
             {
               "label": "決済APIと つなぐ（ABA）",
               "icon": "🔌",
+              "image": {
+                "src": "/img/asakai/tasks/api.webp",
+                "status": "done"
+              },
               "state": "now"
             },
             {
               "label": "処理中の 表示",
               "icon": "⏳",
+              "image": {
+                "src": "/img/asakai/tasks/loading.webp",
+                "status": "done"
+              },
               "state": "now"
             },
             {
               "label": "成功の 画面",
               "icon": "✅",
+              "image": {
+                "src": "/img/asakai/tasks/success.webp",
+                "status": "done"
+              },
               "state": "later"
             },
             {
               "label": "失敗の 画面",
               "icon": "⚠️",
+              "image": {
+                "src": "/img/asakai/tasks/fail.webp",
+                "status": "done"
+              },
               "state": "later"
             },
             {
               "label": "フロントの テスト",
               "icon": "🧪",
+              "image": {
+                "src": "/img/asakai/tasks/test.webp",
+                "status": "done"
+              },
               "state": "later"
             }
           ],
@@ -589,52 +661,92 @@
             {
               "label": "決済の 画面",
               "icon": "🖥️",
+              "image": {
+                "src": "/img/asakai/tasks/screen.webp",
+                "status": "done"
+              },
               "state": "done"
             },
             {
               "label": "ABA Payの ボタン",
               "icon": "🔵",
+              "image": {
+                "src": "/img/asakai/tasks/aba.webp",
+                "status": "done"
+              },
               "state": "done"
             },
             {
               "label": "注文IDと 金額の 表示",
               "icon": "🧾",
+              "image": {
+                "src": "/img/asakai/tasks/order.webp",
+                "status": "done"
+              },
               "state": "done"
             },
             {
               "label": "支払方法を えらぶ",
               "icon": "🔀",
+              "image": {
+                "src": "/img/asakai/tasks/choose.webp",
+                "status": "done"
+              },
               "state": "now"
             },
             {
               "label": "ACLEDA Payを えらぶ",
               "icon": "🟠",
+              "image": {
+                "src": "/img/asakai/tasks/acleda.webp",
+                "status": "done"
+              },
               "state": "now",
               "added": true
             },
             {
               "label": "決済APIと つなぐ（ABA/ACLEDA）",
               "icon": "🔌",
+              "image": {
+                "src": "/img/asakai/tasks/api.webp",
+                "status": "done"
+              },
               "state": "now"
             },
             {
               "label": "処理中の 表示",
               "icon": "⏳",
+              "image": {
+                "src": "/img/asakai/tasks/loading.webp",
+                "status": "done"
+              },
               "state": "now"
             },
             {
               "label": "成功の 画面",
               "icon": "✅",
+              "image": {
+                "src": "/img/asakai/tasks/success.webp",
+                "status": "done"
+              },
               "state": "now"
             },
             {
               "label": "失敗の 画面",
               "icon": "⚠️",
+              "image": {
+                "src": "/img/asakai/tasks/fail.webp",
+                "status": "done"
+              },
               "state": "now"
             },
             {
               "label": "フロントの テスト",
               "icon": "🧪",
+              "image": {
+                "src": "/img/asakai/tasks/test.webp",
+                "status": "done"
+              },
               "state": "later"
             }
           ],
@@ -867,51 +979,91 @@
             {
               "label": "決済の 画面",
               "icon": "🖥️",
+              "image": {
+                "src": "/img/asakai/tasks/screen.webp",
+                "status": "done"
+              },
               "state": "done"
             },
             {
               "label": "ABA Payの ボタン",
               "icon": "🔵",
+              "image": {
+                "src": "/img/asakai/tasks/aba.webp",
+                "status": "done"
+              },
               "state": "done"
             },
             {
               "label": "注文IDと 金額の 表示",
               "icon": "🧾",
+              "image": {
+                "src": "/img/asakai/tasks/order.webp",
+                "status": "done"
+              },
               "state": "done"
             },
             {
               "label": "支払方法を えらぶ",
               "icon": "🔀",
+              "image": {
+                "src": "/img/asakai/tasks/choose.webp",
+                "status": "done"
+              },
               "state": "done"
             },
             {
               "label": "ACLEDA Payを えらぶ",
               "icon": "🟠",
+              "image": {
+                "src": "/img/asakai/tasks/acleda.webp",
+                "status": "done"
+              },
               "state": "done"
             },
             {
               "label": "決済APIと つなぐ（ABA/ACLEDA）",
               "icon": "🔌",
+              "image": {
+                "src": "/img/asakai/tasks/api.webp",
+                "status": "done"
+              },
               "state": "now"
             },
             {
               "label": "処理中の 表示",
               "icon": "⏳",
+              "image": {
+                "src": "/img/asakai/tasks/loading.webp",
+                "status": "done"
+              },
               "state": "now"
             },
             {
               "label": "成功の 画面",
               "icon": "✅",
+              "image": {
+                "src": "/img/asakai/tasks/success.webp",
+                "status": "done"
+              },
               "state": "done"
             },
             {
               "label": "失敗の 画面",
               "icon": "⚠️",
+              "image": {
+                "src": "/img/asakai/tasks/fail.webp",
+                "status": "done"
+              },
               "state": "done"
             },
             {
               "label": "フロントの テスト",
               "icon": "🧪",
+              "image": {
+                "src": "/img/asakai/tasks/test.webp",
+                "status": "done"
+              },
               "state": "later"
             }
           ],
@@ -1223,51 +1375,91 @@
             {
               "label": "決済の 画面",
               "icon": "🖥️",
+              "image": {
+                "src": "/img/asakai/tasks/screen.webp",
+                "status": "done"
+              },
               "state": "done"
             },
             {
               "label": "ABA Payの ボタン",
               "icon": "🔵",
+              "image": {
+                "src": "/img/asakai/tasks/aba.webp",
+                "status": "done"
+              },
               "state": "done"
             },
             {
               "label": "注文IDと 金額の 表示",
               "icon": "🧾",
+              "image": {
+                "src": "/img/asakai/tasks/order.webp",
+                "status": "done"
+              },
               "state": "done"
             },
             {
               "label": "支払方法を えらぶ",
               "icon": "🔀",
+              "image": {
+                "src": "/img/asakai/tasks/choose.webp",
+                "status": "done"
+              },
               "state": "done"
             },
             {
               "label": "ACLEDA Payを えらぶ",
               "icon": "🟠",
+              "image": {
+                "src": "/img/asakai/tasks/acleda.webp",
+                "status": "done"
+              },
               "state": "done"
             },
             {
               "label": "決済APIと つなぐ（ABA）",
               "icon": "🔌",
+              "image": {
+                "src": "/img/asakai/tasks/api.webp",
+                "status": "done"
+              },
               "state": "now"
             },
             {
               "label": "処理中の 表示",
               "icon": "⏳",
+              "image": {
+                "src": "/img/asakai/tasks/loading.webp",
+                "status": "done"
+              },
               "state": "done"
             },
             {
               "label": "成功の 画面",
               "icon": "✅",
+              "image": {
+                "src": "/img/asakai/tasks/success.webp",
+                "status": "done"
+              },
               "state": "done"
             },
             {
               "label": "失敗の 画面",
               "icon": "⚠️",
+              "image": {
+                "src": "/img/asakai/tasks/fail.webp",
+                "status": "done"
+              },
               "state": "done"
             },
             {
               "label": "フロントの テスト",
               "icon": "🧪",
+              "image": {
+                "src": "/img/asakai/tasks/test.webp",
+                "status": "done"
+              },
               "state": "now"
             }
           ],
