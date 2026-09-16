@@ -5,6 +5,8 @@ import {
   authFromToken,
   connectLiveInOrder,
   createSetupGate,
+  FIRST_AUTH_FRESH_MS,
+  reasonFromClose,
   startingWith,
 } from "@/lib/ai/live-connect";
 import { createLiveToken } from "@/lib/ai/live-token";
@@ -395,10 +397,12 @@ export function useLiveVoice(options: LiveVoiceOptions = {}): LiveVoice {
        * 作れないキー（新形式 AQ. で報告あり）のときだけ、本人のキーで直接つなぐ。
        * 1枚目は マイクの 許可を 聞く 前に 作る——鍵が 通らない ときに
        * マイクの 許可だけ 聞く ことに ならない ように（2枚目から は `connectLiveInOrder`）。
+       * 許可ダイアログで 時間が たったら 1枚目も 作り直す（`FIRST_AUTH_FRESH_MS`）。
        */
       const models = wanted.length > 0 ? wanted : [DEFAULT_LIVE_TALK_MODEL];
       const mint = async () => authFromToken(await createLiveToken({ apiKey }), apiKey);
       const first = await mint();
+      const firstFreshUntil = Date.now() + FIRST_AUTH_FRESH_MS;
       if (stale()) return;
       if (!first.ok) {
         setStatus("notReady");
@@ -480,7 +484,11 @@ export function useLiveVoice(options: LiveVoiceOptions = {}): LiveVoice {
         setAnalyser(node);
 
         /** 1つの モデルで つなぐ。したくの 合図まで 待ち、断られたら 投げる。 */
-        const open = async (auth: string, model: string): Promise<VoiceSocket> => {
+        const open = async (
+          auth: string,
+          model: string,
+          claim: (session: VoiceSocket) => boolean,
+        ): Promise<VoiceSocket> => {
           /*
            * **v1beta で つなぐ**（短命トークンでも）。
            *
@@ -491,15 +499,27 @@ export function useLiveVoice(options: LiveVoiceOptions = {}): LiveVoice {
            * この 警告は 当てはまらない と 判断する。
            */
           const ai = new GoogleGenAI({ apiKey: auth, apiVersion: "v1beta" });
-          const gate = createSetupGate<VoiceSocket>();
-          /** この つなぎからの 届きものを 受け取って よいか（断られた つなぎ・古い 世代は 捨てる）。 */
-          const mine = () => !stale() && gate.phase() !== "abandoned";
+          // 期限の あとに 遅れて つながった ものも、まだ どれも 決まって いなければ 使う
+          const gate = createSetupGate<VoiceSocket>(undefined, claim);
+          /**
+           * この つなぎからの 届きものを 受け取って よいか。古い 世代・断られた つなぎ・
+           * 期限を 過ぎて まだ 使うか 決まって いない つなぎ（`late`）は 捨てる。
+           */
+          const mine = () => {
+            const phase = gate.phase();
+            return !stale() && (phase === "waiting" || phase === "ready");
+          };
+          /*
+           * 指示文と 声は **ためす その時の もの**を 使う。つなぎ直しの 途中で ラウンドが
+           * 変わる（`swapInstruction` が 書きかえる）と、始めた ときの 文の ままに なる。
+           */
+          const latest = argsRef.current ?? { systemInstruction, voice };
 
           const connecting = ai.live.connect({
             model,
             config: {
               responseModalities: [Modality.AUDIO],
-              systemInstruction,
+              systemInstruction: latest.systemInstruction,
               inputAudioTranscription: {},
               outputAudioTranscription: {},
               /*
@@ -522,7 +542,9 @@ export function useLiveVoice(options: LiveVoiceOptions = {}): LiveVoice {
                */
               speechConfig: {
                 languageCode: "ja-JP",
-                ...(voice ? { voiceConfig: { prebuiltVoiceConfig: { voiceName: voice } } } : {}),
+                ...(latest.voice
+                  ? { voiceConfig: { prebuiltVoiceConfig: { voiceName: latest.voice } } }
+                  : {}),
               },
             },
             callbacks: {
@@ -601,13 +623,18 @@ export function useLiveVoice(options: LiveVoiceOptions = {}): LiveVoice {
                *
                * 古い 世代の 切断（こちらが 閉じた つなぎ）は 何も しない。拾うと
                * 張り直した ばかりの つなぎを また 張り直す ことに なる。
+               *
+               * つないだ あとの **壊れた（onerror）では 張り直さない**——ブラウザは
+               * 壊れた あと かならず 閉じた（onclose）も 出す。両方で 張り直すと、
+               * 1回 切れた だけで「3回まで」の 2回ぶんを 使う（2026-09-16 の 検収）。
                */
               onerror: () => {
-                if (gate.phase() === "waiting") gate.fail("upstream");
-                else if (mine()) retryLater();
+                const phase = gate.phase();
+                if (phase === "waiting" || phase === "late") gate.fail("upstream");
               },
-              onclose: () => {
-                if (gate.phase() === "waiting") gate.fail("modelNotFound");
+              onclose: (event: unknown) => {
+                const phase = gate.phase();
+                if (phase === "waiting" || phase === "late") gate.fail(reasonFromClose(event));
                 else if (mine()) retryLater();
               },
             },
@@ -617,7 +644,7 @@ export function useLiveVoice(options: LiveVoiceOptions = {}): LiveVoice {
 
         const connected = await connectLiveInOrder({
           models,
-          mint: startingWith(first, mint),
+          mint: startingWith(first, mint, firstFreshUntil),
           open,
           stop: stale,
         });
@@ -629,7 +656,8 @@ export function useLiveVoice(options: LiveVoiceOptions = {}): LiveVoice {
         if (!connected.ok) {
           /*
            * 張り直しの 途中なら 黙って もう一度（3回まで）。人が 押した ときは 理由を 出す。
-           * 理由の 名前は これまでと 同じ——鍵の 問題なら その 名前、つながらなければ connect。
+           * 理由の 名前は これまでの 体系の まま——鍵の 問題なら その 名前、使いすぎで
+           * 閉じられたら rateLimited、ほかで つながらなければ connect。
            */
           if (silent) {
             retryLater();
@@ -642,7 +670,7 @@ export function useLiveVoice(options: LiveVoiceOptions = {}): LiveVoice {
             setReason(connected.reason);
           } else {
             setStatus("error");
-            setReason("connect");
+            setReason(connected.reason === "rateLimited" ? "rateLimited" : "connect");
           }
           return;
         }
@@ -760,8 +788,19 @@ export function useLiveVoice(options: LiveVoiceOptions = {}): LiveVoice {
 
   const swapInstruction = useCallback(
     async (systemInstruction: string, voice?: string) => {
-      // つないで いない ときは 何も しない（つぎに 押した ときの 指示文が 新しい）
-      if (!sessionRef.current) return;
+      if (!sessionRef.current) {
+        /*
+         * つないで いない ときは つなぎ直さない（つぎに 押した ときの 指示文が 新しい）。
+         * **黙って 張り直して いる 途中**なら、これから ためす つなぎが 新しい 文を
+         * 使う ように 覚え書きだけ 書きかえる（`open` が その時の 文を 読む）。
+         * 書きかえないと、ラウンド2が 1の 指示文の まま 続く（2026-09-16 の 検収）。
+         */
+        const args = argsRef.current;
+        if (args && !closingRef.current) {
+          argsRef.current = { ...args, systemInstruction, voice: voice ?? args.voice };
+        }
+        return;
+      }
       retriesRef.current = 0;
       await connect(systemInstruction, voice, undefined, true);
     },

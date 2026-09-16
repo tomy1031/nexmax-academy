@@ -217,4 +217,28 @@ describe("先頭の モデルが 何も 返さない とき（まれ）", () => 
     // 諦めた 先頭が 遅れて つながっても、居座らせずに 閉じる
     expect(sdk.closed).toContain(HEAD);
   });
+
+  it("13秒を 過ぎてから つながった ときは 頼みを 送らず、つなぎは つぎの 報告に 残す", async () => {
+    sdk.plan = { [HEAD]: "hang", [SPARE]: "accept" };
+    sdk.setupAfterMs = 5_000; // 控えの したくも 遅い（9秒 + 5秒 = 14秒ごろ）
+    const { requestAsakaiJudge } = await loadJudgeApi();
+
+    let first: unknown = "pending";
+    void requestAsakaiJudge("mon", CONTEXT, FACTS).then((value) => {
+      first = value;
+    });
+    await vi.advanceTimersByTimeAsync(15_000);
+    expect(first).toBeNull();
+    // 答えは どうせ 捨てる。Live の 往復を 使わない
+    expect(sdk.asks).toHaveLength(0);
+
+    // 札は もう 下りて いて、つぎの 報告は 張った つなぎで すぐ 見て もらえる
+    let second: unknown = "pending";
+    void requestAsakaiJudge("mon", CONTEXT, FACTS).then((value) => {
+      second = value;
+    });
+    await vi.advanceTimersByTimeAsync(3_000);
+    expect(second).toEqual({ saidIds: ["k1"], readsLog: false });
+    expect(sdk.connects.filter((c) => c.model === SPARE)).toHaveLength(1);
+  });
 });

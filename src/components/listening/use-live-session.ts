@@ -5,6 +5,8 @@ import {
   authFromToken,
   connectLiveInOrder,
   createSetupGate,
+  FIRST_AUTH_FRESH_MS,
+  reasonFromClose,
   startingWith,
 } from "@/lib/ai/live-connect";
 import { createLiveToken } from "@/lib/ai/live-token";
@@ -194,9 +196,11 @@ export function useLiveSession(): LiveSession {
        *
        * 1枚目は マイクの 許可を 聞く 前に 作って 鍵を 確かめ、先頭の モデルで 使う。
        * トークンは 1回 使い切りなので、2つ目の モデルからは 作り直す（`connectLiveInOrder`）。
+       * 許可ダイアログで 時間が たったら 1枚目も 作り直す（`FIRST_AUTH_FRESH_MS`）。
        */
       const mint = async () => authFromToken(await createLiveToken({ apiKey }), apiKey);
       const first = await mint();
+      const firstFreshUntil = Date.now() + FIRST_AUTH_FRESH_MS;
       if (stale()) return;
       if (!first.ok) {
         setStatus("notReady");
@@ -252,11 +256,22 @@ export function useLiveSession(): LiveSession {
         outRef.current = out;
 
         /** 1つの モデルで つなぐ。したくの 合図まで 待ち、断られたら 投げる。 */
-        const open = async (auth: string, model: string): Promise<LiveSocket> => {
+        const open = async (
+          auth: string,
+          model: string,
+          claim: (session: LiveSocket) => boolean,
+        ): Promise<LiveSocket> => {
           const ai = new GoogleGenAI({ apiKey: auth, apiVersion: "v1beta" });
-          const gate = createSetupGate<LiveSocket>();
-          /** この つなぎからの 届きものを 受け取って よいか（断られた つなぎ・古い 世代は 捨てる）。 */
-          const mine = () => !stale() && gate.phase() !== "abandoned";
+          // 期限の あとに 遅れて つながった ものも、まだ どれも 決まって いなければ 使う
+          const gate = createSetupGate<LiveSocket>(undefined, claim);
+          /**
+           * この つなぎからの 届きものを 受け取って よいか。古い 世代・断られた つなぎ・
+           * 期限を 過ぎて まだ 使うか 決まって いない つなぎ（`late`）は 捨てる。
+           */
+          const mine = () => {
+            const phase = gate.phase();
+            return !stale() && (phase === "waiting" || phase === "ready");
+          };
 
           const connecting = ai.live.connect({
             model,
@@ -312,11 +327,13 @@ export function useLiveSession(): LiveSession {
                * つないだ あとの 切断だけを 画面の 状態に する。
                */
               onerror: () => {
-                if (gate.phase() === "waiting") gate.fail("upstream");
+                const phase = gate.phase();
+                if (phase === "waiting" || phase === "late") gate.fail("upstream");
                 else if (mine()) setStatus("error");
               },
-              onclose: () => {
-                if (gate.phase() === "waiting") gate.fail("modelNotFound");
+              onclose: (event: unknown) => {
+                const phase = gate.phase();
+                if (phase === "waiting" || phase === "late") gate.fail(reasonFromClose(event));
                 else if (mine()) setStatus("idle");
               },
             },
@@ -326,7 +343,7 @@ export function useLiveSession(): LiveSession {
 
         const connected = await connectLiveInOrder({
           models,
-          mint: startingWith(first, mint),
+          mint: startingWith(first, mint, firstFreshUntil),
           open,
           stop: stale,
         });
@@ -337,14 +354,17 @@ export function useLiveSession(): LiveSession {
           return;
         }
         if (!connected.ok) {
-          // 理由の 名前は これまでと 同じ——鍵の 問題なら その 名前、つながらなければ connect
+          /*
+           * 理由の 名前は これまでの 体系の まま——鍵の 問題なら その 名前、使いすぎで
+           * 閉じられたら rateLimited（「きょうは つかいすぎた」）、ほかで つながらなければ connect。
+           */
           release();
           if (connected.stage === "auth") {
             setStatus("notReady");
             setReason(connected.reason);
           } else {
             setStatus("error");
-            setReason("connect");
+            setReason(connected.reason === "rateLimited" ? "rateLimited" : "connect");
           }
           return;
         }

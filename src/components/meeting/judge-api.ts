@@ -6,6 +6,7 @@ import {
   connectLiveInOrder,
   createSetupGate,
   LiveSetupError,
+  reasonFromClose,
 } from "@/lib/ai/live-connect";
 import { createLiveToken } from "@/lib/ai/live-token";
 import { LIVE_TEXT_MODELS } from "@/lib/ai/models";
@@ -199,13 +200,22 @@ export async function requestAsakaiJudge(
    * **1本目の 見立てが 2本目の 答えに なる**（上の 1本ずつの 理由と 同じ 事故）。
    * 学習者を 待たせる 上限は そのまま——札だけ 往復に 合わせて 持ちつづける。
    * `askAsakai` は 投げない（失敗は null で 返る）。
+   *
+   * 待ちを 諦めた あとに つながった ときは **頼みを 送らない**（`gaveUp`）。
+   * 答えは どうせ 捨てる ので、Live の 往復 1回と 札を 持つ 時間（最大 12秒）の むだに なる。
    */
-  const work = askAsakai(apiKey, key, context, facts).finally(() => {
+  let gaveUp = false;
+  const work = askAsakai(apiKey, key, context, facts, () => gaveUp).finally(() => {
     SLOTS.asakai.busy = false;
   });
   return await Promise.race([
     work,
-    new Promise<null>((resolve) => setTimeout(() => resolve(null), ASAKAI_TIMEOUT_MS)),
+    new Promise<null>((resolve) =>
+      setTimeout(() => {
+        gaveUp = true;
+        resolve(null);
+      }, ASAKAI_TIMEOUT_MS),
+    ),
   ]);
 }
 
@@ -234,11 +244,14 @@ async function askAsakai(
   key: string,
   context: AsakaiJudgeContext,
   facts: readonly MatchableFact[],
+  /** 呼んだ 側が 待ちを 諦めたか（つながった ときに 見て、諦めて いたら 頼まない）。 */
+  gaveUp: () => boolean,
 ): Promise<AsakaiJudgeResult | null> {
   let mine: JudgeSession | null = null;
   try {
     const opened = await openJudge(apiKey, "asakai", key);
-    if (!opened.ok) return null;
+    // つなぎは スロットに 残す（つぎの 報告が 使う）。頼みだけ やめる
+    if (!opened.ok || gaveUp()) return null;
     mine = opened.session;
     const args = await mine.ask(buildAsakaiJudgePrompt(context));
     return parseAsakaiJudge(args, facts);
@@ -577,8 +590,9 @@ async function openSession(auth: string, model: string, slot: Slot): Promise<Jud
         fail = null;
         bad?.(new JudgeError("upstream"));
       },
-      onclose: () => {
-        gate.fail("modelNotFound");
+      onclose: (event: unknown) => {
+        // 使いすぎで 閉じられた ときは その 名前で（学習者の 文言が「つかいすぎ」に なる）
+        gate.fail(reasonFromClose(event));
         alive = false;
         ready();
         const bad = fail;

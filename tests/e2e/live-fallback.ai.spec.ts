@@ -6,6 +6,7 @@ import {
   createSetupGate,
   LIVE_SETUP_TIMEOUT_MS,
   LiveSetupError,
+  reasonFromClose,
 } from "../../src/lib/ai/live-connect";
 import { createLiveToken } from "../../src/lib/ai/live-token";
 import { LIVE_TALK_MODELS } from "../../src/lib/ai/models";
@@ -45,15 +46,17 @@ test.describe("Live の 控えへ 落ちる（鍵が あるときだけ）", () 
 
   test(`断られた モデルは 期限を 待たずに ${LIVE_TALK_MODELS[0]} へ 進む`, async () => {
     const key = evalKey();
-    const tried: { model: string; ms: number; outcome: string }[] = [];
+    const tried: { model: string; ms: number; outcome: string; closeCode?: number }[] = [];
+    /** 閉じられた ときの 番号（理由の 文は 鍵が 混ざりうる ので 残さない）。 */
+    const closeCodes = new Map<string, number>();
 
     const connected = await connectLiveInOrder({
       models: [MISSING_MODEL, LIVE_TALK_MODELS[0]],
       mint: async () => authFromToken(await createLiveToken({ apiKey: key }), key),
-      open: async (auth, model) => {
+      open: async (auth, model, claim) => {
         const started = Date.now();
         const ai = new GoogleGenAI({ apiKey: auth, apiVersion: "v1beta" });
-        const gate = createSetupGate<Session>();
+        const gate = createSetupGate<Session>(LIVE_SETUP_TIMEOUT_MS, claim);
         try {
           // つなぎの 形は ミーティングの 声（use-live-voice.ts）と 同じ
           const session = await gate.wait(
@@ -70,10 +73,13 @@ test.describe("Live の 控えへ 落ちる（鍵が あるときだけ）", () 
               callbacks: {
                 onmessage: () => {},
                 onerror: () => {
-                  if (gate.phase() === "waiting") gate.fail("upstream");
+                  const phase = gate.phase();
+                  if (phase === "waiting" || phase === "late") gate.fail("upstream");
                 },
-                onclose: () => {
-                  if (gate.phase() === "waiting") gate.fail("modelNotFound");
+                onclose: (event) => {
+                  closeCodes.set(model, event.code);
+                  const phase = gate.phase();
+                  if (phase === "waiting" || phase === "late") gate.fail(reasonFromClose(event));
                 },
               },
             }),
@@ -82,7 +88,12 @@ test.describe("Live の 控えへ 落ちる（鍵が あるときだけ）", () 
           return session;
         } catch (error) {
           const outcome = error instanceof LiveSetupError ? error.reason : "sdk";
-          tried.push({ model, ms: Date.now() - started, outcome });
+          tried.push({
+            model,
+            ms: Date.now() - started,
+            outcome,
+            closeCode: closeCodes.get(model),
+          });
           throw error;
         }
       },

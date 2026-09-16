@@ -121,18 +121,28 @@ vi.mock("../src/components/meeting/mic-capture", () => ({
 }));
 
 /* ---- SDK の かわり ---- */
-type Plan = "reject" | "hang" | "accept";
+/**
+ * - reject … 設定・モデルを 断られて 閉じられる（合図は 来ない）
+ * - quota …… 使いすぎで 閉じられる
+ * - hang …… 何も 返らない
+ * - late …… 期限（9秒）を 過ぎた 10秒で つながる
+ * - accept … 0.5秒で つながる
+ */
+type Plan = "reject" | "quota" | "hang" | "late" | "accept";
 
 interface FakeCallbacks {
   onopen?: () => void;
   onmessage?: (message: unknown) => void;
   onerror?: () => void;
-  onclose?: () => void;
+  onclose?: (event?: { code: number; reason: string }) => void;
 }
 
 const sdk = vi.hoisted(() => ({
   plan: {} as Record<string, Plan>,
   connects: [] as string[],
+  /** ためした ときに 渡した 指示文（connects と 同じ 順）。 */
+  instructions: [] as string[],
+  closed: [] as string[],
   live: [] as { model: string; callbacks: FakeCallbacks }[],
 }));
 
@@ -140,25 +150,47 @@ vi.mock("@google/genai", () => ({
   Modality: { AUDIO: "AUDIO" },
   GoogleGenAI: class {
     live = {
-      connect: ({ model, callbacks }: { model: string; callbacks: FakeCallbacks }) => {
+      connect: ({
+        model,
+        config,
+        callbacks,
+      }: {
+        model: string;
+        config: { systemInstruction?: string };
+        callbacks: FakeCallbacks;
+      }) => {
         sdk.connects.push(model);
+        sdk.instructions.push(config.systemInstruction ?? "");
         const plan = sdk.plan[model] ?? "reject";
         const session = {
           sendRealtimeInput: () => {},
           sendClientContent: () => {},
           // ブラウザと 同じく、閉じた 知らせ（onclose）は あとから 届く
-          close: () => setTimeout(() => callbacks.onclose?.(), 0),
+          close: () => {
+            sdk.closed.push(model);
+            setTimeout(() => callbacks.onclose?.({ code: 1000, reason: "" }), 0);
+          },
         };
         return new Promise((resolve) => {
           setTimeout(() => callbacks.onopen?.(), 100);
           // 本物と 同じく: 断られたら 閉じられる だけで、この 約束は 返らない
-          if (plan === "reject") setTimeout(() => callbacks.onclose?.(), 300);
-          if (plan !== "accept") return;
-          setTimeout(() => {
-            callbacks.onmessage?.({ setupComplete: {} });
-            sdk.live.push({ model, callbacks });
-            resolve(session);
-          }, 500);
+          if (plan === "reject") {
+            const reason = "models/x is not found for API version v1beta";
+            setTimeout(() => callbacks.onclose?.({ code: 1008, reason }), 300);
+          }
+          if (plan === "quota") {
+            const reason = "You exceeded your current quota, please check your plan.";
+            setTimeout(() => callbacks.onclose?.({ code: 1011, reason }), 300);
+          }
+          if (plan !== "accept" && plan !== "late") return;
+          setTimeout(
+            () => {
+              callbacks.onmessage?.({ setupComplete: {} });
+              sdk.live.push({ model, callbacks });
+              resolve(session);
+            },
+            plan === "late" ? 10_000 : 500,
+          );
         });
       },
     };
@@ -203,6 +235,8 @@ beforeEach(() => {
   env.contexts = [];
   sdk.plan = {};
   sdk.connects = [];
+  sdk.instructions = [];
+  sdk.closed = [];
   sdk.live = [];
   vi.stubGlobal("window", globalThis);
   vi.stubGlobal("AudioContext", FakeAudioContext);
@@ -286,12 +320,17 @@ describe("ミーティングの 声（use-live-voice）", () => {
     await vi.advanceTimersByTimeAsync(3_000);
     expect(render().status).toBe("live");
 
-    // 回線が 切れる。そこから 先は どの モデルにも 断られる
+    /*
+     * 回線が 切れる（ブラウザは 壊れた → 閉じた の 2つを 出す）。そこから 先は
+     * どの モデルにも 断られる。
+     */
     sdk.plan = {};
-    sdk.live[0]!.callbacks.onclose?.();
+    sdk.live[0]!.callbacks.onerror?.();
+    sdk.live[0]!.callbacks.onclose?.({ code: 1006, reason: "" });
     await vi.advanceTimersByTimeAsync(60_000);
 
-    // 張り直しは 3回（0.5秒 → 1秒 → 2秒）で あきらめ、画面は スタートに 戻る
+    // 張り直しは 3回（0.5秒 → 1秒 → 2秒）で あきらめ、画面は スタートに 戻る。
+    // 1回の 切断で 2回ぶん 使わない（壊れた・閉じた の 両方で 数えない）
     expect(env.streams).toHaveLength(4);
     expect(openStreams()).toBe(0);
     expect(env.captures.every((c) => c.stopped > 0)).toBe(true);
@@ -311,6 +350,41 @@ describe("ミーティングの 声（use-live-voice）", () => {
     // 入れかえの 1回だけ。閉じた 前の つなぎの onclose が 張り直しを 呼び続けない
     expect(sdk.connects).toEqual([HEAD, HEAD]);
     expect(openStreams()).toBe(1);
+  });
+
+  it("遅い 回線: 先頭が 期限の あとに つながったら 先頭を 使い、控えは 閉じる", async () => {
+    sdk.plan = { [HEAD]: "late", [SPARE]: "late" };
+    const render = await load();
+    void render().start("指示");
+    await vi.advanceTimersByTimeAsync(10_500);
+
+    expect(render().status).toBe("live");
+    expect(sdk.connects).toEqual([HEAD, SPARE]);
+    expect(openStreams()).toBe(1);
+
+    // 控えは 9秒で 始まり、19秒で つながる。使わずに 閉じ、張り直しも 呼ばない
+    await vi.advanceTimersByTimeAsync(20_000);
+    expect(sdk.closed).toEqual([SPARE]);
+    expect(sdk.connects).toEqual([HEAD, SPARE]);
+    expect(render().status).toBe("live");
+  });
+
+  it("張り直しの 途中で ラウンドが 変わったら、これから ためす つなぎは 新しい 指示文を 使う", async () => {
+    sdk.plan = { [HEAD]: "accept" };
+    const render = await load();
+    void render().start("ラウンド1");
+    await vi.advanceTimersByTimeAsync(3_000);
+
+    // 切れる → 0.5秒後に 黙って 張り直し。先頭は こんどは 何も 返さない
+    sdk.plan = { [HEAD]: "hang", [SPARE]: "accept" };
+    sdk.live[0]!.callbacks.onclose?.({ code: 1006, reason: "" });
+    await vi.advanceTimersByTimeAsync(1_000);
+    void render().swapInstruction("ラウンド2");
+    await vi.advanceTimersByTimeAsync(12_000);
+
+    expect(sdk.connects).toEqual([HEAD, HEAD, SPARE]);
+    expect(sdk.instructions).toEqual(["ラウンド1", "ラウンド1", "ラウンド2"]);
+    expect(render().status).toBe("live");
   });
 
   it("つなぎの 途中で たいしつ したら、取りかけの マイクも 止める", async () => {
@@ -358,6 +432,18 @@ describe("たいわ（use-live-session）", () => {
     expect(env.contexts.every((c) => c.closed)).toBe(true);
     // 断られた つなぎの 切断で 状態を 動かさない（error の 前に idle / live を 挟まない）
     expect(statusHistory()).toEqual(["connecting", "error"]);
+  });
+
+  it("使いすぎで 閉じられたら、理由は rateLimited（控えも ためしてから）", async () => {
+    sdk.plan = Object.fromEntries(LIVE_TALK_MODELS.map((m) => [m, "quota" as const]));
+    const render = await load();
+    void render().connect("指示");
+    await vi.advanceTimersByTimeAsync(5_000);
+
+    expect(sdk.connects).toEqual([...LIVE_TALK_MODELS]);
+    expect(render().status).toBe("error");
+    expect(render().reason).toBe("rateLimited");
+    expect(openStreams()).toBe(0);
   });
 
   it("つなぎの 途中で 相手が かわったら、前の つなぎは 残りの モデルを ためさない", async () => {
