@@ -1,0 +1,108 @@
+{
+  "refs": [
+    "public/img/characters/hendy/sheet.webp",
+    "public/img/characters/okuda/sheet.webp",
+    "public/img/characters/nyam/sheet.webp"
+  ],
+  "_comment": "「KhmerSabaiの 朝礼」ページの 絵の うち、文字を 焼く 10枚。noText は hourensou_zukai／asakai_zukai と 同じ 文を 逐語で 使う。文字を 焼かない 4枚は asakai_team.json、旅行者の 4枚は asakai_team_tabi.json。",
+  "style": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This is a TEACHING picture, not a mood picture: what each person is doing must be readable from the picture alone. This one is a teaching diagram: few large elements, generous spacing, each label sitting on a soft cream panel with a rounded border, arranged so the eye reads it in one pass.",
+  "noText": "Japanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana. Spell every character exactly as given. No other letters, numbers, logos or watermarks anywhere in the picture.",
+  "negative": "Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots. Payment cards, wallet icons and payment buttons carry ONLY plain abstract stripes and a small blank chip — never two overlapping coloured circles, never four coloured squares, never a swoosh, and never any mark or wordmark that resembles a real card brand or a real bank.",
+  "output": "1536x1024",
+  "scenes": [
+    {
+      "out": "asakai_team_flow",
+      "dest": "public/img/articles/asakai_team/flow.webp",
+      "title": "今週 作る もの（注文 → 決済 → 決済完了）",
+      "where": "content/articles/asakai_team.json 今週、チームで 作る もの",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: this week the team builds one chain: from ordering a ticket, through paying, to the payment being finished. A teaching diagram of three large rounded cream cards in a row on a soft sky-blue background, joined by two thick sky-blue arrows pointing right. Card 1 holds a drawing of a ticket with a perforated edge and a shopping basket; its Japanese label is printed across the top of the card. Card 2 holds a drawing of a smartphone with one big rounded button and a finger pressing it; its Japanese label is printed across the top of the card. Card 3 holds a drawing of a large green circle with a thick white tick inside it; its Japanese label is printed across the top of the card. Few large elements, generous spacing, no people.",
+      "text": ["チケットの 注文", "決済", "決済完了"]
+    },
+    {
+      "out": "asakai_team_duty_okuda",
+      "dest": "public/img/articles/asakai_team/duty_okuda.webp",
+      "title": "奥田さん：注文確認画面（フロントエンド）",
+      "where": "content/articles/asakai_team.json だれが 何を 担当する？ カード1",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: Okuda builds the screen where the traveller checks what he ordered. A large monitor standing on a tidy desk, seen almost straight on so the screen fills most of the frame. The screen shows an order confirmation page: a heading panel across the top carrying its Japanese label, then three product rows, each row with a small square picture on the left, a short soft grey placeholder bar for the name and a small round quantity mark, and at the bottom a wide total line whose left side carries its Japanese label. No people in the room. In the BOTTOM RIGHT CORNER of the picture there is a small round portrait inset with a thick cream border — inside it, the head and shoulders of Okuda — a man in his mid twenties with wavy messy black hair, black thick-rimmed glasses and a dark green hoodie (follow his model sheet), facing the viewer with a calm friendly smile. The inset is about one fifth of the picture height and sits clearly on top of the scene.",
+      "text": ["注文確認", "合計金額"]
+    },
+    {
+      "out": "asakai_team_duty_nyam",
+      "dest": "public/img/articles/asakai_team/duty_nyam.webp",
+      "title": "ニャムさん：注文管理（バックエンド）",
+      "where": "content/articles/asakai_team.json だれが 何を 担当する？ カード2",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: Nyam saves the order in the database, and after the payment succeeds he changes the order status to PAID. A teaching diagram on a soft sky-blue background. On the left a large rounded database cylinder drawing with three stacked order rows inside it, each row a short soft grey placeholder bar; a cream label panel above the cylinder carries its Japanese label. A thick sky-blue arrow points right from the cylinder to a single large rounded status badge, and the badge carries the English word PAID in large capital letters. A small cream label panel under the arrow carries its Japanese label. No people, no other writing. In the BOTTOM RIGHT CORNER of the picture there is a small round portrait inset with a thick cream border — inside it, the head and shoulders of Nyam — a Southeast Asian man in his twenties with warm light-brown skin, short black hair swept up and back, and a coral knit cardigan over a cream shirt (follow his model sheet), facing the viewer with a calm friendly smile. The inset is about one fifth of the picture height and sits clearly on top of the scene.",
+      "text": ["注文管理", "決済成功", "PAID"]
+    },
+    {
+      "out": "asakai_team_duty_you",
+      "dest": "public/img/articles/asakai_team/duty_you.webp",
+      "title": "あなた：決済（フロントエンド）",
+      "where": "content/articles/asakai_team.json だれが 何を 担当する？ カード3",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: you build the screen where the traveller chooses how to pay, and the ABA Pay button. A large monitor standing on a tidy desk, seen almost straight on so the screen fills most of the frame. The screen shows a payment page: a heading panel across the top carrying its Japanese label, then three payment method rows each with a small square card drawing and a round radio mark; the FIRST row is clearly chosen — its radio mark is filled in sky blue, the row is framed with a thicker sky-blue border, and the row carries the words ABA Pay in plain rounded letters with no logo. At the bottom one big rounded sky-blue button. No people in the room. In the BOTTOM RIGHT CORNER of the picture there is a small round portrait inset with a thick cream border — inside it, the head and shoulders of the two new engineers — a young Cambodian woman in her early twenties with warm light-brown skin, a round friendly face and black hair tied back in a low ponytail, wearing a mint-green blouse and beige trousers, and a young Cambodian man in his early twenties with warm light-brown skin, short black hair with a neat side part, wearing a light blue short-sleeved shirt and dark grey chinos; both wear a lanyard with a blank white card. NEVER GIVE THESE TWO THE SAME FACE — she is clearly a woman and he is clearly a man, their two heads side by side inside the same round inset, facing the viewer with a calm friendly smile. The inset is about one fifth of the picture height and sits clearly on top of the scene.",
+      "text": ["決済", "ABA Pay"]
+    },
+    {
+      "out": "asakai_team_duty_hendy",
+      "dest": "public/img/articles/asakai_team/duty_hendy.webp",
+      "title": "ヘンディさん：決済バックエンド",
+      "where": "content/articles/asakai_team.json だれが 何を 担当する？ カード4",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: Hendy builds the payment server behind the screen, and checks the result that comes back. A teaching diagram on a soft sky-blue background. On the left a smartphone drawing with one big rounded button; on the right a large rounded server box with a row of soft indicator dots, and a cream label panel above it carrying its Japanese label. A thick sky-blue cable runs between the phone and the server, and BOTH ENDS ARE CLEARLY PLUGGED IN — each connector goes all the way into its socket with no gap. Above the cable a smaller cream panel carries its Japanese label, with a small magnifying glass drawing beside it. No people, no other writing. In the BOTTOM RIGHT CORNER of the picture there is a small round portrait inset with a thick cream border — inside it, the head and shoulders of the team leader Hendy — a slim man in his late twenties with short black slightly tousled hair, a navy two-button suit, a white shirt and a navy tie (follow his model sheet), facing the viewer with a calm friendly smile. The inset is about one fifth of the picture height and sits clearly on top of the scene.",
+      "text": ["決済API", "決済結果の 確認"]
+    },
+    {
+      "out": "asakai_team_yobare",
+      "dest": "public/img/articles/asakai_team/yobare.webp",
+      "title": "ヘンディさんに 名前を 呼ばれる",
+      "where": "content/articles/asakai_team.json あなたの 報告",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: the chair calls your name, and now it is your turn to speak. A bright office in the morning, the team standing in a half circle. the team leader Hendy — a slim man in his late twenties with short black slightly tousled hair, a navy two-button suit, a white shirt and a navy tie (follow his model sheet) stands at the left, turning towards the viewer's side of the circle and opening one hand towards the new engineer — a young Cambodian man in his early twenties with warm light-brown skin, short black hair with a neat side part, a friendly open face, wearing a light blue short-sleeved shirt, dark grey chinos and a lanyard with a blank white card, who stands at the right and straightens up, ready to speak, holding a small blank notebook. Okuda — a man in his mid twenties with wavy messy black hair, black thick-rimmed glasses and a dark green hoodie (follow his model sheet) and Nyam — a Southeast Asian man in his twenties with warm light-brown skin, short black hair swept up and back, and a coral knit cardigan over a cream shirt (follow his model sheet) stand between them and look towards the new engineer. Hendy has ONE rounded speech balloon above him, and the balloon carries the sentence listed below. Nothing else is written anywhere. Wide shot filling the frame.",
+      "text": ["では 次に、◯◯さん、お願いします。"]
+    },
+    {
+      "out": "asakai_team_r1_kinou",
+      "dest": "public/img/articles/asakai_team/r1_kinou.webp",
+      "title": "報告①：きのう したこと",
+      "where": "content/articles/asakai_team.json 話す ことは 4つです カード1",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: yesterday's work is finished, and that is what you report first. Close view of the new engineer — a young Cambodian man in his early twenties with warm light-brown skin, short black hair with a neat side part, a friendly open face, wearing a light blue short-sleeved shirt, dark grey chinos and a lanyard with a blank white card sitting at his desk in the morning, turned a little towards a large monitor and looking at it with a calm satisfied face, one hand resting flat on the desk. The monitor shows a finished payment page: a summary panel, three payment method rows and one big rounded sky-blue button. Beside the monitor stands a small cream card carrying its Japanese label. Nothing else is written anywhere.",
+      "text": ["きのう したこと"],
+      "output": "Output: one square illustration, 1024x1024. Close view — the subject fills the frame edge to edge."
+    },
+    {
+      "out": "asakai_team_r2_shinchoku",
+      "dest": "public/img/articles/asakai_team/r2_shinchoku.webp",
+      "title": "報告②：担当の 機能 全体の 進捗",
+      "where": "content/articles/asakai_team.json 話す ことは 4つです カード2",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: the whole payment front-end feature is twenty percent done, and you say that number. Close view of a large monitor on a desk showing a clean progress screen: a label panel at the top carrying its Japanese label, and below it ONE thick horizontal progress bar, filled with sky blue for only the first fifth of its length and pale grey for the rest, with 20% printed large just after the filled part. the new engineer — a young Cambodian man in his early twenties with warm light-brown skin, short black hair with a neat side part, a friendly open face, wearing a light blue short-sleeved shirt, dark grey chinos and a lanyard with a blank white card sits beside the monitor and points at the filled part of the bar with one hand, with a small confident smile. Nothing else is written anywhere.",
+      "text": ["決済フロントエンド機能", "20%"],
+      "output": "Output: one square illustration, 1024x1024. Close view — the subject fills the frame edge to edge."
+    },
+    {
+      "out": "asakai_team_r3_kyou",
+      "dest": "public/img/articles/asakai_team/r3_kyou.webp",
+      "title": "報告③：きょう すること",
+      "where": "content/articles/asakai_team.json 話す ことは 4つです カード3",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: today's job is to connect the screen to the payment API, and that is what you report next. A team task board on the office wall with three columns of blank sticky notes. In the left column ONE large yellow sticky note carries its Japanese label; every other sticky note on the board is completely blank. the new engineer — a young Cambodian man in his early twenties with warm light-brown skin, short black hair with a neat side part, a friendly open face, wearing a light blue short-sleeved shirt, dark grey chinos and a lanyard with a blank white card stands in front of the board and touches that note with one hand, ready to start, with a positive expression. Nothing else is written anywhere.",
+      "text": ["決済APIと つなぐ"],
+      "output": "Output: one square illustration, 1024x1024. Close view — the subject fills the frame edge to edge."
+    },
+    {
+      "out": "asakai_team_r4_mondai",
+      "dest": "public/img/articles/asakai_team/r4_mondai.webp",
+      "title": "報告④：問題・確認",
+      "where": "content/articles/asakai_team.json 話す ことは 4つです カード4",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: an error appeared while connecting to the payment API, and you are looking into it right now. Close view of the new engineer — a young Cambodian man in his early twenties with warm light-brown skin, short black hair with a neat side part, a friendly open face, wearing a light blue short-sleeved shirt, dark grey chinos and a lanyard with a blank white card at his desk, looking at his monitor with a puzzled but calm face, one hand on his chin and the other hand on the desk beside a small blank notebook. The monitor shows a soft pale-red message window with a round warning mark and one Japanese word printed large inside it. Not scary — just a small problem at work, in bright daylight. Nothing else is written anywhere.",
+      "text": ["エラー"],
+      "output": "Output: one square illustration, 1024x1024. Close view — the subject fills the frame edge to edge."
+    }
+  ]
+}

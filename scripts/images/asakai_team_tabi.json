@@ -1,0 +1,46 @@
+{
+  "refs": [],
+  "_comment": "「KhmerSabaiの 朝礼」ページの「KhmerSabaiとは？」の カード 4枚（旅行者）。設定画を 参照に 渡さない（渡すと 旅行者が 社員の 顔に なる）。画風の 台も オフィスでは なく カンボジアの 町。文字は 焼かない。",
+  "style": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. EVERY PICTURE IS A REAL PLACE IN CAMBODIA seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME: sandstone temples with lotus-bud towers, sugar-palm and coconut trees, tuk-tuks and small motorbikes, wooden shophouses with cloth awnings, warm tropical light. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. This is a TEACHING picture, not a mood picture: what the person is doing must be readable from the picture alone. THE PERSON IN EACH PICTURE IS A FOREIGN TRAVELLER ON HOLIDAY, NEVER AN OFFICE WORKER — never draw a green hoodie, thick-rimmed glasses, a coral cardigan or an office lanyard. Each of these four pictures shows A DIFFERENT TRAVELLER with a different face, and none of them is the same person.",
+  "noText": "No text, no letters, no kanji, no kana, no numbers anywhere in the image. Screens, papers, whiteboards, books and signs are blank or show only soft abstract shapes and simple pictures. No watermark, no signature, no logo, no speech balloons, no floating symbols such as question marks, exclamation marks, arrows, light bulbs, stars or hearts.",
+  "negative": "Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots, Japanese temples, torii gates, Japanese shop signs, Japanese city streets, office clothes. Payment cards, wallet icons and payment buttons carry ONLY plain abstract stripes and a small blank chip — never two overlapping coloured circles, never four coloured squares, never a swoosh, and never any mark or wordmark that resembles a real card brand or a real bank.",
+  "output": "1024x1024",
+  "scenes": [
+    {
+      "out": "asakai_team_kankou",
+      "dest": "public/img/articles/asakai_team/app_kankou.webp",
+      "title": "観光スポットを さがす",
+      "where": "content/articles/asakai_team.json KhmerSabaiとは？ カード1",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: a traveller uses the app to look for places to visit. Close view of a young backpacker traveller with a small rucksack standing on a sunny stone path, holding a smartphone up in both hands and looking at it with a curious happy face. The phone screen shows a simple map with a few rounded location pins and two small photo thumbnails of scenery — no writing at all. Behind her, softly out of focus, the five stone towers of a big old temple, palm trees and a lotus moat in warm morning light. Exactly five fingers on each hand, no tangled fingers.",
+      "output": "Output: one square illustration, 1024x1024. Close view — the subject fills the frame edge to edge."
+    },
+    {
+      "out": "asakai_team_ticket",
+      "dest": "public/img/articles/asakai_team/app_ticket.webp",
+      "title": "チケットを 買う",
+      "where": "content/articles/asakai_team.json KhmerSabaiとは？ カード2",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: a traveller buys an entrance ticket on the phone, right at the gate. Close view of a traveller's two hands holding a smartphone at chest height in front of the sandstone gateway of an old Cambodian temple, with a queue rail and a small wooden ticket booth behind, softly out of focus. On the phone screen a single large rounded ticket card is drawn, with a perforated edge and a small square code block on it, and one wide rounded button below — no writing at all. One fingertip is about to press the button. Warm afternoon light.",
+      "output": "Output: one square illustration, 1024x1024. Close view — the subject fills the frame edge to edge."
+    },
+    {
+      "out": "asakai_team_tour",
+      "dest": "public/img/articles/asakai_team/app_tour.webp",
+      "title": "ツアーを 予約する",
+      "where": "content/articles/asakai_team.json KhmerSabaiとは？ カード3",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: a traveller books a tour by choosing a day and the number of people. Close view of a woman traveller in her thirties with light brown hair in a short bob, wearing a white linen shirt and a straw sun hat, sitting at a small open-air cafe table, tapping a smartphone lying flat on the table. The phone screen shows a simple booking form: a small calendar grid of blank squares with one square circled, a row of three small person marks, and one wide rounded button — no writing at all. Behind the table, softly out of focus, a small tour minibus at the kerb and a guide holding a blank round sign, palm trees and morning light.",
+      "output": "Output: one square illustration, 1024x1024. Close view — the subject fills the frame edge to edge."
+    },
+    {
+      "out": "asakai_team_food",
+      "dest": "public/img/articles/asakai_team/app_food.webp",
+      "title": "レストランや カフェを さがす",
+      "where": "content/articles/asakai_team.json KhmerSabaiとは？ カード4",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: a traveller uses the app to find a restaurant or a cafe nearby. Close view of an older man traveller in his fifties with grey hair and a short beard, wearing a pale yellow polo shirt and a camera on a strap, standing on a lively evening street in a Cambodian town, holding a smartphone in one hand and looking from the phone towards the shops. The phone screen shows a simple list of three rows, each row with a small round photo of a dish or a coffee cup and a short soft grey placeholder bar beside it — no writing at all. Behind, softly out of focus, a row of small family restaurants and a cafe with cloth awnings, warm lanterns and parked motorbikes.",
+      "output": "Output: one square illustration, 1024x1024. Close view — the subject fills the frame edge to edge."
+    }
+  ]
+}
