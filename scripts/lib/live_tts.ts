@@ -242,13 +242,24 @@ function readingLooksRight(
   return { ok: false, why: `一致 ${(ratio * 100).toFixed(0)}%: 「${transcript.trim()}」` };
 }
 
+/** 読み上げを 受け取るか（`readingLooksRight` より きびしく 見たい ときに 渡す）。 */
+export type AcceptSpoken = (spoken: Spoken) => { ok: boolean; why: string };
+
 /**
  * 新しい モデルから 順に ためし、**台本どおりに 読めた ものだけ**を 返す。
  *
  * 同じ モデルでも 2回目で 読み上げに なる ことが ある（会話の モデルなので
  * ゆらぐ）。だから モデルの 一覧を 2周する。
+ *
+ * `accept` を 渡すと、`readingLooksRight` を 通った あとに もう一段 見る
+ *（リスニングの 1文ずつの 音は 読みの ずれ 1字までしか 許さない — `speech_reading.ts`）。
+ * 通らなければ 同じく つぎの モデルへ 進む。
  */
-export async function synthesizeWithFallback(raw: string, speaker: Speaker): Promise<Spoken> {
+export async function synthesizeWithFallback(
+  raw: string,
+  speaker: Speaker,
+  accept?: AcceptSpoken,
+): Promise<Spoken> {
   const text = forSpeech(raw);
   const failures: string[] = [];
   for (let round = 0; round < 2; round += 1) {
@@ -257,8 +268,13 @@ export async function synthesizeWithFallback(raw: string, speaker: Speaker): Pro
         const spoken = await synthesize(text, model, speaker);
         const seconds = spoken.pcm.byteLength / OUT_RATE / 2;
         const verdict = readingLooksRight(text, spoken.transcript, seconds);
-        if (verdict.ok) return spoken;
-        failures.push(`${model}: 読み上げに なって いません — ${verdict.why}`);
+        if (!verdict.ok) {
+          failures.push(`${model}: 読み上げに なって いません — ${verdict.why}`);
+        } else {
+          const strict = accept?.(spoken) ?? verdict;
+          if (strict.ok) return spoken;
+          failures.push(`${model}: 原稿と ずれて います — ${strict.why}`);
+        }
       } catch (error) {
         failures.push(error instanceof Error ? error.message : String(error));
       }
