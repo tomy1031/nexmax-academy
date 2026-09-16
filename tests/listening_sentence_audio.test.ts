@@ -62,6 +62,12 @@ describe("報告の リスニング（台帳の 教材）", () => {
     const plan = LISTENING_AUDIO_PLANS.houkoku_listening!;
     for (const one of sentences) expect(plan.voices[one.speaker], one.speaker).toBeTruthy();
     expect(plan.voices).toMatchObject({ narration: "Puck", hendy: "Puck", fujiki: "Algieba" });
+    for (const one of sentences) expect(plan.models[one.speaker], one.speaker).toBeTruthy();
+    expect(plan.models).toMatchObject({
+      narration: "gemini-3.8-live",
+      hendy: "gemini-3.8-live",
+      fujiki: "gemini-3.1-flash-live-preview",
+    });
     expect(plan.gapSeconds).toBe(1.5);
     expect(plan.compareGapSeconds).toEqual([2]);
   });

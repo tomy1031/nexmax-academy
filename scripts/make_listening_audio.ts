@@ -19,7 +19,8 @@
  *
  * ## 1文ずつ 作る 教材（`scripts/lib/listening_audio_plans.ts` に ある もの）
  * 台帳に ある 教材は 作りかたが 変わる（2026-09-16 の 指定。報告の リスニング）:
- *  - 行では なく **1文ずつ** 読み上げ、声は 台帳の 名指しの 声を 使う
+ *  - 行では なく **1文ずつ** 読み上げ、声と モデルは 台帳の 名指しの ものを 使う
+ *  - モデルが ちがう 人どうしは **同時に** 作る（列の 中は 1文ずつ）
  *  - 文の 前後の 無音を 切り、**文と 文の あいだを 台帳の 秒に そろえる**
  *  - 文ごとの wav と 台帳（`sentences.json`）を `public/audio/listening/<教材ID>/` に **残す**
  *  - 聞きくらべ用に 別の 秒でも つなぐ（`<教材ID>.gap2s.wav` など）
@@ -165,6 +166,8 @@ const manifestPath = join(sentenceDir, "sentences.json");
 interface SentenceRecord extends SpeakerSentence {
   readonly file: string;
   readonly voice: string;
+  /** 読み上げた モデル。 */
+  readonly model: string;
   /** 前後の 無音を 切った あとの 長さ。 */
   readonly seconds: number;
   /** モデルが 返した 文字起こし（何と 読んだか）。 */
@@ -242,11 +245,14 @@ async function makeSentences(activePlan: ListeningAudioPlan): Promise<void> {
   const tokenizer = await getTokenizer();
   const index = buildFuriganaIndex(listening.furigana ?? []);
 
-  const records: SentenceRecord[] = [];
-  const parts: Uint8Array[] = [];
-  for (const [i, sentence] of sentences.entries()) {
+  /** 文ごとの 結果（並び順に 入れる。同時に 作るので 終わる 順は ばらばら）。 */
+  const done: ({ pcm: Uint8Array; record: SentenceRecord } | undefined)[] = [];
+
+  /** 1文を 作る（名指しの 声・固定の モデル）。 */
+  const makeOne = async (i: number): Promise<void> => {
+    const sentence = sentences[i]!;
     const voice = voiceOf(sentence.speaker);
-    process.stdout.write(`(${i + 1}/${sentences.length}) ${sentence.speaker}・${voice} … `);
+    const model = activePlan.models[sentence.speaker];
     let accepted: ReadingMatch | null = null;
     const accept = (candidate: { transcript: string }) => {
       const match = matchReading(sentence.text, candidate.transcript, index, tokenizer);
@@ -254,7 +260,7 @@ async function makeSentences(activePlan: ListeningAudioPlan): Promise<void> {
       return match;
     };
     /*
-     * モデルを 2周 しても だめ なら、**1分 おいて もう一度**（2回まで）。
+     * ためし切っても だめ なら、**1分 おいて もう一度**（2回まで）。
      * 1文ずつ 作ると つなぐ 回数が 行ごとの 倍に なり、無料枠の「使いすぎ」に
      * 当たりやすい（2026-09-16 に 4文目で 当たった）。それでも だめなら
      * 全部 やめる（行ごとの 作りかたと 同じ 理由）。
@@ -262,34 +268,60 @@ async function makeSentences(activePlan: ListeningAudioPlan): Promise<void> {
     let spoken: Awaited<ReturnType<typeof synthesizeWithFallback>> | null = null;
     for (let attempt = 0; spoken === null; attempt += 1) {
       try {
-        spoken = await synthesizeWithFallback(sentence.text, { apiKey, voice }, accept);
+        spoken = await synthesizeWithFallback(
+          sentence.text,
+          { apiKey, voice },
+          accept,
+          model ? [model] : undefined,
+        );
       } catch (error) {
         if (attempt >= 2) throw error;
-        console.log(`\n  だめ でした。60秒 おいて もう一度（${attempt + 2}回目）`);
+        console.log(`(${i + 1}) だめ でした。60秒 おいて もう一度（${attempt + 2}回目）`);
         await new Promise((wait) => setTimeout(wait, 60_000));
       }
     }
     const match = accepted as ReadingMatch | null;
     if (!match) throw new Error(`(${i + 1}) 照合の 結果が ありません`);
     const pcm = trimSilence(spoken.pcm);
-    parts.push(pcm);
-    records.push({
-      ...sentence,
-      file: sentenceFileName(i),
-      voice,
-      seconds: Math.round(seconds(pcm) * 100) / 100,
-      transcript: spoken.transcript.trim(),
-      reading: { expected: match.expected, spoken: match.spoken, distance: match.distance },
-    });
+    done[i] = {
+      pcm,
+      record: {
+        ...sentence,
+        file: sentenceFileName(i),
+        voice,
+        model: spoken.model,
+        seconds: Math.round(seconds(pcm) * 100) / 100,
+        transcript: spoken.transcript.trim(),
+        reading: { expected: match.expected, spoken: match.spoken, distance: match.distance },
+      },
+    };
     console.log(
-      `${seconds(pcm).toFixed(1)}秒 ずれ${match.distance}字 「${spoken.transcript.trim()}」`,
+      `(${i + 1}/${sentences.length}) ${sentence.speaker}・${voice}・${spoken.model} … ` +
+        `${seconds(pcm).toFixed(1)}秒 ずれ${match.distance}字 「${spoken.transcript.trim()}」`,
     );
-    /*
-     * つぎの 文の 前に 間を おく。成功した ときは `synthesizeWithFallback` が 待たずに
-     * 返る ので、20文を つづけて つなぐと 無料枠の 1分あたりの つなぎ数に 当たる。
-     */
-    if (i + 1 < sentences.length) await new Promise((wait) => setTimeout(wait, 8_000));
-  }
+  };
+
+  /*
+   * **モデルごとに 列を 分けて 同時に 流す**（2026-09-16 の 指定。ヘンディさん＝3.8・
+   * 藤木さん＝3.1）。無料枠は モデルごとに 数えられる ので、列を 分ければ 早く なり、
+   * 上限にも 当たりにくい。列の 中は 1文ずつ、あいだに 間を おく——成功した ときは
+   * `synthesizeWithFallback` が 待たずに 返る ので、つづけて つなぐと 断られる。
+   */
+  const lanes = new Map<string, number[]>();
+  sentences.forEach((sentence, i) => {
+    const lane = activePlan.models[sentence.speaker] ?? "(モデル 指定なし)";
+    lanes.set(lane, [...(lanes.get(lane) ?? []), i]);
+  });
+  await Promise.all(
+    [...lanes.values()].map(async (lane) => {
+      for (const [k, i] of lane.entries()) {
+        if (k > 0) await new Promise((wait) => setTimeout(wait, 8_000));
+        await makeOne(i);
+      }
+    }),
+  );
+  const parts = done.map((one) => one!.pcm);
+  const records = done.map((one) => one!.record);
 
   // ぜんぶ そろって から 書く（前の 文ごとの 音は 消してから 置き直す）
   rmSync(sentenceDir, { recursive: true, force: true });

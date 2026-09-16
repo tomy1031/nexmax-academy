@@ -24,6 +24,13 @@
 export interface ListeningAudioPlan {
   /** 話す人の ID → Gemini Live の 声の 名前（`src/lib/audio/voices.ts` の 綴り）。 */
   readonly voices: Readonly<Record<string, string>>;
+  /**
+   * 話す人の ID → 読み上げる Live の モデル（`src/lib/ai/models.ts` の 名前）。
+   * **固定した モデル以外には 切り替えない**（同じ 声でも モデルで 声の 質が 変わる）。
+   * モデルが ちがう 人どうしは **同時に** 作る——無料枠は モデルごとに 数えられる ので、
+   * 1本の 列で 作るより 早く、上限にも 当たりにくい。
+   */
+  readonly models: Readonly<Record<string, string>>;
   /** 文と 文の あいだの 無音（秒）。教材の `audioUrl` が 指す 1本は この 秒で つなぐ。 */
   readonly gapSeconds: number;
   /**
@@ -39,9 +46,16 @@ export const LISTENING_AUDIO_PLANS: Readonly<Record<string, ListeningAudioPlan>>
    * 旧アプリから 移した 音が 原稿と 合って いなかったので 作り直した。
    * ナレーションは ヘンディさんと 同じ Puck（同日 ユーザーが 選んだ）。
    * 2秒版も 同時に 作る（同日の 指定「2秒に した バージョンも 同時に」）。
+   * モデルは ヘンディさん＝3.8・藤木さん＝3.1（同日の 指定）。ナレーションは
+   * ヘンディさんと 同じ 声なので 同じ 3.8 に そろえる。
    */
   houkoku_listening: {
     voices: { narration: "Puck", hendy: "Puck", fujiki: "Algieba" },
+    models: {
+      narration: "gemini-3.8-live",
+      hendy: "gemini-3.8-live",
+      fujiki: "gemini-3.1-flash-live-preview",
+    },
     gapSeconds: 1.5,
     compareGapSeconds: [2],
   },

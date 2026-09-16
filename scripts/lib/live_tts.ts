@@ -69,6 +69,8 @@ export interface Spoken {
   readonly pcm: Uint8Array;
   /** `outputAudioTranscription`。空の ことも ある（モデルに よる）。 */
   readonly transcript: string;
+  /** 読み上げた モデル（同じ 声でも モデルで 声の 質が 変わる ので 残す）。 */
+  readonly model: string;
 }
 
 /**
@@ -146,7 +148,7 @@ async function synthesize(text: string, model: string, speaker: Speaker): Promis
               const done = () =>
                 finish(() =>
                   chunks.length > 0
-                    ? resolve({ pcm: Buffer.concat(chunks), transcript })
+                    ? resolve({ pcm: Buffer.concat(chunks), transcript, model })
                     : reject(new Error(`${model}: 音が 空でした`)),
                 );
               /*
@@ -162,7 +164,7 @@ async function synthesize(text: string, model: string, speaker: Speaker): Promis
           onclose: (event: unknown) =>
             finish(() =>
               chunks.length > 0
-                ? resolve({ pcm: Buffer.concat(chunks), transcript })
+                ? resolve({ pcm: Buffer.concat(chunks), transcript, model })
                 : reject(new Error(`${model}: 音が 来ないまま 切れました${closeReason(event)}`)),
             ),
         },
@@ -283,16 +285,23 @@ export type AcceptSpoken = (spoken: Spoken) => { ok: boolean; why: string };
  * `accept` を 渡すと、`readingLooksRight` を 通った あとに もう一段 見る
  *（リスニングの 1文ずつの 音は 読みの ずれ 1字までしか 許さない — `speech_reading.ts`）。
  * 通らなければ 同じく つぎの モデルへ 進む。
+ *
+ * `models` を 渡すと その モデルだけを 順に ためす。**1つだけ 渡せば 別の モデルに
+ * 切り替えない**——同じ 声でも モデルが 変わると 声の 質が 変わるので、1人の 声を
+ * そろえたい とき（報告の リスニング。2026-09-16 の 指定）に 使う。1つの ときは
+ * ためす 回数が 減らない ように 4周 する。
  */
 export async function synthesizeWithFallback(
   raw: string,
   speaker: Speaker,
   accept?: AcceptSpoken,
+  models: readonly string[] = LIVE_TTS_MODELS,
 ): Promise<Spoken> {
   const text = forSpeech(raw);
   const failures: string[] = [];
-  for (let round = 0; round < 2; round += 1) {
-    for (const model of LIVE_TTS_MODELS) {
+  const rounds = Math.max(2, Math.ceil(4 / models.length));
+  for (let round = 0; round < rounds; round += 1) {
+    for (const model of models) {
       try {
         const spoken = await synthesize(text, model, speaker);
         const seconds = spoken.pcm.byteLength / OUT_RATE / 2;
