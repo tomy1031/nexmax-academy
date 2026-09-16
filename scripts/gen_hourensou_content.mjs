@@ -680,7 +680,7 @@ write(
     title: "リスニング：悪い ニュースの 報告",
     description: "ヘンディさんが 藤木取締役に バグを 報告します。",
     focus: "ヘンディさんが 悪い ニュースを どう 伝えるかに 注目して 聞いて みましょう。",
-    audioUrl: "/audio/hourensou/houkoku.wav",
+    audioUrl: "/audio/listening/houkoku_listening.wav",
     mode: "player",
     participants: [
       { id: "hendy", name: "ヘンディ", role: "プログラマー", accent: "leaf" },

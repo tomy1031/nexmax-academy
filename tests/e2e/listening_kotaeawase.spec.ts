@@ -51,7 +51,7 @@ for (const width of [390, 1280]) {
     const audio = review.locator("audio");
     await expect(audio).toBeVisible();
     await expect(audio).toHaveAttribute("controls", "");
-    await expect(audio).toHaveAttribute("src", /\/audio\/hourensou\/houkoku\.wav/);
+    await expect(audio).toHaveAttribute("src", /\/audio\/listening\/houkoku_listening\.wav/);
 
     // 2. はやさが こたえあわせの 音に 効く
     await review.getByRole("button", { name: "ゆっくり", exact: true }).click();
