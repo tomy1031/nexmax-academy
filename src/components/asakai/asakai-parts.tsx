@@ -93,6 +93,7 @@ export function CountBoxes({ total, done, now }: { total: number; done: number; 
  *（報告で「きのう したこと」を 言う ときに 見る ものなのに）。
  *
  * 状態は **印と ことばの 両方**で 言う（色だけに 頼らない）。
+ * 並びは **進行順**（実際に 手を つける 順）。教材データが その順で 持つ。
  *
  * ## 「n / 10」は 出さない
  * 最初は 見出しに「（2 / 10）」を 添えて いたが、すぐ 上の 付せんが
@@ -115,7 +116,12 @@ export function ProgressBoxes({
   items,
   index,
 }: {
-  items: readonly { label: string; state: "done" | "now" | "later" }[];
+  items: readonly {
+    label: string;
+    icon?: string;
+    state: "done" | "now" | "later";
+    added?: boolean;
+  }[];
   index: FuriganaIndex;
 }) {
   return (
@@ -126,7 +132,7 @@ export function ProgressBoxes({
       <table className="border-hairline mt-1 w-full border-collapse overflow-hidden rounded-lg border bg-white text-left">
         <thead>
           <tr className="bg-panel-tint text-ink-soft text-[10px] font-black">
-            <th scope="col" className="px-2 py-1">
+            <th scope="col" colSpan={2} className="px-2 py-1">
               <RubyText text="しごと" index={index} show />
             </th>
             <th scope="col" className="w-20 px-2 py-1 text-right">
@@ -139,8 +145,24 @@ export function ProgressBoxes({
             const face = PROGRESS_FACE[item.state];
             return (
               <tr key={item.label} className="border-hairline border-t">
+                {/*
+                  やる ことの 印。**字を 読む 前に あたりが つく**ように 置く
+                  （2026-09-16 の 指定「各タスクに やる ことが わかる 画像を つけて」）。
+                */}
+                <td aria-hidden className="w-7 pl-2 text-center text-base leading-none">
+                  {item.icon ?? ""}
+                </td>
                 <td className="text-ink px-2 py-1 text-[11px] leading-tight font-bold break-words">
                   <RubyText text={item.label} index={index} show />
+                  {/*
+                    **その日 増えた しごと**だけに 出す。表は 毎日 同じ 並びなので、
+                    黙って 1行 増えても 気づけない（2026-09-16 の 指定）。
+                  */}
+                  {item.added ? (
+                    <span className="bg-coral ml-1 rounded-full px-1.5 py-0.5 text-[10px] font-black whitespace-nowrap text-white">
+                      ✚ <RubyText text="追加" index={index} show />
+                    </span>
+                  ) : null}
                 </td>
                 <td className="px-2 py-1 text-right">
                   <span

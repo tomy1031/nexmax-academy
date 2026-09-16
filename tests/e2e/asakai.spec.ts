@@ -73,6 +73,19 @@ async function readingFreeText(page: Page): Promise<string> {
   });
 }
 
+/**
+ * **入室した ときと 曜日が 変わった ときは、報告メモが 自動で 開く**
+ *（2026-09-16 の 指定「曜日を クリックした ときや 画面を 開いた ときに、
+ * モーダルが 出る ように して ください」）。読んだら 閉じて 先へ 進む。
+ */
+async function closeDuty(page: Page): Promise<void> {
+  const memo = page.getByRole("dialog", { name: "報告メモ" });
+  if (await memo.isVisible().catch(() => false)) {
+    await memo.getByRole("button", { name: "とじる" }).click();
+    await expect(memo).toBeHidden();
+  }
+}
+
 async function expectOnScreen(page: Page, text: string): Promise<void> {
   expect(await readingFreeText(page)).toContain(text.replace(/\s+/gu, ""));
 }
@@ -143,6 +156,7 @@ test("朝礼（かんたん）— 報告すると カードが 開く", async ({
   await page.goto("/asakai/meeting-asakai_kantan");
   await shot(page, "asakai-01-kantan-lobby");
   await joinCall(page);
+  await closeDuty(page);
 
   /* 板の 上の 1行が「この 4枚は 何か」を 言っている。 */
   await expect(page.getByText("（0 / 4）")).toBeVisible();
@@ -166,12 +180,20 @@ test("朝礼（かんたん）— 報告すると カードが 開く", async ({
   /*
    * 担当・進捗・きょう する ことは **画面に 出しっぱなしに しない**
    *（2026-09-13 の 指定）。ボタンで 開き、読んだら 閉じる。
+   * 入室ぶんは 上で 閉じて いる ので、ここは **ボタンで 開き直せる**ことを 見る。
    */
   await page.getByRole("button", { name: "報告メモを 見る" }).click();
   const dutyModal = page.getByRole("dialog", { name: "報告メモ" });
   await expect(dutyModal).toBeVisible();
   await expectOnScreen(page, "決済フロントエンド機能");
   await expectOnScreen(page, "進捗");
+  /*
+   * **月曜は ACLEDA Pay が まだ 無い**（社長の 要望は 火曜の 午後）。
+   * つなぐ 先も ABA だけ（2026-09-16 の 指定）。
+   */
+  const memoText = await readingFreeText(page);
+  expect(memoText).toContain("決済APIとつなぐ（ABA）");
+  expect(memoText, "月曜に ACLEDA Pay が 出て いる").not.toContain("ACLEDAPayをえらぶ");
   await shot(page, "asakai-02-kantan-duty");
   /* ポップアップが 開いて いる あいだも 裸の 漢字は 0。 */
   expect(await bareKanjiTexts(page)).toEqual([]);
@@ -216,6 +238,7 @@ test("朝礼（かんたん）— 報告すると カードが 開く", async ({
   expect(await bareKanjiTexts(page)).toEqual([]);
 
   await page.getByRole("button", { name: /つづけます/ }).click();
+  await closeDuty(page);
   await expect(page.getByText("（0 / 4）")).toBeVisible();
 
   /*
@@ -242,6 +265,7 @@ test("夕礼（むずかしい）— メモと カードが 同じ 画面に 並
 
   await page.goto("/asakai/meeting-asakai_muzukashii");
   await joinCall(page);
+  await closeDuty(page);
 
   await expect(page.getByText("（0 / 4）")).toBeVisible();
   /* 上級の 4枚（初級と 同じ 型で、向きだけ ちがう）。 */
@@ -294,6 +318,7 @@ test("夕礼 — 作業記録を そのまま 読み上げると 差し戻され
 
   await page.goto("/asakai/meeting-asakai_muzukashii");
   await joinCall(page);
+  await closeDuty(page);
   await expect(page.getByText("（0 / 4）")).toBeVisible();
 
   /* 月曜の 記録の 冒頭を 時刻ごと そのまま。中身の ことばは ぜんぶ 当たる はず。 */
@@ -343,6 +368,7 @@ test("390px で 板 → マイク → チャット の 順に 並ぶ", async ({ 
   await seedCompleted(context, refs.slice(0, at));
   await page.goto("/asakai/meeting-asakai_muzukashii");
   await joinCall(page);
+  await closeDuty(page);
 
   const board = await page.getByRole("group", { name: "カードの 板" }).boundingBox();
   const mic = await page
@@ -380,6 +406,7 @@ test("月曜を 終えて 開き直すと、火曜から つづく", async ({ pa
 
   await page.goto("/asakai/meeting-asakai_kantan");
   await joinCall(page);
+  await closeDuty(page);
   await page
     .getByLabel("こたえを 入力する")
     .fill(
@@ -396,6 +423,7 @@ test("月曜を 終えて 開き直すと、火曜から つづく", async ({ pa
   /* ここで 回線が 切れた ことに する。 */
   await page.reload();
   await joinCall(page);
+  await closeDuty(page);
   await expectOnScreen(page, "火曜日");
   /* いまが 何日目かは **タブの えらばれ方**で 見る（2026-09-13 に 点から タブへ）。 */
   await expect(page.getByRole("button", { name: /火曜日/ })).toHaveAttribute(
@@ -437,6 +465,7 @@ test("5日 通すと、合否と 数が 読める", async ({ page, context }) =>
   await seedCompleted(context, refs.slice(0, at));
   await page.goto("/asakai/meeting-asakai_kantan");
   await joinCall(page);
+  await closeDuty(page);
 
   /* 5日とも、その日の 司会の れいを ぜんぶ つないで 話す（足場どおりに 話した 人）。 */
   for (const [day, utterance] of exampleUtterances().entries()) {
@@ -444,7 +473,10 @@ test("5日 通すと、合否と 数が 読める", async ({ page, context }) =>
     await page.getByRole("button", { name: "おくる" }).click();
     await page.getByRole("button", { name: "みんなの 報告を 聞く" }).click();
     await page.getByRole("button", { name: /けっかを 見る/ }).click();
-    if (day < 4) await page.getByRole("button", { name: /つづけます/ }).click();
+    if (day < 4) {
+      await page.getByRole("button", { name: /つづけます/ }).click();
+      await closeDuty(page);
+    }
   }
 
   await expectOnScreen(page, "合格");

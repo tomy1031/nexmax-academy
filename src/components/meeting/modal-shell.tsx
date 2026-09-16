@@ -22,6 +22,11 @@ import type { FuriganaIndex } from "@/lib/text/furigana";
  * 高さは 画面の 88%まで。超えたら 中で 縦に すべる（小さい 端末で 上下が
  * 切れて、とじる ボタンに 手が 届かなく なる のを 防ぐ）。
  *
+ * 幅は ふだん `max-w-md`。中身が 表や 何段もの 箱に なる ものは `wide` を 渡して
+ * `max-w-2xl` に する——PC で `max-w-md` の ままだと **細長い 短冊**に なり、
+ * 10行の 表が 1行ずつ 折り返して 縦に 伸びる（2026-09-16 の 指定
+ *「PC版で 報告メモが 細長すぎる ので、もう少し 横幅を 持たせて。縦スクロールも OK」）。
+ *
  * ## とじる ボタンの ふりがな
  * `closeLabel` は **殻が ふりがなを 合成する**（`index` を 渡した ときだけ）。
  * 呼ぶ側が `<RubyText>` を 作って 渡す 形に すると、読み上げの 名前に ふりがなが
@@ -38,6 +43,7 @@ export function ModalShell({
   onClose,
   closeLabel = "とじる",
   index,
+  wide = false,
   children,
 }: {
   /** 読み上げ用の 名前（`aria-label`）。 */
@@ -49,6 +55,8 @@ export function ModalShell({
   closeLabel?: string;
   /** 読み辞書。渡すと とじる ボタンに ふりがなを 合成する。 */
   index?: FuriganaIndex;
+  /** 中身が 表や 何段もの 箱の ときに 広げる（`max-w-md` → `max-w-2xl`）。 */
+  wide?: boolean;
   children: ReactNode;
 }) {
   return (
@@ -77,7 +85,9 @@ export function ModalShell({
         animate={{ opacity: 1, scale: 1, y: 0 }}
         tabIndex={-1}
         autoFocus
-        className="card-island max-h-[88vh] w-full max-w-md overflow-y-auto p-5 outline-none"
+        className={`card-island max-h-[88vh] w-full overflow-y-auto p-5 outline-none ${
+          wide ? "max-w-2xl" : "max-w-md"
+        }`}
         onClick={(event) => event.stopPropagation()}
       >
         {title ? <p className="text-navy text-center text-lg font-black">{title}</p> : null}
