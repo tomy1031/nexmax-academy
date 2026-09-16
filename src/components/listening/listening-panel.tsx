@@ -50,7 +50,7 @@ export function ListeningPanel({
   keywords: readonly string[];
   rules: ListeningRules;
   goal: number;
-  /** 原稿そのものを出すか。既定では出さない（見えていると聞く練習にならない）。 */
+  /** 原稿（穴埋めの 形）を 出すか。教材ごとの 既定は `check.showScript`。 */
   showTranscript: boolean;
   furigana: FuriganaIndex;
   onChange?: (state: ListeningState) => void;
@@ -271,8 +271,8 @@ export function ListeningPanel({
       )}
 
       {/*
-        原稿。既定では出さない——見えていると読む練習になってしまう。
-        「げんこう ON」にしたときだけ、当てた場所が見えてくる形で出す。
+        原稿。**当てた 場所だけが 見えて くる 穴埋めの 形**で 出す——答えは 伏せた まま。
+        既定は ON（2026-09-16 の 指定）。「げんこう OFF」で 消せる。
       */}
       {showTranscript ? (
         <p
@@ -373,6 +373,17 @@ const BADGE: Record<HitKind, { label: string; color: string }> = {
 };
 
 /**
+ * 伏せた 1文字の 代わりに 置く 字。**色は 透明**なので、見えるのは 下地の 四角だけ。
+ *
+ * ## 全角スペース（「　」）に しない
+ * 原稿は `whitespace-pre-wrap` で 出す。全角スペースは **行の 終わりで 折り返されず、
+ * 枠の 外へ ぶら下がる**（CSS の 決まり）。伏せた ことばが 行末に 来ると 四角が
+ * 枠から はみ出して いた（2026-09-16 の 指摘。長い 文ほど 起きる）。
+ * 「〇」は ふつうの 字なので 字と 字の あいだで 折り返し、「。」が 行の 頭に 来る ことも ない。
+ */
+const HIDDEN_GLYPH = "〇";
+
+/**
  * 穴埋めの 原稿。**開いた ことばには ふりがなを 出す**（2026-09-04 の 指定
  *「文章は 漢字主体（ふりがなあり表示）が よい かも」）。
  *
@@ -418,11 +429,11 @@ function RevealedScript({
           ) : (
             <span
               key={i}
-              className="rounded-[3px]"
+              className="rounded-[3px] select-none"
               style={{ background: "var(--color-hairline)", color: "transparent" }}
               aria-hidden
             >
-              {char === "\n" ? "\n" : "　"}
+              {char === "\n" ? "\n" : HIDDEN_GLYPH}
             </span>
           ),
         );

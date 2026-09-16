@@ -16,13 +16,32 @@
  *（/api/studio/gemini-check がキーで実際に使えるものを調べる）。
  *
  * 出典: https://ai.google.dev/gemini-api/docs/models（2026-08-06 確認）
+ *
+ * ## 3.8 Live を 先頭に する（2026-09-16）
+ * `gemini-3.8-live` が 2026-09-15 に **Stable（GA）**で 出た。Google は 3.1 を
+ *「Legacy Live API preview model. We recommend updating to Gemini 3.8 Live」と
+ * 書いて いる——preview は いずれ 消える ので、消える 前に 先頭を 移す。
+ * 無料枠でも 使える（料金表の Free Tier が「Free of charge」）。
+ *
+ * **3.8 には 送ると 断られる 設定が ある**（移行の 注記・2026-09-16 確認）。
+ * 足す ときは 先に 読む:
+ * - `thinkingConfig`（`thinking_level`）を 送らない
+ * - `enableAffectiveDialog` を 送らない（API から 消えた）
+ * - `proactivity: { proactiveAudio: false }` を 送らない（先回りの 声は **常に 有効**で、
+ *   false は エラー）
+ * - `sendClientContent` の `turnComplete: true` は、相手が 話して いても **その場で 止める**
+ * 出典: https://ai.google.dev/gemini-api/docs/models/gemini-3.8-live
+ *
+ * 3.8 には「Extended Thinking」版も ある。考える ぶん 返事が 遅れる ので、
+ * 学習者と 話す ここには 入れない。
  */
 
 /**
  * たいわ（Live対話・音声で話す）。
- * native-audio は声の自然さが要るのでこちらを先に置く。
+ * 3.8 を 先頭に、つながらない ときの 控えとして 3.1 以前を 残す。
  */
 export const LIVE_TALK_MODELS = [
+  "gemini-3.8-live",
   "gemini-3.1-flash-live-preview",
   "gemini-2.5-flash-native-audio-preview-12-2025",
   "gemini-2.5-flash-live",
@@ -34,6 +53,7 @@ export const LIVE_TALK_MODELS = [
  * 「たいわは動くのに 音声づくりは動かない」という追いにくい状態になる。
  */
 export const LIVE_TTS_MODELS = [
+  "gemini-3.8-live",
   "gemini-3.1-flash-live-preview",
   "gemini-2.5-flash-native-audio-preview-12-2025",
   "gemini-2.5-flash-live",
@@ -52,10 +72,13 @@ export const LIVE_TTS_MODELS = [
  * だから **AUDIO で 答えさせて、その 文字起こしから JSON を 読む**。
  * 音は 鳴らさない（判定の つなぎは 再生先を 持たない）。
  *
- * 並びは 実績の ある ものを 先頭に する（3.1 は 文字起こしが 話した 文と
- * そのまま 一致する ことが 先の 実装で 確かめられて いる）。
+ * 並びは 鍵ありの 検証で 通った ものを 先頭に する。3.8 は 道具の 形 4つが
+ * 受け付けられ、同じ つなぎで 2回 頼んでも 答えが 混ざらない ことを
+ * `tests/e2e/live-models.ai.spec.ts` で 見る（3.1 は 先の 実装で 確かめて あった）。
+ * 3.8 は TEXT でも 返せるが、ここは AUDIO の まま——控えの 3.1 が TEXT を 受けない。
  */
 export const LIVE_TEXT_MODELS = [
+  "gemini-3.8-live",
   "gemini-3.1-flash-live-preview",
   "gemini-2.5-flash-live",
   "gemini-2.5-flash-native-audio-preview-12-2025",
@@ -99,4 +122,21 @@ export function looksLiveCapable(name: string): boolean {
 export function preferredLiveModel(available: readonly string[]): string {
   const wanted = LIVE_TALK_MODELS.find((name) => available.includes(name));
   return wanted ?? available[0] ?? DEFAULT_LIVE_TALK_MODEL;
+}
+
+/**
+ * 前に 既定だった 名前（新しい ものほど 後ろに 足す）。
+ *
+ * 先生の 画面（AI指示出し）の「保存」は、2026-09-16 まで 選んで いなくても
+ * **その時の 既定**を 端末（前の 鍵 `nexmax.liveModel`）に 書いて いた。たいわは
+ * 端末の 名前を 一覧より 先に 使う ので、既定を 3.8 に 上げても、一度 保存した
+ * 端末だけ 3.1 で 話し続ける。前の 鍵に 残った 名前は 選んだ ものか ただの 既定か
+ * 区別できない ——**前の 鍵の 前の 既定は「選んで いない」と 同じに 扱う**。
+ * いまは 選んだ ときだけ 新しい 鍵に 書く ので、ここに 足すのは 前の 鍵の ぶんだけで よい。
+ */
+const SUPERSEDED_LIVE_DEFAULTS: readonly string[] = ["gemini-3.1-flash-live-preview"];
+
+/** 端末に 残って いた 名前が、前の 既定か（そうなら 一覧の 並びに 任せる）。 */
+export function isSupersededLiveDefault(name: string): boolean {
+  return SUPERSEDED_LIVE_DEFAULTS.includes(name);
 }

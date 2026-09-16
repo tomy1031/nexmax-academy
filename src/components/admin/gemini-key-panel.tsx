@@ -125,7 +125,12 @@ export function GeminiKeyPanel() {
 
   const save = () => {
     saveGeminiKey(key);
-    saveLiveModel(model);
+    /*
+     * モデルは **選んだ ときだけ** 書く。選んで いない ときに その時の 既定を 書くと、
+     * つぎに 既定を 新しく しても その 端末だけ 古い モデルに 留まる
+     *（2026-09-16、3.8 へ 上げる ときに 3.1 が 端末に 残って いた）。
+     */
+    if (draftModel !== null) saveLiveModel(model);
     setSaved(true);
     window.setTimeout(() => setSaved(false), 2500);
   };
