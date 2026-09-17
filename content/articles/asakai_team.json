@@ -205,9 +205,9 @@
       "tone": "goal",
       "icon": "🎯",
       "title": "ゴール",
-      "text": "9/25 金曜日までに、全部を つなぎます。次の 月曜日（9/28）から 結合テストを します。",
+      "text": "9/25 金曜日までに、全部を つなぎます。金曜日の 午後に、みんなで 結合テストを します。",
       "badges": [
-        "月曜日から 金曜日まで",
+        "9/21 月曜日から 9/25 金曜日まで",
         "朝礼は 毎朝 9時"
       ]
     },
@@ -282,19 +282,6 @@
           }
         },
         {
-          "icon": "🔀",
-          "title": "支払方法を えらぶ",
-          "image": {
-            "src": "/img/asakai/tasks/choose.webp",
-            "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This is a TEACHING picture, not a mood picture: what the person is doing must be readable from the picture alone. The picture will be shown very small, about 80 pixels wide, so keep it to ONE person and ONE screen, drawn LARGE and simple, with the screen's contents big and bold and a clear dominant colour; leave small details out. THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: on this screen you PICK ONE of THREE ways to pay. Very close view of the hands of the new engineer — a young Cambodian woman in her early twenties with warm light-brown skin, a round friendly face and black hair tied back in a low ponytail, wearing a mint-green blouse, beige trousers and a lanyard with a blank white card holding one smartphone upright, the phone FILLING most of the frame, her face and shoulders visible behind it at the top, watching the screen. The screen shows THREE wide rounded option rows stacked one above the other, each with a round radio circle on its left and one name in large text: the top row reads \"ABA Pay\", the middle row reads \"Credit Card\", the bottom row reads \"Cash\". Her thumb rests on the top row; that row has a thick BLUE outline and its radio circle is filled in solid blue to show it is the chosen one, while the other two rows are plain white with empty radio circles. Deciding, thoughtful expression. Lettering — read this part carefully. The picture contains ONLY the words and numbers written inside double quotation marks in the scene above, and no other writing at all. Print each of them LARGE and horizontally in a clean rounded sans-serif font with generous space around it, spelled EXACTLY as given, letter for letter and digit for digit, so that it stays sharp and easy to read at a glance. Every other part of every screen, card and button is blank or shows only plain grey rounded bars. Payment and bank names are written as plain text only — never draw a bank logo or brand mark. No other letters, numbers, logos, watermarks or speech balloons anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots, a second person, a wide empty room shot where the person and the screen are small. Never: misspelled words, extra words, Japanese writing, a bank logo.",
-            "refs": [
-              "/img/articles/asakai_lecture/card_kinou.webp",
-              "/img/asakai/tasks/aba.webp"
-            ],
-            "status": "done"
-          }
-        },
-        {
           "icon": "🔌",
           "title": "決済APIと つなぐ",
           "image": {
@@ -315,6 +302,19 @@
             "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This is a TEACHING picture, not a mood picture: what the person is doing must be readable from the picture alone. The picture will be shown very small, about 80 pixels wide, so keep it to ONE person and ONE screen, drawn LARGE and simple, with the screen's contents big and bold and a clear dominant colour; leave small details out. THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: while the payment is being processed, the screen shows a spinning wait ring. Very close view of the hands of the new engineer — a young Cambodian woman in her early twenties with warm light-brown skin, a round friendly face and black hair tied back in a low ponytail, wearing a mint-green blouse, beige trousers and a lanyard with a blank white card holding one smartphone upright and waiting, the phone FILLING most of the frame, her face and shoulders visible behind it at the top, watching the screen patiently with her chin slightly lowered. The whole screen is plain white except for one huge SKY-BLUE loading ring in the middle — a thick circular arc, open at one side, with a rounded tip and three short curved motion lines following the tip to show it is spinning. Patient, waiting expression. No text, no letters, no kanji, no kana, no numbers and no currency symbols anywhere in the image. Every screen, button, label and card is blank, or shows only plain grey rounded bars standing in for words. No watermark, no signature, no brand logo, no speech balloons. Plain interface marks that ARE the subject of this picture — a tick inside a circle, a warning triangle, a loading ring, a small plus badge, a plug — are allowed and must be drawn large and bold. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots, a second person, a wide empty room shot where the person and the screen are small.",
             "refs": [
               "/img/articles/asakai_lecture/card_kinou.webp"
+            ],
+            "status": "done"
+          }
+        },
+        {
+          "icon": "🔀",
+          "title": "支払方法を えらぶ",
+          "image": {
+            "src": "/img/asakai/tasks/choose.webp",
+            "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This is a TEACHING picture, not a mood picture: what the person is doing must be readable from the picture alone. The picture will be shown very small, about 80 pixels wide, so keep it to ONE person and ONE screen, drawn LARGE and simple, with the screen's contents big and bold and a clear dominant colour; leave small details out. THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: on this screen you PICK ONE of THREE ways to pay. Very close view of the hands of the new engineer — a young Cambodian woman in her early twenties with warm light-brown skin, a round friendly face and black hair tied back in a low ponytail, wearing a mint-green blouse, beige trousers and a lanyard with a blank white card holding one smartphone upright, the phone FILLING most of the frame, her face and shoulders visible behind it at the top, watching the screen. The screen shows THREE wide rounded option rows stacked one above the other, each with a round radio circle on its left and one name in large text: the top row reads \"ABA Pay\", the middle row reads \"Credit Card\", the bottom row reads \"Cash\". Her thumb rests on the top row; that row has a thick BLUE outline and its radio circle is filled in solid blue to show it is the chosen one, while the other two rows are plain white with empty radio circles. Deciding, thoughtful expression. Lettering — read this part carefully. The picture contains ONLY the words and numbers written inside double quotation marks in the scene above, and no other writing at all. Print each of them LARGE and horizontally in a clean rounded sans-serif font with generous space around it, spelled EXACTLY as given, letter for letter and digit for digit, so that it stays sharp and easy to read at a glance. Every other part of every screen, card and button is blank or shows only plain grey rounded bars. Payment and bank names are written as plain text only — never draw a bank logo or brand mark. No other letters, numbers, logos, watermarks or speech balloons anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots, a second person, a wide empty room shot where the person and the screen are small. Never: misspelled words, extra words, Japanese writing, a bank logo.",
+            "refs": [
+              "/img/articles/asakai_lecture/card_kinou.webp",
+              "/img/asakai/tasks/aba.webp"
             ],
             "status": "done"
           }
@@ -533,7 +533,7 @@
       "kind": "link",
       "ref": "asakai_kantan",
       "type": "meeting",
-      "label": "月曜日の 朝礼に 出る"
+      "label": "9/21 月曜日の 朝礼に 出る"
     }
   ],
   "furigana": [
@@ -924,6 +924,10 @@
     [
       "会",
       "かい"
+    ],
+    [
+      "午後",
+      "ごご"
     ]
   ]
 }

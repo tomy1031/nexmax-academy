@@ -707,7 +707,8 @@ describe("報告の 日付（朝礼）", () => {
   const scenes = meetingSchema.parse(kantan).asakai!.scenes;
   /** その日 / きのう（月曜だけ 土日を またいで 先週の 金曜）。 */
   const WEEK = [
-    { today: "9/21 月曜日", yesterday: "9/18 金曜日" },
+    /* 月曜だけ「先週の」を 残す——土日を またぐ ことは 日付だけでは 伝わらない。 */
+    { today: "9/21 月曜日", yesterday: "先週の 金曜日・9/18" },
     { today: "9/22 火曜日", yesterday: "9/21 月曜日" },
     { today: "9/23 水曜日", yesterday: "9/22 火曜日" },
     { today: "9/24 木曜日", yesterday: "9/23 水曜日" },
