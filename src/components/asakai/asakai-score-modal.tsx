@@ -430,8 +430,17 @@ export function ProbeScoreModal({
   /** AIが 日本語を 見たか。見て いない ときは「いいです」と 言わない（規律1）。 */
   judged: boolean;
   index: FuriganaIndex;
-  /** 言い直す（この ポップアップを 閉じて、同じ しつもんに もう いちど 答える）。 */
-  onRetry: () => void;
+  /**
+   * 言い直す（この ポップアップを 閉じて、同じ しつもんに もう いちど 答える）。
+   *
+   * **その日の さいごの 1枚では 渡さない。** 渡して いた ころ、押すと
+   * 司会の 受け止めも メンバーの 報告も 流れない まま 板だけ ⭕ に なり、
+   *「きょうの 評価」も「つぎの 日へ 進む」も **成功したように 見える**のに、
+   * しおりには 1日も 記録されて いなかった——開き直すと 月曜の 途中に
+   * 逆もどりする（2026-09-17 の 通しプレイ検収）。
+   * 言い直す ところが もう 無い 画面に、言い直す ボタンを 置かない。
+   */
+  onRetry?: () => void;
   onClose: () => void;
 }) {
   return (
@@ -442,7 +451,7 @@ export function ProbeScoreModal({
       }
       onClose={onClose}
       closeLabel={nextLabel}
-      secondary={{ label: "言い直す", onClick: onRetry }}
+      secondary={onRetry ? { label: "言い直す", onClick: onRetry } : undefined}
       index={index}
       wide
     >

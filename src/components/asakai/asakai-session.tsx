@@ -889,8 +889,22 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
         return;
       }
 
+      /*
+       * **もう 聞かれない 札を「まだ 言えて いない ところ」に 並べない。**
+       *
+       * 2回 聞いても 開かなかった 札は 打ち切って（`gaveUp`）先へ 進む——
+       * 指定どおり（2026-09-17「質問を 2ど しても 間違い…の 場合は、不正解として
+       * 次の 質問に 移ります」）。ところが その 札を 一覧に 残して いた ので、
+       * 学習者は **もう 開かない ものに 何度も 答えつづけた**。しかも 打ち切った 札は
+       * 照合から 外れる ので、あとから 正しい 数を 言っても 何も 起きない
+       *（2026-09-17 の 通しプレイ検収。木曜の 進捗で 実発生）。
+       * その日の おわりの ふりかえりでは ❗ として ちゃんと 残る。
+       */
       const shut = panels
-        .filter((one) => !step.states.find((x) => x.id === one.id)?.full)
+        .filter((one) => {
+          const state = step.states.find((x) => x.id === one.id);
+          return !state?.full && !state?.gaveUp;
+        })
         .map((one) => one.label);
       /*
        * **進んだ ターンは 聞き返しに 数えない**（2026-09-14 の 通し検収）。
@@ -1687,8 +1701,12 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
             nextLabel={judge.sceneOver ? "みんなの 報告を 聞く ▶" : "つぎの しつもんを 聞く ▶"}
             rest={judge.shut.join("／")}
             index={index}
-            /* 言い直す … 同じ しつもんの まま、もう いちど 書く（司会は 何も 言わない）。 */
-            onRetry={() => setJudge(null)}
+            /*
+              言い直す … 同じ しつもんの まま、もう いちど 書く（司会は 何も 言わない）。
+              **その日が 終わって いる ときは 出さない**——閉じる ことでしか
+              司会の 受け止めと メンバーの 報告に 進めない（上の `onRetry` の 覚え書き）。
+            */
+            onRetry={judge.sceneOver ? undefined : () => setJudge(null)}
             onClose={closeJudge}
           />
         ) : (
