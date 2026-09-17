@@ -135,6 +135,34 @@ describe("画面に 出す 語群の 順（wordbankDisplayOrder）", () => {
     expect(answerLeakScore(shown, question.blanks)).toBe(0);
   });
 
+  it("手数が 尽きても 見え具合を ゆるめて 並びを 返す（語を 変えず・いつも 同じ 順で）", () => {
+    // 画面では 使わない 小さな 上限で、ゆるめる 道と さいごの まぜる だけの 道を 通す
+    for (const stepLimit of [1, 3, 10, 25]) {
+      const shown = wordbankDisplayOrder(question, stepLimit);
+      expect([...shown].sort()).toEqual([...question.bank].sort());
+      expect(wordbankDisplayOrder(question, stepLimit)).toEqual(shown);
+    }
+  });
+
+  it("スキーマが 弾く 端の 形（同じ 語が 2つ・語群に 無い 答え）でも 語を 変えずに 返す", () => {
+    const odd = [
+      { id: "dup-answers", blanks: ["A", "B", "C"], bank: ["A", "A", "B", "C", "D"] },
+      { id: "missing", blanks: ["A", "Z", "B", "C"], bank: ["A", "B", "C", "D", "E"] },
+    ];
+    for (const q of odd) {
+      for (const stepLimit of [3, 5000]) {
+        expect([...wordbankDisplayOrder(q, stepLimit)].sort()).toEqual([...q.bank].sort());
+      }
+    }
+  });
+
+  it("教材では ありえない 大きさの 語群でも 落ちずに 返す（呼び出しの 深さが 尽きない）", () => {
+    const bank = ["答え", ...Array.from({ length: 6000 }, (_, i) => `はずれ${i}`)];
+    const shown = wordbankDisplayOrder({ id: "huge", blanks: ["答え"], bank });
+    expect(shown).toHaveLength(bank.length);
+    expect(new Set(shown)).toEqual(new Set(bank));
+  });
+
   it.each([1, 2, 3, 4, 5])(
     "穴が %i つの 下限は、まぎらわしい 語 1つで 総当たりした 最小と 同じ",
     (holes) => {

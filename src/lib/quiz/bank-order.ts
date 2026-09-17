@@ -99,10 +99,16 @@ function shuffled<T>(items: readonly T[], rng: () => number): T[] {
 
 /**
  * さがす 手数の 上限。見えない 並びは たくさん あるので、ふつうは 数十手で 見つかる。
- * 上限に 当たったら 見え具合を 1つ ゆるめて さがし直す（ゆるめ切れば 刈り込みが
- * 無くなり、1本道で 必ず 並びが できる）。
+ * 上限に 当たったら 見え具合を 1つ ゆるめて さがし直す（`wordbankDisplayOrder`）。
  */
 const STEP_LIMIT = 5000;
+
+/**
+ * さがす 語群の 大きさの 上限。さがしかたは 1語ごとに 1段 深く なるので、
+ * 何千語も ある 語群では 描画中に 呼び出しの 深さが 尽きる（5001語で 実測）。
+ * 教材の 語群は 10語 前後なので、これを 超える ものは まぜた だけで 返す。
+ */
+const SEARCH_WORD_LIMIT = 200;
 
 /**
  * 見え具合が `allow` 以下の 並びを さがす。2段に 分ける。
@@ -123,6 +129,7 @@ function searchOrder(
   blanks: readonly string[],
   allow: number,
   rng: () => number,
+  stepLimit: number,
 ): string[] | null {
   const answers = bank.filter((word) => blanks.includes(word));
   const others = shuffled(
@@ -139,7 +146,7 @@ function searchOrder(
     const fill = (a: number, d: number, spent: number): boolean => {
       if (order.length === bank.length) return true;
       steps += 1;
-      if (steps > STEP_LIMIT) return false;
+      if (steps > stepLimit) return false;
       const answersLeft = sequence.length - a;
       const othersLeft = others.length - d;
       // 残りの 数に 比例して 先に 試す 種類を 決める（刈り込みが 無ければ 一様な 差しこみに なる）
@@ -158,7 +165,7 @@ function searchOrder(
           if (fill(a, d + 1, spent)) return true;
         }
         order.pop();
-        if (steps > STEP_LIMIT) return false;
+        if (steps > stepLimit) return false;
       }
       return false;
     };
@@ -169,7 +176,7 @@ function searchOrder(
   const arrange = (cost: number): string[] | null => {
     if (sequence.length === answers.length) return interleave(cost);
     steps += 1;
-    if (steps > STEP_LIMIT) return null;
+    if (steps > stepLimit) return null;
     const k = sequence.length;
     const lastRank = k > 0 ? blanks.indexOf(sequence[k - 1]!) : -1;
     const candidates = shuffled(
@@ -192,7 +199,7 @@ function searchOrder(
       if (found) return found;
       sequence.pop();
       used[i] = false;
-      if (steps > STEP_LIMIT) return null;
+      if (steps > stepLimit) return null;
     }
     return null;
   };
@@ -204,16 +211,34 @@ function searchOrder(
  * 画面に 出す 語群の 順。見え具合（`answerLeakScore`）が **下限**
  *（`lowestLeakScore`）の 並びを 返す。
  *
- * 決まった 形の 受け皿は 置かない——置くと その 形じたいが 目印に なる。
+ * 手数の 上限に 当たったら 見え具合を 1つずつ ゆるめる。ゆるめる 先は 見え具合の
+ * 最大（左から 当たる 穴・飛ばして 当たる 穴・となりあう 組を ぜんぶ 数えた 数）まで。
+ * そこでも 見つからない（語群が 手数の 上限より 大きい など、教材では ありえない 形）
+ * ときと、語群が `SEARCH_WORD_LIMIT` を 超える ときだけ、まぜた だけの 並びを 返す——
+ * **必ず 終わる** ことを 優先する。
+ *
+ * `stepLimit` は テストで ゆるめる 道を 通す ための もの。画面からは 渡さない。
  */
-export function wordbankDisplayOrder(question: {
-  id: string;
-  bank: readonly string[];
-  blanks: readonly string[];
-}): string[] {
+export function wordbankDisplayOrder(
+  question: {
+    id: string;
+    bank: readonly string[];
+    blanks: readonly string[];
+  },
+  stepLimit: number = STEP_LIMIT,
+): string[] {
   const base = seedOf(`${question.id}\n${question.bank.join("\n")}`);
-  for (let allow = lowestLeakScore(question.blanks.length); ; allow += 1) {
-    const order = searchOrder(question.bank, question.blanks, allow, rngFrom(base + allow));
+  if (question.bank.length > SEARCH_WORD_LIMIT) return shuffled(question.bank, rngFrom(base));
+  const ceiling = question.blanks.length * 2 + question.bank.length;
+  for (let allow = lowestLeakScore(question.blanks.length); allow <= ceiling; allow += 1) {
+    const order = searchOrder(
+      question.bank,
+      question.blanks,
+      allow,
+      rngFrom(base + allow),
+      stepLimit,
+    );
     if (order) return order;
   }
+  return shuffled(question.bank, rngFrom(base));
 }
