@@ -356,7 +356,14 @@ export function ReportScoreModal({
         </p>
       </div>
 
-      {rows.some((row) => row.advice !== "") ? (
+      {/*
+        **読み上げを 差し戻した ターンは、札ごとの 直しを 出さない。**
+        司会の 声は `if (readLog) sayRedo(); else if (followup) say(followup);` で
+        片方に 絞って あるのに（`asakai-session.tsx`）、ポップアップだけ
+        「まとめて もう いちど」と 札4枚ぶんの 聞き返しを **同時に** 並べて いた
+        ——次の 行動は 1つ（規律1・2026-09-17 の R5 再検収）。
+      */}
+      {!readLog && rows.some((row) => row.advice !== "") ? (
         <div className="mt-3">
           <Cap text="やり直す ところ" index={index} />
           <ul className="mt-1 space-y-2">
@@ -394,6 +401,7 @@ export function ProbeScoreModal({
   question,
   answer,
   good,
+  advice,
   fixes,
   nextLabel,
   rest,
@@ -407,10 +415,17 @@ export function ProbeScoreModal({
   question: string;
   answer: string;
   good: string;
+  /**
+   * つぎに 直す こと（AIの ことば）。
+   *
+   * 日の おわりまで 出さずに 溜めて いた ころ、**直しかたが いちばん 要る
+   * 「言い直す」の 直前**に 何も 無かった（2026-09-17 の R5 再検収）。
+   */
+  advice: string;
   fixes: readonly AsakaiFix[];
   /** とじる ボタンの 字（つぎの しつもん／みんなの 報告を 聞く）。 */
   nextLabel: string;
-  /** まだ 聞かれて いない 札の 名前（無ければ 空）。 */
+  /** まだ ⭕ に なって いない 札の 名前（無ければ 空）。 */
   rest: string;
   /** AIが 日本語を 見たか。見て いない ときは「いいです」と 言わない（規律1）。 */
   judged: boolean;
@@ -484,20 +499,19 @@ export function ProbeScoreModal({
         </div>
       </div>
 
-      {good !== "" ? (
-        <div className="border-leaf bg-sky-soft mt-3 rounded-xl border-2 px-3 py-2">
-          <Cap text="✅ よかった ところ" index={index} tone="text-leaf-deep" />
-          <p className="text-navy mt-0.5 text-sm leading-[1.9] font-bold">
-            <Ruby text={good} index={index} />
-          </p>
-        </div>
-      ) : null}
-
       <FixList fixes={fixes} index={index} />
+      <GoodAdvice good={good} advice={advice} index={index} />
 
       {rest !== "" ? (
         <p className="text-ink-soft mt-3 text-[11px] leading-[1.9] font-bold">
-          ☰ <Ruby text={`まだ 聞かれて いない ところ: ${rest}`} index={index} />
+          {/*
+            **「まだ 聞かれて いない」とは 言わない。** `rest` は ⭕ で ない 札 ぜんぶ
+            なので、**いま 聞かれて 答えられなかった 札**も ここに 並ぶ——同じ
+            ポップアップの 上で「❗ 内容: まだ 伝わって いません」と 言って いるのに、
+            下で「まだ 聞かれて いない」と 呼ぶと、未達成の 表示が 事実と ちがう
+            （2026-09-17 の R5 再検収）。
+          */}
+          ☰ <Ruby text={`まだ 言えて いない ところ: ${rest}`} index={index} />
         </p>
       ) : null}
     </ModalShell>
@@ -633,7 +647,7 @@ export function DayScoreModal({
           advice !== ""
             ? advice
             : shut > 0
-              ? "つぎは 報告メモの ①②③④を、上から 1つずつ 声に 出して 言って みましょう。"
+              ? "つぎは 報告メモの やる ことを、上から 1つずつ 声に 出して 言って みましょう。"
               : ""
         }
         index={index}

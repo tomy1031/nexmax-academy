@@ -35,6 +35,8 @@
  */
 
 import type { MatchableFact } from "@/components/listening/req-matcher";
+import { FORBIDDEN_LEARNER_WORDS } from "@/content/schema";
+import { AI_KANJI_WORDS } from "@/lib/ai-kanji";
 import { clampScore, CLARITY_MAX, JAPANESE_MAX } from "@/lib/meeting/asakai-score";
 
 /** 判定係への 言い渡し（つなぎの あいだ ずっと 変わらない 決まりだけ）。 */
@@ -43,7 +45,7 @@ export const ASAKAI_JUDGE_SYSTEM = [
   "学生（日本語 N5〜N3）が、朝礼・夕礼で 1本の 報告を します。",
   "学生の ことばが とどいたら、かならず 1回だけ 道具 houkoku_no_hantei を 呼びます。",
   "声では 返事を しません（道具を 呼ぶだけ）。",
-  "学生に 見せる 文は 返しません。返すのは id の 一覧と 真偽値だけです。",
+  "声で 返事を する かわりに、道具の good・advice・fixes に 学生が 読む ことばを 書きます。",
 ].join("\n");
 
 export const ASAKAI_TOOL = {
@@ -213,6 +215,31 @@ export function buildAsakaiJudgePrompt(context: AsakaiJudgeContext): string {
     "- **学生の 中身を 足しません**。言って いない ことを 直しの 中に 入れない",
   );
 
+  /*
+   * **good・advice・fixes は 画面に そのまま 出る**（`asakai-score-modal.tsx`）。
+   *
+   * ここに ふりがなは 付けられない——読み辞書は 教材の 文の ために 作って あり、
+   * AIが その場で 書いた 文には 届かない。だから 漢字を **一覧の ことばだけ**に
+   * しばる（一覧から ルビの 索引を 作って いる ので、その ことばには かならず
+   * ふりがなが 付く・規律2）。`judge.ts` が ミーティングで 同じ しばりを かけて
+   * いるのに、朝礼の 道具にだけ 無かった（2026-09-17 の R5 再検収）。
+   *
+   * 禁止語は **正典から 取る**。ここに 例として 書き並べると、その 文字列じたいが
+   * `lint:content` の 禁止語検査に 当たって、この ファイルが 保存できなく なる。
+   */
+  lines.push(
+    "",
+    "# 学生が 読む ことばの 書きかた（good・advice・fixes）",
+    "- つかえる 漢字は **つぎの ことばだけ**です。",
+    `  ${AI_KANJI_WORDS.join("・")}`,
+    "  この 一覧に 無い ことばは **ひらがな**で 書いて ください。",
+    "- **国の 名前・外来語は カタカナ**で 書きます（「べとなむ」では なく「ベトナム」）。",
+    "- ことばの あいだに 空白を 入れて 分かち書きに する（例:「わたしは がくせい です」）",
+    `- つぎの ことばは つかわない: ${FORBIDDEN_LEARNER_WORDS.join("・")}`,
+    "  できた ことを 先に 言い、つぎに やる ことを 見せる",
+    "- 人を 評しません。**報告の 中身**に ついてだけ 書きます",
+  );
+
   return lines.join("\n");
 }
 
@@ -279,7 +306,20 @@ export function parseAsakaiJudge(
     advice?: unknown;
     fixes?: unknown;
   };
-  const text = (value: unknown): string => (typeof value === "string" ? value.trim() : "");
+  /*
+   * **「無い」を 表す 字を 空に する。**
+   *
+   * 道具の 引数は null を 持てない ので、AIは 空文字を 返す 決まりだが、
+   * `"null"` や `"なし"` と いう **文字**を そのまま 返す ことが ある——
+   * それを 通すと 画面に「💡 アドバイス / なし」と 出る
+   *（`judge.ts` の `isEmptyFix` が 2026-08-25 に 同じ 型を 記録して いる）。
+   */
+  const EMPTY = ["null", "none", "なし", "無し", "ない", "-", "—"];
+  const text = (value: unknown): string => {
+    if (typeof value !== "string") return "";
+    const trimmed = value.trim();
+    return EMPTY.includes(trimmed) ? "" : trimmed;
+  };
   const fixes: AsakaiFix[] = [];
   for (const one of Array.isArray(bag.fixes) ? bag.fixes : []) {
     if (!one || typeof one !== "object") continue;

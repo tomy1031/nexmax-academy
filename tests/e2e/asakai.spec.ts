@@ -614,6 +614,9 @@ test("5日 通すと、合否と 数が 読める", async ({ page, context }) =>
     }
   }
 
+  /* けっかは ポップアップで 出る（2026-09-17 の 指定「全て モーダルが 良いです」）。 */
+  const week = page.getByRole("dialog", { name: "今週の けっか" });
+  await expect(week).toBeVisible();
   await expectOnScreen(page, "合格");
   await expectOnScreen(page, "以上で 合格");
   await expectOnScreen(page, "聞き返し");
@@ -621,7 +624,13 @@ test("5日 通すと、合否と 数が 読める", async ({ page, context }) =>
   await shot(page, "asakai-10-week-result");
 
   /* 読み終えてから おわりに する（ここまで「クリア」の 板は かぶさらない）。 */
-  await page.getByRole("button", { name: "けっかを 読みました" }).click();
+  await week.getByRole("button", { name: /けっかを 読みました/ }).click();
+  await expect(week).toBeHidden();
+
+  /* 閉じた あとも、数を もう いちど 見に 行ける。 */
+  await page.getByRole("button", { name: "今週の けっかを 見る" }).click();
+  await expect(week).toBeVisible();
+  await expectOnScreen(page, "以上で 合格");
 });
 
 /**
@@ -699,7 +708,7 @@ test("聞き返しに こたえると、こたえの 見かたが 出る", async
   await expectOnScreen(page, "内容: 伝わりました");
   await expectOnScreen(page, "あなたの こたえ");
   /* 残りの 札が 名前で 読める（つぎに 何を 言うかが 分かる）。 */
-  await expectOnScreen(page, "まだ 聞かれて いない ところ");
+  await expectOnScreen(page, "まだ 言えて いない ところ");
   expect(await bareKanjiTexts(page)).toEqual([]);
   await shot(page, "asakai-03c-probe-score");
 
