@@ -699,7 +699,7 @@ test("聞き返しに こたえると、こたえの 見かたが 出る", async
   await expectOnScreen(page, "内容: 伝わりました");
   await expectOnScreen(page, "あなたの こたえ");
   /* 残りの 札が 名前で 読める（つぎに 何を 言うかが 分かる）。 */
-  await expectOnScreen(page, "残りの 確認");
+  await expectOnScreen(page, "まだ 聞かれて いない ところ");
   expect(await bareKanjiTexts(page)).toEqual([]);
   await shot(page, "asakai-03c-probe-score");
 
@@ -707,4 +707,59 @@ test("聞き返しに こたえると、こたえの 見かたが 出る", async
   await probe.getByRole("button", { name: "言い直す" }).click();
   await expect(probe).toBeHidden();
   await expect(page.getByText("（2 / 4）")).toBeVisible();
+});
+
+/**
+ * **「もう いちど 報告する」は その日を はじめから**（2026-09-17 の 通しプレイ検収）
+ *
+ * 今日の 評価の ポップアップには 道が 2つ ある——つぎの 日へ 進むか、
+ * 同じ 日を やり直すか。検収では「押しても 板が （4/4）の まま だった」と
+ * 見えた ので、**板が 空に 戻り、報告の 入口に 帰る**ことを ここで 止める。
+ *
+ * 週の けっかも 見る。同じ 日を 2回 報告しても **行は 1本**（`finishScene` が
+ * 日で 置きかえる）——積み足しに なると「6日ぶん」に なる。
+ */
+test("もう いちど 報告すると、その日が はじめから やり直せる", async ({ page, context }) => {
+  const refs = stageRefs();
+  const at = refs.indexOf("asakai_kantan");
+  await seedCompleted(context, refs.slice(0, at));
+
+  const report = async () => {
+    await page
+      .getByLabel("こたえを 入力する")
+      .fill(
+        "先週の 金曜日は、決済の 決まりを 調べて、決済の 画面と ABA Payの ボタンを 作りました。" +
+          "今、決済フロントエンド機能 ぜんたいの 進捗は 20%です。" +
+          "きょうは、注文IDと 合計金額を 画面に 出します。" +
+          "今の ところ 問題は ありません。",
+      );
+    await page.getByRole("button", { name: "おくる" }).click();
+    await page.getByRole("button", { name: "みんなの 報告を 聞く" }).click();
+    await page.getByRole("button", { name: /けっかを 見る/ }).click();
+  };
+
+  await page.goto("/asakai/meeting-asakai_kantan");
+  await joinCall(page);
+  await closeDuty(page);
+  await report();
+
+  const modal = page.getByRole("dialog", { name: "今日の 評価" });
+  await expect(modal).toBeVisible();
+  await expect(page.getByText("（4 / 4）")).toBeVisible();
+
+  await modal.getByRole("button", { name: "もう いちど 報告する" }).click();
+  await expect(modal).toBeHidden();
+
+  /* 板が 空に 戻る（0枚）。ボタンの 字も「けっかを 見る」では なくなる。 */
+  await closeDuty(page);
+  await expect(page.getByText("（0 / 4）")).toBeVisible();
+  await expect(page.getByRole("button", { name: /けっかを 見る/ })).toHaveCount(0);
+  await expect(page.getByLabel("こたえを 入力する")).toBeVisible();
+  await shot(page, "asakai-11-retry-day");
+
+  /* もう いちど 通すと、週の けっかは 月曜が **1行だけ**。 */
+  await report();
+  await closeDayScore(page);
+  await expectOnScreen(page, "月曜日の 朝礼 おわり");
+  expect(await bareKanjiTexts(page)).toEqual([]);
 });

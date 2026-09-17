@@ -162,7 +162,7 @@ describe("parseAsakaiJudge — 採点と ことば", () => {
     expect(out.japanese).toBeNull();
   });
 
-  it("直しは said と natural が そろって いる ものだけ・2つまで", () => {
+  it("直しは said と natural が そろって いる ものだけ・1つまで", () => {
     const out = parseAsakaiJudge(
       {
         saidIds: [],
@@ -176,13 +176,21 @@ describe("parseAsakaiJudge — 採点と ことば", () => {
       },
       ALL_FACTS,
     );
-    expect(out.fixes).toHaveLength(2);
+    /* 教材の 見かたは「直すのは 1つだけ」。2つ 出すと 何から 直すか 分からない。 */
+    expect(out.fixes).toHaveLength(1);
     expect(out.fixes[0]).toEqual({
       said: "つなぐできません",
       natural: "つなげません",
       note: "できない ときの 形です。",
     });
-    expect(out.fixes[1]?.note, "note が 無くても 直しは 出す").toBe("");
+  });
+
+  it("note が 無くても 直しは 出す", () => {
+    const out = parseAsakaiJudge(
+      { saidIds: [], readsLog: false, fixes: [{ said: "しました", natural: "して います" }] },
+      ALL_FACTS,
+    );
+    expect(out.fixes[0]?.note).toBe("");
   });
 
   it("ことばは 文字列の ときだけ 取る", () => {

@@ -41,9 +41,15 @@ export interface RowView {
   readonly id: string;
   readonly label: string;
   readonly mark: RowMark;
-  /** 学習者が その 札に ついて 言った ところ（無ければ 空）。 */
-  readonly said: string;
-  /** 直す ときの ひとこと（無ければ 空）。 */
+  /**
+   * 直す ときの ひとこと（無ければ 空）。
+   *
+   * **札ごとの「言った ところ」は 持たない。** 照合は 報告 まるごとに 対して
+   * かかる ので、どの 1文が どの 札を 開けたかは 分けられない。持って いた ころは
+   * 空文字の まま 画面に 渡って いて、4つ ぜんぶ 言えた 日にも 全行に
+   *「まだ 報告して いません。」が 並んで いた（2026-09-17 の 通しプレイ検収）。
+   * 言った ことは ポップアップの 中で **1回だけ**（`utterance`）出す。
+   */
   readonly advice: string;
 }
 
@@ -56,9 +62,9 @@ const MARK_FACE: Record<RowMark, { readonly mark: string; readonly cls: string }
 
 /** その日の おわりの ことば（何が 起きたかを 名前で 言う）。 */
 const DAY_WORD: Record<RowMark, string> = {
-  first: "最初から 言えた",
-  probe: "しつもんの あとで 言えた",
-  fixed: "しつもんの あとで 直した",
+  first: "最初から 言えました",
+  probe: "しつもんの あとで 言えました",
+  fixed: "しつもんの あとで 直しました",
   missing: "言えませんでした",
 };
 
@@ -93,11 +99,14 @@ function ScoreHead({
   lead,
   score,
   note,
+  hasKey,
   index,
 }: {
   lead: string;
   score: ScoreView;
   note?: ReactNode;
+  /** 端末に AIの 鍵が あるか（無い ときと 届かなかった ときで 理由が ちがう）。 */
+  hasKey: boolean;
   index: FuriganaIndex;
 }) {
   const axes = [
@@ -150,10 +159,17 @@ function ScoreHead({
           </div>
         ))}
       </div>
+      <p className="text-ink-soft mt-2 text-[11px] leading-[1.9] font-bold">
+        <Ruby text="合格に 効くのは 報告の 内容です。" index={index} />
+      </p>
       {score.total === null ? (
-        <p className="text-ink-soft mt-2 text-[11px] leading-[1.9] font-bold">
+        <p className="text-ink-soft mt-1 text-[11px] leading-[1.9] font-bold">
           <Ruby
-            text="伝わりやすさと 仕事の 日本語は、AIの 鍵が ある ときに 出ます。"
+            text={
+              hasKey
+                ? "いまは AIの 見かたが 届きませんでした。内容の 点だけ 出します。"
+                : "伝わりやすさと 仕事の 日本語は、AIの 鍵が ある ときに 出ます。"
+            }
             index={index}
           />
         </p>
@@ -273,6 +289,8 @@ export function ReportScoreModal({
   fixes,
   readLog,
   nextLabel,
+  utterance,
+  hasKey,
   index,
   onClose,
 }: {
@@ -285,6 +303,9 @@ export function ReportScoreModal({
   readLog: boolean;
   /** とじる ボタンの 字（まだ つづく／その日は おわり）。 */
   nextLabel: string;
+  /** 学習者が いま 言った こと（そのまま 出す）。 */
+  utterance: string;
+  hasKey: boolean;
   index: FuriganaIndex;
   onClose: () => void;
 }) {
@@ -310,6 +331,7 @@ export function ReportScoreModal({
       <ScoreHead
         lead="いまの 報告"
         score={score}
+        hasKey={hasKey}
         index={index}
         note={
           left > 0 ? (
@@ -318,7 +340,7 @@ export function ReportScoreModal({
             </p>
           ) : (
             <p className="text-leaf-deep text-sm leading-[1.9] font-black">
-              ✅ <Ruby text="4つ ぜんぶ 言えました" index={index} />
+              ✅ <Ruby text={`${rows.length}つ ぜんぶ 言えました`} index={index} />
             </p>
           )
         }
@@ -326,41 +348,36 @@ export function ReportScoreModal({
 
       <MarkRow rows={rows} words={FIRST_WORD} index={index} />
 
-      <div className="mt-3">
-        <Cap text="あなたの 報告と、やり直す ところ" index={index} />
-        <ul className="mt-1 space-y-2">
-          {rows.map((row) => (
-            <li
-              key={row.id}
-              className="border-hairline bg-panel rounded-xl border px-3 py-2 sm:flex sm:gap-3"
-            >
-              <p className="text-ink-soft min-w-0 text-[11px] leading-[1.9] font-black sm:w-40 sm:shrink-0">
-                <Ruby text={row.label} index={index} />
-              </p>
-              <div className="min-w-0 flex-1">
-                <p className="text-navy text-sm leading-[1.9] font-bold">
-                  {row.said === "" ? (
-                    <span className="text-ink-faint">
-                      <Ruby text="まだ 報告して いません。" index={index} />
-                    </span>
-                  ) : (
-                    <Ruby text={row.said} index={index} />
-                  )}
-                </p>
-                {row.advice !== "" ? (
-                  <p className="text-coral-deep mt-0.5 text-sm leading-[1.9] font-bold">
+      {/* 言った ことは **1回だけ** 出す（札ごとに 分けられないので、分けた ふりを しない）。 */}
+      <div className="border-hairline bg-panel mt-3 rounded-xl border px-3 py-2">
+        <Cap text="あなたの 報告" index={index} />
+        <p className="text-navy mt-0.5 text-sm leading-[1.9] font-bold">
+          <Ruby text={utterance} index={index} />
+        </p>
+      </div>
+
+      {rows.some((row) => row.advice !== "") ? (
+        <div className="mt-3">
+          <Cap text="やり直す ところ" index={index} />
+          <ul className="mt-1 space-y-2">
+            {rows
+              .filter((row) => row.advice !== "")
+              .map((row) => (
+                <li
+                  key={row.id}
+                  className="border-hairline bg-panel rounded-xl border px-3 py-2 sm:flex sm:gap-3"
+                >
+                  <p className="text-ink-soft min-w-0 text-[11px] leading-[1.9] font-black sm:w-40 sm:shrink-0">
+                    <Ruby text={row.label} index={index} />
+                  </p>
+                  <p className="text-coral-deep min-w-0 flex-1 text-sm leading-[1.9] font-bold">
                     ❗ <Ruby text={row.advice} index={index} />
                   </p>
-                ) : (
-                  <p className="text-leaf-deep mt-0.5 text-sm leading-[1.9] font-bold">
-                    ✅ <Ruby text="この ままで だいじょうぶです" index={index} />
-                  </p>
-                )}
-              </div>
-            </li>
-          ))}
-        </ul>
-      </div>
+                </li>
+              ))}
+          </ul>
+        </div>
+      ) : null}
 
       <FixList fixes={fixes} index={index} />
       <GoodAdvice good={good} advice={advice} index={index} />
@@ -380,11 +397,12 @@ export function ProbeScoreModal({
   fixes,
   nextLabel,
   rest,
+  judged,
   index,
   onRetry,
   onClose,
 }: {
-  /** 中身が 伝わったか（札が 開いたか）。 */
+  /** 中身が 伝わったか（この 1本で 札が 進んだか）。 */
   heard: boolean;
   question: string;
   answer: string;
@@ -392,8 +410,10 @@ export function ProbeScoreModal({
   fixes: readonly AsakaiFix[];
   /** とじる ボタンの 字（つぎの しつもん／みんなの 報告を 聞く）。 */
   nextLabel: string;
-  /** 残りの 確認（まだ 聞かれて いない 札の 名前。無ければ 空）。 */
+  /** まだ 聞かれて いない 札の 名前（無ければ 空）。 */
   rest: string;
+  /** AIが 日本語を 見たか。見て いない ときは「いいです」と 言わない（規律1）。 */
+  judged: boolean;
   index: FuriganaIndex;
   /** 言い直す（この ポップアップを 閉じて、同じ しつもんに もう いちど 答える）。 */
   onRetry: () => void;
@@ -427,15 +447,21 @@ export function ProbeScoreModal({
         </span>
         <span
           className={`rounded-xl border-2 px-3 py-1 text-xs leading-[1.9] font-black ${
-            fixes.length > 0
-              ? "border-sun-deep bg-cream text-sun-deep"
-              : "border-leaf bg-sky-soft text-leaf-deep"
+            !judged
+              ? "border-hairline bg-panel-tint text-ink-soft"
+              : fixes.length > 0
+                ? "border-sun-deep bg-cream text-sun-deep"
+                : "border-leaf bg-sky-soft text-leaf-deep"
           }`}
         >
-          {fixes.length > 0 ? "💬" : "✅"}{" "}
+          {!judged ? "—" : fixes.length > 0 ? "💬" : "✅"}{" "}
           <Ruby
             text={
-              fixes.length > 0 ? "日本語: 直す ところが あります" : "日本語: そのままで いいです"
+              !judged
+                ? "日本語: 見て いません"
+                : fixes.length > 0
+                  ? "日本語: 直す ところが あります"
+                  : "日本語: そのままで いいです"
             }
             index={index}
           />
@@ -471,7 +497,7 @@ export function ProbeScoreModal({
 
       {rest !== "" ? (
         <p className="text-ink-soft mt-3 text-[11px] leading-[1.9] font-bold">
-          ☰ <Ruby text={`残りの 確認: ${rest}`} index={index} />
+          ☰ <Ruby text={`まだ 聞かれて いない ところ: ${rest}`} index={index} />
         </p>
       ) : null}
     </ModalShell>
@@ -484,6 +510,7 @@ export function ProbeScoreModal({
 
 export function DayScoreModal({
   dayName,
+  kindName,
   at,
   total,
   score,
@@ -493,11 +520,14 @@ export function DayScoreModal({
   advice,
   fixes,
   nextLabel,
+  hasKey,
   index,
   onRetry,
   onClose,
 }: {
   dayName: string;
+  /** 「朝礼」「夕礼」（教材で ちがう ので 直書きしない）。 */
+  kindName: string;
   /** 何日目か（1始まり）。 */
   at: number;
   /** ぜんぶで 何日か。 */
@@ -515,6 +545,7 @@ export function DayScoreModal({
   fixes: readonly AsakaiFix[];
   /** とじる ボタンの 字（「木曜日へ 進む ▶」「週の けっかを 見る ▶」）。 */
   nextLabel: string;
+  hasKey: boolean;
   index: FuriganaIndex;
   /** もう いちど 報告する（その日を はじめから）。 */
   onRetry: () => void;
@@ -524,7 +555,7 @@ export function DayScoreModal({
   return (
     <ModalShell
       label="今日の 評価"
-      title={<Ruby text={`${dayName}の 朝礼 きょうの 評価`} index={index} />}
+      title={<Ruby text={`${dayName}の ${kindName} きょうの 評価`} index={index} />}
       onClose={onClose}
       closeLabel={nextLabel}
       secondary={{ label: "もう いちど 報告する", onClick: onRetry }}
@@ -534,11 +565,12 @@ export function DayScoreModal({
       <ScoreHead
         lead={`${dayName}の 報告`}
         score={score}
+        hasKey={hasKey}
         index={index}
         note={
           shut === 0 ? (
             <p className="text-leaf-deep text-sm leading-[1.9] font-black">
-              ✅ <Ruby text="4つ ぜんぶ 伝えられました" index={index} />
+              ✅ <Ruby text={`${rows.length}つ ぜんぶ 伝えられました`} index={index} />
             </p>
           ) : (
             <p className="text-coral-deep text-sm leading-[1.9] font-black">
@@ -547,6 +579,12 @@ export function DayScoreModal({
           )
         }
       />
+
+      {score.clarity !== null ? (
+        <p className="text-ink-soft mt-1 text-[11px] leading-[1.9] font-bold">
+          <Ruby text="伝わりやすさと 仕事の 日本語は、さいごの 報告の 見かたです。" index={index} />
+        </p>
+      ) : null}
 
       <MarkRow rows={rows} words={DAY_WORD} index={index} />
 
@@ -585,7 +623,21 @@ export function DayScoreModal({
       ) : null}
 
       <FixList fixes={fixes} index={index} />
-      <GoodAdvice good={good} advice={advice} index={index} />
+      <GoodAdvice
+        good={good}
+        /*
+         * **言えなかった 日にも つぎの 一手を 置く**（規律1 後段・R5-2）。
+         * AIの ことばは 鍵が ある ときだけ 来る ので、無い ときの 1行を 用意する。
+         */
+        advice={
+          advice !== ""
+            ? advice
+            : shut > 0
+              ? "つぎは 報告メモの ①②③④を、上から 1つずつ 声に 出して 言って みましょう。"
+              : ""
+        }
+        index={index}
+      />
 
       <p className="text-ink-soft mt-3 text-[11px] leading-[1.9] font-bold">
         📅 <Ruby text={`${dayName} おわり ${at}日目 / ${total}日`} index={index} />

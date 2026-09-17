@@ -93,7 +93,7 @@ export const ASAKAI_TOOL = {
           fixes: {
             type: "ARRAY",
             description:
-              "日本語の 直し（多くても 2つ）。通じて いる 文を 自然に する ためだけに 足さない。",
+              "日本語の 直し。**多くても 1つ**（教材の 見かたと 同じ）。通じて いる 文を 自然に する ためだけに 足さない。",
             items: {
               type: "OBJECT",
               properties: {
@@ -203,11 +203,12 @@ export function buildAsakaiJudgePrompt(context: AsakaiJudgeContext): string {
     "  言い方が つたなくても、何を したか・何を するか・何に こまって いるかが 分かれば 高く つけます",
     "- japanese（仕事の 日本語・0〜30）… ですます・助詞・動詞の 形が 職場で 通じるか。",
     "  N5〜N4 の 学生として 見ます。通じて いる 文を 短く する ため・自然に する ためだけに 減らしません",
+    "  教材の 3段を 点に すると: **natural は 25〜30 / rough は 15〜24 / hard は 0〜14**",
     "",
     "# ことば（good・advice・fixes）",
     "- good … 学生が **実際に 言った こと**を 1つ、具体的に。無ければ 空に します",
     "- advice … つぎに 直す ことを 1つ。何を どう 言えば よいかまで 書きます",
-    "- fixes … 日本語の 直しを 多くて 2つ。said（言った ところ）→ natural（自然な 言い方）と、",
+    "- fixes … 日本語の 直しを **1つだけ**。said（言った ところ）→ natural（自然な 言い方）と、",
     "  note（なぜ そう 言うか）を やさしい ことばで 1文。直す ところが 無ければ 空の 配列",
     "- **学生の 中身を 足しません**。言って いない ことを 直しの 中に 入れない",
   );
@@ -287,7 +288,7 @@ export function parseAsakaiJudge(
     /* 直す前と 直した あとが そろって いない 直しは 見せない（片方だけでは 読めない）。 */
     if (said === "" || natural === "") continue;
     fixes.push({ said, natural, note: text((one as { note?: unknown }).note) });
-    if (fixes.length >= 2) break;
+    if (fixes.length >= 1) break;
   }
   return {
     saidIds,
