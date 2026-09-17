@@ -57,6 +57,46 @@ const dayResultSchema = z.object({
 export type DayResult = z.infer<typeof dayResultSchema>;
 
 /**
+ * **報告の 途中**（その日の 板・聞き返しの 回数・チャット）。
+ *
+ * 2026-09-17 の 指定「回答結果が リセットされて しまう。曜日を 切り替えた 場合や
+ * 画面を 切り替えた 場合。ストレージ保管して 再現できるように」。
+ *
+ * ここまでは **終わった 日**しか 残して いなかった（「戻す 単位は 日」）ので、
+ * 火曜を 話しかけた まま 月曜の タブを 見に 行くと、戻った ときには 板が 空に なって いた。
+ * 授業では「前の 日を もう一度 見る」が ふつうに 起きる。
+ *
+ * **日ごとに 1つ**持つ。1つだけ 持つ 形に すると、済んだ 日を 見に 行った だけで
+ * 途中の 日が 消える。チャットも そのまま 残す——板だけ 戻して 会話が 空だと、
+ * 相手が 何を 聞いた ところだったかが 画面から 読めない。
+ */
+const chatLineSchema = z.object({
+  who: z.string().default(""),
+  speakerId: z.string().default(""),
+  text: z.string(),
+  self: z.boolean().optional(),
+  audio: z.string().optional(),
+});
+
+const panelStateSchema = z.object({
+  id: z.string(),
+  said: z.array(z.string()).default([]),
+  open: z.boolean().default(false),
+  full: z.boolean().default(false),
+  gaveUp: z.boolean().default(false),
+});
+
+const asakaiDraftSchema = z.object({
+  states: z.array(panelStateSchema).default([]),
+  attempts: z.record(z.string(), z.number().int().min(0)).default({}),
+  probes: z.number().int().min(0).default(0),
+  askedId: z.string().nullable().default(null),
+  lines: z.array(chatLineSchema).default([]),
+});
+
+export type AsakaiDraft = z.infer<typeof asakaiDraftSchema>;
+
+/**
  * 端末に 残す かたち。
  *
  * 欄を 足す ときは **かならず `.default()` を 付ける**——付けないと
@@ -65,6 +105,8 @@ export type DayResult = z.infer<typeof dayResultSchema>;
 const asakaiResumeSchema = z.object({
   meetingId: z.string(),
   done: z.array(dayResultSchema).default([]),
+  /** 話しかけて いる 日（曜日の id → 途中）。終わった 日は `done` が 持つ。 */
+  drafts: z.record(z.string(), asakaiDraftSchema).default({}),
 });
 
 export type AsakaiResume = z.infer<typeof asakaiResumeSchema>;
@@ -97,7 +139,11 @@ function keyOf(meetingId: string): string {
  * 2. 終わった日が 場面の 数に とどいて いれば 月曜から（＝完走ずみ。何度でも 話せる）
  * 3. 教材が 直されて 場面が 減った ときも、はみ出す なら 月曜から
  */
-export function startAsakaiFrom(saved: AsakaiResume | null, sceneCount: number): AsakaiStart {
+export function startAsakaiFrom(
+  /* 見るのは `done` だけ（途中は 日ごとに 別で 読む）。 */
+  saved: Pick<AsakaiResume, "done"> | null,
+  sceneCount: number,
+): AsakaiStart {
   const done = saved?.done ?? [];
   if (done.length === 0) return FRESH_ASAKAI;
   if (done.length >= sceneCount) return FRESH_ASAKAI;
@@ -128,7 +174,44 @@ export function saveAsakaiResume(
   done: readonly DayResult[],
   backend: ProgressBackend = defaultBackend(),
 ): void {
-  backend.set(keyOf(meetingId), JSON.stringify({ meetingId, done }));
+  /* **途中（`drafts`）を 巻き込んで 消さない**——読んでから 書く。 */
+  const drafts = readAsakaiResume(meetingId, backend)?.drafts ?? {};
+  backend.set(keyOf(meetingId), JSON.stringify({ meetingId, done, drafts }));
+}
+
+/** その日の 途中を 読む（無ければ null）。 */
+export function readAsakaiDraft(
+  meetingId: string,
+  day: string,
+  backend: ProgressBackend = defaultBackend(),
+): AsakaiDraft | null {
+  return readAsakaiResume(meetingId, backend)?.drafts?.[day] ?? null;
+}
+
+/** その日の 途中を 残す（話すたび・板が 動くたび）。 */
+export function saveAsakaiDraft(
+  meetingId: string,
+  day: string,
+  draft: AsakaiDraft,
+  backend: ProgressBackend = defaultBackend(),
+): void {
+  const saved = readAsakaiResume(meetingId, backend);
+  const drafts = { ...(saved?.drafts ?? {}), [day]: draft };
+  backend.set(keyOf(meetingId), JSON.stringify({ meetingId, done: saved?.done ?? [], drafts }));
+}
+
+/** その日が 終わったら 途中を 捨てる（けっかは `done` に 移る）。 */
+export function clearAsakaiDraft(
+  meetingId: string,
+  day: string,
+  backend: ProgressBackend = defaultBackend(),
+): void {
+  const saved = readAsakaiResume(meetingId, backend);
+  if (!saved) return;
+  const drafts = { ...saved.drafts };
+  if (!(day in drafts)) return;
+  delete drafts[day];
+  backend.set(keyOf(meetingId), JSON.stringify({ meetingId, done: saved.done, drafts }));
 }
 
 /** 完走したとき・やり直すときに 消す。 */

@@ -78,7 +78,10 @@ import { getGeminiKey, getProfile } from "@/lib/profile";
 import { fillCallName } from "@/lib/meeting/speech";
 import { recordContentProgress } from "@/lib/progress/store";
 import {
+  clearAsakaiDraft,
   clearAsakaiResume,
+  readAsakaiDraft,
+  saveAsakaiDraft,
   restoreAsakai,
   saveAsakaiResume,
   type DayResult,
@@ -116,6 +119,22 @@ const KIND_NAME: Record<Scene["kind"], string> = { asa: "朝礼", yuu: "夕礼" 
  * 端末に 保存されて いる ので、字を 変えると **前に 報告した 日が 行方不明に なる**
  *（済んだ 日の ✅ が 消え、次の 日が 開かなく なる）。
  */
+/**
+ * **2回 聞いても 言えなかった ときの ことば**（2026-09-17 の 指定）。
+ *
+ * 前は「こう 言うと 開きます。＋ お手本」を 出して いた。0点で 終わらせない ための
+ * 仕組みだったが、**答えを そのまま 読み上げて しまう**——進捗の 札なら
+ *「今、決済フロントエンド機能 ぜんたいの 進捗は 20%です。」が 画面に 出るので、
+ * 学習者は 考えずに 写せる（ユーザーの 指摘）。
+ *
+ * いまは **言えなかった ことを はっきり 言って 次へ 行く**（規律1）。
+ * 答えは 見せない。材料は 報告メモに あるので、次の 日に 自分で 取りに いける。
+ */
+const missedLine = (chairId: string, label: string, last: boolean) => ({
+  speakerId: chairId,
+  text: `${label}は 聞けませんでした。${last ? "きょうの 報告は ここまでです。" : "つぎに いきましょう。"}`,
+});
+
 const dayStamp = (scene: Scene) => {
   const date = /^(\d{1,2}\/\d{1,2})\s/u.exec(scene.title)?.[1];
   return date ? `${date} ${DAY_NAME[scene.day]}` : DAY_NAME[scene.day];
@@ -348,6 +367,24 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
   const scene = asakai?.scenes[sceneAt];
   const panels = useMemo(() => toPanels(scene), [scene]);
 
+  /*
+   * **話した ぶんを その場で 端末に 残す**（2026-09-17 の 指定）。
+   *
+   * 残すのは **話しかけて いる 日**だけ。終わった 日は しおりの `done` が 持つ。
+   * 板・聞き返しの 回数・チャットを そのまま 置くので、曜日を 行き来しても
+   * 画面を 閉じても、戻れば 同じ ところから つづけられる。
+   */
+  useEffect(() => {
+    if (!scene || phase !== "talk" || lines.length === 0) return;
+    saveAsakaiDraft(meeting.id, scene.day, {
+      states: states.map((one) => ({ ...one, said: [...one.said] })),
+      attempts,
+      probes,
+      askedId,
+      lines: [...lines],
+    });
+  }, [scene, phase, states, attempts, probes, askedId, lines, meeting.id]);
+
   /**
    * 作業記録の 行。**夕礼だけ 中身が ある**——朝礼の カードは
    * まとめ済みの 行（`rows`）なので、読み上げても それが 報告に なる。
@@ -382,13 +419,33 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
     (at: number) => {
       const next = asakai?.scenes[at];
       if (!next) return;
+      stopClips();
+
+      /*
+       * **途中まで 話した 日は、そこから 戻す**（2026-09-17 の 指定
+       *「回答結果が リセットされて しまう。曜日を 切り替えた 場合や 画面を
+       * 切り替えた 場合。ストレージ保管して 再現できるように」）。
+       *
+       * こえは 鳴らし直さない——戻って きた 人は もう 聞いて いる。
+       * 報告メモは 開く（どの 日の 話だったかを 先に 見せる）。
+       */
+      const draft = readAsakaiDraft(meeting.id, next.day);
+      if (draft && draft.lines.length > 0) {
+        setLines(draft.lines);
+        setStates(draft.states);
+        setAttempts(draft.attempts);
+        setProbes(draft.probes);
+        setAskedId(draft.askedId);
+        setDuty(true);
+        return;
+      }
+
       const said = [...next.opening, next.sample, next.prompt];
       setLines(said.map((line) => toChatLine(line, nameOf, learnerName)));
-      stopClips();
       pushClips(said, rateOf(speed));
       setDuty(true);
     },
-    [asakai, nameOf, learnerName, pushClips, stopClips, speed],
+    [asakai, meeting.id, nameOf, learnerName, pushClips, stopClips, speed],
   );
 
   /** 報告が 終わった ときの ひとかたまり（受け止め → 采配 → メンバー → 閉じ）。 */
@@ -437,6 +494,8 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
         saveAsakaiResume(meeting.id, done);
         return done;
       });
+      /* 途中の 控えは もう 要らない（「もう いちど 報告する」は はじめから 話す）。 */
+      clearAsakaiDraft(meeting.id, scene.day);
 
       /*
        * **開かなかった カードが ある 日に「ぜんぶ 聞けました」と 言わない**（規律1）。
@@ -599,7 +658,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
                * 0点で 終わらせない ための 仕組みが、いちばん つまずく ところで
                * 効いて いなかった。
                */
-              say({ ...data.example, text: `こう 言うと 開きます。${data.example.text}` });
+              say(missedLine(asakai.chairId, data.label, true));
               finishScene(passed, probes);
             },
           });
@@ -616,7 +675,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
           readLog,
           sceneOver: false,
           after: () => {
-            say({ ...data.example, text: `こう 言うと 開きます。${data.example.text}` });
+            say(missedLine(asakai.chairId, data.label, false));
             if (followup) say(followup);
             setAskedId(next.id);
           },

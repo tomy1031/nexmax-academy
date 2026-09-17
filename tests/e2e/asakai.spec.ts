@@ -601,3 +601,38 @@ test("5日 通すと、合否と 数が 読める", async ({ page, context }) =>
   /* 読み終えてから おわりに する（ここまで「クリア」の 板は かぶさらない）。 */
   await page.getByRole("button", { name: "けっかを 読みました" }).click();
 });
+
+/**
+ * **報告の 途中で 開き直しても、板と 会話が 残る**（2026-09-17 の 指定
+ *「回答結果が リセットされて しまう。…ストレージ保管して 再現できるように」）
+ *
+ * 前は 終わった 日しか 残して いなかった ので、話しかけた ところで 画面を 閉じると
+ * **その日は はじめから**に なった。授業では 途中で 別の 日を 見に 行く ことも あるし、
+ * 回線も 切れる。開いた カードは 端末に 残す。
+ */
+test("報告の 途中で 開き直しても、開いた カードが 残る", async ({ page, context }) => {
+  const refs = stageRefs();
+  const at = refs.indexOf("asakai_kantan");
+  await seedCompleted(context, refs.slice(0, at));
+
+  await page.goto("/asakai/meeting-asakai_kantan");
+  await joinCall(page);
+  await closeDuty(page);
+  await expect(page.getByText("（0 / 4）")).toBeVisible();
+
+  /* きのう した ことだけ 言う（1枚 開く）。 */
+  await page
+    .getByLabel("こたえを 入力する")
+    .fill("先週の 金曜日は、決済の 決まりを 調べて、決済の 画面と ABA Payの ボタンを 作りました。");
+  await page.getByRole("button", { name: "おくる" }).click();
+  await page.getByRole("dialog", { name: "報告の 見かた" }).getByRole("button").first().click();
+  await expect(page.getByText("（1 / 4）")).toBeVisible();
+
+  /* ここで 画面を 閉じた ことに する。 */
+  await page.reload();
+  await joinCall(page);
+  await closeDuty(page);
+  await expect(page.getByText("（1 / 4）"), "開き直したら 板が 空に なった").toBeVisible();
+  /* 会話も 残って いる（相手が どこまで 聞いたかが 読める）。 */
+  await expectOnScreen(page, "先週の 金曜日は、決済の 決まりを 調べて");
+});
