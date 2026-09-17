@@ -1,6 +1,15 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  authFromToken,
+  connectLiveInOrder,
+  createSetupGate,
+  FIRST_AUTH_FRESH_MS,
+  LIVE_SETUP_TIMEOUT_MS,
+  reasonFromClose,
+  startingWith,
+} from "@/lib/ai/live-connect";
 import { createLiveToken } from "@/lib/ai/live-token";
 import { DEFAULT_LIVE_TALK_MODEL, LIVE_TALK_MODELS } from "@/lib/ai/models";
 import { getGeminiKey, getLiveModel } from "@/lib/profile";
@@ -138,6 +147,13 @@ export interface LiveVoiceOptions {
 /** 指を はなしてから かけらを 待つ 時間。文字起こしは 発話より 遅れて 届く。 */
 const FLUSH_AFTER_MS = 1500;
 
+/** Live の つなぎの うち、ここで 使う ぶんだけ（SDK の 形が 変わっても 追いやすい）。 */
+interface VoiceSocket {
+  sendRealtimeInput: (input: unknown) => void;
+  sendClientContent: (input: unknown) => void;
+  close: () => void;
+}
+
 export function useLiveVoice(options: LiveVoiceOptions = {}): LiveVoice {
   const listenOnly = options.listenOnly ?? false;
   const [status, setStatus] = useState<VoiceStatus>("idle");
@@ -159,11 +175,7 @@ export function useLiveVoice(options: LiveVoiceOptions = {}): LiveVoice {
   const saidRef = useRef("");
   const utteranceIdRef = useRef(0);
 
-  const sessionRef = useRef<{
-    sendRealtimeInput: (input: unknown) => void;
-    sendClientContent: (input: unknown) => void;
-    close: () => void;
-  } | null>(null);
+  const sessionRef = useRef<VoiceSocket | null>(null);
   const micRef = useRef<{ capture: MicCapture; stream: MediaStream } | null>(null);
   const outRef = useRef<Output | null>(null);
   /**
@@ -194,10 +206,25 @@ export function useLiveVoice(options: LiveVoiceOptions = {}): LiveVoice {
   /** 続けて 失敗した 回数（3回で あきらめる）。 */
   const retriesRef = useRef(0);
   const retryTimerRef = useRef(0);
+  /**
+   * 張り直しの 途中に 入れかえを 頼まれた 指示文（まだ 効いて いない もの）。
+   * つながった つなぎが 別の 文で 始まって いたら、もう 一度だけ 黙って 張り直す。
+   */
+  const swapWantedRef = useRef<string | null>(null);
   /** `connect` 自身を 呼ぶ ための 参照（自分の 中からは 名前で 呼べない）。 */
   const connectRef = useRef<(s: string, v?: string, o?: string, silent?: boolean) => Promise<void>>(
     async () => {},
   );
+  /**
+   * いまの つなぎの 世代（2026-09-16）。後始末の たびに 進む。
+   *
+   * モデルを 順に ためす ように した ので、つなぎの 途中で 待つ 時間が 伸びた。
+   * その あいだに 張り直し・たいしつ・画面の 切りかえが 来ると、**古い つなぎが
+   * あとから 新しい つなぎの 入れ物（マイク・再生・セッション）を 書きかえる**。
+   * 閉じた つなぎの 切断（onclose）が 張り直しを 呼ぶ のも 同じ 元。
+   * `use-live-session.ts` の 世代と 同じ 型で、ちがう 世代は 何も せず 片づけて 帰る。
+   */
+  const epochRef = useRef(0);
 
   /**
    * つなぎの 後始末。
@@ -208,6 +235,8 @@ export function useLiveVoice(options: LiveVoiceOptions = {}): LiveVoice {
    * 切れると、**死んだ つなぎに 音を 送りつづけて** いた。
    */
   const teardown = useCallback(() => {
+    // 途中の つなぎを 古く する（あとから 届いても 入れ物に 触らせない）
+    epochRef.current += 1;
     talkingRef.current = false;
     setTalking(false);
     setSpeaking(false);
@@ -328,8 +357,15 @@ export function useLiveVoice(options: LiveVoiceOptions = {}): LiveVoice {
        * ヘンディさんが 2人ぶん 同時に 話して 声が 混ざった（2026-08-18 の 実発生）。
        */
       teardown();
+      const epoch = epochRef.current;
+      /** 待って いる あいだに 張り直し・たいしつ・画面の 切りかえが 来たか。 */
+      const stale = () => epoch !== epochRef.current;
       closingRef.current = false;
       argsRef.current = { systemInstruction, voice, opening };
+      // 人が 押して 始めた つなぎは まっさら（前の 入れかえの 頼みを 持ちこさない）
+      if (!silent) swapWantedRef.current = null;
+      /** つながった つなぎが どの 指示文で 始まったか（遅れて 勝った ものも 分かる ように）。 */
+      const startedWith = new Map<VoiceSocket, string>();
 
       /*
        * 黙って 張り直す ときは **画面を 動かさない**。
@@ -369,16 +405,18 @@ export function useLiveVoice(options: LiveVoiceOptions = {}): LiveVoice {
        * (2) キーが香港のデータセンターで復号される。通さなければどちらも起きない。
        *
        * 作れないキー（新形式 AQ. で報告あり）のときだけ、本人のキーで直接つなぐ。
+       * 1枚目は マイクの 許可を 聞く 前に 作る——鍵が 通らない ときに
+       * マイクの 許可だけ 聞く ことに ならない ように（2枚目から は `connectLiveInOrder`）。
+       * 許可ダイアログで 時間が たったら 1枚目も 作り直す（`FIRST_AUTH_FRESH_MS`）。
        */
       const models = wanted.length > 0 ? wanted : [DEFAULT_LIVE_TALK_MODEL];
-      const minted = await createLiveToken({ apiKey });
-      const lastReason = minted.ok ? "upstream" : minted.reason;
-      const canUseKeyDirectly = lastReason === "tokenRejected" || lastReason === "invalidRequest";
-      const auth = minted.ok ? minted.token : canUseKeyDirectly ? apiKey : null;
-      const liveModel = models[0] ?? DEFAULT_LIVE_TALK_MODEL;
-      if (!auth) {
+      const mint = async () => authFromToken(await createLiveToken({ apiKey }), apiKey);
+      const first = await mint();
+      const firstFreshUntil = Date.now() + FIRST_AUTH_FRESH_MS;
+      if (stale()) return;
+      if (!first.ok) {
         setStatus("notReady");
-        setReason(lastReason);
+        setReason(first.reason);
         return;
       }
 
@@ -396,30 +434,36 @@ export function useLiveVoice(options: LiveVoiceOptions = {}): LiveVoice {
           },
         });
       } catch {
+        if (stale()) return;
         setStatus("notReady");
         setReason("noMic");
         return;
       }
 
+      /*
+       * **マイクの 流れは 渡し終える まで この 関数の もの**（2026-09-16 の 検収）。
+       *
+       * 止める 処理は `micRef` に 入れて はじめて 後始末（teardown）に 届く。前は
+       * 入れる 前に 抜ける 道（つながらない・断られて 待ちつづける・張り直しが 重なる）で
+       * 流れが 取り残され、3回 張り直すと マイクが 3本 開いた ままに なった。
+       * 渡す 前に 抜けたら、どの 道でも `finally` で 止める。
+       */
+      let handedOff = false;
       try {
         const { GoogleGenAI, Modality } = await import("@google/genai");
-        /*
-         * **v1beta で つなぐ**（短命トークンでも）。
-         *
-         * SDK の 古い 警告（「ephemeral token support is in v1alpha only」）に
-         * 従って v1alpha に して みたが、判定の つなぎが **どの モデル名でも
-         * つながらなかった**（通し検証・鍵あり・2026-08-20 / reason=modelNotFound）。
-         * v1beta の ままの 声の つなぎは 動いて いるので、いまの SDK（v2.16）には
-         * この 警告は 当てはまらない と 判断する。
-         */
-        const ai = new GoogleGenAI({ apiKey: auth, apiVersion: "v1beta" });
+        if (stale()) return;
 
         /*
          * 再生側。解析器を挟んでから出す（口の形は ここの 音の 大きさで 決まる）。
+         * モデルを 何度 ためしても **1つを 使い回す**（ためす たびに 作ると 鳴らす 先が 増える）。
          */
         const outCtx = new AudioContext();
         // 自動再生の制限で止まったまま始まることがある。動かさないと1音も出ない
         if (outCtx.state === "suspended") await outCtx.resume();
+        if (stale()) {
+          void outCtx.close();
+          return;
+        }
         const node = outCtx.createAnalyser();
         node.fftSize = 512;
         node.connect(outCtx.destination);
@@ -445,125 +489,221 @@ export function useLiveVoice(options: LiveVoiceOptions = {}): LiveVoice {
             setLastAudio({ id: turnAudioIdRef.current, url });
           },
         };
+        // ここから 先は 後始末（teardown）が 閉じる
         outRef.current = out;
         setAnalyser(node);
 
-        const session = await ai.live.connect({
-          model: liveModel,
-          config: {
-            responseModalities: [Modality.AUDIO],
-            systemInstruction,
-            inputAudioTranscription: {},
-            outputAudioTranscription: {},
-            /*
-             * **区切りは こちらが 決める**（自動の 声の 検出を 切る）。
-             *
-             * 既定では 相手の サーバが 音を 聞いて「話しはじめた・話しおわった」を
-             * 自分で 決める。押して 話す 画面と 組み合わせると、押して いる あいだの
-             * 息つぎ・教室の ざわめきの たびに 区切りが 立ち、**1回 押しただけで
-             * 返事が 2つ 3つ 返って きた**（2026-08-20 の 実発生。前の 話題が
-             * 蘇る・声が 重なるのは これが 元）。
-             * `activityStart` / `activityEnd` を こちらから 送る 形に すると、
-             * **1回 押す ＝ 1つの ターン**が 機械的に 保証される。
-             */
-            realtimeInputConfig: { automaticActivityDetection: { disabled: true } },
-            /*
-             * 声は**人物カードで決めたもの**を使う（characters の voice）。
-             * 決めていないときは Live の既定に任せる——ここで別の声を勝手に
-             * 当てると、まんがのヘンディさんと声が違う人になる。
-             * 言語を伝えるのは、日本語として聞き取らせるため。
-             */
-            speechConfig: {
-              languageCode: "ja-JP",
-              ...(voice ? { voiceConfig: { prebuiltVoiceConfig: { voiceName: voice } } } : {}),
-            },
-          },
-          callbacks: {
-            /*
-             * **「したくが できました」まで 話せる ことに しない**（2026-08-20）。
-             *
-             * つなぎが 開いた 瞬間に ボタンを 生かして いた ため、いちばん 早い
-             * 学習者の **1回目の ひとことだけ 拾われなかった**（2回目からは 通る）。
-             * したくの 前に 送った 音と 合図は 受け取られない。
-             * 合図（`setupComplete`）は SDK が 内側で 受け取る ことも あるので、
-             * 開いた あと 少し 待つ 保険も 置く。
-             */
-            onopen: () => {
-              window.setTimeout(() => setStatus("live"), 800);
-            },
-            onmessage: (message: unknown) => {
-              if (isSetupComplete(message)) {
-                // つながった。つぎに 切れた ときは また 3回 ためせる
-                retriesRef.current = 0;
-                setStatus("live");
-              }
+        /** 1つの モデルで つなぐ。したくの 合図まで 待ち、断られたら 投げる。 */
+        const open = async (
+          auth: string,
+          model: string,
+          claim: (session: VoiceSocket) => boolean,
+        ): Promise<VoiceSocket> => {
+          /*
+           * **v1beta で つなぐ**（短命トークンでも）。
+           *
+           * SDK の 古い 警告（「ephemeral token support is in v1alpha only」）に
+           * 従って v1alpha に して みたが、判定の つなぎが **どの モデル名でも
+           * つながらなかった**（通し検証・鍵あり・2026-08-20 / reason=modelNotFound）。
+           * v1beta の ままの 声の つなぎは 動いて いるので、いまの SDK（v2.16）には
+           * この 警告は 当てはまらない と 判断する。
+           */
+          const ai = new GoogleGenAI({ apiKey: auth, apiVersion: "v1beta" });
+          const latest = argsRef.current ?? { systemInstruction, voice };
+          // 期限の あとに 遅れて つながった ものも、まだ どれも 決まって いなければ 使う
+          const gate = createSetupGate<VoiceSocket>(undefined, (session) => {
+            const won = claim(session);
+            if (won) startedWith.set(session, latest.systemInstruction);
+            return won;
+          });
+          /**
+           * この つなぎからの 届きものを 受け取って よいか。古い 世代・断られた つなぎ・
+           * 期限を 過ぎて まだ 使うか 決まって いない つなぎ（`late`）は 捨てる。
+           */
+          const mine = () => {
+            const phase = gate.phase();
+            return !stale() && (phase === "waiting" || phase === "ready");
+          };
+          /*
+           * 指示文と 声は **ためす その時の もの**（上の `latest`）を 使う。つなぎ直しの
+           * 途中で ラウンドが 変わる（`swapInstruction` が 書きかえる）と、始めた ときの
+           * 文の ままに なる。すでに 始めた つなぎが 古い 文で 勝った ときは、つないだ あとに
+           * もう 一度 張り直す（`swapWantedRef`）。
+           */
+
+          const connecting = ai.live.connect({
+            model,
+            config: {
+              responseModalities: [Modality.AUDIO],
+              systemInstruction: latest.systemInstruction,
+              inputAudioTranscription: {},
+              outputAudioTranscription: {},
               /*
-               * 文字起こしは**細切れで**届く（「わたしは」「プノンペン」…）。
-               * 1つずつ字幕にすると読めないし、途中で判定すると言い終える前に
-               * 見られることになる。だから:
-               *   聞き取り（学習者）… 相手が話しはじめた合図で 1つに束ねて流す
-               *   返事（相手）      … turnComplete で 1つに束ねる
+               * **区切りは こちらが 決める**（自動の 声の 検出を 切る）。
+               *
+               * 既定では 相手の サーバが 音を 聞いて「話しはじめた・話しおわった」を
+               * 自分で 決める。押して 話す 画面と 組み合わせると、押して いる あいだの
+               * 息つぎ・教室の ざわめきの たびに 区切りが 立ち、**1回 押しただけで
+               * 返事が 2つ 3つ 返って きた**（2026-08-20 の 実発生。前の 話題が
+               * 蘇る・声が 重なるのは これが 元）。
+               * `activityStart` / `activityEnd` を こちらから 送る 形に すると、
+               * **1回 押す ＝ 1つの ターン**が 機械的に 保証される。
                */
-              const piece = readTranscript(message);
-              if (piece?.from === "me") {
-                heardRef.current += piece.text;
+              realtimeInputConfig: { automaticActivityDetection: { disabled: true } },
+              /*
+               * 声は**人物カードで決めたもの**を使う（characters の voice）。
+               * 決めていないときは Live の既定に任せる——ここで別の声を勝手に
+               * 当てると、まんがのヘンディさんと声が違う人になる。
+               * 言語を伝えるのは、日本語として聞き取らせるため。
+               */
+              speechConfig: {
+                languageCode: "ja-JP",
+                ...(latest.voice
+                  ? { voiceConfig: { prebuiltVoiceConfig: { voiceName: latest.voice } } }
+                  : {}),
+              },
+            },
+            callbacks: {
+              onmessage: (message: unknown) => {
                 /*
-                 * 聞くだけの 相手（朝礼）は 合図を くれない ので、**かけらが
-                 * 止まった ところ**で 流す。かけらが 来るたび 予約を 取り直す。
+                 * したくの 合図（setupComplete）では 状態を 変えない。SDK は ためた 合図を
+                 * connect が 返る 前に 流す ので、**使われない（負けた）つなぎの 合図**でも
+                 * 「つながった」に なって しまう。つながったの 印は connect の あとで 立てる。
                  */
-                if (listenOnly) {
-                  if (flushTimerRef.current !== null) window.clearTimeout(flushTimerRef.current);
-                  flushTimerRef.current = window.setTimeout(flushHeard, FLUSH_AFTER_MS);
+                if (!mine()) return;
+                /*
+                 * 文字起こしは**細切れで**届く（「わたしは」「プノンペン」…）。
+                 * 1つずつ字幕にすると読めないし、途中で判定すると言い終える前に
+                 * 見られることになる。だから:
+                 *   聞き取り（学習者）… 相手が話しはじめた合図で 1つに束ねて流す
+                 *   返事（相手）      … turnComplete で 1つに束ねる
+                 */
+                const piece = readTranscript(message);
+                if (piece?.from === "me") {
+                  heardRef.current += piece.text;
+                  /*
+                   * 聞くだけの 相手（朝礼）は 合図を くれない ので、**かけらが
+                   * 止まった ところ**で 流す。かけらが 来るたび 予約を 取り直す。
+                   */
+                  if (listenOnly) {
+                    if (flushTimerRef.current !== null) window.clearTimeout(flushTimerRef.current);
+                    flushTimerRef.current = window.setTimeout(flushHeard, FLUSH_AFTER_MS);
+                  }
                 }
-              }
-              if (piece?.from === "client") {
-                flushHeard();
-                saidRef.current += piece.text;
-              }
-              /*
-               * 相手の セリフを 途中で 止められた とき（割り込み）。
-               * **鳴って いる 音と ためた かけらを 捨てる**。捨てないと、止めた はずの
-               * セリフが あとから まとめて 鳴る。
-               */
-              /*
-               * 途中で 止められた ぶんの **字幕も 捨てる**。捨てないと、言いかけの
-               * ことばが `saidRef` に 残り、つぎの 返事と つながって チャット欄に
-               * 出る——「話した ことばと 画面の 字が ちがう」の 正体の ひとつ
-               *（2026-08-20 の 指摘）。
-               */
-              if (isInterrupted(message)) {
-                clearScheduled(outRef.current);
-                saidRef.current = "";
-              }
-              if (isTurnComplete(message)) {
-                if (saidRef.current.trim()) {
-                  const said = saidRef.current.trim();
+                if (piece?.from === "client") {
+                  flushHeard();
+                  saidRef.current += piece.text;
+                }
+                /*
+                 * 相手の セリフを 途中で 止められた とき（割り込み）。
+                 * **鳴って いる 音と ためた かけらを 捨てる**。捨てないと、止めた はずの
+                 * セリフが あとから まとめて 鳴る。
+                 */
+                /*
+                 * 途中で 止められた ぶんの **字幕も 捨てる**。捨てないと、言いかけの
+                 * ことばが `saidRef` に 残り、つぎの 返事と つながって チャット欄に
+                 * 出る——「話した ことばと 画面の 字が ちがう」の 正体の ひとつ
+                 *（2026-08-20 の 指摘）。
+                 */
+                if (isInterrupted(message)) {
+                  clearScheduled(outRef.current);
                   saidRef.current = "";
-                  setTurns((prev) => [...prev, { from: "client", text: said }]);
                 }
-                // ためた かけらを 1つの WAV に して 画面へ 渡す（🔊 で 聞き返す ため）
-                flushTurn(outRef.current);
-              }
-              for (const pcm of readAudio(message)) play(outRef.current, pcm);
+                if (isTurnComplete(message)) {
+                  if (saidRef.current.trim()) {
+                    const said = saidRef.current.trim();
+                    saidRef.current = "";
+                    setTurns((prev) => [...prev, { from: "client", text: said }]);
+                  }
+                  // ためた かけらを 1つの WAV に して 画面へ 渡す（🔊 で 聞き返す ため）
+                  flushTurn(outRef.current);
+                }
+                for (const pcm of readAudio(message)) play(outRef.current, pcm);
+                /*
+                 * 「そろそろ 切ります」の 予告。切れる 前に こちらから 張り直す
+                 *（切れて からだと、その ひとことが 途中で 消える）。
+                 */
+                if (isGoAway(message)) retryLater();
+              },
               /*
-               * 「そろそろ 切ります」の 予告。切れる 前に こちらから 張り直す
-               *（切れて からだと、その ひとことが 途中で 消える）。
+               * **したくの 前の 切断は「この モデルに 断られた」**（2026-09-16）。
+               * SDK の connect は 断られても 返らない ので、ここで 門を 落として
+               * つぎの モデルへ 進む。張り直しは 呼ばない（呼ぶと ためして いる
+               * 途中の つなぎと 張り直しが 重なる）。
+               *
+               * **つないだ あとの 切断は 黙って 張り直す**（2026-08-21 の 指定）。
+               * 前は `setStatus("idle")` だけで、丸い マイクが「スタート」に 戻って
+               * いた。切れる 元は いくつも ある（短命トークンの 30分・セッションの
+               * 上限・回線）が、学習者から すれば どれも 同じ「急に 話せなく なった」。
+               * 出るのは やめて、こちらで 張り直す。
+               *
+               * 古い 世代の 切断（こちらが 閉じた つなぎ）は 何も しない。拾うと
+               * 張り直した ばかりの つなぎを また 張り直す ことに なる。
+               *
+               * つないだ あとの **壊れた（onerror）では 張り直さない**——ブラウザは
+               * 壊れた あと かならず 閉じた（onclose）も 出す。両方で 張り直すと、
+               * 1回 切れた だけで「3回まで」の 2回ぶんを 使う（2026-09-16 の 検収）。
                */
-              if (isGoAway(message)) retryLater();
+              onerror: () => {
+                const phase = gate.phase();
+                if (phase === "waiting" || phase === "late") gate.fail("upstream");
+              },
+              onclose: (event: unknown) => {
+                const phase = gate.phase();
+                if (phase === "waiting" || phase === "late") gate.fail(reasonFromClose(event));
+                else if (mine()) retryLater();
+              },
             },
-            /*
-             * **切れたら 黙って 張り直す**（2026-08-21 の 指定）。
-             *
-             * 前は `setStatus("idle")` だけで、丸い マイクが「スタート」に 戻って
-             * いた。切れる 元は いくつも ある（短命トークンの 30分・セッションの
-             * 上限・回線）が、学習者から すれば どれも 同じ「急に 話せなく なった」。
-             * 出るのは やめて、こちらで 張り直す。
-             */
-            onerror: () => retryLater(),
-            onclose: () => retryLater(),
-          },
+          });
+          return await gate.wait(connecting as unknown as Promise<VoiceSocket>);
+        };
+
+        const connected = await connectLiveInOrder({
+          models,
+          mint: startingWith(first, mint, firstFreshUntil),
+          open,
+          stop: stale,
+          lateGraceMs: LIVE_SETUP_TIMEOUT_MS,
         });
-        sessionRef.current = session as unknown as NonNullable<typeof sessionRef.current>;
+        if (stale()) {
+          // 待って いる あいだに 次の つなぎが 始まった。届いた ものは 使わずに 閉じる
+          if (connected.ok) connected.session.close();
+          return;
+        }
+        if (!connected.ok) {
+          /*
+           * 張り直しの 途中なら 黙って もう一度（3回まで）。人が 押した ときは 理由を 出す。
+           * 理由の 名前は これまでの 体系の まま——鍵の 問題なら その 名前、使いすぎで
+           * 閉じられたら rateLimited、ほかで つながらなければ connect。
+           */
+          if (silent) {
+            retryLater();
+            return;
+          }
+          teardown();
+          setAnalyser(null);
+          if (connected.stage === "auth") {
+            setStatus("notReady");
+            setReason(connected.reason);
+          } else {
+            setStatus("error");
+            setReason(connected.reason === "rateLimited" ? "rateLimited" : "connect");
+          }
+          return;
+        }
+        const session = connected.session;
+        sessionRef.current = session;
+        /*
+         * **「したくが できました」まで 話せる ことに しない**（2026-08-20）。
+         *
+         * つなぎが 開いた 瞬間に ボタンを 生かして いた ため、いちばん 早い
+         * 学習者の **1回目の ひとことだけ 拾われなかった**（2回目からは 通る）。
+         * SDK の connect は したくの 合図を 受け取ってから 返る ので、ここが その 時。
+         * 前は「開いて 0.8秒」でも 生かして いたが、それだと **断られる モデルでも**
+         * 一瞬 話せる 画面に なる（2026-09-16）。
+         */
+        retriesRef.current = 0;
+        setStatus("live");
 
         /*
          * マイク → 16kHz PCM → 送信。落とす処理は mic-capture.ts が持つ
@@ -586,7 +726,13 @@ export function useLiveVoice(options: LiveVoiceOptions = {}): LiveVoice {
             },
           });
         });
+        if (stale()) {
+          // セッションと 再生は 次の つなぎの 後始末が 閉じた。マイクは ここで 止める
+          capture.stop();
+          return;
+        }
         micRef.current = { capture, stream };
+        handedOff = true;
 
         /*
          * つないだ ら、こちらから **1回だけ** 合図を 送る。
@@ -600,14 +746,31 @@ export function useLiveVoice(options: LiveVoiceOptions = {}): LiveVoice {
             turnComplete: true,
           });
         }
+
+        /*
+         * 張り直しの 途中で ラウンドが 変わって いて、勝った つなぎが **前の 文で**
+         * 始まって いたら、もう 一度だけ 黙って 張り直す。呼ぶ 側は 入れかえを
+         * 1回しか 頼まない ので、ここで 取りこぼすと ラウンド2が 1の 指示文で 続く。
+         */
+        const swapTo = swapWantedRef.current;
+        swapWantedRef.current = null;
+        const args = argsRef.current;
+        if (swapTo !== null && args && startedWith.get(session) !== swapTo) {
+          retriesRef.current = 0;
+          void connectRef.current(swapTo, args.voice, undefined, true);
+        }
       } catch {
-        stream.getTracks().forEach((t) => t.stop());
+        if (stale()) return;
         if (silent) {
           retryLater();
           return;
         }
+        teardown();
+        setAnalyser(null);
         setStatus("error");
         setReason("connect");
+      } finally {
+        if (!handedOff) stream.getTracks().forEach((t) => t.stop());
       }
     },
     [teardown, retryLater, listenOnly, flushHeard],
@@ -655,8 +818,20 @@ export function useLiveVoice(options: LiveVoiceOptions = {}): LiveVoice {
 
   const swapInstruction = useCallback(
     async (systemInstruction: string, voice?: string) => {
-      // つないで いない ときは 何も しない（つぎに 押した ときの 指示文が 新しい）
-      if (!sessionRef.current) return;
+      if (!sessionRef.current) {
+        /*
+         * つないで いない ときは つなぎ直さない（つぎに 押した ときの 指示文が 新しい）。
+         * **黙って 張り直して いる 途中**なら、これから ためす つなぎが 新しい 文を
+         * 使う ように 覚え書きだけ 書きかえる（`open` が その時の 文を 読む）。
+         * 書きかえないと、ラウンド2が 1の 指示文の まま 続く（2026-09-16 の 検収）。
+         */
+        const args = argsRef.current;
+        if (args && !closingRef.current) {
+          argsRef.current = { ...args, systemInstruction, voice: voice ?? args.voice };
+          swapWantedRef.current = systemInstruction;
+        }
+        return;
+      }
       retriesRef.current = 0;
       await connect(systemInstruction, voice, undefined, true);
     },
@@ -778,12 +953,6 @@ interface Output {
   setBusy: (busy: boolean) => void;
   /** ターンぶんの 音が できた ときに 呼ぶ（聞き返し用）。 */
   onTurnAudio: (url: string) => void;
-}
-
-/** 相手の したくが 済んだか（ここから 送ってよい）。 */
-function isSetupComplete(message: unknown): boolean {
-  if (!message || typeof message !== "object") return false;
-  return (message as { setupComplete?: unknown }).setupComplete !== undefined;
 }
 
 /** 「そろそろ 切ります」の 予告が 来たか。 */

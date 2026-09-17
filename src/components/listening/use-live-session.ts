@@ -1,6 +1,15 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  authFromToken,
+  connectLiveInOrder,
+  createSetupGate,
+  FIRST_AUTH_FRESH_MS,
+  LIVE_SETUP_TIMEOUT_MS,
+  reasonFromClose,
+  startingWith,
+} from "@/lib/ai/live-connect";
 import { createLiveToken } from "@/lib/ai/live-token";
 import { DEFAULT_LIVE_TALK_MODEL, LIVE_TALK_MODELS } from "@/lib/ai/models";
 import { getGeminiKey, getLiveModel } from "@/lib/profile";
@@ -44,6 +53,15 @@ import { startMicCapture, IN_RATE, type MicCapture } from "@/components/meeting/
  * 切りかえると まだ null の session を 閉じられず 居座る（マイク・AudioContext も 漏れる）。
  * `connect` は 自分の 世代を 持ち、await の あとと コールバックの 中で 世代を 確かめる。
  * ちがえば **何も せず 片づけて 帰る**（call-shell の `cancelled` と 同じ 型）。
+ *
+ * ## 🎤 が オンの あいだだけ 送る — 2026-09-16
+ * 前は つないで いる あいだ ずっと マイクの 音を 送り、区切りは 相手（自動の 検出）に
+ * まかせて いた。教室の 声・となりの 学習者の 声まで 相手に 届き、ミーティングで 覚えた
+ *「🎤を 押して 話す」とも ちがって いた（ユーザーの 指定「マイクを 押している 間だけの
+ * 利用が 前提」）。いまは ミーティング（use-live-voice）と 同じ 約束:
+ *   - 自動の 区切りを 切り、`startTalking` / `stopTalking` で activityStart / activityEnd を 送る
+ *   - マイクは つないで いる あいだ 開いて いるが、**オフの あいだの 音は 端末で 捨てる**
+ *   - オンに したとき 相手が 話して いたら、鳴って いる 音を そこで 止める
  */
 
 export type LiveStatus = "idle" | "connecting" | "live" | "notReady" | "error";
@@ -64,6 +82,13 @@ export interface LiveTurn {
 
 /** 返る音声のサンプリングレート（Live API の決まり）。送る側は mic-capture.ts が持つ。 */
 const OUT_RATE = 24_000;
+
+/** Live の つなぎの うち、ここで 使う ぶんだけ（SDK の 形が 変わっても 追いやすい）。 */
+interface LiveSocket {
+  sendRealtimeInput: (input: unknown) => void;
+  sendClientContent: (input: unknown) => void;
+  close: () => void;
+}
 
 export interface LiveSession {
   readonly status: LiveStatus;
@@ -87,6 +112,12 @@ export interface LiveSession {
    * 画面は「声は使えないが、書けば進める」と伝えるために使う。
    */
   readonly voiceOn: boolean;
+  /** 🎤 が オンか。**オンの あいだだけ** マイクの 音を 送る。 */
+  readonly talking: boolean;
+  /** 🎤 を オンに する（相手が 話して いたら 止める）。 */
+  readonly startTalking: () => void;
+  /** 🎤 を オフに する（ここで 相手が 返事を 作りはじめる）。 */
+  readonly stopTalking: () => void;
   /** `voice` は人物カードで決めた声（scenario の client.voice）。 */
   readonly connect: (systemInstruction: string, voice?: string) => Promise<void>;
   readonly disconnect: () => void;
@@ -99,24 +130,25 @@ export function useLiveSession(): LiveSession {
   const [transcript, setTranscript] = useState<readonly LiveTurn[]>([]);
   const [lastUtterance, setLastUtterance] = useState<{ id: number; text: string } | null>(null);
   const [voiceOn, setVoiceOn] = useState(false);
+  const [talking, setTalking] = useState(false);
+  /** マイクの 音を 送って よいか（音声スレッドの 呼び戻しから 読むので ref でも 持つ）。 */
+  const talkingRef = useRef(false);
 
   /** 聞き取りの途中。相手が話しはじめたら1つに束ねて流す。 */
   const heardRef = useRef("");
   const saidRef = useRef("");
   const utteranceIdRef = useRef(0);
 
-  const sessionRef = useRef<{
-    sendRealtimeInput: (input: unknown) => void;
-    sendClientContent: (input: unknown) => void;
-    close: () => void;
-  } | null>(null);
+  const sessionRef = useRef<LiveSocket | null>(null);
   const micRef = useRef<{ capture: MicCapture; stream: MediaStream } | null>(null);
-  const outRef = useRef<{ ctx: AudioContext; node: GainNode; playAt: number } | null>(null);
+  const outRef = useRef<Output | null>(null);
   /** いまの つなぎの 世代。`connect` と `disconnect` の たびに 進む。 */
   const epochRef = useRef(0);
 
   /** 持って いる ものを 全部 止める（状態は 触らない）。 */
   const release = useCallback(() => {
+    // 閉じた つなぎに 音を 送らない（つぎの つなぎも オフから 始める）
+    talkingRef.current = false;
     sessionRef.current?.close();
     sessionRef.current = null;
     micRef.current?.capture.stop();
@@ -126,12 +158,38 @@ export function useLiveSession(): LiveSession {
     outRef.current = null;
   }, []);
 
+  /**
+   * 聞き取りの かけらを 1つの 発話に 束ねて 流す（判定・字幕へ）。相手が 話しはじめた ときに 呼ぶ。
+   */
+  const flushHeard = useCallback(() => {
+    const heard = heardRef.current.trim();
+    heardRef.current = "";
+    if (!heard) return;
+    utteranceIdRef.current += 1;
+    const id = utteranceIdRef.current;
+    setTranscript((prev) => [...prev, { from: "me", text: heard, mode: "voice" }]);
+    setLastUtterance({ id, text: heard });
+  }, []);
+
   const disconnect = useCallback(() => {
     epochRef.current += 1;
     release();
+    setTalking(false);
     setVoiceOn(false);
     setStatus("idle");
     setReason(null);
+  }, [release]);
+
+  /*
+   * **画面から 消える ときは 必ず 閉じる**（2026-09-16・use-live-voice と 同じ）。
+   * 🎤 が オンの まま「ステージに もどる」を 押すと、画面は 消えても つなぎと マイクが
+   * 残り、**教室の 音を 送りつづけて いた**（止める ボタンは もう 画面に 無い）。
+   */
+  useEffect(() => {
+    return () => {
+      epochRef.current += 1;
+      release();
+    };
   }, [release]);
 
   const connect = useCallback(
@@ -146,6 +204,7 @@ export function useLiveSession(): LiveSession {
       setTranscript([]);
       setLastUtterance(null);
       setVoiceOn(false);
+      setTalking(false);
       heardRef.current = "";
       saidRef.current = "";
 
@@ -170,8 +229,6 @@ export function useLiveSession(): LiveSession {
         (name, index, all): name is string => Boolean(name) && all.indexOf(name) === index,
       );
       const models = wanted.length > 0 ? wanted : [DEFAULT_LIVE_TALK_MODEL];
-      const minted = await createLiveToken({ apiKey });
-      if (stale()) return;
       /*
        * 短命トークンが作れないキーでも、たいわを止めない（2026-08-17）
        *
@@ -182,15 +239,20 @@ export function useLiveSession(): LiveSession {
        * 最後の手段として、本人のキーで 直接つなぐ。キーは もともと この端末に
        * ある（BYOK）ので 新しく 配るわけでは ないが、「漏れても30分で 切れる」
        * 効き目は 失う。だから **トークンが 作れなかったときだけ**に 限る。
-       * 権限・使いすぎの ときは 直接つないでも 同じなので 落ちるに まかせる。
+       * 権限・使いすぎの ときは 直接つないでも 同じなので 落ちるに まかせる
+       *（`authFromToken`）。
+       *
+       * 1枚目は マイクの 許可を 聞く 前に 作って 鍵を 確かめ、先頭の モデルで 使う。
+       * トークンは 1回 使い切りなので、2つ目の モデルからは 作り直す（`connectLiveInOrder`）。
+       * 許可ダイアログで 時間が たったら 1枚目も 作り直す（`FIRST_AUTH_FRESH_MS`）。
        */
-      const lastReason = minted.ok ? "upstream" : minted.reason;
-      const canUseKeyDirectly = lastReason === "tokenRejected" || lastReason === "invalidRequest";
-      const auth = minted.ok ? minted.token : canUseKeyDirectly ? apiKey : null;
-      const liveModel = models[0] ?? DEFAULT_LIVE_TALK_MODEL;
-      if (!auth) {
+      const mint = async () => authFromToken(await createLiveToken({ apiKey }), apiKey);
+      const first = await mint();
+      const firstFreshUntil = Date.now() + FIRST_AUTH_FRESH_MS;
+      if (stale()) return;
+      if (!first.ok) {
         setStatus("notReady");
-        setReason(lastReason);
+        setReason(first.reason);
         return;
       }
 
@@ -218,97 +280,164 @@ export function useLiveSession(): LiveSession {
         return;
       }
 
+      /*
+       * **マイクの 流れは `micRef` に 渡し終える まで この 関数の もの**（2026-09-16）。
+       * 渡す 前に 抜けたら（どの モデルにも つながらない・世代が かわった）`finally` で 止める。
+       */
+      let handedOff = false;
       try {
         // SDK は接続時にだけ要る。初期表示のバンドルに載せない。
         const { GoogleGenAI, Modality } = await import("@google/genai");
-        if (stale()) {
-          stream?.getTracks().forEach((track) => track.stop());
-          return;
-        }
-        const ai = new GoogleGenAI({ apiKey: auth, apiVersion: "v1beta" });
+        if (stale()) return;
 
-        // 再生側。24kHz で受けて、切れ目なく順に鳴らす
+        // 再生側。24kHz で受けて、切れ目なく順に鳴らす（モデルを 何度 ためしても 1つを 使う）
         const outCtx = new AudioContext({ sampleRate: OUT_RATE });
         // 自動再生の制限で止まったまま始まることがある。動かさないと1音も出ない
         if (outCtx.state === "suspended") await outCtx.resume();
         if (stale()) {
           void outCtx.close();
-          stream?.getTracks().forEach((track) => track.stop());
           return;
         }
         const node = outCtx.createGain();
         node.connect(outCtx.destination);
-        const out = { ctx: outCtx, node, playAt: 0 };
+        const out: Output = { ctx: outCtx, node, playAt: 0, sources: [] };
         outRef.current = out;
 
-        const session = await ai.live.connect({
-          model: liveModel,
-          config: {
-            responseModalities: [Modality.AUDIO],
-            systemInstruction,
-            // 文字起こしを必ず出す。学習者が「何を言ったか」を目で確かめられるようにする。
-            inputAudioTranscription: {},
-            outputAudioTranscription: {},
-            /*
-             * 声は**人物カードで決めたもの**を使う（scenario の client.voice）。
-             * 決めていないときは Live の既定に任せる——ここで別の声を勝手に当てると、
-             * まんがや ミーティングと 声が 違う人になる。
-             */
-            speechConfig: {
-              languageCode: "ja-JP",
-              ...(voice ? { voiceConfig: { prebuiltVoiceConfig: { voiceName: voice } } } : {}),
-            },
-          },
-          callbacks: {
-            onopen: () => {
-              if (!stale()) setStatus("live");
-            },
-            onmessage: (message: unknown) => {
-              // 閉じた 世代からの 届きもの（声・字幕）は 捨てる。新しい 相手の 名で 出て しまう
-              if (stale()) return;
-              /*
-               * 文字起こしは**細切れで**届く。1つずつ字幕にすると読めないし、
-               * 途中で判定すると言い終える前に見られることになる。だから:
-               *   聞き取り（学習者）… 相手が話しはじめた合図で 1つに束ねて流す
-               *   返事（相手）      … turnComplete で 1つに束ねる
-               */
-              const piece = readTranscript(message);
-              if (piece?.from === "me") heardRef.current += piece.text;
-              if (piece?.from === "client") {
-                const heard = heardRef.current.trim();
-                if (heard) {
-                  heardRef.current = "";
-                  utteranceIdRef.current += 1;
-                  const id = utteranceIdRef.current;
-                  setTranscript((prev) => [...prev, { from: "me", text: heard, mode: "voice" }]);
-                  setLastUtterance({ id, text: heard });
-                }
-                saidRef.current += piece.text;
-              }
-              if (isTurnComplete(message) && saidRef.current.trim()) {
-                const said = saidRef.current.trim();
-                saidRef.current = "";
-                setTranscript((prev) => [...prev, { from: "client", text: said, mode: "voice" }]);
-              }
-              for (const pcm of readAudio(message)) play(out, pcm);
-            },
-            onerror: () => {
-              if (!stale()) setStatus("error");
-            },
-            onclose: () => {
-              if (!stale()) setStatus("idle");
-            },
-          },
-        });
+        /** 1つの モデルで つなぐ。したくの 合図まで 待ち、断られたら 投げる。 */
+        const open = async (
+          auth: string,
+          model: string,
+          claim: (session: LiveSocket) => boolean,
+        ): Promise<LiveSocket> => {
+          const ai = new GoogleGenAI({ apiKey: auth, apiVersion: "v1beta" });
+          // 期限の あとに 遅れて つながった ものも、まだ どれも 決まって いなければ 使う
+          const gate = createSetupGate<LiveSocket>(undefined, claim);
+          /**
+           * この つなぎからの 届きものを 受け取って よいか。古い 世代・断られた つなぎ・
+           * 期限を 過ぎて まだ 使うか 決まって いない つなぎ（`late`）は 捨てる。
+           */
+          const mine = () => {
+            const phase = gate.phase();
+            return !stale() && (phase === "waiting" || phase === "ready");
+          };
 
+          const connecting = ai.live.connect({
+            model,
+            config: {
+              responseModalities: [Modality.AUDIO],
+              systemInstruction,
+              // 文字起こしを必ず出す。学習者が「何を言ったか」を目で確かめられるようにする。
+              inputAudioTranscription: {},
+              outputAudioTranscription: {},
+              /*
+               * **区切りは こちらが 決める**（自動の 声の 検出を 切る・2026-09-16）。
+               * 🎤 を オンに した ときに activityStart、オフに した ときに activityEnd を 送る。
+               * 自動の まま だと、オフの あいだは 音が 来ない ので 区切りが 立たず、
+               * オンの あいだの 息つぎでも 区切りが 立って 返事が 割り込む（ミーティングで 実発生）。
+               */
+              realtimeInputConfig: { automaticActivityDetection: { disabled: true } },
+              /*
+               * 声は**人物カードで決めたもの**を使う（scenario の client.voice）。
+               * 決めていないときは Live の既定に任せる——ここで別の声を勝手に当てると、
+               * まんがや ミーティングと 声が 違う人になる。
+               */
+              speechConfig: {
+                languageCode: "ja-JP",
+                ...(voice ? { voiceConfig: { prebuiltVoiceConfig: { voiceName: voice } } } : {}),
+              },
+            },
+            callbacks: {
+              onmessage: (message: unknown) => {
+                // 閉じた 世代・断られた つなぎからの 届きもの（声・字幕）は 捨てる。新しい 相手の 名で 出て しまう
+                if (!mine()) return;
+                /*
+                 * 文字起こしは**細切れで**届く。1つずつ字幕にすると読めないし、
+                 * 途中で判定すると言い終える前に見られることになる。だから:
+                 *   聞き取り（学習者）… 相手が話しはじめた合図で 1つに束ねて流す
+                 *   返事（相手）      … turnComplete で 1つに束ねる
+                 */
+                const piece = readTranscript(message);
+                if (piece?.from === "me") heardRef.current += piece.text;
+                if (piece?.from === "client") {
+                  flushHeard();
+                  saidRef.current += piece.text;
+                }
+                /*
+                 * 相手の セリフを 途中で 止められた とき（割り込み）。3.8 は 書いて 送ると
+                 * 話して いる 最中でも 止める。**鳴らす 予約と 言いかけの 字を 捨てる**——
+                 * 捨てないと 止めた はずの 声が 鳴りつづけ、言いかけが つぎの 返事と
+                 * 1つの 吹き出しに つながる（use-live-voice と 同じ 扱い）。
+                 */
+                if (isInterrupted(message)) {
+                  clearScheduled(out);
+                  saidRef.current = "";
+                }
+                if (isTurnComplete(message) && saidRef.current.trim()) {
+                  const said = saidRef.current.trim();
+                  saidRef.current = "";
+                  setTranscript((prev) => [...prev, { from: "client", text: said, mode: "voice" }]);
+                }
+                for (const pcm of readAudio(message)) play(out, pcm);
+              },
+              /*
+               * したくの 前の 切断は「この モデルに 断られた」——門を 落として つぎの
+               * モデルへ 進む（SDK の connect は 断られても 返らない）。
+               * つないだ あとの 切断だけを 画面の 状態に する。
+               */
+              onerror: () => {
+                const phase = gate.phase();
+                if (phase === "waiting" || phase === "late") gate.fail("upstream");
+                else if (mine()) {
+                  talkingRef.current = false;
+                  setTalking(false);
+                  setStatus("error");
+                }
+              },
+              onclose: (event: unknown) => {
+                const phase = gate.phase();
+                if (phase === "waiting" || phase === "late") gate.fail(reasonFromClose(event));
+                else if (mine()) {
+                  talkingRef.current = false;
+                  setTalking(false);
+                  setStatus("idle");
+                }
+              },
+            },
+          });
+          return await gate.wait(connecting as unknown as Promise<LiveSocket>);
+        };
+
+        const connected = await connectLiveInOrder({
+          models,
+          mint: startingWith(first, mint, firstFreshUntil),
+          open,
+          stop: stale,
+          // 期限切れで 待って いる つなぎが あれば、決める 前に 少し 待つ（遅い 回線）
+          lateGraceMs: LIVE_SETUP_TIMEOUT_MS,
+        });
         if (stale()) {
           // つなぎ途中に 相手が かわった。届いた セッションは 使わずに 閉じる（居座らせない）
-          (session as unknown as { close: () => void }).close();
-          void outCtx.close();
-          stream?.getTracks().forEach((track) => track.stop());
+          // 再生は 次の つなぎ（か 切断）の 片づけが もう 閉じた（二度 閉じると 投げる）
+          if (connected.ok) connected.session.close();
           return;
         }
-        sessionRef.current = session as unknown as NonNullable<typeof sessionRef.current>;
+        if (!connected.ok) {
+          /*
+           * 理由の 名前は これまでの 体系の まま——鍵の 問題なら その 名前、使いすぎで
+           * 閉じられたら rateLimited（「きょうは つかいすぎた」）、ほかで つながらなければ connect。
+           */
+          release();
+          if (connected.stage === "auth") {
+            setStatus("notReady");
+            setReason(connected.reason);
+          } else {
+            setStatus("error");
+            setReason(connected.reason === "rateLimited" ? "rateLimited" : "connect");
+          }
+          return;
+        }
+        const session = connected.session;
+        sessionRef.current = session;
 
         /*
          * マイク → 16kHz PCM → 送信。落とす処理は mic-capture.ts が持つ
@@ -317,7 +446,8 @@ export function useLiveSession(): LiveSession {
          */
         if (stream) {
           const capture = await startMicCapture(stream, (pcm) => {
-            if (stale()) return;
+            // 🎤 が オフの あいだの 音は **送らずに 捨てる**（教室の 声を 相手に 届けない）
+            if (stale() || !talkingRef.current) return;
             sessionRef.current?.sendRealtimeInput({
               audio: {
                 data: bytesToBase64(new Uint8Array(pcm.buffer, pcm.byteOffset, pcm.byteLength)),
@@ -327,22 +457,32 @@ export function useLiveSession(): LiveSession {
           });
           if (stale()) {
             capture.stop();
-            stream.getTracks().forEach((track) => track.stop());
             return;
           }
           micRef.current = { capture, stream };
+          handedOff = true;
           setVoiceOn(true);
         }
+        /*
+         * SDK の connect は したくの 合図を 受け取ってから 返る。ここで はじめて「つながった」。
+         * 前は つなぎが 開いた 瞬間に live に して いたので、**断られる モデルでも**
+         * 一瞬 つながった 画面に なった（2026-09-16）。
+         * **マイクの 用意が 済んでから** live に する——先に live に すると、用意の あいだ
+         * 画面が「マイクは つかえません」に 切りかわって 🎤 が 一瞬 消える。
+         */
+        setStatus("live");
       } catch {
         if (stale()) return;
         // 例外の中身は出さない。短命トークンが混ざりうるうえ、SDK の生メッセージは
         // 学習者にも先生にも読めない。理由の名前だけ渡す。
-        stream?.getTracks().forEach((track) => track.stop());
+        release();
         setStatus("error");
         setReason("connect");
+      } finally {
+        if (!handedOff) stream?.getTracks().forEach((track) => track.stop());
       }
     },
-    [release],
+    [release, flushHeard],
   );
 
   /**
@@ -352,11 +492,88 @@ export function useLiveSession(): LiveSession {
   const send = useCallback((text: string) => {
     const session = sessionRef.current;
     if (!session || !text.trim()) return;
+    // 🎤 が オンの まま 書いて 送ったら、声の ターンを 先に 閉じる（開いた まま 文字を 重ねない）
+    if (talkingRef.current) {
+      talkingRef.current = false;
+      setTalking(false);
+      session.sendRealtimeInput({ activityEnd: {} });
+    }
     setTranscript((prev) => [...prev, { from: "me", text, mode: "text" }]);
     session.sendClientContent({ turns: text, turnComplete: true });
   }, []);
 
-  return { status, reason, transcript, lastUtterance, voiceOn, connect, disconnect, send };
+  /**
+   * 🎤 を オンに する。**相手が 話して いたら そこで 止める**（Zoom で 割り込むのと 同じ）。
+   * 止めないと、自分の 声と 相手の 声が 重なった まま 聞き取りに 入る。
+   */
+  const startTalking = useCallback(() => {
+    const session = sessionRef.current;
+    if (!session || talkingRef.current) return;
+    clearScheduled(outRef.current);
+    /*
+     * 前の ターンの **言いかけの 字を 捨てる**（use-live-voice と 同じ）。
+     * 聞き取りの 字は 🎤 を オフに した あとも 遅れて 届く。ここで 判定へ 流すと、
+     * 届いた ぶんだけの 切れた 発話（「よさんは」）が 判定に 回り、直前の 案内を 上書きする。
+     */
+    heardRef.current = "";
+    saidRef.current = "";
+    // 別の タブを 見て 戻った あとなど、鳴らす 側が 止まって いる ことが ある
+    void outRef.current?.ctx.resume();
+    talkingRef.current = true;
+    setTalking(true);
+    session.sendRealtimeInput({ activityStart: {} });
+  }, []);
+
+  /** 🎤 を オフに する。「言い終わった」を 伝えないと、相手は 息つぎだと 思って 待ちつづける。 */
+  const stopTalking = useCallback(() => {
+    if (!talkingRef.current) return;
+    talkingRef.current = false;
+    setTalking(false);
+    sessionRef.current?.sendRealtimeInput({ activityEnd: {} });
+  }, []);
+
+  return {
+    status,
+    reason,
+    transcript,
+    lastUtterance,
+    voiceOn,
+    talking,
+    startTalking,
+    stopTalking,
+    connect,
+    disconnect,
+    send,
+  };
+}
+
+/** 鳴らす 側。予約した 音を 持って おき、割り込まれたら 止める。 */
+interface Output {
+  readonly ctx: AudioContext;
+  readonly node: GainNode;
+  playAt: number;
+  sources: AudioBufferSourceNode[];
+}
+
+/** 相手の セリフが 途中で 止められたか。 */
+function isInterrupted(message: unknown): boolean {
+  if (!message || typeof message !== "object") return false;
+  const content = (message as { serverContent?: { interrupted?: unknown } }).serverContent;
+  return content?.interrupted === true;
+}
+
+/** 鳴らす 予約を 全部 止める（割り込み・🎤 を オンに した とき）。 */
+function clearScheduled(out: Output | null): void {
+  if (!out) return;
+  for (const source of out.sources) {
+    try {
+      source.stop();
+    } catch {
+      // もう 鳴り終わって いる ものは 止められない（それで よい）
+    }
+  }
+  out.sources = [];
+  out.playAt = 0;
 }
 
 /** 相手が話し終わったか（返事を1つに束ねる合図）。 */
@@ -367,7 +584,7 @@ function isTurnComplete(message: unknown): boolean {
 }
 
 /** 返ってきた24kHzのPCMを、切れ目なく順に鳴らす。 */
-function play(out: { ctx: AudioContext; node: GainNode; playAt: number } | null, pcm: Uint8Array) {
+function play(out: Output | null, pcm: Uint8Array) {
   if (!out) return;
   const samples = new Int16Array(pcm.buffer, pcm.byteOffset, Math.floor(pcm.byteLength / 2));
   const buffer = out.ctx.createBuffer(1, samples.length, OUT_RATE);
@@ -381,6 +598,11 @@ function play(out: { ctx: AudioContext; node: GainNode; playAt: number } | null,
   const at = Math.max(out.ctx.currentTime, out.playAt);
   source.start(at);
   out.playAt = at + buffer.duration;
+  // 割り込まれたら 止められる ように 持つ。鳴り終えた ものは 手放す（ためこまない）
+  out.sources.push(source);
+  source.onended = () => {
+    out.sources = out.sources.filter((s) => s !== source);
+  };
 }
 
 function bytesToBase64(bytes: Uint8Array): string {

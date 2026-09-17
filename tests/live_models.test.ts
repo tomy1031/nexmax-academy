@@ -1,9 +1,13 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   DEFAULT_LIVE_TALK_MODEL,
+  isSupersededLiveDefault,
   LIVE_TALK_MODELS,
+  LIVE_TEXT_MODELS,
+  LIVE_TTS_MODELS,
   preferredLiveModel,
 } from "../src/lib/ai/models";
+import { getLiveModel, saveLiveModel } from "../src/lib/profile";
 
 /**
  * どのモデルで話すかは、**こちらの並び順**で決める。
@@ -30,5 +34,90 @@ describe("たいわに使うモデルの選び方", () => {
 
   it("使えるものが1つも無ければ 既定を返す（呼ぶ側が空文字を扱わずに済む）", () => {
     expect(preferredLiveModel([])).toBe(DEFAULT_LIVE_TALK_MODEL);
+  });
+});
+
+/**
+ * 3.8 Live を 先頭に する（2026-09-16）
+ *
+ * Live の つなぎは 3つ（たいわ・音声づくり・見かた）あり、一覧も 3つ ある。
+ * 1つだけ 古い 先頭が 残ると「たいわは 3.8 なのに 見かたは 3.1」と なり、追いにくい。
+ */
+describe("Live の 先頭は 3.8", () => {
+  it("3つの 一覧が どれも gemini-3.8-live から ためす", () => {
+    expect(LIVE_TALK_MODELS[0]).toBe("gemini-3.8-live");
+    expect(LIVE_TTS_MODELS[0]).toBe("gemini-3.8-live");
+    expect(LIVE_TEXT_MODELS[0]).toBe("gemini-3.8-live");
+    expect(DEFAULT_LIVE_TALK_MODEL).toBe("gemini-3.8-live");
+  });
+
+  it("3.8 に つながらない 鍵の ために、3.1 を 控えとして 残す", () => {
+    for (const list of [LIVE_TALK_MODELS, LIVE_TTS_MODELS, LIVE_TEXT_MODELS]) {
+      expect(list).toContain("gemini-3.1-flash-live-preview");
+    }
+  });
+
+  it("たいわと 音声づくりは 同じ 並び（片方だけ 古い 名前が 残らない）", () => {
+    expect([...LIVE_TTS_MODELS]).toEqual([...LIVE_TALK_MODELS]);
+  });
+
+  it("使える 一覧に 3.8 と 3.1 が あれば 3.8 を 選ぶ", () => {
+    expect(preferredLiveModel(["gemini-3.1-flash-live-preview", "gemini-3.8-live"])).toBe(
+      "gemini-3.8-live",
+    );
+  });
+});
+
+/** localStorage の 代わり（node には 無い）。 */
+function stubStorage(initial: Record<string, string> = {}) {
+  const map = new Map(Object.entries(initial));
+  vi.stubGlobal("window", {
+    localStorage: {
+      getItem: (key: string) => map.get(key) ?? null,
+      setItem: (key: string, value: string) => void map.set(key, value),
+      removeItem: (key: string) => void map.delete(key),
+    },
+  });
+}
+
+describe("端末に 残った 前の 既定は、3.8 より 先に 使わない", () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it("前の 鍵に「保存」で 残った 3.1 は 選んで いないのと 同じ（一覧の 先頭＝3.8 に なる）", () => {
+    expect(isSupersededLiveDefault("gemini-3.1-flash-live-preview")).toBe(true);
+    stubStorage({ "nexmax.liveModel": "gemini-3.1-flash-live-preview" });
+    expect(getLiveModel()).toBe("");
+  });
+
+  it("前の 鍵に 残った ほかの 名前は 先生が 選んだ ものとして 読み継ぐ", () => {
+    stubStorage({ "nexmax.liveModel": "gemini-2.5-flash-native-audio-preview-12-2025" });
+    expect(getLiveModel()).toBe("gemini-2.5-flash-native-audio-preview-12-2025");
+  });
+
+  it("選んで 保存した 名前は、3.1 でも そのまま 使う（3.8 が 使えない 鍵の 逃げ道）", () => {
+    for (const chosen of [
+      "gemini-3.8-live",
+      "gemini-3.1-flash-live-preview",
+      "gemini-2.5-flash-native-audio-preview-12-2025",
+    ]) {
+      stubStorage({ "nexmax.liveModel": "gemini-3.1-flash-live-preview" });
+      saveLiveModel(chosen);
+      expect(getLiveModel()).toBe(chosen);
+    }
+  });
+
+  it("選び直したら 前の 鍵は 消える（空に 戻しても 前の 名前が 生き返らない）", () => {
+    stubStorage({ "nexmax.liveModel": "gemini-2.5-flash-native-audio-preview-12-2025" });
+    saveLiveModel("");
+    expect(getLiveModel()).toBe("");
+  });
+
+  it("何も 残って いなければ 空（呼ぶ側が 一覧の 先頭を 使う）", () => {
+    stubStorage();
+    expect(getLiveModel()).toBe("");
+    expect(isSupersededLiveDefault("")).toBe(false);
+    expect(isSupersededLiveDefault("gemini-3.8-live")).toBe(false);
   });
 });

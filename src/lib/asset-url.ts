@@ -24,3 +24,8 @@ export function assetUrl(src: string | undefined): string | undefined {
   const version = ASSET_VERSIONS[src];
   return version ? `${src}?v=${version}` : src;
 }
+
+/** その 資産が 置いて あるか（版番号の 一覧に 載って いるか）。 */
+export function hasAsset(src: string): boolean {
+  return src in ASSET_VERSIONS;
+}

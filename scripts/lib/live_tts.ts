@@ -12,7 +12,7 @@
  */
 
 import { GoogleGenAI, Modality } from "@google/genai";
-import { LIVE_TTS_MODELS } from "../../src/lib/ai/models";
+import { LIVE_TTS_MODELS, TEXT_MODEL } from "../../src/lib/ai/models";
 import { NARRATOR_INSTRUCTION } from "../../src/lib/audio/narrator";
 
 /** Live が 返す 音の サンプリングレート（Live API の 決まり）。 */
@@ -43,6 +43,22 @@ export function forSpeech(text: string): string {
 export interface Speaker {
   readonly apiKey: string;
   readonly voice: string;
+  /** 読み上げの 指示（`NARRATOR_INSTRUCTION`）の あとに 足す 文。 */
+  readonly instruction?: string;
+  /**
+   * 1周目で だめ だったら、2周目からは 文を「」で 囲んで 渡す。
+   * 「わかりました。」の ような 短い 文を 話しかけと 取り違えて **返事を して しまう**
+   * モデルが ある（2026-09-16。gemini-3.1-flash-live-preview で 4回 続けて 返事に なった）。
+   */
+  readonly quoteOnRetry?: boolean;
+  /**
+   * Live が 文字起こしを 返さなかった とき、音を **別の モデルで 文字に 起こして** 見くらべる。
+   * gemini-3.8-live は 音は 返すのに 文字起こしが 空の ことが 続いた（2026-09-16。
+   * 「これは とても 大切です。」など 4文が 4回ずつ 空）。確かめられない 音は 通せないので、
+   * 読み上げとは 別の モデル（`TEXT_MODEL`）で 聞き直す——自分の 読み上げを 自分で
+   * 書き起こすより、きびしい 確かめに なる。
+   */
+  readonly transcribeWhenEmpty?: boolean;
 }
 
 /** 生PCM（16bit・モノラル）に WAV の 頭を つける。 */
@@ -69,12 +85,46 @@ export interface Spoken {
   readonly pcm: Uint8Array;
   /** `outputAudioTranscription`。空の ことも ある（モデルに よる）。 */
   readonly transcript: string;
+  /** 読み上げた モデル（同じ 声でも モデルで 声の 質が 変わる ので 残す）。 */
+  readonly model: string;
+  /** 文字起こしを 返した モデル（Live 自身で なければ `TEXT_MODEL`）。 */
+  readonly transcriptBy?: string;
+}
+
+/** 音を 文字に 起こす（Live の 文字起こしが 空だった ときの 控え）。 */
+export async function transcribePcm(pcm: Uint8Array, apiKey: string): Promise<string> {
+  const ai = new GoogleGenAI({ apiKey });
+  const response = await ai.models.generateContent({
+    model: TEXT_MODEL,
+    contents: [
+      {
+        role: "user",
+        parts: [
+          { inlineData: { mimeType: "audio/wav", data: toWav(pcm).toString("base64") } },
+          {
+            text:
+              "この日本語の音声を、聞こえたとおりに一字一句そのまま文字起こししてください。" +
+              "言い直しや足りない言葉も直さずに書いてください。文字起こしの文だけを返してください。",
+          },
+        ],
+      },
+    ],
+  });
+  return response.text?.trim() ?? "";
 }
 
 /**
  * 1文を 読み上げて 音と 文字起こしを 返す。
  *
  * 返事が 来ないまま 開きっぱなしに しない（60秒で あきらめて つぎの モデルへ）。
+ *
+ * ## 読み終えたら **つなぎを 閉じる**
+ * 2026-09-16 まで 閉じて いなかった（ここの 覚書は「ひと呼吸 待ってから 閉じる」と
+ * 書いて いたのに、実際は 結果を 返すだけ だった）。開いた ままの つなぎは
+ * 向こうが 切るまで 残り、**無料枠の 同時に 開ける 数**を 食う。報告の リスニングを
+ * 1文ずつ 作ったら **3文 作った ところで 4文目から 全部の モデルが「使いすぎ」
+ *（code 1011 You exceeded your current quota）**に なった。
+ * 「1分あたりの つなぎ数が 少ない」（下の 覚書）と 見えて いた ものの 一部も これだった おそれが ある。
  */
 async function synthesize(text: string, model: string, speaker: Speaker): Promise<Spoken> {
   const ai = new GoogleGenAI({ apiKey: speaker.apiKey, apiVersion: "v1beta" });
@@ -83,10 +133,20 @@ async function synthesize(text: string, model: string, speaker: Speaker): Promis
 
   return await new Promise<Spoken>((resolve, reject) => {
     let settled = false;
+    let session: { close: () => void } | null = null;
+    const closeSession = () => {
+      try {
+        session?.close();
+      } catch {
+        // もう 閉じて いる ものは 閉じられない（それで よい）
+      }
+    };
     const finish = (fn: () => void) => {
       if (settled) return;
       settled = true;
       clearTimeout(timer);
+      // 閉じると onclose が 呼ばれるが、settled なので 二重には 返らない
+      closeSession();
       fn();
     };
     const timer = setTimeout(
@@ -101,7 +161,9 @@ async function synthesize(text: string, model: string, speaker: Speaker): Promis
           responseModalities: [Modality.AUDIO],
           // モデル自身の 発話の 文字起こし。台本と 見くらべる ために もらう
           outputAudioTranscription: {},
-          systemInstruction: NARRATOR_INSTRUCTION,
+          systemInstruction: speaker.instruction
+            ? `${NARRATOR_INSTRUCTION}${speaker.instruction}`
+            : NARRATOR_INSTRUCTION,
           speechConfig: {
             languageCode: "ja-JP",
             voiceConfig: { prebuiltVoiceConfig: { voiceName: speaker.voice } },
@@ -125,30 +187,55 @@ async function synthesize(text: string, model: string, speaker: Speaker): Promis
                * 「その」だけの 文字起こしを 見て、ちゃんと 読めた 音を 捨てて しまう
                *（2026-08-28 に q5 で 実発生）。ひと呼吸 待ってから 閉じる。
                */
-              setTimeout(() => {
+              const done = () =>
                 finish(() =>
                   chunks.length > 0
-                    ? resolve({ pcm: Buffer.concat(chunks), transcript })
+                    ? resolve({ pcm: Buffer.concat(chunks), transcript, model })
                     : reject(new Error(`${model}: 音が 空でした`)),
                 );
-              }, 700);
+              /*
+               * 700ミリ秒 待っても 文字起こしが 1字も 無い ときは、もう 2秒 待つ
+               *（2026-09-16。gemini-3.8-live で 音は あるのに「文字起こしが 空」で 落ちた。
+               * 閉じる ように した ので、待たないと 遅れて 来る 文字起こしを 自分で 切る）。
+               */
+              setTimeout(() => (transcript.trim() ? done() : setTimeout(done, 2_000)), 700);
             }
           },
           onerror: (error: unknown) =>
             finish(() => reject(new Error(`${model}: ${String(error)}`))),
-          onclose: () =>
+          onclose: (event: unknown) =>
             finish(() =>
               chunks.length > 0
-                ? resolve({ pcm: Buffer.concat(chunks), transcript })
-                : reject(new Error(`${model}: 音が 来ないまま 切れました`)),
+                ? resolve({ pcm: Buffer.concat(chunks), transcript, model })
+                : reject(new Error(`${model}: 音が 来ないまま 切れました${closeReason(event)}`)),
             ),
         },
       })
-      .then((session) => {
-        session.sendClientContent({ turns: text, turnComplete: true });
+      .then((opened) => {
+        session = opened;
+        // つながる 前に 時間切れ などで 終わって いたら、すぐ 閉じる
+        if (settled) {
+          closeSession();
+          return;
+        }
+        opened.sendClientContent({ turns: text, turnComplete: true });
       })
       .catch((error: unknown) => finish(() => reject(new Error(`${model}: ${String(error)}`))));
   });
+}
+
+/**
+ * 切れた 理由（閉じ番号と 理由の 文）。**数の 上限か、声が 無いのか**を 分ける ために 残す
+ *（2026-09-16。Sadachbia だけ 2回 続けて 切れ、どちらか 分からなかった）。
+ * 鍵は URL と ヘッダにしか 無いので ここには 入らない。
+ */
+function closeReason(event: unknown): string {
+  if (typeof event !== "object" || event === null) return "";
+  const { code, reason } = event as { code?: unknown; reason?: unknown };
+  const parts: string[] = [];
+  if (typeof code === "number") parts.push(`code ${code}`);
+  if (typeof reason === "string" && reason.length > 0) parts.push(reason);
+  return parts.length > 0 ? `（${parts.join(" / ")}）` : "";
 }
 
 /**
@@ -228,23 +315,55 @@ function readingLooksRight(
   return { ok: false, why: `一致 ${(ratio * 100).toFixed(0)}%: 「${transcript.trim()}」` };
 }
 
+/** 読み上げを 受け取るか（`readingLooksRight` より きびしく 見たい ときに 渡す）。 */
+export type AcceptSpoken = (spoken: Spoken) => { ok: boolean; why: string };
+
 /**
  * 新しい モデルから 順に ためし、**台本どおりに 読めた ものだけ**を 返す。
  *
  * 同じ モデルでも 2回目で 読み上げに なる ことが ある（会話の モデルなので
  * ゆらぐ）。だから モデルの 一覧を 2周する。
+ *
+ * `accept` を 渡すと、`readingLooksRight` を 通った あとに もう一段 見る
+ *（リスニングの 1文ずつの 音は 読みの ずれ 1字までしか 許さない — `speech_reading.ts`）。
+ * 通らなければ 同じく つぎの モデルへ 進む。
+ *
+ * `models` を 渡すと その モデルだけを 順に ためす。**1つだけ 渡せば 別の モデルに
+ * 切り替えない**——同じ 声でも モデルが 変わると 声の 質が 変わるので、1人の 声を
+ * そろえたい とき（報告の リスニング。2026-09-16 の 指定）に 使う。1つの ときは
+ * ためす 回数が 減らない ように 4周 する。
  */
-export async function synthesizeWithFallback(raw: string, speaker: Speaker): Promise<Spoken> {
+export async function synthesizeWithFallback(
+  raw: string,
+  speaker: Speaker,
+  accept?: AcceptSpoken,
+  models: readonly string[] = LIVE_TTS_MODELS,
+): Promise<Spoken> {
   const text = forSpeech(raw);
   const failures: string[] = [];
-  for (let round = 0; round < 2; round += 1) {
-    for (const model of LIVE_TTS_MODELS) {
+  const rounds = Math.max(2, Math.ceil(4 / models.length));
+  for (let round = 0; round < rounds; round += 1) {
+    for (const model of models) {
       try {
-        const spoken = await synthesize(text, model, speaker);
+        const turn = speaker.quoteOnRetry && round > 0 ? `「${text}」` : text;
+        let spoken = await synthesize(turn, model, speaker);
+        if (speaker.transcribeWhenEmpty && spoken.transcript.trim() === "") {
+          try {
+            const heard = await transcribePcm(spoken.pcm, speaker.apiKey);
+            if (heard) spoken = { ...spoken, transcript: heard, transcriptBy: TEXT_MODEL };
+          } catch (error) {
+            failures.push(`${TEXT_MODEL}: 文字起こし できません — ${String(error)}`);
+          }
+        }
         const seconds = spoken.pcm.byteLength / OUT_RATE / 2;
         const verdict = readingLooksRight(text, spoken.transcript, seconds);
-        if (verdict.ok) return spoken;
-        failures.push(`${model}: 読み上げに なって いません — ${verdict.why}`);
+        if (!verdict.ok) {
+          failures.push(`${model}: 読み上げに なって いません — ${verdict.why}`);
+        } else {
+          const strict = accept?.(spoken) ?? verdict;
+          if (strict.ok) return spoken;
+          failures.push(`${model}: 原稿と ずれて います — ${strict.why}`);
+        }
       } catch (error) {
         failures.push(error instanceof Error ? error.message : String(error));
       }

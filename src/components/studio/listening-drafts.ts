@@ -36,9 +36,10 @@ export function emptyListening(): Listening {
     ],
     keywords: [],
     revealGoal: 30,
-    // 「聞く」教材なので、既定は 顔を並べない再生プレイヤー・台本は隠す
+    // 「聞く」教材なので、既定は 顔を並べない再生プレイヤー。
+    // 原稿は 穴埋めの 形で はじめから 出す（2026-09-16 の 指定）
     mode: "player",
-    check: { minLength: 3, maxMiss: 3, showScript: false, showTyping: true },
+    check: { minLength: 3, maxMiss: 3, showScript: true, showTyping: true },
   };
 }
 

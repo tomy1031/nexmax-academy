@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Listening } from "@/content/schema";
 import { RubyText } from "@/components/ruby-text";
 import { buildFuriganaIndex, type FuriganaIndex } from "@/lib/text/furigana";
@@ -10,7 +10,8 @@ import { recordContentProgress } from "@/lib/progress/store";
 import { CallShell } from "@/components/call-shell";
 import { VideoPlayer } from "@/components/media/video-player";
 import { ImageSlotFrame } from "@/components/article/rich-blocks";
-import { assetUrl } from "@/lib/asset-url";
+import { assetUrl, hasAsset } from "@/lib/asset-url";
+import { lineSentenceClips, type SentenceClip } from "@/lib/audio/sentences";
 import { ListeningPanel } from "./listening-panel";
 import { mediaKind, revealRate, type ListeningState } from "./listening-checks";
 
@@ -24,9 +25,10 @@ import { mediaKind, revealRate, type ListeningState } from "./listening-checks";
  *  2. きく    … 音を流し、聞こえた ことばを 入れて 原稿を ひらいていく
  *  3. たしかめ … 原稿を1行ずつ ひらいて 答え合わせし、つぎの教材へ送る
  *
- * ## 台本は既定で見せない
- * 見えていると「読む練習」になり、聞く練習にならない。出したい先生・行き詰まった
- * 学習者のために ON/OFF は残す（教材ごとの既定は `check.showScript`）。
+ * ## 原稿は 既定で 出す（穴埋めの 形で）
+ * 出すのは **当てた ことばだけが 開く 穴埋め**なので、答えを 先に 見せる ことには ならない。
+ * 文の 長さと 区切りが 見えると、どこを 聞き逃したかが 分かる（2026-09-16 の 指定で
+ * 既定を ON に した）。ON/OFF は 残す（教材ごとの 既定は `check.showScript`）。
  *
  * ## 画面の型
  * `mode: "player"` はふつうの再生プレイヤー。`mode: "call"` は Zoom風。
@@ -103,10 +105,12 @@ export function ListeningPlayer({
           <Player
             listening={listening}
             mediaRef={mediaRef}
-            captionsOn={captionsOn}
-            onCaptions={() => setCaptionsOn((on) => !on)}
-            typingOn={typingOn}
-            onTyping={() => setTypingOn((on) => !on)}
+            toggles={{
+              captionsOn,
+              onCaptions: () => setCaptionsOn((on) => !on),
+              typingOn,
+              onTyping: () => setTypingOn((on) => !on),
+            }}
           />
 
           {typingOn ? (
@@ -276,31 +280,61 @@ function Intro({
   );
 }
 
-/** 音（または 動画）の プレイヤーと、表示の 切り替え。 */
+/** はやさの 既定は 遅め（設計01 P10）。ボタンの「すこし ゆっくり」。 */
+const INITIAL_SPEED = 0.85;
+
+/**
+ * 鳴らす ものに 速さを かける。YouTube の ときは 部品が 無い（`null`）ので 何も しない。
+ *
+ * - 速度を変えてもピッチは保つ（低い声にしない — 設計01 P10）
+ * - `defaultPlaybackRate` にも 入れる。`<audio>` / `<video>` は 読み直す
+ *   （`load()`・`src` の 差しかえ）と `playbackRate` を こちらへ 戻すので、
+ *   `playbackRate` だけ だと その たびに ふつうの 速さに 戻る。
+ */
+function applySpeed(media: HTMLMediaElement | null, value: number) {
+  if (!media) return;
+  media.defaultPlaybackRate = value;
+  media.playbackRate = value;
+  media.preservesPitch = true;
+}
+
+/**
+ * 音（または 動画）の プレイヤーと、表示の 切り替え。
+ *
+ * 「きく」と「たしかめ」の 両方で 使う。表示の 切り替え（げんこう・タイピング）は
+ * 「きく」の ときだけ 渡す——こたえあわせでは 原稿は もう 全部 見えて いて、
+ * タイピングも 終わって いるので、押しても 何も 変わらない ボタンに なる。
+ */
 function Player({
   listening,
   mediaRef,
-  captionsOn,
-  onCaptions,
-  typingOn,
-  onTyping,
+  toggles,
 }: {
   listening: Listening;
   mediaRef: React.RefObject<HTMLMediaElement | null>;
-  captionsOn: boolean;
-  onCaptions: () => void;
-  typingOn: boolean;
-  onTyping: () => void;
+  toggles?: {
+    captionsOn: boolean;
+    onCaptions: () => void;
+    typingOn: boolean;
+    onTyping: () => void;
+  };
 }) {
-  const [speed, setSpeedValue] = useState(0.85); // 既定は遅め（設計01 P10）
+  const [speed, setSpeedValue] = useState(INITIAL_SPEED);
+
+  /*
+   * **開いた ときから 札と 音を そろえる。** 前は ボタンを 押した ときにしか
+   * 速さを かけて いなかったので、「すこし ゆっくり」が 押された 札の まま
+   * ふつうの 速さ（`playbackRate` の 既定 1）で 鳴って いた。
+   * 「きく」と「こたえあわせ」の どちらでも、出る たびに 新しい 音の 部品に なる。
+   * かけるのは 定数では なく **いまの 札（`speed`）**——札と 音が ずれる 道を 残さない。
+   */
+  useEffect(() => {
+    applySpeed(mediaRef.current, speed);
+  }, [mediaRef, speed]);
 
   const setSpeed = (value: number) => {
     setSpeedValue(value);
-    // 速度を変えてもピッチは保つ（低い声にしない — 設計01 P10）
-    if (mediaRef.current) {
-      mediaRef.current.playbackRate = value;
-      mediaRef.current.preservesPitch = true;
-    }
+    applySpeed(mediaRef.current, value);
   };
 
   return (
@@ -359,10 +393,12 @@ function Player({
           </>
         )}
 
-        <span className="ml-auto flex flex-wrap gap-2">
-          <Toggle on={captionsOn} onClick={onCaptions} label="げんこう" />
-          <Toggle on={typingOn} onClick={onTyping} label="タイピング" />
-        </span>
+        {toggles ? (
+          <span className="ml-auto flex flex-wrap gap-2">
+            <Toggle on={toggles.captionsOn} onClick={toggles.onCaptions} label="げんこう" />
+            <Toggle on={toggles.typingOn} onClick={toggles.onTyping} label="タイピング" />
+          </span>
+        ) : null}
       </div>
     </section>
   );
@@ -483,6 +519,13 @@ function NextGate({
  *
  * 「きく」のあいだは伏せていたページ送りを、ここで出す。
  * 1行ずつ進めるのは、全部いっぺんに出すと どこを聞き逃したかが分からないため。
+ *
+ * ## ここでも 音を 鳴らせる
+ * 原稿を 読みながら **その場で 聞き直せる** ように、「きく」と 同じ プレイヤーを
+ * 上に 置く（2026-09-16 の 指定）。前は「もういちど 聞く」で 入力の 画面へ
+ * 戻るしか なく、読んで いた 行が 見えなく なった。
+ * 台本に 行ごとの 時刻（`at`）が 入った 教材は まだ 無いので、行ごとの 再生は しない。
+ * 音の 無い 教材では 何も 出さない（鳴らない ボタンを 置かない）。
  */
 function Review({
   listening,
@@ -501,68 +544,152 @@ function Review({
 }) {
   const total = listening.script.length;
   const shown = listening.script.slice(0, line + 1);
+  const mediaRef = useRef<HTMLMediaElement>(null);
+
+  /*
+   * **文ごとの 音**（2026-09-16 の 指定「個々の 音声を 答え合わせに 貼る」）。
+   * 1文ずつ 作って 残して ある 教材（報告の リスニング）だけ、文の うしろに ▶ を 出す。
+   * 全部の 文の 音が そろって いない 教材には 出さない（`lineSentenceClips`）。
+   */
+  const clips = useMemo(
+    () => lineSentenceClips(listening.id, listening.script, hasAsset),
+    [listening.id, listening.script],
+  );
+  const clipRef = useRef<HTMLAudioElement>(null);
+  const [playing, setPlaying] = useState<string | null>(null);
+
+  // 上の 通しの 音を 鳴らしたら、文の 音は 止める（2つ 重ねて 鳴らさない）
+  useEffect(() => {
+    const media = mediaRef.current;
+    if (!media) return;
+    const stopClip = () => {
+      clipRef.current?.pause();
+      setPlaying(null);
+    };
+    media.addEventListener("play", stopClip);
+    return () => media.removeEventListener("play", stopClip);
+  }, []);
+
+  const playClip = (clip: SentenceClip) => {
+    const audio = clipRef.current;
+    if (!audio) return;
+    if (playing === clip.url && !audio.paused) {
+      audio.pause();
+      setPlaying(null);
+      return;
+    }
+    mediaRef.current?.pause();
+    audio.src = assetUrl(clip.url) ?? clip.url;
+    // 速さは 上の プレイヤーで えらんだ ものに そろえる（音程は 保つ）
+    applySpeed(audio, mediaRef.current?.playbackRate ?? INITIAL_SPEED);
+    setPlaying(clip.url);
+    void audio.play().catch(() => setPlaying(null));
+  };
 
   return (
-    <section className="card-island p-5">
-      <h2 className="text-navy text-lg font-black">✅ こたえあわせ</h2>
-      <p className="text-ink-soft mt-1 text-sm font-bold">
-        1つずつ ひらいて、聞こえた ことばと くらべてみましょう。
-      </p>
-
-      <ol className="mt-4 space-y-2">
-        {shown.map((item, index) => (
-          <li
-            key={index}
-            className={`border-hairline rounded-2xl border-2 p-3 ${
-              index === line ? "bg-sky-soft" : "bg-white"
-            }`}
-          >
-            <p className="text-sky text-[11px] font-black tracking-widest">
-              {nameOf.get(item.speaker) ?? item.speaker}
-            </p>
-            {/* 長い行でも枠からはみ出さない（横スクロールを出さない） */}
-            <p className="text-ink leading-relaxed font-bold break-words">
-              <RubyText text={item.text} index={furigana} />
-            </p>
-          </li>
-        ))}
-      </ol>
-
-      <div className="mt-4 flex flex-wrap items-center justify-between gap-2">
-        <button
-          type="button"
-          onClick={() => onLine(Math.max(0, line - 1))}
-          disabled={line === 0}
-          className="border-hairline text-navy rounded-full border-2 bg-white px-4 py-1.5 text-xs font-black disabled:opacity-40"
-        >
-          ← まえ
-        </button>
-        <span className="text-ink-soft text-xs font-black">
-          {line + 1} / {total}
-        </span>
-        <button
-          type="button"
-          onClick={() => onLine(Math.min(total - 1, line + 1))}
-          disabled={line >= total - 1}
-          className="btn-game px-5 py-1.5 text-xs [--btn-face:#4fa8e8] [--btn-shadow:#0272ae] disabled:opacity-40"
-        >
-          つぎ →
-        </button>
-      </div>
-
-      <button
-        type="button"
-        onClick={onAgain}
-        className="text-sky mt-4 text-xs font-black underline underline-offset-4"
-      >
-        もういちど 聞く
-      </button>
-
-      {line >= total - 1 ? (
-        <p className="text-leaf-deep mt-4 text-center text-sm font-black">
-          さいごまで たしかめました。下の「つぎは…」から すすめます。
+    <>
+      <section className="card-island p-5">
+        <h2 className="text-navy text-lg font-black">✅ こたえあわせ</h2>
+        <p className="text-ink-soft mt-1 text-sm font-bold">
+          1つずつ ひらいて、聞こえた ことばと くらべてみましょう。
         </p>
+
+        {mediaKind(listening) === "none" ? null : (
+          <div className="mt-4">
+            <Player listening={listening} mediaRef={mediaRef} />
+          </div>
+        )}
+
+        <ol className="mt-4 space-y-2">
+          {shown.map((item, index) => (
+            <li
+              key={index}
+              className={`border-hairline rounded-2xl border-2 p-3 ${
+                index === line ? "bg-sky-soft" : "bg-white"
+              }`}
+            >
+              <p className="text-sky text-[11px] font-black tracking-widest">
+                {nameOf.get(item.speaker) ?? item.speaker}
+              </p>
+              {/* 長い行でも枠からはみ出さない（横スクロールを出さない） */}
+              <p className="text-ink leading-relaxed font-bold break-words">
+                {clips?.[index] ? (
+                  clips[index].map((clip, k) => (
+                    <span key={clip.url}>
+                      {k > 0 ? " " : null}
+                      <RubyText text={clip.text} index={furigana} />
+                      <button
+                        type="button"
+                        onClick={() => playClip(clip)}
+                        aria-label={`${k + 1}文目を 聞く`}
+                        aria-pressed={playing === clip.url}
+                        className={`ml-1 inline-grid h-6 w-6 place-items-center rounded-full border-2 align-middle text-[10px] leading-none ${
+                          playing === clip.url
+                            ? "bg-sky border-sky text-white"
+                            : "border-hairline text-sky bg-white"
+                        }`}
+                      >
+                        {playing === clip.url ? "■" : "▶"}
+                      </button>
+                    </span>
+                  ))
+                ) : (
+                  <RubyText text={item.text} index={furigana} />
+                )}
+              </p>
+            </li>
+          ))}
+        </ol>
+
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-2">
+          <button
+            type="button"
+            onClick={() => onLine(Math.max(0, line - 1))}
+            disabled={line === 0}
+            className="border-hairline text-navy rounded-full border-2 bg-white px-4 py-1.5 text-xs font-black disabled:opacity-40"
+          >
+            ← まえ
+          </button>
+          <span className="text-ink-soft text-xs font-black">
+            {line + 1} / {total}
+          </span>
+          <button
+            type="button"
+            onClick={() => onLine(Math.min(total - 1, line + 1))}
+            disabled={line >= total - 1}
+            className="btn-game px-5 py-1.5 text-xs [--btn-face:#4fa8e8] [--btn-shadow:#0272ae] disabled:opacity-40"
+          >
+            つぎ →
+          </button>
+        </div>
+
+        <button
+          type="button"
+          onClick={onAgain}
+          className="text-sky mt-4 text-xs font-black underline underline-offset-4"
+        >
+          もういちど 聞く
+        </button>
+
+        {line >= total - 1 ? (
+          <p className="text-leaf-deep mt-4 text-center text-sm font-black">
+            さいごまで たしかめました。下の「つぎは…」から すすめます。
+          </p>
+        ) : null}
+      </section>
+      {/*
+        文ごとの 音の 部品。**こたえあわせの 枠の 外**に 置く——枠の 中の 音は
+        通しの プレイヤー 1つ（listening_kotaeawase.spec.ts が そう 見て いる）。
+      */}
+      {clips ? (
+        <audio
+          ref={clipRef}
+          preload="none"
+          onEnded={() => setPlaying(null)}
+          data-sentence-clip=""
+          className="hidden"
+        />
       ) : null}
-    </section>
+    </>
   );
 }

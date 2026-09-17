@@ -1,9 +1,15 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import type { Character } from "@/content/schema";
-import { synthesizeSample, TtsError } from "@/lib/audio/live-tts";
-import { LIVE_VOICES } from "@/lib/audio/voices";
+import { assetUrl } from "@/lib/asset-url";
+import {
+  findVoice,
+  LIVE_VOICES,
+  VOICE_SAMPLE_TEXT,
+  voiceOptionLabel,
+  voiceSampleUrl,
+} from "@/lib/audio/voices";
 import { buildCharacterSheetPrompt } from "@/lib/manga-prompt";
 import { getGeminiKey } from "@/lib/profile";
 import { HoverZoomImage } from "./hover-zoom-image";
@@ -96,6 +102,11 @@ export function CharacterEditor({
  *
  * その場で試聴できるようにしてあるのは、**名前だけでは決められない**から
  *（「Charon」がどんな声かは、聞くまで分からない）。
+ *
+ * ## 試聴は 作り置きの 見本を 鳴らす（2026-09-16 の 指定）
+ * 前は 押す たびに Live で 1文 作って いた——キーが 要り、数秒 待たされ、30種を
+ * 聞きくらべる ほど 枠を 食う。いまは **全部の 声で 同じ 文を 先に 作って ある**
+ *（`public/audio/voices/`・`scripts/make_voice_samples.ts`）ので、キーなしで すぐ 鳴る。
  */
 function VoicePicker({
   value,
@@ -104,32 +115,46 @@ function VoicePicker({
   value: Character;
   onChange: (character: Character) => void;
 }) {
-  const [busy, setBusy] = useState(false);
+  const player = useRef<HTMLAudioElement | null>(null);
+  const [playing, setPlaying] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [sampleUrl, setSampleUrl] = useState<string | null>(null);
 
-  const playSample = async () => {
-    const apiKey = getGeminiKey();
-    if (!apiKey) {
-      setError("AIの キーが ありません。「AI設定」で 登録してください。");
-      return;
-    }
+  const stop = () => {
+    player.current?.pause();
+    player.current = null;
+    setPlaying(false);
+  };
+
+  // 画面を 閉じたら 鳴りやませる
+  useEffect(() => () => player.current?.pause(), []);
+
+  const playSample = () => {
+    setError(null);
     if (!value.voice) {
       setError("さきに 声を えらんでください。");
       return;
     }
-    setBusy(true);
-    setError(null);
-    try {
-      const wav = await synthesizeSample(apiKey, value.voice);
-      // 前の試聴のURLは必ず捨てる。押すたびに増えるとメモリを食う
-      if (sampleUrl) URL.revokeObjectURL(sampleUrl);
-      setSampleUrl(URL.createObjectURL(wav));
-    } catch (e) {
-      setError(e instanceof TtsError ? e.message : "音声の 作成に しっぱいしました。");
-    } finally {
-      setBusy(false);
+    const chosen = findVoice(value.voice);
+    if (!chosen) {
+      setError(`「${value.voice}」は 声の 一覧に ありません。えらび直してください。`);
+      return;
     }
+    if (chosen.pitch === null) {
+      setError(`${chosen.name} の 見本は まだ ありません。ほかの 声で ためしてください。`);
+      return;
+    }
+    stop();
+    const audio = new Audio(assetUrl(voiceSampleUrl(chosen.name)));
+    audio.onended = () => setPlaying(false);
+    player.current = audio;
+    setPlaying(true);
+    audio.play().catch(() => {
+      if (player.current === audio) player.current = null;
+      setPlaying(false);
+      setError(
+        `${chosen.name} の 見本を 鳴らせませんでした。ページを 開き直して ためしてください。`,
+      );
+    });
   };
 
   return (
@@ -139,18 +164,21 @@ function VoicePicker({
         value={value.voice ?? ""}
         options={[
           { value: "", label: "— きめない —" },
-          ...LIVE_VOICES.map((voice) => ({
-            value: voice.name,
-            label: `${voice.label}（${voice.hint}）`,
-          })),
+          ...LIVE_VOICES.map((voice) => ({ value: voice.name, label: voiceOptionLabel(voice) })),
         ]}
-        onChange={(voice) => onChange({ ...value, voice: voice.length > 0 ? voice : undefined })}
+        onChange={(voice) => {
+          stop();
+          setError(null);
+          onChange({ ...value, voice: voice.length > 0 ? voice : undefined });
+        }}
         hint="ここで きめた 声で、この人は どの 教材でも 話します。"
       />
-      <MiniButton onClick={() => void playSample()} disabled={busy}>
-        {busy ? "つくっています…" : "▶ 声を ためす"}
+      <MiniButton onClick={playing ? stop : playSample}>
+        {playing ? "■ とめる" : "▶ 声を ためす"}
       </MiniButton>
-      {sampleUrl ? <audio controls src={sampleUrl} className="w-full" /> : null}
+      <p className="text-ink-faint text-xs font-bold">
+        見本の 文:「{VOICE_SAMPLE_TEXT}」（どの 声も 同じ 文です）
+      </p>
       {error ? (
         <p className="text-coral-deep text-xs font-black whitespace-pre-line">{error}</p>
       ) : null}

@@ -54,8 +54,11 @@ const DIC_PATH = join(import.meta.dirname, "..", "..", "node_modules", "kuromoji
 
 let tokenizerPromise: Promise<Tokenizer> | null = null;
 
-/** 形態素解析器（辞書の読み込みが重いので1回だけ作る）。 */
-function getTokenizer(): Promise<Tokenizer> {
+/**
+ * 形態素解析器（辞書の読み込みが重いので1回だけ作る）。
+ * 音の 読み上げの 照合（speech_reading.ts）も 同じ 解析器を 使う。
+ */
+export function getTokenizer(): Promise<Tokenizer> {
   tokenizerPromise ??= new Promise((resolve, reject) => {
     kuromoji.builder({ dicPath: DIC_PATH }).build((err, tokenizer) => {
       if (err) reject(err);
