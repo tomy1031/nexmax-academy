@@ -18,18 +18,36 @@
  */
 
 /**
- * 答えの 順が 画面から 見えて しまって いるか。次の どちらかなら 漏れと みる。
- *  - **いちばん 左の ふだが、1つ目の 穴の 答え**（左から 押すと 1つ目が 当たる。
- *    穴が 1つの ときも これで 見る）
- *  - 答えの 語が、あいだに ほかの 語を はさんでも **答えの 順の まま** 並んで いる
+ * 並びから 答えが どれだけ 見えて しまうか（0 が いちばん 見えない）。
+ *
+ * 1回 まぜた だけでは、答えの 一部が 答えの 順の まま 残る ことが ある
+ *（検収で 見つかった 例: IT の 確認で 2〜4番目の 答えが となりどうしに 並び、
+ * まぎらわしい 語を 飛ばして 左から 押すと 6つの 穴の うち 3つが 当たった）。
+ * だから「まざって いるか」では なく **左から 押す 学習者が 何を 得るか**で 数える。
+ *
+ *  1. ふだを 左から ぜんぶ 押すと 当たる 穴の 数
+ *  2. まぎらわしい 語を 飛ばして 左から 押すと 当たる 穴の 数（穴が 2つ 以上の とき。
+ *     穴が 1つなら 答えは 1枚しか 無いので、飛ばせば 必ず 当たる——並びの せいでは ない）
+ *  3. 答えだけを 左から 見て、答えの 順で となりあう 組の 数
+ *
+ * 穴が 3つの ときは、どう 並べても 1 より 下がらない（6通り すべてで 2 か 3 に
+ * 当たる）。
  */
-export function leaksAnswerOrder(shown: readonly string[], blanks: readonly string[]): boolean {
-  if (blanks.length === 0) return false;
-  if (shown[0] === blanks[0]) return true;
-  if (blanks.length === 1) return false;
-  const positions = blanks.map((word) => shown.indexOf(word));
-  if (positions.some((p) => p < 0)) return false;
-  return positions.every((p, i) => i === 0 || p > positions[i - 1]!);
+export function answerLeakScore(shown: readonly string[], blanks: readonly string[]): number {
+  let score = 0;
+  blanks.forEach((word, i) => {
+    if (shown[i] === word) score += 1;
+  });
+  const answersShown = shown.filter((word) => blanks.includes(word));
+  if (blanks.length >= 2) {
+    answersShown.forEach((word, i) => {
+      if (blanks[i] === word) score += 1;
+    });
+  }
+  for (let k = 0; k + 1 < answersShown.length; k += 1) {
+    if (blanks.indexOf(answersShown[k + 1]!) === blanks.indexOf(answersShown[k]!) + 1) score += 1;
+  }
+  return score;
 }
 
 /** 文字列から 32bit の 種（FNV-1a）。 */
@@ -62,15 +80,18 @@ function shuffled<T>(items: readonly T[], rng: () => number): T[] {
   return copy;
 }
 
-/** まぜ直す 回数の 上限。語群は 10語 前後なので、ほぼ 1回目で 決まる。 */
-const MAX_ATTEMPTS = 8;
+/**
+ * まぜかたの 候補の 数。語群は 10語 前後なので、ほとんどは 数回で 0 に なる。
+ * 0 に ならない とき（穴が 3つ など）も、この 中で いちばん 見えない ものを 選ぶ。
+ */
+const CANDIDATES = 64;
 
 /**
- * 画面に 出す 語群の 順。**答えの 順が 見えない** ことを 約束する。
+ * 画面に 出す 語群の 順。
  *
- * まぜた 結果が たまたま 漏れて いたら、種を 変えて まぜ直す。
- * それでも だめなら「まぎらわしい 語 → 答えを 逆の 順」に 置く
- *（先頭は 答えでは なく、答えの 並びは 逆向きなので、必ず 漏れない）。
+ * 種を 1つずつ 変えて まぜ、`answerLeakScore` が いちばん 小さい 並びを 選ぶ
+ *（0 が 出たら そこで 止める）。決まった 形の 受け皿は 置かない——
+ * 置くと その 形じたいが 目印に なる。
  */
 export function wordbankDisplayOrder(question: {
   id: string;
@@ -78,11 +99,16 @@ export function wordbankDisplayOrder(question: {
   blanks: readonly string[];
 }): string[] {
   const base = seedOf(`${question.id}\n${question.bank.join("\n")}`);
-  for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt += 1) {
+  let best: string[] = [...question.bank];
+  let bestScore = Number.POSITIVE_INFINITY;
+  for (let attempt = 0; attempt < CANDIDATES; attempt += 1) {
     const order = shuffled(question.bank, rngFrom(base + attempt));
-    if (!leaksAnswerOrder(order, question.blanks)) return order;
+    const score = answerLeakScore(order, question.blanks);
+    if (score < bestScore) {
+      best = order;
+      bestScore = score;
+      if (score === 0) break;
+    }
   }
-  const others = question.bank.filter((word) => !question.blanks.includes(word));
-  const answers = [...question.blanks].reverse().filter((word) => question.bank.includes(word));
-  return [...others, ...new Set(answers)];
+  return best;
 }

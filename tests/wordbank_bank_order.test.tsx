@@ -4,7 +4,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { QuestionBody } from "../src/components/quiz/question-types";
 import { quizSetSchema, type QuizQuestion } from "../src/content/schema";
-import { leaksAnswerOrder, wordbankDisplayOrder } from "../src/lib/quiz/bank-order";
+import { answerLeakScore, wordbankDisplayOrder } from "../src/lib/quiz/bank-order";
 import { buildFuriganaIndex } from "../src/lib/text/furigana";
 
 /*
@@ -14,32 +14,69 @@ import { buildFuriganaIndex } from "../src/lib/text/furigana";
  * 語群は「答えを 出た 順に → まぎらわしい 語」と 書かれがちで、画面が その 順の まま
  * 並べて いた。直したのは データでは なく **画面の 並べかた**——次に 作る もんだいも
  * 同じ 形で 書かれるので、書く 人に 頼らない。ここでは
- *  1. 並べかたの 約束（中身は 変えない・いつも 同じ 順・答えの 順に ならない）
- *  2. **git に ある 語群 すべて**が、画面では 答えの 順に ならない こと
- *  3. 画面の 部品が その 並べかたを 通して いる こと（データの 順に 戻さない）
+ *  1. 見え具合の 数えかた（左から 押す 学習者が 何を 得るか）
+ *  2. 並べかたの 約束（中身は 変えない・いつも 同じ 順・答えが 見えない）
+ *  3. **git に ある 語群 すべて**が、画面では 答えが 見えない こと
+ *  4. 画面の 部品が その 並べかたを 通して いる こと（データの 順に 戻さない）
  * を 見る。
  */
 
 type Wordbank = Extract<QuizQuestion, { type: "wordbank" }>;
 
-describe("答えの 順が 見えて いるか（leaksAnswerOrder）", () => {
-  it("答えが 出た 順に 並んで いれば 漏れ（先頭に 固まって いなくても）", () => {
-    expect(leaksAnswerOrder(["報告", "早く", "連絡"], ["報告", "早く"])).toBe(true);
-    expect(leaksAnswerOrder(["報告", "連絡", "早く"], ["報告", "早く"])).toBe(true);
+/**
+ * 画面で 許す 見え具合。穴が 3つの ときは どう 並べても 1 に なる（bank-order.ts の 註）。
+ * ほかの 形は ほとんど 0 に なるが、候補から 選ぶので まれに 1 が 残る。
+ */
+const ALLOWED = 1;
+
+describe("答えの 見え具合（answerLeakScore）", () => {
+  it("データの 順（答えを 出た 順 → まぎらわしい 語）は 大きく 出る", () => {
+    const blanks = ["報告", "早く", "隠す"];
+    // 左から 押すと 3つ ＋ 飛ばして 押すと 3つ ＋ となりあう 組が 2つ
+    expect(answerLeakScore(["報告", "早く", "隠す", "連絡"], blanks)).toBe(8);
   });
 
-  it("順が 1つでも 入れかわって いれば 漏れでは ない", () => {
-    expect(leaksAnswerOrder(["早く", "連絡", "報告"], ["報告", "早く"])).toBe(false);
+  it("まぎらわしい 語を あいだに はさんでも、答えの 順の まま なら 見えて いる", () => {
+    // 検収で 見つかった IT の 確認（q_itwords）の、1回 まぜた だけの 並び。
+    // まぎらわしい 語を 飛ばして 押すと 2〜4番目が 当たり、その 3つは となりあって いる
+    const blanks = [
+      "requirements definition",
+      "design document",
+      "specification",
+      "application",
+      "database",
+      "source code",
+    ];
+    const shown = [
+      "source code",
+      "keyboard",
+      "meeting",
+      "design document",
+      "specification",
+      "application",
+      "requirements definition",
+      "database",
+    ];
+    expect(answerLeakScore(shown, blanks)).toBe(5);
   });
 
-  it("いちばん 左の ふだが 1つ目の 答えなら、ほかが まざって いても 漏れ", () => {
-    // 左から 押す 学習者は、1つ目の 穴だけは 当たって しまう
-    expect(leaksAnswerOrder(["報告", "連絡", "早く", "隠す"], ["報告", "隠す", "早く"])).toBe(true);
+  it("いちばん 左が 1つ目の 答えなら、ほかが まざって いても 数える", () => {
+    // 左から ぜんぶ 押しても、飛ばして 押しても 1つ目が 当たる
+    expect(answerLeakScore(["報告", "隠す", "連絡", "早く"], ["報告", "早く", "隠す"])).toBe(2);
   });
 
-  it("穴が 1つ なら、いちばん 左に 答えが ある ときだけ 漏れ", () => {
-    expect(leaksAnswerOrder(["報告", "連絡"], ["報告"])).toBe(true);
-    expect(leaksAnswerOrder(["連絡", "報告"], ["報告"])).toBe(false);
+  it("穴が 1つなら、左から ぜんぶ 押す ときだけ 数える（答えは 1枚なので 飛ばせば 当たる）", () => {
+    expect(answerLeakScore(["報告", "連絡"], ["報告"])).toBe(1);
+    expect(answerLeakScore(["連絡", "報告"], ["報告"])).toBe(0);
+  });
+
+  it("左から 当たらなくても、答えの 順で となりあえば 数える", () => {
+    // 報告 → 早く が となりあって いる
+    expect(answerLeakScore(["隠す", "連絡", "報告", "早く"], ["報告", "早く", "隠す"])).toBe(1);
+  });
+
+  it("左から 当たらず、となりあいも 無ければ 0", () => {
+    expect(answerLeakScore(["早く", "連絡", "報告"], ["報告", "早く"])).toBe(0);
   });
 });
 
@@ -61,41 +98,40 @@ describe("画面に 出す 語群の 順（wordbankDisplayOrder）", () => {
     ],
   };
 
-  it("語を 足したり 消したり しない", () => {
+  it("語を 足したり 消したり しない（同じ 語が 2つ あっても）", () => {
     expect([...wordbankDisplayOrder(question)].sort()).toEqual([...question.bank].sort());
+    const twice = { id: "dup", blanks: ["A"], bank: ["A", "A", "B"] };
+    expect([...wordbankDisplayOrder(twice)].sort()).toEqual(["A", "A", "B"]);
   });
 
   it("同じ もんだいなら いつも 同じ 順（サーバと ブラウザで 食い違わない）", () => {
     expect(wordbankDisplayOrder(question)).toEqual(wordbankDisplayOrder({ ...question }));
   });
 
-  it("データの 順とは ちがい、答えの 順にも ならない", () => {
+  it("報告の 1問目は、左から 押しても 1つも 当たらない", () => {
     const shown = wordbankDisplayOrder(question);
     expect(shown).not.toEqual(question.bank);
-    expect(leaksAnswerOrder(shown, question.blanks)).toBe(false);
+    expect(answerLeakScore(shown, question.blanks)).toBe(0);
   });
 
-  it("まぜ直しが 尽きても（まぎらわしい 語が 無い 語群でも）漏れない 並びに 落ちる", () => {
-    // 穴3つ・語3つ。6通りの うち 漏れない のは 4通り——種を 変えても 当たらない 場合の 受け皿を 見る
-    for (const id of ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"]) {
-      const blanks = ["あさ", "ひる", "よる"];
-      const shown = wordbankDisplayOrder({ id, blanks, bank: blanks });
-      expect([...shown].sort()).toEqual([...blanks].sort());
-      expect(leaksAnswerOrder(shown, blanks)).toBe(false);
-    }
-  });
-
-  it("まぜる 余地が 小さい 語群（2語）でも 答えの 順に ならない", () => {
-    // 穴2つ・語2つは どう まぜても 答えの 順か その 逆の 2通りしか 無い
-    for (const id of ["a", "b", "c", "d", "e", "f", "g", "h"]) {
-      const shown = wordbankDisplayOrder({
-        id,
-        blanks: ["はい", "いいえ"],
-        bank: ["はい", "いいえ"],
-      });
-      expect(leaksAnswerOrder(shown, ["はい", "いいえ"])).toBe(false);
-    }
-  });
+  /*
+   * 候補から 選ぶので「必ず」とは 証明できない。代わりに 穴の 数・語群の 大きさを
+   * 変えた 多くの もんだいで 確かめる（id を 変える＝まぜかたが 変わる）。
+   */
+  it.each([1, 2, 3, 4, 5, 6])(
+    "穴が %i つの もんだいを たくさん 作っても、答えが 見える 並びに ならない",
+    (holes) => {
+      const blanks = Array.from({ length: holes }, (_, i) => `答え${i}`);
+      for (const extra of [1, 2, 4]) {
+        const bank = [...blanks, ...Array.from({ length: extra }, (_, i) => `はずれ${i}`)];
+        for (let n = 0; n < 300; n += 1) {
+          const shown = wordbankDisplayOrder({ id: `q${n}`, blanks, bank });
+          expect(shown[0]).not.toBe(blanks[0]);
+          expect(answerLeakScore(shown, blanks)).toBeLessThanOrEqual(ALLOWED);
+        }
+      }
+    },
+  );
 });
 
 /** content/ の 下に ある 語群を ぜんぶ 拾う（quizset 以外に 置かれても 見のがさない）。 */
@@ -137,8 +173,10 @@ describe("git に ある 語群", () => {
 
   it.each(
     all.map((w) => [`${w.file.split("/content/")[1]} ${w.question.id}`, w.question] as const),
-  )("%s は 画面で 答えの 順に ならない", (_label, question) => {
-    expect(leaksAnswerOrder(wordbankDisplayOrder(question), question.blanks)).toBe(false);
+  )("%s は 画面で 答えが 見えない", (_label, question) => {
+    const shown = wordbankDisplayOrder(question);
+    expect(shown[0]).not.toBe(question.blanks[0]);
+    expect(answerLeakScore(shown, question.blanks)).toBeLessThanOrEqual(ALLOWED);
   });
 });
 
@@ -157,9 +195,9 @@ describe("語群の 部品", () => {
         type: "wordbank",
         q: "うめて ください。",
         explain: "せつめい。",
-        lines: ["___ と ___ と ___"],
-        blanks: ["あさ", "ひる", "よる"],
-        bank: ["あさ", "ひる", "よる", "よなか", "ゆうがた"],
+        lines: ["___ と ___ と ___ と ___"],
+        blanks: ["あさ", "ひる", "ゆうがた", "よる"],
+        bank: ["あさ", "ひる", "ゆうがた", "よる", "よなか", "まよなか"],
       },
     ],
   });
@@ -169,8 +207,9 @@ describe("語群の 部品", () => {
     const html = renderToStaticMarkup(
       <QuestionBody question={question} furigana={buildFuriganaIndex([])} dispatch={() => {}} />,
     );
-    const chips = [...html.matchAll(/aria-label="([^"]+)" class="btn-island/g)].map((m) => m[1]);
+    const chips = [...html.matchAll(/aria-label="([^"]+)" class="btn-island/g)].map((m) => m[1]!);
     expect(chips).toEqual(wordbankDisplayOrder(question));
-    expect(leaksAnswerOrder(chips as string[], question.blanks)).toBe(false);
+    expect(chips).not.toEqual(question.bank);
+    expect(answerLeakScore(chips, question.blanks)).toBeLessThanOrEqual(ALLOWED);
   });
 });
