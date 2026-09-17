@@ -180,7 +180,9 @@ test("朝礼（かんたん）— 報告すると カードが 開く", async ({
   expect(board).toContain("では次にお願いします。");
   /* 型文の ◯◯（学習者が 埋める 空欄）は 消さない。 */
   await page.getByRole("button", { name: "ヒント" }).click();
-  await expectOnScreen(page, "きのうは ◯◯を しました");
+  /* 月曜の 型文は「きのうは」では なく **先週の 金曜日**（2026-09-17 の 指定）——
+     月曜の「きのう」が 金曜だと 覚えさせない。 */
+  await expectOnScreen(page, "先週の 金曜日は ◯◯を しました");
   await page.getByRole("dialog").getByRole("button", { name: "とじる" }).click();
 
   /*

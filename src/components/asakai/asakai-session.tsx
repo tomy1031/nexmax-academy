@@ -473,9 +473,14 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
             };
 
       /* 采配は「お願いまで 言えたか」で 分ける。言えて いない ときは
-         司会が **言い方を 見せてから** 自分で 段取りする（0点で 終わらせない）。 */
+         司会が **言い方を 見せてから** 自分で 段取りする（0点で 終わらせない）。
+
+         **見るのは「お願い」の 札**（ある 日だけ）。前は「問題・確認」を 見て いた ので、
+         お願いを 一度も 言わなかった 人にも「スケジュールは のばしません」と 返って いた
+         ——**頼んで いない ことへの 返事**に なる（2026-09-17 の R10 検収）。 */
+      const decided = final.find((s) => s.id === "onegai") ?? komari;
       const tail: Line[] = [ack];
-      if (scene.arrange) tail.push(komari?.full ? scene.arrange.done : scene.arrange.missing);
+      if (scene.arrange) tail.push(decided?.full ? scene.arrange.done : scene.arrange.missing);
       tail.push(...scene.members, ...scene.closing);
       setLines((prev) => [...prev, ...tail.map((line) => toChatLine(line, nameOf, learnerName))]);
       pushClips(tail, rateOf(speed));
