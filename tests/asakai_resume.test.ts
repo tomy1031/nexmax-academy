@@ -1,9 +1,12 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  clearAsakaiDraft,
   clearAsakaiResume,
+  readAsakaiDraft,
   readAsakaiResume,
   restoreAsakai,
+  saveAsakaiDraft,
   saveAsakaiResume,
   startAsakaiFrom,
   type AsakaiResume,
@@ -45,11 +48,11 @@ describe("startAsakaiFrom — 戻す 単位は 日", () => {
   });
 
   it("空の 保存も 月曜から", () => {
-    expect(startAsakaiFrom({ meetingId: "m", done: [] }, 5).sceneAt).toBe(0);
+    expect(startAsakaiFrom({ done: [] }, 5).sceneAt).toBe(0);
   });
 
   it("終わった日の 数が そのまま つぎの 曜日に なる", () => {
-    const saved: AsakaiResume = { meetingId: "m", done: [day("月曜日"), day("火曜日")] };
+    const saved: Pick<AsakaiResume, "done"> = { done: [day("月曜日"), day("火曜日")] };
     const start = startAsakaiFrom(saved, 5);
     expect(start.sceneAt).toBe(2);
     expect(start.results).toHaveLength(2);
@@ -58,7 +61,7 @@ describe("startAsakaiFrom — 戻す 単位は 日", () => {
 
   it("5日 終わって いたら 月曜から（何度でも 話せる）", () => {
     const done = ["月", "火", "水", "木", "金"].map((name) => day(name));
-    expect(startAsakaiFrom({ meetingId: "m", done }, 5)).toEqual({
+    expect(startAsakaiFrom({ done }, 5)).toEqual({
       sceneAt: 0,
       results: [],
       resumed: false,
@@ -67,7 +70,7 @@ describe("startAsakaiFrom — 戻す 単位は 日", () => {
 
   it("教材が 短く なって はみ出す ときも 月曜から", () => {
     const done = [day("月"), day("火"), day("水")];
-    expect(startAsakaiFrom({ meetingId: "m", done }, 3).sceneAt).toBe(0);
+    expect(startAsakaiFrom({ done }, 3).sceneAt).toBe(0);
   });
 });
 
@@ -114,5 +117,50 @@ describe("読み書き", () => {
     expect(start.sceneAt).toBe(1);
     expect(start.results[0]?.probes).toBe(0);
     expect(start.results[0]?.chips).toEqual([]);
+  });
+});
+
+/**
+ * **話しかけた 日は 途中から 戻る**（2026-09-17 の 指定）
+ *
+ * ここまでは 終わった 日しか 残して いなかった ので、火曜を 話しかけた まま
+ * 月曜の タブを 見に 行くと、戻った ときには 板が 空に なって いた。
+ */
+describe("報告の 途中", () => {
+  const draft = (said: string[]) => ({
+    states: [{ id: "kinou", said, open: said.length > 0, full: said.length > 0, gaveUp: false }],
+    attempts: { kinou: 1 },
+    probes: 1,
+    askedId: "shinchoku",
+    lines: [{ who: "ヘンディ", speakerId: "hendy", text: "おはよう ございます。" }],
+  });
+
+  it("書いた 途中が そのまま 戻る", () => {
+    const backend = memory();
+    saveAsakaiDraft("m", "tue", draft(["kinou1"]), backend);
+    expect(readAsakaiDraft("m", "tue", backend)).toEqual(draft(["kinou1"]));
+    expect(readAsakaiDraft("m", "wed", backend), "別の 日に 漏れて いる").toBeNull();
+  });
+
+  it("終わった日を 書いても 途中は 消えない", () => {
+    const backend = memory();
+    saveAsakaiDraft("m", "tue", draft(["kinou1"]), backend);
+    saveAsakaiResume("m", [day("月曜日")], backend);
+    expect(
+      readAsakaiDraft("m", "tue", backend),
+      "しおりの 書き込みで 途中が 消えた",
+    ).not.toBeNull();
+    expect(readAsakaiResume("m", backend)?.done).toHaveLength(1);
+  });
+
+  it("途中を 捨てても、ほかの 日と 終わった日は 残る", () => {
+    const backend = memory();
+    saveAsakaiDraft("m", "tue", draft(["kinou1"]), backend);
+    saveAsakaiDraft("m", "wed", draft([]), backend);
+    saveAsakaiResume("m", [day("月曜日")], backend);
+    clearAsakaiDraft("m", "tue", backend);
+    expect(readAsakaiDraft("m", "tue", backend)).toBeNull();
+    expect(readAsakaiDraft("m", "wed", backend)).not.toBeNull();
+    expect(readAsakaiResume("m", backend)?.done).toHaveLength(1);
   });
 });
