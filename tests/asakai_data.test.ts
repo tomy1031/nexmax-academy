@@ -827,6 +827,26 @@ describe("その日の 中身でしか 開かない（朝礼）", () => {
     expect(thu.full).toBe(true);
   });
 
+  /*
+    **ヒントは 足場で あって 答えでは ない**（P8・2026-09-17 の R10 検収）。
+    前は 木の ヒントが 穴の 無い 完成文だった ので、**◯◯を 1つも 埋めずに
+    読み上げるだけで「お願い」の 札が ⭕**に なって いた。進捗の ヒントも
+    その日の %入りで、締めた ばかりの 判定を ヒントが そのまま 満たして いた。
+  */
+  it("ヒントを そのまま 読み上げても 札は 開かない", () => {
+    for (const scene of scenes) {
+      const panels = panelsOf(scene);
+      let states: readonly PanelState[] = initialPanelStates(panels);
+      for (const line of scene.hintLines) {
+        states = applyUtterance({ utterance: line, panels, states }).states;
+      }
+      const full = states.filter((state) => state.full).map((state) => state.id);
+      /* 「今の ところ 問題は ありません」の 型文は 問題の 無い 日だけ。そこは 渡して よい。 */
+      const allowed = ["mon", "tue", "fri"].includes(scene.day) ? ["komari"] : [];
+      expect(full.sort(), `${scene.day}: ヒントだけで 開いた`).toEqual(allowed);
+    }
+  });
+
   it("進捗は その日の 数でしか 開かない", () => {
     const value: Record<string, string> = {
       mon: "20",
