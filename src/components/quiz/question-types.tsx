@@ -5,6 +5,7 @@ import { motion } from "motion/react";
 import { BLANK_MARK, type QuizQuestion } from "@/content/schema";
 import { RubyText } from "@/components/ruby-text";
 import { buildFuriganaIndex, type FuriganaIndex } from "@/lib/text/furigana";
+import { wordbankDisplayOrder } from "@/lib/quiz/bank-order";
 import type { QuizDraft } from "@/lib/quiz/draft";
 import type { QuizAction, QuizMode } from "./quiz-reducer";
 
@@ -137,7 +138,8 @@ export function QuestionBody({
       return (
         <WordBank
           lines={question.lines}
-          bank={question.bank}
+          // データの 順は 答えの 順に なりがち。画面では まぜて 出す（bank-order.ts）
+          bank={wordbankDisplayOrder(question)}
           blankCount={question.blanks.length}
           furigana={furigana}
           disabled={disabled}
