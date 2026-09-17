@@ -528,9 +528,47 @@ describe("どこまで できたかの 表（朝礼）", () => {
     }
   });
 
+  /*
+    **上の しごとほど 早く 手を つける**（2026-09-17 の 指定「タスクが 順番どおりでは
+    ないかも しれませんので、それの 修正も」）。前は「支払方法を えらぶ」が
+    「決済APIと つなぐ」の 上に あり、月曜・火曜の 表で **【これから】が【いま】の 上**に
+    出て いた——表を 上から 読むと 進みが 逆に 見える。
+  */
+  it("手を つける 順に 並んで いる（上の しごとほど 早く 始まる）", () => {
+    /** その しごとに はじめて 手が つく 日（ずっと これから なら 6日目 あつかい）。 */
+    const startAt = (name: string) => {
+      const at = scenes.findIndex((scene) =>
+        scene.card.progress.some((task) => baseName(task.label) === name && task.state !== "later"),
+      );
+      return at === -1 ? scenes.length : at;
+    };
+    const names = labelsOf(scenes.length - 1).map(baseName);
+    const days = names.map(startAt);
+    expect(days, `並びが 手を つける 順で ない: ${names.join(" / ")}`).toEqual(
+      [...days].sort((a, b) => a - b),
+    );
+  });
+
+  /*
+    **【これから】は ぜんぶ 下に かたまる。** どの 日も、まだ 始めて いない しごとの
+    下に「いま」「おわり」が 来ない。ここが くずれると、表が 進みの 順に 読めない。
+  */
+  it("どの 日も 【これから】の 下に いま・おわりが 出ない", () => {
+    for (const scene of scenes) {
+      const states = scene.card.progress.map((task) => task.state);
+      const firstLater = states.indexOf("later");
+      if (firstLater === -1) continue;
+      expect(
+        states.slice(firstLater).every((state) => state === "later"),
+        `${scene.day}: ${states.join(",")}`,
+      ).toBe(true);
+    }
+  });
+
   it("ACLEDA Pay は 水曜から 増え、その日だけ 追加の 印が つく", () => {
     const acleda = scenes.map((scene) =>
-      scene.card.progress.find((row) => row.label.includes("ACLEDA")),
+      /* 「決済APIと つなぐ（ABA/ACLEDA）」に 当たらない ように 頭で 見る。 */
+      scene.card.progress.find((row) => row.label.startsWith("ACLEDA Pay")),
     );
     expect(acleda[0], "月曜に ACLEDA が ある").toBeUndefined();
     expect(acleda[1], "火曜に ACLEDA が ある").toBeUndefined();
@@ -653,6 +691,65 @@ describe("どこまで できたかの 表（朝礼）", () => {
     }
     /* 10の しごとに 10枚。使い回しが あると ここで 落ちる。 */
     expect(new Set(byTask.values()).size).toBe(byTask.size);
+  });
+});
+
+/**
+ * **報告の 日には 日付が ある**（2026-09-17 の 指定
+ *「9/21(月)〜25(金)を 報告の 日として、日付を いれる ように して ください。
+ *  最初の 日は 18(金)の 報告を します」）
+ *
+ * 「先週の 金曜日」「金曜日までに」だけでは、**どの 日の ことか** 読めなかった。
+ * 週は 2026-09-21（月）〜09-25（金）。月曜の「きのう」は 土日を またぐ ので
+ * **先週の 金曜日 9/18**。ここが ずれると、報告の 中身と 表の 進みが 合わなく なる。
+ */
+describe("報告の 日付（朝礼）", () => {
+  const scenes = meetingSchema.parse(kantan).asakai!.scenes;
+  /** その日 / きのう（月曜だけ 土日を またいで 先週の 金曜）。 */
+  const WEEK = [
+    /* 月曜だけ「先週の」を 残す——土日を またぐ ことは 日付だけでは 伝わらない。 */
+    { today: "9/21 月曜日", yesterday: "先週の 金曜日・9/18" },
+    { today: "9/22 火曜日", yesterday: "9/21 月曜日" },
+    { today: "9/23 水曜日", yesterday: "9/22 火曜日" },
+    { today: "9/24 木曜日", yesterday: "9/23 水曜日" },
+    { today: "9/25 金曜日", yesterday: "9/24 木曜日" },
+  ];
+
+  it("場面の 札が 日付で 始まる（画面の 曜日は ここから 取る）", () => {
+    scenes.forEach((scene, at) => {
+      expect(scene.title.startsWith(`${WEEK[at]!.today} `), scene.title).toBe(true);
+    });
+  });
+
+  it("「きのう したこと」の 札は 前の 日の 日付（月曜は 先週の 金曜）", () => {
+    scenes.forEach((scene, at) => {
+      const row = scene.card.rows!.find((one) => one.key === "kinou")!;
+      expect(row.label).toBe(`きのう したこと（${WEEK[at]!.yesterday}）`);
+    });
+  });
+
+  it("「きょう すること」の 札は その日の 日付", () => {
+    scenes.forEach((scene, at) => {
+      const row = scene.card.rows!.find((one) => one.key === "kyou")!;
+      expect(row.label).toBe(`きょう すること（${WEEK[at]!.today}）`);
+    });
+  });
+
+  /* メモの 行と 板の カードは **同じ 札**。ずれると、どの 行の ことか 読めない。 */
+  it("板の カードの 札は メモの 行の 札と 同じ", () => {
+    for (const scene of scenes) {
+      for (const key of ["kinou", "kyou"] as const) {
+        const row = scene.card.rows!.find((one) => one.key === key)!;
+        const panel = scene.panels.find((one) => one.id === key)!;
+        expect(panel.label, `${scene.day} の ${key}`).toBe(row.label);
+      }
+    }
+  });
+
+  it("今週の ゴールは 9/25（5日 とも 同じ）", () => {
+    for (const scene of scenes) {
+      expect(scene.card.goal.startsWith("9/25 金曜日に、")).toBe(true);
+    }
   });
 });
 
