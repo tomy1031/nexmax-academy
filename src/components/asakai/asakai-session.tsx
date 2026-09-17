@@ -73,7 +73,21 @@ import {
   type PanelState,
   type ReportPanel,
 } from "@/lib/meeting/panels";
-import type { AsakaiJudgeResult } from "@/lib/meeting/asakai-judge";
+import type { AsakaiFix, AsakaiJudgeResult } from "@/lib/meeting/asakai-judge";
+import {
+  contentScore,
+  expectedPercentOf,
+  markOf,
+  saidWrongPercent,
+  totalScore,
+} from "@/lib/meeting/asakai-score";
+import {
+  DayScoreModal,
+  ProbeScoreModal,
+  ReportScoreModal,
+  type RowView,
+  type ScoreView,
+} from "@/components/asakai/asakai-score-modal";
 import { getGeminiKey, getProfile } from "@/lib/profile";
 import { fillCallName } from "@/lib/meeting/speech";
 import { recordContentProgress } from "@/lib/progress/store";
@@ -185,6 +199,52 @@ const UI_FURIGANA: readonly (readonly [string, string])[] = [
   ["水曜日", "すいようび"],
   ["木曜日", "もくようび"],
   ["金曜日", "きんようび"],
+  /*
+   * 採点の ポップアップの ことば（2026-09-17）。**画面が 自分で 出す 字**なので
+   * 教材の 辞書では 覆えない——ここに 無い 漢字は 裸で 出る（e2e が 数える）。
+   */
+  ["最初", "さいしょ"],
+  ["言えました", "いえました"],
+  ["言えません", "いえません"],
+  ["言えた", "いえた"],
+  ["言い直す", "いいなおす"],
+  ["言い直しました", "いいなおしました"],
+  ["直した", "なおした"],
+  ["直しました", "なおしました"],
+  ["直す", "なおす"],
+  ["直しましょう", "なおしましょう"],
+  ["内容", "ないよう"],
+  ["伝わりやすさ", "つたわりやすさ"],
+  ["伝わりました", "つたわりました"],
+  ["伝わりませんでした", "つたわりませんでした"],
+  ["伝わって", "つたわって"],
+  ["伝えられたか", "つたえられたか"],
+  ["伝えられました", "つたえられました"],
+  ["仕事", "しごと"],
+  ["日本語", "にほんご"],
+  ["総合", "そうごう"],
+  ["鍵", "かぎ"],
+  ["出ます", "でます"],
+  ["出して", "だして"],
+  ["言い方", "いいかた"],
+  ["文", "ぶん"],
+  ["声", "こえ"],
+  ["言って", "いって"],
+  ["言う", "いう"],
+  ["聞く", "きく"],
+  ["残りの", "のこりの"],
+  ["確認", "かくにん"],
+  ["評価", "ひょうか"],
+  ["朝礼", "ちょうれい"],
+  ["夕礼", "ゆうれい"],
+  ["進む", "すすむ"],
+  ["進捗", "しんちょく"],
+  ["報告する", "ほうこくする"],
+  ["報告して", "ほうこくして"],
+  ["作業記録", "さぎょうきろく"],
+  ["大きな", "おおきな"],
+  ["作業", "さぎょう"],
+  ["日目", "にちめ"],
   ["報告メモ", "ほうこくメモ"],
   ["聞き返し", "ききかえし"],
   ["開いた", "ひらいた"],
@@ -344,13 +404,49 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
    * 学習者は 自分の 報告の けっかを 読んでから つぎへ 進める。
    */
   const [judge, setJudge] = useState<{
+    /** 報告の あと（`report`）か、聞き返しへの こたえの あと（`probe`）か。 */
+    readonly kind: "report" | "probe";
     readonly opened: readonly string[];
     readonly shut: readonly string[];
     /** 作業記録を そのまま 読み上げて いた（数えて いない）。 */
     readonly readLog: boolean;
     readonly sceneOver: boolean;
+    /** 学習者が いま 言った こと（そのまま 出す）。 */
+    readonly utterance: string;
+    /** 直前の しつもん（聞き返しの ときだけ）。 */
+    readonly question: string;
+    readonly score: ScoreView;
+    readonly rows: readonly RowView[];
+    readonly good: string;
+    readonly advice: string;
+    readonly fixes: readonly AsakaiFix[];
     readonly after: (() => void) | null;
   } | null>(null);
+
+  /**
+   * **その日の 分の AIの 見かた**（聞き返しの たびに 上書き）。
+   *
+   * その日の おわりの 評価は 1本の 報告では なく **1日ぶん**を 見せる ので、
+   * 最後に 届いた 点と ことばを 持って おく。鍵が 無い 端末では ずっと null。
+   */
+  const [dayAi, setDayAi] = useState<{
+    readonly clarity: number | null;
+    readonly japanese: number | null;
+    readonly good: string;
+    readonly advice: string;
+    readonly fixes: readonly AsakaiFix[];
+  }>({ clarity: null, japanese: null, good: "", advice: "", fixes: [] });
+
+  /** しつもんと こたえの ふりかえり（その日の 評価に 並べる）。 */
+  const [probeLog, setProbeLog] = useState<
+    readonly { readonly question: string; readonly answer: string; readonly heard: boolean }[]
+  >([]);
+
+  /** 直前の しつもんの 字（聞き返しの こたえの 見かたに 出す）。 */
+  const [askedText, setAskedText] = useState("");
+
+  /** その日の 評価（モーダル）を 出して いる。 */
+  const [dayOpen, setDayOpen] = useState(false);
 
   /** AIに 見て もらって いる あいだ（鍵が 無い ときは いつも false）。 */
   const [waiting, setWaiting] = useState(false);
@@ -569,6 +665,8 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
         aiSaidIds: seen?.saidIds ?? [],
         logLines,
         aiReadsLog: seen?.readsLog ?? false,
+        /* 鍵が ある ときは AIが 正（2026-09-17 の 指定「開閉の 判断は AIを メインに」）。 */
+        aiOnly: seen !== null,
       });
       const target = nextProbePanel(panels, step.states);
 
@@ -598,6 +696,79 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
       /* この 1本で **新しく ⭕ に なった 札**と、まだ 残って いる 札。 */
       const wasFull = new Set(states.filter((one) => one.full).map((one) => one.id));
       const labelOf = (id: string) => panels.find((one) => one.id === id)?.label ?? id;
+
+      /*
+       * **採点の 材料**（2026-09-17 の 指定）。
+       *
+       * 内容の 点は アプリが 数える（開いた 札の 割合）。伝わりやすさと
+       * 仕事の 日本語は AIが 見た ぶんを そのまま 持つ——鍵が 無い ときは null で、
+       * 画面は「—」と 出す（見て いない ものに 0点を つけない）。
+       */
+      /*
+       * **聞き返しへの こたえ**か どうかは、しつもんの 字が あるかで 見る。
+       * 作業記録の 読み上げを 差し戻した ときは `askedId` が 立つが、
+       * 聞かれて いるのは 1枚の 札では なく **報告 まるごと**なので、
+       * そこは これまでどおり「報告の 見かた」を 出す。
+       */
+      const wasProbe = askedId !== null && askedText !== "";
+      const clarity = seen?.clarity ?? null;
+      const japanese = seen?.japanese ?? null;
+      const good = seen?.good ?? "";
+      const adviceText = seen?.advice ?? "";
+      const fixes = seen?.fixes ?? [];
+      if (seen) {
+        setDayAi((prev) => ({
+          clarity: clarity ?? prev.clarity,
+          japanese: japanese ?? prev.japanese,
+          good: good !== "" ? good : prev.good,
+          advice: adviceText !== "" ? adviceText : prev.advice,
+          fixes: fixes.length > 0 ? fixes : prev.fixes,
+        }));
+      }
+
+      /** その日の 札を 1枚ずつ「どう 伝わったか」に する。 */
+      const viewRows = (final: readonly PanelState[]): RowView[] =>
+        panels.map((panel) => {
+          const state = final.find((one) => one.id === panel.id);
+          const asked = attempts[panel.id] ?? 0;
+          /* 進捗の 札だけ、**その日の 数と ちがう 数**を 言って いたかを 見る。 */
+          const expected = expectedPercentOf(panel.facts.flatMap((fact) => fact.keywords));
+          const data = scene.panels.find((one) => one.id === panel.id);
+          return {
+            id: panel.id,
+            label: panel.label,
+            mark: markOf({
+              full: state?.full ?? false,
+              attempts: asked,
+              wrongNumber: saidWrongPercent(text, expected),
+            }),
+            said: "",
+            /* 直しの ことばは **教材の 聞き返し**を そのまま 使う（新しい 呼び名を 作らない）。 */
+            advice: state?.full ? "" : (data?.followups[0]?.text ?? ""),
+          };
+        });
+
+      const viewScore = (final: readonly PanelState[]): ScoreView => {
+        const content = contentScore(final.filter((one) => one.full).length, panels.length);
+        return { content, clarity, japanese, total: totalScore(content, clarity, japanese) };
+      };
+
+      /** 4つの setJudge に 同じ ものを 渡す（写しを 作らない）。 */
+      const view = (final: readonly PanelState[]) => ({
+        kind: (wasProbe ? "probe" : "report") as "probe" | "report",
+        utterance: text,
+        question: askedText,
+        score: viewScore(final),
+        rows: viewRows(final),
+        good,
+        advice: adviceText,
+        fixes,
+      });
+
+      if (wasProbe) {
+        const heard = step.newFacts.length > 0;
+        setProbeLog((prev) => [...prev, { question: askedText, answer: text, heard }]);
+      }
       const opened = step.states
         .filter((one) => one.full && !wasFull.has(one.id))
         .map((one) => labelOf(one.id));
@@ -605,6 +776,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
       if (!target) {
         setStates(step.states);
         setJudge({
+          ...view(step.states),
           opened,
           shut: [],
           readLog,
@@ -643,6 +815,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
         if (!next) {
           setAttempts({ ...attempts, [target.id]: count });
           setJudge({
+            ...view(passed),
             opened,
             shut,
             readLog,
@@ -670,6 +843,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
         setAttempts({ ...attempts, [target.id]: count, [next.id]: nextCount });
         setProbes((n) => n + 1);
         setJudge({
+          ...view(passed),
           opened,
           shut,
           readLog,
@@ -677,6 +851,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
           after: () => {
             say(missedLine(asakai.chairId, data.label, false));
             if (followup) say(followup);
+            setAskedText(followup?.text ?? "");
             setAskedId(next.id);
           },
         });
@@ -688,6 +863,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
       setAttempts({ ...attempts, [target.id]: count });
       setProbes((n) => n + 1);
       setJudge({
+        ...view(step.states),
         opened,
         shut,
         readLog,
@@ -696,11 +872,24 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
           /* 言い直しを たのむ ときは 聞き返さない（次の 行動は 1つ）。 */
           if (readLog) sayRedo();
           else if (followup) say(followup);
+          setAskedText(readLog ? "" : (followup?.text ?? ""));
           setAskedId(target.id);
         },
       });
     },
-    [scene, asakai, panels, states, attempts, probes, logLines, say, finishScene],
+    [
+      scene,
+      asakai,
+      panels,
+      states,
+      attempts,
+      askedId,
+      askedText,
+      probes,
+      logLines,
+      say,
+      finishScene,
+    ],
   );
 
   /**
@@ -858,6 +1047,10 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
       setProbes(0);
       setAnswer("");
       setJudge(null);
+      setProbeLog([]);
+      setDayAi({ clarity: null, japanese: null, good: "", advice: "", fixes: [] });
+      setAskedText("");
+      setDayOpen(false);
       setPhase("talk");
       openScene(at);
     },
@@ -1086,7 +1279,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
       {sceneOver ? (
         <button
           type="button"
-          onClick={toGap}
+          onClick={() => setDayOpen(true)}
           aria-label={
             sceneAt + 1 >= asakai.scenes.length ? "今週の けっかを 見る" : "きょうの けっかを 見る"
           }
@@ -1350,99 +1543,81 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
         />
       ) : null}
       {judge ? (
-        <ReportJudge
-          opened={judge.opened}
-          shut={judge.shut}
-          readLog={judge.readLog}
-          sceneOver={judge.sceneOver}
+        judge.kind === "probe" ? (
+          <ProbeScoreModal
+            heard={judge.opened.length > 0}
+            question={judge.question}
+            answer={judge.utterance}
+            good={judge.good}
+            fixes={judge.fixes}
+            nextLabel={judge.sceneOver ? "みんなの 報告を 聞く ▶" : "つぎの しつもんを 聞く ▶"}
+            rest={judge.shut.join("・")}
+            index={index}
+            /* 言い直す … 同じ しつもんの まま、もう いちど 書く（司会は 何も 言わない）。 */
+            onRetry={() => setJudge(null)}
+            onClose={closeJudge}
+          />
+        ) : (
+          <ReportScoreModal
+            score={judge.score}
+            rows={judge.rows}
+            good={judge.good}
+            advice={judge.advice}
+            fixes={judge.fixes}
+            readLog={judge.readLog}
+            nextLabel={judge.sceneOver ? "みんなの 報告を 聞く ▶" : "報告を つづける ▶"}
+            index={index}
+            onClose={closeJudge}
+          />
+        )
+      ) : null}
+      {dayOpen ? (
+        <DayScoreModal
+          dayName={DAY_NAME[scene.day]}
+          at={sceneAt + 1}
+          total={asakai.scenes.length}
+          score={{
+            content: contentScore(states.filter((one) => one.full).length, panels.length),
+            clarity: dayAi.clarity,
+            japanese: dayAi.japanese,
+            total: totalScore(
+              contentScore(states.filter((one) => one.full).length, panels.length),
+              dayAi.clarity,
+              dayAi.japanese,
+            ),
+          }}
+          rows={panels.map((panel) => ({
+            id: panel.id,
+            label: panel.label,
+            mark: markOf({
+              full: states.find((one) => one.id === panel.id)?.full ?? false,
+              attempts: attempts[panel.id] ?? 0,
+            }),
+            said: "",
+            advice: "",
+          }))}
+          probes={probeLog}
+          good={dayAi.good}
+          advice={dayAi.advice}
+          fixes={dayAi.fixes}
+          nextLabel={
+            sceneAt + 1 >= asakai.scenes.length
+              ? "今週の けっかを 見る ▶"
+              : `${DAY_NAME[asakai.scenes[sceneAt + 1]?.day ?? "fri"]}へ 進む ▶`
+          }
           index={index}
-          onClose={closeJudge}
+          /* もう いちど 報告する … その日を はじめから（けっかは 上書きされる）。 */
+          onRetry={() => {
+            setDayOpen(false);
+            goToScene(sceneAt);
+          }}
+          onClose={() => {
+            setDayOpen(false);
+            toGap();
+          }}
         />
       ) : null}
     </CallShell>
-  );
-}
-
-/**
- * 報告の 見かた（モーダル）。
- *
- * **これを 閉じてから 司会と メンバーが 話す**（2026-09-11 の 指定）。
- * 前は 報告の 直後に 会話が 積まれ、しかも その 会話は 画面の 下に 流れて いた ので、
- * 学習者は **自分の 報告が どう 受け取られたかを 一度も 読まずに** 先へ 進めた。
- *
- * 中身は 数と 札だけ。ねぎらいの ことばは 置かない（規律1・2026-09-03 の 指定）。
- */
-function ReportJudge({
-  opened,
-  shut,
-  readLog,
-  sceneOver,
-  index,
-  onClose,
-}: {
-  opened: readonly string[];
-  shut: readonly string[];
-  readLog: boolean;
-  sceneOver: boolean;
-  index: FuriganaIndex;
-  onClose: () => void;
-}) {
-  return (
-    <ModalShell
-      label="報告の 見かた"
-      title={<RubyText text="いまの 報告" index={index} show />}
-      onClose={onClose}
-      closeLabel={sceneOver ? "みんなの 報告を 聞く ▶" : "つづける ▶"}
-      index={index}
-    >
-      {/*
-        **何も 開かなかった 理由を はっきり 書く**（規律1）。
-        黙って「開いた カード: ありません」だけを 出すと、学習者は
-        ことばが 足りなかったのだと 思って、記録を もう一度 読み上げる。
-      */}
-      {readLog ? (
-        <div className="border-hairline bg-panel text-coral-deep mt-3 rounded-xl border px-3 py-2 text-sm font-bold">
-          <RubyText
-            text={
-              /*
-                **次の 行動は、その場で できる ことに する**（規律1・2026-09-14 の R5 検収）。
-                その日が もう 終わって いるのに「もう いちど まとめて ください」と 書くと、
-                言われた ことを する 場所が どこにも 無い まま 画面が 閉じる。
-              */
-              sceneOver
-                ? "作業記録を そのまま 読み上げて います。この ぶんは 数えて いません。つぎの 日は 大きな 作業を 2つか 3つに まとめて ください。"
-                : "作業記録を そのまま 読み上げて います。この ぶんは 数えて いません。大きな 作業を 2つか 3つに まとめて、もう いちど 言って ください。"
-            }
-            index={index}
-            show
-          />
-        </div>
-      ) : null}
-
-      <div className="border-hairline bg-panel mt-3 rounded-xl border px-3 py-2">
-        <p className="text-leaf-deep text-[11px] font-black">
-          ✓ <RubyText text="開いた カード" index={index} show />
-        </p>
-        <p className="mt-0.5 text-sm font-bold">
-          {opened.length > 0 ? (
-            <RubyText text={opened.join("・")} index={index} show />
-          ) : (
-            <RubyText text="ありません。" index={index} show />
-          )}
-        </p>
-      </div>
-
-      {shut.length > 0 ? (
-        <div className="border-hairline bg-panel mt-2 rounded-xl border px-3 py-2">
-          <p className="text-coral-deep text-[11px] font-black">
-            ▢ <RubyText text="まだ 言って いない カード" index={index} show />
-          </p>
-          <p className="mt-0.5 text-sm font-bold">
-            <RubyText text={shut.join("・")} index={index} show />
-          </p>
-        </div>
-      ) : null}
-    </ModalShell>
   );
 }
 

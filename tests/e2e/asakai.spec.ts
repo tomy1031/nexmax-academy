@@ -86,6 +86,19 @@ async function closeDuty(page: Page): Promise<void> {
   }
 }
 
+/**
+ * **その日の 評価（モーダル）**を 読んで 閉じる（2026-09-17 の 指定「全て モーダルが よい」）。
+ *
+ * 「きょうの けっかを 見る ▶」の あとに 出る。中身は 点・どのように 伝えられたか・
+ * しつもんの ふりかえり。閉じると これまでどおり 時間カードへ 進む。
+ */
+async function closeDayScore(page: Page): Promise<void> {
+  const modal = page.getByRole("dialog", { name: "今日の 評価" });
+  await expect(modal).toBeVisible();
+  await modal.getByRole("button", { name: /へ 進む|今週の けっかを 見る/ }).click();
+  await expect(modal).toBeHidden();
+}
+
 async function expectOnScreen(page: Page, text: string): Promise<void> {
   expect(await readingFreeText(page)).toContain(text.replace(/\s+/gu, ""));
 }
@@ -273,8 +286,15 @@ test("朝礼（かんたん）— 報告すると カードが 開く", async ({
 
   expect(await bareKanjiTexts(page)).toEqual([]);
 
-  /* 時間カード → 火曜日へ。 */
+  /* その日の 評価（モーダル） → 時間カード → 火曜日へ。 */
   await owari.click();
+  await expectOnScreen(page, "きょうの 評価");
+  await expectOnScreen(page, "どのように 伝えられたか");
+  /* 鍵ゼロの 端末では 内容だけ 出す（見て いない ものに 0点を つけない）。 */
+  await expectOnScreen(page, "AIの 鍵が ある ときに 出ます");
+  expect(await bareKanjiTexts(page)).toEqual([]);
+  await shot(page, "asakai-03b-day-score");
+  await closeDayScore(page);
   await expectOnScreen(page, "月曜日の 朝礼 おわり");
   await shot(page, "asakai-04-kantan-timecard");
   expect(await bareKanjiTexts(page)).toEqual([]);
@@ -531,6 +551,7 @@ test("月曜を 終えて 開き直すと、火曜から つづく", async ({ pa
   await page.getByRole("button", { name: "おくる" }).click();
   await page.getByRole("button", { name: "みんなの 報告を 聞く" }).click();
   await page.getByRole("button", { name: /けっかを 見る/ }).click();
+  await closeDayScore(page);
   await expectOnScreen(page, "月曜日の 朝礼 おわり");
 
   /* ここで 回線が 切れた ことに する。 */
@@ -586,6 +607,7 @@ test("5日 通すと、合否と 数が 読める", async ({ page, context }) =>
     await page.getByRole("button", { name: "おくる" }).click();
     await page.getByRole("button", { name: "みんなの 報告を 聞く" }).click();
     await page.getByRole("button", { name: /けっかを 見る/ }).click();
+    await closeDayScore(page);
     if (day < 4) {
       await page.getByRole("button", { name: /つづけます/ }).click();
       await closeDuty(page);
@@ -635,4 +657,54 @@ test("報告の 途中で 開き直しても、開いた カードが 残る", a
   await expect(page.getByText("（1 / 4）"), "開き直したら 板が 空に なった").toBeVisible();
   /* 会話も 残って いる（相手が どこまで 聞いたかが 読める）。 */
   await expectOnScreen(page, "先週の 金曜日は、決済の 決まりを 調べて");
+});
+
+/**
+ * **聞き返しへの こたえにも 見かたが 出る**（2026-09-17 の 指定「全て モーダルが よい」）
+ *
+ * 足りない まま 送ると 司会が 聞き返す。その こたえの あとに 出る ポップアップで
+ *「内容が 伝わったか」「日本語は そのままで よいか」「残りの 確認」が 読める。
+ * 前は 聞き返しの あとも 同じ 2行（開いた／まだ）だけ だった。
+ */
+test("聞き返しに こたえると、こたえの 見かたが 出る", async ({ page, context }) => {
+  const refs = stageRefs();
+  const at = refs.indexOf("asakai_kantan");
+  await seedCompleted(context, refs.slice(0, at));
+
+  await page.goto("/asakai/meeting-asakai_kantan");
+  await joinCall(page);
+  await closeDuty(page);
+
+  /* きのう だけ 言う → 残りを 聞き返される。 */
+  await page
+    .getByLabel("こたえを 入力する")
+    .fill("先週の 金曜日は、決済の 決まりを 調べて、決済の 画面と ABA Payの ボタンを 作りました。");
+  await page.getByRole("button", { name: "おくる" }).click();
+  const first = page.getByRole("dialog", { name: "報告の 見かた" });
+  await expect(first).toBeVisible();
+  /* 報告の あとの 見かたにも 点が 出る（鍵ゼロでは 内容だけ）。ルビが 入るので 字は 素で 見る。 */
+  await expectOnScreen(page, "報告の 内容");
+  await expectOnScreen(page, "どのように 伝えられたか");
+  await first.getByRole("button", { name: /報告を つづける/ }).click();
+
+  /* 聞き返しに こたえる。 */
+  await page
+    .getByLabel("こたえを 入力する")
+    .fill("今、決済フロントエンド機能 ぜんたいの 進捗は 20%です。");
+  await page.getByRole("button", { name: "おくる" }).click();
+
+  const probe = page.getByRole("dialog", { name: "追加の しつもんへの こたえ" });
+  await expect(probe).toBeVisible();
+  await expectOnScreen(page, "こたえが 伝わりました");
+  await expectOnScreen(page, "内容: 伝わりました");
+  await expectOnScreen(page, "あなたの こたえ");
+  /* 残りの 札が 名前で 読める（つぎに 何を 言うかが 分かる）。 */
+  await expectOnScreen(page, "残りの 確認");
+  expect(await bareKanjiTexts(page)).toEqual([]);
+  await shot(page, "asakai-03c-probe-score");
+
+  /* 言い直す … 同じ しつもんの まま 閉じる（司会は 何も 言わない）。 */
+  await probe.getByRole("button", { name: "言い直す" }).click();
+  await expect(probe).toBeHidden();
+  await expect(page.getByText("（2 / 4）")).toBeVisible();
 });

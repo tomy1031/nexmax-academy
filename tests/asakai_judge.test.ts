@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   buildAsakaiJudgePrompt,
+  NO_JUDGE,
   parseAsakaiJudge,
   type AsakaiJudgeContext,
   type JudgeablePanel,
@@ -114,8 +115,8 @@ describe("buildAsakaiJudgePrompt — 渡す 文", () => {
 describe("parseAsakaiJudge — 返って きた もの", () => {
   it("知って いる id だけを 取る", () => {
     expect(parseAsakaiJudge({ saidIds: ["k1", "zzz", "m1"], readsLog: false }, ALL_FACTS)).toEqual({
+      ...NO_JUDGE,
       saidIds: ["k1", "m1"],
-      readsLog: false,
     });
   });
 
@@ -127,7 +128,7 @@ describe("parseAsakaiJudge — 返って きた もの", () => {
 
   it("形が 崩れて いたら 何も 見えなかった ことに する", () => {
     for (const bad of [null, undefined, "k1", { saidIds: "k1" }, {}]) {
-      expect(parseAsakaiJudge(bad, ALL_FACTS)).toEqual({ saidIds: [], readsLog: false });
+      expect(parseAsakaiJudge(bad, ALL_FACTS)).toEqual(NO_JUDGE);
     }
   });
 
@@ -136,5 +137,60 @@ describe("parseAsakaiJudge — 返って きた もの", () => {
     expect(parseAsakaiJudge({ saidIds: [], readsLog: true }, ALL_FACTS).readsLog).toBe(true);
     expect(parseAsakaiJudge({ saidIds: [], readsLog: "true" }, ALL_FACTS).readsLog).toBe(false);
     expect(parseAsakaiJudge({ saidIds: [] }, ALL_FACTS).readsLog).toBe(false);
+  });
+});
+
+/**
+ * **採点は AIが 2つ だけ 見る**（2026-09-17 の 指定「AI側の 採点などを しっかりと 作って」）。
+ *
+ * 内容の 点は アプリが 数える（`asakai-score.ts`）。ここで 見るのは、
+ * 返って きた 値を **そのまま 信じない** ことと、鍵が 無い ときに 0点に しない こと。
+ */
+describe("parseAsakaiJudge — 採点と ことば", () => {
+  it("点は 0〜30 に 丸める", () => {
+    const out = parseAsakaiJudge(
+      { saidIds: [], readsLog: false, clarity: 41, japanese: -3 },
+      ALL_FACTS,
+    );
+    expect(out.clarity).toBe(30);
+    expect(out.japanese).toBe(0);
+  });
+
+  it("点が 返って こなければ null（0点に しない）", () => {
+    const out = parseAsakaiJudge({ saidIds: [], readsLog: false }, ALL_FACTS);
+    expect(out.clarity).toBeNull();
+    expect(out.japanese).toBeNull();
+  });
+
+  it("直しは said と natural が そろって いる ものだけ・2つまで", () => {
+    const out = parseAsakaiJudge(
+      {
+        saidIds: [],
+        readsLog: false,
+        fixes: [
+          { said: "つなぐできません", natural: "つなげません", note: "できない ときの 形です。" },
+          { said: "だけ", natural: "" },
+          { said: "しました", natural: "しています" },
+          { said: "3つ目", natural: "3つ目なおし" },
+        ],
+      },
+      ALL_FACTS,
+    );
+    expect(out.fixes).toHaveLength(2);
+    expect(out.fixes[0]).toEqual({
+      said: "つなぐできません",
+      natural: "つなげません",
+      note: "できない ときの 形です。",
+    });
+    expect(out.fixes[1]?.note, "note が 無くても 直しは 出す").toBe("");
+  });
+
+  it("ことばは 文字列の ときだけ 取る", () => {
+    const out = parseAsakaiJudge(
+      { saidIds: [], readsLog: false, good: "  進捗を 数で 言えました。 ", advice: 7 },
+      ALL_FACTS,
+    );
+    expect(out.good).toBe("進捗を 数で 言えました。");
+    expect(out.advice).toBe("");
   });
 });

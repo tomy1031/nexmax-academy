@@ -595,3 +595,72 @@ describe("打ち切った カードは 動かない", () => {
     expect(countOpen(after.states)).toBe(0);
   });
 });
+
+/**
+ * **AIの 見立てを 正に する**（2026-09-17 の 指定「開閉の 判断は AIを メインと して ほしい」）
+ *
+ * 鍵が ある 端末だけ。ことばの 照合は 書いて ある 語しか 見られない ので、
+ * 言い方が ちがう だけで 開いたり 開かなかったり する。
+ */
+describe("aiOnly — AIの 見立てを 正に する", () => {
+  const panels: ReportPanel[] = [
+    {
+      id: "kinou",
+      label: "きのう したこと",
+      facts: [{ id: "k1", keywords: ["画面", "作りました"] }],
+    },
+    {
+      id: "komari",
+      label: "問題・確認",
+      facts: [{ id: "m1", keywords: ["ありません"] }],
+    },
+  ];
+  const fresh = () => initialPanelStates(panels);
+
+  it("AIが 言えたと 言えば、ことばが 当たらなくても 開く", () => {
+    const step = applyUtterance({
+      utterance: "きのうは ずっと UIを いじって いました。",
+      panels,
+      states: fresh(),
+      aiSaidIds: ["k1"],
+      aiOnly: true,
+    });
+    expect(step.states.find((one) => one.id === "kinou")?.full).toBe(true);
+  });
+
+  it("AIが 言って いないと 見た 札は、ことばが 当たっても 開かない", () => {
+    const step = applyUtterance({
+      utterance: "画面を 作りました。問題は ありません。",
+      panels,
+      states: fresh(),
+      aiSaidIds: ["k1"],
+      aiOnly: true,
+    });
+    expect(step.states.find((one) => one.id === "kinou")?.full).toBe(true);
+    expect(
+      step.states.find((one) => one.id === "komari")?.full,
+      "AIが 見て いない 札が 開いた",
+    ).toBe(false);
+  });
+
+  it("AIが 何も 返さなかった ときは 照合に 戻す（全部 落とさない）", () => {
+    const step = applyUtterance({
+      utterance: "画面を 作りました。",
+      panels,
+      states: fresh(),
+      aiSaidIds: [],
+      aiOnly: true,
+    });
+    expect(step.states.find((one) => one.id === "kinou")?.full).toBe(true);
+  });
+
+  it("鍵が 無い ときは これまでどおり 足し算", () => {
+    const step = applyUtterance({
+      utterance: "画面を 作りました。問題は ありません。",
+      panels,
+      states: fresh(),
+      aiSaidIds: ["k1"],
+    });
+    expect(step.states.filter((one) => one.full)).toHaveLength(2);
+  });
+});

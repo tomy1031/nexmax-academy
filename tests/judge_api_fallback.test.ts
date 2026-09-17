@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { LIVE_TEXT_MODELS } from "../src/lib/ai/models";
-import type { AsakaiJudgeContext } from "../src/lib/meeting/asakai-judge";
+import { NO_JUDGE, type AsakaiJudgeContext } from "../src/lib/meeting/asakai-judge";
 import type * as ProfileModule from "../src/lib/profile";
 
 /**
@@ -138,7 +138,7 @@ describe("先頭の モデルに 断られる 鍵", () => {
 
     await vi.advanceTimersByTimeAsync(13_000);
 
-    expect(result).toEqual({ saidIds: ["k1"], readsLog: false });
+    expect(result).toEqual({ ...NO_JUDGE, saidIds: ["k1"] });
     expect(sdk.connects.map((c) => c.model)).toEqual([HEAD, SPARE]);
     // 閉じられた その場で 控えへ（前は 9秒 待ってから だった）
     expect(sdk.connects[1]!.at - started).toBeLessThan(1_000);
@@ -211,7 +211,7 @@ describe("先頭の モデルが 何も 返さない とき（まれ）", () => 
       third = value;
     });
     await vi.advanceTimersByTimeAsync(5_000);
-    expect(third).toEqual({ saidIds: ["k2"], readsLog: false });
+    expect(third).toEqual({ ...NO_JUDGE, saidIds: ["k2"] });
     expect(sdk.connects.filter((c) => c.model === SPARE)).toHaveLength(1);
 
     // 諦めた 先頭が 遅れて つながっても、居座らせずに 閉じる
@@ -238,7 +238,7 @@ describe("先頭の モデルが 何も 返さない とき（まれ）", () => 
       second = value;
     });
     await vi.advanceTimersByTimeAsync(3_000);
-    expect(second).toEqual({ saidIds: ["k1"], readsLog: false });
+    expect(second).toEqual({ ...NO_JUDGE, saidIds: ["k1"] });
     expect(sdk.connects.filter((c) => c.model === SPARE)).toHaveLength(1);
   });
 });

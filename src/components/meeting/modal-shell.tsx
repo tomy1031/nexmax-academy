@@ -56,6 +56,7 @@ export function ModalShell({
   closeLabel = "とじる",
   index,
   wide = false,
+  secondary,
   children,
 }: {
   /** 読み上げ用の 名前（`aria-label`）。 */
@@ -69,6 +70,14 @@ export function ModalShell({
   index?: FuriganaIndex;
   /** 中身が 表や 何段もの 箱の ときに 広げる（`max-w-md` → `max-w-2xl`）。 */
   wide?: boolean;
+  /**
+   * とじる ボタンの **左に 置く もう 1つ**（「言い直す」「もう いちど 報告する」）。
+   *
+   * 2026-09-17 の 指定（採点の ポップアップ）。閉じる ほかに **やり直す 道**が
+   * 要る 画面が ある——聞き返しの こたえを 言い直す、その日を もう いちど 報告する。
+   * 道が 1つしか 無いと、直したい 人も 先へ 進むしか なくなる。
+   */
+  secondary?: { readonly label: string; readonly onClick: () => void };
   children: ReactNode;
 }) {
   return (
@@ -108,14 +117,26 @@ export function ModalShell({
       >
         {title ? <p className="text-navy text-center text-lg font-black">{title}</p> : null}
         {children}
-        <button
-          type="button"
-          onClick={onClose}
-          aria-label={closeLabel}
-          className="btn-island btn-game mt-5 w-full px-6 py-3 text-base"
-        >
-          {index ? <RubyText text={closeLabel} index={index} show /> : closeLabel}
-        </button>
+        <div className="mt-5 flex flex-wrap items-center gap-2">
+          {secondary ? (
+            <button
+              type="button"
+              onClick={secondary.onClick}
+              aria-label={secondary.label}
+              className="border-blossom text-navy min-w-0 flex-1 rounded-full border-2 bg-white px-4 py-3 text-base font-extrabold"
+            >
+              {index ? <RubyText text={secondary.label} index={index} show /> : secondary.label}
+            </button>
+          ) : null}
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label={closeLabel}
+            className={`btn-island btn-game px-6 py-3 text-base ${secondary ? "min-w-0 flex-[1.4]" : "w-full"}`}
+          >
+            {index ? <RubyText text={closeLabel} index={index} show /> : closeLabel}
+          </button>
+        </div>
       </motion.div>
     </div>
   );

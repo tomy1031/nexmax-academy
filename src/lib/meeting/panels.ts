@@ -306,6 +306,7 @@ export function applyUtterance({
   aiSaidIds = [],
   logLines = [],
   aiReadsLog = false,
+  aiOnly = false,
 }: {
   utterance: string;
   panels: readonly ReportPanel[];
@@ -321,6 +322,17 @@ export function applyUtterance({
    * **正しく まとめた 報告が AIの 見誤りだけで 消える**（設計01 P8 に 逆行）。
    */
   aiReadsLog?: boolean;
+  /**
+   * **AIの 見立てを 正に する**（2026-09-17 の 指定「開閉の 判断は AIを メインと して ほしい」）。
+   *
+   * 鍵が ある 端末だけ true。ことばの 照合は **書いて ある 語**しか 見られない ので、
+   * 言い方が ちがう だけで 開いたり 開かなかったり する。AIは 中身で 見る。
+   *
+   * ただし **AIが 何も 返さなかった ときは 照合に 戻す**——通信の 失敗や
+   * 見落としで 空が 返る ことが あり、そこで 0枚に すると
+   * **正しく 報告した 人が 全部 落ちる**（設計01 P8: 取りこぼしは 誤って 開く ことより 重い）。
+   */
+  aiOnly?: boolean;
 }): PanelStep {
   const byId = new Map(states.map((s) => [s.id, s]));
 
@@ -367,7 +379,16 @@ export function applyUtterance({
     }
 
     const saidSet = new Set(prev.said);
-    const hit = resolveFacts({ utterance, facts: panel.facts, saidIds: saidSet, aiSaidIds });
+    /*
+     * 照合と AIの 見立てを **別々に** 取って から えらぶ。
+     * ふだんは 足し算（学習者に 有利）。`aiOnly` の ときは AIを 正に して、
+     * AIが 何も 言わなかった ときだけ 照合に 戻す。
+     */
+    const local = resolveFacts({ utterance, facts: panel.facts, saidIds: saidSet });
+    const mine = aiSaidIds.filter(
+      (id) => panel.facts.some((fact) => fact.id === id) && !saidSet.has(id),
+    );
+    const hit = aiOnly && aiSaidIds.length > 0 ? mine : [...new Set([...local, ...mine])];
     if (hit.length === 0) return prev;
 
     newFacts.push(...hit);
