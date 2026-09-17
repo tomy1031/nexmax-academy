@@ -102,6 +102,26 @@ const DAY_NAME: Record<Scene["day"], string> = {
 const KIND_NAME: Record<Scene["kind"], string> = { asa: "朝礼", yuu: "夕礼" };
 
 /**
+ * 日付つきの 曜日（「9/21 月曜日」）。**題と 帯の 札**に 使う。
+ *
+ * 2026-09-17 の 指定「9/21(月)〜25(金)を 報告の 日として、日付を いれる ように して
+ * ください」——「先週の 金曜日」「金曜日までに」だけでは、どの 日の ことか 読めなかった。
+ *
+ * 日付は **場面の 札（`title`）の 先頭**が 正（「9/21 月曜日 9:00 朝礼 ・ 司会 ヘンディさん」）。
+ * 週は 教材ごとに ちがう（朝礼は 9/21の 週、夕礼は その つぎの 週）ので、ここに 表を 持つと
+ * **エンジンが 物語の 日付を 持つ**ことに なり、教材を 足すたび ずれる。
+ * 札に 日付が 無い 教材は、これまでどおり 曜日だけを 出す。
+ *
+ * **`DAY_NAME` の ほうは 触らない。** あちらは 週の けっかの 行の 名前（`DayResult.day`）で
+ * 端末に 保存されて いる ので、字を 変えると **前に 報告した 日が 行方不明に なる**
+ *（済んだ 日の ✅ が 消え、次の 日が 開かなく なる）。
+ */
+const dayStamp = (scene: Scene) => {
+  const date = /^(\d{1,2}\/\d{1,2})\s/u.exec(scene.title)?.[1];
+  return date ? `${date} ${DAY_NAME[scene.day]}` : DAY_NAME[scene.day];
+};
+
+/**
  * Live への 言い渡し — **聞くだけ**。
  *
  * 相手役に 質問させない（この ファイル 冒頭の 決まり）。当たり判定は 学習者の
@@ -806,7 +826,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
     };
   });
 
-  const dayHeading = `${DAY_NAME[scene.day]}の ${KIND_NAME[scene.kind]}`;
+  const dayHeading = `${dayStamp(scene)}の ${KIND_NAME[scene.kind]}`;
   /** 場面の あいだ（時間カード・週の けっか）は 報告の 道具を ぜんぶ 消す。 */
   const between = phase !== "talk";
 
@@ -1245,7 +1265,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
             <span className="inline-flex flex-wrap items-center justify-center gap-2">
               <RubyText text="📋 報告メモ" index={index} show />
               <span className="bg-sky-deep inline-block rounded-full px-3 py-1 text-sm leading-[1.9] font-black text-white [&_rt]:text-white">
-                <RubyText text={DAY_NAME[scene.day]} index={index} show />
+                <RubyText text={dayStamp(scene)} index={index} show />
               </span>
             </span>
           }
