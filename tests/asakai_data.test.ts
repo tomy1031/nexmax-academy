@@ -300,19 +300,46 @@ const isOwabi = (word: string) => word.includes("すみません") || word.inclu
  * ある」。教材ごとに 求めると、初級と 上級で 教え方を 変えられなく なる。
  */
 describe("悪い しらせと おわび", () => {
-  it("ステージの どこかに おわびを 求める 箱が ある", () => {
-    const owabi = MEETINGS.flatMap(({ name, raw }) => {
-      const asakai = meetingSchema.parse(raw).asakai!;
-      return asakai.scenes.flatMap((scene) =>
-        scene.panels.flatMap((panel) =>
-          panel.facts
-            .filter((fact) => fact.allOf?.some((group) => group.some(isOwabi)))
-            .map(() => `${name}/${scene.day}/${panel.id}`),
-        ),
-      );
-    });
-    /* おわびの ことばと 中身の **両方**を 求める 行が、ステージに 1つ 以上 ある。 */
-    expect(owabi.length, "おわびを 練習する 箱が ステージから 消えた").toBeGreaterThan(0);
+  /**
+   * **おわびは「お願いの 中身」とは 別の 札**（2026-09-17 の 指定）。
+   *
+   * 前は 1つの 行が おわび＋中身を まとめて 求めて いた ので、
+   *「申し訳ありませんが、予定の 確認を お願いします」（1日 のばす と 言って いない）が 通り、
+   *「納期を 1日 延ばして いただけますか」（おわびが 無い）が 通らなかった——
+   * **中身より ことばが 優先**されて いた。
+   * いまは お願いの 札に 2つの 行を 置く: お願いの 中身と おわび。
+   * どちらが 足りないかが 画面の 箱で 読めるので、直す ところが はっきりする。
+   */
+  const owabiFacts = MEETINGS.flatMap(({ name, raw }) => {
+    const asakai = meetingSchema.parse(raw).asakai!;
+    return asakai.scenes.flatMap((scene) =>
+      scene.panels.flatMap((panel) =>
+        panel.facts
+          .filter(
+            (fact) =>
+              fact.keywords.some(isOwabi) ||
+              (fact.allOf?.some((group) => group.some(isOwabi)) ?? false),
+          )
+          .map((fact) => ({ where: `${name}/${scene.day}/${panel.id}`, fact, panel })),
+      ),
+    );
+  });
+
+  it("ステージの どこかに おわびを 求める 行が ある", () => {
+    expect(owabiFacts.length, "おわびを 練習する 行が ステージから 消えた").toBeGreaterThan(0);
+  });
+
+  it("あやまるだけでは ⭕ に ならない（中身が 要る）", () => {
+    for (const { where, fact, panel } of owabiFacts) {
+      /*
+       * 通り道は 2つ。どちらでも「すみません」だけでは 満点に ならない。
+       * - 同じ 行が おわびと 中身の 両方を 求める（allOf が 2組 以上）
+       * - おわびは 別の 行で、その 札が ⭕ に なるには ほかの 行も 要る
+       */
+      const pairedInFact = (fact.allOf?.length ?? 0) >= 2;
+      const pairedInPanel = panel.facts.length >= 2;
+      expect(pairedInFact || pairedInPanel, `${where}: あやまるだけで ⭕ に なる`).toBe(true);
+    }
   });
 
   it("ステージの どこかで おわびの 言い方を 見本か れいで 見せて いる", () => {
@@ -328,25 +355,6 @@ describe("悪い しらせと おわび", () => {
     });
     expect(shown, "求めるだけで 見せて いない（R10）").toBe(true);
   });
-
-  for (const { name, raw } of MEETINGS) {
-    const meeting = meetingSchema.parse(raw);
-    const asakai = meeting.asakai!;
-
-    it(`${name} の おわびは 中身と セットでしか 立たない`, () => {
-      /* 「すみません」だけで 開くと、**あやまれば 通る** 練習に なる。 */
-      const owabi = asakai.scenes
-        .flatMap((scene) => scene.panels.flatMap((panel) => panel.facts))
-        .filter((fact) =>
-          fact.allOf?.some((group) =>
-            group.some((word) => word.includes("すみません") || word.includes("申し訳")),
-          ),
-        );
-      for (const fact of owabi) {
-        expect(fact.allOf!.length).toBeGreaterThanOrEqual(2);
-      }
-    });
-  }
 
   /*
    * 「ページが おわびの 言い方を 先に 教えて いる」は 2026-09-14 に 外した。
@@ -750,6 +758,159 @@ describe("報告の 日付（朝礼）", () => {
     for (const scene of scenes) {
       expect(scene.card.goal.startsWith("9/25 金曜日に、")).toBe(true);
     }
+  });
+});
+
+/**
+ * **その日の 中身を 言えた ときだけ 開く**（2026-09-17 の 指定 ②③④）
+ *
+ * ユーザーの 指摘:
+ * - 問題が ある 水・木でも「問題は ありません」で 札が 開いて いた
+ * - 進捗が「数字が 1つ あれば」で 開くので、木曜の「1日 遅れる」や
+ *   見本の 50% でも 開いて いた
+ * - お願いが「おわび＋予定＋たのみ方」の 3つ揃いなので、
+ *   **1日 のばして ほしいと 言って いない**「予定の 確認を お願いします」が 通り、
+ *   **おわびの 無い**「納期を 1日 延ばして いただけますか」が 通らなかった
+ */
+describe("その日の 中身でしか 開かない（朝礼）", () => {
+  const scenes = meetingSchema.parse(kantan).asakai!.scenes;
+  const sceneOf = (day: string) => scenes.find((scene) => scene.day === day)!;
+  const panelsOf = (scene: (typeof scenes)[number]) =>
+    scene.panels.map((panel) => ({
+      id: panel.id,
+      label: panel.label,
+      openAt: panel.openAt,
+      rule: panel.rule,
+      facts: panel.facts.map((fact) => ({
+        id: fact.id,
+        box: fact.box,
+        keywords: fact.keywords,
+        minHits: fact.minHits,
+        allOf: fact.allOf,
+      })),
+    }));
+  /** その 発話で 開いた 札の 状態を 返す。 */
+  const say = (day: string, utterance: string, panelId: string) => {
+    const scene = sceneOf(day);
+    const panels = panelsOf(scene);
+    const states = applyUtterance({
+      utterance,
+      panels,
+      states: initialPanelStates(panels),
+    }).states;
+    return states.find((state) => state.id === panelId)!;
+  };
+
+  const NO_PROBLEM = "今の ところ 問題は ありません。";
+
+  it("水・木は「問題は ありません」では 開かない", () => {
+    for (const day of ["wed", "thu"]) {
+      expect(say(day, NO_PROBLEM, "komari").open, `${day}: ありませんで 開いた`).toBe(false);
+    }
+  });
+
+  it("月・火・金は これまでどおり「問題は ありません」で 開く", () => {
+    for (const day of ["mon", "tue", "fri"]) {
+      expect(say(day, NO_PROBLEM, "komari").full, `${day}: 問題なしで 開かない`).toBe(true);
+    }
+  });
+
+  it("水・木は その日の 中身を 言えば 開く", () => {
+    expect(
+      say("wed", "1つ 問題が あります。APIと つなぐ ところが むずかしいです。", "komari").full,
+    ).toBe(true);
+    const thu = say(
+      "thu",
+      "決済APIと つなぐ ところが うまく いって いません。このままだと 予定より 1日 遅れる かもしれません。",
+      "komari",
+    );
+    expect(thu.full).toBe(true);
+  });
+
+  it("進捗は その日の 数でしか 開かない", () => {
+    const value: Record<string, string> = {
+      mon: "20",
+      tue: "35",
+      wed: "45",
+      thu: "60",
+      fri: "85",
+    };
+    for (const [day, percent] of Object.entries(value)) {
+      expect(say(day, `今、進捗は ${percent}%です。`, "shinchoku").full, `${day} の 数`).toBe(true);
+      /* 見本（ヘンディさん）の 数字は 決済バックエンド機能の もの。 */
+      expect(say(day, "今、進捗は 50%です。", "shinchoku").open, `${day}: 見本の 数で 開いた`).toBe(
+        percent === "50",
+      );
+    }
+  });
+
+  it("「1日 遅れる」は 進捗では ない", () => {
+    expect(say("thu", "このままだと、予定より 1日 遅れる かもしれません。", "shinchoku").open).toBe(
+      false,
+    );
+  });
+
+  it("お願いは おわびが 無くても 中身で 立つ", () => {
+    const said = say("thu", "納期を 1日 延ばして いただけますか。", "onegai");
+    expect(said.said).toContain("onegai1");
+    /* おわびは 別の 行なので、ここでは まだ ⭕ に ならない。 */
+    expect(said.full).toBe(false);
+  });
+
+  it("あやまるだけ・確認を たのむだけでは お願いの 中身は 立たない", () => {
+    const only = say("thu", "申し訳ありませんが、予定の 確認を お願いします。", "onegai");
+    expect(only.said, "1日 のばすと 言って いないのに 中身が 立った").not.toContain("onegai1");
+    expect(only.full).toBe(false);
+  });
+
+  it("中身と おわびが そろうと ⭕", () => {
+    expect(
+      say("thu", "申し訳ありませんが、スケジュールを 1日 のばして いただけませんか。", "onegai")
+        .full,
+    ).toBe(true);
+  });
+});
+
+/**
+ * **足場（ヒント・返答・決定の 時点）が その日の 中身と 合って いる**
+ *（2026-09-17 の 指定 ①③④）
+ */
+describe("足場が その日と 合って いる（朝礼）", () => {
+  const scenes = meetingSchema.parse(kantan).asakai!.scenes;
+  const sceneOf = (day: string) => scenes.find((scene) => scene.day === day)!;
+
+  it("問題が ある 日の ヒントは「問題は ありません」を 渡さない", () => {
+    for (const day of ["wed", "thu"]) {
+      const lines = sceneOf(day).hintLines;
+      expect(
+        lines.some((line) => line.includes("問題は ありません")),
+        `${day}: 言っては いけない 型を 渡して いる`,
+      ).toBe(false);
+    }
+  });
+
+  it("月曜の ヒントは「きのう」では なく「先週の 金曜日」", () => {
+    expect(sceneOf("mon").hintLines[0]).toContain("先週の 金曜日");
+  });
+
+  it("木曜の お願いへの 返答が 結論を 言う（だれが・予定は どうなる）", () => {
+    const arrange = sceneOf("thu").arrange!;
+    for (const line of [arrange.done.text, arrange.missing.text]) {
+      expect(line, "だれが 引き取るかが 無い").toMatch(/わたしが 対応します/u);
+      expect(line, "予定が どうなるかが 無い").toMatch(/予定どおり/u);
+    }
+  });
+
+  it("ACLEDA の 決定は 木曜に 伝わる（金曜の 表より 前）", () => {
+    const thu = sceneOf("thu")
+      .closing.map((line) => line.text)
+      .join("\n");
+    expect(thu, "木曜に 決定が 伝わって いない").toContain("次の 回に します");
+    /* 金曜の 表は その 決定の あとなので、つなぐ 先は ABA だけに 戻って いる。 */
+    const friApi = sceneOf("fri").card.progress.find((row) =>
+      row.label.startsWith("決済APIと つなぐ"),
+    )!;
+    expect(friApi.label).toBe("決済APIと つなぐ（ABA）");
   });
 });
 
