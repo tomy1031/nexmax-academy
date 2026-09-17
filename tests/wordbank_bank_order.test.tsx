@@ -4,7 +4,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { QuestionBody } from "../src/components/quiz/question-types";
 import { quizSetSchema, type QuizQuestion } from "../src/content/schema";
-import { answerLeakScore, wordbankDisplayOrder } from "../src/lib/quiz/bank-order";
+import { answerLeakScore, lowestLeakScore, wordbankDisplayOrder } from "../src/lib/quiz/bank-order";
 import { buildFuriganaIndex } from "../src/lib/text/furigana";
 
 /*
@@ -23,11 +23,13 @@ import { buildFuriganaIndex } from "../src/lib/text/furigana";
 
 type Wordbank = Extract<QuizQuestion, { type: "wordbank" }>;
 
-/**
- * 画面で 許す 見え具合。穴が 3つの ときは どう 並べても 1 に なる（bank-order.ts の 註）。
- * ほかの 形は ほとんど 0 に なるが、候補から 選ぶので まれに 1 が 残る。
- */
-const ALLOWED = 1;
+/** 並びを ぜんぶ 作る（小さい 穴の 数で 下限を 総当たりで 確かめる ため）。 */
+function permutations<T>(items: readonly T[]): T[][] {
+  if (items.length <= 1) return [[...items]];
+  return items.flatMap((item, i) =>
+    permutations([...items.slice(0, i), ...items.slice(i + 1)]).map((rest) => [item, ...rest]),
+  );
+}
 
 describe("答えの 見え具合（answerLeakScore）", () => {
   it("データの 順（答えを 出た 順 → まぎらわしい 語）は 大きく 出る", () => {
@@ -61,8 +63,9 @@ describe("答えの 見え具合（answerLeakScore）", () => {
   });
 
   it("いちばん 左が 1つ目の 答えなら、ほかが まざって いても 数える", () => {
-    // 左から ぜんぶ 押しても、飛ばして 押しても 1つ目が 当たる
-    expect(answerLeakScore(["報告", "隠す", "連絡", "早く"], ["報告", "早く", "隠す"])).toBe(2);
+    // 左から ぜんぶ 押しても、飛ばして 押しても 1つ目が 当たる（ほかの 答えは 見えない 並び）
+    const blanks = ["報告", "早く", "隠す", "連絡", "相談"];
+    expect(answerLeakScore(["報告", "隠す", "メール", "相談", "早く", "連絡"], blanks)).toBe(2);
   });
 
   it("穴が 1つなら、左から ぜんぶ 押す ときだけ 数える（答えは 1枚なので 飛ばせば 当たる）", () => {
@@ -73,6 +76,24 @@ describe("答えの 見え具合（answerLeakScore）", () => {
   it("左から 当たらなくても、答えの 順で となりあえば 数える", () => {
     // 報告 → 早く が となりあって いる
     expect(answerLeakScore(["隠す", "連絡", "報告", "早く"], ["報告", "早く", "隠す"])).toBe(1);
+  });
+
+  it("穴が 3つ 以上なら、答えの 逆の 順で となりあう 組も 数える（右から 押せば 当たる）", () => {
+    // 再検収で 見つかった 連絡の r_blank1 の 並び。答えだけを 見ると ちょうど 逆さ
+    const blanks = ["正しい", "短く", "4つ", "何を して ほしいか"];
+    const shown = [
+      "何を して ほしいか",
+      "長く",
+      "3つ",
+      "4つ",
+      "だれが 悪いか",
+      "短く",
+      "新しい",
+      "正しい",
+    ];
+    expect(answerLeakScore(shown, blanks)).toBe(3);
+    // 穴が 2つなら 入れかえは 逆さしか 無いので 数えない
+    expect(answerLeakScore(["早く", "報告", "連絡"], ["報告", "早く"])).toBe(0);
   });
 
   it("左から 当たらず、となりあいも 無ければ 0", () => {
@@ -114,20 +135,33 @@ describe("画面に 出す 語群の 順（wordbankDisplayOrder）", () => {
     expect(answerLeakScore(shown, question.blanks)).toBe(0);
   });
 
-  /*
-   * 候補から 選ぶので「必ず」とは 証明できない。代わりに 穴の 数・語群の 大きさを
-   * 変えた 多くの もんだいで 確かめる（id を 変える＝まぜかたが 変わる）。
-   */
-  it.each([1, 2, 3, 4, 5, 6])(
-    "穴が %i つの もんだいを たくさん 作っても、答えが 見える 並びに ならない",
+  it.each([1, 2, 3, 4, 5])(
+    "穴が %i つの 下限は、まぎらわしい 語 1つで 総当たりした 最小と 同じ",
     (holes) => {
       const blanks = Array.from({ length: holes }, (_, i) => `答え${i}`);
-      for (const extra of [1, 2, 4]) {
+      const least = Math.min(
+        ...permutations([...blanks, "はずれ"]).map((shown) => answerLeakScore(shown, blanks)),
+      );
+      expect(least).toBe(lowestLeakScore(holes));
+    },
+  );
+
+  /*
+   * さがす 手数に 上限が あり（当たると ゆるめる）、「必ず」とは 言い切れない。代わりに
+   * 穴の 数・まぎらわしい 語の 数を 変えた 多くの もんだいで 確かめる（id を 変える＝
+   * まぜかたが 変わる）。まぎらわしい 語 8つは、1段で さがして いた ころ 半分が
+   * 下限に 届かなかった 形。
+   */
+  it.each([1, 2, 3, 4, 5, 6, 8])(
+    "穴が %i つの もんだいを たくさん 作っても、いつも 下限まで 下がる",
+    (holes) => {
+      const blanks = Array.from({ length: holes }, (_, i) => `答え${i}`);
+      for (const extra of [1, 2, 4, 8]) {
         const bank = [...blanks, ...Array.from({ length: extra }, (_, i) => `はずれ${i}`)];
-        for (let n = 0; n < 300; n += 1) {
+        for (let n = 0; n < 200; n += 1) {
           const shown = wordbankDisplayOrder({ id: `q${n}`, blanks, bank });
           expect(shown[0]).not.toBe(blanks[0]);
-          expect(answerLeakScore(shown, blanks)).toBeLessThanOrEqual(ALLOWED);
+          expect(answerLeakScore(shown, blanks)).toBe(lowestLeakScore(holes));
         }
       }
     },
@@ -176,7 +210,7 @@ describe("git に ある 語群", () => {
   )("%s は 画面で 答えが 見えない", (_label, question) => {
     const shown = wordbankDisplayOrder(question);
     expect(shown[0]).not.toBe(question.blanks[0]);
-    expect(answerLeakScore(shown, question.blanks)).toBeLessThanOrEqual(ALLOWED);
+    expect(answerLeakScore(shown, question.blanks)).toBe(lowestLeakScore(question.blanks.length));
   });
 });
 
@@ -210,6 +244,6 @@ describe("語群の 部品", () => {
     const chips = [...html.matchAll(/aria-label="([^"]+)" class="btn-island/g)].map((m) => m[1]!);
     expect(chips).toEqual(wordbankDisplayOrder(question));
     expect(chips).not.toEqual(question.bank);
-    expect(answerLeakScore(chips, question.blanks)).toBeLessThanOrEqual(ALLOWED);
+    expect(answerLeakScore(chips, question.blanks)).toBe(lowestLeakScore(question.blanks.length));
   });
 });

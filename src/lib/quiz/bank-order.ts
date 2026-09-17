@@ -29,9 +29,12 @@
  *  2. まぎらわしい 語を 飛ばして 左から 押すと 当たる 穴の 数（穴が 2つ 以上の とき。
  *     穴が 1つなら 答えは 1枚しか 無いので、飛ばせば 必ず 当たる——並びの せいでは ない）
  *  3. 答えだけを 左から 見て、答えの 順で となりあう 組の 数
+ *  4. 同じく、答えの **逆の 順**で となりあう 組の 数（穴が 3つ 以上の とき）。
+ *     数えないと「右から 押せば ぜんぶ 当たる」逆さの 並びが 0 に なり、穴 4つでは
+ *     4回に 1回 選ばれて いた（再検収で 連絡の r_blank1 が ちょうど 逆さだった）。
+ *     穴が 2つなら 答えの 順で ない 並びは 逆さしか 無いので 数えない
  *
- * 穴が 3つの ときは、どう 並べても 1 より 下がらない（6通り すべてで 2 か 3 に
- * 当たる）。
+ * 穴が 3つの ときは、どう 並べても 1 より 下がらない（`lowestLeakScore`）。
  */
 export function answerLeakScore(shown: readonly string[], blanks: readonly string[]): number {
   let score = 0;
@@ -45,9 +48,23 @@ export function answerLeakScore(shown: readonly string[], blanks: readonly strin
     });
   }
   for (let k = 0; k + 1 < answersShown.length; k += 1) {
-    if (blanks.indexOf(answersShown[k + 1]!) === blanks.indexOf(answersShown[k]!) + 1) score += 1;
+    const step = blanks.indexOf(answersShown[k + 1]!) - blanks.indexOf(answersShown[k]!);
+    if (step === 1) score += 1;
+    if (step === -1 && blanks.length >= 3) score += 1;
   }
   return score;
+}
+
+/**
+ * 並べかたで 下げられる 見え具合の 下限。
+ *
+ * 穴が 3つの ときだけ 1。答えの 並びは 6通りしか 無く、ABC 以外の 5通りも
+ * 「飛ばして 押すと 1つ 当たる」か「となりあう 組が 1つ ある」の どちらかに 必ず 当たる
+ *（ACB・BAC は 当たり＋逆の 組、BCA・CAB は 順の 組、CBA は 当たり＋逆の 組 2つ）。
+ * ほかの 穴の 数は、まぎらわしい 語が 1つ あれば 0 まで 下げられる。
+ */
+export function lowestLeakScore(holes: number): number {
+  return holes === 3 ? 1 : 0;
 }
 
 /** 文字列から 32bit の 種（FNV-1a）。 */
@@ -81,17 +98,113 @@ function shuffled<T>(items: readonly T[], rng: () => number): T[] {
 }
 
 /**
- * まぜかたの 候補の 数。語群は 10語 前後なので、ほとんどは 数回で 0 に なる。
- * 0 に ならない とき（穴が 3つ など）も、この 中で いちばん 見えない ものを 選ぶ。
+ * さがす 手数の 上限。見えない 並びは たくさん あるので、ふつうは 数十手で 見つかる。
+ * 上限に 当たったら 見え具合を 1つ ゆるめて さがし直す（ゆるめ切れば 刈り込みが
+ * 無くなり、1本道で 必ず 並びが できる）。
  */
-const CANDIDATES = 64;
+const STEP_LIMIT = 5000;
 
 /**
- * 画面に 出す 語群の 順。
+ * 見え具合が `allow` 以下の 並びを さがす。2段に 分ける。
  *
- * 種を 1つずつ 変えて まぜ、`answerLeakScore` が いちばん 小さい 並びを 選ぶ
- *（0 が 出たら そこで 止める）。決まった 形の 受け皿は 置かない——
- * 置くと その 形じたいが 目印に なる。
+ *  1. **答えどうしの 順**を 1語ずつ 決める（`answerLeakScore` の 2・3・4 は これだけで 決まる）
+ *  2. その 順を 崩さずに、**まぎらわしい 語を あいだへ 差しこむ**（1 は ここで 決まる）
+ *
+ * 置く 候補の 順は 種で まぜる（同じ もんだいなら 同じ 結果）。置いた 瞬間に 見え具合を
+ * 足し、`allow` を 超えたら その 置きかたは 捨てる。
+ *
+ * - 1回 まぜて 当たりを 待つ やりかたでは、穴 5つで 0 に なるのが 100回に 1回ほどで、
+ *   下限に 届かない もんだいが 残った
+ * - 全部の 語を 1段で さがすと、見え具合に 関わらない **まぎらわしい 語どうしの 並べ替え**
+ *   ばかり 試して 手数が 尽きた（まぎらわしい 語 8つで 半分が 届かなかった）
+ */
+function searchOrder(
+  bank: readonly string[],
+  blanks: readonly string[],
+  allow: number,
+  rng: () => number,
+): string[] | null {
+  const answers = bank.filter((word) => blanks.includes(word));
+  const others = shuffled(
+    bank.filter((word) => !blanks.includes(word)),
+    rng,
+  );
+  const sequence: string[] = [];
+  const used = answers.map(() => false);
+  let steps = 0;
+
+  /* 2段目: まぎらわしい 語を 差しこむ。左から 穴の 数までの 位置だけが 見え具合に 関わる。 */
+  const interleave = (cost: number): string[] | null => {
+    const order: string[] = [];
+    const fill = (a: number, d: number, spent: number): boolean => {
+      if (order.length === bank.length) return true;
+      steps += 1;
+      if (steps > STEP_LIMIT) return false;
+      const answersLeft = sequence.length - a;
+      const othersLeft = others.length - d;
+      // 残りの 数に 比例して 先に 試す 種類を 決める（刈り込みが 無ければ 一様な 差しこみに なる）
+      const answerFirst = rng() * (answersLeft + othersLeft) < answersLeft;
+      for (const kind of answerFirst ? ["answer", "other"] : ["other", "answer"]) {
+        if (kind === "answer") {
+          if (answersLeft === 0) continue;
+          const word = sequence[a]!;
+          const added = blanks[order.length] === word ? 1 : 0;
+          if (spent + added > allow) continue;
+          order.push(word);
+          if (fill(a + 1, d, spent + added)) return true;
+        } else {
+          if (othersLeft === 0) continue;
+          order.push(others[d]!);
+          if (fill(a, d + 1, spent)) return true;
+        }
+        order.pop();
+        if (steps > STEP_LIMIT) return false;
+      }
+      return false;
+    };
+    return fill(0, 0, cost) ? order : null;
+  };
+
+  /* 1段目: 答えどうしの 順。 */
+  const arrange = (cost: number): string[] | null => {
+    if (sequence.length === answers.length) return interleave(cost);
+    steps += 1;
+    if (steps > STEP_LIMIT) return null;
+    const k = sequence.length;
+    const lastRank = k > 0 ? blanks.indexOf(sequence[k - 1]!) : -1;
+    const candidates = shuffled(
+      answers.map((_, i) => i).filter((i) => !used[i]),
+      rng,
+    );
+    for (const i of candidates) {
+      const word = answers[i]!;
+      let added = 0;
+      if (blanks.length >= 2 && blanks[k] === word) added += 1;
+      if (k > 0) {
+        const step = blanks.indexOf(word) - lastRank;
+        if (step === 1) added += 1;
+        if (step === -1 && blanks.length >= 3) added += 1;
+      }
+      if (cost + added > allow) continue;
+      used[i] = true;
+      sequence.push(word);
+      const found = arrange(cost + added);
+      if (found) return found;
+      sequence.pop();
+      used[i] = false;
+      if (steps > STEP_LIMIT) return null;
+    }
+    return null;
+  };
+
+  return arrange(0);
+}
+
+/**
+ * 画面に 出す 語群の 順。見え具合（`answerLeakScore`）が **下限**
+ *（`lowestLeakScore`）の 並びを 返す。
+ *
+ * 決まった 形の 受け皿は 置かない——置くと その 形じたいが 目印に なる。
  */
 export function wordbankDisplayOrder(question: {
   id: string;
@@ -99,16 +212,8 @@ export function wordbankDisplayOrder(question: {
   blanks: readonly string[];
 }): string[] {
   const base = seedOf(`${question.id}\n${question.bank.join("\n")}`);
-  let best: string[] = [...question.bank];
-  let bestScore = Number.POSITIVE_INFINITY;
-  for (let attempt = 0; attempt < CANDIDATES; attempt += 1) {
-    const order = shuffled(question.bank, rngFrom(base + attempt));
-    const score = answerLeakScore(order, question.blanks);
-    if (score < bestScore) {
-      best = order;
-      bestScore = score;
-      if (score === 0) break;
-    }
+  for (let allow = lowestLeakScore(question.blanks.length); ; allow += 1) {
+    const order = searchOrder(question.bank, question.blanks, allow, rngFrom(base + allow));
+    if (order) return order;
   }
-  return best;
 }
