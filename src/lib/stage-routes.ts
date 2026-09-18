@@ -122,6 +122,49 @@ export function splitContentSegment(segment: string): { type: ContentRefType; re
   return null;
 }
 
+/**
+ * **ステージの 中で 別の 教材に 差し替えた** もの（古い 種別＋ID → いまの 種別＋ID）。
+ *
+ * 2026-09-18 に 調査（リサーチ）を 別ページ（link `houkoku_search`）から もんだい
+ * （quizset `houkoku_search_quiz`）へ 差し替えた。元の 別ページは **いったん 残して
+ * ステージから 外した だけ**（同日の 指定「元のものはいったん残して非表示に」）。
+ * ID は 種別を またいで 一意なので 新しい ID に なる。URL の 2段目も 変わる
+ * （`/houkoku/link` → `/houkoku/quiz-houkoku_search_quiz`）ので、先生が 配った 古い URL を
+ * 404 に しない ために ここから 引いて 送る（CLAUDE.md「古いURLは 消さず、本来のURLへ」）。
+ */
+const REPLACED: readonly {
+  readonly stage: string;
+  readonly from: { readonly type: ContentRefType; readonly ref: string };
+  readonly to: { readonly type: ContentRefType; readonly ref: string };
+}[] = [
+  {
+    stage: "houkoku",
+    from: { type: "link", ref: "houkoku_search" },
+    to: { type: "quizset", ref: "houkoku_search_quiz" },
+  },
+];
+
+/**
+ * 差し替えた 教材の **古い 2段目**なら、いまの 種別と ID。ちがえば null。
+ *
+ * ID の 付いて いない 短い形（`/houkoku/link`）も 引く——その ステージに その 種別が
+ * 1本 だけ だった ときの URL で、差し替える 前は この 形で 配られて いた。
+ * 呼ぶのは **いまの ステージで 引けなかった ときだけ**（引ければ そちらが 勝つ）。
+ */
+export function replacedContent(
+  stageId: string,
+  segment: string,
+): { type: ContentRefType; ref: string } | null {
+  const split = splitContentSegment(segment);
+  for (const old of REPLACED) {
+    if (old.stage !== stageId) continue;
+    const short = segment === CONTENT_SEGMENTS[old.from.type];
+    const long = split?.type === old.from.type && split.ref === old.from.ref;
+    if (short || long) return { ...old.to };
+  }
+  return null;
+}
+
 /** そのステージが持つ 全教材ぶんの2段目（generateStaticParams 用）。 */
 export function stageContentSegments(contents: readonly StageContentRef[]): string[] {
   return contents
