@@ -1,7 +1,5 @@
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import { expect, test, type BrowserContext, type Page } from "@playwright/test";
-import { seedCompleted, shot } from "./helpers";
+import { shot } from "./helpers";
 
 /**
  * 調査（リサーチ）：日本の 会社の 階級 — **出して はじめて つぎへ 行ける**
@@ -27,26 +25,6 @@ import { seedCompleted, shot } from "./helpers";
  * もんだいの 側で 見る（`houkoku_search_quiz.spec.ts`）。
  */
 const PATH = "/link/houkoku_search";
-
-/**
- * 手前の 教材を「おわった」ことに してから 開く。
- *
- * この ステージは 順路（関門）が 効いて いるので、そのまま 行くと
- * 「まだ この きょうざいの じゅんばんでは ありません」で 止まる。
- * 順路そのものは 別の テストが 見る（`junro.spec.ts`）。
- */
-async function seedUpToTool(context: BrowserContext) {
-  const stage = JSON.parse(readFileSync(join("content", "stages", "houkoku.json"), "utf8")) as {
-    contents: { ref: string }[];
-  };
-  const before = stage.contents
-    .slice(
-      0,
-      stage.contents.findIndex((content) => content.ref === "houkoku_search"),
-    )
-    .map((content) => content.ref);
-  await seedCompleted(context, before);
-}
 
 /**
  * 画面で 投げられた 例外を ためる。
@@ -77,8 +55,11 @@ async function watchErrors(page: Page, context: BrowserContext): Promise<() => P
   ];
 }
 
-async function openTool(page: Page, context: BrowserContext) {
-  await seedUpToTool(context);
+/*
+ * 単独URL には 関門が 無い ので、手前の 教材を「おわった」に しなくて よい
+ *（ステージに いた ころは していた。いまの 関門は もんだいの 側で 見る）。
+ */
+async function openTool(page: Page) {
   await page.goto(PATH);
   await page
     .getByRole("button", { name: /ひらく/ })
@@ -94,7 +75,7 @@ const MOVED = ["社長", "取締役", "部長", "課長", "社員"];
 
 test("調査（リサーチ）: 入れて ならべて 出すと、はじめて ✅ に なる", async ({ page, context }) => {
   const errors = await watchErrors(page, context);
-  const tool = await openTool(page, context);
+  const tool = await openTool(page);
   await expect(tool.getByLabel("1ばんめ")).toBeVisible();
 
   /* 1. 出す 前に、手で 押せる「おわりました」が 無い。 */
@@ -126,8 +107,8 @@ test("調査（リサーチ）: 入れて ならべて 出すと、はじめて 
   expect(await errors()).toEqual([]);
 });
 
-test("調査（リサーチ）: 足りない ものを 数で 言う（ぼかさない）", async ({ page, context }) => {
-  const tool = await openTool(page, context);
+test("調査（リサーチ）: 足りない ものを 数で 言う（ぼかさない）", async ({ page }) => {
+  const tool = await openTool(page);
   const note = tool.locator("#note");
 
   // 何も 書いて いない とき: 階級が 5つ 足りない
