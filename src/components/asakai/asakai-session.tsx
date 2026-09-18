@@ -76,6 +76,7 @@ import {
 import type { AsakaiFix, AsakaiJudgeResult } from "@/lib/meeting/asakai-judge";
 import {
   contentScore,
+  CONTENT_MAX,
   expectedPercentOf,
   markOf,
   saidWrongPercent,
@@ -214,6 +215,7 @@ const UI_FURIGANA: readonly (readonly [string, string])[] = [
   ["直す", "なおす"],
   ["直しましょう", "なおしましょう"],
   ["内容", "ないよう"],
+  ["内容の", "ないようの"],
   /*
    * **1字の 登録に 割られない ように、ことばで 持つ。**
    * 教材の 辞書には ["回","かい"] と ["答","こた"] が あるので、
@@ -223,6 +225,7 @@ const UI_FURIGANA: readonly (readonly [string, string])[] = [
    */
   ["ブラッシュアップ回答", "ブラッシュアップかいとう"],
   ["回答", "かいとう"],
+  ["項目ごとに", "こうもくごとに"],
   ["項目ごとの", "こうもくごとの"],
   ["項目", "こうもく"],
   ["効くのは", "きくのは"],
@@ -473,8 +476,10 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
     readonly japanese: number | null;
     readonly good: string;
     readonly advice: string;
+    /** 学習者の 文を 直した もの。**1本で 終わった 日は ここでしか 出ない**。 */
+    readonly polished: string;
     readonly fixes: readonly AsakaiFix[];
-  }>({ clarity: null, japanese: null, good: "", advice: "", fixes: [] });
+  }>({ clarity: null, japanese: null, good: "", advice: "", polished: "", fixes: [] });
 
   /**
    * **その日 学習者が 送った ことば ぜんぶ**（その日の 評価に「あなたの 回答」として 並べる）。
@@ -490,6 +495,15 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
       readonly answer: string;
       readonly heard: boolean;
       readonly opened?: number;
+      /**
+       * この 1本で **進んだ 札の id**。
+       *
+       * 「あなたの 答え」を 項目ごとに 並べる ための 手がかり
+       *（2026-09-18 の 指定「あなたの答えと正しい回答を並べて表示できますか？」）。
+       * 照合は 報告 まるごとに かかるが、**どの 札が 進んだか**は 分かる ので、
+       * そこから 逆に「その 札を 開けた ことば」を 引ける。
+       */
+      readonly panels?: readonly string[];
     }[]
   >([]);
 
@@ -573,7 +587,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
       probes,
       askedId,
       lines: [...lines],
-      log: [...probeLog],
+      log: probeLog.map((one) => ({ ...one, panels: one.panels ? [...one.panels] : undefined })),
     });
   }, [scene, panels, phase, states, attempts, probes, askedId, lines, probeLog, meeting.id]);
 
@@ -858,6 +872,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
           japanese: japanese ?? prev.japanese,
           good: good !== "" ? good : prev.good,
           advice: adviceText !== "" ? adviceText : prev.advice,
+          polished: polished !== "" ? polished : prev.polished,
           fixes: fixes.length > 0 ? fixes : prev.fixes,
         }));
       }
@@ -919,6 +934,8 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
             advice: adviceFor(panel, state, data?.followups[0]?.text ?? ""),
             /* 練習の 途中では **見本を 出さない**（写して 終わりに なる）。 */
             example: "",
+            /* 見くらべは 日の おわりだけ。ここでは 札ごとに 分けない。 */
+            said: "",
           };
         });
 
@@ -967,16 +984,38 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
         .filter((one) => one.full && !wasFull.has(one.id))
         .map((one) => labelOf(one.id));
 
+      /* この 1本で 進んだ 札（「あなたの 答え」を 項目ごとに 引くため）。 */
+      const movedPanels = panels
+        .filter((one) => step.newFacts.some((id) => one.facts.some((fact) => fact.id === id)))
+        .map((one) => one.id);
       setProbeLog((prev) => [
         ...prev,
         wasProbe
-          ? { question: askedText, answer: text, heard: heardNow }
+          ? { question: askedText, answer: text, heard: heardNow, panels: movedPanels }
           : /* 1本目は 枚数で 残す（「どれか 1つ 当たれば ✅」に しない）。 */
-            { question: "", answer: text, heard: heardNow, opened: opened.length },
+            {
+              question: "",
+              answer: text,
+              heard: heardNow,
+              opened: opened.length,
+              panels: movedPanels,
+            },
       ]);
 
       if (!target) {
         setStates(step.states);
+        /*
+         * **1本で ぜんぶ 言えた 日は、まとめの 1枚だけ 出す**（2026-09-18 の 指定
+         *「一回で 全部 言えた 時の モーダルは 最後の まとめの ものに できますか？」）。
+         *
+         * 報告の 見かた →（閉じる）→ きょうの 評価 と、**同じ ことを 2枚**
+         * つづけて 読ませて いた。聞き返しが あった 日は 最後の 1枚が
+         *「その しつもんへの こたえ」を 持って いる ので、そのまま 出す。
+         */
+        if (probeLog.length === 0 && !wasProbe) {
+          finishScene(step.states, probes);
+          return;
+        }
         setJudge({
           ...view(step.states),
           opened,
@@ -1097,6 +1136,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
       askedText,
       wrongNums,
       probes,
+      probeLog,
       logLines,
       say,
       finishScene,
@@ -1302,7 +1342,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
       setAnswer("");
       setJudge(null);
       setProbeLog([]);
-      setDayAi({ clarity: null, japanese: null, good: "", advice: "", fixes: [] });
+      setDayAi({ clarity: null, japanese: null, good: "", advice: "", polished: "", fixes: [] });
       setAskedText("");
       setDayOpen(false);
       setPendingTail([]);
@@ -1486,6 +1526,12 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
           📋 <RubyText text="報告メモ" index={index} show />
         </button>
       </StepTabs>
+      <WeekBoard
+        scenes={asakai.scenes.map((one) => DAY_NAME[one.day])}
+        rows={results}
+        unitName={asakai.level === "hard" ? "言えた こと" : "開いた カード"}
+        index={index}
+      />
     </div>
   );
 
@@ -1890,6 +1936,11 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
               wrongNumber: wrongNums.includes(panel.id),
             }),
             advice: "",
+            /* その 札を 開けた ことば（控えから 逆に 引く）。 */
+            said: probeLog
+              .filter((one) => one.panels?.includes(panel.id))
+              .map((one) => one.answer)
+              .join(" "),
             /*
              * **その日の ふりかえりにだけ 正しい 回答を 出す**（2026-09-18 の 指定）。
              * 教材の 見本は 「…」で 囲って ある ので、外して 本文だけ 並べる
@@ -1903,6 +1954,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
           probes={probeLog}
           good={dayAi.good}
           advice={dayAi.advice}
+          polished={dayAi.polished}
           fixes={dayAi.fixes}
           nextLabel={
             sceneAt + 1 >= asakai.scenes.length
@@ -2086,6 +2138,73 @@ function TimeCard({
           <DayProgress at={at + 1} total={total} />
         </span>
       </button>
+    </div>
+  );
+}
+
+/**
+ * **曜日ごとの 点を、ポップアップを 開かずに 見る 帯**（2026-09-18 の 指定
+ *「モーダルでは ない 画面で 曜日ごとの 点数や 評価を 表示する 箇所を 作れますか？」）。
+ *
+ * これまで 点は **きょうの 評価**と **今週の けっか**の 中にしか 無く、
+ * どちらも 閉じると 消えた——いま 何日目で、前の 日が 何点だったかを
+ * 見に 行く 道が 無い。タブの すぐ 下に 置いて、報告の あいだ ずっと 見える ように する。
+ *
+ * 出すのは **端末に 残って いる もの**だけ（`DayResult`）。伝わりやすさと
+ * 仕事の 日本語は 日ごとに 残して いない ので ここには 出さない——
+ * 見て いない ものを 数に しない（規律1）。
+ */
+function WeekBoard({
+  scenes,
+  rows,
+  unitName,
+  index,
+}: {
+  /** 月〜金の 字（`DAY_NAME`）。まだ 報告して いない 日も 席を 出す。 */
+  scenes: readonly string[];
+  rows: readonly DayResult[];
+  unitName: string;
+  index: FuriganaIndex;
+}) {
+  if (rows.length === 0) return null;
+  const byDay = new Map(rows.map((row) => [row.day, row]));
+  return (
+    <div
+      role="group"
+      aria-label="曜日ごとの けっか"
+      className="border-hairline bg-panel rounded-xl border px-3 py-2"
+    >
+      <p className="text-ink-soft text-[11px] leading-[1.9] font-black">
+        📊 <RubyText text={`曜日ごとの けっか（${unitName}／内容の 点）`} index={index} show />
+      </p>
+      <ul className="mt-1 flex flex-wrap gap-1.5">
+        {scenes.map((day) => {
+          const row = byDay.get(day);
+          /* 内容の 点は 残って いる 数から 出す（`asakai-score.ts` と 同じ 出しかた）。 */
+          const point = row ? contentScore(row.cards, row.cardTotal) : null;
+          return (
+            <li
+              key={day}
+              className={`rounded-xl border-2 px-2 py-1 text-[11px] leading-[1.9] font-black ${
+                row === undefined
+                  ? "border-hairline bg-panel-tint text-ink-soft"
+                  : row.cards >= row.cardTotal
+                    ? "border-leaf bg-sky-soft text-leaf-deep"
+                    : "border-sun-deep bg-cream text-sun-deep"
+              }`}
+            >
+              <RubyText text={day} index={index} show />{" "}
+              {row === undefined ? (
+                <RubyText text="まだ" index={index} show />
+              ) : (
+                <span className="tabular-nums">
+                  {row.units} / {row.unitTotal} ・ {point} / {CONTENT_MAX}
+                </span>
+              )}
+            </li>
+          );
+        })}
+      </ul>
     </div>
   );
 }

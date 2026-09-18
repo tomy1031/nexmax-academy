@@ -99,6 +99,8 @@ const sayLogSchema = z.object({
   answer: z.string().default(""),
   heard: z.boolean().default(false),
   opened: z.number().int().min(0).optional(),
+  /** この 1本で 進んだ 札の id（「あなたの 答え」を 項目ごとに 引くため）。 */
+  panels: z.array(z.string()).optional(),
 });
 
 const asakaiDraftSchema = z.object({
