@@ -1,5 +1,7 @@
 "use client";
 
+import { liveDebug } from "@/lib/ai/live-debug";
+
 /**
  * マイク → 16kHz・16bit・モノラルの生PCM（Live に送れる形）
  *
@@ -90,6 +92,12 @@ export async function startMicCapture(
   // レートは**指定しない**。ブラウザが実際に使う値を読んで、こちらで落とす
   const ctx = new AudioContext();
   if (ctx.state === "suspended") await ctx.resume();
+  // 止まった まま（suspended）だと 1フレームも 届かない。`?debug=1` の 記録で 見える ように
+  liveDebug(
+    "mic.capture",
+    `${ctx.audioWorklet ? "worklet" : "script"} ${ctx.state} ${ctx.sampleRate}Hz`,
+    ctx.state !== "running",
+  );
   const source = ctx.createMediaStreamSource(stream);
 
   if (ctx.audioWorklet) {

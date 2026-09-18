@@ -3,6 +3,7 @@
 import { motion } from "motion/react";
 import { RubyText } from "@/components/ruby-text";
 import { buildFuriganaIndex } from "@/lib/text/furigana";
+import { LiveDebugPanel, LiveReasonLine } from "./live-debug-panel";
 import type { VoiceStatus } from "./use-live-voice";
 
 /** ボタンの まわりに 出る 字の 読み（画面の ことば・教材の 辞書とは 混ぜない）。 */
@@ -36,6 +37,7 @@ export function SpeakButton({
   talking,
   disabled = false,
   waitNote,
+  showReason = true,
   onConnect,
   onStartTalking,
   onStopTalking,
@@ -43,6 +45,11 @@ export function SpeakButton({
   status: VoiceStatus;
   /** つながらなかった 理由（`noMic` だけ 言い方を 変える）。 */
   reason?: string | null;
+  /**
+   * つながらなかった ときに 理由の 名前を 小さく 出すか（2026-09-18）。
+   * 画面が 自分で 理由を 大きく 出す ところ（たいわの `LiveReason`）では 二重に なるので 消す。
+   */
+  showReason?: boolean;
   talking: boolean;
   /**
    * いま 押しても 意味が 無い ばんか（相手が 話して いる・見かたを 待って いる）。
@@ -102,6 +109,13 @@ export function SpeakButton({
             <RubyText text="マイクを つなげます" index={BUTTON_FURIGANA} show />
           )}
         </p>
+        {/*
+          理由の 名前は 小さく（先生・開発者が 原因を 追う ため。キーは 含まれない）。
+          前は ここに 何も 出さず、入口の マイクテストも「せつぞくを ためす」も 通るのに
+          🎤 だけ つながらない とき、どこで 止まったか 誰にも 分からなかった（2026-09-18）。
+        */}
+        {showReason && (blocked || status === "error") ? <LiveReasonLine reason={reason} /> : null}
+        <LiveDebugPanel />
       </div>
     );
   }
@@ -139,6 +153,7 @@ export function SpeakButton({
             ? "はなしおわったら、もう いちど おして ください"
             : "こえで こたえましょう！"}
       </p>
+      <LiveDebugPanel />
     </div>
   );
 }
