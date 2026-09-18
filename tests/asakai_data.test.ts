@@ -392,15 +392,25 @@ describe("数字の 見かた", () => {
  * そのまま 音に すると **「まるまるさん」と 読み上げる**——字は「ソピアさん」、
  * こえは「まるまるさん」で 食いちがう。
  *
- * いまは どちらの 教材も 音を 1本も 持って いない（台帳 #408 で これから 作る）。
- * **作る ときに 気づける ように**、ここで 線を 引いて おく。
+ * ## 見張るのは **`◯◯さん`（名前）だけ**（2026-09-18）
+ * 2026-09-15 に 線を 引いた ときは `◯◯` を ぜんぶ 弾いて いた。作り置きを
+ * 実際に 走らせて 気づいた ——止まった 23行の うち **18行は 名前では なく
+ * 穴うめの 目印**だった（「「きのうは ◯◯を しました」の 形で お願いします。」）。
+ *
+ * この 2つは `src/lib/meeting/speech.ts` が すでに 分けて いる:
+ * - `◯◯さん` … 端末の 名前に 置きかわる → **人ごとに 変わるので 焼けない**
+ * - むきだしの `◯◯` … **画面にも そのまま 出る 空欄** → 声も「まるまる」で 字と そろう
+ *
+ * 穴うめまで 黙らせると、**通じなかった ときの 言い直しだけ 無音**に なる
+ *（いちばん 聞きたい 行）。上の 理由は 名前の ことしか 書いて いないので、
+ * 検査を その とおりに 狭める。
  */
-describe("目印の 入った セリフには 音を つけない", () => {
+describe("名前の 置き場には 音を つけない", () => {
   for (const { name, raw } of MEETINGS) {
     const meeting = meetingSchema.parse(raw);
     const asakai = meeting.asakai!;
 
-    it(`${name} は ◯◯ の ある セリフに audio を 持たない`, () => {
+    it(`${name} は ◯◯さん の ある セリフに audio を 持たない`, () => {
       const baked: string[] = [];
       const walk = (value: unknown, path: string): void => {
         if (value === null || typeof value !== "object") return;
@@ -414,7 +424,7 @@ describe("目印の 入った セリフには 音を つけない", () => {
           typeof line.text === "string" &&
           typeof line.audio === "string" &&
           line.audio !== "" &&
-          line.text.includes("◯◯")
+          line.text.includes("◯◯さん")
         ) {
           baked.push(`${path}: ${line.text}`);
         }

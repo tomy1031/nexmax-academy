@@ -59,6 +59,16 @@ export interface RowView {
    * 日が 終わった あとの ふりかえりは、見くらべる 場なので 別。
    */
   readonly example: string;
+  /**
+   * **その 札を 開けた、学習者の ことば**（無ければ 空）。
+   *
+   * 2026-09-18 の 指定「あなたの答えと正しい回答を並べて表示できますか？」。
+   * 前に 持って いた ころは **いつも 空**で、4つ ぜんぶ 言えた 日にも
+   *「まだ 報告して いません。」が 並んで いた——照合の 結果から 逆に 引く
+   * 手だてが 無かった ため。いまは **その 1本で 進んだ 札**を 控えに 残して
+   * ある ので、そこから 本当に 引ける。
+   */
+  readonly said: string;
 }
 
 const MARK_FACE: Record<RowMark, { readonly mark: string; readonly cls: string }> = {
@@ -230,7 +240,11 @@ function Polish({ text, index }: { text: string; index: FuriganaIndex }) {
   if (text === "") return null;
   return (
     <div className="border-sky-deep bg-sky-soft mt-2 rounded-xl border-2 px-3 py-2">
-      <Cap text="✨ ブラッシュアップ（より よい 日本語）" index={index} tone="text-sky-deep" />
+      <Cap
+        text="✨ ブラッシュアップ（あなたの 文を 直した もの）"
+        index={index}
+        tone="text-sky-deep"
+      />
       <p className="text-navy mt-0.5 text-sm leading-[1.9] font-bold">
         <Ruby text={text} index={index} />
       </p>
@@ -593,6 +607,7 @@ export function DayScoreModal({
   probes,
   good,
   advice,
+  polished,
   fixes,
   nextLabel,
   hasKey,
@@ -619,6 +634,11 @@ export function DayScoreModal({
   }[];
   good: string;
   advice: string;
+  /**
+   * 学習者の 文を 直した もの。**1本で ぜんぶ 言えた 日は ここでしか 出ない**
+   *（報告の 見かたを 飛ばして、まとめの 1枚だけ 出す ため）。
+   */
+  polished: string;
   fixes: readonly AsakaiFix[];
   /** とじる ボタンの 字（「木曜日へ 進む ▶」「週の けっかを 見る ▶」）。 */
   nextLabel: string;
@@ -737,23 +757,53 @@ export function DayScoreModal({
         見くらべる 場なので、ここでは お手本を 出す——練習の 途中では 出さない
         （答えを 写して 終わりに なる）。ことばは 教材の 見本 そのまま。
       */}
+      <Polish text={polished} index={index} />
+
       {rows.some((row) => row.example !== "") ? (
         <div className="mt-3">
-          <Cap text="項目ごとの 正しい 回答" index={index} />
+          <Cap text="項目ごとに 見くらべる" index={index} />
           <ul className="mt-1 space-y-2">
             {rows
               .filter((row) => row.example !== "")
               .map((row) => (
                 <li
                   key={`ex/${row.id}`}
-                  className="border-hairline bg-panel rounded-xl border px-3 py-2 sm:flex sm:gap-3"
+                  className="border-hairline bg-panel rounded-xl border px-3 py-2"
                 >
-                  <p className="text-ink-soft min-w-0 text-[11px] leading-[1.9] font-black sm:w-40 sm:shrink-0">
+                  <p className="text-ink-soft text-[11px] leading-[1.9] font-black">
                     {MARK_FACE[row.mark].mark} <Ruby text={row.label} index={index} />
                   </p>
-                  <p className="text-navy min-w-0 flex-1 text-sm leading-[1.9] font-bold">
-                    <Ruby text={row.example} index={index} />
-                  </p>
+                  {/*
+                    **自分の ことばと お手本を 横に 並べる**（2026-09-18 の 指定）。
+                    別々の 欄に 置いて いた ころは、どこが ちがうのかを
+                    画面の 中で 行ったり 来たり して さがす ことに なって いた。
+                  */}
+                  <div className="mt-1 grid grid-cols-1 gap-2 sm:grid-cols-2">
+                    <div
+                      className={`rounded-xl border px-3 py-2 ${
+                        row.said !== ""
+                          ? "border-hairline bg-panel-tint"
+                          : "border-coral bg-blossom"
+                      }`}
+                    >
+                      <Cap text="あなたの 答え" index={index} />
+                      <p className="text-navy mt-0.5 text-sm leading-[1.9] font-bold">
+                        {row.said !== "" ? (
+                          <Ruby text={row.said} index={index} />
+                        ) : (
+                          <span className="text-coral-deep">
+                            <Ruby text="言えませんでした" index={index} />
+                          </span>
+                        )}
+                      </p>
+                    </div>
+                    <div className="border-leaf bg-sky-soft rounded-xl border px-3 py-2">
+                      <Cap text="正しい 回答" index={index} tone="text-leaf-deep" />
+                      <p className="text-navy mt-0.5 text-sm leading-[1.9] font-bold">
+                        <Ruby text={row.example} index={index} />
+                      </p>
+                    </div>
+                  </div>
                 </li>
               ))}
           </ul>
