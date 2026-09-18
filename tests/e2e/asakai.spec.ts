@@ -941,3 +941,61 @@ test("きょうの 評価に 自分の 回答・正しい 回答・まとめが 
   await expectOnScreen(page, "では 次は 奥田さん、お願いします。");
   expect(await bareKanjiTexts(page)).toEqual([]);
 });
+
+/**
+ * **お手本を 見た あとの やり直しは、点を 上書きしない**（2026-09-18 の R5 検収）
+ *
+ * きょうの 評価には 項目ごとの 正しい 回答が 並び、その 同じ 画面に
+ *「もう いちど 報告する」が ある。上書きできる ままだと
+ *「適当に 答える → お手本を 読む → 写して やり直す」で 満点が 記録できる。
+ * 練習は できる（板は 開く）が、**週の けっかに 残る 数は 変わらない**。
+ */
+test("お手本を 見て やり直しても、その日の 点は 変わらない", async ({ page, context }) => {
+  const refs = stageRefs();
+  const at = refs.indexOf("asakai_kantan");
+  await seedCompleted(context, refs.slice(0, at));
+
+  await page.goto("/asakai/meeting-asakai_kantan");
+  await joinCall(page);
+  await closeDuty(page);
+
+  /* かみ合わない ことを 言いつづけて、4枚 とも 打ち切られる まで 進める。 */
+  const day = page.getByRole("dialog", { name: "今日の 評価" });
+  for (let round = 0; round < 12 && !(await day.isVisible()); round += 1) {
+    await page.getByLabel("こたえを 入力する").fill("よろしく お願いします。");
+    await page.getByRole("button", { name: "おくる" }).click();
+    const open = page.getByRole("dialog", { name: /報告の 見かた|追加の しつもんへの こたえ/ });
+    await expect(open.or(day).first()).toBeVisible();
+    if (await day.isVisible()) break;
+    await open.getByRole("button").last().click();
+  }
+  await expect(day).toBeVisible();
+  /* 0枚の 日にも 肯定の 1行が ある（手ぶらで 帰さない）。 */
+  await expectOnScreen(page, "声に 出した ぶんは 練習に なって います");
+  await expectOnScreen(page, "お手本を 見た あとの やり直しは");
+  await shot(page, "asakai-15-zero-day");
+
+  await day.getByRole("button", { name: "もう いちど 報告する" }).click();
+  await closeDuty(page);
+
+  /* 写して やり直す。板は 開くが…… */
+  await page
+    .getByLabel("こたえを 入力する")
+    .fill(
+      "先週の 金曜日は、決済の 決まりを 調べて、決済の 画面と ABA Payの ボタンを 作りました。" +
+        "今、決済フロントエンド機能 ぜんたいの 進捗は 20%です。" +
+        "きょうは、注文IDと 合計金額を 画面に 出します。" +
+        "今の ところ 問題は ありません。",
+    );
+  await page.getByRole("button", { name: "おくる" }).click();
+  await page.getByRole("button", { name: "みんなの 報告を 聞く" }).click();
+  await expect(day).toBeVisible();
+  await expectOnScreen(page, "4つ ぜんぶ 伝えられました");
+
+  /* ……記録は 上書きされない。時間カードの 札は ❌ の まま。 */
+  await closeDayScore(page);
+  const cards = page.getByRole("status").getByText("⭕");
+  await expect(cards).toHaveCount(0);
+  expect(await bareKanjiTexts(page)).toEqual([]);
+  await shot(page, "asakai-16-score-kept");
+});

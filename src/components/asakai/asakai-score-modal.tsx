@@ -395,12 +395,19 @@ export function ReportScoreModal({
         「まとめて もう いちど」と 札4枚ぶんの 聞き返しを **同時に** 並べて いた
         ——次の 行動は 1つ（規律1・2026-09-17 の R5 再検収）。
       */}
+      {/*
+        **出すのは 1つだけ。** 司会は 1つしか 聞かない
+        （`asakai-session.tsx` の `if (readLog) sayRedo(); else if (followup) say(followup);`）
+        のに、ここに 4枚ぶんの 聞き返しが 同時に 並んで いた——次の 行動は 1つ
+        （規律1・2026-09-18 の R5 検収）。
+      */}
       {!readLog && rows.some((row) => row.advice !== "") ? (
         <div className="mt-3">
           <Cap text="やり直す ところ" index={index} />
           <ul className="mt-1 space-y-2">
             {rows
               .filter((row) => row.advice !== "")
+              .slice(0, 1)
               .map((row) => (
                 <li
                   key={row.id}
@@ -478,6 +485,7 @@ export function ProbeScoreModal({
   onRetry?: () => void;
   onClose: () => void;
 }) {
+  const toFix = advice !== "" || fixes.length > 0;
   return (
     <ModalShell
       label="追加の しつもんへの こたえ"
@@ -504,21 +512,28 @@ export function ProbeScoreModal({
             index={index}
           />
         </span>
+        {/*
+          **直す ところが あるかは `advice` も 見る。**
+          日本語の 直しかたは `advice` に 書かせる 形に した（`asakai-judge.ts`）ので、
+          `fixes` だけを 見て いると、下の「💡 アドバイス」に「文に しましょう」が
+          出て いるのに この 札は「✅ そのままで いいです」に なる——同じ 画面が
+          反対の ことを 言う（規律1・2026-09-18 の R5 検収）。
+        */}
         <span
           className={`rounded-xl border-2 px-3 py-1 text-xs leading-[1.9] font-black ${
             !judged
               ? "border-hairline bg-panel-tint text-ink-soft"
-              : fixes.length > 0
+              : toFix
                 ? "border-sun-deep bg-cream text-sun-deep"
                 : "border-leaf bg-sky-soft text-leaf-deep"
           }`}
         >
-          {!judged ? "—" : fixes.length > 0 ? "💬" : "✅"}{" "}
+          {!judged ? "—" : toFix ? "💬" : "✅"}{" "}
           <Ruby
             text={
               !judged
                 ? "日本語: 見て いません"
-                : fixes.length > 0
+                : toFix
                   ? "日本語: 直す ところが あります"
                   : "日本語: そのままで いいです"
             }
@@ -594,11 +609,13 @@ export function DayScoreModal({
   total: number;
   score: ScoreView;
   rows: readonly RowView[];
-  /** しつもんと こたえの ふりかえり。 */
+  /** その日 送った ことば ぜんぶ（「あなたの 回答」に 並べる）。 */
   probes: readonly {
     readonly question: string;
     readonly answer: string;
     readonly heard: boolean;
+    /** 1本目（しつもん無し）の とき、その 1本で 新しく ⭕ に なった 枚数。 */
+    readonly opened?: number;
   }[];
   good: string;
   advice: string;
@@ -647,7 +664,10 @@ export function DayScoreModal({
 
       {score.clarity !== null ? (
         <p className="text-ink-soft mt-1 text-[11px] leading-[1.9] font-bold">
-          <Ruby text="伝わりやすさと 仕事の 日本語は、さいごの 報告の 見かたです。" index={index} />
+          <Ruby
+            text="伝わりやすさと 仕事の 日本語は、AIが さいごに 見た ときの 点です。"
+            index={index}
+          />
         </p>
       ) : null}
 
@@ -679,14 +699,29 @@ export function DayScoreModal({
                   <p className="text-navy text-sm leading-[1.9] font-bold">
                     <Ruby text={one.answer} index={index} />
                   </p>
+                  {/*
+                    **1本目は 枚数で 言う。**「どれか 1つでも 当たれば ✅」で 出して いた ころ、
+                    3枚 足りない 報告にも「✅ 内容は 伝わりました」と 出て、同じ 画面の 上の
+                    「❗ 3つ 言えませんでした」と 食いちがって いた（2026-09-18 の R5 検収）。
+                  */}
                   <p
                     className={`mt-0.5 text-sm leading-[1.9] font-bold ${
-                      one.heard ? "text-leaf-deep" : "text-coral-deep"
+                      (one.opened !== undefined ? one.opened > 0 : one.heard)
+                        ? "text-leaf-deep"
+                        : "text-coral-deep"
                     }`}
                   >
-                    {one.heard ? "✅" : "❗"}{" "}
+                    {(one.opened !== undefined ? one.opened > 0 : one.heard) ? "✅" : "❗"}{" "}
                     <Ruby
-                      text={one.heard ? "内容は 伝わりました" : "内容が 伝わりませんでした"}
+                      text={
+                        one.opened !== undefined
+                          ? one.opened > 0
+                            ? `${one.opened}つ 伝わりました`
+                            : "1つも 伝わりませんでした"
+                          : one.heard
+                            ? "内容は 伝わりました"
+                            : "内容が 伝わりませんでした"
+                      }
                       index={index}
                     />
                   </p>
@@ -728,19 +763,54 @@ export function DayScoreModal({
       {brushUp !== "" ? (
         <div className="border-sky-deep bg-sky-soft mt-3 rounded-xl border-2 px-3 py-2">
           <Cap
-            text="✨ ブラッシュアップ回答（1回に まとめた 形）"
+            text="✨ ブラッシュアップ回答（1回に まとめた お手本）"
             index={index}
             tone="text-sky-deep"
           />
+          {/*
+            **だれの 文かを 書く。** 報告の ポップアップの「ブラッシュアップ」は
+            学習者の こたえを 直した ものだが、ここは **教材の お手本**（言って いない
+            中身も 入って いる）。同じ 名前で 並ぶので、断らないと
+            自分の 文が 直った ものだと 読める（2026-09-18 の R5 検収）。
+          */}
+          <p className="text-ink-soft mt-0.5 text-[11px] leading-[1.9] font-bold">
+            <Ruby text="これは お手本です。あなたの 文では ありません。" index={index} />
+          </p>
           <p className="text-navy mt-0.5 text-sm leading-[1.9] font-bold">
             <Ruby text={brushUp} index={index} />
           </p>
         </div>
       ) : null}
 
+      {/*
+        **お手本を 見た あとの やり直しは 点に 入らない**（同検収）。
+        書いて おかないと、写して 満点に できる 道が 画面から 読めて しまう。
+      */}
+      {brushUp !== "" ? (
+        <p className="text-ink-soft mt-2 text-[11px] leading-[1.9] font-bold">
+          ※{" "}
+          <Ruby
+            text="お手本を 見た あとの やり直しは、練習に なりますが 点は 変わりません。"
+            index={index}
+          />
+        </p>
+      ) : null}
+
       <FixList fixes={fixes} index={index} />
       <GoodAdvice
-        good={good}
+        /*
+         * **手ぶらで 帰さない**（P8・R5-2）。合否は 上で はっきり 言って あるので、
+         * ここは **やった ことの 事実**を 置く——鍵が 無い 日は AIの ことばが
+         * 1つも 来ない ので、0点の 日の 画面に 肯定の 文が 1つも 無かった
+         *（2026-09-18 の R5 検収）。ほめことばでは なく 数える。
+         */
+        good={
+          good !== ""
+            ? good
+            : probes.length > 0
+              ? `きょうは ${probes.length}回 話しました。声に 出した ぶんは 練習に なって います。`
+              : ""
+        }
         /*
          * **言えなかった 日にも つぎの 一手を 置く**（規律1 後段・R5-2）。
          * AIの ことばは 鍵が ある ときだけ 来る ので、無い ときの 1行を 用意する。

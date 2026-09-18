@@ -476,7 +476,12 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
    * 1本目は しつもんが 無いので `question` は 空。
    */
   const [probeLog, setProbeLog] = useState<
-    readonly { readonly question: string; readonly answer: string; readonly heard: boolean }[]
+    readonly {
+      readonly question: string;
+      readonly answer: string;
+      readonly heard: boolean;
+      readonly opened?: number;
+    }[]
   >([]);
 
   /** 直前の しつもんの 字（聞き返しの こたえの 見かたに 出す）。 */
@@ -497,6 +502,16 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
    * 評価の あいだは **司会の 受け止めだけ**を 鳴らし、字は 閉じてから 出す。
    */
   const [pendingTail, setPendingTail] = useState<readonly Line[]>([]);
+  /**
+   * **正しい 回答を 見せた 日**（曜日の 字）。
+   *
+   * きょうの 評価には お手本が 並び、その 同じ 画面に「もう いちど 報告する」が ある。
+   * そのまま だと「適当に 答える → 打ち切り → お手本を 読む → 写して やり直す」で
+   * 満点が 記録できて しまう——2026-09-17 に **お手本を 出すのを やめた**のと
+   * 同じ 穴（2026-09-18 の R5 検収）。**お手本を 見た あとの やり直しは、
+   * 練習は できるが けっかを 上書きしない。**
+   */
+  const [shownAnswers, setShownAnswers] = useState<readonly string[]>([]);
   /** けっかを 読んだ 印。**読んだ ときに 1回だけ**「おわった」を 書く。 */
   const weekRead = useRef(false);
 
@@ -637,7 +652,10 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
           open: final.find((s) => s.id === panel.id)?.full ?? false,
         })),
       };
+      /* お手本を 見た あとの やり直しは 上書きしない（上の `shownAnswers` の 覚え書き）。 */
+      const keepScore = shownAnswers.includes(row.day);
       setResults((prev) => {
+        if (keepScore) return prev;
         /*
          * **同じ 日は 1つだけ**。タブで 行き来できる ように なった ので
          *（2026-09-13）、同じ 日を 2回 報告すると 積み足しでは 2行に なり、
@@ -728,8 +746,9 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
       setPendingTail(tail);
       pushClips([ack], rateOf(speed));
       setDayOpen(true);
+      setShownAnswers((prev) => (prev.includes(row.day) ? prev : [...prev, row.day]));
     },
-    [scene, sceneAt, asakai, panels, nameOf, meeting.id, pushClips, speed],
+    [scene, sceneAt, asakai, panels, nameOf, meeting.id, pushClips, speed, shownAnswers],
   );
 
   /**
@@ -917,13 +936,17 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
         fixes,
       });
 
-      setProbeLog((prev) => [
-        ...prev,
-        { question: wasProbe ? askedText : "", answer: text, heard: heardNow },
-      ]);
       const opened = step.states
         .filter((one) => one.full && !wasFull.has(one.id))
         .map((one) => labelOf(one.id));
+
+      setProbeLog((prev) => [
+        ...prev,
+        wasProbe
+          ? { question: askedText, answer: text, heard: heardNow }
+          : /* 1本目は 枚数で 残す（「どれか 1つ 当たれば ✅」に しない）。 */
+            { question: "", answer: text, heard: heardNow, opened: opened.length },
+      ]);
 
       if (!target) {
         setStates(step.states);
