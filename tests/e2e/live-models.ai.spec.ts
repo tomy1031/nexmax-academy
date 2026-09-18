@@ -351,7 +351,59 @@ test.describe("Live の 先頭の モデル（鍵が あるときだけ）", () 
     }
   });
 
-  test(`AIの みかた: ${LIVE_TEXT_MODELS[0]} が 同じ つなぎで 2回 頼んでも 答えを 混ぜない`, async () => {
+  /*
+   * 朝礼・夕礼の 声（`asakai-session.tsx` の LISTEN_ONLY）。相手に **何も 言わせない**
+   * つなぎで、学習者の 聞き取りだけが 返るか（2026-09-18「マイクが うまく 動かない」の 切り分け）。
+   *
+   * ほかの 声の 検証は **相手が 返事を する** 形だけ だった。3.8 は 先回りの 声が 常に 有効で、
+   * 返事を しない と 決めた ターンの 聞き取りが 来ないと、朝礼では **話しても 何も 起きない**。
+   * 先頭（3.8）と 控え（3.1）の 両方を 見て、ちがいを 記録に 残す。
+   */
+  for (const model of LIVE_TALK_MODELS.slice(0, 2)) {
+    test(`朝礼の 聞くだけ: ${model} が 返事を せずに 聞き取りを 返す`, async () => {
+      const live = await openLive(evalKey(), model, {
+        responseModalities: [Modality.AUDIO],
+        // asakai-session.tsx の LISTEN_ONLY と 同じ 文（ずれたら ここも 直す）
+        systemInstruction: [
+          "あなたは 朝礼の 司会の となりで 聞いて いる 係です。",
+          "学生が 話し終わったら、**何も 言いません**。声でも 文字でも 返事を しません。",
+          "しつもんも しません。あいづちも 打ちません。ただ 聞くだけです。",
+          "つぎに 何を 聞くかは 画面が 決めます。",
+        ].join("\n"),
+        inputAudioTranscription: {},
+        outputAudioTranscription: {},
+        realtimeInputConfig: { automaticActivityDetection: { disabled: true } },
+        speechConfig: { languageCode: "ja-JP" },
+      });
+      try {
+        const results: string[] = [];
+        // 2回 押して 話す（1回目だけ 聞き取れる、を 見のがさない）
+        for (const round of [1, 2]) {
+          live.reset();
+          await pushToTalk(live, voiceSampleAt16k());
+          const endedAt = Date.now();
+          let firstHeardMs: number | null = null;
+          const until = endedAt + 15_000;
+          while (Date.now() < until && !live.closedWith()) {
+            if (firstHeardMs === null && live.heard().trim()) firstHeardMs = Date.now() - endedAt;
+            // 聞き取りが 来て から 2秒 静かなら 終わり（画面の FLUSH_AFTER_MS より 長め）
+            if (firstHeardMs !== null && Date.now() - endedAt > firstHeardMs + 2_000) break;
+            await sleep(100);
+          }
+          const line = `${round}回目 聞き取り「${live.heard().trim()}」（指を はなして ${firstHeardMs ?? "-"}ms）・返事の 声 ${live.audioBytes()}B「${live.said().trim()}」・言い終わり ${live.turnDone()}`;
+          results.push(line);
+          console.log(`[live-models] listen-only ${model} ${line}`);
+          expect.soft(live.heard().trim(), `${round}回目の 聞き取りが 来ない`).not.toBe("");
+          await sleep(1_000);
+        }
+        expect(live.closedWith(), results.join(" / ")).toBeNull();
+      } finally {
+        live.close();
+      }
+    });
+  }
+
+  test(`AIの みかた:${LIVE_TEXT_MODELS[0]} が 同じ つなぎで 2回 頼んでも 答えを 混ぜない`, async () => {
     const model = LIVE_TEXT_MODELS[0];
     const live = await openLive(evalKey(), model, {
       responseModalities: [Modality.AUDIO],
