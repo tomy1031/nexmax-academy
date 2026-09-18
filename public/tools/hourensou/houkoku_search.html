@@ -145,6 +145,18 @@
         visibility: hidden;
       }
 
+      .waitnote {
+        display: none;
+        margin: 40px 16px;
+        text-align: center;
+        color: var(--ink);
+        font-weight: 800;
+      }
+
+      body[data-wait="slow"] .waitnote {
+        display: block;
+      }
+
       /* 先生に まだ とどいて いない ときは 見落とさせない（規律1 ぼかさない） */
       .edge[data-status="ng"] {
         color: #b3261e;
@@ -361,6 +373,7 @@
   </head>
 
   <body>
+    <p class="waitnote" id="waitNote" role="status"></p>
     <div class="wrap">
       <header class="hero">
         <h1 id="title"></h1>
@@ -454,18 +467,19 @@
 
         /* ---------------- 覚えて おく もの ---------------- */
 
-        /** 控えの 形の 版。これより 前の 控えは 持ち主が 分からない（下の LEGACY）。 */
-        var VERSION = 2;
-
         /**
-         * 持ち主の 分からない 古い 控えに 付ける しるし。**本物の id とは 決して 一致しない**ので、
-         * アプリが 持ち主を 教えて くれた 時点で 捨てる（下の `onState`）。
+         * 控えの 形の 版。これより 前の 控えは **持ち主が 分からない** ので、
+         * 「書きかけ」に 戻して 読む（下の `load`）。
          *
-         * 捨てる 理由: この 控えは ログアウトでは 消えない（`clearNexmaxCache` が 消すのは
-         * `nexmax.` で 始まる 鍵だけ）。教室の PC を 何人かで 使うと、A さんの こたえが
+         * 持ち主を 気に する 理由: この 控えは ログアウトでは 消えない（`clearNexmaxCache` が
+         * 消すのは `nexmax.` で 始まる 鍵だけ）。教室の PC を 何人かで 使うと、A さんの こたえが
          * B さんの 名前で 送られ、B さんの 関門まで 開く（2026-09-18 の 検収）。
+         *
+         * **持ち主の 分からない ものは 捨ても 送りも しない。** 書きかけと して 見せ、
+         * 出すかは 開いた 人が 決める——捨てると、自分の スマホで 出した 人の
+         * たった 1つの 控えが 消える（こちらも 同じ 日の 検収）。
          */
-        var LEGACY = "?legacy";
+        var VERSION = 2;
 
         function blankState() {
           var rows = [];
@@ -514,11 +528,9 @@
                 if (typeof saved.answers[key] === "string") state.answers[key] = saved.answers[key];
               });
             }
+            // 古い 版は 持ち主が 分からない。書いた ものだけ 残し、出した 印は 付けない
+            if (saved.v !== VERSION) return state;
             state.submitted = saved.submitted === true;
-            if (saved.v !== VERSION) {
-              state.owner = LEGACY;
-              return state;
-            }
             if (typeof saved.owner === "string") state.owner = saved.owner;
             if (
               saved.attempt &&
@@ -892,13 +904,16 @@
             state.attempt = { stamp: stamp, id: newAttemptId() };
             save();
           }
-          if (stamp === state.saved) {
-            showSaveStatus("ok");
+          /*
+           * **持ち主を 先に 見る。**「とどいた」も「送る」も、アプリが いま ログイン中の
+           * 人を 教えて くれて、この 控えが その 人の もので ある ときだけ。
+           */
+          if (!inApp || !owner || state.owner !== owner) {
+            showSaveStatus("ng");
             return;
           }
-          // 別の タブ・持ち主が まだ 分からない。書いた ものは 端末に 残り、アプリで 開いた とき 送る
-          if (!inApp || !state.owner || state.owner === LEGACY) {
-            showSaveStatus("ng");
+          if (stamp === state.saved) {
+            showSaveStatus("ok");
             return;
           }
           showSaveStatus("wait");
@@ -956,7 +971,7 @@
           try {
             window.parent.postMessage({ type: "nexmax:link-hello", id: DATA.id }, window.location.origin);
           } catch (e) {
-            reveal();
+            tooSlow();
           }
         }
 
@@ -964,6 +979,25 @@
         function reveal() {
           document.body.removeAttribute("data-wait");
         }
+
+        /**
+         * 返事が 来ない（アプリの 画面が 古い まま・こわれた）。
+         *
+         * **控えは 見せない**——持ち主を 確かめて いない ので、前の 人の こたえかも しれない。
+         * 「とどいた」とも 言わず、関門も 開けない。できる ことを 1つ 言う（規律1）。
+         * あとから 返事が 来れば、ふつうに 開く（`onState`）。
+         */
+        function tooSlow() {
+          if (!document.body.hasAttribute("data-wait")) return;
+          document.getElementById("waitNote").innerHTML = rubyfy(M.slow);
+          document.body.setAttribute("data-wait", "slow");
+        }
+
+        /**
+         * アプリが 教えて くれた いまの 学習者。null＝まだ 聞いて いない／分からない
+         *（デモモード・ログインして いない）。**これが 控えの 持ち主と 同じ ときだけ 送る。**
+         */
+        var owner = null;
 
         /**
          * DB に あった こたえを 戻す（別の 端末・別の URL で 開いた とき）。
@@ -994,25 +1028,40 @@
         /**
          * アプリの 返事。**持ち主を 確かめてから** 控えを 使う。
          *
-         * - 持ち主が ちがう（別の 学習者の 控え・持ち主の 分からない 古い 控え）→ 捨てて 白紙に。
-         *   見せも 送りも しない。教室の PC で A さんの こたえが B さんの 名前に なるのを 防ぐ
-         * - 持ち主が まだ 無い（べつの タブ・デモモードで 書いた）→ いま 開いた 人の ものに する
-         * - 持ち主が 分からない（デモモード・ログインして いない）→ 端末の 控えを そのまま 使う
+         * - 持ち主が ちがう（別の 学習者の 控え）→ 捨てて 白紙に。見せも 送りも しない。
+         *   教室の PC で A さんの こたえが B さんの 名前に なるのを 防ぐ
+         * - 持ち主が 無い（古い 版・べつの タブ・デモモードで 書いた）→ **書きかけと して** 引き取る。
+         *   出した 印は 外す——だれが 書いたか 分からない ものを、自動で 送らない・関門を 開けない。
+         *   出すかは 開いた 人が「出す」を 押して 決める
+         * - いまの 学習者が 分からない（デモモード・ログインして いない）→ 端末の 控えを そのまま 使う
+         *   （送らない。アプリが 残せないので）
          *
          * そのあと、白紙なら DB の 前の こたえを 戻し、出して あれば 関門を 開けて 送り直す。
          */
-        function onState(owner, answers, attemptId) {
-          if (typeof owner === "string" && owner !== "") {
-            if (state.owner !== "" && state.owner !== owner) {
+        function onState(who, answers, attemptId) {
+          if (typeof who === "string" && who !== "") {
+            if (state.owner === "") {
+              state.submitted = false;
+              state.attempt = null;
+              state.saved = "";
+            } else if (state.owner !== who) {
               state = blankState();
-              fillFields();
-              showForm();
             }
-            state.owner = owner;
+            state.owner = who;
+            owner = who;
             save();
+          } else if (state.owner !== "") {
+            /*
+             * いまの 学習者が 分からない（読めなかった）のに、控えは だれかの もの。
+             * 見せると 前の 人の こたえかも しれない。返事が 来ない ときと 同じに する。
+             */
+            tooSlow();
+            return;
           }
+          fillFields();
+          showForm();
           reveal();
-          if (isBlank() && Array.isArray(answers) && answers.length > 0 && state.owner !== LEGACY) {
+          if (owner && isBlank() && Array.isArray(answers) && answers.length > 0) {
             if (restore(answers, attemptId)) {
               /*
                * 前に 出した 人。この 端末でも 関門を 開ける（ステージの 関門は 端末ごとに 覚える）。
@@ -1081,6 +1130,15 @@
             goToMissing();
             return;
           }
+          /*
+           * **べつの タブでは 出せない。** だれが 書いたかを アプリに 聞けない ので、
+           * 出した ことに すると、あとで この 端末を 使う 人の 名前で 送られる。
+           * 書いた ものは 残る（アプリで 開くと 書きかけと して 出る）。
+           */
+          if (!inApp) {
+            document.getElementById("note").innerHTML = rubyfy(M.outside);
+            return;
+          }
           state.submitted = true;
           save();
           sendAnswers();
@@ -1103,17 +1161,12 @@
         claimDone();
         if (inApp) {
           /*
-           * アプリの 中では **持ち主を 確かめてから** 控えを 使う（`onState`）。
-           * 返事が 来ない（アプリが 古い・こわれた）ときは しばらく して 見せる。
-           * 送るのは 持ち主が 分かってから なので、見せても 他人の 名前には ならない。
+           * アプリの 中では **持ち主を 確かめてから** 控えを 見せる（`onState`）。
+           * ふつうは 一瞬。返事が 来ない ときも 控えは 見せない（`tooSlow`）。
            */
           document.body.setAttribute("data-wait", "");
-          setTimeout(reveal, 3000);
+          setTimeout(tooSlow, 8000);
           hello();
-        } else if (state.submitted) {
-          // べつの タブ。見せるが、送れない ことを はっきり 言う
-          showDone();
-          sendAnswers();
         }
       })();
     </script>

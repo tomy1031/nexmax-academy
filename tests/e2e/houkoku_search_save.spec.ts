@@ -60,13 +60,15 @@ interface Received {
  * - 「いま だれ？」に `ME` と `stored`（DB に ある ことに する 最後の こたえ）を 返す
  * - 届いた こたえを `window.__answers` に ためる（開き直した 窓ごとに 数え直す）
  * - `e2e:ack` が "1" の ときだけ「DB に 入った」を 返す（途中で 切り替える ため localStorage で 持つ）
+ * - `silent` の ときは「いま だれ？」に 返事を しない（アプリの 画面が 古い・こわれた とき）
  */
 async function actAsApp(
   context: BrowserContext,
-  stored?: readonly { id: string; text: string }[],
+  stored?: readonly { id: string; text: string }[] | null,
+  silent = false,
 ): Promise<void> {
   await context.addInitScript(
-    ({ storedAnswers, storedAttempt, linkId, me }) => {
+    ({ storedAnswers, storedAttempt, linkId, me, quiet }) => {
       if (window.top !== window) return;
       const box: unknown[] = [];
       (window as unknown as { __answers: unknown[] }).__answers = box;
@@ -82,6 +84,7 @@ async function actAsApp(
         const source = event.source as Window;
         if (data.type === "nexmax:link-hello") {
           event.stopImmediatePropagation();
+          if (quiet) return;
           source.postMessage(
             {
               type: "nexmax:link-state",
@@ -110,6 +113,7 @@ async function actAsApp(
       storedAttempt: STORED_ATTEMPT,
       linkId: LINK,
       me: ME,
+      quiet: silent,
     },
   );
 }
@@ -254,7 +258,7 @@ test("調査（リサーチ）: 書き始めて いる ときは、前の こた
   await expect(tool.locator("#doneCard")).toBeHidden();
 });
 
-test("調査（リサーチ）: べつの タブで 出した ものは、アプリで 開いた ときに 送る", async ({
+test("調査（リサーチ）: べつの タブでは 出せない。書いた ものは アプリで 書きかけと して 出る", async ({
   page,
   context,
 }) => {
@@ -262,20 +266,31 @@ test("調査（リサーチ）: べつの タブで 出した ものは、アプ
   await actAsApp(context);
 
   /*
-   * 「べつの タブで ひらく」＝ 親の いない 1枚。送り先が 無いので、
-   * 以前は 黙って 捨てて いた（出した つもりで DB には 何も 無い）。
+   * 「べつの タブで ひらく」＝ 親の いない 1枚。以前は 出した ことに なるのに
+   * 送り先が 無く、黙って 捨てて いた（出した つもりで DB には 何も 無い）。
+   * いまは だれが 書いたかを アプリに 聞けない ので、ここでは 出させない
+   *——出した ことに すると、あとで この 端末を 使う 人の 名前で 送られる。
    */
   await page.goto("/tools/hourensou/houkoku_search.html");
   await fillAll(page);
   await page.getByRole("button", { name: /出す/ }).click();
 
-  /* 1. とどいて いない ことを はっきり 言う（規律1）。 */
-  await expect(page.locator("#savedNote")).toContainText("とどいて いません");
+  /* 1. 出せない ことと、書いた ものが 残る ことを はっきり 言う（規律1）。 */
+  await expect(page.locator("#note")).toContainText("ここでは");
+  await expect(page.locator("#note")).toContainText("のこって います");
+  await expect(page.locator("#doneCard")).toBeHidden();
   await shot(page, "houkoku-search-save-03-newtab");
 
-  /* 2. アプリの 中で 開くと、いま 開いた 人の ものと して 送り、とどいたら そう 出る。 */
+  /* 2. アプリの 中で 開くと、書きかけと して 出る。**自動では 送らない。** */
   await page.evaluate(() => window.localStorage.setItem("e2e:ack", "1"));
   const tool = await openTool(page);
+  await expect(tool.getByLabel("1ばんめ")).toHaveValue("社長");
+  await expect(tool.locator("#doneCard")).toBeHidden();
+  await page.waitForTimeout(1000);
+  expect(await received(page)).toEqual([]);
+
+  /* 3. 自分で「出す」を 押すと、いま 開いた 人の ものと して 送り、とどいたら そう 出る。 */
+  await tool.getByRole("button", { name: /出す/ }).click();
   await expect.poll(async () => (await received(page)).map((one) => one.owner)).toEqual([ME]);
   expect((await received(page))[0]!.answers).toEqual(STORED);
   await expect(tool.locator("#savedNote")).toContainText("とどきました");
@@ -287,37 +302,86 @@ test("調査（リサーチ）: べつの タブで 出した ものは、アプ
  * 前の 人の 控えを 次の 人の 名前で 送ると、先生の 名簿が 静かに 嘘に なり、
  * 次の 人の 関門まで 開く（2026-09-18 の 検収で 見つかった）。
  */
-for (const [label, owner] of [
-  ["ほかの 学習者の 控え", "e2e-learner-a"],
-  ["持ち主の 分からない 古い 控え", null],
-] as const) {
-  test(`調査（リサーチ）: ${label}は、見せず・送らず・関門も 開けない`, async ({
-    page,
-    context,
-  }) => {
-    await seedUpToTool(context);
-    await actAsApp(context);
-    await seedToolState(context, {
-      ...(owner ? { v: 2, owner, attempt: null, saved: "" } : { sent: "" }),
-      rows: ["Aさんの 社長", "Aさんの 部長", "Aさんの 課長", "Aさんの 係長", "Aさんの 社員"],
-      answers: { kaikyuu: "A の 文", houkoku: "A の 文", joushi: "A の 文" },
-      submitted: true,
-    });
+const PREVIOUS = {
+  rows: ["Aさんの 社長", "Aさんの 部長", "Aさんの 課長", "Aさんの 係長", "Aさんの 社員"],
+  answers: { kaikyuu: "A の 文", houkoku: "A の 文", joushi: "A の 文" },
+  submitted: true,
+};
 
-    const tool = await openTool(page);
-    await expect(tool.getByLabel("1ばんめ")).toHaveValue("");
-    await expect(tool.locator("textarea").first()).toHaveValue("");
-    await expect(tool.locator("#doneCard")).toBeHidden();
-    await expect(tool.getByText("Aさんの 社長")).toHaveCount(0);
-
-    await page.waitForTimeout(1500);
-    expect(await received(page)).toEqual([]);
-
-    // 出して いない 人なので、つぎの ページは まだ 閉じて いる
-    await page.goto("/houkoku/article-houkoku_hierarchy");
-    await expect(page.getByText("じゅんばんでは ありません")).toBeVisible();
+test("調査（リサーチ）: ほかの 学習者の 控えは、見せず・送らず・関門も 開けない", async ({
+  page,
+  context,
+}) => {
+  await seedUpToTool(context);
+  await actAsApp(context);
+  await seedToolState(context, {
+    ...PREVIOUS,
+    v: 2,
+    owner: "e2e-learner-a",
+    attempt: null,
+    saved: "",
   });
-}
+
+  const tool = await openTool(page);
+  await expect(tool.getByLabel("1ばんめ")).toHaveValue("");
+  await expect(tool.locator("textarea").first()).toHaveValue("");
+  await expect(tool.locator("#doneCard")).toBeHidden();
+  await expect(tool.getByText("Aさんの 社長")).toHaveCount(0);
+
+  await page.waitForTimeout(1500);
+  expect(await received(page)).toEqual([]);
+
+  // 出して いない 人なので、つぎの ページは まだ 閉じて いる
+  await page.goto("/houkoku/article-houkoku_hierarchy");
+  await expect(page.getByText("じゅんばんでは ありません")).toBeVisible();
+});
+
+test("調査（リサーチ）: 持ち主の 分からない 古い 控えは、書きかけに 戻す（捨てない・送らない・関門も 開けない）", async ({
+  page,
+  context,
+}) => {
+  await seedUpToTool(context);
+  await actAsApp(context);
+  // この 直しの 前の 形（版も 持ち主も 無い）。自分の スマホで 出した 人の たった 1つの 控えかも しれない
+  await seedToolState(context, { ...PREVIOUS, sent: "" });
+
+  const tool = await openTool(page);
+  await expect(tool.getByLabel("1ばんめ")).toHaveValue("Aさんの 社長");
+  await expect(tool.locator("#doneCard")).toBeHidden();
+
+  await page.waitForTimeout(1500);
+  expect(await received(page)).toEqual([]);
+
+  await page.goto("/houkoku/article-houkoku_hierarchy");
+  await expect(page.getByText("じゅんばんでは ありません")).toBeVisible();
+});
+
+test("調査（リサーチ）: アプリから 返事が 来ない ときは、控えを 見せない", async ({
+  page,
+  context,
+}) => {
+  await seedUpToTool(context);
+  await actAsApp(context, null, true);
+  await seedToolState(context, {
+    ...PREVIOUS,
+    v: 2,
+    owner: "e2e-learner-a",
+    attempt: null,
+    saved: "",
+  });
+
+  const tool = await openTool(page);
+  // だれの 控えか 確かめられない。できる ことを 1つ 言い、中身は 見せない
+  await expect(tool.locator("#waitNote")).toContainText("うまく ひらけません", {
+    timeout: 15_000,
+  });
+  await expect(tool.getByLabel("1ばんめ")).toBeHidden();
+  await expect(tool.locator("#doneList")).toBeHidden();
+  expect(await received(page)).toEqual([]);
+
+  await page.goto("/houkoku/article-houkoku_hierarchy");
+  await expect(page.getByText("じゅんばんでは ありません")).toBeVisible();
+});
 
 test("調査（リサーチ）: 行の 中の 全角スペースで、戻した 行が 割れない", async ({
   page,
