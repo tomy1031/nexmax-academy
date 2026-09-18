@@ -27,14 +27,23 @@
       アプリ（`src/components/link/link-view.tsx`）は 同じ 置き場からの 合図だけを 受ける。
       1枚で 開いた ときは 送り先が 無いので、黙って 何も しない（画面は そのまま 使える）。
 
-      ## 書いた ものは 先生にも 届く
-      出した ときに `postMessage({type:"nexmax:link-answers", …})` で 親へ 渡し、
+      ## 書いた ものは 先生にも 届く — **返事が 来るまで 送り直す**
+      出した ときに `postMessage({type:"nexmax:link-answers", …, key})` で 親へ 渡し、
       アプリが 学習の きろく（`quiz_results`）に 残す。ここでは 保存しない
       ——静的な 1枚に DBの 鍵を 置かない（規律4）。
+      DB に 入ると アプリが `nexmax:link-answers-saved`（同じ key）を 返す。
+      **その 返事が 来るまで「先生に とどいた」とは 見なさず、開くたびに 送り直す。**
+      2026-09-18 に 分かった こと: 以前は 送った 瞬間に「送った」印を 付けて いたので、
+      受け手が いない とき（別の タブ・保存の 仕組みが 入る 前）に 出した こたえは
+      二度と 送られず、DB には 1件も 残って いなかった。
 
-      ## 書いた ものは 端末に 残す
+      ## 書いた ものは 端末に 残し、無ければ DB から 戻す
       localStorage に 置く。授業中に うっかり 閉じても 書き直しに ならない。
       使えない 設定の 端末でも 落ちないよう、読み書きは try で 包む。
+      ただし localStorage は **URL と 端末ごと**なので、別の 端末・別の URL
+      （ブランチ用・STG・本番）で 開くと 空に 見える。空の ときは
+      `nexmax:link-restore-request` で アプリに 頼み、DB に ある 最後の こたえを
+      `nexmax:link-restore` で 受け取って 戻す。
     -->
     <style>
       :root {
@@ -129,6 +138,12 @@
       .edge {
         color: var(--ink-faint);
         font-size: 13px;
+      }
+
+      /* 先生に まだ とどいて いない ときは 見落とさせない（規律1 ぼかさない） */
+      .edge[data-status="ng"] {
+        color: #b3261e;
+        font-weight: 800;
       }
 
       ol.rows {
@@ -441,8 +456,12 @@
           DATA.compare.fields.forEach(function (field) {
             answers[field.id] = "";
           });
-          // `sent` は **最後に 先生へ 送った 中身**（同じ ものを 2度 送らない ため）
-          return { rows: rows, answers: answers, submitted: false, sent: "" };
+          /*
+           * `saved` は **DB に 入ったと アプリが 返事を くれた 中身**（同じ ものを 2度 送らない ため）。
+           * 以前の `sent`（送った 瞬間に 付けて いた 印）は 読まない——届いて いない
+           * ものにも 付いて いたので、読むと その こたえを 二度と 送れない。
+           */
+          return { rows: rows, answers: answers, submitted: false, saved: "" };
         }
 
         function load() {
@@ -461,7 +480,7 @@
               });
             }
             state.submitted = saved.submitted === true;
-            if (typeof saved.sent === "string") state.sent = saved.sent;
+            if (typeof saved.saved === "string") state.saved = saved.saved;
           } catch (e) {
             /* 使えない 端末でも 学習は 止めない */
           }
@@ -494,7 +513,6 @@
         put("doneTitle", L.doneTitle);
         put("doneListLabel", L.doneList);
         put("doneNext", L.doneNext);
-        put("savedNote", L.saved);
         putButton("edit", L.edit);
 
         var hints = document.getElementById("rankHints");
@@ -746,6 +764,38 @@
           }
         }
 
+        /* ---------------- 先生に とどいたか ---------------- */
+
+        /** アプリの 中で 開いて いるか（別の タブ・1枚で 開いた ときは 送り先が 無い）。 */
+        var inApp = window.parent !== window;
+
+        /** 返事を 待つ 長さ。これを 過ぎたら「まだ とどいて いません」を 出す。 */
+        var WAIT_MS = 15000;
+
+        /** 返事 待ちの 札 → その 中身（時間切れの あとに 来た 返事も 受ける）。 */
+        var waiting = Object.create(null);
+        /** いま 返事を 待って いる 中身（同じ ものを 重ねて 送らない。時間切れで 空に する）。 */
+        var sending = "";
+        /** いちばん 最後に 出した 中身（画面の「とどいた」は これに 付ける）。 */
+        var latest = "";
+        var sendTimer = 0;
+
+        function newKey() {
+          return String(Date.now()) + "-" + Math.random().toString(36).slice(2, 10);
+        }
+
+        /**
+         * 出した あとの 画面に **先生に とどいたか**を 出す（規律1 ぼかさない）。
+         * "ok" … DB に 入った ／ "wait" … 返事 待ち ／ "ng" … まだ 入って いない
+         */
+        function showSaveStatus(kind) {
+          var node = document.getElementById("savedNote");
+          node.innerHTML = rubyfy(
+            kind === "ok" ? L.savedOk : kind === "wait" ? L.savedWait : L.savedNg,
+          );
+          node.setAttribute("data-status", kind);
+        }
+
         /**
          * 書いた ものを **先生の 画面へ 届ける**ため、親に 渡す（2026-09-11 の 指定 B）。
          *
@@ -753,34 +803,143 @@
          * だから **保存は アプリ側の 仕事**に して、ここは 中身を 渡すだけに する。
          * 受け手は `src/components/link/link-view.tsx` → `src/lib/answers/link-answers-db.ts`。
          *
-         * **出した ときだけ 送る**（開き直しでは 送らない）。開くたびに 送ると、
-         * 同じ こたえが 何行も 先生の 画面に 並ぶ。
+         * 出した とき と、**出した あとに 開き直して まだ DB に 入って いない** ときに 送る。
+         * DB に 入った 中身と 同じなら 送らない（開くたびに 同じ 行を 増やさない）。
+         *
+         * @param alreadySaved true なら 送らずに「入って いる」印だけ 付ける（DB から 戻した とき）
          */
-        function sendAnswers() {
+        function sendAnswers(alreadySaved) {
           var answers = [{ id: "kaikyuu_order", text: filledRows().join("　") }];
           DATA.compare.fields.forEach(function (field) {
             answers.push({ id: field.id, text: state.answers[field.id].trim() });
           });
+          var stamp = JSON.stringify(answers);
+          latest = stamp;
+          if (alreadySaved === true) state.saved = stamp;
           /*
-           * **中身が 前と 同じなら 送らない。**
+           * **中身が DB に 入った ものと 同じなら 送らない。**
            *
            * 「直す → 出す」は 1回ごとに 別の 記録に なる（先生の 画面の「何回目」）。
            * それは 直した ことが 見える 形で よいが、**何も 変えずに もう一度 押した**
            * だけで 同じ 4行が 増えるのは ただの 雑音に なる。
            */
-          var stamp = JSON.stringify(answers);
-          if (stamp === state.sent) return;
-          state.sent = stamp;
-          save();
+          if (stamp === state.saved) {
+            save();
+            showSaveStatus("ok");
+            return;
+          }
+          // 別の タブ・1枚で 開いた。書いた ものは 端末に 残り、アプリで 開いた とき 送る
+          if (!inApp) {
+            showSaveStatus("ng");
+            return;
+          }
+          // 同じ 中身の 返事を まだ 待って いる
+          if (stamp === sending) return;
+          var key = newKey();
+          waiting[key] = stamp;
+          sending = stamp;
+          showSaveStatus("wait");
+          clearTimeout(sendTimer);
+          sendTimer = setTimeout(function () {
+            sending = "";
+            showSaveStatus("ng");
+          }, WAIT_MS);
           try {
             window.parent.postMessage(
-              { type: "nexmax:link-answers", id: DATA.id, answers: answers },
+              { type: "nexmax:link-answers", id: DATA.id, answers: answers, key: key },
               window.location.origin,
             );
           } catch (e) {
-            /* 1枚で 開いた ときは 送り先が 無い。書いた ものは 端末に 残る */
+            sending = "";
+            showSaveStatus("ng");
           }
         }
+
+        /** アプリから「DB に 入った」。札が 合えば、その 中身を「とどいた」に する。 */
+        function onSaved(key) {
+          if (typeof key !== "string" || !(key in waiting)) return;
+          var stamp = waiting[key];
+          delete waiting[key];
+          state.saved = stamp;
+          save();
+          // もう 直して 出し直した。そちらの 返事を 待つ
+          if (stamp !== latest) return;
+          clearTimeout(sendTimer);
+          sending = "";
+          showSaveStatus("ok");
+        }
+
+        /** まだ 何も 書いて いないか（戻した こたえで 上書きして よいか）。 */
+        function isBlank() {
+          if (state.submitted || filledRows().length > 0) return false;
+          return DATA.compare.fields.every(function (field) {
+            return state.answers[field.id].trim() === "";
+          });
+        }
+
+        /** アプリに「前に 出した こたえが DB に あれば ください」と 頼む。 */
+        function askRestore() {
+          try {
+            window.parent.postMessage(
+              { type: "nexmax:link-restore-request", id: DATA.id },
+              window.location.origin,
+            );
+          } catch (e) {
+            /* 戻せなくても 書けば よい */
+          }
+        }
+
+        /**
+         * DB に あった こたえを 戻す（別の 端末・別の URL で 開いた とき）。
+         *
+         * 待って いる あいだに 書き始めて いたら 上書きしない——いま 打った ものが
+         * 消えるのが いちばん まずい。戻した ものは もう DB に あるので 送らない。
+         */
+        function onRestore(answers) {
+          if (!isBlank() || !Array.isArray(answers)) return;
+          var byId = Object.create(null);
+          answers.forEach(function (answer) {
+            if (answer && typeof answer.id === "string" && typeof answer.text === "string") {
+              byId[answer.id] = answer.text;
+            }
+          });
+          if (typeof byId.kaikyuu_order !== "string") return;
+          var rows = byId.kaikyuu_order
+            .split("　")
+            .map(function (value) {
+              return value.trim();
+            })
+            .filter(function (value) {
+              return value !== "";
+            })
+            .slice(0, DATA.rank.max);
+          while (rows.length < DATA.rank.start) rows.push("");
+          state.rows = rows;
+          /*
+           * 欄は 開いた ときに 1度だけ 作って ある。覚えて おく ほうだけ 直すと、
+           * 「直す」を 押した とき 欄が 空の まま 出る（書いた 文が 消えて 見える）。
+           */
+          DATA.compare.fields.forEach(function (field) {
+            if (typeof byId[field.id] !== "string") return;
+            state.answers[field.id] = byId[field.id];
+            document.getElementById("field-" + field.id).value = byId[field.id];
+          });
+          state.submitted = true;
+          renderRows();
+          updateNote();
+          showDone();
+          sendAnswers(true);
+          tellApp();
+        }
+
+        /* アプリからの 返事。**同じ 置き場の 親から 来た ものだけ** 受ける。 */
+        window.addEventListener("message", function (event) {
+          if (event.origin !== window.location.origin || event.source !== window.parent) return;
+          var data = event.data;
+          if (!data || typeof data !== "object" || data.id !== DATA.id) return;
+          if (data.type === "nexmax:link-answers-saved") onSaved(data.key);
+          else if (data.type === "nexmax:link-restore") onRestore(data.answers);
+        });
 
         function showDone() {
           var list = document.getElementById("doneList");
@@ -845,6 +1004,10 @@
            */
           tellApp();
           showDone();
+          // まだ 先生に とどいて いなければ、ここで 送り直す（別の タブで 出した 人も）
+          sendAnswers();
+        } else if (inApp && isBlank()) {
+          askRestore();
         }
       })();
     </script>

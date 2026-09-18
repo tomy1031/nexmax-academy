@@ -29,7 +29,13 @@
 import { linkAnswerOrder } from "@/content/link-answers";
 import { createClient } from "@/lib/supabase/client";
 import { readOwnId } from "@/lib/supabase/claims";
-import { insertQuizResultRows, newAttemptId, type QuizResultRow } from "@/lib/quiz/results-db";
+import {
+  insertQuizResultRows,
+  newAttemptId,
+  readOwnQuizResultRows,
+  type OwnQuizResultRow,
+  type QuizResultRow,
+} from "@/lib/quiz/results-db";
 
 /** ツールから 届く 1つぶん。 */
 export interface LinkAnswer {
@@ -105,14 +111,17 @@ export function linkAnswerRows({
 }
 
 /**
- * 出した こたえを 残す。**待たない・投げない**（記録の ために 学習を 止めない）。
+ * 出した こたえを 残す。**投げない**（記録の ために 学習を 止めない）。
  *
  * ログインして いない（デモモード）ときは 何も しない。**投げないのが 大事**で、
- * 呼び出し側は `void` で 捨てる ので、ここから 例外が 出ると 誰も 受け取らない
+ * 呼び出し側は 結果だけを 見る ので、ここから 例外が 出ると 誰も 受け取らない
  *（画面には 何も 出ず、記録も 残らず、警告すら 出ない）。だから 自分で 握って 書く。
  *
  * id は `readOwnId`（トークンの 中みを その場で 確かめる）で 取る——**外へ 出ない**し、
  * 学習者の 行 まるごと（answers/scores の JSON 込み）を 取りに 行かずに 済む。
+ *
+ * @returns DB に 入ったか。**true の ときだけ** ツールへ「とどいた」を 返す
+ *   （ツールは それまで 開くたびに 送り直す）。
  */
 export async function saveLinkAnswers({
   linkId,
@@ -120,18 +129,64 @@ export async function saveLinkAnswers({
 }: {
   linkId: string;
   answers: readonly LinkAnswer[];
-}): Promise<void> {
-  if (answers.length === 0) return;
+}): Promise<boolean> {
+  if (answers.length === 0) return false;
   try {
     const supabase = createClient();
-    if (!supabase) return; // デモモード（鍵ゼロ）。学習は そのまま 進む
+    if (!supabase) return false; // デモモード（鍵ゼロ）。学習は そのまま 進む
     const profileId = await readOwnId(supabase);
-    if (!profileId) return; // ログインして いない
-    await insertQuizResultRows(
+    if (!profileId) return false; // ログインして いない
+    return await insertQuizResultRows(
       linkAnswerRows({ profileId, linkId, answers, attemptId: newAttemptId() }),
     );
   } catch (error) {
     // 先生の 画面に 出ない ことに 気づける ように、**黙らせない**
     console.warn("[link-answers] 記録できませんでした:", error);
+    return false;
+  }
+}
+
+/**
+ * DB の 行から、**いちばん 新しい 1回ぶん**の こたえを 取り出す（台帳の 順）。
+ *
+ * 「直す → 出す」は 1回ごとに 別の 記録（attempt）に なる。戻すのは 最後に 出した
+ * ものだけ——古い 回の 欄が 混ざると、学習者が 消した はずの 文が 生き返る。
+ *
+ * @param rows 新しい 順（`readOwnQuizResultRows` の 並び）
+ */
+export function latestLinkAnswers(linkId: string, rows: readonly OwnQuizResultRow[]): LinkAnswer[] {
+  const latest = rows[0]?.attempt_id;
+  if (!latest) return [];
+  const byId = new Map(
+    rows
+      .filter((row) => row.attempt_id === latest)
+      .map((row) => [row.question_id, row.answer_text]),
+  );
+  return linkAnswerOrder(linkId).flatMap((id) => {
+    const text = byId.get(id);
+    return text === undefined ? [] : [{ id, text }];
+  });
+}
+
+/**
+ * 前に 出した こたえを DB から 読む。**投げない**。
+ *
+ * 別の 端末・別の URL で ツールを 開くと、ツールの 端末の 控え（localStorage）は 空で、
+ * 出した はずの こたえが 消えた ように 見える。ツールが 空の ときに 頼んで くるので、
+ * ここで 読んで 返す。
+ *
+ * @returns 読めない（デモモード・未ログイン・失敗）・まだ 出して いない ときは 空。
+ */
+export async function loadLinkAnswers(linkId: string): Promise<LinkAnswer[]> {
+  try {
+    const supabase = createClient();
+    if (!supabase) return [];
+    const profileId = await readOwnId(supabase);
+    if (!profileId) return [];
+    const rows = await readOwnQuizResultRows(profileId, linkId);
+    return rows ? latestLinkAnswers(linkId, rows) : [];
+  } catch (error) {
+    console.warn("[link-answers] 読めませんでした:", error);
+    return [];
   }
 }

@@ -10,8 +10,8 @@ import {
   recordContentProgress,
   subscribeProgress,
 } from "@/lib/progress/store";
-import { parseLinkAnswers, saveLinkAnswers } from "@/lib/answers/link-answers-db";
-import { readLinkMessage } from "@/lib/answers/link-message";
+import { loadLinkAnswers, parseLinkAnswers, saveLinkAnswers } from "@/lib/answers/link-answers-db";
+import { readLinkMessage, RESTORE_MESSAGE, SAVED_MESSAGE } from "@/lib/answers/link-message";
 
 /**
  * リンク教材 — 1枚で完結する練習ページを、ステージの中から 全画面で 開く
@@ -42,10 +42,28 @@ import { readLinkMessage } from "@/lib/answers/link-message";
 
 /*
  * 中のページから 届く 合図（「おわった」「おわりの しるしは こちらで 出す」
- * 「学習者の 書いた もの」）の 読み取りは `@/lib/answers/link-message` に 置いて ある。
+ * 「学習者の 書いた もの」「前の こたえを ください」）の 読み取りは
+ * `@/lib/answers/link-message` に 置いて ある。
  * 画面の 効果の 中では テストから 通しにくい のに、**関門の 鍵と 学習者の こたえ**を
  * 運ぶ 道で 取りちがえの 害が いちばん 大きい ため。
+ *
+ * こたえには **返事を 返す**（DB に 入った／前の こたえ）。返事が 来るまで、
+ * 中のページは 開くたびに 送り直す——送りっぱなしだった ころは、受け手の いない
+ * ときに 出した こたえが 二度と 送られず、DB に 1件も 残らなかった（2026-09-18）。
  */
+
+/**
+ * 中のページへ 返事を 返す。**差出人の 窓へ、同じ 置き場（origin）宛てにだけ**。
+ * 合図を 受けた ときに 差出人は もう 確かめて ある（`onMessage`）。
+ */
+function reply(source: MessageEventSource | null, message: Record<string, unknown>): void {
+  if (!source || !("postMessage" in source)) return;
+  try {
+    (source as Window).postMessage(message, window.location.origin);
+  } catch {
+    /* 窓が 閉じた あと。次に 開いた とき ツールが もう一度 頼む */
+  }
+}
 
 /** 画面じたいの 文言の 読み辞書（教材データの 辞書は UIの 文言まで 覆わない・規律2）。 */
 const UI_FURIGANA = buildFuriganaIndex([
@@ -99,16 +117,35 @@ export function LinkView({ link, embedded }: { link: LinkContent; embedded?: boo
       }
       if (message.kind === "answers") {
         /*
-         * 記録は **送りっぱなし**。`saveLinkAnswers` は 自分で 例外を 握るが、
-         * ここでも 受けて おく——`void` で 捨てた 約束が 落ちると、
-         * 画面にも コンソールにも 何も 出ない まま こたえが 消える。
+         * 学習は 待たせない。そのうえで **DB に 入った ときだけ**「とどいた」を 返す
+         *——ツールは 返事が 来るまで、開くたびに 送り直す。`saveLinkAnswers` は
+         * 自分で 例外を 握るが、ここでも 受けて おく（`void` で 捨てた 約束が 落ちると、
+         * 画面にも コンソールにも 何も 出ない まま こたえが 消える）。
          */
+        const { key } = message;
         void saveLinkAnswers({
           linkId: link.id,
           answers: parseLinkAnswers(message.answers),
-        }).catch(() => {
-          /* 記録できなくても 学習は 止めない */
-        });
+        })
+          .then((saved) => {
+            if (saved && key) reply(event.source, { type: SAVED_MESSAGE, id: link.id, key });
+          })
+          .catch(() => {
+            /* 記録できなくても 学習は 止めない（返事を 返さないので、次に 開いた とき 送り直す） */
+          });
+        return;
+      }
+      if (message.kind === "restore-request") {
+        // 別の 端末・別の URL で 開いた。前に 出した こたえが DB に あれば 戻す
+        void loadLinkAnswers(link.id)
+          .then((answers) => {
+            if (answers.length > 0) {
+              reply(event.source, { type: RESTORE_MESSAGE, id: link.id, answers });
+            }
+          })
+          .catch(() => {
+            /* 戻せなくても 書き直せば よい */
+          });
         return;
       }
       markDone();

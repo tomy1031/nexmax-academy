@@ -24,10 +24,35 @@ export const OWNS_DONE_MESSAGE = "nexmax:link-owns-done";
 /** 中のページが **学習者の 書いた もの**を 渡して くる 合図。 */
 export const ANSWERS_MESSAGE = "nexmax:link-answers";
 
+/**
+ * 中のページが「**前に 出した こたえが あれば ください**」と 頼む 合図。
+ * ページの 端末に 何も 残って いない（別の 端末・別の URL で 開いた）ときだけ 来る。
+ */
+export const RESTORE_REQUEST_MESSAGE = "nexmax:link-restore-request";
+
+/*
+ * ここから 下の 2つは **アプリ → 中のページ**（返事）。
+ *
+ * 中のページは 返事が 来るまで「先生に とどいた」と 思わない。以前は 送った 瞬間に
+ * 届いた ことに して いたので、受け手が いない とき（別の タブ・保存の 仕組みが
+ * 入る 前に 出した 人）の こたえが **二度と 送られず** DB に 1件も 残らなかった
+ *（2026-09-18 に 調査の こたえが 0件と 分かった）。
+ */
+
+/** DB に 入った（先生に とどいた）。`key` は 中のページが 付けた 札を そのまま 返す。 */
+export const SAVED_MESSAGE = "nexmax:link-answers-saved";
+
+/** 前に 出した こたえ（DB から 読んだ もの）。 */
+export const RESTORE_MESSAGE = "nexmax:link-restore";
+
+/** 返事に 付けて 返す 札の 長さの 上限（外から 来る ものなので 際限なく 受けない）。 */
+const MAX_KEY = 100;
+
 export type LinkMessage =
   | { readonly kind: "done" }
   | { readonly kind: "owns-done" }
-  | { readonly kind: "answers"; readonly answers: unknown };
+  | { readonly kind: "answers"; readonly answers: unknown; readonly key?: string }
+  | { readonly kind: "restore-request" };
 
 /**
  * この 教材あての 合図か。ちがえば `null`。
@@ -45,11 +70,17 @@ export function readLinkMessage(data: unknown, linkId: string): LinkMessage | nu
     if (typeof id === "string" && id !== linkId) return null;
     return { kind: "done" };
   }
-  // 下の 2つは **鍵と 記録**なので id を 必須に する
+  // ここから 下は **鍵と 記録**なので id を 必須に する
   if (id !== linkId) return null;
   if (type === OWNS_DONE_MESSAGE) return { kind: "owns-done" };
   if (type === ANSWERS_MESSAGE) {
-    return { kind: "answers", answers: (data as { answers?: unknown }).answers };
+    const { answers, key } = data as { answers?: unknown; key?: unknown };
+    // 札の 無い 古い ページも 受ける（記録は 残す。返事を 返さない だけ）
+    if (typeof key !== "string" || key === "" || key.length > MAX_KEY) {
+      return { kind: "answers", answers };
+    }
+    return { kind: "answers", answers, key };
   }
+  if (type === RESTORE_REQUEST_MESSAGE) return { kind: "restore-request" };
   return null;
 }

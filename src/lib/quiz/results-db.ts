@@ -128,11 +128,15 @@ export async function saveQuizResults({
  * `ignoreDuplicates: true` は必須。既定の upsert は ON CONFLICT DO UPDATE を生み、
  * update 権限を要求する——この表に update ポリシーは **わざと置いていない**ので、
  * 既定のままだと RLS に黙って全部落とされる。
+ *
+ * @returns DB に 入ったか。**入った ときだけ true**（行が 無い・デモモード・失敗は false）。
+ *   ツール教材は これを 見て「先生に とどいた」を 返す——届いて いない ものに
+ *   届いた 印を 付けると、二度と 送り直さない（2026-09-18 に 調査の こたえが 0件だった 原因）。
  */
-export async function insertQuizResultRows(rows: readonly QuizResultRow[]): Promise<void> {
-  if (rows.length === 0) return;
+export async function insertQuizResultRows(rows: readonly QuizResultRow[]): Promise<boolean> {
+  if (rows.length === 0) return false;
   const supabase = createClient();
-  if (!supabase) return;
+  if (!supabase) return false;
 
   const { error } = await supabase
     .from(TABLE)
@@ -143,5 +147,45 @@ export async function insertQuizResultRows(rows: readonly QuizResultRow[]): Prom
     // （try/catch で 囲んでも 入らない）。先生の 画面が 空のままなら、まず ここを 見る。
     // 学習者の 画面は 止めない（ここで throw しない）。
     console.warn("[quiz-results] 記録できませんでした:", error.message);
+    return false;
   }
+  return true;
+}
+
+/** 読み戻す ときの 1行（本人の 行だけ。RLS が 他人の 行を 返さない）。 */
+export type OwnQuizResultRow = Pick<
+  QuizResultRow,
+  "question_id" | "answer_text" | "attempt_id" | "created_at"
+>;
+
+/**
+ * 本人が 1つの 教材に 残した 行を、**新しい 順に** 読む。
+ *
+ * ツール教材（調査の ページ）の こたえは、ツールの 置き場（URL）と 端末ごとの
+ * localStorage にしか 無かった。別の 端末・別の URL で 開くと 空に 見え、
+ * 「書いた ものが 消えた」に なる。DB に 残した ものを ここから 戻す。
+ *
+ * @returns 読めなければ null（デモモード・未ログイン・失敗）。
+ */
+export async function readOwnQuizResultRows(
+  profileId: string,
+  quizSetId: string,
+): Promise<OwnQuizResultRow[] | null> {
+  const supabase = createClient();
+  if (!supabase) return null;
+
+  const { data, error } = await supabase
+    .from(TABLE)
+    .select("question_id, answer_text, attempt_id, created_at")
+    .eq("profile_id", profileId)
+    .eq("quiz_set_id", quizSetId)
+    .order("created_at", { ascending: false })
+    // 1回ぶんは 数行。直した 回数ぶん 遡れれば 足りる
+    .limit(50);
+
+  if (error) {
+    console.warn("[quiz-results] 読めませんでした:", error.message);
+    return null;
+  }
+  return (data ?? []) as OwnQuizResultRow[];
 }
