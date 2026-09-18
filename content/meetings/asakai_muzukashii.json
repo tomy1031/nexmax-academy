@@ -65,22 +65,47 @@
           "progress": [
             {
               "label": "学生一覧・検索",
+              "icon": "🔍",
+              "image": {
+                "src": "/img/articles/yuurei_nexttalent/task_ichiran.webp",
+                "status": "done"
+              },
               "state": "now"
             },
             {
               "label": "絞り込み",
+              "icon": "🎚️",
+              "image": {
+                "src": "/img/articles/yuurei_nexttalent/task_shiborikomi.webp",
+                "status": "done"
+              },
               "state": "now"
             },
             {
               "label": "学生詳細への 移動",
+              "icon": "👉",
+              "image": {
+                "src": "/img/articles/yuurei_nexttalent/task_idou.webp",
+                "status": "done"
+              },
               "state": "later"
             },
             {
               "label": "スキルグラフ",
+              "icon": "📊",
+              "image": {
+                "src": "/img/articles/yuurei_nexttalent/task_graph.webp",
+                "status": "done"
+              },
               "state": "later"
             },
             {
               "label": "スマホ対応・結合テスト",
+              "icon": "📱",
+              "image": {
+                "src": "/img/articles/yuurei_nexttalent/task_test.webp",
+                "status": "done"
+              },
               "state": "later"
             }
           ],
@@ -377,22 +402,47 @@
           "progress": [
             {
               "label": "学生一覧・検索",
+              "icon": "🔍",
+              "image": {
+                "src": "/img/articles/yuurei_nexttalent/task_ichiran.webp",
+                "status": "done"
+              },
               "state": "done"
             },
             {
               "label": "絞り込み",
+              "icon": "🎚️",
+              "image": {
+                "src": "/img/articles/yuurei_nexttalent/task_shiborikomi.webp",
+                "status": "done"
+              },
               "state": "done"
             },
             {
               "label": "学生詳細への 移動",
+              "icon": "👉",
+              "image": {
+                "src": "/img/articles/yuurei_nexttalent/task_idou.webp",
+                "status": "done"
+              },
               "state": "done"
             },
             {
               "label": "スキルグラフ",
+              "icon": "📊",
+              "image": {
+                "src": "/img/articles/yuurei_nexttalent/task_graph.webp",
+                "status": "done"
+              },
               "state": "now"
             },
             {
               "label": "スマホ対応・結合テスト",
+              "icon": "📱",
+              "image": {
+                "src": "/img/articles/yuurei_nexttalent/task_test.webp",
+                "status": "done"
+              },
               "state": "later"
             }
           ],
@@ -693,22 +743,47 @@
           "progress": [
             {
               "label": "学生一覧・検索",
+              "icon": "🔍",
+              "image": {
+                "src": "/img/articles/yuurei_nexttalent/task_ichiran.webp",
+                "status": "done"
+              },
               "state": "done"
             },
             {
               "label": "絞り込み",
+              "icon": "🎚️",
+              "image": {
+                "src": "/img/articles/yuurei_nexttalent/task_shiborikomi.webp",
+                "status": "done"
+              },
               "state": "done"
             },
             {
               "label": "学生詳細への 移動",
+              "icon": "👉",
+              "image": {
+                "src": "/img/articles/yuurei_nexttalent/task_idou.webp",
+                "status": "done"
+              },
               "state": "done"
             },
             {
               "label": "スキルグラフ",
+              "icon": "📊",
+              "image": {
+                "src": "/img/articles/yuurei_nexttalent/task_graph.webp",
+                "status": "done"
+              },
               "state": "now"
             },
             {
               "label": "スマホ対応・結合テスト",
+              "icon": "📱",
+              "image": {
+                "src": "/img/articles/yuurei_nexttalent/task_test.webp",
+                "status": "done"
+              },
               "state": "later"
             }
           ],
@@ -1066,22 +1141,47 @@
           "progress": [
             {
               "label": "学生一覧・検索",
+              "icon": "🔍",
+              "image": {
+                "src": "/img/articles/yuurei_nexttalent/task_ichiran.webp",
+                "status": "done"
+              },
               "state": "done"
             },
             {
               "label": "絞り込み",
+              "icon": "🎚️",
+              "image": {
+                "src": "/img/articles/yuurei_nexttalent/task_shiborikomi.webp",
+                "status": "done"
+              },
               "state": "done"
             },
             {
               "label": "学生詳細への 移動",
+              "icon": "👉",
+              "image": {
+                "src": "/img/articles/yuurei_nexttalent/task_idou.webp",
+                "status": "done"
+              },
               "state": "done"
             },
             {
               "label": "スキルグラフ",
+              "icon": "📊",
+              "image": {
+                "src": "/img/articles/yuurei_nexttalent/task_graph.webp",
+                "status": "done"
+              },
               "state": "done"
             },
             {
               "label": "スマホ対応・結合テスト",
+              "icon": "📱",
+              "image": {
+                "src": "/img/articles/yuurei_nexttalent/task_test.webp",
+                "status": "done"
+              },
               "state": "now"
             }
           ],
@@ -1393,22 +1493,47 @@
           "progress": [
             {
               "label": "学生一覧・検索",
+              "icon": "🔍",
+              "image": {
+                "src": "/img/articles/yuurei_nexttalent/task_ichiran.webp",
+                "status": "done"
+              },
               "state": "done"
             },
             {
               "label": "絞り込み",
+              "icon": "🎚️",
+              "image": {
+                "src": "/img/articles/yuurei_nexttalent/task_shiborikomi.webp",
+                "status": "done"
+              },
               "state": "done"
             },
             {
               "label": "学生詳細への 移動",
+              "icon": "👉",
+              "image": {
+                "src": "/img/articles/yuurei_nexttalent/task_idou.webp",
+                "status": "done"
+              },
               "state": "done"
             },
             {
               "label": "スキルグラフ",
+              "icon": "📊",
+              "image": {
+                "src": "/img/articles/yuurei_nexttalent/task_graph.webp",
+                "status": "done"
+              },
               "state": "done"
             },
             {
               "label": "スマホ対応・結合テスト",
+              "icon": "📱",
+              "image": {
+                "src": "/img/articles/yuurei_nexttalent/task_test.webp",
+                "status": "done"
+              },
               "state": "done"
             }
           ],
