@@ -133,6 +133,8 @@ describe("報告の 途中", () => {
     probes: 1,
     askedId: "shinchoku",
     lines: [{ who: "ヘンディ", speakerId: "hendy", text: "おはよう ございます。" }],
+    /* 送った ことばも 控えに 入れる（開き直した ときに 札を 押せる ように）。 */
+    log: [{ question: "", answer: "先週の 金曜日は…", heard: true, opened: 1 }],
   });
 
   it("書いた 途中が そのまま 戻る", () => {
