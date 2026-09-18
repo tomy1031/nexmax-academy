@@ -129,7 +129,7 @@ export function draftAnswered(question: QuizQuestion, draft: QuizDraft | undefin
       return draft.input.trim().length > 0;
     case "ranklist":
       // 1行でも 書けば「こたえた」（いくつ 書くかは 人に よって ちがう）
-      return draft.rows.some((v) => v.trim().length > 0);
+      return visibleRows(question, draft.rows).some((v) => v.trim().length > 0);
   }
 }
 
@@ -229,7 +229,9 @@ export function gradeDraft(question: QuizQuestion, draft: QuizDraft | undefined)
      */
     case "ranklist": {
       if (draft.kind !== "ranklist") return blank;
-      const written = draft.rows.map((v) => v.trim()).filter((v) => v !== "");
+      const written = visibleRows(question, draft.rows)
+        .map((v) => v.trim())
+        .filter((v) => v !== "");
       if (written.length === 0) return blank;
       return {
         correct: true,
@@ -422,6 +424,57 @@ export function correctAnswerText(question: QuizQuestion): string {
     case "ranklist":
       return "";
   }
+}
+
+/**
+ * 画面に 出る 行だけ（`max` まで）。
+ *
+ * 先生が あとから 上限を 下げると、端末の 下書きには 見えない 行が 残る。
+ * 見えない 行を 数えたり 記録に 入れたり しない（学習者が 直せない ものを 出さない）。
+ */
+function visibleRows(question: QuizQuestion, rows: readonly string[]): readonly string[] {
+  return question.type === "ranklist" ? rows.slice(0, question.max) : rows;
+}
+
+/**
+ * 自由記述で 書いた 並びを 行に 分ける（`1. 社長　2. 部長`・`社長、部長`・改行 区切り）。
+ *
+ * 階級の 問いは 2026-09-18 の 夕方まで 自由記述（型文「1. ◯◯　2. ◯◯ …」）だった。
+ * その 間に 書いて まだ 出して いない 人の 下書きを、行の 入力に 移す ため に 使う。
+ */
+export function rowsFromFreeText(text: string): string[] {
+  return (
+    text
+      // 半角の 空白で つないだ 番号つき（「1. 社長 2. 部長」）は 番号の 前で 切る。
+      // 番号の ない 空白（「代表 取締役」）は 1つの 名前なので 切らない
+      .replace(/\s+(?=(?:（\d+）|\(\d+\)|\d+\s*[.．)）:：]))/g, "\n")
+      .split(/[\n\r　、,，→]+/)
+      .map((part) => part.replace(/^\s*(?:（\d+）|\(\d+\)|\d+\s*[.．)）:：]?)\s*/, "").trim())
+      .filter((part) => part !== "")
+  );
+}
+
+/**
+ * 端末に 残って いた 下書きを、いまの 問いの 型に 合わせる。
+ *
+ * **自由記述 → じゅんばんに ならべて 書く** に 変えた 問いの 下書きは、そのままでは
+ * 型が 合わずに 捨てられる（`draftFits`）。書いた ものが それ だけ だと、画面を 開いた
+ * 瞬間に「0もん」と 数えられて 端末から 消される（`quiz-runner` の 保存）。
+ * ここで 行に 分けて 残す。ほかの 組み合わせは 触らない（合わない ものは これまでどおり 捨てる）。
+ */
+export function upgradeDrafts(
+  questions: readonly QuizQuestion[],
+  drafts: Readonly<Record<string, QuizDraft>>,
+): Record<string, QuizDraft> {
+  const out: Record<string, QuizDraft> = { ...drafts };
+  for (const question of questions) {
+    const draft = drafts[question.id];
+    if (question.type !== "ranklist" || draft?.kind !== "free") continue;
+    const rows = rowsFromFreeText(draft.input).slice(0, question.max);
+    if (rows.length === 0) delete out[question.id];
+    else out[question.id] = { kind: "ranklist", rows };
+  }
+  return out;
 }
 
 /**
