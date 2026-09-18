@@ -899,6 +899,18 @@ test("報告した あと、⭕ で ない 札を 押すと もう いちど 聞
   await expectOnScreen(page, "こたえが 伝わりました");
   expect(await bareKanjiTexts(page)).toEqual([]);
   await shot(page, "asakai-13-card-retry");
+
+  /*
+   * **開き直しても 押せる まま。** 押せるかは「1本 送ったか」で 決めて いて、
+   * その 控えを 端末に 残して いなかった ころ、リロード直後だけ ↻ が 消えて
+   * **打ち切られた すぐ あとに やり直せない**（画面に 理由も 出ない）
+   *（2026-09-18 の 通しプレイ検収）。
+   */
+  await probe.getByRole("button", { name: /つぎの しつもん|みんなの 報告/ }).click();
+  await page.reload();
+  await joinCall(page);
+  await closeDuty(page);
+  await expect(page.getByRole("button", { name: /を もう いちど 言う/ }).first()).toBeVisible();
 });
 
 /**
@@ -934,6 +946,21 @@ test("きょうの 評価に 自分の 回答・正しい 回答・まとめが 
   await expectOnScreen(page, "項目ごとの 正しい 回答");
   await expectOnScreen(page, "ブラッシュアップ回答");
   expect(await bareKanjiTexts(page)).toEqual([]);
+
+  /*
+   * **「回答」が「かいこた」に なって いない。**
+   *
+   * 教材の 辞書に ["回","かい"] と ["答","こた"] が ある ので、ことばで 持たないと
+   * 1字ずつに 割れる——**裸の 漢字では ない**ので 上の 検査も `lint:content` も
+   * すり抜ける（2026-09-18 の 通しプレイ検収）。読みが「ある」が「ちがう」型。
+   */
+  const readings = await page.evaluate(() =>
+    [...document.querySelectorAll('[role="dialog"] rt')]
+      .map((rt) => rt.textContent ?? "")
+      .join("／"),
+  );
+  expect(readings, "「回答」が 1字ずつに 割れて いる").not.toContain("かいこた");
+  expect(readings).toContain("かいとう");
   await shot(page, "asakai-14-day-review");
 
   /* 閉じてから 司会の 受け止め → 指名 → メンバー。 */

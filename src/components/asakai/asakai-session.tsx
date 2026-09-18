@@ -214,6 +214,15 @@ const UI_FURIGANA: readonly (readonly [string, string])[] = [
   ["直す", "なおす"],
   ["直しましょう", "なおしましょう"],
   ["内容", "ないよう"],
+  /*
+   * **1字の 登録に 割られない ように、ことばで 持つ。**
+   * 教材の 辞書には ["回","かい"] と ["答","こた"] が あるので、
+   * 「回答」は **「かいこた」**と 読まれて いた——裸の 漢字では ない ので
+   * `lint:content` も e2e も すり抜ける（2026-09-18 の 通しプレイ検収）。
+   * きょうの 評価は 毎日 自動で 開く ので、5日 ぜんぶで 出て いた。
+   */
+  ["ブラッシュアップ回答", "ブラッシュアップかいとう"],
+  ["回答", "かいとう"],
   ["項目ごとの", "こうもくごとの"],
   ["項目", "こうもく"],
   ["効くのは", "きくのは"],
@@ -556,8 +565,9 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
       probes,
       askedId,
       lines: [...lines],
+      log: [...probeLog],
     });
-  }, [scene, panels, phase, states, attempts, probes, askedId, lines, meeting.id]);
+  }, [scene, panels, phase, states, attempts, probes, askedId, lines, probeLog, meeting.id]);
 
   /**
    * 作業記録の 行。**夕礼だけ 中身が ある**——朝礼の カードは
@@ -610,6 +620,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
         setAttempts(draft.attempts);
         setProbes(draft.probes);
         setAskedId(draft.askedId);
+        setProbeLog(draft.log);
         setDuty(true);
         return;
       }
