@@ -264,14 +264,25 @@ function TaskPicture({
 export function CardBoard({
   cards,
   index,
+  onPick,
 }: {
   cards: readonly {
     id: string;
     label: string;
     state: CardState;
     boxes?: readonly { label: string; state: CardState }[];
+    /** 押すと もう いちど 聞いて もらえる（⭕ で ない 札・1本 送った あと）。 */
+    retry?: boolean;
   }[];
   index: FuriganaIndex;
+  /**
+   * 札を 押した とき（2026-09-18 の 指定「報告の カードは、初回回答後は
+   * クリック可能に して、不正解の ものを やり直しできる」）。
+   *
+   * 司会の 聞き返しを 待つ しか なかった ころ、2回 まちがえて 打ち切られた 札は
+   * その日 二度と 開けなかった。**学習者から 開き直せる** ように する。
+   */
+  onPick?: (id: string) => void;
 }) {
   /*
    * **⭕ の 数だけを 数える**（2026-09-11）。
@@ -301,6 +312,11 @@ export function CardBoard({
         <span className="text-ink-soft ml-2 text-xs font-bold">
           ❓ <RubyText text="まだ 言う ことが あります" index={index} show />
         </span>
+        {cards.some((card) => card.retry) && onPick ? (
+          <span className="text-sky-deep ml-2 block text-xs font-bold">
+            ↻ <RubyText text="カードを 押すと、もう いちど 聞いて もらえます" index={index} show />
+          </span>
+        ) : null}
       </p>
       <ul className="grid grid-cols-2 gap-1.5 sm:grid-cols-4">
         {cards.map((card) => {
@@ -308,9 +324,28 @@ export function CardBoard({
           return (
             <li
               key={card.id}
-              className="text-navy relative min-h-[72px] rounded-xl border-2 px-1.5 py-4 text-center"
+              className={`text-navy relative min-h-[72px] rounded-xl border-2 px-1.5 py-4 text-center ${
+                card.retry && onPick ? "cursor-pointer" : ""
+              }`}
               style={{ background: face.face, borderColor: face.edge }}
             >
+              {/*
+                押せる 面は **札 まるごと**（小さな ボタンを 足すと 指で 外す）。
+                字は そのまま 見えて いて、読み上げの 名前だけ ボタンが 持つ。
+              */}
+              {card.retry && onPick ? (
+                <button
+                  type="button"
+                  onClick={() => onPick(card.id)}
+                  aria-label={`${card.label}を もう いちど 言う`}
+                  className="absolute inset-0 z-10 rounded-xl"
+                />
+              ) : null}
+              {card.retry && onPick ? (
+                <span aria-hidden className="text-sky-deep absolute right-1 bottom-0.5 text-[10px]">
+                  ↻
+                </span>
+              ) : null}
               <span
                 aria-hidden
                 className="absolute -top-1.5 -left-1.5 grid h-5 w-5 place-items-center rounded-full text-[10px] font-black text-white"

@@ -51,6 +51,14 @@ export interface RowView {
    * 言った ことは ポップアップの 中で **1回だけ**（`utterance`）出す。
    */
   readonly advice: string;
+  /**
+   * **その 札の 正しい 回答**（教材の 見本）。その日の ふりかえりにだけ 出す。
+   *
+   * 2026-09-18 の 指定「各項目に ついて、正しい 回答を 表示して ください」。
+   * 練習の 途中では 出さない——写して 終わりに なる（答えを 見せない の 決まり）。
+   * 日が 終わった あとの ふりかえりは、見くらべる 場なので 別。
+   */
+  readonly example: string;
 }
 
 const MARK_FACE: Record<RowMark, { readonly mark: string; readonly cls: string }> = {
@@ -210,6 +218,26 @@ function MarkRow({
   );
 }
 
+/**
+ * **ブラッシュアップ** — こたえを 職場の 日本語に 書き直した もの（AIの ことば）。
+ *
+ * 2026-09-18 の 指定「あなたの 報告の 下に『ブラッシュアップ』より よい 日本語を
+ * 入れて ください。あなたの 回答を ベースに 作成して ください。言ってない 言葉は
+ * 補わないで」。**中身を 足さない**のが 要——補うと、言えて いない ことに
+ * 気づけない まま「これで よかった」と 読む（規律1）。
+ */
+function Polish({ text, index }: { text: string; index: FuriganaIndex }) {
+  if (text === "") return null;
+  return (
+    <div className="border-sky-deep bg-sky-soft mt-2 rounded-xl border-2 px-3 py-2">
+      <Cap text="✨ ブラッシュアップ（より よい 日本語）" index={index} tone="text-sky-deep" />
+      <p className="text-navy mt-0.5 text-sm leading-[1.9] font-bold">
+        <Ruby text={text} index={index} />
+      </p>
+    </div>
+  );
+}
+
 /** よかった こと ／ アドバイス（どちらも AIの ことば。無ければ 出さない）。 */
 function GoodAdvice({
   good,
@@ -286,6 +314,7 @@ export function ReportScoreModal({
   rows,
   good,
   advice,
+  polished,
   fixes,
   readLog,
   nextLabel,
@@ -298,6 +327,8 @@ export function ReportScoreModal({
   rows: readonly RowView[];
   good: string;
   advice: string;
+  /** こたえを 職場の 日本語に 書き直した もの（無ければ 出さない）。 */
+  polished: string;
   fixes: readonly AsakaiFix[];
   /** 夕礼で 作業記録を そのまま 読み上げて いた（この ぶんは 数えて いない）。 */
   readLog: boolean;
@@ -355,6 +386,7 @@ export function ReportScoreModal({
           <Ruby text={utterance} index={index} />
         </p>
       </div>
+      <Polish text={polished} index={index} />
 
       {/*
         **読み上げを 差し戻した ターンは、札ごとの 直しを 出さない。**
@@ -402,6 +434,7 @@ export function ProbeScoreModal({
   answer,
   good,
   advice,
+  polished,
   fixes,
   nextLabel,
   rest,
@@ -422,6 +455,8 @@ export function ProbeScoreModal({
    * 「言い直す」の 直前**に 何も 無かった（2026-09-17 の R5 再検収）。
    */
   advice: string;
+  /** こたえを 職場の 日本語に 書き直した もの（無ければ 出さない）。 */
+  polished: string;
   fixes: readonly AsakaiFix[];
   /** とじる ボタンの 字（つぎの しつもん／みんなの 報告を 聞く）。 */
   nextLabel: string;
@@ -508,6 +543,8 @@ export function ProbeScoreModal({
         </div>
       </div>
 
+      <Polish text={polished} index={index} />
+
       <FixList fixes={fixes} index={index} />
       <GoodAdvice good={good} advice={advice} index={index} />
 
@@ -575,6 +612,11 @@ export function DayScoreModal({
   onClose: () => void;
 }) {
   const shut = rows.filter((row) => row.mark === "missing").length;
+  /** 1回に まとめた お手本（教材の 札の 見本を つないだ もの）。 */
+  const brushUp = rows
+    .map((row) => row.example)
+    .filter((one) => one !== "")
+    .join("");
   return (
     <ModalShell
       label="今日の 評価"
@@ -611,9 +653,15 @@ export function DayScoreModal({
 
       <MarkRow rows={rows} words={DAY_WORD} index={index} />
 
+      {/*
+        **「あなたの 回答」**（2026-09-18 の 指定）。前は「しつもんと こたえの ふりかえり」で、
+        **聞き返しへの こたえしか 出て いなかった**——1本目で うまく 言えた 人の
+        できた ことが ふりかえりから 消えて いた。いまは その日 送った ことば ぜんぶ。
+        1本目は しつもんが 無いので「さいしょの 報告」と 置く。
+      */}
       {probes.length > 0 ? (
         <div className="mt-3">
-          <Cap text="しつもんと こたえの ふりかえり" index={index} />
+          <Cap text="あなたの 回答" index={index} />
           <ul className="mt-1 space-y-2">
             {probes.map((one, at2) => (
               <li
@@ -621,7 +669,11 @@ export function DayScoreModal({
                 className="border-hairline bg-panel rounded-xl border px-3 py-2 sm:flex sm:gap-3"
               >
                 <p className="text-ink-soft text-[11px] leading-[1.9] font-black sm:w-40 sm:shrink-0">
-                  {at2 + 1}. <Ruby text={one.question} index={index} />
+                  {at2 + 1}.{" "}
+                  <Ruby
+                    text={one.question !== "" ? one.question : "さいしょの 報告"}
+                    index={index}
+                  />
                 </p>
                 <div className="min-w-0 flex-1">
                   <p className="text-navy text-sm leading-[1.9] font-bold">
@@ -642,6 +694,47 @@ export function DayScoreModal({
               </li>
             ))}
           </ul>
+        </div>
+      ) : null}
+
+      {/*
+        **項目ごとの 正しい 回答**（同じ 指定）。日が 終わった あとの ふりかえりは
+        見くらべる 場なので、ここでは お手本を 出す——練習の 途中では 出さない
+        （答えを 写して 終わりに なる）。ことばは 教材の 見本 そのまま。
+      */}
+      {rows.some((row) => row.example !== "") ? (
+        <div className="mt-3">
+          <Cap text="項目ごとの 正しい 回答" index={index} />
+          <ul className="mt-1 space-y-2">
+            {rows
+              .filter((row) => row.example !== "")
+              .map((row) => (
+                <li
+                  key={`ex/${row.id}`}
+                  className="border-hairline bg-panel rounded-xl border px-3 py-2 sm:flex sm:gap-3"
+                >
+                  <p className="text-ink-soft min-w-0 text-[11px] leading-[1.9] font-black sm:w-40 sm:shrink-0">
+                    {MARK_FACE[row.mark].mark} <Ruby text={row.label} index={index} />
+                  </p>
+                  <p className="text-navy min-w-0 flex-1 text-sm leading-[1.9] font-bold">
+                    <Ruby text={row.example} index={index} />
+                  </p>
+                </li>
+              ))}
+          </ul>
+        </div>
+      ) : null}
+
+      {brushUp !== "" ? (
+        <div className="border-sky-deep bg-sky-soft mt-3 rounded-xl border-2 px-3 py-2">
+          <Cap
+            text="✨ ブラッシュアップ回答（1回に まとめた 形）"
+            index={index}
+            tone="text-sky-deep"
+          />
+          <p className="text-navy mt-0.5 text-sm leading-[1.9] font-bold">
+            <Ruby text={brushUp} index={index} />
+          </p>
         </div>
       ) : null}
 

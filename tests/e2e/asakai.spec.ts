@@ -278,16 +278,16 @@ test("朝礼（かんたん）— 報告すると カードが 開く", async ({
   expect(await bareKanjiTexts(page)).toEqual([]);
   await page.getByRole("button", { name: "みんなの 報告を 聞く" }).click();
 
-  /* 4枚 そろったので 聞き返しが 無く、その 場面は おわる。 */
+  /*
+   * 4枚 そろったので 聞き返しが 無く、その 場面は おわる。
+   * **きょうの 評価は 自動で 開く**（2026-09-18 の 指定）——前は
+   *「きょうの けっかを 見る ▶」を 押すまで 出ず、その あいだに 4人ぶんの
+   * 報告が 流れて、自分の 点が 遠ざかって いた。
+   */
   await expect(page.getByText("（4 / 4）")).toBeVisible();
-  const owari = page.getByRole("button", { name: /けっかを 見る/ });
-  await expect(owari).toBeVisible();
+  await expect(page.getByRole("dialog", { name: "今日の 評価" })).toBeVisible();
   await shot(page, "asakai-03-kantan-opened");
 
-  expect(await bareKanjiTexts(page)).toEqual([]);
-
-  /* その日の 評価（モーダル） → 時間カード → 火曜日へ。 */
-  await owari.click();
   await expectOnScreen(page, "きょうの 評価");
   await expectOnScreen(page, "どのように 伝えられたか");
   /* 鍵ゼロの 端末では 内容だけ 出す（見て いない ものに 0点を つけない）。 */
@@ -550,7 +550,6 @@ test("月曜を 終えて 開き直すと、火曜から つづく", async ({ pa
     );
   await page.getByRole("button", { name: "おくる" }).click();
   await page.getByRole("button", { name: "みんなの 報告を 聞く" }).click();
-  await page.getByRole("button", { name: /けっかを 見る/ }).click();
   await closeDayScore(page);
   await expectOnScreen(page, "月曜日の 朝礼 おわり");
 
@@ -606,7 +605,6 @@ test("5日 通すと、合否と 数が 読める", async ({ page, context }) =>
     await page.getByLabel("こたえを 入力する").fill(utterance);
     await page.getByRole("button", { name: "おくる" }).click();
     await page.getByRole("button", { name: "みんなの 報告を 聞く" }).click();
-    await page.getByRole("button", { name: /けっかを 見る/ }).click();
     await closeDayScore(page);
     if (day < 4) {
       await page.getByRole("button", { name: /つづけます/ }).click();
@@ -744,7 +742,6 @@ test("もう いちど 報告すると、その日が はじめから やり直�
       );
     await page.getByRole("button", { name: "おくる" }).click();
     await page.getByRole("button", { name: "みんなの 報告を 聞く" }).click();
-    await page.getByRole("button", { name: /けっかを 見る/ }).click();
   };
 
   await page.goto("/asakai/meeting-asakai_kantan");
@@ -813,7 +810,6 @@ test("さいごの 1枚の ポップアップに 言い直すは 出ない", asy
 
   /* 閉じる 道は 1つ。ここを 通って はじめて 司会が 受け止める。 */
   await probe.getByRole("button", { name: /みんなの 報告を 聞く/ }).click();
-  await page.getByRole("button", { name: /けっかを 見る/ }).click();
   await closeDayScore(page);
 
   /* しおりに 月曜が 残る＝開き直しても 火曜から つづく。 */
@@ -868,4 +864,80 @@ test("2回 まちがえた 札は、残りの 一覧から 消える", async ({ 
   expect(after, "打ち切った 札を 残りに 並べない").not.toContain("まだ言えていないところ:進捗");
   expect(await bareKanjiTexts(page)).toEqual([]);
   await shot(page, "asakai-12-gave-up-card");
+});
+
+/**
+ * **札を 押すと、その 1枚を もう いちど 聞いて もらえる**（2026-09-18 の 指定）
+ *
+ * 司会の 聞き返しを 待つ しか なかった ころ、2回 まちがえて 打ち切られた 札は
+ * その日 二度と 開けなかった——正しい ことばを 思い出しても 行き場が 無い。
+ */
+test("報告した あと、⭕ で ない 札を 押すと もう いちど 聞かれる", async ({ page, context }) => {
+  const refs = stageRefs();
+  const at = refs.indexOf("asakai_kantan");
+  await seedCompleted(context, refs.slice(0, at));
+
+  await page.goto("/asakai/meeting-asakai_kantan");
+  await joinCall(page);
+  await closeDuty(page);
+
+  /* 1本目は「きのう」だけ。まだ 押せない 札が 3枚 のこる。 */
+  await page
+    .getByLabel("こたえを 入力する")
+    .fill("先週の 金曜日は、決済の 決まりを 調べて、決済の 画面と ABA Payの ボタンを 作りました。");
+  await page.getByRole("button", { name: "おくる" }).click();
+  await page.getByRole("dialog", { name: "報告の 見かた" }).getByRole("button").last().click();
+
+  /* 「問題・確認」を 押す → 司会が その 札の しつもんを する。 */
+  await page.getByRole("button", { name: /問題・確認を もう いちど 言う/ }).click();
+  await expectOnScreen(page, "問題は ありますか");
+
+  await page.getByLabel("こたえを 入力する").fill("今の ところ 問題は ありません。");
+  await page.getByRole("button", { name: "おくる" }).click();
+  const probe = page.getByRole("dialog", { name: "追加の しつもんへの こたえ" });
+  await expect(probe).toBeVisible();
+  await expectOnScreen(page, "こたえが 伝わりました");
+  expect(await bareKanjiTexts(page)).toEqual([]);
+  await shot(page, "asakai-13-card-retry");
+});
+
+/**
+ * **きょうの 評価の 中身**（2026-09-18 の 指定）
+ *
+ * 「あなたの 回答」に **1本目も** 並ぶ（できた ことが ふりかえりから 消えない）。
+ * 項目ごとの 正しい 回答と、1回に まとめた「ブラッシュアップ回答」も 読める。
+ * 閉じた あとに 司会の 受け止めと **指名**が 出て、メンバーが 話しはじめる。
+ */
+test("きょうの 評価に 自分の 回答・正しい 回答・まとめが 並ぶ", async ({ page, context }) => {
+  const refs = stageRefs();
+  const at = refs.indexOf("asakai_kantan");
+  await seedCompleted(context, refs.slice(0, at));
+
+  await page.goto("/asakai/meeting-asakai_kantan");
+  await joinCall(page);
+  await closeDuty(page);
+  await page
+    .getByLabel("こたえを 入力する")
+    .fill(
+      "先週の 金曜日は、決済の 決まりを 調べて、決済の 画面と ABA Payの ボタンを 作りました。" +
+        "今、決済フロントエンド機能 ぜんたいの 進捗は 20%です。" +
+        "きょうは、注文IDと 合計金額を 画面に 出します。" +
+        "今の ところ 問題は ありません。",
+    );
+  await page.getByRole("button", { name: "おくる" }).click();
+  await page.getByRole("button", { name: "みんなの 報告を 聞く" }).click();
+
+  const day = page.getByRole("dialog", { name: "今日の 評価" });
+  await expect(day).toBeVisible();
+  await expectOnScreen(page, "あなたの 回答");
+  await expectOnScreen(page, "さいしょの 報告");
+  await expectOnScreen(page, "項目ごとの 正しい 回答");
+  await expectOnScreen(page, "ブラッシュアップ回答");
+  expect(await bareKanjiTexts(page)).toEqual([]);
+  await shot(page, "asakai-14-day-review");
+
+  /* 閉じてから 司会の 受け止め → 指名 → メンバー。 */
+  await closeDayScore(page);
+  await expectOnScreen(page, "では 次は 奥田さん、お願いします。");
+  expect(await bareKanjiTexts(page)).toEqual([]);
 });

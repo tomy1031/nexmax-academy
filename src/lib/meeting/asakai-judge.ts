@@ -84,13 +84,28 @@ export const ASAKAI_TOOL = {
           good: {
             type: "STRING",
             description:
-              "よかった ところ（1つ・1文）。**学生が 実際に 言った こと**だけを 具体的に 書く。" +
-              "名指しできる ことが 無ければ 空の 文字列。がんばりました の ような 中身の 無い ことばは 書かない。",
+              "**言い方の どこが よかったか**（1つ・1文）。学生が 書いた ことばを 引いて、" +
+              "なぜ それが 職場で 通じる 言い方なのかを 言う" +
+              "（例:「『〜ました』で 終わって いるので、報告だと すぐ 分かります。」）。" +
+              "**言った ことの 要約は 書かない**（「〜を 伝えます」は よかった ことでは ない）。" +
+              "どうしても 名指しできる ことが 無い ときだけ 空の 文字列。",
           },
           advice: {
             type: "STRING",
             description:
-              "つぎに 直す こと（1つ・1文）。何を どう 言えば よいかを 書く。無ければ 空の 文字列。",
+              "**日本語の 直しかた**（1つ・1文）。ことばが 足りない・文に なって いない・" +
+              "ていねいさが 足りない ところを 名指しして、どう 言えば よいかを 言う" +
+              "（例:「数字だけでは 何の 数か 分かりません。『〜の 進捗は 20%です。』と 文に しましょう。」）。" +
+              "**内容を 足せ とは 言わない**——足りない 中身の 指摘は アプリが 別に 出す。" +
+              "直す ところが 無い ときだけ 空の 文字列。",
+          },
+          polished: {
+            type: "STRING",
+            description:
+              "学生の こたえを **職場で 通じる 日本語に 書き直した もの**（1文か 2文）。" +
+              "**学生が 言って いない 中身は 1つも 足さない**" +
+              "（数・機能の 名前・予定を 勝手に 補わない。言って いない ものは 書かない）。" +
+              "直す ところが 無ければ、学生の 文を そのまま 書く。",
           },
           fixes: {
             type: "ARRAY",
@@ -107,7 +122,14 @@ export const ASAKAI_TOOL = {
             },
           },
         },
-        required: ["saidIds", "readsLog"],
+        /*
+         * **見た ものは ぜんぶ 返して もらう**（2026-09-18 の 指定）。
+         *
+         * `clarity` / `japanese` / `good` / `advice` / `polished` を 任意に して いた ころ、
+         * 返って こない 回が あり、同じ 練習の 中で「日本語: そのままで いいです」と
+         *「日本語: 見て いません」が 混ざって いた。空で よいかは 説明文の 側で 決める。
+         */
+        required: ["saidIds", "readsLog", "clarity", "japanese", "good", "advice", "polished"],
       },
     },
   ],
@@ -207,16 +229,31 @@ export function buildAsakaiJudgePrompt(context: AsakaiJudgeContext): string {
     "  N5〜N4 の 学生として 見ます。通じて いる 文を 短く する ため・自然に する ためだけに 減らしません",
     "  教材の 3段を 点に すると: **natural は 25〜30 / rough は 15〜24 / hard は 0〜14**",
     "",
-    "# ことば（good・advice・fixes）",
-    "- good … 学生が **実際に 言った こと**を 1つ、具体的に。無ければ 空に します",
-    "- advice … つぎに 直す ことを 1つ。何を どう 言えば よいかまで 書きます",
-    "- fixes … 日本語の 直しを **1つだけ**。said（言った ところ）→ natural（自然な 言い方）と、",
-    "  note（なぜ そう 言うか）を やさしい ことばで 1文。直す ところが 無ければ 空の 配列",
-    "- **学生の 中身を 足しません**。言って いない ことを 直しの 中に 入れない",
+    "# ことば（good・advice・polished・fixes）",
+    "**4つとも 見るのは 日本語です。**中身が 足りるか どうかは アプリが 別に 数えるので、",
+    "ここで「〜も 報告しましょう」と 中身を 足させないで ください。",
+    "",
+    "- good … **言い方の どこが よかったか**。学生の ことばを 引いて、なぜ 職場で 通じるのかを 1文",
+    "  例:「『作りました』と 終わって いるので、終わった 仕事だと すぐ 分かります。」",
+    "  **言った ことの 要約は good では ありません**（「〜を 伝えます」は 書かない）",
+    "- advice … **日本語の 直しかた**を 1文。名指しして、どう 言えば よいかまで 書きます",
+    "  例:「数字だけでは 何の 数か 分かりません。『〜の 進捗は 20%です。』と 文に しましょう。」",
+    "- polished … 学生の こたえを **職場で 通じる 日本語に 書き直した もの**（1文か 2文）",
+    "  **言って いない 中身は 1つも 足しません**。数・機能の 名前・予定を 勝手に 補わない",
+    "  直す ところが 無ければ、学生の 文を そのまま 書きます",
+    "- fixes … said（言った ところ）→ natural（自然な 言い方）＋ note（なぜ）を **1つだけ**。",
+    "  直す ところが 無ければ 空の 配列",
+    "",
+    "## 学生の こたえが **1語や 数字だけ**の とき",
+    "「20%」「ないよ〜」の ように、聞かれた ことには 当たって いても **文に なって いない**",
+    "こたえが あります。中身は 通って いても、これは 職場の 報告では ありません。",
+    "- japanese を 低く つけます（hard の 幅）",
+    "- advice に「文に する」直しかたを 書きます",
+    "- polished に **その 数・その ことばを 使った 1文**を 書きます（中身は 足さない）",
   );
 
   /*
-   * **good・advice・fixes は 画面に そのまま 出る**（`asakai-score-modal.tsx`）。
+   * **good・advice・polished・fixes は 画面に そのまま 出る**（`asakai-score-modal.tsx`）。
    *
    * ここに ふりがなは 付けられない——読み辞書は 教材の 文の ために 作って あり、
    * AIが その場で 書いた 文には 届かない。だから 漢字を **一覧の ことばだけ**に
@@ -229,7 +266,7 @@ export function buildAsakaiJudgePrompt(context: AsakaiJudgeContext): string {
    */
   lines.push(
     "",
-    "# 学生が 読む ことばの 書きかた（good・advice・fixes）",
+    "# 学生が 読む ことばの 書きかた（good・advice・polished・fixes）",
     "- つかえる 漢字は **つぎの ことばだけ**です。",
     `  ${AI_KANJI_WORDS.join("・")}`,
     "  この 一覧に 無い ことばは **ひらがな**で 書いて ください。",
@@ -263,6 +300,13 @@ export interface AsakaiJudgeResult {
   readonly japanese: number | null;
   readonly good: string;
   readonly advice: string;
+  /**
+   * 学習者の こたえを **職場で 通じる 日本語に 書き直した もの**（ブラッシュアップ）。
+   *
+   * 2026-09-18 の 指定。**言って いない 中身は 足さない**——補うと、
+   * 学習者は 自分が 言えて いない ことに 気づけない まま「これで よかった」と 読む。
+   */
+  readonly polished: string;
   readonly fixes: readonly AsakaiFix[];
 }
 
@@ -274,6 +318,7 @@ export const NO_JUDGE: AsakaiJudgeResult = {
   japanese: null,
   good: "",
   advice: "",
+  polished: "",
   fixes: [],
 };
 
@@ -304,6 +349,7 @@ export function parseAsakaiJudge(
     japanese?: unknown;
     good?: unknown;
     advice?: unknown;
+    polished?: unknown;
     fixes?: unknown;
   };
   /*
@@ -337,6 +383,7 @@ export function parseAsakaiJudge(
     japanese: clampScore(bag.japanese, JAPANESE_MAX),
     good: text(bag.good),
     advice: text(bag.advice),
+    polished: text(bag.polished),
     fixes,
   };
 }
