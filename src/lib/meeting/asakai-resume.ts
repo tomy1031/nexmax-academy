@@ -86,12 +86,30 @@ const panelStateSchema = z.object({
   gaveUp: z.boolean().default(false),
 });
 
+/**
+ * その日 送った ことば 1本（きょうの 評価の「あなたの 回答」に 並ぶ）。
+ *
+ * **控えに 入れる**（2026-09-18 の 通しプレイ検収）。持って いなかった ころ、
+ * 開き直した 直後は 空に 戻り、**❌ の 札が 押せなく なって いた**
+ *（押せるかは「1本 送ったか」で 決めて いる）——打ち切られた すぐ あとに
+ * やり直したい 人が、そこだけ 行き止まりに なる。ふりかえりの 中身も 消えて いた。
+ */
+const sayLogSchema = z.object({
+  question: z.string().default(""),
+  answer: z.string().default(""),
+  heard: z.boolean().default(false),
+  opened: z.number().int().min(0).optional(),
+  /** この 1本で 進んだ 札の id（「あなたの 答え」を 項目ごとに 引くため）。 */
+  panels: z.array(z.string()).optional(),
+});
+
 const asakaiDraftSchema = z.object({
   states: z.array(panelStateSchema).default([]),
   attempts: z.record(z.string(), z.number().int().min(0)).default({}),
   probes: z.number().int().min(0).default(0),
   askedId: z.string().nullable().default(null),
   lines: z.array(chatLineSchema).default([]),
+  log: z.array(sayLogSchema).default([]),
 });
 
 export type AsakaiDraft = z.infer<typeof asakaiDraftSchema>;
