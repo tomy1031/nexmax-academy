@@ -111,7 +111,7 @@ test("調査（リサーチ）: 4問が 1ページに 出て、ぜんぶ 書く�
   await expect(page.getByText("はなす じゅんび", { exact: true })).toHaveCount(0);
   await expect(page.getByText(/じゅんび できました/)).toHaveCount(0);
   await expect(page.getByText(/「📋 自分/)).toHaveCount(0);
-  // ルビが 合成される ので、かなの ひとかたまりで 引く（下したの ボタンで…）
+  // ルビが 合成される ので、かなの ひとかたまりで 引く（いちばん 下したの ボタンで…）
   await expect(page.getByText(/の ボタンで つぎへ/)).toBeVisible();
   await shot(page, "houkoku-search-quiz-02-submitted");
 

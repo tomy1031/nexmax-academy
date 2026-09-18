@@ -62,6 +62,12 @@ describe("こたえノートに 出る もんだい（教材データ）", () =>
       new Set(["a"]),
     );
   });
+
+  it("朝礼・夕礼の 会話は、notes が あっても 数えない（ひきだしを 描かない 画面）", () => {
+    expect(notebookQuizSetIds([{ asakai: { scenes: [] }, notes: [{ ref: "b" }] }])).toEqual(
+      new Set(),
+    );
+  });
 });
 
 /** ぜんぶ 書いて 出した 回の けっか画面を 文字列に する。 */
@@ -104,24 +110,37 @@ function visibleText(html: string): string {
   return html.replace(/<rt>.*?<\/rt>/g, "").replace(/<[^>]+>/g, "");
 }
 
+/**
+ * 案内の 札（FeedbackMessage・role="status"）の 中だけの 文。
+ * カード ぜんたいを 見ると、下の 一覧に 出る 教材の 本文（設問・コツ）に 左右される。
+ */
+function statusText(html: string): string {
+  const found = /role="status"[^>]*>([\s\S]*?)<\/div>/.exec(html);
+  if (!found?.[1]) throw new Error("案内の 札（role=status）が 見つからない");
+  return visibleText(found[1]);
+}
+
 describe("自由記述の けっか画面", () => {
   it("ノートに 出る もんだいは「はなす じゅんび」と 会話の 案内を 出す", () => {
-    const text = visibleText(renderResult(quiz("kaisha_omoshiroi"), true));
-    expect(text).toContain("はなす じゅんび");
-    expect(text).toContain("じゅんび できました！");
-    expect(text).toContain("つぎの 会話の「📋 自分の こたえ」で 見られます");
+    const html = renderResult(quiz("kaisha_omoshiroi"), true);
+    expect(visibleText(html)).toContain("はなす じゅんび");
+    const status = statusText(html);
+    expect(status).toContain("じゅんび できました！");
+    expect(status).toContain("つぎの 会話の「📋 自分の こたえ」で 見られます");
   });
 
   for (const id of ["houkoku_answer", "houkoku_search_quiz"]) {
     it(`${id}: ノートに 出ないので、会話の 案内を 出さず 中立の 案内に する`, () => {
-      const text = visibleText(renderResult(quiz(id), false));
+      const html = renderResult(quiz(id), false);
+      const text = visibleText(html);
       expect(text).not.toContain("はなす じゅんび");
-      expect(text).not.toContain("じゅんび できました");
-      expect(text).not.toContain("会話");
-      expect(text).not.toContain("自分の こたえ");
       expect(text).toContain("けっか");
-      expect(text).toContain("書いた ことは 下で もう一度 読めます");
-      expect(text).toContain("読んだら、下の ボタンで つぎへ 進みましょう");
+      const status = statusText(html);
+      expect(status).not.toContain("じゅんび できました");
+      expect(status).not.toContain("会話");
+      expect(status).not.toContain("自分の こたえ");
+      expect(status).toContain("書いた ことは 下で もう一度 読めます");
+      expect(status).toContain("読んだら、いちばん 下の ボタンで つぎへ 進みましょう");
     });
   }
 
