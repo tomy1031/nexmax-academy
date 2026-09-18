@@ -1026,3 +1026,50 @@ test("お手本を 見て やり直しても、その日の 点は 変わらな�
   expect(await bareKanjiTexts(page)).toEqual([]);
   await shot(page, "asakai-16-score-kept");
 });
+
+/**
+ * **司会は 報告メモを 閉じてから 話しはじめる**（2026-09-18 の 指定）
+ *
+ * 開いた 瞬間に 鳴らして いた ころ、司会の 声は **モーダルの うしろ**で 流れて
+ * いた——学習者は メモ（きのう・きょう・問題・しごとの 表）を 読んで いる
+ * さいちゅうで、聞き逃した ぶんを 聞き直す 手だても 無い。
+ *
+ * 音声が ある 教材（夕礼）で 見る。鳴らせたかでは なく **`play()` を 呼んだか**を
+ * 数える——自動再生を 止める ブラウザでも 呼び出しは 通るので、ここが 一番 固い。
+ */
+test("報告メモを 閉じるまで、こえは 鳴らない", async ({ page, context }) => {
+  const refs = stageRefs();
+  const at = refs.indexOf("asakai_muzukashii");
+  await seedCompleted(context, refs.slice(0, at));
+
+  await page.addInitScript(() => {
+    const plays: string[] = [];
+    (window as unknown as { __plays: string[] }).__plays = plays;
+    const origin = HTMLMediaElement.prototype.play;
+    HTMLMediaElement.prototype.play = function play(this: HTMLMediaElement) {
+      plays.push(this.src);
+      return origin.apply(this);
+    };
+  });
+
+  await page.goto("/asakai/meeting-asakai_muzukashii");
+  await joinCall(page);
+
+  /* 報告メモが 開いて いる あいだは 1本も 鳴らさない。 */
+  await expect(page.getByRole("dialog", { name: "報告メモ" })).toBeVisible();
+  const before = await page.evaluate(() => (window as unknown as { __plays: string[] }).__plays);
+  expect(before, "メモを 読んで いる うしろで こえが 流れて いる").toEqual([]);
+
+  /* 字は もう 積んで ある（閉じた ときに 並んで いる）。 */
+  await expectOnScreen(page, "夕礼を 始めます");
+
+  await closeDuty(page);
+
+  /*
+   * **「閉じたら 鳴る」の 側は、音声データが 入ってから 足す。**
+   * いま 朝礼・夕礼とも 教材データに `audio` の 参照が 1つも 無く
+   *（wav は 残って いるが 名前が 変わって いる）、**どこでも 鳴らない**。
+   * 作り置きの PR が 入った ところで、ここに 鳴る ことの 検査を 足す。
+   */
+  await expect(page.getByLabel("こたえを 入力する")).toBeVisible();
+});

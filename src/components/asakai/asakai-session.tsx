@@ -512,6 +512,14 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
    */
   const [pendingTail, setPendingTail] = useState<readonly Line[]>([]);
   /**
+   * 報告メモを 閉じた ときに 鳴らす 場面の はじめ（司会の 開き → 見本 → あなたの 番）。
+   *
+   * 2026-09-18 の 指定「最初の モーダルを 閉じた タイミングで ヘンディさんが
+   * 話す ように して ください」。開いた 瞬間に 鳴らすと、**モーダルの うしろで**
+   * 声が 流れて しまう。
+   */
+  const [dutyIntro, setDutyIntro] = useState<readonly Line[]>([]);
+  /**
    * **正しい 回答を 見せた 日**（曜日の 字）。
    *
    * きょうの 評価には お手本が 並び、その 同じ 画面に「もう いちど 報告する」が ある。
@@ -625,12 +633,20 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
         return;
       }
 
+      /*
+       * **こえは 報告メモを 閉じてから 鳴らす**（2026-09-18 の 指定）。
+       *
+       * 開いた 瞬間に 鳴らして いた ころ、司会の 声は **モーダルの うしろ**で
+       * 流れて いた——学習者は メモ（きのう・きょう・問題・しごとの 表）を
+       * 読んで いる さいちゅうで、聞き逃した ぶんを 聞き直す 手だても 無い。
+       * 字は 先に 積む（閉じた ときに もう 並んで いる）。
+       */
       const said = [...next.opening, next.sample, next.prompt];
       setLines(said.map((line) => toChatLine(line, nameOf, learnerName)));
-      pushClips(said, rateOf(speed));
+      setDutyIntro(said);
       setDuty(true);
     },
-    [asakai, meeting.id, nameOf, learnerName, pushClips, stopClips, speed],
+    [asakai, meeting.id, nameOf, learnerName, stopClips],
   );
 
   /** 報告が 終わった ときの ひとかたまり（受け止め → 采配 → メンバー → 閉じ）。 */
@@ -1290,6 +1306,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
       setAskedText("");
       setDayOpen(false);
       setPendingTail([]);
+      setDutyIntro([]);
       setPhase("talk");
       openScene(at);
     },
@@ -1786,7 +1803,14 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
               </span>
             </span>
           }
-          onClose={() => setDuty(false)}
+          onClose={() => {
+            setDuty(false);
+            /* 閉じて から 司会が 話しはじめる（上の `dutyIntro` の 覚え書き）。 */
+            if (dutyIntro.length > 0) {
+              pushClips(dutyIntro, rateOf(speed));
+              setDutyIntro([]);
+            }
+          }}
           /* 中身は 3つの 箱＋付せん＋10行の 表。細い ままだと PCで 短冊に なる。 */
           wide
           index={index}
