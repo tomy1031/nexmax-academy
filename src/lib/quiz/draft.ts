@@ -49,7 +49,12 @@ export type QuizDraft =
        * 英語の 欄だけ 空に なって いたら、日本語に する 作業が やり直しに なる。
        */
       readonly en?: string;
-    };
+    }
+  /**
+   * じゅんばんに ならべて 書く（`ranklist`）。**行の 数だけ** 持つ（空の 行も 残す——
+   * 開き直した ときに 同じ 数の 行が 出る）。
+   */
+  | { readonly kind: "ranklist"; readonly rows: readonly string[] };
 
 /**
  * 保存された 下書きを 読み直す ための 検査（`@/lib/quiz/resume` が 使う）。
@@ -62,6 +67,11 @@ export const quizDraftSchema: z.ZodType<QuizDraft> = z.discriminatedUnion("kind"
   z.object({ kind: z.literal("list"), inputs: z.array(z.string()) }),
   z.object({ kind: z.literal("wordbank"), filled: z.array(z.string().nullable()) }),
   z.object({ kind: z.literal("free"), input: z.string(), en: z.string().optional() }),
+  /*
+   * 行の 数に 上限を **付けない**。付けると 上限を こえた 下書きが 読めず、
+   * その 教材の 書いた もの ぜんぶが 消える（`resume.ts`）。上限は 教材（`max`）と 画面で 守る。
+   */
+  z.object({ kind: z.literal("ranklist"), rows: z.array(z.string()) }),
   z.object({
     kind: z.literal("emotion"),
     feeling: z.number().int().min(0).nullable(),
@@ -78,6 +88,7 @@ const DRAFT_KIND: Record<QuizQuestion["type"], QuizDraft["kind"]> = {
   wordbank: "wordbank",
   emotion: "emotion",
   free: "free",
+  ranklist: "ranklist",
 };
 
 /**
@@ -116,6 +127,9 @@ export function draftAnswered(question: QuizQuestion, draft: QuizDraft | undefin
       return draft.feeling !== null && draft.reply !== null;
     case "free":
       return draft.input.trim().length > 0;
+    case "ranklist":
+      // 1行でも 書けば「こたえた」（いくつ 書くかは 人に よって ちがう）
+      return draft.rows.some((v) => v.trim().length > 0);
   }
 }
 
@@ -204,6 +218,24 @@ export function gradeDraft(question: QuizQuestion, draft: QuizDraft | undefined)
         answer: draft.input,
         // もう すこし 書いて ほしい ときは「あと すこし」の 言い方に なる
         partial: !enough && written.length > 0,
+      };
+    }
+
+    /*
+     * じゅんばんに ならべて 書く。**`free` と 同じく 書いて あれば 点**（正解は 無い）。
+     *
+     * 記録の 文は **書いた 行だけを 上から 番号つきで** つなぐ（`（1）社長　（2）取締役`）。
+     * 空の 行は 詰める——`list` と ちがい、ここの 空の 行は 答えでは なく 使わなかった 枠。
+     */
+    case "ranklist": {
+      if (draft.kind !== "ranklist") return blank;
+      const written = draft.rows.map((v) => v.trim()).filter((v) => v !== "");
+      if (written.length === 0) return blank;
+      return {
+        correct: true,
+        earned: question.points,
+        answer: written.map((v, i) => `（${i + 1}）${v}`).join("　"),
+        partial: false,
       };
     }
 
@@ -387,6 +419,18 @@ export function correctAnswerText(question: QuizQuestion): string {
      * 何かを 出すと、**学習者の 書いた ものが まちがいに 見える**。空を 返す。
      */
     case "free":
+    case "ranklist":
       return "";
   }
+}
+
+/**
+ * **正解の 無い 問い**か（自由記述・じゅんばんに ならべて 書く）。
+ *
+ * けっかの 画面で「せいかい」「％」を 出さない ための 見分け（`quiz-runner` の `freeOnly`）。
+ * 型を 足す たびに 画面の 側を 1つずつ 直すと、どこかで「自分の 考えが 不正解」と
+ * 読める 画面が 生まれる ので、ここ 1か所で 決める。
+ */
+export function hasNoRightAnswer(question: QuizQuestion): boolean {
+  return question.type === "free" || question.type === "ranklist";
 }

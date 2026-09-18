@@ -12,7 +12,12 @@ import { RubyText } from "@/components/ruby-text";
 import type { FeedbackKey } from "@/lib/feedback";
 import { buildFuriganaIndex } from "@/lib/text/furigana";
 import { createProgressStore, recordContentProgress } from "@/lib/progress/store";
-import { correctAnswerText, draftAnswerText, draftAnswered } from "@/lib/quiz/draft";
+import {
+  correctAnswerText,
+  draftAnswerText,
+  draftAnswered,
+  hasNoRightAnswer,
+} from "@/lib/quiz/draft";
 import { saveNotebook } from "@/lib/answers/notebook";
 import { clearQuizResume, restoreQuiz, saveQuizResume, type QuizStart } from "@/lib/quiz/resume";
 import { newAttemptId, saveQuizResults } from "@/lib/quiz/results-db";
@@ -261,7 +266,8 @@ export function QuizRunner({
    * その ときは 答え合わせの ほうが 正しい。
    */
   const freeOnly = useMemo(
-    () => set.questions.length > 0 && set.questions.every((q) => q.type === "free"),
+    // 正解の 無い 型（自由記述・じゅんばんに ならべて 書く）だけか。見分けは draft.ts の 1か所
+    () => set.questions.length > 0 && set.questions.every(hasNoRightAnswer),
     [set.questions],
   );
 

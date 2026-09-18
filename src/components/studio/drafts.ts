@@ -277,6 +277,9 @@ export function emptyQuizQuestion(type: QuizQuestion["type"]): QuizQuestion {
       };
     case "free":
       return { ...base, type: "free", minLength: 2 };
+    /* じゅんばんに ならべて 書く。行の 数は 学習者が ふやす（正解は 無い）。 */
+    case "ranklist":
+      return { ...base, type: "ranklist", start: 5, max: 50 };
   }
 }
 

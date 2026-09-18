@@ -8,6 +8,7 @@ import { buildFuriganaIndex, type FuriganaIndex } from "@/lib/text/furigana";
 import { wordbankDisplayOrder } from "@/lib/quiz/bank-order";
 import type { QuizDraft } from "@/lib/quiz/draft";
 import type { QuizAction, QuizMode } from "./quiz-reducer";
+import { RankListInput } from "./rank-list-input";
 
 /** 部品じたいの文言の読み辞書（教材データの辞書はUIの文言まで覆わない・規律2）。 */
 const UI_FURIGANA = buildFuriganaIndex([
@@ -131,6 +132,18 @@ export function QuestionBody({
           submitMode={submitMode}
           draft={draft?.kind === "list" ? draft : undefined}
           onSubmit={(inputs) => dispatch({ type: "answerList", inputs })}
+        />
+      );
+
+    case "ranklist":
+      return (
+        <RankListInput
+          question={question}
+          furigana={furigana}
+          disabled={disabled}
+          submitMode={submitMode}
+          draft={draft?.kind === "ranklist" ? draft : undefined}
+          onSubmit={(rows) => dispatch({ type: "answerRanklist", rows })}
         />
       );
 

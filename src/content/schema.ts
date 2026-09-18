@@ -530,6 +530,48 @@ const freeSchema = z.object({
     .optional(),
 });
 
+/**
+ * 自分で 行を ふやして **じゅんばんに ならべて 書く**。**正解が 無い**問い（`free` と 同じ）。
+ *
+ * 「日本の 会社の 階級を えらい 順に」の ような、**いくつ 書くかも 人に よって ちがう**
+ * 問い。2026-09-18 の 指定「自分でいくらでも追加できる回答コンポーネント。人によって
+ * 20でも30でも階級が作れるように」。元は 別ページ（`public/tools/hourensou/houkoku_search.html`）
+ * に あった 入力で、行を ふやす・消す・↑↓で ならべかえる の 3つを そのまま 持ち込む。
+ *
+ * `list`（順不同・採点あり）とは 別もの。あちらは **欄の 数も 答えも 決まって いる**。
+ *
+ * 採点は `free` と 同じく「書いた こと」だけ（1行でも 書けば 点）。中身は 先生が 読む。
+ *
+ * ## 足すときの 注意（下書きが 消える 事故）
+ * 下書きの 形（`src/lib/quiz/draft.ts` の `quizDraftSchema`）を **狭めない**。
+ * 行の 数に 上限を 付けると、上限を こえた 下書きが 読めずに **その 教材の 書いた もの
+ * ぜんぶ**が 消える（`resume.ts`）。上限は ここ（`max`）と 画面で だけ 守る。
+ */
+const ranklistSchema = z
+  .object({
+    ...quizCommon,
+    type: z.literal("ranklist"),
+    /** 入力欄の うすい 字（「ここに 書く」）。**答えを 書かない。** */
+    placeholder: plainText.optional(),
+    /** いちばん 上の 行の 上に 出す 札（「↑ いちばん えらい」）。 */
+    topLabel: plainText.optional(),
+    /** いちばん 下の 行の 下に 出す 札（「↓ いちばん 下」）。 */
+    bottomLabel: plainText.optional(),
+    /** さいしょに 出す 空の 行の 数。 */
+    start: z.number().int().min(1).max(100).default(5),
+    /** ふやせる 行の 上限（人に よって 20でも 30でも 書ける ように 大きく とる）。 */
+    max: z.number().int().min(2).max(100).default(50),
+  })
+  .superRefine((question, ctx) => {
+    if (question.start > question.max) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["start"],
+        message: `さいしょの 行（${question.start}）が 上限（${question.max}）より 多い`,
+      });
+    }
+  });
+
 export const quizQuestionSchema = z.discriminatedUnion("type", [
   chooseSchema,
   multiSchema,
@@ -538,6 +580,7 @@ export const quizQuestionSchema = z.discriminatedUnion("type", [
   wordbankSchema,
   emotionSchema,
   freeSchema,
+  ranklistSchema,
 ]);
 
 /** 選択で答える型（読解確認でだけ使ってよい）。 */
