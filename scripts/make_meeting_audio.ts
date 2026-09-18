@@ -139,11 +139,14 @@ const talkGame = meeting.talkGame as
  * 司会・ニャム・奥田・藤木が 1つの 場面で 順に 話す。ミーティングの ように
  * ホスト 1人の 声で 通すと、だれが 話して いるか 耳では 分からない。
  *
- * ## `◯◯` は 読むけれど 字は 変えない
- * この 教材の `◯◯` は **穴うめの 目印**（「きのうは ◯◯を しました」の 形で）で、
- * 名前の 置き場でも ある。日本語では どちらも 声では「まるまる」と 読むので、
- * **Live へ 渡す 文だけ** 置きかえる（画面の 字は `◯◯` の まま）。
- * `NMClaw` を カタカナで 読ませる のと 同じ 考え方（`scripts/lib/live_tts.ts`）。
+ * ## `◯◯` は 読むけれど 字は 変えない。**ただし `◯◯さん` は 焼かない**
+ * この 教材の `◯◯` には **2つの 顔**が ある（`src/lib/meeting/speech.ts`）:
+ *
+ * - むきだしの `◯◯` … 学習者が **埋める 空欄**（「きのうは ◯◯を しました」の 形で）。
+ *   画面にも `◯◯` の まま 出る ので、声も「まるまる」で **字と そろう**。作り置きする。
+ * - `◯◯さん` … 学習者の **名前**（`fillCallName` が 端末の 名前を 入れる）。
+ *   人ごとに 変わる ので **作り置きできない**——焼くと 全員が「まるまるさん」と
+ *   呼ばれる。ここは 音を 付けない（`tests/asakai_data.test.ts` が 見張る）。
  *
  * ## 聞き返しも 音に する
  * 聞き返し（`panels[].followups`）と れい（`panels[].example`）は、
@@ -186,6 +189,8 @@ function asakaiJobs(): Job[] {
   const jobs: Job[] = [];
   const add = (key: string, line: AsakaiLine | undefined): void => {
     if (!line?.text?.trim()) return;
+    /* 名前の 置き場は 人ごとに 変わる ので 作り置きしない（上の 覚え書き）。 */
+    if (line.text.includes("◯◯さん")) return;
     const text = forSpeech(line.text);
     jobs.push({
       key: `${key}-${fingerprint(text)}`,
