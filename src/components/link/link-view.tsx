@@ -10,8 +10,8 @@ import {
   recordContentProgress,
   subscribeProgress,
 } from "@/lib/progress/store";
-import { loadLinkAnswers, parseLinkAnswers, saveLinkAnswers } from "@/lib/answers/link-answers-db";
-import { readLinkMessage, RESTORE_MESSAGE, SAVED_MESSAGE } from "@/lib/answers/link-message";
+import { loadLinkState, parseLinkAnswers, saveLinkAnswers } from "@/lib/answers/link-answers-db";
+import { readLinkMessage, SAVED_MESSAGE, STATE_MESSAGE } from "@/lib/answers/link-message";
 
 /**
  * リンク教材 — 1枚で完結する練習ページを、ステージの中から 全画面で 開く
@@ -42,12 +42,12 @@ import { readLinkMessage, RESTORE_MESSAGE, SAVED_MESSAGE } from "@/lib/answers/l
 
 /*
  * 中のページから 届く 合図（「おわった」「おわりの しるしは こちらで 出す」
- * 「学習者の 書いた もの」「前の こたえを ください」）の 読み取りは
+ * 「学習者の 書いた もの」「いま だれが 開いて いるか」）の 読み取りは
  * `@/lib/answers/link-message` に 置いて ある。
  * 画面の 効果の 中では テストから 通しにくい のに、**関門の 鍵と 学習者の こたえ**を
  * 運ぶ 道で 取りちがえの 害が いちばん 大きい ため。
  *
- * こたえには **返事を 返す**（DB に 入った／前の こたえ）。返事が 来るまで、
+ * こたえには **返事を 返す**（DB に 入った／いまの 持ち主と 前の こたえ）。返事が 来るまで、
  * 中のページは 開くたびに 送り直す——送りっぱなしだった ころは、受け手の いない
  * ときに 出した こたえが 二度と 送られず、DB に 1件も 残らなかった（2026-09-18）。
  */
@@ -122,10 +122,12 @@ export function LinkView({ link, embedded }: { link: LinkContent; embedded?: boo
          * 自分で 例外を 握るが、ここでも 受けて おく（`void` で 捨てた 約束が 落ちると、
          * 画面にも コンソールにも 何も 出ない まま こたえが 消える）。
          */
-        const { key } = message;
+        const { key, owner } = message;
         void saveLinkAnswers({
           linkId: link.id,
           answers: parseLinkAnswers(message.answers),
+          owner,
+          attemptId: key,
         })
           .then((saved) => {
             if (saved && key) reply(event.source, { type: SAVED_MESSAGE, id: link.id, key });
@@ -135,16 +137,15 @@ export function LinkView({ link, embedded }: { link: LinkContent; embedded?: boo
           });
         return;
       }
-      if (message.kind === "restore-request") {
-        // 別の 端末・別の URL で 開いた。前に 出した こたえが DB に あれば 戻す
-        void loadLinkAnswers(link.id)
-          .then((answers) => {
-            if (answers.length > 0) {
-              reply(event.source, { type: RESTORE_MESSAGE, id: link.id, answers });
-            }
-          })
+      if (message.kind === "hello") {
+        /*
+         * **かならず 返す**（デモモードでも）。ページは 返事を 待って から 控えを 使う
+         *——持ち主が ちがえば 捨て、空なら DB の 前の こたえを 戻す。
+         */
+        void loadLinkState(link.id)
+          .then((state) => reply(event.source, { type: STATE_MESSAGE, id: link.id, ...state }))
           .catch(() => {
-            /* 戻せなくても 書き直せば よい */
+            /* ページは しばらく して 自分で 控えを 見せる（送りは しない） */
           });
         return;
       }

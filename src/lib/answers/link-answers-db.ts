@@ -120,15 +120,23 @@ export function linkAnswerRows({
  * id は `readOwnId`（トークンの 中みを その場で 確かめる）で 取る——**外へ 出ない**し、
  * 学習者の 行 まるごと（answers/scores の JSON 込み）を 取りに 行かずに 済む。
  *
- * @returns DB に 入ったか。**true の ときだけ** ツールへ「とどいた」を 返す
- *   （ツールは それまで 開くたびに 送り直す）。
+ * @param owner     ページの 控えの 持ち主。**ログイン中の 人と ちがえば 残さない**
+ *   ——控えは ログアウトでは 消えないので、教室の PC では 前の 人の こたえが 来る ことが ある
+ * @param attemptId ページが 付けた 1回の id（uuid）。送り直しでも 同じ id が 来るので、
+ *   DB の 一意索引（attempt_id, question_id）が 2回目を 捨てる。無ければ ここで 作る
+ * @returns DB に 入ったか（すでに 入って いた 送り直しも true）。**true の ときだけ**
+ *   ページへ「とどいた」を 返す（ページは それまで 開くたびに 送り直す）。
  */
 export async function saveLinkAnswers({
   linkId,
   answers,
+  owner,
+  attemptId,
 }: {
   linkId: string;
   answers: readonly LinkAnswer[];
+  owner?: string;
+  attemptId?: string;
 }): Promise<boolean> {
   if (answers.length === 0) return false;
   try {
@@ -136,14 +144,25 @@ export async function saveLinkAnswers({
     if (!supabase) return false; // デモモード（鍵ゼロ）。学習は そのまま 進む
     const profileId = await readOwnId(supabase);
     if (!profileId) return false; // ログインして いない
+    if (owner !== profileId) {
+      console.warn("[link-answers] ほかの 学習者の 控えなので 残しません");
+      return false;
+    }
     return await insertQuizResultRows(
-      linkAnswerRows({ profileId, linkId, answers, attemptId: newAttemptId() }),
+      linkAnswerRows({ profileId, linkId, answers, attemptId: attemptId ?? newAttemptId() }),
     );
   } catch (error) {
     // 先生の 画面に 出ない ことに 気づける ように、**黙らせない**
     console.warn("[link-answers] 記録できませんでした:", error);
     return false;
   }
+}
+
+/** DB に 残って いる 最後の 1回ぶん。 */
+export interface LatestLinkAnswers {
+  readonly answers: LinkAnswer[];
+  /** その 1回の id（ページは これを 覚え、直さずに 出し直しても 行を 増やさない）。 */
+  readonly attemptId: string | null;
 }
 
 /**
@@ -154,39 +173,48 @@ export async function saveLinkAnswers({
  *
  * @param rows 新しい 順（`readOwnQuizResultRows` の 並び）
  */
-export function latestLinkAnswers(linkId: string, rows: readonly OwnQuizResultRow[]): LinkAnswer[] {
+export function latestLinkAnswers(
+  linkId: string,
+  rows: readonly OwnQuizResultRow[],
+): LatestLinkAnswers {
   const latest = rows[0]?.attempt_id;
-  if (!latest) return [];
+  if (!latest) return { answers: [], attemptId: null };
   const byId = new Map(
     rows
       .filter((row) => row.attempt_id === latest)
       .map((row) => [row.question_id, row.answer_text]),
   );
-  return linkAnswerOrder(linkId).flatMap((id) => {
+  const answers = linkAnswerOrder(linkId).flatMap((id) => {
     const text = byId.get(id);
     return text === undefined ? [] : [{ id, text }];
   });
+  return { answers, attemptId: answers.length > 0 ? latest : null };
+}
+
+/** ページへ 返す いまの ようす（`STATE_MESSAGE` の 中身）。 */
+export interface LinkState extends LatestLinkAnswers {
+  /** ログイン中の 人。デモモード・未ログイン・読めない ときは null。 */
+  readonly owner: string | null;
 }
 
 /**
- * 前に 出した こたえを DB から 読む。**投げない**。
+ * **いま だれが 開いて いるか**と、その 人が DB に 残した 最後の こたえを 読む。**投げない**。
  *
- * 別の 端末・別の URL で ツールを 開くと、ツールの 端末の 控え（localStorage）は 空で、
- * 出した はずの こたえが 消えた ように 見える。ツールが 空の ときに 頼んで くるので、
- * ここで 読んで 返す。
- *
- * @returns 読めない（デモモード・未ログイン・失敗）・まだ 出して いない ときは 空。
+ * ページは これを 見て、端末の 控えが この 人の ものか 確かめ（ちがえば 捨てる）、
+ * 控えが 空なら DB の こたえを 戻す——別の 端末・別の URL で 開くと
+ * 控え（localStorage）は 空で、出した はずの こたえが 消えた ように 見えるため。
  */
-export async function loadLinkAnswers(linkId: string): Promise<LinkAnswer[]> {
+export async function loadLinkState(linkId: string): Promise<LinkState> {
+  const none: LinkState = { owner: null, answers: [], attemptId: null };
   try {
     const supabase = createClient();
-    if (!supabase) return [];
+    if (!supabase) return none;
     const profileId = await readOwnId(supabase);
-    if (!profileId) return [];
+    if (!profileId) return none;
     const rows = await readOwnQuizResultRows(profileId, linkId);
-    return rows ? latestLinkAnswers(linkId, rows) : [];
+    return { owner: profileId, ...latestLinkAnswers(linkId, rows ?? []) };
   } catch (error) {
     console.warn("[link-answers] 読めませんでした:", error);
-    return [];
+    return none;
   }
 }

@@ -25,10 +25,11 @@ export const OWNS_DONE_MESSAGE = "nexmax:link-owns-done";
 export const ANSWERS_MESSAGE = "nexmax:link-answers";
 
 /**
- * 中のページが「**前に 出した こたえが あれば ください**」と 頼む 合図。
- * ページの 端末に 何も 残って いない（別の 端末・別の URL で 開いた）ときだけ 来る。
+ * 中のページが「**いま だれが 開いて いて、DB に 前の こたえが あるか**」を 聞く 合図。
+ * こたえを 集める ページは 開くたびに 来る。返事（`STATE_MESSAGE`）が 来るまで
+ * ページは 端末の 控えを 見せも 送りも しない。
  */
-export const RESTORE_REQUEST_MESSAGE = "nexmax:link-restore-request";
+export const HELLO_MESSAGE = "nexmax:link-hello";
 
 /*
  * ここから 下の 2つは **アプリ → 中のページ**（返事）。
@@ -39,20 +40,39 @@ export const RESTORE_REQUEST_MESSAGE = "nexmax:link-restore-request";
  *（2026-09-18 に 調査の こたえが 0件と 分かった）。
  */
 
-/** DB に 入った（先生に とどいた）。`key` は 中のページが 付けた 札を そのまま 返す。 */
+/** DB に 入った（先生に とどいた）。`key` は 中のページが 付けた 1回の id を そのまま 返す。 */
 export const SAVED_MESSAGE = "nexmax:link-answers-saved";
 
-/** 前に 出した こたえ（DB から 読んだ もの）。 */
-export const RESTORE_MESSAGE = "nexmax:link-restore";
+/**
+ * `HELLO_MESSAGE` への 返事: **ログイン中の 人**（`owner`・デモモードでは null）と、
+ * その 人が DB に 残した **最後の こたえ**（`answers`・`attemptId`）。
+ *
+ * 持ち主を 渡すのは、ページの 控え（localStorage）が ログアウトでは 消えないから。
+ * 教室の PC で 前の 人の 控えを 次の 人の 名前で 送らない ように、ページが 比べて 捨てる。
+ */
+export const STATE_MESSAGE = "nexmax:link-state";
 
-/** 返事に 付けて 返す 札の 長さの 上限（外から 来る ものなので 際限なく 受けない）。 */
-const MAX_KEY = 100;
+/**
+ * 1回の 記録の id の 形（uuid）。DB の `attempt_id` 列は uuid なので、
+ * 形の 崩れた ものを 通すと Postgres が 22P02 で 弾き、その 1回が 丸ごと 消える。
+ */
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+/** 持ち主の id の 長さの 上限（外から 来る ものなので 際限なく 受けない）。 */
+const MAX_OWNER = 100;
 
 export type LinkMessage =
   | { readonly kind: "done" }
   | { readonly kind: "owns-done" }
-  | { readonly kind: "answers"; readonly answers: unknown; readonly key?: string }
-  | { readonly kind: "restore-request" };
+  | {
+      readonly kind: "answers";
+      readonly answers: unknown;
+      /** ページが 付けた 1回の id（uuid）。送り直しても 同じ。 */
+      readonly key?: string;
+      /** ページの 控えの 持ち主。ログイン中の 人と ちがえば 残さない。 */
+      readonly owner?: string;
+    }
+  | { readonly kind: "hello" };
 
 /**
  * この 教材あての 合図か。ちがえば `null`。
@@ -74,13 +94,15 @@ export function readLinkMessage(data: unknown, linkId: string): LinkMessage | nu
   if (id !== linkId) return null;
   if (type === OWNS_DONE_MESSAGE) return { kind: "owns-done" };
   if (type === ANSWERS_MESSAGE) {
-    const { answers, key } = data as { answers?: unknown; key?: unknown };
-    // 札の 無い 古い ページも 受ける（記録は 残す。返事を 返さない だけ）
-    if (typeof key !== "string" || key === "" || key.length > MAX_KEY) {
-      return { kind: "answers", answers };
-    }
-    return { kind: "answers", answers, key };
+    const { answers, key, owner } = data as { answers?: unknown; key?: unknown; owner?: unknown };
+    // 形の 合わない 札・持ち主は 付けない（残すか どうかは 受け手が 決める）
+    return {
+      kind: "answers",
+      answers,
+      ...(typeof key === "string" && UUID.test(key) ? { key } : {}),
+      ...(typeof owner === "string" && owner !== "" && owner.length <= MAX_OWNER ? { owner } : {}),
+    };
   }
-  if (type === RESTORE_REQUEST_MESSAGE) return { kind: "restore-request" };
+  if (type === HELLO_MESSAGE) return { kind: "hello" };
   return null;
 }
