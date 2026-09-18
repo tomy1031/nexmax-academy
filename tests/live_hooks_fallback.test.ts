@@ -692,7 +692,7 @@ describe("つなぎの 記録（live-debug）", () => {
 
     expect(render().status).toBe("notReady");
     expect(render().reason).toBe("noMic");
-    const problem = debug.lastLiveProblem();
+    const problem = debug.lastLiveProblem("voice");
     expect(problem?.what).toBe("voice.mic");
     expect(problem?.detail).toBe("NotAllowedError: Permission denied");
     // つなぐ 前に 止まった（モデルには 1つも 行って いない）
@@ -711,7 +711,7 @@ describe("つなぎの 記録（live-debug）", () => {
     expect(log).toContain(`voice.connect ok ${SPARE}`);
     expect(log).not.toMatch(/auth_tokens\/\d/);
     // 先頭に 断られた ことは、控えで つながった あとも 記録に 残る
-    expect(debug.lastLiveProblem()?.detail).toContain(HEAD);
+    expect(debug.lastLiveProblem("voice")?.detail).toContain(HEAD);
   });
 
   it("鍵の 問題は トークンの 理由の 名前で 残す", async () => {
@@ -721,7 +721,10 @@ describe("つなぎの 記録（live-debug）", () => {
     await vi.advanceTimersByTimeAsync(500);
 
     expect(render().reason).toBe("keyRestricted");
-    expect(debug.lastLiveProblem()).toMatchObject({ what: "voice.token", detail: "keyRestricted" });
+    expect(debug.lastLiveProblem("voice")).toMatchObject({
+      what: "voice.token",
+      detail: "keyRestricted",
+    });
   });
 
   it("押して 話した あいだに 送った 音の 数を 残す（0 なら 失敗として 残す）", async () => {
@@ -733,8 +736,8 @@ describe("つなぎの 記録（live-debug）", () => {
 
     render().startTalking();
     render().stopTalking();
-    expect(debug.lastLiveProblem()).toMatchObject({ what: "voice.talk" });
-    expect(debug.lastLiveProblem()?.detail).toContain("sent=0");
+    expect(debug.lastLiveProblem("voice")).toMatchObject({ what: "voice.talk" });
+    expect(debug.lastLiveProblem("voice")?.detail).toContain("sent=0");
 
     render().startTalking();
     const loud = new Int16Array(2048).fill(16_000);
@@ -743,5 +746,40 @@ describe("つなぎの 記録（live-debug）", () => {
     render().stopTalking();
     expect(lines().at(-1)).toContain("voice.talk end sent=2 peak=0.49");
     expect(lines().at(-1)).not.toContain("!!");
+  });
+
+  it("聞き取りと 返事は 字数だけ 残す（発話の 中身は 記録に 入れない）", async () => {
+    sdk.plan = { [HEAD]: "accept" };
+    const { render, lines } = await load();
+    void render().start("指示");
+    await vi.advanceTimersByTimeAsync(1_000);
+    const { callbacks } = sdk.live[0]!;
+    callbacks.onmessage?.({ serverContent: { inputTranscription: { text: "わたしは ソクです" } } });
+    callbacks.onmessage?.({
+      serverContent: { outputTranscription: { text: "ソクさん、よろしく" } },
+    });
+    callbacks.onmessage?.({ serverContent: { turnComplete: true } });
+
+    const log = lines().join("\n");
+    expect(log).toContain("voice.utterance chars=9");
+    expect(log).toContain("voice.turn audio chunks=0 said chars=9");
+    expect(log).not.toContain("ソク");
+  });
+
+  it("こちらが やめた 回の 失敗は、つぎの 回の 理由の 横に 出さない", async () => {
+    sdk.plan = Object.fromEntries(LIVE_TALK_MODELS.map((m) => [m, "hang" as const]));
+    const { render, debug, lines } = await load();
+    void render().start("指示");
+    await vi.advanceTimersByTimeAsync(1_000);
+    // つなぎの 途中で たいしつ → すぐ もう いちど スタート
+    render().stop();
+    sdk.plan = { [HEAD]: "accept" };
+    void render().start("指示");
+    // 前の 回が 9秒の 待ちから 遅れて 抜けても
+    await vi.advanceTimersByTimeAsync(60_000);
+
+    expect(render().status).toBe("live");
+    expect(lines().join("\n")).toContain(`voice.model ${HEAD} timeout`);
+    expect(debug.lastLiveProblem("voice")).toBeNull();
   });
 });

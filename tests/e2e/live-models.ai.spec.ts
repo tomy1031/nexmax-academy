@@ -403,7 +403,7 @@ test.describe("Live の 先頭の モデル（鍵が あるときだけ）", () 
     });
   }
 
-  test(`AIの みかた:${LIVE_TEXT_MODELS[0]} が 同じ つなぎで 2回 頼んでも 答えを 混ぜない`, async () => {
+  test(`AIの みかた: ${LIVE_TEXT_MODELS[0]} が 同じ つなぎで 2回 頼んでも 答えを 混ぜない`, async () => {
     const model = LIVE_TEXT_MODELS[0];
     const live = await openLive(evalKey(), model, {
       responseModalities: [Modality.AUDIO],

@@ -13,6 +13,7 @@ import { getGeminiKey } from "@/lib/profile";
  * ここには **決まった 名前・数・ブラウザの エラー名だけ**を 残す。文字列は 必ず
  * `redactSecrets` を 通す（鍵・トークンの 形を 伏せる）。
  *
+ * - 学習者の 発話・相手の 返事は **字数だけ**（中身は 残さない。記録は Issue に 貼られる ことが ある）
  * - 記録は いつも 取る（メモリの 中だけ・さいごの 300件）。どこにも 送らない
  * - 画面に 出すのは URL に `?debug=1` を 付けた とき（`isLiveDebugOn`）。
  *   付けると この タブの あいだ 覚える。`?debug=0` で 消える
@@ -84,14 +85,24 @@ export function clearLiveDebug(): void {
 }
 
 /**
- * **さいごの つなぎはじめ（`*.start`）から あと**で、さいごに うまく いかなかった 記録。
- * 前の つなぎの 失敗を いまの 理由の 横に 出さない ため、はじめの 記録で 止める。
+ * `source`（`voice` など）の **さいごの つなぎはじめ（`<source>.start`）から あと**で、
+ * さいごに うまく いかなかった 記録。
+ *
+ * - ほかの 出どころ（見かたの `judge.*` など）の 失敗は 見ない。🎤 の 理由の 横に
+ *   「judge.judge timeout」が 出ると、別の 失敗を 指して しまう（2026-09-18 の 検収）
+ * - 前の つなぎの 失敗を いまの 理由の 横に 出さない ため、はじめの 記録で 止める
+ * - マイクの 取りこみ（`mic.*`）は どの 出どころの ものでも 見る（部品が 1つ）
  */
-export function lastLiveProblem(list: readonly LiveDebugEntry[] = entries): LiveDebugEntry | null {
+export function lastLiveProblem(
+  source: string,
+  list: readonly LiveDebugEntry[] = entries,
+): LiveDebugEntry | null {
   for (let i = list.length - 1; i >= 0; i -= 1) {
     const entry = list[i]!;
+    const mine = entry.what.startsWith(`${source}.`) || entry.what.startsWith("mic.");
+    if (!mine) continue;
     if (entry.problem) return entry;
-    if (entry.what.endsWith(".start")) return null;
+    if (entry.what === `${source}.start`) return null;
   }
   return null;
 }
@@ -194,17 +205,21 @@ export function liveDebugReport(list: readonly LiveDebugEntry[] = entries): stri
   return lines.join("\n");
 }
 
-/** マイクの 流れの ようす（数だけ）。ラベル（機種名）は 残さない。 */
+/** マイクの 流れの ようす（数だけ）。ラベル（機種名）は 残さない。**投げない**（記録で 動きを 変えない）。 */
 export function describeStream(stream: MediaStream): string {
-  const track = stream.getAudioTracks?.()[0];
-  if (!track) return "no audio track";
-  const settings = track.getSettings?.() ?? {};
-  return [
-    `state=${track.readyState}`,
-    `muted=${track.muted}`,
-    `enabled=${track.enabled}`,
-    `rate=${settings.sampleRate ?? "?"}`,
-    `ch=${settings.channelCount ?? "?"}`,
-    `aec=${settings.echoCancellation ?? "?"}`,
-  ].join(" ");
+  try {
+    const track = stream.getAudioTracks?.()[0];
+    if (!track) return "no audio track";
+    const settings = track.getSettings?.() ?? {};
+    return [
+      `state=${track.readyState}`,
+      `muted=${track.muted}`,
+      `enabled=${track.enabled}`,
+      `rate=${settings.sampleRate ?? "?"}`,
+      `ch=${settings.channelCount ?? "?"}`,
+      `aec=${settings.echoCancellation ?? "?"}`,
+    ].join(" ");
+  } catch (error) {
+    return describeError(error);
+  }
 }

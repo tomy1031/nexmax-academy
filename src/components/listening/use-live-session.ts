@@ -176,7 +176,8 @@ export function useLiveSession(): LiveSession {
     const heard = heardRef.current.trim();
     heardRef.current = "";
     if (!heard) return;
-    liveDebug("taiwa.utterance", heard);
+    // 発話の 中身は 残さない（記録は 貼られる ことが ある・字数だけ）
+    liveDebug("taiwa.utterance", `chars=${heard.length}`);
     utteranceIdRef.current += 1;
     const id = utteranceIdRef.current;
     setTranscript((prev) => [...prev, { from: "me", text: heard, mode: "voice" }]);
@@ -297,12 +298,13 @@ export function useLiveSession(): LiveSession {
             autoGainControl: true,
           },
         });
-        liveDebug("taiwa.mic", describeStream(stream));
       } catch (error) {
         // 書いて 送る 道は 残る（劣化運転）。原因は ブラウザの エラー名で 分かる
-        liveDebug("taiwa.mic", describeError(error), true);
+        liveDebug("taiwa.mic", describeError(error), !stale());
         stream = null;
       }
+      // 記録は try の 外で（ここで 投げても マイクを 捨てない）
+      if (stream) liveDebug("taiwa.mic", describeStream(stream));
       if (stale()) {
         stream?.getTracks().forEach((track) => track.stop());
         return;
@@ -390,8 +392,6 @@ export function useLiveSession(): LiveSession {
                  *   返事（相手）      … turnComplete で 1つに束ねる
                  */
                 const piece = readTranscript(message);
-                if (piece)
-                  liveDebug(piece.from === "me" ? "taiwa.heard" : "taiwa.said", piece.text);
                 if (piece?.from === "me") heardRef.current += piece.text;
                 if (piece?.from === "client") {
                   flushHeard();
@@ -407,6 +407,9 @@ export function useLiveSession(): LiveSession {
                   liveDebug("taiwa.interrupted");
                   clearScheduled(out);
                   saidRef.current = "";
+                }
+                if (isTurnComplete(message)) {
+                  liveDebug("taiwa.turn", `said chars=${saidRef.current.trim().length}`);
                 }
                 if (isTurnComplete(message) && saidRef.current.trim()) {
                   const said = saidRef.current.trim();
@@ -425,7 +428,7 @@ export function useLiveSession(): LiveSession {
                 liveDebug(
                   "taiwa.error",
                   `${model} ${phase} ${describeError(error)}`,
-                  phase !== "abandoned",
+                  phase !== "abandoned" && !stale(),
                 );
                 if (phase === "waiting" || phase === "late") gate.fail("upstream");
                 else if (mine()) {
@@ -461,7 +464,8 @@ export function useLiveSession(): LiveSession {
             liveDebug(
               "taiwa.model",
               `${model} ${why} ${Date.now() - triedAt}ms`,
-              why !== "superseded",
+              // こちらが やめた 回（世代が かわった）は 失敗に 数えない
+              why !== "superseded" && !stale(),
             );
             throw error;
           }
@@ -478,7 +482,7 @@ export function useLiveSession(): LiveSession {
         liveDebug(
           "taiwa.connect",
           connected.ok ? `ok ${connected.model}` : `${connected.stage} ${connected.reason}`,
-          !connected.ok,
+          !connected.ok && !stale(),
         );
         if (stale()) {
           // つなぎ途中に 相手が かわった。届いた セッションは 使わずに 閉じる（居座らせない）
@@ -542,7 +546,7 @@ export function useLiveSession(): LiveSession {
         setStatus("live");
       } catch (error) {
         // 画面には 出さない（下の 注記）。`?debug=1` の 記録には 伏せた 形で 残す
-        liveDebug("taiwa.crash", describeError(error), true);
+        liveDebug("taiwa.crash", describeError(error), !stale());
         if (stale()) return;
         // 例外の中身は出さない。短命トークンが混ざりうるうえ、SDK の生メッセージは
         // 学習者にも先生にも読めない。理由の名前だけ渡す。

@@ -56,10 +56,20 @@ describe("記録の 入れ物", () => {
     const { lastLiveProblem, liveDebug } = await load();
     liveDebug("voice.start");
     liveDebug("voice.mic", "NotAllowedError", true);
-    expect(lastLiveProblem()?.detail).toBe("NotAllowedError");
+    expect(lastLiveProblem("voice")?.detail).toBe("NotAllowedError");
     liveDebug("voice.start");
     liveDebug("voice.connect", "ok gemini-3.8-live");
-    expect(lastLiveProblem()).toBeNull();
+    expect(lastLiveProblem("voice")).toBeNull();
+  });
+
+  it("ほかの 出どころ（見かた・たいわ）の 失敗は 🎤 の 理由の 横に 出さない。マイクの 取りこみは 出す", async () => {
+    const { lastLiveProblem, liveDebug } = await load();
+    liveDebug("voice.start");
+    liveDebug("judge.judge", "timeout", true);
+    liveDebug("taiwa.mic", "NotAllowedError", true);
+    expect(lastLiveProblem("voice")).toBeNull();
+    liveDebug("mic.capture", "worklet suspended 48000Hz", true);
+    expect(lastLiveProblem("voice")?.what).toBe("mic.capture");
   });
 
   it("押した あいだの 音の 大きさ（0〜1）", async () => {

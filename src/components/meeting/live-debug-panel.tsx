@@ -88,7 +88,8 @@ export function LiveDebugPanel() {
  */
 export function LiveReasonLine({ reason }: { reason: string | null | undefined }) {
   const list = useSyncExternalStore(subscribeLiveDebug, readLiveDebug, readLiveDebugOnServer);
-  const problem = lastLiveProblem(list);
+  // この 🎤 は 声の つなぎ（use-live-voice）の もの。たいわは 自分の `LiveReason` で 出す
+  const problem = lastLiveProblem("voice", list);
   return (
     <p className="text-ink-faint mt-1 text-[11px] font-bold break-all" data-testid="live-reason">
       reason: {reason ?? "unknown"}

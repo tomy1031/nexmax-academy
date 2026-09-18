@@ -358,7 +358,8 @@ export function useLiveVoice(options: LiveVoiceOptions = {}): LiveVoice {
     const heard = heardRef.current.trim();
     if (!heard) return;
     heardRef.current = "";
-    liveDebug("voice.utterance", heard);
+    // 発話の 中身は 残さない（記録は 貼られる ことが ある・字数だけ）
+    liveDebug("voice.utterance", `chars=${heard.length}`);
     utteranceIdRef.current += 1;
     const id = utteranceIdRef.current;
     setTurns((prev) => [...prev, { from: "me", text: heard }]);
@@ -467,15 +468,16 @@ export function useLiveVoice(options: LiveVoiceOptions = {}): LiveVoice {
             autoGainControl: true,
           },
         });
-        liveDebug("voice.mic", describeStream(stream));
       } catch (error) {
         // ブラウザの エラー名で 原因が 分かる（NotAllowedError＝許可・NotReadableError＝ほかの アプリ 等）
-        liveDebug("voice.mic", describeError(error), true);
+        liveDebug("voice.mic", describeError(error), !stale());
         if (stale()) return;
         setStatus("notReady");
         setReason("noMic");
         return;
       }
+      // 記録は try の 外で（ここで 投げても マイクを noMic に しない）
+      liveDebug("voice.mic", describeStream(stream));
 
       /*
        * **マイクの 流れは 渡し終える まで この 関数の もの**（2026-09-16 の 検収）。
@@ -621,8 +623,6 @@ export function useLiveVoice(options: LiveVoiceOptions = {}): LiveVoice {
                  *   返事（相手）      … turnComplete で 1つに束ねる
                  */
                 const piece = readTranscript(message);
-                if (piece)
-                  liveDebug(piece.from === "me" ? "voice.heard" : "voice.said", piece.text);
                 if (piece?.from === "me") {
                   heardRef.current += piece.text;
                   /*
@@ -655,7 +655,10 @@ export function useLiveVoice(options: LiveVoiceOptions = {}): LiveVoice {
                   saidRef.current = "";
                 }
                 if (isTurnComplete(message)) {
-                  liveDebug("voice.turn", `audio chunks=${turnAudioRef.current}`);
+                  liveDebug(
+                    "voice.turn",
+                    `audio chunks=${turnAudioRef.current} said chars=${saidRef.current.trim().length}`,
+                  );
                   turnAudioRef.current = 0;
                   if (saidRef.current.trim()) {
                     const said = saidRef.current.trim();
@@ -702,7 +705,7 @@ export function useLiveVoice(options: LiveVoiceOptions = {}): LiveVoice {
                 liveDebug(
                   "voice.error",
                   `${model} ${phase} ${describeError(error)}`,
-                  phase !== "abandoned",
+                  phase !== "abandoned" && !stale(),
                 );
                 if (phase === "waiting" || phase === "late") gate.fail("upstream");
               },
@@ -730,7 +733,8 @@ export function useLiveVoice(options: LiveVoiceOptions = {}): LiveVoice {
             liveDebug(
               "voice.model",
               `${model} ${why} ${Date.now() - triedAt}ms`,
-              why !== "superseded",
+              // こちらが やめた 回（世代が かわった）は 失敗に 数えない
+              why !== "superseded" && !stale(),
             );
             throw error;
           }
@@ -746,7 +750,7 @@ export function useLiveVoice(options: LiveVoiceOptions = {}): LiveVoice {
         liveDebug(
           "voice.connect",
           connected.ok ? `ok ${connected.model}` : `${connected.stage} ${connected.reason}`,
-          !connected.ok,
+          !connected.ok && !stale(),
         );
         if (stale()) {
           // 待って いる あいだに 次の つなぎが 始まった。届いた ものは 使わずに 閉じる
@@ -847,7 +851,7 @@ export function useLiveVoice(options: LiveVoiceOptions = {}): LiveVoice {
           void connectRef.current(swapTo, args.voice, undefined, true);
         }
       } catch (error) {
-        liveDebug("voice.crash", describeError(error), true);
+        liveDebug("voice.crash", describeError(error), !stale());
         if (stale()) return;
         if (silent) {
           retryLater();

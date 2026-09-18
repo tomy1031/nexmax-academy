@@ -206,7 +206,10 @@ export async function requestAsakaiJudge(
    * 答えは どうせ 捨てる ので、Live の 往復 1回と 札を 持つ 時間（最大 12秒）の むだに なる。
    */
   let gaveUp = false;
+  /** 往復が 終わったか（待ちの 時計は 止めない ので、記録の ときだけ 見る）。 */
+  let settled = false;
   const work = askAsakai(apiKey, key, context, facts, () => gaveUp).finally(() => {
+    settled = true;
     SLOTS.asakai.busy = false;
   });
   return await Promise.race([
@@ -214,7 +217,8 @@ export async function requestAsakaiJudge(
     new Promise<null>((resolve) =>
       setTimeout(() => {
         gaveUp = true;
-        liveDebug("judge.asakai", `timeout ${ASAKAI_TIMEOUT_MS}ms`, true);
+        // 先に 終わって いた ときは 時計だけ 残って いる（失敗では ない）
+        if (!settled) liveDebug("judge.asakai", `timeout ${ASAKAI_TIMEOUT_MS}ms`, true);
         resolve(null);
       }, ASAKAI_TIMEOUT_MS),
     ),
