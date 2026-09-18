@@ -7,9 +7,18 @@ import {
   createSetupGate,
   FIRST_AUTH_FRESH_MS,
   LIVE_SETUP_TIMEOUT_MS,
+  LiveSetupError,
   reasonFromClose,
   startingWith,
 } from "@/lib/ai/live-connect";
+import {
+  describeClose,
+  describeError,
+  describeStream,
+  liveDebug,
+  noteMicPermission,
+  pcmPeak,
+} from "@/lib/ai/live-debug";
 import { createLiveToken } from "@/lib/ai/live-token";
 import { DEFAULT_LIVE_TALK_MODEL, LIVE_TALK_MODELS } from "@/lib/ai/models";
 import { getGeminiKey, getLiveModel } from "@/lib/profile";
@@ -225,6 +234,14 @@ export function useLiveVoice(options: LiveVoiceOptions = {}): LiveVoice {
    * `use-live-session.ts` の 世代と 同じ 型で、ちがう 世代は 何も せず 片づけて 帰る。
    */
   const epochRef = useRef(0);
+  /**
+   * マイクの 音の 数（`?debug=1` の 記録用・2026-09-18）。`frames` は つないでから 届いた 数、
+   * `sent`・`peak` は 押して いる あいだに 送った 数と いちばん 大きい 音。
+   * 押しても `sent` が 0 なら、マイクの 流れが 止まって いる（許可・音の 部屋が 止まった まま）。
+   */
+  const micStatsRef = useRef({ frames: 0, sent: 0, peak: 0 });
+  /** この ターンに 届いた 相手の 声の かけらの 数（記録用）。 */
+  const turnAudioRef = useRef(0);
 
   /**
    * つなぎの 後始末。
@@ -281,6 +298,7 @@ export function useLiveVoice(options: LiveVoiceOptions = {}): LiveVoice {
     if (!args) return;
     window.clearTimeout(retryTimerRef.current);
     if (retriesRef.current >= 3) {
+      liveDebug("voice.retry", "gave up after 3", true);
       teardown();
       setAnalyser(null);
       setStatus("idle");
@@ -288,6 +306,7 @@ export function useLiveVoice(options: LiveVoiceOptions = {}): LiveVoice {
     }
     const wait = 500 * 2 ** retriesRef.current;
     retriesRef.current += 1;
+    liveDebug("voice.retry", `#${retriesRef.current} in ${wait}ms`);
     retryTimerRef.current = window.setTimeout(() => {
       void connectRef.current(args.systemInstruction, args.voice, args.opening, true);
     }, wait);
@@ -315,6 +334,7 @@ export function useLiveVoice(options: LiveVoiceOptions = {}): LiveVoice {
   }, [teardown]);
 
   const stop = useCallback(() => {
+    liveDebug("voice.stop");
     // 人が 出た。切れた ときの 張り直しと 区別する
     closingRef.current = true;
     window.clearTimeout(retryTimerRef.current);
@@ -338,6 +358,7 @@ export function useLiveVoice(options: LiveVoiceOptions = {}): LiveVoice {
     const heard = heardRef.current.trim();
     if (!heard) return;
     heardRef.current = "";
+    liveDebug("voice.utterance", heard);
     utteranceIdRef.current += 1;
     const id = utteranceIdRef.current;
     setTurns((prev) => [...prev, { from: "me", text: heard }]);
@@ -385,6 +406,8 @@ export function useLiveVoice(options: LiveVoiceOptions = {}): LiveVoice {
 
       const apiKey = getGeminiKey();
       if (!apiKey) {
+        // 鍵は 画面の 源（本番・STG・ブランチの URL）ごとに 別。ほかの URL で 入れた 鍵は 見えない
+        liveDebug("voice.key", "none on this origin", true);
         setStatus("notReady");
         setReason("noKey");
         return;
@@ -410,7 +433,17 @@ export function useLiveVoice(options: LiveVoiceOptions = {}): LiveVoice {
        * 許可ダイアログで 時間が たったら 1枚目も 作り直す（`FIRST_AUTH_FRESH_MS`）。
        */
       const models = wanted.length > 0 ? wanted : [DEFAULT_LIVE_TALK_MODEL];
-      const mint = async () => authFromToken(await createLiveToken({ apiKey }), apiKey);
+      liveDebug("voice.start", `${silent ? "silent " : ""}models=${models.join(",")}`);
+      const mint = async () => {
+        const minted = await createLiveToken({ apiKey });
+        const auth = authFromToken(minted, apiKey);
+        liveDebug(
+          "voice.token",
+          minted.ok ? "ok" : auth.ok ? `${minted.reason} -> key direct` : minted.reason,
+          !auth.ok,
+        );
+        return auth;
+      };
       const first = await mint();
       const firstFreshUntil = Date.now() + FIRST_AUTH_FRESH_MS;
       if (stale()) return;
@@ -423,6 +456,7 @@ export function useLiveVoice(options: LiveVoiceOptions = {}): LiveVoice {
       // マイクは**つなぐ前**に許可を取る。つないでから断られると、
       // 相手だけが話して学習者が答えられない状態で残る
       let stream: MediaStream;
+      noteMicPermission("voice");
       try {
         stream = await navigator.mediaDevices.getUserMedia({
           audio: {
@@ -433,7 +467,10 @@ export function useLiveVoice(options: LiveVoiceOptions = {}): LiveVoice {
             autoGainControl: true,
           },
         });
-      } catch {
+        liveDebug("voice.mic", describeStream(stream));
+      } catch (error) {
+        // ブラウザの エラー名で 原因が 分かる（NotAllowedError＝許可・NotReadableError＝ほかの アプリ 等）
+        liveDebug("voice.mic", describeError(error), true);
         if (stale()) return;
         setStatus("notReady");
         setReason("noMic");
@@ -460,6 +497,11 @@ export function useLiveVoice(options: LiveVoiceOptions = {}): LiveVoice {
         const outCtx = new AudioContext();
         // 自動再生の制限で止まったまま始まることがある。動かさないと1音も出ない
         if (outCtx.state === "suspended") await outCtx.resume();
+        liveDebug(
+          "voice.out",
+          `${outCtx.state} ${outCtx.sampleRate}Hz`,
+          outCtx.state !== "running",
+        );
         if (stale()) {
           void outCtx.close();
           return;
@@ -579,6 +621,8 @@ export function useLiveVoice(options: LiveVoiceOptions = {}): LiveVoice {
                  *   返事（相手）      … turnComplete で 1つに束ねる
                  */
                 const piece = readTranscript(message);
+                if (piece)
+                  liveDebug(piece.from === "me" ? "voice.heard" : "voice.said", piece.text);
                 if (piece?.from === "me") {
                   heardRef.current += piece.text;
                   /*
@@ -606,10 +650,13 @@ export function useLiveVoice(options: LiveVoiceOptions = {}): LiveVoice {
                  *（2026-08-20 の 指摘）。
                  */
                 if (isInterrupted(message)) {
+                  liveDebug("voice.interrupted");
                   clearScheduled(outRef.current);
                   saidRef.current = "";
                 }
                 if (isTurnComplete(message)) {
+                  liveDebug("voice.turn", `audio chunks=${turnAudioRef.current}`);
+                  turnAudioRef.current = 0;
                   if (saidRef.current.trim()) {
                     const said = saidRef.current.trim();
                     saidRef.current = "";
@@ -618,12 +665,18 @@ export function useLiveVoice(options: LiveVoiceOptions = {}): LiveVoice {
                   // ためた かけらを 1つの WAV に して 画面へ 渡す（🔊 で 聞き返す ため）
                   flushTurn(outRef.current);
                 }
-                for (const pcm of readAudio(message)) play(outRef.current, pcm);
+                for (const pcm of readAudio(message)) {
+                  turnAudioRef.current += 1;
+                  play(outRef.current, pcm);
+                }
                 /*
                  * 「そろそろ 切ります」の 予告。切れる 前に こちらから 張り直す
                  *（切れて からだと、その ひとことが 途中で 消える）。
                  */
-                if (isGoAway(message)) retryLater();
+                if (isGoAway(message)) {
+                  liveDebug("voice.goAway");
+                  retryLater();
+                }
               },
               /*
                * **したくの 前の 切断は「この モデルに 断られた」**（2026-09-16）。
@@ -644,18 +697,43 @@ export function useLiveVoice(options: LiveVoiceOptions = {}): LiveVoice {
                * 壊れた あと かならず 閉じた（onclose）も 出す。両方で 張り直すと、
                * 1回 切れた だけで「3回まで」の 2回ぶんを 使う（2026-09-16 の 検収）。
                */
-              onerror: () => {
+              onerror: (error: unknown) => {
                 const phase = gate.phase();
+                liveDebug(
+                  "voice.error",
+                  `${model} ${phase} ${describeError(error)}`,
+                  phase !== "abandoned",
+                );
                 if (phase === "waiting" || phase === "late") gate.fail("upstream");
               },
               onclose: (event: unknown) => {
                 const phase = gate.phase();
+                // こちらが 閉じた つなぎ（abandoned・古い 世代）は 問題では ない
+                liveDebug(
+                  "voice.closed",
+                  `${model} ${phase} ${describeClose(event)}`,
+                  phase !== "abandoned" && !stale(),
+                );
                 if (phase === "waiting" || phase === "late") gate.fail(reasonFromClose(event));
                 else if (mine()) retryLater();
               },
             },
           });
-          return await gate.wait(connecting as unknown as Promise<VoiceSocket>);
+          liveDebug("voice.model", `${model} try`);
+          const triedAt = Date.now();
+          try {
+            const session = await gate.wait(connecting as unknown as Promise<VoiceSocket>);
+            liveDebug("voice.model", `${model} ready ${Date.now() - triedAt}ms`);
+            return session;
+          } catch (error) {
+            const why = error instanceof LiveSetupError ? error.reason : describeError(error);
+            liveDebug(
+              "voice.model",
+              `${model} ${why} ${Date.now() - triedAt}ms`,
+              why !== "superseded",
+            );
+            throw error;
+          }
         };
 
         const connected = await connectLiveInOrder({
@@ -665,6 +743,11 @@ export function useLiveVoice(options: LiveVoiceOptions = {}): LiveVoice {
           stop: stale,
           lateGraceMs: LIVE_SETUP_TIMEOUT_MS,
         });
+        liveDebug(
+          "voice.connect",
+          connected.ok ? `ok ${connected.model}` : `${connected.stage} ${connected.reason}`,
+          !connected.ok,
+        );
         if (stale()) {
           // 待って いる あいだに 次の つなぎが 始まった。届いた ものは 使わずに 閉じる
           if (connected.ok) connected.session.close();
@@ -710,9 +793,13 @@ export function useLiveVoice(options: LiveVoiceOptions = {}): LiveVoice {
          *（音声スレッドで動かすため。メインスレッドで作っていたころは、画面が
          * 忙しいと語の途中が丸ごと落ちて、何を言っても書き起こしが崩れていた）。
          */
+        micStatsRef.current = { frames: 0, sent: 0, peak: 0 };
         const capture = await startMicCapture(stream, (pcm) => {
+          micStatsRef.current.frames += 1;
           // 押して いない あいだは 捨てる（口は 開いた まま・音だけ ためない）
           if (!talkingRef.current) return;
+          micStatsRef.current.sent += 1;
+          micStatsRef.current.peak = Math.max(micStatsRef.current.peak, pcmPeak(pcm));
           /*
            * **ためずに その場で 送る**。ためて 最後に まとめて 送って いた ころは、
            * 1回目の 返事が 来ない／あとで 2つ まとめて 来る ことが あった
@@ -759,7 +846,8 @@ export function useLiveVoice(options: LiveVoiceOptions = {}): LiveVoice {
           retriesRef.current = 0;
           void connectRef.current(swapTo, args.voice, undefined, true);
         }
-      } catch {
+      } catch (error) {
+        liveDebug("voice.crash", describeError(error), true);
         if (stale()) return;
         if (silent) {
           retryLater();
@@ -870,6 +958,13 @@ export function useLiveVoice(options: LiveVoiceOptions = {}): LiveVoice {
      * ので、学習者には「返事が 来ない」と しか 見えない。話しはじめる ここで 起こす。
      */
     void outRef.current?.ctx.resume();
+    liveDebug(
+      "voice.talk",
+      `start (mic frames so far=${micStatsRef.current.frames} session=${sessionRef.current ? "yes" : "no"})`,
+      !sessionRef.current,
+    );
+    micStatsRef.current.sent = 0;
+    micStatsRef.current.peak = 0;
     talkingRef.current = true;
     setTalking(true);
     // 「ここから 話す」を こちらから 伝える（自動の 検出は 切って ある）
@@ -885,6 +980,9 @@ export function useLiveVoice(options: LiveVoiceOptions = {}): LiveVoice {
     if (!talkingRef.current) return;
     talkingRef.current = false;
     setTalking(false);
+    const { sent, peak } = micStatsRef.current;
+    // 送った 数が 0・音が ほぼ 無音 なら、マイクの 流れか 入力の 選びかたの 問題
+    liveDebug("voice.talk", `end sent=${sent} peak=${peak.toFixed(2)}`, sent === 0 || peak < 0.01);
     /*
      * 「言い終わった」を 伝える（ここで 相手が 返事を 作りはじめる）。
      * `audioStreamEnd` は **自動の 検出が 生きて いる ときだけ**の 合図なので、

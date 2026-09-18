@@ -659,3 +659,89 @@ describe("たいわの 🎤（オンの あいだだけ 送る）", () => {
     expect(kinds()).toEqual(["activityStart"]);
   });
 });
+
+/*
+ * **つなぎの 記録**（`?debug=1`・2026-09-18「マイクが うまく 動かない」）。
+ * 画面が「いまは したの らんに かいて こたえて ください」しか 出さず、どこで
+ * 止まったか 分からなかった。フックが 止まった ところを 記録に 残すかを 見る。
+ * 記録に **鍵・トークンが 入らない** ことも ここで 見る。
+ */
+describe("つなぎの 記録（live-debug）", () => {
+  async function load() {
+    const { useLiveVoice } = await import("../src/components/meeting/use-live-voice");
+    const debug = await import("../src/lib/ai/live-debug");
+    return {
+      render: () => react.render(() => useLiveVoice()),
+      debug,
+      /** 記録を 画面と 同じ 1行ずつに した もの。 */
+      lines: () => debug.readLiveDebug().map(debug.formatLiveDebugEntry),
+    };
+  }
+
+  it("マイクを 断られたら、理由は noMic の まま、ブラウザの エラー名を 残す", async () => {
+    vi.stubGlobal("navigator", {
+      mediaDevices: {
+        getUserMedia: async () => {
+          throw Object.assign(new Error("Permission denied"), { name: "NotAllowedError" });
+        },
+      },
+    });
+    const { render, debug } = await load();
+    void render().start("指示");
+    await vi.advanceTimersByTimeAsync(1_000);
+
+    expect(render().status).toBe("notReady");
+    expect(render().reason).toBe("noMic");
+    const problem = debug.lastLiveProblem();
+    expect(problem?.what).toBe("voice.mic");
+    expect(problem?.detail).toBe("NotAllowedError: Permission denied");
+    // つなぐ 前に 止まった（モデルには 1つも 行って いない）
+    expect(sdk.connects).toEqual([]);
+  });
+
+  it("先頭に 断られて 控えで つながった 道すじが 残り、トークンは 残らない", async () => {
+    sdk.plan = { [SPARE]: "accept" };
+    const { render, debug, lines } = await load();
+    void render().start("指示");
+    await vi.advanceTimersByTimeAsync(3_000);
+
+    const log = lines().join("\n");
+    expect(log).toContain(`voice.model ${HEAD} try`);
+    expect(log).toContain(`!! voice.model ${HEAD} modelNotFound`);
+    expect(log).toContain(`voice.connect ok ${SPARE}`);
+    expect(log).not.toMatch(/auth_tokens\/\d/);
+    // 先頭に 断られた ことは、控えで つながった あとも 記録に 残る
+    expect(debug.lastLiveProblem()?.detail).toContain(HEAD);
+  });
+
+  it("鍵の 問題は トークンの 理由の 名前で 残す", async () => {
+    env.tokenFails = "keyRestricted";
+    const { render, debug } = await load();
+    void render().start("指示");
+    await vi.advanceTimersByTimeAsync(500);
+
+    expect(render().reason).toBe("keyRestricted");
+    expect(debug.lastLiveProblem()).toMatchObject({ what: "voice.token", detail: "keyRestricted" });
+  });
+
+  it("押して 話した あいだに 送った 音の 数を 残す（0 なら 失敗として 残す）", async () => {
+    sdk.plan = { [HEAD]: "accept" };
+    const { render, debug, lines } = await load();
+    void render().start("指示");
+    await vi.advanceTimersByTimeAsync(1_000);
+    expect(render().status).toBe("live");
+
+    render().startTalking();
+    render().stopTalking();
+    expect(debug.lastLiveProblem()).toMatchObject({ what: "voice.talk" });
+    expect(debug.lastLiveProblem()?.detail).toContain("sent=0");
+
+    render().startTalking();
+    const loud = new Int16Array(2048).fill(16_000);
+    env.captures[0]!.onPcm?.(loud);
+    env.captures[0]!.onPcm?.(loud);
+    render().stopTalking();
+    expect(lines().at(-1)).toContain("voice.talk end sent=2 peak=0.49");
+    expect(lines().at(-1)).not.toContain("!!");
+  });
+});

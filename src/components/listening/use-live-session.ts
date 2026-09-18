@@ -7,9 +7,18 @@ import {
   createSetupGate,
   FIRST_AUTH_FRESH_MS,
   LIVE_SETUP_TIMEOUT_MS,
+  LiveSetupError,
   reasonFromClose,
   startingWith,
 } from "@/lib/ai/live-connect";
+import {
+  describeClose,
+  describeError,
+  describeStream,
+  liveDebug,
+  noteMicPermission,
+  pcmPeak,
+} from "@/lib/ai/live-debug";
 import { createLiveToken } from "@/lib/ai/live-token";
 import { DEFAULT_LIVE_TALK_MODEL, LIVE_TALK_MODELS } from "@/lib/ai/models";
 import { getGeminiKey, getLiveModel } from "@/lib/profile";
@@ -144,6 +153,8 @@ export function useLiveSession(): LiveSession {
   const outRef = useRef<Output | null>(null);
   /** いまの つなぎの 世代。`connect` と `disconnect` の たびに 進む。 */
   const epochRef = useRef(0);
+  /** マイクの 音の 数（`?debug=1` の 記録用。use-live-voice と 同じ）。 */
+  const micStatsRef = useRef({ frames: 0, sent: 0, peak: 0 });
 
   /** 持って いる ものを 全部 止める（状態は 触らない）。 */
   const release = useCallback(() => {
@@ -165,6 +176,7 @@ export function useLiveSession(): LiveSession {
     const heard = heardRef.current.trim();
     heardRef.current = "";
     if (!heard) return;
+    liveDebug("taiwa.utterance", heard);
     utteranceIdRef.current += 1;
     const id = utteranceIdRef.current;
     setTranscript((prev) => [...prev, { from: "me", text: heard, mode: "voice" }]);
@@ -210,6 +222,8 @@ export function useLiveSession(): LiveSession {
 
       const apiKey = getGeminiKey();
       if (!apiKey) {
+        // 鍵は 画面の 源（本番・STG・ブランチの URL）ごとに 別
+        liveDebug("taiwa.key", "none on this origin", true);
         setStatus("notReady");
         setReason("noKey");
         return;
@@ -246,7 +260,17 @@ export function useLiveSession(): LiveSession {
        * トークンは 1回 使い切りなので、2つ目の モデルからは 作り直す（`connectLiveInOrder`）。
        * 許可ダイアログで 時間が たったら 1枚目も 作り直す（`FIRST_AUTH_FRESH_MS`）。
        */
-      const mint = async () => authFromToken(await createLiveToken({ apiKey }), apiKey);
+      liveDebug("taiwa.start", `models=${models.join(",")}`);
+      const mint = async () => {
+        const minted = await createLiveToken({ apiKey });
+        const auth = authFromToken(minted, apiKey);
+        liveDebug(
+          "taiwa.token",
+          minted.ok ? "ok" : auth.ok ? `${minted.reason} -> key direct` : minted.reason,
+          !auth.ok,
+        );
+        return auth;
+      };
       const first = await mint();
       const firstFreshUntil = Date.now() + FIRST_AUTH_FRESH_MS;
       if (stale()) return;
@@ -262,6 +286,7 @@ export function useLiveSession(): LiveSession {
        * ただし**断られても止めない**——書いて送れば会話は成り立つ（劣化運転）。
        */
       let stream: MediaStream | null = null;
+      noteMicPermission("taiwa");
       try {
         stream = await navigator.mediaDevices.getUserMedia({
           audio: {
@@ -272,7 +297,10 @@ export function useLiveSession(): LiveSession {
             autoGainControl: true,
           },
         });
-      } catch {
+        liveDebug("taiwa.mic", describeStream(stream));
+      } catch (error) {
+        // 書いて 送る 道は 残る（劣化運転）。原因は ブラウザの エラー名で 分かる
+        liveDebug("taiwa.mic", describeError(error), true);
         stream = null;
       }
       if (stale()) {
@@ -294,6 +322,11 @@ export function useLiveSession(): LiveSession {
         const outCtx = new AudioContext({ sampleRate: OUT_RATE });
         // 自動再生の制限で止まったまま始まることがある。動かさないと1音も出ない
         if (outCtx.state === "suspended") await outCtx.resume();
+        liveDebug(
+          "taiwa.out",
+          `${outCtx.state} ${outCtx.sampleRate}Hz`,
+          outCtx.state !== "running",
+        );
         if (stale()) {
           void outCtx.close();
           return;
@@ -357,6 +390,8 @@ export function useLiveSession(): LiveSession {
                  *   返事（相手）      … turnComplete で 1つに束ねる
                  */
                 const piece = readTranscript(message);
+                if (piece)
+                  liveDebug(piece.from === "me" ? "taiwa.heard" : "taiwa.said", piece.text);
                 if (piece?.from === "me") heardRef.current += piece.text;
                 if (piece?.from === "client") {
                   flushHeard();
@@ -369,6 +404,7 @@ export function useLiveSession(): LiveSession {
                  * 1つの 吹き出しに つながる（use-live-voice と 同じ 扱い）。
                  */
                 if (isInterrupted(message)) {
+                  liveDebug("taiwa.interrupted");
                   clearScheduled(out);
                   saidRef.current = "";
                 }
@@ -384,8 +420,13 @@ export function useLiveSession(): LiveSession {
                * モデルへ 進む（SDK の connect は 断られても 返らない）。
                * つないだ あとの 切断だけを 画面の 状態に する。
                */
-              onerror: () => {
+              onerror: (error: unknown) => {
                 const phase = gate.phase();
+                liveDebug(
+                  "taiwa.error",
+                  `${model} ${phase} ${describeError(error)}`,
+                  phase !== "abandoned",
+                );
                 if (phase === "waiting" || phase === "late") gate.fail("upstream");
                 else if (mine()) {
                   talkingRef.current = false;
@@ -395,6 +436,11 @@ export function useLiveSession(): LiveSession {
               },
               onclose: (event: unknown) => {
                 const phase = gate.phase();
+                liveDebug(
+                  "taiwa.closed",
+                  `${model} ${phase} ${describeClose(event)}`,
+                  phase !== "abandoned" && !stale(),
+                );
                 if (phase === "waiting" || phase === "late") gate.fail(reasonFromClose(event));
                 else if (mine()) {
                   talkingRef.current = false;
@@ -404,7 +450,21 @@ export function useLiveSession(): LiveSession {
               },
             },
           });
-          return await gate.wait(connecting as unknown as Promise<LiveSocket>);
+          liveDebug("taiwa.model", `${model} try`);
+          const triedAt = Date.now();
+          try {
+            const session = await gate.wait(connecting as unknown as Promise<LiveSocket>);
+            liveDebug("taiwa.model", `${model} ready ${Date.now() - triedAt}ms`);
+            return session;
+          } catch (error) {
+            const why = error instanceof LiveSetupError ? error.reason : describeError(error);
+            liveDebug(
+              "taiwa.model",
+              `${model} ${why} ${Date.now() - triedAt}ms`,
+              why !== "superseded",
+            );
+            throw error;
+          }
         };
 
         const connected = await connectLiveInOrder({
@@ -415,6 +475,11 @@ export function useLiveSession(): LiveSession {
           // 期限切れで 待って いる つなぎが あれば、決める 前に 少し 待つ（遅い 回線）
           lateGraceMs: LIVE_SETUP_TIMEOUT_MS,
         });
+        liveDebug(
+          "taiwa.connect",
+          connected.ok ? `ok ${connected.model}` : `${connected.stage} ${connected.reason}`,
+          !connected.ok,
+        );
         if (stale()) {
           // つなぎ途中に 相手が かわった。届いた セッションは 使わずに 閉じる（居座らせない）
           // 再生は 次の つなぎ（か 切断）の 片づけが もう 閉じた（二度 閉じると 投げる）
@@ -445,9 +510,13 @@ export function useLiveSession(): LiveSession {
          * 語の途中が丸ごと落ちて、何を言っても書き起こしが崩れる）。
          */
         if (stream) {
+          micStatsRef.current = { frames: 0, sent: 0, peak: 0 };
           const capture = await startMicCapture(stream, (pcm) => {
+            micStatsRef.current.frames += 1;
             // 🎤 が オフの あいだの 音は **送らずに 捨てる**（教室の 声を 相手に 届けない）
             if (stale() || !talkingRef.current) return;
+            micStatsRef.current.sent += 1;
+            micStatsRef.current.peak = Math.max(micStatsRef.current.peak, pcmPeak(pcm));
             sessionRef.current?.sendRealtimeInput({
               audio: {
                 data: bytesToBase64(new Uint8Array(pcm.buffer, pcm.byteOffset, pcm.byteLength)),
@@ -471,7 +540,9 @@ export function useLiveSession(): LiveSession {
          * 画面が「マイクは つかえません」に 切りかわって 🎤 が 一瞬 消える。
          */
         setStatus("live");
-      } catch {
+      } catch (error) {
+        // 画面には 出さない（下の 注記）。`?debug=1` の 記録には 伏せた 形で 残す
+        liveDebug("taiwa.crash", describeError(error), true);
         if (stale()) return;
         // 例外の中身は出さない。短命トークンが混ざりうるうえ、SDK の生メッセージは
         // 学習者にも先生にも読めない。理由の名前だけ渡す。
@@ -519,6 +590,9 @@ export function useLiveSession(): LiveSession {
     saidRef.current = "";
     // 別の タブを 見て 戻った あとなど、鳴らす 側が 止まって いる ことが ある
     void outRef.current?.ctx.resume();
+    liveDebug("taiwa.talk", `start (mic frames so far=${micStatsRef.current.frames})`);
+    micStatsRef.current.sent = 0;
+    micStatsRef.current.peak = 0;
     talkingRef.current = true;
     setTalking(true);
     session.sendRealtimeInput({ activityStart: {} });
@@ -529,6 +603,8 @@ export function useLiveSession(): LiveSession {
     if (!talkingRef.current) return;
     talkingRef.current = false;
     setTalking(false);
+    const { sent, peak } = micStatsRef.current;
+    liveDebug("taiwa.talk", `end sent=${sent} peak=${peak.toFixed(2)}`, sent === 0 || peak < 0.01);
     sessionRef.current?.sendRealtimeInput({ activityEnd: {} });
   }, []);
 

@@ -8,6 +8,7 @@ import {
   LiveSetupError,
   reasonFromClose,
 } from "@/lib/ai/live-connect";
+import { liveDebug } from "@/lib/ai/live-debug";
 import { createLiveToken } from "@/lib/ai/live-token";
 import { LIVE_TEXT_MODELS } from "@/lib/ai/models";
 import {
@@ -213,6 +214,7 @@ export async function requestAsakaiJudge(
     new Promise<null>((resolve) =>
       setTimeout(() => {
         gaveUp = true;
+        liveDebug("judge.asakai", `timeout ${ASAKAI_TIMEOUT_MS}ms`, true);
         resolve(null);
       }, ASAKAI_TIMEOUT_MS),
     ),
@@ -255,7 +257,8 @@ async function askAsakai(
     mine = opened.session;
     const args = await mine.ask(buildAsakaiJudgePrompt(context));
     return parseAsakaiJudge(args, facts);
-  } catch {
+  } catch (error) {
+    liveDebug("judge.asakai", `ask ${error instanceof JudgeError ? error.reason : "failed"}`, true);
     /*
      * **自分が 使った つなぎ だけを 捨てる**（2026-09-14 の 検収）。
      *
@@ -329,12 +332,14 @@ export async function requestJudge(request: JudgeRequest): Promise<JudgeApiResul
   const apiKey = getGeminiKey();
   if (!apiKey) return { ok: false, reason: "noKey" };
   // どこで 詰まっても 必ず 返る（止まらない ことを 見かたの 質より 上に 置く）
-  return await Promise.race([
+  const result = await Promise.race([
     askJudge(apiKey, request),
     new Promise<JudgeApiResult>((resolve) =>
       setTimeout(() => resolve({ ok: false, reason: "timeout" }), OVERALL_TIMEOUT_MS),
     ),
   ]);
+  liveDebug("judge.judge", result.ok ? `ok ${result.model}` : result.reason, !result.ok);
+  return result;
 }
 
 /**
@@ -500,6 +505,12 @@ async function openJudge(apiKey: string, kind: SlotKind, key: string): Promise<O
   const opened = await slot.opening;
   slot.opening = null;
   if (opened.ok) slot.session = opened.session;
+  // 見かたの つなぎの 張り直し（`?debug=1` の 記録。使い回しの ときは 残さない）
+  liveDebug(
+    `judge.${kind}`,
+    opened.ok ? `open ${opened.session.model}` : opened.reason,
+    !opened.ok,
+  );
   return opened;
 }
 
