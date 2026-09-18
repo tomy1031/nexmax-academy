@@ -197,6 +197,11 @@ codex -i public/img/characters/nexmax/reference.png \
 | — | 同ページの **しごと 9枚は 撮らない**。朝礼の 画面と 同じ `asakai_tasks.json` の 絵を 使う（同じ しごとの 絵が 2枚に ならない ように） | 2026-09-16 |
 | `scripts/images/asakai_team_tabi.json` | 同 4枚（旅行者が アプリを つかう カード。**設定画を 参照に 渡さない**） | 2026-09-16 |
 | `scripts/images/asakai_team_fujiki.json` | 同 1枚（担当カード 5枚目の 藤木さん。**藤木の 設定画だけ**を 参照に 渡す） | 2026-09-16 |
+| `scripts/images/yuurei_tasks_moji.json` | 「Next Talent の 夕礼」ページの しごと 5枚（夕礼 月曜の progress と 同じ 5つ。画面に 字・ふりがな） | 2026-09-18 |
+| `scripts/images/yuurei_team_zukai.json` | 同 13枚（流れ・担当 4枚・名前を 呼ばれる・報告 4枚・作業記録の 見え方・❌／⭕。**文字あり**・夕方の 光） | 2026-09-18 |
+| `scripts/images/yuurei_team.json` | 同 2枚（表紙・ゴール。文字なし） | 2026-09-18 |
+| `scripts/images/yuurei_team_fujiki.json` | 同 1枚（担当カード 5枚目の 藤木さん。依頼書の 字は 追加要望・優先順位・仕様変更） | 2026-09-18 |
+| `scripts/images/yuurei_team_kigyou.json` | 同 3枚（企業の 担当者が Next Talent を 使う カード。**設定画を 参照に 渡さない**） | 2026-09-18 |
 
 **学習者役を 毎回 同じ 顔に しない**（2026-08-28 の 指摘「同じ女性を使いすぎ」「背景にもバリエーションが
 欲しい」）。§6.7 は「学習者役の 学生は 1枚目を 絵柄アンカーに して 顔と 服を そろえる」と 書いて いるが、

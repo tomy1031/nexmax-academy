@@ -1,0 +1,156 @@
+{
+  "refs": [
+    "public/img/characters/hendy/sheet.webp",
+    "public/img/characters/okuda/sheet.webp",
+    "public/img/characters/nyam/sheet.webp"
+  ],
+  "_comment": "「Next Talent の 夕礼」ページ（content/articles/yuurei_nexttalent.json）の 絵の うち、文字を 焼く 13枚。KhmerSabai の 朝礼（asakai_team_zukai.json）と 同じ 作り・同じ noText。夕礼なので 光は 夕方。❌ の 絵は **名前の ある 登場人物に やらせない**（AGENTS.md 規律10）——読み上げて いるのは 架空の 新人。字を 焼かない 2枚は yuurei_team.json、藤木さんは yuurei_team_fujiki.json、企業の 担当者の 3枚は yuurei_team_kigyou.json、しごとの 5枚は yuurei_tasks_moji.json。",
+  "style": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This is a TEACHING picture, not a mood picture: what each person is doing must be readable from the picture alone. This one is a teaching diagram: few large elements, generous spacing, each label sitting on a soft cream panel with a rounded border, arranged so the eye reads it in one pass. The product in these pictures is Next Talent, a web system where companies look for university students: its pages are clean white with rounded cards.",
+  "noText": "Japanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana, and neither do Latin letters or digits. Spell every character exactly as given. No other letters, numbers, logos or watermarks anywhere in the picture.",
+  "negative": "Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots, university logos.",
+  "output": "1536x1024",
+  "scenes": [
+    {
+      "out": "yuurei_flow",
+      "dest": "public/img/articles/yuurei_nexttalent/flow.webp",
+      "title": "今週 作る もの（学生検索 → 学生詳細 → スキルグラフ）",
+      "where": "content/articles/yuurei_nexttalent.json 今週、チームで 作る もの",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: this week the team builds one chain: search for a student, open that student's page, and see the student's skills as a graph. A teaching diagram of three large rounded cream cards in a row on a soft sky-blue background, joined by two thick sky-blue arrows pointing right. Card 1 holds a drawing of a web page with a rounded search box, a small magnifying-glass mark and three tiny student cards under it; its Japanese label is printed across the top of the card. Card 2 holds a drawing of one student's profile page with a big round face picture and a few grey bars; its Japanese label is printed across the top of the card. Card 3 holds a drawing of a horizontal bar chart with six bars, each shorter than the one above; its Japanese label is printed across the top of the card. Few large elements, generous spacing, no people.",
+      "text": ["学生検索", "学生詳細", "スキルグラフ"]
+    },
+    {
+      "out": "yuurei_duty_nyam",
+      "dest": "public/img/articles/yuurei_nexttalent/duty_nyam.webp",
+      "title": "ニャムさん：学生・スキルデータ管理",
+      "where": "content/articles/yuurei_nexttalent.json チームと 担当 カード1",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: Nyam prepares the data — the students' information and each student's skill scores. A teaching diagram on a soft sky-blue background. On the left a large rounded database cylinder with three stacked student rows inside it, each row a small round face picture and a short grey bar; a cream label panel above the cylinder carries its Japanese label. On the right a large cream table card with two rows, the first row reading \"JavaScript 90\" and the second \"React 85\"; a cream label panel above the table carries its Japanese label. A thick sky-blue line joins the cylinder and the table. No people, no other writing. In the BOTTOM RIGHT CORNER of the picture there is a small round portrait inset with a thick cream border — inside it, the head and shoulders of Nyam — a Southeast Asian man in his twenties with warm light-brown skin, short black hair swept up and back, and a coral knit cardigan over a cream shirt (follow his model sheet), facing the viewer with a calm friendly smile. The inset is about one fifth of the picture height and sits clearly on top of the scene.",
+      "text": ["学生データ", "スキル点数", "JavaScript 90", "React 85"]
+    },
+    {
+      "out": "yuurei_duty_hendy",
+      "dest": "public/img/articles/yuurei_nexttalent/duty_hendy.webp",
+      "title": "ヘンディさん：学生検索バックエンド",
+      "where": "content/articles/yuurei_nexttalent.json チームと 担当 カード2",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: Hendy builds the search server: a search word goes in, and the matching students come back. A teaching diagram on a soft sky-blue background, READ FROM LEFT TO RIGHT. On the left a rounded search box with a small magnifying-glass mark and the word \"React\" typed inside it. A thick sky-blue arrow runs right into a large rounded server box with a row of soft indicator dots; a cream label panel above the server carries its Japanese label. From the server a second thick sky-blue arrow runs further right and carries three small student cards, each with a round face picture and a grey bar. No people, no other writing. In the BOTTOM RIGHT CORNER of the picture there is a small round portrait inset with a thick cream border — inside it, the head and shoulders of the team leader Hendy — a slim man in his late twenties with short black slightly tousled hair, a navy two-button suit, a white shirt and a navy tie (follow his model sheet), facing the viewer with a calm friendly smile. The inset is about one fifth of the picture height and sits clearly on top of the scene.",
+      "text": ["検索API", "React"]
+    },
+    {
+      "out": "yuurei_duty_you",
+      "dest": "public/img/articles/yuurei_nexttalent/duty_you.webp",
+      "title": "あなた：学生検索・スキル可視化フロントエンド",
+      "where": "content/articles/yuurei_nexttalent.json チームと 担当 カード3",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: you build BOTH ends — the student search page at the start and the skill graph at the end. A large monitor standing on a tidy desk, seen almost straight on so the screen fills most of the frame. The screen is split into two halves. The LEFT half is the student search page: a cream heading panel at the top carrying its Japanese label, a rounded search box, three small rounded filter chips and three small student cards with round face pictures. The RIGHT half is the skill graph: a cream heading panel at the top carrying its Japanese label, and six thick horizontal sky-blue bars, each shorter than the one above. No people in the room. In the BOTTOM RIGHT CORNER of the picture there is a small round portrait inset with a thick cream border — inside it, the head and shoulders of the two new engineers — a young Cambodian woman in her early twenties with warm light-brown skin, a round friendly face and black hair tied back in a low ponytail, wearing a mint-green blouse, and a young Cambodian man in his early twenties with warm light-brown skin, short black hair with a neat side part, wearing a light blue short-sleeved shirt; both wear a lanyard with a blank white card. NEVER GIVE THESE TWO THE SAME FACE — she is clearly a woman and he is clearly a man, their two heads side by side inside the same round inset, facing the viewer with a calm friendly smile. The inset is about one fifth of the picture height and sits clearly on top of the scene.",
+      "text": ["学生検索", "スキルグラフ"]
+    },
+    {
+      "out": "yuurei_duty_okuda",
+      "dest": "public/img/articles/yuurei_nexttalent/duty_okuda.webp",
+      "title": "奥田さん：学生詳細フロントエンド",
+      "where": "content/articles/yuurei_nexttalent.json チームと 担当 カード4",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: Okuda builds the student's detail page, and leaves an empty place on it where your skill graph will go. A large monitor standing on a tidy desk, seen almost straight on so the screen fills most of the frame. The screen shows one student's detail page: a cream heading panel across the top carrying its Japanese label, a big round face picture of a smiling university student on the left, three plain grey bars beside it, and across the bottom a wide EMPTY rectangle drawn with a thick DASHED sky-blue border, with a small cream label panel inside it carrying its Japanese label. No people in the room. In the BOTTOM RIGHT CORNER of the picture there is a small round portrait inset with a thick cream border — inside it, the head and shoulders of Okuda — a man in his mid twenties with wavy messy black hair, black thick-rimmed glasses and a dark green hoodie (follow his model sheet), facing the viewer with a calm friendly smile. The inset is about one fifth of the picture height and sits clearly on top of the scene.",
+      "text": ["学生詳細", "スキルグラフ"]
+    },
+    {
+      "out": "yuurei_yobare",
+      "dest": "public/img/articles/yuurei_nexttalent/yobare.webp",
+      "title": "夕礼で ヘンディさんに 名前を 呼ばれる",
+      "where": "content/articles/yuurei_nexttalent.json あなたの 報告",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: at the end of the day the chair calls your name, and now it is your turn to speak. The same office at ten to six in the evening: warm golden-orange low sunlight through the windows, the desk lamps just switched on. The team stands in a half circle. the team leader Hendy — a slim man in his late twenties with short black slightly tousled hair, a navy two-button suit, a white shirt and a navy tie (follow his model sheet) stands at the left, turning towards the viewer's side of the circle and opening one hand towards the new engineer — a young Cambodian man in his early twenties with warm light-brown skin, short black hair with a neat side part, a friendly open face, wearing a light blue short-sleeved shirt, dark grey chinos and a lanyard with a blank white card, who stands at the right and straightens up, ready to speak, holding a small blank notebook. Okuda — a man in his mid twenties with wavy messy black hair, black thick-rimmed glasses and a dark green hoodie (follow his model sheet) and Nyam — a Southeast Asian man in his twenties with warm light-brown skin, short black hair swept up and back, and a coral knit cardigan over a cream shirt (follow his model sheet) stand between them and look towards the new engineer. Hendy has ONE rounded speech balloon above him, and the balloon carries the sentence listed below. Nothing else is written anywhere. Wide shot filling the frame.",
+      "text": ["では 次に ◯◯さん、お願いします。"]
+    },
+    {
+      "out": "yuurei_r1_kyou",
+      "dest": "public/img/articles/yuurei_nexttalent/r1_kyou.webp",
+      "title": "報告①：今日 行ったこと",
+      "where": "content/articles/yuurei_nexttalent.json 話す ことは 4つです カード1",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: today's work is finished, and that is what you report first. Close view of the new engineer — a young Cambodian man in his early twenties with warm light-brown skin, short black hair with a neat side part, a friendly open face, wearing a light blue short-sleeved shirt, dark grey chinos and a lanyard with a blank white card sitting at his desk in the evening, warm orange light through the window behind him, turned a little towards a large monitor and looking at it with a calm satisfied face, one hand resting flat on the desk. The monitor shows a finished student search page: a rounded search box, three small rounded filter chips and a row of student cards with round face pictures. Beside the monitor stands a small cream card carrying its Japanese label. The furigana on that label are exactly: きょう over 今日, and おこな over 行 — the kanji 行 here is read おこな, NEVER い. Nothing else is written anywhere.",
+      "text": ["今日 行ったこと"],
+      "output": "Output: one square illustration, 1024x1024. Close view — the subject fills the frame edge to edge.",
+      "_note": "2026-09-18: 1回目は 行 の ふりがなが い に なった（正しくは おこな）。読みを 場面の 文に 明記して 撮り直した。"
+    },
+    {
+      "out": "yuurei_r2_shinchoku",
+      "dest": "public/img/articles/yuurei_nexttalent/r2_shinchoku.webp",
+      "title": "報告②：進捗率",
+      "where": "content/articles/yuurei_nexttalent.json 話す ことは 4つです カード2",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: your whole feature is thirty-five percent done, and you say that number. Close view of a large monitor on a desk in the evening showing a clean progress screen: a label panel at the top carrying its Japanese label (the word for progress rate), and below it ONE thick horizontal progress bar, filled with sky blue for about one third of its length and pale grey for the rest, with 35% printed large just after the filled part. the new engineer — a young Cambodian man in his early twenties with warm light-brown skin, short black hair with a neat side part, a friendly open face, wearing a light blue short-sleeved shirt, dark grey chinos and a lanyard with a blank white card sits beside the monitor and points at the filled part of the bar with one hand, with a small confident smile. Warm orange evening light. Nothing else is written anywhere.",
+      "text": ["進捗率", "35%"],
+      "output": "Output: one square illustration, 1024x1024. Close view — the subject fills the frame edge to edge."
+    },
+    {
+      "out": "yuurei_r3_ashita",
+      "dest": "public/img/articles/yuurei_nexttalent/r3_ashita.webp",
+      "title": "報告③：明日 行うこと",
+      "where": "content/articles/yuurei_nexttalent.json 話す ことは 4つです カード3",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: before going home you decide tomorrow's job, and that is what you report next. A team task board on the office wall in the evening, warm orange light from the window. The board has two columns of sticky notes; the right column has a cream header panel carrying its Japanese label; its furigana are exactly あした over 明日 and おこな over 行. the new engineer — a young Cambodian man in his early twenties with warm light-brown skin, short black hair with a neat side part, a friendly open face, wearing a light blue short-sleeved shirt, dark grey chinos and a lanyard with a blank white card stands in front of the board and sticks ONE new large yellow sticky note into that right column with one hand, looking forward to tomorrow with a positive expression. Every sticky note on the board is completely blank. Nothing else is written anywhere.",
+      "text": ["明日 行うこと"],
+      "output": "Output: one square illustration, 1024x1024. Close view — the subject fills the frame edge to edge."
+    },
+    {
+      "out": "yuurei_r4_mondai",
+      "dest": "public/img/articles/yuurei_nexttalent/r4_mondai.webp",
+      "title": "報告④：問題点",
+      "where": "content/articles/yuurei_nexttalent.json 話す ことは 4つです カード4",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: if something went wrong today, you tell the team what happened and where it stands now. Close view of the new engineer — a young Cambodian man in his early twenties with warm light-brown skin, short black hair with a neat side part, a friendly open face, wearing a light blue short-sleeved shirt, dark grey chinos and a lanyard with a blank white card at his desk in the evening, looking at his monitor with a puzzled but calm face, one hand on his chin and the other hand on the desk beside a small blank notebook. The monitor shows a student page with a soft pale-red message window over it, with a round warning mark and one Japanese word printed large inside it. Not scary — just a small problem at work, warm evening light. Nothing else is written anywhere.",
+      "text": ["エラー"],
+      "output": "Output: one square illustration, 1024x1024. Close view — the subject fills the frame edge to edge."
+    },
+    {
+      "out": "yuurei_memo",
+      "dest": "public/img/articles/yuurei_nexttalent/memo.webp",
+      "title": "作業記録は こう 出る（例：ログイン画面を 作った 日）",
+      "where": "content/articles/yuurei_nexttalent.json 作業記録を そのまま 読みません",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: on the evening meeting screen you do not get a finished report — you only get the day's work record, one short line for each time of the day. A laptop on a meeting table in the evening, seen straight on and close, so its screen FILLS almost the whole frame. On the screen one white rounded panel. At the top of the panel a small heading carrying the first Japanese word listed below. Under it a vertical list with a thick brown line running down its left side; each row has a time printed in brown on the left and a short Japanese note on the right, in this exact order from top to bottom: 09:00 ログイン画面の 仕様を 確認 / 09:30 メールアドレスの 入力欄を 作成 / 10:30 パスワードの 入力欄を 作成 / 11:30 ログインボタンを 作成 / 12:00 昼休み / 13:00 ログインAPIと 接続 / 15:00 エラーメッセージの 表示を 追加 / 16:30 スマホで 表示を 確認. The rows are evenly spaced, all the same size, left-aligned like a real app screen. No people.",
+      "text": [
+        "きょうの メモ",
+        "09:00",
+        "ログイン画面の 仕様を 確認",
+        "09:30",
+        "メールアドレスの 入力欄を 作成",
+        "10:30",
+        "パスワードの 入力欄を 作成",
+        "11:30",
+        "ログインボタンを 作成",
+        "12:00",
+        "昼休み",
+        "13:00",
+        "ログインAPIと 接続",
+        "15:00",
+        "エラーメッセージの 表示を 追加",
+        "16:30",
+        "スマホで 表示を 確認"
+      ],
+      "_note": "2026-09-18: 月曜の 実際の 記録を 見本に すると、夕礼 月曜の 答えを 写せて しまう（constraints「練習の 例文は、説明で 使った 例と 別の 題材に する」）。題材は 朝礼ページの 説明と 同じ ログイン画面。"
+    },
+    {
+      "out": "yuurei_bad",
+      "dest": "public/img/articles/yuurei_nexttalent/bad.webp",
+      "title": "❌ 作業記録の 読み上げ",
+      "where": "content/articles/yuurei_nexttalent.json 作業記録を そのまま 読みません ❌ カード",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: reading the work record aloud line by line makes the report long, and nobody can tell what was finished. A meeting corner of the office at ten to six in the evening, warm orange light. On the left stands a new hire — a young man in his early twenties with short CURLY BROWN hair and a MUSTARD-YELLOW polo shirt; he is NOT the man in the light blue shirt and looks nothing like him — holding an open laptop in both hands and reading from it with his eyes down on the screen. Above him ONE very long rounded speech balloon that stretches across the top of the picture, filled with a long row of times written one after another, separated ONLY by wide spaces — never by slash marks — trailing off at the right edge. On the right, the team leader Hendy — a slim man in his late twenties with short black slightly tousled hair, a navy two-button suit, a white shirt and a navy tie (follow his model sheet) and Nyam — a Southeast Asian man in his twenties with warm light-brown skin, short black hair swept up and back, and a coral knit cardigan over a cream shirt (follow his model sheet) listen politely but look lost, heads tilted, one of them scratching his head — puzzled, never angry, never mocking. In the TOP LEFT CORNER a large thick RED cross mark (❌) on a white round badge — this mark is the point of the picture and is allowed.",
+      "text": ["9:00…", "9:30…", "10:30…", "11:30…"],
+      "_note": "2026-09-18: 1回目は 時刻の 区切りの / まで 字に なり、時刻も 記録（11:30）と ずれた。区切りを 空白だけに すると 明記して 撮り直した。"
+    },
+    {
+      "out": "yuurei_good",
+      "dest": "public/img/articles/yuurei_nexttalent/good.webp",
+      "title": "⭕ 仕事の 報告",
+      "where": "content/articles/yuurei_nexttalent.json 作業記録を そのまま 読みません ⭕ カード",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: when you put the work together into a few big pieces, the report is short and everyone understands what was finished. The same meeting corner at ten to six in the evening, warm orange light. On the left stands the new engineer — a young Cambodian man in his early twenties with warm light-brown skin, short black hair with a neat side part, a friendly open face, wearing a light blue short-sleeved shirt, dark grey chinos and a lanyard with a blank white card, holding a small notebook at his side and looking up at the team as he speaks, calm and confident. Above him ONE short rounded speech balloon holding exactly TWO big rounded pieces, like two blocks: the first block carries the first Japanese word listed below and the second block carries the second. On the right, the team leader Hendy — a slim man in his late twenties with short black slightly tousled hair, a navy two-button suit, a white shirt and a navy tie (follow his model sheet) and Nyam — a Southeast Asian man in his twenties with warm light-brown skin, short black hair swept up and back, and a coral knit cardigan over a cream shirt (follow his model sheet) nod with bright understanding smiles. In the TOP LEFT CORNER a large thick GREEN circle mark (⭕) on a white round badge — this mark is the point of the picture and is allowed.",
+      "text": ["ログイン画面", "エラーメッセージ"]
+    }
+  ]
+}

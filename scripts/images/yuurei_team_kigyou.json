@@ -1,0 +1,40 @@
+{
+  "refs": [],
+  "_comment": "「Next Talent の 夕礼」ページの「Next Talent とは？」の カード 3枚（企業の 担当者が Next Talent を 使う 場面）。KhmerSabai の 旅行者 4枚（asakai_team_tabi.json）と 同じ 考え方——**設定画を 参照に 渡さない**（渡すと 担当者まで 社員の 顔に なる。skill §6.7）。1枚ごとに 別の 人。画面の 中は 字を 少し 入れる（2026-09-18 の 指定「実際の表示画面と同じように、文字なども」）。",
+  "style": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. EVERY PICTURE IS A REAL PLACE: the office of a company that wants to hire young engineers — a meeting room or desk area with real chairs, windows, plants and a company-style interior — seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. This is a TEACHING picture, not a mood picture: what the person is doing must be readable from the picture alone. THE PERSON IN EACH PICTURE IS A HIRING MANAGER AT A CUSTOMER COMPANY, NEVER A NEXTMAKE ENGINEER — never draw a green hoodie, thick-rimmed glasses, a coral cardigan, a navy suit with a navy tie, a mint-green blouse or a light blue short-sleeved shirt with a lanyard. Each of these three pictures shows A DIFFERENT PERSON with a different face, and none of them is the same person. The screen they look at is Next Talent, a web system where companies look for university students: its pages are clean white with rounded cards.",
+  "noText": "Lettering — read this part carefully. The picture contains ONLY the words and numbers listed in the scene above, and no other writing at all. Print each of them LARGE and horizontally in a clean rounded gothic font with generous space around it, spelled EXACTLY as given, letter for letter and digit for digit, so that it stays sharp and easy to read at a glance. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height. Words written only in hiragana, katakana, Latin letters or digits take no furigana. Every other part of every screen, card and button is blank or shows only plain grey rounded bars. No other letters, numbers, logos, watermarks or speech balloons anywhere in the picture.",
+  "negative": "Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots, university logos. Never: misspelled words, extra words.",
+  "output": "1024x1024",
+  "scenes": [
+    {
+      "out": "yuurei_app_kensaku",
+      "dest": "public/img/articles/yuurei_nexttalent/app_kensaku.webp",
+      "title": "学生を 検索する（企業の 担当者）",
+      "where": "content/articles/yuurei_nexttalent.json Next Talent とは？ カード1",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: a hiring manager at a company uses Next Talent to search for students who have the skill she needs. Close view of a Japanese woman in her late thirties with shoulder-length brown hair, wearing a grey blazer over a white blouse, sitting at a meeting-room table and typing on an open laptop that FILLS most of the frame. On the laptop screen: at the top a plain header bar reading \"Next Talent\"; under it a wide rounded search box with a small magnifying-glass mark and the typed word \"React\"; under that a row of three student cards, each with a round face picture of a different smiling university student and one small rounded tag, the tags reading \"AUPP\", \"CADT\", \"AUPP\". Interested, hopeful expression.",
+      "text": ["Next Talent", "React", "AUPP", "CADT"],
+      "output": "Output: one square illustration, 1024x1024. Close view — the person and the screen fill the frame edge to edge."
+    },
+    {
+      "out": "yuurei_app_shousai",
+      "dest": "public/img/articles/yuurei_nexttalent/app_shousai.webp",
+      "title": "学生詳細を 見る（企業の 担当者）",
+      "where": "content/articles/yuurei_nexttalent.json Next Talent とは？ カード2",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: a hiring manager opens one student's page and reads about that student — university, Japanese level, self-introduction and portfolio. Close view of a Cambodian man in his forties with short grey-streaked hair and a neat moustache, wearing a white long-sleeved shirt with rolled sleeves, sitting at his office desk and leaning towards a large monitor that FILLS most of the frame, reading carefully with one hand on his chin. On the monitor one student's profile page: a big round face picture of a smiling university student at the top left, two rounded tags beside it reading \"AUPP\" and \"N3\", then two cream panels one under the other, the first with the small heading 自己紹介 above two grey bars, the second with the small heading ポートフォリオ above a small row of three picture thumbnails. Thoughtful, impressed expression.",
+      "text": ["AUPP", "N3", "自己紹介", "ポートフォリオ"],
+      "output": "Output: one square illustration, 1024x1024. Close view — the person and the screen fill the frame edge to edge."
+    },
+    {
+      "out": "yuurei_app_graph",
+      "dest": "public/img/articles/yuurei_nexttalent/app_graph.webp",
+      "title": "スキルを グラフで 確認する（企業の 担当者）",
+      "where": "content/articles/yuurei_nexttalent.json Next Talent とは？ カード3",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: a hiring manager checks at a glance which IT skills a student is strongest in, using a bar graph. Close view of a young Japanese man in his early thirties with short black hair and round silver-framed glasses, wearing a beige knit sweater over a collared shirt, standing and holding a large tablet in both hands; the tablet FILLS most of the frame and is turned a little towards the viewer. On the tablet one student's skill graph: EXACTLY SIX thick horizontal bars in warm yellow, one under another, each a little shorter than the one above, and the skill name printed at the left of the top three bars: \"JavaScript\", \"React\", \"SQL\"; the lower three bars carry only grey bars instead of names. Pleased, convinced smile.",
+      "text": ["JavaScript", "React", "SQL"],
+      "output": "Output: one square illustration, 1024x1024. Close view — the person and the tablet fill the frame edge to edge."
+    }
+  ]
+}

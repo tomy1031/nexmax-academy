@@ -1,26 +1,30 @@
 {
   "kind": "article",
   "id": "yuurei_nexttalent",
-  "title": "Next Talent と あなたの 担当",
-  "description": "夕礼に 出る 前に読みます。Next Talent が どんな システムで、チームの だれが 何を 作り、あなたが 何を 担当するかを 絵と カードで 見ます。",
+  "title": "Next Talent の 夕礼",
+  "description": "夕礼に 出る 前に 読む ページです。Next Talent という システム、今週 チームで 作る もの、だれが 何を 担当するか、そして あなたが 夕礼で 話す 4つと、作業記録の まとめ方が 分かります。",
   "blocks": [
     {
       "kind": "hero",
       "eyebrow": "🌇 報連相：報告",
-      "title": "Next Talent と あなたの 担当",
+      "title": "Next Talent の 夕礼",
       "lead": "あなたは ネクストメイクの エンジニアです。KhmerSabai の 決済が 終わった つぎの 週、Next Talent の 開発チームに 入りました。",
       "note": "夕礼に 出る 前に、ここを 読みます。3分で 終わります。",
       "image": {
         "src": "/img/articles/yuurei_nexttalent/hero.webp",
-        "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A small software team of four in a bright Phnom Penh office at dusk, standing in a short stand-up circle near a large monitor showing a student profile page with a colourful bar chart. Warm orange evening light through the window. No text or letters anywhere in the image.",
-        "refs": [],
-        "status": "empty"
+        "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This is a TEACHING picture, not a mood picture: what each person is doing must be readable from the picture alone. THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: at ten to six in the evening, at the end of the working day, the Next Talent team stands together for a short meeting and reports the day's work. The same Japanese IT office in the evening: warm golden-orange low sunlight through a big window, the sky outside turning orange and pink, desk lamps just switched on. Behind the team a large monitor on a desk shows one student's profile page with a round face picture and a horizontal bar chart of six bars. On the wall a round clock with plain hands (no numbers) points to ten to six. Four colleagues stand in a loose half circle, nobody sitting: the team leader Hendy — a slim man in his late twenties with short black slightly tousled hair, a navy two-button suit, a white shirt and a navy tie (follow his model sheet) stands at the left and opens the meeting with a small friendly nod; Okuda — a man in his mid twenties with wavy messy black hair, black thick-rimmed glasses and a dark green hoodie (follow his model sheet) and Nyam — a Southeast Asian man in his twenties with warm light-brown skin, short black hair swept up and back, and a coral knit cardigan over a cream shirt (follow his model sheet) stand in the middle holding small blank notebooks, listening; the new engineer — a young Cambodian man in his early twenties with warm light-brown skin, short black hair with a neat side part, a friendly open face, wearing a light blue short-sleeved shirt, dark grey chinos and a lanyard with a blank white card stands at the right, holding a small blank notebook, ready for his turn. Wide shot filling the frame. No text, no letters, no kanji, no kana, no numbers anywhere in the image. Screens, papers, whiteboards, books and signs are blank or show only soft abstract shapes and simple pictures. No watermark, no signature, no logo, no speech balloons, no floating symbols such as question marks, exclamation marks, arrows, light bulbs, stars or hearts. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots. University logos.",
+        "refs": [
+          "/img/characters/hendy/sheet.webp",
+          "/img/characters/okuda/sheet.webp",
+          "/img/characters/nyam/sheet.webp"
+        ],
+        "status": "done"
       }
     },
     {
       "kind": "heading",
       "level": 2,
-      "text": "Next Talent とは"
+      "text": "Next Talent とは？"
     },
     {
       "kind": "paragraph",
@@ -31,39 +35,70 @@
       "text": "企業の 担当者は、Next Talent を 使って 学生を さがします。大学・専攻・JLPTレベル・ITスキル・スキル点数・自己紹介・ポートフォリオを 見る ことが できます。"
     },
     {
-      "kind": "heading",
-      "level": 2,
-      "text": "今週 作るもの"
+      "kind": "paragraph",
+      "text": "今回は、Next Talent に つぎの 3つを 作ります。"
     },
     {
       "kind": "cards",
-      "tone": "step",
+      "tone": "plain",
       "columns": 3,
       "items": [
         {
           "icon": "🔍",
           "title": "学生を 検索する",
-          "text": "キーワード・大学・JLPTレベル・スキルで しぼり込みます。"
+          "text": "キーワード・大学・JLPTレベル・スキルで しぼり込みます。",
+          "image": {
+            "src": "/img/articles/yuurei_nexttalent/app_kensaku.webp",
+            "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. EVERY PICTURE IS A REAL PLACE: the office of a company that wants to hire young engineers — a meeting room or desk area with real chairs, windows, plants and a company-style interior — seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. This is a TEACHING picture, not a mood picture: what the person is doing must be readable from the picture alone. THE PERSON IN EACH PICTURE IS A HIRING MANAGER AT A CUSTOMER COMPANY, NEVER A NEXTMAKE ENGINEER — never draw a green hoodie, thick-rimmed glasses, a coral cardigan, a navy suit with a navy tie, a mint-green blouse or a light blue short-sleeved shirt with a lanyard. Each of these three pictures shows A DIFFERENT PERSON with a different face, and none of them is the same person. The screen they look at is Next Talent, a web system where companies look for university students: its pages are clean white with rounded cards. THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: a hiring manager at a company uses Next Talent to search for students who have the skill she needs. Close view of a Japanese woman in her late thirties with shoulder-length brown hair, wearing a grey blazer over a white blouse, sitting at a meeting-room table and typing on an open laptop that FILLS most of the frame. On the laptop screen: at the top a plain header bar reading \"Next Talent\"; under it a wide rounded search box with a small magnifying-glass mark and the typed word \"React\"; under that a row of three student cards, each with a round face picture of a different smiling university student and one small rounded tag, the tags reading \"AUPP\", \"CADT\", \"AUPP\". Interested, hopeful expression. The Japanese words in this picture are exactly: Next Talent / React / AUPP / CADT. Lettering — read this part carefully. The picture contains ONLY the words and numbers listed in the scene above, and no other writing at all. Print each of them LARGE and horizontally in a clean rounded gothic font with generous space around it, spelled EXACTLY as given, letter for letter and digit for digit, so that it stays sharp and easy to read at a glance. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height. Words written only in hiragana, katakana, Latin letters or digits take no furigana. Every other part of every screen, card and button is blank or shows only plain grey rounded bars. No other letters, numbers, logos, watermarks or speech balloons anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots, university logos. Never: misspelled words, extra words.",
+            "refs": [],
+            "status": "done"
+          }
         },
         {
           "icon": "👤",
           "title": "学生詳細を 見る",
-          "text": "名前・大学・専攻・JLPTレベル・自己紹介・ポートフォリオが 出ます。"
+          "text": "名前・大学・専攻・JLPTレベル・自己紹介・ポートフォリオが 出ます。",
+          "image": {
+            "src": "/img/articles/yuurei_nexttalent/app_shousai.webp",
+            "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. EVERY PICTURE IS A REAL PLACE: the office of a company that wants to hire young engineers — a meeting room or desk area with real chairs, windows, plants and a company-style interior — seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. This is a TEACHING picture, not a mood picture: what the person is doing must be readable from the picture alone. THE PERSON IN EACH PICTURE IS A HIRING MANAGER AT A CUSTOMER COMPANY, NEVER A NEXTMAKE ENGINEER — never draw a green hoodie, thick-rimmed glasses, a coral cardigan, a navy suit with a navy tie, a mint-green blouse or a light blue short-sleeved shirt with a lanyard. Each of these three pictures shows A DIFFERENT PERSON with a different face, and none of them is the same person. The screen they look at is Next Talent, a web system where companies look for university students: its pages are clean white with rounded cards. THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: a hiring manager opens one student's page and reads about that student — university, Japanese level, self-introduction and portfolio. Close view of a Cambodian man in his forties with short grey-streaked hair and a neat moustache, wearing a white long-sleeved shirt with rolled sleeves, sitting at his office desk and leaning towards a large monitor that FILLS most of the frame, reading carefully with one hand on his chin. On the monitor one student's profile page: a big round face picture of a smiling university student at the top left, two rounded tags beside it reading \"AUPP\" and \"N3\", then two cream panels one under the other, the first with the small heading 自己紹介 above two grey bars, the second with the small heading ポートフォリオ above a small row of three picture thumbnails. Thoughtful, impressed expression. The Japanese words in this picture are exactly: AUPP / N3 / 自己紹介 / ポートフォリオ. Lettering — read this part carefully. The picture contains ONLY the words and numbers listed in the scene above, and no other writing at all. Print each of them LARGE and horizontally in a clean rounded gothic font with generous space around it, spelled EXACTLY as given, letter for letter and digit for digit, so that it stays sharp and easy to read at a glance. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height. Words written only in hiragana, katakana, Latin letters or digits take no furigana. Every other part of every screen, card and button is blank or shows only plain grey rounded bars. No other letters, numbers, logos, watermarks or speech balloons anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots, university logos. Never: misspelled words, extra words.",
+            "refs": [],
+            "status": "done"
+          }
         },
         {
           "icon": "📊",
           "title": "スキルを グラフで 確認する",
-          "text": "ITスキルの 点数を、上位6つの グラフで 見せます。"
+          "text": "ITスキルの 点数を、上位6つの グラフで 見せます。",
+          "image": {
+            "src": "/img/articles/yuurei_nexttalent/app_graph.webp",
+            "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. EVERY PICTURE IS A REAL PLACE: the office of a company that wants to hire young engineers — a meeting room or desk area with real chairs, windows, plants and a company-style interior — seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. This is a TEACHING picture, not a mood picture: what the person is doing must be readable from the picture alone. THE PERSON IN EACH PICTURE IS A HIRING MANAGER AT A CUSTOMER COMPANY, NEVER A NEXTMAKE ENGINEER — never draw a green hoodie, thick-rimmed glasses, a coral cardigan, a navy suit with a navy tie, a mint-green blouse or a light blue short-sleeved shirt with a lanyard. Each of these three pictures shows A DIFFERENT PERSON with a different face, and none of them is the same person. The screen they look at is Next Talent, a web system where companies look for university students: its pages are clean white with rounded cards. THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: a hiring manager checks at a glance which IT skills a student is strongest in, using a bar graph. Close view of a young Japanese man in his early thirties with short black hair and round silver-framed glasses, wearing a beige knit sweater over a collared shirt, standing and holding a large tablet in both hands; the tablet FILLS most of the frame and is turned a little towards the viewer. On the tablet one student's skill graph: EXACTLY SIX thick horizontal bars in warm yellow, one under another, each a little shorter than the one above, and the skill name printed at the left of the top three bars: \"JavaScript\", \"React\", \"SQL\"; the lower three bars carry only grey bars instead of names. Pleased, convinced smile. The Japanese words in this picture are exactly: JavaScript / React / SQL. Lettering — read this part carefully. The picture contains ONLY the words and numbers listed in the scene above, and no other writing at all. Print each of them LARGE and horizontally in a clean rounded gothic font with generous space around it, spelled EXACTLY as given, letter for letter and digit for digit, so that it stays sharp and easy to read at a glance. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height. Words written only in hiragana, katakana, Latin letters or digits take no furigana. Every other part of every screen, card and button is blank or shows only plain grey rounded bars. No other letters, numbers, logos, watermarks or speech balloons anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots, university logos. Never: misspelled words, extra words.",
+            "refs": [],
+            "status": "done"
+          }
         }
       ]
     },
     {
-      "kind": "image",
-      "size": "wide",
+      "kind": "heading",
+      "level": 2,
+      "text": "今週、チームで 作る もの"
+    },
+    {
+      "kind": "paragraph",
+      "text": "今週（9/28 月曜日から 10/2 金曜日まで）に、この 3つを 1つに つなぎます。学生を 検索する ところから、スキルを グラフで 確認する ところまでです。"
+    },
+    {
       "src": "/img/articles/yuurei_nexttalent/flow.webp",
-      "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. Three smartphone screens side by side in a row: a student search list with filter chips, a student profile card, and a horizontal bar chart of skills. Clean flat UI shapes, no readable text. No text or letters anywhere in the image.",
-      "refs": [],
-      "status": "empty"
+      "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This is a TEACHING picture, not a mood picture: what each person is doing must be readable from the picture alone. This one is a teaching diagram: few large elements, generous spacing, each label sitting on a soft cream panel with a rounded border, arranged so the eye reads it in one pass. The product in these pictures is Next Talent, a web system where companies look for university students: its pages are clean white with rounded cards. THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: this week the team builds one chain: search for a student, open that student's page, and see the student's skills as a graph. A teaching diagram of three large rounded cream cards in a row on a soft sky-blue background, joined by two thick sky-blue arrows pointing right. Card 1 holds a drawing of a web page with a rounded search box, a small magnifying-glass mark and three tiny student cards under it; its Japanese label is printed across the top of the card. Card 2 holds a drawing of one student's profile page with a big round face picture and a few grey bars; its Japanese label is printed across the top of the card. Card 3 holds a drawing of a horizontal bar chart with six bars, each shorter than the one above; its Japanese label is printed across the top of the card. Few large elements, generous spacing, no people. The Japanese words in this picture are exactly: 学生検索 / 学生詳細 / スキルグラフ. Japanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana, and neither do Latin letters or digits. Spell every character exactly as given. No other letters, numbers, logos or watermarks anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots, university logos.",
+      "refs": [
+        "/img/characters/hendy/sheet.webp",
+        "/img/characters/okuda/sheet.webp",
+        "/img/characters/nyam/sheet.webp"
+      ],
+      "status": "done",
+      "kind": "image",
+      "caption": "学生検索から スキルグラフまでを、1つに つなぎます。",
+      "size": "wide"
     },
     {
       "kind": "heading",
@@ -73,37 +108,116 @@
     {
       "kind": "cards",
       "tone": "plain",
-      "columns": 4,
+      "columns": 2,
       "items": [
         {
-          "icon": "📊",
-          "label": "あなたの 担当",
-          "title": "学生検索・スキル可視化フロントエンド",
-          "text": "学生一覧・検索・絞り込み・学生詳細への 移動・スキルグラフを 作ります。"
+          "icon": "🗂",
+          "label": "ニャムさん",
+          "title": "学生・スキルデータ管理",
+          "text": "役割は PG（プログラマー）です。学生データ・スキルマスタ・スキル点数・学生詳細APIを 用意します。スキルデータの ことは ニャムさんが くわしいです。",
+          "image": {
+            "src": "/img/articles/yuurei_nexttalent/duty_nyam.webp",
+            "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This is a TEACHING picture, not a mood picture: what each person is doing must be readable from the picture alone. This one is a teaching diagram: few large elements, generous spacing, each label sitting on a soft cream panel with a rounded border, arranged so the eye reads it in one pass. The product in these pictures is Next Talent, a web system where companies look for university students: its pages are clean white with rounded cards. THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: Nyam prepares the data — the students' information and each student's skill scores. A teaching diagram on a soft sky-blue background. On the left a large rounded database cylinder with three stacked student rows inside it, each row a small round face picture and a short grey bar; a cream label panel above the cylinder carries its Japanese label. On the right a large cream table card with two rows, the first row reading \"JavaScript 90\" and the second \"React 85\"; a cream label panel above the table carries its Japanese label. A thick sky-blue line joins the cylinder and the table. No people, no other writing. In the BOTTOM RIGHT CORNER of the picture there is a small round portrait inset with a thick cream border — inside it, the head and shoulders of Nyam — a Southeast Asian man in his twenties with warm light-brown skin, short black hair swept up and back, and a coral knit cardigan over a cream shirt (follow his model sheet), facing the viewer with a calm friendly smile. The inset is about one fifth of the picture height and sits clearly on top of the scene. The Japanese words in this picture are exactly: 学生データ / スキル点数 / JavaScript 90 / React 85. Japanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana, and neither do Latin letters or digits. Spell every character exactly as given. No other letters, numbers, logos or watermarks anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots, university logos.",
+            "refs": [
+              "/img/characters/hendy/sheet.webp",
+              "/img/characters/okuda/sheet.webp",
+              "/img/characters/nyam/sheet.webp"
+            ],
+            "status": "done"
+          }
         },
         {
           "icon": "🔌",
           "label": "ヘンディさん",
           "title": "学生検索バックエンド",
-          "text": "学生一覧API・キーワード検索・複数条件検索を 作ります。PM として 全体の 進捗も 見ます。"
+          "text": "役割は PM（プロジェクトマネージャー）と PG です。学生一覧API・キーワード検索・複数条件検索を 作ります。チーム全体の 進捗を 見て、夕礼の 司会も します。",
+          "image": {
+            "src": "/img/articles/yuurei_nexttalent/duty_hendy.webp",
+            "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This is a TEACHING picture, not a mood picture: what each person is doing must be readable from the picture alone. This one is a teaching diagram: few large elements, generous spacing, each label sitting on a soft cream panel with a rounded border, arranged so the eye reads it in one pass. The product in these pictures is Next Talent, a web system where companies look for university students: its pages are clean white with rounded cards. THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: Hendy builds the search server: a search word goes in, and the matching students come back. A teaching diagram on a soft sky-blue background, READ FROM LEFT TO RIGHT. On the left a rounded search box with a small magnifying-glass mark and the word \"React\" typed inside it. A thick sky-blue arrow runs right into a large rounded server box with a row of soft indicator dots; a cream label panel above the server carries its Japanese label. From the server a second thick sky-blue arrow runs further right and carries three small student cards, each with a round face picture and a grey bar. No people, no other writing. In the BOTTOM RIGHT CORNER of the picture there is a small round portrait inset with a thick cream border — inside it, the head and shoulders of the team leader Hendy — a slim man in his late twenties with short black slightly tousled hair, a navy two-button suit, a white shirt and a navy tie (follow his model sheet), facing the viewer with a calm friendly smile. The inset is about one fifth of the picture height and sits clearly on top of the scene. The Japanese words in this picture are exactly: 検索API / React. Japanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana, and neither do Latin letters or digits. Spell every character exactly as given. No other letters, numbers, logos or watermarks anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots, university logos.",
+            "refs": [
+              "/img/characters/hendy/sheet.webp",
+              "/img/characters/okuda/sheet.webp",
+              "/img/characters/nyam/sheet.webp"
+            ],
+            "status": "done"
+          }
+        },
+        {
+          "icon": "📊",
+          "label": "あなた",
+          "title": "学生検索・スキル可視化フロントエンド",
+          "text": "役割は PG です。学生一覧・検索・絞り込み・学生詳細への 移動と、スキルグラフを 作ります。",
+          "image": {
+            "src": "/img/articles/yuurei_nexttalent/duty_you.webp",
+            "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This is a TEACHING picture, not a mood picture: what each person is doing must be readable from the picture alone. This one is a teaching diagram: few large elements, generous spacing, each label sitting on a soft cream panel with a rounded border, arranged so the eye reads it in one pass. The product in these pictures is Next Talent, a web system where companies look for university students: its pages are clean white with rounded cards. THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: you build BOTH ends — the student search page at the start and the skill graph at the end. A large monitor standing on a tidy desk, seen almost straight on so the screen fills most of the frame. The screen is split into two halves. The LEFT half is the student search page: a cream heading panel at the top carrying its Japanese label, a rounded search box, three small rounded filter chips and three small student cards with round face pictures. The RIGHT half is the skill graph: a cream heading panel at the top carrying its Japanese label, and six thick horizontal sky-blue bars, each shorter than the one above. No people in the room. In the BOTTOM RIGHT CORNER of the picture there is a small round portrait inset with a thick cream border — inside it, the head and shoulders of the two new engineers — a young Cambodian woman in her early twenties with warm light-brown skin, a round friendly face and black hair tied back in a low ponytail, wearing a mint-green blouse, and a young Cambodian man in his early twenties with warm light-brown skin, short black hair with a neat side part, wearing a light blue short-sleeved shirt; both wear a lanyard with a blank white card. NEVER GIVE THESE TWO THE SAME FACE — she is clearly a woman and he is clearly a man, their two heads side by side inside the same round inset, facing the viewer with a calm friendly smile. The inset is about one fifth of the picture height and sits clearly on top of the scene. The Japanese words in this picture are exactly: 学生検索 / スキルグラフ. Japanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana, and neither do Latin letters or digits. Spell every character exactly as given. No other letters, numbers, logos or watermarks anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots, university logos.",
+            "refs": [
+              "/img/characters/hendy/sheet.webp",
+              "/img/characters/okuda/sheet.webp",
+              "/img/characters/nyam/sheet.webp"
+            ],
+            "status": "done"
+          }
         },
         {
           "icon": "👤",
           "label": "奥田さん",
           "title": "学生詳細フロントエンド",
-          "text": "学生詳細画面を 作ります。スキルグラフを 置く 場所も 用意します。"
+          "text": "役割は PG です。学生詳細画面を 作ります。あなたの スキルグラフを、学生詳細画面に 組み込みます。",
+          "image": {
+            "src": "/img/articles/yuurei_nexttalent/duty_okuda.webp",
+            "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This is a TEACHING picture, not a mood picture: what each person is doing must be readable from the picture alone. This one is a teaching diagram: few large elements, generous spacing, each label sitting on a soft cream panel with a rounded border, arranged so the eye reads it in one pass. The product in these pictures is Next Talent, a web system where companies look for university students: its pages are clean white with rounded cards. THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: Okuda builds the student's detail page, and leaves an empty place on it where your skill graph will go. A large monitor standing on a tidy desk, seen almost straight on so the screen fills most of the frame. The screen shows one student's detail page: a cream heading panel across the top carrying its Japanese label, a big round face picture of a smiling university student on the left, three plain grey bars beside it, and across the bottom a wide EMPTY rectangle drawn with a thick DASHED sky-blue border, with a small cream label panel inside it carrying its Japanese label. No people in the room. In the BOTTOM RIGHT CORNER of the picture there is a small round portrait inset with a thick cream border — inside it, the head and shoulders of Okuda — a man in his mid twenties with wavy messy black hair, black thick-rimmed glasses and a dark green hoodie (follow his model sheet), facing the viewer with a calm friendly smile. The inset is about one fifth of the picture height and sits clearly on top of the scene. The Japanese words in this picture are exactly: 学生詳細 / スキルグラフ. Japanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana, and neither do Latin letters or digits. Spell every character exactly as given. No other letters, numbers, logos or watermarks anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots, university logos.",
+            "refs": [
+              "/img/characters/hendy/sheet.webp",
+              "/img/characters/okuda/sheet.webp",
+              "/img/characters/nyam/sheet.webp"
+            ],
+            "status": "done"
+          }
         },
         {
-          "icon": "🗂",
-          "label": "ニャムさん",
-          "title": "学生・スキルデータ管理",
-          "text": "学生データ・スキルマスタ・スキル点数・学生詳細APIを 用意します。"
+          "icon": "📨",
+          "label": "藤木さん",
+          "title": "取締役",
+          "text": "役割は 取締役です。松井社長からの 追加要望・優先順位・仕様変更を、開発チームに 共有します。",
+          "image": {
+            "src": "/img/articles/yuurei_nexttalent/duty_fujiki.webp",
+            "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This is a TEACHING picture, not a mood picture: what each person is doing must be readable from the picture alone. This one is a teaching diagram: few large elements, generous spacing, each label sitting on a soft cream panel with a rounded border, arranged so the eye reads it in one pass. THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: Fujiki shares the president's requests — new wishes, what comes first, and changes to the plan — with the development team. A teaching diagram on a soft sky-blue background, READ FROM LEFT TO RIGHT. On the far left, a quiet executive office corner drawn small and empty of people: one big leather chair behind a dark wooden desk, a tall window behind it. Resting on that desk, one cream request sheet with three short lines on it; each line carries its Japanese label. A thick sky-blue arrow runs from that sheet to the right, into a bright open-plan office corner where three empty developer desks stand in a row, each with a monitor showing a blank white screen; a cream label panel above those desks carries its Japanese label. NO PEOPLE ARE DRAWN ANYWHERE IN THE SCENE — the two rooms are empty, and the only face in the picture is the one in the corner inset. In the BOTTOM RIGHT CORNER of the picture there is a small round portrait inset with a thick cream border — inside it, the head and shoulders of Fujiki — a man in his late twenties with a lean athletic build, very short cropped black hair, lightly tanned completely smooth skin with no lines or creases anywhere on the face, a youthful rounded jaw, big bright dark brown eyes and thick eyebrows, wearing a navy single-breasted blazer worn open over a plain white crew-neck T-shirt, no tie (follow his model sheet), facing the viewer with a calm friendly smile. The inset is about one fifth of the picture height and sits clearly on top of the scene. The Japanese words in this picture are exactly: 追加要望 / 優先順位 / 仕様変更 / 開発チーム. Japanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana. Spell every character exactly as given. No other letters, numbers, logos or watermarks anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots. Payment cards, wallet icons and payment buttons carry ONLY plain abstract stripes and a small blank chip — never two overlapping coloured circles, never four coloured squares, never a swoosh, and never any mark or wordmark that resembles a real card brand or a real bank.",
+            "refs": [
+              "/img/characters/fujiki/sheet.webp"
+            ],
+            "status": "done"
+          }
         }
       ]
     },
     {
+      "kind": "banner",
+      "tone": "goal",
+      "icon": "🎯",
+      "title": "ゴール",
+      "text": "10/2 金曜日までに、学生を 検索して、詳細を 見て、スキルを グラフで 確認できるように します。金曜日の 夕方までに、検索から スキルグラフまで 通して テストします。",
+      "badges": [
+        "9/28 月曜日から 10/2 金曜日まで",
+        "勤務は 9:00〜18:00",
+        "夕礼は 毎日 17:50〜18:00"
+      ]
+    },
+    {
+      "src": "/img/articles/yuurei_nexttalent/goal.webp",
+      "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This is a TEACHING picture, not a mood picture: what each person is doing must be readable from the picture alone. THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: on Friday evening the team tests the whole chain together, from searching for a student to seeing that student's skill graph. An office meeting corner on Friday late afternoon, warm orange light. the team leader Hendy — a slim man in his late twenties with short black slightly tousled hair, a navy two-button suit, a white shirt and a navy tie (follow his model sheet), Okuda — a man in his mid twenties with wavy messy black hair, black thick-rimmed glasses and a dark green hoodie (follow his model sheet), Nyam — a Southeast Asian man in his twenties with warm light-brown skin, short black hair swept up and back, and a coral knit cardigan over a cream shirt (follow his model sheet) and the new engineer — a young Cambodian man in his early twenties with warm light-brown skin, short black hair with a neat side part, a friendly open face, wearing a light blue short-sleeved shirt, dark grey chinos and a lanyard with a blank white card gather around ONE big monitor on a table, all four smiling and leaning in. The monitor shows three panels side by side joined by two thick sky-blue arrows: a search page with a rounded search box and student cards, one student's profile page with a big round face picture, and a horizontal bar chart of six bars. The new engineer points at the bar chart with one hand; Hendy gives a small thumbs up. No writing anywhere. Wide shot filling the frame. No text, no letters, no kanji, no kana, no numbers anywhere in the image. Screens, papers, whiteboards, books and signs are blank or show only soft abstract shapes and simple pictures. No watermark, no signature, no logo, no speech balloons, no floating symbols such as question marks, exclamation marks, arrows, light bulbs, stars or hearts. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots. University logos.",
+      "refs": [
+        "/img/characters/hendy/sheet.webp",
+        "/img/characters/okuda/sheet.webp",
+        "/img/characters/nyam/sheet.webp"
+      ],
+      "status": "done",
+      "kind": "image",
+      "caption": "10/2 金曜日の 夕方までに、検索から スキルグラフまで 通して テストします。",
+      "size": "wide"
+    },
+    {
       "kind": "heading",
-      "level": 2,
+      "level": 3,
       "text": "データは こう つながる"
     },
     {
@@ -124,6 +238,91 @@
     {
       "kind": "heading",
       "level": 2,
+      "text": "あなたの 担当"
+    },
+    {
+      "kind": "heading",
+      "level": 3,
+      "text": "📊 学生検索・スキル可視化フロントエンド"
+    },
+    {
+      "kind": "paragraph",
+      "text": "あなたが 作る ものは、この 5つです。"
+    },
+    {
+      "kind": "cards",
+      "tone": "plain",
+      "columns": 3,
+      "items": [
+        {
+          "icon": "🔍",
+          "title": "学生一覧・検索",
+          "image": {
+            "src": "/img/articles/yuurei_nexttalent/task_ichiran.webp",
+            "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This is a TEACHING picture, not a mood picture: what the person is doing must be readable from the picture alone. The picture is shown small, so keep it to ONE person and ONE screen, drawn LARGE and simple, with the screen's contents big and bold and a clear dominant colour; leave small details out. The screen shows Next Talent, a web system where companies look for university students: its pages are clean white with rounded cards. THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: she is BUILDING the page that lists students and lets you search them by a keyword. Close view of the new engineer — a young Cambodian woman in her early twenties with warm light-brown skin, a round friendly face and black hair tied back in a low ponytail, wearing a mint-green blouse, beige trousers and a lanyard with a blank white card, sitting at her desk with both hands on the keyboard and looking up at a large monitor that FILLS most of the frame. On the monitor is the student list page she is building: across the top a heading reading 学生検索; under it one wide rounded search box with a small magnifying-glass mark on the left and the typed word \"React\" inside it, and a SKY-BLUE rounded button reading 検索 at the right end of the box. Under the search box, three student cards in a row, each with a round face picture of a DIFFERENT smiling university student, one plain grey bar for the name, and one small rounded tag: the first tag reads \"AUPP\", the second \"CADT\", the third \"AUPP\". Dominant colour: sky blue. Focused, calm expression. The Japanese words in this picture are exactly: 学生検索 / React / 検索 / AUPP / CADT. Lettering — read this part carefully. The picture contains ONLY the words and numbers listed in the scene above, and no other writing at all. Print each of them LARGE and horizontally in a clean rounded gothic font with generous space around it, spelled EXACTLY as given, letter for letter and digit for digit, so that it stays sharp and easy to read at a glance. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height. Words written only in hiragana, katakana, Latin letters or digits take no furigana. Every other part of every screen, card and button is blank or shows only plain grey rounded bars. No other letters, numbers, logos, watermarks or speech balloons anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots, a second person, a wide empty room shot where the person and the screen are small, a green tick mark. Never: misspelled words, extra words, a university logo.",
+            "refs": [
+              "/img/articles/asakai_lecture/card_kinou.webp"
+            ],
+            "status": "done"
+          }
+        },
+        {
+          "icon": "🎚️",
+          "title": "絞り込み",
+          "image": {
+            "src": "/img/articles/yuurei_nexttalent/task_shiborikomi.webp",
+            "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This is a TEACHING picture, not a mood picture: what the person is doing must be readable from the picture alone. The picture is shown small, so keep it to ONE person and ONE screen, drawn LARGE and simple, with the screen's contents big and bold and a clear dominant colour; leave small details out. The screen shows Next Talent, a web system where companies look for university students: its pages are clean white with rounded cards. THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: she is BUILDING filters that narrow many students down to the few that match a university, a JLPT level and a skill. Close view of the new engineer — a young Cambodian woman in her early twenties with warm light-brown skin, a round friendly face and black hair tied back in a low ponytail, wearing a mint-green blouse, beige trousers and a lanyard with a blank white card, at her desk, pointing with a pen at a large monitor that FILLS most of the frame. On the left of the screen a filter panel with THREE stacked rounded ORANGE dropdown boxes, each with a small label above it: the label 大学 above a box showing \"AUPP\"; the label \"JLPT\" above a box showing \"N3\"; the label スキル above a box showing \"React\". A thick orange funnel shape beside the panel points to the right, where many small faded student cards shrink down to ONE big bright student card with a round face picture and three small tags reading \"AUPP\", \"N3\" and \"React\". Dominant colour: orange. Pleased, checking expression. The Japanese words in this picture are exactly: 大学 / AUPP / JLPT / N3 / スキル / React. Lettering — read this part carefully. The picture contains ONLY the words and numbers listed in the scene above, and no other writing at all. Print each of them LARGE and horizontally in a clean rounded gothic font with generous space around it, spelled EXACTLY as given, letter for letter and digit for digit, so that it stays sharp and easy to read at a glance. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height. Words written only in hiragana, katakana, Latin letters or digits take no furigana. Every other part of every screen, card and button is blank or shows only plain grey rounded bars. No other letters, numbers, logos, watermarks or speech balloons anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots, a second person, a wide empty room shot where the person and the screen are small, a green tick mark. Never: misspelled words, extra words, a university logo.",
+            "refs": [
+              "/img/articles/asakai_lecture/card_kinou.webp"
+            ],
+            "status": "done"
+          }
+        },
+        {
+          "icon": "👉",
+          "title": "学生詳細への 移動",
+          "image": {
+            "src": "/img/articles/yuurei_nexttalent/task_idou.webp",
+            "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This is a TEACHING picture, not a mood picture: what the person is doing must be readable from the picture alone. The picture is shown small, so keep it to ONE person and ONE screen, drawn LARGE and simple, with the screen's contents big and bold and a clear dominant colour; leave small details out. The screen shows Next Talent, a web system where companies look for university students: its pages are clean white with rounded cards. THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: when you click one student card in the list, the page moves to that student's detail page. Close view of the new engineer — a young Cambodian woman in her early twenties with warm light-brown skin, a round friendly face and black hair tied back in a low ponytail, wearing a mint-green blouse, beige trousers and a lanyard with a blank white card, at her desk with one hand on the mouse, looking at a large monitor that FILLS most of the frame. The screen is split into two halves joined by ONE thick VIOLET arrow pointing right. Left half: the student list, three small student cards stacked; the middle card is framed with a thick violet border and a mouse pointer is clicking it. Right half: that SAME student's detail page, larger: a big round face picture of the same student at the top, a heading reading 学生詳細, two rounded tags reading \"AUPP\" and \"N3\", and a few plain grey bars below. Dominant colour: violet. Attentive expression. The Japanese words in this picture are exactly: 学生詳細 / AUPP / N3. Lettering — read this part carefully. The picture contains ONLY the words and numbers listed in the scene above, and no other writing at all. Print each of them LARGE and horizontally in a clean rounded gothic font with generous space around it, spelled EXACTLY as given, letter for letter and digit for digit, so that it stays sharp and easy to read at a glance. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height. Words written only in hiragana, katakana, Latin letters or digits take no furigana. Every other part of every screen, card and button is blank or shows only plain grey rounded bars. No other letters, numbers, logos, watermarks or speech balloons anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots, a second person, a wide empty room shot where the person and the screen are small, a green tick mark. Never: misspelled words, extra words, a university logo.",
+            "refs": [
+              "/img/articles/asakai_lecture/card_kinou.webp"
+            ],
+            "status": "done"
+          }
+        },
+        {
+          "icon": "📊",
+          "title": "スキルグラフ",
+          "image": {
+            "src": "/img/articles/yuurei_nexttalent/task_graph.webp",
+            "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This is a TEACHING picture, not a mood picture: what the person is doing must be readable from the picture alone. The picture is shown small, so keep it to ONE person and ONE screen, drawn LARGE and simple, with the screen's contents big and bold and a clear dominant colour; leave small details out. The screen shows Next Talent, a web system where companies look for university students: its pages are clean white with rounded cards. THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: she is BUILDING a graph that shows one student's six best IT skills as bars, highest score at the top. Close view of the new engineer — a young Cambodian woman in her early twenties with warm light-brown skin, a round friendly face and black hair tied back in a low ponytail, wearing a mint-green blouse, beige trousers and a lanyard with a blank white card, at her desk, pointing at the top bar on a large monitor that FILLS most of the frame. On the screen a heading reading スキル, and under it EXACTLY SIX thick horizontal TEAL bars, one under another, each one a little shorter than the one above. Each bar has its skill name on its left and its score at its right end, top to bottom: \"JavaScript\" \"90\", \"React\" \"85\", \"SQL\" \"80\", \"Laravel\" \"75\", \"PHP\" \"70\", \"Git\" \"65\". Dominant colour: teal. Proud, friendly expression. The Japanese words in this picture are exactly: スキル / JavaScript / 90 / React / 85 / SQL / 80 / Laravel / 75 / PHP / 70 / Git / 65. Lettering — read this part carefully. The picture contains ONLY the words and numbers listed in the scene above, and no other writing at all. Print each of them LARGE and horizontally in a clean rounded gothic font with generous space around it, spelled EXACTLY as given, letter for letter and digit for digit, so that it stays sharp and easy to read at a glance. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height. Words written only in hiragana, katakana, Latin letters or digits take no furigana. Every other part of every screen, card and button is blank or shows only plain grey rounded bars. No other letters, numbers, logos, watermarks or speech balloons anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots, a second person, a wide empty room shot where the person and the screen are small, a green tick mark. Never: misspelled words, extra words, a university logo.",
+            "refs": [
+              "/img/articles/asakai_lecture/card_kinou.webp"
+            ],
+            "status": "done"
+          }
+        },
+        {
+          "icon": "📱",
+          "title": "スマホ対応・結合テスト",
+          "image": {
+            "src": "/img/articles/yuurei_nexttalent/task_test.webp",
+            "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This is a TEACHING picture, not a mood picture: what the person is doing must be readable from the picture alone. The picture is shown small, so keep it to ONE person and ONE screen, drawn LARGE and simple, with the screen's contents big and bold and a clear dominant colour; leave small details out. The screen shows Next Talent, a web system where companies look for university students: its pages are clean white with rounded cards. THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: the pages also work on a smartphone, and she tests the whole chain — search, then the student's page, then the graph — joined together. Close view of the new engineer — a young Cambodian woman in her early twenties with warm light-brown skin, a round friendly face and black hair tied back in a low ponytail, wearing a mint-green blouse, beige trousers and a lanyard with a blank white card, at her desk, holding a smartphone up in one hand and a large magnifying glass in the other, looking through the glass at the phone. The phone is drawn BIG and fills most of the frame; its screen shows three small stacked panels joined by two small CORAL arrows pointing down: the top panel is a search box with the word \"React\", the middle panel is a student page with a round face picture and the heading 学生詳細, the bottom panel is a small chart of six shrinking bars. Above the phone, a cream label panel reads 結合テスト. Dominant colour: coral. Careful, focused expression. The Japanese words in this picture are exactly: 結合テスト / React / 学生詳細. Lettering — read this part carefully. The picture contains ONLY the words and numbers listed in the scene above, and no other writing at all. Print each of them LARGE and horizontally in a clean rounded gothic font with generous space around it, spelled EXACTLY as given, letter for letter and digit for digit, so that it stays sharp and easy to read at a glance. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height. Words written only in hiragana, katakana, Latin letters or digits take no furigana. Every other part of every screen, card and button is blank or shows only plain grey rounded bars. No other letters, numbers, logos, watermarks or speech balloons anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots, a second person, a wide empty room shot where the person and the screen are small, a green tick mark. Never: misspelled words, extra words, a university logo.",
+            "refs": [
+              "/img/articles/asakai_lecture/card_kinou.webp"
+            ],
+            "status": "done"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "paragraph",
+      "text": "9/28 月曜日は、学生一覧・検索と 絞り込みから 始めます。"
+    },
+    {
+      "kind": "heading",
+      "level": 3,
       "text": "スキルグラフ"
     },
     {
@@ -150,17 +349,9 @@
       ]
     },
     {
-      "kind": "image",
-      "size": "wide",
-      "src": "/img/articles/yuurei_nexttalent/graph.webp",
-      "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A clean horizontal bar chart on a tablet screen showing six bars of decreasing length in sky blue, green and yellow pastel tones, with two faded shorter bars below a dividing line. Flat vector style, no readable text. No text or letters anywhere in the image.",
-      "refs": [],
-      "status": "empty"
-    },
-    {
       "kind": "heading",
-      "level": 2,
-      "text": "グラフ用データ加工（あなたの 仕事）"
+      "level": 3,
+      "text": "グラフ用データ加工"
     },
     {
       "kind": "steps",
@@ -181,28 +372,104 @@
     {
       "kind": "heading",
       "level": 2,
-      "text": "勤務時間と 夕礼"
+      "text": "あなたの 報告"
     },
     {
-      "kind": "banner",
-      "tone": "goal",
-      "icon": "🕕",
-      "title": "夕礼は 1日の 最後の 10分",
-      "text": "勤務時間は 9:00〜18:00 です。毎日 17:50〜18:00 に、チームで 夕礼を 行います。",
-      "badges": [
-        "9/28 月曜日から 10/2 金曜日まで",
-        "勤務 9:00〜18:00",
-        "夕礼 17:50〜18:00"
-      ]
+      "kind": "paragraph",
+      "text": "9/28 月曜日から 10/2 金曜日まで、毎日 夕礼で 報告します。夕礼は 1日の 最後の 10分、17:50〜18:00 です。ヘンディさんから「では 次に ◯◯さん、お願いします」と 言われたら、あなたの 番です。"
     },
     {
-      "kind": "list",
+      "src": "/img/articles/yuurei_nexttalent/yobare.webp",
+      "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This is a TEACHING picture, not a mood picture: what each person is doing must be readable from the picture alone. This one is a teaching diagram: few large elements, generous spacing, each label sitting on a soft cream panel with a rounded border, arranged so the eye reads it in one pass. The product in these pictures is Next Talent, a web system where companies look for university students: its pages are clean white with rounded cards. THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: at the end of the day the chair calls your name, and now it is your turn to speak. The same office at ten to six in the evening: warm golden-orange low sunlight through the windows, the desk lamps just switched on. The team stands in a half circle. the team leader Hendy — a slim man in his late twenties with short black slightly tousled hair, a navy two-button suit, a white shirt and a navy tie (follow his model sheet) stands at the left, turning towards the viewer's side of the circle and opening one hand towards the new engineer — a young Cambodian man in his early twenties with warm light-brown skin, short black hair with a neat side part, a friendly open face, wearing a light blue short-sleeved shirt, dark grey chinos and a lanyard with a blank white card, who stands at the right and straightens up, ready to speak, holding a small blank notebook. Okuda — a man in his mid twenties with wavy messy black hair, black thick-rimmed glasses and a dark green hoodie (follow his model sheet) and Nyam — a Southeast Asian man in his twenties with warm light-brown skin, short black hair swept up and back, and a coral knit cardigan over a cream shirt (follow his model sheet) stand between them and look towards the new engineer. Hendy has ONE rounded speech balloon above him, and the balloon carries the sentence listed below. Nothing else is written anywhere. Wide shot filling the frame. The Japanese words in this picture are exactly: では 次に ◯◯さん、お願いします。. Japanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana, and neither do Latin letters or digits. Spell every character exactly as given. No other letters, numbers, logos or watermarks anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots, university logos.",
+      "refs": [
+        "/img/characters/hendy/sheet.webp",
+        "/img/characters/okuda/sheet.webp",
+        "/img/characters/nyam/sheet.webp"
+      ],
+      "status": "done",
+      "kind": "image",
+      "caption": "名前を 呼ばれたら、あなたの 番です。",
+      "size": "wide"
+    },
+    {
+      "kind": "paragraph",
+      "text": "話す ことは 4つです。"
+    },
+    {
+      "kind": "cards",
+      "tone": "plain",
+      "columns": 2,
       "items": [
-        "① 今日 行ったこと",
-        "② 進捗率（現在、◯◯機能全体の進捗は◯％です）",
-        "③ 明日 行うこと",
-        "④ 問題点（無ければ「今のところ問題はありません」）",
-        "問題が ある ときは「一つ問題があります。」の あと、何が 起きて いるか・解決したか・まだ 残って いるかを 言います。"
+        {
+          "label": "①",
+          "title": "今日 行ったこと",
+          "items": [
+            "「今日は、◯◯を しました。」"
+          ],
+          "image": {
+            "src": "/img/articles/yuurei_nexttalent/r1_kyou.webp",
+            "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This is a TEACHING picture, not a mood picture: what each person is doing must be readable from the picture alone. This one is a teaching diagram: few large elements, generous spacing, each label sitting on a soft cream panel with a rounded border, arranged so the eye reads it in one pass. The product in these pictures is Next Talent, a web system where companies look for university students: its pages are clean white with rounded cards. THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: today's work is finished, and that is what you report first. Close view of the new engineer — a young Cambodian man in his early twenties with warm light-brown skin, short black hair with a neat side part, a friendly open face, wearing a light blue short-sleeved shirt, dark grey chinos and a lanyard with a blank white card sitting at his desk in the evening, warm orange light through the window behind him, turned a little towards a large monitor and looking at it with a calm satisfied face, one hand resting flat on the desk. The monitor shows a finished student search page: a rounded search box, three small rounded filter chips and a row of student cards with round face pictures. Beside the monitor stands a small cream card carrying its Japanese label. The furigana on that label are exactly: きょう over 今日, and おこな over 行 — the kanji 行 here is read おこな, NEVER い. Nothing else is written anywhere. The Japanese words in this picture are exactly: 今日 行ったこと. Japanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana, and neither do Latin letters or digits. Spell every character exactly as given. No other letters, numbers, logos or watermarks anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots, university logos.",
+            "refs": [
+              "/img/characters/hendy/sheet.webp",
+              "/img/characters/okuda/sheet.webp",
+              "/img/characters/nyam/sheet.webp"
+            ],
+            "status": "done"
+          }
+        },
+        {
+          "label": "②",
+          "title": "進捗率",
+          "items": [
+            "「現在、学生検索・スキル可視化フロントエンド機能 ぜんたいの 進捗は ◯％です。」"
+          ],
+          "image": {
+            "src": "/img/articles/yuurei_nexttalent/r2_shinchoku.webp",
+            "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This is a TEACHING picture, not a mood picture: what each person is doing must be readable from the picture alone. This one is a teaching diagram: few large elements, generous spacing, each label sitting on a soft cream panel with a rounded border, arranged so the eye reads it in one pass. The product in these pictures is Next Talent, a web system where companies look for university students: its pages are clean white with rounded cards. THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: your whole feature is thirty-five percent done, and you say that number. Close view of a large monitor on a desk in the evening showing a clean progress screen: a label panel at the top carrying its Japanese label (the word for progress rate), and below it ONE thick horizontal progress bar, filled with sky blue for about one third of its length and pale grey for the rest, with 35% printed large just after the filled part. the new engineer — a young Cambodian man in his early twenties with warm light-brown skin, short black hair with a neat side part, a friendly open face, wearing a light blue short-sleeved shirt, dark grey chinos and a lanyard with a blank white card sits beside the monitor and points at the filled part of the bar with one hand, with a small confident smile. Warm orange evening light. Nothing else is written anywhere. The Japanese words in this picture are exactly: 進捗率 / 35%. Japanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana, and neither do Latin letters or digits. Spell every character exactly as given. No other letters, numbers, logos or watermarks anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots, university logos.",
+            "refs": [
+              "/img/characters/hendy/sheet.webp",
+              "/img/characters/okuda/sheet.webp",
+              "/img/characters/nyam/sheet.webp"
+            ],
+            "status": "done"
+          }
+        },
+        {
+          "label": "③",
+          "title": "明日 行うこと",
+          "items": [
+            "「明日は、◯◯を します。」"
+          ],
+          "image": {
+            "src": "/img/articles/yuurei_nexttalent/r3_ashita.webp",
+            "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This is a TEACHING picture, not a mood picture: what each person is doing must be readable from the picture alone. This one is a teaching diagram: few large elements, generous spacing, each label sitting on a soft cream panel with a rounded border, arranged so the eye reads it in one pass. The product in these pictures is Next Talent, a web system where companies look for university students: its pages are clean white with rounded cards. THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: before going home you decide tomorrow's job, and that is what you report next. A team task board on the office wall in the evening, warm orange light from the window. The board has two columns of sticky notes; the right column has a cream header panel carrying its Japanese label; its furigana are exactly あした over 明日 and おこな over 行. the new engineer — a young Cambodian man in his early twenties with warm light-brown skin, short black hair with a neat side part, a friendly open face, wearing a light blue short-sleeved shirt, dark grey chinos and a lanyard with a blank white card stands in front of the board and sticks ONE new large yellow sticky note into that right column with one hand, looking forward to tomorrow with a positive expression. Every sticky note on the board is completely blank. Nothing else is written anywhere. The Japanese words in this picture are exactly: 明日 行うこと. Japanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana, and neither do Latin letters or digits. Spell every character exactly as given. No other letters, numbers, logos or watermarks anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots, university logos.",
+            "refs": [
+              "/img/characters/hendy/sheet.webp",
+              "/img/characters/okuda/sheet.webp",
+              "/img/characters/nyam/sheet.webp"
+            ],
+            "status": "done"
+          }
+        },
+        {
+          "label": "④",
+          "title": "問題点",
+          "text": "問題が ある ときと、ない ときで 言い方が ちがいます。",
+          "items": [
+            "ない とき:「今の ところ 問題は ありません。」",
+            "ある とき:「一つ 問題が あります。」の あとに、何が 起きて いるか・解決したか・まだ 残って いるかを 言います。"
+          ],
+          "image": {
+            "src": "/img/articles/yuurei_nexttalent/r4_mondai.webp",
+            "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This is a TEACHING picture, not a mood picture: what each person is doing must be readable from the picture alone. This one is a teaching diagram: few large elements, generous spacing, each label sitting on a soft cream panel with a rounded border, arranged so the eye reads it in one pass. The product in these pictures is Next Talent, a web system where companies look for university students: its pages are clean white with rounded cards. THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: if something went wrong today, you tell the team what happened and where it stands now. Close view of the new engineer — a young Cambodian man in his early twenties with warm light-brown skin, short black hair with a neat side part, a friendly open face, wearing a light blue short-sleeved shirt, dark grey chinos and a lanyard with a blank white card at his desk in the evening, looking at his monitor with a puzzled but calm face, one hand on his chin and the other hand on the desk beside a small blank notebook. The monitor shows a student page with a soft pale-red message window over it, with a round warning mark and one Japanese word printed large inside it. Not scary — just a small problem at work, warm evening light. Nothing else is written anywhere. The Japanese words in this picture are exactly: エラー. Japanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana, and neither do Latin letters or digits. Spell every character exactly as given. No other letters, numbers, logos or watermarks anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots, university logos.",
+            "refs": [
+              "/img/characters/hendy/sheet.webp",
+              "/img/characters/okuda/sheet.webp",
+              "/img/characters/nyam/sheet.webp"
+            ],
+            "status": "done"
+          }
+        }
       ]
     },
     {
@@ -212,80 +479,70 @@
     },
     {
       "kind": "paragraph",
-      "text": "朝礼では、カードが 整理されて いました。夕礼は ちがいます。画面に 出るのは 9:00〜17:50 の 作業記録だけです。何が 重要か・何を 省くか・何を まとめるか・問題を どこまで 説明するかを、あなたが 決めます。"
+      "text": "KhmerSabaiの 朝礼では、カードが 整理されて いました。今回は ちがいます。画面に 出るのは 9:00〜17:50 の 作業記録だけです。あなたが それを まとめます（summarize）。"
     },
     {
-      "kind": "compare",
-      "before": {
-        "title": "作業記録の 読み上げ",
-        "lines": [
-          "「9時に 学生詳細画面を 作って、」",
-          "「10時30分に グラフを 作って、」",
-          "「13時30分に スキル名を……」",
-          "細かい 作業を 全部 読んで います。長いのに、何が 進んだか 分かりません。"
-        ]
-      },
-      "after": {
-        "title": "仕事の 報告",
-        "lines": [
-          "「今日は、◯◯と ◯◯を 作りました。」",
-          "「◯◯を そろえて、◯◯の 順に 並べられるように しました。」",
-          "大きな 作業を 2つに まとめて います。短いのに、何が 進んだか 分かります。"
-        ]
-      }
+      "kind": "paragraph",
+      "text": "作業記録は、夕礼の 画面の「報告メモ」に、時間の 順に 出ます。たとえば、ログイン画面を 作った 日なら、こう です。"
     },
     {
-      "kind": "callout",
-      "tone": "care",
-      "text": "問題を 見つけたら、夕礼を 待ちません。その場で ヘンディさんに 報告します。悪い ニュースほど 早く 言います。"
+      "src": "/img/articles/yuurei_nexttalent/memo.webp",
+      "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This is a TEACHING picture, not a mood picture: what each person is doing must be readable from the picture alone. This one is a teaching diagram: few large elements, generous spacing, each label sitting on a soft cream panel with a rounded border, arranged so the eye reads it in one pass. The product in these pictures is Next Talent, a web system where companies look for university students: its pages are clean white with rounded cards. THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: on the evening meeting screen you do not get a finished report — you only get the day's work record, one short line for each time of the day. A laptop on a meeting table in the evening, seen straight on and close, so its screen FILLS almost the whole frame. On the screen one white rounded panel. At the top of the panel a small heading carrying the first Japanese word listed below. Under it a vertical list with a thick brown line running down its left side; each row has a time printed in brown on the left and a short Japanese note on the right, in this exact order from top to bottom: 09:00 ログイン画面の 仕様を 確認 / 09:30 メールアドレスの 入力欄を 作成 / 10:30 パスワードの 入力欄を 作成 / 11:30 ログインボタンを 作成 / 12:00 昼休み / 13:00 ログインAPIと 接続 / 15:00 エラーメッセージの 表示を 追加 / 16:30 スマホで 表示を 確認. The rows are evenly spaced, all the same size, left-aligned like a real app screen. No people. The Japanese words in this picture are exactly: きょうの メモ / 09:00 / ログイン画面の 仕様を 確認 / 09:30 / メールアドレスの 入力欄を 作成 / 10:30 / パスワードの 入力欄を 作成 / 11:30 / ログインボタンを 作成 / 12:00 / 昼休み / 13:00 / ログインAPIと 接続 / 15:00 / エラーメッセージの 表示を 追加 / 16:30 / スマホで 表示を 確認. Japanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana, and neither do Latin letters or digits. Spell every character exactly as given. No other letters, numbers, logos or watermarks anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots, university logos.",
+      "refs": [
+        "/img/characters/hendy/sheet.webp",
+        "/img/characters/okuda/sheet.webp",
+        "/img/characters/nyam/sheet.webp"
+      ],
+      "status": "done",
+      "kind": "image",
+      "caption": "ログイン画面を 作った 日なら、作業記録は こう 出ます。9:00 から 時間の 順に 並びます。",
+      "size": "wide"
     },
     {
-      "kind": "heading",
-      "level": 2,
-      "text": "チームの 人"
-    },
-    {
-      "kind": "characters",
+      "kind": "cards",
+      "tone": "plain",
+      "columns": 2,
       "items": [
         {
-          "ref": "hendy",
-          "role": "先輩（PM・夕礼の 司会）",
-          "note": "学生検索バックエンドの 担当です。夕礼の 司会も します。問題を 見つけたら、まず ヘンディさんに 報告します。"
+          "label": "❌ 悪い 例",
+          "title": "作業記録の 読み上げ",
+          "text": "作業記録を 上から 全部 読んで います。長いのに、何が 進んだか 分かりません。",
+          "items": [
+            "「9時に、ログイン画面の 仕様を 確認しました。」",
+            "「9時30分に、メールアドレスの 入力欄を 作成しました。」",
+            "「10時30分に、パスワードの 入力欄を 作成しました。」",
+            "「11時30分に……」"
+          ],
+          "image": {
+            "src": "/img/articles/yuurei_nexttalent/bad.webp",
+            "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This is a TEACHING picture, not a mood picture: what each person is doing must be readable from the picture alone. This one is a teaching diagram: few large elements, generous spacing, each label sitting on a soft cream panel with a rounded border, arranged so the eye reads it in one pass. The product in these pictures is Next Talent, a web system where companies look for university students: its pages are clean white with rounded cards. THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: reading the work record aloud line by line makes the report long, and nobody can tell what was finished. A meeting corner of the office at ten to six in the evening, warm orange light. On the left stands a new hire — a young man in his early twenties with short CURLY BROWN hair and a MUSTARD-YELLOW polo shirt; he is NOT the man in the light blue shirt and looks nothing like him — holding an open laptop in both hands and reading from it with his eyes down on the screen. Above him ONE very long rounded speech balloon that stretches across the top of the picture, filled with a long row of times written one after another, separated ONLY by wide spaces — never by slash marks — trailing off at the right edge. On the right, the team leader Hendy — a slim man in his late twenties with short black slightly tousled hair, a navy two-button suit, a white shirt and a navy tie (follow his model sheet) and Nyam — a Southeast Asian man in his twenties with warm light-brown skin, short black hair swept up and back, and a coral knit cardigan over a cream shirt (follow his model sheet) listen politely but look lost, heads tilted, one of them scratching his head — puzzled, never angry, never mocking. In the TOP LEFT CORNER a large thick RED cross mark (❌) on a white round badge — this mark is the point of the picture and is allowed. The Japanese words in this picture are exactly: 9:00… / 9:30… / 10:30… / 11:30…. Japanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana, and neither do Latin letters or digits. Spell every character exactly as given. No other letters, numbers, logos or watermarks anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots, university logos.",
+            "refs": [
+              "/img/characters/hendy/sheet.webp",
+              "/img/characters/okuda/sheet.webp",
+              "/img/characters/nyam/sheet.webp"
+            ],
+            "status": "done"
+          }
         },
         {
-          "ref": "okuda",
-          "role": "先輩",
-          "note": "学生詳細フロントエンドの 担当です。あなたの スキルグラフを、学生詳細画面に 組み込みます。"
-        },
-        {
-          "ref": "nyam",
-          "role": "先輩",
-          "note": "学生・スキルデータ管理の 担当です。スキルデータの ことは ニャムさんが くわしいです。"
-        },
-        {
-          "ref": "fujiki",
-          "role": "取締役",
-          "note": "松井社長と 話す 人です。追加要望・優先順位・仕様変更を チームに 共有します。"
+          "label": "⭕ よい 例",
+          "title": "仕事の 報告",
+          "text": "大きな 作業を 2つに まとめて、昼休みなどは 省いて います。短いのに、何が 進んだか 分かります。",
+          "items": [
+            "「今日は、ログイン画面を 作って、ログインAPIと つなぎました。」",
+            "「エラーメッセージも 出るように しました。」"
+          ],
+          "image": {
+            "src": "/img/articles/yuurei_nexttalent/good.webp",
+            "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This is a TEACHING picture, not a mood picture: what each person is doing must be readable from the picture alone. This one is a teaching diagram: few large elements, generous spacing, each label sitting on a soft cream panel with a rounded border, arranged so the eye reads it in one pass. The product in these pictures is Next Talent, a web system where companies look for university students: its pages are clean white with rounded cards. THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: when you put the work together into a few big pieces, the report is short and everyone understands what was finished. The same meeting corner at ten to six in the evening, warm orange light. On the left stands the new engineer — a young Cambodian man in his early twenties with warm light-brown skin, short black hair with a neat side part, a friendly open face, wearing a light blue short-sleeved shirt, dark grey chinos and a lanyard with a blank white card, holding a small notebook at his side and looking up at the team as he speaks, calm and confident. Above him ONE short rounded speech balloon holding exactly TWO big rounded pieces, like two blocks: the first block carries the first Japanese word listed below and the second block carries the second. On the right, the team leader Hendy — a slim man in his late twenties with short black slightly tousled hair, a navy two-button suit, a white shirt and a navy tie (follow his model sheet) and Nyam — a Southeast Asian man in his twenties with warm light-brown skin, short black hair swept up and back, and a coral knit cardigan over a cream shirt (follow his model sheet) nod with bright understanding smiles. In the TOP LEFT CORNER a large thick GREEN circle mark (⭕) on a white round badge — this mark is the point of the picture and is allowed. The Japanese words in this picture are exactly: ログイン画面 / エラーメッセージ. Japanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana, and neither do Latin letters or digits. Spell every character exactly as given. No other letters, numbers, logos or watermarks anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots, university logos.",
+            "refs": [
+              "/img/characters/hendy/sheet.webp",
+              "/img/characters/okuda/sheet.webp",
+              "/img/characters/nyam/sheet.webp"
+            ],
+            "status": "done"
+          }
         }
-      ]
-    },
-    {
-      "kind": "heading",
-      "level": 2,
-      "text": "あなたの 担当"
-    },
-    {
-      "kind": "banner",
-      "tone": "message",
-      "icon": "📊",
-      "title": "学生検索・スキル可視化フロントエンド機能",
-      "text": "学生を さがす ところから、スキルを グラフで 見せる ところまでが あなたの 担当です。夕礼では、この 機能全体の 進捗率を 報告します。",
-      "badges": [
-        "学生一覧・検索",
-        "絞り込み",
-        "学生詳細への 移動",
-        "スキルグラフ",
-        "スマホ対応"
       ]
     },
     {
@@ -356,7 +613,7 @@
     ],
     [
       "分",
-      "ふん"
+      "ぷん"
     ],
     [
       "終わり",
@@ -2481,6 +2738,66 @@
     [
       "一つ",
       "ひとつ"
+    ],
+    [
+      "役割",
+      "やくわり"
+    ],
+    [
+      "呼ばれたら",
+      "よばれたら"
+    ],
+    [
+      "並びます",
+      "ならびます"
+    ],
+    [
+      "上から",
+      "うえから"
+    ],
+    [
+      "学生詳細画面",
+      "がくせいしょうさいがめん"
+    ],
+    [
+      "学生詳細",
+      "がくせいしょうさい"
+    ],
+    [
+      "学生検索",
+      "がくせいけんさく"
+    ],
+    [
+      "学生情報",
+      "がくせいじょうほう"
+    ],
+    [
+      "機能全体",
+      "きのうぜんたい"
+    ],
+    [
+      "複数条件検索",
+      "ふくすうじょうけんけんさく"
+    ],
+    [
+      "点満点",
+      "てんまんてん"
+    ],
+    [
+      "作った 日",
+      "つくった ひ"
+    ],
+    [
+      "立場",
+      "たちば"
+    ],
+    [
+      "入力欄",
+      "にゅうりょくらん"
+    ],
+    [
+      "昼休み",
+      "ひるやすみ"
     ]
   ]
 }
