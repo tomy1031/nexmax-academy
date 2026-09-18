@@ -33,6 +33,7 @@ import {
 import { stageStepNumber } from "@/lib/map-data";
 import {
   resolveStageContent,
+  replacedContent,
   splitContentSegment,
   stageContentPath,
   stageContentSegments,
@@ -216,8 +217,9 @@ export default async function StageContentPage({
      * 先生が 配った リンクだけが 404 に なる、という 終わりかたを させない。
      *
      * 引けるのは **ID が URL に 残って いる 形**だけ（`splitContentSegment`）。
+     * 差し替えた 教材（`/houkoku/link` → もんだい）は 短い形も 引く（`replacedContent`）。
      */
-    const moved = splitContentSegment(content);
+    const moved = replacedContent(stageId, content) ?? splitContentSegment(content);
     const canonical = moved ? await canonicalContentPath(moved.type, moved.ref) : null;
     if (canonical) redirect(canonical);
     notFound();

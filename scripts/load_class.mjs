@@ -52,7 +52,7 @@ const PATHS = [
   "/kaisha/article-kaisha_shirabekata",
   "/kaisha/meeting-kaisha_houkoku_meeting",
   "/kaisha/quiz-kaisha_houkoku",
-  "/houkoku/link-houkoku_search",
+  "/houkoku/quiz-houkoku_search_quiz",
   "/wordtest",
   "/wordtest/kaisha",
   "/dictionary",

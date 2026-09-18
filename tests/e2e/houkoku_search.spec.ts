@@ -1,7 +1,5 @@
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import { expect, test, type BrowserContext, type Page } from "@playwright/test";
-import { seedCompleted, shot } from "./helpers";
+import { shot } from "./helpers";
 
 /**
  * 調査（リサーチ）：日本の 会社の 階級 — **出して はじめて つぎへ 行ける**
@@ -20,27 +18,13 @@ import { seedCompleted, shot } from "./helpers";
  *  3. **出すと アプリ側が ✅ に なる**（iframe → 親への 合図が 届いて いる）。
  */
 
-const PATH = "/houkoku/link";
-
-/**
- * 手前の 教材を「おわった」ことに してから 開く。
- *
- * この ステージは 順路（関門）が 効いて いるので、そのまま 行くと
- * 「まだ この きょうざいの じゅんばんでは ありません」で 止まる。
- * 順路そのものは 別の テストが 見る（`junro.spec.ts`）。
+/*
+ * 2026-09-18 に ステージからは 外した（もんだい `houkoku_search_quiz` に 差し替え。
+ * 指定「元のものはいったん残して非表示に」）。**元の 別ページは 残って いる**ので、
+ * ステージの 外の 単独URLで 動く ことだけ 見張る。関門（出すまで つぎへ 行けない）は
+ * もんだいの 側で 見る（`houkoku_search_quiz.spec.ts`）。
  */
-async function seedUpToTool(context: BrowserContext) {
-  const stage = JSON.parse(readFileSync(join("content", "stages", "houkoku.json"), "utf8")) as {
-    contents: { ref: string }[];
-  };
-  const before = stage.contents
-    .slice(
-      0,
-      stage.contents.findIndex((content) => content.ref === "houkoku_search"),
-    )
-    .map((content) => content.ref);
-  await seedCompleted(context, before);
-}
+const PATH = "/link/houkoku_search";
 
 /**
  * 画面で 投げられた 例外を ためる。
@@ -71,8 +55,11 @@ async function watchErrors(page: Page, context: BrowserContext): Promise<() => P
   ];
 }
 
-async function openTool(page: Page, context: BrowserContext) {
-  await seedUpToTool(context);
+/*
+ * 単独URL には 関門が 無い ので、手前の 教材を「おわった」に しなくて よい
+ *（ステージに いた ころは していた。いまの 関門は もんだいの 側で 見る）。
+ */
+async function openTool(page: Page) {
   await page.goto(PATH);
   await page
     .getByRole("button", { name: /ひらく/ })
@@ -88,7 +75,7 @@ const MOVED = ["社長", "取締役", "部長", "課長", "社員"];
 
 test("調査（リサーチ）: 入れて ならべて 出すと、はじめて ✅ に なる", async ({ page, context }) => {
   const errors = await watchErrors(page, context);
-  const tool = await openTool(page, context);
+  const tool = await openTool(page);
   await expect(tool.getByLabel("1ばんめ")).toBeVisible();
 
   /* 1. 出す 前に、手で 押せる「おわりました」が 無い。 */
@@ -120,46 +107,8 @@ test("調査（リサーチ）: 入れて ならべて 出すと、はじめて 
   expect(await errors()).toEqual([]);
 });
 
-test("調査（リサーチ）: 出すまで つぎの ページが 開かない（関門）", async ({ page, context }) => {
-  await seedUpToTool(context);
-
-  /*
-   * ここが この 教材の 芯（2026-09-11「提出して初めて次の画面に行けます」）。
-   * 手押しの ボタンを 隠しただけでは 意味が なく、**関門が 実際に 閉じて いる**
-   * ことと、**出したら 開く** ことの 両方が 要る。
-   */
-  const NEXT = "/houkoku/article-houkoku_hierarchy";
-  await page.goto(NEXT);
-  await expect(page.getByText("じゅんばんでは ありません")).toBeVisible();
-
-  const tool = await openTool(page, context);
-  for (const [index, word] of MOVED.entries()) {
-    await tool.getByLabel(`${index + 1}ばんめ`).fill(word);
-  }
-  const areas = tool.locator("textarea");
-  for (let i = 0; i < 3; i++) await areas.nth(i).fill("Cambodia is different.");
-  await tool.getByRole("button", { name: /出す/ }).click();
-  await expect(tool.locator("#doneList li")).toHaveCount(MOVED.length);
-
-  // 出した あと: 答え合わせの ページが 開く
-  await page.goto(NEXT);
-  await expect(page.getByText("じゅんばんでは ありません")).toHaveCount(0);
-  await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-
-  /*
-   * 出した ことは 端末に 残り、開き直した ときも もう一度 アプリへ 伝わる
-   *（別の タブで 出した 人が 止まらない ための 道）。
-   */
-  await page.goto(PATH);
-  await page
-    .getByRole("button", { name: /ひらく/ })
-    .first()
-    .click();
-  await expect(page.frameLocator("iframe").locator("#doneList li")).toHaveCount(MOVED.length);
-});
-
-test("調査（リサーチ）: 足りない ものを 数で 言う（ぼかさない）", async ({ page, context }) => {
-  const tool = await openTool(page, context);
+test("調査（リサーチ）: 足りない ものを 数で 言う（ぼかさない）", async ({ page }) => {
+  const tool = await openTool(page);
   const note = tool.locator("#note");
 
   // 何も 書いて いない とき: 階級が 5つ 足りない

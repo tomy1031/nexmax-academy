@@ -37,8 +37,8 @@
       "type": "quizset"
     },
     {
-      "ref": "houkoku_search",
-      "type": "link",
+      "ref": "houkoku_search_quiz",
+      "type": "quizset",
       "gates": true
     },
     {
