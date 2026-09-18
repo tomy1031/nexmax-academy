@@ -37,6 +37,7 @@ import {
 } from "@/content/schema";
 import { GIT_CONTENTS } from "@/content/git-contents.generated";
 import { fetchDbContents } from "@/lib/content-db";
+import { notebookQuizSetIds } from "@/lib/answers/notebook";
 import { hydrateArticle, hydrateManga, hydrateWordStage } from "@/lib/vocabulary";
 
 /**
@@ -249,6 +250,14 @@ export const listMeetings = cache(async (): Promise<Meeting[]> => {
 
 export async function getMeeting(id: string): Promise<Meeting | null> {
   return (await listMeetings()).find((meeting) => meeting.id === id) ?? null;
+}
+
+/**
+ * その もんだいで 書いた こたえが、**あとの 会話の こたえノートに 出るか**。
+ * 会話は DB（スタジオ）で 足される ことも あるので、git と DB を 合流した 一覧で 見る。
+ */
+export async function isInAnswerNotebook(quizSetId: string): Promise<boolean> {
+  return notebookQuizSetIds(await listMeetings()).has(quizSetId);
 }
 
 export const listStages = cache(async (): Promise<Stage[]> => {

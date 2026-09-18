@@ -76,9 +76,16 @@ export function QuizRunner({
    * 別の一覧へ放り出される）。
    */
   embedded = false,
+  /**
+   * ここで 書いた こたえが、**あとの 会話の「📋 自分の こたえ」に 出るか**
+   *（どこかの `meeting.notes` が この もんだいを 名指して いるか）。サーバで 決めて 渡す。
+   * 正解の 無い もんだいの けっかで「つぎの 会話で 見られます」と 言って よいかを 決める。
+   */
+  inNotebook = false,
 }: {
   set: QuizSet;
   embedded?: boolean;
+  inNotebook?: boolean;
 }) {
   const furigana = useMemo(() => buildFuriganaIndex(set.furigana ?? []), [set.furigana]);
   /*
@@ -454,6 +461,7 @@ export function QuizRunner({
           skipped={skipped}
           furigana={furigana}
           freeOnly={freeOnly}
+          inNotebook={inNotebook}
           onRetryAll={() => {
             /*
              * **前の こたえを 持ったまま** やり直す（2026-08-25 の 指定）。
@@ -1680,7 +1688,7 @@ function ReviewRow({
   );
 }
 
-function QuizResultCard({
+export function QuizResultCard({
   set,
   embedded,
   summary,
@@ -1688,6 +1696,7 @@ function QuizResultCard({
   skipped,
   furigana,
   freeOnly,
+  inNotebook = false,
   onRetryAll,
 }: {
   set: QuizSet;
@@ -1700,6 +1709,8 @@ function QuizResultCard({
   furigana: ReturnType<typeof buildFuriganaIndex>;
   /** 正解の 無い 教材（自由記述だけ）か。点・○×・「せいかい」を 出さない。 */
   freeOnly: boolean;
+  /** 書いた こたえが あとの 会話の こたえノートに 出るか（`QuizRunner` の 同名の 値）。 */
+  inNotebook?: boolean;
   onRetryAll: () => void;
 }) {
   const missed = summary.missedQuestionIds.length;
@@ -1728,6 +1739,13 @@ function QuizResultCard({
    * ここでは「4つ 書けました。あと 1つ です」と 言う。
    */
   const written = review.filter(({ result }) => (result.answer ?? "").trim() !== "").length;
+  /**
+   * 「はなす じゅんび」と 呼べるのは、書いた ものが **本当に あとの 会話で 開ける** とき だけ。
+   * そうで ない 自由記述（報告ステージの「何と 言いますか」・調査）では、つぎは スキットや
+   * 答え合わせの ページで、「📋 自分の こたえ」は どこにも 無い——無い ひきだしを
+   * 探させない。点を 出さず 書けた 数を 数える ところは どちらも 同じ。
+   */
+  const prepared = freeOnly && inNotebook;
 
   return (
     <motion.div
@@ -1740,7 +1758,7 @@ function QuizResultCard({
         <NexMax variant={praised ? "cheer" : set.nekumax} size={84} bob />
         <div>
           <p className="text-ink-soft text-sm font-extrabold">
-            {freeOnly ? "はなす じゅんび" : "けっか"}
+            {prepared ? "はなす じゅんび" : "けっか"}
           </p>
           <h2 className="text-ink text-3xl font-extrabold">
             {freeOnly
@@ -1771,7 +1789,13 @@ function QuizResultCard({
         ) : (
           <FeedbackMessage
             messageKey={
-              freeOnly ? "quiz.prepared" : summary.passed ? "stage.passed" : "quiz.keepGoing"
+              prepared
+                ? "quiz.prepared"
+                : freeOnly
+                  ? "quiz.written"
+                  : summary.passed
+                    ? "stage.passed"
+                    : "quiz.keepGoing"
             }
           />
         )}

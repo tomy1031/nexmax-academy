@@ -87,6 +87,16 @@ test("調査（リサーチ）: 4問が 1ページに 出て、ぜんぶ 書く�
   await submitAnswers(page);
   // 正解の 無い もんだいなので 点では なく「いくつ 書けたか」を 出す（quiz-runner の freeOnly）
   await expect(page.getByText("4 / 4 つ")).toBeVisible();
+  /*
+   * ここで 書いた ものを 開く 会話は 無い（つぎは 答え合わせの ページ）。
+   * 「はなす じゅんび／つぎの 会話の『📋 自分の こたえ』で 見られます」を 出すと、
+   * 無い ひきだしを 探させる。会話の ノートに 出る もんだい（会社を知る）だけが そう 言う。
+   */
+  await expect(page.getByText("はなす じゅんび", { exact: true })).toHaveCount(0);
+  await expect(page.getByText(/じゅんび できました/)).toHaveCount(0);
+  await expect(page.getByText(/「📋 自分/)).toHaveCount(0);
+  // ルビが 合成される ので、かなの ひとかたまりで 引く（下したの ボタンで…）
+  await expect(page.getByText(/の ボタンで つぎへ/)).toBeVisible();
   await shot(page, "houkoku-search-quiz-02-submitted");
 
   /* 4. 出したので、答え合わせの ページが 開く。 */
