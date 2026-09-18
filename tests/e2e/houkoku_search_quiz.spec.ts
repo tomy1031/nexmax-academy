@@ -155,3 +155,61 @@ test("調査（リサーチ）: 階級は 行を ふやして・↑↓で なら
     await expect(row(at + 1)).toHaveValue(value);
   }
 });
+
+test("調査（リサーチ）: ↓を キーボードで 続けて 押せる・行の 中の Enter で 出さない", async ({
+  page,
+  context,
+}) => {
+  await seedUpToQuiz(context);
+  await page.goto(PATH);
+  await page.getByRole("button", { name: "はじめる" }).click();
+
+  const box = page.locator("#q-kaikyuu_order");
+  const row = (n: number) => box.getByLabel(`${n}ばんめを 入力する`, { exact: true });
+  await writeRanksIn(page, "kaikyuu_order", RANKS);
+
+  /*
+   * ↓を 2回。1回目で 行ごと DOM が 動くので、目を 置き直さないと 2回目が 空振りする
+   *（2026-09-18 の 検収）。社長（1ばんめ）が 3ばんめまで 下がる。
+   */
+  await box.getByRole("button", { name: "1ばんめを 下へ", exact: true }).focus();
+  await page.keyboard.press("Enter");
+  await page.keyboard.press("Enter");
+  await expect(row(3)).toHaveValue("社長");
+  await expect(row(1)).toHaveValue("取締役");
+
+  /* 行の 中で Enter を 押しても 何も 起きない（元の 別ページと 同じ）。 */
+  await row(1).focus();
+  await page.keyboard.press("Enter");
+  await expect(box.locator("ol > li")).toHaveCount(RANKS.length);
+  await expect(page.getByRole("dialog", { name: "こたえを 出す かくにん" })).toHaveCount(0);
+  await expect(row(1)).toHaveValue("取締役");
+});
+
+test("調査（リサーチ）: 自由記述だった ころの 書きかけは、行に 分けて もどる", async ({
+  page,
+  context,
+}) => {
+  await seedUpToQuiz(context);
+  // 夕方まで 階級は 自由記述（型文「1. ◯◯　2. ◯◯ …」）。その ときの 書きかけを 置く
+  await context.addInitScript((key) => {
+    window.localStorage.setItem(
+      key,
+      JSON.stringify({
+        quizSetId: "houkoku_search_quiz",
+        results: [],
+        mode: "submit",
+        drafts: { kaikyuu_order: { kind: "free", input: "1. 社長　2. 取締役　3. 部長" } },
+        index: 0,
+      }),
+    );
+  }, "nexmax:v1:quiz-resume:houkoku_search_quiz");
+
+  await page.goto(PATH);
+  await page.getByRole("button", { name: "つづきから" }).click();
+  const box = page.locator("#q-kaikyuu_order");
+  const row = (n: number) => box.getByLabel(`${n}ばんめを 入力する`, { exact: true });
+  await expect(row(1)).toHaveValue("社長");
+  await expect(row(2)).toHaveValue("取締役");
+  await expect(row(3)).toHaveValue("部長");
+});
