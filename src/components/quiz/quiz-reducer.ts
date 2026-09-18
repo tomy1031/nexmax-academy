@@ -136,6 +136,7 @@ export type QuizAction =
       readonly en?: string;
     } & Targeted)
   | ({ readonly type: "answerList"; readonly inputs: readonly string[] } & Targeted)
+  | ({ readonly type: "answerRanklist"; readonly rows: readonly string[] } & Targeted)
   | ({ readonly type: "answerWordbank"; readonly filled: readonly (string | null)[] } & Targeted)
   | ({ readonly type: "answerFeeling"; readonly index: number } & Targeted)
   | ({ readonly type: "answerReply"; readonly index: number } & Targeted)
@@ -353,6 +354,15 @@ export function quizReducer(state: QuizState, action: QuizAction): QuizState {
     case "answerList": {
       if (question.type !== "list") return state;
       return put(state, question, { kind: "list", inputs: [...action.inputs] });
+    }
+
+    /*
+     * じゅんばんに ならべて 書く（`ranklist`）。行の 並びが そのまま こたえ。
+     * IME の 注意は 出さない（`answerList` と 同じ 理由——英語で 書く 人も いる）。
+     */
+    case "answerRanklist": {
+      if (question.type !== "ranklist") return state;
+      return put(state, question, { kind: "ranklist", rows: [...action.rows] });
     }
 
     case "answerWordbank": {

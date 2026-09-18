@@ -835,6 +835,12 @@ export function collectLabeledTexts(content: Content): LabeledText[] {
             push(at("placeholder"), q.placeholder);
             // english.* は 英語の 欄（漢字を 持たない）。ふりがなの 対象外
             break;
+          case "ranklist":
+            // 行の 上と 下の 札は 出しっぱなし。placeholder は 行ごとに 出る
+            push(at("placeholder"), q.placeholder);
+            push(at("topLabel"), q.topLabel);
+            push(at("bottomLabel"), q.bottomLabel);
+            break;
         }
       });
       break;

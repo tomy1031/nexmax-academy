@@ -10,8 +10,10 @@ import { replacedContent } from "@/lib/stage-routes";
  *
  * 指定:「別ウィンドウで表示する形式をやめて、いつものクイズ形式に」
  *      「『問題』のコンポーネントに差し替え。全ページ表示・提出型」
- *      「新しいUIはより理解を必要とする」（＝新しい 部品は 作らない。いまの 型だけ）
  *      「元のものはいったん残して非表示に」（＝元の 別ページは 消さず ステージから 外す）
+ *      「階級は元のコンポーネントと同じものに。自分でいくらでも追加できる回答コンポーネント」
+ *      （＝階級だけ 新しい 型 `ranklist`。同日 はじめは「新しいUIは作らない」だったが、
+ *       その あとの この 指定で 変わった）
  *
  * 別ページの 検査（`houkoku_search_tool.test.ts`）が 見て いた 学習上の 約束を、
  * もんだいの 側でも 同じに 保つ。
@@ -31,6 +33,9 @@ function learnerTexts(): string[] {
     texts.push(q.q, q.explain, q.section ?? "", q.sectionNote ?? "");
     for (const hint of q.hints ?? []) texts.push(hint.title, hint.text);
     if (q.type === "free") texts.push(q.placeholder ?? "", q.starter ?? "");
+    if (q.type === "ranklist") {
+      texts.push(q.placeholder ?? "", q.topLabel ?? "", q.bottomLabel ?? "");
+    }
   }
   return texts.filter((text) => text !== "");
 }
@@ -56,11 +61,24 @@ describe("調査の もんだい", () => {
     expect(quiz.answerMode).toBe("all");
     expect(quiz.requireAll).toBe(true);
     for (const q of quiz.questions) {
-      // 新しい 部品は 作らない（いまの 型だけ）。どれも 正解の 無い 自由記述
+      if (q.id === "kaikyuu_order") continue;
+      // くらべる 3問は 正解の 無い 自由記述
       expect(q.type).toBe("free");
       // 「とりあえず埋めた時にまだ提出できない」を 起こさない。書けば 点（中身は 先生が 読む）
       if (q.type === "free") expect(q.minLength).toBe(1);
     }
+  });
+
+  it("階級は 行を いくらでも ふやせる 入力（元の 別ページと 同じ 動き）", () => {
+    const ranks = quiz.questions.find((q) => q.id === "kaikyuu_order");
+    expect(ranks?.type).toBe("ranklist");
+    if (ranks?.type !== "ranklist") return;
+    // 人に よって 20でも 30でも 書ける
+    expect(ranks.max).toBeGreaterThanOrEqual(30);
+    // 元の 別ページの 札と 行の 数（`houkoku_search.data.js` の rank）
+    expect(ranks.topLabel).toBe("↑ いちばん えらい");
+    expect(ranks.bottomLabel).toBe("↓ いちばん 下");
+    expect(ranks.start).toBe(5);
   });
 });
 

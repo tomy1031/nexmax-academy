@@ -444,6 +444,27 @@ export async function writeListIn(
 }
 
 /**
+ * じゅんばんに ならべて 書く（`ranklist`）の 行を 上から 埋める。行が 足りなければ ふやす。
+ *
+ * **名前は 完全一致で 引く**——「1ばんめ」は「11ばんめ」の 中にも ある（20行を 超えて
+ * 書く 教材なので、部分一致だと 2行目以降で 取りちがえる）。
+ */
+export async function writeRanksIn(
+  page: Page,
+  questionId: string,
+  values: readonly string[],
+): Promise<void> {
+  const box = page.locator(`#q-${questionId}`);
+  for (const [at, value] of values.entries()) {
+    const input = box.getByLabel(`${at + 1}ばんめを 入力する`, { exact: true });
+    if ((await input.count()) === 0) {
+      await box.getByRole("button", { name: "行を ふやす", exact: true }).click();
+    }
+    await input.fill(value);
+  }
+}
+
+/**
  * 4択の もんだいで **番号で** えらぶ（全問1ページの 教材）。
  *
  * 文字で えらばないのは、ルビが 合成されて 選択肢の 文が

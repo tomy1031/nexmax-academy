@@ -167,6 +167,12 @@ export function describeQuestionIssues(question: QuizQuestion): string[] {
      */
     case "free":
       return [];
+
+    /* じゅんばんに ならべて 書く。正解は 無い。行の 数の 決めごとだけ 見る。 */
+    case "ranklist":
+      return question.start > question.max
+        ? ["さいしょの 行の 数が、ふやせる 上限より 多いです。"]
+        : [];
   }
 }
 
@@ -241,6 +247,8 @@ const QUIZ_TYPE_OPTIONS: readonly { value: QuizQuestion["type"]; label: string }
   { value: "emotion", label: "気もち → 言い方" },
   // 正解が 無い 問い（「なぜ そう 思いましたか」）。書けば 点が 入る
   { value: "free", label: "じゆうに 書く（正解なし）" },
+  // 学習者が 行を ふやして じゅんばんに 書く（「えらい 順に 階級を」）。正解は 無い
+  { value: "ranklist", label: "じゅんばんに ならべて 書く（正解なし・行を ふやせる）" },
 ];
 
 const PHASE_OPTIONS: readonly { value: QuizSet["phase"]; label: string }[] = [
@@ -745,6 +753,56 @@ function QuestionBody({
           />
         </div>
       );
+
+    /*
+     * じゅんばんに ならべて 書く。正解の 欄は 無い（書けば 点）。
+     * 見せかたの 札と 行の 数だけ 決める。空の 札は 出さない（undefined に もどす）。
+     */
+    case "ranklist": {
+      const optional = (value: string) => (value.trim() === "" ? undefined : value);
+      return (
+        <div className="space-y-3">
+          <TextField
+            label="うすい字（書く 形の 見本）"
+            value={question.placeholder ?? ""}
+            onChange={(placeholder) =>
+              onChange({ ...question, placeholder: optional(placeholder) })
+            }
+            placeholder="例：ここに 書く"
+            hint="入力欄に うすく 出ます。こたえその ものは 書かないでください。"
+          />
+          <TextField
+            label="いちばん 上の 札"
+            value={question.topLabel ?? ""}
+            onChange={(topLabel) => onChange({ ...question, topLabel: optional(topLabel) })}
+            placeholder="例：↑ いちばん えらい"
+          />
+          <TextField
+            label="いちばん 下の 札"
+            value={question.bottomLabel ?? ""}
+            onChange={(bottomLabel) =>
+              onChange({ ...question, bottomLabel: optional(bottomLabel) })
+            }
+            placeholder="例：↓ いちばん 下"
+          />
+          <NumberField
+            label="さいしょに 出す 行の 数"
+            value={question.start}
+            min={1}
+            max={100}
+            onChange={(start) => onChange({ ...question, start })}
+          />
+          <NumberField
+            label="ふやせる 行の 上限"
+            value={question.max}
+            min={2}
+            max={100}
+            onChange={(max) => onChange({ ...question, max })}
+            hint="人に よって 20でも 30でも 書ける ように、大きめに します。"
+          />
+        </div>
+      );
+    }
   }
 }
 

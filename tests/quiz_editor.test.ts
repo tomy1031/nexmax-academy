@@ -155,6 +155,8 @@ describe("drafts（もんだい）", () => {
       emotion: 3,
       // 自由記述は 枠を 出さない（正解を 書く 欄が 無い）
       free: 0,
+      // じゅんばんに ならべて 書く も 正解の 枠は 無い（行は 学習者が ふやす）
+      ranklist: 0,
     };
     for (const [type, least] of Object.entries(counts) as [QuizQuestion["type"], number][]) {
       const question = emptyQuizQuestion(type);
