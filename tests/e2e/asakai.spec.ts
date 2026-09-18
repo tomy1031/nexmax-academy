@@ -500,11 +500,16 @@ test("朝礼: しごとの 表に 絵が 出て、押すと ひろがる", async
 });
 
 /**
- * 夕礼の しごとは 絵を 持って いない。**その ときは 欄を 広げない**——
- * 390px の 画面では 表の 幅が 318px しか なく、88px を 空欄に 使うと
- * しごとの 名前に 134px しか 残らない（2026-09-16 の 検収）。
+ * 夕礼の しごとの 表にも **しごとごとの 絵が 出る**（2026-09-18 の 判断 A）。
+ * 絵は「Next Talent の 夕礼」ページの しごとカードと 同じ 5枚。
+ *
+ * もとは「夕礼の しごとは 絵を 持って いない ので 欄を 広げない」を 見る テストだった
+ *（390px では 表の 幅が 318px しか なく、絵の 無い 表で 88px を 空欄に 使うと
+ * しごとの 名前に 134px しか 残らない。2026-09-16 の 検収）。夕礼の 表にも 絵が 入り、
+ * 教材の 中に 絵の 無い 表が 無く なった ので、その 守りは 部品を じかに 描く
+ * 単体テスト（`tests/asakai_progress_boxes.test.tsx`）へ 移した（同日・ユーザー承認）。
  */
-test("夕礼: 絵の 無い 表は 絵の 欄を 広げない", async ({ page, context }) => {
+test("夕礼: しごとの 表に 5枚の 絵が 出て、絵の 欄が 広がる", async ({ page, context }) => {
   const refs = stageRefs();
   await seedCompleted(context, refs.slice(0, refs.indexOf("asakai_muzukashii")));
   await page.goto("/asakai/meeting-asakai_muzukashii");
@@ -513,10 +518,10 @@ test("夕礼: 絵の 無い 表は 絵の 欄を 広げない", async ({ page, c
   const memo = page.getByRole("dialog", { name: "報告メモ" });
   await expect(memo).toBeVisible();
   const table = memo.locator("table").first();
-  await expect(table.locator("img")).toHaveCount(0);
+  await expect(table.locator("img")).toHaveCount(5);
   const firstCell = table.locator("tbody tr").first().locator("td").first();
   const box = await firstCell.boundingBox();
-  expect(box!.width, "絵が 無いのに 欄が 広い").toBeLessThan(40);
+  expect(box!.width, "絵が あるのに 欄が せまい").toBeGreaterThan(80);
 });
 
 /**
