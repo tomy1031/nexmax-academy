@@ -13,6 +13,7 @@ import { buildFuriganaIndex, type FuriganaEntry } from "@/lib/text/furigana";
 import { recordContentProgress } from "@/lib/progress/store";
 import { bufferTalkTurn, flushTalkTurns, newTalkSessionId } from "@/lib/records/talk-log";
 import { CaptionBar, CallShell } from "@/components/call-shell";
+import { LiveDebugPanel } from "@/components/meeting/live-debug-panel";
 import { SpeakButton } from "@/components/meeting/speak-button";
 import { LiveReason } from "./live-reason";
 import { MemoStep } from "./memo-step";
@@ -670,13 +671,19 @@ export function TalkSession({
              * ここで 何も 言わないと、声が 届いていない ことに 気づけない。
              * 押しても 何も 送れない 🎤 は 出さない。
              */
-            <p className="text-ink-soft text-center text-xs font-extrabold break-keep">
-              マイクは つかえません。下に 書いて 送れば、そのまま すすめます
-            </p>
+            <>
+              <p className="text-ink-soft text-center text-xs font-extrabold break-keep">
+                マイクは つかえません。下に 書いて 送れば、そのまま すすめます
+              </p>
+              {/* 🎤 を 出さない ので、記録（`?debug=1`）は ここに 出す */}
+              <LiveDebugPanel />
+            </>
           ) : (
             <SpeakButton
               status={live.status}
               reason={live.reason}
+              // 理由は 下の `LiveReason` が 大きく 出す（二重に しない）
+              showReason={false}
               talking={live.talking}
               // 声は人物カードで決めたもの（まんが・ミーティングと同じ人の声にする）
               onConnect={() => connectTo(target.id)}
