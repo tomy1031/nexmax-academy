@@ -6,10 +6,11 @@ import { QuizResultCard } from "../src/components/quiz/quiz-runner";
 import type { QuizResult } from "../src/components/quiz/quiz-reducer";
 import { meetingSchema, quizSetSchema, type QuizSet } from "../src/content/schema";
 import { notebookQuizSetIds } from "../src/lib/answers/notebook";
+import { hasNoRightAnswer } from "../src/lib/quiz/draft";
 import { buildFuriganaIndex } from "../src/lib/text/furigana";
 
 /*
- * 正解の 無い もんだい（自由記述だけ）の けっか画面。
+ * 正解の 無い もんだい（自由記述・じゅんばんに ならべて 書く だけ）の けっか画面。
  *
  * 「はなす じゅんび／つぎの 会話の『📋 自分の こたえ』で 見られます」と 言って よいのは、
  * **あとの 会話が その もんだいを こたえノートに 出す** とき だけ。報告ステージの
@@ -33,8 +34,9 @@ const meetings = readdirSync(join("content", "meetings"))
 const quiz = (id: string): QuizSet =>
   quizSetSchema.parse(read("content", "quizsets", `${id}.json`));
 
+/** `quiz-runner` の `freeOnly` と 同じ 見分け（見分けは draft.ts の 1か所）。 */
 function freeOnly(set: QuizSet): boolean {
-  return set.questions.length > 0 && set.questions.every((q) => q.type === "free");
+  return set.questions.length > 0 && set.questions.every(hasNoRightAnswer);
 }
 
 describe("こたえノートに 出る もんだい（教材データ）", () => {
@@ -49,7 +51,7 @@ describe("こたえノートに 出る もんだい（教材データ）", () =>
     expect(ids.has("houkoku_search_quiz")).toBe(false);
   });
 
-  it("3本とも 自由記述だけの もんだい（この 見分けが 効く 相手）", () => {
+  it("3本とも 正解の 無い もんだい（この 見分けが 効く 相手）", () => {
     for (const id of ["kaisha_omoshiroi", "houkoku_answer", "houkoku_search_quiz"]) {
       expect(freeOnly(quiz(id)), id).toBe(true);
     }

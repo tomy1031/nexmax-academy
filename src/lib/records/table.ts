@@ -293,10 +293,11 @@ const QUIZ_TYPE_LABEL: Record<string, string> = {
   wordbank: "語群から あなうめ",
   emotion: "気もち → 言い方",
   // 自由記述（`free`）と 順不同の 入力（`list`）。これまで 生の 英語が 出て いた。
-  // ※ `list` は 採点する（`draft.ts` の `hits === groups.length`）。無採点なのは `free` と
-  //   ツール教材に 書いた こたえだけ
+  // ※ `list` は 採点する（`draft.ts` の `hits === groups.length`）。無採点なのは `free`・
+  //   `ranklist`（じゅんばんに ならべて 書く）と ツール教材に 書いた こたえだけ
   free: "じゆうに 書く",
   list: "いくつか 書く",
+  ranklist: "じゅんばんに ならべる",
 };
 
 export function quizTable(records: readonly QuizRecord[], lookups: Lookups): RecordTable {

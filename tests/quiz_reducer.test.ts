@@ -67,6 +67,9 @@ function answerCorrectly(state: QuizState): QuizState {
       });
     case "free":
       return quizReducer(state, { type: "answerFree", input: "じゆうに 書いた こたえ" });
+    // じゅんばんに ならべて 書く（正解は 無い。書けば 点）
+    case "ranklist":
+      return quizReducer(state, { type: "answerRanklist", rows: ["社長", "部長"] });
     case "wordbank":
       return quizReducer(state, { type: "answerWordbank", filled: q.blanks });
     case "emotion":
@@ -775,6 +778,12 @@ function answerCorrectlyAt(state: QuizState, id: string): QuizState {
       return quizReducer(state, {
         type: "answerFree",
         input: "じゆうに 書いた こたえ",
+        questionId: id,
+      });
+    case "ranklist":
+      return quizReducer(state, {
+        type: "answerRanklist",
+        rows: ["社長", "部長"],
         questionId: id,
       });
     case "wordbank":
