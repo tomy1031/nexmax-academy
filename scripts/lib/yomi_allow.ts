@@ -184,6 +184,24 @@ export const YOMI_ALLOW: readonly YomiAllowEntry[] = [
     where: "歩いて",
     note: "「歩いて 8分」。解析は ふん（連濁を 落とす）",
   },
+  {
+    surface: "分",
+    reading: "ぷん",
+    where: "3分",
+    note: "「3分で 終わります」＝さんぷん（夕礼の 前ばなし）。解析は ふん（連濁を 落とす）",
+  },
+  {
+    surface: "分",
+    reading: "ぷん",
+    where: "10分",
+    note: "「1日の 最後の 10分」＝じゅっぷん（夕礼の 前ばなし）。解析は ふん",
+  },
+  {
+    surface: "分",
+    reading: "ぷん",
+    where: "30分",
+    note: "「9時30分に」＝さんじゅっぷん（夕礼の 前ばなし）。解析は ふん",
+  },
   { surface: "月の", reading: "がつの", where: "4月の", note: "「4月の 新学期」。解析は つき" },
   {
     surface: "行ったら、もう ",

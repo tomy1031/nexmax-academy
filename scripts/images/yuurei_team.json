@@ -1,0 +1,30 @@
+{
+  "refs": [
+    "public/img/characters/hendy/sheet.webp",
+    "public/img/characters/okuda/sheet.webp",
+    "public/img/characters/nyam/sheet.webp"
+  ],
+  "_comment": "「Next Talent の 夕礼」ページ（content/articles/yuurei_nexttalent.json）の 絵の うち、文字を 焼かない 2枚（表紙・ゴール）。KhmerSabai の 朝礼（asakai_team.json）と 同じ 作り・同じ noText。夕礼なので 光は 夕方。文字を 焼く 13枚は yuurei_team_zukai.json。",
+  "style": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This is a TEACHING picture, not a mood picture: what each person is doing must be readable from the picture alone.",
+  "noText": "No text, no letters, no kanji, no kana, no numbers anywhere in the image. Screens, papers, whiteboards, books and signs are blank or show only soft abstract shapes and simple pictures. No watermark, no signature, no logo, no speech balloons, no floating symbols such as question marks, exclamation marks, arrows, light bulbs, stars or hearts.",
+  "negative": "Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots. University logos.",
+  "output": "1536x1024",
+  "scenes": [
+    {
+      "out": "yuurei_hero",
+      "dest": "public/img/articles/yuurei_nexttalent/hero.webp",
+      "title": "Next Talent チームの 夕礼（表紙）",
+      "where": "content/articles/yuurei_nexttalent.json hero",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: at ten to six in the evening, at the end of the working day, the Next Talent team stands together for a short meeting and reports the day's work. The same Japanese IT office in the evening: warm golden-orange low sunlight through a big window, the sky outside turning orange and pink, desk lamps just switched on. Behind the team a large monitor on a desk shows one student's profile page with a round face picture and a horizontal bar chart of six bars. On the wall a round clock with plain hands (no numbers) points to ten to six. Four colleagues stand in a loose half circle, nobody sitting: the team leader Hendy — a slim man in his late twenties with short black slightly tousled hair, a navy two-button suit, a white shirt and a navy tie (follow his model sheet) stands at the left and opens the meeting with a small friendly nod; Okuda — a man in his mid twenties with wavy messy black hair, black thick-rimmed glasses and a dark green hoodie (follow his model sheet) and Nyam — a Southeast Asian man in his twenties with warm light-brown skin, short black hair swept up and back, and a coral knit cardigan over a cream shirt (follow his model sheet) stand in the middle holding small blank notebooks, listening; the new engineer — a young Cambodian man in his early twenties with warm light-brown skin, short black hair with a neat side part, a friendly open face, wearing a light blue short-sleeved shirt, dark grey chinos and a lanyard with a blank white card stands at the right, holding a small blank notebook, ready for his turn. Wide shot filling the frame."
+    },
+    {
+      "out": "yuurei_goal",
+      "dest": "public/img/articles/yuurei_nexttalent/goal.webp",
+      "title": "金曜日の 夕方に 通して テストする（ゴール）",
+      "where": "content/articles/yuurei_nexttalent.json ゴールの 帯の 下",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: on Friday evening the team tests the whole chain together, from searching for a student to seeing that student's skill graph. An office meeting corner on Friday late afternoon, warm orange light. the team leader Hendy — a slim man in his late twenties with short black slightly tousled hair, a navy two-button suit, a white shirt and a navy tie (follow his model sheet), Okuda — a man in his mid twenties with wavy messy black hair, black thick-rimmed glasses and a dark green hoodie (follow his model sheet), Nyam — a Southeast Asian man in his twenties with warm light-brown skin, short black hair swept up and back, and a coral knit cardigan over a cream shirt (follow his model sheet) and the new engineer — a young Cambodian man in his early twenties with warm light-brown skin, short black hair with a neat side part, a friendly open face, wearing a light blue short-sleeved shirt, dark grey chinos and a lanyard with a blank white card gather around ONE big monitor on a table, all four smiling and leaning in. The monitor shows three panels side by side joined by two thick sky-blue arrows: a search page with a rounded search box and student cards, one student's profile page with a big round face picture, and a horizontal bar chart of six bars. The new engineer points at the bar chart with one hand; Hendy gives a small thumbs up. No writing anywhere. Wide shot filling the frame."
+    }
+  ]
+}

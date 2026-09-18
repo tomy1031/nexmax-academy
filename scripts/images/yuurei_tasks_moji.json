@@ -1,0 +1,74 @@
+{
+  "refs": ["public/img/articles/asakai_lecture/card_kinou.webp"],
+  "_comment": "「Next Talent の 夕礼」ページ（content/articles/yuurei_nexttalent.json）の「あなたの 担当」の しごと 5枚。**夕礼（asakai_muzukashii）の 月曜の カードの progress と 同じ 5つ・同じ 名前**（2026-09-18 の 指定「実際の ミーティング練習の 初日の 内容と 完全に 一致」）。KhmerSabai の しごと 9枚（asakai_tasks_moji.json）と 同じ 作り——人 1人と 画面 1つ・画面の 中身に 字を 入れる（同日の 指定「アイコンだけではなく、実際の表示画面と同じように、文字なども表示させてください」）。顔は 朝礼の しごとの 絵と 同じ エンジニア（card_kinou を 参照）。字は 日本語も 入るので noText は ふりがなの 指示つき。",
+  "style": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This is a TEACHING picture, not a mood picture: what the person is doing must be readable from the picture alone. The picture is shown small, so keep it to ONE person and ONE screen, drawn LARGE and simple, with the screen's contents big and bold and a clear dominant colour; leave small details out. The screen shows Next Talent, a web system where companies look for university students: its pages are clean white with rounded cards.",
+  "noText": "Lettering — read this part carefully. The picture contains ONLY the words and numbers listed in the scene above, and no other writing at all. Print each of them LARGE and horizontally in a clean rounded gothic font with generous space around it, spelled EXACTLY as given, letter for letter and digit for digit, so that it stays sharp and easy to read at a glance. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height. Words written only in hiragana, katakana, Latin letters or digits take no furigana. Every other part of every screen, card and button is blank or shows only plain grey rounded bars. No other letters, numbers, logos, watermarks or speech balloons anywhere in the picture.",
+  "negative": "Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots, a second person, a wide empty room shot where the person and the screen are small, a green tick mark. Never: misspelled words, extra words, a university logo.",
+  "output": "1024x1024",
+  "scenes": [
+    {
+      "out": "yuurei_task_ichiran",
+      "dest": "public/img/articles/yuurei_nexttalent/task_ichiran.webp",
+      "title": "1 学生一覧・検索",
+      "where": "content/articles/yuurei_nexttalent.json あなたの 担当 カード1（夕礼 月曜の progress[0]）",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: she is BUILDING the page that lists students and lets you search them by a keyword. Close view of the new engineer — a young Cambodian woman in her early twenties with warm light-brown skin, a round friendly face and black hair tied back in a low ponytail, wearing a mint-green blouse, beige trousers and a lanyard with a blank white card, sitting at her desk with both hands on the keyboard and looking up at a large monitor that FILLS most of the frame. On the monitor is the student list page she is building: across the top a heading reading 学生検索; under it one wide rounded search box with a small magnifying-glass mark on the left and the typed word \"React\" inside it, and a SKY-BLUE rounded button reading 検索 at the right end of the box. Under the search box, three student cards in a row, each with a round face picture of a DIFFERENT smiling university student, one plain grey bar for the name, and one small rounded tag: the first tag reads \"AUPP\", the second \"CADT\", the third \"AUPP\". Dominant colour: sky blue. Focused, calm expression.",
+      "text": ["学生検索", "React", "検索", "AUPP", "CADT"],
+      "output": "Output: one square illustration, 1024x1024. Close view — the person and the screen fill the frame edge to edge."
+    },
+    {
+      "out": "yuurei_task_shiborikomi",
+      "dest": "public/img/articles/yuurei_nexttalent/task_shiborikomi.webp",
+      "title": "2 絞り込み",
+      "where": "content/articles/yuurei_nexttalent.json あなたの 担当 カード2（夕礼 月曜の progress[1]）",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: she is BUILDING filters that narrow many students down to the few that match a university, a JLPT level and a skill. Close view of the new engineer — a young Cambodian woman in her early twenties with warm light-brown skin, a round friendly face and black hair tied back in a low ponytail, wearing a mint-green blouse, beige trousers and a lanyard with a blank white card, at her desk, pointing with a pen at a large monitor that FILLS most of the frame. On the left of the screen a filter panel with THREE stacked rounded ORANGE dropdown boxes, each with a small label above it: the label 大学 above a box showing \"AUPP\"; the label \"JLPT\" above a box showing \"N3\"; the label スキル above a box showing \"React\". A thick orange funnel shape beside the panel points to the right, where many small faded student cards shrink down to ONE big bright student card with a round face picture and three small tags reading \"AUPP\", \"N3\" and \"React\". Dominant colour: orange. Pleased, checking expression.",
+      "text": ["大学", "AUPP", "JLPT", "N3", "スキル", "React"],
+      "output": "Output: one square illustration, 1024x1024. Close view — the person and the screen fill the frame edge to edge."
+    },
+    {
+      "out": "yuurei_task_idou",
+      "dest": "public/img/articles/yuurei_nexttalent/task_idou.webp",
+      "title": "3 学生詳細への 移動",
+      "where": "content/articles/yuurei_nexttalent.json あなたの 担当 カード3（夕礼 月曜の progress[2]）",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: when you click one student card in the list, the page moves to that student's detail page. Close view of the new engineer — a young Cambodian woman in her early twenties with warm light-brown skin, a round friendly face and black hair tied back in a low ponytail, wearing a mint-green blouse, beige trousers and a lanyard with a blank white card, at her desk with one hand on the mouse, looking at a large monitor that FILLS most of the frame. The screen is split into two halves joined by ONE thick VIOLET arrow pointing right. Left half: the student list, three small student cards stacked; the middle card is framed with a thick violet border and a mouse pointer is clicking it. Right half: that SAME student's detail page, larger: a big round face picture of the same student at the top, a heading reading 学生詳細, two rounded tags reading \"AUPP\" and \"N3\", and a few plain grey bars below. Dominant colour: violet. Attentive expression.",
+      "text": ["学生詳細", "AUPP", "N3"],
+      "output": "Output: one square illustration, 1024x1024. Close view — the person and the screen fill the frame edge to edge."
+    },
+    {
+      "out": "yuurei_task_graph",
+      "dest": "public/img/articles/yuurei_nexttalent/task_graph.webp",
+      "title": "4 スキルグラフ",
+      "where": "content/articles/yuurei_nexttalent.json あなたの 担当 カード4（夕礼 月曜の progress[3]）",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: she is BUILDING a graph that shows one student's six best IT skills as bars, highest score at the top. Close view of the new engineer — a young Cambodian woman in her early twenties with warm light-brown skin, a round friendly face and black hair tied back in a low ponytail, wearing a mint-green blouse, beige trousers and a lanyard with a blank white card, at her desk, pointing at the top bar on a large monitor that FILLS most of the frame. On the screen a heading reading スキル, and under it EXACTLY SIX thick horizontal TEAL bars, one under another, each one a little shorter than the one above. Each bar has its skill name on its left and its score at its right end, top to bottom: \"JavaScript\" \"90\", \"React\" \"85\", \"SQL\" \"80\", \"Laravel\" \"75\", \"PHP\" \"70\", \"Git\" \"65\". Dominant colour: teal. Proud, friendly expression.",
+      "text": [
+        "スキル",
+        "JavaScript",
+        "90",
+        "React",
+        "85",
+        "SQL",
+        "80",
+        "Laravel",
+        "75",
+        "PHP",
+        "70",
+        "Git",
+        "65"
+      ],
+      "output": "Output: one square illustration, 1024x1024. Close view — the person and the screen fill the frame edge to edge."
+    },
+    {
+      "out": "yuurei_task_test",
+      "dest": "public/img/articles/yuurei_nexttalent/task_test.webp",
+      "title": "5 スマホ対応・結合テスト",
+      "where": "content/articles/yuurei_nexttalent.json あなたの 担当 カード5（夕礼 月曜の progress[4]）",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: the pages also work on a smartphone, and she tests the whole chain — search, then the student's page, then the graph — joined together. Close view of the new engineer — a young Cambodian woman in her early twenties with warm light-brown skin, a round friendly face and black hair tied back in a low ponytail, wearing a mint-green blouse, beige trousers and a lanyard with a blank white card, at her desk, holding a smartphone up in one hand and a large magnifying glass in the other, looking through the glass at the phone. The phone is drawn BIG and fills most of the frame; its screen shows three small stacked panels joined by two small CORAL arrows pointing down: the top panel is a search box with the word \"React\", the middle panel is a student page with a round face picture and the heading 学生詳細, the bottom panel is a small chart of six shrinking bars. Above the phone, a cream label panel reads 結合テスト. Dominant colour: coral. Careful, focused expression.",
+      "text": ["結合テスト", "React", "学生詳細"],
+      "output": "Output: one square illustration, 1024x1024. Close view — the person and the phone fill the frame edge to edge."
+    }
+  ]
+}
