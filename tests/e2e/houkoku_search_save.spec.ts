@@ -15,16 +15,21 @@ import { seedCompleted, shot } from "./helpers";
  * 二度と 送られなかった。そして 書いた ものは ツールの URL と 端末ごとの
  * localStorage にしか 無く、別の URL で 開くと 空に 見えた。
  *
- * ここでは アプリの 役（持ち主を 教える・DB に 入れて 返事を する）を テストが
+ * 控えは **学習者ごとの 置き場**に 分けて ある（教室の PC を 何人かで 使うため）。
+ * ここでは アプリの 役（いまの 学習者を 教える・DB に 入れて 返事を する）を テストが
  * 代わりに 務める。デモモード（鍵ゼロ）の アプリは DB に 書けないので、
  * 本物の 受け口には 合図を 渡さない（`stopImmediatePropagation`）。
  */
 
 const PATH = "/houkoku/link";
 const LINK = "houkoku_search";
-const STORE_KEY = "nexmax:houkoku_search:v1";
+/** 持ち主の 分からない 書きかけの 置き場（古い 版・べつの タブ）。 */
+const SHARED_KEY = "nexmax:houkoku_search:v1";
 /** いま ログインして いる ことに する 学習者。 */
 const ME = "e2e-learner-b";
+/** 前に この 端末を 使った 学習者。 */
+const OTHER = "e2e-learner-a";
+const slotOf = (owner: string) => `nexmax:houkoku_search:v2:${owner}`;
 
 async function seedUpToTool(context: BrowserContext) {
   const stage = JSON.parse(readFileSync(join("content", "stages", "houkoku.json"), "utf8")) as {
@@ -57,18 +62,24 @@ interface Received {
 /**
  * アプリの 役を する。**親の 窓だけ**で 動く（init script は iframe の 中でも 走る）。
  *
- * - 「いま だれ？」に `ME` と `stored`（DB に ある ことに する 最後の こたえ）を 返す
+ * - 「いま だれ？」に 答える。`who` が "me" なら `ME`、"nobody" なら だれか 分からない
+ *   （ログインの 情報が 読めない）、"silent" なら 返事を しない（アプリが 古い・こわれた）
+ * - `stored` は DB に ある ことに する 最後の こたえ
  * - 届いた こたえを `window.__answers` に ためる（開き直した 窓ごとに 数え直す）
  * - `e2e:ack` が "1" の ときだけ「DB に 入った」を 返す（途中で 切り替える ため localStorage で 持つ）
- * - `silent` の ときは「いま だれ？」に 返事を しない（アプリの 画面が 古い・こわれた とき）
  */
 async function actAsApp(
   context: BrowserContext,
-  stored?: readonly { id: string; text: string }[] | null,
-  silent = false,
+  {
+    stored = null,
+    who = "me",
+  }: {
+    stored?: readonly { id: string; text: string }[] | null;
+    who?: "me" | "nobody" | "silent";
+  } = {},
 ): Promise<void> {
   await context.addInitScript(
-    ({ storedAnswers, storedAttempt, linkId, me, quiet }) => {
+    ({ storedAnswers, storedAttempt, linkId, me, mode }) => {
       if (window.top !== window) return;
       const box: unknown[] = [];
       (window as unknown as { __answers: unknown[] }).__answers = box;
@@ -84,12 +95,13 @@ async function actAsApp(
         const source = event.source as Window;
         if (data.type === "nexmax:link-hello") {
           event.stopImmediatePropagation();
-          if (quiet) return;
+          if (mode === "silent") return;
           source.postMessage(
             {
               type: "nexmax:link-state",
               id: linkId,
-              owner: me,
+              owner: mode === "me" ? me : null,
+              demo: false,
               answers: storedAnswers ?? [],
               attemptId: storedAnswers ? storedAttempt : null,
             },
@@ -113,21 +125,21 @@ async function actAsApp(
       storedAttempt: STORED_ATTEMPT,
       linkId: LINK,
       me: ME,
-      quiet: silent,
+      mode: who,
     },
   );
 }
 
 /** この 端末に 控えを 置いて おく（前の 学習者・古い 版 などを 作る）。1回だけ 置く。 */
-async function seedToolState(context: BrowserContext, state: Record<string, unknown>) {
+async function seedToolState(context: BrowserContext, key: string, state: Record<string, unknown>) {
   await context.addInitScript(
-    ({ key, value }) => {
-      if (window.top === window) return;
-      if (window.localStorage.getItem("e2e:seeded")) return;
-      window.localStorage.setItem("e2e:seeded", "1");
-      window.localStorage.setItem(key, value);
+    ({ storageKey, value }) => {
+      const flag = `e2e:seeded:${storageKey}`;
+      if (window.localStorage.getItem(flag)) return;
+      window.localStorage.setItem(flag, "1");
+      window.localStorage.setItem(storageKey, value);
     },
-    { key: STORE_KEY, value: JSON.stringify(state) },
+    { storageKey: key, value: JSON.stringify(state) },
   );
 }
 
@@ -145,6 +157,10 @@ async function received(page: Page): Promise<Received[]> {
   return page.evaluate(() => (window as unknown as { __answers?: Received[] }).__answers ?? []);
 }
 
+async function readSlot(page: Page, key: string): Promise<Record<string, unknown> | null> {
+  return page.evaluate((k) => JSON.parse(window.localStorage.getItem(k) ?? "null"), key);
+}
+
 async function fillAll(tool: FrameLocator | Page) {
   const ranks = STORED[0]!.text.split("　");
   for (const [index, word] of ranks.entries()) {
@@ -155,6 +171,17 @@ async function fillAll(tool: FrameLocator | Page) {
     await areas.nth(index).fill(answer.text);
   }
 }
+
+/** 前の 学習者（OTHER）が 出した ままの 控え。 */
+const PREVIOUS = {
+  v: 2,
+  rows: ["Aさんの 社長", "Aさんの 部長", "Aさんの 課長", "Aさんの 係長", "Aさんの 社員"],
+  answers: { kaikyuu: "A の 文", houkoku: "A の 文", joushi: "A の 文" },
+  submitted: true,
+  editing: false,
+  attempt: null,
+  saved: "",
+};
 
 test("調査（リサーチ）: 先生に とどいたと 返事が 来るまで、同じ 1回の id で 送り直す", async ({
   page,
@@ -200,12 +227,44 @@ test("調査（リサーチ）: 先生に とどいたと 返事が 来るまで
   expect(await received(page)).toEqual([]);
 });
 
+test("調査（リサーチ）: 「直す」の とちゅうで 閉じても、書きかけは 送らない（出した 1回を 送る）", async ({
+  page,
+  context,
+}) => {
+  await seedUpToTool(context);
+  await actAsApp(context);
+
+  let tool = await openTool(page);
+  await fillAll(tool);
+  await tool.getByRole("button", { name: /出す/ }).click();
+  await expect.poll(async () => (await received(page)).length).toBe(1);
+  const first = (await received(page))[0]!;
+
+  /* 「直す」で 1行 消して、出さずに 閉じる */
+  await tool.getByRole("button", { name: /直す/ }).click();
+  await tool.locator("li.row").nth(4).getByRole("button", { name: "消す" }).click();
+
+  await page.evaluate(() => window.localStorage.setItem("e2e:ack", "1"));
+  await page.reload();
+  tool = await openTool(page);
+
+  /* 送り直すのは 出した ときの 中身と 1回の id。書きかけの 4行では ない。 */
+  await expect.poll(async () => (await received(page)).length).toBe(1);
+  const again = (await received(page))[0]!;
+  expect(again.key).toBe(first.key);
+  expect(again.answers).toEqual(STORED);
+
+  /* 欄には 直して いる とちゅうの 書きかけが 残って いる（消えて いない）。 */
+  await expect(tool.getByLabel("4ばんめ")).toHaveValue("課長");
+  await expect(tool.getByLabel("5ばんめ")).toHaveCount(0);
+});
+
 test("調査（リサーチ）: 端末が 空なら、DB に ある 前の こたえを 戻す", async ({
   page,
   context,
 }) => {
   await seedUpToTool(context);
-  await actAsApp(context, STORED);
+  await actAsApp(context, { stored: STORED });
 
   const tool = await openTool(page);
 
@@ -240,13 +299,13 @@ test("調査（リサーチ）: 書き始めて いる ときは、前の こた
   context,
 }) => {
   await seedUpToTool(context);
-  await actAsApp(context, STORED);
-  await seedToolState(context, {
+  await actAsApp(context, { stored: STORED });
+  await seedToolState(context, slotOf(ME), {
     v: 2,
-    owner: ME,
     rows: ["わたしの 書きかけ", "", "", "", ""],
     answers: { kaikyuu: "", houkoku: "", joushi: "" },
     submitted: false,
+    editing: false,
     attempt: null,
     saved: "",
   });
@@ -264,14 +323,16 @@ test("調査（リサーチ）: べつの タブでは 出せない。書いた 
 }) => {
   await seedUpToTool(context);
   await actAsApp(context);
+  // 前の 学習者の 置き場。べつの タブでは だれか 分からないので、見えては いけない
+  await seedToolState(context, slotOf(OTHER), PREVIOUS);
 
   /*
    * 「べつの タブで ひらく」＝ 親の いない 1枚。以前は 出した ことに なるのに
    * 送り先が 無く、黙って 捨てて いた（出した つもりで DB には 何も 無い）。
-   * いまは だれが 書いたかを アプリに 聞けない ので、ここでは 出させない
-   *——出した ことに すると、あとで この 端末を 使う 人の 名前で 送られる。
+   * いまは だれが 書いたかを アプリに 聞けない ので、ここでは 出させない。
    */
   await page.goto("/tools/hourensou/houkoku_search.html");
+  await expect(page.getByLabel("1ばんめ")).toHaveValue("");
   await fillAll(page);
   await page.getByRole("button", { name: /出す/ }).click();
 
@@ -300,27 +361,16 @@ test("調査（リサーチ）: べつの タブでは 出せない。書いた 
  * 教室の PC は 1台を 何人かで 使う。ツールの 控えは ログアウトでは 消えない
  *（`clearNexmaxCache` が 消すのは `nexmax.` で 始まる 鍵だけ）。
  * 前の 人の 控えを 次の 人の 名前で 送ると、先生の 名簿が 静かに 嘘に なり、
- * 次の 人の 関門まで 開く（2026-09-18 の 検収で 見つかった）。
+ * 次の 人の 関門まで 開く。捨てると、前の 人の まだ 届いて いない こたえが 消える
+ *（どちらも 2026-09-18 の 検収で 見つかった）。
  */
-const PREVIOUS = {
-  rows: ["Aさんの 社長", "Aさんの 部長", "Aさんの 課長", "Aさんの 係長", "Aさんの 社員"],
-  answers: { kaikyuu: "A の 文", houkoku: "A の 文", joushi: "A の 文" },
-  submitted: true,
-};
-
-test("調査（リサーチ）: ほかの 学習者の 控えは、見せず・送らず・関門も 開けない", async ({
+test("調査（リサーチ）: ほかの 学習者の 控えは、見せず・送らず・関門も 開けず・消しも しない", async ({
   page,
   context,
 }) => {
   await seedUpToTool(context);
   await actAsApp(context);
-  await seedToolState(context, {
-    ...PREVIOUS,
-    v: 2,
-    owner: "e2e-learner-a",
-    attempt: null,
-    saved: "",
-  });
+  await seedToolState(context, slotOf(OTHER), PREVIOUS);
 
   const tool = await openTool(page);
   await expect(tool.getByLabel("1ばんめ")).toHaveValue("");
@@ -330,6 +380,8 @@ test("調査（リサーチ）: ほかの 学習者の 控えは、見せず・�
 
   await page.waitForTimeout(1500);
   expect(await received(page)).toEqual([]);
+  // 前の 人の 控えは その 人の 置き場に 残って いる（次に その 人が 開けば 送られる）
+  expect(await readSlot(page, slotOf(OTHER))).toMatchObject({ rows: PREVIOUS.rows });
 
   // 出して いない 人なので、つぎの ページは まだ 閉じて いる
   await page.goto("/houkoku/article-houkoku_hierarchy");
@@ -343,7 +395,12 @@ test("調査（リサーチ）: 持ち主の 分からない 古い 控えは、
   await seedUpToTool(context);
   await actAsApp(context);
   // この 直しの 前の 形（版も 持ち主も 無い）。自分の スマホで 出した 人の たった 1つの 控えかも しれない
-  await seedToolState(context, { ...PREVIOUS, sent: "" });
+  await seedToolState(context, SHARED_KEY, {
+    rows: PREVIOUS.rows,
+    answers: PREVIOUS.answers,
+    submitted: true,
+    sent: "",
+  });
 
   const tool = await openTool(page);
   await expect(tool.getByLabel("1ばんめ")).toHaveValue("Aさんの 社長");
@@ -356,32 +413,28 @@ test("調査（リサーチ）: 持ち主の 分からない 古い 控えは、
   await expect(page.getByText("じゅんばんでは ありません")).toBeVisible();
 });
 
-test("調査（リサーチ）: アプリから 返事が 来ない ときは、控えを 見せない", async ({
-  page,
-  context,
-}) => {
-  await seedUpToTool(context);
-  await actAsApp(context, null, true);
-  await seedToolState(context, {
-    ...PREVIOUS,
-    v: 2,
-    owner: "e2e-learner-a",
-    attempt: null,
-    saved: "",
-  });
+for (const [label, who] of [
+  ["アプリから 返事が 来ない", "silent"],
+  ["ログインして いる 人が 分からない", "nobody"],
+] as const) {
+  test(`調査（リサーチ）: ${label} ときは、何も 見せず・出させない`, async ({ page, context }) => {
+    await seedUpToTool(context);
+    await actAsApp(context, { who });
+    await seedToolState(context, SHARED_KEY, { ...PREVIOUS, v: 2 });
 
-  const tool = await openTool(page);
-  // だれの 控えか 確かめられない。できる ことを 1つ 言い、中身は 見せない
-  await expect(tool.locator("#waitNote")).toContainText("うまく ひらけません", {
-    timeout: 15_000,
-  });
-  await expect(tool.getByLabel("1ばんめ")).toBeHidden();
-  await expect(tool.locator("#doneList")).toBeHidden();
-  expect(await received(page)).toEqual([]);
+    const tool = await openTool(page);
+    // だれの 控えか 確かめられない。できる ことを 1つ 言い、中身は 見せない
+    await expect(tool.locator("#waitNote")).toContainText("うまく ひらけません", {
+      timeout: 15_000,
+    });
+    await expect(tool.getByLabel("1ばんめ")).toBeHidden();
+    await expect(tool.getByRole("button", { name: /出す/ })).toBeHidden();
+    expect(await received(page)).toEqual([]);
 
-  await page.goto("/houkoku/article-houkoku_hierarchy");
-  await expect(page.getByText("じゅんばんでは ありません")).toBeVisible();
-});
+    await page.goto("/houkoku/article-houkoku_hierarchy");
+    await expect(page.getByText("じゅんばんでは ありません")).toBeVisible();
+  });
+}
 
 test("調査（リサーチ）: 行の 中の 全角スペースで、戻した 行が 割れない", async ({
   page,

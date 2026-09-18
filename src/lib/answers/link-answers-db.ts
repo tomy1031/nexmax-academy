@@ -195,6 +195,12 @@ export function latestLinkAnswers(
 export interface LinkState extends LatestLinkAnswers {
   /** ログイン中の 人。デモモード・未ログイン・読めない ときは null。 */
   readonly owner: string | null;
+  /**
+   * デモモード（鍵ゼロ）か。ページは これが true の ときだけ、持ち主の 無い 控えで 動く。
+   * owner が null で これが false（ログインの 情報が 読めない）なら、ページは 何も 見せない
+   *——だれの 控えか 決められず、出しても DB に 届かないのに 関門だけ 開いて しまう。
+   */
+  readonly demo: boolean;
 }
 
 /**
@@ -205,14 +211,14 @@ export interface LinkState extends LatestLinkAnswers {
  * 控え（localStorage）は 空で、出した はずの こたえが 消えた ように 見えるため。
  */
 export async function loadLinkState(linkId: string): Promise<LinkState> {
-  const none: LinkState = { owner: null, answers: [], attemptId: null };
+  const none: LinkState = { owner: null, answers: [], attemptId: null, demo: false };
   try {
     const supabase = createClient();
-    if (!supabase) return none;
+    if (!supabase) return { ...none, demo: true };
     const profileId = await readOwnId(supabase);
     if (!profileId) return none;
     const rows = await readOwnQuizResultRows(profileId, linkId);
-    return { owner: profileId, ...latestLinkAnswers(linkId, rows ?? []) };
+    return { owner: profileId, demo: false, ...latestLinkAnswers(linkId, rows ?? []) };
   } catch (error) {
     console.warn("[link-answers] 読めませんでした:", error);
     return none;
