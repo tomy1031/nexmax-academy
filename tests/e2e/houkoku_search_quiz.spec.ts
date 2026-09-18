@@ -103,6 +103,16 @@ test("調査（リサーチ）: 4問が 1ページに 出て、ぜんぶ 書く�
   // 出した 並びが そのまま 見える（番号つき・書いた 順）。取締役 には ふりがなが 入るので 外して 見る
   await expect(page.getByText(/（1）社長/).first()).toBeVisible();
   await expect(page.getByText(/（3）部長\s*（4）課長\s*（5）社員/).first()).toBeVisible();
+  /*
+   * ここで 書いた ものを 開く 会話は 無い（つぎは 答え合わせの ページ）。
+   * 「はなす じゅんび／つぎの 会話の『📋 自分の こたえ』で 見られます」を 出すと、
+   * 無い ひきだしを 探させる。会話の ノートに 出る もんだい（会社を知る）だけが そう 言う。
+   */
+  await expect(page.getByText("はなす じゅんび", { exact: true })).toHaveCount(0);
+  await expect(page.getByText(/じゅんび できました/)).toHaveCount(0);
+  await expect(page.getByText(/「📋 自分/)).toHaveCount(0);
+  // ルビが 合成される ので、かなの ひとかたまりで 引く（いちばん 下したの ボタンで…）
+  await expect(page.getByText(/の ボタンで つぎへ/)).toBeVisible();
   await shot(page, "houkoku-search-quiz-02-submitted");
 
   /* 4. 出したので、答え合わせの ページが 開く。 */

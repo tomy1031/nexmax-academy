@@ -571,6 +571,15 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
     await expect(page.getByText(`${JUNBI_TOTAL} / ${JUNBI_TOTAL} つ 書`)).toBeVisible();
     await expect(page.getByRole("button", { name: "書き直す" })).toBeVisible();
     /*
+     * ここで 書いた ものは、つぎの 対話（松井社長）の「📋 自分の こたえ」に 本当に 出る
+     *（`kaisha_matsui` の `notes`）。だから この もんだい だけは 会話の じゅんびと 呼ぶ。
+     * 自由記述でも ノートに 出ない もんだい（報告ステージ）は 中立の 案内に なる
+     *（`houkoku_search_quiz.spec.ts`）。
+     */
+    await expect(page.getByText("はなす じゅんび", { exact: true })).toBeVisible();
+    await expect(page.getByText(/じゅんび できました/)).toBeVisible();
+    await expect(page.getByText(/「📋 自分/)).toBeVisible();
+    /*
      * 書いた ものは 消えずに 残る。**かなだけの ひとかたまり**で さがす——
      * 画面の 漢字には ルビが 合成される ので、書いた 文の まま 引くと 当たらない。
      */
