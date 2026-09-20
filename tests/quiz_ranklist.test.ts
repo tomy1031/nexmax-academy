@@ -7,6 +7,8 @@ import {
   gradeDraft,
   hasNoRightAnswer,
   quizDraftSchema,
+  rowsFromFreeText,
+  upgradeDrafts,
   type QuizDraft,
 } from "@/lib/quiz/draft";
 import { readQuizResume, saveQuizResume, type QuizResume } from "@/lib/quiz/resume";
@@ -171,5 +173,59 @@ describe("問題エンジンの 中で", () => {
       questionId: "f",
     });
     expect(state.drafts.f).toBeUndefined();
+  });
+});
+
+/*
+ * 検収の 指摘（2026-09-18）への 直し。
+ *  - 自由記述だった ころの 下書き（「1. 社長　2. 部長」）を 行に 移す（捨てない）
+ *  - 先生が 上限を 下げても、見えない 行を 数えない・記録に 入れない
+ */
+describe("自由記述だった ころの 下書きを 行に 移す", () => {
+  it("型文どおり（番号＋全角の 空白）・読点・改行・（1）の 形を 分ける", () => {
+    expect(rowsFromFreeText("1. 社長　2. 取締役　3. 部長")).toEqual(["社長", "取締役", "部長"]);
+    expect(rowsFromFreeText("社長、部長、課長")).toEqual(["社長", "部長", "課長"]);
+    expect(rowsFromFreeText("社長\n部長\n\n課長")).toEqual(["社長", "部長", "課長"]);
+    expect(rowsFromFreeText("（1）社長　（2）部長")).toEqual(["社長", "部長"]);
+  });
+
+  it("半角の 空白は 番号の 前だけで 切る（名前の 中の 空白は 残す）", () => {
+    expect(rowsFromFreeText("1. 社長 2. 代表 取締役 3) 部長")).toEqual([
+      "社長",
+      "代表 取締役",
+      "部長",
+    ]);
+  });
+
+  it("階級の 問いの 自由記述の 下書きだけを 移し、ほかは 触らない", () => {
+    const other: QuizQuestion = {
+      id: "kaikyuu",
+      type: "free",
+      q: "カンボジアの 会社の 階級は どうですか。",
+      explain: "。",
+      points: 1,
+      minLength: 1,
+    };
+    const upgraded = upgradeDrafts([RANKS, other], {
+      kaikyuu_order: { kind: "free", input: "1. 社長　2. 部長" },
+      kaikyuu: { kind: "free", input: "CEO" },
+    });
+    expect(upgraded.kaikyuu_order).toEqual({ kind: "ranklist", rows: ["社長", "部長"] });
+    expect(upgraded.kaikyuu).toEqual({ kind: "free", input: "CEO" });
+    expect(draftAnswered(RANKS, upgraded.kaikyuu_order)).toBe(true);
+  });
+
+  it("空の 自由記述は 移さない（何も 書いて いない）", () => {
+    const upgraded = upgradeDrafts([RANKS], { kaikyuu_order: { kind: "free", input: "  " } });
+    expect(upgraded.kaikyuu_order).toBeUndefined();
+  });
+});
+
+describe("上限を こえた 行", () => {
+  it("見えない 行（上限の 外）は 数えず、記録にも 入れない", () => {
+    const small = { ...RANKS, max: 2 };
+    const graded = gradeDraft(small, rows("社長", "部長", "課長"));
+    expect(graded.answer).toBe("（1）社長　（2）部長");
+    expect(draftAnswered(small, rows("", "", "課長"))).toBe(false);
   });
 });

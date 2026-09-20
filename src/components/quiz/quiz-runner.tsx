@@ -17,6 +17,7 @@ import {
   draftAnswerText,
   draftAnswered,
   hasNoRightAnswer,
+  upgradeDrafts,
 } from "@/lib/quiz/draft";
 import { saveNotebook } from "@/lib/answers/notebook";
 import { clearQuizResume, restoreQuiz, saveQuizResume, type QuizStart } from "@/lib/quiz/resume";
@@ -106,7 +107,14 @@ export function QuizRunner({
     ),
   );
   const [state, setState] = useState<QuizState>(() =>
-    resumeQuizSession(set, start.index, start.results, set.answerMode, start.drafts),
+    resumeQuizSession(
+      set,
+      start.index,
+      start.results,
+      set.answerMode,
+      // 型を 変えた 問い（自由記述 → じゅんばんに ならべて 書く）の 下書きを 移す
+      upgradeDrafts(set.questions, start.drafts),
+    ),
   );
   // 1問目をいきなり出さない。「何をするのか・全部できなくてよい」を先に置く
   //（いきなり問われると、答えられない不安のほうが先に立つ — P8）。

@@ -24,8 +24,14 @@ import type { QuizDraft } from "@/lib/quiz/draft";
  * ## 元と 変えた ところ（規律10: 変えた 理由を その場で 書く）
  * - ↑↓の あと **入力欄に 目を もどさない**。元は 動かした 行の 欄に フォーカスを
  *   移して いたが、スマホでは 押す たびに キーボードが 開いて 画面が 半分に なる。
- *   行を 動かしても 押した ボタンが 付いて くる（行に 変わらない 鍵を 付けた）ので、
- *   続けて 押せる。
+ *   代わりに **押した ボタンに 目を 置き直す**（動いた 先の 行の 同じ ボタン）ので、
+ *   続けて 押せる。↓は 行ごと DOM が 動いて 目が 外れる ため、置き直さないと
+ *   2回 続けて 押せない（2026-09-18 の 検収）。
+ *
+ * ## Enter で 出さない
+ * 行の 中で Enter を 押しても 何も しない（元の 別ページと 同じ）。1問ずつの やりかたでは
+ * 入力が `<form>` の 中に あるので、そのままだと 1行目で Enter を 押した 瞬間に
+ * 1行だけで 出して しまう。**変換を 確定する Enter は 通す**（`isComposing`）。
  *
  * ## 書いて いる 字を 上から 押し戻さない
  * 状態は **開いた ときに 1回だけ** 下書きから 読む（`FreeInput` と 同じ 決まり。
@@ -81,6 +87,25 @@ export function RankListInput({
     });
   };
 
+  /**
+   * ↑↓で 動かした あと、**動いた 先の 行の 同じ ボタン**に 目を 置き直す。
+   * 端に 着いて その ボタンが 押せなく なったら、同じ 行の 反対の ボタンへ。
+   */
+  const move = (at: number, step: -1 | 1) => {
+    const to = at + step;
+    if (to < 0 || to >= rows.length) return;
+    commit(moveItem(rows, at, step));
+    const n = to + 1;
+    const same = step < 0 ? `${n}ばんめを 上へ` : `${n}ばんめを 下へ`;
+    const other = step < 0 ? `${n}ばんめを 下へ` : `${n}ばんめを 上へ`;
+    requestAnimationFrame(() => {
+      const find = (label: string) =>
+        listRef.current?.querySelector<HTMLButtonElement>(`button[aria-label="${label}"]`);
+      const target = find(same);
+      (target && !target.disabled ? target : find(other))?.focus();
+    });
+  };
+
   const add = () => {
     if (rows.length >= question.max) return;
     // 鍵は いま ある どの 行とも かぶらない 数（消した 行の 鍵は 使い回さない）
@@ -122,6 +147,11 @@ export function RankListInput({
                 disabled={disabled}
                 maxLength={MAX_ROW}
                 onChange={(e) => commit(replaceAt(rows, index, { ...row, value: e.target.value }))}
+                onKeyDown={(e) => {
+                  // 変換の 確定（IME）は 通す。それ以外の Enter で 出さない
+                  if (e.key !== "Enter" || e.nativeEvent.isComposing || e.keyCode === 229) return;
+                  e.preventDefault();
+                }}
                 autoComplete="off"
                 autoCorrect="off"
                 spellCheck={false}
@@ -134,13 +164,13 @@ export function RankListInput({
                   mark="↑"
                   label={`${n}ばんめを 上へ`}
                   disabled={disabled || index === 0}
-                  onClick={() => commit(moveItem(rows, index, -1))}
+                  onClick={() => move(index, -1)}
                 />
                 <RowButton
                   mark="↓"
                   label={`${n}ばんめを 下へ`}
                   disabled={disabled || index === rows.length - 1}
-                  onClick={() => commit(moveItem(rows, index, 1))}
+                  onClick={() => move(index, 1)}
                 />
                 <RowButton
                   mark="✕"
