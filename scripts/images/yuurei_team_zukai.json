@@ -151,6 +151,26 @@
       "priority": "A",
       "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: when you put the work together into a few big pieces, the report is short and everyone understands what was finished. The same meeting corner at ten to six in the evening, warm orange light. On the left stands the new engineer — a young Cambodian man in his early twenties with warm light-brown skin, short black hair with a neat side part, a friendly open face, wearing a light blue short-sleeved shirt, dark grey chinos and a lanyard with a blank white card, holding a small notebook at his side and looking up at the team as he speaks, calm and confident. Above him ONE short rounded speech balloon holding exactly TWO big rounded pieces, like two blocks: the first block carries the first Japanese word listed below and the second block carries the second. On the right, the team leader Hendy — a slim man in his late twenties with short black slightly tousled hair, a navy two-button suit, a white shirt and a navy tie (follow his model sheet) and Nyam — a Southeast Asian man in his twenties with warm light-brown skin, short black hair swept up and back, and a coral knit cardigan over a cream shirt (follow his model sheet) nod with bright understanding smiles. In the TOP LEFT CORNER a large thick GREEN circle mark (⭕) on a white round badge — this mark is the point of the picture and is allowed.",
       "text": ["ログイン画面", "エラーメッセージ"]
+    },
+    {
+      "out": "yuurei_tsunagari",
+      "dest": "public/img/articles/yuurei_nexttalent/tsunagari.webp",
+      "title": "データは こう つながる（だれが 何を するか・全体の 流れ）",
+      "where": "content/articles/yuurei_nexttalent.json データは こう つながる",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: the student data travels through the team in one line — Nyam prepares it, Hendy's search server returns it, YOU show the list and the filters, Okuda's page opens when a student is chosen, and YOU draw the skill graph on that page. A teaching flow diagram, READ FROM LEFT TO RIGHT, on a soft sky-blue background, with FIVE large rounded cream cards in one row joined by four thick sky-blue arrows pointing right. EVERY card is built the same way: a small round portrait of the person at the TOP LEFT of the card, that person's Japanese name label printed beside the portrait, one simple drawing filling the middle of the card, and the card's Japanese work label printed across the bottom of the card. Card 1 — portrait of Nyam — a Southeast Asian man in his twenties with warm light-brown skin, short black hair swept up and back, and a coral knit cardigan over a cream shirt (follow his model sheet); drawing: a rounded database cylinder with three student rows inside it. Card 2 — portrait of the team leader Hendy — a slim man in his late twenties with short black slightly tousled hair, a navy two-button suit, a white shirt and a navy tie (follow his model sheet); drawing: a rounded server box with a row of soft indicator dots and a small magnifying glass beside it. Card 3 — portrait of the new engineer — a young Cambodian man in his early twenties with warm light-brown skin, short black hair with a neat side part, wearing a light blue short-sleeved shirt and a lanyard with a blank white card; drawing: a web page with a search box and three small student cards under it. Card 4 — portrait of Okuda — a man in his mid twenties with wavy messy black hair, black thick-rimmed glasses and a dark green hoodie (follow his model sheet); drawing: one student's profile page with a big round face picture and a few plain grey bars. Card 5 — the SAME portrait of that new engineer as in card 3 (the same person appears twice, at card 3 and card 5); drawing: a horizontal bar chart with six bars, each shorter than the one above. Cards 3 and 5 have a slightly thicker sky-blue border than the others, so that the two cards done by the same person stand out. No other people anywhere, no desks, no office — only the five cards, the arrows and the labels.",
+      "text": [
+        "ニャムさん",
+        "学生データ",
+        "ヘンディさん",
+        "検索API",
+        "あなた",
+        "学生一覧・検索",
+        "奥田さん",
+        "学生詳細画面",
+        "あなた",
+        "スキルグラフ"
+      ]
     }
   ]
 }

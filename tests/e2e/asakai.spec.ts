@@ -154,8 +154,14 @@ test("夕礼の 前ばなしに Next Talent と 担当が 書いて ある", asy
   if (await skip.count()) await skip.first().click();
   await expectOnScreen(page, "Next Talent");
   await expectOnScreen(page, "学生検索・スキル可視化フロントエンド");
-  /* データの ながれ（ニャム → ヘンディ → あなた → 奥田 → あなた）。 */
-  await expectOnScreen(page, "ニャムさんが、学生情報と スキル情報を 用意します");
+  /*
+   * データの ながれ（ニャム → ヘンディ → あなた → 奥田 → あなた）。
+   * 2026-09-20 の 指定で **5行の 文を 1枚の 絵に 置きかえた**（ユーザー承認）——
+   * 同じ ことを 字と 絵で 二重に 出さない（constraints 2026-09-14）。
+   * 画面に のこる 字は 見出しと、あなたの 担当が どこかを 言う ひとこと。
+   */
+  await expectOnScreen(page, "データは こう つながる");
+  await expectOnScreen(page, "まん中の 学生詳細画面は 奥田さんの 担当です");
   /* 作業記録の 読み上げと 仕事の 報告の くらべ。 */
   await expectOnScreen(page, "作業記録の 読み上げ");
   await expectOnScreen(page, "仕事の 報告");
