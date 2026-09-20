@@ -74,7 +74,7 @@ import {
   type ReportPanel,
 } from "@/lib/meeting/panels";
 import { hintOf } from "@/lib/meeting/asakai-hint";
-import type { AsakaiFix, AsakaiItem, AsakaiJudgeResult } from "@/lib/meeting/asakai-judge";
+import type { AsakaiItem, AsakaiJudgeResult } from "@/lib/meeting/asakai-judge";
 import {
   contentScore,
   CONTENT_MAX,
@@ -460,11 +460,6 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
     readonly rows: readonly RowView[];
     readonly good: string;
     readonly advice: string;
-    /** こたえを 職場の 日本語に 書き直した もの（ブラッシュアップ。聞き返しで 伝わった ときだけ）。 */
-    readonly polished: string;
-    readonly fixes: readonly AsakaiFix[];
-    /** 聞き返しで 伝わらなかった ときの ヒント（教材の 型文）。 */
-    readonly hint: string;
     readonly after: (() => void) | null;
   } | null>(null);
 
@@ -869,16 +864,24 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
        * そこは これまでどおり「報告の 見かた」を 出す。
        */
       const wasProbe = askedId !== null && askedText !== "";
-      const clarity = seen?.clarity ?? null;
-      const japanese = seen?.japanese ?? null;
+      /*
+       * **点は 積み上げ**（2026-09-20 の 指定「点数も 増える ごとに 積み上げ（最高100点）」）。
+       *
+       * 内容の 点は 開いた 札の 数なので もともと 増える。AIの 2つ（伝わりやすさ・
+       * 仕事の 日本語）は **1本ごとの 見立て**なので、聞き返しの 1行に こたえた だけで
+       * 下がる ことが あった——同じ 日の 中で 点が 行ったり 来たり すると、
+       * 何を すれば 上がるのかが 読めない。**その日の いちばん よい 点**を 持つ。
+       */
+      const best = (now: number | null, kept: number | null): number | null =>
+        now === null ? kept : kept === null ? now : Math.max(now, kept);
+      const clarity = best(seen?.clarity ?? null, dayAi.clarity);
+      const japanese = best(seen?.japanese ?? null, dayAi.japanese);
       const good = seen?.good ?? "";
       const adviceText = seen?.advice ?? "";
-      const polished = seen?.polished ?? "";
-      const fixes = seen?.fixes ?? [];
       if (seen) {
         setDayAi((prev) => ({
-          clarity: clarity ?? prev.clarity,
-          japanese: japanese ?? prev.japanese,
+          clarity: best(clarity, prev.clarity),
+          japanese: best(japanese, prev.japanese),
           good: good !== "" ? good : prev.good,
           advice: adviceText !== "" ? adviceText : prev.advice,
         }));
@@ -1003,22 +1006,6 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
         rows: viewRows(final),
         good,
         advice: adviceText,
-        /*
-         * **聞き返しの こたえが 伝わった ときだけ** ブラッシュアップを 出す。
-         * 伝わらなかった ときは 答えを 出さず、聞かれた 札の 型文を ヒントに する
-         *（2026-09-19 の 指定「数値など 正しく 言えて いない 場合は 答えは 出さず…ヒントに」）。
-         * 項目ごとの 直しが あれば そちらを 使う（聞かれた 札の ところだけ）。
-         */
-        polished: heardNow ? ((asked && itemOf(asked.id)?.polished) ?? polished) : "",
-        fixes: heardNow ? fixes : [],
-        hint:
-          wasProbe && !heardNow
-            ? hintOf(
-                (scene.panels.find((one) => one.id === askedId)?.followups ?? []).map(
-                  (one) => one.text,
-                ),
-              )
-            : "",
       });
 
       const opened = step.states
@@ -1179,6 +1166,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
       probes,
       probeLog,
       logLines,
+      dayAi,
       say,
       finishScene,
     ],
@@ -1925,9 +1913,9 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
             answer={judge.utterance}
             good={judge.good}
             advice={judge.advice}
-            polished={judge.polished}
-            fixes={judge.fixes}
-            hint={judge.hint}
+            score={judge.score}
+            rows={judge.rows}
+            hasKey={hasKey}
             nextLabel={judge.sceneOver ? "みんなの 報告を 聞く ▶" : "つぎの しつもんを 聞く ▶"}
             rest={judge.shut.join("／")}
             index={index}

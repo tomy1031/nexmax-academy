@@ -86,26 +86,32 @@ describe("報告の ポップアップの 表", () => {
 
   it("言えた 札は ブラッシュアップ、直す ところが 無ければ「このままで 通じます」", () => {
     const [kinou, , , komari] = rowsText(render(ROWS));
-    expect(kinou).toContain("✨ きのうは 決済の 画面を 作りました。");
-    expect(kinou).toContain("あなた: きのう けっさい がめん つくった");
+    /* あなたの 発言と ブラッシュアップは 枠で 分ける（2026-09-20 の 指定）。 */
+    expect(kinou).toContain("あなたの 発言");
+    expect(kinou).toContain("きのう けっさい がめん つくった");
+    expect(kinou).toContain("✨ ブラッシュアップ");
+    expect(kinou).toContain("決済の 画面を 作りました。");
     expect(komari).toContain("✅ このままで 通じます");
-    expect(komari).not.toContain("✨");
+    expect(komari).not.toContain("ブラッシュアップ");
   });
 
   it("まだの 札は 答えを 出さず ヒント（型文）だけ", () => {
     const [, shinchoku, kyou] = rowsText(render(ROWS));
-    expect(shinchoku).toContain("💡 「今、決済フロントエンド機能 ぜんたいの 進捗は ◯◯%です。」");
-    expect(shinchoku).toContain("あなた: しんちょく20%");
+    expect(shinchoku).toContain("💡 ヒント");
+    expect(shinchoku).toContain("「今、決済フロントエンド機能 ぜんたいの 進捗は ◯◯%です。」");
+    expect(shinchoku).toContain("しんちょく20%");
     /* 学生の 数を 直した 文（「進捗は 20%です」）を 出さない——正しい 数に 見える。 */
     expect(shinchoku).not.toContain("✨");
     expect(shinchoku).not.toMatch(/進捗は\s*20%です/u);
-    expect(kyou).toContain("💡 「きょうは ◯◯を します。」");
+    expect(kyou).toContain("「きょうは ◯◯を します。」");
   });
 
   it("司会が つぎに 聞く 1つにだけ 👉（次の 行動は 1つ）", () => {
     const text = rowsText(render(ROWS));
     expect(text.filter((one) => one.includes("👉"))).toHaveLength(1);
-    expect(text[1]).toContain("👉 つぎに 聞かれます: 進捗を、パーセントで お願いします。");
+    /* **短く 1行**（2026-09-20 の 指定）。何を 聞かれるかは 司会が 声で 言う。 */
+    expect(text[1]).toContain("👉 つぎに 聞かれます");
+    expect(text[1]).not.toContain("パーセントで お願いします");
   });
 
   it("作業記録の 読み上げを 差し戻した ターンは ヒントも 👉 も 出さない", () => {
