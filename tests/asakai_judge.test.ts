@@ -202,3 +202,70 @@ describe("parseAsakaiJudge — 採点と ことば", () => {
     expect(out.advice).toBe("");
   });
 });
+
+/**
+ * **ブラッシュアップは 項目ごと**（2026-09-19 の 指定「ブラッシュアップは 項目ごとに まとめて」）。
+ *
+ * AIは 学生の ことばを 項目ごとに 分けて 直す。中身が 合って いるかは ここでは
+ * 決めない（画面が 札の けっかを 見て、まだの 札には ヒントを 出す）。
+ */
+describe("parseAsakaiJudge — 項目ごとの ブラッシュアップ", () => {
+  const ITEM_IDS = ["kyou", "shinchoku", "komari"];
+
+  it("知って いる 項目だけ・1項目 1つ・said と polished が そろった ものだけ", () => {
+    const out = parseAsakaiJudge(
+      {
+        saidIds: [],
+        readsLog: false,
+        items: [
+          { id: "shinchoku", said: "しんちょく20%", polished: "進捗は 20%です。" },
+          { id: "shinchoku", said: "二つめ", polished: "二つめ。" },
+          { id: "zzz", said: "知らない", polished: "知らない。" },
+          { id: "kyou", said: "いろいろ終わった", polished: "" },
+          { id: "komari", said: "ないよ", polished: "今の ところ 問題は ありません。" },
+        ],
+      },
+      ALL_FACTS,
+      ITEM_IDS,
+    );
+    expect(out.items).toEqual([
+      { id: "shinchoku", said: "しんちょく20%", polished: "進捗は 20%です。" },
+      { id: "komari", said: "ないよ", polished: "今の ところ 問題は ありません。" },
+    ]);
+  });
+
+  it("項目の id を 渡さなければ 取らない・形が 崩れて いれば 空", () => {
+    const args = {
+      saidIds: [],
+      readsLog: false,
+      items: [{ id: "kyou", said: "a", polished: "b" }],
+    };
+    expect(parseAsakaiJudge(args, ALL_FACTS).items).toEqual([]);
+    expect(parseAsakaiJudge({ ...args, items: "kyou" }, ALL_FACTS, ITEM_IDS).items).toEqual([]);
+  });
+
+  it("文に 項目の 一覧が 出る（行を 持たない 進捗率も）", () => {
+    const prompt = buildAsakaiJudgePrompt({
+      ...base,
+      items: [
+        { id: "kyou", label: "今日 行ったこと" },
+        { id: "shinchoku", label: "進捗率" },
+        { id: "komari", label: "問題点" },
+      ],
+    });
+    expect(prompt).toContain("# 項目（items の id）");
+    expect(prompt).toContain("- shinchoku: 進捗率");
+    /* 行の 節には 出さない（行を 持たない 札は AIに 聞く ことが 無い）。 */
+    expect(prompt).not.toContain("## 進捗率");
+  });
+
+  /*
+   * **数が まちがって いても 正しい 数に 見えない ように**、アドバイスの 例は ◯◯ に する
+   *（2026-09-19 の 指定「数値など 正しく 言えて いない 場合は 答えは 出さず…ヒントに」）。
+   */
+  it("アドバイスの 例に 数を 書かせない", () => {
+    const prompt = buildAsakaiJudgePrompt(base);
+    expect(prompt).toContain("『◯◯の 進捗は ◯◯%です。』");
+    expect(prompt).not.toContain("『〜の 進捗は 20%です。』");
+  });
+});

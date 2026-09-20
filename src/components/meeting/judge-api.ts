@@ -260,7 +260,11 @@ async function askAsakai(
     if (!opened.ok || gaveUp()) return null;
     mine = opened.session;
     const args = await mine.ask(buildAsakaiJudgePrompt(context));
-    return parseAsakaiJudge(args, facts);
+    return parseAsakaiJudge(
+      args,
+      facts,
+      (context.items ?? context.panels).map((one) => one.id),
+    );
   } catch (error) {
     liveDebug("judge.asakai", `ask ${error instanceof JudgeError ? error.reason : "failed"}`, true);
     /*
