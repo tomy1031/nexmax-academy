@@ -50,6 +50,8 @@ const UI_FURIGANA = buildFuriganaIndex([
   ["回答", "かいとう"],
   ["方", "かた"],
   ["何", "なに"],
+  ["先", "さき"],
+  ["押", "お"],
 ]);
 
 type Reviewable = Extract<QuizQuestion, { type: "free" | "fillin" }>;
@@ -68,6 +70,7 @@ type Phase =
   | { kind: "failed"; of: string; reason: string };
 
 export function AiReviewPanel({
+  setId,
   question,
   /** 学習者が いま 書いて いる もの（`fillin` は 組み立てた メール全文）。 */
   written,
@@ -83,6 +86,8 @@ export function AiReviewPanel({
   scene,
   furigana,
 }: {
+  /** どの 教材か（つなぎを 教材と 問いで 1本に する 鍵）。 */
+  setId?: string;
   question: Reviewable;
   written: string;
   hasInput: boolean;
@@ -113,7 +118,7 @@ export function AiReviewPanel({
   const ask = async () => {
     setPhase({ kind: "asking" });
     const result = await requestQuizReview(
-      `${question.id}`,
+      `${setId ?? "quiz"}:${question.id}`,
       {
         question: question.q,
         scene: scene ?? "",
@@ -219,7 +224,7 @@ export function AiReviewPanel({
       </button>
       {empty && (
         <p className="text-ink-faint mt-1.5 text-xs font-bold">
-          <RubyText text="先に 書くと 押せます。" index={buildFuriganaIndex([["先", "さき"]])} />
+          <RubyText text="先に 書くと 押せます。" index={UI_FURIGANA} />
         </p>
       )}
 

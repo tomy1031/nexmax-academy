@@ -56,14 +56,16 @@ test("連絡文: 20問が 1ページに 出て、メールの 型を 打てて�
   await expect(first.getByText("💬")).toBeVisible();
   await expect(first.locator("mark").first()).toBeVisible();
   await expect(first.getByText("📧 メール作成")).toBeVisible();
-  await expect(first.getByText(/【重要】システムエラー/)).toBeVisible();
+  // ルビが 語の 中に 入る（「重要じゅうよう」）ので、ふりがなの 入らない ところで さがす
+  await expect(first.getByText(/システムエラーに ついて/)).toBeVisible();
 
   /* 4. 書く 前は AIの ボタンが 押せない（お手本を 先に 見せない ため）。 */
   const ask = first.getByRole("button", { name: /AIに 見/ });
   await expect(ask).toBeDisabled();
   await expect(first.getByRole("button", { name: /お手本/ })).toHaveCount(0);
   // ものさし（観点）は 答える 前から 見えて いる
-  await expect(first.getByText(/AIが 見る ところ/)).toBeVisible();
+  // ルビが 語の 中に 入る（「見みる」）ので、ふりがなの 入らない ところで さがす
+  await expect(first.getByText(/AIが/)).toBeVisible();
 
   await writeFillinIn(page, "mail_1", {
     宛先: "システム管理部の 佐藤さん",
@@ -81,7 +83,13 @@ test("連絡文: 20問が 1ページに 出て、メールの 型を 打てて�
   await ask.click();
   await expect(first.getByText(/AIの せっていが まだです/)).toBeVisible();
   await expect(first.getByText(/模範解答/)).toBeVisible();
-  await expect(first.getByText("【原因】サーバーの エラー")).toBeVisible();
+  /*
+   * お手本は **欄の 正解から 組み立てた メール全文**。ルビが 語の 中に 入るので、
+   * 箱ごと 見て「その ことばが ある」ことを 確かめる（完全一致では 掴めない）。
+   */
+  const panel = first.locator("section").last();
+  await expect(panel).toContainText("サーバーの エラー");
+  await expect(panel).toContainText("よろしく");
   await shot(page, "renraku-contact-quiz-02-model-answer");
 
   /* Slackの 問いにも 同じ ボタンが ある（問いごとに 1つ）。 */

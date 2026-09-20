@@ -482,6 +482,7 @@ export function QuizRunner({
         />
       ) : state.mode === "all" ? (
         <AllQuestionsCard
+          setId={set.id}
           questions={state.questions}
           drafts={state.drafts}
           retryIds={retryIds}
@@ -601,6 +602,7 @@ export function QuizRunner({
                       </div>
                     )}
                     <QuestionBody
+                      setId={set.id}
                       question={question}
                       furigana={furigana}
                       dispatch={dispatch}
@@ -1173,6 +1175,7 @@ function SubmitConfirmDialog({
  * 全問の 入力が 作り直されて、書いた ものが 飛ぶ。
  */
 function AllQuestionsCard({
+  setId,
   questions,
   drafts,
   retryIds,
@@ -1183,6 +1186,8 @@ function AllQuestionsCard({
   dispatch,
   onSubmit,
 }: {
+  /** どの 教材か（AIの つなぎを 教材ごとに 分ける・`ai-review-panel.tsx`）。 */
+  setId: string;
   questions: readonly QuizQuestion[];
   drafts: Readonly<Record<string, Parameters<typeof draftAnswerText>[1]>>;
   /** 前の 回で もう一度に なった もんだい（赤い しるしを 出す）。 */
@@ -1273,6 +1278,7 @@ function AllQuestionsCard({
                 </p>
               )}
               <QuestionRow
+                setId={setId}
                 question={q}
                 index={index}
                 total={questions.length}
@@ -1353,6 +1359,7 @@ function AllQuestionsCard({
  * `React.memo` で 包む。包まないと、どこか 1問に 1文字 打つ たびに 全問が 描き直される。
  */
 const QuestionRow = memo(function QuestionRow({
+  setId,
   question,
   index,
   total,
@@ -1362,6 +1369,7 @@ const QuestionRow = memo(function QuestionRow({
   dispatch,
   inputIssue,
 }: {
+  setId: string;
   question: QuizQuestion;
   index: number;
   total: number;
@@ -1404,6 +1412,7 @@ const QuestionRow = memo(function QuestionRow({
       <QuestionHints question={question} furigana={furigana} />
 
       <QuestionBody
+        setId={setId}
         question={question}
         furigana={furigana}
         dispatch={dispatch}

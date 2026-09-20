@@ -37,6 +37,14 @@ const ACTIVE_BLANK_MARK = "▶";
  */
 
 interface Props {
+  /**
+   * どの 教材か。AIの つなぎ（Live）を **教材と 問いで 1本**に する ための 鍵。
+   *
+   * 問いの id は 教材の 中でしか 一意では ない（スタジオの 既定は `q1`）。
+   * 教材を またいで 同じ 鍵に すると、**前の 教材の 話の つづき**として
+   * 見かたが 返る（2026-08-21 に 会話の 判定で 実際に 起きた 形）。
+   */
+  setId?: string;
   question: QuizQuestion;
   furigana: FuriganaIndex;
   dispatch: (action: QuizAction) => void;
@@ -54,6 +62,7 @@ interface Props {
 }
 
 export function QuestionBody({
+  setId,
   question,
   furigana,
   dispatch,
@@ -116,6 +125,7 @@ export function QuestionBody({
     case "free":
       return (
         <FreeInput
+          setId={setId}
           question={question}
           furigana={furigana}
           placeholder={question.placeholder}
@@ -130,6 +140,7 @@ export function QuestionBody({
     case "fillin":
       return (
         <FillinInput
+          setId={setId}
           question={question}
           furigana={furigana}
           disabled={disabled}
@@ -597,6 +608,7 @@ function KeywordInput({
  * 「ちがいます」が 出ない 問いなので、思った ことを そのまま 書ける 広さを 出す。
  */
 function FreeInput({
+  setId,
   question,
   furigana,
   onSubmit,
@@ -606,6 +618,7 @@ function FreeInput({
   placeholder,
   starter,
 }: {
+  setId?: string;
   question: Extract<QuizQuestion, { type: "free" }>;
   furigana: FuriganaIndex;
   onSubmit: (input: string, en?: string) => void;
@@ -676,6 +689,7 @@ function FreeInput({
         「まだ 書いて いません」の まま 見て もらう ことに なる。
       */}
       <AiReviewPanel
+        setId={setId}
         question={question}
         written={value}
         hasInput={!empty}
@@ -697,6 +711,7 @@ function FreeInput({
  * 形には しない（それでは 何を 書いて いるのか 分からなく なる）。
  */
 function FillinInput({
+  setId,
   question,
   furigana,
   onSubmit,
@@ -704,6 +719,7 @@ function FillinInput({
   submitMode,
   draft,
 }: {
+  setId?: string;
   question: Extract<QuizQuestion, { type: "fillin" }>;
   furigana: FuriganaIndex;
   onSubmit: (inputs: readonly string[]) => void;
@@ -724,6 +740,15 @@ function FillinInput({
 
   const box =
     "border-hairline bg-panel text-ink min-w-0 flex-1 rounded-[var(--radius-button)] border-2 px-3 py-2 text-sm font-bold";
+  /*
+   * **`size={1}` を 付ける**（2026-09-20 の 390px 検証）。
+   *
+   * `input` は 既定で 20文字ぶんの 幅を「いちばん 縮んだ 幅」として 主張する。
+   * もんだいの 一覧は grid なので、行の いちばん 縮んだ 幅が **ページの 幅**に なり、
+   * 390px の 端末で 横スクロールが 出て いた（実測 489px）。`min-w-0` だけでは
+   * 縮まない（Chromium は この 主張を 残す）ので、主張の もとを 1文字に する。
+   * 実際の 幅は `flex-1` が 決めるので 見た目は 変わらない。
+   */
   /** 本文の 上の 行（宛先）の 欄は 先頭から、本文の 欄は その あと（`fillinSlots` の 並び）。 */
   let slot = 0;
 
@@ -757,6 +782,7 @@ function FillinInput({
               ) : (
                 <input
                   type="text"
+                  size={1}
                   value={inputs[index] ?? ""}
                   disabled={disabled}
                   onChange={(e) => change(index, e.target.value)}
@@ -784,6 +810,7 @@ function FillinInput({
                 </span>
                 <input
                   type="text"
+                  size={1}
                   value={inputs[index] ?? ""}
                   disabled={disabled}
                   onChange={(e) => change(index, e.target.value)}
@@ -815,6 +842,7 @@ function FillinInput({
 
       {/* AIには **1本の メール**として 渡す（欄ごとでは 文として 見て もらえない） */}
       <AiReviewPanel
+        setId={setId}
         question={question}
         written={fillinText(question, inputs)}
         hasInput={!empty}
