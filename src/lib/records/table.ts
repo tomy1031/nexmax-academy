@@ -298,6 +298,8 @@ const QUIZ_TYPE_LABEL: Record<string, string> = {
   free: "じゆうに 書く",
   list: "いくつか 書く",
   ranklist: "じゅんばんに ならべる",
+  // メールの 型（宛先・【 】）。欄ごとに 正解が ある ので 採点する
+  fillin: "メールの 型を うめる",
 };
 
 export function quizTable(records: readonly QuizRecord[], lookups: Lookups): RecordTable {

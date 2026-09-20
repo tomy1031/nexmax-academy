@@ -41,8 +41,8 @@
       "type": "link"
     },
     {
-      "ref": "renraku_contact",
-      "type": "link"
+      "ref": "renraku_contact_quiz",
+      "type": "quizset"
     }
   ],
   "wordStageIds": [

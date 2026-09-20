@@ -22,7 +22,8 @@
 
 import { z } from "zod";
 import type { QuizQuestion } from "@/content/schema";
-import { answerMatches } from "@/lib/text/normalize";
+import { fillinSlots, type FillinSlot } from "@/lib/quiz/fillin";
+import { answerMatches, normalizeReading } from "@/lib/text/normalize";
 
 /**
  * 学習者が いま 出して いる もの（採点まえ）。
@@ -36,6 +37,12 @@ export type QuizDraft =
   | { readonly kind: "keyword"; readonly input: string }
   /** 順不同の 入力（`list`）。**欄の 数だけ** 持つ（空の 欄も 残す）。 */
   | { readonly kind: "list"; readonly inputs: readonly string[] }
+  /**
+   * 型の ある 文の うめこみ（`fillin`）。**欄の 数だけ** 持ち、並びは
+   * `fillinSlots`（宛先 → 本文の 【】）の とおり。空の 欄も 残す——
+   * 詰めると、開き直した ときに 書いた ものが 1つ 上に ずれる。
+   */
+  | { readonly kind: "fillin"; readonly inputs: readonly string[] }
   | { readonly kind: "wordbank"; readonly filled: readonly (string | null)[] }
   | { readonly kind: "emotion"; readonly feeling: number | null; readonly reply: number | null }
   | {
@@ -65,6 +72,7 @@ export const quizDraftSchema: z.ZodType<QuizDraft> = z.discriminatedUnion("kind"
   z.object({ kind: z.literal("multi"), indexes: z.array(z.number().int().min(0)) }),
   z.object({ kind: z.literal("keyword"), input: z.string() }),
   z.object({ kind: z.literal("list"), inputs: z.array(z.string()) }),
+  z.object({ kind: z.literal("fillin"), inputs: z.array(z.string()) }),
   z.object({ kind: z.literal("wordbank"), filled: z.array(z.string().nullable()) }),
   z.object({ kind: z.literal("free"), input: z.string(), en: z.string().optional() }),
   /*
@@ -89,6 +97,7 @@ const DRAFT_KIND: Record<QuizQuestion["type"], QuizDraft["kind"]> = {
   emotion: "emotion",
   free: "free",
   ranklist: "ranklist",
+  fillin: "fillin",
 };
 
 /**
@@ -120,6 +129,13 @@ export function draftAnswered(question: QuizQuestion, draft: QuizDraft | undefin
       return draft.input.trim().length > 0;
     case "list":
       return draft.inputs.some((v) => v.trim().length > 0);
+    case "fillin":
+      /*
+       * **ぜんぶの 欄が うまって はじめて「こたえた」**。1つでも 空の まま だと
+       * メールとして 相手に 届かない（宛先の 無い メールは 送れない）ので、
+       * 「のこり」の 数に 数えつづける。
+       */
+      return draft.inputs.length > 0 && draft.inputs.every((v) => v.trim().length > 0);
     case "wordbank":
       return draft.filled.some((v) => v !== null && v !== "");
     case "emotion":
@@ -256,6 +272,25 @@ export function gradeDraft(question: QuizQuestion, draft: QuizDraft | undefined)
         correct,
         earned: correct ? question.points : 0,
         answer: draft.inputs.map((v, i) => `（${i + 1}）${v.trim()}`).join("　"),
+        partial: !correct && hits > 0,
+      };
+    }
+
+    /*
+     * 型の ある 文の うめこみ（メール）。**欄と 正解を 1対1で** 見る——
+     * どこに 入れるかが 問いの 中身なので、`list` のように 順不同には しない。
+     */
+    case "fillin": {
+      if (draft.kind !== "fillin") return blank;
+      const slots = fillinSlots(question);
+      const hits = slots.filter((slot, i) => fillinSlotOk(slot, draft.inputs[i] ?? "")).length;
+      if (draft.inputs.every((v) => v.trim() === "")) return blank;
+      const correct = hits === slots.length;
+      return {
+        correct,
+        earned: correct ? question.points : 0,
+        // 記録の 形は 穴うめと 同じ（`（1）…　（2）…`）。読み戻しも 同じ 関数で できる
+        answer: formatWordbankAnswer(slots.map((_, i) => (draft.inputs[i] ?? "").trim())),
         partial: !correct && hits > 0,
       };
     }
@@ -406,6 +441,9 @@ export function correctAnswerText(question: QuizQuestion): string {
       return question.answer;
     case "list":
       return question.groups.map((g) => g.label).join(" ／ ");
+    case "fillin":
+      // 穴うめと 同じ 形で 返す（読み戻しも 同じ `parseWordbankAnswer` で できる）
+      return formatWordbankAnswer(fillinSlots(question).map((slot) => slot.answer));
     case "wordbank":
       // 組み立ては 1か所だけ（`formatWordbankAnswer`）。ここで 別に 組むと、
       // 区切りを 直した 日に こたえノートの 正解だけが 静かに ずれる
@@ -422,6 +460,53 @@ export function correctAnswerText(question: QuizQuestion): string {
     case "ranklist":
       return "";
   }
+}
+
+/**
+ * 欄 1つの 合否。**正解の ことばが 入って いれば 合格**（`answerMatches` の 前後に
+ * 何が 付いても 落とさない）。
+ *
+ * ねらいは「メモから 必要な ことを 見つける」ことで、写し取る 正確さでは ない
+ *（constraints 2026-08-20「採点は やさしく。意味が つたわれば 合格」）。
+ * 「ユーザーが ログインできない」と 前を 足した 学習者は **見つけられて いる**。
+ *
+ * 逆に 短すぎる もの（「ログイン」だけ）は 落ちる——正解を 丸ごと 含んで いないため。
+ */
+export function fillinSlotOk(slot: FillinSlot, input: string): boolean {
+  const written = input.trim();
+  if (written === "") return false;
+  const answers = [slot.answer, ...slot.accept];
+  if (answerMatches(written, answers)) return true;
+  const mine = normalizeReading(written);
+  return answers.some((answer) => {
+    const right = normalizeReading(answer);
+    return right !== "" && mine.includes(right);
+  });
+}
+
+/**
+ * 型の ある 文を **欄ごとに** 見る（`checkWordbank` と 同じ 役目）。
+ *
+ * 記録に 残るのは 文だけ なので、答え合わせの 画面で「どの 欄を どう まちがえたか」を
+ * 出すには、その 文を 欄ごとに 読み戻す 必要が ある。
+ */
+export function checkFillin(
+  question: Extract<QuizQuestion, { type: "fillin" }>,
+  answer: string,
+  /** 採点の けっか。合格なら 欄は ぜんぶ ○に する（`checkWordbank` と 同じ 理由）。 */
+  correct?: boolean,
+): (BlankCheck & { readonly label: string })[] {
+  const slots = fillinSlots(question);
+  const filled = parseWordbankAnswer(answer, slots.length);
+  return slots.map((slot, i) => {
+    const own = filled[i] ?? "";
+    return {
+      label: slot.label,
+      own,
+      right: slot.answer,
+      ok: correct === true || fillinSlotOk(slot, own),
+    };
+  });
 }
 
 /**

@@ -444,6 +444,23 @@ export async function writeListIn(
 }
 
 /**
+ * 型の ある 文（`fillin`・メール）の 欄を 名前で 埋める。
+ *
+ * 欄の 名前（宛先・原因…）で 引く——**どの 欄に 入れるかが 問いの 中身**なので、
+ * 番号で 埋める 書き方に すると、欄の 並びを 直した 日に テストが 静かに 通りつづける。
+ */
+export async function writeFillinIn(
+  page: Page,
+  questionId: string,
+  values: Readonly<Record<string, string>>,
+): Promise<void> {
+  const box = page.locator(`#q-${questionId}`);
+  for (const [label, value] of Object.entries(values)) {
+    await box.getByLabel(`${label}を 入力する`, { exact: true }).fill(value);
+  }
+}
+
+/**
  * じゅんばんに ならべて 書く（`ranklist`）の 行を 上から 埋める。行が 足りなければ ふやす。
  *
  * **名前は 完全一致で 引く**——「1ばんめ」は「11ばんめ」の 中にも ある（20行を 超えて

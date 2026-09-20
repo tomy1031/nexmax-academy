@@ -21,6 +21,14 @@ import {
 } from "@/lib/meeting/asakai-judge";
 import { getGeminiKey } from "@/lib/profile";
 import {
+  QUIZ_REVIEW_SYSTEM,
+  QUIZ_REVIEW_TOOL,
+  buildQuizReviewPrompt,
+  parseQuizReview,
+  type QuizReviewContext,
+  type QuizReviewResult,
+} from "@/lib/quiz/ai-review";
+import {
   CARD_TOOL,
   JUDGE_TOOL,
   buildCardPrompt,
@@ -280,6 +288,79 @@ async function askAsakai(
   }
 }
 
+export type QuizReviewApiResult =
+  { ok: true; review: QuizReviewResult; model: string } | { ok: false; reason: string };
+
+/**
+ * 書いた ものを 見て もらう（もんだいの「🤖 AIに 見て もらう」）。
+ *
+ * ## 1本ずつ しか 頼まない
+ * 全問 1ページの 教材では、学習者は **となりの もんだいの ボタンも すぐ 押せる**。
+ * つなぎは 往復を 1組しか 持たない ので、重ねると **1問目の 見立てが 2問目の
+ * 答えに なる**（朝礼で 実際に 起きた 形）。重なった ぶんは `busy` で 断り、
+ * 画面は「いま ほかの もんだいを 見て います」と 言う。
+ *
+ * ## つなぎは しつもんごと（`key`）
+ * 同じ つなぎを しつもんを またいで 使い回すと、相手は 前の しつもんの 返事を
+ * くり返す ように なる（2026-08-21 の 実発生）。張り直す 数秒より、
+ * **ちがう もんだいの 直しが 返る** ほうが こわい。
+ *
+ * ## 読めない 漢字は 1回だけ 言い直させる
+ * `needsKanjiRetry` は 呼ぶ 側（画面）が 決める——読み辞書は 教材が 持って いて、
+ * ここからは 見えない ため。
+ */
+export async function requestQuizReview(
+  key: string,
+  context: QuizReviewContext,
+  needsKanjiRetry: (result: QuizReviewResult) => boolean,
+): Promise<QuizReviewApiResult> {
+  const apiKey = getGeminiKey();
+  if (!apiKey) return { ok: false, reason: "noKey" };
+  if (SLOTS.review.busy) return { ok: false, reason: "busy" };
+  SLOTS.review.busy = true;
+  try {
+    // どこで 詰まっても 必ず 返る（画面の ボタンを 押しっぱなしに しない）
+    const result = await Promise.race([
+      askQuizReview(apiKey, key, context, needsKanjiRetry),
+      new Promise<QuizReviewApiResult>((resolve) =>
+        setTimeout(() => resolve({ ok: false, reason: "timeout" }), OVERALL_TIMEOUT_MS),
+      ),
+    ]);
+    liveDebug("judge.review", result.ok ? `ok ${result.model}` : result.reason, !result.ok);
+    return result;
+  } finally {
+    SLOTS.review.busy = false;
+  }
+}
+
+async function askQuizReview(
+  apiKey: string,
+  key: string,
+  context: QuizReviewContext,
+  needsKanjiRetry: (result: QuizReviewResult) => boolean,
+): Promise<QuizReviewApiResult> {
+  const opened = await openJudge(apiKey, "review", key);
+  if (!opened.ok) return { ok: false, reason: opened.reason };
+  const session = opened.session;
+  try {
+    let review = parseQuizReview(await session.ask(buildQuizReviewPrompt(context)), context.checks);
+    if (review && needsKanjiRetry(review)) {
+      const again = parseQuizReview(
+        await session.ask(buildQuizReviewPrompt(context, true)),
+        context.checks,
+      );
+      // 2回目が 崩れて いたら 1回目を 使う（読めない 文は 画面が 落とす）
+      if (again) review = again;
+    }
+    if (!review) return { ok: false, reason: "badShape" };
+    return { ok: true, review, model: session.model };
+  } catch (error) {
+    // 切れて いる ことが ある。つぎの 呼び出しで 張り直せる ように 捨てる
+    dropSlot(SLOTS.review);
+    return { ok: false, reason: error instanceof JudgeError ? error.reason : "network" };
+  }
+}
+
 export type TalkApiResult =
   { ok: true; judgement: TalkJudgement; model: string } | { ok: false; reason: string };
 
@@ -410,7 +491,7 @@ interface JudgeSession {
  * 問題が 変わるまでは 同じ つなぎを 使い回して いた。
  */
 /** つなぎの 役（役ごとに 別の つなぎを 張る）。 */
-type SlotKind = "judge" | "cards" | "talk" | "asakai";
+type SlotKind = "judge" | "cards" | "talk" | "asakai" | "review";
 
 interface Slot {
   /** つなぎの 中身（相手に 渡す 決まりと 道具）。 */
@@ -476,6 +557,20 @@ const SLOTS: Record<SlotKind, Slot> = {
     system: ASAKAI_JUDGE_SYSTEM,
     tool: ASAKAI_TOOL,
     temperature: 0,
+    session: null,
+    key: "",
+    opening: null,
+  },
+  /*
+   * 書いた ものの 見かた（もんだいの `free`・`fillin`）。**思いつきは ほとんど 要らない**
+   *——同じ 文を 2回 見て もらった ときに 観点の ○△が 入れ替わると、
+   * 学習者は どちらを 信じれば よいか 分からなく なる。
+   * 書き直し（ブラッシュアップ）の ために 0 よりは すこしだけ 上げる。
+   */
+  review: {
+    system: QUIZ_REVIEW_SYSTEM,
+    tool: QUIZ_REVIEW_TOOL,
+    temperature: 0.2,
     session: null,
     key: "",
     opening: null,
@@ -718,6 +813,9 @@ export function judgeFailNote(reason: string): string {
       return "AIが いま こんで います。すこし まってから もう いちど おねがいします。";
     case "timeout":
       return "AIの へんじが おそいので、さきに すすみます。";
+    // 全問 1ページの 教材で、となりの もんだいを 見て いる あいだに 押した とき
+    case "busy":
+      return "AIは いま ほかの もんだいを みて います。すこし まってから おして ください。";
     case "network":
       return "つうしんが うまく いきませんでした。もう いちど おねがいします。";
     default:

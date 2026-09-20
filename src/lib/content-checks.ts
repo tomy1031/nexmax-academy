@@ -804,6 +804,26 @@ export function collectLabeledTexts(content: Content): LabeledText[] {
         push(at("section"), q.section);
         push(at("sectionNote"), q.sectionNote);
         push(at("source"), q.source);
+        /*
+         * 場面の メモ（`scene`）は **設問と 同じくらい 読まれる**——連絡文の 練習では
+         * こちらが 材料 そのもの。名前・宛先の 行も 画面に 出る。
+         */
+        if (q.scene) {
+          push(at("scene.from"), q.scene.from);
+          push(at("scene.to"), q.scene.to);
+          push(at("scene.text"), q.scene.text);
+          // marks は scene.text の 一部（同じ 文字を 2度 数えない）
+        }
+        /*
+         * AIの 観点と お手本は **押した あとに 画面へ 出る**（`ai-review-panel.tsx`）。
+         * AIの 返事には ふりがなを 足せない ので、せめて 教材が 持つ この 2つは 覆う。
+         */
+        const ai = q.type === "free" || q.type === "fillin" ? q.ai : undefined;
+        if (ai) {
+          ai.checks.forEach((check, j) => push(at(`ai.checks[${j}].label`), check.label));
+          push(at("ai.model"), ai.model);
+          // note は AIだけが 読む（画面に 出ない）ので 覆いの 対象外
+        }
         (q.hints ?? []).forEach((hint, j) => {
           push(at(`hints[${j}].title`), hint.title);
           push(at(`hints[${j}].text`), hint.text);
@@ -840,6 +860,26 @@ export function collectLabeledTexts(content: Content): LabeledText[] {
             push(at("placeholder"), q.placeholder);
             push(at("topLabel"), q.topLabel);
             push(at("bottomLabel"), q.bottomLabel);
+            break;
+          case "fillin":
+            // 紙の 見た目（見出し・決まり文・欄の 名前）は ぜんぶ 出しっぱなし
+            push(at("formTitle"), q.formTitle);
+            push(at("intro"), q.intro);
+            push(at("outro"), q.outro);
+            q.head.forEach((row, j) => {
+              push(at(`head[${j}].label`), row.label);
+              if (row.kind === "fixed") push(at(`head[${j}].text`), row.text);
+              // 打つ 行の こたえは 答え合わせの 画面に 出る（正解は 学習者が 読む 文）
+              else {
+                push(at(`head[${j}].answer`), row.answer);
+                push(at(`head[${j}].placeholder`), row.placeholder);
+              }
+            });
+            q.blanks.forEach((blank, j) => {
+              push(at(`blanks[${j}].label`), blank.label);
+              push(at(`blanks[${j}].answer`), blank.answer);
+              push(at(`blanks[${j}].placeholder`), blank.placeholder);
+            });
             break;
         }
       });

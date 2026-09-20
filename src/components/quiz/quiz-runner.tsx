@@ -24,6 +24,8 @@ import { newAttemptId, saveQuizResults } from "@/lib/quiz/results-db";
 import { fetchOwnProfile } from "@/lib/profile-db";
 import { CelebrationBurst, StampRow } from "./celebration";
 import { QuestionBody } from "./question-types";
+import { FillinReview } from "./fillin-review";
+import { SceneCard } from "./scene-card";
 import { WordbankReview } from "./wordbank-review";
 import {
   answeredCount,
@@ -563,6 +565,8 @@ export function QuizRunner({
                 <DictionaryText text={question.q} index={furigana} />
               </p>
               <QuestionSource question={question} furigana={furigana} />
+              {/* 場面の メモは 設問の すぐ 下（読んでから 書く 順に 並べる） */}
+              {question.scene && <SceneCard scene={question.scene} furigana={furigana} />}
               {state.phase.kind !== "explain" && (
                 <div className="mt-3">
                   <QuestionHints question={question} furigana={furigana} />
@@ -866,6 +870,18 @@ function AnswerPair({
   if (question.type === "wordbank") {
     return (
       <WordbankReview
+        question={question}
+        answer={answer ?? ""}
+        correct={correct}
+        furigana={furigana}
+      />
+    );
+  }
+
+  /* メールの 型も 同じ——欄の 名前を 付けた まま 返す（`FillinReview`）。 */
+  if (question.type === "fillin") {
+    return (
+      <FillinReview
         question={question}
         answer={answer ?? ""}
         correct={correct}
@@ -1383,6 +1399,8 @@ const QuestionRow = memo(function QuestionRow({
         </span>
       </div>
 
+      {question.scene && <SceneCard scene={question.scene} furigana={furigana} />}
+
       <QuestionHints question={question} furigana={furigana} />
 
       <QuestionBody
@@ -1605,6 +1623,8 @@ function ReviewRow({
    * だけの 行は、どの あなの ことか 分からず、カンペにも ならなかった。
    */
   const wordbank = question.type === "wordbank" ? question : null;
+  /** メールの 型も 同じ 理由で 欄ごとに 返す（横に 並べた 行は カンペに ならない）。 */
+  const fillin = question.type === "fillin" ? question : null;
 
   return (
     <li
@@ -1650,6 +1670,13 @@ function ReviewRow({
           correct={ok}
           furigana={furigana}
         />
+      ) : fillin ? (
+        <FillinReview
+          question={fillin}
+          answer={result.answer ?? ""}
+          correct={ok}
+          furigana={furigana}
+        />
       ) : (
         say !== "" && (
           <p className="text-ink mt-1 leading-relaxed font-extrabold">
@@ -1665,6 +1692,7 @@ function ReviewRow({
       {!freeOnly &&
         !ok &&
         !wordbank &&
+        !fillin &&
         (own === "" ? (
           <p className="text-ink-faint mt-0.5 text-xs font-bold">
             <RubyText text="まだ かいて いません" index={UI_FURIGANA} />

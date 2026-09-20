@@ -7,6 +7,8 @@ import { RubyText } from "@/components/ruby-text";
 import { buildFuriganaIndex, type FuriganaIndex } from "@/lib/text/furigana";
 import { wordbankDisplayOrder } from "@/lib/quiz/bank-order";
 import type { QuizDraft } from "@/lib/quiz/draft";
+import { fillinSlots, fillinText } from "@/lib/quiz/fillin";
+import { AiReviewPanel } from "./ai-review-panel";
 import type { QuizAction, QuizMode } from "./quiz-reducer";
 import { RankListInput } from "./rank-list-input";
 
@@ -114,12 +116,26 @@ export function QuestionBody({
     case "free":
       return (
         <FreeInput
+          question={question}
+          furigana={furigana}
           placeholder={question.placeholder}
           starter={question.starter}
           disabled={disabled}
           submitMode={submitMode}
           draft={draft?.kind === "free" ? draft : undefined}
           onSubmit={(input) => dispatch({ type: "answerFree", input })}
+        />
+      );
+
+    case "fillin":
+      return (
+        <FillinInput
+          question={question}
+          furigana={furigana}
+          disabled={disabled}
+          submitMode={submitMode}
+          draft={draft?.kind === "fillin" ? draft : undefined}
+          onSubmit={(inputs) => dispatch({ type: "answerFillin", inputs })}
         />
       );
 
@@ -581,6 +597,8 @@ function KeywordInput({
  * 「ちがいます」が 出ない 問いなので、思った ことを そのまま 書ける 広さを 出す。
  */
 function FreeInput({
+  question,
+  furigana,
   onSubmit,
   disabled,
   submitMode,
@@ -588,6 +606,8 @@ function FreeInput({
   placeholder,
   starter,
 }: {
+  question: Extract<QuizQuestion, { type: "free" }>;
+  furigana: FuriganaIndex;
   onSubmit: (input: string, en?: string) => void;
   disabled?: boolean;
   submitMode?: boolean;
@@ -650,6 +670,157 @@ function FreeInput({
         自由入力に 正解が 無い ことは、下の 型文（`starter`）と ヒントが すでに 見せて いる。
         ことばで 先回りせず、ゆるさは **動き**で 出す（AGENTS.md 規律1）。
       */}
+      {/*
+        AIの 見かたは **いま 打って いる 文**を 見る（下書きでは なく この 部品の 文字）。
+        1問ずつの やりかたでは 下書きが 更新されないので、下書きから 読むと
+        「まだ 書いて いません」の まま 見て もらう ことに なる。
+      */}
+      <AiReviewPanel
+        question={question}
+        written={value}
+        hasInput={!empty}
+        scene={question.scene?.text}
+        furigana={furigana}
+      />
+    </form>
+  );
+}
+
+/* ---------------- 型の ある 文の うめこみ（メール・連絡文） ---------------- */
+
+/**
+ * 決まった 型（宛先・件名・【問題】【原因】…）を 自分で 打って うめる。
+ *
+ * 元の 別ページ（`public/tools/hourensou/renraku_contact.html`）の メール画面を
+ * そのまま 持ち込む: 上に 宛先と 件名、下に 本文、本文の 中に 【ラベル】＋入力欄。
+ * **型が 目に 見えて いる ことが この 問いの 足場**なので、欄だけを 縦に 並べた
+ * 形には しない（それでは 何を 書いて いるのか 分からなく なる）。
+ */
+function FillinInput({
+  question,
+  furigana,
+  onSubmit,
+  disabled,
+  submitMode,
+  draft,
+}: {
+  question: Extract<QuizQuestion, { type: "fillin" }>;
+  furigana: FuriganaIndex;
+  onSubmit: (inputs: readonly string[]) => void;
+  disabled?: boolean;
+  submitMode?: boolean;
+  draft?: Extract<QuizDraft, { kind: "fillin" }>;
+}) {
+  const slots = useMemo(() => fillinSlots(question), [question]);
+  // 画面の 文字は この部品が 持つ（親から 送り返すと 変換の 途中で 入れ替わる）
+  const [inputs, setInputs] = useState<string[]>(() => slots.map((_, i) => draft?.inputs[i] ?? ""));
+  const empty = inputs.every((v) => v.trim() === "");
+
+  const change = (index: number, next: string) => {
+    const updated = inputs.map((value, i) => (i === index ? next : value));
+    setInputs(updated);
+    if (submitMode) onSubmit(updated);
+  };
+
+  const box =
+    "border-hairline bg-panel text-ink min-w-0 flex-1 rounded-[var(--radius-button)] border-2 px-3 py-2 text-sm font-bold";
+  /** 本文の 上の 行（宛先）の 欄は 先頭から、本文の 欄は その あと（`fillinSlots` の 並び）。 */
+  let slot = 0;
+
+  return (
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        if (!submitMode && !disabled && !empty) onSubmit(inputs);
+      }}
+    >
+      <div className="border-hairline overflow-hidden rounded-[var(--radius-card)] border-2 bg-white">
+        {question.formTitle && (
+          <p className="bg-panel-tint border-hairline text-ink border-b-2 px-3 py-2 text-sm font-extrabold">
+            <RubyText text={question.formTitle} index={furigana} />
+          </p>
+        )}
+        {question.head.map((row, i) => {
+          const index = row.kind === "write" ? slot++ : -1;
+          return (
+            <div
+              key={`${row.label}-${i}`}
+              className="border-hairline flex items-center gap-2 border-b px-3 py-2"
+            >
+              <span className="text-ink-soft w-16 shrink-0 text-xs font-extrabold">
+                <RubyText text={row.label} index={furigana} />
+              </span>
+              {row.kind === "fixed" ? (
+                <span className="text-ink min-w-0 flex-1 text-sm font-bold">
+                  <RubyText text={row.text} index={furigana} />
+                </span>
+              ) : (
+                <input
+                  type="text"
+                  value={inputs[index] ?? ""}
+                  disabled={disabled}
+                  onChange={(e) => change(index, e.target.value)}
+                  autoComplete="off"
+                  aria-label={`${row.label}を 入力する`}
+                  placeholder={row.placeholder}
+                  className={box}
+                />
+              )}
+            </div>
+          );
+        })}
+        <div className="grid gap-2 px-3 py-3">
+          {question.intro && (
+            <p className="text-ink text-sm leading-relaxed font-bold">
+              <RubyText text={question.intro} index={furigana} />
+            </p>
+          )}
+          {question.blanks.map((blank, i) => {
+            const index = slot + i;
+            return (
+              <div key={`${blank.label}-${i}`} className="flex items-center gap-2">
+                <span className="text-ink w-24 shrink-0 text-xs font-extrabold">
+                  <RubyText text={`【${blank.label}】`} index={furigana} />
+                </span>
+                <input
+                  type="text"
+                  value={inputs[index] ?? ""}
+                  disabled={disabled}
+                  onChange={(e) => change(index, e.target.value)}
+                  autoComplete="off"
+                  aria-label={`${blank.label}を 入力する`}
+                  placeholder={blank.placeholder}
+                  className={box}
+                />
+              </div>
+            );
+          })}
+          {question.outro && (
+            <p className="text-ink text-sm leading-relaxed font-bold">
+              <RubyText text={question.outro} index={furigana} />
+            </p>
+          )}
+        </div>
+      </div>
+
+      {!submitMode && (
+        <button
+          type="submit"
+          disabled={disabled || empty}
+          className="btn-island btn-game mt-3 px-8 py-3 disabled:opacity-50"
+        >
+          こたえる
+        </button>
+      )}
+
+      {/* AIには **1本の メール**として 渡す（欄ごとでは 文として 見て もらえない） */}
+      <AiReviewPanel
+        question={question}
+        written={fillinText(question, inputs)}
+        hasInput={!empty}
+        scene={question.scene?.text}
+        furigana={furigana}
+      />
     </form>
   );
 }
