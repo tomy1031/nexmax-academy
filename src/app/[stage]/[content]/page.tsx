@@ -40,7 +40,7 @@ import {
   stageContentSegments,
 } from "@/lib/stage-routes";
 import { canonicalContentPath } from "@/lib/stage-lookup";
-import { loadRef } from "../page";
+import { loadRef } from "@/lib/stage-refs";
 
 /**
  * ステージの中の教材（`/asakai/listening`）
