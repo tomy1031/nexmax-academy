@@ -33,6 +33,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore
 
 import { CallShell } from "@/components/call-shell";
 import { DictionaryText } from "@/components/dictionary-text";
+import { AiWaiting } from "@/components/meeting/ai-waiting";
 import { HintModal } from "@/components/meeting/hint-modal";
 import { dropJudgeSession, requestAsakaiJudge } from "@/components/meeting/judge-api";
 import { ModalShell } from "@/components/meeting/modal-shell";
@@ -1603,7 +1604,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
               waitNote: judge
                 ? "見かたを 読んでから 話します。"
                 : waiting
-                  ? "AIが いま 見て います。"
+                  ? "Gemini（AI）が いま 見て います。"
                   : null,
               onConnect: () => void voice.start(LISTEN_ONLY),
               onStartTalking: voice.startTalking,
@@ -1810,6 +1811,8 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
         <Chat
           lines={lines}
           index={index}
+          /* Gemini を 呼んで いる あいだは、記録の いちばん下に ローディングを 出す。 */
+          waiting={waiting}
           draft={answer}
           /* 見かたを 読んで いる あいだ・AIが 見て いる あいだ・その日が 終わった あとは 送れない。 */
           canSend={!between && !sceneOver && judge === null && !waiting}
@@ -1817,7 +1820,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
             judge
               ? "見かたを 読んでから 送れます"
               : waiting
-                ? "AIが いま 見て います…"
+                ? "Gemini（AI）が いま 見て います…"
                 : "いまは 送れません"
           }
           onDraft={setAnswer}
@@ -2389,6 +2392,7 @@ function WeekResult({
 function Chat({
   lines,
   index,
+  waiting,
   draft,
   canSend,
   sendNote,
@@ -2398,6 +2402,8 @@ function Chat({
 }: {
   lines: readonly ChatLine[];
   index: FuriganaIndex;
+  /** Gemini を 呼んで いる あいだ（ローディングを 出す）。 */
+  waiting: boolean;
   /** 書きかけの 字。 */
   draft: string;
   /** いま 送れるか（見かたを 読んで いる あいだ・AIを 待って いる あいだは 送れない）。 */
@@ -2414,7 +2420,7 @@ function Chat({
   useEffect(() => {
     const node = box.current;
     if (node) node.scrollTop = node.scrollHeight;
-  }, [lines]);
+  }, [lines, waiting]);
   return (
     /* 殻も 入力欄も **ミーティングと 同じ 部品**（`ChatPanel`）。 */
     <ChatPanel
@@ -2450,6 +2456,11 @@ function Chat({
           </p>
         );
       })}
+      {/*
+        **Gemini を 呼んで いる あいだの ローディング**（2026-09-20 の 指定）。
+        送信欄の 灰色の 字だけでは、止まって いるのか 動いて いるのかが 読めなかった。
+      */}
+      {waiting ? <AiWaiting doing="見て います" index={index} /> : null}
     </ChatPanel>
   );
 }
