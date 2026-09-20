@@ -16,7 +16,7 @@ type Plan = "reject" | "hang" | "late" | "accept";
 const sdk = vi.hoisted(() => ({
   plan: {} as Record<string, Plan>,
   connects: [] as { model: string; at: number }[],
-  asks: [] as { model: string; at: number }[],
+  asks: [] as { model: string; at: number; text: string }[],
   closed: [] as string[],
   tokens: 0,
   setupAfterMs: 500,
@@ -51,14 +51,36 @@ vi.mock("@google/genai", () => ({
         sdk.connects.push({ model, at: Date.now() });
         const plan = sdk.plan[model] ?? "reject";
         const session = {
-          sendClientContent: () => {
-            sdk.asks.push({ model, at: Date.now() });
+          sendClientContent: (input: unknown) => {
+            /*
+             * 頼みの 文を 見て 返す 形を 変える。もんだいの 見かた（`kaitou_no_mikata`）は
+             * 朝礼と 引数の 形が ちがう ので、同じ 作り物で 両方を ためせる ように する。
+             */
+            const text =
+              (input as { turns?: { parts?: { text?: string }[] }[] })?.turns?.[0]?.parts?.[0]
+                ?.text ?? "";
+            sdk.asks.push({ model, at: Date.now(), text });
             const n = sdk.asks.length;
+            const review = text.includes("# 見る ところ");
             setTimeout(
               () =>
                 callbacks.onmessage({
                   toolCall: {
-                    functionCalls: [{ id: `c${n}`, name: "asakai", args: { saidIds: [`k${n}`] } }],
+                    functionCalls: [
+                      review
+                        ? {
+                            id: `c${n}`,
+                            name: "kaitou_no_mikata",
+                            args: {
+                              ok: true,
+                              checks: [{ id: "ketsuron", ok: true, note: "" }],
+                              good: "",
+                              advice: "",
+                              polished: `へんじ${n}`,
+                            },
+                          }
+                        : { id: `c${n}`, name: "asakai", args: { saidIds: [`k${n}`] } },
+                    ],
                   },
                 }),
               sdk.replyAfterMs,
@@ -240,5 +262,76 @@ describe("先頭の モデルが 何も 返さない とき（まれ）", () => 
     await vi.advanceTimersByTimeAsync(3_000);
     expect(second).toEqual({ ...NO_JUDGE, saidIds: ["k1"] });
     expect(sdk.connects.filter((c) => c.model === SPARE)).toHaveLength(1);
+  });
+});
+
+/**
+ * もんだいの 見かた（`requestQuizReview`）— **押し直しで 前の 返事が 出ない こと**
+ *
+ * 全問 1ページの 教材では、学習者は 文を 直して すぐ もう一度 押す。札（busy）を
+ * 待ちを 諦めた 時点で 下ろすと、**1回目の 見立てが 2回目の 答えに なる**——
+ * 直した 文に「⭕ つたわります」と 断言する（規律1 の 逆）。朝礼が 2026-09-16 に
+ * 直した 形を、こちらでも 固定して おく。
+ */
+describe("もんだいの AIの 見かた", () => {
+  const CONTEXT = {
+    question: "Slackの メッセージを 書いて ください。",
+    scene: "テスト用の URLが 変わった。",
+    model: "お疲れさまです。",
+    note: "",
+    checks: [{ id: "ketsuron", label: "1行目で 何の 連絡かが 分かる" }],
+    written: "1回目の 文",
+  };
+
+  it("諦めた あとに 押し直しても、前の 頼みの 返事は 返らない", async () => {
+    sdk.plan = { [HEAD]: "hang", [SPARE]: "accept" };
+    sdk.setupAfterMs = 5_000; // 控えの したくも 遅い（9秒 + 5秒 で 14秒ごろ）
+    sdk.replyAfterMs = 11_500; // 往復は 25秒の 上限を またぐ
+    const { requestQuizReview } = await loadJudgeApi();
+
+    let first: unknown = "pending";
+    void requestQuizReview("set:q1:1", CONTEXT, () => false).then((value) => {
+      first = value;
+    });
+    await vi.advanceTimersByTimeAsync(25_000);
+    expect(first).toEqual({ ok: false, reason: "timeout" });
+
+    // 直して すぐ 押す。**1回目の 往復が 生きて いる あいだは 断る**
+    let second: unknown = "pending";
+    void requestQuizReview("set:q1:2", { ...CONTEXT, written: "なおした 文" }, () => false).then(
+      (value) => {
+        second = value;
+      },
+    );
+    await vi.advanceTimersByTimeAsync(0);
+    expect(second).toEqual({ ok: false, reason: "busy" });
+
+    // 往復が 終われば、つぎの 頼みは 自分の 返事を もらう（ここからは 混みが 解けた ことに する）
+    await vi.advanceTimersByTimeAsync(1_000);
+    sdk.replyAfterMs = 2_000;
+    let third: unknown = "pending";
+    void requestQuizReview("set:q1:3", { ...CONTEXT, written: "なおした 文" }, () => false).then(
+      (value) => {
+        third = value;
+      },
+    );
+    await vi.advanceTimersByTimeAsync(20_000);
+    expect(third).toMatchObject({ ok: true });
+    // 送った 文は それぞれの 回の もの（1回目の 文が 2回目の 答えに ならない）
+    const sent = sdk.asks.map((ask) => ask.text);
+    expect(sent.some((text) => text.includes("1回目の 文"))).toBe(true);
+    expect(sent.filter((text) => text.includes("なおした 文"))).toHaveLength(1);
+  });
+
+  it("鍵が 無い ときは つながず、理由の 名前で 返す", async () => {
+    vi.resetModules();
+    vi.doMock("@/lib/profile", () => ({ getGeminiKey: () => "" }));
+    const { requestQuizReview } = await import("../src/components/meeting/judge-api");
+    await expect(requestQuizReview("set:q1:1", CONTEXT, () => false)).resolves.toEqual({
+      ok: false,
+      reason: "noKey",
+    });
+    expect(sdk.connects).toHaveLength(0);
+    vi.doUnmock("@/lib/profile");
   });
 });

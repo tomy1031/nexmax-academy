@@ -149,6 +149,36 @@ export function draftAnswered(question: QuizQuestion, draft: QuizDraft | undefin
   }
 }
 
+/**
+ * **1字でも 書いたか**（`draftAnswered` より ゆるい 見かた）。
+ *
+ * 下書きを 端末に 残すか 消すかの 判断に だけ 使う。`draftAnswered` は
+ *「こたえとして 数える か」で、メールの 型（`fillin`）は 欄が ぜんぶ うまるまで
+ * 数えない——その ものさしで 保存を 決めると、**2欄だけ 書いて 開き直した 学習者の
+ * 書いた ものが ぜんぶ 消える**（2026-09-20 の 通しプレイ検収で 実発生）。
+ */
+export function draftStarted(question: QuizQuestion, draft: QuizDraft | undefined): boolean {
+  if (!draftFits(question, draft) || !draft) return false;
+  switch (draft.kind) {
+    case "choice":
+    case "multi":
+    case "wordbank":
+    case "emotion":
+      // えらぶ 型は「こたえた」と 同じ（途中の 形が 無い・emotion は 片方でも 残す）
+      return draft.kind === "emotion"
+        ? draft.feeling !== null || draft.reply !== null
+        : draftAnswered(question, draft);
+    case "keyword":
+    case "free":
+      return draft.input.trim().length > 0;
+    case "list":
+    case "fillin":
+      return draft.inputs.some((value) => value.trim().length > 0);
+    case "ranklist":
+      return draft.rows.some((value) => value.trim().length > 0);
+  }
+}
+
 /** 採点の 結果（記録に 残す 3つ ＋ 言い方を 選ぶ ための「あと すこし」）。 */
 export interface QuizGrade {
   readonly correct: boolean;
@@ -476,12 +506,20 @@ export function fillinSlotOk(slot: FillinSlot, input: string): boolean {
   const written = input.trim();
   if (written === "") return false;
   const answers = [slot.answer, ...slot.accept];
-  if (answerMatches(written, answers)) return true;
-  const mine = normalizeReading(written);
-  return answers.some((answer) => {
-    const right = normalizeReading(answer);
-    return right !== "" && mine.includes(right);
-  });
+  /*
+   * `answerMatches` は **包含も 通す**（「ホームページを つくります」←「ホームページ」）。
+   * それだけで 決めると、正解が そのまま 入って いる **メモを 丸ごと 4つの 欄に 貼る**
+   * だけで 満点に なる——さがす 練習が 消える（2026-09-20 の コード検収）。
+   */
+  const matched = answers.filter((answer) => answerMatches(written, [answer]));
+  if (matched.length === 0) return false;
+  /*
+   * **長さの 見張り**。前に ことばが 付く ぶん（「ユーザーが ログインできない こと」）は
+   * 通し、文を 丸ごと 貼った ものは 通さない 幅に する。当たった 正解の うち
+   * **いちばん 長い もの**で 測る（別の 言い方を 足した 教材で きつく ならない ように）。
+   */
+  const limit = Math.max(...matched.map((answer) => normalizeReading(answer).length)) * 2 + 8;
+  return normalizeReading(written).length <= limit;
 }
 
 /**

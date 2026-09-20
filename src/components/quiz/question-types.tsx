@@ -738,8 +738,13 @@ function FillinInput({
     if (submitMode) onSubmit(updated);
   };
 
+  /*
+   * 入力欄の 字は **16px（`text-base`）**。iPhone の Safari は 16px 未満の 欄に
+   * さわると **画面を 勝手に 拡大する**ので、390px に 収めた 並びが その場で 崩れる
+   *（2026-09-20 の コード検収）。ほかの 問いの 欄（`KeywordInput`・`ListInput`）も 同じ。
+   */
   const box =
-    "border-hairline bg-panel text-ink min-w-0 flex-1 rounded-[var(--radius-button)] border-2 px-3 py-2 text-sm font-bold";
+    "border-hairline bg-panel text-ink min-w-0 flex-1 rounded-[var(--radius-button)] border-2 px-3 py-2 text-base font-bold";
   /*
    * **`size={1}` を 付ける**（2026-09-20 の 390px 検証）。
    *

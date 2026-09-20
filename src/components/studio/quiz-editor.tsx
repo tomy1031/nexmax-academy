@@ -915,22 +915,25 @@ function FillinRowsEditor({
           </button>
         </div>
       ))}
-      <div className="flex flex-wrap gap-2">
-        <button
-          type="button"
-          onClick={() => put([...rows, { kind: "write", label: "", answer: "", accept: [] }])}
-          className="border-hairline rounded-full border-2 px-3 py-1 text-xs font-extrabold"
-        >
-          ＋ 打つ 行を 追加
-        </button>
-        <button
-          type="button"
-          onClick={() => put([...rows, { kind: "fixed", label: "", text: "" }])}
-          className="border-hairline rounded-full border-2 px-3 py-1 text-xs font-extrabold"
-        >
-          ＋ 変えられない 行を 追加
-        </button>
-      </div>
+      {/* 上限は スキーマと 同じ 4行（越えると 保存の ときに 理由の 分からない 失敗に なる） */}
+      {rows.length < 4 && (
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => put([...rows, { kind: "write", label: "", answer: "", accept: [] }])}
+            className="border-hairline rounded-full border-2 px-3 py-1 text-xs font-extrabold"
+          >
+            ＋ 打つ 行を 追加
+          </button>
+          <button
+            type="button"
+            onClick={() => put([...rows, { kind: "fixed", label: "", text: "" }])}
+            className="border-hairline rounded-full border-2 px-3 py-1 text-xs font-extrabold"
+          >
+            ＋ 変えられない 行を 追加
+          </button>
+        </div>
+      )}
     </div>
   );
 }

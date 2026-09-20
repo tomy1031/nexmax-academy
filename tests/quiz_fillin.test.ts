@@ -4,6 +4,7 @@ import {
   checkFillin,
   correctAnswerText,
   draftAnswered,
+  draftStarted,
   gradeDraft,
   quizDraftSchema,
 } from "@/lib/quiz/draft";
@@ -92,6 +93,17 @@ describe("fillin の 採点", () => {
     expect(result.earned).toBe(0);
   });
 
+  it("メモを 丸ごと 貼った ものは 通らない（さがす 練習が 消える）", () => {
+    /*
+     * 正解は どれも メモの 中に そのまま ある。包含だけで 見ると、同僚の チャットを
+     * 4つの 欄に 貼るだけで 満点に なって いた（2026-09-20 の コード検収）。
+     */
+    const memo =
+      "システム管理部の 佐藤さんに メールを お願い！ さっきから ログインできない って ユーザーから 連絡が 来てるんだ。調べたら サーバーの エラーが 原因みたい。";
+    const result = grade([memo, memo, memo]);
+    expect(result.correct).toBe(false);
+  });
+
   it("欄を 入れかえたら 通らない（どこに 入れるかが 問いの 中身）", () => {
     const result = grade(["システム管理部の 佐藤さん", "サーバーの エラー", "ログインできない"]);
     expect(result.correct).toBe(false);
@@ -133,6 +145,18 @@ describe("fillin の こたえた 判定と 答え合わせ", () => {
   it("採点が 合格なら 欄は ぜんぶ ○（画面が 自分に 矛盾しない）", () => {
     const checks = checkFillin(QUESTION, "（1）ちがう　（2）ちがう　（3）ちがう", true);
     expect(checks.every((check) => check.ok)).toBe(true);
+  });
+
+  it("1欄だけ 書いた ところで「書きかけ」に なる（端末に 残す 判断）", () => {
+    /*
+     * `draftAnswered` は 欄が ぜんぶ うまるまで false。保存を その ものさしで 決めると、
+     * 2欄だけ 書いて 開き直した 学習者の 書いた ものが ぜんぶ 消える
+     *（2026-09-20 の 通しプレイ検収で 実発生）。
+     */
+    const half = { kind: "fillin", inputs: ["佐藤さん", "", ""] } as const;
+    expect(draftAnswered(QUESTION, half)).toBe(false);
+    expect(draftStarted(QUESTION, half)).toBe(true);
+    expect(draftStarted(QUESTION, { kind: "fillin", inputs: ["", "", ""] })).toBe(false);
   });
 
   it("下書きの 形は 保存から 読み直せる（開き直しても 消えない）", () => {

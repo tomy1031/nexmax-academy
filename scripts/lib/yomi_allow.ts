@@ -466,6 +466,12 @@ export const YOMI_ALLOW: readonly YomiAllowEntry[] = [
     note: "上と 同じ（元の 別ページの 日付を そのまま 写して いる ので 半角の まま）",
   },
   {
+    surface: "分間",
+    reading: "ぷんかん",
+    where: "10分間",
+    note: "「今から 10分間、サービスが 止まります」＝じゅっぷんかん。解析は ふんかん（連濁を 落とす）。同じ 台帳の {分/ぷん/10分} と 同じ 筋",
+  },
+  {
     surface: "行目",
     reading: "ぎょうめ",
     where: "1行目",

@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { expect, test, type BrowserContext } from "@playwright/test";
+import { expect, test, type BrowserContext, type Page } from "@playwright/test";
 import { bareKanjiTexts, seedCompleted, shot, submitAnswers, writeFillinIn } from "./helpers";
 
 /**
@@ -23,6 +23,18 @@ import { bareKanjiTexts, seedCompleted, shot, submitAnswers, writeFillinIn } fro
 const QUIZ = "renraku_contact_quiz";
 const PATH = `/renraku/quiz-${QUIZ}`;
 
+/**
+ * ステージ クリアの 板を 閉じる。
+ *
+ * この 教材は **関門では ない**（元の 別ページと 同じ `gates: false`）ので、
+ * 前の 7本を 終えた 時点で ステージは クリア扱いに なる。開いた 瞬間に
+ * お祝いの 板が 出るのは 差し替え前と 同じ 動き——ここでは 閉じて 先へ 進む。
+ */
+async function closeClearDialog(page: Page) {
+  const stay = page.getByRole("button", { name: "ここに のこる" });
+  if ((await stay.count()) > 0) await stay.click();
+}
+
 async function seedUpToQuiz(context: BrowserContext) {
   const stage = JSON.parse(readFileSync(join("content", "stages", "renraku.json"), "utf8")) as {
     contents: { ref: string }[];
@@ -44,6 +56,7 @@ test("連絡文: 古い 別ページの URL は もんだいへ 送る", async (
 test("連絡文: 20問が 1ページに 出て、メールの 型を 打てて、出せる", async ({ page, context }) => {
   await seedUpToQuiz(context);
   await page.goto(PATH);
+  await closeClearDialog(page);
   await page.getByRole("button", { name: "はじめる" }).click();
 
   /* 2. 20問が 同時に 見えて いる。別ページ（iframe）は もう 無い。 */
@@ -108,6 +121,7 @@ test("連絡文: 学習者の 幅（390px）で 読めて、裸の 漢字が 無
   await seedUpToQuiz(context);
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto(PATH);
+  await closeClearDialog(page);
   await page.getByRole("button", { name: "はじめる" }).click();
 
   await expect(page.locator("#q-mail_1")).toBeVisible();
@@ -120,4 +134,37 @@ test("連絡文: 学習者の 幅（390px）で 読めて、裸の 漢字が 無
 
   /* 画面の 漢字は ぜんぶ ふりがな つき（規律2）。 */
   expect(await bareKanjiTexts(page)).toEqual([]);
+});
+
+test("連絡文: 欄を 2つだけ 書いて 開き直しても 消えない", async ({ page, context }) => {
+  /*
+   * メールの 型は **欄が ぜんぶ うまって はじめて「こたえた」**。保存を その ものさしで
+   * 決めて いた ころは、2欄だけ 書いて 開き直すと **書いた ものが ぜんぶ 消えて いた**
+   *（2026-09-20 の 通しプレイ検収）。はじめの 画面は「行き来しても 消えません」と
+   * 言って いる ので、言った とおりに 動く ことを ここで 固定する。
+   */
+  await seedUpToQuiz(context);
+  await page.goto(PATH);
+  await closeClearDialog(page);
+  await page.getByRole("button", { name: "はじめる" }).click();
+
+  await writeFillinIn(page, "mail_1", {
+    宛先: "システム管理部の 佐藤さん",
+    問題: "ログインできない",
+  });
+  await expect(page.locator("#q-mail_1").getByLabel("宛先を 入力する")).toHaveValue(
+    "システム管理部の 佐藤さん",
+  );
+
+  await page.reload();
+  await closeClearDialog(page);
+  // しおりが あれば「つづきから」、無ければ「はじめる」——どちらでも 中へ 入る
+  const resume = page.getByRole("button", { name: /つづきから/ });
+  await ((await resume.count()) > 0
+    ? resume.click()
+    : page.getByRole("button", { name: "はじめる" }).click());
+
+  const first = page.locator("#q-mail_1");
+  await expect(first.getByLabel("宛先を 入力する")).toHaveValue("システム管理部の 佐藤さん");
+  await expect(first.getByLabel("問題を 入力する")).toHaveValue("ログインできない");
 });

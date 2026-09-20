@@ -48,8 +48,6 @@ const UI_FURIGANA = buildFuriganaIndex([
   ["直", "なお"],
   ["書", "か"],
   ["回答", "かいとう"],
-  ["方", "かた"],
-  ["何", "なに"],
   ["先", "さき"],
   ["押", "お"],
 ]);
@@ -97,6 +95,14 @@ export function AiReviewPanel({
   const ai = question.ai;
   const [phase, setPhase] = useState<Phase>({ kind: "idle" });
   const [showModel, setShowModel] = useState(false);
+  /**
+   * 何回目の お願いか。**つなぎの 鍵に 混ぜて、押すたびに 張り直す**。
+   *
+   * 同じ つなぎを 使い回すと 相手は 前の 返事を くり返す（たいわ・朝礼で 確かめた 形）。
+   * 学習者は **直して から もう一度 押す** ので、そこで 前の 見立てが 返るのは
+   * いちばん こまる（直した ところが 見て もらえない）。
+   */
+  const [round, setRound] = useState(0);
 
   /*
    * AIの 文には 読み辞書が 無い。教材の 辞書に `AI_KANJI_FURIGANA` を 重ねた ものを
@@ -117,8 +123,10 @@ export function AiReviewPanel({
 
   const ask = async () => {
     setPhase({ kind: "asking" });
+    const turn = round + 1;
+    setRound(turn);
     const result = await requestQuizReview(
-      `${setId ?? "quiz"}:${question.id}`,
+      `${setId ?? "quiz"}:${question.id}:${turn}`,
       {
         question: question.q,
         scene: scene ?? "",
@@ -138,8 +146,15 @@ export function AiReviewPanel({
     );
     if (!result.ok) {
       setPhase({ kind: "failed", of: written, reason: result.reason });
-      // 見かたが 届かなくても お手本は 見せる（学習者を 手ぶらで 帰さない）
-      setShowModel(true);
+      /*
+       * **お手本を 出すのは「鍵が 無い」ときだけ**（2026-09-20 の コード検収）。
+       *
+       * 鍵が 無い 端末では AIは いつまでも 来ない ので、お手本まで 閉じると
+       * 学習者は 手ぶらで 帰る。けれど 混んで いる・となりの もんだいを 見て いる・
+       * 返事が 遅い は **押し直せば 通る** 一時の 失敗で、そこで 答えを 出すと
+       * 1文字 書いて 連打するだけで お手本が 見られる（写すだけの 問いに なる）。
+       */
+      if (result.reason === "noKey") setShowModel(true);
       return;
     }
     /*
@@ -166,7 +181,15 @@ export function AiReviewPanel({
   };
 
   /** 打ち直した あとの 見立ては 出さない（古い ⭕を 新しい 文の 下に 残さない）。 */
-  const fresh = (phase.kind === "done" || phase.kind === "failed") && phase.of === written;
+  const settled = phase.kind === "done" || phase.kind === "failed";
+  const fresh = settled && phase.of === written;
+  /**
+   * 見て もらって いる あいだに 打ち直した。
+   *
+   * 古い 見立ては 出せない（いまの 文の ことでは ない）が、**黙って 消すと
+   * 押したのに 何も 起きなかった**ように 見える。次の 一手を 1行で 言う。
+   */
+  const stale = settled && !fresh;
   const done = phase.kind === "done" && fresh ? phase.review : null;
 
   return (
@@ -225,6 +248,12 @@ export function AiReviewPanel({
       {empty && (
         <p className="text-ink-faint mt-1.5 text-xs font-bold">
           <RubyText text="先に 書くと 押せます。" index={UI_FURIGANA} />
+        </p>
+      )}
+
+      {stale && (
+        <p className="text-ink-soft mt-2 text-xs font-bold">
+          <RubyText text="文を 直したので、もう いちど 押して ください。" index={UI_FURIGANA} />
         </p>
       )}
 

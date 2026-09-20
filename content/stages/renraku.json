@@ -42,7 +42,8 @@
     },
     {
       "ref": "renraku_contact_quiz",
-      "type": "quizset"
+      "type": "quizset",
+      "gates": false
     }
   ],
   "wordStageIds": [

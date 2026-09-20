@@ -40,6 +40,9 @@ test.describe("もんだいの AIの 見かた（鍵が あるときだけ）", 
     );
 
     await page.goto(PATH);
+    // この 教材は 関門では ない ので、開いた ときに ステージ クリアの 板が 出る
+    const stay = page.getByRole("button", { name: "ここに のこる" });
+    if ((await stay.count()) > 0) await stay.click();
     await page.getByRole("button", { name: "はじめる" }).click();
 
     /* わざと **足りない** 連絡を 書く（△が 1つ 出る ことを 期待する）。 */

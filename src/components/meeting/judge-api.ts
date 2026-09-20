@@ -318,19 +318,31 @@ export async function requestQuizReview(
   if (!apiKey) return { ok: false, reason: "noKey" };
   if (SLOTS.review.busy) return { ok: false, reason: "busy" };
   SLOTS.review.busy = true;
-  try {
-    // どこで 詰まっても 必ず 返る（画面の ボタンを 押しっぱなしに しない）
-    const result = await Promise.race([
-      askQuizReview(apiKey, key, context, needsKanjiRetry),
-      new Promise<QuizReviewApiResult>((resolve) =>
-        setTimeout(() => resolve({ ok: false, reason: "timeout" }), OVERALL_TIMEOUT_MS),
-      ),
-    ]);
-    liveDebug("judge.review", result.ok ? `ok ${result.model}` : result.reason, !result.ok);
-    return result;
-  } finally {
+  /*
+   * **札（busy）を 下ろすのは 中の 往復が 本当に 終わった とき**（朝礼が 2026-09-16 に
+   * 直した 形と 同じ）。待ちを 諦めた 時点で 下ろすと、往復は その あとも 生きて いて、
+   * つぎの 頼みが 同じ つなぎに 重なり、**1回目の 見立てが 2回目の 答えに なる**。
+   * 学習者は 書き直した 文に「⭕ つたわります」と 断言される——規律1 の 逆。
+   *
+   * 待ちを 諦めた あとに つながった ときは **頼みを 送らない**（`gaveUp`）。
+   * 答えは どうせ 捨てる ので、Live の 往復 1回の むだに なる。
+   */
+  let gaveUp = false;
+  const work = askQuizReview(apiKey, key, context, needsKanjiRetry, () => gaveUp).finally(() => {
     SLOTS.review.busy = false;
-  }
+  });
+  // どこで 詰まっても 必ず 返る（画面の ボタンを 押しっぱなしに しない）
+  const result = await Promise.race([
+    work,
+    new Promise<QuizReviewApiResult>((resolve) =>
+      setTimeout(() => {
+        gaveUp = true;
+        resolve({ ok: false, reason: "timeout" });
+      }, OVERALL_TIMEOUT_MS),
+    ),
+  ]);
+  liveDebug("judge.review", result.ok ? `ok ${result.model}` : result.reason, !result.ok);
+  return result;
 }
 
 async function askQuizReview(
@@ -338,9 +350,13 @@ async function askQuizReview(
   key: string,
   context: QuizReviewContext,
   needsKanjiRetry: (result: QuizReviewResult) => boolean,
+  /** 呼んだ 側が 待ちを 諦めたか（つながった ときに 見て、諦めて いたら 頼まない）。 */
+  gaveUp: () => boolean,
 ): Promise<QuizReviewApiResult> {
   const opened = await openJudge(apiKey, "review", key);
   if (!opened.ok) return { ok: false, reason: opened.reason };
+  // つなぎは スロットに 残す（つぎの 頼みが 使う）。頼みだけ やめる
+  if (gaveUp()) return { ok: false, reason: "timeout" };
   const session = opened.session;
   try {
     let review = parseQuizReview(await session.ask(buildQuizReviewPrompt(context)), context.checks);
@@ -355,8 +371,13 @@ async function askQuizReview(
     if (!review) return { ok: false, reason: "badShape" };
     return { ok: true, review, model: session.model };
   } catch (error) {
-    // 切れて いる ことが ある。つぎの 呼び出しで 張り直せる ように 捨てる
-    dropSlot(SLOTS.review);
+    /*
+     * **自分が 使った つなぎ だけを 捨てる**（朝礼の `askAsakai` と 同じ）。
+     * `dropSlot` は スロットの **いまの 中身**を 捨てるので、別の 問いへ 移った あとに
+     * 前の 問いの 失敗が 届くと、**新しい つなぎを 巻き添えに する**。そこから 先は
+     * 毎回 張り直しに なり、短命トークンも 1枚ずつ むだに なる。
+     */
+    if (SLOTS.review.session === session) dropSlot(SLOTS.review);
     return { ok: false, reason: error instanceof JudgeError ? error.reason : "network" };
   }
 }
