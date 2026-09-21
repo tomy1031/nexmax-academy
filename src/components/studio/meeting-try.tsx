@@ -225,7 +225,7 @@ export function MeetingTryPanel({
             {/* **Gemini を 呼んで いる あいだの ローディング**（2026-09-20 の 指定）。 */}
             {phase === "asking" ? (
               <div className="flex flex-wrap items-center gap-2">
-                <AiWaiting doing="きいて います" index={EMPTY_FURIGANA} look="line" />
+                <AiWaiting doing="きいて います" index={EMPTY_FURIGANA} />
                 <span className="text-ink-soft text-xs font-bold">
                   はじめの 1回は つなぐのに 数びょう かかります。
                 </span>

@@ -33,7 +33,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore
 
 import { CallShell } from "@/components/call-shell";
 import { DictionaryText } from "@/components/dictionary-text";
-import { AiWaiting } from "@/components/meeting/ai-waiting";
+import { AiWaitingOverlay } from "@/components/meeting/ai-waiting";
 import { HintModal } from "@/components/meeting/hint-modal";
 import { dropJudgeSession, requestAsakaiJudge } from "@/components/meeting/judge-api";
 import { ModalShell } from "@/components/meeting/modal-shell";
@@ -1811,8 +1811,6 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
         <Chat
           lines={lines}
           index={index}
-          /* Gemini を 呼んで いる あいだは、記録の いちばん下に ローディングを 出す。 */
-          waiting={waiting}
           draft={answer}
           /* 見かたを 読んで いる あいだ・AIが 見て いる あいだ・その日が 終わった あとは 送れない。 */
           canSend={!between && !sceneOver && judge === null && !waiting}
@@ -2029,6 +2027,13 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
       {weekOpen ? (
         <WeekResult asakai={asakai} rows={results} index={index} onClose={closeWeek} />
       ) : null}
+      {/*
+        **Gemini を 呼んで いる あいだは 画面 ぜんたいを 覆う**（2026-09-21 の 指定
+        「マイクで 話すのが メイン…画面の 制御も ある ため、全体に 表示される ことが
+        望ましい」）。会話の 記録の 中に 置いて いた ころは、話して いる 学習者の
+        目に 入らず、待って いる あいだに 曜日の 帯や 報告メモが 押せて しまって いた。
+      */}
+      {waiting ? <AiWaitingOverlay doing="見て います" index={index} /> : null}
     </CallShell>
   );
 }
@@ -2392,7 +2397,6 @@ function WeekResult({
 function Chat({
   lines,
   index,
-  waiting,
   draft,
   canSend,
   sendNote,
@@ -2402,8 +2406,6 @@ function Chat({
 }: {
   lines: readonly ChatLine[];
   index: FuriganaIndex;
-  /** Gemini を 呼んで いる あいだ（ローディングを 出す）。 */
-  waiting: boolean;
   /** 書きかけの 字。 */
   draft: string;
   /** いま 送れるか（見かたを 読んで いる あいだ・AIを 待って いる あいだは 送れない）。 */
@@ -2420,7 +2422,7 @@ function Chat({
   useEffect(() => {
     const node = box.current;
     if (node) node.scrollTop = node.scrollHeight;
-  }, [lines, waiting]);
+  }, [lines]);
   return (
     /* 殻も 入力欄も **ミーティングと 同じ 部品**（`ChatPanel`）。 */
     <ChatPanel
@@ -2456,11 +2458,6 @@ function Chat({
           </p>
         );
       })}
-      {/*
-        **Gemini を 呼んで いる あいだの ローディング**（2026-09-20 の 指定）。
-        送信欄の 灰色の 字だけでは、止まって いるのか 動いて いるのかが 読めなかった。
-      */}
-      {waiting ? <AiWaiting doing="見て います" index={index} /> : null}
     </ChatPanel>
   );
 }
