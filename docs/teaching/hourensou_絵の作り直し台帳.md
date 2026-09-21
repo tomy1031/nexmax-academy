@@ -535,6 +535,8 @@ Warm modern anime illustration, like a friendly Japanese educational manga — c
 
 ### 26. 連絡は 事実だけで いい（対比）
 
+> **2026-09-21 に 差し替えた。** この 絵の いまの 正は `scripts/images/renraku_lecture.json`（`node scripts/slides/gen_images.mjs scripts/images/renraku_lecture.json ＜出力先＞` で 撮り直す）。**書き込む 先も `content/articles/renraku_lecture.json` を 直に 直す**（`scripts/gen_hourensou_content.mjs` は 走らせない — docs/constraints.md）。
+
 - **出力する 先** … `public/img/hourensou/renraku/s1.webp`
 - **書き込む 先** … scripts/gen_hourensou_content.mjs renraku_lecture blocks[3]（image）
 - **絵の 中の 文字** … 「気持ち（きもち）」・「事実（じじつ）」
@@ -550,6 +552,8 @@ Warm modern anime illustration, like a friendly Japanese educational manga — c
 </details>
 
 ### 27. 短い 時間で 伝わる コツ 2つ
+
+> **2026-09-21 に 外した。** 「良い 連絡の コツ」は 旧アプリの スライドと 同じ **4点**に なり、1点ごとに ❌⭕の 絵を 1枚 持つ（`kotsu1`〜`kotsu4`。台帳は `scripts/images/renraku_lecture.json`）。2点だけの この 絵（`s3.webp`）は 記事から 外れた。
 
 - **出力する 先** … `public/img/hourensou/renraku/s3.webp`
 - **書き込む 先** … scripts/gen_hourensou_content.mjs renraku_lecture blocks[8]（image）
@@ -567,6 +571,8 @@ Warm modern anime illustration, like a friendly Japanese educational manga — c
 
 ### 28. メールは【 】で 読みやすく する
 
+> **2026-09-21 に 差し替えた。** この 絵の いまの 正は `scripts/images/renraku_lecture.json`（`node scripts/slides/gen_images.mjs scripts/images/renraku_lecture.json ＜出力先＞` で 撮り直す）。**書き込む 先も `content/articles/renraku_lecture.json` を 直に 直す**（`scripts/gen_hourensou_content.mjs` は 走らせない — docs/constraints.md）。
+
 - **出力する 先** … `public/img/hourensou/renraku/s4.webp`
 - **書き込む 先** … scripts/gen_hourensou_content.mjs renraku_lecture blocks[12]（image）
 - **絵の 中の 文字** … 「【重要】（じゅうよう）」・「【相談】（そうだん）」・「【共有】（きょうゆう）」
@@ -582,6 +588,8 @@ Warm modern anime illustration, like a friendly Japanese educational manga — c
 </details>
 
 ### 29. 連絡の ケーススタディ（2つの 場面）
+
+> **2026-09-21 に 差し替えた。** この 絵の いまの 正は `scripts/images/renraku_lecture.json`（`node scripts/slides/gen_images.mjs scripts/images/renraku_lecture.json ＜出力先＞` で 撮り直す）。**書き込む 先も `content/articles/renraku_lecture.json` を 直に 直す**（`scripts/gen_hourensou_content.mjs` は 走らせない — docs/constraints.md）。
 
 - **出力する 先** … `public/img/hourensou/renraku/s2.webp`
 - **書き込む 先** … scripts/gen_hourensou_content.mjs renraku_lecture blocks[20]（image）

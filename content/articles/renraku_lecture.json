@@ -26,20 +26,27 @@
     {
       "kind": "heading",
       "level": 2,
-      "text": "1. 連絡は「事実」だけで いい"
+      "text": "1. 連絡は「事実（Fact）」だけで いい"
     },
     {
       "kind": "image",
       "size": "wide",
       "src": "/img/hourensou/renraku/s1.webp",
-      "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This one is a teaching diagram: few large elements, generous spacing, each label sitting on a soft cream panel with a rounded border, arranged so the eye reads it in one pass. One wide picture split into two equal halves by a soft vertical cream gutter. LEFT HALF, on a warm pale coral ground: a young engineer at his desk waves both hands in a flustered, apologetic way while his team leader tilts his head, unsure how to help. RIGHT HALF, on a pale sky-blue ground: the same engineer sits calmly and points at one clear line on his blank screen, and the leader gives a confident thumbs up. A rounded cream label panel sits at the top of each half carrying the Japanese words given here. The Japanese words in this picture are exactly: 気持ち（きもち） / 事実（じじつ）. Japanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana. Spell every character exactly as given. No other letters, numbers, logos or watermarks anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
-      "refs": [],
+      "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Match the drawing style, the colours and the two men of the FIRST reference picture exactly: the junior engineer is a young man with short dark brown hair wearing a coral-orange shirt jacket over a white tee, and the team leader is a man with short black hair in a navy blazer over a white shirt. This is a TEACHING picture, not a mood picture: what each person is doing must be readable from the picture alone.\nTHE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: saying how you feel leaves the leader stuck, while saying the plain fact lets the leader act at once. Recreate the FIRST reference picture as faithfully as possible — the same wide picture split into two equal halves by a soft vertical cream gutter, the same warm pale coral ground on the LEFT and pale sky-blue ground on the RIGHT, the same two men at the same desk in the same poses, the same rounded cream label panel at the top of each half. LEFT HALF: the junior engineer waves both hands in a flustered, apologetic way with small sweat drops, and the leader beside him tilts his head with a hand on his chin, unsure how to help. RIGHT HALF: the same engineer sits calmly and points at one clear line on his laptop screen, and the leader gives a confident thumbs up and a warm smile. THE CHANGES from the reference picture, all of them: (1) the LEFT label panel now begins with a large bold red cross mark before its word, and the RIGHT label panel begins with a large bold green circle mark before its word, so that bad and good are unmistakable at a glance; (2) each half now has TWO speech balloons, one from the engineer and one from the leader. On the LEFT the engineer's balloon says すごく 焦って います！ and the leader's balloon says どう すれば いい？. On the RIGHT the engineer's balloon says エラーが 出て います。 and the leader's balloon says OK！ ヘルプを 入れるね。 The balloons are large soft rounded speech balloons with a tail pointing at the speaker's mouth; they are big enough to read at a glance and none of them covers a face or the laptop screen. FURIGANA INSIDE THE BALLOONS — this matters as much as the label panels: every kanji that appears inside a speech balloon also carries its reading in small hiragana directly above it, centred over that kanji and clearly separated from it, exactly the same way as the words in the label panels. No kanji anywhere in this picture is left without its reading.\nThe Japanese words in this picture are exactly: 気持ち / 事実 / すごく 焦って います！ / どう すれば いい？ / エラーが 出て います。 / OK！ ヘルプを 入れるね。.\nOutput: one landscape illustration, 1536x1024.\nJapanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana. Spell every character exactly as given. No other letters, numbers, logos or watermarks anywhere in the picture.\nNever: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+      "refs": [
+        "/img/hourensou/renraku/s1.webp",
+        "/img/characters/hendy/sheet.webp"
+      ],
       "status": "done",
-      "caption": "事実だけを 言う"
+      "caption": "❌ 気持ちでは なく ⭕ 事実を 言う"
     },
     {
       "kind": "paragraph",
       "text": "連絡の 目的は、情報を 早く シェアする ことです。ここに 自分の 気持ち（つらい・焦って いる・がんばって いる）は いりません。まず 事実だけを 伝えて ください。"
+    },
+    {
+      "kind": "paragraph",
+      "text": "たとえば、トラブルが 起きた とき、どちらが リーダーに とって 助かるでしょうか。"
     },
     {
       "kind": "compare",
@@ -66,25 +73,93 @@
     {
       "kind": "heading",
       "level": 2,
-      "text": "2. 短い 時間で 伝わる コツ"
+      "text": "2. ケーススタディ"
     },
     {
       "kind": "image",
       "size": "wide",
-      "src": "/img/hourensou/renraku/s3.webp",
-      "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This one is a teaching diagram: few large elements, generous spacing, each label sitting on a soft cream panel with a rounded border, arranged so the eye reads it in one pass. A teaching diagram of two large rounded cream cards side by side on a soft sky-blue background. In the first card a colleague holds up a small blank card with a large soft clock face drawn on it, showing an exact amount of time. In the second card a colleague points at the very first line of a long blank message on a screen while a busy teammate reads only that line and nods. Each card carries its Japanese label across the top. The Japanese words in this picture are exactly: 具体的な 数字（ぐたいてきな すうじ） / 結論から 書く（けつろんから かく）. Japanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana. Spell every character exactly as given. No other letters, numbers, logos or watermarks anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+      "src": "/img/hourensou/renraku/s2.webp",
+      "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This one is a teaching diagram: few large elements, generous spacing, each label sitting on a soft cream panel with a rounded border, arranged so the eye reads it in one pass. One wide picture split into two equal panels by a thin cream gutter, each panel a small workplace scene. LEFT PANEL: an engineer at his desk turns to a wall clock and then types a short message — a schedule has changed. RIGHT PANEL: an engineer holds up a tablet to show a teammate something useful he has found, and the teammate smiles. A rounded cream label panel sits at the top of each panel carrying the Japanese words given here. The Japanese words in this picture are exactly: ケース A / ケース B. Japanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana. Spell every character exactly as given. No other letters, numbers, logos or watermarks anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
       "refs": [],
       "status": "done",
-      "caption": "良い 連絡の コツ"
+      "caption": "ケース A と ケース B"
+    },
+    {
+      "kind": "paragraph",
+      "text": "実際の 連絡を 2つ 見て みましょう。どちらも「送る 相手」と「件名」を 先に 決めて から、中身を 書いて います。"
     },
     {
       "kind": "cards",
       "columns": 2,
       "items": [
         {
+          "icon": "🗓",
+          "label": "ケース A",
+          "title": "予定の 変更",
+          "items": [
+            "送る 相手：関係者 全員（@channel）",
+            "件名：分かりやすく（【連絡】MTG時間変更）",
+            "本文：変更前（14:00）と 変更後（15:00）を どちらも はっきり 書く",
+            "実際の 文：「【連絡】MTG変更。14:00→15:00に なりました。」"
+          ]
+        },
+        {
+          "icon": "🚀",
+          "label": "ケース B",
+          "title": "開発環境の アップデート",
+          "items": [
+            "送る 相手：開発チーム 全員（@here）",
+            "件名：【連絡】デプロイ完了",
+            "優先事項：更新内容（何が 新しく なったか）・利用開始時間（いつから 使えるか）。影響範囲（どこに 影響が 出るか）も 伝える",
+            "実際の 文：「【連絡】開発環境に 最新コードを デプロイしました。新機能（検索）が 使えます。」"
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "3. 良い 連絡の コツ"
+    },
+    {
+      "kind": "paragraph",
+      "text": "相手の 時間を 大切に する ために、短くて わかりやすい 文を 書きましょう。「いつ・何が・どう なるか・何を して ほしいか」を 書く ときの コツです。"
+    },
+    {
+      "kind": "cards",
+      "columns": 2,
+      "items": [
+        {
+          "icon": "🔎",
+          "label": "コツ ①",
+          "title": "事実ベースで 伝える",
+          "image": {
+            "src": "/img/hourensou/renraku/kotsu1.webp",
+            "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Match the drawing style, the colours and the two men of the FIRST reference picture exactly: the junior engineer is a young man with short dark brown hair wearing a coral-orange shirt jacket over a white tee, and the team leader is a man with short black hair in a navy blazer over a white shirt. This is a TEACHING picture, not a mood picture: what each person is doing must be readable from the picture alone.\nTHE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: a vague feeling word tells the leader nothing, a measured fact tells him everything. One tall teaching card on a soft cream background, drawn as three stacked rows inside one big rounded panel. TOP ROW: a wide rounded navy label bar holding the title. MIDDLE ROW, on a warm pale coral ground: a large bold red cross mark on the left, then the junior engineer at his laptop waving a hand in a flustered way with small sweat drops, a soft rounded speech balloon beside him carrying the first quoted line; his screen is blank. BOTTOM ROW, on a pale sky-blue ground: a large bold green circle mark on the left, then the same engineer sitting calmly and pointing at his laptop, on which a simple line graph climbs steeply to a clearly high level near the top of its scale, and a soft rounded speech balloon beside him carrying the second quoted line. The red row and the green row are the same size and read top to bottom in one pass.\nThe Japanese words in this picture are exactly: 事実ベースで 伝える / サーバーが やばいです / CPU使用率が 95%です.\nOutput: one square illustration, 1024x1024.\nJapanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana. Spell every character exactly as given. No other letters, numbers, logos or watermarks anywhere in the picture.\nNever: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+            "refs": [
+              "/img/hourensou/renraku/s1.webp",
+              "/img/characters/hendy/sheet.webp"
+            ],
+            "status": "done"
+          },
+          "items": [
+            "❌「サーバーが やばいです」… どのくらい 悪いのかが わかりません。",
+            "⭕「CPU使用率が 95%です」… 相手は すぐに どうするかを 決められます。"
+          ]
+        },
+        {
           "icon": "🔢",
-          "label": "①",
+          "label": "コツ ②",
           "title": "具体的な 数字を 使う",
+          "image": {
+            "src": "/img/hourensou/renraku/kotsu2.webp",
+            "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Match the drawing style, the colours and the two men of the FIRST reference picture exactly: the junior engineer is a young man with short dark brown hair wearing a coral-orange shirt jacket over a white tee, and the team leader is a man with short black hair in a navy blazer over a white shirt. This is a TEACHING picture, not a mood picture: what each person is doing must be readable from the picture alone.\nTHE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: 'soon' means a different length of time to every person, an exact amount of time means the same thing to everyone. One tall teaching card on a soft cream background, drawn as three stacked rows inside one big rounded panel, exactly the same layout as the other cards in this set. TOP ROW: a wide rounded navy label bar holding the title. MIDDLE ROW, on a warm pale coral ground: a large bold red cross mark on the left, then the junior engineer at his laptop shrugging with one hand raised vaguely, a soft rounded speech balloon beside him carrying the first quoted line, and behind him two teammates each imagining a different clock face — one clock's hand has barely moved, the other's has swept far round — so that the same words clearly mean two different lengths of time. BOTTOM ROW, on a pale sky-blue ground: a large bold green circle mark on the left, then the same engineer pointing confidently at one clock whose hand marks a short, exact slice of the dial, a soft rounded speech balloon beside him carrying the second quoted line, and one teammate beside him nodding and writing the time in a notebook. FURIGANA EVERYWHERE — this matters as much as the title bar: EVERY kanji anywhere in this picture — in the title bar, in the subject line, in the bracketed headings, in the body lines, in the chat windows and in any speech balloon — carries its reading in small hiragana directly above it, centred over that kanji and clearly separated from it. No kanji is left without its reading.\nThe Japanese words in this picture are exactly: 具体的な 数字を 使う / もうすぐ 終わります / あと 15分で 終わります.\nOutput: one square illustration, 1024x1024.\nJapanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana. Spell every character exactly as given. No other letters, numbers, logos or watermarks anywhere in the picture.\nNever: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+            "refs": [
+              "/img/hourensou/renraku/s1.webp",
+              "/img/characters/hendy/sheet.webp"
+            ],
+            "status": "done"
+          },
           "items": [
             "❌「もうすぐ 終わります」… 5分と 思う 人も、1時間と 思う 人も います。",
             "⭕「あと 15分で 終わります」… 相手は 次の 予定を 用意できます。"
@@ -92,11 +167,39 @@
         },
         {
           "icon": "📌",
-          "label": "②",
+          "label": "コツ ③",
           "title": "結論から 書く",
+          "image": {
+            "src": "/img/hourensou/renraku/kotsu3.webp",
+            "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Match the drawing style, the colours and the two men of the FIRST reference picture exactly: the junior engineer is a young man with short dark brown hair wearing a coral-orange shirt jacket over a white tee, and the team leader is a man with short black hair in a navy blazer over a white shirt. This is a TEACHING picture, not a mood picture: what each person is doing must be readable from the picture alone.\nTHE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: a busy reader only reads the first line, so the first line has to carry the answer. One tall teaching card on a soft cream background, drawn as three stacked rows inside one big rounded panel, exactly the same layout as the other cards in this set. TOP ROW: a wide rounded navy label bar holding the title. MIDDLE ROW, on a warm pale coral ground: a large bold red cross mark on the left, then a chat window on a screen showing a long message whose first line carries the first quoted words and whose remaining four lines are soft grey abstract bars with no readable writing; a busy teammate glances at the first line, frowns slightly and scrolls past, and a soft coral arrow curls back on itself to show the message going nowhere. BOTTOM ROW, on a pale sky-blue ground: a large bold green circle mark on the left, then the same chat window where the very first line carries the second quoted words, highlighted behind with a soft yellow marker band, and the same teammate reads only that line and nods, a straight soft arrow running from the line to him. FURIGANA EVERYWHERE — this matters as much as the title bar: EVERY kanji anywhere in this picture — in the title bar, in the subject line, in the bracketed headings, in the body lines, in the chat windows and in any speech balloon — carries its reading in small hiragana directly above it, centred over that kanji and clearly separated from it. No kanji is left without its reading. The second quoted line uses the kanji form 一日 for 'one day' — write it exactly as given, with the reading いちにち above it.\nThe Japanese words in this picture are exactly: 結論から 書く / テストに 時間が かかって いて… / リリースが 一日 遅れます。.\nOutput: one square illustration, 1024x1024.\nJapanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana. Spell every character exactly as given. No other letters, numbers, logos or watermarks anywhere in the picture.\nNever: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+            "refs": [
+              "/img/hourensou/renraku/s1.webp",
+              "/img/characters/hendy/sheet.webp"
+            ],
+            "status": "done"
+          },
           "items": [
             "❌「昨日から A機能の テストを して いたんですが、バグが 見つかって、修正に 時間が かかって いて…」",
             "⭕「リリースが 一日 遅れます。（原因は A機能の バグ修正の ためです）」"
+          ],
+          "text": "結論（一番 大切な こと）を 先に 書きます。"
+        },
+        {
+          "icon": "📣",
+          "label": "コツ ④",
+          "title": "誰に 連絡するか 書く",
+          "image": {
+            "src": "/img/hourensou/renraku/kotsu4.webp",
+            "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Match the drawing style, the colours and the two men of the FIRST reference picture exactly: the junior engineer is a young man with short dark brown hair wearing a coral-orange shirt jacket over a white tee, and the team leader is a man with short black hair in a navy blazer over a white shirt. This is a TEACHING picture, not a mood picture: what each person is doing must be readable from the picture alone.\nTHE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: when a message is addressed to nobody in particular, everybody assumes somebody else will do it; naming one person makes it move. One tall teaching card on a soft cream background, drawn as three stacked rows inside one big rounded panel, exactly the same layout as the other cards in this set. TOP ROW: a wide rounded navy label bar holding the title. MIDDLE ROW, on a warm pale coral ground: a large bold red cross mark on the left, then a chat window carrying the first quoted line, and beside it three teammates at their desks all looking away from the screen with small question marks over their heads, nobody reaching for the keyboard. BOTTOM ROW, on a pale sky-blue ground: a large bold green circle mark on the left, then the same chat window carrying the second quoted line with a soft coral arrow running from the message to ONE teammate, who looks up, raises a hand and starts typing, while the other two carry on with their own work. FURIGANA INSIDE THE BALLOONS — this matters as much as the label panels: every kanji that appears inside a speech balloon also carries its reading in small hiragana directly above it, centred over that kanji and clearly separated from it, exactly the same way as the words in the label panels. No kanji anywhere in this picture is left without its reading.\nThe Japanese words in this picture are exactly: 誰に 連絡するか 書く / 誰か 見て ください / @田中さん、確認 お願いします。.\nOutput: one square illustration, 1024x1024.\nJapanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana. Spell every character exactly as given. No other letters, numbers, logos or watermarks anywhere in the picture.\nNever: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+            "refs": [
+              "/img/hourensou/renraku/s1.webp",
+              "/img/characters/hendy/sheet.webp"
+            ],
+            "status": "done"
+          },
+          "items": [
+            "❌「誰か 見て ください」… みんなが「ほかの 人が やる」と 思って しまいます。",
+            "⭕「@田中さん、確認 お願いします」… 名前を 呼ばれた 人が すぐに 動けます。"
           ]
         }
       ]
@@ -109,16 +212,19 @@
     {
       "kind": "heading",
       "level": 2,
-      "text": "3. メールは【 】で 読みやすく する"
+      "text": "4. メールは【 】で 読みやすく する"
     },
     {
       "kind": "image",
       "size": "wide",
       "src": "/img/hourensou/renraku/s4.webp",
-      "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This one is a teaching diagram: few large elements, generous spacing, each label sitting on a soft cream panel with a rounded border, arranged so the eye reads it in one pass. A teaching diagram. A large rounded cream panel in the centre is drawn as a simple mail window: one bold subject line at the top and, below it, three or four soft grey abstract bars standing for the body text, with no readable writing in them. Three rounded coral tags float above the subject line, each carrying one of the Japanese words given here. On the right a colleague scans the tags and nods, understanding at a glance which mail to open first. The Japanese words in this picture are exactly: 【重要】（じゅうよう） / 【相談】（そうだん） / 【共有】（きょうゆう）. Japanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana. Spell every character exactly as given. No other letters, numbers, logos or watermarks anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
-      "refs": [],
+      "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Match the drawing style, the colours and the two men of the FIRST reference picture exactly: the junior engineer is a young man with short dark brown hair wearing a coral-orange shirt jacket over a white tee, and the team leader is a man with short black hair in a navy blazer over a white shirt. This is a TEACHING picture, not a mood picture: what each person is doing must be readable from the picture alone.\nTHE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: square brackets cut a long mail into parts you can find with your eyes. A teaching picture of ONE real mail, seen over the shoulder in a bright office. A large rounded cream panel fills most of the frame and is drawn as a mail window with a thin toolbar of small blank rounded buttons along its top edge. Inside the window, from top to bottom: a subject line in large bold letters carrying the first quoted words, with the bracketed tag at its head printed on a small coral chip so it stands out; a thin divider; then three short blocks, each beginning with its own bracketed heading in bold navy on its own line, carrying the second, third and fourth quoted lines in order, each with a small round bullet in front of it; and below them three soft grey abstract bars standing for the closing greeting, with no readable writing in them. On the right of the frame Hendy — a young man in a navy suit, white shirt and navy tie, following his model sheet — leans in and points at the bracketed headings with one hand, smiling, showing that this is how to find things fast. Behind him a softly blurred office with windows, a plant and a colleague at another desk. The bracketed headings are what the eye lands on first. FURIGANA EVERYWHERE — this matters as much as the title bar: EVERY kanji anywhere in this picture — in the title bar, in the subject line, in the bracketed headings, in the body lines, in the chat windows and in any speech balloon — carries its reading in small hiragana directly above it, centred over that kanji and clearly separated from it. No kanji is left without its reading.\nThe Japanese words in this picture are exactly: 【重要】ログイン画面の バグに ついて / 【問題】ログインが できない / 【原因】サーバーの 不具合 / 【復旧見込み】15:00頃.\nOutput: one landscape illustration, 1536x1024.\nJapanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana. Spell every character exactly as given. No other letters, numbers, logos or watermarks anywhere in the picture.\nNever: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+      "refs": [
+        "/img/hourensou/renraku/s1.webp",
+        "/img/characters/hendy/sheet.webp"
+      ],
       "status": "done",
-      "caption": "メールの 書きかた"
+      "caption": "【 】で 分けた メールの 見本"
     },
     {
       "kind": "paragraph",
@@ -135,7 +241,7 @@
     {
       "kind": "heading",
       "level": 2,
-      "text": "4. リアクション（スタンプ）は「読みました」の 合図"
+      "text": "5. リアクション（スタンプ）は「読みました」の 合図"
     },
     {
       "kind": "image",
@@ -149,7 +255,7 @@
     },
     {
       "kind": "paragraph",
-      "text": "メッセージを 見た とき、返信を 書く 時間が なくても スタンプ（リアクション）を しましょう。これは「読みました」という 合図です。リモートワークでは 相手の 顔が 見えません。リアクションが ないと、送った 人は「無視されて いるのかな」「届いて いないのかな」と 不安に なります。"
+      "text": "メッセージを 見た とき、返信を 書く 時間が なくても スタンプ（リアクション）を しましょう。これは「読みました」という 合図（Sign）です。リモートワークでは 相手の 顔が 見えません。リアクションが ないと、送った 人は「無視されて いるのかな」「届いて いないのかな」と 不安に なります。"
     },
     {
       "kind": "cards",
@@ -181,18 +287,17 @@
       "kind": "callout",
       "tone": "care",
       "text": "とても 親しい チームなら 面白い スタンプも 使いますが、最初の うちは ベーシックな ものが 無難です。"
-    },
-    {
-      "kind": "image",
-      "size": "wide",
-      "src": "/img/hourensou/renraku/s2.webp",
-      "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This one is a teaching diagram: few large elements, generous spacing, each label sitting on a soft cream panel with a rounded border, arranged so the eye reads it in one pass. One wide picture split into two equal panels by a thin cream gutter, each panel a small workplace scene. LEFT PANEL: an engineer at his desk turns to a wall clock and then types a short message — a schedule has changed. RIGHT PANEL: an engineer holds up a tablet to show a teammate something useful he has found, and the teammate smiles. A rounded cream label panel sits at the top of each panel carrying the Japanese words given here. The Japanese words in this picture are exactly: ケース A / ケース B. Japanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana. Spell every character exactly as given. No other letters, numbers, logos or watermarks anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
-      "refs": [],
-      "status": "done",
-      "caption": "ケーススタディ"
     }
   ],
   "furigana": [
+    [
+      "利用開始時間",
+      "りようかいしじかん"
+    ],
+    [
+      "分かりやすく",
+      "わかりやすく"
+    ],
     [
       "優先順位",
       "ゆうせんじゅんい"
@@ -200,6 +305,30 @@
     [
       "一生懸命",
       "いっしょうけんめい"
+    ],
+    [
+      "開発環境",
+      "かいはつかんきょう"
+    ],
+    [
+      "利用開始",
+      "りようかいし"
+    ],
+    [
+      "優先事項",
+      "ゆうせんじこう"
+    ],
+    [
+      "更新内容",
+      "こうしんないよう"
+    ],
+    [
+      "時間変更",
+      "じかんへんこう"
+    ],
+    [
+      "影響範囲",
+      "えいきょうはんい"
     ],
     [
       "報連相",
@@ -210,12 +339,36 @@
       "ぐたいてき"
     ],
     [
-      "日から",
-      "ひから"
-    ],
-    [
       "調査中",
       "ちょうさちゅう"
+    ],
+    [
+      "使用率",
+      "しようりつ"
+    ],
+    [
+      "関係者",
+      "かんけいしゃ"
+    ],
+    [
+      "新機能",
+      "しんきのう"
+    ],
+    [
+      "変更前",
+      "へんこうまえ"
+    ],
+    [
+      "変更後",
+      "へんこうご"
+    ],
+    [
+      "分かり",
+      "わかり"
+    ],
+    [
+      "新しく",
+      "あたらしく"
     ],
     [
       "報告",
@@ -452,6 +605,90 @@
     [
       "通知",
       "つうち"
+    ],
+    [
+      "一日",
+      "いちにち"
+    ],
+    [
+      "最新",
+      "さいしん"
+    ],
+    [
+      "更新",
+      "こうしん"
+    ],
+    [
+      "影響",
+      "えいきょう"
+    ],
+    [
+      "範囲",
+      "はんい"
+    ],
+    [
+      "開発",
+      "かいはつ"
+    ],
+    [
+      "環境",
+      "かんきょう"
+    ],
+    [
+      "検索",
+      "けんさく"
+    ],
+    [
+      "全員",
+      "ぜんいん"
+    ],
+    [
+      "変更",
+      "へんこう"
+    ],
+    [
+      "対象",
+      "たいしょう"
+    ],
+    [
+      "明確",
+      "めいかく"
+    ],
+    [
+      "実際",
+      "じっさい"
+    ],
+    [
+      "利用",
+      "りよう"
+    ],
+    [
+      "開始",
+      "かいし"
+    ],
+    [
+      "使用",
+      "しよう"
+    ],
+    [
+      "田中",
+      "たなか"
+    ],
+    [
+      "名前",
+      "なまえ"
+    ],
+    [
+      "中身",
+      "なかみ"
+    ],
+    [
+      "見本",
+      "みほん"
+    ],
+    [
+      "分け",
+      "わけ"
     ],
     [
       "人",
@@ -746,8 +983,20 @@
       "め"
     ],
     [
-      "一日",
-      "いちにち"
+      "誰",
+      "だれ"
+    ],
+    [
+      "呼",
+      "よ"
+    ],
+    [
+      "悪",
+      "わる"
+    ],
+    [
+      "起",
+      "お"
     ]
   ]
 }
