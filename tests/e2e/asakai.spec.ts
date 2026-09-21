@@ -563,14 +563,12 @@ test("月曜を 終えて 開き直すと、火曜から つづく", async ({ pa
   await expectOnScreen(page, "火曜日");
 
   /*
-   * **曜日ごとの けっかは ポップアップを 開かずに 見える**（2026-09-18 の 指定）。
-   * 点が きょうの 評価と 今週の けっかの 中にしか 無かった ころ、閉じると 消えて
-   * いま 何日目で 前の 日が 何点だったかを 見に 行く 道が 無かった。
-   * 報告の あいだ ずっと、タブの すぐ 下に 出る。
+   * **その日を はじめから やり直せる**（2026-09-21 の 指定）。
+   * これまで やり直せるのは「きょうの 評価」の 中だけで、報告の さいちゅうに
+   * 気が 変わった 人（言い方を 変えたい）に 道が 無かった。
    */
-  await expect(page.getByRole("group", { name: "曜日ごとの けっか" })).toBeVisible();
-  await expectOnScreen(page, "曜日ごとの けっか");
-  await shot(page, "asakai-17-week-board");
+  await expect(page.getByRole("button", { name: "この日を はじめから やり直す" })).toBeVisible();
+  await shot(page, "asakai-17-restart-day");
   /* いまが 何日目かは **タブの えらばれ方**で 見る（2026-09-13 に 点から タブへ）。 */
   await expect(page.getByRole("button", { name: /火曜日/ })).toHaveAttribute(
     "aria-current",
@@ -1077,11 +1075,112 @@ test("報告メモを 閉じるまで、こえは 鳴らない", async ({ page, 
 
   await closeDuty(page);
 
+  /* 閉じたら 鳴りはじめる。 */
+  await expect
+    .poll(
+      async () =>
+        (await page.evaluate(() => (window as unknown as { __plays: string[] }).__plays)).length,
+      { message: "閉じても こえが 鳴らない" },
+    )
+    .toBeGreaterThan(0);
+
   /*
-   * **「閉じたら 鳴る」の 側は、音声データが 入ってから 足す。**
-   * いま 朝礼・夕礼とも 教材データに `audio` の 参照が 1つも 無く
-   *（wav は 残って いるが 名前が 変わって いる）、**どこでも 鳴らない**。
-   * 作り置きの PR が 入った ところで、ここに 鳴る ことの 検査を 足す。
+   * **チャットの 行から 聞き直せる**（2026-09-21 の 指定「チャット欄に 音声の
+   * 再生ボタンを つけて ください」）。作り置きの こえが ある 行にだけ 🔊 が 出る。
    */
+  const replay = page.getByRole("button", { name: /ことばを もう一度 聞く/ });
+  await expect(replay.first()).toBeVisible();
+  expect(await replay.count(), "🔊 が 1つも 無い").toBeGreaterThan(1);
+});
+
+/**
+ * **その日を はじめから やり直す**（2026-09-21 の 指定）
+ *
+ * これまで やり直せるのは「きょうの 評価」の 中だけ——**報告の さいちゅうに
+ * 気が 変わった 人**（言い方を 変えたい・最初から 通して 言いたい）に 道が 無かった。
+ * 途中の 控えごと 捨てるので、板も チャットも 場面の はじめに 戻る。
+ */
+test("報告の 途中でも、その日を はじめから やり直せる", async ({ page, context }) => {
+  const refs = stageRefs();
+  const at = refs.indexOf("asakai_kantan");
+  await seedCompleted(context, refs.slice(0, at));
+
+  await page.goto("/asakai/meeting-asakai_kantan");
+  await joinCall(page);
+  await closeDuty(page);
+
+  /* 1枚だけ 開けて 途中に する。 */
+  await page
+    .getByLabel("こたえを 入力する")
+    .fill("先週の 金曜日は、決済の 決まりを 調べて、決済の 画面と ABA Payの ボタンを 作りました。");
+  await page.getByRole("button", { name: "おくる" }).click();
+  await page.getByRole("dialog", { name: "報告の 見かた" }).getByRole("button").last().click();
+  await expect(page.getByText("（1 / 4）")).toBeVisible();
+
+  await page.getByRole("button", { name: "この日を はじめから やり直す" }).click();
+  await closeDuty(page);
+
+  /* 板は 空、チャットは 場面の はじめだけ。 */
+  await expect(page.getByText("（0 / 4）")).toBeVisible();
   await expect(page.getByLabel("こたえを 入力する")).toBeVisible();
+  expect(await bareKanjiTexts(page)).toEqual([]);
+  await shot(page, "asakai-18-restart-mid");
+
+  /* 開き直しても 途中に 戻らない（控えごと 捨てて ある）。 */
+  await page.reload();
+  await joinCall(page);
+  await closeDuty(page);
+  await expect(page.getByText("（0 / 4）")).toBeVisible();
+});
+
+/**
+ * **開き直したら、そこまでの 会話を もう いちど 鳴らす**（2026-09-21 の 指定）
+ *
+ * 前は 字だけ 戻して 黙って いた——開き直した 人は どこまで 話したかを
+ * **字で さかのぼる**しか なく、聞いて 覚える 練習に ならなかった。
+ * 鳴りはじめるのは 報告メモを 閉じた あと（メモの うしろで 流さない）。
+ */
+test("開き直すと、そこまでの 会話を 鳴らし直す", async ({ page, context }) => {
+  const refs = stageRefs();
+  const at = refs.indexOf("asakai_kantan");
+  await seedCompleted(context, refs.slice(0, at));
+
+  await page.addInitScript(() => {
+    const plays: string[] = [];
+    (window as unknown as { __plays: string[] }).__plays = plays;
+    const origin = HTMLMediaElement.prototype.play;
+    HTMLMediaElement.prototype.play = function play(this: HTMLMediaElement) {
+      plays.push(this.src);
+      return origin.apply(this);
+    };
+  });
+
+  await page.goto("/asakai/meeting-asakai_kantan");
+  await joinCall(page);
+  await closeDuty(page);
+  await page
+    .getByLabel("こたえを 入力する")
+    .fill("先週の 金曜日は、決済の 決まりを 調べて、決済の 画面と ABA Payの ボタンを 作りました。");
+  await page.getByRole("button", { name: "おくる" }).click();
+  await page.getByRole("dialog", { name: "報告の 見かた" }).getByRole("button").last().click();
+  await expect(page.getByText("（1 / 4）")).toBeVisible();
+
+  await page.reload();
+  await joinCall(page);
+
+  /* メモが 開いて いる あいだは まだ 黙って いる。 */
+  await expect(page.getByRole("dialog", { name: "報告メモ" })).toBeVisible();
+  expect(await page.evaluate(() => (window as unknown as { __plays: string[] }).__plays)).toEqual(
+    [],
+  );
+
+  await closeDuty(page);
+  await expect
+    .poll(
+      async () =>
+        (await page.evaluate(() => (window as unknown as { __plays: string[] }).__plays)).length,
+      { message: "開き直しても こえが 鳴らない" },
+    )
+    .toBeGreaterThan(0);
+  await expect(page.getByText("（1 / 4）")).toBeVisible();
 });

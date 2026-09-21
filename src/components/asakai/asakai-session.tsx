@@ -637,8 +637,12 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
        *「回答結果が リセットされて しまう。曜日を 切り替えた 場合や 画面を
        * 切り替えた 場合。ストレージ保管して 再現できるように」）。
        *
-       * こえは 鳴らし直さない——戻って きた 人は もう 聞いて いる。
-       * 報告メモは 開く（どの 日の 話だったかを 先に 見せる）。
+       * **こえも 鳴らし直す**（2026-09-21 の 指定「毎回 開いた 時に 今までの 会話を
+       * 再生する ように して ください」）。前は 字だけ 戻して 黙って いた——
+       * 開き直した 人は **どこまで 話したかを 字で さかのぼる**しか なく、
+       * 聞いて 覚える 練習に ならなかった。字と 同じ 順で 待ち行列に 積む。
+       * 報告メモは 開く（どの 日の 話だったかを 先に 見せる）ので、
+       * 鳴りはじめるのは **閉じた あと**（`dutyIntro` の 覚え書き）。
        */
       const draft = readAsakaiDraft(meeting.id, next.day);
       if (draft && draft.lines.length > 0) {
@@ -648,6 +652,13 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
         setProbes(draft.probes);
         setAskedId(draft.askedId);
         setProbeLog(draft.log);
+        setDutyIntro(
+          draft.lines.map((line) => ({
+            speakerId: line.speakerId,
+            text: line.text,
+            audio: line.audio,
+          })),
+        );
         setDuty(true);
         return;
       }
@@ -1388,6 +1399,19 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
 
   const goNext = useCallback(() => goToScene(sceneAt + 1), [goToScene, sceneAt]);
 
+  /**
+   * **その日を はじめから やり直す**（2026-09-21 の 指定）。
+   *
+   * 途中の 控えを 捨ててから 場面を 開き直す——捨てないと `openScene` が
+   * 控えを 読んで、**やり直した つもりで 途中に 戻る**。
+   * 記録した けっかは そのまま（お手本を 見た あとの やり直しと 同じ 決まり）。
+   */
+  const restartDay = useCallback(() => {
+    if (!scene) return;
+    clearAsakaiDraft(meeting.id, scene.day);
+    goToScene(sceneAt);
+  }, [scene, meeting.id, sceneAt, goToScene]);
+
   if (!asakai || !scene) return null;
 
   /* 点が 出ない 理由を 分ける ため、鍵の 有無を 見て おく（値は 使わない）。 */
@@ -1559,12 +1583,25 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
           📋 <RubyText text="報告メモ" index={index} show />
         </button>
       </StepTabs>
-      <WeekBoard
-        scenes={asakai.scenes.map((one) => DAY_NAME[one.day])}
-        rows={results}
-        unitName={asakai.level === "hard" ? "言えた こと" : "開いた カード"}
-        index={index}
-      />
+      {/*
+        **その日を はじめから やり直す**（2026-09-21 の 指定）。
+        これまで やり直せるのは「きょうの 評価」の 中だけ——**報告の さいちゅうに
+        気が 変わった 人**（言い方を 変えたい・最初から 通して 言いたい）に 道が 無かった。
+        点は 上書きしない 決まりの まま（お手本を 見た あとの やり直しと 同じ）。
+      */}
+      <button
+        type="button"
+        onClick={restartDay}
+        /*
+          **曜日の 名前を 入れない。** 入れると 上の タブと 同じ 名前に なり、
+          読み上げでも 検査でも「どちらの ボタンか」が 分からなく なる。
+          いまが 何曜日かは、すぐ 上の えらばれた タブが 言って いる。
+        */
+        aria-label="この日を はじめから やり直す"
+        className="border-blossom text-navy w-full rounded-full border-2 bg-white px-3 py-1.5 text-xs font-extrabold"
+      >
+        ↻ <RubyText text="この日を はじめから" index={index} show />
+      </button>
     </div>
   );
 
@@ -2184,73 +2221,6 @@ function TimeCard({
           <DayProgress at={at + 1} total={total} />
         </span>
       </button>
-    </div>
-  );
-}
-
-/**
- * **曜日ごとの 点を、ポップアップを 開かずに 見る 帯**（2026-09-18 の 指定
- *「モーダルでは ない 画面で 曜日ごとの 点数や 評価を 表示する 箇所を 作れますか？」）。
- *
- * これまで 点は **きょうの 評価**と **今週の けっか**の 中にしか 無く、
- * どちらも 閉じると 消えた——いま 何日目で、前の 日が 何点だったかを
- * 見に 行く 道が 無い。タブの すぐ 下に 置いて、報告の あいだ ずっと 見える ように する。
- *
- * 出すのは **端末に 残って いる もの**だけ（`DayResult`）。伝わりやすさと
- * 仕事の 日本語は 日ごとに 残して いない ので ここには 出さない——
- * 見て いない ものを 数に しない（規律1）。
- */
-function WeekBoard({
-  scenes,
-  rows,
-  unitName,
-  index,
-}: {
-  /** 月〜金の 字（`DAY_NAME`）。まだ 報告して いない 日も 席を 出す。 */
-  scenes: readonly string[];
-  rows: readonly DayResult[];
-  unitName: string;
-  index: FuriganaIndex;
-}) {
-  if (rows.length === 0) return null;
-  const byDay = new Map(rows.map((row) => [row.day, row]));
-  return (
-    <div
-      role="group"
-      aria-label="曜日ごとの けっか"
-      className="border-hairline bg-panel rounded-xl border px-3 py-2"
-    >
-      <p className="text-ink-soft text-[11px] leading-[1.9] font-black">
-        📊 <RubyText text={`曜日ごとの けっか（${unitName}／内容の 点）`} index={index} show />
-      </p>
-      <ul className="mt-1 flex flex-wrap gap-1.5">
-        {scenes.map((day) => {
-          const row = byDay.get(day);
-          /* 内容の 点は 残って いる 数から 出す（`asakai-score.ts` と 同じ 出しかた）。 */
-          const point = row ? contentScore(row.cards, row.cardTotal) : null;
-          return (
-            <li
-              key={day}
-              className={`rounded-xl border-2 px-2 py-1 text-[11px] leading-[1.9] font-black ${
-                row === undefined
-                  ? "border-hairline bg-panel-tint text-ink-soft"
-                  : row.cards >= row.cardTotal
-                    ? "border-leaf bg-sky-soft text-leaf-deep"
-                    : "border-sun-deep bg-cream text-sun-deep"
-              }`}
-            >
-              <RubyText text={day} index={index} show />{" "}
-              {row === undefined ? (
-                <RubyText text="まだ" index={index} show />
-              ) : (
-                <span className="tabular-nums">
-                  {row.units} / {row.unitTotal} ・ {point} / {CONTENT_MAX}
-                </span>
-              )}
-            </li>
-          );
-        })}
-      </ul>
     </div>
   );
 }
