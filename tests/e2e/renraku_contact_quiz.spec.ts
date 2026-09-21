@@ -16,7 +16,7 @@ import { bareKanjiTexts, seedCompleted, shot, submitAnswers, writeFillinIn } fro
  *
  * 見張るのは 6つ:
  *  1. 古い URL（`/renraku/link-renraku_contact`）が もんだいへ 送られる
- *  2. 別ページ（iframe）では なく、20問が 1ページに 並ぶ
+ *  2. 別ページ（iframe）では なく、10問が 1ページに 並ぶ（初級・上級は **別の 教材**）
  *  3. **答える 前に お手本も 観点も 出さない**（写せない）
  *  4. 欄の となりに ⭕✗が 出る。**⭕に なるまで つぎの もんだいは 閉じて いる**
  *  5. ぜんぶ ⭕に なるまで「こたえを 出す」が 出ない
@@ -29,7 +29,9 @@ import { bareKanjiTexts, seedCompleted, shot, submitAnswers, writeFillinIn } fro
  */
 
 const QUIZ = "renraku_contact_quiz";
+const SLACK_QUIZ = "renraku_contact_slack_quiz";
 const PATH = `/renraku/quiz-${QUIZ}`;
+const SLACK_PATH = `/renraku/quiz-${SLACK_QUIZ}`;
 
 type Head = { kind: "fixed"; text: string } | { kind: "write"; label: string; answer: string };
 type Mail = {
@@ -41,11 +43,15 @@ type Mail = {
 type Slack = { id: string; type: "free"; minLength: number };
 type Question = Mail | Slack;
 
-const QUESTIONS = (
-  JSON.parse(readFileSync(join("content", "quizsets", `${QUIZ}.json`), "utf8")) as {
-    questions: Question[];
-  }
-).questions;
+function questionsOf(id: string): Question[] {
+  return (
+    JSON.parse(readFileSync(join("content", "quizsets", `${id}.json`), "utf8")) as {
+      questions: Question[];
+    }
+  ).questions;
+}
+const QUESTIONS = questionsOf(QUIZ);
+const SLACK_QUESTIONS = questionsOf(SLACK_QUIZ);
 
 /** その もんだいの 欄に **正解を そのまま** 書く（⭕を 通して つぎを 開く ため）。 */
 async function fillRight(page: Page, mail: Mail) {
@@ -96,12 +102,12 @@ async function closeClearDialog(page: Page, { first = true } = {}) {
   await expect(page.getByRole("dialog", { name: "ステージ クリア" })).toHaveCount(0);
 }
 
-async function seedUpToQuiz(context: BrowserContext) {
+async function seedUpToQuiz(context: BrowserContext, ref: string = QUIZ) {
   const stage = JSON.parse(readFileSync(join("content", "stages", "renraku.json"), "utf8")) as {
     contents: { ref: string }[];
   };
-  const at = stage.contents.findIndex((content) => content.ref === QUIZ);
-  expect(at, "連絡ステージに 連絡文の もんだいが 無い").toBeGreaterThan(0);
+  const at = stage.contents.findIndex((content) => content.ref === ref);
+  expect(at, `連絡ステージに ${ref} が 無い`).toBeGreaterThan(0);
   await seedCompleted(
     context,
     stage.contents.slice(0, at).map((content) => content.ref),
@@ -115,15 +121,17 @@ test("連絡文: 古い 別ページの URL は もんだいへ 送る", async (
 });
 
 test("連絡文: 1問ずつ ⭕に して 進み、ぜんぶ ⭕で 出せる", async ({ page, context }) => {
-  test.slow(); // 20問を 順に ⭕に する 通し
+  test.slow(); // 10問を 順に ⭕に する 通し
   await seedUpToQuiz(context);
   await page.goto(PATH);
   await closeClearDialog(page);
   await page.getByRole("button", { name: "はじめる" }).click();
 
-  /* 2. 20問が 同時に 見えて いる。別ページ（iframe）は もう 無い。 */
-  await expect(page.getByText("1/20", { exact: true })).toBeVisible();
-  await expect(page.getByText("20/20", { exact: true })).toBeVisible();
+  /* 2. 初級の 10問が 同時に 見えて いる。別ページ（iframe）は もう 無い。 */
+  await expect(page.getByText("1/10", { exact: true })).toBeVisible();
+  await expect(page.getByText("10/10", { exact: true })).toBeVisible();
+  // 上級（Slack）は この 教材には もう 無い（2026-09-21 の 指定で 分けた）
+  await expect(page.locator("#q-slack_1")).toHaveCount(0);
   await expect(page.locator("iframe")).toHaveCount(0);
 
   /* 3. 同僚の メモと メールの 型が 出て いる。しるしは 第1問に ある。 */
@@ -145,7 +153,7 @@ test("連絡文: 1問ずつ ⭕に して 進み、ぜんぶ ⭕で 出せる", 
   await expect(second.getByText(/もんだいが ⭕に なると/)).toBeVisible();
   // たたんで ある（欄その ものが 無い）。行は 残る ので「あと 何問」は 見える
   await expect(second.getByLabel("宛先を 入力する")).toHaveCount(0);
-  await expect(second.getByText("2/20", { exact: true })).toBeVisible();
+  await expect(second.getByText("2/10", { exact: true })).toBeVisible();
 
   /* 5. ぜんぶ ⭕に なるまで「こたえを 出す」は 出ない。 */
   await expect(page.getByRole("button", { name: /こたえを 出/ })).toHaveCount(0);
@@ -244,7 +252,7 @@ test("連絡文: 欄を 2つだけ 書いて 開き直しても 消えない", a
 test("連絡文: ⭕に した ところは 開き直しても 開いた まま", async ({ page, context }) => {
   /*
    * 関門を 付けた 日に いちばん こわいのは **やり直しの 強制**——開き直す たびに
-   * 1問目から 見て もらい直しに なると、20問の 教材は 終わらない。
+   * 1問目から 見て もらい直しに なると、10問の 教材は 終わらない。
    * ⭕は 文と セットで 端末に 残す（`resume.checked`）。
    */
   await seedUpToQuiz(context);
@@ -264,4 +272,45 @@ test("連絡文: ⭕に した ところは 開き直しても 開いた まま"
 
   await expect(page.locator("#q-mail_2").getByLabel("宛先を 入力する")).toBeEnabled();
   await expect(page.locator("#q-mail_3").getByLabel("宛先を 入力する")).toHaveCount(0);
+});
+
+/**
+ * 上級（Slack）は **別の 教材**（2026-09-21 の 指定「上級は別な教材として分けてください」）。
+ *
+ * 元の 別ページも 初級／上級の **タブ 2つ**だったので、その 形に 戻した ことに なる。
+ * 見るのは 3つ:
+ *  1. 初級とは 別の URL で 開き、10問が 並ぶ（メールの 型は 1つも 無い）
+ *  2. 関門は こちらでも 効く（書いて チェックすると つぎが 開く）
+ *  3. お手本は 答え合わせだけ
+ */
+test("連絡文（上級）: 別の 教材として 開き、書いて 進み、答え合わせで お手本が 出る", async ({
+  page,
+  context,
+}) => {
+  test.slow();
+  await seedUpToQuiz(context, SLACK_QUIZ);
+  await page.goto(SLACK_PATH);
+  await closeClearDialog(page);
+  await page.getByRole("button", { name: "はじめる" }).click();
+
+  /* 1. 上級だけの 10問。メールの 型（宛先の 欄）は 1つも 無い。 */
+  await expect(page.getByText("1/10", { exact: true })).toBeVisible();
+  await expect(page.getByText("10/10", { exact: true })).toBeVisible();
+  await expect(page.getByLabel("宛先を 入力する")).toHaveCount(0);
+  await expect(page.locator("#q-mail_1")).toHaveCount(0);
+  // 解いて いる 途中に お手本は 出さない
+  await expect(page.getByText(/模範解答/)).toHaveCount(0);
+
+  /* 2. 2問目は 閉じて いる。1問目を ⭕に すると 開く。 */
+  const second = page.locator(`#q-${SLACK_QUESTIONS[1]!.id}`);
+  await expect(second.getByText(/もんだいが ⭕に なると/)).toBeVisible();
+  await passOne(page, SLACK_QUESTIONS[0]!);
+  await expect(second.getByLabel("じゆうに 書く")).toBeEnabled();
+  await shot(page, "renraku-slack-quiz-01-ok");
+
+  /* 3. ぜんぶ ⭕に して 出すと、答え合わせで はじめて お手本が 出る。 */
+  for (const question of SLACK_QUESTIONS.slice(1)) await passOne(page, question);
+  await submitAnswers(page);
+  await expect(page.getByText(/模範解答/).first()).toBeVisible();
+  await shot(page, "renraku-slack-quiz-02-result");
 });

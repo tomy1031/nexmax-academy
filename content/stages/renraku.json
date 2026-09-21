@@ -44,6 +44,11 @@
       "ref": "renraku_contact_quiz",
       "type": "quizset",
       "gates": false
+    },
+    {
+      "ref": "renraku_contact_slack_quiz",
+      "type": "quizset",
+      "gates": false
     }
   ],
   "wordStageIds": [
