@@ -24,7 +24,17 @@ function read<T>(...path: string[]): T {
   return JSON.parse(readFileSync(join(...path), "utf8")) as T;
 }
 
-const quiz = quizSetSchema.parse(read("content", "quizsets", "renraku_contact_quiz.json"));
+/*
+ * 2026-09-21 の 指定「上級は別な教材として分けてください」で **2本に 分けた**。
+ * 元の 別ページも 初級／上級の **タブ 2つ**だったので、その 形に 戻した ことに なる。
+ * 移植の 突き合わせは **2本を 合わせた もの**で 見る——分けた ことで 問いが
+ * 1つでも 落ちたら ここで 止まる。
+ */
+const mailSet = quizSetSchema.parse(read("content", "quizsets", "renraku_contact_quiz.json"));
+const slackSet = quizSetSchema.parse(
+  read("content", "quizsets", "renraku_contact_slack_quiz.json"),
+);
+const quiz = { questions: [...mailSet.questions, ...slackSet.questions] };
 const stage = stageSchema.parse(read("content", "stages", "renraku.json"));
 
 /** 空白の ちがいは 見ない（アプリの 文は 分かち書きに する）。 */
@@ -37,12 +47,49 @@ const mails = quiz.questions.filter((q) => q.type === "fillin");
 const slacks = quiz.questions.filter((q) => q.type === "free");
 
 describe("連絡文の もんだい（移植）", () => {
-  it("元の 別ページと 同じ 20問（メール10・Slack10）", () => {
+  it("元の 別ページと 同じ 20問（初級10・上級10）を 2本に 分けて 持つ", () => {
     expect(quiz.questions).toHaveLength(20);
     expect(mails).toHaveLength(10);
     expect(slacks).toHaveLength(10);
     // 元の ページの 問いの 数（q-card）と 合わせる
     expect([...HTML.matchAll(/class="q-card"/g)]).toHaveLength(20);
+    // 1本に メールと Slackが 混ざって いない（分けた 意味が 無く なる）
+    expect(mailSet.questions.every((q) => q.type === "fillin")).toBe(true);
+    expect(slackSet.questions.every((q) => q.type === "free")).toBe(true);
+  });
+
+  it("2本とも 同じ やりかた・同じ 合格ラインで 出す（分けた だけで 難しさを 変えない）", () => {
+    expect(slackSet.answerMode).toBe(mailSet.answerMode);
+    expect(slackSet.passRate).toBe(mailSet.passRate);
+  });
+
+  it("章の 見出しは 元の ページの まま（タブの 名前は 教材の 題に 移した）", () => {
+    // 元は タブ＝初級／上級、その 中の 見出しが パターンA…／レベル1…
+    const heads = (set: typeof mailSet) => [
+      ...new Set(set.questions.map((q) => q.section).filter((one) => one !== undefined)),
+    ];
+    expect(heads(mailSet)).toEqual([
+      "パターンA：システムエラー",
+      "パターンB：スケジュール変更",
+      "パターンC：お願い・依頼",
+    ]);
+    expect(heads(slackSet)).toEqual([
+      "レベル1",
+      "レベル2",
+      "レベル3",
+      "レベル4",
+      "レベル4（自由記述）",
+    ]);
+    for (const set of [mailSet, slackSet]) {
+      for (const q of set.questions) {
+        expect(q.section?.startsWith("初級"), `${q.id} に タブの 名前が 残って いる`).not.toBe(
+          true,
+        );
+        expect(q.section?.startsWith("上級"), `${q.id} に タブの 名前が 残って いる`).not.toBe(
+          true,
+        );
+      }
+    }
   });
 
   it("メールの 欄の こたえは 元の ページと 同じ（並びも 同じ）", () => {
@@ -110,13 +157,34 @@ describe("連絡文の もんだい（移植）", () => {
   });
 
   it("全問 1ページ・自分で 日本語を 出す 教材（選択式は 置かない）", () => {
-    expect(quiz.answerMode).toBe("all");
-    expect(quiz.phase).toBe("production");
+    for (const set of [mailSet, slackSet]) {
+      expect(set.answerMode).toBe("all");
+      expect(set.phase).toBe("production");
+    }
     for (const q of quiz.questions) expect(["fillin", "free"]).toContain(q.type);
   });
 });
 
 describe("連絡ステージの 差し替え", () => {
+  it("上級は 初級の **すぐ うしろ**（前提が 揃う順）", () => {
+    /*
+     * 2026-09-21 の 指定で 2本に 分けた。並びは「足した順」では なく「前提が 揃う順」。
+     * 上級（自分で 書く）は 初級（型に うめる）を 通って からで ないと 足場が 無い。
+     */
+    const refs = stage.contents.map((content) => content.ref);
+    const mail = refs.indexOf("renraku_contact_quiz");
+    const slack = refs.indexOf("renraku_contact_slack_quiz");
+    expect(mail).toBeGreaterThan(0);
+    expect(slack).toBe(mail + 1);
+  });
+
+  it("2本とも 関門では ない（元の 別ページと 同じ 通り道）", () => {
+    for (const ref of ["renraku_contact_quiz", "renraku_contact_slack_quiz"]) {
+      const item = stage.contents.find((content) => content.ref === ref);
+      expect(item?.gates, `${ref} が 関門に なって いる`).toBe(false);
+    }
+  });
+
   it("別ページは ステージから 外れ、同じ 位置に もんだいが 入る", () => {
     const refs = stage.contents.map((content) => content.ref);
     expect(refs).toContain("renraku_contact_quiz");
