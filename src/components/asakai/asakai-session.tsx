@@ -33,6 +33,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore
 
 import { CallShell } from "@/components/call-shell";
 import { DictionaryText } from "@/components/dictionary-text";
+import { AiWaitingOverlay } from "@/components/meeting/ai-waiting";
 import { HintModal } from "@/components/meeting/hint-modal";
 import { dropJudgeSession, requestAsakaiJudge } from "@/components/meeting/judge-api";
 import { ModalShell } from "@/components/meeting/modal-shell";
@@ -1603,7 +1604,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
               waitNote: judge
                 ? "見かたを 読んでから 話します。"
                 : waiting
-                  ? "AIが いま 見て います。"
+                  ? "Gemini（AI）が いま 見て います。"
                   : null,
               onConnect: () => void voice.start(LISTEN_ONLY),
               onStartTalking: voice.startTalking,
@@ -1817,7 +1818,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
             judge
               ? "見かたを 読んでから 送れます"
               : waiting
-                ? "AIが いま 見て います…"
+                ? "Gemini（AI）が いま 見て います…"
                 : "いまは 送れません"
           }
           onDraft={setAnswer}
@@ -2026,6 +2027,13 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
       {weekOpen ? (
         <WeekResult asakai={asakai} rows={results} index={index} onClose={closeWeek} />
       ) : null}
+      {/*
+        **Gemini を 呼んで いる あいだは 画面 ぜんたいを 覆う**（2026-09-21 の 指定
+        「マイクで 話すのが メイン…画面の 制御も ある ため、全体に 表示される ことが
+        望ましい」）。会話の 記録の 中に 置いて いた ころは、話して いる 学習者の
+        目に 入らず、待って いる あいだに 曜日の 帯や 報告メモが 押せて しまって いた。
+      */}
+      {waiting ? <AiWaitingOverlay doing="見て います" index={index} /> : null}
     </CallShell>
   );
 }
