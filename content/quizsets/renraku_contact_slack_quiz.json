@@ -2,7 +2,7 @@
   "kind": "quizset",
   "id": "renraku_contact_slack_quiz",
   "title": "連絡文の 練習（上級：Slack）",
-  "description": "Slackの 連絡を 自分の ことばで 書きます。",
+  "description": "Slackの 連絡を 自分で 書きます。",
   "nekumax": "hello",
   "phase": "production",
   "answerMode": "all",
