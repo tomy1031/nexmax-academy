@@ -65,6 +65,7 @@ import { AnswerNotebook } from "@/components/answers/answer-notebook";
 import { HintModal } from "./hint-modal";
 import { CertificateModal } from "./certificate-modal";
 import { JudgeModal } from "./judge-modal";
+import { AiWaitingOverlay } from "./ai-waiting";
 import { AskPanel } from "./ask-panel";
 import { ChatPanel } from "./chat-panel";
 import { SpeakButton } from "./speak-button";
@@ -1423,15 +1424,6 @@ export function MeetingSession({
           }
         />
       ))}
-      {thinking ? (
-        <p className="bg-panel-tint text-ink-soft rounded-[var(--radius-card)] px-4 py-2 text-sm font-black">
-          {meeting.host.name}さんが{" "}
-          <ruby>
-            聞<rt>き</rt>
-          </ruby>
-          いて います…
-        </p>
-      ) : null}
     </ChatPanel>
   );
 
@@ -1815,6 +1807,14 @@ export function MeetingSession({
           onNext={closeJudge}
         />
       ) : null}
+
+      {/*
+        **Gemini を 呼んで いる あいだは 画面 ぜんたいを 覆う**（2026-09-21 の 指定
+        「マイクで 話すのが メイン…全体に 表示される ことが 望ましい」）。
+        会話の 記録の 中に 置いて いた ころは、話して いる 学習者の 目に 入らず、
+        待って いる あいだに しつもんの カードや 速さの つまみが 押せて しまって いた。
+      */}
+      {thinking ? <AiWaitingOverlay doing="聞いて います" index={CHROME_FURIGANA} /> : null}
     </div>
   );
 }
