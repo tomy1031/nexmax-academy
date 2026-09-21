@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { LIVE_TEXT_MODELS } from "../src/lib/ai/models";
 import { NO_JUDGE, type AsakaiJudgeContext } from "../src/lib/meeting/asakai-judge";
 import type * as ProfileModule from "../src/lib/profile";
+import type { QuizReviewContext } from "../src/lib/quiz/ai-review";
 
 /**
  * 見かたの つなぎ（judge-api.ts）が 控えへ 落ちる 速さと、朝礼の 待ちの 整合（2026-09-16 の 検収）
@@ -70,12 +71,10 @@ vi.mock("@google/genai", () => ({
                       review
                         ? {
                             id: `c${n}`,
-                            name: "kaitou_no_mikata",
+                            name: "kotae_no_check",
                             args: {
                               ok: true,
-                              checks: [{ id: "ketsuron", ok: true, note: "" }],
-                              good: "",
-                              advice: "",
+                              items: [{ id: "ketsuron", ok: true, note: "" }],
                               polished: `へんじ${n}`,
                             },
                           }
@@ -274,12 +273,13 @@ describe("先頭の モデルが 何も 返さない とき（まれ）", () => 
  * 直した 形を、こちらでも 固定して おく。
  */
 describe("もんだいの AIの 見かた", () => {
-  const CONTEXT = {
+  const CONTEXT: QuizReviewContext = {
     question: "Slackの メッセージを 書いて ください。",
     scene: "テスト用の URLが 変わった。",
     model: "お疲れさまです。",
     note: "",
-    checks: [{ id: "ketsuron", label: "1行目で 何の 連絡かが 分かる" }],
+    itemKind: "point",
+    items: [{ id: "ketsuron", label: "1行目で 何の 連絡かが 分かる" }],
     written: "1回目の 文",
   };
 

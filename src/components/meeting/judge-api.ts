@@ -345,6 +345,34 @@ export async function requestQuizReview(
   return result;
 }
 
+/**
+ * **押す 前に つなぎを 張って おく**（2026-09-21 の 指定「AI読み取りの反応が遅いです」）。
+ *
+ * 見かたの つなぎは **1回の チェックごとに 張り直す**（`key` に 回数が 入って いる——
+ * 同じ つなぎを 使い回すと 前の 回の 返事を くり返す ため）。その したくは
+ * 短命トークンの 発行＋Live の 接続＋合図待ちで **数秒**かかり、いまは その 数秒を
+ * **押した あとに** 待たせて いた。
+ *
+ * だから 押しそうな ところ——**ぜんぶ 書けて ボタンが 押せるように なった とき**——で
+ * 先に 張る。押した ときには もう 開いて いる ので、往復ぶんだけで 返る。
+ *
+ * 張るのは **1つの 鍵に つき 1回**（`openJudge` が 同じ 鍵なら 使い回す）。
+ * 見て もらって いる 最中（`busy`）は 何も しない——走って いる 往復の つなぎを
+ * 横から 捨てて しまう。
+ */
+export async function warmQuizReview(key: string): Promise<boolean> {
+  const apiKey = getGeminiKey();
+  if (!apiKey) return false;
+  // 見て もらって いる 最中は 触らない（走って いる 往復の つなぎを 捨てて しまう）
+  if (SLOTS.review.busy) return false;
+  if (SLOTS.review.key === key && (SLOTS.review.session?.alive() || SLOTS.review.opening)) {
+    return true;
+  }
+  const opened = await openJudge(apiKey, "review", key).catch(() => null);
+  // 失敗した ことは 画面に 出さない（押した ときに もう一度 張る）
+  return opened?.ok === true;
+}
+
 async function askQuizReview(
   apiKey: string,
   key: string,
@@ -359,11 +387,11 @@ async function askQuizReview(
   if (gaveUp()) return { ok: false, reason: "timeout" };
   const session = opened.session;
   try {
-    let review = parseQuizReview(await session.ask(buildQuizReviewPrompt(context)), context.checks);
+    let review = parseQuizReview(await session.ask(buildQuizReviewPrompt(context)), context);
     if (review && needsKanjiRetry(review)) {
       const again = parseQuizReview(
         await session.ask(buildQuizReviewPrompt(context, true)),
-        context.checks,
+        context,
       );
       // 2回目が 崩れて いたら 1回目を 使う（読めない 文は 画面が 落とす）
       if (again) review = again;

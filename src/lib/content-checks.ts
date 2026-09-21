@@ -636,6 +636,31 @@ export function checkReferenceIntegrity(entries: readonly ContentEntry[]): Findi
       }
     });
   }
+
+  /*
+   * **型を うめる 問い（`fillin`）に AIの 観点（`ai.checks`）を 置かない。**
+   *
+   * `fillin` は 欄そのものが 見る 単位で、⭕✗は 欄の 正解から アプリが 決める
+   *（`fillinSlotOk`）。そこへ 観点を 足すと、画面の ⭕✗と 答え合わせの ⭕✗で
+   * **ものさしが 2つ**に なる（規律10「学習者に 見せる 枠組みを 増やさない」）。
+   *
+   * これを **保存の 形（zod）では 弾かない**のは、同じ 形の 検査が 先生の DBの 行にも
+   * 効いて しまう ため——きのうまで 正しかった 形を 今日 弾くと、`content-db.ts` が
+   * その 行を 黙って 捨てて git の 版に 戻す＝**先生の 直しだけが 消える**。
+   * ここ（教材ファイルの 検収）なら、消えずに 名指しで 止まる。
+   */
+  for (const { file, content } of entries) {
+    if (content.kind !== "quizset") continue;
+    content.questions.forEach((question, i) => {
+      if (question.type !== "fillin") return;
+      if (!question.ai?.checks) return;
+      findings.push({
+        file,
+        level: "error",
+        message: `questions[${i}]（${question.id}）の ai.checks — 型を うめる 問いに 観点は 置かない（欄そのものが 見る 単位。⭕✗が 2つの ものさしに なる）`,
+      });
+    });
+  }
   return findings;
 }
 
@@ -815,12 +840,13 @@ export function collectLabeledTexts(content: Content): LabeledText[] {
           // marks は scene.text の 一部（同じ 文字を 2度 数えない）
         }
         /*
-         * AIの 観点と お手本は **押した あとに 画面へ 出る**（`ai-review-panel.tsx`）。
+         * AIの 観点は **こたえの チェックを 押した あとに** ⭕✗と 並んで 出る
+         *（`slack-question.tsx`）。お手本は 答え合わせで 出る（`check-parts.tsx`）。
          * AIの 返事には ふりがなを 足せない ので、せめて 教材が 持つ この 2つは 覆う。
          */
         const ai = q.type === "free" || q.type === "fillin" ? q.ai : undefined;
         if (ai) {
-          ai.checks.forEach((check, j) => push(at(`ai.checks[${j}].label`), check.label));
+          (ai.checks ?? []).forEach((check, j) => push(at(`ai.checks[${j}].label`), check.label));
           push(at("ai.model"), ai.model);
           // note は AIだけが 読む（画面に 出ない）ので 覆いの 対象外
         }

@@ -18,6 +18,7 @@
  */
 
 import type { QuizQuestion } from "@/content/schema";
+import type { QuizDraft } from "@/lib/quiz/draft";
 
 type Fillin = Extract<QuizQuestion, { type: "fillin" }>;
 
@@ -67,7 +68,6 @@ export function fillinSlots(question: Fillin): FillinSlot[] {
  *（言って いない 中身を 足さない・朝礼の `polished` と 同じ 決めごと）。
  */
 export function fillinText(question: Fillin, inputs: readonly string[]): string {
-  const slots = fillinSlots(question);
   const value = (index: number): string => {
     const written = (inputs[index] ?? "").trim();
     return written === "" ? "（まだ 書いて いません）" : written;
@@ -93,4 +93,25 @@ export function fillinModelText(question: Fillin): string {
     question,
     fillinSlots(question).map((slot) => slot.answer),
   );
+}
+
+/**
+ * **チェックを 受けた 文**（画面の 部品と もんだいの 画面で 同じ ものを 見る ため）。
+ *
+ * ⭕の 印は「どの 文に ついての ⭕か」を いっしょに 持つ（`answer-check.tsx`）。
+ * その 文の 作り方が 2か所に あると、打ち直して いないのに ⭕が 消える／
+ * 打ち直したのに ⭕が 残る、が 起きる。だから ここ 1つに する。
+ */
+export function checkedText(question: QuizQuestion, draft: QuizDraft | undefined): string {
+  /*
+   * 前後の 空白は 落とす。メールは 欄ごとに `.trim()` して 組み立てる（`fillinText`）のに
+   * 自由記述は 生の ままだった ころは、**うしろに 空白を 1つ 足しただけで ⭕が 消え、
+   * つぎの もんだいが また 閉じた**（2026-09-21 のコード検収）。
+   * 部品の 側（`useAnswerCheck`）も 同じ ように 落として 突き合わせる。
+   */
+  if (question.type === "fillin") {
+    return fillinText(question, draft?.kind === "fillin" ? draft.inputs : []).trim();
+  }
+  if (question.type === "free") return draft?.kind === "free" ? draft.input.trim() : "";
+  return "";
 }
