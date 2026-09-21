@@ -19,7 +19,7 @@
  * 国の 名前・外来語は **カタカナ**で 書かせる（「べとなむ」では 読みにくい）。
  * こちらは 漢字では ないので この 一覧には 入らない。
  */
-import type { FuriganaEntry } from "@/lib/text/furigana";
+import { mergeFuriganaEntries, type FuriganaEntry } from "@/lib/text/furigana";
 
 /** AIが 漢字で 書いてよい ことば（表記, 読み）。長い ものから 並べる。 */
 export const AI_KANJI_FURIGANA: readonly FuriganaEntry[] = [
@@ -279,4 +279,22 @@ export function unknownKanji(text: string): string[] {
   let rest = text;
   for (const [word] of AI_KANJI_FURIGANA) rest = rest.split(word).join("");
   return [...new Set(rest.match(/[一-鿿々]/gu) ?? [])];
+}
+
+/**
+ * **AIが 書いた 文を 画面に 出す ときの 読み索引**（教材の 辞書 ＋ この 一覧）。
+ *
+ * AIの 返事には 読み辞書が 付いて こない。だから 2つを 重ねた ものを
+ * **通す／通さないの 検査にも、画面に 描く ときにも 同じ もの**として 使う。
+ * 別々に すると「検査は 通るのに 画面では ルビが 付かない」が 起きる——
+ * 2026-09-21 の 読み検収で、こたえの チェックの ひとことが まさに その 状態に
+ * なって いた（検査は 重ねた 索引、画面は 教材の 辞書だけ）。
+ *
+ * 教材の ぶんを **あとに 置いて 勝たせる**（`mergeFuriganaEntries` は 後勝ち）
+ * ——同じ 表記で 読みが ちがう ときは、その 教材の 決めた 読みが 正。
+ */
+export function aiReplyFurigana(
+  materialEntries: readonly FuriganaEntry[],
+): readonly FuriganaEntry[] {
+  return mergeFuriganaEntries(AI_KANJI_FURIGANA, materialEntries);
 }

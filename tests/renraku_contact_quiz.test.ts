@@ -71,11 +71,22 @@ describe("連絡文の もんだい（移植）", () => {
     }
   });
 
-  it("どの 問いにも AIの 観点が ある（ものさしは 答える 前に 見せる）", () => {
+  it("どの 問いも AIに 見て もらえる（`ai` が ある）", () => {
     for (const q of quiz.questions) {
       const ai = q.type === "free" || q.type === "fillin" ? q.ai : undefined;
-      expect(ai, `${q.id} に AIの 観点が 無い`).toBeDefined();
-      expect(ai?.checks.length ?? 0).toBeGreaterThanOrEqual(2);
+      expect(ai, `${q.id} が AIの チェックに かからない`).toBeDefined();
+    }
+  });
+
+  it("見る 単位は 型で ちがう（メールは 欄・Slackは 観点。ものさしを 2つに しない）", () => {
+    // メール: ⭕✗は 欄の 正解から アプリが 決める。観点を 足すと 判定が 2つに なる（規律10）
+    for (const q of mails) {
+      expect(q.type === "fillin" && q.ai?.checks, `${q.id} に 観点が ある`).toBeFalsy();
+    }
+    // Slack: 機械の 正解が 無い ので、観点が ⭕✗の 単位に なる
+    for (const q of slacks) {
+      const checks = q.type === "free" ? (q.ai?.checks ?? []) : [];
+      expect(checks.length, `${q.id} の 観点が 足りない`).toBeGreaterThanOrEqual(2);
     }
   });
 

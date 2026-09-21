@@ -7,9 +7,9 @@ import { RubyText } from "@/components/ruby-text";
 import { buildFuriganaIndex, type FuriganaIndex } from "@/lib/text/furigana";
 import { wordbankDisplayOrder } from "@/lib/quiz/bank-order";
 import type { QuizDraft } from "@/lib/quiz/draft";
-import { fillinSlots, fillinText } from "@/lib/quiz/fillin";
-import { AiReviewPanel } from "./ai-review-panel";
+import { MailQuestion } from "./mail-question";
 import type { QuizAction, QuizMode } from "./quiz-reducer";
+import { SlackQuestion } from "./slack-question";
 import { RankListInput } from "./rank-list-input";
 
 /** 部品じたいの文言の読み辞書（教材データの辞書はUIの文言まで覆わない・規律2）。 */
@@ -37,14 +37,12 @@ const ACTIVE_BLANK_MARK = "▶";
  */
 
 interface Props {
-  /**
-   * どの 教材か。AIの つなぎ（Live）を **教材と 問いで 1本**に する ための 鍵。
-   *
-   * 問いの id は 教材の 中でしか 一意では ない（スタジオの 既定は `q1`）。
-   * 教材を またいで 同じ 鍵に すると、**前の 教材の 話の つづき**として
-   * 見かたが 返る（2026-08-21 に 会話の 判定で 実際に 起きた 形）。
+  /*
+   * 教材の id は ここでは 受け取らない。AIの つなぎの 鍵は
+   * `AnswerCheckProvider`（`answer-check.tsx`）が 教材ごとに 持って いて、
+   * 部品は `useAnswerCheck` から 受け取る——同じ ものを 2つの 道で 配ると、
+   * 片方だけ 古い 教材の id の まま に なる。
    */
-  setId?: string;
   question: QuizQuestion;
   furigana: FuriganaIndex;
   dispatch: (action: QuizAction) => void;
@@ -62,7 +60,6 @@ interface Props {
 }
 
 export function QuestionBody({
-  setId,
   question,
   furigana,
   dispatch,
@@ -122,12 +119,23 @@ export function QuestionBody({
         />
       );
 
+    /*
+     * 自由記述は 2つの 顔を 持つ（2026-09-21 の 指定「初級と上級は コンポーネントを 分ける」）。
+     * - 観点（`ai`）を 持つ もの … 上級の 連絡文。書いて チェックを 受ける `SlackQuestion`
+     * - 持たない もの ………………… これまでどおり「書けば 点」の `FreeInput`
+     */
     case "free":
-      return (
-        <FreeInput
-          setId={setId}
+      return question.ai ? (
+        <SlackQuestion
           question={question}
           furigana={furigana}
+          disabled={disabled}
+          submitMode={submitMode}
+          draft={draft?.kind === "free" ? draft : undefined}
+          onSubmit={(input) => dispatch({ type: "answerFree", input })}
+        />
+      ) : (
+        <FreeInput
           placeholder={question.placeholder}
           starter={question.starter}
           disabled={disabled}
@@ -137,10 +145,10 @@ export function QuestionBody({
         />
       );
 
+    /* 初級の 連絡文（メールの 型）。欄の となりで ⭕✗を 返す。 */
     case "fillin":
       return (
-        <FillinInput
-          setId={setId}
+        <MailQuestion
           question={question}
           furigana={furigana}
           disabled={disabled}
@@ -239,10 +247,13 @@ function OptionList({
               }
             >
               <span
-                className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-sm font-extrabold"
+                /* 白い 文字は クラスで（ふりがなも いっしょに 白に する・ruby-text.tsx） */
+                className={`grid h-7 w-7 shrink-0 place-items-center rounded-full text-sm font-extrabold ${
+                  on ? "text-white" : ""
+                }`}
                 style={{
                   background: on ? "var(--color-sky)" : "var(--color-sky-soft)",
-                  color: on ? "#fff" : "var(--color-navy)",
+                  color: on ? undefined : "var(--color-navy)",
                 }}
               >
                 {/* 色だけに 頼らない。えらんだ ところは しるしでも 分かる（規律・色覚） */}
@@ -413,10 +424,13 @@ function MultiPicker({
                 }
               >
                 <span
-                  className="grid h-7 w-7 shrink-0 place-items-center rounded-lg text-sm font-extrabold"
+                  /* 白い 文字は クラスで（ふりがなも いっしょに 白に する・ruby-text.tsx） */
+                  className={`grid h-7 w-7 shrink-0 place-items-center rounded-lg text-sm font-extrabold ${
+                    on ? "text-white" : ""
+                  }`}
                   style={{
                     background: on ? "var(--color-sky)" : "var(--color-panel-tint)",
-                    color: on ? "#fff" : "var(--color-ink-faint)",
+                    color: on ? undefined : "var(--color-ink-faint)",
                   }}
                 >
                   {on ? "✓" : ""}
@@ -608,9 +622,6 @@ function KeywordInput({
  * 「ちがいます」が 出ない 問いなので、思った ことを そのまま 書ける 広さを 出す。
  */
 function FreeInput({
-  setId,
-  question,
-  furigana,
   onSubmit,
   disabled,
   submitMode,
@@ -618,9 +629,6 @@ function FreeInput({
   placeholder,
   starter,
 }: {
-  setId?: string;
-  question: Extract<QuizQuestion, { type: "free" }>;
-  furigana: FuriganaIndex;
   onSubmit: (input: string, en?: string) => void;
   disabled?: boolean;
   submitMode?: boolean;
@@ -683,177 +691,6 @@ function FreeInput({
         自由入力に 正解が 無い ことは、下の 型文（`starter`）と ヒントが すでに 見せて いる。
         ことばで 先回りせず、ゆるさは **動き**で 出す（AGENTS.md 規律1）。
       */}
-      {/*
-        AIの 見かたは **いま 打って いる 文**を 見る（下書きでは なく この 部品の 文字）。
-        1問ずつの やりかたでは 下書きが 更新されないので、下書きから 読むと
-        「まだ 書いて いません」の まま 見て もらう ことに なる。
-      */}
-      <AiReviewPanel
-        setId={setId}
-        question={question}
-        written={value}
-        hasInput={!empty}
-        scene={question.scene?.text}
-        furigana={furigana}
-      />
-    </form>
-  );
-}
-
-/* ---------------- 型の ある 文の うめこみ（メール・連絡文） ---------------- */
-
-/**
- * 決まった 型（宛先・件名・【問題】【原因】…）を 自分で 打って うめる。
- *
- * 元の 別ページ（`public/tools/hourensou/renraku_contact.html`）の メール画面を
- * そのまま 持ち込む: 上に 宛先と 件名、下に 本文、本文の 中に 【ラベル】＋入力欄。
- * **型が 目に 見えて いる ことが この 問いの 足場**なので、欄だけを 縦に 並べた
- * 形には しない（それでは 何を 書いて いるのか 分からなく なる）。
- */
-function FillinInput({
-  setId,
-  question,
-  furigana,
-  onSubmit,
-  disabled,
-  submitMode,
-  draft,
-}: {
-  setId?: string;
-  question: Extract<QuizQuestion, { type: "fillin" }>;
-  furigana: FuriganaIndex;
-  onSubmit: (inputs: readonly string[]) => void;
-  disabled?: boolean;
-  submitMode?: boolean;
-  draft?: Extract<QuizDraft, { kind: "fillin" }>;
-}) {
-  const slots = useMemo(() => fillinSlots(question), [question]);
-  // 画面の 文字は この部品が 持つ（親から 送り返すと 変換の 途中で 入れ替わる）
-  const [inputs, setInputs] = useState<string[]>(() => slots.map((_, i) => draft?.inputs[i] ?? ""));
-  const empty = inputs.every((v) => v.trim() === "");
-
-  const change = (index: number, next: string) => {
-    const updated = inputs.map((value, i) => (i === index ? next : value));
-    setInputs(updated);
-    if (submitMode) onSubmit(updated);
-  };
-
-  /*
-   * 入力欄の 字は **16px（`text-base`）**。iPhone の Safari は 16px 未満の 欄に
-   * さわると **画面を 勝手に 拡大する**ので、390px に 収めた 並びが その場で 崩れる
-   *（2026-09-20 の コード検収）。ほかの 問いの 欄（`KeywordInput`・`ListInput`）も 同じ。
-   */
-  const box =
-    "border-hairline bg-panel text-ink min-w-0 flex-1 rounded-[var(--radius-button)] border-2 px-3 py-2 text-base font-bold";
-  /*
-   * **`size={1}` を 付ける**（2026-09-20 の 390px 検証）。
-   *
-   * `input` は 既定で 20文字ぶんの 幅を「いちばん 縮んだ 幅」として 主張する。
-   * もんだいの 一覧は grid なので、行の いちばん 縮んだ 幅が **ページの 幅**に なり、
-   * 390px の 端末で 横スクロールが 出て いた（実測 489px）。`min-w-0` だけでは
-   * 縮まない（Chromium は この 主張を 残す）ので、主張の もとを 1文字に する。
-   * 実際の 幅は `flex-1` が 決めるので 見た目は 変わらない。
-   */
-  /** 本文の 上の 行（宛先）の 欄は 先頭から、本文の 欄は その あと（`fillinSlots` の 並び）。 */
-  let slot = 0;
-
-  return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        if (!submitMode && !disabled && !empty) onSubmit(inputs);
-      }}
-    >
-      <div className="border-hairline overflow-hidden rounded-[var(--radius-card)] border-2 bg-white">
-        {question.formTitle && (
-          <p className="bg-panel-tint border-hairline text-ink border-b-2 px-3 py-2 text-sm font-extrabold">
-            <RubyText text={question.formTitle} index={furigana} />
-          </p>
-        )}
-        {question.head.map((row, i) => {
-          const index = row.kind === "write" ? slot++ : -1;
-          return (
-            <div
-              key={`${row.label}-${i}`}
-              className="border-hairline flex items-center gap-2 border-b px-3 py-2"
-            >
-              <span className="text-ink-soft w-16 shrink-0 text-xs font-extrabold">
-                <RubyText text={row.label} index={furigana} />
-              </span>
-              {row.kind === "fixed" ? (
-                <span className="text-ink min-w-0 flex-1 text-sm font-bold">
-                  <RubyText text={row.text} index={furigana} />
-                </span>
-              ) : (
-                <input
-                  type="text"
-                  size={1}
-                  value={inputs[index] ?? ""}
-                  disabled={disabled}
-                  onChange={(e) => change(index, e.target.value)}
-                  autoComplete="off"
-                  aria-label={`${row.label}を 入力する`}
-                  placeholder={row.placeholder}
-                  className={box}
-                />
-              )}
-            </div>
-          );
-        })}
-        <div className="grid gap-2 px-3 py-3">
-          {question.intro && (
-            <p className="text-ink text-sm leading-relaxed font-bold">
-              <RubyText text={question.intro} index={furigana} />
-            </p>
-          )}
-          {question.blanks.map((blank, i) => {
-            const index = slot + i;
-            return (
-              <div key={`${blank.label}-${i}`} className="flex items-center gap-2">
-                <span className="text-ink w-24 shrink-0 text-xs font-extrabold">
-                  <RubyText text={`【${blank.label}】`} index={furigana} />
-                </span>
-                <input
-                  type="text"
-                  size={1}
-                  value={inputs[index] ?? ""}
-                  disabled={disabled}
-                  onChange={(e) => change(index, e.target.value)}
-                  autoComplete="off"
-                  aria-label={`${blank.label}を 入力する`}
-                  placeholder={blank.placeholder}
-                  className={box}
-                />
-              </div>
-            );
-          })}
-          {question.outro && (
-            <p className="text-ink text-sm leading-relaxed font-bold">
-              <RubyText text={question.outro} index={furigana} />
-            </p>
-          )}
-        </div>
-      </div>
-
-      {!submitMode && (
-        <button
-          type="submit"
-          disabled={disabled || empty}
-          className="btn-island btn-game mt-3 px-8 py-3 disabled:opacity-50"
-        >
-          こたえる
-        </button>
-      )}
-
-      {/* AIには **1本の メール**として 渡す（欄ごとでは 文として 見て もらえない） */}
-      <AiReviewPanel
-        setId={setId}
-        question={question}
-        written={fillinText(question, inputs)}
-        hasInput={!empty}
-        scene={question.scene?.text}
-        furigana={furigana}
-      />
     </form>
   );
 }

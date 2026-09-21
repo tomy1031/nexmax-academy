@@ -9,6 +9,7 @@ import {
   type QuizResume,
 } from "../src/lib/quiz/resume";
 import { createMemoryBackend, recordContentProgress } from "../src/lib/progress/store";
+import { checkedText } from "@/lib/quiz/fillin";
 
 /**
  * つづきから はじめる（もんだい／quizset 版）。
@@ -33,6 +34,7 @@ function savedThrough(count: number, ids: readonly string[] = IDS): QuizResume {
     mode: "one",
     drafts: {},
     index: 0,
+    checked: {},
   };
 }
 
@@ -198,6 +200,7 @@ describe("まとめて 出す の 下書き", () => {
         q3: { kind: "keyword", input: "ほうれんそう" },
       },
       index: 4,
+      checked: {},
     };
   }
 
@@ -287,6 +290,7 @@ describe("まとめて 出す の 下書き", () => {
         q3: { kind: "keyword", input: "ほうれんそう" },
       },
       index: 4,
+      checked: {},
     };
   }
 
@@ -378,6 +382,7 @@ describe("ぜんぶ 1ページでも 書いた ものが 消えない", () => {
         k1_okyakusama: { kind: "keyword", input: "くるま" },
       },
       index: 5,
+      checked: {},
     };
   }
 
@@ -417,5 +422,33 @@ describe("ぜんぶ 1ページでも 書いた ものが 消えない", () => {
   it("教材から 消えた もんだいの 下書きは 落とす（並びが 変わっても IDなので ずれない）", () => {
     const start = startFrom(draftsSaved("all"), undefined, ["k1_okyakusama"], "all");
     expect(Object.keys(start.drafts)).toEqual(["k1_okyakusama"]);
+  });
+});
+
+/**
+ * こたえの チェックの ⭕は **文と セット**（`checked[id]` は その ときの 文）。
+ *
+ * 2026-09-21 のコード検収: メールは 欄ごとに `.trim()` して 組み立てるのに
+ * 自由記述は 生の ままで、**うしろに 空白を 1つ 足しただけで ⭕が 消え、
+ * つぎの もんだいが また 閉じて いた**。突き合わせる 文は 1か所で そろえる。
+ */
+describe("チェックを 受けた 文", () => {
+  const free = {
+    id: "s1",
+    type: "free" as const,
+    q: "書いて",
+    explain: "",
+    points: 1,
+    minLength: 5,
+  };
+
+  it("自由記述は 前後の 空白で 変わらない", () => {
+    expect(checkedText(free, { kind: "free", input: "おつかれさまです" })).toBe(
+      checkedText(free, { kind: "free", input: "  おつかれさまです \n" }),
+    );
+  });
+
+  it("書いて いない ときは 空（⭕を 持ち越さない）", () => {
+    expect(checkedText(free, undefined)).toBe("");
   });
 });

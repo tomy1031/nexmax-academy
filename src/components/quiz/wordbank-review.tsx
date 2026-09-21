@@ -45,7 +45,17 @@ const OK_STYLE = { borderColor: "#58c273", background: "#e9f8ee", color: "#1f3a5
 const NG_STYLE = { borderColor: "#f26fa7", background: "#fdeaf2", color: "#1f3a56" } as const;
 /** えらばなかった あな。**まちがいと 同じ 顔に しない**（別の 出来事なので）。 */
 const YET_STYLE = { borderColor: "#c9d4de", background: "#f2f6f9", color: "#5a7089" } as const;
-const RIGHT_STYLE = { borderColor: "#58c273", background: "#58c273", color: "#ffffff" } as const;
+/*
+ * **色の 面に 文字を のせる ときは、文字色を `text-white`（クラス）で 決める。**
+ * インラインの `style={{ color: "#fff" }}` だけだと **ふりがな（`rt`）が 白に ならず**、
+ * 濃い 地の 上で ふりがなだけ 沈む（2026-09-21 に 緑の 正解チップで 実発生。
+ * 同じ 事故は 2026-08-18・08-21 にも 起きて いる）。`globals.css` の
+ * `.text-white rt { color: currentColor }` は **クラスにしか 効かない**。
+ * 機械の 見張りは `tests/ruby_on_color.test.ts`。
+ */
+const RIGHT_STYLE = { borderColor: "#58c273", background: "#58c273" } as const;
+/** 緑の 面に のせる 正解の チップ（文字も ふりがなも 白）。 */
+const RIGHT_CHIP = `${CHIP} text-white`;
 
 /**
  * 数の 言い方。**「11つ」は 日本語に ならない**ので、10を こえたら「こ」に する
@@ -134,7 +144,7 @@ export function WordbankReview({
                         <span aria-hidden className="text-ink-faint text-xs font-extrabold">
                           →
                         </span>
-                        <span className={CHIP} style={RIGHT_STYLE}>
+                        <span className={RIGHT_CHIP} style={RIGHT_STYLE}>
                           <RubyText text={check.right} index={furigana} />
                         </span>
                       </>
