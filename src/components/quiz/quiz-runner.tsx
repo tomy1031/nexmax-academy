@@ -16,6 +16,7 @@ import {
   correctAnswerText,
   draftAnswerText,
   draftAnswered,
+  draftStarted,
   hasNoRightAnswer,
 } from "@/lib/quiz/draft";
 import { saveNotebook } from "@/lib/answers/notebook";
@@ -24,6 +25,8 @@ import { newAttemptId, saveQuizResults } from "@/lib/quiz/results-db";
 import { fetchOwnProfile } from "@/lib/profile-db";
 import { CelebrationBurst, StampRow } from "./celebration";
 import { QuestionBody } from "./question-types";
+import { FillinReview } from "./fillin-review";
+import { SceneCard } from "./scene-card";
 import { WordbankReview } from "./wordbank-review";
 import {
   answeredCount,
@@ -127,6 +130,16 @@ export function QuizRunner({
   const submitMode = state.mode !== "one";
   /** まとめて 出す ときに「何問 書いたか」（しおりにも 案内の 文にも 使う）。 */
   const written = useMemo(() => answeredCount(state), [state]);
+  /**
+   * 1字でも 書いた ものが あるか（下書きを 残すか 消すかの 判断）。
+   *
+   * 「こたえた 数」とは 別。メールの 型は 欄が そろうまで こたえた 数に 入らない ので、
+   * こちらで 見ないと 書きかけが 保存されない（上の 保存の 註）。
+   */
+  const anyWritten = useMemo(
+    () => state.questions.some((q) => draftStarted(q, state.drafts[q.id])),
+    [state],
+  );
 
   /**
    * この回が **見ないまま 飛ばして 始めた** 問題の 数。
@@ -215,14 +228,19 @@ export function QuizRunner({
     }
     if (submitMode) {
       /*
-       * 書いた ものが 0に 戻った ときは **消す**。
+       * 書いた 字が 1つも 無く なった ときは **消す**。
        *
        * 前は そのまま return して いた。すると 唯一 書いた こたえを 自分で 消しても
        * 前の 保存が 残り、他の ページから 戻ると「1もん 書きました」と 言われて
        * **消した はずの こたえが 生き返る**（別の目 検収で 実発生）。
-       * 画面が 0と 言う ときは、端末の 中も 0で ある。
+       *
+       * 見るのは **こたえた 数では なく 書いた 字**（2026-09-20 の 通しプレイ検収）。
+       * メールの 型（`fillin`）は **欄が ぜんぶ うまって はじめて「こたえた」**ので、
+       * 2欄だけ 書いた 学習者は こたえた 数 0 の まま——そこで 消して いたため、
+       * 開き直すと **書いた ものが ぜんぶ 消えて いた**（はじめの 画面は
+       *「行き来しても 消えません」と 言って いる のに）。
        */
-      if (written === 0) {
+      if (!anyWritten) {
         clearQuizResume(set.id);
         return;
       }
@@ -480,6 +498,7 @@ export function QuizRunner({
         />
       ) : state.mode === "all" ? (
         <AllQuestionsCard
+          setId={set.id}
           questions={state.questions}
           drafts={state.drafts}
           retryIds={retryIds}
@@ -563,6 +582,8 @@ export function QuizRunner({
                 <DictionaryText text={question.q} index={furigana} />
               </p>
               <QuestionSource question={question} furigana={furigana} />
+              {/* 場面の メモは 設問の すぐ 下（読んでから 書く 順に 並べる） */}
+              {question.scene && <SceneCard scene={question.scene} furigana={furigana} />}
               {state.phase.kind !== "explain" && (
                 <div className="mt-3">
                   <QuestionHints question={question} furigana={furigana} />
@@ -597,6 +618,7 @@ export function QuizRunner({
                       </div>
                     )}
                     <QuestionBody
+                      setId={set.id}
                       question={question}
                       furigana={furigana}
                       dispatch={dispatch}
@@ -866,6 +888,18 @@ function AnswerPair({
   if (question.type === "wordbank") {
     return (
       <WordbankReview
+        question={question}
+        answer={answer ?? ""}
+        correct={correct}
+        furigana={furigana}
+      />
+    );
+  }
+
+  /* メールの 型も 同じ——欄の 名前を 付けた まま 返す（`FillinReview`）。 */
+  if (question.type === "fillin") {
+    return (
+      <FillinReview
         question={question}
         answer={answer ?? ""}
         correct={correct}
@@ -1157,6 +1191,7 @@ function SubmitConfirmDialog({
  * 全問の 入力が 作り直されて、書いた ものが 飛ぶ。
  */
 function AllQuestionsCard({
+  setId,
   questions,
   drafts,
   retryIds,
@@ -1167,6 +1202,8 @@ function AllQuestionsCard({
   dispatch,
   onSubmit,
 }: {
+  /** どの 教材か（AIの つなぎを 教材ごとに 分ける・`ai-review-panel.tsx`）。 */
+  setId: string;
   questions: readonly QuizQuestion[];
   drafts: Readonly<Record<string, Parameters<typeof draftAnswerText>[1]>>;
   /** 前の 回で もう一度に なった もんだい（赤い しるしを 出す）。 */
@@ -1257,6 +1294,7 @@ function AllQuestionsCard({
                 </p>
               )}
               <QuestionRow
+                setId={setId}
                 question={q}
                 index={index}
                 total={questions.length}
@@ -1272,12 +1310,23 @@ function AllQuestionsCard({
       </ol>
 
       <div className="card-island mt-6 p-6">
+        {/*
+          **画面の ことばと ボタンの 動きを 合わせる**（2026-09-20 の 通しプレイ検収）。
+          `requireAll` が 無い 教材では「ぜんぶ 書いてから 出しましょう」の すぐ 下に
+          押せる「こたえを 出す」が 出る。読んだ とおりに すると 出せない はずなのに
+          出せる——学習者は どちらを 信じれば よいか 分からなく なる。
+        */}
         <p className="text-ink-soft font-bold">
           {left === 0 ? (
             <RubyText text="ぜんぶ 書けました。出しても だいじょうぶ" index={UI_FURIGANA} />
-          ) : (
+          ) : requireAll ? (
             <RubyText
               text={`のこり ${left}もん。ぜんぶ 書いてから 出しましょう`}
+              index={UI_FURIGANA}
+            />
+          ) : (
+            <RubyText
+              text={`のこり ${left}もん です。いま 出す ことも できます（書いた ぶんだけ 見ます）`}
               index={UI_FURIGANA}
             />
           )}
@@ -1337,6 +1386,7 @@ function AllQuestionsCard({
  * `React.memo` で 包む。包まないと、どこか 1問に 1文字 打つ たびに 全問が 描き直される。
  */
 const QuestionRow = memo(function QuestionRow({
+  setId,
   question,
   index,
   total,
@@ -1346,6 +1396,7 @@ const QuestionRow = memo(function QuestionRow({
   dispatch,
   inputIssue,
 }: {
+  setId: string;
   question: QuizQuestion;
   index: number;
   total: number;
@@ -1383,9 +1434,12 @@ const QuestionRow = memo(function QuestionRow({
         </span>
       </div>
 
+      {question.scene && <SceneCard scene={question.scene} furigana={furigana} />}
+
       <QuestionHints question={question} furigana={furigana} />
 
       <QuestionBody
+        setId={setId}
         question={question}
         furigana={furigana}
         dispatch={dispatch}
@@ -1605,6 +1659,8 @@ function ReviewRow({
    * だけの 行は、どの あなの ことか 分からず、カンペにも ならなかった。
    */
   const wordbank = question.type === "wordbank" ? question : null;
+  /** メールの 型も 同じ 理由で 欄ごとに 返す（横に 並べた 行は カンペに ならない）。 */
+  const fillin = question.type === "fillin" ? question : null;
 
   return (
     <li
@@ -1650,6 +1706,13 @@ function ReviewRow({
           correct={ok}
           furigana={furigana}
         />
+      ) : fillin ? (
+        <FillinReview
+          question={fillin}
+          answer={result.answer ?? ""}
+          correct={ok}
+          furigana={furigana}
+        />
       ) : (
         say !== "" && (
           <p className="text-ink mt-1 leading-relaxed font-extrabold">
@@ -1665,6 +1728,7 @@ function ReviewRow({
       {!freeOnly &&
         !ok &&
         !wordbank &&
+        !fillin &&
         (own === "" ? (
           <p className="text-ink-faint mt-0.5 text-xs font-bold">
             <RubyText text="まだ かいて いません" index={UI_FURIGANA} />
