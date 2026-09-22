@@ -280,6 +280,82 @@ export const wordStageSchema = z
 /** 空欄のしるし。wordbank の文中でこの並びが1つの空欄になる。 */
 export const BLANK_MARK = "___";
 
+/**
+ * 場面の カード（学習者が 読む メモ）。
+ *
+ * `style` は 見た目だけの ちがいで、中身の 決まりは 同じ:
+ * - `chat` … 同僚から 届いた チャット（緑の ふきだし）
+ * - `slack` … これから 自分が 出す ところ（宛先の 行＋メモ）
+ */
+const sceneSchema = z.object({
+  style: z.enum(["chat", "slack"]).default("chat"),
+  /** ふきだしの 上に 出す 名前（「同僚」「あなた」）。 */
+  from: plainText.optional(),
+  /** 宛先の 行（「フロントエンド開発チーム (@frontend_team)」）。 */
+  to: plainText.optional(),
+  text: plainText,
+  /**
+   * メモの 中で **黄色く 光らせる ことば**（元の 別ページの `answer-hint`）。
+   *
+   * 出すか 出さないかは **問いの むずかしさ**そのもの——元の 教材は
+   * 第1問・第4問・第7問（それぞれの パターンの 1問目）にだけ 付けて、
+   * 2問目からは 自分で さがさせて いた。移すときに 勝手に そろえない。
+   */
+  marks: z.array(plainText).default([]),
+});
+
+/**
+ * AIに 見て もらう ための 持ちもの（`free`・`fillin` だけ）。
+ *
+ * ## なぜ 問いごとに 持つか
+ * 「観点は しつもんごとに 持つ」（2026-08-31 の 指定・docs/constraints.md）。
+ * ぜんぶ 同じ 表で 見ると、聞いて いない ことで 減点され、学習者は 何を 直せば
+ * よいか 分からなく なる。
+ *
+ * ## **いつ 見せるかは 2026-09-21 に 変わった**
+ * 同じ 指定に あった「ものさしは 答える 前に 見せる」は **やめた**
+ *（「🤖 AIが 見る ところ　模範解答いらない」）。いまは **押した あとに**
+ * 項目ごとの ⭕✗と ひとことで 見せる——何を 直すかは そこで 分かる。
+ * 古い ほうの 言いかた（答える 前に 並べる）に 戻さない こと。
+ *
+ * ## `model`（模範解答）は **AIには いつも・学習者には 答え合わせだけ**
+ * AIには **見本**として 渡す（ずれた 直しを させない ため）。学習者に 出すのは
+ * **答え合わせの 画面だけ**（2026-09-21 の 指定「模範解答は答え合わせの時だけで
+ * いいです」）。解いて いる 途中に 出すと 写せて しまい、写した ものが ⭕に なると
+ * 関門は 開くのに 学習は 何も 起きない（`src/components/quiz/check-parts.tsx`
+ * の `ModelAnswer`）。
+ */
+const aiReviewSchema = z.object({
+  /**
+   * 見る ところ。**⭕✗を 返す 単位**で あって、答える 前に 見せる ものでは ない
+   *（2026-09-21 の 指定「🤖 AIが 見る ところ　模範解答いらない」で 先出しを やめた）。
+   *
+   * `fillin` では 省く——欄そのものが 見る 単位で、⭕✗は 欄の 正解から アプリが 決める。
+   * ここに 別の 分類軸を 足すと、画面の ⭕✗と 答え合わせの ⭕✗が 食いちがう（規律10）。
+   * `free` では 必ず 書く（下の superRefine）。
+   */
+  checks: z
+    .array(
+      z.object({
+        id: z.string().regex(/^[a-z0-9_-]+$/),
+        label: plainText,
+      }),
+    )
+    .min(1)
+    .max(4)
+    .optional(),
+  /**
+   * お手本。**本文に ある 型だけで 書く**（新しい 枠組みを 足さない・規律10）。
+   *
+   * `fillin` では 省ける——欄の 正解を 型に はめれば お手本の 文が できる
+   *（`fillinModelText`）。同じ ことを 2か所に 書くと、欄の 正解を 直した 日に
+   * お手本だけ 古い ままに なる。`free` では 必ず 書く（下の superRefine）。
+   */
+  model: plainText.optional(),
+  /** この 問いで とくに 見て ほしい こと（AIだけが 読む・画面には 出ない）。 */
+  note: plainText.optional(),
+});
+
 const quizCommon = {
   id: z.string().min(1),
   /** 設問文。 */
@@ -343,6 +419,18 @@ const quizCommon = {
    * 空けて おくと **作り忘れが 画面から 見えなく なる**（記事の 絵と 同じ 決めごと）。
    */
   image: imageSlotSchema.optional(),
+  /**
+   * 場面の **カード**（同僚の チャット・Slackの 宛先つきの メモ）。
+   *
+   * `image`（場面の 絵）とは 別もの。あちらは 絵で、こちらは **読んで 材料を
+   * 取り出す ための 文**——連絡文の 練習は「バラバラの メモから 必要な ものを
+   * さがす」ことが ねらいなので、メモは 設問文とは **別の 箱**で 出す
+   *（元の 別ページ `public/tools/hourensou/renraku_contact.html` と 同じ 見せかた）。
+   *
+   * `q` に まぜない のは、設問（何を するか）と 材料（メモ）が 1つの かたまりに
+   * なると、**どこまでが 指示で どこからが 材料か**が 読めなく なるため。
+   */
+  scene: sceneSchema.optional(),
 };
 
 /** 4択（読解確認）。 */
@@ -528,6 +616,13 @@ const freeSchema = z.object({
       starter: z.string().min(1).optional(),
     })
     .optional(),
+  /**
+   * AIに 見て もらう（省ける）。**採点では ない**——点は これまでどおり
+   * 「書いて あれば 入る」（`gradeDraft`）。AIが 返すのは 見かたと 直しかた、
+   * そして **学習者の 文を もとにした ブラッシュアップ**だけで、合否は 動かさない。
+   * 鍵（BYOK）が 無い 端末では ボタンごと 出ない——書いて 進む 道は そのまま 残る。
+   */
+  ai: aiReviewSchema.optional(),
 });
 
 /**
@@ -572,6 +667,72 @@ const ranklistSchema = z
     }
   });
 
+/**
+ * **型の ある 文を、自分で 打って うめる**（メール・連絡文）。
+ *
+ * 元は 別ページ（`public/tools/hourensou/renraku_contact.html`）に あった メールの
+ * 練習。同僚の バラバラな メモを 読み、**必要な ことだけ**を 決まった 型の
+ * それぞれの 欄に 入れる——「型が ある から 書ける」を 体で おぼえる 問い。
+ *
+ * ## `wordbank` とは 別もの
+ * あちらは **並んだ ふだから えらぶ**。ここは **自分で 打つ**（産出・規律3）。
+ * メモの ことばを そのまま 写しても よい——さがす ことが ねらいなので。
+ *
+ * ## `list` とも 別もの
+ * あちらは **順不同**（どの 欄に 書いても よい）。ここは 欄に 名前（【問題】【原因】）が
+ * 付いて いて、**どこに 入れるかが 問いの 中身**。入れ替えたら 通らない。
+ *
+ * ## 採点は やさしく（constraints 2026-08-20）
+ * 正解の ことばが **入って いれば 合格**（`answerMatches` の 前後に 何か 付いても
+ * 落とさない）。ねらいは「メモから 必要な ことを 見つける」ことで、写し取る
+ * 正確さでは ない。
+ */
+const fillinSchema = z
+  .object({
+    ...quizCommon,
+    type: z.literal("fillin"),
+    /** 書く 紙の 見出し（「📧 メール作成」）。 */
+    formTitle: plainText.optional(),
+    /**
+     * 本文の 前に ある 行（宛先・件名）。
+     * - `fixed` … 変えられない 行（件名は 教材が 決めて いる）
+     * - `write` … 学習者が 打つ 行（宛先）
+     */
+    head: z
+      .array(
+        z.discriminatedUnion("kind", [
+          z.object({ kind: z.literal("fixed"), label: plainText, text: plainText }),
+          z.object({
+            kind: z.literal("write"),
+            label: plainText,
+            answer: plainText,
+            accept: z.array(plainText).default([]),
+            placeholder: plainText.optional(),
+          }),
+        ]),
+      )
+      .max(4)
+      .default([]),
+    /** 空欄の 前に ある 決まり文（「お疲れ様です。〇〇です。…」）。 */
+    intro: plainText.optional(),
+    /** 【ラベル】＋ 入力欄 の 行（上から 順に）。 */
+    blanks: z
+      .array(
+        z.object({
+          label: plainText,
+          answer: plainText,
+          accept: z.array(plainText).default([]),
+          placeholder: plainText.optional(),
+        }),
+      )
+      .min(1)
+      .max(8),
+    /** 空欄の あとに ある 決まり文（「よろしく お願い いたします。」）。 */
+    outro: plainText.optional(),
+    /** AIに 見て もらう（`free` と 同じ・省ける）。 */
+    ai: aiReviewSchema.optional(),
+  });
+
 export const quizQuestionSchema = z.discriminatedUnion("type", [
   chooseSchema,
   multiSchema,
@@ -581,6 +742,7 @@ export const quizQuestionSchema = z.discriminatedUnion("type", [
   emotionSchema,
   freeSchema,
   ranklistSchema,
+  fillinSchema,
 ]);
 
 /** 選択で答える型（読解確認でだけ使ってよい）。 */
@@ -660,6 +822,39 @@ export const quizSetSchema = z
           message: `産出フェーズに選択式（${q.type}）は置けない。自由入力型を使う（規律3）`,
         });
       }
+
+      /*
+       * 自由記述で AIに 見て もらう なら **お手本が 要る**。
+       * お手本が 無い まま 見て もらうと、AIは 自分で 正しさを 決める ことに なり、
+       * 問いごとの ものさし（`checks`）と ずれた 直しが 返る。
+       * `fillin` は 欄の 正解から 組み立てられる ので 省ける。
+       */
+      if (q.type === "free" && q.ai && !q.ai.model) {
+        ctx.addIssue({
+          code: "custom",
+          path: at("ai"),
+          message: "自由記述で AIに 見て もらうなら ai.model（お手本）が 要る",
+        });
+      }
+      /*
+       * 自由記述には **機械の 正解が 無い**。だから ⭕✗を 返す 単位（`checks`）が
+       * 無いと、AIは 何を 見るかを 自分で 決める ことに なる。
+       */
+      if (q.type === "free" && q.ai && !q.ai.checks) {
+        ctx.addIssue({
+          code: "custom",
+          path: at("ai"),
+          message: "自由記述で AIに 見て もらうなら ai.checks（見る ところ）が 要る",
+        });
+      }
+      /*
+       * `fillin` に `checks` が 付いて いても **ここでは 弾かない**（画面が 無視する）。
+       * 保存の 形の 検査は **先生が DBに 入れた 行にも 効く**（`content-db.ts` は
+       * 形が 合わない 行を 黙って 捨てて git の 版に 戻す）。きのうまで 正しかった
+       * 形を 今日 弾くと、**先生の 直しだけが 何も 言わずに 消える**
+       *（2026-08-26 の「DBだけが 遅れる」と 同じ 向きの 事故）。
+       * 教材ファイル側の 見張りは `lint:content`（`src/lib/content-checks.ts`）に 置く。
+       */
 
       if (q.type === "choose" && q.answer >= q.options.length) {
         ctx.addIssue({ code: "custom", path: at("answer"), message: "answer が options の範囲外" });
@@ -814,6 +1009,19 @@ export const listeningSchema = z
     keywords: z.array(plainText).default([]),
     /** 隠し原稿リベールのクリア条件（原稿の表示率%）。ここを超えると答え合わせへ進める。 */
     revealGoal: z.number().int().min(1).max(100).default(30),
+    /**
+     * 先生が 教室で 教える **あいことば**（2026-09-22 の 指定）。
+     *
+     * 表示率が どうしても 目標に 届かない 学習者の ための 逃げ道。
+     * **空に すると 逃げ道そのものが 出ない**（同日の 指定 B）——1語を どの 教材でも
+     * 使い回すと、教室で 回った あとは 誰でも 素通りできて しまうため、
+     * 「開けられる 教材」を 先生が 選ぶ 形に する。
+     *
+     * 学習者の 画面には **出さない**（先生から 聞く もの）。判定は
+     * 聞き取りチェックと 同じ 正規化で 行うので、かなで 打っても 当たる
+     *（`opensRescue`。「報告」に 対して「ほうこく」でも 開く）。
+     */
+    rescueWord: plainText.optional(),
     /**
      * 画面の型。
      * - `player` … ふつうの再生プレイヤー。字幕はフロートで追いかける

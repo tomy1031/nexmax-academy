@@ -33,6 +33,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore
 
 import { CallShell } from "@/components/call-shell";
 import { DictionaryText } from "@/components/dictionary-text";
+import { AiWaitingOverlay } from "@/components/meeting/ai-waiting";
 import { HintModal } from "@/components/meeting/hint-modal";
 import { dropJudgeSession, requestAsakaiJudge } from "@/components/meeting/judge-api";
 import { ModalShell } from "@/components/meeting/modal-shell";
@@ -73,7 +74,8 @@ import {
   type PanelState,
   type ReportPanel,
 } from "@/lib/meeting/panels";
-import type { AsakaiFix, AsakaiJudgeResult } from "@/lib/meeting/asakai-judge";
+import { hintOf } from "@/lib/meeting/asakai-hint";
+import type { AsakaiItem, AsakaiJudgeResult } from "@/lib/meeting/asakai-judge";
 import {
   contentScore,
   CONTENT_MAX,
@@ -459,9 +461,6 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
     readonly rows: readonly RowView[];
     readonly good: string;
     readonly advice: string;
-    /** こたえを 職場の 日本語に 書き直した もの（ブラッシュアップ）。 */
-    readonly polished: string;
-    readonly fixes: readonly AsakaiFix[];
     readonly after: (() => void) | null;
   } | null>(null);
 
@@ -476,10 +475,16 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
     readonly japanese: number | null;
     readonly good: string;
     readonly advice: string;
-    /** 学習者の 文を 直した もの。**1本で 終わった 日は ここでしか 出ない**。 */
-    readonly polished: string;
-    readonly fixes: readonly AsakaiFix[];
-  }>({ clarity: null, japanese: null, good: "", advice: "", polished: "", fixes: [] });
+  }>({ clarity: null, japanese: null, good: "", advice: "" });
+
+  /**
+   * **その日の 項目ごとの ブラッシュアップ**（札の id → いちばん 新しい 直し）。
+   *
+   * 2026-09-19 の 指定「ブラッシュアップは 項目ごとに まとめて」。前は 1日ぶんを
+   * 1本の 文（`polished`）で 持って いた ので、どの 項目の 直しかが 読めなかった。
+   * 1本で ぜんぶ 言えた 日は その日の 評価しか 出ない ので、ここから 引く。
+   */
+  const [dayItems, setDayItems] = useState<Readonly<Record<string, AsakaiItem>>>({});
 
   /**
    * **その日 学習者が 送った ことば ぜんぶ**（その日の 評価に「あなたの 回答」として 並べる）。
@@ -632,8 +637,12 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
        *「回答結果が リセットされて しまう。曜日を 切り替えた 場合や 画面を
        * 切り替えた 場合。ストレージ保管して 再現できるように」）。
        *
-       * こえは 鳴らし直さない——戻って きた 人は もう 聞いて いる。
-       * 報告メモは 開く（どの 日の 話だったかを 先に 見せる）。
+       * **こえも 鳴らし直す**（2026-09-21 の 指定「毎回 開いた 時に 今までの 会話を
+       * 再生する ように して ください」）。前は 字だけ 戻して 黙って いた——
+       * 開き直した 人は **どこまで 話したかを 字で さかのぼる**しか なく、
+       * 聞いて 覚える 練習に ならなかった。字と 同じ 順で 待ち行列に 積む。
+       * 報告メモは 開く（どの 日の 話だったかを 先に 見せる）ので、
+       * 鳴りはじめるのは **閉じた あと**（`dutyIntro` の 覚え書き）。
        */
       const draft = readAsakaiDraft(meeting.id, next.day);
       if (draft && draft.lines.length > 0) {
@@ -643,6 +652,13 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
         setProbes(draft.probes);
         setAskedId(draft.askedId);
         setProbeLog(draft.log);
+        setDutyIntro(
+          draft.lines.map((line) => ({
+            speakerId: line.speakerId,
+            text: line.text,
+            audio: line.audio,
+          })),
+        );
         setDuty(true);
         return;
       }
@@ -860,22 +876,38 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
        * そこは これまでどおり「報告の 見かた」を 出す。
        */
       const wasProbe = askedId !== null && askedText !== "";
-      const clarity = seen?.clarity ?? null;
-      const japanese = seen?.japanese ?? null;
+      /*
+       * **点は 積み上げ**（2026-09-20 の 指定「点数も 増える ごとに 積み上げ（最高100点）」）。
+       *
+       * 内容の 点は 開いた 札の 数なので もともと 増える。AIの 2つ（伝わりやすさ・
+       * 仕事の 日本語）は **1本ごとの 見立て**なので、聞き返しの 1行に こたえた だけで
+       * 下がる ことが あった——同じ 日の 中で 点が 行ったり 来たり すると、
+       * 何を すれば 上がるのかが 読めない。**その日の いちばん よい 点**を 持つ。
+       */
+      const best = (now: number | null, kept: number | null): number | null =>
+        now === null ? kept : kept === null ? now : Math.max(now, kept);
+      const clarity = best(seen?.clarity ?? null, dayAi.clarity);
+      const japanese = best(seen?.japanese ?? null, dayAi.japanese);
       const good = seen?.good ?? "";
       const adviceText = seen?.advice ?? "";
-      const polished = seen?.polished ?? "";
-      const fixes = seen?.fixes ?? [];
       if (seen) {
         setDayAi((prev) => ({
-          clarity: clarity ?? prev.clarity,
-          japanese: japanese ?? prev.japanese,
+          clarity: best(clarity, prev.clarity),
+          japanese: best(japanese, prev.japanese),
           good: good !== "" ? good : prev.good,
           advice: adviceText !== "" ? adviceText : prev.advice,
-          polished: polished !== "" ? polished : prev.polished,
-          fixes: fixes.length > 0 ? fixes : prev.fixes,
         }));
+        if (seen.items.length > 0) {
+          setDayItems((prev) => {
+            const next = { ...prev };
+            for (const item of seen.items) next[item.id] = item;
+            return next;
+          });
+        }
       }
+      /** この 1本の、項目ごとの ブラッシュアップ（AIが 見た ときだけ）。 */
+      const itemOf = (id: string): AsakaiItem | undefined =>
+        seen?.items.find((item) => item.id === id);
 
       /* 進捗の 札だけ、**その日の 数と ちがう 数**を 言って いたかを 見る。 */
       const wrongNow = panels
@@ -910,14 +942,16 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
           const state = final.find((one) => one.id === panel.id);
           const asked = attempts[panel.id] ?? 0;
           const data = scene.panels.find((one) => one.id === panel.id);
+          const mark = markOf({
+            full: state?.full ?? false,
+            attempts: asked,
+            wrongNumber: wrongAll.includes(panel.id),
+          });
+          const item = itemOf(panel.id);
           return {
             id: panel.id,
             label: panel.label,
-            mark: markOf({
-              full: state?.full ?? false,
-              attempts: asked,
-              wrongNumber: wrongAll.includes(panel.id),
-            }),
+            mark,
             /*
              * 直しの ことばは **教材の 聞き返し**を そのまま 使う（新しい 呼び名を 作らない）。
              * ただし **打ち切った 札には 出さない**——司会は もう「聞けませんでした。
@@ -934,8 +968,16 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
             advice: adviceFor(panel, state, data?.followups[0]?.text ?? ""),
             /* 練習の 途中では **見本を 出さない**（写して 終わりに なる）。 */
             example: "",
-            /* 見くらべは 日の おわりだけ。ここでは 札ごとに 分けない。 */
-            said: "",
+            /* その 項目の ところ（AIが 分けた ときだけ。鍵が 無ければ 空）。 */
+            said: item?.said ?? "",
+            /*
+             * **中身が 合った 札にだけ** ブラッシュアップを 出す（2026-09-19 の 指定）。
+             * AIは 学生の 数の まま 直すので、まちがった 数を 直した 文に すると
+             * 正しい 数に 見える——まだの 札は 下の ヒント（型文）に する。
+             */
+            polished: mark !== "missing" ? (item?.polished ?? "") : "",
+            /* 答えを 出さない 型文（教材の 聞き返しから。`asakai-hint.ts`）。 */
+            hint: hintOf((data?.followups ?? []).map((one) => one.text)),
           };
         });
 
@@ -976,8 +1018,6 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
         rows: viewRows(final),
         good,
         advice: adviceText,
-        polished,
-        fixes,
       });
 
       const opened = step.states
@@ -1138,6 +1178,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
       probes,
       probeLog,
       logLines,
+      dayAi,
       say,
       finishScene,
     ],
@@ -1179,6 +1220,8 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
           panels: scene.panels
             .filter((panel) => panel.facts.length > 0)
             .map((panel) => ({ id: panel.id, label: panel.label, facts: panel.facts })),
+          /* 項目ごとの ブラッシュアップの ために、行を 持たない 札（進捗率）も 渡す。 */
+          items: scene.panels.map((panel) => ({ id: panel.id, label: panel.label })),
           hasLog: logLines.length > 0,
           utterance: text,
         },
@@ -1342,7 +1385,8 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
       setAnswer("");
       setJudge(null);
       setProbeLog([]);
-      setDayAi({ clarity: null, japanese: null, good: "", advice: "", polished: "", fixes: [] });
+      setDayAi({ clarity: null, japanese: null, good: "", advice: "" });
+      setDayItems({});
       setAskedText("");
       setDayOpen(false);
       setPendingTail([]);
@@ -1354,6 +1398,19 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
   );
 
   const goNext = useCallback(() => goToScene(sceneAt + 1), [goToScene, sceneAt]);
+
+  /**
+   * **その日を はじめから やり直す**（2026-09-21 の 指定）。
+   *
+   * 途中の 控えを 捨ててから 場面を 開き直す——捨てないと `openScene` が
+   * 控えを 読んで、**やり直した つもりで 途中に 戻る**。
+   * 記録した けっかは そのまま（お手本を 見た あとの やり直しと 同じ 決まり）。
+   */
+  const restartDay = useCallback(() => {
+    if (!scene) return;
+    clearAsakaiDraft(meeting.id, scene.day);
+    goToScene(sceneAt);
+  }, [scene, meeting.id, sceneAt, goToScene]);
 
   if (!asakai || !scene) return null;
 
@@ -1526,12 +1583,25 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
           📋 <RubyText text="報告メモ" index={index} show />
         </button>
       </StepTabs>
-      <WeekBoard
-        scenes={asakai.scenes.map((one) => DAY_NAME[one.day])}
-        rows={results}
-        unitName={asakai.level === "hard" ? "言えた こと" : "開いた カード"}
-        index={index}
-      />
+      {/*
+        **その日を はじめから やり直す**（2026-09-21 の 指定）。
+        これまで やり直せるのは「きょうの 評価」の 中だけ——**報告の さいちゅうに
+        気が 変わった 人**（言い方を 変えたい・最初から 通して 言いたい）に 道が 無かった。
+        点は 上書きしない 決まりの まま（お手本を 見た あとの やり直しと 同じ）。
+      */}
+      <button
+        type="button"
+        onClick={restartDay}
+        /*
+          **曜日の 名前を 入れない。** 入れると 上の タブと 同じ 名前に なり、
+          読み上げでも 検査でも「どちらの ボタンか」が 分からなく なる。
+          いまが 何曜日かは、すぐ 上の えらばれた タブが 言って いる。
+        */
+        aria-label="この日を はじめから やり直す"
+        className="border-blossom text-navy w-full rounded-full border-2 bg-white px-3 py-1.5 text-xs font-extrabold"
+      >
+        ↻ <RubyText text="この日を はじめから" index={index} show />
+      </button>
     </div>
   );
 
@@ -1571,7 +1641,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
               waitNote: judge
                 ? "見かたを 読んでから 話します。"
                 : waiting
-                  ? "AIが いま 見て います。"
+                  ? "Gemini（AI）が いま 見て います。"
                   : null,
               onConnect: () => void voice.start(LISTEN_ONLY),
               onStartTalking: voice.startTalking,
@@ -1785,7 +1855,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
             judge
               ? "見かたを 読んでから 送れます"
               : waiting
-                ? "AIが いま 見て います…"
+                ? "Gemini（AI）が いま 見て います…"
                 : "いまは 送れません"
           }
           onDraft={setAnswer}
@@ -1881,8 +1951,9 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
             answer={judge.utterance}
             good={judge.good}
             advice={judge.advice}
-            polished={judge.polished}
-            fixes={judge.fixes}
+            score={judge.score}
+            rows={judge.rows}
+            hasKey={hasKey}
             nextLabel={judge.sceneOver ? "みんなの 報告を 聞く ▶" : "つぎの しつもんを 聞く ▶"}
             rest={judge.shut.join("／")}
             index={index}
@@ -1900,8 +1971,6 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
             rows={judge.rows}
             good={judge.good}
             advice={judge.advice}
-            polished={judge.polished}
-            fixes={judge.fixes}
             readLog={judge.readLog}
             nextLabel={judge.sceneOver ? "みんなの 報告を 聞く ▶" : "報告を つづける ▶"}
             utterance={judge.utterance}
@@ -1927,35 +1996,42 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
               dayAi.japanese,
             ),
           }}
-          rows={panels.map((panel) => ({
-            id: panel.id,
-            label: panel.label,
-            mark: markOf({
+          rows={panels.map((panel) => {
+            const mark = markOf({
               full: states.find((one) => one.id === panel.id)?.full ?? false,
               attempts: attempts[panel.id] ?? 0,
               wrongNumber: wrongNums.includes(panel.id),
-            }),
-            advice: "",
-            /* その 札を 開けた ことば（控えから 逆に 引く）。 */
-            said: probeLog
-              .filter((one) => one.panels?.includes(panel.id))
-              .map((one) => one.answer)
-              .join(" "),
-            /*
-             * **その日の ふりかえりにだけ 正しい 回答を 出す**（2026-09-18 の 指定）。
-             * 教材の 見本は 「…」で 囲って ある ので、外して 本文だけ 並べる
-             *（つないで「ブラッシュアップ回答」を 作るため）。
-             */
-            example: (scene.panels.find((one) => one.id === panel.id)?.example?.text ?? "").replace(
-              /^「|」$/gu,
-              "",
-            ),
-          }))}
+            });
+            return {
+              id: panel.id,
+              label: panel.label,
+              mark,
+              advice: "",
+              /* その 札を 開けた ことば（控えから 逆に 引く）。 */
+              said: probeLog
+                .filter((one) => one.panels?.includes(panel.id))
+                .map((one) => one.answer)
+                .join(" "),
+              /*
+               * **その日の ふりかえりにだけ 正しい 回答を 出す**（2026-09-18 の 指定）。
+               * 教材の 見本は 「…」で 囲って ある ので、外して 本文だけ 並べる
+               *（つないで「ブラッシュアップ回答」を 作るため）。
+               */
+              example: (
+                scene.panels.find((one) => one.id === panel.id)?.example?.text ?? ""
+              ).replace(/^「|」$/gu, ""),
+              /*
+               * 項目ごとの ブラッシュアップ（その日 いちばん 新しい 直し）。**言えた 札だけ**——
+               * まだの 札は 横の「正しい 回答」で 見くらべる（日の おわりは 答えを 見せて よい）。
+               */
+              polished: mark !== "missing" ? (dayItems[panel.id]?.polished ?? "") : "",
+              /* 日の おわりは 正しい 回答を 出す ので、ヒントは 要らない。 */
+              hint: "",
+            };
+          })}
           probes={probeLog}
           good={dayAi.good}
           advice={dayAi.advice}
-          polished={dayAi.polished}
-          fixes={dayAi.fixes}
           nextLabel={
             sceneAt + 1 >= asakai.scenes.length
               ? "今週の けっかを 見る ▶"
@@ -1988,6 +2064,13 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
       {weekOpen ? (
         <WeekResult asakai={asakai} rows={results} index={index} onClose={closeWeek} />
       ) : null}
+      {/*
+        **Gemini を 呼んで いる あいだは 画面 ぜんたいを 覆う**（2026-09-21 の 指定
+        「マイクで 話すのが メイン…画面の 制御も ある ため、全体に 表示される ことが
+        望ましい」）。会話の 記録の 中に 置いて いた ころは、話して いる 学習者の
+        目に 入らず、待って いる あいだに 曜日の 帯や 報告メモが 押せて しまって いた。
+      */}
+      {waiting ? <AiWaitingOverlay doing="見て います" index={index} /> : null}
     </CallShell>
   );
 }
@@ -2138,73 +2221,6 @@ function TimeCard({
           <DayProgress at={at + 1} total={total} />
         </span>
       </button>
-    </div>
-  );
-}
-
-/**
- * **曜日ごとの 点を、ポップアップを 開かずに 見る 帯**（2026-09-18 の 指定
- *「モーダルでは ない 画面で 曜日ごとの 点数や 評価を 表示する 箇所を 作れますか？」）。
- *
- * これまで 点は **きょうの 評価**と **今週の けっか**の 中にしか 無く、
- * どちらも 閉じると 消えた——いま 何日目で、前の 日が 何点だったかを
- * 見に 行く 道が 無い。タブの すぐ 下に 置いて、報告の あいだ ずっと 見える ように する。
- *
- * 出すのは **端末に 残って いる もの**だけ（`DayResult`）。伝わりやすさと
- * 仕事の 日本語は 日ごとに 残して いない ので ここには 出さない——
- * 見て いない ものを 数に しない（規律1）。
- */
-function WeekBoard({
-  scenes,
-  rows,
-  unitName,
-  index,
-}: {
-  /** 月〜金の 字（`DAY_NAME`）。まだ 報告して いない 日も 席を 出す。 */
-  scenes: readonly string[];
-  rows: readonly DayResult[];
-  unitName: string;
-  index: FuriganaIndex;
-}) {
-  if (rows.length === 0) return null;
-  const byDay = new Map(rows.map((row) => [row.day, row]));
-  return (
-    <div
-      role="group"
-      aria-label="曜日ごとの けっか"
-      className="border-hairline bg-panel rounded-xl border px-3 py-2"
-    >
-      <p className="text-ink-soft text-[11px] leading-[1.9] font-black">
-        📊 <RubyText text={`曜日ごとの けっか（${unitName}／内容の 点）`} index={index} show />
-      </p>
-      <ul className="mt-1 flex flex-wrap gap-1.5">
-        {scenes.map((day) => {
-          const row = byDay.get(day);
-          /* 内容の 点は 残って いる 数から 出す（`asakai-score.ts` と 同じ 出しかた）。 */
-          const point = row ? contentScore(row.cards, row.cardTotal) : null;
-          return (
-            <li
-              key={day}
-              className={`rounded-xl border-2 px-2 py-1 text-[11px] leading-[1.9] font-black ${
-                row === undefined
-                  ? "border-hairline bg-panel-tint text-ink-soft"
-                  : row.cards >= row.cardTotal
-                    ? "border-leaf bg-sky-soft text-leaf-deep"
-                    : "border-sun-deep bg-cream text-sun-deep"
-              }`}
-            >
-              <RubyText text={day} index={index} show />{" "}
-              {row === undefined ? (
-                <RubyText text="まだ" index={index} show />
-              ) : (
-                <span className="tabular-nums">
-                  {row.units} / {row.unitTotal} ・ {point} / {CONTENT_MAX}
-                </span>
-              )}
-            </li>
-          );
-        })}
-      </ul>
     </div>
   );
 }

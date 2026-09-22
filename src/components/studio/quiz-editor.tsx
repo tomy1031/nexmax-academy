@@ -173,6 +173,28 @@ export function describeQuestionIssues(question: QuizQuestion): string[] {
       return question.start > question.max
         ? ["さいしょの 行の 数が、ふやせる 上限より 多いです。"]
         : [];
+
+    /*
+     * 型の ある 文の うめこみ（メール）。欄には 1つずつ 正解が ある ので、
+     * **空の 正解**は そのまま 公開されると 誰も 合格できない 欄に なる。
+     */
+    case "fillin": {
+      const notices: string[] = [];
+      const writes = question.head.filter((row) => row.kind === "write");
+      if (writes.some((row) => row.answer.trim().length === 0)) {
+        notices.push("上の 行（宛先など）の こたえが 空の ものが あります。");
+      }
+      if (question.head.some((row) => row.label.trim().length === 0)) {
+        notices.push("上の 行の 名前（宛先・件名）が 空の ものが あります。");
+      }
+      if (question.blanks.some((blank) => blank.label.trim().length === 0)) {
+        notices.push("【 】の 名前が 空の ものが あります。");
+      }
+      if (question.blanks.some((blank) => blank.answer.trim().length === 0)) {
+        notices.push("【 】の こたえが 空の ものが あります。");
+      }
+      return notices;
+    }
   }
 }
 
@@ -249,6 +271,8 @@ const QUIZ_TYPE_OPTIONS: readonly { value: QuizQuestion["type"]; label: string }
   { value: "free", label: "じゆうに 書く（正解なし）" },
   // 学習者が 行を ふやして じゅんばんに 書く（「えらい 順に 階級を」）。正解は 無い
   { value: "ranklist", label: "じゅんばんに ならべて 書く（正解なし・行を ふやせる）" },
+  // 型の ある 文（メール・連絡文）を 欄ごとに 打つ。欄には 1つずつ 正解が ある
+  { value: "fillin", label: "メールの 型を うめる（宛先・【 】の あなうめ）" },
 ];
 
 const PHASE_OPTIONS: readonly { value: QuizSet["phase"]; label: string }[] = [
@@ -803,7 +827,180 @@ function QuestionBody({
         </div>
       );
     }
+
+    /*
+     * 型の ある 文（メール）。**場面の メモ（`scene`）と AIの 観点（`ai`）は
+     * ここでは 直せない**——`onChange` は 受け取った 問いを そのまま 広げて 返すので、
+     * 直さない かぎり 消えない（先生が 文言を 直しても 残る）。
+     * 直せる ように するのは 別の 作業（先生から 求められた ときに 足す）。
+     */
+    case "fillin":
+      return (
+        <div className="space-y-3">
+          <TextField
+            label="紙の 見出し（なくても よい）"
+            value={question.formTitle ?? ""}
+            onChange={(formTitle) =>
+              onChange({ ...question, formTitle: formTitle.trim() === "" ? undefined : formTitle })
+            }
+            placeholder="例：📧 メール作成"
+          />
+          <FillinRowsEditor question={question} onChange={onChange} />
+          <TextAreaField
+            label="本文の はじめ（変えられない 文）"
+            rows={2}
+            value={question.intro ?? ""}
+            onChange={(intro) =>
+              onChange({ ...question, intro: intro.trim() === "" ? undefined : intro })
+            }
+          />
+          <FillinBlanksEditor question={question} onChange={onChange} />
+          <TextAreaField
+            label="本文の おわり（変えられない 文）"
+            rows={2}
+            value={question.outro ?? ""}
+            onChange={(outro) =>
+              onChange({ ...question, outro: outro.trim() === "" ? undefined : outro })
+            }
+          />
+        </div>
+      );
   }
+}
+
+type FillinQuestion = Extract<QuizQuestion, { type: "fillin" }>;
+
+/** 本文の 上の 行（宛先・件名）。打つ 行と 変えられない 行を ならべる。 */
+function FillinRowsEditor({
+  question,
+  onChange,
+}: {
+  question: FillinQuestion;
+  onChange: (question: QuizQuestion) => void;
+}) {
+  const rows = question.head;
+  const put = (next: FillinQuestion["head"]) => onChange({ ...question, head: next });
+  return (
+    <div className="space-y-2">
+      <p className="text-ink-soft text-xs font-extrabold">本文の 上の 行（宛先・件名）</p>
+      {rows.map((row, index) => (
+        <div key={index} className="border-hairline space-y-2 rounded-xl border-2 p-2">
+          <TextField
+            label="行の 名前"
+            value={row.label}
+            onChange={(label) => put(replaceAt(rows, index, { ...row, label }))}
+            placeholder="例：宛先"
+          />
+          {row.kind === "fixed" ? (
+            <TextField
+              label="出す 文（学習者は 打てない）"
+              value={row.text}
+              onChange={(text) => put(replaceAt(rows, index, { ...row, text }))}
+              placeholder="例：【重要】システムエラーについて"
+            />
+          ) : (
+            <TextField
+              label="こたえ"
+              value={row.answer}
+              onChange={(answer) => put(replaceAt(rows, index, { ...row, answer }))}
+              hint="この ことばが 入って いれば 合格に します。"
+            />
+          )}
+          <button
+            type="button"
+            onClick={() => put(removeAt(rows, index))}
+            className="text-coral-deep text-xs font-extrabold"
+          >
+            この 行を 消す
+          </button>
+        </div>
+      ))}
+      {/* 上限は スキーマと 同じ 4行（越えると 保存の ときに 理由の 分からない 失敗に なる） */}
+      {rows.length < 4 && (
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => put([...rows, { kind: "write", label: "", answer: "", accept: [] }])}
+            className="border-hairline rounded-full border-2 px-3 py-1 text-xs font-extrabold"
+          >
+            ＋ 打つ 行を 追加
+          </button>
+          <button
+            type="button"
+            onClick={() => put([...rows, { kind: "fixed", label: "", text: "" }])}
+            className="border-hairline rounded-full border-2 px-3 py-1 text-xs font-extrabold"
+          >
+            ＋ 変えられない 行を 追加
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/** 本文の 【ラベル】＋ 入力欄。 */
+function FillinBlanksEditor({
+  question,
+  onChange,
+}: {
+  question: FillinQuestion;
+  onChange: (question: QuizQuestion) => void;
+}) {
+  const blanks = question.blanks;
+  const put = (next: FillinQuestion["blanks"]) => onChange({ ...question, blanks: next });
+  return (
+    <div className="space-y-2">
+      <p className="text-ink-soft text-xs font-extrabold">本文の 【 】（上から 順に）</p>
+      {blanks.map((blank, index) => (
+        <div key={index} className="border-hairline space-y-2 rounded-xl border-2 p-2">
+          <TextField
+            label="【 】の 名前"
+            value={blank.label}
+            onChange={(label) => put(replaceAt(blanks, index, { ...blank, label }))}
+            placeholder="例：原因"
+          />
+          <TextField
+            label="こたえ"
+            value={blank.answer}
+            onChange={(answer) => put(replaceAt(blanks, index, { ...blank, answer }))}
+            hint="この ことばが 入って いれば 合格に します。"
+          />
+          <TextField
+            label="うすい字（なくても よい）"
+            value={blank.placeholder ?? ""}
+            onChange={(placeholder) =>
+              put(
+                replaceAt(blanks, index, {
+                  ...blank,
+                  placeholder: placeholder.trim() === "" ? undefined : placeholder,
+                }),
+              )
+            }
+            placeholder="例：何が おきて いる？"
+            hint="こたえその ものは 書かないでください。"
+          />
+          {blanks.length > 1 && (
+            <button
+              type="button"
+              onClick={() => put(removeAt(blanks, index))}
+              className="text-coral-deep text-xs font-extrabold"
+            >
+              この 【 】を 消す
+            </button>
+          )}
+        </div>
+      ))}
+      {blanks.length < 8 && (
+        <button
+          type="button"
+          onClick={() => put([...blanks, { label: "", answer: "", accept: [] }])}
+          className="border-hairline rounded-full border-2 px-3 py-1 text-xs font-extrabold"
+        >
+          ＋ 【 】を 追加
+        </button>
+      )}
+    </div>
+  );
 }
 
 /** 1つだけ こたえを えらぶ形（4たく・気もち・言い方）。 */

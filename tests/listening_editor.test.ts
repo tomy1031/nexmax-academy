@@ -4,6 +4,7 @@ import {
   countLinesBySpeaker,
   emptyListening,
   missingKeywords,
+  rescueWordOnScreen,
 } from "@/components/studio/listening-drafts";
 
 /**
@@ -113,5 +114,30 @@ describe("emptyListening", () => {
 
   it("作りたての 下書きでは キーワードの 警告を 出さない", () => {
     expect(missingKeywords(emptyListening())).toEqual([]);
+  });
+});
+
+describe("rescueWordOnScreen", () => {
+  it("見かた（focus）に 同じ ことばが あると 知らせる", () => {
+    const value = listening({ rescueWord: "こまっていること" });
+    // focus は「…「こまっていること」を どう つたえるかに…」
+    expect(rescueWordOnScreen(value)).toBe(true);
+  });
+
+  it("かぎかっこ・空白が ちがっても 見つける（画面の 見たままを 打てば 通る ため）", () => {
+    expect(rescueWordOnScreen(listening({ rescueWord: "こまって いること" }))).toBe(true);
+    expect(
+      rescueWordOnScreen(listening({ title: "朝会（あさかい）", rescueWord: "あさかい" })),
+    ).toBe(true);
+  });
+
+  it("台本にしか 出て こない ことばは 知らせない", () => {
+    // 台本の「原因はまだ分かりません」から。聞かないと 出て こない
+    expect(rescueWordOnScreen(listening({ rescueWord: "原因はまだ分かりません" }))).toBe(false);
+  });
+
+  it("あいことばが 無い ときは 知らせない", () => {
+    expect(rescueWordOnScreen(listening())).toBe(false);
+    expect(rescueWordOnScreen(listening({ rescueWord: "  " }))).toBe(false);
   });
 });

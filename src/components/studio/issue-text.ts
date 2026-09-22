@@ -89,6 +89,7 @@ const FIELD_LABELS: Record<string, string> = {
   at: "はじまる 秒",
   keywords: "さがす ことば",
   revealGoal: "原稿を ひらく 目標",
+  rescueWord: "あいことば",
   focus: "聞く まえに 配る 見かた",
   audioUrl: "音声の ばしょ",
 };

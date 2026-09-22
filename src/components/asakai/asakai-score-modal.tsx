@@ -4,7 +4,6 @@ import type { ReactNode } from "react";
 
 import { ModalShell } from "@/components/meeting/modal-shell";
 import { RubyText } from "@/components/ruby-text";
-import type { AsakaiFix } from "@/lib/meeting/asakai-judge";
 import { CLARITY_MAX, CONTENT_MAX, JAPANESE_MAX, type RowMark } from "@/lib/meeting/asakai-score";
 import type { FuriganaIndex } from "@/lib/text/furigana";
 
@@ -69,6 +68,22 @@ export interface RowView {
    * ある ので、そこから 本当に 引ける。
    */
   readonly said: string;
+  /**
+   * その 札の **ブラッシュアップ**（学習者の その ところを 職場の 日本語に 直した もの・AI）。
+   *
+   * 2026-09-19 の 指定「内容は 合って いて 日本語が おかしい 場合は、正しい 日本語を
+   * ブラッシュアップと して 表で 出して」。**札が 開いた（中身が 合った）ときだけ** 入る——
+   * AIは 学生の 数の まま 直すので、まちがった 数を 直した 文に 入れると
+   * 正しい 数に 見える。無ければ 空。
+   */
+  readonly polished: string;
+  /**
+   * 言えて いない 札の **ヒント**（教材の 型文。答えは 入らない・`asakai-hint.ts`）。
+   *
+   * 2026-09-19 の 指定「数値など 正しく 言えて いない 場合は 答えは 出さず、
+   * 『○○画面全体の 進捗は ○%です。』の ように ヒントに する」。無ければ 空。
+   */
+  readonly hint: string;
 }
 
 const MARK_FACE: Record<RowMark, { readonly mark: string; readonly cls: string }> = {
@@ -142,6 +157,10 @@ function ScoreHead({
     <div className="border-hairline bg-panel-tint mt-3 rounded-2xl border-2 p-3">
       <Cap text={lead} index={index} />
       <p className="text-navy mt-1 text-3xl font-black">
+        {/*
+          **「総合」の 字は 出さない**（2026-09-20 の 指定）。数字と 満点だけで 読める。
+          鍵が 無い 日は AIの 2つを 見て いないので、何の 点かを「内容」で 断る。
+        */}
         {score.total === null ? (
           <>
             <Ruby text="内容" index={index} /> {score.content}
@@ -149,7 +168,7 @@ function ScoreHead({
           </>
         ) : (
           <>
-            <Ruby text="総合" index={index} /> {score.total}
+            {score.total}
             <span className="text-ink-soft text-base"> / 100</span>
           </>
         )}
@@ -228,27 +247,185 @@ function MarkRow({
   );
 }
 
+/** 空白の ちがいだけの 文は 同じと 見る（「進捗は 45%です」と「進捗は45%です」）。 */
+function sameText(a: string, b: string): boolean {
+  return a.replace(/\s+/gu, "") === b.replace(/\s+/gu, "");
+}
+
 /**
- * **ブラッシュアップ** — こたえを 職場の 日本語に 書き直した もの（AIの ことば）。
+ * **項目ごとの まとめ**（「どのように 伝えられたか」を 表に する）
  *
- * 2026-09-18 の 指定「あなたの 報告の 下に『ブラッシュアップ』より よい 日本語を
- * 入れて ください。あなたの 回答を ベースに 作成して ください。言ってない 言葉は
- * 補わないで」。**中身を 足さない**のが 要——補うと、言えて いない ことに
- * 気づけない まま「これで よかった」と 読む（規律1）。
+ * 2026-09-19 の 指定「ブラッシュアップは 項目ごとに まとめて」「表に まとめて」
+ *「まだです の ところも 表で 一括で まとめて」。前は 札 4枚・ブラッシュアップ（1本）・
+ * やり直す ところ・日本語の 直し が 別々の 箱で、**どの 項目の 話か**を 画面の 中で
+ * 行ったり 来たり して 探す ことに なって いた。
+ *
+ * 1行が 1項目。右の 列は 札の けっかで 中身が 変わる:
+ * - **言えた**（中身が 合った）… AIの ブラッシュアップ（直す ところが 無ければ「このままで 通じます」）
+ * - **まだです**（言って いない・数が ちがう など）… **答えは 出さず** 教材の 型文を ヒントに する
+ *
+ * ## 「やり直す ところ」は 表の 中へ（規律10 の 引き継ぎ）
+ * 前の 箱は **司会が つぎに 聞く 1つ**を 見せて いた（次の 行動は 1つ・R5）。
+ * その 役目は **👉 の 行**が 引き継ぐ——まだの 行の うち 最初の 1つにだけ、司会の
+ * 聞き返しを 添える。
+ *
+ * 作業記録を そのまま 読み上げた ターンは ヒントを 出さない（やる ことは
+ *「まとめて もう いちど」の 1つ。上の 赤い 帯が 言う）。
  */
-function Polish({ text, index }: { text: string; index: FuriganaIndex }) {
-  if (text === "") return null;
+function ItemTable({
+  rows,
+  words,
+  showHints,
+  index,
+}: {
+  rows: readonly RowView[];
+  words: Record<RowMark, string>;
+  /** ヒントと 👉 を 出すか（作業記録の 読み上げを 差し戻した ターンは 出さない）。 */
+  showHints: boolean;
+  index: FuriganaIndex;
+}) {
+  const nextId = showHints
+    ? rows.find((row) => row.mark === "missing" && row.advice !== "")?.id
+    : undefined;
   return (
-    <div className="border-sky-deep bg-sky-soft mt-2 rounded-xl border-2 px-3 py-2">
-      <Cap
-        text="✨ ブラッシュアップ（あなたの 文を 直した もの）"
-        index={index}
-        tone="text-sky-deep"
-      />
-      <p className="text-navy mt-0.5 text-sm leading-[1.9] font-bold">
+    <div className="mt-3">
+      <Cap text="どのように 伝えられたか" index={index} />
+      <table className="border-hairline mt-1 w-full border-collapse overflow-hidden rounded-xl border bg-white text-left">
+        <thead>
+          <tr className="bg-panel-tint text-ink-soft text-[10px] leading-[1.9] font-black">
+            <th scope="col" className="w-[36%] px-2 py-1 sm:w-[24%]">
+              <Ruby text="項目" index={index} />
+            </th>
+            <th scope="col" className="hidden w-[20%] px-2 py-1 sm:table-cell">
+              <Ruby text="けっか" index={index} />
+            </th>
+            <th scope="col" className="px-2 py-1">
+              <Ruby text="ブラッシュアップ ／ ヒント" index={index} />
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row) => {
+            const face = MARK_FACE[row.mark];
+            const badge = (
+              <span
+                className={`inline-flex items-center gap-1 rounded-full border-2 px-1.5 py-0.5 text-[11px] leading-[1.9] font-black whitespace-nowrap ${face.cls}`}
+              >
+                <span aria-hidden>{face.mark}</span>
+                <Ruby text={words[row.mark]} index={index} />
+              </span>
+            );
+            return (
+              <tr key={row.id} className="border-hairline border-t align-top">
+                <td className="px-2 py-2">
+                  <p className="text-ink text-[11px] leading-[1.9] font-black break-words">
+                    <Ruby text={row.label} index={index} />
+                  </p>
+                  {/* スマホでは けっかの 列を 置かず、項目の 下に 出す（318px に 3列は 入らない）。 */}
+                  <p className="mt-0.5 sm:hidden">{badge}</p>
+                </td>
+                <td className="hidden px-2 py-2 sm:table-cell">{badge}</td>
+                <td className="px-2 py-2">
+                  <BrushCell
+                    row={row}
+                    showHint={showHints}
+                    next={row.id === nextId}
+                    index={index}
+                  />
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+/**
+ * 表の 右の 列（ブラッシュアップ か ヒント）。
+ *
+ * **あなたの 発言と ブラッシュアップは 枠で 分け、ブラッシュアップを 目立たせる**
+ *（2026-09-20 の 指定）。前は 同じ 段に 小さく 並べて いたので、どちらが
+ * 直した 文かが ひと目で 分からなかった。
+ */
+function BrushCell({
+  row,
+  showHint,
+  next,
+  index,
+}: {
+  row: RowView;
+  showHint: boolean;
+  next: boolean;
+  index: FuriganaIndex;
+}) {
+  const yours =
+    row.said !== "" ? (
+      <div className="border-hairline bg-panel-tint rounded-lg border px-2 py-1">
+        <Cap text="あなたの 発言" index={index} />
+        <p className="text-ink mt-0.5 text-[13px] leading-[1.9] font-bold">
+          <Ruby text={row.said} index={index} />
+        </p>
+      </div>
+    ) : null;
+  /** 目立つ 枠（ブラッシュアップ・ヒント）。 */
+  const box = (tone: { border: string; face: string; cap: string }, cap: string, text: string) => (
+    <div className={`mt-1 rounded-lg border-2 px-2 py-1.5 ${tone.border} ${tone.face}`}>
+      <Cap text={cap} index={index} tone={tone.cap} />
+      <p className="text-navy mt-0.5 text-sm leading-[1.9] font-black">
         <Ruby text={text} index={index} />
       </p>
     </div>
+  );
+  const BRUSH = { border: "border-sky-deep", face: "bg-sky-soft", cap: "text-sky-deep" };
+  const HINT = { border: "border-sun-deep", face: "bg-cream", cap: "text-sun-deep" };
+  if (row.mark !== "missing") {
+    if (row.polished === "") {
+      /* AIが 見て いない（鍵が 無い・届かなかった）。見て いない ものに「いいです」と 言わない。 */
+      return (
+        <>
+          {yours}
+          <p className="text-ink-faint text-sm font-black">—</p>
+        </>
+      );
+    }
+    if (row.said !== "" && sameText(row.polished, row.said)) {
+      return (
+        <>
+          {yours}
+          <p className="text-leaf-deep mt-1 text-[11px] leading-[1.9] font-black">
+            ✅ <Ruby text="このままで 通じます" index={index} />
+          </p>
+        </>
+      );
+    }
+    return (
+      <>
+        {yours}
+        {box(BRUSH, "✨ ブラッシュアップ", row.polished)}
+      </>
+    );
+  }
+  if (!showHint || row.hint === "") {
+    return (
+      <>
+        {yours}
+        <p className="text-ink-faint text-sm font-black">—</p>
+      </>
+    );
+  }
+  return (
+    <>
+      {yours}
+      {box(HINT, "💡 ヒント（この 形で 言って みましょう）", row.hint)}
+      {next ? (
+        <p className="text-coral-deep mt-1 text-[11px] leading-[1.9] font-black">
+          {/* **短く 1行**（2026-09-20 の 指定）。何を 聞かれるかは 司会が 声で 言う。 */}
+          👉 <Ruby text="つぎに 聞かれます" index={index} />
+        </p>
+      ) : null}
+    </>
   );
 }
 
@@ -285,40 +462,6 @@ function GoodAdvice({
   );
 }
 
-/** 日本語の 直し（あなたの 表現 → 自然な 表現）。 */
-function FixList({ fixes, index }: { fixes: readonly AsakaiFix[]; index: FuriganaIndex }) {
-  if (fixes.length === 0) return null;
-  return (
-    <div className="border-sun-deep bg-cream mt-3 rounded-xl border-2 px-3 py-2">
-      <Cap text="💡 日本語を 直しましょう" index={index} tone="text-sun-deep" />
-      {fixes.map((fix) => (
-        <div key={`${fix.said}/${fix.natural}`} className="mt-1">
-          <p className="flex flex-wrap items-center gap-1 text-xs leading-[1.9] font-black">
-            <span className="border-hairline text-ink-soft rounded-full border bg-white px-2">
-              <Ruby text="あなたの 言い方" index={index} />
-            </span>
-            <span className="bg-blossom text-coral-deep rounded-full px-2">
-              <Ruby text={fix.said} index={index} />
-            </span>
-            <span aria-hidden>→</span>
-            <span className="bg-sky-soft text-leaf-deep rounded-full px-2">
-              <Ruby text={fix.natural} index={index} />
-            </span>
-          </p>
-          {fix.note !== "" ? (
-            <p className="text-navy mt-0.5 text-sm leading-[1.9] font-bold">
-              <Ruby text={fix.note} index={index} />
-            </p>
-          ) : null}
-        </div>
-      ))}
-      <p className="text-ink-soft mt-1 text-[11px] leading-[1.9] font-bold">
-        🔊 <Ruby text="直した 文を 声に 出して 言って みましょう。" index={index} />
-      </p>
-    </div>
-  );
-}
-
 /* ================================================================== *
  * 1) 報告の あと（まだ その日は 終わって いない）
  * ================================================================== */
@@ -328,8 +471,6 @@ export function ReportScoreModal({
   rows,
   good,
   advice,
-  polished,
-  fixes,
   readLog,
   nextLabel,
   utterance,
@@ -341,9 +482,6 @@ export function ReportScoreModal({
   rows: readonly RowView[];
   good: string;
   advice: string;
-  /** こたえを 職場の 日本語に 書き直した もの（無ければ 出さない）。 */
-  polished: string;
-  fixes: readonly AsakaiFix[];
   /** 夕礼で 作業記録を そのまま 読み上げて いた（この ぶんは 数えて いない）。 */
   readLog: boolean;
   /** とじる ボタンの 字（まだ つづく／その日は おわり）。 */
@@ -391,55 +529,16 @@ export function ReportScoreModal({
         }
       />
 
-      <MarkRow rows={rows} words={FIRST_WORD} index={index} />
-
-      {/* 言った ことは **1回だけ** 出す（札ごとに 分けられないので、分けた ふりを しない）。 */}
+      {/* 言った ことは **1回だけ** まるごと 出す（表の 中は 項目ごとの ところだけ）。 */}
       <div className="border-hairline bg-panel mt-3 rounded-xl border px-3 py-2">
         <Cap text="あなたの 報告" index={index} />
         <p className="text-navy mt-0.5 text-sm leading-[1.9] font-bold">
           <Ruby text={utterance} index={index} />
         </p>
       </div>
-      <Polish text={polished} index={index} />
 
-      {/*
-        **読み上げを 差し戻した ターンは、札ごとの 直しを 出さない。**
-        司会の 声は `if (readLog) sayRedo(); else if (followup) say(followup);` で
-        片方に 絞って あるのに（`asakai-session.tsx`）、ポップアップだけ
-        「まとめて もう いちど」と 札4枚ぶんの 聞き返しを **同時に** 並べて いた
-        ——次の 行動は 1つ（規律1・2026-09-17 の R5 再検収）。
-      */}
-      {/*
-        **出すのは 1つだけ。** 司会は 1つしか 聞かない
-        （`asakai-session.tsx` の `if (readLog) sayRedo(); else if (followup) say(followup);`）
-        のに、ここに 4枚ぶんの 聞き返しが 同時に 並んで いた——次の 行動は 1つ
-        （規律1・2026-09-18 の R5 検収）。
-      */}
-      {!readLog && rows.some((row) => row.advice !== "") ? (
-        <div className="mt-3">
-          <Cap text="やり直す ところ" index={index} />
-          <ul className="mt-1 space-y-2">
-            {rows
-              .filter((row) => row.advice !== "")
-              .slice(0, 1)
-              .map((row) => (
-                <li
-                  key={row.id}
-                  className="border-hairline bg-panel rounded-xl border px-3 py-2 sm:flex sm:gap-3"
-                >
-                  <p className="text-ink-soft min-w-0 text-[11px] leading-[1.9] font-black sm:w-40 sm:shrink-0">
-                    <Ruby text={row.label} index={index} />
-                  </p>
-                  <p className="text-coral-deep min-w-0 flex-1 text-sm leading-[1.9] font-bold">
-                    ❗ <Ruby text={row.advice} index={index} />
-                  </p>
-                </li>
-              ))}
-          </ul>
-        </div>
-      ) : null}
+      <ItemTable rows={rows} words={FIRST_WORD} showHints={!readLog} index={index} />
 
-      <FixList fixes={fixes} index={index} />
       <GoodAdvice good={good} advice={advice} index={index} />
     </ModalShell>
   );
@@ -449,14 +548,24 @@ export function ReportScoreModal({
  * 2) 聞き返しへの こたえ の あと
  * ================================================================== */
 
+/**
+ * 聞き返しへの こたえの あと — **「いまの 報告」と 同じ 骨**
+ *
+ * 2026-09-20 の 指定「質問の ときの 判定モーダルを 今の 報告で 統一に して。
+ * こちらに 新しく 追加された ものを 増やして いく 形で。点数も 増える ごとに 積み上げ」。
+ * 点（積み上げ）→ 伝わったかの 札 → しつもんと こたえ → **項目ごとの 表**の 順で、
+ * 報告の あとの ポップアップと 同じ ものが 同じ 場所に 出る。
+ * 表は 毎回 その 日の ぜんぶの 項目を 出す ので、こたえる たびに ⭕ が 増えて いく。
+ */
 export function ProbeScoreModal({
   heard,
   question,
   answer,
   good,
   advice,
-  polished,
-  fixes,
+  score,
+  rows,
+  hasKey,
   nextLabel,
   rest,
   judged,
@@ -476,9 +585,11 @@ export function ProbeScoreModal({
    * 「言い直す」の 直前**に 何も 無かった（2026-09-17 の R5 再検収）。
    */
   advice: string;
-  /** こたえを 職場の 日本語に 書き直した もの（無ければ 出さない）。 */
-  polished: string;
-  fixes: readonly AsakaiFix[];
+  /** ここまでの 点（内容は 開いた 札の 数なので、こたえる たびに 増える）。 */
+  score: ScoreView;
+  /** その日の 札 ぜんぶ（報告の あとの ポップアップと 同じ 表を 出す）。 */
+  rows: readonly RowView[];
+  hasKey: boolean;
   /** とじる ボタンの 字（つぎの しつもん／みんなの 報告を 聞く）。 */
   nextLabel: string;
   /** まだ ⭕ に なって いない 札の 名前（無ければ 空）。 */
@@ -499,7 +610,9 @@ export function ProbeScoreModal({
   onRetry?: () => void;
   onClose: () => void;
 }) {
-  const toFix = advice !== "" || fixes.length > 0;
+  const toFix =
+    advice !== "" || rows.some((row) => row.polished !== "" && row.said !== row.polished);
+  const left = rows.filter((row) => row.mark === "missing").length;
   return (
     <ModalShell
       label="追加の しつもんへの こたえ"
@@ -512,6 +625,24 @@ export function ProbeScoreModal({
       index={index}
       wide
     >
+      <ScoreHead
+        lead="ここまでの 報告"
+        score={score}
+        hasKey={hasKey}
+        index={index}
+        note={
+          left > 0 ? (
+            <p className="text-coral-deep text-sm leading-[1.9] font-black">
+              ❗ <Ruby text={`まだ 言う ことが ${left}つ あります`} index={index} />
+            </p>
+          ) : (
+            <p className="text-leaf-deep text-sm leading-[1.9] font-black">
+              ✅ <Ruby text={`${rows.length}つ ぜんぶ 言えました`} index={index} />
+            </p>
+          )
+        }
+      />
+
       <div className="mt-3 flex flex-wrap gap-2">
         <span
           className={`rounded-xl border-2 px-3 py-1 text-xs leading-[1.9] font-black ${
@@ -572,9 +703,12 @@ export function ProbeScoreModal({
         </div>
       </div>
 
-      <Polish text={polished} index={index} />
+      {/*
+        **報告の あとと 同じ 表**（2026-09-20 の 指定）。ブラッシュアップも ヒントも
+        この 中に 出る ので、別の 箱を 並べない——同じ ものが 2か所に 出ない。
+      */}
+      <ItemTable rows={rows} words={FIRST_WORD} showHints index={index} />
 
-      <FixList fixes={fixes} index={index} />
       <GoodAdvice good={good} advice={advice} index={index} />
 
       {rest !== "" ? (
@@ -607,8 +741,6 @@ export function DayScoreModal({
   probes,
   good,
   advice,
-  polished,
-  fixes,
   nextLabel,
   hasKey,
   index,
@@ -634,12 +766,6 @@ export function DayScoreModal({
   }[];
   good: string;
   advice: string;
-  /**
-   * 学習者の 文を 直した もの。**1本で ぜんぶ 言えた 日は ここでしか 出ない**
-   *（報告の 見かたを 飛ばして、まとめの 1枚だけ 出す ため）。
-   */
-  polished: string;
-  fixes: readonly AsakaiFix[];
   /** とじる ボタンの 字（「木曜日へ 進む ▶」「週の けっかを 見る ▶」）。 */
   nextLabel: string;
   hasKey: boolean;
@@ -757,8 +883,6 @@ export function DayScoreModal({
         見くらべる 場なので、ここでは お手本を 出す——練習の 途中では 出さない
         （答えを 写して 終わりに なる）。ことばは 教材の 見本 そのまま。
       */}
-      <Polish text={polished} index={index} />
-
       {rows.some((row) => row.example !== "") ? (
         <div className="mt-3">
           <Cap text="項目ごとに 見くらべる" index={index} />
@@ -796,6 +920,16 @@ export function DayScoreModal({
                           </span>
                         )}
                       </p>
+                      {/*
+                        **ブラッシュアップは 項目ごと**（2026-09-19 の 指定）。前は 1日ぶんを
+                        1本に まとめた 文が 表の 上に あり、どの 項目の 直しかが 読めなかった。
+                        1本で ぜんぶ 言えた 日は この ポップアップしか 出ない ので、ここに 置く。
+                      */}
+                      {row.polished !== "" && !sameText(row.polished, row.said) ? (
+                        <p className="text-sky-deep mt-1 text-sm leading-[1.9] font-bold">
+                          ✨ <Ruby text={`ブラッシュアップ: ${row.polished}`} index={index} />
+                        </p>
+                      ) : null}
                     </div>
                     <div className="border-leaf bg-sky-soft rounded-xl border px-3 py-2">
                       <Cap text="正しい 回答" index={index} tone="text-leaf-deep" />
@@ -846,7 +980,6 @@ export function DayScoreModal({
         </p>
       ) : null}
 
-      <FixList fixes={fixes} index={index} />
       <GoodAdvice
         /*
          * **手ぶらで 帰さない**（P8・R5-2）。合否は 上で はっきり 言って あるので、

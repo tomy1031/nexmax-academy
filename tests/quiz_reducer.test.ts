@@ -13,6 +13,7 @@ import {
   type QuizAction,
   type QuizState,
 } from "../src/components/quiz/quiz-reducer";
+import { fillinSlots } from "../src/lib/quiz/fillin";
 
 function loadSet(): QuizSet {
   const raw = readFileSync(
@@ -67,6 +68,12 @@ function answerCorrectly(state: QuizState): QuizState {
       });
     case "free":
       return quizReducer(state, { type: "answerFree", input: "じゆうに 書いた こたえ" });
+    // メールの 型（欄ごとに 正解が ある）
+    case "fillin":
+      return quizReducer(state, {
+        type: "answerFillin",
+        inputs: fillinSlots(q).map((slot) => slot.answer),
+      });
     // じゅんばんに ならべて 書く（正解は 無い。書けば 点）
     case "ranklist":
       return quizReducer(state, { type: "answerRanklist", rows: ["社長", "部長"] });
@@ -772,6 +779,12 @@ function answerCorrectlyAt(state: QuizState, id: string): QuizState {
       return quizReducer(state, {
         type: "answerList",
         inputs: q.groups.map((group) => group.label),
+        questionId: id,
+      });
+    case "fillin":
+      return quizReducer(state, {
+        type: "answerFillin",
+        inputs: fillinSlots(q).map((slot) => slot.answer),
         questionId: id,
       });
     case "free":
