@@ -40,6 +40,14 @@ export interface QuizOpen extends QuizStart {
    * こちらは **もう 出した もの**で、直して 出し直す ための 画面で ある。
    */
   readonly reopened: boolean;
+  /**
+   * 端末の 写しが 書かれた 時こく（戻せた ときだけ）。
+   *
+   * DB から 読んだ ぶんと くらべて **新しい ほうを 採る**ための ものさし。
+   * 端末で 出し直した 直後は 写しの ほうが 新しい——そこへ 古い 提出を かぶせると、
+   * 直した はずの こたえが 画面の 上で 元に 戻る。
+   */
+  readonly notebookAt?: string;
 }
 
 /**
@@ -53,6 +61,20 @@ export function rankRowsOfAnswer(answer: string): string[] {
     .split(/（\d+）/)
     .map((row) => row.trim())
     .filter((row) => row !== "");
+}
+
+/**
+ * DB（`quiz_results`）から 読んだ ほうを 採るか。
+ *
+ * **新しい ほうが 正しい。** 端末で 出し直した 直後は 写しの ほうが 新しく、そこへ
+ * 古い 提出を かぶせると **直した はずの こたえが 画面の 上で 元に 戻る**。
+ * 同じ 時こくなら 手もとの まま（動かす 理由が 無い）。写しが 無ければ DB を 採る
+ * ——別の 端末で 書いた 人が、そこで はじめて 戻る。
+ */
+export function shouldTakeDbAnswers(notebookAt: string | undefined, dbAt: string): boolean {
+  if (dbAt === "") return false;
+  if (notebookAt === undefined || notebookAt === "") return true;
+  return dbAt > notebookAt;
 }
 
 /** 教材ぜんぶが 正解の 無い 問いか（＝開き直し＝見直しに する 教材か）。 */
@@ -69,24 +91,37 @@ export function draftsFromNotebook(
   set: QuizSet,
   notebook: Notebook | null,
 ): Record<string, QuizDraft> {
-  if (notebook === null || !keepsAnswers(set)) return {};
+  if (notebook === null) return {};
+  return draftsFromAnswers(
+    set,
+    Object.fromEntries(notebook.lines.map((line) => [line.questionId, line.answer])),
+  );
+}
 
-  const byId = new Map(set.questions.map((q) => [q.id, q]));
+/**
+ * 「問いの id → 出した こたえの 文」から 下書きを 組み立てる。
+ *
+ * 端末の 写し（こたえノート）も DB（`quiz_results`）も、残して いるのは **文**である。
+ * 戻し方を 2か所に 書くと、`ranklist` の ほどき方を 直した 日に 片方だけ 直る。
+ */
+export function draftsFromAnswers(
+  set: QuizSet,
+  answers: Readonly<Record<string, string>>,
+): Record<string, QuizDraft> {
+  if (!keepsAnswers(set)) return {};
+
   const drafts: Record<string, QuizDraft> = {};
-
-  for (const line of notebook.lines) {
-    const question = byId.get(line.questionId);
-    const answer = line.answer.trim();
-    if (question === undefined || answer === "") continue;
+  for (const question of set.questions) {
+    const answer = answers[question.id] ?? "";
+    if (answer.trim() === "") continue;
 
     if (question.type === "free") {
-      drafts[question.id] = { kind: "free", input: line.answer };
+      drafts[question.id] = { kind: "free", input: answer };
     } else if (question.type === "ranklist") {
-      const rows = rankRowsOfAnswer(line.answer);
+      const rows = rankRowsOfAnswer(answer);
       if (rows.length > 0) drafts[question.id] = { kind: "ranklist", rows };
     }
   }
-
   return drafts;
 }
 
@@ -105,8 +140,9 @@ export function openQuiz(set: QuizSet, backend: ProgressBackend = defaultBackend
   );
   if (start.resumed) return { ...start, reopened: false };
 
-  const drafts = draftsFromNotebook(set, readNotebook(set.id, backend));
+  const notebook = readNotebook(set.id, backend);
+  const drafts = draftsFromNotebook(set, notebook);
   if (Object.keys(drafts).length === 0) return { ...start, reopened: false };
 
-  return { ...start, drafts, reopened: true };
+  return { ...start, drafts, reopened: true, notebookAt: notebook?.at };
 }

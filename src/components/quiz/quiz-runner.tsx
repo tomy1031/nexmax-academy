@@ -21,8 +21,14 @@ import {
 } from "@/lib/quiz/draft";
 import { saveNotebook } from "@/lib/answers/notebook";
 import { clearQuizResume, saveQuizResume } from "@/lib/quiz/resume";
-import { openQuiz, type QuizOpen } from "@/lib/quiz/reopen";
-import { newAttemptId, saveQuizResults } from "@/lib/quiz/results-db";
+import {
+  draftsFromAnswers,
+  keepsAnswers,
+  openQuiz,
+  shouldTakeDbAnswers,
+  type QuizOpen,
+} from "@/lib/quiz/reopen";
+import { fetchLatestQuizAnswers, newAttemptId, saveQuizResults } from "@/lib/quiz/results-db";
 import { fetchOwnProfile } from "@/lib/profile-db";
 import { CelebrationBurst, StampRow } from "./celebration";
 import { QuestionBody } from "./question-types";
@@ -485,6 +491,44 @@ export function QuizRunner({
    * 教材サイトへ 戻った ぶんが そのまま 残って いた（2026-09-21 のコード検収）。
    */
   useEffect(() => dropJudgeSession, []);
+
+  /*
+   * **ログインした 人の 前の こたえ**を DB から 戻す（2026-09-22 の 指定「Bであるべき」）。
+   *
+   * 端末の 写し（こたえノート）は 同じ ブラウザの 中だけ。教室の 共用 PC で 別の 人が
+   * 開いたり、スマホで 書いて PC で 開き直すと 戻らない。記録は もともと
+   * `quiz_results` に ある ので、そこから 読み直す。
+   *
+   * 守る ことが 3つ ある。
+   *  1. **ロビーに いる あいだだけ**（`started` の あと 入れ替えると、打って いる 字が 消える）
+   *  2. **書きかけの つづきが ある 回は 触らない**（`start.resumed`）
+   *  3. **端末の 写しの ほうが 新しければ そのまま**（出し直した 直後に 古い 提出で 上書きしない）
+   *
+   * 読めない ときは 何も しない——鍵ゼロの デモモードでも 画面は そのまま 開く。
+   */
+  const startedRef = useRef(false);
+  startedRef.current = started;
+  useEffect(() => {
+    if (start.resumed || !keepsAnswers(set)) return;
+    let alive = true;
+    void fetchOwnProfile()
+      .then((profile) => (profile ? fetchLatestQuizAnswers(profile.id, set.id) : null))
+      .then((found) => {
+        if (!alive || found === null || startedRef.current) return;
+        // 端末の 写しと くらべて 新しい ほうを 採る（同じ 時こくなら 手もとの まま）
+        if (!shouldTakeDbAnswers(start.notebookAt, found.at)) return;
+        const drafts = draftsFromAnswers(set, found.answers);
+        if (Object.keys(drafts).length === 0) return;
+        restart(set.questions, drafts);
+        setReopened(true);
+      })
+      .catch(() => {
+        /* 前の こたえが 読めなくても 学習は 止めない */
+      });
+    return () => {
+      alive = false;
+    };
+  }, [set, start.resumed, start.notebookAt, restart]);
 
   /*
    * こたえの チェックの 預かり所は **画面ぜんたい**に かける。
