@@ -41,6 +41,10 @@
       "ref": "renraku_contact_slack_quiz",
       "type": "quizset",
       "gates": false
+    },
+    {
+      "ref": "renraku_irai",
+      "type": "link"
     }
   ],
   "wordStageIds": [
