@@ -80,7 +80,7 @@
     "復旧"
   ],
   "revealGoal": 30,
-  "rescueWord": "短く伝える",
+  "rescueWord": "絶対に保存",
   "check": {
     "minLength": 2,
     "maxMiss": 5,

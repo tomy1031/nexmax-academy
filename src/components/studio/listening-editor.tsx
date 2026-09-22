@@ -89,9 +89,12 @@ export function ListeningEditor({
 
   /* あいことばの かなの 形（先生が 黒板に 書く ため）。読み辞書は 教材のもの。 */
   const rescueKana = useMemo(
-    () => rescueReading(value, buildFuriganaIndex(value.furigana ?? [])),
-    [value],
+    () => rescueReading({ rescueWord: value.rescueWord }, buildFuriganaIndex(value.furigana ?? [])),
+    // patch() は 毎回 新しい オブジェクトを 返す ので、`value` を 見ると 一度も 効かない
+    [value.rescueWord, value.furigana],
   );
+  /* 読み辞書に 無い 漢字は かなに 倒れず 残る。残った ままを 黒板に 書かせない。 */
+  const kanaHasKanji = /[一-鿿]/u.test(rescueKana);
   /* 聞く 前の 画面に そのまま 出て いないか（出て いると 関所が 関所で なくなる）。 */
   const rescueOnScreen = rescueWordOnScreen(value);
 
@@ -347,7 +350,7 @@ export function ListeningEditor({
             「変換できない 学習者」が そこで 止まる——判定は かなでも 通るので、
             通る 形を そのまま 見せる。
           */}
-          {rescueKana.length > 0 && rescueKana !== value.rescueWord ? (
+          {rescueKana.length > 0 && rescueKana !== value.rescueWord && !kanaHasKanji ? (
             <p className="text-ink-soft mt-1 text-xs font-bold">
               かなで <span className="text-navy font-black">{rescueKana}</span> と 打っても
               開きます（漢字を 出せない 学習者には こちらを 伝えてください）。
@@ -358,6 +361,14 @@ export function ListeningEditor({
             先生に 聞かなくても 読んで 打てて しまう——関所が 関所で なくなる。
             打っている そばで 気づけるように 出す（台本に 無い キーワードと 同じ 扱い）。
           */}
+          {kanaHasKanji ? (
+            <p className="text-coral-deep mt-1 text-xs font-black">
+              この ことばの 漢字は 読み辞書に ありません（かなで 打っても 開きません）。
+              <span className="text-ink-soft mt-1 block font-bold">
+                下の「よみ」に その ことばの 読みを 足すか、かなの ことばに してください。
+              </span>
+            </p>
+          ) : null}
           {rescueOnScreen ? (
             <p className="text-coral-deep mt-1 text-xs font-black">
               この ことばは 聞く 前の 画面（題・せつめい・見かた）に 出て います。

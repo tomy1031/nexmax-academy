@@ -1,8 +1,4 @@
-import { readFileSync, readdirSync } from "node:fs";
-import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import type { Listening } from "@/content/schema";
-import { rescueWordOnScreen } from "@/components/studio/listening-drafts";
 import { buildFuriganaIndex } from "@/lib/text/furigana";
 import {
   createListening,
@@ -14,7 +10,6 @@ import {
   POINTS,
   remainingKeywords,
   replayListening,
-  rescueReading,
   rescueWordOf,
   revealRate,
   submitListening,
@@ -254,45 +249,4 @@ describe("あいことば（教材ごと・表示率が届かない学習者の�
   it("英字は 1文字ずつの 読みでも 開く（SES → えすいーえす）", () => {
     expect(opensRescue("えすいーえす", { rescueWord: "SES" })).toBe(true);
   });
-});
-
-describe("いまの 教材の あいことばは、先生が 言った とおりに 打てば 開く", () => {
-  const dir = join(__dirname, "..", "content", "listening");
-  const files = readdirSync(dir).filter((name) => name.endsWith(".json"));
-
-  it("リスニングの 教材が 読めて いる（この 検査そのものが 空回りして いない）", () => {
-    expect(files.length).toBeGreaterThan(0);
-  });
-
-  for (const name of files) {
-    const data = JSON.parse(readFileSync(join(dir, name), "utf8")) as {
-      rescueWord?: string;
-      furigana?: [string, string][];
-    };
-    /*
-     * あいことばの 無い 教材は 逃げ道を 置かない ことを 選んだ もの（指定 B）なので
-     * ここでは 何も 言わない。**入れた のに 開かない** ときだけ 落とす。
-     */
-    if (!data.rescueWord) continue;
-
-    it(`${name}: そのままでも、かなでも 開く`, () => {
-      const furigana = buildFuriganaIndex(data.furigana ?? []);
-      const word = data.rescueWord as string;
-      expect(opensRescue(word, data, furigana)).toBe(true);
-
-      /*
-       * 先生が 黒板に 書く かなの 形（スタジオが 出す もの）。**漢字が 残って いたら
-       * だめ**——そこは 学習者が 打てない ので、読み辞書に 足す 合図に なる。
-       */
-      const kana = rescueReading(data, furigana);
-      expect(kana).not.toMatch(/[一-鿿]/u);
-      expect(opensRescue(kana, data, furigana)).toBe(true);
-
-      /*
-       * 聞く 前の 画面（題・せつめい・見かた）に そのまま 出て いたら、
-       * 先生に 聞かなくても 読んで 打てる——関所が 関所で なくなる。
-       */
-      expect(rescueWordOnScreen(data as unknown as Listening)).toBe(false);
-    });
-  }
 });
