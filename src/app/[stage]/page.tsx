@@ -1,28 +1,20 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { RESERVED_STAGE_IDS, type StageContentRef } from "@/content/schema";
+import { RESERVED_STAGE_IDS } from "@/content/schema";
 import {
   StageDetail,
   type StageContentItem,
   type StageWordItem,
 } from "@/components/stage/stage-detail";
 import { mergeFuriganaEntries, type FuriganaEntry } from "@/lib/text/furigana";
-import {
-  getArticle,
-  getLink,
-  getListening,
-  getManga,
-  getQuizSet,
-  getQuest,
-  getMeeting,
-  getScenario,
-  getSkit,
-  getSlides,
-  getStage,
-  listStages,
-  getWordStage,
-} from "@/lib/content";
+import { getStage, getWordStage, listStages } from "@/lib/content";
 import { stageStepNumber } from "@/lib/map-data";
+/*
+ * 教材の 見出しを 引く ところは **ページの 外**に 置く。ページは 決まった 名前しか
+ * 書き出せない ので、ここから export すると ビルドの 型検査が 落ちる（理由の 全文は
+ * `src/lib/stage-refs.ts` の 冒頭）。
+ */
+import { loadRef } from "@/lib/stage-refs";
 import { stageWordStage } from "@/lib/wordstage-merge";
 import { stageContentPath } from "@/lib/stage-routes";
 
@@ -67,128 +59,6 @@ export async function generateMetadata({
   const { stage: id } = await params;
   const stage = await getStage(id);
   return { title: stage ? `${stage.title} | ステージ` : "ステージ" };
-}
-
-/**
- * 参照先の見出しを引く。参照切れ（null）はここでは落とさず一覧から外す
- * — 参照整合は lint:content が先に落とす契約なので、画面は壊さないほうを選ぶ。
- *
- * 読み辞書も一緒に持ち帰る。ステージ詳細の一覧は学習者が最初に見る画面なので、
- * ここで裸の漢字を出さない（AGENTS.md 規律2 — 表示時にエンジンがルビを合成する）。
- */
-interface LoadedRef {
-  title: string;
-  description: string;
-  furigana?: readonly FuriganaEntry[];
-}
-
-export async function loadRef(ref: StageContentRef): Promise<LoadedRef | null> {
-  switch (ref.type) {
-    case "manga": {
-      const manga = await getManga(ref.ref);
-      return (
-        manga && {
-          title: manga.title,
-          description: manga.description,
-          furigana: manga.furigana,
-        }
-      );
-    }
-    case "article": {
-      const article = await getArticle(ref.ref);
-      return (
-        article && {
-          title: article.title,
-          description: article.description,
-          furigana: article.furigana,
-        }
-      );
-    }
-    case "slides": {
-      const slides = await getSlides(ref.ref);
-      return (
-        slides && {
-          title: slides.title,
-          description: slides.description,
-          furigana: slides.furigana,
-        }
-      );
-    }
-    case "listening": {
-      const listening = await getListening(ref.ref);
-      return (
-        listening && {
-          title: listening.title,
-          description: listening.description,
-          furigana: listening.furigana,
-        }
-      );
-    }
-    case "quizset": {
-      const set = await getQuizSet(ref.ref);
-      return set && { title: set.title, description: set.description, furigana: set.furigana };
-    }
-    case "scenario": {
-      const scenario = await getScenario(ref.ref);
-      return (
-        scenario && {
-          title: scenario.title,
-          description: scenario.subtitle,
-          furigana: scenario.furigana,
-        }
-      );
-    }
-    case "meeting": {
-      const meeting = await getMeeting(ref.ref);
-      return (
-        meeting && {
-          title: meeting.title,
-          description: meeting.description,
-          furigana: meeting.furigana,
-        }
-      );
-    }
-    case "wordstage": {
-      const stage = await getWordStage(ref.ref);
-      return (
-        stage && {
-          title: stage.title,
-          description: stage.description,
-          furigana: stage.furigana,
-        }
-      );
-    }
-    case "link": {
-      const link = await getLink(ref.ref);
-      return (
-        link && {
-          title: link.title,
-          description: link.description,
-          furigana: link.furigana,
-        }
-      );
-    }
-    case "skit": {
-      const skit = await getSkit(ref.ref);
-      return (
-        skit && {
-          title: skit.title,
-          description: skit.description,
-          furigana: skit.furigana,
-        }
-      );
-    }
-    case "quest": {
-      const quest = await getQuest(ref.ref);
-      return (
-        quest && {
-          title: quest.title,
-          description: quest.description,
-          furigana: quest.furigana,
-        }
-      );
-    }
-  }
 }
 
 /**
