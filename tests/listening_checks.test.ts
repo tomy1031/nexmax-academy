@@ -12,6 +12,7 @@ import {
   POINTS,
   remainingKeywords,
   replayListening,
+  rescueReading,
   rescueWordOf,
   revealRate,
   submitListening,
@@ -276,9 +277,14 @@ describe("いまの 教材の あいことばは、先生が 言った とおり
       const furigana = buildFuriganaIndex(data.furigana ?? []);
       const word = data.rescueWord as string;
       expect(opensRescue(word, data, furigana)).toBe(true);
-      // 読み辞書に 読みが あるなら、その かなでも 開く（漢字を 出せない 学習者の 道）
-      const reading = (data.furigana ?? []).find(([term]) => term === word)?.[1];
-      if (reading) expect(opensRescue(reading, data, furigana)).toBe(true);
+
+      /*
+       * 先生が 黒板に 書く かなの 形（スタジオが 出す もの）。**漢字が 残って いたら
+       * だめ**——そこは 学習者が 打てない ので、読み辞書に 足す 合図に なる。
+       */
+      const kana = rescueReading(data, furigana);
+      expect(kana).not.toMatch(/[一-鿿]/u);
+      expect(opensRescue(kana, data, furigana)).toBe(true);
     });
   }
 });

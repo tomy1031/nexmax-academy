@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import type { Listening, ListeningParticipant, ListeningScriptLine } from "@/content/schema";
 import { moveItem, removeAt, replaceAt } from "./list-ops";
 import {
@@ -10,7 +11,8 @@ import {
   SPEAKER_ME,
   SPEAKER_NARRATION,
 } from "./listening-drafts";
-import { DEFAULT_RESCUE_WORD } from "@/components/listening/listening-checks";
+import { DEFAULT_RESCUE_WORD, rescueReading } from "@/components/listening/listening-checks";
+import { buildFuriganaIndex } from "@/lib/text/furigana";
 import { AudioMaker } from "./audio-maker";
 import { ImageSlotEditor } from "./image-slot-editor";
 import {
@@ -83,6 +85,12 @@ export function ListeningEditor({
     patch({ script: replaceAt(value.script, index, next) });
 
   const missing = missingKeywords(value);
+
+  /* あいことばの かなの 形（先生が 黒板に 書く ため）。読み辞書は 教材のもの。 */
+  const rescueKana = useMemo(
+    () => rescueReading(value, buildFuriganaIndex(value.furigana ?? [])),
+    [value],
+  );
 
   return (
     <div className="space-y-4">
@@ -329,8 +337,19 @@ export function ListeningEditor({
               patch({ rescueWord: rescueWord.length > 0 ? rescueWord : undefined })
             }
             placeholder={DEFAULT_RESCUE_WORD}
-            hint="目標まで ひらかなかった 学習者が、これを 入れると つぎへ 進めます。からに すると その 逃げ道は 出ません。学習者の 画面には 出ません（かなで 打っても 当たります）。"
+            hint="目標まで ひらかなかった 学習者が、これを 入れると つぎへ 進めます。からに すると その 逃げ道は 出ません。学習者の 画面には 出ません。"
           />
+          {/*
+            かなの 形を 出す のは、先生が 黒板に 書く ため。漢字で しか 伝えないと
+            「変換できない 学習者」が そこで 止まる——判定は かなでも 通るので、
+            通る 形を そのまま 見せる。
+          */}
+          {rescueKana.length > 0 && rescueKana !== value.rescueWord ? (
+            <p className="text-ink-soft mt-1 text-xs font-bold">
+              かなで <span className="text-navy font-black">{rescueKana}</span> と 打っても
+              開きます（漢字を 出せない 学習者には こちらを 伝えてください）。
+            </p>
+          ) : null}
         </div>
 
         <div className="flex flex-wrap gap-3">

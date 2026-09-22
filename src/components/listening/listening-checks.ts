@@ -635,3 +635,18 @@ export function opensRescue(
   if (typed === normalizeReading(word)) return true;
   return toKana(input, furigana) === toKana(word, furigana);
 }
+
+/**
+ * あいことばの **かなの 形**（先生が 黒板に 書く ため）。
+ *
+ * 判定は かなでも 通る（`opensRescue`）が、先生が それを 知らないと
+ * 「漢字で 書いて 打てない 学習者」が 生まれる。スタジオは これを 添えて 見せる。
+ * 英字は 1文字ずつ 開く（SES → えすいーえす）——学習者が 打つ 形に そろえる。
+ */
+export function rescueReading(
+  listening: { rescueWord?: string },
+  furigana: FuriganaIndex = { entries: [], maxLength: 0 },
+): string {
+  const word = rescueWordOf(listening);
+  return word.length === 0 ? "" : toKana(word, furigana);
+}
