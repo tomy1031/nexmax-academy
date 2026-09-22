@@ -242,6 +242,31 @@
         - それ以外 … 点数は **同じ 枠に 入れて** 出し、「もう一度 チャレンジしましょう。」
       どちらでも 点数は 枠の 中に ある（指定「100点じゃなくても点数表示の構成は枠に入れて欲しい」）。
     -->
+    <!--
+      さきに 指示を 読む ための お知らせ（2026-09-22 の 指定で alert から モーダルへ）。
+      alert は 端末に よって 字が 小さく、ふりがなも 振れない。
+    -->
+    <div id="notice-screen"
+        class="hidden absolute inset-0 z-50 bg-slate-900/70 flex items-center justify-center backdrop-blur-sm p-4">
+        <div class="bg-white rounded-2xl w-full max-w-sm shadow-2xl p-8 text-center">
+            <img src="/img/characters/hendy/portrait.webp" alt="ヘンディ先輩"
+                class="w-20 h-20 rounded-full object-cover mx-auto mb-4 shadow-md" />
+            <h2 class="text-xl font-bold text-slate-800 leading-relaxed">
+                さきに ヘンディ<ruby>先輩<rt>せんぱい</rt></ruby>の<br><ruby>話<rt>はなし</rt></ruby>を
+                <ruby>読<rt>よ</rt></ruby>みましょう。
+            </h2>
+            <p class="mt-3 text-sm leading-7 text-slate-600">
+                <b class="text-indigo-600">Hendy Senpai</b> の DM を ひらいて、<br>
+                「<ruby>了解<rt>りょうかい</rt></ruby>です。<ruby>対応<rt>たいおう</rt></ruby>します。」を
+                <ruby>押<rt>お</rt></ruby>すと はじまります。
+            </p>
+            <button onclick="closeNotice()"
+                class="mt-6 w-full py-3 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition shadow-lg">
+                わかりました
+            </button>
+        </div>
+    </div>
+
     <div id="completion-screen"
         class="hidden absolute inset-0 z-50 bg-slate-900/90 flex items-center justify-center backdrop-blur-sm p-4 overflow-y-auto">
         <div class="bg-white rounded-2xl w-full max-w-md shadow-2xl my-auto">
@@ -334,10 +359,21 @@
             { id: 'random', name: 'random' }
         ];
 
+        /** 顔は 本人の もの（2026-09-22 の 指定）。 */
+        const OKUDA = "/img/characters/okuda/portrait.webp";
+        const NYAM = "/img/characters/nyam/portrait.webp";
+
         const SCENARIOS = [
             {
                 id: 1,
                 title: "Doc Update",
+                /* 資料の 共有 … 見た しるし → ありがとう → リンクが 助かった */
+                reactions: ["👀", "🙏", "📄"],
+                reply: {
+                    name: `ニャムさん`,
+                    face: NYAM,
+                    text: `${r("助", "たす")}かります！ リンクから すぐ${r("見", "み")}られました。`
+                },
                 targetChannel: 'project-a',
                 vocab: [
                     { w: r("仕様書", "しようしょ"), m: "Spec Document" },
@@ -420,6 +456,13 @@
             {
                 id: 2,
                 title: "Client MTG Change",
+                /* 予定の 変更 … 見た → カレンダーを 直す → 了解 */
+                reactions: ["👀", "🗓", "👍"],
+                reply: {
+                    name: `${r("奥田", "おくだ")}さん`,
+                    face: OKUDA,
+                    text: `${r("了解", "りょうかい")}です。カレンダーを${r("直", "なお")}しておきます。`
+                },
                 targetChannel: 'project-a',
                 vocab: [
                     { w: r("変更", "へんこう"), m: "Change" },
@@ -479,6 +522,13 @@
             {
                 id: 3,
                 title: "Common Logic Update",
+                /* 共通の ところを さわった … 見た → 自分の ところも 確かめる → 了解 */
+                reactions: ["👀", "🔍", "👍"],
+                reply: {
+                    name: `ニャムさん`,
+                    face: NYAM,
+                    text: `${r("確認", "かくにん")}しました。こちらの${r("画面", "がめん")}も${r("見", "み")}ておきます。`
+                },
                 targetChannel: 'dev-team',
                 vocab: [
                     { w: r("元号", "げんごう"), m: "Japanese Era Name" },
@@ -539,6 +589,13 @@
             {
                 id: 4,
                 title: "DB Reset Notice",
+                /* 使えなく なる お知らせ … 見た → 気をつける → 了解 */
+                reactions: ["👀", "⚠️", "👍"],
+                reply: {
+                    name: `${r("奥田", "おくだ")}さん`,
+                    face: OKUDA,
+                    text: `${r("了解", "りょうかい")}！ 14:00まで${r("触", "さわ")}らないように します。`
+                },
                 targetChannel: 'project-a',
                 vocab: [
                     { w: r("環境", "かんきょう"), m: "Environment" },
@@ -601,6 +658,11 @@
                 targetChannel: 'dev-team',
                 /* このミッションだけ スタンプが 返る。お願いが 届いた ことが 目に 見える。 */
                 reactions: ["👀", "🙏", "👍"],
+                reply: {
+                    name: `${r("奥田", "おくだ")}さん`,
+                    face: OKUDA,
+                    text: `${r("了解", "りょうかい")}です！ 17:00までに${r("見", "み")}ます。`
+                },
                 vocab: [
                     { w: r("依頼", "いらい"), m: "Request" },
                     { w: r("修正", "しゅうせい"), m: "Fix / Correction" },
@@ -710,6 +772,7 @@
             draftText: document.getElementById('draft-text'),
             score: document.getElementById('score-display'),
             completion: document.getElementById('completion-screen'),
+            notice: document.getElementById('notice-screen'),
             finalScore: document.getElementById('final-score'),
             diplomaCard: document.getElementById('diploma-card'),
             diplomaScore: document.getElementById('diploma-score'),
@@ -833,10 +896,21 @@
             renderActionArea();
         }
 
+        /** さきに 指示を 読んで ほしい ときの お知らせ（2026-09-22 の 指定で alert から モーダルへ）。 */
+        function showNotice() {
+            els.notice.classList.remove('hidden');
+        }
+
+        function closeNotice() {
+            els.notice.classList.add('hidden');
+            // 押す ところまで つれて いく（読め、とだけ 言って 放り出さない）
+            handleDMClick();
+        }
+
         function handleChannelClick(channelId) {
             // Check if user is allowed to move
             if (state.phase === 'dm_briefing') {
-                alert("まずはHendy Senpai（ヘンディ先輩）の指示を確認し、「了解」ボタンを押してタスクを開始してください。");
+                showNotice();
                 return;
             }
 
@@ -884,7 +958,7 @@
             }
         }
 
-        function addMessageUI(sender, html, type) {
+        function addMessageUI(sender, html, type, face) {
             const div = document.createElement('div');
             div.className = "flex gap-4 fade-in group";
 
@@ -893,6 +967,10 @@
 
             if (type === 'tanaka') {
                 avatarHtml = `<img src="/img/characters/hendy/portrait.webp" alt="ヘンディ先輩" class="w-10 h-10 rounded object-cover flex-shrink-0 shadow-md" />`;
+                bgClass = "bg-white border-slate-100 shadow-sm";
+            } else if (type === 'member') {
+                // チームの だれか（本人の 顔を 使う）
+                avatarHtml = `<img src="${face}" alt="" class="w-10 h-10 rounded object-cover flex-shrink-0 shadow-md" />`;
                 bgClass = "bg-white border-slate-100 shadow-sm";
             } else if (type === 'me') {
                 avatarHtml = `<div class="w-10 h-10 rounded bg-slate-700 flex items-center justify-center text-white font-bold flex-shrink-0 shadow-md">Y</div>`;
@@ -1107,6 +1185,18 @@
             const reactions = sc.reactions || [];
             if (reactions.length > 0) addReactions(sent, reactions);
 
+            /*
+             * スタンプ → 返事 → 完了、の 順。**届いた ことが 目に 見える**ように する
+             *（2026-09-22 の 指定「送ったメッセージにリアクションや返信をして欲しい」）。
+             */
+            const afterStamps = 600 + reactions.length * 220;
+
+            if (sc.reply) {
+                setTimeout(() => {
+                    addMessageUI(sc.reply.name, sc.reply.text, 'member', sc.reply.face);
+                }, afterStamps);
+            }
+
             setTimeout(() => {
                 // ミッション完了のシステムメッセージ
                 addSystemMessage(`<span class="text-green-600 font-bold flex items-center gap-1 justify-center"><i data-lucide="check-circle" class="w-4 h-4"></i> Mission Accomplished</span>`);
@@ -1115,7 +1205,7 @@
                 setTimeout(() => {
                     triggerSenpaiNotification();
                 }, 1000);
-            }, 600 + reactions.length * 220);
+            }, afterStamps + (sc.reply ? 700 : 0));
         }
 
         function triggerSenpaiNotification() {
