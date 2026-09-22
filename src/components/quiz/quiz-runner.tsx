@@ -19,7 +19,8 @@ import {
   hasNoRightAnswer,
 } from "@/lib/quiz/draft";
 import { saveNotebook } from "@/lib/answers/notebook";
-import { clearQuizResume, restoreQuiz, saveQuizResume, type QuizStart } from "@/lib/quiz/resume";
+import { clearQuizResume, saveQuizResume } from "@/lib/quiz/resume";
+import { openQuiz, type QuizOpen } from "@/lib/quiz/reopen";
 import { newAttemptId, saveQuizResults } from "@/lib/quiz/results-db";
 import { fetchOwnProfile } from "@/lib/profile-db";
 import { CelebrationBurst, StampRow } from "./celebration";
@@ -57,6 +58,8 @@ const UI_FURIGANA = buildFuriganaIndex([
   // ぜんぶ 1ページ（answerMode: "all"）の 案内で 使う
   ["行き来", "いきき"],
   ["消", "き"],
+  // 出したあとに 開き直した ときの 案内（`@/lib/quiz/reopen`）
+  ["入", "はい"],
 ]);
 
 /**
@@ -98,13 +101,7 @@ export function QuizRunner({
    * useState 初期化の 流儀）。ロビー（StartCard）の 中身は この 値に 依るので、
    * ここで 読んで おかないと 何問目からかが 分からない。
    */
-  const [start] = useState<QuizStart>(() =>
-    restoreQuiz(
-      set.id,
-      set.questions.map((q) => q.id),
-      set.answerMode,
-    ),
-  );
+  const [start] = useState<QuizOpen>(() => openQuiz(set));
   const [state, setState] = useState<QuizState>(() =>
     resumeQuizSession(set, start.index, start.results, set.answerMode, start.drafts),
   );
@@ -113,6 +110,13 @@ export function QuizRunner({
   const [started, setStarted] = useState(false);
   /** 途中から 戻って きた ことを StartCard に 伝えるか（「はじめから」を 選ぶと 消える）。 */
   const [resumed, setResumed] = useState(start.resumed);
+  /**
+   * 前に 出した こたえを 入力欄に 戻したか（`@/lib/quiz/reopen`）。
+   *
+   * 「つづき」（まだ 出して いない）と 言い分ける ため 別に 持つ。「はじめから」を
+   * 選ばれたら 消す——そのあとは 本当に まっさらだから。
+   */
+  const [reopened, setReopened] = useState(start.reopened);
 
   const dispatch = useCallback((action: QuizAction) => {
     setState((prev) => quizReducer(prev, action));
@@ -446,6 +450,7 @@ export function QuizRunner({
           set={set}
           furigana={furigana}
           resumed={resumed}
+          reopened={reopened}
           answerMode={set.answerMode}
           answeredCount={submitMode ? written : start.results.length}
           startIndex={state.index}
@@ -455,6 +460,7 @@ export function QuizRunner({
             setRetryIds([]);
             restart(set.questions);
             setResumed(false);
+            setReopened(false);
             setStarted(true);
           }}
         />
@@ -647,6 +653,7 @@ function StartCard({
   set,
   furigana,
   resumed,
+  reopened,
   answerMode,
   answeredCount,
   startIndex,
@@ -657,6 +664,13 @@ function StartCard({
   furigana: ReturnType<typeof buildFuriganaIndex>;
   /** 途中の 続きが あるか。 */
   resumed: boolean;
+  /**
+   * **もう 出した** こたえが 入力欄に 戻って いるか（`@/lib/quiz/reopen`）。
+   *
+   * 「つづきから」と 同じ 言い方に しない——出した 人に「つづき」と 言うと、
+   * 出せて いなかったのかと 読める。ここは 見直して 直す 画面で ある。
+   */
+  reopened: boolean;
   /** 教材の やりかた（先生が 管理画面で 決める）。 */
   answerMode: QuizMode;
   /** ここまで 答えた（書いた）問題の 数（案内の 文に 出す）。 */
@@ -687,7 +701,14 @@ function StartCard({
         </div>
       </div>
 
-      {resumed ? (
+      {reopened ? (
+        <p className="bg-cream border-hairline text-ink mt-5 rounded-[var(--radius-card)] border-2 px-4 py-3 font-extrabold">
+          <RubyText
+            text={`📝 まえに 出した こたえが 入って います。直して、もう一度 出せます。（${answeredCount}もん）`}
+            index={UI_FURIGANA}
+          />
+        </p>
+      ) : resumed ? (
         <p className="bg-cream border-hairline text-ink mt-5 rounded-[var(--radius-card)] border-2 px-4 py-3 font-extrabold">
           {answeredCount === 0 ? (
             /*
@@ -712,7 +733,7 @@ function StartCard({
         </p>
       ) : null}
 
-      {!resumed ? (
+      {!resumed && !reopened ? (
         <div className="mt-5">
           <button
             type="button"
@@ -742,15 +763,26 @@ function StartCard({
         </div>
       ) : (
         <div className="mt-5 grid gap-3">
-          <button type="button" onClick={onContinue} className="btn-island btn-game px-6 py-3.5">
-            つづきから
+          {/* ルビが 名前に 混ざると「見みる」に なり、名前で 引けない（`rank-list-input.tsx` と 同じ 手当て） */}
+          <button
+            type="button"
+            onClick={onContinue}
+            aria-label={reopened ? "こたえを 見る・直す" : undefined}
+            className="btn-island btn-game px-6 py-3.5"
+          >
+            {reopened ? <RubyText text="こたえを 見る・直す" index={UI_FURIGANA} /> : "つづきから"}
           </button>
           <button
             type="button"
             onClick={onStart}
+            aria-label={reopened ? "ぜんぶ 消して はじめから" : undefined}
             className="border-hairline text-ink-soft bg-panel rounded-full border-2 px-6 py-2.5 text-sm font-extrabold"
           >
-            はじめから やる
+            {reopened ? (
+              <RubyText text="ぜんぶ 消して はじめから" index={UI_FURIGANA} />
+            ) : (
+              "はじめから やる"
+            )}
           </button>
         </div>
       )}
