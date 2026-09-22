@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  この Mac から 授業前の 本番デプロイを 起こす（保険）。入れかたは ../README.md。
+
+  この Mac の タイムゾーンは ICT（+07）なので、下の 時刻は **そのまま ICT**。
+  Cloudflare 側（workers/deploy-kicker/wrangler.jsonc）は UTC で 書いて あるが、
+  指して いる 時刻は 同じ: 16:10 / 16:52 / 17:02 ICT（授業は 17:30 ICT）。
+
+  Mac が 寝て いた 時刻の ぶんは、起きた ときに まとめて 1回 走る（launchd の 仕様）。
+  そのとき すでに Cloudflare 側が 出して いれば、スクリプトが 本番と integration を
+  見比べて 何も しない。
+-->
+<plist version="1.0">
+  <dict>
+    <key>Label</key>
+    <string>dev.nexmax.academy.deploy-kick</string>
+
+    <key>ProgramArguments</key>
+    <array>
+      <string>/bin/sh</string>
+      <string>REPLACE_WITH_ABSOLUTE_PATH/nexmax-deploy-kick.sh</string>
+    </array>
+
+    <key>StartCalendarInterval</key>
+    <array>
+      <dict>
+        <key>Weekday</key><integer>2</integer>
+        <key>Hour</key><integer>16</integer>
+        <key>Minute</key><integer>10</integer>
+      </dict>
+      <dict>
+        <key>Weekday</key><integer>2</integer>
+        <key>Hour</key><integer>16</integer>
+        <key>Minute</key><integer>52</integer>
+      </dict>
+      <dict>
+        <key>Weekday</key><integer>2</integer>
+        <key>Hour</key><integer>17</integer>
+        <key>Minute</key><integer>2</integer>
+      </dict>
+      <dict>
+        <key>Weekday</key><integer>3</integer>
+        <key>Hour</key><integer>16</integer>
+        <key>Minute</key><integer>10</integer>
+      </dict>
+      <dict>
+        <key>Weekday</key><integer>3</integer>
+        <key>Hour</key><integer>16</integer>
+        <key>Minute</key><integer>52</integer>
+      </dict>
+      <dict>
+        <key>Weekday</key><integer>3</integer>
+        <key>Hour</key><integer>17</integer>
+        <key>Minute</key><integer>2</integer>
+      </dict>
+      <dict>
+        <key>Weekday</key><integer>5</integer>
+        <key>Hour</key><integer>16</integer>
+        <key>Minute</key><integer>10</integer>
+      </dict>
+      <dict>
+        <key>Weekday</key><integer>5</integer>
+        <key>Hour</key><integer>16</integer>
+        <key>Minute</key><integer>52</integer>
+      </dict>
+      <dict>
+        <key>Weekday</key><integer>5</integer>
+        <key>Hour</key><integer>17</integer>
+        <key>Minute</key><integer>2</integer>
+      </dict>
+    </array>
+
+    <key>StandardOutPath</key>
+    <string>REPLACE_WITH_HOME/Library/Logs/nexmax-deploy-kick.out.log</string>
+    <key>StandardErrorPath</key>
+    <string>REPLACE_WITH_HOME/Library/Logs/nexmax-deploy-kick.err.log</string>
+  </dict>
+</plist>
