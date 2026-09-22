@@ -25,12 +25,12 @@
     {
       "out": "kotsu1",
       "dest": "public/img/hourensou/renraku/kotsu1.webp",
-      "title": "コツ① 事実ベースで 伝える（❌サーバーが やばいです／⭕CPU使用率が 95%です）",
+      "title": "コツ① 事実を 伝える（❌サーバーが やばいです／⭕CPU使用率が 95%です）",
       "where": "content/articles/renraku_lecture.json 3節 cards items[0]",
       "priority": "A",
-      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: a vague feeling word tells the leader nothing, a measured fact tells him everything. One tall teaching card on a soft cream background, drawn as three stacked rows inside one big rounded panel. TOP ROW: a wide rounded navy label bar holding the title. MIDDLE ROW, on a warm pale coral ground: a large bold red cross mark on the left, then the junior engineer at his laptop waving a hand in a flustered way with small sweat drops, a soft rounded speech balloon beside him carrying the first quoted line; his screen is blank. BOTTOM ROW, on a pale sky-blue ground: a large bold green circle mark on the left, then the same engineer sitting calmly and pointing at his laptop, on which a simple line graph climbs steeply to a clearly high level near the top of its scale, and a soft rounded speech balloon beside him carrying the second quoted line. The red row and the green row are the same size and read top to bottom in one pass.",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: a vague feeling word tells the leader nothing, a measured fact tells him everything. One tall teaching card on a soft cream background, drawn as three stacked rows inside one big rounded panel. TOP ROW: a wide rounded navy label bar holding the title. MIDDLE ROW, on a warm pale coral ground: a large bold red cross mark on the left, then the junior engineer at his laptop waving a hand in a flustered way with small sweat drops, a soft rounded speech balloon beside him carrying the first quoted line; his screen is blank. BOTTOM ROW, on a pale sky-blue ground: a large bold green circle mark on the left, then the same engineer sitting calmly and pointing at his laptop, on which a simple line graph climbs steeply to a clearly high level near the top of its scale, and a soft rounded speech balloon beside him carrying the second quoted line. The red row and the green row are the same size and read top to bottom in one pass. FURIGANA EVERYWHERE — this matters as much as the title bar: EVERY kanji anywhere in this picture — in the title bar, in the speech balloons and anywhere else — carries its reading in small hiragana directly above it, centred over that kanji and clearly separated from it. No kanji is left without its reading.",
       "output": "Output: one square illustration, 1024x1024.",
-      "text": ["事実ベースで 伝える", "サーバーが やばいです", "CPU使用率が 95%です"]
+      "text": ["事実を 伝える", "サーバーが やばいです", "CPU使用率が 95%です"]
     },
     {
       "out": "kotsu2",

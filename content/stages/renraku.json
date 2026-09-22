@@ -29,10 +29,6 @@
       "type": "quizset"
     },
     {
-      "ref": "renraku_builder",
-      "type": "link"
-    },
-    {
       "ref": "renraku_slack",
       "type": "link"
     },
