@@ -87,7 +87,7 @@
     "予定"
   ],
   "revealGoal": 30,
-  "rescueWord": "正直に早く",
+  "rescueWord": "正直",
   "check": {
     "minLength": 2,
     "maxMiss": 5,

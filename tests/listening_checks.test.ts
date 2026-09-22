@@ -6,7 +6,9 @@ import {
   DEFAULT_RULES,
   lengthBonus,
   MAX_MISS,
+  matchesRescueFingerprint,
   opensRescue,
+  rescueFingerprints,
   POINTS,
   remainingKeywords,
   replayListening,
@@ -248,5 +250,25 @@ describe("あいことば（教材ごと・表示率が届かない学習者の�
 
   it("英字は 1文字ずつの 読みでも 開く（SES → えすいーえす）", () => {
     expect(opensRescue("えすいーえす", { rescueWord: "SES" })).toBe(true);
+  });
+
+  it("指紋には ことばが 入って いない（画面へ 渡すのは これだけ）", () => {
+    const prints = rescueFingerprints({ rescueWord: "正直" });
+    expect(prints.join("")).not.toContain("正直");
+    expect(prints.join("")).toMatch(/^[0-9a-f]+$/);
+  });
+
+  it("指紋でも 素の 形・かなの 形の どちらでも 開く", () => {
+    const furigana = buildFuriganaIndex([["正直", "しょうじき"]]);
+    const prints = rescueFingerprints({ rescueWord: "正直" }, furigana);
+    expect(matchesRescueFingerprint("正直", prints, furigana)).toBe(true);
+    expect(matchesRescueFingerprint("しょうじき", prints, furigana)).toBe(true);
+    expect(matchesRescueFingerprint("ショウジキ", prints, furigana)).toBe(true);
+    expect(matchesRescueFingerprint("せいちょく", prints, furigana)).toBe(false);
+  });
+
+  it("指紋が 空（あいことばの 無い 教材）なら 何を 打っても 開かない", () => {
+    expect(rescueFingerprints({})).toEqual([]);
+    expect(matchesRescueFingerprint("なんでも", [])).toBe(false);
   });
 });

@@ -3,10 +3,13 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
 import { buildFuriganaIndex } from "@/lib/text/furigana";
-import { normalizeReading } from "@/lib/text/normalize";
-import { collectLabeledTexts } from "@/lib/content-checks";
 import { contentSchema, type Content, type Listening } from "@/content/schema";
-import { opensRescue, rescueReading } from "@/components/listening/listening-checks";
+import {
+  matchesRescueFingerprint,
+  opensRescue,
+  rescueFingerprints,
+  rescueReading,
+} from "@/components/listening/listening-checks";
 import { rescueWordOnScreen } from "@/components/studio/listening-drafts";
 
 /**
@@ -30,32 +33,6 @@ const ROOT = join(__dirname, "..");
 function read(file: string): Content | null {
   const parsed = contentSchema.safeParse(JSON.parse(readFileSync(file, "utf8")) as unknown);
   return parsed.success ? parsed.data : null;
-}
-
-/** 教材ID → ファイル（ステージの contents から 引く ため）。 */
-function contentFileById(): Map<string, string> {
-  const byId = new Map<string, string>();
-  for (const dir of readdirSync(join(ROOT, "content"), { withFileTypes: true })) {
-    if (!dir.isDirectory()) continue;
-    for (const name of readdirSync(join(ROOT, "content", dir.name))) {
-      if (!name.endsWith(".json")) continue;
-      const file = join(ROOT, "content", dir.name, name);
-      const raw = JSON.parse(readFileSync(file, "utf8")) as { id?: string };
-      if (raw.id) byId.set(raw.id, file);
-    }
-  }
-  return byId;
-}
-
-/** その教材で 学習者が 読む 字を ぜんぶ つないだ もの（比べる 形に 倒して ある）。 */
-function learnerText(file: string): string {
-  const content = read(file);
-  if (!content) return "";
-  return normalizeReading(
-    collectLabeledTexts(content)
-      .map((item) => item.text)
-      .join(""),
-  );
 }
 
 const listenings = readdirSync(join(ROOT, "content", "listening"))
@@ -85,64 +62,51 @@ describe("あいことばは 打てば 開く", () => {
       const kana = rescueReading(listening, furigana);
       expect(kana).not.toMatch(/[一-鿿]/u);
       expect(opensRescue(kana, listening, furigana)).toBe(true);
+
+      /*
+       * 画面が 持つのは 指紋だけ（語は 配信HTMLに 載せない）。**同じ 2つの 形**で
+       * 開かないと、直した つもりで 逃げ道だけ 死ぬ。
+       */
+      const prints = rescueFingerprints(listening, furigana);
+      expect(prints.length).toBeGreaterThan(0);
+      expect(matchesRescueFingerprint(word, prints, furigana)).toBe(true);
+      expect(matchesRescueFingerprint(kana, prints, furigana)).toBe(true);
+      expect(matchesRescueFingerprint("ちがうことば", prints, furigana)).toBe(false);
+      expect(prints.join("")).not.toContain(word);
     });
   }
 });
 
 /**
- * **同じ ステージの ほかの 教材に 出て いても よい**と 決めた もの。
+ * **画面に 出て いても よい**と 決めた もの（1件ごとに 理由を 書く）。
  *
  * `KNOWN_ESCAPED`（`tests/coverage_walker.test.ts`）と 同じ 運用で、
  * **ここに 無い ものが 出たら 落とす**。1件 直したら 1行 消す。
  */
-const ALLOW_IN_STAGE: Readonly<Record<string, { ref: string; why: string }>> = {
-  youken_hearing: {
-    ref: "youken_matcha",
-    why: "ユーザー指定（2026-09-22）の「抹茶」。同じ ステージの **1つ前の 教材**（記事「抹茶と 茶道を 知る」）に 出て くる 語で、そこを 読んだ 学習者だけが 知って いる。聞く 前の 画面には 出ない",
-  },
+const ALLOW_ON_SCREEN: Readonly<Record<string, string>> = {
+  kaisha_shugyo_keitai_listening:
+    "ユーザー指定（2026-09-22）の「受託開発」。この 教材の 見かた「SES・受託開発・自社開発の「どこで 働くか」に 注目して 聞きましょう。」に そのまま 出て いる——読んで 打てる ことは 承知の うえ",
 };
 
-describe("あいことばは どこにも 書いて いない", () => {
-  const byId = contentFileById();
-  const stages = readdirSync(join(ROOT, "content", "stages"))
-    .filter((name) => name.endsWith(".json"))
-    .map(
-      (name) =>
-        JSON.parse(readFileSync(join(ROOT, "content", "stages", name), "utf8")) as {
-          id: string;
-          title?: string;
-          description?: string;
-          contents?: { ref: string }[];
-        },
-    );
-
+describe("あいことばは 関所と 同じ 画面に 書いて いない", () => {
+  /*
+   * 見るのは **打って いる その 画面**だけ（題・せつめい・見かた・参加者）。
+   * 同じ ステージの ほかの 教材は 見ない——あいことばは その 課の ことばなので、
+   * ステージの どこかには 必ず 出る（2026-09-22 に 広げて みたら、短い
+   * キーワードは 例外なく 当たった）。別の 画面を 開いて 探すのは、
+   * 聞くのと 同じくらい 手間が かかる。
+   */
   for (const listening of withWord) {
-    it(`${listening.id}: 聞く 前の 画面に 出て いない`, () => {
-      // 題・せつめい・見かたは まえおきの 画面（関所と 同じ 画面）に 出る
-      expect(rescueWordOnScreen(listening)).toBe(false);
-    });
-
-    it(`${listening.id}: 同じ ステージの ほかの 教材にも 出て いない`, () => {
-      const needle = normalizeReading(listening.rescueWord as string);
-      const stage = stages.find((s) => (s.contents ?? []).some((c) => c.ref === listening.id));
-      if (!stage) return; // どのステージにも 入って いない 教材（一覧からのみ 到達）
-
-      const stageText = normalizeReading(`${stage.title ?? ""}${stage.description ?? ""}`);
-      expect(
-        stageText.includes(needle),
-        `ステージ「${stage.id}」の 題・せつめいに 出て います`,
-      ).toBe(false);
-
-      for (const item of stage.contents ?? []) {
-        if (item.ref === listening.id) continue;
-        if (ALLOW_IN_STAGE[listening.id]?.ref === item.ref) continue;
-        const file = byId.get(item.ref);
-        if (!file) continue;
-        expect(
-          learnerText(file).includes(needle),
-          `同じ ステージの「${item.ref}」に 出て います`,
-        ).toBe(false);
-      }
+    const allowed = ALLOW_ON_SCREEN[listening.id];
+    it(`${listening.id}: 聞く 前の 画面に 出て いない${allowed ? "（例外として 記録ずみ）" : ""}`, () => {
+      expect(rescueWordOnScreen(listening)).toBe(Boolean(allowed));
     });
   }
+
+  it("記録した 例外が もう 要らなく なって いない（直したら 1行 消す）", () => {
+    for (const id of Object.keys(ALLOW_ON_SCREEN)) {
+      const listening = withWord.find((l) => l.id === id);
+      expect(listening, `${id} は もう 無い`).toBeDefined();
+    }
+  });
 });

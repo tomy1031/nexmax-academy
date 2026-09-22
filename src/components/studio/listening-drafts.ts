@@ -101,12 +101,22 @@ export function countLinesBySpeaker(listening: Listening, speakerId: string): nu
  * なくなる。2026-09-22 に 実際に 7本中 5本が こう なった
  *（「その 課の 要点」を 選んだ ら、要点は まさに 見かたに 書いて あった）。
  *
+ * 参加者の 名前・役も 見る——`mode: "call"` では 顔と 一緒に 関所と 同じ 画面に 並ぶ。
+ *
  * 比べかたは 判定と 同じ 正規化（空白・記号・かぎかっこを 落とす）。
  * 画面の 見たままを 打てば 通って しまう ので、そこまで 含めて 見る。
+ *
+ * **同じ ステージの ほかの 教材までは 見ない。** あいことばは その 課の ことば
+ * なので、ステージの どこかには 必ず 出て くる（2026-09-22 に 広げて みて、
+ * 短い キーワードは 例外なく 当たった）。守りたいのは
+ * 「打って いる その 画面に 答えが 書いて ある」形だけ。
  */
 export function rescueWordOnScreen(listening: Listening): boolean {
   const word = rescueWordOf(listening);
   if (word.length === 0) return false;
-  const shown = normalizeReading(`${listening.title}${listening.description}${listening.focus}`);
+  const people = listening.participants.map((p) => `${p.name}${p.role}`).join("");
+  const shown = normalizeReading(
+    `${listening.title}${listening.description}${listening.focus}${people}`,
+  );
   return shown.includes(normalizeReading(word));
 }

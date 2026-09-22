@@ -650,3 +650,75 @@ export function rescueReading(
   const word = rescueWordOf(listening);
   return word.length === 0 ? "" : toKana(word, furigana);
 }
+
+/**
+ * 短い 指紋（**学習者の 画面に 語そのものを 送らない** ため）。
+ *
+ * ## なぜ 要るか
+ * 画面は 作りおきの HTML で、client component の props は そのまま HTML に 載る。
+ * `rescueWord` を 渡すと **Ctrl+U で 読めて しまう**（2026-09-22 の 検収で
+ * `"rescueWord":"正直に早く"` が 配信HTMLに 出て いるのを 実測）。IT専攻の 学生に
+ * とっては 1手で 開く 鍵で、先生から 聞く 意味が 無くなる。
+ *
+ * ## どこまで 守るか（正直に 書く）
+ * これは **暗号では ない**。守るのは「ソースを 見て そのまま 読める」ところまでで、
+ * 台本の ことばを 総当たりで 試す 書き方を すれば 破れる。そこまで する 学習者は
+ * 聞くより 手間が かかる、という 線引き。**秘密を 預ける 用途には 使わない**。
+ *
+ * FNV-1a（32bit）を 種ちがいで 2本 回して つなぐ（64文字ぶんの 幅）。
+ * 速く・依存が なく・**サーバでも ブラウザでも 同じ 値**に なる
+ *（BigInt を 使わないのは、tsconfig の target が ES2020 未満の ため）。
+ */
+function fingerprint(text: string): string {
+  const bytes = new TextEncoder().encode(text);
+  let a = 0x811c9dc5;
+  let b = 0x01000193;
+  for (const byte of bytes) {
+    a = Math.imul(a ^ byte, 0x01000193) >>> 0;
+    b = Math.imul(b ^ byte, 0x85ebca6b) >>> 0;
+  }
+  return a.toString(16).padStart(8, "0") + b.toString(16).padStart(8, "0");
+}
+
+/**
+ * その 教材の あいことばの 指紋（**画面へ 渡すのは これだけ**）。
+ *
+ * 2つ 作る: 素の 形と、読み辞書で かなへ 倒した 形。`opensRescue` が 見る のと
+ * 同じ 2つ なので、**漢字でも かなでも 開く**という 学習者の 道は そのまま。
+ * あいことばの 無い 教材は 空（＝逃げ道を 出さない）。
+ */
+export function rescueFingerprints(
+  listening: { rescueWord?: string },
+  furigana: FuriganaIndex = { entries: [], maxLength: 0 },
+): string[] {
+  const word = rescueWordOf(listening);
+  if (word.length === 0) return [];
+  return [...new Set([fingerprint(normalizeReading(word)), fingerprint(toKana(word, furigana))])];
+}
+
+/** 打った ことばが 指紋に 合うか（画面の 中の 照合。語は 持って いない）。 */
+export function matchesRescueFingerprint(
+  input: string,
+  prints: readonly string[],
+  furigana: FuriganaIndex = { entries: [], maxLength: 0 },
+): boolean {
+  if (prints.length === 0) return false;
+  const typed = normalizeReading(input);
+  if (typed.length === 0) return false;
+  return (
+    prints.includes(fingerprint(typed)) || prints.includes(fingerprint(toKana(input, furigana)))
+  );
+}
+
+/**
+ * 学習者の 画面へ 渡す 形（**あいことばを 落とす**）。
+ *
+ * client component の props は 作りおきの HTML に そのまま 載る。語を 付けた まま
+ * 渡すと Ctrl+U で 読める ので、ページは これを 通してから 渡す。
+ * 代わりに 送るのが `rescueFingerprints` の 指紋。
+ */
+export function hideRescueWord<T extends { rescueWord?: string }>(listening: T): T {
+  const shown = { ...listening };
+  delete shown.rescueWord;
+  return shown;
+}
