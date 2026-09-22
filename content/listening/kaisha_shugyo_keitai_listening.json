@@ -48,7 +48,7 @@
     "サービス"
   ],
   "revealGoal": 30,
-  "rescueWord": "どこで働くか",
+  "rescueWord": "何を作るか",
   "check": {
     "minLength": 2,
     "maxMiss": 5,

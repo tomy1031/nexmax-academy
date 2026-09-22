@@ -8,6 +8,7 @@ import {
   emptyListeningParticipant,
   LISTENING_ACCENT_OPTIONS,
   missingKeywords,
+  rescueWordOnScreen,
   SPEAKER_ME,
   SPEAKER_NARRATION,
 } from "./listening-drafts";
@@ -91,6 +92,8 @@ export function ListeningEditor({
     () => rescueReading(value, buildFuriganaIndex(value.furigana ?? [])),
     [value],
   );
+  /* 聞く 前の 画面に そのまま 出て いないか（出て いると 関所が 関所で なくなる）。 */
+  const rescueOnScreen = rescueWordOnScreen(value);
 
   return (
     <div className="space-y-4">
@@ -348,6 +351,20 @@ export function ListeningEditor({
             <p className="text-ink-soft mt-1 text-xs font-bold">
               かなで <span className="text-navy font-black">{rescueKana}</span> と 打っても
               開きます（漢字を 出せない 学習者には こちらを 伝えてください）。
+            </p>
+          ) : null}
+          {/*
+            題・せつめい・見かたは **聞く 前の 画面に 出る**。そこに 同じ ことばが あると、
+            先生に 聞かなくても 読んで 打てて しまう——関所が 関所で なくなる。
+            打っている そばで 気づけるように 出す（台本に 無い キーワードと 同じ 扱い）。
+          */}
+          {rescueOnScreen ? (
+            <p className="text-coral-deep mt-1 text-xs font-black">
+              この ことばは 聞く 前の 画面（題・せつめい・見かた）に 出て います。
+              <span className="text-ink-soft mt-1 block font-bold">
+                学習者は 読んで そのまま 打てます。台本の 中の ことばなど、聞かないと 出て こない
+                ものに してください。
+              </span>
             </p>
           ) : null}
         </div>

@@ -1,6 +1,8 @@
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
+import type { Listening } from "@/content/schema";
+import { rescueWordOnScreen } from "@/components/studio/listening-drafts";
 import { buildFuriganaIndex } from "@/lib/text/furigana";
 import {
   createListening,
@@ -285,6 +287,12 @@ describe("いまの 教材の あいことばは、先生が 言った とおり
       const kana = rescueReading(data, furigana);
       expect(kana).not.toMatch(/[一-鿿]/u);
       expect(opensRescue(kana, data, furigana)).toBe(true);
+
+      /*
+       * 聞く 前の 画面（題・せつめい・見かた）に そのまま 出て いたら、
+       * 先生に 聞かなくても 読んで 打てる——関所が 関所で なくなる。
+       */
+      expect(rescueWordOnScreen(data as unknown as Listening)).toBe(false);
     });
   }
 });

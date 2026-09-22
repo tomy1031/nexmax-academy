@@ -11,7 +11,8 @@
  */
 
 import type { Listening, ListeningParticipant } from "@/content/schema";
-import { DEFAULT_RESCUE_WORD } from "@/components/listening/listening-checks";
+import { DEFAULT_RESCUE_WORD, rescueWordOf } from "@/components/listening/listening-checks";
+import { normalizeReading } from "@/lib/text/normalize";
 
 /** 台本の話す人に使える特別枠。participants には入れない（schema.ts の superRefine と同じ）。 */
 export const SPEAKER_ME = "me";
@@ -90,4 +91,22 @@ export function missingKeywords(listening: Listening): string[] {
  */
 export function countLinesBySpeaker(listening: Listening, speakerId: string): number {
   return listening.script.filter((line) => line.speaker === speakerId).length;
+}
+
+/**
+ * あいことばが **聞く 前の 画面に そのまま 出て いる**か。
+ *
+ * 題・せつめい・「聞く まえに 配る 見かた」は まえおきの 画面に 出る。そこに
+ * 同じ ことばが あると、**先生に 聞かなくても 読んで 打てる**——関所が 関所で
+ * なくなる。2026-09-22 に 実際に 7本中 5本が こう なった
+ *（「その 課の 要点」を 選んだ ら、要点は まさに 見かたに 書いて あった）。
+ *
+ * 比べかたは 判定と 同じ 正規化（空白・記号・かぎかっこを 落とす）。
+ * 画面の 見たままを 打てば 通って しまう ので、そこまで 含めて 見る。
+ */
+export function rescueWordOnScreen(listening: Listening): boolean {
+  const word = rescueWordOf(listening);
+  if (word.length === 0) return false;
+  const shown = normalizeReading(`${listening.title}${listening.description}${listening.focus}`);
+  return shown.includes(normalizeReading(word));
 }
