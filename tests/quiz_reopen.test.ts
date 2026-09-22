@@ -3,7 +3,13 @@ import { quizSetSchema, type QuizSet } from "@/content/schema";
 import { createMemoryBackend } from "@/lib/progress/store";
 import { saveNotebook } from "@/lib/answers/notebook";
 import { saveQuizResume } from "@/lib/quiz/resume";
-import { draftsFromNotebook, keepsAnswers, openQuiz, rankRowsOfAnswer } from "@/lib/quiz/reopen";
+import {
+  draftsFromNotebook,
+  keepsAnswers,
+  openQuiz,
+  rankRowsOfAnswer,
+  shouldTakeDbAnswers,
+} from "@/lib/quiz/reopen";
 
 /**
  * 出したあとに 開き直したら、**前の こたえが 入力欄に 戻る**（2026-09-22 の 指定）
@@ -228,5 +234,28 @@ describe("ならべた こたえを 行に ほどく", () => {
 
   it("空の 文は 0行", () => {
     expect(rankRowsOfAnswer("")).toEqual([]);
+  });
+});
+
+describe("端末の 写しと DB の どちらを 採るか", () => {
+  it("DB の ほうが 新しければ DB", () => {
+    expect(shouldTakeDbAnswers("2026-09-20T18:36:28.000Z", "2026-09-22T09:57:09.000Z")).toBe(true);
+  });
+
+  it("端末で 出し直した 直後は 手もとの まま（古い 提出で 上書きしない）", () => {
+    expect(shouldTakeDbAnswers("2026-09-22T09:57:09.000Z", "2026-09-20T18:36:28.000Z")).toBe(false);
+  });
+
+  it("同じ 時こくなら 動かさない", () => {
+    const at = "2026-09-22T09:57:09.000Z";
+    expect(shouldTakeDbAnswers(at, at)).toBe(false);
+  });
+
+  it("写しが 無ければ DB を 採る（別の 端末で 書いた 人）", () => {
+    expect(shouldTakeDbAnswers(undefined, "2026-09-22T09:57:09.000Z")).toBe(true);
+  });
+
+  it("DB の 時こくが 読めない ときは 動かさない", () => {
+    expect(shouldTakeDbAnswers(undefined, "")).toBe(false);
   });
 });

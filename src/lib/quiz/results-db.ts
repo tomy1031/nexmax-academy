@@ -145,3 +145,60 @@ export async function insertQuizResultRows(rows: readonly QuizResultRow[]): Prom
     console.warn("[quiz-results] 記録できませんでした:", error.message);
   }
 }
+
+/**
+ * その人が **最後に 出した こたえ**を 読む（端末を またいで 戻す ため）
+ *
+ * ## なぜ 要るか（2026-09-22 の 指定）
+ * 出したあとに 開き直したら 欄が 空だった。端末の 写し（こたえノート）から 戻す 形を
+ * 先に 入れたが、それは **同じ 端末・同じ ブラウザ**の 中だけ。教室の 共用 PC で
+ * 別の 人が 開いたら 戻らないし、スマホで 書いて PC で 開いても 戻らない。
+ * 「ログインユーザーごとに管理されるべき」——記録は もともと ここに ある。
+ *
+ * ## `profile_id` を 必ず 絞る
+ * RLS は「自分の 行 **または 管理者**」を 通す（`quiz_results_select_own_or_admin`）。
+ * 先生は 管理者なので、**絞らないと 教室ぜんいんの 行が 返る**——他人の こたえが
+ * 自分の 欄に 入る という、いちばん まずい 形に なる。
+ *
+ * ## 丸ごと 通した 回だけ（`full_set`）
+ * 絞った やり直しの 回は 一部の 問いしか 行が 無い。それで 戻すと、
+ * **見て いない 問いが 空の まま** 揃った 顔で 並ぶ（こたえノートが `wholeRun` の
+ * ときだけ 書くのと 同じ 理由）。
+ */
+export async function fetchLatestQuizAnswers(
+  profileId: string,
+  quizSetId: string,
+): Promise<{ at: string; answers: Record<string, string> } | null> {
+  const supabase = createClient();
+  if (!supabase) return null;
+
+  const { data, error } = await supabase
+    .from(TABLE)
+    .select("question_id, answer_text, attempt_id, created_at")
+    .eq("profile_id", profileId)
+    .eq("quiz_set_id", quizSetId)
+    .eq("full_set", true)
+    .order("created_at", { ascending: false })
+    .limit(60);
+
+  if (error) {
+    // 表が まだ 無い 環境（移行SQL の 前）は 黙って あきらめる——画面は 開く
+    if (!MISSING_TABLE_CODES.has(error.code)) {
+      console.warn("[quiz-results] 前の こたえを 読めませんでした:", error.message);
+    }
+    return null;
+  }
+
+  const rows = (data ?? []) as QuizResultRow[];
+  const newest = rows[0];
+  if (newest === undefined) return null;
+
+  // いちばん 新しい 1回ぶんだけ（同じ 挑戦の 行は 同じ `attempt_id`）
+  const answers: Record<string, string> = {};
+  for (const row of rows) {
+    if (row.attempt_id !== newest.attempt_id) continue;
+    if (row.answer_text !== "") answers[row.question_id] = row.answer_text;
+  }
+
+  return { at: newest.created_at ?? "", answers };
+}
