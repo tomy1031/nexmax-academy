@@ -101,6 +101,7 @@
     "現場"
   ],
   "revealGoal": 30,
+  "rescueWord": "要件定義",
   "check": {
     "minLength": 2,
     "maxMiss": 5,

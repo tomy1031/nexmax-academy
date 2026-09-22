@@ -8,13 +8,8 @@ import {
 } from "@/components/stage/stage-detail";
 import { mergeFuriganaEntries, type FuriganaEntry } from "@/lib/text/furigana";
 import { getStage, getWordStage, listStages } from "@/lib/content";
-import { stageStepNumber } from "@/lib/map-data";
-/*
- * 教材の 見出しを 引く ところは **ページの 外**に 置く。ページは 決まった 名前しか
- * 書き出せない ので、ここから export すると ビルドの 型検査が 落ちる（理由の 全文は
- * `src/lib/stage-refs.ts` の 冒頭）。
- */
 import { loadRef } from "@/lib/stage-refs";
+import { stageStepNumber } from "@/lib/map-data";
 import { stageWordStage } from "@/lib/wordstage-merge";
 import { stageContentPath } from "@/lib/stage-routes";
 

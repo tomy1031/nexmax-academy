@@ -1,4 +1,17 @@
-import type { FuriganaEntry } from "@/lib/text/furigana";
+/**
+ * ステージの 一覧に 出す「参照先の 見出し」を 引く
+ *
+ * ## なぜ ページの 外に 置くか（2026-09-20）
+ * ここは 元は `src/app/[stage]/page.tsx` の `export` だった。Next は **page.tsx が
+ * 決められた もの以外を export する ことを 許さない**（`default`・`generateStaticParams`・
+ * `dynamic` など）。ふだんは 気づかないが、**その ページが 型検査の 対象に 入った
+ * ビルドで だけ** `"loadRef" is not a valid Page export field` と 言って 止まる——
+ * 何も 直して いない ファイルが、別の 変更の ついでに 落ちる。
+ *
+ * ページは 画面の ため、引きものは ここ。2つの ページ（ステージのトップと 教材の ページ）が
+ * 同じ 引きものを 使うので、置き場は どちらでも ない ところに する。
+ */
+
 import type { StageContentRef } from "@/content/schema";
 import {
   getArticle,
@@ -13,27 +26,7 @@ import {
   getSlides,
   getWordStage,
 } from "@/lib/content";
-
-/**
- * ステージの 参照先（教材）の 見出しを 引く — ページから 切り出した 読み込み
- *
- * ## なぜ ページの 中に 置けないのか（2026-09-22）
- * もとは `src/app/[stage]/page.tsx` が `loadRef` を **export** して いて、子の
- * `[content]/page.tsx` が そこから 引いて いた。Next 16 は **ページの 書き出しを
- * 決まった 名前だけに 限る**ので、この 書き出しは 規約ちがいで ある:
- *
- *     Type error: Page "src/app/[stage]/page.tsx" does not match the required types
- *       of a Next.js Page. "loadRef" is not a valid Page export field.
- *
- * ところが この 検査は **型検査が その ページを 見直した ときだけ** 出る。
- * ふだんは 見直されないので 眠って いて、`[stage]/page.tsx` が 読んで いる
- * モジュール（`@/lib/map-data` など）の **形**が 変わった 瞬間に、
- * **関係の 無い 変更の ビルドが 落ちる**。実際 2026-09-22 に カードの 絵を
- * 足す 変更（`MapStage` に 欄を 1つ 足しただけ）で `npm run build` が 落ちた。
- *
- * 置き場を ここに 移せば、ページの 書き出しは 規約どおりに なり、罠も 消える。
- * 中身は 移しただけで、1行も 変えて いない。
- */
+import type { FuriganaEntry } from "@/lib/text/furigana";
 
 /**
  * 参照先の見出しを引く。参照切れ（null）はここでは落とさず一覧から外す
@@ -42,7 +35,7 @@ import {
  * 読み辞書も一緒に持ち帰る。ステージ詳細の一覧は学習者が最初に見る画面なので、
  * ここで裸の漢字を出さない（AGENTS.md 規律2 — 表示時にエンジンがルビを合成する）。
  */
-export interface LoadedRef {
+interface LoadedRef {
   title: string;
   description: string;
   furigana?: readonly FuriganaEntry[];

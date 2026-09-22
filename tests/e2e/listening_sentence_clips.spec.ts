@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { expect, test } from "@playwright/test";
-import { seedCompleted, shot } from "./helpers";
+import { rescueWord, seedCompleted, shot } from "./helpers";
 
 /**
  * こたえあわせで **1文ずつ** 音を 鳴らせる（2026-09-16 の 指定「個々の 音声を 答え合わせに 貼る」）
@@ -32,7 +32,7 @@ for (const width of [390, 1280]) {
     await input.fill("報告");
     await input.press("Enter");
     await page.getByText("どうしても すすめない ときは").click();
-    await page.getByLabel("あいことば").fill("きいた");
+    await page.getByLabel("あいことば").fill(rescueWord("houkoku_listening"));
     await page.getByRole("button", { name: "ひらく" }).click();
     await page.getByRole("button", { name: "こたえあわせに すすむ" }).click();
 

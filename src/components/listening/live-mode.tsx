@@ -637,10 +637,13 @@ export function TalkSession({
                   role="radio"
                   aria-checked={chosen}
                   onClick={() => switchTo(person.id)}
-                  className="rounded-full px-3 py-1.5 text-xs font-extrabold"
+                  /* 白い 文字は クラスで（ふりがなも いっしょに 白に する・ruby-text.tsx） */
+                  className={`rounded-full px-3 py-1.5 text-xs font-extrabold ${
+                    chosen ? "" : "text-white"
+                  }`}
                   style={{
                     background: chosen ? "#ffc93c" : "rgba(255,255,255,0.12)",
-                    color: chosen ? "#3b2a00" : "#fff",
+                    color: chosen ? "#3b2a00" : undefined,
                   }}
                 >
                   {chosen ? "🎤 " : ""}

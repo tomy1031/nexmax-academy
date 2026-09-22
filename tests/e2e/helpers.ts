@@ -220,6 +220,26 @@ export const SHUGYO_TOTAL: number = (
 ).questions.length;
 
 /**
+ * リスニングの 関所を 開ける **あいことば**。**教材から 読む**（`HOUKOKU_TOTAL` と 同じ 理由）。
+ *
+ * 2026-09-22 から 教材ごとに 変えられる（`rescueWord`）。前は「きいた」を テストに
+ * 焼いて いたので、先生が ことばを 変えるたびに テストだけが 置いて いかれた。
+ */
+export function rescueWord(listeningId: string): string {
+  const data = JSON.parse(
+    readFileSync(
+      join(__dirname, "..", "..", "content", "listening", `${listeningId}.json`),
+      "utf8",
+    ),
+  ) as { rescueWord?: string };
+  const word = data.rescueWord ?? "";
+  if (word.length === 0) {
+    throw new Error(`${listeningId} に あいことばが ありません（関所は 開けられません）`);
+  }
+  return word;
+}
+
+/**
  * その教材より前の教材のID（関門を開けるために「おわった」ことにする分）。
  *
  * **番号ではなく教材そのものを受ける。** 前は `itemsBefore(4)` のように番号で
@@ -440,6 +460,23 @@ export async function writeListIn(
   const row = page.locator(`#q-${questionId}`);
   for (const [at, value] of values.entries()) {
     await row.getByLabel(`${at + 1}つめを 入力する`).fill(value);
+  }
+}
+
+/**
+ * 型の ある 文（`fillin`・メール）の 欄を 名前で 埋める。
+ *
+ * 欄の 名前（宛先・原因…）で 引く——**どの 欄に 入れるかが 問いの 中身**なので、
+ * 番号で 埋める 書き方に すると、欄の 並びを 直した 日に テストが 静かに 通りつづける。
+ */
+export async function writeFillinIn(
+  page: Page,
+  questionId: string,
+  values: Readonly<Record<string, string>>,
+): Promise<void> {
+  const box = page.locator(`#q-${questionId}`);
+  for (const [label, value] of Object.entries(values)) {
+    await box.getByLabel(`${label}を 入力する`, { exact: true }).fill(value);
   }
 }
 

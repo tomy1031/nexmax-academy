@@ -1267,7 +1267,10 @@ function CardsView({ stages, progress }: { stages: readonly MapStage[]; progress
                         )}
                       </div>
                       <span
-                        className="grid h-11 w-11 place-items-center rounded-full border-4 border-white text-lg shadow-md"
+                        /* 白い 文字は クラスで（ふりがなも いっしょに 白に する・ruby-text.tsx） */
+                        className={`grid h-11 w-11 place-items-center rounded-full border-4 border-white text-lg shadow-md ${
+                          status === "locked" ? "" : "text-white"
+                        }`}
                         style={{
                           backgroundColor:
                             status === "current"
@@ -1275,7 +1278,7 @@ function CardsView({ stages, progress }: { stages: readonly MapStage[]; progress
                               : status === "cleared"
                                 ? CLEARED_COLOR
                                 : "#ffffff",
-                          color: status === "locked" ? STAGE_COLORS[stage.color] : "#ffffff",
+                          color: status === "locked" ? STAGE_COLORS[stage.color] : undefined,
                         }}
                       >
                         {status === "cleared" ? "✓" : status === "current" ? "▶" : "○"}

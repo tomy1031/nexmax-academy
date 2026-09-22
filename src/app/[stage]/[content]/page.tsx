@@ -8,6 +8,8 @@ import { LinkView } from "@/components/link/link-view";
 import { SkitView } from "@/components/skit/skit-view";
 import { QuestView } from "@/components/quest/quest-view";
 import { ListeningPlayer } from "@/components/listening/playback-mode";
+import { hideRescueWord, rescueFingerprints } from "@/components/listening/listening-checks";
+import { buildFuriganaIndex } from "@/lib/text/furigana";
 import { MangaReader } from "@/components/manga/manga-reader";
 import { QuizRunner } from "@/components/quiz/quiz-runner";
 import { SlideDeck } from "@/components/slides/slide-deck";
@@ -272,7 +274,14 @@ async function renderContent(ref: StageContentRef) {
     case "listening": {
       const listening = await getListening(ref.ref);
       if (!listening) notFound();
-      return <ListeningPlayer listening={listening} embedded />;
+      /* あいことばは 指紋で 渡す（語を props に 置くと 配信HTMLで 読める）。 */
+      return (
+        <ListeningPlayer
+          listening={hideRescueWord(listening)}
+          rescue={rescueFingerprints(listening, buildFuriganaIndex(listening.furigana ?? []))}
+          embedded
+        />
+      );
     }
     case "quizset": {
       const set = await getQuizSet(ref.ref);

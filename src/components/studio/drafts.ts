@@ -280,6 +280,18 @@ export function emptyQuizQuestion(type: QuizQuestion["type"]): QuizQuestion {
     /* じゅんばんに ならべて 書く。行の 数は 学習者が ふやす（正解は 無い）。 */
     case "ranklist":
       return { ...base, type: "ranklist", start: 5, max: 50 };
+    /*
+     * 型の ある 文の うめこみ（メール）。スキーマの 下限（欄 1つ）だけ 出す。
+     * 宛先の 行は 最初から 置く——連絡文は **だれに 出すか**から 始まる ので、
+     * 空の 型から 作り始める 先生も そこを 書き落とさない。
+     */
+    case "fillin":
+      return {
+        ...base,
+        type: "fillin",
+        head: [{ kind: "write", label: "宛先", answer: "", accept: [] }],
+        blanks: [{ label: "", answer: "", accept: [] }],
+      };
   }
 }
 

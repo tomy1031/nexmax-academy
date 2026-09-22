@@ -136,6 +136,7 @@ export type QuizAction =
       readonly en?: string;
     } & Targeted)
   | ({ readonly type: "answerList"; readonly inputs: readonly string[] } & Targeted)
+  | ({ readonly type: "answerFillin"; readonly inputs: readonly string[] } & Targeted)
   | ({ readonly type: "answerRanklist"; readonly rows: readonly string[] } & Targeted)
   | ({ readonly type: "answerWordbank"; readonly filled: readonly (string | null)[] } & Targeted)
   | ({ readonly type: "answerFeeling"; readonly index: number } & Targeted)
@@ -363,6 +364,16 @@ export function quizReducer(state: QuizState, action: QuizAction): QuizState {
     case "answerRanklist": {
       if (question.type !== "ranklist") return state;
       return put(state, question, { kind: "ranklist", rows: [...action.rows] });
+    }
+
+    /*
+     * 型の ある 文の うめこみ（`fillin`）。欄の 並びは `fillinSlots` の とおりで、
+     * ここでは 受け取った ものを そのまま 置く（並べ替えは 画面の 仕事では ない）。
+     * IME の 注意は 出さない（`answerList` と 同じ 理由——URL や @名前 を 打つ 欄が ある）。
+     */
+    case "answerFillin": {
+      if (question.type !== "fillin") return state;
+      return put(state, question, { kind: "fillin", inputs: [...action.inputs] });
     }
 
     case "answerWordbank": {
