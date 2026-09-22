@@ -132,10 +132,10 @@
         {
           "icon": "🔎",
           "label": "コツ ①",
-          "title": "事実ベースで 伝える",
+          "title": "事実を 伝える",
           "image": {
             "src": "/img/hourensou/renraku/kotsu1.webp",
-            "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Match the drawing style, the colours and the two men of the FIRST reference picture exactly: the junior engineer is a young man with short dark brown hair wearing a coral-orange shirt jacket over a white tee, and the team leader is a man with short black hair in a navy blazer over a white shirt. This is a TEACHING picture, not a mood picture: what each person is doing must be readable from the picture alone.\nTHE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: a vague feeling word tells the leader nothing, a measured fact tells him everything. One tall teaching card on a soft cream background, drawn as three stacked rows inside one big rounded panel. TOP ROW: a wide rounded navy label bar holding the title. MIDDLE ROW, on a warm pale coral ground: a large bold red cross mark on the left, then the junior engineer at his laptop waving a hand in a flustered way with small sweat drops, a soft rounded speech balloon beside him carrying the first quoted line; his screen is blank. BOTTOM ROW, on a pale sky-blue ground: a large bold green circle mark on the left, then the same engineer sitting calmly and pointing at his laptop, on which a simple line graph climbs steeply to a clearly high level near the top of its scale, and a soft rounded speech balloon beside him carrying the second quoted line. The red row and the green row are the same size and read top to bottom in one pass.\nThe Japanese words in this picture are exactly: 事実ベースで 伝える / サーバーが やばいです / CPU使用率が 95%です.\nOutput: one square illustration, 1024x1024.\nJapanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana. Spell every character exactly as given. No other letters, numbers, logos or watermarks anywhere in the picture.\nNever: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+            "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Match the drawing style, the colours and the two men of the FIRST reference picture exactly: the junior engineer is a young man with short dark brown hair wearing a coral-orange shirt jacket over a white tee, and the team leader is a man with short black hair in a navy blazer over a white shirt. This is a TEACHING picture, not a mood picture: what each person is doing must be readable from the picture alone.\nTHE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: a vague feeling word tells the leader nothing, a measured fact tells him everything. One tall teaching card on a soft cream background, drawn as three stacked rows inside one big rounded panel. TOP ROW: a wide rounded navy label bar holding the title. MIDDLE ROW, on a warm pale coral ground: a large bold red cross mark on the left, then the junior engineer at his laptop waving a hand in a flustered way with small sweat drops, a soft rounded speech balloon beside him carrying the first quoted line; his screen is blank. BOTTOM ROW, on a pale sky-blue ground: a large bold green circle mark on the left, then the same engineer sitting calmly and pointing at his laptop, on which a simple line graph climbs steeply to a clearly high level near the top of its scale, and a soft rounded speech balloon beside him carrying the second quoted line. The red row and the green row are the same size and read top to bottom in one pass. FURIGANA EVERYWHERE — this matters as much as the title bar: EVERY kanji anywhere in this picture — in the title bar, in the speech balloons and anywhere else — carries its reading in small hiragana directly above it, centred over that kanji and clearly separated from it. No kanji is left without its reading.\nThe Japanese words in this picture are exactly: 事実を 伝える / サーバーが やばいです / CPU使用率が 95%です.\nOutput: one square illustration, 1024x1024.\nJapanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana. Spell every character exactly as given. No other letters, numbers, logos or watermarks anywhere in the picture.\nNever: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
             "refs": [
               "/img/hourensou/renraku/s1.webp",
               "/img/characters/hendy/sheet.webp"
@@ -287,6 +287,13 @@
       "kind": "callout",
       "tone": "care",
       "text": "とても 親しい チームなら 面白い スタンプも 使いますが、最初の うちは ベーシックな ものが 無難です。"
+    },
+    {
+      "kind": "vocab",
+      "wordIds": [
+        "shiyouritsu",
+        "taisaku"
+      ]
     }
   ],
   "furigana": [
@@ -689,6 +696,10 @@
     [
       "分け",
       "わけ"
+    ],
+    [
+      "問題",
+      "もんだい"
     ],
     [
       "人",
