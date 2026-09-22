@@ -507,7 +507,10 @@ export function QuizRunner({
    * 読めない ときは 何も しない——鍵ゼロの デモモードでも 画面は そのまま 開く。
    */
   const startedRef = useRef(false);
-  startedRef.current = started;
+  // 描画の 中で ref に 書かない（React の 規則）。押された ことを あとから 写す だけ
+  useEffect(() => {
+    startedRef.current = started;
+  }, [started]);
   useEffect(() => {
     if (start.resumed || !keepsAnswers(set)) return;
     let alive = true;
