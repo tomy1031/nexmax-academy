@@ -142,6 +142,17 @@ const REPLACED: readonly {
     from: { type: "link", ref: "houkoku_search" },
     to: { type: "quizset", ref: "houkoku_search_quiz" },
   },
+  /*
+   * 2026-09-20: 連絡文の 練習（メール・Slack）を 別ページ（link `renraku_contact`）から
+   * もんだい（quizset `renraku_contact_quiz`）へ 差し替えた。指定は「別ページで 開くのでは
+   * なく、問題コンポーネントとして AI問題を チェックできるように」。元の 別ページは
+   * 消さずに ステージから 外した だけ（調査の ときと 同じ 畳みかた）。
+   */
+  {
+    stage: "renraku",
+    from: { type: "link", ref: "renraku_contact" },
+    to: { type: "quizset", ref: "renraku_contact_quiz" },
+  },
 ];
 
 /**

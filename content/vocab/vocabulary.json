@@ -10239,6 +10239,20 @@
       ]
     },
     {
+      "id": "taisaku",
+      "term": "対策",
+      "reading": "たいさく",
+      "romaji": "taisaku",
+      "meaningJa": "同じ 問題が また 起きない ように する ことです。",
+      "englishTerm": "Countermeasure",
+      "example": "【対策】には、つぎから どう するかを 書きます。",
+      "wrongMeanings": [
+        "Schedule",
+        "Reply",
+        "Request"
+      ]
+    },
+    {
       "id": "roguingamen",
       "term": "ログイン画面",
       "reading": "ろぐいんがめん",

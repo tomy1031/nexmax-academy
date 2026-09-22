@@ -4,7 +4,7 @@
   "order": 6,
   "title": "報連相：連絡",
   "reading": "ほうれんそう れんらく",
-  "description": "チーム全体に 情報を 伝える「連絡」を 学びます。まんがで 始めて、事実だけを 短く 伝える 練習を、スキットと Slack風の 画面で します。",
+  "description": "チーム全体に 情報を 伝える「連絡」を 学びます。まんがで 始めて、事実だけを 短く 伝える 練習を、メール・Slack風の 画面で します。",
   "color": "leaf",
   "status": "published",
   "area": {
@@ -21,10 +21,6 @@
       "type": "article"
     },
     {
-      "ref": "renraku_skit",
-      "type": "skit"
-    },
-    {
       "ref": "renraku_listening",
       "type": "listening"
     },
@@ -33,16 +29,18 @@
       "type": "quizset"
     },
     {
-      "ref": "renraku_builder",
-      "type": "link"
-    },
-    {
       "ref": "renraku_slack",
       "type": "link"
     },
     {
-      "ref": "renraku_contact",
-      "type": "link"
+      "ref": "renraku_contact_quiz",
+      "type": "quizset",
+      "gates": false
+    },
+    {
+      "ref": "renraku_contact_slack_quiz",
+      "type": "quizset",
+      "gates": false
     }
   ],
   "wordStageIds": [

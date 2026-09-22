@@ -84,6 +84,7 @@ const NOT_LEARNER_TEXT: readonly { key: RegExp; why: string }[] = [
   { key: /(^|\.)nekumax$/, why: "ネクマックスの 出しかた" },
   { key: /(^|\.)answerMode$/, why: "やりかた（データの 型）" },
   { key: /(^|\.)password$/, why: "先生が 配る 合いことば" },
+  { key: /(^|\.)rescueWord$/, why: "先生が 教室で 教える あいことば（学習者の 画面に 出ない）" },
   { key: /(^|\.)fieldSequence(\[|$)/, why: "ゲームの 背景の 名前" },
   { key: /(^|\.)state$/, why: "箱の 状態（done / now / later）" },
   { key: /(^|\.)from$/, why: "準備フォームの 設問を 指す 名前" },
@@ -97,6 +98,12 @@ const NOT_LEARNER_TEXT: readonly { key: RegExp; why: string }[] = [
    *（ヘッダに 出るのは `name`、工程表に 出るのは `chapter`）。
    */
   { key: /^phases\[\d+\]\.desc$/, why: "クエストの 場面の おぼえがき（画面に 出ない）" },
+  /*
+   * こたえの チェックで **AIだけに 渡す** 言い渡し（`aiReviewSchema.note`）。
+   * 観点（`ai.checks[].label`）と お手本（`ai.model`）は 画面に 出る ので
+   * `collectLabeledTexts` が 覆うが、これは どこにも 出ない。
+   */
+  { key: /^questions\[\d+\]\.ai\.note$/, why: "AIだけが 読む 言い渡し（画面に 出ない）" },
 ];
 
 /** 漢字か かなを 含む＝日本語の 文（記号・英数だけの 値は 見ない）。 */

@@ -1,0 +1,44 @@
+/**
+ * deploy-kicker — 授業前の 本番デプロイを 時間通りに 起こす ための 外の 時計。
+ * 中身と なぜ 要るかは src/index.js の 冒頭。
+ *
+ * 出しかた（アプリ本体とは 別の Worker なので、設定ファイルを 名指しする）:
+ *   npx wrangler deploy  -c workers/deploy-kicker/wrangler.jsonc
+ *   npx wrangler secret put GITHUB_TOKEN -c workers/deploy-kicker/wrangler.jsonc
+ *
+ * **アプリ本体（wrangler.jsonc・name=academy）には 触らない。**
+ * ここを 本体に 相乗りさせると、OpenNext の ビルド出力と 混ざる。
+ */
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "academy-deploy-kicker",
+  "main": "src/index.js",
+  "compatibility_date": "2026-07-01",
+
+  // 動いて いるかを あとから 見られる ように しておく（鍵は 出ない）。
+  "observability": { "enabled": true },
+
+  // **UTC で 書く。** ICT は UTC+7。授業は 火・水・金 17:30 ICT。
+  //
+  //   09:10 UTC = 16:10 ICT … 本命。ビルド6〜10分 なので 16:22 ごろ 本番に 載る
+  //   09:52 UTC = 16:52 ICT … 16:10 以降に 入った 教材を 拾う
+  //                            （デプロイ側の「前の ビルドから 30分」を 満たす 間隔）
+  //   10:02 UTC = 17:02 ICT … 上の 2本が 出なかった ときの 最後の 受け皿
+  //
+  // **3回 起きても、本番へ 出るのは 必要な ときだけ。** 出すか どうかは
+  // ワークフロー側の `scripts/lib/should_deploy.mjs` が 本番の `/api/version` を
+  // 見て 決める（中身が 同じ／30分 未満 なら 空振り＝ KV 0件）。
+  "triggers": {
+    "crons": ["10 9 * * 2,3,5", "52 9 * * 2,3,5", "2 10 * * 2,3,5"],
+  },
+
+  "vars": {
+    "GITHUB_REPO": "tomy1031/nexmax-academy",
+    "WORKFLOW": "deploy.yml",
+    "PROD_URL": "https://academy.nexmax.workers.dev",
+  },
+
+  // secret（`wrangler secret put` で 入れる。ここには 書かない）:
+  //   GITHUB_TOKEN … 細粒度 PAT。Repository access: nexmax-academy だけ。
+  //                  Permissions: Actions = Read and write（これだけ）。
+}

@@ -106,6 +106,7 @@
     "プノンペン"
   ],
   "revealGoal": 30,
+  "rescueWord": "抹茶",
   "check": {
     "minLength": 2,
     "maxMiss": 5,
@@ -113,6 +114,7 @@
     "showTyping": true
   },
   "furigana": [
+    ["抹茶", "まっちゃ"],
     [
       "何でしょうか",
       "なんでしょうか"

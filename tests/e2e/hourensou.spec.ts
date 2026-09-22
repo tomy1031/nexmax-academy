@@ -27,9 +27,14 @@ function skit(id: string): { lines: { speaker: string; text: string; audioUrl?: 
   return JSON.parse(readFileSync(join("content", "skits", `${id}.json`), "utf8"));
 }
 
+/**
+ * `skitId` が `null` の ステージは スキットを 持たない。連絡は 2026-09-21 の
+ * 指定で スキットを 外した（教材そのものを ステージから 削除）ので、
+ * 「スキットが 鳴らせる」の 検査を 回さない。
+ */
 const STAGES = [
   { id: "houkoku", title: "報告", skitId: "houkoku_skit" },
-  { id: "renraku", title: "連絡", skitId: "renraku_skit" },
+  { id: "renraku", title: "連絡", skitId: null },
   { id: "soudan", title: "相談", skitId: "soudan_skit" },
 ] as const;
 
@@ -190,30 +195,32 @@ for (const { id, title, skitId } of STAGES) {
     }
   });
 
-  test(`報連相：${title} — スキットが 鳴らせる`, async ({ page }) => {
-    const data = skit(skitId);
-    await open(page, `/${id}/skit`);
+  // スキットの 無い ステージ（連絡）は この 検査だけ 回さない。**残りの 検査は 回す**。
+  if (skitId)
+    test(`報連相：${title} — スキットが 鳴らせる`, async ({ page }) => {
+      const data = skit(skitId);
+      await open(page, `/${id}/skit`);
 
-    /*
-     * セリフが ぜんぶ 画面に 出て いるか。**文字列では 探さない**——ルビが 合成されると
-     * 1つの 文が `<ruby>` で いくつにも 割れる ので、文まるごとの 一致は 当たらない。
-     * 行の 数で 見る（1行でも 落ちたら まねる 練習に ならない）。
-     */
-    await expect(page.locator('[data-skit="lines"] > li')).toHaveCount(data.lines.length);
+      /*
+       * セリフが ぜんぶ 画面に 出て いるか。**文字列では 探さない**——ルビが 合成されると
+       * 1つの 文が `<ruby>` で いくつにも 割れる ので、文まるごとの 一致は 当たらない。
+       * 行の 数で 見る（1行でも 落ちたら まねる 練習に ならない）。
+       */
+      await expect(page.locator('[data-skit="lines"] > li')).toHaveCount(data.lines.length);
 
-    // ト書き 以外の 行の 数だけ スピーカーが ある
-    const spoken = data.lines.filter((line) => line.speaker !== "narration").length;
-    await expect(page.getByRole("button", { name: "聞く" })).toHaveCount(spoken);
+      // ト書き 以外の 行の 数だけ スピーカーが ある
+      const spoken = data.lines.filter((line) => line.speaker !== "narration").length;
+      await expect(page.getByRole("button", { name: "聞く" })).toHaveCount(spoken);
 
-    // 音の ファイルが 本当に 置いて あるか（データだけが 指して いる 状態を 弾く）
-    for (const line of data.lines) {
-      if (!line.audioUrl) continue;
-      const res = await page.request.get(line.audioUrl);
-      expect(res.status(), `${line.audioUrl} が 無い`).toBe(200);
-    }
+      // 音の ファイルが 本当に 置いて あるか（データだけが 指して いる 状態を 弾く）
+      for (const line of data.lines) {
+        if (!line.audioUrl) continue;
+        const res = await page.request.get(line.audioUrl);
+        expect(res.status(), `${line.audioUrl} が 無い`).toBe(200);
+      }
 
-    await shot(page, `hourensou-${id}-skit`);
-  });
+      await shot(page, `hourensou-${id}-skit`);
+    });
 
   test(`報連相：${title} — 動画が 置いて ある`, async ({ page }) => {
     const article = pathsOf(id).find((item) => item.type === "article");

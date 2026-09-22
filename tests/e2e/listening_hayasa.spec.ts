@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { expect, test, type Locator } from "@playwright/test";
-import { seedCompleted } from "./helpers";
+import { rescueWord, seedCompleted } from "./helpers";
 
 /**
  * リスニングの はやさ：**押す 前から** 札どおりの 速さで 鳴る
@@ -60,7 +60,7 @@ test("リスニング：はやさは 押す 前から「すこし ゆっくり�
   await input.fill("報告");
   await input.press("Enter");
   await page.getByText("どうしても すすめない ときは").click();
-  await page.getByLabel("あいことば").fill("きいた");
+  await page.getByLabel("あいことば").fill(rescueWord("houkoku_listening"));
   await page.getByRole("button", { name: "ひらく" }).click();
   await page.getByRole("button", { name: "こたえあわせに すすむ" }).click();
 

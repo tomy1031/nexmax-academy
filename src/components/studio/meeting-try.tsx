@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import type { Meeting } from "@/content/schema";
+import { AiWaiting } from "@/components/meeting/ai-waiting";
+import { buildFuriganaIndex } from "@/lib/text/furigana";
 import { JudgeCard } from "@/components/meeting/judge-card";
 import { judgeFailNote, requestCardHit, requestJudge } from "@/components/meeting/judge-api";
 import { buildCardPrompt, buildJudgePrompt, type JudgeResult } from "@/lib/meeting/judge";
@@ -44,6 +46,9 @@ import { MiniButton, SelectField, StudioSection, TextAreaField } from "./studio-
 const SAMPLE_LEARNER = "ソク";
 
 type Phase = "idle" | "asking";
+
+/** 先生の 画面なので ふりがなは 要らない（学習者の 画面では 教材の 辞書を 渡す）。 */
+const EMPTY_FURIGANA = buildFuriganaIndex([]);
 
 export function MeetingTryPanel({
   value,
@@ -217,10 +222,14 @@ export function MeetingTryPanel({
             >
               {phase === "asking" ? "きいて います…" : "AIに きく"}
             </MiniButton>
+            {/* **Gemini を 呼んで いる あいだの ローディング**（2026-09-20 の 指定）。 */}
             {phase === "asking" ? (
-              <span className="text-ink-soft text-xs font-bold">
-                はじめの 1回は つなぐのに 数びょう かかります。
-              </span>
+              <div className="flex flex-wrap items-center gap-2">
+                <AiWaiting doing="きいて います" index={EMPTY_FURIGANA} />
+                <span className="text-ink-soft text-xs font-bold">
+                  はじめの 1回は つなぐのに 数びょう かかります。
+                </span>
+              </div>
             ) : null}
           </div>
 

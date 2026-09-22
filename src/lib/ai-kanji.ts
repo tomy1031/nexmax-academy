@@ -19,7 +19,7 @@
  * 国の 名前・外来語は **カタカナ**で 書かせる（「べとなむ」では 読みにくい）。
  * こちらは 漢字では ないので この 一覧には 入らない。
  */
-import type { FuriganaEntry } from "@/lib/text/furigana";
+import { mergeFuriganaEntries, type FuriganaEntry } from "@/lib/text/furigana";
 
 /** AIが 漢字で 書いてよい ことば（表記, 読み）。長い ものから 並べる。 */
 export const AI_KANJI_FURIGANA: readonly FuriganaEntry[] = [
@@ -237,6 +237,21 @@ export const AI_KANJI_FURIGANA: readonly FuriganaEntry[] = [
   ["回", "かい"],
   ["重", "おも"],
   ["速", "はや"],
+  /* 2026-09-20 — もんだいの AIの 見かた（連絡文）。**2字以上で 名指しする**:
+   * 教材の 読み辞書と 重ねる ときに 1字の 見出し（行・分・中 など）が 後勝ちで
+   * 上書きされ、「行きます」が ぎょうきます、「部分」が ぶぷん に なって いた
+   *（2026-09-20 の 読みの検収）。長い ことばは 最長一致で 必ず 勝つ。 */
+  ["午前中", "ごぜんちゅう"],
+  ["今日中", "きょうじゅう"],
+  ["部分", "ぶぶん"],
+  ["気分", "きぶん"],
+  ["中止", "ちゅうし"],
+  ["十分", "じゅうぶん"],
+  ["大事", "だいじ"],
+  ["場合", "ばあい"],
+  ["行き", "いき"],
+  ["行って", "いって"],
+  ["行った", "いった"],
 ];
 
 /** AIへの 指示に 並べる 表記の 一覧。 */
@@ -264,4 +279,22 @@ export function unknownKanji(text: string): string[] {
   let rest = text;
   for (const [word] of AI_KANJI_FURIGANA) rest = rest.split(word).join("");
   return [...new Set(rest.match(/[一-鿿々]/gu) ?? [])];
+}
+
+/**
+ * **AIが 書いた 文を 画面に 出す ときの 読み索引**（教材の 辞書 ＋ この 一覧）。
+ *
+ * AIの 返事には 読み辞書が 付いて こない。だから 2つを 重ねた ものを
+ * **通す／通さないの 検査にも、画面に 描く ときにも 同じ もの**として 使う。
+ * 別々に すると「検査は 通るのに 画面では ルビが 付かない」が 起きる——
+ * 2026-09-21 の 読み検収で、こたえの チェックの ひとことが まさに その 状態に
+ * なって いた（検査は 重ねた 索引、画面は 教材の 辞書だけ）。
+ *
+ * 教材の ぶんを **あとに 置いて 勝たせる**（`mergeFuriganaEntries` は 後勝ち）
+ * ——同じ 表記で 読みが ちがう ときは、その 教材の 決めた 読みが 正。
+ */
+export function aiReplyFurigana(
+  materialEntries: readonly FuriganaEntry[],
+): readonly FuriganaEntry[] {
+  return mergeFuriganaEntries(AI_KANJI_FURIGANA, materialEntries);
 }

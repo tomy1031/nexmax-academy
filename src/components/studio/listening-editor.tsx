@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import type { Listening, ListeningParticipant, ListeningScriptLine } from "@/content/schema";
 import { moveItem, removeAt, replaceAt } from "./list-ops";
 import {
@@ -7,9 +8,12 @@ import {
   emptyListeningParticipant,
   LISTENING_ACCENT_OPTIONS,
   missingKeywords,
+  rescueWordOnScreen,
   SPEAKER_ME,
   SPEAKER_NARRATION,
 } from "./listening-drafts";
+import { DEFAULT_RESCUE_WORD, rescueReading } from "@/components/listening/listening-checks";
+import { buildFuriganaIndex } from "@/lib/text/furigana";
 import { AudioMaker } from "./audio-maker";
 import { ImageSlotEditor } from "./image-slot-editor";
 import {
@@ -82,6 +86,17 @@ export function ListeningEditor({
     patch({ script: replaceAt(value.script, index, next) });
 
   const missing = missingKeywords(value);
+
+  /* あいことばの かなの 形（先生が 黒板に 書く ため）。読み辞書は 教材のもの。 */
+  const rescueKana = useMemo(
+    () => rescueReading({ rescueWord: value.rescueWord }, buildFuriganaIndex(value.furigana ?? [])),
+    // patch() は 毎回 新しい オブジェクトを 返す ので、`value` を 見ると 一度も 効かない
+    [value.rescueWord, value.furigana],
+  );
+  /* 読み辞書に 無い 漢字は かなに 倒れず 残る。残った ままを 黒板に 書かせない。 */
+  const kanaHasKanji = /[一-鿿]/u.test(rescueKana);
+  /* 聞く 前の 画面に そのまま 出て いないか（出て いると 関所が 関所で なくなる）。 */
+  const rescueOnScreen = rescueWordOnScreen(value);
 
   return (
     <div className="space-y-4">
@@ -318,6 +333,52 @@ export function ListeningEditor({
             onChange={(maxMiss) => patch({ check: { ...value.check, maxMiss } })}
             hint="この 回数を こえたら「もういちど 聞こう」と 出します。"
           />
+        </div>
+
+        <div className="sm:w-2/3">
+          <TextField
+            label="あいことば（先生が 教室で 教える）"
+            value={value.rescueWord ?? ""}
+            onChange={(rescueWord) =>
+              patch({ rescueWord: rescueWord.length > 0 ? rescueWord : undefined })
+            }
+            placeholder={DEFAULT_RESCUE_WORD}
+            hint="目標まで ひらかなかった 学習者が、これを 入れると つぎへ 進めます。からに すると その 逃げ道は 出ません。学習者の 画面には 出ません。"
+          />
+          {/*
+            かなの 形を 出す のは、先生が 黒板に 書く ため。漢字で しか 伝えないと
+            「変換できない 学習者」が そこで 止まる——判定は かなでも 通るので、
+            通る 形を そのまま 見せる。
+          */}
+          {rescueKana.length > 0 && rescueKana !== value.rescueWord && !kanaHasKanji ? (
+            <p className="text-ink-soft mt-1 text-xs font-bold">
+              かなで <span className="text-navy font-black">{rescueKana}</span> と 打っても
+              開きます（漢字を 出せない 学習者には こちらを 伝えてください）。
+            </p>
+          ) : null}
+          {/*
+            題・せつめい・見かたは **聞く 前の 画面に 出る**。そこに 同じ ことばが あると、
+            先生に 聞かなくても 読んで 打てる。ただし あいことばは **その 課で おぼえて
+            ほしい ことば**なので、大切な ことばほど 見かたにも 書いて ある
+            （2026-09-22 の 指定）。だから 止めずに、知らせる だけに する。
+          */}
+          {kanaHasKanji ? (
+            <p className="text-coral-deep mt-1 text-xs font-black">
+              この ことばの 漢字は 読み辞書に ありません（かなで 打っても 開きません）。
+              <span className="text-ink-soft mt-1 block font-bold">
+                下の「よみ」に その ことばの 読みを 足すか、かなの ことばに してください。
+              </span>
+            </p>
+          ) : null}
+          {rescueOnScreen ? (
+            <p className="text-coral-deep mt-1 text-xs font-black">
+              この ことばは 聞く 前の 画面（題・せつめい・見かた）に 出て います。
+              <span className="text-ink-soft mt-1 block font-bold">
+                学習者は 読んで そのまま 打てます。台本の 中の ことばなど、聞かないと 出て こない
+                ものに してください。
+              </span>
+            </p>
+          ) : null}
         </div>
 
         <div className="flex flex-wrap gap-3">

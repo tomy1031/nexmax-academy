@@ -1,6 +1,9 @@
 import { notFound, redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { ListeningPlayer } from "@/components/listening/playback-mode";
+import { hideRescueWord, rescueFingerprints } from "@/components/listening/listening-checks";
+import { buildFuriganaIndex } from "@/lib/text/furigana";
+import type { Listening } from "@/content/schema";
 import { getListening, listListenings } from "@/lib/content";
 import { canonicalContentPath } from "@/lib/stage-lookup";
 
@@ -50,5 +53,20 @@ export default async function ListeningPage({
   const canonical = await canonicalContentPath("listening", id);
   if (canonical) redirect(canonical);
 
-  return <ListeningPlayer listening={listening} />;
+  const learner = forLearner(listening);
+  return <ListeningPlayer listening={learner.listening} rescue={learner.rescue} />;
+}
+
+/**
+ * 学習者の 画面へ 渡す 形。**あいことばを 落とし、指紋だけを 付ける。**
+ *
+ * client component の props は 作りおきの HTML に そのまま 載る。
+ * `rescueWord` を 付けた まま 渡すと、Ctrl+U で 読めて しまう
+ *（2026-09-22 の 検収で 配信HTMLに 出て いるのを 実測）。
+ */
+function forLearner(listening: Listening): { listening: Listening; rescue: string[] } {
+  return {
+    listening: hideRescueWord(listening),
+    rescue: rescueFingerprints(listening, buildFuriganaIndex(listening.furigana ?? [])),
+  };
 }
