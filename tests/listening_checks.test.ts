@@ -2,12 +2,17 @@ import { describe, expect, it } from "vitest";
 import { buildFuriganaIndex } from "@/lib/text/furigana";
 import {
   createListening,
+  DEFAULT_RESCUE_WORD,
   DEFAULT_RULES,
   lengthBonus,
   MAX_MISS,
+  matchesRescueFingerprint,
+  opensRescue,
+  rescueFingerprints,
   POINTS,
   remainingKeywords,
   replayListening,
+  rescueWordOf,
   revealRate,
   submitListening,
   type ListeningState,
@@ -205,5 +210,65 @@ describe("同じ ことばを 2回 打った とき", () => {
     state = submitListening(state, "たっせいかん");
     state = submitListening(state, "たっせいかん");
     expect(state.misses).toBe(0);
+  });
+});
+
+describe("あいことば（教材ごと・表示率が届かない学習者の逃げ道）", () => {
+  it("教材の ことばで 開く", () => {
+    const 教材 = { rescueWord: "もくようび" };
+    expect(rescueWordOf(教材)).toBe("もくようび");
+    expect(opensRescue("もくようび", 教材)).toBe(true);
+    expect(opensRescue("きんようび", 教材)).toBe(false);
+  });
+
+  it("あいことばの 無い 教材は 何を 打っても 開かない（2026-09-22 の 指定 B）", () => {
+    for (const 教材 of [{}, { rescueWord: "" }, { rescueWord: "   " }, { rescueWord: "、、" }]) {
+      expect(rescueWordOf(教材)).toBe("");
+      expect(opensRescue("なんでも", 教材)).toBe(false);
+      expect(opensRescue(DEFAULT_RESCUE_WORD, 教材)).toBe(false);
+      // 記号だけの ときに 空と 比べて しまうと「空欄でも 開く」に なる
+      expect(opensRescue("", 教材)).toBe(false);
+    }
+  });
+
+  it("既定の ことばは 新しい 教材の ための もので、それ自体は 鍵に ならない", () => {
+    expect(DEFAULT_RESCUE_WORD).toBe("ネクマックス");
+    expect(opensRescue(DEFAULT_RESCUE_WORD, { rescueWord: DEFAULT_RESCUE_WORD })).toBe(true);
+  });
+
+  it("カタカナ・全角・大文字・前後の 空白で 弾かない", () => {
+    expect(opensRescue(" ねくまっくす ", { rescueWord: "ネクマックス" })).toBe(true);
+    expect(opensRescue("ＳＥＳ", { rescueWord: "ses" })).toBe(true);
+  });
+
+  it("読み辞書が あれば かなで 打っても 開く（漢字を 出せない 学習者を 落とさない）", () => {
+    const 辞書 = buildFuriganaIndex([["報告", "ほうこく"]]);
+    expect(opensRescue("ほうこく", { rescueWord: "報告" }, 辞書)).toBe(true);
+    expect(opensRescue("報告", { rescueWord: "報告" }, 辞書)).toBe(true);
+    expect(opensRescue("れんらく", { rescueWord: "報告" }, 辞書)).toBe(false);
+  });
+
+  it("英字は 1文字ずつの 読みでも 開く（SES → えすいーえす）", () => {
+    expect(opensRescue("えすいーえす", { rescueWord: "SES" })).toBe(true);
+  });
+
+  it("指紋には ことばが 入って いない（画面へ 渡すのは これだけ）", () => {
+    const prints = rescueFingerprints({ rescueWord: "正直" });
+    expect(prints.join("")).not.toContain("正直");
+    expect(prints.join("")).toMatch(/^[0-9a-f]+$/);
+  });
+
+  it("指紋でも 素の 形・かなの 形の どちらでも 開く", () => {
+    const furigana = buildFuriganaIndex([["正直", "しょうじき"]]);
+    const prints = rescueFingerprints({ rescueWord: "正直" }, furigana);
+    expect(matchesRescueFingerprint("正直", prints, furigana)).toBe(true);
+    expect(matchesRescueFingerprint("しょうじき", prints, furigana)).toBe(true);
+    expect(matchesRescueFingerprint("ショウジキ", prints, furigana)).toBe(true);
+    expect(matchesRescueFingerprint("せいちょく", prints, furigana)).toBe(false);
+  });
+
+  it("指紋が 空（あいことばの 無い 教材）なら 何を 打っても 開かない", () => {
+    expect(rescueFingerprints({})).toEqual([]);
+    expect(matchesRescueFingerprint("なんでも", [])).toBe(false);
   });
 });

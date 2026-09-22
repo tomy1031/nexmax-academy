@@ -13,7 +13,12 @@ import { ImageSlotFrame } from "@/components/article/rich-blocks";
 import { assetUrl, hasAsset } from "@/lib/asset-url";
 import { lineSentenceClips, type SentenceClip } from "@/lib/audio/sentences";
 import { ListeningPanel } from "./listening-panel";
-import { mediaKind, revealRate, type ListeningState } from "./listening-checks";
+import {
+  matchesRescueFingerprint,
+  mediaKind,
+  revealRate,
+  type ListeningState,
+} from "./listening-checks";
 
 /**
  * リスニング — 「聞く」教材
@@ -37,12 +42,19 @@ import { mediaKind, revealRate, type ListeningState } from "./listening-checks";
 export function ListeningPlayer({
   listening,
   /**
+   * 関所の あいことばの **指紋**（`rescueFingerprints`）。**語そのものは 受け取らない**
+   * ——この props は そのまま 配信HTMLに 載る ので、語を 渡すと Ctrl+U で 読めて
+   * しまう（2026-09-22 の 検収で 実測）。渡すのは サーバ側（ページ）の 仕事。
+   */
+  rescue = [],
+  /**
    * ステージの枠（ContentFrame）の中に置くとき。自前の外枠と戻りリンクを出さない
    * ——戻り先は枠が持つ。
    */
   embedded = false,
 }: {
   listening: Listening;
+  rescue?: readonly string[];
   embedded?: boolean;
 }) {
   const furigana = useMemo(
@@ -127,6 +139,8 @@ export function ListeningPlayer({
           ) : null}
 
           <NextGate
+            rescue={rescue}
+            furigana={furigana}
             rate={rate}
             goal={goal}
             touched={touched || !typingOn}
@@ -419,17 +433,22 @@ function Toggle({ on, onClick, label }: { on: boolean; onClick: () => void; labe
   );
 }
 
-/** 先生から聞く あいことば（どうしても表示率が届かない学習者の逃げ道）。 */
-const RESCUE_WORD = "きいた";
-
 /**
  * つぎ（こたえあわせ）へ進む関所。
  *
  * 表示率が目標に届くまでは進めない——聞かずに答えだけ見るのを防ぐため。
- * ただし**行き止まりは作らない**。どうしても届かない学習者のために、
- * 先生から聞いた あいことば で開けるようにしておく。
+ * どうしても届かない学習者のために、先生から聞いた あいことば で開ける道を残す。
+ *
+ * あいことばは **教材ごと**（`rescueWord`）。**入っていない 教材では 逃げ道の
+ * 入口ごと 出さない**（2026-09-22 の 指定）——開けられない 欄を 見せるのは、
+ * 何度 打っても 開かない 学習者を 作るだけ。
+ *
+ * ここが 持つのは **指紋だけ**で、ことばそのものは 持たない。props は 配信HTMLに
+ * そのまま 載る ので、語を 持つと ソースを 見た 学習者に 読まれる。
  */
 function NextGate({
+  rescue,
+  furigana,
   rate,
   goal,
   touched,
@@ -437,6 +456,8 @@ function NextGate({
   onRescue,
   onNext,
 }: {
+  rescue: readonly string[];
+  furigana: FuriganaIndex;
   rate: number;
   goal: number;
   touched: boolean;
@@ -447,6 +468,7 @@ function NextGate({
   const [word, setWord] = useState("");
   const [wrong, setWrong] = useState(false);
   const open = rate >= goal || rescued;
+  const hasRescue = rescue.length > 0;
 
   return (
     <section className="card-island p-4">
@@ -468,7 +490,7 @@ function NextGate({
           <p className="text-ink-soft text-sm font-bold">
             げんこうが {goal}% ひらくと、こたえあわせに すすめます（いま {rate}%）。
           </p>
-          {touched ? (
+          {touched && hasRescue ? (
             <details className="mt-3">
               <summary className="text-ink-faint cursor-pointer text-xs font-bold">
                 どうしても すすめない ときは
@@ -480,7 +502,7 @@ function NextGate({
                 className="mt-2 flex flex-wrap gap-2"
                 onSubmit={(event) => {
                   event.preventDefault();
-                  if (word.trim() === RESCUE_WORD) onRescue();
+                  if (matchesRescueFingerprint(word, rescue, furigana)) onRescue();
                   else setWrong(true);
                 }}
               >
