@@ -20,8 +20,10 @@ import { stageCardImage } from "@/lib/stage-card-image";
  * 既定の停留所は持たない（持つと、地図にあるのに中身が無い停留所ができる）。
  * 「はじめに」のような案内は `listed: false` で地図から外れ、URLだけで開く。
  *
- * スタジオで「こうかい」したステージは、再デプロイを待たずこの間隔でマップに増える
- * （設計07 §11.1「gitコンテンツは静的生成のまま。DBコンテンツはリクエスト時取得」）。
+ * スタジオで「こうかい」したステージが ここに 増えるのは **次のデプロイ**。下の
+ * `force-static` で 作りおきを 作り直さないと 決めた ときに そう なった（2026-09-22 に
+ * 書き直し——ここには「再デプロイを待たずマップに増える」と 残って いて、すぐ 下の
+ * 判断と 食い違って いた）。
  */
 /*
  * **作りおきを 作り直さない**（`force-static`）。`revalidate` を 置くと、期限ぎれの
@@ -60,15 +62,24 @@ async function cardImages(stages: readonly Stage[]): Promise<Map<string, string>
     ...quizSets,
     ...meetings,
     ...scenarios,
-  ] as Content[]) {
+  ]) {
     byRef.set(`${item.kind}:${item.id}`, item);
   }
 
   const images = new Map<string, string>();
   for (const stage of stages) {
     const src = stageCardImage(stage, (ref) => byRef.get(`${ref.type}:${ref.ref}`));
-    // 絵の 差しかえが 学習者に 届くよう 版番号を 付ける（src/lib/asset-url.ts）
-    if (src) images.set(stage.id, assetUrl(src) ?? src);
+    if (!src) continue;
+    /*
+     * 教材の 絵は **教材の 画面と 同じ URL**に する——どちらも `assetUrl` で 版番号を
+     * 付けるので、1回 落とせば 使い回される（差しかえも 届く。src/lib/asset-url.ts）。
+     *
+     * 土地の 景色に 落ちた ときだけ 素の まま にする。地図（`AreaImage`）が 版番号を
+     * 付けずに 出して いるので、ここで 付けると **同じ 絵を 2つの URL で 2回 落とす**
+     *（`/img/*` は immutable。public/_headers）。教室の 回線では それが そのまま 待ち時間。
+     */
+    const raw = stage.area?.image;
+    images.set(stage.id, src === raw ? src : (assetUrl(src) ?? src));
   }
   return images;
 }

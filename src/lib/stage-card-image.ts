@@ -32,6 +32,8 @@ import type {
   Stage,
   StageContentRef,
 } from "@/content/schema";
+// たいわの 画面と 同じ 見分け方（純関数。React は 持って いない）
+import { avatarSrc } from "@/components/listening/people";
 
 /**
  * 画像スロットから 出せる 絵。
@@ -108,12 +110,13 @@ function meetingImage(meeting: Meeting): string | null {
 /**
  * シナリオ: お客さまの 顔。
  *
- * `avatar` は 絵の 場所とは 限らない（`bakery` のように 頭文字の 丸に なる 名前も 入る）
- * ので、`/` で 始まる ものだけを 絵として 扱う。
+ * `avatar` は 絵の 場所とは 限らない（`bakery` のように 頭文字の 丸に なる 名前も 入る）。
+ * **その 見分けは 画面が すでに 持って いる**ので、書き直さずに 同じ ものを 使う
+ *（AGENTS.md「共有ユーティリティを 使う。再実装しない」）。片方だけ 直すと、
+ * カードに 顔が 出て いるのに たいわの 画面では 丸、が 起きる。
  */
 function scenarioImage(scenario: Scenario): string | null {
-  const avatar = scenario.client.avatar;
-  return avatar.startsWith("/") ? avatar : null;
+  return avatarSrc(scenario.client);
 }
 
 /**

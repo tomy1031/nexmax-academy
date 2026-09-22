@@ -1231,6 +1231,7 @@ function StageCardImage({ src }: { src: string }) {
         alt=""
         aria-hidden
         loading="lazy"
+        decoding="async"
         onError={() => setFailed(true)}
         className="h-full w-full object-cover"
       />
