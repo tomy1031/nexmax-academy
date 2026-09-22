@@ -65,22 +65,47 @@
           "progress": [
             {
               "label": "学生一覧・検索",
+              "icon": "🔍",
+              "image": {
+                "src": "/img/articles/yuurei_nexttalent/task_ichiran.webp",
+                "status": "done"
+              },
               "state": "now"
             },
             {
               "label": "絞り込み",
+              "icon": "🎚️",
+              "image": {
+                "src": "/img/articles/yuurei_nexttalent/task_shiborikomi.webp",
+                "status": "done"
+              },
               "state": "now"
             },
             {
               "label": "学生詳細への 移動",
+              "icon": "👉",
+              "image": {
+                "src": "/img/articles/yuurei_nexttalent/task_idou.webp",
+                "status": "done"
+              },
               "state": "later"
             },
             {
               "label": "スキルグラフ",
+              "icon": "📊",
+              "image": {
+                "src": "/img/articles/yuurei_nexttalent/task_graph.webp",
+                "status": "done"
+              },
               "state": "later"
             },
             {
               "label": "スマホ対応・結合テスト",
+              "icon": "📱",
+              "image": {
+                "src": "/img/articles/yuurei_nexttalent/task_test.webp",
+                "status": "done"
+              },
               "state": "later"
             }
           ],
@@ -167,16 +192,19 @@
         "opening": [
           {
             "speakerId": "hendy",
-            "text": "お疲れさまです。17時50分に なりました。今日の 夕礼を 始めます。"
+            "text": "お疲れさまです。17時50分に なりました。今日の 夕礼を 始めます。",
+            "audio": "/audio/meetings/asakai_muzukashii/s0-opening-0-b98d92db.wav"
           },
           {
             "speakerId": "hendy",
-            "text": "報告は 4つです。今日 行ったこと、担当の 機能全体の 進捗率、明日 行うこと、問題点。まず 私から。"
+            "text": "報告は 4つです。今日 行ったこと、担当の 機能全体の 進捗率、明日 行うこと、問題点。まず 私から。",
+            "audio": "/audio/meetings/asakai_muzukashii/s0-opening-1-c7e98ef9.wav"
           }
         ],
         "sample": {
           "speakerId": "hendy",
-          "text": "今日は、大学、JLPTレベル、スキルによる 検索APIを 作りました。複数条件でも 検索できるように しました。現在、学生検索バックエンド機能全体の 進捗は 55％です。明日は、キーワード検索と 検索結果の 並び替えを 作ります。今のところ 問題は ありません。"
+          "text": "今日は、大学、JLPTレベル、スキルによる 検索APIを 作りました。複数条件でも 検索できるように しました。現在、学生検索バックエンド機能全体の 進捗は 55％です。明日は、キーワード検索と 検索結果の 並び替えを 作ります。今のところ 問題は ありません。",
+          "audio": "/audio/meetings/asakai_muzukashii/s0-sample-b9978ead.wav"
         },
         "prompt": {
           "speakerId": "hendy",
@@ -184,22 +212,26 @@
         },
         "ack": {
           "speakerId": "hendy",
-          "text": "はい。今日 行ったこと、進捗率、明日 行うこと、問題点。4つとも 聞けました。"
+          "text": "はい。今日 行ったこと、進捗率、明日 行うこと、問題点。4つとも 聞けました。",
+          "audio": "/audio/meetings/asakai_muzukashii/s0-ack-6435458b.wav"
         },
         "members": [
           {
             "speakerId": "okuda",
-            "text": "奥田です。今日は、学生詳細画面に JLPTレベル、ポートフォリオ、スキル一覧を 追加しました。現在、学生詳細フロントエンド機能全体の 進捗は 50％です。明日は、学生一覧から 学生詳細画面へ 移動できるように します。今のところ 問題は ありません。"
+            "text": "奥田です。今日は、学生詳細画面に JLPTレベル、ポートフォリオ、スキル一覧を 追加しました。現在、学生詳細フロントエンド機能全体の 進捗は 50％です。明日は、学生一覧から 学生詳細画面へ 移動できるように します。今のところ 問題は ありません。",
+            "audio": "/audio/meetings/asakai_muzukashii/s0-member-0-7594ff77.wav"
           },
           {
             "speakerId": "nyam",
-            "text": "ニャムです。今日は、学生ごとの スキル点数と ポートフォリオ情報を 登録しました。現在、学生・スキルデータ管理機能全体の 進捗は 55％です。明日は、学生詳細APIで スキル名、点数、カテゴリを 返せるように します。今のところ 問題は ありません。"
+            "text": "ニャムです。今日は、学生ごとの スキル点数と ポートフォリオ情報を 登録しました。現在、学生・スキルデータ管理機能全体の 進捗は 55％です。明日は、学生詳細APIで スキル名、点数、カテゴリを 返せるように します。今のところ 問題は ありません。",
+            "audio": "/audio/meetings/asakai_muzukashii/s0-member-1-e8784621.wav"
           }
         ],
         "closing": [
           {
             "speakerId": "hendy",
-            "text": "ありがとうございました。今日の 夕礼は ここまでです。また 明日 お願いします。"
+            "text": "ありがとうございました。今日の 夕礼は ここまでです。また 明日 お願いします。",
+            "audio": "/audio/meetings/asakai_muzukashii/s0-closing-0-83731d06.wav"
           }
         ],
         "panels": [
@@ -243,16 +275,19 @@
             "followups": [
               {
                 "speakerId": "hendy",
-                "text": "今日 行ったことを、もう一度 お願いします。"
+                "text": "今日 行ったことを、もう一度 お願いします。",
+                "audio": "/audio/meetings/asakai_muzukashii/s0-kyou-fu0-b047f41a.wav"
               },
               {
                 "speakerId": "hendy",
-                "text": "作業記録を そのまま 読まずに、まとめて 話して ください。大きな 作業から 2つか 3つで けっこうです。"
+                "text": "作業記録を そのまま 読まずに、まとめて 話して ください。大きな 作業から 2つか 3つで けっこうです。",
+                "audio": "/audio/meetings/asakai_muzukashii/s0-kyou-fu1-ef4b3944.wav"
               }
             ],
             "example": {
               "speakerId": "hendy",
-              "text": "「今日は、学生一覧APIと 接続して、実際の 学生データを 表示できるように しました。キーワード検索と、大学、JLPTレベル、スキルによる 絞り込みも 作りました。」"
+              "text": "「今日は、学生一覧APIと 接続して、実際の 学生データを 表示できるように しました。キーワード検索と、大学、JLPTレベル、スキルによる 絞り込みも 作りました。」",
+              "audio": "/audio/meetings/asakai_muzukashii/s0-kyou-ex-e85d6221.wav"
             }
           },
           {
@@ -263,16 +298,19 @@
             "followups": [
               {
                 "speakerId": "hendy",
-                "text": "進捗率を お願いします。"
+                "text": "進捗率を お願いします。",
+                "audio": "/audio/meetings/asakai_muzukashii/s0-shinchoku-fu0-1e9bd982.wav"
               },
               {
                 "speakerId": "hendy",
-                "text": "「現在、学生検索・スキル可視化フロントエンド機能全体の進捗は◯◯％です」の 形で お願いします。カードの 付せんに 書いて あります。"
+                "text": "「現在、学生検索・スキル可視化フロントエンド機能全体の進捗は◯◯％です」の 形で お願いします。カードの 付せんに 書いて あります。",
+                "audio": "/audio/meetings/asakai_muzukashii/s0-shinchoku-fu1-7f8f58aa.wav"
               }
             ],
             "example": {
               "speakerId": "hendy",
-              "text": "「現在、学生検索・スキル可視化フロントエンド機能 ぜんたいの 進捗は 35％です。」"
+              "text": "「現在、学生検索・スキル可視化フロントエンド機能 ぜんたいの 進捗は 35％です。」",
+              "audio": "/audio/meetings/asakai_muzukashii/s0-shinchoku-ex-803ac0be.wav"
             }
           },
           {
@@ -301,16 +339,19 @@
             "followups": [
               {
                 "speakerId": "hendy",
-                "text": "明日 行うことを お願いします。"
+                "text": "明日 行うことを お願いします。",
+                "audio": "/audio/meetings/asakai_muzukashii/s0-ashita-fu0-f29535c9.wav"
               },
               {
                 "speakerId": "hendy",
-                "text": "「明日は、◯◯を します」の 形で お願いします。"
+                "text": "「明日は、◯◯を します」の 形で お願いします。",
+                "audio": "/audio/meetings/asakai_muzukashii/s0-ashita-fu1-96c8631c.wav"
               }
             ],
             "example": {
               "speakerId": "hendy",
-              "text": "「明日は、学生詳細画面への 移動と、スキルグラフの 作成を 進めます。」"
+              "text": "「明日は、学生詳細画面への 移動と、スキルグラフの 作成を 進めます。」",
+              "audio": "/audio/meetings/asakai_muzukashii/s0-ashita-ex-1f308a87.wav"
             }
           },
           {
@@ -343,16 +384,19 @@
             "followups": [
               {
                 "speakerId": "hendy",
-                "text": "問題は ありましたか。"
+                "text": "問題は ありましたか。",
+                "audio": "/audio/meetings/asakai_muzukashii/s0-komari-fu0-5171de37.wav"
               },
               {
                 "speakerId": "hendy",
-                "text": "無ければ「今のところ問題はありません」と 言って ください。"
+                "text": "無ければ「今のところ問題はありません」と 言って ください。",
+                "audio": "/audio/meetings/asakai_muzukashii/s0-komari-fu1-e78e6db2.wav"
               }
             ],
             "example": {
               "speakerId": "hendy",
-              "text": "「今の ところ 問題は ありません。」"
+              "text": "「今の ところ 問題は ありません。」",
+              "audio": "/audio/meetings/asakai_muzukashii/s0-komari-ex-69593213.wav"
             }
           }
         ],
@@ -377,22 +421,47 @@
           "progress": [
             {
               "label": "学生一覧・検索",
+              "icon": "🔍",
+              "image": {
+                "src": "/img/articles/yuurei_nexttalent/task_ichiran.webp",
+                "status": "done"
+              },
               "state": "done"
             },
             {
               "label": "絞り込み",
+              "icon": "🎚️",
+              "image": {
+                "src": "/img/articles/yuurei_nexttalent/task_shiborikomi.webp",
+                "status": "done"
+              },
               "state": "done"
             },
             {
               "label": "学生詳細への 移動",
+              "icon": "👉",
+              "image": {
+                "src": "/img/articles/yuurei_nexttalent/task_idou.webp",
+                "status": "done"
+              },
               "state": "done"
             },
             {
               "label": "スキルグラフ",
+              "icon": "📊",
+              "image": {
+                "src": "/img/articles/yuurei_nexttalent/task_graph.webp",
+                "status": "done"
+              },
               "state": "now"
             },
             {
               "label": "スマホ対応・結合テスト",
+              "icon": "📱",
+              "image": {
+                "src": "/img/articles/yuurei_nexttalent/task_test.webp",
+                "status": "done"
+              },
               "state": "later"
             }
           ],
@@ -484,12 +553,14 @@
         "opening": [
           {
             "speakerId": "hendy",
-            "text": "お疲れさまです。火曜日の 夕礼を 始めます。まず 私から。"
+            "text": "お疲れさまです。火曜日の 夕礼を 始めます。まず 私から。",
+            "audio": "/audio/meetings/asakai_muzukashii/s1-opening-0-fb23f6b2.wav"
           }
         ],
         "sample": {
           "speakerId": "hendy",
-          "text": "今日は、キーワード検索と 検索結果の 並び替えを 作りました。現在、学生検索バックエンド機能全体の 進捗は 75％です。明日は、検索結果件数と 学生詳細画面で 必要な データを 整理します。今のところ 問題は ありません。"
+          "text": "今日は、キーワード検索と 検索結果の 並び替えを 作りました。現在、学生検索バックエンド機能全体の 進捗は 75％です。明日は、検索結果件数と 学生詳細画面で 必要な データを 整理します。今のところ 問題は ありません。",
+          "audio": "/audio/meetings/asakai_muzukashii/s1-sample-ef277650.wav"
         },
         "prompt": {
           "speakerId": "hendy",
@@ -497,22 +568,26 @@
         },
         "ack": {
           "speakerId": "hendy",
-          "text": "はい。今日 行ったこと、進捗率、明日 行うこと、問題点。4つとも 聞けました。"
+          "text": "はい。今日 行ったこと、進捗率、明日 行うこと、問題点。4つとも 聞けました。",
+          "audio": "/audio/meetings/asakai_muzukashii/s1-ack-6435458b.wav"
         },
         "members": [
           {
             "speakerId": "okuda",
-            "text": "奥田です。今日は、学生一覧から 学生詳細画面へ 移動できるように しました。スキルグラフを 表示する 領域も 準備しました。現在、学生詳細フロントエンド機能全体の 進捗は 70％です。明日は、実際の スキルグラフを 学生詳細画面に 組み込みます。今のところ 問題は ありません。"
+            "text": "奥田です。今日は、学生一覧から 学生詳細画面へ 移動できるように しました。スキルグラフを 表示する 領域も 準備しました。現在、学生詳細フロントエンド機能全体の 進捗は 70％です。明日は、実際の スキルグラフを 学生詳細画面に 組み込みます。今のところ 問題は ありません。",
+            "audio": "/audio/meetings/asakai_muzukashii/s1-member-0-29a02ca7.wav"
           },
           {
             "speakerId": "nyam",
-            "text": "ニャムです。今日は、学生詳細APIで スキル名、点数、カテゴリを 返せるように しました。現在、学生・スキルデータ管理機能全体の 進捗は 75％です。明日は、AUPPと CADTの 実際の 学生データを 確認します。今のところ 問題は ありません。"
+            "text": "ニャムです。今日は、学生詳細APIで スキル名、点数、カテゴリを 返せるように しました。現在、学生・スキルデータ管理機能全体の 進捗は 75％です。明日は、AUPPと CADTの 実際の 学生データを 確認します。今のところ 問題は ありません。",
+            "audio": "/audio/meetings/asakai_muzukashii/s1-member-1-e7b2717e.wav"
           }
         ],
         "closing": [
           {
             "speakerId": "hendy",
-            "text": "ありがとうございました。明日も よろしく お願いします。"
+            "text": "ありがとうございました。明日も よろしく お願いします。",
+            "audio": "/audio/meetings/asakai_muzukashii/s1-closing-0-80ebdb81.wav"
           }
         ],
         "panels": [
@@ -556,16 +631,19 @@
             "followups": [
               {
                 "speakerId": "hendy",
-                "text": "今日 行ったことを、もう一度 お願いします。"
+                "text": "今日 行ったことを、もう一度 お願いします。",
+                "audio": "/audio/meetings/asakai_muzukashii/s1-kyou-fu0-b047f41a.wav"
               },
               {
                 "speakerId": "hendy",
-                "text": "作業記録を そのまま 読まずに、まとめて 話して ください。大きな 作業から 2つか 3つで けっこうです。"
+                "text": "作業記録を そのまま 読まずに、まとめて 話して ください。大きな 作業から 2つか 3つで けっこうです。",
+                "audio": "/audio/meetings/asakai_muzukashii/s1-kyou-fu1-ef4b3944.wav"
               }
             ],
             "example": {
               "speakerId": "hendy",
-              "text": "「今日は、学生一覧から 学生詳細画面へ 移動できるように しました。それから、スキルグラフを 作りました。スキル名を そろえて、点数が 高い順に 並べ、上位6スキルを 表示できるように しました。」"
+              "text": "「今日は、学生一覧から 学生詳細画面へ 移動できるように しました。それから、スキルグラフを 作りました。スキル名を そろえて、点数が 高い順に 並べ、上位6スキルを 表示できるように しました。」",
+              "audio": "/audio/meetings/asakai_muzukashii/s1-kyou-ex-0c932039.wav"
             }
           },
           {
@@ -576,16 +654,19 @@
             "followups": [
               {
                 "speakerId": "hendy",
-                "text": "進捗率を お願いします。"
+                "text": "進捗率を お願いします。",
+                "audio": "/audio/meetings/asakai_muzukashii/s1-shinchoku-fu0-1e9bd982.wav"
               },
               {
                 "speakerId": "hendy",
-                "text": "「現在、学生検索・スキル可視化フロントエンド機能全体の進捗は◯◯％です」の 形で お願いします。カードの 付せんに 書いて あります。"
+                "text": "「現在、学生検索・スキル可視化フロントエンド機能全体の進捗は◯◯％です」の 形で お願いします。カードの 付せんに 書いて あります。",
+                "audio": "/audio/meetings/asakai_muzukashii/s1-shinchoku-fu1-7f8f58aa.wav"
               }
             ],
             "example": {
               "speakerId": "hendy",
-              "text": "「現在、学生検索・スキル可視化フロントエンド機能 ぜんたいの 進捗は 55％です。」"
+              "text": "「現在、学生検索・スキル可視化フロントエンド機能 ぜんたいの 進捗は 55％です。」",
+              "audio": "/audio/meetings/asakai_muzukashii/s1-shinchoku-ex-c7d5a0a7.wav"
             }
           },
           {
@@ -617,16 +698,19 @@
             "followups": [
               {
                 "speakerId": "hendy",
-                "text": "明日 行うことを お願いします。"
+                "text": "明日 行うことを お願いします。",
+                "audio": "/audio/meetings/asakai_muzukashii/s1-ashita-fu0-f29535c9.wav"
               },
               {
                 "speakerId": "hendy",
-                "text": "「明日は、◯◯を します」の 形で お願いします。"
+                "text": "「明日は、◯◯を します」の 形で お願いします。",
+                "audio": "/audio/meetings/asakai_muzukashii/s1-ashita-fu1-96c8631c.wav"
               }
             ],
             "example": {
               "speakerId": "hendy",
-              "text": "「明日は、実際の AUPPと CADTの 学生データを 使って、スキルグラフを 確認します。」"
+              "text": "「明日は、実際の AUPPと CADTの 学生データを 使って、スキルグラフを 確認します。」",
+              "audio": "/audio/meetings/asakai_muzukashii/s1-ashita-ex-e17206a1.wav"
             }
           },
           {
@@ -659,16 +743,19 @@
             "followups": [
               {
                 "speakerId": "hendy",
-                "text": "問題は ありましたか。"
+                "text": "問題は ありましたか。",
+                "audio": "/audio/meetings/asakai_muzukashii/s1-komari-fu0-5171de37.wav"
               },
               {
                 "speakerId": "hendy",
-                "text": "無ければ「今のところ問題はありません」と 言って ください。"
+                "text": "無ければ「今のところ問題はありません」と 言って ください。",
+                "audio": "/audio/meetings/asakai_muzukashii/s1-komari-fu1-e78e6db2.wav"
               }
             ],
             "example": {
               "speakerId": "hendy",
-              "text": "「今の ところ 問題は ありません。」"
+              "text": "「今の ところ 問題は ありません。」",
+              "audio": "/audio/meetings/asakai_muzukashii/s1-komari-ex-69593213.wav"
             }
           }
         ],
@@ -693,22 +780,47 @@
           "progress": [
             {
               "label": "学生一覧・検索",
+              "icon": "🔍",
+              "image": {
+                "src": "/img/articles/yuurei_nexttalent/task_ichiran.webp",
+                "status": "done"
+              },
               "state": "done"
             },
             {
               "label": "絞り込み",
+              "icon": "🎚️",
+              "image": {
+                "src": "/img/articles/yuurei_nexttalent/task_shiborikomi.webp",
+                "status": "done"
+              },
               "state": "done"
             },
             {
               "label": "学生詳細への 移動",
+              "icon": "👉",
+              "image": {
+                "src": "/img/articles/yuurei_nexttalent/task_idou.webp",
+                "status": "done"
+              },
               "state": "done"
             },
             {
               "label": "スキルグラフ",
+              "icon": "📊",
+              "image": {
+                "src": "/img/articles/yuurei_nexttalent/task_graph.webp",
+                "status": "done"
+              },
               "state": "now"
             },
             {
               "label": "スマホ対応・結合テスト",
+              "icon": "📱",
+              "image": {
+                "src": "/img/articles/yuurei_nexttalent/task_test.webp",
+                "status": "done"
+              },
               "state": "later"
             }
           ],
@@ -805,12 +917,14 @@
         "opening": [
           {
             "speakerId": "hendy",
-            "text": "お疲れさまです。水曜日の 夕礼を 始めます。まず 私から。"
+            "text": "お疲れさまです。水曜日の 夕礼を 始めます。まず 私から。",
+            "audio": "/audio/meetings/asakai_muzukashii/s2-opening-0-b464daec.wav"
           }
         ],
         "sample": {
           "speakerId": "hendy",
-          "text": "今日は、検索結果件数と 学生詳細画面で 必要な データを 確認しました。現在、学生検索バックエンド機能全体の 進捗は 90％です。明日は、複数条件検索を 含めて 全体テストを します。スキルデータに 問題が 見つかりましたが、原因は 確認できています。"
+          "text": "今日は、検索結果件数と 学生詳細画面で 必要な データを 確認しました。現在、学生検索バックエンド機能全体の 進捗は 90％です。明日は、複数条件検索を 含めて 全体テストを します。スキルデータに 問題が 見つかりましたが、原因は 確認できています。",
+          "audio": "/audio/meetings/asakai_muzukashii/s2-sample-492c228a.wav"
         },
         "prompt": {
           "speakerId": "hendy",
@@ -818,22 +932,26 @@
         },
         "ack": {
           "speakerId": "hendy",
-          "text": "はい。今日 行ったこと、進捗率、明日 行うこと、問題点。4つとも 聞けました。"
+          "text": "はい。今日 行ったこと、進捗率、明日 行うこと、問題点。4つとも 聞けました。",
+          "audio": "/audio/meetings/asakai_muzukashii/s2-ack-6435458b.wav"
         },
         "members": [
           {
             "speakerId": "okuda",
-            "text": "奥田です。今日は、学生詳細画面に スキルグラフを 組み込みました。現在、学生詳細フロントエンド機能全体の 進捗は 85％です。明日は、学生一覧から 学生詳細画面まで 全体を 確認します。スキルデータの 修正後に、グラフも もう一度 確認します。"
+            "text": "奥田です。今日は、学生詳細画面に スキルグラフを 組み込みました。現在、学生詳細フロントエンド機能全体の 進捗は 85％です。明日は、学生一覧から 学生詳細画面まで 全体を 確認します。スキルデータの 修正後に、グラフも もう一度 確認します。",
+            "audio": "/audio/meetings/asakai_muzukashii/s2-member-0-5649ac0d.wav"
           },
           {
             "speakerId": "nyam",
-            "text": "ニャムです。今日は、AUPPと CADTの 学生データを 確認しました。夕方、スキルデータを 調査して、スキル名の 表記に 揺れが あることと、古い スキルデータが 残っていることを 確認しました。現在、学生・スキルデータ管理機能全体の 進捗は 90％です。明日は、古い データを 整理して、最新の スキル点数に そろえます。"
+            "text": "ニャムです。今日は、AUPPと CADTの 学生データを 確認しました。夕方、スキルデータを 調査して、スキル名の 表記に 揺れが あることと、古い スキルデータが 残っていることを 確認しました。現在、学生・スキルデータ管理機能全体の 進捗は 90％です。明日は、古い データを 整理して、最新の スキル点数に そろえます。",
+            "audio": "/audio/meetings/asakai_muzukashii/s2-member-1-f6fb573a.wav"
           }
         ],
         "closing": [
           {
             "speakerId": "hendy",
-            "text": "では、今日の 夕礼は ここまでです。明日は 修正後の 確認から お願いします。"
+            "text": "では、今日の 夕礼は ここまでです。明日は 修正後の 確認から お願いします。",
+            "audio": "/audio/meetings/asakai_muzukashii/s2-closing-0-885880d8.wav"
           }
         ],
         "panels": [
@@ -868,16 +986,19 @@
             "followups": [
               {
                 "speakerId": "hendy",
-                "text": "今日 行ったことを、もう一度 お願いします。"
+                "text": "今日 行ったことを、もう一度 お願いします。",
+                "audio": "/audio/meetings/asakai_muzukashii/s2-kyou-fu0-b047f41a.wav"
               },
               {
                 "speakerId": "hendy",
-                "text": "作業記録を そのまま 読まずに、まとめて 話して ください。大きな 作業から 2つか 3つで けっこうです。"
+                "text": "作業記録を そのまま 読まずに、まとめて 話して ください。大きな 作業から 2つか 3つで けっこうです。",
+                "audio": "/audio/meetings/asakai_muzukashii/s2-kyou-fu1-ef4b3944.wav"
               }
             ],
             "example": {
               "speakerId": "hendy",
-              "text": "「今日は、AUPPと CADTの 実際の 学生データを 使って、スキルグラフを 確認しました。学生詳細画面への 組み込みも 進めました。」"
+              "text": "「今日は、AUPPと CADTの 実際の 学生データを 使って、スキルグラフを 確認しました。学生詳細画面への 組み込みも 進めました。」",
+              "audio": "/audio/meetings/asakai_muzukashii/s2-kyou-ex-30863fb3.wav"
             }
           },
           {
@@ -888,16 +1009,19 @@
             "followups": [
               {
                 "speakerId": "hendy",
-                "text": "進捗率を お願いします。"
+                "text": "進捗率を お願いします。",
+                "audio": "/audio/meetings/asakai_muzukashii/s2-shinchoku-fu0-1e9bd982.wav"
               },
               {
                 "speakerId": "hendy",
-                "text": "「現在、学生検索・スキル可視化フロントエンド機能全体の進捗は◯◯％です」の 形で お願いします。カードの 付せんに 書いて あります。"
+                "text": "「現在、学生検索・スキル可視化フロントエンド機能全体の進捗は◯◯％です」の 形で お願いします。カードの 付せんに 書いて あります。",
+                "audio": "/audio/meetings/asakai_muzukashii/s2-shinchoku-fu1-7f8f58aa.wav"
               }
             ],
             "example": {
               "speakerId": "hendy",
-              "text": "「現在、学生検索・スキル可視化フロントエンド機能 ぜんたいの 進捗は 75％です。」"
+              "text": "「現在、学生検索・スキル可視化フロントエンド機能 ぜんたいの 進捗は 75％です。」",
+              "audio": "/audio/meetings/asakai_muzukashii/s2-shinchoku-ex-fee8dfb8.wav"
             }
           },
           {
@@ -928,16 +1052,19 @@
             "followups": [
               {
                 "speakerId": "hendy",
-                "text": "明日 行うことを お願いします。"
+                "text": "明日 行うことを お願いします。",
+                "audio": "/audio/meetings/asakai_muzukashii/s2-ashita-fu0-f29535c9.wav"
               },
               {
                 "speakerId": "hendy",
-                "text": "「明日は、◯◯を します」の 形で お願いします。"
+                "text": "「明日は、◯◯を します」の 形で お願いします。",
+                "audio": "/audio/meetings/asakai_muzukashii/s2-ashita-fu1-96c8631c.wav"
               }
             ],
             "example": {
               "speakerId": "hendy",
-              "text": "「明日は、修正された データで スキルグラフを 再確認して、そのあと 全体テストを します。」"
+              "text": "「明日は、修正された データで スキルグラフを 再確認して、そのあと 全体テストを します。」",
+              "audio": "/audio/meetings/asakai_muzukashii/s2-ashita-ex-03c59405.wav"
             }
           },
           {
@@ -1022,16 +1149,19 @@
             "followups": [
               {
                 "speakerId": "hendy",
-                "text": "夕方の 件も 報告に 入れて ください。"
+                "text": "夕方の 件も 報告に 入れて ください。",
+                "audio": "/audio/meetings/asakai_muzukashii/s2-komari-fu0-3273adea.wav"
               },
               {
                 "speakerId": "hendy",
-                "text": "何が 起きて、誰に 報告して、何が 分かったか。この 順で お願いします。"
+                "text": "何が 起きて、誰に 報告して、何が 分かったか。この 順で お願いします。",
+                "audio": "/audio/meetings/asakai_muzukashii/s2-komari-fu1-60c4bc20.wav"
               }
             ],
             "example": {
               "speakerId": "hendy",
-              "text": "「夕方、JavaScriptが 別の 名前と 点数で 2件 表示される 問題を 見つけたため、ヘンディさんに 報告しました。そのあと、ニャムさんに 調査していただき、スキル名の 表記に 揺れが あることと、古い スキルデータが 残っていることが 分かりました。」"
+              "text": "「夕方、JavaScriptが 別の 名前と 点数で 2件 表示される 問題を 見つけたため、ヘンディさんに 報告しました。そのあと、ニャムさんに 調査していただき、スキル名の 表記に 揺れが あることと、古い スキルデータが 残っていることが 分かりました。」",
+              "audio": "/audio/meetings/asakai_muzukashii/s2-komari-ex-c9e2f3ce.wav"
             }
           }
         ],
@@ -1044,11 +1174,13 @@
         "arrange": {
           "done": {
             "speakerId": "hendy",
-            "text": "早めに 報告してくれて ありがとうございます。17時05分に 見つけて、17時10分に 報告。夕礼を 待たなかったのが 良かったです。明日は、データ修正後の 確認から 進めましょう。"
+            "text": "早めに 報告してくれて ありがとうございます。17時05分に 見つけて、17時10分に 報告。夕礼を 待たなかったのが 良かったです。明日は、データ修正後の 確認から 進めましょう。",
+            "audio": "/audio/meetings/asakai_muzukashii/s2-arrange-done-70295a0c.wav"
           },
           "missing": {
             "speakerId": "hendy",
-            "text": "夕方の 件を 補足します。17時05分に 問題を 見つけて、17時10分に 報告してくれました。夕礼を 待たずに 報告する。これが 大事です。明日は、データ修正後の 確認から 進めましょう。"
+            "text": "夕方の 件を 補足します。17時05分に 問題を 見つけて、17時10分に 報告してくれました。夕礼を 待たずに 報告する。これが 大事です。明日は、データ修正後の 確認から 進めましょう。",
+            "audio": "/audio/meetings/asakai_muzukashii/s2-arrange-missing-9ad8b3e2.wav"
           }
         },
         "judgeNote": "**この 日が 週の 山です。**\n- 夕礼まで 待たずに、17:10 に その場で ヘンディさんに 報告して います。**その場で 報告した ことを 言えて いれば 高く 見ます**（悪い しらせほど 早く）\n- 「問題点」は 3つの 箱です。何が 起きたか だけで なく、**だれに 言ったか**と **原因が 何だったか**まで 言えて いるかを 見ます\n- 原因を 調べたのは ニャムさんです。学生が 自分で 調べたように 書いて いなくても 減らしません"
@@ -1066,22 +1198,47 @@
           "progress": [
             {
               "label": "学生一覧・検索",
+              "icon": "🔍",
+              "image": {
+                "src": "/img/articles/yuurei_nexttalent/task_ichiran.webp",
+                "status": "done"
+              },
               "state": "done"
             },
             {
               "label": "絞り込み",
+              "icon": "🎚️",
+              "image": {
+                "src": "/img/articles/yuurei_nexttalent/task_shiborikomi.webp",
+                "status": "done"
+              },
               "state": "done"
             },
             {
               "label": "学生詳細への 移動",
+              "icon": "👉",
+              "image": {
+                "src": "/img/articles/yuurei_nexttalent/task_idou.webp",
+                "status": "done"
+              },
               "state": "done"
             },
             {
               "label": "スキルグラフ",
+              "icon": "📊",
+              "image": {
+                "src": "/img/articles/yuurei_nexttalent/task_graph.webp",
+                "status": "done"
+              },
               "state": "done"
             },
             {
               "label": "スマホ対応・結合テスト",
+              "icon": "📱",
+              "image": {
+                "src": "/img/articles/yuurei_nexttalent/task_test.webp",
+                "status": "done"
+              },
               "state": "now"
             }
           ],
@@ -1188,12 +1345,14 @@
         "opening": [
           {
             "speakerId": "hendy",
-            "text": "お疲れさまです。木曜日の 夕礼を 始めます。まず 私から。"
+            "text": "お疲れさまです。木曜日の 夕礼を 始めます。まず 私から。",
+            "audio": "/audio/meetings/asakai_muzukashii/s3-opening-0-b092446a.wav"
           }
         ],
         "sample": {
           "speakerId": "hendy",
-          "text": "今日は、複数条件検索を 含めて 全体の 動きを 確認しました。現在、学生検索バックエンド機能全体の 進捗は 100％です。明日は、フロントエンドの 最終テストと コードレビューを サポートします。今のところ 大きな 問題は ありません。"
+          "text": "今日は、複数条件検索を 含めて 全体の 動きを 確認しました。現在、学生検索バックエンド機能全体の 進捗は 100％です。明日は、フロントエンドの 最終テストと コードレビューを サポートします。今のところ 大きな 問題は ありません。",
+          "audio": "/audio/meetings/asakai_muzukashii/s3-sample-a83f8c09.wav"
         },
         "prompt": {
           "speakerId": "hendy",
@@ -1201,22 +1360,26 @@
         },
         "ack": {
           "speakerId": "hendy",
-          "text": "はい。今日 行ったこと、進捗率、明日 行うこと、問題点。4つとも 聞けました。"
+          "text": "はい。今日 行ったこと、進捗率、明日 行うこと、問題点。4つとも 聞けました。",
+          "audio": "/audio/meetings/asakai_muzukashii/s3-ack-6435458b.wav"
         },
         "members": [
           {
             "speakerId": "okuda",
-            "text": "奥田です。今日は、学生一覧から 学生詳細画面まで 全体を 確認しました。プロフィール、ポートフォリオ、スキルグラフも 確認しました。現在、学生詳細フロントエンド機能全体の 進捗は 100％です。明日は、最終テストで 問題が あれば 修正します。今のところ 問題は ありません。"
+            "text": "奥田です。今日は、学生一覧から 学生詳細画面まで 全体を 確認しました。プロフィール、ポートフォリオ、スキルグラフも 確認しました。現在、学生詳細フロントエンド機能全体の 進捗は 100％です。明日は、最終テストで 問題が あれば 修正します。今のところ 問題は ありません。",
+            "audio": "/audio/meetings/asakai_muzukashii/s3-member-0-13e1a73b.wav"
           },
           {
             "speakerId": "nyam",
-            "text": "ニャムです。今日は、古い スキルデータを 整理して、スキル名の 表記を そろえました。最新の スキル点数だけ 使える 状態に しました。現在、学生・スキルデータ管理機能全体の 進捗は 100％です。明日は、最終テストで 学生データを 確認します。今のところ 問題は ありません。"
+            "text": "ニャムです。今日は、古い スキルデータを 整理して、スキル名の 表記を そろえました。最新の スキル点数だけ 使える 状態に しました。現在、学生・スキルデータ管理機能全体の 進捗は 100％です。明日は、最終テストで 学生データを 確認します。今のところ 問題は ありません。",
+            "audio": "/audio/meetings/asakai_muzukashii/s3-member-1-6c09c9f9.wav"
           }
         ],
         "closing": [
           {
             "speakerId": "hendy",
-            "text": "ありがとうございました。明日で 最後です。よろしく お願いします。"
+            "text": "ありがとうございました。明日で 最後です。よろしく お願いします。",
+            "audio": "/audio/meetings/asakai_muzukashii/s3-closing-0-7ecfc0dc.wav"
           }
         ],
         "panels": [
@@ -1252,16 +1415,19 @@
             "followups": [
               {
                 "speakerId": "hendy",
-                "text": "今日 行ったことを、もう一度 お願いします。"
+                "text": "今日 行ったことを、もう一度 お願いします。",
+                "audio": "/audio/meetings/asakai_muzukashii/s3-kyou-fu0-b047f41a.wav"
               },
               {
                 "speakerId": "hendy",
-                "text": "作業記録を そのまま 読まずに、まとめて 話して ください。大きな 作業から 2つか 3つで けっこうです。"
+                "text": "作業記録を そのまま 読まずに、まとめて 話して ください。大きな 作業から 2つか 3つで けっこうです。",
+                "audio": "/audio/meetings/asakai_muzukashii/s3-kyou-fu1-ef4b3944.wav"
               }
             ],
             "example": {
               "speakerId": "hendy",
-              "text": "「今日は、昨日 見つかった スキルデータの 問題について、修正された データで 再テストしました。そのあと、検索画面から 学生詳細画面、スキルグラフまで 全体を 通して テストしました。」"
+              "text": "「今日は、昨日 見つかった スキルデータの 問題について、修正された データで 再テストしました。そのあと、検索画面から 学生詳細画面、スキルグラフまで 全体を 通して テストしました。」",
+              "audio": "/audio/meetings/asakai_muzukashii/s3-kyou-ex-dd5ff324.wav"
             }
           },
           {
@@ -1272,16 +1438,19 @@
             "followups": [
               {
                 "speakerId": "hendy",
-                "text": "進捗率を お願いします。"
+                "text": "進捗率を お願いします。",
+                "audio": "/audio/meetings/asakai_muzukashii/s3-shinchoku-fu0-1e9bd982.wav"
               },
               {
                 "speakerId": "hendy",
-                "text": "「現在、学生検索・スキル可視化フロントエンド機能全体の進捗は◯◯％です」の 形で お願いします。カードの 付せんに 書いて あります。"
+                "text": "「現在、学生検索・スキル可視化フロントエンド機能全体の進捗は◯◯％です」の 形で お願いします。カードの 付せんに 書いて あります。",
+                "audio": "/audio/meetings/asakai_muzukashii/s3-shinchoku-fu1-7f8f58aa.wav"
               }
             ],
             "example": {
               "speakerId": "hendy",
-              "text": "「現在、学生検索・スキル可視化フロントエンド機能 ぜんたいの 進捗は 90％です。」"
+              "text": "「現在、学生検索・スキル可視化フロントエンド機能 ぜんたいの 進捗は 90％です。」",
+              "audio": "/audio/meetings/asakai_muzukashii/s3-shinchoku-ex-b47ca614.wav"
             }
           },
           {
@@ -1309,16 +1478,19 @@
             "followups": [
               {
                 "speakerId": "hendy",
-                "text": "明日 行うことを お願いします。"
+                "text": "明日 行うことを お願いします。",
+                "audio": "/audio/meetings/asakai_muzukashii/s3-ashita-fu0-f29535c9.wav"
               },
               {
                 "speakerId": "hendy",
-                "text": "「明日は、◯◯を します」の 形で お願いします。"
+                "text": "「明日は、◯◯を します」の 形で お願いします。",
+                "audio": "/audio/meetings/asakai_muzukashii/s3-ashita-fu1-96c8631c.wav"
               }
             ],
             "example": {
               "speakerId": "hendy",
-              "text": "「明日は、最終テストと コードレビューを します。」"
+              "text": "「明日は、最終テストと コードレビューを します。」",
+              "audio": "/audio/meetings/asakai_muzukashii/s3-ashita-ex-49932e4f.wav"
             }
           },
           {
@@ -1359,16 +1531,19 @@
             "followups": [
               {
                 "speakerId": "hendy",
-                "text": "問題点を お願いします。今 どうなっているかも 教えて ください。"
+                "text": "問題点を お願いします。今 どうなっているかも 教えて ください。",
+                "audio": "/audio/meetings/asakai_muzukashii/s3-komari-fu0-0c1da24b.wav"
               },
               {
                 "speakerId": "hendy",
-                "text": "何が あって、今 どうなっているか。この 2つで お願いします。"
+                "text": "何が あって、今 どうなっているか。この 2つで お願いします。",
+                "audio": "/audio/meetings/asakai_muzukashii/s3-komari-fu1-a4f6b99d.wav"
               }
             ],
             "example": {
               "speakerId": "hendy",
-              "text": "「スマートフォンで スキルグラフの 文字が 重なる 問題が ありましたが、今日中に 修正して 再テストまで 完了しています。」"
+              "text": "「スマートフォンで スキルグラフの 文字が 重なる 問題が ありましたが、今日中に 修正して 再テストまで 完了しています。」",
+              "audio": "/audio/meetings/asakai_muzukashii/s3-komari-ex-996a1a5a.wav"
             }
           }
         ],
@@ -1393,22 +1568,47 @@
           "progress": [
             {
               "label": "学生一覧・検索",
+              "icon": "🔍",
+              "image": {
+                "src": "/img/articles/yuurei_nexttalent/task_ichiran.webp",
+                "status": "done"
+              },
               "state": "done"
             },
             {
               "label": "絞り込み",
+              "icon": "🎚️",
+              "image": {
+                "src": "/img/articles/yuurei_nexttalent/task_shiborikomi.webp",
+                "status": "done"
+              },
               "state": "done"
             },
             {
               "label": "学生詳細への 移動",
+              "icon": "👉",
+              "image": {
+                "src": "/img/articles/yuurei_nexttalent/task_idou.webp",
+                "status": "done"
+              },
               "state": "done"
             },
             {
               "label": "スキルグラフ",
+              "icon": "📊",
+              "image": {
+                "src": "/img/articles/yuurei_nexttalent/task_graph.webp",
+                "status": "done"
+              },
               "state": "done"
             },
             {
               "label": "スマホ対応・結合テスト",
+              "icon": "📱",
+              "image": {
+                "src": "/img/articles/yuurei_nexttalent/task_test.webp",
+                "status": "done"
+              },
               "state": "done"
             }
           ],
@@ -1505,12 +1705,14 @@
         "opening": [
           {
             "speakerId": "hendy",
-            "text": "お疲れさまです。金曜日の 夕礼を 始めます。今日は 藤木取締役も 同席しています。まず 私から。"
+            "text": "お疲れさまです。金曜日の 夕礼を 始めます。今日は 藤木取締役も 同席しています。まず 私から。",
+            "audio": "/audio/meetings/asakai_muzukashii/s4-opening-0-f18b2e26.wav"
           }
         ],
         "sample": {
           "speakerId": "hendy",
-          "text": "今日は、最終テストと フロントエンドの コードレビューを しました。現在、学生検索バックエンド機能全体の 進捗は 100％です。今回の 学生検索バックエンド機能は 完了です。今のところ 問題は ありません。"
+          "text": "今日は、最終テストと フロントエンドの コードレビューを しました。現在、学生検索バックエンド機能全体の 進捗は 100％です。今回の 学生検索バックエンド機能は 完了です。今のところ 問題は ありません。",
+          "audio": "/audio/meetings/asakai_muzukashii/s4-sample-25abbd8c.wav"
         },
         "prompt": {
           "speakerId": "hendy",
@@ -1518,26 +1720,31 @@
         },
         "ack": {
           "speakerId": "hendy",
-          "text": "はい。今日 行ったこと、進捗率、明日 行うこと、問題点。4つとも 聞けました。"
+          "text": "はい。今日 行ったこと、進捗率、明日 行うこと、問題点。4つとも 聞けました。",
+          "audio": "/audio/meetings/asakai_muzukashii/s4-ack-6435458b.wav"
         },
         "members": [
           {
             "speakerId": "okuda",
-            "text": "奥田です。今日は、学生詳細画面の 最終確認を しました。学生一覧から 詳細画面への 移動と、プロフィール、ポートフォリオ、スキルグラフを 確認しました。現在、学生詳細フロントエンド機能全体の 進捗は 100％です。今回の 担当は 完了です。問題は ありません。"
+            "text": "奥田です。今日は、学生詳細画面の 最終確認を しました。学生一覧から 詳細画面への 移動と、プロフィール、ポートフォリオ、スキルグラフを 確認しました。現在、学生詳細フロントエンド機能全体の 進捗は 100％です。今回の 担当は 完了です。問題は ありません。",
+            "audio": "/audio/meetings/asakai_muzukashii/s4-member-0-e5a87d15.wav"
           },
           {
             "speakerId": "nyam",
-            "text": "ニャムです。今日は、最終テストで AUPPと CADTの 学生データを 確認しました。スキルデータも 問題 ありませんでした。現在、学生・スキルデータ管理機能全体の 進捗は 100％です。今回の 担当は 完了です。問題は ありません。"
+            "text": "ニャムです。今日は、最終テストで AUPPと CADTの 学生データを 確認しました。スキルデータも 問題 ありませんでした。現在、学生・スキルデータ管理機能全体の 進捗は 100％です。今回の 担当は 完了です。問題は ありません。",
+            "audio": "/audio/meetings/asakai_muzukashii/s4-member-1-44edd8ac.wav"
           }
         ],
         "closing": [
           {
             "speakerId": "fujiki",
-            "text": "藤木です。松井社長にも 報告しました。学生を 検索して、詳細を 見て、スキルを グラフで 確認する。ここまで 1週間で 形に なりました。ありがとうございました。"
+            "text": "藤木です。松井社長にも 報告しました。学生を 検索して、詳細を 見て、スキルを グラフで 確認する。ここまで 1週間で 形に なりました。ありがとうございました。",
+            "audio": "/audio/meetings/asakai_muzukashii/s4-closing-0-f2b03683.wav"
           },
           {
             "speakerId": "hendy",
-            "text": "皆さん、1週間 お疲れさまでした。Next Talent の 学生検索と スキル可視化は これで 完了です。来週は 改善項目の 整理から 始めます。"
+            "text": "皆さん、1週間 お疲れさまでした。Next Talent の 学生検索と スキル可視化は これで 完了です。来週は 改善項目の 整理から 始めます。",
+            "audio": "/audio/meetings/asakai_muzukashii/s4-closing-1-4ef8c935.wav"
           }
         ],
         "panels": [
@@ -1572,16 +1779,19 @@
             "followups": [
               {
                 "speakerId": "hendy",
-                "text": "今日 行ったことを、もう一度 お願いします。"
+                "text": "今日 行ったことを、もう一度 お願いします。",
+                "audio": "/audio/meetings/asakai_muzukashii/s4-kyou-fu0-b047f41a.wav"
               },
               {
                 "speakerId": "hendy",
-                "text": "作業記録を そのまま 読まずに、まとめて 話して ください。大きな 作業から 2つか 3つで けっこうです。"
+                "text": "作業記録を そのまま 読まずに、まとめて 話して ください。大きな 作業から 2つか 3つで けっこうです。",
+                "audio": "/audio/meetings/asakai_muzukashii/s4-kyou-fu1-ef4b3944.wav"
               }
             ],
             "example": {
               "speakerId": "hendy",
-              "text": "「今日は、Next Talentの 学生検索機能と スキルグラフの 最終確認を しました。コードレビューで 指摘された 部分を 修正して、再テストまで 完了しました。」"
+              "text": "「今日は、Next Talentの 学生検索機能と スキルグラフの 最終確認を しました。コードレビューで 指摘された 部分を 修正して、再テストまで 完了しました。」",
+              "audio": "/audio/meetings/asakai_muzukashii/s4-kyou-ex-386bdd4e.wav"
             }
           },
           {
@@ -1592,16 +1802,19 @@
             "followups": [
               {
                 "speakerId": "hendy",
-                "text": "進捗率を お願いします。"
+                "text": "進捗率を お願いします。",
+                "audio": "/audio/meetings/asakai_muzukashii/s4-shinchoku-fu0-1e9bd982.wav"
               },
               {
                 "speakerId": "hendy",
-                "text": "「現在、学生検索・スキル可視化フロントエンド機能全体の進捗は◯◯％です」の 形で お願いします。カードの 付せんに 書いて あります。"
+                "text": "「現在、学生検索・スキル可視化フロントエンド機能全体の進捗は◯◯％です」の 形で お願いします。カードの 付せんに 書いて あります。",
+                "audio": "/audio/meetings/asakai_muzukashii/s4-shinchoku-fu1-7f8f58aa.wav"
               }
             ],
             "example": {
               "speakerId": "hendy",
-              "text": "「現在、学生検索・スキル可視化フロントエンド機能 ぜんたいの 進捗は 100％です。」"
+              "text": "「現在、学生検索・スキル可視化フロントエンド機能 ぜんたいの 進捗は 100％です。」",
+              "audio": "/audio/meetings/asakai_muzukashii/s4-shinchoku-ex-9568a68c.wav"
             }
           },
           {
@@ -1623,16 +1836,19 @@
             "followups": [
               {
                 "speakerId": "hendy",
-                "text": "来週 行うことを お願いします。"
+                "text": "来週 行うことを お願いします。",
+                "audio": "/audio/meetings/asakai_muzukashii/s4-ashita-fu0-4687bbb5.wav"
               },
               {
                 "speakerId": "hendy",
-                "text": "「来週は、◯◯を します」の 形で お願いします。"
+                "text": "「来週は、◯◯を します」の 形で お願いします。",
+                "audio": "/audio/meetings/asakai_muzukashii/s4-ashita-fu1-f3c64e78.wav"
               }
             ],
             "example": {
               "speakerId": "hendy",
-              "text": "「次は、完成した 機能を もとに 改善項目を 整理します。」"
+              "text": "「次は、完成した 機能を もとに 改善項目を 整理します。」",
+              "audio": "/audio/meetings/asakai_muzukashii/s4-ashita-ex-7d16ac86.wav"
             }
           },
           {
@@ -1665,16 +1881,19 @@
             "followups": [
               {
                 "speakerId": "hendy",
-                "text": "問題は ありましたか。"
+                "text": "問題は ありましたか。",
+                "audio": "/audio/meetings/asakai_muzukashii/s4-komari-fu0-5171de37.wav"
               },
               {
                 "speakerId": "hendy",
-                "text": "無ければ「今のところ問題はありません」と 言って ください。"
+                "text": "無ければ「今のところ問題はありません」と 言って ください。",
+                "audio": "/audio/meetings/asakai_muzukashii/s4-komari-fu1-e78e6db2.wav"
               }
             ],
             "example": {
               "speakerId": "hendy",
-              "text": "「今の ところ 問題は ありません。」"
+              "text": "「今の ところ 問題は ありません。」",
+              "audio": "/audio/meetings/asakai_muzukashii/s4-komari-ex-69593213.wav"
             }
           }
         ],

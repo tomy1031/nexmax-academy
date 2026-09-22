@@ -98,6 +98,12 @@ const NOT_LEARNER_TEXT: readonly { key: RegExp; why: string }[] = [
    *（ヘッダに 出るのは `name`、工程表に 出るのは `chapter`）。
    */
   { key: /^phases\[\d+\]\.desc$/, why: "クエストの 場面の おぼえがき（画面に 出ない）" },
+  /*
+   * こたえの チェックで **AIだけに 渡す** 言い渡し（`aiReviewSchema.note`）。
+   * 観点（`ai.checks[].label`）と お手本（`ai.model`）は 画面に 出る ので
+   * `collectLabeledTexts` が 覆うが、これは どこにも 出ない。
+   */
+  { key: /^questions\[\d+\]\.ai\.note$/, why: "AIだけが 読む 言い渡し（画面に 出ない）" },
 ];
 
 /** 漢字か かなを 含む＝日本語の 文（記号・英数だけの 値は 見ない）。 */

@@ -139,11 +139,14 @@ export function MeetingPromptPreview({ value }: { value: Meeting }) {
                 type="button"
                 onClick={() => setPane(item.key)}
                 aria-pressed={pane === item.key}
-                className="rounded-full px-3 py-1.5 text-xs font-extrabold"
+                /* 白い 文字は クラスで（ふりがなも いっしょに 白に する・ruby-text.tsx） */
+                className={`rounded-full px-3 py-1.5 text-xs font-extrabold ${
+                  pane === item.key ? "text-white" : ""
+                }`}
                 style={{
                   background:
                     pane === item.key ? "var(--color-sky-deep)" : "var(--color-panel-tint)",
-                  color: pane === item.key ? "#fff" : "var(--color-ink-soft)",
+                  color: pane === item.key ? undefined : "var(--color-ink-soft)",
                 }}
               >
                 {item.label}

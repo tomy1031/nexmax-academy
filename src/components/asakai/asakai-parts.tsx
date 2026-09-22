@@ -132,9 +132,9 @@ export function ProgressBoxes({
 }) {
   /*
     絵の 欄を 広げるのは **絵を 持って いる 表だけ**。
-    夕礼（`asakai_muzukashii`）の しごとは 絵も 絵文字も 持って いないので、
-    いつも 広げると 318px の 表から 88px を 空欄の ために 取り上げる ことに なる
-    （しごとの 名前に 残るのは 134px。2026-09-16 の 検収）。
+    絵の 無い 表で いつも 広げると、318px の 表から 88px を 空欄の ために
+    取り上げる ことに なる（しごとの 名前に 残るのは 134px。2026-09-16 の 検収）。
+    2026-09-18 から 朝礼・夕礼とも 絵を 持つ。守りは `tests/asakai_progress_boxes.test.tsx`。
   */
   const hasImage = items.some((item) => taskImage(item.image));
   return (

@@ -1,0 +1,94 @@
+{
+  "refs": ["public/img/hourensou/renraku/s1.webp", "public/img/characters/hendy/sheet.webp"],
+  "_comment": "報連相：連絡 の 講義ページ（content/articles/renraku_lecture.json）の 絵。2026-09-21 の 指定で 3つ 直す — ①s1 を「❌気持ち／⭕事実」に はっきり させ、吹き出しで セリフを 言わせる ②「良い 連絡の コツ」を 旧アプリの スライドと 同じ 4点に して、1点ごとに ❌⭕の 絵を 1枚 ③s4 を 抽象（灰色の 棒）から 旧スライドと 同じ 具体的な メールに 戻す。refs の 1枚目は いまの s1（絵柄と 登場する 2人の アンカー）。",
+  "style": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Match the drawing style, the colours and the two men of the FIRST reference picture exactly: the junior engineer is a young man with short dark brown hair wearing a coral-orange shirt jacket over a white tee, and the team leader is a man with short black hair in a navy blazer over a white shirt. This is a TEACHING picture, not a mood picture: what each person is doing must be readable from the picture alone.",
+  "noText": "Japanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana. Spell every character exactly as given. No other letters, numbers, logos or watermarks anywhere in the picture.",
+  "negative": "Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+  "output": "1536x1024",
+  "scenes": [
+    {
+      "out": "s1",
+      "dest": "public/img/hourensou/renraku/s1.webp",
+      "title": "連絡は 事実だけで いい（❌気持ち／⭕事実）",
+      "where": "content/articles/renraku_lecture.json 1節の 絵",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: saying how you feel leaves the leader stuck, while saying the plain fact lets the leader act at once. Recreate the FIRST reference picture as faithfully as possible — the same wide picture split into two equal halves by a soft vertical cream gutter, the same warm pale coral ground on the LEFT and pale sky-blue ground on the RIGHT, the same two men at the same desk in the same poses, the same rounded cream label panel at the top of each half. LEFT HALF: the junior engineer waves both hands in a flustered, apologetic way with small sweat drops, and the leader beside him tilts his head with a hand on his chin, unsure how to help. RIGHT HALF: the same engineer sits calmly and points at one clear line on his laptop screen, and the leader gives a confident thumbs up and a warm smile. THE CHANGES from the reference picture, all of them: (1) the LEFT label panel now begins with a large bold red cross mark before its word, and the RIGHT label panel begins with a large bold green circle mark before its word, so that bad and good are unmistakable at a glance; (2) each half now has TWO speech balloons, one from the engineer and one from the leader. On the LEFT the engineer's balloon says すごく 焦って います！ and the leader's balloon says どう すれば いい？. On the RIGHT the engineer's balloon says エラーが 出て います。 and the leader's balloon says OK！ ヘルプを 入れるね。 The balloons are large soft rounded speech balloons with a tail pointing at the speaker's mouth; they are big enough to read at a glance and none of them covers a face or the laptop screen. FURIGANA INSIDE THE BALLOONS — this matters as much as the label panels: every kanji that appears inside a speech balloon also carries its reading in small hiragana directly above it, centred over that kanji and clearly separated from it, exactly the same way as the words in the label panels. No kanji anywhere in this picture is left without its reading.",
+      "text": [
+        "気持ち",
+        "事実",
+        "すごく 焦って います！",
+        "どう すれば いい？",
+        "エラーが 出て います。",
+        "OK！ ヘルプを 入れるね。"
+      ]
+    },
+    {
+      "out": "kotsu1",
+      "dest": "public/img/hourensou/renraku/kotsu1.webp",
+      "title": "コツ① 事実を 伝える（❌サーバーが やばいです／⭕CPU使用率が 95%です）",
+      "where": "content/articles/renraku_lecture.json 3節 cards items[0]",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: a vague feeling word tells the leader nothing, a measured fact tells him everything. One tall teaching card on a soft cream background, drawn as three stacked rows inside one big rounded panel. TOP ROW: a wide rounded navy label bar holding the title. MIDDLE ROW, on a warm pale coral ground: a large bold red cross mark on the left, then the junior engineer at his laptop waving a hand in a flustered way with small sweat drops, a soft rounded speech balloon beside him carrying the first quoted line; his screen is blank. BOTTOM ROW, on a pale sky-blue ground: a large bold green circle mark on the left, then the same engineer sitting calmly and pointing at his laptop, on which a simple line graph climbs steeply to a clearly high level near the top of its scale, and a soft rounded speech balloon beside him carrying the second quoted line. The red row and the green row are the same size and read top to bottom in one pass. FURIGANA EVERYWHERE — this matters as much as the title bar: EVERY kanji anywhere in this picture — in the title bar, in the speech balloons and anywhere else — carries its reading in small hiragana directly above it, centred over that kanji and clearly separated from it. No kanji is left without its reading.",
+      "output": "Output: one square illustration, 1024x1024.",
+      "text": ["事実を 伝える", "サーバーが やばいです", "CPU使用率が 95%です"]
+    },
+    {
+      "out": "kotsu2",
+      "dest": "public/img/hourensou/renraku/kotsu2.webp",
+      "title": "コツ② 具体的な 数字を 使う（❌もうすぐ 終わります／⭕あと 15分で 終わります）",
+      "where": "content/articles/renraku_lecture.json 3節 cards items[1]",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: 'soon' means a different length of time to every person, an exact amount of time means the same thing to everyone. One tall teaching card on a soft cream background, drawn as three stacked rows inside one big rounded panel, exactly the same layout as the other cards in this set. TOP ROW: a wide rounded navy label bar holding the title. MIDDLE ROW, on a warm pale coral ground: a large bold red cross mark on the left, then the junior engineer at his laptop shrugging with one hand raised vaguely, a soft rounded speech balloon beside him carrying the first quoted line, and behind him two teammates each imagining a different clock face — one clock's hand has barely moved, the other's has swept far round — so that the same words clearly mean two different lengths of time. BOTTOM ROW, on a pale sky-blue ground: a large bold green circle mark on the left, then the same engineer pointing confidently at one clock whose hand marks a short, exact slice of the dial, a soft rounded speech balloon beside him carrying the second quoted line, and one teammate beside him nodding and writing the time in a notebook. FURIGANA EVERYWHERE — this matters as much as the title bar: EVERY kanji anywhere in this picture — in the title bar, in the subject line, in the bracketed headings, in the body lines, in the chat windows and in any speech balloon — carries its reading in small hiragana directly above it, centred over that kanji and clearly separated from it. No kanji is left without its reading.",
+      "output": "Output: one square illustration, 1024x1024.",
+      "text": ["具体的な 数字を 使う", "もうすぐ 終わります", "あと 15分で 終わります"]
+    },
+    {
+      "out": "kotsu3",
+      "dest": "public/img/hourensou/renraku/kotsu3.webp",
+      "title": "コツ③ 結論から 書く（❌長い 言いわけ／⭕1行目に 結論）",
+      "where": "content/articles/renraku_lecture.json 3節 cards items[2]",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: a busy reader only reads the first line, so the first line has to carry the answer. One tall teaching card on a soft cream background, drawn as three stacked rows inside one big rounded panel, exactly the same layout as the other cards in this set. TOP ROW: a wide rounded navy label bar holding the title. MIDDLE ROW, on a warm pale coral ground: a large bold red cross mark on the left, then a chat window on a screen showing a long message whose first line carries the first quoted words and whose remaining four lines are soft grey abstract bars with no readable writing; a busy teammate glances at the first line, frowns slightly and scrolls past, and a soft coral arrow curls back on itself to show the message going nowhere. BOTTOM ROW, on a pale sky-blue ground: a large bold green circle mark on the left, then the same chat window where the very first line carries the second quoted words, highlighted behind with a soft yellow marker band, and the same teammate reads only that line and nods, a straight soft arrow running from the line to him. FURIGANA EVERYWHERE — this matters as much as the title bar: EVERY kanji anywhere in this picture — in the title bar, in the subject line, in the bracketed headings, in the body lines, in the chat windows and in any speech balloon — carries its reading in small hiragana directly above it, centred over that kanji and clearly separated from it. No kanji is left without its reading. The second quoted line uses the kanji form 一日 for 'one day' — write it exactly as given, with the reading いちにち above it.",
+      "output": "Output: one square illustration, 1024x1024.",
+      "text": ["結論から 書く", "テストに 時間が かかって いて…", "リリースが 一日 遅れます。"]
+    },
+    {
+      "out": "kotsu4",
+      "dest": "public/img/hourensou/renraku/kotsu4.webp",
+      "title": "コツ④ 誰に 連絡するか 書く（❌誰か 見て ください／⭕名前を 呼ぶ）",
+      "where": "content/articles/renraku_lecture.json 3節 cards items[3]",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: when a message is addressed to nobody in particular, everybody assumes somebody else will do it; naming one person makes it move. One tall teaching card on a soft cream background, drawn as three stacked rows inside one big rounded panel, exactly the same layout as the other cards in this set. TOP ROW: a wide rounded navy label bar holding the title. MIDDLE ROW, on a warm pale coral ground: a large bold red cross mark on the left, then a chat window carrying the first quoted line, and beside it three teammates at their desks all looking away from the screen with small question marks over their heads, nobody reaching for the keyboard. BOTTOM ROW, on a pale sky-blue ground: a large bold green circle mark on the left, then the same chat window carrying the second quoted line with a soft coral arrow running from the message to ONE teammate, who looks up, raises a hand and starts typing, while the other two carry on with their own work. FURIGANA INSIDE THE BALLOONS — this matters as much as the label panels: every kanji that appears inside a speech balloon also carries its reading in small hiragana directly above it, centred over that kanji and clearly separated from it, exactly the same way as the words in the label panels. No kanji anywhere in this picture is left without its reading.",
+      "output": "Output: one square illustration, 1024x1024.",
+      "text": ["誰に 連絡するか 書く", "誰か 見て ください", "@田中さん、確認 お願いします。"]
+    },
+    {
+      "out": "s4",
+      "dest": "public/img/hourensou/renraku/s4.webp",
+      "title": "メールは【 】で 読みやすく する（具体的な メール1通）",
+      "where": "content/articles/renraku_lecture.json 4節の 絵",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: square brackets cut a long mail into parts you can find with your eyes. A teaching picture of ONE real mail, seen over the shoulder in a bright office. A large rounded cream panel fills most of the frame and is drawn as a mail window with a thin toolbar of small blank rounded buttons along its top edge. Inside the window, from top to bottom: a subject line in large bold letters carrying the first quoted words, with the bracketed tag at its head printed on a small coral chip so it stands out; a thin divider; then three short blocks, each beginning with its own bracketed heading in bold navy on its own line, carrying the second, third and fourth quoted lines in order, each with a small round bullet in front of it; and below them three soft grey abstract bars standing for the closing greeting, with no readable writing in them. On the right of the frame Hendy — a young man in a navy suit, white shirt and navy tie, following his model sheet — leans in and points at the bracketed headings with one hand, smiling, showing that this is how to find things fast. Behind him a softly blurred office with windows, a plant and a colleague at another desk. The bracketed headings are what the eye lands on first. FURIGANA EVERYWHERE — this matters as much as the title bar: EVERY kanji anywhere in this picture — in the title bar, in the subject line, in the bracketed headings, in the body lines, in the chat windows and in any speech balloon — carries its reading in small hiragana directly above it, centred over that kanji and clearly separated from it. No kanji is left without its reading.",
+      "text": [
+        "【重要】ログイン画面の バグに ついて",
+        "【問題】ログインが できない",
+        "【原因】サーバーの 不具合",
+        "【復旧見込み】15:00頃"
+      ]
+    },
+    {
+      "out": "s2",
+      "dest": "public/img/hourensou/renraku/s2.webp",
+      "title": "ケーススタディ（ケースA 予定の変更／ケースB 開発環境の アップデート）",
+      "where": "content/articles/renraku_lecture.json 2節の 絵",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: two real pieces of news, each sent to exactly the people it concerns. One wide picture split into two equal panels by a thin cream gutter; each panel is one small workplace scene with a rounded cream label panel across its top carrying that panel's title. LEFT PANEL, on a pale sky-blue ground: a wall calendar page and, beside it, two large clock faces joined by a soft coral arrow — the first clock's hands sit at two o'clock, the second clock's hands sit at three o'clock, so the change of time reads at a glance; in front of them the junior engineer types a short message on his laptop, and a soft rounded speech balloon from the laptop carries the first quoted message; behind him a small group of four teammates at their desks all look up at once, showing that the message went to everyone. RIGHT PANEL, on a pale mint-green ground: a simple server rack with a soft upward arrow running from it into a rounded cloud shape, a small green tick beside the cloud showing the work finished; in front of it the same engineer turns from his laptop to two teammates and a soft rounded speech balloon carries the second quoted message; the two teammates give a thumbs up. The two panels are the same size and read left to right in one pass.",
+      "text": [
+        "ケース A：予定の 変更",
+        "【連絡】MTG変更。14:00→15:00に なりました。",
+        "ケース B：開発環境の アップデート",
+        "【連絡】開発環境に デプロイしました。"
+      ]
+    }
+  ]
+}

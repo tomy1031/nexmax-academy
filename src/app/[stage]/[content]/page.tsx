@@ -28,6 +28,7 @@ import {
   getSkit,
   getSlides,
   getStage,
+  isInAnswerNotebook,
   listStages,
 } from "@/lib/content";
 import { stageStepNumber } from "@/lib/map-data";
@@ -39,7 +40,7 @@ import {
   stageContentSegments,
 } from "@/lib/stage-routes";
 import { canonicalContentPath } from "@/lib/stage-lookup";
-import { loadRef } from "../page";
+import { loadRef } from "@/lib/stage-refs";
 
 /**
  * ステージの中の教材（`/asakai/listening`）
@@ -277,7 +278,7 @@ async function renderContent(ref: StageContentRef) {
       const set = await getQuizSet(ref.ref);
       if (!set) notFound();
       /* もんだいの 設問文・ヒントにも 辞書が 出る（引き先は 読みものと 同じ）。 */
-      return <QuizRunner set={set} embedded />;
+      return <QuizRunner set={set} embedded inNotebook={await isInAnswerNotebook(set.id)} />;
     }
     case "scenario": {
       const scenario = await getScenario(ref.ref);

@@ -197,7 +197,7 @@ codex -i public/img/characters/nexmax/reference.png \
 | — | 同ページの **しごと 9枚は 撮らない**。朝礼の 画面と 同じ `asakai_tasks.json` の 絵を 使う（同じ しごとの 絵が 2枚に ならない ように） | 2026-09-16 |
 | `scripts/images/asakai_team_tabi.json` | 同 4枚（旅行者が アプリを つかう カード。**設定画を 参照に 渡さない**） | 2026-09-16 |
 | `scripts/images/asakai_team_fujiki.json` | 同 1枚（担当カード 5枚目の 藤木さん。**藤木の 設定画だけ**を 参照に 渡す） | 2026-09-16 |
-| `scripts/images/yuurei_tasks_moji.json` | 「Next Talent の 夕礼」ページの しごと 5枚（夕礼 月曜の progress と 同じ 5つ。画面に 字・ふりがな） | 2026-09-18 |
+| `scripts/images/yuurei_tasks_moji.json` | 「Next Talent の 夕礼」ページの しごと 5枚（夕礼 月曜の progress と 同じ 5つ。画面に 字・ふりがな）。**夕礼ミーティングの しごと表でも 同じ ファイルを 使う**（640×640 q78） | 2026-09-18 |
 | `scripts/images/yuurei_team_zukai.json` | 同 13枚（流れ・担当 4枚・名前を 呼ばれる・報告 4枚・作業記録の 見え方・❌／⭕。**文字あり**・夕方の 光） | 2026-09-18 |
 | `scripts/images/yuurei_team.json` | 同 2枚（表紙・ゴール。文字なし） | 2026-09-18 |
 | `scripts/images/yuurei_team_fujiki.json` | 同 1枚（担当カード 5枚目の 藤木さん。依頼書の 字は 追加要望・優先順位・仕様変更） | 2026-09-18 |
@@ -267,9 +267,11 @@ no tangled or merged fingers` を 足すと 直った。
   だから 変換は `cwebp -q 78` で **640×640**（1枚 40〜60KB、10枚で 500KB ほど。
   表は 画面の 下の ほうに ある ので `next/image` の 既定の 遅延読み込みが 効く）。
   1024 の まま 置くと 10枚で 8MB を 学習者の 回線に 乗せる ことに なる。
-- **絵の 欄を 広げるのは 絵を 持って いる 表だけ。** 夕礼（`asakai_muzukashii`）の
-  しごとは 絵を 持って いないので、いつも 広げると 318px の 表から 88px を
-  空欄の ために 取り上げる ことに なる。
+- **絵の 欄を 広げるのは 絵を 持って いる 表だけ。** 絵の 無い 表で いつも 広げると、
+  318px の 表から 88px を 空欄の ために 取り上げる ことに なる。2026-09-18 から
+  夕礼（`asakai_muzukashii`）の 表にも 絵が 入った（`yuurei_tasks_moji.json` の 5枚・
+  640×640 q78。「Next Talent の 夕礼」ページの しごとカードと **同じ ファイル**）。
+  絵の 無い 表の 守りは `tests/asakai_progress_boxes.test.tsx`。
 - **みどりの ✓ は 8枚目（成功の 画面）だけの もの。** 表の 右の 列は
   「おわり」を ✅ で 言う ので、ほかの 絵に ✓ が 出ると 表と 絵が ぶつかる
   （6枚目「決済APIと つなぐ」で 実発生。画面の 中は 灰色の 帯だけに して 撮り直した）。

@@ -7,7 +7,9 @@ import { RubyText } from "@/components/ruby-text";
 import { buildFuriganaIndex, type FuriganaIndex } from "@/lib/text/furigana";
 import { wordbankDisplayOrder } from "@/lib/quiz/bank-order";
 import type { QuizDraft } from "@/lib/quiz/draft";
+import { MailQuestion } from "./mail-question";
 import type { QuizAction, QuizMode } from "./quiz-reducer";
+import { SlackQuestion } from "./slack-question";
 import { RankListInput } from "./rank-list-input";
 
 /** 部品じたいの文言の読み辞書（教材データの辞書はUIの文言まで覆わない・規律2）。 */
@@ -35,6 +37,12 @@ const ACTIVE_BLANK_MARK = "▶";
  */
 
 interface Props {
+  /*
+   * 教材の id は ここでは 受け取らない。AIの つなぎの 鍵は
+   * `AnswerCheckProvider`（`answer-check.tsx`）が 教材ごとに 持って いて、
+   * 部品は `useAnswerCheck` から 受け取る——同じ ものを 2つの 道で 配ると、
+   * 片方だけ 古い 教材の id の まま に なる。
+   */
   question: QuizQuestion;
   furigana: FuriganaIndex;
   dispatch: (action: QuizAction) => void;
@@ -111,8 +119,22 @@ export function QuestionBody({
         />
       );
 
+    /*
+     * 自由記述は 2つの 顔を 持つ（2026-09-21 の 指定「初級と上級は コンポーネントを 分ける」）。
+     * - 観点（`ai`）を 持つ もの … 上級の 連絡文。書いて チェックを 受ける `SlackQuestion`
+     * - 持たない もの ………………… これまでどおり「書けば 点」の `FreeInput`
+     */
     case "free":
-      return (
+      return question.ai ? (
+        <SlackQuestion
+          question={question}
+          furigana={furigana}
+          disabled={disabled}
+          submitMode={submitMode}
+          draft={draft?.kind === "free" ? draft : undefined}
+          onSubmit={(input) => dispatch({ type: "answerFree", input })}
+        />
+      ) : (
         <FreeInput
           placeholder={question.placeholder}
           starter={question.starter}
@@ -120,6 +142,19 @@ export function QuestionBody({
           submitMode={submitMode}
           draft={draft?.kind === "free" ? draft : undefined}
           onSubmit={(input) => dispatch({ type: "answerFree", input })}
+        />
+      );
+
+    /* 初級の 連絡文（メールの 型）。欄の となりで ⭕✗を 返す。 */
+    case "fillin":
+      return (
+        <MailQuestion
+          question={question}
+          furigana={furigana}
+          disabled={disabled}
+          submitMode={submitMode}
+          draft={draft?.kind === "fillin" ? draft : undefined}
+          onSubmit={(inputs) => dispatch({ type: "answerFillin", inputs })}
         />
       );
 
@@ -212,10 +247,13 @@ function OptionList({
               }
             >
               <span
-                className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-sm font-extrabold"
+                /* 白い 文字は クラスで（ふりがなも いっしょに 白に する・ruby-text.tsx） */
+                className={`grid h-7 w-7 shrink-0 place-items-center rounded-full text-sm font-extrabold ${
+                  on ? "text-white" : ""
+                }`}
                 style={{
                   background: on ? "var(--color-sky)" : "var(--color-sky-soft)",
-                  color: on ? "#fff" : "var(--color-navy)",
+                  color: on ? undefined : "var(--color-navy)",
                 }}
               >
                 {/* 色だけに 頼らない。えらんだ ところは しるしでも 分かる（規律・色覚） */}
@@ -386,10 +424,13 @@ function MultiPicker({
                 }
               >
                 <span
-                  className="grid h-7 w-7 shrink-0 place-items-center rounded-lg text-sm font-extrabold"
+                  /* 白い 文字は クラスで（ふりがなも いっしょに 白に する・ruby-text.tsx） */
+                  className={`grid h-7 w-7 shrink-0 place-items-center rounded-lg text-sm font-extrabold ${
+                    on ? "text-white" : ""
+                  }`}
                   style={{
                     background: on ? "var(--color-sky)" : "var(--color-panel-tint)",
-                    color: on ? "#fff" : "var(--color-ink-faint)",
+                    color: on ? undefined : "var(--color-ink-faint)",
                   }}
                 >
                   {on ? "✓" : ""}

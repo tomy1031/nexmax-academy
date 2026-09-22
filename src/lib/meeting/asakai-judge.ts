@@ -95,9 +95,34 @@ export const ASAKAI_TOOL = {
             description:
               "**日本語の 直しかた**（1つ・1文）。ことばが 足りない・文に なって いない・" +
               "ていねいさが 足りない ところを 名指しして、どう 言えば よいかを 言う" +
-              "（例:「数字だけでは 何の 数か 分かりません。『〜の 進捗は 20%です。』と 文に しましょう。」）。" +
+              "（例:「数字だけでは 何の 数か 分かりません。『◯◯の 進捗は ◯◯%です。』と 文に しましょう。」）。" +
               "**内容を 足せ とは 言わない**——足りない 中身の 指摘は アプリが 別に 出す。" +
+              "**学生の 数や 中身を 例の 中に 書かない**（◯◯ に する。数が まちがって いても 正しい 数に 見える）。" +
               "直す ところが 無い ときだけ 空の 文字列。",
+          },
+          items: {
+            type: "ARRAY",
+            description:
+              "**項目ごとの ブラッシュアップ**。学生が 話した 項目ごとに 1つ。" +
+              "話して いない 項目は 入れない。",
+            items: {
+              type: "OBJECT",
+              properties: {
+                id: { type: "STRING", description: "項目の id（「# 項目」に 並べた もの）。" },
+                said: {
+                  type: "STRING",
+                  description: "学生の こたえの うち、その 項目の ところ（そのまま 引く）。",
+                },
+                polished: {
+                  type: "STRING",
+                  description:
+                    "その ところを 職場で 通じる 日本語に 直した もの（1文か 2文）。" +
+                    "**中身は 1つも 足さない・変えない**（数も 学生の 数の まま）。" +
+                    "直す ところが 無ければ said と 同じ 文を 書く。",
+                },
+              },
+              required: ["id", "said", "polished"],
+            },
           },
           polished: {
             type: "STRING",
@@ -130,7 +155,16 @@ export const ASAKAI_TOOL = {
          * 返って こない 回が あり、同じ 練習の 中で「日本語: そのままで いいです」と
          *「日本語: 見て いません」が 混ざって いた。空で よいかは 説明文の 側で 決める。
          */
-        required: ["saidIds", "readsLog", "clarity", "japanese", "good", "advice", "polished"],
+        required: [
+          "saidIds",
+          "readsLog",
+          "clarity",
+          "japanese",
+          "good",
+          "advice",
+          "items",
+          "polished",
+        ],
       },
     },
   ],
@@ -153,6 +187,13 @@ export interface AsakaiJudgeContext {
   readonly panels: readonly JudgeablePanel[];
   /** 作業記録が ある 教材か（夕礼だけ true。朝礼は 記録を 持たない）。 */
   readonly hasLog: boolean;
+  /**
+   * **項目の 一覧**（`items` の id に 使う。行を 持たない 札も 入る）。
+   *
+   * `panels` は 行を 持つ 札だけ（進捗率の ように 数の 形で 見る 札は 入らない）なので、
+   * 項目ごとの ブラッシュアップには 足りない。省くと `panels` から 取る。
+   */
+  readonly items?: readonly { readonly id: string; readonly label: string }[];
   readonly utterance: string;
 }
 
@@ -189,6 +230,11 @@ export function buildAsakaiJudgePrompt(context: AsakaiJudgeContext): string {
         `  よく 出る ことば: ${fact.keywords.join("、")}`,
       );
     }
+  }
+
+  lines.push("", "# 項目（items の id）");
+  for (const item of context.items ?? context.panels) {
+    lines.push(`- ${item.id}: ${item.label}`);
   }
 
   lines.push(
@@ -230,15 +276,22 @@ export function buildAsakaiJudgePrompt(context: AsakaiJudgeContext): string {
     "  N5〜N4 の 学生として 見ます。通じて いる 文を 短く する ため・自然に する ためだけに 減らしません",
     "  教材の 3段を 点に すると: **natural は 25〜30 / rough は 15〜24 / hard は 0〜14**",
     "",
-    "# ことば（good・advice・polished・fixes）",
-    "**4つとも 見るのは 日本語です。**中身が 足りるか どうかは アプリが 別に 数えるので、",
+    "# ことば（good・advice・items・polished・fixes）",
+    "**どれも 見るのは 日本語です。**中身が 足りるか どうかは アプリが 別に 数えるので、",
     "ここで「〜も 報告しましょう」と 中身を 足させないで ください。",
     "",
     "- good … **言い方の どこが よかったか**。学生の ことばを 引いて、なぜ 職場で 通じるのかを 1文",
     "  例:「『作りました』と 終わって いるので、終わった 仕事だと すぐ 分かります。」",
     "  **言った ことの 要約は good では ありません**（「〜を 伝えます」は 書かない）",
     "- advice … **日本語の 直しかた**を 1文。名指しして、どう 言えば よいかまで 書きます",
-    "  例:「数字だけでは 何の 数か 分かりません。『〜の 進捗は 20%です。』と 文に しましょう。」",
+    "  例:「数字だけでは 何の 数か 分かりません。『◯◯の 進捗は ◯◯%です。』と 文に しましょう。」",
+    "  **学生の 数や 中身は 例に 書かず ◯◯ に します**（数が まちがって いても、直した 文に",
+    "  入れると 正しい 数に 見えて しまう。合って いるかは アプリが 見ます）",
+    "- items … **項目ごとの ブラッシュアップ**。学生が 話した 項目ごとに 1つ",
+    "  id は「# 項目」の id、said は 学生の こたえの うち その 項目の ところ（そのまま 引く）、",
+    "  polished は その ところを 職場で 通じる 日本語に 直した もの",
+    "  **中身は 1つも 足さない・変えない**（数も 学生の 数の まま。正しいかは アプリが 見ます）",
+    "  直す ところが 無ければ polished は said と 同じ 文。話して いない 項目は 入れません",
     "- polished … 学生の こたえを **職場で 通じる 日本語に 書き直した もの**（1文か 2文）",
     "  **言って いない 中身は 1つも 足しません**。数・機能の 名前・予定を 勝手に 補わない",
     "  **使って よいのは、学生の ことばと、聞かれた ことの ことばだけ**です",
@@ -252,7 +305,7 @@ export function buildAsakaiJudgePrompt(context: AsakaiJudgeContext): string {
     "こたえが あります。中身は 通って いても、これは 職場の 報告では ありません。",
     "- japanese を 低く つけます（hard の 幅）",
     "- advice に「文に する」直しかたを 書きます",
-    "- polished に **その 数・その ことばを 使った 1文**を 書きます（中身は 足さない）",
+    "- polished と items の polished に **その 数・その ことばを 使った 1文**を 書きます（中身は 足さない）",
   );
 
   /*
@@ -269,7 +322,7 @@ export function buildAsakaiJudgePrompt(context: AsakaiJudgeContext): string {
    */
   lines.push(
     "",
-    "# 学生が 読む ことばの 書きかた（good・advice・polished・fixes）",
+    "# 学生が 読む ことばの 書きかた（good・advice・items・polished・fixes）",
     "- つかえる 漢字は **つぎの ことばだけ**です。",
     `  ${AI_KANJI_WORDS.join("・")}`,
     "  この 一覧に 無い ことばは **ひらがな**で 書いて ください。",
@@ -281,6 +334,22 @@ export function buildAsakaiJudgePrompt(context: AsakaiJudgeContext): string {
   );
 
   return lines.join("\n");
+}
+
+/**
+ * 項目ごとの ブラッシュアップ 1つ（2026-09-19 の 指定「ブラッシュアップは 項目ごとに」）。
+ *
+ * **中身が 合って いるかは ここでは 決めない**——AIは 学生の 数の まま 直すので、
+ * 画面は 札が 開いた（中身が 合った）ときだけ `polished` を 出し、それ以外は
+ * 教材の 型文（ヒント）を 出す（`asakai-hint.ts`）。
+ */
+export interface AsakaiItem {
+  /** 項目（札）の id。 */
+  readonly id: string;
+  /** 学生の こたえの うち、その 項目の ところ。 */
+  readonly said: string;
+  /** その ところを 職場の 日本語に 直した もの（直す ところが 無ければ said と 同じ）。 */
+  readonly polished: string;
 }
 
 /** 日本語の 直し 1つ（あなたの 表現 → 自然な 表現）。 */
@@ -310,6 +379,8 @@ export interface AsakaiJudgeResult {
    * 学習者は 自分が 言えて いない ことに 気づけない まま「これで よかった」と 読む。
    */
   readonly polished: string;
+  /** 項目ごとの ブラッシュアップ（話した 項目だけ。知らない id は 落とす）。 */
+  readonly items: readonly AsakaiItem[];
   readonly fixes: readonly AsakaiFix[];
 }
 
@@ -322,6 +393,7 @@ export const NO_JUDGE: AsakaiJudgeResult = {
   good: "",
   advice: "",
   polished: "",
+  items: [],
   fixes: [],
 };
 
@@ -335,6 +407,8 @@ export const NO_JUDGE: AsakaiJudgeResult = {
 export function parseAsakaiJudge(
   args: unknown,
   facts: readonly MatchableFact[],
+  /** 項目（札）の id。省くと 項目ごとの ブラッシュアップは 取らない。 */
+  itemIds: readonly string[] = [],
 ): AsakaiJudgeResult {
   if (!args || typeof args !== "object") return NO_JUDGE;
   const raw = (args as { saidIds?: unknown; readsLog?: unknown }).saidIds;
@@ -353,6 +427,7 @@ export function parseAsakaiJudge(
     good?: unknown;
     advice?: unknown;
     polished?: unknown;
+    items?: unknown;
     fixes?: unknown;
   };
   /*
@@ -379,6 +454,21 @@ export function parseAsakaiJudge(
     fixes.push({ said, natural, note: text((one as { note?: unknown }).note) });
     if (fixes.length >= 1) break;
   }
+  /*
+   * **知って いる 項目だけ・1項目 1つ**。said と polished が そろって いない ものは
+   * 見せない（片方だけでは 何を 直したか 読めない）。
+   */
+  const knownItems = new Set(itemIds);
+  const items: AsakaiItem[] = [];
+  for (const one of Array.isArray(bag.items) ? bag.items : []) {
+    if (!one || typeof one !== "object") continue;
+    const id = text((one as { id?: unknown }).id);
+    const said = text((one as { said?: unknown }).said);
+    const polished = text((one as { polished?: unknown }).polished);
+    if (!knownItems.has(id) || said === "" || polished === "") continue;
+    if (items.some((item) => item.id === id)) continue;
+    items.push({ id, said, polished });
+  }
   return {
     saidIds,
     readsLog: bag.readsLog === true,
@@ -387,6 +477,7 @@ export function parseAsakaiJudge(
     good: text(bag.good),
     advice: text(bag.advice),
     polished: text(bag.polished),
+    items,
     fixes,
   };
 }

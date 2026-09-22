@@ -140,3 +140,27 @@ export function spokenAnswer(line: NotebookLine): string {
   if (line.correctAnswer.trim() !== "") return line.correctAnswer;
   return own;
 }
+
+/**
+ * **あとの 会話の「📋 自分の こたえ」に 出る** もんだいの id。
+ *
+ * 置くのは どの もんだいでも 置く（`saveNotebook`）が、開く 場所が あるのは
+ * どれかの 会話が `notes` で 名指した もんだいだけ である。けっかの 画面が
+ * 「つぎの 会話で 見られます」と 言って よいのは ここに ある ときだけ——
+ * 自由記述だけの もんだいを 一律に「会話の じゅんび」と 呼んで いた ころは、
+ * つぎが スキットや 答え合わせの ページでも そう 言い、学習者に 無い ひきだしを
+ * 探させて いた（報告ステージの 2本）。
+ *
+ * **朝礼・夕礼（`asakai`）の 会話は 数えない。** あの 画面（`AsakaiSession`）は
+ * ひきだしを 描かない（出るのは「📋 報告メモ」だけ）。スタジオで `notes` を 付けても
+ * 開く 場所が 無いので、数えると 同じ 約束を また 破る。
+ */
+export function notebookQuizSetIds(
+  meetings: readonly { asakai?: unknown; notes?: readonly { ref: string }[] }[],
+): Set<string> {
+  return new Set(
+    meetings
+      .filter((meeting) => !meeting.asakai)
+      .flatMap((meeting) => (meeting.notes ?? []).map((note) => note.ref)),
+  );
+}
