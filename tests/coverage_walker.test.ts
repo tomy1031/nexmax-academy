@@ -84,6 +84,7 @@ const NOT_LEARNER_TEXT: readonly { key: RegExp; why: string }[] = [
   { key: /(^|\.)nekumax$/, why: "ネクマックスの 出しかた" },
   { key: /(^|\.)answerMode$/, why: "やりかた（データの 型）" },
   { key: /(^|\.)password$/, why: "先生が 配る 合いことば" },
+  { key: /(^|\.)rescueWord$/, why: "先生が 教室で 教える あいことば（学習者の 画面に 出ない）" },
   { key: /(^|\.)fieldSequence(\[|$)/, why: "ゲームの 背景の 名前" },
   { key: /(^|\.)state$/, why: "箱の 状態（done / now / later）" },
   { key: /(^|\.)from$/, why: "準備フォームの 設問を 指す 名前" },

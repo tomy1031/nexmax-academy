@@ -10,6 +10,7 @@ import {
   SPEAKER_ME,
   SPEAKER_NARRATION,
 } from "./listening-drafts";
+import { DEFAULT_RESCUE_WORD } from "@/components/listening/listening-checks";
 import { AudioMaker } from "./audio-maker";
 import { ImageSlotEditor } from "./image-slot-editor";
 import {
@@ -317,6 +318,18 @@ export function ListeningEditor({
             max={20}
             onChange={(maxMiss) => patch({ check: { ...value.check, maxMiss } })}
             hint="この 回数を こえたら「もういちど 聞こう」と 出します。"
+          />
+        </div>
+
+        <div className="sm:w-2/3">
+          <TextField
+            label="あいことば（先生が 教室で 教える）"
+            value={value.rescueWord ?? ""}
+            onChange={(rescueWord) =>
+              patch({ rescueWord: rescueWord.length > 0 ? rescueWord : undefined })
+            }
+            placeholder={DEFAULT_RESCUE_WORD}
+            hint="目標まで ひらかなかった 学習者が、これを 入れると つぎへ 進めます。からに すると その 逃げ道は 出ません。学習者の 画面には 出ません（かなで 打っても 当たります）。"
           />
         </div>
 

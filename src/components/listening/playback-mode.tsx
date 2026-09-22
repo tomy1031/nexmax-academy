@@ -13,7 +13,13 @@ import { ImageSlotFrame } from "@/components/article/rich-blocks";
 import { assetUrl, hasAsset } from "@/lib/asset-url";
 import { lineSentenceClips, type SentenceClip } from "@/lib/audio/sentences";
 import { ListeningPanel } from "./listening-panel";
-import { mediaKind, revealRate, type ListeningState } from "./listening-checks";
+import {
+  mediaKind,
+  opensRescue,
+  rescueWordOf,
+  revealRate,
+  type ListeningState,
+} from "./listening-checks";
 
 /**
  * リスニング — 「聞く」教材
@@ -127,6 +133,8 @@ export function ListeningPlayer({
           ) : null}
 
           <NextGate
+            listening={listening}
+            furigana={furigana}
             rate={rate}
             goal={goal}
             touched={touched || !typingOn}
@@ -419,17 +427,21 @@ function Toggle({ on, onClick, label }: { on: boolean; onClick: () => void; labe
   );
 }
 
-/** 先生から聞く あいことば（どうしても表示率が届かない学習者の逃げ道）。 */
-const RESCUE_WORD = "きいた";
-
 /**
  * つぎ（こたえあわせ）へ進む関所。
  *
  * 表示率が目標に届くまでは進めない——聞かずに答えだけ見るのを防ぐため。
- * ただし**行き止まりは作らない**。どうしても届かない学習者のために、
- * 先生から聞いた あいことば で開けるようにしておく。
+ * どうしても届かない学習者のために、先生から聞いた あいことば で開ける道を残す。
+ *
+ * あいことばは **教材ごと**（`rescueWord`）。**入っていない 教材では 逃げ道の
+ * 入口ごと 出さない**（2026-09-22 の 指定）——開けられない 欄を 見せるのは、
+ * 何度 打っても 開かない 学習者を 作るだけ。
+ * 合っているかの 判定は `opensRescue` に 置いて あり、ことば自体は ここに 出さない
+ * ——画面に 出すと 先生から 聞く 意味が 無くなる。
  */
 function NextGate({
+  listening,
+  furigana,
   rate,
   goal,
   touched,
@@ -437,6 +449,8 @@ function NextGate({
   onRescue,
   onNext,
 }: {
+  listening: Listening;
+  furigana: FuriganaIndex;
   rate: number;
   goal: number;
   touched: boolean;
@@ -447,6 +461,7 @@ function NextGate({
   const [word, setWord] = useState("");
   const [wrong, setWrong] = useState(false);
   const open = rate >= goal || rescued;
+  const hasRescue = rescueWordOf(listening).length > 0;
 
   return (
     <section className="card-island p-4">
@@ -468,7 +483,7 @@ function NextGate({
           <p className="text-ink-soft text-sm font-bold">
             げんこうが {goal}% ひらくと、こたえあわせに すすめます（いま {rate}%）。
           </p>
-          {touched ? (
+          {touched && hasRescue ? (
             <details className="mt-3">
               <summary className="text-ink-faint cursor-pointer text-xs font-bold">
                 どうしても すすめない ときは
@@ -480,7 +495,7 @@ function NextGate({
                 className="mt-2 flex flex-wrap gap-2"
                 onSubmit={(event) => {
                   event.preventDefault();
-                  if (word.trim() === RESCUE_WORD) onRescue();
+                  if (opensRescue(word, listening, furigana)) onRescue();
                   else setWrong(true);
                 }}
               >

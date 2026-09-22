@@ -11,6 +11,7 @@
  */
 
 import type { Listening, ListeningParticipant } from "@/content/schema";
+import { DEFAULT_RESCUE_WORD } from "@/components/listening/listening-checks";
 
 /** 台本の話す人に使える特別枠。participants には入れない（schema.ts の superRefine と同じ）。 */
 export const SPEAKER_ME = "me";
@@ -36,6 +37,9 @@ export function emptyListening(): Listening {
     ],
     keywords: [],
     revealGoal: 30,
+    // あいことばは 入れた 形から 始める（空だと 逃げ道が 出ない。2026-09-22 の 指定）。
+    // 教材ごとに その 課の 大事な ことばへ 変えてもらう。
+    rescueWord: DEFAULT_RESCUE_WORD,
     // 「聞く」教材なので、既定は 顔を並べない再生プレイヤー。
     // 原稿は 穴埋めの 形で はじめから 出す（2026-09-16 の 指定）
     mode: "player",

@@ -220,6 +220,26 @@ export const SHUGYO_TOTAL: number = (
 ).questions.length;
 
 /**
+ * リスニングの 関所を 開ける **あいことば**。**教材から 読む**（`HOUKOKU_TOTAL` と 同じ 理由）。
+ *
+ * 2026-09-22 から 教材ごとに 変えられる（`rescueWord`）。前は「きいた」を テストに
+ * 焼いて いたので、先生が ことばを 変えるたびに テストだけが 置いて いかれた。
+ */
+export function rescueWord(listeningId: string): string {
+  const data = JSON.parse(
+    readFileSync(
+      join(__dirname, "..", "..", "content", "listening", `${listeningId}.json`),
+      "utf8",
+    ),
+  ) as { rescueWord?: string };
+  const word = data.rescueWord ?? "";
+  if (word.length === 0) {
+    throw new Error(`${listeningId} に あいことばが ありません（関所は 開けられません）`);
+  }
+  return word;
+}
+
+/**
  * その教材より前の教材のID（関門を開けるために「おわった」ことにする分）。
  *
  * **番号ではなく教材そのものを受ける。** 前は `itemsBefore(4)` のように番号で

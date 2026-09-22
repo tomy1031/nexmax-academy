@@ -593,3 +593,45 @@ export function mediaKind(listening: {
   if (listening.audioUrl) return "audio";
   return "none";
 }
+
+/**
+ * 新しく 作る 教材に 入れて おく **あいことば**の 既定（2026-09-22 の 指定）。
+ *
+ * スタジオで リスニングを 作ると まず これが 入る。そのままでも 逃げ道は 働くが、
+ * **教材ごとに 変える** ほうが 強い——1語を 使い回すと、教室で 回った あとは
+ * 誰でも 素通りできる。
+ */
+export const DEFAULT_RESCUE_WORD = "ネクマックス";
+
+/**
+ * その 教材の あいことば。**空なら 空**（逃げ道を 置かない）。
+ *
+ * 2026-09-22 の 指定で「空欄＝逃げ道なし」に した。記号だけ（「、、」など）は
+ * 比べる 形に すると 空に なり **何を 打っても 開いて しまう** ので、
+ * ここで 無かった ことに する。
+ */
+export function rescueWordOf(listening: { rescueWord?: string }): string {
+  const word = listening.rescueWord?.trim() ?? "";
+  return normalizeReading(word).length > 0 ? word : "";
+}
+
+/**
+ * 打った ことばが あいことばと 合うか。あいことばの 無い 教材は **いつも false**。
+ *
+ * 比べかたは 聞き取りチェックと 同じ。素の 形（`normalizeReading`）で 見て、
+ * 外れたら **読み辞書で かなへ 倒して** もう一度 見る——だから 「報告」の 教材は
+ * 「ほうこく」と 打っても 開く。字が 浮かばない 学習者を ここで 落とさない
+ *（「先生に 聞いた のに 開かない」が いちばん 救いの ない 止まり方）。
+ */
+export function opensRescue(
+  input: string,
+  listening: { rescueWord?: string },
+  furigana: FuriganaIndex = { entries: [], maxLength: 0 },
+): boolean {
+  const word = rescueWordOf(listening);
+  if (word.length === 0) return false;
+  const typed = normalizeReading(input);
+  if (typed.length === 0) return false;
+  if (typed === normalizeReading(word)) return true;
+  return toKana(input, furigana) === toKana(word, furigana);
+}
