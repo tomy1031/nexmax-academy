@@ -82,7 +82,7 @@
     "方法"
   ],
   "revealGoal": 30,
-  "rescueWord": "管理",
+  "rescueWord": "意見",
   "check": {
     "minLength": 2,
     "maxMiss": 5,
