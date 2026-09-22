@@ -157,6 +157,8 @@ describe("drafts（もんだい）", () => {
       free: 0,
       // じゅんばんに ならべて 書く も 正解の 枠は 無い（行は 学習者が ふやす）
       ranklist: 0,
+      // メールの 型は 宛先の 行 1つと 【 】1つ から（スキーマの 下限）
+      fillin: 2,
     };
     for (const [type, least] of Object.entries(counts) as [QuizQuestion["type"], number][]) {
       const question = emptyQuizQuestion(type);

@@ -63,6 +63,17 @@ const resumeSchema = z.object({
   drafts: z.record(z.string(), quizDraftSchema).default({}),
   /** まとめて 出す ときに 見て いた 問題の 番号（0始まり）。 */
   index: z.number().int().min(0).default(0),
+  /**
+   * こたえの チェックが 通った 問題（2026-09-21）。
+   *
+   * 連絡文の もんだいは **⭕に なるまで つぎへ 進めない**。この 印が 消えると
+   * 開き直した とき 1問目から やり直しに なる ので、下書きと 同じ ところに 残す。
+   * `.default({})` に して あるので、この鍵が 無かった 頃の 保存値も そのまま 読める。
+   *
+   * 中身は「⭕に なった 文」——打ち直したら 印は 効かなく なる（見て もらって いない
+   * 文で 関門が 開かない ように）。
+   */
+  checked: z.record(z.string(), z.string()).default({}),
 });
 
 export type QuizResumeResult = z.infer<typeof resultSchema>;
@@ -86,6 +97,8 @@ export interface QuizStart {
   readonly mode: QuizMode;
   /** まとめて 出す ときの 採点まえの こたえ（問題IDごと）。 */
   readonly drafts: Readonly<Record<string, QuizDraft>>;
+  /** こたえの チェックが 通った 問題と、その ときの 文（問題IDごと）。 */
+  readonly checked: Readonly<Record<string, string>>;
 }
 
 /** もんだいの やりかた（`@/components/quiz/quiz-reducer` の QuizMode と同じ 3つ）。 */
@@ -112,6 +125,7 @@ export const FRESH_QUIZ_START: QuizStart = {
   resumed: false,
   mode: "submit",
   drafts: {},
+  checked: {},
 };
 
 function keyOf(quizSetId: string): string {
@@ -186,6 +200,10 @@ export function startFrom(
       resumed: true,
       mode,
       drafts: Object.fromEntries(alive),
+      // いま 教材に 無い 問題の 印も 落とす（下書きと 同じ 扱い）
+      checked: Object.fromEntries(
+        Object.entries(own.checked).filter(([id]) => questionIds.includes(id)),
+      ),
     };
   }
 

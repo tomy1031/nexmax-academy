@@ -123,6 +123,7 @@ describe("下書きが 消えない", () => {
         kaikyuu: { kind: "free", input: "CEO" },
       },
       index: 0,
+      checked: {},
     };
     const backend = createMemoryBackend();
     saveQuizResume(saved, backend);

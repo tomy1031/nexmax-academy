@@ -80,6 +80,7 @@
     "復旧"
   ],
   "revealGoal": 30,
+  "rescueWord": "復旧",
   "check": {
     "minLength": 2,
     "maxMiss": 5,
