@@ -159,6 +159,8 @@ describe("drafts（もんだい）", () => {
       ranklist: 0,
       // メールの 型は 宛先の 行 1つと 【 】1つ から（スキーマの 下限）
       fillin: 2,
+      // バグ報告は バグ 1つから
+      bugreport: 1,
     };
     for (const [type, least] of Object.entries(counts) as [QuizQuestion["type"], number][]) {
       const question = emptyQuizQuestion(type);

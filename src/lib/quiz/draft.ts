@@ -22,6 +22,15 @@
 
 import { z } from "zod";
 import type { QuizQuestion } from "@/content/schema";
+import {
+  bugReportAnswerText,
+  bugReportFilled,
+  bugReportModelText,
+  bugReportPassed,
+  bugReportsPassed,
+  bugReportStarted,
+  type BugReportEntry,
+} from "@/lib/quiz/bugreport";
 import { fillinSlots, type FillinSlot } from "@/lib/quiz/fillin";
 import { answerMatches, normalizeReading } from "@/lib/text/normalize";
 
@@ -61,7 +70,12 @@ export type QuizDraft =
    * じゅんばんに ならべて 書く（`ranklist`）。**行の 数だけ** 持つ（空の 行も 残す——
    * 開き直した ときに 同じ 数の 行が 出る）。
    */
-  | { readonly kind: "ranklist"; readonly rows: readonly string[] };
+  | { readonly kind: "ranklist"; readonly rows: readonly string[] }
+  /**
+   * バグ報告（`bugreport`）。**バグの 数だけ** 持つ（`@/lib/quiz/bugreport`）。
+   * 話した ことばと AIの 点も ここに 置く——開き直しても 関門が 閉じ直らない ように。
+   */
+  | { readonly kind: "bugreport"; readonly reports: readonly BugReportEntry[] };
 
 /**
  * 保存された 下書きを 読み直す ための 検査（`@/lib/quiz/resume` が 使う）。
@@ -81,6 +95,22 @@ export const quizDraftSchema: z.ZodType<QuizDraft> = z.discriminatedUnion("kind"
    */
   z.object({ kind: z.literal("ranklist"), rows: z.array(z.string()) }),
   z.object({
+    kind: z.literal("bugreport"),
+    reports: z.array(
+      z.object({
+        screen: z.string(),
+        action: z.string(),
+        result: z.string(),
+        expected: z.string(),
+        spoken: z.string(),
+        score: z.number().min(0).max(100).nullable(),
+        items: z.array(z.object({ id: z.string(), ok: z.boolean(), note: z.string() })),
+        polished: z.string(),
+        skipped: z.boolean(),
+      }),
+    ),
+  }),
+  z.object({
     kind: z.literal("emotion"),
     feeling: z.number().int().min(0).nullable(),
     reply: z.number().int().min(0).nullable(),
@@ -98,6 +128,7 @@ const DRAFT_KIND: Record<QuizQuestion["type"], QuizDraft["kind"]> = {
   free: "free",
   ranklist: "ranklist",
   fillin: "fillin",
+  bugreport: "bugreport",
 };
 
 /**
@@ -146,6 +177,15 @@ export function draftAnswered(question: QuizQuestion, draft: QuizDraft | undefin
     case "ranklist":
       // 1行でも 書けば「こたえた」（いくつ 書くかは 人に よって ちがう）
       return draft.rows.some((v) => v.trim().length > 0);
+    case "bugreport":
+      // どの バグも 4つの 欄が うまって はじめて「こたえた」（メールの 型と 同じ 考え）
+      return (
+        question.type === "bugreport" &&
+        question.bugs.every((_, i) => {
+          const entry = draft.reports[i];
+          return entry !== undefined && bugReportFilled(entry);
+        })
+      );
   }
 }
 
@@ -176,6 +216,8 @@ export function draftStarted(question: QuizQuestion, draft: QuizDraft | undefine
       return draft.inputs.some((value) => value.trim().length > 0);
     case "ranklist":
       return draft.rows.some((value) => value.trim().length > 0);
+    case "bugreport":
+      return draft.reports.some(bugReportStarted);
   }
 }
 
@@ -322,6 +364,22 @@ export function gradeDraft(question: QuizQuestion, draft: QuizDraft | undefined)
         // 記録の 形は 穴うめと 同じ（`（1）…　（2）…`）。読み戻しも 同じ 関数で できる
         answer: formatWordbankAnswer(slots.map((_, i) => (draft.inputs[i] ?? "").trim())),
         partial: !correct && hits > 0,
+      };
+    }
+
+    /*
+     * バグ報告。**ぜんぶの バグが 合格（60点 より 上）で 点**。
+     * 1つだけ 合格なら「あと すこし」。
+     */
+    case "bugreport": {
+      if (draft.kind !== "bugreport") return blank;
+      if (!draft.reports.some(bugReportStarted)) return blank;
+      const correct = bugReportsPassed(question, draft.reports);
+      return {
+        correct,
+        earned: correct ? question.points : 0,
+        answer: bugReportAnswerText(question, draft.reports),
+        partial: !correct && draft.reports.some(bugReportPassed),
       };
     }
 
@@ -489,6 +547,8 @@ export function correctAnswerText(question: QuizQuestion): string {
     case "free":
     case "ranklist":
       return "";
+    case "bugreport":
+      return bugReportModelText(question);
   }
 }
 

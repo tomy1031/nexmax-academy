@@ -35,6 +35,7 @@ import { QuestionBody } from "./question-types";
 import { AnswerCheckProvider, type AnswerCheck, type AnswerChecks } from "./answer-check";
 import { dropJudgeSession } from "@/components/meeting/judge-api";
 import { checkedText, fillinModelText } from "@/lib/quiz/fillin";
+import { bugReportModelText, bugReportsPassed } from "@/lib/quiz/bugreport";
 import { ModelAnswer } from "./check-parts";
 import { FillinReview } from "./fillin-review";
 import { SceneCard } from "./scene-card";
@@ -79,6 +80,10 @@ const UI_FURIGANA = buildFuriganaIndex([
   ["今", "いま"],
   // 「出すと 採点します」（前から 覆えて いなかった・2026-09-21 の 読み検収）
   ["採点", "さいてん"],
+  ["報告", "ほうこく"],
+  ["点", "てん"],
+  ["次", "つぎ"],
+  ["上", "うえ"],
   ["進", "すす"],
 ]);
 
@@ -420,6 +425,12 @@ export function QuizRunner({
       });
   }, [attemptId, done, wholeRun, set.id, set.questions, state.results]);
   const question = currentQuestion(state);
+  /** 1問ずつの 画面で、バグ報告が まだ 合格して いない（「つぎ →」を 止める）。 */
+  const bugBlocked = (() => {
+    if (question?.type !== "bugreport") return false;
+    const draft = currentDraft(state);
+    return !(draft?.kind === "bugreport" && bugReportsPassed(question, draft.reports));
+  })();
   const byId = useMemo(() => new Map(set.questions.map((q) => [q.id, q])), [set.questions]);
 
   /*
@@ -565,7 +576,9 @@ export function QuizRunner({
             reopened={reopened}
             answerMode={set.answerMode}
             gated={set.questions.some(
-              (q) => (q.type === "fillin" || q.type === "free") && q.ai !== undefined,
+              (q) =>
+                ((q.type === "fillin" || q.type === "free") && q.ai !== undefined) ||
+                q.type === "bugreport",
             )}
             answeredCount={submitMode ? written : start.results.length}
             startIndex={state.index}
@@ -734,15 +747,30 @@ export function QuizRunner({
                       出す まえの かくにんで 戻って これる ように する。
                     */}
                       {submitMode && (
-                        <button
-                          type="button"
-                          onClick={() => dispatch({ type: "next" })}
-                          className="btn-island btn-game mt-5 w-full px-6 py-3"
-                        >
-                          {state.index === state.questions.length - 1
-                            ? "さいごに かくにん →"
-                            : "つぎ →"}
-                        </button>
+                        <>
+                          {/*
+                            バグ報告は **60点 より 上に なるまで 進めない**（2026-09-23 の 指定）。
+                            ボタンを 消さずに 押せなく して、理由を すぐ 上に 言う。
+                          */}
+                          {bugBlocked && (
+                            <p className="text-ink-soft mt-5 text-sm font-extrabold" role="status">
+                              <RubyText
+                                text="🎤で 報告して、60点より 上に なると 次へ 進めます。"
+                                index={UI_FURIGANA}
+                              />
+                            </p>
+                          )}
+                          <button
+                            type="button"
+                            disabled={bugBlocked}
+                            onClick={() => dispatch({ type: "next" })}
+                            className="btn-island btn-game mt-5 w-full px-6 py-3 disabled:opacity-50"
+                          >
+                            {state.index === state.questions.length - 1
+                              ? "さいごに かくにん →"
+                              : "つぎ →"}
+                          </button>
+                        </>
                       )}
                     </>
                   )}
@@ -1389,8 +1417,14 @@ function AllQuestionsCard({
    * チェックの 無い 教材（これまでの もんだい）は 何も 変わらない。
    */
   const needsCheck = (question: QuizQuestion): boolean =>
-    (question.type === "fillin" || question.type === "free") && question.ai !== undefined;
+    ((question.type === "fillin" || question.type === "free") && question.ai !== undefined) ||
+    question.type === "bugreport";
   const passed = (question: QuizQuestion): boolean => {
+    // バグ報告は 点が 下書きに 入って いる（60点 より 上で 合格）
+    if (question.type === "bugreport") {
+      const draft = drafts[question.id];
+      return draft?.kind === "bugreport" && bugReportsPassed(question, draft.reports);
+    }
     const check = checks[question.id];
     return check?.ok === true && check.of === checkedText(question, drafts[question.id]);
   };
@@ -1922,7 +1956,9 @@ function ReviewRow({
    * 自由記述に 正解は 無いので、書いた ものが そのまま 言う ことばに なる。
    */
   const right = correctAnswerText(question);
-  const say = ok ? own : right !== "" ? right : own;
+  /** バグ報告は **自分の 報告を そのまま** 出す（お手本は 下の 箱）。 */
+  const bug = question.type === "bugreport" ? question : null;
+  const say = ok || bug ? own : right !== "" ? right : own;
   /*
    * 穴うめだけは **文の 中で** 返す（`WordbankReview`）。ことばを 横に 並べた
    * だけの 行は、どの あなの ことか 分からず、カンペにも ならなかった。
@@ -1998,6 +2034,7 @@ function ReviewRow({
         !ok &&
         !wordbank &&
         !fillin &&
+        !bug &&
         (own === "" ? (
           <p className="text-ink-faint mt-0.5 text-xs font-bold">
             <RubyText text="まだ かいて いません" index={UI_FURIGANA} />
@@ -2019,6 +2056,8 @@ function ReviewRow({
       */}
       {fillin ? (
         <ModelAnswer text={fillinModelText(fillin)} furigana={furigana} />
+      ) : bug ? (
+        <ModelAnswer text={bugReportModelText(bug)} furigana={furigana} />
       ) : (
         question.type === "free" &&
         question.ai && <ModelAnswer text={question.ai.model ?? ""} furigana={furigana} />

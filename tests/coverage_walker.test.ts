@@ -104,6 +104,11 @@ const NOT_LEARNER_TEXT: readonly { key: RegExp; why: string }[] = [
    * `collectLabeledTexts` が 覆うが、これは どこにも 出ない。
    */
   { key: /^questions\[\d+\]\.ai\.note$/, why: "AIだけが 読む 言い渡し（画面に 出ない）" },
+  /* バグ報告の「どんな バグか」も AIだけに 渡す（お手本 `bugs[].model` は 画面に 出る ので 覆う）。 */
+  {
+    key: /^questions\[\d+\]\.bugs\[\d+\]\.note$/,
+    why: "AIだけが 読む バグの 中身（画面に 出ない）",
+  },
 ];
 
 /** 漢字か かなを 含む＝日本語の 文（記号・英数だけの 値は 見ない）。 */

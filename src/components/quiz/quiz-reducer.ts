@@ -27,6 +27,7 @@
 import type { QuizQuestion, QuizSet } from "@/content/schema";
 import { INPUT_ISSUE_FEEDBACK, type FeedbackKey } from "@/lib/feedback";
 import { draftAnswered, gradeDraft, type QuizDraft } from "@/lib/quiz/draft";
+import type { BugReportEntry } from "@/lib/quiz/bugreport";
 import { inspectReadingInput } from "@/lib/text/normalize";
 
 /** もんだいの やりかた。 */
@@ -138,6 +139,10 @@ export type QuizAction =
   | ({ readonly type: "answerList"; readonly inputs: readonly string[] } & Targeted)
   | ({ readonly type: "answerFillin"; readonly inputs: readonly string[] } & Targeted)
   | ({ readonly type: "answerRanklist"; readonly rows: readonly string[] } & Targeted)
+  | ({
+      readonly type: "answerBugreport";
+      readonly reports: readonly BugReportEntry[];
+    } & Targeted)
   | ({ readonly type: "answerWordbank"; readonly filled: readonly (string | null)[] } & Targeted)
   | ({ readonly type: "answerFeeling"; readonly index: number } & Targeted)
   | ({ readonly type: "answerReply"; readonly index: number } & Targeted)
@@ -374,6 +379,12 @@ export function quizReducer(state: QuizState, action: QuizAction): QuizState {
     case "answerFillin": {
       if (question.type !== "fillin") return state;
       return put(state, question, { kind: "fillin", inputs: [...action.inputs] });
+    }
+
+    /* バグ報告。欄・話した ことば・AIの 点を まとめて 置く（`@/lib/quiz/bugreport`）。 */
+    case "answerBugreport": {
+      if (question.type !== "bugreport") return state;
+      return put(state, question, { kind: "bugreport", reports: [...action.reports] });
     }
 
     case "answerWordbank": {

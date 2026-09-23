@@ -7,6 +7,7 @@ import { RubyText } from "@/components/ruby-text";
 import { buildFuriganaIndex, type FuriganaIndex } from "@/lib/text/furigana";
 import { wordbankDisplayOrder } from "@/lib/quiz/bank-order";
 import type { QuizDraft } from "@/lib/quiz/draft";
+import { BugReportQuestionView } from "./bug-report-question";
 import { MailQuestion } from "./mail-question";
 import type { QuizAction, QuizMode } from "./quiz-reducer";
 import { SlackQuestion } from "./slack-question";
@@ -179,6 +180,22 @@ export function QuestionBody({
           submitMode={submitMode}
           draft={draft?.kind === "ranklist" ? draft : undefined}
           onSubmit={(rows) => dispatch({ type: "answerRanklist", rows })}
+        />
+      );
+
+    /* バグ報告（サイトを 使って、声で 報告する）。点が 60点 以下の あいだは 進めない */
+    case "bugreport":
+      return (
+        <BugReportQuestionView
+          question={question}
+          furigana={furigana}
+          disabled={disabled}
+          submitMode={submitMode}
+          draft={draft?.kind === "bugreport" ? draft : undefined}
+          // AIの 点は あとから 届く。その あいだに 問いを 移っても、この 問いに 書く
+          onSubmit={(reports) =>
+            dispatch({ type: "answerBugreport", reports: [...reports], questionId: question.id })
+          }
         />
       );
 

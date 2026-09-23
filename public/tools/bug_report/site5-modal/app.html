@@ -1,0 +1,106 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><style>
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI","Noto Sans JP",sans-serif;color:#1f2937;background:#fff}
+header{padding:14px 22px;border-bottom:1px solid #e5e7eb;display:flex;justify-content:space-between;align-items:center}
+main{padding:22px}.card{border:1px solid #e5e7eb;border-radius:14px;padding:18px}
+button{font:inherit;cursor:pointer}.btn{border:0;border-radius:9px;padding:10px 14px;background:#111827;color:white;font-weight:700}
+.muted{color:#667085}.top-actions{display:flex;justify-content:flex-end;margin-bottom:16px}
+.news{display:grid;gap:10px}.news button{text-align:left;padding:15px;border:1px solid #d1d5db;border-radius:11px;background:white}
+.hidden{display:none}.article{border:1px solid #e5e7eb;border-radius:14px;padding:20px;background:#fff}
+.article h2{margin-top:0}.article-body{line-height:1.9}.back-btn{margin-bottom:16px;background:#fff;color:#111827;border:1px solid #d1d5db}
+.overlay{position:fixed;inset:0;background:rgba(15,23,42,.45);display:grid;place-items:center}
+.overlay.hidden{display:none}.modal{background:white;border-radius:15px;padding:24px;width:min(430px,88vw)}
+</style></head>
+<body>
+<header><b>NewsBoard</b><span>お<ruby>知<rt>し</rt></ruby>らせ</span></header>
+<main>
+  <div class="top-actions"><button id="noticeBtn" class="btn">🔔 お<ruby>知<rt>し</rt></ruby>らせを<ruby>見<rt>み</rt></ruby>る</button></div>
+
+  <section id="newsList" class="card">
+    <h2>ニュース<ruby>一覧<rt>いちらん</rt></ruby></h2>
+    <div class="news">
+      <button class="news-item" data-id="release">
+        <b><ruby>新<rt>あたら</rt></ruby>しいリリース<ruby>情報<rt>じょうほう</rt></ruby></b><br><span class="muted">9<ruby>月<rt>がつ</rt></ruby>23<ruby>日<rt>にち</rt></ruby></span>
+      </button>
+      <button class="news-item" data-id="event">
+        <b>イベントのお<ruby>知<rt>し</rt></ruby>らせ</b><br><span class="muted">9<ruby>月<rt>がつ</rt></ruby><ruby>20日<rt>はつか</rt></ruby></span>
+      </button>
+    </div>
+  </section>
+
+  <section id="articleView" class="article hidden">
+    <button id="backToList" class="btn back-btn">← ニュース<ruby>一覧<rt>いちらん</rt></ruby>にもどる</button>
+    <p id="articleDate" class="muted"></p>
+    <h2 id="articleTitle"></h2>
+    <div id="articleBody" class="article-body"></div>
+  </section>
+
+  <div id="overlay" class="overlay hidden">
+    <div class="modal">
+      <h2><ruby>大切<rt>たいせつ</rt></ruby>なお<ruby>知<rt>し</rt></ruby>らせ</h2>
+      <p><ruby>今日<rt>きょう</rt></ruby> 18:00から メンテナンスが あります。</p>
+      <button id="close" class="btn"><ruby>閉<rt>と</rt></ruby>じる</button>
+    </div>
+  </div>
+</main>
+
+<script>
+const articles = {
+  release: {
+    title: '<ruby>新<rt>あたら</rt></ruby>しいリリース<ruby>情報<rt>じょうほう</rt></ruby>',
+    date: '9<ruby>月<rt>がつ</rt></ruby>23<ruby>日<rt>にち</rt></ruby>',
+    body: `
+      <p><ruby>新<rt>あたら</rt></ruby>しい<ruby>機能<rt>きのう</rt></ruby>を リリースしました。</p>
+      <p><ruby>今回<rt>こんかい</rt></ruby>のアップデートでは、ニュースを もっと <ruby>見<rt>み</rt></ruby>やすくしました。</p>
+      <p>これからも NewsBoard を よろしくお<ruby>願<rt>ねが</rt></ruby>いします。</p>
+    `
+  },
+  event: {
+    title: 'イベントのお<ruby>知<rt>し</rt></ruby>らせ',
+    date: '9<ruby>月<rt>がつ</rt></ruby><ruby>20日<rt>はつか</rt></ruby>',
+    body: `
+      <p><ruby>来週<rt>らいしゅう</rt></ruby>、<ruby>社内<rt>しゃない</rt></ruby>イベントを <ruby>行<rt>おこな</rt></ruby>います。</p>
+      <p><b><ruby>日時<rt>にちじ</rt></ruby>：</b>9<ruby>月<rt>がつ</rt></ruby>30<ruby>日<rt>にち</rt></ruby> 15:00〜17:00</p>
+      <p><b><ruby>場所<rt>ばしょ</rt></ruby>：</b>Meeting Room A</p>
+      <p><ruby>参加<rt>さんか</rt></ruby>できる<ruby>人<rt>ひと</rt></ruby>は、チームリーダーに <ruby>連絡<rt>れんらく</rt></ruby>してください。</p>
+    `
+  }
+};
+
+const newsList = document.getElementById('newsList');
+const articleView = document.getElementById('articleView');
+const articleTitle = document.getElementById('articleTitle');
+const articleDate = document.getElementById('articleDate');
+const articleBody = document.getElementById('articleBody');
+
+document.querySelectorAll('.news-item').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const article = articles[btn.dataset.id];
+    articleTitle.innerHTML = article.title;
+    articleDate.innerHTML = article.date;
+    articleBody.innerHTML = article.body;
+    newsList.classList.add('hidden');
+    articleView.classList.remove('hidden');
+  });
+});
+
+document.getElementById('backToList').addEventListener('click', () => {
+  articleView.classList.add('hidden');
+  newsList.classList.remove('hidden');
+});
+
+let opened = false;
+const noticeBtn = document.getElementById('noticeBtn');
+const overlay = document.getElementById('overlay');
+const closeBtn = document.getElementById('close');
+
+noticeBtn.addEventListener('click', () => {
+  if (opened) return;
+  overlay.classList.remove('hidden');
+  opened = true;
+});
+
+closeBtn.addEventListener('click', () => {
+  overlay.classList.add('hidden');
+});
+</script>
+</body></html>

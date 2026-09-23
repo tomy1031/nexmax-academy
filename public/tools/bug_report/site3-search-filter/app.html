@@ -1,0 +1,23 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><style>
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI","Noto Sans JP",sans-serif;color:#1f2937;background:#fff}
+header{padding:14px 22px;border-bottom:1px solid #e5e7eb;display:flex;justify-content:space-between;align-items:center}main{padding:22px}
+.card{border:1px solid #e5e7eb;border-radius:14px;padding:18px}button{font:inherit;cursor:pointer}.btn{border:0;border-radius:9px;padding:10px 14px;background:#111827;color:white;font-weight:700}
+input,select{font:inherit;padding:10px;border:1px solid #cfd5df;border-radius:9px}.muted{color:#667085}
+
+.controls{display:grid;grid-template-columns:1fr 150px auto;gap:8px}.products{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}.product{border:1px solid #e5e7eb;border-radius:12px;padding:13px}.emoji{font-size:34px}.cat{font-size:12px;background:#f1f5f9;padding:3px 7px;border-radius:999px}@media(max-width:650px){.controls,.products{grid-template-columns:1fr}}</style></head>
+<body><header><b>ShopNow</b><span><ruby>商品<rt>しょうひん</rt></ruby><ruby>検索<rt>けんさく</rt></ruby></span></header><main><div class="card">
+<div class="controls"><input id="q" placeholder="商品名の一部を入力"><select id="cat"><option value="all">すべて</option><option value="food">Food</option><option value="drink">Drink</option></select><button id="go" class="btn"><ruby>検索<rt>けんさく</rt></ruby></button></div>
+<p id="count" class="muted"></p><div id="products" class="products"></div></div></main><script>
+const data=[
+{name:'Chicken Rice',category:'food',emoji:'🍗'},
+{name:'Curry and Rice',category:'drink',emoji:'🍛'},
+{name:'Green Salad',category:'food',emoji:'🥗'},
+{name:'Iced Coffee',category:'drink',emoji:'☕'},
+{name:'Orange Juice',category:'drink',emoji:'🍊'},
+{name:'Milk Tea',category:'drink',emoji:'🧋'}
+];
+const q=document.getElementById('q'),cat=document.getElementById('cat'),box=document.getElementById('products'),count=document.getElementById('count');
+function render(list){box.innerHTML=list.map(p=>`<div class="product"><div class="emoji">${p.emoji}</div><h3>${p.name}</h3><span class="cat">${p.category}</span></div>`).join('');count.innerHTML=list.length+'<ruby>件<rt>けん</rt></ruby>';}
+go.onclick=()=>{const text=q.value.trim().toLowerCase();const c=cat.value;let list=data.filter(p=>(c==='all'||p.category===c)&&(!text||p.name.toLowerCase().startsWith(text)));render(list);};
+render(data);
+</script></body></html>

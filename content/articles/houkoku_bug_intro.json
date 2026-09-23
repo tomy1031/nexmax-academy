@@ -1,0 +1,409 @@
+{
+  "kind": "article",
+  "id": "houkoku_bug_intro",
+  "title": "バグ報告ゲーム",
+  "description": "Webサイトを テストして、見つけた バグを 報告する ゲームの 説明です。",
+  "furigana": [
+    [
+      "注文画面",
+      "ちゅうもんがめん"
+    ],
+    [
+      "管理画面",
+      "かんりがめん"
+    ],
+    [
+      "編集画面",
+      "へんしゅうがめん"
+    ],
+    [
+      "予約画面",
+      "よやくがめん"
+    ],
+    [
+      "商品検索画面",
+      "しょうひんけんさくがめん"
+    ],
+    [
+      "自己紹介",
+      "じこしょうかい"
+    ],
+    [
+      "会議室",
+      "かいぎしつ"
+    ],
+    [
+      "開始日",
+      "かいしび"
+    ],
+    [
+      "終了日",
+      "しゅうりょうび"
+    ],
+    [
+      "商品名",
+      "しょうひんめい"
+    ],
+    [
+      "問い",
+      "とい"
+    ],
+    [
+      "合わせ",
+      "あわせ"
+    ],
+    [
+      "合って",
+      "あって"
+    ],
+    [
+      "合計",
+      "ごうけい"
+    ],
+    [
+      "場合",
+      "ばあい"
+    ],
+    [
+      "入って",
+      "はいって"
+    ],
+    [
+      "入力",
+      "にゅうりょく"
+    ],
+    [
+      "出して",
+      "だして"
+    ],
+    [
+      "出て",
+      "でて"
+    ],
+    [
+      "今日",
+      "きょう"
+    ],
+    [
+      "一度",
+      "いちど"
+    ],
+    [
+      "一部",
+      "いちぶ"
+    ],
+    [
+      "予約",
+      "よやく"
+    ],
+    [
+      "仕事",
+      "しごと"
+    ],
+    [
+      "会社",
+      "かいしゃ"
+    ],
+    [
+      "保存",
+      "ほぞん"
+    ],
+    [
+      "内容",
+      "ないよう"
+    ],
+    [
+      "名前",
+      "なまえ"
+    ],
+    [
+      "商品",
+      "しょうひん"
+    ],
+    [
+      "報告",
+      "ほうこく"
+    ],
+    [
+      "大切",
+      "たいせつ"
+    ],
+    [
+      "実際",
+      "じっさい"
+    ],
+    [
+      "操作",
+      "そうさ"
+    ],
+    [
+      "数字",
+      "すうじ"
+    ],
+    [
+      "新しい",
+      "あたらしい"
+    ],
+    [
+      "未来",
+      "みらい"
+    ],
+    [
+      "本当",
+      "ほんとう"
+    ],
+    [
+      "検索",
+      "けんさく"
+    ],
+    [
+      "注文",
+      "ちゅうもん"
+    ],
+    [
+      "画面",
+      "がめん"
+    ],
+    [
+      "確認",
+      "かくにん"
+    ],
+    [
+      "管理",
+      "かんり"
+    ],
+    [
+      "編集",
+      "へんしゅう"
+    ],
+    [
+      "自分",
+      "じぶん"
+    ],
+    [
+      "自由",
+      "じゆう"
+    ],
+    [
+      "表示",
+      "ひょうじ"
+    ],
+    [
+      "説明",
+      "せつめい"
+    ],
+    [
+      "送信",
+      "そうしん"
+    ],
+    [
+      "金額",
+      "きんがく"
+    ],
+    [
+      "項目",
+      "こうもく"
+    ],
+    [
+      "回目",
+      "かいめ"
+    ],
+    [
+      "何",
+      "なに"
+    ],
+    [
+      "各",
+      "かく"
+    ],
+    [
+      "日",
+      "ひ"
+    ],
+    [
+      "上",
+      "うえ"
+    ],
+    [
+      "前",
+      "まえ"
+    ],
+    [
+      "次",
+      "つぎ"
+    ],
+    [
+      "数",
+      "かず"
+    ],
+    [
+      "点",
+      "てん"
+    ],
+    [
+      "声",
+      "こえ"
+    ],
+    [
+      "空",
+      "から"
+    ],
+    [
+      "回",
+      "かい"
+    ],
+    [
+      "押",
+      "お"
+    ],
+    [
+      "見",
+      "み"
+    ],
+    [
+      "書",
+      "か"
+    ],
+    [
+      "使",
+      "つか"
+    ],
+    [
+      "変",
+      "か"
+    ],
+    [
+      "外",
+      "はず"
+    ],
+    [
+      "送",
+      "おく"
+    ],
+    [
+      "進",
+      "すす"
+    ],
+    [
+      "選",
+      "えら"
+    ],
+    [
+      "閉",
+      "と"
+    ],
+    [
+      "開",
+      "ひら"
+    ],
+    [
+      "探",
+      "さが"
+    ],
+    [
+      "試",
+      "ため"
+    ],
+    [
+      "読",
+      "よ"
+    ],
+    [
+      "作",
+      "つく"
+    ],
+    [
+      "思",
+      "おも"
+    ],
+    [
+      "食",
+      "た"
+    ],
+    [
+      "決",
+      "き"
+    ],
+    [
+      "終",
+      "お"
+    ],
+    [
+      "知",
+      "し"
+    ],
+    [
+      "動",
+      "うご"
+    ],
+    [
+      "同",
+      "おな"
+    ],
+    [
+      "入",
+      "い"
+    ]
+  ],
+  "blocks": [
+    {
+      "kind": "hero",
+      "eyebrow": "🐞 バグ報告ゲーム",
+      "title": "バグ報告ゲーム",
+      "lead": "あなたは テスターです。プログラマーが 作った Webサイトを テストして、見つけた バグを 報告しましょう。",
+      "image": {
+        "src": "/img/articles/houkoku_bug/hero.webp",
+        "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This one is a teaching diagram: few large elements, generous spacing, each label sitting on a soft cream panel with a rounded border, arranged so the eye reads it in one pass.\n\nTHE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: you are the tester — you use a website that a programmer made, and look carefully for things that do not work. A young Southeast Asian IT student in their early twenties (the tester), neat short dark hair, light sky-blue polo shirt, friendly focused face. sits at a desk in a bright office, seen from a three-quarter angle, one hand on the mouse, leaning in toward a large monitor. The monitor FILLS a big part of the frame and shows a simple WEATHER web page: a city name 'Tokyo' at the top and a row of five day cards, each with a weather icon (sun, cloud, rain) and a temperature like '24°'. A big friendly cartoon ladybug-shaped 'bug' (a cute round beetle, clearly a symbol, not scary) peeks out from behind one of the day cards, and the tester has noticed it with a curious 'hmm?' face. On the desk: a notepad and a pen. In the background, blurred, a programmer colleague types at another desk. Label panels: テスター near the tester, プログラマー near the colleague. Screen values allowed: 'Tokyo', '24°', '22°', '19°'. No food, no shopping cart, no forms.",
+        "status": "done"
+      }
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "ゲームの 説明"
+    },
+    {
+      "kind": "paragraph",
+      "text": "各ページには、テストする Webサイトが 入っています。実際に クリックしたり、入力したりして、動きを 確認してください。"
+    },
+    {
+      "kind": "cards",
+      "tone": "step",
+      "columns": 3,
+      "items": [
+        {
+          "title": "使う",
+          "text": "Webサイトを 操作します。",
+          "image": {
+            "src": "/img/articles/houkoku_bug/step1_use.webp",
+            "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This one is a teaching diagram: few large elements, generous spacing, each label sitting on a soft cream panel with a rounded border, arranged so the eye reads it in one pass.\n\nTHE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: step 1 — really use the website: click buttons and type, like a real user. Close-up from over the shoulder of A young Southeast Asian IT student in their early twenties (the tester), neat short dark hair, light sky-blue polo shirt, friendly focused face. at a laptop. The laptop screen fills most of the frame and shows a simple WEATHER web page with two big city tabs 'Tokyo' and 'Osaka' at the top and one large weather card below (a sun icon and '24°'). The tester's finger clicks the 'Osaka' tab; a small click-ripple shows the press. A soft cream label panel at the top of the picture reads 使う. Screen values allowed: 'Tokyo', 'Osaka', '24°'. No food, no shopping cart, no plus or minus buttons.",
+            "status": "done"
+          }
+        },
+        {
+          "title": "見つける",
+          "text": "「おかしい」と 思う 動きを 探します。",
+          "image": {
+            "src": "/img/articles/houkoku_bug/step2_find.webp",
+            "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This one is a teaching diagram: few large elements, generous spacing, each label sitting on a soft cream panel with a rounded border, arranged so the eye reads it in one pass.\n\nTHE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: step 2 — notice something strange: the words and the picture on the screen do not match. Close-up of a laptop screen filling the frame, showing a WEATHER card: the city 'Osaka', the big word 'Sunny', and next to it a big RAIN CLOUD icon with falling raindrops (not a sun). The rain cloud icon is circled with a thick coral-red hand-drawn circle, and a big question mark floats next to it. In the lower corner, the face of A young Southeast Asian IT student in their early twenties (the tester), neat short dark hair, light sky-blue polo shirt, friendly focused face. looks surprised and puzzled. A soft cream label panel at the top of the picture reads 見つける. Screen values allowed: 'Osaka', 'Sunny', '24°'. No food, no shopping cart, no prices.",
+            "status": "done"
+          }
+        },
+        {
+          "title": "報告する",
+          "text": "どの画面で、何をしたか、どうなったか、本当はどうなるかを 書きます。",
+          "image": {
+            "src": "/img/articles/houkoku_bug/step3_report.webp",
+            "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This one is a teaching diagram: few large elements, generous spacing, each label sitting on a soft cream panel with a rounded border, arranged so the eye reads it in one pass.\n\nTHE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: step 3 — report the bug in 4 parts, in this order: which screen, what you did, what happened, what should happen. A young Southeast Asian IT student in their early twenties (the tester), neat short dark hair, light sky-blue polo shirt, friendly focused face. stands on the left and speaks politely to an older Japanese programmer colleague (short hair, glasses, navy cardigan) sitting at a desk on the right, who listens and nods. Between them, large and in the centre, floats a big cream report card with four numbered rows, top to bottom, each row a rounded box with a small icon: row 1 a screen icon with the words どの画面, row 2 a pointing-finger click icon with 何をしたか, row 3 an exclamation icon with どうなったか, row 4 a check-mark lightbulb icon with 本当は どうなるか. Circled numbers 1 to 4 at the left of each row. A soft cream label panel at the top of the picture reads 報告する.",
+            "status": "done"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "callout",
+      "tone": "point",
+      "text": "書いたら、🎤で 声に 出して 報告します。60点より 上に なると、次の 画面へ 進めます。"
+    }
+  ]
+}
