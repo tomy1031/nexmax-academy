@@ -50,6 +50,12 @@ export interface MapStage {
    * 学習者を一覧に放り出すことになるので、**そのステージのもの**へ直行させる。
    */
   wordStageIds: readonly string[];
+  /**
+   * カード表示に 出す 絵。**この ステージの 教材が すでに 使って いる 1枚**で、
+   * 選び方は `src/lib/stage-card-image.ts`（地図の 絵は `area.image` が 持つ）。
+   * 絵の 無い ステージも ある ので、無ければ カードは 字だけで 出す。
+   */
+  image?: string;
 }
 
 export interface MapStageContent {
@@ -91,7 +97,15 @@ export function stageStepNumber(stages: readonly Stage[], stageId: string): numb
   return index < 0 ? null : index + 1;
 }
 
-export function toMapStages(stages: readonly Stage[]): MapStage[] {
+/**
+ * `images` は ステージID → カードに 出す 絵。**引かなくても よい**——絵の 読み込みは
+ * 教材を ぜんぶ 開く ことに なる ので、地図の 台帳を 作るだけの 呼び手
+ *（scripts）には 要らない。
+ */
+export function toMapStages(
+  stages: readonly Stage[],
+  images?: ReadonlyMap<string, string>,
+): MapStage[] {
   return sortStages(stages).map((stage, index) => ({
     id: stage.id,
     number: index + 1,
@@ -107,6 +121,7 @@ export function toMapStages(stages: readonly Stage[]): MapStage[] {
       return href ? [{ id: content.ref, type: content.type, href }] : [];
     }),
     wordStageIds: stage.wordStageIds,
+    image: images?.get(stage.id),
   }));
 }
 
