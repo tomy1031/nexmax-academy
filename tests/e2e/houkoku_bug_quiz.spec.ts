@@ -148,7 +148,9 @@ test("バグ報告: 60点 以下は つぎへ 進めない・75点で 進める"
   await seed(2);
   await page.reload();
   await page.getByRole("button", { name: "つづきから" }).click();
-  await expect(page.getByText(/50点/).first()).toBeVisible();
+  // 点は 最初に 大きく「50 / 100」＋「もういちど」（2026-09-23 の 指定）
+  await expect(page.getByTestId("bug-score")).toHaveText(/50\s*\/ 100/);
+  await expect(page.getByText("もういちど", { exact: true })).toBeVisible();
   // 話した ことばが 出る（ルビが 語の 中に 入るので、かなの ところで 引く）
   await expect(page.getByText(/プラスを/).first()).toBeVisible();
   await expect(page.getByRole("button", { name: "つぎ →" })).toBeDisabled();
@@ -157,7 +159,8 @@ test("バグ報告: 60点 以下は つぎへ 進めない・75点で 進める"
   await seed(3);
   await page.reload();
   await page.getByRole("button", { name: "つづきから" }).click();
-  await expect(page.getByText(/75点/).first()).toBeVisible();
+  await expect(page.getByTestId("bug-score")).toHaveText(/75\s*\/ 100/);
+  await expect(page.getByText("OK", { exact: true })).toBeVisible();
   await expect(page.getByRole("button", { name: "つぎ →" })).toBeEnabled();
 });
 

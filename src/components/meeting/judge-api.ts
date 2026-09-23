@@ -21,6 +21,14 @@ import {
 } from "@/lib/meeting/asakai-judge";
 import { getGeminiKey } from "@/lib/profile";
 import {
+  BUG_REVIEW_SYSTEM,
+  BUG_REVIEW_TOOL,
+  buildBugReviewPrompt,
+  parseBugReview,
+  type BugReviewContext,
+  type BugReviewResult,
+} from "@/lib/quiz/bugreport";
+import {
   QUIZ_REVIEW_SYSTEM,
   QUIZ_REVIEW_TOOL,
   buildQuizReviewPrompt,
@@ -449,6 +457,89 @@ async function askQuizReview(
   }
 }
 
+export type BugReviewApiResult =
+  { ok: true; review: BugReviewResult; model: string } | { ok: false; reason: string };
+
+/** バグ報告の 採点ぜんたいの 上限（1回 張り直す ぶんを 見込む）。 */
+const BUG_OVERALL_TIMEOUT_MS = 45_000;
+
+/**
+ * バグ報告の 採点（もんだい `bugreport`）。
+ *
+ * ## 遅い・返らない ときは **新しい つなぎで 1回だけ やり直す**
+ * 2026-09-23 の 指定「時間が ある程度 経過したからか、返答が 遅い 場合に 回答を 表示して
+ * くれない」。先に 張って おいた つなぎ（欄が うまった ときの 温め）は、話し終える までに
+ * 何分も 空く ことが あり、その あいだに 相手側で 切れて いても こちらからは 生きて 見える。
+ * そこへ 頼むと 返事が 来ず、時間切れで 点が 出ない。だから 時間切れ・切断・崩れた 返事の
+ * ときは、その つなぎを 捨てて **鍵を 変えて 張り直し**、もう一度 頼む。
+ */
+export async function requestBugReview(
+  key: string,
+  context: BugReviewContext,
+  needsKanjiRetry: (result: BugReviewResult) => boolean,
+): Promise<BugReviewApiResult> {
+  const apiKey = getGeminiKey();
+  if (!apiKey) return { ok: false, reason: "noKey" };
+  if (SLOTS.bug.busy) return { ok: false, reason: "busy" };
+  SLOTS.bug.busy = true;
+  let gaveUp = false;
+  const work = (async (): Promise<BugReviewApiResult> => {
+    const first = await askBugReview(apiKey, key, context, needsKanjiRetry, () => gaveUp);
+    if (first.ok || gaveUp) return first;
+    if (!["timeout", "network", "upstream", "badShape"].includes(first.reason)) return first;
+    liveDebug("judge.bug", `retry after ${first.reason}`, true);
+    dropSlot(SLOTS.bug);
+    return askBugReview(apiKey, `${key}:retry`, context, needsKanjiRetry, () => gaveUp);
+  })().finally(() => {
+    SLOTS.bug.busy = false;
+  });
+  const result = await Promise.race([
+    work,
+    new Promise<BugReviewApiResult>((resolve) =>
+      setTimeout(() => {
+        gaveUp = true;
+        resolve({ ok: false, reason: "timeout" });
+      }, BUG_OVERALL_TIMEOUT_MS),
+    ),
+  ]);
+  liveDebug("judge.bug", result.ok ? `ok ${result.model}` : result.reason, !result.ok);
+  return result;
+}
+
+/** 欄が うまった ところで つなぎを 先に 張る（`warmQuizReview` と 同じ）。 */
+export async function warmBugReview(key: string): Promise<boolean> {
+  const apiKey = getGeminiKey();
+  if (!apiKey || SLOTS.bug.busy) return false;
+  if (SLOTS.bug.key === key && (SLOTS.bug.session?.alive() || SLOTS.bug.opening)) return true;
+  const opened = await openJudge(apiKey, "bug", key).catch(() => null);
+  return opened?.ok === true;
+}
+
+async function askBugReview(
+  apiKey: string,
+  key: string,
+  context: BugReviewContext,
+  needsKanjiRetry: (result: BugReviewResult) => boolean,
+  gaveUp: () => boolean,
+): Promise<BugReviewApiResult> {
+  const opened = await openJudge(apiKey, "bug", key);
+  if (!opened.ok) return { ok: false, reason: opened.reason };
+  if (gaveUp()) return { ok: false, reason: "timeout" };
+  const session = opened.session;
+  try {
+    let review = parseBugReview(await session.ask(buildBugReviewPrompt(context)));
+    if (review && needsKanjiRetry(review)) {
+      const again = parseBugReview(await session.ask(buildBugReviewPrompt(context, true)));
+      if (again) review = again;
+    }
+    if (!review) return { ok: false, reason: "badShape" };
+    return { ok: true, review, model: session.model };
+  } catch (error) {
+    if (SLOTS.bug.session === session) dropSlot(SLOTS.bug);
+    return { ok: false, reason: error instanceof JudgeError ? error.reason : "network" };
+  }
+}
+
 export type TalkApiResult =
   { ok: true; judgement: TalkJudgement; model: string } | { ok: false; reason: string };
 
@@ -579,7 +670,7 @@ interface JudgeSession {
  * 問題が 変わるまでは 同じ つなぎを 使い回して いた。
  */
 /** つなぎの 役（役ごとに 別の つなぎを 張る）。 */
-type SlotKind = "judge" | "cards" | "talk" | "asakai" | "review";
+type SlotKind = "judge" | "cards" | "talk" | "asakai" | "review" | "bug";
 
 interface Slot {
   /** つなぎの 中身（相手に 渡す 決まりと 道具）。 */
@@ -658,6 +749,15 @@ const SLOTS: Record<SlotKind, Slot> = {
   review: {
     system: QUIZ_REVIEW_SYSTEM,
     tool: QUIZ_REVIEW_TOOL,
+    temperature: 0.2,
+    session: null,
+    key: "",
+    opening: null,
+  },
+  /* バグ報告の 採点（部分点つき）。書き直しの 文も 作る ので `review` と 同じ 温度 */
+  bug: {
+    system: BUG_REVIEW_SYSTEM,
+    tool: BUG_REVIEW_TOOL,
     temperature: 0.2,
     session: null,
     key: "",

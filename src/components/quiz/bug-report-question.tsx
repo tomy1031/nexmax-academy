@@ -4,16 +4,17 @@ import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { RubyText } from "@/components/ruby-text";
 import { AiWaitingOverlay } from "@/components/meeting/ai-waiting";
-import { judgeFailNote, requestQuizReview, warmQuizReview } from "@/components/meeting/judge-api";
+import { judgeFailNote, requestBugReview, warmBugReview } from "@/components/meeting/judge-api";
 import { SpeakButton } from "@/components/meeting/speak-button";
 import { useLiveVoice } from "@/components/meeting/use-live-voice";
 import { aiReplyFurigana } from "@/lib/ai-kanji";
 import type { QuizDraft } from "@/lib/quiz/draft";
-import type { QuizReviewResult } from "@/lib/quiz/ai-review";
 import {
   BUG_REPORT_CHECKS,
   BUG_REPORT_FIELDS,
+  BUG_REPORT_ITEM_POINTS,
   BUG_REPORT_PASS,
+  BUG_REPORT_SHOW_ANSWER_AFTER,
   EMPTY_BUG_REPORT,
   bugReportFilled,
   bugReportPassed,
@@ -21,6 +22,8 @@ import {
   bugReportsPassed,
   bugReviewContext,
   composeBugReport,
+  readAloudMatches,
+  type BugReviewResult,
   type BugReportEntry,
   type BugReportFieldId,
   type BugReportQuestion,
@@ -28,7 +31,7 @@ import {
 import { getGeminiKey } from "@/lib/profile";
 import { buildFuriganaIndex, uncoveredKanji, type FuriganaIndex } from "@/lib/text/furigana";
 import { useAnswerCheckStore } from "./answer-check";
-import { BrushUp, CheckMark, CheckNote, NG_COLOR, OK_COLOR } from "./check-parts";
+import { BrushUp, NG_COLOR, OK_COLOR } from "./check-parts";
 
 /**
  * バグ報告（もんだい `bugreport`）— サイトを 使って、見つけた バグを 声で 報告する
@@ -93,6 +96,13 @@ const UI_FURIGANA = buildFuriganaIndex([
   ["出して", "だして"],
   ["書き直して", "かきなおして"],
   ["使えません", "つかえません"],
+  ["答え", "こたえ"],
+  ["読んで", "よんで"],
+  ["読めました", "よめました"],
+  ["読みましょう", "よみましょう"],
+  ["上", "うえ"],
+  ["下", "した"],
+  ["回", "かい"],
 ]);
 
 /** 聞くだけの つなぎ（朝礼の `LISTEN_ONLY` と 同じ 決め——相手は 何も 言わない）。 */
@@ -101,6 +111,15 @@ const LISTEN_ONLY = [
   "学生が 話し終わったら、**何も 言いません**。声でも 文字でも 返事を しません。",
   "しつもんも しません。あいづちも 打ちません。ただ 聞くだけです。",
 ].join("\n");
+
+/** 3回 だめで、答えを 見せて いる ところか。 */
+function answerShownFor(entry: BugReportEntry): boolean {
+  return (
+    (entry.tries ?? 0) >= BUG_REPORT_SHOW_ANSWER_AFTER &&
+    (entry.corrected ?? "") !== "" &&
+    !bugReportPassed(entry)
+  );
+}
 
 /**
  * 見かたの 鍵の 通し番号。**部品の 外に 置く**——問いを 行き来して 部品が 作り直されても
@@ -155,7 +174,8 @@ export function BugReportQuestionView({
   /** AIが 来なかった ときの ひとこと（バグごと）。 */
   const [failNotes, setFailNotes] = useState<Record<number, string>>({});
 
-  const voice = useLiveVoice({ listenOnly: true });
+  // 採点の あいだに 相手の 声（「はい」など）を 鳴らさない（2026-09-23 の 指定）
+  const voice = useLiveVoice({ listenOnly: true, muted: true });
   /** マイクが 使えない（許可が 無い・つながらない）——鍵が 無い ときと 同じく 止めない。 */
   const voiceBroken = voice.status === "notReady" || voice.status === "error";
   const noVoice = !hasKey || voiceBroken;
@@ -183,7 +203,15 @@ export function BugReportQuestionView({
        * 残すと、合格した あとに 欄を 何に 書き換えても「つぎ →」が 開いた ままに なり、
        * 先生の 記録にも 見て いない 報告の 横に 古い 点が 並ぶ（コード検収 2026-09-23）。
        */
-      const edited = { ...entry, [field]: value, spoken: "", score: null, items: [], polished: "" };
+      const edited = {
+        ...entry,
+        [field]: value,
+        spoken: "",
+        score: null,
+        items: [],
+        polished: "",
+        readAnswer: false,
+      };
       // 声を 聞けない 端末は、欄が うまれば 進める（理由は 画面に 出す）
       return { ...edited, skipped: noVoice };
     });
@@ -199,7 +227,7 @@ export function BugReportQuestionView({
   /* ぜんぶ 書けたら、見かたの つなぎを 先に 張る（押した あとの 待ちを 短く する） */
   const anyFilled = reports.some(bugReportFilled);
   useEffect(() => {
-    if (anyFilled && hasKey) void warmQuizReview(`${setId}:${question.id}:${reviewRound + 1}`);
+    if (anyFilled && hasKey) void warmBugReview(`${setId}:${question.id}:${reviewRound + 1}`);
   }, [anyFilled, hasKey, setId, question.id]);
 
   /* 話し終わった ことばを AIに 見せる */
@@ -212,11 +240,15 @@ export function BugReportQuestionView({
       const readable = (value: string) =>
         value === "" || uncoveredKanji(value, aiFurigana).length === 0;
       try {
-        const result = await requestQuizReview(
+        const result = await requestBugReview(
           `${setId}:${question.id}:${reviewRound}`,
           bugReviewContext(question, index, latest.current, spoken),
-          (one: QuizReviewResult) =>
-            !(readable(one.polished) && one.items.every((item) => readable(item.note))),
+          (one: BugReviewResult) =>
+            !(
+              readable(one.polished) &&
+              readable(one.corrected) &&
+              one.items.every((item) => readable(item.note))
+            ),
         );
         setFailNotes((prev) => ({
           ...prev,
@@ -229,24 +261,38 @@ export function BugReportQuestionView({
           latest.current.map((entry, i) => {
             if (i !== index) return entry;
             /*
-             * AIが 来なかった（混んで いる・時間切れ・使いすぎ）ときは **止めない**。
-             * 欄が うまって いれば 進める（朝礼と 同じ 決め）。止めると、鍵を 入れて いる
-             * 人ほど 先へ 行けなく なり、画面の「さきに すすみます」とも 食いちがう。
+             * AIが 来なかった（使いすぎ・つながらない）ときは **止めない**。
+             * 欄が うまって いれば 進める（朝礼と 同じ 決め）。時間切れは
+             * `requestBugReview` が 新しい つなぎで 1回 やり直して から ここへ 来る。
              */
             if (!result.ok) {
               return { ...entry, spoken, score: null, items: [], polished: "", skipped: true };
             }
             const items = result.review.items.map((item) => ({
-              ...item,
+              id: item.id,
+              points: item.points,
+              ok: item.points >= BUG_REPORT_ITEM_POINTS,
               note: readable(item.note) ? item.note : "",
             }));
+            const score = bugReportScore(items, result.review.understandable);
+            // 見せて いる 答え（3回 だめだった あと）。読んで いる 途中に 入れ替えない
+            const shown = answerShownFor(entry) ? (entry.corrected ?? "") : "";
+            const readAnswer = shown !== "" && readAloudMatches(shown, spoken);
+            const passedNow = score > BUG_REPORT_PASS || readAnswer;
+            const fresh = readable(result.review.corrected) ? result.review.corrected : "";
             return {
               ...entry,
               spoken,
               items,
-              score: bugReportScore(items),
+              score,
               polished: readable(result.review.polished) ? result.review.polished : "",
               skipped: false,
+              tries: passedNow ? (entry.tries ?? 0) : (entry.tries ?? 0) + 1,
+              corrected:
+                shown !== ""
+                  ? shown
+                  : fresh || entry.corrected || (question.bugs[index]?.model ?? ""),
+              readAnswer,
             };
           }),
         );
@@ -270,10 +316,20 @@ export function BugReportQuestionView({
     });
   }, [voice.lastUtterance, review]);
 
-  /* 聞き取りが 来なかった（何も 話さなかった）ときも、待ちは 数秒で ほどく */
+  /*
+   * 聞き取りが 来なかった（声が 届かなかった・つなぎが 切れて いた）ときも、待ちは
+   * 数秒で ほどき、**何が 起きたかを 言う**（黙って 何も 出ないのが いちばん 困る）。
+   */
   useEffect(() => {
     if (pendingFor === null) return;
-    const timer = window.setTimeout(() => setPendingFor(null), 6000);
+    const index = pendingFor;
+    const timer = window.setTimeout(() => {
+      setPendingFor(null);
+      setFailNotes((prev) => ({
+        ...prev,
+        [index]: "こえが とどきませんでした。もう いちど 🎤を おして、はなして ください。",
+      }));
+    }, 8000);
     return () => window.clearTimeout(timer);
   }, [pendingFor]);
 
@@ -462,6 +518,7 @@ function BugCard({
 }) {
   const passed = bugReportPassed(entry);
   const judged = entry.score !== null;
+  const showAnswer = answerShownFor(entry);
   return (
     <section
       id={id}
@@ -512,11 +569,32 @@ function BugCard({
         <p className="text-ink mt-1 text-base leading-loose font-bold whitespace-pre-line">
           <RubyText text={composeBugReport(entry)} index={furigana} />
         </p>
+        {/*
+          3回 うまく いかなかったら **答えの 文**を 出して、それを 読んで もらう
+          （2026-09-23 の 指定）。🎤の すぐ 上に 置く——見ながら 読める ように。
+        */}
+        {showAnswer && (
+          <div className="mt-3 rounded-2xl border-2 border-[#f5b73b] bg-white px-3 py-2.5">
+            <p className="text-[12px] font-black text-[#b7791f]">
+              <RubyText
+                text={`📖 ${BUG_REPORT_SHOW_ANSWER_AFTER}回 うまく いきませんでした。この 答えの 文を 🎤で 読んで ください。`}
+                index={UI_FURIGANA}
+              />
+            </p>
+            <p className="text-ink mt-1 text-base leading-loose font-bold whitespace-pre-line">
+              <RubyText text={entry.corrected ?? ""} index={aiFurigana} />
+            </p>
+          </div>
+        )}
         {hasKey && (
           <div className="mt-3">
             <p className="text-ink-soft mb-2 text-xs font-bold">
               <RubyText
-                text="この 文を 見ながら、🎤で 声に 出して 報告しましょう。"
+                text={
+                  showAnswer
+                    ? "上の 答えの 文を 見ながら、🎤で 読みましょう。"
+                    : "この 文を 見ながら、🎤で 声に 出して 報告しましょう。"
+                }
                 index={UI_FURIGANA}
               />
             </p>
@@ -531,7 +609,96 @@ function BugCard({
         </p>
       )}
 
-      {entry.spoken !== "" && (
+      {judged && (
+        <>
+          {/* **点を 最初に・大きく**（2026-09-23 の 指定「60 / 100 などの 表示で 大きく」） */}
+          <div
+            role="status"
+            className="mt-3 rounded-2xl border-2 bg-white px-4 py-3 text-center"
+            style={{ borderColor: passed ? OK_COLOR : NG_COLOR }}
+          >
+            <p className="text-ink font-black" data-testid="bug-score">
+              <span className="text-5xl">{entry.score}</span>
+              <span className="text-ink-soft text-2xl"> / 100</span>
+            </p>
+            <p className="mt-1">
+              <span
+                className="inline-block rounded-full px-4 py-1 text-lg font-black text-white"
+                style={{ background: passed ? OK_COLOR : NG_COLOR }}
+              >
+                {passed ? "OK" : "もういちど"}
+              </span>
+            </p>
+            <p className="text-ink mt-2 text-sm leading-relaxed font-bold">
+              <RubyText
+                text={
+                  passed
+                    ? entry.readAnswer
+                      ? "答えの 文を 読めました。次へ 進めます。"
+                      : "合格です。次へ 進めます。"
+                    : `${BUG_REPORT_PASS}点 以下なので、次へ 進めません。下の ヒントを 見て、もう一度 🎤で 話して ください。`
+                }
+                index={UI_FURIGANA}
+              />
+            </p>
+            {!passed && !showAnswer && (entry.tries ?? 0) > 0 && (
+              <p className="text-ink-soft mt-1 text-xs font-bold">
+                <RubyText
+                  text={`${BUG_REPORT_SHOW_ANSWER_AFTER}回 うまく いかないと、答えの 文が 出ます（いま ${entry.tries}回）。`}
+                  index={UI_FURIGANA}
+                />
+              </p>
+            )}
+          </div>
+
+          {entry.spoken !== "" && (
+            <div className="mt-3 rounded-2xl border-2 border-[#4fa8e8] bg-white px-3 py-2.5">
+              <p className="text-[11px] font-black text-[#2a7ab5]">
+                <RubyText text="🎤 あなたが 話した ことば" index={UI_FURIGANA} />
+              </p>
+              <p className="text-ink mt-1 text-sm leading-relaxed font-bold">
+                <RubyText text={entry.spoken} index={furigana} />
+              </p>
+            </div>
+          )}
+
+          <ul className="mt-3 grid gap-2">
+            {BUG_REPORT_CHECKS.map((check) => {
+              const hit = entry.items.find((item) => item.id === check.id);
+              if (!hit) return null;
+              const points = hit.points ?? (hit.ok ? BUG_REPORT_ITEM_POINTS : 0);
+              const full = points >= BUG_REPORT_ITEM_POINTS;
+              const color = full ? OK_COLOR : points > 0 ? "#f5b73b" : NG_COLOR;
+              return (
+                <li key={check.id} className="border-hairline rounded-xl border-2 bg-white p-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg">{full ? "⭕" : points > 0 ? "△" : "✗"}</span>
+                    <span className="text-ink min-w-0 flex-1 text-sm font-bold">
+                      <RubyText text={check.label} index={UI_FURIGANA} />
+                    </span>
+                    <span className="text-sm font-black" style={{ color }}>
+                      {points} / {BUG_REPORT_ITEM_POINTS}
+                    </span>
+                  </div>
+                  {hit.note !== "" && (
+                    <p className="text-ink mt-1 text-sm leading-relaxed font-bold">
+                      {!full && (
+                        <span className="font-black text-[#b7791f]">
+                          <RubyText text="💡 ヒント: " index={UI_FURIGANA} />
+                        </span>
+                      )}
+                      <RubyText text={hit.note} index={aiFurigana} />
+                    </p>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+          <BrushUp text={entry.polished} furigana={aiFurigana} />
+        </>
+      )}
+
+      {!judged && entry.spoken !== "" && (
         <div className="mt-3 rounded-2xl border-2 border-[#4fa8e8] bg-white px-3 py-2.5">
           <p className="text-[11px] font-black text-[#2a7ab5]">
             <RubyText text="🎤 あなたが 話した ことば" index={UI_FURIGANA} />
@@ -540,53 +707,6 @@ function BugCard({
             <RubyText text={entry.spoken} index={furigana} />
           </p>
         </div>
-      )}
-
-      {judged && (
-        <>
-          <ul className="mt-3 grid gap-2">
-            {BUG_REPORT_CHECKS.map((check) => {
-              const hit = entry.items.find((item) => item.id === check.id);
-              if (!hit) return null;
-              return (
-                <li key={check.id} className="border-hairline rounded-xl border-2 bg-white p-2">
-                  <div className="flex items-start gap-2">
-                    <CheckMark ok={hit.ok} />
-                    <span className="text-ink min-w-0 flex-1 text-sm font-bold">
-                      <RubyText text={check.label} index={UI_FURIGANA} />
-                    </span>
-                  </div>
-                  <CheckNote ok={hit.ok} note={hit.note} furigana={aiFurigana} />
-                </li>
-              );
-            })}
-          </ul>
-          <BrushUp text={entry.polished} furigana={aiFurigana} />
-          <div
-            role="status"
-            className="mt-3 rounded-2xl border-2 bg-white px-3 py-2.5"
-            style={{ borderColor: passed ? OK_COLOR : NG_COLOR }}
-          >
-            <p className="text-ink text-base font-black">
-              <RubyText
-                text={
-                  passed
-                    ? `⭕ ${entry.score}点。合格です。次へ 進めます。`
-                    : `✗ ${entry.score}点。${BUG_REPORT_PASS}点 以下なので、次へ 進めません。`
-                }
-                index={UI_FURIGANA}
-              />
-            </p>
-            {!passed && (
-              <p className="text-ink-soft mt-1 text-xs leading-relaxed font-bold">
-                <RubyText
-                  text="✗の ところを 見直して、欄を 書き直して、もう一度 🎤で 話して ください。"
-                  index={UI_FURIGANA}
-                />
-              </p>
-            )}
-          </div>
-        </>
       )}
     </section>
   );
