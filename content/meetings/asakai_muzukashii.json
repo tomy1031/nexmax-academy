@@ -580,7 +580,7 @@
           {
             "speakerId": "nyam",
             "text": "ニャムです。今日は、学生詳細APIで スキル名、点数、カテゴリを 返せるように しました。現在、学生・スキルデータ管理機能全体の 進捗は 75％です。明日は、AUPPと CADTの 実際の 学生データを 確認します。今のところ 問題は ありません。",
-            "audio": "/audio/meetings/asakai_muzukashii/s1-member-1-e7b2717e.wav"
+            "audio": "/audio/meetings/asakai_muzukashii/s1-member-1-1302193b.wav"
           }
         ],
         "closing": [
@@ -710,7 +710,7 @@
             "example": {
               "speakerId": "hendy",
               "text": "「明日は、実際の AUPPと CADTの 学生データを 使って、スキルグラフを 確認します。」",
-              "audio": "/audio/meetings/asakai_muzukashii/s1-ashita-ex-e17206a1.wav"
+              "audio": "/audio/meetings/asakai_muzukashii/s1-ashita-ex-03df436a.wav"
             }
           },
           {
@@ -944,7 +944,7 @@
           {
             "speakerId": "nyam",
             "text": "ニャムです。今日は、AUPPと CADTの 学生データを 確認しました。夕方、スキルデータを 調査して、スキル名の 表記に 揺れが あることと、古い スキルデータが 残っていることを 確認しました。現在、学生・スキルデータ管理機能全体の 進捗は 90％です。明日は、古い データを 整理して、最新の スキル点数に そろえます。",
-            "audio": "/audio/meetings/asakai_muzukashii/s2-member-1-f6fb573a.wav"
+            "audio": "/audio/meetings/asakai_muzukashii/s2-member-1-db77178e.wav"
           }
         ],
         "closing": [
@@ -998,7 +998,7 @@
             "example": {
               "speakerId": "hendy",
               "text": "「今日は、AUPPと CADTの 実際の 学生データを 使って、スキルグラフを 確認しました。学生詳細画面への 組み込みも 進めました。」",
-              "audio": "/audio/meetings/asakai_muzukashii/s2-kyou-ex-30863fb3.wav"
+              "audio": "/audio/meetings/asakai_muzukashii/s2-kyou-ex-50ce924e.wav"
             }
           },
           {
@@ -1732,7 +1732,7 @@
           {
             "speakerId": "nyam",
             "text": "ニャムです。今日は、最終テストで AUPPと CADTの 学生データを 確認しました。スキルデータも 問題 ありませんでした。現在、学生・スキルデータ管理機能全体の 進捗は 100％です。今回の 担当は 完了です。問題は ありません。",
-            "audio": "/audio/meetings/asakai_muzukashii/s4-member-1-44edd8ac.wav"
+            "audio": "/audio/meetings/asakai_muzukashii/s4-member-1-5bcd26f4.wav"
           }
         ],
         "closing": [
