@@ -179,7 +179,7 @@
         "sample": {
           "speakerId": "hendy",
           "text": "先週の 金曜日は、ABA Pay（カンボジアの 決済の サービス）の 仕様を 調べて、決済APIの 基本の ところを 作り始めました。今、決済バックエンド機能 ぜんたいの 進捗は 30%です。きょうは、ABA Payの 設定と、決済を 始める APIを 進めます。今の ところ、大きな 問題は ありません。",
-          "audio": "/audio/meetings/asakai_kantan/s0-sample-da68de59.wav"
+          "audio": "/audio/meetings/asakai_kantan/s0-sample-e1e432d8.wav"
         },
         "prompt": {
           "speakerId": "hendy",
@@ -243,7 +243,7 @@
             "example": {
               "speakerId": "hendy",
               "text": "「先週の 金曜日は、決済の 仕様を 調べて、決済の 画面と ABA Payの ボタンを 作りました。」",
-              "audio": "/audio/meetings/asakai_kantan/s0-kinou-ex-f739e0e1.wav"
+              "audio": "/audio/meetings/asakai_kantan/s0-kinou-ex-d5f5b9dc.wav"
             }
           },
           {
@@ -495,7 +495,7 @@
         "sample": {
           "speakerId": "hendy",
           "text": "きのうは、ABA Payの 設定と、決済を 始める APIを 進めました。テスト用の データで APIを 呼ぶ ところまで 確認できました。今、決済バックエンド機能 ぜんたいの 進捗は 50%です。きょうは、ABA Payから 返って くる 決済の けっかを 確認する ところを 作ります。今の ところ 問題は ありません。",
-          "audio": "/audio/meetings/asakai_kantan/s1-sample-546ee79c.wav"
+          "audio": "/audio/meetings/asakai_kantan/s1-sample-f363a474.wav"
         },
         "prompt": {
           "speakerId": "hendy",
@@ -522,7 +522,7 @@
           {
             "speakerId": "fujiki",
             "text": "藤木です。1つ お知らせが あります。松井社長から、決済の 機能に ついて 追加の お願いが ありました。ABA Payだけでは なく、ACLEDA Payも 使えるように したい そうです。",
-            "audio": "/audio/meetings/asakai_kantan/s1-closing-0-b264ce2f.wav"
+            "audio": "/audio/meetings/asakai_kantan/s1-closing-0-0382f7b6.wav"
           },
           {
             "speakerId": "hendy",
@@ -542,7 +542,7 @@
           {
             "speakerId": "hendy",
             "text": "決済フロントエンドは、ABA Payと ACLEDA Payを えらべるように 変えて ください。お願いします。",
-            "audio": "/audio/meetings/asakai_kantan/s1-closing-4-6c6086ad.wav"
+            "audio": "/audio/meetings/asakai_kantan/s1-closing-4-c2dc4ccb.wav"
           },
           {
             "speakerId": "fujiki",
@@ -652,7 +652,7 @@
             "example": {
               "speakerId": "hendy",
               "text": "「きょうは、ABA Payの 決済APIと つなぎ始めます。それから、処理中の 表示を 作ります。」",
-              "audio": "/audio/meetings/asakai_kantan/s1-kyou-ex-c5813de3.wav"
+              "audio": "/audio/meetings/asakai_kantan/s1-kyou-ex-9b752bd0.wav"
             }
           },
           {
@@ -845,7 +845,7 @@
         "sample": {
           "speakerId": "hendy",
           "text": "きのうは、ABA Payの 決済の けっかを 確認する ところを 作りました。ABA Pay がわの 設定も 進めました。今、決済バックエンド機能 ぜんたいの 進捗は 70%です。きょうは、決済が 成功したか 失敗したかを KhmerSabai へ 返す ところを 作ります。今の ところ 大きな 問題は ありません。",
-          "audio": "/audio/meetings/asakai_kantan/s2-sample-bc8dcf84.wav"
+          "audio": "/audio/meetings/asakai_kantan/s2-sample-e106b09b.wav"
         },
         "prompt": {
           "speakerId": "hendy",
@@ -912,7 +912,7 @@
             "example": {
               "speakerId": "hendy",
               "text": "「きのうは、ABA Payの APIと つなぎ始めました。ABA Payと ACLEDA Payを えらべる 画面も 作り始めました。」",
-              "audio": "/audio/meetings/asakai_kantan/s2-kinou-ex-f75172e1.wav"
+              "audio": "/audio/meetings/asakai_kantan/s2-kinou-ex-684d0ec6.wav"
             }
           },
           {
@@ -1217,7 +1217,7 @@
         "sample": {
           "speakerId": "hendy",
           "text": "きのうは、ABA Payの 決済の けっかを あつかう ところを 作りました。ABA Payの 設定も 進めました。今、決済バックエンド機能 ぜんたいの 進捗は 90%です。きょうは、バックエンドの 最後の テストを します。ABA Payの 設定が 思ったより 順調なので、予定より 早く 終わりそうです。",
-          "audio": "/audio/meetings/asakai_kantan/s3-sample-dfdba01a.wav"
+          "audio": "/audio/meetings/asakai_kantan/s3-sample-84310cb6.wav"
         },
         "prompt": {
           "speakerId": "hendy",
@@ -1249,12 +1249,12 @@
           {
             "speakerId": "fujiki",
             "text": "藤木です。ACLEDA Payに ついて お知らせします。ACLEDA Payは、開発だけでは なく、ACLEDA銀行との 接続や 設定も 要ります。松井社長に 確認しました。ACLEDA Payは 次の 回に します。今回は ABA Payを 予定どおり 仕上げて ください。",
-            "audio": "/audio/meetings/asakai_kantan/s3-closing-1-8d7f2972.wav"
+            "audio": "/audio/meetings/asakai_kantan/s3-closing-1-456c133f.wav"
           },
           {
             "speakerId": "hendy",
             "text": "ありがとう ございます。では、開発チームは ABA Payを 予定どおり 仕上げます。あしたの 午後、注文から 決済完了までを みんなで テストします。きょうの 朝礼は ここまでです。",
-            "audio": "/audio/meetings/asakai_kantan/s3-closing-2-a3f69929.wav"
+            "audio": "/audio/meetings/asakai_kantan/s3-closing-2-7bf7272c.wav"
           }
         ],
         "panels": [
@@ -1578,7 +1578,7 @@
           "done": {
             "speakerId": "hendy",
             "text": "分かりました。早めに 言って くれて ありがとう ございます。わたしの 決済バックエンド機能は 90%まで 進んで いて、ABA Payの 設定も 思ったより 順調です。予定より 早く 終わりそうなので、まず チームの 中で 仕事を 分け直しましょう。決済APIと つなぐ ところは、きょうから わたしが 対応します。あなたは、処理中の 表示と、成功・失敗の 画面の 最後の 確認を 進めて ください。スケジュールは のばしません。金曜日の テストは 予定どおり 行います。",
-            "audio": "/audio/meetings/asakai_kantan/s3-arrange-done-5944d692.wav"
+            "audio": "/audio/meetings/asakai_kantan/s3-arrange-done-9054f169.wav"
           },
           "missing": {
             "speakerId": "hendy",
@@ -1724,7 +1724,7 @@
         "sample": {
           "speakerId": "hendy",
           "text": "きのうは、ABA Payの バックエンドを 仕上げました。それから、フロントエンドとの APIを つなぐ ところも やりました。今、決済バックエンド機能 ぜんたいの 進捗は 100%です。きょうは、注文から 決済完了までの 結合テストを します。ABA Payに ついては、大きな 問題は ありません。",
-          "audio": "/audio/meetings/asakai_kantan/s4-sample-158f9755.wav"
+          "audio": "/audio/meetings/asakai_kantan/s4-sample-b695e508.wav"
         },
         "prompt": {
           "speakerId": "hendy",
@@ -1744,14 +1744,14 @@
           {
             "speakerId": "nyam",
             "text": "ニャムです。きのうは、結合テスト用の 注文データを 用意しました。PENDING（決済まち）、PAID、FAILED を 確認できる 形です。今、注文管理機能 ぜんたいの 進捗は 95%です。きょうは、ほんとうの ABA Payの けっかで 注文の 状態が 正しく 変わるか 確認します。今の ところ 問題は ありません。",
-            "audio": "/audio/meetings/asakai_kantan/s4-member-1-77bcf4a4.wav"
+            "audio": "/audio/meetings/asakai_kantan/s4-member-1-24c79a4a.wav"
           }
         ],
         "closing": [
           {
             "speakerId": "fujiki",
             "text": "藤木です。きのう お伝えした とおり、ACLEDA Payは 次の 回です。きょうは ABA Payを 仕上げましょう。",
-            "audio": "/audio/meetings/asakai_kantan/s4-closing-0-9ae8a903.wav"
+            "audio": "/audio/meetings/asakai_kantan/s4-closing-0-e1d73e05.wav"
           },
           {
             "speakerId": "hendy",
@@ -1771,7 +1771,7 @@
           {
             "speakerId": "hendy",
             "text": "あなたの 画面でも「決済が 終わりました」と 出て いました。失敗の ときの 画面も 確認できました。決済フロントエンド機能 ぜんたいの 進捗も 100%です。これで ABA Payに ついては 仕上がりです。1週間、ありがとう ございました。",
-            "audio": "/audio/meetings/asakai_kantan/s4-closing-4-c9ecd980.wav"
+            "audio": "/audio/meetings/asakai_kantan/s4-closing-4-8c646e1a.wav"
           }
         ],
         "panels": [
@@ -1881,7 +1881,7 @@
             "example": {
               "speakerId": "hendy",
               "text": "「きょうは、ABA Payの 結合テストと、最後の 確認を します。」",
-              "audio": "/audio/meetings/asakai_kantan/s4-kyou-ex-652b39e6.wav"
+              "audio": "/audio/meetings/asakai_kantan/s4-kyou-ex-bf4ca95f.wav"
             }
           },
           {
