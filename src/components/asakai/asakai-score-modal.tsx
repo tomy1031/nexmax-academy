@@ -17,7 +17,7 @@ import type { FuriganaIndex } from "@/lib/text/furigana";
  * 何を 直すのか**が 読めないので、学習者は 同じ ところで つまずき つづける。
  *
  * ## 3つとも 同じ 骨
- * 見出し（点）→ どのように 伝えられたか → 中身の ふりかえり → よかった こと／アドバイス。
+ * 見出し（点）→ あなたの 報告と ブラッシュアップ → 中身の ふりかえり → よかった こと／アドバイス。
  * 骨を そろえるのは、**同じ ものを 同じ 場所で 読める**ように する ため
  *（画面ごとに 並びが 変わると、毎回 探す ところから 始まる）。
  *
@@ -132,14 +132,11 @@ function ScoreHead({
   lead,
   score,
   note,
-  hasKey,
   index,
 }: {
   lead: string;
   score: ScoreView;
   note?: ReactNode;
-  /** 端末に AIの 鍵が あるか（無い ときと 届かなかった ときで 理由が ちがう）。 */
-  hasKey: boolean;
   index: FuriganaIndex;
 }) {
   const axes = [
@@ -193,29 +190,34 @@ function ScoreHead({
                 </>
               )}
             </p>
+            {/*
+              **「—」の 横に 字を 置く**（R5 検収 2026-09-23）。「—」だけだと
+              **0点に 見える**——仕組みの ことば（AI・鍵）を 使わずに、
+              見て いない ことだけを 言う。同じ 言い回しが すでに
+              聞き返しの ポップアップに ある（「日本語: 見て いません」）。
+            */}
+            {axis.value === null ? (
+              <p className="text-ink-faint text-[10px] leading-[1.9] font-bold">
+                <Ruby text="まだ 見て いません" index={index} />
+              </p>
+            ) : null}
           </div>
         ))}
       </div>
-      <p className="text-ink-soft mt-2 text-[11px] leading-[1.9] font-bold">
-        <Ruby text="合格に 効くのは 報告の 内容です。" index={index} />
-      </p>
-      {score.total === null ? (
-        <p className="text-ink-soft mt-1 text-[11px] leading-[1.9] font-bold">
-          <Ruby
-            text={
-              hasKey
-                ? "いまは AIの 見かたが 届きませんでした。内容の 点だけ 出します。"
-                : "伝わりやすさと 仕事の 日本語は、AIの 鍵が ある ときに 出ます。"
-            }
-            index={index}
-          />
-        </p>
-      ) : null}
+      {/*
+        **「合格に 効くのは 報告の 内容です。」と「AIの 見かたが 届きませんでした」は 出さない**
+        （2026-09-23 の 指定「意味が わかりません。AIの みかた？ 正直 混乱するので 表示不要」）。
+
+        仕組みの ことば（AI・鍵・見かた）は 学習者の ことばでは ない。点の 由来を
+        断る ための 文だったが、**読んだ 人が いちばん 先に つまずく 文**に なって いた。
+        見て いない ものさしは 上の 箱の「—」が そのまま 言う（0点とは 書かない）ので、
+        「見て いない ものに 0点を つけない」（規律1）は そこで 守れて いる。
+      */}
     </div>
   );
 }
 
-/** 「どのように 伝えられたか」の 帯。 */
+/** 「項目ごとの けっか」の 帯（その日の おわり。ここに ブラッシュアップは 出ない）。 */
 function MarkRow({
   rows,
   words,
@@ -227,7 +229,7 @@ function MarkRow({
 }) {
   return (
     <div className="mt-3">
-      <Cap text="どのように 伝えられたか" index={index} />
+      <Cap text="項目ごとの けっか" index={index} />
       <div className="mt-1 grid grid-cols-2 gap-2 sm:grid-cols-4">
         {rows.map((row) => {
           const face = MARK_FACE[row.mark];
@@ -253,7 +255,7 @@ function sameText(a: string, b: string): boolean {
 }
 
 /**
- * **項目ごとの まとめ**（「どのように 伝えられたか」を 表に する）
+ * **項目ごとの まとめ**（「あなたの 報告と ブラッシュアップ」の 表）
  *
  * 2026-09-19 の 指定「ブラッシュアップは 項目ごとに まとめて」「表に まとめて」
  *「まだです の ところも 表で 一括で まとめて」。前は 札 4枚・ブラッシュアップ（1本）・
@@ -289,7 +291,7 @@ function ItemTable({
     : undefined;
   return (
     <div className="mt-3">
-      <Cap text="どのように 伝えられたか" index={index} />
+      <Cap text="あなたの 報告と ブラッシュアップ" index={index} />
       <table className="border-hairline mt-1 w-full border-collapse overflow-hidden rounded-xl border bg-white text-left">
         <thead>
           <tr className="bg-panel-tint text-ink-soft text-[10px] leading-[1.9] font-black">
@@ -474,7 +476,6 @@ export function ReportScoreModal({
   readLog,
   nextLabel,
   utterance,
-  hasKey,
   index,
   onClose,
 }: {
@@ -488,7 +489,6 @@ export function ReportScoreModal({
   nextLabel: string;
   /** 学習者が いま 言った こと（そのまま 出す）。 */
   utterance: string;
-  hasKey: boolean;
   index: FuriganaIndex;
   onClose: () => void;
 }) {
@@ -514,7 +514,6 @@ export function ReportScoreModal({
       <ScoreHead
         lead="いまの 報告"
         score={score}
-        hasKey={hasKey}
         index={index}
         note={
           left > 0 ? (
@@ -529,9 +528,17 @@ export function ReportScoreModal({
         }
       />
 
-      {/* 言った ことは **1回だけ** まるごと 出す（表の 中は 項目ごとの ところだけ）。 */}
+      {/*
+        言った ことは **1回だけ** まるごと 出す（表の 中は 項目ごとの ところだけ）。
+
+        名前は「あなたの 報告」では なく **「言った ことば ぜんぶ」**（R5 検収 2026-09-23）。
+        下の 表が「あなたの 報告と ブラッシュアップ」に なった ので、似た 名前が
+        3つ 縦に 並び、**次の 一手（💡ヒント・✨ブラッシュアップ）の 入った 箱**が
+        上と 同じ ものに 見えて 読み飛ばされる。上＝まるごと／下＝項目ごと、と
+        名前だけで 分ける。
+      */}
       <div className="border-hairline bg-panel mt-3 rounded-xl border px-3 py-2">
-        <Cap text="あなたの 報告" index={index} />
+        <Cap text="言った ことば ぜんぶ" index={index} />
         <p className="text-navy mt-0.5 text-sm leading-[1.9] font-bold">
           <Ruby text={utterance} index={index} />
         </p>
@@ -565,7 +572,6 @@ export function ProbeScoreModal({
   advice,
   score,
   rows,
-  hasKey,
   nextLabel,
   rest,
   judged,
@@ -589,7 +595,6 @@ export function ProbeScoreModal({
   score: ScoreView;
   /** その日の 札 ぜんぶ（報告の あとの ポップアップと 同じ 表を 出す）。 */
   rows: readonly RowView[];
-  hasKey: boolean;
   /** とじる ボタンの 字（つぎの しつもん／みんなの 報告を 聞く）。 */
   nextLabel: string;
   /** まだ ⭕ に なって いない 札の 名前（無ければ 空）。 */
@@ -628,7 +633,6 @@ export function ProbeScoreModal({
       <ScoreHead
         lead="ここまでの 報告"
         score={score}
-        hasKey={hasKey}
         index={index}
         note={
           left > 0 ? (
@@ -742,7 +746,6 @@ export function DayScoreModal({
   good,
   advice,
   nextLabel,
-  hasKey,
   index,
   onRetry,
   onClose,
@@ -768,7 +771,6 @@ export function DayScoreModal({
   advice: string;
   /** とじる ボタンの 字（「木曜日へ 進む ▶」「週の けっかを 見る ▶」）。 */
   nextLabel: string;
-  hasKey: boolean;
   index: FuriganaIndex;
   /** もう いちど 報告する（その日を はじめから）。 */
   onRetry: () => void;
@@ -793,7 +795,6 @@ export function DayScoreModal({
       <ScoreHead
         lead={`${dayName}の 報告`}
         score={score}
-        hasKey={hasKey}
         index={index}
         note={
           shut === 0 ? (
@@ -810,10 +811,13 @@ export function DayScoreModal({
 
       {score.clarity !== null ? (
         <p className="text-ink-soft mt-1 text-[11px] leading-[1.9] font-bold">
-          <Ruby
-            text="伝わりやすさと 仕事の 日本語は、AIが さいごに 見た ときの 点です。"
-            index={index}
-          />
+          {/*
+            **消さずに 言い換える**（R5 検収 2026-09-23）。この 文は「1日 ぜんぶの
+            点では ない」と 断って いる ので、消すと 1日ぶんの 評価と 読める
+            （`dayAi` は さいごの 空で ない 点を 持ち越す）。仕組みの ことば
+            （AI・鍵・見かた）だけを 落とす。
+          */}
+          <Ruby text="この 2つは、さいごの こたえを 見た 点です。" index={index} />
         </p>
       ) : null}
 

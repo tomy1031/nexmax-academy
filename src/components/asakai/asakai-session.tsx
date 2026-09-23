@@ -69,6 +69,7 @@ import {
 } from "@/lib/text/furigana";
 import {
   applyUtterance,
+  attributeUtterance,
   initialPanelStates,
   nextProbePanel,
   type PanelState,
@@ -230,15 +231,22 @@ const UI_FURIGANA: readonly (readonly [string, string])[] = [
   ["項目ごとに", "こうもくごとに"],
   ["項目ごとの", "こうもくごとの"],
   ["項目", "こうもく"],
-  ["効くのは", "きくのは"],
   /*
-   * 鍵が 無い／AIが 返さなかった ときの 説明文の 字。**鍵が ある 道は
-   * e2e の 裸漢字検査を 通らない**（デモモードしか 走らない）ので、
-   * ここで 持って いないと 気づけない（2026-09-17 の R5 再検収）。
+   * **「あなたの 発言」は 画面が 自分で 出す 字**（表の 中の 項目ごとの こたえ）。
+   * 2026-09-23 に AIの 鍵が 無くても 出す ように した ら、e2e の 裸漢字検査が
+   * 「発」を 拾った——教材の 辞書に ["言","い"] が ある ので 「言」だけ 読まれて
+   * 「発」が 裸に なって いた。ことばで 持って 割られない ように する。
    */
-  ["点だけ", "てんだけ"],
+  ["発言", "はつげん"],
+  /*
+   * **送りがなで 読みが 変わる ので、ことばで 持つ**（2026-09-23）。
+   * 1字の ["見","み"] だけでは 足りず、["言","い"] は 「言った」を
+   *「いった」と 読ませられない。画面が 自分で 出す 字は ここで 覆う。
+   */
+  ["見て", "みて"],
+  ["見た", "みた"],
+  ["言った", "いった"],
   ["点", "てん"],
-  ["届きませんでした", "とどきませんでした"],
   ["足して", "たして"],
   ["伝わりやすさ", "つたわりやすさ"],
   ["伝わりました", "つたわりました"],
@@ -485,6 +493,15 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
    * 1本で ぜんぶ 言えた 日は その日の 評価しか 出ない ので、ここから 引く。
    */
   const [dayItems, setDayItems] = useState<Readonly<Record<string, AsakaiItem>>>({});
+
+  /**
+   * **その日の 項目ごとの「あなたの 発言」**（札の id → その 札を 開けた 学習者の 1文）。
+   *
+   * 2026-09-23 の 指定で 表に 出す ように なった もの。1本ごとに 消えると、
+   * 聞き返しの ポップアップで **前の ターンで 言えた 札が 空**に なる——同じ 表が
+   * ✅ と「—」を 並べて、何を 言って ✅ に なったのかが 読めない。
+   */
+  const [dayMine, setDayMine] = useState<Readonly<Record<string, string>>>({});
 
   /**
    * **その日 学習者が 送った ことば ぜんぶ**（その日の 評価に「あなたの 回答」として 並べる）。
@@ -835,6 +852,22 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
       const target = nextProbePanel(panels, step.states);
 
       /*
+       * **項目ごとの「あなたの 発言」を その日ぶん ためる**（2026-09-23 の 指定）。
+       * 1本ごとに 消すと、聞き返しの ポップアップで 前の ターンに 言えた 札が
+       * 空に なる——同じ 表に ✅ と「—」が 並んで しまう。
+       *
+       * **差し戻した ターン（作業記録の 読み上げ）は ためない。** 記録は 正しい
+       * ことばで 書かれて いる ので 文が 札に 当たって しまい、前の ターンで
+       * 自分の ことばで 言えた 1文が **記録の 丸写しで 上書き**される。
+       */
+      if (!step.readLog) {
+        setDayMine((prev) => ({
+          ...prev,
+          ...attributeUtterance({ utterance: text, panels, states: step.states }),
+        }));
+      }
+
+      /*
        * **作業記録を そのまま 読み上げた ぶんは 数えない**（2026-09-14）。
        *
        * 罰では なく 言い直し。司会は 教材の あたまと 同じ ことばで 言う
@@ -937,8 +970,16 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
       };
 
       /** その日の 札を 1枚ずつ「どう 伝わったか」に する。 */
-      const viewRows = (final: readonly PanelState[]): RowView[] =>
-        panels.map((panel) => {
+      const viewRows = (final: readonly PanelState[]): RowView[] => {
+        /*
+         * **項目ごとの「あなたの 発言」を、この 1本から 引く**（2026-09-23 の 指定）。
+         * AIの 見立てが あれば そちらが 正（中身で 見る）。無い 日は 照合で 引く ので、
+         * **鍵が 無い 端末でも 表に 自分の ことばが 出る**。
+         */
+        const mine = step.readLog
+          ? {}
+          : attributeUtterance({ utterance: text, panels, states: final });
+        return panels.map((panel) => {
           const state = final.find((one) => one.id === panel.id);
           const asked = attempts[panel.id] ?? 0;
           const data = scene.panels.find((one) => one.id === panel.id);
@@ -948,6 +989,11 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
             wrongNumber: wrongAll.includes(panel.id),
           });
           const item = itemOf(panel.id);
+          /* AIの 見立て → この 1本の 照合 → その日 前の ターンで 引いた ぶん の 順。 */
+          const said =
+            [item?.said, mine[panel.id], dayMine[panel.id]].find(
+              (one) => one !== undefined && one !== "",
+            ) ?? "";
           return {
             id: panel.id,
             label: panel.label,
@@ -968,8 +1014,8 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
             advice: adviceFor(panel, state, data?.followups[0]?.text ?? ""),
             /* 練習の 途中では **見本を 出さない**（写して 終わりに なる）。 */
             example: "",
-            /* その 項目の ところ（AIが 分けた ときだけ。鍵が 無ければ 空）。 */
-            said: item?.said ?? "",
+            /* その 項目の ところ（AIが 分けた ぶん。無ければ 照合で 引いた 1文）。 */
+            said,
             /*
              * **中身が 合った 札にだけ** ブラッシュアップを 出す（2026-09-19 の 指定）。
              * AIは 学生の 数の まま 直すので、まちがった 数を 直した 文に すると
@@ -980,6 +1026,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
             hint: hintOf((data?.followups ?? []).map((one) => one.text)),
           };
         });
+      };
 
       const viewScore = (final: readonly PanelState[]): ScoreView => {
         const content = contentScore(final.filter((one) => one.full).length, panels.length);
@@ -1179,6 +1226,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
       probeLog,
       logLines,
       dayAi,
+      dayMine,
       say,
       finishScene,
     ],
@@ -1387,6 +1435,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
       setProbeLog([]);
       setDayAi({ clarity: null, japanese: null, good: "", advice: "" });
       setDayItems({});
+      setDayMine({});
       setAskedText("");
       setDayOpen(false);
       setPendingTail([]);
@@ -1414,8 +1463,6 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
 
   if (!asakai || !scene) return null;
 
-  /* 点が 出ない 理由を 分ける ため、鍵の 有無を 見て おく（値は 使わない）。 */
-  const hasKey = getGeminiKey() !== "";
   const last = lines[lines.length - 1];
   /** 相手の さいごの ことば（自分の 発話は とばす）。 */
   const lastSaid = [...lines].reverse().find((line) => !line.self);
@@ -1953,7 +2000,6 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
             advice={judge.advice}
             score={judge.score}
             rows={judge.rows}
-            hasKey={hasKey}
             nextLabel={judge.sceneOver ? "みんなの 報告を 聞く ▶" : "つぎの しつもんを 聞く ▶"}
             rest={judge.shut.join("／")}
             index={index}
@@ -1974,7 +2020,6 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
             readLog={judge.readLog}
             nextLabel={judge.sceneOver ? "みんなの 報告を 聞く ▶" : "報告を つづける ▶"}
             utterance={judge.utterance}
-            hasKey={hasKey}
             index={index}
             onClose={closeJudge}
           />
@@ -2037,7 +2082,6 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
               ? "今週の けっかを 見る ▶"
               : `${DAY_NAME[asakai.scenes[sceneAt + 1]?.day ?? "fri"]}へ 進む ▶`
           }
-          hasKey={hasKey}
           index={index}
           /* もう いちど 報告する … その日を はじめから（けっかは 上書きされる）。 */
           onRetry={() => {

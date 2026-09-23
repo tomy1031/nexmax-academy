@@ -62,7 +62,6 @@ function render(rows: readonly RowView[], readLog = false): string {
       readLog={readLog}
       nextLabel="報告を つづける ▶"
       utterance="きのう けっさい がめん つくった。しんちょく20%。今の ところ 問題は ありません。"
-      hasKey
       index={index}
       onClose={() => undefined}
     />,
@@ -79,7 +78,9 @@ function rowsText(html: string): string[] {
 describe("報告の ポップアップの 表", () => {
   it("1つの 表に 4項目 ぜんぶ（まだの 札も）", () => {
     const html = render(ROWS);
-    expect(html).toContain("どのように 伝えられたか");
+    /* 2026-09-23 の 指定で「どのように 伝えられたか」から 名前を 変えた。 */
+    expect(html).toContain("あなたの 報告と ブラッシュアップ");
+    expect(html).not.toContain("どのように 伝えられたか");
     expect(html.match(/<table/gu)).toHaveLength(1);
     expect(rowsText(html)).toHaveLength(4);
   });
@@ -112,6 +113,17 @@ describe("報告の ポップアップの 表", () => {
     /* **短く 1行**（2026-09-20 の 指定）。何を 聞かれるかは 司会が 声で 言う。 */
     expect(text[1]).toContain("👉 つぎに 聞かれます");
     expect(text[1]).not.toContain("パーセントで お願いします");
+  });
+
+  it("点の 見出しに 仕組みの ことばを 出さない（2026-09-23 の 指定）", () => {
+    /*
+     * 「合格に 効くのは 報告の 内容です。」「AIの 見かたが 届きませんでした」は
+     * 学習者の ことばでは ない——読んだ 人が いちばん 先に つまずく 文だった。
+     */
+    const html = render(ROWS);
+    expect(html).not.toContain("合格に 効く");
+    expect(html).not.toContain("AIの 見かた");
+    expect(html).not.toContain("AIの 鍵");
   });
 
   it("作業記録の 読み上げを 差し戻した ターンは ヒントも 👉 も 出さない", () => {
