@@ -241,27 +241,38 @@ jobs:
         if: env.AUTO == 'true' && steps.need.outputs.needed != 'true'
         run: echo "::notice::本番は 最新です。何も せずに 終わります（KV 0件）。"
 
-      # 足りないときは「いま登録されている名前」も出す。
-      # 名前の打ちまちがい（CLOUDFLARE_TOKEN / SUPABASE_URL など）や、Variables 側・
-      # Environment 側へ入れてしまった場合、「足りません」だけでは原因が見えないため。
-      # **出すのは名前だけ**（`keys[]`）。値は1文字も出さない。
+      # 足りないときは、**このワークフローが読む名前**をそのまま並べて、
+      # 登録してある名前と見くらべられるようにする。名前の打ちまちがい
+      #（CLOUDFLARE_TOKEN / SUPABASE_URL など）や、Variables 側・リポジトリ直下へ
+      # 入れてしまった場合、「足りません」だけでは原因が見えないため。
+      #
+      # **`toJSON(secrets)` を使わない**（2026-09-23）。Secret をまとめて1つの環境変数へ
+      # 流し込む書き方は、GitHub の「怪しいワークフロー」検査（2026-07-28 導入・public
+      # リポジトリに自動で効き、切る設定は無い）が**持ち出しと見なす形の典型**。
+      # 9/22 にこのファイルを直した14分後から、ランが全部 `action_required` で止まり、
+      # 人がブラウザで承認するまで1本も動かなくなった（docs/deploy.md §0.16）。
+      # 登録済みの名前を一覧するのは「あれば親切」なだけなので落とす。
+      # **ここに `toJSON(secrets)` を戻さない。**
       - name: 鍵と公開値がそろっているか
         if: env.AUTO != 'true' || steps.need.outputs.needed == 'true'
         env:
           CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
           SUPABASE_ANON: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
-          SECRET_NAMES: ${{ toJSON(secrets) }}
         run: |
           missing=""
           [ -n "$CF_TOKEN" ] || missing="$missing CLOUDFLARE_API_TOKEN"
           [ -n "$SUPABASE_URL" ] || missing="$missing NEXT_PUBLIC_SUPABASE_URL"
           [ -n "$SUPABASE_ANON" ] || missing="$missing NEXT_PUBLIC_SUPABASE_ANON_KEY"
           if [ -n "$missing" ]; then
-            echo "── いま このリポジトリに 登録されている Secret の名前（値は出しません）──"
-            printf '%s' "$SECRET_NAMES" | jq -r 'keys[]' | sed 's/^/  - /'
+            echo "── ここが読む名前（1文字でも違うと 見つかりません）──"
+            echo "  - CLOUDFLARE_API_TOKEN"
+            echo "  - NEXT_PUBLIC_SUPABASE_URL"
+            echo "  - NEXT_PUBLIC_SUPABASE_ANON_KEY"
+            echo "  置き場: Settings → Environments → **Preview**"
+            echo "  （リポジトリ直下の Secrets とは別物。ジョブの environment: Preview から見える側）"
             echo "───────────────────────────────────────────────"
-            echo "::error::Secrets が足りません:$missing — 名前が1文字でも違うと 見つかりません。上の一覧と 見くらべてください。"
+            echo "::error::Secrets が足りません:$missing — 上の名前と 見くらべてください。"
             exit 1
           fi
           echo "✓ 鍵と公開値はそろっています"
@@ -367,8 +378,11 @@ jobs:
         if: env.AUTO != 'true' || steps.need.outputs.needed == 'true'
         env:
           DEPLOY_SHA: ${{ steps.rev.outputs.sha }}
+          # ${{ }} を run: の中に直に書かない（式の中身がシェルの一部になる形は、
+          # 上と同じ「怪しいワークフロー」検査が定番で叩く）。env 経由で渡す。
+          TARGET: ${{ github.event.inputs.target }}
         run: |
-          if [ "$AUTO" = "true" ] || [ "${{ github.event.inputs.target }}" = "production" ]; then
+          if [ "$AUTO" = "true" ] || [ "$TARGET" = "production" ]; then
             url="https://academy.nexmax.workers.dev"
           else
             url="https://staging-academy.nexmax.workers.dev"
