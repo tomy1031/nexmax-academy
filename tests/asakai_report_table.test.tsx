@@ -158,9 +158,57 @@ describe("報告の ポップアップの 表", () => {
     expect(html).not.toContain("/map/settings");
   });
 
-  it("知らない 理由でも 黙らない（既定の 1行）", () => {
+  it("知らない 理由でも 黙らない（共有の 台帳の 既定へ 寄せる）", () => {
     const html = render(ROWS, false, "なぞ");
-    expect(html).toContain("返事が 届きませんでした");
+    expect(html).toContain("Google から ");
+    expect(html).toContain("が ありませんでした");
+  });
+
+  /*
+   * **キーが 壊れて いる 側も 言い分ける**（2026-09-23 の code-critic 検収）。
+   *
+   * 朝礼だけの 台帳に 書き写して いた ころ、期限切れ・IP制限・API が OFF・
+   * VPN（場所）の 7つが 落ちて いて、その 学習者は
+   *「返事が 届きませんでした。もう いちど 報告すると 出ます。」を 永久に 読む
+   * ことに なって いた——**ユーザーが 報告して きたのと 同じ 型の 故障**。
+   * 文は `src/lib/ai/key-check.ts` の 台帳（型で 全部の 名前を 要求する）から 引く。
+   */
+  it("キーが 期限切れ・制限つきの ときも 名前で 言う", () => {
+    const expired = render(ROWS, false, "keyExpired");
+    expect(expired).toContain("期限");
+    expect(expired).not.toContain("もう いちど 報告すると");
+    /* 書きかえれば 直る ので、せっていへ 送る。 */
+    expect(expired).toContain("/map/settings");
+
+    const restricted = render(ROWS, false, "keyRestricted");
+    expect(restricted).toContain("制限");
+    /* 先生に 頼む しか ない 理由には 行き先を 出さない（押しても 直せない）。 */
+    expect(restricted).not.toContain("/map/settings");
+  });
+
+  it("VPN（場所）で はじかれた ときは、キーの 話を しない", () => {
+    const html = render(ROWS, false, "locationNotSupported");
+    expect(html).toContain("VPN");
+    expect(html).not.toContain("/map/settings");
+  });
+
+  /*
+   * **返事は 届いたのに 数が 欠けた 回**（同検収）。前は 理由が null の まま
+   * 点だけ「—」で、ユーザーが 報告して きた 画面と 一字一句 同じだった。
+   */
+  it("AIが 点を つけなかった 回も 理由を 出す", () => {
+    const html = render(ROWS, false, "badScore");
+    expect(html).toContain("AIが 点を つけませんでした");
+  });
+
+  /*
+   * **何回 報告しても 出ない 理由に「もう いちど」と 言わない**（同検収）。
+   * できない ことを つぎの 一手に しない。
+   */
+  it("見る ところが 無い 日は、先生へ 送る", () => {
+    const html = render(ROWS, false, "noFacts");
+    expect(html).toContain("先生に つたえて ください");
+    expect(html).not.toContain("もう いちど 報告すると");
   });
 
   it("点が 出て いる ときは 理由を 出さない", () => {

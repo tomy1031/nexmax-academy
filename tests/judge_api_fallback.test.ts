@@ -198,6 +198,83 @@ describe("先頭の モデルに 断られる 鍵", () => {
   });
 });
 
+/**
+ * **つなぎを 先に 張る**（`warmAsakaiJudge`・2026-09-23）
+ *
+ * 判定の 上限（13秒）には したくが 入る。先頭の モデルが 何も 返さない ときは
+ * そこだけで 9秒 かかる ので、その日の **最初の 1本**が 間に 合わない——
+ * ユーザーの 報告（キーは 入って いるのに 点が 出ない）は これだった。
+ */
+describe("判定の つなぎを 先に 張る", () => {
+  it("先に 張って おくと、9秒 かかる したくを 払わずに 1本目が 返る", async () => {
+    sdk.plan = { [HEAD]: "hang", [SPARE]: "accept" };
+    const { warmAsakaiJudge, requestAsakaiJudge } = await loadJudgeApi();
+
+    /* 学習者が 報告メモを 読んで いる あいだに 張る。 */
+    void warmAsakaiJudge("mon");
+    await vi.advanceTimersByTimeAsync(10_000);
+    expect(sdk.connects.map((c) => c.model)).toEqual([HEAD, SPARE]);
+    /* 温めは 頼まない（往復は 使わない）。 */
+    expect(sdk.asks).toHaveLength(0);
+
+    /* ここで 1本目の 報告。したくは 済んで いる ので 往復ぶんだけ。 */
+    const started = Date.now();
+    let result: unknown = "pending";
+    let doneAt = 0;
+    void requestAsakaiJudge("mon", CONTEXT, FACTS).then((value) => {
+      result = value;
+      doneAt = Date.now();
+    });
+    await vi.advanceTimersByTimeAsync(13_000);
+
+    expect(result).toEqual({ ok: true, judge: { ...NO_JUDGE, saidIds: ["k1"] } });
+    /* 張り直して いない（つなぎを 使い回して いる）。 */
+    expect(sdk.connects).toHaveLength(2);
+    expect(doneAt - started).toBeLessThan(4_000);
+  });
+
+  it("走って いる 往復が ある あいだは 何も しない（横から つなぎを 捨てない）", async () => {
+    sdk.plan = { [HEAD]: "accept" };
+    sdk.replyAfterMs = 5_000;
+    const { warmAsakaiJudge, requestAsakaiJudge } = await loadJudgeApi();
+
+    void requestAsakaiJudge("mon", CONTEXT, FACTS);
+    await vi.advanceTimersByTimeAsync(1_000);
+    const before = sdk.connects.length;
+
+    let warmed: unknown = "pending";
+    void warmAsakaiJudge("tue").then((value) => {
+      warmed = value;
+    });
+    await vi.advanceTimersByTimeAsync(0);
+    expect(warmed).toBe(false);
+    /* 走って いる 往復の つなぎは そのまま。 */
+    expect(sdk.connects).toHaveLength(before);
+    expect(sdk.closed).not.toContain(HEAD);
+  });
+
+  it("もう 張って ある ときは 通信を しない", async () => {
+    sdk.plan = { [HEAD]: "accept" };
+    const { warmAsakaiJudge } = await loadJudgeApi();
+
+    void warmAsakaiJudge("mon");
+    await vi.advanceTimersByTimeAsync(2_000);
+    const tokens = sdk.tokens;
+    const connects = sdk.connects.length;
+    expect(connects).toBe(1);
+
+    let again: unknown = "pending";
+    void warmAsakaiJudge("mon").then((value) => {
+      again = value;
+    });
+    await vi.advanceTimersByTimeAsync(0);
+    expect(again).toBe(true);
+    /* 短命トークンも つなぎも 増えて いない（無料枠を 食わない）。 */
+    expect(sdk.tokens).toBe(tokens);
+    expect(sdk.connects).toHaveLength(connects);
+  });
+});
+
 describe("先頭の モデルが 何も 返さない とき（まれ）", () => {
   it("その 1本は 間に 合わないが、往復が 生きて いる あいだは 2本目を 重ねない", async () => {
     sdk.plan = { [HEAD]: "late", [SPARE]: "accept" };

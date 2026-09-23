@@ -5,6 +5,7 @@ import Link from "next/link";
 
 import { ModalShell } from "@/components/meeting/modal-shell";
 import { RubyText } from "@/components/ruby-text";
+import { adviceFor, KEY_CHECK_FURIGANA } from "@/lib/ai/key-check";
 import { CLARITY_MAX, CONTENT_MAX, JAPANESE_MAX, type RowMark } from "@/lib/meeting/asakai-score";
 import type { FuriganaIndex } from "@/lib/text/furigana";
 
@@ -119,9 +120,22 @@ const FIRST_WORD: Record<RowMark, string> = {
  * **キーを 登録して いる 人が キーを 疑う**ことに なって いた（実際の 報告では
  * キーは 入って いて、間に 合わなかった ほうだった）。
  *
- * 名前は `judge-api.ts` が 返す もの。知らない 名前が 来ても 黙らない（既定の 1行）。
+ * ## キーの ことばは **共有の 台帳から 引く**（再実装しない）
+ * `src/lib/ai/key-check.ts` の `KEY_CHECK_ADVICE` は `KeyCheckReason` の
+ * **全部の 名前を 型で 要求する** 台帳で、期限切れ・IP制限・API が OFF・
+ * VPN（場所）まで 1つずつ 文を 持って いる。ここで 書き写すと
+ * **網羅が 落ちる**——最初の 版は 7つ 落ちて いて、キーが 壊れて いる 学習者は
+ *「返事が 届きませんでした。もう いちど 報告すると 出ます。」を 永久に 読む ことに
+ * なって いた（2026-09-23 の code-critic 検収）。
+ *
+ * ここに 書くのは **朝礼にしか 無い 理由**だけ（共有の 台帳に 名前が 無い もの）。
  */
-const FAIL_WORD: Record<string, { readonly what: string; readonly next: string }> = {
+const OWN_WORD: Record<string, { readonly what: string; readonly next: string }> = {
+  /*
+   * `noKey` は 共有の 台帳にも ある が、そちらの つぎの 一手は
+   *「もういちど おして ください」＝**せっていの 画面に 立って いる 人**に 向けた 文。
+   * 朝礼の 画面から 読む 人には 行き先が 要るので、ここだけ 言い方を 持つ。
+   */
   noKey: {
     what: "Gemini（AI）の APIキーが 登録されて いません。",
     next: "せっていの 画面で 登録すると、この 2つが 出ます。マイクで 話す ことも できます。",
@@ -130,48 +144,68 @@ const FAIL_WORD: Record<string, { readonly what: string; readonly next: string }
     what: "AIの 返事が 間に 合いませんでした。",
     next: "もう いちど 報告すると 出ます。",
   },
+  /*
+   * **「まってから もう いちど 報告して」とは 言わない**（同検収）。
+   * その 発話は もう 数えて 札も 開き、司会も 先へ 進んで いる——
+   * ポップアップには すでに「言い直す」と「つぎへ」が ある ので、
+   * ここで 3つめの 行動を 並べると 何を すれば よいか 読めなく なる（規律1）。
+   */
   busy: {
     what: "AIは まだ まえの 報告を 見て います。",
-    next: "すこし まってから もう いちど 報告して ください。",
+    next: "つぎの 報告から 出ます。",
   },
-  rateLimited: {
-    what: "きょうは AIを 使いすぎました。",
-    next: "あしたに なると また 使えます。",
-  },
-  quota: {
-    what: "きょうは AIを 使いすぎました。",
-    next: "あしたに なると また 使えます。",
-  },
-  overloaded: {
-    what: "AIが いま こんで います。",
-    next: "すこし まってから もう いちど 報告して ください。",
-  },
-  network: {
-    what: "つうしんが うまく いきませんでした。",
+  /* AIは 返事を したが、点の 数を 付けて こなかった 回。 */
+  badScore: {
+    what: "AIが 点を つけませんでした。",
     next: "もう いちど 報告すると 出ます。",
+  },
+  badShape: {
+    what: "AIの 返事を 読めませんでした。",
+    next: "もう いちど 報告すると 出ます。",
+  },
+  /*
+   * 見る 行が 1つも 無い 教材（データの 不備）。**何回 報告しても 出ない**ので、
+   * 「もう いちど」とは 言わない——できない ことを つぎの 一手に しない。
+   */
+  noFacts: {
+    what: "この 日は AIが 見る ところが ありません。",
+    next: "先生に つたえて ください。",
   },
 };
 
-const FAIL_DEFAULT = {
-  what: "AIの 返事が 届きませんでした。",
-  next: "もう いちど 報告すると 出ます。",
-} as const;
+/**
+ * **せっていへ 行けば 学習者が 直せる** 理由（キーを 書きかえる もの）。
+ *
+ * 先生に 頼む しか ない もの（IP制限・プロジェクトの 設定・場所）には 出さない——
+ * 押しても 直せない 行き先を 見せると、そこで 止まる。
+ */
+const FIXABLE_IN_SETTINGS: ReadonlySet<string> = new Set([
+  "noKey",
+  "badKey",
+  "keyExpired",
+  "wrongKeyType",
+  "tokenRejected",
+  "apiDisabled",
+]);
 
-/** キーの ことだけ、直し先（せってい）へ 行ける ように する。 */
+/** キーの ことばは 学習者が 読む 文。読みは その 台帳が 持って いる。 */
 const SETTINGS_HREF = "/map/settings";
 
 /** AIの 点が 出ない ときの 1枚（理由＋つぎの 一手）。 */
 function FailNote({ reason, index }: { reason: string; index: FuriganaIndex }) {
-  const word = FAIL_WORD[reason] ?? FAIL_DEFAULT;
+  const own = OWN_WORD[reason];
+  const word = own ?? adviceFor(reason);
+  /* 朝礼の ことばは 朝礼の 辞書、キーの ことばは その 台帳の 辞書で 読む。 */
+  const dict = own ? index : KEY_CHECK_FURIGANA;
   return (
     <div className="border-sun-deep bg-cream mt-2 rounded-xl border-2 px-3 py-2">
       <p className="text-sun-deep text-[11px] leading-[1.9] font-black">
-        💡 <Ruby text={word.what} index={index} />
+        💡 <Ruby text={word.what} index={dict} />
       </p>
       <p className="text-ink mt-0.5 text-[11px] leading-[1.9] font-bold">
-        <Ruby text={word.next} index={index} />
+        <Ruby text={word.next} index={dict} />
       </p>
-      {reason === "noKey" ? (
+      {FIXABLE_IN_SETTINGS.has(reason) ? (
         <Link
           prefetch={false}
           href={SETTINGS_HREF}

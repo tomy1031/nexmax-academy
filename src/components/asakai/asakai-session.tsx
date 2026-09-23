@@ -260,9 +260,9 @@ const UI_FURIGANA: readonly (readonly [string, string])[] = [
   ["話す", "はなす"],
   ["返事", "へんじ"],
   ["間に 合いません", "まにあいません"],
-  ["使いすぎました", "つかいすぎました"],
-  ["使えます", "つかえます"],
-  ["届きませんでした", "とどきませんでした"],
+  ["読めませんでした", "よめませんでした"],
+  ["先生", "せんせい"],
+  ["日", "にち"],
   ["点", "てん"],
   ["足して", "たして"],
   ["伝わりやすさ", "つたわりやすさ"],
@@ -419,6 +419,15 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
   const [duty, setDuty] = useState(false);
   /** `"talk"` 報告中 ／ `"gap"` 時間カード ／ `"done"` 週の けっか。 */
   const [phase, setPhase] = useState<"talk" | "gap" | "done">("talk");
+  /**
+   * **入室したか**（ミーティングの 入口を 通ったか）。
+   *
+   * 判定の つなぎを 温める 合図に 使う。`phase` は 初期値が `"talk"` で `scene` も
+   * マウントの 時点で 決まって いる ので、これが 無いと **入口の 画面を 開いただけで**
+   * 短命トークンを 1枚 作って WebSocket を 1本 張る——報告する 気が 無い 人の ぶんまで
+   * 無料枠を 食う（2026-09-23 の code-critic 検収）。
+   */
+  const [joined, setJoined] = useState(false);
   const [results, setResults] = useState<readonly DayResult[]>(start.results);
 
   /*
@@ -660,9 +669,17 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
    *（`warmQuizReview`）。失敗は 画面に 出さない——報告の ときに もう いちど 張る。
    */
   useEffect(() => {
-    if (!scene || phase !== "talk") return;
+    if (!scene || phase !== "talk" || !joined) return;
     void warmAsakaiJudge(`${meeting.id}:${scene.day}`);
-  }, [scene, phase, meeting.id]);
+    /*
+     * `judge` を 引き金に 入れて **もう いちど 試す**。温めは 走って いる 往復を
+     * 横取りしない ため 札（busy）が 立って いる あいだ 何も しない ので、
+     * **前の 報告を 待って いる うちに 別の 曜日へ 移ると、その 日は 永久に
+     * 温まらない**（2026-09-23 の code-critic 検収）。見かたの ポップアップが
+     * 開いて 閉じる ころには 札は 下りて いる。つながって いる ときの 温めは
+     * 通信を しない（`openJudge` が 使い回す）ので、何度 走っても ただ。
+     */
+  }, [scene, phase, joined, judge, meeting.id]);
 
   /**
    * 作業記録の 行。**夕礼だけ 中身が ある**——朝礼の カードは
@@ -974,8 +991,17 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
       const japanese = best(seen?.japanese ?? null, dayAi.japanese);
       const good = seen?.good ?? "";
       const adviceText = seen?.advice ?? "";
-      /* 1本でも 届いたら 理由は 消す（その日の 評価に 点が 出る）。 */
-      setDayFail((prev) => (seen ? null : (failReason ?? prev)));
+      /*
+       * **点が 出て いるかで 見る**（2026-09-23 の code-critic 検収）。
+       *
+       * 「返事が 届いたか」で 見て いた ころ、AIが 返事は したのに 数を 1つも
+       * 付けなかった 回（`clampScore` が 数で ない ものを null に する）は
+       * **理由が null の まま 点だけ 「—」**——ユーザーが 報告して きた 画面と
+       * 一字一句 同じに なって いた。
+       */
+      setDayFail((prev) =>
+        clarity !== null && japanese !== null ? null : (failReason ?? prev ?? "badScore"),
+      );
       if (seen) {
         setDayAi((prev) => ({
           clarity: best(clarity, prev.clarity),
@@ -1117,7 +1143,11 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
          * キーが 無いのか・混んで いるのか・間に 合わなかったのかで、
          * 学習者が する ことが まるで ちがう。届いた ときは null。
          */
-        failReason,
+        /*
+         * 返事は 届いたのに 数が 欠けた 回も 黙らない（同検収）。
+         * 点が 出て いれば null、出て いなければ 必ず 何かの 名前が 入る。
+         */
+        failReason: clarity !== null && japanese !== null ? null : (failReason ?? "badScore"),
         utterance: text,
         question: askedText,
         score: viewScore(final),
@@ -1946,7 +1976,10 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
         }))}
       faces={faces}
       settings={<SpeechSpeedPicker value={speed} onChange={saveSpeechSpeed} />}
-      onJoined={() => openScene(start.sceneAt)}
+      onJoined={() => {
+        setJoined(true);
+        openScene(start.sceneAt);
+      }}
       onLeft={() => {
         voice.stop();
         clips.stop();
