@@ -35,7 +35,11 @@ import { CallShell } from "@/components/call-shell";
 import { DictionaryText } from "@/components/dictionary-text";
 import { AiWaitingOverlay } from "@/components/meeting/ai-waiting";
 import { HintModal } from "@/components/meeting/hint-modal";
-import { dropJudgeSession, requestAsakaiJudge } from "@/components/meeting/judge-api";
+import {
+  dropJudgeSession,
+  requestAsakaiJudge,
+  warmAsakaiJudge,
+} from "@/components/meeting/judge-api";
 import { ModalShell } from "@/components/meeting/modal-shell";
 import { AskPanel } from "@/components/meeting/ask-panel";
 import { ChatPanel } from "@/components/meeting/chat-panel";
@@ -246,6 +250,19 @@ const UI_FURIGANA: readonly (readonly [string, string])[] = [
   ["見て", "みて"],
   ["見た", "みた"],
   ["言った", "いった"],
+  /*
+   * **AIの 点が 出ない 理由**の ことば（2026-09-23）。`FAIL_WORD`
+   *（`asakai-score-modal.tsx`）が 出す 字で、**教材の 辞書では 覆えない**。
+   * ここに 無い 漢字は 裸で 出る（見張りは e2e の 裸漢字検査だけ）。
+   */
+  ["登録", "とうろく"],
+  ["画面", "がめん"],
+  ["話す", "はなす"],
+  ["返事", "へんじ"],
+  ["間に 合いません", "まにあいません"],
+  ["使いすぎました", "つかいすぎました"],
+  ["使えます", "つかえます"],
+  ["届きませんでした", "とどきませんでした"],
   ["点", "てん"],
   ["足して", "たして"],
   ["伝わりやすさ", "つたわりやすさ"],
@@ -461,6 +478,15 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
     readonly heard: boolean;
     /** AIが 見たか（鍵が あって、返事が 届いた ときだけ true）。 */
     readonly judged: boolean;
+    /**
+     * **AIの 見かたが 出ない 理由**（届いた ときは null）。
+     *
+     * 2026-09-23 の 指定。前は どの 失敗も 同じ 1文
+     *（「AIの 見かたが 届きませんでした」）で、**キーが 無いのか・混んで いるのか・
+     * 間に 合わなかったのか**が 読めなかった——キーを 登録して いる 人に
+     * キーの 話を して いたり、その 逆だったり する。
+     */
+    readonly failReason: string | null;
     /** 学習者が いま 言った こと（そのまま 出す）。 */
     readonly utterance: string;
     /** 直前の しつもん（聞き返しの ときだけ）。 */
@@ -502,6 +528,14 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
    * ✅ と「—」を 並べて、何を 言って ✅ に なったのかが 読めない。
    */
   const [dayMine, setDayMine] = useState<Readonly<Record<string, string>>>({});
+
+  /**
+   * **その日 AIの 点が 届かなかった 理由**（1本でも 届いたら null に 戻す）。
+   *
+   * その日の おわりの 評価は 1日ぶんを 見せる ので、1本でも 届いて いれば
+   * 点が 出る。1本も 届かなかった 日にだけ、**なぜ 出ないか**を ここから 言う。
+   */
+  const [dayFail, setDayFail] = useState<string | null>(null);
 
   /**
    * **その日 学習者が 送った ことば ぜんぶ**（その日の 評価に「あなたの 回答」として 並べる）。
@@ -612,6 +646,23 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
       log: probeLog.map((one) => ({ ...one, panels: one.panels ? [...one.panels] : undefined })),
     });
   }, [scene, panels, phase, states, attempts, probes, askedId, lines, probeLog, meeting.id]);
+
+  /**
+   * **判定の つなぎを、話しはじめる 前に 張って おく**（2026-09-23）。
+   *
+   * `requestAsakaiJudge` の 上限（13秒）には **つなぎの したく**も 入る。
+   * 先頭の モデルが 何も 返さない ときは そこだけで 9秒 かかる ので、
+   * その日 **最初の 1本**が 間に 合わず「AIの 見かたが 届きませんでした」に なる
+   *（2026-09-23 に ユーザーから 実報告。キーは 入って いた）。
+   *
+   * 学習者が 報告メモを 読んで いる あいだに 張って おけば、報告の ときは
+   * 往復ぶんだけで 返る。もんだいの「こたえの チェック」と 同じ 手
+   *（`warmQuizReview`）。失敗は 画面に 出さない——報告の ときに もう いちど 張る。
+   */
+  useEffect(() => {
+    if (!scene || phase !== "talk") return;
+    void warmAsakaiJudge(`${meeting.id}:${scene.day}`);
+  }, [scene, phase, meeting.id]);
 
   /**
    * 作業記録の 行。**夕礼だけ 中身が ある**——朝礼の カードは
@@ -837,7 +888,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
    * 開く 条件も 合格ラインも ここでは 変えない（`panels.ts` が 数える）。
    */
   const apply = useCallback(
-    (text: string, seen: AsakaiJudgeResult | null) => {
+    (text: string, seen: AsakaiJudgeResult | null, failReason: string | null) => {
       if (!scene) return;
       const step = applyUtterance({
         utterance: text,
@@ -923,6 +974,8 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
       const japanese = best(seen?.japanese ?? null, dayAi.japanese);
       const good = seen?.good ?? "";
       const adviceText = seen?.advice ?? "";
+      /* 1本でも 届いたら 理由は 消す（その日の 評価に 点が 出る）。 */
+      setDayFail((prev) => (seen ? null : (failReason ?? prev)));
       if (seen) {
         setDayAi((prev) => ({
           clarity: best(clarity, prev.clarity),
@@ -1059,6 +1112,12 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
          * ある。見て いないのに「そのままで いいです」と 言わない（規律1）。
          */
         judged: seen !== null && seen.japanese !== null,
+        /*
+         * **AIの 見かたが 出ない 理由**（2026-09-23 の 指定）。
+         * キーが 無いのか・混んで いるのか・間に 合わなかったのかで、
+         * 学習者が する ことが まるで ちがう。届いた ときは null。
+         */
+        failReason,
         utterance: text,
         question: askedText,
         score: viewScore(final),
@@ -1252,7 +1311,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
       setLines((prev) => [...prev, { who: "あなた", speakerId: "self", text, self: true }]);
 
       if (!getGeminiKey()) {
-        apply(text, null);
+        apply(text, null, "noKey");
         return;
       }
       /* 待って いる あいだも 画面は 生きて いる（上限を 過ぎたら 照合だけで 進む）。 */
@@ -1275,11 +1334,11 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
         },
         scene.panels.flatMap((panel) => panel.facts),
       )
-        .catch(() => null)
+        .catch(() => ({ ok: false as const, reason: "failed" }))
         .then((seen) => {
           if (runId.current !== at) return; // 別の 日へ 移った ぶんは 捨てる
           setWaiting(false);
-          apply(text, seen);
+          apply(text, seen.ok ? seen.judge : null, seen.ok ? null : seen.reason);
         });
     },
     [answer, scene, asakai, meeting.id, meeting.judgePrompt, logLines, apply],
@@ -1436,6 +1495,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
       setDayAi({ clarity: null, japanese: null, good: "", advice: "" });
       setDayItems({});
       setDayMine({});
+      setDayFail(null);
       setAskedText("");
       setDayOpen(false);
       setPendingTail([]);
@@ -2002,6 +2062,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
             rows={judge.rows}
             nextLabel={judge.sceneOver ? "みんなの 報告を 聞く ▶" : "つぎの しつもんを 聞く ▶"}
             rest={judge.shut.join("／")}
+            failReason={judge.failReason}
             index={index}
             /*
               言い直す … 同じ しつもんの まま、もう いちど 書く（司会は 何も 言わない）。
@@ -2020,6 +2081,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
             readLog={judge.readLog}
             nextLabel={judge.sceneOver ? "みんなの 報告を 聞く ▶" : "報告を つづける ▶"}
             utterance={judge.utterance}
+            failReason={judge.failReason}
             index={index}
             onClose={closeJudge}
           />
@@ -2077,6 +2139,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
           probes={probeLog}
           good={dayAi.good}
           advice={dayAi.advice}
+          failReason={dayFail}
           nextLabel={
             sceneAt + 1 >= asakai.scenes.length
               ? "今週の けっかを 見る ▶"

@@ -52,16 +52,25 @@ const ROWS: RowView[] = [
   }),
 ];
 
-function render(rows: readonly RowView[], readLog = false): string {
+function render(
+  rows: readonly RowView[],
+  readLog = false,
+  failReason: string | null = null,
+): string {
   return renderToStaticMarkup(
     <ReportScoreModal
-      score={{ content: 20, clarity: 10, japanese: 10, total: 40 }}
+      score={
+        failReason === null
+          ? { content: 20, clarity: 10, japanese: 10, total: 40 }
+          : { content: 20, clarity: null, japanese: null, total: null }
+      }
       rows={rows}
       good=""
       advice=""
       readLog={readLog}
       nextLabel="報告を つづける ▶"
       utterance="きのう けっさい がめん つくった。しんちょく20%。今の ところ 問題は ありません。"
+      failReason={failReason}
       index={index}
       onClose={() => undefined}
     />,
@@ -124,6 +133,40 @@ describe("報告の ポップアップの 表", () => {
     expect(html).not.toContain("合格に 効く");
     expect(html).not.toContain("AIの 見かた");
     expect(html).not.toContain("AIの 鍵");
+  });
+
+  /*
+   * **なぜ AIの 点が 出ないかを 名前で 言う**（2026-09-23 の 指定
+   *「鍵がない＝GeminiAPIキーがないということですか？ ならそのように言って
+   *  APIキーの登録をうながしてください」）。
+   *
+   * 前は どの 失敗も「いまは AIの 見かたが 届きませんでした」の 1文だった ので、
+   * **キーを 登録して いる 人が キーを 疑う**ことに なって いた。
+   */
+  it("キーが 無い ときは そう 言って、登録の 行き先を 出す", () => {
+    const html = render(ROWS, false, "noKey");
+    expect(html).toContain("APIキーが 登録されて いません");
+    expect(html).toContain("/map/settings");
+    expect(html).toContain("マイクで 話す");
+  });
+
+  it("間に 合わなかった ときは キーの 話を しない", () => {
+    const html = render(ROWS, false, "timeout");
+    expect(html).toContain("返事が 間に 合いませんでした");
+    expect(html).toContain("もう いちど 報告すると 出ます");
+    expect(html).not.toContain("APIキー");
+    expect(html).not.toContain("/map/settings");
+  });
+
+  it("知らない 理由でも 黙らない（既定の 1行）", () => {
+    const html = render(ROWS, false, "なぞ");
+    expect(html).toContain("返事が 届きませんでした");
+  });
+
+  it("点が 出て いる ときは 理由を 出さない", () => {
+    const html = render(ROWS, false, null);
+    expect(html).not.toContain("APIキー");
+    expect(html).not.toContain("届きませんでした");
   });
 
   it("作業記録の 読み上げを 差し戻した ターンは ヒントも 👉 も 出さない", () => {

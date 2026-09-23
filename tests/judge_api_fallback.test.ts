@@ -159,7 +159,7 @@ describe("先頭の モデルに 断られる 鍵", () => {
 
     await vi.advanceTimersByTimeAsync(13_000);
 
-    expect(result).toEqual({ ...NO_JUDGE, saidIds: ["k1"] });
+    expect(result).toEqual({ ok: true, judge: { ...NO_JUDGE, saidIds: ["k1"] } });
     expect(sdk.connects.map((c) => c.model)).toEqual([HEAD, SPARE]);
     // 閉じられた その場で 控えへ（前は 9秒 待ってから だった）
     expect(sdk.connects[1]!.at - started).toBeLessThan(1_000);
@@ -210,7 +210,12 @@ describe("先頭の モデルが 何も 返さない とき（まれ）", () => 
     });
     // 先頭は 9秒 待って 諦め、控えで つないで 頼む（返事は 13.5秒 ごろ）
     await vi.advanceTimersByTimeAsync(13_000);
-    expect(first).toBeNull();
+    /*
+     * **なぜ 出ないかを 名前で 返す**（2026-09-23 の 指定）。前は どの 失敗も `null`
+     * だった ので、画面は「AIの 見かたが 届きませんでした」の 1文しか 出せず、
+     * **キーを 登録して いる 人が キーを 疑う**ことに なって いた。
+     */
+    expect(first).toEqual({ ok: false, reason: "timeout" });
     expect(sdk.asks).toHaveLength(1);
 
     /*
@@ -222,7 +227,8 @@ describe("先頭の モデルが 何も 返さない とき（まれ）", () => 
       second = value;
     });
     await vi.advanceTimersByTimeAsync(0);
-    expect(second).toBeNull();
+    /* 重なった ぶんは 札（busy）で 断る。理由も その 名前で 返す。 */
+    expect(second).toEqual({ ok: false, reason: "busy" });
     expect(sdk.asks).toHaveLength(1);
 
     // 1本目の 往復が 終われば、つぎの 報告は 裏で 張った つなぎを 使い、自分の 見立てを もらう
@@ -232,7 +238,7 @@ describe("先頭の モデルが 何も 返さない とき（まれ）", () => 
       third = value;
     });
     await vi.advanceTimersByTimeAsync(5_000);
-    expect(third).toEqual({ ...NO_JUDGE, saidIds: ["k2"] });
+    expect(third).toEqual({ ok: true, judge: { ...NO_JUDGE, saidIds: ["k2"] } });
     expect(sdk.connects.filter((c) => c.model === SPARE)).toHaveLength(1);
 
     // 諦めた 先頭が 遅れて つながっても、居座らせずに 閉じる
@@ -249,7 +255,7 @@ describe("先頭の モデルが 何も 返さない とき（まれ）", () => 
       first = value;
     });
     await vi.advanceTimersByTimeAsync(15_000);
-    expect(first).toBeNull();
+    expect(first).toEqual({ ok: false, reason: "timeout" });
     // 答えは どうせ 捨てる。Live の 往復を 使わない
     expect(sdk.asks).toHaveLength(0);
 
@@ -259,7 +265,7 @@ describe("先頭の モデルが 何も 返さない とき（まれ）", () => 
       second = value;
     });
     await vi.advanceTimersByTimeAsync(3_000);
-    expect(second).toEqual({ ...NO_JUDGE, saidIds: ["k1"] });
+    expect(second).toEqual({ ok: true, judge: { ...NO_JUDGE, saidIds: ["k1"] } });
     expect(sdk.connects.filter((c) => c.model === SPARE)).toHaveLength(1);
   });
 });

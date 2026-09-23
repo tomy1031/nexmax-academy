@@ -297,6 +297,12 @@ test("朝礼（かんたん）— 報告すると カードが 開く", async ({
   await expect(page.getByText("合格に 効くのは")).toHaveCount(0);
   /* **代わりに 何が 出るか**も 見る——「—」だけだと 0点に 見える（R5 検収）。 */
   await expectOnScreen(page, "まだ 見て いません");
+  /*
+   * **なぜ 出ないかを 名前で 言い、登録の 行き先まで 出す**（2026-09-23 の 指定）。
+   * E2E は 鍵ゼロで 走る ので、ここに 出るのは いつも「キーが 無い」の 側。
+   */
+  await expectOnScreen(page, "APIキーが 登録されて いません");
+  await expect(page.getByRole("link", { name: /せっていを ひらく/ })).toBeVisible();
   expect(await bareKanjiTexts(page)).toEqual([]);
   await shot(page, "asakai-03b-day-score");
   await closeDayScore(page);

@@ -1,6 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
+import Link from "next/link";
 
 import { ModalShell } from "@/components/meeting/modal-shell";
 import { RubyText } from "@/components/ruby-text";
@@ -109,6 +110,80 @@ const FIRST_WORD: Record<RowMark, string> = {
   missing: "まだです",
 };
 
+/**
+ * **AIの 点が 出ない 理由を、学習者の ことばで 言う**（2026-09-23 の 指定
+ *「鍵がない＝GeminiAPIキーがないということですか？ ならそのように言って
+ *  APIキーの登録をうながしてください」）。
+ *
+ * 前は どの 失敗も「いまは AIの 見かたが 届きませんでした」の 1文だった ので、
+ * **キーを 登録して いる 人が キーを 疑う**ことに なって いた（実際の 報告では
+ * キーは 入って いて、間に 合わなかった ほうだった）。
+ *
+ * 名前は `judge-api.ts` が 返す もの。知らない 名前が 来ても 黙らない（既定の 1行）。
+ */
+const FAIL_WORD: Record<string, { readonly what: string; readonly next: string }> = {
+  noKey: {
+    what: "Gemini（AI）の APIキーが 登録されて いません。",
+    next: "せっていの 画面で 登録すると、この 2つが 出ます。マイクで 話す ことも できます。",
+  },
+  timeout: {
+    what: "AIの 返事が 間に 合いませんでした。",
+    next: "もう いちど 報告すると 出ます。",
+  },
+  busy: {
+    what: "AIは まだ まえの 報告を 見て います。",
+    next: "すこし まってから もう いちど 報告して ください。",
+  },
+  rateLimited: {
+    what: "きょうは AIを 使いすぎました。",
+    next: "あしたに なると また 使えます。",
+  },
+  quota: {
+    what: "きょうは AIを 使いすぎました。",
+    next: "あしたに なると また 使えます。",
+  },
+  overloaded: {
+    what: "AIが いま こんで います。",
+    next: "すこし まってから もう いちど 報告して ください。",
+  },
+  network: {
+    what: "つうしんが うまく いきませんでした。",
+    next: "もう いちど 報告すると 出ます。",
+  },
+};
+
+const FAIL_DEFAULT = {
+  what: "AIの 返事が 届きませんでした。",
+  next: "もう いちど 報告すると 出ます。",
+} as const;
+
+/** キーの ことだけ、直し先（せってい）へ 行ける ように する。 */
+const SETTINGS_HREF = "/map/settings";
+
+/** AIの 点が 出ない ときの 1枚（理由＋つぎの 一手）。 */
+function FailNote({ reason, index }: { reason: string; index: FuriganaIndex }) {
+  const word = FAIL_WORD[reason] ?? FAIL_DEFAULT;
+  return (
+    <div className="border-sun-deep bg-cream mt-2 rounded-xl border-2 px-3 py-2">
+      <p className="text-sun-deep text-[11px] leading-[1.9] font-black">
+        💡 <Ruby text={word.what} index={index} />
+      </p>
+      <p className="text-ink mt-0.5 text-[11px] leading-[1.9] font-bold">
+        <Ruby text={word.next} index={index} />
+      </p>
+      {reason === "noKey" ? (
+        <Link
+          prefetch={false}
+          href={SETTINGS_HREF}
+          className="text-sky-deep mt-1 inline-block text-[11px] leading-[1.9] font-black underline underline-offset-4"
+        >
+          <Ruby text="せっていを ひらく ▶" index={index} />
+        </Link>
+      ) : null}
+    </div>
+  );
+}
+
 function Ruby({ text, index }: { text: string; index: FuriganaIndex }) {
   return <RubyText text={text} index={index} show />;
 }
@@ -132,11 +207,14 @@ function ScoreHead({
   lead,
   score,
   note,
+  failReason,
   index,
 }: {
   lead: string;
   score: ScoreView;
   note?: ReactNode;
+  /** AIの 点が 出ない 理由（出て いれば null）。 */
+  failReason: string | null;
   index: FuriganaIndex;
 }) {
   const axes = [
@@ -205,14 +283,18 @@ function ScoreHead({
         ))}
       </div>
       {/*
-        **「合格に 効くのは 報告の 内容です。」と「AIの 見かたが 届きませんでした」は 出さない**
-        （2026-09-23 の 指定「意味が わかりません。AIの みかた？ 正直 混乱するので 表示不要」）。
+        **「合格に 効くのは 報告の 内容です。」は 出さない**（2026-09-23 の 指定
+        「意味が わかりません。正直 混乱するので 表示不要」）。点の 由来を 断る ための
+        文だったが、読んだ 人が いちばん 先に つまずく 文に なって いた。
 
-        仕組みの ことば（AI・鍵・見かた）は 学習者の ことばでは ない。点の 由来を
-        断る ための 文だったが、**読んだ 人が いちばん 先に つまずく 文**に なって いた。
-        見て いない ものさしは 上の 箱の「—」が そのまま 言う（0点とは 書かない）ので、
-        「見て いない ものに 0点を つけない」（規律1）は そこで 守れて いる。
+        代わりに 出すのは **なぜ 出ないか と、つぎに 何を するか**だけ。同じ日の
+        指定「鍵がない＝GeminiAPIキーがないということですか？ ならそのように言って
+        APIキーの登録をうながしてください」——「AIの 見かた」の ような
+        こちらの 事情の ことばは 使わず、**キーの ときは 登録の 行き先まで 出す**。
       */}
+      {score.total === null && failReason !== null ? (
+        <FailNote reason={failReason} index={index} />
+      ) : null}
     </div>
   );
 }
@@ -476,6 +558,7 @@ export function ReportScoreModal({
   readLog,
   nextLabel,
   utterance,
+  failReason,
   index,
   onClose,
 }: {
@@ -489,6 +572,8 @@ export function ReportScoreModal({
   nextLabel: string;
   /** 学習者が いま 言った こと（そのまま 出す）。 */
   utterance: string;
+  /** AIの 点が 出ない 理由（出て いれば null）。 */
+  failReason: string | null;
   index: FuriganaIndex;
   onClose: () => void;
 }) {
@@ -514,6 +599,7 @@ export function ReportScoreModal({
       <ScoreHead
         lead="いまの 報告"
         score={score}
+        failReason={failReason}
         index={index}
         note={
           left > 0 ? (
@@ -575,6 +661,7 @@ export function ProbeScoreModal({
   nextLabel,
   rest,
   judged,
+  failReason,
   index,
   onRetry,
   onClose,
@@ -601,6 +688,8 @@ export function ProbeScoreModal({
   rest: string;
   /** AIが 日本語を 見たか。見て いない ときは「いいです」と 言わない（規律1）。 */
   judged: boolean;
+  /** AIの 点が 出ない 理由（出て いれば null）。 */
+  failReason: string | null;
   index: FuriganaIndex;
   /**
    * 言い直す（この ポップアップを 閉じて、同じ しつもんに もう いちど 答える）。
@@ -633,6 +722,7 @@ export function ProbeScoreModal({
       <ScoreHead
         lead="ここまでの 報告"
         score={score}
+        failReason={failReason}
         index={index}
         note={
           left > 0 ? (
@@ -746,6 +836,7 @@ export function DayScoreModal({
   good,
   advice,
   nextLabel,
+  failReason,
   index,
   onRetry,
   onClose,
@@ -771,6 +862,8 @@ export function DayScoreModal({
   advice: string;
   /** とじる ボタンの 字（「木曜日へ 進む ▶」「週の けっかを 見る ▶」）。 */
   nextLabel: string;
+  /** その日 いちども AIの 点が 届かなかった ときの 理由（届いて いれば null）。 */
+  failReason: string | null;
   index: FuriganaIndex;
   /** もう いちど 報告する（その日を はじめから）。 */
   onRetry: () => void;
@@ -795,6 +888,7 @@ export function DayScoreModal({
       <ScoreHead
         lead={`${dayName}の 報告`}
         score={score}
+        failReason={failReason}
         index={index}
         note={
           shut === 0 ? (
