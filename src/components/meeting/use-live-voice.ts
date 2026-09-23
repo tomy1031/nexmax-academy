@@ -151,6 +151,14 @@ export interface LiveVoice {
  */
 export interface LiveVoiceOptions {
   readonly listenOnly?: boolean;
+  /**
+   * 相手の 声を **鳴らさない**（聞き取りだけ 使う）。
+   *
+   * 聞くだけの 相手に「何も 言わない」と 言い渡しても、Live は ときどき「はい」と
+   * 声で 返す。バグ報告の 採点で 実際に 鳴った（2026-09-23 の 指定「採点を する ときに
+   * 音声が 出力されて います」）。字幕の かけらは これまでどおり 受け取る。
+   */
+  readonly muted?: boolean;
 }
 
 /** 指を はなしてから かけらを 待つ 時間。文字起こしは 発話より 遅れて 届く。 */
@@ -165,6 +173,12 @@ interface VoiceSocket {
 
 export function useLiveVoice(options: LiveVoiceOptions = {}): LiveVoice {
   const listenOnly = options.listenOnly ?? false;
+  /* 音声スレッドからの 呼び出しで 読むので ref（つなぎ直しを 起こさない） */
+  const muted = options.muted ?? false;
+  const mutedRef = useRef(muted);
+  useEffect(() => {
+    mutedRef.current = muted;
+  }, [muted]);
   const [status, setStatus] = useState<VoiceStatus>("idle");
   const [reason, setReason] = useState<string | null>(null);
   const [turns, setTurns] = useState<readonly VoiceTurn[]>([]);
@@ -670,7 +684,7 @@ export function useLiveVoice(options: LiveVoiceOptions = {}): LiveVoice {
                 }
                 for (const pcm of readAudio(message)) {
                   turnAudioRef.current += 1;
-                  play(outRef.current, pcm);
+                  if (!mutedRef.current) play(outRef.current, pcm);
                 }
                 /*
                  * 「そろそろ 切ります」の 予告。切れる 前に こちらから 張り直す

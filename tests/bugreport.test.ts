@@ -6,8 +6,11 @@ import {
   bugReportPassed,
   bugReportScore,
   bugReportsPassed,
+  buildBugReviewPrompt,
   bugReviewContext,
   composeBugReport,
+  parseBugReview,
+  readAloudMatches,
   type BugReportEntry,
   type BugReportQuestion,
 } from "@/lib/quiz/bugreport";
@@ -85,7 +88,7 @@ describe("まとめて 報告しましょう", () => {
 });
 
 describe("AIへの 頼み", () => {
-  it("2つの 画面では もう 1つの 欄で 話した ことを 渡す（同じ バグの 二重どり 防止）", () => {
+  it("2つの 画面では もう 1つの 欄で 合格した 報告を 渡す（同じ バグの 二重どり 防止）", () => {
     const other = { ...judged(4), spoken: "ことばで 検索すると 出ません" };
     const context = bugReviewContext(
       double,
@@ -93,14 +96,70 @@ describe("AIへの 頼み", () => {
       [other, EMPTY_BUG_REPORT],
       "カテゴリーが ちがいます",
     );
-    expect(context.note).toContain("ことばで 検索すると 出ません");
-    expect(context.items.map((one) => one.id)).toEqual(["screen", "action", "result", "expected"]);
-    expect(context.written).toBe("カテゴリーが ちがいます");
+    expect(context.others).toEqual(["ことばで 検索すると 出ません"]);
+    expect(buildBugReviewPrompt(context)).toContain("ことばで 検索すると 出ません");
+    expect(context.spoken).toBe("カテゴリーが ちがいます");
   });
 
-  it("✗だった 報告は「すでに 報告した」に 数えない（正しい 報告を 二重どりで 落とさない）", () => {
+  it("✗だった 報告は「すでに 報告した」に 数えない", () => {
     const failed = { ...judged(1), spoken: "ことばで 検索すると 出ません" };
     const context = bugReviewContext(double, 1, [failed, EMPTY_BUG_REPORT], "同じ はなし");
-    expect(context.note).not.toContain("ことばで 検索すると 出ません");
+    expect(context.others).toEqual([]);
+  });
+
+  it("2回目からは ヒントを 具体的に 頼む", () => {
+    const context = bugReviewContext(single, 0, [{ ...judged(1), tries: 1 }], "…");
+    expect(context.attempt).toBe(2);
+    expect(buildBugReviewPrompt(context)).toContain("2回目");
+  });
+
+  it("道具の 返事は 4項目 そろって はじめて 読む（点は 0〜25 に 丸める）", () => {
+    const args = {
+      items: [
+        { id: "screen", points: 25, note: "" },
+        { id: "action", points: 40, note: "" },
+        { id: "result", points: -3, note: "" },
+        { id: "expected", points: 12.4, note: "もう すこし" },
+      ],
+      understandable: true,
+      polished: "",
+      corrected: "フード注文画面で …",
+    };
+    const review = parseBugReview(args)!;
+    expect(review.items.map((one) => one.points)).toEqual([25, 25, 0, 12]);
+    expect(parseBugReview({ ...args, items: args.items.slice(0, 3) })).toBeNull();
+  });
+});
+
+describe("部分点と 意味の 通らない 報告（2026-09-23 の 指定）", () => {
+  const items = (points: number[]) =>
+    points.map((p, i) => ({ id: String(i), ok: p === 25, points: p }));
+
+  it("項目ごとに 25点・部分点は 足す", () => {
+    expect(bugReportScore(items([25, 20, 15, 10]))).toBe(70);
+  });
+
+  it("意味が 通らない 報告は 60点を 超えない（＝進めない）", () => {
+    expect(bugReportScore(items([25, 25, 20, 20]), false)).toBe(60);
+    expect(bugReportPassed({ ...filled, spoken: "…", score: 60, items: [] })).toBe(false);
+  });
+});
+
+describe("3回 だめなら 答えを 読んで 通す", () => {
+  const shown =
+    "フード注文画面で、＋を 押しました。すると、合計が 変わりませんでした。本当は、合計も 変わる はずです。";
+
+  it("見せた 文を ほぼ そのまま 読めば 通る（聞き取りの 字の ゆれは 気に しない）", () => {
+    expect(
+      readAloudMatches(
+        shown,
+        "フード注文画面で プラスを押しました すると合計が変わりませんでした 本当は合計も変わるはずです",
+      ),
+    ).toBe(true);
+    expect(readAloudMatches(shown, "ログイン画面で ボタンを 押しました")).toBe(false);
+  });
+
+  it("読めた 報告は 点に かかわらず 合格", () => {
+    expect(bugReportPassed({ ...judged(1), readAnswer: true })).toBe(true);
   });
 });

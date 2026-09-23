@@ -104,9 +104,20 @@ export const quizDraftSchema: z.ZodType<QuizDraft> = z.discriminatedUnion("kind"
         expected: z.string(),
         spoken: z.string(),
         score: z.number().min(0).max(100).nullable(),
-        items: z.array(z.object({ id: z.string(), ok: z.boolean(), note: z.string() })),
+        items: z.array(
+          z.object({
+            id: z.string(),
+            ok: z.boolean(),
+            note: z.string(),
+            points: z.number().min(0).max(25).optional(),
+          }),
+        ),
         polished: z.string(),
         skipped: z.boolean(),
+        // 2026-09-23 に 足した（それより 前の 下書きにも 無いので 省ける）
+        tries: z.number().int().min(0).optional(),
+        corrected: z.string().optional(),
+        readAnswer: z.boolean().optional(),
       }),
     ),
   }),
