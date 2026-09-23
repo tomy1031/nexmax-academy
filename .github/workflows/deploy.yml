@@ -13,10 +13,13 @@ name: デプロイ
 #   - **STG は `integration` の中身**。作業ブランチを `integration` へ マージした
 #     時点で 自動更新される。STG で 確かめてから main へ 昇格する、という 順番を
 #     作るため（それまでは main しか 載せられず、STG が 門番に なって いなかった）。
-#   - **本番は `main` の中身**。授業のある **火・水・金 17:05 ICT** に、
-#     `integration` を main へ 早送りしてから 自動で 出る（授業は 17:30 ICT）。
-#     cron は UTC なので `5 10 * * 2,3,5`。
+#   - **本番は `main` の中身**。授業のある **火・水・金**の 授業前（17:30 ICT）に、
+#     `integration` を main へ 早送りしてから 自動で 出る。
+#     **起こし役は GitHub の cron では なく 外の 時計**（2026-09-22 から。
+#     `workers/deploy-kicker` ／ docs/deploy.md §0.15）。GitHub の cron は
+#     毎回 3〜5時間 遅れる ので、下の `schedule:` は 最後の 受け皿として 残して あるだけ。
 #   - 緊急の 直しは 手動（Actions タブ → このワークフロー → Run workflow → production）。
+#     cron を 手で 前倒ししたい だけなら **auto** を 選ぶ（同じ 道を 通る）。
 #
 # 必要な Secrets（Settings → Secrets and variables → Actions）:
 #   - CLOUDFLARE_API_TOKEN         … Workers のデプロイ権限を持つトークン
@@ -55,6 +58,25 @@ on:
   # **main を push のトリガーに 足さない。** 下の「本番へ 昇格」が main を 進めるので、
   # 足すと 昇格のたびに STG 用の ランが もう1本 立ち上がる（GITHUB_TOKEN の push は
   # ワークフローを 起こさない ので 実際には 起きないが、その 挙動に 頼らない）。
+  # **2026-09-22 追記: この 5本は もはや 保険でしか ない。**
+  # 上の「5本 ぜんぶが 落ちない かぎり 授業には 間に合う」は **外れた**。
+  # 46本の schedule ランを 測ったら、**5本 とも 同じだけ 遅れて いた**。
+  # 5本は 別々の 待ち行列では なく、**同じ 1つの 遅れ**を 見て いただけ だった。
+  #
+  # | イベント | ラン作成までの 時間（実測 2026-09-01〜09-18） |
+  # | --- | --- |
+  # | `push` | **3秒**（直近20本 すべて） |
+  # | `schedule` | **3時間15分〜4時間43分**（46本の 中央値 3時間45分・最大 11時間） |
+  #
+  # 時差では ない（`12 9 UTC` = `16:12 ICT` は 正しい）。遅れ幅が 日ごとに 88分
+  # ぶれるので 固定の ずれでも なく、**時刻を 早めても 直らない**（早すぎる 日が
+  # 出るだけで、直前に 入れた 教材が 載らなくなる）。詰まって いるのは Actions では
+  # なく **schedule の 配達だけ**——`push` は 3秒で 走って いる。
+  #
+  # **だから 時計を GitHub の 外へ 出した**（docs/deploy.md §0.15）。外の 時計が
+  # 下の `target: auto` を 叩く。この cron は 外の 時計が 全部 黙った ときの
+  # **最後の 受け皿**として 残す（遅れて 届いても、`auto` が もう 出して いれば
+  # 「出す必要が あるか 決める」が 空振りに する ので 二重には 出ない）。
   schedule:
     - cron: "12 9 * * 2,3,5" # 16:12 ICT
     - cron: "26 9 * * 2,3,5" # 16:26 ICT
@@ -62,18 +84,23 @@ on:
     - cron: "51 9 * * 2,3,5" # 16:51 ICT
     - cron: "12 10 * * 2,3,5" # 17:12 ICT（最後の 1本）
   # 手動で 回すときは **ref に 気を つける**。
-  #   production … ref=main（本番の 配信元）
+  #   auto       … ref=main。**cron と まったく 同じ 道**（integration を 取り込む →
+  #                検査 → main を 早送り → 本番）。外の 時計（Cloudflare の
+  #                Cron Trigger／この Mac の launchd）が 叩く ための 入口。
+  #                人が 押しても よい（押すと cron を 手で 前倒しした のと 同じ）。
+  #   production … ref=main（本番の 配信元）。緊急の 直しを そのまま 出す 道。
   #   staging    … ref=integration（STG の 配信元）。main の ref で staging を 選ぶと
   #                `preview_alias.mjs` が 止める——STG に main を 載せると、
   #                integration に 溜まって いる 確認前の 作業が 消える ため。
   workflow_dispatch:
     inputs:
       target:
-        description: どこへ出すか（production は ref=main / staging は ref=integration）
+        description: どこへ出すか（auto は cron と同じ道 / production は ref=main / staging は ref=integration）
         type: choice
         options:
           - staging
           - production
+          - auto
         default: staging
 
 # 同じ行き先へ同時に上げない（あとから上げたほうが前のを消す事故を防ぐ）。
@@ -82,8 +109,12 @@ on:
 # schedule には inputs が 無いので null → 'staging' に 落ちるが、実体は 本番である。
 # 本番の ランが 2本 走っても 互いを 待たない、という 一番 まずい 形になる。
 # そこで **どの イベントで 起きたか**から 行き先を 決める。
+#
+# `auto`（外の 時計）も 行き先は 本番なので production 側に 入れる。ここは
+# ワークフローの 頭で 評価されるので、下の `env.AUTO` は まだ 使えない
+# （`env` は ジョブの 中でしか 見えない）。条件を 直に 書くのは その ため。
 concurrency:
-  group: deploy-${{ (github.event_name == 'schedule' || github.event.inputs.target == 'production') && 'production' || 'staging' }}
+  group: deploy-${{ (github.event_name == 'schedule' || github.event.inputs.target == 'production' || github.event.inputs.target == 'auto') && 'production' || 'staging' }}
   cancel-in-progress: false
 
 jobs:
@@ -97,10 +128,20 @@ jobs:
     # 付いていない（Deployment branches and tags も No restriction）。
     # 統合ブランチからも そのまま 見える（2026-08-27 に API で 実物を 確認）。
     environment: Preview
-    # schedule のときだけ `integration` → `main` を 早送りするので、書き込みが要る。
+    # 自動の道のときだけ `integration` → `main` を 早送りするので、書き込みが要る。
     permissions:
       contents: write
     timeout-minutes: 30
+    # **「自動の 道」かどうかを 1か所で 決める。**
+    #
+    # 自動の 道 ＝ GitHub の cron（`schedule`）と、外の 時計が 叩く `target: auto`。
+    # どちらも「integration を 取り込む → 検査 → main を 早送り → 本番へ」を 通る。
+    # 以下の ステップは この 旗だけを 見る ので、起こし役が 増えても ここを 直せば済む。
+    #
+    # 外の 時計を 足したのは 2026-09-22。GitHub の schedule が 毎回 3〜5時間 遅れて
+    # 授業に 間に合わなかった ため（上の 表・docs/deploy.md §0.15）。
+    env:
+      AUTO: ${{ github.event_name == 'schedule' || github.event.inputs.target == 'auto' }}
     steps:
       # preview_alias.mjs は HEAD と origin/integration を**中身で**比べるので、
       # 浅いクローンだと判定できない（fetch-depth: 0 が要る）。
@@ -126,8 +167,8 @@ jobs:
       # 早送りに ならない とき（main にだけ ある コミットが 残っている ＝ 緊急修正の
       # 戻しマージ 忘れ）は、ここで 止めて 人に 知らせる。黙って 進めると その 直しが
       # 消える。止まっても 本番は 前の版の まま（安全側）。
-      - name: integration を 取り込む（schedule のみ）
-        if: github.event_name == 'schedule'
+      - name: integration を 取り込む（自動の道のみ）
+        if: env.AUTO == 'true'
         run: |
           set -euo pipefail
           git fetch origin integration main --quiet
@@ -186,9 +227,9 @@ jobs:
       #
       # ここは `npm ci` の **前**に 置く（空振りの ランを 1分で 終わらせる ため）。
       # 依存を 使わない 素の Node だけで 動くように 書いてある。
-      - name: 出す必要が あるか 決める（schedule のみ）
+      - name: 出す必要が あるか 決める（自動の道のみ）
         id: need
-        if: github.event_name == 'schedule'
+        if: env.AUTO == 'true'
         env:
           DEPLOY_SHA: ${{ steps.rev.outputs.sha }}
           QUIET_MINUTES: "30"
@@ -197,42 +238,53 @@ jobs:
       # 以降の 重い 工程は、schedule の 空振りでは 全部 とばす。
       # `needed` は schedule のとき だけ 入る ので、push と dispatch は これまで どおり。
       - name: 出さないので ここで 終わり
-        if: github.event_name == 'schedule' && steps.need.outputs.needed != 'true'
+        if: env.AUTO == 'true' && steps.need.outputs.needed != 'true'
         run: echo "::notice::本番は 最新です。何も せずに 終わります（KV 0件）。"
 
-      # 足りないときは「いま登録されている名前」も出す。
-      # 名前の打ちまちがい（CLOUDFLARE_TOKEN / SUPABASE_URL など）や、Variables 側・
-      # Environment 側へ入れてしまった場合、「足りません」だけでは原因が見えないため。
-      # **出すのは名前だけ**（`keys[]`）。値は1文字も出さない。
+      # 足りないときは、**このワークフローが読む名前**をそのまま並べて、
+      # 登録してある名前と見くらべられるようにする。名前の打ちまちがい
+      #（CLOUDFLARE_TOKEN / SUPABASE_URL など）や、Variables 側・リポジトリ直下へ
+      # 入れてしまった場合、「足りません」だけでは原因が見えないため。
+      #
+      # **`toJSON(secrets)` を使わない**（2026-09-23）。Secret をまとめて1つの環境変数へ
+      # 流し込む書き方は、GitHub の「怪しいワークフロー」検査（2026-07-28 導入・public
+      # リポジトリに自動で効き、切る設定は無い）が**持ち出しと見なす形の典型**。
+      # 9/22 にこのファイルを直した14分後から、ランが全部 `action_required` で止まり、
+      # 人がブラウザで承認するまで1本も動かなくなった（docs/deploy.md §0.16）。
+      # 登録済みの名前を一覧するのは「あれば親切」なだけなので落とす。
+      # **ここに `toJSON(secrets)` を戻さない。**
       - name: 鍵と公開値がそろっているか
-        if: github.event_name != 'schedule' || steps.need.outputs.needed == 'true'
+        if: env.AUTO != 'true' || steps.need.outputs.needed == 'true'
         env:
           CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
           SUPABASE_ANON: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
-          SECRET_NAMES: ${{ toJSON(secrets) }}
         run: |
           missing=""
           [ -n "$CF_TOKEN" ] || missing="$missing CLOUDFLARE_API_TOKEN"
           [ -n "$SUPABASE_URL" ] || missing="$missing NEXT_PUBLIC_SUPABASE_URL"
           [ -n "$SUPABASE_ANON" ] || missing="$missing NEXT_PUBLIC_SUPABASE_ANON_KEY"
           if [ -n "$missing" ]; then
-            echo "── いま このリポジトリに 登録されている Secret の名前（値は出しません）──"
-            printf '%s' "$SECRET_NAMES" | jq -r 'keys[]' | sed 's/^/  - /'
+            echo "── ここが読む名前（1文字でも違うと 見つかりません）──"
+            echo "  - CLOUDFLARE_API_TOKEN"
+            echo "  - NEXT_PUBLIC_SUPABASE_URL"
+            echo "  - NEXT_PUBLIC_SUPABASE_ANON_KEY"
+            echo "  置き場: Settings → Environments → **Preview**"
+            echo "  （リポジトリ直下の Secrets とは別物。ジョブの environment: Preview から見える側）"
             echo "───────────────────────────────────────────────"
-            echo "::error::Secrets が足りません:$missing — 名前が1文字でも違うと 見つかりません。上の一覧と 見くらべてください。"
+            echo "::error::Secrets が足りません:$missing — 上の名前と 見くらべてください。"
             exit 1
           fi
           echo "✓ 鍵と公開値はそろっています"
 
       # postinstall で pdf.js の実体を public/ へ写す（スライド教材が使う）
       - name: npm ci
-        if: github.event_name != 'schedule' || steps.need.outputs.needed == 'true'
+        if: env.AUTO != 'true' || steps.need.outputs.needed == 'true'
         run: npm ci
 
       # 赤いものをそのまま出さないための最後の関所（数秒で終わる）
       - name: 単体テスト
-        if: github.event_name != 'schedule' || steps.need.outputs.needed == 'true'
+        if: env.AUTO != 'true' || steps.need.outputs.needed == 'true'
         run: npm test
 
       # DBが遅れたまま本番へ出さない（2026-08-26 の事故）。
@@ -254,7 +306,7 @@ jobs:
       # ときは `--strict` の有無に関わらず落ちる（それは分かっている事実だから）。
       # 鍵を入れた瞬間に、ここは自動で本当の関所になる。
       - name: DBが追いついているか（本番のみ）
-        if: (github.event_name == 'schedule' || github.event.inputs.target == 'production') && (github.event_name != 'schedule' || steps.need.outputs.needed == 'true')
+        if: (env.AUTO == 'true' || github.event.inputs.target == 'production') && (env.AUTO != 'true' || steps.need.outputs.needed == 'true')
         env:
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
         run: node scripts/check_migrations.mjs
@@ -284,8 +336,8 @@ jobs:
       #
       # `git push origin <sha>:refs/heads/main` に **force を 付けない**。
       # 早送りに ならない ときは サーバが 拒否する ＝ 取りこぼしを 作らない。
-      - name: main を 早送りする（schedule のみ）
-        if: github.event_name == 'schedule' && steps.need.outputs.needed == 'true'
+      - name: main を 早送りする（自動の道のみ）
+        if: env.AUTO == 'true' && steps.need.outputs.needed == 'true'
         env:
           DEPLOY_SHA: ${{ steps.rev.outputs.sha }}
         run: |
@@ -307,7 +359,7 @@ jobs:
       # 見分ける規則は `scripts/lib/cache_populated.mjs`（STG から KV を 外した あとも、
       # **本番側の 見張りとして 使い続ける**）。schedule で 出すときも 同じように 効く。
       - name: 本番へ反映
-        if: (github.event_name == 'schedule' || github.event.inputs.target == 'production') && (github.event_name != 'schedule' || steps.need.outputs.needed == 'true')
+        if: (env.AUTO == 'true' || github.event.inputs.target == 'production') && (env.AUTO != 'true' || steps.need.outputs.needed == 'true')
         run: |
           set -o pipefail
           # `|| code=$?` で受けるのは、cf:deploy が落ちた時も **見張りを必ず通す**ため
@@ -323,11 +375,14 @@ jobs:
       # 上げっぱなしにしない。出した中身が本当に載ったかを、そのURLで確かめる
       #（/api/version はビルド時のコミットSHAを返す — next.config.ts）。
       - name: 生きているか・中身が載ったか
-        if: github.event_name != 'schedule' || steps.need.outputs.needed == 'true'
+        if: env.AUTO != 'true' || steps.need.outputs.needed == 'true'
         env:
           DEPLOY_SHA: ${{ steps.rev.outputs.sha }}
+          # ${{ }} を run: の中に直に書かない（式の中身がシェルの一部になる形は、
+          # 上と同じ「怪しいワークフロー」検査が定番で叩く）。env 経由で渡す。
+          TARGET: ${{ github.event.inputs.target }}
         run: |
-          if [ "${{ github.event_name }}" = "schedule" ] || [ "${{ github.event.inputs.target }}" = "production" ]; then
+          if [ "$AUTO" = "true" ] || [ "$TARGET" = "production" ]; then
             url="https://academy.nexmax.workers.dev"
           else
             url="https://staging-academy.nexmax.workers.dev"

@@ -1209,6 +1209,36 @@ function MapViewPane({
   );
 }
 
+/**
+ * カードの 顔に なる 絵。**ステージの 中で 使って いる 1枚**をそのまま出す
+ *（選び方は `src/lib/stage-card-image.ts`）。
+ *
+ * 読み込めなかった ときは わくごと 消す（`AreaImage` と 同じ）。壊れた 絵の しるしが
+ * 11枚 並ぶより、字だけの カードの ほうが 読める。
+ *
+ * 比は 3:2 に そろえて `object-cover` で 切る。教材の 中の 絵（`ImageSlotFrame`）は
+ * 比を 変えないが、こちらは **一覧の サムネイル**なので、高さが カードごとに 変わると
+ * 「何枚 あるか」を 目で 追えなく なる。
+ */
+function StageCardImage({ src }: { src: string }) {
+  const [failed, setFailed] = useState(false);
+  if (failed) return null;
+  return (
+    <div className="bg-bg-sky aspect-[3/2] w-full overflow-hidden border-b-2 border-white">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={src}
+        alt=""
+        aria-hidden
+        loading="lazy"
+        decoding="async"
+        onError={() => setFailed(true)}
+        className="h-full w-full object-cover"
+      />
+    </div>
+  );
+}
+
 function CardsView({ stages, progress }: { stages: readonly MapStage[]; progress: StageProgress }) {
   return (
     <main className="bg-bg-sky relative min-h-dvh px-4 pt-36 pb-16 sm:px-8 md:pl-48">
@@ -1222,57 +1252,60 @@ function CardsView({ stages, progress }: { stages: readonly MapStage[]; progress
             {stages.map((stage) => {
               const status = stageStatus(stage.id, progress);
               return (
-                <article key={stage.id} className="card-pop flex flex-col p-5">
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <p className="text-sky text-xs font-black tracking-widest">
-                        STEP {String(stage.number).padStart(2, "0")}
-                      </p>
-                      <h2 className="text-navy mt-1 text-xl font-black">
-                        <StageTitle stage={stage} />
-                      </h2>
-                      {HAS_KANJI.test(stage.title) && (
-                        <p className="text-ink-soft text-xs font-bold">（{stage.reading}）</p>
-                      )}
+                <article key={stage.id} className="card-pop flex flex-col overflow-hidden">
+                  {stage.image && <StageCardImage src={stage.image} />}
+                  <div className="flex flex-1 flex-col p-5">
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <p className="text-sky text-xs font-black tracking-widest">
+                          STEP {String(stage.number).padStart(2, "0")}
+                        </p>
+                        <h2 className="text-navy mt-1 text-xl font-black">
+                          <StageTitle stage={stage} />
+                        </h2>
+                        {HAS_KANJI.test(stage.title) && (
+                          <p className="text-ink-soft text-xs font-bold">（{stage.reading}）</p>
+                        )}
+                      </div>
+                      <span
+                        /* 白い 文字は クラスで（ふりがなも いっしょに 白に する・ruby-text.tsx） */
+                        className={`grid h-11 w-11 place-items-center rounded-full border-4 border-white text-lg shadow-md ${
+                          status === "locked" ? "" : "text-white"
+                        }`}
+                        style={{
+                          backgroundColor:
+                            status === "current"
+                              ? CURRENT_COLOR
+                              : status === "cleared"
+                                ? CLEARED_COLOR
+                                : "#ffffff",
+                          color: status === "locked" ? STAGE_COLORS[stage.color] : undefined,
+                        }}
+                      >
+                        {status === "cleared" ? "✓" : status === "current" ? "▶" : "○"}
+                      </span>
                     </div>
-                    <span
-                      /* 白い 文字は クラスで（ふりがなも いっしょに 白に する・ruby-text.tsx） */
-                      className={`grid h-11 w-11 place-items-center rounded-full border-4 border-white text-lg shadow-md ${
-                        status === "locked" ? "" : "text-white"
-                      }`}
-                      style={{
-                        backgroundColor:
-                          status === "current"
-                            ? CURRENT_COLOR
-                            : status === "cleared"
-                              ? CLEARED_COLOR
-                              : "#ffffff",
-                        color: status === "locked" ? STAGE_COLORS[stage.color] : undefined,
-                      }}
+                    <p className="text-ink-soft mt-3 text-sm font-extrabold">
+                      <KindLabel stage={stage} />
+                    </p>
+                    <p className="text-ink mt-2 flex-1 text-sm font-bold">
+                      <RubyText text={stage.description} furigana={stage.furigana} />
+                    </p>
+                    <p className="text-ink-soft mt-3 text-xs font-extrabold">
+                      {status === "cleared"
+                        ? "クリア"
+                        : status === "current"
+                          ? "いまの ステージ"
+                          : "じゅんびちゅう"}
+                    </p>
+                    <Link
+                      prefetch={false}
+                      href={`/${stage.id}`}
+                      className="btn-game mt-4 w-full px-4 py-2 [--btn-face:#ffc93c] [--btn-shadow:#f0a819]"
                     >
-                      {status === "cleared" ? "✓" : status === "current" ? "▶" : "○"}
-                    </span>
+                      {status === "cleared" ? "もういちど" : "すすむ"}
+                    </Link>
                   </div>
-                  <p className="text-ink-soft mt-3 text-sm font-extrabold">
-                    <KindLabel stage={stage} />
-                  </p>
-                  <p className="text-ink mt-2 flex-1 text-sm font-bold">
-                    <RubyText text={stage.description} furigana={stage.furigana} />
-                  </p>
-                  <p className="text-ink-soft mt-3 text-xs font-extrabold">
-                    {status === "cleared"
-                      ? "クリア"
-                      : status === "current"
-                        ? "いまの ステージ"
-                        : "じゅんびちゅう"}
-                  </p>
-                  <Link
-                    prefetch={false}
-                    href={`/${stage.id}`}
-                    className="btn-game mt-4 w-full px-4 py-2 [--btn-face:#ffc93c] [--btn-shadow:#f0a819]"
-                  >
-                    {status === "cleared" ? "もういちど" : "すすむ"}
-                  </Link>
                 </article>
               );
             })}

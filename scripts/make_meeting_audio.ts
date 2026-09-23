@@ -40,7 +40,12 @@ import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
-import { OUT_RATE, synthesizeWithFallback, toWav } from "./lib/live_tts";
+import {
+  forSpeech as withSpeechAliases,
+  OUT_RATE,
+  synthesizeWithFallback,
+  toWav,
+} from "./lib/live_tts";
 
 const meetingId: string = process.argv[2] ?? "";
 /** すでに ある ものも 作り直すか。 */
@@ -175,9 +180,17 @@ interface Job {
   clear: () => void;
 }
 
-/** 声に する ときの 文。画面の 字は 変えない。 */
+/**
+ * 声に する ときの 文。画面の 字は 変えない。
+ *
+ * **読みの 言い換え（`SPEECH_ALIASES`）も ここで 当てる。**
+ * 当てて いなかった ころ、`ABA` の 読みを 直しても **指紋が 変わらず**、
+ * 「すでに あります」で 素通しされて **古い「アバ」の 声が 鳴りつづけた**
+ *（2026-09-23）。合成の 中でも もう いちど 当たるが、当たった あとの 字に
+ * `ABA` は もう 無いので 二重に は ならない。
+ */
 function forSpeech(text: string): string {
-  return text.replaceAll("◯◯", "まるまる").replaceAll("◯", "まる");
+  return withSpeechAliases(text.replaceAll("◯◯", "まるまる").replaceAll("◯", "まる"));
 }
 
 /** 文の 指紋（8桁）。同じ 声・同じ 文なら 同じ。 */

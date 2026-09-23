@@ -121,6 +121,51 @@ test("調査（リサーチ）: 4問が 1ページに 出て、ぜんぶ 書く�
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
 });
 
+/**
+ * 出したあとに 開き直したら **前の こたえが 入力欄に 戻る**（2026-09-22 の 指定）。
+ *
+ * 先生が 入れ直そうと 開いたら 欄が 空で、「回答が 消えてしまってます」に なった。
+ * 記録（`quiz_results`・こたえノート）は 残って いたのに 入力欄が 読み戻して いなかった。
+ * 調査は **やり直す 意味が 無い**——調べて 書いた ものを あとで 見返して 直すのが 正しい。
+ */
+test("調査（リサーチ）: 出したあとに 開き直すと、前の こたえが 入力欄に 戻る", async ({
+  page,
+  context,
+}) => {
+  await seedUpToQuiz(context);
+  await page.goto(PATH);
+  await page.getByRole("button", { name: "はじめる" }).click();
+
+  await writeRanksIn(page, "kaikyuu_order", RANKS);
+  for (const [questionId, written] of WRITTEN) {
+    await writeIn(page, questionId, written);
+  }
+  await writeIn(page, LAST, "The boss is closer here.");
+  await submitAnswers(page);
+  await expect(page.getByText("4 / 4 つ")).toBeVisible();
+
+  /* 出したあとに もう一度 開く——「はじめる」では なく「こたえを 見る・直す」が 出る。 */
+  await page.goto(PATH);
+  await expect(page.getByRole("button", { name: "はじめる" })).toHaveCount(0);
+  await page.getByRole("button", { name: "こたえを 見る・直す", exact: true }).click();
+
+  /* 行の 入力も 自由記述も、出した ものが そのまま 欄に 入って いる。 */
+  const box = page.locator("#q-kaikyuu_order");
+  for (const [at, value] of RANKS.entries()) {
+    await expect(box.getByLabel(`${at + 1}ばんめを 入力する`, { exact: true })).toHaveValue(value);
+  }
+  for (const [questionId, written] of WRITTEN) {
+    await expect(page.locator(`#q-${questionId}`).getByLabel("じゆうに 書く")).toHaveValue(written);
+  }
+  await shot(page, "houkoku-search-quiz-04-reopened");
+
+  /* 直して 出し直せる（1行 足して、また 出す）。 */
+  await writeIn(page, "kaikyuu", "In my country: CEO, manager, staff. (naoshita)");
+  await submitAnswers(page);
+  await expect(page.getByText("4 / 4 つ")).toBeVisible();
+  await expect(page.getByText(/naoshita/).first()).toBeVisible();
+});
+
 test("調査（リサーチ）: 階級は 行を ふやして・↑↓で ならべかえて・消せる（離れても 消えない）", async ({
   page,
   context,
