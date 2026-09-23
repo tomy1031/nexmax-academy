@@ -31,7 +31,7 @@ import {
 import { getGeminiKey } from "@/lib/profile";
 import { buildFuriganaIndex, uncoveredKanji, type FuriganaIndex } from "@/lib/text/furigana";
 import { useAnswerCheckStore } from "./answer-check";
-import { BrushUp, NG_COLOR, OK_COLOR } from "./check-parts";
+import { NG_COLOR, OK_COLOR } from "./check-parts";
 
 /**
  * バグ報告（もんだい `bugreport`）— サイトを 使って、見つけた バグを 声で 報告する
@@ -103,6 +103,8 @@ const UI_FURIGANA = buildFuriganaIndex([
   ["上", "うえ"],
   ["下", "した"],
   ["回", "かい"],
+  ["言い方", "いいかた"],
+  ["伝わります", "つたわります"],
 ]);
 
 /** 聞くだけの つなぎ（朝礼の `LISTEN_ONLY` と 同じ 決め——相手は 何も 言わない）。 */
@@ -651,6 +653,27 @@ function BugCard({
             )}
           </div>
 
+          {/*
+            ブラッシュアップは **点の すぐ 下に 大きく**（2026-09-23 の 指定「ブラッシュアップは
+            もっと強調して」）。いちばん 読んで ほしい 文なので、話した ことばより 先に 置く。
+          */}
+          {entry.polished !== "" && (
+            <div
+              className="mt-3 rounded-2xl border-4 border-[#7c6cf0] px-4 py-3"
+              style={{ background: "#f3f0ff" }}
+            >
+              <p className="text-base font-black text-[#5f4fd6]">
+                <RubyText text="✨ ブラッシュアップ" index={UI_FURIGANA} />
+              </p>
+              <p className="text-ink mt-1 text-lg leading-loose font-black whitespace-pre-line">
+                <RubyText text={entry.polished} index={aiFurigana} />
+              </p>
+              <p className="mt-1 text-xs font-bold text-[#5f4fd6]">
+                <RubyText text="この 言い方で 話せると、もっと 伝わります。" index={UI_FURIGANA} />
+              </p>
+            </div>
+          )}
+
           {entry.spoken !== "" && (
             <div className="mt-3 rounded-2xl border-2 border-[#4fa8e8] bg-white px-3 py-2.5">
               <p className="text-[11px] font-black text-[#2a7ab5]">
@@ -694,7 +717,6 @@ function BugCard({
               );
             })}
           </ul>
-          <BrushUp text={entry.polished} furigana={aiFurigana} />
         </>
       )}
 
