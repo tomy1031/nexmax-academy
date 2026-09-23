@@ -25,10 +25,18 @@ export const OUT_RATE = 24_000;
  * `NMClaw` が「エヌエムシーロー」に なった（2026-09-04 に 実発生。正しくは エヌエムクロー）。
  * 学習者に 見せる 字は `NMClaw` の ままに して、**Live へ 渡す 文だけ** カタカナに する。
  *
- * 頭字語（SES・DX・IT）は 綴りどおり 1字ずつ 読まれる ので 直さなくて よい。
- * ここに 足すのは **綴りから 読めない 名前**だけ。
+ * 頭字語は たいてい 綴りどおり 1字ずつ 読まれる（SES・DX・IT）。
+ * ただし **ことばとして 読めて しまう 綴り**は 別で、`ABA` が「アバ」に なった
+ *（2026-09-23 に 実発生。カンボジアの 銀行で、正しくは エービーエー）。
+ * ここに 足すのは **綴りから 正しく 読めない 名前**——読めない ものと、
+ * 読めて しまう ものの 両方。
  */
-const SPEECH_ALIASES: readonly (readonly [string, string])[] = [["NMClaw", "エヌエムクロー"]];
+const SPEECH_ALIASES: readonly (readonly [string, string])[] = [
+  ["NMClaw", "エヌエムクロー"],
+  /* 「ABA Pay」を 先に 当てる（長い ものから 当てる ので 並びは 自由）。 */
+  ["ABA Pay", "エービーエー ペイ"],
+  ["ABA", "エービーエー"],
+];
 
 /** 読み上げる 前に 言い換える（長い ものから 当てる）。 */
 export function forSpeech(text: string): string {

@@ -187,10 +187,18 @@
                 </div>
             </header>
 
-            <div id="messages-container" class="flex-1 overflow-y-auto p-6 space-y-6 bg-slate-50 scroll-smooth">
+            <!--
+              下の 2段（下書き・選択肢）が ふくらんでも、**メッセージ欄を 押しつぶさない**。
+              2026-09-22 の 指定「メッセージ増えたのが原因なら、スクロール入れるなどして
+              前と同じ拡大倍率に」。3段が 高さを 取り合う 作りなので、
+              **取り合いを やめて それぞれ スクロールさせる**。
+            -->
+            <div id="messages-container"
+                class="flex-1 min-h-[240px] overflow-y-auto p-6 space-y-6 bg-slate-50 scroll-smooth">
             </div>
 
-            <div id="draft-area" class="hidden border-t border-indigo-100 bg-indigo-50/60 p-4 fade-in backdrop-blur-sm">
+            <div id="draft-area"
+                class="hidden max-h-[26vh] flex-shrink-0 overflow-y-auto border-t border-indigo-100 bg-indigo-50/60 p-4 fade-in backdrop-blur-sm">
                 <div class="max-w-3xl mx-auto flex gap-4">
                     <div class="pt-1">
                         <div
@@ -209,7 +217,7 @@
             </div>
 
             <div id="action-area"
-                class="p-6 bg-white border-t min-h-[180px] flex-shrink-0 z-10 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+                class="p-6 bg-white border-t min-h-[180px] max-h-[44vh] overflow-y-auto flex-shrink-0 z-10 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
             </div>
         </div>
 
