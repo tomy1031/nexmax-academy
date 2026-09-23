@@ -126,7 +126,7 @@ test("バグ報告: 60点 以下は つぎへ 進めない・75点で 進める"
       ok: i < ok,
       note: "",
     })),
-    polished: "",
+    polished: ok >= 3 ? "フード注文画面で、＋を 押しました。" : "",
     skipped: false,
   });
   const seed = async (ok: number) =>
@@ -161,6 +161,9 @@ test("バグ報告: 60点 以下は つぎへ 進めない・75点で 進める"
   await page.getByRole("button", { name: "つづきから" }).click();
   await expect(page.getByTestId("bug-score")).toHaveText(/75\s*\/ 100/);
   await expect(page.getByText("OK", { exact: true })).toBeVisible();
+  // ブラッシュアップは 点の すぐ 下に 大きく（2026-09-23 の 指定）
+  await expect(page.getByText(/ブラッシュアップ/).first()).toBeVisible();
+  await shot(page, "houkoku-bug-05-75pt-brushup");
   await expect(page.getByRole("button", { name: "つぎ →" })).toBeEnabled();
 });
 
