@@ -21,6 +21,20 @@ describe("読み上げの 言い換え", () => {
     expect(forSpeech("ABAの 仕様を 調べました。")).toBe("エービーエーの 仕様を 調べました。");
   });
 
+  /* 読みは ユーザーが 決めた もの（2026-09-23・docs/constraints.md）。 */
+  it("ACLEDA は アクレダ、CADT は シーエーディーティー、KhmerSabai は クメールサバーイ と 読む", () => {
+    expect(forSpeech("ABA/ACLEDA の 決済です。")).toBe("エービーエー/アクレダ の 決済です。");
+    expect(forSpeech("ACLEDA Payの 画面です。")).toBe("アクレダ ペイの 画面です。");
+    expect(forSpeech("CADT学生10名の データです。")).toBe(
+      "シーエーディーティー学生10名の データです。",
+    );
+    expect(forSpeech("KhmerSabai の 朝礼です。")).toBe("クメールサバーイ の 朝礼です。");
+  });
+
+  it("AUPP は 綴りどおりで 正しく 読めて いたので 言い換えない", () => {
+    expect(forSpeech("AUPPと CADTの 学生データ")).toBe("AUPPと シーエーディーティーの 学生データ");
+  });
+
   it("NMClaw は エヌエムクロー と 読む", () => {
     expect(forSpeech("NMClaw を つかいます。")).toBe("エヌエムクロー を つかいます。");
   });
@@ -32,7 +46,7 @@ describe("読み上げの 言い換え", () => {
   });
 
   it("2回 当てても 二重に ならない（指紋と 合成の 両方で 通る）", () => {
-    const once = forSpeech("ABA Payです。");
+    const once = forSpeech("ABA Payと ACLEDA Payと CADTと KhmerSabaiです。");
     expect(forSpeech(once)).toBe(once);
   });
 });
