@@ -522,7 +522,7 @@
           {
             "speakerId": "fujiki",
             "text": "藤木です。1つ お知らせが あります。松井社長から、決済の 機能に ついて 追加の お願いが ありました。ABA Payだけでは なく、ACLEDA Payも 使えるように したい そうです。",
-            "audio": "/audio/meetings/asakai_kantan/s1-closing-0-0382f7b6.wav"
+            "audio": "/audio/meetings/asakai_kantan/s1-closing-0-2bc1480b.wav"
           },
           {
             "speakerId": "hendy",
@@ -542,12 +542,12 @@
           {
             "speakerId": "hendy",
             "text": "決済フロントエンドは、ABA Payと ACLEDA Payを えらべるように 変えて ください。お願いします。",
-            "audio": "/audio/meetings/asakai_kantan/s1-closing-4-c2dc4ccb.wav"
+            "audio": "/audio/meetings/asakai_kantan/s1-closing-4-ddf04082.wav"
           },
           {
             "speakerId": "fujiki",
             "text": "ACLEDA Payを いつ つなぐかは、まだ 決まって いません。では、きょうは ここまでです。",
-            "audio": "/audio/meetings/asakai_kantan/s1-closing-5-03885908.wav"
+            "audio": "/audio/meetings/asakai_kantan/s1-closing-5-7e39cc80.wav"
           }
         ],
         "panels": [
@@ -845,7 +845,7 @@
         "sample": {
           "speakerId": "hendy",
           "text": "きのうは、ABA Payの 決済の けっかを 確認する ところを 作りました。ABA Pay がわの 設定も 進めました。今、決済バックエンド機能 ぜんたいの 進捗は 70%です。きょうは、決済が 成功したか 失敗したかを KhmerSabai へ 返す ところを 作ります。今の ところ 大きな 問題は ありません。",
-          "audio": "/audio/meetings/asakai_kantan/s2-sample-e106b09b.wav"
+          "audio": "/audio/meetings/asakai_kantan/s2-sample-4068eb52.wav"
         },
         "prompt": {
           "speakerId": "hendy",
@@ -912,7 +912,7 @@
             "example": {
               "speakerId": "hendy",
               "text": "「きのうは、ABA Payの APIと つなぎ始めました。ABA Payと ACLEDA Payを えらべる 画面も 作り始めました。」",
-              "audio": "/audio/meetings/asakai_kantan/s2-kinou-ex-684d0ec6.wav"
+              "audio": "/audio/meetings/asakai_kantan/s2-kinou-ex-7d77549a.wav"
             }
           },
           {
@@ -1249,7 +1249,7 @@
           {
             "speakerId": "fujiki",
             "text": "藤木です。ACLEDA Payに ついて お知らせします。ACLEDA Payは、開発だけでは なく、ACLEDA銀行との 接続や 設定も 要ります。松井社長に 確認しました。ACLEDA Payは 次の 回に します。今回は ABA Payを 予定どおり 仕上げて ください。",
-            "audio": "/audio/meetings/asakai_kantan/s3-closing-1-456c133f.wav"
+            "audio": "/audio/meetings/asakai_kantan/s3-closing-1-dd5a4796.wav"
           },
           {
             "speakerId": "hendy",
@@ -1751,7 +1751,7 @@
           {
             "speakerId": "fujiki",
             "text": "藤木です。きのう お伝えした とおり、ACLEDA Payは 次の 回です。きょうは ABA Payを 仕上げましょう。",
-            "audio": "/audio/meetings/asakai_kantan/s4-closing-0-e1d73e05.wav"
+            "audio": "/audio/meetings/asakai_kantan/s4-closing-0-0d9d8365.wav"
           },
           {
             "speakerId": "hendy",
