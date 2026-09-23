@@ -182,13 +182,50 @@ export async function requestCardHit(
  * `key` に 教材と 曜日を 混ぜるのは、**日が 変わったら 張り直す**ため
  *（月曜の 履歴を 引きずると、火曜の 報告を 月曜の 行で 見はじめる）。
  */
+export type AsakaiJudgeApiResult =
+  { ok: true; judge: AsakaiJudgeResult } | { ok: false; reason: string };
+
+/**
+ * **報告の 判定の つなぎを 先に 張って おく**（2026-09-23）。
+ *
+ * `requestAsakaiJudge` の 上限（13秒）には **つなぎの したく**も 入る。
+ * したくは 通行証 → 接続 → setup の 3つで、先頭の モデルが 何も 返さない ときは
+ * そこだけで 9秒 かかる——その日 **最初の 1本**が 毎回 間に 合わず、
+ * 「AIの 見かたが 届きませんでした」に なって いた（2026-09-23 に 実報告）。
+ *
+ * もんだいの 見て もらう（`warmQuizReview`）と 同じ 手で、**学習者が まだ
+ * 報告メモを 読んで いる あいだ**に 張る。押した ときには もう 開いて いるので
+ * 往復ぶんだけで 返る。失敗は 画面に 出さない（報告の ときに もう いちど 張る）。
+ */
+export async function warmAsakaiJudge(key: string): Promise<boolean> {
+  const apiKey = getGeminiKey();
+  if (!apiKey) return false;
+  // 見て もらって いる 最中は 触らない（走って いる 往復の つなぎを 捨てて しまう）
+  if (SLOTS.asakai.busy) return false;
+  if (SLOTS.asakai.key === key && (SLOTS.asakai.session?.alive() || SLOTS.asakai.opening)) {
+    return true;
+  }
+  const opened = await openJudge(apiKey, "asakai", key).catch(() => null);
+  return opened?.ok === true;
+}
+
 export async function requestAsakaiJudge(
   key: string,
   context: AsakaiJudgeContext,
   facts: readonly MatchableFact[],
-): Promise<AsakaiJudgeResult | null> {
+): Promise<AsakaiJudgeApiResult> {
   const apiKey = getGeminiKey();
-  if (!apiKey || facts.length === 0) return null;
+  /*
+   * **なぜ 出ないかを 画面に 返す**（2026-09-23 の 指定
+   *「鍵がない＝GeminiAPIキーがないということですか？ ならそのように言って
+   *  APIキーの登録をうながしてください」）。
+   *
+   * 前は どの 失敗も `null` で 帰って いた ので、画面は
+   *「AIの 見かたが 届きませんでした」の 1文しか 出せなかった——キーが 無いのか、
+   * 混んで いるのか、間に 合わなかったのかで **学習者が する ことは まるで ちがう**。
+   */
+  if (!apiKey) return { ok: false, reason: "noKey" };
+  if (facts.length === 0) return { ok: false, reason: "noFacts" };
   /*
    * **1本ずつ しか 頼まない**（2026-09-14 の 検収）。
    *
@@ -199,7 +236,7 @@ export async function requestAsakaiJudge(
    * 断言する ことに なる（規律1 の 逆）。重なった ぶんは 頼まずに 諦める：
    * ことばの 照合だけで 進むので、学習者は 止まらない。
    */
-  if (SLOTS.asakai.busy) return null;
+  if (SLOTS.asakai.busy) return { ok: false, reason: "busy" };
   SLOTS.asakai.busy = true;
   /*
    * **札（busy）を 下ろすのは 中の 往復が 本当に 終わった とき**（2026-09-16 の 検収）。
@@ -222,12 +259,12 @@ export async function requestAsakaiJudge(
   });
   return await Promise.race([
     work,
-    new Promise<null>((resolve) =>
+    new Promise<AsakaiJudgeApiResult>((resolve) =>
       setTimeout(() => {
         gaveUp = true;
         // 先に 終わって いた ときは 時計だけ 残って いる（失敗では ない）
         if (!settled) liveDebug("judge.asakai", `timeout ${ASAKAI_TIMEOUT_MS}ms`, true);
-        resolve(null);
+        resolve({ ok: false, reason: "timeout" });
       }, ASAKAI_TIMEOUT_MS),
     ),
   ]);
@@ -260,19 +297,21 @@ async function askAsakai(
   facts: readonly MatchableFact[],
   /** 呼んだ 側が 待ちを 諦めたか（つながった ときに 見て、諦めて いたら 頼まない）。 */
   gaveUp: () => boolean,
-): Promise<AsakaiJudgeResult | null> {
+): Promise<AsakaiJudgeApiResult> {
   let mine: JudgeSession | null = null;
   try {
     const opened = await openJudge(apiKey, "asakai", key);
     // つなぎは スロットに 残す（つぎの 報告が 使う）。頼みだけ やめる
-    if (!opened.ok || gaveUp()) return null;
+    if (!opened.ok) return { ok: false, reason: opened.reason };
+    if (gaveUp()) return { ok: false, reason: "timeout" };
     mine = opened.session;
     const args = await mine.ask(buildAsakaiJudgePrompt(context));
-    return parseAsakaiJudge(
+    const judge = parseAsakaiJudge(
       args,
       facts,
       (context.items ?? context.panels).map((one) => one.id),
     );
+    return judge ? { ok: true, judge } : { ok: false, reason: "badShape" };
   } catch (error) {
     liveDebug("judge.asakai", `ask ${error instanceof JudgeError ? error.reason : "failed"}`, true);
     /*
@@ -284,7 +323,7 @@ async function askAsakai(
      * 上限を 超えつづける＝AIの 見立てが 二度と 届かない。
      */
     if (mine && SLOTS.asakai.session === mine) dropSlot(SLOTS.asakai);
-    return null;
+    return { ok: false, reason: error instanceof JudgeError ? error.reason : "failed" };
   }
 }
 

@@ -89,7 +89,7 @@ async function closeDuty(page: Page): Promise<void> {
 /**
  * **その日の 評価（モーダル）**を 読んで 閉じる（2026-09-17 の 指定「全て モーダルが よい」）。
  *
- * 「きょうの けっかを 見る ▶」の あとに 出る。中身は 点・どのように 伝えられたか・
+ * 「きょうの けっかを 見る ▶」の あとに 出る。中身は 点・項目ごとの けっか・
  * しつもんの ふりかえり。閉じると これまでどおり 時間カードへ 進む。
  */
 async function closeDayScore(page: Page): Promise<void> {
@@ -288,9 +288,21 @@ test("朝礼（かんたん）— 報告すると カードが 開く", async ({
   await shot(page, "asakai-03-kantan-opened");
 
   await expectOnScreen(page, "きょうの 評価");
-  await expectOnScreen(page, "どのように 伝えられたか");
-  /* 鍵ゼロの 端末では 内容だけ 出す（見て いない ものに 0点を つけない）。 */
-  await expectOnScreen(page, "AIの 鍵が ある ときに 出ます");
+  await expectOnScreen(page, "項目ごとの けっか");
+  /*
+   * **仕組みの ことば（AI・鍵・見かた）を 画面に 出さない**（2026-09-23 の 指定）。
+   * 見て いない ものさしは 箱の「—」が そのまま 言う。
+   */
+  await expect(page.getByText("AIの 鍵が ある ときに 出ます")).toHaveCount(0);
+  await expect(page.getByText("合格に 効くのは")).toHaveCount(0);
+  /* **代わりに 何が 出るか**も 見る——「—」だけだと 0点に 見える（R5 検収）。 */
+  await expectOnScreen(page, "まだ 見て いません");
+  /*
+   * **なぜ 出ないかを 名前で 言い、登録の 行き先まで 出す**（2026-09-23 の 指定）。
+   * E2E は 鍵ゼロで 走る ので、ここに 出るのは いつも「キーが 無い」の 側。
+   */
+  await expectOnScreen(page, "APIキーが 登録されて いません");
+  await expect(page.getByRole("link", { name: /せっていを ひらく/ })).toBeVisible();
   expect(await bareKanjiTexts(page)).toEqual([]);
   await shot(page, "asakai-03b-day-score");
   await closeDayScore(page);
@@ -701,7 +713,16 @@ test("聞き返しに こたえると、こたえの 見かたが 出る", async
   await expect(first).toBeVisible();
   /* 報告の あとの 見かたにも 点が 出る（鍵ゼロでは 内容だけ）。ルビが 入るので 字は 素で 見る。 */
   await expectOnScreen(page, "報告の 内容");
-  await expectOnScreen(page, "どのように 伝えられたか");
+  await expectOnScreen(page, "あなたの 報告と ブラッシュアップ");
+  /*
+   * **項目ごとの「あなたの 発言」**（2026-09-23 の 指定）。鍵ゼロの E2Eでも 出る——
+   * AIの 見立てが 無い ときは 発話を 文に 分けて 照合で 引く（`attributeUtterance`）。
+   */
+  await expectOnScreen(page, "あなたの 発言");
+  /* 全文の 箱と 表で 名前を 分ける（似た 名前を 3つ 並べない・R5 検収）。 */
+  await expectOnScreen(page, "言った ことば ぜんぶ");
+  await expectOnScreen(page, "決済の 画面と ABA Payの ボタンを 作りました。");
+  await shot(page, "asakai-14-report-score");
   await first.getByRole("button", { name: /報告を つづける/ }).click();
 
   /* 聞き返しに こたえる。 */

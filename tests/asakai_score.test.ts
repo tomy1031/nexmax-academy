@@ -59,7 +59,7 @@ describe("AIが 返した 点を そのまま 信じない", () => {
   });
 });
 
-describe("どのように 伝えられたか", () => {
+describe("項目ごとの けっか", () => {
   it("聞き返し 0回で ⭕ なら 最初から", () => {
     expect(markOf({ full: true, attempts: 0 })).toBe("first");
   });

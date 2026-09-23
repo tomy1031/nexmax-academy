@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   applyUtterance,
+  attributeUtterance,
   countFacts,
   countLogHeads,
   countLogLines,
@@ -11,6 +12,7 @@ import {
   nextProbePanel,
   readsLog,
   saysProgress,
+  splitSentences,
   type PanelState,
   type ReportPanel,
 } from "@/lib/meeting/panels";
@@ -662,5 +664,58 @@ describe("aiOnly — AIの 見立てを 正に する", () => {
       aiSaidIds: ["k1"],
     });
     expect(step.states.filter((one) => one.full)).toHaveLength(2);
+  });
+});
+
+/*
+ * 項目ごとの「あなたの 発言」— 2026-09-23 の 指定
+ *「原理的に『あなたの 発言』を（項目ごとの 表に）入れる ことは できますか？」。
+ *
+ * 前は AIの 見立てからしか 引けず、**鍵が 無い 端末では 4行 ぜんぶ 空**だった。
+ */
+describe("attributeUtterance — 札を 開けた 1文を 引く", () => {
+  it("文ごとに 分けて、その 札が 数えた 行に 当たった 文だけ 返す", () => {
+    const utterance = "きのうは テストを しました。きょうは のこりを 4こ します。進捗は 80%です。";
+    const step = applyUtterance({
+      utterance,
+      panels: EASY_TUE,
+      states: initialPanelStates(EASY_TUE),
+    });
+    const mine = attributeUtterance({ utterance, panels: EASY_TUE, states: step.states });
+    expect(mine["kinou"]).toBe("きのうは テストを しました。");
+    expect(mine["kyou"]).toBe("きょうは のこりを 4こ します。");
+    /* 形で 見る 札（進捗）も、開いて いれば その 文を 引ける。 */
+    expect(mine["suuji"]).toBe("進捗は 80%です。");
+    /* 言って いない 札は 空の まま（言った ことに しない）。 */
+    expect(mine["komari"]).toBeUndefined();
+  });
+
+  it("開いて いない 数の 札には 文を つけない", () => {
+    const utterance = "きのうは テストを しました。";
+    const step = applyUtterance({
+      utterance,
+      panels: EASY_TUE,
+      states: initialPanelStates(EASY_TUE),
+    });
+    const mine = attributeUtterance({ utterance, panels: EASY_TUE, states: step.states });
+    expect(mine["suuji"]).toBeUndefined();
+  });
+
+  it("1つの 札に 2文 当たったら つなぐ", () => {
+    const utterance = "きのうは テストを しました。16こ 終わりました。";
+    const step = applyUtterance({
+      utterance,
+      panels: EASY_TUE,
+      states: initialPanelStates(EASY_TUE),
+    });
+    const mine = attributeUtterance({ utterance, panels: EASY_TUE, states: step.states });
+    expect(mine["kinou"]).toBe("きのうは テストを しました。16こ 終わりました。");
+  });
+
+  it("句点が 無くても 改行で 切る", () => {
+    expect(splitSentences("きのうは テストを しました\nきょうは 4こ します")).toEqual([
+      "きのうは テストを しました",
+      "きょうは 4こ します",
+    ]);
   });
 });

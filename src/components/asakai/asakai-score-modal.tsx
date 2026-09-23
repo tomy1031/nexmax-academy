@@ -1,9 +1,11 @@
 "use client";
 
 import type { ReactNode } from "react";
+import Link from "next/link";
 
 import { ModalShell } from "@/components/meeting/modal-shell";
 import { RubyText } from "@/components/ruby-text";
+import { adviceFor, KEY_CHECK_FURIGANA } from "@/lib/ai/key-check";
 import { CLARITY_MAX, CONTENT_MAX, JAPANESE_MAX, type RowMark } from "@/lib/meeting/asakai-score";
 import type { FuriganaIndex } from "@/lib/text/furigana";
 
@@ -17,7 +19,7 @@ import type { FuriganaIndex } from "@/lib/text/furigana";
  * 何を 直すのか**が 読めないので、学習者は 同じ ところで つまずき つづける。
  *
  * ## 3つとも 同じ 骨
- * 見出し（点）→ どのように 伝えられたか → 中身の ふりかえり → よかった こと／アドバイス。
+ * 見出し（点）→ あなたの 報告と ブラッシュアップ → 中身の ふりかえり → よかった こと／アドバイス。
  * 骨を そろえるのは、**同じ ものを 同じ 場所で 読める**ように する ため
  *（画面ごとに 並びが 変わると、毎回 探す ところから 始まる）。
  *
@@ -109,6 +111,113 @@ const FIRST_WORD: Record<RowMark, string> = {
   missing: "まだです",
 };
 
+/**
+ * **AIの 点が 出ない 理由を、学習者の ことばで 言う**（2026-09-23 の 指定
+ *「鍵がない＝GeminiAPIキーがないということですか？ ならそのように言って
+ *  APIキーの登録をうながしてください」）。
+ *
+ * 前は どの 失敗も「いまは AIの 見かたが 届きませんでした」の 1文だった ので、
+ * **キーを 登録して いる 人が キーを 疑う**ことに なって いた（実際の 報告では
+ * キーは 入って いて、間に 合わなかった ほうだった）。
+ *
+ * ## キーの ことばは **共有の 台帳から 引く**（再実装しない）
+ * `src/lib/ai/key-check.ts` の `KEY_CHECK_ADVICE` は `KeyCheckReason` の
+ * **全部の 名前を 型で 要求する** 台帳で、期限切れ・IP制限・API が OFF・
+ * VPN（場所）まで 1つずつ 文を 持って いる。ここで 書き写すと
+ * **網羅が 落ちる**——最初の 版は 7つ 落ちて いて、キーが 壊れて いる 学習者は
+ *「返事が 届きませんでした。もう いちど 報告すると 出ます。」を 永久に 読む ことに
+ * なって いた（2026-09-23 の code-critic 検収）。
+ *
+ * ここに 書くのは **朝礼にしか 無い 理由**だけ（共有の 台帳に 名前が 無い もの）。
+ */
+const OWN_WORD: Record<string, { readonly what: string; readonly next: string }> = {
+  /*
+   * `noKey` は 共有の 台帳にも ある が、そちらの つぎの 一手は
+   *「もういちど おして ください」＝**せっていの 画面に 立って いる 人**に 向けた 文。
+   * 朝礼の 画面から 読む 人には 行き先が 要るので、ここだけ 言い方を 持つ。
+   */
+  noKey: {
+    what: "Gemini（AI）の APIキーが 登録されて いません。",
+    next: "せっていの 画面で 登録すると、この 2つが 出ます。マイクで 話す ことも できます。",
+  },
+  timeout: {
+    what: "AIの 返事が 間に 合いませんでした。",
+    next: "もう いちど 報告すると 出ます。",
+  },
+  /*
+   * **「まってから もう いちど 報告して」とは 言わない**（同検収）。
+   * その 発話は もう 数えて 札も 開き、司会も 先へ 進んで いる——
+   * ポップアップには すでに「言い直す」と「つぎへ」が ある ので、
+   * ここで 3つめの 行動を 並べると 何を すれば よいか 読めなく なる（規律1）。
+   */
+  busy: {
+    what: "AIは まだ まえの 報告を 見て います。",
+    next: "つぎの 報告から 出ます。",
+  },
+  /* AIは 返事を したが、点の 数を 付けて こなかった 回。 */
+  badScore: {
+    what: "AIが 点を つけませんでした。",
+    next: "もう いちど 報告すると 出ます。",
+  },
+  badShape: {
+    what: "AIの 返事を 読めませんでした。",
+    next: "もう いちど 報告すると 出ます。",
+  },
+  /*
+   * 見る 行が 1つも 無い 教材（データの 不備）。**何回 報告しても 出ない**ので、
+   * 「もう いちど」とは 言わない——できない ことを つぎの 一手に しない。
+   */
+  noFacts: {
+    what: "この 日は AIが 見る ところが ありません。",
+    next: "先生に つたえて ください。",
+  },
+};
+
+/**
+ * **せっていへ 行けば 学習者が 直せる** 理由（キーを 書きかえる もの）。
+ *
+ * 先生に 頼む しか ない もの（IP制限・プロジェクトの 設定・場所）には 出さない——
+ * 押しても 直せない 行き先を 見せると、そこで 止まる。
+ */
+const FIXABLE_IN_SETTINGS: ReadonlySet<string> = new Set([
+  "noKey",
+  "badKey",
+  "keyExpired",
+  "wrongKeyType",
+  "tokenRejected",
+  "apiDisabled",
+]);
+
+/** キーの ことばは 学習者が 読む 文。読みは その 台帳が 持って いる。 */
+const SETTINGS_HREF = "/map/settings";
+
+/** AIの 点が 出ない ときの 1枚（理由＋つぎの 一手）。 */
+function FailNote({ reason, index }: { reason: string; index: FuriganaIndex }) {
+  const own = OWN_WORD[reason];
+  const word = own ?? adviceFor(reason);
+  /* 朝礼の ことばは 朝礼の 辞書、キーの ことばは その 台帳の 辞書で 読む。 */
+  const dict = own ? index : KEY_CHECK_FURIGANA;
+  return (
+    <div className="border-sun-deep bg-cream mt-2 rounded-xl border-2 px-3 py-2">
+      <p className="text-sun-deep text-[11px] leading-[1.9] font-black">
+        💡 <Ruby text={word.what} index={dict} />
+      </p>
+      <p className="text-ink mt-0.5 text-[11px] leading-[1.9] font-bold">
+        <Ruby text={word.next} index={dict} />
+      </p>
+      {FIXABLE_IN_SETTINGS.has(reason) ? (
+        <Link
+          prefetch={false}
+          href={SETTINGS_HREF}
+          className="text-sky-deep mt-1 inline-block text-[11px] leading-[1.9] font-black underline underline-offset-4"
+        >
+          <Ruby text="せっていを ひらく ▶" index={index} />
+        </Link>
+      ) : null}
+    </div>
+  );
+}
+
 function Ruby({ text, index }: { text: string; index: FuriganaIndex }) {
   return <RubyText text={text} index={index} show />;
 }
@@ -132,14 +241,14 @@ function ScoreHead({
   lead,
   score,
   note,
-  hasKey,
+  failReason,
   index,
 }: {
   lead: string;
   score: ScoreView;
   note?: ReactNode;
-  /** 端末に AIの 鍵が あるか（無い ときと 届かなかった ときで 理由が ちがう）。 */
-  hasKey: boolean;
+  /** AIの 点が 出ない 理由（出て いれば null）。 */
+  failReason: string | null;
   index: FuriganaIndex;
 }) {
   const axes = [
@@ -193,29 +302,38 @@ function ScoreHead({
                 </>
               )}
             </p>
+            {/*
+              **「—」の 横に 字を 置く**（R5 検収 2026-09-23）。「—」だけだと
+              **0点に 見える**——仕組みの ことば（AI・鍵）を 使わずに、
+              見て いない ことだけを 言う。同じ 言い回しが すでに
+              聞き返しの ポップアップに ある（「日本語: 見て いません」）。
+            */}
+            {axis.value === null ? (
+              <p className="text-ink-faint text-[10px] leading-[1.9] font-bold">
+                <Ruby text="まだ 見て いません" index={index} />
+              </p>
+            ) : null}
           </div>
         ))}
       </div>
-      <p className="text-ink-soft mt-2 text-[11px] leading-[1.9] font-bold">
-        <Ruby text="合格に 効くのは 報告の 内容です。" index={index} />
-      </p>
-      {score.total === null ? (
-        <p className="text-ink-soft mt-1 text-[11px] leading-[1.9] font-bold">
-          <Ruby
-            text={
-              hasKey
-                ? "いまは AIの 見かたが 届きませんでした。内容の 点だけ 出します。"
-                : "伝わりやすさと 仕事の 日本語は、AIの 鍵が ある ときに 出ます。"
-            }
-            index={index}
-          />
-        </p>
+      {/*
+        **「合格に 効くのは 報告の 内容です。」は 出さない**（2026-09-23 の 指定
+        「意味が わかりません。正直 混乱するので 表示不要」）。点の 由来を 断る ための
+        文だったが、読んだ 人が いちばん 先に つまずく 文に なって いた。
+
+        代わりに 出すのは **なぜ 出ないか と、つぎに 何を するか**だけ。同じ日の
+        指定「鍵がない＝GeminiAPIキーがないということですか？ ならそのように言って
+        APIキーの登録をうながしてください」——「AIの 見かた」の ような
+        こちらの 事情の ことばは 使わず、**キーの ときは 登録の 行き先まで 出す**。
+      */}
+      {score.total === null && failReason !== null ? (
+        <FailNote reason={failReason} index={index} />
       ) : null}
     </div>
   );
 }
 
-/** 「どのように 伝えられたか」の 帯。 */
+/** 「項目ごとの けっか」の 帯（その日の おわり。ここに ブラッシュアップは 出ない）。 */
 function MarkRow({
   rows,
   words,
@@ -227,7 +345,7 @@ function MarkRow({
 }) {
   return (
     <div className="mt-3">
-      <Cap text="どのように 伝えられたか" index={index} />
+      <Cap text="項目ごとの けっか" index={index} />
       <div className="mt-1 grid grid-cols-2 gap-2 sm:grid-cols-4">
         {rows.map((row) => {
           const face = MARK_FACE[row.mark];
@@ -253,7 +371,7 @@ function sameText(a: string, b: string): boolean {
 }
 
 /**
- * **項目ごとの まとめ**（「どのように 伝えられたか」を 表に する）
+ * **項目ごとの まとめ**（「あなたの 報告と ブラッシュアップ」の 表）
  *
  * 2026-09-19 の 指定「ブラッシュアップは 項目ごとに まとめて」「表に まとめて」
  *「まだです の ところも 表で 一括で まとめて」。前は 札 4枚・ブラッシュアップ（1本）・
@@ -289,7 +407,7 @@ function ItemTable({
     : undefined;
   return (
     <div className="mt-3">
-      <Cap text="どのように 伝えられたか" index={index} />
+      <Cap text="あなたの 報告と ブラッシュアップ" index={index} />
       <table className="border-hairline mt-1 w-full border-collapse overflow-hidden rounded-xl border bg-white text-left">
         <thead>
           <tr className="bg-panel-tint text-ink-soft text-[10px] leading-[1.9] font-black">
@@ -474,7 +592,7 @@ export function ReportScoreModal({
   readLog,
   nextLabel,
   utterance,
-  hasKey,
+  failReason,
   index,
   onClose,
 }: {
@@ -488,7 +606,8 @@ export function ReportScoreModal({
   nextLabel: string;
   /** 学習者が いま 言った こと（そのまま 出す）。 */
   utterance: string;
-  hasKey: boolean;
+  /** AIの 点が 出ない 理由（出て いれば null）。 */
+  failReason: string | null;
   index: FuriganaIndex;
   onClose: () => void;
 }) {
@@ -514,7 +633,7 @@ export function ReportScoreModal({
       <ScoreHead
         lead="いまの 報告"
         score={score}
-        hasKey={hasKey}
+        failReason={failReason}
         index={index}
         note={
           left > 0 ? (
@@ -529,9 +648,17 @@ export function ReportScoreModal({
         }
       />
 
-      {/* 言った ことは **1回だけ** まるごと 出す（表の 中は 項目ごとの ところだけ）。 */}
+      {/*
+        言った ことは **1回だけ** まるごと 出す（表の 中は 項目ごとの ところだけ）。
+
+        名前は「あなたの 報告」では なく **「言った ことば ぜんぶ」**（R5 検収 2026-09-23）。
+        下の 表が「あなたの 報告と ブラッシュアップ」に なった ので、似た 名前が
+        3つ 縦に 並び、**次の 一手（💡ヒント・✨ブラッシュアップ）の 入った 箱**が
+        上と 同じ ものに 見えて 読み飛ばされる。上＝まるごと／下＝項目ごと、と
+        名前だけで 分ける。
+      */}
       <div className="border-hairline bg-panel mt-3 rounded-xl border px-3 py-2">
-        <Cap text="あなたの 報告" index={index} />
+        <Cap text="言った ことば ぜんぶ" index={index} />
         <p className="text-navy mt-0.5 text-sm leading-[1.9] font-bold">
           <Ruby text={utterance} index={index} />
         </p>
@@ -565,10 +692,10 @@ export function ProbeScoreModal({
   advice,
   score,
   rows,
-  hasKey,
   nextLabel,
   rest,
   judged,
+  failReason,
   index,
   onRetry,
   onClose,
@@ -589,13 +716,14 @@ export function ProbeScoreModal({
   score: ScoreView;
   /** その日の 札 ぜんぶ（報告の あとの ポップアップと 同じ 表を 出す）。 */
   rows: readonly RowView[];
-  hasKey: boolean;
   /** とじる ボタンの 字（つぎの しつもん／みんなの 報告を 聞く）。 */
   nextLabel: string;
   /** まだ ⭕ に なって いない 札の 名前（無ければ 空）。 */
   rest: string;
   /** AIが 日本語を 見たか。見て いない ときは「いいです」と 言わない（規律1）。 */
   judged: boolean;
+  /** AIの 点が 出ない 理由（出て いれば null）。 */
+  failReason: string | null;
   index: FuriganaIndex;
   /**
    * 言い直す（この ポップアップを 閉じて、同じ しつもんに もう いちど 答える）。
@@ -628,7 +756,7 @@ export function ProbeScoreModal({
       <ScoreHead
         lead="ここまでの 報告"
         score={score}
-        hasKey={hasKey}
+        failReason={failReason}
         index={index}
         note={
           left > 0 ? (
@@ -742,7 +870,7 @@ export function DayScoreModal({
   good,
   advice,
   nextLabel,
-  hasKey,
+  failReason,
   index,
   onRetry,
   onClose,
@@ -768,7 +896,8 @@ export function DayScoreModal({
   advice: string;
   /** とじる ボタンの 字（「木曜日へ 進む ▶」「週の けっかを 見る ▶」）。 */
   nextLabel: string;
-  hasKey: boolean;
+  /** その日 いちども AIの 点が 届かなかった ときの 理由（届いて いれば null）。 */
+  failReason: string | null;
   index: FuriganaIndex;
   /** もう いちど 報告する（その日を はじめから）。 */
   onRetry: () => void;
@@ -793,7 +922,7 @@ export function DayScoreModal({
       <ScoreHead
         lead={`${dayName}の 報告`}
         score={score}
-        hasKey={hasKey}
+        failReason={failReason}
         index={index}
         note={
           shut === 0 ? (
@@ -810,10 +939,13 @@ export function DayScoreModal({
 
       {score.clarity !== null ? (
         <p className="text-ink-soft mt-1 text-[11px] leading-[1.9] font-bold">
-          <Ruby
-            text="伝わりやすさと 仕事の 日本語は、AIが さいごに 見た ときの 点です。"
-            index={index}
-          />
+          {/*
+            **消さずに 言い換える**（R5 検収 2026-09-23）。この 文は「1日 ぜんぶの
+            点では ない」と 断って いる ので、消すと 1日ぶんの 評価と 読める
+            （`dayAi` は さいごの 空で ない 点を 持ち越す）。仕組みの ことば
+            （AI・鍵・見かた）だけを 落とす。
+          */}
+          <Ruby text="この 2つは、さいごの こたえを 見た 点です。" index={index} />
         </p>
       ) : null}
 

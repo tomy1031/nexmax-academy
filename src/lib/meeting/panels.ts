@@ -31,7 +31,7 @@
  */
 
 import type { MatchableFact } from "@/components/listening/req-matcher";
-import { resolveFacts } from "@/components/listening/req-matcher";
+import { matchAllLocally, resolveFacts } from "@/components/listening/req-matcher";
 import { normalizeReading } from "@/lib/text/normalize";
 
 /** パネルの 中の 1行。`box` が あると 画面に 箱の 名前が 出る。 */
@@ -438,4 +438,58 @@ export function countOpen(states: readonly PanelState[]): number {
 /** 言えた 行の 数（むずかしい側の 箱を 数える ときに 使う）。 */
 export function countFacts(states: readonly PanelState[]): number {
   return states.reduce((sum, s) => sum + s.said.length, 0);
+}
+
+/**
+ * 文の 切れめ。「。」「？」「！」と 改行で 切る（句点を 打たない 人が いる ので 改行も 見る）。
+ */
+const SENTENCE = /[^。．.!?！？\n]+[。．.!?！？]?/gu;
+
+/** 1本の 発話を 文に 分ける（空の 文は 落とす）。 */
+export function splitSentences(utterance: string): string[] {
+  return (utterance.match(SENTENCE) ?? []).map((one) => one.trim()).filter((one) => one !== "");
+}
+
+/**
+ * **その 札を 開けた 1文を、発話の 中から 引く**（項目ごとの「あなたの 発言」）。
+ *
+ * 2026-09-23 の 指定「原理的に『あなたの 発言』を（項目ごとの 表に）入れる ことは
+ * できますか？」。できる——**項目ごとに 照合を もう いちど かける**だけで よい。
+ *
+ * 前は AIの 見立て（`AsakaiItem.said`）からしか 引いて いなかった ので、
+ * **鍵が 無い 端末では 4行 ぜんぶ 空**に なり、✅ が 並んで いるのに
+ * 自分が 何を 言って そう なったのかが 画面に 1文字も 出なかった。
+ *
+ * 引く 手は 足し算では なく **引き算**に する: 札が 実際に 数えた 行
+ *（`PanelState.said`）に 当たった 文だけを 返す。当たらなければ 空で、
+ * 画面は「あなたの 発言」の 箱ごと 出さない——言って いない ものを
+ * 言った ことに しない（規律1）。
+ *
+ * `rule: "number"` の 札は 行を 持たないので、**開いて いる ときだけ**
+ * 割合を 言って いる 文を 取る。
+ */
+export function attributeUtterance({
+  utterance,
+  panels,
+  states,
+}: {
+  utterance: string;
+  panels: readonly ReportPanel[];
+  states: readonly PanelState[];
+}): Record<string, string> {
+  const sentences = splitSentences(utterance);
+  if (sentences.length === 0) return {};
+  const byId = new Map(states.map((one) => [one.id, one]));
+  const out: Record<string, string> = {};
+  for (const panel of panels) {
+    const state = byId.get(panel.id);
+    const counted = new Set(state?.said ?? []);
+    const hit = sentences.filter((line) =>
+      panel.rule === "number"
+        ? (state?.open ?? false) && saysProgress(line)
+        : matchAllLocally(line, panel.facts).some((id) => counted.has(id)),
+    );
+    if (hit.length > 0) out[panel.id] = hit.join("");
+  }
+  return out;
 }
