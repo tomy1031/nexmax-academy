@@ -63,6 +63,12 @@ export const GLOSSARY = [
     en: "Or more",
   },
   {
+    term: "一部",
+    reading: "いちぶ",
+    meaning: "ぜんぶでは なく、その 中の いくつかです。",
+    en: "Part / Some",
+  },
+  {
     term: "一覧",
     reading: "いちらん",
     meaning: "ぜんぶを 1つの 表に ならべた ものです。",
@@ -925,6 +931,7 @@ export const GLOSSARY = [
     meaning: "車が 安全かを しらべる、国の 検査です。",
     en: "Vehicle inspection",
   },
+  { term: "写真", reading: "しゃしん", meaning: "カメラで うつした 絵です。", en: "Photo" },
   {
     term: "社長",
     reading: "しゃちょう",
@@ -2029,6 +2036,12 @@ export const GLOSSARY = [
     reading: "めぐる",
     meaning: "あちこちを 順番に 回る ことです。",
     en: "To go around",
+  },
+  {
+    term: "メニュー",
+    reading: "めにゅー",
+    meaning: "お店の 料理と 値段を ならべた ものです。",
+    en: "Menu",
   },
   {
     term: "目的",

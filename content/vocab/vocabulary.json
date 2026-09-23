@@ -1938,6 +1938,26 @@
     [
       "古",
       "ふる"
+    ],
+    [
+      "料理",
+      "りょうり"
+    ],
+    [
+      "値段",
+      "ねだん"
+    ],
+    [
+      "表示",
+      "ひょうじ"
+    ],
+    [
+      "一部",
+      "いちぶ"
+    ],
+    [
+      "分け",
+      "わけ"
     ]
   ],
   "words": [
@@ -18241,6 +18261,118 @@
           "ついか"
         ]
       ]
+    },
+    {
+      "id": "resutoran",
+      "term": "レストラン",
+      "reading": "れすとらん",
+      "romaji": "resutoran",
+      "meaningJa": "お店で ごはんを 食べる ところです。",
+      "englishTerm": "Restaurant",
+      "wrongMeanings": [
+        "Hotel",
+        "Supermarket",
+        "Kitchen"
+      ],
+      "example": "レストランの メニュー画面を 作って います。"
+    },
+    {
+      "id": "menyu-",
+      "term": "メニュー",
+      "reading": "めにゅー",
+      "romaji": "menyu-",
+      "meaningJa": "お店の 料理と 値段を ならべた ものです。",
+      "englishTerm": "Menu",
+      "wrongMeanings": [
+        "Receipt",
+        "Order",
+        "Reservation"
+      ],
+      "example": "メニューに 料理の 写真を ならべます。"
+    },
+    {
+      "id": "ryouri",
+      "term": "料理",
+      "reading": "りょうり",
+      "romaji": "ryouri",
+      "meaningJa": "食べものや、食べものを 作る ことです。",
+      "englishTerm": "Dish / Cooking",
+      "wrongMeanings": [
+        "Drink",
+        "Recipe",
+        "Ingredient"
+      ],
+      "example": "メニュー画面に 料理の 名前を ならべました。"
+    },
+    {
+      "id": "nedan",
+      "term": "値段",
+      "reading": "ねだん",
+      "romaji": "nedan",
+      "meaningJa": "お店で はらう お金です。",
+      "englishTerm": "Price",
+      "wrongMeanings": [
+        "Discount",
+        "Payment",
+        "Budget"
+      ],
+      "example": "料理の 名前と 値段を 画面に ならべました。"
+    },
+    {
+      "id": "shashin",
+      "term": "写真",
+      "reading": "しゃしん",
+      "romaji": "shashin",
+      "meaningJa": "カメラで うつした 絵です。",
+      "englishTerm": "Photo",
+      "wrongMeanings": [
+        "Drawing",
+        "Video",
+        "Map"
+      ],
+      "example": "一部の 料理の 写真が 表示されません。"
+    },
+    {
+      "id": "kategori-",
+      "term": "カテゴリー",
+      "reading": "かてごりー",
+      "romaji": "kategori-",
+      "meaningJa": "にた ものを まとめた なかまです。",
+      "englishTerm": "Category",
+      "wrongMeanings": [
+        "Keyword",
+        "Level",
+        "Order"
+      ],
+      "example": "料理を カテゴリーごとに 分けます。"
+    },
+    {
+      "id": "ichibu",
+      "term": "一部",
+      "reading": "いちぶ",
+      "romaji": "ichibu",
+      "meaningJa": "ぜんぶでは なく、その 中の いくつかです。",
+      "englishTerm": "Part / Some",
+      "wrongMeanings": [
+        "All",
+        "Half",
+        "Rest"
+      ],
+      "example": "一部の 写真が 表示されません。"
+    },
+    {
+      "id": "todoku",
+      "term": "届く",
+      "reading": "とどく",
+      "romaji": "todoku",
+      "meaningJa": "おくった ものが、相手の ところに 来る ことです。",
+      "englishTerm": "Arrive / Reach",
+      "wrongMeanings": [
+        "Send",
+        "Return",
+        "Wait"
+      ],
+      "example": "APIから データが 届いて いるか 確認します。"
     }
   ]
 }
