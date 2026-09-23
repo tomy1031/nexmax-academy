@@ -332,7 +332,20 @@ export function CardsBlock({ block, furigana, show }: { block: CardsBlockData } 
                       ●
                     </span>
                     <span>
-                      <RubyText text={line} index={furigana} show={show} />
+                      {/*
+                       * ●の行にも 辞書の 下線を 出す（2026-09-23）。ここだけ RubyText の
+                       * ままで、**同じ カードの 見出しと 説明文は DictionaryText**だった——
+                       * 学習者から 見ると「同じ ふだの 中で、上の 行は 引けるのに
+                       * 下の 行は 引けない」。朝礼の 記事の 練習の 例文
+                       *（「レストランの メニュー画面に、料理の 名前と 値段を…」）が
+                       * まさに この 行に あり、辞書に 足した 語が 効かなかった。
+                       * 暗い ふだ（dark）だけ ルビの まま なのは item.text と 同じ理由。
+                       */}
+                      {dark ? (
+                        <RubyText text={line} index={furigana} show={show} />
+                      ) : (
+                        <DictionaryText text={line} index={furigana} show={show} />
+                      )}
                     </span>
                   </li>
                 ))}
