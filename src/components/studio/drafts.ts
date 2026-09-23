@@ -292,6 +292,17 @@ export function emptyQuizQuestion(type: QuizQuestion["type"]): QuizQuestion {
         head: [{ kind: "write", label: "宛先", answer: "", accept: [] }],
         blanks: [{ label: "", answer: "", accept: [] }],
       };
+    /* バグ報告。バグは 1つから（2つ ある 画面は 先生が 足す）。 */
+    case "bugreport":
+      return {
+        ...base,
+        type: "bugreport",
+        screen: "",
+        site: "/tools/bug_report/",
+        about: "",
+        usage: "",
+        bugs: [{ model: "", note: "" }],
+      };
   }
 }
 

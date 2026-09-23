@@ -195,6 +195,22 @@ export function describeQuestionIssues(question: QuizQuestion): string[] {
       }
       return notices;
     }
+
+    /* バグ報告。お手本と バグの 中身が 空だと、AIが 何を 見れば よいか 分からない。 */
+    case "bugreport": {
+      const notices: string[] = [];
+      if (question.screen.trim().length === 0) notices.push("画面の 名前を 書いてください。");
+      if (!/^\/tools\/[\w\-/]+\.html$/.test(question.site)) {
+        notices.push("テストする サイトの 場所（/tools/…/app.html）を 書いてください。");
+      }
+      if (question.bugs.some((bug) => bug.model.trim().length === 0)) {
+        notices.push("お手本の 報告が 空の バグが あります。");
+      }
+      if (question.bugs.some((bug) => bug.note.trim().length === 0)) {
+        notices.push("どんな バグか（AIが 読む）が 空の ものが あります。");
+      }
+      return notices;
+    }
   }
 }
 
@@ -273,6 +289,8 @@ const QUIZ_TYPE_OPTIONS: readonly { value: QuizQuestion["type"]; label: string }
   { value: "ranklist", label: "じゅんばんに ならべて 書く（正解なし・行を ふやせる）" },
   // 型の ある 文（メール・連絡文）を 欄ごとに 打つ。欄には 1つずつ 正解が ある
   { value: "fillin", label: "メールの 型を うめる（宛先・【 】の あなうめ）" },
+  // テストする サイトを 使って バグを 報告する（🎤 で 話して AIが 点を 付ける）
+  { value: "bugreport", label: "バグ報告（サイトを テストして 話す）" },
 ];
 
 const PHASE_OPTIONS: readonly { value: QuizSet["phase"]; label: string }[] = [
@@ -863,6 +881,85 @@ function QuestionBody({
               onChange({ ...question, outro: outro.trim() === "" ? undefined : outro })
             }
           />
+        </div>
+      );
+
+    /* バグ報告。サイトは public/tools/ に 置いた 静的HTML を 指す。 */
+    case "bugreport":
+      return (
+        <div className="space-y-3">
+          <TextField
+            label="画面の 名前（①の こたえ）"
+            value={question.screen}
+            onChange={(screen) => onChange({ ...question, screen })}
+            placeholder="例：フード注文画面"
+          />
+          <TextField
+            label="テストする サイトの 場所"
+            value={question.site}
+            onChange={(site) => onChange({ ...question, site })}
+            placeholder="/tools/bug_report/site1-food-order/app.html"
+          />
+          <TextAreaField
+            label="この 画面は 何を する 画面ですか？"
+            rows={2}
+            value={question.about}
+            onChange={(about) => onChange({ ...question, about })}
+          />
+          <TextAreaField
+            label="使い方"
+            rows={2}
+            value={question.usage}
+            onChange={(usage) => onChange({ ...question, usage })}
+          />
+          {question.bugs.map((bug, i) => (
+            <div key={i} className="border-hairline space-y-2 rounded-xl border-2 p-3">
+              <TextAreaField
+                label={`バグ ${i + 1}：お手本の 報告（答え合わせで 出る）`}
+                rows={3}
+                value={bug.model}
+                onChange={(model) =>
+                  onChange({
+                    ...question,
+                    bugs: question.bugs.map((one, j) => (j === i ? { ...one, model } : one)),
+                  })
+                }
+              />
+              <TextAreaField
+                label={`バグ ${i + 1}：どんな バグか（AIだけが 読む）`}
+                rows={2}
+                value={bug.note}
+                onChange={(note) =>
+                  onChange({
+                    ...question,
+                    bugs: question.bugs.map((one, j) => (j === i ? { ...one, note } : one)),
+                  })
+                }
+              />
+              {question.bugs.length > 1 && (
+                <button
+                  type="button"
+                  className="text-ink-soft text-xs font-bold"
+                  onClick={() =>
+                    onChange({ ...question, bugs: question.bugs.filter((_, j) => j !== i) })
+                  }
+                >
+                  このバグを 消す
+                </button>
+              )}
+            </div>
+          ))}
+          {question.bugs.length < 3 && (
+            <button
+              type="button"
+              className="text-navy text-sm font-extrabold"
+              onClick={() =>
+                onChange({ ...question, bugs: [...question.bugs, { model: "", note: "" }] })
+              }
+            >
+              ＋ バグを 足す
+            </button>
+          )}
         </div>
       );
   }

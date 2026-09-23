@@ -1,0 +1,12 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><style>
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI","Noto Sans JP",sans-serif;color:#1f2937;background:#fff}
+header{padding:14px 22px;border-bottom:1px solid #e5e7eb;display:flex;justify-content:space-between;align-items:center}main{padding:22px}
+.card{border:1px solid #e5e7eb;border-radius:14px;padding:18px}button{font:inherit;cursor:pointer}.btn{border:0;border-radius:9px;padding:10px 14px;background:#111827;color:white;font-weight:700}
+input,select{font:inherit;padding:10px;border:1px solid #cfd5df;border-radius:9px}.muted{color:#667085}
+
+.wrap{max-width:480px;margin:28px auto}label{display:block;font-weight:700;margin:14px 0}label input{display:block;width:100%;margin-top:5px}.btn{width:100%}#msg{margin-top:12px;padding:11px;background:#f8fafc;border-radius:9px}</style></head>
+<body><header><b>Room Booking</b><span><ruby>会議室<rt>かいぎしつ</rt></ruby><ruby>予約<rt>よやく</rt></ruby></span></header><main><div class="wrap card"><h2><ruby>会議室<rt>かいぎしつ</rt></ruby>を<ruby>予約<rt>よやく</rt></ruby>する</h2>
+<label><ruby>開始日<rt>かいしび</rt></ruby><input id="start" type="date"></label><label><ruby>終了日<rt>しゅうりょうび</rt></ruby><input id="end" type="date"></label>
+<button id="book" class="btn"><ruby>予約<rt>よやく</rt></ruby>する</button><div id="msg"><ruby>日付<rt>ひづけ</rt></ruby>を <ruby>入<rt>い</rt></ruby>れてください。</div></div></main><script>
+book.onclick=()=>{if(!start.value||!end.value){msg.innerHTML='<ruby>開始日<rt>かいしび</rt></ruby>と <ruby>終了日<rt>しゅうりょうび</rt></ruby>を <ruby>入<rt>い</rt></ruby>れてください。';return;}msg.innerHTML=`${start.value} から ${end.value} までで <ruby>予約<rt>よやく</rt></ruby>しました。`;};
+</script></body></html>

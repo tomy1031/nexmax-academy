@@ -46,6 +46,19 @@ const latinAnswerSet: QuizSet = quizSetSchema.parse({
   ],
 });
 
+/** 合格した バグ報告 1つ（テストの 下ごしらえ）。 */
+const PASSED_BUG_REPORT = {
+  screen: "フード注文画面",
+  action: "＋を 押しました。",
+  result: "合計が 変わりませんでした。",
+  expected: "合計も 変わる はずです。",
+  spoken: "フード注文画面で、＋を 押すと、合計が 変わりませんでした。",
+  score: 100,
+  items: [],
+  polished: "",
+  skipped: false,
+};
+
 function run(state: QuizState, actions: QuizAction[]): QuizState {
   return actions.reduce(quizReducer, state);
 }
@@ -77,6 +90,12 @@ function answerCorrectly(state: QuizState): QuizState {
     // じゅんばんに ならべて 書く（正解は 無い。書けば 点）
     case "ranklist":
       return quizReducer(state, { type: "answerRanklist", rows: ["社長", "部長"] });
+    // バグ報告（ぜんぶの バグが 60点 より 上で 合格）
+    case "bugreport":
+      return quizReducer(state, {
+        type: "answerBugreport",
+        reports: q.bugs.map(() => PASSED_BUG_REPORT),
+      });
     case "wordbank":
       return quizReducer(state, { type: "answerWordbank", filled: q.blanks });
     case "emotion":
@@ -797,6 +816,12 @@ function answerCorrectlyAt(state: QuizState, id: string): QuizState {
       return quizReducer(state, {
         type: "answerRanklist",
         rows: ["社長", "部長"],
+        questionId: id,
+      });
+    case "bugreport":
+      return quizReducer(state, {
+        type: "answerBugreport",
+        reports: q.bugs.map(() => PASSED_BUG_REPORT),
         questionId: id,
       });
     case "wordbank":

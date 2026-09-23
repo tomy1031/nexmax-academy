@@ -907,6 +907,13 @@ export function collectLabeledTexts(content: Content): LabeledText[] {
               push(at(`blanks[${j}].placeholder`), blank.placeholder);
             });
             break;
+          case "bugreport":
+            // 画面の 説明は 出しっぱなし。お手本は 答え合わせで 出る（note は AIだけが 読む）
+            push(at("screen"), q.screen);
+            push(at("about"), q.about);
+            push(at("usage"), q.usage);
+            q.bugs.forEach((bug, j) => push(at(`bugs[${j}].model`), bug.model));
+            break;
         }
       });
       break;

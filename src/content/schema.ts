@@ -733,6 +733,52 @@ const fillinSchema = z
     ai: aiReviewSchema.optional(),
   });
 
+/**
+ * **バグ報告**（テストする サイトを 使って、見つけた バグを 報告する）。
+ *
+ * 元は 別ページ（`bug_report/`・2026-09-23 の 指定で 移植）。1画面に つき
+ * - テストする サイト（`site`・iframe で 埋め込む。`public/tools/bug_report/` の 静的HTML）
+ * - 報告の 型 ①どの 画面 ②何を したか ③どう なったか ④本当は どう なる はずか
+ * - 「まとめて 報告しましょう」の 1文 ＋ 🎤（Gemini Live で 聞き取り、AIが 見る）
+ *
+ * ## 点と 関門
+ * AIは ①〜④の 4つを ⭕✗で 見る（観点は 報告の 型 そのもの。新しい 枠組みを 足さない・規律10）。
+ * 点は ⭕の 数 × 25。**60点 以下は つぎへ 進めない**（2026-09-23 の 指定「点数が60点以下の
+ * 場合（内容が合っていない）場合には、次のページに行けないように」）。
+ *
+ * ## バグが 2つ ある 画面
+ * `bugs` を 2つ 書く。学習者は どちらを 先に 見つけても よい——AIには その画面の
+ * バグを ぜんぶ 渡し、もう 1つの 欄で 報告した ものと 同じなら ✗に する。
+ */
+const bugreportSchema = z.object({
+  ...quizCommon,
+  type: z.literal("bugreport"),
+  /** 画面の 名前（①の 正解。AIが 見る）。 */
+  screen: plainText,
+  /** テストする サイト（`/tools/bug_report/…/app.html`）。 */
+  site: z.string().regex(/^\/tools\/[\w\-/]+\.html$/),
+  /** 「この 画面は 何を する 画面ですか？」の 答え（学習者が 読む）。 */
+  about: plainText,
+  /** 使い方（学習者が 読む）。 */
+  usage: plainText,
+  /** この 画面に ある バグ（1〜3）。 */
+  bugs: z
+    .array(
+      z.object({
+        /** お手本の 報告（AIの 見本・答え合わせの ときだけ 学習者に 出す）。 */
+        model: plainText,
+        /**
+         * どんな バグか（AIが 読む・画面には 出さない）。**答えを 隠す 仕組みでは ない**——
+         * AIへの 頼みは 端末で 組み立てる ので、ページの データには 入る
+         *（テストする サイトは 目の 前に ある ので、ここを 読めても 報告の 練習は 残る）。
+         */
+        note: z.string().min(1),
+      }),
+    )
+    .min(1)
+    .max(3),
+});
+
 export const quizQuestionSchema = z.discriminatedUnion("type", [
   chooseSchema,
   multiSchema,
@@ -743,6 +789,7 @@ export const quizQuestionSchema = z.discriminatedUnion("type", [
   freeSchema,
   ranklistSchema,
   fillinSchema,
+  bugreportSchema,
 ]);
 
 /** 選択で答える型（読解確認でだけ使ってよい）。 */

@@ -300,6 +300,8 @@ const QUIZ_TYPE_LABEL: Record<string, string> = {
   ranklist: "じゅんばんに ならべる",
   // メールの 型（宛先・【 】）。欄ごとに 正解が ある ので 採点する
   fillin: "メールの 型を うめる",
+  // バグ報告（🎤で 話して AIが 点を 付ける。60点 より 上で 合格）
+  bugreport: "バグ報告",
 };
 
 export function quizTable(records: readonly QuizRecord[], lookups: Lookups): RecordTable {

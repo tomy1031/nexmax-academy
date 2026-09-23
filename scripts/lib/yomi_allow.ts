@@ -27,6 +27,12 @@ export interface YomiAllowEntry {
 }
 
 export const YOMI_ALLOW: readonly YomiAllowEntry[] = [
+  {
+    surface: "空",
+    reading: "から",
+    where: "項目",
+    note: "「空の 項目がある 場合も 試して」（バグ報告ゲームの お問い合わせ画面）＝何も 入って いない 欄。元の ページも 空（から）。解析は そら",
+  },
   // ---- 固有名詞・この現場のことば（IPA辞書が知らない読み） ----
   {
     surface: "大にぎわい",

@@ -1,0 +1,20 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><style>
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI","Noto Sans JP",sans-serif;color:#1f2937;background:#fff}
+header{padding:14px 22px;border-bottom:1px solid #e5e7eb;display:flex;justify-content:space-between;align-items:center}main{padding:22px}
+.card{border:1px solid #e5e7eb;border-radius:14px;padding:18px}button{font:inherit;cursor:pointer}.btn{border:0;border-radius:9px;padding:10px 14px;background:#111827;color:white;font-weight:700}
+input,select{font:inherit;padding:10px;border:1px solid #cfd5df;border-radius:9px}.muted{color:#667085}
+
+.grid{display:grid;grid-template-columns:1fr 280px;gap:16px}.menu{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.item{border:1px solid #e5e7eb;border-radius:12px;padding:13px;display:grid;gap:7px}.emoji{font-size:34px}.cart-row{border-bottom:1px solid #eee;padding:10px 0}.qty{display:flex;gap:8px;align-items:center;margin-top:7px}.qty button{width:30px;height:30px}.total{display:flex;justify-content:space-between;font-size:18px;padding-top:14px}@media(max-width:650px){.grid{grid-template-columns:1fr}.menu{grid-template-columns:1fr}}</style></head>
+<body><header><b>LunchGo</b><span>フード<ruby>注文<rt>ちゅうもん</rt></ruby></span></header><main><div class="grid">
+<section class="card"><h2>メニュー</h2><div class="menu">
+<div class="item"><div class="emoji">🍛</div><b>Chicken Curry</b><span>$5.50</span><button class="btn" data-name="Chicken Curry" data-price="5.5">カートに<ruby>入<rt>い</rt></ruby>れる</button></div>
+<div class="item"><div class="emoji">🍜</div><b>Beef Noodles</b><span>$6.00</span><button class="btn" data-name="Beef Noodles" data-price="6">カートに<ruby>入<rt>い</rt></ruby>れる</button></div>
+<div class="item"><div class="emoji">🥗</div><b>Green Salad</b><span>$4.25</span><button class="btn" data-name="Green Salad" data-price="4.25">カートに<ruby>入<rt>い</rt></ruby>れる</button></div>
+</div></section><aside class="card"><h2>カート</h2><div id="cart"><p class="muted">まだ <ruby>商品<rt>しょうひん</rt></ruby>は ありません。</p></div><div class="total"><span><ruby>合計<rt>ごうけい</rt></ruby></span><b id="total">$0.00</b></div></aside>
+</div></main><script>
+const data=[],cart=document.getElementById('cart'),total=document.getElementById('total');
+document.querySelectorAll('[data-name]').forEach(b=>b.onclick=()=>{const f=data.find(x=>x.name===b.dataset.name);if(f)f.qty++;else data.push({name:b.dataset.name,price:+b.dataset.price,qty:1});renderAll();});
+function change(i,d){data[i].qty+=d;if(data[i].qty<=0)data.splice(i,1);renderItems();}
+function renderItems(){cart.innerHTML=data.length?data.map((x,i)=>`<div class="cart-row"><b>${x.name}</b><div>${x.price.toFixed(2)}</div><div class="qty"><button onclick="change(${i},-1)">−</button><span>${x.qty}</span><button onclick="change(${i},1)">＋</button></div></div>`).join(''):'<p class="muted">まだ <ruby>商品<rt>しょうひん</rt></ruby>は ありません。</p>';}
+function renderAll(){renderItems();total.textContent='$'+data.reduce((s,x)=>s+x.price*x.qty,0).toFixed(2);}
+</script></body></html>
