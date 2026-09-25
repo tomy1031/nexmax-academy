@@ -2,219 +2,847 @@
   "kind": "manga",
   "id": "renraku_manga",
   "format": "story",
-  "title": "まんが：連絡が なかった 日",
-  "description": "連絡を あとまわしに した 日、チームに 何が 起きたでしょうか。リスニングの 前に 読む ものがたりです。",
+  "title": "まんが：連絡した つもり？",
+  "description": "ログインの エラーを 見つけた ソカさん。すぐ チャットに 書いたのに、ヘンディさんに 通知が 届きません。どう 連絡すれば、チームが 動けるでしょうか。",
   "characters": [
     {
-      "id": "nyam",
-      "name": "ニャム",
-      "role": "同期"
+      "id": "soka",
+      "name": "ソカ",
+      "role": "新人エンジニア"
+    },
+    {
+      "id": "okuda",
+      "name": "奥田",
+      "role": "先輩エンジニア"
     },
     {
       "id": "hendy",
       "name": "ヘンディ",
-      "role": "先輩"
+      "role": "PM（プロジェクトマネージャ）"
+    },
+    {
+      "id": "customer",
+      "name": "お客様",
+      "role": "あおばストアの 中村さん"
+    },
+    {
+      "id": "gamen",
+      "name": "画面の 字",
+      "role": "パソコン・スマホ・ノート"
     }
+  ],
+  "castIds": [
+    "soka",
+    "okuda",
+    "hendy"
+  ],
+  "speechInImage": true,
+  "vocabIds": [
+    "renraku",
+    "mi-teingu",
+    "gamen",
+    "roguin",
+    "shouhin",
+    "ichiran",
+    "gozen",
+    "tesuto",
+    "chatto",
+    "eraa",
+    "henji",
+    "tsuuchi",
+    "komatte",
+    "kaihatukankyou",
+    "roguingamen",
+    "daiji",
+    "jouhou",
+    "oshiete_kudasai",
+    "genin",
+    "settei",
+    "soudan",
+    "suuji",
+    "naoshimasu",
+    "depuroi",
+    "rebyu",
+    "kakunin",
+    "ketsuka",
+    "kanryou",
+    "gogo",
+    "kenmei",
+    "honjitsu",
+    "henkou",
+    "onegai",
+    "chi-mu",
+    "shashin",
+    "hajimemasu",
+    "junbi",
+    "imi",
+    "ochitsuite",
+    "jijitu",
+    "tsutaeru",
+    "gutaiteki",
+    "ketsuron",
+    "todoku",
+    "maniau",
+    "tamesu",
+    "tasukemasu",
+    "chigai",
+    "senpai",
+    "menshon",
+    "ryoukai",
+    "aizu",
+    "roguauto",
+    "sashidashinin",
+    "onrain"
   ],
   "pages": [
     {
-      "title": "金曜日の 夕方 — オフィス",
+      "title": "10:00 — 今日 15時、お客様との ミーティング",
       "panels": [
         {
-          "size": "normal",
+          "size": "page",
           "image": {
-            "src": "/img/manga/renraku_manga/panel1.webp",
-            "prompt": "Medium shot, clean line art, flat cel shading, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. Keep empty space at the top of the frame. No text, no letters, no numbers, no signage, no speech bubbles, no readable text. Anime manga panel, no readable text. A bright modern software office in the late afternoon, warm orange light through the window. a young Southeast Asian junior engineer man (Nyam, short black hair swept up off the forehead, coral cardigan over a cream button-down shirt) sits at his desk looking at a sticky note on his monitor, thinking, one hand on his chin. Absolutely no readable text, letters, numbers, logos or speech bubbles anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra fingers, distorted hands, dark or scary mood, angry faces, watermarks.",
+            "src": "/img/manga/renraku_manga/v2/p01.webp",
             "refs": [
-              "/img/characters/nyam/sheet.webp",
+              "/img/characters/soka/sheet.webp",
+              "/img/characters/okuda/sheet.webp",
               "/img/characters/hendy/sheet.webp"
             ],
-            "status": "done"
+            "status": "done",
+            "prompt": "scripts/images/renraku_manga_v2.json の p01"
           },
           "lines": [
             {
-              "speaker": "narration",
-              "text": "金曜日の 夕方です。ニャムさんは 検証サーバーの アップデートを たのまれました。"
+              "speaker": "gamen",
+              "text": "今日 15:00　お客様と オンラインミーティング"
             },
             {
-              "speaker": "nyam",
-              "text": "きょうの 20時に やろう。すぐ 終わる 仕事だ。"
-            }
-          ]
-        },
-        {
-          "size": "normal",
-          "image": {
-            "src": "/img/manga/renraku_manga/panel2.webp",
-            "prompt": "Medium shot, clean line art, flat cel shading, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. Keep empty space at the top of the frame. No text, no letters, no numbers, no signage, no speech bubbles, no readable text. Anime manga panel, no readable text. Close shot on a young Southeast Asian junior engineer man (Nyam, short black hair swept up off the forehead, coral cardigan over a cream button-down shirt) at the same desk, one hand hovering over the keyboard, a chat app open as abstract blurred bubbles on the screen, his eyes glancing away with a slightly guilty look. Absolutely no readable text, letters, numbers, logos or speech bubbles anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra fingers, distorted hands, dark or scary mood, angry faces, watermarks.",
-            "refs": [
-              "/img/characters/nyam/sheet.webp",
-              "/img/characters/hendy/sheet.webp"
-            ],
-            "status": "done"
-          },
-          "lines": [
-            {
-              "speaker": "nyam",
-              "text": "連絡は…… あとで いいか。"
+              "speaker": "gamen",
+              "text": "見せる 画面：ログイン／商品一覧"
             },
             {
-              "speaker": "narration",
-              "text": "ニャムさんは 連絡を あとまわしに しました。"
-            }
-          ]
-        },
-        {
-          "size": "wide",
-          "image": {
-            "src": "/img/manga/renraku_manga/panel3.webp",
-            "prompt": "Medium shot, clean line art, flat cel shading, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. Keep empty space at the top of the frame. No text, no letters, no numbers, no signage, no speech bubbles, no readable text. Anime manga panel, no readable text. Wide shot of the office at night, dark blue palette, only one desk lamp on where a young Southeast Asian junior engineer man (Nyam, short black hair swept up off the forehead, coral cardigan over a cream button-down shirt) works alone. By the wall, a small server rack with one status light glowing red instead of green. Absolutely no readable text, letters, numbers, logos or speech bubbles anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra fingers, distorted hands, dark or scary mood, angry faces, watermarks.",
-            "refs": [
-              "/img/characters/nyam/sheet.webp",
-              "/img/characters/hendy/sheet.webp"
-            ],
-            "status": "done"
-          },
-          "lines": [
+              "speaker": "hendy",
+              "text": "今日の 15時、お客様に この 画面を 見せます。ソカさん、午前中に テストして ください。"
+            },
             {
-              "speaker": "narration",
-              "text": "20時。検証サーバーが 止まりました。だれも 知りません。"
+              "speaker": "soka",
+              "text": "はい！　ログインから 試します。"
             }
+          ],
+          "bakedText": [
+            "今日 15:00　お客様と オンラインミーティング",
+            "見せる 画面：ログイン／商品一覧",
+            "今日の 15時、お客様に この 画面を 見せます。ソカさん、午前中に テストして ください。",
+            "はい！　ログインから 試します。"
           ]
         }
       ]
     },
     {
-      "title": "その 夜 と 月曜日の 朝",
+      "title": "10:10 — ログイン できない！",
       "panels": [
         {
-          "size": "normal",
+          "size": "page",
           "image": {
-            "src": "/img/manga/renraku_manga/panel4.webp",
-            "prompt": "Medium shot, clean line art, flat cel shading, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. Keep empty space at the top of the frame. No text, no letters, no numbers, no signage, no speech bubbles, no readable text. Anime manga panel, no readable text. Night at a home desk with a warm lamp. Hendy the senior engineer, drawn from the attached character sheet: a Japanese man in his late twenties, slim, short slightly tousled black hair, gentle smile, at home in a casual grey hoodie instead of his suit, no lanyard and no glasses, looking at a laptop that shows an abstract empty error dialog, confused expression, tilting his head. Absolutely no readable text, letters, numbers, logos or speech bubbles anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra fingers, distorted hands, dark or scary mood, angry faces, watermarks.",
+            "src": "/img/manga/renraku_manga/v2/p02.webp",
             "refs": [
-              "/img/characters/nyam/sheet.webp",
+              "/img/characters/soka/sheet.webp",
+              "/img/characters/okuda/sheet.webp",
               "/img/characters/hendy/sheet.webp"
             ],
-            "status": "done"
+            "status": "done",
+            "prompt": "scripts/images/renraku_manga_v2.json の p02"
           },
           "lines": [
             {
-              "speaker": "narration",
-              "text": "同じ ころ。ヘンディさんは 家で 確認作業を して いました。"
+              "speaker": "gamen",
+              "text": "500 Internal Server Error"
             },
             {
-              "speaker": "hendy",
-              "text": "あれ？ 検証環境に つながらない……。"
-            }
-          ]
-        },
-        {
-          "size": "normal",
-          "image": {
-            "src": "/img/manga/renraku_manga/panel5.webp",
-            "prompt": "Medium shot, clean line art, flat cel shading, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. Keep empty space at the top of the frame. No text, no letters, no numbers, no signage, no speech bubbles, no readable text. Anime manga panel, no readable text. Same home desk at night. Hendy the senior engineer, drawn from the attached character sheet: a Japanese man in his late twenties, slim, short slightly tousled black hair, gentle smile, at home in a casual grey hoodie instead of his suit, no lanyard and no glasses, leans back with both hands on his head, looking at the ceiling, tired, the laptop screen dim. Absolutely no readable text, letters, numbers, logos or speech bubbles anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra fingers, distorted hands, dark or scary mood, angry faces, watermarks.",
-            "refs": [
-              "/img/characters/nyam/sheet.webp",
-              "/img/characters/hendy/sheet.webp"
-            ],
-            "status": "done"
-          },
-          "lines": [
-            {
-              "speaker": "hendy",
-              "text": "保存する 前に 止まった……。きょうの 作業が 消えて しまった。"
-            }
-          ]
-        },
-        {
-          "size": "wide",
-          "image": {
-            "src": "/img/manga/renraku_manga/panel6.webp",
-            "prompt": "Medium shot, clean line art, flat cel shading, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. Keep empty space at the top of the frame. No text, no letters, no numbers, no signage, no speech bubbles, no readable text. Anime manga panel, no readable text. Monday morning in the bright office. a young Southeast Asian junior engineer man (Nyam, short black hair swept up off the forehead, coral cardigan over a cream button-down shirt) bows apologetically beside a desk. Hendy the senior engineer, drawn from the attached character sheet: a Japanese man in his late twenties, slim, short slightly tousled black hair, gentle smile, navy single-breasted suit jacket over a crisp white dress shirt with a navy necktie, no lanyard and no glasses turns from his chair with a calm, kind expression, soft morning light through the window. Absolutely no readable text, letters, numbers, logos or speech bubbles anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra fingers, distorted hands, dark or scary mood, angry faces, watermarks.",
-            "refs": [
-              "/img/characters/nyam/sheet.webp",
-              "/img/characters/hendy/sheet.webp"
-            ],
-            "status": "done"
-          },
-          "lines": [
-            {
-              "speaker": "nyam",
-              "text": "すみません。金曜の 夜、わたしが サーバーを 止めました。連絡を して いませんでした。"
+              "speaker": "soka",
+              "text": "えっ！"
             },
             {
-              "speaker": "hendy",
-              "text": "そうだったんですね。では、つぎの 一手を 考えましょう。"
+              "speaker": "gamen",
+              "text": "昨日 17:00　ログイン OK　商品一覧 OK"
+            },
+            {
+              "speaker": "soka",
+              "text": "昨日は、何も なかったのに……。"
+            },
+            {
+              "speaker": "soka",
+              "text": "（15時に お客様に 見せるのに……。早く 連絡しなきゃ！）"
             }
+          ],
+          "bakedText": [
+            "500 Internal Server Error",
+            "えっ！",
+            "昨日 17:00　ログイン OK　商品一覧 OK",
+            "昨日は、何も なかったのに……。",
+            "（15時に お客様に 見せるのに……。早く 連絡しなきゃ！）"
           ]
         }
       ]
     },
     {
-      "title": "月曜日の 昼 — 二人で 連絡",
-      "note": "この 連絡は、つぎの リスニングで ヘンディさんが 読み上げる 連絡に つながります。",
+      "title": "10:12 — 送ったのに、届かない",
       "panels": [
         {
-          "size": "normal",
+          "size": "page",
           "image": {
-            "src": "/img/manga/renraku_manga/panel7.webp",
-            "prompt": "Medium shot, clean line art, flat cel shading, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. Keep empty space at the top of the frame. No text, no letters, no numbers, no signage, no speech bubbles, no readable text. Anime manga panel, no readable text. Hendy the senior engineer, drawn from the attached character sheet: a Japanese man in his late twenties, slim, short slightly tousled black hair, gentle smile, navy single-breasted suit jacket over a crisp white dress shirt with a navy necktie, no lanyard and no glasses and a young Southeast Asian junior engineer man (Nyam, short black hair swept up off the forehead, coral cardigan over a cream button-down shirt) sit side by side at one laptop. Hendy points at the screen with a pen, Nyam nods holding a small notebook. Absolutely no readable text, letters, numbers, logos or speech bubbles anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra fingers, distorted hands, dark or scary mood, angry faces, watermarks.",
+            "src": "/img/manga/renraku_manga/v2/p03.webp",
             "refs": [
-              "/img/characters/nyam/sheet.webp",
+              "/img/characters/soka/sheet.webp",
+              "/img/characters/okuda/sheet.webp",
               "/img/characters/hendy/sheet.webp"
             ],
-            "status": "done"
+            "status": "done",
+            "prompt": "scripts/images/renraku_manga_v2.json の p03"
+          },
+          "lines": [
+            {
+              "speaker": "soka",
+              "text": "えっ！？"
+            },
+            {
+              "speaker": "soka",
+              "text": "ログイン できないです😭😭😭"
+            },
+            {
+              "speaker": "soka",
+              "text": "昨日は 大丈夫だったのに…なんで？？"
+            },
+            {
+              "speaker": "soka",
+              "text": "15時なのに！！　やばいです！！"
+            },
+            {
+              "speaker": "soka",
+              "text": "どうしよう　だれか 助けて〜😱"
+            },
+            {
+              "speaker": "soka",
+              "text": "送った！　これで ヘンディさんも 分かるはず。"
+            }
+          ],
+          "bakedText": [
+            "えっ！？",
+            "ログイン できないです😭😭😭",
+            "昨日は 大丈夫だったのに…なんで？？",
+            "15時なのに！！　やばいです！！",
+            "どうしよう　だれか 助けて〜😱",
+            "送った！　これで ヘンディさんも 分かるはず。"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "10:15 — 奥田さんが 気づく",
+      "panels": [
+        {
+          "size": "page",
+          "image": {
+            "src": "/img/manga/renraku_manga/v2/p04.webp",
+            "refs": [
+              "/img/characters/soka/sheet.webp",
+              "/img/characters/okuda/sheet.webp",
+              "/img/characters/hendy/sheet.webp"
+            ],
+            "status": "done",
+            "prompt": "scripts/images/renraku_manga_v2.json の p04"
+          },
+          "lines": [
+            {
+              "speaker": "okuda",
+              "text": "（ログイン できない……？　どの 画面？　何が 起きた？）"
+            },
+            {
+              "speaker": "okuda",
+              "text": "ソカさん、チャットを 見ました。でも、何が 起きたか 分かりません。どう しましたか？"
+            },
+            {
+              "speaker": "soka",
+              "text": "ヘンディさんに 送ったんですが、返事が ありません……。"
+            },
+            {
+              "speaker": "okuda",
+              "text": "ヘンディさんの メンションが ありません。メンションが ないと、通知が 来ない ことが あります。"
+            },
+            {
+              "speaker": "okuda",
+              "text": "それに、これだと 困って いる ことは 分かりますが、何が 起きたかは 分かりません。"
+            },
+            {
+              "speaker": "soka",
+              "text": "あっ！"
+            }
+          ],
+          "bakedText": [
+            "（ログイン できない……？　どの 画面？　何が 起きた？）",
+            "ソカさん、チャットを 見ました。でも、何が 起きたか 分かりません。どう しましたか？",
+            "ヘンディさんに 送ったんですが、返事が ありません……。",
+            "ヘンディさんの メンションが ありません。メンションが ないと、通知が 来ない ことが あります。",
+            "それに、これだと 困って いる ことは 分かりますが、何が 起きたかは 分かりません。",
+            "あっ！"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "10:15 — 何を 伝える？",
+      "panels": [
+        {
+          "size": "page",
+          "image": {
+            "src": "/img/manga/renraku_manga/v2/p05.webp",
+            "refs": [
+              "/img/characters/soka/sheet.webp",
+              "/img/characters/okuda/sheet.webp",
+              "/img/characters/hendy/sheet.webp"
+            ],
+            "status": "done",
+            "prompt": "scripts/images/renraku_manga_v2.json の p05"
+          },
+          "lines": [
+            {
+              "speaker": "okuda",
+              "text": "どの 画面ですか？"
+            },
+            {
+              "speaker": "soka",
+              "text": "開発環境の ログイン画面です。"
+            },
+            {
+              "speaker": "okuda",
+              "text": "何が 出ましたか？"
+            },
+            {
+              "speaker": "soka",
+              "text": "エラー500です。2回 試して、2回とも 出ました。昨日の 17時は、ログイン できました。"
+            },
+            {
+              "speaker": "okuda",
+              "text": "昨日は できた。それも 大事な 情報です。全部 書いて、ヘンディさんを メンションしましょう。私も 調べます。"
+            }
+          ],
+          "bakedText": [
+            "どの 画面ですか？",
+            "開発環境の ログイン画面です。",
+            "何が 出ましたか？",
+            "エラー500です。2回 試して、2回とも 出ました。昨日の 17時は、ログイン できました。",
+            "昨日は できた。それも 大事な 情報です。全部 書いて、ヘンディさんを メンションしましょう。私も 調べます。"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "10:20 — 今度は 届いた",
+      "panels": [
+        {
+          "size": "page",
+          "image": {
+            "src": "/img/manga/renraku_manga/v2/p06.webp",
+            "refs": [
+              "/img/characters/soka/sheet.webp",
+              "/img/characters/okuda/sheet.webp",
+              "/img/characters/hendy/sheet.webp"
+            ],
+            "status": "done",
+            "prompt": "scripts/images/renraku_manga_v2.json の p06"
+          },
+          "lines": [
+            {
+              "speaker": "soka",
+              "text": "@ヘンディさん　【ログインの エラー】10:10、開発環境の ログイン画面で エラー500が 出ました。2回 試して、2回とも 出ました。昨日 17:00は ログイン できました。奥田さんと 調べます。"
+            },
+            {
+              "speaker": "gamen",
+              "text": "ピコン！"
+            },
+            {
+              "speaker": "hendy",
+              "text": "ログイン画面の エラーか。昨日は できたんだな。"
+            },
+            {
+              "speaker": "hendy",
+              "text": "見ました。分かった ことが あれば 教えて ください。"
+            },
+            {
+              "speaker": "soka",
+              "text": "今度は 届いた！"
+            }
+          ],
+          "bakedText": [
+            "@ヘンディさん　【ログインの エラー】10:10、開発環境の ログイン画面で エラー500が 出ました。2回 試して、2回とも 出ました。昨日 17:00は ログイン できました。奥田さんと 調べます。",
+            "ピコン！",
+            "ログイン画面の エラーか。昨日は できたんだな。",
+            "見ました。分かった ことが あれば 教えて ください。",
+            "今度は 届いた！"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "10:40 — まだ 分からない。次の 時間を 決める",
+      "panels": [
+        {
+          "size": "page",
+          "image": {
+            "src": "/img/manga/renraku_manga/v2/p07.webp",
+            "refs": [
+              "/img/characters/soka/sheet.webp",
+              "/img/characters/okuda/sheet.webp",
+              "/img/characters/hendy/sheet.webp"
+            ],
+            "status": "done",
+            "prompt": "scripts/images/renraku_manga_v2.json の p07"
+          },
+          "lines": [
+            {
+              "speaker": "soka",
+              "text": "いつ 直るか、分かりますか？"
+            },
+            {
+              "speaker": "okuda",
+              "text": "まだ 分かりません。"
+            },
+            {
+              "speaker": "soka",
+              "text": "じゃあ、どう 連絡しましょう？"
+            },
+            {
+              "speaker": "okuda",
+              "text": "次に 連絡する 時間を 決めましょう。"
+            },
+            {
+              "speaker": "soka",
+              "text": "@ヘンディさん　【10:40の 連絡】原因は まだ 分かりません。奥田さんと 設定を 調べて います。次は 11:10に 連絡します。"
+            },
+            {
+              "speaker": "hendy",
+              "text": "了解です。12時までに 直らなかったら、お客様に 相談します。"
+            },
+            {
+              "speaker": "soka",
+              "text": "（ヘンディさんも、次に どう するか 決められた）"
+            }
+          ],
+          "bakedText": [
+            "いつ 直るか、分かりますか？",
+            "まだ 分かりません。",
+            "じゃあ、どう 連絡しましょう？",
+            "次に 連絡する 時間を 決めましょう。",
+            "@ヘンディさん　【10:40の 連絡】原因は まだ 分かりません。奥田さんと 設定を 調べて います。次は 11:10に 連絡します。",
+            "了解です。12時までに 直らなかったら、お客様に 相談します。",
+            "（ヘンディさんも、次に どう するか 決められた）"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "11:10 — 原因が 分かった",
+      "panels": [
+        {
+          "size": "page",
+          "image": {
+            "src": "/img/manga/renraku_manga/v2/p08.webp",
+            "refs": [
+              "/img/characters/soka/sheet.webp",
+              "/img/characters/okuda/sheet.webp",
+              "/img/characters/hendy/sheet.webp"
+            ],
+            "status": "done",
+            "prompt": "scripts/images/renraku_manga_v2.json の p08"
+          },
+          "lines": [
+            {
+              "speaker": "okuda",
+              "text": "原因が 分かりました。設定の 数字が 違って いました。直すのは、あと 30分です。"
+            },
+            {
+              "speaker": "soka",
+              "text": "私が 直します。"
+            },
+            {
+              "speaker": "soka",
+              "text": "@ヘンディさん　【11:10の 連絡】原因が 分かりました。設定の 数字が 違って いました。私が 直して、11:40に デプロイします。"
+            },
+            {
+              "speaker": "hendy",
+              "text": "分かりました。お客様への 相談は、いりませんね。"
+            }
+          ],
+          "bakedText": [
+            "原因が 分かりました。設定の 数字が 違って いました。直すのは、あと 30分です。",
+            "私が 直します。",
+            "@ヘンディさん　【11:10の 連絡】原因が 分かりました。設定の 数字が 違って いました。私が 直して、11:40に デプロイします。",
+            "分かりました。お客様への 相談は、いりませんね。"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "11:40〜11:50 — 直った。確認も 終わった",
+      "panels": [
+        {
+          "size": "page",
+          "image": {
+            "src": "/img/manga/renraku_manga/v2/p09.webp",
+            "refs": [
+              "/img/characters/soka/sheet.webp",
+              "/img/characters/okuda/sheet.webp",
+              "/img/characters/hendy/sheet.webp"
+            ],
+            "status": "done",
+            "prompt": "scripts/images/renraku_manga_v2.json の p09"
+          },
+          "lines": [
+            {
+              "speaker": "okuda",
+              "text": "レビューは 終わりました。開発環境に デプロイします。"
+            },
+            {
+              "speaker": "soka",
+              "text": "両方、開きました！"
+            },
+            {
+              "speaker": "soka",
+              "text": "@ヘンディさん　【確認の 結果】11:50に、開発環境で ログインと 商品一覧を 確認しました。今は、どちらも 開きます。"
+            },
+            {
+              "speaker": "soka",
+              "text": "@here　【デプロイ完了】11:40に 開発環境へ デプロイしました。11:50に ログインと 商品一覧を 確認しました。テスト できます。"
+            },
+            {
+              "speaker": "okuda",
+              "text": "直した あとは、午後に ほかの 画面も 全部 もう 一度 見ます。いつも そう して います。"
+            },
+            {
+              "speaker": "soka",
+              "text": "はい！"
+            }
+          ],
+          "bakedText": [
+            "レビューは 終わりました。開発環境に デプロイします。",
+            "両方、開きました！",
+            "@ヘンディさん　【確認の 結果】11:50に、開発環境で ログインと 商品一覧を 確認しました。今は、どちらも 開きます。",
+            "@here　【デプロイ完了】11:40に 開発環境へ デプロイしました。11:50に ログインと 商品一覧を 確認しました。テスト できます。",
+            "直した あとは、午後に ほかの 画面も 全部 もう 一度 見ます。いつも そう して います。",
+            "はい！"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "13:10 — お客様から 別の 連絡",
+      "panels": [
+        {
+          "size": "page",
+          "image": {
+            "src": "/img/manga/renraku_manga/v2/p10.webp",
+            "refs": [
+              "/img/characters/soka/sheet.webp",
+              "/img/characters/okuda/sheet.webp",
+              "/img/characters/hendy/sheet.webp"
+            ],
+            "status": "done",
+            "prompt": "scripts/images/renraku_manga_v2.json の p10"
+          },
+          "lines": [
+            {
+              "speaker": "gamen",
+              "text": "差出人：お客様（あおばストア 中村）"
+            },
+            {
+              "speaker": "gamen",
+              "text": "件名：【本日の ミーティング】時間の 変更"
+            },
+            {
+              "speaker": "customer",
+              "text": "本日 15:00の ミーティングを、16:00に 変更 できますか。"
+            },
+            {
+              "speaker": "hendy",
+              "text": "お客様からの お願いですね。"
+            },
+            {
+              "speaker": "gamen",
+              "text": "件名：【本日の ミーティング】16:00に 変更します"
+            },
+            {
+              "speaker": "hendy",
+              "text": "【時間】16:00からで お願い いたします。【内容】ログイン画面と 商品一覧を 見せます。"
+            },
+            {
+              "speaker": "hendy",
+              "text": "お客様から 連絡が ありました。ミーティングは 16時に なりました。ソカさん、チームにも 連絡して ください。"
+            },
+            {
+              "speaker": "soka",
+              "text": "はい！"
+            }
+          ],
+          "bakedText": [
+            "差出人：お客様（あおばストア 中村）",
+            "件名：【本日の ミーティング】時間の 変更",
+            "本日 15:00の ミーティングを、16:00に 変更 できますか。",
+            "お客様からの お願いですね。",
+            "件名：【本日の ミーティング】16:00に 変更します",
+            "【時間】16:00からで お願い いたします。【内容】ログイン画面と 商品一覧を 見せます。",
+            "お客様から 連絡が ありました。ミーティングは 16時に なりました。ソカさん、チームにも 連絡して ください。",
+            "はい！"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "13:15 — みんなにも 伝える",
+      "panels": [
+        {
+          "size": "page",
+          "image": {
+            "src": "/img/manga/renraku_manga/v2/p11.webp",
+            "refs": [
+              "/img/characters/soka/sheet.webp",
+              "/img/characters/okuda/sheet.webp",
+              "/img/characters/hendy/sheet.webp"
+            ],
+            "status": "done",
+            "prompt": "scripts/images/renraku_manga_v2.json の p11"
+          },
+          "lines": [
+            {
+              "speaker": "gamen",
+              "text": "メンバー：ヘンディ・奥田・ソカ"
+            },
+            {
+              "speaker": "soka",
+              "text": "@channel　【時間の 変更】お客様との ミーティングは 15:00→16:00に なりました。お客様から 連絡が ありました。"
+            },
+            {
+              "speaker": "okuda",
+              "text": "ありがとう。新しい 時間が すぐ 分かります。"
+            },
+            {
+              "speaker": "soka",
+              "text": "（時間は 変わった。でも、やる ことは 同じ。午後は 全部 もう 一度 見よう）"
+            }
+          ],
+          "bakedText": [
+            "メンバー：ヘンディ・奥田・ソカ",
+            "@channel　【時間の 変更】お客様との ミーティングは 15:00→16:00に なりました。お客様から 連絡が ありました。",
+            "ありがとう。新しい 時間が すぐ 分かります。",
+            "（時間は 変わった。でも、やる ことは 同じ。午後は 全部 もう 一度 見よう）"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "13:30 — もう 一度 見たら、気づいた",
+      "panels": [
+        {
+          "size": "page",
+          "image": {
+            "src": "/img/manga/renraku_manga/v2/p12.webp",
+            "refs": [
+              "/img/characters/soka/sheet.webp",
+              "/img/characters/okuda/sheet.webp",
+              "/img/characters/hendy/sheet.webp"
+            ],
+            "status": "done",
+            "prompt": "scripts/images/renraku_manga_v2.json の p12"
+          },
+          "lines": [
+            {
+              "speaker": "soka",
+              "text": "写真は 出て いる。でも、小さくて 少し 見にくいな。"
+            },
+            {
+              "speaker": "soka",
+              "text": "（これは エラーじゃない。でも、お客様は 写真を 見たい はず。どの 画面で、何を 見て、どう したいかを 書こう）"
+            }
+          ],
+          "bakedText": [
+            "写真は 出て いる。でも、小さくて 少し 見にくいな。",
+            "（これは エラーじゃない。でも、お客様は 写真を 見たい はず。どの 画面で、何を 見て、どう したいかを 書こう）"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "13:35 — すぐに、届く 連絡を",
+      "panels": [
+        {
+          "size": "page",
+          "image": {
+            "src": "/img/manga/renraku_manga/v2/p13.webp",
+            "refs": [
+              "/img/characters/soka/sheet.webp",
+              "/img/characters/okuda/sheet.webp",
+              "/img/characters/hendy/sheet.webp"
+            ],
+            "status": "done",
+            "prompt": "scripts/images/renraku_manga_v2.json の p13"
+          },
+          "lines": [
+            {
+              "speaker": "soka",
+              "text": "@ヘンディさん @奥田さん　【商品一覧の 写真】13:30、開発環境の 商品一覧を 確認しました。全部の 写真は 出て います。エラーは ありません。ただ、写真が 小さくて、少し 見にくいです。ミーティングの 前に 大きく した ほうが いいですか？"
+            },
+            {
+              "speaker": "gamen",
+              "text": "ピコン、ピコン！"
+            },
+            {
+              "speaker": "okuda",
+              "text": "写真の 大きさは、設定で すぐ 変えられます。10分です。"
+            },
+            {
+              "speaker": "hendy",
+              "text": "大きく しましょう。16時まで 時間は あります。"
+            },
+            {
+              "speaker": "soka",
+              "text": "はい！"
+            }
+          ],
+          "bakedText": [
+            "@ヘンディさん @奥田さん　【商品一覧の 写真】13:30、開発環境の 商品一覧を 確認しました。全部の 写真は 出て います。エラーは ありません。ただ、写真が 小さくて、少し 見にくいです。ミーティングの 前に 大きく した ほうが いいですか？",
+            "ピコン、ピコン！",
+            "写真の 大きさは、設定で すぐ 変えられます。10分です。",
+            "大きく しましょう。16時まで 時間は あります。",
+            "はい！"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "14:00〜14:10 — 直して、もう 一度 テスト",
+      "panels": [
+        {
+          "size": "page",
+          "image": {
+            "src": "/img/manga/renraku_manga/v2/p14.webp",
+            "refs": [
+              "/img/characters/soka/sheet.webp",
+              "/img/characters/okuda/sheet.webp",
+              "/img/characters/hendy/sheet.webp"
+            ],
+            "status": "done",
+            "prompt": "scripts/images/renraku_manga_v2.json の p14"
+          },
+          "lines": [
+            {
+              "speaker": "okuda",
+              "text": "レビューは 終わりました。デプロイします。"
+            },
+            {
+              "speaker": "soka",
+              "text": "@ヘンディさん　【最後の 確認】14:10、ログイン・商品一覧の 写真・ログアウトを 確認しました。写真は 大きく なりました。今は、全部 動いて います。"
+            },
+            {
+              "speaker": "hendy",
+              "text": "ありがとう。16時に 始めます。"
+            },
+            {
+              "speaker": "okuda",
+              "text": "15時でも 間に合いましたね。"
+            }
+          ],
+          "bakedText": [
+            "レビューは 終わりました。デプロイします。",
+            "@ヘンディさん　【最後の 確認】14:10、ログイン・商品一覧の 写真・ログアウトを 確認しました。写真は 大きく なりました。今は、全部 動いて います。",
+            "ありがとう。16時に 始めます。",
+            "15時でも 間に合いましたね。"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "15:30 — 「見ました」と「終わりました」",
+      "panels": [
+        {
+          "size": "page",
+          "image": {
+            "src": "/img/manga/renraku_manga/v2/p15.webp",
+            "refs": [
+              "/img/characters/soka/sheet.webp",
+              "/img/characters/okuda/sheet.webp",
+              "/img/characters/hendy/sheet.webp"
+            ],
+            "status": "done",
+            "prompt": "scripts/images/renraku_manga_v2.json の p15"
           },
           "lines": [
             {
               "speaker": "hendy",
-              "text": "いっしょに 連絡の 文を 作りましょう。いつ・何が・どう なるか・何を して ほしいか、です。"
+              "text": "【16時の 準備】最後に 画面を 確認して、結果を 教えて ください。"
+            },
+            {
+              "speaker": "soka",
+              "text": "👀は「見ました」の 合図。まだ 終わったと いう 意味では ありません。"
+            },
+            {
+              "speaker": "soka",
+              "text": "@ヘンディさん　もう 一度 見ました。ログインと 商品一覧、大丈夫です。準備 できました。"
+            },
+            {
+              "speaker": "hendy",
+              "text": "了解です。"
             }
+          ],
+          "bakedText": [
+            "【16時の 準備】最後に 画面を 確認して、結果を 教えて ください。",
+            "👀は「見ました」の 合図。まだ 終わったと いう 意味では ありません。",
+            "@ヘンディさん　もう 一度 見ました。ログインと 商品一覧、大丈夫です。準備 できました。",
+            "了解です。"
           ]
-        },
+        }
+      ]
+    },
+    {
+      "title": "16:00 — 連絡すると、チームが 動ける",
+      "panels": [
         {
-          "size": "normal",
+          "size": "page",
           "image": {
-            "src": "/img/manga/renraku_manga/panel8.webp",
-            "prompt": "Medium shot, clean line art, flat cel shading, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. Keep empty space at the top of the frame. No text, no letters, no numbers, no signage, no speech bubbles, no readable text. Anime manga panel, no readable text. Close-up of the laptop screen showing a chat compose box as abstract blurred lines, a young Southeast Asian junior engineer man (Nyam, short black hair swept up off the forehead, coral cardigan over a cream button-down shirt) pressing the enter key with one finger, focused hopeful face. Absolutely no readable text, letters, numbers, logos or speech bubbles anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra fingers, distorted hands, dark or scary mood, angry faces, watermarks.",
+            "src": "/img/manga/renraku_manga/v2/p16.webp",
             "refs": [
-              "/img/characters/nyam/sheet.webp",
+              "/img/characters/soka/sheet.webp",
+              "/img/characters/okuda/sheet.webp",
               "/img/characters/hendy/sheet.webp"
             ],
-            "status": "done"
+            "status": "done",
+            "prompt": "scripts/images/renraku_manga_v2.json の p16"
           },
           "lines": [
             {
-              "speaker": "nyam",
-              "text": "あしたの 18時から 19時まで、検証サーバーを 止めます。"
+              "speaker": "customer",
+              "text": "写真が 大きくて、見やすいですね。"
             },
             {
-              "speaker": "nyam",
-              "text": "その 前に、データを 保存して ください。"
-            }
-          ]
-        },
-        {
-          "size": "wide",
-          "image": {
-            "src": "/img/manga/renraku_manga/panel9.webp",
-            "prompt": "Medium shot, clean line art, flat cel shading, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. Keep empty space at the top of the frame. No text, no letters, no numbers, no signage, no speech bubbles, no readable text. Anime manga panel, no readable text. The chat window on a laptop screen with one abstract message bubble and three colorful round reaction icons floating beside it: an eye icon, a thumbs-up icon, and folded hands icon. Behind the laptop, a young Southeast Asian junior engineer man (Nyam, short black hair swept up off the forehead, coral cardigan over a cream button-down shirt) and Hendy the senior engineer, drawn from the attached character sheet: a Japanese man in his late twenties, slim, short slightly tousled black hair, gentle smile, navy single-breasted suit jacket over a crisp white dress shirt with a navy necktie, no lanyard and no glasses smile at each other, bright cheerful light. Absolutely no readable text, letters, numbers, logos or speech bubbles anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra fingers, distorted hands, dark or scary mood, angry faces, watermarks.",
-            "refs": [
-              "/img/characters/nyam/sheet.webp",
-              "/img/characters/hendy/sheet.webp"
-            ],
-            "status": "done"
-          },
-          "lines": [
-            {
-              "speaker": "narration",
-              "text": "スタンプが ならびました。「読みました」の 合図です。"
+              "speaker": "okuda",
+              "text": "朝 すぐに 連絡したから、午後は 落ち着いて できましたね。"
             },
             {
-              "speaker": "nyam",
-              "text": "連絡は、みんなの 時間を まもるんですね。"
+              "speaker": "soka",
+              "text": "はい。昨日は 大丈夫でも、今日は 分かりません。テストして、すぐ 連絡します。"
+            },
+            {
+              "speaker": "gamen",
+              "text": "連絡の コツ　①事実を 伝える　②具体的な 数字を 使う　③結論から 書く　④誰に 連絡するか 書く"
+            },
+            {
+              "speaker": "soka",
+              "text": "次も、見つけたら すぐ 連絡します！"
             }
+          ],
+          "bakedText": [
+            "写真が 大きくて、見やすいですね。",
+            "朝 すぐに 連絡したから、午後は 落ち着いて できましたね。",
+            "はい。昨日は 大丈夫でも、今日は 分かりません。テストして、すぐ 連絡します。",
+            "連絡の コツ　①事実を 伝える　②具体的な 数字を 使う　③結論から 書く　④誰に 連絡するか 書く",
+            "次も、見つけたら すぐ 連絡します！"
           ]
         }
       ]
@@ -222,188 +850,580 @@
   ],
   "furigana": [
     [
-      "検証環境",
-      "けんしょうかんきょう"
-    ],
-    [
-      "確認作業",
-      "かくにんさぎょう"
-    ],
-    [
-      "金曜日",
-      "きんようび"
-    ],
-    [
-      "月曜日",
-      "げつようび"
-    ],
-    [
-      "連絡",
-      "れんらく"
-    ],
-    [
-      "先輩",
-      "せんぱい"
-    ],
-    [
-      "仕事",
-      "しごと"
-    ],
-    [
-      "作業",
-      "さぎょう"
-    ],
-    [
-      "確認",
-      "かくにん"
-    ],
-    [
-      "合図",
-      "あいず"
-    ],
-    [
-      "環境",
-      "かんきょう"
-    ],
-    [
-      "保存",
-      "ほぞん"
-    ],
-    [
-      "時間",
-      "じかん"
-    ],
-    [
-      "検証",
-      "けんしょう"
-    ],
-    [
-      "夕方",
-      "ゆうがた"
-    ],
-    [
-      "金曜",
-      "きんよう"
-    ],
-    [
-      "二人",
-      "ふたり"
-    ],
-    [
-      "一手",
-      "いって"
-    ],
-    [
-      "同期",
-      "どうき"
-    ],
-    [
-      "人",
-      "ひと"
-    ],
-    [
-      "前",
-      "まえ"
+      "今日",
+      "きょう"
     ],
     [
       "時",
       "じ"
     ],
     [
-      "日",
-      "ひ"
+      "時間",
+      "じかん"
     ],
     [
-      "月",
-      "げつ"
+      "客様",
+      "きゃくさま"
     ],
     [
-      "作",
-      "つく"
+      "見",
+      "み"
     ],
     [
-      "止",
-      "と"
+      "画面",
+      "がめん"
     ],
     [
-      "終",
-      "お"
+      "商品一覧",
+      "しょうひんいちらん"
     ],
     [
-      "知",
-      "し"
+      "商品",
+      "しょうひん"
     ],
     [
-      "考",
-      "かんが"
+      "一覧",
+      "いちらん"
     ],
     [
-      "読",
-      "よ"
+      "午前中",
+      "ごぜんちゅう"
+    ],
+    [
+      "試",
+      "ため"
+    ],
+    [
+      "昨日",
+      "きのう"
     ],
     [
       "何",
       "なに"
     ],
     [
-      "連",
-      "れん"
+      "早",
+      "はや"
     ],
     [
-      "先",
-      "さき"
+      "連絡",
+      "れんらく"
     ],
     [
-      "同",
-      "おな"
+      "送",
+      "おく"
     ],
     [
-      "上",
-      "うえ"
+      "大丈夫",
+      "だいじょうぶ"
     ],
     [
-      "間",
-      "ま"
+      "助",
+      "たす"
     ],
     [
-      "合",
-      "あ"
+      "分か",
+      "わか"
     ],
     [
-      "朝",
-      "あさ"
+      "分かっ",
+      "わかっ"
+    ],
+    [
+      "分",
+      "ぷん"
+    ],
+    [
+      "奥田",
+      "おくだ"
+    ],
+    [
+      "気",
+      "き"
     ],
     [
       "起",
       "お"
     ],
     [
-      "文",
-      "ぶん"
+      "返事",
+      "へんじ"
     ],
     [
-      "金",
-      "かね"
+      "通知",
+      "つうち"
     ],
     [
-      "夜",
-      "よる"
+      "来ない",
+      "こない"
     ],
     [
-      "家",
-      "いえ"
+      "困",
+      "こま"
     ],
     [
-      "消",
+      "伝",
+      "つた"
+    ],
+    [
+      "開発環境",
+      "かいはつかんきょう"
+    ],
+    [
+      "開発",
+      "かいはつ"
+    ],
+    [
+      "環境",
+      "かんきょう"
+    ],
+    [
+      "出",
+      "で"
+    ],
+    [
+      "回",
+      "かい"
+    ],
+    [
+      "大事",
+      "だいじ"
+    ],
+    [
+      "情報",
+      "じょうほう"
+    ],
+    [
+      "全部",
+      "ぜんぶ"
+    ],
+    [
+      "書",
+      "か"
+    ],
+    [
+      "私",
+      "わたし"
+    ],
+    [
+      "調",
+      "しら"
+    ],
+    [
+      "今度",
+      "こんど"
+    ],
+    [
+      "届",
+      "とど"
+    ],
+    [
+      "教",
+      "おし"
+    ],
+    [
+      "直",
+      "なお"
+    ],
+    [
+      "次",
+      "つぎ"
+    ],
+    [
+      "決",
       "き"
+    ],
+    [
+      "原因",
+      "げんいん"
+    ],
+    [
+      "設定",
+      "せってい"
+    ],
+    [
+      "了解",
+      "りょうかい"
+    ],
+    [
+      "相談",
+      "そうだん"
+    ],
+    [
+      "数字",
+      "すうじ"
+    ],
+    [
+      "違",
+      "ちが"
+    ],
+    [
+      "終",
+      "お"
+    ],
+    [
+      "両方",
+      "りょうほう"
+    ],
+    [
+      "開",
+      "ひら"
+    ],
+    [
+      "確認",
+      "かくにん"
+    ],
+    [
+      "結果",
+      "けっか"
+    ],
+    [
+      "今",
+      "いま"
+    ],
+    [
+      "完了",
+      "かんりょう"
+    ],
+    [
+      "午後",
+      "ごご"
+    ],
+    [
+      "一度",
+      "いちど"
+    ],
+    [
+      "差出人",
+      "さしだしにん"
+    ],
+    [
+      "中村",
+      "なかむら"
+    ],
+    [
+      "件名",
+      "けんめい"
+    ],
+    [
+      "本日",
+      "ほんじつ"
+    ],
+    [
+      "変更",
+      "へんこう"
+    ],
+    [
+      "願",
+      "ねが"
+    ],
+    [
+      "内容",
+      "ないよう"
+    ],
+    [
+      "新し",
+      "あたらし"
+    ],
+    [
+      "変わ",
+      "かわ"
+    ],
+    [
+      "変え",
+      "かえ"
+    ],
+    [
+      "同じ",
+      "おなじ"
+    ],
+    [
+      "写真",
+      "しゃしん"
+    ],
+    [
+      "小さ",
+      "ちいさ"
+    ],
+    [
+      "少し",
+      "すこし"
+    ],
+    [
+      "前",
+      "まえ"
+    ],
+    [
+      "大き",
+      "おおき"
+    ],
+    [
+      "最後",
+      "さいご"
+    ],
+    [
+      "動",
+      "うご"
+    ],
+    [
+      "始",
+      "はじ"
+    ],
+    [
+      "間に合",
+      "まにあ"
+    ],
+    [
+      "準備",
+      "じゅんび"
+    ],
+    [
+      "合図",
+      "あいず"
+    ],
+    [
+      "意味",
+      "いみ"
+    ],
+    [
+      "朝",
+      "あさ"
+    ],
+    [
+      "落",
+      "お"
+    ],
+    [
+      "着",
+      "つ"
+    ],
+    [
+      "事実",
+      "じじつ"
+    ],
+    [
+      "具体的",
+      "ぐたいてき"
+    ],
+    [
+      "使",
+      "つか"
+    ],
+    [
+      "結論",
+      "けつろん"
+    ],
+    [
+      "誰",
+      "だれ"
+    ],
+    [
+      "別",
+      "べつ"
+    ],
+    [
+      "新人",
+      "しんじん"
+    ],
+    [
+      "先輩",
+      "せんぱい"
+    ],
+    [
+      "字",
+      "じ"
+    ],
+    [
+      "予定",
+      "よてい"
+    ],
+    [
+      "名前",
+      "なまえ"
+    ],
+    [
+      "中身",
+      "なかみ"
+    ],
+    [
+      "中",
+      "なか"
+    ],
+    [
+      "入",
+      "はい"
+    ],
+    [
+      "店",
+      "みせ"
+    ],
+    [
+      "売",
+      "う"
+    ],
+    [
+      "表",
+      "ひょう"
     ],
     [
       "昼",
       "ひる"
     ],
     [
-      "方",
-      "かた"
+      "打",
+      "う"
+    ],
+    [
+      "場所",
+      "ばしょ"
+    ],
+    [
+      "場",
+      "ば"
+    ],
+    [
+      "話し",
+      "はなし"
+    ],
+    [
+      "話す",
+      "はなす"
+    ],
+    [
+      "話に",
+      "はなしに"
+    ],
+    [
+      "自分",
+      "じぶん"
+    ],
+    [
+      "返",
+      "かえ"
+    ],
+    [
+      "言葉",
+      "ことば"
+    ],
+    [
+      "言い方",
+      "いいかた"
+    ],
+    [
+      "言い",
+      "いい"
+    ],
+    [
+      "言う",
+      "いう"
+    ],
+    [
+      "作",
+      "つく"
+    ],
+    [
+      "道具",
+      "どうぐ"
+    ],
+    [
+      "役に立",
+      "やくにた"
+    ],
+    [
+      "意見",
+      "いけん"
+    ],
+    [
+      "聞",
+      "き"
+    ],
+    [
+      "壊",
+      "こわ"
+    ],
+    [
+      "元",
+      "もと"
+    ],
+    [
+      "本当",
+      "ほんとう"
+    ],
+    [
+      "人",
+      "ひと"
+    ],
+    [
+      "急",
+      "いそ"
+    ],
+    [
+      "気持",
+      "きも"
+    ],
+    [
+      "静",
+      "しず"
+    ],
+    [
+      "考",
+      "かんが"
+    ],
+    [
+      "予想",
+      "よそう"
+    ],
+    [
+      "数",
+      "かず"
+    ],
+    [
+      "様子",
+      "ようす"
+    ],
+    [
+      "来る",
+      "くる"
+    ],
+    [
+      "日",
+      "ひ"
+    ],
+    [
+      "力",
+      "ちから"
+    ],
+    [
+      "先",
+      "さき"
+    ],
+    [
+      "会社",
+      "かいしゃ"
+    ],
+    [
+      "仕事",
+      "しごと"
+    ],
+    [
+      "知",
+      "し"
+    ],
+    [
+      "外",
+      "そと"
+    ],
+    [
+      "手紙",
+      "てがみ"
+    ],
+    [
+      "正し",
+      "ただし"
+    ],
+    [
+      "夕方",
+      "ゆうがた"
     ]
   ]
 }

@@ -1958,6 +1958,14 @@
     [
       "分け",
       "わけ"
+    ],
+    [
+      "客様",
+      "きゃくさま"
+    ],
+    [
+      "通知",
+      "つうち"
     ]
   ],
   "words": [
@@ -18373,6 +18381,90 @@
         "Wait"
       ],
       "example": "APIから データが 届いて いるか 確認します。"
+    },
+    {
+      "id": "menshon",
+      "term": "メンション",
+      "reading": "めんしょん",
+      "romaji": "menshon",
+      "meaningJa": "チャットで「@名前」を 書いて、その 人に 知らせる ことです。",
+      "englishTerm": "Mention (@name)",
+      "example": "@ヘンディさん と メンションすると、通知が 届きます。",
+      "wrongMeanings": [
+        "Emoji",
+        "Channel",
+        "Password"
+      ]
+    },
+    {
+      "id": "ryoukai",
+      "term": "了解",
+      "reading": "りょうかい",
+      "romaji": "ryoukai",
+      "meaningJa": "「分かりました」と いう 返事です。",
+      "englishTerm": "Understood / OK",
+      "example": "了解です。あとで 連絡します。",
+      "wrongMeanings": [
+        "Sorry",
+        "Thank you",
+        "Good morning"
+      ]
+    },
+    {
+      "id": "aizu",
+      "term": "合図",
+      "reading": "あいず",
+      "romaji": "aizu",
+      "meaningJa": "ことばを 使わないで、あいてに 知らせる しるしです。",
+      "englishTerm": "Sign / signal",
+      "example": "👀は「見ました」の 合図です。",
+      "wrongMeanings": [
+        "Map",
+        "Rule",
+        "Question"
+      ]
+    },
+    {
+      "id": "roguauto",
+      "term": "ログアウト",
+      "reading": "ろぐあうと",
+      "romaji": "roguauto",
+      "meaningJa": "システムの 中から 外へ 出る ことです。",
+      "englishTerm": "Logout",
+      "example": "さいごに ログアウトも 確認しました。",
+      "wrongMeanings": [
+        "Login",
+        "Sign up",
+        "Download"
+      ]
+    },
+    {
+      "id": "sashidashinin",
+      "term": "差出人",
+      "reading": "さしだしにん",
+      "romaji": "sashidashinin",
+      "meaningJa": "メールや 手紙を 送った 人です。",
+      "englishTerm": "Sender (From)",
+      "example": "メールの 差出人を 見て、お客様だと 分かりました。",
+      "wrongMeanings": [
+        "Subject",
+        "Receiver",
+        "Attachment"
+      ]
+    },
+    {
+      "id": "onrain",
+      "term": "オンライン",
+      "reading": "おんらいん",
+      "romaji": "onrain",
+      "meaningJa": "インターネットで つながって いる ことです。",
+      "englishTerm": "Online",
+      "example": "午後に オンラインミーティングが あります。",
+      "wrongMeanings": [
+        "In the office",
+        "On paper",
+        "By phone"
+      ]
     }
   ]
 }

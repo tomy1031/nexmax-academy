@@ -664,6 +664,7 @@ export const ASSET_VERSIONS: Readonly<Record<string, string>> = {
   "/img/characters/risa/portrait.webp": "c9516500",
   "/img/characters/risa/reference.jpg": "3b63fc7d",
   "/img/characters/risa/sheet.webp": "e6711916",
+  "/img/characters/soka/sheet.webp": "ef6a9b4a",
   "/img/characters/tomita/sheet.webp": "a7b0da46",
   "/img/characters/yukawa/portrait.webp": "671bb08e",
   "/img/characters/yukawa/reference.jpg": "2598b5cc",

@@ -58,6 +58,30 @@ describe("セリフ入りに する", () => {
     ]);
   });
 
+  it("送りがなと 頭の かなは 落として 漢字の 真上の 読みだけに する", () => {
+    const index = buildFuriganaIndex([
+      ["見ま", "みま"],
+      ["客様", "きゃくさま"],
+      ["来ない", "こない"],
+    ]);
+    expect(bakedReadings(["見ません。お客様は 来ない。"], index)).toEqual([
+      ["見", "み"],
+      ["客様", "きゃくさま"],
+      ["来", "こ"],
+    ]);
+  });
+
+  it("同じ 漢字に 読みが 2つ あるときは 送りがなを 残して 見分けさせる", () => {
+    const index = buildFuriganaIndex([
+      ["分か", "わか"],
+      ["分", "ぷん"],
+    ]);
+    expect(bakedReadings(["分かりました。あと 30分です。"], index)).toEqual([
+      ["分か", "わか"],
+      ["分", "ぷん"],
+    ]);
+  });
+
   it("焼く文字が 変わったコマの 絵は 消す（字の無い絵を そのまま使わせない）", () => {
     const { manga: baked } = bakeSpeech(manga());
     expect(baked.pages[0]?.panels[0]?.image.src).toBeUndefined();

@@ -1,0 +1,21 @@
+{
+  "kind": "character",
+  "id": "soka",
+  "name": "ソカ",
+  "reading": "そか",
+  "role": "新人エンジニア（カンボジアから 来て、入社 1年目）",
+  "looks": "Cambodian woman in her early twenties — clearly Southeast Asian, drawn after the attached learner illustration (same face, hair and colouring). Warm light-brown skin. Straight black hair with a centre part, falling just past the shoulders, no fringe. Soft oval face, brown almond eyes with gentle double eyelids, thin natural eyebrows, a small warm smile. Outfit: a coral (#F26B4F) long-sleeved button-down shirt with one chest pocket, sleeves rolled to just below the elbow, worn untucked; dark navy slim trousers; white low-top sneakers. Carries a small A6 notebook with a cream cover. Height about 158cm, slim build, attentive upright posture. No glasses, no lanyard, no jewellery.",
+  "personality": "まじめで、すぐ 動きます。あわてると 気もちが 先に 出ますが、教えて もらうと すぐ 直します。メモを よく とります。",
+  "sheet": {
+    "src": "/img/characters/soka/sheet.webp",
+    "prompt": "A character model sheet for a Japanese language-learning manga.\nLayout: front view (full body, T-pose) on the left, right side view and back view next to it,\nand a column of 6 bust-up facial expressions on the right\n(neutral, smiling, worried, surprised, thinking, apologetic).\nWhite background. Light grid lines overlay to keep eye level consistent across views.\nCharacter: 新人エンジニア（カンボジアから 来て、入社 1年目） — Cambodian woman in her early twenties — clearly Southeast Asian, drawn after the attached learner illustration (same face, hair and colouring). Warm light-brown skin. Straight black hair with a centre part, falling just past the shoulders, no fringe. Soft oval face, brown almond eyes with gentle double eyelids, thin natural eyebrows, a small warm smile. Outfit: a coral (#F26B4F) long-sleeved button-down shirt with one chest pocket, sleeves rolled to just below the elbow, worn untucked; dark navy slim trousers; white low-top sneakers. Carries a small A6 notebook with a cream cover. Height about 158cm, slim build, attentive upright posture. No glasses, no lanyard, no jewellery.\nPersonality (affects posture and expression): まじめで、すぐ 動きます。あわてると 気もちが 先に 出ますが、教えて もらうと すぐ 直します。メモを よく とります。\nStyle: clean modern Japanese manga / anime style, soft cel shading, bright friendly palette, rounded shapes, no harsh shadows, office and school settings, contemporary Japan.\nAvoid: no text, no letters, no kanji, no kana, no numbers anywhere in the image, speech balloons must be completely EMPTY (white inside, no writing), no watermark, no signature, no logo, no frame border, no six fingers, no extra limbs, no costume changes between panels, no duplicate faces of the same character in one panel.\nDo NOT write the character's name or any label on the sheet.",
+    "refs": [
+      "/img/articles/kaisha_shirabekata/g1.webp",
+      "/img/characters/okuda/sheet.webp"
+    ],
+    "status": "done"
+  },
+  "references": [
+    "/img/articles/kaisha_shirabekata/g1.webp"
+  ]
+}
