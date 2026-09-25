@@ -118,6 +118,10 @@ export const quizDraftSchema: z.ZodType<QuizDraft> = z.discriminatedUnion("kind"
         tries: z.number().int().min(0).optional(),
         corrected: z.string().optional(),
         readAnswer: z.boolean().optional(),
+        // 2026-09-25 に 足した（文法の 直し）
+        grammar: z
+          .array(z.object({ said: z.string(), fix: z.string(), why: z.string() }))
+          .optional(),
       }),
     ),
   }),

@@ -93,6 +93,7 @@ const UI_FURIGANA = buildFuriganaIndex([
   ["出ます", "でます"],
   ["文", "ぶん"],
   ["見ながら", "みながら"],
+  ["見て", "みて"],
   ["出して", "だして"],
   ["書き直して", "かきなおして"],
   ["使えません", "つかえません"],
@@ -106,6 +107,7 @@ const UI_FURIGANA = buildFuriganaIndex([
   ["言い方", "いいかた"],
   ["伝わります", "つたわります"],
   ["送る", "おくる"],
+  ["文法", "ぶんぽう"],
 ]);
 
 /** 聞くだけの つなぎ（朝礼の `LISTEN_ONLY` と 同じ 決め——相手は 何も 言わない）。 */
@@ -214,6 +216,7 @@ export function BugReportQuestionView({
         items: [],
         polished: "",
         readAnswer: false,
+        grammar: [],
       };
       // 声を 聞けない 端末は、欄が うまれば 進める（理由は 画面に 出す）
       return { ...edited, skipped: noVoice };
@@ -250,7 +253,8 @@ export function BugReportQuestionView({
             !(
               readable(one.polished) &&
               readable(one.corrected) &&
-              one.items.every((item) => readable(item.note))
+              one.items.every((item) => readable(item.note)) &&
+              one.grammar.every((fix) => readable(fix.said + fix.fix + fix.why))
             ),
         );
         setFailNotes((prev) => ({
@@ -269,7 +273,15 @@ export function BugReportQuestionView({
              * `requestBugReview` が 新しい つなぎで 1回 やり直して から ここへ 来る。
              */
             if (!result.ok) {
-              return { ...entry, spoken, score: null, items: [], polished: "", skipped: true };
+              return {
+                ...entry,
+                spoken,
+                score: null,
+                items: [],
+                polished: "",
+                grammar: [],
+                skipped: true,
+              };
             }
             const items = result.review.items.map((item) => ({
               id: item.id,
@@ -296,6 +308,9 @@ export function BugReportQuestionView({
                   ? shown
                   : fresh || entry.corrected || (question.bugs[index]?.model ?? ""),
               readAnswer,
+              grammar: result.review.grammar.filter((fix) =>
+                readable(fix.said + fix.fix + fix.why),
+              ),
             };
           }),
         );
@@ -754,6 +769,33 @@ function BugCard({
               );
             })}
           </ul>
+
+          {/* 文法の 直し（2026-09-25 の 指定。点には 入れない） */}
+          {(entry.grammar ?? []).length > 0 && (
+            <div className="mt-3 rounded-2xl border-2 border-[#f5b73b] bg-white px-3 py-2.5">
+              <p className="text-sm font-black text-[#b7791f]">
+                <RubyText text="📝 文法" index={UI_FURIGANA} />
+              </p>
+              <ul className="mt-1 grid gap-2">
+                {(entry.grammar ?? []).map((fix, i) => (
+                  <li key={i} className="text-ink text-sm leading-relaxed font-bold">
+                    <span className="line-through decoration-[#d9534f]">
+                      「<RubyText text={fix.said} index={aiFurigana} />」
+                    </span>
+                    {" → "}
+                    <span className="font-black" style={{ color: OK_COLOR }}>
+                      「<RubyText text={fix.fix} index={aiFurigana} />」
+                    </span>
+                    {fix.why !== "" && (
+                      <span className="text-ink-soft block text-xs">
+                        <RubyText text={fix.why} index={aiFurigana} />
+                      </span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </>
       )}
 
