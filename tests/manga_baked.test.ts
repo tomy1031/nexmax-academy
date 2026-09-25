@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { bakeSpeech, staleBakedPanels, unbakeSpeech } from "@/lib/manga-baked";
+import { bakedReadings, bakeSpeech, staleBakedPanels, unbakeSpeech } from "@/lib/manga-baked";
+import { buildFuriganaIndex } from "@/lib/text/furigana";
 import { contentSchema, type Manga } from "@/content/schema";
 
 /**
@@ -38,11 +39,23 @@ function manga(over: Record<string, unknown> = {}): Manga {
 }
 
 describe("セリフ入りに する", () => {
-  it("読み辞書から かなを 作って 焼く文字にする", () => {
+  it("セリフを そのまま 焼く文字にする（漢字は 絵の 中で ふりがなを 付ける・2026-09-25）", () => {
     const { manga: baked, problems } = bakeSpeech(manga());
     expect(problems).toEqual([]);
     expect(baked.speechInImage).toBe(true);
-    expect(baked.pages[0]?.panels[0]?.bakedText).toEqual(["あさかいを はじめます。"]);
+    expect(baked.pages[0]?.panels[0]?.bakedText).toEqual(["朝会を はじめます。"]);
+  });
+
+  it("焼く 漢字の 読みは 読み辞書の 最長一致で 渡す（画面の ルビと 同じ 読み）", () => {
+    const index = buildFuriganaIndex([
+      ["朝会", "あさかい"],
+      ["朝", "あさ"],
+      ["報告", "ほうこく"],
+    ]);
+    expect(bakedReadings(["朝会を はじめます。", "報告と 朝会"], index)).toEqual([
+      ["朝会", "あさかい"],
+      ["報告", "ほうこく"],
+    ]);
   });
 
   it("焼く文字が 変わったコマの 絵は 消す（字の無い絵を そのまま使わせない）", () => {
@@ -70,7 +83,7 @@ describe("セリフ入りに する", () => {
     expect(problems).toHaveLength(1);
     expect(problems[0]?.text).toContain("資料");
     // 焼けた方は入っている。1語の読み漏れで 切りかえ自体を できなくしない
-    expect(baked.pages[0]?.panels[0]?.bakedText[0]).toBe("あさかいを はじめます。");
+    expect(baked.pages[0]?.panels[0]?.bakedText[0]).toBe("朝会を はじめます。");
     expect(baked.pages[0]?.panels[0]?.bakedText[1]).toBe("");
   });
 
@@ -135,13 +148,25 @@ describe("ずれたコマを 見つける", () => {
     expect(staleBakedPanels(baked)).toEqual([]);
   });
 
+  it("かなで 焼いた 古い 絵（2026-08 まで）も ずれとは 言わない", () => {
+    const { manga: baked } = bakeSpeech(manga());
+    const kana = {
+      ...baked,
+      pages: baked.pages.map((page) => ({
+        ...page,
+        panels: page.panels.map((panel) => ({ ...panel, bakedText: ["あさかいを はじめます。"] })),
+      })),
+    };
+    expect(staleBakedPanels(kana)).toEqual([]);
+  });
+
   it("絵だけモードでは 何も 言わない", () => {
     expect(staleBakedPanels(manga())).toEqual([]);
   });
 });
 
 describe("スキーマが 危ないものを 止める", () => {
-  const bakedManga = (bakedText: string[], lines = 1) =>
+  const bakedManga = (bakedText: string[], lines = 1, text = "はい。", size = "normal") =>
     contentSchema.safeParse({
       kind: "manga",
       id: "m1",
@@ -153,9 +178,10 @@ describe("スキーマが 危ないものを 止める", () => {
         {
           panels: [
             {
+              size,
               lines: Array.from({ length: lines }, () => ({
                 speaker: "narration",
-                text: "はい。",
+                text,
               })),
               bakedText,
             },
@@ -164,16 +190,27 @@ describe("スキーマが 危ないものを 止める", () => {
       ],
     });
 
-  it("漢字を 焼こうとしたら 止める（ふりがなを 焼けない）", () => {
+  it("セリフと ちがう 漢字を 焼こうとしたら 止める（読みを 渡せない・言い換え）", () => {
     const result = bakedManga(["朝会を はじめます"]);
     expect(result.success).toBe(false);
-    expect(JSON.stringify(result.error?.issues)).toContain("漢字");
+    expect(JSON.stringify(result.error?.issues)).toContain("一字一句");
   });
 
-  it("20文字を こえたら 止める（長いと 字が くずれる）", () => {
-    const result = bakedManga(["あ".repeat(21)]);
+  it("セリフと 一字一句 同じなら 漢字・ローマ字も 焼ける（願い #115）", () => {
+    const text = "これから 私と Zoomで 話しましょう。";
+    expect(bakedManga([text], 1, text).success).toBe(true);
+  });
+
+  it("30文字を こえたら 止める（1コマ絵は 長いと 字が くずれる）", () => {
+    const result = bakedManga(["あ".repeat(31)]);
     expect(result.success).toBe(false);
-    expect(JSON.stringify(result.error?.issues)).toContain("20");
+    expect(JSON.stringify(result.error?.issues)).toContain("30");
+  });
+
+  it("ページ絵（page）は 吹き出しの 数と 長さを 見ない（目の 受入で 見る）", () => {
+    const long =
+      "@ヘンディさん 【ログインの エラー】10:10、開発環境の ログイン画面で エラー500が 出ました。";
+    expect(bakedManga([long, long, long], 3, long, "page").success).toBe(true);
   });
 
   it("セリフと 数が 合わないと 止める", () => {

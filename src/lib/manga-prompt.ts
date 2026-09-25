@@ -4,24 +4,26 @@
  * 調査（2026-08-06）で分かった、外せない決まりをここに集める。
  * 画面ごとに書き分けると、1か所だけ古い書き方が残って画風が割れる。
  *
- * ## 1. 絵の中に日本語を描かせない（最重要）
- * 画像生成に日本語を描かせると漢字が崩れやすく、**ふりがな（ルビ）は実例が
- * 1件も見つからない**。拡散モデルは文字を言語ではなくピクセル模様として学習する
- * ため、通常サイズの漢字ですら不安定で、ルビは
- *   (a) 本文より小さい (b) 親文字との対応位置が厳密 (c) 画数の多い漢字の真上
- * という三重苦になる。国内の実務記事はそろって「文字なしで生成 → 後から重ねる」を
- * 定石として挙げている。
- * この方針は AGENTS.md 規律2（ルビHTMLを手書きしない・表示時に合成する）とも合い、
- * `lint:content` のふりがな全覆い検査もそのまま効く。
- * → 吹き出しは**空**で描かせ、セリフはアプリが重ねる。
+ * ## 1. 文字の 入れかたは 2通り（2026-09-25 に 改めた）
+ * - **セリフ入り（`buildBakedPanelPrompt`）**: 吹き出しに セリフを 焼く、ふつうの カラー漫画の 形。
+ *   **字は 横書き**、**漢字には 1つ残らず ふりがな**（読みは 読み辞書から 逐語で 渡す）。
+ *   2026-08-06 は「画像生成に ルビは 焼けない（実例ゼロ）」と 判断して かなに 縛って いたが、
+ *   image-gen-2 で 漢字＋ふりがな＋ローマ字の 吹き出しが 崩れずに 描けた（2026-08-19・願い #115。
+ *   2026-09-18 の 夕礼の しごと絵でも 画面の 字に ふりがなを 焼けて いる）。
+ *   ユーザーの 指定（2026-09-25）「一般的なカラー漫画の形式」「全ての漢字には正確なふりがな」
+ *   「吹き出しの文字は横」。**焼いた 絵は 1枚ずつ 目で 字と 読みを 照合する**（崩れたら 撮り直す）。
+ * - **絵だけ（`buildPanelPrompt`）**: 吹き出しは 空で 描かせ、セリフは アプリが 重ねる。
+ *   設定画・口パクなど、文字が あると 困る 絵は こちら（`NO_TEXT`）。
  *
  * ## 2. キャラクターは設定画（シート）を参照画像として毎回渡す
  * プロンプトで毎回容姿を書くより確実。Google の consistent-imagery codelab も
  * 国内の実装記事も同じ結論。だからシートを先に1枚作る。
  *
- * ## 3. コマは1枚ずつ描かせる
+ * ## 3. コマは1枚ずつ描かせる（スタジオの 既定）
  * 4コマを1枚で出すとコマ順とレイアウトが制御できず、読み順が崩れる報告が多い。
- * 枠とセリフはアプリ側（HTML）が持ち、AIには1コマ＝1枚の絵だけ描かせる。
+ * スタジオでは 枠とセリフはアプリ側（HTML）が持ち、AIには1コマ＝1枚の絵だけ描かせる。
+ * 例外: カラー漫画の 1ページを 1枚で 描く 教材（`size: "page"`）は、台帳
+ *（`scripts/images/<id>.json`）で コマの 並びを 1コマずつ 言葉で 指定して 描かせる。
  *
  * ## 4. 技術語は英語、描く中身は具体的に
  * 構図・光・画風のテクニカルワードは英語のほうが安定する。あいまいな語は
@@ -140,25 +142,37 @@ export function buildMouthPrompt(
 }
 
 /**
+ * 絵に 焼く 字の 決まり（横書き・漢字には ふりがな）。**台帳の 絵でも 同じ 文を 使う**
+ *（`scripts/images/renraku_manga_v2.json` の `noText` は ここを 逐語で 写した もの）。
+ */
+export const RUBY_LETTERING = [
+  "All lettering is HORIZONTAL (left to right, yokogaki) — never vertical.",
+  "Copy every text EXACTLY as given, character for character: do not translate, rephrase, shorten, or add anything.",
+  "Directly above EVERY kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height.",
+  "Use exactly the readings listed below — never guess a reading.",
+  "Hiragana, katakana, Latin letters, digits and symbols take no furigana.",
+  "Letter it large and clearly legible in a plain rounded manga font.",
+].join(" ");
+
+/**
  * セリフを**絵の中に焼く**コマの指示。
  *
  * 通常の `buildPanelPrompt` と分けてあるのは、禁止事項が正反対になるから。
- * こちらは「文字を描け」と言う必要がある一方で、
- * **かな以外は描かせない**（漢字はふりがなを焼けないので学習者が読めない・規律2）。
+ * こちらは「文字を描け」と言う。焼く文字は **セリフそのもの**（`bakedText`）で、
+ * ここでは **逐語で1回だけ**書く——言い換えられると、データのセリフと絵の字がずれる。
+ * 漢字の 読みは 呼ぶ側が 読み辞書から 渡す（`bakedReadings`）。モデルに 読ませると
+ * 文脈と ちがう 読み（「行」を ぎょう 等）を 焼く ことが ある。
  *
- * 焼く文字は呼ぶ側が機械変換で用意する（`kanaOf`）。ここでは
- * **逐語で1回だけ**書く——言い換えられると、データのセリフと絵の字がずれる。
- *
- * 画像生成の日本語は長いほど崩れるので、スキーマ側で20文字・1コマ2吹き出しに
- * 絞ってある。ここではその前提で「大きく・はっきり」を頼む。
- *
- * ## 実測（2026-08-07・Codex image_gen / gpt-image-2）
- * 「おはようございます。」「あさかいを はじめます。」の2つの吹き出しを、
- * **1回の生成で崩れゼロ・分かち書きの空白まで保って**描けた。
- * かな限定にしたのは学習者が読めるようにするためだが、
- * **生成の安定にも効いている**（漢字を混ぜないほど字形が崩れない）。
+ * ## 実測
+ * - 2026-08-07: 「おはようございます。」「あさかいを はじめます。」（かな）を 崩れゼロで 描けた。
+ * - 2026-08-19: 「これから 私と Zoom」＋「私」の 上に「わたし」を 1回で 描けた（願い #115）。
  */
-export function buildBakedPanelPrompt(brief: PanelBrief & { texts: readonly string[] }): string {
+export function buildBakedPanelPrompt(
+  brief: PanelBrief & {
+    texts: readonly string[];
+    readings?: readonly (readonly [string, string])[];
+  },
+): string {
   const cast = brief.cast
     .map((person, index) => `Character ${index + 1} (${person.role}): ${person.looks}`)
     .join("\n");
@@ -169,6 +183,8 @@ export function buildBakedPanelPrompt(brief: PanelBrief & { texts: readonly stri
         `  Balloon ${i + 1} must contain exactly this text, copied character for character:\n    ${text}`,
     )
     .join("\n");
+
+  const readings = brief.readings ?? [];
 
   return [
     "One single manga panel (not a page, not a grid) for a Japanese language-learning lesson.",
@@ -183,12 +199,11 @@ export function buildBakedPanelPrompt(brief: PanelBrief & { texts: readonly stri
     `Draw ${brief.texts.length} speech balloon(s), placed so they do not cover any face.`,
     balloons,
     "",
-    "Rules for the text inside the balloons:",
-    "- Copy it EXACTLY. Do not translate, rephrase, shorten, or add anything.",
-    "- It is Japanese hiragana/katakana only. Do NOT add kanji.",
-    "- Do NOT add furigana or any small text above the characters.",
-    "- Write it large and clearly legible, in a plain rounded manga lettering style.",
-    "- No other writing anywhere in the image.",
+    `Lettering: ${RUBY_LETTERING}`,
+    readings.length > 0
+      ? `Furigana readings (kanji → hiragana): ${readings.map(([surface, reading]) => `${surface} → ${reading}`).join(" / ")}`
+      : "",
+    "No other writing anywhere in the image.",
     "",
     `Style: ${STYLE}.`,
     `Avoid: ${NEGATIVE}, no watermark, no signature, no logo, no frame border.`,

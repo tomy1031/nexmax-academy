@@ -440,4 +440,5 @@ export const PANEL_SIZE_OPTIONS: readonly { value: MangaPanel["size"]; label: st
   { value: "normal", label: "ふつう" },
   { value: "wide", label: "よこ長（決めゴマ）" },
   { value: "tall", label: "たて長" },
+  { value: "page", label: "1ページの 絵（カラー漫画・タップで 大きく）" },
 ];
