@@ -19,6 +19,8 @@ label input,label textarea{display:block;width:100%;margin-top:6px}textarea{min-
 <div id="status" class="status">まだ <ruby>送信<rt>そうしん</rt></ruby>していません。</div>
 </div></main>
 <script>
+// status は window.status（組み込みの 文字列）に なるので、id で 引く
+const status=document.getElementById('status');
 send.onclick=()=>{
   if(!message.value.trim()){status.innerHTML='メッセージを <ruby>入<rt>い</rt></ruby>れてください。';return;}
   status.innerHTML='<ruby>送信<rt>そうしん</rt></ruby>しました。ありがとうございました。';

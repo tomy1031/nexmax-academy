@@ -328,3 +328,40 @@ test("バグ報告: 文法の 直しが あれば「📝 文法」に 出る（2
   expect((await bareKanjiTexts(page)).filter((text) => !typed.includes(text))).toEqual([]);
   await shot(page, "houkoku-bug-07-grammar");
 });
+
+/*
+ * テストする サイトが **本来の バグどおりに** 動くか（2026-09-25）。
+ * `status` を id の まま 書くと window.status（組み込みの 文字列）に なり、
+ * お問い合わせは 何を しても「まだ 送信していません」、プロフィールは エラーで
+ * 「保存しました。」が 出なかった。
+ */
+test("バグ報告: お問い合わせは 名前と メールが 空でも 送信できて しまう（本来の バグ）", async ({
+  page,
+}) => {
+  const errors: string[] = [];
+  page.on("pageerror", (error) => errors.push(error.message));
+  await page.goto("/tools/bug_report/site6-contact/app.html");
+  const status = page.locator("#status");
+  await page.locator("#send").click();
+  await expect(status).toContainText("メッセージを");
+  await page.locator("#message").fill("hello");
+  await page.locator("#send").click();
+  await expect(status).toContainText("ありがとうございました");
+  expect(errors).toEqual([]);
+});
+
+test("バグ報告: プロフィールは「保存しました。」が 出るのに 名前が 変わらない（本来の バグ）", async ({
+  page,
+}) => {
+  const errors: string[] = [];
+  page.on("pageerror", (error) => errors.push(error.message));
+  await page.goto("/tools/bug_report/site8-profile/app.html");
+  const before = await page.locator("#displayName").innerText();
+  await page.locator("#name").fill("Sok");
+  await page.locator("#bio").fill("こんにちは");
+  await page.locator("#save").click();
+  await expect(page.locator("#status")).toBeVisible();
+  await expect(page.locator("#displayBio")).toHaveText("こんにちは");
+  await expect(page.locator("#displayName")).toHaveText(before);
+  expect(errors).toEqual([]);
+});
