@@ -53,10 +53,6 @@
       "ref": "houkoku_bug_quiz",
       "type": "quizset",
       "gates": true
-    },
-    {
-      "ref": "houkoku_meeting",
-      "type": "meeting"
     }
   ],
   "wordStageIds": [
