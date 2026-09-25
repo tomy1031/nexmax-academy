@@ -21,6 +21,8 @@ label{display:block;font-weight:700;margin:14px 0}label input,label textarea{dis
 <div id="status" class="status"><ruby>保存<rt>ほぞん</rt></ruby>しました。</div>
 </div></main>
 <script>
+// status は window.status（組み込みの 文字列）に なるので、id で 引く
+const status=document.getElementById('status');
 save.onclick=()=>{
   displayBio.textContent=bio.value;
   status.style.display='block';
