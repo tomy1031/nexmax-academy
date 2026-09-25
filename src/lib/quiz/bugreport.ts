@@ -94,6 +94,15 @@ export interface BugReportEntry {
   readonly corrected?: string;
   /** 答えを 見せた あとに 読んだ 文が、見せた 文と ほぼ 同じだった（通す）。 */
   readonly readAnswer?: boolean;
+  /** 文法の 直し（2026-09-25 に 足した。点には 入れない）。 */
+  readonly grammar?: readonly BugGrammarFix[];
+}
+
+/** 文法の 直し 1つ（学生の 言った ところ → 直した 形・なぜ）。 */
+export interface BugGrammarFix {
+  readonly said: string;
+  readonly fix: string;
+  readonly why: string;
 }
 
 /** この 回数 だめなら 答えを 見せる。 */
@@ -251,6 +260,7 @@ export interface BugReviewResult {
   readonly understandable: boolean;
   readonly polished: string;
   readonly corrected: string;
+  readonly grammar: readonly BugGrammarFix[];
 }
 
 export const BUG_REVIEW_SYSTEM = [
@@ -288,9 +298,12 @@ export const BUG_REVIEW_TOOL = {
                   type: "STRING",
                   description:
                     "ひとこと（1〜2文）。25点なら よかった ところ。" +
-                    "25点より 下なら **何を 足せば よいかの ヒント**を 具体的に" +
-                    "（どこを 見るか・どの ことばを 入れるか・どんな 形で 言うか）。" +
-                    "ただし 正しい 報告の 文を そのまま 書かない。",
+                    "25点より 下なら **学生が この 項目で 言った ことばを「」で 引いて**、" +
+                    "それの どこが 足りないか・合って いないかを 言い、何を 見れば よいかを 添える。" +
+                    "**中身が バグと ちがう（逆の ことを 言って いる）ときは、ちがうと はっきり 書く**" +
+                    "（れい:「ログインが する」と 言いましたが、ここで ログインするのが おかしい ところです）。" +
+                    "「くわしく 書きましょう」だけの 一般論に しない。" +
+                    "ただし 正しい 報告の 文を まるごと 書かない。",
                 },
               },
               required: ["id", "points", "note"],
@@ -315,8 +328,29 @@ export const BUG_REVIEW_TOOL = {
               "合う **正しい 報告の 文**（〜で、〜ました。すると、〜ました。本当は、〜はずです。）。" +
               "学生が 3回 まちがえた ときに 見せて、読んで もらう。",
           },
+          grammar: {
+            type: "ARRAY",
+            description:
+              "学生の ことばの 文法の まちがい（助詞・動詞の 形・ていねいさ）。1つずつ。" +
+              "無ければ 空の 配列。点には 入れない。",
+            items: {
+              type: "OBJECT",
+              properties: {
+                said: {
+                  type: "STRING",
+                  description: "学生が 言った ところ（そのまま・みじかく）。",
+                },
+                fix: { type: "STRING", description: "直した 形。" },
+                why: {
+                  type: "STRING",
+                  description: "なぜ 直すか（1文・文法の 名前は 使わない）。",
+                },
+              },
+              required: ["said", "fix", "why"],
+            },
+          },
         },
-        required: ["items", "understandable", "polished", "corrected"],
+        required: ["items", "understandable", "polished", "corrected", "grammar"],
       },
     },
   ],
@@ -368,7 +402,12 @@ export function buildBugReviewPrompt(context: BugReviewContext, kanjiRetry = fal
     "- action: 何を したか（押した ボタン・入れた ことば・えらんだ もの）。",
     "- result: その あと どう なったか（おかしい ところ）。",
     "- expected: 本当は どう なる はずか。",
-    "- 声を 文字に した ものなので、同じ 音の 字の ちがい・句読点・小さな 文法の まちがいでは 点を 引かない。",
+    "- 声を 文字に した ものなので、同じ 音の 字の ちがい・句読点では 点を 引かない。",
+    "- ヒント（note）は、学生が その 項目で 言った ことばを「」で 引いて、そこに 向けて 書く。" +
+      "言った ことばが バグと 逆・ちがう ときは「ちがいます」と はっきり 言い、どこが おかしいのかを 書く。",
+    "- 文法の まちがい（助詞・動詞の 形・ていねいさ）は **点を 引かずに** grammar に 1つずつ 書く" +
+      "（れい: said「ログインが する」→ fix「ログインする」／said「表示が しちゃいました」→ fix「表示されました」）。" +
+      "同じ 音の 字の ちがい・句読点は 書かない。",
     "- **0点は きびしい**。だいたい 言えて いれば 部分点を あげる。",
     "- この 画面の バグと 関係の ない 話や、意味が 通らない ときは understandable を false に する。",
     "- 原因や 直し方は 聞いて いない。言って いなくても 点を 引かない。",
@@ -395,7 +434,7 @@ export function buildBugReviewPrompt(context: BugReviewContext, kanjiRetry = fal
     context.spoken,
     "```",
     "",
-    "# 学生が 読む ことばの 書きかた（note・polished・corrected）",
+    "# 学生が 読む ことばの 書きかた（note・polished・corrected・grammar）",
     "- つかえる 漢字は **画面の 説明と お手本に 出て くる ことば**と、つぎの ことばだけです。",
     `  ${AI_KANJI_WORDS.join("・")}`,
     "  どちらにも 無い ことばは **ひらがな**で 書く。外来語は カタカナ。",
@@ -427,6 +466,7 @@ export function parseBugReview(args: unknown): BugReviewResult | null {
     understandable?: unknown;
     polished?: unknown;
     corrected?: unknown;
+    grammar?: unknown;
   };
   const known = new Set(BUG_REPORT_CHECKS.map((one) => one.id));
   const seen = new Map<string, { id: string; points: number; note: string }>();
@@ -446,5 +486,12 @@ export function parseBugReview(args: unknown): BugReviewResult | null {
     understandable: bag.understandable !== false,
     polished: text(bag.polished),
     corrected: text(bag.corrected),
+    // 無い・形が ちがう 返事でも 点は 出す（文法は 足しの 情報）
+    grammar: (Array.isArray(bag.grammar) ? bag.grammar : [])
+      .map((one) => {
+        const fix = (one ?? {}) as { said?: unknown; fix?: unknown; why?: unknown };
+        return { said: text(fix.said), fix: text(fix.fix), why: text(fix.why) };
+      })
+      .filter((one) => one.said !== "" && one.fix !== "" && one.said !== one.fix),
   };
 }
