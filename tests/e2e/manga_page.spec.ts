@@ -27,22 +27,37 @@ test("ページ絵は 縦長で 出て、タップで 大きく なり、とじ�
   expect(box && box.height > box.width).toBe(true);
 
   // 絵の 下の セリフも 出て いる（焼いた 字とは 別に、ふりがな・語彙は ここが 担う）
-  const lastLine = FIRST.lines.at(-1)!.text;
-  await expect(page.getByText(lastLine.slice(0, 3)).first()).toBeVisible();
+  const figure = page.locator("figure").first();
+  await expect(figure.getByText("ヘンディ").first()).toBeVisible();
+  await expect(figure.getByText("テストして").first()).toBeVisible();
   expect(await bareKanjiTexts(page)).toEqual([]);
   await shot(page, "manga-page-01-390");
 
   await open.click();
   const zoom = page.getByTestId("manga-page-zoom");
+  await expect(zoom.getByRole("button", { name: "✕ とじる" })).toBeFocused();
   await expect(zoom).toBeVisible();
-  await shot(page, "manga-page-02-zoom");
+  // 大きく した 画面は 画面に 固定の 幕なので、ページ全体では なく 見えて いる 範囲で 撮る
+  await page.screenshot({ path: "e2e-screens/manga-page-02-zoom.png" });
 
   // もう 1回 タップで 2ばい（ふりがなまで 読める 大きさ）
   await zoom.getByRole("button", { name: "もっと おおきく する" }).click();
   await expect(zoom.getByRole("button", { name: "もとの おおきさに もどす" })).toBeVisible();
-  await shot(page, "manga-page-03-zoom2x");
+  await page.screenshot({ path: "e2e-screens/manga-page-03-zoom2x.png" });
+
+  // 大きく して いる あいだは ←→ で コマが 変わらない（2ばいでは 横スクロールの キー）
+  await page.keyboard.press("ArrowRight");
+  await expect(zoom).toBeVisible();
+  await expect(page.getByText(`1 / ${manga.pages.length} コマ`)).toBeAttached();
 
   await zoom.getByRole("button", { name: "✕ とじる" }).click();
-  await expect(zoom).toHaveCount(0);
-  await expect(open).toBeVisible();
+  await expect(zoom).toBeHidden();
+  await expect(open).toBeFocused();
+
+  // Esc でも 閉じて、フォーカスは ページの ボタンへ 戻る
+  await open.click();
+  await expect(zoom.getByRole("button", { name: "✕ とじる" })).toBeFocused();
+  await page.keyboard.press("Escape");
+  await expect(zoom).toBeHidden();
+  await expect(open).toBeFocused();
 });

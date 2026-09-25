@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { bakedReadings, bakeSpeech, staleBakedPanels, unbakeSpeech } from "@/lib/manga-baked";
+import { readdirSync, readFileSync } from "node:fs";
+import { join } from "node:path";
 import { buildFuriganaIndex } from "@/lib/text/furigana";
 import { contentSchema, type Manga } from "@/content/schema";
 
@@ -68,6 +70,20 @@ describe("セリフ入りに する", () => {
       ["見", "み"],
       ["客様", "きゃくさま"],
       ["来", "こ"],
+    ]);
+  });
+
+  it("かなを はさむ 語は 漢字ごとに 分ける（間に合 → 間・合）", () => {
+    const index = buildFuriganaIndex([
+      ["間に合", "まにあ"],
+      ["落", "お"],
+      ["着", "つ"],
+    ]);
+    expect(bakedReadings(["15時でも 間に合いましたね。落ち着いて"], index)).toEqual([
+      ["間", "ま"],
+      ["合", "あ"],
+      ["落", "お"],
+      ["着", "つ"],
     ]);
   });
 
@@ -214,10 +230,29 @@ describe("スキーマが 危ないものを 止める", () => {
       ],
     });
 
-  it("セリフと ちがう 漢字を 焼こうとしたら 止める（読みを 渡せない・言い換え）", () => {
-    const result = bakedManga(["朝会を はじめます"]);
-    expect(result.success).toBe(false);
-    expect(JSON.stringify(result.error?.issues)).toContain("一字一句");
+  it("セリフと 焼き字の 食い違いは 保存を 止めず「絵が 古い」と 知らせる（誤字を 直せる ように）", () => {
+    const result = bakedManga(["朝会を はじめます"], 1, "朝会を はじめます。");
+    expect(result.success).toBe(true);
+    if (!result.success || result.data.kind !== "manga") throw new Error("まんがでない");
+    expect(staleBakedPanels(result.data)).toHaveLength(1);
+  });
+
+  it("ページ絵は 焼き直しても 絵を 消さない（スタジオは ページ絵を 描き直せない）", () => {
+    const source = manga({
+      pages: [
+        {
+          panels: [
+            {
+              size: "page",
+              image: { src: "/img/page.webp", refs: [], status: "done" },
+              lines: [{ speaker: "narration", text: "朝会を はじめます。" }],
+            },
+          ],
+        },
+      ],
+    });
+    const { manga: baked } = bakeSpeech(source);
+    expect(baked.pages[0]?.panels[0]?.image.src).toBe("/img/page.webp");
   });
 
   it("セリフと 一字一句 同じなら 漢字・ローマ字も 焼ける（願い #115）", () => {
@@ -265,5 +300,18 @@ describe("スキーマが 危ないものを 止める", () => {
     });
     expect(result.success).toBe(false);
     expect(JSON.stringify(result.error?.issues)).toContain("もどしたら");
+  });
+});
+
+describe("git の まんが", () => {
+  it("絵に 焼いた 字が セリフと ずれて いない（セリフを 直したら 絵も 撮り直す）", () => {
+    const dir = join("content", "manga");
+    const stale: string[] = [];
+    for (const file of readdirSync(dir).filter((f) => f.endsWith(".json"))) {
+      const parsed = contentSchema.parse(JSON.parse(readFileSync(join(dir, file), "utf8")));
+      if (parsed.kind !== "manga") continue;
+      for (const s of staleBakedPanels(parsed)) stale.push(`${file} p${s.page + 1}: ${s.text}`);
+    }
+    expect(stale).toEqual([]);
   });
 });

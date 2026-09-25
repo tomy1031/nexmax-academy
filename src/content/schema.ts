@@ -1819,9 +1819,6 @@ export const mangaSchema = z
 const MAX_BAKED_CHARS = 30;
 /** 1コマ絵の 吹き出しの 数の 上限（多いと 字が くずれる）。ページ絵（page）は 見ない。 */
 const MAX_BAKED_BALLOONS = 2;
-/** かなで 焼く（2026-08 までの 形）ときに 使える 文字。 */
-const KANA_AND_MARKS = /^[ぁ-ゖァ-ヶーゔ0-9０-９、。！？…「」・\s]*$/u;
-const HAS_KANJI = /[㐀-鿿々]/u;
 
 /**
  * 絵に焼く文字の検査。
@@ -1831,12 +1828,15 @@ const HAS_KANJI = /[㐀-鿿々]/u;
  *   - 読み辞書に 無い 漢字が 絵に 焼かれ、ふりがなの 無い まま 学習者が 止まる（規律2）
  *   - 「絵だけ」に戻したのに焼き文字が残り、絵の字とアプリのセリフが二重に出る
  *
- * 焼いて よい 文字は 2通り（2026-09-25 に 漢字を 解禁・願い #115）:
+ * 焼く 文字は 2通り（2026-09-25 に 漢字を 解禁・願い #115）:
  *   1. **セリフと 一字一句 同じ 文**。漢字・カタカナ・ローマ字（Zoom 等）も そのまま。
  *      漢字の ふりがなは 読み辞書から 絵に 渡す——セリフは `lint:content` の
  *      ふりがな全覆い検査を 通る ので、焼く 漢字も 必ず 読みを 持つ。
- *   2. かな・数字・記号だけの 文（`kanaOf` の 機械変換。2026-08 までの 形・後方互換）。
- * それ以外（セリフと ちがう 漢字・言い換え）は 止める。
+ *   2. かなに 直した 文（`kanaOf` の 機械変換。2026-08 までの 形・後方互換）。
+ * **中身の 食い違いは ここでは 止めない**（`staleBakedPanels` が「絵が 古い」と 知らせる）。
+ * 止めると、先生が セリフの 誤字を 1字 直しただけで 保存できなく なり、
+ * 焼き直しで ページ絵が 消える（スタジオは ページ絵を 描き直せない・code-critic の 指摘）。
+ * git の 教材は 単体テストが「古い 焼き字が 無い」ことを 見張る（tests/manga_baked.test.ts）。
  */
 function checkBakedText(
   speechInImage: boolean,
@@ -1879,21 +1879,6 @@ function checkBakedText(
     });
   }
   panel.bakedText.forEach((text, i) => {
-    const verbatim = text === panel.lines[i]?.text;
-    if (!verbatim && HAS_KANJI.test(text)) {
-      ctx.addIssue({
-        code: "custom",
-        path: at(`bakedText[${i}]`),
-        message:
-          "絵に 漢字を 焼くなら セリフと 一字一句 同じに する（ふりがなは 読み辞書から 絵に 渡す・規律2）",
-      });
-    } else if (!verbatim && !KANA_AND_MARKS.test(text)) {
-      ctx.addIssue({
-        code: "custom",
-        path: at(`bakedText[${i}]`),
-        message: "絵に 焼く 文字は セリフと 同じ 文か、ひらがな・カタカナ・数字・記号だけ",
-      });
-    }
     if (onePanel && [...text].length > MAX_BAKED_CHARS) {
       ctx.addIssue({
         code: "custom",

@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "motion/react";
 import type { Manga, MangaLine, MangaPanel } from "@/content/schema";
 import { NexMax } from "@/components/nexmax";
@@ -403,23 +403,56 @@ function PanelView({
  *
  * 大きく した 画面は **2だんかい**: まず 画面の はばいっぱい → もう 1回 タップで 2ばい
  *（ふりがなまで 読める 大きさ）。はみ出した ぶんは スクロールで 見る。
+ *
+ * ネイティブの `<dialog>`（`showModal`）に する。うしろの 画面を 押せなく し、
+ * フォーカスを 中に 閉じこめ、Esc で 閉じる——自前の `div` では うしろの「つぎ →」を
+ * Tab で 押せて、ページが 変わって 閉じて いた（code-critic の 指摘）。
  */
 function PageArt({ src }: { src: string }) {
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const openerRef = useRef<HTMLButtonElement>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
   const [open, setOpen] = useState(false);
   const [double, setDouble] = useState(false);
 
   useEffect(() => {
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+    if (open && !dialog.open) {
+      dialog.showModal();
+      closeRef.current?.focus();
+    }
+    if (!open && dialog.open) dialog.close();
+  }, [open]);
+
+  /*
+   * 大きく して いる あいだは ←→ で コマを 送らない（2ばいでは 横に スクロールする キー）。
+   * まんが全体の ←→ は window の 泡立ちで 聞いて いるので、同じ window の
+   * 捕獲で 先に 止める。キーの 既定の 動き（スクロール）は 止めない。
+   */
+  useEffect(() => {
     if (!open) return;
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setOpen(false);
+      if (event.key === "ArrowLeft" || event.key === "ArrowRight") event.stopPropagation();
     };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    window.addEventListener("keydown", onKey, true);
+    const overflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey, true);
+      document.body.style.overflow = overflow;
+    };
   }, [open]);
+
+  const close = () => {
+    setOpen(false);
+    openerRef.current?.focus();
+  };
 
   return (
     <>
       <button
+        ref={openerRef}
         type="button"
         onClick={() => {
           setDouble(false);
@@ -441,39 +474,46 @@ function PageArt({ src }: { src: string }) {
         </span>
       </button>
 
-      {open ? (
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-label="まんがの ページ"
-          data-testid="manga-page-zoom"
-          className="fixed inset-0 z-50 overflow-auto bg-black/90"
-        >
-          <button
-            type="button"
-            onClick={() => setOpen(false)}
-            className="fixed top-3 right-3 z-10 rounded-full bg-white px-4 py-2 text-sm font-black text-[#1f2937] shadow"
-          >
-            ✕ とじる
-          </button>
-          <button
-            type="button"
-            onClick={() => setDouble((v) => !v)}
-            className={`block ${double ? "w-[200%] max-w-none cursor-zoom-out" : "mx-auto w-full max-w-3xl cursor-zoom-in"}`}
-            aria-label={double ? "もとの おおきさに もどす" : "もっと おおきく する"}
-          >
-            <Image
-              src={src}
-              alt=""
-              width={1024}
-              height={1536}
-              sizes="200vw"
-              className="h-auto w-full"
-              unoptimized
-            />
-          </button>
-        </div>
-      ) : null}
+      <dialog
+        ref={dialogRef}
+        aria-label="まんがの ページ"
+        data-testid="manga-page-zoom"
+        onCancel={(event) => {
+          // Esc。ブラウザに 閉じさせず、状態から 閉じる（フォーカスを 元へ 戻すため）
+          event.preventDefault();
+          close();
+        }}
+        className="fixed inset-0 m-0 h-dvh max-h-none w-screen max-w-none overflow-auto bg-black/90 p-0 backdrop:bg-black/60"
+      >
+        {open ? (
+          <>
+            <button
+              ref={closeRef}
+              type="button"
+              onClick={close}
+              className="fixed top-3 right-3 z-10 rounded-full bg-white px-4 py-2 text-sm font-black text-[#1f2937] shadow"
+            >
+              ✕ とじる
+            </button>
+            <button
+              type="button"
+              onClick={() => setDouble((v) => !v)}
+              className={`block ${double ? "w-[200%] max-w-none cursor-zoom-out" : "mx-auto w-full max-w-3xl cursor-zoom-in"}`}
+              aria-label={double ? "もとの おおきさに もどす" : "もっと おおきく する"}
+            >
+              {/* 絵の 大きさは 絵に 任せる（h-auto）。width/height は 並べる 前の 目安だけ */}
+              <Image
+                src={src}
+                alt=""
+                width={1024}
+                height={1536}
+                className="h-auto w-full"
+                unoptimized
+              />
+            </button>
+          </>
+        ) : null}
+      </dialog>
     </>
   );
 }
