@@ -565,8 +565,12 @@ function LineBubble({
           </span>
         ) : null}
       </span>
-      {/* 絵の下の文は、絵に焼いた字と同じくらい大きく読める必要がある（学習者はここでルビを読む） */}
-      <span className="text-ink min-w-0 flex-1 text-lg leading-loose font-bold break-words sm:text-xl">
+      {/*
+        絵の下の文は、絵に焼いた字と同じくらい大きく読める必要がある（学習者はここでルビを読む）。
+        スマホ幅では 札の 下に 全幅で 置く——札（名前＋立場）が 長いと、横に 並べた 文が
+        1行 5字ほどに 細く 折れて 読めなかった（2026-09-25・390px で 実測）。
+      */}
+      <span className="text-ink min-w-0 basis-full text-lg leading-loose font-bold break-words sm:flex-1 sm:basis-0 sm:text-xl">
         <RubyText text={line.text} index={furigana} show={furiganaOn} />
       </span>
     </p>
