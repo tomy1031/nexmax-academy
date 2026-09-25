@@ -163,3 +163,38 @@ describe("3回 だめなら 答えを 読んで 通す", () => {
     expect(bugReportPassed({ ...judged(1), readAnswer: true })).toBe(true);
   });
 });
+
+describe("ヒントは 学生の ことばに 向ける・文法も 見る（2026-09-25 の 指定）", () => {
+  it("頼みに「」で 引く・逆なら ちがうと 言う・文法は grammar に 書く が 入る", () => {
+    const prompt = buildBugReviewPrompt(
+      bugReviewContext(single, 0, [filled], "ログイン画面で 表示が しちゃいました。"),
+    );
+    expect(prompt).toContain("「」で 引いて");
+    expect(prompt).toContain("「ちがいます」と はっきり");
+    expect(prompt).toContain("grammar に 1つずつ");
+    // 文法は 点を 引かない（点の きまりは #524 の まま）
+    expect(prompt).toContain("**点を 引かずに**");
+  });
+
+  it("文法の 直しを 読む（無くても 点は 出す・同じ 形や 空は 捨てる）", () => {
+    const base = {
+      items: ["screen", "action", "result", "expected"].map((id) => ({ id, points: 25, note: "" })),
+      understandable: true,
+      polished: "",
+      corrected: "",
+    };
+    expect(parseBugReview(base)!.grammar).toEqual([]);
+    const review = parseBugReview({
+      ...base,
+      grammar: [
+        { said: "ログインが する", fix: "ログインする", why: "「が」は いりません。" },
+        { said: "おなじ", fix: "おなじ", why: "" },
+        { said: "", fix: "x", why: "" },
+        "こわれた 形",
+      ],
+    })!;
+    expect(review.grammar).toEqual([
+      { said: "ログインが する", fix: "ログインする", why: "「が」は いりません。" },
+    ]);
+  });
+});

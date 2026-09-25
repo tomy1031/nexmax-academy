@@ -212,3 +212,117 @@ test("バグ報告: バグが 2つの 画面は さいごの 2問で、2つの �
   expect(await bareKanjiTexts(page)).toEqual([]);
   await shot(page, "houkoku-bug-04-search-two-bugs");
 });
+
+test("バグ報告: 3回 だめだったら 字でも 出せる（2回までは 🎤だけ）", async ({ page, context }) => {
+  await seedUpTo(context, QUIZ);
+  const report = (tries: number) => ({
+    screen: "フード注文画面",
+    action: "＋を 押しました。",
+    result: "合計が 変わりませんでした。",
+    expected: "合計も 変わる はずです。",
+    spoken: "フード注文画面で、プラスを 押しました。",
+    score: 50,
+    items: ["screen", "action", "result", "expected"].map((id, i) => ({
+      id,
+      ok: i < 2,
+      note: "",
+    })),
+    polished: "",
+    skipped: false,
+    tries,
+    corrected: "フード注文画面で、＋を 押しました。",
+  });
+  const seed = async (tries: number) =>
+    page.evaluate((one) => {
+      window.localStorage.setItem(
+        "nexmax:v1:quiz-resume:houkoku_bug_quiz",
+        JSON.stringify({
+          quizSetId: "houkoku_bug_quiz",
+          results: [],
+          mode: "submit",
+          drafts: { food: { kind: "bugreport", reports: [one] } },
+          index: 0,
+          checked: {},
+        }),
+      );
+      // 🎤の ボタンを 出す（鍵の 中身は 見ない——字の 欄の 出し分けだけを 見る）
+      window.localStorage.setItem("nexmax.geminiKey", "e2e-dummy");
+    }, report(tries));
+
+  await page.goto(PATH);
+  await seed(2);
+  await page.reload();
+  await page.getByRole("button", { name: "つづきから" }).click();
+  await expect(page.getByTestId("bug-score")).toHaveText(/50\s*\/ 100/);
+  await expect(page.getByLabel("報告の 文")).toHaveCount(0);
+
+  await seed(3);
+  await page.reload();
+  await page.getByRole("button", { name: "つづきから" }).click();
+  const box = page.getByLabel("報告の 文");
+  await expect(box).toBeVisible();
+  const send = page.getByRole("button", { name: "送る" });
+  await expect(send).toBeDisabled();
+  await box.fill("フード注文画面で、＋を 押しました。");
+  await expect(send).toBeEnabled();
+  await shot(page, "houkoku-bug-06-type-after-3");
+});
+
+test("バグ報告: 文法の 直しが あれば「📝 文法」に 出る（2026-09-25 の 指定）", async ({
+  page,
+  context,
+}) => {
+  await seedUpTo(context, QUIZ);
+  await page.goto(PATH);
+  await page.evaluate(() => {
+    window.localStorage.setItem(
+      "nexmax:v1:quiz-resume:houkoku_bug_quiz",
+      JSON.stringify({
+        quizSetId: "houkoku_bug_quiz",
+        results: [],
+        mode: "submit",
+        drafts: {
+          food: {
+            kind: "bugreport",
+            reports: [
+              {
+                screen: "フード注文画面",
+                action: "＋を 押しました。",
+                result: "合計が 変わりませんでした。",
+                expected: "合計も 変わる はずです。",
+                spoken: "フード注文画面で、プラスを 押しました。",
+                score: 50,
+                items: ["screen", "action", "result", "expected"].map((id, i) => ({
+                  id,
+                  ok: i < 2,
+                  note: "",
+                })),
+                polished: "",
+                skipped: false,
+                tries: 1,
+                grammar: [
+                  {
+                    said: "ごうけいが かわらなかった",
+                    fix: "ごうけいが かわりませんでした",
+                    why: "しごとの ほうこくは ですます で いいます。",
+                  },
+                ],
+              },
+            ],
+          },
+        },
+        index: 0,
+        checked: {},
+      }),
+    );
+  });
+  await page.reload();
+  await page.getByRole("button", { name: "つづきから" }).click();
+  await expect(page.getByText(/📝/)).toBeVisible();
+  await expect(page.getByText(/かわりませんでした/).first()).toBeVisible();
+  // 欄の 中の 字は 学習者が 打った もの（画面の 文では ない）ので 除く。
+  // 「下の ヒントを 見て」の 見て は ここで 見つかった（ふりがな 無しだった）
+  const typed = ["＋を 押しました。", "合計が 変わりませんでした。", "合計も 変わる はずです。"];
+  expect((await bareKanjiTexts(page)).filter((text) => !typed.includes(text))).toEqual([]);
+  await shot(page, "houkoku-bug-07-grammar");
+});
