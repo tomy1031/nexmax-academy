@@ -161,13 +161,13 @@ function contentFiles(): { file: string; content: Content }[] {
  * - `scenario.research.pages[].html` … 調査用の 模擬ページ（HTMLの 中身）
  * - `quizset.questions[].placeholder` … 入力欄の うすい 字。**学習者に 見える**
  * - `character.name` / `role` / `personality` … 人物カード
- * - `wordstage.label` / `manga.pages[].note` / `quizset.…groups[].label` / `scenario.words[].r`
+ * - `wordstage.label` / `quizset.…groups[].label` / `scenario.words[].r`
+ *   （`manga.pages[].note` は 2026-09-25 に 使う まんがが 無く なったので 消した）
  */
 const KNOWN_ESCAPED: readonly string[] = [
   "character.name",
   "character.personality",
   "character.role",
-  "manga.pages[].note",
   "quizset.questions[].groups[].label",
   "quizset.questions[].placeholder",
   "scenario.research.pages[].html",

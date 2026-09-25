@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "motion/react";
 import type { Manga, MangaLine, MangaPanel } from "@/content/schema";
 import { NexMax } from "@/components/nexmax";
@@ -18,11 +18,15 @@ import { readContentProgress, recordContentProgress } from "@/lib/progress/store
  * **次へ進むのに1回タップが要る**ので、そのコマを読んだことになる。
  *
  * ## セリフは「絵の中」と「絵の下」の両方に出す
- * `speechInImage: true` の教材は、絵の吹き出しにも文字が焼いてある（まんがとして
- * 読めるように）。それでも**下のセリフは消さない**。焼いた字はふりがなを持てず
- *（画像生成のルビは崩れる）、語彙ポップアップも読み上げも効かないので、
- * 規律2（読めない漢字で学習者を止めない）を守るのは下のテキストの役目である。
+ * `speechInImage: true` の教材は、絵の吹き出しにも文字が焼いてある（ふつうの
+ * カラー漫画として 読めるように。漢字には 絵の 中で ふりがなを 付ける）。
+ * それでも**下のセリフは消さない**。絵の 字は 小さく、ふりがなの ON/OFF も
+ * 語彙ポップアップも 効かないので、それを 担うのは 下のテキストの役目である。
  * つまり `speechInImage` は「絵に焼くかどうか」だけを意味する。
+ *
+ * ## ページ絵（`size: "page"`）
+ * 1枚の 絵が カラー漫画の 1ページ（縦長・3コマ前後）。縦長の わくで 出し、
+ * **タップで 大きく**する（スマホでは ふりがなまで 読むには 小さい。2026-09-25 の 指定）。
  *
  * 進捗はコマ単位。見たいちばん先のコマを しおり に残し、最後まで行ったら「よみおわり」。
  */
@@ -293,8 +297,8 @@ export function MangaSlides({ manga, embedded }: { manga: Manga; embedded: boole
 /**
  * 1コマ。絵と、その下のセリフ。
  *
- * セリフは**絵に焼いてあっても下に出す**。焼いた字はふりがなを持てないので
- *（画像生成でルビは崩れる）、ルビ・語彙ポップアップ・読み上げは下のテキストが担う。
+ * セリフは**絵に焼いてあっても下に出す**。ふりがなの ON/OFF・語彙ポップアップ・
+ * 読み上げは 下のテキストが担う。
  * `speechInImage` は「絵に焼くかどうか」だけを意味し、下に出すかは左右しない。
  */
 function PanelView({
@@ -312,37 +316,41 @@ function PanelView({
 }) {
   return (
     <figure className="card-island overflow-hidden p-0">
-      {/*
-        高さの上限を付ける理由: 埋め込み時の枠は横に広い（88rem）ので、4:3 のままだと
-        1コマが画面の高さを超え、絵とセリフを同時に見られない。
-        「1コマずつ見る」形の意味が無くなるので、画面の高さで頭打ちにする。
-        object-contain なので、はみ出しは切らずに左右が余るだけ。
-      */}
-      <div className="bg-panel-tint relative aspect-[4/3] max-h-[58vh] w-full">
-        {panel.image.src ? (
-          <Image
-            src={panel.image.src}
-            alt=""
-            fill
-            sizes="(max-width: 768px) 100vw, 768px"
-            className="object-contain"
-            unoptimized
-          />
-        ) : (
-          /*
-            しるし（`data-slot="empty"`）は 記事の 絵わく（`ImageSlotFrame`）と そろえて ある。
-            「まだ 絵が 無い」を **アプリ全体で 1つの しるし**に して おくと、
-            通しの 検証が「絵の 抜け」を 種別を またいで 数えられる。
-            見た目は ここだけ ちがう——まんがは コマの 中いっぱいに 出す ため。
-          */
-          <span
-            data-slot="empty"
-            className="text-ink-faint absolute inset-0 grid place-items-center text-sm font-bold"
-          >
-            🖼️ え は じゅんびちゅう
-          </span>
-        )}
-      </div>
+      {panel.size === "page" && panel.image.src ? (
+        <PageArt src={panel.image.src} />
+      ) : (
+        /*
+          高さの上限を付ける理由: 埋め込み時の枠は横に広い（88rem）ので、4:3 のままだと
+          1コマが画面の高さを超え、絵とセリフを同時に見られない。
+          「1コマずつ見る」形の意味が無くなるので、画面の高さで頭打ちにする。
+          object-contain なので、はみ出しは切らずに左右が余るだけ。
+        */
+        <div className="bg-panel-tint relative aspect-[4/3] max-h-[58vh] w-full">
+          {panel.image.src ? (
+            <Image
+              src={panel.image.src}
+              alt=""
+              fill
+              sizes="(max-width: 768px) 100vw, 768px"
+              className="object-contain"
+              unoptimized
+            />
+          ) : (
+            /*
+              しるし（`data-slot="empty"`）は 記事の 絵わく（`ImageSlotFrame`）と そろえて ある。
+              「まだ 絵が 無い」を **アプリ全体で 1つの しるし**に して おくと、
+              通しの 検証が「絵の 抜け」を 種別を またいで 数えられる。
+              見た目は ここだけ ちがう——まんがは コマの 中いっぱいに 出す ため。
+            */
+            <span
+              data-slot="empty"
+              className="text-ink-faint absolute inset-0 grid place-items-center text-sm font-bold"
+            >
+              🖼️ え は じゅんびちゅう
+            </span>
+          )}
+        </div>
+      )}
 
       {panel.caption ? (
         <figcaption className="border-hairline border-t p-4">
@@ -390,6 +398,126 @@ function PanelView({
  * `RubyText` で 描いて いるのに、まんがだけ 裸の 漢字を 出して いた。
  * 読みは 借りた 語が 運んで くる（`hydrateManga`）。
  */
+/**
+ * カラー漫画の 1ページ（縦長）。タップで 大きく する。
+ *
+ * 大きく した 画面は **2だんかい**: まず 画面の はばいっぱい → もう 1回 タップで 2ばい
+ *（ふりがなまで 読める 大きさ）。はみ出した ぶんは スクロールで 見る。
+ *
+ * ネイティブの `<dialog>`（`showModal`）に する。うしろの 画面を 押せなく し、
+ * フォーカスを 中に 閉じこめ、Esc で 閉じる——自前の `div` では うしろの「つぎ →」を
+ * Tab で 押せて、ページが 変わって 閉じて いた（code-critic の 指摘）。
+ */
+function PageArt({ src }: { src: string }) {
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const openerRef = useRef<HTMLButtonElement>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
+  const [open, setOpen] = useState(false);
+  const [double, setDouble] = useState(false);
+
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+    if (open && !dialog.open) {
+      dialog.showModal();
+      closeRef.current?.focus();
+    }
+    if (!open && dialog.open) dialog.close();
+  }, [open]);
+
+  /*
+   * 大きく して いる あいだは ←→ で コマを 送らない（2ばいでは 横に スクロールする キー）。
+   * まんが全体の ←→ は window の 泡立ちで 聞いて いるので、同じ window の
+   * 捕獲で 先に 止める。キーの 既定の 動き（スクロール）は 止めない。
+   */
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "ArrowLeft" || event.key === "ArrowRight") event.stopPropagation();
+    };
+    window.addEventListener("keydown", onKey, true);
+    const overflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey, true);
+      document.body.style.overflow = overflow;
+    };
+  }, [open]);
+
+  const close = () => {
+    setOpen(false);
+    openerRef.current?.focus();
+  };
+
+  return (
+    <>
+      <button
+        ref={openerRef}
+        type="button"
+        onClick={() => {
+          setDouble(false);
+          setOpen(true);
+        }}
+        className="bg-panel-tint relative mx-auto block aspect-[2/3] max-h-[78vh] w-full cursor-zoom-in"
+        aria-label="まんがの ページを おおきく する"
+      >
+        <Image
+          src={src}
+          alt=""
+          fill
+          sizes="(max-width: 768px) 100vw, 768px"
+          className="object-contain"
+          unoptimized
+        />
+        <span className="bg-ink/70 absolute right-2 bottom-2 rounded-full px-3 py-1 text-xs font-black text-white">
+          🔍 タップで おおきく
+        </span>
+      </button>
+
+      <dialog
+        ref={dialogRef}
+        aria-label="まんがの ページ"
+        data-testid="manga-page-zoom"
+        onCancel={(event) => {
+          // Esc。ブラウザに 閉じさせず、状態から 閉じる（フォーカスを 元へ 戻すため）
+          event.preventDefault();
+          close();
+        }}
+        className="fixed inset-0 m-0 h-dvh max-h-none w-screen max-w-none overflow-auto bg-black/90 p-0 backdrop:bg-black/60"
+      >
+        {open ? (
+          <>
+            <button
+              ref={closeRef}
+              type="button"
+              onClick={close}
+              className="fixed top-3 right-3 z-10 rounded-full bg-white px-4 py-2 text-sm font-black text-[#1f2937] shadow"
+            >
+              ✕ とじる
+            </button>
+            <button
+              type="button"
+              onClick={() => setDouble((v) => !v)}
+              className={`block ${double ? "w-[200%] max-w-none cursor-zoom-out" : "mx-auto w-full max-w-3xl cursor-zoom-in"}`}
+              aria-label={double ? "もとの おおきさに もどす" : "もっと おおきく する"}
+            >
+              {/* 絵の 大きさは 絵に 任せる（h-auto）。width/height は 並べる 前の 目安だけ */}
+              <Image
+                src={src}
+                alt=""
+                width={1024}
+                height={1536}
+                className="h-auto w-full"
+                unoptimized
+              />
+            </button>
+          </>
+        ) : null}
+      </dialog>
+    </>
+  );
+}
+
 function VocabMeaning({
   item,
   furigana,
@@ -477,8 +605,12 @@ function LineBubble({
           </span>
         ) : null}
       </span>
-      {/* 絵の下の文は、絵に焼いた字と同じくらい大きく読める必要がある（学習者はここでルビを読む） */}
-      <span className="text-ink min-w-0 flex-1 text-lg leading-loose font-bold break-words sm:text-xl">
+      {/*
+        絵の下の文は、絵に焼いた字と同じくらい大きく読める必要がある（学習者はここでルビを読む）。
+        スマホ幅では 札の 下に 全幅で 置く——札（名前＋立場）が 長いと、横に 並べた 文が
+        1行 5字ほどに 細く 折れて 読めなかった（2026-09-25・390px で 実測）。
+      */}
+      <span className="text-ink min-w-0 basis-full text-lg leading-loose font-bold break-words sm:flex-1 sm:basis-0 sm:text-xl">
         <RubyText text={line.text} index={furigana} show={furiganaOn} />
       </span>
     </p>

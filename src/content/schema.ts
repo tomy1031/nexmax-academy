@@ -1712,8 +1712,12 @@ const mangaLineSchema = z.object({
 });
 
 const mangaPanelSchema = z.object({
-  /** レイアウトヒント（story 形式でのみ意味を持つ。wide＝決めゴマ）。 */
-  size: z.enum(["normal", "wide", "tall"]).default("normal"),
+  /**
+   * レイアウトヒント（story 形式でのみ意味を持つ。wide＝決めゴマ）。
+   * `page` は **1枚の 絵が カラー漫画の 1ページ**（縦長・コマ割りも 吹き出しも 絵の 中）。
+   * 画面は 縦長の わくで 出し、タップで 大きく できる（2026-09-25 の 指定）。
+   */
+  size: z.enum(["normal", "wide", "tall", "page"]).default("normal"),
   image: imageSlotSchema.default({ refs: [], status: "empty" }),
   /** セリフは画像に焼き込まずデータで持つ（設計07 §4 最重要判断）。 */
   lines: z.array(mangaLineSchema).default([]),
@@ -1721,7 +1725,8 @@ const mangaPanelSchema = z.object({
   /**
    * 絵の中に焼いた文字（`speechInImage: true` のときだけ入る）。
    *
-   * `lines[i]` を読み辞書で かなに直したもの（`kanaOf`）。i番目の吹き出しに対応する。
+   * `lines[i]` と **一字一句 同じ 文**（漢字は 絵の 中で ふりがなを 付ける）か、
+   * 読み辞書で かなに直したもの（`kanaOf`・2026-08 までの 形）。i番目の吹き出しに対応する。
    *
    * **AIに書かせない。** 機械変換にするのは、絵に焼いた文字とデータのセリフが
    * ずれる余地を無くすため——ずれると「セリフを直したのに古い字の絵が
@@ -1765,15 +1770,15 @@ export const mangaSchema = z
     /** 使い回す登場人物のID（character）。絵を作るとき 参照画像として渡す。 */
     castIds: z.array(z.string().min(1)).default([]),
     /**
-     * セリフを**絵の中に**描くか。
+     * セリフを**絵の中に**描くか（ふつうの カラー漫画の 形）。
      *
-     * 既定は false（絵は文字なしで作り、セリフは画面で重ねる）。
-     * 画像生成に日本語を描かせると漢字が崩れやすく、**ふりがなは実例がゼロ**で、
-     * 原理的にも最も壊れる（本文より小さい・位置が厳密・画数の多い漢字の真上）。
-     * 焼き込むと `lint:content` のふりがな全覆い検査も効かなくなる（AGENTS.md 規律2）。
+     * true なら 吹き出しに セリフを 焼き、**漢字には 絵の 中で ふりがなを 付ける**
+     *（2026-09-25 の 指定。image-gen-2 で 漢字＋ふりがなが 焼けると 分かった——願い #115）。
+     * 焼く 漢字は セリフと 一字一句 同じに する ので、`lint:content` の
+     * ふりがな全覆い検査（`lines` を 見る）が そのまま 焼く 字にも 効く。
+     * 絵の下の セリフ（アプリの ふりがな つき）は true でも 出す（manga-slides.tsx）。
      *
-     * それでも「絵の中に入れたい」ときのために true を用意してある。
-     * true にすると、画面はセリフを別に出さない。
+     * false は 吹き出しを 空で 描き、セリフは 画面が 重ねる 形（2026-08 までの 既定）。
      */
     speechInImage: z.boolean().default(false),
     pages: z.array(mangaPageSchema).min(1),
@@ -1806,23 +1811,40 @@ export const mangaSchema = z
     });
   });
 
-/** 絵に描かせる日本語は長いほど崩れる。1つの吹き出しの上限。 */
-const MAX_BAKED_CHARS = 20;
-/** 絵に焼いてよい文字。かな・数字・句読点だけ（漢字はルビを焼けないので入れない）。 */
-const KANA_AND_MARKS = /^[ぁ-ゖァ-ヶーゔ0-9０-９、。！？…「」・\s]*$/u;
-const HAS_KANJI = /[㐀-鿿々]/u;
+/**
+ * 絵に描かせる日本語は長いほど崩れる。1コマ絵（`size` が page 以外）の 1つの吹き出しの上限。
+ * 2026-08 は かな限定で 20字だったが、漢字＋ふりがなを 許した ので 01ガイドの
+ * 「1文15〜30字」に そろえた（願い #115「20字の 上限を 見直す」）。
+ */
+const MAX_BAKED_CHARS = 30;
+/** 1コマ絵の 吹き出しの 数の 上限（多いと 字が くずれる）。ページ絵（page）は 見ない。 */
+const MAX_BAKED_BALLOONS = 2;
 
 /**
  * 絵に焼く文字の検査。
  *
  * ここが無いと、次の壊れ方が**先生から見えないまま**残る:
  *   - セリフを直したのに絵が古い（学習者は絵の字を読むので、直した意味がない）
- *   - 絵に漢字が焼かれ、ふりがなを振れないまま学習者が止まる（規律2）
+ *   - 読み辞書に 無い 漢字が 絵に 焼かれ、ふりがなの 無い まま 学習者が 止まる（規律2）
  *   - 「絵だけ」に戻したのに焼き文字が残り、絵の字とアプリのセリフが二重に出る
+ *
+ * 焼く 文字は 2通り（2026-09-25 に 漢字を 解禁・願い #115）:
+ *   1. **セリフと 一字一句 同じ 文**。漢字・カタカナ・ローマ字（Zoom 等）も そのまま。
+ *      漢字の ふりがなは 読み辞書から 絵に 渡す——セリフは `lint:content` の
+ *      ふりがな全覆い検査を 通る ので、焼く 漢字も 必ず 読みを 持つ。
+ *   2. かなに 直した 文（`kanaOf` の 機械変換。2026-08 までの 形・後方互換）。
+ * **中身の 食い違いは ここでは 止めない**（`staleBakedPanels` が「絵が 古い」と 知らせる）。
+ * 止めると、先生が セリフの 誤字を 1字 直しただけで 保存できなく なり、
+ * 焼き直しで ページ絵が 消える（スタジオは ページ絵を 描き直せない・code-critic の 指摘）。
+ * git の 教材は 単体テストが「古い 焼き字が 無い」ことを 見張る（tests/manga_baked.test.ts）。
  */
 function checkBakedText(
   speechInImage: boolean,
-  panel: { lines: readonly { text: string }[]; bakedText: readonly string[] },
+  panel: {
+    size: string;
+    lines: readonly { text: string }[];
+    bakedText: readonly string[];
+  },
   path: (string | number)[],
   ctx: z.RefinementCtx,
 ): void {
@@ -1839,6 +1861,9 @@ function checkBakedText(
     return;
   }
 
+  // ページ絵（カラー漫画の 1ページ）は 吹き出しも 多く 長い。数と 長さは 目の 受入で 見る
+  const onePanel = panel.size !== "page";
+
   if (panel.bakedText.length !== panel.lines.length) {
     ctx.addIssue({
       code: "custom",
@@ -1846,28 +1871,15 @@ function checkBakedText(
       message: `焼いた 文字が ${panel.bakedText.length}こ、セリフが ${panel.lines.length}こ — 数を そろえる`,
     });
   }
-  if (panel.lines.length > 2) {
+  if (onePanel && panel.lines.length > MAX_BAKED_BALLOONS) {
     ctx.addIssue({
       code: "custom",
       path: at("lines"),
-      message: "文字を 絵に 焼くときは 1コマ 2つの 吹き出しまで（多いと 字が くずれる）",
+      message: `文字を 絵に 焼くときは 1コマ ${MAX_BAKED_BALLOONS}つの 吹き出しまで（多いと 字が くずれる）`,
     });
   }
   panel.bakedText.forEach((text, i) => {
-    if (HAS_KANJI.test(text)) {
-      ctx.addIssue({
-        code: "custom",
-        path: at(`bakedText[${i}]`),
-        message: "絵に 焼く 文字に 漢字は 使えない（ふりがなを 焼けないので 学習者が 読めない・規律2）",
-      });
-    } else if (!KANA_AND_MARKS.test(text)) {
-      ctx.addIssue({
-        code: "custom",
-        path: at(`bakedText[${i}]`),
-        message: "絵に 焼く 文字は ひらがな・カタカナ・数字・記号だけ",
-      });
-    }
-    if ([...text].length > MAX_BAKED_CHARS) {
+    if (onePanel && [...text].length > MAX_BAKED_CHARS) {
       ctx.addIssue({
         code: "custom",
         path: at(`bakedText[${i}]`),

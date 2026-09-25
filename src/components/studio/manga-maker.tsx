@@ -16,6 +16,8 @@ import {
   validateOutline,
   type StoryOutline,
 } from "@/lib/manga-story";
+import { bakedReadings } from "@/lib/manga-baked";
+import { buildFuriganaIndex } from "@/lib/text/furigana";
 import { generateFromBrowser } from "@/lib/ai/generate-browser";
 import { TEXT_MODEL } from "@/lib/ai/models";
 import { hasCodex } from "@/lib/codex-settings";
@@ -231,8 +233,9 @@ export function MangaMaker({
     };
     /*
      * セリフ入りモードでは、吹き出しの中の文字も描かせる。
-     * 焼く文字は `bakedText`（読み辞書からの機械変換）を**逐語で**渡す——
+     * 焼く文字は `bakedText`（セリフそのもの）を**逐語で**渡す——
      * ここで言い換えると、データのセリフと絵の字がずれる。
+     * 漢字の ふりがなは 読み辞書から 渡す（画面の ルビと 同じ 読みに なる）。
      */
     const baked = value.speechInImage ? panel.bakedText.filter((t) => t.length > 0) : [];
     if (value.speechInImage && baked.length !== panel.lines.length) {
@@ -244,7 +247,11 @@ export function MangaMaker({
     }
     const prompt =
       baked.length > 0
-        ? buildBakedPanelPrompt({ ...brief, texts: baked })
+        ? buildBakedPanelPrompt({
+            ...brief,
+            texts: baked,
+            readings: bakedReadings(baked, buildFuriganaIndex(value.furigana ?? [])),
+          })
         : buildPanelPrompt(brief);
     // 設定画を渡すのが、コマ間で顔や服をぶれさせない いちばん確実な方法
     const references = chosen.flatMap((c) => (c.sheet.src ? [c.sheet.src] : []));

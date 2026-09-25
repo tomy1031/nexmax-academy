@@ -401,8 +401,9 @@ function SpeechModePanel({ value, onChange }: { value: Manga; onChange: (manga: 
       </div>
 
       <p className="text-ink-soft mt-2 text-xs font-bold">
-        絵に 焼く 文字は、読み辞書から <strong>ひらがなに 直して</strong> 作ります。 絵に 焼いた
-        漢字には ふりがなを つけられないので、学習者が そこで 止まります。
+        絵に 焼く 文字は <strong>セリフ そのまま</strong>です（横書き）。 漢字には 読み辞書の 読みで{" "}
+        <strong>ふりがな</strong>を 絵の 中に つけます。 できた 絵は、字と ふりがなを 1つずつ 目で
+        たしかめてください。
       </p>
 
       {value.speechInImage && (
