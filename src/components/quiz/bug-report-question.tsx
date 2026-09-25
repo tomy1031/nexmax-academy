@@ -12,6 +12,7 @@ import type { QuizDraft } from "@/lib/quiz/draft";
 import {
   BUG_REPORT_CHECKS,
   BUG_REPORT_FIELDS,
+  bugGrammarPenalty,
   BUG_REPORT_ITEM_POINTS,
   BUG_REPORT_PASS,
   BUG_REPORT_SHOW_ANSWER_AFTER,
@@ -289,7 +290,10 @@ export function BugReportQuestionView({
               ok: item.points >= BUG_REPORT_ITEM_POINTS,
               note: readable(item.note) ? item.note : "",
             }));
-            const score = bugReportScore(items, result.review.understandable);
+            const grammar = result.review.grammar.filter((fix) =>
+              readable(fix.said + fix.fix + fix.why),
+            );
+            const score = bugReportScore(items, result.review.understandable, grammar.length);
             // 見せて いる 答え（3回 だめだった あと）。読んで いる 途中に 入れ替えない
             const shown = answerShownFor(entry) ? (entry.corrected ?? "") : "";
             const readAnswer = shown !== "" && readAloudMatches(shown, spoken);
@@ -308,9 +312,7 @@ export function BugReportQuestionView({
                   ? shown
                   : fresh || entry.corrected || (question.bugs[index]?.model ?? ""),
               readAnswer,
-              grammar: result.review.grammar.filter((fix) =>
-                readable(fix.said + fix.fix + fix.why),
-              ),
+              grammar,
             };
           }),
         );
@@ -775,6 +777,10 @@ function BugCard({
             <div className="mt-3 rounded-2xl border-2 border-[#f5b73b] bg-white px-3 py-2.5">
               <p className="text-sm font-black text-[#b7791f]">
                 <RubyText text="📝 文法" index={UI_FURIGANA} />
+                <span className="ml-2" style={{ color: NG_COLOR }}>
+                  −{bugGrammarPenalty((entry.grammar ?? []).length)}
+                  <RubyText text="点" index={UI_FURIGANA} />
+                </span>
               </p>
               <ul className="mt-1 grid gap-2">
                 {(entry.grammar ?? []).map((fix, i) => (
