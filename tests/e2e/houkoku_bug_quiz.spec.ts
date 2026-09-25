@@ -319,6 +319,8 @@ test("バグ報告: 文法の 直しが あれば「📝 文法」に 出る（2
   await page.reload();
   await page.getByRole("button", { name: "つづきから" }).click();
   await expect(page.getByText(/📝/)).toBeVisible();
+  // 引いた 点を 箱に 書く（1つ 2点。2026-09-25「少し引く」）
+  await expect(page.getByText(/−2/)).toBeVisible();
   await expect(page.getByText(/かわりませんでした/).first()).toBeVisible();
   // 欄の 中の 字は 学習者が 打った もの（画面の 文では ない）ので 除く。
   // 「下の ヒントを 見て」の 見て は ここで 見つかった（ふりがな 無しだった）

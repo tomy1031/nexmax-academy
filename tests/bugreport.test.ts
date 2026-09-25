@@ -3,6 +3,7 @@ import bugQuiz from "../content/quizsets/houkoku_bug_quiz.json";
 import { quizSetSchema } from "@/content/schema";
 import {
   EMPTY_BUG_REPORT,
+  bugGrammarPenalty,
   bugReportPassed,
   bugReportScore,
   bugReportsPassed,
@@ -172,8 +173,10 @@ describe("ヒントは 学生の ことばに 向ける・文法も 見る（202
     expect(prompt).toContain("「」で 引いて");
     expect(prompt).toContain("「ちがいます」と はっきり");
     expect(prompt).toContain("grammar に 1つずつ");
-    // 文法は 点を 引かない（点の きまりは #524 の まま）
-    expect(prompt).toContain("**点を 引かずに**");
+    // 文法は 項目の 点からは 引かない（アプリが 1つ 2点・上限 6点を 引く。2026-09-25「少し引く」）
+    expect(prompt).toContain("項目の 点から 引かずに");
+    // 中身が ちがっても 言って いれば ごく 少し（2026-09-25 の 指定）
+    expect(prompt).toContain("1〜3点（0点は 何も 言って いない ときだけ）");
   });
 
   it("文法の 直しを 読む（無くても 点は 出す・同じ 形や 空は 捨てる）", () => {
@@ -196,5 +199,25 @@ describe("ヒントは 学生の ことばに 向ける・文法も 見る（202
     expect(review.grammar).toEqual([
       { said: "ログインが する", fix: "ログインする", why: "「が」は いりません。" },
     ]);
+  });
+});
+
+describe("文法の まちがいは 少し 引く（2026-09-25 の 指定）", () => {
+  const items = (points: number[]) =>
+    points.map((p, i) => ({ id: String(i), ok: p === 25, points: p }));
+
+  it("1つ 2点・上限 6点", () => {
+    expect([0, 1, 2, 3, 4, 10].map(bugGrammarPenalty)).toEqual([0, 2, 4, 6, 6, 6]);
+  });
+
+  it("項目の 合計から 引く（0点より 下には ならない）", () => {
+    expect(bugReportScore(items([25, 25, 20, 20]), true, 2)).toBe(86);
+    expect(bugReportScore(items([25, 25, 25, 25]), true, 9)).toBe(94);
+    expect(bugReportScore(items([2, 0, 0, 0]), true, 3)).toBe(0);
+  });
+
+  it("意味が 通らない 報告は 引いた あとも 60点で 止める", () => {
+    expect(bugReportScore(items([25, 25, 25, 25]), false, 1)).toBe(60);
+    expect(bugReportScore(items([25, 20, 10, 5]), false, 3)).toBe(54);
   });
 });

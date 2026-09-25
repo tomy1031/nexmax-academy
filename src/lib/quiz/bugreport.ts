@@ -146,20 +146,36 @@ export function composeBugReport(entry: BugReportEntry): string {
 /** 1項目の 満点。 */
 export const BUG_REPORT_ITEM_POINTS = 25;
 
+/** 文法の まちがい 1つで 引く 点。 */
+export const BUG_REPORT_GRAMMAR_POINTS = 2;
 /**
- * 項目ごとの 点を 足す（1項目 0〜25）。**意味が 通らない 報告は 60点で 止める**。
+ * 文法で 引く 点の 上限。声を 文字に した ものなので、聞き取りの ずれを
+ * 文法の まちがいと 見られる ことが ある——引きすぎない（2026-09-25「少し引く」）。
+ */
+export const BUG_REPORT_GRAMMAR_MAX = 6;
+
+/** 文法の まちがいで 引く 点（1つ 2点・上限 6点）。 */
+export function bugGrammarPenalty(count: number): number {
+  return Math.min(Math.max(0, count) * BUG_REPORT_GRAMMAR_POINTS, BUG_REPORT_GRAMMAR_MAX);
+}
+
+/**
+ * 項目ごとの 点を 足す（1項目 0〜25）。文法の まちがいの ぶんを 少し 引く。
+ * **意味が 通らない 報告は 60点で 止める**。
  * 点を 返さない 古い 形（`ok` だけ）は ⭕＝25・✗＝0 として 数える。
  */
 export function bugReportScore(
   items: readonly { readonly ok: boolean; readonly points?: number }[],
   understandable = true,
+  grammarCount = 0,
 ): number {
   const total = items.reduce((sum, one) => {
     const points = one.points ?? (one.ok ? BUG_REPORT_ITEM_POINTS : 0);
     return sum + Math.max(0, Math.min(BUG_REPORT_ITEM_POINTS, Math.round(points)));
   }, 0);
   const capped = Math.min(total, BUG_REPORT_ITEM_POINTS * BUG_REPORT_CHECKS.length);
-  return understandable ? capped : Math.min(capped, BUG_REPORT_PASS);
+  const graded = Math.max(0, capped - bugGrammarPenalty(grammarCount));
+  return understandable ? graded : Math.min(graded, BUG_REPORT_PASS);
 }
 
 /** 1つの 報告が 合格か（つぎへ 進めるか）。 */
@@ -292,7 +308,9 @@ export const BUG_REVIEW_TOOL = {
                   type: "NUMBER",
                   description:
                     "0〜25。できて いれば 25。**だいたい 言えて いれば 部分点**（15〜20）。" +
-                    "少しだけ ふれて いれば 5〜10。まったく 言って いない ときだけ 0。",
+                    "少しだけ ふれて いれば 5〜10。" +
+                    "**中身は ちがう（バグと 逆・関係ない）が、この 項目で 何か 言って いる**なら 1〜3。" +
+                    "この 項目で 何も 言って いない ときだけ 0。文法の まちがいでは ここの 点を 引かない。",
                 },
                 note: {
                   type: "STRING",
@@ -332,7 +350,7 @@ export const BUG_REVIEW_TOOL = {
             type: "ARRAY",
             description:
               "学生の ことばの 文法の まちがい（助詞・動詞の 形・ていねいさ）。1つずつ。" +
-              "無ければ 空の 配列。点には 入れない。",
+              "無ければ 空の 配列。1つに つき 2点 引く（上限 6点。アプリが 引く）。",
             items: {
               type: "OBJECT",
               properties: {
@@ -405,9 +423,10 @@ export function buildBugReviewPrompt(context: BugReviewContext, kanjiRetry = fal
     "- 声を 文字に した ものなので、同じ 音の 字の ちがい・句読点では 点を 引かない。",
     "- ヒント（note）は、学生が その 項目で 言った ことばを「」で 引いて、そこに 向けて 書く。" +
       "言った ことばが バグと 逆・ちがう ときは「ちがいます」と はっきり 言い、どこが おかしいのかを 書く。",
-    "- 文法の まちがい（助詞・動詞の 形・ていねいさ）は **点を 引かずに** grammar に 1つずつ 書く" +
+    "- **中身は ちがうが、その 項目で 何か 言って いる**ときは 1〜3点（0点は 何も 言って いない ときだけ）。",
+    "- 文法の まちがい（助詞・動詞の 形・ていねいさ）は 項目の 点から 引かずに grammar に 1つずつ 書く" +
       "（れい: said「ログインが する」→ fix「ログインする」／said「表示が しちゃいました」→ fix「表示されました」）。" +
-      "同じ 音の 字の ちがい・句読点は 書かない。",
+      "同じ 音の 字の ちがい・句読点は 書かない（1つに つき 2点 引かれるので、たしかな ものだけ）。",
     "- **0点は きびしい**。だいたい 言えて いれば 部分点を あげる。",
     "- この 画面の バグと 関係の ない 話や、意味が 通らない ときは understandable を false に する。",
     "- 原因や 直し方は 聞いて いない。言って いなくても 点を 引かない。",
