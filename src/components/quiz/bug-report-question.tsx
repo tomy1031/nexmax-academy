@@ -105,6 +105,7 @@ const UI_FURIGANA = buildFuriganaIndex([
   ["回", "かい"],
   ["言い方", "いいかた"],
   ["伝わります", "つたわります"],
+  ["送る", "おくる"],
 ]);
 
 /** 聞くだけの つなぎ（朝礼の `LISTEN_ONLY` と 同じ 決め——相手は 何も 言わない）。 */
@@ -442,6 +443,8 @@ export function BugReportQuestionView({
           hasKey={hasKey}
           failNote={failNotes[index] ?? ""}
           onChange={(field, value) => change(index, field, value)}
+          typeBusy={asking || pendingFor !== null || voice.talking}
+          onType={(text) => void review(index, text)}
           speak={
             <SpeakButton
               status={voice.status}
@@ -505,6 +508,8 @@ function BugCard({
   hasKey,
   failNote,
   onChange,
+  typeBusy,
+  onType,
   speak,
 }: {
   id: string;
@@ -516,11 +521,19 @@ function BugCard({
   hasKey: boolean;
   failNote: string;
   onChange: (field: BugReportFieldId, value: string) => void;
+  typeBusy: boolean;
+  onType: (text: string) => void;
   speak: React.ReactNode;
 }) {
   const passed = bugReportPassed(entry);
   const judged = entry.score !== null;
   const showAnswer = answerShownFor(entry);
+  /*
+   * 3回 うまく いかなかったら、🎤の ほかに **字でも 出せる**（2026-09-25 の 指定。
+   * 案内は 出さない）。打った 文は 話した ことばと 同じ 見かたに 回す。
+   */
+  const canType = !passed && (entry.tries ?? 0) >= BUG_REPORT_SHOW_ANSWER_AFTER;
+  const [typed, setTyped] = useState("");
   return (
     <section
       id={id}
@@ -601,6 +614,30 @@ function BugCard({
               />
             </p>
             {speak}
+            {canType && (
+              <div className="mt-3 grid gap-2">
+                <textarea
+                  value={typed}
+                  disabled={disabled}
+                  onChange={(e) => setTyped(e.target.value)}
+                  aria-label="報告の 文"
+                  rows={3}
+                  autoComplete="off"
+                  autoCorrect="off"
+                  spellCheck={false}
+                  className="border-hairline bg-panel text-ink w-full rounded-[var(--radius-button)] border-2 px-3 py-2 text-base font-bold"
+                />
+                <button
+                  type="button"
+                  aria-label="送る"
+                  disabled={disabled || typeBusy || typed.trim() === ""}
+                  onClick={() => onType(typed.trim())}
+                  className="btn-island btn-game justify-self-start px-6 py-2 disabled:opacity-50"
+                >
+                  <RubyText text="送る" index={UI_FURIGANA} />
+                </button>
+              </div>
+            )}
           </div>
         )}
       </div>

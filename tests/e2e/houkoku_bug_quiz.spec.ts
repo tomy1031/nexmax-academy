@@ -212,3 +212,58 @@ test("バグ報告: バグが 2つの 画面は さいごの 2問で、2つの �
   expect(await bareKanjiTexts(page)).toEqual([]);
   await shot(page, "houkoku-bug-04-search-two-bugs");
 });
+
+test("バグ報告: 3回 だめだったら 字でも 出せる（2回までは 🎤だけ）", async ({ page, context }) => {
+  await seedUpTo(context, QUIZ);
+  const report = (tries: number) => ({
+    screen: "フード注文画面",
+    action: "＋を 押しました。",
+    result: "合計が 変わりませんでした。",
+    expected: "合計も 変わる はずです。",
+    spoken: "フード注文画面で、プラスを 押しました。",
+    score: 50,
+    items: ["screen", "action", "result", "expected"].map((id, i) => ({
+      id,
+      ok: i < 2,
+      note: "",
+    })),
+    polished: "",
+    skipped: false,
+    tries,
+    corrected: "フード注文画面で、＋を 押しました。",
+  });
+  const seed = async (tries: number) =>
+    page.evaluate((one) => {
+      window.localStorage.setItem(
+        "nexmax:v1:quiz-resume:houkoku_bug_quiz",
+        JSON.stringify({
+          quizSetId: "houkoku_bug_quiz",
+          results: [],
+          mode: "submit",
+          drafts: { food: { kind: "bugreport", reports: [one] } },
+          index: 0,
+          checked: {},
+        }),
+      );
+      // 🎤の ボタンを 出す（鍵の 中身は 見ない——字の 欄の 出し分けだけを 見る）
+      window.localStorage.setItem("nexmax.geminiKey", "e2e-dummy");
+    }, report(tries));
+
+  await page.goto(PATH);
+  await seed(2);
+  await page.reload();
+  await page.getByRole("button", { name: "つづきから" }).click();
+  await expect(page.getByTestId("bug-score")).toHaveText(/50\s*\/ 100/);
+  await expect(page.getByLabel("報告の 文")).toHaveCount(0);
+
+  await seed(3);
+  await page.reload();
+  await page.getByRole("button", { name: "つづきから" }).click();
+  const box = page.getByLabel("報告の 文");
+  await expect(box).toBeVisible();
+  const send = page.getByRole("button", { name: "送る" });
+  await expect(send).toBeDisabled();
+  await box.fill("フード注文画面で、＋を 押しました。");
+  await expect(send).toBeEnabled();
+  await shot(page, "houkoku-bug-06-type-after-3");
+});
