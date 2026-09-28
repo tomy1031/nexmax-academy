@@ -365,3 +365,57 @@ test("バグ報告: プロフィールは「保存しました。」が 出る�
   await expect(page.locator("#displayName")).toHaveText(before);
   expect(errors).toEqual([]);
 });
+
+test("バグ報告: 一度 OKなら 欄を 書き直しても 点は 消えず、つぎへ 進める（2026-09-28 の 指定）", async ({
+  page,
+  context,
+}) => {
+  await seedUpTo(context, QUIZ);
+  const report = (score: number, passedOnce: boolean) => ({
+    screen: "フード注文画面",
+    action: "＋を 押しました。",
+    result: "合計が 変わりませんでした。",
+    expected: "合計も 変わる はずです。",
+    spoken: "フード注文画面で、プラスを 押しました。",
+    score,
+    items: ["screen", "action", "result", "expected"].map((id) => ({ id, ok: true, note: "" })),
+    polished: "",
+    skipped: false,
+    ...(passedOnce ? { passedOnce } : {}),
+  });
+  const seed = async (one: ReturnType<typeof report>) =>
+    page.evaluate((entry) => {
+      window.localStorage.setItem(
+        "nexmax:v1:quiz-resume:houkoku_bug_quiz",
+        JSON.stringify({
+          quizSetId: "houkoku_bug_quiz",
+          results: [],
+          mode: "submit",
+          drafts: { food: { kind: "bugreport", reports: [entry] } },
+          index: 0,
+          checked: {},
+        }),
+      );
+    }, one);
+  const next = page.getByRole("button", { name: "つぎ →" });
+
+  // 75点で OK → 欄を 書き直しても 点は 残り、つぎへ 進める
+  await page.goto(PATH);
+  await seed(report(75, false));
+  await page.reload();
+  await page.getByRole("button", { name: "つづきから" }).click();
+  await expect(next).toBeEnabled();
+  await page.locator("#bug-food-0").getByLabel("② 何を しましたか？").fill("＋を 2回 押しました。");
+  await expect(page.getByTestId("bug-score")).toHaveText(/75\s*\/ 100/);
+  await expect(next).toBeEnabled();
+
+  // 前に 合格して いれば、いまの 点が 60点 以下でも 進める（点の 箱は いまの 点で 言う）
+  await seed(report(40, true));
+  await page.reload();
+  await page.getByRole("button", { name: "つづきから" }).click();
+  await expect(page.getByTestId("bug-score")).toHaveText(/40\s*\/ 100/);
+  await expect(page.getByText("もういちど", { exact: true })).toBeVisible();
+  await expect(page.getByText(/して いるので/).first()).toBeVisible();
+  await expect(next).toBeEnabled();
+  await shot(page, "houkoku-bug-08-passed-once");
+});

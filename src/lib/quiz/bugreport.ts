@@ -94,6 +94,11 @@ export interface BugReportEntry {
   readonly corrected?: string;
   /** 答えを 見せた あとに 読んだ 文が、見せた 文と ほぼ 同じだった（通す）。 */
   readonly readAnswer?: boolean;
+  /**
+   * 一度でも 合格したか。**一度 OKなら、あとで 欄を 書き直しても 話し直しても
+   * 次へ 進める**（2026-09-28 の 指定「一度OKであれば、次のページに常に遷移できるべき」）。
+   */
+  readonly passedOnce?: boolean;
   /** 文法の 直し（2026-09-25 に 足した。点には 入れない）。 */
   readonly grammar?: readonly BugGrammarFix[];
 }
@@ -178,11 +183,23 @@ export function bugReportScore(
   return understandable ? graded : Math.min(graded, BUG_REPORT_PASS);
 }
 
-/** 1つの 報告が 合格か（つぎへ 進めるか）。 */
-export function bugReportPassed(entry: BugReportEntry): boolean {
+/** **いまの** 点で 合格か（前の 合格は 見ない。点の 箱の OK／もういちど に 使う）。 */
+export function bugReportPassedNow(entry: BugReportEntry): boolean {
   if (entry.readAnswer === true && entry.spoken.trim() !== "") return true;
   if (entry.score !== null) return entry.score > BUG_REPORT_PASS;
   return entry.skipped && bugReportFilled(entry);
+}
+
+/** 1つの 報告が 合格か（つぎへ 進めるか）。**一度 合格したら ずっと 合格**。 */
+export function bugReportPassed(entry: BugReportEntry): boolean {
+  return entry.passedOnce === true || bugReportPassedNow(entry);
+}
+
+/** 合格を 覚える（下書きに 入れる 前に 通す）。 */
+export function rememberBugReportPass(entry: BugReportEntry): BugReportEntry {
+  return entry.passedOnce !== true && bugReportPassedNow(entry)
+    ? { ...entry, passedOnce: true }
+    : entry;
 }
 
 /** その 画面の 報告が ぜんぶ 合格か（関門）。 */

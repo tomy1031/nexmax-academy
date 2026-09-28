@@ -19,11 +19,13 @@ import {
   EMPTY_BUG_REPORT,
   bugReportFilled,
   bugReportPassed,
+  bugReportPassedNow,
   bugReportScore,
   bugReportsPassed,
   bugReviewContext,
   composeBugReport,
   readAloudMatches,
+  rememberBugReportPass,
   type BugReviewResult,
   type BugReportEntry,
   type BugReportFieldId,
@@ -109,6 +111,7 @@ const UI_FURIGANA = buildFuriganaIndex([
   ["伝わります", "つたわります"],
   ["送る", "おくる"],
   ["文法", "ぶんぽう"],
+  ["前", "まえ"],
 ]);
 
 /** 聞くだけの つなぎ（朝礼の `LISTEN_ONLY` と 同じ 決め——相手は 何も 言わない）。 */
@@ -193,7 +196,9 @@ export function BugReportQuestionView({
   /** いちばん 新しい 下書き（AIを 待つ あいだに 打った 字を 消さない ため）。 */
   const latest = useRef(reports);
   const commit = useCallback(
-    (next: BugReportEntry[]) => {
+    (changed: BugReportEntry[]) => {
+      // 一度 合格したら 覚えて おく（あとで 書き直しても 話し直しても 次へ 進める）
+      const next = changed.map(rememberBugReportPass);
       latest.current = next;
       setReports(next);
       if (submitMode) onSubmit(next);
@@ -205,20 +210,11 @@ export function BugReportQuestionView({
     const next = reports.map((entry, i) => {
       if (i !== index) return entry;
       /*
-       * **欄を 書き直したら 前の 点は 消す**（点は 話した 報告に 付いて いる）。
-       * 残すと、合格した あとに 欄を 何に 書き換えても「つぎ →」が 開いた ままに なり、
-       * 先生の 記録にも 見て いない 報告の 横に 古い 点が 並ぶ（コード検収 2026-09-23）。
+       * **欄を 書き直しても 前の 点は 消さない**（2026-09-28 の 指定「項目を 書き直した
+       * 場合に 採点結果が 消える 挙動を やめて」）。2026-09-23 の コード検収では 消して いたが、
+       * 学習者から 見ると **合格した 結果が 消えて 次へ 進めなく なる**。
        */
-      const edited = {
-        ...entry,
-        [field]: value,
-        spoken: "",
-        score: null,
-        items: [],
-        polished: "",
-        readAnswer: false,
-        grammar: [],
-      };
+      const edited = { ...entry, [field]: value };
       // 声を 聞けない 端末は、欄が うまれば 進める（理由は 画面に 出す）
       return { ...edited, skipped: noVoice };
     });
@@ -543,6 +539,8 @@ function BugCard({
   speak: React.ReactNode;
 }) {
   const passed = bugReportPassed(entry);
+  /** いまの 点で 合格か（点の 箱は いまの 点で 言う——前の 合格で ぼかさない）。 */
+  const passedNow = bugReportPassedNow(entry);
   const judged = entry.score !== null;
   const showAnswer = answerShownFor(entry);
   /*
@@ -671,7 +669,7 @@ function BugCard({
           <div
             role="status"
             className="mt-3 rounded-2xl border-2 bg-white px-4 py-3 text-center"
-            style={{ borderColor: passed ? OK_COLOR : NG_COLOR }}
+            style={{ borderColor: passedNow ? OK_COLOR : NG_COLOR }}
           >
             <p className="text-ink font-black" data-testid="bug-score">
               <span className="text-5xl">{entry.score}</span>
@@ -680,19 +678,21 @@ function BugCard({
             <p className="mt-1">
               <span
                 className="inline-block rounded-full px-4 py-1 text-lg font-black text-white"
-                style={{ background: passed ? OK_COLOR : NG_COLOR }}
+                style={{ background: passedNow ? OK_COLOR : NG_COLOR }}
               >
-                {passed ? "OK" : "もういちど"}
+                {passedNow ? "OK" : "もういちど"}
               </span>
             </p>
             <p className="text-ink mt-2 text-sm leading-relaxed font-bold">
               <RubyText
                 text={
-                  passed
+                  passedNow
                     ? entry.readAnswer
                       ? "答えの 文を 読めました。次へ 進めます。"
                       : "合格です。次へ 進めます。"
-                    : `${BUG_REPORT_PASS}点 以下なので、次へ 進めません。下の ヒントを 見て、もう一度 🎤で 話して ください。`
+                    : passed
+                      ? `${BUG_REPORT_PASS}点 以下でした。前に 合格して いるので、次へ 進めます。`
+                      : `${BUG_REPORT_PASS}点 以下なので、次へ 進めません。下の ヒントを 見て、もう一度 🎤で 話して ください。`
                 }
                 index={UI_FURIGANA}
               />

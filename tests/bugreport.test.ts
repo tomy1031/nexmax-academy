@@ -5,6 +5,7 @@ import {
   EMPTY_BUG_REPORT,
   bugGrammarPenalty,
   bugReportPassed,
+  bugReportPassedNow,
   bugReportScore,
   bugReportsPassed,
   buildBugReviewPrompt,
@@ -12,6 +13,7 @@ import {
   composeBugReport,
   parseBugReview,
   readAloudMatches,
+  rememberBugReportPass,
   type BugReportEntry,
   type BugReportQuestion,
 } from "@/lib/quiz/bugreport";
@@ -222,5 +224,21 @@ describe("文法の まちがいは 少し 引く（2026-09-25 の 指定）", (
   it("意味が 通らない 報告は 引いた あとも 60点で 止める", () => {
     expect(bugReportScore(items([25, 25, 25, 25]), false, 1)).toBe(60);
     expect(bugReportScore(items([25, 20, 10, 5]), false, 3)).toBe(54);
+  });
+});
+
+describe("一度 合格したら ずっと 次へ 進める（2026-09-28 の 指定）", () => {
+  it("合格を 覚えると、あとで 点が 下がっても 合格の まま（いまの 点は 別に 見られる）", () => {
+    const ok = rememberBugReportPass({ ...filled, spoken: "…", score: 75 });
+    expect(ok.passedOnce).toBe(true);
+    const later = { ...ok, score: 40, action: "書き直した" };
+    expect(bugReportPassed(later)).toBe(true);
+    expect(bugReportPassedNow(later)).toBe(false);
+  });
+
+  it("まだ 合格して いなければ 何も 足さない", () => {
+    const ng = { ...filled, spoken: "…", score: 50 };
+    expect(rememberBugReportPass(ng)).toBe(ng);
+    expect(bugReportPassed(ng)).toBe(false);
   });
 });
