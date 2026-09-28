@@ -17,10 +17,23 @@
  * いまは **原稿も 入力も、教材の 読み辞書（furigana）で かなへ 倒してから 比べる**
  *（`annotateRuby` → 読みへ 置換）。辞書に 無い 漢字の ために、素の 形の 見かたも
  * 同時に 持ち、**どちらかに 当たれば 当たり**に する。
+ *
+ * ## 数字・英字で 始まる 語も かなで 当たる（2026-09-28 に 足した）
+ * 読み辞書は **漢字の 位置からしか 引かない**ので、「10時」「360円」「GitHub」は
+ * 読みを 書いても 当たらなかった——聞いた とおり「じゅうじ」「ぎっとはぶ」と 打つと
+ * 永久に 外れる。そこで **聞き取りチェック だけが 使う 読み**（`SoundsIndex`・
+ * 台帳は `src/content/listening-sounds.ts`）を 別に 持ち、**どの 位置からでも** 引く。
+ * 同じ 表記に 読みを 何本も 書ける（80％ → はちじゅっ／はちじっ ぱーせんと）ので、
+ * 読みの 見かたは 候補の 数だけ 作る。ルビは 振らない（画面の 見た目は 変えない）。
  */
 
 import { looseReading, normalizeReading } from "@/lib/text/normalize";
-import { annotateRuby, type FuriganaIndex } from "@/lib/text/furigana";
+import {
+  annotateRuby,
+  type FuriganaEntry,
+  type FuriganaIndex,
+  type RubySegment,
+} from "@/lib/text/furigana";
 
 /** 判定の種類。点数と文言はここで決まる（原典の配点をそのまま使う）。 */
 export type HitKind =
@@ -131,12 +144,17 @@ export interface ListeningState {
   readonly misses: number;
   /** 原稿の見えている文字の位置。 */
   readonly revealed: ReadonlySet<number>;
-  /** 読み辞書で かなへ 倒した 見かた（ひらがな入力は これに 当てる）。 */
-  readonly kanaView: KanaView;
+  /**
+   * 読み辞書で かなへ 倒した 見かた（ひらがな入力は これに 当てる）。
+   * **聞き取り専用の 読みの 候補の 数だけ** ある（候補が 無ければ 1つ）。
+   */
+  readonly kanaViews: readonly KanaView[];
   /** 素の 見かた（辞書に 無い 漢字・英字は こちらで 当てる）。 */
   readonly rawView: KanaView;
   /** 入力を かなへ 倒す ための 辞書。 */
   readonly furigana: FuriganaIndex;
+  /** 聞き取りチェック だけが 使う 読み（数字・英字で 始まる 語。どの 位置からでも 引く）。 */
+  readonly sounds: SoundsIndex;
   /**
    * 長音を 母音に 開いた 見かた（「さーばー」＝「さあばあ」）。
    * `looseReading` は 1文字を 1文字に 置きかえる ので 長さが 変わらず、
@@ -160,20 +178,143 @@ export interface LogEntry {
   readonly hint?: string;
 }
 
+/* ------------------------------------------------------------------ *
+ * 聞き取り専用の 読み（数字・英字で 始まる 語）
+ * ------------------------------------------------------------------ */
+
+/** 聞き取り専用の 読みの 1語。 */
+interface SoundsEntry {
+  /** 比べる 形（`foldChars` を 通した 表記）。 */
+  readonly key: string;
+  /** 読みの 候補（`normalizeReading` を 通した もの）。1つ目が 基本。 */
+  readonly readings: readonly string[];
+}
+
+/** 聞き取り専用の 読みの 索引。 */
+export interface SoundsIndex {
+  /** 長い 表記から 順（最長一致）。 */
+  readonly entries: readonly SoundsEntry[];
+  /** 読みの 候補の 最大数＝作る 見かたの 数（候補が 無ければ 1）。 */
+  readonly variants: number;
+}
+
+export const NO_SOUNDS: SoundsIndex = { entries: [], variants: 1 };
+
+/**
+ * 1文字ずつ NFKC ＋ 小文字に そろえる（**長さを 変えない**）。
+ *
+ * 学習者は「ＧｉｔＨｕｂ」「github」とも 打つ ので、表記の 比べは この 形で する。
+ * 1文字が 2文字以上に ほどける 字（「㎇」など）は そのまま 残す——長さが 変わると
+ * 原稿の 位置の 対応（owners）が ずれる。
+ */
+function foldChars(text: string): string {
+  return text
+    .split("")
+    .map((ch) => {
+      const folded = ch.normalize("NFKC").toLowerCase();
+      return folded.length === 1 ? folded : ch;
+    })
+    .join("");
+}
+
+/**
+ * `[表記, よみ]` の 並びから 索引を 作る。**同じ 表記を 何行でも 書ける**——
+ * 2行目からは 別の 読み（聞こえかたの ゆれ）に なる。
+ */
+export function buildSoundsIndex(entries: readonly FuriganaEntry[] = []): SoundsIndex {
+  const byKey = new Map<string, string[]>();
+  for (const [surface, reading] of entries) {
+    const key = foldChars(surface);
+    const kana = normalizeReading(reading);
+    if (!key || !kana) continue;
+    const list = byKey.get(key) ?? [];
+    if (!list.includes(kana)) list.push(kana);
+    byKey.set(key, list);
+  }
+  const list = [...byKey.entries()]
+    .map(([key, readings]) => ({ key, readings }))
+    .sort((a, b) => b.key.length - a.key.length);
+  const variants = list.reduce((max, entry) => Math.max(max, entry.readings.length), 1);
+  return { entries: list, variants };
+}
+
+const LATIN = /[a-z]/;
+const DIGIT = /[0-9]/;
+
+/**
+ * 語の 切れ目に 当たって いるか。「5時」が「15時」の 中で、「API」が「RAPID」の 中で
+ * 当たると、ちがう 数・ちがう 語の 読みに なる。**英字の 前後に 英字、数字の 前後に
+ * 数字が 続く ところでは 当てない**（「100GB」の「GB」は 数字の あとなので 当たる）。
+ */
+function atWordEdge(folded: string, start: number, length: number): boolean {
+  const same = (a: string | undefined, b: string | undefined) =>
+    a !== undefined &&
+    b !== undefined &&
+    ((LATIN.test(a) && LATIN.test(b)) || (DIGIT.test(a) && DIGIT.test(b)));
+  return (
+    !same(folded[start], folded[start - 1]) &&
+    !same(folded[start + length - 1], folded[start + length])
+  );
+}
+
+/**
+ * 文を 読みの ついた 断片に 割る（聞き取りチェック用）。
+ *
+ * 聞き取り専用の 読みを **どの 位置からでも** 先に 当て、その あいだは 読み辞書
+ *（`annotateRuby`・漢字の 位置から）で 割る。`variant` 番目の 読みの 候補を 使う
+ *（候補が 足りない 語は 1つ目）。
+ */
+function typingSegments(
+  text: string,
+  furigana: FuriganaIndex,
+  sounds: SoundsIndex,
+  variant: number,
+): RubySegment[] {
+  if (sounds.entries.length === 0) return annotateRuby(text, furigana);
+  const folded = foldChars(text);
+  const out: RubySegment[] = [];
+  let gapStart = 0;
+  let i = 0;
+  while (i < text.length) {
+    const hit = sounds.entries.find(
+      (entry) => folded.startsWith(entry.key, i) && atWordEdge(folded, i, entry.key.length),
+    );
+    if (!hit) {
+      i += 1;
+      continue;
+    }
+    if (i > gapStart) out.push(...annotateRuby(text.slice(gapStart, i), furigana));
+    const reading = hit.readings[Math.min(variant, hit.readings.length - 1)] ?? hit.readings[0];
+    out.push({ text: text.slice(i, i + hit.key.length), reading });
+    i += hit.key.length;
+    gapStart = i;
+  }
+  if (gapStart < text.length) out.push(...annotateRuby(text.slice(gapStart), furigana));
+  return out;
+}
+
 /**
  * 原稿を かなの 並びへ 倒し、1文字ずつ「元の どこか」を 覚える。
  *
- * `withReadings` が true の ときだけ 読み辞書を 使う（漢字→読み）。
- * false の ときは 1文字ずつ `normalizeReading` を 通すだけ——
+ * `variant` が 数の ときだけ 読み（辞書と 聞き取り専用の 読みの その 番目の 候補）を 使う。
+ * `null` の ときは 1文字ずつ `normalizeReading` を 通すだけ——
  * 辞書に 無い 漢字や 英字（SES など）は こちらで 当てる。
  */
-function buildView(transcript: string, index: FuriganaIndex, withReadings: boolean): KanaView {
+function buildView(
+  transcript: string,
+  index: FuriganaIndex,
+  sounds: SoundsIndex,
+  variant: number | null,
+): KanaView {
+  const withReadings = variant !== null;
   const owners: (readonly number[])[] = [];
   let kana = "";
   let at = 0;
-  const segments = withReadings ? annotateRuby(transcript, index) : [{ text: transcript }];
+  const segments: readonly RubySegment[] = withReadings
+    ? typingSegments(transcript, index, sounds, variant)
+    : [{ text: transcript }];
   for (const segment of segments) {
-    const reading = "reading" in segment ? segment.reading : undefined;
+    const reading = segment.reading;
     if (withReadings && reading) {
       // 読みの どこに 当たっても、その ことば まるごとを ひらく
       const whole = Array.from({ length: segment.text.length }, (_, k) => at + k);
@@ -233,9 +374,17 @@ function spellLatin(text: string): string {
   return [...text].map((ch) => LATIN_KANA[ch] ?? ch).join("");
 }
 
-/** 入力を 読み辞書で かなへ 倒す（辞書に 無い 漢字は そのまま 残る）。 */
-function toKana(text: string, index: FuriganaIndex): string {
-  return annotateRuby(text, index)
+/**
+ * 入力を 読み辞書で かなへ 倒す（辞書に 無い 漢字は そのまま 残る）。
+ * 聞き取り専用の 読みが あれば、その `variant` 番目の 候補で 倒す。
+ */
+function toKana(
+  text: string,
+  index: FuriganaIndex,
+  sounds: SoundsIndex = NO_SOUNDS,
+  variant = 0,
+): string {
+  return typingSegments(text, index, sounds, variant)
     .map((segment) =>
       segment.reading
         ? normalizeReading(segment.reading)
@@ -244,14 +393,28 @@ function toKana(text: string, index: FuriganaIndex): string {
     .join("");
 }
 
+/**
+ * かなへ 倒した 形を **読みの 候補の 数だけ** 返す（重複は 落とす。1つ目が 基本）。
+ * 「80％」は「はちじゅっぱーせんと」と「はちじっぱーせんと」の 2つに なる。
+ */
+function kanaForms(text: string, state: ListeningState): readonly string[] {
+  const forms = Array.from({ length: state.sounds.variants }, (_, variant) =>
+    toKana(text, state.furigana, state.sounds, variant),
+  );
+  return [...new Set(forms)];
+}
+
 export function createListening(
   transcript: string,
   keywords: readonly string[],
   rules: ListeningRules = DEFAULT_RULES,
   furigana: FuriganaIndex = { entries: [], maxLength: 0 },
+  sounds: SoundsIndex = NO_SOUNDS,
 ): ListeningState {
-  const kanaView = buildView(transcript, furigana, true);
-  const rawView = buildView(transcript, furigana, false);
+  const kanaViews = Array.from({ length: sounds.variants }, (_, variant) =>
+    buildView(transcript, furigana, sounds, variant),
+  );
+  const rawView = buildView(transcript, furigana, sounds, null);
   // 記号・空白は最初から見えている（形だけ分かると「発掘」しやすい）
   const revealed = new Set<number>();
   let hideableCount = 0;
@@ -264,9 +427,10 @@ export function createListening(
     keywords,
     rules,
     furigana,
-    kanaView,
+    sounds,
+    kanaViews,
     rawView,
-    looseViews: [kanaView, rawView].map((view) => ({
+    looseViews: [...kanaViews, rawView].map((view) => ({
       kana: looseReading(view.kana),
       owners: view.owners,
     })),
@@ -299,7 +463,8 @@ export function submitListening(state: ListeningState, raw: string): ListeningSt
   const needle = normalizeReading(input);
   if (!needle) return state;
   /** 入力を 読み辞書で かなへ 倒した 形（「達成感」→「たっせいかん」）。 */
-  const kana = toKana(input, state.furigana);
+  const kanas = kanaForms(input, state);
+  const kana = kanas[0] ?? needle;
 
   /*
    * 同じ ことばで 二度は 稼げない。ただし **「まだ 出ていない」とは 言わない**——
@@ -309,7 +474,7 @@ export function submitListening(state: ListeningState, raw: string): ListeningSt
    * 打っても 同じ ことばなので 二度は 数えない（読みへ 倒してから 見くらべる）。
    */
   const alreadyUsed = state.usedInputs.some(
-    (used) => used === needle || toKana(used, state.furigana) === kana,
+    (used) => used === needle || toKana(used, state.furigana, state.sounds) === kana,
   );
   if (alreadyUsed) {
     return push(state, { input, kind: "repeat", points: 0, keywords: [] }, { countMiss: false });
@@ -319,31 +484,37 @@ export function submitListening(state: ListeningState, raw: string): ListeningSt
 
   // 1. キーワードそのもの（表記／読みの どちらでも）
   const exact = remaining.find((kw) => kw === input);
-  const mine = needleForms(needle, kana);
+  const mine = needleForms(needle, ...kanas);
   const byReading = remaining.find((kw) => {
-    const theirs = needleForms(normalizeReading(kw), toKana(kw, state.furigana));
+    const theirs = needleForms(normalizeReading(kw), ...kanaForms(kw, state));
     return theirs.some((one) => mine.includes(one));
   });
   if (exact || byReading) {
     const hit = exact ?? byReading!;
     const kind: HitKind = exact ? "keyword" : "hiragana";
-    return award(state, input, needle, kana, kind, POINTS[kind] + lengthBonus(input, state.rules), [
-      hit,
-    ]);
+    return award(
+      state,
+      input,
+      needle,
+      kanas,
+      kind,
+      POINTS[kind] + lengthBonus(input, state.rules),
+      [hit],
+    );
   }
 
   // 2. キーワードを含む言い方
   const contained = remaining.filter((kw) => {
-    const theirs = needleForms(normalizeReading(kw), toKana(kw, state.furigana));
+    const theirs = needleForms(normalizeReading(kw), ...kanaForms(kw, state));
     return theirs.some((one) => one.length > 0 && mine.some((form) => form.includes(one)));
   });
   if (contained.length > 0) {
-    if (isInTranscript(state, needle, kana)) {
+    if (isInTranscript(state, needle, kanas)) {
       return award(
         state,
         input,
         needle,
-        kana,
+        kanas,
         "contains",
         POINTS.contains * contained.length + lengthBonus(input, state.rules),
         contained,
@@ -360,12 +531,12 @@ export function submitListening(state: ListeningState, raw: string): ListeningSt
   }
 
   // 4. キーワードではないが本文に出てくる
-  if (isInTranscript(state, needle, kana)) {
+  if (isInTranscript(state, needle, kanas)) {
     return award(
       state,
       input,
       needle,
-      kana,
+      kanas,
       "partial",
       POINTS.partial + lengthBonus(input, state.rules),
       [],
@@ -373,7 +544,7 @@ export function submitListening(state: ListeningState, raw: string): ListeningSt
   }
 
   // 5. 該当なし —— **なぜ 外れたか**を 切り分けて 返す
-  return push(state, { input, ...diagnose(state, input, needle, kana) });
+  return push(state, { input, ...diagnose(state, input, needle, kanas) });
 }
 
 /**
@@ -390,7 +561,7 @@ function diagnose(
   state: ListeningState,
   input: string,
   needle: string,
-  kana: string,
+  kanas: readonly string[],
 ): { kind: HitKind; points: number; keywords: readonly string[]; hint?: string } {
   const base = { points: 0, keywords: [] as readonly string[] };
 
@@ -407,7 +578,7 @@ function diagnose(
    * 途中までは 合って いるか。**長い ほうから** 見て、いちばん 長く 合った
    * ところを 返す（2文字 未満は 手がかりに ならない ので 出さない）。
    */
-  const forms = needleForms(needle, kana).filter((form) => form.length >= 3);
+  const forms = needleForms(needle, ...kanas).filter((form) => form.length >= 3);
   for (const form of forms) {
     for (let end = form.length - 1; end >= 2; end -= 1) {
       const head = form.slice(0, end);
@@ -428,7 +599,7 @@ function award(
   state: ListeningState,
   input: string,
   needle: string,
-  kana: string,
+  kanas: readonly string[],
   kind: HitKind,
   points: number,
   keywords: readonly string[],
@@ -440,7 +611,10 @@ function award(
    */
   let revealed = state.revealed;
   for (const form of [input, ...keywords]) {
-    const forms = needleForms(normalizeReading(form), toKana(form, state.furigana));
+    const forms =
+      form === input
+        ? needleForms(needle, ...kanas)
+        : needleForms(normalizeReading(form), ...kanaForms(form, state));
     for (const view of allViews(state)) {
       for (const one of forms) revealed = revealWith(view, revealed, one);
     }
@@ -507,15 +681,16 @@ function revealWith(
  * 前は `normalizeReading(transcript)` を 見て いた——カタカナを ひらがなに するだけ なので
  * 漢字は 漢字の まま で、かなで 打った 学習者は 永久に 当たらなかった。
  */
-function isInTranscript(state: ListeningState, needle: string, kana: string): boolean {
+function isInTranscript(state: ListeningState, needle: string, kanas: readonly string[]): boolean {
+  const forms = needleForms(needle, ...kanas);
   return allViews(state).some((view) =>
-    needleForms(needle, kana).some((form) => form.length > 0 && view.kana.includes(form)),
+    forms.some((form) => form.length > 0 && view.kana.includes(form)),
   );
 }
 
 /** 原稿の 見かた ぜんぶ（素・読み・長音を 開いた もの）。 */
 function allViews(state: ListeningState): readonly KanaView[] {
-  return [state.rawView, state.kanaView, ...state.looseViews];
+  return [state.rawView, ...state.kanaViews, ...state.looseViews];
 }
 
 /**
@@ -523,8 +698,15 @@ function allViews(state: ListeningState): readonly KanaView[] {
  * ひらがな・カタカナ・漢字・英字の どれで 打っても 当たる ように 手を 広げる
  *（2026-09-04 の 指定）。重複は 落とす。
  */
-function needleForms(needle: string, kana: string): readonly string[] {
-  return [...new Set([needle, kana, looseReading(needle), looseReading(kana)])];
+function needleForms(needle: string, ...kanas: readonly string[]): readonly string[] {
+  return [
+    ...new Set([
+      needle,
+      ...kanas,
+      looseReading(needle),
+      ...kanas.map((kana) => looseReading(kana)),
+    ]),
+  ];
 }
 
 /**
