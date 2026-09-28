@@ -126,7 +126,9 @@ test("よみを 外すと 入力欄が 空に なり、正しく 打てるまで
   await expect(input).toBeVisible({ timeout: 20_000 });
 
   // 1回目の 打ちまちがい。合図は **❌ の しるしだけ**（文は 出さない）
-  await input.fill("ぜんぜんちがうよみ");
+  // PC の よみ入力は ローマ字を アプリが ひらがなに する（IME を 使わせない。kotoba_ime.spec.ts）
+  await input.pressSequentially("zenzentigauyomi");
+  await expect(input).toHaveValue("ぜんぜんちがうよみ");
   await input.press("Enter");
   await expect(page.getByLabel("ちがう")).toBeVisible();
   await expect(input).toHaveValue(""); // 入力した 字は 消える
@@ -134,7 +136,7 @@ test("よみを 外すと 入力欄が 空に なり、正しく 打てるまで
   await expect(page.getByText("英語の 意味を えらぼう！")).toHaveCount(0);
 
   // 2回目の 打ちまちがいでも 同じ。番は 終わらない
-  await input.fill("これもちがう");
+  await input.pressSequentially("koremotigau");
   await input.press("Enter");
   await expect(input).toHaveValue("");
   await expect(page.getByText("英語の 意味を えらぼう！")).toHaveCount(0);

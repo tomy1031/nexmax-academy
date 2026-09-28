@@ -7,7 +7,7 @@ import type { WordGroupHead } from "@/lib/wordstage-merge";
 import { FeedbackMessage } from "@/components/feedback-message";
 import { RubyText } from "@/components/ruby-text";
 import { buildFuriganaIndex, type FuriganaEntry } from "@/lib/text/furigana";
-import { isHiraganaInputReady } from "@/lib/text/normalize";
+import { isHiraganaInputReady, readingMatches } from "@/lib/text/normalize";
 import { createProgressStore, recordContentProgress } from "@/lib/progress/store";
 import { newWordTestAttemptId, saveWordTest } from "@/lib/records/word-test-db";
 import {
@@ -618,6 +618,7 @@ function PlayLayer({
                 shake={Boolean(state.hint)}
                 shakeKey={state.flash === "retry" ? state.flashSeq : 0}
                 onSubmit={(input) => dispatch({ type: "submitReading", input })}
+                accepts={(kana) => readingMatches(kana, word.reading)}
               />
             </div>
           </>
