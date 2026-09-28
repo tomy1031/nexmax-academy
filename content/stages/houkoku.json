@@ -53,6 +53,46 @@
       "ref": "houkoku_bug_quiz",
       "type": "quizset",
       "gates": true
+    },
+    {
+      "ref": "houkoku_kanryou_listening",
+      "type": "listening"
+    },
+    {
+      "ref": "houkoku_kanryou_quiz",
+      "type": "quizset"
+    },
+    {
+      "ref": "houkoku_okure_listening",
+      "type": "listening"
+    },
+    {
+      "ref": "houkoku_okure_quiz",
+      "type": "quizset"
+    },
+    {
+      "ref": "houkoku_shougai_listening",
+      "type": "listening"
+    },
+    {
+      "ref": "houkoku_shougai_quiz",
+      "type": "quizset"
+    },
+    {
+      "ref": "houkoku_chousa_listening",
+      "type": "listening"
+    },
+    {
+      "ref": "houkoku_chousa_quiz",
+      "type": "quizset"
+    },
+    {
+      "ref": "houkoku_chourei_listening",
+      "type": "listening"
+    },
+    {
+      "ref": "houkoku_chourei_quiz",
+      "type": "quizset"
     }
   ],
   "wordStageIds": [

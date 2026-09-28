@@ -40,6 +40,18 @@ export interface ListeningAudioPlan {
   readonly compareGapSeconds?: readonly number[];
 }
 
+/** 報告の リスニング 5場面の 人（性別は 声と 表紙の 絵で そろえる）。 */
+const REPORT_PEOPLE = {
+  takahashi: { voice: "Alnilam", model: "gemini-3.1-flash-live-preview" }, // 男・チームの リーダー
+  sato: { voice: "Autonoe", model: "gemini-3.8-live" }, // 女・プログラマー
+  yamada: { voice: "Achird", model: "gemini-3.8-live" }, // 男・プログラマー
+  suzuki: { voice: "Kore", model: "gemini-3.1-flash-live-preview" }, // 女・チームの リーダー
+  nakamura: { voice: "Erinome", model: "gemini-3.8-live" }, // 女・エンジニア
+  tanaka: { voice: "Charon", model: "gemini-3.1-flash-live-preview" }, // 男・チームの リーダー
+  kobayashi: { voice: "Rasalgethi", model: "gemini-3.8-live" }, // 男・エンジニア
+  kato: { voice: "Gacrux", model: "gemini-3.1-flash-live-preview" }, // 女・チームの リーダー
+} as const;
+
 export const LISTENING_AUDIO_PLANS: Readonly<Record<string, ListeningAudioPlan>> = {
   /*
    * 報告「悪い ニュースの 報告」（2026-09-16 の 指定）。
@@ -59,4 +71,31 @@ export const LISTENING_AUDIO_PLANS: Readonly<Record<string, ListeningAudioPlan>>
     gapSeconds: 1.5,
     compareGapSeconds: [2],
   },
+
+  /*
+   * 報告の リスニング 5場面（2026-09-28。`リスニング問題.md` から 作った）。
+   * 声は **人ごとに 固定**して 5本で そろえる——高橋さん・佐藤さん・山田さんは 2本に 出る。
+   * 同じ 場面の 2人は 男女を 分けて、だれが 話して いるか 耳で 分かる ように する
+   *（朝礼の 3人は 高橋さん＝低めの 男・佐藤さん＝女・山田さん＝高めの 男）。
+   * 表紙の 絵の 性別も これに そろえる（`scripts/images/houkoku_report_covers.json`）。
+   * 秒は 報告の リスニングと 同じ 1.5秒。
+   */
+  houkoku_kanryou_listening: reportPlan(["sato", "takahashi"]),
+  houkoku_okure_listening: reportPlan(["yamada", "suzuki"]),
+  houkoku_shougai_listening: reportPlan(["nakamura", "tanaka"]),
+  houkoku_chousa_listening: reportPlan(["kobayashi", "kato"]),
+  houkoku_chourei_listening: reportPlan(["takahashi", "sato", "yamada"]),
 };
+
+/**
+ * 報告の リスニング 5場面の 人と 声（Gemini Live の 声・`src/lib/audio/voices.ts`）。
+ * **リーダー役は 3.1、報告する 人は 3.8** で 作る——モデルが ちがう 人どうしは
+ * 同時に 作れる（上の `models` の 説明）。
+ */
+function reportPlan(speakers: readonly (keyof typeof REPORT_PEOPLE)[]): ListeningAudioPlan {
+  return {
+    voices: Object.fromEntries(speakers.map((id) => [id, REPORT_PEOPLE[id].voice])),
+    models: Object.fromEntries(speakers.map((id) => [id, REPORT_PEOPLE[id].model])),
+    gapSeconds: 1.5,
+  };
+}
