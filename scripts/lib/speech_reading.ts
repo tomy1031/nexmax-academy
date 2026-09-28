@@ -147,8 +147,46 @@ export function matchReading(
   if (transcript.trim() === "") {
     return { ok: false, expected, spoken: "", distance: expected.length, why: "文字起こしが 空" };
   }
-  const spoken = spokenReading(transcript, tokenizer, index, sounds);
-  const distance = editDistance(expected, spoken);
+  const pair = readingPair(text, transcript, index, tokenizer, sounds);
+  if (sounds.entries.length > 0) {
+    /*
+     * **台帳を 通さない 見くらべも して、ずれの 少ない ほうを 取る**。文字起こしが
+     * 英字の 途中に 空白や 点を 入れる（「Git Hub」「A.W.S.」）と 台帳に 当たらず、
+     * 台帳を 入れる 前は 通って いた 音まで 落ちる（2026-09-28 の 検収で 実測）。
+     */
+    const plain = readingPair(text, transcript, index, tokenizer, NO_SOUNDS);
+    if (plain.distance < pair.distance) return verdict(plain);
+  }
+  return verdict(pair);
+}
+
+/** 原稿と 文字起こしの 読みを 同じ 台帳で 作って 比べる。 */
+function readingPair(
+  text: string,
+  transcript: string,
+  index: FuriganaIndex,
+  tokenizer: Tokenizer,
+  sounds: SoundsIndex,
+): { expected: string; spoken: string; distance: number } {
+  // 英字・数字の あいだの 空白と 点は 文字起こしの ゆれ（「Git Hub」「S 3」「A.W.S.」）
+  const joined = transcript.replace(
+    /(?<=[A-Za-z0-9Ａ-Ｚａ-ｚ０-９])[\s.．・]+(?=[A-Za-z0-9Ａ-Ｚａ-ｚ０-９])/g,
+    "",
+  );
+  const expected = scriptReading(text, index, sounds);
+  const spoken = spokenReading(joined, tokenizer, index, sounds);
+  return { expected, spoken, distance: editDistance(expected, spoken) };
+}
+
+function verdict({
+  expected,
+  spoken,
+  distance,
+}: {
+  expected: string;
+  spoken: string;
+  distance: number;
+}): ReadingMatch {
   const allowed = 0;
   return {
     ok: distance <= allowed,

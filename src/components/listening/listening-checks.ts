@@ -27,9 +27,10 @@
  * 読みの 見かたは 候補の 数だけ 作る。ルビは 振らない（画面の 見た目は 変えない）。
  */
 
-import { looseReading, normalizeReading } from "@/lib/text/normalize";
+import { looseReading, normalizeReading, toHiragana } from "@/lib/text/normalize";
 import {
   annotateRuby,
+  KANJI,
   type FuriganaEntry,
   type FuriganaIndex,
   type RubySegment,
@@ -203,7 +204,8 @@ export const NO_SOUNDS: SoundsIndex = { entries: [], variants: 1 };
 /**
  * 1文字ずつ NFKC ＋ 小文字に そろえる（**長さを 変えない**）。
  *
- * 学習者は「ＧｉｔＨｕｂ」「github」とも 打つ ので、表記の 比べは この 形で する。
+ * 学習者は「ＧｉｔＨｕｂ」「github」とも、「80パーセント」「80ぱーせんと」とも 打つ ので、
+ * 表記の 比べは この 形で する（カタカナも ひらがなへ。1字は 1字の まま）。
  * 1文字が 2文字以上に ほどける 字（「㎇」など）は そのまま 残す——長さが 変わると
  * 原稿の 位置の 対応（owners）が ずれる。
  */
@@ -211,7 +213,7 @@ function foldChars(text: string): string {
   return text
     .split("")
     .map((ch) => {
-      const folded = ch.normalize("NFKC").toLowerCase();
+      const folded = toHiragana(ch.normalize("NFKC").toLowerCase());
       return folded.length === 1 ? folded : ch;
     })
     .join("");
@@ -240,21 +242,54 @@ export function buildSoundsIndex(entries: readonly FuriganaEntry[] = []): Sounds
 
 const LATIN = /[a-z]/;
 const DIGIT = /[0-9]/;
+const KANJI_NUMERAL = /[〇一二三四五六七八九十百千万]/;
 
 /**
- * 語の 切れ目に 当たって いるか。「5時」が「15時」の 中で、「API」が「RAPID」の 中で
- * 当たると、ちがう 数・ちがう 語の 読みに なる。**英字の 前後に 英字、数字の 前後に
- * 数字が 続く ところでは 当てない**（「100GB」の「GB」は 数字の あとなので 当たる）。
+ * 語の 切れ目に 当たって いるか。「5時」が「15時」の 中で、「API」が「RAPID」の 中で、
+ * 「五時」が「十五時」の 中で、「5GB」が「1.5GB」の 中で 当たると、ちがう 数・ちがう 語の
+ * 読みに なる。**英字の 前後に 英字、数字（漢数字）の 前後に 数字が 続く ところでは
+ * 当てない**（「100GB」の「GB」は 数字の あとなので 当たる）。
  */
 function atWordEdge(folded: string, start: number, length: number): boolean {
   const same = (a: string | undefined, b: string | undefined) =>
     a !== undefined &&
     b !== undefined &&
-    ((LATIN.test(a) && LATIN.test(b)) || (DIGIT.test(a) && DIGIT.test(b)));
+    ((LATIN.test(a) && LATIN.test(b)) ||
+      (DIGIT.test(a) && DIGIT.test(b)) ||
+      (KANJI_NUMERAL.test(a) && KANJI_NUMERAL.test(b)));
+  const first = folded[start];
+  // 小数点・桁の 区切りを はさんだ 数（1.5GB・3,600円）の 途中から 始めない
+  const inNumber =
+    first !== undefined &&
+    DIGIT.test(first) &&
+    /[.,]/.test(folded[start - 1] ?? "") &&
+    DIGIT.test(folded[start - 2] ?? "");
   return (
-    !same(folded[start], folded[start - 1]) &&
+    !inNumber &&
+    !same(first, folded[start - 1]) &&
     !same(folded[start + length - 1], folded[start + length])
   );
+}
+
+/**
+ * 読み辞書の 熟語を 割らないか。「10時間」に 台帳の「10時」を 当てると、辞書の「時間」が
+ * 割れて「じかん」と 打っても 当たらなく なる。**台帳の 語の 中から 始まって 外まで
+ * 続く 辞書の 見出し**が あれば、その 位置では 台帳を 当てない（辞書に ゆずる）。
+ */
+function splitsDictionaryWord(
+  text: string,
+  furigana: FuriganaIndex,
+  start: number,
+  end: number,
+): boolean {
+  for (let k = start; k < end; k += 1) {
+    if (!KANJI.test(text[k] ?? "")) continue;
+    const longer = furigana.entries.some(
+      ([surface]) => k + surface.length > end && text.startsWith(surface, k),
+    );
+    if (longer) return true;
+  }
+  return false;
 }
 
 /**
@@ -277,7 +312,10 @@ function typingSegments(
   let i = 0;
   while (i < text.length) {
     const hit = sounds.entries.find(
-      (entry) => folded.startsWith(entry.key, i) && atWordEdge(folded, i, entry.key.length),
+      (entry) =>
+        folded.startsWith(entry.key, i) &&
+        atWordEdge(folded, i, entry.key.length) &&
+        !splitsDictionaryWord(text, furigana, i, i + entry.key.length),
     );
     if (!hit) {
       i += 1;
@@ -414,7 +452,39 @@ function kanaForms(text: string, state: ListeningState): readonly string[] {
   const forms = Array.from({ length: state.sounds.variants }, (_, variant) =>
     toKana(text, state.furigana, state.sounds, variant),
   );
+  /*
+   * **台帳を 通さない 形も 残す**。「5じまで」「10じごろ」の ように 数字を 変換せずに
+   * かなと 混ぜて 打つ 学習者は、台帳の 読み（ごじ）では なく 数字の まま（5じ）の
+   * 見かたに 当たる。台帳を 入れた せいで これが 外れると「嘘の 不正解」に なる。
+   */
+  if (state.sounds.entries.length > 0) forms.push(toKana(text, state.furigana));
   return [...new Set(forms)];
+}
+
+/**
+ * 読みの 候補を **1つ目に そろえた** 形（同じ ことばかを 見る ため）。
+ * 「はちじっぱーせんと」も「はちじゅうぱーせんと」も「はちじゅっぱーせんと」に なる。
+ * 長い 読みから 先に 当てる（「ひゃくぎが」を「ひゃくぎがばいと」の 頭で 置きかえない）。
+ */
+function canonicalKana(kana: string, sounds: SoundsIndex): string {
+  const alternates = sounds.entries
+    .filter((entry) => entry.readings.length > 1)
+    .flatMap((entry) => entry.readings.map((reading) => [reading, entry.readings[0]!] as const))
+    .sort((a, b) => b[0].length - a[0].length);
+  if (alternates.length === 0) return kana;
+  let out = "";
+  let i = 0;
+  while (i < kana.length) {
+    const hit = alternates.find(([reading]) => kana.startsWith(reading, i));
+    if (hit) {
+      out += hit[1];
+      i += hit[0].length;
+    } else {
+      out += kana[i];
+      i += 1;
+    }
+  }
+  return out;
 }
 
 export function createListening(
@@ -427,6 +497,8 @@ export function createListening(
   const kanaViews = Array.from({ length: sounds.variants }, (_, variant) =>
     buildView(transcript, furigana, sounds, variant),
   );
+  // 台帳を 通さない 見かたも 1本（「5時」を「5じ」と 打つ 学習者の ため。`kanaForms` と 対）
+  if (sounds.entries.length > 0) kanaViews.push(buildView(transcript, furigana, NO_SOUNDS, 0));
   const rawView = buildView(transcript, furigana, sounds, null);
   // 記号・空白は最初から見えている（形だけ分かると「発掘」しやすい）
   const revealed = new Set<number>();
@@ -477,7 +549,6 @@ export function submitListening(state: ListeningState, raw: string): ListeningSt
   if (!needle) return state;
   /** 入力を 読み辞書で かなへ 倒した 形（「達成感」→「たっせいかん」）。 */
   const kanas = kanaForms(input, state);
-  const kana = kanas[0] ?? needle;
 
   /*
    * 同じ ことばで 二度は 稼げない。ただし **「まだ 出ていない」とは 言わない**——
@@ -486,8 +557,11 @@ export function submitListening(state: ListeningState, raw: string): ListeningSt
    * 見るのは **表記では なく ことば**。「たっせいかん」の あとに 「達成感」と
    * 打っても 同じ ことばなので 二度は 数えない（読みへ 倒してから 見くらべる）。
    */
+  const mineKeys = new Set(kanas.map((one) => canonicalKana(one, state.sounds)));
   const alreadyUsed = state.usedInputs.some(
-    (used) => used === needle || toKana(used, state.furigana, state.sounds) === kana,
+    (used) =>
+      used === needle ||
+      kanaForms(used, state).some((one) => mineKeys.has(canonicalKana(one, state.sounds))),
   );
   if (alreadyUsed) {
     return push(state, { input, kind: "repeat", points: 0, keywords: [] }, { countMiss: false });

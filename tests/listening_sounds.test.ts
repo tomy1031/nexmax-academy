@@ -31,9 +31,6 @@ function load(id: string): ListeningJson {
   return JSON.parse(readFileSync(join("content", "listening", `${id}.json`), "utf8"));
 }
 
-/** 字母を 1つずつ 読む 略語（CSV・API・AWS）。`spellLatin` が 開くので 台帳は 要らない。 */
-const SPELLED_ACRONYM = /^[A-Z]{2,4}$/;
-
 describe("聞き取り専用の 読みの 台帳", () => {
   const ids = Object.keys(LISTENING_SOUNDS_LIKE);
 
@@ -59,17 +56,14 @@ describe("聞き取り専用の 読みの 台帳", () => {
     const rules = { minLength: listening.check.minLength, maxMiss: listening.check.maxMiss };
     const fresh = () => createListening(transcript, listening.keywords, rules, furigana, sounds);
 
-    it("原稿の 数字・英字の 語は ぜんぶ 読みを 持つ（字母読みの 略語を のぞく）", () => {
+    it("原稿の 数字・英字の 語は ぜんぶ 読みを 持つ（字母読みの 略語も 台帳に 書く）", () => {
       // 台帳の 表記に 当たる ところを 消してから、残った 数字・英字を 数える
       let rest = transcript;
       const surfaces = [...(LISTENING_SOUNDS_LIKE[id] ?? [])]
         .map(([surface]) => surface)
         .sort((a, b) => b.length - a.length);
       for (const surface of surfaces) rest = rest.split(surface).join("　");
-      const leftovers = (rest.match(/[A-Za-z0-9０-９Ａ-Ｚａ-ｚ]+/g) ?? []).filter(
-        (word) => !SPELLED_ACRONYM.test(word),
-      );
-      expect(leftovers).toEqual([]);
+      expect(rest.match(/[A-Za-z0-9０-９Ａ-Ｚａ-ｚ]+/g) ?? []).toEqual([]);
     });
 
     it("キーワードは 書かれた 形でも かなでも 見つかる", () => {
@@ -92,19 +86,84 @@ describe("聞き取り専用の 読みの 台帳", () => {
       }
     });
 
-    it("原稿の 漢字の 語は ぜんぶ かなで 打って 当たる（読み辞書の 読み）", () => {
+    it("原稿の 漢字の 語は ぜんぶ かなで 打って、**その 場所が** ひらく（読み辞書の 読み）", () => {
+      // 同じ 語が 別の 場所に あって 当たった だけ、を 合格に しない（台帳が 熟語を 割ったら 落ちる）
       const missed: string[] = [];
-      for (const line of listening.script) {
-        for (const segment of annotateRuby(line.text, furigana)) {
-          if (!segment.reading || segment.reading.length < rules.minLength) continue;
-          const kind = submitListening(fresh(), segment.reading).log[0]?.kind;
-          if (!["partial", "keyword", "hiragana", "contains"].includes(kind ?? "")) {
-            missed.push(`${segment.text}→${segment.reading}（${kind}）`);
-          }
-        }
+      let at = 0;
+      for (const segment of annotateRuby(transcript, furigana)) {
+        const start = at;
+        at += segment.text.length;
+        if (!segment.reading || segment.reading.length < rules.minLength) continue;
+        const state = submitListening(fresh(), segment.reading);
+        const opened = [...segment.text].every((_, k) => state.revealed.has(start + k));
+        if (!opened) missed.push(`${segment.text}→${segment.reading}（${state.log[0]?.kind}）`);
       }
       expect(missed).toEqual([]);
     });
+  });
+});
+
+/**
+ * 学習者が 実際に 打ちそうな 形（2026-09-28 の 検収で 外れた もの）。
+ * **変換で 出る 漢字・数字と かなの 混ぜ書き・聞こえかたの ゆれ**の どれでも 当たる。
+ */
+describe("打ちかたの ゆれ（実際の 教材で）", () => {
+  const cases: Readonly<Record<string, readonly string[]>> = {
+    houkoku_kanryou_listening: ["確認して下さい", "詳細画面があく", "ぎっとはぶのいしゅー"],
+    houkoku_okure_listening: ["5じまで", "５じまで", "午後五時", "あすの午前中", "きょうちゅうに"],
+    houkoku_shougai_listening: ["十時ごろ", "10じごろ", "10時頃", "十時頃"],
+    houkoku_chousa_listening: [
+      "三百六十円",
+      "360えん",
+      "100ぎが",
+      "百ギガ",
+      "えす3",
+      "えすさん",
+      "さくじつ",
+    ],
+    houkoku_chourei_listening: [
+      "80ぱーせんと",
+      "八十パーセント",
+      "60パーセント",
+      "昨日は",
+      "今日は",
+    ],
+  };
+  it.each(Object.entries(cases))("%s", (id, inputs) => {
+    const listening = load(id);
+    const transcript = listening.script.map((line) => line.text).join("\n");
+    const start = () =>
+      createListening(
+        transcript,
+        listening.keywords,
+        { minLength: listening.check.minLength, maxMiss: listening.check.maxMiss },
+        buildFuriganaIndex(listening.furigana ?? []),
+        buildSoundsIndex(LISTENING_SOUNDS_LIKE[id]),
+      );
+    for (const input of inputs) {
+      const kind = submitListening(start(), input).log[0]?.kind;
+      expect(["partial", "keyword", "hiragana", "contains"], input).toContain(kind);
+    }
+  });
+
+  it("読みの ゆれを 打ち分けても 同じ 語で 二度は 稼げない", () => {
+    const id = "houkoku_chourei_listening";
+    const listening = load(id);
+    const transcript = listening.script.map((line) => line.text).join("\n");
+    let state = createListening(
+      transcript,
+      [],
+      { minLength: 2, maxMiss: 5 },
+      buildFuriganaIndex(listening.furigana ?? []),
+      buildSoundsIndex(LISTENING_SOUNDS_LIKE[id]),
+    );
+    state = submitListening(state, "80％");
+    const score = state.score;
+    for (const again of ["はちじっぱーせんと", "はちじゅうぱーせんと", "80パーセント"]) {
+      state = submitListening(state, again);
+      expect(state.log[0]?.kind, again).toBe("repeat");
+    }
+    expect(state.score).toBe(score);
   });
 });
 
@@ -156,6 +215,26 @@ describe("音づくりの 読み比べも 同じ 台帳を 通す（scripts/lib/
       expect(match.why).toBe("読みが ぴったり 一致");
     },
   );
+
+  it("文字起こしが 英字の 途中に 空白や 点を 入れても 通す（Git Hub・A.W.S.・S 3）", () => {
+    const id = "houkoku_chousa_listening";
+    const listening = load(id);
+    const index = buildFuriganaIndex(listening.furigana ?? []);
+    const sounds = buildSoundsIndex(LISTENING_SOUNDS_LIKE[id]);
+    for (const heard of [
+      "二つ目は、A.W.S.のS 3に画像を保存する方法です。",
+      "二つ目は、AWSの S3に 画像を 保存する 方法です。",
+    ]) {
+      const match = matchReading(
+        "二つ目は、AWSの S3に 画像を 保存する 方法です。",
+        heard,
+        index,
+        tokenizer,
+        sounds,
+      );
+      expect(match.why, heard).toBe("読みが ぴったり 一致");
+    }
+  });
 
   it("読み飛ばしは 台帳を 通しても 落とす（360円 を 言わなかった）", () => {
     const id = "houkoku_chousa_listening";

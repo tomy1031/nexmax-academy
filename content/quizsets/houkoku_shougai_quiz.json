@@ -1,7 +1,7 @@
 {
   "kind": "quizset",
   "id": "houkoku_shougai_quiz",
-  "title": "障害の 報告の もんだい",
+  "title": "トラブルの 報告の もんだい",
   "description": "聞いた 会話を 思い出して、正しい ものを 1つ えらびます。",
   "nekumax": "listen",
   "phase": "research",
@@ -157,10 +157,6 @@
     [
       "中村",
       "なかむら"
-    ],
-    [
-      "障害",
-      "しょうがい"
     ],
     [
       "報告",

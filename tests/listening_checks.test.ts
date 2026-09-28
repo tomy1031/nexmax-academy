@@ -256,6 +256,35 @@ describe("数字・英字で 始まる 語も かなで 当たる（聞き取り
     expect(state.log[0]?.kind).not.toBe("partial");
   });
 
+  it("数字を 変換せずに かなと 混ぜた 形（10じごろ）も 当たる——台帳を 入れても 外れない", () => {
+    expect(submitListening(start(), "10じごろ").log[0]?.kind).toBe("partial");
+  });
+
+  it("読み辞書の 熟語を 割らない（「10時間」の 時間 は じかん の まま）", () => {
+    const state = submitListening(
+      createListening(
+        "10時間 かかります。",
+        [],
+        rules,
+        buildFuriganaIndex([["時間", "じかん"]]),
+        buildSoundsIndex([["10時", "じゅうじ"]]),
+      ),
+      "じかん",
+    );
+    expect(state.log[0]?.kind).toBe("partial");
+  });
+
+  it("漢数字・小数の 途中でも 当てない（十五時・1.5GB）", () => {
+    const sounds = buildSoundsIndex([
+      ["五時", "ごじ"],
+      ["5GB", "ごぎが"],
+    ]);
+    const kanji = createListening("十五時に 始めます。", [], rules, 辞書, sounds);
+    expect(submitListening(kanji, "ごじ").log[0]?.kind).not.toBe("partial");
+    const decimal = createListening("1.5GBです。", [], rules, 辞書, sounds);
+    expect(submitListening(decimal, "ごぎが").log[0]?.kind).not.toBe("partial");
+  });
+
   it("語の 途中では 当てない（「15時」の 中の「5時」を「ごじ」に しない）", () => {
     const state = submitListening(
       createListening(

@@ -1,7 +1,7 @@
 {
   "kind": "quizset",
   "id": "houkoku_okure_quiz",
-  "title": "予定どおりに 終わらない ときの もんだい",
+  "title": "遅れの 報告の もんだい",
   "description": "聞いた 会話を 思い出して、正しい ものを 1つ えらびます。",
   "nekumax": "listen",
   "phase": "research",
@@ -133,10 +133,6 @@
     [
       "一度",
       "いちど"
-    ],
-    [
-      "予定どおり",
-      "よていどおり"
     ],
     [
       "今日",
