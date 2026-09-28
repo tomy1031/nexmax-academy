@@ -294,6 +294,19 @@ function typingSegments(
 }
 
 /**
+ * 聞き取り専用の 読みの 語だけ **かなに 置きかえた 文**（ほかの 字は そのまま）。
+ *
+ * 音づくり（`scripts/lib/speech_reading.ts`）が、原稿と 文字起こしの 両方を これに
+ * 通してから 読みを 比べる。文字起こしは「GitHub」とも「ギットハブ」とも、
+ * 「10時」とも「十時」とも 書く ので、同じ 台帳で そろえないと 正しく 読んだ 音まで 落ちる。
+ */
+export function spellSounds(text: string, sounds: SoundsIndex): string {
+  return typingSegments(text, { entries: [], maxLength: 0 }, sounds, 0)
+    .map((segment) => segment.reading ?? segment.text)
+    .join("");
+}
+
+/**
  * 原稿を かなの 並びへ 倒し、1文字ずつ「元の どこか」を 覚える。
  *
  * `variant` が 数の ときだけ 読み（辞書と 聞き取り専用の 読みの その 番目の 候補）を 使う。

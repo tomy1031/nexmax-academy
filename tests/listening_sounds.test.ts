@@ -8,7 +8,10 @@
  */
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
+import type { Tokenizer } from "kuromoji";
+import { matchReading } from "../scripts/lib/speech_reading";
+import { getTokenizer } from "../scripts/lib/yomi_check";
 import { LISTENING_SOUNDS_LIKE } from "../src/content/listening-sounds";
 import { annotateRuby, buildFuriganaIndex, kanaOf } from "../src/lib/text/furigana";
 import {
@@ -102,5 +105,68 @@ describe("聞き取り専用の 読みの 台帳", () => {
       }
       expect(missed).toEqual([]);
     });
+  });
+});
+
+describe("音づくりの 読み比べも 同じ 台帳を 通す（scripts/lib/speech_reading.ts）", () => {
+  let tokenizer: Tokenizer;
+  beforeAll(async () => {
+    tokenizer = await getTokenizer();
+  }, 60_000);
+
+  const cases: readonly (readonly [string, string, string])[] = [
+    [
+      "houkoku_chousa_listening",
+      "100GB 保存すると、料金は 月に だいたい 360円です。",
+      "100ギガバイト保存すると、料金は月にだいたい三百六十円です。",
+    ],
+    [
+      "houkoku_chousa_listening",
+      "今回は、S3を 使う 方が よいと 思います。",
+      "今回は、エススリーを使う方がよいと思います。",
+    ],
+    [
+      "houkoku_chourei_listening",
+      "商品詳細機能 全体の 進捗は、80％です。",
+      "商品詳細機能全体の進捗は、80パーセントです。",
+    ],
+    [
+      "houkoku_shougai_listening",
+      "今日の 10時ごろから、一部の ユーザーが 予約できない 問題が 発生して います。",
+      "今日の十時頃から、一部のユーザーが予約できない問題が発生しています。",
+    ],
+    [
+      "houkoku_kanryou_listening",
+      "GitHubの Issueを 作ったので、内容を 確認して ください。",
+      "ギットハブのイシューを作ったので、内容を確認してください。",
+    ],
+  ];
+
+  it.each(cases)(
+    "%s: 文字起こしの 書きかたが ちがっても 読みが 同じなら 通す",
+    (id, text, heard) => {
+      const listening = load(id);
+      const match = matchReading(
+        text,
+        heard,
+        buildFuriganaIndex(listening.furigana ?? []),
+        tokenizer,
+        buildSoundsIndex(LISTENING_SOUNDS_LIKE[id]),
+      );
+      expect(match.why).toBe("読みが ぴったり 一致");
+    },
+  );
+
+  it("読み飛ばしは 台帳を 通しても 落とす（360円 を 言わなかった）", () => {
+    const id = "houkoku_chousa_listening";
+    const listening = load(id);
+    const match = matchReading(
+      "料金は 月に だいたい 360円です。",
+      "料金は月にだいたいです。",
+      buildFuriganaIndex(listening.furigana ?? []),
+      tokenizer,
+      buildSoundsIndex(LISTENING_SOUNDS_LIKE[id]),
+    );
+    expect(match.ok).toBe(false);
   });
 });

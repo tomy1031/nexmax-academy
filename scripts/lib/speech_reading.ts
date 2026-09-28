@@ -19,6 +19,11 @@
 import type { Tokenizer } from "kuromoji";
 import { annotateRuby, KANJI, type FuriganaIndex } from "../../src/lib/text/furigana";
 import { looseReading } from "../../src/lib/text/normalize";
+import {
+  NO_SOUNDS,
+  spellSounds,
+  type SoundsIndex,
+} from "../../src/components/listening/listening-checks";
 
 /** 1けたの 数字の 読み（「1日」と「一日」を そろえる ため。原稿に 2けた以上は 無い）。 */
 const DIGIT_READING: Readonly<Record<string, string>> = {
@@ -41,10 +46,17 @@ function comparable(reading: string): string {
   );
 }
 
-/** 原稿の 読み（画面と 同じ 読み辞書で 付ける。辞書に 無い 字は そのまま）。 */
-export function scriptReading(text: string, index: FuriganaIndex): string {
+/**
+ * 原稿の 読み（画面と 同じ 読み辞書で 付ける。辞書に 無い 字は そのまま）。
+ * 数字・英字で 始まる 語は **聞き取り専用の 読み**（`src/content/listening-sounds.ts`）で 先に かなへ。
+ */
+export function scriptReading(
+  text: string,
+  index: FuriganaIndex,
+  sounds: SoundsIndex = NO_SOUNDS,
+): string {
   return comparable(
-    annotateRuby(text, index)
+    annotateRuby(spellSounds(text, sounds), index)
       .map((segment) => segment.reading ?? segment.text)
       .join(""),
   );
@@ -63,9 +75,10 @@ export function spokenReading(
   transcript: string,
   tokenizer: Tokenizer,
   index: FuriganaIndex,
+  sounds: SoundsIndex = NO_SOUNDS,
 ): string {
   return comparable(
-    annotateRuby(transcript.normalize("NFKC"), index)
+    annotateRuby(spellSounds(transcript.normalize("NFKC"), sounds), index)
       .map((segment) => {
         if (segment.reading) return segment.reading;
         if (!KANJI.test(segment.text)) return segment.text;
@@ -128,12 +141,13 @@ export function matchReading(
   transcript: string,
   index: FuriganaIndex,
   tokenizer: Tokenizer,
+  sounds: SoundsIndex = NO_SOUNDS,
 ): ReadingMatch {
-  const expected = scriptReading(text, index);
+  const expected = scriptReading(text, index, sounds);
   if (transcript.trim() === "") {
     return { ok: false, expected, spoken: "", distance: expected.length, why: "文字起こしが 空" };
   }
-  const spoken = spokenReading(transcript, tokenizer, index);
+  const spoken = spokenReading(transcript, tokenizer, index, sounds);
   const distance = editDistance(expected, spoken);
   const allowed = 0;
   return {

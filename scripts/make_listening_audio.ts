@@ -44,6 +44,8 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync, rmSync } from "node
 import { join } from "node:path";
 import { joinPcm } from "../src/lib/audio/wav";
 import { buildFuriganaIndex } from "../src/lib/text/furigana";
+import { buildSoundsIndex } from "../src/components/listening/listening-checks";
+import { soundsLikeOf } from "../src/content/listening-sounds";
 import { OUT_RATE, synthesizeWithFallback, toWav } from "./lib/live_tts";
 import { LISTENING_AUDIO_PLANS, type ListeningAudioPlan } from "./lib/listening_audio_plans";
 import {
@@ -286,6 +288,8 @@ async function makeSentences(activePlan: ListeningAudioPlan): Promise<void> {
   const apiKey = requireApiKey();
   const tokenizer = await getTokenizer();
   const index = buildFuriganaIndex(listening.furigana ?? []);
+  // 数字・英字の 語は 原稿も 文字起こしも 同じ 台帳で かなへ（「GitHub」＝「ギットハブ」）
+  const sounds = buildSoundsIndex(soundsLikeOf(listeningId));
 
   /** 文ごとの 結果（並び順に 入れる。同時に 作るので 終わる 順は ばらばら）。 */
   const done: ({ pcm: Uint8Array; record: SentenceRecord } | undefined)[] = [];
@@ -315,7 +319,7 @@ async function makeSentences(activePlan: ListeningAudioPlan): Promise<void> {
     const model = activePlan.models[sentence.speaker];
     let accepted: ReadingMatch | null = null;
     const accept = (candidate: { transcript: string; pcm: Uint8Array }) => {
-      const match = matchReading(sentence.text, candidate.transcript, index, tokenizer);
+      const match = matchReading(sentence.text, candidate.transcript, index, tokenizer, sounds);
       if (!match.ok) return match;
       /*
        * 読みが 合っても **長さが おかしい 音**は 落とす（2026-09-16。同じ 文が
