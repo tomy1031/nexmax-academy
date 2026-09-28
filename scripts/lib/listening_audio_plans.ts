@@ -42,14 +42,14 @@ export interface ListeningAudioPlan {
 
 /** 報告の リスニング 5場面の 人（性別は 声と 表紙の 絵で そろえる）。 */
 const REPORT_PEOPLE = {
-  takahashi: { voice: "Alnilam", model: "gemini-3.1-flash-live-preview" }, // 男・チームの リーダー
+  takahashi: { voice: "Alnilam", model: "gemini-3.8-live" }, // 男・チームの リーダー
   sato: { voice: "Autonoe", model: "gemini-3.8-live" }, // 女・プログラマー
   yamada: { voice: "Achird", model: "gemini-3.8-live" }, // 男・プログラマー
-  suzuki: { voice: "Kore", model: "gemini-3.1-flash-live-preview" }, // 女・チームの リーダー
+  suzuki: { voice: "Kore", model: "gemini-3.8-live" }, // 女・チームの リーダー
   nakamura: { voice: "Erinome", model: "gemini-3.8-live" }, // 女・エンジニア
-  tanaka: { voice: "Charon", model: "gemini-3.1-flash-live-preview" }, // 男・チームの リーダー
+  tanaka: { voice: "Charon", model: "gemini-3.8-live" }, // 男・チームの リーダー
   kobayashi: { voice: "Rasalgethi", model: "gemini-3.8-live" }, // 男・エンジニア
-  kato: { voice: "Gacrux", model: "gemini-3.1-flash-live-preview" }, // 女・チームの リーダー
+  kato: { voice: "Gacrux", model: "gemini-3.8-live" }, // 女・チームの リーダー
 } as const;
 
 export const LISTENING_AUDIO_PLANS: Readonly<Record<string, ListeningAudioPlan>> = {
@@ -89,8 +89,9 @@ export const LISTENING_AUDIO_PLANS: Readonly<Record<string, ListeningAudioPlan>>
 
 /**
  * 報告の リスニング 5場面の 人と 声（Gemini Live の 声・`src/lib/audio/voices.ts`）。
- * **リーダー役は 3.1、報告する 人は 3.8** で 作る——モデルが ちがう 人どうしは
- * 同時に 作れる（上の `models` の 説明）。
+ * **全員 3.8** で 作る。はじめは リーダー役を 3.1 に して 同時に 作って いたが、
+ * 3.1 は 短い 返事（「はい、大丈夫ですよ。」）を 4回とも「はい」「はいだい」で 切った
+ *（2026-09-28・run 36405843836。3.8 の 佐藤さんは 同じ 形の「はい、そうです。」を 読めた）。
  */
 function reportPlan(speakers: readonly (keyof typeof REPORT_PEOPLE)[]): ListeningAudioPlan {
   return {
