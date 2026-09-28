@@ -73,7 +73,19 @@ test("ひらがな入力チェック: 変換の Enter では 進まず、次の 
   await shot(page, "70-hiragana-check-ime");
 });
 
-test("ゲームの よみ入力欄も、変換の Enter では こたえに ならない", async ({ page, context }) => {
+/**
+ * ゲームの よみ入力欄は、PC では **IME を 起こさない**（2026-09-28）。
+ *
+ * IME の 予測候補を 見れば、あてずっぽうの 読みが 画面の 漢字に なるかを
+ * 入力欄の 中で 答え合わせ できて しまう。だから 欄は 読み取り専用に して、
+ * 打った キー（ローマ字）を アプリが ひらがなに する（src/lib/text/romaji.ts）。
+ * IME の 変換が 来ても 欄には 何も 入らない ことと、ローマ字で 打てば
+ * ひらがなに なって 判定まで 届く ことを 確かめる。
+ */
+test("ゲームの よみ入力欄は IME を 受けつけず、ローマ字を ひらがなに する", async ({
+  page,
+  context,
+}) => {
   await page.goto("/wordtest/hajimari_kotoba");
   await page
     .getByRole("button", { name: /テスト/ })
@@ -91,10 +103,64 @@ test("ゲームの よみ入力欄も、変換の Enter では こたえに な�
   await expect(reading).toBeVisible();
   await reading.click();
 
+  // 対策の 本体: 欄が 読み取り専用＝OS の IME が 起きない（予測候補の 窓が 出ない）
+  await expect(reading).toHaveJSProperty("readOnly", true);
+
+  // IME の 変換（予測候補を 選んだ ときと 同じ 流れ）は 欄に 入らない
   const cdp = await context.newCDPSession(page);
   await imeTypeAndCommit(cdp, "あいうえお");
-
-  // 変換を 決めた だけなので、まだ よみの 入力の まま（意味の4択に 飛ばない）。
+  await expect(reading).toHaveValue("");
   await expect(page.getByText("英語の 意味を えらぼう！")).toHaveCount(0);
-  await expect(reading).toHaveValue("あいうえお");
+
+  // ローマ字は その場で ひらがなに なる。打ちかけは 英字の まま 見える
+  await reading.pressSequentially("shigoto");
+  await expect(reading).toHaveValue("しごと");
+  await reading.pressSequentially("ky");
+  await expect(reading).toHaveValue("しごとky");
+  // Backspace は かな 1つ／打ちかけの 1字を 消す
+  await reading.press("Backspace");
+  await reading.press("Backspace");
+  await expect(reading).toHaveValue("しごと");
+  await reading.press("Backspace");
+  await expect(reading).toHaveValue("しご");
+  // 読めない 字（数字）は 入らない
+  await reading.press("1");
+  await expect(reading).toHaveValue("しご");
+  await shot(page, "71-reading-romaji");
+});
+
+/**
+ * スマホ（指の きかい）は これまで どおり 端末の キーボードで 打つ。
+ * だから 前の 守り——**変換を 確定する Enter で こたえに ならない**——を ここで 続けて 確かめる。
+ */
+test.describe("スマホの よみ入力欄", () => {
+  test.use({ hasTouch: true, isMobile: true, viewport: { width: 390, height: 844 } });
+
+  test("変換の Enter では こたえに ならない", async ({ page, context }) => {
+    await page.goto("/wordtest/hajimari_kotoba");
+    await page
+      .getByRole("button", { name: /テスト/ })
+      .first()
+      .click();
+
+    const check = page.getByLabel("ひらがなで 入力する");
+    for (const word of ["あいうえお", "ようけんていぎ"]) {
+      await check.click();
+      await check.fill(word);
+      await page.keyboard.press("Enter");
+    }
+
+    const reading = page.getByLabel("よみを ひらがなで 入力する");
+    await expect(reading).toBeVisible();
+    // 指の きかいでは ふつうの 入力欄（端末の キーボードが 出る）
+    await expect(reading).toHaveJSProperty("readOnly", false);
+    await reading.click();
+
+    const cdp = await context.newCDPSession(page);
+    await imeTypeAndCommit(cdp, "あいうえお");
+
+    // 変換を 決めた だけなので、まだ よみの 入力の まま（意味の4択に 飛ばない）。
+    await expect(page.getByText("英語の 意味を えらぼう！")).toHaveCount(0);
+    await expect(reading).toHaveValue("あいうえお");
+  });
 });
