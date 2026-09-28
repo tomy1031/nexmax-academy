@@ -50,6 +50,25 @@ export function speechText(text: string): string {
   return text.replace(/(?<=[^\x00-\x7F])[ 　]+(?=[^\x00-\x7F])/g, "").trim();
 }
 
+/**
+ * 文の 切れ目に 入れる **長い 間**の 札（TTS の 決まった 札。読み上げずに 無音に なる）。
+ *
+ * 1回目（2026-09-28・run 36409901284）は 札なしで 読ませた。会話の 間は 0.1〜0.3秒しか 無く、
+ * 読点の 間・「っ」の すきまと 見分けが つかず、24文中 7文の 切れ目が ずれた
+ *（「はい。」が 1.6秒、「パソコンと スマートフォンの どちらも…」が 2.1秒）。
+ * 文の おわりごとに 札を 置けば、切れ目だけが はっきり 長く なる。
+ */
+export const SENTENCE_BREAK = "<long pause>";
+
+/**
+ * 1行を 読み上げに 渡す 字に する（文と 文の あいだに 長い 間の 札）。
+ * `breakAfter` が true なら 行の おわりにも 札を 置く（次の 人へ 渡る 切れ目）。
+ */
+export function speechLine(sentences: readonly string[], breakAfter: boolean): string {
+  const body = sentences.map((one) => speechText(one)).join(` ${SENTENCE_BREAK} `);
+  return breakAfter ? `${body} ${SENTENCE_BREAK}` : body;
+}
+
 /** Interactions API に 送る 体（テストで 形を 見張る）。 */
 export function ttsRequestBody(request: TtsRequest): Record<string, unknown> {
   const speakers = [...new Set(request.lines.map((line) => line.speaker))];
@@ -227,11 +246,13 @@ export async function synthesizeDialogue(
  * 1つが 上限（gemini-2.5-flash は 1日 20回）でも 次で 聞ける。
  */
 export const TRANSCRIBE_MODELS = [
+  // 2026-09-28 の 実測: 3.8-flash と 3-flash-preview は 混雑（503）、2.5-flash は 1日 20回で 上限、
+  // 3.1-flash と 2.5-flash-lite は 404（「3.5-flash-lite を 使え」と 返った）
+  "gemini-3.5-flash-lite",
+  "gemini-3.5-flash",
   "gemini-3.8-flash",
-  "gemini-3.1-flash",
   "gemini-3-flash-preview",
   "gemini-2.5-flash",
-  "gemini-2.5-flash-lite",
 ] as const;
 
 /**
@@ -243,6 +264,19 @@ export async function transcribeAny(
   apiKey: string,
 ): Promise<{ text: string; model: string } | null> {
   const ai = new GoogleGenAI({ apiKey });
+  // 混雑（503）は 少し 待てば 通る ことが 多いので、ひと回り だめなら 1回だけ 待って もう一周
+  for (let round = 1; round <= 2; round += 1) {
+    if (round > 1) await sleep(20_000);
+    const found = await transcribeOnce(ai, pcm);
+    if (found) return found;
+  }
+  return null;
+}
+
+async function transcribeOnce(
+  ai: GoogleGenAI,
+  pcm: Uint8Array,
+): Promise<{ text: string; model: string } | null> {
   for (const model of TRANSCRIBE_MODELS) {
     try {
       const response = await ai.models.generateContent({

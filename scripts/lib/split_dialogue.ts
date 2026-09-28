@@ -7,7 +7,7 @@
  *
  * ## 切りかた
  * 1. 10ミリ秒ごとの 音の 大きさで **間**（無音の つづき）を 全部 拾う
- * 2. 文の 数 − 1 本の 間を **動的計画法で** えらぶ。よい 切れ目は
+ * 2. 文の 数 − 1 本の 間を **動的計画法で** えらぶ（`minBoundarySeconds` より 短い 間は 候補に しない）。よい 切れ目は
  *    - 間が 長い（文の おわりや 話す人の 交代は、読点より 長く 間が あく）
  *    - 切った 1文の 長さが、その 文の 読み（かなの 数）から 見こむ 長さに 近い
  *    の 2つを 合わせた 点で 決める。長さだけ・間だけの どちらか 一方だと、
@@ -84,13 +84,16 @@ const LENGTH_PENALTY = 0.35;
  * log に するのは、長い 文の 1秒と 短い 文の 1秒の ずれを 同じに 数えない ため。
  */
 export function chooseCuts(
-  pauses: readonly Pause[],
+  allPauses: readonly Pause[],
   speechStart: number,
   speechEnd: number,
   weights: readonly number[],
+  { minBoundarySeconds = 0 } = {},
 ): number[] | null {
   const n = weights.length;
   if (n <= 1) return [];
+  // 切れ目に なれる のは 長い 間だけ（`<long pause>` の 札を 置いた 切れ目）
+  const pauses = allPauses.filter((p) => (p.end - p.start) / SAMPLE_RATE >= minBoundarySeconds);
   if (pauses.length < n - 1) return null;
   const total = weights.reduce((sum, w) => sum + Math.max(w, 0.5), 0);
   const span = speechEnd - speechStart;

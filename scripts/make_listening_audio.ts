@@ -30,8 +30,8 @@
  * Live で 1文ずつ では なく、**Gemini の TTS で 会話を まとめて 読み**（声は 1回に 2人まで。
  * 3人 出る 原稿は 2人ずつの かたまりに 分ける）、**文と 文の あいだの 間で 1文ずつに 切る**
  *（`scripts/lib/gemini_tts.ts`・`scripts/lib/split_dialogue.ts`）。できる ものは 上と 同じ
- *（文ごとの wav・`sentences.json`・台帳の 秒で つないだ 1本）。ほかに **切る 前の 自然な 間の
- * 1本**を `<教材ID>.natural.wav` に 残す（聞きくらべ用。教材からは 指さない）。
+ *（文ごとの wav・`sentences.json`・台帳の 秒で つないだ 1本）。文の おわりごとに 長い 間の 札
+ *（`<long pause>`）を 置いて 読ませ、その 間で 切る。
  * 読みの 確かめは **かたまり ごとに 1回** 文字起こしして 原稿と 比べる（無料枠を 使い切らない ため）。
  *
  * 秒だけ 変える ときは 台帳の `gapSeconds` を 直して `--join` で つなぎ直す。
@@ -57,7 +57,7 @@ import { soundsLikeOf } from "../src/content/listening-sounds";
 import { forSpeech, OUT_RATE, synthesizeWithFallback, toWav } from "./lib/live_tts";
 import {
   dialogueChunks,
-  speechText,
+  speechLine,
   synthesizeDialogue,
   transcribeAny,
   TTS_MODEL,
@@ -473,8 +473,11 @@ async function makeSentences(activePlan: ListeningAudioPlan): Promise<void> {
 const TTS_ATTEMPTS = 3;
 /** 間を 拾う ときの 音の 大きさの しきい（小さい 順に 試す）。 */
 const PAUSE_THRESHOLDS = [60, 120, 250] as const;
-/** かたまりの あいだに はさむ 無音（自然な 間の 1本を つなぐ とき）。 */
-const NATURAL_CHUNK_GAP_MS = 800;
+/**
+ * 文の 切れ目と みなす 間の 短さの 下限（秒）。`<long pause>` を 置いた 切れ目は
+ * これより 長く あく。読点や「っ」の すきま（0.1〜0.3秒）では 切らない。
+ */
+const MIN_BOUNDARY_PAUSE = 0.45;
 
 /** かたまり 1つぶんの 結果（台帳 `sentences.json` の `chunks` に 残す）。 */
 interface ChunkRecord {
@@ -517,7 +520,6 @@ async function makeSentencesByTts(activePlan: ListeningAudioPlan): Promise<void>
   );
 
   const clips: Uint8Array[] = [];
-  const naturals: Uint8Array[] = [];
   const records: SentenceRecord[] = [];
   const chunkRecords: ChunkRecord[] = [];
   const sleep = (ms: number) => new Promise((wait) => setTimeout(wait, ms));
@@ -530,9 +532,13 @@ async function makeSentencesByTts(activePlan: ListeningAudioPlan): Promise<void>
     );
     const chunkText = members.map((one) => one.text).join("");
     const request = {
-      lines: lineIds.map((id) => ({
+      // 文の おわりごとに 長い 間の 札を 置く（切れ目を はっきり させる。`SENTENCE_BREAK`）
+      lines: lineIds.map((id, k) => ({
         speaker: nameOf(script[id]!.speaker),
-        text: forSpeech(speechText(script[id]!.text)),
+        text: speechLine(
+          lineSentences[id]!.map((one) => forSpeech(one.text)),
+          k < lineIds.length - 1,
+        ),
       })),
       voices,
       style: activePlan.style,
@@ -545,7 +551,6 @@ async function makeSentencesByTts(activePlan: ListeningAudioPlan): Promise<void>
     /** 合格した ものか、いちばん ずれの 少なかった もの。 */
     let chosen: {
       parts: Uint8Array[];
-      raw: Uint8Array;
       transcript: string;
       by: string | null;
       distance: number | null;
@@ -566,7 +571,9 @@ async function makeSentencesByTts(activePlan: ListeningAudioPlan): Promise<void>
       let why = "";
       for (const threshold of PAUSE_THRESHOLDS) {
         const found = findPauses(raw, { threshold });
-        const cuts = chooseCuts(found.pauses, found.speechStart, found.speechEnd, weights);
+        const cuts = chooseCuts(found.pauses, found.speechStart, found.speechEnd, weights, {
+          minBoundarySeconds: MIN_BOUNDARY_PAUSE,
+        });
         if (!cuts) {
           why = `間が ${found.pauses.length}か所しか ありません（要る のは ${members.length - 1}）`;
           continue;
@@ -595,7 +602,6 @@ async function makeSentencesByTts(activePlan: ListeningAudioPlan): Promise<void>
       );
       const candidate = {
         parts,
-        raw,
         transcript: heard?.text ?? "",
         by: heard?.model ?? null,
         distance,
@@ -626,7 +632,9 @@ async function makeSentencesByTts(activePlan: ListeningAudioPlan): Promise<void>
         await sleep(3_000);
         const { pcm } = await synthesizeDialogue(
           {
-            lines: [{ speaker: nameOf(one.speaker), text: forSpeech(speechText(one.text)) }],
+            lines: [
+              { speaker: nameOf(one.speaker), text: speechLine([forSpeech(one.text)], false) },
+            ],
             voices,
             style: activePlan.style,
           },
@@ -636,7 +644,6 @@ async function makeSentencesByTts(activePlan: ListeningAudioPlan): Promise<void>
       }
       chosen = {
         parts,
-        raw: joinPcm(parts, 400).pcm,
         transcript: "",
         by: null,
         distance: null,
@@ -644,7 +651,6 @@ async function makeSentencesByTts(activePlan: ListeningAudioPlan): Promise<void>
       };
     }
 
-    naturals.push(trimSilence(chosen.raw));
     chunkRecords.push({
       lines: lineIds,
       speakers: who,
@@ -691,14 +697,12 @@ async function makeSentencesByTts(activePlan: ListeningAudioPlan): Promise<void>
   };
   writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
   writeJoined(clips, activePlan);
-  const natural = joinPcm(naturals, NATURAL_CHUNK_GAP_MS).pcm;
-  writeFileSync(join(outDir, `${listeningId}.natural.wav`), toWav(natural));
   pointAudioUrl();
 
   const unchecked = chunkRecords.filter((one) => one.distance === null).length;
   const off = chunkRecords.filter((one) => (one.distance ?? 0) > 0);
   console.log(
-    `${records.length}文を ${sentenceDir}/ に 残しました（切る 前の 1本: ${listeningId}.natural.wav）。` +
+    `${records.length}文を ${sentenceDir}/ に 残しました。` +
       ` 確かめて いない かたまり: ${unchecked}／ずれの ある かたまり: ${off.length}` +
       off
         .map((one) => `\n  行 ${one.lines.join(",")}: ずれ ${one.distance}字「${one.transcript}」`)

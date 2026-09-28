@@ -10,6 +10,8 @@ import {
   audioFromInteraction,
   dialogueChunks,
   pcmFromAudio,
+  SENTENCE_BREAK,
+  speechLine,
   speechText,
   ttsRequestBody,
   TTS_MODEL,
@@ -82,6 +84,16 @@ describe("TTS に 送る 形（Interactions API）", () => {
     expect(speechText("二つ目は、AWSの S3に 画像を 保存する 方法です。")).toBe(
       "二つ目は、AWSの S3に画像を保存する方法です。",
     );
+  });
+});
+
+describe("文の 切れ目に 長い 間の 札を 置く", () => {
+  it("文と 文の あいだ・行の おわりに <long pause>（行の 最後の 行には 置かない）", () => {
+    expect(SENTENCE_BREAK).toBe("<long pause>");
+    expect(speechLine(["はい。", "どこまで できましたか。"], true)).toBe(
+      "はい。 <long pause> どこまでできましたか。 <long pause>",
+    );
+    expect(speechLine(["お願いします。"], false)).toBe("お願いします。");
   });
 });
 
@@ -187,6 +199,34 @@ describe("間で 1文ずつに 切る", () => {
     expect(seconds[0]).toBeCloseTo(2.65, 1);
     expect(seconds[1]).toBeCloseTo(1.05, 1);
     expect(plausibleSplit(seconds, weights).ok).toBe(true);
+  });
+
+  it("短い 間は 切れ目の 候補に しない（長い 間の 札の 切れ目だけで 切る）", () => {
+    // 文1（読点 0.3秒を はさむ）| 0.9秒 | 文2「はい。」| 0.9秒 | 文3
+    const pcm = pcmOf([
+      [1.0, true],
+      [0.3, false],
+      [1.0, true],
+      [0.9, false],
+      [0.4, true],
+      [0.9, false],
+      [2.0, true],
+    ]);
+    const found = findPauses(pcm);
+    expect(found.pauses).toHaveLength(3);
+    // 見こみの 長さを わざと 読点の 位置に 寄せても、短い 間は えらばれない
+    const cuts = chooseCuts(found.pauses, found.speechStart, found.speechEnd, [7, 9, 14], {
+      minBoundarySeconds: 0.45,
+    });
+    const seconds = splitAt(pcm, cuts!).map((one) => one.byteLength / 2 / SAMPLE_RATE);
+    expect(seconds[0]).toBeCloseTo(2.75, 1);
+    expect(seconds[1]).toBeCloseTo(1.3, 1);
+    // 長い 間が 足りなければ 切らない
+    expect(
+      chooseCuts(found.pauses, found.speechStart, found.speechEnd, [1, 1, 1, 1], {
+        minBoundarySeconds: 0.45,
+      }),
+    ).toBeNull();
   });
 
   it("間が 足りなければ 切らない（null）", () => {
