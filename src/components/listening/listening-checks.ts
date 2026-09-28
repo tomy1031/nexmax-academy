@@ -338,9 +338,13 @@ function typingSegments(
  * 通してから 読みを 比べる。文字起こしは「GitHub」とも「ギットハブ」とも、
  * 「10時」とも「十時」とも 書く ので、同じ 台帳で そろえないと 正しく 読んだ 音まで 落ちる。
  */
-export function spellSounds(text: string, sounds: SoundsIndex): string {
+export function spellSounds(
+  text: string,
+  sounds: SoundsIndex,
+  render: (reading: string) => string = (reading) => reading,
+): string {
   return typingSegments(text, { entries: [], maxLength: 0 }, sounds, 0)
-    .map((segment) => segment.reading ?? segment.text)
+    .map((segment) => (segment.reading ? render(segment.reading) : segment.text))
     .join("");
 }
 

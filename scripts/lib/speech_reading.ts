@@ -78,7 +78,7 @@ export function spokenReading(
   sounds: SoundsIndex = NO_SOUNDS,
 ): string {
   return comparable(
-    annotateRuby(spellSounds(transcript.normalize("NFKC"), sounds), index)
+    annotateRuby(spellSounds(tidyTranscript(transcript), sounds), index)
       .map((segment) => {
         if (segment.reading) return segment.reading;
         if (!KANJI.test(segment.text)) return segment.text;
@@ -93,6 +93,93 @@ export function spokenReading(
       })
       .join(""),
   );
+}
+
+/**
+ * 文字起こしの 空白を 詰める。モデルに よっては 語ごとに 空白を 入れて 返す
+ *（「公開 日」「Git ハブ」。2026-09-28 の gemini-3.5-flash-lite）。空白で 語が 割れると
+ * 読み辞書の 熟語（公開日＝こうかいび）や 台帳の 語（GitHub）に 当たらず、正しく 読んだ 音まで
+ * ずれて 見える。英字どうしの あいだの 空白（「Laravel Breeze」）だけは 残す。
+ */
+export function tidyTranscript(transcript: string): string {
+  return transcript
+    .normalize("NFKC")
+    .replace(/(?<![A-Za-z])\s+|\s+(?![A-Za-z])/g, "")
+    .trim();
+}
+
+/**
+ * 原稿の 文ごとの 読みを、まとめて 聞いた 読みに 当てて、**文ごとの ずれ**を 出す。
+ *
+ * TTS で 会話を まとめて 読んだ ときに、全体で 1回だけ 文字起こし して、
+ * どの 文が 原稿と ちがうかを 見つける（その 文だけ 読み直す）。編集距離の 表を
+ * たどって、足す・消す・置きかえる を 原稿の どの 文に 起きたかに 分ける。
+ * **文の 切れ目に 足された 音**（同じ 文を 2度 読んだ など）は、どちらの 文の 音に
+ * 入ったか 分からないので **両どなりの 文**に 数える。
+ */
+export function alignSentences(
+  expectedParts: readonly string[],
+  spoken: string,
+): { spoken: string; distance: number }[] {
+  const e = [...expectedParts.join("")];
+  const s = [...spoken];
+  // 文の 始まり位置（e の 添字）
+  const starts: number[] = [];
+  let at = 0;
+  for (const part of expectedParts) {
+    starts.push(at);
+    at += [...part].length;
+  }
+  const owner = (i: number): number => {
+    let k = 0;
+    while (k + 1 < starts.length && starts[k + 1]! <= i) k += 1;
+    return k;
+  };
+  const rows = e.length + 1;
+  const cols = s.length + 1;
+  const d: number[][] = Array.from({ length: rows }, (_, i) =>
+    Array.from({ length: cols }, (_, j) => (i === 0 ? j : j === 0 ? i : 0)),
+  );
+  for (let i = 1; i < rows; i += 1) {
+    for (let j = 1; j < cols; j += 1) {
+      d[i]![j] = Math.min(
+        d[i - 1]![j]! + 1,
+        d[i]![j - 1]! + 1,
+        d[i - 1]![j - 1]! + (e[i - 1] === s[j - 1] ? 0 : 1),
+      );
+    }
+  }
+  const out = expectedParts.map(() => ({ spoken: "", distance: 0 }));
+  let i = e.length;
+  let j = s.length;
+  while (i > 0 || j > 0) {
+    if (i > 0 && j > 0 && d[i]![j] === d[i - 1]![j - 1]! + (e[i - 1] === s[j - 1] ? 0 : 1)) {
+      const k = owner(i - 1);
+      out[k]!.spoken = s[j - 1] + out[k]!.spoken;
+      if (e[i - 1] !== s[j - 1]) out[k]!.distance += 1;
+      i -= 1;
+      j -= 1;
+    } else if (i > 0 && d[i]![j] === d[i - 1]![j]! + 1) {
+      out[owner(i - 1)]!.distance += 1;
+      i -= 1;
+    } else {
+      // 足された 音。原稿の i 文字目の 前に 入った
+      const inside = i > 0 && i < e.length && !starts.includes(i);
+      const targets = inside
+        ? [owner(i)]
+        : i === 0
+          ? [0]
+          : i >= e.length
+            ? [expectedParts.length - 1]
+            : [owner(i - 1), owner(i)];
+      for (const k of targets) {
+        out[k]!.spoken = s[j - 1] + out[k]!.spoken;
+        out[k]!.distance += 1;
+      }
+      j -= 1;
+    }
+  }
+  return out;
 }
 
 /** 2つの 文字列の 編集距離（足す・消す・置きかえる の 回数）。 */
@@ -169,7 +256,7 @@ function readingPair(
   sounds: SoundsIndex,
 ): { expected: string; spoken: string; distance: number } {
   // 英字・数字の あいだの 空白と 点は 文字起こしの ゆれ（「Git Hub」「S 3」「A.W.S.」）
-  const joined = transcript.replace(
+  const joined = tidyTranscript(transcript).replace(
     /(?<=[A-Za-z0-9Ａ-Ｚａ-ｚ０-９])[\s.．・]+(?=[A-Za-z0-9Ａ-Ｚａ-ｚ０-９])/g,
     "",
   );

@@ -18,6 +18,8 @@ import {
 } from "../scripts/lib/gemini_tts";
 import { chooseCuts, findPauses, plausibleSplit, splitAt } from "../scripts/lib/split_dialogue";
 import { LISTENING_AUDIO_PLANS } from "../scripts/lib/listening_audio_plans";
+import { alignSentences, tidyTranscript } from "../scripts/lib/speech_reading";
+import { buildSoundsIndex, spellSounds } from "../src/components/listening/listening-checks";
 
 describe("TTS に 送る 形（Interactions API）", () => {
   it("2人の 会話は conversational で、行ごとに 話す人と 話しかたを 付ける", () => {
@@ -242,5 +244,53 @@ describe("間で 1文ずつに 切る", () => {
   it("見こみから 大きく 外れた 切りかたは 落とす", () => {
     expect(plausibleSplit([0.3, 9.0], [20, 2]).ok).toBe(false);
     expect(plausibleSplit([3.0, 0.6], [20, 2]).ok).toBe(true);
+  });
+});
+
+describe("まとめて 聞いた 読みを 文ごとに 分ける（ずれた 文だけ 読み直す ため）", () => {
+  it("そろって いれば どの 文も ずれ 0", () => {
+    const out = alignSentences(["はい", "どうしましたか"], "はいどうしましたか");
+    expect(out.map((one) => one.distance)).toEqual([0, 0]);
+    expect(out.map((one) => one.spoken)).toEqual(["はい", "どうしましたか"]);
+  });
+
+  it("文の 中の 読みちがいは その 文だけに 数える（Issue を いっしゅう）", () => {
+    const out = alignSentences(
+      ["わかりました", "いしゅーをかくにんしてから"],
+      "わかりましたいっしゅうをかくにんしてから",
+    );
+    expect(out[0]!.distance).toBe(0);
+    expect(out[1]!.distance).toBeGreaterThan(0);
+  });
+
+  it("同じ ことばを 2度 読んだ ときも ずれとして 出る", () => {
+    const out = alignSentences(
+      ["いまのところもんだいはありません", "ぱそこんと"],
+      "いまのところもんだいはありませんもんだいはありませんぱそこんと",
+    );
+    // どちらの 写しを 本物と みるかは 決められない。どちらかの 文には 必ず 出る
+    //（音の 側は 長さの 見張りで 見つける——make_listening_audio.ts の `outOfPace`）
+    expect(out[0]!.distance + out[1]!.distance).toBeGreaterThan(0);
+  });
+});
+
+describe("文字起こしの 空白・英字の 読ませかた", () => {
+  it("語ごとの 空白を 詰める（英字どうしの あいだだけ 残す）", () => {
+    expect(tidyTranscript("お 知らせ の タイトル 公開 日")).toBe("お知らせのタイトル公開日");
+    expect(tidyTranscript("Git ハブ の イシュー")).toBe("Gitハブのイシュー");
+    expect(tidyTranscript("Laravel Breeze を 使います")).toBe("Laravel Breezeを使います");
+  });
+
+  it("英字の 語だけ 台帳の 読みの カタカナに する（数字の 語は 変えない）", () => {
+    const latin = buildSoundsIndex([
+      ["GitHub", "ぎっとはぶ"],
+      ["Issue", "いしゅー"],
+      ["S3", "えすすりー"],
+    ]);
+    const katakana = (kana: string) =>
+      kana.replace(/[ぁ-ゖ]/g, (ch) => String.fromCharCode(ch.charCodeAt(0) + 0x60));
+    expect(spellSounds("GitHubの Issueを 作った。AWSの S3に 10時", latin, katakana)).toBe(
+      "ギットハブの イシューを 作った。AWSの エススリーに 10時",
+    );
   });
 });
