@@ -477,8 +477,17 @@ async function makeSentences(activePlan: ListeningAudioPlan): Promise<void> {
 
 /** まとめて 読む のを 何回まで 試すか（切れ目が 決まらない ときの 読み直し）。 */
 const BATCH_ATTEMPTS = 2;
-/** ずれた 1文を 1文だけで 読み直す 回数。 */
-const SENTENCE_ATTEMPTS = 3;
+/**
+ * ずれた 文を まとめて 読み直す 回数。**無料枠は 1日 10回**（2026-09-28 に 429 で 判明:
+ * 「limit: 10 requests per day on Free Tier」）なので、1文ずつ では なく まとめて 読み直す。
+ */
+const REREAD_ROUNDS = 2;
+/**
+ * 読み直す ずれの 大きさ（かな 何字 から）。1字の ずれは ほぼ 文字起こしの ゆれ
+ *（「イシュー」→「イシュ」の 長音 落ち）で、1日 10回の 枠を 使う ほどでは ない。
+ * 1字の ずれが 残った 文は 台帳（`sentences.json`）と 最後の まとめに 名指しで 出る。
+ */
+const REREAD_DISTANCE = 2;
 /** 間を 拾う ときの 音の 大きさの しきい（小さい 順に 試す）。 */
 const PAUSE_THRESHOLDS = [60, 120, 250] as const;
 /**
@@ -556,172 +565,156 @@ async function makeSentencesByTts(activePlan: ListeningAudioPlan): Promise<void>
   const clips: TtsClip[] = [];
   const chunkRecords: ChunkRecord[] = [];
 
-  /** 1文だけで 読み直す（ずれた 文・まとめて 読めなかった かたまり）。いちばん よい ものを 返す。 */
-  const readOne = async (one: { speaker: string; text: string }): Promise<TtsClip> => {
-    let best: TtsClip | null = null;
-    for (let attempt = 1; attempt <= SENTENCE_ATTEMPTS; attempt += 1) {
-      await sleep(3_000);
-      let pcm: Uint8Array;
-      try {
-        pcm = trimSilence(
-          (
-            await synthesizeDialogue(
-              {
-                lines: [
-                  { speaker: nameOf(one.speaker), text: speechLine([forTts(one.text)], false) },
-                ],
-                voices,
-                style: activePlan.style,
-              },
-              apiKey,
-            )
-          ).pcm,
-        );
-      } catch (error) {
-        console.log(
-          `    読み直し ${attempt}回目: ${error instanceof Error ? error.message : String(error)}`,
-        );
+  /** 文 1つ（原稿の 通し番号つき）。 */
+  type Member = { index: number; speaker: string; text: string };
+
+  /**
+   * いくつかの 文を **まとめて 1回で** 読み、長い 間で 切って、1回の 文字起こしで
+   * 文ごとの ずれを 出す。切れ目が 決まらなければ `null`（呼ぶ 側が 読み直す）。
+   * `groups` は 行（話す人の ひとつづき）ごとの 文。
+   */
+  const speakBatch = async (
+    groups: readonly (readonly Member[])[],
+    source: TtsClip["source"],
+  ): Promise<{ clips: TtsClip[]; odd: boolean[]; transcript: string } | null> => {
+    const members = groups.flat();
+    const expectedParts = members.map((one) => scriptReading(one.text, index, sounds));
+    const weights = expectedParts.map((reading) => Math.max(1, reading.length));
+    const raw = (
+      await synthesizeDialogue(
+        {
+          // 文の おわりごとに 長い 間の 札を 置く（切れ目を はっきり させる。`SENTENCE_BREAK`）
+          lines: groups.map((group, k) => ({
+            speaker: nameOf(group[0]!.speaker),
+            text: speechLine(
+              group.map((one) => forTts(one.text)),
+              k < groups.length - 1,
+            ),
+          })),
+          voices,
+          style: activePlan.style,
+        },
+        apiKey,
+      )
+    ).pcm;
+    let parts: Uint8Array[] | null = null;
+    let why = "";
+    for (const threshold of PAUSE_THRESHOLDS) {
+      const found = findPauses(raw, { threshold });
+      const cuts = chooseCuts(found.pauses, found.speechStart, found.speechEnd, weights, {
+        minBoundarySeconds: MIN_BOUNDARY_PAUSE,
+      });
+      if (!cuts) {
+        why = `長い 間が 足りません（要る のは ${members.length - 1}）`;
         continue;
       }
-      const heard = await transcribeAny(pcm, apiKey);
-      const match = heard ? matchReading(one.text, heard.text, index, tokenizer, sounds) : null;
-      const clip: TtsClip = {
-        pcm,
-        spoken: match?.spoken ?? "",
-        distance: match ? match.distance : null,
-        by: heard?.model ?? null,
-        source: "sentence",
-      };
-      console.log(
-        `    読み直し ${attempt}回目「${one.text}」: ` +
-          (match ? `ずれ ${match.distance}字（${heard!.model}）` : "文字起こし できず"),
-      );
-      if (!best || (clip.distance ?? Infinity) < (best.distance ?? Infinity)) best = clip;
-      if (clip.distance === 0 || clip.distance === null) break;
+      const split = splitAt(raw, cuts).map((one) => trimSilence(one));
+      const check = plausibleSplit(split.map(seconds), weights);
+      why = check.why;
+      if (check.ok) {
+        parts = split;
+        break;
+      }
     }
-    if (!best) throw new Error(`「${one.text}」を 読めませんでした`);
-    return best;
+    console.log(
+      `  ${members.length}文を まとめて: ${(raw.byteLength / OUT_RATE / 2).toFixed(1)}秒 — ` +
+        (parts ? "切れました" : `切れ目が 決まりません（${why}）`),
+    );
+    if (!parts) return null;
+    const heard = await transcribeAny(raw, apiKey);
+    const aligned = heard
+      ? alignSentences(expectedParts, spokenReading(heard.text, tokenizer, index, sounds))
+      : null;
+    /*
+     * **長さの 見張り**（文字起こしが 無くても 効く）。まとめて 読んだ ふつうの 速さ
+     *（かな 1字 あたりの 秒の 中央値）から 大きく 外れた 文は 読み直す。
+     * 2回目（run 36410609494）で「問題は ありません」を 2度 読み、その 音が
+     * 31字の 文に 入って 7.8秒（ふつうの 1.7倍）に なって いた。文が 少ない ときは 当てに
+     * ならないので、3文 以上 まとめた ときだけ 見る。
+     */
+    const rates = parts.map((pcm, k) => seconds(pcm) / weights[k]!).sort((a, b) => a - b);
+    const pace = rates[Math.floor(rates.length / 2)]!;
+    const odd = parts.map(
+      (pcm, k) =>
+        members.length >= 3 &&
+        (seconds(pcm) > pace * weights[k]! * 1.45 + 0.5 ||
+          seconds(pcm) < pace * weights[k]! * 0.55 - 0.2),
+    );
+    return {
+      clips: parts.map((pcm, k) => ({
+        pcm,
+        spoken: aligned?.[k]?.spoken ?? "",
+        distance: aligned ? aligned[k]!.distance : null,
+        by: heard?.model ?? null,
+        source,
+      })),
+      odd,
+      transcript: heard?.text ?? "",
+    };
   };
+
+  /** 読み直しが 要るか（ずれが 大きい・長さが おかしい）。 */
+  const needsReread = (clip: TtsClip, odd: boolean): boolean =>
+    odd || (clip.distance !== null && clip.distance >= REREAD_DISTANCE);
+  /** a の ほうが よいか（ずれが 少ない。確かめて いない ものは いちばん 下）。 */
+  const better = (a: TtsClip, b: TtsClip): boolean =>
+    (a.distance ?? Number.POSITIVE_INFINITY) < (b.distance ?? Number.POSITIVE_INFINITY);
 
   for (const [c, lineIds] of chunks.entries()) {
     if (c > 0) await sleep(5_000);
-    const members = lineIds.flatMap((id) => lineSentences[id]!);
-    const expectedParts = members.map((one) => scriptReading(one.text, index, sounds));
-    const weights = expectedParts.map((reading) => Math.max(1, reading.length));
-    const request = {
-      // 文の おわりごとに 長い 間の 札を 置く（切れ目を はっきり させる。`SENTENCE_BREAK`）
-      lines: lineIds.map((id, k) => ({
-        speaker: nameOf(script[id]!.speaker),
-        text: speechLine(
-          lineSentences[id]!.map((one) => forTts(one.text)),
-          k < lineIds.length - 1,
-        ),
-      })),
-      voices,
-      style: activePlan.style,
-    };
-    const who = [...new Set(request.lines.map((line) => line.speaker))];
+    const groups = lineIds.map((id) => lineSentences[id]!);
+    const members = groups.flat();
+    const who = [...new Set(members.map((one) => nameOf(one.speaker)))];
     console.log(
       `[${c + 1}/${chunks.length}] ${who.join("・")} ${lineIds.length}行・${members.length}文`,
     );
 
-    // 1. まとめて 読んで、長い 間で 切る
-    let parts: Uint8Array[] | null = null;
-    let raw: Uint8Array | null = null;
+    // 1. かたまりを まとめて 読んで 切る（切れ目が 決まらなければ もう 1回）
+    let first: Awaited<ReturnType<typeof speakBatch>> = null;
     let attempts = 0;
-    for (let attempt = 1; attempt <= BATCH_ATTEMPTS && !parts; attempt += 1) {
+    for (let attempt = 1; attempt <= BATCH_ATTEMPTS && !first; attempt += 1) {
       if (attempt > 1) await sleep(5_000);
       attempts = attempt;
-      try {
-        raw = (await synthesizeDialogue(request, apiKey)).pcm;
-      } catch (error) {
-        console.log(`  ${attempt}回目: ${error instanceof Error ? error.message : String(error)}`);
-        continue;
-      }
-      let why = "";
-      for (const threshold of PAUSE_THRESHOLDS) {
-        const found = findPauses(raw, { threshold });
-        const cuts = chooseCuts(found.pauses, found.speechStart, found.speechEnd, weights, {
-          minBoundarySeconds: MIN_BOUNDARY_PAUSE,
-        });
-        if (!cuts) {
-          why = `長い 間が 足りません（要る のは ${members.length - 1}）`;
-          continue;
-        }
-        const split = splitAt(raw, cuts).map((one) => trimSilence(one));
-        const check = plausibleSplit(split.map(seconds), weights);
-        why = check.why;
-        if (check.ok) {
-          parts = split;
-          break;
-        }
-      }
-      console.log(
-        `  ${attempt}回目: ${(raw.byteLength / OUT_RATE / 2).toFixed(1)}秒 — ` +
-          (parts ? `${members.length}文に 切れました` : `切れ目が 決まりません（${why}）`),
-      );
+      first = await speakBatch(groups, "dialogue");
     }
+    if (!first) throw new Error(`${c + 1}つ目の かたまりを 文に 切れませんでした`);
+    first.clips.forEach((clip, k) => (clips[members[k]!.index] = clip));
 
-    // 2. 全体を 1回だけ 文字起こし して、文ごとの ずれを 出す
-    let transcript = "";
-    let by: string | null = null;
-    const reread: number[] = [];
-    if (parts && raw) {
-      const heard = await transcribeAny(raw, apiKey);
-      transcript = heard?.text ?? "";
-      by = heard?.model ?? null;
-      const aligned = heard
-        ? alignSentences(expectedParts, spokenReading(heard.text, tokenizer, index, sounds))
-        : null;
-      /*
-       * **長さの 見張り**（文字起こしが 無くても 効く）。この かたまりの ふつうの 速さ
-       *（かな 1字 あたりの 秒の 中央値）から 大きく 外れた 文は 読み直す。
-       * 2回目（run 36410609494）で「問題は ありません」を 2度 読み、その 音が
-       * 31字の 文に 入って 7.8秒（ふつうの 1.7倍）に なって いた。
-       */
-      const rates = parts.map((pcm, k) => seconds(pcm) / weights[k]!).sort((a, b) => a - b);
-      const pace = rates[Math.floor(rates.length / 2)]!;
-      const outOfPace = (pcm: Uint8Array, weight: number): boolean =>
-        seconds(pcm) > pace * weight * 1.45 + 0.5 || seconds(pcm) < pace * weight * 0.55 - 0.2;
-      for (const [k, one] of members.entries()) {
-        const pcm = parts[k]!;
-        const spokenHere = aligned?.[k];
-        // 読みが ずれた 文・長さが ふつうから 外れた 文（2度 読んだ・途中で 切れた）は 読み直す
-        const odd = outOfPace(pcm, weights[k]!);
-        if ((spokenHere && spokenHere.distance > 0) || odd) {
-          console.log(
-            `  (${one.index + 1}) 読み直します「${one.text}」— ` +
-              (spokenHere && spokenHere.distance > 0
-                ? `ずれ ${spokenHere.distance}字「${spokenHere.spoken}」`
-                : `長さが ふつうと ちがう（${seconds(pcm).toFixed(1)}秒）`),
-          );
-          reread.push(one.index + 1);
-          clips[one.index] = await readOne(one);
-          continue;
+    // 2. ずれた 文・長さが おかしい 文だけ、**まとめて** 読み直す（無料枠は 1日 10回）
+    let bad = members.filter((_, k) => needsReread(first!.clips[k]!, first!.odd[k]!));
+    const reread = bad.map((one) => one.index + 1);
+    for (let round = 1; round <= REREAD_ROUNDS && bad.length > 0; round += 1) {
+      await sleep(5_000);
+      for (const one of bad) {
+        const now = clips[one.index]!;
+        console.log(
+          `  (${one.index + 1}) 読み直し「${one.text}」— ` +
+            (now.distance !== null && now.distance >= REREAD_DISTANCE
+              ? `ずれ ${now.distance}字「${now.spoken}」`
+              : `長さが ふつうと ちがう（${seconds(now.pcm).toFixed(1)}秒）`),
+        );
+      }
+      const again = await speakBatch(
+        bad.map((one) => [one]),
+        "sentence",
+      );
+      if (!again) continue;
+      bad = bad.filter((one, k) => {
+        const clip = again.clips[k]!;
+        const current = clips[one.index]!;
+        const odd = again.odd[k]!;
+        if (!odd && (better(clip, current) || needsReread(current, false))) {
+          clips[one.index] = clip;
         }
-        clips[one.index] = {
-          pcm,
-          spoken: spokenHere?.spoken ?? "",
-          distance: spokenHere ? spokenHere.distance : null,
-          by,
-          source: "dialogue",
-        };
-      }
-    } else {
-      // まとめて 読めなかった かたまりは 1文ずつ 読む（切る 必要が ない）
-      console.log("  まとめて 読めなかったので、1文ずつ 読みます");
-      for (const one of members) {
-        reread.push(one.index + 1);
-        clips[one.index] = await readOne(one);
-      }
-      attempts = 0;
+        return needsReread(clips[one.index]!, odd);
+      });
     }
     chunkRecords.push({
       lines: lineIds,
       speakers: who,
       attempts,
-      transcript,
-      transcribedBy: by,
+      transcript: first.transcript,
+      transcribedBy: first.clips[0]?.by ?? null,
       reread,
     });
   }

@@ -226,6 +226,10 @@ export async function synthesizeDialogue(
     const text = await response.text();
     if (!response.ok) {
       lastError = `${response.status} ${text.slice(0, 600)}`;
+      // 1日の 枠を 使い切った（無料枠は 1日 10回）。待っても 今日は 通らないので すぐ やめる
+      if (response.status === 429 && /per day/i.test(text)) {
+        throw new Error(`TTS の 1日の 無料枠を 使い切りました: ${lastError}`);
+      }
       if (response.status === 429 || response.status === 503) {
         const delay = Number(/"retryDelay":\s*"(\d+)/.exec(text)?.[1] ?? 20);
         await sleep(Math.min(90, delay + 2) * 1000);
