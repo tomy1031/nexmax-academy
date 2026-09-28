@@ -38,6 +38,14 @@ export interface ListeningAudioPlan {
    * `public/audio/listening/<教材ID>.gap<秒>s.wav`（例 `houkoku_listening.gap2s.wav`）。
    */
   readonly compareGapSeconds?: readonly number[];
+  /**
+   * 読み上げの 道。`live`（既定）= Live で 1文ずつ。`tts` = Gemini の TTS で 会話を
+   * まとめて 読み、間で 1文ずつに 切る（`scripts/make_listening_audio.ts` の `makeSentencesByTts`）。
+   * `tts` の ときは `models` を 使わない。
+   */
+  readonly engine?: "live" | "tts";
+  /** TTS に 渡す 話しかたの 指示（全部の 行に 付ける）。`engine: "tts"` の ときだけ 効く。 */
+  readonly style?: string;
 }
 
 /** 報告の リスニング 5場面の 人（性別は 声と 表紙の 絵で そろえる）。 */
@@ -88,15 +96,22 @@ export const LISTENING_AUDIO_PLANS: Readonly<Record<string, ListeningAudioPlan>>
 };
 
 /**
- * 報告の リスニング 5場面の 人と 声（Gemini Live の 声・`src/lib/audio/voices.ts`）。
- * **全員 3.8** で 作る。はじめは リーダー役を 3.1 に して 同時に 作って いたが、
- * 3.1 は 短い 返事（「はい、大丈夫ですよ。」）を 4回とも「はい」「はいだい」で 切った
- *（2026-09-28・run 36405843836。3.8 の 佐藤さんは 同じ 形の「はい、そうです。」を 読めた）。
+ * 報告の リスニング 5場面の 人と 声（Gemini の 声・`src/lib/audio/voices.ts`）。
+ *
+ * **Gemini の TTS で 会話を まとめて 読む**（2026-09-28 の 指定「ためしに Google の 新しい
+ * TTS で 一括で 作成」）。Live で 1文ずつ 作って いた ときは、3.1 も 3.8 も 短い 返事
+ *（「はい、大丈夫ですよ。」「どうしましたか。」）を 途中で 切り、確かめの 文字起こしも
+ * 無料枠を 使い切って 1本も できなかった（run 36405843836・36406776276・36406785324）。
+ * `models` は Live に 戻す ときの ために 残す（TTS では 使わない）。
  */
 function reportPlan(speakers: readonly (keyof typeof REPORT_PEOPLE)[]): ListeningAudioPlan {
   return {
     voices: Object.fromEntries(speakers.map((id) => [id, REPORT_PEOPLE[id].voice])),
     models: Object.fromEntries(speakers.map((id) => [id, REPORT_PEOPLE[id].model])),
     gapSeconds: 1.5,
+    engine: "tts",
+    style:
+      "日本のIT企業の職場での、ていねいな会話。日本語を勉強中の人にも聞き取りやすいように、" +
+      "はっきり、少しゆっくり、落ちついて話す。",
   };
 }

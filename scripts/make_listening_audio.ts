@@ -26,6 +26,14 @@
  *  - 聞きくらべ用に 別の 秒でも つなぐ（`<教材ID>.gap2s.wav` など）
  *  - 読み上げは **読み（かな）の ずれ 1字まで**しか 許さない（`scripts/lib/speech_reading.ts`）
  *
+ * ## TTS で まとめて 読む 教材（台帳の `engine: "tts"`。2026-09-28 から）
+ * Live で 1文ずつ では なく、**Gemini の TTS で 会話を まとめて 読み**（声は 1回に 2人まで。
+ * 3人 出る 原稿は 2人ずつの かたまりに 分ける）、**文と 文の あいだの 間で 1文ずつに 切る**
+ *（`scripts/lib/gemini_tts.ts`・`scripts/lib/split_dialogue.ts`）。できる ものは 上と 同じ
+ *（文ごとの wav・`sentences.json`・台帳の 秒で つないだ 1本）。ほかに **切る 前の 自然な 間の
+ * 1本**を `<教材ID>.natural.wav` に 残す（聞きくらべ用。教材からは 指さない）。
+ * 読みの 確かめは **かたまり ごとに 1回** 文字起こしして 原稿と 比べる（無料枠を 使い切らない ため）。
+ *
  * 秒だけ 変える ときは 台帳の `gapSeconds` を 直して `--join` で つなぎ直す。
  * **鍵も 読み上げも 要らない**ので 手もとで できる。原稿が 変わって いたら 止まる
  *（古い 文の 音を 新しい 原稿に つなが ない ため）——そのときは `--force` で 作り直す。
@@ -46,16 +54,25 @@ import { joinPcm } from "../src/lib/audio/wav";
 import { buildFuriganaIndex } from "../src/lib/text/furigana";
 import { buildSoundsIndex } from "../src/components/listening/listening-checks";
 import { soundsLikeOf } from "../src/content/listening-sounds";
-import { OUT_RATE, synthesizeWithFallback, toWav } from "./lib/live_tts";
+import { forSpeech, OUT_RATE, synthesizeWithFallback, toWav } from "./lib/live_tts";
+import {
+  dialogueChunks,
+  speechText,
+  synthesizeDialogue,
+  transcribeAny,
+  TTS_MODEL,
+} from "./lib/gemini_tts";
+import { chooseCuts, findPauses, plausibleSplit, splitAt } from "./lib/split_dialogue";
 import { LISTENING_AUDIO_PLANS, type ListeningAudioPlan } from "./lib/listening_audio_plans";
 import {
   longestInnerPause,
   scriptSentences,
   sentenceFileName,
+  splitSentences,
   trimSilence,
   type SpeakerSentence,
 } from "./lib/listening_sentences";
-import { matchReading, type ReadingMatch } from "./lib/speech_reading";
+import { matchReading, scriptReading, type ReadingMatch } from "./lib/speech_reading";
 import { getTokenizer } from "./lib/yomi_check";
 
 const listeningId: string = process.argv[2] ?? "";
@@ -448,9 +465,251 @@ async function makeSentences(activePlan: ListeningAudioPlan): Promise<void> {
   );
 }
 
+/* ------------------------------------------------------------------ *
+ * TTS で 会話を まとめて 読み、間で 1文ずつに 切る（台帳の `engine: "tts"`）
+ * ------------------------------------------------------------------ */
+
+/** 1つの かたまりを 何回まで 読み直すか（切れ目か 読みが 合わない とき）。 */
+const TTS_ATTEMPTS = 3;
+/** 間を 拾う ときの 音の 大きさの しきい（小さい 順に 試す）。 */
+const PAUSE_THRESHOLDS = [60, 120, 250] as const;
+/** かたまりの あいだに はさむ 無音（自然な 間の 1本を つなぐ とき）。 */
+const NATURAL_CHUNK_GAP_MS = 800;
+
+/** かたまり 1つぶんの 結果（台帳 `sentences.json` の `chunks` に 残す）。 */
+interface ChunkRecord {
+  readonly lines: readonly number[];
+  readonly speakers: readonly string[];
+  /** どう 切ったか。`dialogue` = まとめて 読んで 間で 切った。`sentence` = 1文ずつ 読み直した。 */
+  readonly split: "dialogue" | "sentence";
+  readonly attempts: number;
+  readonly transcript: string;
+  readonly transcribedBy: string | null;
+  /** 読みの ずれ（かな何字）。文字起こし できなかった ときは null（確かめて いない）。 */
+  readonly distance: number | null;
+}
+
+async function makeSentencesByTts(activePlan: ListeningAudioPlan): Promise<void> {
+  const apiKey = requireApiKey();
+  const tokenizer = await getTokenizer();
+  const index = buildFuriganaIndex(listening.furigana ?? []);
+  const sounds = buildSoundsIndex(soundsLikeOf(listeningId));
+  const sentences = scriptSentences(script);
+
+  /** 話す人の 名前（TTS に 渡す ラベル）→ 声。 */
+  const nameOf = (id: string): string =>
+    (listening.participants ?? []).find((p: { id: string; name: string }) => p.id === id)?.name ??
+    (id === "narration" ? "ナレーション" : id);
+  const voices: Record<string, string> = {};
+  for (const line of script) voices[nameOf(line.speaker)] = voiceOf(line.speaker);
+
+  /** 行ごとの 文（原稿の 文の 通し番号つき）。 */
+  let serial = 0;
+  const lineSentences = script.map((line) =>
+    splitSentences(line.text).map((text) => ({ index: serial++, speaker: line.speaker, text })),
+  );
+  const chunks = dialogueChunks(
+    script.map((line) => line.speaker),
+    script.map((line) => line.text.length),
+  );
+  console.log(
+    `${sentences.length}文・${script.length}行を ${chunks.length}回で 読みます（${TTS_MODEL}）`,
+  );
+
+  const clips: Uint8Array[] = [];
+  const naturals: Uint8Array[] = [];
+  const records: SentenceRecord[] = [];
+  const chunkRecords: ChunkRecord[] = [];
+  const sleep = (ms: number) => new Promise((wait) => setTimeout(wait, ms));
+
+  for (const [c, lineIds] of chunks.entries()) {
+    if (c > 0) await sleep(5_000);
+    const members = lineIds.flatMap((id) => lineSentences[id]!);
+    const weights = members.map((one) =>
+      Math.max(1, scriptReading(one.text, index, sounds).length),
+    );
+    const chunkText = members.map((one) => one.text).join("");
+    const request = {
+      lines: lineIds.map((id) => ({
+        speaker: nameOf(script[id]!.speaker),
+        text: forSpeech(speechText(script[id]!.text)),
+      })),
+      voices,
+      style: activePlan.style,
+    };
+    const who = [...new Set(request.lines.map((line) => line.speaker))];
+    console.log(
+      `[${c + 1}/${chunks.length}] ${who.join("・")} ${lineIds.length}行・${members.length}文`,
+    );
+
+    /** 合格した ものか、いちばん ずれの 少なかった もの。 */
+    let chosen: {
+      parts: Uint8Array[];
+      raw: Uint8Array;
+      transcript: string;
+      by: string | null;
+      distance: number | null;
+      attempts: number;
+    } | null = null;
+
+    for (let attempt = 1; attempt <= TTS_ATTEMPTS; attempt += 1) {
+      if (attempt > 1) await sleep(5_000);
+      let raw: Uint8Array;
+      try {
+        raw = (await synthesizeDialogue(request, apiKey)).pcm;
+      } catch (error) {
+        console.log(`  ${attempt}回目: ${error instanceof Error ? error.message : String(error)}`);
+        continue;
+      }
+      // 1. 間で 切る（しきいを 上げながら、切れ目の 数が そろう まで）
+      let parts: Uint8Array[] | null = null;
+      let why = "";
+      for (const threshold of PAUSE_THRESHOLDS) {
+        const found = findPauses(raw, { threshold });
+        const cuts = chooseCuts(found.pauses, found.speechStart, found.speechEnd, weights);
+        if (!cuts) {
+          why = `間が ${found.pauses.length}か所しか ありません（要る のは ${members.length - 1}）`;
+          continue;
+        }
+        const split = splitAt(raw, cuts).map((one) => trimSilence(one));
+        const check = plausibleSplit(split.map(seconds), weights);
+        why = check.why;
+        if (check.ok) {
+          parts = split;
+          break;
+        }
+      }
+      if (!parts) {
+        console.log(`  ${attempt}回目: 切れ目が 決まりません — ${why}`);
+        continue;
+      }
+      // 2. 読みが 原稿どおりか（かたまり ごとに 1回 文字起こし）
+      const heard = await transcribeAny(raw, apiKey);
+      const match = heard ? matchReading(chunkText, heard.text, index, tokenizer, sounds) : null;
+      const distance = match ? match.distance : null;
+      console.log(
+        `  ${attempt}回目: ${(raw.byteLength / OUT_RATE / 2).toFixed(1)}秒・${members.length}文に 切れました。` +
+          (match
+            ? ` 読みの ずれ ${match.distance}字（${heard!.model}）`
+            : " 文字起こし できず（確かめて いない）"),
+      );
+      const candidate = {
+        parts,
+        raw,
+        transcript: heard?.text ?? "",
+        by: heard?.model ?? null,
+        distance,
+        attempts: attempt,
+      };
+      if (
+        !chosen ||
+        (candidate.distance ?? Number.POSITIVE_INFINITY) <
+          (chosen.distance ?? Number.POSITIVE_INFINITY)
+      ) {
+        chosen = candidate;
+      }
+      // 合格（ずれ 0）か、確かめられない（文字起こしの 枠が 無い）なら それで 決める
+      if (distance === 0 || distance === null) break;
+      if (match) console.log(`    ${match.why}`);
+    }
+
+    let split: ChunkRecord["split"] = "dialogue";
+    if (!chosen) {
+      /*
+       * まとめて 読んで 切る のが 3回とも だめ なら、**この かたまりだけ 1文ずつ 読む**。
+       * 1文ずつ なら 切る 必要が 無い（文字起こしは しない——無料枠を 守る）。
+       */
+      console.log("  まとめて 読めなかったので、1文ずつ 読みます");
+      split = "sentence";
+      const parts: Uint8Array[] = [];
+      for (const one of members) {
+        await sleep(3_000);
+        const { pcm } = await synthesizeDialogue(
+          {
+            lines: [{ speaker: nameOf(one.speaker), text: forSpeech(speechText(one.text)) }],
+            voices,
+            style: activePlan.style,
+          },
+          apiKey,
+        );
+        parts.push(trimSilence(pcm));
+      }
+      chosen = {
+        parts,
+        raw: joinPcm(parts, 400).pcm,
+        transcript: "",
+        by: null,
+        distance: null,
+        attempts: TTS_ATTEMPTS,
+      };
+    }
+
+    naturals.push(trimSilence(chosen.raw));
+    chunkRecords.push({
+      lines: lineIds,
+      speakers: who,
+      split,
+      attempts: chosen.attempts,
+      transcript: chosen.transcript,
+      transcribedBy: chosen.by,
+      distance: chosen.distance,
+    });
+    members.forEach((one, k) => {
+      const pcm = chosen!.parts[k]!;
+      clips.push(pcm);
+      records.push({
+        speaker: one.speaker,
+        text: one.text,
+        file: sentenceFileName(one.index),
+        voice: voiceOf(one.speaker),
+        model: TTS_MODEL,
+        seconds: Math.round(seconds(pcm) * 100) / 100,
+        longestPause: Math.round(longestInnerPause(pcm) * 100) / 100,
+        transcript: "",
+        transcriptBy: chosen!.by ?? "（確かめて いない）",
+        reading: {
+          expected: scriptReading(one.text, index, sounds),
+          spoken: "",
+          distance: chosen!.distance ?? -1,
+        },
+      });
+    });
+  }
+
+  rmSync(sentenceDir, { recursive: true, force: true });
+  mkdirSync(sentenceDir, { recursive: true });
+  records.forEach((record, i) => writeFileSync(join(sentenceDir, record.file), toWav(clips[i]!)));
+  const manifest: Manifest & { engine: string; chunks: readonly ChunkRecord[] } = {
+    listeningId,
+    gapSeconds: activePlan.gapSeconds,
+    compareGapSeconds: activePlan.compareGapSeconds ?? [],
+    complete: records.length === sentences.length,
+    missing: [],
+    sentences: records,
+    engine: TTS_MODEL,
+    chunks: chunkRecords,
+  };
+  writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
+  writeJoined(clips, activePlan);
+  const natural = joinPcm(naturals, NATURAL_CHUNK_GAP_MS).pcm;
+  writeFileSync(join(outDir, `${listeningId}.natural.wav`), toWav(natural));
+  pointAudioUrl();
+
+  const unchecked = chunkRecords.filter((one) => one.distance === null).length;
+  const off = chunkRecords.filter((one) => (one.distance ?? 0) > 0);
+  console.log(
+    `${records.length}文を ${sentenceDir}/ に 残しました（切る 前の 1本: ${listeningId}.natural.wav）。` +
+      ` 確かめて いない かたまり: ${unchecked}／ずれの ある かたまり: ${off.length}` +
+      off
+        .map((one) => `\n  行 ${one.lines.join(",")}: ずれ ${one.distance}字「${one.transcript}」`)
+        .join(""),
+  );
+}
+
 async function main(): Promise<void> {
   if (plan) {
-    await makeSentences(plan);
+    if (plan.engine === "tts" && !joinOnly) await makeSentencesByTts(plan);
+    else await makeSentences(plan);
     return;
   }
   if (joinOnly) {
