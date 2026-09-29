@@ -691,39 +691,14 @@ test("5日 通すと、合否と 数が 読める", async ({ page, context }) =>
   );
 });
 
-/**
- * 5日 話し終えて 週の けっかを まだ 閉じて いない しおり（`asakai-resume.ts` と 同じ 形）。
- * `probesOn` の 曜日（0始まり）だけ 聞き返しが あった ことに する。
- */
-function pendingWeek(probesOn: Record<number, number>): string {
+/** 各日の 札ごとの「司会の れい」（札の id と 見本）。 */
+function panelExamples(): { id: string; text: string }[][] {
   const meeting = JSON.parse(
     readFileSync(join(__dirname, "..", "..", "content", "meetings", "asakai_kantan.json"), "utf8"),
-  ) as {
-    asakai: {
-      scenes: {
-        kind: "asa" | "yuu";
-        panels: { id: string; label: string; facts: unknown[] }[];
-      }[];
-    };
-  };
-  const names = ["月曜日", "火曜日", "水曜日", "木曜日", "金曜日"];
-  const done = meeting.asakai.scenes.map((scene, at) => {
-    const komari = scene.panels.find((panel) => panel.id === "komari");
-    return {
-      day: names[at],
-      kind: scene.kind,
-      cards: scene.panels.length,
-      cardTotal: scene.panels.length,
-      units: scene.panels.length,
-      unitTotal: scene.panels.length,
-      komariOpen: true,
-      komariBoxes: komari?.facts.length ?? 0,
-      komariTotal: komari?.facts.length ?? 0,
-      probes: probesOn[at] ?? 0,
-      chips: scene.panels.map((panel) => ({ label: panel.label, open: true })),
-    };
-  });
-  return JSON.stringify({ meetingId: "asakai_kantan", done, drafts: {}, weekPending: true });
+  ) as { asakai: { scenes: { panels: { id: string; example: { text: string } }[] }[] } };
+  return meeting.asakai.scenes.map((scene) =>
+    scene.panels.map((panel) => ({ id: panel.id, text: panel.example.text })),
+  );
 }
 
 /**
@@ -732,30 +707,86 @@ function pendingWeek(probesOn: Record<number, number>): string {
  *
  * 合格の 線は そのまま、★は その 上の 目標。★の ない 曜日には「もう いちど」が あり、
  * 話し直して 評価を 閉じると 次の 曜日へ 進まずに 週の けっかへ 戻る。
+ *
+ * **同じ 授業の 中で 5日 通してから** 話し直す（code-critic 検収 E1）。しおりを 直に
+ * 仕込むと「お手本を 見た 日」の 印が 空の まま 始まり、話し直しで 印を 外す ところを
+ * 消しても 緑の ままに なる。
  */
 test("★の ない 曜日だけ 話し直すと、週の けっかに 戻って ★が 付く", async ({ page, context }) => {
+  test.slow();
   const refs = stageRefs();
   const at = refs.indexOf("asakai_kantan");
   await seedCompleted(context, refs.slice(0, at));
   await page.goto("/asakai/meeting-asakai_kantan");
-  await page.evaluate(
-    (saved) => window.localStorage.setItem("nexmax:v1:asakai-resume:asakai_kantan", saved),
-    pendingWeek({ 2: 2 }),
-  );
-  await page.reload();
   await joinCall(page);
+  await closeDuty(page);
+
+  const send = async (text: string) => {
+    await page.getByLabel("こたえを 入力する").fill(text);
+    await page.getByRole("button", { name: "おくる" }).click();
+  };
+  const day = page.getByRole("dialog", { name: "今日の 評価" });
+  for (const [at2, panels] of panelExamples().entries()) {
+    if (at2 === 2) {
+      /* 水曜だけ 問題を 言い忘れて、聞き返しで こたえる（★の 付かない 日）。 */
+      await send(
+        panels
+          .filter((one) => one.id !== "komari")
+          .map((one) => one.text)
+          .join(" "),
+      );
+      await page
+        .getByRole("dialog", { name: "報告の 見かた" })
+        .getByRole("button", { name: /報告を つづける/ })
+        .click();
+      await send(panels.find((one) => one.id === "komari")?.text ?? "");
+      await page
+        .getByRole("dialog", { name: "追加の しつもんへの こたえ" })
+        .getByRole("button", { name: /きょうの 評価を 見る/ })
+        .click();
+      await expect(day).toBeVisible();
+      /* ルビが 入るので 字では 引けない（常に 0件に なる）。rt を 外した 字で 見る。 */
+      const plain = await day.evaluate((node) => {
+        const clone = node.cloneNode(true) as HTMLElement;
+        for (const rt of Array.from(clone.querySelectorAll("rt"))) rt.remove();
+        return (clone.textContent ?? "").replace(/\s+/gu, "");
+      });
+      expect(plain).toContain("ぜんぶ伝えられました");
+      expect(plain).not.toContain("1回でぜんぶ言えました");
+    } else {
+      await send(panels.map((one) => one.text).join(" "));
+      await expect(day).toBeVisible();
+      /* ★を 取った ことは その日の 評価で すぐ 分かる（R5 検収）。 */
+      await expectOnScreen(page, "1回で ぜんぶ 言えました");
+    }
+    await closeDayScore(page);
+    if (at2 < 4) {
+      await page.getByRole("button", { name: /つづけます/ }).click();
+      await closeDuty(page);
+    }
+  }
 
   const week = page.getByRole("dialog", { name: "今週の けっか" });
+  await page.getByRole("button", { name: "今週の けっかを 見る" }).click();
   await expect(week).toBeVisible();
   await expectOnScreen(page, "1回で ぜんぶ 言えた 曜日 4 / 5");
   await expectOnScreen(page, "★は 合格の 数に 入りません");
-  await expectOnScreen(page, "話し直せます");
+  await expectOnScreen(page, "★が ない 曜日だけ 話し直せます");
   /* 「もう いちど」は ★の ない 水曜日だけ。 */
   await expect(week.getByRole("button", { name: "水曜日を もう いちど" })).toBeVisible();
   await expect(week.getByRole("button", { name: "月曜日を もう いちど" })).toHaveCount(0);
   expect(await bareKanjiTexts(page)).toEqual([]);
   await shot(page, "asakai-21-week-stars");
 
+  /* 押しまちがえても、話さずに 週の けっかへ 戻れる（code-critic 検収）。 */
+  await week.getByRole("button", { name: "水曜日を もう いちど" }).click();
+  await expect(week).toBeHidden();
+  await closeDuty(page);
+  await page.getByRole("button", { name: "話し直しを やめて 今週の けっかに もどる" }).click();
+  await expect(week).toBeVisible();
+  await expectOnScreen(page, "1回で ぜんぶ 言えた 曜日 4 / 5");
+
+  /* 水曜を 1本で 話し直す（聞き返し 0回）。 */
   await week.getByRole("button", { name: "水曜日を もう いちど" }).click();
   await expect(week).toBeHidden();
   await closeDuty(page);
@@ -763,12 +794,11 @@ test("★の ない 曜日だけ 話し直すと、週の けっかに 戻って
     "aria-current",
     "step",
   );
-
-  /* 水曜の れいを 1本で 話す（聞き返し 0回）。 */
-  await page.getByLabel("こたえを 入力する").fill(exampleUtterances()[2] ?? "");
-  await page.getByRole("button", { name: "おくる" }).click();
-  const day = page.getByRole("dialog", { name: "今日の 評価" });
+  await send(exampleUtterances()[2] ?? "");
   await expect(day).toBeVisible();
+  await expectOnScreen(page, "1回で ぜんぶ 言えました");
+  /* 話し直しの 評価では「もう いちど 報告する」を 出さない（数える 道は 週の けっかの 1つ）。 */
+  await expect(day.getByRole("button", { name: "もう いちど 報告する" })).toHaveCount(0);
   /* 木曜へ 進まずに、週の けっかへ 戻る。 */
   await day.getByRole("button", { name: /今週の けっかに もどる/ }).click();
   await expect(day).toBeHidden();

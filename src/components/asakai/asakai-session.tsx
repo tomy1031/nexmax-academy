@@ -1576,13 +1576,20 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
     (at: number) => {
       const day = asakai?.scenes[at]?.day;
       if (!day) return;
+      /*
+       * **しおりを 書き直してから 始める**（code-critic 検収）。週の けっかを 一度 閉じると
+       * しおりは 消えて いる。その まま 話しかけて 閉じると、途中の 控えだけが
+       * 「終わった 日 0」の しおりに 残り、**来週の 水曜が 先週の 途中から**始まって いた。
+       * 5日ぶんと 週の けっか待ちの 印を 先に 置けば、開き直しても 週の けっかに 戻る。
+       */
+      saveAsakaiResume(meeting.id, results, undefined, asakai?.scenes.length ?? 0);
       clearAsakaiDraft(meeting.id, day);
       setShownAnswers((prev) => prev.filter((one) => one !== DAY_NAME[day]));
       setBackToWeek(true);
       setWeekOpen(false);
       goToScene(at);
     },
-    [asakai, meeting.id, goToScene],
+    [asakai, meeting.id, results, goToScene],
   );
 
   /**
@@ -1596,10 +1603,22 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
     setWaiting(false);
     stopClips();
     voice.stop();
+    /* 評価の あいだに 遅れて 届いた 1本の 見かたを 週の けっかの 上に 出さない。 */
+    setJudge(null);
     setBackToWeek(false);
     setPhase("done");
     setWeekOpen(true);
   }, [stopClips, voice]);
+
+  /**
+   * **話し直しを やめて 週の けっかへ 戻る**（code-critic 検収）。押しまちがえた 人が、
+   * その日を 最後まで 話して けっかを 変えるしか 戻る 道が 無かった。
+   * 途中の 控えは 捨てる（けっかは 前の まま）。
+   */
+  const quitRedo = useCallback(() => {
+    if (scene) clearAsakaiDraft(meeting.id, scene.day);
+    backToWeekResult();
+  }, [scene, meeting.id, backToWeekResult]);
 
   const goNext = useCallback(() => goToScene(sceneAt + 1), [goToScene, sceneAt]);
 
@@ -1809,6 +1828,16 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
         */}
         ↻ <RubyText text="この 曜日を はじめから" index={index} show />
       </button>
+      {backToWeek ? (
+        <button
+          type="button"
+          onClick={quitRedo}
+          aria-label="話し直しを やめて 今週の けっかに もどる"
+          className="border-hairline text-navy w-full rounded-full border-2 bg-white px-3 py-1.5 text-xs font-extrabold"
+        >
+          ← <RubyText text="やめて 今週の けっかに もどる" index={index} show />
+        </button>
+      ) : null}
     </div>
   );
 
@@ -2270,12 +2299,21 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
           }
           index={index}
           aiIndex={aiIndex}
-          /* もう いちど 報告する … その日を はじめから（けっかは 上書きされる）。 */
-          onRetry={() => {
-            setDayOpen(false);
-            setPendingTail([]);
-            goToScene(sceneAt);
-          }}
+          /*
+           * もう いちど 報告する … その日を はじめから（お手本を 見た あとなので 点は 変わらない）。
+           * **週の けっかからの 話し直しでは 出さない**（code-critic 検収）。ここで 押すと 点が
+           * 変わらず、週の けっかの「もう いちど」だと 変わる——同じ 行動で 結果が ちがう。
+           * 話し直したい ときは 週の けっかの「もう いちど」から（そちらは 数え直す）。
+           */
+          onRetry={
+            backToWeek
+              ? undefined
+              : () => {
+                  setDayOpen(false);
+                  setPendingTail([]);
+                  goToScene(sceneAt);
+                }
+          }
           onClose={() => {
             setDayOpen(false);
             if (backToWeek) {
@@ -2703,7 +2741,7 @@ function WeekResult({
           </p>
           <p className="text-ink-soft text-[11px]">
             <RubyText
-              text="話し直すと、その 曜日を 数え直します。数が 下がった ときは、前の けっかが 残ります。"
+              text="話し直すと、その 曜日を 数え直します。前より 悪く なった ときは、前の けっかが 残ります。"
               index={index}
               show
             />

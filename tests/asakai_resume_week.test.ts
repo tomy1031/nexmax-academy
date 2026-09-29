@@ -125,8 +125,8 @@ describe("isOneShotDay", () => {
 });
 
 /*
- * **話し直しで 合格が 消えない**（2026-09-29 の R5 検収）。★は 合格の 上の 目標なので、
- * ★を ねらった 話し直しで 合格に 数える 数が 下がったら 前の けっかを 残す。
+ * **話し直しで 前より 悪く ならない**（2026-09-29 の R5・code-critic 検収）。★は 合格の
+ * 上の 目標なので、★を ねらった 話し直しで 合格も ★も 消さない。
  */
 describe("keptDayResult", () => {
   const old = { ...day("水曜日"), probes: 2 };
@@ -140,7 +140,7 @@ describe("keptDayResult", () => {
     expect(keptDayResult(old, next)).toBe(next);
   });
 
-  it("問題の 札を 言いそびれたら 前の けっかを 残す", () => {
+  it("問題の 札を 言いそびれたら 前の けっかを 残す（合格が 消えない）", () => {
     const next = { ...day("水曜日"), cards: 3, units: 3, komariOpen: false, komariBoxes: 0 };
     expect(keptDayResult(old, next)).toBe(old);
   });
@@ -149,8 +149,20 @@ describe("keptDayResult", () => {
     expect(keptDayResult(old, { ...old, cards: 3, units: 3, probes: 1 })).toBe(old);
   });
 
-  it("数が 同じか 上がったら 新しい ほう（聞き返しの 回数は 新しい ほうの まま）", () => {
+  it("★の 日を 話し直して 聞き返されたら ★を 残す", () => {
+    const star = day("月曜日");
+    expect(keptDayResult(star, { ...star, probes: 1 })).toBe(star);
+  });
+
+  it("数が 同じなら、聞き返しが 減った ときだけ 新しい ほう", () => {
+    const fewer = { ...old, probes: 1 };
+    expect(keptDayResult(old, fewer)).toBe(fewer);
+    expect(keptDayResult(old, { ...old, probes: 3 })).toBe(old);
+  });
+
+  it("数が 上がれば、聞き返しが 増えても 新しい ほう", () => {
+    const low = { ...old, cards: 3, units: 3, probes: 1 };
     const next = { ...old, probes: 3 };
-    expect(keptDayResult(old, next)).toBe(next);
+    expect(keptDayResult(low, next)).toBe(next);
   });
 });

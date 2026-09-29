@@ -1063,8 +1063,8 @@ export function DayScoreModal({
   index: FuriganaIndex;
   /** AIが 書いた 文の 読み（省くと `index`）。 */
   aiIndex?: FuriganaIndex;
-  /** もう いちど 報告する（その日を はじめから）。 */
-  onRetry: () => void;
+  /** もう いちど 報告する（その日を はじめから）。省くと ボタンを 出さない。 */
+  onRetry?: () => void;
   onClose: () => void;
 }) {
   const shut = rows.filter((row) => row.mark === "missing").length;
@@ -1079,7 +1079,7 @@ export function DayScoreModal({
       title={<Ruby text={`${dayName}の ${kindName} きょうの 評価`} index={index} />}
       onClose={onClose}
       closeLabel={nextLabel}
-      secondary={{ label: "もう いちど 報告する", onClick: onRetry }}
+      secondary={onRetry ? { label: "もう いちど 報告する", onClick: onRetry } : undefined}
       index={index}
       wide
     >
