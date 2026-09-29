@@ -12,8 +12,11 @@ import { VideoPlayer } from "@/components/media/video-player";
 import { ImageSlotFrame } from "@/components/article/rich-blocks";
 import { assetUrl, hasAsset } from "@/lib/asset-url";
 import { lineSentenceClips, type SentenceClip } from "@/lib/audio/sentences";
+import { audioUnitsOf } from "@/content/listening-audio";
+import { soundsLikeOf } from "@/content/listening-sounds";
 import { ListeningPanel } from "./listening-panel";
 import {
+  buildSoundsIndex,
   matchesRescueFingerprint,
   mediaKind,
   revealRate,
@@ -61,6 +64,8 @@ export function ListeningPlayer({
     () => buildFuriganaIndex(listening.furigana ?? []),
     [listening.furigana],
   );
+  /** 聞き取り専用の 読み（「10時」を「じゅうじ」と 打っても 当たる。台帳は 教材の ID で 引く）。 */
+  const sounds = useMemo(() => buildSoundsIndex(soundsLikeOf(listening.id)), [listening.id]);
 
   /**
    * 話者の名前。「あなた」ではなく、その学習者の名前を出す。
@@ -134,6 +139,7 @@ export function ListeningPlayer({
               goal={goal}
               showTranscript={captionsOn}
               furigana={furigana}
+              sounds={sounds}
               onChange={onCheckChange}
             />
           ) : null}
@@ -574,7 +580,7 @@ function Review({
    * 全部の 文の 音が そろって いない 教材には 出さない（`lineSentenceClips`）。
    */
   const clips = useMemo(
-    () => lineSentenceClips(listening.id, listening.script, hasAsset),
+    () => lineSentenceClips(listening.id, listening.script, hasAsset, audioUnitsOf(listening.id)),
     [listening.id, listening.script],
   );
   const clipRef = useRef<HTMLAudioElement>(null);

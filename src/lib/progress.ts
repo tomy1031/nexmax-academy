@@ -11,13 +11,27 @@
 
 const PROGRESS_KEY = "nexmax.progress.v1";
 
-export type StageStatus = "cleared" | "current" | "locked";
+/**
+ * 最後に 教材を 開いた ステージ（まだ クリアして いない もの）。
+ * 地図の「いま ここ」を 決める 手がかりに なる（`deriveProgress`）。
+ */
+const STUDYING_KEY = "nexmax.studying.v1";
+
+/**
+ * - cleared … クリア済み
+ * - current … いま ここ
+ * - skipped … とばした（いま ここ／クリア済みの ステージより 前に あって、まだ おわって いない）
+ * - locked  … まだ 来て いない（いま ここ より 先）
+ */
+export type StageStatus = "cleared" | "current" | "skipped" | "locked";
 
 export interface StageProgress {
   /** クリア済みステージの id（マップの並び順） */
   clearedIds: readonly string[];
   /** いま取り組むステージ。すべてクリア済みなら null */
   currentStageId: string | null;
+  /** とばしたステージの id（マップの並び順）。`StageStatus` の skipped。 */
+  skippedIds: readonly string[];
   clearedCount: number;
   totalCount: number;
   /** 0–100 の整数 */
@@ -83,25 +97,111 @@ export function markStageCleared(stageId: string): void {
   store.setItem(PROGRESS_KEY, JSON.stringify([...ids, stageId]));
 }
 
-/** クリア済み id の一覧から、画面表示に使う進捗をまとめて導く */
+/**
+ * 保存してある文字列そのまま（無ければ ""）。`clearedIdsSnapshot` と 同じく スナップショット用。
+ *
+ * 読み書きとも 例外を 外へ 出さない（プライベートモード・容量超過）。これは 地図と
+ * **全教材の 画面**から 呼ばれるので、投げると 学習の 画面ごと エラー画面に 替わる。
+ */
+export function studyingStageSnapshot(): string {
+  try {
+    return storage()?.getItem(STUDYING_KEY) ?? "";
+  } catch {
+    return "";
+  }
+}
+
+/**
+ * 教材を おえた ステージを「いま 学習中」として 覚える。
+ *
+ * **クリア済みの ステージでは 書かない。** 見直しに 戻った だけで「いま ここ」が
+ * 後ろへ 引き戻されると、地図を 開くたびに 見直した ステージへ 飛ばされる。
+ */
+export function rememberStudyingStage(stageId: string): void {
+  try {
+    const store = storage();
+    if (!store) return;
+    if (getClearedStageIds([stageId]).length > 0) return;
+    store.setItem(STUDYING_KEY, stageId);
+  } catch {
+    /* 覚えられなくても 学習は 続けられる（地図は いちばん 先の クリアの つぎに 戻る） */
+  }
+}
+
+/**
+ * クリア済み id の一覧から、画面表示に使う進捗をまとめて導く。
+ *
+ * 「いま ここ」は **最後に 教材を 開いた ステージ**（`studyingStageId`）。
+ * それが 無い・もう クリアした・地図に 無い ときは、**いちばん 先まで クリアした
+ * ステージの つぎ**にする。
+ *
+ * 以前は「上から 数えて 最初の 未クリア」だった。それだと **いくつか とばした
+ * 学習者は、ずっと とばした ステージに 引き戻される**——授業は ステージ7 なのに、
+ * 地図の「いま ここ」は 休んだ 日の ステージ3 に 立つ（2026-09-29 の 指定）。
+ * とばした ステージは `skippedIds` に 入り、地図では 🔒 を 出さない。
+ */
 export function deriveProgress(
   clearedIds: readonly string[],
   stageIds: readonly string[],
+  studyingStageId: string | null = null,
 ): StageProgress {
   const cleared = new Set(clearedIds);
   const totalCount = stageIds.length;
   const clearedCount = stageIds.filter((id) => cleared.has(id)).length;
 
+  const furthestCleared = stageIds.findLastIndex((id) => cleared.has(id));
+  const studying =
+    studyingStageId && stageIds.includes(studyingStageId) && !cleared.has(studyingStageId)
+      ? studyingStageId
+      : null;
+  const currentStageId =
+    studying ??
+    stageIds[furthestCleared + 1] ??
+    // 先は ぜんぶ クリア済み。残って いるのは とばした ステージだけ
+    stageIds.find((id) => !cleared.has(id)) ??
+    null;
+
+  const passedUntil = Math.max(
+    currentStageId ? stageIds.indexOf(currentStageId) : -1,
+    furthestCleared,
+  );
+  const skippedIds = stageIds.filter(
+    (id, index) => index < passedUntil && id !== currentStageId && !cleared.has(id),
+  );
+
   return {
     clearedIds,
-    currentStageId: stageIds.find((id) => !cleared.has(id)) ?? null,
+    currentStageId,
+    skippedIds,
     clearedCount,
     totalCount,
     percent: totalCount === 0 ? 0 : Math.round((clearedCount / totalCount) * 100),
   };
 }
 
+/**
+ * 地図を ひらいた ときに 下りる 先（2026-09-29 の 指定「毎回 一番上は きつい」）。
+ *
+ * - いま ここ の ステージ … `{ kind: "stage" }`
+ * - ぜんぶ クリア … `{ kind: "goal" }`（地図は ゴールへ。カードには ゴールが 無いので 下りない）
+ * - **はじめての 学習者**（まだ 何も クリアして いない・教材も おえて いない）… null。
+ *   一番上の START の 看板から 見せる
+ *
+ * 地図は ログインの 内側に あって 通しの 検証から 見えない。見張れるのは 単体テスト
+ * だけなので、判断は 部品に 書かず ここに 置く（map-data.ts の `mapStageActions` と 同じ 理由）。
+ */
+export type MapLanding = { kind: "stage"; stageId: string } | { kind: "goal" } | null;
+
+export function mapLanding(progress: StageProgress, studyingStageId: string | null): MapLanding {
+  if (progress.currentStageId === null) {
+    return progress.clearedCount > 0 ? { kind: "goal" } : null;
+  }
+  const fresh = progress.clearedCount === 0 && progress.currentStageId !== studyingStageId;
+  return fresh ? null : { kind: "stage", stageId: progress.currentStageId };
+}
+
 export function stageStatus(stageId: string, progress: StageProgress): StageStatus {
   if (progress.clearedIds.includes(stageId)) return "cleared";
-  return stageId === progress.currentStageId ? "current" : "locked";
+  if (stageId === progress.currentStageId) return "current";
+  return progress.skippedIds.includes(stageId) ? "skipped" : "locked";
 }

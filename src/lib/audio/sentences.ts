@@ -46,12 +46,56 @@ export interface SpeakerSentence {
   readonly text: string;
 }
 
-/** 原稿（行の 並び）を、話す人つきの 文の 並びに する。 */
+/** 短い 文と みなす 字の 数（空白と 記号は 数えない）。「ありがとう ございます。」は 10字。 */
+export const SHORT_SENTENCE_CHARS = 10;
+
+/** 短い 文か（「はい。」「分かりました。」「ありがとう ございます。」）。 */
+export function isShortSentence(text: string): boolean {
+  return (
+    text.replace(/[\s\u3000、。，．,.!?！？「」『』（）()・…]/g, "").length <= SHORT_SENTENCE_CHARS
+  );
+}
+
+/**
+ * 1行（同じ 人の ひとつづき）の 文を、**音の ひとまとまり**に まとめる。
+ *
+ * 2026-09-29 の 指定「わかりました。／ありがとうございます。などの 短い 文で 同じ 人の ものは
+ * そのまま 結合」。1文ずつ 1.5秒 あけると「分かりました。…（1.5秒）…ありがとう ございます。」と
+ * 不自然に 切れる。**短い 文は 前の 文に つける**（行の 頭の 短い 文は 次の 文に つける）。
+ * 行を またいで（話す人が 変わって）まとめる ことは しない。
+ */
+export function joinShortSentences(sentences: readonly string[]): string[] {
+  const groups: string[][] = [];
+  let leadingShort = false;
+  for (const sentence of sentences) {
+    const last = groups[groups.length - 1];
+    if (last && (isShortSentence(sentence) || leadingShort)) {
+      last.push(sentence);
+      leadingShort = leadingShort && isShortSentence(sentence);
+      continue;
+    }
+    groups.push([sentence]);
+    leadingShort = groups.length === 1 && isShortSentence(sentence);
+  }
+  return groups.map((group) => group.join(""));
+}
+
+/** 行を 文（または 短い 文を まとめた ひとまとまり）に 割る。 */
+function lineUnits(text: string, joinShort: boolean): string[] {
+  const sentences = splitSentences(text);
+  return joinShort ? joinShortSentences(sentences) : sentences;
+}
+
+/**
+ * 原稿（行の 並び）を、話す人つきの 文の 並びに する。
+ * `joinShort` の 教材（`src/content/listening-audio.ts`）は 短い 文を となりと 1つに する。
+ */
 export function scriptSentences(
   script: readonly { readonly speaker: string; readonly text: string }[],
+  { joinShort = false }: { joinShort?: boolean } = {},
 ): SpeakerSentence[] {
   return script.flatMap((line) =>
-    splitSentences(line.text).map((text) => ({ speaker: line.speaker, text })),
+    lineUnits(line.text, joinShort).map((text) => ({ speaker: line.speaker, text })),
   );
 }
 
@@ -82,10 +126,14 @@ export function lineSentenceClips(
   listeningId: string,
   script: readonly { readonly speaker: string; readonly text: string }[],
   has: (url: string) => boolean,
+  { joinShort = false }: { joinShort?: boolean } = {},
 ): SentenceClip[][] | null {
   let at = 0;
   const lines = script.map((line) =>
-    splitSentences(line.text).map((text) => ({ text, url: sentenceAudioUrl(listeningId, at++) })),
+    lineUnits(line.text, joinShort).map((text) => ({
+      text,
+      url: sentenceAudioUrl(listeningId, at++),
+    })),
   );
   return lines.every((clips) => clips.every((clip) => has(clip.url))) ? lines : null;
 }

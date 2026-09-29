@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { buildFuriganaIndex } from "@/lib/text/furigana";
 import {
+  buildSoundsIndex,
   createListening,
   DEFAULT_RESCUE_WORD,
   DEFAULT_RULES,
@@ -180,6 +181,122 @@ describe("ひらがなで 打っても 当たる（読み辞書を 通す）", (
     const かな = submitListening(createListening(原稿, [], rules, 辞書), "たっせいかん");
     const 漢字 = submitListening(createListening(原稿, [], rules, 辞書), "達成感");
     expect(revealRate(かな)).toBe(revealRate(漢字));
+  });
+});
+
+describe("数字・英字で 始まる 語も かなで 当たる（聞き取り専用の 読み・2026-09-28）", () => {
+  const 原稿 = "今日の 10時ごろから、GitHubの Issueを 見ます。進捗は 80％です。";
+  const 辞書 = buildFuriganaIndex([
+    ["今日", "きょう"],
+    ["進捗", "しんちょく"],
+    ["時", "じ"],
+    ["見", "み"],
+  ]);
+  const 読み = buildSoundsIndex([
+    ["10時", "じゅうじ"],
+    ["十時", "じゅうじ"],
+    ["GitHub", "ぎっとはぶ"],
+    ["Issue", "いしゅー"],
+    ["80％", "はちじゅっぱーせんと"],
+    ["80％", "はちじっぱーせんと"],
+  ]);
+  const rules = { minLength: 2, maxMiss: 5 };
+  const start = (keywords: readonly string[] = []) =>
+    createListening(原稿, keywords, rules, 辞書, 読み);
+  const 位置 = (word: string) =>
+    Array.from({ length: word.length }, (_, k) => 原稿.indexOf(word) + k);
+
+  it("「10時」を「じゅうじ」と 打って 当たり、「10時」まるごとが ひらく", () => {
+    const state = submitListening(start(), "じゅうじ");
+    expect(state.log[0]?.kind).toBe("partial");
+    for (const i of 位置("10時")) expect(state.revealed.has(i)).toBe(true);
+  });
+
+  it("前後の ことばと つなげて 打っても 当たる（きょうの じゅうじごろ）", () => {
+    expect(submitListening(start(), "きょうのじゅうじごろ").log[0]?.kind).toBe("partial");
+    expect(submitListening(start(), "今日の10時ごろ").log[0]?.kind).toBe("partial");
+  });
+
+  it("書かれた 形・変換で 出る 形（十時）でも 当たる", () => {
+    expect(submitListening(start(), "10時").log[0]?.kind).toBe("partial");
+    expect(submitListening(start(), "十時").log[0]?.kind).toBe("partial");
+  });
+
+  it("英語の 語は ひらがな・カタカナ・英字（大小・全角）の どれでも 当たる", () => {
+    for (const typed of [
+      "ぎっとはぶ",
+      "ギットハブ",
+      "GitHub",
+      "github",
+      "ＧｉｔＨｕｂ",
+      "いしゅー",
+    ]) {
+      expect(submitListening(start(), typed).log[0]?.kind, typed).toBe("partial");
+    }
+  });
+
+  it("聞こえかたの ゆれ（2行目の 読み）でも 当たり、キーワードにも なる", () => {
+    const partial = submitListening(start(), "はちじっぱーせんと");
+    expect(partial.log[0]?.kind).toBe("partial");
+    const keyword = submitListening(start(["80％"]), "はちじっぱーせんと");
+    expect(keyword.log[0]?.kind).toBe("hiragana");
+    expect(keyword.foundKeywords).toEqual(["80％"]);
+  });
+
+  it("キーワードは 漢字でも かなでも 同じ 1語として 見つかる", () => {
+    const かな = submitListening(start(["10時"]), "じゅうじ");
+    const 数字 = submitListening(start(["10時"]), "10時");
+    expect(かな.foundKeywords).toEqual(["10時"]);
+    expect(数字.foundKeywords).toEqual(["10時"]);
+    expect(revealRate(かな)).toBe(revealRate(数字));
+  });
+
+  it("台帳が 無ければ 前と 同じ（じゅうじ は 当たらない）", () => {
+    const state = submitListening(createListening(原稿, [], rules, 辞書), "じゅうじ");
+    expect(state.log[0]?.kind).not.toBe("partial");
+  });
+
+  it("数字を 変換せずに かなと 混ぜた 形（10じごろ）も 当たる——台帳を 入れても 外れない", () => {
+    expect(submitListening(start(), "10じごろ").log[0]?.kind).toBe("partial");
+  });
+
+  it("読み辞書の 熟語を 割らない（「10時間」の 時間 は じかん の まま）", () => {
+    const state = submitListening(
+      createListening(
+        "10時間 かかります。",
+        [],
+        rules,
+        buildFuriganaIndex([["時間", "じかん"]]),
+        buildSoundsIndex([["10時", "じゅうじ"]]),
+      ),
+      "じかん",
+    );
+    expect(state.log[0]?.kind).toBe("partial");
+  });
+
+  it("漢数字・小数の 途中でも 当てない（十五時・1.5GB）", () => {
+    const sounds = buildSoundsIndex([
+      ["五時", "ごじ"],
+      ["5GB", "ごぎが"],
+    ]);
+    const kanji = createListening("十五時に 始めます。", [], rules, 辞書, sounds);
+    expect(submitListening(kanji, "ごじ").log[0]?.kind).not.toBe("partial");
+    const decimal = createListening("1.5GBです。", [], rules, 辞書, sounds);
+    expect(submitListening(decimal, "ごぎが").log[0]?.kind).not.toBe("partial");
+  });
+
+  it("語の 途中では 当てない（「15時」の 中の「5時」を「ごじ」に しない）", () => {
+    const state = submitListening(
+      createListening(
+        "15時に 始めます。",
+        [],
+        rules,
+        buildFuriganaIndex([["時", "じ"]]),
+        buildSoundsIndex([["5時", "ごじ"]]),
+      ),
+      "ごじ",
+    );
+    expect(state.log[0]?.kind).not.toBe("partial");
   });
 });
 
