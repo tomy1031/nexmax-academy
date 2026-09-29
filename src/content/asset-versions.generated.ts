@@ -1,6 +1,7 @@
 // 自動生成（scripts/generate_asset_versions.mjs）。手で 直さない。
 // 資産の 中身の ハッシュ。URL に `?v=` として 付け、差しかえが 学習者に 届くようにする。
 export const ASSET_VERSIONS: Readonly<Record<string, string>> = {
+  "/audio/.DS_Store": "152803be",
   "/audio/hourensou/renraku.wav": "6980987c",
   "/audio/hourensou/soudan.wav": "e7a489c9",
   "/audio/kaisha/shugyo_keitai.wav": "f749d89e",
