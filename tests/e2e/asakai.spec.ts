@@ -692,6 +692,98 @@ test("5日 通すと、合否と 数が 読める", async ({ page, context }) =>
 });
 
 /**
+ * 5日 話し終えて 週の けっかを まだ 閉じて いない しおり（`asakai-resume.ts` と 同じ 形）。
+ * `probesOn` の 曜日（0始まり）だけ 聞き返しが あった ことに する。
+ */
+function pendingWeek(probesOn: Record<number, number>): string {
+  const meeting = JSON.parse(
+    readFileSync(join(__dirname, "..", "..", "content", "meetings", "asakai_kantan.json"), "utf8"),
+  ) as {
+    asakai: {
+      scenes: {
+        kind: "asa" | "yuu";
+        panels: { id: string; label: string; facts: unknown[] }[];
+      }[];
+    };
+  };
+  const names = ["月曜日", "火曜日", "水曜日", "木曜日", "金曜日"];
+  const done = meeting.asakai.scenes.map((scene, at) => {
+    const komari = scene.panels.find((panel) => panel.id === "komari");
+    return {
+      day: names[at],
+      kind: scene.kind,
+      cards: scene.panels.length,
+      cardTotal: scene.panels.length,
+      units: scene.panels.length,
+      unitTotal: scene.panels.length,
+      komariOpen: true,
+      komariBoxes: komari?.facts.length ?? 0,
+      komariTotal: komari?.facts.length ?? 0,
+      probes: probesOn[at] ?? 0,
+      chips: scene.panels.map((panel) => ({ label: panel.label, open: true })),
+    };
+  });
+  return JSON.stringify({ meetingId: "asakai_kantan", done, drafts: {}, weekPending: true });
+}
+
+/**
+ * **★ 1回で ぜんぶ 言えた 曜日と、その 曜日だけ 話し直す 道**（2026-09-29 の 指定
+ *「最終的には 各曜日 一度で 伝えられる ように なると いい」・A）。
+ *
+ * 合格の 線は そのまま、★は その 上の 目標。★の ない 曜日には「もう いちど」が あり、
+ * 話し直して 評価を 閉じると 次の 曜日へ 進まずに 週の けっかへ 戻る。
+ */
+test("★の ない 曜日だけ 話し直すと、週の けっかに 戻って ★が 付く", async ({ page, context }) => {
+  const refs = stageRefs();
+  const at = refs.indexOf("asakai_kantan");
+  await seedCompleted(context, refs.slice(0, at));
+  await page.goto("/asakai/meeting-asakai_kantan");
+  await page.evaluate(
+    (saved) => window.localStorage.setItem("nexmax:v1:asakai-resume:asakai_kantan", saved),
+    pendingWeek({ 2: 2 }),
+  );
+  await page.reload();
+  await joinCall(page);
+
+  const week = page.getByRole("dialog", { name: "今週の けっか" });
+  await expect(week).toBeVisible();
+  await expectOnScreen(page, "1回で ぜんぶ 言えた 曜日 4 / 5");
+  await expectOnScreen(page, "合格とは べつの 目標です");
+  /* 「もう いちど」は ★の ない 水曜日だけ。 */
+  await expect(week.getByRole("button", { name: "水曜日を もう いちど" })).toBeVisible();
+  await expect(week.getByRole("button", { name: "月曜日を もう いちど" })).toHaveCount(0);
+  expect(await bareKanjiTexts(page)).toEqual([]);
+  await shot(page, "asakai-21-week-stars");
+
+  await week.getByRole("button", { name: "水曜日を もう いちど" }).click();
+  await expect(week).toBeHidden();
+  await closeDuty(page);
+  await expect(page.getByRole("button", { name: /水曜日/ })).toHaveAttribute(
+    "aria-current",
+    "step",
+  );
+
+  /* 水曜の れいを 1本で 話す（聞き返し 0回）。 */
+  await page.getByLabel("こたえを 入力する").fill(exampleUtterances()[2] ?? "");
+  await page.getByRole("button", { name: "おくる" }).click();
+  const day = page.getByRole("dialog", { name: "今日の 評価" });
+  await expect(day).toBeVisible();
+  /* 木曜へ 進まずに、週の けっかへ 戻る。 */
+  await day.getByRole("button", { name: /今週の けっかに もどる/ }).click();
+  await expect(day).toBeHidden();
+  await expect(week).toBeVisible();
+  await expectOnScreen(page, "1回で ぜんぶ 言えた 曜日 5 / 5");
+  await expect(week.getByRole("button", { name: /を もう いちど/ })).toHaveCount(0);
+  await shot(page, "asakai-22-week-stars-redone");
+
+  /* 話し直した けっかは しおりに 残る（週の けっかを 閉じる 前に 開き直しても）。 */
+  await page.reload();
+  await joinCall(page);
+  await expect(week).toBeVisible();
+  await expectOnScreen(page, "1回で ぜんぶ 言えた 曜日 5 / 5");
+});
+
+/**
  * **報告の 途中で 開き直しても、板と 会話が 残る**（2026-09-17 の 指定
  *「回答結果が リセットされて しまう。…ストレージ保管して 再現できるように」）
  *

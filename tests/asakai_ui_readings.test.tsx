@@ -50,6 +50,38 @@ describe.each(MEETINGS)("%s の 画面の 字", (id) => {
   });
 });
 
+/*
+ * 週の けっかの ★と「その 曜日だけ 話し直す」（2026-09-29）。
+ * 画面が 自分で 出す 字なので、裸の 漢字と 送りがなの 読みちがいを ここで 見る。
+ */
+const KANJI = /[\u4e00-\u9fff]/u;
+
+describe.each(MEETINGS)("%s の 週の けっかの ★", (id) => {
+  it.each([
+    ["1回で ぜんぶ 言えた 曜日", ["回〔かい〕", "言えた〔いえた〕", "曜日〔ようび〕"]],
+    [
+      "聞き返し 0回で、ぜんぶ 言えた 曜日に ★が 付きます。合格とは べつの 目標です。",
+      ["聞き返し〔ききかえし〕", "付きます〔つきます〕", "合格〔ごうかく〕", "目標〔もくひょう〕"],
+    ],
+    [
+      "★が ない 曜日は「もう いちど」で、その 曜日だけ 話し直せます。けっかは 話し直した ほうに 変わります。",
+      [
+        "話し直せます〔はなしなおせます〕",
+        "話し直した〔はなしなおした〕",
+        "変わります〔かわります〕",
+      ],
+    ],
+    ["今週の けっかに もどる ▶", ["今週〔こんしゅう〕"]],
+  ])("「%s」", (text, expected) => {
+    const got = read(text, id);
+    for (const one of expected) expect(got).toContain(one);
+    const bare = annotateRuby(text, indexOf(id)).filter(
+      (seg) => !seg.reading && KANJI.test(seg.text),
+    );
+    expect(bare.map((seg) => seg.text)).toEqual([]);
+  });
+});
+
 describe("数字＋日 は 手書きの ルビで 読む", () => {
   it("5日 は いつか", () => {
     expect(renderToStaticMarkup(<DayCount n={5} />)).toContain("<rt>いつか</rt>");

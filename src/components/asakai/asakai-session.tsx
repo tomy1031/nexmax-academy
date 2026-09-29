@@ -108,6 +108,7 @@ import { recordContentProgress } from "@/lib/progress/store";
 import {
   clearAsakaiDraft,
   clearAsakaiResume,
+  isOneShotDay,
   readAsakaiDraft,
   refreshSavedLines,
   saveAsakaiDraft,
@@ -530,6 +531,11 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
   const [shownAnswers, setShownAnswers] = useState<readonly string[]>([]);
   /** けっかを 読んだ 印。**読んだ ときに 1回だけ**「おわった」を 書く。 */
   const weekRead = useRef(false);
+  /**
+   * **週の けっかから 1日だけ 話し直して いる**（2026-09-29・`redoDay`）。
+   * その日の 評価を 閉じたら、つぎの 曜日へ 進まずに 週の けっかへ 戻る。
+   */
+  const [backToWeek, setBackToWeek] = useState(false);
 
   /** AIに 見て もらって いる あいだ（鍵が 無い ときは いつも false）。 */
   const [waiting, setWaiting] = useState(false);
@@ -1541,9 +1547,52 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
     weekRead.current = false;
     setResults([]);
     setShownAnswers([]);
+    setBackToWeek(false);
     setWeekOpen(false);
     goToScene(0);
   }, [meeting.id, goToScene]);
+
+  /**
+   * **その 曜日だけ 話し直す**（2026-09-29 の 指定。★の ない 曜日の「もう いちど」）。
+   *
+   * 目標は「どの 曜日も 1回で 伝えられる」こと。週を まるごと やり直さなくても、
+   * ★の ない 曜日だけ 練習できる ように する。
+   *
+   * ## 話し直した けっかで **置きかえる**（お手本を 見た あとでも）
+   * 同じ 授業の 中の やり直しは「お手本を 見た あと」なので 点を 変えない 決まり
+   *（`shownAnswers`）。ただ それは **お手本を 見た その場で 写す** 道を ふさぐ ための もので、
+   * 週の けっかには お手本が 無い。「月曜日から もう いちど」（`restartWeek`）と 同じく、
+   * ここからの 話し直しは その 曜日の 印を 外して 数え直す。
+   * 置きかえるのは 話し終えた ときだけ——途中で やめたら 前の けっかが 残る。
+   */
+  const redoDay = useCallback(
+    (at: number) => {
+      const day = asakai?.scenes[at]?.day;
+      if (!day) return;
+      clearAsakaiDraft(meeting.id, day);
+      setShownAnswers((prev) => prev.filter((one) => one !== DAY_NAME[day]));
+      setBackToWeek(true);
+      setWeekOpen(false);
+      goToScene(at);
+    },
+    [asakai, meeting.id, goToScene],
+  );
+
+  /**
+   * 話し直した 日の 評価を 閉じたら、週の けっかへ 戻る。
+   *
+   * 先輩の 報告と 締めは 流さない——合否を 読む うしろで 声が 流れる ことに なる
+   *（金曜に 週の けっかを 自動で 開かない ように した のと 同じ 理由・`toGap`）。
+   */
+  const backToWeekResult = useCallback(() => {
+    runId.current += 1;
+    setWaiting(false);
+    stopClips();
+    voice.stop();
+    setBackToWeek(false);
+    setPhase("done");
+    setWeekOpen(true);
+  }, [stopClips, voice]);
 
   const goNext = useCallback(() => goToScene(sceneAt + 1), [goToScene, sceneAt]);
 
@@ -2203,10 +2252,12 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
           advice={dayAi.advice}
           failReason={dayFail}
           nextLabel={
-            sceneAt + 1 >= asakai.scenes.length
-              ? /* 閉じた あとは 先輩の 報告を 聞き、週の けっかは ボタンで 開く（上の `toGap`）。 */
-                "みんなの 報告を 聞く ▶"
-              : `${DAY_NAME[asakai.scenes[sceneAt + 1]?.day ?? "fri"]}へ 進む ▶`
+            backToWeek
+              ? "今週の けっかに もどる ▶"
+              : sceneAt + 1 >= asakai.scenes.length
+                ? /* 閉じた あとは 先輩の 報告を 聞き、週の けっかは ボタンで 開く（上の `toGap`）。 */
+                  "みんなの 報告を 聞く ▶"
+                : `${DAY_NAME[asakai.scenes[sceneAt + 1]?.day ?? "fri"]}へ 進む ▶`
           }
           index={index}
           aiIndex={aiIndex}
@@ -2218,6 +2269,14 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
           }}
           onClose={() => {
             setDayOpen(false);
+            if (backToWeek) {
+              /* 司会の 受け止め（評価の あいだに 鳴った 1行）だけ 字で 残す。 */
+              const ack = pendingTail[0];
+              if (ack) setLines((prev) => [...prev, toChatLine(ack, nameOf, learnerName)]);
+              setPendingTail([]);
+              backToWeekResult();
+              return;
+            }
             /* 受け止めの 字と、そのあとの 話を ここで 出す（上の `finishScene` の 覚え書き）。 */
             if (pendingTail.length > 0) {
               const rest = pendingTail.slice(1);
@@ -2239,6 +2298,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
           index={index}
           onClose={closeWeek}
           onRestart={restartWeek}
+          onRedoDay={redoDay}
         />
       ) : null}
       {/*
@@ -2421,6 +2481,7 @@ function WeekResult({
   index,
   onClose,
   onRestart,
+  onRedoDay,
 }: {
   asakai: Asakai;
   rows: readonly DayResult[];
@@ -2428,6 +2489,8 @@ function WeekResult({
   onClose: () => void;
   /** 月曜日から もう いちど（しおりを 消して 白紙から）。 */
   onRestart: () => void;
+  /** その 曜日だけ 話し直す（何日目か・0始まり）。 */
+  onRedoDay: (at: number) => void;
 }) {
   /*
    * 問題の 札は **教材の ことばを 使う**。「こまりごと」と 書き込んで いた ころ、
@@ -2459,6 +2522,12 @@ function WeekResult({
    * 中で 午後の テストの けっかを 話して いた（時間の 筋が 逆だった）ので、ここへ 移した。
    */
   const after = asakai.scenes[asakai.scenes.length - 1]?.lead ?? "";
+  /*
+   * **★ 1回で ぜんぶ 言えた 曜日**（2026-09-29 の 指定）。合否の 線とは 分けて 出す——
+   * 同じ 段に 並べると「★が 5つ 無いと 不合格」に 読める。
+   */
+  const stars = rows.filter(isOneShotDay).length;
+  const sceneAtOf = (day: string) => asakai.scenes.findIndex((s) => DAY_NAME[s.day] === day);
 
   return (
     <ModalShell
@@ -2513,6 +2582,25 @@ function WeekResult({
         </p>
       ) : null}
 
+      <div className="bg-panel-tint mt-3 rounded-xl px-3 py-2">
+        <p className="text-sm font-bold">
+          <span aria-hidden="true" className="text-sun-deep">
+            ★
+          </span>{" "}
+          <RubyText text="1回で ぜんぶ 言えた 曜日" index={index} show />{" "}
+          <span className="tabular-nums">
+            {stars} / {rows.length}
+          </span>
+        </p>
+        <p className="text-ink-soft mt-0.5 text-[11px] leading-[1.9] font-bold">
+          <RubyText
+            text="聞き返し 0回で、ぜんぶ 言えた 曜日に ★が 付きます。合格とは べつの 目標です。"
+            index={index}
+            show
+          />
+        </p>
+      </div>
+
       <table className="mt-3 w-full text-left text-[13px] font-bold">
         <thead>
           <tr className="text-ink-soft text-[11px]">
@@ -2525,24 +2613,63 @@ function WeekResult({
             <th scope="col" className="py-1">
               <RubyText text="聞き返し" index={index} show />
             </th>
+            {/* 見出しの 字は 出さない（ボタンの 字が そのまま 列の 名前）。 */}
+            <th scope="col" className="py-1">
+              <span className="sr-only">もう いちど</span>
+            </th>
           </tr>
         </thead>
         <tbody>
-          {rows.map((row) => (
-            <tr key={row.day} className="border-hairline border-t">
-              <td className="py-1">
-                <RubyText text={row.day} index={index} show />
-              </td>
-              <td className="py-1 tabular-nums">
-                {row.units} / {row.unitTotal}
-              </td>
-              <td className="py-1 tabular-nums">
-                <RubyText text={`${row.probes}回`} index={index} show />
-              </td>
-            </tr>
-          ))}
+          {rows.map((row) => {
+            const star = isOneShotDay(row);
+            const at = sceneAtOf(row.day);
+            return (
+              <tr key={row.day} className="border-hairline border-t">
+                <td className="py-1">
+                  <RubyText text={row.day} index={index} show />
+                  {star ? (
+                    <span
+                      role="img"
+                      aria-label="1回で ぜんぶ 言えた"
+                      className="text-sun-deep ml-1"
+                    >
+                      ★
+                    </span>
+                  ) : null}
+                </td>
+                <td className="py-1 tabular-nums">
+                  {row.units} / {row.unitTotal}
+                </td>
+                <td className="py-1 tabular-nums">
+                  <RubyText text={`${row.probes}回`} index={index} show />
+                </td>
+                <td className="py-1 text-right">
+                  {!star && at >= 0 ? (
+                    <button
+                      type="button"
+                      onClick={() => onRedoDay(at)}
+                      aria-label={`${row.day}を もう いちど`}
+                      className="btn-island px-2 py-1 text-[11px] whitespace-nowrap"
+                    >
+                      もう いちど
+                    </button>
+                  ) : null}
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
+
+      {stars < rows.length ? (
+        <p className="mt-2 text-[12px] leading-[1.9] font-bold">
+          <RubyText
+            text="★が ない 曜日は「もう いちど」で、その 曜日だけ 話し直せます。けっかは 話し直した ほうに 変わります。"
+            index={index}
+            show
+          />
+        </p>
+      ) : null}
 
       {pass ? null : (
         <p className="mt-3 text-sm font-bold">

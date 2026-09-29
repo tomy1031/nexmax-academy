@@ -57,6 +57,18 @@ const dayResultSchema = z.object({
 export type DayResult = z.infer<typeof dayResultSchema>;
 
 /**
+ * **1回で ぜんぶ 言えた 日**（★・2026-09-29 の 指定「最終的には 各曜日 一度で
+ * 伝えられるように なると いい」）。合格の 条件では なく、その 上の 目標。
+ *
+ * 欄は 足さず、いま ある 数から 決める——聞き返しが 0回で 終わった 日は、
+ * さいしょの 1本で 札が ぜんぶ ⭕ に なった 日だけ（打ち切りは 聞き返しの あとにしか
+ * 起きない）。だから 前から 残って いる しおりにも そのまま ★が 付く。
+ */
+export function isOneShotDay(row: DayResult): boolean {
+  return row.probes === 0 && row.cardTotal > 0 && row.cards === row.cardTotal;
+}
+
+/**
  * **報告の 途中**（その日の 板・聞き返しの 回数・チャット）。
  *
  * 2026-09-17 の 指定「回答結果が リセットされて しまう。曜日を 切り替えた 場合や

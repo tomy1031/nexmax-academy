@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   clearAsakaiDraft,
   clearAsakaiResume,
+  isOneShotDay,
   readAsakaiResume,
   restoreAsakai,
   saveAsakaiDraft,
@@ -97,5 +98,27 @@ describe("週の けっか待ち", () => {
     saveAsakaiResume("m", WEEK, backend, 5);
     clearAsakaiResume("m", backend);
     expect(restoreAsakai("m", 5, backend).sceneAt).toBe(0);
+  });
+});
+
+/*
+ * **★ 1回で ぜんぶ 言えた 曜日**（2026-09-29 の 指定）。欄は 足さず、
+ * 聞き返しの 回数と 開いた 札の 数から 決める（古い しおりにも そのまま 付く）。
+ */
+describe("isOneShotDay", () => {
+  it("聞き返し 0回で 札が ぜんぶ ⭕ なら ★", () => {
+    expect(isOneShotDay(day("月曜日"))).toBe(true);
+  });
+
+  it("聞き返しが 1回でも あれば ★では ない（あとで ぜんぶ 開いても）", () => {
+    expect(isOneShotDay({ ...day("水曜日"), probes: 1 })).toBe(false);
+  });
+
+  it("開かなかった 札が あれば ★では ない", () => {
+    expect(isOneShotDay({ ...day("木曜日"), cards: 3 })).toBe(false);
+  });
+
+  it("札の ない 日（壊れた 記録）には 付けない", () => {
+    expect(isOneShotDay({ ...day("金曜日"), cards: 0, cardTotal: 0 })).toBe(false);
   });
 });
