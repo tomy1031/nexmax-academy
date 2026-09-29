@@ -80,6 +80,8 @@ const LEDGER: Readonly<Record<string, readonly FuriganaEntry[]>> = {
     ["明日", "あす"],
     ["今日中", "きょうじゅう"],
     ["今日中", "きょうちゅう"],
+    // 変換や 文字起こしが 数字で 書く 形（2026-09-29。Live の 確かめが「1つずつ」を いちつずつ と 読んで 2回 落ちた）
+    ["1つずつ", "ひとつずつ"],
   ],
   // ③ トラブルの 報告（「十時」は 変換で 出る 形）
   houkoku_shougai_listening: [
@@ -102,6 +104,9 @@ const LEDGER: Readonly<Record<string, readonly FuriganaEntry[]>> = {
     ["S3", "えすさん"],
     ["昨日", "きのう"],
     ["昨日", "さくじつ"],
+    ["1つ目", "ひとつめ"],
+    ["2つ目", "ふたつめ"],
+    ["2つ", "ふたつ"],
     ["AWS", "えーだぶりゅーえす"],
     ["GitHub", "ぎっとはぶ"],
     ["Issue", "いしゅー"],
