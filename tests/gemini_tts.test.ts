@@ -17,7 +17,13 @@ import {
 } from "../scripts/lib/gemini_tts";
 import { chooseCuts, findPauses, plausibleSplit, splitAt } from "../scripts/lib/split_dialogue";
 import { LISTENING_AUDIO_PLANS } from "../scripts/lib/listening_audio_plans";
-import { allPairings, choosePairings, pairSpeakers, planCalls } from "../scripts/lib/tts_listening";
+import {
+  allPairings,
+  choosePairings,
+  fadeEdges,
+  pairSpeakers,
+  planCalls,
+} from "../scripts/lib/tts_listening";
 import { alignSentences, tidyTranscript } from "../scripts/lib/speech_reading";
 import { buildSoundsIndex, spellSounds } from "../src/components/listening/listening-checks";
 
@@ -122,6 +128,30 @@ describe("返事の 読みかた", () => {
     const pcm = new Uint8Array([1, 0, 2, 0, 3, 0]);
     expect([...pcmFromAudio(new Uint8Array(toWav(pcm)))]).toEqual([...pcm]);
     expect([...pcmFromAudio(pcm)]).toEqual([...pcm]);
+  });
+
+  it("data の 前に LIST が ある WAV（ffmpeg の 出力）も data だけ 取る（頭に ブツッを 入れない）", () => {
+    const pcm = Buffer.from([1, 0, 2, 0]);
+    const head = Buffer.alloc(12);
+    head.write("RIFF", 0);
+    head.write("WAVE", 8);
+    const fmt = Buffer.alloc(24);
+    fmt.write("fmt ", 0);
+    fmt.writeUInt32LE(16, 4);
+    fmt.writeUInt16LE(1, 8);
+    fmt.writeUInt16LE(1, 10);
+    fmt.writeUInt32LE(24000, 12);
+    fmt.writeUInt32LE(48000, 16);
+    fmt.writeUInt16LE(2, 20);
+    fmt.writeUInt16LE(16, 22);
+    const list = Buffer.concat([
+      Buffer.from("LIST"),
+      Buffer.from([26, 0, 0, 0]),
+      Buffer.from("INFOISFT\x0e\x00\x00\x00Lavf61.7.100\x00\x00"),
+    ]);
+    const data = Buffer.concat([Buffer.from("data"), Buffer.from([4, 0, 0, 0]), pcm]);
+    const wav = new Uint8Array(Buffer.concat([head, fmt, list, data]));
+    expect([...pcmFromAudio(wav)]).toEqual([1, 0, 2, 0]);
   });
 
   it("24kHz 以外は 止める（つなぐ 相手と 速さが ずれる）", () => {
@@ -327,5 +357,16 @@ describe("文字起こしの 空白・英字の 読ませかた", () => {
     expect(spellSounds("GitHubの Issueを 作った。AWSの S3に 10時", latin, katakana)).toBe(
       "ギットハブの イシューを 作った。AWSの エススリーに 10時",
     );
+  });
+});
+
+describe("音の 頭と おしり", () => {
+  it("はじめと おわりの 10ミリ秒で 0から 入り 0へ 消える（切れ目で 鳴らない）", () => {
+    const view = new DataView(new ArrayBuffer(24000 * 2));
+    for (let i = 0; i < 24000; i += 1) view.setInt16(i * 2, 10000, true);
+    const faded = new DataView(fadeEdges(new Uint8Array(view.buffer)).buffer);
+    expect(faded.getInt16(0, true)).toBe(0);
+    expect(Math.abs(faded.getInt16((24000 - 1) * 2, true))).toBeLessThan(10);
+    expect(faded.getInt16(12000 * 2, true)).toBe(10000);
   });
 });

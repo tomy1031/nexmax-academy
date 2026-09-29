@@ -40,7 +40,13 @@ import {
 import { soundsLikeOf } from "../../src/content/listening-sounds";
 import { audioUnitsOf } from "../../src/content/listening-audio";
 import { forSpeech, OUT_RATE, toWav } from "./live_tts";
-import { speechLine, synthesizeDialogue, transcribeAny, TTS_MODEL } from "./gemini_tts";
+import {
+  pcmFromAudio,
+  speechLine,
+  synthesizeDialogue,
+  transcribeAny,
+  TTS_MODEL,
+} from "./gemini_tts";
 import { chooseCuts, findPauses, plausibleSplit, splitAt } from "./split_dialogue";
 import { LISTENING_AUDIO_PLANS, type ListeningAudioPlan } from "./listening_audio_plans";
 import {
@@ -215,8 +221,15 @@ export function choosePairings<T>(
   return best;
 }
 
-/** atempo で 速さを 変える（音程は 保つ）。ffmpeg が 要る。 */
-function changeTempo(pcm: Uint8Array, tempo: number, work: string): Uint8Array {
+/**
+ * atempo で 速さを 変える（音程は 保つ）。ffmpeg が 要る。
+ *
+ * **出力の 頭を 44バイトと 決めつけない**。ffmpeg の WAV には `LIST`（作った 道具の 名前）が
+ * 入り、data は 78バイト目から 始まる。44バイトで 切ると 残りの 34バイト（「INFOISFT Lavf…」）を
+ * 音と して 読み、どの 音の 頭にも「ブツッ」が 入った（2026-09-29 の 指摘「音声が 切り替わる
+ * 時に クリック音」）。チャンクを たどって data だけ 取る（`pcmFromAudio`）。
+ */
+export function changeTempo(pcm: Uint8Array, tempo: number, work: string): Uint8Array {
   if (tempo === 1) return pcm;
   const input = join(work, "in.wav");
   const output = join(work, "out.wav");
@@ -237,7 +250,25 @@ function changeTempo(pcm: Uint8Array, tempo: number, work: string): Uint8Array {
     "pcm_s16le",
     output,
   ]);
-  return new Uint8Array(readFileSync(output).subarray(44));
+  return pcmFromAudio(new Uint8Array(readFileSync(output)));
+}
+
+/**
+ * 音の 頭と おしりを ごく 短く（10ミリ秒）ふわっと 入れて 消す。
+ * 切った ところの 小さな 雑音から 無音（0）へ 急に 変わると、そこが 小さく 鳴る。
+ */
+export function fadeEdges(pcm: Uint8Array, ms = 10): Uint8Array {
+  const out = new Uint8Array(pcm);
+  const view = new DataView(out.buffer, out.byteOffset, out.byteLength);
+  const samples = Math.floor(out.byteLength / 2);
+  const span = Math.min(Math.round((OUT_RATE * ms) / 1000), Math.floor(samples / 2));
+  for (let i = 0; i < span; i += 1) {
+    const gain = 0.5 - 0.5 * Math.cos((Math.PI * i) / span);
+    view.setInt16(i * 2, Math.round(view.getInt16(i * 2, true) * gain), true);
+    const j = samples - 1 - i;
+    view.setInt16(j * 2, Math.round(view.getInt16(j * 2, true) * gain), true);
+  }
+  return out;
 }
 
 /** 1つの ひとまとまりの 音と 確かめ。 */
@@ -490,7 +521,9 @@ function writeSource(
   const index = buildFuriganaIndex(source.furigana);
   const tempo = source.plan.tempo ?? 1;
   const units = source.lines.flat();
-  const pcms = units.map((unit) => changeTempo(clips.get(keyOf(unit))!.pcm, tempo, work));
+  const pcms = units.map((unit) =>
+    fadeEdges(changeTempo(clips.get(keyOf(unit))!.pcm, tempo, work)),
+  );
 
   rmSync(dir, { recursive: true, force: true });
   mkdirSync(dir, { recursive: true });
