@@ -138,10 +138,12 @@ describe("AIの 文の 読み — 行ったこと・行うこと（夕礼の 報
       expect(ruby("今日 行ったこと")).not.toContain("いった");
     });
 
-    it(`${name}: 行う の 形（明日 行うこと・行いました・行わない）は おこな と 読む`, () => {
+    it(`${name}: 行う の 形（明日 行うこと・行いました・行わない・行えます・行おう）は おこな と 読む`, () => {
       expect(ruby("明日 行うこと")).toBe("明日〔あした〕 行う〔おこなう〕こと");
       expect(ruby("テストを 行いました。")).toContain("行い〔おこない〕ました");
       expect(ruby("テストを 行わない")).toContain("行わ〔おこなわ〕ない");
+      expect(ruby("テストを 行えます。")).toContain("行え〔おこなえ〕ます");
+      expect(ruby("テストを 行おう。")).toContain("行お〔おこなお〕う");
     });
 
     /* 変えて いない ところ: 行く の 形は 共通の 一覧の まま */
@@ -150,17 +152,30 @@ describe("AIの 文の 読み — 行ったこと・行うこと（夕礼の 報
       expect(ruby("会社に 行って")).toContain("行って〔いって〕");
       expect(ruby("会社に 行った。")).toContain("行った〔いった〕。");
     });
-  }
 
-  it("足した 行 の 見出しは 送りがなが 読みに そろう", () => {
-    const added = asakaiAiFurigana().filter(([surface]) => surface.startsWith("行"));
-    expect(added.map(([surface]) => surface)).toEqual(
-      expect.arrayContaining(["行ったこと", "行った こと", "行う", "行い", "行わ"]),
-    );
-    expect(added.map(([surface, reading]) => checkFuriganaEntry(surface, reading))).toEqual(
-      added.map(() => null),
-    );
-  });
+    /*
+     * AIの 索引の 見出しは **ぜんぶ** 送りがなが 読みに そろう（2026-09-29 の 読み検収）。
+     * `ASAKAI_EXTRA_KANJI` は lint:content の 対象外で、`furigana_checks.test.ts` も
+     * 共通の 一覧しか 見て いない。空回りしない ように、足した 見出しが 入って いる ことも 見る。
+     */
+    it(`${name}: AIの 索引の 見出しは ぜんぶ 送りがなが 読みに そろう`, () => {
+      const entries = asakaiAiFurigana(furigana);
+      expect(entries.map(([surface]) => surface)).toEqual(
+        expect.arrayContaining([
+          "行ったこと",
+          "行った こと",
+          "行う",
+          "行い",
+          "行わ",
+          "行え",
+          "行お",
+        ]),
+      );
+      expect(
+        entries.filter(([surface, reading]) => checkFuriganaEntry(surface, reading) !== null),
+      ).toEqual([]);
+    });
+  }
 });
 
 describe("keepReadableAsakai — 読めない 文は 出さない", () => {
