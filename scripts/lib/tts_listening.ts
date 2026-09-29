@@ -165,6 +165,51 @@ export function pairSpeakers(counts: ReadonlyMap<string, number>): string[][] {
   return pairs;
 }
 
+/**
+ * 話す人を 2人ずつに 分ける **分けかた ぜんぶ**（3人なら 3とおり）。1人だけの 組も 許す。
+ * 呼ぶ 回数が いちばん 少なく なる 分けかたを 選ぶ ために 使う（`choosePairings`）。
+ */
+export function allPairings(people: readonly string[]): string[][][] {
+  if (people.length <= 2) return [[[...people]]];
+  const [first, ...rest] = people;
+  const out: string[][][] = [];
+  for (let k = 0; k < rest.length; k += 1) {
+    const partner = rest[k]!;
+    const others = rest.filter((_, i) => i !== k);
+    for (const tail of allPairings(others)) out.push([[first!, partner], ...tail]);
+  }
+  return out;
+}
+
+/**
+ * 3人 以上 出る 教材の 分けかたを、**全体の 呼ぶ 回数が いちばん 少ない** ものに する。
+ * ⑤（高橋・佐藤・山田）は 高橋・佐藤 ＋ 山田 に 分けると、① の 組と ② の 組に 相乗り できて
+ * 5本で 4回に なる（よく 話す 順の 高橋・山田 ＋ 佐藤 だと 5回）。同じ 回数なら よく 話す 順。
+ */
+export function choosePairings<T>(
+  items: readonly T[],
+  optionsOf: (item: T) => readonly string[][][],
+  countCalls: (choice: readonly string[][][]) => number,
+): string[][][] {
+  const options = items.map(optionsOf);
+  let best: string[][][] = options.map((one) => one[0]!);
+  let bestCount = countCalls(best);
+  const walk = (i: number, picked: string[][][]) => {
+    if (i === options.length) {
+      const count = countCalls(picked);
+      if (count < bestCount) {
+        best = [...picked];
+        bestCount = count;
+      }
+      return;
+    }
+    for (const option of options[i]!) walk(i + 1, [...picked, option]);
+  };
+  // 組み合わせが 多すぎる ときは 探さない（よく 話す 順の まま）
+  if (options.reduce((n, one) => n * one.length, 1) <= 4096) walk(0, []);
+  return best;
+}
+
 /** atempo で 速さを 変える（音程は 保つ）。ffmpeg が 要る。 */
 function changeTempo(pcm: Uint8Array, tempo: number, work: string): Uint8Array {
   if (tempo === 1) return pcm;
@@ -237,14 +282,9 @@ export async function runTtsListenings(ids: readonly string[], apiKey: string): 
 
   const tokenizer = await getTokenizer();
 
-  // 1. 組に 分けて、同じ 組を まとめる
-  const parts = sources.flatMap((source) => {
-    const counts = new Map<string, number>();
-    for (const line of source.lines) {
-      const who = line[0]?.speaker;
-      if (who) counts.set(who, (counts.get(who) ?? 0) + line.length);
-    }
-    return pairSpeakers(counts).map((pair) => {
+  // 1. 組に 分けて、同じ 組を まとめる（呼ぶ 回数が いちばん 少ない 分けかたを 選ぶ）
+  const partsOf = (source: Source, pairs: readonly string[][]) =>
+    pairs.map((pair) => {
       const lines: CallLine[] = source.lines
         .filter((line) => line.length > 0 && pair.includes(line[0]!.speaker))
         .map((units) => ({ source, speaker: units[0]!.speaker, units }));
@@ -254,7 +294,23 @@ export async function runTtsListenings(ids: readonly string[], apiKey: string): 
         lines,
       };
     });
-  });
+  const pairings = choosePairings(
+    sources,
+    (source) => {
+      const counts = new Map<string, number>();
+      for (const line of source.lines) {
+        const who = line[0]?.speaker;
+        if (who) counts.set(who, (counts.get(who) ?? 0) + line.length);
+      }
+      const byFrequency = pairSpeakers(counts);
+      const others = allPairings([...counts.keys()]).filter(
+        (one) => JSON.stringify(one) !== JSON.stringify(byFrequency),
+      );
+      return [byFrequency, ...others];
+    },
+    (choice) => planCalls(sources.flatMap((source, i) => partsOf(source, choice[i]!))).length,
+  );
+  const parts = sources.flatMap((source, i) => partsOf(source, pairings[i]!));
   const calls = planCalls(parts).map((group) => group.flatMap((part) => part.lines));
   const total = sources.reduce((sum, source) => sum + source.lines.flat().length, 0);
   console.log(

@@ -17,7 +17,7 @@ import {
 } from "../scripts/lib/gemini_tts";
 import { chooseCuts, findPauses, plausibleSplit, splitAt } from "../scripts/lib/split_dialogue";
 import { LISTENING_AUDIO_PLANS } from "../scripts/lib/listening_audio_plans";
-import { pairSpeakers, planCalls } from "../scripts/lib/tts_listening";
+import { allPairings, choosePairings, pairSpeakers, planCalls } from "../scripts/lib/tts_listening";
 import { alignSentences, tidyTranscript } from "../scripts/lib/speech_reading";
 import { buildSoundsIndex, spellSounds } from "../src/components/listening/listening-checks";
 
@@ -153,6 +153,21 @@ describe("呼ぶ 回数を 減らす 組の 分けかた（声は 1回に 2人�
     ];
     const calls = planCalls(parts).map((call) => call.map((part) => part.name));
     expect(calls).toEqual([["①", "⑤a"], ["②", "⑤b"], ["③"], ["④"]]);
+  });
+
+  it("3人の 教材は、相乗り できる 分けかたを 選ぶ（⑤ は 高橋・佐藤 ＋ 山田 → 5本で 4回）", () => {
+    expect(allPairings(["t", "s", "y"])).toHaveLength(3);
+    const other = [
+      { persons: ["s", "t"], chars: 500 },
+      { persons: ["y", "u"], chars: 450 },
+    ];
+    const chosen = choosePairings(
+      ["⑤"],
+      () => [[["t", "y"], ["s"]], ...allPairings(["t", "s", "y"])],
+      (choice) =>
+        planCalls([...other, ...choice[0]!.map((pair) => ({ persons: pair, chars: 100 }))]).length,
+    );
+    expect(chosen[0]).toEqual([["t", "s"], ["y"]]);
   });
 
   it("長すぎる ときは まとめない", () => {
