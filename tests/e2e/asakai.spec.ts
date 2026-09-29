@@ -1218,8 +1218,9 @@ test("開き直すと、しおりの 古い 音では なく 今の 声で 鳴�
   const meeting = JSON.parse(
     readFileSync(join(__dirname, "..", "..", "content", "meetings", "asakai_kantan.json"), "utf8"),
   ) as { asakai: { scenes: { sample: { audio: string } }[] } };
-  const current = meeting.asakai.scenes[0].sample.audio;
+  const current = meeting.asakai.scenes.at(0)?.sample.audio ?? "";
   const stale = "/audio/meetings/asakai_kantan/s0-sample-da68de59.wav";
+  expect(current, "月曜の 見本に 音が 無い").not.toBe("");
   expect(current, "しおりに 入れる 古い 音と 今の 音が 同じ").not.toBe(stale);
 
   await page.addInitScript(() => {
