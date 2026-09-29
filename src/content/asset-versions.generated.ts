@@ -613,7 +613,7 @@ export const ASSET_VERSIONS: Readonly<Record<string, string>> = {
   "/img/articles/yuurei_nexttalent/hero.webp": "92a5df3c",
   "/img/articles/yuurei_nexttalent/memo.webp": "bc403ca9",
   "/img/articles/yuurei_nexttalent/r1_kyou.webp": "c7dd52d8",
-  "/img/articles/yuurei_nexttalent/r2_shinchoku.webp": "516c66ea",
+  "/img/articles/yuurei_nexttalent/r2_shinchoku.webp": "6665ee6a",
   "/img/articles/yuurei_nexttalent/r3_ashita.webp": "493b95f6",
   "/img/articles/yuurei_nexttalent/r4_mondai.webp": "4d370d2e",
   "/img/articles/yuurei_nexttalent/task_graph.webp": "bb7ddeb7",
