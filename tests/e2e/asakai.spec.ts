@@ -643,6 +643,19 @@ test("5日 通すと、合否と 数が 読める", async ({ page, context }) =>
   expect(await bareKanjiTexts(page)).toEqual([]);
   await shot(page, "asakai-10-week-result");
 
+  /*
+   * **週の けっかを 閉じる 前に 開き直しても 5日ぶんが 消えない**（2026-09-28 の 点検 B4）。
+   * 前は 5日 そろった しおりを「完走ずみ」と して 月曜の 白紙に 戻し、完了も 付かなかった。
+   */
+  const done = await page.evaluate(() =>
+    window.localStorage.getItem("nexmax:v1:content:asakai_kantan"),
+  );
+  expect(done, "5日 そろった ところで 完了が 付いて いない").toContain("completed");
+  await page.reload();
+  await joinCall(page);
+  await expect(week).toBeVisible();
+  await expectOnScreen(page, "以上で 合格");
+
   /* 読み終えてから おわりに する（ここまで「クリア」の 板は かぶさらない）。 */
   await week.getByRole("button", { name: /けっかを 読みました/ }).click();
   await expect(week).toBeHidden();

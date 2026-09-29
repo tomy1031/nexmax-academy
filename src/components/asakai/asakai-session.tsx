@@ -299,7 +299,8 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
    */
   const [duty, setDuty] = useState(false);
   /** `"talk"` 報告中 ／ `"gap"` 時間カード ／ `"done"` 週の けっか。 */
-  const [phase, setPhase] = useState<"talk" | "gap" | "done">("talk");
+  /* 週の けっか待ちで 戻った ときは「話し終えた」ところから（B4・2026-09-28）。 */
+  const [phase, setPhase] = useState<"talk" | "gap" | "done">(start.weekPending ? "done" : "talk");
   /**
    * **入室したか**（ミーティングの 入口を 通ったか）。
    *
@@ -712,7 +713,17 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
         const done = [...prev.filter((r) => r.day !== row.day), row].sort(
           (a, b) => order(a.day) - order(b.day),
         );
-        saveAsakaiResume(meeting.id, done);
+        const sceneCount = asakai?.scenes.length ?? 0;
+        saveAsakaiResume(meeting.id, done, undefined, sceneCount);
+        /*
+         * **5日 そろった ところで「おわった」を 書く**（2026-09-28 の 点検 B4）。
+         * 週の けっかを 閉じる ときだけ 書いて いた ころは、金曜の 評価を 読んで いる
+         * 最中に 更新・退室すると 完了が 付かず、5日ぶんも 消えて いた。
+         * 閉じた ときにも もう 1回 書くが、同じ ことを 書くだけなので 害は 無い。
+         */
+        if (sceneCount > 0 && done.length >= sceneCount) {
+          recordContentProgress(meeting.id, { status: "completed" });
+        }
         return done;
       });
       /* 途中の 控えは もう 要らない（「もう いちど 報告する」は はじめから 話す）。 */
@@ -1414,10 +1425,10 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
   /**
    * 週の けっかを 読み終えた とき。
    *
-   * **「おわった」を ここで 書く**（`toGap` では 書かない）。先に 書くと
-   * ステージの「クリア」の 板が けっかの 上に かぶさり、合格か 不合格かが
-   * 読めなく なる（規律1。2026-09-11 に 390px の 通しで 実発生）。
-   * `MeetingSession` が 修了証を 閉じた ときに 書くのと 同じ 順番。
+   * **「おわった」を ここでも 書く**（2026-09-28 から 5日 そろった 時点で 先に 書く。
+   * `finishScene` の 覚え書き）。2026-09-11 には 先に 書くと ステージの「クリア」の
+   * 板が けっかの 上に かぶさった が、いまの けっかは ポップアップ（z-50）で、
+   * 板（z-40）より 上に 出る。
    */
   const closeResult = useCallback(() => {
     recordContentProgress(meeting.id, { status: "completed" });
@@ -1925,6 +1936,11 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
       settings={<SpeechSpeedPicker value={speed} onChange={saveSpeechSpeed} />}
       onJoined={() => {
         setJoined(true);
+        /* 5日 話し終えて 週の けっかを まだ 閉じて いない ときは、けっかから（B4）。 */
+        if (start.weekPending) {
+          setWeekOpen(true);
+          return;
+        }
         openScene(start.sceneAt);
       }}
       onLeft={() => {
