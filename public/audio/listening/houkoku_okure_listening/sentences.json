@@ -1,0 +1,281 @@
+{
+  "listeningId": "houkoku_okure_listening",
+  "gapSeconds": 1.25,
+  "compareGapSeconds": [],
+  "complete": false,
+  "missing": [10],
+  "sentences": [
+    {
+      "speaker": "yamada",
+      "text": "鈴木さん、今、少し お時間 よろしいでしょうか。",
+      "file": "01.wav",
+      "voice": "Achird",
+      "model": "gemini-3.8-live",
+      "seconds": 3.58,
+      "longestPause": 0.26,
+      "transcript": "鈴木さん、今、少し お時間 よろしいでしょうか。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "すずきさんいますこしおじかんよろしいでしょうか",
+        "spoken": "すずきさんいますこしおじかんよろしいでしょうか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "suzuki",
+      "text": "はい。どうしましたか。",
+      "file": "02.wav",
+      "voice": "Kore",
+      "model": "gemini-3.8-live",
+      "seconds": 1.68,
+      "longestPause": 0.52,
+      "transcript": "はい。どうしましたか?",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "はいどうしましたか",
+        "spoken": "はいどうしましたか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "yamada",
+      "text": "CSVアップロード機能に ついて、報告が あります。",
+      "file": "03.wav",
+      "voice": "Achird",
+      "model": "gemini-3.8-live",
+      "seconds": 3.54,
+      "longestPause": 0.17,
+      "transcript": "CSV アップロード 機能 に ついて、報告 があります。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "しいえすぶいあっぷろおどきのうについてほうこくがあります",
+        "spoken": "しいえすぶいあっぷろおどきのうについてほうこくがあります",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "yamada",
+      "text": "今日中に 終わる 予定でしたが、少し 遅れそうです。",
+      "file": "04.wav",
+      "voice": "Achird",
+      "model": "gemini-3.8-live",
+      "seconds": 3.42,
+      "longestPause": 0.24,
+      "transcript": "今日 中 に 終わる 予定 でし た が 、 少し 遅れ そう です 。",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "きょうじゅうにおわるよていでしたがすこしおくれそうです",
+        "spoken": "きょうじゅうにおわるよていでしたがすこしおくれそうです",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "suzuki",
+      "text": "何か 問題が ありましたか。",
+      "file": "05.wav",
+      "voice": "Kore",
+      "model": "gemini-3.8-live",
+      "seconds": 2.08,
+      "longestPause": 0.03,
+      "transcript": "何か問題がありましたか。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "なにかもんだいがありましたか",
+        "spoken": "なにかもんだいがありましたか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "yamada",
+      "text": "はい。アップロードする データが 多いので、エラーの チェックに 時間が かかって います。",
+      "file": "06.wav",
+      "voice": "Achird",
+      "model": "gemini-3.8-live",
+      "seconds": 5.02,
+      "longestPause": 0.52,
+      "transcript": "はい アップロード する データ が 多い の で 、 エラー の チェック に 時間 が かかっ て い ます 。",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "はいあっぷろおどするでえたがおおいのでえらあのちぇっくにじかんがかかっています",
+        "spoken": "はいあっぷろおどするでえたがおおいのでえらあのちぇっくにじかんがかかっています",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "suzuki",
+      "text": "データが 多くて、エラーの チェックに 時間が かかって いるんですね。",
+      "file": "07.wav",
+      "voice": "Kore",
+      "model": "gemini-3.8-live",
+      "seconds": 4.15,
+      "longestPause": 0.19,
+      "transcript": "データ が 多く て エラー の チェック に 時間 が かかっ て いる ん です ね 。",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "でえたがおおくてえらあのちぇっくにじかんがかかっているんですね",
+        "spoken": "でえたがおおくてえらあのちぇっくにじかんがかかっているんですね",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "yamada",
+      "text": "はい、そうです。",
+      "file": "08.wav",
+      "voice": "Achird",
+      "model": "gemini-3.8-live",
+      "seconds": 1.09,
+      "longestPause": 0.03,
+      "transcript": "はい 、 そう です 。",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "はいそうです",
+        "spoken": "はいそうです",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "suzuki",
+      "text": "今は 何を 確認して いますか。",
+      "file": "09.wav",
+      "voice": "Kore",
+      "model": "gemini-3.8-live",
+      "seconds": 2.52,
+      "longestPause": 0.01,
+      "transcript": "いま は 何 を 確認 し て い ます か ?",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "いまはなにをかくにんしていますか",
+        "spoken": "いまはなにをかくにんしていますか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "yamada",
+      "text": "また、エラーが 出た 行を 正しく 表示できるかも テストして います。",
+      "file": "11.wav",
+      "voice": "Achird",
+      "model": "gemini-3.8-live",
+      "seconds": 4.41,
+      "longestPause": 0.06,
+      "transcript": "また、エラーが出た行を正しく表示できるかもテストしています。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "またえらあがでたぎょうをただしくひょうじできるかもてすとしています",
+        "spoken": "またえらあがでたぎょうをただしくひょうじできるかもてすとしています",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "suzuki",
+      "text": "今は、データと エラー表示を 確認して いると いう ことですね。",
+      "file": "12.wav",
+      "voice": "Kore",
+      "model": "gemini-3.8-live",
+      "seconds": 4.68,
+      "longestPause": 0.28,
+      "transcript": "いまはデータとエラー表示を確認しているということですね。",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "いまはでえたとえらあひょうじをかくにんしているということですね",
+        "spoken": "いまはでえたとえらあひょうじをかくにんしているということですね",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "yamada",
+      "text": "はい。",
+      "file": "13.wav",
+      "voice": "Achird",
+      "model": "gemini-3.8-live",
+      "seconds": 0.47,
+      "longestPause": 0.02,
+      "transcript": "はい",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "はい",
+        "spoken": "はい",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "suzuki",
+      "text": "どのくらい 遅れそうですか。",
+      "file": "14.wav",
+      "voice": "Kore",
+      "model": "gemini-3.8-live",
+      "seconds": 1.68,
+      "longestPause": 0.04,
+      "transcript": "どの くらい 遅れ そう です か ?",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "どのくらいおくれそうですか",
+        "spoken": "どのくらいおくれそうですか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "yamada",
+      "text": "今の ところ、明日の 午前中までには 終わると 思います。",
+      "file": "15.wav",
+      "voice": "Achird",
+      "model": "gemini-3.8-live",
+      "seconds": 4.02,
+      "longestPause": 0.28,
+      "transcript": "いまのところ、明日の午前中までには終わると思います。",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "いまのところあしたのごぜんちゅうまでにはおわるとおもいます",
+        "spoken": "いまのところあしたのごぜんちゅうまでにはおわるとおもいます",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "suzuki",
+      "text": "明日の 午前中までには 終わる 予定と いう ことですね。",
+      "file": "16.wav",
+      "voice": "Kore",
+      "model": "gemini-3.8-live",
+      "seconds": 3.69,
+      "longestPause": 0.05,
+      "transcript": "明日 の 午前 中 まで に は 終わる 予定 と いう こと です ね 。",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "あしたのごぜんちゅうまでにはおわるよていということですね",
+        "spoken": "あしたのごぜんちゅうまでにはおわるよていということですね",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "suzuki",
+      "text": "今日の 午後5時までに、もう一度 状況を 教えて ください。",
+      "file": "17.wav",
+      "voice": "Kore",
+      "model": "gemini-3.8-live",
+      "seconds": 4.04,
+      "longestPause": 0.19,
+      "transcript": "今日 の 午後 5 時 まで に 、 もう 一度 状況 を 教え て ください 。",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "きょうのごごごじまでにもういちどじょうきょうをおしえてください",
+        "spoken": "きょうのごごごじまでにもういちどじょうきょうをおしえてください",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "yamada",
+      "text": "はい。分かりました。",
+      "file": "18.wav",
+      "voice": "Achird",
+      "model": "gemini-3.8-live",
+      "seconds": 1.41,
+      "longestPause": 0.27,
+      "transcript": "はい わかり まし た 。",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "はいわかりました",
+        "spoken": "はいわかりました",
+        "distance": 0
+      }
+    }
+  ]
+}
