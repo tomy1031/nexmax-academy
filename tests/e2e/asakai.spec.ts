@@ -786,10 +786,35 @@ test("★の ない 曜日だけ 話し直すと、週の けっかに 戻って
   await expect(week).toBeVisible();
   await expectOnScreen(page, "1回で ぜんぶ 言えた 曜日 4 / 5");
 
-  /* 水曜を 1本で 話し直す（聞き返し 0回）。 */
+  /*
+   * **話し直しの 途中で 開き直しても、同じ 曜日の「もう いちど」で 続きから**（通しプレイ検収）。
+   * 前は「もう いちど」が 途中の 控えを 捨てて いて、3/4 まで 言えて いても 0/4 に 戻った。
+   */
+  const wed = panelExamples()[2] ?? [];
   await week.getByRole("button", { name: "水曜日を もう いちど" }).click();
   await expect(week).toBeHidden();
   await closeDuty(page);
+  await send(
+    wed
+      .filter((one) => one.id !== "komari")
+      .map((one) => one.text)
+      .join(" "),
+  );
+  await page
+    .getByRole("dialog", { name: "報告の 見かた" })
+    .getByRole("button", { name: /報告を つづける/ })
+    .click();
+  await page.reload();
+  await joinCall(page);
+  await expect(week).toBeVisible();
+  await week.getByRole("button", { name: "水曜日を もう いちど" }).click();
+  await closeDuty(page);
+  await expect(page.getByText("（3 / 4）")).toBeVisible();
+
+  /* はじめから 1本で 話し直す（聞き返し 0回）。 */
+  await page.getByRole("button", { name: "この日を はじめから やり直す" }).click();
+  await closeDuty(page);
+  await expect(page.getByText("（0 / 4）")).toBeVisible();
   await expect(page.getByRole("button", { name: /水曜日/ })).toHaveAttribute(
     "aria-current",
     "step",

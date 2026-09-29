@@ -1483,8 +1483,8 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
   /**
    * 週の けっかを 閉じる。**「おわった」は 1回だけ 書く。**
    *
-   * ポップアップは 閉じた あとも もう いちど 開ける ので、開け閉めの たびに
-   * しおりを 消しに いかない。
+   * しおりは 閉じる たびに 消す（下の 覚え書き）。閉じた あとも 同じ 画面の 中では
+   * けっかを もう いちど 開けるが、開き直したら 月曜から（5日 終わったら 消す・`asakai-resume.ts`）。
    */
   const closeWeek = useCallback(() => {
     setWeekOpen(false);
@@ -1583,7 +1583,11 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
        * 5日ぶんと 週の けっか待ちの 印を 先に 置けば、開き直しても 週の けっかに 戻る。
        */
       saveAsakaiResume(meeting.id, results, undefined, asakai?.scenes.length ?? 0);
-      clearAsakaiDraft(meeting.id, day);
+      /*
+       * **途中の 控えは 捨てない**（通しプレイ検収）。話し直しの 途中で 開き直すと 週の けっかから
+       * 始まる ので、ここで 捨てると 3/4 まで 言えて いても 0/4 に 戻って いた。控えが ある のは
+       * 話し直しかけた 日だけ（終えた 日の 控えは `finishScene` が 消す）。やめる ときは `quitRedo` が 捨てる。
+       */
       setShownAnswers((prev) => prev.filter((one) => one !== DAY_NAME[day]));
       setBackToWeek(true);
       setWeekOpen(false);
