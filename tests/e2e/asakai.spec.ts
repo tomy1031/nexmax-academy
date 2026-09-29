@@ -1263,10 +1263,33 @@ test("開き直すと、しおりの 古い 音では なく 今の 声で 鳴�
   await page.reload();
   await joinCall(page);
   await closeDuty(page);
+
+  /*
+   * **鳴る 順番には 頼らない**。見本の 前には 司会の あいさつが あり、
+   * 声は 1本ずつ 鳴り終わってから 次へ 進む（`use-voice-queue.ts`）。
+   * だから まず 画面の 字と、書き戻された しおりで 差し替わりを 確かめ、
+   * 声は あいさつが 鳴り終わるまで 待てる 長さで 見る。
+   */
+  await expect(page.getByText("（直す 前の 文）")).toHaveCount(0);
+  const savedAudios = () =>
+    page.evaluate(() => {
+      const saved = JSON.parse(
+        localStorage.getItem("nexmax:v1:asakai-resume:asakai_kantan") ?? "{}",
+      ) as { drafts?: Record<string, { lines: { audio?: string }[] }> };
+      return (saved.drafts?.mon?.lines ?? []).map((line) => line.audio ?? "");
+    });
+  await expect
+    .poll(async () => (await savedAudios()).includes(current), {
+      message: "しおりが 今の 声に 書き直されない",
+    })
+    .toBe(true);
+  expect(await savedAudios(), "しおりに 古い 声が 残って いる").not.toContain(stale);
+
   const plays = () => page.evaluate(() => (window as unknown as { __plays: string[] }).__plays);
   await expect
     .poll(async () => (await plays()).some((src) => src.includes(current)), {
       message: "今の 見本の 声が 鳴らない",
+      timeout: 60_000,
     })
     .toBe(true);
   expect(
@@ -1274,5 +1297,4 @@ test("開き直すと、しおりの 古い 音では なく 今の 声で 鳴�
     "しおりに 残った 古い 声が 鳴った",
   ).toBe(false);
   expect(await bareKanjiTexts(page), "ふりがなの 無い 漢字").toEqual([]);
-  await expect(page.getByText("（直す 前の 文）")).toHaveCount(0);
 });

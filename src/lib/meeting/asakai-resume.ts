@@ -266,11 +266,17 @@ export function voicedSlotOf(audio: string | undefined): string | null {
 }
 
 interface VoicedLine {
+  readonly speakerId: string;
   readonly text: string;
-  readonly audio?: string;
+  readonly audio: string;
 }
 
-/** 教材の 中の **音の ある 行**を ぜんぶ、行の 鍵で 引ける ように する。 */
+/**
+ * 場面の 中の **音の ある 行**を ぜんぶ、行の 鍵で 引ける ように する。
+ *
+ * 渡すのは **開く 日の 場面 1つ**（5日ぶん まとめて 渡さない）。しおりは 日ごとなので、
+ * ほかの 日の 行に 差し替わる 道を はじめから 作らない。
+ */
 export function voicedLinesBySlot(root: unknown): Map<string, VoicedLine> {
   const found = new Map<string, VoicedLine>();
   const walk = (value: unknown): void => {
@@ -279,10 +285,16 @@ export function voicedLinesBySlot(root: unknown): Map<string, VoicedLine> {
       return;
     }
     if (!value || typeof value !== "object") return;
-    const line = value as { text?: unknown; audio?: unknown };
+    const line = value as { speakerId?: unknown; text?: unknown; audio?: unknown };
     if (typeof line.text === "string" && typeof line.audio === "string") {
       const slot = voicedSlotOf(line.audio);
-      if (slot) found.set(slot, { text: line.text, audio: line.audio });
+      if (slot) {
+        found.set(slot, {
+          speakerId: typeof line.speakerId === "string" ? line.speakerId : "",
+          text: line.text,
+          audio: line.audio,
+        });
+      }
     }
     Object.values(value).forEach(walk);
   };
@@ -300,17 +312,33 @@ export function voicedLinesBySlot(root: unknown): Map<string, VoicedLine> {
  * 古い「アバペイ」が 鳴りつづけた（古い ファイルも 配信に 残って いる）。
  * 文も 同じで、司会の セリフを 書き直しても 保存した 人には 前の 文が 出る。
  *
- * 差し替えるのは **音の ある 行だけ**（司会・メンバーの 決まった セリフ）。
- * 学習者の 発話と、名前を 埋めた 行（`◯◯さん`。音を 持たない）は そのまま 残す。
- * 今の 教材に 同じ 行が 無ければ、手を つけない。
+ * ## 差し替える 条件は **行の 鍵と 話し手の 両方**が 合う こと
+ * 行の 鍵は **並びの 番号**で できて いる（`s0-member-1` など）。メンバーの 順番を
+ * 入れ替えると（2026-09-13 に 実際に あった）、同じ 鍵が **別の 人の 行**に なる。
+ * 鍵だけで 差し替えると、奥田さんの 行に ニャムさんの 文と 声が 入る。
+ *
+ * ## 合う 行が 無い ときは **古い 声を 鳴らさない**
+ * この 教材の 鍵なのに 今の 場面に 合う 行が 無いのは、文を 直して 音を 外した
+ * （作り直し待ち）か、並びが 変わった とき。どちらも 古い 声は もう 正しくない——
+ * 残すと、外すよう 言われた セリフが 声で 流れつづける。字は 残す（会話の 流れを 崩さない）。
+ *
+ * 学習者の 発話と、名前を 埋めた 行（`◯◯さん`。音を 持たない）には 触らない。
  */
-export function refreshSavedLines<T extends { text: string; audio?: string }>(
+export function refreshSavedLines<T extends { speakerId: string; text: string; audio?: string }>(
   lines: readonly T[],
   current: ReadonlyMap<string, VoicedLine>,
+  meetingId: string,
 ): T[] {
   return lines.map((line) => {
     const slot = voicedSlotOf(line.audio);
-    const now = slot ? current.get(slot) : undefined;
-    return now ? { ...line, text: now.text, audio: now.audio } : line;
+    if (!slot) return line;
+    const now = current.get(slot);
+    if (now && now.speakerId === line.speakerId) {
+      return { ...line, text: now.text, audio: now.audio };
+    }
+    if (!slot.startsWith(`${meetingId}/`)) return line;
+    const silent = { ...line };
+    delete silent.audio;
+    return silent;
   });
 }

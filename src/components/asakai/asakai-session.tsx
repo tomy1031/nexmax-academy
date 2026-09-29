@@ -373,8 +373,6 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
     () => buildFuriganaIndex(mergeFuriganaEntries(UI_FURIGANA, meeting.furigana)),
     [meeting.furigana],
   );
-  /** 今の 教材の 音の ある 行（保存した 会話を 開き直す ときに 引き直す — `refreshSavedLines`）。 */
-  const voicedNow = useMemo(() => voicedLinesBySlot(asakai?.scenes), [asakai]);
   const nameOf = useMemo(() => {
     const map = new Map<string, string>();
     for (const person of asakai?.people ?? []) map.set(person.id, person.name);
@@ -738,7 +736,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
        */
       const draft = readAsakaiDraft(meeting.id, next.day);
       if (draft && draft.lines.length > 0) {
-        const saved = refreshSavedLines(draft.lines, voicedNow);
+        const saved = refreshSavedLines(draft.lines, voicedLinesBySlot(next), meeting.id);
         setLines(saved);
         setStates(draft.states);
         setAttempts(draft.attempts);
@@ -769,7 +767,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
       setDutyIntro(said);
       setDuty(true);
     },
-    [asakai, meeting.id, nameOf, learnerName, stopClips, voicedNow],
+    [asakai, meeting.id, nameOf, learnerName, stopClips],
   );
 
   /** 報告が 終わった ときの ひとかたまり（受け止め → 采配 → メンバー → 閉じ）。 */
