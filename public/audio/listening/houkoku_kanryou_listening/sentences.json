@@ -2,8 +2,8 @@
   "listeningId": "houkoku_kanryou_listening",
   "gapSeconds": 1.25,
   "compareGapSeconds": [],
-  "complete": false,
-  "missing": [5],
+  "complete": true,
+  "missing": [],
   "sentences": [
     {
       "speaker": "sato",
@@ -66,6 +66,22 @@
       "reading": {
         "expected": "はいどこまでできましたか",
         "spoken": "はいどこまでできましたか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "sato",
+      "text": "お知らせの タイトル、日にち、文章を 表示できるように しました。",
+      "file": "05.wav",
+      "voice": "Autonoe",
+      "model": "gemini-3.8-live",
+      "seconds": 4.62,
+      "longestPause": 0.3,
+      "transcript": "お知らせ の タイトル 日にち 文章 を 表示 できる よう に し まし た 。",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "おしらせのたいとるひにちぶんしょうをひょうじできるようにしました",
+        "spoken": "おしらせのたいとるひにちぶんしょうをひょうじできるようにしました",
         "distance": 0
       }
     },
