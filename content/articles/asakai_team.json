@@ -430,7 +430,7 @@
           "label": "②",
           "title": "担当機能の 進捗",
           "items": [
-            "「決済フロントエンド機能 全体の 進捗は、◯％です。」"
+            "「決済フロントエンド機能の 進捗は、◯％です。」"
           ],
           "image": {
             "src": "/img/articles/asakai_team/r2_shinchoku.webp",
