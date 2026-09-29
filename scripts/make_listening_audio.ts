@@ -48,8 +48,7 @@
  *   `node --import tsx scripts/make_listening_audio.ts <教材ID> --join`（1文ずつの 教材だけ）
  */
 
-import { readFileSync, writeFileSync, mkdirSync, mkdtempSync, existsSync, rmSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { readFileSync, writeFileSync, mkdirSync, existsSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import { joinPcm } from "../src/lib/audio/wav";
 import { buildFuriganaIndex } from "../src/lib/text/furigana";
@@ -509,14 +508,8 @@ async function makeLiveSample(unitNumber: number): Promise<void> {
   const base = join(dir, `${listeningId}-${String(unitNumber).padStart(2, "0")}-live`);
   writeFileSync(`${base}.wav`, toWav(pcm));
   const tempo = plan?.tempo ?? 1;
-  if (tempo !== 1) {
-    const work = mkdtempSync(join(tmpdir(), "live-sample-"));
-    try {
-      writeFileSync(`${base}-x${tempo}.wav`, toWav(fadeEdges(changeTempo(pcm, tempo, work))));
-    } finally {
-      rmSync(work, { recursive: true, force: true });
-    }
-  }
+  if (tempo !== 1)
+    writeFileSync(`${base}-x${tempo}.wav`, toWav(fadeEdges(changeTempo(pcm, tempo))));
   console.log(
     `${base}.wav（${seconds(pcm).toFixed(1)}秒・${spoken.model}）` +
       (tempo !== 1 ? ` と ${base}-x${tempo}.wav` : "") +

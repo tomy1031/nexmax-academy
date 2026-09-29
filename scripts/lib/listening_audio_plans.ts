@@ -47,7 +47,7 @@ export interface ListeningAudioPlan {
   /** TTS に 渡す 話しかたの 指示（全部の 行に 付ける）。`engine: "tts"` の ときだけ 効く。 */
   readonly style?: string;
   /**
-   * できた 音の 速さ（1 = そのまま。音程は 保つ・ffmpeg の atempo）。`engine: "tts"` の ときだけ 効く。
+   * できた 音の 速さ（1 = そのまま。音程は 保つ・`scripts/lib/tempo.ts`）。`engine: "tts"` の ときだけ 効く。
    * 画面の「はやさ」ボタン（既定 0.85）は この 上に かかる。
    */
   readonly tempo?: number;

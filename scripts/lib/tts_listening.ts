@@ -18,12 +18,10 @@
  * 2. 0.45秒 以上の 間で ひとまとまりずつに 切る（`split_dialogue.ts`）
  * 3. 全体を 1回 文字起こしして、ひとまとまりごとの 読みの ずれを 出す（`alignSentences`）
  * 4. ずれた もの・長さが おかしい もの（同じ ことばを 2度 読んだ など）だけ まとめて 読み直す
- * 5. 台帳の 速さ（`tempo`）に そろえる（2026-09-29 の 指定「スピードは 1.25」。ffmpeg の atempo・音程は 保つ）
+ * 5. 台帳の 速さ（`tempo`）に そろえる（2026-09-29 の 指定「スピードは 1.25」。音程は 保つ・`tempo.ts`）
  */
 
-import { execFileSync } from "node:child_process";
-import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import type { Tokenizer } from "kuromoji";
 import { joinPcm } from "../../src/lib/audio/wav";
@@ -40,13 +38,8 @@ import {
 import { soundsLikeOf } from "../../src/content/listening-sounds";
 import { audioUnitsOf } from "../../src/content/listening-audio";
 import { forSpeech, OUT_RATE, toWav } from "./live_tts";
-import {
-  pcmFromAudio,
-  speechLine,
-  synthesizeDialogue,
-  transcribeAny,
-  TTS_MODEL,
-} from "./gemini_tts";
+import { timeStretch } from "./tempo";
+import { speechLine, synthesizeDialogue, transcribeAny, TTS_MODEL } from "./gemini_tts";
 import { chooseCuts, findPauses, plausibleSplit, splitAt } from "./split_dialogue";
 import { LISTENING_AUDIO_PLANS, type ListeningAudioPlan } from "./listening_audio_plans";
 import {
@@ -222,35 +215,14 @@ export function choosePairings<T>(
 }
 
 /**
- * atempo で 速さを 変える（音程は 保つ）。ffmpeg が 要る。
+ * 速さを 変える（音程は 保つ）。**外の 道具を 使わない**（`scripts/lib/tempo.ts` の WSOLA）。
  *
- * **出力の 頭を 44バイトと 決めつけない**。ffmpeg の WAV には `LIST`（作った 道具の 名前）が
- * 入り、data は 78バイト目から 始まる。44バイトで 切ると 残りの 34バイト（「INFOISFT Lavf…」）を
- * 音と して 読み、どの 音の 頭にも「ブツッ」が 入った（2026-09-29 の 指摘「音声が 切り替わる
- * 時に クリック音」）。チャンクを たどって data だけ 取る（`pcmFromAudio`）。
+ * はじめは ffmpeg の atempo を 呼んで いたが、GitHub Actions に ffmpeg が 無く 止まった
+ *（2026-09-29・`spawnSync ffmpeg ENOENT`）。ffmpeg の WAV の 頭を 44バイトと 決めつけて
+ * 「ブツッ」を 入れた（同日の 指摘）のも ここだった——自前なら どちらも 起きない。
  */
-export function changeTempo(pcm: Uint8Array, tempo: number, work: string): Uint8Array {
-  if (tempo === 1) return pcm;
-  const input = join(work, "in.wav");
-  const output = join(work, "out.wav");
-  writeFileSync(input, toWav(pcm));
-  execFileSync("ffmpeg", [
-    "-y",
-    "-loglevel",
-    "error",
-    "-i",
-    input,
-    "-filter:a",
-    `atempo=${tempo}`,
-    "-ar",
-    String(OUT_RATE),
-    "-ac",
-    "1",
-    "-c:a",
-    "pcm_s16le",
-    output,
-  ]);
-  return pcmFromAudio(new Uint8Array(readFileSync(output)));
+export function changeTempo(pcm: Uint8Array, tempo: number): Uint8Array {
+  return tempo === 1 ? pcm : timeStretch(pcm, tempo);
 }
 
 /**
@@ -310,11 +282,6 @@ export async function runTtsListenings(ids: readonly string[], apiKey: string): 
       lines,
     };
   });
-
-  // 速さを 変える なら、呼ぶ 前に ffmpeg が あるか 見る（無料枠を 使ってから 止まらない）
-  if (sources.some((source) => (source.plan.tempo ?? 1) !== 1)) {
-    execFileSync("ffmpeg", ["-version"], { stdio: "ignore" });
-  }
 
   const tokenizer = await getTokenizer();
 
@@ -501,12 +468,7 @@ export async function runTtsListenings(ids: readonly string[], apiKey: string): 
   }
 
   // 4. 速さを そろえて、教材ごとに 書く
-  const work = mkdtempSync(join(tmpdir(), "tts-tempo-"));
-  try {
-    for (const source of sources) writeSource(source, clips, keyOf, work);
-  } finally {
-    rmSync(work, { recursive: true, force: true });
-  }
+  for (const source of sources) writeSource(source, clips, keyOf);
 }
 
 /** 教材 1本ぶんを 書く（文ごとの wav・sentences.json・つないだ 1本・audioUrl）。 */
@@ -514,16 +476,13 @@ function writeSource(
   source: Source,
   clips: ReadonlyMap<string, Clip>,
   keyOf: (unit: Unit) => string,
-  work: string,
 ): void {
   const outDir = join("public", "audio", "listening");
   const dir = join(outDir, source.id);
   const index = buildFuriganaIndex(source.furigana);
   const tempo = source.plan.tempo ?? 1;
   const units = source.lines.flat();
-  const pcms = units.map((unit) =>
-    fadeEdges(changeTempo(clips.get(keyOf(unit))!.pcm, tempo, work)),
-  );
+  const pcms = units.map((unit) => fadeEdges(changeTempo(clips.get(keyOf(unit))!.pcm, tempo)));
 
   rmSync(dir, { recursive: true, force: true });
   mkdirSync(dir, { recursive: true });
