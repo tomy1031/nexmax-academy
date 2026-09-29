@@ -741,10 +741,45 @@ test("聞き返しに こたえると、こたえの 見かたが 出る", async
   expect(await bareKanjiTexts(page)).toEqual([]);
   await shot(page, "asakai-03c-probe-score");
 
-  /* 言い直す … 同じ しつもんの まま 閉じる（司会は 何も 言わない）。 */
-  await probe.getByRole("button", { name: "言い直す" }).click();
+  /*
+   * **伝わった 回には「言い直す」を 置かない**（2026-09-28 の 点検 B3）。
+   * 置いて いた ころは、押すと 次の 札の 1回目の 問いが 流れない まま
+   * 回数だけ 進み、型文つきの 2回目から 始まって いた。
+   */
+  await expect(probe.getByRole("button", { name: "言い直す" })).toHaveCount(0);
+  await probe.getByRole("button", { name: /つぎの しつもんを 聞く/ }).click();
   await expect(probe).toBeHidden();
   await expect(page.getByText("（2 / 4）")).toBeVisible();
+
+  /* 伝わらなかった 回だけ 言い直せる。押しても 聞き返しの 回数は 使わない（同じ 問いの まま）。 */
+  const answer = async (text: string) => {
+    await page.getByLabel("こたえを 入力する").fill(text);
+    await page.getByRole("button", { name: "おくる" }).click();
+    await expect(probe).toBeVisible();
+  };
+  await answer("すみません、わかりません。");
+  await expectOnScreen(page, "もう いちど お願いします");
+  await probe.getByRole("button", { name: "言い直す" }).click();
+  await expect(probe).toBeHidden();
+
+  /* 言い直しで 回数を 戻したので、もう 1回 はずしても まだ 打ち切られない。 */
+  await answer("すみません、わかりません。");
+  await expectOnScreen(page, "もう いちど お願いします");
+  await probe.getByRole("button", { name: /つぎの しつもんを 聞く/ }).click();
+  await expect(probe).toBeHidden();
+
+  /*
+   * **3回目で 打ち切る ときは「ここまで」と はっきり 言う**（B2）。
+   * 前は「もう いちど お願いします」＋ヒント＋「言い直す」を 出して いて、
+   * 閉じると 司会が「聞けませんでした」と 言う——画面と 会話が 逆だった。
+   */
+  await answer("すみません、わかりません。");
+  await expectOnScreen(page, "は ここまでです");
+  expect(await readingFreeText(page)).not.toContain("もういちどお願いします");
+  await expect(probe.getByRole("button", { name: "言い直す" })).toHaveCount(0);
+  await expectOnScreen(page, "この 項目は ここまでです");
+  expect(await bareKanjiTexts(page)).toEqual([]);
+  await shot(page, "asakai-03d-probe-gave-up");
 });
 
 /**

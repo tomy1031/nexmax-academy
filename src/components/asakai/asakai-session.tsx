@@ -390,6 +390,22 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
     readonly rows: readonly RowView[];
     readonly good: string;
     readonly advice: string;
+    /**
+     * **この 回で 打ち切った 札の 名前**（2回 聞いても 開かなかった。無ければ null）。
+     *
+     * 2026-09-28 の 点検。打ち切った 回にも「もう いちど お願いします」＋ヒント＋
+     *「言い直す」を 出して いた ので、閉じると 司会が「◯◯は 聞けませんでした」と
+     * 言うのと **画面が 逆の ことを 言って いた**（規律1）。
+     */
+    readonly gaveUp: string | null;
+    /**
+     * 言い直す（同じ 問いに もう いちど 答える）。**伝わらなかった 回だけ** 入る。
+     *
+     * 前は いつでも ポップアップを 閉じるだけ だった ので、聞き返しの 回数だけ
+     * 使われて、型文つきの 2回目の 問いが 流れない まま 打ち切られて いた。
+     * 伝わった 回に 押すと、次の 札が 1回目を 飛ばして いた（2026-09-28）。
+     */
+    readonly retry: (() => void) | null;
     readonly after: (() => void) | null;
   } | null>(null);
 
@@ -963,6 +979,8 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
             id: panel.id,
             label: panel.label,
             mark,
+            /* 2回で 打ち切った 札（もう 聞かれない）。ヒントを 出さない。 */
+            closed: state?.gaveUp ?? false,
             /*
              * 直しの ことばは **教材の 聞き返し**を そのまま 使う（新しい 呼び名を 作らない）。
              * ただし **打ち切った 札には 出さない**——司会は もう「聞けませんでした。
@@ -1040,6 +1058,8 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
         rows: viewRows(final),
         good,
         advice: adviceText,
+        gaveUp: null as string | null,
+        retry: null as (() => void) | null,
       });
 
       const opened = step.states
@@ -1137,6 +1157,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
             shut,
             readLog,
             sceneOver: true,
+            gaveUp: data.label,
             after: () => {
               /*
                * **その日の さいごの 札でも、聞けなかった ことを 言ってから 閉じる**。
@@ -1159,6 +1180,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
           shut,
           readLog,
           sceneOver: false,
+          gaveUp: data.label,
           after: () => {
             say(missedLine(asakai.chairId, data.label, false));
             if (followup) say(followup);
@@ -1170,6 +1192,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
       }
 
       const followup = data.followups[Math.min(count, data.followups.length) - 1];
+      const before = attempts[target.id] ?? 0;
       setStates(step.states);
       setAttempts({ ...attempts, [target.id]: count });
       setProbes((n) => n + 1);
@@ -1179,6 +1202,19 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
         shut,
         readLog,
         sceneOver: false,
+        /*
+         * **言い直しは 伝わらなかった 聞き返しの あとだけ**（2026-09-28）。
+         * 押したら この 回を 数えなかった ことに する（同じ 問いの まま・司会は 何も 言わない）。
+         * 伝わった 回・作業記録の 差し戻し には 置かない（次の 行動は 1つ）。
+         */
+        retry:
+          wasProbe && !heardNow && !readLog
+            ? () => {
+                setAttempts((prev) => ({ ...prev, [target.id]: before }));
+                setProbes((n) => Math.max(0, n - 1));
+                setJudge(null);
+              }
+            : null,
         after: () => {
           /* 言い直しを たのむ ときは 聞き返さない（次の 行動は 1つ）。 */
           if (readLog) sayRedo();
@@ -2005,12 +2041,13 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
             failReason={judge.failReason}
             index={index}
             aiIndex={aiIndex}
+            gaveUpLabel={judge.gaveUp ?? undefined}
             /*
               言い直す … 同じ しつもんの まま、もう いちど 書く（司会は 何も 言わない）。
-              **その日が 終わって いる ときは 出さない**——閉じる ことでしか
-              司会の 受け止めと メンバーの 報告に 進めない（上の `onRetry` の 覚え書き）。
+              **伝わらなかった 回だけ**（`retry`）。その日が 終わって いる とき・
+              打ち切った とき・伝わった ときは 出さない（2026-09-28）。
             */
-            onRetry={judge.sceneOver ? undefined : () => setJudge(null)}
+            onRetry={judge.sceneOver ? undefined : (judge.retry ?? undefined)}
             onClose={closeJudge}
           />
         ) : (
@@ -2023,6 +2060,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
             nextLabel={judge.sceneOver ? "みんなの 報告を 聞く ▶" : "報告を つづける ▶"}
             utterance={judge.utterance}
             failReason={judge.failReason}
+            gaveUpLabel={judge.gaveUp ?? undefined}
             index={index}
             aiIndex={aiIndex}
             onClose={closeJudge}

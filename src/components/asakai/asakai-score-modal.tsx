@@ -87,6 +87,13 @@ export interface RowView {
    * 『○○画面全体の 進捗は ○%です。』の ように ヒントに する」。無ければ 空。
    */
   readonly hint: string;
+  /**
+   * **2回 聞いても 開かず、打ち切った 札**（もう 聞かれない）。
+   *
+   * ヒントを 出すと「この 形で 言って みましょう」と 言いながら、その 札は
+   * もう 開かない（2026-09-28 の 点検）。打ち切りは「ここまで」と はっきり 書く。
+   */
+  readonly closed?: boolean;
 }
 
 const MARK_FACE: Record<RowMark, { readonly mark: string; readonly cls: string }> = {
@@ -95,6 +102,9 @@ const MARK_FACE: Record<RowMark, { readonly mark: string; readonly cls: string }
   fixed: { mark: "🔁", cls: "border-sun-deep bg-cream text-sun-deep" },
   missing: { mark: "❗", cls: "border-coral bg-blossom text-coral-deep" },
 };
+
+/** 2回で 打ち切った 札の 顔（もう 聞かれない。❗ の「まだ」と 分ける）。 */
+const CLOSED_FACE = { mark: "❌", cls: "border-coral bg-blossom text-coral-deep" } as const;
 
 /** その日の おわりの ことば（何が 起きたかを 名前で 言う）。 */
 const DAY_WORD: Record<RowMark, string> = {
@@ -407,7 +417,7 @@ function ItemTable({
   aiIndex?: FuriganaIndex;
 }) {
   const nextId = showHints
-    ? rows.find((row) => row.mark === "missing" && row.advice !== "")?.id
+    ? rows.find((row) => row.mark === "missing" && !row.closed && row.advice !== "")?.id
     : undefined;
   return (
     <div className="mt-3">
@@ -428,13 +438,14 @@ function ItemTable({
         </thead>
         <tbody>
           {rows.map((row) => {
-            const face = MARK_FACE[row.mark];
+            const shut = row.closed === true && row.mark === "missing";
+            const face = shut ? CLOSED_FACE : MARK_FACE[row.mark];
             const badge = (
               <span
                 className={`inline-flex items-center gap-1 rounded-full border-2 px-1.5 py-0.5 text-[11px] leading-[1.9] font-black whitespace-nowrap ${face.cls}`}
               >
                 <span aria-hidden>{face.mark}</span>
-                <Ruby text={words[row.mark]} index={index} />
+                <Ruby text={shut ? "ここまで" : words[row.mark]} index={index} />
               </span>
             );
             return (
@@ -538,6 +549,17 @@ function BrushCell({
       </>
     );
   }
+  /* 打ち切った 札に ヒントを 出さない（もう 開かない のに「言って みましょう」に なる）。 */
+  if (row.closed) {
+    return (
+      <>
+        {yours}
+        <p className="text-coral-deep mt-1 text-[11px] leading-[1.9] font-black">
+          ❌ <Ruby text="この 項目は ここまでです" index={index} />
+        </p>
+      </>
+    );
+  }
   if (!showHint || row.hint === "") {
     return (
       <>
@@ -599,6 +621,45 @@ function GoodAdvice({
   );
 }
 
+/**
+ * 点の 下の 1行（まだ 言う こと／ぜんぶ 言えた／打ち切った ものが ある）。
+ *
+ * 打ち切った 札は「まだ 言う こと」に 数えない（もう 聞かれない）。ただし
+ * **「ぜんぶ 言えました」とも 言わない**——言えなかった ものが 残って いる（規律1）。
+ */
+function LeftNote({ rows, index }: { rows: readonly RowView[]; index: FuriganaIndex }) {
+  const missing = rows.filter((row) => row.mark === "missing");
+  const left = missing.filter((row) => !row.closed).length;
+  if (left > 0) {
+    return (
+      <p className="text-coral-deep text-sm leading-[1.9] font-black">
+        ❗ <Ruby text={`まだ 言う ことが ${left}つ あります`} index={index} />
+      </p>
+    );
+  }
+  if (missing.length > 0) {
+    return (
+      <p className="text-coral-deep text-sm leading-[1.9] font-black">
+        ❌ <Ruby text={`言えなかった ことが ${missing.length}つ あります`} index={index} />
+      </p>
+    );
+  }
+  return (
+    <p className="text-leaf-deep text-sm leading-[1.9] font-black">
+      ✅ <Ruby text={`${rows.length}つ ぜんぶ 言えました`} index={index} />
+    </p>
+  );
+}
+
+/** 打ち切った ことを はっきり 言う 帯（報告の ポップアップ用）。 */
+function GaveUpBand({ label, index }: { label: string; index: FuriganaIndex }) {
+  return (
+    <div className="border-coral bg-blossom text-coral-deep mt-3 rounded-xl border-2 px-3 py-2 text-sm leading-[1.9] font-black">
+      ❌ <Ruby text={`${label}は ここまでです。つぎに 進みます。`} index={index} />
+    </div>
+  );
+}
+
 /* ================================================================== *
  * 1) 報告の あと（まだ その日は 終わって いない）
  * ================================================================== */
@@ -612,6 +673,7 @@ export function ReportScoreModal({
   nextLabel,
   utterance,
   failReason,
+  gaveUpLabel,
   index,
   aiIndex = index,
   onClose,
@@ -628,12 +690,13 @@ export function ReportScoreModal({
   utterance: string;
   /** AIの 点が 出ない 理由（出て いれば null）。 */
   failReason: string | null;
+  /** この 回で 打ち切った 札の 名前（2回 聞いても 開かなかった）。 */
+  gaveUpLabel?: string;
   index: FuriganaIndex;
   /** AIが 書いた 文の 読み（省くと `index`）。 */
   aiIndex?: FuriganaIndex;
   onClose: () => void;
 }) {
-  const left = rows.filter((row) => row.mark === "missing").length;
   return (
     <ModalShell
       label="報告の 見かた"
@@ -651,23 +714,14 @@ export function ReportScoreModal({
           />
         </div>
       ) : null}
+      {gaveUpLabel ? <GaveUpBand label={gaveUpLabel} index={index} /> : null}
 
       <ScoreHead
         lead="いまの 報告"
         score={score}
         failReason={failReason}
         index={index}
-        note={
-          left > 0 ? (
-            <p className="text-coral-deep text-sm leading-[1.9] font-black">
-              ❗ <Ruby text={`まだ 言う ことが ${left}つ あります`} index={index} />
-            </p>
-          ) : (
-            <p className="text-leaf-deep text-sm leading-[1.9] font-black">
-              ✅ <Ruby text={`${rows.length}つ ぜんぶ 言えました`} index={index} />
-            </p>
-          )
-        }
+        note={<LeftNote rows={rows} index={index} />}
       />
 
       {/*
@@ -730,6 +784,7 @@ export function ProbeScoreModal({
   rest,
   judged,
   failReason,
+  gaveUpLabel,
   index,
   aiIndex = index,
   onRetry,
@@ -759,6 +814,11 @@ export function ProbeScoreModal({
   judged: boolean;
   /** AIの 点が 出ない 理由（出て いれば null）。 */
   failReason: string | null;
+  /**
+   * この 回で 打ち切った 札の 名前（2回 聞いても 開かなかった）。
+   * あるときは 見出しを「❌ ◯◯は ここまでです」に し、言い直すを 出さない。
+   */
+  gaveUpLabel?: string;
   index: FuriganaIndex;
   /** AIが 書いた 文の 読み（省くと `index`）。 */
   aiIndex?: FuriganaIndex;
@@ -777,16 +837,24 @@ export function ProbeScoreModal({
 }) {
   const toFix =
     advice !== "" || rows.some((row) => row.polished !== "" && row.said !== row.polished);
-  const left = rows.filter((row) => row.mark === "missing").length;
   return (
     <ModalShell
       label="追加の しつもんへの こたえ"
       title={
-        <Ruby text={heard ? "こたえが 伝わりました" : "もう いちど お願いします"} index={index} />
+        <Ruby
+          text={
+            gaveUpLabel
+              ? `❌ ${gaveUpLabel}は ここまでです`
+              : heard
+                ? "こたえが 伝わりました"
+                : "もう いちど お願いします"
+          }
+          index={index}
+        />
       }
       onClose={onClose}
       closeLabel={nextLabel}
-      secondary={onRetry ? { label: "言い直す", onClick: onRetry } : undefined}
+      secondary={onRetry && !gaveUpLabel ? { label: "言い直す", onClick: onRetry } : undefined}
       index={index}
       wide
     >
@@ -795,17 +863,7 @@ export function ProbeScoreModal({
         score={score}
         failReason={failReason}
         index={index}
-        note={
-          left > 0 ? (
-            <p className="text-coral-deep text-sm leading-[1.9] font-black">
-              ❗ <Ruby text={`まだ 言う ことが ${left}つ あります`} index={index} />
-            </p>
-          ) : (
-            <p className="text-leaf-deep text-sm leading-[1.9] font-black">
-              ✅ <Ruby text={`${rows.length}つ ぜんぶ 言えました`} index={index} />
-            </p>
-          )
-        }
+        note={<LeftNote rows={rows} index={index} />}
       />
 
       <div className="mt-3 flex flex-wrap gap-2">
