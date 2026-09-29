@@ -874,7 +874,8 @@ test("さいごの 1枚の ポップアップに 言い直すは 出ない", asy
   await expect(probe.getByRole("button", { name: "言い直す" })).toHaveCount(0);
 
   /* 閉じる 道は 1つ。ここを 通って はじめて 司会が 受け止める。 */
-  await probe.getByRole("button", { name: /みんなの 報告を 聞く/ }).click();
+  /* 押した 先は その日の 評価（2026-09-28。前は「みんなの 報告を 聞く」で 行き先と 合わなかった）。 */
+  await probe.getByRole("button", { name: /きょうの 評価を 見る/ }).click();
   await closeDayScore(page);
 
   /* しおりに 月曜が 残る＝開き直しても 火曜から つづく。 */
@@ -918,7 +919,7 @@ test("2回 まちがえた 札は、残りの 一覧から 消える", async ({ 
     await expect(probe).toBeVisible();
     const rest = await readingFreeText(page);
     expect(rest, "打ち切る 前は 一覧に 残って いる").toContain("進捗");
-    await probe.getByRole("button", { name: /つぎの しつもん|みんなの 報告/ }).click();
+    await probe.getByRole("button", { name: /つぎの しつもん|きょうの 評価を 見る/ }).click();
   }
 
   /* 3本目。進捗は もう 聞かれない ので、一覧からも 消えて いる。 */
@@ -971,7 +972,7 @@ test("報告した あと、⭕ で ない 札を 押すと もう いちど 聞
    * **打ち切られた すぐ あとに やり直せない**（画面に 理由も 出ない）
    *（2026-09-18 の 通しプレイ検収）。
    */
-  await probe.getByRole("button", { name: /つぎの しつもん|みんなの 報告/ }).click();
+  await probe.getByRole("button", { name: /つぎの しつもん|きょうの 評価を 見る/ }).click();
   await page.reload();
   await joinCall(page);
   await closeDuty(page);
@@ -1187,6 +1188,68 @@ test("報告の 途中でも、その日を はじめから やり直せる", as
   await joinCall(page);
   await closeDuty(page);
   await expect(page.getByText("（0 / 4）")).toBeVisible();
+});
+
+/**
+ * **評価を 閉じた あと、先輩の 報告の こえを 止めない**（2026-09-28 の 点検 B5）
+ *
+ * 2026-09-18 の 指定「モーダルの 後に、各担当者が 報告を します」。評価を 閉じた
+ * ところで 采配・メンバー・締めの こえを 積むのに、同じ 手で 時間カードへ 移る
+ * 処理が **こえを 止めて いた**——字だけ 流れて 1つも 鳴らなかった。
+ * 止める（pause）が 走らず、閉じた あとに 新しく 鳴る ことを 見る。
+ */
+test("評価を 閉じた あとも、先輩の 報告の こえが 鳴りつづける", async ({ page, context }) => {
+  const refs = stageRefs();
+  const at = refs.indexOf("asakai_kantan");
+  await seedCompleted(context, refs.slice(0, at));
+
+  await page.addInitScript(() => {
+    const w = window as unknown as { __plays: string[]; __pauses: number };
+    w.__plays = [];
+    w.__pauses = 0;
+    const play = HTMLMediaElement.prototype.play;
+    HTMLMediaElement.prototype.play = function (this: HTMLMediaElement) {
+      w.__plays.push(this.src);
+      return play.apply(this);
+    };
+    const pause = HTMLMediaElement.prototype.pause;
+    HTMLMediaElement.prototype.pause = function (this: HTMLMediaElement) {
+      w.__pauses += 1;
+      return pause.apply(this);
+    };
+  });
+  const counts = () =>
+    page.evaluate(() => {
+      const w = window as unknown as { __plays: string[]; __pauses: number };
+      return { plays: w.__plays.length, pauses: w.__pauses };
+    });
+
+  await page.goto("/asakai/meeting-asakai_kantan");
+  await joinCall(page);
+  await closeDuty(page);
+  await page
+    .getByLabel("こたえを 入力する")
+    .fill(
+      "先週の 金曜日は、決済の 決まりを 調べて、決済の 画面と ABA Payの ボタンを 作りました。" +
+        "今、決済フロントエンド機能 ぜんたいの 進捗は 20%です。" +
+        "きょうは、注文IDと 合計金額を 画面に 出します。" +
+        "今の ところ 問題は ありません。",
+    );
+  await page.getByRole("button", { name: "おくる" }).click();
+  const day = page.getByRole("dialog", { name: "今日の 評価" });
+  await expect(day).toBeVisible();
+
+  const before = await counts();
+  await day.getByRole("button", { name: /へ 進む/ }).click();
+  await expect(day).toBeHidden();
+
+  /* 閉じた あとに 先輩の こえが 鳴る（奥田さん・ニャムさんの 報告）。 */
+  await expect
+    .poll(async () => (await counts()).plays, { message: "閉じた あとに こえが 鳴らない" })
+    .toBeGreaterThan(before.plays);
+  /* 時間カードへ 移っても 止めて いない。 */
+  await page.waitForTimeout(800);
+  expect((await counts()).pauses, "時間カードへ 移る ときに こえを 止めた").toBe(before.pauses);
 });
 
 /**

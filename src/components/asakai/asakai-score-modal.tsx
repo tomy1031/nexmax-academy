@@ -806,7 +806,7 @@ export function ProbeScoreModal({
   score: ScoreView;
   /** その日の 札 ぜんぶ（報告の あとの ポップアップと 同じ 表を 出す）。 */
   rows: readonly RowView[];
-  /** とじる ボタンの 字（つぎの しつもん／みんなの 報告を 聞く）。 */
+  /** とじる ボタンの 字（つぎの しつもん／きょうの 評価を 見る）。 */
   nextLabel: string;
   /** まだ ⭕ に なって いない 札の 名前（無ければ 空）。 */
   rest: string;

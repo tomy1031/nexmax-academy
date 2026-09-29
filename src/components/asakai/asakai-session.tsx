@@ -1391,12 +1391,17 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
   const toGap = useCallback(() => {
     if (!asakai) return;
     /*
-     * 場面を 離れる ときは 鳴って いる こえも、つないだ ままの Live も 止める。
+     * 場面を 離れる ときは つないだ ままの Live を 止め、番号を 進める。
      * 止めないと 遅れて 届いた 1本で けっかの 画面に モーダルが 出る。
+     *
+     * **作り置きの こえは 止めない**（2026-09-28 の 点検 B5）。評価を 閉じた ところで
+     * 先輩の 報告と 締めの こえを 積んで いる ので、ここで 止めると **字だけ 流れて
+     * 1つも 鳴らなかった**（2026-09-18 の 指定「モーダルの 後に、各担当者が 報告を します」が
+     * 声では 起きて いなかった）。時間カードの あいだも チャットは 見えて いる。
+     * 止めるのは 曜日を 移る とき（`goToScene`）と 退室だけ。
      */
     runId.current += 1;
     setWaiting(false);
-    stopClips();
     voice.stop();
     if (sceneAt + 1 >= asakai.scenes.length) {
       setPhase("done");
@@ -1404,7 +1409,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
       return;
     }
     setPhase("gap");
-  }, [asakai, sceneAt, stopClips, voice]);
+  }, [asakai, sceneAt, voice]);
 
   /**
    * 週の けっかを 読み終えた とき。
@@ -2036,7 +2041,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
             advice={judge.advice}
             score={judge.score}
             rows={judge.rows}
-            nextLabel={judge.sceneOver ? "みんなの 報告を 聞く ▶" : "つぎの しつもんを 聞く ▶"}
+            nextLabel={judge.sceneOver ? "きょうの 評価を 見る ▶" : "つぎの しつもんを 聞く ▶"}
             rest={judge.shut.join("／")}
             failReason={judge.failReason}
             index={index}
@@ -2057,7 +2062,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
             good={judge.good}
             advice={judge.advice}
             readLog={judge.readLog}
-            nextLabel={judge.sceneOver ? "みんなの 報告を 聞く ▶" : "報告を つづける ▶"}
+            nextLabel={judge.sceneOver ? "きょうの 評価を 見る ▶" : "報告を つづける ▶"}
             utterance={judge.utterance}
             failReason={judge.failReason}
             gaveUpLabel={judge.gaveUp ?? undefined}
