@@ -113,10 +113,10 @@ function reportPlan(speakers: readonly (keyof typeof REPORT_PEOPLE)[]): Listenin
   return {
     voices: Object.fromEntries(speakers.map((id) => [id, REPORT_PEOPLE[id].voice])),
     models: Object.fromEntries(speakers.map((id) => [id, REPORT_PEOPLE[id].model])),
-    gapSeconds: 1.5,
+    // 2026-09-29 の 指定「間の 時間を 1.25秒に する。速度を 変える 必要は ない」
+    //（はじめ「スピードは 1.25」を 速さと 取りちがえて tempo: 1.25 に して いた）
+    gapSeconds: 1.25,
     engine: "tts",
-    // 2026-09-29 の 指定「スピードは 1.25 が いい」（① の ためしの 音を 聞いて）
-    tempo: 1.25,
     style:
       "日本のIT企業の職場での、ていねいな会話。日本語を勉強中の人にも聞き取りやすいように、" +
       "はっきり、少しゆっくり、落ちついて話す。",
