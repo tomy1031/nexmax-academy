@@ -675,7 +675,8 @@
             ],
             "example": {
               "speakerId": "hendy",
-              "text": "「現在、学生検索・スキル可視化フロントエンド機能の 進捗は 60％です。」"
+              "text": "「現在、学生検索・スキル可視化フロントエンド機能の 進捗は 60％です。」",
+              "audio": "/audio/meetings/asakai_muzukashii/s1-shinchoku-ex-5c44c748.wav"
             }
           },
           {
