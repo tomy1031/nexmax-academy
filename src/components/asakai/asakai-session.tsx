@@ -2414,6 +2414,12 @@ function WeekResult({
         ? komariDays >= needDays
         : true;
   const pass = units >= needUnits && secondOk;
+  /*
+   * **さいごの 日の「この あと あった こと」**（2026-09-28 の 点検 C4）。
+   * 月〜木は 時間カードが 出すが、金曜は 時間カードを 通らない。9:00 の 朝礼の
+   * 中で 午後の テストの けっかを 話して いた（時間の 筋が 逆だった）ので、ここへ 移した。
+   */
+  const after = asakai.scenes[asakai.scenes.length - 1]?.lead ?? "";
 
   return (
     <ModalShell
@@ -2430,6 +2436,16 @@ function WeekResult({
       /* 中身は 5行の 表。細い ままだと PCで 短冊に なる。 */
       wide
     >
+      {after !== "" ? (
+        <div className="bg-panel-tint mt-3 rounded-xl px-3 py-2">
+          <p className="text-ink-soft text-[11px] font-black">
+            <RubyText text="この あと あった こと" index={index} show />
+          </p>
+          <p className="mt-0.5 text-sm font-bold">
+            <RubyText text={after} index={index} show />
+          </p>
+        </div>
+      ) : null}
       <p className="mt-3 text-sm font-bold">
         <RubyText text={unitName} index={index} show />{" "}
         <span className="tabular-nums">
