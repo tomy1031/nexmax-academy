@@ -170,6 +170,7 @@ export function pairSpeakers(counts: ReadonlyMap<string, number>): string[][] {
  * 呼ぶ 回数が いちばん 少なく なる 分けかたを 選ぶ ために 使う（`choosePairings`）。
  */
 export function allPairings(people: readonly string[]): string[][][] {
+  if (people.length === 0) return [[]];
   if (people.length <= 2) return [[[...people]]];
   const [first, ...rest] = people;
   const out: string[][][] = [];
@@ -177,6 +178,10 @@ export function allPairings(people: readonly string[]): string[][][] {
     const partner = rest[k]!;
     const others = rest.filter((_, i) => i !== k);
     for (const tail of allPairings(others)) out.push([[first!, partner], ...tail]);
+  }
+  // 人数が 奇数なら、1人だけの 組を 1つ 持てる（先頭の 人が 1人に なる 分けかたも 入れる）
+  if (people.length % 2 === 1) {
+    for (const tail of allPairings(rest)) out.push([[first!], ...tail]);
   }
   return out;
 }
