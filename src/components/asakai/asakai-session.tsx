@@ -2113,6 +2113,9 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
             index={index}
             aiIndex={aiIndex}
             gaveUpLabel={judge.gaveUp ?? undefined}
+            readLog={judge.readLog}
+            copied={judge.copied}
+            askRedo={!judge.sceneOver && judge.gaveUp === null}
             /*
               言い直す … 同じ しつもんの まま、もう いちど 書く（司会は 何も 言わない）。
               **伝わらなかった 回だけ**（`retry`）。その日が 終わって いる とき・

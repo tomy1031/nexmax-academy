@@ -651,6 +651,49 @@ function LeftNote({ rows, index }: { rows: readonly RowView[]; index: FuriganaIn
   );
 }
 
+/**
+ * **作業記録の 読み上げの 帯**（報告・聞き返しの 両方の ポップアップで 使う）。
+ *
+ * 聞き返しへの こたえで 記録を 読んだ ときにも 出す（2026-09-28 の 通しプレイ検収:
+ * 聞き返しの ポップアップには 理由も 写しの 行も 出ず「もう いちど お願いします」だけだった）。
+ */
+function ReadLogBand({
+  copied,
+  askRedo,
+  index,
+}: {
+  copied: readonly string[];
+  askRedo: boolean;
+  index: FuriganaIndex;
+}) {
+  return (
+    <div className="border-coral bg-blossom text-coral-deep mt-3 rounded-xl border-2 px-3 py-2 text-sm leading-[1.9] font-bold">
+      <Ruby
+        text={
+          askRedo
+            ? "作業記録を そのまま 読み上げて います。この ぶんは 数えて いません。大きな 作業を 2つか 3つに まとめて、もう いちど 言って ください。"
+            : "作業記録を そのまま 読み上げて います。この ぶんは 数えて いません。つぎは 大きな 作業を 2つか 3つに まとめましょう。"
+        }
+        index={index}
+      />
+      {/*
+        **どの 行が 読み上げに 当たったかを 名指しする**（2026-09-28 の 点検 D2）。
+        「読み上げて います」だけでは、どこを まとめ直せば よいか 読めない。
+        写しで ない 文（進捗・明日 など）は 数えて いる。
+      */}
+      {copied.length > 0 ? (
+        <ul className="mt-1 list-disc pl-5 text-xs leading-[1.9] font-bold">
+          {copied.map((line) => (
+            <li key={line}>
+              <Ruby text={line} index={index} />
+            </li>
+          ))}
+        </ul>
+      ) : null}
+    </div>
+  );
+}
+
 /** 打ち切った ことを はっきり 言う 帯（報告の ポップアップ用）。 */
 function GaveUpBand({ label, index }: { label: string; index: FuriganaIndex }) {
   return (
@@ -715,32 +758,7 @@ export function ReportScoreModal({
       index={index}
       wide
     >
-      {readLog ? (
-        <div className="border-coral bg-blossom text-coral-deep mt-3 rounded-xl border-2 px-3 py-2 text-sm leading-[1.9] font-bold">
-          <Ruby
-            text={
-              askRedo
-                ? "作業記録を そのまま 読み上げて います。この ぶんは 数えて いません。大きな 作業を 2つか 3つに まとめて、もう いちど 言って ください。"
-                : "作業記録を そのまま 読み上げて います。この ぶんは 数えて いません。つぎは 大きな 作業を 2つか 3つに まとめましょう。"
-            }
-            index={index}
-          />
-          {/*
-            **どの 行が 読み上げに 当たったかを 名指しする**（2026-09-28 の 点検 D2）。
-            「読み上げて います」だけでは、どこを まとめ直せば よいか 読めない。
-            写しで ない 文（進捗・明日 など）は 数えて いる。
-          */}
-          {copied.length > 0 ? (
-            <ul className="mt-1 list-disc pl-5 text-xs leading-[1.9] font-bold">
-              {copied.map((line) => (
-                <li key={line}>
-                  <Ruby text={line} index={index} />
-                </li>
-              ))}
-            </ul>
-          ) : null}
-        </div>
-      ) : null}
+      {readLog ? <ReadLogBand copied={copied} askRedo={askRedo} index={index} /> : null}
       {gaveUpLabel ? <GaveUpBand label={gaveUpLabel} index={index} /> : null}
 
       <ScoreHead
@@ -812,6 +830,9 @@ export function ProbeScoreModal({
   judged,
   failReason,
   gaveUpLabel,
+  readLog = false,
+  copied = [],
+  askRedo = true,
   index,
   aiIndex = index,
   onRetry,
@@ -846,6 +867,12 @@ export function ProbeScoreModal({
    * あるときは 見出しを「❌ ◯◯は ここまでです」に し、言い直すを 出さない。
    */
   gaveUpLabel?: string;
+  /** 聞き返しへの こたえで 作業記録を そのまま 読み上げて いた（写した 文は 数えて いない）。 */
+  readLog?: boolean;
+  /** 写しに 当たった 記録の 行（名指しする）。 */
+  copied?: readonly string[];
+  /** 読み上げの 帯に「もう いちど 言って ください」を 添えるか。 */
+  askRedo?: boolean;
   index: FuriganaIndex;
   /** AIが 書いた 文の 読み（省くと `index`）。 */
   aiIndex?: FuriganaIndex;
@@ -885,6 +912,7 @@ export function ProbeScoreModal({
       index={index}
       wide
     >
+      {readLog ? <ReadLogBand copied={copied} askRedo={askRedo} index={index} /> : null}
       {/* 伝わった こたえで ほかの 札が 打ち切りに なった ときも、打ち切りは 帯で はっきり 言う。 */}
       {heard && gaveUpLabel ? <GaveUpBand label={gaveUpLabel} index={index} /> : null}
       <ScoreHead
