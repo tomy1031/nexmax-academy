@@ -20,7 +20,7 @@
  */
 
 import { GoogleGenAI } from "@google/genai";
-import { OUT_RATE, toWav } from "./live_tts";
+import { OUT_RATE, toWav, TRANSCRIBE_MODELS } from "./live_tts";
 
 export const TTS_MODEL = "gemini-3.8-flash-tts";
 const ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/interactions";
@@ -213,20 +213,6 @@ export async function synthesizeDialogue(
   }
   throw new Error(`TTS が 混んで います: ${lastError}`);
 }
-
-/**
- * 文字起こしに 使う モデル（前から 順に 試す）。**無料枠は モデルごと**に 数えられるので、
- * 1つが 上限（gemini-2.5-flash は 1日 20回）でも 次で 聞ける。
- */
-export const TRANSCRIBE_MODELS = [
-  // 2026-09-28 の 実測: 3.8-flash と 3-flash-preview は 混雑（503）、2.5-flash は 1日 20回で 上限、
-  // 3.1-flash と 2.5-flash-lite は 404（「3.5-flash-lite を 使え」と 返った）
-  "gemini-3.5-flash-lite",
-  "gemini-3.5-flash",
-  "gemini-3.8-flash",
-  "gemini-3-flash-preview",
-  "gemini-2.5-flash",
-] as const;
 
 /**
  * 音を 文字に 起こす（読んだ 字が 原稿どおりかを 確かめる ため）。

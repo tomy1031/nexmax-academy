@@ -174,15 +174,37 @@ describe("こたえあわせの 文ごとの 音（lineSentenceClips）", () => 
       const listening = JSON.parse(
         readFileSync(join("content", "listening", `${id}.json`), "utf8"),
       );
-      expect(manifest.complete, id).toBe(true);
-      expect(
-        manifest.sentences.map((one: { speaker: string; text: string }) => [one.speaker, one.text]),
-        id,
-      ).toEqual(
-        scriptSentences(listening.script, audioUnitsOf(id)).map((one) => [one.speaker, one.text]),
-      );
-      manifest.sentences.forEach((one: { file: string }, i: number) => {
-        expect(one.file).toBe(sentenceFileName(i));
+      const units = scriptSentences(listening.script, audioUnitsOf(id));
+      if (manifest.complete) {
+        expect(
+          manifest.sentences.map((one: { speaker: string; text: string }) => [
+            one.speaker,
+            one.text,
+          ]),
+          id,
+        ).toEqual(units.map((one) => [one.speaker, one.text]));
+        manifest.sentences.forEach((one: { file: string }, i: number) => {
+          expect(one.file).toBe(sentenceFileName(i));
+        });
+      } else {
+        /*
+         * **途中まで**（Live で 作れなかった 文が ある）。つぎの 実行が 続きから 作る ために
+         * 残す。画面は 全部の 音が そろう まで ▶ を 出さず（`lineSentenceClips`）、教材の
+         * `audioUrl` も 付かない ので、学習者には 何も 出ない。見るのは **置いて ある 音が
+         * いまの 原稿の 同じ 位置の 文と 同じ**こと（ずれた 音を 続きに 使わない）。
+         */
+        expect(listening.audioUrl ?? null, `${id}: 途中なのに 音が 付いて いる`).not.toBe(
+          `/audio/listening/${id}.wav`,
+        );
+        for (const one of manifest.sentences as { file: string; speaker: string; text: string }[]) {
+          const at = Number.parseInt(one.file, 10) - 1;
+          expect([one.speaker, one.text], `${id} ${one.file}`).toEqual([
+            units[at]?.speaker,
+            units[at]?.text,
+          ]);
+        }
+      }
+      manifest.sentences.forEach((one: { file: string }) => {
         expect(existsSync(join(dir, id, one.file)), one.file).toBe(true);
       });
     }

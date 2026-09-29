@@ -211,7 +211,7 @@ describe("呼ぶ 回数を 減らす 組の 分けかた（声は 1回に 2人�
     expect(calls).toHaveLength(2);
   });
 
-  it("報告の リスニング 5場面は TTS・間 1.25秒・速さは そのまま で 作る 台帳に なって いる", () => {
+  it("報告の リスニング 5場面は Live・間 1.25秒・速さは そのまま で 作る 台帳に なって いる", () => {
     for (const id of [
       "houkoku_kanryou_listening",
       "houkoku_okure_listening",
@@ -219,7 +219,7 @@ describe("呼ぶ 回数を 減らす 組の 分けかた（声は 1回に 2人�
       "houkoku_chousa_listening",
       "houkoku_chourei_listening",
     ]) {
-      expect(LISTENING_AUDIO_PLANS[id]?.engine, id).toBe("tts");
+      expect(LISTENING_AUDIO_PLANS[id]?.engine ?? "live", id).toBe("live");
       expect(LISTENING_AUDIO_PLANS[id]?.gapSeconds, id).toBe(1.25);
       expect(LISTENING_AUDIO_PLANS[id]?.tempo ?? 1, id).toBe(1);
     }

@@ -101,13 +101,15 @@ export const LISTENING_AUDIO_PLANS: Readonly<Record<string, ListeningAudioPlan>>
 };
 
 /**
- * 報告の リスニング 5場面の 人と 声（Gemini の 声・`src/lib/audio/voices.ts`）。
+ * 報告の リスニング 5場面の 人と 声（Gemini Live の 声・`src/lib/audio/voices.ts`）。
  *
- * **Gemini の TTS で 会話を まとめて 読む**（2026-09-28 の 指定「ためしに Google の 新しい
- * TTS で 一括で 作成」）。Live で 1文ずつ 作って いた ときは、3.1 も 3.8 も 短い 返事
- *（「はい、大丈夫ですよ。」「どうしましたか。」）を 途中で 切り、確かめの 文字起こしも
- * 無料枠を 使い切って 1本も できなかった（run 36405843836・36406776276・36406785324）。
- * `models` は Live に 戻す ときの ために 残す（TTS では 使わない）。
+ * **Live で 1まとまりずつ 読んで つなぐ**（2026-09-29 の 指定「B」＝Live で 1つずつ 作って
+ * 組み合わせる）。まとまりは 短い 文を となりの 文と 1つに した もの（`src/content/listening-audio.ts`）
+ * ——前に Live が 途中で 切った 短い 返事（「はい、大丈夫ですよ。」「どうしましたか。」）は
+ * となりと 1つに なって いる。全員 3.8（3.1 は 短い 返事を 切った。run 36405843836）。
+ *
+ * TTS で まとめて 読む 道（`engine: "tts"`・`scripts/lib/tts_listening.ts`）も 残して ある。
+ * 2026-09-28 に ためし、1日 10回の 無料枠と 切り分けの 手間から、同日 Live に 決めた。
  */
 function reportPlan(speakers: readonly (keyof typeof REPORT_PEOPLE)[]): ListeningAudioPlan {
   return {
@@ -116,9 +118,5 @@ function reportPlan(speakers: readonly (keyof typeof REPORT_PEOPLE)[]): Listenin
     // 2026-09-29 の 指定「間の 時間を 1.25秒に する。速度を 変える 必要は ない」
     //（はじめ「スピードは 1.25」を 速さと 取りちがえて tempo: 1.25 に して いた）
     gapSeconds: 1.25,
-    engine: "tts",
-    style:
-      "日本のIT企業の職場での、ていねいな会話。日本語を勉強中の人にも聞き取りやすいように、" +
-      "はっきり、少しゆっくり、落ちついて話す。",
   };
 }
