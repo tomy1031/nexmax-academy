@@ -8,6 +8,7 @@ import {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
   useSyncExternalStore,
 } from "react";
@@ -47,6 +48,7 @@ import {
   clearedIdsSnapshot,
   deriveProgress,
   stageStatus,
+  studyingStageSnapshot,
   type StageProgress,
   type StageStatus,
 } from "@/lib/progress";
@@ -118,6 +120,14 @@ const NODE_TOP = 50;
 const CURRENT_COLOR = "#f26fa7";
 const CLEARED_COLOR = "#3aa458";
 
+/** 丸の 読み上げに 添える ようす。 */
+const STATUS_WORD = {
+  cleared: "クリア",
+  current: "いま ここ",
+  skipped: "まだ",
+  locked: "じゅんびちゅう",
+} satisfies Record<StageStatus, string>;
+
 const STAGE_COLORS = {
   leaf: "#58c273",
   sky: "#4fa8e8",
@@ -185,6 +195,29 @@ function flownUntil(progress: StageProgress, routeAreas: readonly MapArea[]): nu
   if (index < 0) return routeAreas.length;
   return index + NODE_TOP / 100;
 }
+
+/**
+ * 地図を ひらいたら、**いま 学習中の ステージの ところまで 1回だけ 下りる**
+ *（2026-09-29 の 指定「毎回 一番上は きつい」）。ステージは 10を 超え、せまい
+ * 画面では 1つ 940px ある——教材から 戻る たびに 何千px も 指で 送らせて いた。
+ *
+ * 1回だけに するのは、下りた あとで 学習者が 自分で 動かした 位置を 奪わないため。
+ * 着く 高さは 目あての 要素の `scroll-margin-top` が 決める（HUD や ☰ に 隠れない 位置）。
+ * `elementId` が null の あいだは 下りない（はじめての 学習者は START の 看板から 見せる）。
+ */
+function useLandOnMount(elementId: string | null) {
+  const landed = useRef(false);
+  useEffect(() => {
+    if (landed.current || !elementId) return;
+    landed.current = true;
+    document.getElementById(elementId)?.scrollIntoView({ block: "start", behavior: "instant" });
+  }, [elementId]);
+}
+
+/** 地図の 丸・カードの 要素 id。下りる 先を 探すのに 使う。 */
+const MAP_GOAL_ELEMENT_ID = "map-goal";
+const mapStageElementId = (stageId: string) => `map-stage-${stageId}`;
+const cardStageElementId = (stageId: string) => `card-stage-${stageId}`;
 
 /**
  * 左上のロゴ。押すと最初の画面へもどる。
@@ -713,12 +746,16 @@ function StageNode({
       type="button"
       aria-expanded={open}
       aria-current={status === "current" ? "step" : undefined}
-      aria-label={`STEP ${step} ${stage.title}（${
-        status === "cleared" ? "クリア" : status === "current" ? "いま ここ" : "じゅんびちゅう"
-      }）`}
+      aria-label={`STEP ${step} ${stage.title}（${STATUS_WORD[status]}）`}
       onClick={onToggle}
+      /* とばした ステージは 🔒 を 出さず、うすくも しない。もう 通りすぎた 場所で、
+         いつでも 戻って できる——鍵の しるしは「まだ ここまで 来ていない」の 意味しか 持たない */
       className={`relative grid h-14 w-20 place-items-center rounded-[50%] border-4 text-xl font-black shadow-[0_8px_0_rgba(0,79,141,.35),0_13px_24px_rgba(0,0,0,.22)] transition sm:h-17 sm:w-24 ${
-        status === "locked" ? "text-navy opacity-85" : "text-white"
+        status === "locked"
+          ? "text-navy opacity-85"
+          : status === "skipped"
+            ? "text-navy"
+            : "text-white"
       } ${status === "current" ? "ring-4 ring-white/70" : ""}`}
       style={face}
     >
@@ -1039,7 +1076,10 @@ function RouteArea({
         {stage && status && (
           <>
             <div
-              className="absolute z-30 -translate-x-1/2 -translate-y-1/2"
+              id={mapStageElementId(stage.id)}
+              /* 下りた ときに 丸が 立つ 高さ。せまい 画面は パネルが 丸の 下に 開くので 上寄せ、
+                 広い 画面は パネルが 横に 出るので まんなか寄り（useLandOnMount） */
+              className="absolute z-30 -translate-x-1/2 -translate-y-1/2 scroll-mt-[22vh] md:scroll-mt-[35vh]"
               style={{ left: `${nodeX}%`, top: `${nodeTop}%` }}
             >
               <StageNode
@@ -1101,6 +1141,7 @@ function GoalArea({
   const complete = progress.currentStageId === null;
   return (
     <section
+      id={MAP_GOAL_ELEMENT_ID}
       aria-label={goalArea.name}
       className="relative h-[clamp(320px,40vh,460px)] w-full overflow-hidden"
       style={{ backgroundColor: SKY_BLUE }}
@@ -1150,6 +1191,7 @@ function MapViewPane({
   learner,
   expandedStage,
   onExpandedStageChange,
+  landOn,
 }: {
   routeAreas: readonly MapArea[];
   goalArea: MapArea;
@@ -1159,7 +1201,10 @@ function MapViewPane({
   learner: LearnerAvatar | null;
   expandedStage: string | null;
   onExpandedStageChange: (id: string | null) => void;
+  /** ひらいた ときに 下りる 先の 要素 id（`useLandOnMount`）。null なら 一番上の まま */
+  landOn: string | null;
 }) {
+  useLandOnMount(landOn);
   const firstArea = routeAreas[0];
   const flown = flownUntil(progress, routeAreas);
   // 分身が立つ場所。まだ1つも終えていなければ「スタートの立札」のところに立つ
@@ -1239,7 +1284,17 @@ function StageCardImage({ src }: { src: string }) {
   );
 }
 
-function CardsView({ stages, progress }: { stages: readonly MapStage[]; progress: StageProgress }) {
+function CardsView({
+  stages,
+  progress,
+  landOn,
+}: {
+  stages: readonly MapStage[];
+  progress: StageProgress;
+  /** ひらいた ときに 下りる 先の 要素 id（`useLandOnMount`）。null なら 一番上の まま */
+  landOn: string | null;
+}) {
+  useLandOnMount(landOn);
   return (
     <main className="bg-bg-sky relative min-h-dvh px-4 pt-36 pb-16 sm:px-8 md:pl-48">
       <section className="relative z-10 mx-auto max-w-6xl">
@@ -1252,7 +1307,12 @@ function CardsView({ stages, progress }: { stages: readonly MapStage[]; progress
             {stages.map((stage) => {
               const status = stageStatus(stage.id, progress);
               return (
-                <article key={stage.id} className="card-pop flex flex-col overflow-hidden">
+                <article
+                  key={stage.id}
+                  id={cardStageElementId(stage.id)}
+                  /* 下りた ときに カードの 上が 右上の HUD に 隠れない 高さ（上の pt-36 と そろえる） */
+                  className="card-pop flex scroll-mt-36 flex-col overflow-hidden"
+                >
                   {stage.image && <StageCardImage src={stage.image} />}
                   <div className="flex flex-1 flex-col p-5">
                     <div className="flex items-start justify-between gap-3">
@@ -1270,7 +1330,7 @@ function CardsView({ stages, progress }: { stages: readonly MapStage[]; progress
                       <span
                         /* 白い 文字は クラスで（ふりがなも いっしょに 白に する・ruby-text.tsx） */
                         className={`grid h-11 w-11 place-items-center rounded-full border-4 border-white text-lg shadow-md ${
-                          status === "locked" ? "" : "text-white"
+                          status === "locked" || status === "skipped" ? "" : "text-white"
                         }`}
                         style={{
                           backgroundColor:
@@ -1279,7 +1339,10 @@ function CardsView({ stages, progress }: { stages: readonly MapStage[]; progress
                               : status === "cleared"
                                 ? CLEARED_COLOR
                                 : "#ffffff",
-                          color: status === "locked" ? STAGE_COLORS[stage.color] : undefined,
+                          color:
+                            status === "locked" || status === "skipped"
+                              ? STAGE_COLORS[stage.color]
+                              : undefined,
                         }}
                       >
                         {status === "cleared" ? "✓" : status === "current" ? "▶" : "○"}
@@ -1296,7 +1359,9 @@ function CardsView({ stages, progress }: { stages: readonly MapStage[]; progress
                         ? "クリア"
                         : status === "current"
                           ? "いまの ステージ"
-                          : "じゅんびちゅう"}
+                          : status === "skipped"
+                            ? "まだ"
+                            : "じゅんびちゅう"}
                     </p>
                     <Link
                       prefetch={false}
@@ -1340,6 +1405,7 @@ export function MapShell({
     progressSnapshot,
     () => PROGRESS_SERVER_SNAPSHOT,
   );
+  const studying = useSyncExternalStore(subscribeToStorage, studyingStageSnapshot, () => "");
   const storedView = useSyncExternalStore<MapView>(subscribeToStorage, getMapView, () => "map");
   const cachedProfile = useMemo(
     () => (rawProfile === PROFILE_SERVER_SNAPSHOT ? null : getProfile()),
@@ -1353,8 +1419,18 @@ export function MapShell({
     } catch {
       // 壊れた保存値。読めないだけなので、進捗0として続ける（画面は落とさない）
     }
-    return deriveProgress(Array.isArray(parsed) ? (parsed as string[]) : [], stageIds);
-  }, [rawProgress, stageIds]);
+    return deriveProgress(
+      Array.isArray(parsed) ? (parsed as string[]) : [],
+      stageIds,
+      studying || null,
+    );
+  }, [rawProgress, stageIds, studying]);
+  /*
+   * ひらいた ときに 下りる 先。はじめての 学習者（まだ 何も クリアして いない・教材も
+   * 開いて いない）は 下りず、START の 看板から 見せる。ぜんぶ クリアなら ゴールへ。
+   */
+  const fresh = progress.clearedCount === 0 && progress.currentStageId !== studying;
+  const landingStageId = fresh ? null : progress.currentStageId;
   const [databaseProfile, setDatabaseProfile] = useState<DiagnosedProfileRow | null>(null);
   const profile = databaseProfile ? profileFromRow(databaseProfile) : cachedProfile;
   // 地図に立たせる分身。診断が終わっていない人には出さない（絵が決まらない）
@@ -1515,9 +1591,18 @@ export function MapShell({
           learner={learnerAvatar}
           expandedStage={expandedStage}
           onExpandedStageChange={setExpandedOverride}
+          landOn={
+            progress.currentStageId === null && progress.clearedCount > 0
+              ? MAP_GOAL_ELEMENT_ID
+              : landingStageId && mapStageElementId(landingStageId)
+          }
         />
       ) : (
-        <CardsView stages={stages} progress={progress} />
+        <CardsView
+          stages={stages}
+          progress={progress}
+          landOn={landingStageId && cardStageElementId(landingStageId)}
+        />
       )}
     </div>
   );

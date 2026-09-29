@@ -29,10 +29,43 @@ describe("deriveProgress", () => {
     expect(progress.percent).toBe(100);
   });
 
-  it("途中を飛ばしてクリアしていても、未クリアの最初のステージを現在地にする", () => {
+  it("途中を飛ばしてクリアしていたら、いちばん先のクリアの つぎを現在地にする", () => {
+    // 2026-09-29 の指定で 向きを 変えた。以前は「未クリアの 最初」＝s2 に 引き戻して いた
     const progress = deriveProgress([STAGE_IDS[0]!, STAGE_IDS[3]!], STAGE_IDS);
-    expect(progress.currentStageId).toBe(STAGE_IDS[1]);
+    expect(progress.currentStageId).toBe(STAGE_IDS[4]);
+    expect(progress.skippedIds).toEqual([STAGE_IDS[1], STAGE_IDS[2]]);
     expect(progress.clearedCount).toBe(2);
+  });
+
+  it("最後に教材を開いたステージがまだなら、そこを現在地にする", () => {
+    const progress = deriveProgress(STAGE_IDS.slice(0, 2), STAGE_IDS, STAGE_IDS[3]!);
+    expect(progress.currentStageId).toBe(STAGE_IDS[3]);
+    expect(progress.skippedIds).toEqual([STAGE_IDS[2]]);
+  });
+
+  it("とばしたステージへ戻って学習しているなら、そこを現在地にする", () => {
+    const progress = deriveProgress(
+      [STAGE_IDS[0]!, STAGE_IDS[1]!, STAGE_IDS[3]!],
+      STAGE_IDS,
+      STAGE_IDS[2]!,
+    );
+    expect(progress.currentStageId).toBe(STAGE_IDS[2]);
+    expect(progress.skippedIds).toEqual([]);
+  });
+
+  it("最後に開いたステージがクリア済み・地図に無いときは、いちばん先のクリアの つぎ", () => {
+    const cleared = [STAGE_IDS[0]!, STAGE_IDS[1]!];
+    expect(deriveProgress(cleared, STAGE_IDS, STAGE_IDS[1]!).currentStageId).toBe(STAGE_IDS[2]);
+    expect(deriveProgress(cleared, STAGE_IDS, "けしたステージ").currentStageId).toBe(STAGE_IDS[2]);
+  });
+
+  it("先がぜんぶクリア済みなら、とばしたステージを現在地にする", () => {
+    const progress = deriveProgress(
+      [STAGE_IDS[0]!, STAGE_IDS[2]!, STAGE_IDS[3]!, STAGE_IDS[4]!],
+      STAGE_IDS,
+    );
+    expect(progress.currentStageId).toBe(STAGE_IDS[1]);
+    expect(progress.skippedIds).toEqual([]);
   });
 
   it("消したステージのクリア記録は数に入れない", () => {
@@ -55,6 +88,13 @@ describe("stageStatus", () => {
     expect(stageStatus(STAGE_IDS[0]!, progress)).toBe("cleared");
     expect(stageStatus(STAGE_IDS[1]!, progress)).toBe("current");
     expect(stageStatus(STAGE_IDS[2]!, progress)).toBe("locked");
+  });
+
+  it("とばしたステージは locked ではなく skipped", () => {
+    const progress = deriveProgress([STAGE_IDS[0]!, STAGE_IDS[2]!], STAGE_IDS);
+    expect(stageStatus(STAGE_IDS[1]!, progress)).toBe("skipped");
+    expect(stageStatus(STAGE_IDS[3]!, progress)).toBe("current");
+    expect(stageStatus(STAGE_IDS[4]!, progress)).toBe("locked");
   });
 });
 

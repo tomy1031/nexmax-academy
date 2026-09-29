@@ -9,7 +9,7 @@ import { CelebrationBurst } from "@/components/quiz/celebration";
 import { useIsAdmin } from "@/lib/admin-flag";
 import { useGatesUnlocked } from "@/lib/unlock-flag";
 import { contentKindMeta } from "@/lib/content-kinds";
-import { getClearedStageIds, markStageCleared } from "@/lib/progress";
+import { getClearedStageIds, markStageCleared, rememberStudyingStage } from "@/lib/progress";
 import { readContentProgress, subscribeProgress } from "@/lib/progress/store";
 import {
   KANJI,
@@ -172,6 +172,16 @@ export function ContentFrame({
   useEffect(() => {
     if (stageDone) markStageCleared(stage.id);
   }, [stageDone, stage.id]);
+
+  /*
+    教材を 開いた ステージを「いま 学習中」として 覚える。地図は ここを「いま ここ」にして、
+    開いた ときに そこまで 下りる（2026-09-29 の 指定）。地図に 出ない ステージ（はじめに 等）は
+    覚えない——上書きすると、その前に 学習して いた ステージを 忘れる。
+  */
+  const onMap = stage.number !== null;
+  useEffect(() => {
+    if (onMap) rememberStudyingStage(stage.id);
+  }, [onMap, stage.id]);
 
   /*
     ステージ1本を おえたことは、1問の正解より ずっと 大きな 節目なので、
