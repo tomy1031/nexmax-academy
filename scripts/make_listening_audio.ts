@@ -55,10 +55,11 @@ import { buildFuriganaIndex } from "../src/lib/text/furigana";
 import { buildSoundsIndex } from "../src/components/listening/listening-checks";
 import { soundsLikeOf } from "../src/content/listening-sounds";
 import { OUT_RATE, synthesizeWithFallback, toWav } from "./lib/live_tts";
-import { changeTempo, fadeEdges, runTtsListenings } from "./lib/tts_listening";
+import { changeTempo, runTtsListenings } from "./lib/tts_listening";
 import { audioUnitsOf } from "../src/content/listening-audio";
 import { LISTENING_AUDIO_PLANS, type ListeningAudioPlan } from "./lib/listening_audio_plans";
 import {
+  fadeEdges,
   longestInnerPause,
   scriptSentences,
   sentenceFileName,
@@ -250,8 +251,9 @@ function writeJoined(parts: readonly Uint8Array[], activePlan: ListeningAudioPla
     [file, activePlan.gapSeconds],
     ...(activePlan.compareGapSeconds ?? []).map((g): [string, number] => [compareFile(g), g]),
   ];
+  const smooth = parts.map((part) => fadeEdges(part));
   for (const [target, gapSeconds] of targets) {
-    const joined = joinPcm(parts, gapSeconds * 1000).pcm;
+    const joined = joinPcm(smooth, gapSeconds * 1000).pcm;
     writeFileSync(target, toWav(joined));
     console.log(`${target}（文の あいだ ${gapSeconds}秒・全体 ${seconds(joined).toFixed(1)}秒）`);
   }
@@ -380,7 +382,8 @@ async function makeSentences(activePlan: ListeningAudioPlan): Promise<void> {
     );
     const match = accepted as ReadingMatch | null;
     if (!match) throw new Error(`(${i + 1}) 照合の 結果が ありません`);
-    const pcm = trimSilence(spoken.pcm);
+    // 頭と おしりを なめらかに（Live は 無音なしで 声から 始まる ことが ある。つなぎ目で 鳴らさない）
+    const pcm = fadeEdges(trimSilence(spoken.pcm));
     const pause = longestInnerPause(pcm);
     done[i] = {
       pcm,

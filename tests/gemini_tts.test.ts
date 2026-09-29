@@ -16,14 +16,9 @@ import {
   TTS_MODEL,
 } from "../scripts/lib/gemini_tts";
 import { chooseCuts, findPauses, plausibleSplit, splitAt } from "../scripts/lib/split_dialogue";
+import { fadeEdges } from "../scripts/lib/listening_sentences";
 import { LISTENING_AUDIO_PLANS } from "../scripts/lib/listening_audio_plans";
-import {
-  allPairings,
-  choosePairings,
-  fadeEdges,
-  pairSpeakers,
-  planCalls,
-} from "../scripts/lib/tts_listening";
+import { allPairings, choosePairings, pairSpeakers, planCalls } from "../scripts/lib/tts_listening";
 import { alignSentences, tidyTranscript } from "../scripts/lib/speech_reading";
 import { buildSoundsIndex, spellSounds } from "../src/components/listening/listening-checks";
 

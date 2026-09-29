@@ -44,6 +44,7 @@ import { speechLine, synthesizeDialogue, transcribeAny, TTS_MODEL } from "./gemi
 import { chooseCuts, findPauses, plausibleSplit, splitAt } from "./split_dialogue";
 import { LISTENING_AUDIO_PLANS, type ListeningAudioPlan } from "./listening_audio_plans";
 import {
+  fadeEdges,
   longestInnerPause,
   scriptSentences,
   sentenceFileName,
@@ -224,24 +225,6 @@ export function choosePairings<T>(
  */
 export function changeTempo(pcm: Uint8Array, tempo: number): Uint8Array {
   return tempo === 1 ? pcm : timeStretch(pcm, tempo);
-}
-
-/**
- * 音の 頭と おしりを ごく 短く（10ミリ秒）ふわっと 入れて 消す。
- * 切った ところの 小さな 雑音から 無音（0）へ 急に 変わると、そこが 小さく 鳴る。
- */
-export function fadeEdges(pcm: Uint8Array, ms = 10): Uint8Array {
-  const out = new Uint8Array(pcm);
-  const view = new DataView(out.buffer, out.byteOffset, out.byteLength);
-  const samples = Math.floor(out.byteLength / 2);
-  const span = Math.min(Math.round((OUT_RATE * ms) / 1000), Math.floor(samples / 2));
-  for (let i = 0; i < span; i += 1) {
-    const gain = 0.5 - 0.5 * Math.cos((Math.PI * i) / span);
-    view.setInt16(i * 2, Math.round(view.getInt16(i * 2, true) * gain), true);
-    const j = samples - 1 - i;
-    view.setInt16(j * 2, Math.round(view.getInt16(j * 2, true) * gain), true);
-  }
-  return out;
 }
 
 /** 1つの ひとまとまりの 音と 確かめ。 */

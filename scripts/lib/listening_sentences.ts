@@ -84,3 +84,22 @@ export function longestInnerPause(pcm: Uint8Array, { threshold = 60 } = {}): num
   }
   return (longest * WINDOW) / SAMPLE_RATE;
 }
+
+/**
+ * 音の 頭と おしりを ごく 短く（10ミリ秒）ふわっと 入れて 消す。
+ * 切った ところの 小さな 雑音から 無音（0）へ 急に 変わると、そこが 小さく 鳴る。
+ * Live も 無音なしで いきなり 声から 始まる 音を 返す ことが ある（2026-09-29 の ①で 4本）。
+ */
+export function fadeEdges(pcm: Uint8Array, ms = 10): Uint8Array {
+  const out = new Uint8Array(pcm);
+  const view = new DataView(out.buffer, out.byteOffset, out.byteLength);
+  const samples = Math.floor(out.byteLength / 2);
+  const span = Math.min(Math.round((SAMPLE_RATE * ms) / 1000), Math.floor(samples / 2));
+  for (let i = 0; i < span; i += 1) {
+    const gain = 0.5 - 0.5 * Math.cos((Math.PI * i) / span);
+    view.setInt16(i * 2, Math.round(view.getInt16(i * 2, true) * gain), true);
+    const j = samples - 1 - i;
+    view.setInt16(j * 2, Math.round(view.getInt16(j * 2, true) * gain), true);
+  }
+  return out;
+}
