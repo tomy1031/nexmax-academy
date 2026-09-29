@@ -3,6 +3,8 @@ import { describe, expect, it } from "vitest";
 import {
   clearAsakaiDraft,
   clearAsakaiResume,
+  isOneShotDay,
+  keptDayResult,
   readAsakaiResume,
   restoreAsakai,
   saveAsakaiDraft,
@@ -97,5 +99,70 @@ describe("週の けっか待ち", () => {
     saveAsakaiResume("m", WEEK, backend, 5);
     clearAsakaiResume("m", backend);
     expect(restoreAsakai("m", 5, backend).sceneAt).toBe(0);
+  });
+});
+
+/*
+ * **★ 1回で ぜんぶ 言えた 曜日**（2026-09-29 の 指定）。欄は 足さず、
+ * 聞き返しの 回数と 開いた 札の 数から 決める（古い しおりにも そのまま 付く）。
+ */
+describe("isOneShotDay", () => {
+  it("聞き返し 0回で 札が ぜんぶ ⭕ なら ★", () => {
+    expect(isOneShotDay(day("月曜日"))).toBe(true);
+  });
+
+  it("聞き返しが 1回でも あれば ★では ない（あとで ぜんぶ 開いても）", () => {
+    expect(isOneShotDay({ ...day("水曜日"), probes: 1 })).toBe(false);
+  });
+
+  it("開かなかった 札が あれば ★では ない", () => {
+    expect(isOneShotDay({ ...day("木曜日"), cards: 3 })).toBe(false);
+  });
+
+  it("札の ない 日（壊れた 記録）には 付けない", () => {
+    expect(isOneShotDay({ ...day("金曜日"), cards: 0, cardTotal: 0 })).toBe(false);
+  });
+});
+
+/*
+ * **話し直しで 前より 悪く ならない**（2026-09-29 の R5・code-critic 検収）。★は 合格の
+ * 上の 目標なので、★を ねらった 話し直しで 合格も ★も 消さない。
+ */
+describe("keptDayResult", () => {
+  const old = { ...day("水曜日"), probes: 2 };
+
+  it("はじめての 日は そのまま", () => {
+    expect(keptDayResult(undefined, old)).toBe(old);
+  });
+
+  it("★が 付いたら 新しい ほう", () => {
+    const next = day("水曜日");
+    expect(keptDayResult(old, next)).toBe(next);
+  });
+
+  it("問題の 札を 言いそびれたら 前の けっかを 残す（合格が 消えない）", () => {
+    const next = { ...day("水曜日"), cards: 3, units: 3, komariOpen: false, komariBoxes: 0 };
+    expect(keptDayResult(old, next)).toBe(old);
+  });
+
+  it("開いた 札が 減ったら 前の けっかを 残す", () => {
+    expect(keptDayResult(old, { ...old, cards: 3, units: 3, probes: 1 })).toBe(old);
+  });
+
+  it("★の 日を 話し直して 聞き返されたら ★を 残す", () => {
+    const star = day("月曜日");
+    expect(keptDayResult(star, { ...star, probes: 1 })).toBe(star);
+  });
+
+  it("数が 同じなら、聞き返しが 減った ときだけ 新しい ほう", () => {
+    const fewer = { ...old, probes: 1 };
+    expect(keptDayResult(old, fewer)).toBe(fewer);
+    expect(keptDayResult(old, { ...old, probes: 3 })).toBe(old);
+  });
+
+  it("数が 上がれば、聞き返しが 増えても 新しい ほう", () => {
+    const low = { ...old, cards: 3, units: 3, probes: 1 };
+    const next = { ...old, probes: 3 };
+    expect(keptDayResult(low, next)).toBe(next);
   });
 });

@@ -7,6 +7,7 @@ import { UI_FURIGANA } from "../src/components/asakai/ui-furigana";
 import {
   annotateRuby,
   buildFuriganaIndex,
+  KANJI,
   mergeFuriganaEntries,
   type FuriganaEntry,
 } from "../src/lib/text/furigana";
@@ -47,6 +48,56 @@ describe.each(MEETINGS)("%s の 画面の 字", (id) => {
     const got = read(text, id);
     expect(got).toContain(expected);
     expect(got).not.toMatch(/日〔にち〕|上〔あ〕/u);
+  });
+});
+
+/*
+ * 週の けっかの ★と「その 曜日だけ 話し直す」（2026-09-29）。
+ * 画面が 自分で 出す 字なので、裸の 漢字と 送りがなの 読みちがいを ここで 見る。
+ * 漢字の 範囲は エンジンと 同じ `KANJI`（々・拡張Aも 拾う）。
+ */
+describe.each(MEETINGS)("%s の 週の けっかの ★", (id) => {
+  it.each([
+    ["1回で ぜんぶ 言えた 曜日", ["回〔かい〕", "言えた〔いえた〕", "曜日〔ようび〕"]],
+    [
+      "報告メモの ことを、最初の 報告で ぜんぶ 言えた 曜日に ★が 付きます（聞き返し 0回）。★は 合格の 数に 入りません。",
+      [
+        "最初の〔さいしょの〕",
+        "付きます〔つきます〕",
+        "聞き返し〔ききかえし〕",
+        "合格〔ごうかく〕",
+        "入りません〔はいりません〕",
+      ],
+    ],
+    [
+      "表の「もう いちど」で、★が ない 曜日だけ 話し直せます。",
+      ["表の〔ひょうの〕", "話し直せます〔はなしなおせます〕"],
+    ],
+    [
+      "表の「もう いちど」で、★が ない 曜日を 話し直しましょう。",
+      ["話し直しましょう〔はなしなおしましょう〕"],
+    ],
+    [
+      "話し直すと、その 曜日を 数え直します。前より 悪く なった ときは、前の けっかが 残ります。",
+      [
+        "話し直すと〔はなしなおすと〕",
+        "数え直します〔かぞえなおします〕",
+        "前より〔まえより〕",
+        "悪く〔わるく〕",
+        "残ります〔のこります〕",
+      ],
+    ],
+    ["1回で ぜんぶ 言えました", ["回〔かい〕", "言えました〔いえました〕"]],
+    ["やめて 今週の けっかに もどる", ["今週〔こんしゅう〕"]],
+    [" ぜんぶ 話しました。", ["話"]],
+    ["今週の けっかに もどる ▶", ["今週〔こんしゅう〕"]],
+  ])("「%s」", (text, expected) => {
+    const got = read(text, id);
+    for (const one of expected) expect(got).toContain(one);
+    const bare = annotateRuby(text, indexOf(id)).filter(
+      (seg) => !seg.reading && KANJI.test(seg.text),
+    );
+    expect(bare.map((seg) => seg.text)).toEqual([]);
   });
 });
 

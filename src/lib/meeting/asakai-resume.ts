@@ -57,6 +57,46 @@ const dayResultSchema = z.object({
 export type DayResult = z.infer<typeof dayResultSchema>;
 
 /**
+ * **1回で ぜんぶ 言えた 日**（★・2026-09-29 の 指定「最終的には 各曜日 一度で
+ * 伝えられるように なると いい」）。合格の 条件では なく、その 上の 目標。
+ *
+ * 欄は 足さず、いま ある 数から 決める——聞き返しが 0回で 終わった 日は、
+ * さいしょの 1本で 札が ぜんぶ ⭕ に なった 日だけ（打ち切りは 聞き返しの あとにしか
+ * 起きない）。だから 前から 残って いる しおりにも そのまま ★が 付く。
+ */
+export function isOneShotDay(row: DayResult): boolean {
+  return row.probes === 0 && row.cardTotal > 0 && row.cards === row.cardTotal;
+}
+
+/**
+ * 同じ 曜日を 話し直した とき、**どちらの けっかを 残すか**（2026-09-29 の R5・code-critic 検収）。
+ *
+ * ★は 合格の 上の 目標なので、★を ねらった 話し直しで **前より 悪く なっては いけない**
+ *（問題の 札を 1回 言いそびれるだけで「合格」が「不合格」に、★の 日を タブから
+ * 話し直して 聞き返されると ★が 消えて いた）。画面は「前より 悪く なった ときは、
+ * 前の けっかが 残ります」と 言う。
+ *
+ * - 合格に 数える 数（言えた 数・問題の 箱・問題の 札）が 1つでも 下がったら 前
+ * - 数が どれか 上がったら 新しい ほう
+ * - 数が 同じなら、聞き返しが 増えて いない ときだけ 新しい ほう（★は 聞き返し 0回なので 消えない）
+ *
+ * 1つの 記録を 2回ぶんから つぎはぎには しない（どちらも 本当に あった 1回）。
+ */
+export function keptDayResult(prev: DayResult | undefined, next: DayResult): DayResult {
+  if (!prev) return next;
+  const lower =
+    next.units < prev.units ||
+    next.komariBoxes < prev.komariBoxes ||
+    (prev.komariOpen && !next.komariOpen);
+  if (lower) return prev;
+  const higher =
+    next.units > prev.units ||
+    next.komariBoxes > prev.komariBoxes ||
+    (next.komariOpen && !prev.komariOpen);
+  return higher || next.probes <= prev.probes ? next : prev;
+}
+
+/**
  * **報告の 途中**（その日の 板・聞き返しの 回数・チャット）。
  *
  * 2026-09-17 の 指定「回答結果が リセットされて しまう。曜日を 切り替えた 場合や
