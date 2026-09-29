@@ -274,7 +274,8 @@
             ],
             "example": {
               "speakerId": "hendy",
-              "text": "「今、決済フロントエンド機能 ぜんたいの 進捗は 22%です。」"
+              "text": "「今、決済フロントエンド機能 ぜんたいの 進捗は 22%です。」",
+              "audio": "/audio/meetings/asakai_kantan/s0-shinchoku-ex-80360e02.wav"
             }
           },
           {
@@ -614,7 +615,8 @@
             ],
             "example": {
               "speakerId": "hendy",
-              "text": "「今、決済フロントエンド機能 ぜんたいの 進捗は 33%です。」"
+              "text": "「今、決済フロントエンド機能 ぜんたいの 進捗は 33%です。」",
+              "audio": "/audio/meetings/asakai_kantan/s1-shinchoku-ex-0875b5b6.wav"
             }
           },
           {
@@ -941,7 +943,8 @@
             ],
             "example": {
               "speakerId": "hendy",
-              "text": "「今、決済フロントエンド機能 ぜんたいの 進捗は 30%です。」"
+              "text": "「今、決済フロントエンド機能 ぜんたいの 進捗は 30%です。」",
+              "audio": "/audio/meetings/asakai_kantan/s2-shinchoku-ex-8cc19c34.wav"
             }
           },
           {
@@ -1322,7 +1325,8 @@
             ],
             "example": {
               "speakerId": "hendy",
-              "text": "「今、決済フロントエンド機能 ぜんたいの 進捗は 70%です。」"
+              "text": "「今、決済フロントエンド機能 ぜんたいの 進捗は 70%です。」",
+              "audio": "/audio/meetings/asakai_kantan/s3-shinchoku-ex-81eaa7a4.wav"
             }
           },
           {
@@ -1437,7 +1441,8 @@
             "followups": [
               {
                 "speakerId": "hendy",
-                "text": "きょうは 問題が あります。何が 起きて いて、今 どう して いるか。予定に えいきょうが あるかも お願いします。"
+                "text": "きょうは 問題が あります。何が 起きて いて、今 どう して いるか。予定に えいきょうが あるかも お願いします。",
+                "audio": "/audio/meetings/asakai_kantan/s3-komari-fu0-14f8b5fd.wav"
               },
               {
                 "speakerId": "hendy",
@@ -1744,15 +1749,18 @@
         "closing": [
           {
             "speakerId": "fujiki",
-            "text": "藤木です。きのう お伝えした とおり、ACLEDA Payは 次の 回です。"
+            "text": "藤木です。きのう お伝えした とおり、ACLEDA Payは 次の 回です。",
+            "audio": "/audio/meetings/asakai_kantan/s4-closing-0-61eb92db.wav"
           },
           {
             "speakerId": "fujiki",
-            "text": "水曜日に あなたが、小さい うちに 問題を 言って くれました。木曜日には、はっきり 相談して くれました。だから ヘンディさんが すぐ 手伝う ことが できて、予定を のばさずに、きょう テストが できます。"
+            "text": "水曜日に あなたが、小さい うちに 問題を 言って くれました。木曜日には、はっきり 相談して くれました。だから ヘンディさんが すぐ 手伝う ことが できて、予定を のばさずに、きょう テストが できます。",
+            "audio": "/audio/meetings/asakai_kantan/s4-closing-1-00549ec4.wav"
           },
           {
             "speakerId": "hendy",
-            "text": "ありがとう ございます。では、午後に 結合テストを します。きょうの 朝礼は ここまでです。"
+            "text": "ありがとう ございます。では、午後に 結合テストを します。きょうの 朝礼は ここまでです。",
+            "audio": "/audio/meetings/asakai_kantan/s4-closing-2-3ebbfd4e.wav"
           }
         ],
         "panels": [
@@ -1828,7 +1836,8 @@
             ],
             "example": {
               "speakerId": "hendy",
-              "text": "「今、決済フロントエンド機能 ぜんたいの 進捗は 90%です。」"
+              "text": "「今、決済フロントエンド機能 ぜんたいの 進捗は 90%です。」",
+              "audio": "/audio/meetings/asakai_kantan/s4-shinchoku-ex-ef874998.wav"
             }
           },
           {
