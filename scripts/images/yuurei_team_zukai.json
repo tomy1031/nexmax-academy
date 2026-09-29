@@ -81,8 +81,8 @@
       "title": "報告②：進捗率",
       "where": "content/articles/yuurei_nexttalent.json 話す ことは 4つです カード2",
       "priority": "A",
-      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: your whole feature is thirty-five percent done, and you say that number. Close view of a large monitor on a desk in the evening showing a clean progress screen: a label panel at the top carrying its Japanese label (the word for progress rate), and below it ONE thick horizontal progress bar, filled with sky blue for about one third of its length and pale grey for the rest, with 35% printed large just after the filled part. the new engineer — a young Cambodian man in his early twenties with warm light-brown skin, short black hair with a neat side part, a friendly open face, wearing a light blue short-sleeved shirt, dark grey chinos and a lanyard with a blank white card sits beside the monitor and points at the filled part of the bar with one hand, with a small confident smile. Warm orange evening light. Nothing else is written anywhere.",
-      "text": ["進捗率", "35%"],
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: your whole feature is thirty percent done, and you say that number. Close view of a large monitor on a desk in the evening showing a clean progress screen: a label panel at the top carrying its Japanese label (the word for progress rate), and below it ONE thick horizontal progress bar, filled with sky blue for three tenths of its length and pale grey for the rest, with 30% printed large just after the filled part. the new engineer — a young Cambodian man in his early twenties with warm light-brown skin, short black hair with a neat side part, a friendly open face, wearing a light blue short-sleeved shirt, dark grey chinos and a lanyard with a blank white card sits beside the monitor and points at the filled part of the bar with one hand, with a small confident smile. Warm orange evening light. Nothing else is written anywhere.",
+      "text": ["進捗率", "30%"],
       "output": "Output: one square illustration, 1024x1024. Close view — the subject fills the frame edge to edge."
     },
     {
