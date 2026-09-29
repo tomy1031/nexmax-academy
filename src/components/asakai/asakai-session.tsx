@@ -103,9 +103,11 @@ import {
   clearAsakaiDraft,
   clearAsakaiResume,
   readAsakaiDraft,
+  refreshSavedLines,
   saveAsakaiDraft,
   restoreAsakai,
   saveAsakaiResume,
+  voicedLinesBySlot,
   type DayResult,
 } from "@/lib/meeting/asakai-resume";
 
@@ -728,17 +730,21 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
        * 聞いて 覚える 練習に ならなかった。字と 同じ 順で 待ち行列に 積む。
        * 報告メモは 開く（どの 日の 話だったかを 先に 見せる）ので、
        * 鳴りはじめるのは **閉じた あと**（`dutyIntro` の 覚え書き）。
+       *
+       * 保存した 行は **今の 教材の 文と 音に 引き直す**（`refreshSavedLines`）。
+       * 保存した ままを 鳴らすと、作り直す 前の 古い 声（「アバペイ」）が 鳴る。
        */
       const draft = readAsakaiDraft(meeting.id, next.day);
       if (draft && draft.lines.length > 0) {
-        setLines(draft.lines);
+        const saved = refreshSavedLines(draft.lines, voicedLinesBySlot(next), meeting.id);
+        setLines(saved);
         setStates(draft.states);
         setAttempts(draft.attempts);
         setProbes(draft.probes);
         setAskedId(draft.askedId);
         setProbeLog(draft.log);
         setDutyIntro(
-          draft.lines.map((line) => ({
+          saved.map((line) => ({
             speakerId: line.speakerId,
             text: line.text,
             audio: line.audio,
