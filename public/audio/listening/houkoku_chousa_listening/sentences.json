@@ -1,0 +1,313 @@
+{
+  "listeningId": "houkoku_chousa_listening",
+  "gapSeconds": 1.25,
+  "compareGapSeconds": [],
+  "complete": true,
+  "missing": [],
+  "sentences": [
+    {
+      "speaker": "kobayashi",
+      "text": "加藤さん、今、お時間 よろしいでしょうか。",
+      "file": "01.wav",
+      "voice": "Rasalgethi",
+      "model": "gemini-3.8-live",
+      "seconds": 3.05,
+      "longestPause": 0.5,
+      "transcript": "加藤さん、今、お時間よろしいでしょうか。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "かとうさんいまおじかんよろしいでしょうか",
+        "spoken": "かとうさんいまおじかんよろしいでしょうか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "kato",
+      "text": "はい。どうしましたか。",
+      "file": "02.wav",
+      "voice": "Gacrux",
+      "model": "gemini-3.8-live",
+      "seconds": 1.58,
+      "longestPause": 0.17,
+      "transcript": "はい、どうしました か ?",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "はいどうしましたか",
+        "spoken": "はいどうしましたか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "kobayashi",
+      "text": "昨日 お願いされた、画像を 保存する 方法に ついて、調査が 終わりましたので 報告します。",
+      "file": "03.wav",
+      "voice": "Rasalgethi",
+      "model": "gemini-3.8-live",
+      "seconds": 6.71,
+      "longestPause": 0.34,
+      "transcript": "昨日 お 願い さ れ た 画像 を 保存 する 方法 に つい て 調査 が 終わり まし た の で 報告 し ます 。",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "きのうおねがいされたがぞうをほぞんするほうほうについてちょうさがおわりましたのでほうこくします",
+        "spoken": "きのうおねがいされたがぞうをほぞんするほうほうについてちょうさがおわりましたのでほうこくします",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "kato",
+      "text": "お願いします。",
+      "file": "04.wav",
+      "voice": "Gacrux",
+      "model": "gemini-3.8-live",
+      "seconds": 0.71,
+      "longestPause": 0,
+      "transcript": "お願い し ます 。",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "おねがいします",
+        "spoken": "おねがいします",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "kobayashi",
+      "text": "二つの 方法を 調べました。",
+      "file": "05.wav",
+      "voice": "Rasalgethi",
+      "model": "gemini-3.8-live",
+      "seconds": 1.99,
+      "longestPause": 0.01,
+      "transcript": "2 つ の 方法 を 調べ まし た 。",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "ふたつのほうほうをしらべました",
+        "spoken": "ふたつのほうほうをしらべました",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "kobayashi",
+      "text": "一つ目は、今 使って いる サーバーに 画像を 保存する 方法です。",
+      "file": "06.wav",
+      "voice": "Rasalgethi",
+      "model": "gemini-3.8-live",
+      "seconds": 5.43,
+      "longestPause": 0.37,
+      "transcript": "一つ目は、今使っているサーバーに画像を保存する方法です。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "ひとつめはいまつかっているさあばあにがぞうをほぞんするほうほうです",
+        "spoken": "ひとつめはいまつかっているさあばあにがぞうをほぞんするほうほうです",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "kobayashi",
+      "text": "二つ目は、AWSの S3に 画像を 保存する 方法です。",
+      "file": "07.wav",
+      "voice": "Rasalgethi",
+      "model": "gemini-3.8-live",
+      "seconds": 5.08,
+      "longestPause": 0.35,
+      "transcript": "二つ目は、AWSのS3に画像を保存する方法です。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "ふたつめはええだぶりゅうえすのえすすりいにがぞうをほぞんするほうほうです",
+        "spoken": "ふたつめはええだぶりゅうえすのえすすりいにがぞうをほぞんするほうほうです",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "kato",
+      "text": "どちらが よさそうですか。",
+      "file": "08.wav",
+      "voice": "Gacrux",
+      "model": "gemini-3.8-live",
+      "seconds": 1.83,
+      "longestPause": 0.02,
+      "transcript": "どちら が よさ そう です か ?",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "どちらがよさそうですか",
+        "spoken": "どちらがよさそうですか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "kobayashi",
+      "text": "今回は、S3を 使う 方が よいと 思います。",
+      "file": "09.wav",
+      "voice": "Rasalgethi",
+      "model": "gemini-3.8-live",
+      "seconds": 3.57,
+      "longestPause": 0.32,
+      "transcript": "今回は、S3を使う 方がよいと 思います。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "こんかいはえすすりいをつかうほうがよいとおもいます",
+        "spoken": "こんかいはえすすりいをつかうほうがよいとおもいます",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "kato",
+      "text": "S3の 方が よいと いう ことですね。理由は 何ですか。",
+      "file": "10.wav",
+      "voice": "Gacrux",
+      "model": "gemini-3.8-live",
+      "seconds": 4.08,
+      "longestPause": 0.37,
+      "transcript": "S3の方がよいということですね。理由は何ですか。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "えすすりいのほうがよいということですねりゆうはなんですか",
+        "spoken": "えすすりいのほうがよいということですねりゆうはなんですか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "kobayashi",
+      "text": "はい。商品画像が 増えても 管理しやすいからです。",
+      "file": "11.wav",
+      "voice": "Rasalgethi",
+      "model": "gemini-3.8-live",
+      "seconds": 3.72,
+      "longestPause": 0.55,
+      "transcript": "はい。商品画像が 増えても管理しやすいからです。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "はいしょうひんがぞうがふえてもかんりしやすいからです",
+        "spoken": "はいしょうひんがぞうがふえてもかんりしやすいからです",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "kobayashi",
+      "text": "また、今の サーバーに 画像を たくさん 保存しなくても よく なります。",
+      "file": "12.wav",
+      "voice": "Rasalgethi",
+      "model": "gemini-3.8-live",
+      "seconds": 5.1,
+      "longestPause": 0.36,
+      "transcript": "また 、 今 の サーバー に 画像 を たくさん 保存 し なく て も 良く なり ます 。",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "またいまのさあばあにがぞうをたくさんほぞんしなくてもよくなります",
+        "spoken": "またいまのさあばあにがぞうをたくさんほぞんしなくてもよくなります",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "kato",
+      "text": "料金は どうですか。",
+      "file": "13.wav",
+      "voice": "Gacrux",
+      "model": "gemini-3.8-live",
+      "seconds": 1.51,
+      "longestPause": 0.04,
+      "transcript": "料金 は どう です か ?",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "りょうきんはどうですか",
+        "spoken": "りょうきんはどうですか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "kobayashi",
+      "text": "100GB 保存すると、料金は 月に だいたい 360円です。",
+      "file": "14.wav",
+      "voice": "Rasalgethi",
+      "model": "gemini-3.8-live",
+      "seconds": 5.09,
+      "longestPause": 0.36,
+      "transcript": "100GB 保存 する と 料金 は 月 に 大体 360円 です 。",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "ひゃくぎがばいとほぞんするとりょうきんはつきにだいたいさんびゃくろくじゅうえんです",
+        "spoken": "ひゃくぎがばいとほぞんするとりょうきんはつきにだいたいさんびゃくろくじゅうえんです",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "kobayashi",
+      "text": "ただし、データの 送信や リクエストにも 料金が かかる 場合が あります。",
+      "file": "15.wav",
+      "voice": "Rasalgethi",
+      "model": "gemini-3.8-live",
+      "seconds": 5.12,
+      "longestPause": 0.42,
+      "transcript": "ただし、データの送信やリクエストにも料金がかかる場合があります。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "ただしでえたのそうしんやりくえすとにもりょうきんがかかるばあいがあります",
+        "spoken": "ただしでえたのそうしんやりくえすとにもりょうきんがかかるばあいがあります",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "kato",
+      "text": "100GBで、月360円と いう ことですね。",
+      "file": "16.wav",
+      "voice": "Gacrux",
+      "model": "gemini-3.8-live",
+      "seconds": 3.8,
+      "longestPause": 0.27,
+      "transcript": "100GBで、月360円と いうことですね。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "ひゃくぎがばいとでつきさんびゃくろくじゅうえんということですね",
+        "spoken": "ひゃくぎがばいとでつきさんびゃくろくじゅうえんということですね",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "kobayashi",
+      "text": "はい、そうです。",
+      "file": "17.wav",
+      "voice": "Rasalgethi",
+      "model": "gemini-3.8-live",
+      "seconds": 1.13,
+      "longestPause": 0.19,
+      "transcript": "はい 、 そう です 。",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "はいそうです",
+        "spoken": "はいそうです",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "kato",
+      "text": "分かりました。料金と 調査結果を GitHubの Issueに まとめて ください。",
+      "file": "18.wav",
+      "voice": "Gacrux",
+      "model": "gemini-3.8-live",
+      "seconds": 5.08,
+      "longestPause": 0.18,
+      "transcript": "わかりました。 料金と調査結果をGitHubのissueにまとめてください。",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "わかりましたりょうきんとちょうさけっかをぎっとはぶのいしゅうにまとめてください",
+        "spoken": "わかりましたりょうきんとちょうさけっかをぎっとはぶのいしゅうにまとめてください",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "kobayashi",
+      "text": "はい。分かりました。",
+      "file": "19.wav",
+      "voice": "Rasalgethi",
+      "model": "gemini-3.8-live",
+      "seconds": 1.54,
+      "longestPause": 0.42,
+      "transcript": "はい 。 わかり まし た 。",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "はいわかりました",
+        "spoken": "はいわかりました",
+        "distance": 0
+      }
+    }
+  ]
+}

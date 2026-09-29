@@ -107,11 +107,46 @@ export interface Spoken {
   readonly transcriptBy?: string;
 }
 
-/** 音を 文字に 起こす（Live の 文字起こしが 空だった ときの 控え）。 */
-export async function transcribePcm(pcm: Uint8Array, apiKey: string): Promise<string> {
+/**
+ * 文字起こしに 使う モデル（前から 順に 試す）。**無料枠は モデルごと**に 数えられるので、
+ * 1つが 上限でも 次で 聞ける。2026-09-28 の 実測: gemini-2.5-flash（`TEXT_MODEL`）は
+ * 1日 20回で 上限、3.8-flash と 3-flash-preview は 混雑（503）が 多い、
+ * 3.1-flash と 2.5-flash-lite は 404（「3.5-flash-lite を 使え」と 返った）。
+ * 以前は `TEXT_MODEL` 1つ だけで、上限に 当たると Live の 音が 全部 捨てられた。
+ */
+export const TRANSCRIBE_MODELS = [
+  "gemini-3.5-flash-lite",
+  "gemini-3.5-flash",
+  TEXT_MODEL,
+  "gemini-3.8-flash",
+  "gemini-3-flash-preview",
+] as const;
+
+/**
+ * 音を 文字に 起こす（Live の 文字起こしが 空だった ときの 控え）。
+ * `TRANSCRIBE_MODELS` を 前から 試し、最初に 返った ものを 使う。どれも だめなら 投げる。
+ */
+export async function transcribePcm(
+  pcm: Uint8Array,
+  apiKey: string,
+): Promise<{ text: string; model: string }> {
+  const failures: string[] = [];
+  for (const model of TRANSCRIBE_MODELS) {
+    try {
+      const text = await transcribeWith(model, pcm, apiKey);
+      if (text) return { text, model };
+      failures.push(`${model}: 空`);
+    } catch (error) {
+      failures.push(`${model}: ${String(error).slice(0, 160)}`);
+    }
+  }
+  throw new Error(`文字起こし できません — ${failures.join(" / ")}`);
+}
+
+async function transcribeWith(model: string, pcm: Uint8Array, apiKey: string): Promise<string> {
   const ai = new GoogleGenAI({ apiKey });
   const response = await ai.models.generateContent({
-    model: TEXT_MODEL,
+    model,
     contents: [
       {
         role: "user",
@@ -366,9 +401,9 @@ export async function synthesizeWithFallback(
         if (speaker.transcribeWhenEmpty && spoken.transcript.trim() === "") {
           try {
             const heard = await transcribePcm(spoken.pcm, speaker.apiKey);
-            if (heard) spoken = { ...spoken, transcript: heard, transcriptBy: TEXT_MODEL };
+            spoken = { ...spoken, transcript: heard.text, transcriptBy: heard.model };
           } catch (error) {
-            failures.push(`${TEXT_MODEL}: 文字起こし できません — ${String(error)}`);
+            failures.push(String(error));
           }
         }
         const seconds = spoken.pcm.byteLength / OUT_RATE / 2;

@@ -4,7 +4,7 @@
   "order": 4,
   "title": "報連相：報告",
   "reading": "ほうれんそう ほうこく",
-  "description": "日本の 会社の「報連相」を 学びます。上司への 報告の しかたを 読んで、聞いて、声に 出して 練習します。",
+  "description": "日本の 会社の「報連相」を 学びます。上司への 報告の しかたを 読んで、聞いて、声に 出して 練習します。さいごに、いろいろな 場面の 報告を 聞いて 確かめます。",
   "color": "sky",
   "status": "published",
   "area": {
@@ -53,6 +53,46 @@
       "ref": "houkoku_bug_quiz",
       "type": "quizset",
       "gates": true
+    },
+    {
+      "ref": "houkoku_kanryou_listening",
+      "type": "listening"
+    },
+    {
+      "ref": "houkoku_kanryou_quiz",
+      "type": "quizset"
+    },
+    {
+      "ref": "houkoku_okure_listening",
+      "type": "listening"
+    },
+    {
+      "ref": "houkoku_okure_quiz",
+      "type": "quizset"
+    },
+    {
+      "ref": "houkoku_shougai_listening",
+      "type": "listening"
+    },
+    {
+      "ref": "houkoku_shougai_quiz",
+      "type": "quizset"
+    },
+    {
+      "ref": "houkoku_chousa_listening",
+      "type": "listening"
+    },
+    {
+      "ref": "houkoku_chousa_quiz",
+      "type": "quizset"
+    },
+    {
+      "ref": "houkoku_chourei_listening",
+      "type": "listening"
+    },
+    {
+      "ref": "houkoku_chourei_quiz",
+      "type": "quizset"
     }
   ],
   "wordStageIds": [
@@ -60,6 +100,14 @@
     "hourensou_houkoku_jokyu"
   ],
   "furigana": [
+    [
+      "確かめ",
+      "たしかめ"
+    ],
+    [
+      "場面",
+      "ばめん"
+    ],
     [
       "報連相",
       "ほうれんそう"

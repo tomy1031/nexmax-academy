@@ -1,0 +1,489 @@
+{
+  "listeningId": "houkoku_chourei_listening",
+  "gapSeconds": 1.25,
+  "compareGapSeconds": [],
+  "complete": true,
+  "missing": [],
+  "sentences": [
+    {
+      "speaker": "takahashi",
+      "text": "おはよう ございます。それでは、朝礼を 始めます。",
+      "file": "01.wav",
+      "voice": "Alnilam",
+      "model": "gemini-3.8-live",
+      "seconds": 3.64,
+      "longestPause": 0.48,
+      "transcript": "おはようございます。それでは、朝礼を始めます。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "おはようございますそれではちょうれいをはじめます",
+        "spoken": "おはようございますそれではちょうれいをはじめます",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "takahashi",
+      "text": "佐藤さんから お願いします。",
+      "file": "02.wav",
+      "voice": "Alnilam",
+      "model": "gemini-3.8-live",
+      "seconds": 1.76,
+      "longestPause": 0.02,
+      "transcript": "佐藤 さん から お 願い し ます 。",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "さとうさんからおねがいします",
+        "spoken": "さとうさんからおねがいします",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "sato",
+      "text": "おはよう ございます。",
+      "file": "03.wav",
+      "voice": "Autonoe",
+      "model": "gemini-3.8-live",
+      "seconds": 1.23,
+      "longestPause": 0,
+      "transcript": "おはようございます。",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "おはようございます",
+        "spoken": "おはようございます",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "sato",
+      "text": "きのうは、商品詳細画面を 作成しました。",
+      "file": "04.wav",
+      "voice": "Autonoe",
+      "model": "gemini-3.8-live",
+      "seconds": 6.37,
+      "longestPause": 0.2,
+      "transcript": "きのうは、商品詳細画面を作成しました。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "きのうはしょうひんしょうさいがめんをさくせいしました",
+        "spoken": "きのうはしょうひんしょうさいがめんをさくせいしました",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "sato",
+      "text": "商品名、商品画像、値段、商品説明を 表示できるように しました。",
+      "file": "05.wav",
+      "voice": "Autonoe",
+      "model": "gemini-3.8-live",
+      "seconds": 5.94,
+      "longestPause": 0.33,
+      "transcript": "商品 名 商品 画像 値段 商品 説明 を 表示 できる よう に し まし た 。",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "しょうひんめいしょうひんがぞうねだんしょうひんせつめいをひょうじできるようにしました",
+        "spoken": "しょうひんめいしょうひんがぞうねだんしょうひんせつめいをひょうじできるようにしました",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "sato",
+      "text": "商品詳細機能 全体の 進捗は、80％です。",
+      "file": "06.wav",
+      "voice": "Autonoe",
+      "model": "gemini-3.8-live",
+      "seconds": 4.88,
+      "longestPause": 0.34,
+      "transcript": "商品詳細機能全体の進捗は、80％です。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "しょうひんしょうさいきのうぜんたいのしんちょくははちじゅっぱあせんとです",
+        "spoken": "しょうひんしょうさいきのうぜんたいのしんちょくははちじゅっぱあせんとです",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "sato",
+      "text": "きょうは、商品の 画像を クリックすると、大きい 画像を 表示する 機能を 作ります。",
+      "file": "07.wav",
+      "voice": "Autonoe",
+      "model": "gemini-3.8-live",
+      "seconds": 5.64,
+      "longestPause": 0.26,
+      "transcript": "今日 は 商品 の 画像 を クリック する と 大きい 画像 を 表示 する 機能 を 作り ます 。",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "きょうはしょうひんのがぞうをくりっくするとおおきいがぞうをひょうじするきのうをつくります",
+        "spoken": "きょうはしょうひんのがぞうをくりっくするとおおきいがぞうをひょうじするきのうをつくります",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "sato",
+      "text": "問題は ありません。",
+      "file": "08.wav",
+      "voice": "Autonoe",
+      "model": "gemini-3.8-live",
+      "seconds": 1.33,
+      "longestPause": 0,
+      "transcript": "問題 は あり ませ ん 。",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "もんだいはありません",
+        "spoken": "もんだいはありません",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "takahashi",
+      "text": "商品詳細機能は 80％で、問題は ないと いう ことですね。",
+      "file": "09.wav",
+      "voice": "Alnilam",
+      "model": "gemini-3.8-live",
+      "seconds": 5.02,
+      "longestPause": 0.09,
+      "transcript": "商品 詳細 機能 は 80% で 問題 は ない と いう こと です ね 。",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "しょうひんしょうさいきのうははちじゅっぱあせんとでもんだいはないということですね",
+        "spoken": "しょうひんしょうさいきのうははちじゅっぱあせんとでもんだいはないということですね",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "sato",
+      "text": "はい、そうです。",
+      "file": "10.wav",
+      "voice": "Autonoe",
+      "model": "gemini-3.8-live",
+      "seconds": 1.24,
+      "longestPause": 0.19,
+      "transcript": "はい、そうです。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "はいそうです",
+        "spoken": "はいそうです",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "takahashi",
+      "text": "ありがとう ございます。では、山田さん お願いします。",
+      "file": "11.wav",
+      "voice": "Alnilam",
+      "model": "gemini-3.8-live",
+      "seconds": 4.55,
+      "longestPause": 0.12,
+      "transcript": "ありがとう ござい ます 。 で は 山田 さん お 願い し ます 。",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "ありがとうございますではやまださんおねがいします",
+        "spoken": "ありがとうございますではやまださんおねがいします",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "yamada",
+      "text": "おはよう ございます。",
+      "file": "12.wav",
+      "voice": "Achird",
+      "model": "gemini-3.8-live",
+      "seconds": 1.41,
+      "longestPause": 0.09,
+      "transcript": "おはよう ござい ます 。",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "おはようございます",
+        "spoken": "おはようございます",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "yamada",
+      "text": "きのうは、商品検索APIを 作成しました。",
+      "file": "13.wav",
+      "voice": "Achird",
+      "model": "gemini-3.8-live",
+      "seconds": 3.21,
+      "longestPause": 0.22,
+      "transcript": "昨日 は 商品 検索 API を 作成 し まし た 。",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "きのうはしょうひんけんさくええぴいあいをさくせいしました",
+        "spoken": "きのうはしょうひんけんさくええぴいあいをさくせいしました",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "yamada",
+      "text": "商品検索機能 全体の 進捗は、60％です。",
+      "file": "14.wav",
+      "voice": "Achird",
+      "model": "gemini-3.8-live",
+      "seconds": 4.63,
+      "longestPause": 0.2,
+      "transcript": "商品検索機能 全体の進捗は、60％です。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "しょうひんけんさくきのうぜんたいのしんちょくはろくじゅっぱあせんとです",
+        "spoken": "しょうひんけんさくきのうぜんたいのしんちょくはろくじゅっぱあせんとです",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "yamada",
+      "text": "きょうは、カテゴリーで 商品を 検索する 処理を 修正します。",
+      "file": "15.wav",
+      "voice": "Achird",
+      "model": "gemini-3.8-live",
+      "seconds": 4.33,
+      "longestPause": 0.26,
+      "transcript": "今日はカテゴリーで商品を検索する処理を修正します。",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "きょうはかてごりいでしょうひんをけんさくするしょりをしゅうせいします",
+        "spoken": "きょうはかてごりいでしょうひんをけんさくするしょりをしゅうせいします",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "yamada",
+      "text": "カテゴリーで 検索すると、違う カテゴリーの 商品も 表示される 問題が あります。",
+      "file": "16.wav",
+      "voice": "Achird",
+      "model": "gemini-3.8-live",
+      "seconds": 5.17,
+      "longestPause": 0.29,
+      "transcript": "カテゴリーで検索すると、違うカテゴリーの商品も表示される問題があります。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "かてごりいでけんさくするとちがうかてごりいのしょうひんもひょうじされるもんだいがあります",
+        "spoken": "かてごりいでけんさくするとちがうかてごりいのしょうひんもひょうじされるもんだいがあります",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "yamada",
+      "text": "今、APIの 検索条件を 確認して います。",
+      "file": "17.wav",
+      "voice": "Achird",
+      "model": "gemini-3.8-live",
+      "seconds": 3.71,
+      "longestPause": 0.26,
+      "transcript": "今、APIの検索条件を確認しています。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "いまええぴいあいのけんさくじょうけんをかくにんしています",
+        "spoken": "いまええぴいあいのけんさくじょうけんをかくにんしています",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "takahashi",
+      "text": "今は APIの 検索条件を 確認して いるんですね。",
+      "file": "18.wav",
+      "voice": "Alnilam",
+      "model": "gemini-3.8-live",
+      "seconds": 3.8,
+      "longestPause": 0.17,
+      "transcript": "今 は API の 検索 条件 を 確認 し て いる ん です ね 。",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "いまはええぴいあいのけんさくじょうけんをかくにんしているんですね",
+        "spoken": "いまはええぴいあいのけんさくじょうけんをかくにんしているんですね",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "yamada",
+      "text": "はい、そうです。",
+      "file": "19.wav",
+      "voice": "Achird",
+      "model": "gemini-3.8-live",
+      "seconds": 1.12,
+      "longestPause": 0.03,
+      "transcript": "はい 、 そう です 。",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "はいそうです",
+        "spoken": "はいそうです",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "takahashi",
+      "text": "原因は まだ 分かって いませんか。",
+      "file": "20.wav",
+      "voice": "Alnilam",
+      "model": "gemini-3.8-live",
+      "seconds": 2.29,
+      "longestPause": 0.07,
+      "transcript": "原因 は まだ 分かっ て い ませ ん か ?",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "げんいんはまだわかっていませんか",
+        "spoken": "げんいんはまだわかっていませんか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "yamada",
+      "text": "はい。まだ 分かって いません。午前中に 確認して、分かったら Slackで 報告します。",
+      "file": "21.wav",
+      "voice": "Achird",
+      "model": "gemini-3.8-live",
+      "seconds": 6.15,
+      "longestPause": 0.24,
+      "transcript": "はい 、 まだ 分かっ て い ませ ん 。 午前 中 に 確認 し て 分かっ たら スラック で 報告 し ます 。",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "はいまだわかっていませんごぜんちゅうにかくにんしてわかったらすらっくでほうこくします",
+        "spoken": "はいまだわかっていませんごぜんちゅうにかくにんしてわかったらすらっくでほうこくします",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "takahashi",
+      "text": "午前中に 確認すると いう ことですね。",
+      "file": "22.wav",
+      "voice": "Alnilam",
+      "model": "gemini-3.8-live",
+      "seconds": 2.48,
+      "longestPause": 0,
+      "transcript": "午前 中 に 確認 する と いう こと です ね 。",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "ごぜんちゅうにかくにんするということですね",
+        "spoken": "ごぜんちゅうにかくにんするということですね",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "yamada",
+      "text": "はい。",
+      "file": "23.wav",
+      "voice": "Achird",
+      "model": "gemini-3.8-live",
+      "seconds": 0.36,
+      "longestPause": 0,
+      "transcript": "はい",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "はい",
+        "spoken": "はい",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "takahashi",
+      "text": "分かりました。ありがとう ございます。",
+      "file": "24.wav",
+      "voice": "Alnilam",
+      "model": "gemini-3.8-live",
+      "seconds": 2.41,
+      "longestPause": 0.38,
+      "transcript": "分かりました。ありがとう ございます。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "わかりましたありがとうございます",
+        "spoken": "わかりましたありがとうございます",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "takahashi",
+      "text": "では、今日の 報告を 確認します。",
+      "file": "25.wav",
+      "voice": "Alnilam",
+      "model": "gemini-3.8-live",
+      "seconds": 3.28,
+      "longestPause": 0.54,
+      "transcript": "で は 今日 の 報告 を 確認 し ます 。",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "ではきょうのほうこくをかくにんします",
+        "spoken": "ではきょうのほうこくをかくにんします",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "takahashi",
+      "text": "佐藤さんは、商品画像を 大きく 表示する 機能を 作ります。",
+      "file": "26.wav",
+      "voice": "Alnilam",
+      "model": "gemini-3.8-live",
+      "seconds": 4.68,
+      "longestPause": 0.16,
+      "transcript": "佐藤さんは、商品画像を大きく表示する機能を作ります。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "さとうさんはしょうひんがぞうをおおきくひょうじするきのうをつくります",
+        "spoken": "さとうさんはしょうひんがぞうをおおきくひょうじするきのうをつくります",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "takahashi",
+      "text": "山田さんは、商品検索APIの 問題を 確認します。",
+      "file": "27.wav",
+      "voice": "Alnilam",
+      "model": "gemini-3.8-live",
+      "seconds": 4.46,
+      "longestPause": 0.17,
+      "transcript": "山田さんは、商品検索APIの問題を確認します。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "やまださんはしょうひんけんさくええぴいあいのもんだいをかくにんします",
+        "spoken": "やまださんはしょうひんけんさくええぴいあいのもんだいをかくにんします",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "sato",
+      "text": "はい。分かりました。",
+      "file": "28.wav",
+      "voice": "Autonoe",
+      "model": "gemini-3.8-live",
+      "seconds": 1.48,
+      "longestPause": 0.48,
+      "transcript": "はい。分かりました。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "はいわかりました",
+        "spoken": "はいわかりました",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "yamada",
+      "text": "はい。分かりました。",
+      "file": "29.wav",
+      "voice": "Achird",
+      "model": "gemini-3.8-live",
+      "seconds": 1.58,
+      "longestPause": 0.57,
+      "transcript": "はい 。 わかり まし た 。",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "はいわかりました",
+        "spoken": "はいわかりました",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "takahashi",
+      "text": "では、今日も よろしく お願いします。",
+      "file": "30.wav",
+      "voice": "Alnilam",
+      "model": "gemini-3.8-live",
+      "seconds": 2.17,
+      "longestPause": 0.19,
+      "transcript": "で は 今日 も よろしく お 願い し ます 。",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "ではきょうもよろしくおねがいします",
+        "spoken": "ではきょうもよろしくおねがいします",
+        "distance": 0
+      }
+    }
+  ]
+}

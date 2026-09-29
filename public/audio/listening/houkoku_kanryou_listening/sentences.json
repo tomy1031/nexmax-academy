@@ -1,0 +1,313 @@
+{
+  "listeningId": "houkoku_kanryou_listening",
+  "gapSeconds": 1.25,
+  "compareGapSeconds": [],
+  "complete": true,
+  "missing": [],
+  "sentences": [
+    {
+      "speaker": "sato",
+      "text": "高橋さん、今、お時間 よろしいでしょうか。",
+      "file": "01.wav",
+      "voice": "Autonoe",
+      "model": "gemini-3.8-live",
+      "seconds": 2.59,
+      "longestPause": 0.28,
+      "transcript": "高橋さん、今、お時間よろしいでしょうか。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "たかはしさんいまおじかんよろしいでしょうか",
+        "spoken": "たかはしさんいまおじかんよろしいでしょうか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "takahashi",
+      "text": "はい、大丈夫ですよ。どうしましたか。",
+      "file": "02.wav",
+      "voice": "Alnilam",
+      "model": "gemini-3.8-live",
+      "seconds": 2.98,
+      "longestPause": 0.53,
+      "transcript": "はい、大丈夫ですよ。どうしましたか。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "はいだいじょうぶですよどうしましたか",
+        "spoken": "はいだいじょうぶですよどうしましたか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "sato",
+      "text": "担当して いた、お知らせ一覧画面の 作業が 終わりましたので、報告します。",
+      "file": "03.wav",
+      "voice": "Autonoe",
+      "model": "gemini-3.8-live",
+      "seconds": 5.41,
+      "longestPause": 0.27,
+      "transcript": "担当していた、お知らせ一覧画面の作業が終わりましたので、報告します。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "たんとうしていたおしらせいちらんがめんのさぎょうがおわりましたのでほうこくします",
+        "spoken": "たんとうしていたおしらせいちらんがめんのさぎょうがおわりましたのでほうこくします",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "takahashi",
+      "text": "はい。どこまで できましたか。",
+      "file": "04.wav",
+      "voice": "Alnilam",
+      "model": "gemini-3.8-live",
+      "seconds": 2.41,
+      "longestPause": 0.22,
+      "transcript": "はい。どこまでできましたか。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "はいどこまでできましたか",
+        "spoken": "はいどこまでできましたか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "sato",
+      "text": "お知らせの タイトル、日にち、文章を 表示できるように しました。",
+      "file": "05.wav",
+      "voice": "Autonoe",
+      "model": "gemini-3.8-live",
+      "seconds": 4.62,
+      "longestPause": 0.3,
+      "transcript": "お知らせ の タイトル 日にち 文章 を 表示 できる よう に し まし た 。",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "おしらせのたいとるひにちぶんしょうをひょうじできるようにしました",
+        "spoken": "おしらせのたいとるひにちぶんしょうをひょうじできるようにしました",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "sato",
+      "text": "また、タイトルを クリックすると、お知らせの 詳細画面が 開く ことも 確認しました。",
+      "file": "06.wav",
+      "voice": "Autonoe",
+      "model": "gemini-3.8-live",
+      "seconds": 4.7,
+      "longestPause": 0.2,
+      "transcript": "また タイトル を クリック する と お 知らせ の 詳細 画面 が 開く こと も 確認 し まし た 。",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "またたいとるをくりっくするとおしらせのしょうさいがめんがひらくこともかくにんしました",
+        "spoken": "またたいとるをくりっくするとおしらせのしょうさいがめんがひらくこともかくにんしました",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "takahashi",
+      "text": "一覧の 表示と、詳細画面を 開く ところまで できたと いう ことですね。",
+      "file": "07.wav",
+      "voice": "Alnilam",
+      "model": "gemini-3.8-live",
+      "seconds": 4.52,
+      "longestPause": 0.15,
+      "transcript": "一覧 の 表示 と 詳細 画面 を 開く ところ まで でき た と いう こと です ね 。",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "いちらんのひょうじとしょうさいがめんをひらくところまでできたということですね",
+        "spoken": "いちらんのひょうじとしょうさいがめんをひらくところまでできたということですね",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "sato",
+      "text": "はい、そうです。",
+      "file": "08.wav",
+      "voice": "Autonoe",
+      "model": "gemini-3.8-live",
+      "seconds": 1.15,
+      "longestPause": 0.27,
+      "transcript": "はい、そうです。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "はいそうです",
+        "spoken": "はいそうです",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "takahashi",
+      "text": "テストも 終わって いますか。",
+      "file": "09.wav",
+      "voice": "Alnilam",
+      "model": "gemini-3.8-live",
+      "seconds": 1.8,
+      "longestPause": 0.05,
+      "transcript": "テスト も 終わっ て い ます か ?",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "てすともおわっていますか",
+        "spoken": "てすともおわっていますか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "sato",
+      "text": "はい。パソコンと スマートフォンで 確認しました。",
+      "file": "10.wav",
+      "voice": "Autonoe",
+      "model": "gemini-3.8-live",
+      "seconds": 2.83,
+      "longestPause": 0.22,
+      "transcript": "はい。パソコンとスマートフォンで確認しました。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "はいぱそこんとすまあとふぉんでかくにんしました",
+        "spoken": "はいぱそこんとすまあとふぉんでかくにんしました",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "sato",
+      "text": "今の ところ、問題は ありません。",
+      "file": "11.wav",
+      "voice": "Autonoe",
+      "model": "gemini-3.8-live",
+      "seconds": 2.35,
+      "longestPause": 0.21,
+      "transcript": "いまのところ、問題はありません。",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "いまのところもんだいはありません",
+        "spoken": "いまのところもんだいはありません",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "takahashi",
+      "text": "パソコンと スマートフォンの どちらも 大丈夫と いう ことですね。",
+      "file": "12.wav",
+      "voice": "Alnilam",
+      "model": "gemini-3.8-live",
+      "seconds": 4.2,
+      "longestPause": 0.2,
+      "transcript": "パソコンとスマートフォンのどちらも大丈夫ということですね。",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "ぱそこんとすまあとふぉんのどちらもだいじょうぶということですね",
+        "spoken": "ぱそこんとすまあとふぉんのどちらもだいじょうぶということですね",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "sato",
+      "text": "はい、そうです。",
+      "file": "13.wav",
+      "voice": "Autonoe",
+      "model": "gemini-3.8-live",
+      "seconds": 1.43,
+      "longestPause": 0.49,
+      "transcript": "はい 。 そう です 。",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "はいそうです",
+        "spoken": "はいそうです",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "takahashi",
+      "text": "分かりました。ありがとう ございます。",
+      "file": "14.wav",
+      "voice": "Alnilam",
+      "model": "gemini-3.8-live",
+      "seconds": 2.51,
+      "longestPause": 0.42,
+      "transcript": "わかり まし た 。 ありがとう ござい ます 。",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "わかりましたありがとうございます",
+        "spoken": "わかりましたありがとうございます",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "sato",
+      "text": "次は どの タスクを すれば いいですか。",
+      "file": "15.wav",
+      "voice": "Autonoe",
+      "model": "gemini-3.8-live",
+      "seconds": 2.74,
+      "longestPause": 0.04,
+      "transcript": "次 は どの タスク を すれ ば いい です か ?",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "つぎはどのたすくをすればいいですか",
+        "spoken": "つぎはどのたすくをすればいいですか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "takahashi",
+      "text": "次は、お知らせを 登録する 画面を お願いします。",
+      "file": "16.wav",
+      "voice": "Alnilam",
+      "model": "gemini-3.8-live",
+      "seconds": 3.37,
+      "longestPause": 0.24,
+      "transcript": "次は、お知らせを 登録する 画面を お願いします。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "つぎはおしらせをとうろくするがめんをおねがいします",
+        "spoken": "つぎはおしらせをとうろくするがめんをおねがいします",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "takahashi",
+      "text": "GitHubの Issueを 作ったので、確認して ください。",
+      "file": "17.wav",
+      "voice": "Alnilam",
+      "model": "gemini-3.8-live",
+      "seconds": 3.23,
+      "longestPause": 0.19,
+      "transcript": "GitHub の Issue を作ったので、確認してください。",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "ぎっとはぶのいしゅうをつくったのでかくにんしてください",
+        "spoken": "ぎっとはぶのいしゅうをつくったのでかくにんしてください",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "sato",
+      "text": "分かりました。Issueを 確認してから 作業を 始めます。",
+      "file": "18.wav",
+      "voice": "Autonoe",
+      "model": "gemini-3.8-live",
+      "seconds": 3.68,
+      "longestPause": 0.17,
+      "transcript": "わかりました 。 異臭 を 確認 し て から 作業 を 始め ます 。",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "わかりましたいしゅうをかくにんしてからさぎょうをはじめます",
+        "spoken": "わかりましたいしゅうをかくにんしてからさぎょうをはじめます",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "takahashi",
+      "text": "お願いします。",
+      "file": "19.wav",
+      "voice": "Alnilam",
+      "model": "gemini-3.8-live",
+      "seconds": 0.78,
+      "longestPause": 0,
+      "transcript": "お願いします。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "おねがいします",
+        "spoken": "おねがいします",
+        "distance": 0
+      }
+    }
+  ]
+}

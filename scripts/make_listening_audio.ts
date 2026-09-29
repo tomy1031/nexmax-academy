@@ -26,6 +26,14 @@
  *  - 聞きくらべ用に 別の 秒でも つなぐ（`<教材ID>.gap2s.wav` など）
  *  - 読み上げは **読み（かな）の ずれ 1字まで**しか 許さない（`scripts/lib/speech_reading.ts`）
  *
+ * ## TTS で まとめて 読む 教材（台帳の `engine: "tts"`。2026-09-28 から）
+ * Live で 1文ずつ では なく、**Gemini の TTS で 会話を まとめて 読み**（声は 1回に 2人まで。
+ * 3人 出る 原稿は 2人ずつの かたまりに 分ける）、**文と 文の あいだの 間で 1文ずつに 切る**
+ *（`scripts/lib/gemini_tts.ts`・`scripts/lib/split_dialogue.ts`）。できる ものは 上と 同じ
+ *（文ごとの wav・`sentences.json`・台帳の 秒で つないだ 1本）。文の おわりごとに 長い 間の 札
+ *（`<long pause>`）を 置いて 読ませ、その 間で 切る。
+ * 読みの 確かめは **かたまり ごとに 1回** 文字起こしして 原稿と 比べる（無料枠を 使い切らない ため）。
+ *
  * 秒だけ 変える ときは 台帳の `gapSeconds` を 直して `--join` で つなぎ直す。
  * **鍵も 読み上げも 要らない**ので 手もとで できる。原稿が 変わって いたら 止まる
  *（古い 文の 音を 新しい 原稿に つなが ない ため）——そのときは `--force` で 作り直す。
@@ -44,9 +52,14 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync, rmSync } from "node
 import { join } from "node:path";
 import { joinPcm } from "../src/lib/audio/wav";
 import { buildFuriganaIndex } from "../src/lib/text/furigana";
+import { buildSoundsIndex } from "../src/components/listening/listening-checks";
+import { soundsLikeOf } from "../src/content/listening-sounds";
 import { OUT_RATE, synthesizeWithFallback, toWav } from "./lib/live_tts";
+import { changeTempo, runTtsListenings } from "./lib/tts_listening";
+import { audioUnitsOf } from "../src/content/listening-audio";
 import { LISTENING_AUDIO_PLANS, type ListeningAudioPlan } from "./lib/listening_audio_plans";
 import {
+  fadeEdges,
   longestInnerPause,
   scriptSentences,
   sentenceFileName,
@@ -56,7 +69,24 @@ import {
 import { matchReading, type ReadingMatch } from "./lib/speech_reading";
 import { getTokenizer } from "./lib/yomi_check";
 
-const listeningId: string = process.argv[2] ?? "";
+/**
+ * 作る 教材。**カンマで 並べると まとめて 作る**（TTS の 教材だけ。`listening:a,b,c`）。
+ * 1回の 実行で 何本でも 作れる ように した のは、TTS の 無料枠が 1日 10回だから——
+ * 同じ 2人の 声の 行は 教材を またいで 1回で 読む（scripts/lib/tts_listening.ts）。
+ */
+const requested: string[] = (process.argv[2] ?? "").split(",").filter(Boolean);
+/**
+ * **1まとまりだけ Live で ためしに 作る**（`<教材ID>@live-<番号>`。番号は 1から）。
+ * 区切りに「:」を 使わない——ワークフローが この 文字列で ブランチを 作り、Git は「:」を 許さない
+ *（2026-09-29 に `@live:5` で 実際に 止まった）。
+ * 2026-09-29 の 指定「いったん 1文だけ gemini-live で 作って 確認」。教材の 音と 台帳には
+ * 触らず、`public/audio/listening/samples/` に 置く（教材からは 指さない。聞きくらべ用）。
+ */
+const [firstId = "", sampleSpec] = (requested[0] ?? "").split("@");
+const sampleUnit: number | null = /^live-(\d+)$/.test(sampleSpec ?? "")
+  ? Number(/^live-(\d+)$/.exec(sampleSpec!)![1])
+  : null;
+const listeningId: string = firstId;
 /** すでに ある ものも 作り直すか。 */
 const force: boolean = process.argv.includes("--force");
 /** 残して ある 文ごとの 音を、台帳の 秒で つなぎ直すだけに するか。 */
@@ -221,8 +251,9 @@ function writeJoined(parts: readonly Uint8Array[], activePlan: ListeningAudioPla
     [file, activePlan.gapSeconds],
     ...(activePlan.compareGapSeconds ?? []).map((g): [string, number] => [compareFile(g), g]),
   ];
+  const smooth = parts.map((part) => fadeEdges(part));
   for (const [target, gapSeconds] of targets) {
-    const joined = joinPcm(parts, gapSeconds * 1000).pcm;
+    const joined = joinPcm(smooth, gapSeconds * 1000).pcm;
     writeFileSync(target, toWav(joined));
     console.log(`${target}（文の あいだ ${gapSeconds}秒・全体 ${seconds(joined).toFixed(1)}秒）`);
   }
@@ -241,7 +272,8 @@ const RUN_BUDGET_MS = 18 * 60_000;
 
 async function makeSentences(activePlan: ListeningAudioPlan): Promise<void> {
   const startedAt = Date.now();
-  const sentences = scriptSentences(script);
+  // 短い 文を まとめる 教材は 同じ まとめかたで 見くらべる（src/content/listening-audio.ts）
+  const sentences = scriptSentences(script, audioUnitsOf(listeningId));
   const previous: Manifest | null = existsSync(manifestPath)
     ? (JSON.parse(readFileSync(manifestPath, "utf8")) as Manifest)
     : null;
@@ -286,6 +318,8 @@ async function makeSentences(activePlan: ListeningAudioPlan): Promise<void> {
   const apiKey = requireApiKey();
   const tokenizer = await getTokenizer();
   const index = buildFuriganaIndex(listening.furigana ?? []);
+  // 数字・英字の 語は 原稿も 文字起こしも 同じ 台帳で かなへ（「GitHub」＝「ギットハブ」）
+  const sounds = buildSoundsIndex(soundsLikeOf(listeningId));
 
   /** 文ごとの 結果（並び順に 入れる。同時に 作るので 終わる 順は ばらばら）。 */
   const done: ({ pcm: Uint8Array; record: SentenceRecord } | undefined)[] = [];
@@ -315,7 +349,7 @@ async function makeSentences(activePlan: ListeningAudioPlan): Promise<void> {
     const model = activePlan.models[sentence.speaker];
     let accepted: ReadingMatch | null = null;
     const accept = (candidate: { transcript: string; pcm: Uint8Array }) => {
-      const match = matchReading(sentence.text, candidate.transcript, index, tokenizer);
+      const match = matchReading(sentence.text, candidate.transcript, index, tokenizer, sounds);
       if (!match.ok) return match;
       /*
        * 読みが 合っても **長さが おかしい 音**は 落とす（2026-09-16。同じ 文が
@@ -348,7 +382,8 @@ async function makeSentences(activePlan: ListeningAudioPlan): Promise<void> {
     );
     const match = accepted as ReadingMatch | null;
     if (!match) throw new Error(`(${i + 1}) 照合の 結果が ありません`);
-    const pcm = trimSilence(spoken.pcm);
+    // 頭と おしりを なめらかに（Live は 無音なしで 声から 始まる ことが ある。つなぎ目で 鳴らさない）
+    const pcm = fadeEdges(trimSilence(spoken.pcm));
     const pause = longestInnerPause(pcm);
     done[i] = {
       pcm,
@@ -444,7 +479,59 @@ async function makeSentences(activePlan: ListeningAudioPlan): Promise<void> {
   );
 }
 
+/** 1まとまりだけ Live で 作り、そのままと 台帳の 速さの 2本を 置く。 */
+async function makeLiveSample(unitNumber: number): Promise<void> {
+  const apiKey = requireApiKey();
+  const units = scriptSentences(script, audioUnitsOf(listeningId));
+  const unit = units[unitNumber - 1];
+  if (!unit)
+    throw new Error(
+      `${listeningId} に ${unitNumber}番目の まとまりは ありません（${units.length}個）`,
+    );
+  const voice = voiceOf(unit.speaker);
+  const model = plan?.models[unit.speaker];
+  console.log(
+    `${listeningId} ${unitNumber}番目（${unit.speaker}・${voice}・${model ?? "既定"}）「${unit.text}」`,
+  );
+  const tokenizer = await getTokenizer();
+  const index = buildFuriganaIndex(listening.furigana ?? []);
+  const sounds = buildSoundsIndex(soundsLikeOf(listeningId));
+  const spoken = await synthesizeWithFallback(
+    unit.text,
+    { apiKey, voice, instruction: SCRIPT_LINE_INSTRUCTION, quoteOnRetry: true },
+    (candidate) => {
+      // 聞いて 確かめる ための ためしなので、文字起こしが 空でも 通す（ずれは 記録する）
+      if (candidate.transcript.trim() === "") return { ok: true, why: "文字起こし なし" };
+      const match = matchReading(unit.text, candidate.transcript, index, tokenizer, sounds);
+      return match.distance <= 1 ? { ok: true, why: match.why } : { ok: false, why: match.why };
+    },
+    model ? [model] : undefined,
+  );
+  const pcm = trimSilence(spoken.pcm);
+  const dir = join(outDir, "samples");
+  mkdirSync(dir, { recursive: true });
+  const base = join(dir, `${listeningId}-${String(unitNumber).padStart(2, "0")}-live`);
+  writeFileSync(`${base}.wav`, toWav(pcm));
+  const tempo = plan?.tempo ?? 1;
+  if (tempo !== 1)
+    writeFileSync(`${base}-x${tempo}.wav`, toWav(fadeEdges(changeTempo(pcm, tempo))));
+  console.log(
+    `${base}.wav（${seconds(pcm).toFixed(1)}秒・${spoken.model}）` +
+      (tempo !== 1 ? ` と ${base}-x${tempo}.wav` : "") +
+      `\n  文字起こし「${spoken.transcript.trim()}」`,
+  );
+}
+
 async function main(): Promise<void> {
+  if (sampleUnit !== null) {
+    await makeLiveSample(sampleUnit);
+    return;
+  }
+  // TTS の 教材は まとめて 作る（カンマで 何本でも。scripts/lib/tts_listening.ts）
+  if ((requested.length > 1 || plan?.engine === "tts") && !joinOnly) {
+    await runTtsListenings(requested, requireApiKey());
+    return;
+  }
   if (plan) {
     await makeSentences(plan);
     return;

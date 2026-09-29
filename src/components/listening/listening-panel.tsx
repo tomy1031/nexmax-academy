@@ -7,6 +7,7 @@ import { annotateRuby, type FuriganaIndex } from "@/lib/text/furigana";
 import { readListeningFinds, saveListeningFinds } from "@/lib/progress/store";
 import {
   createListening,
+  NO_SOUNDS,
   remainingKeywords,
   replayListening,
   revealRate,
@@ -14,6 +15,7 @@ import {
   type HitKind,
   type ListeningRules,
   type ListeningState,
+  type SoundsIndex,
 } from "./listening-checks";
 
 /**
@@ -42,6 +44,7 @@ export function ListeningPanel({
   goal,
   showTranscript,
   furigana,
+  sounds = NO_SOUNDS,
   onChange,
 }: {
   /** 保存のキー（この教材のID）。 */
@@ -53,13 +56,15 @@ export function ListeningPanel({
   /** 原稿（穴埋めの 形）を 出すか。教材ごとの 既定は `check.showScript`。 */
   showTranscript: boolean;
   furigana: FuriganaIndex;
+  /** 聞き取り専用の 読み（数字・英字で 始まる 語。`src/content/listening-sounds.ts`）。 */
+  sounds?: SoundsIndex;
   onChange?: (state: ListeningState) => void;
 }) {
   const [state, setState] = useState<ListeningState>(() =>
     // 前に当てた言葉を流し込んで、続きから始める
     replayListening(
       // 読み辞書を 渡す —— これが 無いと ひらがなで 打っても 当たらない
-      createListening(transcript, keywords, rules, furigana),
+      createListening(transcript, keywords, rules, furigana, sounds),
       readListeningFinds(contentId),
     ),
   );
@@ -128,7 +133,7 @@ export function ListeningPanel({
   const reset = () => {
     setAsking(false);
     setValue("");
-    const fresh = createListening(transcript, keywords, rules, furigana);
+    const fresh = createListening(transcript, keywords, rules, furigana, sounds);
     setState(fresh);
     saveListeningFinds(contentId, [], { revealPercent: 0, keywordsLeft: keywords.length });
     onChange?.(fresh);

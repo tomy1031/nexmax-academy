@@ -38,7 +38,32 @@ export interface ListeningAudioPlan {
    * `public/audio/listening/<教材ID>.gap<秒>s.wav`（例 `houkoku_listening.gap2s.wav`）。
    */
   readonly compareGapSeconds?: readonly number[];
+  /**
+   * 読み上げの 道。`live`（既定）= Live で 1文ずつ。`tts` = Gemini の TTS で 会話を
+   * まとめて 読み、間で 1文ずつに 切る（`scripts/make_listening_audio.ts` の `makeSentencesByTts`）。
+   * `tts` の ときは `models` を 使わない。
+   */
+  readonly engine?: "live" | "tts";
+  /** TTS に 渡す 話しかたの 指示（全部の 行に 付ける）。`engine: "tts"` の ときだけ 効く。 */
+  readonly style?: string;
+  /**
+   * できた 音の 速さ（1 = そのまま。音程は 保つ・`scripts/lib/tempo.ts`）。`engine: "tts"` の ときだけ 効く。
+   * 画面の「はやさ」ボタン（既定 0.85）は この 上に かかる。
+   */
+  readonly tempo?: number;
 }
+
+/** 報告の リスニング 5場面の 人（性別は 声と 表紙の 絵で そろえる）。 */
+const REPORT_PEOPLE = {
+  takahashi: { voice: "Alnilam", model: "gemini-3.8-live" }, // 男・チームの リーダー
+  sato: { voice: "Autonoe", model: "gemini-3.8-live" }, // 女・プログラマー
+  yamada: { voice: "Achird", model: "gemini-3.8-live" }, // 男・プログラマー
+  suzuki: { voice: "Kore", model: "gemini-3.8-live" }, // 女・チームの リーダー
+  nakamura: { voice: "Erinome", model: "gemini-3.8-live" }, // 女・エンジニア
+  tanaka: { voice: "Charon", model: "gemini-3.8-live" }, // 男・チームの リーダー
+  kobayashi: { voice: "Rasalgethi", model: "gemini-3.8-live" }, // 男・エンジニア
+  kato: { voice: "Gacrux", model: "gemini-3.8-live" }, // 女・チームの リーダー
+} as const;
 
 export const LISTENING_AUDIO_PLANS: Readonly<Record<string, ListeningAudioPlan>> = {
   /*
@@ -59,4 +84,39 @@ export const LISTENING_AUDIO_PLANS: Readonly<Record<string, ListeningAudioPlan>>
     gapSeconds: 1.5,
     compareGapSeconds: [2],
   },
+
+  /*
+   * 報告の リスニング 5場面（2026-09-28。`リスニング問題.md` から 作った）。
+   * 声は **人ごとに 固定**して 5本で そろえる——高橋さん・佐藤さん・山田さんは 2本に 出る。
+   * 同じ 場面の 2人は 男女を 分けて、だれが 話して いるか 耳で 分かる ように する
+   *（朝礼の 3人は 高橋さん＝低めの 男・佐藤さん＝女・山田さん＝高めの 男）。
+   * 表紙の 絵の 性別も これに そろえる（`scripts/images/houkoku_report_covers.json`）。
+   * 秒は 報告の リスニングと 同じ 1.5秒。
+   */
+  houkoku_kanryou_listening: reportPlan(["sato", "takahashi"]),
+  houkoku_okure_listening: reportPlan(["yamada", "suzuki"]),
+  houkoku_shougai_listening: reportPlan(["nakamura", "tanaka"]),
+  houkoku_chousa_listening: reportPlan(["kobayashi", "kato"]),
+  houkoku_chourei_listening: reportPlan(["takahashi", "sato", "yamada"]),
 };
+
+/**
+ * 報告の リスニング 5場面の 人と 声（Gemini Live の 声・`src/lib/audio/voices.ts`）。
+ *
+ * **Live で 1まとまりずつ 読んで つなぐ**（2026-09-29 の 指定「B」＝Live で 1つずつ 作って
+ * 組み合わせる）。まとまりは 短い 文を となりの 文と 1つに した もの（`src/content/listening-audio.ts`）
+ * ——前に Live が 途中で 切った 短い 返事（「はい、大丈夫ですよ。」「どうしましたか。」）は
+ * となりと 1つに なって いる。全員 3.8（3.1 は 短い 返事を 切った。run 36405843836）。
+ *
+ * TTS で まとめて 読む 道（`engine: "tts"`・`scripts/lib/tts_listening.ts`）も 残して ある。
+ * 2026-09-28 に ためし、1日 10回の 無料枠と 切り分けの 手間から、同日 Live に 決めた。
+ */
+function reportPlan(speakers: readonly (keyof typeof REPORT_PEOPLE)[]): ListeningAudioPlan {
+  return {
+    voices: Object.fromEntries(speakers.map((id) => [id, REPORT_PEOPLE[id].voice])),
+    models: Object.fromEntries(speakers.map((id) => [id, REPORT_PEOPLE[id].model])),
+    // 2026-09-29 の 指定「間の 時間を 1.25秒に する。速度を 変える 必要は ない」
+    //（はじめ「スピードは 1.25」を 速さと 取りちがえて tempo: 1.25 に して いた）
+    gapSeconds: 1.25,
+  };
+}
