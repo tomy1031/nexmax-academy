@@ -75,13 +75,15 @@ import { getTokenizer } from "./lib/yomi_check";
  */
 const requested: string[] = (process.argv[2] ?? "").split(",").filter(Boolean);
 /**
- * **1まとまりだけ Live で ためしに 作る**（`<教材ID>@live:<番号>`。番号は 1から）。
+ * **1まとまりだけ Live で ためしに 作る**（`<教材ID>@live-<番号>`。番号は 1から）。
+ * 区切りに「:」を 使わない——ワークフローが この 文字列で ブランチを 作り、Git は「:」を 許さない
+ *（2026-09-29 に `@live:5` で 実際に 止まった）。
  * 2026-09-29 の 指定「いったん 1文だけ gemini-live で 作って 確認」。教材の 音と 台帳には
  * 触らず、`public/audio/listening/samples/` に 置く（教材からは 指さない。聞きくらべ用）。
  */
 const [firstId = "", sampleSpec] = (requested[0] ?? "").split("@");
-const sampleUnit: number | null = /^live:(\d+)$/.test(sampleSpec ?? "")
-  ? Number(/^live:(\d+)$/.exec(sampleSpec!)![1])
+const sampleUnit: number | null = /^live-(\d+)$/.test(sampleSpec ?? "")
+  ? Number(/^live-(\d+)$/.exec(sampleSpec!)![1])
   : null;
 const listeningId: string = firstId;
 /** すでに ある ものも 作り直すか。 */
