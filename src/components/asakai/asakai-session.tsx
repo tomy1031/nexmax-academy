@@ -82,7 +82,11 @@ import {
   type ReportPanel,
 } from "@/lib/meeting/panels";
 import { hintOf } from "@/lib/meeting/asakai-hint";
-import type { AsakaiItem, AsakaiJudgeResult } from "@/lib/meeting/asakai-judge";
+import {
+  asakaiAiFurigana,
+  type AsakaiItem,
+  type AsakaiJudgeResult,
+} from "@/lib/meeting/asakai-judge";
 import {
   contentScore,
   CONTENT_MAX,
@@ -237,6 +241,15 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
   /* 教材の 読みが 先（後勝ち）。画面の ことばは そこに 無い ものだけ 拾う。 */
   const index = useMemo(
     () => buildFuriganaIndex(mergeFuriganaEntries(UI_FURIGANA, meeting.furigana)),
+    [meeting.furigana],
+  );
+  /*
+   * **AIが 書いた 文の 読み**（2026-09-28 の 点検）。上の `index` で 描いて いた ころ、
+   * AIに 許した 漢字（今日・明日・全部…）に ルビが 付かず、教材の 1字の 見出しで
+   *「いまにち」と 読ませて いた。判定の 検査（`keepReadableAsakai`）と 同じ 読みで 描く。
+   */
+  const aiIndex = useMemo(
+    () => buildFuriganaIndex(asakaiAiFurigana(meeting.furigana ?? [])),
     [meeting.furigana],
   );
   const nameOf = useMemo(() => {
@@ -1234,6 +1247,10 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
           items: scene.panels.map((panel) => ({ id: panel.id, label: panel.label })),
           hasLog: logLines.length > 0,
           utterance: text,
+          /* 聞き返しへの こたえなら その 問い（A3・2026-09-28）。報告の ときは 空。 */
+          question: askedId !== null ? askedText : "",
+          /* AIが 漢字で 書いて よい 教材の 語と、読めない 文の 検査に 使う（A1・A2）。 */
+          furigana: meeting.furigana ?? [],
         },
         scene.panels.flatMap((panel) => panel.facts),
       )
@@ -1244,7 +1261,18 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
           apply(text, seen.ok ? seen.judge : null, seen.ok ? null : seen.reason);
         });
     },
-    [answer, scene, asakai, meeting.id, meeting.judgePrompt, logLines, apply],
+    [
+      answer,
+      scene,
+      asakai,
+      meeting.id,
+      meeting.judgePrompt,
+      meeting.furigana,
+      logLines,
+      askedId,
+      askedText,
+      apply,
+    ],
   );
 
   /** 見かたの モーダルを 閉じる。**ここで はじめて 司会と メンバーが 話す**。 */
@@ -1976,6 +2004,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
             rest={judge.shut.join("／")}
             failReason={judge.failReason}
             index={index}
+            aiIndex={aiIndex}
             /*
               言い直す … 同じ しつもんの まま、もう いちど 書く（司会は 何も 言わない）。
               **その日が 終わって いる ときは 出さない**——閉じる ことでしか
@@ -1995,6 +2024,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
             utterance={judge.utterance}
             failReason={judge.failReason}
             index={index}
+            aiIndex={aiIndex}
             onClose={closeJudge}
           />
         )
@@ -2058,6 +2088,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
               : `${DAY_NAME[asakai.scenes[sceneAt + 1]?.day ?? "fri"]}へ 進む ▶`
           }
           index={index}
+          aiIndex={aiIndex}
           /* もう いちど 報告する … その日を はじめから（けっかは 上書きされる）。 */
           onRetry={() => {
             setDayOpen(false);

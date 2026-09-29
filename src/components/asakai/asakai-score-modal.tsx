@@ -396,12 +396,15 @@ function ItemTable({
   words,
   showHints,
   index,
+  aiIndex = index,
 }: {
   rows: readonly RowView[];
   words: Record<RowMark, string>;
   /** ヒントと 👉 を 出すか（作業記録の 読み上げを 差し戻した ターンは 出さない）。 */
   showHints: boolean;
   index: FuriganaIndex;
+  /** AIが 書いた 文（ブラッシュアップ）の 読み（`asakaiAiFurigana`）。 */
+  aiIndex?: FuriganaIndex;
 }) {
   const nextId = showHints
     ? rows.find((row) => row.mark === "missing" && row.advice !== "")?.id
@@ -450,6 +453,7 @@ function ItemTable({
                     showHint={showHints}
                     next={row.id === nextId}
                     index={index}
+                    aiIndex={aiIndex}
                   />
                 </td>
               </tr>
@@ -473,11 +477,14 @@ function BrushCell({
   showHint,
   next,
   index,
+  aiIndex = index,
 }: {
   row: RowView;
   showHint: boolean;
   next: boolean;
   index: FuriganaIndex;
+  /** AIの 文の 読み。教材の 1字の 見出し（日=にち・上=あ）に 取られない ように 分ける。 */
+  aiIndex?: FuriganaIndex;
 }) {
   const yours =
     row.said !== "" ? (
@@ -489,11 +496,16 @@ function BrushCell({
       </div>
     ) : null;
   /** 目立つ 枠（ブラッシュアップ・ヒント）。 */
-  const box = (tone: { border: string; face: string; cap: string }, cap: string, text: string) => (
+  const box = (
+    tone: { border: string; face: string; cap: string },
+    cap: string,
+    text: string,
+    textIndex: FuriganaIndex,
+  ) => (
     <div className={`mt-1 rounded-lg border-2 px-2 py-1.5 ${tone.border} ${tone.face}`}>
       <Cap text={cap} index={index} tone={tone.cap} />
       <p className="text-navy mt-0.5 text-sm leading-[1.9] font-black">
-        <Ruby text={text} index={index} />
+        <Ruby text={text} index={textIndex} />
       </p>
     </div>
   );
@@ -522,7 +534,7 @@ function BrushCell({
     return (
       <>
         {yours}
-        {box(BRUSH, "✨ ブラッシュアップ", row.polished)}
+        {box(BRUSH, "✨ ブラッシュアップ", row.polished, aiIndex)}
       </>
     );
   }
@@ -537,7 +549,7 @@ function BrushCell({
   return (
     <>
       {yours}
-      {box(HINT, "💡 ヒント（この 形で 言って みましょう）", row.hint)}
+      {box(HINT, "💡 ヒント（この 形で 言って みましょう）", row.hint, index)}
       {next ? (
         <p className="text-coral-deep mt-1 text-[11px] leading-[1.9] font-black">
           {/* **短く 1行**（2026-09-20 の 指定）。何を 聞かれるかは 司会が 声で 言う。 */}
@@ -553,10 +565,16 @@ function GoodAdvice({
   good,
   advice,
   index,
+  goodIndex = index,
+  adviceIndex = index,
 }: {
   good: string;
   advice: string;
   index: FuriganaIndex;
+  /** よかった ことの 読み（AIの 文なら `asakaiAiFurigana`・画面の 代わりの 文なら 画面の 読み）。 */
+  goodIndex?: FuriganaIndex;
+  /** アドバイスの 読み（同上）。 */
+  adviceIndex?: FuriganaIndex;
 }) {
   if (good === "" && advice === "") return null;
   return (
@@ -565,7 +583,7 @@ function GoodAdvice({
         <div className="border-leaf bg-sky-soft rounded-xl border-2 px-3 py-2">
           <Cap text="✨ よかった こと" index={index} tone="text-leaf-deep" />
           <p className="text-navy mt-0.5 text-sm leading-[1.9] font-bold">
-            <Ruby text={good} index={index} />
+            <Ruby text={good} index={goodIndex} />
           </p>
         </div>
       ) : null}
@@ -573,7 +591,7 @@ function GoodAdvice({
         <div className="border-sun-deep bg-cream rounded-xl border-2 px-3 py-2">
           <Cap text="💡 アドバイス" index={index} tone="text-sun-deep" />
           <p className="text-navy mt-0.5 text-sm leading-[1.9] font-bold">
-            <Ruby text={advice} index={index} />
+            <Ruby text={advice} index={adviceIndex} />
           </p>
         </div>
       ) : null}
@@ -595,6 +613,7 @@ export function ReportScoreModal({
   utterance,
   failReason,
   index,
+  aiIndex = index,
   onClose,
 }: {
   score: ScoreView;
@@ -610,6 +629,8 @@ export function ReportScoreModal({
   /** AIの 点が 出ない 理由（出て いれば null）。 */
   failReason: string | null;
   index: FuriganaIndex;
+  /** AIが 書いた 文の 読み（省くと `index`）。 */
+  aiIndex?: FuriganaIndex;
   onClose: () => void;
 }) {
   const left = rows.filter((row) => row.mark === "missing").length;
@@ -665,9 +686,21 @@ export function ReportScoreModal({
         </p>
       </div>
 
-      <ItemTable rows={rows} words={FIRST_WORD} showHints={!readLog} index={index} />
+      <ItemTable
+        rows={rows}
+        words={FIRST_WORD}
+        showHints={!readLog}
+        index={index}
+        aiIndex={aiIndex}
+      />
 
-      <GoodAdvice good={good} advice={advice} index={index} />
+      <GoodAdvice
+        good={good}
+        advice={advice}
+        index={index}
+        goodIndex={aiIndex}
+        adviceIndex={aiIndex}
+      />
     </ModalShell>
   );
 }
@@ -698,6 +731,7 @@ export function ProbeScoreModal({
   judged,
   failReason,
   index,
+  aiIndex = index,
   onRetry,
   onClose,
 }: {
@@ -726,6 +760,8 @@ export function ProbeScoreModal({
   /** AIの 点が 出ない 理由（出て いれば null）。 */
   failReason: string | null;
   index: FuriganaIndex;
+  /** AIが 書いた 文の 読み（省くと `index`）。 */
+  aiIndex?: FuriganaIndex;
   /**
    * 言い直す（この ポップアップを 閉じて、同じ しつもんに もう いちど 答える）。
    *
@@ -836,9 +872,15 @@ export function ProbeScoreModal({
         **報告の あとと 同じ 表**（2026-09-20 の 指定）。ブラッシュアップも ヒントも
         この 中に 出る ので、別の 箱を 並べない——同じ ものが 2か所に 出ない。
       */}
-      <ItemTable rows={rows} words={FIRST_WORD} showHints index={index} />
+      <ItemTable rows={rows} words={FIRST_WORD} showHints index={index} aiIndex={aiIndex} />
 
-      <GoodAdvice good={good} advice={advice} index={index} />
+      <GoodAdvice
+        good={good}
+        advice={advice}
+        index={index}
+        goodIndex={aiIndex}
+        adviceIndex={aiIndex}
+      />
 
       {rest !== "" ? (
         <p className="text-ink-soft mt-3 text-[11px] leading-[1.9] font-bold">
@@ -873,6 +915,7 @@ export function DayScoreModal({
   nextLabel,
   failReason,
   index,
+  aiIndex = index,
   onRetry,
   onClose,
 }: {
@@ -900,6 +943,8 @@ export function DayScoreModal({
   /** その日 いちども AIの 点が 届かなかった ときの 理由（届いて いれば null）。 */
   failReason: string | null;
   index: FuriganaIndex;
+  /** AIが 書いた 文の 読み（省くと `index`）。 */
+  aiIndex?: FuriganaIndex;
   /** もう いちど 報告する（その日を はじめから）。 */
   onRetry: () => void;
   onClose: () => void;
@@ -1060,7 +1105,8 @@ export function DayScoreModal({
                       */}
                       {row.polished !== "" && !sameText(row.polished, row.said) ? (
                         <p className="text-sky-deep mt-1 text-sm leading-[1.9] font-bold">
-                          ✨ <Ruby text={`ブラッシュアップ: ${row.polished}`} index={index} />
+                          ✨ <Ruby text="ブラッシュアップ:" index={index} />{" "}
+                          <Ruby text={row.polished} index={aiIndex} />
                         </p>
                       ) : null}
                     </div>
@@ -1139,6 +1185,9 @@ export function DayScoreModal({
               : ""
         }
         index={index}
+        /* AIの 文は AIの 読み、画面の 代わりの 文は 画面の 読みで 描く（「上から」を あから に しない）。 */
+        goodIndex={good !== "" ? aiIndex : index}
+        adviceIndex={advice !== "" ? aiIndex : index}
       />
 
       <p className="text-ink-soft mt-3 text-[11px] leading-[1.9] font-bold">
