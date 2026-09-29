@@ -311,6 +311,19 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
    */
   const [joined, setJoined] = useState(false);
   const [results, setResults] = useState<readonly DayResult[]>(start.results);
+  /*
+   * **5日 そろった ところで「おわった」を 書く**（2026-09-28 の 点検 B4）。
+   * 週の けっかを 閉じる ときだけ 書いて いた ころは、金曜の 評価を 読んで いる
+   * 最中に 更新・退室すると 完了が 付かず、5日ぶんも 消えて いた。
+   * 状態の 更新関数の 中では 書かない（描画中に ほかの 部品へ 通知が 飛ぶ・code-critic 検収）。
+   * 閉じた ときにも もう 1回 書くが、同じ ことを 書くだけなので 害は 無い。
+   */
+  const sceneTotal = asakai?.scenes.length ?? 0;
+  useEffect(() => {
+    if (sceneTotal > 0 && results.length >= sceneTotal) {
+      recordContentProgress(meeting.id, { status: "completed" });
+    }
+  }, [results.length, sceneTotal, meeting.id]);
 
   /*
    * **声が 本線**（2026-09-11 の 指定「マイクで話すのがメインです」）。
@@ -556,10 +569,23 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
       attempts,
       probes,
       askedId,
+      askedText,
       lines: [...lines],
       log: probeLog.map((one) => ({ ...one, panels: one.panels ? [...one.panels] : undefined })),
     });
-  }, [scene, panels, phase, states, attempts, probes, askedId, lines, probeLog, meeting.id]);
+  }, [
+    scene,
+    panels,
+    phase,
+    states,
+    attempts,
+    probes,
+    askedId,
+    askedText,
+    lines,
+    probeLog,
+    meeting.id,
+  ]);
 
   /**
    * **判定の つなぎを、話しはじめる 前に 張って おく**（2026-09-23）。
@@ -641,6 +667,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
         setAttempts(draft.attempts);
         setProbes(draft.probes);
         setAskedId(draft.askedId);
+        setAskedText(draft.askedText);
         setProbeLog(draft.log);
         setDutyIntro(
           draft.lines.map((line) => ({
@@ -715,17 +742,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
         const done = [...prev.filter((r) => r.day !== row.day), row].sort(
           (a, b) => order(a.day) - order(b.day),
         );
-        const sceneCount = asakai?.scenes.length ?? 0;
-        saveAsakaiResume(meeting.id, done, undefined, sceneCount);
-        /*
-         * **5日 そろった ところで「おわった」を 書く**（2026-09-28 の 点検 B4）。
-         * 週の けっかを 閉じる ときだけ 書いて いた ころは、金曜の 評価を 読んで いる
-         * 最中に 更新・退室すると 完了が 付かず、5日ぶんも 消えて いた。
-         * 閉じた ときにも もう 1回 書くが、同じ ことを 書くだけなので 害は 無い。
-         */
-        if (sceneCount > 0 && done.length >= sceneCount) {
-          recordContentProgress(meeting.id, { status: "completed" });
-        }
+        saveAsakaiResume(meeting.id, done, undefined, asakai?.scenes.length ?? 0);
         return done;
       });
       /* 途中の 控えは もう 要らない（「もう いちど 報告する」は はじめから 話す）。 */
@@ -1419,8 +1436,13 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
     setWaiting(false);
     voice.stop();
     if (sceneAt + 1 >= asakai.scenes.length) {
+      /*
+       * **金曜は 週の けっかを 自動で 開かない**（2026-09-28 の code-critic 検収）。
+       * 声を 止めなく なった ので、開くと 合否を 読んで いる うしろで 朝の 先輩と
+       * 藤木さんの 声が 流れ、週の けっかの「この あと あった こと」（午後）と
+       * 時間が 逆に なる。先輩の 報告を 聞いて から「今週の けっかを 見る ▶」で 開く。
+       */
       setPhase("done");
-      setWeekOpen(true);
       return;
     }
     setPhase("gap");
@@ -1448,10 +1470,16 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
    */
   const closeWeek = useCallback(() => {
     setWeekOpen(false);
+    /*
+     * しおりは **閉じる たびに** 片づける（2026-09-28 の code-critic 検収）。1度 閉じた
+     * あとに 1日 やり直すと「週の けっか待ち」の 印が 立ち直り、2回目に 閉じても
+     * 片づけないと、つぎに 開いた とき 週の けっかから 始まって しまう。
+     */
+    clearAsakaiResume(meeting.id);
     if (weekRead.current) return;
     weekRead.current = true;
     closeResult();
-  }, [closeResult]);
+  }, [closeResult, meeting.id]);
 
   /**
    * その 日へ 移る。**つぎへ 進む ときも、タブで 飛ぶ ときも ここを 通る**。
@@ -2101,6 +2129,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
             advice={judge.advice}
             readLog={judge.readLog}
             copied={judge.copied}
+            askRedo={!judge.sceneOver && judge.gaveUp === null}
             nextLabel={judge.sceneOver ? "きょうの 評価を 見る ▶" : "報告を つづける ▶"}
             utterance={judge.utterance}
             failReason={judge.failReason}
@@ -2166,7 +2195,8 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
           failReason={dayFail}
           nextLabel={
             sceneAt + 1 >= asakai.scenes.length
-              ? "今週の けっかを 見る ▶"
+              ? /* 閉じた あとは 先輩の 報告を 聞き、週の けっかは ボタンで 開く（上の `toGap`）。 */
+                "みんなの 報告を 聞く ▶"
               : `${DAY_NAME[asakai.scenes[sceneAt + 1]?.day ?? "fri"]}へ 進む ▶`
           }
           index={index}

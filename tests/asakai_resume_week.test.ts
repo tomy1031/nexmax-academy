@@ -78,6 +78,20 @@ describe("週の けっか待ち", () => {
     expect(readAsakaiResume("m", backend)?.weekPending).toBe(true);
   });
 
+  /* 開き直した あとも 聞き返しの 問いを AIに 渡せる ように（code-critic 検収・A3）。 */
+  it("途中に 聞き返しの 字を 残し、読み戻せる", () => {
+    const backend = memory();
+    saveAsakaiDraft(
+      "m",
+      "tue",
+      { ...DRAFT, askedId: "shinchoku", askedText: "進捗を、パーセントで お願いします。" },
+      backend,
+    );
+    expect(readAsakaiResume("m", backend)?.drafts.tue?.askedText).toBe(
+      "進捗を、パーセントで お願いします。",
+    );
+  });
+
   it("週の けっかを 閉じたら（しおりを 消す）月曜から", () => {
     const backend = memory();
     saveAsakaiResume("m", WEEK, backend, 5);

@@ -95,7 +95,10 @@ async function closeDuty(page: Page): Promise<void> {
 async function closeDayScore(page: Page): Promise<void> {
   const modal = page.getByRole("dialog", { name: "今日の 評価" });
   await expect(modal).toBeVisible();
-  await modal.getByRole("button", { name: /へ 進む|今週の けっかを 見る/ }).click();
+  /* 金曜は「みんなの 報告を 聞く」（週の けっかは 先輩の 報告の あとに ボタンで 開く・2026-09-28）。 */
+  await modal
+    .getByRole("button", { name: /へ 進む|今週の けっかを 見る|みんなの 報告を 聞く/ })
+    .click();
   await expect(modal).toBeHidden();
 }
 
@@ -634,9 +637,18 @@ test("5日 通すと、合否と 数が 読める", async ({ page, context }) =>
     }
   }
 
-  /* けっかは ポップアップで 出る（2026-09-17 の 指定「全て モーダルが 良いです」）。 */
+  /*
+   * **金曜は 週の けっかを 自動で 開かない**（2026-09-28 の code-critic 検収）。
+   * 開くと 合否を 読んで いる うしろで 朝の 先輩の 声が 流れ、「この あと あった こと」
+   *（午後）と 時間が 逆に なる。先輩の 報告の あと、ボタンで 開く。
+   */
   const week = page.getByRole("dialog", { name: "今週の けっか" });
+  await expect(week).toBeHidden();
+  await page.getByRole("button", { name: "今週の けっかを 見る" }).click();
+  /* けっかは ポップアップで 出る（2026-09-17 の 指定「全て モーダルが 良いです」）。 */
   await expect(week).toBeVisible();
+  /* 金曜の 午後の できごと（C4: 9:00 の 朝礼では 話さない）。 */
+  await expectOnScreen(page, "この あと あった こと");
   await expectOnScreen(page, "合格");
   await expectOnScreen(page, "以上で 合格");
   await expectOnScreen(page, "聞き返し");

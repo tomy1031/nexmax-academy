@@ -108,11 +108,18 @@ const asakaiDraftSchema = z.object({
   attempts: z.record(z.string(), z.number().int().min(0)).default({}),
   probes: z.number().int().min(0).default(0),
   askedId: z.string().nullable().default(null),
+  /**
+   * 司会の 聞き返しの 字（2026-09-28 の 検収）。無いと、開き直した あとの こたえが
+   * AIに「報告 まるごと」と して 見られ、聞き返しの ポップアップも 出ない。
+   */
+  askedText: z.string().default(""),
   lines: z.array(chatLineSchema).default([]),
   log: z.array(sayLogSchema).default([]),
 });
 
 export type AsakaiDraft = z.infer<typeof asakaiDraftSchema>;
+/** 書く ときの 形（`.default()` の 欄は 省いて よい。読む ときに 埋まる）。 */
+export type AsakaiDraftInput = z.input<typeof asakaiDraftSchema>;
 
 /**
  * 端末に 残す かたち。
@@ -231,7 +238,7 @@ export function readAsakaiDraft(
 export function saveAsakaiDraft(
   meetingId: string,
   day: string,
-  draft: AsakaiDraft,
+  draft: AsakaiDraftInput,
   backend: ProgressBackend = defaultBackend(),
 ): void {
   const saved = readAsakaiResume(meetingId, backend);

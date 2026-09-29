@@ -94,6 +94,13 @@ describe("readableAsakaiText — 数字＋日・分", () => {
     expect(ruby("よく 分かります。")).toContain("分かり〔わかり〕");
   });
 
+  it("時刻は「17:05」の 形に 書き直して 出す（夕礼の よい 報告を 消さない）", () => {
+    expect(readableAsakaiText("17時5分に 見つけて、17時10分に 報告しました。", index)).toBe(
+      "17:05に 見つけて、17:10に 報告しました。",
+    );
+    expect(readableAsakaiText("10日 かかります。", index)).toBe("");
+  });
+
   it("人数・作文 を 1字ずつに 割らない", () => {
     expect(ruby("人数")).toBe("人数〔にんずう〕");
     expect(ruby("作文")).toBe("作文〔さくぶん〕");
@@ -120,8 +127,42 @@ describe("keepReadableAsakai — 読めない 文は 出さない", () => {
     expect(kept.good).toBe(seen.good);
     expect(kept.advice).toBe("");
     expect(kept.polished).toBe("決済の 画面を 作りました。");
-    expect(kept.items.map((item) => item.id)).toEqual(["kinou"]);
+    /* 読めない 直し（kyou）は 直しだけ 空に して 残す */
+    expect(kept.items.map((item) => [item.id, item.polished])).toEqual([
+      ["kinou", "決済の 画面を 作りました。"],
+      ["kyou", ""],
+    ]);
     expect(kept.fixes).toEqual([]);
+  });
+
+  /* 項目を 落とすと said まで 消え、画面は「見て いない —」に なる（code-critic 検収）。 */
+  it("直す ところが 無い 項目は、学生の 漢字が あっても そのまま 残す", () => {
+    const kept = keepReadableAsakai(
+      {
+        ...NO_JUDGE,
+        items: [
+          {
+            id: "kinou",
+            said: "昨日は 締切を 確認しました。",
+            polished: "昨日は 締切を 確認しました",
+          },
+        ],
+      },
+      kantan.furigana,
+    );
+    expect(kept.items).toHaveLength(1);
+    expect(kept.items[0]?.said).toBe("昨日は 締切を 確認しました。");
+  });
+
+  it("読めない 直しは 直しだけ 空に する（項目と said は 残す）", () => {
+    const kept = keepReadableAsakai(
+      {
+        ...NO_JUDGE,
+        items: [{ id: "kyou", said: "きょう つなぐ", polished: "締め切りまでに つなぎます。" }],
+      },
+      kantan.furigana,
+    );
+    expect(kept.items).toEqual([{ id: "kyou", said: "きょう つなぐ", polished: "" }]);
   });
 
   it("学習者の ことばの 引用（said）は 見ない・点は そのまま", () => {

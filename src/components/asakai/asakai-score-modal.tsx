@@ -671,6 +671,7 @@ export function ReportScoreModal({
   advice,
   readLog,
   copied = [],
+  askRedo = true,
   nextLabel,
   utterance,
   failReason,
@@ -687,6 +688,11 @@ export function ReportScoreModal({
   readLog: boolean;
   /** 写しに 当たった 記録の 行（どこが 読み上げかを 名指しする・2026-09-28）。 */
   copied?: readonly string[];
+  /**
+   * 「もう いちど 言って ください」を 添えるか。打ち切り・その日の おわりでは 添えない
+   *（ボタンは「つぎへ」なので、次の 行動が 2つに なる・2026-09-28 の code-critic 検収）。
+   */
+  askRedo?: boolean;
   /** とじる ボタンの 字（まだ つづく／その日は おわり）。 */
   nextLabel: string;
   /** 学習者が いま 言った こと（そのまま 出す）。 */
@@ -712,7 +718,11 @@ export function ReportScoreModal({
       {readLog ? (
         <div className="border-coral bg-blossom text-coral-deep mt-3 rounded-xl border-2 px-3 py-2 text-sm leading-[1.9] font-bold">
           <Ruby
-            text="作業記録を そのまま 読み上げて います。この ぶんは 数えて いません。大きな 作業を 2つか 3つに まとめて、もう いちど 言って ください。"
+            text={
+              askRedo
+                ? "作業記録を そのまま 読み上げて います。この ぶんは 数えて いません。大きな 作業を 2つか 3つに まとめて、もう いちど 言って ください。"
+                : "作業記録を そのまま 読み上げて います。この ぶんは 数えて いません。つぎは 大きな 作業を 2つか 3つに まとめましょう。"
+            }
             index={index}
           />
           {/*
@@ -860,10 +870,10 @@ export function ProbeScoreModal({
       title={
         <Ruby
           text={
-            gaveUpLabel
-              ? `❌ ${gaveUpLabel}は ここまでです`
-              : heard
-                ? "こたえが 伝わりました"
+            heard
+              ? "こたえが 伝わりました"
+              : gaveUpLabel
+                ? `❌ ${gaveUpLabel}は ここまでです`
                 : "もう いちど お願いします"
           }
           index={index}
@@ -875,6 +885,8 @@ export function ProbeScoreModal({
       index={index}
       wide
     >
+      {/* 伝わった こたえで ほかの 札が 打ち切りに なった ときも、打ち切りは 帯で はっきり 言う。 */}
+      {heard && gaveUpLabel ? <GaveUpBand label={gaveUpLabel} index={index} /> : null}
       <ScoreHead
         lead="ここまでの 報告"
         score={score}

@@ -577,10 +577,20 @@ export function keepReadableAsakai(
   const index = buildFuriganaIndex(asakaiAiFurigana(furigana));
   /** 読める 形に 直した 文（読めなければ 空）。 */
   const fit = (text: string) => readableAsakaiText(text, index);
+  /*
+   * **項目は 落とさない**（2026-09-28 の code-critic 検収）。落とすと 学生の ことば（said）まで
+   * 消えて、画面は「AIが 見て いない —」を 出す——見たのに 見て いないと 言う。
+   * - 直す ところが 無い（said と 同じ）… そのまま（画面は「✅ このままで 通じます」で、
+   *   直した 文を 描かない ので 読みの 検査は 要らない）
+   * - 読めない 直し … 直しだけ 空に する
+   */
   const items: AsakaiItem[] = [];
   for (const item of result.items) {
-    const polished = fit(item.polished);
-    if (polished !== "") items.push({ ...item, polished });
+    if (sameWords(item.polished, item.said)) {
+      items.push(item);
+      continue;
+    }
+    items.push({ ...item, polished: fit(item.polished) });
   }
   const fixes: AsakaiFix[] = [];
   for (const one of result.fixes) {
@@ -596,6 +606,12 @@ export function keepReadableAsakai(
     items,
     fixes,
   };
+}
+
+/** 空白と 句点の ちがいを 無視して 同じ 文か（「このままで 通じます」の 判定と そろえる）。 */
+function sameWords(a: string, b: string): boolean {
+  const flat = (text: string) => text.replace(/[\s。．.、，,]/gu, "");
+  return flat(a) !== "" && flat(a) === flat(b);
 }
 
 /** 数字（半角・全角）→ 漢数字（日の 数の 書き直し用。1〜5 だけ）。 */
@@ -615,18 +631,28 @@ const KANJI_DIGIT: Readonly<Record<string, string>> = {
 /**
  * AIの 文を **読める 形に して 返す**（読めなければ 空）。
  *
+ * - 時刻は「17時5分」→「17:05」の 形に 書き直す（夕礼の よい 報告は 時刻つき。
+ *   時・分は 読みが 割れる ので 漢字で 出さない・2026-09-28 の code-critic 検収）
  * - 「1日」〜「5日」は「一日」〜「五日」に 書き直す（数字の 位置からは 辞書を 引けず、
  *   日だけが 日=ひ に 当たって「1ひ」に なる・2026-09-28 の 読み検収）
- * - 数字＋分（時刻・長さ）を 含む 文は 出さない（ぷん／ふん が 割れる。「3分かかり」が わかかり に なる）
+ * - それでも 数字＋日・数字＋分（10日・3分 など）が 残る 文は 出さない
+ *  （「3分かかり」が わかかり、「10日」が 10ひ に なる）
  * - ふりがなの 付かない 漢字が 残る 文は 出さない
  */
 export function readableAsakaiText(text: string, index: FuriganaIndex): string {
   if (text === "") return "";
-  const fixed = text.replace(
-    /(?<![0-9０-９])([1-5１-５])日(?!目)/gu,
-    (_, digit: string) => `${KANJI_DIGIT[digit] ?? digit}日`,
-  );
-  if (/[0-9０-９]\s*分/u.test(fixed)) return "";
+  const fixed = text
+    .replace(
+      /([0-9]{1,2})\s*時\s*([0-9]{1,2})\s*分/gu,
+      (_, h: string, m: string) => `${h}:${m.padStart(2, "0")}`,
+    )
+    .replace(/([0-9]{1,2})\s*時半/gu, (_, h: string) => `${h}:30`)
+    .replace(/([0-9]{1,2})\s*時(?![間代])/gu, (_, h: string) => `${h}:00`)
+    .replace(
+      /(?<![0-9０-９])([1-5１-５])日(?!目)/gu,
+      (_, digit: string) => `${KANJI_DIGIT[digit] ?? digit}日`,
+    );
+  if (/[0-9０-９]\s*[分日]/u.test(fixed)) return "";
   return uncoveredKanji(fixed, index).length === 0 ? fixed : "";
 }
 

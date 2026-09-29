@@ -288,6 +288,36 @@ function isCopiedSentence(sentence: string, lines: readonly LogLine[]): boolean 
   );
 }
 
+/** 隣り合う 文を つないで 見る 数（声の 書き起こしで 1行が 何文に 割れうるか）。 */
+const SPLIT_WINDOW = 3;
+
+/**
+ * **写しで ない 文だけ**を つないで 返す（差し戻す ときに 数える ぶん）。
+ *
+ * 声の 書き起こしは 間を 置いた ところに 句点を 打つので、記録の 1行が
+ *「17:05 同じ スキルが 別の 名前と。点数で 登録されて いる ことを 確認。」の ように
+ * **2つの 文に 割れる**ことが ある。文ごとに 見るだけだと どちらの 文にも 行が
+ * 丸ごと 入らず、写しが 数えられて 札が 開くのに、画面は「数えて いません」と
+ * 名指しする（2026-09-28 の code-critic 検収）。隣り合う 文を つないで 行が
+ * 丸ごと 現れる ときは、その 文を ぜんぶ 写しに する。それでも 残りに 行が 入って
+ * いれば（もっと 細かく 割れた）、何も 数えない。
+ */
+export function uncopiedText(utterance: string, lines: readonly LogLine[]): string {
+  const sentences = splitSentences(utterance);
+  const copied = sentences.map((sentence) => isCopiedSentence(sentence, lines));
+  for (let at = 0; at < sentences.length; at += 1) {
+    for (let size = 2; size <= SPLIT_WINDOW && at + size <= sentences.length; size += 1) {
+      const window = sentences.slice(at, at + size);
+      const alone = window.reduce((sum, one) => sum + countLogLines(one, lines), 0);
+      if (countLogLines(window.join(""), lines) > alone) {
+        for (let k = at; k < at + size; k += 1) copied[k] = true;
+      }
+    }
+  }
+  const rest = sentences.filter((_, at) => !copied[at]).join("");
+  return countLogLines(rest, lines) > 0 ? "" : rest;
+}
+
 /**
  * **AIの 見立てを 効かせて よいか**（写しの あとが 残って いるか）。
  *
@@ -403,9 +433,7 @@ export function applyUtterance({
      * 付いて いて、どの 文に 当たったかを 分けられない ため。
      */
     const copied = copiedLogLines(utterance, logLines);
-    const counted = splitSentences(utterance)
-      .filter((sentence) => !isCopiedSentence(sentence, logLines))
-      .join("");
+    const counted = uncopiedText(utterance, logLines);
     if (counted === "") {
       return { states, newFacts: [], opened: [], completed: [], readLog: true, copied, counted };
     }

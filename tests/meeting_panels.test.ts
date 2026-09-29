@@ -333,6 +333,23 @@ describe("読み上げの 差し戻しは 文ごと", () => {
     expect(step.opened).toContain("komari");
   });
 
+  /* 声の 書き起こしは 間で 句点を 打つ。1行が 2つの 文に 割れても 写しと 見る（code-critic 検収）。 */
+  it("記録の 1行が 句点で 割れても、写しは 数えない", () => {
+    const said =
+      "16:30 スキルグラフの 表示を 確認。" +
+      "17:05 同じ スキルが 別の 名前と。点数で 登録されている ことを 確認。" +
+      "17:10 ヘンディさんに 問題を 報告。17:15 ニャムさんが スキルデータを 調査。";
+    const step = applyUtterance({
+      utterance: said,
+      panels: PANELS,
+      states: initialPanelStates(PANELS),
+      logLines: WED,
+    });
+    expect(step.readLog).toBe(true);
+    expect(step.states.find((one) => one.id === "komari")?.open).toBe(false);
+    expect(step.counted).toBe("");
+  });
+
   it("写した 文は 数えず、自分で 言った 文（進捗）は 数える", () => {
     const said =
       WED.slice(0, 4)
