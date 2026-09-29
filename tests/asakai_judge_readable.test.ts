@@ -14,6 +14,7 @@ import {
   type JudgeablePanel,
 } from "@/lib/meeting/asakai-judge";
 import { annotateRuby, buildFuriganaIndex, type FuriganaEntry } from "@/lib/text/furigana";
+import { checkFuriganaEntry } from "@/lib/text/furigana-checks";
 
 /*
  * 朝礼・夕礼の AIの 文を **読める 形で だけ 出す**（2026-09-28 の 点検 A1〜A3）。
@@ -104,6 +105,61 @@ describe("readableAsakaiText — 数字＋日・分", () => {
   it("人数・作文 を 1字ずつに 割らない", () => {
     expect(ruby("人数")).toBe("人数〔にんずう〕");
     expect(ruby("作文")).toBe("作文〔さくぶん〕");
+  });
+});
+
+/*
+ * **行（おこな）う の 読み**（2026-09-29）。共通の 一覧は 行=い・行った=いった（行く の 読み）
+ * なので、夕礼の 報告の 型を AIが 書くと「今日 いったこと」「明日 いうこと」に なって いた。
+ * 教材の 文は 教材の 辞書で おこなったこと に なる——AIの 文だけが 割れて いた。
+ */
+describe("AIの 文の 読み — 行ったこと・行うこと（夕礼の 報告の 型）", () => {
+  const muzukashii = JSON.parse(
+    readFileSync(join(__dirname, "..", "content", "meetings", "asakai_muzukashii.json"), "utf8"),
+  ) as { furigana: FuriganaEntry[] };
+  const readWith = (furigana: readonly FuriganaEntry[]) => {
+    const index = buildFuriganaIndex(asakaiAiFurigana(furigana));
+    return (text: string) =>
+      annotateRuby(text, index)
+        .map((seg) => (seg.reading ? `${seg.text}〔${seg.reading}〕` : seg.text))
+        .join("");
+  };
+
+  for (const [name, furigana] of [
+    ["朝礼", kantan.furigana],
+    ["夕礼", muzukashii.furigana],
+  ] as const) {
+    const ruby = readWith(furigana);
+
+    it(`${name}: 「今日 行ったこと」は おこなったこと と 読む（空白入りも）`, () => {
+      expect(ruby("今日 行ったこと")).toBe("今日〔きょう〕 行ったこと〔おこなったこと〕");
+      expect(ruby("今日 行ったことを 言いましょう。")).toContain("行ったこと〔おこなったこと〕");
+      expect(ruby("今日 行った ことを")).toContain("行った こと〔おこなった こと〕");
+      expect(ruby("今日 行ったこと")).not.toContain("いった");
+    });
+
+    it(`${name}: 行う の 形（明日 行うこと・行いました・行わない）は おこな と 読む`, () => {
+      expect(ruby("明日 行うこと")).toBe("明日〔あした〕 行う〔おこなう〕こと");
+      expect(ruby("テストを 行いました。")).toContain("行い〔おこない〕ました");
+      expect(ruby("テストを 行わない")).toContain("行わ〔おこなわ〕ない");
+    });
+
+    /* 変えて いない ところ: 行く の 形は 共通の 一覧の まま */
+    it(`${name}: 行く の 形（行きます・行って・会社に 行った）は いく の まま`, () => {
+      expect(ruby("会社に 行きます。")).toContain("行き〔いき〕ます");
+      expect(ruby("会社に 行って")).toContain("行って〔いって〕");
+      expect(ruby("会社に 行った。")).toContain("行った〔いった〕。");
+    });
+  }
+
+  it("足した 行 の 見出しは 送りがなが 読みに そろう", () => {
+    const added = asakaiAiFurigana().filter(([surface]) => surface.startsWith("行"));
+    expect(added.map(([surface]) => surface)).toEqual(
+      expect.arrayContaining(["行ったこと", "行った こと", "行う", "行い", "行わ"]),
+    );
+    expect(added.map(([surface, reading]) => checkFuriganaEntry(surface, reading))).toEqual(
+      added.map(() => null),
+    );
   });
 });
 
