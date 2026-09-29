@@ -1205,3 +1205,73 @@ test("開き直すと、そこまでの 会話を 鳴らし直す", async ({ pag
     .toBeGreaterThan(0);
   await expect(page.getByText("（1 / 4）")).toBeVisible();
 });
+
+/**
+ * **開き直すと、今の 教材の 声で 鳴る**（2026-09-29 に 実発生）。
+ * 途中の しおりは 行を 保存した ときの 音の 場所ごと 持つ。声を 作り直した あとも、
+ * 前に 話しかけて いた 人には 古い「アバペイ」の 声が 鳴りつづけた。
+ */
+test("開き直すと、しおりの 古い 音では なく 今の 声で 鳴る", async ({ page, context }) => {
+  const refs = stageRefs();
+  const at = refs.indexOf("asakai_kantan");
+  await seedCompleted(context, refs.slice(0, at));
+  const meeting = JSON.parse(
+    readFileSync(join(__dirname, "..", "..", "content", "meetings", "asakai_kantan.json"), "utf8"),
+  ) as { asakai: { scenes: { sample: { audio: string } }[] } };
+  const current = meeting.asakai.scenes[0].sample.audio;
+  const stale = "/audio/meetings/asakai_kantan/s0-sample-da68de59.wav";
+  expect(current, "しおりに 入れる 古い 音と 今の 音が 同じ").not.toBe(stale);
+
+  await page.addInitScript(() => {
+    const plays: string[] = [];
+    (window as unknown as { __plays: string[] }).__plays = plays;
+    const origin = HTMLMediaElement.prototype.play;
+    HTMLMediaElement.prototype.play = function play(this: HTMLMediaElement) {
+      plays.push(this.src);
+      return origin.apply(this);
+    };
+  });
+
+  await page.goto("/asakai/meeting-asakai_kantan");
+  await joinCall(page);
+  await closeDuty(page);
+  await page
+    .getByLabel("こたえを 入力する")
+    .fill("先週の 金曜日は、決済の 決まりを 調べて、決済の 画面と ABA Payの ボタンを 作りました。");
+  await page.getByRole("button", { name: "おくる" }).click();
+  await page.getByRole("dialog", { name: "報告の 見かた" }).getByRole("button").last().click();
+  await expect(page.getByText("（1 / 4）")).toBeVisible();
+
+  /* 声を 作り直す 前に 保存された しおりの 形に する（見本の 行だけ 古い 音を 指す）。 */
+  await page.evaluate(
+    ([now, old]) => {
+      const key = "nexmax:v1:asakai-resume:asakai_kantan";
+      const saved = JSON.parse(localStorage.getItem(key) ?? "{}") as {
+        drafts?: Record<string, { lines: { text: string; audio?: string }[] }>;
+      };
+      const lines = saved.drafts?.mon?.lines ?? [];
+      const target = lines.find((line) => line.audio === now);
+      if (!target) throw new Error("しおりに 見本の 行が ありません");
+      target.audio = old;
+      target.text = "（直す 前の 文）";
+      localStorage.setItem(key, JSON.stringify(saved));
+    },
+    [current, stale],
+  );
+
+  await page.reload();
+  await joinCall(page);
+  await closeDuty(page);
+  const plays = () => page.evaluate(() => (window as unknown as { __plays: string[] }).__plays);
+  await expect
+    .poll(async () => (await plays()).some((src) => src.includes(current)), {
+      message: "今の 見本の 声が 鳴らない",
+    })
+    .toBe(true);
+  expect(
+    (await plays()).some((src) => src.includes(stale)),
+    "しおりに 残った 古い 声が 鳴った",
+  ).toBe(false);
+  expect(await bareKanjiTexts(page), "ふりがなの 無い 漢字").toEqual([]);
+  await expect(page.getByText("（直す 前の 文）")).toHaveCount(0);
+});

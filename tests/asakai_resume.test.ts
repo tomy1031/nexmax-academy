@@ -5,14 +5,18 @@ import {
   clearAsakaiResume,
   readAsakaiDraft,
   readAsakaiResume,
+  refreshSavedLines,
   restoreAsakai,
   saveAsakaiDraft,
   saveAsakaiResume,
   startAsakaiFrom,
+  voicedLinesBySlot,
+  voicedSlotOf,
   type AsakaiResume,
   type DayResult,
 } from "@/lib/meeting/asakai-resume";
 import type { ProgressBackend } from "@/lib/progress/store";
+import kantan from "../content/meetings/asakai_kantan.json";
 
 /** 端末の かわり（`localStorage` と 同じ 形だけ 持つ）。 */
 function memory(): ProgressBackend & { raw: Map<string, string> } {
@@ -164,5 +168,85 @@ describe("報告の 途中", () => {
     expect(readAsakaiDraft("m", "tue", backend)).toBeNull();
     expect(readAsakaiDraft("m", "wed", backend)).not.toBeNull();
     expect(readAsakaiResume("m", backend)?.done).toHaveLength(1);
+  });
+});
+
+/**
+ * 開き直した ときは **今の 教材の 文と 音**で 鳴らす（2026-09-29 に 実発生）。
+ * 途中の しおりは 行を 保存した ときの 形で 持つので、そのまま 鳴らすと
+ * `ABA` を 直す 前の 古い「アバペイ」の 声が 鳴りつづけた。
+ */
+describe("保存した 会話を 今の 教材に 合わせ直す", () => {
+  const now = voicedLinesBySlot(kantan.asakai.scenes);
+
+  it("音の 場所から 行の 鍵を 取り出す（文の 指紋は 捨てる）", () => {
+    expect(voicedSlotOf("/audio/meetings/asakai_kantan/s0-sample-da68de59.wav")).toBe(
+      "asakai_kantan/s0-sample",
+    );
+    expect(voicedSlotOf("/audio/meetings/asakai_kantan/s3-arrange-done-9054f169.wav")).toBe(
+      "asakai_kantan/s3-arrange-done",
+    );
+    expect(
+      voicedSlotOf("/audio/meetings/kaisha_matsui/closing.wav"),
+      "指紋の 無い 名前",
+    ).toBeNull();
+    expect(voicedSlotOf(undefined)).toBeNull();
+  });
+
+  it("古い 音の 行は、今の 文と 音に 差し替わる", () => {
+    const sample = kantan.asakai.scenes.at(0)?.sample;
+    expect(sample?.audio, "月曜の 見本に 音が 無い").toBeTruthy();
+    const [line] = refreshSavedLines(
+      [
+        {
+          who: "ヘンディ",
+          speakerId: "hendy",
+          text: "（直す 前の 文）",
+          audio: "/audio/meetings/asakai_kantan/s0-sample-da68de59.wav",
+        },
+      ],
+      now,
+    );
+    expect(line?.audio).toBe(sample?.audio);
+    expect(line?.text).toBe(sample?.text);
+    expect(line?.who, "話し手は そのまま").toBe("ヘンディ");
+  });
+
+  it("学習者の 発話と、音の 無い 行は そのまま 残す", () => {
+    const mine = {
+      who: "",
+      speakerId: "me",
+      text: "きのうは 決済の 画面を 作りました。",
+      self: true,
+    };
+    const called = {
+      who: "ヘンディ",
+      speakerId: "hendy",
+      text: "では 次に トミーさん、お願いします。",
+    };
+    expect(refreshSavedLines([mine, called], now)).toEqual([mine, called]);
+  });
+
+  it("今の 教材に 無い 行は 手を つけない", () => {
+    const gone = {
+      who: "ヘンディ",
+      speakerId: "hendy",
+      text: "もう 無い セリフ",
+      audio: "/audio/meetings/asakai_kantan/s9-nothing-0-12345678.wav",
+    };
+    expect(refreshSavedLines([gone], now)).toEqual([gone]);
+  });
+
+  it("教材の 音の ある 行は、鍵が 重ならない", () => {
+    const audios: string[] = [];
+    const walk = (value: unknown): void => {
+      if (Array.isArray(value)) return value.forEach(walk);
+      if (!value || typeof value !== "object") return;
+      const audio = (value as { audio?: unknown }).audio;
+      if (typeof audio === "string") audios.push(audio);
+      Object.values(value).forEach(walk);
+    };
+    walk(kantan.asakai.scenes);
+    expect(now.size, "同じ 鍵の 行が 2つ ある").toBe(new Set(audios).size);
   });
 });

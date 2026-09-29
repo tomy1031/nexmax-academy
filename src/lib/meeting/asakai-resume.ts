@@ -248,3 +248,69 @@ export function restoreAsakai(
 ): AsakaiStart {
   return startAsakaiFrom(readAsakaiResume(meetingId, backend), sceneCount);
 }
+
+/* ------------------------------------------------------------------ *
+ * 保存した 会話を **今の 教材**に 合わせ直す
+ * ------------------------------------------------------------------ */
+
+/**
+ * 音の 置き場所から **どの 行か**を 取り出す（`<教材ID>/<行の 鍵>`）。
+ *
+ * 音の ファイル名は `<行の 鍵>-<文の 指紋 8桁>.wav`（`scripts/make_meeting_audio.ts`）。
+ * 文や 読みを 直すと 指紋だけが 変わり、**行の 鍵は 変わらない**——だから 鍵で 引けば、
+ * 古い 音の 場所からでも 今の 行に たどり着ける。指紋の 無い 名前は 引かない（null）。
+ */
+export function voicedSlotOf(audio: string | undefined): string | null {
+  const hit = audio?.match(/\/audio\/meetings\/([^/]+)\/(.+)-[0-9a-f]{8}\.wav$/u);
+  return hit ? `${hit[1]}/${hit[2]}` : null;
+}
+
+interface VoicedLine {
+  readonly text: string;
+  readonly audio?: string;
+}
+
+/** 教材の 中の **音の ある 行**を ぜんぶ、行の 鍵で 引ける ように する。 */
+export function voicedLinesBySlot(root: unknown): Map<string, VoicedLine> {
+  const found = new Map<string, VoicedLine>();
+  const walk = (value: unknown): void => {
+    if (Array.isArray(value)) {
+      value.forEach(walk);
+      return;
+    }
+    if (!value || typeof value !== "object") return;
+    const line = value as { text?: unknown; audio?: unknown };
+    if (typeof line.text === "string" && typeof line.audio === "string") {
+      const slot = voicedSlotOf(line.audio);
+      if (slot) found.set(slot, { text: line.text, audio: line.audio });
+    }
+    Object.values(value).forEach(walk);
+  };
+  walk(root);
+  return found;
+}
+
+/**
+ * 保存して おいた 会話の 行を、**今の 教材の 文と 音**に 差し替える。
+ *
+ * ## なぜ 要るか（2026-09-29 に 実発生）
+ * 途中の しおり（`drafts`）は チャットの 行を **保存した ときの 形の まま**持つ。
+ * 行には 音の 場所も 入って いる ので、開き直して 鳴らし直すと **保存した 日の 音**が 鳴る。
+ * `ABA` を「アバ」と 読んで いた 音を 作り直した あとも、直す 前に 話しかけて いた 人には
+ * 古い「アバペイ」が 鳴りつづけた（古い ファイルも 配信に 残って いる）。
+ * 文も 同じで、司会の セリフを 書き直しても 保存した 人には 前の 文が 出る。
+ *
+ * 差し替えるのは **音の ある 行だけ**（司会・メンバーの 決まった セリフ）。
+ * 学習者の 発話と、名前を 埋めた 行（`◯◯さん`。音を 持たない）は そのまま 残す。
+ * 今の 教材に 同じ 行が 無ければ、手を つけない。
+ */
+export function refreshSavedLines<T extends { text: string; audio?: string }>(
+  lines: readonly T[],
+  current: ReadonlyMap<string, VoicedLine>,
+): T[] {
+  return lines.map((line) => {
+    const slot = voicedSlotOf(line.audio);
+    const now = slot ? current.get(slot) : undefined;
+    return now ? { ...line, text: now.text, audio: now.audio } : line;
+  });
+}
