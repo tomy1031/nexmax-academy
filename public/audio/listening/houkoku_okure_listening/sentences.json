@@ -2,8 +2,8 @@
   "listeningId": "houkoku_okure_listening",
   "gapSeconds": 1.25,
   "compareGapSeconds": [],
-  "complete": false,
-  "missing": [10],
+  "complete": true,
+  "missing": [],
   "sentences": [
     {
       "speaker": "yamada",
@@ -146,6 +146,22 @@
       "reading": {
         "expected": "いまはなにをかくにんしていますか",
         "spoken": "いまはなにをかくにんしていますか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "yamada",
+      "text": "CSVの データに 間違いが ないか、一つずつ 確認して います。",
+      "file": "10.wav",
+      "voice": "Achird",
+      "model": "gemini-3.8-live",
+      "seconds": 4.96,
+      "longestPause": 0.21,
+      "transcript": "CSV の データ に 間違い が ない か 1 つ ずつ 確認 し て い ます 。",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "しいえすぶいのでえたにまちがいがないかひとつずつかくにんしています",
+        "spoken": "しいえすぶいのでえたにまちがいがないかひとつずつかくにんしています",
         "distance": 0
       }
     },
