@@ -859,11 +859,12 @@ describe("その日の 中身でしか 開かない（朝礼）", () => {
 
   it("進捗は その日の 数でしか 開かない", () => {
     const value: Record<string, string> = {
-      mon: "20",
-      tue: "35",
-      wed: "45",
-      thu: "60",
-      fri: "85",
+      /* 2026-09-28 から しごと表の ✅の 数（✅ ÷ ぜんぶ）に そろえた（点検 C3・ユーザー指定 A）。 */
+      mon: "22",
+      tue: "33",
+      wed: "30",
+      thu: "70",
+      fri: "90",
     };
     for (const [day, percent] of Object.entries(value)) {
       expect(say(day, `今、進捗は ${percent}%です。`, "shinchoku").full, `${day} の 数`).toBe(true);

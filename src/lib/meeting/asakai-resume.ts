@@ -108,11 +108,18 @@ const asakaiDraftSchema = z.object({
   attempts: z.record(z.string(), z.number().int().min(0)).default({}),
   probes: z.number().int().min(0).default(0),
   askedId: z.string().nullable().default(null),
+  /**
+   * 司会の 聞き返しの 字（2026-09-28 の 検収）。無いと、開き直した あとの こたえが
+   * AIに「報告 まるごと」と して 見られ、聞き返しの ポップアップも 出ない。
+   */
+  askedText: z.string().default(""),
   lines: z.array(chatLineSchema).default([]),
   log: z.array(sayLogSchema).default([]),
 });
 
 export type AsakaiDraft = z.infer<typeof asakaiDraftSchema>;
+/** 書く ときの 形（`.default()` の 欄は 省いて よい。読む ときに 埋まる）。 */
+export type AsakaiDraftInput = z.input<typeof asakaiDraftSchema>;
 
 /**
  * 端末に 残す かたち。
@@ -125,6 +132,14 @@ const asakaiResumeSchema = z.object({
   done: z.array(dayResultSchema).default([]),
   /** 話しかけて いる 日（曜日の id → 途中）。終わった 日は `done` が 持つ。 */
   drafts: z.record(z.string(), asakaiDraftSchema).default({}),
+  /**
+   * **5日 そろったが、週の けっかを まだ 閉じて いない**（2026-09-28 の 点検 B4）。
+   *
+   * 前は 5日 そろった しおりを「完走ずみ」と して 月曜から 始めて いたので、
+   * 金曜の 評価を 読んで いる 最中に 更新・退室すると **5日ぶんが 消え、
+   * 完了も 付かなかった**。この 印が ある ときは 週の けっかから 始める。
+   */
+  weekPending: z.boolean().default(false),
 });
 
 export type AsakaiResume = z.infer<typeof asakaiResumeSchema>;
@@ -137,6 +152,8 @@ export interface AsakaiStart {
   readonly results: readonly DayResult[];
   /** 途中から 戻ったか（画面の 組み立てに 使う。**学習者には 出さない**）。 */
   readonly resumed: boolean;
+  /** 5日 そろって、週の けっかを まだ 閉じて いない（週の けっかから 始める）。 */
+  readonly weekPending?: boolean;
 }
 
 export const FRESH_ASAKAI: AsakaiStart = { sceneAt: 0, results: [], resumed: false };
@@ -152,18 +169,22 @@ function keyOf(meetingId: string): string {
 /**
  * 保存されて いた ものから、始める ところを 決める。
  *
- * 規則は 3つ:
+ * 規則は 4つ:
  * 1. 保存が 無い・空なら 月曜から
- * 2. 終わった日が 場面の 数に とどいて いれば 月曜から（＝完走ずみ。何度でも 話せる）
- * 3. 教材が 直されて 場面が 減った ときも、はみ出す なら 月曜から
+ * 2. 5日 そろって **週の けっかを まだ 閉じて いない**なら、週の けっかから（2026-09-28）
+ * 3. 終わった日が 場面の 数に とどいて いれば 月曜から（＝完走ずみ。何度でも 話せる）
+ * 4. 教材が 直されて 場面が 減った ときも、はみ出す なら 月曜から
  */
 export function startAsakaiFrom(
-  /* 見るのは `done` だけ（途中は 日ごとに 別で 読む）。 */
-  saved: Pick<AsakaiResume, "done"> | null,
+  /* 見るのは `done` と 週の けっか待ち だけ（途中は 日ごとに 別で 読む）。 */
+  saved: (Pick<AsakaiResume, "done"> & { readonly weekPending?: boolean }) | null,
   sceneCount: number,
 ): AsakaiStart {
   const done = saved?.done ?? [];
   if (done.length === 0) return FRESH_ASAKAI;
+  if (done.length === sceneCount && saved?.weekPending === true) {
+    return { sceneAt: sceneCount - 1, results: done, resumed: true, weekPending: true };
+  }
   if (done.length >= sceneCount) return FRESH_ASAKAI;
   return { sceneAt: done.length, results: done, resumed: true };
 }
@@ -191,10 +212,17 @@ export function saveAsakaiResume(
   meetingId: string,
   done: readonly DayResult[],
   backend: ProgressBackend = defaultBackend(),
+  /** 場面の 数。渡すと、5日 そろった ときに「週の けっか待ち」の 印を 立てる。 */
+  sceneCount?: number,
 ): void {
-  /* **途中（`drafts`）を 巻き込んで 消さない**——読んでから 書く。 */
-  const drafts = readAsakaiResume(meetingId, backend)?.drafts ?? {};
-  backend.set(keyOf(meetingId), JSON.stringify({ meetingId, done, drafts }));
+  /* **途中（`drafts`）と 印を 巻き込んで 消さない**——読んでから 書く。 */
+  const saved = readAsakaiResume(meetingId, backend);
+  const weekPending =
+    sceneCount !== undefined ? done.length >= sceneCount : (saved?.weekPending ?? false);
+  backend.set(
+    keyOf(meetingId),
+    JSON.stringify({ meetingId, done, drafts: saved?.drafts ?? {}, weekPending }),
+  );
 }
 
 /** その日の 途中を 読む（無ければ null）。 */
@@ -210,12 +238,20 @@ export function readAsakaiDraft(
 export function saveAsakaiDraft(
   meetingId: string,
   day: string,
-  draft: AsakaiDraft,
+  draft: AsakaiDraftInput,
   backend: ProgressBackend = defaultBackend(),
 ): void {
   const saved = readAsakaiResume(meetingId, backend);
   const drafts = { ...(saved?.drafts ?? {}), [day]: draft };
-  backend.set(keyOf(meetingId), JSON.stringify({ meetingId, done: saved?.done ?? [], drafts }));
+  backend.set(
+    keyOf(meetingId),
+    JSON.stringify({
+      meetingId,
+      done: saved?.done ?? [],
+      drafts,
+      weekPending: saved?.weekPending ?? false,
+    }),
+  );
 }
 
 /** その日が 終わったら 途中を 捨てる（けっかは `done` に 移る）。 */
@@ -229,7 +265,10 @@ export function clearAsakaiDraft(
   const drafts = { ...saved.drafts };
   if (!(day in drafts)) return;
   delete drafts[day];
-  backend.set(keyOf(meetingId), JSON.stringify({ meetingId, done: saved.done, drafts }));
+  backend.set(
+    keyOf(meetingId),
+    JSON.stringify({ meetingId, done: saved.done, drafts, weekPending: saved.weekPending }),
+  );
 }
 
 /** 完走したとき・やり直すときに 消す。 */
@@ -247,4 +286,98 @@ export function restoreAsakai(
   backend: ProgressBackend = defaultBackend(),
 ): AsakaiStart {
   return startAsakaiFrom(readAsakaiResume(meetingId, backend), sceneCount);
+}
+
+/* ------------------------------------------------------------------ *
+ * 保存した 会話を **今の 教材**に 合わせ直す
+ * ------------------------------------------------------------------ */
+
+/**
+ * 音の 置き場所から **どの 行か**を 取り出す（`<教材ID>/<行の 鍵>`）。
+ *
+ * 音の ファイル名は `<行の 鍵>-<文の 指紋 8桁>.wav`（`scripts/make_meeting_audio.ts`）。
+ * 文や 読みを 直すと 指紋だけが 変わり、**行の 鍵は 変わらない**——だから 鍵で 引けば、
+ * 古い 音の 場所からでも 今の 行に たどり着ける。指紋の 無い 名前は 引かない（null）。
+ */
+export function voicedSlotOf(audio: string | undefined): string | null {
+  const hit = audio?.match(/\/audio\/meetings\/([^/]+)\/(.+)-[0-9a-f]{8}\.wav$/u);
+  return hit ? `${hit[1]}/${hit[2]}` : null;
+}
+
+interface VoicedLine {
+  readonly speakerId: string;
+  readonly text: string;
+  readonly audio: string;
+}
+
+/**
+ * 場面の 中の **音の ある 行**を ぜんぶ、行の 鍵で 引ける ように する。
+ *
+ * 渡すのは **開く 日の 場面 1つ**（5日ぶん まとめて 渡さない）。しおりは 日ごとなので、
+ * ほかの 日の 行に 差し替わる 道を はじめから 作らない。
+ */
+export function voicedLinesBySlot(root: unknown): Map<string, VoicedLine> {
+  const found = new Map<string, VoicedLine>();
+  const walk = (value: unknown): void => {
+    if (Array.isArray(value)) {
+      value.forEach(walk);
+      return;
+    }
+    if (!value || typeof value !== "object") return;
+    const line = value as { speakerId?: unknown; text?: unknown; audio?: unknown };
+    if (typeof line.text === "string" && typeof line.audio === "string") {
+      const slot = voicedSlotOf(line.audio);
+      if (slot) {
+        found.set(slot, {
+          speakerId: typeof line.speakerId === "string" ? line.speakerId : "",
+          text: line.text,
+          audio: line.audio,
+        });
+      }
+    }
+    Object.values(value).forEach(walk);
+  };
+  walk(root);
+  return found;
+}
+
+/**
+ * 保存して おいた 会話の 行を、**今の 教材の 文と 音**に 差し替える。
+ *
+ * ## なぜ 要るか（2026-09-29 に 実発生）
+ * 途中の しおり（`drafts`）は チャットの 行を **保存した ときの 形の まま**持つ。
+ * 行には 音の 場所も 入って いる ので、開き直して 鳴らし直すと **保存した 日の 音**が 鳴る。
+ * `ABA` を「アバ」と 読んで いた 音を 作り直した あとも、直す 前に 話しかけて いた 人には
+ * 古い「アバペイ」が 鳴りつづけた（古い ファイルも 配信に 残って いる）。
+ * 文も 同じで、司会の セリフを 書き直しても 保存した 人には 前の 文が 出る。
+ *
+ * ## 差し替える 条件は **行の 鍵と 話し手の 両方**が 合う こと
+ * 行の 鍵は **並びの 番号**で できて いる（`s0-member-1` など）。メンバーの 順番を
+ * 入れ替えると（2026-09-13 に 実際に あった）、同じ 鍵が **別の 人の 行**に なる。
+ * 鍵だけで 差し替えると、奥田さんの 行に ニャムさんの 文と 声が 入る。
+ *
+ * ## 合う 行が 無い ときは **古い 声を 鳴らさない**
+ * この 教材の 鍵なのに 今の 場面に 合う 行が 無いのは、文を 直して 音を 外した
+ * （作り直し待ち）か、並びが 変わった とき。どちらも 古い 声は もう 正しくない——
+ * 残すと、外すよう 言われた セリフが 声で 流れつづける。字は 残す（会話の 流れを 崩さない）。
+ *
+ * 学習者の 発話と、名前を 埋めた 行（`◯◯さん`。音を 持たない）には 触らない。
+ */
+export function refreshSavedLines<T extends { speakerId: string; text: string; audio?: string }>(
+  lines: readonly T[],
+  current: ReadonlyMap<string, VoicedLine>,
+  meetingId: string,
+): T[] {
+  return lines.map((line) => {
+    const slot = voicedSlotOf(line.audio);
+    if (!slot) return line;
+    const now = current.get(slot);
+    if (now && now.speakerId === line.speakerId) {
+      return { ...line, text: now.text, audio: now.audio };
+    }
+    if (!slot.startsWith(`${meetingId}/`)) return line;
+    const silent = { ...line };
+    delete silent.audio;
+    return silent;
+  });
 }

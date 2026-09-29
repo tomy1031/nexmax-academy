@@ -56,12 +56,14 @@ import {
   subscribeSpeechSpeed,
 } from "@/lib/meeting/speed";
 import { useVoiceQueue } from "@/components/asakai/use-voice-queue";
+import { UI_FURIGANA } from "@/components/asakai/ui-furigana";
 import {
   CardBoard,
   CountBoxes,
   DayProgress,
   ProgressBoxes,
   SkyStrip,
+  DayCount,
 } from "@/components/asakai/asakai-parts";
 import type { CardState } from "@/components/asakai/asakai-parts";
 import type { Meeting } from "@/content/schema";
@@ -80,7 +82,11 @@ import {
   type ReportPanel,
 } from "@/lib/meeting/panels";
 import { hintOf } from "@/lib/meeting/asakai-hint";
-import type { AsakaiItem, AsakaiJudgeResult } from "@/lib/meeting/asakai-judge";
+import {
+  asakaiAiFurigana,
+  type AsakaiItem,
+  type AsakaiJudgeResult,
+} from "@/lib/meeting/asakai-judge";
 import {
   contentScore,
   CONTENT_MAX,
@@ -103,9 +109,11 @@ import {
   clearAsakaiDraft,
   clearAsakaiResume,
   readAsakaiDraft,
+  refreshSavedLines,
   saveAsakaiDraft,
   restoreAsakai,
   saveAsakaiResume,
+  voicedLinesBySlot,
   type DayResult,
 } from "@/lib/meeting/asakai-resume";
 
@@ -184,140 +192,6 @@ const LISTEN_ONLY = [
   "つぎに 何を 聞くかは 画面が 決めます。",
 ].join("\n");
 
-/**
- * **画面が 自分で 出す 字**の 読み（`CallShell` の `SHELL_FURIGANA` と 同じ 流儀）。
- *
- * 教材の 読み辞書だけで 描いて いた ころ、週の けっかの「合格」が
- * かんたんの 辞書に ある ["合","あ"] を 拾って **「あ格」**に なって いた
- *（2026-09-11。教材の 辞書は 教材の 文の ために 作られて いる）。
- * 画面の ことばは 教材ごとに 変わらない ので、ここで 持つ。
- */
-const UI_FURIGANA: readonly (readonly [string, string])[] = [
-  ["合格", "ごうかく"],
-  ["不合格", "ふごうかく"],
-  ["以上", "いじょう"],
-  ["曜日", "ようび"],
-  /*
-   * 曜日は **5つとも 書く**。`annotateRuby` は **漢字の 位置からしか 辞書を 引かない**
-   * ので、「月曜日」は 頭の「月」から 引く——「曜日」だけ 持って いても 当たらず、
-   * 帯に **裸の 漢字**が 出る（丸い タブの ころは 1字ずつ ルビを 手で 付けて いた）。
-   */
-  ["月曜日", "げつようび"],
-  ["火曜日", "かようび"],
-  ["水曜日", "すいようび"],
-  ["木曜日", "もくようび"],
-  ["金曜日", "きんようび"],
-  /*
-   * 採点の ポップアップの ことば（2026-09-17）。**画面が 自分で 出す 字**なので
-   * 教材の 辞書では 覆えない——ここに 無い 漢字は 裸で 出る（e2e が 数える）。
-   */
-  ["最初", "さいしょ"],
-  ["言えました", "いえました"],
-  ["言えません", "いえません"],
-  ["言えた", "いえた"],
-  ["言い直す", "いいなおす"],
-  ["言い直しました", "いいなおしました"],
-  ["直した", "なおした"],
-  ["直しました", "なおしました"],
-  ["直す", "なおす"],
-  ["直しましょう", "なおしましょう"],
-  ["内容", "ないよう"],
-  ["内容の", "ないようの"],
-  /*
-   * **1字の 登録に 割られない ように、ことばで 持つ。**
-   * 教材の 辞書には ["回","かい"] と ["答","こた"] が あるので、
-   * 「回答」は **「かいこた」**と 読まれて いた——裸の 漢字では ない ので
-   * `lint:content` も e2e も すり抜ける（2026-09-18 の 通しプレイ検収）。
-   * きょうの 評価は 毎日 自動で 開く ので、5日 ぜんぶで 出て いた。
-   */
-  ["ブラッシュアップ回答", "ブラッシュアップかいとう"],
-  ["回答", "かいとう"],
-  ["項目ごとに", "こうもくごとに"],
-  ["項目ごとの", "こうもくごとの"],
-  ["項目", "こうもく"],
-  /*
-   * **「あなたの 発言」は 画面が 自分で 出す 字**（表の 中の 項目ごとの こたえ）。
-   * 2026-09-23 に AIの 鍵が 無くても 出す ように した ら、e2e の 裸漢字検査が
-   * 「発」を 拾った——教材の 辞書に ["言","い"] が ある ので 「言」だけ 読まれて
-   * 「発」が 裸に なって いた。ことばで 持って 割られない ように する。
-   */
-  ["発言", "はつげん"],
-  /*
-   * **送りがなで 読みが 変わる ので、ことばで 持つ**（2026-09-23）。
-   * 1字の ["見","み"] だけでは 足りず、["言","い"] は 「言った」を
-   *「いった」と 読ませられない。画面が 自分で 出す 字は ここで 覆う。
-   */
-  ["見て", "みて"],
-  ["見た", "みた"],
-  ["言った", "いった"],
-  /*
-   * **AIの 点が 出ない 理由**の ことば（2026-09-23）。`FAIL_WORD`
-   *（`asakai-score-modal.tsx`）が 出す 字で、**教材の 辞書では 覆えない**。
-   * ここに 無い 漢字は 裸で 出る（見張りは e2e の 裸漢字検査だけ）。
-   */
-  ["登録", "とうろく"],
-  ["画面", "がめん"],
-  ["話す", "はなす"],
-  ["返事", "へんじ"],
-  ["間に 合いません", "まにあいません"],
-  ["読めませんでした", "よめませんでした"],
-  ["先生", "せんせい"],
-  ["日", "にち"],
-  ["点", "てん"],
-  ["足して", "たして"],
-  ["伝わりやすさ", "つたわりやすさ"],
-  ["伝わりました", "つたわりました"],
-  ["伝わりませんでした", "つたわりませんでした"],
-  ["伝わって", "つたわって"],
-  ["伝えられたか", "つたえられたか"],
-  ["伝えられました", "つたえられました"],
-  ["仕事", "しごと"],
-  ["日本語", "にほんご"],
-  ["総合", "そうごう"],
-  ["鍵", "かぎ"],
-  ["出ます", "でます"],
-  ["出して", "だして"],
-  ["言い方", "いいかた"],
-  ["文", "ぶん"],
-  ["声", "こえ"],
-  ["言って", "いって"],
-  ["言う", "いう"],
-  ["聞く", "きく"],
-  ["聞かれて", "きかれて"],
-  ["聞いて", "きいて"],
-  ["押すと", "おすと"],
-  ["残りの", "のこりの"],
-  ["確認", "かくにん"],
-  ["評価", "ひょうか"],
-  ["朝礼", "ちょうれい"],
-  ["夕礼", "ゆうれい"],
-  ["進む", "すすむ"],
-  ["進捗", "しんちょく"],
-  ["報告する", "ほうこくする"],
-  ["報告して", "ほうこくして"],
-  ["作業記録", "さぎょうきろく"],
-  ["大きな", "おおきな"],
-  ["作業", "さぎょう"],
-  ["日目", "にちめ"],
-  ["報告メモ", "ほうこくメモ"],
-  ["聞き返し", "ききかえし"],
-  ["開いた", "ひらいた"],
-  ["開きます", "ひらきます"],
-  ["開かなかった", "ひらかなかった"],
-  ["言えた", "いえた"],
-  ["報告", "ほうこく"],
-  ["担当", "たんとう"],
-  ["今週", "こんしゅう"],
-  ["目標", "もくひょう"],
-  ["番", "ばん"],
-  ["書いて", "かいて"],
-  ["見る", "みる"],
-  ["増えます", "ふえます"],
-  ["数", "かず"],
-  ["回", "かい"],
-  ["日", "にち"],
-];
-
 interface ChatLine {
   readonly who: string;
   readonly speakerId: string;
@@ -371,6 +245,15 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
     () => buildFuriganaIndex(mergeFuriganaEntries(UI_FURIGANA, meeting.furigana)),
     [meeting.furigana],
   );
+  /*
+   * **AIが 書いた 文の 読み**（2026-09-28 の 点検）。上の `index` で 描いて いた ころ、
+   * AIに 許した 漢字（今日・明日・全部…）に ルビが 付かず、教材の 1字の 見出しで
+   *「いまにち」と 読ませて いた。判定の 検査（`keepReadableAsakai`）と 同じ 読みで 描く。
+   */
+  const aiIndex = useMemo(
+    () => buildFuriganaIndex(asakaiAiFurigana(meeting.furigana ?? [])),
+    [meeting.furigana],
+  );
   const nameOf = useMemo(() => {
     const map = new Map<string, string>();
     for (const person of asakai?.people ?? []) map.set(person.id, person.name);
@@ -418,7 +301,8 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
    */
   const [duty, setDuty] = useState(false);
   /** `"talk"` 報告中 ／ `"gap"` 時間カード ／ `"done"` 週の けっか。 */
-  const [phase, setPhase] = useState<"talk" | "gap" | "done">("talk");
+  /* 週の けっか待ちで 戻った ときは「話し終えた」ところから（B4・2026-09-28）。 */
+  const [phase, setPhase] = useState<"talk" | "gap" | "done">(start.weekPending ? "done" : "talk");
   /**
    * **入室したか**（ミーティングの 入口を 通ったか）。
    *
@@ -429,6 +313,19 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
    */
   const [joined, setJoined] = useState(false);
   const [results, setResults] = useState<readonly DayResult[]>(start.results);
+  /*
+   * **5日 そろった ところで「おわった」を 書く**（2026-09-28 の 点検 B4）。
+   * 週の けっかを 閉じる ときだけ 書いて いた ころは、金曜の 評価を 読んで いる
+   * 最中に 更新・退室すると 完了が 付かず、5日ぶんも 消えて いた。
+   * 状態の 更新関数の 中では 書かない（描画中に ほかの 部品へ 通知が 飛ぶ・code-critic 検収）。
+   * 閉じた ときにも もう 1回 書くが、同じ ことを 書くだけなので 害は 無い。
+   */
+  const sceneTotal = asakai?.scenes.length ?? 0;
+  useEffect(() => {
+    if (sceneTotal > 0 && results.length >= sceneTotal) {
+      recordContentProgress(meeting.id, { status: "completed" });
+    }
+  }, [results.length, sceneTotal, meeting.id]);
 
   /*
    * **声が 本線**（2026-09-11 の 指定「マイクで話すのがメインです」）。
@@ -441,8 +338,13 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
    * 学習者の ことばは「相手が 話しはじめた 合図」では 流れて こない——
    * `listenOnly` を 渡して、かけらが 止まった ところで 束ねて もらう
    *（2026-09-11 の 検収。これが 無いと **声で 報告しても 何も 起きない**）。
+   *
+   * **`muted` も 渡す**（2026-09-28）。「何も 言いません」と 言い渡しても、Live は
+   * ときどき「はい」と 声で 返す——バグ報告の 採点で 実際に 鳴った（2026-09-23）。
+   * 朝礼は 司会の 作り置きの 声が 鳴る 画面なので、知らない 声が 混ざると
+   * だれが 話したのか 分からなく なる。字幕の かけらは これまでどおり 受け取る。
    */
-  const voice = useLiveVoice({ listenOnly: true });
+  const voice = useLiveVoice({ listenOnly: true, muted: true });
   /* 司会が 名指しで 呼ぶ ための 呼び名（ミーティングと 同じ 読みかた）。 */
   const learnerName = useSyncExternalStore(
     subscribeToProfile,
@@ -480,8 +382,10 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
     readonly kind: "report" | "probe";
     readonly opened: readonly string[];
     readonly shut: readonly string[];
-    /** 作業記録を そのまま 読み上げて いた（数えて いない）。 */
+    /** 作業記録を そのまま 読み上げて いた（写した 文は 数えて いない）。 */
     readonly readLog: boolean;
+    /** 写しに 当たった 記録の 行（名指しする・2026-09-28）。 */
+    readonly copied: readonly string[];
     readonly sceneOver: boolean;
     /** この 1本で 札が 進んだか（聞き返しの こたえの 印。ふりかえりと 同じ ものさし）。 */
     readonly heard: boolean;
@@ -504,6 +408,22 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
     readonly rows: readonly RowView[];
     readonly good: string;
     readonly advice: string;
+    /**
+     * **この 回で 打ち切った 札の 名前**（2回 聞いても 開かなかった。無ければ null）。
+     *
+     * 2026-09-28 の 点検。打ち切った 回にも「もう いちど お願いします」＋ヒント＋
+     *「言い直す」を 出して いた ので、閉じると 司会が「◯◯は 聞けませんでした」と
+     * 言うのと **画面が 逆の ことを 言って いた**（規律1）。
+     */
+    readonly gaveUp: string | null;
+    /**
+     * 言い直す（同じ 問いに もう いちど 答える）。**伝わらなかった 回だけ** 入る。
+     *
+     * 前は いつでも ポップアップを 閉じるだけ だった ので、聞き返しの 回数だけ
+     * 使われて、型文つきの 2回目の 問いが 流れない まま 打ち切られて いた。
+     * 伝わった 回に 押すと、次の 札が 1回目を 飛ばして いた（2026-09-28）。
+     */
+    readonly retry: (() => void) | null;
     readonly after: (() => void) | null;
   } | null>(null);
 
@@ -651,10 +571,23 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
       attempts,
       probes,
       askedId,
+      askedText,
       lines: [...lines],
       log: probeLog.map((one) => ({ ...one, panels: one.panels ? [...one.panels] : undefined })),
     });
-  }, [scene, panels, phase, states, attempts, probes, askedId, lines, probeLog, meeting.id]);
+  }, [
+    scene,
+    panels,
+    phase,
+    states,
+    attempts,
+    probes,
+    askedId,
+    askedText,
+    lines,
+    probeLog,
+    meeting.id,
+  ]);
 
   /**
    * **判定の つなぎを、話しはじめる 前に 張って おく**（2026-09-23）。
@@ -728,17 +661,22 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
        * 聞いて 覚える 練習に ならなかった。字と 同じ 順で 待ち行列に 積む。
        * 報告メモは 開く（どの 日の 話だったかを 先に 見せる）ので、
        * 鳴りはじめるのは **閉じた あと**（`dutyIntro` の 覚え書き）。
+       *
+       * 保存した 行は **今の 教材の 文と 音に 引き直す**（`refreshSavedLines`）。
+       * 保存した ままを 鳴らすと、作り直す 前の 古い 声（「アバペイ」）が 鳴る。
        */
       const draft = readAsakaiDraft(meeting.id, next.day);
       if (draft && draft.lines.length > 0) {
-        setLines(draft.lines);
+        const saved = refreshSavedLines(draft.lines, voicedLinesBySlot(next), meeting.id);
+        setLines(saved);
         setStates(draft.states);
         setAttempts(draft.attempts);
         setProbes(draft.probes);
         setAskedId(draft.askedId);
+        setAskedText(draft.askedText);
         setProbeLog(draft.log);
         setDutyIntro(
-          draft.lines.map((line) => ({
+          saved.map((line) => ({
             speakerId: line.speakerId,
             text: line.text,
             audio: line.audio,
@@ -810,7 +748,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
         const done = [...prev.filter((r) => r.day !== row.day), row].sort(
           (a, b) => order(a.day) - order(b.day),
         );
-        saveAsakaiResume(meeting.id, done);
+        saveAsakaiResume(meeting.id, done, undefined, asakai?.scenes.length ?? 0);
         return done;
       });
       /* 途中の 控えは もう 要らない（「もう いちど 報告する」は はじめから 話す）。 */
@@ -928,10 +866,12 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
        * ことばで 書かれて いる ので 文が 札に 当たって しまい、前の ターンで
        * 自分の ことばで 言えた 1文が **記録の 丸写しで 上書き**される。
        */
-      if (!step.readLog) {
+      /* 差し戻した ターンでも、写しでない 文（`counted`）は 自分の ことば（2026-09-28）。 */
+      const ownWords = step.readLog ? (step.counted ?? "") : text;
+      if (ownWords !== "") {
         setDayMine((prev) => ({
           ...prev,
-          ...attributeUtterance({ utterance: text, panels, states: step.states }),
+          ...attributeUtterance({ utterance: ownWords, panels, states: step.states }),
         }));
       }
 
@@ -1055,9 +995,8 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
          * AIの 見立てが あれば そちらが 正（中身で 見る）。無い 日は 照合で 引く ので、
          * **鍵が 無い 端末でも 表に 自分の ことばが 出る**。
          */
-        const mine = step.readLog
-          ? {}
-          : attributeUtterance({ utterance: text, panels, states: final });
+        const mine =
+          ownWords === "" ? {} : attributeUtterance({ utterance: ownWords, panels, states: final });
         return panels.map((panel) => {
           const state = final.find((one) => one.id === panel.id);
           const asked = attempts[panel.id] ?? 0;
@@ -1077,6 +1016,8 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
             id: panel.id,
             label: panel.label,
             mark,
+            /* 2回で 打ち切った 札（もう 聞かれない）。ヒントを 出さない。 */
+            closed: state?.gaveUp ?? false,
             /*
              * 直しの ことばは **教材の 聞き返し**を そのまま 使う（新しい 呼び名を 作らない）。
              * ただし **打ち切った 札には 出さない**——司会は もう「聞けませんでした。
@@ -1154,6 +1095,9 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
         rows: viewRows(final),
         good,
         advice: adviceText,
+        gaveUp: null as string | null,
+        retry: null as (() => void) | null,
+        copied: (step.copied ?? []).map((line) => line.text),
       });
 
       const opened = step.states
@@ -1251,6 +1195,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
             shut,
             readLog,
             sceneOver: true,
+            gaveUp: data.label,
             after: () => {
               /*
                * **その日の さいごの 札でも、聞けなかった ことを 言ってから 閉じる**。
@@ -1273,6 +1218,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
           shut,
           readLog,
           sceneOver: false,
+          gaveUp: data.label,
           after: () => {
             say(missedLine(asakai.chairId, data.label, false));
             if (followup) say(followup);
@@ -1284,6 +1230,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
       }
 
       const followup = data.followups[Math.min(count, data.followups.length) - 1];
+      const before = attempts[target.id] ?? 0;
       setStates(step.states);
       setAttempts({ ...attempts, [target.id]: count });
       setProbes((n) => n + 1);
@@ -1293,6 +1240,19 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
         shut,
         readLog,
         sceneOver: false,
+        /*
+         * **言い直しは 伝わらなかった 聞き返しの あとだけ**（2026-09-28）。
+         * 押したら この 回を 数えなかった ことに する（同じ 問いの まま・司会は 何も 言わない）。
+         * 伝わった 回・作業記録の 差し戻し には 置かない（次の 行動は 1つ）。
+         */
+        retry:
+          wasProbe && !heardNow && !readLog
+            ? () => {
+                setAttempts((prev) => ({ ...prev, [target.id]: before }));
+                setProbes((n) => Math.max(0, n - 1));
+                setJudge(null);
+              }
+            : null,
         after: () => {
           /* 言い直しを たのむ ときは 聞き返さない（次の 行動は 1つ）。 */
           if (readLog) sayRedo();
@@ -1361,6 +1321,10 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
           items: scene.panels.map((panel) => ({ id: panel.id, label: panel.label })),
           hasLog: logLines.length > 0,
           utterance: text,
+          /* 聞き返しへの こたえなら その 問い（A3・2026-09-28）。報告の ときは 空。 */
+          question: askedId !== null ? askedText : "",
+          /* AIが 漢字で 書いて よい 教材の 語と、読めない 文の 検査に 使う（A1・A2）。 */
+          furigana: meeting.furigana ?? [],
         },
         scene.panels.flatMap((panel) => panel.facts),
       )
@@ -1371,7 +1335,18 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
           apply(text, seen.ok ? seen.judge : null, seen.ok ? null : seen.reason);
         });
     },
-    [answer, scene, asakai, meeting.id, meeting.judgePrompt, logLines, apply],
+    [
+      answer,
+      scene,
+      asakai,
+      meeting.id,
+      meeting.judgePrompt,
+      meeting.furigana,
+      logLines,
+      askedId,
+      askedText,
+      apply,
+    ],
   );
 
   /** 見かたの モーダルを 閉じる。**ここで はじめて 司会と メンバーが 話す**。 */
@@ -1454,28 +1429,38 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
   const toGap = useCallback(() => {
     if (!asakai) return;
     /*
-     * 場面を 離れる ときは 鳴って いる こえも、つないだ ままの Live も 止める。
+     * 場面を 離れる ときは つないだ ままの Live を 止め、番号を 進める。
      * 止めないと 遅れて 届いた 1本で けっかの 画面に モーダルが 出る。
+     *
+     * **作り置きの こえは 止めない**（2026-09-28 の 点検 B5）。評価を 閉じた ところで
+     * 先輩の 報告と 締めの こえを 積んで いる ので、ここで 止めると **字だけ 流れて
+     * 1つも 鳴らなかった**（2026-09-18 の 指定「モーダルの 後に、各担当者が 報告を します」が
+     * 声では 起きて いなかった）。時間カードの あいだも チャットは 見えて いる。
+     * 止めるのは 曜日を 移る とき（`goToScene`）と 退室だけ。
      */
     runId.current += 1;
     setWaiting(false);
-    stopClips();
     voice.stop();
     if (sceneAt + 1 >= asakai.scenes.length) {
+      /*
+       * **金曜は 週の けっかを 自動で 開かない**（2026-09-28 の code-critic 検収）。
+       * 声を 止めなく なった ので、開くと 合否を 読んで いる うしろで 朝の 先輩と
+       * 藤木さんの 声が 流れ、週の けっかの「この あと あった こと」（午後）と
+       * 時間が 逆に なる。先輩の 報告を 聞いて から「今週の けっかを 見る ▶」で 開く。
+       */
       setPhase("done");
-      setWeekOpen(true);
       return;
     }
     setPhase("gap");
-  }, [asakai, sceneAt, stopClips, voice]);
+  }, [asakai, sceneAt, voice]);
 
   /**
    * 週の けっかを 読み終えた とき。
    *
-   * **「おわった」を ここで 書く**（`toGap` では 書かない）。先に 書くと
-   * ステージの「クリア」の 板が けっかの 上に かぶさり、合格か 不合格かが
-   * 読めなく なる（規律1。2026-09-11 に 390px の 通しで 実発生）。
-   * `MeetingSession` が 修了証を 閉じた ときに 書くのと 同じ 順番。
+   * **「おわった」を ここでも 書く**（2026-09-28 から 5日 そろった 時点で 先に 書く。
+   * `finishScene` の 覚え書き）。2026-09-11 には 先に 書くと ステージの「クリア」の
+   * 板が けっかの 上に かぶさった が、いまの けっかは ポップアップ（z-50）で、
+   * 板（z-40）より 上に 出る。
    */
   const closeResult = useCallback(() => {
     recordContentProgress(meeting.id, { status: "completed" });
@@ -1491,10 +1476,16 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
    */
   const closeWeek = useCallback(() => {
     setWeekOpen(false);
+    /*
+     * しおりは **閉じる たびに** 片づける（2026-09-28 の code-critic 検収）。1度 閉じた
+     * あとに 1日 やり直すと「週の けっか待ち」の 印が 立ち直り、2回目に 閉じても
+     * 片づけないと、つぎに 開いた とき 週の けっかから 始まって しまう。
+     */
+    clearAsakaiResume(meeting.id);
     if (weekRead.current) return;
     weekRead.current = true;
     closeResult();
-  }, [closeResult]);
+  }, [closeResult, meeting.id]);
 
   /**
    * その 日へ 移る。**つぎへ 進む ときも、タブで 飛ぶ ときも ここを 通る**。
@@ -1535,6 +1526,24 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
     },
     [asakai, openScene, stopClips, voice],
   );
+
+  /**
+   * **月曜日から もう いちど**（2026-09-28 の 点検 B6）。
+   *
+   * 週の けっかは 不合格の とき「もう いちど はじめから 話すと…」と 言うのに、
+   * はじめる ボタンが 無かった（再読み込みしか 道が 無い）。合格ラインを
+   * 「問題の 札 5日とも」に 上げた ので、やり直す 道が 要る。
+   * しおりを 消して 月曜の 白紙から。「おわった」の 記録は そのまま（5日目で 書いて ある）。
+   */
+  const restartWeek = useCallback(() => {
+    clearAsakaiResume(meeting.id);
+    /* つぎの 週の けっかを 閉じた ときに、しおりを もう いちど 片づける。 */
+    weekRead.current = false;
+    setResults([]);
+    setShownAnswers([]);
+    setWeekOpen(false);
+    goToScene(0);
+  }, [meeting.id, goToScene]);
 
   const goNext = useCallback(() => goToScene(sceneAt + 1), [goToScene, sceneAt]);
 
@@ -1737,7 +1746,12 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
         aria-label="この日を はじめから やり直す"
         className="border-blossom text-navy w-full rounded-full border-2 bg-white px-3 py-1.5 text-xs font-extrabold"
       >
-        ↻ <RubyText text="この日を はじめから" index={index} show />
+        {/*
+          見える 字は「この 曜日」（2026-09-28）。「この日」は 教材の 1字の 見出し
+          ["日","にち"] に 当たって **このにち** と 読まれて いた。aria-label は
+          e2e が 引くので そのまま。
+        */}
+        ↻ <RubyText text="この 曜日を はじめから" index={index} show />
       </button>
     </div>
   );
@@ -1978,6 +1992,11 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
       settings={<SpeechSpeedPicker value={speed} onChange={saveSpeechSpeed} />}
       onJoined={() => {
         setJoined(true);
+        /* 5日 話し終えて 週の けっかを まだ 閉じて いない ときは、けっかから（B4）。 */
+        if (start.weekPending) {
+          setWeekOpen(true);
+          return;
+        }
         openScene(start.sceneAt);
       }}
       onLeft={() => {
@@ -2013,7 +2032,8 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
           */
           <div className="card-island space-y-2 p-4">
             <p className="text-navy text-sm leading-[1.9] font-bold">
-              <RubyText text={`${asakai.scenes.length}日 ぜんぶ 話しました。`} index={index} show />
+              <DayCount n={asakai.scenes.length} />
+              <RubyText text=" ぜんぶ 話しました。" index={index} show />
             </p>
             <button
               type="button"
@@ -2093,16 +2113,21 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
             advice={judge.advice}
             score={judge.score}
             rows={judge.rows}
-            nextLabel={judge.sceneOver ? "みんなの 報告を 聞く ▶" : "つぎの しつもんを 聞く ▶"}
+            nextLabel={judge.sceneOver ? "きょうの 評価を 見る ▶" : "つぎの しつもんを 聞く ▶"}
             rest={judge.shut.join("／")}
             failReason={judge.failReason}
             index={index}
+            aiIndex={aiIndex}
+            gaveUpLabel={judge.gaveUp ?? undefined}
+            readLog={judge.readLog}
+            copied={judge.copied}
+            askRedo={!judge.sceneOver && judge.gaveUp === null}
             /*
               言い直す … 同じ しつもんの まま、もう いちど 書く（司会は 何も 言わない）。
-              **その日が 終わって いる ときは 出さない**——閉じる ことでしか
-              司会の 受け止めと メンバーの 報告に 進めない（上の `onRetry` の 覚え書き）。
+              **伝わらなかった 回だけ**（`retry`）。その日が 終わって いる とき・
+              打ち切った とき・伝わった ときは 出さない（2026-09-28）。
             */
-            onRetry={judge.sceneOver ? undefined : () => setJudge(null)}
+            onRetry={judge.sceneOver ? undefined : (judge.retry ?? undefined)}
             onClose={closeJudge}
           />
         ) : (
@@ -2112,10 +2137,14 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
             good={judge.good}
             advice={judge.advice}
             readLog={judge.readLog}
-            nextLabel={judge.sceneOver ? "みんなの 報告を 聞く ▶" : "報告を つづける ▶"}
+            copied={judge.copied}
+            askRedo={!judge.sceneOver && judge.gaveUp === null}
+            nextLabel={judge.sceneOver ? "きょうの 評価を 見る ▶" : "報告を つづける ▶"}
             utterance={judge.utterance}
             failReason={judge.failReason}
+            gaveUpLabel={judge.gaveUp ?? undefined}
             index={index}
+            aiIndex={aiIndex}
             onClose={closeJudge}
           />
         )
@@ -2175,10 +2204,12 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
           failReason={dayFail}
           nextLabel={
             sceneAt + 1 >= asakai.scenes.length
-              ? "今週の けっかを 見る ▶"
+              ? /* 閉じた あとは 先輩の 報告を 聞き、週の けっかは ボタンで 開く（上の `toGap`）。 */
+                "みんなの 報告を 聞く ▶"
               : `${DAY_NAME[asakai.scenes[sceneAt + 1]?.day ?? "fri"]}へ 進む ▶`
           }
           index={index}
+          aiIndex={aiIndex}
           /* もう いちど 報告する … その日を はじめから（けっかは 上書きされる）。 */
           onRetry={() => {
             setDayOpen(false);
@@ -2202,7 +2233,13 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
         />
       ) : null}
       {weekOpen ? (
-        <WeekResult asakai={asakai} rows={results} index={index} onClose={closeWeek} />
+        <WeekResult
+          asakai={asakai}
+          rows={results}
+          index={index}
+          onClose={closeWeek}
+          onRestart={restartWeek}
+        />
       ) : null}
       {/*
         **Gemini を 呼んで いる あいだは 画面 ぜんたいを 覆う**（2026-09-21 の 指定
@@ -2383,11 +2420,14 @@ function WeekResult({
   rows,
   index,
   onClose,
+  onRestart,
 }: {
   asakai: Asakai;
   rows: readonly DayResult[];
   index: FuriganaIndex;
   onClose: () => void;
+  /** 月曜日から もう いちど（しおりを 消して 白紙から）。 */
+  onRestart: () => void;
 }) {
   /*
    * 問題の 札は **教材の ことばを 使う**。「こまりごと」と 書き込んで いた ころ、
@@ -2413,6 +2453,12 @@ function WeekResult({
         ? komariDays >= needDays
         : true;
   const pass = units >= needUnits && secondOk;
+  /*
+   * **さいごの 日の「この あと あった こと」**（2026-09-28 の 点検 C4）。
+   * 月〜木は 時間カードが 出すが、金曜は 時間カードを 通らない。9:00 の 朝礼の
+   * 中で 午後の テストの けっかを 話して いた（時間の 筋が 逆だった）ので、ここへ 移した。
+   */
+  const after = asakai.scenes[asakai.scenes.length - 1]?.lead ?? "";
 
   return (
     <ModalShell
@@ -2424,10 +2470,21 @@ function WeekResult({
       }
       onClose={onClose}
       closeLabel="けっかを 読みました ▶"
+      secondary={{ label: "月曜日から もう いちど", onClick: onRestart }}
       index={index}
       /* 中身は 5行の 表。細い ままだと PCで 短冊に なる。 */
       wide
     >
+      {after !== "" ? (
+        <div className="bg-panel-tint mt-3 rounded-xl px-3 py-2">
+          <p className="text-ink-soft text-[11px] font-black">
+            <RubyText text="この あと あった こと" index={index} show />
+          </p>
+          <p className="mt-0.5 text-sm font-bold">
+            <RubyText text={after} index={index} show />
+          </p>
+        </div>
+      ) : null}
       <p className="mt-3 text-sm font-bold">
         <RubyText text={unitName} index={index} show />{" "}
         <span className="tabular-nums">
@@ -2447,12 +2504,12 @@ function WeekResult({
         </p>
       ) : needDays !== undefined ? (
         <p className="mt-1 text-sm font-bold">
-          <RubyText text={`${komariName}を 言えた 日`} index={index} show />{" "}
+          <RubyText text={`${komariName}を 言えた 曜日`} index={index} show />{" "}
           <span className="tabular-nums">
             {komariDays} / {rows.length}
           </span>{" "}
-          — <span className="tabular-nums">{needDays}</span>
-          <RubyText text="日 以上で 合格" index={index} show />
+          — <DayCount n={needDays} />
+          <RubyText text=" 以上で 合格" index={index} show />
         </p>
       ) : null}
 
@@ -2489,7 +2546,11 @@ function WeekResult({
 
       {pass ? null : (
         <p className="mt-3 text-sm font-bold">
-          <RubyText text="もう いちど はじめから 話すと、数は 数え直します。" index={index} show />
+          <RubyText
+            text="下の「月曜日から もう いちど」を 押すと、月曜日から 話して、数を 数え直します。"
+            index={index}
+            show
+          />
         </p>
       )}
     </ModalShell>
