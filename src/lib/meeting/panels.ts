@@ -157,8 +157,15 @@ export const LOG_READ_HEADS = 3;
  */
 export const LOG_READ_LINES = 4;
 
-/** 時刻と 組んで 見る ときの 本文の 数（時刻だけでは 決めない・下の `readsLog`）。 */
-export const LOG_READ_PAIR = 2;
+/**
+ * 時刻と 組んで 見る ときの 本文の 数（時刻だけでは 決めない・下の `readsLog`）。
+ *
+ * **2 から 3 に 上げた**（2026-09-28 の 点検 D2）。夕礼・水曜の よい 報告は
+ *「17時5分に 見つけて、17時10分に ヘンディさんに 報告し、17時15分に ニャムさんが
+ * 調べた」と、**悪い 知らせを 時刻つきで 順に 言う**——時刻 3つ・写し 2行に なり、
+ * 報告まるごと 差し戻されて いた。悪い 知らせの 報告に 時刻を 添えるのは 正しい。
+ */
+export const LOG_READ_PAIR = 3;
 
 /** 短すぎる 行は 数えない（「昼休み」は まとめた 文にも 入りうる）。 */
 const LOG_LINE_MIN = 8;
@@ -246,6 +253,41 @@ export function readsLog(utterance: string, lines: readonly LogLine[]): boolean 
   return countLogHeads(utterance, lines) >= LOG_READ_HEADS && copied >= LOG_READ_PAIR;
 }
 
+/** 発話の 中に そのまま 入って いる 記録の 行（名指しの ため・`countLogLines` と 同じ 見かた）。 */
+export function copiedLogLines(utterance: string, lines: readonly LogLine[]): LogLine[] {
+  const haystack = normalizeReading(utterance);
+  if (!haystack) return [];
+  const seen = new Set<string>();
+  const found: LogLine[] = [];
+  for (const line of lines) {
+    const needle = normalizeReading(line.text);
+    if (needle.length < LOG_LINE_MIN || seen.has(needle)) continue;
+    if (haystack.includes(needle)) {
+      seen.add(needle);
+      found.push(line);
+    }
+  }
+  return found;
+}
+
+/**
+ * **記録を 写した 文**か（差し戻す ときに、数えない 文を 選ぶ）。
+ *
+ * - 記録の 行（8字 以上）を まるごと 含む
+ * - 時刻と くぎりを 除くと、記録の 行（短い 行も）と 同じ 字に なる
+ */
+function isCopiedSentence(sentence: string, lines: readonly LogLine[]): boolean {
+  if (countLogLines(sentence, lines) > 0) return true;
+  let rest = normalizeReading(sentence);
+  for (const line of lines)
+    for (const form of headForms(line.head)) rest = rest.split(form).join("");
+  rest = rest.replace(/[、，,。．.\s・:：]/gu, "");
+  if (rest === "") return false;
+  return lines.some(
+    (line) => normalizeReading(line.text).replace(/[、，,。．.\s・]/gu, "") === rest,
+  );
+}
+
 /**
  * **AIの 見立てを 効かせて よいか**（写しの あとが 残って いるか）。
  *
@@ -254,7 +296,9 @@ export function readsLog(utterance: string, lines: readonly LogLine[]): boolean 
  * 記録を 持たない 朝礼でも AIの 一言だけで 発話が 消せた
  *（発話の 中に 囲いを 書いて 閉じるだけで 作れた）。
  *
- * 本文の 写しが 2行 以上 ある ときだけ、AIは「まとめて いない」と 言える。
+ * 本文の 写しが 3行 以上 ある ときだけ、AIは「まとめて いない」と 言える
+ *（2026-09-28 に 2 から 3 へ。悪い 知らせの 事実を 2つ 添えた よい 報告を、
+ * AIの 一言だけで 消さない）。
  */
 export function couldBeLog(utterance: string, lines: readonly LogLine[]): boolean {
   return countLogLines(utterance, lines) >= LOG_READ_PAIR;
@@ -284,13 +328,20 @@ export interface PanelStep {
   /** この 発話で **⭕ に なった** パネル。 */
   readonly completed: readonly string[];
   /**
-   * 作業記録を そのまま 読み上げて いた（夕礼）。**この とき 状態は 動かない**。
+   * 作業記録を そのまま 読み上げて いた（夕礼）。**写した 文は 数えない**。
    *
    * 罰では なく **言い直し**。画面は 司会に「まとめて ください」と 言わせ、
-   * 聞き返しは そのまま 数える ので、2回 つづけば お手本が 出て 先へ 進む
+   * 聞き返しは そのまま 数える ので、2回 つづけば 先へ 進む
    *（0点で 終わらせない 仕組みは そのまま 効く）。
+   *
+   * 2026-09-28 から **文ごと**。前は 発話まるごと 捨てて いたので、写しの あとに
+   * 自分で 言った 進捗・明日・問題点まで 消えて いた。
    */
   readonly readLog: boolean;
+  /** 写しに 当たった 記録の 行（画面で 名指しする。差し戻さない ときは 空）。 */
+  readonly copied?: readonly LogLine[];
+  /** 数えた 文（差し戻した ときだけ。写しの 文を 除いた 残り）。 */
+  readonly counted?: string;
 }
 
 /**
@@ -346,7 +397,20 @@ export function applyUtterance({
    * 一度も 見て いなかった。
    */
   if (readsLog(utterance, logLines) || (aiReadsLog && couldBeLog(utterance, logLines))) {
-    return { states, newFacts: [], opened: [], completed: [], readLog: true };
+    /*
+     * **写した 文だけ 数えない**（2026-09-28 の 点検 D2・ユーザー承認）。
+     * 残りの 文は ことばの 照合だけで 数える——AIの 見立ては 発話 まるごとに
+     * 付いて いて、どの 文に 当たったかを 分けられない ため。
+     */
+    const copied = copiedLogLines(utterance, logLines);
+    const counted = splitSentences(utterance)
+      .filter((sentence) => !isCopiedSentence(sentence, logLines))
+      .join("");
+    if (counted === "") {
+      return { states, newFacts: [], opened: [], completed: [], readLog: true, copied, counted };
+    }
+    const rest = applyUtterance({ utterance: counted, panels, states });
+    return { ...rest, readLog: true, copied, counted };
   }
   const newFacts: string[] = [];
   const opened: string[] = [];

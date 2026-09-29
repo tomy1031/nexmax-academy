@@ -273,8 +273,12 @@ describe("readsLog — 記録の 読み上げ", () => {
     expect(step.readLog).toBe(false);
   });
 
-  it("写しが 2行 あり、AIも そう 見たら 止まる", () => {
-    const said = `${LOG[0]!.text}。${LOG[1]!.text}。`;
+  /*
+   * 2026-09-28 に 2行 から 3行 へ（点検 D2）。悪い 知らせの 事実を 2つ 添えた
+   * よい 報告を、AIの 一言だけで 消さない（下の「水曜の よい 報告」）。
+   */
+  it("写しが 3行 あり、AIも そう 見たら 止まる", () => {
+    const said = `${LOG[0]!.text}。${LOG[1]!.text}。${LOG[2]!.text}。`;
     expect(readsLog(said, LOG)).toBe(false); // ことばだけでは 止めない
     const step = applyUtterance({
       utterance: said,
@@ -285,6 +289,68 @@ describe("readsLog — 記録の 読み上げ", () => {
     });
     expect(step.readLog).toBe(true);
     expect(countOpen(step.states)).toBe(0);
+  });
+});
+
+/**
+ * **写した 文だけ 数えない**（2026-09-28 の 点検 D2・ユーザー承認）
+ *
+ * 前は 差し戻すと 発話まるごと 捨てて いたので、写しの あとに 自分で 言った
+ * 進捗・明日・問題点まで 消えて いた。夕礼・水曜の よい 報告（悪い 知らせを
+ * 時刻つきで 順に 言う）は、差し戻しに すら しない。
+ */
+describe("読み上げの 差し戻しは 文ごと", () => {
+  const WED = [
+    { head: "16:30", text: "スキルグラフの 表示を 確認" },
+    { head: "17:05", text: "同じ スキルが 別の 名前と 点数で 登録されている ことを 確認" },
+    { head: "17:10", text: "ヘンディさんに 問題を 報告" },
+    { head: "17:15", text: "ニャムさんが スキルデータを 調査" },
+    { head: "17:30", text: "最新の スキル点数のみ 表示する 方針を 確認" },
+  ];
+  const PANELS: ReportPanel[] = [
+    {
+      id: "komari",
+      label: "問題点",
+      facts: [{ id: "m1", keywords: ["同じ スキル", "別の 名前"] }],
+    },
+    { id: "shinchoku", label: "進捗率", facts: [], rule: "number" },
+  ];
+
+  it("水曜の よい 報告（時刻 3つ・事実 2つ）は 差し戻さない", () => {
+    const said =
+      "17時5分に、同じ スキルが 別の 名前で 出る 問題を 見つけました。" +
+      "17時10分に ヘンディさんに 問題を 報告しました。" +
+      "17時15分に ニャムさんが スキルデータを 調査して、原因が 分かりました。";
+    expect(countLogHeads(said, WED)).toBe(3);
+    expect(readsLog(said, WED)).toBe(false);
+    const step = applyUtterance({
+      utterance: said,
+      panels: PANELS,
+      states: initialPanelStates(PANELS),
+      logLines: WED,
+    });
+    expect(step.readLog).toBe(false);
+    expect(step.opened).toContain("komari");
+  });
+
+  it("写した 文は 数えず、自分で 言った 文（進捗）は 数える", () => {
+    const said =
+      WED.slice(0, 4)
+        .map((row) => `${row.head} ${row.text}`)
+        .join("。") + "。今、進捗は 75%です。";
+    const step = applyUtterance({
+      utterance: said,
+      panels: PANELS,
+      states: initialPanelStates(PANELS),
+      logLines: WED,
+    });
+    expect(step.readLog).toBe(true);
+    expect(step.opened).toEqual(["shinchoku"]);
+    /* 写しの 行で 開く はずの 問題点は 開かない */
+    expect(step.states.find((one) => one.id === "komari")?.open).toBe(false);
+    expect(step.counted).toBe("今、進捗は 75%です。");
+    /* 名指しの ために 写しの 行を 返す（8字 以上の 行） */
+    expect(step.copied?.map((row) => row.head)).toEqual(["16:30", "17:05", "17:10", "17:15"]);
   });
 });
 

@@ -367,8 +367,10 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
     readonly kind: "report" | "probe";
     readonly opened: readonly string[];
     readonly shut: readonly string[];
-    /** 作業記録を そのまま 読み上げて いた（数えて いない）。 */
+    /** 作業記録を そのまま 読み上げて いた（写した 文は 数えて いない）。 */
     readonly readLog: boolean;
+    /** 写しに 当たった 記録の 行（名指しする・2026-09-28）。 */
+    readonly copied: readonly string[];
     readonly sceneOver: boolean;
     /** この 1本で 札が 進んだか（聞き返しの こたえの 印。ふりかえりと 同じ ものさし）。 */
     readonly heard: boolean;
@@ -841,10 +843,12 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
        * ことばで 書かれて いる ので 文が 札に 当たって しまい、前の ターンで
        * 自分の ことばで 言えた 1文が **記録の 丸写しで 上書き**される。
        */
-      if (!step.readLog) {
+      /* 差し戻した ターンでも、写しでない 文（`counted`）は 自分の ことば（2026-09-28）。 */
+      const ownWords = step.readLog ? (step.counted ?? "") : text;
+      if (ownWords !== "") {
         setDayMine((prev) => ({
           ...prev,
-          ...attributeUtterance({ utterance: text, panels, states: step.states }),
+          ...attributeUtterance({ utterance: ownWords, panels, states: step.states }),
         }));
       }
 
@@ -968,9 +972,8 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
          * AIの 見立てが あれば そちらが 正（中身で 見る）。無い 日は 照合で 引く ので、
          * **鍵が 無い 端末でも 表に 自分の ことばが 出る**。
          */
-        const mine = step.readLog
-          ? {}
-          : attributeUtterance({ utterance: text, panels, states: final });
+        const mine =
+          ownWords === "" ? {} : attributeUtterance({ utterance: ownWords, panels, states: final });
         return panels.map((panel) => {
           const state = final.find((one) => one.id === panel.id);
           const asked = attempts[panel.id] ?? 0;
@@ -1071,6 +1074,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
         advice: adviceText,
         gaveUp: null as string | null,
         retry: null as (() => void) | null,
+        copied: (step.copied ?? []).map((line) => line.text),
       });
 
       const opened = step.states
@@ -2096,6 +2100,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
             good={judge.good}
             advice={judge.advice}
             readLog={judge.readLog}
+            copied={judge.copied}
             nextLabel={judge.sceneOver ? "きょうの 評価を 見る ▶" : "報告を つづける ▶"}
             utterance={judge.utterance}
             failReason={judge.failReason}

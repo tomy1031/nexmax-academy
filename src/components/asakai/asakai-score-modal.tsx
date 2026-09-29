@@ -670,6 +670,7 @@ export function ReportScoreModal({
   good,
   advice,
   readLog,
+  copied = [],
   nextLabel,
   utterance,
   failReason,
@@ -682,8 +683,10 @@ export function ReportScoreModal({
   rows: readonly RowView[];
   good: string;
   advice: string;
-  /** 夕礼で 作業記録を そのまま 読み上げて いた（この ぶんは 数えて いない）。 */
+  /** 夕礼で 作業記録を そのまま 読み上げて いた（写した 文は 数えて いない）。 */
   readLog: boolean;
+  /** 写しに 当たった 記録の 行（どこが 読み上げかを 名指しする・2026-09-28）。 */
+  copied?: readonly string[];
   /** とじる ボタンの 字（まだ つづく／その日は おわり）。 */
   nextLabel: string;
   /** 学習者が いま 言った こと（そのまま 出す）。 */
@@ -712,6 +715,20 @@ export function ReportScoreModal({
             text="作業記録を そのまま 読み上げて います。この ぶんは 数えて いません。大きな 作業を 2つか 3つに まとめて、もう いちど 言って ください。"
             index={index}
           />
+          {/*
+            **どの 行が 読み上げに 当たったかを 名指しする**（2026-09-28 の 点検 D2）。
+            「読み上げて います」だけでは、どこを まとめ直せば よいか 読めない。
+            写しで ない 文（進捗・明日 など）は 数えて いる。
+          */}
+          {copied.length > 0 ? (
+            <ul className="mt-1 list-disc pl-5 text-xs leading-[1.9] font-bold">
+              {copied.map((line) => (
+                <li key={line}>
+                  <Ruby text={line} index={index} />
+                </li>
+              ))}
+            </ul>
+          ) : null}
         </div>
       ) : null}
       {gaveUpLabel ? <GaveUpBand label={gaveUpLabel} index={index} /> : null}

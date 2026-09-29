@@ -801,7 +801,13 @@ test("聞き返しに こたえると、こたえの 見かたが 出る", async
    */
   await answer("すみません、わかりません。");
   await expectOnScreen(page, "は ここまでです");
-  expect(await readingFreeText(page)).not.toContain("もういちどお願いします");
+  /* 見出しは ポップアップの 中で 見る（チャットには 司会の「もう いちど お願いします」が 残る）。 */
+  const probeText = await probe.evaluate((element) => {
+    const copy = element.cloneNode(true) as HTMLElement;
+    copy.querySelectorAll("rt").forEach((rt) => rt.remove());
+    return (copy.textContent ?? "").replace(/\s+/gu, "");
+  });
+  expect(probeText).not.toContain("もういちどお願いします");
   await expect(probe.getByRole("button", { name: "言い直す" })).toHaveCount(0);
   await expectOnScreen(page, "この 項目は ここまでです");
   expect(await bareKanjiTexts(page)).toEqual([]);
@@ -1236,6 +1242,12 @@ test("評価を 閉じた あとも、先輩の 報告の こえが 鳴りつづ
     const play = HTMLMediaElement.prototype.play;
     HTMLMediaElement.prototype.play = function (this: HTMLMediaElement) {
       w.__plays.push(this.src);
+      /*
+       * **声を 短く 終わらせる**（ここだけの 細工）。本物の 長さで 待つと、
+       * 司会の 見本（約20秒）が 鳴って いる あいだに 評価を 閉じて しまい、
+       * つぎの 声が 行列に 積まれた まま 鳴りはじめない。
+       */
+      window.setTimeout(() => this.dispatchEvent(new Event("ended")), 30);
       return play.apply(this);
     };
     const pause = HTMLMediaElement.prototype.pause;
