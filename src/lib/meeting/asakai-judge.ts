@@ -43,6 +43,7 @@ import {
   mergeFuriganaEntries,
   uncoveredKanji,
   type FuriganaEntry,
+  type FuriganaIndex,
 } from "@/lib/text/furigana";
 
 /** 判定係への 言い渡し（つなぎの あいだ ずっと 変わらない 決まりだけ）。 */
@@ -242,11 +243,38 @@ export function materialKanjiEntries(entries: readonly FuriganaEntry[] = []): Fu
  * 共通の 一覧は ほかの 教材も 使う ので ここでは 変えない。
  */
 const ASAKAI_EXTRA_KANJI: readonly FuriganaEntry[] = [
-  ["分か", "わか"],
+  /*
+   * 「分か」は **分かる の 形だけ**（2026-09-28 の 読み検収）。「分か」で 持つと
+   *「3分かかりました」が わかかりました に なる。数字＋分（時刻）の 文は
+   * `readableAsakaiText` が 出さない。
+   */
+  ["分かり", "わかり"],
+  ["分かる", "わかる"],
+  ["分かっ", "わかっ"],
+  ["分から", "わから"],
+  ["分かれ", "わかれ"],
   ["数え", "かぞえ"],
   ["数字", "すうじ"],
+  /* 1字の 数・文 は、共通一覧の 1字（人=ひと・回=かい・作=つく）と 組むと 割れる ので、よく 出る 語を 先に 持つ */
+  ["人数", "にんずう"],
+  ["数回", "すうかい"],
+  ["回数", "かいすう"],
+  ["作文", "さくぶん"],
+  ["例文", "れいぶん"],
+  ["文章", "ぶんしょう"],
+  ["文法", "ぶんぽう"],
   ["数", "かず"],
   ["文", "ぶん"],
+  /*
+   * **日の 数は 漢数字で 持つ**（2026-09-28 の 読み検収）。AIが「1日」と 書くと、
+   * 数字の 位置からは 辞書を 引けず、うしろの 日 だけが 共通一覧の 日=ひ に 当たって
+   *「1ひ」に なる。`readableAsakaiText` が「1日」を「一日」に 書き直す。
+   */
+  ["一日", "いちにち"],
+  ["二日", "ふつか"],
+  ["三日", "みっか"],
+  ["四日", "よっか"],
+  ["五日", "いつか"],
   ["直し", "なおし"],
   ["直す", "なおす"],
   ["直せ", "なおせ"],
@@ -437,6 +465,7 @@ export function buildAsakaiJudgePrompt(context: AsakaiJudgeContext): string {
       : []),
     "  この 一覧に 無い ことばは **ひらがな**で 書いて ください。",
     "- **国の 名前・外来語は カタカナ**で 書きます（「べとなむ」では なく「ベトナム」）。",
+    "- 日の 数は **漢数字**で 書きます（「一日」「二日」。「1日」とは 書かない）。時刻・分は ひらがなか 数字だけで 書きます",
     "- ことばの あいだに 空白を 入れて 分かち書きに する（例:「わたしは がくせい です」）",
     `- つぎの ことばは つかわない: ${FORBIDDEN_LEARNER_WORDS.join("・")}`,
     "  できた ことを 先に 言い、つぎに やる ことを 見せる",
@@ -546,15 +575,59 @@ export function keepReadableAsakai(
   furigana: readonly FuriganaEntry[],
 ): AsakaiJudgeResult {
   const index = buildFuriganaIndex(asakaiAiFurigana(furigana));
-  const ok = (text: string) => text === "" || uncoveredKanji(text, index).length === 0;
+  /** 読める 形に 直した 文（読めなければ 空）。 */
+  const fit = (text: string) => readableAsakaiText(text, index);
+  const items: AsakaiItem[] = [];
+  for (const item of result.items) {
+    const polished = fit(item.polished);
+    if (polished !== "") items.push({ ...item, polished });
+  }
+  const fixes: AsakaiFix[] = [];
+  for (const one of result.fixes) {
+    const natural = fit(one.natural);
+    const note = one.note === "" ? "" : fit(one.note);
+    if (natural !== "" && (one.note === "" || note !== "")) fixes.push({ ...one, natural, note });
+  }
   return {
     ...result,
-    good: ok(result.good) ? result.good : "",
-    advice: ok(result.advice) ? result.advice : "",
-    polished: ok(result.polished) ? result.polished : "",
-    items: result.items.filter((item) => ok(item.polished)),
-    fixes: result.fixes.filter((fix) => ok(fix.natural) && ok(fix.note)),
+    good: fit(result.good),
+    advice: fit(result.advice),
+    polished: fit(result.polished),
+    items,
+    fixes,
   };
+}
+
+/** 数字（半角・全角）→ 漢数字（日の 数の 書き直し用。1〜5 だけ）。 */
+const KANJI_DIGIT: Readonly<Record<string, string>> = {
+  "1": "一",
+  "2": "二",
+  "3": "三",
+  "4": "四",
+  "5": "五",
+  "１": "一",
+  "２": "二",
+  "３": "三",
+  "４": "四",
+  "５": "五",
+};
+
+/**
+ * AIの 文を **読める 形に して 返す**（読めなければ 空）。
+ *
+ * - 「1日」〜「5日」は「一日」〜「五日」に 書き直す（数字の 位置からは 辞書を 引けず、
+ *   日だけが 日=ひ に 当たって「1ひ」に なる・2026-09-28 の 読み検収）
+ * - 数字＋分（時刻・長さ）を 含む 文は 出さない（ぷん／ふん が 割れる。「3分かかり」が わかかり に なる）
+ * - ふりがなの 付かない 漢字が 残る 文は 出さない
+ */
+export function readableAsakaiText(text: string, index: FuriganaIndex): string {
+  if (text === "") return "";
+  const fixed = text.replace(
+    /(?<![0-9０-９])([1-5１-５])日(?!目)/gu,
+    (_, digit: string) => `${KANJI_DIGIT[digit] ?? digit}日`,
+  );
+  if (/[0-9０-９]\s*分/u.test(fixed)) return "";
+  return uncoveredKanji(fixed, index).length === 0 ? fixed : "";
 }
 
 function readAsakaiJudge(

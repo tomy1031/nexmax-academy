@@ -9,6 +9,7 @@ import {
   materialKanjiEntries,
   NO_JUDGE,
   parseAsakaiJudge,
+  readableAsakaiText,
   type AsakaiJudgeContext,
   type JudgeablePanel,
 } from "@/lib/meeting/asakai-judge";
@@ -67,6 +68,35 @@ describe("AIの 文の 読み（asakaiAiFurigana）", () => {
       false,
     );
     expect(read("上")).toBe("上〔うえ〕");
+  });
+});
+
+/*
+ * **読みの 検収（2026-09-28）で 見つかった 割れ**。AIの 文を AI用の 読みに
+ * 切り替えた とき、教材の 1字 日=にち が 外れて「1日」が「1ひ」に なって いた。
+ */
+describe("readableAsakaiText — 数字＋日・分", () => {
+  const index = buildFuriganaIndex(asakaiAiFurigana(kantan.furigana));
+  const ruby = (text: string) =>
+    annotateRuby(text, index)
+      .map((seg) => (seg.reading ? `${seg.text}〔${seg.reading}〕` : seg.text))
+      .join("");
+
+  it("「1日」は「一日（いちにち）」に 書き直して 出す", () => {
+    const out = readableAsakaiText("予定より 1日 遅れる かもしれません。", index);
+    expect(out).toBe("予定より 一日 遅れる かもしれません。");
+    expect(ruby(out)).toContain("一日〔いちにち〕");
+    expect(ruby(out)).not.toContain("日〔ひ〕");
+  });
+
+  it("数字＋分（時刻・長さ）の 文は 出さない（わかかりました に しない）", () => {
+    expect(readableAsakaiText("3分かかりました。", index)).toBe("");
+    expect(ruby("よく 分かります。")).toContain("分かり〔わかり〕");
+  });
+
+  it("人数・作文 を 1字ずつに 割らない", () => {
+    expect(ruby("人数")).toBe("人数〔にんずう〕");
+    expect(ruby("作文")).toBe("作文〔さくぶん〕");
   });
 });
 
