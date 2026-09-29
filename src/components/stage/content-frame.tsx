@@ -174,14 +174,19 @@ export function ContentFrame({
   }, [stageDone, stage.id]);
 
   /*
-    教材を 開いた ステージを「いま 学習中」として 覚える。地図は ここを「いま ここ」にして、
-    開いた ときに そこまで 下りる（2026-09-29 の 指定）。地図に 出ない ステージ（はじめに 等）は
-    覚えない——上書きすると、その前に 学習して いた ステージを 忘れる。
+    教材を **1本 おえた** ステージを「いま 学習中」として 覚える。地図は ここを「いま ここ」に
+    して、開いた ときに そこまで 下りる（2026-09-29 の 指定）。
+
+    開いた だけでは 覚えない。地図は 先の ステージも 開けるので、のぞいた だけで「いま ここ」が
+    飛ぶと、次に 地図を 開いた とき 学習中の ステージから 遠く 離れた ところに 下りる。
+    関門で 止められた 教材（locked）も 中身を 見て いないので 数えない。
+    地図に 出ない ステージ（はじめに 等）も 覚えない——上書きすると、その前に 学習して いた
+    ステージを 忘れる。
   */
-  const onMap = stage.number !== null;
+  const studiedHere = stage.number !== null && !locked && codes[currentIndex] === "2";
   useEffect(() => {
-    if (onMap) rememberStudyingStage(stage.id);
-  }, [onMap, stage.id]);
+    if (studiedHere) rememberStudyingStage(stage.id);
+  }, [studiedHere, stage.id]);
 
   /*
     ステージ1本を おえたことは、1問の正解より ずっと 大きな 節目なので、

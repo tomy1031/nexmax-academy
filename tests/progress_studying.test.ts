@@ -49,6 +49,19 @@ describe("rememberStudyingStage", () => {
     expect(studyingStageSnapshot()).toBe("renraku");
   });
 
+  it("保存できない端末でも投げない（教材の画面ごと落とさない）", () => {
+    const broken = fakeStorage();
+    broken.setItem = () => {
+      throw new Error("QuotaExceededError");
+    };
+    broken.getItem = () => {
+      throw new Error("SecurityError");
+    };
+    (globalThis as { window?: unknown }).window = { localStorage: broken };
+    expect(() => rememberStudyingStage("houkoku")).not.toThrow();
+    expect(studyingStageSnapshot()).toBe("");
+  });
+
   it("ブラウザの外では何もしない", () => {
     delete (globalThis as { window?: unknown }).window;
     expect(() => rememberStudyingStage("houkoku")).not.toThrow();

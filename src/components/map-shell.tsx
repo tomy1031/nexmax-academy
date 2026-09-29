@@ -47,6 +47,7 @@ import {
 import {
   clearedIdsSnapshot,
   deriveProgress,
+  mapLanding,
   stageStatus,
   studyingStageSnapshot,
   type StageProgress,
@@ -203,7 +204,11 @@ function flownUntil(progress: StageProgress, routeAreas: readonly MapArea[]): nu
  *
  * 1回だけに するのは、下りた あとで 学習者が 自分で 動かした 位置を 奪わないため。
  * 着く 高さは 目あての 要素の `scroll-margin-top` が 決める（HUD や ☰ に 隠れない 位置）。
- * `elementId` が null の あいだは 下りない（はじめての 学習者は START の 看板から 見せる）。
+ * `elementId` が null の あいだは 下りない（どこへ 下りるかは `mapLanding`）。
+ *
+ * **useLayoutEffect に しない。** Next.js は 画面が 替わった 直後（レイアウトの 段）に
+ * 自分で 一番上へ 戻す（layout-router の `scrollTop = 0`）。こちらは その あとの 段で
+ * 動くので 上書きされない。レイアウトの 段へ 移すと、Next に 一番上へ 戻される。
  */
 function useLandOnMount(elementId: string | null) {
   const landed = useRef(false);
@@ -1425,12 +1430,7 @@ export function MapShell({
       studying || null,
     );
   }, [rawProgress, stageIds, studying]);
-  /*
-   * ひらいた ときに 下りる 先。はじめての 学習者（まだ 何も クリアして いない・教材も
-   * 開いて いない）は 下りず、START の 看板から 見せる。ぜんぶ クリアなら ゴールへ。
-   */
-  const fresh = progress.clearedCount === 0 && progress.currentStageId !== studying;
-  const landingStageId = fresh ? null : progress.currentStageId;
+  const landing = mapLanding(progress, studying || null);
   const [databaseProfile, setDatabaseProfile] = useState<DiagnosedProfileRow | null>(null);
   const profile = databaseProfile ? profileFromRow(databaseProfile) : cachedProfile;
   // 地図に立たせる分身。診断が終わっていない人には出さない（絵が決まらない）
@@ -1592,16 +1592,18 @@ export function MapShell({
           expandedStage={expandedStage}
           onExpandedStageChange={setExpandedOverride}
           landOn={
-            progress.currentStageId === null && progress.clearedCount > 0
+            landing?.kind === "goal"
               ? MAP_GOAL_ELEMENT_ID
-              : landingStageId && mapStageElementId(landingStageId)
+              : landing
+                ? mapStageElementId(landing.stageId)
+                : null
           }
         />
       ) : (
         <CardsView
           stages={stages}
           progress={progress}
-          landOn={landingStageId && cardStageElementId(landingStageId)}
+          landOn={landing?.kind === "stage" ? cardStageElementId(landing.stageId) : null}
         />
       )}
     </div>

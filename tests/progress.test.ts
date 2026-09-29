@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { GOAL_AREA } from "../src/content/areas";
-import { deriveProgress, stageStatus } from "../src/lib/progress";
+import { deriveProgress, mapLanding, stageStatus } from "../src/lib/progress";
 
 /**
  * 進み具合は「マップに出ている順のID」を渡して計算する。
@@ -95,6 +95,42 @@ describe("stageStatus", () => {
     expect(stageStatus(STAGE_IDS[1]!, progress)).toBe("skipped");
     expect(stageStatus(STAGE_IDS[3]!, progress)).toBe("current");
     expect(stageStatus(STAGE_IDS[4]!, progress)).toBe("locked");
+  });
+});
+
+describe("mapLanding（地図を ひらいた ときに 下りる 先）", () => {
+  it("はじめての学習者は下りない（START の看板から見せる）", () => {
+    expect(mapLanding(deriveProgress([], STAGE_IDS), null)).toBeNull();
+  });
+
+  it("クリアが無くても、教材をおえたステージがあればそこへ下りる", () => {
+    expect(mapLanding(deriveProgress([], STAGE_IDS, STAGE_IDS[0]!), STAGE_IDS[0]!)).toEqual({
+      kind: "stage",
+      stageId: STAGE_IDS[0],
+    });
+    expect(mapLanding(deriveProgress([], STAGE_IDS, STAGE_IDS[2]!), STAGE_IDS[2]!)).toEqual({
+      kind: "stage",
+      stageId: STAGE_IDS[2],
+    });
+  });
+
+  it("覚えているステージが地図に無ければ、はじめての学習者と同じ", () => {
+    expect(
+      mapLanding(deriveProgress([], STAGE_IDS, "けしたステージ"), "けしたステージ"),
+    ).toBeNull();
+  });
+
+  it("とばした学習者は、いちばん先のクリアの つぎへ下りる", () => {
+    const progress = deriveProgress([STAGE_IDS[0]!, STAGE_IDS[3]!], STAGE_IDS);
+    expect(mapLanding(progress, null)).toEqual({ kind: "stage", stageId: STAGE_IDS[4] });
+  });
+
+  it("ぜんぶクリアならゴールへ", () => {
+    expect(mapLanding(deriveProgress(STAGE_IDS, STAGE_IDS), null)).toEqual({ kind: "goal" });
+  });
+
+  it("ステージが1つも無ければ下りない", () => {
+    expect(mapLanding(deriveProgress([], []), null)).toBeNull();
   });
 });
 
