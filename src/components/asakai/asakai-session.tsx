@@ -441,8 +441,13 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
    * 学習者の ことばは「相手が 話しはじめた 合図」では 流れて こない——
    * `listenOnly` を 渡して、かけらが 止まった ところで 束ねて もらう
    *（2026-09-11 の 検収。これが 無いと **声で 報告しても 何も 起きない**）。
+   *
+   * **`muted` も 渡す**（2026-09-28）。「何も 言いません」と 言い渡しても、Live は
+   * ときどき「はい」と 声で 返す——バグ報告の 採点で 実際に 鳴った（2026-09-23）。
+   * 朝礼は 司会の 作り置きの 声が 鳴る 画面なので、知らない 声が 混ざると
+   * だれが 話したのか 分からなく なる。字幕の かけらは これまでどおり 受け取る。
    */
-  const voice = useLiveVoice({ listenOnly: true });
+  const voice = useLiveVoice({ listenOnly: true, muted: true });
   /* 司会が 名指しで 呼ぶ ための 呼び名（ミーティングと 同じ 読みかた）。 */
   const learnerName = useSyncExternalStore(
     subscribeToProfile,
