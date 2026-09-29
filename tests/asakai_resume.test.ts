@@ -145,7 +145,8 @@ describe("報告の 途中", () => {
   it("書いた 途中が そのまま 戻る", () => {
     const backend = memory();
     saveAsakaiDraft("m", "tue", draft(["kinou1"]), backend);
-    expect(readAsakaiDraft("m", "tue", backend)).toEqual(draft(["kinou1"]));
+    /* 聞き返しの 字（askedText）は 2026-09-28 に 足した 欄。書かなければ 空で 戻る。 */
+    expect(readAsakaiDraft("m", "tue", backend)).toEqual({ ...draft(["kinou1"]), askedText: "" });
     expect(readAsakaiDraft("m", "wed", backend), "別の 日に 漏れて いる").toBeNull();
   });
 

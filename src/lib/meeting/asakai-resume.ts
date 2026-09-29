@@ -108,11 +108,18 @@ const asakaiDraftSchema = z.object({
   attempts: z.record(z.string(), z.number().int().min(0)).default({}),
   probes: z.number().int().min(0).default(0),
   askedId: z.string().nullable().default(null),
+  /**
+   * 司会の 聞き返しの 字（2026-09-28 の 検収）。無いと、開き直した あとの こたえが
+   * AIに「報告 まるごと」と して 見られ、聞き返しの ポップアップも 出ない。
+   */
+  askedText: z.string().default(""),
   lines: z.array(chatLineSchema).default([]),
   log: z.array(sayLogSchema).default([]),
 });
 
 export type AsakaiDraft = z.infer<typeof asakaiDraftSchema>;
+/** 書く ときの 形（`.default()` の 欄は 省いて よい。読む ときに 埋まる）。 */
+export type AsakaiDraftInput = z.input<typeof asakaiDraftSchema>;
 
 /**
  * 端末に 残す かたち。
@@ -125,6 +132,14 @@ const asakaiResumeSchema = z.object({
   done: z.array(dayResultSchema).default([]),
   /** 話しかけて いる 日（曜日の id → 途中）。終わった 日は `done` が 持つ。 */
   drafts: z.record(z.string(), asakaiDraftSchema).default({}),
+  /**
+   * **5日 そろったが、週の けっかを まだ 閉じて いない**（2026-09-28 の 点検 B4）。
+   *
+   * 前は 5日 そろった しおりを「完走ずみ」と して 月曜から 始めて いたので、
+   * 金曜の 評価を 読んで いる 最中に 更新・退室すると **5日ぶんが 消え、
+   * 完了も 付かなかった**。この 印が ある ときは 週の けっかから 始める。
+   */
+  weekPending: z.boolean().default(false),
 });
 
 export type AsakaiResume = z.infer<typeof asakaiResumeSchema>;
@@ -137,6 +152,8 @@ export interface AsakaiStart {
   readonly results: readonly DayResult[];
   /** 途中から 戻ったか（画面の 組み立てに 使う。**学習者には 出さない**）。 */
   readonly resumed: boolean;
+  /** 5日 そろって、週の けっかを まだ 閉じて いない（週の けっかから 始める）。 */
+  readonly weekPending?: boolean;
 }
 
 export const FRESH_ASAKAI: AsakaiStart = { sceneAt: 0, results: [], resumed: false };
@@ -152,18 +169,22 @@ function keyOf(meetingId: string): string {
 /**
  * 保存されて いた ものから、始める ところを 決める。
  *
- * 規則は 3つ:
+ * 規則は 4つ:
  * 1. 保存が 無い・空なら 月曜から
- * 2. 終わった日が 場面の 数に とどいて いれば 月曜から（＝完走ずみ。何度でも 話せる）
- * 3. 教材が 直されて 場面が 減った ときも、はみ出す なら 月曜から
+ * 2. 5日 そろって **週の けっかを まだ 閉じて いない**なら、週の けっかから（2026-09-28）
+ * 3. 終わった日が 場面の 数に とどいて いれば 月曜から（＝完走ずみ。何度でも 話せる）
+ * 4. 教材が 直されて 場面が 減った ときも、はみ出す なら 月曜から
  */
 export function startAsakaiFrom(
-  /* 見るのは `done` だけ（途中は 日ごとに 別で 読む）。 */
-  saved: Pick<AsakaiResume, "done"> | null,
+  /* 見るのは `done` と 週の けっか待ち だけ（途中は 日ごとに 別で 読む）。 */
+  saved: (Pick<AsakaiResume, "done"> & { readonly weekPending?: boolean }) | null,
   sceneCount: number,
 ): AsakaiStart {
   const done = saved?.done ?? [];
   if (done.length === 0) return FRESH_ASAKAI;
+  if (done.length === sceneCount && saved?.weekPending === true) {
+    return { sceneAt: sceneCount - 1, results: done, resumed: true, weekPending: true };
+  }
   if (done.length >= sceneCount) return FRESH_ASAKAI;
   return { sceneAt: done.length, results: done, resumed: true };
 }
@@ -191,10 +212,17 @@ export function saveAsakaiResume(
   meetingId: string,
   done: readonly DayResult[],
   backend: ProgressBackend = defaultBackend(),
+  /** 場面の 数。渡すと、5日 そろった ときに「週の けっか待ち」の 印を 立てる。 */
+  sceneCount?: number,
 ): void {
-  /* **途中（`drafts`）を 巻き込んで 消さない**——読んでから 書く。 */
-  const drafts = readAsakaiResume(meetingId, backend)?.drafts ?? {};
-  backend.set(keyOf(meetingId), JSON.stringify({ meetingId, done, drafts }));
+  /* **途中（`drafts`）と 印を 巻き込んで 消さない**——読んでから 書く。 */
+  const saved = readAsakaiResume(meetingId, backend);
+  const weekPending =
+    sceneCount !== undefined ? done.length >= sceneCount : (saved?.weekPending ?? false);
+  backend.set(
+    keyOf(meetingId),
+    JSON.stringify({ meetingId, done, drafts: saved?.drafts ?? {}, weekPending }),
+  );
 }
 
 /** その日の 途中を 読む（無ければ null）。 */
@@ -210,12 +238,20 @@ export function readAsakaiDraft(
 export function saveAsakaiDraft(
   meetingId: string,
   day: string,
-  draft: AsakaiDraft,
+  draft: AsakaiDraftInput,
   backend: ProgressBackend = defaultBackend(),
 ): void {
   const saved = readAsakaiResume(meetingId, backend);
   const drafts = { ...(saved?.drafts ?? {}), [day]: draft };
-  backend.set(keyOf(meetingId), JSON.stringify({ meetingId, done: saved?.done ?? [], drafts }));
+  backend.set(
+    keyOf(meetingId),
+    JSON.stringify({
+      meetingId,
+      done: saved?.done ?? [],
+      drafts,
+      weekPending: saved?.weekPending ?? false,
+    }),
+  );
 }
 
 /** その日が 終わったら 途中を 捨てる（けっかは `done` に 移る）。 */
@@ -229,7 +265,10 @@ export function clearAsakaiDraft(
   const drafts = { ...saved.drafts };
   if (!(day in drafts)) return;
   delete drafts[day];
-  backend.set(keyOf(meetingId), JSON.stringify({ meetingId, done: saved.done, drafts }));
+  backend.set(
+    keyOf(meetingId),
+    JSON.stringify({ meetingId, done: saved.done, drafts, weekPending: saved.weekPending }),
+  );
 }
 
 /** 完走したとき・やり直すときに 消す。 */

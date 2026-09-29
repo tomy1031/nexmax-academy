@@ -318,6 +318,8 @@ async function askAsakai(
       args,
       facts,
       (context.items ?? context.panels).map((one) => one.id),
+      /* 読めない 文は ここで 捨てる（画面は 同じ 読みで 描く・2026-09-28）。 */
+      context.furigana ?? [],
     );
     return judge ? { ok: true, judge } : { ok: false, reason: "badShape" };
   } catch (error) {
