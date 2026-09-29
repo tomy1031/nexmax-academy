@@ -1489,6 +1489,24 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
     [asakai, openScene, stopClips, voice],
   );
 
+  /**
+   * **月曜日から もう いちど**（2026-09-28 の 点検 B6）。
+   *
+   * 週の けっかは 不合格の とき「もう いちど はじめから 話すと…」と 言うのに、
+   * はじめる ボタンが 無かった（再読み込みしか 道が 無い）。合格ラインを
+   * 「問題の 札 5日とも」に 上げた ので、やり直す 道が 要る。
+   * しおりを 消して 月曜の 白紙から。「おわった」の 記録は そのまま（5日目で 書いて ある）。
+   */
+  const restartWeek = useCallback(() => {
+    clearAsakaiResume(meeting.id);
+    /* つぎの 週の けっかを 閉じた ときに、しおりを もう いちど 片づける。 */
+    weekRead.current = false;
+    setResults([]);
+    setShownAnswers([]);
+    setWeekOpen(false);
+    goToScene(0);
+  }, [meeting.id, goToScene]);
+
   const goNext = useCallback(() => goToScene(sceneAt + 1), [goToScene, sceneAt]);
 
   /**
@@ -2171,7 +2189,13 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
         />
       ) : null}
       {weekOpen ? (
-        <WeekResult asakai={asakai} rows={results} index={index} onClose={closeWeek} />
+        <WeekResult
+          asakai={asakai}
+          rows={results}
+          index={index}
+          onClose={closeWeek}
+          onRestart={restartWeek}
+        />
       ) : null}
       {/*
         **Gemini を 呼んで いる あいだは 画面 ぜんたいを 覆う**（2026-09-21 の 指定
@@ -2352,11 +2376,14 @@ function WeekResult({
   rows,
   index,
   onClose,
+  onRestart,
 }: {
   asakai: Asakai;
   rows: readonly DayResult[];
   index: FuriganaIndex;
   onClose: () => void;
+  /** 月曜日から もう いちど（しおりを 消して 白紙から）。 */
+  onRestart: () => void;
 }) {
   /*
    * 問題の 札は **教材の ことばを 使う**。「こまりごと」と 書き込んで いた ころ、
@@ -2393,6 +2420,7 @@ function WeekResult({
       }
       onClose={onClose}
       closeLabel="けっかを 読みました ▶"
+      secondary={{ label: "月曜日から もう いちど", onClick: onRestart }}
       index={index}
       /* 中身は 5行の 表。細い ままだと PCで 短冊に なる。 */
       wide
@@ -2458,7 +2486,11 @@ function WeekResult({
 
       {pass ? null : (
         <p className="mt-3 text-sm font-bold">
-          <RubyText text="もう いちど はじめから 話すと、数は 数え直します。" index={index} show />
+          <RubyText
+            text="下の「月曜日から もう いちど」を 押すと、月曜日から 話して、数を 数え直します。"
+            index={index}
+            show
+          />
         </p>
       )}
     </ModalShell>

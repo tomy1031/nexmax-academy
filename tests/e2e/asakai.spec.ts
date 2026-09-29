@@ -664,6 +664,19 @@ test("5日 通すと、合否と 数が 読める", async ({ page, context }) =>
   await page.getByRole("button", { name: "今週の けっかを 見る" }).click();
   await expect(week).toBeVisible();
   await expectOnScreen(page, "以上で 合格");
+
+  /*
+   * **月曜日から もう いちど**（2026-09-28 の 点検 B6）。前は「もう いちど はじめから
+   * 話すと…」と 言うだけで ボタンが 無く、再読み込みしか 道が 無かった。
+   */
+  await week.getByRole("button", { name: "月曜日から もう いちど" }).click();
+  await expect(week).toBeHidden();
+  await closeDuty(page);
+  await expect(page.getByText("（0 / 4）")).toBeVisible();
+  await expect(page.getByRole("button", { name: /月曜日/ })).toHaveAttribute(
+    "aria-current",
+    "step",
+  );
 });
 
 /**
