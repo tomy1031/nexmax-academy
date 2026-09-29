@@ -298,6 +298,7 @@ export const ASSET_VERSIONS: Readonly<Record<string, string>> = {
   "/audio/meetings/asakai_muzukashii/s1-sample-836ce355.wav": "f6f628e9",
   "/audio/meetings/asakai_muzukashii/s1-sample-ef277650.wav": "fed24403",
   "/audio/meetings/asakai_muzukashii/s1-shinchoku-ex-2e452c2d.wav": "92596513",
+  "/audio/meetings/asakai_muzukashii/s1-shinchoku-ex-5c44c748.wav": "89cf493c",
   "/audio/meetings/asakai_muzukashii/s1-shinchoku-ex-c7d5a0a7.wav": "26aea36c",
   "/audio/meetings/asakai_muzukashii/s1-shinchoku-ex-debd928a.wav": "e3f8bb72",
   "/audio/meetings/asakai_muzukashii/s1-shinchoku-fu0-1e9bd982.wav": "5a3f4963",
