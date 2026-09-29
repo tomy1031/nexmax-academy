@@ -3,6 +3,7 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 
+import { DayProgress } from "@/components/asakai/asakai-parts";
 import { ModalShell } from "@/components/meeting/modal-shell";
 import { RubyText } from "@/components/ruby-text";
 import { adviceFor, KEY_CHECK_FURIGANA } from "@/lib/ai/key-check";
@@ -168,7 +169,7 @@ const OWN_WORD: Record<string, { readonly what: string; readonly next: string }>
    * 「もう いちど」とは 言わない——できない ことを つぎの 一手に しない。
    */
   noFacts: {
-    what: "この 日は AIが 見る ところが ありません。",
+    what: "この 曜日は AIが 見る ところが ありません。",
     next: "先生に つたえて ください。",
   },
 };
@@ -1141,7 +1142,7 @@ export function DayScoreModal({
       />
 
       <p className="text-ink-soft mt-3 text-[11px] leading-[1.9] font-bold">
-        📅 <Ruby text={`${dayName} おわり ${at}日目 / ${total}日`} index={index} />
+        📅 <Ruby text={`${dayName} おわり`} index={index} /> <DayProgress at={at} total={total} />
       </p>
     </ModalShell>
   );
