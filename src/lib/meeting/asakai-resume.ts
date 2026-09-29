@@ -69,6 +69,23 @@ export function isOneShotDay(row: DayResult): boolean {
 }
 
 /**
+ * 同じ 曜日を 話し直した とき、**どちらの けっかを 残すか**（2026-09-29 の R5 検収）。
+ *
+ * ★は 合格の 上の 目標なので、★を ねらった 話し直しで **合格が 消えては いけない**
+ *（問題の 札を 1回 言いそびれるだけで「合格」が「不合格」に 変わって いた）。
+ * 合格に 数える 数が 1つでも 下がったら 前の けっかを 残す。★が 付いた ときは
+ * いつも 新しい ほう（どの 数も 満点）。1つの 記録を 2回ぶんから つぎはぎには しない。
+ */
+export function keptDayResult(prev: DayResult | undefined, next: DayResult): DayResult {
+  if (!prev || isOneShotDay(next)) return next;
+  const lower =
+    next.units < prev.units ||
+    next.komariBoxes < prev.komariBoxes ||
+    (prev.komariOpen && !next.komariOpen);
+  return lower ? prev : next;
+}
+
+/**
  * **報告の 途中**（その日の 板・聞き返しの 回数・チャット）。
  *
  * 2026-09-17 の 指定「回答結果が リセットされて しまう。曜日を 切り替えた 場合や

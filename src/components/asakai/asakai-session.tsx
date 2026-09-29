@@ -109,6 +109,7 @@ import {
   clearAsakaiDraft,
   clearAsakaiResume,
   isOneShotDay,
+  keptDayResult,
   readAsakaiDraft,
   refreshSavedLines,
   saveAsakaiDraft,
@@ -751,7 +752,12 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
         /* `day` は "月曜日"（`DAY_NAME`）。`scene.day` は "mon" なので 変換して 比べる。 */
         const order = (day: string) =>
           asakai?.scenes.findIndex((s) => DAY_NAME[s.day] === day) ?? 0;
-        const done = [...prev.filter((r) => r.day !== row.day), row].sort(
+        /* 合格に 数える 数が 下がる 話し直しは 前の けっかを 残す（`keptDayResult`）。 */
+        const kept = keptDayResult(
+          prev.find((r) => r.day === row.day),
+          row,
+        );
+        const done = [...prev.filter((r) => r.day !== row.day), kept].sort(
           (a, b) => order(a.day) - order(b.day),
         );
         saveAsakaiResume(meeting.id, done, undefined, asakai?.scenes.length ?? 0);
@@ -1558,12 +1564,13 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
    * 目標は「どの 曜日も 1回で 伝えられる」こと。週を まるごと やり直さなくても、
    * ★の ない 曜日だけ 練習できる ように する。
    *
-   * ## 話し直した けっかで **置きかえる**（お手本を 見た あとでも）
+   * ## 話し直した けっかで **数え直す**（お手本を 見た あとでも）
    * 同じ 授業の 中の やり直しは「お手本を 見た あと」なので 点を 変えない 決まり
    *（`shownAnswers`）。ただ それは **お手本を 見た その場で 写す** 道を ふさぐ ための もので、
    * 週の けっかには お手本が 無い。「月曜日から もう いちど」（`restartWeek`）と 同じく、
    * ここからの 話し直しは その 曜日の 印を 外して 数え直す。
-   * 置きかえるのは 話し終えた ときだけ——途中で やめたら 前の けっかが 残る。
+   * 数え直すのは 話し終えた ときだけ——途中で やめたら 前の けっかが 残る。
+   * 合格に 数える 数が 下がった ときも 前の けっかを 残す（`keptDayResult`）。
    */
   const redoDay = useCallback(
     (at: number) => {
@@ -2248,6 +2255,8 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
             };
           })}
           probes={probeLog}
+          /* 聞き返し 0回で ぜんぶ ⭕（週の けっかの ★と 同じ ものさし・`isOneShotDay`）。 */
+          oneShot={probes === 0 && states.length > 0 && states.every((one) => one.full)}
           good={dayAi.good}
           advice={dayAi.advice}
           failReason={dayFail}
@@ -2544,6 +2553,14 @@ function WeekResult({
       /* 中身は 5行の 表。細い ままだと PCで 短冊に なる。 */
       wide
     >
+      {/*
+        **手ぶらで 帰さない**（P8・R5-2）。合否と ★が どちらも 0 の 週にも、
+        やった ことの 事実を 1行 置く（その日の 評価の「きょうは N回 話しました」と 同じ 流儀）。
+      */}
+      <p className="text-leaf-deep mt-2 text-center text-sm font-black">
+        <DayCount n={rows.length} />
+        <RubyText text=" ぜんぶ 話しました。" index={index} show />
+      </p>
       {after !== "" ? (
         <div className="bg-panel-tint mt-3 rounded-xl px-3 py-2">
           <p className="text-ink-soft text-[11px] font-black">
@@ -2592,9 +2609,13 @@ function WeekResult({
             {stars} / {rows.length}
           </span>
         </p>
+        {/*
+          **どう すれば ★か**を 言う（R5 検収）。聞き返しの 回数だけでは 次に 何を
+          するかに ならない。「目標」は N3 の 語なので 使わず、合否との 関係を 言い切る。
+        */}
         <p className="text-ink-soft mt-0.5 text-[11px] leading-[1.9] font-bold">
           <RubyText
-            text="聞き返し 0回で、ぜんぶ 言えた 曜日に ★が 付きます。合格とは べつの 目標です。"
+            text="報告メモの ことを、最初の 報告で ぜんぶ 言えた 曜日に ★が 付きます（聞き返し 0回）。★は 合格の 数に 入りません。"
             index={index}
             show
           />
@@ -2661,25 +2682,34 @@ function WeekResult({
         </tbody>
       </table>
 
+      {/*
+        **次の 行動は 1つ**（規律1・R5 検収）。不合格の 週には ★の ない 曜日が 必ず ある ので、
+        「その 曜日だけ 話し直す」と「月曜日から」を 並べると 2つに なる。近い ほう
+        （足りない 曜日だけ）を 言い、月曜日からは 下の ボタンに だけ 残す。
+        「もう いちど」は 下の「月曜日から もう いちど」にも ある ので、**表の** と 言う。
+      */}
       {stars < rows.length ? (
-        <p className="mt-2 text-[12px] leading-[1.9] font-bold">
-          <RubyText
-            text="★が ない 曜日は「もう いちど」で、その 曜日だけ 話し直せます。けっかは 話し直した ほうに 変わります。"
-            index={index}
-            show
-          />
-        </p>
+        <div className="mt-2 space-y-0.5 text-[12px] leading-[1.9] font-bold">
+          <p>
+            <RubyText
+              text={
+                pass
+                  ? "表の「もう いちど」で、★が ない 曜日だけ 話し直せます。"
+                  : "表の「もう いちど」で、★が ない 曜日を 話し直しましょう。"
+              }
+              index={index}
+              show
+            />
+          </p>
+          <p className="text-ink-soft text-[11px]">
+            <RubyText
+              text="話し直すと、その 曜日を 数え直します。数が 下がった ときは、前の けっかが 残ります。"
+              index={index}
+              show
+            />
+          </p>
+        </div>
       ) : null}
-
-      {pass ? null : (
-        <p className="mt-3 text-sm font-bold">
-          <RubyText
-            text="下の「月曜日から もう いちど」を 押すと、月曜日から 話して、数を 数え直します。"
-            index={index}
-            show
-          />
-        </p>
-      )}
     </ModalShell>
   );
 }

@@ -748,7 +748,8 @@ test("★の ない 曜日だけ 話し直すと、週の けっかに 戻って
   const week = page.getByRole("dialog", { name: "今週の けっか" });
   await expect(week).toBeVisible();
   await expectOnScreen(page, "1回で ぜんぶ 言えた 曜日 4 / 5");
-  await expectOnScreen(page, "合格とは べつの 目標です");
+  await expectOnScreen(page, "★は 合格の 数に 入りません");
+  await expectOnScreen(page, "話し直せます");
   /* 「もう いちど」は ★の ない 水曜日だけ。 */
   await expect(week.getByRole("button", { name: "水曜日を もう いちど" })).toBeVisible();
   await expect(week.getByRole("button", { name: "月曜日を もう いちど" })).toHaveCount(0);

@@ -1025,6 +1025,7 @@ export function DayScoreModal({
   score,
   rows,
   probes,
+  oneShot = false,
   good,
   advice,
   nextLabel,
@@ -1051,6 +1052,8 @@ export function DayScoreModal({
     /** 1本目（しつもん無し）の とき、その 1本で 新しく ⭕ に なった 枚数。 */
     readonly opened?: number;
   }[];
+  /** 聞き返し 0回で ぜんぶ ⭕（週の けっかの ★と 同じ ものさし）。 */
+  oneShot?: boolean;
   good: string;
   advice: string;
   /** とじる ボタンの 字（「木曜日へ 進む ▶」「週の けっかを 見る ▶」）。 */
@@ -1087,9 +1090,21 @@ export function DayScoreModal({
         index={index}
         note={
           shut === 0 ? (
-            <p className="text-leaf-deep text-sm leading-[1.9] font-black">
-              ✅ <Ruby text={`${rows.length}つ ぜんぶ 伝えられました`} index={index} />
-            </p>
+            <>
+              <p className="text-leaf-deep text-sm leading-[1.9] font-black">
+                ✅ <Ruby text={`${rows.length}つ ぜんぶ 伝えられました`} index={index} />
+              </p>
+              {/*
+                **★を 取った ことに その場で 気づける ように**（2026-09-29 の R5 検収）。
+                司会の 受け止めは 聞き返しの あとで そろった 日と 同じ なので、
+                週の けっかを 開くまで ★の 行動に 何も 返って いなかった。
+              */}
+              {oneShot ? (
+                <p className="text-sun-deep text-sm leading-[1.9] font-black">
+                  ★ <Ruby text="1回で ぜんぶ 言えました" index={index} />
+                </p>
+              ) : null}
+            </>
           ) : (
             <p className="text-coral-deep text-sm leading-[1.9] font-black">
               ❗ <Ruby text={`${shut}つ 言えませんでした`} index={index} />

@@ -4,6 +4,7 @@ import {
   clearAsakaiDraft,
   clearAsakaiResume,
   isOneShotDay,
+  keptDayResult,
   readAsakaiResume,
   restoreAsakai,
   saveAsakaiDraft,
@@ -120,5 +121,36 @@ describe("isOneShotDay", () => {
 
   it("札の ない 日（壊れた 記録）には 付けない", () => {
     expect(isOneShotDay({ ...day("金曜日"), cards: 0, cardTotal: 0 })).toBe(false);
+  });
+});
+
+/*
+ * **話し直しで 合格が 消えない**（2026-09-29 の R5 検収）。★は 合格の 上の 目標なので、
+ * ★を ねらった 話し直しで 合格に 数える 数が 下がったら 前の けっかを 残す。
+ */
+describe("keptDayResult", () => {
+  const old = { ...day("水曜日"), probes: 2 };
+
+  it("はじめての 日は そのまま", () => {
+    expect(keptDayResult(undefined, old)).toBe(old);
+  });
+
+  it("★が 付いたら 新しい ほう", () => {
+    const next = day("水曜日");
+    expect(keptDayResult(old, next)).toBe(next);
+  });
+
+  it("問題の 札を 言いそびれたら 前の けっかを 残す", () => {
+    const next = { ...day("水曜日"), cards: 3, units: 3, komariOpen: false, komariBoxes: 0 };
+    expect(keptDayResult(old, next)).toBe(old);
+  });
+
+  it("開いた 札が 減ったら 前の けっかを 残す", () => {
+    expect(keptDayResult(old, { ...old, cards: 3, units: 3, probes: 1 })).toBe(old);
+  });
+
+  it("数が 同じか 上がったら 新しい ほう（聞き返しの 回数は 新しい ほうの まま）", () => {
+    const next = { ...old, probes: 3 };
+    expect(keptDayResult(old, next)).toBe(next);
   });
 });
