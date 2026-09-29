@@ -8,7 +8,6 @@ import { SAMPLE_RATE } from "../src/lib/audio/wav";
 import { toWav } from "../scripts/lib/live_tts";
 import {
   audioFromInteraction,
-  dialogueChunks,
   pcmFromAudio,
   SENTENCE_BREAK,
   speechLine,
@@ -18,6 +17,7 @@ import {
 } from "../scripts/lib/gemini_tts";
 import { chooseCuts, findPauses, plausibleSplit, splitAt } from "../scripts/lib/split_dialogue";
 import { LISTENING_AUDIO_PLANS } from "../scripts/lib/listening_audio_plans";
+import { pairSpeakers, planCalls } from "../scripts/lib/tts_listening";
 import { alignSentences, tidyTranscript } from "../scripts/lib/speech_reading";
 import { buildSoundsIndex, spellSounds } from "../src/components/listening/listening-checks";
 
@@ -129,25 +129,44 @@ describe("返事の 読みかた", () => {
   });
 });
 
-describe("かたまりの 分けかた（声は 1回に 2人まで）", () => {
-  it("3人目が 出た ところで 分ける（朝礼の 形）", () => {
-    const speakers = ["t", "s", "s", "t", "y", "y", "t", "s", "y", "t"];
-    const chunks = dialogueChunks(
-      speakers,
-      speakers.map(() => 10),
+describe("呼ぶ 回数を 減らす 組の 分けかた（声は 1回に 2人まで・無料枠は 1日 10回）", () => {
+  it("3人の 教材は よく 話す 2人を 1組に、のこりを 別の 組に", () => {
+    expect(
+      pairSpeakers(
+        new Map([
+          ["yamada", 7],
+          ["takahashi", 12],
+          ["sato", 8],
+        ]),
+      ),
+    ).toEqual([["takahashi", "sato"], ["yamada"]]);
+  });
+
+  it("同じ 2人（か その 一部）の 組は、教材を またいで 1回に まとめる", () => {
+    const parts = [
+      { name: "①", persons: ["佐藤", "高橋"], chars: 500 },
+      { name: "②", persons: ["山田", "鈴木"], chars: 450 },
+      { name: "③", persons: ["中村", "田中"], chars: 400 },
+      { name: "④", persons: ["小林", "加藤"], chars: 500 },
+      { name: "⑤a", persons: ["高橋", "佐藤"], chars: 350 },
+      { name: "⑤b", persons: ["山田"], chars: 200 },
+    ];
+    const calls = planCalls(parts).map((call) => call.map((part) => part.name));
+    expect(calls).toEqual([["①", "⑤a"], ["②", "⑤b"], ["③"], ["④"]]);
+  });
+
+  it("長すぎる ときは まとめない", () => {
+    const calls = planCalls(
+      [
+        { persons: ["a", "b"], chars: 1000 },
+        { persons: ["a", "b"], chars: 1000 },
+      ],
+      1800,
     );
-    expect(chunks).toEqual([[0, 1, 2, 3], [4, 5, 6], [7, 8], [9]]);
-    for (const chunk of chunks) {
-      expect(new Set(chunk.map((i) => speakers[i])).size).toBeLessThanOrEqual(2);
-    }
+    expect(calls).toHaveLength(2);
   });
 
-  it("2人の 会話は 1回で 読む（長すぎる ときだけ 切る）", () => {
-    expect(dialogueChunks(["a", "b", "a", "b"], [10, 10, 10, 10])).toEqual([[0, 1, 2, 3]]);
-    expect(dialogueChunks(["a", "b", "a"], [10, 10, 10], { maxChars: 20 })).toEqual([[0, 1], [2]]);
-  });
-
-  it("報告の リスニング 5場面は TTS で 作る 台帳に なって いる", () => {
+  it("報告の リスニング 5場面は TTS・速さ 1.25 で 作る 台帳に なって いる", () => {
     for (const id of [
       "houkoku_kanryou_listening",
       "houkoku_okure_listening",
@@ -156,6 +175,7 @@ describe("かたまりの 分けかた（声は 1回に 2人まで）", () => {
       "houkoku_chourei_listening",
     ]) {
       expect(LISTENING_AUDIO_PLANS[id]?.engine, id).toBe("tts");
+      expect(LISTENING_AUDIO_PLANS[id]?.tempo, id).toBe(1.25);
     }
     // 報告（悪い ニュース）は これまでどおり Live
     expect(LISTENING_AUDIO_PLANS.houkoku_listening?.engine).toBeUndefined();

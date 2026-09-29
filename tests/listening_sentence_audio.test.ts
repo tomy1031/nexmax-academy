@@ -12,7 +12,8 @@ import { beforeAll, describe, expect, it } from "vitest";
 import type { Tokenizer } from "kuromoji";
 import { SAMPLE_RATE } from "../src/lib/audio/wav";
 import { buildFuriganaIndex } from "../src/lib/text/furigana";
-import { lineSentenceClips } from "../src/lib/audio/sentences";
+import { joinShortSentences, lineSentenceClips } from "../src/lib/audio/sentences";
+import { audioUnitsOf } from "../src/content/listening-audio";
 import { LISTENING_AUDIO_PLANS } from "../scripts/lib/listening_audio_plans";
 import {
   longestInnerPause,
@@ -90,6 +91,53 @@ function pcmWith(silenceBefore: number, voice: number, silenceAfter: number): Ui
   return new Uint8Array(view.buffer);
 }
 
+describe("短い 文を となりと 1つの 音に する（2026-09-29 の 指定）", () => {
+  it("同じ 人の 短い 文どうしは 1つに（分かりました。ありがとう ございます。）", () => {
+    expect(joinShortSentences(["分かりました。", "ありがとう ございます。"])).toEqual([
+      "分かりました。ありがとう ございます。",
+    ]);
+  });
+
+  it("行の 頭の 短い 文は 次の 文に、途中の 短い 文は 前の 文に つける", () => {
+    expect(
+      joinShortSentences([
+        "はい。",
+        "パソコンと スマートフォンで 確認しました。",
+        "今の ところ、問題は ありません。",
+      ]),
+    ).toEqual([
+      "はい。パソコンと スマートフォンで 確認しました。",
+      "今の ところ、問題は ありません。",
+    ]);
+    expect(
+      joinShortSentences([
+        "お知らせの タイトル、公開日、内容を 表示できるように しました。",
+        "はい。",
+        "また、タイトルを クリックすると 開きます。",
+      ]),
+    ).toEqual([
+      "お知らせの タイトル、公開日、内容を 表示できるように しました。はい。",
+      "また、タイトルを クリックすると 開きます。",
+    ]);
+  });
+
+  it("長い 文どうしは 分けた まま", () => {
+    const long = [
+      "次は、お知らせを 登録する 画面を お願いします。",
+      "GitHubの Issueを 作ったので、内容を 確認して ください。",
+    ];
+    expect(joinShortSentences(long)).toEqual(long);
+  });
+
+  it("画面の ▶ も 同じ まとまりで 並ぶ（音づくりと ずれない）", () => {
+    const script = [{ speaker: "t", text: "分かりました。ありがとう ございます。" }];
+    expect(lineSentenceClips("x", script, () => true, { joinShort: true })).toEqual([
+      [{ text: "分かりました。ありがとう ございます。", url: "/audio/listening/x/01.wav" }],
+    ]);
+    expect(lineSentenceClips("x", script, () => true)?.[0]).toHaveLength(2);
+  });
+});
+
 describe("こたえあわせの 文ごとの 音（lineSentenceClips）", () => {
   const script = [
     { speaker: "a", text: "はい。そうですか。" },
@@ -130,7 +178,9 @@ describe("こたえあわせの 文ごとの 音（lineSentenceClips）", () => 
       expect(
         manifest.sentences.map((one: { speaker: string; text: string }) => [one.speaker, one.text]),
         id,
-      ).toEqual(scriptSentences(listening.script).map((one) => [one.speaker, one.text]));
+      ).toEqual(
+        scriptSentences(listening.script, audioUnitsOf(id)).map((one) => [one.speaker, one.text]),
+      );
       manifest.sentences.forEach((one: { file: string }, i: number) => {
         expect(one.file).toBe(sentenceFileName(i));
         expect(existsSync(join(dir, id, one.file)), one.file).toBe(true);

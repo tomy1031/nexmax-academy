@@ -11,12 +11,12 @@
  * ## 使いかた（Interactions API・参考 https://qiita.com/Takuya__/items/45a3c0b0da5c17f0b3bc）
  * - モデル `gemini-3.8-flash-tts`。行ごとに `speech_metadata` で 話す人と 話しかたを 付ける
  * - 2人の 会話は `speech_config.mode = "conversational"`。**1回に 声は 2人まで**
- *   だから 3人 出る 朝礼は 2人ずつの かたまりに 分けて 呼ぶ（`dialogueChunks`）
+ *   だから 3人 出る 朝礼は 2人ずつに 分けて 呼ぶ（`scripts/lib/tts_listening.ts` の `planCalls`）
  * - 返る 音は 24kHz・16bit・モノラル（WAV か 生PCM。どちらでも 読む）
  *
  * SDK（@google/genai 2.16）の 型には まだ `mode` と `speech_metadata` が 無いので、
  * REST を 直に 呼ぶ。ここの 純関数（`ttsRequestBody`・`audioFromInteraction`・`pcmFromAudio`・
- * `dialogueChunks`）は 鍵なしで テストできる（tests/gemini_tts.test.ts）。
+ * ）は 鍵なしで テストできる（tests/gemini_tts.test.ts）。
  */
 
 import { GoogleGenAI } from "@google/genai";
@@ -171,37 +171,6 @@ export function pcmFromAudio(bytes: Uint8Array, sampleRate = OUT_RATE): Uint8Arr
   }
   if (sampleRate !== OUT_RATE) throw new Error(`音の 速さが ちがいます（${sampleRate}Hz）`);
   return new Uint8Array(bytes);
-}
-
-/**
- * 原稿の 行を、**声が 2人まで**の かたまりに 分ける（行の 並びは 変えない）。
- * 3人目が 出た ところで 次の かたまりに する。長すぎる かたまりも 切る
- *（1回の 音が 長いと、途中で 止まった ときに 失う ぶんが 大きい）。
- */
-export function dialogueChunks(
-  speakers: readonly string[],
-  lengths: readonly number[],
-  { maxSpeakers = 2, maxChars = 1400 } = {},
-): number[][] {
-  const chunks: number[][] = [];
-  let current: number[] = [];
-  let who = new Set<string>();
-  let chars = 0;
-  speakers.forEach((speaker, i) => {
-    const length = lengths[i] ?? 0;
-    const grows = !who.has(speaker);
-    if (current.length > 0 && ((grows && who.size >= maxSpeakers) || chars + length > maxChars)) {
-      chunks.push(current);
-      current = [];
-      who = new Set();
-      chars = 0;
-    }
-    current.push(i);
-    who.add(speaker);
-    chars += length;
-  });
-  if (current.length > 0) chunks.push(current);
-  return chunks;
 }
 
 /** 待つ。 */

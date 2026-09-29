@@ -46,6 +46,11 @@ export interface ListeningAudioPlan {
   readonly engine?: "live" | "tts";
   /** TTS に 渡す 話しかたの 指示（全部の 行に 付ける）。`engine: "tts"` の ときだけ 効く。 */
   readonly style?: string;
+  /**
+   * できた 音の 速さ（1 = そのまま。音程は 保つ・ffmpeg の atempo）。`engine: "tts"` の ときだけ 効く。
+   * 画面の「はやさ」ボタン（既定 0.85）は この 上に かかる。
+   */
+  readonly tempo?: number;
 }
 
 /** 報告の リスニング 5場面の 人（性別は 声と 表紙の 絵で そろえる）。 */
@@ -110,6 +115,8 @@ function reportPlan(speakers: readonly (keyof typeof REPORT_PEOPLE)[]): Listenin
     models: Object.fromEntries(speakers.map((id) => [id, REPORT_PEOPLE[id].model])),
     gapSeconds: 1.5,
     engine: "tts",
+    // 2026-09-29 の 指定「スピードは 1.25 が いい」（① の ためしの 音を 聞いて）
+    tempo: 1.25,
     style:
       "日本のIT企業の職場での、ていねいな会話。日本語を勉強中の人にも聞き取りやすいように、" +
       "はっきり、少しゆっくり、落ちついて話す。",

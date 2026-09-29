@@ -12,6 +12,7 @@ import { VideoPlayer } from "@/components/media/video-player";
 import { ImageSlotFrame } from "@/components/article/rich-blocks";
 import { assetUrl, hasAsset } from "@/lib/asset-url";
 import { lineSentenceClips, type SentenceClip } from "@/lib/audio/sentences";
+import { audioUnitsOf } from "@/content/listening-audio";
 import { soundsLikeOf } from "@/content/listening-sounds";
 import { ListeningPanel } from "./listening-panel";
 import {
@@ -579,7 +580,7 @@ function Review({
    * 全部の 文の 音が そろって いない 教材には 出さない（`lineSentenceClips`）。
    */
   const clips = useMemo(
-    () => lineSentenceClips(listening.id, listening.script, hasAsset),
+    () => lineSentenceClips(listening.id, listening.script, hasAsset, audioUnitsOf(listening.id)),
     [listening.id, listening.script],
   );
   const clipRef = useRef<HTMLAudioElement>(null);
