@@ -15,6 +15,9 @@ import { shuffle } from "./scheduler";
  * **ふりがな ON/OFF**（2026-09-29 の 指定）。OFF で 消すのは **おもての 語の よみ だけ**——
  * 漢字を 見て 読めるかを 自分で ためす ため。うらは 答え合わせの 面なので、OFF の ときは
  * よみを うらに 出す（単語ゲームの「ふりがな OFF」と 同じ 決まり。答えの 面では いつも 読める）。
+ *
+ * カードの 箱は その 1行ぶん 高く 取って ある（`min-h-60`）。取らないと OFF で めくる たびに
+ * 箱が 伸びて、下の「まえ／つぎ」が 指の 下から ずれる（intro の 44枚中 10枚で 実測）。
  */
 export function FlashcardDeck({
   words,
@@ -51,7 +54,7 @@ export function FlashcardDeck({
         initial={{ rotateY: -90, opacity: 0 }}
         animate={{ rotateY: 0, opacity: 1 }}
         transition={{ type: "spring", stiffness: 260, damping: 22 }}
-        className="border-hairline bg-panel-tint mt-4 grid min-h-52 w-full place-items-center rounded-[var(--radius-card)] border-2 px-5 py-8"
+        className="border-hairline bg-panel-tint mt-4 grid min-h-60 w-full place-items-center rounded-[var(--radius-card)] border-2 px-5 py-8"
         aria-label="カードを めくる"
       >
         {flipped ? (
@@ -97,9 +100,12 @@ export function FlashcardDeck({
       </div>
       <div className="mt-2 flex flex-wrap justify-center gap-2">
         {/* 色は 単語ゲームの ふりがな ボタンと そろえる（ON＝青・OFF＝白） */}
+        {/* 幅は ON/OFF で 変えない。変わると せまい 画面で 折り返しが 入れかわり、
+            押しなおした 指の 下に「じゅんばんを かえる」が 来る（412px で 実測） */}
         <DeckButton
           onClick={() => setFuriganaOn((on) => !on)}
           pressed={furiganaOn}
+          className="min-w-36"
           face={furiganaOn ? "#4fa8e8" : "#ffffff"}
           shadow={furiganaOn ? "#0272ae" : "#cfe6f3"}
         >
@@ -128,6 +134,7 @@ function DeckButton({
   children,
   onClick,
   pressed,
+  className = "",
   face = "#ffffff",
   shadow = "#cfe6f3",
 }: {
@@ -135,6 +142,7 @@ function DeckButton({
   onClick: () => void;
   /** 切りかえボタンの ときだけ 渡す（読み上げに ON/OFF を 伝える）。 */
   pressed?: boolean;
+  className?: string;
   face?: string;
   shadow?: string;
 }) {
@@ -143,7 +151,7 @@ function DeckButton({
       type="button"
       onClick={onClick}
       aria-pressed={pressed}
-      className="btn-island btn-game px-5 py-2.5 text-sm"
+      className={`btn-island btn-game px-5 py-2.5 text-sm ${className}`}
       style={
         {
           "--btn-face": face,
