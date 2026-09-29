@@ -269,7 +269,7 @@ test("朝礼（かんたん）— 報告すると カードが 開く", async ({
     .getByLabel("こたえを 入力する")
     .fill(
       "先週の 金曜日は、決済の 決まりを 調べて、決済の 画面と ABA Payの ボタンを 作りました。" +
-        "今、決済フロントエンド機能 ぜんたいの 進捗は 22%です。" +
+        "今、決済フロントエンド機能の 進捗は 20%です。" +
         "きょうは、注文IDと 合計金額を 画面に 出します。" +
         "今の ところ 問題は ありません。",
     );
@@ -563,7 +563,7 @@ test("月曜を 終えて 開き直すと、火曜から つづく", async ({ pa
     .getByLabel("こたえを 入力する")
     .fill(
       "先週の 金曜日は、決済の 決まりを 調べて、決済の 画面と ABA Payの ボタンを 作りました。" +
-        "今、決済フロントエンド機能 ぜんたいの 進捗は 22%です。" +
+        "今、決済フロントエンド機能の 進捗は 20%です。" +
         "きょうは、注文IDと 合計金額を 画面に 出します。" +
         "今の ところ 問題は ありません。",
     );
@@ -691,6 +691,154 @@ test("5日 通すと、合否と 数が 読める", async ({ page, context }) =>
   );
 });
 
+/** 各日の 札ごとの「司会の れい」（札の id と 見本）。 */
+function panelExamples(): { id: string; text: string }[][] {
+  const meeting = JSON.parse(
+    readFileSync(join(__dirname, "..", "..", "content", "meetings", "asakai_kantan.json"), "utf8"),
+  ) as { asakai: { scenes: { panels: { id: string; example: { text: string } }[] }[] } };
+  return meeting.asakai.scenes.map((scene) =>
+    scene.panels.map((panel) => ({ id: panel.id, text: panel.example.text })),
+  );
+}
+
+/**
+ * **★ 1回で ぜんぶ 言えた 曜日と、その 曜日だけ 話し直す 道**（2026-09-29 の 指定
+ *「最終的には 各曜日 一度で 伝えられる ように なると いい」・A）。
+ *
+ * 合格の 線は そのまま、★は その 上の 目標。★の ない 曜日には「もう いちど」が あり、
+ * 話し直して 評価を 閉じると 次の 曜日へ 進まずに 週の けっかへ 戻る。
+ *
+ * **同じ 授業の 中で 5日 通してから** 話し直す（code-critic 検収 E1）。しおりを 直に
+ * 仕込むと「お手本を 見た 日」の 印が 空の まま 始まり、話し直しで 印を 外す ところを
+ * 消しても 緑の ままに なる。
+ */
+test("★の ない 曜日だけ 話し直すと、週の けっかに 戻って ★が 付く", async ({ page, context }) => {
+  test.slow();
+  const refs = stageRefs();
+  const at = refs.indexOf("asakai_kantan");
+  await seedCompleted(context, refs.slice(0, at));
+  await page.goto("/asakai/meeting-asakai_kantan");
+  await joinCall(page);
+  await closeDuty(page);
+
+  const send = async (text: string) => {
+    await page.getByLabel("こたえを 入力する").fill(text);
+    await page.getByRole("button", { name: "おくる" }).click();
+  };
+  const day = page.getByRole("dialog", { name: "今日の 評価" });
+  for (const [at2, panels] of panelExamples().entries()) {
+    if (at2 === 2) {
+      /* 水曜だけ 問題を 言い忘れて、聞き返しで こたえる（★の 付かない 日）。 */
+      await send(
+        panels
+          .filter((one) => one.id !== "komari")
+          .map((one) => one.text)
+          .join(" "),
+      );
+      await page
+        .getByRole("dialog", { name: "報告の 見かた" })
+        .getByRole("button", { name: /報告を つづける/ })
+        .click();
+      await send(panels.find((one) => one.id === "komari")?.text ?? "");
+      await page
+        .getByRole("dialog", { name: "追加の しつもんへの こたえ" })
+        .getByRole("button", { name: /きょうの 評価を 見る/ })
+        .click();
+      await expect(day).toBeVisible();
+      /* ルビが 入るので 字では 引けない（常に 0件に なる）。rt を 外した 字で 見る。 */
+      const plain = await day.evaluate((node) => {
+        const clone = node.cloneNode(true) as HTMLElement;
+        for (const rt of Array.from(clone.querySelectorAll("rt"))) rt.remove();
+        return (clone.textContent ?? "").replace(/\s+/gu, "");
+      });
+      expect(plain).toContain("ぜんぶ伝えられました");
+      expect(plain).not.toContain("1回でぜんぶ言えました");
+    } else {
+      await send(panels.map((one) => one.text).join(" "));
+      await expect(day).toBeVisible();
+      /* ★を 取った ことは その日の 評価で すぐ 分かる（R5 検収）。 */
+      await expectOnScreen(page, "1回で ぜんぶ 言えました");
+    }
+    await closeDayScore(page);
+    if (at2 < 4) {
+      await page.getByRole("button", { name: /つづけます/ }).click();
+      await closeDuty(page);
+    }
+  }
+
+  const week = page.getByRole("dialog", { name: "今週の けっか" });
+  await page.getByRole("button", { name: "今週の けっかを 見る" }).click();
+  await expect(week).toBeVisible();
+  await expectOnScreen(page, "1回で ぜんぶ 言えた 曜日 4 / 5");
+  await expectOnScreen(page, "★は 合格の 数に 入りません");
+  await expectOnScreen(page, "★が ない 曜日だけ 話し直せます");
+  /* 「もう いちど」は ★の ない 水曜日だけ。 */
+  await expect(week.getByRole("button", { name: "水曜日を もう いちど" })).toBeVisible();
+  await expect(week.getByRole("button", { name: "月曜日を もう いちど" })).toHaveCount(0);
+  expect(await bareKanjiTexts(page)).toEqual([]);
+  await shot(page, "asakai-21-week-stars");
+
+  /* 押しまちがえても、話さずに 週の けっかへ 戻れる（code-critic 検収）。 */
+  await week.getByRole("button", { name: "水曜日を もう いちど" }).click();
+  await expect(week).toBeHidden();
+  await closeDuty(page);
+  await page.getByRole("button", { name: "話し直しを やめて 今週の けっかに もどる" }).click();
+  await expect(week).toBeVisible();
+  await expectOnScreen(page, "1回で ぜんぶ 言えた 曜日 4 / 5");
+
+  /*
+   * **話し直しの 途中で 開き直しても、同じ 曜日の「もう いちど」で 続きから**（通しプレイ検収）。
+   * 前は「もう いちど」が 途中の 控えを 捨てて いて、3/4 まで 言えて いても 0/4 に 戻った。
+   */
+  const wed = panelExamples()[2] ?? [];
+  await week.getByRole("button", { name: "水曜日を もう いちど" }).click();
+  await expect(week).toBeHidden();
+  await closeDuty(page);
+  await send(
+    wed
+      .filter((one) => one.id !== "komari")
+      .map((one) => one.text)
+      .join(" "),
+  );
+  await page
+    .getByRole("dialog", { name: "報告の 見かた" })
+    .getByRole("button", { name: /報告を つづける/ })
+    .click();
+  await page.reload();
+  await joinCall(page);
+  await expect(week).toBeVisible();
+  await week.getByRole("button", { name: "水曜日を もう いちど" }).click();
+  await closeDuty(page);
+  await expect(page.getByText("（3 / 4）")).toBeVisible();
+
+  /* はじめから 1本で 話し直す（聞き返し 0回）。 */
+  await page.getByRole("button", { name: "この日を はじめから やり直す" }).click();
+  await closeDuty(page);
+  await expect(page.getByText("（0 / 4）")).toBeVisible();
+  await expect(page.getByRole("button", { name: /水曜日/ })).toHaveAttribute(
+    "aria-current",
+    "step",
+  );
+  await send(exampleUtterances()[2] ?? "");
+  await expect(day).toBeVisible();
+  await expectOnScreen(page, "1回で ぜんぶ 言えました");
+  /* 話し直しの 評価では「もう いちど 報告する」を 出さない（数える 道は 週の けっかの 1つ）。 */
+  await expect(day.getByRole("button", { name: "もう いちど 報告する" })).toHaveCount(0);
+  /* 木曜へ 進まずに、週の けっかへ 戻る。 */
+  await day.getByRole("button", { name: /今週の けっかに もどる/ }).click();
+  await expect(day).toBeHidden();
+  await expect(week).toBeVisible();
+  await expectOnScreen(page, "1回で ぜんぶ 言えた 曜日 5 / 5");
+  await expect(week.getByRole("button", { name: /を もう いちど/ })).toHaveCount(0);
+  await shot(page, "asakai-22-week-stars-redone");
+
+  /* 話し直した けっかは しおりに 残る（週の けっかを 閉じる 前に 開き直しても）。 */
+  await page.reload();
+  await joinCall(page);
+  await expect(week).toBeVisible();
+  await expectOnScreen(page, "1回で ぜんぶ 言えた 曜日 5 / 5");
+});
+
 /**
  * **報告の 途中で 開き直しても、板と 会話が 残る**（2026-09-17 の 指定
  *「回答結果が リセットされて しまう。…ストレージ保管して 再現できるように」）
@@ -764,9 +912,7 @@ test("聞き返しに こたえると、こたえの 見かたが 出る", async
   await first.getByRole("button", { name: /報告を つづける/ }).click();
 
   /* 聞き返しに こたえる。 */
-  await page
-    .getByLabel("こたえを 入力する")
-    .fill("今、決済フロントエンド機能 ぜんたいの 進捗は 22%です。");
+  await page.getByLabel("こたえを 入力する").fill("今、決済フロントエンド機能の 進捗は 20%です。");
   await page.getByRole("button", { name: "おくる" }).click();
 
   const probe = page.getByRole("dialog", { name: "追加の しつもんへの こたえ" });
@@ -846,7 +992,7 @@ test("もう いちど 報告すると、その日が はじめから やり直�
       .getByLabel("こたえを 入力する")
       .fill(
         "先週の 金曜日は、決済の 決まりを 調べて、決済の 画面と ABA Payの ボタンを 作りました。" +
-          "今、決済フロントエンド機能 ぜんたいの 進捗は 22%です。" +
+          "今、決済フロントエンド機能の 進捗は 20%です。" +
           "きょうは、注文IDと 合計金額を 画面に 出します。" +
           "今の ところ 問題は ありません。",
       );
@@ -907,7 +1053,7 @@ test("さいごの 1枚の ポップアップに 言い直すは 出ない", asy
   await page
     .getByLabel("こたえを 入力する")
     .fill(
-      "今、決済フロントエンド機能 ぜんたいの 進捗は 22%です。" +
+      "今、決済フロントエンド機能の 進捗は 20%です。" +
         "きょうは、注文IDと 合計金額を 画面に 出します。" +
         "今の ところ 問題は ありません。",
     );
@@ -1042,7 +1188,7 @@ test("きょうの 評価に 自分の 回答・正しい 回答・まとめが 
     .getByLabel("こたえを 入力する")
     .fill(
       "先週の 金曜日は、決済の 決まりを 調べて、決済の 画面と ABA Payの ボタンを 作りました。" +
-        "今、決済フロントエンド機能 ぜんたいの 進捗は 22%です。" +
+        "今、決済フロントエンド機能の 進捗は 20%です。" +
         "きょうは、注文IDと 合計金額を 画面に 出します。" +
         "今の ところ 問題は ありません。",
     );
@@ -1122,7 +1268,7 @@ test("お手本を 見て やり直しても、その日の 点は 変わらな�
     .getByLabel("こたえを 入力する")
     .fill(
       "先週の 金曜日は、決済の 決まりを 調べて、決済の 画面と ABA Payの ボタンを 作りました。" +
-        "今、決済フロントエンド機能 ぜんたいの 進捗は 22%です。" +
+        "今、決済フロントエンド機能の 進捗は 20%です。" +
         "きょうは、注文IDと 合計金額を 画面に 出します。" +
         "今の ところ 問題は ありません。",
     );
@@ -1281,7 +1427,7 @@ test("評価を 閉じた あとも、先輩の 報告の こえが 鳴りつづ
     .getByLabel("こたえを 入力する")
     .fill(
       "先週の 金曜日は、決済の 決まりを 調べて、決済の 画面と ABA Payの ボタンを 作りました。" +
-        "今、決済フロントエンド機能 ぜんたいの 進捗は 22%です。" +
+        "今、決済フロントエンド機能の 進捗は 20%です。" +
         "きょうは、注文IDと 合計金額を 画面に 出します。" +
         "今の ところ 問題は ありません。",
     );

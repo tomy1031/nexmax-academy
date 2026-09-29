@@ -15701,7 +15701,7 @@
       "romaji": "shinchokukanri",
       "meaningJa": "作業が 予定どおり 進んで いるかを、いつも 見て いく ことです。",
       "englishTerm": "Keeping track of progress",
-      "example": "リーダーは、チーム全体の 進捗管理を します。",
+      "example": "リーダーは、チームの 進捗管理を します。",
       "wrongMeanings": [
         "Keeping track of issues",
         "Keeping track of the budget",
@@ -15719,10 +15719,6 @@
         [
           "作業",
           "さぎょう"
-        ],
-        [
-          "全体",
-          "ぜんたい"
         ]
       ]
     },
@@ -17618,7 +17614,7 @@
         "Pass rate",
         "Exchange rate"
       ],
-      "example": "担当の 機能 全体の 進捗率を 報告します。",
+      "example": "担当の 機能の 進捗率を 報告します。",
       "furigana": [
         [
           "進捗率",
@@ -17639,10 +17635,6 @@
         [
           "機能",
           "きのう"
-        ],
-        [
-          "全体",
-          "ぜんたい"
         ],
         [
           "報告",

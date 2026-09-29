@@ -67,7 +67,7 @@
     {
       "out": "shinchoku_zukai",
       "dest": "public/img/articles/asakai_lecture/sec4_shinchoku.webp",
-      "title": "作業ごとの 状態から 機能全体の 進捗を 考える 図",
+      "title": "作業ごとの 状態から 機能の 進捗を 考える 図",
       "where": "content/articles/asakai_lecture.json 3．自分の 進捗を 分かるように して おこう",
       "priority": "A",
       "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: you look at each piece of work to decide the progress of the whole feature. A teaching diagram on a soft sky-blue background with no people. At the top centre, one large rounded cream card reads ログイン機能 70% in big letters, with a thick progress bar under the words filled to 70 percent. Three thin connector lines go down from it to a row of three smaller cream cards. The first small card shows a green check mark and reads ログイン画面UI 完了. The second small card shows a blue circular arrow and reads API接続 作業中. The third small card shows an empty square box and reads テスト まだ. Few large elements, generous spacing.",

@@ -108,6 +108,8 @@ import { recordContentProgress } from "@/lib/progress/store";
 import {
   clearAsakaiDraft,
   clearAsakaiResume,
+  isOneShotDay,
+  keptDayResult,
   readAsakaiDraft,
   refreshSavedLines,
   saveAsakaiDraft,
@@ -154,7 +156,7 @@ const KIND_NAME: Record<Scene["kind"], string> = { asa: "朝礼", yuu: "夕礼" 
  *
  * 前は「こう 言うと 開きます。＋ お手本」を 出して いた。0点で 終わらせない ための
  * 仕組みだったが、**答えを そのまま 読み上げて しまう**——進捗の 札なら
- *「今、決済フロントエンド機能 ぜんたいの 進捗は 20%です。」が 画面に 出るので、
+ *「今、決済フロントエンド機能の 進捗は 20%です。」が 画面に 出るので、
  * 学習者は 考えずに 写せる（ユーザーの 指摘）。
  *
  * いまは **言えなかった ことを はっきり 言って 次へ 行く**（規律1）。
@@ -530,6 +532,11 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
   const [shownAnswers, setShownAnswers] = useState<readonly string[]>([]);
   /** けっかを 読んだ 印。**読んだ ときに 1回だけ**「おわった」を 書く。 */
   const weekRead = useRef(false);
+  /**
+   * **週の けっかから 1日だけ 話し直して いる**（2026-09-29・`redoDay`）。
+   * その日の 評価を 閉じたら、つぎの 曜日へ 進まずに 週の けっかへ 戻る。
+   */
+  const [backToWeek, setBackToWeek] = useState(false);
 
   /** AIに 見て もらって いる あいだ（鍵が 無い ときは いつも false）。 */
   const [waiting, setWaiting] = useState(false);
@@ -745,7 +752,12 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
         /* `day` は "月曜日"（`DAY_NAME`）。`scene.day` は "mon" なので 変換して 比べる。 */
         const order = (day: string) =>
           asakai?.scenes.findIndex((s) => DAY_NAME[s.day] === day) ?? 0;
-        const done = [...prev.filter((r) => r.day !== row.day), row].sort(
+        /* 合格に 数える 数が 下がる 話し直しは 前の けっかを 残す（`keptDayResult`）。 */
+        const kept = keptDayResult(
+          prev.find((r) => r.day === row.day),
+          row,
+        );
+        const done = [...prev.filter((r) => r.day !== row.day), kept].sort(
           (a, b) => order(a.day) - order(b.day),
         );
         saveAsakaiResume(meeting.id, done, undefined, asakai?.scenes.length ?? 0);
@@ -1471,8 +1483,8 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
   /**
    * 週の けっかを 閉じる。**「おわった」は 1回だけ 書く。**
    *
-   * ポップアップは 閉じた あとも もう いちど 開ける ので、開け閉めの たびに
-   * しおりを 消しに いかない。
+   * しおりは 閉じる たびに 消す（下の 覚え書き）。閉じた あとも 同じ 画面の 中では
+   * けっかを もう いちど 開けるが、開き直したら 月曜から（5日 終わったら 消す・`asakai-resume.ts`）。
    */
   const closeWeek = useCallback(() => {
     setWeekOpen(false);
@@ -1541,9 +1553,76 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
     weekRead.current = false;
     setResults([]);
     setShownAnswers([]);
+    setBackToWeek(false);
     setWeekOpen(false);
     goToScene(0);
   }, [meeting.id, goToScene]);
+
+  /**
+   * **その 曜日だけ 話し直す**（2026-09-29 の 指定。★の ない 曜日の「もう いちど」）。
+   *
+   * 目標は「どの 曜日も 1回で 伝えられる」こと。週を まるごと やり直さなくても、
+   * ★の ない 曜日だけ 練習できる ように する。
+   *
+   * ## 話し直した けっかで **数え直す**（お手本を 見た あとでも）
+   * 同じ 授業の 中の やり直しは「お手本を 見た あと」なので 点を 変えない 決まり
+   *（`shownAnswers`）。ただ それは **お手本を 見た その場で 写す** 道を ふさぐ ための もので、
+   * 週の けっかには お手本が 無い。「月曜日から もう いちど」（`restartWeek`）と 同じく、
+   * ここからの 話し直しは その 曜日の 印を 外して 数え直す。
+   * 数え直すのは 話し終えた ときだけ——途中で やめたら 前の けっかが 残る。
+   * 合格に 数える 数が 下がった ときも 前の けっかを 残す（`keptDayResult`）。
+   */
+  const redoDay = useCallback(
+    (at: number) => {
+      const day = asakai?.scenes[at]?.day;
+      if (!day) return;
+      /*
+       * **しおりを 書き直してから 始める**（code-critic 検収）。週の けっかを 一度 閉じると
+       * しおりは 消えて いる。その まま 話しかけて 閉じると、途中の 控えだけが
+       * 「終わった 日 0」の しおりに 残り、**来週の 水曜が 先週の 途中から**始まって いた。
+       * 5日ぶんと 週の けっか待ちの 印を 先に 置けば、開き直しても 週の けっかに 戻る。
+       */
+      saveAsakaiResume(meeting.id, results, undefined, asakai?.scenes.length ?? 0);
+      /*
+       * **途中の 控えは 捨てない**（通しプレイ検収）。話し直しの 途中で 開き直すと 週の けっかから
+       * 始まる ので、ここで 捨てると 3/4 まで 言えて いても 0/4 に 戻って いた。控えが ある のは
+       * 話し直しかけた 日だけ（終えた 日の 控えは `finishScene` が 消す）。やめる ときは `quitRedo` が 捨てる。
+       */
+      setShownAnswers((prev) => prev.filter((one) => one !== DAY_NAME[day]));
+      setBackToWeek(true);
+      setWeekOpen(false);
+      goToScene(at);
+    },
+    [asakai, meeting.id, results, goToScene],
+  );
+
+  /**
+   * 話し直した 日の 評価を 閉じたら、週の けっかへ 戻る。
+   *
+   * 先輩の 報告と 締めは 流さない——合否を 読む うしろで 声が 流れる ことに なる
+   *（金曜に 週の けっかを 自動で 開かない ように した のと 同じ 理由・`toGap`）。
+   */
+  const backToWeekResult = useCallback(() => {
+    runId.current += 1;
+    setWaiting(false);
+    stopClips();
+    voice.stop();
+    /* 評価の あいだに 遅れて 届いた 1本の 見かたを 週の けっかの 上に 出さない。 */
+    setJudge(null);
+    setBackToWeek(false);
+    setPhase("done");
+    setWeekOpen(true);
+  }, [stopClips, voice]);
+
+  /**
+   * **話し直しを やめて 週の けっかへ 戻る**（code-critic 検収）。押しまちがえた 人が、
+   * その日を 最後まで 話して けっかを 変えるしか 戻る 道が 無かった。
+   * 途中の 控えは 捨てる（けっかは 前の まま）。
+   */
+  const quitRedo = useCallback(() => {
+    if (scene) clearAsakaiDraft(meeting.id, scene.day);
+    backToWeekResult();
+  }, [scene, meeting.id, backToWeekResult]);
 
   const goNext = useCallback(() => goToScene(sceneAt + 1), [goToScene, sceneAt]);
 
@@ -1753,6 +1832,16 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
         */}
         ↻ <RubyText text="この 曜日を はじめから" index={index} show />
       </button>
+      {backToWeek ? (
+        <button
+          type="button"
+          onClick={quitRedo}
+          aria-label="話し直しを やめて 今週の けっかに もどる"
+          className="border-hairline text-navy w-full rounded-full border-2 bg-white px-3 py-1.5 text-xs font-extrabold"
+        >
+          ← <RubyText text="やめて 今週の けっかに もどる" index={index} show />
+        </button>
+      ) : null}
     </div>
   );
 
@@ -1834,7 +1923,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
    * 報告メモに 並べる 箱。**きのう → 進捗 → きょう → 問題（→ お願い）**
    *（2026-09-16 の 指定「進捗を 昨日したことの 次に 入れて ください」）。
    *
-   * この 並びは **報告の 4つの 型と 同じ**——① きのう したこと ② 担当の 機能 ぜんたいの 進捗
+   * この 並びは **報告の 4つの 型と 同じ**——① きのう したこと ② 担当の 機能の 進捗
    * ③ きょう すること ④ 問題・確認。板の 4枚の カードとも 同じ 順に なる ので、
    * メモを 上から 読めば その まま 報告の 順に なる。
    *
@@ -2199,25 +2288,46 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
             };
           })}
           probes={probeLog}
+          /* 聞き返し 0回で ぜんぶ ⭕（週の けっかの ★と 同じ ものさし・`isOneShotDay`）。 */
+          oneShot={probes === 0 && states.length > 0 && states.every((one) => one.full)}
           good={dayAi.good}
           advice={dayAi.advice}
           failReason={dayFail}
           nextLabel={
-            sceneAt + 1 >= asakai.scenes.length
-              ? /* 閉じた あとは 先輩の 報告を 聞き、週の けっかは ボタンで 開く（上の `toGap`）。 */
-                "みんなの 報告を 聞く ▶"
-              : `${DAY_NAME[asakai.scenes[sceneAt + 1]?.day ?? "fri"]}へ 進む ▶`
+            backToWeek
+              ? "今週の けっかに もどる ▶"
+              : sceneAt + 1 >= asakai.scenes.length
+                ? /* 閉じた あとは 先輩の 報告を 聞き、週の けっかは ボタンで 開く（上の `toGap`）。 */
+                  "みんなの 報告を 聞く ▶"
+                : `${DAY_NAME[asakai.scenes[sceneAt + 1]?.day ?? "fri"]}へ 進む ▶`
           }
           index={index}
           aiIndex={aiIndex}
-          /* もう いちど 報告する … その日を はじめから（けっかは 上書きされる）。 */
-          onRetry={() => {
-            setDayOpen(false);
-            setPendingTail([]);
-            goToScene(sceneAt);
-          }}
+          /*
+           * もう いちど 報告する … その日を はじめから（お手本を 見た あとなので 点は 変わらない）。
+           * **週の けっかからの 話し直しでは 出さない**（code-critic 検収）。ここで 押すと 点が
+           * 変わらず、週の けっかの「もう いちど」だと 変わる——同じ 行動で 結果が ちがう。
+           * 話し直したい ときは 週の けっかの「もう いちど」から（そちらは 数え直す）。
+           */
+          onRetry={
+            backToWeek
+              ? undefined
+              : () => {
+                  setDayOpen(false);
+                  setPendingTail([]);
+                  goToScene(sceneAt);
+                }
+          }
           onClose={() => {
             setDayOpen(false);
+            if (backToWeek) {
+              /* 司会の 受け止め（評価の あいだに 鳴った 1行）だけ 字で 残す。 */
+              const ack = pendingTail[0];
+              if (ack) setLines((prev) => [...prev, toChatLine(ack, nameOf, learnerName)]);
+              setPendingTail([]);
+              backToWeekResult();
+              return;
+            }
             /* 受け止めの 字と、そのあとの 話を ここで 出す（上の `finishScene` の 覚え書き）。 */
             if (pendingTail.length > 0) {
               const rest = pendingTail.slice(1);
@@ -2239,6 +2349,7 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
           index={index}
           onClose={closeWeek}
           onRestart={restartWeek}
+          onRedoDay={redoDay}
         />
       ) : null}
       {/*
@@ -2421,6 +2532,7 @@ function WeekResult({
   index,
   onClose,
   onRestart,
+  onRedoDay,
 }: {
   asakai: Asakai;
   rows: readonly DayResult[];
@@ -2428,6 +2540,8 @@ function WeekResult({
   onClose: () => void;
   /** 月曜日から もう いちど（しおりを 消して 白紙から）。 */
   onRestart: () => void;
+  /** その 曜日だけ 話し直す（何日目か・0始まり）。 */
+  onRedoDay: (at: number) => void;
 }) {
   /*
    * 問題の 札は **教材の ことばを 使う**。「こまりごと」と 書き込んで いた ころ、
@@ -2459,6 +2573,12 @@ function WeekResult({
    * 中で 午後の テストの けっかを 話して いた（時間の 筋が 逆だった）ので、ここへ 移した。
    */
   const after = asakai.scenes[asakai.scenes.length - 1]?.lead ?? "";
+  /*
+   * **★ 1回で ぜんぶ 言えた 曜日**（2026-09-29 の 指定）。合否の 線とは 分けて 出す——
+   * 同じ 段に 並べると「★が 5つ 無いと 不合格」に 読める。
+   */
+  const stars = rows.filter(isOneShotDay).length;
+  const sceneAtOf = (day: string) => asakai.scenes.findIndex((s) => DAY_NAME[s.day] === day);
 
   return (
     <ModalShell
@@ -2475,6 +2595,14 @@ function WeekResult({
       /* 中身は 5行の 表。細い ままだと PCで 短冊に なる。 */
       wide
     >
+      {/*
+        **手ぶらで 帰さない**（P8・R5-2）。合否と ★が どちらも 0 の 週にも、
+        やった ことの 事実を 1行 置く（その日の 評価の「きょうは N回 話しました」と 同じ 流儀）。
+      */}
+      <p className="text-leaf-deep mt-2 text-center text-sm font-black">
+        <DayCount n={rows.length} />
+        <RubyText text=" ぜんぶ 話しました。" index={index} show />
+      </p>
       {after !== "" ? (
         <div className="bg-panel-tint mt-3 rounded-xl px-3 py-2">
           <p className="text-ink-soft text-[11px] font-black">
@@ -2513,6 +2641,29 @@ function WeekResult({
         </p>
       ) : null}
 
+      <div className="bg-panel-tint mt-3 rounded-xl px-3 py-2">
+        <p className="text-sm font-bold">
+          <span aria-hidden="true" className="text-sun-deep">
+            ★
+          </span>{" "}
+          <RubyText text="1回で ぜんぶ 言えた 曜日" index={index} show />{" "}
+          <span className="tabular-nums">
+            {stars} / {rows.length}
+          </span>
+        </p>
+        {/*
+          **どう すれば ★か**を 言う（R5 検収）。聞き返しの 回数だけでは 次に 何を
+          するかに ならない。「目標」は N3 の 語なので 使わず、合否との 関係を 言い切る。
+        */}
+        <p className="text-ink-soft mt-0.5 text-[11px] leading-[1.9] font-bold">
+          <RubyText
+            text="報告メモの ことを、最初の 報告で ぜんぶ 言えた 曜日に ★が 付きます（聞き返し 0回）。★は 合格の 数に 入りません。"
+            index={index}
+            show
+          />
+        </p>
+      </div>
+
       <table className="mt-3 w-full text-left text-[13px] font-bold">
         <thead>
           <tr className="text-ink-soft text-[11px]">
@@ -2525,34 +2676,82 @@ function WeekResult({
             <th scope="col" className="py-1">
               <RubyText text="聞き返し" index={index} show />
             </th>
+            {/* 見出しの 字は 出さない（ボタンの 字が そのまま 列の 名前）。 */}
+            <th scope="col" className="py-1">
+              <span className="sr-only">もう いちど</span>
+            </th>
           </tr>
         </thead>
         <tbody>
-          {rows.map((row) => (
-            <tr key={row.day} className="border-hairline border-t">
-              <td className="py-1">
-                <RubyText text={row.day} index={index} show />
-              </td>
-              <td className="py-1 tabular-nums">
-                {row.units} / {row.unitTotal}
-              </td>
-              <td className="py-1 tabular-nums">
-                <RubyText text={`${row.probes}回`} index={index} show />
-              </td>
-            </tr>
-          ))}
+          {rows.map((row) => {
+            const star = isOneShotDay(row);
+            const at = sceneAtOf(row.day);
+            return (
+              <tr key={row.day} className="border-hairline border-t">
+                <td className="py-1">
+                  <RubyText text={row.day} index={index} show />
+                  {star ? (
+                    <span
+                      role="img"
+                      aria-label="1回で ぜんぶ 言えた"
+                      className="text-sun-deep ml-1"
+                    >
+                      ★
+                    </span>
+                  ) : null}
+                </td>
+                <td className="py-1 tabular-nums">
+                  {row.units} / {row.unitTotal}
+                </td>
+                <td className="py-1 tabular-nums">
+                  <RubyText text={`${row.probes}回`} index={index} show />
+                </td>
+                <td className="py-1 text-right">
+                  {!star && at >= 0 ? (
+                    <button
+                      type="button"
+                      onClick={() => onRedoDay(at)}
+                      aria-label={`${row.day}を もう いちど`}
+                      className="btn-island px-2 py-1 text-[11px] whitespace-nowrap"
+                    >
+                      もう いちど
+                    </button>
+                  ) : null}
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
 
-      {pass ? null : (
-        <p className="mt-3 text-sm font-bold">
-          <RubyText
-            text="下の「月曜日から もう いちど」を 押すと、月曜日から 話して、数を 数え直します。"
-            index={index}
-            show
-          />
-        </p>
-      )}
+      {/*
+        **次の 行動は 1つ**（規律1・R5 検収）。不合格の 週には ★の ない 曜日が 必ず ある ので、
+        「その 曜日だけ 話し直す」と「月曜日から」を 並べると 2つに なる。近い ほう
+        （足りない 曜日だけ）を 言い、月曜日からは 下の ボタンに だけ 残す。
+        「もう いちど」は 下の「月曜日から もう いちど」にも ある ので、**表の** と 言う。
+      */}
+      {stars < rows.length ? (
+        <div className="mt-2 space-y-0.5 text-[12px] leading-[1.9] font-bold">
+          <p>
+            <RubyText
+              text={
+                pass
+                  ? "表の「もう いちど」で、★が ない 曜日だけ 話し直せます。"
+                  : "表の「もう いちど」で、★が ない 曜日を 話し直しましょう。"
+              }
+              index={index}
+              show
+            />
+          </p>
+          <p className="text-ink-soft text-[11px]">
+            <RubyText
+              text="話し直すと、その 曜日を 数え直します。前より 悪く なった ときは、前の けっかが 残ります。"
+              index={index}
+              show
+            />
+          </p>
+        </div>
+      ) : null}
     </ModalShell>
   );
 }
