@@ -11,6 +11,10 @@ import { shuffle } from "./scheduler";
 /**
  * フラッシュカード。カードをめくって覚える（旧5モードのひとつ）。
  * 読み上げは端末の音声合成を使い、無い環境ではボタンを出さない。
+ *
+ * **ふりがな ON/OFF**（2026-09-29 の 指定）。OFF で 消すのは **おもての 語の よみ だけ**——
+ * 漢字を 見て 読めるかを 自分で ためす ため。うらは 答え合わせの 面なので、OFF の ときは
+ * よみを うらに 出す（単語ゲームの「ふりがな OFF」と 同じ 決まり。答えの 面では いつも 読める）。
  */
 export function FlashcardDeck({
   words,
@@ -24,6 +28,7 @@ export function FlashcardDeck({
   const [order, setOrder] = useState<readonly Word[]>(words);
   const [index, setIndex] = useState(0);
   const [flipped, setFlipped] = useState(false);
+  const [furiganaOn, setFuriganaOn] = useState(true);
 
   const word = order[index];
   if (!word) return null;
@@ -51,6 +56,14 @@ export function FlashcardDeck({
       >
         {flipped ? (
           <span>
+            {!furiganaOn && (
+              <span className="text-ink mb-2 block text-xl font-extrabold">
+                <ruby>
+                  {word.term}
+                  <rt>{word.reading}</rt>
+                </ruby>
+              </span>
+            )}
             <span className="text-ink block text-2xl font-extrabold">{word.meaningEn}</span>
             <span className="text-ink-soft mt-3 block text-base font-bold">
               <RubyText text={word.explanationJa} index={furigana} />
@@ -60,7 +73,8 @@ export function FlashcardDeck({
           <span className="text-ink text-4xl font-extrabold">
             <ruby>
               {word.term}
-              <rt>{word.reading}</rt>
+              {/* 消しても 高さは 残す（ON/OFF の たびに 語が 上下に 跳ねない） */}
+              <rt className={furiganaOn ? undefined : "invisible"}>{word.reading}</rt>
             </ruby>
           </span>
         )}
@@ -82,6 +96,15 @@ export function FlashcardDeck({
         <DeckButton onClick={() => go(1)}>つぎ →</DeckButton>
       </div>
       <div className="mt-2 flex flex-wrap justify-center gap-2">
+        {/* 色は 単語ゲームの ふりがな ボタンと そろえる（ON＝青・OFF＝白） */}
+        <DeckButton
+          onClick={() => setFuriganaOn((on) => !on)}
+          pressed={furiganaOn}
+          face={furiganaOn ? "#4fa8e8" : "#ffffff"}
+          shadow={furiganaOn ? "#0272ae" : "#cfe6f3"}
+        >
+          ふりがな {furiganaOn ? "ON" : "OFF"}
+        </DeckButton>
         <DeckButton
           onClick={() => {
             setOrder(shuffle(words));
@@ -104,11 +127,14 @@ export function FlashcardDeck({
 function DeckButton({
   children,
   onClick,
+  pressed,
   face = "#ffffff",
   shadow = "#cfe6f3",
 }: {
   children: React.ReactNode;
   onClick: () => void;
+  /** 切りかえボタンの ときだけ 渡す（読み上げに ON/OFF を 伝える）。 */
+  pressed?: boolean;
   face?: string;
   shadow?: string;
 }) {
@@ -116,6 +142,7 @@ function DeckButton({
     <button
       type="button"
       onClick={onClick}
+      aria-pressed={pressed}
       className="btn-island btn-game px-5 py-2.5 text-sm"
       style={
         {
