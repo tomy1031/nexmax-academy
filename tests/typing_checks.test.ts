@@ -187,22 +187,22 @@ describe("数字・英字の 語も かなで 当たる（台帳 src/content/lis
 
 describe("ちがう 文は はっきり 外す（規律1）", () => {
   it("助詞が ちがう・語が 抜ける・余計な 字・空 は 外れる", () => {
-    // ユーザーの 一覧の 打ちまちがい（タスク「は」）は リスニングどおり「を」が 正しい
-    expect(judge("kanryou", 6, "次は どの タスクは すれば いいですか。").ok).toBe(false);
-    expect(judge("kanryou", 6, "次は タスクを すれば いいですか。").ok).toBe(false);
-    expect(judge("kanryou", 6, "次は どの タスクを すれば いいですかね。").ok).toBe(false);
+    // お手本は「次に 対応する タスクは ありますか。」（リスニングの 原稿どおり）。助詞「は」を「を」に 変えると 外れる
+    expect(judge("kanryou", 6, "次に 対応する タスクを ありますか。").ok).toBe(false);
+    expect(judge("kanryou", 6, "次に タスクは ありますか。").ok).toBe(false);
+    expect(judge("kanryou", 6, "次に 対応する タスクは ありますかね。").ok).toBe(false);
     expect(judge("kanryou", 6, "").ok).toBe(false);
     expect(judge("kanryou", 6, "   ").ok).toBe(false);
   });
 
   it("外れた ときは、頭から 合って いた ところを 返す", () => {
-    expect(judge("kanryou", 6, "次は どの タスクは すれば いいですか。")).toEqual({
+    expect(judge("kanryou", 6, "次に 対応する タスクを ありますか。")).toEqual({
       ok: false,
-      matched: "次は どの タスク",
+      matched: "次に 対応する タスク",
     });
-    expect(judge("kanryou", 6, "つぎは どの たすくは")).toEqual({
+    expect(judge("kanryou", 6, "つぎに たいおうする たすくを")).toEqual({
       ok: false,
-      matched: "つぎは どの たすく",
+      matched: "つぎに たいおうする たすく",
     });
     expect(judge("kanryou", 6, "あいう")).toEqual({ ok: false, matched: "" });
   });
