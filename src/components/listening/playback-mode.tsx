@@ -15,6 +15,7 @@ import { lineSentenceClips, type SentenceClip } from "@/lib/audio/sentences";
 import { audioUnitsOf } from "@/content/listening-audio";
 import { soundsLikeOf } from "@/content/listening-sounds";
 import { ListeningPanel } from "./listening-panel";
+import { useSeekableAudio, type SeekableAudio } from "./use-seekable-audio";
 import {
   buildSoundsIndex,
   matchesRescueFingerprint,
@@ -90,6 +91,15 @@ export function ListeningPlayer({
    * 動画（`<video>`）でも 同じ 札で 速さを 変えられる（どちらも この 型を 継ぐ）。
    */
   const mediaRef = useRef<HTMLMediaElement>(null);
+  /**
+   * 通しの 音は **手もとに 取ってから** 鳴らす（つまみで 位置を 動かせる ように。
+   * 理由は `use-seekable-audio.ts`）。「きく」と「たしかめ」で 1つを 分け合う。
+   * 「はじめる」を 押す 前は 取らない（教室の 細い 回線を 食わない）。
+   */
+  const audio = useSeekableAudio(
+    assetUrl(listening.audioUrl),
+    phase !== "intro" && mediaKind(listening) === "audio",
+  );
 
   const goal = listening.revealGoal;
 
@@ -122,6 +132,7 @@ export function ListeningPlayer({
           <Player
             listening={listening}
             mediaRef={mediaRef}
+            audio={audio}
             toggles={{
               captionsOn,
               onCaptions: () => setCaptionsOn((on) => !on),
@@ -162,6 +173,7 @@ export function ListeningPlayer({
           listening={listening}
           nameOf={nameOf}
           furigana={furigana}
+          audio={audio}
           line={line}
           onLine={setLine}
           onAgain={() => {
@@ -328,10 +340,13 @@ function applySpeed(media: HTMLMediaElement | null, value: number) {
 function Player({
   listening,
   mediaRef,
+  audio,
   toggles,
 }: {
   listening: Listening;
   mediaRef: React.RefObject<HTMLMediaElement | null>;
+  /** 音（`<audio>`）の 取り出し 結果。動画・YouTube では 使わない。 */
+  audio: SeekableAudio;
   toggles?: {
     captionsOn: boolean;
     onCaptions: () => void;
@@ -368,12 +383,20 @@ function Player({
           mediaRef={mediaRef}
         />
       ) : mediaKind(listening) === "audio" ? (
-        <audio
-          ref={mediaRef as React.RefObject<HTMLAudioElement | null>}
-          src={assetUrl(listening.audioUrl)}
-          controls
-          className="w-full"
-        />
+        <>
+          <audio
+            ref={mediaRef as React.RefObject<HTMLAudioElement | null>}
+            src={audio.url}
+            data-src={assetUrl(listening.audioUrl)}
+            controls
+            className="w-full"
+          />
+          {audio.status === "loading" ? (
+            <p className="text-ink-soft text-xs font-bold" aria-live="polite">
+              音を じゅんび しています…{audio.progress === null ? "" : `（${audio.progress}%）`}
+            </p>
+          ) : null}
+        </>
       ) : (
         <p className="text-ink-soft text-sm font-bold">
           この きょうざいには まだ 音が ありません。げんこうを 見ながら すすめてください。
@@ -559,6 +582,7 @@ function Review({
   listening,
   nameOf,
   furigana,
+  audio,
   line,
   onLine,
   onAgain,
@@ -566,6 +590,7 @@ function Review({
   listening: Listening;
   nameOf: ReadonlyMap<string, string>;
   furigana: FuriganaIndex;
+  audio: SeekableAudio;
   line: number;
   onLine: (line: number) => void;
   onAgain: () => void;
@@ -624,7 +649,7 @@ function Review({
 
         {mediaKind(listening) === "none" ? null : (
           <div className="mt-4">
-            <Player listening={listening} mediaRef={mediaRef} />
+            <Player listening={listening} mediaRef={mediaRef} audio={audio} />
           </div>
         )}
 

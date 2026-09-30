@@ -51,7 +51,9 @@ for (const width of [390, 1280]) {
     const audio = review.locator("audio");
     await expect(audio).toBeVisible();
     await expect(audio).toHaveAttribute("controls", "");
-    await expect(audio).toHaveAttribute("src", /\/audio\/listening\/houkoku_listening\.wav/);
+    // 位置を 動かせる ように 手もとの Blob で 鳴らす。元の ファイルは data-src で 見分ける
+    await expect(audio).toHaveAttribute("data-src", /\/audio\/listening\/houkoku_listening\.wav/);
+    await expect(audio).toHaveAttribute("src", /^blob:/);
 
     // 2. はやさが こたえあわせの 音に 効く
     await review.getByRole("button", { name: "ゆっくり", exact: true }).click();
