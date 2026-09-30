@@ -4,7 +4,7 @@
   "order": 6,
   "title": "報連相：報告（リスニング）",
   "reading": "ほうれんそう ほうこく りすにんぐ",
-  "description": "いろいろな 場面の 報告を 聞いて、もんだいで 確かめます。作業の 完了・予定の 遅れ・システムの トラブル・技術の 調査・朝礼の 5つの 場面です。",
+  "description": "いろいろな 場面の 報告を 聞いて、大事な 文を 入力して、もんだいで 確かめます。作業の 完了・予定の 遅れ・システムの トラブル・技術の 調査・朝礼の 5つの 場面です。",
   "color": "sky",
   "status": "published",
   "area": {
@@ -17,12 +17,20 @@
       "type": "listening"
     },
     {
+      "ref": "houkoku_kanryou_typing",
+      "type": "typing"
+    },
+    {
       "ref": "houkoku_kanryou_quiz",
       "type": "quizset"
     },
     {
       "ref": "houkoku_okure_listening",
       "type": "listening"
+    },
+    {
+      "ref": "houkoku_okure_typing",
+      "type": "typing"
     },
     {
       "ref": "houkoku_okure_quiz",
@@ -33,12 +41,20 @@
       "type": "listening"
     },
     {
+      "ref": "houkoku_shougai_typing",
+      "type": "typing"
+    },
+    {
       "ref": "houkoku_shougai_quiz",
       "type": "quizset"
     },
     {
       "ref": "houkoku_chousa_listening",
       "type": "listening"
+    },
+    {
+      "ref": "houkoku_chousa_typing",
+      "type": "typing"
     },
     {
       "ref": "houkoku_chousa_quiz",
@@ -49,12 +65,28 @@
       "type": "listening"
     },
     {
+      "ref": "houkoku_chourei_typing",
+      "type": "typing"
+    },
+    {
       "ref": "houkoku_chourei_quiz",
       "type": "quizset"
     }
   ],
   "wordStageIds": [],
   "furigana": [
+    [
+      "大事",
+      "だいじ"
+    ],
+    [
+      "入力",
+      "にゅうりょく"
+    ],
+    [
+      "文",
+      "ぶん"
+    ],
     [
       "報連相",
       "ほうれんそう"

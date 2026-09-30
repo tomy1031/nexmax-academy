@@ -70,6 +70,11 @@ const META: Record<ContentRefType, ContentKindMeta> = {
    * ここで 止めると 1人で 来た 日に 先へ 進めなく なる。
    */
   quest: { icon: "🗺", label: "クエスト", href: (id) => `/quest/${id}`, gates: false },
+  /*
+   * タイピングは **関門に する**。おわりは「ぜんぶの 文を 正しく 打てた」で、
+   * アプリから 見える（1文ずつ 判定する）。2026-09-30 の 指定・願い #550。
+   */
+  typing: { icon: "⌨️", label: "タイピング", href: (id) => `/typing/${id}`, gates: true },
 };
 
 export function contentKindMeta(type: ContentRefType): ContentKindMeta {

@@ -1,0 +1,204 @@
+{
+  "kind": "typing",
+  "id": "houkoku_okure_typing",
+  "title": "タイピング：遅れの 報告",
+  "description": "文を 見て、同じように 入力しましょう。入力に 成功すると、英語訳と ことばの 意味が 表示されます。",
+  "listeningRef": "houkoku_okure_listening",
+  "sentences": [
+    {
+      "text": "CSVアップロード機能に ついて、報告が あります。",
+      "en": "I have a report about the CSV upload feature.",
+      "wordIds": [
+        "kinou",
+        "houkoku"
+      ]
+    },
+    {
+      "text": "今日中に 終わる 予定でしたが、少し 遅れそうです。",
+      "en": "It was supposed to be finished today, but it looks like it will be a little late.",
+      "wordIds": [
+        "yotei",
+        "okure"
+      ]
+    },
+    {
+      "text": "アップロードする データが 多いので、エラーの チェックに 時間が かかって います。",
+      "en": "There is a lot of data to upload, so checking for errors is taking time.",
+      "wordIds": [
+        "de-ta",
+        "eraa"
+      ]
+    },
+    {
+      "text": "CSVの データに 間違いが ないか、一つずつ 確認して います。",
+      "en": "I am checking the CSV data one by one for mistakes.",
+      "wordIds": [
+        "de-ta",
+        "kakunin"
+      ]
+    },
+    {
+      "text": "また、エラーが 出た 行を 正しく 表示できるかも テストして います。",
+      "en": "I am also testing whether the rows with errors are shown correctly.",
+      "wordIds": [
+        "eraa",
+        "hyouji",
+        "tesuto"
+      ]
+    },
+    {
+      "text": "今の ところ、明日の 午前中までには 終わると 思います。",
+      "en": "At this point, I think it will be finished by tomorrow morning.",
+      "wordIds": []
+    },
+    {
+      "text": "今日の 午後5時までに、もう一度 状況を 教えて ください。",
+      "en": "Please tell me the status again by 5 p.m. today.",
+      "wordIds": [
+        "joukyou"
+      ]
+    }
+  ],
+  "furigana": [
+    [
+      "遅れ",
+      "おくれ"
+    ],
+    [
+      "報告",
+      "ほうこく"
+    ],
+    [
+      "入力",
+      "にゅうりょく"
+    ],
+    [
+      "成功",
+      "せいこう"
+    ],
+    [
+      "英語訳",
+      "えいごやく"
+    ],
+    [
+      "意味",
+      "いみ"
+    ],
+    [
+      "表示",
+      "ひょうじ"
+    ],
+    [
+      "同じ",
+      "おなじ"
+    ],
+    [
+      "文",
+      "ぶん"
+    ],
+    [
+      "見",
+      "み"
+    ],
+    [
+      "今日中",
+      "きょうじゅう"
+    ],
+    [
+      "午前中",
+      "ごぜんちゅう"
+    ],
+    [
+      "一つずつ",
+      "ひとつずつ"
+    ],
+    [
+      "一度",
+      "いちど"
+    ],
+    [
+      "間違い",
+      "まちがい"
+    ],
+    [
+      "正しく",
+      "ただしく"
+    ],
+    [
+      "今日",
+      "きょう"
+    ],
+    [
+      "明日",
+      "あした"
+    ],
+    [
+      "午後",
+      "ごご"
+    ],
+    [
+      "今の",
+      "いまの"
+    ],
+    [
+      "少し",
+      "すこし"
+    ],
+    [
+      "多い",
+      "おおい"
+    ],
+    [
+      "出た",
+      "でた"
+    ],
+    [
+      "予定",
+      "よてい"
+    ],
+    [
+      "機能",
+      "きのう"
+    ],
+    [
+      "時間",
+      "じかん"
+    ],
+    [
+      "確認",
+      "かくにん"
+    ],
+    [
+      "状況",
+      "じょうきょう"
+    ],
+    [
+      "今",
+      "いま"
+    ],
+    [
+      "終",
+      "お"
+    ],
+    [
+      "遅",
+      "おく"
+    ],
+    [
+      "時",
+      "じ"
+    ],
+    [
+      "行",
+      "ぎょう"
+    ],
+    [
+      "思",
+      "おも"
+    ],
+    [
+      "教",
+      "おし"
+    ]
+  ]
+}

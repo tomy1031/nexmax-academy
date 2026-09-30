@@ -1,0 +1,208 @@
+{
+  "kind": "typing",
+  "id": "houkoku_kanryou_typing",
+  "title": "タイピング：作業完了の 報告",
+  "description": "文を 見て、同じように 入力しましょう。入力に 成功すると、英語訳と ことばの 意味が 表示されます。",
+  "listeningRef": "houkoku_kanryou_listening",
+  "sentences": [
+    {
+      "text": "高橋さん、今、お時間 よろしいでしょうか。",
+      "en": "Takahashi-san, do you have a moment now?",
+      "wordIds": [
+        "yoroshiideshouka"
+      ]
+    },
+    {
+      "text": "担当して いた、お知らせ一覧画面の 作業が 終わりましたので、報告します。",
+      "en": "I have finished the work on the announcements list screen that I was in charge of, so I am reporting it.",
+      "wordIds": [
+        "tantou",
+        "ichiran",
+        "gamen",
+        "sagyou",
+        "houkoku"
+      ]
+    },
+    {
+      "text": "お知らせの タイトル、日にち、文章を 表示できるように しました。",
+      "en": "I made it possible to show the title, date, and text of each announcement.",
+      "wordIds": [
+        "bunshou",
+        "hyouji"
+      ]
+    },
+    {
+      "text": "また、タイトルを クリックすると、お知らせの 詳細画面が 開く ことも 確認しました。",
+      "en": "I also checked that clicking a title opens the announcement's detail screen.",
+      "wordIds": [
+        "shousai",
+        "gamen",
+        "kakunin"
+      ]
+    },
+    {
+      "text": "パソコンと スマートフォンで 確認しました。",
+      "en": "I checked it on a PC and a smartphone.",
+      "wordIds": [
+        "kakunin"
+      ]
+    },
+    {
+      "text": "今の ところ、問題は ありません。",
+      "en": "So far, there are no problems.",
+      "wordIds": []
+    },
+    {
+      "text": "次は どの タスクを すれば いいですか。",
+      "en": "Which task should I do next?",
+      "wordIds": [
+        "tasuku"
+      ]
+    },
+    {
+      "text": "GitHubの Issueを 作ったので、確認して ください。",
+      "en": "I created an issue on GitHub, so please check it.",
+      "wordIds": [
+        "kakunin"
+      ]
+    },
+    {
+      "text": "Issueを 確認してから 作業を 始めます。",
+      "en": "I will check the issue and then start working.",
+      "wordIds": [
+        "kakunin",
+        "sagyou"
+      ]
+    }
+  ],
+  "furigana": [
+    [
+      "作業完了",
+      "さぎょうかんりょう"
+    ],
+    [
+      "報告",
+      "ほうこく"
+    ],
+    [
+      "入力",
+      "にゅうりょく"
+    ],
+    [
+      "成功",
+      "せいこう"
+    ],
+    [
+      "英語訳",
+      "えいごやく"
+    ],
+    [
+      "意味",
+      "いみ"
+    ],
+    [
+      "表示",
+      "ひょうじ"
+    ],
+    [
+      "同じ",
+      "おなじ"
+    ],
+    [
+      "文",
+      "ぶん"
+    ],
+    [
+      "見",
+      "み"
+    ],
+    [
+      "詳細画面",
+      "しょうさいがめん"
+    ],
+    [
+      "一覧画面",
+      "いちらんがめん"
+    ],
+    [
+      "日にち",
+      "ひにち"
+    ],
+    [
+      "知らせ",
+      "しらせ"
+    ],
+    [
+      "開く",
+      "ひらく"
+    ],
+    [
+      "今の",
+      "いまの"
+    ],
+    [
+      "高橋",
+      "たかはし"
+    ],
+    [
+      "担当",
+      "たんとう"
+    ],
+    [
+      "作業",
+      "さぎょう"
+    ],
+    [
+      "完了",
+      "かんりょう"
+    ],
+    [
+      "一覧",
+      "いちらん"
+    ],
+    [
+      "画面",
+      "がめん"
+    ],
+    [
+      "文章",
+      "ぶんしょう"
+    ],
+    [
+      "詳細",
+      "しょうさい"
+    ],
+    [
+      "確認",
+      "かくにん"
+    ],
+    [
+      "問題",
+      "もんだい"
+    ],
+    [
+      "時間",
+      "じかん"
+    ],
+    [
+      "今",
+      "いま"
+    ],
+    [
+      "終",
+      "お"
+    ],
+    [
+      "次",
+      "つぎ"
+    ],
+    [
+      "作",
+      "つく"
+    ],
+    [
+      "始",
+      "はじ"
+    ]
+  ]
+}

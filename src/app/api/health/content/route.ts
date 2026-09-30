@@ -5,6 +5,7 @@ import {
   listArticles,
   listLinks,
   listSkits,
+  listTypings,
   listListenings,
   listMangas,
   listMeetings,
@@ -51,6 +52,7 @@ export async function GET() {
     listMeetings(),
     listLinks(),
     listSkits(),
+    listTypings(),
   ]);
 
   const KINDS = [
@@ -63,6 +65,7 @@ export async function GET() {
     "meeting",
     "link",
     "skit",
+    "typing",
   ] as const;
   const liveContentIds = new Set(
     lists.flatMap((items, at) => items.map((item) => `${KINDS[at]}:${item.id}`)),

@@ -274,3 +274,35 @@ export function hydrateManga<
     vocab: borrowed.map(toVocabItem),
   };
 }
+
+/** タイピングの ことばカード 1枚（`toVocabItem` と 同じ 中身）。 */
+export type TypingWordCard = ReturnType<typeof toVocabItem>;
+
+/**
+ * タイピングの ことば（`sentences[].wordIds`）を 正から 埋める。
+ *
+ * 記事の ことばブロックと 同じ——**保存は 参照、読み出しは 中身**。カードは 文ごとに
+ * 同じ 語が 何度も 出る（商品・画像）ので、文には id の まま 残し、中身は
+ * `words`（id → カード）に 1回だけ 積む。借りた 語の 読みも 読み辞書に 運ぶ
+ *（判定が 入力の 漢字を かなへ 倒す ときにも 効く）。
+ */
+export function hydrateTyping<
+  T extends {
+    sentences: readonly { wordIds?: readonly string[] }[];
+    furigana?: readonly FuriganaEntry[];
+  },
+>(typing: T, vocab: readonly VocabWord[]): T & { words: Record<string, TypingWordCard> } {
+  const index = vocabById(vocab);
+  const borrowed: VocabWord[] = [];
+  const words: Record<string, TypingWordCard> = {};
+  for (const sentence of typing.sentences) {
+    for (const id of sentence.wordIds ?? []) {
+      const word = index.get(id);
+      if (!word || words[id]) continue;
+      words[id] = toVocabItem(word);
+      borrowed.push(word);
+    }
+  }
+  if (borrowed.length === 0) return { ...typing, words };
+  return { ...typing, words, furigana: withBorrowedFurigana(typing.furigana, borrowed) };
+}

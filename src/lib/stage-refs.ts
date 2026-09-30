@@ -20,6 +20,7 @@ import {
   getManga,
   getMeeting,
   getQuest,
+  getTyping,
   getQuizSet,
   getScenario,
   getSkit,
@@ -144,6 +145,16 @@ export async function loadRef(ref: StageContentRef): Promise<LoadedRef | null> {
           title: quest.title,
           description: quest.description,
           furigana: quest.furigana,
+        }
+      );
+    }
+    case "typing": {
+      const typing = await getTyping(ref.ref);
+      return (
+        typing && {
+          title: typing.title,
+          description: typing.description,
+          furigana: typing.furigana,
         }
       );
     }

@@ -30,6 +30,7 @@ import {
   type Skit,
   type Slides,
   type Stage,
+  type Typing,
   type WordStage,
   type VocabBook,
   type VocabWord,
@@ -38,7 +39,13 @@ import {
 import { GIT_CONTENTS } from "@/content/git-contents.generated";
 import { fetchDbContents } from "@/lib/content-db";
 import { notebookQuizSetIds } from "@/lib/answers/notebook";
-import { hydrateArticle, hydrateManga, hydrateWordStage } from "@/lib/vocabulary";
+import {
+  hydrateArticle,
+  hydrateManga,
+  hydrateTyping,
+  hydrateWordStage,
+  type TypingWordCard,
+} from "@/lib/vocabulary";
 
 /**
  * 一覧はどれも `cache()` で包んである。
@@ -363,4 +370,20 @@ export const listQuests = cache(async (): Promise<Quest[]> => {
 
 export async function getQuest(id: string): Promise<Quest | null> {
   return (await listQuests()).find((quest) => quest.id === id) ?? null;
+}
+
+/** 読み出した あとの タイピング（ことばカードの 中身が 埋まって いる）。 */
+export type HydratedTyping = Typing & { words: Record<string, TypingWordCard> };
+
+export const listTypings = cache(async (): Promise<HydratedTyping[]> => {
+  const git = gitContentsOfKind<Typing>("typing");
+  const merged = mergeContentsById(git, await listPublishedFromDb("typing")).sort((a, b) =>
+    a.id.localeCompare(b.id),
+  );
+  const words = await listVocabWords();
+  return merged.map((typing) => hydrateTyping(typing, words));
+});
+
+export async function getTyping(id: string): Promise<HydratedTyping | null> {
+  return (await listTypings()).find((typing) => typing.id === id) ?? null;
 }

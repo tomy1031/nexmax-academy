@@ -1,0 +1,264 @@
+{
+  "kind": "typing",
+  "id": "houkoku_chousa_typing",
+  "title": "タイピング：技術調査の 結果の 報告",
+  "description": "文を 見て、同じように 入力しましょう。入力に 成功すると、英語訳と ことばの 意味が 表示されます。",
+  "listeningRef": "houkoku_chousa_listening",
+  "sentences": [
+    {
+      "text": "昨日 お願いされた、画像を 保存する 方法に ついて、調査が 終わりましたので 報告します。",
+      "en": "I have finished researching how to store images, which you asked me about yesterday, so I am reporting on it.",
+      "wordIds": [
+        "gazou",
+        "hozon",
+        "houhou",
+        "chousa",
+        "houkoku"
+      ]
+    },
+    {
+      "text": "二つの 方法を 調べました。",
+      "en": "I looked into two methods.",
+      "wordIds": [
+        "houhou"
+      ]
+    },
+    {
+      "text": "一つ目は、今 使って いる サーバーに 画像を 保存する 方法です。",
+      "en": "The first is to store images on the server we are using now.",
+      "wordIds": [
+        "saba",
+        "gazou",
+        "hozon",
+        "houhou"
+      ]
+    },
+    {
+      "text": "二つ目は、AWSの S3に 画像を 保存する 方法です。",
+      "en": "The second is to store images in AWS S3.",
+      "wordIds": [
+        "gazou",
+        "hozon",
+        "houhou"
+      ]
+    },
+    {
+      "text": "今回は、S3を 使う 方が よいと 思います。",
+      "en": "This time, I think it is better to use S3.",
+      "wordIds": []
+    },
+    {
+      "text": "理由は 何ですか。",
+      "en": "What is the reason?",
+      "wordIds": [
+        "riyuu"
+      ]
+    },
+    {
+      "text": "商品画像が 増えても 管理しやすいからです。",
+      "en": "Because it is easy to manage even when the number of product images grows.",
+      "wordIds": [
+        "shouhin",
+        "gazou",
+        "kanri"
+      ]
+    },
+    {
+      "text": "また、今の サーバーに 画像を たくさん 保存しなくても よく なります。",
+      "en": "Also, we will not need to store many images on the current server.",
+      "wordIds": [
+        "saba",
+        "gazou",
+        "hozon"
+      ]
+    },
+    {
+      "text": "100GB 保存すると、料金は 月に だいたい 360円です。",
+      "en": "Storing 100 GB costs about 360 yen a month.",
+      "wordIds": [
+        "hozon"
+      ]
+    },
+    {
+      "text": "ただし、データの 送信や リクエストにも 料金が かかる 場合が あります。",
+      "en": "However, sending data and requests may also cost money.",
+      "wordIds": [
+        "de-ta"
+      ]
+    },
+    {
+      "text": "料金と 調査結果を GitHubの Issueに まとめて ください。",
+      "en": "Please summarize the costs and the research results in a GitHub issue.",
+      "wordIds": [
+        "chousa",
+        "ketsuka"
+      ]
+    }
+  ],
+  "furigana": [
+    [
+      "技術調査",
+      "ぎじゅつちょうさ"
+    ],
+    [
+      "結果",
+      "けっか"
+    ],
+    [
+      "報告",
+      "ほうこく"
+    ],
+    [
+      "入力",
+      "にゅうりょく"
+    ],
+    [
+      "成功",
+      "せいこう"
+    ],
+    [
+      "英語訳",
+      "えいごやく"
+    ],
+    [
+      "意味",
+      "いみ"
+    ],
+    [
+      "表示",
+      "ひょうじ"
+    ],
+    [
+      "同じ",
+      "おなじ"
+    ],
+    [
+      "文",
+      "ぶん"
+    ],
+    [
+      "見",
+      "み"
+    ],
+    [
+      "調査結果",
+      "ちょうさけっか"
+    ],
+    [
+      "商品画像",
+      "しょうひんがぞう"
+    ],
+    [
+      "何ですか",
+      "なんですか"
+    ],
+    [
+      "一つ目",
+      "ひとつめ"
+    ],
+    [
+      "二つ目",
+      "ふたつめ"
+    ],
+    [
+      "二つ",
+      "ふたつ"
+    ],
+    [
+      "昨日",
+      "きのう"
+    ],
+    [
+      "今回",
+      "こんかい"
+    ],
+    [
+      "今の",
+      "いまの"
+    ],
+    [
+      "増え",
+      "ふえ"
+    ],
+    [
+      "技術",
+      "ぎじゅつ"
+    ],
+    [
+      "調査",
+      "ちょうさ"
+    ],
+    [
+      "画像",
+      "がぞう"
+    ],
+    [
+      "保存",
+      "ほぞん"
+    ],
+    [
+      "方法",
+      "ほうほう"
+    ],
+    [
+      "理由",
+      "りゆう"
+    ],
+    [
+      "商品",
+      "しょうひん"
+    ],
+    [
+      "管理",
+      "かんり"
+    ],
+    [
+      "料金",
+      "りょうきん"
+    ],
+    [
+      "送信",
+      "そうしん"
+    ],
+    [
+      "場合",
+      "ばあい"
+    ],
+    [
+      "願",
+      "ねが"
+    ],
+    [
+      "終",
+      "お"
+    ],
+    [
+      "調",
+      "しら"
+    ],
+    [
+      "使",
+      "つか"
+    ],
+    [
+      "思",
+      "おも"
+    ],
+    [
+      "方",
+      "ほう"
+    ],
+    [
+      "月",
+      "つき"
+    ],
+    [
+      "円",
+      "えん"
+    ],
+    [
+      "今",
+      "いま"
+    ]
+  ]
+}

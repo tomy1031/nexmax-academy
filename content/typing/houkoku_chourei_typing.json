@@ -1,0 +1,290 @@
+{
+  "kind": "typing",
+  "id": "houkoku_chourei_typing",
+  "title": "タイピング：複数人で 行う 朝礼",
+  "description": "文を 見て、同じように 入力しましょう。入力に 成功すると、英語訳と ことばの 意味が 表示されます。",
+  "listeningRef": "houkoku_chourei_listening",
+  "sentences": [
+    {
+      "text": "それでは、朝礼を 始めます。",
+      "en": "Now, let's start the morning meeting.",
+      "wordIds": [
+        "chourei"
+      ]
+    },
+    {
+      "text": "きのうは、商品詳細画面を 作成しました。",
+      "en": "Yesterday, I made the product detail screen.",
+      "wordIds": [
+        "shouhin",
+        "shousai",
+        "gamen",
+        "sakusei"
+      ]
+    },
+    {
+      "text": "商品名、商品画像、値段、商品説明を 表示できるように しました。",
+      "en": "I made it possible to show the product name, product image, price, and product description.",
+      "wordIds": [
+        "shouhin",
+        "gazou",
+        "nedan",
+        "setsumei",
+        "hyouji"
+      ]
+    },
+    {
+      "text": "商品詳細機能 全体の 進捗は、80％です。",
+      "en": "The overall progress of the product detail feature is 80%.",
+      "wordIds": [
+        "shouhin",
+        "shousai",
+        "kinou",
+        "zentai",
+        "sinchoku"
+      ]
+    },
+    {
+      "text": "きょうは、商品の 画像を クリックすると、大きい 画像を 表示する 機能を 作ります。",
+      "en": "Today, I will make a feature that shows a large image when you click a product image.",
+      "wordIds": [
+        "shouhin",
+        "gazou",
+        "hyouji",
+        "kinou"
+      ]
+    },
+    {
+      "text": "問題は ありません。",
+      "en": "There are no problems.",
+      "wordIds": []
+    },
+    {
+      "text": "きのうは、商品検索APIを 作成しました。",
+      "en": "Yesterday, I made the product search API.",
+      "wordIds": [
+        "shouhin",
+        "kensaku",
+        "api",
+        "sakusei"
+      ]
+    },
+    {
+      "text": "商品検索機能 全体の 進捗は、60％です。",
+      "en": "The overall progress of the product search feature is 60%.",
+      "wordIds": [
+        "shouhin",
+        "kensaku",
+        "kinou",
+        "zentai",
+        "sinchoku"
+      ]
+    },
+    {
+      "text": "きょうは、カテゴリーで 商品を 検索する 処理を 修正します。",
+      "en": "Today, I will fix the process that searches for products by category.",
+      "wordIds": [
+        "kategori-",
+        "shouhin",
+        "kensaku",
+        "shori",
+        "shuusei"
+      ]
+    },
+    {
+      "text": "カテゴリーで 検索すると、違う カテゴリーの 商品も 表示される 問題が あります。",
+      "en": "When you search by category, products from other categories are also shown.",
+      "wordIds": [
+        "kategori-",
+        "kensaku",
+        "shouhin",
+        "hyouji"
+      ]
+    },
+    {
+      "text": "今、APIの 検索条件を 確認して います。",
+      "en": "I am checking the search conditions of the API now.",
+      "wordIds": [
+        "api",
+        "kensaku",
+        "jouken",
+        "kakunin"
+      ]
+    },
+    {
+      "text": "はい。まだ 分かって いません。",
+      "en": "That's right. We do not know yet.",
+      "wordIds": []
+    },
+    {
+      "text": "午前中に 確認して、分かったら Slackで 報告します。",
+      "en": "I will check it this morning and report on Slack when I find out.",
+      "wordIds": [
+        "kakunin",
+        "houkoku"
+      ]
+    }
+  ],
+  "furigana": [
+    [
+      "複数人",
+      "ふくすうにん"
+    ],
+    [
+      "行う",
+      "おこなう"
+    ],
+    [
+      "朝礼",
+      "ちょうれい"
+    ],
+    [
+      "入力",
+      "にゅうりょく"
+    ],
+    [
+      "成功",
+      "せいこう"
+    ],
+    [
+      "英語訳",
+      "えいごやく"
+    ],
+    [
+      "意味",
+      "いみ"
+    ],
+    [
+      "表示",
+      "ひょうじ"
+    ],
+    [
+      "同じ",
+      "おなじ"
+    ],
+    [
+      "文",
+      "ぶん"
+    ],
+    [
+      "見",
+      "み"
+    ],
+    [
+      "商品詳細画面",
+      "しょうひんしょうさいがめん"
+    ],
+    [
+      "商品詳細機能",
+      "しょうひんしょうさいきのう"
+    ],
+    [
+      "商品検索機能",
+      "しょうひんけんさくきのう"
+    ],
+    [
+      "商品検索",
+      "しょうひんけんさく"
+    ],
+    [
+      "商品画像",
+      "しょうひんがぞう"
+    ],
+    [
+      "商品説明",
+      "しょうひんせつめい"
+    ],
+    [
+      "検索条件",
+      "けんさくじょうけん"
+    ],
+    [
+      "午前中",
+      "ごぜんちゅう"
+    ],
+    [
+      "商品名",
+      "しょうひんめい"
+    ],
+    [
+      "大きい",
+      "おおきい"
+    ],
+    [
+      "違う",
+      "ちがう"
+    ],
+    [
+      "分か",
+      "わか"
+    ],
+    [
+      "報告",
+      "ほうこく"
+    ],
+    [
+      "商品",
+      "しょうひん"
+    ],
+    [
+      "作成",
+      "さくせい"
+    ],
+    [
+      "値段",
+      "ねだん"
+    ],
+    [
+      "機能",
+      "きのう"
+    ],
+    [
+      "全体",
+      "ぜんたい"
+    ],
+    [
+      "進捗",
+      "しんちょく"
+    ],
+    [
+      "画像",
+      "がぞう"
+    ],
+    [
+      "検索",
+      "けんさく"
+    ],
+    [
+      "処理",
+      "しょり"
+    ],
+    [
+      "修正",
+      "しゅうせい"
+    ],
+    [
+      "問題",
+      "もんだい"
+    ],
+    [
+      "確認",
+      "かくにん"
+    ],
+    [
+      "朝",
+      "あさ"
+    ],
+    [
+      "今",
+      "いま"
+    ],
+    [
+      "始",
+      "はじ"
+    ],
+    [
+      "作",
+      "つく"
+    ]
+  ]
+}
