@@ -63,8 +63,8 @@ function judge(scene: string, index: number, input: string) {
  * 行＝ぎょう を くだり、正しく を まさしく、何ですか を なにですか と 読む。
  */
 const TOKENIZER_MISREADS = new Set([
-  "また、エラーが 出た 行を 正しく 表示できるかも テストして います。",
-  "理由は 何ですか。",
+  "また、エラーが出た行を正しく表示できるかもテストしています。",
+  "理由は何ですか。",
 ]);
 
 describe("報告の リスニング 5場面の タイピング — 全部の 文", () => {

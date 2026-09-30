@@ -18457,6 +18457,111 @@
         "On paper",
         "By phone"
       ]
+    },
+    {
+      "id": "machigai",
+      "term": "間違い",
+      "reading": "まちがい",
+      "romaji": "machigai",
+      "meaningJa": "正しく ない ところです。",
+      "englishTerm": "Mistake",
+      "example": "データに 間違いが ないか 確認します。"
+    },
+    {
+      "id": "ryoukin",
+      "term": "料金",
+      "reading": "りょうきん",
+      "romaji": "ryoukin",
+      "meaningJa": "何かを 使う ために はらう お金です。",
+      "englishTerm": "Fee / Charge",
+      "example": "サーバーの 料金は 月に だいたい 360円です。"
+    },
+    {
+      "id": "soushin",
+      "term": "送信",
+      "reading": "そうしん",
+      "romaji": "soushin",
+      "meaningJa": "データや メールを 相手に 送る ことです。",
+      "englishTerm": "Sending (data)",
+      "example": "データの 送信に 時間が かかります。"
+    },
+    {
+      "id": "baai",
+      "term": "場合",
+      "reading": "ばあい",
+      "romaji": "baai",
+      "meaningJa": "「〜の とき」と いう 意味です。",
+      "englishTerm": "Case / When",
+      "example": "エラーが 出た 場合は、すぐに 報告します。"
+    },
+    {
+      "id": "shiharau",
+      "term": "支払う",
+      "reading": "しはらう",
+      "romaji": "shiharau",
+      "meaningJa": "お金を はらう ことです。",
+      "englishTerm": "To pay",
+      "example": "クレジットカードで 支払います。"
+    },
+    {
+      "id": "kuwashii",
+      "term": "詳しい",
+      "reading": "くわしい",
+      "romaji": "kuwashii",
+      "meaningJa": "こまかい ところまで よく 分かる ようすです。",
+      "englishTerm": "Detailed",
+      "example": "詳しい 原因を 調べます。"
+    },
+    {
+      "id": "konkai",
+      "term": "今回",
+      "reading": "こんかい",
+      "romaji": "konkai",
+      "meaningJa": "いまの、この 1回です。",
+      "englishTerm": "This time",
+      "example": "今回は S3を 使います。"
+    },
+    {
+      "id": "fueru",
+      "term": "増える",
+      "reading": "ふえる",
+      "romaji": "fueru",
+      "meaningJa": "数や 量が 多く なる ことです。",
+      "englishTerm": "To increase",
+      "example": "ユーザーが 増えて います。",
+      "furigana": [
+        [
+          "増え",
+          "ふえ"
+        ]
+      ]
+    },
+    {
+      "id": "rikuesuto",
+      "term": "リクエスト",
+      "reading": "りくえすと",
+      "romaji": "rikuesuto",
+      "meaningJa": "サーバーに「これを ください」と たのむ ことです。",
+      "englishTerm": "Request (to a server)",
+      "example": "リクエストが 多いと 料金が かかります。"
+    },
+    {
+      "id": "kyoujuu",
+      "term": "今日中",
+      "reading": "きょうじゅう",
+      "romaji": "kyoujuu",
+      "meaningJa": "今日が 終わるまでに、と いう 意味です。",
+      "englishTerm": "By the end of today",
+      "example": "今日中に 終わる 予定です。"
+    },
+    {
+      "id": "gozenchuu",
+      "term": "午前中",
+      "reading": "ごぜんちゅう",
+      "romaji": "gozenchuu",
+      "meaningJa": "朝から お昼までの あいだです。",
+      "englishTerm": "During the morning",
+      "example": "午前中に 確認します。"
     }
   ]
 }
