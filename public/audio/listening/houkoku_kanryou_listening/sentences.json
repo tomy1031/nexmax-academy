@@ -251,14 +251,14 @@
       "file": "16.wav",
       "voice": "Autonoe",
       "model": "gemini-3.8-live",
-      "seconds": 3.4,
-      "longestPause": 0.4,
-      "transcript": "分かりました。異臭を確認して から作業を始めます。",
-      "transcriptBy": "gemini-3.5-flash-lite",
+      "seconds": 3.67,
+      "longestPause": 0.37,
+      "transcript": "",
+      "transcriptBy": "耳（2026-09-30 ユーザーが 聞きくらべで OK。渡しかた 1: 小文字の issue）",
       "reading": {
         "expected": "わかりましたいしゅうをかくにんしてからさぎょうをはじめます",
-        "spoken": "わかりましたいしゅうをかくにんしてからさぎょうをはじめます",
-        "distance": 0
+        "spoken": "",
+        "distance": null
       }
     },
     {

@@ -7,11 +7,10 @@ import { describe, expect, it } from "vitest";
 import { ISSUE_TRIALS, speechInputOf, trialInputOf } from "../scripts/lib/speak_as";
 
 describe("Live に 渡す 文", () => {
-  it("Issue は カタカナに して、頭に アクセントを 置く 指示を 足す", () => {
+  it("Issue は 小文字の issue に して 渡す（指示は 足さない。2026-09-30 の 聞きくらべで OK）", () => {
     const out = speechInputOf("GitHubの Issueを 作ったので、確認して ください。", "BASE");
-    expect(out.text).toBe("GitHubの イシューを 作ったので、確認して ください。");
-    expect(out.instruction.startsWith("BASE")).toBe(true);
-    expect(out.instruction).toContain("イ↘シュー");
+    expect(out.text).toBe("GitHubの issueを 作ったので、確認して ください。");
+    expect(out.instruction).toBe("BASE");
   });
 
   it("読みかえる 語が 無い 文は そのまま（指示も 足さない）", () => {

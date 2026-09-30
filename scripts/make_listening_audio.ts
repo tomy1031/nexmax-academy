@@ -55,7 +55,7 @@ import { buildFuriganaIndex } from "../src/lib/text/furigana";
 import { buildSoundsIndex } from "../src/components/listening/listening-checks";
 import { soundsLikeOf } from "../src/content/listening-sounds";
 import { OUT_RATE, synthesizeWithFallback, toWav } from "./lib/live_tts";
-import { ISSUE_TRIALS, speechInputOf, trialInputOf } from "./lib/speak_as";
+import { ISSUE_PICKS, ISSUE_TRIALS, PICK_TAKES, speechInputOf, trialInputOf } from "./lib/speak_as";
 import { changeTempo, runTtsListenings } from "./lib/tts_listening";
 import { audioUnitsOf } from "../src/content/listening-audio";
 import { LISTENING_AUDIO_PLANS, type ListeningAudioPlan } from "./lib/listening_audio_plans";
@@ -84,10 +84,14 @@ const requested: string[] = (process.argv[2] ?? "").split(",").filter(Boolean);
  * 触らず、`public/audio/listening/samples/` に 置く（教材からは 指さない。聞きくらべ用）。
  */
 const [firstId = "", sampleSpec] = (requested[0] ?? "").split("@");
-const sampleMatch = /^live-(\d+)(-trials)?$/.exec(sampleSpec ?? "");
+const sampleMatch = /^live-(\d+)(?:-(trials|picks))?$/.exec(sampleSpec ?? "");
 const sampleUnit: number | null = sampleMatch ? Number(sampleMatch[1]) : null;
-/** 「Issue」の 渡しかたを 変えて 何本か 作る（`@live-<番号>-trials`。scripts/lib/speak_as.ts）。 */
-const sampleTrials: boolean = Boolean(sampleMatch?.[2]);
+/**
+ * 「Issue」の 渡しかたを 変えて 作る（scripts/lib/speak_as.ts）。
+ * `-trials` … 4通りを 1本ずつ。`-picks` … OK だった 2通りを 3本ずつ（耳で 選ぶ）。
+ */
+const sampleTrials: "trials" | "picks" | null =
+  (sampleMatch?.[2] as "trials" | "picks" | undefined) ?? null;
 const listeningId: string = firstId;
 /** すでに ある ものも 作り直すか。 */
 const force: boolean = process.argv.includes("--force");
@@ -527,7 +531,7 @@ async function makeLiveSample(unitNumber: number): Promise<void> {
 }
 
 /** 1まとまりを「Issue」の 渡しかた ごとに 1本ずつ 作る（聞きくらべ用・教材の 音には 触らない）。 */
-async function makeIssueTrials(unitNumber: number): Promise<void> {
+async function makeIssueTrials(unitNumber: number, mode: "trials" | "picks"): Promise<void> {
   const apiKey = requireApiKey();
   const units = scriptSentences(script, audioUnitsOf(listeningId));
   const unit = units[unitNumber - 1];
@@ -536,9 +540,15 @@ async function makeIssueTrials(unitNumber: number): Promise<void> {
   const model = plan?.models[unit.speaker];
   const dir = join(outDir, "samples");
   mkdirSync(dir, { recursive: true });
-  for (const trial of ISSUE_TRIALS) {
+  const runs =
+    mode === "picks"
+      ? ISSUE_PICKS.flatMap((trial) =>
+          Array.from({ length: PICK_TAKES }, (_, k) => ({ trial, tag: `${trial.name}-${k + 1}` })),
+        )
+      : ISSUE_TRIALS.map((trial) => ({ trial, tag: trial.name }));
+  for (const { trial, tag } of runs) {
     const input = trialInputOf(unit.text, SCRIPT_LINE_INSTRUCTION, trial);
-    console.log(`${trial.name}: 「${input.text}」`);
+    console.log(`${tag}: 「${input.text}」`);
     try {
       // 聞きくらべ なので 読みの 照合は しない（どう 読んだかは 文字起こしで 残す）
       const spoken = await synthesizeWithFallback(
@@ -550,21 +560,21 @@ async function makeIssueTrials(unitNumber: number): Promise<void> {
       const pcm = fadeEdges(trimSilence(spoken.pcm));
       const out = join(
         dir,
-        `${listeningId}-${String(unitNumber).padStart(2, "0")}-trial-${trial.name}.wav`,
+        `${listeningId}-${String(unitNumber).padStart(2, "0")}-${mode === "picks" ? "pick" : "trial"}-${tag}.wav`,
       );
       writeFileSync(out, toWav(pcm));
       console.log(
         `  ${out}（${seconds(pcm).toFixed(1)}秒）文字起こし「${spoken.transcript.trim()}」`,
       );
     } catch (error) {
-      console.log(`  ${trial.name} は 作れませんでした: ${String(error)}`);
+      console.log(`  ${tag} は 作れませんでした: ${String(error)}`);
     }
   }
 }
 
 async function main(): Promise<void> {
   if (sampleUnit !== null) {
-    if (sampleTrials) await makeIssueTrials(sampleUnit);
+    if (sampleTrials) await makeIssueTrials(sampleUnit, sampleTrials);
     else await makeLiveSample(sampleUnit);
     return;
   }
