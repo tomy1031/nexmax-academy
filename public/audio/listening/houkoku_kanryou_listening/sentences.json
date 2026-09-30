@@ -3,7 +3,7 @@
   "gapSeconds": 1.25,
   "compareGapSeconds": [],
   "complete": false,
-  "missing": [15, 16],
+  "missing": [16],
   "sentences": [
     {
       "speaker": "sato",
@@ -226,6 +226,22 @@
       "reading": {
         "expected": "つぎはおしらせをとうろくするがめんをおねがいします",
         "spoken": "つぎはおしらせをとうろくするがめんをおねがいします",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "takahashi",
+      "text": "GitHubの Issueを 作ったので、確認して ください。",
+      "file": "15.wav",
+      "voice": "Alnilam",
+      "model": "gemini-3.8-live",
+      "seconds": 3.17,
+      "longestPause": 0.19,
+      "transcript": "GitHub の Issue を作ったので、確認してください。",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "ぎっとはぶのいしゅうをつくったのでかくにんしてください",
+        "spoken": "ぎっとはぶのいしゅうをつくったのでかくにんしてください",
         "distance": 0
       }
     },
