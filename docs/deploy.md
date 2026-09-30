@@ -1201,13 +1201,20 @@ Range の 処理が 無い——**`env.ASSETS.fetch` も 全体を 返す**。
 この 2つの 道だけ `src/lib/media-range.ts` で 切り出して **206** を 返す。ほかは OpenNext へ
 そのまま 回す。
 
-**ファイルの 大きさは 焼いた 表から 引く**（`src/content/media-sizes.generated.ts`・
-`npm run gen:content` が 作る）。`env.ASSETS.fetch` の 応答には **Content-Length が 付かない**
-（asset-worker が 付けるのは ETag・Content-Type・Cache-Control・CF-Cache-Status だけ。
-束縛ごしでは 長さの 見出しも 生まれない——workerd で 確認）。大きさが 無いと `bytes=N-` の
-終わりも `Content-Range` の 全体も 書けない。表と 実物が 1本でも 食いちがうと
-`tests/media_range.test.ts` が 落ちる（**音・動画を 足したら `npm run gen:content`**）。
-表に 無い ファイルは これまでどおり 200＋全体で、`Accept-Ranges` も 名乗らない。画面側の 直し（動画も Blob で 鳴らす）は 採らなかった——最初の 1コマまで
+**ファイルの 大きさは 焼いた 表から 引く**（`src/content/media-files.generated.ts`・
+`npm run gen:content` が 作る・638本で gzip 11KB）。`env.ASSETS.fetch` の 応答には
+**Content-Length が 付かない**（asset-worker が 付けるのは ETag・Content-Type・
+Cache-Control・CF-Cache-Status だけ。束縛ごしでは 長さの 見出しも 生まれない——workerd で
+確認）。大きさが 無いと `bytes=N-` の 終わりも `Content-Range` の 全体も 書けない。
+
+**表の 大きさは、配信の ETag が 表と 合う ときだけ 信じる。** 表が 古いまま 出ると うその
+`Content-Range` で 再生が 途中で 壊れる（今より 悪い）。ETag は wrangler が 中身から 作る
+名札（`blake3(base64(中身)+拡張子)` の 先頭 32桁。本番の 値と 一致を 確認）で、同じ 計算の
+先頭 8桁を 表に 焼いて ある（`scripts/lib/asset_etag.mjs`）。合わない・表に 無い ファイルは
+これまでどおり 200＋全体で、`Accept-Ranges` も 名乗らない（壊れず、位置を 動かせない だけ）。
+表と 実物が 1本でも 食いちがうと `tests/media_range.test.ts` が 落ちる
+（**音・動画を 足したり 差しかえたり したら `npm run gen:content`**）。実際 2026-09-30 に
+並行スレッドの 音声差しかえを 取り込んだ 直後に 落ちて、焼き直しで 直った。画面側の 直し（動画も Blob で 鳴らす）は 採らなかった——最初の 1コマまで
 5〜7MB を 全部 待たせる ことに なり、iPhone も 直る 保証が 無い。
 
 **無料枠への 影響（見積もり）**:

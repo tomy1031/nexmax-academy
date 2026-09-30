@@ -25,9 +25,13 @@
  * ETag・Content-Type・Cache-Control・CF-Cache-Status だけで、束縛ごしでは 長さの 見出しも
  * 生まれない。2026-09-30 に workerd で 確認）。大きさが 無いと `bytes=N-` の 終わりも
  * `Content-Range` の 全体も 書けないので、`npm run gen:content` が 焼く
- * `MEDIA_SIZES`（src/content/media-sizes.generated.ts）を 使う。表に 無い ファイルは
- * これまでどおり 全体を 200 で 送り、途中から 送れるとは 名乗らない。表と 実物の
- * 食いちがいは テストが 1本ずつ 止める。
+ * `MEDIA_FILES`（src/content/media-files.generated.ts）を 使う。
+ *
+ * **表の 大きさは、配信の ETag が 表と 合う ときだけ 信じる。** 表が 古い（差しかえた
+ * のに 焼き直して いない）まま 出ると、うその Content-Range で 再生が 途中で 壊れる——
+ * 今より 悪い。ETag は wrangler が 中身から 作る 名札で、同じ 計算を 表に 焼いて ある
+ * （scripts/lib/asset_etag.mjs）。合わない・表に 無い ときは これまでどおり 全体を 200 で
+ * 送り、途中から 送れるとは 名乗らない。表と 実物の 食いちがいは テストも 1本ずつ 止める。
  *
  * ## `_headers` の Cache-Control を ここでも 付ける
  * Worker を 通した 応答には `_headers` が 効かない（Cloudflare の 資料）。付け忘れると
@@ -36,7 +40,7 @@
  */
 
 // `@/` は 使わない——worker.mjs を 束ねる wrangler は tsconfig の paths を 知らない
-import { MEDIA_SIZES } from "../content/media-sizes.generated";
+import { MEDIA_FILES } from "../content/media-files.generated";
 
 /** Worker を 先に 通す 道と、その Cache-Control（`public/_headers` と 同じ 値）。 */
 export const MEDIA_CACHE_CONTROL = {
@@ -48,6 +52,9 @@ export type MediaPrefix = keyof typeof MEDIA_CACHE_CONTROL;
 
 /** まとめて 読む 大きさ。これで 7MB の 読み捨ても 7回で 済む。 */
 export const READ_CHUNK = 1024 * 1024;
+
+/** 道 → [大きさ（バイト）, 配信の ETag の 先頭]（`MEDIA_FILES` と 同じ 形）。 */
+export type MediaFiles = Readonly<Record<string, readonly [size: number, etag: string]>>;
 
 /** 教材の 音・動画の 道なら その 頭（`/audio/` か `/video/`）、ちがえば `null`。 */
 export function mediaPrefix(pathname: string): MediaPrefix | null {
@@ -96,13 +103,13 @@ export type AssetsBinding = { fetch(request: Request): Promise<Response> };
 /**
  * 音・動画を 返す。`Range` が あれば その ぶんだけ 206 で、無ければ 全体を 200 で。
  * 404 など 中身の 無い 応答は そのまま 返す（呼ぶ 側が アプリ本体へ 回す）。
- * `sizes` は テストが 差しかえる ための もの（ふだんは 焼いた 表）。
+ * `files` は テストが 差しかえる ための もの（ふだんは 焼いた 表）。
  */
 export async function serveMedia(
   request: Request,
   assets: AssetsBinding,
   prefix: MediaPrefix,
-  sizes: Readonly<Record<string, number>> = MEDIA_SIZES,
+  files: MediaFiles = MEDIA_FILES,
 ): Promise<Response> {
   const upstream = await assets.fetch(request);
   // 404 に 長い キャッシュを 付けない。付けて よいのは 中身が ある とき（と 304）だけ
@@ -120,7 +127,7 @@ export async function serveMedia(
 
   // 大きさが 分からないと 範囲を 決められない——これまでどおり 全体を 送り、
   // 途中から 送れるとは 名乗らない（名乗ると ブラウザが 途中からを 頼み、毎回 全体を 取り直す）
-  const size = sizeOf(request, upstream, sizes);
+  const size = sizeOf(request, upstream, files);
   if (size === null) return pass(200, upstream.body);
   headers.set("Accept-Ranges", "bytes");
 
@@ -158,13 +165,10 @@ export async function serveMedia(
 
 /**
  * ファイルの 大きさ（バイト）。分からなければ `null`。
- * 配信元が いつか 長さを 付ける ように なったら そちらを 信じ、無ければ 焼いた 表を 引く。
+ * 配信元が いつか 長さを 付ける ように なったら そちらを 信じ、無ければ 焼いた 表を 引く
+ * （表は 配信の ETag が 合う ときだけ——古い 表の 大きさで うその 範囲を 書かない）。
  */
-function sizeOf(
-  request: Request,
-  upstream: Response,
-  sizes: Readonly<Record<string, number>>,
-): number | null {
+function sizeOf(request: Request, upstream: Response, files: MediaFiles): number | null {
   const header = upstream.headers.get("Content-Length");
   if (header !== null) {
     const size = Number(header);
@@ -176,7 +180,10 @@ function sizeOf(
   } catch {
     return null;
   }
-  return sizes[pathname] ?? null;
+  const entry = files[pathname];
+  const etag = upstream.headers.get("ETag")?.replace(/^W\//, "").replace(/"/g, "");
+  if (!entry || !etag || !etag.startsWith(entry[1])) return null;
+  return entry[0];
 }
 
 /**

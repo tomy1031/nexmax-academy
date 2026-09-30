@@ -9,7 +9,8 @@ import {
   serveMedia,
   type AssetsBinding,
 } from "@/lib/media-range";
-import { MEDIA_SIZES } from "@/content/media-sizes.generated";
+import { MEDIA_FILES } from "@/content/media-files.generated";
+import { assetEtag, ETAG_PREFIX_LENGTH } from "../scripts/lib/asset_etag.mjs";
 
 /**
  * 教材の 音・動画を 途中から 送る（206）見張り。
@@ -18,7 +19,9 @@ import { MEDIA_SIZES } from "@/content/media-sizes.generated";
  */
 
 const ROOT = process.cwd();
-const ETAG = '"abc123"';
+/** 配信の ETag（wrangler の 名札と 同じ 32桁）。表には 先頭 8桁を 焼く。 */
+const ETAG_HASH = "0123456789abcdef0123456789abcdef";
+const ETAG = `"${ETAG_HASH}"`;
 
 /** 0,1,2,… と 並ぶ 中身（どこを 切り出したかを 値で 確かめられる）。 */
 function makeFile(size: number): Uint8Array {
@@ -33,7 +36,7 @@ const CLIP = "/video/hourensou/clip.mp4";
  * 静的アセットの 偽物。本物と 同じく **Range を 無視して 200＋全体**を 返し、
  * **Content-Length を 付けない**（asset-worker が 付けるのは ETag・Content-Type・
  * Cache-Control・CF-Cache-Status だけ。束縛ごしでは 長さの 見出しも 生まれない）。
- * 大きさは 焼いた 表（`sizes`）で 渡す。中身は `chunk` バイトずつ 届く（本物の 細切れを
+ * 大きさは 焼いた 表（`files`・[大きさ, ETag の 先頭]）で 渡す。中身は `chunk` バイトずつ 届く（本物の 細切れを
  * まねる）。どこまで 読まれたかを 数える。
  */
 function fakeAssets(file: Uint8Array, { chunk = 4096, contentLength = false } = {}) {
@@ -70,8 +73,10 @@ function fakeAssets(file: Uint8Array, { chunk = 4096, contentLength = false } = 
       return new Response(body, { status: 200, headers });
     },
   };
-  const sizes: Record<string, number> = { [CLIP]: file.byteLength };
-  return { assets, stats, sizes };
+  const files: Record<string, readonly [number, string]> = {
+    [CLIP]: [file.byteLength, ETAG_HASH.slice(0, ETAG_PREFIX_LENGTH)],
+  };
+  return { assets, stats, files };
 }
 
 const get = (range?: string, extra: Record<string, string> = {}) =>
@@ -204,8 +209,8 @@ describe.each([
   const file = makeFile(50_000);
 
   it("Range が 無ければ 200＋全体。途中から 送れる ことと キャッシュの 決まりを 足す", async () => {
-    const { assets, sizes } = fakeAssets(file);
-    const res = await serveMedia(get(), assets, "/video/", sizes);
+    const { assets, files } = fakeAssets(file);
+    const res = await serveMedia(get(), assets, "/video/", files);
     expect(res.status).toBe(200);
     expect(res.headers.get("Accept-Ranges")).toBe("bytes");
     expect(res.headers.get("Cache-Control")).toBe(MEDIA_CACHE_CONTROL["/video/"]);
@@ -213,8 +218,8 @@ describe.each([
   });
 
   it("途中の 範囲（bytes=1000-1999）は 206 で その ぶんだけ（細切れの 境目を またぐ）", async () => {
-    const { assets, sizes } = fakeAssets(file);
-    const res = await serveMedia(get("bytes=1000-1999"), assets, "/video/", sizes);
+    const { assets, files } = fakeAssets(file);
+    const res = await serveMedia(get("bytes=1000-1999"), assets, "/video/", files);
     expect(res.status).toBe(206);
     expect(res.headers.get("Content-Range")).toBe(`bytes 1000-1999/${file.byteLength}`);
     expect(res.headers.get("Content-Length")).toBe("1000");
@@ -222,8 +227,8 @@ describe.each([
   });
 
   it("Chrome の 最初の 頼み方（bytes=0-）は 206＋全体", async () => {
-    const { assets, sizes } = fakeAssets(file);
-    const res = await serveMedia(get("bytes=0-"), assets, "/video/", sizes);
+    const { assets, files } = fakeAssets(file);
+    const res = await serveMedia(get("bytes=0-"), assets, "/video/", files);
     expect(res.status).toBe(206);
     expect(res.headers.get("Content-Range")).toBe(
       `bytes 0-${file.byteLength - 1}/${file.byteLength}`,
@@ -232,23 +237,23 @@ describe.each([
   });
 
   it("つまみで 動かした 先から 最後まで（bytes=N-）", async () => {
-    const { assets, sizes } = fakeAssets(file);
-    const res = await serveMedia(get("bytes=12345-"), assets, "/video/", sizes);
+    const { assets, files } = fakeAssets(file);
+    const res = await serveMedia(get("bytes=12345-"), assets, "/video/", files);
     expect(res.status).toBe(206);
     expect(res.headers.get("Content-Length")).toBe(String(file.byteLength - 12345));
     await expectBody(res, file.slice(12345));
   });
 
   it("末尾から（bytes=-300）", async () => {
-    const { assets, sizes } = fakeAssets(file);
-    const res = await serveMedia(get("bytes=-300"), assets, "/video/", sizes);
+    const { assets, files } = fakeAssets(file);
+    const res = await serveMedia(get("bytes=-300"), assets, "/video/", files);
     expect(res.status).toBe(206);
     await expectBody(res, file.slice(-300));
   });
 
   it("Safari の 最初の 頼み方（bytes=0-1）は 2バイトだけ。残りは 読まずに 止める", async () => {
-    const { assets, stats, sizes } = fakeAssets(file);
-    const res = await serveMedia(get("bytes=0-1"), assets, "/video/", sizes);
+    const { assets, stats, files } = fakeAssets(file);
+    const res = await serveMedia(get("bytes=0-1"), assets, "/video/", files);
     expect(res.status).toBe(206);
     await expectBody(res, file.slice(0, 2));
     expect(stats.cancelled).toBe(true);
@@ -256,8 +261,8 @@ describe.each([
   });
 
   it("ファイルの 外は 416（Content-Range: bytes */大きさ）。1年の キャッシュや 種類を 残さない", async () => {
-    const { assets, sizes } = fakeAssets(file);
-    const res = await serveMedia(get(`bytes=${file.byteLength}-`), assets, "/video/", sizes);
+    const { assets, files } = fakeAssets(file);
+    const res = await serveMedia(get(`bytes=${file.byteLength}-`), assets, "/video/", files);
     expect(res.status).toBe(416);
     expect(res.headers.get("Content-Range")).toBe(`bytes */${file.byteLength}`);
     expect(res.headers.get("Cache-Control")).toBeNull();
@@ -265,26 +270,26 @@ describe.each([
   });
 
   it("複数の 範囲は 全体を 200 で", async () => {
-    const { assets, sizes } = fakeAssets(file);
-    const res = await serveMedia(get("bytes=0-1,5-6"), assets, "/video/", sizes);
+    const { assets, files } = fakeAssets(file);
+    const res = await serveMedia(get("bytes=0-1,5-6"), assets, "/video/", files);
     expect(res.status).toBe(200);
     await expectBody(res, file);
   });
 
   it("If-Range が 手もとの 版と ちがえば 全体、同じなら 途中から", async () => {
-    const { assets, sizes } = fakeAssets(file);
+    const { assets, files } = fakeAssets(file);
     const stale = await serveMedia(
       get("bytes=10-19", { "If-Range": '"old"' }),
       assets,
       "/video/",
-      sizes,
+      files,
     );
     expect(stale.status).toBe(200);
     const fresh = await serveMedia(
       get("bytes=10-19", { "If-Range": ETAG }),
       fakeAssets(file).assets,
       "/video/",
-      sizes,
+      files,
     );
     expect(fresh.status).toBe(206);
     await expectBody(fresh, file.slice(10, 20));
@@ -300,6 +305,16 @@ describe.each([
     await expectBody(res, file);
   });
 
+  it("表の ETag が 配信と 合わない（表が 古い）ときは 大きさを 信じず 200＋全体", async () => {
+    // 古い 表の 大きさで 範囲を 書くと、うその Content-Range で 再生が 途中で 壊れる
+    const { assets } = fakeAssets(file);
+    const stale = { [CLIP]: [file.byteLength + 10, "deadbeef"] as const };
+    const res = await serveMedia(get("bytes=10-19"), assets, "/video/", stale);
+    expect(res.status).toBe(200);
+    expect(res.headers.get("Accept-Ranges")).toBeNull();
+    await expectBody(res, file);
+  });
+
   it("配信元が いつか Content-Length を 付けたら、表に 無くても そちらで 206", async () => {
     const { assets } = fakeAssets(file, { contentLength: true });
     const res = await serveMedia(get("bytes=10-19"), assets, "/video/", {});
@@ -312,12 +327,12 @@ describe("serveMedia — 中身の 無い 応答", () => {
   const file = makeFile(1000);
 
   it("HEAD は 見出しだけ（途中から 送れる ことと 大きさを 知らせる）", async () => {
-    const { assets, sizes } = fakeAssets(file);
+    const { assets, files } = fakeAssets(file);
     const res = await serveMedia(
       new Request(`https://academy.example${CLIP}`, { method: "HEAD" }),
       assets,
       "/video/",
-      sizes,
+      files,
     );
     expect(res.status).toBe(200);
     expect(res.headers.get("Accept-Ranges")).toBe("bytes");
@@ -326,24 +341,24 @@ describe("serveMedia — 中身の 無い 応答", () => {
   });
 
   it("304 には キャッシュの 決まりを 付ける（手もとの ものを 使いつづけられる）", async () => {
-    const { assets, sizes } = fakeAssets(file);
+    const { assets, files } = fakeAssets(file);
     const res = await serveMedia(
       get(undefined, { "If-None-Match": ETAG }),
       assets,
       "/audio/",
-      sizes,
+      files,
     );
     expect(res.status).toBe(304);
     expect(res.headers.get("Cache-Control")).toBe(MEDIA_CACHE_CONTROL["/audio/"]);
   });
 
   it("404 は そのまま（長い キャッシュを 付けない。入口が アプリ本体へ 回す）", async () => {
-    const { assets, sizes } = fakeAssets(file);
+    const { assets, files } = fakeAssets(file);
     const res = await serveMedia(
       new Request("https://academy.example/video/nothing.mp4"),
       assets,
       "/video/",
-      sizes,
+      files,
     );
     expect(res.status).toBe(404);
     expect(res.headers.get("Cache-Control")).toBeNull();
@@ -359,8 +374,8 @@ describe("CPU を 使わない（無料枠は 1リクエスト 10ms）", () => {
 
   it("7MB の 動画の 途中から 送っても、JS で 読むのは 1MB ずつ（4KB の 細切れ ごとに 回さない）", async () => {
     const file = makeFile(7_000_000);
-    const { assets, sizes } = fakeAssets(file, { chunk: 4096 });
-    const res = await serveMedia(get("bytes=5000000-"), assets, "/video/", sizes);
+    const { assets, files } = fakeAssets(file, { chunk: 4096 });
+    const res = await serveMedia(get("bytes=5000000-"), assets, "/video/", files);
     expect(res.status).toBe(206);
     await expectBody(res, file.subarray(5_000_000));
     // 細切れ ごとなら 1700回を 超える。1MB ずつなら 読み捨て 5回＋送る 2回（＋終わりの 確かめ）
@@ -372,18 +387,20 @@ describe("CPU を 使わない（無料枠は 1リクエスト 10ms）", () => {
   });
 });
 
-describe("大きさの 表（src/content/media-sizes.generated.ts）は 実物と 同じ", () => {
+describe("音・動画の 表（src/content/media-files.generated.ts）は 実物と 同じ", () => {
   /** public/audio・public/video の 実物（見えない ファイルは 配らないので 除く）。 */
-  function actualSizes(): Record<string, number> {
-    const out: Record<string, number> = {};
+  function actualFiles(): Record<string, readonly [number, string]> {
+    const out: Record<string, readonly [number, string]> = {};
     const walk = (dir: string) => {
       for (const name of fs.readdirSync(dir)) {
         if (name.startsWith(".")) continue;
         const full = path.join(dir, name);
-        if (fs.statSync(full).isDirectory()) walk(full);
-        else
-          out[`/${path.relative(path.join(ROOT, "public"), full).split(path.sep).join("/")}`] =
-            fs.statSync(full).size;
+        if (fs.statSync(full).isDirectory()) {
+          walk(full);
+          continue;
+        }
+        const url = `/${path.relative(path.join(ROOT, "public"), full).split(path.sep).join("/")}`;
+        out[url] = [fs.statSync(full).size, assetEtag(full).slice(0, ETAG_PREFIX_LENGTH)];
       }
     };
     for (const root of Object.keys(MEDIA_CACHE_CONTROL)) {
@@ -393,15 +410,23 @@ describe("大きさの 表（src/content/media-sizes.generated.ts）は 実物�
     return out;
   }
 
-  it("1本ずつ 大きさが 合って いて、足りない ものも 余る ものも 無い", () => {
-    // 食いちがうと Content-Range が うそに なり、再生が 途中で 壊れる。
-    // 落ちたら `npm run gen:content` を 回して media-sizes.generated.ts を 入れる
-    const actual = actualSizes();
+  it("1本ずつ 大きさと 名札が 合って いて、足りない ものも 余る ものも 無い", () => {
+    // 食いちがった ファイルは Worker が 途中から 送るのを やめる（壊れは しないが 位置を
+    // 動かせなく なる）。落ちたら `npm run gen:content` を 回して media-files.generated.ts を 入れる
+    const actual = actualFiles();
     expect(Object.keys(actual).length).toBeGreaterThan(0);
-    const wrong = Object.keys({ ...actual, ...MEDIA_SIZES })
-      .filter((url) => actual[url] !== MEDIA_SIZES[url])
-      .map((url) => `${url}: 表=${MEDIA_SIZES[url] ?? "なし"} 実物=${actual[url] ?? "なし"}`);
+    const show = (entry?: readonly [number, string]) => (entry ? entry.join("/") : "なし");
+    const wrong = Object.keys({ ...actual, ...MEDIA_FILES })
+      .filter((url) => show(actual[url]) !== show(MEDIA_FILES[url]))
+      .map((url) => `${url}: 表=${show(MEDIA_FILES[url])} 実物=${show(actual[url])}`);
     expect(wrong, "npm run gen:content で 作り直す").toEqual([]);
+  }, 30_000);
+
+  it("名札の 計算は 配信の ETag と 同じ（本番で 実測した 値）", () => {
+    // wrangler の hashFile（blake3(base64(中身)+拡張子)）。本番の ETag は 2026-09-30 に curl で 取得
+    expect(assetEtag(path.join(ROOT, "public/video/hourensou/soudan_30min_a.mp4"))).toBe(
+      "17932e4c6732bf8ba5a1b4165aecee33",
+    );
   });
 });
 

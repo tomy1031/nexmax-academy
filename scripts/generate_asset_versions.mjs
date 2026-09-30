@@ -16,16 +16,18 @@
  * 出すのは `src/content/asset-versions.generated.ts`。346本で gzip 数KB——
  * Worker の 3MiB 枠（AGENTS.md デプロイ 罠5）に対して 誤差の 大きさ。
  *
- * ## 音・動画の 大きさも ここで 出す（2026-09-30）
+ * ## 音・動画の 大きさと 名札も ここで 出す（2026-09-30）
  * Worker が 音・動画を 途中から 送る（206）には ファイルの 大きさが 要るが、
  * `env.ASSETS.fetch` の 応答には Content-Length が 付かない
  *（src/lib/media-range.ts・docs/deploy.md §0.17）。だから 大きさを 焼いて おく
- *（`src/content/media-sizes.generated.ts`）。読み込まず 大きさだけ 見る。
- * 実物と 食いちがうと 再生が 壊れるので、tests/media_range.test.ts が 1本ずつ 突き合わせる。
+ *（`src/content/media-files.generated.ts`）。あわせて 配信の ETag の 先頭
+ *（scripts/lib/asset_etag.mjs）も 焼き、Worker は ETag が 合う ときだけ 大きさを 信じる。
+ * 表と 実物の 食いちがいは tests/media_range.test.ts が 1本ずつ 止める。
  */
 import { createHash } from "node:crypto";
 import { readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { join, posix, sep } from "node:path";
+import { assetEtag, ETAG_PREFIX_LENGTH } from "./lib/asset_etag.mjs";
 
 /** 版番号を 付ける 置き場（教材が 指す 資産だけ。`_next` は Next.js が すでに 付けて いる）。 */
 const ROOTS = ["audio", "img"];
@@ -70,7 +72,8 @@ console.log(`資産の 版番号: ${sorted.length}本を 書き出しました`)
 /** 途中から 送る（206）置き場。wrangler.jsonc の `run_worker_first` と 同じ。 */
 const MEDIA_ROOTS = ["audio", "video"];
 
-const sizes = {};
+/** @type {Record<string, [number, string]>} 道 → [大きさ, ETag の 先頭] */
+const media = {};
 for (const root of MEDIA_ROOTS) {
   let files = [];
   try {
@@ -82,17 +85,24 @@ for (const root of MEDIA_ROOTS) {
     const parts = file.split(sep).slice(1);
     // `.DS_Store` など 見えない ファイルは 配らない もの なので 入れない
     if (parts.some((part) => part.startsWith("."))) continue;
-    sizes[`/${parts.join(posix.sep)}`] = statSync(file).size;
+    media[`/${parts.join(posix.sep)}`] = [
+      statSync(file).size,
+      assetEtag(file).slice(0, ETAG_PREFIX_LENGTH),
+    ];
   }
 }
 
-const mediaSorted = Object.keys(sizes).sort();
-const mediaBody = mediaSorted.map((url) => `  ${JSON.stringify(url)}: ${sizes[url]},`);
+const mediaSorted = Object.keys(media).sort();
+const mediaBody = mediaSorted.map((url) => {
+  const [size, etag] = media[url];
+  return `  ${JSON.stringify(url)}: [${size}, ${JSON.stringify(etag)}],`;
+});
 writeFileSync(
-  join("src", "content", "media-sizes.generated.ts"),
+  join("src", "content", "media-files.generated.ts"),
   `// 自動生成（scripts/generate_asset_versions.mjs）。手で 直さない。\n` +
-    `// 音・動画の 大きさ（バイト）。Worker が 途中から 送る（206）ときに 使う（src/lib/media-range.ts）。\n` +
-    `export const MEDIA_SIZES: Readonly<Record<string, number>> = {\n${mediaBody.join("\n")}\n};\n`,
+    `// 音・動画の [大きさ（バイト）, 配信の ETag の 先頭]。Worker が 途中から 送る（206）ときに 使う\n` +
+    `// （src/lib/media-range.ts）。ETag が 合わない ときは 大きさを 信じない。\n` +
+    `export const MEDIA_FILES: Readonly<Record<string, readonly [size: number, etag: string]>> = {\n${mediaBody.join("\n")}\n};\n`,
   "utf8",
 );
-console.log(`音・動画の 大きさ: ${mediaSorted.length}本を 書き出しました`);
+console.log(`音・動画の 大きさと 名札: ${mediaSorted.length}本を 書き出しました`);
