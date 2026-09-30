@@ -34,6 +34,8 @@ function skit(id: string): { lines: { speaker: string; text: string; audioUrl?: 
  */
 const STAGES = [
   { id: "houkoku", title: "報告", skitId: "houkoku_skit" },
+  // 報告の リスニング 5場面（2026-09-30 に 報告から 分けた ステージ）。スキットは 無い
+  { id: "houkoku-kiku", title: "報告（リスニング）", skitId: null },
   { id: "renraku", title: "連絡", skitId: null },
   { id: "soudan", title: "相談", skitId: "soudan_skit" },
 ] as const;

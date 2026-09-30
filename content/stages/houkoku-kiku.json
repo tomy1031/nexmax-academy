@@ -1,0 +1,123 @@
+{
+  "kind": "stage",
+  "id": "houkoku-kiku",
+  "order": 6,
+  "title": "報連相：報告（リスニング）",
+  "reading": "ほうれんそう ほうこく りすにんぐ",
+  "description": "いろいろな 場面の 報告を 聞いて、もんだいで 確かめます。作業の 完了・予定の 遅れ・システムの トラブル・技術の 調査・朝礼の 5つの 場面です。",
+  "color": "sky",
+  "status": "published",
+  "area": {
+    "image": "/img/scenes/area_ferris_harbour.webp",
+    "note": "みなとに おおきな かんらんしゃが まわる まちです。"
+  },
+  "contents": [
+    {
+      "ref": "houkoku_kanryou_listening",
+      "type": "listening"
+    },
+    {
+      "ref": "houkoku_kanryou_quiz",
+      "type": "quizset"
+    },
+    {
+      "ref": "houkoku_okure_listening",
+      "type": "listening"
+    },
+    {
+      "ref": "houkoku_okure_quiz",
+      "type": "quizset"
+    },
+    {
+      "ref": "houkoku_shougai_listening",
+      "type": "listening"
+    },
+    {
+      "ref": "houkoku_shougai_quiz",
+      "type": "quizset"
+    },
+    {
+      "ref": "houkoku_chousa_listening",
+      "type": "listening"
+    },
+    {
+      "ref": "houkoku_chousa_quiz",
+      "type": "quizset"
+    },
+    {
+      "ref": "houkoku_chourei_listening",
+      "type": "listening"
+    },
+    {
+      "ref": "houkoku_chourei_quiz",
+      "type": "quizset"
+    }
+  ],
+  "wordStageIds": [],
+  "furigana": [
+    [
+      "報連相",
+      "ほうれんそう"
+    ],
+    [
+      "報告",
+      "ほうこく"
+    ],
+    [
+      "場面",
+      "ばめん"
+    ],
+    [
+      "確かめ",
+      "たしかめ"
+    ],
+    [
+      "作業",
+      "さぎょう"
+    ],
+    [
+      "完了",
+      "かんりょう"
+    ],
+    [
+      "予定",
+      "よてい"
+    ],
+    [
+      "遅れ",
+      "おくれ"
+    ],
+    [
+      "技術",
+      "ぎじゅつ"
+    ],
+    [
+      "調査",
+      "ちょうさ"
+    ],
+    [
+      "朝礼",
+      "ちょうれい"
+    ],
+    [
+      "聞",
+      "き"
+    ],
+    [
+      "報",
+      "ほう"
+    ],
+    [
+      "連",
+      "れん"
+    ],
+    [
+      "相",
+      "そう"
+    ],
+    [
+      "告",
+      "こく"
+    ]
+  ]
+}

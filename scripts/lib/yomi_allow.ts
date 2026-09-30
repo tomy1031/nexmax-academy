@@ -70,6 +70,11 @@ export const YOMI_ALLOW: readonly YomiAllowEntry[] = [
     reading: "ほうれんそう ほうこく ちょうれいと ゆうれい",
     note: "ステージ名。相＝そう（上の 報連相 と 同じ）。読みの 空白は ：（ ） の 代わり",
   },
+  {
+    surface: "報連相：報告（リスニング）",
+    reading: "ほうれんそう ほうこく りすにんぐ",
+    note: "ステージ名（2026-09-30）。相＝そう（上の 報連相 と 同じ）。読みの 空白は ：（ ） の 代わり",
+  },
   { surface: "報連相：連絡", reading: "ほうれんそう れんらく", note: "同上" },
   { surface: "報連相：相談", reading: "ほうれんそう そうだん", note: "同上" },
   { surface: "修和", reading: "しゅうわ", note: "人名（川村修和）。解析は おさむわ と割る" },

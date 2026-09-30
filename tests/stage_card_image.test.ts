@@ -252,7 +252,7 @@ describe("カードの 絵（実データ）", () => {
    * **増えた ことに 気づける ように して おく**。増やすなら、ここを 書き直す ついでに
    * その ステージの 教材に 表紙を 1枚 用意する ことを 考える。
    */
-  it("教材に 絵が 無くて 景色に 落ちる ステージは、いまは お客さまインタビューだけ", async () => {
+  it("教材に 絵が 無くて 景色に 落ちる ステージは、いまは 報告（リスニング）と お客さまインタビューだけ", async () => {
     const [stages, ...rest] = await Promise.all([
       listStages(),
       listMangas(),
@@ -272,7 +272,9 @@ describe("カードの 絵（実データ）", () => {
         return Boolean(src) && src === item.area?.image;
       })
       .map((item) => item.id);
-    expect(fellBack).toEqual(["interview"]);
+    // 報告（リスニング）は 5場面の 表紙が まだ 無い（scripts/images/houkoku_report_covers.json）。
+    // 表紙が できたら ここから 外す（2026-09-30 に 承認を 得て 足した）
+    expect(fellBack).toEqual(["houkoku-kiku", "interview"]);
   });
 
   it("はじまりは まんがの 1コマ目（2026-09-22 に 見本として 指定された 1枚）", async () => {
