@@ -2,8 +2,8 @@
   "listeningId": "houkoku_shougai_listening",
   "gapSeconds": 1.25,
   "compareGapSeconds": [],
-  "complete": false,
-  "missing": [5, 6, 11, 12],
+  "complete": true,
+  "missing": [],
   "sentences": [
     {
       "speaker": "nakamura",
@@ -71,6 +71,38 @@
     },
     {
       "speaker": "tanaka",
+      "text": "どんな ユーザーが 予約できないんですか。",
+      "file": "05.wav",
+      "voice": "Charon",
+      "model": "gemini-3.8-live",
+      "seconds": 2.67,
+      "longestPause": 0.17,
+      "transcript": "どんなユーザーが予約できないんですか。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "どんなゆうざあがよやくできないんですか",
+        "spoken": "どんなゆうざあがよやくできないんですか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "nakamura",
+      "text": "確認した ところ、クレジットカードで 支払う ユーザーだけに 問題が 出て います。",
+      "file": "06.wav",
+      "voice": "Erinome",
+      "model": "gemini-3.8-live",
+      "seconds": 5.47,
+      "longestPause": 0.14,
+      "transcript": "確認 し た ところ クレジット カード で 支払う ユーザー だけ に 問題 が 出 て い ます 。",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "かくにんしたところくれじっとかあどでしはらうゆうざあだけにもんだいがでています",
+        "spoken": "かくにんしたところくれじっとかあどでしはらうゆうざあだけにもんだいがでています",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "tanaka",
       "text": "原因は 分かって いますか。",
       "file": "07.wav",
       "voice": "Charon",
@@ -130,6 +162,38 @@
       "reading": {
         "expected": "いまはえらあがはっせいしたじかんのろぐをかくにんしています",
         "spoken": "いまはえらあがはっせいしたじかんのろぐをかくにんしています",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "tanaka",
+      "text": "今は ログを 確認して いるんですね。分かりました。",
+      "file": "11.wav",
+      "voice": "Charon",
+      "model": "gemini-3.8-live",
+      "seconds": 3.8,
+      "longestPause": 0.55,
+      "transcript": "今はログを確認しているんですね。分かりました。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "いまはろぐをかくにんしているんですねわかりました",
+        "spoken": "いまはろぐをかくにんしているんですねわかりました",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "tanaka",
+      "text": "原因が 分かったら、すぐに 報告して ください。",
+      "file": "12.wav",
+      "voice": "Charon",
+      "model": "gemini-3.8-live",
+      "seconds": 3.16,
+      "longestPause": 0.21,
+      "transcript": "原因 が わかっ たら すぐ に 報告 し て ください 。",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "げんいんがわかったらすぐにほうこくしてください",
+        "spoken": "げんいんがわかったらすぐにほうこくしてください",
         "distance": 0
       }
     },
