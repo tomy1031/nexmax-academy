@@ -79,6 +79,8 @@ export function TypingView({ typing, embedded }: { typing: TypingViewData; embed
   const [input, setInput] = useState("");
   const [result, setResult] = useState<TypingResult | null>(null);
   const [finished, setFinished] = useState(false);
+  /** 貼り付けを 止めた ことを 知らせる（黙って 何も 起きないと、壊れて いると 思う）。 */
+  const [pasteBlocked, setPasteBlocked] = useState(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
   /** 正解した 時刻（Enter の 押しすぎで 次へ 飛ばない ため）。 */
   const solvedAtRef = useRef(0);
@@ -101,6 +103,7 @@ export function TypingView({ typing, embedded }: { typing: TypingViewData; embed
   }, [input, targets, index, typing.id, isLast]);
 
   const reset = useCallback(() => {
+    setPasteBlocked(false);
     setInput("");
     setResult(null);
     inputRef.current?.focus();
@@ -156,8 +159,22 @@ export function TypingView({ typing, embedded }: { typing: TypingViewData; embed
             {index + 1} / {total}
           </span>
         </div>
-        <p className="bg-panel-tint border-hairline text-ink mt-3 rounded-2xl border px-4 py-4 text-lg leading-loose font-extrabold break-words sm:text-xl">
-          <RubyText text={sentence.text} index={furigana} show={furiganaOn} />
+        {/*
+         * お手本は **ふりがなを 付けない**・**コピーできない**（2026-09-30 の 指定
+         * 「例文に 読み仮名は 入れません。文章の コピペは できないように」）。
+         * 読みが 付いて いると かなを 写すだけに なり、コピーできると 打つ 練習に ならない。
+         * `data-furigana="off"` は e2e の 裸の 漢字の 見張り（bareKanjiTexts）に「わざと」を 知らせる 印。
+         */}
+        <p
+          className="bg-panel-tint border-hairline text-ink mt-3 rounded-2xl border px-4 py-4 text-lg leading-loose font-extrabold break-words select-none sm:text-xl"
+          data-furigana="off"
+          data-typing="sentence"
+          onCopy={(event) => event.preventDefault()}
+          onCut={(event) => event.preventDefault()}
+          onDragStart={(event) => event.preventDefault()}
+          onContextMenu={(event) => event.preventDefault()}
+        >
+          {sentence.text}
         </p>
       </section>
 
@@ -179,7 +196,17 @@ export function TypingView({ typing, embedded }: { typing: TypingViewData; embed
           autoCorrect="off"
           spellCheck={false}
           aria-label="お手本と 同じ 文を 入力する"
+          onPaste={(event) => {
+            // 貼り付けでは 打つ 練習に ならない（2026-09-30 の 指定）
+            event.preventDefault();
+            setPasteBlocked(true);
+          }}
+          onDrop={(event) => {
+            event.preventDefault();
+            setPasteBlocked(true);
+          }}
           onChange={(event) => {
+            setPasteBlocked(false);
             setInput(event.target.value);
             // 外れの 札は 打ち直した 時点で 古く なる（正解の あとは 読むだけ）
             if (result && !result.ok) setResult(null);
@@ -231,6 +258,15 @@ export function TypingView({ typing, embedded }: { typing: TypingViewData; embed
             )}
           </div>
         </div>
+        {pasteBlocked ? (
+          <p role="status" className="text-coral-deep mt-2 text-sm font-bold" data-typing="paste">
+            <RubyText
+              text="貼り付けは できません。自分で 入力しましょう。"
+              index={TYPING_UI_FURIGANA}
+              show={furiganaOn}
+            />
+          </p>
+        ) : null}
         <Verdict result={result} show={furiganaOn} furigana={furigana} />
       </section>
 

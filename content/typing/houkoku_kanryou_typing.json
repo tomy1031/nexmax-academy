@@ -6,17 +6,18 @@
   "listeningRef": "houkoku_kanryou_listening",
   "sentences": [
     {
-      "text": "高橋さん、今、お時間 よろしいでしょうか。",
+      "text": "高橋さん、今、お時間よろしいでしょうか。",
       "en": "Takahashi-san, do you have a moment now?",
       "wordIds": [
         "yoroshiideshouka"
       ]
     },
     {
-      "text": "担当して いた、お知らせ一覧画面の 作業が 終わりましたので、報告します。",
+      "text": "担当していた、お知らせ一覧画面の作業が終わりましたので、報告します。",
       "en": "I have finished the work on the announcements list screen that I was in charge of, so I am reporting it.",
       "wordIds": [
         "tantou",
+        "oshirase",
         "ichiran",
         "gamen",
         "sagyou",
@@ -24,50 +25,52 @@
       ]
     },
     {
-      "text": "お知らせの タイトル、日にち、文章を 表示できるように しました。",
+      "text": "お知らせのタイトル、日にち、文章を表示できるようにしました。",
       "en": "I made it possible to show the title, date, and text of each announcement.",
       "wordIds": [
+        "oshirase",
         "bunshou",
         "hyouji"
       ]
     },
     {
-      "text": "また、タイトルを クリックすると、お知らせの 詳細画面が 開く ことも 確認しました。",
+      "text": "また、タイトルをクリックすると、お知らせの詳細画面が開くことも確認しました。",
       "en": "I also checked that clicking a title opens the announcement's detail screen.",
       "wordIds": [
+        "oshirase",
         "shousai",
         "gamen",
         "kakunin"
       ]
     },
     {
-      "text": "パソコンと スマートフォンで 確認しました。",
+      "text": "パソコンとスマートフォンで確認しました。",
       "en": "I checked it on a PC and a smartphone.",
       "wordIds": [
         "kakunin"
       ]
     },
     {
-      "text": "今の ところ、問題は ありません。",
+      "text": "今のところ、問題はありません。",
       "en": "So far, there are no problems.",
       "wordIds": []
     },
     {
-      "text": "次は どの タスクを すれば いいですか。",
+      "text": "次はどのタスクをすればいいですか。",
       "en": "Which task should I do next?",
       "wordIds": [
         "tasuku"
       ]
     },
     {
-      "text": "GitHubの Issueを 作ったので、確認して ください。",
+      "text": "GitHubのIssueを作ったので、確認してください。",
       "en": "I created an issue on GitHub, so please check it.",
       "wordIds": [
         "kakunin"
       ]
     },
     {
-      "text": "Issueを 確認してから 作業を 始めます。",
+      "text": "Issueを確認してから作業を始めます。",
       "en": "I will check the issue and then start working.",
       "wordIds": [
         "kakunin",

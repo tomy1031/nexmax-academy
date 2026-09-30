@@ -6,14 +6,14 @@
   "listeningRef": "houkoku_chourei_listening",
   "sentences": [
     {
-      "text": "それでは、朝礼を 始めます。",
+      "text": "それでは、朝礼を始めます。",
       "en": "Now, let's start the morning meeting.",
       "wordIds": [
         "chourei"
       ]
     },
     {
-      "text": "きのうは、商品詳細画面を 作成しました。",
+      "text": "きのうは、商品詳細画面を作成しました。",
       "en": "Yesterday, I made the product detail screen.",
       "wordIds": [
         "shouhin",
@@ -23,7 +23,7 @@
       ]
     },
     {
-      "text": "商品名、商品画像、値段、商品説明を 表示できるように しました。",
+      "text": "商品名、商品画像、値段、商品説明を表示できるようにしました。",
       "en": "I made it possible to show the product name, product image, price, and product description.",
       "wordIds": [
         "shouhin",
@@ -34,7 +34,7 @@
       ]
     },
     {
-      "text": "商品詳細機能 全体の 進捗は、80％です。",
+      "text": "商品詳細機能全体の進捗は、80％です。",
       "en": "The overall progress of the product detail feature is 80%.",
       "wordIds": [
         "shouhin",
@@ -45,7 +45,7 @@
       ]
     },
     {
-      "text": "きょうは、商品の 画像を クリックすると、大きい 画像を 表示する 機能を 作ります。",
+      "text": "きょうは、商品の画像をクリックすると、大きい画像を表示する機能を作ります。",
       "en": "Today, I will make a feature that shows a large image when you click a product image.",
       "wordIds": [
         "shouhin",
@@ -55,12 +55,12 @@
       ]
     },
     {
-      "text": "問題は ありません。",
+      "text": "問題はありません。",
       "en": "There are no problems.",
       "wordIds": []
     },
     {
-      "text": "きのうは、商品検索APIを 作成しました。",
+      "text": "きのうは、商品検索APIを作成しました。",
       "en": "Yesterday, I made the product search API.",
       "wordIds": [
         "shouhin",
@@ -70,7 +70,7 @@
       ]
     },
     {
-      "text": "商品検索機能 全体の 進捗は、60％です。",
+      "text": "商品検索機能全体の進捗は、60％です。",
       "en": "The overall progress of the product search feature is 60%.",
       "wordIds": [
         "shouhin",
@@ -81,7 +81,7 @@
       ]
     },
     {
-      "text": "きょうは、カテゴリーで 商品を 検索する 処理を 修正します。",
+      "text": "きょうは、カテゴリーで商品を検索する処理を修正します。",
       "en": "Today, I will fix the process that searches for products by category.",
       "wordIds": [
         "kategori-",
@@ -92,7 +92,7 @@
       ]
     },
     {
-      "text": "カテゴリーで 検索すると、違う カテゴリーの 商品も 表示される 問題が あります。",
+      "text": "カテゴリーで検索すると、違うカテゴリーの商品も表示される問題があります。",
       "en": "When you search by category, products from other categories are also shown.",
       "wordIds": [
         "kategori-",
@@ -102,7 +102,7 @@
       ]
     },
     {
-      "text": "今、APIの 検索条件を 確認して います。",
+      "text": "今、APIの検索条件を確認しています。",
       "en": "I am checking the search conditions of the API now.",
       "wordIds": [
         "api",
@@ -112,14 +112,15 @@
       ]
     },
     {
-      "text": "はい。まだ 分かって いません。",
+      "text": "はい。まだ分かっていません。",
       "en": "That's right. We do not know yet.",
       "wordIds": []
     },
     {
-      "text": "午前中に 確認して、分かったら Slackで 報告します。",
+      "text": "午前中に確認して、分かったらSlackで報告します。",
       "en": "I will check it this morning and report on Slack when I find out.",
       "wordIds": [
+        "gozenchuu",
         "kakunin",
         "houkoku"
       ]
