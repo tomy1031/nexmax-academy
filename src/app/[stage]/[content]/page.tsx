@@ -7,6 +7,7 @@ import { TalkSession } from "@/components/listening/live-mode";
 import { LinkView } from "@/components/link/link-view";
 import { SkitView } from "@/components/skit/skit-view";
 import { QuestView } from "@/components/quest/quest-view";
+import { TypingView } from "@/components/typing/typing-view";
 import { ListeningPlayer } from "@/components/listening/playback-mode";
 import { hideRescueWord, rescueFingerprints } from "@/components/listening/listening-checks";
 import { buildFuriganaIndex } from "@/lib/text/furigana";
@@ -30,6 +31,7 @@ import {
   getSkit,
   getSlides,
   getStage,
+  getTyping,
   isInAnswerNotebook,
   listStages,
 } from "@/lib/content";
@@ -169,6 +171,10 @@ export async function generateMetadata({
     case "quest": {
       const quest = await getQuest(ref.ref);
       return { title: `${quest?.title ?? ""} | クエスト`, description: quest?.description };
+    }
+    case "typing": {
+      const typing = await getTyping(ref.ref);
+      return { title: `${typing?.title ?? ""} | タイピング`, description: typing?.description };
     }
   }
 }
@@ -346,6 +352,11 @@ async function renderContent(ref: StageContentRef) {
       const quest = await getQuest(ref.ref);
       if (!quest) notFound();
       return <QuestView quest={quest} embedded />;
+    }
+    case "typing": {
+      const typing = await getTyping(ref.ref);
+      if (!typing) notFound();
+      return <TypingView typing={typing} embedded />;
     }
     // 単語ステージは contents[] に入らない（wordStageIds 側・行き先は /wordtest）。
     // ここに来るのは壊れたデータなので 404 にする。

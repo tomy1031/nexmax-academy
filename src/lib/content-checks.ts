@@ -530,6 +530,9 @@ export function checkReferenceIntegrity(entries: readonly ContentEntry[]): Findi
   for (const { file, content } of entries) {
     if (content.kind === "wordstage" && content.wordIds) reportMissing(file, content.wordIds);
     if (content.kind === "manga" && content.vocabIds) reportMissing(file, content.vocabIds);
+    if (content.kind === "typing") {
+      for (const sentence of content.sentences) reportMissing(file, sentence.wordIds);
+    }
     if (content.kind === "article") {
       for (const block of content.blocks) {
         if (block.kind === "vocab" && block.wordIds) reportMissing(file, block.wordIds);
@@ -1344,6 +1347,18 @@ export function collectLabeledTexts(content: Content): LabeledText[] {
           push(card("explanation"), option.explanation);
         });
       });
+      break;
+    }
+
+    case "typing": {
+      /*
+       * タイピングは **お手本の 文そのものが 学習者の 読む 文**（2026-09-30）。
+       * 英語訳（`en`）は 英語なので 数えない。`accept` は 当たり判定の 材料で 画面に 出ない。
+       * ことばカードの 語と 意味は 正（content/vocab）が 覆う（`wordIds` の 参照）。
+       */
+      push("title", content.title);
+      push("description", content.description);
+      content.sentences.forEach((sentence, i) => push(`sentences[${i}].text`, sentence.text));
       break;
     }
   }

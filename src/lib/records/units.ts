@@ -37,6 +37,7 @@ import {
   listSkits,
   listSlides,
   listStages,
+  listTypings,
   listWordStages,
 } from "@/lib/content";
 import { LINK_ANSWER_PROMPTS } from "@/content/link-answers";
@@ -88,6 +89,7 @@ export async function loadUnitIndex(): Promise<UnitIndex> {
     links,
     skits,
     quests,
+    typings,
   ] = await Promise.all([
     listStages(),
     listMangas(),
@@ -101,6 +103,7 @@ export async function loadUnitIndex(): Promise<UnitIndex> {
     listLinks(),
     listSkits(),
     listQuests(),
+    listTypings(),
   ]);
 
   /*
@@ -174,6 +177,7 @@ export async function loadUnitIndex(): Promise<UnitIndex> {
   put(links, "link");
   put(skits, "skit");
   put(quests, "quest");
+  put(typings, "typing");
 
   const ordered = sortStages(stages);
   const units: UnitRef[] = [];

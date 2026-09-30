@@ -451,18 +451,29 @@ function toKana(
 /**
  * かなへ 倒した 形を **読みの 候補の 数だけ** 返す（重複は 落とす。1つ目が 基本）。
  * 「80％」は「はちじゅっぱーせんと」と「はちじっぱーせんと」の 2つに なる。
+ *
+ * タイピング（`src/components/typing/typing-checks.ts`）も 同じ 倒しかたで 文を 比べる
+ * ので 外に 出す（2026-09-30。聞き取りと タイピングで 読みの 当たりかたを 変えない）。
  */
-function kanaForms(text: string, state: ListeningState): readonly string[] {
-  const forms = Array.from({ length: state.sounds.variants }, (_, variant) =>
-    toKana(text, state.furigana, state.sounds, variant),
+export function readingForms(
+  text: string,
+  furigana: FuriganaIndex,
+  sounds: SoundsIndex = NO_SOUNDS,
+): readonly string[] {
+  const forms = Array.from({ length: sounds.variants }, (_, variant) =>
+    toKana(text, furigana, sounds, variant),
   );
   /*
    * **台帳を 通さない 形も 残す**。「5じまで」「10じごろ」の ように 数字を 変換せずに
    * かなと 混ぜて 打つ 学習者は、台帳の 読み（ごじ）では なく 数字の まま（5じ）の
    * 見かたに 当たる。台帳を 入れた せいで これが 外れると「嘘の 不正解」に なる。
    */
-  if (state.sounds.entries.length > 0) forms.push(toKana(text, state.furigana));
+  if (sounds.entries.length > 0) forms.push(toKana(text, furigana));
   return [...new Set(forms)];
+}
+
+function kanaForms(text: string, state: ListeningState): readonly string[] {
+  return readingForms(text, state.furigana, state.sounds);
 }
 
 /**
@@ -470,7 +481,7 @@ function kanaForms(text: string, state: ListeningState): readonly string[] {
  * 「はちじっぱーせんと」も「はちじゅうぱーせんと」も「はちじゅっぱーせんと」に なる。
  * 長い 読みから 先に 当てる（「ひゃくぎが」を「ひゃくぎがばいと」の 頭で 置きかえない）。
  */
-function canonicalKana(kana: string, sounds: SoundsIndex): string {
+export function canonicalKana(kana: string, sounds: SoundsIndex): string {
   const alternates = sounds.entries
     .filter((entry) => entry.readings.length > 1)
     .flatMap((entry) => entry.readings.map((reading) => [reading, entry.readings[0]!] as const))

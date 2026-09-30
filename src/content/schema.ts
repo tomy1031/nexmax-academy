@@ -1372,6 +1372,7 @@ export const CONTENT_REF_TYPES = [
   "link",
   "skit",
   "quest",
+  "typing",
 ] as const;
 
 const contentRefTypeSchema = z.enum(CONTENT_REF_TYPES);
@@ -1469,6 +1470,7 @@ export const RESERVED_STAGE_IDS = [
   "studio",
   "talk",
   "tutorial",
+  "typing",
   "welcome",
   "wordtest",
 ] as const;
@@ -2409,6 +2411,49 @@ const skitLineSchema = z.object({
  * 1歩ずつ 絵を 置いた のと 同じ 理由で、絵は 行に 持たせる。
  * 表紙の 1枚だけは 別に `cover` で 置ける。
  */
+/**
+ * タイピングの 1文。
+ *
+ * - `text` … お手本（学習者は 同じ 文を 打つ）。リスニングから 取った 文は **原稿と 同じ 字**に する
+ *   （2026-09-30 の 指定「リスニングと 文章が 異なる ものが あれば リスニングに 合わせる」）
+ * - `en` … 英語訳。**正解した あとに だけ** 出る
+ * - `wordIds` … 意味を 出す ことば（`content/vocab` の id）。N5 の 基本語は 入れない（画面は「N4以上」）
+ * - `accept` … 意味が 同じ 別の 言いかた。かな／漢字・空白・句読点の ちがいは **書かない**——
+ *   判定（`src/components/typing/typing-checks.ts`）が 読みで 吸収する
+ */
+const typingSentenceSchema = z.object({
+  text: plainText,
+  en: noJapanese,
+  wordIds: z.array(z.string().regex(/^[a-z0-9_-]+$/)).default([]),
+  accept: z.array(plainText).default([]),
+});
+
+/**
+ * **タイピング**（2026-09-30 の 指定・願い #550）。
+ *
+ * お手本の 文を 見て、同じように 入力する → 判定。正解すると **英語訳**と
+ * **ことばの 意味（N4以上）**が 出る。1画面 1文で、ぜんぶ 正解すると 済みに なる。
+ *
+ * ## かなでも 漢字でも 当たる
+ * 判定は お手本も 入力も 読み（`furigana`）で かなへ 倒して 比べる。数字・英字の 語
+ *（10時・GitHub・80％）の 読みは `listeningRef` の リスニングの 台帳
+ *（`src/content/listening-sounds.ts`）を 借りる——同じ 文を 聞き取りでも 打つので、
+ * 読みの 当たりかたを 2か所で 持たない。
+ */
+export const typingSchema = z.object({
+  kind: z.literal("typing"),
+  id: z.string().regex(/^[a-z0-9_-]+$/),
+  title: plainText,
+  description: plainText,
+  /** 数字・英字の 読みの 台帳を 借りる リスニングの id（省ける）。 */
+  listeningRef: z
+    .string()
+    .regex(/^[a-z0-9_-]+$/)
+    .optional(),
+  sentences: z.array(typingSentenceSchema).min(1),
+  furigana: z.array(furiganaEntrySchema).optional(),
+});
+
 export const skitSchema = z
   .object({
     kind: z.literal("skit"),
@@ -3157,6 +3202,7 @@ export const contentSchema = z.discriminatedUnion("kind", [
   linkSchema,
   skitSchema,
   questSchema,
+  typingSchema,
 ]);
 
 export type VocabWord = z.infer<typeof vocabWordSchema>;
@@ -3207,4 +3253,6 @@ export type LinkContent = z.infer<typeof linkSchema>;
 export type Skit = z.infer<typeof skitSchema>;
 export type SkitRole = z.infer<typeof skitRoleSchema>;
 export type SkitLine = z.infer<typeof skitLineSchema>;
+export type Typing = z.infer<typeof typingSchema>;
+export type TypingSentence = Typing["sentences"][number];
 export type Content = z.infer<typeof contentSchema>;

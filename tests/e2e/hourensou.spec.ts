@@ -52,6 +52,7 @@ const SEGMENT: Record<string, string> = {
   link: "link",
   meeting: "meeting",
   manga: "manga",
+  typing: "typing",
 };
 
 /** 教材データの 置き場（種別 → フォルダ）。 */
@@ -63,6 +64,7 @@ const DIR: Record<string, string> = {
   link: "links",
   meeting: "meetings",
   manga: "manga",
+  typing: "typing",
 };
 
 function contentOf(type: string, ref: string): unknown {

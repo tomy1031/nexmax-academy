@@ -6,7 +6,7 @@ import { seedCompleted, shot } from "./helpers";
 /**
  * 報告の リスニング 5場面（2026-09-28。`リスニング問題.md` から 作った）
  *
- * 1. 5本とも 報告の リスニングの ステージ（`houkoku-kiku`）に 並び、リスニング → もんだい の 順で 開ける
+ * 1. 5本とも 報告の リスニングの ステージ（`houkoku-kiku`）に 並び、リスニング → タイピング → もんだい の 順で 開ける
  *    （2026-09-30 の 指定で「報連相：報告」から 移した。古い URL は 新しい ステージへ 送る）
  * 2. **数字・英語の 語も かなで 打って 当たる**（同日の 指定「ひらがなでも 漢字ありでも
  *    どちらも 正しく 機能するように」）。前は「10時」を「じゅうじ」と 打つと 外れた
@@ -36,9 +36,14 @@ async function type(page: Page, word: string): Promise<void> {
   await input.press("Enter");
 }
 
-test("5場面は 報告の リスニングの ステージに リスニング → もんだい の 順で 並ぶ", () => {
+test("5場面は 報告の リスニングの ステージに リスニング → タイピング → もんだい の 順で 並ぶ", () => {
+  // 並びは 2026-09-30 の 選択「聴く→打つ→もんだい」
   expect(refs()).toEqual(
-    SCENES.flatMap((scene) => [`houkoku_${scene}_listening`, `houkoku_${scene}_quiz`]),
+    SCENES.flatMap((scene) => [
+      `houkoku_${scene}_listening`,
+      `houkoku_${scene}_typing`,
+      `houkoku_${scene}_quiz`,
+    ]),
   );
   // 報告の ステージからは 外れて いる（2つの ステージに 同じ 教材を 並べない）
   const houkoku = refs("houkoku");
