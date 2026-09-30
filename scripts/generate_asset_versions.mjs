@@ -15,6 +15,13 @@
  *
  * 出すのは `src/content/asset-versions.generated.ts`。346本で gzip 数KB——
  * Worker の 3MiB 枠（AGENTS.md デプロイ 罠5）に対して 誤差の 大きさ。
+ *
+ * ## 音・動画の 大きさも ここで 出す（2026-09-30）
+ * Worker が 音・動画を 途中から 送る（206）には ファイルの 大きさが 要るが、
+ * `env.ASSETS.fetch` の 応答には Content-Length が 付かない
+ *（src/lib/media-range.ts・docs/deploy.md §0.17）。だから 大きさを 焼いて おく
+ *（`src/content/media-sizes.generated.ts`）。読み込まず 大きさだけ 見る。
+ * 実物と 食いちがうと 再生が 壊れるので、tests/media_range.test.ts が 1本ずつ 突き合わせる。
  */
 import { createHash } from "node:crypto";
 import { readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
@@ -59,3 +66,33 @@ writeFileSync(
   "utf8",
 );
 console.log(`資産の 版番号: ${sorted.length}本を 書き出しました`);
+
+/** 途中から 送る（206）置き場。wrangler.jsonc の `run_worker_first` と 同じ。 */
+const MEDIA_ROOTS = ["audio", "video"];
+
+const sizes = {};
+for (const root of MEDIA_ROOTS) {
+  let files = [];
+  try {
+    files = walk(join("public", root));
+  } catch {
+    continue;
+  }
+  for (const file of files) {
+    const parts = file.split(sep).slice(1);
+    // `.DS_Store` など 見えない ファイルは 配らない もの なので 入れない
+    if (parts.some((part) => part.startsWith("."))) continue;
+    sizes[`/${parts.join(posix.sep)}`] = statSync(file).size;
+  }
+}
+
+const mediaSorted = Object.keys(sizes).sort();
+const mediaBody = mediaSorted.map((url) => `  ${JSON.stringify(url)}: ${sizes[url]},`);
+writeFileSync(
+  join("src", "content", "media-sizes.generated.ts"),
+  `// 自動生成（scripts/generate_asset_versions.mjs）。手で 直さない。\n` +
+    `// 音・動画の 大きさ（バイト）。Worker が 途中から 送る（206）ときに 使う（src/lib/media-range.ts）。\n` +
+    `export const MEDIA_SIZES: Readonly<Record<string, number>> = {\n${mediaBody.join("\n")}\n};\n`,
+  "utf8",
+);
+console.log(`音・動画の 大きさ: ${mediaSorted.length}本を 書き出しました`);

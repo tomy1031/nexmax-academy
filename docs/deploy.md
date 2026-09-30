@@ -1199,7 +1199,15 @@ Range の 処理が 無い——**`env.ASSETS.fetch` も 全体を 返す**。
 **直し**: `/audio/*` `/video/*` だけ Worker を 先に 通す（`wrangler.jsonc` の
 `assets.run_worker_first`）。入口 `worker.mjs` が OpenNext の `.open-next/worker.js` を 包み、
 この 2つの 道だけ `src/lib/media-range.ts` で 切り出して **206** を 返す。ほかは OpenNext へ
-そのまま 回す。画面側の 直し（動画も Blob で 鳴らす）は 採らなかった——最初の 1コマまで
+そのまま 回す。
+
+**ファイルの 大きさは 焼いた 表から 引く**（`src/content/media-sizes.generated.ts`・
+`npm run gen:content` が 作る）。`env.ASSETS.fetch` の 応答には **Content-Length が 付かない**
+（asset-worker が 付けるのは ETag・Content-Type・Cache-Control・CF-Cache-Status だけ。
+束縛ごしでは 長さの 見出しも 生まれない——workerd で 確認）。大きさが 無いと `bytes=N-` の
+終わりも `Content-Range` の 全体も 書けない。表と 実物が 1本でも 食いちがうと
+`tests/media_range.test.ts` が 落ちる（**音・動画を 足したら `npm run gen:content`**）。
+表に 無い ファイルは これまでどおり 200＋全体で、`Accept-Ranges` も 名乗らない。画面側の 直し（動画も Blob で 鳴らす）は 採らなかった——最初の 1コマまで
 5〜7MB を 全部 待たせる ことに なり、iPhone も 直る 保証が 無い。
 
 **無料枠への 影響（見積もり）**:
@@ -1229,7 +1237,9 @@ curl -s -o /dev/null -D - -H 'Range: bytes=1000-1999' "https://staging-academy.n
 ```
 
 `206`・`content-range: bytes 1000-1999/6756541`・`content-length: 1000`・
-`cache-control: public,max-age=86400,…` が 出れば よい。CPU は 本番で
+`cache-control: public,max-age=86400,…` が 出れば よい。**判定は curl で する**——
+`Accept-Ranges` だけ 名乗って 200＋全体を 返す 壊れ方だと、Chrome は 位置を 動かせて
+しまう（動かす たびに 全体を 取り直す）ので、画面だけ 見ると 直った ように 見える。CPU は 本番で
 `npx wrangler tail academy --format json` を 見ながら つまみを 動かし、`/video/` の
 `cpuTime` と `outcome=ok` を 見る（STG は tail できない。§0.13）。
 

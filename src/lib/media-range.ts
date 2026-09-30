@@ -20,11 +20,23 @@
  *   まとめ読みは Workers だけに ある `readAtLeast` を 使う（無い 所＝テストの Node
  *   では ふつうの BYOB 読みを くり返す）。
  *
+ * ## ファイルの 大きさは 焼いた 表から 引く
+ * `env.ASSETS.fetch` の 応答には **Content-Length が 付かない**（asset-worker が 付けるのは
+ * ETag・Content-Type・Cache-Control・CF-Cache-Status だけで、束縛ごしでは 長さの 見出しも
+ * 生まれない。2026-09-30 に workerd で 確認）。大きさが 無いと `bytes=N-` の 終わりも
+ * `Content-Range` の 全体も 書けないので、`npm run gen:content` が 焼く
+ * `MEDIA_SIZES`（src/content/media-sizes.generated.ts）を 使う。表に 無い ファイルは
+ * これまでどおり 全体を 200 で 送り、途中から 送れるとは 名乗らない。表と 実物の
+ * 食いちがいは テストが 1本ずつ 止める。
+ *
  * ## `_headers` の Cache-Control を ここでも 付ける
  * Worker を 通した 応答には `_headers` が 効かない（Cloudflare の 資料）。付け忘れると
  * 開くたびに 取り直しに なり、教室の 細い 回線を 食う。値は `public/_headers` と
  * 同じに する（`tests/media_range.test.ts` が 突き合わせる）。
  */
+
+// `@/` は 使わない——worker.mjs を 束ねる wrangler は tsconfig の paths を 知らない
+import { MEDIA_SIZES } from "../content/media-sizes.generated";
 
 /** Worker を 先に 通す 道と、その Cache-Control（`public/_headers` と 同じ 値）。 */
 export const MEDIA_CACHE_CONTROL = {
@@ -84,11 +96,13 @@ export type AssetsBinding = { fetch(request: Request): Promise<Response> };
 /**
  * 音・動画を 返す。`Range` が あれば その ぶんだけ 206 で、無ければ 全体を 200 で。
  * 404 など 中身の 無い 応答は そのまま 返す（呼ぶ 側が アプリ本体へ 回す）。
+ * `sizes` は テストが 差しかえる ための もの（ふだんは 焼いた 表）。
  */
 export async function serveMedia(
   request: Request,
   assets: AssetsBinding,
   prefix: MediaPrefix,
+  sizes: Readonly<Record<string, number>> = MEDIA_SIZES,
 ): Promise<Response> {
   const upstream = await assets.fetch(request);
   // 404 に 長い キャッシュを 付けない。付けて よいのは 中身が ある とき（と 304）だけ
@@ -98,19 +112,23 @@ export async function serveMedia(
 
   const headers = new Headers(upstream.headers);
   headers.set("Cache-Control", MEDIA_CACHE_CONTROL[prefix]);
-  headers.set("Accept-Ranges", "bytes");
   const pass = (status: number, body: ReadableStream<Uint8Array> | null) =>
     new Response(body, { status, headers });
 
-  // 配信元が 自分で 切った（206）・304・HEAD は 見出しだけ 足して 返す
-  if (upstream.status !== 200 || request.method !== "GET" || !upstream.body) {
-    return pass(upstream.status, upstream.body);
-  }
+  // 配信元が 自分で 切った（206）・304 は 見出しだけ 足して 返す
+  if (upstream.status !== 200) return pass(upstream.status, upstream.body);
 
-  // 長さが 分からないと 範囲を 決められない——これまでどおり 全体を 送る
-  const lengthHeader = upstream.headers.get("Content-Length");
-  const size = lengthHeader === null ? NaN : Number(lengthHeader);
-  if (!Number.isSafeInteger(size) || size < 0 || !ifRangeAllows(request, upstream)) {
+  // 大きさが 分からないと 範囲を 決められない——これまでどおり 全体を 送り、
+  // 途中から 送れるとは 名乗らない（名乗ると ブラウザが 途中からを 頼み、毎回 全体を 取り直す）
+  const size = sizeOf(request, upstream, sizes);
+  if (size === null) return pass(200, upstream.body);
+  headers.set("Accept-Ranges", "bytes");
+
+  if (request.method === "HEAD") {
+    headers.set("Content-Length", String(size));
+    return pass(200, null);
+  }
+  if (request.method !== "GET" || !upstream.body || !ifRangeAllows(request, upstream)) {
     return pass(200, upstream.body);
   }
 
@@ -118,6 +136,9 @@ export async function serveMedia(
   if (range === null) return pass(200, upstream.body);
   if (range === "unsatisfiable") {
     await upstream.body.cancel();
+    // 中身の 無い 答えに 1年の キャッシュや 動画の 種類を 残さない
+    headers.delete("Cache-Control");
+    headers.delete("Content-Type");
     headers.delete("Content-Length");
     headers.set("Content-Range", `bytes */${size}`);
     return pass(416, null);
@@ -133,6 +154,29 @@ export async function serveMedia(
   headers.set("Content-Range", `bytes ${start}-${end}/${size}`);
   headers.set("Content-Length", String(length));
   return pass(206, body);
+}
+
+/**
+ * ファイルの 大きさ（バイト）。分からなければ `null`。
+ * 配信元が いつか 長さを 付ける ように なったら そちらを 信じ、無ければ 焼いた 表を 引く。
+ */
+function sizeOf(
+  request: Request,
+  upstream: Response,
+  sizes: Readonly<Record<string, number>>,
+): number | null {
+  const header = upstream.headers.get("Content-Length");
+  if (header !== null) {
+    const size = Number(header);
+    return Number.isSafeInteger(size) && size >= 0 ? size : null;
+  }
+  let pathname: string;
+  try {
+    pathname = decodeURIComponent(new URL(request.url).pathname);
+  } catch {
+    return null;
+  }
+  return sizes[pathname] ?? null;
 }
 
 /**
