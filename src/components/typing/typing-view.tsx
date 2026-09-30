@@ -165,7 +165,7 @@ export function TypingView({ typing, embedded }: { typing: TypingViewData; embed
             type="button"
             onClick={reset}
             aria-label="リセット"
-            className="btn-island btn-game px-5 py-2.5 text-sm"
+            className="border-sky text-sky bg-panel rounded-2xl border-2 px-5 py-2.5 text-sm font-extrabold"
           >
             ↺ リセット
           </button>

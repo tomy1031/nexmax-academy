@@ -43,6 +43,7 @@ async function type(page: Page, text: string) {
 }
 
 test("かなだけで 打っても 当たり、英語訳と ことばの 意味が 出る", async ({ page, context }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
   await open(page, context);
   await expect(page.locator('[data-typing="progress"]')).toHaveText(`1 / ${sentences().length}`);
   // 正解の 前は 英語訳を 見せない
@@ -59,6 +60,7 @@ test("かなだけで 打っても 当たり、英語訳と ことばの 意味�
 });
 
 test("ちがう 文は ❌ で、英語訳は 出ない。リセットで 消える", async ({ page, context }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
   await open(page, context);
   await type(page, "たかはしさん、いま、じかん");
   const verdict = page.locator('[data-typing="verdict"]');
