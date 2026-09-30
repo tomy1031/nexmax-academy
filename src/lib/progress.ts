@@ -18,6 +18,12 @@ const PROGRESS_KEY = "nexmax.progress.v1";
 const STUDYING_KEY = "nexmax.studying.v1";
 
 /**
+ * 最後に 開いた ステージ（トップでも、中の 教材でも）。**進み具合とは 関係ない**。
+ * 地図は ひらいた ときに ここへ 下りる（`mapLanding`・2026-09-30 の 指定）。
+ */
+const LAST_OPENED_KEY = "nexmax.lastOpened.v1";
+
+/**
  * - cleared … クリア済み
  * - current … いま ここ
  * - skipped … とばした（いま ここ／クリア済みの ステージより 前に あって、まだ おわって いない）
@@ -111,6 +117,29 @@ export function studyingStageSnapshot(): string {
   }
 }
 
+/** 最後に 開いた ステージ（無ければ ""）。例外を 外へ 出さない 理由は `studyingStageSnapshot` と 同じ。 */
+export function lastOpenedStageSnapshot(): string {
+  try {
+    return storage()?.getItem(LAST_OPENED_KEY) ?? "";
+  } catch {
+    return "";
+  }
+}
+
+/**
+ * 開いた ステージを 覚える（ステージの トップと 教材の 枠が 開いた ときに 呼ぶ）。
+ *
+ * クリア済みでも、のぞいた だけでも 書く。これは「どこまで 進んだか」では なく
+ * 「どこから 地図へ 戻って きたか」の 控えなので、見直しも のぞきも 数える。
+ */
+export function rememberOpenedStage(stageId: string): void {
+  try {
+    storage()?.setItem(LAST_OPENED_KEY, stageId);
+  } catch {
+    /* 覚えられなくても 学習は 続けられる（地図は いま ここ へ 下りる） */
+  }
+}
+
 /**
  * 教材を おえた ステージを「いま 学習中」として 覚える。
  *
@@ -182,17 +211,34 @@ export function deriveProgress(
 /**
  * 地図を ひらいた ときに 下りる 先（2026-09-29 の 指定「毎回 一番上は きつい」）。
  *
- * - いま ここ の ステージ … `{ kind: "stage" }`
+ * - **最後に 開いた ステージ**（`lastOpenedStageId`・地図に ある もの）… そこ。
+ *   進み具合とは 関係なく、戻って きた 場所に 戻す（2026-09-30 の 指定）
+ * - それが 無ければ いま ここ の ステージ … `{ kind: "stage" }`
  * - ぜんぶ クリア … `{ kind: "goal" }`（地図は ゴールへ。カードには ゴールが 無いので 下りない）
  * - **はじめての 学習者**（まだ 何も クリアして いない・教材も おえて いない）… null。
  *   一番上の START の 看板から 見せる
+ *
+ * 2026-09-29 版は 進み具合（いま ここ）へ 下りて いた。すると「報告を 開いて 戻ったのに、
+ * 先まで 進めて いた 要件定義に 下りる」——見て いた 場所から 引き離される（ユーザーの 指摘）。
+ * 画面の 行き来は 進み具合で なく **最後に 開いた もの** で 決める。
+ *
+ * `stageIds` は 地図の 並び。最後に 開いた ステージが 地図に 無い（消した・地図に 出さない）
+ * ときは 数えない。渡さなければ 最後に 開いた ステージは 見ない。
  *
  * 地図は ログインの 内側に あって 通しの 検証から 見えない。見張れるのは 単体テスト
  * だけなので、判断は 部品に 書かず ここに 置く（map-data.ts の `mapStageActions` と 同じ 理由）。
  */
 export type MapLanding = { kind: "stage"; stageId: string } | { kind: "goal" } | null;
 
-export function mapLanding(progress: StageProgress, studyingStageId: string | null): MapLanding {
+export function mapLanding(
+  progress: StageProgress,
+  studyingStageId: string | null,
+  lastOpenedStageId: string | null = null,
+  stageIds: readonly string[] = [],
+): MapLanding {
+  if (lastOpenedStageId && stageIds.includes(lastOpenedStageId)) {
+    return { kind: "stage", stageId: lastOpenedStageId };
+  }
   if (progress.currentStageId === null) {
     return progress.clearedCount > 0 ? { kind: "goal" } : null;
   }

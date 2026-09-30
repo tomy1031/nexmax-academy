@@ -9,7 +9,12 @@ import { CelebrationBurst } from "@/components/quiz/celebration";
 import { useIsAdmin } from "@/lib/admin-flag";
 import { useGatesUnlocked } from "@/lib/unlock-flag";
 import { contentKindMeta } from "@/lib/content-kinds";
-import { getClearedStageIds, markStageCleared, rememberStudyingStage } from "@/lib/progress";
+import {
+  getClearedStageIds,
+  markStageCleared,
+  rememberOpenedStage,
+  rememberStudyingStage,
+} from "@/lib/progress";
 import { readContentProgress, subscribeProgress } from "@/lib/progress/store";
 import {
   KANJI,
@@ -187,6 +192,16 @@ export function ContentFrame({
   useEffect(() => {
     if (studiedHere) rememberStudyingStage(stage.id);
   }, [studiedHere, stage.id]);
+
+  /*
+    こちらは 進み具合と 関係なく「最後に 開いた ステージ」を 覚える。地図へ 戻った ときの
+    下りる 先に なる（2026-09-30 の 指定——報告を 開いて 戻ったのに、先まで 進めて いた
+    要件定義に 下りて いた）。のぞいた だけでも、関門で 止められて いても 書く。
+  */
+  const onMap = stage.number !== null;
+  useEffect(() => {
+    if (onMap) rememberOpenedStage(stage.id);
+  }, [onMap, stage.id]);
 
   /*
     ステージ1本を おえたことは、1問の正解より ずっと 大きな 節目なので、

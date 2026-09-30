@@ -134,6 +134,39 @@ describe("mapLanding（地図を ひらいた ときに 下りる 先）", () =>
   });
 });
 
+describe("mapLanding（最後に 開いた ステージ・2026-09-30 の 指定）", () => {
+  it("先まで進んでいても、最後に開いたステージへ下りる（報告を開いて戻ったら報告）", () => {
+    // s1〜s4 クリア済み・いま ここ は s5。s2 を 開いて 戻って きた
+    const progress = deriveProgress(STAGE_IDS.slice(0, 4), STAGE_IDS);
+    expect(mapLanding(progress, null, STAGE_IDS[1]!, STAGE_IDS)).toEqual({
+      kind: "stage",
+      stageId: STAGE_IDS[1],
+    });
+  });
+
+  it("はじめての学習者でも、開いたステージがあればそこへ下りる", () => {
+    expect(mapLanding(deriveProgress([], STAGE_IDS), null, STAGE_IDS[0]!, STAGE_IDS)).toEqual({
+      kind: "stage",
+      stageId: STAGE_IDS[0],
+    });
+  });
+
+  it("ぜんぶクリアでも、見直しに開いたステージへ下りる（ゴールへ飛ばさない）", () => {
+    expect(
+      mapLanding(deriveProgress(STAGE_IDS, STAGE_IDS), null, STAGE_IDS[2]!, STAGE_IDS),
+    ).toEqual({ kind: "stage", stageId: STAGE_IDS[2] });
+  });
+
+  it("最後に開いたステージが地図に無ければ、いままでどおり いま ここ へ", () => {
+    const progress = deriveProgress(STAGE_IDS.slice(0, 2), STAGE_IDS);
+    expect(mapLanding(progress, null, "けしたステージ", STAGE_IDS)).toEqual({
+      kind: "stage",
+      stageId: STAGE_IDS[2],
+    });
+    expect(mapLanding(deriveProgress([], STAGE_IDS), null, "けしたステージ", STAGE_IDS)).toBeNull();
+  });
+});
+
 describe("GOAL_AREA", () => {
   it("ゴールは日本で、ステージには結びつかない", () => {
     // ゴールだけは学習の目的地そのものなのでコードに置く（先生が消す対象ではない）
