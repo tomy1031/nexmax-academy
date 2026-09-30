@@ -2,8 +2,8 @@
   "listeningId": "houkoku_kanryou_listening",
   "gapSeconds": 1.25,
   "compareGapSeconds": [],
-  "complete": false,
-  "missing": [12, 13],
+  "complete": true,
+  "missing": [],
   "sentences": [
     {
       "speaker": "sato",
@@ -178,6 +178,38 @@
       "reading": {
         "expected": "いまのところもんだいはありません",
         "spoken": "いまのところもんだいはありません",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "takahashi",
+      "text": "パソコンと スマートフォンの どちらも 大丈夫と いう ことですね。分かりました。ありがとう ございます。",
+      "file": "12.wav",
+      "voice": "Alnilam",
+      "model": "gemini-3.8-live",
+      "seconds": 5.85,
+      "longestPause": 0.24,
+      "transcript": "パソコンとスマートフォンのどちらも大丈夫ということですね。分かりました。ありがとうございます。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "ぱそこんとすまあとふぉんのどちらもだいじょうぶということですねわかりましたありがとうございます",
+        "spoken": "ぱそこんとすまあとふぉんのどちらもだいじょうぶということですねわかりましたありがとうございます",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "sato",
+      "text": "次に 対応する タスクは ありますか。",
+      "file": "13.wav",
+      "voice": "Autonoe",
+      "model": "gemini-3.8-live",
+      "seconds": 3.15,
+      "longestPause": 0.29,
+      "transcript": "次 に 対応 する タスク は あり ます か ?",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "つぎにたいおうするたすくはありますか",
+        "spoken": "つぎにたいおうするたすくはありますか",
         "distance": 0
       }
     },
