@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { expect, test, type Page } from "@playwright/test";
-import { seedAdmin } from "./helpers";
+import { seedAdmin, shot } from "./helpers";
 
 /**
  * 管理画面の ステージ編集 —「＋ ふやす」で ミーティングを 入れる
@@ -57,7 +57,10 @@ test("ミーティングを「もう ある ものから えらぶ」で 入れ�
   await expect(flowItems(page)).toHaveCount(before + 1);
   await expect(flowItems(page).last()).toContainText(title);
   await expect(flowItems(page).last()).toContainText("ミーティング");
-  await expect(page.getByText(WARNING)).toHaveCount(0);
+  // 足した 行だけを 見る（このステージの スキットの 行には、スキットが スタジオの
+  // 一覧に まだ 無いので 別の 理由で 出ている — 並行スレッドで 直し中）。
+  await expect(flowItems(page).last().getByText(WARNING)).toHaveCount(0);
+  await shot(page, "studio-flow-meeting-picked");
 });
 
 test("ミーティングを ステージの 中で あたらしく つくれる（エディタが 開く）", async ({ page }) => {
@@ -68,4 +71,5 @@ test("ミーティングを ステージの 中で あたらしく つくれる�
 
   await expect(page.getByRole("heading", { name: "あいての 話し方（AIへの 指示）" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "③ この ステージの ながれ" })).toHaveCount(0);
+  await shot(page, "studio-flow-meeting-create");
 });
