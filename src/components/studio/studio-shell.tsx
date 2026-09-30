@@ -43,6 +43,7 @@ import { emptyListening } from "./listening-drafts";
 import { ListeningEditor } from "./listening-editor";
 import { MangaEditor } from "./manga-editor";
 import { MeetingEditor } from "./meeting-editor";
+import { noEditorMessage } from "./no-editor";
 import { QuizEditor } from "./quiz-editor";
 import { SlidesEditor } from "./slides-editor";
 import { StageEditor, type RefOption } from "./stage-editor";
@@ -384,13 +385,11 @@ export function StudioShell({
           if (draft) setView({ mode: "wordstage", draft, parent });
           return;
         }
-        case "scenario":
-          // たいわ（scenario）はまだエディタが無い。押しても何も起きないより、理由を出す。
-          setToast({
-            message:
-              "たいわは まだ スタジオで 直せません（content/scenarios の JSON で 作ります）。",
-            tone: "ng",
-          });
+        default:
+          // たいわ・スキット・クエスト・リンク・タイピングは まだ エディタが 無い
+          // （no-editor.ts）。押しても何も起きないより、理由を出す。
+          // 種別を 足して case も no-editor.ts も 書き忘れると、ここで 型検査が 止まる。
+          setToast({ message: noEditorMessage(type), tone: "ng" });
           return;
       }
     },
