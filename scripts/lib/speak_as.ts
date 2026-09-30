@@ -30,3 +30,34 @@ export function speechInputOf(
     instruction: baseInstruction + hits.map((entry) => entry.note).join(""),
   };
 }
+
+/**
+ * 「Issue」の 渡しかたの 聞きくらべ（`<教材ID>@live-<番号>-trials`）。
+ *
+ * 2026-09-30、カタカナ＋アクセントの 指示でも「音声は 全滅」（まだ 異臭の ように 聞こえる）。
+ * ユーザーの 問い「issue で インプットしても だめですか？」に 答える ため、同じ 文を
+ * 渡しかたを 変えて 1本ずつ 作り、耳で 選んで もらう。
+ */
+export const ISSUE_TRIALS: readonly {
+  readonly name: string;
+  readonly say: string;
+  readonly note: string;
+}[] = [
+  { name: "issue", say: "issue", note: "" },
+  {
+    name: "issue-en",
+    say: "issue",
+    note: "「issue」は英語の単語です。日本語風に平らに読まず、英語の issue（ISH-oo）の発音で、最初の音を強く読んでください。",
+  },
+  { name: "katakana", say: "イシュー", note: "" },
+  { name: "sokuon", say: "イッシュー", note: "" },
+];
+
+/** 聞きくらべの 1本ぶんの 渡す 文と 指示。 */
+export function trialInputOf(
+  text: string,
+  baseInstruction: string,
+  trial: (typeof ISSUE_TRIALS)[number],
+): { readonly text: string; readonly instruction: string } {
+  return { text: text.replace(/Issue/g, trial.say), instruction: baseInstruction + trial.note };
+}
