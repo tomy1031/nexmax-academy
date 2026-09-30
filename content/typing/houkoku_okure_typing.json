@@ -55,8 +55,7 @@
       "text": "今日の 午後5時までに、もう一度 状況を 教えて ください。",
       "en": "Please tell me the status again by 5 p.m. today.",
       "wordIds": [
-        "joukyou",
-        "oshi"
+        "joukyou"
       ]
     }
   ],
@@ -90,8 +89,8 @@
       "ひょうじ"
     ],
     [
-      "同",
-      "おな"
+      "同じ",
+      "おなじ"
     ],
     [
       "文",

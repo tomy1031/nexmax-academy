@@ -142,7 +142,6 @@ export function TypingView({ typing, embedded }: { typing: TypingViewData; embed
           autoComplete="off"
           autoCorrect="off"
           spellCheck={false}
-          placeholder="ここに 入力して ください。"
           aria-label="お手本と 同じ 文を 入力する"
           onChange={(event) => {
             setInput(event.target.value);
@@ -197,7 +196,7 @@ export function TypingView({ typing, embedded }: { typing: TypingViewData; embed
 
       {solved ? (
         <>
-          <Translation text={sentence.en} />
+          <Translation text={sentence.en} show={furiganaOn} />
           {words.length > 0 ? (
             <WordCards words={words} show={furiganaOn} furigana={furigana} />
           ) : null}
@@ -258,7 +257,7 @@ function Verdict({ result, show }: { result: TypingResult | null; show: boolean 
 }
 
 /** 英語訳。コピーの ボタンは クリップボードが 使える 端末だけに 出す。 */
-function Translation({ text }: { text: string }) {
+function Translation({ text, show }: { text: string; show: boolean }) {
   const canCopy = useSyncExternalStore(
     subscribeNever,
     () => typeof navigator !== "undefined" && Boolean(navigator.clipboard?.writeText),
@@ -268,7 +267,7 @@ function Translation({ text }: { text: string }) {
   return (
     <section className="card-island border-hairline border p-5 sm:p-6" data-typing="translation">
       <h2 className="text-navy font-extrabold">
-        🌐 <RubyText text="英語訳" index={TYPING_UI_FURIGANA} />
+        🌐 <RubyText text="英語訳" index={TYPING_UI_FURIGANA} show={show} />
       </h2>
       <div className="border-leaf bg-leaf-soft mt-3 flex items-start gap-3 rounded-2xl border px-4 py-3">
         <p lang="en" className="text-ink flex-1 text-lg font-bold break-words">
