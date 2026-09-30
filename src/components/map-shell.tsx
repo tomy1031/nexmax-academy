@@ -47,6 +47,8 @@ import {
 import {
   clearedIdsSnapshot,
   deriveProgress,
+  lastOpenedStageSnapshot,
+  mapInitialPanel,
   mapLanding,
   stageStatus,
   studyingStageSnapshot,
@@ -1411,6 +1413,7 @@ export function MapShell({
     () => PROGRESS_SERVER_SNAPSHOT,
   );
   const studying = useSyncExternalStore(subscribeToStorage, studyingStageSnapshot, () => "");
+  const lastOpened = useSyncExternalStore(subscribeToStorage, lastOpenedStageSnapshot, () => "");
   const storedView = useSyncExternalStore<MapView>(subscribeToStorage, getMapView, () => "map");
   const cachedProfile = useMemo(
     () => (rawProfile === PROFILE_SERVER_SNAPSHOT ? null : getProfile()),
@@ -1430,7 +1433,10 @@ export function MapShell({
       studying || null,
     );
   }, [rawProgress, stageIds, studying]);
-  const landing = mapLanding(progress, studying || null);
+  const landing = mapLanding(progress, studying || null, {
+    stageId: lastOpened || null,
+    stageIds,
+  });
   const [databaseProfile, setDatabaseProfile] = useState<DiagnosedProfileRow | null>(null);
   const profile = databaseProfile ? profileFromRow(databaseProfile) : cachedProfile;
   // 地図に立たせる分身。診断が終わっていない人には出さない（絵が決まらない）
@@ -1445,11 +1451,14 @@ export function MapShell({
   const [collapsed, setCollapsed] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [loadingIsSlow, setLoadingIsSlow] = useState(false);
-  // undefined = 学習者がまだ触っていない。そのあいだは「いま取り組むステージ」を開いておく
+  // undefined = 学習者がまだ触っていない。そのあいだは 下りた 先の ステージ（最後に 開いた
+  // ステージ。無ければ「いま取り組むステージ」）を開いておく——下りた 先の パネルが 閉じて いると、
+  // 戻って きた 場所なのに 何も 押せない
   const [expandedOverride, setExpandedOverride] = useState<string | null | undefined>(undefined);
   const view = viewOverride ?? storedView;
 
-  const expandedStage = expandedOverride === undefined ? progress.currentStageId : expandedOverride;
+  const expandedStage =
+    expandedOverride === undefined ? mapInitialPanel(landing, progress) : expandedOverride;
 
   useEffect(() => {
     let active = true;

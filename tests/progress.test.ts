@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { GOAL_AREA } from "../src/content/areas";
-import { deriveProgress, mapLanding, stageStatus } from "../src/lib/progress";
+import { deriveProgress, mapInitialPanel, mapLanding, stageStatus } from "../src/lib/progress";
 
 /**
  * 進み具合は「マップに出ている順のID」を渡して計算する。
@@ -131,6 +131,68 @@ describe("mapLanding（地図を ひらいた ときに 下りる 先）", () =>
 
   it("ステージが1つも無ければ下りない", () => {
     expect(mapLanding(deriveProgress([], []), null)).toBeNull();
+  });
+});
+
+describe("mapLanding（最後に 開いた ステージ・2026-09-30 の 指定）", () => {
+  const opened = (stageId: string | null) => ({ stageId, stageIds: STAGE_IDS });
+
+  it("先まで進んでいても、最後に開いたステージへ下りる（報告を開いて戻ったら報告）", () => {
+    // s1〜s4 クリア済み・いま ここ は s5。s2 を 開いて 戻って きた
+    const progress = deriveProgress(STAGE_IDS.slice(0, 4), STAGE_IDS);
+    expect(mapLanding(progress, null, opened(STAGE_IDS[1]!))).toEqual({
+      kind: "stage",
+      stageId: STAGE_IDS[1],
+    });
+  });
+
+  it("学習中のステージと食い違っても、最後に開いたほうへ下りる（いま ここ は動かない）", () => {
+    const progress = deriveProgress(STAGE_IDS.slice(0, 2), STAGE_IDS, STAGE_IDS[3]!);
+    expect(progress.currentStageId).toBe(STAGE_IDS[3]);
+    expect(mapLanding(progress, STAGE_IDS[3]!, opened(STAGE_IDS[0]!))).toEqual({
+      kind: "stage",
+      stageId: STAGE_IDS[0],
+    });
+  });
+
+  it("はじめての学習者でも、開いたステージがあればそこへ下りる", () => {
+    expect(mapLanding(deriveProgress([], STAGE_IDS), null, opened(STAGE_IDS[0]!))).toEqual({
+      kind: "stage",
+      stageId: STAGE_IDS[0],
+    });
+  });
+
+  it("ぜんぶクリアでも、見直しに開いたステージへ下りる（ゴールへ飛ばさない）", () => {
+    expect(mapLanding(deriveProgress(STAGE_IDS, STAGE_IDS), null, opened(STAGE_IDS[2]!))).toEqual({
+      kind: "stage",
+      stageId: STAGE_IDS[2],
+    });
+  });
+
+  it("最後に開いたステージが無い・地図に無ければ、いままでどおり いま ここ へ", () => {
+    const progress = deriveProgress(STAGE_IDS.slice(0, 2), STAGE_IDS);
+    const current = { kind: "stage", stageId: STAGE_IDS[2] };
+    expect(mapLanding(progress, null, opened("けしたステージ"))).toEqual(current);
+    expect(mapLanding(progress, null, opened(null))).toEqual(current);
+    expect(mapLanding(deriveProgress([], STAGE_IDS), null, opened("けしたステージ"))).toBeNull();
+  });
+});
+
+describe("mapInitialPanel（はじめから 開いて おく パネル）", () => {
+  it("下りた先のステージのパネルを開く（いま ここ でなくても）", () => {
+    const progress = deriveProgress(STAGE_IDS.slice(0, 4), STAGE_IDS);
+    const landing = mapLanding(progress, null, { stageId: STAGE_IDS[1]!, stageIds: STAGE_IDS });
+    expect(mapInitialPanel(landing, progress)).toBe(STAGE_IDS[1]);
+  });
+
+  it("はじめての学習者（下りない）は いま ここ のパネル", () => {
+    const progress = deriveProgress([], STAGE_IDS);
+    expect(mapInitialPanel(mapLanding(progress, null), progress)).toBe(STAGE_IDS[0]);
+  });
+
+  it("ゴールへ下りたときは開くパネルが無い", () => {
+    const progress = deriveProgress(STAGE_IDS, STAGE_IDS);
+    expect(mapInitialPanel(mapLanding(progress, null), progress)).toBeNull();
   });
 });
 
