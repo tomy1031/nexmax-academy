@@ -1152,3 +1152,28 @@ describe("秘匿漏れの検査（規律6・P4）", () => {
     expect(checkSecretLeaks("f.json", scenarioOf(bare))).toEqual([]);
   });
 });
+
+describe("タイピングの 参照（2026-09-30）", () => {
+  const typing = (listeningRef?: string) =>
+    ({
+      kind: "typing",
+      id: "t1",
+      title: "タイピング",
+      description: "文を 打ちます。",
+      ...(listeningRef ? { listeningRef } : {}),
+      sentences: [{ text: "はい。", en: "Yes.", wordIds: [], accept: [] }],
+    }) as unknown as Content;
+  const listening = { kind: "listening", id: "l1" } as unknown as Content;
+
+  it("listeningRef の リスニングが 無ければ 弾く（数字・英字の 読みが 黙って 消える）", () => {
+    const findings = checkReferenceIntegrity([entry(typing("nope"), "t.json")]);
+    expect(findings).toHaveLength(1);
+    expect(findings[0]?.level).toBe("error");
+    expect(findings[0]?.message).toContain("nope");
+  });
+
+  it("listeningRef の リスニングが あれば 通す・書いて いなければ 見ない", () => {
+    expect(checkReferenceIntegrity([entry(typing("l1"), "t.json"), entry(listening)])).toEqual([]);
+    expect(checkReferenceIntegrity([entry(typing(), "t.json")])).toEqual([]);
+  });
+});

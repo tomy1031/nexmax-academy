@@ -99,10 +99,37 @@ test("漢字まじりで ぜんぶ 打つと 済みに なる（つぎの 文へ
   expect(JSON.parse(saved ?? "{}")).toMatchObject({ status: "completed" });
 });
 
-test("Enter でも 判定できる（IME の 確定の Enter では 判定しない）", async ({ page, context }) => {
+test("Enter でも 判定できる。続けて Enter を 押しても 英語訳を 見ずに 次へ 飛ばない", async ({
+  page,
+  context,
+}) => {
   await open(page, context);
   const input = page.getByLabel("お手本と 同じ 文を 入力する");
   await input.fill(sentences()[0]!.text);
   await input.press("Enter");
   await expect(page.locator('[data-typing="verdict"]')).toHaveAttribute("data-ok", "true");
+  // 判定の すぐ あとの Enter では 次へ 行かない（押しすぎの ガード）
+  await input.press("Enter");
+  await expect(page.locator('[data-typing="progress"]')).toHaveText(`1 / ${sentences().length}`);
+  await expect(page.locator('[data-typing="translation"]')).toBeVisible();
+});
+
+test("漢字まじりで 外れても、合って いた ところに ルビが 付く（裸の 漢字を 出さない）", async ({
+  page,
+  context,
+}) => {
+  await open(page, context);
+  await type(page, "高橋さん、今、時間");
+  const verdict = page.locator('[data-typing="verdict"]');
+  await expect(verdict).toHaveAttribute("data-ok", "false");
+  expect(await bareKanjiTexts(page)).toEqual([]);
+});
+
+test("しおり: 途中で 開き直すと つづきの 文から", async ({ page, context }) => {
+  await open(page, context);
+  await type(page, sentences()[0]!.text);
+  await page.getByRole("button", { name: "つぎの 文へ" }).click();
+  await expect(page.locator('[data-typing="progress"]')).toHaveText(`2 / ${sentences().length}`);
+  await page.reload();
+  await expect(page.locator('[data-typing="progress"]')).toHaveText(`2 / ${sentences().length}`);
 });

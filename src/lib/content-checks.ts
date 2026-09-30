@@ -518,6 +518,9 @@ export function checkReferenceIntegrity(entries: readonly ContentEntry[]): Findi
       content.kind === "vocab" ? content.words.map((w) => [w.id, w] as const) : [],
     ),
   );
+  const listeningIds = new Set(
+    entries.flatMap(({ content }) => (content.kind === "listening" ? [content.id] : [])),
+  );
   const reportMissing = (file: string, ids: readonly string[]) => {
     const missing = ids.filter((id) => !vocabWords.has(id));
     if (missing.length === 0) return;
@@ -532,6 +535,17 @@ export function checkReferenceIntegrity(entries: readonly ContentEntry[]): Findi
     if (content.kind === "manga" && content.vocabIds) reportMissing(file, content.vocabIds);
     if (content.kind === "typing") {
       for (const sentence of content.sentences) reportMissing(file, sentence.wordIds);
+      /*
+       * 数字・英字の 読みの 台帳を 借りる 先。typo だと 台帳が 黙って 空に なり、
+       * 「じゅうじ」「ぎっとはぶ」と 打っても 外れる（lint は 緑の まま。code-critic の 指摘）。
+       */
+      if (content.listeningRef && !listeningIds.has(content.listeningRef)) {
+        findings.push({
+          file,
+          level: "error",
+          message: `listeningRef「${content.listeningRef}」の リスニングが 無い — 数字・英字の 読み（10時・GitHub など）が かなで 当たらなく なる。id を 直すか 外す`,
+        });
+      }
     }
     if (content.kind === "article") {
       for (const block of content.blocks) {

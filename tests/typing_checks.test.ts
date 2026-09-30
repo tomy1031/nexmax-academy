@@ -15,6 +15,8 @@ import { buildFuriganaIndex } from "../src/lib/text/furigana";
 import { toHiragana } from "../src/lib/text/normalize";
 import { buildSoundsIndex } from "../src/components/listening/listening-checks";
 import { soundsLikeOf } from "../src/content/listening-sounds";
+import type { VocabWord } from "../src/content/schema";
+import { hydrateTyping } from "../src/lib/vocabulary";
 import {
   createTypingTarget,
   judgeTyping,
@@ -23,9 +25,14 @@ import {
 
 interface TypingJson {
   readonly listeningRef: string;
-  readonly sentences: readonly { readonly text: string }[];
-  readonly furigana: readonly (readonly [string, string])[];
+  readonly sentences: readonly { readonly text: string; readonly wordIds: readonly string[] }[];
+  readonly furigana: readonly [string, string][];
 }
+
+/** ことばの 正（画面は ここから 借りた 読みも 混ぜて 判定する）。 */
+const VOCAB: readonly VocabWord[] = JSON.parse(
+  readFileSync(join("content", "vocab", "vocabulary.json"), "utf8"),
+).words;
 
 const SCENES = ["kanryou", "okure", "shougai", "chousa", "chourei"] as const;
 
@@ -37,7 +44,11 @@ function load(scene: string): TypingJson {
 
 function targetsOf(scene: string): TypingTarget[] {
   const doc = load(scene);
-  const furigana = buildFuriganaIndex(doc.furigana);
+  /*
+   * **画面と 同じ 辞書で** 判定する（`src/lib/content.ts` の `hydrateTyping` を 通した もの）。
+   * 教材の 辞書だけで 見ると、語の 正に 長い 見出しが 入って 分け方が 変わっても 緑の まま（code-critic の 指摘）。
+   */
+  const furigana = buildFuriganaIndex(hydrateTyping(doc, VOCAB).furigana ?? []);
   const sounds = buildSoundsIndex(soundsLikeOf(doc.listeningRef));
   return doc.sentences.map((item) => createTypingTarget(item.text, { furigana, sounds }));
 }
@@ -194,5 +205,54 @@ describe("ちがう 文は はっきり 外す（規律1）", () => {
       matched: "つぎは どの たすく",
     });
     expect(judge("kanryou", 6, "あいう")).toEqual({ ok: false, matched: "" });
+  });
+});
+
+describe("IME が かなの 語を 漢字に 変えても 落とさない", () => {
+  it("頃・迄・事・無い・様に・又・所 に 変えて 打っても 当たる", () => {
+    const base = "一部の ユーザーが 予約できない 問題が 発生して います。";
+    expect(judge("shougai", 1, `今日の 10時頃から、${base}`)).toEqual({ ok: true });
+    expect(judge("okure", 5, "今の 所、明日の 午前中迄には 終わると 思います。")).toEqual({
+      ok: true,
+    });
+    expect(
+      judge(
+        "kanryou",
+        3,
+        "又、タイトルを クリックすると、お知らせの 詳細画面が 開く 事も 確認しました。",
+      ),
+    ).toEqual({ ok: true });
+    expect(judge("okure", 3, "CSVの データに 間違いが 無いか、一つずつ 確認して います。")).toEqual(
+      {
+        ok: true,
+      },
+    );
+    expect(
+      judge("kanryou", 2, "お知らせの タイトル、日にち、文章を 表示できる様に しました。"),
+    ).toEqual({
+      ok: true,
+    });
+  });
+
+  it("お手本に その 漢字が ある 文では 戻さない（ちがう 文は 外れた まま）", () => {
+    const target = createTypingTarget("仕事の 事を 話す。", {
+      furigana: buildFuriganaIndex([
+        ["仕事", "しごと"],
+        ["事", "こと"],
+        ["話", "はな"],
+      ]),
+    });
+    expect(judgeTyping(target, "しごとの ことを はなす。")).toEqual({ ok: true });
+    expect(judgeTyping(target, "仕こと の 事を 話す。").ok).toBe(false);
+  });
+});
+
+describe("長い 入力でも 固まらない", () => {
+  it("3000字を 貼り付けても すぐ 返る（どこまで 合って いたかの 探しは お手本の 2倍まで）", () => {
+    const target = targetsOf("chousa")[0]!;
+    const long = "あ".repeat(3000);
+    const started = performance.now();
+    expect(judgeTyping(target, long).ok).toBe(false);
+    expect(performance.now() - started).toBeLessThan(1000);
   });
 });

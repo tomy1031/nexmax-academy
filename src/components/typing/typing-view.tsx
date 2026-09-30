@@ -6,7 +6,11 @@ import { soundsLikeOf } from "@/content/listening-sounds";
 import { buildSoundsIndex } from "@/components/listening/listening-checks";
 import { RubyText } from "@/components/ruby-text";
 import { SpeakButton } from "@/components/speak-button";
-import { recordContentProgress } from "@/lib/progress/store";
+import {
+  readContentProgress,
+  recordContentProgress,
+  subscribeProgress,
+} from "@/lib/progress/store";
 import { buildFuriganaIndex, type FuriganaIndex } from "@/lib/text/furigana";
 import type { TypingWordCard } from "@/lib/vocabulary";
 import { createTypingTarget, judgeTyping, type TypingResult } from "./typing-checks";
@@ -18,6 +22,21 @@ export type TypingViewData = Typing & { words: Record<string, TypingWordCard> };
 function subscribeNever(): () => void {
   return () => {};
 }
+
+/**
+ * つづきの 文（しおり）。**済みなら 1文目から**（見直し）。
+ * 朝礼は 13文 ある ので、更新・戻る・タブの 破棄の たびに 1文目からだと やり直しが 重い
+ *（ミーティングを「つづきから」に した のと 同じ 理由・docs/constraints.md）。
+ */
+function resumeAt(id: string, total: number): number {
+  const saved = readContentProgress(id);
+  if (!saved || saved.status === "completed") return 0;
+  const at = saved.position?.sentence;
+  return typeof at === "number" && Number.isInteger(at) && at >= 0 && at < total ? at : 0;
+}
+
+/** 判定の Enter を 続けて 押しても、英語訳を 見ずに 次へ 飛ばない ための 間（ミリ秒）。 */
+const NEXT_GUARD_MS = 800;
 
 /**
  * タイピング — お手本の 文を 見て、同じように 打つ（2026-09-30 の 指定・願い #550）
@@ -42,14 +61,28 @@ export function TypingView({ typing, embedded }: { typing: TypingViewData; embed
     [typing.sentences, furigana, sounds],
   );
 
+  const total = typing.sentences.length;
+  /*
+   * しおりは 端末の 保存から 読む。サーバでは 読めない ので、サーバと 最初の 描画は 1文目、
+   * そのあと つづきへ（`useSyncExternalStore`——ハイドレーションの ずれを 作らない）。
+   * 学習者が 進めたら、その 番号（`chosen`）が 勝つ。
+   */
+  const saved = useSyncExternalStore(
+    subscribeProgress,
+    () => resumeAt(typing.id, total),
+    () => 0,
+  );
+  const [chosen, setChosen] = useState<number | null>(null);
+  const index = chosen ?? saved;
+
   const [furiganaOn, setFuriganaOn] = useState(true);
-  const [index, setIndex] = useState(0);
   const [input, setInput] = useState("");
   const [result, setResult] = useState<TypingResult | null>(null);
   const [finished, setFinished] = useState(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
+  /** 正解した 時刻（Enter の 押しすぎで 次へ 飛ばない ため）。 */
+  const solvedAtRef = useRef(0);
 
-  const total = typing.sentences.length;
   const sentence = typing.sentences[index]!;
   const solved = result?.ok === true;
   const isLast = index === total - 1;
@@ -58,6 +91,7 @@ export function TypingView({ typing, embedded }: { typing: TypingViewData; embed
     if (!input.trim()) return;
     const next = judgeTyping(targets[index]!, input);
     setResult(next);
+    if (next.ok) solvedAtRef.current = Date.now();
     recordContentProgress(typing.id, { status: "started", position: { sentence: index } });
     // 「つぎの 文へ」は 正解の あとしか 押せないので、最後の 文の 正解＝ぜんぶ 正解
     if (next.ok && isLast) {
@@ -74,15 +108,16 @@ export function TypingView({ typing, embedded }: { typing: TypingViewData; embed
 
   const goNext = useCallback(() => {
     if (!solved || isLast) return;
-    setIndex((i) => i + 1);
+    setChosen(index + 1);
+    recordContentProgress(typing.id, { status: "started", position: { sentence: index + 1 } });
     setInput("");
     setResult(null);
     inputRef.current?.focus();
-  }, [solved, isLast]);
+  }, [solved, isLast, index, typing.id]);
 
-  const words = (sentence.wordIds ?? [])
-    .map((id) => typing.words[id])
-    .filter((word): word is TypingWordCard => word !== undefined);
+  const words = [...new Set(sentence.wordIds ?? [])]
+    .map((id) => ({ id, word: typing.words[id] }))
+    .filter((item): item is { id: string; word: TypingWordCard } => item.word !== undefined);
 
   return (
     <div className={embedded ? "space-y-4" : "mx-auto w-full max-w-4xl space-y-4 px-4 py-6"}>
@@ -139,6 +174,7 @@ export function TypingView({ typing, embedded }: { typing: TypingViewData; embed
           lang="ja"
           value={input}
           readOnly={solved}
+          maxLength={300}
           autoComplete="off"
           autoCorrect="off"
           spellCheck={false}
@@ -154,8 +190,12 @@ export function TypingView({ typing, embedded }: { typing: TypingViewData; embed
               return;
             }
             event.preventDefault();
-            if (solved) goNext();
-            else judge();
+            if (!solved) {
+              judge();
+              return;
+            }
+            // 判定の Enter の 押しすぎ（キーの 押しっぱなし・2回 押し）では 次へ 行かない
+            if (!event.repeat && Date.now() - solvedAtRef.current > NEXT_GUARD_MS) goNext();
           }}
           className="border-sky text-ink bg-panel mt-3 w-full rounded-2xl border-2 px-4 py-3 text-lg font-bold"
         />
@@ -191,7 +231,7 @@ export function TypingView({ typing, embedded }: { typing: TypingViewData; embed
             )}
           </div>
         </div>
-        <Verdict result={result} show={furiganaOn} />
+        <Verdict result={result} show={furiganaOn} furigana={furigana} />
       </section>
 
       {solved ? (
@@ -217,7 +257,16 @@ export function TypingView({ typing, embedded }: { typing: TypingViewData; embed
 }
 
 /** 判定の 札。⭕ か ❌ を **はっきり 言う**（規律1）。外れたら、どこまで 合って いたかも。 */
-function Verdict({ result, show }: { result: TypingResult | null; show: boolean }) {
+function Verdict({
+  result,
+  show,
+  furigana,
+}: {
+  result: TypingResult | null;
+  show: boolean;
+  /** 教材の 読み辞書（打った 漢字にも ルビを 付ける）。 */
+  furigana: FuriganaIndex;
+}) {
   if (!result) return null;
   if (result.ok) {
     return (
@@ -241,7 +290,7 @@ function Verdict({ result, show }: { result: TypingResult | null; show: boolean 
       <p className="font-extrabold">❌ まだ ちがう ところが あります。</p>
       {result.matched ? (
         <p className="mt-1">
-          「{result.matched}」
+          「<RubyText text={result.matched} index={furigana} show={show} />」
           <RubyText text="までは 合って います。" index={TYPING_UI_FURIGANA} show={show} />
         </p>
       ) : null}
@@ -299,7 +348,7 @@ function WordCards({
   show,
   furigana,
 }: {
-  words: readonly TypingWordCard[];
+  words: readonly { id: string; word: TypingWordCard }[];
   show: boolean;
   furigana: FuriganaIndex;
 }) {
@@ -309,8 +358,8 @@ function WordCards({
         📕 <RubyText text="ことばの 意味（N4以上）" index={TYPING_UI_FURIGANA} show={show} />
       </h2>
       <ul className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        {words.map((word) => (
-          <li key={word.term} className="border-hairline bg-panel rounded-2xl border p-4">
+        {words.map(({ id, word }) => (
+          <li key={id} className="border-hairline bg-panel rounded-2xl border p-4">
             <div className="flex items-start justify-between gap-2">
               <p className="text-ink text-xl font-black">
                 <RubyText text={word.term} furigana={[[word.term, word.reading]]} show={show} />
