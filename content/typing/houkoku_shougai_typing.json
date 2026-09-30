@@ -6,7 +6,7 @@
   "listeningRef": "houkoku_shougai_listening",
   "sentences": [
     {
-      "text": "システムの 問題に ついて 報告が あります。",
+      "text": "システムの問題について報告があります。",
       "en": "I have a report about a system problem.",
       "wordIds": [
         "shisutemu",
@@ -14,7 +14,7 @@
       ]
     },
     {
-      "text": "今日の 10時ごろから、一部の ユーザーが 予約できない 問題が 発生して います。",
+      "text": "今日の10時ごろから、一部のユーザーが予約できない問題が発生しています。",
       "en": "Since around 10 o'clock today, some users have not been able to make reservations.",
       "wordIds": [
         "ichibu",
@@ -24,22 +24,23 @@
       ]
     },
     {
-      "text": "確認した ところ、クレジットカードで 支払う ユーザーだけに 問題が 出て います。",
+      "text": "確認したところ、クレジットカードで支払うユーザーだけに問題が出ています。",
       "en": "When I checked, the problem only affects users who pay by credit card.",
       "wordIds": [
         "kakunin",
+        "shiharau",
         "yu-za-"
       ]
     },
     {
-      "text": "原因は 分かって いますか。",
+      "text": "原因は分かっていますか。",
       "en": "Do you know the cause?",
       "wordIds": [
         "genin"
       ]
     },
     {
-      "text": "APIで エラーが 出て いる ことは 確認しました。",
+      "text": "APIでエラーが出ていることは確認しました。",
       "en": "I have confirmed that the API is returning errors.",
       "wordIds": [
         "api",
@@ -48,14 +49,15 @@
       ]
     },
     {
-      "text": "ただ、詳しい 原因は まだ 分かって いません。",
+      "text": "ただ、詳しい原因はまだ分かっていません。",
       "en": "However, we do not know the exact cause yet.",
       "wordIds": [
+        "kuwashii",
         "genin"
       ]
     },
     {
-      "text": "今は、エラーが 発生した 時間の ログを 確認して います。",
+      "text": "今は、エラーが発生した時間のログを確認しています。",
       "en": "Right now, I am checking the logs from the time the errors happened.",
       "wordIds": [
         "eraa",
@@ -65,7 +67,7 @@
       ]
     },
     {
-      "text": "原因が 分かったら、すぐに 報告して ください。",
+      "text": "原因が分かったら、すぐに報告してください。",
       "en": "As soon as you find the cause, please report it.",
       "wordIds": [
         "genin",

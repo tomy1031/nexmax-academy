@@ -133,3 +133,34 @@ test("しおり: 途中で 開き直すと つづきの 文から", async ({ pag
   await page.reload();
   await expect(page.locator('[data-typing="progress"]')).toHaveText(`2 / ${sentences().length}`);
 });
+
+test("お手本は ふりがな なし・空白 なし・コピーも 貼り付けも できない", async ({
+  page,
+  context,
+}) => {
+  await open(page, context);
+  // 2026-09-30 の 指定「例文に 読み仮名は 入れません。文章の コピペは できないように。
+  // 変な 半角スペースは 削除」
+  const model = page.locator('[data-typing="sentence"]');
+  await expect(model.locator("ruby")).toHaveCount(0);
+  await expect(model).toHaveText(sentences()[0]!.text);
+  expect(sentences().every((item) => !/[ 　]/.test(item.text))).toBe(true);
+  expect(await model.evaluate((el) => getComputedStyle(el).userSelect)).toBe("none");
+
+  const input = page.getByLabel("お手本と 同じ 文を 入力する");
+  await input.focus();
+  const prevented = await input.evaluate((el) => {
+    const data = new DataTransfer();
+    data.setData("text/plain", "高橋さん、今、お時間よろしいでしょうか。");
+    const event = new ClipboardEvent("paste", {
+      clipboardData: data,
+      bubbles: true,
+      cancelable: true,
+    });
+    el.dispatchEvent(event);
+    return event.defaultPrevented;
+  });
+  expect(prevented).toBe(true);
+  await expect(input).toHaveValue("");
+  await expect(page.locator('[data-typing="paste"]')).toBeVisible();
+});

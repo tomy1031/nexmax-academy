@@ -344,6 +344,10 @@ export async function shot(page: Page, name: string): Promise<void> {
  *
  * `<ruby>` の中は base も rt も 覆われている扱い。`<script>` `<style>` の中は
  * 学習者が読む文ではないので数えない（Next.js の埋め込みデータが引っかかるだけ）。
+ *
+ * `data-furigana="off"` の 中も 数えない——**ユーザーが ふりがなを 付けないと 決めた 所**の 印
+ *（タイピングの お手本の 文。2026-09-30 の 指定「例文に 読み仮名は 入れません」）。
+ * 印は 画面側で 1か所ずつ 付ける ので、うっかりの 裸の 漢字は これまでどおり 落ちる。
  */
 export async function bareKanjiTexts(page: Page): Promise<string[]> {
   return page.evaluate(() => {
@@ -358,7 +362,13 @@ export async function bareKanjiTexts(page: Page): Promise<string[]> {
         let covered = false;
         while (element) {
           const tag = element.tagName;
-          if (tag === "RUBY" || tag === "SCRIPT" || tag === "STYLE" || tag === "TEMPLATE") {
+          if (
+            tag === "RUBY" ||
+            tag === "SCRIPT" ||
+            tag === "STYLE" ||
+            tag === "TEMPLATE" ||
+            element.getAttribute("data-furigana") === "off"
+          ) {
             covered = true;
             break;
           }

@@ -6,7 +6,7 @@
   "listeningRef": "houkoku_okure_listening",
   "sentences": [
     {
-      "text": "CSVアップロード機能に ついて、報告が あります。",
+      "text": "CSVアップロード機能について、報告があります。",
       "en": "I have a report about the CSV upload feature.",
       "wordIds": [
         "kinou",
@@ -14,15 +14,16 @@
       ]
     },
     {
-      "text": "今日中に 終わる 予定でしたが、少し 遅れそうです。",
+      "text": "今日中に終わる予定でしたが、少し遅れそうです。",
       "en": "It was supposed to be finished today, but it looks like it will be a little late.",
       "wordIds": [
+        "kyoujuu",
         "yotei",
         "okure"
       ]
     },
     {
-      "text": "アップロードする データが 多いので、エラーの チェックに 時間が かかって います。",
+      "text": "アップロードするデータが多いので、エラーのチェックに時間がかかっています。",
       "en": "There is a lot of data to upload, so checking for errors is taking time.",
       "wordIds": [
         "de-ta",
@@ -30,15 +31,16 @@
       ]
     },
     {
-      "text": "CSVの データに 間違いが ないか、一つずつ 確認して います。",
+      "text": "CSVのデータに間違いがないか、一つずつ確認しています。",
       "en": "I am checking the CSV data one by one for mistakes.",
       "wordIds": [
         "de-ta",
+        "machigai",
         "kakunin"
       ]
     },
     {
-      "text": "また、エラーが 出た 行を 正しく 表示できるかも テストして います。",
+      "text": "また、エラーが出た行を正しく表示できるかもテストしています。",
       "en": "I am also testing whether the rows with errors are shown correctly.",
       "wordIds": [
         "eraa",
@@ -47,12 +49,14 @@
       ]
     },
     {
-      "text": "今の ところ、明日の 午前中までには 終わると 思います。",
+      "text": "今のところ、明日の午前中までには終わると思います。",
       "en": "At this point, I think it will be finished by tomorrow morning.",
-      "wordIds": []
+      "wordIds": [
+        "gozenchuu"
+      ]
     },
     {
-      "text": "今日の 午後5時までに、もう一度 状況を 教えて ください。",
+      "text": "今日の午後5時までに、もう一度状況を教えてください。",
       "en": "Please tell me the status again by 5 p.m. today.",
       "wordIds": [
         "joukyou"

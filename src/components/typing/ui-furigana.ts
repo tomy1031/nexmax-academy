@@ -19,4 +19,6 @@ export const TYPING_UI_FURIGANA = buildFuriganaIndex([
   ["一度", "いちど"],
   ["文", "ぶん"],
   ["手本", "てほん"],
+  ["貼り付け", "はりつけ"],
+  ["自分", "じぶん"],
 ]);
