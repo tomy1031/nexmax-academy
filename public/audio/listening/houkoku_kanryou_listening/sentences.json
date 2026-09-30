@@ -2,8 +2,8 @@
   "listeningId": "houkoku_kanryou_listening",
   "gapSeconds": 1.25,
   "compareGapSeconds": [],
-  "complete": true,
-  "missing": [],
+  "complete": false,
+  "missing": [15, 16],
   "sentences": [
     {
       "speaker": "sato",
@@ -226,38 +226,6 @@
       "reading": {
         "expected": "つぎはおしらせをとうろくするがめんをおねがいします",
         "spoken": "つぎはおしらせをとうろくするがめんをおねがいします",
-        "distance": 0
-      }
-    },
-    {
-      "speaker": "takahashi",
-      "text": "GitHubの Issueを 作ったので、確認して ください。",
-      "file": "15.wav",
-      "voice": "Alnilam",
-      "model": "gemini-3.8-live",
-      "seconds": 3.23,
-      "longestPause": 0.19,
-      "transcript": "GitHub の Issue を作ったので、確認してください。",
-      "transcriptBy": "gemini-3.5-flash-lite",
-      "reading": {
-        "expected": "ぎっとはぶのいしゅうをつくったのでかくにんしてください",
-        "spoken": "ぎっとはぶのいしゅうをつくったのでかくにんしてください",
-        "distance": 0
-      }
-    },
-    {
-      "speaker": "sato",
-      "text": "分かりました。Issueを 確認してから 作業を 始めます。",
-      "file": "16.wav",
-      "voice": "Autonoe",
-      "model": "gemini-3.8-live",
-      "seconds": 3.68,
-      "longestPause": 0.17,
-      "transcript": "わかりました 。 異臭 を 確認 し て から 作業 を 始め ます 。",
-      "transcriptBy": "gemini-3.5-flash-lite",
-      "reading": {
-        "expected": "わかりましたいしゅうをかくにんしてからさぎょうをはじめます",
-        "spoken": "わかりましたいしゅうをかくにんしてからさぎょうをはじめます",
         "distance": 0
       }
     },

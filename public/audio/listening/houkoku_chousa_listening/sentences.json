@@ -2,8 +2,8 @@
   "listeningId": "houkoku_chousa_listening",
   "gapSeconds": 1.25,
   "compareGapSeconds": [],
-  "complete": true,
-  "missing": [],
+  "complete": false,
+  "missing": [18],
   "sentences": [
     {
       "speaker": "kobayashi",
@@ -274,22 +274,6 @@
       "reading": {
         "expected": "それならねだんもだいじょうぶそうですね",
         "spoken": "それならねだんもだいじょうぶそうですね",
-        "distance": 0
-      }
-    },
-    {
-      "speaker": "kato",
-      "text": "では 料金と 調査結果を GitHubの Issueに まとめて ください。",
-      "file": "18.wav",
-      "voice": "Gacrux",
-      "model": "gemini-3.8-live",
-      "seconds": 5.15,
-      "longestPause": 0.31,
-      "transcript": "では料金と調査結果をGitHubのissueにまとめてください。",
-      "transcriptBy": "gemini-3.5-flash-lite",
-      "reading": {
-        "expected": "ではりょうきんとちょうさけっかをぎっとはぶのいしゅうにまとめてください",
-        "spoken": "ではりょうきんとちょうさけっかをぎっとはぶのいしゅうにまとめてください",
         "distance": 0
       }
     },

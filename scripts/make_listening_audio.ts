@@ -55,6 +55,7 @@ import { buildFuriganaIndex } from "../src/lib/text/furigana";
 import { buildSoundsIndex } from "../src/components/listening/listening-checks";
 import { soundsLikeOf } from "../src/content/listening-sounds";
 import { OUT_RATE, synthesizeWithFallback, toWav } from "./lib/live_tts";
+import { speechInputOf } from "./lib/speak_as";
 import { changeTempo, runTtsListenings } from "./lib/tts_listening";
 import { audioUnitsOf } from "../src/content/listening-audio";
 import { LISTENING_AUDIO_PLANS, type ListeningAudioPlan } from "./lib/listening_audio_plans";
@@ -368,12 +369,13 @@ async function makeSentences(activePlan: ListeningAudioPlan): Promise<void> {
       return match;
     };
     // ためし切って だめ なら 投げる（呼ぶ 側が この 文を 飛ばして つぎへ 進む）
+    const speech = speechInputOf(sentence.text, SCRIPT_LINE_INSTRUCTION);
     const spoken = await synthesizeWithFallback(
-      sentence.text,
+      speech.text,
       {
         apiKey,
         voice,
-        instruction: SCRIPT_LINE_INSTRUCTION,
+        instruction: speech.instruction,
         quoteOnRetry: true,
         transcribeWhenEmpty: true,
       },
@@ -496,9 +498,10 @@ async function makeLiveSample(unitNumber: number): Promise<void> {
   const tokenizer = await getTokenizer();
   const index = buildFuriganaIndex(listening.furigana ?? []);
   const sounds = buildSoundsIndex(soundsLikeOf(listeningId));
+  const speech = speechInputOf(unit.text, SCRIPT_LINE_INSTRUCTION);
   const spoken = await synthesizeWithFallback(
-    unit.text,
-    { apiKey, voice, instruction: SCRIPT_LINE_INSTRUCTION, quoteOnRetry: true },
+    speech.text,
+    { apiKey, voice, instruction: speech.instruction, quoteOnRetry: true },
     (candidate) => {
       // 聞いて 確かめる ための ためしなので、文字起こしが 空でも 通す（ずれは 記録する）
       if (candidate.transcript.trim() === "") return { ok: true, why: "文字起こし なし" };
