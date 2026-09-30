@@ -6,18 +6,19 @@ import { seedCompleted, shot } from "./helpers";
 /**
  * 報告の リスニング 5場面（2026-09-28。`リスニング問題.md` から 作った）
  *
- * 1. 5本とも ステージの おわりに 並び、リスニング → もんだい の 順で 開ける
+ * 1. 5本とも 報告の リスニングの ステージ（`houkoku-kiku`）に 並び、リスニング → もんだい の 順で 開ける
+ *    （2026-09-30 の 指定で「報連相：報告」から 移した。古い URL は 新しい ステージへ 送る）
  * 2. **数字・英語の 語も かなで 打って 当たる**（同日の 指定「ひらがなでも 漢字ありでも
  *    どちらも 正しく 機能するように」）。前は「10時」を「じゅうじ」と 打つと 外れた
  * 3. 漢字の 語は 漢字でも かなでも 当たる
  */
 
-const STAGE = "houkoku";
+const STAGE = "houkoku-kiku";
 const SCENES = ["kanryou", "okure", "shougai", "chousa", "chourei"] as const;
 
-function refs(): string[] {
+function refs(stageId: string = STAGE): string[] {
   const stage: { contents: { ref: string }[] } = JSON.parse(
-    readFileSync(join("content", "stages", `${STAGE}.json`), "utf8"),
+    readFileSync(join("content", "stages", `${stageId}.json`), "utf8"),
   );
   return stage.contents.map((item) => item.ref);
 }
@@ -35,12 +36,21 @@ async function type(page: Page, word: string): Promise<void> {
   await input.press("Enter");
 }
 
-test("5場面は ステージの おわりに リスニング → もんだい の 順で 並ぶ", () => {
-  const all = refs();
-  const tail = all.slice(all.indexOf("houkoku_bug_quiz") + 1);
-  expect(tail).toEqual(
+test("5場面は 報告の リスニングの ステージに リスニング → もんだい の 順で 並ぶ", () => {
+  expect(refs()).toEqual(
     SCENES.flatMap((scene) => [`houkoku_${scene}_listening`, `houkoku_${scene}_quiz`]),
   );
+  // 報告の ステージからは 外れて いる（2つの ステージに 同じ 教材を 並べない）
+  const houkoku = refs("houkoku");
+  for (const scene of SCENES) {
+    expect(houkoku).not.toContain(`houkoku_${scene}_listening`);
+    expect(houkoku).not.toContain(`houkoku_${scene}_quiz`);
+  }
+});
+
+test("報告の ステージに あった ころの URL は、新しい ステージへ 送られる", async ({ page }) => {
+  await page.goto("/houkoku/listening-houkoku_kanryou_listening");
+  await expect(page).toHaveURL(new RegExp(`/${STAGE}/listening-houkoku_kanryou_listening$`));
 });
 
 test("障害の 報告: 「10時」を じゅうじ・10時・十時 の どれで 打っても 原稿が ひらく", async ({
