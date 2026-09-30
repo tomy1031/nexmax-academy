@@ -56,9 +56,10 @@
       "wordIds": []
     },
     {
-      "text": "次はどのタスクをすればいいですか。",
-      "en": "Which task should I do next?",
+      "text": "次に対応するタスクはありますか。",
+      "en": "Is there a task I should work on next?",
       "wordIds": [
+        "taiou",
         "tasuku"
       ]
     },
@@ -118,6 +119,10 @@
     [
       "見",
       "み"
+    ],
+    [
+      "対応",
+      "たいおう"
     ],
     [
       "詳細画面",

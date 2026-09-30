@@ -71,72 +71,40 @@
     },
     {
       "speaker": "tanaka",
-      "text": "全員が 予約できないんですか。",
+      "text": "どんな ユーザーが 予約できないんですか。",
       "file": "05.wav",
       "voice": "Charon",
       "model": "gemini-3.8-live",
-      "seconds": 2.27,
-      "longestPause": 0.03,
-      "transcript": "全員 が 予約 でき ない ん です か ?",
-      "transcriptBy": "gemini-3.5-flash-lite",
+      "seconds": 2.67,
+      "longestPause": 0.17,
+      "transcript": "どんなユーザーが予約できないんですか。",
+      "transcriptBy": "gemini-3.8-live",
       "reading": {
-        "expected": "ぜんいんがよやくできないんですか",
-        "spoken": "ぜんいんがよやくできないんですか",
+        "expected": "どんなゆうざあがよやくできないんですか",
+        "spoken": "どんなゆうざあがよやくできないんですか",
         "distance": 0
       }
     },
     {
       "speaker": "nakamura",
-      "text": "いいえ。確認した ところ、クレジットカードで 支払う ユーザーだけに 問題が 出て います。",
+      "text": "確認した ところ、クレジットカードで 支払う ユーザーだけに 問題が 出て います。",
       "file": "06.wav",
       "voice": "Erinome",
       "model": "gemini-3.8-live",
-      "seconds": 6.12,
-      "longestPause": 0.43,
-      "transcript": "いいえ。確認したところ、クレジットカードで支払うユーザーだけに問題が出ています。",
-      "transcriptBy": "gemini-3.8-live",
-      "reading": {
-        "expected": "いいえかくにんしたところくれじっとかあどでしはらうゆうざあだけにもんだいがでています",
-        "spoken": "いいえかくにんしたところくれじっとかあどでしはらうゆうざあだけにもんだいがでています",
-        "distance": 0
-      }
-    },
-    {
-      "speaker": "tanaka",
-      "text": "クレジットの ユーザーだけですね。",
-      "file": "07.wav",
-      "voice": "Charon",
-      "model": "gemini-3.8-live",
-      "seconds": 1.9,
-      "longestPause": 0.09,
-      "transcript": "クレジット の ユーザー だけ です ね 。",
+      "seconds": 5.47,
+      "longestPause": 0.14,
+      "transcript": "確認 し た ところ クレジット カード で 支払う ユーザー だけ に 問題 が 出 て い ます 。",
       "transcriptBy": "gemini-3.5-flash-lite",
       "reading": {
-        "expected": "くれじっとのゆうざあだけですね",
-        "spoken": "くれじっとのゆうざあだけですね",
-        "distance": 0
-      }
-    },
-    {
-      "speaker": "nakamura",
-      "text": "はい、そうです。",
-      "file": "08.wav",
-      "voice": "Erinome",
-      "model": "gemini-3.8-live",
-      "seconds": 1.17,
-      "longestPause": 0.17,
-      "transcript": "はい 。 そう です 。",
-      "transcriptBy": "gemini-3.5-flash-lite",
-      "reading": {
-        "expected": "はいそうです",
-        "spoken": "はいそうです",
+        "expected": "かくにんしたところくれじっとかあどでしはらうゆうざあだけにもんだいがでています",
+        "spoken": "かくにんしたところくれじっとかあどでしはらうゆうざあだけにもんだいがでています",
         "distance": 0
       }
     },
     {
       "speaker": "tanaka",
       "text": "原因は 分かって いますか。",
-      "file": "09.wav",
+      "file": "07.wav",
       "voice": "Charon",
       "model": "gemini-3.8-live",
       "seconds": 1.75,
@@ -152,7 +120,7 @@
     {
       "speaker": "nakamura",
       "text": "APIで エラーが 出て いる ことは 確認しました。",
-      "file": "10.wav",
+      "file": "08.wav",
       "voice": "Erinome",
       "model": "gemini-3.8-live",
       "seconds": 3.15,
@@ -168,7 +136,7 @@
     {
       "speaker": "nakamura",
       "text": "ただ、詳しい 原因は まだ 分かって いません。",
-      "file": "11.wav",
+      "file": "09.wav",
       "voice": "Erinome",
       "model": "gemini-3.8-live",
       "seconds": 3.8,
@@ -184,7 +152,7 @@
     {
       "speaker": "nakamura",
       "text": "今は、エラーが 発生した 時間の ログを 確認して います。",
-      "file": "12.wav",
+      "file": "10.wav",
       "voice": "Erinome",
       "model": "gemini-3.8-live",
       "seconds": 4.07,
@@ -199,56 +167,40 @@
     },
     {
       "speaker": "tanaka",
-      "text": "今は ログを 確認して いるんですね。",
-      "file": "13.wav",
+      "text": "今は ログを 確認して いるんですね。分かりました。",
+      "file": "11.wav",
       "voice": "Charon",
       "model": "gemini-3.8-live",
-      "seconds": 2.35,
-      "longestPause": 0.03,
-      "transcript": "今 は ログ を 確認 し て いる ん です ね 。",
-      "transcriptBy": "gemini-3.5-flash-lite",
+      "seconds": 3.8,
+      "longestPause": 0.55,
+      "transcript": "今はログを確認しているんですね。分かりました。",
+      "transcriptBy": "gemini-3.8-live",
       "reading": {
-        "expected": "いまはろぐをかくにんしているんですね",
-        "spoken": "いまはろぐをかくにんしているんですね",
-        "distance": 0
-      }
-    },
-    {
-      "speaker": "nakamura",
-      "text": "はい。",
-      "file": "14.wav",
-      "voice": "Erinome",
-      "model": "gemini-3.8-live",
-      "seconds": 0.58,
-      "longestPause": 0.19,
-      "transcript": "はい",
-      "transcriptBy": "gemini-3.5-flash-lite",
-      "reading": {
-        "expected": "はい",
-        "spoken": "はい",
+        "expected": "いまはろぐをかくにんしているんですねわかりました",
+        "spoken": "いまはろぐをかくにんしているんですねわかりました",
         "distance": 0
       }
     },
     {
       "speaker": "tanaka",
-      "text": "分かりました。原因が 分かったら、すぐに 報告して ください。",
-      "file": "15.wav",
+      "text": "原因が 分かったら、すぐに 報告して ください。",
+      "file": "12.wav",
       "voice": "Charon",
       "model": "gemini-3.8-live",
-      "seconds": 4.24,
-      "longestPause": 0.45,
-      "transcript": "分かりました。原因が分かったら、すぐに報告してください。",
-      "transcriptBy": "gemini-3.8-live",
+      "seconds": 3.16,
+      "longestPause": 0.21,
+      "transcript": "原因 が わかっ たら すぐ に 報告 し て ください 。",
+      "transcriptBy": "gemini-3.5-flash-lite",
       "reading": {
-        "expected": "わかりましたげんいんがわかったらすぐにほうこくしてください",
-        "spoken": "わかりましたげんいんがわかったらすぐにほうこくしてください",
+        "expected": "げんいんがわかったらすぐにほうこくしてください",
+        "spoken": "げんいんがわかったらすぐにほうこくしてください",
         "distance": 0
       }
     },
     {
       "speaker": "nakamura",
       "text": "はい。分かりました。",
-      "file": "16.wav",
+      "file": "13.wav",
       "voice": "Erinome",
       "model": "gemini-3.8-live",
       "seconds": 1.46,
