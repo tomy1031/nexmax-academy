@@ -387,8 +387,9 @@ middleware は `/api/` を素通しするので、404 の画面がそのまま�
   **公称の 10ms は そのままの 形では 効いていない** — 2026-09-02 の実測で 665ms が
   通っている。1102 を 見たら まず §0.12 を 読む
 - KV **書き 1000/日**（超えるとデプロイの `populateCache` も落ちる。§0.6 の「まとめて出す」の理由）
-- 静的アセット（画像・JS・音）は**無制限・カウント外**。「Worker を通る回数を減らして
-  アセットに逃がす」が無料枠での基本方針
+- 静的アセット（画像・JS）は**無制限・カウント外**。「Worker を通る回数を減らして
+  アセットに逃がす」が無料枠での基本方針。**例外: 音・動画（`/audio/*` `/video/*`）は
+  2026-09-30 から Worker を通る**（途中から送る 206 のため。回数と CPU の見積もりは §0.17）
 
 **授業の前に確かめる**: `node scripts/loadcheck.mjs <URL>` で主要ページに 20並列を
 当てて、全部 200 で返るかを見る（総リクエスト数は小さく抑えてある。本番の無料枠を
@@ -1046,8 +1047,10 @@ Workers 有料（$5/月）に すると CPU は 10ms → 30秒 に なる。**�
 ブラウザが 1回だけ 取る（`src/lib/dictionary-store.ts`）。
 
 **`public/` の ファイルは Worker を 通らない。** `.open-next/assets` に 入り、
-Cloudflare が そのまま 返す（`wrangler.jsonc` に `run_worker_first` を 書いて
-いないので 既定の false ＝ アセットが 先）。だから この ぶんの CPU は **0** に なる。
+Cloudflare が そのまま 返す（`wrangler.jsonc` の `run_worker_first` に 無い 道は
+アセットが 先）。だから この ぶんの CPU は **0** に なる。
+**例外は 音・動画だけ**（`/audio/*` `/video/*`。2026-09-30 から Worker を 先に 通す。§0.17）。
+`public/dictionary/` は Worker を 通らない ままなので、ここの 話は 変わらない。
 
 取れるまでの あいだも **本文は ふつうに 読める**（ルビは 教材 自身の 読み辞書が
 付ける）。取れた 時点で 下線と ふきだしが 足される。取れなくても 学習は 止まらない。
@@ -1179,6 +1182,60 @@ GitHub が 止めるのは GitHub の ランだけ なので、それなら 構�
 
 **教訓**: **ログに 親切で 出す ものが、外からは 攻撃に 見える ことが ある。**
 「値は 出して いないから 安全」は こちらの 理屈で、検査器は 形しか 見ない。
+
+### 0.17 音・動画は「途中から」に 応えない —— Worker で 切り出す（2026-09-30）
+
+**症状**: 本番・STG とも、`public/` の 音・動画に `Range: bytes=1000-1999` を 付けても
+**200＋全体**が 返る（`Accept-Ranges` も 無い）。HTTP/1.1・2、Safari の UA、`bytes=0-1`
+の どれでも 同じ。配信の 中身（workers-shared の asset-worker。miniflare に 同梱）にも
+Range の 処理が 無い——**`env.ASSETS.fetch` も 全体を 返す**。
+
+| 端末（2026-09-30 実測） | 起きる こと |
+| --- | --- |
+| Chrome・Edge（学習者の 大半。Windows 16〜17人） | `seekable`=`[0,0]`。つまみを 動かしても **0秒に 戻る**（再生中も 停止中も）。最後まで 見て ▶ で 頭から、は 効く |
+| Mac の Safari 18.6 | 問題 なし（200＋全体を 丸ごと 受けて、手もとで 位置を 動かせる） |
+| iPhone（iOS 18.1.1 の 学習者 1人） | **確かめて いない**。Apple は iOS 向けの 配信に byte-range 対応を 求めて いる——応えないと 再生に 失敗しうる |
+
+**直し**: `/audio/*` `/video/*` だけ Worker を 先に 通す（`wrangler.jsonc` の
+`assets.run_worker_first`）。入口 `worker.mjs` が OpenNext の `.open-next/worker.js` を 包み、
+この 2つの 道だけ `src/lib/media-range.ts` で 切り出して **206** を 返す。ほかは OpenNext へ
+そのまま 回す。画面側の 直し（動画も Blob で 鳴らす）は 採らなかった——最初の 1コマまで
+5〜7MB を 全部 待たせる ことに なり、iPhone も 直る 保証が 無い。
+
+**無料枠への 影響（見積もり）**:
+
+- **リクエスト**: 音・動画を 取るたびに 1回。Chrome は 最初に `bytes=0-`、つまみを 動かす
+  たびに もう 1回。学習者 20人・授業 1回で 数百回——10万/日の 1% 未満。
+- **CPU**: 全体（`bytes=0-`）は 中身に 触らず 流すので ほぼ 0。途中からは 手前を
+  **1MB ずつ まとめて** 読み捨てる（Workers だけに ある `readAtLeast`）ので、7MB でも
+  JS の 読みは 10回 前後（`tests/media_range.test.ts` が 回数を 見張る）。届いた 細切れ
+  （数KB）ごとに JS を 回すと 千回を 超え、10ms（§0.13）に 触れうる。
+- **大きさ**（§0.5）: 入口の 数KB だけ。OpenNext の DO（`DOQueueHandler` など）は
+  使って いないので 出さない。
+
+**守る こと**:
+
+- **Cache-Control は Worker で 付け直す。** Worker を 通した 応答には `_headers` が 効かない
+  （Cloudflare の 資料）。付け忘れると 開くたびに 取り直しに なり、教室の 回線を 食う。
+  値は `public/_headers` と 同じで、テストが 突き合わせる。
+- ファイルが 無い（404）ときは アプリ本体へ 回す（アセットが 先だった ころと 同じ 行き先）。
+  404 に 長い キャッシュを 付けない。
+- `run_worker_first` に 道を 足す ときは `MEDIA_CACHE_CONTROL` にも 足す（テストが 止める）。
+
+**確かめかた**（STG・本番）:
+
+```bash
+curl -s -o /dev/null -D - -H 'Range: bytes=1000-1999' "https://staging-academy.nexmax.workers.dev/video/hourensou/soudan_skit.mp4?v=$RANDOM" | grep -iE '^(HTTP|content-range|content-length|accept-ranges|cache-control)'
+```
+
+`206`・`content-range: bytes 1000-1999/6756541`・`content-length: 1000`・
+`cache-control: public,max-age=86400,…` が 出れば よい。CPU は 本番で
+`npx wrangler tail academy --format json` を 見ながら つまみを 動かし、`/video/` の
+`cpuTime` と `outcome=ok` を 見る（STG は tail できない。§0.13）。
+
+リスニングの 音を「1回 まるごと 取って Blob で 鳴らす」画面側の 直し（同じ日に 別スレッドで
+入れた `use-seekable-audio.ts`）は、これが 入った あとも 害は 無い（Range の 無い 頼みには
+これまでどおり 200＋全体を 返す）。
 
 ## 1. 環境の位置づけ
 
