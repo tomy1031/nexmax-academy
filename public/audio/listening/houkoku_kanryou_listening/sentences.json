@@ -2,8 +2,8 @@
   "listeningId": "houkoku_kanryou_listening",
   "gapSeconds": 1.25,
   "compareGapSeconds": [],
-  "complete": false,
-  "missing": [16],
+  "complete": true,
+  "missing": [],
   "sentences": [
     {
       "speaker": "sato",
@@ -242,6 +242,22 @@
       "reading": {
         "expected": "ぎっとはぶのいしゅうをつくったのでかくにんしてください",
         "spoken": "ぎっとはぶのいしゅうをつくったのでかくにんしてください",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "sato",
+      "text": "分かりました。Issueを 確認してから 作業を 始めます。",
+      "file": "16.wav",
+      "voice": "Autonoe",
+      "model": "gemini-3.8-live",
+      "seconds": 3.4,
+      "longestPause": 0.4,
+      "transcript": "分かりました。異臭を確認して から作業を始めます。",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "わかりましたいしゅうをかくにんしてからさぎょうをはじめます",
+        "spoken": "わかりましたいしゅうをかくにんしてからさぎょうをはじめます",
         "distance": 0
       }
     },
