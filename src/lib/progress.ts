@@ -222,8 +222,8 @@ export function deriveProgress(
  * 先まで 進めて いた 要件定義に 下りる」——見て いた 場所から 引き離される（ユーザーの 指摘）。
  * 画面の 行き来は 進み具合で なく **最後に 開いた もの** で 決める。
  *
- * `stageIds` は 地図の 並び。最後に 開いた ステージが 地図に 無い（消した・地図に 出さない）
- * ときは 数えない。渡さなければ 最後に 開いた ステージは 見ない。
+ * `lastOpened.stageIds` は 地図の 並び。最後に 開いた ステージが 地図に 無い（消した・
+ * 地図に 出さない）ときは 数えない。並びを 渡し忘れられない よう、ID と 対で 受け取る。
  *
  * 地図は ログインの 内側に あって 通しの 検証から 見えない。見張れるのは 単体テスト
  * だけなので、判断は 部品に 書かず ここに 置く（map-data.ts の `mapStageActions` と 同じ 理由）。
@@ -233,17 +233,26 @@ export type MapLanding = { kind: "stage"; stageId: string } | { kind: "goal" } |
 export function mapLanding(
   progress: StageProgress,
   studyingStageId: string | null,
-  lastOpenedStageId: string | null = null,
-  stageIds: readonly string[] = [],
+  lastOpened?: { stageId: string | null; stageIds: readonly string[] },
 ): MapLanding {
-  if (lastOpenedStageId && stageIds.includes(lastOpenedStageId)) {
-    return { kind: "stage", stageId: lastOpenedStageId };
+  if (lastOpened?.stageId && lastOpened.stageIds.includes(lastOpened.stageId)) {
+    return { kind: "stage", stageId: lastOpened.stageId };
   }
   if (progress.currentStageId === null) {
     return progress.clearedCount > 0 ? { kind: "goal" } : null;
   }
   const fresh = progress.clearedCount === 0 && progress.currentStageId !== studyingStageId;
   return fresh ? null : { kind: "stage", stageId: progress.currentStageId };
+}
+
+/**
+ * 地図を ひらいた ときに はじめから 開いて おく パネル。**下りた 先の ステージ**。
+ * 下りた 先が ステージで ない（ゴール・一番上）ときは「いま ここ」。
+ *
+ * 下りた 先の パネルが 閉じて いると、戻って きた 場所なのに 押せる ものが 無い。
+ */
+export function mapInitialPanel(landing: MapLanding, progress: StageProgress): string | null {
+  return landing?.kind === "stage" ? landing.stageId : progress.currentStageId;
 }
 
 export function stageStatus(stageId: string, progress: StageProgress): StageStatus {
