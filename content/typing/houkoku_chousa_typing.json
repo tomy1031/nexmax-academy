@@ -95,8 +95,8 @@
       ]
     },
     {
-      "text": "料金と調査結果をGitHubのIssueにまとめてください。",
-      "en": "Please summarize the costs and the research results in a GitHub issue.",
+      "text": "では料金と調査結果をGitHubのIssueにまとめてください。",
+      "en": "Then please summarize the costs and the research results in a GitHub issue.",
       "wordIds": [
         "ryoukin",
         "chousa",

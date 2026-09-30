@@ -151,33 +151,33 @@
     },
     {
       "speaker": "kato",
-      "text": "S3の 方が よいと いう ことですね。理由は 何ですか。",
+      "text": "S3の 方が よいのですね。理由は 何ですか。",
       "file": "10.wav",
       "voice": "Gacrux",
       "model": "gemini-3.8-live",
-      "seconds": 4.08,
-      "longestPause": 0.37,
-      "transcript": "S3の方がよいということですね。理由は何ですか。",
+      "seconds": 3.45,
+      "longestPause": 0.22,
+      "transcript": "S3の 方が よいのですね。理由は 何ですか。",
       "transcriptBy": "gemini-3.8-live",
       "reading": {
-        "expected": "えすすりいのほうがよいということですねりゆうはなんですか",
-        "spoken": "えすすりいのほうがよいということですねりゆうはなんですか",
+        "expected": "えすすりいのほうがよいのですねりゆうはなんですか",
+        "spoken": "えすすりいのほうがよいのですねりゆうはなんですか",
         "distance": 0
       }
     },
     {
       "speaker": "kobayashi",
-      "text": "はい。商品画像が 増えても 管理しやすいからです。",
+      "text": "商品画像が 増えても 管理しやすいからです。",
       "file": "11.wav",
       "voice": "Rasalgethi",
       "model": "gemini-3.8-live",
-      "seconds": 3.72,
-      "longestPause": 0.55,
-      "transcript": "はい。商品画像が 増えても管理しやすいからです。",
-      "transcriptBy": "gemini-3.8-live",
+      "seconds": 3.58,
+      "longestPause": 0.25,
+      "transcript": "商品 画像 が 増え て も 管理 し やすい から です 。",
+      "transcriptBy": "gemini-3.5-flash-lite",
       "reading": {
-        "expected": "はいしょうひんがぞうがふえてもかんりしやすいからです",
-        "spoken": "はいしょうひんがぞうがふえてもかんりしやすいからです",
+        "expected": "しょうひんがぞうがふえてもかんりしやすいからです",
+        "spoken": "しょうひんがぞうがふえてもかんりしやすいからです",
         "distance": 0
       }
     },
@@ -199,17 +199,17 @@
     },
     {
       "speaker": "kato",
-      "text": "料金は どうですか。",
+      "text": "なるほど。サーバーに たくさん 保存すると 重く なりますからね。料金は どうですか。",
       "file": "13.wav",
       "voice": "Gacrux",
       "model": "gemini-3.8-live",
-      "seconds": 1.51,
-      "longestPause": 0.04,
-      "transcript": "料金 は どう です か ?",
+      "seconds": 6.42,
+      "longestPause": 0.34,
+      "transcript": "なるほど、サーバーにたくさん保存すると重くなりますからね。 料金はどうですか?",
       "transcriptBy": "gemini-3.5-flash-lite",
       "reading": {
-        "expected": "りょうきんはどうですか",
-        "spoken": "りょうきんはどうですか",
+        "expected": "なるほどさあばあにたくさんほぞんするとおもくなりますからねりょうきんはどうですか",
+        "spoken": "なるほどさあばあにたくさんほぞんするとおもくなりますからねりょうきんはどうですか",
         "distance": 0
       }
     },
@@ -247,49 +247,49 @@
     },
     {
       "speaker": "kato",
-      "text": "100GBで、月360円と いう ことですね。",
+      "text": "100GBで、月360円ですか。",
       "file": "16.wav",
       "voice": "Gacrux",
       "model": "gemini-3.8-live",
-      "seconds": 3.8,
-      "longestPause": 0.27,
-      "transcript": "100GBで、月360円と いうことですね。",
-      "transcriptBy": "gemini-3.8-live",
-      "reading": {
-        "expected": "ひゃくぎがばいとでつきさんびゃくろくじゅうえんということですね",
-        "spoken": "ひゃくぎがばいとでつきさんびゃくろくじゅうえんということですね",
-        "distance": 0
-      }
-    },
-    {
-      "speaker": "kobayashi",
-      "text": "はい、そうです。",
-      "file": "17.wav",
-      "voice": "Rasalgethi",
-      "model": "gemini-3.8-live",
-      "seconds": 1.13,
-      "longestPause": 0.19,
-      "transcript": "はい 、 そう です 。",
+      "seconds": 3.06,
+      "longestPause": 0.16,
+      "transcript": "100GB で 月 360円 です か ?",
       "transcriptBy": "gemini-3.5-flash-lite",
       "reading": {
-        "expected": "はいそうです",
-        "spoken": "はいそうです",
+        "expected": "ひゃくぎがばいとでつきさんびゃくろくじゅうえんですか",
+        "spoken": "ひゃくぎがばいとでつきさんびゃくろくじゅうえんですか",
         "distance": 0
       }
     },
     {
       "speaker": "kato",
-      "text": "分かりました。料金と 調査結果を GitHubの Issueに まとめて ください。",
+      "text": "それなら 値段も 大丈夫そうですね。",
+      "file": "17.wav",
+      "voice": "Gacrux",
+      "model": "gemini-3.8-live",
+      "seconds": 2.74,
+      "longestPause": 0,
+      "transcript": "それなら値段も大丈夫そうですね。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "それならねだんもだいじょうぶそうですね",
+        "spoken": "それならねだんもだいじょうぶそうですね",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "kato",
+      "text": "では 料金と 調査結果を GitHubの Issueに まとめて ください。",
       "file": "18.wav",
       "voice": "Gacrux",
       "model": "gemini-3.8-live",
-      "seconds": 5.08,
-      "longestPause": 0.18,
-      "transcript": "わかりました。 料金と調査結果をGitHubのissueにまとめてください。",
+      "seconds": 5.15,
+      "longestPause": 0.31,
+      "transcript": "では料金と調査結果をGitHubのissueにまとめてください。",
       "transcriptBy": "gemini-3.5-flash-lite",
       "reading": {
-        "expected": "わかりましたりょうきんとちょうさけっかをぎっとはぶのいしゅうにまとめてください",
-        "spoken": "わかりましたりょうきんとちょうさけっかをぎっとはぶのいしゅうにまとめてください",
+        "expected": "ではりょうきんとちょうさけっかをぎっとはぶのいしゅうにまとめてください",
+        "spoken": "ではりょうきんとちょうさけっかをぎっとはぶのいしゅうにまとめてください",
         "distance": 0
       }
     },
