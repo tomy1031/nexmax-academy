@@ -55,6 +55,7 @@ import { buildFuriganaIndex } from "../src/lib/text/furigana";
 import { buildSoundsIndex } from "../src/components/listening/listening-checks";
 import { soundsLikeOf } from "../src/content/listening-sounds";
 import { OUT_RATE, synthesizeWithFallback, toWav } from "./lib/live_tts";
+import { ISSUE_PICKS, ISSUE_TRIALS, PICK_TAKES, speechInputOf, trialInputOf } from "./lib/speak_as";
 import { changeTempo, runTtsListenings } from "./lib/tts_listening";
 import { audioUnitsOf } from "../src/content/listening-audio";
 import { LISTENING_AUDIO_PLANS, type ListeningAudioPlan } from "./lib/listening_audio_plans";
@@ -83,9 +84,14 @@ const requested: string[] = (process.argv[2] ?? "").split(",").filter(Boolean);
  * 触らず、`public/audio/listening/samples/` に 置く（教材からは 指さない。聞きくらべ用）。
  */
 const [firstId = "", sampleSpec] = (requested[0] ?? "").split("@");
-const sampleUnit: number | null = /^live-(\d+)$/.test(sampleSpec ?? "")
-  ? Number(/^live-(\d+)$/.exec(sampleSpec!)![1])
-  : null;
+const sampleMatch = /^live-(\d+)(?:-(trials|picks))?$/.exec(sampleSpec ?? "");
+const sampleUnit: number | null = sampleMatch ? Number(sampleMatch[1]) : null;
+/**
+ * 「Issue」の 渡しかたを 変えて 作る（scripts/lib/speak_as.ts）。
+ * `-trials` … 4通りを 1本ずつ。`-picks` … OK だった 2通りを 3本ずつ（耳で 選ぶ）。
+ */
+const sampleTrials: "trials" | "picks" | null =
+  (sampleMatch?.[2] as "trials" | "picks" | undefined) ?? null;
 const listeningId: string = firstId;
 /** すでに ある ものも 作り直すか。 */
 const force: boolean = process.argv.includes("--force");
@@ -368,12 +374,13 @@ async function makeSentences(activePlan: ListeningAudioPlan): Promise<void> {
       return match;
     };
     // ためし切って だめ なら 投げる（呼ぶ 側が この 文を 飛ばして つぎへ 進む）
+    const speech = speechInputOf(sentence.text, SCRIPT_LINE_INSTRUCTION);
     const spoken = await synthesizeWithFallback(
-      sentence.text,
+      speech.text,
       {
         apiKey,
         voice,
-        instruction: SCRIPT_LINE_INSTRUCTION,
+        instruction: speech.instruction,
         quoteOnRetry: true,
         transcribeWhenEmpty: true,
       },
@@ -496,9 +503,10 @@ async function makeLiveSample(unitNumber: number): Promise<void> {
   const tokenizer = await getTokenizer();
   const index = buildFuriganaIndex(listening.furigana ?? []);
   const sounds = buildSoundsIndex(soundsLikeOf(listeningId));
+  const speech = speechInputOf(unit.text, SCRIPT_LINE_INSTRUCTION);
   const spoken = await synthesizeWithFallback(
-    unit.text,
-    { apiKey, voice, instruction: SCRIPT_LINE_INSTRUCTION, quoteOnRetry: true },
+    speech.text,
+    { apiKey, voice, instruction: speech.instruction, quoteOnRetry: true },
     (candidate) => {
       // 聞いて 確かめる ための ためしなので、文字起こしが 空でも 通す（ずれは 記録する）
       if (candidate.transcript.trim() === "") return { ok: true, why: "文字起こし なし" };
@@ -522,9 +530,52 @@ async function makeLiveSample(unitNumber: number): Promise<void> {
   );
 }
 
+/** 1まとまりを「Issue」の 渡しかた ごとに 1本ずつ 作る（聞きくらべ用・教材の 音には 触らない）。 */
+async function makeIssueTrials(unitNumber: number, mode: "trials" | "picks"): Promise<void> {
+  const apiKey = requireApiKey();
+  const units = scriptSentences(script, audioUnitsOf(listeningId));
+  const unit = units[unitNumber - 1];
+  if (!unit) throw new Error(`${listeningId} に ${unitNumber}番目の まとまりは ありません`);
+  const voice = voiceOf(unit.speaker);
+  const model = plan?.models[unit.speaker];
+  const dir = join(outDir, "samples");
+  mkdirSync(dir, { recursive: true });
+  const runs =
+    mode === "picks"
+      ? ISSUE_PICKS.flatMap((trial) =>
+          Array.from({ length: PICK_TAKES }, (_, k) => ({ trial, tag: `${trial.name}-${k + 1}` })),
+        )
+      : ISSUE_TRIALS.map((trial) => ({ trial, tag: trial.name }));
+  for (const { trial, tag } of runs) {
+    const input = trialInputOf(unit.text, SCRIPT_LINE_INSTRUCTION, trial);
+    console.log(`${tag}: 「${input.text}」`);
+    try {
+      // 聞きくらべ なので 読みの 照合は しない（どう 読んだかは 文字起こしで 残す）
+      const spoken = await synthesizeWithFallback(
+        input.text,
+        { apiKey, voice, instruction: input.instruction, quoteOnRetry: true },
+        () => ({ ok: true, why: "聞きくらべ" }),
+        model ? [model] : undefined,
+      );
+      const pcm = fadeEdges(trimSilence(spoken.pcm));
+      const out = join(
+        dir,
+        `${listeningId}-${String(unitNumber).padStart(2, "0")}-${mode === "picks" ? "pick" : "trial"}-${tag}.wav`,
+      );
+      writeFileSync(out, toWav(pcm));
+      console.log(
+        `  ${out}（${seconds(pcm).toFixed(1)}秒）文字起こし「${spoken.transcript.trim()}」`,
+      );
+    } catch (error) {
+      console.log(`  ${tag} は 作れませんでした: ${String(error)}`);
+    }
+  }
+}
+
 async function main(): Promise<void> {
   if (sampleUnit !== null) {
-    await makeLiveSample(sampleUnit);
+    if (sampleTrials) await makeIssueTrials(sampleUnit, sampleTrials);
+    else await makeLiveSample(sampleUnit);
     return;
   }
   // TTS の 教材は まとめて 作る（カンマで 何本でも。scripts/lib/tts_listening.ts）

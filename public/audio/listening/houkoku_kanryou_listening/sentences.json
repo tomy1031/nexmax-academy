@@ -235,14 +235,14 @@
       "file": "15.wav",
       "voice": "Alnilam",
       "model": "gemini-3.8-live",
-      "seconds": 3.23,
-      "longestPause": 0.19,
-      "transcript": "GitHub の Issue を作ったので、確認してください。",
-      "transcriptBy": "gemini-3.5-flash-lite",
+      "seconds": 3.26,
+      "longestPause": 0.07,
+      "transcript": "",
+      "transcriptBy": "耳（2026-10-01 ユーザーが 聞きくらべで Good。高橋_1-3: 小文字の issue）",
       "reading": {
         "expected": "ぎっとはぶのいしゅうをつくったのでかくにんしてください",
-        "spoken": "ぎっとはぶのいしゅうをつくったのでかくにんしてください",
-        "distance": 0
+        "spoken": "",
+        "distance": null
       }
     },
     {
@@ -251,14 +251,14 @@
       "file": "16.wav",
       "voice": "Autonoe",
       "model": "gemini-3.8-live",
-      "seconds": 3.68,
-      "longestPause": 0.17,
-      "transcript": "わかりました 。 異臭 を 確認 し て から 作業 を 始め ます 。",
-      "transcriptBy": "gemini-3.5-flash-lite",
+      "seconds": 3.67,
+      "longestPause": 0.37,
+      "transcript": "",
+      "transcriptBy": "耳（2026-09-30 ユーザーが 聞きくらべで OK。渡しかた 1: 小文字の issue）",
       "reading": {
         "expected": "わかりましたいしゅうをかくにんしてからさぎょうをはじめます",
-        "spoken": "わかりましたいしゅうをかくにんしてからさぎょうをはじめます",
-        "distance": 0
+        "spoken": "",
+        "distance": null
       }
     },
     {

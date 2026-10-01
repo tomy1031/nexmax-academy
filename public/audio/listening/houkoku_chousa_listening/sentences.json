@@ -283,14 +283,14 @@
       "file": "18.wav",
       "voice": "Gacrux",
       "model": "gemini-3.8-live",
-      "seconds": 5.15,
-      "longestPause": 0.31,
-      "transcript": "では料金と調査結果をGitHubのissueにまとめてください。",
-      "transcriptBy": "gemini-3.5-flash-lite",
+      "seconds": 4.78,
+      "longestPause": 0.09,
+      "transcript": "",
+      "transcriptBy": "耳（2026-10-01 ユーザーが 聞きくらべで Good。加藤_1-1: 小文字の issue）",
       "reading": {
         "expected": "ではりょうきんとちょうさけっかをぎっとはぶのいしゅうにまとめてください",
-        "spoken": "ではりょうきんとちょうさけっかをぎっとはぶのいしゅうにまとめてください",
-        "distance": 0
+        "spoken": "",
+        "distance": null
       }
     },
     {
