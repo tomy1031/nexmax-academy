@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState, useSyncExternalStore } from "react";
+import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import type { ContentRefType } from "@/content/schema";
 import { RubyText } from "@/components/ruby-text";
+import { rememberOpenedStage } from "@/lib/progress";
 import { readContentProgress, subscribeProgress } from "@/lib/progress/store";
 import {
   KANJI,
@@ -99,6 +100,15 @@ export function StageDetail({
     [wordStages],
   );
   const [furiganaOn, setFuriganaOn] = useState(true);
+  /*
+    ステージの トップを 開いたら「最後に 開いた ステージ」として 覚える。地図へ 戻った ときに
+    ここへ 下りる（2026-09-30 の 指定。教材の 枠 ContentFrame と 同じ 控え）。
+    地図に 出ない ステージ（はじめに 等）は 覚えない。
+  */
+  const onMap = stage.number !== null;
+  useEffect(() => {
+    if (onMap) rememberOpenedStage(stage.id);
+  }, [onMap, stage.id]);
   const serverKey = useMemo(() => items.map(() => "0").join(""), [items]);
   const progressKey = useSyncExternalStore(
     subscribeProgress,

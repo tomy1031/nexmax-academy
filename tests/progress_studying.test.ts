@@ -1,6 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import {
+  lastOpenedStageSnapshot,
   markStageCleared,
+  rememberOpenedStage,
   rememberStudyingStage,
   studyingStageSnapshot,
 } from "../src/lib/progress";
@@ -66,5 +68,38 @@ describe("rememberStudyingStage", () => {
     delete (globalThis as { window?: unknown }).window;
     expect(() => rememberStudyingStage("houkoku")).not.toThrow();
     expect(studyingStageSnapshot()).toBe("");
+  });
+});
+
+describe("rememberOpenedStage（最後に 開いた ステージ）", () => {
+  it("まだ何も開いていなければ空", () => {
+    expect(lastOpenedStageSnapshot()).toBe("");
+  });
+
+  it("クリア済みでも覚える（見直しに開いた場所へ地図を戻す）", () => {
+    markStageCleared("houkoku");
+    rememberOpenedStage("youken");
+    rememberOpenedStage("houkoku");
+    expect(lastOpenedStageSnapshot()).toBe("houkoku");
+  });
+
+  it("学習中の控えとは別に持つ（開いただけでは いま ここ を動かさない）", () => {
+    rememberStudyingStage("youken");
+    rememberOpenedStage("houkoku");
+    expect(studyingStageSnapshot()).toBe("youken");
+    expect(lastOpenedStageSnapshot()).toBe("houkoku");
+  });
+
+  it("保存できない端末でも投げない", () => {
+    const broken = fakeStorage();
+    broken.setItem = () => {
+      throw new Error("QuotaExceededError");
+    };
+    broken.getItem = () => {
+      throw new Error("SecurityError");
+    };
+    (globalThis as { window?: unknown }).window = { localStorage: broken };
+    expect(() => rememberOpenedStage("houkoku")).not.toThrow();
+    expect(lastOpenedStageSnapshot()).toBe("");
   });
 });

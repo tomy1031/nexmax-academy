@@ -1,7 +1,9 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { ArcadeGame } from "@/components/arcade/arcade-game";
+import { RememberOpenedStage } from "@/components/stage/remember-opened-stage";
 import { listStages, listWordStages } from "@/lib/content";
+import { isOnMap } from "@/lib/map-data";
 import { findLearnerWordSets, learnerWordGroups, wordStageOwner } from "@/lib/wordstage-merge";
 
 /**
@@ -93,19 +95,23 @@ export default async function ArcadeStagePage({ params }: { params: Promise<{ st
   const all = learnerWordGroups(stages, words);
 
   return (
-    <ArcadeGame
-      stages={owner ? sets : undefined}
-      groups={owner ? undefined : all.heads}
-      initialStageId={sets.length === 1 ? sets[0]!.id : undefined}
-      backTo={owner ? `/${owner.id}` : undefined}
-      backTitle={
-        owner
-          ? {
-              title: owner.title,
-              furigana: [...(owner.furigana ?? []), [owner.title, owner.reading]],
-            }
-          : undefined
-      }
-    />
+    <>
+      {/* 地図へ 戻った ときに 持ち主の ステージへ 下りる ため（地図に 出る ステージだけ） */}
+      {owner && isOnMap(owner) ? <RememberOpenedStage stageId={owner.id} /> : null}
+      <ArcadeGame
+        stages={owner ? sets : undefined}
+        groups={owner ? undefined : all.heads}
+        initialStageId={sets.length === 1 ? sets[0]!.id : undefined}
+        backTo={owner ? `/${owner.id}` : undefined}
+        backTitle={
+          owner
+            ? {
+                title: owner.title,
+                furigana: [...(owner.furigana ?? []), [owner.title, owner.reading]],
+              }
+            : undefined
+        }
+      />
+    </>
   );
 }
