@@ -38,6 +38,12 @@
 # ファイルを 返す**ので、リスニングの 音を 作り直しても 古い 音が 鳴った
 #（2026-09-04 に 実発生）。短くする 案は 採らない: 変えて いない 資産まで
 # 毎回 取り直させ、教室の 細い 回線を 食う。
+#
+# **`/audio/*` と `/video/*` は 2026-09-30 から Worker を 先に 通る**（途中から
+# 送る 206 の ため。wrangler.jsonc の run_worker_first・docs/deploy.md §0.17）。
+# Worker を 通した 応答には この ファイルが 効かないので、同じ 値を
+# src/lib/media-range.ts でも 付けて いる。**値を 変える ときは 両方**
+#（tests/media_range.test.ts が 突き合わせる）。
 /audio/*
   Cache-Control: public,max-age=31536000,immutable
 /img/*
@@ -56,6 +62,7 @@
 #
 # `immutable` には しない——こちらが 差し替えた ときに 1日で 入れ替わるように 残す
 # （pdf.js の worker と 同じ 考え方）。
+# ここも Worker が 同じ 値を 付ける（上の `/audio/*` の 注を 見る）。
 /video/*
   Cache-Control: public,max-age=86400,stale-while-revalidate=604800
 

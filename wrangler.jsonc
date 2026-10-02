@@ -1,7 +1,8 @@
 /**
  * Cloudflare Workers 設定（OpenNext 経由）。docs/design/09_Cloudflare移行実行計画.md を参照。
  *
- * - main / assets は `opennextjs-cloudflare build` の出力先。手で書き換えない。
+ * - assets は `opennextjs-cloudflare build` の出力先。手で書き換えない。
+ *   main は その出力（`.open-next/worker.js`）を包む worker.mjs（2026-09-30。音・動画の 206 のため）。
  * - nodejs_compat は OpenNext の必須要件。
  * - compatibility_date は 2025-05-05 以降が必須（FinalizationRegistry 対策・計画書 §2.4）。
  *   OpenNext は「6か月より古い日付」に警告を出すので、更新時は現在に近い日付へ寄せる。
@@ -21,7 +22,9 @@
   // name=academy・subdomain=nexmax で `academy.nexmax.workers.dev` になる。
   // 改名すると別 Worker になる（旧名のデプロイ履歴は引き継がれない）。
   "name": "academy",
-  "main": ".open-next/worker.js",
+  // 入口は OpenNext の `.open-next/worker.js` を 包んだ もの（2026-09-30）。
+  // 教材の 音・動画を 途中から 送る（206）ため。中身は worker.mjs・docs/deploy.md §0.17。
+  "main": "worker.mjs",
   // Wrangler は OpenNext が作った handler を **もう一度 束ね直す**。ここを指定しないと
   // その 最終束ねだけ 圧縮されず、上げる大きさが gzip で 333KiB ふくらむ（実測）。
   // 無料枠の スクリプト上限は gzip 3MiB で、超えると deploy が code:10027 で 止まる。
@@ -31,6 +34,12 @@
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS",
+    // 教材の 音・動画だけ Worker を 先に 通す（静的アセットは Range を 無視して
+    // 200＋全体を 返すので、Chrome で 再生位置を 動かせず、iPhone では 再生に
+    // 失敗しうる）。ほかの public/ は これまでどおり Worker を 通らない。
+    // ここを 変えたら src/lib/media-range.ts の MEDIA_CACHE_CONTROL も そろえる
+    //（tests/media_range.test.ts が 突き合わせる）。docs/deploy.md §0.17。
+    "run_worker_first": ["/audio/*", "/video/*"],
   },
   "kv_namespaces": [
     {
