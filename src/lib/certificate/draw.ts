@@ -243,7 +243,7 @@ export async function drawCertificate(cert: IssuedCertificate): Promise<Blob> {
 /** 保存する ファイル（PNG）を 作る。画面が 修了証を 出した 時点で 先に 作って おく。 */
 export async function certificateFile(cert: IssuedCertificate): Promise<File> {
   const blob = await drawCertificate(cert);
-  return new File([blob], certificateFileName(cert.contentId, cert.issuedAt), {
+  return new File([blob], certificateFileName(cert), {
     type: "image/png",
   });
 }
