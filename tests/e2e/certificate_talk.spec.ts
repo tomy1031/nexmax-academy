@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { expect, test } from "@playwright/test";
-import { joinCall, seedCompleted, shot, skipAsk } from "./helpers";
+import { answerTalk, joinCall, readOn, seedCompleted, shot, skipAsk } from "./helpers";
 
 /**
  * 会話の 練習の 修了証（2026-10-06 の 回答「取りこぼしなし」・願い #562 の 第2段）
@@ -79,4 +79,29 @@ test("ヒアリング: 退室した 瞬間に 修了証が 出る（聞き出せ
   await expect(page.locator('[data-certificate="reasons"]')).toContainText(`${total}こ`);
   await cert.scrollIntoViewIfNeeded();
   await shot(page, "certificate-scenario-not-perfect");
+});
+
+test("たいわ: クリアした 瞬間に パーフェクトの 修了証が 出る", async ({ page, context }) => {
+  await seedBefore(context, "kaisha", "kaisha_matsui");
+  /*
+   * 聞く ばんの 最後の 1つ手前から 始める（最初から 話すと 9回 以上 かかる）。
+   * 聞いた 数が 上限に とどくと クリア（`src/lib/talkgame/affinity.ts` の LISTEN_MAX_ASKS）。
+   */
+  await context.addInitScript(() => {
+    window.localStorage.setItem(
+      "nexmax:v1:talkgame-resume:kaisha_matsui",
+      JSON.stringify({ round: "listen", percent: 50, turns: 6, asked: 5 }),
+    );
+  });
+  await page.goto("/kaisha/meeting-kaisha_matsui");
+  await page.getByRole("button", { name: "つづきから 話す ▶" }).click();
+  await readOn(page);
+  await answerTalk(page, "会社で いちばん 大切に して いる ことは 何ですか。");
+  await readOn(page, 10);
+
+  const cert = page.locator('[data-certificate="ready"]');
+  await expect(cert).toBeVisible({ timeout: 30_000 });
+  await expect(cert).toHaveAttribute("data-perfect", "true");
+  await cert.scrollIntoViewIfNeeded();
+  await shot(page, "certificate-talkgame-perfect");
 });

@@ -456,7 +456,8 @@ test("かいしゃステージを 通しで あそべる（端末に 何も 置�
     await expect(page.getByRole("button", { name: /さんに しつもん/ })).toHaveCount(0);
     const cert1 = page.getByRole("dialog", { name: "しゅうりょうしょうの ポップアップ" });
     await expect(cert1).toBeVisible();
-    await cert1.getByRole("button").click();
+    // ポップアップには 修了証の「画像で 保存」も ある（願い #562）ので、押す ボタンを 名指しする
+    await cert1.getByRole("button", { name: /ステージに もどる/ }).click();
     await expect(cert1).toHaveCount(0);
 
     /*
