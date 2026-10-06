@@ -26,6 +26,7 @@ export function ArcadeResult({
   onBack,
   onLeave,
   leaveLabel,
+  certificate = null,
 }: {
   summary: ArcadeSummary;
   gameScore: number;
@@ -45,6 +46,8 @@ export function ArcadeResult({
    */
   onLeave?: () => void;
   leaveLabel?: ReactNode;
+  /** 単語テストの 修了証（テストを 終えた 瞬間に 発行した もの。願い #562）。点の すぐ 下に 置く。 */
+  certificate?: ReactNode;
 }) {
   return (
     <motion.div
@@ -118,6 +121,8 @@ export function ArcadeResult({
         {!isTest && <Stat label="スコア" value={String(gameScore)} accent="#f0a819" />}
         {!isTest && <Stat label="さいこう れんぞく" value={`${bestCombo}`} accent="#f2654a" />}
       </dl>
+
+      {certificate ? <div className="mt-5 text-left">{certificate}</div> : null}
 
       {missedWords.length > 0 && (
         <section className="mt-6">

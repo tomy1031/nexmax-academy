@@ -30,6 +30,9 @@ import type { TermOutcome } from "./arcade-three";
 import { ArcadeButton, ArcadePanel } from "./arcade-panel";
 import { ApproachClock, DamageFlash, McqTerm, ScorePop, Verdict } from "./arcade-fx";
 import { ArcadeResult } from "./arcade-result";
+import { CertificatePanel } from "@/components/certificate/certificate-panel";
+import { PreviousCertificate } from "@/components/certificate/previous-certificate";
+import { useWordTestCertificate } from "./use-word-test-certificate";
 import { FlashcardDeck } from "./flashcard-deck";
 import { MeaningChoice } from "./meaning-choice";
 import { ReadingInput } from "./reading-input";
@@ -173,10 +176,20 @@ export function ArcadeGame({
    * localStorage を 消した 学習者で 1に 戻り、嘘を つく。
    */
   const attemptIdRef = useRef<string>("");
+  /** いまの 回が「まちがえた ことばだけ」か（修了証の パーフェクトに しない）。 */
+  const [onlyMissed, setOnlyMissed] = useState(false);
+  /** 単語テストの 修了証（願い #562 の 第2段）。テストを 終えた 瞬間に 発行する。 */
+  const certificate = useWordTestCertificate();
+  const { reset: resetCertificate } = certificate;
 
   const stageId = "stageId" in screen ? screen.stageId : (initialStageId ?? stages[0]?.id);
   const stage = stages.find((s) => s.id === stageId) ?? null;
   const furigana = useMemo(() => buildFuriganaIndex(stage?.furigana ?? []), [stage?.furigana]);
+  /** 修了証の 教材名（「単語テスト：…」）の 読み。ゲームの 画面の 読みには 混ぜない。 */
+  const certificateFurigana = useMemo(
+    () => buildFuriganaIndex([...(stage?.furigana ?? []), ["単語", "たんご"]]),
+    [stage?.furigana],
+  );
 
   /*
    * セットを えらぶ 画面から 出る ときの 行き先の 名前。**わたされた 名前**を 使い、
@@ -196,12 +209,14 @@ export function ArcadeGame({
     (target: WordStage, mode: ArcadeMode, onlyWordIds?: readonly string[]) => {
       const mastery = store.readMastery(target.id);
       setSession(createSession({ stage: target, mode, difficulty, mastery, onlyWordIds }));
+      setOnlyMissed(Boolean(onlyWordIds));
+      resetCertificate();
       savedRef.current = null;
       savedCountRef.current = 0;
       attemptIdRef.current = newWordTestAttemptId();
       setScreen({ kind: "play", stageId: target.id });
     },
-    [difficulty, store],
+    [difficulty, store, resetCertificate],
   );
 
   // ロックは置かない（願い #26）。どのグループもすぐ開ける。
@@ -365,6 +380,22 @@ export function ArcadeGame({
                   if (mode === "test") setScreen({ kind: "hiraCheck", stageId: stage.id, mode });
                   else start(stage, mode);
                 }}
+                previous={
+                  certificate.certificate ? (
+                    <CertificatePanel
+                      state={certificate.certificate}
+                      furigana={certificateFurigana}
+                      show
+                      onRetry={certificate.retry}
+                    />
+                  ) : (
+                    <PreviousCertificate
+                      contentId={stage.id}
+                      show
+                      onOpen={(cert) => certificate.setCertificate({ status: "ready", cert })}
+                    />
+                  )
+                }
                 onFlashcard={() => setScreen({ kind: "flashcard", stageId: stage.id })}
                 onDictionary={() => setScreen({ kind: "dictionary", stageId: stage.id })}
                 onBack={goBackFromMode}
@@ -398,6 +429,9 @@ export function ArcadeGame({
                 store={store}
                 savedRef={savedRef}
                 attemptIdRef={attemptIdRef}
+                onlyMissed={onlyMissed}
+                certificate={certificate}
+                certificateFurigana={certificateFurigana}
                 onRetryWrong={(ids) => start(stage, session.mode, ids)}
                 onBack={() => setScreen({ kind: "mode", stageId: stage.id })}
                 /* おわった 直後が いちばん 出たい 瞬間。ステージから 来た ときだけ 出す */
@@ -842,6 +876,7 @@ function ModeSelect({
   onFlashcard,
   onDictionary,
   onBack,
+  previous,
 }: {
   stage: WordStage;
   furigana: ReturnType<typeof buildFuriganaIndex>;
@@ -853,6 +888,8 @@ function ModeSelect({
   onFlashcard: () => void;
   onDictionary: () => void;
   onBack: () => void;
+  /** 前に 出した 修了証（テストの 修了証を 保存し直す）。 */
+  previous?: ReactNode;
 }) {
   return (
     <ArcadePanel
@@ -934,6 +971,8 @@ function ModeSelect({
           <span className="text-xs opacity-80">ことばを しらべる</span>
         </ArcadeButton>
       </div>
+
+      {previous ? <div className="mt-4 text-left">{previous}</div> : null}
 
       <ArcadeButton tone="quiet" className="mt-4 px-6 py-2 text-sm" onClick={onBack}>
         {backLabel}
@@ -1022,6 +1061,9 @@ function ResultLayer({
   store,
   savedRef,
   attemptIdRef,
+  onlyMissed,
+  certificate,
+  certificateFurigana,
   onRetryWrong,
   onBack,
   onLeave,
@@ -1033,6 +1075,9 @@ function ResultLayer({
   store: ReturnType<typeof createProgressStore>;
   savedRef: React.RefObject<string | null>;
   attemptIdRef: React.RefObject<string>;
+  onlyMissed: boolean;
+  certificate: ReturnType<typeof useWordTestCertificate>;
+  certificateFurigana: ReturnType<typeof buildFuriganaIndex>;
   onRetryWrong: (ids: readonly string[]) => void;
   onBack: () => void;
   onLeave?: () => void;
@@ -1080,6 +1125,25 @@ function ResultLayer({
     void saveWordTest({ state, summary, words: stage.words, attemptId: attemptIdRef.current });
   }, [stage, state, summary, store, savedRef, attemptIdRef]);
 
+  /*
+   * 修了証は **テストを 最後まで 終えた 瞬間**に 1回だけ（同じ 回は attemptId で 見分ける）。
+   * れんしゅう・もんだいだけ・途中で やめた 回には 出さない。
+   */
+  const { finish } = certificate;
+  useEffect(() => {
+    if (state.mode !== "test" || !summary.completed) return;
+    finish(attemptIdRef.current, stage.id, wordTestTitle(stage), {
+      score: summary.score,
+      maxScore: summary.maxScore,
+      readingCorrect: summary.readingCorrect,
+      readingAsked: state.outcomes.filter((o) => o.readingOk !== null).length,
+      meaningCorrect: summary.meaningCorrect,
+      words: summary.total,
+      passed: summary.passed,
+      onlyMissed,
+    });
+  }, [state.mode, state.outcomes, summary, stage, onlyMissed, finish, attemptIdRef]);
+
   return (
     <div className="pointer-events-auto">
       <ArcadeResult
@@ -1093,7 +1157,22 @@ function ResultLayer({
         onBack={onBack}
         onLeave={onLeave}
         leaveLabel={leaveLabel}
+        certificate={
+          certificate.certificate ? (
+            <CertificatePanel
+              state={certificate.certificate}
+              furigana={certificateFurigana}
+              show
+              onRetry={certificate.retry}
+            />
+          ) : null
+        }
       />
     </div>
   );
+}
+
+/** 修了証の 教材名。セットの 名前だけ（「はじまり」）では 何の 証明か 分からない。 */
+function wordTestTitle(stage: WordStage): string {
+  return `単語テスト：${stage.title}${stage.label ? `（${stage.label}）` : ""}`;
 }
