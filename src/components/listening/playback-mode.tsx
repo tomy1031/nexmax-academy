@@ -7,6 +7,20 @@ import { RubyText } from "@/components/ruby-text";
 import { buildFuriganaIndex, type FuriganaIndex } from "@/lib/text/furigana";
 import { getProfile } from "@/lib/profile";
 import { recordContentProgress } from "@/lib/progress/store";
+import {
+  CertificatePanel,
+  type CertificateState,
+} from "@/components/certificate/certificate-panel";
+import { issueCertificate } from "@/lib/certificate/certificate-db";
+import { listeningResult } from "@/lib/certificate/model";
+import {
+  endRun,
+  readIssued,
+  readRun,
+  saveIssued,
+  startRun,
+  updateRun,
+} from "@/lib/certificate/run";
 import { CallShell } from "@/components/call-shell";
 import { VideoPlayer } from "@/components/media/video-player";
 import { ImageSlotFrame } from "@/components/article/rich-blocks";
@@ -20,6 +34,7 @@ import {
   matchesRescueFingerprint,
   mediaKind,
   revealRate,
+  isFullyRevealed,
   type ListeningState,
 } from "./listening-checks";
 
@@ -93,10 +108,80 @@ export function ListeningPlayer({
 
   const goal = listening.revealGoal;
 
-  const onCheckChange = useCallback((state: ListeningState) => {
-    setRate(revealRate(state));
-    setTouched(true);
-  }, []);
+  /**
+   * 修了証（願い #562）。原稿を **1字も 残さず** 開いた 瞬間に DB へ 発行する。
+   * パーフェクト = こたえあわせを 見る 前に 100%・あいことばを 使わない（ミスは 許す）。
+   * ミス・あいことば・こたえあわせを 見たかは 端末の 1回ぶんの 記録に 積む（開き直しても 消えない）。
+   */
+  const [certificate, setCertificate] = useState<CertificateState | null>(null);
+  /** この 画面で いちばん 新しい 聞き取りの すがた（こたえあわせへ 進む ときに 100%か 見る）。 */
+  const latestRef = useRef<ListeningState | null>(null);
+  /** 開いた ときに もう 100% だったか（その ときは 新しく 発行しない）。null = まだ 見て いない。 */
+  const fullAtOpenRef = useRef<boolean | null>(null);
+  /** この 画面で 見た ミスの 数（開き直すと 0 から 数え直す ので、増えた ぶんだけ 積む）。 */
+  const seenMissesRef = useRef(0);
+  const issuedRef = useRef(false);
+
+  const issue = useCallback(
+    (score: number) => {
+      const run = readRun(listening.id) ?? startRun(listening.id);
+      const result = listeningResult(listening.id, listening.title, {
+        score,
+        misses: run.misses ?? 0,
+        usedRescue: Boolean(run.usedRescue),
+        reviewedEarly: Boolean(run.reviewedEarly),
+      });
+      setCertificate({ status: "issuing" });
+      void issueCertificate(result).then((outcome) => {
+        if (outcome.status === "error") {
+          setCertificate({ status: "error" });
+          return;
+        }
+        saveIssued(outcome.cert);
+        endRun(listening.id);
+        setCertificate({ status: "ready", cert: outcome.cert });
+      });
+    },
+    [listening.id, listening.title],
+  );
+
+  const onCheckChange = useCallback(
+    (state: ListeningState) => {
+      setRate(revealRate(state));
+      setTouched(true);
+      latestRef.current = state;
+      const full = isFullyRevealed(state);
+      if (fullAtOpenRef.current === null) {
+        fullAtOpenRef.current = full;
+        seenMissesRef.current = state.misses;
+        // 前の 回で もう 100%: 出した 修了証が あれば 見せる（画像を 保存し直せる）
+        if (full) {
+          const last = readIssued(listening.id);
+          if (last) setCertificate({ status: "ready", cert: last });
+        }
+        return;
+      }
+      if (state.misses > seenMissesRef.current) {
+        const added = state.misses - seenMissesRef.current;
+        updateRun(listening.id, (run) => ({ ...run, misses: (run.misses ?? 0) + added }));
+      }
+      seenMissesRef.current = state.misses;
+      if (full && !fullAtOpenRef.current && !issuedRef.current) {
+        issuedRef.current = true;
+        issue(state.score);
+      }
+    },
+    [listening.id, issue],
+  );
+
+  /** 「はじめから」: 新しい 回に する。 */
+  const onReset = useCallback(() => {
+    startRun(listening.id, { misses: 0 });
+    fullAtOpenRef.current = false;
+    seenMissesRef.current = 0;
+    issuedRef.current = false;
+    setCertificate(null);
+  }, [listening.id]);
 
   const start = () => {
     setPhase("listen");
@@ -108,6 +193,11 @@ export function ListeningPlayer({
   };
 
   const finish = () => {
+    // 100%に なる 前に こたえあわせ（原稿）を 見たら、この 回は パーフェクトに しない
+    const current = latestRef.current;
+    if (!current || !isFullyRevealed(current)) {
+      updateRun(listening.id, (run) => ({ ...run, reviewedEarly: true }));
+    }
     setPhase("review");
     setCaptionsOn(true);
     setLine(0);
@@ -141,6 +231,7 @@ export function ListeningPlayer({
               furigana={furigana}
               sounds={sounds}
               onChange={onCheckChange}
+              onReset={onReset}
             />
           ) : null}
 
@@ -151,10 +242,24 @@ export function ListeningPlayer({
             goal={goal}
             touched={touched || !typingOn}
             rescued={rescued}
-            onRescue={() => setRescued(true)}
+            onRescue={() => {
+              setRescued(true);
+              updateRun(listening.id, (run) => ({ ...run, usedRescue: true }));
+            }}
             onNext={finish}
           />
         </>
+      ) : null}
+
+      {certificate && phase !== "intro" ? (
+        <CertificatePanel
+          state={certificate}
+          furigana={furigana}
+          onRetry={() => {
+            const score = latestRef.current?.score ?? 0;
+            issue(score);
+          }}
+        />
       ) : null}
 
       {phase === "review" ? (

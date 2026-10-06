@@ -2,7 +2,7 @@
  * 学習の きろくを **1つの 表の かたち**に そろえる
  *
  * ## なぜ そろえるか
- * 記録は 5種類 ある（進み具合・もんだい・ことば・会話・リスニング）。種類ごとに
+ * 記録は 6種類 ある（進み具合・もんだい・ことば・会話・リスニング・修了証）。種類ごとに
  * 絞り込みと 表と CSV を 書くと 同じ ものが 5つに 増え、**片方だけ 直る**
  *（学校で 絞れるのに 期生で 絞れない 表、CSV に 名前が 出ない 表）。
  * だから 中身を 先に `RecordRow` へ 落として、絞り込み・並べ・表示・CSV は 1本に する。
@@ -16,11 +16,13 @@
  */
 
 import type { ContentRefType } from "@/content/schema";
+import { formatIssuedAt } from "@/lib/certificate/model";
 import { contentKindMeta } from "@/lib/content-kinds";
 import type { ProfileRow } from "@/lib/profile-db";
 import { formatSchool } from "@/lib/school";
 import type { UnitRef } from "@/lib/records/units";
 import type {
+  CertificateRecord,
   ContentProgressRecord,
   ListeningRecord,
   MeetingRecord,
@@ -46,6 +48,12 @@ export interface RecordRow {
   readonly cells: Readonly<Record<string, string>>;
   /** つまずきを 数える ための 素の 値（無い 行は 数えない）。 */
   readonly stat?: RecordStat;
+  /**
+   * 照合番号を **ゆれを 取って 小文字に した もの**（修了証の 行だけ。`normalizeCode`）。
+   * 先生が 画像から 写した 番号に 空白・ハイフン・全角が 混ざっても 当たるように、
+   * 表示の 文字（`cells.code`）とは 別に 持つ。
+   */
+  readonly codeKey?: string;
 }
 
 /**
@@ -90,6 +98,7 @@ export const RECORD_KINDS = [
   { id: "word", icon: "🕹️", label: "ことばの テスト" },
   { id: "talk", icon: "💬", label: "会話" },
   { id: "listening", icon: "🎧", label: "リスニング" },
+  { id: "certificate", icon: "🎓", label: "修了証" },
 ] as const;
 
 export type RecordKind = (typeof RECORD_KINDS)[number]["id"];
@@ -641,6 +650,83 @@ export function listeningTable(records: readonly ListeningRecord[], lookups: Loo
   };
 }
 
+/**
+ * 照合番号の ゆれを 取る（空白・ハイフン・全角・大文字小文字）。
+ *
+ * 先生は 学習者が 出した 画像から 番号を **写す**。画像では 読みやすく
+ * 「ABCD-2345」の ように 区切る ことも あり、貼り付け方で 空白や 全角が 混ざる。
+ * 番号そのものは 8文字の 英数字なので、区切りを 全部 落として 比べれば 同じ ものに 当たる。
+ */
+export function normalizeCode(value: string): string {
+  return value
+    .normalize("NFKC")
+    .replace(/[\s\-\u2010-\u2015\u2212\u30FC_]/g, "")
+    .toLowerCase();
+}
+
+/**
+ * 成績の 1行（教材の 種類ごとに 数え方が ちがう。画像に 出す 内訳と 同じ 数）。
+ *
+ * 知らない 種類（これから 足す 教材）でも **持って いる 数は そのまま 出す**——
+ * 空欄に すると、先生には「成績が 無い」ように 見える。
+ */
+function certificateScoreText(record: CertificateRecord): string {
+  const misses = record.misses ?? 0;
+  if (record.kind === "listening") return `スコア ${record.score ?? 0}点・ミス ${misses}回`;
+  if (record.kind === "typing") {
+    return `1回で 正解 ${record.score ?? 0}/${record.max_score ?? 0}・❌ ${misses}回`;
+  }
+  const parts: string[] = [];
+  if (record.score !== null) {
+    parts.push(
+      record.max_score !== null ? `${record.score}/${record.max_score}` : `${record.score}点`,
+    );
+  }
+  if (record.misses !== null) parts.push(`ミス ${record.misses}回`);
+  return parts.join("・");
+}
+
+/**
+ * 修了証は **1行 ＝ 1回の 証明**。先生が 学習者の 画像の 照合番号を 突き合わせる ための 表。
+ *
+ * - 名前は **出した 時の 名前**（`learner_name`）。先頭の「学生」は いまの 名前なので、
+ *   あとで 設定を 直した 人は 2つが ずれる——それが 他人の 画像との 見分けに なる。
+ * - 時刻は **カンボジアの 時刻（ICT）に 固定**（先生の 端末の 時差に よらない）。画像と 同じ 書き方。
+ * - パーフェクトは「★PERFECT」と 文字で 出す（この 表は セルごとの 色を 持たない）。
+ * - `stat` は 付けない ＝ つまずきの まとめには 出さない（正誤の 記録では ない）。
+ */
+export function certificateTable(
+  records: readonly CertificateRecord[],
+  lookups: Lookups,
+): RecordTable {
+  return {
+    columns: [
+      ...COMMON_COLUMNS,
+      { key: "learnerName", label: "出した 時の 名前" },
+      { key: "attempt", label: "回" },
+      { key: "result", label: "結果" },
+      { key: "score", label: "成績" },
+      { key: "issuedAt", label: "終えた 時刻" },
+      { key: "code", label: "照合番号" },
+    ],
+    rows: records.map((record) => ({
+      profileId: record.profile_id,
+      unitId: record.content_id,
+      at: record.issued_at,
+      codeKey: normalizeCode(record.code),
+      cells: {
+        ...commonCells(record.profile_id, record.content_id, lookups),
+        learnerName: record.learner_name,
+        attempt: `${record.attempt}回目`,
+        result: record.perfect ? "★PERFECT" : "修了",
+        score: certificateScoreText(record),
+        issuedAt: formatIssuedAt(record.issued_at),
+        code: record.code,
+      },
+    })),
+  };
+}
+
 /* ------------------------------------------------------------------ *
  * つまずき（まとめ）
  *
@@ -822,6 +908,9 @@ export function summaryTable(kind: RecordKind, rows: readonly RecordRow[]): Reco
     };
   }
 
+  // 修了証は 正誤の 記録では ない（まとめる 値を 持たない）。
+  if (kind === "certificate") return null;
+
   const buckets = bucketize(rows, (stat) => stat.value !== undefined);
   if (buckets.length === 0) return null;
   return {
@@ -867,7 +956,10 @@ export interface RecordFilter {
   readonly stageId: string;
   /** "" = ぜんぶ。 */
   readonly unitId: string;
-  /** 学生の 名前・こたえの 中の ことば（空 = 絞らない）。 */
+  /**
+   * 学生の 名前・こたえの 中の ことば（空 = 絞らない）。
+   * 修了証では **照合番号**も これで さがす（空白・ハイフン・全角・大小は 問わない）。
+   */
   readonly text: string;
 }
 
@@ -975,6 +1067,8 @@ export function filterRows(
   lookups: Lookups,
 ): readonly RecordRow[] {
   const needle = filter.text.trim().toLowerCase();
+  // 照合番号用。「ABCD-2345」「abcd 2345」も 「ABCD2345」と 同じ ものに 当てる
+  const codeNeedle = normalizeCode(filter.text);
   return (
     table.rows
       .filter((row) => {
@@ -986,7 +1080,8 @@ export function filterRows(
         }
         if (needle !== "") {
           const haystack = Object.values(row.cells).join(" ").toLowerCase();
-          if (!haystack.includes(needle)) return false;
+          const byCode = codeNeedle !== "" && (row.codeKey ?? "").includes(codeNeedle);
+          if (!haystack.includes(needle) && !byCode) return false;
         }
         return true;
       })

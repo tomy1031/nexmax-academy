@@ -6,7 +6,7 @@
  * ## 何を 解いた ものか
  * 記録は 表ごとに 別の 画面に 散って いた（ミーティング／テスト）うえ、進み具合・
  * ことばの テスト・たいわ・リスニングは **そもそも 残って いなかった**。
- * ここは その 5種類を **1つの 表の かたち**で 読む 場所である。
+ * ここは その 6種類（修了証を 含む）を **1つの 表の かたち**で 読む 場所である。
  *
  * ## 順は「絞る → 出た データの 種類を えらぶ」（2026-09-09 の 指定・願い #346）
  * 前は **種類を 先に えらばせて** いた（画面の いちばん 上に タブ）。先生が 先に
@@ -36,6 +36,7 @@ import { fetchAllProfiles, fetchOwnProfile, type ProfileRow } from "@/lib/profil
 import { AFFILIATIONS, COHORTS, formatSchool } from "@/lib/school";
 import { createClient } from "@/lib/supabase/client";
 import {
+  fetchCertificateRecords,
   fetchContentProgress,
   fetchListeningRecords,
   fetchMeetingRecords,
@@ -53,6 +54,7 @@ import {
 import {
   buildLookups,
   buildRecordsCsv,
+  certificateTable,
   defaultKind,
   EMPTY_FILTER,
   filterRows,
@@ -386,12 +388,21 @@ export function RecordsShell({
             </select>
           </Field>
 
-          <Field label="ことばで さがす">
+          {/*
+            修了証では 同じ 入れ物を **照合番号の 検索**に 使う（先生が 学習者の 画像から
+            番号を 写して 貼る。空白・ハイフン・全角・大小は `filterRows` が 吸収する）。
+            別の 入れ物を 足すと 「ことばで さがす」が 2つに なって 迷う。
+          */}
+          <Field label={kind === "certificate" ? "照合番号で さがす" : "ことばで さがす"}>
             <input
               type="search"
               value={filter.text}
               onChange={(e) => changeFilter({ text: e.target.value })}
-              placeholder="学生の こたえ・名前"
+              placeholder={
+                kind === "certificate"
+                  ? "画像の 照合番号を はりつけ（名前でも さがせます）"
+                  : "学生の こたえ・名前"
+              }
               className={SELECT}
             />
           </Field>
@@ -617,6 +628,10 @@ async function loadTable(
       meetings,
       talks,
     ]);
+  }
+  if (kind === "certificate") {
+    const got = await fetchCertificateRecords(query);
+    return wrap(certificateTable(got.ok ? got.rows : [], lookups), [got]);
   }
   const got = await fetchListeningRecords(query);
   return wrap(listeningTable(got.ok ? got.rows : [], lookups), [got]);

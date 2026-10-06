@@ -13,6 +13,13 @@ import {
 } from "@/lib/progress/store";
 import { buildFuriganaIndex, type FuriganaIndex } from "@/lib/text/furigana";
 import type { TypingWordCard } from "@/lib/vocabulary";
+import {
+  CertificatePanel,
+  type CertificateState,
+} from "@/components/certificate/certificate-panel";
+import { issueCertificate } from "@/lib/certificate/certificate-db";
+import { typingResult } from "@/lib/certificate/model";
+import { endRun, readRun, saveIssued, startRun, updateRun } from "@/lib/certificate/run";
 import { createTypingTarget, judgeTyping, type TypingResult } from "./typing-checks";
 import { TYPING_UI_FURIGANA } from "./ui-furigana";
 
@@ -84,10 +91,39 @@ export function TypingView({ typing, embedded }: { typing: TypingViewData; embed
   const inputRef = useRef<HTMLInputElement | null>(null);
   /** 正解した 時刻（Enter の 押しすぎで 次へ 飛ばない ため）。 */
   const solvedAtRef = useRef(0);
+  /**
+   * 修了証（願い #562）。ぜんぶ 正解した 瞬間に DB へ 発行する（押した 時では ない）。
+   * ❌ は 文ごとに 端末へ 積む（`src/lib/certificate/run.ts`。開き直しても 消えない）。
+   */
+  const [certificate, setCertificate] = useState<CertificateState | null>(null);
+  /** いま 外れて いる 入力（同じ 外れを 打ち直さずに もう一度 判定しても ❌ を 数えない）。 */
+  const lastMissRef = useRef<string | null>(null);
 
   const sentence = typing.sentences[index]!;
   const solved = result?.ok === true;
   const isLast = index === total - 1;
+
+  /** 修了証を 出す（落ちたら「もう一度」から 呼び直す）。 */
+  const issue = useCallback(
+    (run: NonNullable<ReturnType<typeof readRun>>) => {
+      const result = typingResult(typing.id, typing.title, {
+        total,
+        missesBySentence: run.missesBySentence ?? [],
+        partial: Boolean(run.partial),
+      });
+      setCertificate({ status: "issuing" });
+      void issueCertificate(result).then((outcome) => {
+        if (outcome.status === "error") {
+          setCertificate({ status: "error" });
+          return;
+        }
+        saveIssued(outcome.cert);
+        endRun(typing.id);
+        setCertificate({ status: "ready", cert: outcome.cert });
+      });
+    },
+    [typing.id, typing.title, total],
+  );
 
   const judge = useCallback(() => {
     if (!input.trim()) return;
@@ -95,12 +131,32 @@ export function TypingView({ typing, embedded }: { typing: TypingViewData; embed
     setResult(next);
     if (next.ok) solvedAtRef.current = Date.now();
     recordContentProgress(typing.id, { status: "started", position: { sentence: index } });
+    /*
+     * 修了証の ための 1回ぶんの 記録。回が 無ければ 始める——1文目なら ふつうの 回、
+     * 途中の 文なら「前の 回の 続き」（全部の 文を 見て いないので パーフェクトに しない）。
+     */
+    const run =
+      readRun(typing.id) ??
+      startRun(typing.id, {
+        missesBySentence: Array.from({ length: total }, () => 0),
+        partial: index > 0,
+      });
+    let current = run;
+    if (!next.ok && lastMissRef.current !== input) {
+      current = updateRun(typing.id, (r) => {
+        const counts = Array.from({ length: total }, (_, i) => r.missesBySentence?.[i] ?? 0);
+        counts[index] = (counts[index] ?? 0) + 1;
+        return { ...r, missesBySentence: counts };
+      });
+    }
+    lastMissRef.current = next.ok ? null : input;
     // 「つぎの 文へ」は 正解の あとしか 押せないので、最後の 文の 正解＝ぜんぶ 正解
     if (next.ok && isLast) {
       recordContentProgress(typing.id, { status: "completed" });
       setFinished(true);
+      issue(current);
     }
-  }, [input, targets, index, typing.id, isLast]);
+  }, [input, targets, index, typing.id, isLast, total, issue]);
 
   const reset = useCallback(() => {
     setPasteBlocked(false);
@@ -112,6 +168,7 @@ export function TypingView({ typing, embedded }: { typing: TypingViewData; embed
   const goNext = useCallback(() => {
     if (!solved || isLast) return;
     setChosen(index + 1);
+    lastMissRef.current = null;
     recordContentProgress(typing.id, { status: "started", position: { sentence: index + 1 } });
     setInput("");
     setResult(null);
@@ -287,6 +344,17 @@ export function TypingView({ typing, embedded }: { typing: TypingViewData; embed
           🎉 ぜんぶの <RubyText text="文を 入力" index={TYPING_UI_FURIGANA} show={furiganaOn} />
           できました。
         </p>
+      ) : null}
+      {certificate ? (
+        <CertificatePanel
+          state={certificate}
+          furigana={furigana}
+          show={furiganaOn}
+          onRetry={() => {
+            const run = readRun(typing.id);
+            if (run) issue(run);
+          }}
+        />
       ) : null}
     </div>
   );

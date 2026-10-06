@@ -46,6 +46,7 @@ export function ListeningPanel({
   furigana,
   sounds = NO_SOUNDS,
   onChange,
+  onReset,
 }: {
   /** 保存のキー（この教材のID）。 */
   contentId: string;
@@ -59,6 +60,8 @@ export function ListeningPanel({
   /** 聞き取り専用の 読み（数字・英字で 始まる 語。`src/content/listening-sounds.ts`）。 */
   sounds?: SoundsIndex;
   onChange?: (state: ListeningState) => void;
+  /** 「はじめから やりなおす」で 消した とき（修了証の 回を 新しく する。願い #562）。 */
+  onReset?: () => void;
 }) {
   const [state, setState] = useState<ListeningState>(() =>
     // 前に当てた言葉を流し込んで、続きから始める
@@ -136,6 +139,7 @@ export function ListeningPanel({
     const fresh = createListening(transcript, keywords, rules, furigana, sounds);
     setState(fresh);
     saveListeningFinds(contentId, [], { revealPercent: 0, keywordsLeft: keywords.length });
+    onReset?.();
     onChange?.(fresh);
   };
 
