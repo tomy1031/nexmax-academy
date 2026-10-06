@@ -79,7 +79,7 @@ for (const width of [390, 1280]) {
   });
 }
 
-test("文を 進めると、その 文の 音に 変わる（短い 文と 1つの 音は その まとまり）", async ({
+test("文を 進めると、その 文の 音に 変わる（短い 文と 1つの 音からは 切り出した 音）", async ({
   page,
   context,
 }) => {
@@ -89,8 +89,8 @@ test("文を 進めると、その 文の 音に 変わる（短い 文と 1つ�
   // 2文目（担当して いた…）は 03.wav——リスニングの 2行目（高橋さん）を とばす
   await solveAndNext(page, list[0]!.text);
   await expect(audio).toHaveAttribute("src", /houkoku_kanryou_listening\/03\.wav/);
-  // 5文目「パソコンと…確認しました。」は「はい。パソコンと…」の 10.wav
+  // 5文目「パソコンと…確認しました。」は「はい。パソコンと…」（10.wav）から 切り出した 10_2.wav
   for (const index of [1, 2, 3]) await solveAndNext(page, list[index]!.text);
   await expect(page.locator('[data-typing="progress"]')).toHaveText(`5 / ${list.length}`);
-  await expect(audio).toHaveAttribute("src", /houkoku_kanryou_listening\/10\.wav/);
+  await expect(audio).toHaveAttribute("src", /houkoku_kanryou_listening\/10_2\.wav/);
 });

@@ -5,13 +5,20 @@
  * - お手本と 字が 同じ 音（空白は 見ない）を 当てる
  * - 短い 文を となりと 1つに した 音（「はい。パソコンと…」）は、お手本が **文として まるごと**
  *   入って いれば 当てる。文の 途中の 切れはし には 当てない
+ * - その 一部を **切り出した 音**（`scripts/cut_sentence_parts.ts`）が あれば それを 鳴らす
+ *  （同日の 選択「B」——「はい。」などを 鳴らさず、お手本と ぴったり 同じ 音に する）
  * - 1文でも 当たらなければ どの 文にも 出さない
  */
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { audioUnitsOf } from "../src/content/listening-audio";
-import { matchSentenceClips } from "../src/lib/audio/sentences";
+import {
+  locateSentence,
+  matchSentenceClips,
+  scriptSentences,
+  sentencePartFileName,
+} from "../src/lib/audio/sentences";
 
 const hasFile = (url: string) => existsSync(join("public", url));
 
@@ -49,16 +56,36 @@ describe("報告の リスニング 5場面の タイピング", () => {
     expect(file(clips?.[1])).toBe("03.wav"); // 担当して いた、…報告します。
   });
 
-  it("短い 文と 1つに した 音は、その まとまりを 鳴らす", () => {
+  it("短い 文と 1つに した 音は、お手本の ぶんだけ 切り出した 音を 鳴らす", () => {
     const kanryou = clipsOf("houkoku_kanryou_typing");
-    // 「はい。パソコンと スマートフォンで 確認しました。」
-    expect(file(kanryou?.[4])).toBe("10.wav");
-    // 「分かりました。Issueを 確認してから 作業を 始めます。」
-    expect(file(kanryou?.[8])).toBe("16.wav");
-    // 朝礼:「はい。まだ 分かって いません。午前中に…報告します。」で 1つの 音 → 2文とも ここ
+    // 「はい。パソコンと スマートフォンで 確認しました。」の 2文目
+    expect(file(kanryou?.[4])).toBe("10_2.wav");
+    // 「分かりました。Issueを 確認してから 作業を 始めます。」の 2文目
+    expect(file(kanryou?.[8])).toBe("16_2.wav");
+    // 朝礼:「はい。まだ 分かって いません。午前中に…報告します。」→ 1〜2文目 と 3文目
     const chourei = clipsOf("houkoku_chourei_typing");
-    expect(file(chourei?.[11])).toBe("21.wav");
-    expect(file(chourei?.[12])).toBe("21.wav");
+    expect(file(chourei?.[11])).toBe("21_1-2.wav");
+    expect(file(chourei?.[12])).toBe("21_3.wav");
+  });
+
+  it("どの お手本も、前後に ほかの 文が 付いた 音を 鳴らさない（切り出しが 無ければ 知らせる）", () => {
+    for (const scene of ["kanryou", "okure", "shougai", "chousa", "chourei"]) {
+      const typing = load("typing", `houkoku_${scene}_typing`);
+      const listening = load("listening", typing.listeningRef);
+      const units = scriptSentences(listening.script, audioUnitsOf(listening.id)).map(
+        (one) => one.text,
+      );
+      const clips = clipsOf(`houkoku_${scene}_typing`) ?? [];
+      typing.sentences.forEach((sentence: { text: string }, i: number) => {
+        const part = locateSentence(units, sentence.text);
+        const whole = part !== null && part.from === 1 && part.to === part.count;
+        expect(
+          whole || /_\d+(-\d+)?\.wav$/.test(clips[i] ?? ""),
+          `${typing.id} ${i + 1}文目「${sentence.text}」の 音に ほかの 文が 付いて いる。` +
+            "リスニングの 音を 作り直したなら node --import tsx scripts/cut_sentence_parts.ts を 回す",
+        ).toBe(true);
+      });
+    }
   });
 });
 
@@ -76,14 +103,25 @@ describe("matchSentenceClips", () => {
     ).toEqual(["/audio/listening/x/01.wav", "/audio/listening/x/02.wav"]);
   });
 
-  it("まとめた 音の 中の 文にも 当てる（joinShort）", () => {
+  it("まとめた 音の 中の 文には、切り出した 音が あれば それ・無ければ まとまりごと（joinShort）", () => {
     expect(matchSentenceClips("x", script, ["分かりました。"], all, { joinShort: true })).toEqual([
-      "/audio/listening/x/02.wav",
+      "/audio/listening/x/02_2.wav",
     ]);
+    const wholeOnly = (url: string) => !url.includes("_");
+    expect(
+      matchSentenceClips("x", script, ["分かりました。"], wholeOnly, { joinShort: true }),
+    ).toEqual(["/audio/listening/x/02.wav"]);
   });
 
   it("音が 置いて いない 文には 当てない", () => {
     const only1 = (url: string) => url.endsWith("/01.wav");
     expect(matchSentenceClips("x", script, ["はい。"], only1)).toBeNull();
+  });
+});
+
+describe("sentencePartFileName", () => {
+  it("ひとまとまりの 番号_何文目（範囲は ハイフン）", () => {
+    expect(sentencePartFileName({ unit: 9, from: 2, to: 2, count: 2 })).toBe("10_2.wav");
+    expect(sentencePartFileName({ unit: 20, from: 1, to: 2, count: 3 })).toBe("21_1-2.wav");
   });
 });

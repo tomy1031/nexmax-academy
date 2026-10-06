@@ -140,30 +140,83 @@ export function lineSentenceClips(
 
 /** 空白を 落とす（原稿は 分かち書き・タイピングの お手本は 空白なし）。 */
 function squash(text: string): string {
-  return text.replace(/[\s　]/g, "");
+  return text.replace(/[\s\u3000]/g, "");
 }
 
-/** 音の ひとまとまりの 中に、`target` が **文として まるごと**（となり合う 文の 並びで）入って いるか。 */
-function holdsWholeSentences(unit: string, target: string): boolean {
+/** ある 文が、音の ひとまとまりの 中で 占める 位置。 */
+export interface SentencePart {
+  /** 音の ひとまとまりの 番号（0から。`sentenceFileName` に 渡す 番号）。 */
+  readonly unit: number;
+  /** ひとまとまりの 中の 何文目から 何文目まで（1から 数える）。 */
+  readonly from: number;
+  readonly to: number;
+  /** ひとまとまりの 文の 数（`from` が 1・`to` が これなら まるごと）。 */
+  readonly count: number;
+}
+
+/**
+ * ひとまとまりから **切り出した 音**の ファイル名（`scripts/cut_sentence_parts.ts` が 作る）。
+ * `10.wav` の 2文目なら `10_2.wav`、`21.wav` の 1〜2文目なら `21_1-2.wav`。
+ * 音づくりが ひとまとまりを 作り直すと フォルダごと 消える ので、古い 音の 切り出しは 残らない。
+ */
+export function sentencePartFileName(part: SentencePart): string {
+  const base = sentenceFileName(part.unit).replace(/\.wav$/, "");
+  return `${base}_${part.from === part.to ? part.from : `${part.from}-${part.to}`}.wav`;
+}
+
+/** ひとまとまりの 中に `target` が **文として まるごと**（となり合う 文の 並びで）入って いる 位置。 */
+function partWithin(
+  unit: string,
+  target: string,
+): { from: number; to: number; count: number } | null {
   const parts = splitSentences(unit).map(squash);
   for (let from = 0; from < parts.length; from += 1) {
     let joined = "";
     for (let to = from; to < parts.length; to += 1) {
       joined += parts[to];
-      if (joined === target) return true;
+      if (joined === target) return { from: from + 1, to: to + 1, count: parts.length };
       if (joined.length >= target.length) break;
     }
   }
-  return false;
+  return null;
+}
+
+/**
+ * 別の 教材の 文（タイピングの お手本）が、リスニングの 音の どこに あたるか。
+ *
+ * - まず **音の ひとまとまりと 字が 同じ** もの（空白は 見ない）
+ * - 無ければ、ひとまとまりの 中に **文として まるごと 入って いる** もの。短い 文を となりと
+ *   1つに した 教材（`joinShort`）では「はい。パソコンと…確認しました。」が 1つの 音なので、
+ *   お手本「パソコンと…確認しました。」は その 2文目
+ *
+ * `units` は ひとまとまりの 字（`scriptSentences` の 順）。`usable` で 音の 無い ものを 外す。
+ */
+export function locateSentence(
+  units: readonly string[],
+  text: string,
+  usable: (unit: number) => boolean = () => true,
+): SentencePart | null {
+  const target = squash(text);
+  const candidates = units.map((unit, index) => ({ index, text: squash(unit) }));
+  const exact = candidates.find((one) => usable(one.index) && one.text === target);
+  if (exact) {
+    const count = splitSentences(units[exact.index]!).length;
+    return { unit: exact.index, from: 1, to: count, count };
+  }
+  for (const one of candidates) {
+    if (!usable(one.index)) continue;
+    const part = partWithin(one.text, target);
+    if (part) return { unit: one.index, ...part };
+  }
+  return null;
 }
 
 /**
  * 別の 教材の 文（タイピングの お手本）ごとに、リスニングの 文ごとの 音から 当たる 音の URL を 返す。
  *
- * - まず **音の ひとまとまりと 字が 同じ** もの（空白は 見ない）
- * - 無ければ、ひとまとまりの 中に **文として まるごと 入って いる** もの。短い 文を となりと
- *   1つに した 教材（`joinShort`）では「はい。パソコンと…確認しました。」が 1つの 音なので、
- *   お手本「パソコンと…確認しました。」には その 音を 当てる（前の「はい。」ごと 鳴る）
+ * - 当てかたは `locateSentence`
+ * - ひとまとまりの 一部に あたる 文は、**切り出した 音**（`sentencePartFileName`）が あれば それ、
+ *   無ければ ひとまとまりごと（前後の「はい。」なども 鳴る）
  * - **1文でも 当たらなければ `null`**（`lineSentenceClips` と 同じ 理由——一部の 文にだけ
  *   ボタンが 出ると、聞けない のか 壊れて いるのか 区別が つかない）
  */
@@ -174,20 +227,15 @@ export function matchSentenceClips(
   has: (url: string) => boolean,
   { joinShort = false }: { joinShort?: boolean } = {},
 ): string[] | null {
-  const units = scriptSentences(script, { joinShort })
-    .map((sentence, index) => ({
-      text: squash(sentence.text),
-      url: sentenceAudioUrl(listeningId, index),
-    }))
-    .filter((unit) => has(unit.url));
+  const units = scriptSentences(script, { joinShort }).map((sentence) => sentence.text);
+  const usable = (index: number) => has(sentenceAudioUrl(listeningId, index));
   const urls: string[] = [];
   for (const text of texts) {
-    const target = squash(text);
-    const unit =
-      units.find((one) => one.text === target) ??
-      units.find((one) => holdsWholeSentences(one.text, target));
-    if (!unit) return null;
-    urls.push(unit.url);
+    const part = locateSentence(units, text, usable);
+    if (!part) return null;
+    const cut = `/audio/listening/${listeningId}/${sentencePartFileName(part)}`;
+    const whole = part.from === 1 && part.to === part.count;
+    urls.push(!whole && has(cut) ? cut : sentenceAudioUrl(listeningId, part.unit));
   }
   return urls;
 }
