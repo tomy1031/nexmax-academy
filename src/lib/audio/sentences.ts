@@ -137,3 +137,57 @@ export function lineSentenceClips(
   );
   return lines.every((clips) => clips.every((clip) => has(clip.url))) ? lines : null;
 }
+
+/** 空白を 落とす（原稿は 分かち書き・タイピングの お手本は 空白なし）。 */
+function squash(text: string): string {
+  return text.replace(/[\s　]/g, "");
+}
+
+/** 音の ひとまとまりの 中に、`target` が **文として まるごと**（となり合う 文の 並びで）入って いるか。 */
+function holdsWholeSentences(unit: string, target: string): boolean {
+  const parts = splitSentences(unit).map(squash);
+  for (let from = 0; from < parts.length; from += 1) {
+    let joined = "";
+    for (let to = from; to < parts.length; to += 1) {
+      joined += parts[to];
+      if (joined === target) return true;
+      if (joined.length >= target.length) break;
+    }
+  }
+  return false;
+}
+
+/**
+ * 別の 教材の 文（タイピングの お手本）ごとに、リスニングの 文ごとの 音から 当たる 音の URL を 返す。
+ *
+ * - まず **音の ひとまとまりと 字が 同じ** もの（空白は 見ない）
+ * - 無ければ、ひとまとまりの 中に **文として まるごと 入って いる** もの。短い 文を となりと
+ *   1つに した 教材（`joinShort`）では「はい。パソコンと…確認しました。」が 1つの 音なので、
+ *   お手本「パソコンと…確認しました。」には その 音を 当てる（前の「はい。」ごと 鳴る）
+ * - **1文でも 当たらなければ `null`**（`lineSentenceClips` と 同じ 理由——一部の 文にだけ
+ *   ボタンが 出ると、聞けない のか 壊れて いるのか 区別が つかない）
+ */
+export function matchSentenceClips(
+  listeningId: string,
+  script: readonly { readonly speaker: string; readonly text: string }[],
+  texts: readonly string[],
+  has: (url: string) => boolean,
+  { joinShort = false }: { joinShort?: boolean } = {},
+): string[] | null {
+  const units = scriptSentences(script, { joinShort })
+    .map((sentence, index) => ({
+      text: squash(sentence.text),
+      url: sentenceAudioUrl(listeningId, index),
+    }))
+    .filter((unit) => has(unit.url));
+  const urls: string[] = [];
+  for (const text of texts) {
+    const target = squash(text);
+    const unit =
+      units.find((one) => one.text === target) ??
+      units.find((one) => holdsWholeSentences(one.text, target));
+    if (!unit) return null;
+    urls.push(unit.url);
+  }
+  return urls;
+}
