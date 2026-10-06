@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
 import { answerTalk, joinCall, readOn, seedCompleted, shot, skipAsk } from "./helpers";
 
 /**
@@ -81,27 +81,52 @@ test("ヒアリング: 退室した 瞬間に 修了証が 出る（聞き出せ
   await shot(page, "certificate-scenario-not-perfect");
 });
 
-test("たいわ: クリアした 瞬間に パーフェクトの 修了証が 出る", async ({ page, context }) => {
-  await seedBefore(context, "kaisha", "kaisha_matsui");
-  /*
-   * 聞く ばんの 最後の 1つ手前から 始める（最初から 話すと 9回 以上 かかる）。
-   * 聞いた 数が 上限に とどくと クリア（`src/lib/talkgame/affinity.ts` の LISTEN_MAX_ASKS）。
-   */
-  await context.addInitScript(() => {
-    window.localStorage.setItem(
-      "nexmax:v1:talkgame-resume:kaisha_matsui",
-      JSON.stringify({ round: "listen", percent: 50, turns: 6, asked: 5 }),
-    );
-  });
+/** たいわの 聞く ばんの 最後の 1つ手前の しおり（最初から 話すと 9回 以上 かかる）。 */
+const TALK_NEAR_CLEAR = { round: "listen", percent: 50, turns: 6, asked: 5 };
+
+async function clearTalkGame(page: Page) {
   await page.goto("/kaisha/meeting-kaisha_matsui");
   await page.getByRole("button", { name: "つづきから 話す ▶" }).click();
   await readOn(page);
+  // 聞いた 数が 上限に とどくと クリア（`src/lib/talkgame/affinity.ts` の LISTEN_MAX_ASKS）
   await answerTalk(page, "会社で いちばん 大切に して いる ことは 何ですか。");
   await readOn(page, 10);
+}
+
+test("たいわ: この 端末で 始めた 回を クリアした 瞬間に パーフェクトの 修了証が 出る", async ({
+  page,
+  context,
+}) => {
+  await seedBefore(context, "kaisha", "kaisha_matsui");
+  // しおりと 一緒に **この 端末で 始めた 回の 記録**も 置く（自分の 回の つづき）
+  await context.addInitScript((talk) => {
+    window.localStorage.setItem("nexmax:v1:talkgame-resume:kaisha_matsui", JSON.stringify(talk));
+    window.localStorage.setItem(
+      "nexmax.cert-run.v1:kaisha_matsui",
+      JSON.stringify({ startedAt: new Date().toISOString() }),
+    );
+  }, TALK_NEAR_CLEAR);
+  await clearTalkGame(page);
 
   const cert = page.locator('[data-certificate="ready"]');
   await expect(cert).toBeVisible({ timeout: 30_000 });
   await expect(cert).toHaveAttribute("data-perfect", "true");
   await cert.scrollIntoViewIfNeeded();
   await shot(page, "certificate-talkgame-perfect");
+});
+
+test("たいわ: 回の 記録が 無い しおりの つづき（共有 PC で 前の 人の 続き）は パーフェクトに しない", async ({
+  page,
+  context,
+}) => {
+  await seedBefore(context, "kaisha", "kaisha_matsui");
+  await context.addInitScript((talk) => {
+    window.localStorage.setItem("nexmax:v1:talkgame-resume:kaisha_matsui", JSON.stringify(talk));
+  }, TALK_NEAR_CLEAR);
+  await clearTalkGame(page);
+
+  const cert = page.locator('[data-certificate="ready"]');
+  await expect(cert).toBeVisible({ timeout: 30_000 });
+  await expect(cert).toHaveAttribute("data-perfect", "false");
+  await expect(page.locator('[data-certificate="reasons"]')).toContainText("続");
 });

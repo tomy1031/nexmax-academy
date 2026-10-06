@@ -43,6 +43,7 @@ import {
 import { ModalShell } from "@/components/meeting/modal-shell";
 import { CertificatePanel } from "@/components/certificate/certificate-panel";
 import { useCertificateIssuer } from "@/components/certificate/use-certificate-issuer";
+import { CertificateCorner } from "@/components/certificate/certificate-corner";
 import { asakaiResult } from "@/lib/certificate/model";
 import { AskPanel } from "@/components/meeting/ask-panel";
 import { ChatPanel } from "@/components/meeting/chat-panel";
@@ -340,12 +341,14 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
    * 聞き返し・ヒントは よい。
    */
   const issuer = useCertificateIssuer(meeting.id);
-  const { begin: beginCertificate, finish: finishCertificate, reset: resetCertificate } = issuer;
+  const { begin: beginCertificate, finish: finishCertificate } = issuer;
   /** 前に 見た 日数（4日 → 5日 に 変わった 瞬間だけを 拾う）。 */
   const daysSeen = useRef(start.results.length);
+  /** しおりから 戻った 回か（1日でも 終えて いた・途中の 控えが ある）。 */
+  const resumedWeek = start.results.length > 0 || start.resumed;
   useEffect(() => {
-    if (joined) beginCertificate();
-  }, [joined, beginCertificate]);
+    if (joined) beginCertificate({ resumed: resumedWeek });
+  }, [joined, beginCertificate, resumedWeek]);
   useEffect(() => {
     const before = daysSeen.current;
     daysSeen.current = results.length;
@@ -354,7 +357,13 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
     finishCertificate(
       asakaiResult(meeting.id, meeting.title, {
         days: results.length,
-        fullDays: results.filter((row) => row.units >= row.unitTotal).length,
+        /*
+         * その日の ことを ぜんぶ 言えた 曜日。「問題」の 札（むずかしい 方は 別に 数える）を
+         * 言いもらした 日も 取りこぼし（回答「取りこぼしなし」・code-critic の 指摘）。
+         */
+        fullDays: results.filter(
+          (row) => row.units >= row.unitTotal && row.komariBoxes >= row.komariTotal,
+        ).length,
         units: week.units,
         unitTotal: week.unitTotal,
         passed: week.pass,
@@ -1585,14 +1594,14 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
     clearAsakaiResume(meeting.id);
     /* つぎの 週の けっかを 閉じた ときに、しおりを もう いちど 片づける。 */
     weekRead.current = false;
-    // つぎの 週の 修了証を 出せる ように する（日数は 0 に 戻るので、5日目で また 拾う）
-    resetCertificate();
+    // つぎの 週は 新しい 回（日数は 0 に 戻るので、5日目で また 拾う）
+    beginCertificate({ resumed: false });
     setResults([]);
     setShownAnswers([]);
     setBackToWeek(false);
     setWeekOpen(false);
     goToScene(0);
-  }, [meeting.id, goToScene, resetCertificate]);
+  }, [meeting.id, goToScene, beginCertificate]);
 
   /**
    * **その 曜日だけ 話し直す**（2026-09-29 の 指定。★の ない 曜日の「もう いちど」）。
@@ -2090,322 +2099,330 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
   );
 
   return (
-    <CallShell
-      title={meeting.title}
-      focus={meeting.focus}
-      furigana={meeting.furigana ?? []}
-      purpose="speak"
-      tone="light"
-      activeSpeaker={last && !last.self ? last.speakerId : undefined}
-      participants={asakai.people
-        /*
-         * **その日に 話す 人は 出す**。
-         *
-         * `fridayOnly` だけで 見て いた ころ、藤木さんに 火曜と 木曜の 台詞を
-         * 足したのに **顔が 出ない まま 声だけ 流れて いた**（2026-09-13）。
-         * だれが しゃべって いるのか 画面から 追えない。旗では なく
-         * **その場面に 台詞が あるか**で 決める。
-         */
-        .filter((person) => !person.fridayOnly || speakersOf(scene).has(person.id))
-        .map((person) => ({
-          id: person.id,
-          name: person.name,
-          role: person.duty,
-          accent: person.accent,
-        }))}
-      faces={faces}
-      settings={<SpeechSpeedPicker value={speed} onChange={saveSpeechSpeed} />}
-      onJoined={() => {
-        setJoined(true);
-        /* 5日 話し終えて 週の けっかを まだ 閉じて いない ときは、けっかから（B4）。 */
-        if (start.weekPending) {
-          setWeekOpen(true);
-          return;
-        }
-        openScene(start.sceneAt);
-      }}
-      onLeft={() => {
-        voice.stop();
-        clips.stop();
-      }}
-      side={
-        <Chat
-          lines={lines}
-          index={index}
-          draft={answer}
-          /* 見かたを 読んで いる あいだ・AIが 見て いる あいだ・その日が 終わった あとは 送れない。 */
-          canSend={!between && !sceneOver && judge === null && !waiting}
-          sendNote={
-            judge
-              ? "見かたを 読んでから 送れます"
-              : waiting
-                ? "Gemini（AI）が いま 見て います…"
-                : "いまは 送れません"
-          }
-          onDraft={setAnswer}
-          onSend={() => send()}
-          onReplay={(url) => clips.replay(url, rateOf(speed))}
-        />
-      }
-      speak={between ? null : <CardBoard cards={cards} index={index} onPick={retryPanel} />}
-      controls={
-        phase === "done" ? (
+    <>
+      {/* 入る 前: 前に 出した 修了証・出し直し（願い #562） */}
+      {!joined ? (
+        <div className="mb-4">
+          <CertificateCorner issuer={issuer} contentId={meeting.id} furigana={index} />
+        </div>
+      ) : null}
+      <CallShell
+        title={meeting.title}
+        focus={meeting.focus}
+        furigana={meeting.furigana ?? []}
+        purpose="speak"
+        tone="light"
+        activeSpeaker={last && !last.self ? last.speakerId : undefined}
+        participants={asakai.people
           /*
+           * **その日に 話す 人は 出す**。
+           *
+           * `fridayOnly` だけで 見て いた ころ、藤木さんに 火曜と 木曜の 台詞を
+           * 足したのに **顔が 出ない まま 声だけ 流れて いた**（2026-09-13）。
+           * だれが しゃべって いるのか 画面から 追えない。旗では なく
+           * **その場面に 台詞が あるか**で 決める。
+           */
+          .filter((person) => !person.fridayOnly || speakersOf(scene).has(person.id))
+          .map((person) => ({
+            id: person.id,
+            name: person.name,
+            role: person.duty,
+            accent: person.accent,
+          }))}
+        faces={faces}
+        settings={<SpeechSpeedPicker value={speed} onChange={saveSpeechSpeed} />}
+        onJoined={() => {
+          setJoined(true);
+          /* 5日 話し終えて 週の けっかを まだ 閉じて いない ときは、けっかから（B4）。 */
+          if (start.weekPending) {
+            setWeekOpen(true);
+            return;
+          }
+          openScene(start.sceneAt);
+        }}
+        onLeft={() => {
+          voice.stop();
+          clips.stop();
+        }}
+        side={
+          <Chat
+            lines={lines}
+            index={index}
+            draft={answer}
+            /* 見かたを 読んで いる あいだ・AIが 見て いる あいだ・その日が 終わった あとは 送れない。 */
+            canSend={!between && !sceneOver && judge === null && !waiting}
+            sendNote={
+              judge
+                ? "見かたを 読んでから 送れます"
+                : waiting
+                  ? "Gemini（AI）が いま 見て います…"
+                  : "いまは 送れません"
+            }
+            onDraft={setAnswer}
+            onSend={() => send()}
+            onReplay={(url) => clips.replay(url, rateOf(speed))}
+          />
+        }
+        speak={between ? null : <CardBoard cards={cards} index={index} onPick={retryPanel} />}
+        controls={
+          phase === "done" ? (
+            /*
             けっかは **ポップアップ**で 出す（2026-09-17 の 指定「全て モーダルが 良いです」）。
             ここに 残すのは **開け直す 道**だけ——閉じた あと 画面に 何も 無いと、
             もう いちど 数を 見たい 人が 行き場を なくす。
           */
-          <div className="card-island space-y-2 p-4">
-            <p className="text-navy text-sm leading-[1.9] font-bold">
-              <DayCount n={asakai.scenes.length} />
-              <RubyText text=" ぜんぶ 話しました。" index={index} show />
-            </p>
-            <button
-              type="button"
-              onClick={() => setWeekOpen(true)}
-              aria-label="今週の けっかを 見る"
-              className="btn-island btn-game w-full px-6 py-3"
-            >
-              <RubyText text="今週の けっかを 見る ▶" index={index} show />
-            </button>
-          </div>
-        ) : phase === "gap" ? (
-          <TimeCard
-            result={results[results.length - 1]}
-            lead={scene.lead}
-            nextDay={DAY_NAME[asakai.scenes[sceneAt + 1]?.day ?? "fri"]}
-            at={sceneAt + 1}
-            total={asakai.scenes.length}
-            index={index}
-            onNext={goNext}
-          />
-        ) : (
-          <div className="space-y-2">
-            {steps}
-            {reportPanel}
-          </div>
-        )
-      }
-      controlsAt="top"
-    >
-      {duty ? (
-        <ModalShell
-          label="報告メモ"
-          /*
+            <div className="card-island space-y-2 p-4">
+              <p className="text-navy text-sm leading-[1.9] font-bold">
+                <DayCount n={asakai.scenes.length} />
+                <RubyText text=" ぜんぶ 話しました。" index={index} show />
+              </p>
+              <button
+                type="button"
+                onClick={() => setWeekOpen(true)}
+                aria-label="今週の けっかを 見る"
+                className="btn-island btn-game w-full px-6 py-3"
+              >
+                <RubyText text="今週の けっかを 見る ▶" index={index} show />
+              </button>
+            </div>
+          ) : phase === "gap" ? (
+            <TimeCard
+              result={results[results.length - 1]}
+              lead={scene.lead}
+              nextDay={DAY_NAME[asakai.scenes[sceneAt + 1]?.day ?? "fri"]}
+              at={sceneAt + 1}
+              total={asakai.scenes.length}
+              index={index}
+              onNext={goNext}
+            />
+          ) : (
+            <div className="space-y-2">
+              {steps}
+              {reportPanel}
+            </div>
+          )
+        }
+        controlsAt="top"
+      >
+        {duty ? (
+          <ModalShell
+            label="報告メモ"
+            /*
             **題の 横に 曜日**（2026-09-16 の 指定「報告メモの タイトルの 横に
             目立つ ように 曜日を 記載して ください」）。中身は 曜日ごとに ぜんぶ 変わる のに、
             開いた ポップアップだけを 見て いると **いつの メモか**が 分からなかった。
           */
-          title={
-            <span className="inline-flex flex-wrap items-center justify-center gap-2">
-              <RubyText text="📋 報告メモ" index={index} show />
-              <span className="bg-sky-deep inline-block rounded-full px-3 py-1 text-sm leading-[1.9] font-black text-white [&_rt]:text-white">
-                <RubyText text={dayStamp(scene)} index={index} show />
+            title={
+              <span className="inline-flex flex-wrap items-center justify-center gap-2">
+                <RubyText text="📋 報告メモ" index={index} show />
+                <span className="bg-sky-deep inline-block rounded-full px-3 py-1 text-sm leading-[1.9] font-black text-white [&_rt]:text-white">
+                  <RubyText text={dayStamp(scene)} index={index} show />
+                </span>
               </span>
-            </span>
-          }
-          onClose={() => {
-            setDuty(false);
-            /* 閉じて から 司会が 話しはじめる（上の `dutyIntro` の 覚え書き）。 */
-            if (dutyIntro.length > 0) {
-              pushClips(dutyIntro, rateOf(speed));
-              setDutyIntro([]);
             }
-          }}
-          /* 中身は 3つの 箱＋付せん＋10行の 表。細い ままだと PCで 短冊に なる。 */
-          wide
-          index={index}
-        >
-          {dutyBody}
-        </ModalShell>
-      ) : null}
-      {hint ? (
-        <HintModal
-          lines={scene.hintLines}
-          hasBlank={scene.hintLines.some((line) => line.includes("◯"))}
-          furigana={index}
-          onClose={() => setHint(false)}
-        />
-      ) : null}
-      {judge ? (
-        judge.kind === "probe" ? (
-          <ProbeScoreModal
-            heard={judge.heard}
-            judged={judge.judged}
-            question={judge.question}
-            answer={judge.utterance}
-            good={judge.good}
-            advice={judge.advice}
-            score={judge.score}
-            rows={judge.rows}
-            nextLabel={judge.sceneOver ? "きょうの 評価を 見る ▶" : "つぎの しつもんを 聞く ▶"}
-            rest={judge.shut.join("／")}
-            failReason={judge.failReason}
+            onClose={() => {
+              setDuty(false);
+              /* 閉じて から 司会が 話しはじめる（上の `dutyIntro` の 覚え書き）。 */
+              if (dutyIntro.length > 0) {
+                pushClips(dutyIntro, rateOf(speed));
+                setDutyIntro([]);
+              }
+            }}
+            /* 中身は 3つの 箱＋付せん＋10行の 表。細い ままだと PCで 短冊に なる。 */
+            wide
             index={index}
-            aiIndex={aiIndex}
-            gaveUpLabel={judge.gaveUp ?? undefined}
-            readLog={judge.readLog}
-            copied={judge.copied}
-            askRedo={!judge.sceneOver && judge.gaveUp === null}
-            /*
+          >
+            {dutyBody}
+          </ModalShell>
+        ) : null}
+        {hint ? (
+          <HintModal
+            lines={scene.hintLines}
+            hasBlank={scene.hintLines.some((line) => line.includes("◯"))}
+            furigana={index}
+            onClose={() => setHint(false)}
+          />
+        ) : null}
+        {judge ? (
+          judge.kind === "probe" ? (
+            <ProbeScoreModal
+              heard={judge.heard}
+              judged={judge.judged}
+              question={judge.question}
+              answer={judge.utterance}
+              good={judge.good}
+              advice={judge.advice}
+              score={judge.score}
+              rows={judge.rows}
+              nextLabel={judge.sceneOver ? "きょうの 評価を 見る ▶" : "つぎの しつもんを 聞く ▶"}
+              rest={judge.shut.join("／")}
+              failReason={judge.failReason}
+              index={index}
+              aiIndex={aiIndex}
+              gaveUpLabel={judge.gaveUp ?? undefined}
+              readLog={judge.readLog}
+              copied={judge.copied}
+              askRedo={!judge.sceneOver && judge.gaveUp === null}
+              /*
               言い直す … 同じ しつもんの まま、もう いちど 書く（司会は 何も 言わない）。
               **伝わらなかった 回だけ**（`retry`）。その日が 終わって いる とき・
               打ち切った とき・伝わった ときは 出さない（2026-09-28）。
             */
-            onRetry={judge.sceneOver ? undefined : (judge.retry ?? undefined)}
-            onClose={closeJudge}
-          />
-        ) : (
-          <ReportScoreModal
-            score={judge.score}
-            rows={judge.rows}
-            good={judge.good}
-            advice={judge.advice}
-            readLog={judge.readLog}
-            copied={judge.copied}
-            askRedo={!judge.sceneOver && judge.gaveUp === null}
-            nextLabel={judge.sceneOver ? "きょうの 評価を 見る ▶" : "報告を つづける ▶"}
-            utterance={judge.utterance}
-            failReason={judge.failReason}
-            gaveUpLabel={judge.gaveUp ?? undefined}
+              onRetry={judge.sceneOver ? undefined : (judge.retry ?? undefined)}
+              onClose={closeJudge}
+            />
+          ) : (
+            <ReportScoreModal
+              score={judge.score}
+              rows={judge.rows}
+              good={judge.good}
+              advice={judge.advice}
+              readLog={judge.readLog}
+              copied={judge.copied}
+              askRedo={!judge.sceneOver && judge.gaveUp === null}
+              nextLabel={judge.sceneOver ? "きょうの 評価を 見る ▶" : "報告を つづける ▶"}
+              utterance={judge.utterance}
+              failReason={judge.failReason}
+              gaveUpLabel={judge.gaveUp ?? undefined}
+              index={index}
+              aiIndex={aiIndex}
+              onClose={closeJudge}
+            />
+          )
+        ) : null}
+        {dayOpen ? (
+          <DayScoreModal
+            dayName={DAY_NAME[scene.day]}
+            kindName={KIND_NAME[scene.kind]}
+            at={sceneAt + 1}
+            total={asakai.scenes.length}
+            score={{
+              content: contentScore(states.filter((one) => one.full).length, panels.length),
+              clarity: dayAi.clarity,
+              japanese: dayAi.japanese,
+              total: totalScore(
+                contentScore(states.filter((one) => one.full).length, panels.length),
+                dayAi.clarity,
+                dayAi.japanese,
+              ),
+            }}
+            rows={panels.map((panel) => {
+              const mark = markOf({
+                full: states.find((one) => one.id === panel.id)?.full ?? false,
+                attempts: attempts[panel.id] ?? 0,
+                wrongNumber: wrongNums.includes(panel.id),
+              });
+              return {
+                id: panel.id,
+                label: panel.label,
+                mark,
+                advice: "",
+                /* その 札を 開けた ことば（控えから 逆に 引く）。 */
+                said: probeLog
+                  .filter((one) => one.panels?.includes(panel.id))
+                  .map((one) => one.answer)
+                  .join(" "),
+                /*
+                 * **その日の ふりかえりにだけ 正しい 回答を 出す**（2026-09-18 の 指定）。
+                 * 教材の 見本は 「…」で 囲って ある ので、外して 本文だけ 並べる
+                 *（つないで「ブラッシュアップ回答」を 作るため）。
+                 */
+                example: (
+                  scene.panels.find((one) => one.id === panel.id)?.example?.text ?? ""
+                ).replace(/^「|」$/gu, ""),
+                /*
+                 * 項目ごとの ブラッシュアップ（その日 いちばん 新しい 直し）。**言えた 札だけ**——
+                 * まだの 札は 横の「正しい 回答」で 見くらべる（日の おわりは 答えを 見せて よい）。
+                 */
+                polished: mark !== "missing" ? (dayItems[panel.id]?.polished ?? "") : "",
+                /* 日の おわりは 正しい 回答を 出す ので、ヒントは 要らない。 */
+                hint: "",
+              };
+            })}
+            probes={probeLog}
+            /* 聞き返し 0回で ぜんぶ ⭕（週の けっかの ★と 同じ ものさし・`isOneShotDay`）。 */
+            oneShot={probes === 0 && states.length > 0 && states.every((one) => one.full)}
+            good={dayAi.good}
+            advice={dayAi.advice}
+            failReason={dayFail}
+            nextLabel={
+              backToWeek
+                ? "今週の けっかに もどる ▶"
+                : sceneAt + 1 >= asakai.scenes.length
+                  ? /* 閉じた あとは 先輩の 報告を 聞き、週の けっかは ボタンで 開く（上の `toGap`）。 */
+                    "みんなの 報告を 聞く ▶"
+                  : `${DAY_NAME[asakai.scenes[sceneAt + 1]?.day ?? "fri"]}へ 進む ▶`
+            }
             index={index}
             aiIndex={aiIndex}
-            onClose={closeJudge}
+            /*
+             * もう いちど 報告する … その日を はじめから（お手本を 見た あとなので 点は 変わらない）。
+             * **週の けっかからの 話し直しでは 出さない**（code-critic 検収）。ここで 押すと 点が
+             * 変わらず、週の けっかの「もう いちど」だと 変わる——同じ 行動で 結果が ちがう。
+             * 話し直したい ときは 週の けっかの「もう いちど」から（そちらは 数え直す）。
+             */
+            onRetry={
+              backToWeek
+                ? undefined
+                : () => {
+                    setDayOpen(false);
+                    setPendingTail([]);
+                    goToScene(sceneAt);
+                  }
+            }
+            onClose={() => {
+              setDayOpen(false);
+              if (backToWeek) {
+                /* 司会の 受け止め（評価の あいだに 鳴った 1行）だけ 字で 残す。 */
+                const ack = pendingTail[0];
+                if (ack) setLines((prev) => [...prev, toChatLine(ack, nameOf, learnerName)]);
+                setPendingTail([]);
+                backToWeekResult();
+                return;
+              }
+              /* 受け止めの 字と、そのあとの 話を ここで 出す（上の `finishScene` の 覚え書き）。 */
+              if (pendingTail.length > 0) {
+                const rest = pendingTail.slice(1);
+                setLines((prev) => [
+                  ...prev,
+                  ...pendingTail.map((line) => toChatLine(line, nameOf, learnerName)),
+                ]);
+                if (rest.length > 0) pushClips(rest, rateOf(speed));
+                setPendingTail([]);
+              }
+              toGap();
+            }}
           />
-        )
-      ) : null}
-      {dayOpen ? (
-        <DayScoreModal
-          dayName={DAY_NAME[scene.day]}
-          kindName={KIND_NAME[scene.kind]}
-          at={sceneAt + 1}
-          total={asakai.scenes.length}
-          score={{
-            content: contentScore(states.filter((one) => one.full).length, panels.length),
-            clarity: dayAi.clarity,
-            japanese: dayAi.japanese,
-            total: totalScore(
-              contentScore(states.filter((one) => one.full).length, panels.length),
-              dayAi.clarity,
-              dayAi.japanese,
-            ),
-          }}
-          rows={panels.map((panel) => {
-            const mark = markOf({
-              full: states.find((one) => one.id === panel.id)?.full ?? false,
-              attempts: attempts[panel.id] ?? 0,
-              wrongNumber: wrongNums.includes(panel.id),
-            });
-            return {
-              id: panel.id,
-              label: panel.label,
-              mark,
-              advice: "",
-              /* その 札を 開けた ことば（控えから 逆に 引く）。 */
-              said: probeLog
-                .filter((one) => one.panels?.includes(panel.id))
-                .map((one) => one.answer)
-                .join(" "),
-              /*
-               * **その日の ふりかえりにだけ 正しい 回答を 出す**（2026-09-18 の 指定）。
-               * 教材の 見本は 「…」で 囲って ある ので、外して 本文だけ 並べる
-               *（つないで「ブラッシュアップ回答」を 作るため）。
-               */
-              example: (
-                scene.panels.find((one) => one.id === panel.id)?.example?.text ?? ""
-              ).replace(/^「|」$/gu, ""),
-              /*
-               * 項目ごとの ブラッシュアップ（その日 いちばん 新しい 直し）。**言えた 札だけ**——
-               * まだの 札は 横の「正しい 回答」で 見くらべる（日の おわりは 答えを 見せて よい）。
-               */
-              polished: mark !== "missing" ? (dayItems[panel.id]?.polished ?? "") : "",
-              /* 日の おわりは 正しい 回答を 出す ので、ヒントは 要らない。 */
-              hint: "",
-            };
-          })}
-          probes={probeLog}
-          /* 聞き返し 0回で ぜんぶ ⭕（週の けっかの ★と 同じ ものさし・`isOneShotDay`）。 */
-          oneShot={probes === 0 && states.length > 0 && states.every((one) => one.full)}
-          good={dayAi.good}
-          advice={dayAi.advice}
-          failReason={dayFail}
-          nextLabel={
-            backToWeek
-              ? "今週の けっかに もどる ▶"
-              : sceneAt + 1 >= asakai.scenes.length
-                ? /* 閉じた あとは 先輩の 報告を 聞き、週の けっかは ボタンで 開く（上の `toGap`）。 */
-                  "みんなの 報告を 聞く ▶"
-                : `${DAY_NAME[asakai.scenes[sceneAt + 1]?.day ?? "fri"]}へ 進む ▶`
-          }
-          index={index}
-          aiIndex={aiIndex}
-          /*
-           * もう いちど 報告する … その日を はじめから（お手本を 見た あとなので 点は 変わらない）。
-           * **週の けっかからの 話し直しでは 出さない**（code-critic 検収）。ここで 押すと 点が
-           * 変わらず、週の けっかの「もう いちど」だと 変わる——同じ 行動で 結果が ちがう。
-           * 話し直したい ときは 週の けっかの「もう いちど」から（そちらは 数え直す）。
-           */
-          onRetry={
-            backToWeek
-              ? undefined
-              : () => {
-                  setDayOpen(false);
-                  setPendingTail([]);
-                  goToScene(sceneAt);
-                }
-          }
-          onClose={() => {
-            setDayOpen(false);
-            if (backToWeek) {
-              /* 司会の 受け止め（評価の あいだに 鳴った 1行）だけ 字で 残す。 */
-              const ack = pendingTail[0];
-              if (ack) setLines((prev) => [...prev, toChatLine(ack, nameOf, learnerName)]);
-              setPendingTail([]);
-              backToWeekResult();
-              return;
+        ) : null}
+        {weekOpen ? (
+          <WeekResult
+            asakai={asakai}
+            rows={results}
+            index={index}
+            onClose={closeWeek}
+            onRestart={restartWeek}
+            onRedoDay={redoDay}
+            certificate={
+              issuer.certificate ? (
+                <CertificatePanel
+                  state={issuer.certificate}
+                  furigana={index}
+                  show
+                  onRetry={issuer.retry}
+                />
+              ) : null
             }
-            /* 受け止めの 字と、そのあとの 話を ここで 出す（上の `finishScene` の 覚え書き）。 */
-            if (pendingTail.length > 0) {
-              const rest = pendingTail.slice(1);
-              setLines((prev) => [
-                ...prev,
-                ...pendingTail.map((line) => toChatLine(line, nameOf, learnerName)),
-              ]);
-              if (rest.length > 0) pushClips(rest, rateOf(speed));
-              setPendingTail([]);
-            }
-            toGap();
-          }}
-        />
-      ) : null}
-      {weekOpen ? (
-        <WeekResult
-          asakai={asakai}
-          rows={results}
-          index={index}
-          onClose={closeWeek}
-          onRestart={restartWeek}
-          onRedoDay={redoDay}
-          certificate={
-            issuer.certificate ? (
-              <CertificatePanel
-                state={issuer.certificate}
-                furigana={index}
-                show
-                onRetry={issuer.retry}
-              />
-            ) : null
-          }
-        />
-      ) : null}
-      {/*
+          />
+        ) : null}
+        {/*
         **Gemini を 呼んで いる あいだは 画面 ぜんたいを 覆う**（2026-09-21 の 指定
         「マイクで 話すのが メイン…画面の 制御も ある ため、全体に 表示される ことが
         望ましい」）。会話の 記録の 中に 置いて いた ころは、話して いる 学習者の
         目に 入らず、待って いる あいだに 曜日の 帯や 報告メモが 押せて しまって いた。
       */}
-      {waiting ? <AiWaitingOverlay doing="見て います" index={index} /> : null}
-    </CallShell>
+        {waiting ? <AiWaitingOverlay doing="見て います" index={index} /> : null}
+      </CallShell>
+    </>
   );
 }
 

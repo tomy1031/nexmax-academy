@@ -35,6 +35,7 @@ import {
 import { useLiveSession } from "./use-live-session";
 import { CertificatePanel } from "@/components/certificate/certificate-panel";
 import { useCertificateIssuer } from "@/components/certificate/use-certificate-issuer";
+import { CertificateCorner } from "@/components/certificate/certificate-corner";
 import { scenarioResult } from "@/lib/certificate/model";
 
 /**
@@ -188,6 +189,8 @@ export function TalkSession({
   const { begin: beginCertificate, finish: finishCertificate, reset: resetCertificate } = issuer;
   /** 退室した（事前調査の 無い 教材は けっかの 画面が 無いので、退室の あとに 修了証を 出す）。 */
   const [leftCall, setLeftCall] = useState(false);
+  /** 会話に 入った（入る 前だけ「前に 出した 修了証」を 出す）。 */
+  const [inCall, setInCall] = useState(false);
   // 画面に出す文言は型付きキーだけ（自由文字列を書けなくする — 設計03 §1.3-1）
   const [note, setNote] = useState<FeedbackKey | null>(null);
   const [draft, setDraft] = useState("");
@@ -505,13 +508,15 @@ export function TalkSession({
     setLeaveAsk(false);
     setMemo(Array.from({ length: Math.max(3, people.length) }, () => ""));
     setLeftCall(false);
+    setInCall(false);
     resetCertificate();
     setPhase("mission");
   }, [live, people.length, resetCertificate]);
 
   // 会話の 画面に 入った ときに 回を 始める（開き直して つづきから 話すのは 同じ 回）
   useEffect(() => {
-    if (phase === "interview") beginCertificate();
+    // しおりは 無い（開き直すと はじめから）ので、いつも 新しい 回
+    if (phase === "interview") beginCertificate({ resumed: false });
   }, [phase, beginCertificate]);
 
   /**
@@ -645,6 +650,7 @@ export function TalkSession({
       faces={faces}
       furigana={scenario.furigana}
       purpose="speak"
+      onJoined={() => setInCall(true)}
       onLeft={handleLeft}
       speak={
         multi ? (
@@ -1108,6 +1114,13 @@ export function TalkSession({
 
       {/* 5段の 教材だけ、いま どこに いるかを 帯で 見せる */}
       {research && <StepBar current={phase} />}
+
+      {/* 始める 前: 前に 出した 修了証・出し直し（願い #562） */}
+      {(research ? phase === "mission" : !inCall && !leftCall) ? (
+        <div className="mb-4">
+          <CertificateCorner issuer={issuer} contentId={scenario.id} furigana={furigana} />
+        </div>
+      ) : null}
 
       {research && phase === "mission" ? (
         <MissionStep scenario={scenario} furigana={furigana} onDone={() => setPhase("research")} />

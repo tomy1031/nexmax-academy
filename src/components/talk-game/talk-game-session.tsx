@@ -51,6 +51,7 @@ import { TalkFeedback, TalkRubric, FEEDBACK_FURIGANA } from "./talk-feedback";
 import { TalkScene } from "./talk-scene";
 import { CertificatePanel } from "@/components/certificate/certificate-panel";
 import { useCertificateIssuer } from "@/components/certificate/use-certificate-issuer";
+import { CertificateCorner } from "@/components/certificate/certificate-corner";
 import { talkGameResult } from "@/lib/certificate/model";
 
 /**
@@ -263,7 +264,7 @@ export function TalkGameSession({
    * 回を 始め、**クリアした 瞬間**に 発行する。
    */
   const issuer = useCertificateIssuer(meeting.id);
-  const { begin: beginCertificate, finish: finishCertificate, reset: resetCertificate } = issuer;
+  const { begin: beginCertificate, finish: finishCertificate } = issuer;
   const [queue, setQueue] = useState<readonly Line[]>([]);
   /**
    * もう 出した 社長の ことば（**新しい ものが うしろ**）。
@@ -561,8 +562,8 @@ export function TalkGameSession({
       if (!game) return;
       turnRef.current += 1;
       if (fresh) clearTalkResume(meeting.id);
-      resetCertificate();
-      beginCertificate();
+      // しおりの つづきなら「つづき」（この 端末で 始めた 回で なければ 前の 回の 続き）
+      beginCertificate({ resumed: !fresh && saved !== null });
       const from = fresh ? EMPTY_TALK : (saved ?? EMPTY_TALK);
       setTalk(from);
       setResult(null);
@@ -601,7 +602,7 @@ export function TalkGameSession({
       }
       recordContentProgress(meeting.id, { status: "started" });
     },
-    [game, meeting.id, saved, withName, openerAt, lineOf, resetCertificate, beginCertificate],
+    [game, meeting.id, saved, withName, openerAt, lineOf, beginCertificate],
   );
 
   /**
@@ -923,6 +924,8 @@ export function TalkGameSession({
             {saved ? "つづきから 話す ▶" : "はじめる ▶"}
           </button>
         </div>
+        {/* 前に 出した 修了証・出し直し（願い #562） */}
+        <CertificateCorner issuer={issuer} contentId={meeting.id} furigana={furigana} />
       </div>
     );
   }

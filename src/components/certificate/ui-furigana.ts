@@ -40,6 +40,8 @@ export const CERTIFICATE_UI_FURIGANA = buildFuriganaIndex([
   // 会話の 練習（第2段）
   ["答", "こた"],
   ["話", "はな"],
+  // 「聞き出す」は 語で 持つ（1字の 聞・出 では 出が 残る・code-critic の 指摘）
+  ["聞き出", "ききだ"],
   ["聞", "き"],
   ["言", "い"],
   ["曜日", "ようび"],
