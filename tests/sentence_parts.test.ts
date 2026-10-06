@@ -64,6 +64,13 @@ describe("pickBoundaries", () => {
   });
 });
 
+describe("pickBoundaries（読みが 空）", () => {
+  it("読みの 長さが 0 なら 切らない", () => {
+    const { pauses, voiceStart, voiceEnd } = innerPauses(audio);
+    expect(pickBoundaries(pauses, voiceStart, voiceEnd, [0, 0])).toBeNull();
+  });
+});
+
 describe("cutPart", () => {
   it("2文目だけ 切ると「はい。」の 声が 入らず、間の のりしろを 少し 残す", () => {
     const { pauses, voiceStart, voiceEnd } = innerPauses(audio);
