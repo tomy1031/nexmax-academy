@@ -9,7 +9,7 @@
  *
  * 端末ごとの 記録なので、途中で 端末を 替えた 回は 数えられない（範囲外。願い #562）。
  */
-import type { IssuedCertificate } from "./model";
+import type { CertificateResult, IssuedCertificate } from "./model";
 
 /*
  * 鍵は「nexmax.」で 始める——ログアウトで `clearNexmaxCache()` が まとめて 消す。
@@ -20,6 +20,12 @@ const RUN_PREFIX = "nexmax.cert-run.v1:";
 const ISSUED_PREFIX = "nexmax.cert.v1:";
 /** この 教材の こたえあわせ（原稿）を 見た ことが あるか（「はじめから」でも 消さない）。 */
 const SAW_PREFIX = "nexmax.cert-saw.v1:";
+/**
+ * もんだい（第2段）: どの 回で こたえを 見たか。**回の 名札（startedAt）付き**で 残す——
+ * 1問ずつの やりかたは 答える たびに こたえを 見せるので、同じ 回の 中で 見た ことは
+ * 数えない。ほかの 回（前の 回・別の タブ）で 見た ことだけを 数える。
+ */
+const ANSWERS_PREFIX = "nexmax.cert-answers.v1:";
 
 /** 1回ぶんの 記録（リスニング・タイピング 共通。使う 欄は 種類ごと）。 */
 export interface CertificateRun {
@@ -39,6 +45,11 @@ export interface CertificateRun {
   readonly sawScriptBefore?: boolean;
   /** 回を 始めた 人（ログインして いれば 本人の id。発行の ときに 突き合わせる）。 */
   readonly owner?: string;
+  /**
+   * 終えた のに まだ 発行できて いない 成績（もんだい）。発行の 途中で 閉じた・落ちた ときに
+   * 次に 開いた 画面で「もう一度 ためす」から 出し直す（黙って 消さない）。
+   */
+  readonly pending?: { readonly result: CertificateResult; readonly attemptId: string };
 }
 
 function storage(): Storage | null {
@@ -112,4 +123,32 @@ export function markSawScript(contentId: string): void {
 
 export function sawScript(contentId: string): boolean {
   return readJson<boolean>(SAW_PREFIX + contentId) === true;
+}
+
+interface AnswersSeen {
+  /** 見た 回の 名札（`CertificateRun.startedAt`）。 */
+  readonly run: string;
+  readonly at: string;
+}
+
+/** この 回で こたえを 見た 印を 付ける（もんだい）。 */
+export function markSawAnswers(contentId: string, runStartedAt: string): void {
+  writeJson(ANSWERS_PREFIX + contentId, {
+    run: runStartedAt,
+    at: new Date().toISOString(),
+  } satisfies AnswersSeen);
+}
+
+/** どこかの 回で こたえを 見た ことが あるか（回を 始める 時に 見る）。 */
+export function sawAnyAnswers(contentId: string): boolean {
+  return readJson<AnswersSeen>(ANSWERS_PREFIX + contentId) !== null;
+}
+
+/**
+ * **ほかの 回**で こたえを 見たか（終える 時に 見る）。2つの タブで 同じ もんだいを 開き、
+ * 片方で 出して こたえを 見てから、もう片方で 出す——を 止める（code-critic の 指摘）。
+ */
+export function sawAnswersOutside(contentId: string, runStartedAt: string): boolean {
+  const seen = readJson<AnswersSeen>(ANSWERS_PREFIX + contentId);
+  return seen !== null && seen.run !== runStartedAt;
 }

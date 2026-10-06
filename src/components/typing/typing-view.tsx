@@ -17,12 +17,11 @@ import {
   CertificatePanel,
   type CertificateState,
 } from "@/components/certificate/certificate-panel";
-import { claimRun, currentOwner, issueCertificate } from "@/lib/certificate/certificate-db";
-import { typingResult, type IssuedCertificate } from "@/lib/certificate/model";
-import { CERTIFICATE_UI_FURIGANA } from "@/components/certificate/ui-furigana";
+import { claimRun, issueCertificate } from "@/lib/certificate/certificate-db";
+import { typingResult } from "@/lib/certificate/model";
+import { PreviousCertificate } from "@/components/certificate/previous-certificate";
 import {
   endRun,
-  readIssued,
   readRun,
   saveIssued,
   startRun,
@@ -515,45 +514,5 @@ function WordCards({
         ))}
       </ul>
     </section>
-  );
-}
-
-/**
- * 前に 出した 修了証を ひらく（画像を 保存し直す ため）。端末の 控えを 読むので、
- * サーバと 最初の 描画では 出さない。**持ち主を 突き合わせて から** 出す
- *（共有 PC で 前の 人の 名前・番号を 見せない）。
- */
-function PreviousCertificate({
-  contentId,
-  onOpen,
-  show,
-}: {
-  contentId: string;
-  onOpen: (cert: IssuedCertificate) => void;
-  show: boolean;
-}) {
-  const stored = useSyncExternalStore(
-    subscribeNever,
-    () => (readIssued(contentId) ? "yes" : "no"),
-    () => "no",
-  );
-  if (stored !== "yes") return null;
-  return (
-    <p className="text-center">
-      <button
-        type="button"
-        onClick={() => {
-          const cert = readIssued(contentId);
-          if (!cert) return;
-          void currentOwner().then((owner) => {
-            if ((cert.owner ?? "") === (owner ?? "")) onOpen(cert);
-          });
-        }}
-        className="border-hairline text-navy bg-panel rounded-2xl border px-4 py-2 text-sm font-extrabold"
-      >
-        🎓{" "}
-        <RubyText text="前に 出した 修了証を ひらく" index={CERTIFICATE_UI_FURIGANA} show={show} />
-      </button>
-    </p>
   );
 }

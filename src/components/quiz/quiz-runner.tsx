@@ -35,7 +35,14 @@ import { QuestionBody } from "./question-types";
 import { AnswerCheckProvider, type AnswerCheck, type AnswerChecks } from "./answer-check";
 import { dropJudgeSession } from "@/components/meeting/judge-api";
 import { checkedText, fillinModelText } from "@/lib/quiz/fillin";
-import { bugReportModelText, bugReportsPassed } from "@/lib/quiz/bugreport";
+import {
+  BUG_REPORT_SHOW_ANSWER_AFTER,
+  bugReportModelText,
+  bugReportsPassed,
+} from "@/lib/quiz/bugreport";
+import { CertificatePanel } from "@/components/certificate/certificate-panel";
+import { PreviousCertificate } from "@/components/certificate/previous-certificate";
+import { useQuizCertificate } from "./use-quiz-certificate";
 import { ModelAnswer } from "./check-parts";
 import { FillinReview } from "./fillin-review";
 import { SceneCard } from "./scene-card";
@@ -142,6 +149,8 @@ export function QuizRunner({
    * 選ばれたら 消す——そのあとは 本当に まっさらだから。
    */
   const [reopened, setReopened] = useState(start.reopened);
+  /** 修了証（願い #562 の 第2段）。出して 採点された 瞬間に 発行する。 */
+  const certificate = useQuizCertificate(set.id, set.title);
   /**
    * こたえの チェックが 通った 問題（2026-09-21 の 指定）。
    *
@@ -424,6 +433,39 @@ export function QuizRunner({
         /* 記録できなくても 学習は 止めない */
       });
   }, [attemptId, done, wholeRun, set.id, set.questions, state.results]);
+
+  /*
+   * 修了証は **出して 採点された 瞬間に** 1回だけ 発行する（ボタンを 押した 時では ない——
+   * あとで こっそり やって 授業中に 押す、を させない）。鍵は 上と 同じ この 回の `attemptId`。
+   */
+  const { finish: finishCertificate } = certificate;
+  const certifiedRef = useRef<string | null>(null);
+  useEffect(() => {
+    if (!done || certifiedRef.current === attemptId) return;
+    certifiedRef.current = attemptId;
+    finishCertificate({
+      total: summary.total,
+      correct: summary.correct,
+      percent: summary.percent,
+      passed: summary.passed,
+      freeOnly,
+      wholeRun,
+      sawModelAnswer: sawBugReportAnswer(state.drafts),
+      attemptId,
+    });
+  }, [done, attemptId, summary, freeOnly, wholeRun, state.drafts, finishCertificate]);
+
+  /*
+   * この 回の 中で こたえを 見た 印（1問ずつの せつめい・バグ報告で 3回 だめで 見せた 文）。
+   * 同じ 回では 数えないが、「はじめから」で 回を 新しく しても **前の 回で 見た** ことは 残る
+   *（code-critic の 指摘。印が 無いと、見てから やり直して パーフェクトに なる）。
+   */
+  const { sawAnswers } = certificate;
+  const explaining = state.phase.kind === "explain";
+  const bugAnswerShown = sawBugReportAnswer(state.drafts);
+  useEffect(() => {
+    if (started && (explaining || bugAnswerShown)) sawAnswers();
+  }, [started, explaining, bugAnswerShown, sawAnswers]);
   const question = currentQuestion(state);
   /** 1問ずつの 画面で、バグ報告が まだ 合格して いない（「つぎ →」を 止める）。 */
   const bugBlocked = (() => {
@@ -569,29 +611,53 @@ export function QuizRunner({
         )}
 
         {!started ? (
-          <StartCard
-            set={set}
-            furigana={furigana}
-            resumed={resumed}
-            reopened={reopened}
-            answerMode={set.answerMode}
-            gated={set.questions.some(
-              (q) =>
-                ((q.type === "fillin" || q.type === "free") && q.ai !== undefined) ||
-                q.type === "bugreport",
-            )}
-            answeredCount={submitMode ? written : start.results.length}
-            startIndex={state.index}
-            onContinue={() => setStarted(true)}
-            onStart={() => {
-              clearQuizResume(set.id);
-              setRetryIds([]);
-              restart(set.questions);
-              setResumed(false);
-              setReopened(false);
-              setStarted(true);
-            }}
-          />
+          <>
+            <StartCard
+              set={set}
+              furigana={furigana}
+              resumed={resumed}
+              reopened={reopened}
+              answerMode={set.answerMode}
+              gated={set.questions.some(
+                (q) =>
+                  ((q.type === "fillin" || q.type === "free") && q.ai !== undefined) ||
+                  q.type === "bugreport",
+              )}
+              answeredCount={submitMode ? written : start.results.length}
+              startIndex={state.index}
+              onContinue={() => {
+                certificate.begin(reopened ? "reopened" : "continue");
+                setStarted(true);
+              }}
+              onStart={() => {
+                // 前に 出した こたえが 戻って いた 人は、消しても「出した あと」に 変わりない
+                certificate.begin(reopened ? "reopened" : "fresh");
+                clearQuizResume(set.id);
+                setRetryIds([]);
+                restart(set.questions);
+                setResumed(false);
+                setReopened(false);
+                setStarted(true);
+              }}
+            />
+            {/* 前に 出した 修了証（画像を 保存し直す）。開くと ここに 出す */}
+            <div className="mt-4">
+              {certificate.certificate ? (
+                <CertificatePanel
+                  state={certificate.certificate}
+                  furigana={furigana}
+                  show
+                  onRetry={certificate.retry}
+                />
+              ) : (
+                <PreviousCertificate
+                  contentId={set.id}
+                  show
+                  onOpen={(cert) => certificate.setCertificate({ status: "ready", cert })}
+                />
+              )}
+            </div>
+          </>
         ) : state.phase.kind === "finished" ? (
           <QuizResultCard
             set={set}
@@ -602,7 +668,19 @@ export function QuizRunner({
             furigana={furigana}
             freeOnly={freeOnly}
             inNotebook={inNotebook}
+            certificate={
+              certificate.certificate ? (
+                <CertificatePanel
+                  state={certificate.certificate}
+                  furigana={furigana}
+                  show
+                  onRetry={certificate.retry}
+                />
+              ) : null
+            }
             onRetryAll={() => {
+              // けっかの 画面で こたえを 見た あとの やりなおし（パーフェクトに しない）
+              certificate.begin("retry");
               /*
                * **前の こたえを 持ったまま** やり直す（2026-08-25 の 指定）。
                * ぜんぶ 消えると、合って いた 25問を もう一度 打ち直す ことに なる。
@@ -2088,6 +2166,7 @@ export function QuizResultCard({
   furigana,
   freeOnly,
   inNotebook = false,
+  certificate = null,
   onRetryAll,
 }: {
   set: QuizSet;
@@ -2102,6 +2181,8 @@ export function QuizResultCard({
   freeOnly: boolean;
   /** 書いた こたえが あとの 会話の こたえノートに 出るか（`QuizRunner` の 同名の 値）。 */
   inNotebook?: boolean;
+  /** 修了証（出して 採点された 瞬間に 発行した もの）。点の すぐ 下に 置く。 */
+  certificate?: React.ReactNode;
   onRetryAll: () => void;
 }) {
   const missed = summary.missedQuestionIds.length;
@@ -2211,6 +2292,8 @@ export function QuizResultCard({
         <StampRow count={freeOnly ? written : summary.correct} />
       </div>
 
+      {certificate ? <div className="mt-5">{certificate}</div> : null}
+
       {/*
         **ぜんぶの もんだいを 出す**（合っていた ものも）。自分が 何と 答え、正解が
         何だったのかが 1画面で 分かるように する。まとめて 出す やりかたでは、
@@ -2310,5 +2393,19 @@ export function QuizResultCard({
         )}
       </div>
     </motion.div>
+  );
+}
+
+/**
+ * バグ報告で **こたえの 文を 見た** か（3回 だめで AIが 正しい 報告を 見せた）。
+ * 見せた 文を 読めば 通る ので、修了証の パーフェクトに しない（願い #562 の 第2段）。
+ */
+function sawBugReportAnswer(drafts: QuizState["drafts"]): boolean {
+  return Object.values(drafts).some(
+    (draft) =>
+      draft?.kind === "bugreport" &&
+      draft.reports.some(
+        (entry) => (entry.tries ?? 0) >= BUG_REPORT_SHOW_ANSWER_AFTER || entry.readAnswer === true,
+      ),
   );
 }

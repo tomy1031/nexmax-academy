@@ -679,14 +679,27 @@ function certificateScoreText(record: CertificateRecord): string {
   const detail = (record.detail ?? {}) as Record<string, unknown>;
   const notes = [
     ...(detail.partial ? ["前の 回の 続きから"] : []),
-    ...(detail.sawScriptBefore ? ["こたえあわせを 見た あとの やりなおし"] : []),
+    ...(detail.sawScriptBefore
+      ? [
+          record.kind === "quizset"
+            ? "こたえを 見た あとの やりなおし"
+            : "こたえあわせを 見た あとの やりなおし",
+        ]
+      : []),
     ...(detail.reviewedEarly ? ["100%の 前に こたえあわせを 見た"] : []),
     ...(detail.usedRescue ? ["あいことばを 使った"] : []),
+    ...(detail.sawModelAnswer ? ["バグ報告で こたえの 文を 見た"] : []),
   ];
   const tail = notes.length > 0 ? `（${notes.join("・")}）` : "";
   if (record.kind === "listening") return `スコア ${record.score ?? 0}点・ミス ${misses}回${tail}`;
   if (record.kind === "typing") {
     return `1回で 正解 ${record.score ?? 0}/${record.max_score ?? 0}・❌ ${misses}回${tail}`;
+  }
+  if (record.kind === "quizset") {
+    // 正解の 無い 教材は 点も 合否も 無い（書けた 数だけ。けっかの 画面と 同じ）
+    if (detail.freeOnly) return `書けた ${record.score ?? 0}/${record.max_score ?? 0}${tail}`;
+    const verdict = detail.passed ? "合格" : "不合格";
+    return `正解 ${record.score ?? 0}/${record.max_score ?? 0}・${verdict}${tail}`;
   }
   const parts: string[] = [];
   if (record.score !== null) {

@@ -1,7 +1,15 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { expect, test, type BrowserContext, type Page } from "@playwright/test";
-import { bareKanjiTexts, seedCompleted, shot } from "./helpers";
+import {
+  bareKanjiTexts,
+  choiceButtons,
+  goNext,
+  goToConfirm,
+  seedCompleted,
+  shot,
+  submitAnswers,
+} from "./helpers";
 
 /**
  * 修了証（2026-10-06 の 指定・願い #562）
@@ -231,4 +239,137 @@ test("リスニング: 100%の 前に こたえあわせを 見て 戻ると、�
   await expect(cert).toBeVisible();
   await expect(cert).toHaveAttribute("data-perfect", "false");
   await expect(page.locator('[data-certificate="reasons"]')).toContainText("こたえあわせ");
+});
+
+/* ---- 第2段: もんだい（2026-10-06 の 回答「満点」） ---- */
+
+const QUIZ = "houkoku_kanryou_quiz";
+
+function quizAnswers(): number[] {
+  return JSON.parse(
+    readFileSync(join("content", "quizsets", `${QUIZ}.json`), "utf8"),
+  ).questions.map((q: { answer: number }) => q.answer);
+}
+
+/** 1問ずつ えらんで（まとめて 出す）、さいごに 出す。 */
+async function answerQuiz(page: Page, picks: readonly number[]) {
+  for (const [i, at] of picks.entries()) {
+    await choiceButtons(page).nth(at).click();
+    if (i < picks.length - 1) await goNext(page);
+    else await goToConfirm(page);
+  }
+  await submitAnswers(page);
+}
+
+test("もんだい: 全問 正解で 出すと パーフェクト。「もう一度」は こたえを 見た あとの やりなおし", async ({
+  page,
+  context,
+}) => {
+  await page.setViewportSize({ width: 390, height: 900 });
+  await seedBefore(context, QUIZ);
+  await page.goto(`/${STAGE}/quiz-${QUIZ}`);
+  await page.getByRole("button", { name: "はじめる" }).click();
+  const answers = quizAnswers();
+  await answerQuiz(page, answers);
+
+  const cert = page.locator('[data-certificate="ready"]');
+  await expect(cert).toBeVisible();
+  await expect(cert).toHaveAttribute("data-perfect", "true");
+  await expect(page.locator('[data-certificate="badge"]')).toHaveText("★ PERFECT");
+  await expect(cert).toContainText(`${answers.length} / ${answers.length}`);
+  expect(await bareKanjiIn(page, '[data-certificate="ready"]')).toEqual([]);
+  await cert.scrollIntoViewIfNeeded();
+  await shot(page, "certificate-quiz-perfect-390");
+
+  // けっかの 画面で こたえを 見た → 「もう一度」は 満点でも パーフェクトに しない
+  await page.getByRole("button", { name: "もう一度 やる" }).click();
+  await expect(page.locator('[data-certificate="ready"]')).toHaveCount(0);
+  for (let i = 0; i < answers.length - 1; i++) await goNext(page);
+  await goToConfirm(page);
+  await submitAnswers(page);
+  await expect(cert).toHaveAttribute("data-perfect", "false");
+  await expect(page.locator('[data-certificate="reasons"]')).toContainText("やりなおし");
+});
+
+test("もんだい: 1問 まちがえると パーフェクトで ない（まちがえた 数と 合否を 書く）", async ({
+  page,
+  context,
+}) => {
+  await page.setViewportSize({ width: 390, height: 900 });
+  await seedBefore(context, QUIZ);
+  await page.goto(`/${STAGE}/quiz-${QUIZ}`);
+  await page.getByRole("button", { name: "はじめる" }).click();
+  const answers = quizAnswers();
+  // 1問目だけ ちがう 選択肢を えらぶ
+  await answerQuiz(page, [(answers[0]! + 1) % 2, ...answers.slice(1)]);
+
+  const cert = page.locator('[data-certificate="ready"]');
+  await expect(cert).toHaveAttribute("data-perfect", "false");
+  await expect(page.locator('[data-certificate="reasons"]')).toContainText("1問");
+  await expect(cert).toContainText(`${answers.length - 1} / ${answers.length}`);
+  expect(await bareKanjiIn(page, '[data-certificate="ready"]')).toEqual([]);
+  await cert.scrollIntoViewIfNeeded();
+  await shot(page, "certificate-quiz-not-perfect-390");
+});
+
+test("もんだい: こたえを 見た あと 開き直して「はじめる」から 全問 正解しても パーフェクトに ならない", async ({
+  page,
+  context,
+}) => {
+  await seedBefore(context, QUIZ);
+  await page.goto(`/${STAGE}/quiz-${QUIZ}`);
+  await page.getByRole("button", { name: "はじめる" }).click();
+  const answers = quizAnswers();
+  // 1回目は 白紙に 近い まま 出して、けっかの 画面で こたえを 見る
+  await answerQuiz(
+    page,
+    answers.map((at) => (at + 1) % 2),
+  );
+  await expect(page.locator('[data-certificate="ready"]')).toBeVisible();
+
+  // 開き直して はじめから（端末の 印が「前に こたえを 見た」を 覚えて いる）
+  await page.reload();
+  await page.getByRole("button", { name: "はじめる" }).click();
+  await answerQuiz(page, answers);
+  const cert = page.locator('[data-certificate="ready"]');
+  await expect(cert).toHaveAttribute("data-perfect", "false");
+  await expect(page.locator('[data-certificate="reasons"]')).toContainText("やりなおし");
+});
+
+test("もんだい: 発行の 途中で 閉じた 回は、次に 開くと「もう一度 ためす」から 出し直せる", async ({
+  page,
+  context,
+}) => {
+  await seedBefore(context, QUIZ);
+  const total = quizAnswers().length;
+  await context.addInitScript(
+    ([key, total]) => {
+      window.localStorage.setItem(
+        key as string,
+        JSON.stringify({
+          startedAt: "2026-10-06T05:00:00.000Z",
+          pending: {
+            attemptId: "00000000-0000-4000-8000-000000000001",
+            result: {
+              kind: "quizset",
+              contentId: "houkoku_kanryou_quiz",
+              title: "作業完了の 報告の もんだい",
+              perfect: true,
+              score: total,
+              maxScore: total,
+              misses: 0,
+              detail: { questions: total, percent: 100, passed: true },
+            },
+          },
+        }),
+      );
+    },
+    [`nexmax.cert-run.v1:${QUIZ}`, total] as const,
+  );
+  await page.goto(`/${STAGE}/quiz-${QUIZ}`);
+  await expect(page.locator('[data-certificate="error"]')).toBeVisible();
+  await page.getByRole("button", { name: /ためす/ }).click();
+  const cert = page.locator('[data-certificate="ready"]');
+  await expect(cert).toBeVisible();
+  await expect(cert).toHaveAttribute("data-perfect", "true");
 });
